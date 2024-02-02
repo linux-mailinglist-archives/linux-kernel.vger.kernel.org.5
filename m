@@ -1,299 +1,171 @@
-Return-Path: <linux-kernel+bounces-49032-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49028-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A73AD84650B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:19:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 892BD8464FB
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:18:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 189C11F269A7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:19:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1520F1F253C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 00:18:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEA75185B;
-	Fri,  2 Feb 2024 00:18:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1D121396;
+	Fri,  2 Feb 2024 00:17:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="jt9FTXbQ"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XpTODJeZ"
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECE2D440A;
-	Fri,  2 Feb 2024 00:18:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A071B10E5;
+	Fri,  2 Feb 2024 00:17:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706833129; cv=none; b=eYhciVxhfGvZpYcaQ+Q639WPB06Aa4XBjHVlE5zp9FATwMUaAD+ZtdpDbTMv5VPseicDlHLH1kW98eklQITfy7OitQwbf/xxNw91MMhcEoE3UMl221lotRpXwn/ykGzo3tc5lID5UMH1X7CyULExvfPqXBBpkUabiOl2LslcbSY=
+	t=1706833077; cv=none; b=frYWH3K5O9esUMcq8yLuy7ZOTXda64z821pJUb7vujLCXNDroucEFjNN+o2qLR6+9GYLbBWJCdiCb3CrhH3cs1OcnqYqZZwBsLSgk0GXE6ElwTAU+LVsCi0gRpiKpI+vDJA1OC21lVftfqHNC0eANgsYuSX3JpGA2r75HuzIlB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706833129; c=relaxed/simple;
-	bh=iVgokjiSNCJ+Z8sW9cejr+PMtsQU9x0YADB/NwsNM7I=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uFn1DcJKpW8toV5cu+7irTjQxx769AYI5bx8GMzxGCWH6vjcWKPOvsiQOpgFMzz2/BxRc8GqZ9B6x9vashD7QDUVa47Avla1czEMh7zaa74Ht5vuVdQ4u8T85g/uK4coJv5ZAwFqgx0dkLdJJ8lhXml1oJgPs+jPd1633J91R70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=jt9FTXbQ; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1706833127; x=1738369127;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=iVgokjiSNCJ+Z8sW9cejr+PMtsQU9x0YADB/NwsNM7I=;
-  b=jt9FTXbQWbtbpUROGvkSbNU7HbJH2fxwpEoksDiULBBbXI5IQolnhpjv
-   VYazjimtsUxqwnk3P+ICx5bYnokFjzXLlNyOQUfAehBv8wSawLti3v3tJ
-   UQsZ7M2WF6Mrw8kQckwc1NmaVm3xiOrKvHVDTIdikLG2/Ybn09zsEsAW/
-   8jPgoMrR6Wbpf5EJpbf1nO+Lz2NeGKnQBLlzxx0s6VKjS15nry3nZsC1K
-   hqd+Z6Qk6/UcilzXhj8JM9IevXmX7vcQ7FvNPet7p5oK3lp9SeAWwb6oD
-   U9G4+/bC02eTj8LIT2eIXFzj7yQL2O+/Fl3CGuvGTwIEXaolUjC3UOtlF
-   g==;
-X-CSE-ConnectionGUID: e1Zn+Vq1QxOgwJxDtWrJAA==
-X-CSE-MsgGUID: xiJdaRRaTmaL/bGY5WpIoA==
-X-IronPort-AV: E=Sophos;i="6.05,236,1701154800"; 
-   d="scan'208";a="15654000"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 01 Feb 2024 17:18:46 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 1 Feb 2024 17:18:12 -0700
-Received: from che-lt-i70843lx.amer.actel.com (10.10.85.11) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Thu, 1 Feb 2024 17:18:03 -0700
-From: Dharma Balasubiramani <dharma.b@microchip.com>
-To: <sam@ravnborg.org>, <bbrezillon@kernel.org>,
-	<maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-	<tzimmermann@suse.de>, <airlied@gmail.com>, <daniel@ffwll.ch>,
-	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-	<conor+dt@kernel.org>, <nicolas.ferre@microchip.com>,
-	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
-	<dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<lee@kernel.org>, <thierry.reding@gmail.com>,
-	<u.kleine-koenig@pengutronix.de>, <linux-pwm@vger.kernel.org>
-CC: <hari.prasathge@microchip.com>, <manikandan.m@microchip.com>, "Dharma
- Balasubiramani" <dharma.b@microchip.com>, Conor Dooley
-	<conor.dooley@microchip.com>
-Subject: [linux][PATCH v6 3/3] dt-bindings: mfd: atmel,hlcdc: Convert to DT schema format
-Date: Fri, 2 Feb 2024 05:47:33 +0530
-Message-ID: <20240202001733.91455-4-dharma.b@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240202001733.91455-1-dharma.b@microchip.com>
-References: <20240202001733.91455-1-dharma.b@microchip.com>
+	s=arc-20240116; t=1706833077; c=relaxed/simple;
+	bh=k2jB5QQ5ayM1QsazOOOPQP4MmZQKKeAb/Ovz7gtJCYU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OG2GptuEu36yK32z1uoSvXvwBlwits+hDAIIu9vsW11gB2142kt6d8LQEQKVN5WLc8yCNkxfbmV6Yn0eXleM9JT02CQZUW37BH8CvNwZMi08+7US1cpj0hbA6sNVhjsOg5wn4PtK90KJx5KmoWgDqe26g4lLIKWtS9D1En2MJ2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XpTODJeZ; arc=none smtp.client-ip=209.85.215.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5d4d15ec7c5so1435488a12.1;
+        Thu, 01 Feb 2024 16:17:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706833075; x=1707437875; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=De0VqAzZQlyUqR32McEyDScTzRgzYQCCM/EkMQwWShQ=;
+        b=XpTODJeZx2ObDSb5CZl0TZVLOoPxkvX1Zn6nqwBm3NHa9sMlHoKmAE1dZdAMNDbzAI
+         bkmtGdPB11V7D+U0LtRNra5fO/Y8MSmXVHAEchb8L15kBOBwshWIH67I/pQ1RFjaNs5G
+         pdfdF1SqdxsCQr4OMZmhyqGWCFjxpnIdgfGxY6KzDAa7RMgOR2i5wOOP3lqaSb8iu2Ee
+         TvGzRNMjIS4WDMgeE/jzzq4GphfoHhxeRqSFcDf0b9veOu6dqBHPuT3r7Jh6C4LIgkh7
+         UrsReup9Jd8cW+vemb0VTMZ5ile8E1VW1dtbuIjzG1532virtS26jgqDLmbBZZIHvA5C
+         xUKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706833075; x=1707437875;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=De0VqAzZQlyUqR32McEyDScTzRgzYQCCM/EkMQwWShQ=;
+        b=YaTOXKkM10Itn/p1z/ZgBKrgO7SNFoUIt9gdXXfDn7A352aXUPe8pZoAX3ocT+XS1c
+         JIsPd+BwMpWTLMACYwcrX5q4NAuCBYjNIYSxmDtbPi4Zu9T224P9EaGkrvOIsQDHhIY0
+         kETa0L8m9DUDUEZM8K6BKj+0aaItf8AuzlntbfCa233jmaNszYUsnrvFEMSB5qBdN04Q
+         7Vmh0cNAbzlze1BWSoShHMpaGcBDilxF6s1oR8Aq0depcFbzAu9D8r68V7EDdWkUnIsd
+         +RJRFmvleeC8Zt4yP398jEqLe6Zv1KXYkZqVcwrHFvV/MtFF1c49575/N/0QwpbabNh2
+         6xIQ==
+X-Gm-Message-State: AOJu0Yy/rkKcfT96qFpczOH5U513j1ymG0yIoOR80cObGf8Gi3szEiRC
+	EKonn1ToQAlLNZBm94nE/0aqd2Gacr8ZtZm2MtS7Enx4t1eJWkGxIStvsTAM9AVfRL/sC47xJAI
+	q/nKpdM10pGZQR1h495WI/Mlu37s=
+X-Google-Smtp-Source: AGHT+IEcmeVrBM5Kau+GUw0k5RW62PM8JNo4ZAkPBQ94srraHAG9DfpyENyuu+H+9fFa+ri6+7aDH5bsPcY89GLvCAs=
+X-Received: by 2002:a05:6a21:2c82:b0:19c:9d4d:7d7 with SMTP id
+ ua2-20020a056a212c8200b0019c9d4d07d7mr5802356pzb.41.1706833074745; Thu, 01
+ Feb 2024 16:17:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20240106223951.387067-1-aford173@gmail.com> <20240106223951.387067-2-aford173@gmail.com>
+ <CAPDyKFpx_Xo6Y5yGfuMiV8w3kR2hL6f8t31pKC=91-wEperqjA@mail.gmail.com>
+In-Reply-To: <CAPDyKFpx_Xo6Y5yGfuMiV8w3kR2hL6f8t31pKC=91-wEperqjA@mail.gmail.com>
+From: Adam Ford <aford173@gmail.com>
+Date: Thu, 1 Feb 2024 18:17:43 -0600
+Message-ID: <CAHCN7xLqKTAcVpsBYXmzdvSefOnXdXzzrGie7mxkzeJLFKu+Rw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] pmdomain: imx8mp-blk-ctrl: imx8mp_blk: Add fdcc clock
+ to hdmimix domain
+To: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: linux-pm@vger.kernel.org, Sandor Yu <Sandor.yu@nxp.com>, 
+	Jacky Bai <ping.bai@nxp.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
+	NXP Linux Team <linux-imx@nxp.com>, Lucas Stach <l.stach@pengutronix.de>, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Convert the atmel,hlcdc binding to DT schema format.
+On Thu, Feb 1, 2024 at 4:33=E2=80=AFPM Ulf Hansson <ulf.hansson@linaro.org>=
+ wrote:
+>
+> On Sat, 6 Jan 2024 at 23:40, Adam Ford <aford173@gmail.com> wrote:
+> >
+> > According to i.MX8MP RM and HDMI ADD, the fdcc clock is part of
+> > hdmi rx verification IP that should not enable for HDMI TX.
+> > But actually if the clock is disabled before HDMI/LCDIF probe,
+> > LCDIF will not get pixel clock from HDMI PHY and print the error
+> > logs:
+> >
+> > [CRTC:39:crtc-2] vblank wait timed out
+> > WARNING: CPU: 2 PID: 9 at drivers/gpu/drm/drm_atomic_helper.c:1634 drm_=
+atomic_helper_wait_for_vblanks.part.0+0x23c/0x260
+> >
+> > Add fdcc clock to LCDIF and HDMI TX power domains to fix the issue.
+> >
+> > Signed-off-by: Sandor Yu <Sandor.yu@nxp.com>
+> > Reviewed-by: Jacky Bai <ping.bai@nxp.com>
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
+>
+> Just to let you know, this looks good to me and it seems like the NXP
+> people like this too. What I am waiting for is an ack on the DT patch,
+> then I am ready to queue this up.
 
-Align clocks and clock-names properties to clearly indicate that the LCD
-controller expects lvds_pll_clk when interfaced with the lvds display. This
-alignment with the specific hardware requirements ensures accurate device tree
-configuration for systems utilizing the HLCDC IP.
+What about the bindings?  I'm assuming that Shawn would take the DT
+through his IMX tree, but I am not sure if I need to resubmit the
+bindings with a different commit message.
 
-Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
----
-Changelog
-v5 -> v6
-- No changes.
-v4 -> v5
-- Revert v3 dropping lvds_pll_clk instead add it as an optional clock.
-- Update minItems to 3.
-- Update commit message accordingly.
-v3 -> v4
-- Drop lvds_pll_clk, It can be enabled in lvds driver itself.
-- Update commit message.
-Note: Since there is no complexities now, I believe that specifying
-maxitems in the clocks property should be sufficient.
-v2 -> v3
-- Rename hlcdc-display-controller and hlcdc-pwm to generic names.
-- Modify the description by removing the unwanted comments and '|'.
-- Modify clock-names simpler.
-v1 -> v2
-- Remove the explicit copyrights.
-- Modify title (not include words like binding/driver).
-- Modify description actually describing the hardware and not the driver.
-- Add details of lvds_pll addition in commit message.
-- Ref endpoint and not endpoint-base.
-- Fix coding style.
-..
- .../devicetree/bindings/mfd/atmel,hlcdc.yaml  | 99 +++++++++++++++++++
- .../devicetree/bindings/mfd/atmel-hlcdc.txt   | 56 -----------
- 2 files changed, 99 insertions(+), 56 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mfd/atmel,hlcdc.yaml
- delete mode 100644 Documentation/devicetree/bindings/mfd/atmel-hlcdc.txt
-
-diff --git a/Documentation/devicetree/bindings/mfd/atmel,hlcdc.yaml b/Documentation/devicetree/bindings/mfd/atmel,hlcdc.yaml
-new file mode 100644
-index 000000000000..4aa36903e755
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mfd/atmel,hlcdc.yaml
-@@ -0,0 +1,99 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mfd/atmel,hlcdc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Atmel's HLCD Controller
-+
-+maintainers:
-+  - Nicolas Ferre <nicolas.ferre@microchip.com>
-+  - Alexandre Belloni <alexandre.belloni@bootlin.com>
-+  - Claudiu Beznea <claudiu.beznea@tuxon.dev>
-+
-+description:
-+  The Atmel HLCDC (HLCD Controller) IP available on Atmel SoCs exposes two
-+  subdevices, a PWM chip and a Display Controller.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - atmel,at91sam9n12-hlcdc
-+      - atmel,at91sam9x5-hlcdc
-+      - atmel,sama5d2-hlcdc
-+      - atmel,sama5d3-hlcdc
-+      - atmel,sama5d4-hlcdc
-+      - microchip,sam9x60-hlcdc
-+      - microchip,sam9x75-xlcdc
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    minItems: 3
-+
-+  clock-names:
-+    items:
-+      - const: periph_clk
-+      - const: sys_clk
-+      - const: slow_clk
-+      - const: lvds_pll_clk
-+    minItems: 3
-+
-+  display-controller:
-+    $ref: /schemas/display/atmel/atmel,hlcdc-display-controller.yaml
-+
-+  pwm:
-+    $ref: /schemas/pwm/atmel,hlcdc-pwm.yaml
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/at91.h>
-+    #include <dt-bindings/dma/at91.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    lcd_controller: lcd-controller@f0030000 {
-+      compatible = "atmel,sama5d3-hlcdc";
-+      reg = <0xf0030000 0x2000>;
-+      clocks = <&lcdc_clk>, <&lcdck>, <&clk32k>;
-+      clock-names = "periph_clk", "sys_clk", "slow_clk";
-+      interrupts = <36 IRQ_TYPE_LEVEL_HIGH 0>;
-+
-+      display-controller {
-+        compatible = "atmel,hlcdc-display-controller";
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&pinctrl_lcd_base &pinctrl_lcd_rgb888>;
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        port@0 {
-+          #address-cells = <1>;
-+          #size-cells = <0>;
-+          reg = <0>;
-+
-+          hlcdc_panel_output: endpoint@0 {
-+            reg = <0>;
-+            remote-endpoint = <&panel_input>;
-+          };
-+        };
-+      };
-+
-+      pwm {
-+        compatible = "atmel,hlcdc-pwm";
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&pinctrl_lcd_pwm>;
-+        #pwm-cells = <3>;
-+      };
-+    };
-diff --git a/Documentation/devicetree/bindings/mfd/atmel-hlcdc.txt b/Documentation/devicetree/bindings/mfd/atmel-hlcdc.txt
-deleted file mode 100644
-index 7de696eefaed..000000000000
---- a/Documentation/devicetree/bindings/mfd/atmel-hlcdc.txt
-+++ /dev/null
-@@ -1,56 +0,0 @@
--Device-Tree bindings for Atmel's HLCDC (High LCD Controller) MFD driver
--
--Required properties:
-- - compatible: value should be one of the following:
--   "atmel,at91sam9n12-hlcdc"
--   "atmel,at91sam9x5-hlcdc"
--   "atmel,sama5d2-hlcdc"
--   "atmel,sama5d3-hlcdc"
--   "atmel,sama5d4-hlcdc"
--   "microchip,sam9x60-hlcdc"
--   "microchip,sam9x75-xlcdc"
-- - reg: base address and size of the HLCDC device registers.
-- - clock-names: the name of the 3 clocks requested by the HLCDC device.
--   Should contain "periph_clk", "sys_clk" and "slow_clk".
-- - clocks: should contain the 3 clocks requested by the HLCDC device.
-- - interrupts: should contain the description of the HLCDC interrupt line
--
--The HLCDC IP exposes two subdevices:
-- - a PWM chip: see ../pwm/atmel-hlcdc-pwm.txt
-- - a Display Controller: see ../display/atmel/hlcdc-dc.txt
--
--Example:
--
--	hlcdc: hlcdc@f0030000 {
--		compatible = "atmel,sama5d3-hlcdc";
--		reg = <0xf0030000 0x2000>;
--		clocks = <&lcdc_clk>, <&lcdck>, <&clk32k>;
--		clock-names = "periph_clk","sys_clk", "slow_clk";
--		interrupts = <36 IRQ_TYPE_LEVEL_HIGH 0>;
--
--		hlcdc-display-controller {
--			compatible = "atmel,hlcdc-display-controller";
--			pinctrl-names = "default";
--			pinctrl-0 = <&pinctrl_lcd_base &pinctrl_lcd_rgb888>;
--			#address-cells = <1>;
--			#size-cells = <0>;
--
--			port@0 {
--				#address-cells = <1>;
--				#size-cells = <0>;
--				reg = <0>;
--
--				hlcdc_panel_output: endpoint@0 {
--					reg = <0>;
--					remote-endpoint = <&panel_input>;
--				};
--			};
--		};
--
--		hlcdc_pwm: hlcdc-pwm {
--			compatible = "atmel,hlcdc-pwm";
--			pinctrl-names = "default";
--			pinctrl-0 = <&pinctrl_lcd_pwm>;
--			#pwm-cells = <3>;
--		};
--	};
--- 
-2.25.1
-
+adam
+>
+> Kind regards
+> Uffe
+>
+> > ---
+> > The original work was from Sandor on the NXP Down-stream kernel
+> >
+> > diff --git a/drivers/pmdomain/imx/imx8mp-blk-ctrl.c b/drivers/pmdomain/=
+imx/imx8mp-blk-ctrl.c
+> > index e3203eb6a022..a56f7f92d091 100644
+> > --- a/drivers/pmdomain/imx/imx8mp-blk-ctrl.c
+> > +++ b/drivers/pmdomain/imx/imx8mp-blk-ctrl.c
+> > @@ -55,7 +55,7 @@ struct imx8mp_blk_ctrl_domain_data {
+> >         const char *gpc_name;
+> >  };
+> >
+> > -#define DOMAIN_MAX_CLKS 2
+> > +#define DOMAIN_MAX_CLKS 3
+> >  #define DOMAIN_MAX_PATHS 3
+> >
+> >  struct imx8mp_blk_ctrl_domain {
+> > @@ -457,8 +457,8 @@ static const struct imx8mp_blk_ctrl_domain_data imx=
+8mp_hdmi_domain_data[] =3D {
+> >         },
+> >         [IMX8MP_HDMIBLK_PD_LCDIF] =3D {
+> >                 .name =3D "hdmiblk-lcdif",
+> > -               .clk_names =3D (const char *[]){ "axi", "apb" },
+> > -               .num_clks =3D 2,
+> > +               .clk_names =3D (const char *[]){ "axi", "apb", "fdcc" }=
+,
+> > +               .num_clks =3D 3,
+> >                 .gpc_name =3D "lcdif",
+> >                 .path_names =3D (const char *[]){"lcdif-hdmi"},
+> >                 .num_paths =3D 1,
+> > @@ -483,8 +483,8 @@ static const struct imx8mp_blk_ctrl_domain_data imx=
+8mp_hdmi_domain_data[] =3D {
+> >         },
+> >         [IMX8MP_HDMIBLK_PD_HDMI_TX] =3D {
+> >                 .name =3D "hdmiblk-hdmi-tx",
+> > -               .clk_names =3D (const char *[]){ "apb", "ref_266m" },
+> > -               .num_clks =3D 2,
+> > +               .clk_names =3D (const char *[]){ "apb", "ref_266m", "fd=
+cc" },
+> > +               .num_clks =3D 3,
+> >                 .gpc_name =3D "hdmi-tx",
+> >         },
+> >         [IMX8MP_HDMIBLK_PD_HDMI_TX_PHY] =3D {
+> > --
+> > 2.43.0
+> >
 
