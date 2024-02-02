@@ -1,234 +1,230 @@
-Return-Path: <linux-kernel+bounces-49698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49699-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E99C9846E43
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:50:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C849846E47
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:51:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0DB7298FEC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:50:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4573298FCB
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:51:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B3667A73D;
-	Fri,  2 Feb 2024 10:49:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C1447C0A2;
+	Fri,  2 Feb 2024 10:50:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JDH3qyaX"
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VOXD2IKQ"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BD917A732
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 10:49:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E45422067;
+	Fri,  2 Feb 2024 10:50:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706870994; cv=none; b=lTv3MOfPRTqo05ZhWhkjQHb0D9hlvt0+lVQm3OxCB2qknKIXIc3LKnnmhQO7MRdVBv+DMUpUrJaXef/EHBqPUrChgIh0Dybz23XmmsNrfZ/+uc9MY15U2X+PfpfRYZ/9k2D0/ws9YC0VInDfmRz8RznQ9Q212uveLCUloqLYAOs=
+	t=1706871054; cv=none; b=I0k4byhEl8BhRIIiEAFRCx6XxxUOipDtaUopB0pr+krPp5PJ3356mO+dVuNUVv7tNRq/QOVX4iIidgPyAuZtKmaJUSxmGYwq5nnv0pqZ36bz+0ZAgU+P5sYtBwX5zg9FVcbqnh7dKefqH2eShdBtKGNeGO15Yhh0tZS6TIg/gu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706870994; c=relaxed/simple;
-	bh=Tq53S3XqSKmPixpG2mO8PRxXSYePRUKdTcAhAwTD1ic=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tcqBn6cm9M88E8eVGWitok90nwKPEfY0ie1j6FIEQ6Yema67NteVbHX4vgajxjTwag0aAMAtOUAv4uDvWs/PNWEYunH6+WXSQBptMJ8QiZj2Ja/UzW/ws96nAGwpwhYq8/V9VFbknS3ySN8Ghy7qrAUc8NBwgir2aZaxJqHPYr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JDH3qyaX; arc=none smtp.client-ip=209.85.222.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-783045e88a6so129616085a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 02:49:51 -0800 (PST)
+	s=arc-20240116; t=1706871054; c=relaxed/simple;
+	bh=EU60AJ/wPOUddPzydcM0wLpZPFMiP7dkEkSpksaeKT0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sx6p8NlTbN0qyPXlg8BDJgrSv2hx29AAKHrtOaZv3eEwDe3sO0iUivQgoyVaF2oHn7cBRa31oFqQ8S5QJQbFk1AENLBitYRikixNl+OGFtFCTLZ7hRTDoXiLE2/CKxd7IsBGXKB8y4iSOJ94bPLJT6LhyBx/7KuX7zH2sc7sTX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VOXD2IKQ; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5113303e664so1295711e87.0;
+        Fri, 02 Feb 2024 02:50:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706870990; x=1707475790; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=O3b844T5139R4eYbNAZElUdeiuPv3v5NVMBih9lh2J4=;
-        b=JDH3qyaXH+NWHHAlcglcVeRQSQzoOX3exS+Ogx0n7KHZkKv3MEa6EeeGoUMXDchG9F
-         gOEb0P34Ea6SujbPyve6GXQ7bBoe0HIkE+CbjGUDAzyLcAH32rVBMqZVtRLxp7jNGbe1
-         0RNO8jHLFETsUvVE/fqsl2qFOJmoWskr0vDeTvBDa9BBH00WEvEPy5HOekl0r6UnlPj5
-         peLW2+aaeAVu/3xfXUngyvVcfM0QEAzaoUTQ2LmLGEd3yKG2cP43HLWhalbZIaYu0mlb
-         GeBMtp1N64ZKcUglJayZbUgPk9wmckiP5EidT7EijcwPTli7XYa9eAicn1jChjyLMBM5
-         owSg==
+        d=gmail.com; s=20230601; t=1706871050; x=1707475850; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ezetAdrGUzi80LfrZYbUgN2AgU2wxiaRJ4LeWUJ80vI=;
+        b=VOXD2IKQaa0qmE7HlLGUcC+PZU7Yf+3rNY32GFLhKpRR9Zy5xcyLYYdMC/WVjisBng
+         A/2pYp2SVcvO+Plwj099bBdstcgHVtfr8IQUs4KVvFKFCq1tE/gYaNzvknBM46arfFRS
+         fxv79brTco8grpW5ZuUiKObYpvTljNNXHZyIyhZKEkijtfS6JOu5PyxyUi8QYAItxXMq
+         mqFQzwO8BNGRaO5hwAm0+Vc3UZXARfNPvCnfKoNoMWgVshwkERETsd7fraXR0Y4o46T6
+         iSWA8F3+tH/8pP7PaQGAQCAcRTg0hI0++ffv0kIxVQx74P/oHtIsceRFyarBeJxRq4JS
+         Y1Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706870990; x=1707475790;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=O3b844T5139R4eYbNAZElUdeiuPv3v5NVMBih9lh2J4=;
-        b=livs0vM2ieub8oMCFYK591My7uJSkDSGVIkviLFccmONzyf9Z4AyQNZeIeoH/bBFKb
-         L5WjCzJgQbdC/JchKbggGdckh20oXKxrS53cZdbAArCT2JuokVU3huigdSWvYhtGmm+R
-         nww/54aCc2u51MB/ToTvAXnPk3tfEURTo79+VLCGqwMDOriui9ZqGeq7CAFYYPFIw4ev
-         RhQaOjW4RsxNBKtHXEEK2EUP8YIhb9jYvURs3w/cCKBuAx3a5t3acqQoUKlVfml8zgYN
-         MQZNXyYidgBhUeNgJE5+90L2BDG5Hr5eqVcBhOttugxQ8nj/kRSHLDYw1gLI3iAY938M
-         xXMw==
-X-Gm-Message-State: AOJu0YzjgJKMUVt/1wZAKofyIi6sR9D3SlkbzuPbxu+6l2LE8knkjp0S
-	Ycq5Di3GFtZ2B75/St9rZF3Hak7qMO4Et/irGFHPYbooPGEEmf/h7AGyH3cTDyw=
-X-Google-Smtp-Source: AGHT+IHGvmnPYn4hEtreD5PLVWgcslKwmjYXnHDMnbZ9bJ0+WZTv3GPFXl3bRegFhGELu1XZw0MkiA==
-X-Received: by 2002:a05:620a:5613:b0:785:443b:b430 with SMTP id vu19-20020a05620a561300b00785443bb430mr1707849qkn.14.1706870990017;
-        Fri, 02 Feb 2024 02:49:50 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXa/IY8ncMkHr4op3aIGWr4vIhlog9YIH9P1fanfg6Q5rKA1ZuOtPNPKV3HmY0VEsalE5SK6KGQDfOuWR26oE5Fd6d6Fsrdd097rvaLR3FF0Iwa0906MV9v1t2zih+Hq6p0BDRDKS0kM+PnGctxKlWzvRnLuADPFn9c9IyNgcgtABcHYsIVPb7APTd1Doqq3KHK/1Hl0lGt7YO1+2SGblN2LxnTwBGz9xBemFn3w56DO2ao/k8/mLDsSi+KfWKwnbfgISsMlEu91oXGJaCRuB95rM27PovKpGANB5QgIMvLV4jNAUuev/zKUcf33ekmkKKPNZGxL3VuF5Vq1VQwXdi6y/I4S2/kKoTcdTnoR1CfAcXqwdEUHyUgZSmEl4pc2mf2qXQECBGeKkGKmRxTvwtNNztzrnSQ6anvJN1/c0MVAFBE6FQDzoh2rAa55Vcp/heXGF3BHp77jfwRRuNJx8d8QNV/o4XZ/vj2YNbR96xH5M+L8vb3M0E=
-Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id br41-20020a05620a462900b00783f82a9386sm580458qkb.23.2024.02.02.02.49.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Feb 2024 02:49:49 -0800 (PST)
-Message-ID: <4e9360cf-2952-45e9-8c85-caa4c0d92175@linaro.org>
-Date: Fri, 2 Feb 2024 11:49:45 +0100
+        d=1e100.net; s=20230601; t=1706871050; x=1707475850;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ezetAdrGUzi80LfrZYbUgN2AgU2wxiaRJ4LeWUJ80vI=;
+        b=wj+ddnZnkmuAxkCbUIrErIaLN8sFCeYMuog7jecNDBVOvMkbCGfE7QhE7mnRFm1Ioh
+         u4I7OJr8q1Aw99vLVoqFak5jwtt10JIzj5rzfBM6KLJvl5RtrxvwM9rMIRhaxLT5d/ok
+         em3IPKUM7aIkiU7wEAvjpnKw+gJ+AH423wls/h0Uj4rzGliEYc+kTuA2EyOup4zd8TGT
+         uoJV2ehWy25tleNiSw0FsRWsrstbzf23Oy6jdb5xAaA2rXrGRrPLRwMNE2TwHxeg67AZ
+         YX8GAzHtoUIWUJNH03BLpD0dJ70KPLEjDoXrdKi8Ikx6exqaW3DrdcotFZP3iYHAlk7d
+         Fu2Q==
+X-Gm-Message-State: AOJu0YzawIYQOP00/GBbhYvLYqHEsLr0eZLyNbC6L9SFzlrO9K8LPAqe
+	SzakoYHmN7krgILXfjDsSAVmSBqNbP5Cb8eeF+bKac+XIyztcOB1
+X-Google-Smtp-Source: AGHT+IFY7jsnsgdzXAniUyhH+YrHZWSG4wTqXL2QlAUjlS9x8Z4+/xFbrmQQNMg3zLD4lMrXE5cjdw==
+X-Received: by 2002:a05:6512:3482:b0:511:2e09:932a with SMTP id v2-20020a056512348200b005112e09932amr2955145lfr.41.1706871050260;
+        Fri, 02 Feb 2024 02:50:50 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWj5ayWlnGWMF9RRgGQCgfJQbV9I/DbvuUKLSCAWq2E12OaHxHBPZ/rXf4JAAyKIGHNwf0pSFtjjP7tB8c0MaFozEwdtSjwEO0W455NWXoHb6R7R6wV3BN6rU5l9R2Qusn4YmAGq+gqjIvRKFvZ6W5cU9ikwMW8cxyy43gQHMWZ0sfJENwJ49WcH9jWeqaSN9ykTqbZOque/PJ5jscp/LRhASU18wRP3haiz9jRZEbRejkXHXtC92sAd7jIgw7opJEfORBQUFJs9DDjH3xPvmt4iQmqDjPZK393DJvcskFgd5QfYQnEjcUTWaJXRuhpQ8WMU+8zTtnLtD4Jp5LQ5up75cdX6N4DhKCCpHehb2QR8ObSjuAr6KDU0zIlAmt9jFCx9L6S0Twsh27Incm8518G4YFXA7+oydGqMAsls+5bIBzdbC8IRTNFhsrTh940mFyMNxLaxff0I4CWvsYTKq2JOysZ4H+RlgQn3TyyVX7n4NlBywQBwURGw7TimJc76siAPdV08SQA7abdNKVG59JMjOSVaBz6C1tGCMUQPFcL03sPplDC13pNHNe2z1pUAX8GvVxGS0+ZC9rdxmQM3FIuRY47iTEb1OU8SKRdJN/xLVYswAC1ZsEXEEEj3yc+sQX+gkZVVPhiXQQ1NfdKCYM3GTBswjiRNScimpk+52OT+6jjeGEy6UyWfFd8/QV8npV7yvldCGfNhWd3l34aEbltlGf061qmonQ7Ul8XSsXpbdLflft3BlnV6bUUXW1VwOcH4HFdInpDYb7TpbZHygr/6/hv+zYgDFKLgCOFiQd86fq24YrWbdN6Bs+BNcG25foLwVVkrMOnUbNe9DJQbH8FFmIznOiqJBV5mhFMyLYnH7YG0ghtQkUxIzHcPTaWnqQgW/1g1IQbhOPuBqucDmYHaD6N3hwr0dAE
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id d10-20020ac24c8a000000b0051121bedf76sm209502lfl.34.2024.02.02.02.50.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 02:50:49 -0800 (PST)
+Date: Fri, 2 Feb 2024 13:50:47 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+Cc: vkoul@kernel.org, jingoohan1@gmail.com, conor+dt@kernel.org, 
+	konrad.dybcio@linaro.org, manivannan.sadhasivam@linaro.org, robh+dt@kernel.org, 
+	quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com, quic_ramkri@quicinc.com, 
+	quic_nayiluri@quicinc.com, dmitry.baryshkov@linaro.org, quic_krichai@quicinc.com, 
+	quic_vbadigan@quicinc.com, quic_parass@quicinc.com, quic_schintav@quicinc.com, 
+	quic_shijjose@quicinc.com, Gustavo Pimentel <gustavo.pimentel@synopsys.com>, 
+	Lorenzo Pieralisi <lpieralisi@kernel.org>, Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>, 
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
+	Kishon Vijay Abraham I <kishon@kernel.org>, dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org, mhi@lists.linux.dev
+Subject: Re: [PATCH v1 1/6] dmaengine: dw-edma: Pass 'struct dw_edma_chip' to
+ irq_vector()
+Message-ID: <vlllubkhvya3po7xdxqrb555vox6xwbrujn3ekyka7rbtrhaum@uqvkofe3zlat>
+References: <1705669223-5655-1-git-send-email-quic_msarkar@quicinc.com>
+ <1705669223-5655-2-git-send-email-quic_msarkar@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] dt-bindings: fpga: xlnx,fpga-slave-selectmap: add DT
- schema
-Content-Language: en-US
-To: Charles Perry <charles.perry@savoirfairelinux.com>
-Cc: mdf <mdf@kernel.org>, Allen VANDIVER <avandiver@markem-imaje.com>,
- Brian CODY <bcody@markem-imaje.com>, hao wu <hao.wu@intel.com>,
- yilun xu <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
- Rob Herring <robh+dt@kernel.org>,
- krzysztof kozlowski+dt <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Michal Simek <michal.simek@amd.com>,
- linux-fpga <linux-fpga@vger.kernel.org>,
- devicetree <devicetree@vger.kernel.org>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- linux-arm-kernel@lists.infradead.org
-References: <20240129225602.3832449-1-charles.perry@savoirfairelinux.com>
- <20240131230542.3993409-1-charles.perry@savoirfairelinux.com>
- <20240131230542.3993409-3-charles.perry@savoirfairelinux.com>
- <d5fe1ec2-b647-4902-a599-fb866e96e9cf@linaro.org>
- <1391244934.434321.1706811892834.JavaMail.zimbra@savoirfairelinux.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <1391244934.434321.1706811892834.JavaMail.zimbra@savoirfairelinux.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1705669223-5655-2-git-send-email-quic_msarkar@quicinc.com>
 
-On 01/02/2024 19:24, Charles Perry wrote:
+On Fri, Jan 19, 2024 at 06:30:17PM +0530, Mrinmay Sarkar wrote:
+> From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 > 
-> 
-> ----- On Feb 1, 2024, at 3:07 AM, Krzysztof Kozlowski krzysztof.kozlowski@linaro.org wrote:
-> 
->> On 01/02/2024 00:05, Charles Perry wrote:
->>> Document the slave SelectMAP interface of Xilinx 7 series FPGA.
->>>
->>> Signed-off-by: Charles Perry <charles.perry@savoirfairelinux.com>
->>> ---
->>>  .../bindings/fpga/xlnx,fpga-selectmap.yaml    | 83 +++++++++++++++++++
->>>  1 file changed, 83 insertions(+)
->>>  create mode 100644
->>>  Documentation/devicetree/bindings/fpga/xlnx,fpga-selectmap.yaml
->>>
->>> diff --git a/Documentation/devicetree/bindings/fpga/xlnx,fpga-selectmap.yaml
->>> b/Documentation/devicetree/bindings/fpga/xlnx,fpga-selectmap.yaml
->>> new file mode 100644
->>> index 0000000000000..c9a446b43cdd9
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/fpga/xlnx,fpga-selectmap.yaml
->>> @@ -0,0 +1,83 @@
->>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>> +%YAML 1.2
->>> +---
->>> +$id: http://devicetree.org/schemas/fpga/xlnx,fpga-selectmap.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: Xilinx SelectMAP FPGA interface
->>> +
->>> +maintainers:
->>> +  - Charles Perry <charles.perry@savoirfairelinux.com>
->>> +
->>> +description: |
->>> +  Xilinx 7 Series FPGAs support a method of loading the bitstream over a
->>> +  parallel port named the SelectMAP interface in the documentation. Only
->>> +  the x8 mode is supported where data is loaded at one byte per rising edge of
->>> +  the clock, with the MSB of each byte presented to the D0 pin.
->>> +
->>> +  Datasheets:
->>> +
->>> https://www.xilinx.com/support/documentation/user_guides/ug470_7Series_Config.pdf
->>> +
->>> +allOf:
->>> +  - $ref: /schemas/memory-controllers/mc-peripheral-props.yaml#
->>> +
->>> +properties:
->>> +  compatible:
->>> +    enum:
->>> +      - xlnx,fpga-selectmap
->>
->> Your description mentions "7 Series" which is not present in compatible
->> and title. What is exactly the product here? Interface usually is not
->> the final binding, so is this specific to some particular FPGA or SoC?
->>
->>
->> Best regards,
->> Krzysztof
-> 
-> This is specific to the FPGA, the 7 series encompass the following part
-> family:
->  * Spartan-7 (XC7S6, XC7S15, ... XC7S100)
->  * Artix-7 (XC7A12T, XC7A15T, ... XC7A200T)
->  * Kintex-7 (XC7K70T, XC7K160T, ... XC7K480T)
->  * Virtex-7 (XC7V585T, XC7V2000T, 
->              XC7VX330T, XC7VX415T, ... XC7VX1140T,
->              XC7VH580T, XC7VH870T)
-> 
-> 
-> The configuration guide of Xilinx [1] tells us that all those devices
-> share a common programming scheme.
-> 
-> I do agree that having a mention of "7 series" in the compatible name
-> would be beneficial as Xilinx has more FPGA than just the 7 series.
-> The name was inspired from "xlnx,fpga-slave-serial" which is the compatible
-> for the serial interface.
-> 
-> What about "xlnx,fpga-xc7-selectmap" ?
-> 
+> eDMA client drivers defining the irq_vector() callback need to access the
+> members of dw_edma_chip structure. So let's pass that pointer instead.
 
-I am not sure what xc7 is and how Xilinx numbers it products, but
-compatibles are supposed to be device specific, not family. Common
-programming model could be denoted with generic fallback, but then the
-fallback could be device-specific as well, which usually we recommend.
+See my comment to the patch 4:
+https://lore.kernel.org/linux-pci/qfdsnz7louqdrs6mhz72o6mzjo66kw63vtlhgpz6hgqfyyzyhq@tge3r7mvwtw3/
 
-Best regards,
-Krzysztof
+-Serge(y)
 
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+> ---
+>  drivers/dma/dw-edma/dw-edma-core.c           | 11 +++++------
+>  drivers/dma/dw-edma/dw-edma-pcie.c           |  4 ++--
+>  drivers/pci/controller/dwc/pcie-designware.c |  4 ++--
+>  include/linux/dma/edma.h                     |  3 ++-
+>  4 files changed, 11 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/dma/dw-edma/dw-edma-core.c b/drivers/dma/dw-edma/dw-edma-core.c
+> index 6823624..7fe1c19 100644
+> --- a/drivers/dma/dw-edma/dw-edma-core.c
+> +++ b/drivers/dma/dw-edma/dw-edma-core.c
+> @@ -849,7 +849,7 @@ static int dw_edma_irq_request(struct dw_edma *dw,
+>  
+>  	if (chip->nr_irqs == 1) {
+>  		/* Common IRQ shared among all channels */
+> -		irq = chip->ops->irq_vector(dev, 0);
+> +		irq = chip->ops->irq_vector(chip, 0);
+>  		err = request_irq(irq, dw_edma_interrupt_common,
+>  				  IRQF_SHARED, dw->name, &dw->irq[0]);
+>  		if (err) {
+> @@ -874,7 +874,7 @@ static int dw_edma_irq_request(struct dw_edma *dw,
+>  		dw_edma_add_irq_mask(&rd_mask, *rd_alloc, dw->rd_ch_cnt);
+>  
+>  		for (i = 0; i < (*wr_alloc + *rd_alloc); i++) {
+> -			irq = chip->ops->irq_vector(dev, i);
+> +			irq = chip->ops->irq_vector(chip, i);
+>  			err = request_irq(irq,
+>  					  i < *wr_alloc ?
+>  						dw_edma_interrupt_write :
+> @@ -895,7 +895,7 @@ static int dw_edma_irq_request(struct dw_edma *dw,
+>  
+>  err_irq_free:
+>  	for  (i--; i >= 0; i--) {
+> -		irq = chip->ops->irq_vector(dev, i);
+> +		irq = chip->ops->irq_vector(chip, i);
+>  		free_irq(irq, &dw->irq[i]);
+>  	}
+>  
+> @@ -975,7 +975,7 @@ int dw_edma_probe(struct dw_edma_chip *chip)
+>  
+>  err_irq_free:
+>  	for (i = (dw->nr_irqs - 1); i >= 0; i--)
+> -		free_irq(chip->ops->irq_vector(dev, i), &dw->irq[i]);
+> +		free_irq(chip->ops->irq_vector(chip, i), &dw->irq[i]);
+>  
+>  	return err;
+>  }
+> @@ -984,7 +984,6 @@ EXPORT_SYMBOL_GPL(dw_edma_probe);
+>  int dw_edma_remove(struct dw_edma_chip *chip)
+>  {
+>  	struct dw_edma_chan *chan, *_chan;
+> -	struct device *dev = chip->dev;
+>  	struct dw_edma *dw = chip->dw;
+>  	int i;
+>  
+> @@ -997,7 +996,7 @@ int dw_edma_remove(struct dw_edma_chip *chip)
+>  
+>  	/* Free irqs */
+>  	for (i = (dw->nr_irqs - 1); i >= 0; i--)
+> -		free_irq(chip->ops->irq_vector(dev, i), &dw->irq[i]);
+> +		free_irq(chip->ops->irq_vector(chip, i), &dw->irq[i]);
+>  
+>  	/* Deregister eDMA device */
+>  	dma_async_device_unregister(&dw->dma);
+> diff --git a/drivers/dma/dw-edma/dw-edma-pcie.c b/drivers/dma/dw-edma/dw-edma-pcie.c
+> index 1c60437..2b13725 100644
+> --- a/drivers/dma/dw-edma/dw-edma-pcie.c
+> +++ b/drivers/dma/dw-edma/dw-edma-pcie.c
+> @@ -90,9 +90,9 @@ static const struct dw_edma_pcie_data snps_edda_data = {
+>  	.rd_ch_cnt			= 2,
+>  };
+>  
+> -static int dw_edma_pcie_irq_vector(struct device *dev, unsigned int nr)
+> +static int dw_edma_pcie_irq_vector(struct dw_edma_chip *chip, unsigned int nr)
+>  {
+> -	return pci_irq_vector(to_pci_dev(dev), nr);
+> +	return pci_irq_vector(to_pci_dev(chip->dev), nr);
+>  }
+>  
+>  static u64 dw_edma_pcie_address(struct device *dev, phys_addr_t cpu_addr)
+> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
+> index 250cf7f..eca047a 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware.c
+> @@ -858,9 +858,9 @@ static u32 dw_pcie_readl_dma(struct dw_pcie *pci, u32 reg)
+>  	return val;
+>  }
+>  
+> -static int dw_pcie_edma_irq_vector(struct device *dev, unsigned int nr)
+> +static int dw_pcie_edma_irq_vector(struct dw_edma_chip *edma, unsigned int nr)
+>  {
+> -	struct platform_device *pdev = to_platform_device(dev);
+> +	struct platform_device *pdev = to_platform_device(edma->dev);
+>  	char name[6];
+>  	int ret;
+>  
+> diff --git a/include/linux/dma/edma.h b/include/linux/dma/edma.h
+> index 3080747..7197a58 100644
+> --- a/include/linux/dma/edma.h
+> +++ b/include/linux/dma/edma.h
+> @@ -16,6 +16,7 @@
+>  #define EDMA_MAX_RD_CH                                  8
+>  
+>  struct dw_edma;
+> +struct dw_edma_chip;
+>  
+>  struct dw_edma_region {
+>  	u64		paddr;
+> @@ -41,7 +42,7 @@ struct dw_edma_region {
+>   *			automatically.
+>   */
+>  struct dw_edma_plat_ops {
+> -	int (*irq_vector)(struct device *dev, unsigned int nr);
+> +	int (*irq_vector)(struct dw_edma_chip *chip, unsigned int nr);
+>  	u64 (*pci_address)(struct device *dev, phys_addr_t cpu_addr);
+>  };
+>  
+> -- 
+> 2.7.4
+> 
 
