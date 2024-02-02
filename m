@@ -1,151 +1,139 @@
-Return-Path: <linux-kernel+bounces-49678-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFE6E846E06
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:32:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E77C846E0D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 11:33:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75B5E28FBD3
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:32:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E4041C2254E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:33:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C380112AAC3;
-	Fri,  2 Feb 2024 10:32:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8874131E37;
+	Fri,  2 Feb 2024 10:33:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="IE/h4hZL"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="negZTzXR"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 867CD129A61
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 10:32:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A770A131748
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 10:33:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706869958; cv=none; b=Lgw+CyET/ZcSPvxyT7zmcTG87iZOcUIzoqhY2+pZqoHNqIBqSlm943pW2e1TcnlRcqjPEDwxFLax9Nc3l57gfiRwx4KH3Eg3h+WW1lwK+ICpXXFdy0Ig7xx/UyqTJFESJ883/5hhQUyxDWPmU+PxC583gJFfcTKAHlth6/WQs4M=
+	t=1706870003; cv=none; b=RNkGVweW0N8+LDMMaL5zmu0kzOiCdkj6+ODBLX8t+XppkV82Owmy/e/1emTyqw3OhjMkc+cMR8+IVfdWsLDW8I3v5PSPDlHXs4bwm7gVCLp68/vTIMNlMdbKnEBjJZxG+4AXDlB7RyWJD4Zr140Oxe/d+hAc2JUawttYMTwwPog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706869958; c=relaxed/simple;
-	bh=uXUipmy/R5ZOIbKsEs9QPraU2tmLbEvI/QwqRmYhptQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S5KJ3sh8BK76L9Dug+ZMqLEdI59TUZBPdZeVLpte9x3N8h3xzVQn6+Rf3kQ7DApMO5C/i7aMNtQ7ISdkXfH05lfuKXuyTOEleMgMw0iqjmWCeod/F0S4+B+EUKs/0yOoVpGuTKstJjKp5WoKqEZBalNF9kTkP699+o4xafMPkE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=IE/h4hZL; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d953fa3286so11585835ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 02:32:36 -0800 (PST)
+	s=arc-20240116; t=1706870003; c=relaxed/simple;
+	bh=DMMt/shyGWqcD+ib28kiLpaMXR+euETZG735wBIYD+c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=flSI9D27SN6qlPzxdnGGM2YlJ8ZaTAApeaT8Vln+mTUikN5pkSPdTkc2fAevbUz/hkxSXb5hW1fJqBBmFxjyk/gesT7s0Gwa4y2A1RnefyPDWFpVhG20BqEc1QoG0P9w84wp8fHZB7iDaKis/pO5IRQDc9IJsALRKlk06oVS/FI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=negZTzXR; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6de207c85fcso209677b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 02:33:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706869956; x=1707474756; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rP513YN1a62J3CV7L8vAPGxN8u8562HK0dd64qxYUI0=;
-        b=IE/h4hZLP5B9QlKrQZjz7nMUdCqEO5FWX2ZPrHBKI/2ejd3n4oTi0az3qpdcC/BRMA
-         LY1wjCyV83KuGcF3gl+mwIH9XPmrp3hfEFEopOhbF4I3GU/7zabCB1g1xIAs/cuja0vg
-         AVCbDJkdHpnlGDIo2yWQ24QCE3BRj9e040BM4=
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706870001; x=1707474801; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=T8iHE479YVvdQnvL1fZ7V63tnI2/lAPeZVx8YhIJp00=;
+        b=negZTzXRrjRf79V0Fa9wwXTO+vGf1SvuWwD9EL7YSCEc3Vi7mh40+Vt/R9kmVFnh+O
+         quYQE8upbtGWkVftruWEetnbd9P2I2NmZBPx5MviTLeDVLNzeVoiCvRW5+MqgGLhIYes
+         nnoKS8t+fdAyY4I4rbYfhgUyphZByzl+mob3zoBJDNd57Atl9pK0moK1A3C28nhW//4U
+         CbJPl3mNUsM5MhZq8qfGD2/0dixngpqh0ZDlumdOfaVzWIBZSGtZRwSQVXVdR9heJuYd
+         nL4AckRHPNbhK5eLeFg2qr8hh32MDK9ZijtdlDR5HKjeNgf4RD338n6jgD4WDJBWe3PX
+         oWiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706869956; x=1707474756;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rP513YN1a62J3CV7L8vAPGxN8u8562HK0dd64qxYUI0=;
-        b=qfVlubVRTTB12Q1nWi3MEAsOcJTA2zW1dgoKJeviRSB5ngCI7HGRDeMlPRllFHeJrM
-         PgrinGJMhTRtTAmTSlHjOk4epJ0MbVls31oTf93XRY24XjAGJgbKQ1WPiJe0Nq5cp354
-         6bqG5BndTadCX7/fHibv+IrOeUJ0bsoLB6jMG14Rj02iB8LT1R3dAfmBU2ub0jUYAOG9
-         uf4AWyl4DdaGb5+S62+5R+9/bSUlNVWyuyH3FvVKJwy42/JFypK1x1KIgkxKZb1hB7GS
-         L+E7goFKIipa8UD0uA//Xy7BeLgvODeT4rBHk/Nm1FeJ0re+ZNdoVvL18HAlW3+RPbPW
-         fEGA==
-X-Gm-Message-State: AOJu0YwInk9b/bA3LFxiWZkp56SCkymJH7r/E3pt8nXS6p+WiwDpI/6y
-	urlWQ8wgzErNEzXI35OnJC1sJHWPSeBbxTokyAeUSToA6f08/wSGU6zGJSVs5A==
-X-Google-Smtp-Source: AGHT+IEyirkJDw7WBU/1FJrLaWfq2iP+2z+RGmivHiVQ2prUmq3XvBaVVXQ92tYQlvHdPx57k1bbeA==
-X-Received: by 2002:a17:903:2b04:b0:1d9:7ab0:5e20 with SMTP id mc4-20020a1709032b0400b001d97ab05e20mr523799plb.69.1706869955727;
-        Fri, 02 Feb 2024 02:32:35 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXXfbi4Cj5WSyBND3C3ah7zoVKwtEN2SMAsOXAl4EPG51gwjcNNnpczP6t/IxL9mzZtFXSpw9P88crW7mDekJrRJsZ/unHzLU/9n5hQ0bl4KhBFvqvK+7et2rKpw35rXL5G+d+hazne7DQzlBP4MVxBAzG6KcEILvRCuPXQA1j5QnK74OxNGYgNUhsol1J0BGtRnggpkhC4kKxhchbcAgW58pQiBTxB5QL2ieTBDfEehYMWw/UW/4ZNvx3wqvZrQU0JiZCr6F180azg7aeLZg==
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id kl4-20020a170903074400b001d94644382dsm1297090plb.108.2024.02.02.02.32.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 02:32:35 -0800 (PST)
-Date: Fri, 2 Feb 2024 02:32:34 -0800
-From: Kees Cook <keescook@chromium.org>
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
-	kernel test robot <lkp@intel.com>, Rich Felker <dalias@libc.org>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nicolas Schier <n.schier@avm.de>, linux-sh@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] sh: Fix build with CONFIG_UBSAN=y
-Message-ID: <202402020228.BBEF7DAC@keescook>
-References: <20240130232717.work.088-kees@kernel.org>
- <494586ed5a0871cf7cfd005f513577952306a0bc.camel@physik.fu-berlin.de>
- <fe057f57aba0f8a9040d4700d27f5bd478032925.camel@physik.fu-berlin.de>
+        d=1e100.net; s=20230601; t=1706870001; x=1707474801;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=T8iHE479YVvdQnvL1fZ7V63tnI2/lAPeZVx8YhIJp00=;
+        b=RSc3W7o7nS3YSsABrCHUp7hNt/t36XJbubE6bKZj3hTrukGewxxxeGnZ4DybofCZLF
+         6H/MzjCbwX97NbaCG5iaLDvY52nAD/tNP2/eQA8VjtZTkhLVGlEdc20Gsm+fPhNS7FyX
+         /Bs7lOWqcm20cJNeOEKalBIz0twhDywFus43MaVxZHO39T3sclxdDpF2kljF5CpD3V1h
+         HorpEphBadF05iOlcT8Bz1X6VCJc73AD7E++Gs1/I64T/MX2eAqtDIXbqT8BHuTq40wp
+         YEfaI55jn4wZKUwQswGc4bwOZT7xEANoYnNlV8bVtjaszp97f/NywmkPiXef7GGo5RhV
+         qqxw==
+X-Gm-Message-State: AOJu0YyNFVOEGHy03U5aMSsZKl+V8xB4HeHwTz4unIr4icrAJneweieo
+	1JljUyqKDveLa2PC8wmoDGTqkv80laQjQfCfYtX/H+HdFkvOWG2h01MTJCRI9JE=
+X-Google-Smtp-Source: AGHT+IF6Vbai2YBU7cb51y8R4IB03FxPQx+BBkX/tfJTtHIPiA0XBZiwJtgRNHGa4tUQp7qa7GJeHQ==
+X-Received: by 2002:a05:6a20:7486:b0:19c:9c10:fa27 with SMTP id p6-20020a056a20748600b0019c9c10fa27mr5462240pzd.4.1706870000941;
+        Fri, 02 Feb 2024 02:33:20 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUE4ny+RfqFrQN3ryErdIfcptjtiUDXiAnUOdO8oSK4hhFsFYWe37sJfIbcmbdh+n9iSFjmgJOylcGTuWgAnnJg8Ck/toMJwjx3Ha9RnlqV0ti/2dFnQVZ4XXCGAStK0s2Bkkj1LHDNHM6CSubetnEajPBYkxC9xYe/G2BeVKyhgcaF6HhrN9qRhNvnyt5NjRqcXjz3sZdsydpAemlP78SDJi21qiUfnV29zoyoqabPyCl2nt0H0NYH35uo6WJrrCjbLgTKxjk6x1J6HbmZpTnQEPVhPZmKYb1gqK2wJKCZc4D+XUbi0NdKaStXWC6Vu4NHC+Hz4pUUyObRAR3LxOueT3GnzfZoxQOZZGec1yObxzzYUR8awfMF6wo67wFXPDV6hG5v/4uxm0ip6MUS7ITWAjHGGRMBU2GPGgj2yov3Ln5fyYNe98r7y1G06yaZnA6A0ow5DAu4sxD2sZn2YJVJmrMLRIQCuGgI+YsviiAkLZ4MGpbDyMQZfXjvqhKzSoaG3+OaLdOeywYmOwTtFwAxgHgh8APY6t9bD7HG4EoJLE/rjmHWih00OTsF9hVw6ayr/q6SEo2XzVwHOt20RQ==
+Received: from ?IPV6:2a01:e0a:999:a3a0:6d51:959f:bb28:92? ([2a01:e0a:999:a3a0:6d51:959f:bb28:92])
+        by smtp.gmail.com with ESMTPSA id mj10-20020a17090b368a00b002963e682f6fsm1111059pjb.57.2024.02.02.02.33.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Feb 2024 02:33:20 -0800 (PST)
+Message-ID: <f2e5fdbf-971c-4f73-af07-3c3a04bd0069@rivosinc.com>
+Date: Fri, 2 Feb 2024 11:33:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fe057f57aba0f8a9040d4700d27f5bd478032925.camel@physik.fu-berlin.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v12 22/25] irqchip: Add RISC-V advanced PLIC driver for
+ direct-mode
+Content-Language: en-US
+To: Anup Patel <apatel@ventanamicro.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Frank Rowand <frowand.list@gmail.com>, Conor Dooley <conor+dt@kernel.org>,
+ devicetree@vger.kernel.org, Saravana Kannan <saravanak@google.com>,
+ Marc Zyngier <maz@kernel.org>, Anup Patel <anup@brainfault.org>,
+ linux-kernel@vger.kernel.org, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@kernel.org>, Atish Patra <atishp@atishpatra.org>,
+ linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ Andrew Jones <ajones@ventanamicro.com>
+References: <20240127161753.114685-1-apatel@ventanamicro.com>
+ <20240127161753.114685-23-apatel@ventanamicro.com>
+ <eed1ee03-923b-41e8-b99a-accc1278da6b@rivosinc.com>
+ <CAK9=C2U5_Ho0XUvEXRgASDKrGaVvPX68+UV2+=Z4k=cUaM3=6A@mail.gmail.com>
+From: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+In-Reply-To: <CAK9=C2U5_Ho0XUvEXRgASDKrGaVvPX68+UV2+=Z4k=cUaM3=6A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 31, 2024 at 12:19:22PM +0100, John Paul Adrian Glaubitz wrote:
-> Hi Kees,
+
+
+On 02/02/2024 11:30, Anup Patel wrote:
+>>> +int aplic_setup_priv(struct aplic_priv *priv, struct device *dev,
+>>> +                  void __iomem *regs)
+>>> +{
+>>> +     struct of_phandle_args parent;
+>>> +     int rc;
+>>> +
+>>> +     /*
+>>> +      * Currently, only OF fwnode is supported so extend this
+>>> +      * function for ACPI support.
+>>> +      */
+>>> +     if (!is_of_node(dev->fwnode))
+>>> +             return -EINVAL;
+>>> +
+>>> +     /* Save device pointer and register base */
+>>> +     priv->dev = dev;
+>>> +     priv->regs = regs;
+>>> +
+>>> +     /* Find out number of interrupt sources */
+>>> +     rc = of_property_read_u32(to_of_node(dev->fwnode),
+>>> +                                          "riscv,num-sources",
+>>> +                                          &priv->nr_irqs);
+>>
+>> Use device_property_read_u32() which works for both ACPI and OF.
 > 
-> On Wed, 2024-01-31 at 12:03 +0100, John Paul Adrian Glaubitz wrote:
-> > Hi Kees,
-> > 
-> > On Tue, 2024-01-30 at 15:27 -0800, Kees Cook wrote:
-> > > The early boot stub for sh had UBSan instrumentation present where it is
-> > > not supported. Disable it for this part of the build.
-> > > 
-> > >   sh4-linux-ld: arch/sh/boot/compressed/misc.o: in function `zlib_inflate_table':
-> > >   misc.c:(.text+0x670): undefined reference to `__ubsan_handle_shift_out_of_bounds'
-> > > 
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Closes: https://lore.kernel.org/oe-kbuild-all/202401310416.s8HLiLnC-lkp@intel.com/
-> > > Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> > > Cc: Rich Felker <dalias@libc.org>
-> > > Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-> > > Cc: Masahiro Yamada <masahiroy@kernel.org>
-> > > Cc: Nicolas Schier <n.schier@avm.de>
-> > > Cc: linux-sh@vger.kernel.org
-> > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > ---
-> > >  arch/sh/boot/compressed/Makefile | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > > 
-> > > diff --git a/arch/sh/boot/compressed/Makefile b/arch/sh/boot/compressed/Makefile
-> > > index b5e29f99c02c..6c6c791a1d06 100644
-> > > --- a/arch/sh/boot/compressed/Makefile
-> > > +++ b/arch/sh/boot/compressed/Makefile
-> > > @@ -12,6 +12,7 @@ targets := vmlinux vmlinux.bin vmlinux.bin.gz vmlinux.bin.bz2 \
-> > >             vmlinux.bin.lzma vmlinux.bin.xz vmlinux.bin.lzo $(OBJECTS)
-> > >  
-> > >  GCOV_PROFILE := n
-> > > +UBSAN_SANITIZE := n
-> > >  
-> > >  #
-> > >  # IMAGE_OFFSET is the load offset of the compression loader
-> > 
-> > Thanks for the patch. I'm looking into this now and will provide the review later.
-> 
-> I tried to reproduce the error using your tree and the branch devel/overflow/ubsan-only
-> minus the above patch and using the provided config but I'm unable to reproduce the
-> error above.
-> 
-> Am I missing anything?
+> In the previous versions, we did try to unify property reading for
+> both ACPI and OF but MarcZ suggested to keep th ACPI and
+> OF probe paths totally separate hence we use OF APIs over
+> here because we should reach here only for OF probing.
 
-When I use GCC 13.2 (I'm specifically on Ubuntu 23.10) and the randconfig
-linked from the report:
-https://download.01.org/0day-ci/archive/20240131/202401310416.s8HLiLnC-lkp@intel.com/config
-(which is notably enabling CONFIG_UBSAN=y and CONFIG_UBSAN_SHIFT=y) then I
-see at the final link stage:
+Ok, indeed it makes sense. Discard that comment then !
 
-/usr/bin/sh4-linux-gnu-ld: arch/sh/boot/compressed/misc.o: in function `zlib_inflate_table':
-misc.c:(.text+0x650): undefined reference to `__ubsan_handle_shift_out_of_bounds'
-..
+Thanks,
 
-After the patch, it's solved.
-
--Kees
-
--- 
-Kees Cook
+Clément
 
