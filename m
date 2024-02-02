@@ -1,324 +1,229 @@
-Return-Path: <linux-kernel+bounces-50229-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7352847610
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:26:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3838984760F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:25:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3141CB2BF26
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:24:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B1881C27861
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:25:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DA8014AD24;
-	Fri,  2 Feb 2024 17:24:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A76714A4F8;
+	Fri,  2 Feb 2024 17:25:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sHfavaIw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aqgWYQ71"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C919314A4E6;
-	Fri,  2 Feb 2024 17:24:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59F651474A1;
+	Fri,  2 Feb 2024 17:25:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706894670; cv=none; b=EG84427Abg0NadoXRqYu76pY+DPdKKbPZ/pX83T3Tp1YGMbUPP9zRoYPD88ALuoWaxojCGkDb49uakuE0hQTIP1CK3VjFpYtjcFCokFfBDeoiuQts+X9OtqnKvGcYc0KFnmTHWbcGtDrzz76hEgCRlleE905GKNpZUbdPtpMx4s=
+	t=1706894714; cv=none; b=PrBQuwymyOAUrWxb1lPGD0Cz2sQVhWMY8yF5x7mnucexBo36a3ABiyiAzyqknKzq6Y81fR1fqc3Cim5TRpCNwMbx8AsJp7CfCcsBLpqJDRUWqpy5IXXKFCyH+buc11J6pKx8lkWCdzB+d03WMBNrWCSnidg2CQEaULifGHY0kdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706894670; c=relaxed/simple;
-	bh=gH6u2dryMc1Vv4IaCuQUmgGMrxBT1ABnbHkcvmr2Kls=;
+	s=arc-20240116; t=1706894714; c=relaxed/simple;
+	bh=bL8+5y1uIX4CrzzBVdY7DuATZixLF3DqnJULrlkz1wM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LjJ+hpiMvNGlAAfx6qDMEpMTbETozxANpp4BQN7/U/gtc4Y+BbHDGyXB9KnsKzwP6N0+1kgYdPigRv3vEaK6yMbfg8ciLlywt3MMiIky5D8Opw72JPdknZ9OqQUaK3qVHz7KTDyq55u7yJtmKHU3IwxwqF3QqzMhMi32bLCrvmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sHfavaIw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A142CC433C7;
-	Fri,  2 Feb 2024 17:24:28 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=p/jAMqZ2gC1NYGSJsKEtePGlUR7lzRLVETBTtFHWRugrB6bitnawktBh8YP/SB+nRS8+cBwVi4mKchygPczHsxHIxrjpsOXDVXp/Xv4mIH2/2lI7PywzR1S3ckZIXc243rtjr4+0m6izInU2X8ys2ujH9eDRg4XTVuyedSAbRBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aqgWYQ71; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB6D9C433C7;
+	Fri,  2 Feb 2024 17:25:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706894670;
-	bh=gH6u2dryMc1Vv4IaCuQUmgGMrxBT1ABnbHkcvmr2Kls=;
+	s=k20201202; t=1706894713;
+	bh=bL8+5y1uIX4CrzzBVdY7DuATZixLF3DqnJULrlkz1wM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sHfavaIwJcuEltLM4CaMAZdOSujQf9s99qiO7U6saUKHfRM3/+cElbcdOtbm4IlR4
-	 k/6pSEKxTgrdvRaKWRICEznqNVUolonXxp5A87S4QelpX5745P9/tiA6ZMwECiWsYE
-	 iBic5sCq7POf14YeXxjOjXTdwNRhl+6jyjZfwpC7ZDmIOoTFo9lOBjN2dI3tHV88uI
-	 n6UhUQkkFy2ThD+bAnVNOqv5maAd/9vQN51fWu61AoMrHdK4v4ojcrM8b/wxJkeb+X
-	 qnOxWolijJAqUz1hcorJpBwk4+0txH/idGc2WMbIelegU9MiH3ALy4cspOD0ycrHSV
-	 KimIJ/XmpEoCw==
-Date: Fri, 2 Feb 2024 18:24:25 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Andy Lutomirski <luto@amacapital.net>, 
-	"Eric W. Biederman" <ebiederm@xmission.com>, Tycho Andersen <tycho@tycho.pizza>, linux-api@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] pidfd_poll: report POLLHUP when pid_task() == NULL
-Message-ID: <20240202-lackmantel-vervielfachen-4c0f0374219b@brauner>
-References: <20240202131147.GA25988@redhat.com>
- <20240202131226.GA26018@redhat.com>
- <20240202-arbeit-fruchtig-26880564a21a@brauner>
- <20240202160704.GA5850@redhat.com>
+	b=aqgWYQ71rrPA7I2TRmZsG4KbtYfiJdPSxEhJnkIU2aj2dCrnU/dp5Bcrd19lg1k1R
+	 33jQmpAZRi/AiqU+mTu4vtiT5lIVa2prncpU5vZTGur8bbuy0EVxuuZER9Mqni8/8o
+	 kEHJ3A5LVvP0J8Hc2P1X/iNq6jwGaqW8HLQWkTK0K23lOm4bG/st4iRPSynEHr4zYt
+	 CQeQb/y65oxX8HXqIBkT0PjQSx4raNGWO80h2KtcaFc2nS5egVSLoZ5/ndr/U3A8NB
+	 CxKdXl7MZj61N7F5qg+9PelJnjoD/aCnJdLa7Q5tOXCs74fTw7YxZnmg+K2PTGaQDv
+	 lTXkgpLo6JfMA==
+Date: Fri, 2 Feb 2024 09:25:13 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: John Garry <john.g.garry@oracle.com>
+Cc: hch@lst.de, viro@zeniv.linux.org.uk, brauner@kernel.org,
+	dchinner@redhat.com, jack@suse.cz, chandan.babu@oracle.com,
+	martin.petersen@oracle.com, linux-kernel@vger.kernel.org,
+	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	tytso@mit.edu, jbongio@google.com, ojaswin@linux.ibm.com
+Subject: Re: [PATCH 1/6] fs: iomap: Atomic write support
+Message-ID: <20240202172513.GZ6226@frogsfrogsfrogs>
+References: <20240124142645.9334-1-john.g.garry@oracle.com>
+ <20240124142645.9334-2-john.g.garry@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="jrozykordr44ab6z"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240202160704.GA5850@redhat.com>
+In-Reply-To: <20240124142645.9334-2-john.g.garry@oracle.com>
 
-
---jrozykordr44ab6z
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-
-> I think we need a simpler patch. I was going to send it as 4/4, but I'd
-> like to think more, _perhaps_ we can also discriminate the PIDFD_THREAD
-> and non-PIDFD_THREAD waiters. I'll try to make the patch(es) tomorrow or
-
-Right, I didn't go that far.
-
-> at least provided more info.
+On Wed, Jan 24, 2024 at 02:26:40PM +0000, John Garry wrote:
+> Add flag IOMAP_ATOMIC_WRITE to indicate to the FS that an atomic write
+> bio is being created and all the rules there need to be followed.
 > 
-> 3 notes for now:
+> It is the task of the FS iomap iter callbacks to ensure that the mapping
+> created adheres to those rules, like size is power-of-2, is at a
+> naturally-aligned offset, etc. However, checking for a single iovec, i.e.
+> iter type is ubuf, is done in __iomap_dio_rw().
 > 
-> 	1. we can't use wake_up_poll(), it passes nr_exclusive => 1
-
-Bah. So we need the same stuff we did for io_uring and use
-__wake_up() directly. Or we add wake_up_all_poll() and convert the other
-three callsites:
-
-// uncompiled, untested
-
-diff --git a/include/linux/wait.h b/include/linux/wait.h
-index 8aa3372f21a0..210ee0d69b6f 100644
---- a/include/linux/wait.h
-+++ b/include/linux/wait.h
-@@ -234,6 +234,8 @@ void __wake_up_pollfree(struct wait_queue_head *wq_head);
- #define key_to_poll(m) ((__force __poll_t)(uintptr_t)(void *)(m))
- #define wake_up_poll(x, m)                                                     \
-        __wake_up(x, TASK_NORMAL, 1, poll_to_key(m))
-+#define wake_up_all_poll(x, m)                                                 \
-+       __wake_up(x, TASK_NORMAL, 0, poll_to_key(m))
- #define wake_up_poll_on_current_cpu(x, m)                                      \
-        __wake_up_on_current_cpu(x, TASK_NORMAL, poll_to_key(m))
- #define wake_up_locked_poll(x, m)                                              \
-diff --git a/io_uring/io_uring.h b/io_uring/io_uring.h
-index 04e33f25919c..65dcd5dc9645 100644
---- a/io_uring/io_uring.h
-+++ b/io_uring/io_uring.h
-@@ -228,8 +228,7 @@ static inline void io_commit_cqring(struct io_ring_ctx *ctx)
- static inline void io_poll_wq_wake(struct io_ring_ctx *ctx)
- {
-        if (wq_has_sleeper(&ctx->poll_wq))
--               __wake_up(&ctx->poll_wq, TASK_NORMAL, 0,
--                               poll_to_key(EPOLL_URING_WAKE | EPOLLIN));
-+               wake_up_all_poll(&ctx->poll_wq, EPOLL_URING_WAKE | EPOLLIN);
- }
-
- static inline void io_cqring_wake(struct io_ring_ctx *ctx)
-@@ -245,8 +244,7 @@ static inline void io_cqring_wake(struct io_ring_ctx *ctx)
-         * epoll and should terminate multishot poll at that point.
-         */
-        if (wq_has_sleeper(&ctx->cq_wait))
--               __wake_up(&ctx->cq_wait, TASK_NORMAL, 0,
--                               poll_to_key(EPOLL_URING_WAKE | EPOLLIN));
-+               wake_up_all_poll(&ctx->cq_wait, EPOLL_URING_WAKE | EPOLLIN);
- }
-
- static inline bool io_sqring_full(struct io_ring_ctx *ctx)
-diff --git a/kernel/sched/wait.c b/kernel/sched/wait.c
-index 51e38f5f4701..ee849fb35603 100644
---- a/kernel/sched/wait.c
-+++ b/kernel/sched/wait.c
-@@ -208,7 +208,7 @@ EXPORT_SYMBOL_GPL(__wake_up_sync);  /* For internal
-use only */
-
- void __wake_up_pollfree(struct wait_queue_head *wq_head)
-  {
-  -       __wake_up(wq_head, TASK_NORMAL, 0, poll_to_key(EPOLLHUP |
-  POLLFREE));
-  +       wake_up_all_poll(wq_head, EPOLLHUP | POLLFREE);
-          /* POLLFREE must have cleared the queue. */
-	          WARN_ON_ONCE(waitqueue_active(wq_head));
-		   }
-
+> A write should only produce a single bio, so error when it doesn't.
 > 
-> 	2. exit_notify() should not pass EPOLLHUP to wake_up, we do
-> 	   not want to wake up the { .events = POLLHUP } waiters.
-
-Indeed.
-
+> Signed-off-by: John Garry <john.g.garry@oracle.com>
+> ---
+>  fs/iomap/direct-io.c  | 21 ++++++++++++++++++++-
+>  fs/iomap/trace.h      |  3 ++-
+>  include/linux/iomap.h |  1 +
+>  3 files changed, 23 insertions(+), 2 deletions(-)
 > 
-> 	3. we do not need to change __change_pid().
+> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> index bcd3f8cf5ea4..25736d01b857 100644
+> --- a/fs/iomap/direct-io.c
+> +++ b/fs/iomap/direct-io.c
+> @@ -275,10 +275,12 @@ static inline blk_opf_t iomap_dio_bio_opflags(struct iomap_dio *dio,
+>  static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
+>  		struct iomap_dio *dio)
+>  {
+> +	bool atomic_write = iter->flags & IOMAP_ATOMIC;
+>  	const struct iomap *iomap = &iter->iomap;
+>  	struct inode *inode = iter->inode;
+>  	unsigned int fs_block_size = i_blocksize(inode), pad;
+>  	loff_t length = iomap_length(iter);
+> +	const size_t iter_len = iter->len;
+>  	loff_t pos = iter->pos;
+>  	blk_opf_t bio_opf;
+>  	struct bio *bio;
+> @@ -381,6 +383,9 @@ static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
+>  					  GFP_KERNEL);
+>  		bio->bi_iter.bi_sector = iomap_sector(iomap, pos);
+>  		bio->bi_ioprio = dio->iocb->ki_ioprio;
+> +		if (atomic_write)
+> +			bio->bi_opf |= REQ_ATOMIC;
+
+This really ought to be in iomap_dio_bio_opflags.  Unless you can't pass
+REQ_ATOMIC to bio_alloc*, in which case there ought to be a comment
+about why.
+
+Also, what's the meaning of REQ_OP_READ | REQ_ATOMIC?  Does that
+actually work?  I don't know what that means, and "block: Add REQ_ATOMIC
+flag" says that's not a valid combination.  I'll complain about this
+more below.
+
+> +
+>  		bio->bi_private = dio;
+>  		bio->bi_end_io = iomap_dio_bio_end_io;
+>  
+> @@ -397,6 +402,12 @@ static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
+>  		}
+>  
+>  		n = bio->bi_iter.bi_size;
+> +		if (atomic_write && n != iter_len) {
+
+s/iter_len/orig_len/ ?
+
+> +			/* This bio should have covered the complete length */
+> +			ret = -EINVAL;
+> +			bio_put(bio);
+> +			goto out;
+> +		}
+>  		if (dio->flags & IOMAP_DIO_WRITE) {
+>  			task_io_account_write(n);
+>  		} else {
+> @@ -554,12 +565,17 @@ __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
+>  	struct blk_plug plug;
+>  	struct iomap_dio *dio;
+>  	loff_t ret = 0;
+> +	bool is_read = iov_iter_rw(iter) == READ;
+> +	bool atomic_write = (iocb->ki_flags & IOCB_ATOMIC) && !is_read;
+
+Hrmm.  So if the caller passes in an IOCB_ATOMIC iocb with a READ iter,
+we'll silently drop IOCB_ATOMIC and do the read anyway?  That seems like
+a nonsense combination, but is that ok for some reason?
+
+>  	trace_iomap_dio_rw_begin(iocb, iter, dio_flags, done_before);
+>  
+>  	if (!iomi.len)
+>  		return NULL;
+>  
+> +	if (atomic_write && !iter_is_ubuf(iter))
+> +		return ERR_PTR(-EINVAL);
+
+Does !iter_is_ubuf actually happen?  Why don't we support any of the
+other ITER_ types?  Is it because hardware doesn't want vectored
+buffers?
+
+I really wish there was more commenting on /why/ we do things here:
+
+	if (iocb->ki_flags & IOCB_ATOMIC) {
+		/* atomic reads do not make sense */
+		if (iov_iter_rw(iter) == READ)
+			return ERR_PTR(-EINVAL);
+
+		/*
+		 * block layer doesn't want to handle handle vectors of
+		 * buffers when performing an atomic write i guess?
+		 */
+		if (!iter_is_ubuf(iter))
+			return ERR_PTR(-EINVAL);
+
+		iomi.flags |= IOMAP_ATOMIC;
+	}
+
+> +
+>  	dio = kmalloc(sizeof(*dio), GFP_KERNEL);
+>  	if (!dio)
+>  		return ERR_PTR(-ENOMEM);
+> @@ -579,7 +595,7 @@ __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
+>  	if (iocb->ki_flags & IOCB_NOWAIT)
+>  		iomi.flags |= IOMAP_NOWAIT;
+>  
+> -	if (iov_iter_rw(iter) == READ) {
+> +	if (is_read) {
+>  		/* reads can always complete inline */
+>  		dio->flags |= IOMAP_DIO_INLINE_COMP;
+>  
+> @@ -605,6 +621,9 @@ __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
+>  		if (iocb->ki_flags & IOCB_DIO_CALLER_COMP)
+>  			dio->flags |= IOMAP_DIO_CALLER_COMP;
+>  
+> +		if (atomic_write)
+> +			iomi.flags |= IOMAP_ATOMIC;
+> +
+>  		if (dio_flags & IOMAP_DIO_OVERWRITE_ONLY) {
+>  			ret = -EAGAIN;
+>  			if (iomi.pos >= dio->i_size ||
+> diff --git a/fs/iomap/trace.h b/fs/iomap/trace.h
+> index c16fd55f5595..c95576420bca 100644
+> --- a/fs/iomap/trace.h
+> +++ b/fs/iomap/trace.h
+> @@ -98,7 +98,8 @@ DEFINE_RANGE_EVENT(iomap_dio_rw_queued);
+>  	{ IOMAP_REPORT,		"REPORT" }, \
+>  	{ IOMAP_FAULT,		"FAULT" }, \
+>  	{ IOMAP_DIRECT,		"DIRECT" }, \
+> -	{ IOMAP_NOWAIT,		"NOWAIT" }
+> +	{ IOMAP_NOWAIT,		"NOWAIT" }, \
+> +	{ IOMAP_ATOMIC,		"ATOMIC" }
+>  
+>  #define IOMAP_F_FLAGS_STRINGS \
+>  	{ IOMAP_F_NEW,		"NEW" }, \
+> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
+> index 96dd0acbba44..9eac704a0d6f 100644
+> --- a/include/linux/iomap.h
+> +++ b/include/linux/iomap.h
+> @@ -178,6 +178,7 @@ struct iomap_folio_ops {
+>  #else
+>  #define IOMAP_DAX		0
+>  #endif /* CONFIG_FS_DAX */
+> +#define IOMAP_ATOMIC		(1 << 9)
+>  
+>  struct iomap_ops {
+>  	/*
+> -- 
+> 2.31.1
 > 
-> 	   Well, _perhaps_ it can/should use __wake_up_pollfree(), but
-> 	   I need to check if fs/select.c use "autoremove" or not.
 > 
-> 
-> > -static __poll_t pidfd_poll(struct file *file, struct poll_table_struct *pts)
-> > +static __poll_t pidfd_poll(struct file *file, poll_table *wait)
-> >  {
-> >  	struct pid *pid = file->private_data;
-> >  	bool thread = file->f_flags & PIDFD_THREAD;
-> >  	struct task_struct *task;
-> >  	__poll_t poll_flags = 0;
-> >  
-> > -	poll_wait(file, &pid->wait_pidfd, pts);
-> > +	poll_wait(file, &pid->wait_pidfd, wait);
-> 
-> This is correct but only cosemtic and has nothing to do with what
-> we discuss?
-
-No, I just folded all of the changes because it was just a draft. See
-the updated draft I appended.
-
---jrozykordr44ab6z
-Content-Type: text/x-diff; charset=utf-8
-Content-Disposition: attachment; filename="0001-UNTESTED-UNCOMPILED.patch"
-
-From 1a026da491f1262dc525933c73b90b6297abf5da Mon Sep 17 00:00:00 2001
-From: Christian Brauner <brauner@kernel.org>
-Date: Fri, 2 Feb 2024 18:21:19 +0100
-Subject: [PATCH] [UNTESTED][UNCOMPILED]
-
-Signed-off-by: Christian Brauner <brauner@kernel.org>
----
- include/linux/pid.h  |  2 +-
- include/linux/wait.h |  2 ++
- io_uring/io_uring.h  |  6 ++----
- kernel/exit.c        |  2 +-
- kernel/fork.c        |  4 ++--
- kernel/sched/wait.c  |  2 +-
- kernel/signal.c      | 11 +++++------
- 7 files changed, 14 insertions(+), 15 deletions(-)
-
-diff --git a/include/linux/pid.h b/include/linux/pid.h
-index 8124d57752b9..b261cd53517d 100644
---- a/include/linux/pid.h
-+++ b/include/linux/pid.h
-@@ -74,7 +74,7 @@ struct pid *pidfd_pid(const struct file *file);
- struct pid *pidfd_get_pid(unsigned int fd, unsigned int *flags);
- struct task_struct *pidfd_get_task(int pidfd, unsigned int *flags);
- int pidfd_prepare(struct pid *pid, unsigned int flags, struct file **ret);
--void do_notify_pidfd(struct task_struct *task);
-+void pidfd_wake_up_poll(struct task_struct *task, bool dead);
- 
- static inline struct pid *get_pid(struct pid *pid)
- {
-diff --git a/include/linux/wait.h b/include/linux/wait.h
-index 8aa3372f21a0..210ee0d69b6f 100644
---- a/include/linux/wait.h
-+++ b/include/linux/wait.h
-@@ -234,6 +234,8 @@ void __wake_up_pollfree(struct wait_queue_head *wq_head);
- #define key_to_poll(m) ((__force __poll_t)(uintptr_t)(void *)(m))
- #define wake_up_poll(x, m)							\
- 	__wake_up(x, TASK_NORMAL, 1, poll_to_key(m))
-+#define wake_up_all_poll(x, m)							\
-+	__wake_up(x, TASK_NORMAL, 0, poll_to_key(m))
- #define wake_up_poll_on_current_cpu(x, m)					\
- 	__wake_up_on_current_cpu(x, TASK_NORMAL, poll_to_key(m))
- #define wake_up_locked_poll(x, m)						\
-diff --git a/io_uring/io_uring.h b/io_uring/io_uring.h
-index 04e33f25919c..65dcd5dc9645 100644
---- a/io_uring/io_uring.h
-+++ b/io_uring/io_uring.h
-@@ -228,8 +228,7 @@ static inline void io_commit_cqring(struct io_ring_ctx *ctx)
- static inline void io_poll_wq_wake(struct io_ring_ctx *ctx)
- {
- 	if (wq_has_sleeper(&ctx->poll_wq))
--		__wake_up(&ctx->poll_wq, TASK_NORMAL, 0,
--				poll_to_key(EPOLL_URING_WAKE | EPOLLIN));
-+		wake_up_all_poll(&ctx->poll_wq, EPOLL_URING_WAKE | EPOLLIN);
- }
- 
- static inline void io_cqring_wake(struct io_ring_ctx *ctx)
-@@ -245,8 +244,7 @@ static inline void io_cqring_wake(struct io_ring_ctx *ctx)
- 	 * epoll and should terminate multishot poll at that point.
- 	 */
- 	if (wq_has_sleeper(&ctx->cq_wait))
--		__wake_up(&ctx->cq_wait, TASK_NORMAL, 0,
--				poll_to_key(EPOLL_URING_WAKE | EPOLLIN));
-+		wake_up_all_poll(&ctx->cq_wait, EPOLL_URING_WAKE | EPOLLIN);
- }
- 
- static inline bool io_sqring_full(struct io_ring_ctx *ctx)
-diff --git a/kernel/exit.c b/kernel/exit.c
-index c038d10dfb38..70c967e08efa 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -744,7 +744,7 @@ static void exit_notify(struct task_struct *tsk, int group_dead)
- 	 * PIDFD_THREAD waiters.
- 	 */
- 	if (!thread_group_empty(tsk))
--		do_notify_pidfd(tsk);
-+		pidfd_wake_up_poll(tsk, false);
- 
- 	if (unlikely(tsk->ptrace)) {
- 		int sig = thread_group_leader(tsk) &&
-diff --git a/kernel/fork.c b/kernel/fork.c
-index aa08193d124f..7b882e66448b 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2074,14 +2074,14 @@ static void pidfd_show_fdinfo(struct seq_file *m, struct file *f)
- /*
-  * Poll support for process exit notification.
-  */
--static __poll_t pidfd_poll(struct file *file, struct poll_table_struct *pts)
-+static __poll_t pidfd_poll(struct file *file, poll_table *wait)
- {
- 	struct pid *pid = file->private_data;
- 	bool thread = file->f_flags & PIDFD_THREAD;
- 	struct task_struct *task;
- 	__poll_t poll_flags = 0;
- 
--	poll_wait(file, &pid->wait_pidfd, pts);
-+	poll_wait(file, &pid->wait_pidfd, wait);
- 	/*
- 	 * Depending on PIDFD_THREAD, inform pollers when the thread
- 	 * or the whole thread-group exits.
-diff --git a/kernel/sched/wait.c b/kernel/sched/wait.c
-index 51e38f5f4701..ee849fb35603 100644
---- a/kernel/sched/wait.c
-+++ b/kernel/sched/wait.c
-@@ -208,7 +208,7 @@ EXPORT_SYMBOL_GPL(__wake_up_sync);	/* For internal use only */
- 
- void __wake_up_pollfree(struct wait_queue_head *wq_head)
- {
--	__wake_up(wq_head, TASK_NORMAL, 0, poll_to_key(EPOLLHUP | POLLFREE));
-+	wake_up_all_poll(wq_head, EPOLLHUP | POLLFREE);
- 	/* POLLFREE must have cleared the queue. */
- 	WARN_ON_ONCE(waitqueue_active(wq_head));
- }
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 9b40109f0c56..86b3721ea08f 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2019,13 +2019,12 @@ int send_sigqueue(struct sigqueue *q, struct pid *pid, enum pid_type type)
- 	return ret;
- }
- 
--void do_notify_pidfd(struct task_struct *task)
-+void pidfd_wake_up_poll(struct task_struct *task, bool dead)
- {
--	struct pid *pid;
--
- 	WARN_ON(task->exit_state == 0);
--	pid = task_pid(task);
--	wake_up_all(&pid->wait_pidfd);
-+	WARN_ON(mask == 0);
-+	wake_up_all_poll(&task_pid(task)->wait_pidfd,
-+			 EPOLLIN | EPOLLRDNORM | dead ? EPOLLHUP : 0);
- }
- 
- /*
-@@ -2055,7 +2054,7 @@ bool do_notify_parent(struct task_struct *tsk, int sig)
- 	 * non-PIDFD_THREAD waiters.
- 	 */
- 	if (thread_group_empty(tsk))
--		do_notify_pidfd(tsk);
-+		pidfd_wake_up_poll(tsk, false);
- 
- 	if (sig != SIGCHLD) {
- 		/*
--- 
-2.43.0
-
-
---jrozykordr44ab6z--
 
