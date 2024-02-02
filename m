@@ -1,227 +1,194 @@
-Return-Path: <linux-kernel+bounces-49166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49168-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA01D8466BA
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 05:03:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9669F8466BC
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 05:04:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A657289ADD
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:03:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B6912896CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:04:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FC42EAF2;
-	Fri,  2 Feb 2024 04:03:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 186B0DF4C;
+	Fri,  2 Feb 2024 04:04:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qqNVn6Q5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="VvdBz1nl"
+Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC1CE54E;
-	Fri,  2 Feb 2024 04:03:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9049AE549
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 04:03:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706846617; cv=none; b=BvUpZbWGCiKZBnEfir9WsGqaGv7S3mGedyxpMtRlsv3+TBRMOQZ9pYvM40cfftGaKCJ7+bKK9rtwuUZLZExQQsum/6je/s/RaTIXdtaKpfY5yvHh2n9k+GaSWsBEuuA0YEgn/YDpO+RcKgvPsb0i7mXsg1LoXIFmnPSBnHDdh6I=
+	t=1706846640; cv=none; b=HtcY1YTO6jphbA0I3uJcTkDPIbPwKU0FkXZmxBG3XOuilxDF5BXFYPn6lZfhqB47Q9tAk4j6E9tmzfiGrn934fYKd7Z+T2iJJrJ1iQTvm/waYE6690DXqHmSreb+6Cp8q0Po9iJ7gFgSb/QHers6lBnTPgIpj0Fmy90cEdA4KOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706846617; c=relaxed/simple;
-	bh=+MM0R6bVOvD7EKq9CIbszzVHDXHuZzK4c+gZTtd5NV0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cb3QXYqlhROPea5hCuBi2kh8Zqx4a3dib6GuNDzL6kCxcB5j6A4OWCDklr2If6I8UffiXTjnRQ/5vi9k8Wc3/qWADi6FTd8TwHyBx1Eo54LVNTsQzrNTZ7jeU9cl8iJwPDujzUDmUhd+68cMeZhFl/H2rCuJKZsXkcsYTXFE4B0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qqNVn6Q5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59117C433F1;
-	Fri,  2 Feb 2024 04:03:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706846617;
-	bh=+MM0R6bVOvD7EKq9CIbszzVHDXHuZzK4c+gZTtd5NV0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qqNVn6Q5OpakF1FEiX+4PR7WJkRyWcexOY4NyKGTviSk1AJBxfTsQa7OxI1RnEvhH
-	 Fe85v0phzPji57h6ftfiFcd8eQfzJQ2ks1XwvFm1TtuNpx6+ZWirSwrog1vZVeTDqz
-	 f02Ov9yYQKsEFAXVLZ6PIpilOUAch/prN/vPY9SH2tXr6lKkUx2HVeLZ2HZfSS2JgT
-	 gT2lZ0+1A+LPwGnqywc7dpQPOBSz3nfzWywakp6Vau0gRE0T9IXz0VnHpNNopaEiTU
-	 Pq00Nt/Ec9+OHK47jQ/9z/wPd2aKMd5NiFOHprT/q35gstcY1hMEAqr0j9MdFQ6GTG
-	 CJwcl8/jfCvJg==
-Date: Thu, 1 Feb 2024 22:03:33 -0600
-From: Bjorn Andersson <andersson@kernel.org>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Marcel Holtmann <marcel@holtmann.org>, 
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Alex Elder <elder@linaro.org>, 
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Abel Vesa <abel.vesa@linaro.org>, 
-	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, linux-arm-msm@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
-	linux-pci@vger.kernel.org, Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [RFC 9/9] PCI/pwrctl: add a PCI power control driver for power
- sequenced devices
-Message-ID: <jb4hzijjxjv4kiy3cn2fuc5ox4x5uutredbxiwo2fvnkh2xudf@5w65qtp35ase>
-References: <20240201155532.49707-1-brgl@bgdev.pl>
- <20240201155532.49707-10-brgl@bgdev.pl>
+	s=arc-20240116; t=1706846640; c=relaxed/simple;
+	bh=4eaGVcAq7zTNWzIKHGaRDBxIEfRMATFqDOHfO1lQH8Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZxAg2S4pZhsYEn/hBxApVMxFGwL4QizC8PIlSjgH/WbNKbMZax4OO3oncE01Ns1KG2aq16Ft/jREqytXC603AQQIFFM95QV/WqS89TDwLUJ1Ik0Zi3iu0q19D5iuxuqiRSVe5khzrRk3+hSRYMjRsk2aAEKcysMrqnrEF1Z2Wfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=VvdBz1nl; arc=none smtp.client-ip=209.85.160.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-219108b8e9cso211064fac.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 20:03:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706846637; x=1707451437; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UBPcz0GP5Gh1HSYLOPzBAm/cEGRCFW+Rm8/XCSszjkI=;
+        b=VvdBz1nlcgqlNER9AlHRBIAmL68JjrS4MJow0N2ZhzSZZQN9yYTT5MHT8vaguL23CE
+         STzyaGK4GAEqSzCBc+XB7QKQbelxmqjCa4M5MQO71hMdfWzMMj6VMmd/V3v8ZhHr1Brv
+         3NYvUQ1vnKLA4PA+bOzPugw52WmcusNcqFzSs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706846637; x=1707451437;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UBPcz0GP5Gh1HSYLOPzBAm/cEGRCFW+Rm8/XCSszjkI=;
+        b=eaGE6potlhV7lxzB7xQF9vEUSZz+W6FXVJLT6FydkiNB/gSR/UW8rrCKQHybUEUyER
+         Etw+SsrBX32Y5IAgycBfJBjn6v1hXnzieqsiQZUcZS7HrDPcOBTkgDFRQA3tgfCy0dnL
+         4aONYBy/RhLr2sNG+bG+mkCxsiYTTVzjBIW7TudGOhyB98y5b7adLxSfbkFW7B2GMGL3
+         y/DEKgE8bYLVMRGbWRTMM3X15tsv3qg078ZDqdxcpGZ39LzvlLHjsh9jzLUZvMLK/2Y6
+         PM3dwzXURe5bXDUA7ixv5mdZLcWgHE8WrZdhiW4nciGaJ0imyolE2B3kVN32w8AW7wQ+
+         Qzpg==
+X-Gm-Message-State: AOJu0YygAUqtWBs1X+KV+EmdME83TuZI4OU6CYvPn9M37iaNy5yteDAV
+	NGhGfXZwipqLkrUdgi58nYqhuPlc4zdaMlSrpPHCSj2Yqwwe8Hza+qxophti2gsnyr3DYO3XTB3
+	Vrz8WhUXFY9zf+Hu0DVqlSFDBVJ2qtglXSL+6
+X-Google-Smtp-Source: AGHT+IES4sq+g6F4jHLGGFMZ3vUJFlNPbI6MSO0M/CCogUCWKZrbwpoaixxpKt/8wANqpnBcfmTqY5IUCygQOB1rm1o=
+X-Received: by 2002:a05:6870:40c1:b0:218:e4c3:e34 with SMTP id
+ l1-20020a05687040c100b00218e4c30e34mr4696738oal.55.1706846637645; Thu, 01 Feb
+ 2024 20:03:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240201155532.49707-10-brgl@bgdev.pl>
+References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131175027.3287009-3-jeffxu@chromium.org>
+ <20240201231151.GA41472@sol.localdomain> <CABi2SkWW78n3PK3Qk5cCzpjb57ZCoLmybA1ds3=rHrGMams7sw@mail.gmail.com>
+ <96087.1706846050@cvs.openbsd.org>
+In-Reply-To: <96087.1706846050@cvs.openbsd.org>
+From: Jeff Xu <jeffxu@chromium.org>
+Date: Thu, 1 Feb 2024 20:03:45 -0800
+Message-ID: <CABi2SkWP=N_V9+VvH3omw3gw=VcRqhqenti-qABijo-SNqXxhQ@mail.gmail.com>
+Subject: Re: [PATCH v8 2/4] mseal: add mseal syscall
+To: Theo de Raadt <deraadt@openbsd.org>
+Cc: Eric Biggers <ebiggers@kernel.org>, akpm@linux-foundation.org, keescook@chromium.org, 
+	jannh@google.com, sroettger@google.com, willy@infradead.org, 
+	gregkh@linuxfoundation.org, torvalds@linux-foundation.org, 
+	usama.anjum@collabora.com, rdunlap@infradead.org, jeffxu@google.com, 
+	jorgelo@chromium.org, groeck@chromium.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, pedro.falcato@gmail.com, 
+	dave.hansen@intel.com, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 01, 2024 at 04:55:32PM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> Add a PCI power control driver that's capable of correctly powering up
-> devices using the power sequencing subsystem. For now we support the
-> ath11k module on QCA6390.
-> 
+On Thu, Feb 1, 2024 at 7:54=E2=80=AFPM Theo de Raadt <deraadt@openbsd.org> =
+wrote:
+>
+> Jeff Xu <jeffxu@chromium.org> wrote:
+>
+> > On Thu, Feb 1, 2024 at 3:11=E2=80=AFPM Eric Biggers <ebiggers@kernel.or=
+g> wrote:
+> > >
+> > > On Wed, Jan 31, 2024 at 05:50:24PM +0000, jeffxu@chromium.org wrote:
+> > > > [PATCH v8 2/4] mseal: add mseal syscall
+> > > [...]
+> > > > +/*
+> > > > + * The PROT_SEAL defines memory sealing in the prot argument of mm=
+ap().
+> > > > + */
+> > > > +#define PROT_SEAL    0x04000000      /* _BITUL(26) */
+> > > > +
+> > > >  /* 0x01 - 0x03 are defined in linux/mman.h */
+> > > >  #define MAP_TYPE     0x0f            /* Mask for type of mapping *=
+/
+> > > >  #define MAP_FIXED    0x10            /* Interpret addr exactly */
+> > > > @@ -33,6 +38,9 @@
+> > > >  #define MAP_UNINITIALIZED 0x4000000  /* For anonymous mmap, memory=
+ could be
+> > > >                                        * uninitialized */
+> > > >
+> > > > +/* map is sealable */
+> > > > +#define MAP_SEALABLE 0x8000000       /* _BITUL(27) */
+> > >
+> > > IMO this patch is misleading, as it claims to just be adding a new sy=
+scall, but
+> > > it actually adds three new UAPIs, only one of which is the new syscal=
+l.  The
+> > > other two new UAPIs are new flags to the mmap syscall.
+> > >
+> > The description does include all three. I could update the patch title.
+> >
+> > > Based on recent discussions, it seems the usefulness of the new mmap =
+flags has
+> > > not yet been established.  Note also that there are only a limited nu=
+mber of
+> > > mmap flags remaining, so we should be careful about allocating them.
+> > >
+> > > Therefore, why not start by just adding the mseal syscall, without th=
+e new mmap
+> > > flags alongside it?
+> > >
+> > > I'll also note that the existing PROT_* flags seem to be conventional=
+ly used for
+> > > the CPU page protections, as opposed to kernel-specific properties of=
+ the VMA
+> > > object.  As such, PROT_SEAL feels a bit out of place anyway.  If it's=
+ added at
+> > > all it perhaps should be a MAP_* flag, not PROT_*.  I'm not sure this=
+ aspect has
+> > > been properly discussed yet, seeing as the patchset is presented as j=
+ust adding
+> > > sys_mseal().  Some reviewers may not have noticed or considered the n=
+ew flags.
+> > >
+> > MAP_ flags is more used for type of mapping, such as MAP_FIXED_NOREPLAC=
+E.
+> >
+> > The PROT_SEAL might make more sense because sealing the protection bit
+> > is the main functionality of the sealing at this moment.
+>
+> Jeff, please show a piece of software that needs to do PROT_SEAL as
+> mprotect() or mmap() argument.
+>
+I didn't propose mprotect().
 
-For a PCI device which doesn't share resources with something on another
-bus, the whole power sequencing would be implemented in a driver like
-this - without the involvement of the power sequence framework.
+for mmap() here is a potential use case:
 
-I think it would be nice to see this series introduce a simple
-pci_pwrctl driver, and then (in the same series) introduce the power
-sequence framework and your PMU driver.
+fs/binfmt_elf.c
+if (current->personality & MMAP_PAGE_ZERO) {
+                /* Why this, you ask???  Well SVr4 maps page 0 as read-only=
+,
+                   and some applications "depend" upon this behavior.
+                   Since we do not have the power to recompile these, we
+                   emulate the SVr4 behavior. Sigh. */
 
-One case where such model would be appropriate is the XHCI controller
-(uPD720201) on db845c. Today we describe vddpe-3p3-supply as a supply on
-the PCI controller, but it should have been vdd33-supply, vdd10-supply,
-avdd33-supply on the PCI device.
+                error =3D vm_mmap(NULL, 0, PAGE_SIZE,
+                                PROT_READ | PROT_EXEC,   <-- add PROT_SEAL
+                                MAP_FIXED | MAP_PRIVATE, 0);
+        }
 
-That would provide an example for how a simple PCI power control driver
-can/should look like, and we can discuss the PCI pieces separate from
-the introduction of the new power sequence framework (which is unrelated
-to PCI).
+I don't see the benefit of RWX page 0, which might make a null
+pointers error to become executable for some code.
 
-Regards,
-Bjorn
 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
->  drivers/pci/pwrctl/Kconfig             |  9 +++
->  drivers/pci/pwrctl/Makefile            |  1 +
->  drivers/pci/pwrctl/pci-pwrctl-pwrseq.c | 83 ++++++++++++++++++++++++++
->  3 files changed, 93 insertions(+)
->  create mode 100644 drivers/pci/pwrctl/pci-pwrctl-pwrseq.c
-> 
-> diff --git a/drivers/pci/pwrctl/Kconfig b/drivers/pci/pwrctl/Kconfig
-> index e2dc5e5d2af1..bca72dc08e79 100644
-> --- a/drivers/pci/pwrctl/Kconfig
-> +++ b/drivers/pci/pwrctl/Kconfig
-> @@ -5,4 +5,13 @@ menu "PCI Power control drivers"
->  config PCI_PWRCTL
->  	bool
->  
-> +config PCI_PWRCTL_PWRSEQ
-> +	tristate "PCI Power Control driver using the Power Sequencing subsystem"
-> +	select POWER_SEQUENCING
-> +	select PCI_PWRCTL
-> +	default m if (ATH11K_PCI && ARCH_QCOM)
-> +	help
-> +	  Enable support for the PCI power control driver for device
-> +	  drivers using the Power Sequencing subsystem.
-> +
->  endmenu
-> diff --git a/drivers/pci/pwrctl/Makefile b/drivers/pci/pwrctl/Makefile
-> index 4381cfbf3f21..919c0f704ee9 100644
-> --- a/drivers/pci/pwrctl/Makefile
-> +++ b/drivers/pci/pwrctl/Makefile
-> @@ -1,3 +1,4 @@
->  # SPDX-License-Identifier: GPL-2.0
->  
->  obj-$(CONFIG_PCI_PWRCTL)		+= core.o
-> +obj-$(CONFIG_PCI_PWRCTL_PWRSEQ)		+= pci-pwrctl-pwrseq.o
-> diff --git a/drivers/pci/pwrctl/pci-pwrctl-pwrseq.c b/drivers/pci/pwrctl/pci-pwrctl-pwrseq.c
-> new file mode 100644
-> index 000000000000..510598c4edc4
-> --- /dev/null
-> +++ b/drivers/pci/pwrctl/pci-pwrctl-pwrseq.c
-> @@ -0,0 +1,83 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2023-2024 Linaro Ltd.
-> + */
-> +
-> +#include <linux/device.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/pci-pwrctl.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/pwrseq/consumer.h>
-> +#include <linux/slab.h>
-> +#include <linux/types.h>
-> +
-> +struct pci_pwrctl_pwrseq_data {
-> +	struct pci_pwrctl ctx;
-> +	struct pwrseq_desc *pwrseq;
-> +};
-> +
-> +static void devm_pci_pwrctl_pwrseq_power_off(void *data)
-> +{
-> +	struct pwrseq_desc *pwrseq = data;
-> +
-> +	pwrseq_power_off(pwrseq);
-> +}
-> +
-> +static int pci_pwrctl_pwrseq_probe(struct platform_device *pdev)
-> +{
-> +	struct pci_pwrctl_pwrseq_data *data;
-> +	struct device *dev = &pdev->dev;
-> +	int ret;
-> +
-> +	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-> +	if (!data)
-> +		return -ENOMEM;
-> +
-> +	data->pwrseq = devm_pwrseq_get(dev);
-> +	if (IS_ERR(data->pwrseq))
-> +		return dev_err_probe(dev, PTR_ERR(data->pwrseq),
-> +				     "Failed to get the power sequencer\n");
-> +
-> +	ret = pwrseq_power_on(data->pwrseq);
-> +	if (ret)
-> +		return dev_err_probe(dev, ret,
-> +				     "Failed to power-on the device\n");
-> +
-> +	ret = devm_add_action_or_reset(dev, devm_pci_pwrctl_pwrseq_power_off,
-> +				       data->pwrseq);
-> +	if (ret)
-> +		return ret;
-> +
-> +	data->ctx.dev = dev;
-> +
-> +	ret = devm_pci_pwrctl_device_enable(dev, &data->ctx);
-> +	if (ret)
-> +		return dev_err_probe(dev, ret,
-> +				     "Failed to register the pwrctl wrapper\n");
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id pci_pwrctl_pwrseq_of_match[] = {
-> +	{
-> +		/* ATH11K in QCA6390 package. */
-> +		.compatible = "pci17cb,1101",
-> +	},
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, pci_pwrctl_pwrseq_of_match);
-> +
-> +static struct platform_driver pci_pwrctl_pwrseq_driver = {
-> +	.driver = {
-> +		.name = "pci-pwrctl-pwrseq",
-> +		.of_match_table = pci_pwrctl_pwrseq_of_match,
-> +	},
-> +	.probe = pci_pwrctl_pwrseq_probe,
-> +};
-> +module_platform_driver(pci_pwrctl_pwrseq_driver);
-> +
-> +MODULE_AUTHOR("Bartosz Golaszewski <bartosz.golaszewski@linaro.org>");
-> +MODULE_DESCRIPTION("Generic PCI Power Control module for power sequenced devices");
-> +MODULE_LICENSE("GPL");
-> -- 
-> 2.40.1
-> 
+> Please don't write it as a vague essay.
+>
+> Instead, take a piece of existing code, write a diff, and show your work.
+>
+> Then explain that diff, justify why doing the PROT_SEAL as an argument
+> of mprotect() or mmap() is a required improvement, and show your Linux
+> developer peers that you can do computer science.
+>
+> I did the same work in OpenBSD, at least 25% time over 2 years, and I
+> had to prove my work inside my development community.  I had to prove
+> that it worked system wide, not in 1 program, with hand-waving for the
+> rest.  If I had said "Looks, it works in ssh, trust me it works in other
+> programs", it would not have gone further.
+>
+> glibc is the best example to demonstrate, but smaller examples might
+> convince.
 
