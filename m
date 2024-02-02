@@ -1,66 +1,68 @@
-Return-Path: <linux-kernel+bounces-50237-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03534847621
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:31:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 73F85847623
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:31:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 288701C2656A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:31:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 989551C275B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:31:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D87814A4EC;
-	Fri,  2 Feb 2024 17:30:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A67114C5B6;
+	Fri,  2 Feb 2024 17:30:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="SHWnzrlu"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Z7PwQ514"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D676F14C59A
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 17:30:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E536614A4F2
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 17:30:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706895042; cv=none; b=UI8DixIZ7JPTdIa0Da51kGKWVtuv3I6xnJb6QPLuP4gtqsGvPBNH7FLAR2ENdchgoryLomGPBqcZE10MPa8MXqXDWg9AFZ02pv6/PctK4NWWnp//Hp54I+lemUrxcZ0cRXQ+22X6VckWgyjtkfBsYbveAtTjgjLeIsW8tXlP9+o=
+	t=1706895044; cv=none; b=b+YJmJeWcG/sAesP0PUYwQy1Z36+xxwP8G5QEJYspoAsRJo44+VR6DVVohoMgegNrdVyaIyBoHEMvDQRRdvrfSdMY2zIJWNQ9M+Xco8UQbZzCElvMd3U58EL9MWrQBthg4AOTAh7Rv0SVC5IFWri8sNajj726xShNTAIjrrsOBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706895042; c=relaxed/simple;
-	bh=2doe7Rnh2cfYTExP59GbRKeFESMtXfgH6+kHay/XYgs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=SoXCjNTd/keeXbE8DjrzNgi7XauUCQxT+W2IjjPjDMEwBvWX4a/Xhdz2rWQHQj91IhmgSgBMutcjA9UlI759uyk2w33NNLciCoHbqi95jfjmLXLVac8Q8PRyYj0N7UaXIsUzXnQSD5Xxh+MgXB3MeZ0WhthSBuYZDJXRTpMZTgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=SHWnzrlu; arc=none smtp.client-ip=209.85.218.44
+	s=arc-20240116; t=1706895044; c=relaxed/simple;
+	bh=yPuFc5Hx096mrPElw26CkIg8PftBQLpZhjMEh1Ai9Wo=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=sF/jYoEllqDSQE3det1HcaXELn4RSQSmVvyDQ6oWG8YOX/jQeIWxG+75AR7GbOprLZnOVAbzdJLGfdGIqVPVw1O4dWtpjWT0Wes6NT4SHPACTstPofBrg29fK2oX8hMSzykBClTze/g5LXDuOQlqB1mctAL/65L3PfQ32GTGcLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Z7PwQ514; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a35b32bd055so306048966b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 09:30:40 -0800 (PST)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3566c0309fso315718866b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 09:30:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706895039; x=1707499839; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VC5vJdORBChkJeHwFEmBTnLuqGC0FMrsRwyZcN+KE/8=;
-        b=SHWnzrluA44ZDiQCs6yI/CNYRyFWJ5cvRemavkE4kIZ1+kC62SBVDCEP3dx77s1X0R
-         6gqMkKBVuIy0x2QI+IyX3uXf5I0ohB367/y2hO5Y5hnouYwOoBeODS+gwPyYfPgGkhC0
-         IxPYXlox7nL87jEQbqF4uwYe8DTv3YfUaHldc=
+        d=chromium.org; s=google; t=1706895041; x=1707499841; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Tzgmnc/dVe67zqThKg2HRZiMqYk93YXXRdjM9PXNfFY=;
+        b=Z7PwQ514xyA/s+47Kcj4Zz1EKyOMm+aKZwdxJLJBIR5SvAhbc0NUTXjPhC3nxLvK14
+         Kwq3bFFkbeA/Rdl/P23HG3pneSt9QAwLKs0Z5yO+X9eEilFITTFZ1jTkvW87Itz62PxM
+         MyC0ML7TSmLFMoRWxW+NWCdogvW9p48xMCFHI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706895039; x=1707499839;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VC5vJdORBChkJeHwFEmBTnLuqGC0FMrsRwyZcN+KE/8=;
-        b=hhjIKiw2BeMBwnKpTp6+Bl40ShUzw4hgZPnHGsY5uHZAWDvnkSfQYSvQEl+x2ms99B
-         0sYaq/uEo7RYbq710ysNSd28ZGYN95F6UgwFrgLgwuWhar3fas3PVdaSipVvqHl1BAOO
-         LaSeWxiJSfrjFv549aBrCk/levYY/9kxp52X6BwEx3tKechCTer1gydhTfIIBOBi84gZ
-         SHlpnC+eRuJU4Kg7k0FfedlBLu08bIyrfzc/D1zNoMhC9ArBvCzhOmXAkc0bSxrfQVCK
-         eZQAJQG7pYBMK/NLwEZ856K0GCK6pa0gYNjVh5+20vlgCO+OT54RuK72c1+srlfdJPNZ
-         pEFA==
-X-Gm-Message-State: AOJu0Yx2c1M6tIaT+VqU8xBatmd3U0tKOILWTONtibmHRJz5KQcVcV6R
-	JbNDUf8HLz26fAXpa6ZovYRwaRKH6xe3K6euNsojHnp3IIOce6DsNo4hJibLdw==
-X-Google-Smtp-Source: AGHT+IG1HErWZnyyHQSeGiKtyMdVerFNECncUUd+5zGq4gXzObiZ/ksbYjQQAYMUm32Ai9vzo+62Ow==
-X-Received: by 2002:a17:906:3ad1:b0:a36:84f5:5186 with SMTP id z17-20020a1709063ad100b00a3684f55186mr1897465ejd.77.1706895038981;
-        Fri, 02 Feb 2024 09:30:38 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVoNRQtsktnhKqsQgth/Jzy6fvhViLBtHaC32Wc+CfldyFICiQswcGmg+tYTe6fcJJE6SXBOebY7AGhCY5TzPSpu4khIX5k0IXeiDWk81gBRjuVesFgMX/8Wu1MYjfMMllrYbHe0K3zUhWjUjZpQg1l753MWXySN6XFuLTBo2aAZ1MPnhZZEkmye7WfxY/NRJH52N1zQg5E9swSHq+1EvebLk5jvHJv4Jxvkh7CVb2MLxK9c3pC/yUovmZWkOWwnAfaf/8Md0JFVNR/e5BkCobQNpZ2eIBfyeTBFgordCWD11YYQ4ugXx59ZzhTsGKtYSSxfTVibDKASHZ76EiRDyWR2YjGKfAiPtGb69vlRTSxvOSLhqokzBsOCLx2hZLMx7s0C4OCD0FQbYkzHLEBhexR1nrEC73ENVUC
+        d=1e100.net; s=20230601; t=1706895041; x=1707499841;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Tzgmnc/dVe67zqThKg2HRZiMqYk93YXXRdjM9PXNfFY=;
+        b=oKAJAFO2b8RvGOLzKo8QfEgNCNnM6mYfayfpOrmf3AHZcjDxXIt0wNri0wxAajCsgD
+         e8IpgKw0UWZAG4uGAsSpHmxLZC8vz0shnF9qbG9scOPWAT8WcNJS5kns+nWcJDB1LTGt
+         E/Q/uV+R+WS0ztee57N+v6wGVoP+K9+EuFPe3TIo9nlVQPRukKylQmM8NU/0y7AqDw5N
+         hjerrG11/gm+Iyi4V3N3Ld00+y6OeO4R1SKYyJm4fs/RgM2fFU1gphuvf3HMsW/AAhmZ
+         fB5QUf+ZFz/8Dj03mJ+R8DE/8b5IrG0qCWBVMwl3kjZYtRfPelD9rKCUNZys9ZbuJn4e
+         Jbqg==
+X-Gm-Message-State: AOJu0YwoJwjvLI0eR+uPCvmeso51SGjrMIeD1sT1SMS0XMlELP12bsHe
+	KzAuTyx8gIGXMA1oBqkAjJcIO1pcYDp4nRVavQ9ea73D6rd4U+VLAr3zR0EpXA==
+X-Google-Smtp-Source: AGHT+IHP/5ZRaiYDK4PC6NOpbhF4S/tt6Owof3FS9hi+3Z07dQE03DFVssqBWWiemWc6kEze73Kx1g==
+X-Received: by 2002:a17:906:3953:b0:a36:bc20:9a40 with SMTP id g19-20020a170906395300b00a36bc209a40mr4037025eje.48.1706895041195;
+        Fri, 02 Feb 2024 09:30:41 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVB+aeDQCmsjLIJCF1+hLEAB2MNuxDgtEcELXJAQrzVS+FKMfLPsHVNuRO0/x/w2ifw58p98oInEOeEGBFF/BoteWFKMfzmLbWwwF+yXGN5t8EZcLqc2POFH42h1uQwwSuLnVaQdpOEivnGT6yndjNtKffsMy/xOY63No5NoFBQA5+/AIROegXmnUIb/JrIbajw2npi4/Iw43KUERPlznK5KkPo5ADrHLBagAy8HrwKygw=
 Received: from chromium.org (66.224-78-194.adsl-static.isp.belgacom.be. [194.78.224.66])
-        by smtp.gmail.com with ESMTPSA id hd34-20020a17090796a200b00a36f314daa6sm1083392ejc.46.2024.02.02.09.30.37
+        by smtp.gmail.com with ESMTPSA id hd34-20020a17090796a200b00a36f314daa6sm1083392ejc.46.2024.02.02.09.30.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 09:30:38 -0800 (PST)
+        Fri, 02 Feb 2024 09:30:40 -0800 (PST)
 From: Simon Glass <sjg@chromium.org>
 To: linux-arm-kernel@lists.infradead.org
 Cc: Ahmad Fatoum <a.fatoum@pengutronix.de>,
@@ -68,18 +70,14 @@ Cc: Ahmad Fatoum <a.fatoum@pengutronix.de>,
 	Nicolas Schier <nicolas@fjasle.eu>,
 	Simon Glass <sjg@chromium.org>,
 	Catalin Marinas <catalin.marinas@arm.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Terrell <terrelln@fb.com>,
 	Will Deacon <will@kernel.org>,
-	linux-doc@vger.kernel.org,
-	linux-kbuild@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	workflows@vger.kernel.org
-Subject: [PATCH v10 0/2] arm64: Add a build target for Flat Image Tree
-Date: Fri,  2 Feb 2024 10:30:32 -0700
-Message-Id: <20240202173034.221790-1-sjg@chromium.org>
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v10 1/2] arm64: Add BOOT_TARGETS variable
+Date: Fri,  2 Feb 2024 10:30:33 -0700
+Message-Id: <20240202173034.221790-2-sjg@chromium.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240202173034.221790-1-sjg@chromium.org>
+References: <20240202173034.221790-1-sjg@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,95 +86,47 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Flat Image Tree (FIT) is a widely used file format for packaging a
-kernel and associated devicetree files[1]. It is not specific to any
-one bootloader, as it is supported by U-Boot, coreboot, Linuxboot,
-Tianocore and Barebox.
+Add a new variable containing a list of possible targets. Mark them as
+phony. This matches the approach taken for arch/arm
 
-This series adds support for building a FIT as part of the kernel
-build. This makes it easy to try out the kernel - just load the FIT
-onto your tftp server and it will run automatically on any supported
-arm64 board.
+Signed-off-by: Simon Glass <sjg@chromium.org>
+---
 
-The script is written in Python, since it is easy to build a FIT using
-the Python libfdt bindings. For now, no attempt is made to compress
-files in parallel, so building the 900-odd files takes a while, about
-6 seconds with my testing.
-
-The series also includes a minor clean-up patch.
-
-[1] https://github.com/open-source-firmware/flat-image-tree
-
-Changes in v10:
-- Make use of dtbs-list file
-- Mention dtbs-list and FIT_COMPRESSION
-- Update copyright year
-- Update cover letter to take account of an applied patch
-
-Changes in v9:
-- Move the compression control into Makefile.lib
-
-Changes in v8:
-- Drop compatible string in FDT node
-- Correct sorting of MAINTAINERS to before ARM64 PORT
-- Turn compress part of the make_fit.py comment in to a sentence
-- Add two blank lines before parse_args() and setup_fit()
-- Use 'image.fit: dtbs' instead of BUILD_DTBS var
-- Use '$(<D)/dts' instead of '$(dir $<)dts'
-- Add 'mkimage' details Documentation/process/changes.rst
-- Allow changing the compression used
-- Tweak cover letter since there is only one clean-up patch
+(no changes since v7)
 
 Changes in v7:
 - Drop the kbuild tag
-- Add Image as a dependency of image.fit
-- Drop kbuild tag
-- Add dependency on dtbs
-- Drop unnecessary path separator for dtbs
-- Rebase to -next
 
 Changes in v6:
 - Drop the unwanted .gz suffix
 
-Changes in v5:
-- Drop patch previously applied
-- Correct compression rule which was broken in v4
+ arch/arm64/Makefile | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Changes in v4:
-- Use single quotes for UIMAGE_NAME
-
-Changes in v3:
-- Drop temporary file image.itk
-- Drop patch 'Use double quotes for image name'
-- Drop double quotes in use of UIMAGE_NAME
-- Drop unnecessary CONFIG_EFI_ZBOOT condition for help
-- Avoid hard-coding "arm64" for the DT architecture
-
-Changes in v2:
-- Drop patch previously applied
-- Add .gitignore file
-- Move fit rule to Makefile.lib using an intermediate file
-- Drop dependency on CONFIG_EFI_ZBOOT
-- Pick up .dtb files separately from the kernel
-- Correct pylint too-many-args warning for write_kernel()
-- Include the kernel image in the file count
-- Add a pointer to the FIT spec and mention of its wide industry usage
-- Mention the kernel version in the FIT description
-
-Simon Glass (2):
-  arm64: Add BOOT_TARGETS variable
-  arm64: boot: Support Flat Image Tree
-
- Documentation/process/changes.rst |   9 +
- MAINTAINERS                       |   7 +
- arch/arm64/Makefile               |  11 +-
- arch/arm64/boot/.gitignore        |   1 +
- arch/arm64/boot/Makefile          |   6 +-
- scripts/Makefile.lib              |  16 ++
- scripts/make_fit.py               | 298 ++++++++++++++++++++++++++++++
- 7 files changed, 345 insertions(+), 3 deletions(-)
- create mode 100755 scripts/make_fit.py
-
+diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+index 47ecc4cff9d2..83cd2b7234b9 100644
+--- a/arch/arm64/Makefile
++++ b/arch/arm64/Makefile
+@@ -150,6 +150,10 @@ libs-$(CONFIG_EFI_STUB) += $(objtree)/drivers/firmware/efi/libstub/lib.a
+ # Default target when executing plain make
+ boot		:= arch/arm64/boot
+ 
++BOOT_TARGETS	:= Image vmlinuz.efi
++
++PHONY += $(BOOT_TARGETS)
++
+ ifeq ($(CONFIG_EFI_ZBOOT),)
+ KBUILD_IMAGE	:= $(boot)/Image.gz
+ else
+@@ -159,7 +163,7 @@ endif
+ all:	$(notdir $(KBUILD_IMAGE))
+ 
+ vmlinuz.efi: Image
+-Image vmlinuz.efi: vmlinux
++$(BOOT_TARGETS): vmlinux
+ 	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
+ 
+ Image.%: Image
 -- 
 2.34.1
 
