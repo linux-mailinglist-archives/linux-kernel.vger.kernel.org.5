@@ -1,135 +1,268 @@
-Return-Path: <linux-kernel+bounces-50625-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1FE3847BD2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:51:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 801D1847BC9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:50:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA3F81C237C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:51:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5ADE1C23433
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:50:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B72D2839FE;
-	Fri,  2 Feb 2024 21:50:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8E4483A03;
+	Fri,  2 Feb 2024 21:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="SaGn4WU/"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u+sbDsAY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A77D8594A
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 21:50:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED12D8175F;
+	Fri,  2 Feb 2024 21:50:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706910652; cv=none; b=cXW8OZZxCzSwWN5e7zccSETjNvLD3aAS2bmIjTypOP1PdAhwXNV0Qox6n0y8KfEVrLMfaUNGwwMprTr+BvK/CM6VmH9FhR0AMZ65IM1M89KUnWeFQ+0D/jfSYcM44HxbUfxL4n0Wa+Gx+0NnGjXilLhrU/fRvlndg8ZFBNcuNAw=
+	t=1706910632; cv=none; b=bCkmCx9X9SWOE6vXEKoapXPQUkIsVWd9PQiQneqtu66GmF5Vtwd7V9qDj4fCOmtCiPUP1ifc/fsqwiQ8mGVKqZwmxiSumJ1ZQFLCLKWVSB56fy3ToP95sabD/pjfDmn703Ddyo8J+8gxBQSud3JRk0Ympot+q5PEMtV3xtdx5Sk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706910652; c=relaxed/simple;
-	bh=j1+6smkjmxO2TPfR0I7+fbIujkXeFYIF+x2HwXzQ4SY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=QpG1hGmOgA/JW8n8TaMukCvhYDvqn3h/RvYPcrRdDNXXc4H9pkGcelYJKn5N7Q0yVcHwhMpuu7etq/hvxsuIJsFH9ZiVmqV21kHr2m1RA5p3+m00ag1OvQzHLbqj1wPDbBexwwLaujHS8W5a0ycV+V2i5Ehv0rE7TFuwFZns92A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=SaGn4WU/; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 412Lkb4Z000581;
-	Fri, 2 Feb 2024 21:50:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:date:subject:mime-version:content-type
-	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=SVl
-	N3fADnRzFhsjCTs1uFxfAX8KThaSYQyGegUws1dI=; b=SaGn4WU/6EnI4uRJa3L
-	KhPdZHJ55LTV/V4GJrw2+zP7V8ZhSCS+n/7aIhn45hhuVWgshwwp/SsQ+r5Zi6Zj
-	W0EA0VjjkDJN8TAwjwgRUfDP8necTq3y/1pWD/f3X5plC0yemlKqTErG2q9wqB9l
-	6pMYCztFarGh2Y0IiBAF5B9uUcw5e827SyYfAtYVLm4qb4lL5/ywplSVZUzX8aLf
-	blDCjEbFon2HSv7XD38k0d2dY8MypHaGk+3lQ2OFSJaizmaBINrA6Q4AinTbN7OX
-	4leOX7OZg1c6PxxJ2LypVusInfGcoJRVhN7WgfbBdqTlAuGMhLno8djTX66mMOqC
-	7Kw==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w0ptxjfcd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 02 Feb 2024 21:50:35 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 412LoYEo014779
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 2 Feb 2024 21:50:35 GMT
-Received: from jesszhan-linux.qualcomm.com (10.80.80.8) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 2 Feb 2024 13:50:34 -0800
-From: Jessica Zhang <quic_jesszhan@quicinc.com>
-Date: Fri, 2 Feb 2024 13:50:21 -0800
-Subject: [PATCH] drm/panel: visionox-r66451: Set prepare_prev_first flag
+	s=arc-20240116; t=1706910632; c=relaxed/simple;
+	bh=hHxaw+nn+YcEJGGK4DNyV7fvRw6Yx8yXT/whi8BAW/o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fbjJ6YUu+c61xzz7SR1Vbl5MaBZEHjTnYXj5JdV2bil0shqcf8CeZrdjevdnQpo8d15pfZV7EiWTWV8RfoKSOhnRe5l/esTpK90K44NxGbQ11VPCxfeOPuRl6q2tgiraOsSuGj4Ad0ElKeiIC5ej+Ez+AdVCNGGNLNBvVw1Fv1w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u+sbDsAY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 490D7C433C7;
+	Fri,  2 Feb 2024 21:50:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706910631;
+	bh=hHxaw+nn+YcEJGGK4DNyV7fvRw6Yx8yXT/whi8BAW/o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=u+sbDsAYLj91MJYJb1fQsbtsO4gd29RCXVuvQUoxe7YVHfcK9q8TubRVA0iuzOYr3
+	 QqDrAD7+rYQpfrRtIMFqh3g354/1lWHKYzPFYHb0v5NnyuMz4xWBx3OLJHqpxBUmgl
+	 1Fx3FXyi6KKXdN0xkDcgmrvlsN2Ao9dBAlg0YrzyWdAvIRL8NVK8k8gNGPhgiM4/sK
+	 Pu7uJFdJwxGs0YXF1H0H5jQq6bPxqi0KTfUGT7a0fjI/R/e2Z/UGrSgfNAyMyXGXOn
+	 CFLG9Y+G5xzJuaoe0/zL5vDWNTZT2kWRmqjzVabX6RlFm/GIOOdNzIsEgNfVQ83o6M
+	 Q5p2UL+OJd/3w==
+Date: Fri, 2 Feb 2024 15:50:29 -0600
+From: Rob Herring <robh@kernel.org>
+To: Hari Nagalla <hnagalla@ti.com>
+Cc: andersson@kernel.org, mathieu.poirier@linaro.org,
+	p.zabel@pengutronix.de, martyn.welch@collabora.com, nm@ti.com,
+	vigneshr@ti.com, kristo@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v7 1/5] dt-bindings: remoteproc: k3-m4f: Add K3 AM64x SoCs
+Message-ID: <20240202215029.GA1597859-robh@kernel.org>
+References: <20240202175538.1705-1-hnagalla@ti.com>
+ <20240202175538.1705-2-hnagalla@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240202-visionox-r66451-prev-first-v1-1-c267dc889284@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIAJxjvWUC/yWMSwqAMAwFryJZG+hHU/Aq4sJP1GxUWpGCeHeDL
- of3Zm5IHIUTNMUNkS9Jsm8KtixgXPttYZRJGZxx3gQb8L/sGSNRVVs81MJZYjqRwmA8WTLsHWh
- Ap1nyF2+753kBtzhPXmwAAAA=
-To: Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg
-	<sam@ravnborg.org>, David Airlie <airlied@gmail.com>,
-        Daniel Vetter
-	<daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-CC: <quic_abhinavk@quicinc.com>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>
-X-Mailer: b4 0.13-dev-2d940
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706910634; l=1137;
- i=quic_jesszhan@quicinc.com; s=20230329; h=from:subject:message-id;
- bh=j1+6smkjmxO2TPfR0I7+fbIujkXeFYIF+x2HwXzQ4SY=;
- b=a5m4w+x7U6gunqaLxXXorLqcSL4H44MRB2xTmI3wMhsVhLlYvjppnXehX45YL181M7iKIHwQ9
- vfA1I1m9l8nA8rtE+vAze9Fv9qN8bQqkukppk4CkY/J5fQrWXWTveTo
-X-Developer-Key: i=quic_jesszhan@quicinc.com; a=ed25519;
- pk=gAUCgHZ6wTJOzQa3U0GfeCDH7iZLlqIEPo4rrjfDpWE=
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: NKhIfIUk_Z7tzlG538Iy_nmDTYgJw3ov
-X-Proofpoint-GUID: NKhIfIUk_Z7tzlG538Iy_nmDTYgJw3ov
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-02_14,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 adultscore=0 impostorscore=0 priorityscore=1501 malwarescore=0
- spamscore=0 suspectscore=0 mlxlogscore=923 mlxscore=0 phishscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402020161
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240202175538.1705-2-hnagalla@ti.com>
 
-The DSI host needs to be enabled for the panel to be initialized in
-prepare(). Ensure this happens by setting prepare_prev_first.
+On Fri, Feb 02, 2024 at 11:55:34AM -0600, Hari Nagalla wrote:
+> K3 AM64x SoC has a Cortex M4F subsystem in the MCU voltage domain.
+> The remote processor's life cycle management and IPC mechanisms are
+> similar across the R5F and M4F cores from remote processor driver
+> point of view. However, there are subtle differences in image loading
+> and starting the M4F subsystems.
+> 
+> The YAML binding document provides the various node properties to be
+> configured by the consumers of the M4F subsystem.
+> 
+> Signed-off-by: Martyn Welch <martyn.welch@collabora.com>
+> Signed-off-by: Hari Nagalla <hnagalla@ti.com>
+> ---
+> Changes since v1:
+>  - Spelling corrections
+>  - Corrected to pass DT checks
+> 
+> Changes since v2:
+>  - Missed spelling correction to commit message
+> 
+> Changes since v3:
+>  - Removed unnecessary descriptions and used generic memory region names
+>  - Made mboxes and memory-region optional
+>  - Removed unrelated items from examples
+> 
+> Changes since v4:
+>  - Rebased to the latest kernel-next tree
+>  - Added optional sram memory region for m4f device node
+> 
+> Changes since v5:
+>  - None
+> 
+> Changes since v6:
+>  - Removed blank line, fixed type for firm-ware property and binding check
+>    errors.
+> 
+> link to v6:
+>   https://lore.kernel.org/all/20230913111644.29889-2-hnagalla@ti.com/
+> 
+>  .../bindings/remoteproc/ti,k3-m4f-rproc.yaml  | 138 ++++++++++++++++++
+>  1 file changed, 138 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yaml
+> new file mode 100644
+> index 000000000000..645dbce3773b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yaml
+> @@ -0,0 +1,138 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/remoteproc/ti,k3-m4f-rproc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: TI K3 M4F processor subsystems
+> +
+> +maintainers:
+> +  - Hari Nagalla <hnagalla@ti.com>
+> +  - Mathieu Poirier <mathieu.poirier@linaro.org>
+> +
+> +description: |
+> +  Some K3 family SoCs have Arm Cortex M4F cores. AM64x is a SoC in K3
+> +  family with a M4F core. Typically safety oriented applications may use
+> +  the M4F core in isolation without an IPC. Where as some industrial and
+> +  home automation applications, may use the M4F core as a remote processor
+> +  with IPC communications.
+> +
+> +$ref: /schemas/arm/keystone/ti,k3-sci-common.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,am64-m4fss
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  "#address-cells":
+> +    const: 2
+> +
+> +  "#size-cells":
+> +    const: 2
+> +
+> +  reg:
+> +    items:
+> +      - description: IRAM internal memory region
+> +      - description: DRAM internal memory region
+> +
+> +  reg-names:
+> +    items:
+> +      - const: iram
+> +      - const: dram
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  firmware-name:
+> +    maxItems: 1
+> +    description: Name of firmware to load for the M4F core
+> +
+> +  mboxes:
+> +    description: |
 
-Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
----
- drivers/gpu/drm/panel/panel-visionox-r66451.c | 1 +
- 1 file changed, 1 insertion(+)
+Don't need '|' if no formatting.
 
-diff --git a/drivers/gpu/drm/panel/panel-visionox-r66451.c b/drivers/gpu/drm/panel/panel-visionox-r66451.c
-index fbb73464de332..493f2a6076f8d 100644
---- a/drivers/gpu/drm/panel/panel-visionox-r66451.c
-+++ b/drivers/gpu/drm/panel/panel-visionox-r66451.c
-@@ -322,6 +322,7 @@ static int visionox_r66451_probe(struct mipi_dsi_device *dsi)
- 	dsi->lanes = 4;
- 	dsi->format = MIPI_DSI_FMT_RGB888;
- 	dsi->mode_flags = MIPI_DSI_MODE_LPM | MIPI_DSI_CLOCK_NON_CONTINUOUS;
-+	ctx->panel.prepare_prev_first = true;
- 
- 	drm_panel_init(&ctx->panel, dev, &visionox_r66451_funcs, DRM_MODE_CONNECTOR_DSI);
- 	ctx->panel.backlight = visionox_r66451_create_backlight(dsi);
+> +      OMAP Mailbox specifier denoting the sub-mailbox, to be used for
+> +      communication with the remote processor. This property should match
+> +      with the sub-mailbox node used in the firmware image.
+> +    maxItems: 1
+> +
+> +  memory-region:
+> +    description: |
+> +      phandle to the reserved memory nodes to be associated with the
+> +      remoteproc device. The reserved memory nodes should be carveout nodes,
+> +      and should be defined with a "no-map" property as per the bindings in
+> +      Documentation/devicetree/bindings/reserved-memory/reserved-memory.yaml
 
----
-base-commit: 51b70ff55ed88edd19b080a524063446bcc34b62
-change-id: 20230717-visionox-r66451-prev-first-67b036160e32
+This has moved to dtschema. I'd just drop the file name.
 
-Best regards,
--- 
-Jessica Zhang <quic_jesszhan@quicinc.com>
+> +      Optional memory regions available for firmware specific purposes.
+> +    maxItems: 8
+> +    items:
+> +      - description: regions used for DMA allocations like vrings, vring buffers
+> +                     and memory dedicated to firmware's specific purposes.
+> +    additionalItems: true
 
+I think you want just:
+
+minItems: 1
+maxItems: 8
+
+> +
+> +  sram:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    maxItems: 4
+> +    items:
+> +      maxItems: 1
+> +    description: |
+> +      phandles to reserved on-chip SRAM regions. The regions should be
+> +      defined as child nodes of the respective SRAM node, and
+> +      should be defined as per the generic bindings in,
+> +      Documentation/devicetree/bindings/sram/sram.yaml
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - ti,sci
+> +  - ti,sci-dev-id
+> +  - ti,sci-proc-ids
+> +  - resets
+> +  - firmware-name
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    reserved-memory {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        mcu_m4fss_dma_memory_region: m4f-dma-memory@9cb00000 {
+> +            compatible = "shared-dma-pool";
+> +            reg = <0x00 0x9cb00000 0x00 0x100000>;
+> +            no-map;
+> +        };
+> +
+> +        mcu_m4fss_memory_region: m4f-memory@9cc00000 {
+> +            compatible = "shared-dma-pool";
+> +            reg = <0x00 0x9cc00000 0x00 0xe00000>;
+> +            no-map;
+> +        };
+> +    };
+> +
+> +    soc {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        mailbox0_cluster0: mailbox-0 {
+> +            #mbox-cells = <1>;
+> +        };
+> +
+> +        remoteproc@5000000 {
+> +            compatible = "ti,am64-m4fss";
+> +            reg = <0x00 0x5000000 0x00 0x30000>,
+> +                  <0x00 0x5040000 0x00 0x10000>;
+> +            reg-names = "iram", "dram";
+> +            ti,sci = <&dmsc>;
+> +            ti,sci-dev-id = <9>;
+> +            ti,sci-proc-ids = <0x18 0xff>;
+> +            resets = <&k3_reset 9 1>;
+> +            firmware-name = "am62-mcu-m4f0_0-fw";
+> +            mboxes = <&mailbox0_cluster0>, <&mbox_m4_0>;
+> +            memory-region = <&mcu_m4fss_dma_memory_region>,
+> +                            <&mcu_m4fss_memory_region>;
+> +            sram = <&oc_sram>;
+> +         };
+> +    };
+> -- 
+> 2.34.1
+> 
 
