@@ -1,71 +1,72 @@
-Return-Path: <linux-kernel+bounces-49484-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49485-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23AF0846AF6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:43:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 043BB846AF9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:43:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBE861F2356A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:43:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35A2F1C259F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:43:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D65BE5FDB5;
-	Fri,  2 Feb 2024 08:41:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C1CF60DF6;
+	Fri,  2 Feb 2024 08:42:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="L6utNQ+u"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="KeApL3q9"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10A1D5FDDE
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 08:41:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33CE16087F
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 08:41:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706863319; cv=none; b=tA+ftwlYHs9SIQCpGN9hGJCqcRNWHNcojAZQjyb4U9xnw+T6UpeypMws/wYNRumUs41h310YPC+HxumELDQl0g5JwCTe5H+MFdn5uvPu03osXTFRR+0rr25tGzJMnJGSpb6a1HKYXhyLnPsVBeY2lxMJhIev5WoKaU53YWMzrTw=
+	t=1706863321; cv=none; b=ScTbvDTCucpzuZKR2/0sDUdYRlPVasLgmjPF+XuEFjgrrIa08smp1o+FjCiBegfAF81qqxE03zKPerHvByhz4FVZ/G5AykFMo13WqbZYiC1LD9nTJbldrqaAc97NtfHrR06XrNfCNEKLRvPPJuY59utow145OxLVNkej8Wbv8Js=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706863319; c=relaxed/simple;
-	bh=b56D2CY5bgg4QkrVUzroUfj/0+2LJ8RI6nI9KNFOMcs=;
+	s=arc-20240116; t=1706863321; c=relaxed/simple;
+	bh=7knUzxJaOSATsmEqjBqD5f6xLSBKqcQD+sqyG+aVVfE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=g+r77DEu9aGlXtpD5yj1oMB2ZCglWYiOtrZ7arnVK5tKgyysnkEbI3Mv19XTn7ZcfOfdOhlhWPJSjtxyBvJNxBRVi2DSnPAvUwPTVpPmyQis3o+bS7ajl9P21bSV1XzHA0rD28AQTpc5gRFG/ShFjhqU3IW8SszJpc1JBSI65hs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=L6utNQ+u; arc=none smtp.client-ip=209.85.218.47
+	 MIME-Version; b=WBf8VIUoSpoFBwXDKjs8mwqS7/ll9sDojIZrANB47CUYDAXw54jlhYaGjQRppESgsazA7AMp9zEqh5Y2Gz15F8yDgTtJ/b9yxGBwhhEOVRTLNJ0kbNaix5Dl5Q5B8XLRRIrkszPCsy0T6lfOIbCiObjv1hL0DKJPXQm0LegJufM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=KeApL3q9; arc=none smtp.client-ip=209.85.208.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a35b32bd055so237183666b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 00:41:56 -0800 (PST)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-55ef0465507so2217287a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 00:41:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1706863315; x=1707468115; darn=vger.kernel.org;
+        d=tuxon.dev; s=google; t=1706863317; x=1707468117; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jzGt+E15n9CkIZ0b5NiVKi9D2q0/fFc8ybljSM9HrP0=;
-        b=L6utNQ+utTtHZ1bk0qxAIouJtFmh7SFKayws8R2qWPQMEsljKB0NJ9I7IYU/kjG359
-         12TBxX7EVyJDH4WPBNYCfhKpsc5NVRONP4VezyE3+Q3ihol1Rt8Xlnd6gPx3OesoctEw
-         6ok7wAXO7KpFwuLkjEswenn5jz09+K1ddeeE+2lmH9KHG9vrkV9Rr8J67WBks+DEg9yM
-         GUyLpnKqnND2IaUuR9Z1y1XNcrBpmKKUGtuP/kYbKR0FXXmHqnCYeVp8uVbTpCPwRmWi
-         AJYfsKsOv5FQSVrNkG2c7dOccLlXzXjgWSkr+dgxSsZXTZD2BAbDZwTq86W+raOPz58Q
-         9Dbg==
+        bh=QcPvbSGq6xN49QvaaQuCyF55moPeocRQPNZDf403Hwc=;
+        b=KeApL3q9VYwm1LbfD5KvpSf6/DSat/d8nFWKDdQE0QJldx+i7B5Gz5q4i1dTSJFcGo
+         qWJQeYzfGdGbPcf/aDnl0YVJG/HMPiGVGKt4GLQzwl6f0IJA76TgePN8iIzOt/dzVDJK
+         36M4lY3mE5QIwHfTJm4KWaA2G4BjWGRkctmDP3kk9JZcolQuq/AH6GxxwCFD8v3igvnt
+         I/IJjMLoBuZIOR0mvUYuRYxh/d+SCa5z4uLpG+fqsvnWAFZyMiYfhDPXUP5gwYqzfiWL
+         ZdldmpJX6QUEXeyev/v3GfRD1wk5uw8a6KrcltmPKzvkelttjFTXlt+aXmcpqlMXKXit
+         NT8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706863315; x=1707468115;
+        d=1e100.net; s=20230601; t=1706863317; x=1707468117;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jzGt+E15n9CkIZ0b5NiVKi9D2q0/fFc8ybljSM9HrP0=;
-        b=XWNWTHADGI4sH1QgYZ302MkX//C4XainRnjlAqVC7c3GFtKgbnHj85Ii/yK7CorJKs
-         GzvLVxZJVBeFnlwL6LNDsHBYm/S/IsSUUOfxbHpDC1YPoosAZp2BIvMNfqxXFTfoW/Rk
-         c5ivDtkWFzITq2gJBT5yY8WWgIPAYcxFnS7qV8M5XNoUY+1XP7c2rvO3pq7kc41fTly/
-         ItWCNpB6F1tN8qTrPQ3T/hVXqheKdEpB1qpSGmeeTwVLQiSkMhzr9kbzy4H1gZ1qUB+m
-         /Mxc8tGQ6DLMoEexJEyvjzgps1QN8V3Z8fwEQKmrRtakyMOyC/FUfuR6bmsfFFTE26DY
-         XdyQ==
-X-Gm-Message-State: AOJu0YyPAyKekFT3mAqPWbRgA1ixfIn6Z2CElaxqXN0JmaiNo5kyv7Es
-	pD6jb/UwJle6/X399ksOiBCANceO2ytjDuhjsAzW0tgk3cgsHSrMf57dtaxqCRs=
-X-Google-Smtp-Source: AGHT+IE/pWJ574ClsrBeTk7aSvxb2/16S2ptiIy1yUNi6iNmqVmV3gn75wwbIVLVtrT+d481lsT/jw==
-X-Received: by 2002:a17:907:86a3:b0:a31:8b26:47ee with SMTP id qa35-20020a17090786a300b00a318b2647eemr1334170ejc.55.1706863315094;
-        Fri, 02 Feb 2024 00:41:55 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWAqdCcHyQcWt8vvzEoffySZ6yJH3Lr1cgLPpEFkCZo7AA50MSHHvBLXjml76UBdsAwtcsz8MZ44TC3Z670P+HueNHtoFI4O5I8eRgQqFWAh53lHtohU1yz9uQmCdbbBqTY3HcQm6yJeCgrP1EI0S0LVc7u55iTIZONqU8Z8BwO5vcSF+GLI4Xs9WXsynqGq6BoOfMo2FaF48kNejkzz43DqSso7rUIVabixSi5nQK+YljHsTaEyrGLsSqoHeMBKtzVSnrpFlPj9spNeQ3kLA+SAWMCHZcnUqBeZlVVC0F8xXQ+Ez4YSKwIY5galpiKeJc1dMlPtiWJtYYea9Mxf0WOgwxn1d1eEl6VW9SkNkEtsWdMGjCjZhyl8b92rlKL+SMrYrijTj2yZMZM3Q==
+        bh=QcPvbSGq6xN49QvaaQuCyF55moPeocRQPNZDf403Hwc=;
+        b=qnPDntn0rkFa44y1PIDDd3WKZghvCfrxSo2EaDTGNnWCpDVJl02kaxe/wQ6O+1xr29
+         Df6rhQw14YDk/k+OcP3yvtRAjdZJSqDRXQTwM5BG2B5Ve138+xJr+D4/d6IhVeAdZ5EK
+         pfVA77ZJGslUqNwFgSB77LA/5mGXJFfN/GEC/N4o3XNJuAe2eE+x/FkObBPrP9DeLi9s
+         1Cwbp8PN5Z7JkEBauw0p0jsiKLozFxS9Gnw/SD0NcxTMruHoL7I0pCgnr00U8rHT6snt
+         fSaHbXyQIvBKK7qNjwSt19FZodtq3RygfEVL+efbpNxL36n+ga3hJ7+dPljsmcGBI/JI
+         PLGw==
+X-Forwarded-Encrypted: i=0; AJvYcCV0rTXnW99WSqb5rP9TyVeKTbQyXIQoNMCahc06YRCsylJhf/FgbcDKGSiDrFEjh8uA/3GGfJH+NSb73sMCFHWSWwzE0HEL1zlC99iF
+X-Gm-Message-State: AOJu0YyiVNpYnS1qIAzxeygjleXdpktYULVDJpAv+IMZmsuxxnfm6Nb+
+	8fit9HKIrsfHZtIWPDlgyIavWPyNGrcYmgoN4OdG1n/pg/cAYbBz/qofuWcU7Ms=
+X-Google-Smtp-Source: AGHT+IHUg5QEIwAX1/FjeYfVhxorC/bkxITWEs1POR/iprN1aR+jqEPzp5x3sn7zuKVqxHeTAbGzGQ==
+X-Received: by 2002:a17:906:3612:b0:a36:8711:f7b6 with SMTP id q18-20020a170906361200b00a368711f7b6mr3487272ejb.34.1706863317150;
+        Fri, 02 Feb 2024 00:41:57 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCV3hy6AVSB5ks+zaQtr4DnV/Kixqk03qDqPraUFFQM/1B+JC0kfHttEMn8AbQJ5kvPdDJ97oThb3cJIJ/VVvpapYCn34so1BAuL57J9nGcO5LJAwOqh3u2nOlyD6uNKspJV2A9Sym6Q7Hv2oAhC763Aj8rEdWk3z+bwsFj5cyLUgeAp7ob17Wx3HTfOFp+2+aA0I9OlMGQUe+wCG1JD39yrcqR8ORml6IlCLOBdLhxi3179FdXTflWQdHLsjAqNwnUvGav9H1/Uitt9tsosglgtP3Ldq/dtv4mOju4JgA6B4jyz/4WlBFImRs58mxB+DyZVr0DnqLSMrqHD/OXxLJWEUHjWg2g0M9nr6dcs92tgf402JOdfk1Ka66LO8yi2Y/o5AM8uOBiqxalpZtAvDlEvt91EAzNJmLOk/Wr+GM8Soqgc7Qs=
 Received: from claudiu-X670E-Pro-RS.. ([82.78.167.87])
-        by smtp.gmail.com with ESMTPSA id oz35-20020a1709077da300b00a361c1375absm631642ejc.133.2024.02.02.00.41.53
+        by smtp.gmail.com with ESMTPSA id oz35-20020a1709077da300b00a361c1375absm631642ejc.133.2024.02.02.00.41.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 00:41:54 -0800 (PST)
+        Fri, 02 Feb 2024 00:41:56 -0800 (PST)
 From: Claudiu <claudiu.beznea@tuxon.dev>
 X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
 To: s.shtylyov@omp.ru,
@@ -79,10 +80,11 @@ Cc: netdev@vger.kernel.org,
 	linux-renesas-soc@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	claudiu.beznea@tuxon.dev,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH net-next v6 03/15] net: ravb: Make reset controller support mandatory
-Date: Fri,  2 Feb 2024 10:41:24 +0200
-Message-Id: <20240202084136.3426492-4-claudiu.beznea.uj@bp.renesas.com>
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH net-next v6 04/15] net: ravb: Switch to SYSTEM_SLEEP_PM_OPS()/RUNTIME_PM_OPS() and pm_ptr()
+Date: Fri,  2 Feb 2024 10:41:25 +0200
+Message-Id: <20240202084136.3426492-5-claudiu.beznea.uj@bp.renesas.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240202084136.3426492-1-claudiu.beznea.uj@bp.renesas.com>
 References: <20240202084136.3426492-1-claudiu.beznea.uj@bp.renesas.com>
@@ -96,62 +98,88 @@ Content-Transfer-Encoding: 8bit
 
 From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-On the RZ/G3S SoC the reset controller is mandatory for the IP to work.
-The device tree binding documentation for the ravb driver specifies that
-the resets are mandatory. Based on this, make the resets mandatory also in
-driver for all ravb devices.
+SET_SYSTEM_SLEEP_PM_OPS() and SET_RUNTIME_PM_OPS() are deprecated now
+and require __maybe_unused protection against unused function warnings.
+The usage of pm_ptr() and SYSTEM_SLEEP_PM_OPS()/RUNTIME_PM_OPS() allows
+the compiler to see the functions, thus suppressing the warning. Thus
+drop the __maybe_unused markings.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
 
 Changes in v6:
 - re-arranged the tags as my b4 am/shazam placed the Rb tags
   before author's Sob tag
 
-Change in v5:
+Changes in v5:
 - none
 
 Changes in v4:
-- select RESET_CONTROLLER
-- dropped Geert Rb as I changed the patch again according to his
-  indication
-  
+- none
+
 Changes in v3:
 - none
 
 Changes in v2:
 - collected tags
 
- drivers/net/ethernet/renesas/Kconfig     | 1 +
- drivers/net/ethernet/renesas/ravb_main.c | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/renesas/Kconfig b/drivers/net/ethernet/renesas/Kconfig
-index d6136fe5c206..b03fae7a0f72 100644
---- a/drivers/net/ethernet/renesas/Kconfig
-+++ b/drivers/net/ethernet/renesas/Kconfig
-@@ -34,6 +34,7 @@ config RAVB
- 	select MII
- 	select MDIO_BITBANG
- 	select PHYLIB
-+	select RESET_CONTROLLER
- 	help
- 	  Renesas Ethernet AVB device driver.
- 
+ drivers/net/ethernet/renesas/ravb_main.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
 diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-index 3181fa73aa32..fd431f1a0b98 100644
+index fd431f1a0b98..7ced5db04f75 100644
 --- a/drivers/net/ethernet/renesas/ravb_main.c
 +++ b/drivers/net/ethernet/renesas/ravb_main.c
-@@ -2645,7 +2645,7 @@ static int ravb_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	}
+@@ -2971,7 +2971,7 @@ static int ravb_wol_restore(struct net_device *ndev)
+ 	return disable_irq_wake(priv->emac_irq);
+ }
  
--	rstc = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
-+	rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
- 	if (IS_ERR(rstc))
- 		return dev_err_probe(&pdev->dev, PTR_ERR(rstc),
- 				     "failed to get cpg reset\n");
+-static int __maybe_unused ravb_suspend(struct device *dev)
++static int ravb_suspend(struct device *dev)
+ {
+ 	struct net_device *ndev = dev_get_drvdata(dev);
+ 	struct ravb_private *priv = netdev_priv(ndev);
+@@ -2993,7 +2993,7 @@ static int __maybe_unused ravb_suspend(struct device *dev)
+ 	return ret;
+ }
+ 
+-static int __maybe_unused ravb_resume(struct device *dev)
++static int ravb_resume(struct device *dev)
+ {
+ 	struct net_device *ndev = dev_get_drvdata(dev);
+ 	struct ravb_private *priv = netdev_priv(ndev);
+@@ -3052,7 +3052,7 @@ static int __maybe_unused ravb_resume(struct device *dev)
+ 	return ret;
+ }
+ 
+-static int __maybe_unused ravb_runtime_nop(struct device *dev)
++static int ravb_runtime_nop(struct device *dev)
+ {
+ 	/* Runtime PM callback shared between ->runtime_suspend()
+ 	 * and ->runtime_resume(). Simply returns success.
+@@ -3065,8 +3065,8 @@ static int __maybe_unused ravb_runtime_nop(struct device *dev)
+ }
+ 
+ static const struct dev_pm_ops ravb_dev_pm_ops = {
+-	SET_SYSTEM_SLEEP_PM_OPS(ravb_suspend, ravb_resume)
+-	SET_RUNTIME_PM_OPS(ravb_runtime_nop, ravb_runtime_nop, NULL)
++	SYSTEM_SLEEP_PM_OPS(ravb_suspend, ravb_resume)
++	RUNTIME_PM_OPS(ravb_runtime_nop, ravb_runtime_nop, NULL)
+ };
+ 
+ static struct platform_driver ravb_driver = {
+@@ -3074,7 +3074,7 @@ static struct platform_driver ravb_driver = {
+ 	.remove_new	= ravb_remove,
+ 	.driver = {
+ 		.name	= "ravb",
+-		.pm	= &ravb_dev_pm_ops,
++		.pm	= pm_ptr(&ravb_dev_pm_ops),
+ 		.of_match_table = ravb_match_table,
+ 	},
+ };
 -- 
 2.39.2
 
