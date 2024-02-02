@@ -1,99 +1,82 @@
-Return-Path: <linux-kernel+bounces-49475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5232F846AC9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:36:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C390A846ACD
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:36:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E59BF1F264A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:36:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 784121F2797D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:36:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1021862B;
-	Fri,  2 Feb 2024 08:35:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b="iLGZnmEC"
-Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E85182DD;
+	Fri,  2 Feb 2024 08:36:44 +0000 (UTC)
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 596D6182B3
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 08:35:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.178.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAED5182BE;
+	Fri,  2 Feb 2024 08:36:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706862955; cv=none; b=A9Fnrqck860H5N+UdH0fgMlCaMJr32g8tEhdIxq4cvUYakvUJfKP7XUFOfjLe1jHq2b49jw2bi1F/KKjQzCbxDbU1c4P0mMFl+0CalLgJ6RWO76+AkgVSlMdaTF5c1E0moUth511ZfsyRg8wfbw+oJ+sqknRR4TnhTk1GJeZhjo=
+	t=1706863004; cv=none; b=la+LJPXnI/QPGQfXzqT0wNx4F/OJoHjUEnkJ7SmfwnMa5BjBjAJ+lgew8Z+F7sF73ev7MoMK6JNiPAdWhpgw+uWcyhyTy3kgvtrGsgADrKgIdPhTYfxwViHkirehIyDaB8HAlkGvYeG0lgGElLNup1x8aI79Msq1q10ZbdF3v9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706862955; c=relaxed/simple;
-	bh=8eV5u1OGTI4t/SRy8w9CenjXu8cgkdrUvYo8GQYd8m4=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZKU5mWB2BtGRUCgiCJ6PnOM8H7oJLqZ2OBARxy9STV7fIlY62+qhLLcaWNpqhuV1Buwd781tvot0eHWHH4BDUJp8aiIeZTlnujl7DcX7MRr5PdqEZbq0DX4XHiF5CtI83yEknzceHKCzYfzoihebpplnQU6XMdRAHOYSALhR3EU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b=iLGZnmEC; arc=none smtp.client-ip=205.220.178.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250811.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4126UcML019911;
-	Fri, 2 Feb 2024 08:35:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
-	 h=from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PPS06212021; bh=cifVdN/BWCjPEATbgcrIPOECirbrweYCh5LvFuV7M6o=; b=
-	iLGZnmEC6smQCTqQnxEV9nCf90FsypouoilGQgSMjIM0oLHIB5GspxqNAg+tfb4F
-	A0sNY1pG73pyKkfFffmTVz9rAbvrvzpMhHzA7zSWl4cR7ikR8qi7E/AyU2HX98Kw
-	oezpAnxE0n6+RVq45hZfitGSzy0ud0KxSWTxB+Xm1A5bSaz6kiTqrSknZi1Ck7oj
-	RCKFP9po+/NcdZplUaQHnRTiAkaPdrtfYWrQ66NXCqO0AR2gX/LO9nJG6ZBT4RaM
-	wB1fk/B7pQqMdhphgO9XNeWTIARDSZCZo8PwYF63+LgvJoW15OyOtqtjWLaXgvXE
-	/gvQY1dZEAIvSVnx2vRl8g==
-Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.wrs.com [147.11.82.252])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3w0pvg08f6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Fri, 02 Feb 2024 08:35:49 +0000 (GMT)
-Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 2 Feb 2024 00:35:49 -0800
-Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Fri, 2 Feb 2024 00:35:48 -0800
-From: Lizhi Xu <lizhi.xu@windriver.com>
-To: <syzbot+7a3d75905ea1a830dbe5@syzkaller.appspotmail.com>
-CC: <linux-kernel@vger.kernel.org>
-Subject: Re: [syzbot] [v9fs?] KASAN: slab-use-after-free Read in v9fs_stat2inode_dotl
-Date: Fri, 2 Feb 2024 16:35:46 +0800
-Message-ID: <20240202083546.2409378-1-lizhi.xu@windriver.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <00000000000055ecb906105ed669@google.com>
-References: <00000000000055ecb906105ed669@google.com>
+	s=arc-20240116; t=1706863004; c=relaxed/simple;
+	bh=eolS9kucw4GS7qQgXMbsHb/gx9RBQSE7IndU+OJ5npg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CmUaUKJbChG4TZueqfN0Di1IheY6nqWqHr1PBbcTLMFt2J4MQVrsVakSJwn15/fcIj96vEesmmwfo/V6gIZUPQUFyA6dsEJUe0EpJkoBkOBeeRZ4SZe2OjF+pOa29LFrvueaSVIsTNdns9AFv94si5b0pCmHZgzcUoArfwo+kTE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+	id 1rVp22-0090Dp-VU; Fri, 02 Feb 2024 16:36:20 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 02 Feb 2024 16:36:32 +0800
+Date: Fri, 2 Feb 2024 16:36:32 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: JiaJie Ho <jiajie.ho@starfivetech.com>
+Cc: "'David S . Miller'" <davem@davemloft.net>,
+	'Rob Herring' <robh+dt@kernel.org>,
+	'Krzysztof Kozlowski' <krzysztof.kozlowski+dt@linaro.org>,
+	'Conor Dooley' <conor+dt@kernel.org>,
+	"'linux-crypto@vger.kernel.org'" <linux-crypto@vger.kernel.org>,
+	"'devicetree@vger.kernel.org'" <devicetree@vger.kernel.org>,
+	"'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/5] crypto: starfive: Add sm3 support for JH8100
+Message-ID: <ZbypkC/y1einkKmw@gondor.apana.org.au>
+References: <20240116090135.75737-1-jiajie.ho@starfivetech.com>
+ <20240116090135.75737-5-jiajie.ho@starfivetech.com>
+ <ZbNCKrTLXmPcsrSH@gondor.apana.org.au>
+ <BJSPR01MB0659C3FE1262DF8CC7F7DA468A43A@BJSPR01MB0659.CHNPR01.prod.partner.outlook.cn>
+ <Zbsu39gZn2cGrnew@gondor.apana.org.au>
+ <SHXPR01MB0670720DD9EAB09EE8A1B13E8A43A@SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn>
+ <Zbs1xy4DesZDkFC4@gondor.apana.org.au>
+ <SHXPR01MB067059F064CD56ED58DE6F9A8A43A@SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: Q5pBYCrsXb9eoV-v_bYgVqFOXQyoU7ka
-X-Proofpoint-ORIG-GUID: Q5pBYCrsXb9eoV-v_bYgVqFOXQyoU7ka
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-02_02,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
- lowpriorityscore=0 impostorscore=0 mlxscore=0 malwarescore=0 adultscore=0
- phishscore=0 mlxlogscore=512 suspectscore=0 clxscore=1011
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402020062
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SHXPR01MB067059F064CD56ED58DE6F9A8A43A@SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn>
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+On Thu, Feb 01, 2024 at 06:40:09AM +0000, JiaJie Ho wrote:
+>
+> The object files defining these functions aren't included for CRYPTO_DEV_JH7110 in the Makefile.
+> obj-$(CONFIG_CRYPTO_DEV_JH7110) += jh7110-crypto.o
+> jh7110-crypto-objs := jh7110-cryp.o jh7110-hash.o jh7110-rsa.o jh7110-aes.o
+> 
+> obj-$(CONFIG_CRYPTO_DEV_JH8100) += jh8100-crypto.o
+> jh8100-crypto-objs := jh7110-cryp.o jh7110-hash.o jh7110-rsa.o jh7110-aes.o jh8100-sm3.o jh8100-sm4.o
 
-diff --git a/fs/9p/vfs_inode_dotl.c b/fs/9p/vfs_inode_dotl.c
-index ef9db3e03506..6ad86b604877 100644
---- a/fs/9p/vfs_inode_dotl.c
-+++ b/fs/9p/vfs_inode_dotl.c
-@@ -82,7 +82,6 @@ struct inode *v9fs_fid_iget_dotl(struct super_block *sb, struct p9_fid *fid)
- 	if (retval)
- 		goto error;
- 
--	v9fs_stat2inode_dotl(st, inode, 0);
- 	v9fs_set_netfs_context(inode);
- 	v9fs_cache_inode_get_cookie(inode);
- 	retval = v9fs_get_acl(inode, fid);
+What happens if someone enables/loads both drivers? If you want
+to share code then that needs to be split out into a third module.
+
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
