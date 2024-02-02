@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-49418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD74D846A30
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:10:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 466E3846A34
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:10:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C31B1C25391
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:10:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA3571F2AF78
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:10:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1869E3A1CF;
-	Fri,  2 Feb 2024 08:08:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C963C3FE36;
+	Fri,  2 Feb 2024 08:08:45 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E07A017C6F
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 08:08:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 675FD3FB34
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 08:08:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706861321; cv=none; b=gvubq1Iqu4A6cvR9lCO/ax6KwVNmBL/ui9NBeYlaGRibf5j/C2skHKmsjtddraj2OfMvPkGGSRcZjIICRLAgSUGRpD+Pf48f+gLqNBauYndd0q5OsB0EMPInKqGI8h1gu1MZcKaZU15nAl6+XujclV/0JvW8UldcwV1dbI6T9t4=
+	t=1706861325; cv=none; b=qNLHIaKC7R/MYlm8aM+1hwLiKzYcb/fui0UZX2Cni4iM18bw7oyIyTuADhqSyjX4ydh2dzoDZyKFhYMNbKORoSdxxe0JFzYrXETca6lOQbYnXAz782GEv/tAUjeoJfAyWHnhQNgjKVO7VEArJYvLf4gZX3GoXTJZ+V7LMt1wSI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706861321; c=relaxed/simple;
-	bh=G4QEC3AJOHW95nVtaRI4iF4ZvUTMkYQdtSKQEs0NfH0=;
+	s=arc-20240116; t=1706861325; c=relaxed/simple;
+	bh=1bnCWOCo19towQ1NBag6+0h207ceYs77u/vdiiGC3Cw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=R3u4ST4ur5bPiA3kFq3EBFIzWO9ib0loz3yL6H87NcUSPkNZqFmdAVjvtrsFTd4CTP1XL0wyo2MoeQ4dW7jqOW/dOW/MVY5aZYxx85f0AGGLoVW8+8KGSiseT/a0uxSHLAOlvE8HDJ4NeWr9pKLi8qvs7e7/7n/RoxZzP/5hqNs=
+	 MIME-Version; b=lZLqhZ9vKRZBFAOu/cNrJ0r3jPZsLOwBJUUb8tXm/LMZO/avcdf0E9i0nG5t8Tm3ELfJpr8WRcTIOvh3iaAlpFzLASkCvgSdfoTG9NbZJoeKmbsaVOlIyyjv91gMWkgRlJbE030YNdiL1ufFHX6Gn+67UTuJvf8WuYbhxkR9qaw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 911E2176A;
-	Fri,  2 Feb 2024 00:09:21 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6299E176B;
+	Fri,  2 Feb 2024 00:09:25 -0800 (PST)
 Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A536F3F5A1;
-	Fri,  2 Feb 2024 00:08:35 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 76D9A3F5A1;
+	Fri,  2 Feb 2024 00:08:39 -0800 (PST)
 From: Ryan Roberts <ryan.roberts@arm.com>
 To: Catalin Marinas <catalin.marinas@arm.com>,
 	Will Deacon <will@kernel.org>,
@@ -64,9 +64,9 @@ Cc: Ryan Roberts <ryan.roberts@arm.com>,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 06/25] powerpc/mm: Convert pte_next_pfn() to pte_advance_pfn()
-Date: Fri,  2 Feb 2024 08:07:37 +0000
-Message-Id: <20240202080756.1453939-7-ryan.roberts@arm.com>
+Subject: [PATCH v5 07/25] x86/mm: Convert pte_next_pfn() to pte_advance_pfn()
+Date: Fri,  2 Feb 2024 08:07:38 +0000
+Message-Id: <20240202080756.1453939-8-ryan.roberts@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240202080756.1453939-1-ryan.roberts@arm.com>
 References: <20240202080756.1453939-1-ryan.roberts@arm.com>
@@ -83,22 +83,31 @@ improve the API to do so and change the name.
 
 Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 ---
- arch/powerpc/mm/pgtable.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/include/asm/pgtable.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
-index 549a440ed7f6..6853cdb1290d 100644
---- a/arch/powerpc/mm/pgtable.c
-+++ b/arch/powerpc/mm/pgtable.c
-@@ -220,7 +220,7 @@ void set_ptes(struct mm_struct *mm, unsigned long addr, pte_t *ptep,
- 			break;
- 		ptep++;
- 		addr += PAGE_SIZE;
--		pte = pte_next_pfn(pte);
-+		pte = pte_advance_pfn(pte, 1);
- 	}
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index 9d077bca6a10..b60b0c897b4c 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -956,13 +956,13 @@ static inline int pte_same(pte_t a, pte_t b)
+ 	return a.pte == b.pte;
  }
  
+-static inline pte_t pte_next_pfn(pte_t pte)
++static inline pte_t pte_advance_pfn(pte_t pte, unsigned long nr)
+ {
+ 	if (__pte_needs_invert(pte_val(pte)))
+-		return __pte(pte_val(pte) - (1UL << PFN_PTE_SHIFT));
+-	return __pte(pte_val(pte) + (1UL << PFN_PTE_SHIFT));
++		return __pte(pte_val(pte) - (nr << PFN_PTE_SHIFT));
++	return __pte(pte_val(pte) + (nr << PFN_PTE_SHIFT));
+ }
+-#define pte_next_pfn	pte_next_pfn
++#define pte_advance_pfn	pte_advance_pfn
+ 
+ static inline int pte_present(pte_t a)
+ {
 -- 
 2.25.1
 
