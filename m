@@ -1,111 +1,95 @@
-Return-Path: <linux-kernel+bounces-49163-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AF568466AF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:59:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77B428466BB
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 05:04:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 558DEB2322E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 03:59:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BC1F1F26D02
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 04:04:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45AF1DDD6;
-	Fri,  2 Feb 2024 03:59:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="ThLHEQBS"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00E30F9C1;
+	Fri,  2 Feb 2024 04:03:41 +0000 (UTC)
+Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.67.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C41E8BE1;
-	Fri,  2 Feb 2024 03:59:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36062E541
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 04:03:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.132.67.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706846378; cv=none; b=ZCcgzj8q6pZgN6ICw3NLlBmPXd49JDZ13iqQK3snlmB3QwbthUFh3uiVHD5Hxm9/vWUbcunjLAGSM9wYjaKpKeJ7ghy1pY1sQ27MXE35k2hs8KUXug9AQ30GgDV6DZ9uHLfQl6Svi9hqFcibJui0Ilcx17axC6L/oAVmm8xuypo=
+	t=1706846620; cv=none; b=l2xz2iYFZ0DXxh1HPZhsFqW9lNZboyt1s0nrm+2sRcB2OjRbDGEscvRRKMPIc/Ftt1TfB5DIw/bD2cZyaaPTZUKwLn6PO6oNZPKxf4qfFw0VnEVazHMP9EfDhZtyGNTpT9Wykv+OJpL4t/EyjtMJrKEtAE3lBLHtU+hpSesr3PI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706846378; c=relaxed/simple;
-	bh=QzEhyZ/AjWdCqBZ7Tb/w4lAB4oUYf9rFeWxGrnrWYPM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=qlrzlcwumGfwfvzhF32FBNBk4ciMupw11b/TgRNQlS/Z6Imo71BTs/yxSc68MtIFwH7edOroyLq7T+j18CEH7BKYTFtKiHVUJSjRqPtgQQ4LhBn8/IwIXxNAu6vgb4pgtZUuPMAP95/rIGLobSijXIFYOGriIfttu2HV++sZp2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=ThLHEQBS; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1706846374;
-	bh=SbRycSWNgVtn3G+ZRHuFY2qcGel0XSRTKvh7++fPqNk=;
-	h=Date:From:To:Cc:Subject:From;
-	b=ThLHEQBSGvrjDDqT1Nq5WiIfYfutsC/5J/ZIoqnNdbvN8cTz7r8zOSK4L9Ejdz3mv
-	 nzufdmCzSpioqtr78jjjrd4i+bLasnVI2JJ6dDofV7vMdS4k6lP7Sb9sxSPeglHBa6
-	 9lF0dKbNjvwCvjTGBZID6eZJ5KQfM32UyFb7Hm3jeiMctYwCJ+dquRduiLY8fp1t1j
-	 +LgoskOG7nazmHLZ8VKz1FHWTdmK3oylglWsalHAEFKtIHkPyRbILukkUMkCFZLDx3
-	 oZ63EIobeMogMYpXiH3+2vks7MHaktZGJ1JmqvKez/vqTRR68dxm+3bCzoPkOLTrDK
-	 K7SFxERXbQiYw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TR28j0LNHz4wcb;
-	Fri,  2 Feb 2024 14:59:32 +1100 (AEDT)
-Date: Fri, 2 Feb 2024 14:59:32 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>
-Cc: Ashish Kalra <ashish.kalra@amd.com>, "Borislav Petkov (AMD)"
- <bp@alien8.de>, Brijesh Singh <brijesh.singh@amd.com>, Michael Roth
- <michael.roth@amd.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings after merge of the tip tree
-Message-ID: <20240202145932.31c62fd6@canb.auug.org.au>
+	s=arc-20240116; t=1706846620; c=relaxed/simple;
+	bh=+Eo2dwljZcW5uV4yjXoHiFKq3QU2j3mrhDikr579ado=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bzLwBqmBONL90StqFjLc/dhbZNRwl4VXVwzHmn8yFMwHNRxeXNeG9osccmAO4lczoICfOc03jmv8yKFUguM8e7mng4E+KX28jnpzr7Fea96c1BeX0R76xwm+nr0RW+VDerXkGbuUt3mkiLPEjCtdMfADDqfcdvElpQZy3j+I5gg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=114.132.67.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
+X-QQ-mid: bizesmtp72t1706846544tpicfqcy
+X-QQ-Originating-IP: Aby11FTS8fbag06Qy9tbwzEEl2YdZgrNCtLGverTmj8=
+Received: from localhost ( [183.209.108.228])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Fri, 02 Feb 2024 12:02:22 +0800 (CST)
+X-QQ-SSF: 01400000000000504000000A0000000
+X-QQ-FEAT: W+onFc5Tw4OrFz6v/gvbEmaS1UMOWtNxM4tOzgs1lH0rkHYguDEySueuhAkfE
+	mQFugpbemCJRHgjBaaVvk3Go474QHdo/bD5In6Cv03LAORRYTgtvxLAlygeNJ1A/bNTQhTJ
+	oSQHA0+PMEEcNqJbCTq7njG7d4qU3oa3lIm21kj4t5T+f+5NtDb8Ix2E+LgRlzuvDjTEpTO
+	4YV3/paMc7I6CTdfznQePEwm0jo2GbWROPnTNLm/pGg2VXYOKMSFUp7mYiIVJlBT0Ttm51j
+	/2xQOohz56PBwubBE+eoBa55SsfTO2q0IuC835IITfWrZKkTZh9olgM7kbkVEYx103xlT+w
+	IhiZOpqlV90I/MHBp816VkZjJrssDvQfSgQq6b1m1wSwMTw3hbCoT0gcn6jPA==
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 5419536639946482779
+From: Dawei Li <dawei.li@shingroup.cn>
+To: catalin.marinas@arm.com,
+	will@kernel.org
+Cc: mark.rutland@arm.com,
+	mcgrof@kernel.org,
+	jpoimboe@kernel.org,
+	j.granados@samsung.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	set_pte_at@outlook.com,
+	Dawei Li <dawei.li@shingroup.cn>
+Subject: [PATCH] arm64: remove unneeded BUILD_BUG_ON assertion
+Date: Fri,  2 Feb 2024 12:02:11 +0800
+Message-Id: <20240202040211.3118918-1-dawei.li@shingroup.cn>
+X-Mailer: git-send-email 2.27.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ykspLj8QIjBmiaVUFaZPk=C";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
 
---Sig_/ykspLj8QIjBmiaVUFaZPk=C
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Since commit c02433dd6de3 ("arm64: split thread_info from task stack"),
+CONFIG_THREAD_INFO_IN_TASK is enabled unconditionally for arm64. So
+remove this always-true assertion from arch_dup_task_struct.
 
-Hi all,
+Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
+---
+ arch/arm64/kernel/process.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-After merging the tip tree, today's linux-next build (htmldocs) produced
-these warnings:
+diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+index 7387b68c745b..4ae31b7af6c3 100644
+--- a/arch/arm64/kernel/process.c
++++ b/arch/arm64/kernel/process.c
+@@ -290,9 +290,6 @@ int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src)
+ 		fpsimd_preserve_current_state();
+ 	*dst = *src;
+ 
+-	/* We rely on the above assignment to initialize dst's thread_flags: */
+-	BUILD_BUG_ON(!IS_ENABLED(CONFIG_THREAD_INFO_IN_TASK));
+-
+ 	/*
+ 	 * Detach src's sve_state (if any) from dst so that it does not
+ 	 * get erroneously used or freed prematurely.  dst's copies
+-- 
+2.27.0
 
-Documentation/virt/coco/sev-guest.rst:75: WARNING: Inline emphasis start-st=
-ring without end-string.
-Documentation/virt/coco/sev-guest.rst:78: WARNING: Inline emphasis start-st=
-ring without end-string.
-Documentation/virt/coco/sev-guest.rst:81: WARNING: Inline emphasis start-st=
-ring without end-string.
-Documentation/virt/coco/sev-guest.rst:83: WARNING: Definition list ends wit=
-hout a blank line; unexpected unindent.
-
-Introduced by commit
-
-  f5db8841ebe5 ("crypto: ccp: Add the SNP_PLATFORM_STATUS command")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ykspLj8QIjBmiaVUFaZPk=C
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmW8aKQACgkQAVBC80lX
-0Gz0Ggf7BF1esHiAJIx5iZ7dQwGM5wPxsOV/1LTP7n3fxopM6apPXxPdqru24WaX
-/ZqMYtGK4DxAUDTjZ9RTpQcAquvZ7OnpD8WORlDrIMVDNYeoFrMjOg3zaVCuUqOp
-cbIA+c2fx5tMvGEXPJC9vL1HK1gHBfSlgs5XZKMqIOQ/qcdXKe5NY3RofgZapWxv
-8z+JiFRa76kjK+24DC4XLyFupQtSOgWL73sV9m5yCMpvQ+ngBPJO37RDXk28bdzs
-5LQgJxTAgiUKtLxiNRnApUAk0oTAJIizUzO9PuRU7NFteznx04z3PCDuM3NB79H3
-v77D5v0gjrXCZOfzy+LWFzvyVONszA==
-=i0Fw
------END PGP SIGNATURE-----
-
---Sig_/ykspLj8QIjBmiaVUFaZPk=C--
 
