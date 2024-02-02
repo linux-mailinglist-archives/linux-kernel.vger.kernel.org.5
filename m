@@ -1,126 +1,207 @@
-Return-Path: <linux-kernel+bounces-50232-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50234-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10296847613
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:29:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1FD7847616
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:30:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E7BF1C24FE5
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:29:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 586F328CAE1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:30:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3DE014A4DE;
-	Fri,  2 Feb 2024 17:29:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B7AF14AD1E;
+	Fri,  2 Feb 2024 17:30:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KpIgD3/9"
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="BGVzjsA6"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15C6114A4F0;
-	Fri,  2 Feb 2024 17:29:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9759514A4F2;
+	Fri,  2 Feb 2024 17:30:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706894964; cv=none; b=Xe9KVIplmuTKNPgo4xYVIaaaRxnUQ6VOZEPwzET1R//e9i5uL/OEAwGwEUAktjeVtOJK2Jrs1zzy/Bi6V7sG3d+WrPkkrT0k4giqkTl4w51Lk+Jd3DsfkJtqzj4pnDK/6q82fvpgfPA1wkIyGBPBjC3Exc63dAe1QCuJx+vk2W8=
+	t=1706895008; cv=none; b=Qm5J8OslidCGbEMYV/W6SemtlgVmyIp1u6pvVRL6Rkt8Btan5NHCEE46O2Mv9FjaD2p6Q3XOVwKsJVsLn7E+LInwVvEvx5CHTlSbRcxQnzJ+Qzb/AgXUlGpDKzocGEsVBbGHwBNJNt0tLp7KaqgdtGVYYu18Zq9pae0jNNLNG1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706894964; c=relaxed/simple;
-	bh=2bSArbKYkVHDGGCfc6i2dzgspi7zxkpn93VId/cTZCI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rrOyy8Yt0RJpbTls3kdbXRPPa9AgP2g5aCxlPZqwsEbauZ2Zh6+cmOHCnEs0MqywTEun1v6tLWRItiLGIjfsVJDNkcgesgik9vo92qSZSxX6vzB5CZqtMQnOC+UeA5ForjJ+WwTN/EHfZsHNzr6kjAGTDTYsPQZVt1W0ahBwQ/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KpIgD3/9; arc=none smtp.client-ip=209.85.215.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5dbf050821fso1621497a12.2;
-        Fri, 02 Feb 2024 09:29:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706894958; x=1707499758; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qvCQ0WG1c/2jh+URC+HLop9pZd7x9TV23fRrBN2u978=;
-        b=KpIgD3/9xwpuJbMC+NjuTeKG+sA4cbVy0+CVzxLvrIAcX+ogL0VO1FXrb00zdnbXf/
-         gAcGRsIwKYkuL0p9n/5F7zJnrzj0iuO9Ot82qKfaLCjVxWpB8GJlDVTfv4x8S8aIXBRi
-         KbXCiZt5Ixgkn2lNLyIdYWNOPwfektlbRuEw6QNECQBDLehuy4xTiKvWB/ab3QAtzu28
-         2txJE9Aw/9r6MN/oTxbeiU2uL1a2jdofDXHBdSxckzLxqjxPm9pKcNf9KAyiIza7nT1/
-         cu4OGg8PcHZHzcrdzkLMibwOGjtip4tUbTaUQyzvc1whFyDcghwO0YUm+P3RU3wKeyZP
-         N6/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706894958; x=1707499758;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qvCQ0WG1c/2jh+URC+HLop9pZd7x9TV23fRrBN2u978=;
-        b=S6EtBFwgqu8C+Gkz+m0OzarVH3VpwD0wKFtl1tGBH7qxPIbaZv7eE0gCLqylZ/1S6d
-         rVIOCefIayNMJY/Zylop/1l0iMSQKBpOFAGLTOWVBatHTWZHyKoYw2nUXHKYBEYgM2Q8
-         KsATGco01hsR9pzmuyoxh8aERb2j+Pko9p82b3QZxINkSbGhBg8EXnKh5q6lfJbSJL+3
-         K3P2dRQGhqL5l4SCOSrjnASydOOMMTPkbvxkDpQchwftboOqt4iEwZNkNVQA3g9GRAPq
-         XWuOLg0ayaF3CAX+MhlMJwqqovZvcHLm1PoYz0gWmua/2D8teydlzKHctRMS48ncdV3R
-         ktzw==
-X-Gm-Message-State: AOJu0YylceaBxzasqdc6OpOROQPgqFKDjLxUg3VY0fg2mOj6xIPwggHM
-	LVuJsXsG2Ib0lBFzYje6Yr/z4cY6uswurtLzimIoAYFaePVayuiTqaDHoR8acb8=
-X-Google-Smtp-Source: AGHT+IF1Hy3XkzGGAtkm0jQedhjZ6GjQERKVtsfsKgwdpjHWJQIL321TdSDkGSYDx3Sj0dhPMrlU0w==
-X-Received: by 2002:a05:6a20:9f88:b0:19c:8fcf:97ca with SMTP id mm8-20020a056a209f8800b0019c8fcf97camr2643818pzb.60.1706894958224;
-        Fri, 02 Feb 2024 09:29:18 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUJ4vG1yFOtAi02O14GiFWGHSPCgs0+7LQF3H0O/wL1Z7TdOEaZ3Z9/yEJjkMQ/6HCdP70hVAhowUgdye9G3ACDwL5Va469z7sU/Yn4LSQ4XGJfLPvCUEOjxN8dYXZ5I8OQ7Ax9s30lMTlWo0Cak9MQ4DRpX77rRKj1zBVGfG4nk+tI3L9faiqI9i039Pv4DAuHX53g
-Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
-        by smtp.gmail.com with ESMTPSA id y9-20020a62ce09000000b006db85b12036sm1943005pfg.137.2024.02.02.09.29.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 09:29:17 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Fri, 2 Feb 2024 07:29:16 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Helge Deller <deller@gmx.de>
-Cc: Helge Deller <deller@kernel.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
-Subject: Re: [PATCH][RFC] workqueue: Fix kernel panic on CPU hot-unplug
-Message-ID: <Zb0mbHlIud_bqftx@slm.duckdns.org>
-References: <ZbqfMR_mVLaSCj4Q@carbonx1>
- <ZbrJq3X63hIMkbl2@slm.duckdns.org>
- <8a266076-b3dc-4a39-aac4-089e2ef77da3@gmx.de>
- <ZbvM1V8CYNeds14r@slm.duckdns.org>
- <e6916a78-7872-442d-922d-31ea3920da4f@gmx.de>
- <ZbxHuS6vOc0MB7-R@slm.duckdns.org>
- <983189ec-e8fc-41ef-bad7-cfebad20ac83@gmx.de>
- <f75e7606-0904-4e97-b337-e8f74843e87d@gmx.de>
+	s=arc-20240116; t=1706895008; c=relaxed/simple;
+	bh=wqNuAPanptQME98W67sLtw8ZvWcSrR//ShLTuJ17UaQ=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=pWOkgH9RXvcY+1iVywbXDd7gwsf0QJonbSTmicom2BHlX+zHBI7QElgLO4IFJaTTuXFm0/00M5h+ggNEvxAjY7OWXL5rNg3j7R7TGLTL6UAXldpUweh4an7B6mP7qKJRtaCQrd+Z01KMcL0XJ6EuucoQ6rFwsTVJkyEGLH5quJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=BGVzjsA6; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id BF38C40007;
+	Fri,  2 Feb 2024 17:29:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706894998;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=+FIIaUhKnjjImo2lXmcI5ga52r8L4n7S83Aop/cwrI4=;
+	b=BGVzjsA6m18eDYYQlpjHqj6iSi3qWCJgfHuP4KjmyGA6vLM+OZ++ZPTPu3glA9vGETzMQ1
+	7G8YKJzMNtM5rfSxRcv9buvL8rrcQXPNAsDuGDQh0Bx4DkSxk31pDBeL5JxvhQKKTKnl8X
+	sakENjwkaxhlfotrFmIP6RR82effY+SjOkm4C2PxiLgA0zCvW7BE4Y3JVd78DdceShuk6U
+	156ZQf6fCDWMZBqd9E4WWLY8jVT1e+C0j6VoQe9HSbNA0KT7inemWVm4yZHq9H3+qaySmi
+	8FuOi2sW5X9UVk+7PQlo8Q7gjslh1N0xKmciaTrmTa30eHuA0SfBAF86wz3CYw==
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Date: Fri, 02 Feb 2024 18:29:40 +0100
+Subject: [PATCH] spi: cadence-qspi: stop calling system-wide PM helpers for
+ runtime PM
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f75e7606-0904-4e97-b337-e8f74843e87d@gmx.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240202-cdns-qspi-pm-fix-v1-1-3c8feb2bfdd8@bootlin.com>
+X-B4-Tracking: v=1; b=H4sIAIMmvWUC/x2MQQqAMAwEv1JyNlCLKPoV8aBt1BystQERpH83e
+ BmYgd0XhDKTwGBeyHSz8BlV6sqA3+e4EXJQB2ddYxXoQxS8JDGmA1d+0PWttd63oVtW0FnKpPm
+ /HKdSPpR19q9iAAAA
+To: Mark Brown <broonie@kernel.org>, Apurva Nandan <a-nandan@ti.com>, 
+ Dhruva Gole <d-gole@ti.com>
+Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: b4 0.12.4
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-Hello, Helge.
+The ->runtime_suspend() and ->runtime_resume() callbacks are not
+expected to call spi_controller_suspend() and spi_controller_resume().
+Remove calls to those in the cadence-qspi driver.
 
-On Fri, Feb 02, 2024 at 09:41:38AM +0100, Helge Deller wrote:
-> In a second step I extended your patch to print the present
-> and online CPUs too. Below is the relevant dmesg part.
-> 
-> Note, that on parisc the second CPU will be activated later in the
-> boot process, after the kernel has the inventory.
-> This I think differs vs x86, where all CPUs are available earlier
-> in the boot process.
-> ...
-> [    0.000000] XXX workqueue_init_early: possible_cpus=ffff  present=0001  online=0001
-..
-> [    0.228080] XXX workqueue_init: possible_cpus=ffff  present=0001  online=0001
-..
-> [    0.263466] XXX workqueue_init_topology: possible_cpus=ffff  present=0001  online=0001
+Those helpers have two roles currently:
+ - They stop/start the queue, including dealing with the kworker.
+ - They toggle the SPI controller SPI_CONTROLLER_SUSPENDED flag. It
+   requires acquiring ctlr->bus_lock_mutex.
 
-So, what's bothersome is that when the wq_dump.py script printing each cpu's
-pwq, it's only printing for CPU 0 and 1. The for_each_possible_cpu() drgn
-helper reads cpu_possible_mask from the kernel and iterates that, so that
-most likely indicates at some point the cpu_possible_mask becomes 0x3
-instead of the one used during boot - 0xffff, which is problematic.
+The cadence-qspi ->exec_op() implementation bumps the usage counter at
+its start. It might therefore run our ->runtime_resume()
+implementation. However, ctlr->bus_lock_mutex is acquired by
+spi_mem_exec_op() while ->exec_op() is being called.
 
-Can you please sprinkle more printks to find out whether and when the
-cpu_possible_mask changes during boot?
+Here is a brief call tree highlighting the issue:
 
-Thanks.
+spi_mem_exec_op()
+        ...
+        spi_mem_access_start()
+                mutex_lock(&ctlr->bus_lock_mutex)
 
+        cqspi_exec_mem_op()
+                pm_runtime_resume_and_get()
+                        cqspi_resume()
+                                spi_controller_resume()
+                                        mutex_lock(&ctlr->bus_lock_mutex)
+                ...
+
+        spi_mem_access_end()
+                mutex_unlock(&ctlr->bus_lock_mutex)
+        ...
+
+The fatal conclusion of this is a deadlock: we acquire a lock on each
+operation but while running the operation, we might want to runtime
+resume and acquire the same lock.
+
+Anyway, those helpers (spi_controller_{suspend,resume}) are aimed at
+system-wide suspend and resume and should NOT be called at runtime
+suspend & resume.
+
+Side note: the previous implementation had a second issue. It acquired a
+pointer to both `struct cqspi_st` and `struct spi_controller` using
+dev_get_drvdata(). Neither embed the other. This lead to memory
+corruption that was being hidden inside the big cqspi->f_pdata array on
+my setup. It was working until I tried changing the array side to its
+theorical max of 4, which lead to the discovery of this gnarly bug.
+
+Fixes: 0578a6dbfe75 ("spi: spi-cadence-quadspi: add runtime pm support")
+Fixes: 2087e85bb66e ("spi: cadence-quadspi: fix suspend-resume implementations")
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+---
+Hi,
+
+This is a draft patch highlighting a serious bug in the
+->runtime_suspend() and ->runtime_resume() implementations of
+cadence-qspi. Seeing how runtime PM and autosuspend are enabled by
+default, I believe this affects all users of the driver.
+
+I've tried my best to be exhaustive in the commit message. Have I missed
+something that could explain how the current implementations could have
+been functional in the last few revisions of the kernel?
+
+The MIPS platform at hand, used for debugging and testing, is currently
+not supported by the driver. It is the Mobileye EyeQ5 [0]. No code
+changes are required for support, only a new compatible and appropriate
+match data + flags. That will come later, with some performance-related
+patches.
+
+Conclusion being: feedback from maintainers & others that know the
+driver and subsystem would be useful to bring this forward.
+
+Thanks all,
+Théo
+
+[0]: https://lore.kernel.org/lkml/20240118155252.397947-1-gregory.clement@bootlin.com/
+---
+ drivers/spi/spi-cadence-quadspi.c | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+index 74647dfcb86c..72f80c77ee35 100644
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
+@@ -1927,24 +1927,18 @@ static void cqspi_remove(struct platform_device *pdev)
+ 	pm_runtime_disable(&pdev->dev);
+ }
+ 
+-static int cqspi_suspend(struct device *dev)
++static int cqspi_runtime_suspend(struct device *dev)
+ {
+ 	struct cqspi_st *cqspi = dev_get_drvdata(dev);
+-	struct spi_controller *host = dev_get_drvdata(dev);
+-	int ret;
+ 
+-	ret = spi_controller_suspend(host);
+ 	cqspi_controller_enable(cqspi, 0);
+-
+ 	clk_disable_unprepare(cqspi->clk);
+-
+-	return ret;
++	return 0;
+ }
+ 
+-static int cqspi_resume(struct device *dev)
++static int cqspi_runtime_resume(struct device *dev)
+ {
+ 	struct cqspi_st *cqspi = dev_get_drvdata(dev);
+-	struct spi_controller *host = dev_get_drvdata(dev);
+ 
+ 	clk_prepare_enable(cqspi->clk);
+ 	cqspi_wait_idle(cqspi);
+@@ -1953,11 +1947,11 @@ static int cqspi_resume(struct device *dev)
+ 	cqspi->current_cs = -1;
+ 	cqspi->sclk = 0;
+ 
+-	return spi_controller_resume(host);
++	return 0;
+ }
+ 
+-static DEFINE_RUNTIME_DEV_PM_OPS(cqspi_dev_pm_ops, cqspi_suspend,
+-				 cqspi_resume, NULL);
++static DEFINE_RUNTIME_DEV_PM_OPS(cqspi_dev_pm_ops, cqspi_runtime_suspend,
++				 cqspi_runtime_resume, NULL);
+ 
+ static const struct cqspi_driver_platdata cdns_qspi = {
+ 	.quirks = CQSPI_DISABLE_DAC_MODE,
+
+---
+base-commit: 27470aa9b51a348f7edfb99641b5a9004f81e3e6
+change-id: 20240202-cdns-qspi-pm-fix-29600cc6d7bf
+
+Best regards,
 -- 
-tejun
+Théo Lebrun <theo.lebrun@bootlin.com>
+
 
