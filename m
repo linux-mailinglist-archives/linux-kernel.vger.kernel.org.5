@@ -1,156 +1,186 @@
-Return-Path: <linux-kernel+bounces-50605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50606-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F761847B7F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:26:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BF54847B81
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:28:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C388D1C22A49
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:26:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 405C11C24225
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 21:28:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C719A8175C;
-	Fri,  2 Feb 2024 21:26:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1CB58175F;
+	Fri,  2 Feb 2024 21:28:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Sf3OCmb+"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="X65ntk3Y"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86D8280635
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 21:26:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9560A210E0
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 21:28:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706909180; cv=none; b=EYUfHH1fWufopw3c4llEp5fq4JWvPtslPzhJvFcdgvZAPinlwmyNys9TxiztrOyzFHlh7FC+FXK1PsGqV6hwy7YPlKCHfVGhXgVADLTwzRW5bVsKO/zuWMiO2M9xOA2Qw5fw+QmFcmetqbbsjU6WMsJP6RE2US7oU8v967tCcDE=
+	t=1706909320; cv=none; b=YTtpos7cCJigccx7bd3Up+dhqhn2Xhg5ZKUXayvwik9rEjxbUGUDxcVhF3K42JbrUX5UTd2mKNDTXbpwHHYUWZLaGc+7qtQp4plo/CR0YxJWzX+WJkFvl4KR5CGKi09rNPs677FyXC+1t3Lnz5WkXgwESBq6OnrDzjIDbNxVwYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706909180; c=relaxed/simple;
-	bh=laYlLSczKRguWCQE53OfIsdOEgJiAC/wjE7KI/+Blw8=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=ZCAAQPp0Fm5jRr4byuuZOiSjyPC+6HUXI7V5rSqZDz41C9oNfas4X6s40jg0lkyv1da6H/wJWZKe8mEFgUwp6/p4aH9klvDs+U1Ucr0uO43Et6XtdEwG/5d4gTcvfp8dJTO3Kpsbx1bPeQO8GrGWLEICqWrXtTSYcLDZZrgDwhY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Sf3OCmb+; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40fccd090c2so2538485e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 13:26:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706909176; x=1707513976; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TmB9on2Qyd1/EoIwQXgbQR2FlMtBTSI1mKzg7M+hgpA=;
-        b=Sf3OCmb+KdgFVYpXJ8PE3J4m3HVz0Hy82fxa133l+afQim2VDs0bi9/ZEqCog5EpAR
-         T6ZXYioWzIZZUd0rGuS+F77v7iv1l2NVaDsuyMyzCWnNA0AQBhr3Lnlh79g8aPTTTKhv
-         Fyrg5quTVV/Lfc5LEzuC4kJEJMr0IkmoOHVpdEGn+XC6ls8hQ1GFRxVrzcT/bczeWsit
-         KMyRiaQGOpLot6Xmyz1k72c03DZTxdmlaFxn4QOOM5FWduhPuynmbPhM2CZhvvHAwrkh
-         WYZV42M3NUFLoD5gWVzWMZnTyzaYMC87cZN/cf+FeXzr1WxT7+czsa1YjcgUjcJ8XmSK
-         CVBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706909176; x=1707513976;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=TmB9on2Qyd1/EoIwQXgbQR2FlMtBTSI1mKzg7M+hgpA=;
-        b=BqHz9Ql7XgESoSzWPSD0FU8cbJpcvkoS9ueW6GbVnAuHA8YD/YxWD7qFUz+whswhSE
-         0LksVShYY0kzzBwtcb3BpFGA4wXNSJHMzdPp+IMSRIr7RRaXFRu1BgXdhNZrsXQwJenI
-         7pk0EDfdOxBU0dlu1nNod4YPHoi/klv6e1oo8IkgSRvH6Fmg89bQd/wKoFQbVTz1bNoa
-         XZvD1niWA9YQaSFMNB/FNmf3qf94Mdf/KVVRoHpdU/IPAu49FXy2hQrhxvOx6k+mq/UV
-         mf6XuWVY9SQoEgYVnwKlkfm4XPZPrr+Jr7muWF8J19VQ5ezwIVH6QrlvuhpaeeOyQo8A
-         lrLQ==
-X-Gm-Message-State: AOJu0Yxl13U61Sk+AOY8lWHnISrjDdOBXFqugHdfAhUMyw1BkvcopWUg
-	9TcdbnvyFtEKdmVLPUYiEoLz0wWDubDPIr/NdtTAgt3N3NkMZ8wwfMbKUIqV8W8=
-X-Google-Smtp-Source: AGHT+IH5Vuk3yI8JNNLTuPlyb8tEfqYbcmNEYXqaI+D+1WXqokwDXjT4X6Qkm//NaQnNSShWgrOopQ==
-X-Received: by 2002:a05:600c:3b83:b0:40e:facf:c05b with SMTP id n3-20020a05600c3b8300b0040efacfc05bmr5969062wms.23.1706909175694;
-        Fri, 02 Feb 2024 13:26:15 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWe8738tc8wMiy3xXs1CNNQ5rM3MZmMLoYuaT2zNs+o0GN014Y5tIp62SXPsA7CKl3z8KfbeB8FqDjTJTm/HN+oXxloioKDJpJHlwv943sr8/UKCfyw6nUcbOYOxyArs5LS6GHOcmpZd73rZKKY15wpqseVswbMmEkgMRJqpx0Bj8KB9R/XufW+3kIOo7dt/jNsRSxBUrKV7JPVQugW0OeQ8ekn7gvSngZV/LESVdkR1JogStqmAgZO1TthSIIWQlWpr9jg9u4/AvVoiUCCLDXys1EjNQgnrl37wXoOS2NUjsWmjhP0like0fBWSyYzCxOktLEgWWMvWBLBVMBfYLMxUexfhNB6KrWC3ijvNpqEnzmhQgfdjHyeDfj23tlAVp50IvOjuC9HamBJ+EjUEJUxnfD0vOF2a/L9aKjACnbJ6L4VeU8v0GxhMcgM5NVp8ngEizzW16k+jjyHssayxf7OjK7wPYFSmJ9Ytp20qbYO
-Received: from [192.168.27.65] (home.beaume.starnux.net. [82.66.176.246])
-        by smtp.gmail.com with ESMTPSA id fa18-20020a05600c519200b0040f22171921sm976140wmb.3.2024.02.02.13.26.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Feb 2024 13:26:15 -0800 (PST)
-Message-ID: <4992bea2-f22b-4953-8b14-d2810d47fb8a@linaro.org>
-Date: Fri, 2 Feb 2024 22:26:12 +0100
+	s=arc-20240116; t=1706909320; c=relaxed/simple;
+	bh=XyjPHGndI+MoNCSsW1aIE1c7E7oe1Y7s3NJJa14+lOU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=FAA9ZVZOq4XVA9viWmYvrwFIq/lcALh6cmwfLeM91Qfrf9ZVLZewOtGiT5CQo2HBV/k6IKjAUoc+8JEUOvYknAdpLwH7ISwM2qIKLSjcyH+8+H5ENv6JV/oqHJGfItaCPNwOHLzMxW7oHAw0pfAKzy0hfamtRlvGD7ai+N9HWfI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=X65ntk3Y; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 412LMQDx006438;
+	Fri, 2 Feb 2024 21:28:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : reply-to : to : cc : date : in-reply-to : references : content-type
+ : mime-version : content-transfer-encoding; s=pp1;
+ bh=upT5E8WhMh+NpFZBlCi3M+42Wgyud0gZF/cyZtkROsc=;
+ b=X65ntk3YyV3vO98fo2eZRKHuwpceBC24S7RxLYGdouicoFNtw/ug4Ud93XHhgH3mpIWa
+ i4OmhblNWT2ckGAkaDMwcAz/6NYTpgVRP7GyFCvsplz9A5ibi7IAx2sjUhShPqJPgOFE
+ xLzTxzCIu/c6ZtRd9R46v/gYUeC/eB2OxlnP1m/zok6IHUVDjNgqyg2nHqg8X8nC6XyA
+ 8jFx6FEG7tYsTadWfFOqfXuVsV4wYZ1sWKCZD56yMpNyjyYH+bANrrE+LsIAOI3zZyzQ
+ xKHFD+BUTCBv2CAuBi2JHoQ+j1MkHX0IcL21YMm6qIjg+pkCpFwgWz0TanJIEfcbedqs VQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w188br3by-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Feb 2024 21:28:10 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 412LMS21006461;
+	Fri, 2 Feb 2024 21:28:10 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w188br3b8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Feb 2024 21:28:10 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 412KXu0k007168;
+	Fri, 2 Feb 2024 21:28:09 GMT
+Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vwev2wgup-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Feb 2024 21:28:09 +0000
+Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
+	by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 412LS8bq20120294
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 2 Feb 2024 21:28:08 GMT
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8A14058058;
+	Fri,  2 Feb 2024 21:28:08 +0000 (GMT)
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B440958057;
+	Fri,  2 Feb 2024 21:28:03 +0000 (GMT)
+Received: from [172.22.1.223] (unknown [9.67.185.238])
+	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Fri,  2 Feb 2024 21:28:03 +0000 (GMT)
+Message-ID: <6ccd8c7998542f1ac68514700fb9e31049a3a3c7.camel@linux.ibm.com>
+Subject: Re: [PATCH 1/2] x86/random: Retry on RDSEED failure
+From: James Bottomley <jejb@linux.ibm.com>
+Reply-To: jejb@linux.ibm.com
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "Reshetova, Elena"
+ <elena.reshetova@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov
+ <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
+        "x86@kernel.org"
+ <x86@kernel.org>,
+        Kuppuswamy Sathyanarayanan
+ <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Nakajima, Jun"
+ <jun.nakajima@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kalra,
+ Ashish" <ashish.kalra@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date: Fri, 02 Feb 2024 22:28:01 +0100
+In-Reply-To: <20240202160515.GC119530@mit.edu>
+References: 
+	<DM8PR11MB5750B861F7A105886AA5FCE4E77C2@DM8PR11MB5750.namprd11.prod.outlook.com>
+	 <CAHmME9oJvbZgT4yT9Vydc2ZQVSo3Ea65G5aVK7gFxphkV00BnQ@mail.gmail.com>
+	 <20240131140756.GB2356784@mit.edu> <Zbpc8tppxuKr-hnN@zx2c4.com>
+	 <20240131171042.GA2371371@mit.edu>
+	 <DM8PR11MB5750C7D16DC566CD1329D5A5E77C2@DM8PR11MB5750.namprd11.prod.outlook.com>
+	 <CAHmME9q-eUXnXnpaDu0VOQemOYysst7SaJ-=b8-vCFP9h50Szg@mail.gmail.com>
+	 <20240201045710.GD2356784@mit.edu>
+	 <CAHmME9oqM2a766dBK22-yKr8=2-icg=UkQzmBOF8G5Zh_Y9E9w@mail.gmail.com>
+	 <ad1a131a006bf98a506e767a01f5022358b3e291.camel@linux.ibm.com>
+	 <20240202160515.GC119530@mit.edu>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH] dt-bindings: visionox-rm69299: Update maintainers
-Content-Language: en-US, fr
-To: Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg
- <sam@ravnborg.org>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: quic_abhinavk@quicinc.com, Bjorn Andersson <quic_bjorande@quicinc.com>,
- dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240202-rm69299-maintainers-v1-1-423aa40f344f@quicinc.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20240202-rm69299-maintainers-v1-1-423aa40f344f@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: aE7ZWHsxFs8wPydSK9e4wmzWrzuxXahb
+X-Proofpoint-ORIG-GUID: qTUk9b7EiQk_odhnwMryDIq1QGThG6DZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-02_14,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 malwarescore=0 phishscore=0 mlxlogscore=999 spamscore=0
+ clxscore=1015 impostorscore=0 mlxscore=0 adultscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402020158
 
-On 02/02/2024 19:03, Jessica Zhang wrote:
-> The current maintainer (Harigovindan P) is no longer reachable through
-> the listed email. Update maintainers list to be Abhinav and I.
+On Fri, 2024-02-02 at 11:05 -0500, Theodore Ts'o wrote:
+> On Fri, Feb 02, 2024 at 04:47:11PM +0100, James Bottomley wrote:
+> > 
+> > It's a lot to quote, so I cut it, but all of your solutions assume
+> > a rdseed/rdrand failure equates to a system one but it really
+> > doesn't: in most systems there are other entropy sources.  In
+> > confidential computing it is an issue because we have no other
+> > trusted sources. The problem with picking on rdseed/rdrand is that
+> > there are bound to be older CP s somewhere that have rng generation
+> > bugs that this will
+> > expose.
 > 
-> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-> ---
->   Documentation/devicetree/bindings/display/panel/visionox,rm69299.yaml | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/display/panel/visionox,rm69299.yaml b/Documentation/devicetree/bindings/display/panel/visionox,rm69299.yaml
-> index fa745a6f4456c..7723990675158 100644
-> --- a/Documentation/devicetree/bindings/display/panel/visionox,rm69299.yaml
-> +++ b/Documentation/devicetree/bindings/display/panel/visionox,rm69299.yaml
-> @@ -7,7 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
->   title: Visionox model RM69299 Panels
->   
->   maintainers:
-> -  - Harigovindan P <harigovi@codeaurora.org>
-> +  - Abhinav Kumar <quic_abhinavk@quicinc.com>
-> +  - Jessica Zhang <quic_jesszhan@quicinc.com>
->   
->   description: |
->     This binding is for display panels using a Visionox RM692999 panel.
-> 
-> ---
-> base-commit: 51b70ff55ed88edd19b080a524063446bcc34b62
-> change-id: 20240202-rm69299-maintainers-7e069f78334f
-> 
-> Best regards,
+> I'm not sure what you're concerned about.  As far as I know, all of
+> the CPU's have some variant of Confidential Compute have some kind of
+> RDRAND-like command.  And while we're using the term RDRAND, I'd
+> extend this to any CPU architecture-level RNG instruction which can
+> return failure if it is subject to exhaustion attacks.
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+My big concern is older cpus where rdrand/rdseed don't produce useful
+entropy.  Exhaustion attacks are going to be largely against VMs not
+physical systems, so I worry about physical systems with older CPUs
+that might have rdrand issues which then trip our Confidential
+Computing checks.
+
+
+> > How about making the failure contingent on the entropy pool
+> > not having any entropy when the first random number is requested?
+> 
+> We have tried to avoid characterizing entropy sources as "valid" or
+> "invalid".  First of all, it's rarely quite so black-and-white.
+> Something which is vulnerable to someone who can spy on inter-packet
+> arrival times by having a hardware tap between the CPU and the
+> network switch, or a wireless radio right next to the device being
+> attacked, might not be easily carried out by someone who doesn't have
+> local physical access.
+> 
+> So we may be measuring various things that might or might not have
+> "entropy".  In the case of Confidential Compute, we have declared
+> that none of those other sources constitute "entropy".  But that's
+> not a decision that can be made by the computer, or at least until
+> we've tracked the AGI problem.  (At which point, we might have other
+> problems --- "I'm sorry, I'm afraid I can't do that.")
+
+The signal for rdseed failing is fairly clear, so if the node has other
+entropy sources, it should continue otherwise it should signal failure.
+Figuring out how a confidential computing environment signals that
+failure is TBD.
+
+James
+
 
