@@ -1,162 +1,142 @@
-Return-Path: <linux-kernel+bounces-49408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49409-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76136846A1C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:04:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25A3B846A1F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:05:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E3C9290D65
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:04:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD4F81F2ABED
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 08:05:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8F1817C77;
-	Fri,  2 Feb 2024 08:04:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCA84182AE;
+	Fri,  2 Feb 2024 08:05:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UBttLn8v"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="YyVcB4IH"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AC9E17C64;
-	Fri,  2 Feb 2024 08:04:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31636182AB;
+	Fri,  2 Feb 2024 08:05:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706861069; cv=none; b=YnJEciWZYtPlGXhe6B7MESYHMYb/NkKZuLS0jxOer/fAkNDt1dI3JXTqXeTKZsBKyAJ/AamT+Tt+W2epsMuJ6RlldHNM4gAngSR9SC778gs7IFFYnWK9OLmUrVpkA2pjwkmTVUxHzh7hHi2aEg0urx0ro2ni7eaeGjEWjweGZ1g=
+	t=1706861107; cv=none; b=rfweHxi2MfJPFQ560UbMk876sUZHjSGfSBan79yM0Dj9CQcR3uiNlghAbq9J+mIPRjC1olHUM2pvgAluencT59icY4GskcCEw8YJtzLmGEy7VHL32rDuiYvfX35VQTLU+k76mHEvVPoGVdroE9/IRjRvLFDRDt8B4DNqIEdXJtE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706861069; c=relaxed/simple;
-	bh=vn1Uy7iLyuBoZC2jtSRfxjt5sl8GxyEeXddLMX+BM7s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kZ5nriDFjG67VlWjUede0ETq/wCXe2dpiWR16Fk1DGrcn1Q5YoIzOoCmBbyeOQMJcRQp5wkzfD4VzPIVRZDMljCRNRod8XQsEzu0D5pTCkKXyV+dbHF29ykiut18KioHoLwZtkdJ4eo9Hrn/Frgge1jz5VxQeVIDKMV8ENyY3kU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UBttLn8v; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706861068; x=1738397068;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=vn1Uy7iLyuBoZC2jtSRfxjt5sl8GxyEeXddLMX+BM7s=;
-  b=UBttLn8vRLNhj50s9wsLyFXzIlmT3nI0a4IuVsERvdkPluq4a9bED7T1
-   YQMqaCrK/B1Wf+nYcZjI+qIeJFsAClqxmDBtjIl+TGW5sjOoQ5I+50wPI
-   i6yNYAD5c65QeWbr1YrFWK/oCqbzec8F/HLS3shXdY7dYGwY36+keriCV
-   Dh8khYnM+XUvXW2dm+VLVXeVqteKKarzkuxLTBvXCam2nAw+5mu5i9vUx
-   DDbMVsysWaddeOdKuCUTZI1b67BSYMpvbzMiD+ADOo8sHPGZ2tybVK0TO
-   2q+emsFgl7txjVOeGEVyX0xQyMlVSiJnU5VipTnztuoV+NWVKkIKwHx5e
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="3959696"
-X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
-   d="scan'208";a="3959696"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 00:04:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="962145227"
-X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
-   d="scan'208";a="962145227"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.93.33.17]) ([10.93.33.17])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 00:04:22 -0800
-Message-ID: <2e174040-933d-4f54-b5fb-380411b53355@intel.com>
-Date: Fri, 2 Feb 2024 16:04:17 +0800
+	s=arc-20240116; t=1706861107; c=relaxed/simple;
+	bh=7mI6NlFwieNOHDQjAZw0IK3HCmfxxR/i9TASPTBpMNI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=I0F3MwYS75H+UIIQlTbfo35mVyaMxDEUc+RruRPqFAMy4W1g0HByfte7pqczA2a9Z3lYPNK+9hmoZfDG571XhD6x3B7eW/ot/2mcbHtsAgvO9YiAd7PY7pC0uyKdv8oVx2UipF0y87MEOTZWi5vmy1tPLNWZdyLHz7imAg1CNgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=YyVcB4IH; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4127Fgh2019667;
+	Fri, 2 Feb 2024 08:05:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Ty+Qj9A+Kq0SxNjkhWAFPF3gpCT1JtB+qJfAJBgIQHQ=; b=Yy
+	VcB4IHlabDk0xIPnMovROen01itCpzC6qqTtX/wh1rXSBNV5uc13I0dowGpyFg7r
+	LymJ/P+DM9mnfpL3KX86UJ1KSywKw5LoL03hh78VyBAiHG+01K0NFG/OJ6qPMitc
+	HtSQ6X+En/dalQoRokcJ0XFXsCtfURUlyO0WzSJ4HmpLQALoj4iRkOPfs2vU0J8x
+	OaX9JZUyq/TUZCwNVxNKU2fH9jqu5BsiNzcKt7PowuByRvREBXQrFW69V1kl11hK
+	wDYDE7611g05wS06gtoB1lBrFqiGIqDGmMtq/n6Ozc2UHHhSFhcZkQonsUs8VNjw
+	RxSj5+ffyn/DGZ6VxuYA==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w0pu4gtcr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Feb 2024 08:05:00 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41284x2W022320
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 2 Feb 2024 08:04:59 GMT
+Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 2 Feb
+ 2024 00:04:57 -0800
+Message-ID: <9773d189-c896-d5c5-804c-e086c24987b4@quicinc.com>
+Date: Fri, 2 Feb 2024 13:34:54 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v18 013/121] KVM: TDX: Add TDX "architectural" error codes
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1] soc: qcom: mdt_loader: Add Upperbounds check for
+ program header access
 Content-Language: en-US
-To: isaku.yamahata@intel.com, kvm@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
- Sean Christopherson <sean.j.christopherson@intel.com>
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <212f22ed28e43c016607e3c420d7d98910878007.1705965634.git.isaku.yamahata@intel.com>
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <212f22ed28e43c016607e3c420d7d98910878007.1705965634.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Auditya Bhattaram <quic_audityab@quicinc.com>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240202063919.23780-1-quic_audityab@quicinc.com>
+From: Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <20240202063919.23780-1-quic_audityab@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: yjVRKeSGM5qYyVmq9XFV6vA_8F2o4Beo
+X-Proofpoint-ORIG-GUID: yjVRKeSGM5qYyVmq9XFV6vA_8F2o4Beo
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-02_02,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 mlxscore=0 malwarescore=0 phishscore=0 lowpriorityscore=0
+ mlxlogscore=999 clxscore=1015 bulkscore=0 spamscore=0 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402020057
 
-On 1/23/2024 7:52 AM, isaku.yamahata@intel.com wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
+
+This should be v2., first time patches is always counted as v1
+
+On 2/2/2024 12:09 PM, Auditya Bhattaram wrote:
+> hash_index is evaluated by looping phdrs till QCOM_MDT_TYPE_HASH
+> is found. Add an upperbound check to phdrs to access within elf size.
 > 
-> Add error codes for the TDX SEAMCALLs both for TDX VMM side for TDH
-> SEAMCALL and TDX guest side for TDG.VP.VMCALL.  KVM issues the TDX
-> SEAMCALLs and checks its error code.  KVM handles hypercall from the TDX
-> guest and may return an error.  So error code for the TDX guest is also
-> needed.
-> 
-> TDX SEAMCALL uses bits 31:0 to return more information, so these error
-> codes will only exactly match RAX[63:32].  Error codes for TDG.VP.VMCALL is
-> defined by TDX Guest-Host-Communication interface spec.
-> 
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+> Signed-off-by: Auditya Bhattaram <quic_audityab@quicinc.com> > ---
+> Added error prints for Invalid access.
+> Link for previous discussion https://lore.kernel.org/linux-arm-msm/5d7a3b97-d840-4863-91a0-32c1d8e7532f@linaro.org/T/#t
+
+Would be better if you take reference from other patches,
+
+Like above can be done as,
+
+Changes in v2:
+   -  ...
+   -  ,,,
 > ---
->   arch/x86/kvm/vmx/tdx_errno.h | 43 ++++++++++++++++++++++++++++++++++++
->   1 file changed, 43 insertions(+)
->   create mode 100644 arch/x86/kvm/vmx/tdx_errno.h
+>   drivers/soc/qcom/mdt_loader.c | 5 +++++
+>   1 file changed, 5 insertions(+)
 > 
-> diff --git a/arch/x86/kvm/vmx/tdx_errno.h b/arch/x86/kvm/vmx/tdx_errno.h
-> new file mode 100644
-> index 000000000000..7f96696b8e7c
-> --- /dev/null
-> +++ b/arch/x86/kvm/vmx/tdx_errno.h
-> @@ -0,0 +1,43 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/* architectural status code for SEAMCALL */
+> diff --git a/drivers/soc/qcom/mdt_loader.c b/drivers/soc/qcom/mdt_loader.c
+> index 6f177e46fa0f..61e2377cc5c3 100644
+> --- a/drivers/soc/qcom/mdt_loader.c
+> +++ b/drivers/soc/qcom/mdt_loader.c
+> @@ -145,6 +145,11 @@ void *qcom_mdt_read_metadata(const struct firmware *fw, size_t *data_len,
+>   	if (phdrs[0].p_type == PT_LOAD)
+>   		return ERR_PTR(-EINVAL);
+> 
+> +	if (((size_t)(phdrs + ehdr->e_phnum)) > ((size_t)ehdr + fw->size)) {
+> +		dev_err(dev, "Invalid phdrs access: %s\n", fw_name);
+> +		return ERR_PTR(-EINVAL);
+> +	}
 > +
-> +#ifndef __KVM_X86_TDX_ERRNO_H
-> +#define __KVM_X86_TDX_ERRNO_H
-> +
-> +#define TDX_SEAMCALL_STATUS_MASK		0xFFFFFFFF00000000ULL
-> +
-> +/*
-> + * TDX SEAMCALL Status Codes (returned in RAX)
-> + */
-> +#define TDX_NON_RECOVERABLE_VCPU		0x4000000100000000ULL
-> +#define TDX_INTERRUPTED_RESUMABLE		0x8000000300000000ULL
-> +#define TDX_OPERAND_INVALID			0xC000010000000000ULL
-> +#define TDX_OPERAND_BUSY			0x8000020000000000ULL
-> +#define TDX_PREVIOUS_TLB_EPOCH_BUSY		0x8000020100000000ULL
-> +#define TDX_VCPU_NOT_ASSOCIATED			0x8000070200000000ULL
-> +#define TDX_KEY_GENERATION_FAILED		0x8000080000000000ULL
-> +#define TDX_KEY_STATE_INCORRECT			0xC000081100000000ULL
-> +#define TDX_KEY_CONFIGURED			0x0000081500000000ULL
-> +#define TDX_NO_HKID_READY_TO_WBCACHE		0x0000082100000000ULL
-> +#define TDX_FLUSHVP_NOT_DONE			0x8000082400000000ULL
-> +#define TDX_EPT_WALK_FAILED			0xC0000B0000000000ULL
-> +#define TDX_EPT_ENTRY_NOT_FREE			0xC0000B0200000000ULL
-> +#define TDX_EPT_ENTRY_STATE_INCORRECT		0xC0000B0D00000000ULL
-> +
-> +/*
-> + * TDG.VP.VMCALL Status Codes (returned in R10)
-> + */
-> +#define TDG_VP_VMCALL_SUCCESS			0x0000000000000000ULL
-> +#define TDG_VP_VMCALL_RETRY			0x0000000000000001ULL
-> +#define TDG_VP_VMCALL_INVALID_OPERAND		0x8000000000000000ULL
-> +#define TDG_VP_VMCALL_TDREPORT_FAILED		0x8000000000000001ULL
 
-Same to previous Patch:
+Should this not be marked for stable kernel ? as without this it could 
+be accessing beyond fw_size for uncertain scenario.
 
-These should be put in some shared header file, because they are shared 
-with guest TD code.
+-Mukesh
 
-Other than it,
-
-Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
-
-> +/*
-> + * TDX module operand ID, appears in 31:0 part of error code as
-> + * detail information
-> + */
-> +#define TDX_OPERAND_ID_RCX			0x01
-> +#define TDX_OPERAND_ID_SEPT			0x92
-> +#define TDX_OPERAND_ID_TD_EPOCH			0xa9
-> +
-> +#endif /* __KVM_X86_TDX_ERRNO_H */
-
+>   	for (i = 1; i < ehdr->e_phnum; i++) {
+>   		if ((phdrs[i].p_flags & QCOM_MDT_TYPE_MASK) == QCOM_MDT_TYPE_HASH) {
+>   			hash_segment = i;
+> --
+> 2.17.1
+> 
+> 
 
