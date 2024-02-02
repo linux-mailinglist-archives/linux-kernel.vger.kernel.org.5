@@ -1,90 +1,114 @@
-Return-Path: <linux-kernel+bounces-49071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49072-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C0B0846584
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:44:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1BE2846585
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:46:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 756E01C25143
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:44:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D559F1C24D56
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:46:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 655A18BE2;
-	Fri,  2 Feb 2024 01:43:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="1meNNi5A"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 037CD6ABB;
+	Fri,  2 Feb 2024 01:46:22 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30B3E8824;
-	Fri,  2 Feb 2024 01:43:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A2D4BA2C;
+	Fri,  2 Feb 2024 01:46:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706838229; cv=none; b=LqBsEl5RemRfySKDswLVF2kFhxUvnwnUKLJ28hyhTRMR4ny7AUB4KYA5sUdFPmel/m76KYhPyJzBkDPyIEA/ikIAzNrGfyEa0nO9jAL2+y/ETkSQoZLC9c8iFMlLagTnB16s2qQX5FU0KgYVeMeNqNJbSSlJ/WCn3TtNo8bEIAY=
+	t=1706838381; cv=none; b=B/JrEC0XpRf2TQareOA1zXf9fsaEgon4MHQk75sqHqzAJ3M6j4HfOdOhuy9rVs+ga23hCpDzhlWLD32c8ANpwInKKD+dnMHIoj/ErnujbDOKFWu9NzTlwmJChbr1XAMRDSZXqLr8bs57kqoVlkjkJdzRxoE52oAzfODvxFU1RWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706838229; c=relaxed/simple;
-	bh=jF7cqlsOLjqdYzWUfrDIRz33gJa1OHskriEj+F8t68s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VK2wUXyvCFW4OtOfuceerGaREafzfqF3YZ3//mlq6KEMLv1wqRmZtlQjtbrP4/qIMXnSWbVSxSmh0d1sDWz8AuJh16hB6omUCa9BZzKqNkxlujxxEy125yT4wzSRwjjw+dd/2tQv8mTdRMI/w5lS0uH5PfYDrN1XhLG64gIGKs0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=1meNNi5A; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=bUBDi/m6vanSfN7M1l7jMTNcJUjKwJryfyB1BXudoSg=; b=1meNNi5AWyupGCEBpPG/qvE0jH
-	qHT2flxVKXduJRVNGc1gJPVEMWbHDwndfrIv0O1PeGOqnnlYHAPZvjLWHN+041RvQJD61XXP2H4ob
-	z0KuDS3B5b0uBdNL4Caud36vx4KSxonWgw4GwgG0ciql4H59CS3VGJ10jEwgCgA4o5KY=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rViaf-006jmC-Ku; Fri, 02 Feb 2024 02:43:37 +0100
-Date: Fri, 2 Feb 2024 02:43:37 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org
-Subject: Re: [net-next PATCH v5 9/9] net: phy: qca807x: add support for
- configurable LED
-Message-ID: <46085abf-8e82-4fd9-95b8-95cbfde6e5c2@lunn.ch>
-References: <20240201151747.7524-1-ansuelsmth@gmail.com>
- <20240201151747.7524-10-ansuelsmth@gmail.com>
+	s=arc-20240116; t=1706838381; c=relaxed/simple;
+	bh=zQL/rMBDuoXBWrWx5GoEV+Lp22Ug6QFEu8XoV5dB1T0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=hNCnw6Y1xilQE01qioVhjAQmkKmjIQMe0hDqyMOnHH4YYplatcWKjuNQJv/7Q64zsQ0gt2DEly05vMtYdJjog0MjxZPoxtgMKYU4ynNmD9DuBoPOgL3oUdSmmn7fTpJ4OKCMafNTvUIVi+1d87RTJ3ITwBKuFX1bPk9HCCHzkDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62967C433C7;
+	Fri,  2 Feb 2024 01:46:20 +0000 (UTC)
+Date: Thu, 1 Feb 2024 20:46:37 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc: linux-trace-kernel@vger.kernel.org, Masami Hiramatsu
+ <mhiramat@kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Pengutronix Kernel Team
+ <kernel@pengutronix.de>
+Subject: Re: Boot-time dumping of ftrace fuctiongraph buffer
+Message-ID: <20240201204637.2afab2db@gandalf.local.home>
+In-Reply-To: <d33e5271-219d-4b8e-be5a-8903219d7fd6@pengutronix.de>
+References: <d33e5271-219d-4b8e-be5a-8903219d7fd6@pengutronix.de>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240201151747.7524-10-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-> +
-> +			phydev->drv->led_brightness_set = NULL;
-> +			phydev->drv->led_blink_set = NULL;
-> +			phydev->drv->led_hw_is_supported = NULL;
-> +			phydev->drv->led_hw_control_set = NULL;
-> +			phydev->drv->led_hw_control_get = NULL;
+On Thu, 1 Feb 2024 13:21:37 +0100
+Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
 
-I don't see how that works. You have multiple PHYs using this
-driver. Some might have LEDs, some might have GPOs. But if you modify
-the driver structure like this, you prevent all PHYs from having LEDs,
-and maybe cause a Opps if a PHY device has already registered its
-LEDs?
+> Hello,
+> 
+> I semi-regularly debug probe failures. For drivers that use dev_err_probe
+> rigorously, this is a quick matter: The probe function records a deferral reason
+> and if the deferral persists, deferred_probe_timeout_work_func() will print
+> the collected reasons, even if PID 1 is never started.
+> 
+> For drivers that don't call dev_err_probe, I find myself sometimes doing printf
+> debugging inside the probe function.
 
-	Andrew
+Is the driver built in or started after init?
+
+> 
+> I would like to replace this with the function graph tracer:
+> 
+>   - record the probe function, configured over kernel command line
+>     (The device indefinitely deferring probe is printed to the console,
+>      so I know what I am looking for on the next boot)
+> 
+>   - Dump the function graph trace
+> 
+>   - See if the last call before (non-devm) cleanup is getting a clock, a GPIO,
+>     a regulator or w/e.
+> 
+> For this to be maximally useful, I need to configure this not only at boot-time,
+> but also dump the ftrace buffer at boot time. Probe deferral can hinder the kernel from
+> calling init and providing a shell, where I could read /sys/kernel/tracing/trace.
+
+OK so the driver is built in.
+
+> 
+> I found following two mechanisms that looked relevant, but seem not to
+> do exactly what I want:
+> 
+>   - tp_printk: seems to be related to trace points only and not usable
+>     for the function graph output
+> 
+>   - dump_on_oops: I don't get an Oops if probe deferral times out, but maybe
+>     one could patch the kernel to check a oops_on_probe_deferral or dump_on_probe_deferral
+>     kernel command line parameter in deferred_probe_timeout_work_func()?
+> 
+> 
+> Is there existing support that I am missing? Any input on whether this
+> would be a welcome feature to have?
+
+Well you can start function_graph on the kernel command line and event
+filter on a give function
+
+ ftrace=function_graph function_graph_filter=probe_func
+
+You can add your own ftrace_dump() on some kind of detected error and put
+that in the kernel command line. For example RCU has:
+
+  rcupdate.rcu_cpu_stall_ftrace_dump=
+
+Which will do a ftrace dump when a RCU stall is triggered.
+
+-- Steve
+
 
