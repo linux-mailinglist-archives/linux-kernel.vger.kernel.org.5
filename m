@@ -1,140 +1,137 @@
-Return-Path: <linux-kernel+bounces-49044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF55F84653C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:04:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8167D84653E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 02:04:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D21DA1C23885
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:04:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B346F1C23F10
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 01:04:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 166EEBA25;
-	Fri,  2 Feb 2024 01:04:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59A86DF5D;
+	Fri,  2 Feb 2024 01:04:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KNn8rv00"
-Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="NgO5f9Oe";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="q+Tf598b"
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB6FEAD47
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 01:04:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4008D308;
+	Fri,  2 Feb 2024 01:04:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.29
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706835845; cv=none; b=pyICJCFwWVuKsaPFxphveqK8Xvwr/izDSUnRPpyImJMHiHpAygwroa277WfdWov8/N890+Xc0woGmwGG5+Bxl696381xNGaBtqS3/RlsNasyNKCxtNsKWOlzi17ZSBPftXHNOwxG9J2aB5Y0u4zLFyXPKhCeSmokUbE3s5Ojmy8=
+	t=1706835878; cv=none; b=OFdj/xmGS2yLYsSmx6kFVZVZ66o64j1H6bbW2og8bQySGNSwJgFjyojMNgakTRzGqVCmGkRotaQjRezk8nhRhSyRPUbDP/1F9LILkqh6kRxHg1iplPMfnAJRb6x2tt6yC0dcJh+cZ/AqJs92i8hFAS0LtB4oGT0VLnNrEE8P78c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706835845; c=relaxed/simple;
-	bh=a5Nlr4RQBP77XBehSgB40yGoPgT0XBNvTDdGKSSmOJU=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=ThR9Ex9lMhBW0XT0QfPnCC8VEZxdlIv4NBRSg+TcflZneBCfiefE2T+L2hVwoR3RGWTKGS2WQNDVCIHvLJS5uehymv7ci+tqV58ned/YBJuPhNDsl+aRGrNlwyLu8wzLNqP6Gc2gasQDr6Kh6eOsxV15Q2RzCxPmimUqXTUvGoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KNn8rv00; arc=none smtp.client-ip=209.85.210.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6de2116e7c2so1491312b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Feb 2024 17:04:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706835843; x=1707440643; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XbgnQJwz1vgU0uxdyyb22RvKZPgmTtLqOjZGD/vUXYI=;
-        b=KNn8rv00/YbCPMQYf8pXkiqgTRPKcza1JQrgViry+AqE6ir1VNJdZjqufV1wbQr8c4
-         ZQ8lrw5u9fWcVvfoNVKXPO7dsQS3OADXZBrh1N4Umnx+xC1A3f6C2SMC5YLbghWxRfi0
-         1C5Tzp8U6i5+BcZZbm8hgarbMUe2ALhi4zKkZjtYTvuxnKJpB6zPfYiKMgHHaeoqzcww
-         6HOL/KT8fahJOg3DtXCYbXs71C1XRcxrclPCKw86ArlZn8YirrLT3dUBApylAlEZSqGf
-         lEzVbjMoHW3Y5bvUPYYZfd9MKTRieqmn9AAUBI1Dj122uVJzXo6RbfGjFtMhY7zkEFgJ
-         knvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706835843; x=1707440643;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XbgnQJwz1vgU0uxdyyb22RvKZPgmTtLqOjZGD/vUXYI=;
-        b=CLqkaTBT3eL2LcqZ2HjmqylV+YFoNewIss/8NWz6D+n3S4ZZauT1C0QzttPiBbZKCZ
-         1helowLJhmLJZ9D2Z3VdCrvFGAxqDDysijSZDfQyNBFM/Gd2GS+Ghh1D8lSvw+jEUxdD
-         p3ppxUBI8j1pAefL3FU26Sz0jLmybEMSckOysZnqHLV9IWFBQedzbi9W86YWkygGFOwT
-         BirwB9i6xJu7ikH806cBfqVDmrSAkzsbZUV6Kd4OeBpgH6+ZhX+Ekr4lFCLq1EMYIYw9
-         csEMqKhivJD0V0O6OfEXkG0Q3Grxg530LzymeleaZNDKlQoy9eHdJTy0GhFXsImk7KeZ
-         kN4Q==
-X-Gm-Message-State: AOJu0YzFbiaTS1Q2eeaXYkgd2s0Pg6ZMs30xZLe/td1uwqpPCe9AOE9U
-	72da16COGQsDQtlI78NCTJuglZ7f94N4lk6ttbOU3rMlrut99bdK6xMCS5CLrIUxSS+0oZV8pcb
-	dkZdgeo5twl/SuV2T+g==
-X-Google-Smtp-Source: AGHT+IE/JxLkSou/VDo5U1rx0tT391GDl15vJuyWnddaQq63I5wd1sjbiRacqQYzWmPRXa7XRZALYt4dElsYU/6X
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6a00:1c9b:b0:6df:e31e:e995 with
- SMTP id y27-20020a056a001c9b00b006dfe31ee995mr274511pfw.6.1706835842950; Thu,
- 01 Feb 2024 17:04:02 -0800 (PST)
-Date: Fri, 2 Feb 2024 01:04:01 +0000
-In-Reply-To: <20240201181240.GE321148@cmpxchg.org>
+	s=arc-20240116; t=1706835878; c=relaxed/simple;
+	bh=VsGcaBj2+DVUKNNWLzh2v7rvDdhx1Vhnha3Ztw0+ZGs=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=mBaroJ2MWLCnmb4QtWxqXYRe5pOENtIw6ORpP7sM/rdANK3e4xDJdfNBohPboeBv4zZik+zge9kjX3V3WGNPj6xkKsi+SRVY1hdwnWljGo7zrcO+S/SW3ddrhPGPUKI1e7vvKqAWjf62IVwVuPEhixD15wKl3XQ4LPcJ37HMgJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=NgO5f9Oe; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=q+Tf598b; arc=none smtp.client-ip=66.111.4.29
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.nyi.internal (Postfix) with ESMTP id 91ED45C015E;
+	Thu,  1 Feb 2024 20:04:34 -0500 (EST)
+Received: from imap44 ([10.202.2.94])
+  by compute3.internal (MEProxy); Thu, 01 Feb 2024 20:04:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm3; t=1706835874; x=
+	1706922274; bh=GIGLcKpOqgSFtDtF20FwBeWhNJabIQLZaNxjZseleos=; b=N
+	gO5f9Oe/8mxQCf8Zaban9cEk62KEDE7Aske1nUe/zUJDN/kg5YY/akgCaQwb4O0j
+	m9eWvSBpJEh9zedXV9+sI2OLs2BFFYyXX0tVS29dJk0MbEM45Aybhl30oZ3MwlaC
+	2Kb0bcn81LxR6SgsiFMHeRbJQm2IsK08WrU1mbxyVKL566Ibswbnlde5qMqw8Vjo
+	IjQJoRTYFtmWcIV88fy5yor0660awbAwC77BDfcx8xrizgK0IiFsJzvZiQo5MxuX
+	1WV+uVopvCazyzzIynRV5jsP21QHxIzCp84Otx/YTnSk/ZbTVJoigVzHToATQrMd
+	nmCNGs9mR8lC7GEQjppuA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706835874; x=1706922274; bh=GIGLcKpOqgSFtDtF20FwBeWhNJab
+	IQLZaNxjZseleos=; b=q+Tf598bVqDN5xHd7UVg+Z1/t+B0VNNJVf+9Yo3uA3Es
+	vqox50GNDEwYsGowvQTwvgaR/67lOBEDUuYXlIEcH4UHeKie/scQo2HuN5y4HLh2
+	4zXRa1xv6jMmlB9bttvcvx7QruaTfIbJGdewdREUWzuy8XOEdGEaK1Nxk/RoS8zy
+	5LAMEnuaAzrUbyLEfYYewCYNxEwTu5M/xVlb4p9lo3GZdufv0iq+rf9CY9V4bKXo
+	p5DbadGWrwJ4rYoBMbH2t8KmgQC8/hFrQO4DUap2dCH3IViBMvKOYSrz+DtMkE7n
+	5RvZI0zv0ozEaQcvDe57jTSifHNXGRDkoDHPYx65EA==
+X-ME-Sender: <xms:oj-8Zbm73Bl162_5SNlPYUNFveGZch85U5sKvabU8v-vL5T-w4ENIg>
+    <xme:oj-8Ze0_Jhh9dGdfbhQ_b2-l9Kv6l4PPdgHsQAx_hHbWilWkvFSYyelUKuR48WL-Q
+    WwW53Y48avL23scQqw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeduvddgvdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfvfgr
+    khgrshhhihcuufgrkhgrmhhothhofdcuoehoqdhtrghkrghshhhisehsrghkrghmohgttg
+    hhihdrjhhpqeenucggtffrrghtthgvrhhnpeelfedvveevveetjeeikedtgefghfeigfek
+    leefkeekieehiedviefghfeltdehkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
+    grmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:oj-8ZRp-lBFUwq61DvI8xrIPOiJjE7Ek5mZ76tYzsqLCUglYt4dsDg>
+    <xmx:oj-8ZTl5YPY8SbzEu4O-eyxb3JtoWDdgWNz6KSrD4MXeS_9K1mcsbg>
+    <xmx:oj-8ZZ2XzP4Wb0SdKrBQyxH1gHee9rtSoSTc314TTsGX8bCmDkQgXQ>
+    <xmx:oj-8Za8STrUwsPTQwtL19_3v2RU978ns-6Ykk0PD3kj7MOyObstZSQ>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 363CB36A0076; Thu,  1 Feb 2024 20:04:34 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240201-b4-zswap-invalidate-entry-v1-0-56ed496b6e55@bytedance.com>
- <20240201-b4-zswap-invalidate-entry-v1-5-56ed496b6e55@bytedance.com> <20240201181240.GE321148@cmpxchg.org>
-Message-ID: <Zbw_gZIyEHquaxho@google.com>
-Subject: Re: [PATCH 5/6] mm/zswap: only support zswap_exclusive_loads_enabled
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Chengming Zhou <zhouchengming@bytedance.com>, Nhat Pham <nphamcs@gmail.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Message-Id: <96ef2869-ad72-478f-aa09-691752ce5b81@app.fastmail.com>
+In-Reply-To: <20240202111602.6f6e2c1a@canb.auug.org.au>
+References: <20240202111602.6f6e2c1a@canb.auug.org.au>
+Date: Fri, 02 Feb 2024 10:04:12 +0900
+From: "Takashi Sakamoto" <o-takashi@sakamocchi.jp>
+To: "Stephen Rothwell" <sfr@canb.auug.org.au>
+Cc: "Li Zhijian" <lizhijian@fujitsu.com>,
+ "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+ "Linux Next Mailing List" <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the ieee1394 tree
+Content-Type: text/plain
 
-On Thu, Feb 01, 2024 at 01:12:40PM -0500, Johannes Weiner wrote:
-> On Thu, Feb 01, 2024 at 03:49:05PM +0000, Chengming Zhou wrote:
-> > The !zswap_exclusive_loads_enabled mode will leave compressed copy in
-> > the zswap tree and lru list after the folio swapin.
-> > 
-> > There are some disadvantages in this mode:
-> > 1. It's a waste of memory since there are two copies of data, one is
-> >    folio, the other one is compressed data in zswap. And it's unlikely
-> >    the compressed data is useful in the near future.
-> > 
-> > 2. If that folio is dirtied, the compressed data must be not useful,
-> >    but we don't know and don't invalidate the trashy memory in zswap.
-> > 
-> > 3. It's not reclaimable from zswap shrinker since zswap_writeback_entry()
-> >    will always return -EEXIST and terminate the shrinking process.
-> > 
-> > On the other hand, the only downside of zswap_exclusive_loads_enabled
-> > is a little more cpu usage/latency when compression, and the same if
-> > the folio is removed from swapcache or dirtied.
-> > 
-> > Not sure if we should accept the above disadvantages in the case of
-> > !zswap_exclusive_loads_enabled, so send this out for disscusion.
-> > 
-> > Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> 
-> This is interesting.
-> 
-> First, I will say that I never liked this config option, because it's
-> nearly impossible for a user to answer this question. Much better to
-> just pick a reasonable default.
-> 
-> What should the default be?
-> 
-> Caching "swapout work" is helpful when the system is thrashing. Then
-> recently swapped in pages might get swapped out again very soon. It
-> certainly makes sense with conventional swap, because keeping a clean
-> copy on the disk saves IO work and doesn't cost any additional memory.
-> 
-> But with zswap, it's different. It saves some compression work on a
-> thrashing page. But the act of keeping compressed memory contributes
-> to a higher rate of thrashing. And that can cause IO in other places
-> like zswap writeback and file memory.
+Hi Stephen,
 
-Agreed.
+I'm sorry for the build failure. Indeed, It is my fault to merge
+some fixes for v3.8-rc3 ahead. (I just checked merge conflict
+between the issued commits...)
 
-At Google, we have been using exclusive loads for a very long time in
-production, so I have no objections to this. The user interface is also
-relatively new, so I don't think it will have accumulated users.
+However, I'm out until next Tuesday. Let you cancel merging
+ieee1394 tree in the next few days. I'm sorry to trouble you...
 
-> 
-> It would be useful to have an A/B test to confirm that not caching is
-> better. Can you run your test with and without keeping the cache, and
-> in addition to the timings also compare the deltas for pgscan_anon,
-> pgscan_file, workingset_refault_anon, workingset_refault_file?
-
-That would be interesting :)
+On Fri, Feb 2, 2024, at 09:16, Stephen Rothwell wrote:
+> Hi all,
+>
+> After merging the ieee1394 tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+>
+> drivers/firewire/core-device.c: In function 'show_text_leaf':
+> drivers/firewire/core-device.c:369:48: error: 'bufsize' undeclared 
+> (first use in this function); did you mean 'ksize'?
+>   369 |                                                bufsize);
+>       |                                                ^~~~~~~
+>       |                                                ksize
+>
+> Caused by commit
+>
+>   67a5a58c0443 ("firewire: Kill unnecessary buf check in device_attribute.show")
+>
+> interacting with commit
+>
+>   47dc55181dcb ("firewire: core: search descriptor leaf just after 
+> vendor directory entry in root directory")
+>
+> from Linus' tree (v6.8-rc2 - that the ieee1394 tree has just been rebased on
+> top of).  I have dropped the ieee1394 tree for today.
+>
+> -- 
+> Cheers,
+> Stephen Rothwell
 
