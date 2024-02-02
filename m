@@ -1,104 +1,147 @@
-Return-Path: <linux-kernel+bounces-50278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 838348476D5
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:58:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 396408476D8
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:59:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 144D228BE45
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:58:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E631D2887D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 17:59:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 515A714E2C9;
-	Fri,  2 Feb 2024 17:57:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E79214C595;
+	Fri,  2 Feb 2024 17:59:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QFdxQU1F"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="LtKFdmnu"
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A19314A4E6;
-	Fri,  2 Feb 2024 17:57:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DC5D14C58B
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 17:59:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706896622; cv=none; b=J8AgLdqIY8c6hSwXDZ5OpmbLONgMBuJurAmeSLc1sKfBhMj1ZmZU03bzcxI7vwdHWY+l3WMWFRkepZML9INWZBDBxyLiSNrW5a2C6H+/LPbRi9BuLm3+pJy9MXwoD5stpe5Cq71KeKRgZmMtxGaOyIE5ChOwcniaETqXPzNSn+w=
+	t=1706896747; cv=none; b=bCQE/Y52M6nUjuUClSOHfgUwsh5z9rJ7jrJ/S8hewmA9NQJusRw+4041kBTlw64UbBIoqRhqy7DprZFHhOAiwP5onoINGGIAtdjFCuazU4430GsfTUprnnt3zsNsVwxqh+iagXf66U4JWOq+h9RyLdykv97zwJW4gmZt9SrqZw4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706896622; c=relaxed/simple;
-	bh=YDwuxmOU5GedLso/AjAPu0UEHBl8mlloHEaWlojo/uY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Rtkv5FtPU1NsB7vaC0ZCJ2eT+0GVXTpS7e2nyY+LJFCZ85pkT8PJ2/gLPn9502X6XAEDT0lorT7lApXHbMzCGtGSb1QJa1l+EPoSrv2dlWDPz5FXFw1a7mpb4mTBXQ1ap4xIXqbKGSWRmH0RInpZ0vzeEcPpe4RwwI3Coj9SdYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QFdxQU1F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03C2DC433F1;
-	Fri,  2 Feb 2024 17:57:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706896622;
-	bh=YDwuxmOU5GedLso/AjAPu0UEHBl8mlloHEaWlojo/uY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QFdxQU1FH8KyVVWxKSgZjhHNqrIJbTWk5njPHRuI5GceUCCon4DSj1SXkTkv4W7y3
-	 KRWwi4djmiEcEXT9sxULrl1uBlQqmGPU5iId3D3OQEeB9cdudA4OA/tusM5768a0U1
-	 71p7QCflBksGSLi9oM9iZSLogJWUvE1MC8JOpxlHyANFVXxZbc+YdRy8Zrkfk1q55u
-	 fa0xo7eAd41U+lmzcXxFEb7UvPa6Qc+RFXCm5JS9cJuy1d5+ghq+ojkofiqGHJUzIg
-	 jmoDf2kMaiHHaeN5V3kovdtNwkDbpMwClNO2ard0CNDYuPi7sEPSyf5Zs174xfLosB
-	 9khLB7quPkWUQ==
-Date: Fri, 2 Feb 2024 09:57:01 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: John Garry <john.g.garry@oracle.com>
-Cc: hch@lst.de, viro@zeniv.linux.org.uk, brauner@kernel.org,
-	dchinner@redhat.com, jack@suse.cz, chandan.babu@oracle.com,
-	martin.petersen@oracle.com, linux-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	tytso@mit.edu, jbongio@google.com, ojaswin@linux.ibm.com
-Subject: Re: [PATCH 2/6] fs: Add FS_XFLAG_ATOMICWRITES flag
-Message-ID: <20240202175701.GI6184@frogsfrogsfrogs>
-References: <20240124142645.9334-1-john.g.garry@oracle.com>
- <20240124142645.9334-3-john.g.garry@oracle.com>
+	s=arc-20240116; t=1706896747; c=relaxed/simple;
+	bh=b0UK3I6qBl5XLXZ/ULBInBz/ydG+gAjVS2eKkSAUwuc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eu53vZEb5fSGSRfjw0VAngVBcVJVudV/S9+FBooUKidJ7/VfCkJ9/CgCCfA4W5fbvaNFqRLTNFP6oTjhnRs+AdMrxzSr7PkDgQlBmbj3AIOE5Yqkb06YVpPbXe9YeTO7HnG0gDxO1+aBQx05WwluOwMvUN4tbj5m8eQ6lo7YL90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=LtKFdmnu; arc=none smtp.client-ip=209.85.210.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6e141ee9c14so1193299a34.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 09:59:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706896745; x=1707501545; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V3MyFHdGuJXKIHAocH1cP+k+k6xBW4irfqW7F3umGsY=;
+        b=LtKFdmnuA9zRYggzAzNUaUaUmyKVOrU3o7RbDHpumwWHWdIWt3HRxK05zC1yAXd5Ic
+         d0zcKrDc9vE0iPxnps/sWZLyewDKkhPCIJxhubQl3OmkdoxfE+xI0CB13/ZZIanxtW+k
+         Z6muAVLps3zZZncPOFwtUaVHPzeXiGn7dKyZQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706896745; x=1707501545;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=V3MyFHdGuJXKIHAocH1cP+k+k6xBW4irfqW7F3umGsY=;
+        b=cSo78O5VBZq2QhTD+wK2sEK+Z6bkeFouZbhXAfAgQLXL0aXc43bfhzMXc4Z6GKU6tM
+         fKFMohSzAmdntmUOjHwDjjMhoaOJOkyKkhaSIRPuVDLCW5H5g20pUddUBeuJlRknFamw
+         PJsRwbdniqRbOf4gJcv2bc7OvMvPvPvX8/kPp/I+CSJlKbDCHFlACJyFiiEUg/wswosY
+         6qbnjDTdYC2xdtnI8cFL93JM6RNr6duPGWGkeBbBI/pT39MEPW9GutJvSBTazgb9vrcC
+         7gR/qdPd4agDYHC+7k/IaPmd1gHcItJ4pZ3VQjCLhAxlYp9bobci7rJBcGBSy0hjW0lp
+         zS6w==
+X-Gm-Message-State: AOJu0Yz+fimGxwoXIBi4+4klVAk+L6w7fgoqLMnV5dxnZXR16sju0ZCd
+	GqVrwgnsdMQ5s2nvVTtNbLO5LA0BYVd+5O6QklxxBEG86NOhBmWNy+KEuoyDzNER32Y3tKvN0yL
+	kW9jOu7WN2PtszkqE+99KQbwnkt+Zf64P881k
+X-Google-Smtp-Source: AGHT+IGpU/xeyR4Cac3EmRCRvgJs1LUHcLu+M+2J4+z8SyoU1mY+7pncKYINef4x09GNaY4SUrFEJxNBeJFX0e+aASY=
+X-Received: by 2002:a05:6870:200b:b0:218:eff8:3161 with SMTP id
+ o11-20020a056870200b00b00218eff83161mr487923oab.39.1706896745307; Fri, 02 Feb
+ 2024 09:59:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240124142645.9334-3-john.g.garry@oracle.com>
+References: <20240131175027.3287009-1-jeffxu@chromium.org> <20240131193411.opisg5yoyxkwoyil@revolver>
+ <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com>
+ <20240201204512.ht3e33yj77kkxi4q@revolver> <CABi2SkWB2eV24LBJtgJ73zEwaAWuFhAwrfqx3Rs=tqnpcJ0qRw@mail.gmail.com>
+ <58408.1706828083@cvs.openbsd.org> <CAHk-=wjqozic6JuRimXD=RamnJmD6FoaQki7RtNYrezzx_OfOg@mail.gmail.com>
+ <CALmYWFtqcixi3p3Ab44wENJr+n2k2SNaCJEofNm_awnNdJZnDQ@mail.gmail.com>
+ <8744.1706846710@cvs.openbsd.org> <CABi2SkWSt=UMFWe9n916ZH16wCzaipKXmEJ5VasQHMr1AxerxQ@mail.gmail.com>
+ <29248.1706850035@cvs.openbsd.org>
+In-Reply-To: <29248.1706850035@cvs.openbsd.org>
+From: Jeff Xu <jeffxu@chromium.org>
+Date: Fri, 2 Feb 2024 09:58:53 -0800
+Message-ID: <CABi2SkXPNPKgqheuFuQ9iZApQkJm8o6bypNn0B-QDz_W9b0JBQ@mail.gmail.com>
+Subject: Re: [PATCH v8 0/4] Introduce mseal
+To: Theo de Raadt <deraadt@openbsd.org>
+Cc: Jeff Xu <jeffxu@google.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org, 
+	keescook@chromium.org, jannh@google.com, sroettger@google.com, 
+	willy@infradead.org, gregkh@linuxfoundation.org, usama.anjum@collabora.com, 
+	rdunlap@infradead.org, jorgelo@chromium.org, groeck@chromium.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com, 
+	linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 24, 2024 at 02:26:41PM +0000, John Garry wrote:
-> Add a flag indicating that a regular file is enabled for atomic writes.
+On Thu, Feb 1, 2024 at 9:00=E2=80=AFPM Theo de Raadt <deraadt@openbsd.org> =
+wrote:
+>
+> Jeff Xu <jeffxu@chromium.org> wrote:
+>
+> > Even without free.
+> > I personally do not like the heap getting sealed like that.
+> >
+> > Component A.
+> > p=3Dmalloc(4096);
+> > writing something to p.
+> >
+> > Component B:
+> > mprotect(p,4096, RO)
+> > mseal(p,4096)
+> >
+> > This will split the heap VMA, and prevent the heap from shrinking, if
+> > this is in a frequent code path, then it might hurt the process's
+> > memory usage.
+> >
+> > The existing code is more likely to use malloc than mmap(), so it is
+> > easier for dev to seal a piece of data belonging to another component.
+> > I hope this pattern is not wide-spreading.
+> >
+> > The ideal way will be just changing the library A to use mmap.
+>
+> I think you are lacking some test programs to see how it actually
+> behaves; the effect is worse than you think, and the impact is immediatel=
+y
+> visible to the programmer, and the lesson is clear:
+>
+>         you can only seal objects which you gaurantee never get recycled.
+>
+>         Pushing a sealed object back into reuse is a disasterous bug.
+>
+>         Noone should call this interface, unless they understand that.
+>
+> I'll say again, you don't have a test program for various allocators to
+> understand how it behaves.  The failure modes described in your docuemnts
+> are not correct.
+>
+I understand what you mean: I will add that part to the document:
+Try to recycle a sealed memory is disastrous, e.g.
+p=3Dmalloc(4096);
+mprotect(p,4096,RO)
+mseal(p,4096)
+free(p);
 
-This is a file attribute that mirrors an ondisk inode flag.  Actual
-support for untorn file writes (for now) depends on both the iflag and
-the underlying storage devices, which we can only really check at statx
-and pwrite time.  This is the same story as FS_XFLAG_DAX, which signals
-to the fs that we should try to enable the fsdax IO path on the file
-(instead of the regular page cache), but applications have to query
-STAT_ATTR_DAX to find out if they really got that IO path.
+My point is:
+I think sealing an object from the heap is a bad pattern in general,
+even dev doesn't free it. That was one of the reasons for the sealable
+flag, I hope saying this doesn't be perceived as looking for excuses.
 
-"try to enable atomic writes", perhaps?
-
-(and the comment for FS_XFLAG_DAX ought to read "try to use DAX for IO")
-
---D 
-
-> 
-> Signed-off-by: John Garry <john.g.garry@oracle.com>
-> ---
->  include/uapi/linux/fs.h | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
-> index a0975ae81e64..b5b4e1db9576 100644
-> --- a/include/uapi/linux/fs.h
-> +++ b/include/uapi/linux/fs.h
-> @@ -140,6 +140,7 @@ struct fsxattr {
->  #define FS_XFLAG_FILESTREAM	0x00004000	/* use filestream allocator */
->  #define FS_XFLAG_DAX		0x00008000	/* use DAX for IO */
->  #define FS_XFLAG_COWEXTSIZE	0x00010000	/* CoW extent size allocator hint */
-> +#define FS_XFLAG_ATOMICWRITES	0x00020000	/* atomic writes enabled */
->  #define FS_XFLAG_HASATTR	0x80000000	/* no DIFLAG for this	*/
->  
->  /* the read-only stuff doesn't really belong here, but any other place is
-> -- 
-> 2.31.1
-> 
-> 
+>
 
