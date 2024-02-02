@@ -1,123 +1,95 @@
-Return-Path: <linux-kernel+bounces-50006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D52D88472F0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:18:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 76A9C8472F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 16:18:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1305D1C21523
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:18:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9F991C21439
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:18:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A415C145B21;
-	Fri,  2 Feb 2024 15:18:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A87FA1468EF;
+	Fri,  2 Feb 2024 15:18:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="JmpdB/Lv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cQcOhnUq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C25821872;
-	Fri,  2 Feb 2024 15:18:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDF3E145B23;
+	Fri,  2 Feb 2024 15:18:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706887115; cv=none; b=OOC2+ikKcfKdkdbwzYLtr9ZW0JgjWc9C0PSw8YhjS8kKTrAKnl2sfkTz5UUo7/BMl+nYjJPC7JvOkkeCw50G38DiuZdRQcfMGNCUfgONr9fS8T2lIIiBvQIDjEZShfVmhjiZLgIgufg5wi6sCu2NJmv+8hiKIS53f8ZPZBe+Pq0=
+	t=1706887116; cv=none; b=G2bplsQNtpitIw5UFLVJjAOhO3EQPY021BxsL+Yvfm2Y2osOLe/ohf504NC+FUwkD4PY8Kf24Jqgm7e1JTOMUDDbR2aS/GKiery9obpRHcOwM3ClS6wj0eteLp86Tx/GSa4kOnxfDiagkF6oPXHwZG06EzzShPfrhtEVlIpjbz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706887115; c=relaxed/simple;
-	bh=K7NuQyBVO5NkQ+Fis32NW+0CYtstw9NntLngIcR6Dhs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fJvZqFrtCX8JPxIvzn3dFVyAKMfvBnr0kjAtBR8Qlmz9lhajXpgEkJGYWupVVMwAxNqBP8VYnT0pdvj6CqBENXXyFOOskqDSDDYMVp0yl8ZtE0zYDkwTtyZ0nqOy17sxuELS+3r5aask4t7qMxAbmit/Sxbic5gGi6oZKSRDyAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=JmpdB/Lv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28D5FC433C7;
-	Fri,  2 Feb 2024 15:18:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1706887114;
-	bh=K7NuQyBVO5NkQ+Fis32NW+0CYtstw9NntLngIcR6Dhs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JmpdB/LvHCipua99PImkpjtbcuHksJQW1JRmGtW67QSvsYaOZ8z/seR80R1i7s6VA
-	 Qj4ib79qMpbGVgThxF+lzjBH/VWndw55Z5C+dg2nxUG745u7TAvhstd2+ZsNjwZOPZ
-	 Uo3s7T7sJwKtBpXJz4H4oW0Qir/mMFk9X+3fuSaE=
-Date: Fri, 2 Feb 2024 07:18:33 -0800
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Jeff Xu <jeffxu@chromium.org>
-Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org,
-	keescook@chromium.org, jannh@google.com, sroettger@google.com,
-	willy@infradead.org, torvalds@linux-foundation.org,
-	usama.anjum@collabora.com, rdunlap@infradead.org, jeffxu@google.com,
-	jorgelo@chromium.org, groeck@chromium.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v8 0/4] Introduce mseal
-Message-ID: <2024020227-suing-ooze-d555@gregkh>
-References: <20240131175027.3287009-1-jeffxu@chromium.org>
- <20240131193411.opisg5yoyxkwoyil@revolver>
- <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com>
- <20240201204512.ht3e33yj77kkxi4q@revolver>
- <60731.1706826280@cvs.openbsd.org>
- <2024020137-hacking-tightwad-a485@gregkh>
- <CABi2SkVb1goM95FT5v2K18NHbaLitLpK6fL+wE6Y47z8yvW0Nw@mail.gmail.com>
+	s=arc-20240116; t=1706887116; c=relaxed/simple;
+	bh=6t6R5CJEHME/IBmZS0DVoNaz0FLeEZ3QHw8W3A7sirE=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=KxE9gQ93BpcIqVDPiDLT8AFZyuC5hsGJWxnVurPvXGqLlh6pjfGBLRsMIuzjrELlyhFcSZDMuWBm0v3bramZiVdVZFTRQ3gnaeLjHF9KpRdyX8w4tW4REVVfmz9yeqfojQLYkYyn2l6JkFKXEHcl47cK2IpPC8JPDUgRO37hPfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cQcOhnUq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A4A6C433F1;
+	Fri,  2 Feb 2024 15:18:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706887115;
+	bh=6t6R5CJEHME/IBmZS0DVoNaz0FLeEZ3QHw8W3A7sirE=;
+	h=Date:From:To:Cc:Subject:From;
+	b=cQcOhnUqaRHNLwnS/VIxrw6cM2q7hu9TBkTRE4Pc66xipugRLgRobqaXuOlAd32oa
+	 r3x1qmEyxyWbSgLnnzob01cBpXHSuamIwBb1wCG3STrXcmZSFAHH8rsmvCztByKvzv
+	 RATSLmRFxD4A1HcBjX5oEfKl8EzVa71Nh56XbHng9ue1FB/oYvoRPnpUuSL1eqC/0h
+	 AAMGYdENJnvnITCEvh49IXRsrg35lNaOzbNd7Z046x8u/eVlXYxrn9cq9M4QDnCxn5
+	 WAMbSjf8YYiQwO4fgHnsdiLb9ix65+F938vBPtLMr3THE3hrT7mCpm+jG3sO8iIxAj
+	 ZacNhbK7dDVrg==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rVvJP-000000003qK-1PZ0;
+	Fri, 02 Feb 2024 16:18:39 +0100
+Date: Fri, 2 Feb 2024 16:18:39 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] USB-serial device ids for 6.8-rc3
+Message-ID: <Zb0Hz0dFStw_bcrh@hovoldconsulting.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABi2SkVb1goM95FT5v2K18NHbaLitLpK6fL+wE6Y47z8yvW0Nw@mail.gmail.com>
 
-On Thu, Feb 01, 2024 at 07:24:02PM -0800, Jeff Xu wrote:
-> On Thu, Feb 1, 2024 at 5:06 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Thu, Feb 01, 2024 at 03:24:40PM -0700, Theo de Raadt wrote:
-> > > As an outsider, Linux development is really strange:
-> > >
-> > > Two sub-features are being pushed very hard, and the primary developer
-> > > doesn't have code which uses either of them.  And once it goes in, it
-> > > cannot be changed.
-> > >
-> > > It's very different from my world, where the absolutely minimal
-> > > interface was written to apply to a whole operating system plus 10,000+
-> > > applications, and then took months of testing before it was approved for
-> > > inclusion.  And if it was subtly wrong, we would be able to change it.
-> >
-> > No, it's this "feature" submission that is strange to think that we
-> > don't need that.  We do need, and will require, an actual working
-> > userspace something to use it, otherwise as you say, there's no way to
-> > actually know if it works properly or not and we can't change it once we
-> > accept it.
-> >
-> > So along those lines, Jeff, do you have a pointer to the Chrome patches,
-> > or glibc patches, that use this new interface that proves that it
-> > actually works?  Those would be great to see to at least verify it's
-> > been tested in a real-world situation and actually works for your use
-> > case.
-> >
-> The MAP_SEALABLE is raised because of other concerns not related to libc.
-> 
-> The patch Stephan developed was based on V1 of the patch, IIRC, which
-> is really ancient, and it is not based on MAP_SEALABLE, which is a
-> more recent development entirely from me.
-> 
-> I don't see unresolvable problems  with glibc though,  E.g. For the
-> elf case (binfmt_elf.c), there are two places I need to add
-> MAP_SEALABLE, then the memory  to user space is marked with sealable.
-> There might be cases where glibc needs to add MAP_SEALABLE it uses
-> mmap(FIXED) to split the memory.
-> 
-> If the decision of MAP_SELABLE depends on the glibc case being able to
-> use it, we can develop such a patch, but it will take a while, say a
-> few weeks to months, due to vacation, work load, etc.
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
 
-There's no rush here, and no deadlines in kernel development.  If you
-don't have a working userspace user for your new feature(s), there is no
-way we can accept the changes to the kernel (and hint, you don't want us
-to either...)
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
 
-good luck!
+are available in the Git repository at:
 
-greg k-h
+  https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git tags/usb-serial-6.8-rc3
+
+for you to fetch changes up to b4a1f4eaf1d798066affc6ad040f76eb1a16e1c9:
+
+  USB: serial: option: add Fibocom FM101-GL variant (2024-01-31 10:21:20 +0100)
+
+----------------------------------------------------------------
+USB-serial device ids for 6.8-rc3
+
+Here are some new device ids for 6.8-rc3.
+
+All have been in linux-next with no reported issues.
+
+----------------------------------------------------------------
+JackBB Wu (1):
+      USB: serial: qcserial: add new usb-id for Dell Wireless DW5826e
+
+Leonard Dallmayr (1):
+      USB: serial: cp210x: add ID for IMST iM871A-USB
+
+Puliang Lu (1):
+      USB: serial: option: add Fibocom FM101-GL variant
+
+ drivers/usb/serial/cp210x.c   | 1 +
+ drivers/usb/serial/option.c   | 1 +
+ drivers/usb/serial/qcserial.c | 2 ++
+ 3 files changed, 4 insertions(+)
 
