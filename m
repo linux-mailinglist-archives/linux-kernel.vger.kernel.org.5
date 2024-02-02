@@ -1,101 +1,107 @@
-Return-Path: <linux-kernel+bounces-50316-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50317-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34DFA84775D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:26:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C3CA847752
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 19:25:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF081B298A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:24:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B438D1C2342E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 18:25:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D3FD14E2F0;
-	Fri,  2 Feb 2024 18:22:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F4FF152DFB;
+	Fri,  2 Feb 2024 18:22:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I1TvU+Lj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VG7D5afL"
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B890F152DEF;
-	Fri,  2 Feb 2024 18:22:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64216150990;
+	Fri,  2 Feb 2024 18:22:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706898161; cv=none; b=M0gZ4babYzxRRI/SmSfVTIlWbNun2kQRmbLLXoG79yM/PkrczJ09WG+Xot9BUEWi5eJ44nAr0sa7bC9FEJkFnqHanECv+j1lYQJFBkUPaZC+44GQdtfxa4IjjWbFKuYsQWFY/cWS4zf+QU16iis/Pv62xg84u5O8xVBL8RCV4yY=
+	t=1706898166; cv=none; b=VSlUMqFv0qf3drKQKA5rmCtFKxVAop09yBHGl8ubxVcXdcR9ZNrcs6dis5hOSnVEIUnlZIcbMW9kFqS6JmUyBPr9PETj1McvW1L4vt+ckEWOeq5erS7uWO+C4e4cILHpR/z8EWVPDjbp+nNdkylBAipsjXQh70+I+rUXYeYF7ZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706898161; c=relaxed/simple;
-	bh=svlvAKv5Rsvu79CaMk7L2BcATKO9LgP+bcm0qXURTwE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kXT40s587iTqiLmrwCm3PglsnqX26GDXanspLQaEos6Q+x3gVLuUDWztlw0tlH4BmToxViyX52enzsEYPm1+fYGpciU6ZikEW7QcjRi7FK07cirEy1VQID4FCJAbjdr6+n7BgIlh1EWje8T5FFa7CMu0FPsPGjSEYNQhUGXqPOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I1TvU+Lj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9F75C433F1;
-	Fri,  2 Feb 2024 18:22:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706898161;
-	bh=svlvAKv5Rsvu79CaMk7L2BcATKO9LgP+bcm0qXURTwE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=I1TvU+LjPjr5qbLEIXhr7/DRLc7UIpceNQ5kWHZnw0xpTGQ94/KFqA+FR7dw+gIe9
-	 TAQY0kW36tFvSPdxJIwk/qePlR6anGBbBhKCAnuXDVvwO+u3737/q1pGdLwlnQORkO
-	 xSF61brZecFv2S2/NxndiIyhyEPiX6cS7v/2dSJOVKqTX0Aqfb3DGpLcjPUUf9ChVL
-	 wFwZeRnYRq/xjtfK8nVM+KWFYAstoemWARClHatdXrrEJP5i1KSnptzOc273mnBYOD
-	 4UDD4jrAbn8EpOUc62qfT90JE1ISVJtRHOoi4/JbYdDbpMYbe1ySHALb0wbjzs5ree
-	 q6FH+Kfhb/GWQ==
-Date: Fri, 2 Feb 2024 10:22:39 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Joe Damato <jdamato@fastly.com>
-Cc: "Samudrala, Sridhar" <sridhar.samudrala@intel.com>, Eric Dumazet
- <edumazet@google.com>, <netdev@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <chuck.lever@oracle.com>,
- <jlayton@kernel.org>, <linux-api@vger.kernel.org>, <brauner@kernel.org>,
- <davem@davemloft.net>, <alexander.duyck@gmail.com>, "Wei Wang"
- <weiwan@google.com>, Amritha Nambiar <amritha.nambiar@intel.com>
-Subject: Re: [net-next 0/3] Per epoll context busy poll support
-Message-ID: <20240202102239.274ca9bb@kernel.org>
-In-Reply-To: <f0b4d813-d7cb-428b-9c41-a2d86684f3f1@intel.com>
-References: <20240124025359.11419-1-jdamato@fastly.com>
-	<CANn89i+YKwrgpt8VnHrw4eeVpqRamLkTSr4u+g1mRDMZa6b+7Q@mail.gmail.com>
-	<5faf88de-5063-421f-ad78-ad24d931fd17@intel.com>
-	<20240202032806.GA8708@fastly.com>
-	<f0b4d813-d7cb-428b-9c41-a2d86684f3f1@intel.com>
+	s=arc-20240116; t=1706898166; c=relaxed/simple;
+	bh=2VoEdRvrRqBHfptG31aYebj1E1qTdeZ8YWp0J6B5gdk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Syc0T8rzonN4rh3v8OPY6ZRABH8ENuXfmplYMjij21w4wTBBqGNNbchLKu8XNPRDHwTt83rFeSdlnSfPSwb9DZbylw0MeWGm66A1fAJJCNMPK8AIG4UMmDBS7Hu2Qkw9BD6N1OaU/A6XLTel2xPX4foqk9F7FjcgVNsEN1UpuJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VG7D5afL; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-28bec6ae0ffso1787170a91.3;
+        Fri, 02 Feb 2024 10:22:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706898164; x=1707502964; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YT/0Srb3byEwhZGAN9MvjmeizM6BiaKwUj1DsG3vCZE=;
+        b=VG7D5afLoG6oay4ugal35RSMw6734XJSxkyc+cXzMhFs4G0Cwz0ErzCQfqIK1Y0gNS
+         ee1iZsu/WFOe4vt6UnMb2pOlEqpNUxNt2S9zzD3MRc0Z/OuM8f1cDtDssp7pniEgMNvE
+         7QZm41vkI4RaOHtHn5ESWny9hYaQc8d/4A9ly6Ahm+fCjs9lOOSyVp0HmWGH5na1ZzA6
+         cOB3GYd3AJ33fcLj2YsImqUt/3KCDLHSa1mVDP7Rb48G0oruF1A3kaO+hTa77uvILIqV
+         K/uQhuvPUJaNv28n72yc94moArVgKTsNausthTQxgr2fou+ahBkNwpN2s2kkZ5OJOdV2
+         c5vQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706898164; x=1707502964;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YT/0Srb3byEwhZGAN9MvjmeizM6BiaKwUj1DsG3vCZE=;
+        b=usecHkz8m7P+ZG0mZVpFdNQA9ktO1RfqcZl5JQzI3XpC+MQhknuiR66jtsjpcZ81Ml
+         aaPkKtF94+klmJmhTfy9l6Lhd0laK24wpde62obqeSRyMLUdIbhapXzTrer7e/AV6Y0Q
+         PlVN359+5F+QdcSvbvfqOmR2w+VyYNhSxEuQ7rg6gOWA+IOtQWGIfJkUXCieJWf2i/Ri
+         Fw2/8kUd+nf/xXl5LqOJI2uNU1O0eCrAPduSZ9xwAxHgxZaopgWKaGAiNXhMSHTLDTr1
+         KMX9565sw+6gYGpuq+H4hZrC3gHDFkrmZ0ijzM/NBav7tjXg5gNxoljCiXPIZSDUAfvh
+         rmpw==
+X-Gm-Message-State: AOJu0YxukAAqDhELoQlbxP2jm+jwRDwMGQrbji/8IHcPyYpnsQXo2/md
+	uG4+O0VfoA1b+dnK415w1W801NdgR9lvjm/ia3OPeGk4EgxXAqMwa6vvWINp
+X-Google-Smtp-Source: AGHT+IGrUXxBw9jg+aIzlF/xYC+0+LaqvOK84khmAMHLUTLNSJQDwY6j38qwSHgxrWVfIv1UR3NiZg==
+X-Received: by 2002:a17:90b:205:b0:295:f9a5:f8f0 with SMTP id fy5-20020a17090b020500b00295f9a5f8f0mr2883428pjb.10.1706898164395;
+        Fri, 02 Feb 2024 10:22:44 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUeBJY7v8lYdeGa0d/C1VBduqn96gP+fdlNA+X/J9qXmj4Z7PxTFe8Y6ugyx2+vcY+meTvYtVcYnq+HNLCDwxbTLECJcq2IiSbCYXYXbM1MBTCJmOpzl4PLgmp+Dykf7J1yWbGHAkAr
+Received: from google.com ([2620:15c:9d:2:c30c:2f35:dc97:44fc])
+        by smtp.gmail.com with ESMTPSA id u16-20020a17090ac89000b00290f9e8b4f9sm311350pjt.46.2024.02.02.10.22.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 10:22:44 -0800 (PST)
+Date: Fri, 2 Feb 2024 10:22:41 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Werner Sembach <wse@tuxedocomputers.com>
+Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] Fix strange behavior of touchpad on Clevo NS70PU
+Message-ID: <Zb0y8cc0T6rr_NDr@google.com>
+References: <20231205163602.16106-1-wse@tuxedocomputers.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231205163602.16106-1-wse@tuxedocomputers.com>
 
-On Fri, 2 Feb 2024 11:23:28 -0600 Samudrala, Sridhar wrote:
-> > I know I am replying to a stale thread on the patches I've submit (there is
-> > a v5 now [1]), but I just looked at your message - sorry I didn't reply
-> > sooner.
-> > 
-> > The per-queue and per-napi netlink APIs look extremely useful, thanks for
-> > pointing this out.
-> > 
-> > In my development tree, I had added SIOCGIFNAME_BY_NAPI_ID which works
-> > similar to SIOCGIFNAME: it takes a NAPI ID and returns the IF name. This is
-> > useful on machines with multiple NICs where each NIC could be located in
-> > one of many different NUMA zones.
-> > 
-> > The idea was that apps would use SO_INCOMING_NAPI_ID, distribute the NAPI
-> > ID to a worker thread which could then use SIOCGIFNAME_BY_NAPI_ID to
-> > compute which NIC the connection came in on. The app would then (via
-> > configuration) know where to pin that worker thread; ideally somewhere NUMA
-> > local to the NIC.
-> > 
-> > I had assumed that such a change would be rejected, but I figured I'd send
-> > an RFC for it after the per epoll context stuff was done and see if anyone
-> > thought SIOCGIFNAME_BY_NAPI_ID would be useful for them, as well.  
+On Tue, Dec 05, 2023 at 05:36:01PM +0100, Werner Sembach wrote:
+> When closing the laptop lid with an external screen connected, the mouse
+> pointer has a constant movement to the lower right corner. Opening the
+> lid again stops this movement, but after that the touchpad does no longer
+> register clicks.
 > 
-> I think you should be able to get this functionality via the netdev-genl 
-> API to get napi parameters. It returns ifindex as one of the parameters 
-> and you should able to get the name from ifindex.
+> The touchpad is connected both via i2c-hid and PS/2, the predecessor of
+> this device (NS70MU) has the same layout in this regard and also strange
+> behaviour caused by the psmouse and the i2c-hid driver fighting over
+> touchpad control. This fix is reusing the same workaround by just
+> disabling the PS/2 aux port, that is only used by the touchpad, to give the
+> i2c-hid driver the lone control over the touchpad.
 > 
-> $ ./cli.py --spec netdev.yaml --do napi-get --json='{"id": 593}'
-> {'id': 593, 'ifindex': 12, 'irq': 291, 'pid': 3727}
+> v2: Rebased on current master
+> 
+> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> Cc: stable@vger.kernel.org
 
-FWIW we also have a C library to access those. Out of curiosity what's
-the programming language you'd use in user space, Joe?
+Applied, thank you.
+
+-- 
+Dmitry
 
