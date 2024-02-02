@@ -1,139 +1,197 @@
-Return-Path: <linux-kernel+bounces-49631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49632-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 447CE846D24
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:59:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F275846D25
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 10:59:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE7AE290775
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:59:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63BBA1C27903
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 09:59:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D51A17A71D;
-	Fri,  2 Feb 2024 09:58:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D415777F28;
+	Fri,  2 Feb 2024 09:59:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lbkQ76vF"
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Z2i1QSxW"
+Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com [209.85.217.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37EA95FEF8;
-	Fri,  2 Feb 2024 09:58:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AFDE605DB
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 09:59:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706867935; cv=none; b=YMDeHHdY+mOxJyo53bsH34R3yLSfDDH01Q9gkeSNzGCaVrr1abScrtWCG7P8rLAq92cIFOIyPTG7HgTf7zp1RNi01Oeu36UobyAFVvmzuRUfhaTeu8liJ2trCqtREWkd141HTd12YOai9HdCmRrkVLvCpJ6lzBoHSQvpInDxuNo=
+	t=1706867985; cv=none; b=bX33oeKospYz93/CDZ3KMHef56C2vBIsrpPyfLJOICkC5mlPMfVNXD83P2xQbFzbVns5yYhEUP6Mm76vhoVu8OGvPhLvet/iOR1jVYgF807qSXOrmX5Ph3jwOhcjP4YXwlO26sJSKoZMx0OXY//8g/Drpqg4NnYvLOyC2rspy+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706867935; c=relaxed/simple;
-	bh=DkbWTuDazMKJWZUiAxryy/903EaX7q6q9RefI6eZyfo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qpFT9m1VK7oRlgN36zt3GaGaAswVKoBNU+r3PA2HAwcJ8TtTBpZ85HTTxb9TY0DwXD8QL3vmZCzUEGGfLmfidG/kK90+6zmFyGFp59raDdmRAMq+NmuO6YR+HFdPYQATJeu0E4PDnLYm65u14ehhNgR0s50jKX3/e/9d9l3cqzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lbkQ76vF; arc=none smtp.client-ip=209.85.222.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-783da8920e5so124096185a.1;
-        Fri, 02 Feb 2024 01:58:51 -0800 (PST)
+	s=arc-20240116; t=1706867985; c=relaxed/simple;
+	bh=dc8rQnh6PDoB1TWGzNuLOJkPoGzySAD7iS8TKBzVRPk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MY4kHmfFoEnkcr4BPG0lK+1AvW83/C7BqeCmMjyvMLh2prQF4cXi/DZtggFzA4omSor4Eb9AveO3PKZ/QCZSpTXk8mEtQOv9Kd0iPTmo8jG58wPqh0YKBnRLJrRS3AP8O7clNgrM6AINqTfY+c4UEHleVr8qHrYXCS5RDIkn/zQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Z2i1QSxW; arc=none smtp.client-ip=209.85.217.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-46b24280725so353806137.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 01:59:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706867931; x=1707472731; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=T6fyBxEnYt0Yb8BWzW2Dkq1yl3Yvo5z3oSE+nBfPAD8=;
-        b=lbkQ76vFaOi0PYTlhC66bXWbRwcRapttgdgVG0kWp0hfoRMxLTdP8W9FjslJ0ykGdU
-         IoD0oTNOfaZvH2XCjMIWURTV2QfHJYHvHzj0qlz5vVINk8B7eHbCuiheOB1Aa2Pp1T/z
-         pmTUptwEP22gxAez8Aya3ynxsxsRibeMicNAJlMu3U4PFZhacgVJODVaDQEg9J4L3I6x
-         1fl7t+7Qgw5Qaak5Z4YjK08TzXCgik6CabDsUH1KZ/HM+nXyK9SzAZOLf/d0q8cDHL51
-         v6h2hiCheLdereUeB8G1WNIYGP2J6QPmKuw4B3viYt/ZQA+7XvZm9E3DrmdjwrAzJUG1
-         q0Nw==
+        d=linaro.org; s=google; t=1706867982; x=1707472782; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=mGyYTzfbWHLJ9icv+vr2JH/WdzWZ6KgDnIC2V14paRI=;
+        b=Z2i1QSxW7NutcqfA7Zy0AUOJOb6cderHycpxrrWTlI2QqmvKyvGFtJmcs+60jtVrr2
+         PNOsy2KHVdXdzCwRQi1kcXVCpWVFJTcPXJ+j3VyipMzRbDyxPF9cr5AOjp86LKKlSWJJ
+         yjZHj5oqT0O6WmoTvHBtRUB9s6PDWfCs4YWfZxEexMcgcFvR9nYEfVeI8aqfVoGZqqVD
+         x2MwCf4DsHtFhG6oJIRWptofVB29z4E7whwC1v7Od6oX9Nq1GcgZuo6+pzRo3rnC5bVM
+         z+WgMuLDKnlE1TD0FdoVWkpfMHZo7K4novF3xeqU8aenv/UA4yrNvRzG8nOlZ9nEw4OJ
+         Kvhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706867931; x=1707472731;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=T6fyBxEnYt0Yb8BWzW2Dkq1yl3Yvo5z3oSE+nBfPAD8=;
-        b=UyBoKMLcHrbLncLEQ4HnGTOFhANRG8IwJyuO3bB/2aTGmvBgzCR76sZ+ovk0mDxG1U
-         KMVxYTdkYHv8CSeHVx9h2E48FYP6J6FrKIDLymPTkuxOZ7g8czTDd24FV40Lz+CJf+Wn
-         dv7q4pi+A73dH46VKQzNCtU/5Hl4H+5jfr70iCCa/M7WVq+/Vp9d0rgiO7FNd0ODZ5Gw
-         bhuzLPKih8HlfYtbTui3/G/bpwkBcqzyNIfJR8bfeTvy533GtaFMoJzmwfHu599NKl61
-         bwQo7wHBfLLeRYypEXom82+9IRo81+BtVz+rU1aAEeTU8rHdiBEi3X0L7GW5Ia9KWH12
-         E+tA==
-X-Gm-Message-State: AOJu0Yz3upWzapqjhYSyzeIPHGMg/iBPvZ4aINxMwSoHj+/UxSYK+qSy
-	Bm8h4uDhbAGX8LBm08xKv2Ufqg/0WvDzHqtkae9NlbFkArHQQXCH
-X-Google-Smtp-Source: AGHT+IGi9xNvoo0qkunPvcWTLEC1MipJ3N1phvvIyme5M65V1UqM8X/fWswldrRtYf3mmuEu4dItkA==
-X-Received: by 2002:ad4:5ce3:0:b0:68c:5e33:dc9 with SMTP id iv3-20020ad45ce3000000b0068c5e330dc9mr1944927qvb.34.1706867931016;
-        Fri, 02 Feb 2024 01:58:51 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCV2moWMTAK/wWuRjR7mNQbLtk63x3NEIn+rA95YoOusIf2NgWE2rM56Zxl224DYusrrt5d0lu7FMoPJrbI3XZ2XdOZ3jxwnxQ+Aru74zeR5LYM3W9T+RHjebO66iN2WUHL0VamvvWBlltriJa7rLW6yNeS93nsV7pZ+1vL0HJDnSsQ1oLjrrSvQ8FtTUhf0qQ99BQVCEMoVzhkSqRSHHVDcd9134BBkEV2AAhk4AYwRzwaNSrDNv9rq+Hbpnw41Ue1uJCEgOP49Pu3013c/5IyRxa1yvtBUczdmYuUWi4Ky9RezECguyAM/NBASLCAqK0CWw3jjzVNZ5lD2RvCPGrEfCo8a9czOk1c5bIlgvq3kiBrxzH1queUExT6OLn/LOlyMJOcS7+ab4lhjnfyrE+SKjPbcjOjPstmLz+/RUA1pkLGIjL/LjQ3pNp2reOU34PZTVlf9P5sGJm3NWjrb+w8MNTDCvm5DNM/pjPLSEbKVvQIVfpZaEOJrU9qw+keQh4fDqg57REuOg2YnjiPvBFBWvYXnLdaSUHsUQErK8KWB1rD9oA1U25u94i9Vst1P9j/9UbNOihJvBVlLjcXrf0BnNRocrFZEvig6/sPt5mcoXml4M7JRoCagxGXmWsYqvejwazwbyMWJnq38tUb+AgCfdk4ZiTCeNGYhaLuK6p8pS0sOeA==
-Received: from [192.168.178.55] (f215227.upc-f.chello.nl. [80.56.215.227])
-        by smtp.gmail.com with ESMTPSA id t2-20020a0cea22000000b0068c4f1da09csm659978qvp.120.2024.02.02.01.58.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Feb 2024 01:58:50 -0800 (PST)
-Message-ID: <a91c6a28-6762-41cf-bb85-09e79f3d29d4@gmail.com>
-Date: Fri, 2 Feb 2024 10:58:45 +0100
+        d=1e100.net; s=20230601; t=1706867982; x=1707472782;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mGyYTzfbWHLJ9icv+vr2JH/WdzWZ6KgDnIC2V14paRI=;
+        b=bmNByIAxQ1HAG5FzctLd2QRv6sqva3uOi8MXMggj8Fh6e9fxv4bIxdf1+gB7ZuzwBk
+         J/iGFfHAfLRQ+0cVBcYiDn2A1swkjyUGPTPkKMVMlQDJnuPAaUbXo40elDAUqdbMQFHa
+         TV681jqW08yC9siMp8KD3+3FHoCnHkgpyH6s7hX9P1EPl2nBkC5avToLT+zN6gRxfS2L
+         5oSl5Rb2dntP8o2mOcqLz9vbOYaykSlaD9ihVKL5xJSUJZ0aO8ykq3shOGm8oot2AhQt
+         WvIH/H3qnsUTATIDD+7mJCxEpAFpubNet7MR+/5ukkyZ0O802uApFWdzqWXke/jubaRk
+         Xlmg==
+X-Gm-Message-State: AOJu0YwUDKa72iOFOnxxpRlHxzby5NWLEJEE4zYPbithinyJ7v/VffaZ
+	dckUlJTPgj84SV4fEj3I4fS3GGBuKFURwIM12/boXTarF7fTW9HH4+Riqj7y4R/fyFF5UgyihD2
+	9+zKjys8ODMF5MZ6YCJPtQMXiZZGIt7CBnvTwLQ==
+X-Google-Smtp-Source: AGHT+IGx011pU/uYoeRaO9GDRIyKMw5o70O5J6j1cmokVIok+jvPB4MJkIPn0wNMToA6OBf4Al+Gz7jgxs56x66TY0U=
+X-Received: by 2002:a67:f61a:0:b0:46c:fc76:7746 with SMTP id
+ k26-20020a67f61a000000b0046cfc767746mr1201018vso.2.1706867981911; Fri, 02 Feb
+ 2024 01:59:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] wifi: brcmfmac: Adjust n_channels usage for __counted_by
-To: Kalle Valo <kvalo@kernel.org>, Kees Cook <keescook@chromium.org>
-Cc: Franky Lin <franky.lin@broadcom.com>,
- Hante Meuleman <hante.meuleman@broadcom.com>,
- Chi-hsien Lin <chi-hsien.lin@infineon.com>, Ian Lin <ian.lin@infineon.com>,
- Johannes Berg <johannes.berg@intel.com>,
- Wright Feng <wright.feng@cypress.com>, Hector Martin <marcan@marcan.st>,
- linux-wireless@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- Jisoo Jang <jisoo.jang@yonsei.ac.kr>, Hans de Goede <hdegoede@redhat.com>,
- Aloka Dixit <quic_alokad@quicinc.com>, John Keeping <john@keeping.me.uk>,
- Jeff Johnson <quic_jjohnson@quicinc.com>, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-References: <20240126223150.work.548-kees@kernel.org>
- <170678189299.2736043.11616312910656558919.kvalo@kernel.org>
-Content-Language: en-US
-From: Arend Van Spriel <aspriel@gmail.com>
-In-Reply-To: <170678189299.2736043.11616312910656558919.kvalo@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240131174347.510961-1-jens.wiklander@linaro.org>
+In-Reply-To: <20240131174347.510961-1-jens.wiklander@linaro.org>
+From: Sumit Garg <sumit.garg@linaro.org>
+Date: Fri, 2 Feb 2024 15:29:30 +0530
+Message-ID: <CAFA6WYORTtuRsoiDhjCdPwaDHyJ+ixZBu_-VQHPE2RhCprKQ0w@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] Replay Protected Memory Block (RPMB) subsystem
+To: Jens Wiklander <jens.wiklander@linaro.org>
+Cc: linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
+	op-tee@lists.trustedfirmware.org, 
+	Shyam Saini <shyamsaini@linux.microsoft.com>, Ulf Hansson <ulf.hansson@linaro.org>, 
+	Jerome Forissier <jerome.forissier@linaro.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Bart Van Assche <bvanassche@acm.org>, 
+	Randy Dunlap <rdunlap@infradead.org>, Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On 2/1/2024 11:04 AM, Kalle Valo wrote:
-> Kees Cook <keescook@chromium.org> wrote:
-> 
->> After commit e3eac9f32ec0 ("wifi: cfg80211: Annotate struct
->> cfg80211_scan_request with __counted_by"), the compiler may enforce
->> dynamic array indexing of req->channels to stay below n_channels. As a
->> result, n_channels needs to be increased _before_ accessing the newly
->> added array index. Increment it first, then use "i" for the prior index.
->> Solves this warning in the coming GCC that has __counted_by support:
->>
->> ../drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c: In function 'brcmf_internal_escan_add_info':
->> ../drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c:3783:46: warning: operation on 'req->
->> n_channels' may be undefined [-Wsequence-point]
->>   3783 |                 req->channels[req->n_channels++] = chan;
->>        |                               ~~~~~~~~~~~~~~~^~
->>
->> Fixes: e3eac9f32ec0 ("wifi: cfg80211: Annotate struct cfg80211_scan_request with __counted_by")
->> Cc: Arend van Spriel <aspriel@gmail.com>
->> Cc: Franky Lin <franky.lin@broadcom.com>
->> Cc: Hante Meuleman <hante.meuleman@broadcom.com>
->> Cc: Kalle Valo <kvalo@kernel.org>
->> Cc: Chi-hsien Lin <chi-hsien.lin@infineon.com>
->> Cc: Ian Lin <ian.lin@infineon.com>
->> Cc: Johannes Berg <johannes.berg@intel.com>
->> Cc: Wright Feng <wright.feng@cypress.com>
->> Cc: Hector Martin <marcan@marcan.st>
->> Cc: linux-wireless@vger.kernel.org
->> Cc: brcm80211-dev-list.pdl@broadcom.com
->> Signed-off-by: Kees Cook <keescook@chromium.org>
->> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
->> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
->> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> 
-> I'm planning to queue this for wireless tree. Arend, ack?
+Hi Jens,
 
-This slipped past my broadcom email. As the Fixes commit is in 6.7 I 
-would say ACK.
+On Wed, 31 Jan 2024 at 23:14, Jens Wiklander <jens.wiklander@linaro.org> wrote:
+>
+> Hi,
+>
+> It's been a while since Shyam posted the last version [1] of this patch
+> set. I've pinged Shyam, but so far I've had no reply so I'm trying to make
+> another attempt with the RPMB subsystem. If Shyam has other changes in mind
+> than what I'm adding here I hope we'll find a way to cover that too. I'm
+> calling it version two of the patchset since I'm trying to address all
+> feedback on the previous version even if I'm starting a new thread.
+>
+> This patch set introduces a new RPMB subsystem, based on patches from [1],
+> [2], and [3]. The RPMB subsystem aims at providing access to RPMB
+> partitions to other kernel drivers, in particular the OP-TEE driver. A new
+> user space ABI isn't needed, we can instead continue using the already
+> present ABI when writing the RPMB key during production.
+>
+> I've added and removed things to keep only what is needed by the OP-TEE
+> driver. Since the posting of [3], there has been major changes in the MMC
+> subsystem so "mmc: block: register RPMB partition with the RPMB subsystem"
+> is in practice completely rewritten.
+>
+> With this OP-TEE can access RPMB during early boot instead of having to
+> wait for user space to become available as in the current design [4].
+> This will benefit the efi variables [5] since we wont rely on userspace as
+> well as some TPM issues [6] that were solved.
+>
+> The OP-TEE driver finds the correct RPMB device to interact with by
+> iterating over available devices until one is found with a programmed
+> authentication matching the one OP-TEE is using. This enables coexisting
+> users of other RPMBs since the owner can be determined by who knows the
+> authentication key.
+>
+> I've put myself as a maintainer for the RPMB subsystem as I have an
+> interest in the OP-TEE driver to keep this in good shape. However, if you'd
+> rather see someone else taking the maintainership that's fine too. I'll
+> help keep the subsystem updated regardless.
+>
+> [1] https://lore.kernel.org/lkml/20230722014037.42647-1-shyamsaini@linux.microsoft.com/
+> [2] https://lore.kernel.org/lkml/20220405093759.1126835-2-alex.bennee@linaro.org/
+> [3] https://lore.kernel.org/linux-mmc/1478548394-8184-2-git-send-email-tomas.winkler@intel.com/
+> [4] https://optee.readthedocs.io/en/latest/architecture/secure_storage.html#rpmb-secure-storage
+> [5] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c44b6be62e8dd4ee0a308c36a70620613e6fc55f
+> [6] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7269cba53d906cf257c139d3b3a53ad272176bca
+>
+> Thanks,
+> Jens
+>
+> Changes since Shyam's RFC:
+> * Removed the remaining leftover rpmb_cdev_*() function calls
+> * Refactored the struct rpmb_ops with all the previous ops replaced, in
+>   some sense closer to [3] with the route_frames() op
+> * Added rpmb_route_frames()
+> * Added struct rpmb_frame, enum rpmb_op_result, and enum rpmb_type from [3]
+> * Removed all functions not needed in the OP-TEE use case
+> * Added "mmc: block: register RPMB partition with the RPMB subsystem", based
+>   on the commit with the same name in [3]
+> * Added "optee: probe RPMB device using RPMB subsystem" for integration
+>   with OP-TEE
+> * Moved the RPMB driver into drivers/misc/rpmb-core.c
+> * Added my name to MODULE_AUTHOR() in rpmb-core.c
+> * Added an rpmb_mutex to serialize access to the IDA
+> * Removed the target parameter from all rpmb_*() functions since it's
+>   currently unused
+>
 
-Gr. AvS
+Thanks for working on this. This is a huge step towards supporting TEE
+kernel client drivers. IIRC you mentioned offline to test it with
+virtio RPMB on Qemu. If it works then I would be happy to try it out
+as well.
+
+Along with that can you point me to the corresponding OP-TEE OS
+changes? I suppose as you are just adding 3 new RPC calls in patch#3,
+so we should be fine ABI wise although people have to uprev both
+OP-TEE and Linux kernel to get this feature enabled. However, OP-TEE
+should gate those RPCs behind a config flag or can just fallback to
+user-space supplicant if those aren't supported?
+
+-Sumit
+
+>
+>
+> Jens Wiklander (3):
+>   rpmb: add Replay Protected Memory Block (RPMB) subsystem
+>   mmc: block: register RPMB partition with the RPMB subsystem
+>   optee: probe RPMB device using RPMB subsystem
+>
+>  MAINTAINERS                       |   7 +
+>  drivers/misc/Kconfig              |   9 ++
+>  drivers/misc/Makefile             |   1 +
+>  drivers/misc/rpmb-core.c          | 247 ++++++++++++++++++++++++++++++
+>  drivers/mmc/core/block.c          | 177 +++++++++++++++++++++
+>  drivers/tee/optee/core.c          |   1 +
+>  drivers/tee/optee/ffa_abi.c       |   2 +
+>  drivers/tee/optee/optee_private.h |   6 +
+>  drivers/tee/optee/optee_rpc_cmd.h |  33 ++++
+>  drivers/tee/optee/rpc.c           | 221 ++++++++++++++++++++++++++
+>  drivers/tee/optee/smc_abi.c       |   2 +
+>  include/linux/rpmb.h              | 184 ++++++++++++++++++++++
+>  12 files changed, 890 insertions(+)
+>  create mode 100644 drivers/misc/rpmb-core.c
+>  create mode 100644 include/linux/rpmb.h
+>
+>
+> base-commit: 41bccc98fb7931d63d03f326a746ac4d429c1dd3
+> --
+> 2.34.1
+>
 
