@@ -1,759 +1,337 @@
-Return-Path: <linux-kernel+bounces-50734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4395847D67
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:55:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 80A0C847D69
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:58:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 141871C2383B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:55:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D7001C225BE
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:58:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D597A12F378;
-	Fri,  2 Feb 2024 23:55:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7785D12D750;
+	Fri,  2 Feb 2024 23:58:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="U0R5hav+"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ym6gwuRz"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42BE485946
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 23:54:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7C917F4
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 23:58:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706918100; cv=none; b=MyC4BFNUxgS2smYoDXqgYhH4rvOr0Cml2gUQQmDarXvSn+6CIZ1pztH+f68yCN5ffhsjJC1zy2ED1shUam2KKc9OLVpFbL/e/6jhgX28yMUKI9MpLPGcbmpIEBE1ejHIbdNNqk9+sAfijdb7SIgMKoUJOLCMqW2xoqh+45ZpTNA=
+	t=1706918323; cv=none; b=AXnZgD9Jj9KnQXfwBMF9M4V3WWNCG+rDuJW1pcEbcfcfnuBWAaZ7xpWG5lw4H1GqKV06KcAUb7O3NZFh+bQvyml3oC2G90hgktzZPt4AlmWjIOexnmA39PnUdHpbNXNAAJA6F2a9PIt/Hg27kggDyESsrkyClWjyMsFBUiwhj6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706918100; c=relaxed/simple;
-	bh=vwhBmHfF/EKObUwb3qKoX49eRqG1MgvOSHuJsJTDdRo=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Rg9cae+qzU5RFn6LnLunjj98GWXm42//tRiWe7YLUmehkUj8NGGjtJzksTdPPpjU3ehoz+RwX5Hvq6FOzCmQRw6foOA6jqj8Uj9S1Mu5P3ARlyKXegkDj2oJGW62fYxCffHWlijPBC77oxreebkPT7KqSLmefr9Kk2eDhfKDgtM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=U0R5hav+; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d746856d85so20821265ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 15:54:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706918097; x=1707522897; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xunksNOigL1rXi22PNXZoQDfg/C2wRrV7gzfa+vwFao=;
-        b=U0R5hav+AWzFHUU849BcG44sBQcsL1/gyOVUnLZ1SOr8a5UpKU4B32nDF+6krnxvcL
-         rV2dOUDnuv9VqeG3Wx2olOBM0DHaWh65z4jNejRKDTVWkBJpty5QuLVC194a5jzLHLwY
-         JfnoBEE5g3YXdMYHO1nT+A0Kybfk84wNT+TjYslAO2xP1fbcTSU6p6dDcbgFqtYCyfM+
-         tMuFu1Wyy2/9PvvOGWbgZkp9vjXA4Bywv0g/ySG733d6nM0ILi9z+wu2WxYgeVrjnD/j
-         Qgkcl2WEm2Bu5FwAyMtrWc8WICGJXvYRTSecZXwv//Cy2zO/FRsYGicgJPTqv0qgMIbn
-         GQFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706918097; x=1707522897;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xunksNOigL1rXi22PNXZoQDfg/C2wRrV7gzfa+vwFao=;
-        b=otdrwFeAeRpEwLZUiRDBbFCyw6dzCc9nf8D8rTu2Cc2noywBSCVO8TGF/awr0NzbQv
-         P1bbe6qbkU1/JuQrFu11ybSlM/xjEEp/RLJkraiHA9BOfqnIQj4uwwplDdH15Wm3v5nR
-         drPjyVg2XOtiFCWkMkhRltdzIEl2EEIaSzNWx+4r/yueLAShnqzqtA/iietlVEj0qSlX
-         gCR+FyQ9UpEDTPcIk2s0Sqwo55QB8jwt/y8mynt3Dyug9WM4feedU/dhVZJB+po7st8X
-         DQhVBcZfVbhvcdRPX+lALXyVrf/PjkQH2M4LaaBwbcYxnOS9U+wD7tupoFtftPKM7B39
-         k2XQ==
-X-Gm-Message-State: AOJu0Yz2p7G+xlW9FWSAWAoJ5qsWtRwmmsCOlJUPxfXzJvtlTTyxDVpP
-	RPpEfhgJAaV6CID1CtqZcmKYsUBPDs4bdSkMRxFO2nDytQVBRhocGdXpzDh7VNM=
-X-Google-Smtp-Source: AGHT+IFYHxXEjIxPpgXA6J1gs/EirBeKRbhlsf+UfzOqed7FQaaJMsX52TR4lNfokk2aQ9ZAARrxWA==
-X-Received: by 2002:a17:903:1210:b0:1d8:debb:4125 with SMTP id l16-20020a170903121000b001d8debb4125mr3316154plh.38.1706918097358;
-        Fri, 02 Feb 2024 15:54:57 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUngsmC9mmyAjdvI5TTu9ggcNSXbmqX/s809OxaHO7G3/6T1jktG55f6M5eOHDC9iFwztIn/oqWXyXAPkpjpdMucEQN3HPjSkiZyZTbKwlqG6Rq3NirkiCKXKpa9sD0jeozME1MBNcshWKkmYZ9tZIUySIXk246uhabAM5cus1y9r2BjT9Kdljzu24iH8BmHlFMssm0Ge1tR+MDjULLEsHt7jgsQ3l7M2KrGPVvwd7Om44NSqvGi729GqqWFuaXvDa6Qouki+NyZO0Urt3xyFUTKA5uJzha2DDyQODaQTi/XD3+nGXqkTTxZayTF3GMNOt9CQr7Xqq3SA==
-Received: from charlie.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id u1-20020a17090282c100b001d8f81ece98sm2133607plz.104.2024.02.02.15.54.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 15:54:56 -0800 (PST)
-From: Charlie Jenkins <charlie@rivosinc.com>
-Date: Fri, 02 Feb 2024 15:54:53 -0800
-Subject: [PATCH v3 2/2] riscv: Disable misaligned access probe when
- CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+	s=arc-20240116; t=1706918323; c=relaxed/simple;
+	bh=zYoO7Wdoe+eIO/LyIAPkIFAZg398b2C1GJUJEJ0a+AE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Hpy7fePfXe7pMUJaV/W7KvT9tn7R5ojtJEQAk0KyJWFONMhqjEgZ4VqOqU63rqEt632k5BeHm65gek8JKZLQFnm3psY9Ng12mYeWmRRdkB7ZVOLv+YEmH/4g2+ihe2pr9LwaZ1JMp7Wx5vUpv761i+snjRi4638kampuJtoaRA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ym6gwuRz; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706918321; x=1738454321;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=zYoO7Wdoe+eIO/LyIAPkIFAZg398b2C1GJUJEJ0a+AE=;
+  b=Ym6gwuRzFNc5mxP9lLUoXnidGK5mJO8MTMMzyYxMHI2NjL2BMxFqWjFQ
+   L1SgWDo7rKqWWFRXOwxBjcPsm/9YOtwUWyOT4N/zwDppHY6h3cJmAIR6J
+   QkE2SxM4UFEFyUuwRd7dWYnSZuYp5x76JD6EbtYiYGlyo19YAOsH4aAYW
+   iIFALSE3P2f9zCjraxaVmHk3oTwbn7uWjVIk6W0StKg7RSY+bPROggEnV
+   qhZnPSYhhJAqRWlDZNnRXPfyDL5TiE1vPCQNhnbpVzBEAaRBsQPiWrFlS
+   Y2drKM/Se4bOXXRa4lVD8EvGMCUdqHmTMWZbhJ2XxXOw/+TzhFZ+8D4g9
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="172888"
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="172888"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 15:58:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="494891"
+Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
+  by orviesa006.jf.intel.com with ESMTP; 02 Feb 2024 15:58:39 -0800
+Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rW3QZ-0004Py-2N;
+	Fri, 02 Feb 2024 23:58:35 +0000
+Date: Sat, 3 Feb 2024 07:58:33 +0800
+From: kernel test robot <lkp@intel.com>
+To: Max Kellermann <max.kellermann@ionos.com>, linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev,
+	Max Kellermann <max.kellermann@ionos.com>
+Subject: Re: [PATCH 16/28] device.h: move declarations to device_types.h
+Message-ID: <202402030708.WgadrfjA-lkp@intel.com>
+References: <20240131145008.1345531-17-max.kellermann@ionos.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240202-disable_misaligned_probe_config-v3-2-c44f91f03bb6@rivosinc.com>
-References: <20240202-disable_misaligned_probe_config-v3-0-c44f91f03bb6@rivosinc.com>
-In-Reply-To: <20240202-disable_misaligned_probe_config-v3-0-c44f91f03bb6@rivosinc.com>
-To: Paul Walmsley <paul.walmsley@sifive.com>, 
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
- Jisheng Zhang <jszhang@kernel.org>, Evan Green <evan@rivosinc.com>, 
- =?utf-8?q?Cl=C3=A9ment_L=C3=A9ger?= <cleger@rivosinc.com>, 
- Eric Biggers <ebiggers@kernel.org>, 
- Elliot Berman <quic_eberman@quicinc.com>
-Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Charlie Jenkins <charlie@rivosinc.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706918093; l=19916;
- i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
- bh=vwhBmHfF/EKObUwb3qKoX49eRqG1MgvOSHuJsJTDdRo=;
- b=QBayGrWdc/19uAkWgBJuvk/KwxtyVs+VZzXjoNqgXRlxbhfDMcIcM//li0qGe6y6xyRNUJszt
- IDoFebO2PCBCiQ9tPXk2cBHc8ktUcbEg4p1nf96VFtUzqma0JiKZlSi
-X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
- pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240131145008.1345531-17-max.kellermann@ionos.com>
 
-When CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS is selected, the cpus can be
-set to have fast misaligned access without needing to probe.
+Hi Max,
 
-To avoid some ifdefs, move unalignment probing code into its own file
-and make CONFIG_RISCV_MISALIGNED depend on
-CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS.
+kernel test robot noticed the following build warnings:
 
-Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
----
- arch/riscv/Kconfig                          |   1 +
- arch/riscv/include/asm/cpufeature.h         |   7 +
- arch/riscv/kernel/Makefile                  |   3 +
- arch/riscv/kernel/cpufeature.c              | 255 --------------------------
- arch/riscv/kernel/misaligned_access_speed.c | 265 ++++++++++++++++++++++++++++
- arch/riscv/kernel/sys_hwprobe.c             |   4 +
- 6 files changed, 280 insertions(+), 255 deletions(-)
+[auto build test WARNING on next-20240131]
+[cannot apply to mkp-scsi/for-next jejb-scsi/for-next axboe-block/for-next linus/master v6.8-rc2 v6.8-rc1 v6.7 v6.8-rc2]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index bffbd869a068..3223d2d08f74 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -690,6 +690,7 @@ config THREAD_SIZE_ORDER
- config RISCV_MISALIGNED
- 	bool "Support misaligned load/store traps for kernel and userspace"
- 	select SYSCTL_ARCH_UNALIGN_ALLOW
-+	depends on !HAVE_EFFICIENT_UNALIGNED_ACCESS
- 	default y
- 	help
- 	  Say Y here if you want the kernel to embed support for misaligned
-diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm/cpufeature.h
-index eb3ac304fc42..44734e5169b1 100644
---- a/arch/riscv/include/asm/cpufeature.h
-+++ b/arch/riscv/include/asm/cpufeature.h
-@@ -51,6 +51,12 @@ static inline bool check_unaligned_access_emulated(int cpu)
- static inline void unaligned_emulation_finish(void) {}
- #endif
- 
-+#ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
-+static __always_inline bool has_fast_misaligned_accesses(void)
-+{
-+	return true;
-+}
-+#else
- DECLARE_PER_CPU(long, misaligned_access_speed);
- 
- DECLARE_STATIC_KEY_FALSE(fast_misaligned_access_speed_key);
-@@ -59,6 +65,7 @@ static __always_inline bool has_fast_misaligned_accesses(void)
- {
- 	return static_branch_likely(&fast_misaligned_access_speed_key);
- }
-+#endif
- 
- unsigned long riscv_get_elf_hwcap(void);
- 
-diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-index f71910718053..ffba5ecf12c2 100644
---- a/arch/riscv/kernel/Makefile
-+++ b/arch/riscv/kernel/Makefile
-@@ -62,6 +62,9 @@ obj-y	+= tests/
- obj-$(CONFIG_MMU) += vdso.o vdso/
- 
- obj-$(CONFIG_RISCV_MISALIGNED)	+= traps_misaligned.o
-+ifneq ($(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS), y)
-+obj-y	+= misaligned_access_speed.o
-+endif
- obj-$(CONFIG_FPU)		+= fpu.o
- obj-$(CONFIG_RISCV_ISA_V)	+= vector.o
- obj-$(CONFIG_RISCV_ISA_V)	+= kernel_mode_vector.o
-diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-index 89920f84d0a3..319670af5704 100644
---- a/arch/riscv/kernel/cpufeature.c
-+++ b/arch/riscv/kernel/cpufeature.c
-@@ -11,7 +11,6 @@
- #include <linux/cpu.h>
- #include <linux/cpuhotplug.h>
- #include <linux/ctype.h>
--#include <linux/jump_label.h>
- #include <linux/log2.h>
- #include <linux/memory.h>
- #include <linux/module.h>
-@@ -21,20 +20,12 @@
- #include <asm/cacheflush.h>
- #include <asm/cpufeature.h>
- #include <asm/hwcap.h>
--#include <asm/hwprobe.h>
- #include <asm/patch.h>
- #include <asm/processor.h>
- #include <asm/vector.h>
- 
--#include "copy-unaligned.h"
--
- #define NUM_ALPHA_EXTS ('z' - 'a' + 1)
- 
--#define MISALIGNED_ACCESS_JIFFIES_LG2 1
--#define MISALIGNED_BUFFER_SIZE 0x4000
--#define MISALIGNED_BUFFER_ORDER get_order(MISALIGNED_BUFFER_SIZE)
--#define MISALIGNED_COPY_SIZE ((MISALIGNED_BUFFER_SIZE / 2) - 0x80)
--
- unsigned long elf_hwcap __read_mostly;
- 
- /* Host ISA bitmap */
-@@ -43,11 +34,6 @@ static DECLARE_BITMAP(riscv_isa, RISCV_ISA_EXT_MAX) __read_mostly;
- /* Per-cpu ISA extensions. */
- struct riscv_isainfo hart_isa[NR_CPUS];
- 
--/* Performance information */
--DEFINE_PER_CPU(long, misaligned_access_speed);
--
--static cpumask_t fast_misaligned_access;
--
- /**
-  * riscv_isa_extension_base() - Get base extension word
-  *
-@@ -706,247 +692,6 @@ unsigned long riscv_get_elf_hwcap(void)
- 	return hwcap;
- }
- 
--static int check_unaligned_access(void *param)
--{
--	int cpu = smp_processor_id();
--	u64 start_cycles, end_cycles;
--	u64 word_cycles;
--	u64 byte_cycles;
--	int ratio;
--	unsigned long start_jiffies, now;
--	struct page *page = param;
--	void *dst;
--	void *src;
--	long speed = RISCV_HWPROBE_MISALIGNED_SLOW;
--
--	if (check_unaligned_access_emulated(cpu))
--		return 0;
--
--	/* Make an unaligned destination buffer. */
--	dst = (void *)((unsigned long)page_address(page) | 0x1);
--	/* Unalign src as well, but differently (off by 1 + 2 = 3). */
--	src = dst + (MISALIGNED_BUFFER_SIZE / 2);
--	src += 2;
--	word_cycles = -1ULL;
--	/* Do a warmup. */
--	__riscv_copy_words_unaligned(dst, src, MISALIGNED_COPY_SIZE);
--	preempt_disable();
--	start_jiffies = jiffies;
--	while ((now = jiffies) == start_jiffies)
--		cpu_relax();
--
--	/*
--	 * For a fixed amount of time, repeatedly try the function, and take
--	 * the best time in cycles as the measurement.
--	 */
--	while (time_before(jiffies, now + (1 << MISALIGNED_ACCESS_JIFFIES_LG2))) {
--		start_cycles = get_cycles64();
--		/* Ensure the CSR read can't reorder WRT to the copy. */
--		mb();
--		__riscv_copy_words_unaligned(dst, src, MISALIGNED_COPY_SIZE);
--		/* Ensure the copy ends before the end time is snapped. */
--		mb();
--		end_cycles = get_cycles64();
--		if ((end_cycles - start_cycles) < word_cycles)
--			word_cycles = end_cycles - start_cycles;
--	}
--
--	byte_cycles = -1ULL;
--	__riscv_copy_bytes_unaligned(dst, src, MISALIGNED_COPY_SIZE);
--	start_jiffies = jiffies;
--	while ((now = jiffies) == start_jiffies)
--		cpu_relax();
--
--	while (time_before(jiffies, now + (1 << MISALIGNED_ACCESS_JIFFIES_LG2))) {
--		start_cycles = get_cycles64();
--		mb();
--		__riscv_copy_bytes_unaligned(dst, src, MISALIGNED_COPY_SIZE);
--		mb();
--		end_cycles = get_cycles64();
--		if ((end_cycles - start_cycles) < byte_cycles)
--			byte_cycles = end_cycles - start_cycles;
--	}
--
--	preempt_enable();
--
--	/* Don't divide by zero. */
--	if (!word_cycles || !byte_cycles) {
--		pr_warn("cpu%d: rdtime lacks granularity needed to measure unaligned access speed\n",
--			cpu);
--
--		return 0;
--	}
--
--	if (word_cycles < byte_cycles)
--		speed = RISCV_HWPROBE_MISALIGNED_FAST;
--
--	ratio = div_u64((byte_cycles * 100), word_cycles);
--	pr_info("cpu%d: Ratio of byte access time to unaligned word access is %d.%02d, unaligned accesses are %s\n",
--		cpu,
--		ratio / 100,
--		ratio % 100,
--		(speed == RISCV_HWPROBE_MISALIGNED_FAST) ? "fast" : "slow");
--
--	per_cpu(misaligned_access_speed, cpu) = speed;
--
--	/*
--	 * Set the value of fast_misaligned_access of a CPU. These operations
--	 * are atomic to avoid race conditions.
--	 */
--	if (speed == RISCV_HWPROBE_MISALIGNED_FAST)
--		cpumask_set_cpu(cpu, &fast_misaligned_access);
--	else
--		cpumask_clear_cpu(cpu, &fast_misaligned_access);
--
--	return 0;
--}
--
--static void check_unaligned_access_nonboot_cpu(void *param)
--{
--	unsigned int cpu = smp_processor_id();
--	struct page **pages = param;
--
--	if (smp_processor_id() != 0)
--		check_unaligned_access(pages[cpu]);
--}
--
--DEFINE_STATIC_KEY_FALSE(fast_misaligned_access_speed_key);
--
--static void modify_unaligned_access_branches(cpumask_t *mask, int weight)
--{
--	if (cpumask_weight(mask) == weight)
--		static_branch_enable_cpuslocked(&fast_misaligned_access_speed_key);
--	else
--		static_branch_disable_cpuslocked(&fast_misaligned_access_speed_key);
--}
--
--static void set_unaligned_access_static_branches_except_cpu(int cpu)
--{
--	/*
--	 * Same as set_unaligned_access_static_branches, except excludes the
--	 * given CPU from the result. When a CPU is hotplugged into an offline
--	 * state, this function is called before the CPU is set to offline in
--	 * the cpumask, and thus the CPU needs to be explicitly excluded.
--	 */
--
--	cpumask_t fast_except_me;
--
--	cpumask_and(&fast_except_me, &fast_misaligned_access, cpu_online_mask);
--	cpumask_clear_cpu(cpu, &fast_except_me);
--
--	modify_unaligned_access_branches(&fast_except_me, num_online_cpus() - 1);
--}
--
--static void set_unaligned_access_static_branches(void)
--{
--	/*
--	 * This will be called after check_unaligned_access_all_cpus so the
--	 * result of unaligned access speed for all CPUs will be available.
--	 *
--	 * To avoid the number of online cpus changing between reading
--	 * cpu_online_mask and calling num_online_cpus, cpus_read_lock must be
--	 * held before calling this function.
--	 */
--
--	cpumask_t fast_and_online;
--
--	cpumask_and(&fast_and_online, &fast_misaligned_access, cpu_online_mask);
--
--	modify_unaligned_access_branches(&fast_and_online, num_online_cpus());
--}
--
--static int lock_and_set_unaligned_access_static_branch(void)
--{
--	cpus_read_lock();
--	set_unaligned_access_static_branches();
--	cpus_read_unlock();
--
--	return 0;
--}
--
--arch_initcall_sync(lock_and_set_unaligned_access_static_branch);
--
--static int riscv_online_cpu(unsigned int cpu)
--{
--	static struct page *buf;
--
--	/* We are already set since the last check */
--	if (per_cpu(misaligned_access_speed, cpu) != RISCV_HWPROBE_MISALIGNED_UNKNOWN)
--		goto exit;
--
--	buf = alloc_pages(GFP_KERNEL, MISALIGNED_BUFFER_ORDER);
--	if (!buf) {
--		pr_warn("Allocation failure, not measuring misaligned performance\n");
--		return -ENOMEM;
--	}
--
--	check_unaligned_access(buf);
--	__free_pages(buf, MISALIGNED_BUFFER_ORDER);
--
--exit:
--	set_unaligned_access_static_branches();
--
--	return 0;
--}
--
--static int riscv_offline_cpu(unsigned int cpu)
--{
--	set_unaligned_access_static_branches_except_cpu(cpu);
--
--	return 0;
--}
--
--/* Measure unaligned access on all CPUs present at boot in parallel. */
--static int check_unaligned_access_all_cpus(void)
--{
--	unsigned int cpu;
--	unsigned int cpu_count = num_possible_cpus();
--	struct page **bufs = kzalloc(cpu_count * sizeof(struct page *),
--				     GFP_KERNEL);
--
--	if (!bufs) {
--		pr_warn("Allocation failure, not measuring misaligned performance\n");
--		return 0;
--	}
--
--	/*
--	 * Allocate separate buffers for each CPU so there's no fighting over
--	 * cache lines.
--	 */
--	for_each_cpu(cpu, cpu_online_mask) {
--		bufs[cpu] = alloc_pages(GFP_KERNEL, MISALIGNED_BUFFER_ORDER);
--		if (!bufs[cpu]) {
--			pr_warn("Allocation failure, not measuring misaligned performance\n");
--			goto out;
--		}
--	}
--
--	/* Check everybody except 0, who stays behind to tend jiffies. */
--	on_each_cpu(check_unaligned_access_nonboot_cpu, bufs, 1);
--
--	/* Check core 0. */
--	smp_call_on_cpu(0, check_unaligned_access, bufs[0], true);
--
--	/*
--	 * Setup hotplug callbacks for any new CPUs that come online or go
--	 * offline.
--	 */
--	cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN, "riscv:online",
--				  riscv_online_cpu, riscv_offline_cpu);
--
--out:
--	unaligned_emulation_finish();
--	for_each_cpu(cpu, cpu_online_mask) {
--		if (bufs[cpu])
--			__free_pages(bufs[cpu], MISALIGNED_BUFFER_ORDER);
--	}
--
--	kfree(bufs);
--	return 0;
--}
--
--arch_initcall(check_unaligned_access_all_cpus);
--
- void riscv_user_isa_enable(void)
- {
- 	if (riscv_cpu_has_extension_unlikely(smp_processor_id(), RISCV_ISA_EXT_ZICBOZ))
-diff --git a/arch/riscv/kernel/misaligned_access_speed.c b/arch/riscv/kernel/misaligned_access_speed.c
-new file mode 100644
-index 000000000000..b725c07dd1af
---- /dev/null
-+++ b/arch/riscv/kernel/misaligned_access_speed.c
-@@ -0,0 +1,265 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright 2024 Rivos Inc.
-+ */
-+
-+#include <linux/cpu.h>
-+#include <linux/cpumask.h>
-+#include <linux/jump_label.h>
-+#include <linux/mm.h>
-+#include <linux/smp.h>
-+#include <linux/types.h>
-+#include <asm/cpufeature.h>
-+#include <asm/hwprobe.h>
-+
-+#include "copy-unaligned.h"
-+
-+#define MISALIGNED_ACCESS_JIFFIES_LG2 1
-+#define MISALIGNED_BUFFER_SIZE 0x4000
-+#define MISALIGNED_BUFFER_ORDER get_order(MISALIGNED_BUFFER_SIZE)
-+#define MISALIGNED_COPY_SIZE ((MISALIGNED_BUFFER_SIZE / 2) - 0x80)
-+
-+DEFINE_PER_CPU(long, misaligned_access_speed);
-+
-+static cpumask_t fast_misaligned_access;
-+
-+static int check_unaligned_access(void *param)
-+{
-+	int cpu = smp_processor_id();
-+	u64 start_cycles, end_cycles;
-+	u64 word_cycles;
-+	u64 byte_cycles;
-+	int ratio;
-+	unsigned long start_jiffies, now;
-+	struct page *page = param;
-+	void *dst;
-+	void *src;
-+	long speed = RISCV_HWPROBE_MISALIGNED_SLOW;
-+
-+	if (check_unaligned_access_emulated(cpu))
-+		return 0;
-+
-+	/* Make an unaligned destination buffer. */
-+	dst = (void *)((unsigned long)page_address(page) | 0x1);
-+	/* Unalign src as well, but differently (off by 1 + 2 = 3). */
-+	src = dst + (MISALIGNED_BUFFER_SIZE / 2);
-+	src += 2;
-+	word_cycles = -1ULL;
-+	/* Do a warmup. */
-+	__riscv_copy_words_unaligned(dst, src, MISALIGNED_COPY_SIZE);
-+	preempt_disable();
-+	start_jiffies = jiffies;
-+	while ((now = jiffies) == start_jiffies)
-+		cpu_relax();
-+
-+	/*
-+	 * For a fixed amount of time, repeatedly try the function, and take
-+	 * the best time in cycles as the measurement.
-+	 */
-+	while (time_before(jiffies, now + (1 << MISALIGNED_ACCESS_JIFFIES_LG2))) {
-+		start_cycles = get_cycles64();
-+		/* Ensure the CSR read can't reorder WRT to the copy. */
-+		mb();
-+		__riscv_copy_words_unaligned(dst, src, MISALIGNED_COPY_SIZE);
-+		/* Ensure the copy ends before the end time is snapped. */
-+		mb();
-+		end_cycles = get_cycles64();
-+		if ((end_cycles - start_cycles) < word_cycles)
-+			word_cycles = end_cycles - start_cycles;
-+	}
-+
-+	byte_cycles = -1ULL;
-+	__riscv_copy_bytes_unaligned(dst, src, MISALIGNED_COPY_SIZE);
-+	start_jiffies = jiffies;
-+	while ((now = jiffies) == start_jiffies)
-+		cpu_relax();
-+
-+	while (time_before(jiffies, now + (1 << MISALIGNED_ACCESS_JIFFIES_LG2))) {
-+		start_cycles = get_cycles64();
-+		mb();
-+		__riscv_copy_bytes_unaligned(dst, src, MISALIGNED_COPY_SIZE);
-+		mb();
-+		end_cycles = get_cycles64();
-+		if ((end_cycles - start_cycles) < byte_cycles)
-+			byte_cycles = end_cycles - start_cycles;
-+	}
-+
-+	preempt_enable();
-+
-+	/* Don't divide by zero. */
-+	if (!word_cycles || !byte_cycles) {
-+		pr_warn("cpu%d: rdtime lacks granularity needed to measure unaligned access speed\n",
-+			cpu);
-+
-+		return 0;
-+	}
-+
-+	if (word_cycles < byte_cycles)
-+		speed = RISCV_HWPROBE_MISALIGNED_FAST;
-+
-+	ratio = div_u64((byte_cycles * 100), word_cycles);
-+	pr_info("cpu%d: Ratio of byte access time to unaligned word access is %d.%02d, unaligned accesses are %s\n",
-+		cpu,
-+		ratio / 100,
-+		ratio % 100,
-+		(speed == RISCV_HWPROBE_MISALIGNED_FAST) ? "fast" : "slow");
-+
-+	per_cpu(misaligned_access_speed, cpu) = speed;
-+
-+	/*
-+	 * Set the value of fast_misaligned_access of a CPU. These operations
-+	 * are atomic to avoid race conditions.
-+	 */
-+	if (speed == RISCV_HWPROBE_MISALIGNED_FAST)
-+		cpumask_set_cpu(cpu, &fast_misaligned_access);
-+	else
-+		cpumask_clear_cpu(cpu, &fast_misaligned_access);
-+
-+	return 0;
-+}
-+
-+static void check_unaligned_access_nonboot_cpu(void *param)
-+{
-+	unsigned int cpu = smp_processor_id();
-+	struct page **pages = param;
-+
-+	if (smp_processor_id() != 0)
-+		check_unaligned_access(pages[cpu]);
-+}
-+
-+DEFINE_STATIC_KEY_FALSE(fast_misaligned_access_speed_key);
-+
-+static void modify_unaligned_access_branches(cpumask_t *mask, int weight)
-+{
-+	if (cpumask_weight(mask) == weight)
-+		static_branch_enable_cpuslocked(&fast_misaligned_access_speed_key);
-+	else
-+		static_branch_disable_cpuslocked(&fast_misaligned_access_speed_key);
-+}
-+
-+static void set_unaligned_access_static_branches_except_cpu(int cpu)
-+{
-+	/*
-+	 * Same as set_unaligned_access_static_branches, except excludes the
-+	 * given CPU from the result. When a CPU is hotplugged into an offline
-+	 * state, this function is called before the CPU is set to offline in
-+	 * the cpumask, and thus the CPU needs to be explicitly excluded.
-+	 */
-+
-+	cpumask_t fast_except_me;
-+
-+	cpumask_and(&fast_except_me, &fast_misaligned_access, cpu_online_mask);
-+	cpumask_clear_cpu(cpu, &fast_except_me);
-+
-+	modify_unaligned_access_branches(&fast_except_me, num_online_cpus() - 1);
-+}
-+
-+static void set_unaligned_access_static_branches(void)
-+{
-+	/*
-+	 * This will be called after check_unaligned_access_all_cpus so the
-+	 * result of unaligned access speed for all CPUs will be available.
-+	 *
-+	 * To avoid the number of online cpus changing between reading
-+	 * cpu_online_mask and calling num_online_cpus, cpus_read_lock must be
-+	 * held before calling this function.
-+	 */
-+
-+	cpumask_t fast_and_online;
-+
-+	cpumask_and(&fast_and_online, &fast_misaligned_access, cpu_online_mask);
-+
-+	modify_unaligned_access_branches(&fast_and_online, num_online_cpus());
-+}
-+
-+static int lock_and_set_unaligned_access_static_branch(void)
-+{
-+	cpus_read_lock();
-+	set_unaligned_access_static_branches();
-+	cpus_read_unlock();
-+
-+	return 0;
-+}
-+
-+arch_initcall_sync(lock_and_set_unaligned_access_static_branch);
-+
-+static int riscv_online_cpu(unsigned int cpu)
-+{
-+	static struct page *buf;
-+
-+	/* We are already set since the last check */
-+	if (per_cpu(misaligned_access_speed, cpu) != RISCV_HWPROBE_MISALIGNED_UNKNOWN)
-+		goto exit;
-+
-+	buf = alloc_pages(GFP_KERNEL, MISALIGNED_BUFFER_ORDER);
-+	if (!buf) {
-+		pr_warn("Allocation failure, not measuring misaligned performance\n");
-+		return -ENOMEM;
-+	}
-+
-+	check_unaligned_access(buf);
-+	__free_pages(buf, MISALIGNED_BUFFER_ORDER);
-+
-+exit:
-+	set_unaligned_access_static_branches();
-+
-+	return 0;
-+}
-+
-+static int riscv_offline_cpu(unsigned int cpu)
-+{
-+	set_unaligned_access_static_branches_except_cpu(cpu);
-+
-+	return 0;
-+}
-+
-+/* Measure unaligned access on all CPUs present at boot in parallel. */
-+static int check_unaligned_access_all_cpus(void)
-+{
-+	unsigned int cpu;
-+	unsigned int cpu_count = num_possible_cpus();
-+	struct page **bufs = kzalloc(cpu_count * sizeof(struct page *),
-+				     GFP_KERNEL);
-+
-+	if (!bufs) {
-+		pr_warn("Allocation failure, not measuring misaligned performance\n");
-+		return 0;
-+	}
-+
-+	/*
-+	 * Allocate separate buffers for each CPU so there's no fighting over
-+	 * cache lines.
-+	 */
-+	for_each_cpu(cpu, cpu_online_mask) {
-+		bufs[cpu] = alloc_pages(GFP_KERNEL, MISALIGNED_BUFFER_ORDER);
-+		if (!bufs[cpu]) {
-+			pr_warn("Allocation failure, not measuring misaligned performance\n");
-+			goto out;
-+		}
-+	}
-+
-+	/* Check everybody except 0, who stays behind to tend jiffies. */
-+	on_each_cpu(check_unaligned_access_nonboot_cpu, bufs, 1);
-+
-+	/* Check core 0. */
-+	smp_call_on_cpu(0, check_unaligned_access, bufs[0], true);
-+
-+	/*
-+	 * Setup hotplug callbacks for any new CPUs that come online or go
-+	 * offline.
-+	 */
-+	cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN, "riscv:online",
-+				  riscv_online_cpu, riscv_offline_cpu);
-+
-+out:
-+	unaligned_emulation_finish();
-+	for_each_cpu(cpu, cpu_online_mask) {
-+		if (bufs[cpu])
-+			__free_pages(bufs[cpu], MISALIGNED_BUFFER_ORDER);
-+	}
-+
-+	kfree(bufs);
-+	return 0;
-+}
-+
-+arch_initcall(check_unaligned_access_all_cpus);
-diff --git a/arch/riscv/kernel/sys_hwprobe.c b/arch/riscv/kernel/sys_hwprobe.c
-index a7c56b41efd2..d9bd24776a3e 100644
---- a/arch/riscv/kernel/sys_hwprobe.c
-+++ b/arch/riscv/kernel/sys_hwprobe.c
-@@ -149,6 +149,9 @@ static bool hwprobe_ext0_has(const struct cpumask *cpus, unsigned long ext)
- 
- static u64 hwprobe_misaligned(const struct cpumask *cpus)
- {
-+#ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
-+	return RISCV_HWPROBE_MISALIGNED_FAST;
-+#else
- 	int cpu;
- 	u64 perf = -1ULL;
- 
-@@ -168,6 +171,7 @@ static u64 hwprobe_misaligned(const struct cpumask *cpus)
- 		return RISCV_HWPROBE_MISALIGNED_UNKNOWN;
- 
- 	return perf;
-+#endif
- }
- 
- static void hwprobe_one_pair(struct riscv_hwprobe *pair,
+url:    https://github.com/intel-lab-lkp/linux/commits/Max-Kellermann/include-add-missing-includes/20240131-231042
+base:   next-20240131
+patch link:    https://lore.kernel.org/r/20240131145008.1345531-17-max.kellermann%40ionos.com
+patch subject: [PATCH 16/28] device.h: move declarations to device_types.h
+config: arm64-defconfig (https://download.01.org/0day-ci/archive/20240203/202402030708.WgadrfjA-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240203/202402030708.WgadrfjA-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402030708.WgadrfjA-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+         |                                                                    ^~~~~
+   mm/slub.c:6327:14: error: 'slabs' undeclared here (not in a function); did you mean 'slab'?
+    6327 | SLAB_ATTR_RO(slabs);
+         |              ^~~~~
+   mm/slub.c:6132:68: note: in definition of macro 'SLAB_ATTR_RO'
+    6132 |         static struct slab_attribute _name##_attr = __ATTR_RO_MODE(_name, 0400)
+         |                                                                    ^~~~~
+   mm/slub.c:6333:14: error: 'total_objects' undeclared here (not in a function); did you mean 'oo_objects'?
+    6333 | SLAB_ATTR_RO(total_objects);
+         |              ^~~~~~~~~~~~~
+   mm/slub.c:6132:68: note: in definition of macro 'SLAB_ATTR_RO'
+    6132 |         static struct slab_attribute _name##_attr = __ATTR_RO_MODE(_name, 0400)
+         |                                                                    ^~~~~
+   mm/slub.c:6339:14: error: 'objects' undeclared here (not in a function); did you mean 'kobject'?
+    6339 | SLAB_ATTR_RO(objects);
+         |              ^~~~~~~
+   mm/slub.c:6132:68: note: in definition of macro 'SLAB_ATTR_RO'
+    6132 |         static struct slab_attribute _name##_attr = __ATTR_RO_MODE(_name, 0400)
+         |                                                                    ^~~~~
+   mm/slub.c:6345:14: error: 'sanity_checks' undeclared here (not in a function); did you mean 'sanity_checks_attr'?
+    6345 | SLAB_ATTR_RO(sanity_checks);
+         |              ^~~~~~~~~~~~~
+   mm/slub.c:6132:68: note: in definition of macro 'SLAB_ATTR_RO'
+    6132 |         static struct slab_attribute _name##_attr = __ATTR_RO_MODE(_name, 0400)
+         |                                                                    ^~~~~
+   mm/slub.c:6132:53: error: invalid initializer
+    6132 |         static struct slab_attribute _name##_attr = __ATTR_RO_MODE(_name, 0400)
+         |                                                     ^~~~~~~~~~~~~~
+   mm/slub.c:6351:1: note: in expansion of macro 'SLAB_ATTR_RO'
+    6351 | SLAB_ATTR_RO(trace);
+         | ^~~~~~~~~~~~
+   mm/slub.c:6358:14: error: 'red_zone' undeclared here (not in a function)
+    6358 | SLAB_ATTR_RO(red_zone);
+         |              ^~~~~~~~
+   mm/slub.c:6132:68: note: in definition of macro 'SLAB_ATTR_RO'
+    6132 |         static struct slab_attribute _name##_attr = __ATTR_RO_MODE(_name, 0400)
+         |                                                                    ^~~~~
+   mm/slub.c:6365:14: error: 'poison' undeclared here (not in a function)
+    6365 | SLAB_ATTR_RO(poison);
+         |              ^~~~~~
+   mm/slub.c:6132:68: note: in definition of macro 'SLAB_ATTR_RO'
+    6132 |         static struct slab_attribute _name##_attr = __ATTR_RO_MODE(_name, 0400)
+         |                                                                    ^~~~~
+   mm/slub.c:6372:14: error: 'store_user' undeclared here (not in a function); did you mean 'pte_user'?
+    6372 | SLAB_ATTR_RO(store_user);
+         |              ^~~~~~~~~~
+   mm/slub.c:6132:68: note: in definition of macro 'SLAB_ATTR_RO'
+    6132 |         static struct slab_attribute _name##_attr = __ATTR_RO_MODE(_name, 0400)
+         |                                                                    ^~~~~
+   mm/slub.c:6391:11: error: 'validate' undeclared here (not in a function); did you mean 'key_validate'?
+    6391 | SLAB_ATTR(validate);
+         |           ^~~~~~~~
+   mm/slub.c:6135:68: note: in definition of macro 'SLAB_ATTR'
+    6135 |         static struct slab_attribute _name##_attr = __ATTR_RW_MODE(_name, 0600)
+         |                                                                    ^~~~~
+   mm/slub.c:6431:11: error: 'shrink' undeclared here (not in a function); did you mean 'shrinker'?
+    6431 | SLAB_ATTR(shrink);
+         |           ^~~~~~
+   mm/slub.c:6135:68: note: in definition of macro 'SLAB_ATTR'
+    6135 |         static struct slab_attribute _name##_attr = __ATTR_RW_MODE(_name, 0600)
+         |                                                                    ^~~~~
+   mm/slub.c:6455:11: error: 'remote_node_defrag_ratio' undeclared here (not in a function); did you mean 'remote_node_defrag_ratio_attr'?
+    6455 | SLAB_ATTR(remote_node_defrag_ratio);
+         |           ^~~~~~~~~~~~~~~~~~~~~~~~
+   mm/slub.c:6135:68: note: in definition of macro 'SLAB_ATTR'
+    6135 |         static struct slab_attribute _name##_attr = __ATTR_RW_MODE(_name, 0600)
+         |                                                                    ^~~~~
+   mm/slub.c:6682:21: error: variable 'slab_sysfs_ops' has initializer but incomplete type
+    6682 | static const struct sysfs_ops slab_sysfs_ops = {
+         |                     ^~~~~~~~~
+   mm/slub.c:6683:10: error: 'const struct sysfs_ops' has no member named 'show'
+    6683 |         .show = slab_attr_show,
+         |          ^~~~
+   mm/slub.c:6683:17: warning: excess elements in struct initializer
+    6683 |         .show = slab_attr_show,
+         |                 ^~~~~~~~~~~~~~
+   mm/slub.c:6683:17: note: (near initialization for 'slab_sysfs_ops')
+   mm/slub.c:6684:10: error: 'const struct sysfs_ops' has no member named 'store'
+    6684 |         .store = slab_attr_store,
+         |          ^~~~~
+   mm/slub.c:6684:18: warning: excess elements in struct initializer
+    6684 |         .store = slab_attr_store,
+         |                  ^~~~~~~~~~~~~~~
+   mm/slub.c:6684:18: note: (near initialization for 'slab_sysfs_ops')
+   mm/slub.c: In function 'sysfs_slab_add':
+   mm/slub.c:6760:17: error: implicit declaration of function 'sysfs_remove_link' [-Werror=implicit-function-declaration]
+    6760 |                 sysfs_remove_link(&slab_kset->kobj, s->name);
+         |                 ^~~~~~~~~~~~~~~~~
+   mm/slub.c:6777:15: error: implicit declaration of function 'sysfs_create_group' [-Werror=implicit-function-declaration]
+    6777 |         err = sysfs_create_group(&s->kobj, &slab_attr_group);
+         |               ^~~~~~~~~~~~~~~~~~
+   mm/slub.c: In function 'sysfs_slab_alias':
+   mm/slub.c:6827:24: error: implicit declaration of function 'sysfs_create_link'; did you mean 'kernfs_create_link'? [-Werror=implicit-function-declaration]
+    6827 |                 return sysfs_create_link(&slab_kset->kobj, &s->kobj, name);
+         |                        ^~~~~~~~~~~~~~~~~
+         |                        kernfs_create_link
+   mm/slub.c: At top level:
+   mm/slub.c:6682:31: error: storage size of 'slab_sysfs_ops' isn't known
+    6682 | static const struct sysfs_ops slab_sysfs_ops = {
+         |                               ^~~~~~~~~~~~~~
+>> mm/slub.c:6439:16: warning: 'remote_node_defrag_ratio_store' defined but not used [-Wunused-function]
+    6439 | static ssize_t remote_node_defrag_ratio_store(struct kmem_cache *s,
+         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> mm/slub.c:6434:16: warning: 'remote_node_defrag_ratio_show' defined but not used [-Wunused-function]
+    6434 | static ssize_t remote_node_defrag_ratio_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   mm/slub.c:6422:16: warning: 'shrink_store' defined but not used [-Wunused-function]
+    6422 | static ssize_t shrink_store(struct kmem_cache *s,
+         |                ^~~~~~~~~~~~
+   mm/slub.c:6417:16: warning: 'shrink_show' defined but not used [-Wunused-function]
+    6417 | static ssize_t shrink_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~~
+   mm/slub.c:6379:16: warning: 'validate_store' defined but not used [-Wunused-function]
+    6379 | static ssize_t validate_store(struct kmem_cache *s,
+         |                ^~~~~~~~~~~~~~
+   mm/slub.c:6374:16: warning: 'validate_show' defined but not used [-Wunused-function]
+    6374 | static ssize_t validate_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~~~~
+   mm/slub.c:6367:16: warning: 'store_user_show' defined but not used [-Wunused-function]
+    6367 | static ssize_t store_user_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~~~~~~
+   mm/slub.c:6360:16: warning: 'poison_show' defined but not used [-Wunused-function]
+    6360 | static ssize_t poison_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~~
+   mm/slub.c:6353:16: warning: 'red_zone_show' defined but not used [-Wunused-function]
+    6353 | static ssize_t red_zone_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~~~~
+   mm/slub.c:6347:16: warning: 'trace_show' defined but not used [-Wunused-function]
+    6347 | static ssize_t trace_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~
+   mm/slub.c:6341:16: warning: 'sanity_checks_show' defined but not used [-Wunused-function]
+    6341 | static ssize_t sanity_checks_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~~~~~~~~~
+   mm/slub.c:6335:16: warning: 'objects_show' defined but not used [-Wunused-function]
+    6335 | static ssize_t objects_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~~~
+   mm/slub.c:6329:16: warning: 'total_objects_show' defined but not used [-Wunused-function]
+    6329 | static ssize_t total_objects_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~~~~~~~~~
+   mm/slub.c:6323:16: warning: 'slabs_show' defined but not used [-Wunused-function]
+    6323 | static ssize_t slabs_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~
+   mm/slub.c:6316:16: warning: 'destroy_by_rcu_show' defined but not used [-Wunused-function]
+    6316 | static ssize_t destroy_by_rcu_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~~~~~~~~~~
+   mm/slub.c:6301:16: warning: 'cache_dma_show' defined but not used [-Wunused-function]
+    6301 | static ssize_t cache_dma_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~~~~~
+   mm/slub.c:6294:16: warning: 'hwcache_align_show' defined but not used [-Wunused-function]
+    6294 | static ssize_t hwcache_align_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~~~~~~~~~
+   mm/slub.c:6288:16: warning: 'reclaim_account_show' defined but not used [-Wunused-function]
+    6288 | static ssize_t reclaim_account_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~~~~~~~~~~~
+   mm/slub.c:6247:16: warning: 'slabs_cpu_partial_show' defined but not used [-Wunused-function]
+    6247 | static ssize_t slabs_cpu_partial_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~~~~~~~~~~~~~
+   mm/slub.c:6241:16: warning: 'objects_partial_show' defined but not used [-Wunused-function]
+    6241 | static ssize_t objects_partial_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~~~~~~~~~~~
+   mm/slub.c:6235:16: warning: 'cpu_slabs_show' defined but not used [-Wunused-function]
+    6235 | static ssize_t cpu_slabs_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~~~~~
+   mm/slub.c:6229:16: warning: 'partial_show' defined but not used [-Wunused-function]
+    6229 | static ssize_t partial_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~~~
+   mm/slub.c:6223:16: warning: 'aliases_show' defined but not used [-Wunused-function]
+    6223 | static ssize_t aliases_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~~~
+   mm/slub.c:6215:16: warning: 'ctor_show' defined but not used [-Wunused-function]
+    6215 | static ssize_t ctor_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~
+   mm/slub.c:6197:16: warning: 'cpu_partial_store' defined but not used [-Wunused-function]
+    6197 | static ssize_t cpu_partial_store(struct kmem_cache *s, const char *buf,
+         |                ^~~~~~~~~~~~~~~~~
+   mm/slub.c:6187:16: warning: 'cpu_partial_show' defined but not used [-Wunused-function]
+    6187 | static ssize_t cpu_partial_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~~~~~~~
+   mm/slub.c:6172:16: warning: 'min_partial_store' defined but not used [-Wunused-function]
+    6172 | static ssize_t min_partial_store(struct kmem_cache *s, const char *buf,
+         |                ^~~~~~~~~~~~~~~~~
+   mm/slub.c:6167:16: warning: 'min_partial_show' defined but not used [-Wunused-function]
+    6167 | static ssize_t min_partial_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~~~~~~~
+   mm/slub.c:6161:16: warning: 'order_show' defined but not used [-Wunused-function]
+    6161 | static ssize_t order_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~
+   mm/slub.c:6155:16: warning: 'objs_per_slab_show' defined but not used [-Wunused-function]
+    6155 | static ssize_t objs_per_slab_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~~~~~~~~~
+   mm/slub.c:6149:16: warning: 'object_size_show' defined but not used [-Wunused-function]
+    6149 | static ssize_t object_size_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~~~~~~~
+   mm/slub.c:6143:16: warning: 'align_show' defined but not used [-Wunused-function]
+    6143 | static ssize_t align_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~
+   mm/slub.c:6137:16: warning: 'slab_size_show' defined but not used [-Wunused-function]
+    6137 | static ssize_t slab_size_show(struct kmem_cache *s, char *buf)
+         |                ^~~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
+
+
+vim +/remote_node_defrag_ratio_store +6439 mm/slub.c
+
+2086d26a05a4b5 Christoph Lameter 2007-05-06  6432  
+81819f0fc8285a Christoph Lameter 2007-05-06  6433  #ifdef CONFIG_NUMA
+9824601ead957a Christoph Lameter 2008-01-07 @6434  static ssize_t remote_node_defrag_ratio_show(struct kmem_cache *s, char *buf)
+81819f0fc8285a Christoph Lameter 2007-05-06  6435  {
+bf16d19aabd8f5 Joe Perches       2020-12-14  6436  	return sysfs_emit(buf, "%u\n", s->remote_node_defrag_ratio / 10);
+81819f0fc8285a Christoph Lameter 2007-05-06  6437  }
+81819f0fc8285a Christoph Lameter 2007-05-06  6438  
+9824601ead957a Christoph Lameter 2008-01-07 @6439  static ssize_t remote_node_defrag_ratio_store(struct kmem_cache *s,
+81819f0fc8285a Christoph Lameter 2007-05-06  6440  				const char *buf, size_t length)
+81819f0fc8285a Christoph Lameter 2007-05-06  6441  {
+eb7235eb842043 Alexey Dobriyan   2018-04-05  6442  	unsigned int ratio;
+0121c619d03820 Christoph Lameter 2008-04-29  6443  	int err;
+0121c619d03820 Christoph Lameter 2008-04-29  6444  
+eb7235eb842043 Alexey Dobriyan   2018-04-05  6445  	err = kstrtouint(buf, 10, &ratio);
+0121c619d03820 Christoph Lameter 2008-04-29  6446  	if (err)
+0121c619d03820 Christoph Lameter 2008-04-29  6447  		return err;
+eb7235eb842043 Alexey Dobriyan   2018-04-05  6448  	if (ratio > 100)
+eb7235eb842043 Alexey Dobriyan   2018-04-05  6449  		return -ERANGE;
+0121c619d03820 Christoph Lameter 2008-04-29  6450  
+0121c619d03820 Christoph Lameter 2008-04-29  6451  	s->remote_node_defrag_ratio = ratio * 10;
+81819f0fc8285a Christoph Lameter 2007-05-06  6452  
+81819f0fc8285a Christoph Lameter 2007-05-06  6453  	return length;
+81819f0fc8285a Christoph Lameter 2007-05-06  6454  }
+9824601ead957a Christoph Lameter 2008-01-07  6455  SLAB_ATTR(remote_node_defrag_ratio);
+81819f0fc8285a Christoph Lameter 2007-05-06  6456  #endif
+81819f0fc8285a Christoph Lameter 2007-05-06  6457  
 
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
