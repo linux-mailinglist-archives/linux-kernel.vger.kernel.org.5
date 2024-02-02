@@ -1,48 +1,74 @@
-Return-Path: <linux-kernel+bounces-50731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAE98847D64
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:53:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22F20847D65
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:55:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E01B51C225E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:53:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB69F1F26045
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:55:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D51ED12D745;
-	Fri,  2 Feb 2024 23:53:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5BAB12D742;
+	Fri,  2 Feb 2024 23:54:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Clu3thbS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="bW3IiDqn"
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15B8585946;
-	Fri,  2 Feb 2024 23:53:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56BA912C80A
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 23:54:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706918018; cv=none; b=YuTnGWmMw0Gq9xIs5SKjLO0zmYYeVH0SvGEfZc6QHSVOkJxx+29uABEwdEjmk5T8wx9JC+m3alA/JRpvzjTYjuLTI9eb3q7X2W1k5hP/EGyO7bWnx/h5Hr2+Uu2PfunixFAWa5rdAByswXoOf8mFVGAZq0qZnyaO2bglv8aJ63o=
+	t=1706918097; cv=none; b=ZPxTCnXKb5XLZuMDFwdtbB9AveY+k70pSZOkYoBjF0cjPlZ4hB7Z2VLdgKBKunhvJyxXOnWWrjU+iHtge1Y1kAnyECfn5ixzlCo9G4GGu3FsDk+GJRbd5qYfePn6hdYClFaDOYv+EteVKqw+dnEVVSU0tpQ2xtEQfDe0IfodQbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706918018; c=relaxed/simple;
-	bh=ToVjAvQmv/dtNRn5p4/8OjGcotgzRI0qmd7n0/i3AJA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=sVfPvS2/xStBFpUsWuVpkNqyUerEyg1KmvIzEhI7WfghfXqrGAX6LnpMsfQXCL9iOJd1g+FsaQ3mhwonkzEzpwxPNT2//2jfj4bd4V4rO2GQXdhsmhI+K3ntWhNgvKFndPRB7T+BBDdTTQhWXigpDHNqPy7v9MNpl9AmNCONHJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Clu3thbS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEC73C433C7;
-	Fri,  2 Feb 2024 23:53:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706918017;
-	bh=ToVjAvQmv/dtNRn5p4/8OjGcotgzRI0qmd7n0/i3AJA=;
-	h=From:Date:Subject:To:Cc:From;
-	b=Clu3thbSoR8/bxiVDj/+7YLjpR9VmIrYwYhNJwQlNPbwg7l83CnutrlFfMFD907Sg
-	 B447oCeU97r/zGad3HHVC0pzuDGf5Qb6KXpsqcWkoRaPcpNXkSZ2a2sxQf8THivYaN
-	 +WpZkHcoOVWHSBjpzhgy7jCgdKXp0WE8U88W30qe9Ho2IZrii68KRQTMeqkaQXrpdl
-	 JUM6kM26LOqoclr7wmUwZpL/0q1imPWBbCs+1jySwU+iEXFhYG6aYwF7vFlF/J6ts+
-	 KJaoT/rNZqL6+RpLibWGxsAWP7qPYv5bER7dGSqWoGPatiyJeYmtcJXdddSWGiuDbG
-	 HyuW/Czm23xRg==
-From: Nathan Chancellor <nathan@kernel.org>
-Date: Fri, 02 Feb 2024 16:53:21 -0700
-Subject: [PATCH] x86/coco: Define cc_vendor without
- CONFIG_ARCH_HAS_CC_PLATFORM
+	s=arc-20240116; t=1706918097; c=relaxed/simple;
+	bh=0xbrQ7dU8s/DO/vYKW8uWrhcAt8ul7TZYujjtbD0uls=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=puNZmUEKWAduTIqD9HiQGyx/ostVmb4iDnjIXmXCkJUYc3awwyv4iK1ZdzZpBdDCGfNm0TP6l1wivlu1i8bYHsTivv2ejNjDuQ1tToh5X6bpQTY+1RK39K+/8vxZzdZluAejq4k83lOeuOvF+up6faMBNCNW5Bx21BZR6Ai9Cn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=bW3IiDqn; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-53fa455cd94so1955329a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 15:54:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706918094; x=1707522894; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cB2tFVOKVxTeJSZexMtqa/UnSmD6oQiVHBBq312ozek=;
+        b=bW3IiDqnC2QkigMfYe3QHXBhLMg0oqTE4eJnUQ2lY1nqbFc69VOOKJ43Fi9QD2NoBL
+         R/CbETgWevzrI3MwWlnMcD69mxDs2+XMYYZXsYxn5n5jjFu1TLxLjeN261uEtGUt9cOv
+         QqpAbDBbz9JAjA7ElywZdLAO0s73kYsIq1MABh+b1qoaPlIlEQN6MubBYUQOb+F0KT3B
+         XKceiteZ1YOajy68GKwiebT+ES3XAfYYdwDWiYtf3kWmH3IjVGKkELilVPZz+G4rCinc
+         EoIcFANyL1sttCCn2Vo//tyCJyhigv21jFoaPsVFhpLIOKKRG10Pct++muZxCwsJeI8h
+         Cq5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706918094; x=1707522894;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cB2tFVOKVxTeJSZexMtqa/UnSmD6oQiVHBBq312ozek=;
+        b=gWakv875LDf3/cV+P6+tlrk/UuQwJPOse5nxCld6Zq74oRjiETsyhTr5+oCQ5gdW2F
+         y4ZEJ1O5LR7wQi3wDyYbbCOfZ+6yzOt0sTo8SXi6ZBxHdbgn2IpnFw/gzrT8hlPXSeV9
+         cOqU4VLZnVy205QHbf3372Oq/AqKeb0z+mYXj+NQxRib+Eu+/MvhE5UQd8KLG/T5wWcm
+         kQaB5Ma6ThyXtKHfeiISVaqEp8rxFHAxH+F/SC+8HtJ7hQFomPyPu8g7ypDk92uQWar6
+         bF3j4AAeXqB9InSiUfXiK9GePKLM50/yJZVqoQ5XmTKmVjVE3XneVluwuXLLIkxddmtR
+         MTvA==
+X-Gm-Message-State: AOJu0YxruotJvHfmRAIfITkdPOm65vqbqtA+lDRWwKLBS6m4DZR1pm/K
+	OnExouBuyIGYoXhIdSHPGpT2lNBLbrRTuQVv2L+dKgBj4R5iMrnQwbty9p9sWAY=
+X-Google-Smtp-Source: AGHT+IGLgtA3E1LDzO/LZZVS/RWVQ5xYoH2SpNXNrhjNq/+CgtvwgDQ697+VSVKAlRlVIbFY+Vk/yQ==
+X-Received: by 2002:a17:902:c94b:b0:1d9:8e37:56d6 with SMTP id i11-20020a170902c94b00b001d98e3756d6mr24686pla.40.1706918094688;
+        Fri, 02 Feb 2024 15:54:54 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCU3+EXKr5vkEi7B65f4rJCfn25LtJsju5OTbujLL6Rhwkf+mo7rwdkg1Ls1605PbAxDFmTUgI7ejfFUQmsTgmuMmEFv8nHSXPkKNm3RhsonISnHEDY44ly/WL1z1cU4GNhcVUumBjw60ORNwpyI3uCmmN595/Xsz1x2aUbxM5LGWrI5qJUwDF1hDQkLL+DSZmiWhY+/AkyYsdHtcpdTlkZRmG70LEF4DyHAsbmFl4GR4ITnC6hTkA9niYdVFXdo1kPTekPLKyRpyqu7l8ZjTQ2CJmp9GpMljk457CbyKLoa/3EbUpsP/LC+5TSSXj5PycstgBk67FOFUg==
+Received: from charlie.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id u1-20020a17090282c100b001d8f81ece98sm2133607plz.104.2024.02.02.15.54.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 15:54:54 -0800 (PST)
+From: Charlie Jenkins <charlie@rivosinc.com>
+Subject: [PATCH v3 0/2] riscv: Use CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+ to set misaligned access speed
+Date: Fri, 02 Feb 2024 15:54:51 -0800
+Message-Id: <20240202-disable_misaligned_probe_config-v3-0-c44f91f03bb6@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -50,97 +76,65 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240202-provide-cc_vendor-without-arch_has_cc_platform-v1-1-09ad5f2a3099@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAHCAvWUC/x2N0QoCIRBFf2XxuQFzE6JfiZBBxxwoldG1YNl/T
- 3o5cDhw764aCVNTt2VXQoMblzzlfFqUT5ifBBymK6PNRU9AlTI4EHjvBuVQBD7cU9k6oPjkEjY
- 3U31hj0XesBqLa0S6WqvVHK1Ckb//w/vjOH7efz0/gAAAAA==
-To: pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
- dave.hansen@linux.intel.com, x86@kernel.org
-Cc: kirill.shutemov@linux.intel.com, ndesaulniers@google.com, 
- morbo@google.com, justinstitt@google.com, linux-kernel@vger.kernel.org, 
- llvm@lists.linux.dev, patches@lists.linux.dev, 
- Nathan Chancellor <nathan@kernel.org>
-X-Mailer: b4 0.13-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2621; i=nathan@kernel.org;
- h=from:subject:message-id; bh=ToVjAvQmv/dtNRn5p4/8OjGcotgzRI0qmd7n0/i3AJA=;
- b=owGbwMvMwCUmm602sfCA1DTG02pJDKl7GxpezDlQ0XH0+nVGxhge+Z4nixuUWrfvOzjvZqtVo
- uH26bn3O0pZGMS4GGTFFFmqH6seNzScc5bxxqlJMHNYmUCGMHBxCsBEKroY/qfcFXhU3mi2N2Lv
- 1Ot+635tz2TleKKdwvjCa9KTKQv2rp7H8FecZ/HrC1PyTL9dP/ak1bnIJv+phFfytEP5/ae8JZb
- wpzIDAA==
-X-Developer-Key: i=nathan@kernel.org; a=openpgp;
- fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAMuAvWUC/43NywqDMBCF4VeRrJuSi1btqu9RiuQy6oBNJCmhR
+ Xz3RjeFrlwN/yy+s5AIASGSa7GQAAkjepdDngpiRuUGoGhzE8FEybjk1GJUeoLume+EgwPbzcF
+ r6Ix3PQ6UlVKBknXVt5JkZQ7Q43tfuD9yjxhfPnz2wcS373E7ccpo21heVdAaq5pbwOQjOnM2/
+ kk2PokfKdgBUmSyro28NBpsrcUfua7rF4l32skkAQAA
+To: Paul Walmsley <paul.walmsley@sifive.com>, 
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+ Jisheng Zhang <jszhang@kernel.org>, Evan Green <evan@rivosinc.com>, 
+ =?utf-8?q?Cl=C3=A9ment_L=C3=A9ger?= <cleger@rivosinc.com>, 
+ Eric Biggers <ebiggers@kernel.org>, 
+ Elliot Berman <quic_eberman@quicinc.com>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Charlie Jenkins <charlie@rivosinc.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706918093; l=1713;
+ i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
+ bh=0xbrQ7dU8s/DO/vYKW8uWrhcAt8ul7TZYujjtbD0uls=;
+ b=v0l5aXNQvH2VsUmoq5qlzgcz8zo1xqLL0XudiHNz3LWPiY/mYq5kNEs5OS90//u5rt+ErwxlJ
+ uVUSfjHU6nlBta8MlZuIaHGIbcEIYEDq50ZRWcPdyboL3LNnhgiEQBr
+X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
+ pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
 
-After commit a9ef277488cf ("x86/kvm: Fix SEV check in
-sev_map_percpu_data()"), there is a build error when building
-x86_64_defconfig with GCOV using LLVM:
+If CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS is enabled, no time needs to
+be spent in the misaligned access speed probe. Disable the probe in this
+case and set respective uses to "fast" misaligned accesses. On riscv,
+this config is selected if RISCV_EFFICIENT_UNALIGNED_ACCESS is selected,
+which is dependent on NONPORTABLE.
 
-  ld.lld: error: undefined symbol: cc_vendor
-  >>> referenced by kvm.c
-  >>>               arch/x86/kernel/kvm.o:(kvm_smp_prepare_boot_cpu) in archive vmlinux.a
-
-which corresponds to
-
-  if (cc_vendor != CC_VENDOR_AMD ||
-      !cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
-            return;
-
-Without GCOV, clang is able to eliminate the use of cc_vendor because
-cc_platform_has() evaluates to false when CONFIG_ARCH_HAS_CC_PLATFORM is
-not set, meaning that if statement will be true no matter what value
-cc_vendor has.
-
-With GCOV, the instrumentation keeps the use of cc_vendor around for
-code coverage purposes but cc_vendor is only declared, not defined,
-without CONFIG_ARCH_HAS_CC_PLATFORM, leading to the build error above.
-
-Provide a macro definition of cc_vendor when CONFIG_ARCH_HAS_CC_PLATFORM
-is not set with a value of CC_VENDOR_NONE, so that the first condition
-can always be evaluated/eliminated at compile time, avoiding the build
-error altogether. This is very similar to the situation prior to
-commit da86eb961184 ("x86/coco: Get rid of accessor functions").
-
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 ---
-Commit a9ef277488cf ("x86/kvm: Fix SEV check in sev_map_percpu_data()")
-exposes this build error but I think it is really a problem with commit
-da86eb961184 ("x86/coco: Get rid of accessor functions"), although I am
-not positive so I left out the fixes tag. It would be nice if this could
-go along with KVM tree that has that change but it is obviously well
-within -tip's territory so I will just aim it at both parties and let
-them figure it out :)
----
- arch/x86/include/asm/coco.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Changes in v3:
+- Revert change to csum (Eric)
+- Change ifndefs for ifdefs (Eric)
+- Change config in Makefile (Elliot/Eric)
+- Link to v2: https://lore.kernel.org/r/20240201-disable_misaligned_probe_config-v2-0-77c368bed7b2@rivosinc.com
 
-diff --git a/arch/x86/include/asm/coco.h b/arch/x86/include/asm/coco.h
-index 6ae2d16a7613..76c310b19b11 100644
---- a/arch/x86/include/asm/coco.h
-+++ b/arch/x86/include/asm/coco.h
-@@ -10,13 +10,14 @@ enum cc_vendor {
- 	CC_VENDOR_INTEL,
- };
- 
--extern enum cc_vendor cc_vendor;
--
- #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
-+extern enum cc_vendor cc_vendor;
- void cc_set_mask(u64 mask);
- u64 cc_mkenc(u64 val);
- u64 cc_mkdec(u64 val);
- #else
-+#define cc_vendor (CC_VENDOR_NONE)
-+
- static inline u64 cc_mkenc(u64 val)
- {
- 	return val;
+Changes in v2:
+- Move around definitions to reduce ifdefs (Clément)
+- Make RISCV_MISALIGNED depend on !HAVE_EFFICIENT_UNALIGNED_ACCESS
+  (Clément)
+- Link to v1: https://lore.kernel.org/r/20240131-disable_misaligned_probe_config-v1-0-98d155e9cda8@rivosinc.com
 
 ---
-base-commit: a9ef277488cfc1b7da88235dc11c338a14f34835
-change-id: 20240202-provide-cc_vendor-without-arch_has_cc_platform-325a3fae8550
+Charlie Jenkins (2):
+      riscv: lib: Introduce has_fast_misaligned_access function
+      riscv: Disable misaligned access probe when CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
 
-Best regards,
+ arch/riscv/Kconfig                          |   1 +
+ arch/riscv/include/asm/cpufeature.h         |  22 ++-
+ arch/riscv/kernel/Makefile                  |   3 +
+ arch/riscv/kernel/cpufeature.c              | 255 --------------------------
+ arch/riscv/kernel/misaligned_access_speed.c | 265 ++++++++++++++++++++++++++++
+ arch/riscv/kernel/sys_hwprobe.c             |   4 +
+ arch/riscv/lib/csum.c                       |   7 +-
+ 7 files changed, 292 insertions(+), 265 deletions(-)
+---
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+change-id: 20240131-disable_misaligned_probe_config-043aea375f93
 -- 
-Nathan Chancellor <nathan@kernel.org>
+- Charlie
 
 
