@@ -1,237 +1,121 @@
-Return-Path: <linux-kernel+bounces-50672-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50673-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C686D847C5D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:35:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7968C847C5F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:36:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49ED61F24D7D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:35:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 166F61F24FB6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 22:36:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3786126F27;
-	Fri,  2 Feb 2024 22:35:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5526126F1A;
+	Fri,  2 Feb 2024 22:35:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jF9t6KSP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tzC1Vcbt"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFBA685954;
-	Fri,  2 Feb 2024 22:35:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0D658592F
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 22:35:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706913307; cv=none; b=MbRcELY9HCoe7uDMebox6qQtbajU7bhjDQoQ55eLZtcI7pg7cRAFa4y9dKnP7VDimPYcqG84OaoMzjo4OVY6QpKrKGed3axCZy9hT1RCkju5KP0pH52gx7nxFuhSohYv+fIwC9qzmZE2Du2RFYSHAliBWtevQ9aWXv/sRaQl7CM=
+	t=1706913351; cv=none; b=H+mBFiwWBYeGBDqwlXlKyji6zCHsPBBkHm/rIsiemhfC+r0CHnRQ0GGb3+4xZCXIUfz4H1Bo/BdW/Z/uhhuSL1P+0pneJxrDpYMvNMZTRd4a5pR66xIrYZ8Q+k1Z0zQJzNHCGpCcrU/4mBIAP0dEOrHZJbXBPAWWdOVyRiMm6mA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706913307; c=relaxed/simple;
-	bh=piSJZV9wP11DN45leIZQLdOe8OAXQLdIK19f/zlcWl4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TN1aigFomZkzZid/f7CBN4XuU+yESioe87Tye4a+zppZL96W+3qcqzOdHk4AWTAchAyy5sWDAOo7YVD1b/4y0EWB3AgThYmGteyA0dNnzOExA9zIsR4MCd2gzar7KJm1pL27EC0vUk4CADF/3Bg5VolF0FaPlcZVIVBJXKBMOKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jF9t6KSP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F1EAC433F1;
-	Fri,  2 Feb 2024 22:35:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706913307;
-	bh=piSJZV9wP11DN45leIZQLdOe8OAXQLdIK19f/zlcWl4=;
-	h=From:To:Cc:Subject:Date:From;
-	b=jF9t6KSPmMvMVh1V9fW20wY/mwPs4yjcFfPG1BffzLlhv/w0/nHcX8v58Y9ztZIrp
-	 GFxS/7N/aEfGij7jg5zy9l84eu1gVAQloefohZhnUJFwD42M0wUo0VLR696txWpT3i
-	 xx5F9BEQhAhSFZfNd5rFVhKc4N5Lx1ZTvcwnZilOE+IMb/38zUI2e7BhFtT6cnKr/U
-	 qzcFm9BvFUxtTcY40dym3jov6+J6WwrVbzNhrxJ1NxU6sdHOnxvv21RBF/Q1BmFERS
-	 g0LGxkyuwnHERO1Y8rq1Al8K9KqHXzs/iQEh6WzC+G4ThXeKXZkBJiBElPyhFYbw4G
-	 uKTDgsm1Ozqkw==
-From: Rob Herring <robh@kernel.org>
-To: Linus Walleij <linus.walleij@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>
-Cc: linux-gpio@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-tegra@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: pinctrl: nvidia,tegra234-pinmux: Restructure common schema
-Date: Fri,  2 Feb 2024 16:34:53 -0600
-Message-ID: <20240202223454.1667383-1-robh@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706913351; c=relaxed/simple;
+	bh=JXT5OHVVhhp1OBhwJZY4IYHGL6yAqJAwyumvJZtYG88=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XTCpLpxK7O4gFrqoM03Ohagb9lXNqLRjKrM3uq03RIl8yv8f1Du6Y45DJugN+pptFnjkah/171oHCfy23Gn9Ay2KC2m7DT/RgmvglwYEJg523m41p/zm3JhnyZsYg9lOEriFZJaxTbqEsgMgTtY+7563p/jBOUl4qxuGMdJpcGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tzC1Vcbt; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a36126ee41eso350993566b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 14:35:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706913348; x=1707518148; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0+qQwjL7b78T10XqvIbUCoEdwqpS1GzNQCRv1zXvcjA=;
+        b=tzC1Vcbt7s2jvRNsJ1y0segbBZ8w5zNy5mysJ5SV/cDqsB00MQfqQC0re/n2qIMcpk
+         0M4BuJOc7cAtwcyhN6xNkEFc4WtLmX5mOj+zyhC+bwL/VQKXKshDjbdB5XdsIRE+HsWt
+         pQqgmNqCzG0MsyfA//Ny3LlfzQ5f7p8HqShNlu4kqQqML7MpyoFVcXeNGk1moLb9TKGa
+         K85q65tQjGPX9farUClguQxNPaUqA8WRe7ZnynlpLcmuvFN0oIKXnKgA1UDfemxOkHpv
+         ulVpwzxGH7y9O0jA6VnjDDRR5XVkNucAB2kzAzA3Uj+Q65PjJaJuYaApHzTlr/LmUW1r
+         AZqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706913348; x=1707518148;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0+qQwjL7b78T10XqvIbUCoEdwqpS1GzNQCRv1zXvcjA=;
+        b=AknmMpwkUM4rhKkGiUf8CQxHLLoeO1H+jmrb0/0gRmb1BKJIU+6TGvnXM3IJxf4Ns9
+         c8e4BS6qKbifE1oNcDF5yRZxTgsqKoTvnukbVwsh3Gg2gEQD/DfIFqP+YeokIsLMlPGx
+         lVY7Osqcac29/O63iPRCDHzXUkb7qVIHkrCOeU++Qp6OXqKipaukCzOAYG7eRPByLlgQ
+         qDIueiNHFbxckgG3faGMxwJrqQ+s7Sk9dxJKsY64bgugUQ2g2yqpr9+dMqq1fgAEf6O6
+         Gn1Xp7unZH67uetIE/H5DKlyNTd5eGj0No1dnHX0MHlWekqHY/D3QtXfVvS1+MQ8siM7
+         vS3A==
+X-Gm-Message-State: AOJu0YwoNi71BoMDvcyMZa9LdVoZstw4efWhhF8JvWN21YRbtqC3cxzq
+	VgoYM2uI0IeqiNduGpEQGaIlcasVuW2xsnoDjnWbmJouPdLgYrE3mZKrV0/Vlo+m4lPqpLSo+ZW
+	/TUaiH/GHoHM7ewFUPPBRnlly3+HvQTTR6XNp
+X-Google-Smtp-Source: AGHT+IGvB459/BXAdardPQcfjxRtp4LvVuLJxT3vVQFzFdSPsDtLjHnCQ98ZXWaIPxQz5tA8GbHQnHBkHHBxQI1eHnw=
+X-Received: by 2002:a17:906:250c:b0:a33:b64f:48c1 with SMTP id
+ i12-20020a170906250c00b00a33b64f48c1mr6152350ejb.21.1706913347656; Fri, 02
+ Feb 2024 14:35:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240202221026.1055122-1-tjmercier@google.com>
+ <CAJD7tkZh=M58Avfwx_D+UEXy6mm18Zx_hVKn8Gb8-+8-JQQfWw@mail.gmail.com> <CABdmKX3_jCjZdOQeinKCKBS3m4XS8heE9WMDU-z1oFpCcPc5fg@mail.gmail.com>
+In-Reply-To: <CABdmKX3_jCjZdOQeinKCKBS3m4XS8heE9WMDU-z1oFpCcPc5fg@mail.gmail.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Fri, 2 Feb 2024 14:35:10 -0800
+Message-ID: <CAJD7tkaRSeWV=UGT8KbnwjehsckVGnncL738qThV9hoyvEV95A@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: memcg: Use larger batches for proactive reclaim
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
+	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Efly Young <yangyifei03@kuaishou.com>, android-mm@google.com, yuzhao@google.com, 
+	mkoutny@suse.com, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-The structure of the NVIDIA Tegra234 common pinmux schema doesn't work
-for restricting properties because a child node schema can't be extended
-with additional properties from another schema defining the same child
-node. The 2 child node schemas are evaluated independently as the
-schemas are not recursively combined in any way.
+> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > > index 46d8d02114cf..e6f921555e07 100644
+> > > --- a/mm/memcontrol.c
+> > > +++ b/mm/memcontrol.c
+> > > @@ -6965,6 +6965,9 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+> > >         while (nr_reclaimed < nr_to_reclaim) {
+> > >                 unsigned long reclaimed;
+> > >
+> > > +               /* Will converge on zero, but reclaim enforces a minimum */
+> > > +               unsigned long batch_size = (nr_to_reclaim - nr_reclaimed) / 4;
+> > > +
 
-As the common schema is almost all the child node schema anyways, just
-remove the parent node from the common schema. Then add 'reg' and adjust
-the $ref's in the users of the common schema.
+I think it's clearer with no blank lines between declarations. Perhaps
+add these two lines right above the declaration of "reclaimed"?
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- .../pinctrl/nvidia,tegra234-pinmux-aon.yaml   |  7 +-
- .../nvidia,tegra234-pinmux-common.yaml        | 84 ++++++++-----------
- .../pinctrl/nvidia,tegra234-pinmux.yaml       |  7 +-
- 3 files changed, 45 insertions(+), 53 deletions(-)
+> > >                 if (signal_pending(current))
+> > >                         return -EINTR;
+> > >
+> > > @@ -6977,7 +6980,7 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+> > >                         lru_add_drain_all();
+> > >
+> > >                 reclaimed = try_to_free_mem_cgroup_pages(memcg,
+> > > -                                       min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
+> > > +                                       batch_size,
+> > >                                         GFP_KERNEL, reclaim_options);
+> >
+> > I think the above two lines should now fit into one.
+>
+> It goes out to 81 characters. I wasn't brave enough, even though the
+> 80 char limit is no more. :)
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux-aon.yaml b/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux-aon.yaml
-index f3deda9f7127..db8224dfba2c 100644
---- a/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux-aon.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux-aon.yaml
-@@ -10,18 +10,21 @@ maintainers:
-   - Thierry Reding <thierry.reding@gmail.com>
-   - Jon Hunter <jonathanh@nvidia.com>
- 
--$ref: nvidia,tegra234-pinmux-common.yaml
--
- properties:
-   compatible:
-     const: nvidia,tegra234-pinmux-aon
- 
-+  reg:
-+    maxItems: 1
-+
- patternProperties:
-   "^pinmux(-[a-z0-9-]+)?$":
-     type: object
- 
-     # pin groups
-     additionalProperties:
-+      $ref: nvidia,tegra234-pinmux-common.yaml
-+
-       properties:
-         nvidia,pins:
-           items:
-diff --git a/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux-common.yaml b/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux-common.yaml
-index 4f9de78085e5..8cf9e4c915ff 100644
---- a/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux-common.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux-common.yaml
-@@ -10,57 +10,43 @@ maintainers:
-   - Thierry Reding <thierry.reding@gmail.com>
-   - Jon Hunter <jonathanh@nvidia.com>
- 
--properties:
--  reg:
--    items:
--      - description: pinmux registers
--
--patternProperties:
--  "^pinmux(-[a-z0-9-]+)?$":
--    type: object
--
--    # pin groups
--    additionalProperties:
--      $ref: nvidia,tegra-pinmux-common.yaml
--      # We would typically use unevaluatedProperties here but that has the
--      # downside that all the properties in the common bindings become valid
--      # for all chip generations. In this case, however, we want the per-SoC
--      # bindings to be able to override which of the common properties are
--      # allowed, since not all pinmux generations support the same sets of
--      # properties. This way, the common bindings define the format of the
--      # properties but the per-SoC bindings define which of them apply to a
--      # given chip.
--      additionalProperties: false
--      properties:
--        nvidia,function:
--          enum: [ gp, uartc, i2c8, spi2, i2c2, can1, can0, rsvd0, eth0, eth2,
--                  eth1, dp, eth3, i2c4, i2c7, i2c9, eqos, pe2, pe1, pe0, pe3,
--                  pe4, pe5, pe6, pe7, pe8, pe9, pe10, qspi0, qspi1, qpsi,
--                  sdmmc1, sce, soc, gpio, hdmi, ufs0, spi3, spi1, uartb, uarte,
--                  usb, extperiph2, extperiph1, i2c3, vi0, i2c5, uarta, uartd,
--                  i2c1, i2s4, i2s6, aud, spi5, touch, uartj, rsvd1, wdt, tsc,
--                  dmic3, led, vi0_alt, i2s5, nv, extperiph3, extperiph4, spi4,
--                  ccla, i2s1, i2s2, i2s3, i2s8, rsvd2, dmic5, dca, displayb,
--                  displaya, vi1, dcb, dmic1, dmic4, i2s7, dmic2, dspk0, rsvd3,
--                  tsc_alt, istctrl, vi1_alt, dspk1, igpu ]
-+$ref: nvidia,tegra-pinmux-common.yaml
- 
--        # out of the common properties, only these are allowed for Tegra234
--        nvidia,pins: true
--        nvidia,pull: true
--        nvidia,tristate: true
--        nvidia,schmitt: true
--        nvidia,enable-input: true
--        nvidia,open-drain: true
--        nvidia,lock: true
--        nvidia,drive-type: true
--        nvidia,io-hv: true
--
--      required:
--        - nvidia,pins
-+properties:
-+  nvidia,function:
-+    enum: [ gp, uartc, i2c8, spi2, i2c2, can1, can0, rsvd0, eth0, eth2,
-+            eth1, dp, eth3, i2c4, i2c7, i2c9, eqos, pe2, pe1, pe0, pe3,
-+            pe4, pe5, pe6, pe7, pe8, pe9, pe10, qspi0, qspi1, qpsi,
-+            sdmmc1, sce, soc, gpio, hdmi, ufs0, spi3, spi1, uartb, uarte,
-+            usb, extperiph2, extperiph1, i2c3, vi0, i2c5, uarta, uartd,
-+            i2c1, i2s4, i2s6, aud, spi5, touch, uartj, rsvd1, wdt, tsc,
-+            dmic3, led, vi0_alt, i2s5, nv, extperiph3, extperiph4, spi4,
-+            ccla, i2s1, i2s2, i2s3, i2s8, rsvd2, dmic5, dca, displayb,
-+            displaya, vi1, dcb, dmic1, dmic4, i2s7, dmic2, dspk0, rsvd3,
-+            tsc_alt, istctrl, vi1_alt, dspk1, igpu ]
-+
-+  # out of the common properties, only these are allowed for Tegra234
-+  nvidia,pins: true
-+  nvidia,pull: true
-+  nvidia,tristate: true
-+  nvidia,schmitt: true
-+  nvidia,enable-input: true
-+  nvidia,open-drain: true
-+  nvidia,lock: true
-+  nvidia,drive-type: true
-+  nvidia,io-hv: true
- 
- required:
--  - compatible
--  - reg
-+  - nvidia,pins
-+
-+# We would typically use unevaluatedProperties here but that has the
-+# downside that all the properties in the common bindings become valid
-+# for all chip generations. In this case, however, we want the per-SoC
-+# bindings to be able to override which of the common properties are
-+# allowed, since not all pinmux generations support the same sets of
-+# properties. This way, the common bindings define the format of the
-+# properties but the per-SoC bindings define which of them apply to a
-+# given chip.
-+additionalProperties: false
- 
--additionalProperties: true
- ...
-diff --git a/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux.yaml b/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux.yaml
-index 17b865ecfcda..f5a3a881dec4 100644
---- a/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/nvidia,tegra234-pinmux.yaml
-@@ -10,18 +10,21 @@ maintainers:
-   - Thierry Reding <thierry.reding@gmail.com>
-   - Jon Hunter <jonathanh@nvidia.com>
- 
--$ref: nvidia,tegra234-pinmux-common.yaml
--
- properties:
-   compatible:
-     const: nvidia,tegra234-pinmux
- 
-+  reg:
-+    maxItems: 1
-+
- patternProperties:
-   "^pinmux(-[a-z0-9-]+)?$":
-     type: object
- 
-     # pin groups
-     additionalProperties:
-+      $ref: nvidia,tegra234-pinmux-common.yaml
-+
-       properties:
-         nvidia,pins:
-           items:
--- 
-2.43.0
-
+Oh okay, I would leave it as-is or rename batch_size to something
+slightly shorter. Not a big deal either way. Going to 81 chars is
+probably fine too.
 
