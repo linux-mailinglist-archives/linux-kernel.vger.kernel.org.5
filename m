@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-50723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50725-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 546AD847D4D
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:42:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8407847D52
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:43:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 784FC1C218EA
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:42:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C61CB27368
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:43:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98838132484;
-	Fri,  2 Feb 2024 23:41:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BDF41332A1;
+	Fri,  2 Feb 2024 23:41:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sMuuW/oA"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xcg4W7LX"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0E53130AF2
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 23:41:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06493132476
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 23:41:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706917283; cv=none; b=Drct7RqBXuicnBw7sBcKTNTeakDYm05wYBD8+k071ihzoUGheFMXCk9yZTt6yis6gFYZxN6/RyvGLABT8uHTiN7GlDMjZDt+YXFx6dtADoUGFexqOsMKUqjD3ar+2dyEumgVT8DzhbpZWpX5JedUR/VbWe5Qj9I8lNJygVCwtXM=
+	t=1706917285; cv=none; b=Qn9cUdApkxvUi5OiqCJzivZhteXs2kz+O44AognBn0nw2mNuRAE3SZurFU0CPWzfE62RzxFp6DnWrLXGVc092jnsGOMOCzpq4B1wQLWiK2uWCuakox2ak/FK3l6h+LiQECT7Tzt83bfiUnXzJBZangI18jp5rBuHhcMDXCwZnN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706917283; c=relaxed/simple;
-	bh=TXC4fY94F4QG3R5rAXB5MKDuVhvys01fhTTOf+9TuDM=;
+	s=arc-20240116; t=1706917285; c=relaxed/simple;
+	bh=0FiaP31PDhjVbhEu1bCl/SbTIvgKTkMX5fOyfQItO7k=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=MjNbVMywgfqJ9LSTHKtNUxeBm0VDZwjh4ocVqygFBJ/htOvHj7Haz8Ac0lPElod0mZsRaGftS8rsnh5uQlJPRUMbn8tYIIWPyNVZGoMFwTedbNxRTGd8+Ka8xWshsj8TMZOK6McG2BFgfjFKlZifjdnRhtD37+xbMdwgo3Vb/h0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=sMuuW/oA; arc=none smtp.client-ip=209.85.219.201
+	 To:Content-Type; b=cPdlq5ZfeuXRqUfHCzv8JfHd7EOfZ+lADlR10213G1ZLeGPdOOuVZDr7ujuQkcpnOkX10RMVE85sqMgxYd6ZKl4C9VxuCqXgM/LtM5rxaQxwZP7zauu0y9wsRh7IhJTVRo/ZH7aM4ldWDpvQRr/X5Dur/vQOgIhOWZtnLSrs7WM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xcg4W7LX; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc64f63d768so4754962276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 15:41:21 -0800 (PST)
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6041dbb7a78so40617437b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 15:41:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706917281; x=1707522081; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1706917283; x=1707522083; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=9PKn59qI/eEru2iRWjl8r3A2NQszSA8YlNSVgwlBz0k=;
-        b=sMuuW/oAwOEVa93y3Ljf4HwsW9FKQ/j+oHFKLOuY1zE1iGOnRqhmjnRRaE4Z8jwLR3
-         gEQcjNhVLPW1yyMJWUR9nnCwtNM1m8j9Q6zssgfYlyUWfiC7mEo2LyLETLlD/dU0kqhO
-         ejm/n+48PbiQFl4x9qw9MB73KRCtRZJZ8A8q2kzTUwZr06x7IyiWJPjJAi9XbbssnAYz
-         JmqupUkqXZy52FfPvWgUSeqAddd5T9PmV8fiH8wwTV1VyiQKNaK5hnkd+hEc2tovNRhO
-         ifi4wFsNI43STWImWgqqeBtMCdXi2saFTZ4DT1sEVa4E2GhDd/VzKPWLOOv5bloQu7+o
-         zo9A==
+        bh=Jm6+rGnwaR5/dop0r40XD+HXuvjfQ9BLsYsO2f1XDQM=;
+        b=xcg4W7LXC/Lm4VGyXDbJWnjemFnNierLSmeKZwGDaq3FvGbLOZhjL6RBHwSmrdg4LN
+         4J/YBgwjz3bsuDcyhPgpfadd5FHgi9N4n5s/f2wq5JNeVjpZuA6HhlGVvNAmOHG4ss2v
+         2h6xH4iBi4gCpxIRixZVuXLwUGNIYdeDf9Q7hXNnlDlouj/WdZKoHZhgnuuG8BjnxU7l
+         cASRrINfBVW5Yhob+Ry4VRjch4EP2OdQAI1+4ZrcY+ngfS1xjJXTIYJoAPbevkdWeAqp
+         1WF1sk3zSgoBMJfV7/jT/PSA4p8XTVayJ+EkOCCyPrY8MWn7L7+u3C9qQilaklEgpf6f
+         g2pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706917281; x=1707522081;
+        d=1e100.net; s=20230601; t=1706917283; x=1707522083;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9PKn59qI/eEru2iRWjl8r3A2NQszSA8YlNSVgwlBz0k=;
-        b=e1mTl/WwXSNiAuk5GfFs9CxyUEDciOhnLwcu4xSekOU6KDdyvZ362O4Oacas1NDxxD
-         /+cPuFkGo2Op1+z0IJmjAz85X4vOu+GW1Vktyn/Ylzn/mdGJVjtd5/t7CrypmMT/How8
-         UqzE4NsQ3BCLr4zUuXHFqqopLr/UbkO/v23P3AzzHODfEFZAfqzkgDAqxMji8jc9NG+2
-         bNnjAc6Ti5WmcbKkRUv5OlHnVGs0xDntXYTHSIWewHJNlPMOV3JmqgEU7EHIR+0cUxKw
-         NNUPgtALy9W6LJBiGPjSLh9SLLX9u5iICvEeSAVtyXNNQt+TS+215fPDcHi+Pt/VuoYY
-         lVhg==
-X-Gm-Message-State: AOJu0YyV6SaGw6m9PIPsAJYVtQaOjk9Vhl20FBGUuQ9v48wDly3F5Pmv
-	RFCYF/Ezj/Ax770KAqP8tKzmx9sHZR49MwbqUmnvkjEOIBPOJ3+5StljvlOmU2CSYWdieDrhsAa
-	ROoqFCQ==
-X-Google-Smtp-Source: AGHT+IHWmLxSFYG5o2YfD0f8kFtxG69QWwfC87vLwnlWGI5t07xlvynFj+vFP0PXcxWx19/9iJha3k0Bf84P
+        bh=Jm6+rGnwaR5/dop0r40XD+HXuvjfQ9BLsYsO2f1XDQM=;
+        b=QgnbzoZwVmE3v63aLuXx07oQLYZI2FuDBPz80uD+FM1HSy9PYpEvM5ODvxpbW/Dvjz
+         sbTG6bIr0WskZrZRNNN5LeyM5xvxQDjlYKOK5oiY598GfZPh1ik70zl0aWQAIU7eOXG9
+         MHhR5E/SH8N6sDSjD12lVh1ITYZfCtHeelKHnQLtZExYE/qOyhYAr5fQ786xCfau/VYI
+         ejYDFH2NrtyyRvJd64kN6tNpqVy8sRVCTS4aLUsFX5148SmidA2GGrjQzuZ+yZxtmGy8
+         Y4E7ZpV0ugyhNmigfOpMdseo5SQTk4ecu0skAYSGWye24BTu4VD0DFF3ekSsGfwX9crf
+         jGrA==
+X-Gm-Message-State: AOJu0YxHkgSDCPMbXHqCMzkHOcnJ42cg+Bay9N6wUjpGB3SwIHS3L0ex
+	yknLSdq6jr9rwS0krHGXz7ME949Xlv+CavYCC4Txmeu8irhVREVokBNohWqylnNq1sEMNHpFjLm
+	KkY4KMg==
+X-Google-Smtp-Source: AGHT+IEIf9VK/cffpyCYFMB/1zS7sPl9WTUUnXn9QcSaGnk7G6TAqWm/KHwq9Yo8DYBPsZvSFAYyXv5pPTH8
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:7732:d863:503:f53d])
- (user=irogers job=sendgmr) by 2002:a05:6902:2512:b0:dc2:1dd0:c517 with SMTP
- id dt18-20020a056902251200b00dc21dd0c517mr2454050ybb.7.1706917280766; Fri, 02
- Feb 2024 15:41:20 -0800 (PST)
-Date: Fri,  2 Feb 2024 15:40:54 -0800
+ (user=irogers job=sendgmr) by 2002:a81:994c:0:b0:5ff:dac0:6524 with SMTP id
+ q73-20020a81994c000000b005ffdac06524mr2160038ywg.3.1706917283080; Fri, 02 Feb
+ 2024 15:41:23 -0800 (PST)
+Date: Fri,  2 Feb 2024 15:40:55 -0800
 In-Reply-To: <20240202234057.2085863-1-irogers@google.com>
-Message-Id: <20240202234057.2085863-6-irogers@google.com>
+Message-Id: <20240202234057.2085863-7-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,7 +73,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240202234057.2085863-1-irogers@google.com>
 X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-Subject: [PATCH v3 5/8] perf cpumap: Clean up use of perf_cpu_map__has_any_cpu_or_is_empty
+Subject: [PATCH v3 6/8] perf arm64 header: Remove unnecessary CPU map get and put
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
@@ -99,122 +99,36 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Most uses of what was perf_cpu_map__empty but is now
-perf_cpu_map__has_any_cpu_or_is_empty want to do something with the
-CPU map if it contains CPUs. Replace uses of
-perf_cpu_map__has_any_cpu_or_is_empty with other helpers so that CPUs
-within the map can be handled.
+In both cases the CPU map is known owned by either the caller or a
+PMU.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 Reviewed-by: James Clark <james.clark@arm.com>
 ---
- tools/perf/builtin-c2c.c   | 6 +-----
- tools/perf/builtin-stat.c  | 9 ++++-----
- tools/perf/util/auxtrace.c | 4 ++--
- tools/perf/util/record.c   | 2 +-
- tools/perf/util/stat.c     | 2 +-
- 5 files changed, 9 insertions(+), 14 deletions(-)
+ tools/perf/arch/arm64/util/header.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
-index 16b40f5d43db..24107062c43e 100644
---- a/tools/perf/builtin-c2c.c
-+++ b/tools/perf/builtin-c2c.c
-@@ -2319,11 +2319,7 @@ static int setup_nodes(struct perf_session *session)
+diff --git a/tools/perf/arch/arm64/util/header.c b/tools/perf/arch/arm64/util/header.c
+index 97037499152e..a9de0b5187dd 100644
+--- a/tools/perf/arch/arm64/util/header.c
++++ b/tools/perf/arch/arm64/util/header.c
+@@ -25,8 +25,6 @@ static int _get_cpuid(char *buf, size_t sz, struct perf_cpu_map *cpus)
+ 	if (!sysfs || sz < MIDR_SIZE)
+ 		return EINVAL;
  
- 		nodes[node] = set;
- 
--		/* empty node, skip */
--		if (perf_cpu_map__has_any_cpu_or_is_empty(map))
--			continue;
+-	cpus = perf_cpu_map__get(cpus);
 -
--		perf_cpu_map__for_each_cpu(cpu, idx, map) {
-+		perf_cpu_map__for_each_cpu_skip_any(cpu, idx, map) {
- 			__set_bit(cpu.cpu, set);
+ 	for (cpu = 0; cpu < perf_cpu_map__nr(cpus); cpu++) {
+ 		char path[PATH_MAX];
+ 		FILE *file;
+@@ -51,7 +49,6 @@ static int _get_cpuid(char *buf, size_t sz, struct perf_cpu_map *cpus)
+ 		break;
+ 	}
  
- 			if (WARN_ONCE(cpu2node[cpu.cpu] != -1, "node/cpu topology bug"))
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 5fe9abc6a524..280eb0c99d2b 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -1317,10 +1317,9 @@ static int cpu__get_cache_id_from_map(struct perf_cpu cpu, char *map)
- 	 * be the first online CPU in the cache domain else use the
- 	 * first online CPU of the cache domain as the ID.
- 	 */
--	if (perf_cpu_map__has_any_cpu_or_is_empty(cpu_map))
-+	id = perf_cpu_map__min(cpu_map).cpu;
-+	if (id == -1)
- 		id = cpu.cpu;
--	else
--		id = perf_cpu_map__cpu(cpu_map, 0).cpu;
+-	perf_cpu_map__put(cpus);
+ 	return ret;
+ }
  
- 	/* Free the perf_cpu_map used to find the cache ID */
- 	perf_cpu_map__put(cpu_map);
-@@ -1623,7 +1622,7 @@ static int perf_stat_init_aggr_mode(void)
- 	 * taking the highest cpu number to be the size of
- 	 * the aggregation translate cpumap.
- 	 */
--	if (!perf_cpu_map__has_any_cpu_or_is_empty(evsel_list->core.user_requested_cpus))
-+	if (!perf_cpu_map__is_any_cpu_or_is_empty(evsel_list->core.user_requested_cpus))
- 		nr = perf_cpu_map__max(evsel_list->core.user_requested_cpus).cpu;
- 	else
- 		nr = 0;
-@@ -2290,7 +2289,7 @@ int process_stat_config_event(struct perf_session *session,
- 
- 	perf_event__read_stat_config(&stat_config, &event->stat_config);
- 
--	if (perf_cpu_map__has_any_cpu_or_is_empty(st->cpus)) {
-+	if (perf_cpu_map__is_empty(st->cpus)) {
- 		if (st->aggr_mode != AGGR_UNSET)
- 			pr_warning("warning: processing task data, aggregation mode not set\n");
- 	} else if (st->aggr_mode != AGGR_UNSET) {
-diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
-index 3684e6009b63..6b1d4bafad59 100644
---- a/tools/perf/util/auxtrace.c
-+++ b/tools/perf/util/auxtrace.c
-@@ -174,7 +174,7 @@ void auxtrace_mmap_params__set_idx(struct auxtrace_mmap_params *mp,
- 				   struct evlist *evlist,
- 				   struct evsel *evsel, int idx)
- {
--	bool per_cpu = !perf_cpu_map__has_any_cpu_or_is_empty(evlist->core.user_requested_cpus);
-+	bool per_cpu = !perf_cpu_map__has_any_cpu(evlist->core.user_requested_cpus);
- 
- 	mp->mmap_needed = evsel->needs_auxtrace_mmap;
- 
-@@ -648,7 +648,7 @@ int auxtrace_parse_snapshot_options(struct auxtrace_record *itr,
- 
- static int evlist__enable_event_idx(struct evlist *evlist, struct evsel *evsel, int idx)
- {
--	bool per_cpu_mmaps = !perf_cpu_map__has_any_cpu_or_is_empty(evlist->core.user_requested_cpus);
-+	bool per_cpu_mmaps = !perf_cpu_map__has_any_cpu(evlist->core.user_requested_cpus);
- 
- 	if (per_cpu_mmaps) {
- 		struct perf_cpu evlist_cpu = perf_cpu_map__cpu(evlist->core.all_cpus, idx);
-diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
-index 87e817b3cf7e..e867de8ddaaa 100644
---- a/tools/perf/util/record.c
-+++ b/tools/perf/util/record.c
-@@ -237,7 +237,7 @@ bool evlist__can_select_event(struct evlist *evlist, const char *str)
- 
- 	evsel = evlist__last(temp_evlist);
- 
--	if (!evlist || perf_cpu_map__has_any_cpu_or_is_empty(evlist->core.user_requested_cpus)) {
-+	if (!evlist || perf_cpu_map__is_any_cpu_or_is_empty(evlist->core.user_requested_cpus)) {
- 		struct perf_cpu_map *cpus = perf_cpu_map__new_online_cpus();
- 
- 		if (cpus)
-diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
-index b0bcf92f0f9c..0bd5467389e4 100644
---- a/tools/perf/util/stat.c
-+++ b/tools/perf/util/stat.c
-@@ -315,7 +315,7 @@ static int check_per_pkg(struct evsel *counter, struct perf_counts_values *vals,
- 	if (!counter->per_pkg)
- 		return 0;
- 
--	if (perf_cpu_map__has_any_cpu_or_is_empty(cpus))
-+	if (perf_cpu_map__is_any_cpu_or_is_empty(cpus))
- 		return 0;
- 
- 	if (!mask) {
 -- 
 2.43.0.594.gd9cf4e227d-goog
 
