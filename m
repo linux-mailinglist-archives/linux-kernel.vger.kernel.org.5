@@ -1,207 +1,136 @@
-Return-Path: <linux-kernel+bounces-49959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-49927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 286D9847213
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:40:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E0CA8471A7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 15:11:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A79BD1F2B70A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:40:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C10EA1F28219
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 14:11:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1EF113D509;
-	Fri,  2 Feb 2024 14:40:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7809B13F00D;
+	Fri,  2 Feb 2024 14:11:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f3k3M0jI"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b="LwlOtlJL"
+Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FD0260249
+	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 14:11:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.250.239
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706883095; cv=none; b=CZ253lS9mDDQRQFLvo11Sn+LfnvqAiOhJ+J+3cNyTyNEXwo4DgGDZAJ9EfLLWCxfM3fz8gOmcCXGh0R74DrGiVvb7bAxfgAWAyyPLzvDvqeuK8zqJJkeP/7GxRbsC7oBwWdEAvSN5cI1it6o2AhY2gTGhn7VhtIYFzWztNOcIvo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706883095; c=relaxed/simple;
+	bh=wjLjnJAjbNBLCn9zKPLVKdaXKEMkZpMbB5LhcZy/RbI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=INStssRMVamt4B8T7aJNTEbaZEERiHmad+J3l/OxNSxVC81EwSA37VQl2o3qgojQV3IP9d7RxbPXKvF8EIwSsn3FqckxKl8d87NuUowKXEH+HhXg6oHMBcT7VDqXXWUE9sFeHNKDK7YNHwj9eiDgK+7xUWH++68zJUKAgNxvKas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org; spf=pass smtp.mailfrom=8bytes.org; dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b=LwlOtlJL; arc=none smtp.client-ip=85.214.250.239
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=8bytes.org
+Received: from 8bytes.org (p4ffe0c3c.dip0.t-ipconnect.de [79.254.12.60])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E7DC20DFA;
-	Fri,  2 Feb 2024 14:40:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706884803; cv=fail; b=ZqR8ID62KubWpa8EiR2dbJHsyr8EnoBfK7vP6SDSo/CTAvXMW2PJXI+TPPJ+z6hktWHtr9UezRl3lzd2fyRtEqVzwjPjq01dgSiWhilbN94LySOFYz5RrYwdCDvlyKL44rd7CeMOCniYOFtBXc8/FMAeY+GomnEMyeNh/SstpSg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706884803; c=relaxed/simple;
-	bh=pYsCDGwyYymbmB+k6Y2V4kh/gmMwP6zECw704kEsf+Q=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=VBjRSrVHL2UMLJc8Bhxhh7glXSpd6XWqr0r6ONrc63TleQjIghElKDe+j17BI3LdY20LcU/r67wExxz6eU03q7i8MFCBFeqSVUDNGWdGUKEdWX1mgeC9/BInaMQod+IGTMbgmGjMxNVf4qqgljQsRZ0zdgVNuQPqZy09gn9jcZA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=f3k3M0jI; arc=fail smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706884802; x=1738420802;
-  h=date:from:to:cc:subject:message-id:reply-to:references:
-   in-reply-to:mime-version;
-  bh=pYsCDGwyYymbmB+k6Y2V4kh/gmMwP6zECw704kEsf+Q=;
-  b=f3k3M0jI8ePgwD5si/hRDrhKPSQywkvJV7SyRkyxayjFtZJ1Pa4GXaB9
-   e832Z5uiF3ZsekJzPyQHJ9q2/2yzaCFqOPLmoh4KzRgQBAi8N5aBE1Oak
-   MGVYekviBvAcmvJAg1NkFj+S9UqYFarilQhxMoFohU7u3fDJpe0x1Ofb2
-   gz61dtu3gjfrJEavmcB2NpXWvcUQgI1uE1BiOmGVDx6QcQjQ3PtD/nIVg
-   0eS2Yv5dZvCWqj2puoC3elAYj1pDxf20e2ouYzRIKcqmc8ADEGP7SQwYh
-   iUoFwoaGvOvG3qSE9BPQtqk3NcJSTUDHhr5Kx+57dZWklTxQryzMYyAfo
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="4067877"
-X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="4067877"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 06:39:25 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="368644"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 02 Feb 2024 06:39:23 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 2 Feb 2024 06:39:22 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 2 Feb 2024 06:39:22 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 2 Feb 2024 06:39:22 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 2 Feb 2024 06:39:22 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XlW6gEOXvR3Mn1P0B6NgoyBQy/ky1LRkwUaBLCH2LmKbKzi+emripGO5K4Nsi24JIZFwg4kKq2o/z1yFoV9k13RmS1JksXydil9Okrx1HoN9+bStNxB7lgI9WnE4iHnhM6RkG0wTPBSvY7+2+rfW5yVvFJad9TccNO4ycg21ZLfNcANUXkIsPdtLVTA5iQso/862XMHTLWZXlN65qGw3OY5Sj++e8D76lk/MBR/r4bGqeKhpE846Xaz12FNNFJ+O+ZmRz0r1sGn5J1MPfn4CKsvT+98P/+SCeROc2Qb3PYPoLxFugVTVt+T77Bub4uWD7T7SyuO+QFUEs/1KkeaQvw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0Dor3yZqd/Db7aUYo+NgPp4C4OIbol+EPXFqML7to7g=;
- b=heSUTIXKOTszwHc47W+luMVv8fJB7GAWdKy6xuS82SBcNZ5eNdzYmTYvqI4ZuUOigQBq6jmhTH2+lPRvHFhLMdZn64rA1k4uT1FL3jm/qb7AVGdhb7njaDHPKY21VYS0YBajPlfqka+Eto6NlipxZGwS6DLazgVOwn3FWI6/JsN5s9NBdxlmvIVV1Rtl85yIrT5qYqA/AOrf+YhhMG40IKi4DgJFdJfGu8PDzp7cWkGLbsimwzdkQ5C1YBopqOqREkxgXFgv1NtXT7F0xHIic3qU3NcpGATY5Nq3XXY8+7Yj62dLvLmcTs42NPUVWndYQXaycZQlbYr8fPpJq67MKg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
- PH7PR11MB7572.namprd11.prod.outlook.com (2603:10b6:510:27b::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.26; Fri, 2 Feb
- 2024 14:39:20 +0000
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::81e3:37ec:f363:689e]) by DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::81e3:37ec:f363:689e%6]) with mapi id 15.20.7249.027; Fri, 2 Feb 2024
- 14:39:19 +0000
-Date: Fri, 2 Feb 2024 22:09:45 +0800
-From: Yan Zhao <yan.y.zhao@intel.com>
-To: Arnd Bergmann <arnd@arndb.de>
-CC: Linus Walleij <linus.walleij@linaro.org>, guoren <guoren@kernel.org>,
-	Brian Cain <bcain@quicinc.com>, Jonas Bonn <jonas@southpole.se>, "Stefan
- Kristiansson" <stefan.kristiansson@saunalahti.fi>, Stafford Horne
-	<shorne@gmail.com>, Linux-Arch <linux-arch@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, "linux-csky@vger.kernel.org"
-	<linux-csky@vger.kernel.org>, <linux-hexagon@vger.kernel.org>,
-	"linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>
-Subject: Re: [PATCH 0/4] apply page shift to PFN instead of VA in pfn_to_virt
-Message-ID: <Zbz3qVq+8le1xuKr@yzhao56-desk.sh.intel.com>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <20240131055159.2506-1-yan.y.zhao@intel.com>
- <5e55b5c0-6c8d-45b4-ac04-cf694bcb08d3@app.fastmail.com>
- <ZbrfcTaiuu2gaa2A@yzhao56-desk.sh.intel.com>
- <9f27c23b-ea8b-443c-b09c-03ecaa210cd5@app.fastmail.com>
- <Zbw/PpNkCQCbXPdP@yzhao56-desk.sh.intel.com>
- <33a5d3a9-3154-4dad-afae-18b16e6cf61e@app.fastmail.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <33a5d3a9-3154-4dad-afae-18b16e6cf61e@app.fastmail.com>
-X-ClientProxiedBy: SGXP274CA0001.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::13)
- To DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6)
+	by mail.8bytes.org (Postfix) with ESMTPSA id 5D1431E1FDD;
+	Fri,  2 Feb 2024 15:11:26 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
+	s=default; t=1706883086;
+	bh=wjLjnJAjbNBLCn9zKPLVKdaXKEMkZpMbB5LhcZy/RbI=;
+	h=Date:From:To:Cc:Subject:From;
+	b=LwlOtlJLDYZupoUvtA4BGF9e9WqN2ngejjHfAJyE7pK1AQrV3crlsWCXDEjRRSiD1
+	 C1LzBYi0+9CEtZiIvzNpc3wWpPs4HS74edv7CNG0mTPYDlR3F4Ydi6W0rNhOI7ODzp
+	 4X2FV3NNnMXkpGLwaJvmlEmrGHa57IlKym+VUYxvSmiawgI0dGKGqxw8ur66CtBR8a
+	 RygOFpYyNP2wQPNcgu/WQevk8SHCpq56sPoCzPL4ZbZ1g+WYgb0RF44OKO/nupfNBo
+	 09jXpbTDG5cQ7RK/sfauKgZoGGw6LDfcty8/8TBQXFZfj3qcr047y5bLwevLs+rJ2x
+	 f2dlXOXSIqZ/A==
+Date: Fri, 2 Feb 2024 15:11:25 +0100
+From: Joerg Roedel <joro@8bytes.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev
+Subject: [git pull] IOMMU Fixes for Linux v6.8-rc2
+Message-ID: <Zbz4DdrTl4js-w9H@8bytes.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|PH7PR11MB7572:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1ed646ca-b1e2-4fa2-2eea-08dc23fcbd4b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: X4b+tUYRRZqSJhK5/tAdLO2m7LpBsGy+jOZVQoE5ZGLvnL6PaZM2lar/SFZGmTzZ4rarIUOrkIaeguc2VIppyuxpX1pos3/U9XYtg0Hi6zsqzcvcyM738vzQ0FDvt/N82Z8/LXsXvIyJDj+c4At020lG6XetV6pUmOgpqlJuOUFGeYZRK+8XmiUx1t00NCD2JbA9AONUcW8aC6vLcwU34ui7vIzFcKGWXcOuoIpK+ydW5DpI2DmWGYgxl/8axZPq+YYmlAyXnmi44758qls6KcB8tgpfyXKfltlDjnfhS0+y7xTcM8vK0vM/BNGGDYt4hYYJgChW0uerNSPqL40wYpm1izM2s7opJZwt2rZWuWE8o+54TUTexOoRSCDSdCvlbigbHqzDVhiTqLovDBY3+qRHCzS1QTtVer/tJZAmHYAwPcKd/POlufYWrehXVEBWOt19F7r+5bDtngmHHWD5bi1cvGNkPI0zz9g3uPfglB3z9zHisNwynu9kXvDjpfMwv2WvheZAQyFo6otR64FvT603awrDX5dVP4Y1YeP+4HkRlpP8QZyaC0N2/kzSPUJwhLSQKVo0zFiMNyTPSPp1Td90tYYcae/bfYnSCuD78Sg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(136003)(366004)(376002)(396003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(6512007)(6506007)(26005)(6666004)(82960400001)(41300700001)(83380400001)(86362001)(38100700002)(966005)(6486002)(478600001)(8936002)(8676002)(4326008)(3450700001)(5660300002)(7416002)(66946007)(2906002)(54906003)(316002)(66476007)(66556008)(6916009)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?f1RLqVPwIWnXKGSHCAWw+UD85Lj7J7bQH13oUGPsKEMu6nv1uplNt21YBdc+?=
- =?us-ascii?Q?tRv5wjfECIvB+Yt2DOGQWnXjeoTNs2zB0p08vAa2EYlGPja4Y/xNLZCErAjE?=
- =?us-ascii?Q?1kw//HR5K60sUiCapiDJ1G4ltS0797CD2xXFqjs3s3erbYpOZuS89XsNKo+5?=
- =?us-ascii?Q?+ZxdWjzUItrYuT48fL2A2HRwRt5sA32WfMDywR3xtVX8z08qWt7z6WxumTYt?=
- =?us-ascii?Q?1dtDZEaas0jbZLPI8FtiFnLSYokuXRvJpWNL9JHpahe0OdRyLbhDVCYB9jOY?=
- =?us-ascii?Q?BKQt/iYiTT5p3Sa5mNWMWiEJdcq7ON1Q+48t55pJF8jOLR0dcP7tagxw1FLO?=
- =?us-ascii?Q?6iz0HebsL4vj/yobxeBYvc7V1boQLOUIpygoaxocd/MIPqVvcGzWWEn8MCbO?=
- =?us-ascii?Q?3xVJfkV2LiHXE/dzpwwGgRhcr5iiCtqFy44KbmSw8FjwgaIT+d3hr5QwmOi2?=
- =?us-ascii?Q?mXR3efaCVyb+zlUmD5kELxq7qsFyhWqQb+HVns+F+SUh6xe1mS2J3PEfULAs?=
- =?us-ascii?Q?vMKomjn2S6Gr6gfvss4qNkVywSj8ok+TiCHb8Lmcv6Rhzs+/9DP11tLtyP+Y?=
- =?us-ascii?Q?VFy5aL4Hzlvb7OVXZAE27c7VmQFuQTo1ykgh8augBNJJfSz5og4rc6HXOcUZ?=
- =?us-ascii?Q?CqXAfMXgLoCgu7LVQ9rwFepZHBGPGXtdjodZ/7IRYO6GxwLKY66ZDTgRid2/?=
- =?us-ascii?Q?RPosQ35bzht9neEx0mHZ8CiQwceIDvRxau31sjEvnfWzvO3nlCf0Bi9A6Don?=
- =?us-ascii?Q?AyuwTNNd7AqpFxYMcZnw3SMp11EpIMTo8wXdTO4HgWZwDhKVIsMHQxHxAunM?=
- =?us-ascii?Q?kqguuP83xksmO/Oohriq23Dk4sAdUvm8W7aticTxuxhnF9208RjrBCUH/K7L?=
- =?us-ascii?Q?GtpsseGa0rLo2iUt25dSJ8d29Fe6YLpO8l7B/gzIY7JOI5OUATcmNyz65HQ1?=
- =?us-ascii?Q?QZEak1WV7pLbfBwwRktqli9EC0UBEPcRHnFFHTjj1lOuUdcCDkbqsAqvtFMz?=
- =?us-ascii?Q?hEODLfuZUSB8TeiSG6JK18H8UbI9W4VwilOgnT7FN+suI7Kr8Nl3mJGk0loB?=
- =?us-ascii?Q?O9ZvghlyyP1ZO/Zz3QYc7VhSysZJiIXQO1/JP8mLTLtzGAEGMFP/oHXe6nQ8?=
- =?us-ascii?Q?CkcdduYkurqIJa0BsNZEAuFHOL4KXytOfn25ZuXSgZh8TKBe3j0DIOT/GWZo?=
- =?us-ascii?Q?YYBpBOMVt2fg3+cMDLm1MtG3ow123wbofAow5RE6D+E9OyRKPBstKSpK92tj?=
- =?us-ascii?Q?P76TNySAgkaPac0d/4zlCvdK5bFJLLBAlKTLkSIJ9FMbRT2uJ5N1H7svzoHv?=
- =?us-ascii?Q?BtQf62QWT7DSGbKW6V7qBT2TaCwKu411aRQmYFUYFlFjl0IR9LpIm/YuzNeq?=
- =?us-ascii?Q?eC669Jx6MghY4DIKrynwc2RMzZDYXxP0wQLAeV5AxsYecuDNU34ivO8yIo0s?=
- =?us-ascii?Q?tSgoJpwSZpHExw0X0TqtvE0M8g0hwSuMI6omNzctAw2ZnIuVpKGsMdTrAoRe?=
- =?us-ascii?Q?AfUUV1zQlNRRt0ipxwaliZfKzCDESRU1ezBM+0oWa4YWpGugL+c/PKUcMvEr?=
- =?us-ascii?Q?kRyYGSGX3W9xS2qO7eigzoTxY9IHSvTlJxUfRB1w?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1ed646ca-b1e2-4fa2-2eea-08dc23fcbd4b
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2024 14:39:19.5621
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9PLCsTVo+NLyxkEtylqxyhQ6SWAaxPKV7A7/WU+2j+JBsPCKCdO5UwMIAojHo2Xxo2djOsFaN8PpgMcZ5J2t2w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7572
-X-OriginatorOrg: intel.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="30+K22LByfpbaTue"
+Content-Disposition: inline
 
-On Fri, Feb 02, 2024 at 08:04:34AM +0100, Arnd Bergmann wrote:
-> On Fri, Feb 2, 2024, at 02:02, Yan Zhao wrote:
-> > On Thu, Feb 01, 2024 at 06:46:46AM +0100, Arnd Bergmann wrote:
-> >> 
-> >> I think it's fair to assume we won't need asm-generic/page.h any
-> >> more, as we likely won't be adding new NOMMU architectures.
-> >> I can have a look myself at removing any such unused headers in
-> >> include/asm-generic/, it's probably not the only one.
-> >> 
-> >> Can you just send a patch to remove the unused pfn_to_virt()
-> >> functions?
-> > Ok. I'll do it!
-> > BTW: do you think it's also good to keep this fixing series though we'll
-> > remove the unused function later?
-> > So if people want to revert the removal some day, they can get right one.
-> >
-> > Or maybe I'm just paranoid, and explanation about the fix in the commit
-> > message of patch for function removal is enough.
-> >
-> > What's your preference? :)
-> 
-> I would just remove it, there is no point in having both
-> pfn_to_kaddr() and pfn_to_virt() when they do the exact
-> same thing aside from this bug.
->
-> Just do a single patch for all architectures, no need to
-> have three or four identical ones when I'm going to merge
-> them all through the same tree anyway.
-> 
-> Just make sure you explain in the changelog what the bug was
-> and how you noticed it, in case anyone is ever tempted to
-> bring the function back.
-Done.
-https://lore.kernel.org/all/20240202140550.9886-1-yan.y.zhao@intel.com
-Thanks for you guidance :)
 
+--30+K22LByfpbaTue
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi Linus,
+
+The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
+
+  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-fixes-v6.8-rc2
+
+for you to fetch changes up to d2d00e15808c37ec476a5c040ee2cdd23854ef18:
+
+  powerpc: iommu: Bring back table group release_ownership() call (2024-02-02 09:26:20 +0100)
+
+----------------------------------------------------------------
+IOMMU Fixes for Linux v6.8-rc2
+
+Including:
+
+	- Make iommu_ops->default_domain work without CONFIG_IOMMU_DMA to fix
+	  initialization of FSL-PAMU devices
+
+	- Fix for Tegra fbdev initialization failure
+
+	- Fix for a VFIO device unbinding failure on PowerPC
+
+----------------------------------------------------------------
+Jason Gunthorpe (2):
+      iommu: Allow ops->default_domain to work when !CONFIG_IOMMU_DMA
+      drm/tegra: Do not assume that a NULL domain means no DMA IOMMU
+
+Shivaprasad G Bhat (1):
+      powerpc: iommu: Bring back table group release_ownership() call
+
+ arch/powerpc/kernel/iommu.c | 37 ++++++++++++++++++++++++++++---------
+ drivers/gpu/drm/tegra/drm.c |  3 ++-
+ drivers/iommu/iommu.c       | 18 +++++++++++++-----
+ 3 files changed, 43 insertions(+), 15 deletions(-)
+
+Please pull.
+
+Thanks,
+
+	Joerg
+
+--30+K22LByfpbaTue
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEr9jSbILcajRFYWYyK/BELZcBGuMFAmW8+A0ACgkQK/BELZcB
+GuO8Hw/+MDm8+qaRSjySkUWpfewPcQEFbMLrcuHTsIW0WvHyvnKOCB+SZjHrWRa1
+phXK27RassNVOpkCySxe+8f6qJcIuorPB/7X4XVLCntIbghp1KyoIGOiwJ8i5Etd
+kjbrzIWsMw6S+g3zvM0IaVlezxWG9/cBNx1vKOrvL1RA/+BBptUfsm5KEQT1+FMa
++ZzmycC4ooM2yvEGwuVvMUTcLpp0noaeEJY0sy54udg9XE6FmONkzR0laOhagNPW
+Yeu03zETVJm2Cke5PRrpDygcf58smWrk1zh/t1A4WkG/zbJF4GxoG2kKhzeHXnp3
+ZvZ3GlAGs8seqh97eX1tsUGdi66J4utTg5yq+KpUvcF1HfyRe7X0iU+Zs0wgIq7e
+m/Z5ZgA1XzpJiytKpcR1bMb4x/67VMyUejzrpHjtaPrJIRu0CprdiUkqWeeVNO6A
+6NxbRdC+c4TwOMZ5a3oJSxNzcDuOLHh0PiDTeAz9uY5R1TVs5oI84ao9/EtGTBb1
+1cbmeJv7jIDsr54v8p88njjP9iaVku3TkXm0+5RIptXrkr9DnJsxEmRgOD4PY5rv
+tplEV+6Po1kkJcZZQAXbUSR22Nn3E741KvoBpTGgfrYbS1UX5kpd7TgFw+AjO6fm
+RtCYWr7mlX0uEpBMDLy7C25hfUdi5UoRwx7bdTkLpLTEV1qrqS8=
+=w3pA
+-----END PGP SIGNATURE-----
+
+--30+K22LByfpbaTue--
 
