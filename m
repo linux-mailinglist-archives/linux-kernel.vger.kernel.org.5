@@ -1,148 +1,111 @@
-Return-Path: <linux-kernel+bounces-50974-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50975-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8193D84847E
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 09:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E4C0848483
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 09:34:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F1B71F25BF0
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 08:20:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5EC11F2904D
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 08:34:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06F294F1F9;
-	Sat,  3 Feb 2024 08:20:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="c3QotZqe"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 114705C91B;
+	Sat,  3 Feb 2024 08:34:41 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54C6D4EB5C
-	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 08:20:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12F465C8F8
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 08:34:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706948429; cv=none; b=SrtudDYZ2XnBD7beusehrQ7HMMuQ8n8yldzFIOndTwJIm0Bq6D5KKVf4FkovUF89FGVUQyal2Z6c5GrnH3wMeR2J9Em3/vPZpBs0pKrW8ZnceRq8VMpVdS+jP5ZelQpdjoDZdRrtVDrf6Bq2j5fYU02WIyEuvkU97JvG8ERciXk=
+	t=1706949280; cv=none; b=WRChl30HgEmH8xUrsIlinU1khSTa2zGiOpl73Fiwfld101Yfctg8egTzDu6+RDi5z17RDgsrmUhsgd4kgCJNcSyjbvgWGqSGe944Ox1wPJGfxJCne7hPRGRuF4T5vwcdztyV09mkJm+0FVNNRUa9qT8R47aKvJN407WMOucP0S8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706948429; c=relaxed/simple;
-	bh=VJTsZpqCDZpsu5T+MNLTD5MewmrnD3AsR3yU5nnD+1U=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=uwVFNeG0ORXFGPxTe7uPEJACiGwb70bPXARHfJDInzo0quy4uLoKxmNSxRYG7ve5DaSoJYVXaCsO1BpOm38a26XKp5k2YefjsO9KUTQX2SvcG+udxvqV+LqyDr453kzh8Y6xINsWJPy5wOUM5WscBRxuMY9ZepxFumDc6uVLKJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=c3QotZqe; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706948427; x=1738484427;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=VJTsZpqCDZpsu5T+MNLTD5MewmrnD3AsR3yU5nnD+1U=;
-  b=c3QotZqetqvZYt56ILT0UQKaRs9FkIeVyHony44QCRlhFlSV8tX8rFxl
-   2vpQUGYNRVKCxq4Dvb2WXKjrev3+q/XFNA9wYXVBGVuID0EIWhpnNt0AJ
-   J3ZwZg7uHblBHaAisLYqFlq0iWqGevAJZIMteCgeAMuiy/xAdudq3JmPJ
-   T1wz/zS54srxxv95vKFxhAuuJO2trxkEYwKfBMEHZMYn1xPJj5c0S47lP
-   hLM4oqD0VvJNf184agmZFJwYSUW/y/7oMOrFIAWUkH0aUBiSTlvqf6ZPB
-   TLMaTZgb+7ettSy5k+NJr1NXECQqY4prqsv5YF1WcPgkAqpefPzrSncQK
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="206181"
-X-IronPort-AV: E=Sophos;i="6.05,240,1701158400"; 
-   d="scan'208";a="206181"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2024 00:20:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,240,1701158400"; 
-   d="scan'208";a="295609"
-Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
-  by fmviesa010.fm.intel.com with ESMTP; 03 Feb 2024 00:20:25 -0800
-Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rWBGA-0004mg-05;
-	Sat, 03 Feb 2024 08:20:22 +0000
-Date: Sat, 3 Feb 2024 16:20:14 +0800
-From: kernel test robot <lkp@intel.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Masahiro Yamada <masahiroy@kernel.org>, Alex Shi <alexs@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>
-Subject: include/linux/compiler_types.h:346:38: error: call to
- '__compiletime_assert_412' declared with attribute error: FIELD_PREP: mask
- is not constant
-Message-ID: <202402031636.ZMuj0En9-lkp@intel.com>
+	s=arc-20240116; t=1706949280; c=relaxed/simple;
+	bh=dREloSxjsQd3Dm2TwTvLLgS4yjeB2A4QST2I21fOKPI=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=jwWGcWTIivBwkW1fCg/LaRjbkOZoxdrf0RuCYTJyAKm6oPKvP80ttqvYOq0dkiRk26u3jEExrLUZMvkMhdfWLn5AHV2m37JC8E3yTgrc1YQvK35Tdk219EerFlrL4rXIdrjSCIIp/NKBxjyYUWKrEjLnOJPE/kilwcTRPqKdDvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-363bde409b2so836845ab.1
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Feb 2024 00:34:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706949278; x=1707554078;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fET0Mp30kk4vbeHTvxgVRyoa35Y2AW8JHcb4p/vnIZs=;
+        b=DWVFSopLfe1ogO600twxV7+7DNX+Zh650kEto77FxLkfQ6LNJoQqDTJUUXWK0G8FZB
+         tjBT1wL5GXwm42PgwmTW8R3eZUn6N9FKVIRYZT5pxBoIe+tLGRVoBJNl0p02UIDqgO/X
+         +7g56XKb/pbEZm57JJrv8BC1mzSAHE6WzAl7oTBbwFmmaixRSpdysQn5wMnDP5h1GBDt
+         LJnSjgWHyGImnyIEgR22Yhwx1GQG3EhmxWYXPgUQ0vaanG54MW0Q+6A5f5YAWmbaukZe
+         Qo3kK7y9HioMpzimnuaTiP2EswRccpMuwhFf8UAe9mB2OcRyWHkVLHT1mdyxjkKPxv7M
+         Vvfg==
+X-Gm-Message-State: AOJu0YwSpvUvCF0oscco9wZBmhh4s2i9NHHKo20cyhuFA9VnABp/D2WR
+	SjVMDFA0pt2i0NhjH9rxfae9eYnTOef/H7VVvg9VuDf82jB0123AtZy/wuW/rxHgz6K/zBus3SR
+	SqLYtjpBNB3taYhVYFaFi4SsieVEQL6ox7+VOgnDQuz1VLO1W4SWwe+x6Gg==
+X-Google-Smtp-Source: AGHT+IFCSqaViRTl7MXK4bNIJv6w5IfZz0CUOIsCDXUztj9Lhe7QGIjPGGhRjUSlcdy2uM0cIfvFU0WMYzqMXfwCCvFSZP34dMZv
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-Received: by 2002:a05:6e02:2166:b0:363:8b04:6df7 with SMTP id
+ s6-20020a056e02216600b003638b046df7mr68726ilv.0.1706949278191; Sat, 03 Feb
+ 2024 00:34:38 -0800 (PST)
+Date: Sat, 03 Feb 2024 00:34:38 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006057050610761986@google.com>
+Subject: [syzbot] Monthly wireless report (Feb 2024)
+From: syzbot <syzbot+listce8d4b19585dfc84b816@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   56897d51886fa7e9f034ff26128eb09f1b811594
-commit: e8c07082a810fbb9db303a2b66b66b8d7e588b53 Kbuild: move to -std=gnu11
-date:   1 year, 11 months ago
-config: x86_64-buildonly-randconfig-002-20240203 (https://download.01.org/0day-ci/archive/20240203/202402031636.ZMuj0En9-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240203/202402031636.ZMuj0En9-lkp@intel.com/reproduce)
+Hello wireless maintainers/developers,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402031636.ZMuj0En9-lkp@intel.com/
+This is a 31-day syzbot report for the wireless subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/wireless
 
-All errors (new ones prefixed by >>):
+During the period, 1 new issues were detected and 1 were fixed.
+In total, 28 issues are still open and 120 have been fixed so far.
 
-   In file included from <command-line>:0:0:
-   drivers/gpu/drm/i915/gt/uc/intel_guc.c: In function 'intel_guc_send_mmio':
->> include/linux/compiler_types.h:346:38: error: call to '__compiletime_assert_412' declared with attribute error: FIELD_PREP: mask is not constant
-     _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-                                         ^
-   include/linux/compiler_types.h:327:4: note: in definition of macro '__compiletime_assert'
-       prefix ## suffix();    \
-       ^~~~~~
-   include/linux/compiler_types.h:346:2: note: in expansion of macro '_compiletime_assert'
-     _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-     ^~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-    #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-                                        ^~~~~~~~~~~~~~~~~~
-   include/linux/bitfield.h:62:3: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-      BUILD_BUG_ON_MSG(!__builtin_constant_p(_mask),  \
-      ^~~~~~~~~~~~~~~~
-   include/linux/bitfield.h:111:3: note: in expansion of macro '__BF_FIELD_CHECK'
-      __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: "); \
-      ^~~~~~~~~~~~~~~~
-   drivers/gpu/drm/i915/gt/uc/intel_guc.c:430:9: note: in expansion of macro 'FIELD_PREP'
-            FIELD_PREP(GUC_HXG_MSG_0_ORIGIN,
-            ^~~~~~~~~~
+Some of the still happening issues:
 
+Ref  Crashes Repro Title
+<1>  6696    Yes   WARNING in __ieee80211_beacon_get
+                   https://syzkaller.appspot.com/bug?extid=18c783c5cf6a781e3e2c
+<2>  4569    Yes   WARNING in ieee80211_link_info_change_notify (2)
+                   https://syzkaller.appspot.com/bug?extid=de87c09cc7b964ea2e23
+<3>  4395    Yes   WARNING in __cfg80211_ibss_joined (2)
+                   https://syzkaller.appspot.com/bug?extid=7f064ba1704c2466e36d
+<4>  2892    No    WARNING in ieee80211_ibss_csa_beacon (2)
+                   https://syzkaller.appspot.com/bug?extid=b10a54cb0355d83fd75c
+<5>  851     Yes   WARNING in ieee80211_bss_info_change_notify (2)
+                   https://syzkaller.appspot.com/bug?extid=dd4779978217b1973180
+<6>  844     Yes   WARNING in ar5523_submit_rx_cmd/usb_submit_urb
+                   https://syzkaller.appspot.com/bug?extid=6101b0c732dea13ea55b
+<7>  747     Yes   WARNING in ieee80211_start_next_roc
+                   https://syzkaller.appspot.com/bug?extid=c3a167b5615df4ccd7fb
+<8>  717     No    INFO: task hung in ath9k_hif_usb_firmware_cb (2)
+                   https://syzkaller.appspot.com/bug?extid=d5635158fb0281b27bff
+<9>  66      Yes   WARNING in ieee80211_free_ack_frame (2)
+                   https://syzkaller.appspot.com/bug?extid=ac648b0525be1feba506
+<10> 46      Yes   WARNING in carl9170_usb_submit_cmd_urb/usb_submit_urb
+                   https://syzkaller.appspot.com/bug?extid=9468df99cb63a4a4c4e1
 
-vim +/__compiletime_assert_412 +346 include/linux/compiler_types.h
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  332  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  333  #define _compiletime_assert(condition, msg, prefix, suffix) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  334  	__compiletime_assert(condition, msg, prefix, suffix)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  335  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  336  /**
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  337   * compiletime_assert - break build and emit msg if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  338   * @condition: a compile-time constant condition to check
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  339   * @msg:       a message to emit if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  340   *
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  341   * In tradition of POSIX assert, this macro will break the build if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  342   * supplied condition is *false*, emitting the supplied error message if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  343   * compiler has support to do so.
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  344   */
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  345  #define compiletime_assert(condition, msg) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21 @346  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  347  
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
-:::::: The code at line 346 was first introduced by commit
-:::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move compiletime_assert() macros into compiler_types.h
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
 
-:::::: TO: Will Deacon <will@kernel.org>
-:::::: CC: Will Deacon <will@kernel.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+You may send multiple commands in a single email message.
 
