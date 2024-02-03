@@ -1,153 +1,174 @@
-Return-Path: <linux-kernel+bounces-51300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1B7C8488FC
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 22:33:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ADBD848906
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 22:49:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D94561C21D01
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 21:33:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C25461F233DD
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 21:49:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 258EC134B9;
-	Sat,  3 Feb 2024 21:32:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 737AE134D1;
+	Sat,  3 Feb 2024 21:49:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EddJrCsG"
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="KEserLf4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8D2E12E4A;
-	Sat,  3 Feb 2024 21:32:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF35E12E48;
+	Sat,  3 Feb 2024 21:49:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706995978; cv=none; b=OQTl/8th0bjN2T+HLUuTHhe1Z3lnM0lZFYAPm91eu7pdNXRfBjgeF+cxq8ZSUg91Rn65/0sCjQ1orTMrfwJfwuNjxkMMTACWqoitn0R24w5SYmJCGR5SJTOszUNnTMeFs6qupATb0EaAd/mVcQXkE023ZJOvRNJcTpQfQDL+3aY=
+	t=1706996961; cv=none; b=OcgP75FjI2wfCD1A8mcksfS7rb8xGHosrKJIAKpBiJCF3OD636QhD7LcVgkbRXMGld7xgaugtT4ONi5bK1nnpoth5hQ2JuUisjhu0d0hK5ZKF38v4iSum59GrIS35m9kXoM7g+hGQzQkLpLHIxmC41AQVJH7GbQ9UeVa00lmLEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706995978; c=relaxed/simple;
-	bh=Q+ypL+7r7LGKJTlpt2JxSW5Xhm2c2GoeyyTiSedEHNU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iDyhGrPYb7PbHWyiJPI++Ug/+qlLjFl3LgKh8rff4bNLnfTz87kRWBrYsKAxm6YZ58mFljKGtZaaC1MW883BMgINhg+uNhhWX2oSJYddr2s/ejTtmFvuo66FxGmpAmhbOj0izAPSvjftiCJuib2LtU7iyBFNFpyMLIhv8iX7+Uc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EddJrCsG; arc=none smtp.client-ip=209.85.222.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-78574840242so13426985a.0;
-        Sat, 03 Feb 2024 13:32:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706995975; x=1707600775; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VAGoWDaCAmllD0xBrRiBwC90oxDOcMQb+WVxB91lwtA=;
-        b=EddJrCsGSHdoxfU/mNWcDYnTVIbll67hwqP8hk2mdn+w7wClQ+90a/Ss7xkG0gKE3H
-         IRKD8o+XoErKdEuKaLIDHEw+7QC5bv4UT0Gzeij46LI+vkgotMx6dMfE2j20JBWTqU8o
-         u1daVE3UWK2negIvzHazUxMIrUqoOKR6w9E3uYSr91tdbbzp9kIBcL7LAHFdbOu3wSr8
-         qYBjvt0WVx3ul2V3QxVj1swQSkY/lALaVfIt+uZOh3VWzYpOgY7QJVHWGilbJb2j9VZp
-         BE3sIXBNqIVBywiK4HZKG79kl4XgzWUcbTKy0X2m5eSeL6FvZ39l3QCp51yb2tBbIjGy
-         2IOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706995975; x=1707600775;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VAGoWDaCAmllD0xBrRiBwC90oxDOcMQb+WVxB91lwtA=;
-        b=OWRc2BQkmzs2o/osIIydeamkZnwq4nZqqMquBqdUYPe/nSVYW0OG11Kq0q8qH7YGj6
-         GwMjrPN3s6IKmPzWw5cbVBNquoPs2AUnfnQ/Sa8B3IHFm1YYp+VG8ISsR8+lEuZB+g+m
-         W7DRR6gjX7lHtFLLez/vaY4It/bR2jJcijw+4lF7UJTozmUQkGVuRp8WgD5RRS9bYD6O
-         aN3ZOs3duZ2yjpJE+8xF1KSDiSWo+pTaDIdKfXvFpdASsClWLX2/Cqeeod2GygyoJ2OB
-         zgRc2SpjaixDIBx6g1DMtStZ3P+Nhfsybj6gMDvxmAlrqgGWymNmJTSOBWqFc1NSHRAQ
-         xvjw==
-X-Gm-Message-State: AOJu0YzvvK7xrDkAGoSpc7oJopVcW3WFtOajQeo1BjbN+bXEZrj4eaXT
-	a+6ntnevHH8J1MxPAiMS5z1TfWVCIT9OkuOaVyeOdOot7mgJM5SJ
-X-Google-Smtp-Source: AGHT+IFq+iaOcyedgmkBKtHcp13uhNezaL6vS1Tbh/fIF4UcxkSNQzqma49Nlgh6C0WBspmq/9Zhkw==
-X-Received: by 2002:a05:620a:1aa9:b0:785:56ca:2f21 with SMTP id bl41-20020a05620a1aa900b0078556ca2f21mr7292269qkb.57.1706995975619;
-        Sat, 03 Feb 2024 13:32:55 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXIABY7+aw1St0L6xek8FwmXBimYIdcvj96klH8syYuCbiQNNQssL9kb5CvN+aTyAQeTliQrl3Gxs74Sj/0YKZFqzyKNFeW2zbnxqI2Ftb6iQ7F9vLqFtbiw3XbOjQEJWAuLTHUQHZgcEHZvdaUoOjf1iDSdVLChxR6CZdr44a14eVQl6pcJob29bajPAVtO/4H3SMHo8RDpGR36l7KfUpkstd46LktTmZJLpsXrxDbpCAdrdUV7sdq+iUQUgTxfLpjezknSQTkFRXui8iKWF+M7pqLXmyX3uhP0f3Cqq8j3Ct9AnlOEtAmDqJ7r4cllqurey+5XuxFYFwLWegXBhbKnnXsCxcBTNPquL+Hj7Zb/XURgY1UWHJglrK3G6jlviUC4upHm7xvC7pUtRgKlPJj/erVLKQK++12s3KhUrH05B8YH3oTK/iDlkbdS9XZeYLVXVNZB/LNt0DrYjr5J9fTdKMW2wg/A08E6ipMzYFB2DJvdxwq6djusjIHyKB0+x2WhRbrusvr
-Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
-        by smtp.gmail.com with ESMTPSA id x11-20020ae9e64b000000b0078408c334f8sm1700780qkl.122.2024.02.03.13.32.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 03 Feb 2024 13:32:55 -0800 (PST)
-Message-ID: <f3c74a9f-9288-45e2-a3e9-64bd47f94faf@gmail.com>
-Date: Sat, 3 Feb 2024 13:32:52 -0800
+	s=arc-20240116; t=1706996961; c=relaxed/simple;
+	bh=+FBMOQB3faUW4Rvc94zSO2OIMH3ZaGb/MEhF9zaVYXY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=KBo5cH+apK5Tb7yW5aor5Hk7lMVEsx6Q9RhrrK3R0RhIM32zhYqPQb2znuKkk1oVKCDdk1txMX0S1xFLz3HT/y0WXAtE3TzmjTMjKx0V27ZJXnZ795CZUZzywLEls1YdSXrEnGAjAxIQxBxgm8pxgfoq/1n/E+sVqDH7oIyl3K0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=KEserLf4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E35FC433F1;
+	Sat,  3 Feb 2024 21:49:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1706996961;
+	bh=+FBMOQB3faUW4Rvc94zSO2OIMH3ZaGb/MEhF9zaVYXY=;
+	h=Date:From:To:Cc:Subject:From;
+	b=KEserLf4PdPMyHfeSAsvmnZVsVrbRoWYJC4BIUfRCKVKAmZkLWz4KQCBFsdiCUAjH
+	 m7BQWPIlSsG8MpVxjChOrK9GAaVqhc/XS4421U819WiP6v8BWIUEo7m7rZD0LVfS9H
+	 i6+EXcAs5XGgeYAeGfXbQSaIGgN15qK0UvGfr9jk=
+Date: Sat, 3 Feb 2024 13:49:20 -0800
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+	linux-usb@vger.kernel.org
+Subject: [GIT PULL] USB driver fixes for 6.8-rc3
+Message-ID: <Zb604Bt0_l-KUvkg@kroah.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.1 000/221] 6.1.77-rc2 review
-Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
- conor@kernel.org, allen.lkml@gmail.com
-References: <20240203174756.358721205@linuxfoundation.org>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; keydata=
- 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
- HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <20240203174756.358721205@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
 
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
 
-On 2/3/2024 9:52 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.77 release.
-> There are 221 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Mon, 05 Feb 2024 17:47:20 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.77-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+are available in the Git repository at:
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-6.8-rc3
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+for you to fetch changes up to ad834c7c8e4a74dd6cd4397848aa255e473d4a63:
+
+  Merge tag 'usb-serial-6.8-rc3' of https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial into usb-linus (2024-02-02 08:36:38 -0800)
+
+----------------------------------------------------------------
+USB driver fixes for 6.8-rc3
+
+Here are a bunch of small USB driver fixes for 6.8-rc3.  Included in
+here are:
+  - new usb-serial driver ids
+  - new dwc3 driver id added
+  - typec driver change revert
+  - ncm gadget driver endian bugfix
+  - xhci bugfixes for a number of reported issues
+  - usb hub bugfix for alternate settings
+  - ulpi driver debugfs memory leak fix
+  - chipidea driver bugfix
+  - usb gadget driver fixes
+
+All of these have been in linux-next for a while with no reported
+issues.
+
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+----------------------------------------------------------------
+Badhri Jagan Sridharan (1):
+      Revert "usb: typec: tcpm: fix cc role at port reset"
+
+Christian A. Ehrhardt (3):
+      usb: ucsi: Add missing ppm_lock
+      usb: ucsi_acpi: Fix command completion handling
+      usb: ucsi_acpi: Quirk to ack a connector change ack cmd
+
+Dmitry Baryshkov (1):
+      usb: typec: tcpm: fix the PD disabled case
+
+Greg Kroah-Hartman (1):
+      Merge tag 'usb-serial-6.8-rc3' of https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial into usb-linus
+
+Heikki Krogerus (1):
+      usb: dwc3: pci: add support for the Intel Arrow Lake-H
+
+JackBB Wu (1):
+      USB: serial: qcserial: add new usb-id for Dell Wireless DW5826e
+
+Krishna Kurapati (1):
+      usb: gadget: ncm: Fix endianness of wMaxSegmentSize variable in ecm_desc
+
+Leonard Dallmayr (1):
+      USB: serial: cp210x: add ID for IMST iM871A-USB
+
+Mathias Nyman (3):
+      xhci: fix possible null pointer dereference at secondary interrupter removal
+      xhci: fix off by one check when adding a secondary interrupter.
+      xhci: process isoc TD properly when there was a transaction error mid TD.
+
+Michal Pecio (1):
+      xhci: handle isoc Babble and Buffer Overrun events properly
+
+Oliver Neukum (1):
+      USB: hub: check for alternate port before enabling A_ALT_HNP_SUPPORT
+
+Prashanth K (2):
+      usb: dwc3: host: Set XHCI_SG_TRB_CACHE_SIZE_QUIRK
+      usb: host: xhci-plat: Add support for XHCI_SG_TRB_CACHE_SIZE_QUIRK
+
+Puliang Lu (1):
+      USB: serial: option: add Fibocom FM101-GL variant
+
+Randy Dunlap (1):
+      usb: gadget: pch_udc: fix an Excess kernel-doc warning
+
+Sean Anderson (1):
+      usb: ulpi: Fix debugfs directory leak
+
+Udipto Goswami (2):
+      usb: gadget: ncm: Fix indentations in documentation of NCM section
+      usb: core: Prevent null pointer dereference in update_port_device_state
+
+Uttkarsh Aggarwal (1):
+      usb: dwc3: gadget: Fix NULL pointer dereference in dwc3_gadget_suspend
+
+Xu Yang (1):
+      usb: chipidea: core: handle power lost in workqueue
+
+yuan linyu (1):
+      usb: f_mass_storage: forbid async queue when shutdown happen
+
+ Documentation/usb/gadget-testing.rst         | 22 +++----
+ drivers/usb/chipidea/ci.h                    |  2 +
+ drivers/usb/chipidea/core.c                  | 44 +++++++-------
+ drivers/usb/common/ulpi.c                    |  2 +-
+ drivers/usb/core/hub.c                       | 46 ++++++++++-----
+ drivers/usb/dwc3/dwc3-pci.c                  |  4 ++
+ drivers/usb/dwc3/gadget.c                    |  6 +-
+ drivers/usb/dwc3/host.c                      |  4 +-
+ drivers/usb/gadget/function/f_mass_storage.c | 20 ++++++-
+ drivers/usb/gadget/function/f_ncm.c          |  8 +--
+ drivers/usb/gadget/udc/pch_udc.c             |  1 -
+ drivers/usb/host/xhci-mem.c                  | 14 ++---
+ drivers/usb/host/xhci-plat.c                 |  3 +
+ drivers/usb/host/xhci-ring.c                 | 80 ++++++++++++++++++++-----
+ drivers/usb/host/xhci.h                      |  1 +
+ drivers/usb/serial/cp210x.c                  |  1 +
+ drivers/usb/serial/option.c                  |  1 +
+ drivers/usb/serial/qcserial.c                |  2 +
+ drivers/usb/typec/tcpm/tcpm.c                |  6 +-
+ drivers/usb/typec/ucsi/ucsi.c                |  2 +
+ drivers/usb/typec/ucsi/ucsi_acpi.c           | 88 +++++++++++++++++++++++++---
+ 21 files changed, 267 insertions(+), 90 deletions(-)
 
