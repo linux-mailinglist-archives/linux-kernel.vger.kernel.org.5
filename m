@@ -1,199 +1,500 @@
-Return-Path: <linux-kernel+bounces-50943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50944-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F80E848415
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 07:37:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46928848418
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 07:50:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA315287A0B
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 06:37:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B980B1F281DE
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 06:50:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA79E1B950;
-	Sat,  3 Feb 2024 06:37:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C01C942079;
+	Sat,  3 Feb 2024 06:50:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="dMECvtci"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zLYmvw95"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 685651AAD2;
-	Sat,  3 Feb 2024 06:37:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D232B9D4
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 06:50:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706942266; cv=none; b=BkvHCXhmreMLtfyFabe+/WNpwmAWZb+uJpIqpsEbiJQscQW1zb5NLcp2R3/km/6jt5kgQMBwMxqeYFbIJMwsD2gAhUNdVlT22GlOByHhvBYXh6MrIZ0Yf/Qrhf2a4gd5n1KJR3LNQhPOPMu1LmubN9G9vaDx8y4loYNlEfZmsQ4=
+	t=1706943013; cv=none; b=eZGSG/N/DgGMVJVl3uBCzD+EoZfwJDahK0R029hW64FVp/w1VxrSSjlpHdgeC0jD2iNup1Miy179j1f/tEWlCj9GB+65r1bH61VJKz5NN8uH//MgrE0Xa2pXcXm0wtzayG8HWJt1jZTBa+jMKXyQEv248u+ep3UDXmUSEhQmdrA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706942266; c=relaxed/simple;
-	bh=NWsuLgcUqK/SS+nC89P+huD7byUyZzjhqKttzM5nCv0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=XQMR+QGdkHoni75vRiIRtLN53thlK2rX2wJPGcbHJk/Kh9aX7PO1IOgArDbmV+/JRCN73tiLQNXmFEz/6Kc441RdKcialpPLncSPXMlYLoFFRic3HkbuSYDi3YrTexAQrN1YOaSsOSzG5CP/ZgSWwJ9vJSTnnDXTaksSA7zMyvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=dMECvtci; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4136bP3n029472;
-	Sat, 3 Feb 2024 06:37:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=V1gGZUc/2iBRmUitELzTdMe/CsmObuU2g5gUnc1Jvc0=; b=dM
-	ECvtcifEeHDX2V+j2SCIKC8phsD2PVeljjBU2FtNc5gFD/bvrZkli/TrFw8hRSUo
-	BHPrkAv4h53WpKkggj0vJHUZUylmPmnde7yDXe8lUyF5BboVKpBXLhtrDl+tsRA/
-	T7a9pfWrvJP1/tMfcrEYc5zR2XulVzx0ozF40uOSgGltPdRS05KZz40Czranui5J
-	llyKommE1jfQ3p2ZxY5uncV8nx18/I0I0NRjnYMtYd1vE4HmAyMl2HQqtJ37l/bc
-	2VMaKV4MwbIhljiU9tYTQYO+clHDIM77cA+uJXWSB2rfBROeC3RBtCpy1F1V1q23
-	eP6N56TAPop0ufIRDXBA==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w1f40r2t8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 03 Feb 2024 06:37:25 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4136bNkj029002
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 3 Feb 2024 06:37:23 GMT
-Received: from [10.216.25.209] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 2 Feb
- 2024 22:37:20 -0800
-Message-ID: <67ed3805-40cb-4f00-9d0d-b0fd012d6221@quicinc.com>
-Date: Sat, 3 Feb 2024 12:07:17 +0530
+	s=arc-20240116; t=1706943013; c=relaxed/simple;
+	bh=dDlLJfU/TrjVSAD5U52Ifxm7lmEpX8JXHF0GFcs6NS0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mMNJx91XLD6HRQjJ9qJ0sJes5H+QoK2XAQ5bnncipdLoGTWdFa3W5ZHXTz30DW8ItBrWoH+0UOTDVnVVwOf4jv7P80OJdYtcZsU3RYt+IYx1ScARy0sykFLLIy/RPTSxj4ISKv/duc0nwxWflNTmzgjOBQ9bx0E8h3V1A9g28J4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zLYmvw95; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-55fff7a874fso3496a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 22:50:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706943008; x=1707547808; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=So1RJn9SZMbUJD2eJsB0mQLe9jKt0oRfpSZfMlTwLK4=;
+        b=zLYmvw95nVYtx4tCcyOsWEoqwGHTBh2kvtT4SdrUSor2qPAQDOQdttAx1ychgnLGGQ
+         tF3OYphsR21bgfXMK7AP6YF+kgzx/3ZVX+s4HGK9Kgw+LYYBdrWQn0q/ktoxdmvzs/JM
+         6C+gfPpiDkFZSmH38eUM6t4iy84lYGzFDStHJL9R6pzYVVsahz6hqXF5sC6Oxb98Hocl
+         Nrms8LwdjnPuB+K4Gt3MTcbXPkAGSQkiAzXw2FCAKhJkKND02TxqwVybIlVUCHT5q2iz
+         goBgphWbzcSnPJYv+XD/C/KoyuK0LbFksX/fMbNokFhl/TL3KIJjgTV/Yet4MjwxYzmb
+         yfeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706943008; x=1707547808;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=So1RJn9SZMbUJD2eJsB0mQLe9jKt0oRfpSZfMlTwLK4=;
+        b=dXpp/uOSrvTY9QATZuB4IMt1ocVOj6XC3LqEYeQvOp/sD9TboSVh11zs389SEGvZpx
+         xFWzRbNE3Mg83y2gfLZJDU5I09og6c040v9d7+RkxgG/IjlEGodfkO/z6Ofvna+mFgSt
+         wUx+jgVukTfcJxirW3FBNWcKfGLOTe0Ojl59GOMjlCRUhRW/5uD1Z5Wia9GJ1tF3y5xB
+         N9uUFiIHTgIdL/fk98cSP1MNdIkUfcVXnL540I3Nhgd+h3IwWkXCizqT9rV55RS1tsah
+         3UfmgJwzQTbjdGisYsggBrPvYiAvJ4Oli6mr3ZGWNCduix4lrlKjQL9C83/b12aVrvu5
+         AnZA==
+X-Gm-Message-State: AOJu0Yw4ol6dB1jNUlKKu4Q17mo09JtTcgKwHsoa45GmvOlsbMYTimDO
+	xhu/weswnYDoqMpwQQml2sYXZeKy6L9ebYBpBJ3dQAsX7mnz03r0Ed6j0Ya0DE9wtj4hgSeLU8s
+	cLoNJL6PfrvVtO7AbRTB6cgWA1cDPjgz+/w+W
+X-Google-Smtp-Source: AGHT+IHtR6+NllsoEXb+PjJZydGX5HfqQo35hMrwheGkoCQau/BwYCen80zD/GkByJIstLPv7WiheikBU5Y9wF+xawQ=
+X-Received: by 2002:a50:d517:0:b0:55f:98d7:877c with SMTP id
+ u23-20020a50d517000000b0055f98d7877cmr66344edi.5.1706943006426; Fri, 02 Feb
+ 2024 22:50:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] watchdog: qcom: fine tune the max timeout value
- calculation
-To: Guenter Roeck <linux@roeck-us.net>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Wim Van
- Sebroeck <wim@linux-watchdog.org>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20240116-wdt-v2-1-501c7694c3f0@quicinc.com>
- <2c4f9829-138d-41a5-8810-d13cf749fded@roeck-us.net>
-Content-Language: en-US
-From: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-In-Reply-To: <2c4f9829-138d-41a5-8810-d13cf749fded@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: -RHG9Y1qdlcKZBex5DrycRtgGDA_FJUj
-X-Proofpoint-GUID: -RHG9Y1qdlcKZBex5DrycRtgGDA_FJUj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-03_02,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- phishscore=0 lowpriorityscore=0 spamscore=0 adultscore=0
- priorityscore=1501 impostorscore=0 suspectscore=0 mlxlogscore=999
- clxscore=1011 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402030044
+References: <20240126221426.4173112-1-rmoar@google.com>
+In-Reply-To: <20240126221426.4173112-1-rmoar@google.com>
+From: David Gow <davidgow@google.com>
+Date: Sat, 3 Feb 2024 14:49:52 +0800
+Message-ID: <CABVgOSnOEc2AGteQNwysapxmYhNy625NeErXWpg_vvci5zC-=w@mail.gmail.com>
+Subject: Re: [KTAP V2 PATCH v2] ktap_v2: add test metadata
+To: Rae Moar <rmoar@google.com>
+Cc: frowand.list@gmail.com, keescook@chromium.org, Tim.Bird@sony.com, 
+	shuah@kernel.org, brendanhiggins@google.com, dlatypov@google.com, 
+	tytso@google.com, gustavo.padovan@collabora.com, 
+	ricardo.canuelo@collabora.com, guillaume.tucker@collabora.com, corbet@lwn.net, 
+	kernelci@lists.linux.dev, linux-kselftest@vger.kernel.org, 
+	kunit-dev@googlegroups.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="000000000000abc926061074a36f"
 
+--000000000000abc926061074a36f
+Content-Type: text/plain; charset="UTF-8"
 
+On Sat, 27 Jan 2024 at 06:15, Rae Moar <rmoar@google.com> wrote:
+>
+> Add specification for test metadata to the KTAP v2 spec.
+>
+> KTAP v1 only specifies the output format of very basic test information:
+> test result and test name. Any additional test information either gets
+> added to general diagnostic data or is not included in the output at all.
+>
+> The purpose of KTAP metadata is to create a framework to include and
+> easily identify additional important test information in KTAP.
+>
+> KTAP metadata could include any test information that is pertinent for
+> user interaction before or after the running of the test. For example,
+> the test file path or the test speed.
+>
+> Since this includes a large variety of information, this specification
+> will recognize notable types of KTAP metadata to ensure consistent format
+> across test frameworks. See the full list of types in the specification.
+>
+> Example of KTAP Metadata:
+>
+>  KTAP version 2
+>  # ktap_test: main
+>  # ktap_arch: uml
+>  1..1
+>      KTAP version 2
+>      # ktap_test: suite_1
+>      # ktap_subsystem: example
+>      # ktap_test_file: lib/test.c
+>      1..2
+>      ok 1 test_1
+>      # ktap_test: test_2
+>      # ktap_speed: very_slow
+>      # custom_is_flaky: true
+>      ok 2 test_2
+>  ok 1 test_suite
 
-On 1/16/2024 8:32 PM, Guenter Roeck wrote:
-> On 1/16/24 00:22, Kathiravan Thirumoorthy wrote:
->> To determine the max_timeout value, the below calculation is used.
->>
->>     max_timeout = 0x10000000 / clk_rate
->>
->> cat 
->> /sys/devices/platform/soc@0/b017000.watchdog/watchdog/watchdog0/max_timeout
->> 8388
->>
->> However, this is not valid for all the platforms. IPQ SoCs starting from
->> IPQ40xx and recent Snapdragron SoCs also has the bark and bite time field
->> length of 20bits, which can hold max up to 32 seconds if the clk_rate is
->> 32KHz.
->>
->> If the user tries to configure the timeout more than 32s, then the value
->> will be truncated and the actual value will not be reflected in the HW.
->>
->> To avoid this, lets add a variable called max_tick_count in the device 
->> data,
->> which defines max counter value of the WDT controller. Using this, 
->> max-timeout
->> will be calculated in runtime for various WDT contorllers.
->>
->> With this change, we get the proper max_timeout as below and restricts
->> the user from configuring the timeout higher than this.
->>
->> cat 
->> /sys/devices/platform/soc@0/b017000.watchdog/watchdog/watchdog0/max_timeout
->> 32
->>
->> Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-> 
-> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+This 'test_suite' name doesn't match the 'suite_1' name above.
 
+It also could be clearer that it's supposed to match 'suite_1', not
+'main', due to the indentation difference. Maybe we should add an
+explicit note pointing that out?
 
-Guenter / Will, Can this be picked for v6.9? I don't see this in linux- 
-next yet, so please consider this as a gentle reminder!
+>
+> The changes to the KTAP specification outline the format, location, and
+> different types of metadata.
+>
+> Here is a link to a version of the KUnit parser that is able to parse test
+> metadata lines for KTAP version 2. Note this includes test metadata
+> lines for the main level of KTAP.
+>
+> Link: https://kunit-review.googlesource.com/c/linux/+/5889
 
-> 
->> ---
->> Changes in v2:
->> - drop the minimum timeout change from 30s to 32s
->> - Link to v1: 
->> https://lore.kernel.org/r/20240111-wdt-v1-1-28c648b3b1f3@quicinc.com
->> ---
->>   drivers/watchdog/qcom-wdt.c | 7 +++++--
->>   1 file changed, 5 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/watchdog/qcom-wdt.c b/drivers/watchdog/qcom-wdt.c
->> index 9e790f0c2096..006f9c61aa64 100644
->> --- a/drivers/watchdog/qcom-wdt.c
->> +++ b/drivers/watchdog/qcom-wdt.c
->> @@ -41,6 +41,7 @@ static const u32 reg_offset_data_kpss[] = {
->>   struct qcom_wdt_match_data {
->>       const u32 *offset;
->>       bool pretimeout;
->> +    u32 max_tick_count;
->>   };
->>   struct qcom_wdt {
->> @@ -177,11 +178,13 @@ static const struct watchdog_info 
->> qcom_wdt_pt_info = {
->>   static const struct qcom_wdt_match_data match_data_apcs_tmr = {
->>       .offset = reg_offset_data_apcs_tmr,
->>       .pretimeout = false,
->> +    .max_tick_count = 0x10000000U,
->>   };
->>   static const struct qcom_wdt_match_data match_data_kpss = {
->>       .offset = reg_offset_data_kpss,
->>       .pretimeout = true,
->> +    .max_tick_count = 0xFFFFFU,
->>   };
->>   static int qcom_wdt_probe(struct platform_device *pdev)
->> @@ -236,7 +239,7 @@ static int qcom_wdt_probe(struct platform_device 
->> *pdev)
->>        */
->>       wdt->rate = clk_get_rate(clk);
->>       if (wdt->rate == 0 ||
->> -        wdt->rate > 0x10000000U) {
->> +        wdt->rate > data->max_tick_count) {
->>           dev_err(dev, "invalid clock rate\n");
->>           return -EINVAL;
->>       }
->> @@ -260,7 +263,7 @@ static int qcom_wdt_probe(struct platform_device 
->> *pdev)
->>       wdt->wdd.ops = &qcom_wdt_ops;
->>       wdt->wdd.min_timeout = 1;
->> -    wdt->wdd.max_timeout = 0x10000000U / wdt->rate;
->> +    wdt->wdd.max_timeout = data->max_tick_count / wdt->rate;
->>       wdt->wdd.parent = dev;
->>       wdt->layout = data->offset;
->>
->> ---
->> base-commit: 9e21984d62c56a0f6d1fc6f76b646212cfd7fe88
->> change-id: 20240111-wdt-5bd079ecf14d
->>
->> Best regards,
-> 
+I tested this, and it works well. I think there's a couple of changes
+we'd want for a more useful set of KUnit parser changes (namely the
+option to support non ktap_ prefixes, as well as an actual way of
+using this data), but I'll leave those for a future review of that
+patch -- it's not relevant to this spec.
+
+>
+> Signed-off-by: Rae Moar <rmoar@google.com>
+> ---
+
+I like this: it covers all of the requirements we have in KUnit, as
+well as a few things we'd like to add.
+
+Is there anything obviously missing for this to work with other
+usecases? Are there any other examples of metadata people want to
+capture?
+
+For me, this is
+Reviewed-by: David Gow <davidgow@google.com>
+
+>  Documentation/dev-tools/ktap.rst | 163 ++++++++++++++++++++++++++++++-
+>  1 file changed, 159 insertions(+), 4 deletions(-)
+>
+> diff --git a/Documentation/dev-tools/ktap.rst b/Documentation/dev-tools/ktap.rst
+> index ff77f4aaa6ef..4480eaf5bbc3 100644
+> --- a/Documentation/dev-tools/ktap.rst
+> +++ b/Documentation/dev-tools/ktap.rst
+> @@ -17,19 +17,20 @@ KTAP test results describe a series of tests (which may be nested: i.e., test
+>  can have subtests), each of which can contain both diagnostic data -- e.g., log
+>  lines -- and a final result. The test structure and results are
+>  machine-readable, whereas the diagnostic data is unstructured and is there to
+> -aid human debugging.
+> +aid human debugging. One exception to this is test metadata lines - a type
+> +of diagnostic lines. Test metadata is used to identify important supplemental
+> +test information and can be machine-readable.
+>
+>  KTAP output is built from four different types of lines:
+>  - Version lines
+>  - Plan lines
+>  - Test case result lines
+> -- Diagnostic lines
+> +- Diagnostic lines (including test metadata)
+>
+>  In general, valid KTAP output should also form valid TAP output, but some
+>  information, in particular nested test results, may be lost. Also note that
+>  there is a stagnant draft specification for TAP14, KTAP diverges from this in
+> -a couple of places (notably the "Subtest" header), which are described where
+> -relevant later in this document.
+> +a couple of places, which are described where relevant later in this document.
+>
+>  Version lines
+>  -------------
+> @@ -166,6 +167,154 @@ even if they do not start with a "#": this is to capture any other useful
+>  kernel output which may help debug the test. It is nevertheless recommended
+>  that tests always prefix any diagnostic output they have with a "#" character.
+>
+> +KTAP metadata lines
+> +-------------------
+> +
+> +KTAP metadata lines are a subset of diagnostic lines that are used to include
+> +and easily identify important supplemental test information in KTAP.
+> +
+> +.. code-block:: none
+> +
+> +       # <prefix>_<metadata type>: <metadata value>
+> +
+> +The <prefix> indicates where to find the specification for the type of
+> +metadata. The metadata types listed below use the prefix "ktap" (See Types of
+> +KTAP Metadata).
+> +
+> +Types that are instead specified by an individual test framework use the
+> +framework name as the prefix. For example, a metadata type documented by the
+> +kselftest specification would use the prefix "kselftest". Any metadata type
+> +that is not listed in a specification must use the prefix "custom". Note the
+> +prefix must not include spaces or the characters ":" or "_".
+
+We should probably be more explicit about what counts as a
+'specification' here, and hence whether a new prefix or 'custom'
+should be used.
+
+I'm tempted to be inspired by the OpenGL extension mechanism and say
+that new prefixes must be 'registered' before they can be used, where
+'registration' consists of submitting a patch to this document linking
+to the specification.
+
+> +The format of <metadata type> and <value> varies based on the type. See the
+> +individual specification. For "custom" types the <metadata type> can be any
+> +string excluding ":", spaces, or newline characters and the <value> can be any
+> +string.
+> +
+> +**Location:**
+> +
+> +The first KTAP metadata entry for a test must be "# ktap_test: <test name>",
+> +which acts as a header to associate metadata with the correct test.
+> +
+> +For test cases, the location of the metadata is between the prior test result
+> +line and the current test result line. For test suites, the location of the
+> +metadata is between the suite's version line and test plan line. See the
+> +example below.
+> +
+> +KTAP metadata for a test does not need to be contiguous. For example, a kernel
+> +warning or other diagnostic output could interrupt metadata lines. However, it
+> +is recommended to keep a test's metadata lines together when possible, as this
+> +improves readability.
+
+Should we give an example of this? e.g. ktap_duration will need to be
+output after the test has completed, but ktap_test must be output
+before any log lines. (And most of the others probably prefer to be at
+the beginning.)
+
+I think this is the most complicated point from a parsing point of
+view, so we should probably draw more attention to it.
+
+> +
+> +**Here is an example of using KTAP metadata:**
+> +
+> +::
+> +
+> +        KTAP version 2
+> +        # ktap_test: main
+> +        # ktap_arch: uml
+> +        1..1
+> +          KTAP version 2
+> +          # ktap_test: suite_1
+> +          # ktap_subsystem: example
+> +          # ktap_test_file: lib/test.c
+> +          1..2
+> +          ok 1 test_1
+> +          # ktap_test: test_2
+> +          # ktap_speed: very_slow
+> +          # custom_is_flaky: true
+> +          ok 2 test_2
+> +        # suite_1 passed
+> +        ok 1 suite_1
+
+Would it be clearer to have some examples which have other,
+non-metadata diagnostic lines here, so we can see how they interact?
+
+> +
+> +In this example, the tests are running on UML. The test suite "suite_1" is part
+> +of the subsystem "example" and belongs to the file "lib/example_test.c". It has
+> +two subtests, "test_1" and "test_2". The subtest "test_2" has a speed of
+> +"very_slow" and has been marked with a custom KTAP metadata type called
+> +"custom_is_flaky" with the value of "true".
+> +
+> +**Types of KTAP Metadata:**
+> +
+> +This is the current list of KTAP metadata types recognized in this
+> +specification. Note that all of these metadata types are optional (except for
+> +ktap_test as the KTAP metadata header).
+> +
+> +- ``ktap_test``: Name of test (used as header of KTAP metadata). This should
+> +  match the test name printed in the test result line: "ok 1 [test_name]".
+> +
+> +- ``ktap_module``: Name of the module containing the test
+> +
+> +- ``ktap_subsystem``: Name of the subsystem being tested
+> +
+> +- ``ktap_start_time``: Time tests started in ISO8601 format
+> +
+> +  - Example: "# ktap_start_time: 2024-01-09T13:09:01.990000+00:00"
+> +
+> +- ``ktap_duration``: Time taken (in seconds) to execute the test
+> +
+> +  - Example: "ktap_duration: 10.154s"
+> +
+> +- ``ktap_speed``: Category of how fast test runs: "normal", "slow", or
+> +  "very_slow"
+> +
+> +- ``ktap_test_file``: Path to source file containing the test. This metadata
+> +  line can be repeated if the test is spread across multiple files.
+> +
+> +  - Example: "# ktap_test_file: lib/test.c"
+> +
+> +- ``ktap_generated_file``: Description of and path to file generated during
+> +  test execution. This could be a core dump, generated filesystem image, some
+> +  form of visual output (for graphics drivers), etc. This metadata line can be
+> +  repeated to attach multiple files to the test.
+> +
+> +  - Example: "# ktap_generated_file: Core dump: /var/lib/systemd/coredump/hello.core"
+> +
+> +- ``ktap_log_file``: Path to file containing kernel log test output
+> +
+> +  - Example: "# ktap_log_file: /sys/kernel/debugfs/kunit/example/results"
+
+When should we use something generic like 'ktap_generated_file',
+versus something more specific, like 'ktap_log_file'?
+
+> +
+> +- ``ktap_error_file``: Path to file containing context for test failure or
+> +  error. This could include the difference between optimal test output and
+> +  actual test output.
+> +
+> +  - Example: "# ktap_error_file: fs/results/example.out.bad"
+> +
+> +- ``ktap_results_url``: Link to webpage describing this test run and its
+> +  results
+> +
+> +  - Example: "# ktap_results_url: https://kcidb.kernelci.org/hello"
+> +
+> +- ``ktap_arch``: Architecture used during test run
+> +
+> +  - Example: "# ktap_arch: x86_64"
+> +
+> +- ``ktap_compiler``: Compiler used during test run
+> +
+> +  - Example: "# ktap_compiler: gcc (GCC) 10.1.1 20200507 (Red Hat 10.1.1-1)"
+> +
+> +- ``ktap_respository_url``: Link to git repository of the checked out code.
+> +
+> +  - Example: "# ktap_respository_url: https://github.com/torvalds/linux.git"
+> +
+> +- ``ktap_git_branch``: Name of git branch of checked out code
+> +
+> +  - Example: "# ktap_git_branch: kselftest/kunit"
+> +
+> +- ``ktap_kernel_version``: Version of Linux Kernel being used during test run
+> +
+> +  - Example: "# ktap_kernel_version: 6.7-rc1"
+> +
+> +- ``ktap_commit_hash``: The full git commit hash of the checked out base code.
+> +
+> +  - Example: "# ktap_commit_hash: 064725faf8ec2e6e36d51e22d3b86d2707f0f47f"
+> +
+> +**Other Metadata Types:**
+> +
+> +There can also be KTAP metadata that is not included in the recognized list
+> +above. This metadata must be prefixed with the test framework, ie. "kselftest",
+> +or with the prefix "custom". For example, "# custom_batch: 20".
+> +
+>  Unknown lines
+>  -------------
+>
+> @@ -206,6 +355,7 @@ An example of a test with two nested subtests:
+>         KTAP version 2
+>         1..1
+>           KTAP version 2
+> +         # ktap_test: example
+>           1..2
+>           ok 1 test_1
+>           not ok 2 test_2
+> @@ -219,6 +369,7 @@ An example format with multiple levels of nested testing:
+>         KTAP version 2
+>         1..2
+>           KTAP version 2
+> +         # ktap_test: example_test_1
+>           1..2
+>             KTAP version 2
+>             1..2
+> @@ -254,6 +405,7 @@ Example KTAP output
+>         KTAP version 2
+>         1..1
+>           KTAP version 2
+> +         # ktap_test: main_test
+>           1..3
+>             KTAP version 2
+>             1..1
+> @@ -261,11 +413,14 @@ Example KTAP output
+>             ok 1 test_1
+>           ok 1 example_test_1
+>             KTAP version 2
+> +        # ktap_test: example_test_2
+> +        # ktap_speed: slow
+>             1..2
+>             ok 1 test_1 # SKIP test_1 skipped
+>             ok 2 test_2
+>           ok 2 example_test_2
+>             KTAP version 2
+> +           # ktap_test: example_test_3
+>             1..3
+>             ok 1 test_1
+>             # test_2: FAIL
+>
+> base-commit: 906f02e42adfbd5ae70d328ee71656ecb602aaf5
+> --
+> 2.43.0.429.g432eaa2c6b-goog
+>
+
+--000000000000abc926061074a36f
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIPqgYJKoZIhvcNAQcCoIIPmzCCD5cCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg0EMIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+7xDrOPfX3COqq162RFg/MFcGA1UdIARQME4wCQYHZ4EMAQUBATBBBgkrBgEEAaAyASgwNDAyBggr
+BgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wDAYDVR0TAQH/
+BAIwADCBmgYIKwYBBQUHAQEEgY0wgYowPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmdsb2JhbHNp
+Z24uY29tL2NhL2dzYXRsYXNyM3NtaW1lY2EyMDIwMEgGCCsGAQUFBzAChjxodHRwOi8vc2VjdXJl
+Lmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcnQwHwYDVR0jBBgw
+FoAUfMwKaNei6x4schvRzV2Vb4378mMwRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cDovL2NybC5nbG9i
+YWxzaWduLmNvbS9jYS9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcmwwDQYJKoZIhvcNAQELBQADggEB
+AK0lDd6/eSh3qHmXaw1YUfIFy07B25BEcTvWgOdla99gF1O7sOsdYaTz/DFkZI5ghjgaPJCovgla
+mRMfNcxZCfoBtsB7mAS6iOYjuwFOZxi9cv6jhfiON6b89QWdMaPeDddg/F2Q0bxZ9Z2ZEBxyT34G
+wlDp+1p6RAqlDpHifQJW16h5jWIIwYisvm5QyfxQEVc+XH1lt+taSzCfiBT0ZLgjB9Sg+zAo8ys6
+5PHxFaT2a5Td/fj5yJ5hRSrqy/nj/hjT14w3/ZdX5uWg+cus6VjiiR/5qGSZRjHt8JoApD6t6/tg
+ITv8ZEy6ByumbU23nkHTMOzzQSxczHkT+0q10/MxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJF
+MRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIz
+IFNNSU1FIENBIDIwMjACEAHS+TgZvH/tCq5FcDC0n9IwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZI
+hvcNAQkEMSIEIMA+aseay74EIYxrfZBfZwUctnYKQrAKoUIk2EmK+jF4MBgGCSqGSIb3DQEJAzEL
+BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDIwMzA2NTAwOFowaQYJKoZIhvcNAQkPMVww
+WjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkq
+hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAAigkS
+3q8OC4tJsXCsyLxT8fFhqpptTYetnukOEtwQOnW+EfV6R84MmhkjxvKAEGTJDUflcEYDA9ifH/nK
+JwXyajrArdejlzW3K6WvNGkrO3Rb0ip9hYQr75G9y32VP9d9Hi4DdXDnzDFvaQWzihTCBwF+D1+A
+LluBOEw4GuMKwtb4rAOyOmvWctsqt60QgiR2xfGzmBHOCx7+oUpf6uZBJFMeseszjXT73oMaFFjn
+aqEhC6nciw+IwQU6oeIrPy5Jo7uKQ+RQ4wlg2lNGC6aqDbyi2BHaSuR1B17+qQK/t7Uj826bd/HD
+y2jW39pQnhVIBCPp5xhNLDeVPr4gM/6n
+--000000000000abc926061074a36f--
 
