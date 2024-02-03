@@ -1,204 +1,144 @@
-Return-Path: <linux-kernel+bounces-51234-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51235-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A1DE848827
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 19:12:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2448E84882B
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 19:18:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6773A1C22AEF
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 18:12:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C30EB2521F
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 18:18:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 444165FB99;
-	Sat,  3 Feb 2024 18:12:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C4335FBAE;
+	Sat,  3 Feb 2024 18:18:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h/6Gzac/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="y3ZNKGcF"
+Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 667385F86E
-	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 18:12:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68CC85FB8D;
+	Sat,  3 Feb 2024 18:18:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706983941; cv=none; b=k+hlvn40Byz8v++xgv8LJ4P9Fd+9gwbut6NUgfgXdyJyMwvmahcRceQtxIUguZ9TVplbbeqcIcKWy0CsHsJ6JJckdWZT9ZQzRt9xgBuMC7aO6eO6HrY+Uj5b0fWfT+Cvh7s3JZKFMr93UAtbT0SdayPwfiBmcYtorSZxoLQ1YOs=
+	t=1706984307; cv=none; b=oIkYgNwWXzhBcjzyMQHu3pX3ZC0z6qOWEKDm+6yfqqthyBQA2ByH/BIxuy6t05WOWjHQn4DlXvy0DWY0M/SknHvXGKIMFKpzy8K9XpFWU0S29njGlh0x/8ST61grZ0WeiabPJUXrioJgrJMngaFFTh5YRHDTklxCoPYlMjgB7y4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706983941; c=relaxed/simple;
-	bh=xaOtEgvN3akIZapWeQD74APO0YpbDflzAhvmzlV2KLU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GHWE29hIUiMZ1l1pZP204jHRSv+CiDL8n7cA5oJM7fatQHgY+Ju+b/zd8C5BKzMfp4UnUwco1MaU6u2ceK2+TQ31zDQcsW6jCwObrEquBGeKCSqxyPE6wGM30lap/0ocmJnf3hUKkJqK0hG5aD8OccNcSfb4eaBusIG6GW1lChI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h/6Gzac/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD846C433F1
-	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 18:12:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706983940;
-	bh=xaOtEgvN3akIZapWeQD74APO0YpbDflzAhvmzlV2KLU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=h/6Gzac/JcVhyQHGSfvAcE+4+ib4Ppb/0eOhpGDh1AOEOuOmIn27WsV300SgggUh/
-	 kciTQmDFDkniRaAK6DvrwPE+a0vEA95oS7/9icakiTNk6bapmffpRrsn0ohCfudtsF
-	 VstP8xgoDp7wQszlczt/yivQxFOxSGvpRrQ5okxzP0Ke4kD2Ztxnnuati/GAPYa+wg
-	 dwPgcKomhR3UTiy54D7ZBy9qbdBJPN8G3I5T8rAximVprX3ns2OgrNc+PbAfrBmGhl
-	 /Vtbmd3hDmtW2HdG/TZ3N40H4LZU4e5bYeJT6yur3CbBSFFJC+0Qs8KcwVT9DdKUc9
-	 7mjWqPWRbgkBQ==
-Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-363bafdce59so2160795ab.2
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Feb 2024 10:12:20 -0800 (PST)
-X-Gm-Message-State: AOJu0YzwEfU6QPUlHriRkkv28cJ4rPnFki+qgUoxOhvPjXjSuggzX73z
-	LV7r/Y3dB6Wkn9LLY/UAmhXoeT1rZB1sYfkUxixi4hqgyimHi2LNaqqluSwAPhk3PhMcTWbCg38
-	ZgmRq4KMM9DoGHTVrMAccG4I2M21qyjDQpwnE
-X-Google-Smtp-Source: AGHT+IEJyzS+d9q6ggvPRYlSBlVSPDHcekseMrxwtMHsWzd9RErX5IT9RVjraEcw0vH/w+czF07qW60n4eP5BHxn1j4=
-X-Received: by 2002:a92:c8ce:0:b0:363:c2f8:fd16 with SMTP id
- c14-20020a92c8ce000000b00363c2f8fd16mr779020ilq.21.1706983940202; Sat, 03 Feb
- 2024 10:12:20 -0800 (PST)
+	s=arc-20240116; t=1706984307; c=relaxed/simple;
+	bh=v18Uq25xFd0lAYlqmeeW1rPPUfvDN/gZuKrB7cBLNgk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J1lXNUUiL4aBXovL0VKGeNnz6qBWk57l8p4euQSWSq4Qlhg4Nu1MyfcVtParGCXDGcZgx9yj1hLL21djHbhjdmW1NDgg/XBrU8yAwuzfAolwFB0LCGIm2n6oQ4oLQWP7sMk6XZVieeNmbWTfL+tQxCE/krPQT+CTjFwTce4bpok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=y3ZNKGcF; arc=none smtp.client-ip=195.181.215.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
+	t=1706984294; bh=v18Uq25xFd0lAYlqmeeW1rPPUfvDN/gZuKrB7cBLNgk=;
+	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
+	b=y3ZNKGcFub4QSs9xq0iVNFE7+KJSaXXYyWbxvggkDoGYxo6ADvmOOyh3q97eGngaY
+	 7NqT787d2NhDpOozFjmHwAAiNLLNbVsbNOK/8+dYHxKsKZ8if65gNuI2FO5qbw8JSd
+	 8NRQYdjVNQAUC89HwrkKZJAbGcCaiysmIsGTVWWE=
+Date: Sat, 3 Feb 2024 19:18:13 +0100
+From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
+To: Pavel Machek <pavel@ucw.cz>
+Cc: phone-devel@vger.kernel.org, 
+	kernel list <linux-kernel@vger.kernel.org>, fiona.klute@gmx.de, martijn@brixit.nl, samuel@sholland.org, 
+	heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH] usb: typec: anx7688: Add driver for ANX7688 USB-C HDMI
+ bridge
+Message-ID: <iikhv7e2z3pk7nr6bvtuepwyrmukym5fjtc2xspsmhxzz5jlwe@5vfs4i3w66kc>
+Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
+	Pavel Machek <pavel@ucw.cz>, phone-devel@vger.kernel.org, 
+	kernel list <linux-kernel@vger.kernel.org>, fiona.klute@gmx.de, martijn@brixit.nl, samuel@sholland.org, 
+	heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org
+X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
+ <https://xff.cz/key.txt>
+References: <Zbt1dIByBZ2stzjm@mobian>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131-async-free-v2-1-525f03e07184@kernel.org>
- <87sf2ceoks.fsf@yhuang6-desk2.ccr.corp.intel.com> <7f19b4d69ff20efe8260a174c7866b4819532b1f.camel@linux.intel.com>
-In-Reply-To: <7f19b4d69ff20efe8260a174c7866b4819532b1f.camel@linux.intel.com>
-From: Chris Li <chrisl@kernel.org>
-Date: Sat, 3 Feb 2024 10:12:08 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuNvB8gXv3kj2nkN5j2ny0ZjJoVEdkeDDWSuWxySkKE=1g@mail.gmail.com>
-Message-ID: <CAF8kJuNvB8gXv3kj2nkN5j2ny0ZjJoVEdkeDDWSuWxySkKE=1g@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: swap: async free swap slot cache entries
-To: Tim Chen <tim.c.chen@linux.intel.com>
-Cc: "Huang, Ying" <ying.huang@intel.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	=?UTF-8?B?V2VpIFh177+8?= <weixugc@google.com>, 
-	=?UTF-8?B?WXUgWmhhb++/vA==?= <yuzhao@google.com>, 
-	Greg Thelen <gthelen@google.com>, Chun-Tse Shao <ctshao@google.com>, 
-	=?UTF-8?Q?Suren_Baghdasaryan=EF=BF=BC?= <surenb@google.com>, 
-	=?UTF-8?B?WW9zcnkgQWhtZWTvv7w=?= <yosryahmed@google.com>, 
-	Brain Geffon <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>, 
-	Mel Gorman <mgorman@techsingularity.net>, Nhat Pham <nphamcs@gmail.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Kairui Song <kasong@tencent.com>, 
-	Zhongkun He <hezhongkun.hzk@bytedance.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
-	Barry Song <v-songbaohua@oppo.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zbt1dIByBZ2stzjm@mobian>
 
-On Thu, Feb 1, 2024 at 3:21=E2=80=AFPM Tim Chen <tim.c.chen@linux.intel.com=
-> wrote:
->
-> On Thu, 2024-02-01 at 13:33 +0800, Huang, Ying wrote:
-> > Chris Li <chrisl@kernel.org> writes:
-> >
-> > >
-> > > Changes in v2:
-> > > - Add description of the impact of time changing suggest by Ying.
-> > > - Remove create_workqueue() and use schedule_work()
-> > > - Link to v1: https://lore.kernel.org/r/20231221-async-free-v1-1-94b2=
-77992cb0@kernel.org
-> > > ---
-> > >  include/linux/swap_slots.h |  1 +
-> > >  mm/swap_slots.c            | 29 +++++++++++++++++++++--------
-> > >  2 files changed, 22 insertions(+), 8 deletions(-)
-> > >
-> > > diff --git a/include/linux/swap_slots.h b/include/linux/swap_slots.h
-> > > index 15adfb8c813a..67bc8fa30d63 100644
-> > > --- a/include/linux/swap_slots.h
-> > > +++ b/include/linux/swap_slots.h
-> > > @@ -19,6 +19,7 @@ struct swap_slots_cache {
-> > >     spinlock_t      free_lock;  /* protects slots_ret, n_ret */
-> > >     swp_entry_t     *slots_ret;
-> > >     int             n_ret;
-> > > +   struct work_struct async_free;
-> > >  };
-> > >
-> > >  void disable_swap_slots_cache_lock(void);
-> > > diff --git a/mm/swap_slots.c b/mm/swap_slots.c
-> > > index 0bec1f705f8e..71d344564e55 100644
-> > > --- a/mm/swap_slots.c
-> > > +++ b/mm/swap_slots.c
-> > > @@ -44,6 +44,7 @@ static DEFINE_MUTEX(swap_slots_cache_mutex);
-> > >  static DEFINE_MUTEX(swap_slots_cache_enable_mutex);
-> > >
-> > >  static void __drain_swap_slots_cache(unsigned int type);
-> > > +static void swapcache_async_free_entries(struct work_struct *data);
-> > >
-> > >  #define use_swap_slot_cache (swap_slot_cache_active && swap_slot_cac=
-he_enabled)
-> > >  #define SLOTS_CACHE 0x1
-> > > @@ -149,6 +150,7 @@ static int alloc_swap_slot_cache(unsigned int cpu=
-)
-> > >             spin_lock_init(&cache->free_lock);
-> > >             cache->lock_initialized =3D true;
-> > >     }
-> > > +   INIT_WORK(&cache->async_free, swapcache_async_free_entries);
-> > >     cache->nr =3D 0;
-> > >     cache->cur =3D 0;
-> > >     cache->n_ret =3D 0;
-> > > @@ -269,6 +271,20 @@ static int refill_swap_slots_cache(struct swap_s=
-lots_cache *cache)
-> > >     return cache->nr;
-> > >  }
-> > >
-> > > +static void swapcache_async_free_entries(struct work_struct *data)
-> > > +{
-> > > +   struct swap_slots_cache *cache;
-> > > +
-> > > +   cache =3D container_of(data, struct swap_slots_cache, async_free)=
-;
-> > > +   spin_lock_irq(&cache->free_lock);
-> > > +   /* Swap slots cache may be deactivated before acquiring lock */
-> > > +   if (cache->slots_ret) {
-> > > +           swapcache_free_entries(cache->slots_ret, cache->n_ret);
-> > > +           cache->n_ret =3D 0;
-> > > +   }
-> > > +   spin_unlock_irq(&cache->free_lock);
-> > > +}
-> > > +
-> > >  void free_swap_slot(swp_entry_t entry)
-> > >  {
-> > >     struct swap_slots_cache *cache;
-> > > @@ -282,17 +298,14 @@ void free_swap_slot(swp_entry_t entry)
-> > >                     goto direct_free;
-> > >             }
-> > >             if (cache->n_ret >=3D SWAP_SLOTS_CACHE_SIZE) {
-> > > -                   /*
-> > > -                    * Return slots to global pool.
-> > > -                    * The current swap_map value is SWAP_HAS_CACHE.
-> > > -                    * Set it to 0 to indicate it is available for
-> > > -                    * allocation in global pool
-> > > -                    */
-> > > -                   swapcache_free_entries(cache->slots_ret, cache->n=
-_ret);
-> > > -                   cache->n_ret =3D 0;
-> > > +                   spin_unlock_irq(&cache->free_lock);
-> > > +                   schedule_work(&cache->async_free);
-> > > +                   goto direct_free;
-> > >             }
-> > >             cache->slots_ret[cache->n_ret++] =3D entry;
-> > >             spin_unlock_irq(&cache->free_lock);
-> > > +           if (cache->n_ret >=3D SWAP_SLOTS_CACHE_SIZE)
-> > > +                   schedule_work(&cache->async_free);
->
->
-> I have some concerns about the current patch with the change above.
-> We could hit the direct_free path very often.
->
-> By delaying the freeing of entries in the return
-> cache, we have to do more freeing of swap entry one at a time. When
-> we try to free an entry, we can find the return cache still full, waiting=
- to be freed.
+Hi Pavel,
 
-You are describing the async free is not working. In that case it will alwa=
-ys
-hit the direct free path one by one.
+On Thu, Feb 01, 2024 at 11:41:56AM +0100, Pavel Machek wrote:
+> From: Ondrej Jirman <megi@xff.cz>
+> 
+> This is driver for ANX7688 USB-C HDMI, with flashing and debugging
+> features removed. ANX7688 is rather criticial piece on PinePhone,
+> there's no display and no battery charging without it.
 
+Don't remove the flashing part. Some Pinephones come without the firmware
+in the past. Even recently, I've seen some people in the Pine chat
+asking how to flash the firmware on some old PinePhone.
+
+It's a safe operation that can be done at any time and can only be done
+from the kernel driver.
+
+> There's likely more work to be done here, but having basic support
+> in mainline is needed to be able to work on the other stuff
+> (networking, cameras, power management).
+> 
+> Signed-off-by: Ondrej Jirman <megi@xff.cz>
+
+I should be second in order of sign-offs. Martijn wrote a non-working skeleton
+https://megous.com/git/linux/commit/?h=pp-5.7&id=30e33cefd7956a2b49fb27008b4af9d868974e58
+driver. Then I picked it up and developed it over years to a working thing.
+Almost none of the skeleton remains.
+
+License is GPLv2.
+
+> Signed-off-by: Martijn Braam <martijn@brixit.nl>
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> Signed-off-by: Pavel Machek <pavel@ucw.cz>
+> 
+> [...]
 >
-> So we have fewer batch free of swap entries, resulting in an increase in
-> number of sis->lock acquisitions overall. This could have the
-> effect of reducing swap throughput overall when swap is under heavy
-> operations and sis->lock is contended.
+> +static int anx7688_i2c_probe(struct i2c_client *client)
+> +{
+> +        struct anx7688 *anx7688;
+> +        struct device *dev = &client->dev;
+> +        struct typec_capability typec_cap = { };
+> +        int i, vid_h, vid_l;
+> +        int irq_cabledet;
+> +        int ret = 0;
+> +
+> +        anx7688 = devm_kzalloc(dev, sizeof(*anx7688), GFP_KERNEL);
+> +        if (!anx7688)
+> +                return -ENOMEM;
+> +
+> +        i2c_set_clientdata(client, anx7688);
+> +        anx7688->client = client;
+> +        anx7688->dev = &client->dev;
+> +        mutex_init(&anx7688->lock);
+> +        INIT_DELAYED_WORK(&anx7688->work, anx7688_work);
+> +	anx7688->last_extcon_state = -1;
+> +
+> +	ret = of_property_read_variable_u32_array(dev->of_node, "source-caps",
+> +						  anx7688->src_caps,
+> +						  1, ARRAY_SIZE(anx7688->src_caps));
+> +	if (ret < 0) {
+> +		dev_err(dev, "failed to get source-caps from DT\n");
+> +		return ret;
+> +	}
+> +	anx7688->n_src_caps = ret;
+> +
+> +	ret = of_property_read_variable_u32_array(dev->of_node, "sink-caps",
+> +						  anx7688->snk_caps,
+> +						  1, ARRAY_SIZE(anx7688->snk_caps));
+> +	if (ret < 0) {
+> +		dev_err(dev, "failed to get sink-caps from DT\n");
+> +		return ret;
+> +	}
 
-I  can change the direct free path to free all entries. If the async
-free hasn't freed up the batch by the time the next swap fault comes in.
-The new swap fault will take the hit, just free the whole batch. It will be=
-have
-closer to the original batch free behavior in this path.
+^^^ The driver will need to follow usb-c-connector bindings and it will need
+a bindings documentation for itself.
 
-Chris
+That's one of the missing things that I did not implement, yet.
+
+Kind regards,
+	o.
 
