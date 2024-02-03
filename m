@@ -1,78 +1,134 @@
-Return-Path: <linux-kernel+bounces-51100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11401848672
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 14:15:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2761584867A
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 14:17:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82322B219DD
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 13:15:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AD291C22948
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 13:16:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 406255D755;
-	Sat,  3 Feb 2024 13:15:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01CCD2574F;
+	Sat,  3 Feb 2024 13:16:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ojq/QYEr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g9D1rO/x"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27F195D47E;
-	Sat,  3 Feb 2024 13:15:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED8F61AACF;
+	Sat,  3 Feb 2024 13:16:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706966130; cv=none; b=MdAhwj46gmyJJJI7Xits1zox7oyX0oq5xuJoYvQlKUuLbXdimvEipAMJ/Tg4BqIu2rcuLY7xz2SlrxwHK4+smZFHqFbnsQkdmQgmPCX4Q2rdXDbl3noojzRjopwQs8jsJLClar4OQn98s5xAR9ur2Rsyj+G/JrAN6stwKUCPQyE=
+	t=1706966212; cv=none; b=tVMrlTBni3xouQhUY5KZzTogp8xllXy4nMySbguU/kS4d5SsMjS5iOE15XBg1jpBtFevzMwzP0dzU148asGc3KCKTkBkpRNjUpMzWc1CbwalTTQ+a47qRhG4tvSafmMn3w1IMdyoxrLw4TxdB20xRY32zgiLD7TUOsAHgrlHgO4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706966130; c=relaxed/simple;
-	bh=flQ6GnLUKLFnvuxnXDKqbRXwudb/hut3th1YVysTEfI=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=W4BEbDhN3Q5k7EM/JfTlh85q5nTtcvyRp/CTP+3lBQvSEMHYWXNtOCZQ3qvCF+TYlW+h7eOHx+z9ea98Sc8c815utKJ3ReayJAP34PdMgNOKzz8xfdf17lCI3roMfgsX25DI4zMw8cQaU4a0Bi8lRmDvQpgfsvOt0FZ1r/qXKT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ojq/QYEr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6227FC433F1;
-	Sat,  3 Feb 2024 13:15:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706966129;
-	bh=flQ6GnLUKLFnvuxnXDKqbRXwudb/hut3th1YVysTEfI=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=Ojq/QYErN4buWyS0hjJoAjvD1qew51dG3yRYS/ug94Tdr3wlQiQXAgDQxAQPizarT
-	 ZaCmI+uGklCmY3CktbdW1NORm2tuDLEO8ZTKujSGMx+RkmF+9FdY9BRKVX5YKEel/t
-	 3caU6iup9fqSuYdDkbAKS/T3rqxB1AAzJ3XuArAw/WYtONoD2qkKTjG3Juj2Uw5qeo
-	 ew+bGh5M4YnZAQNRMYIM54MRxFjmLFi4gzJu5vESDjCKYUIRspeVPAbcKLClz+i4Aw
-	 +ry+7KIFiGkvyDbdKfyj4SfIB/+9ZgRB0sPyy1XOqO6q7waTHuwb1MFHV6B94iU8Et
-	 NrBjS6cRmU8kA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4B088C04E32;
-	Sat,  3 Feb 2024 13:15:29 +0000 (UTC)
-Subject: Re: [GIT PULL] perf tools fixes for v6.8
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20240201202254.15588-1-acme@kernel.org>
-References: <20240201202254.15588-1-acme@kernel.org>
-X-PR-Tracked-List-Id: <linux-perf-users.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20240201202254.15588-1-acme@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools.git perf-tools-fixes-for-v6.8-1-2024-02-01
-X-PR-Tracked-Commit-Id: fdd0ae72b34e56eb5e896d067c49a78ecb451032
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b555d191561a7f89b8d2108dff687d9bc4284e48
-Message-Id: <170696612929.602.15683354228494654874.pr-tracker-bot@kernel.org>
-Date: Sat, 03 Feb 2024 13:15:29 +0000
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, Clark Williams <williams@redhat.com>, Kate Carcia <kcarcia@redhat.com>, linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, Arnaldo Carvalho de Melo <acme@kernel.org>, James Clark <james.clark@arm.com>, Kan Liang <kan.liang@linux.intel.com>, Sun Haiyong <sunhaiyong@loongson.cn>, Thomas Richter <tmricht@linux.ibm.com>, Yanteng Si <siyanteng@loongson.cn>, Yicong Yang <yangyicong@hisilicon.com>, Arnaldo Carvalho de Melo <acme@redhat.com>
+	s=arc-20240116; t=1706966212; c=relaxed/simple;
+	bh=4+zMKxvYaiaxOW0B3LJoq39gR4Zfnm5GTXLb8V0K1bQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=r3utJP1OgfoUyK2PQugbahhQCMIe8Abw132pGldLqk/xhQEJAnTnJE0ct4BE2DN3cNTiIWON7oV/2YKBC9b5hkrArmX3CI1+77FWePEOqfJec/54FxvaLD5NSq9hjp4rbzNhCJZJUP4rY38neieqXinJ+vk1qts/kFlKEgXTrB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g9D1rO/x; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706966211; x=1738502211;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=4+zMKxvYaiaxOW0B3LJoq39gR4Zfnm5GTXLb8V0K1bQ=;
+  b=g9D1rO/xS5dUssIG7E6/SnUQACvsY7zOhSOSO4R4VXeyN7qmsuQEJe6L
+   Qrungcp8Wf7n4TB4Kp8OrRVCpiH9OQiv47dnxxU0yZtaJPfPCMBfVtr2M
+   r3Sch70QD2uKgLSLHA+eD1FOBqSrEMAUFo9Q2TopF74tC6w4GjITyJlEI
+   DTniGrnt7KXK8dKvJFpOEI4aiZW0cwucNSjzehTcCJRKT0/oKtPTdLk9J
+   F7pzHhEUoWEWHvNXqy0t4fDWygrhfPsL+CywhRfn2yx+46KEyc4Xs0YH0
+   lM+cLz7waJafKtZhkFwD1b8dCD9A3rqKv9w1bPRH8nzh8Dcl1vw/qVkc3
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="17728810"
+X-IronPort-AV: E=Sophos;i="6.05,240,1701158400"; 
+   d="scan'208";a="17728810"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2024 05:16:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,240,1701158400"; 
+   d="scan'208";a="4932024"
+Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
+  by orviesa003.jf.intel.com with ESMTP; 03 Feb 2024 05:16:46 -0800
+Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rWFsx-00055a-0l;
+	Sat, 03 Feb 2024 13:16:43 +0000
+Date: Sat, 3 Feb 2024 21:15:48 +0800
+From: kernel test robot <lkp@intel.com>
+To: Jiaxun Yang <jiaxun.yang@flygoat.com>, Oleg Nesterov <oleg@redhat.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Ben Hutchings <bwh@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Xi Ruoyao <xry111@xry111.site>
+Subject: Re: [PATCH 3/3] mm/memory: Use exception ip to search exception
+ tables
+Message-ID: <202402032150.DmM8VjRz-lkp@intel.com>
+References: <20240201-exception_ip-v1-3-aa26ab3ee0b5@flygoat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240201-exception_ip-v1-3-aa26ab3ee0b5@flygoat.com>
 
-The pull request you sent on Thu,  1 Feb 2024 17:22:54 -0300:
+Hi Jiaxun,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools.git perf-tools-fixes-for-v6.8-1-2024-02-01
+kernel test robot noticed the following build errors:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b555d191561a7f89b8d2108dff687d9bc4284e48
+[auto build test ERROR on 06f658aadff0e483ee4f807b0b46c9e5cba62bfa]
 
-Thank you!
+url:    https://github.com/intel-lab-lkp/linux/commits/Jiaxun-Yang/ptrace-Introduce-exception_ip-arch-hook/20240201-234906
+base:   06f658aadff0e483ee4f807b0b46c9e5cba62bfa
+patch link:    https://lore.kernel.org/r/20240201-exception_ip-v1-3-aa26ab3ee0b5%40flygoat.com
+patch subject: [PATCH 3/3] mm/memory: Use exception ip to search exception tables
+config: i386-buildonly-randconfig-002-20240203 (https://download.01.org/0day-ci/archive/20240203/202402032150.DmM8VjRz-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240203/202402032150.DmM8VjRz-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402032150.DmM8VjRz-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   mm/memory.c: In function 'get_mmap_lock_carefully':
+>> mm/memory.c:5484:22: error: implicit declaration of function 'exception_ip' [-Werror=implicit-function-declaration]
+      unsigned long ip = exception_ip(regs);
+                         ^~~~~~~~~~~~
+   cc1: some warnings being treated as errors
+
+
+vim +/exception_ip +5484 mm/memory.c
+
+  5477	
+  5478	static inline bool get_mmap_lock_carefully(struct mm_struct *mm, struct pt_regs *regs)
+  5479	{
+  5480		if (likely(mmap_read_trylock(mm)))
+  5481			return true;
+  5482	
+  5483		if (regs && !user_mode(regs)) {
+> 5484			unsigned long ip = exception_ip(regs);
+  5485			if (!search_exception_tables(ip))
+  5486				return false;
+  5487		}
+  5488	
+  5489		return !mmap_read_lock_killable(mm);
+  5490	}
+  5491	
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
