@@ -1,106 +1,148 @@
-Return-Path: <linux-kernel+bounces-50880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CABC1847FBB
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 03:59:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3038F847FBF
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 04:00:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87A3F2822BA
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 02:59:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEA972825C7
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 03:00:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57DD1F9F5;
-	Sat,  3 Feb 2024 02:49:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E32510795;
+	Sat,  3 Feb 2024 02:56:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4RIekuo4"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aQC5dk+P"
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 474FA10782
-	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 02:49:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 388EB10A1B
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 02:56:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706928558; cv=none; b=Cy6Bwg7cM0f6DHgH1Pp/ZB1BLKsDf+OoPBFcq4VngNhi0dKASQPiGSwEcnqFFmzjJwiQj1YF5Wuyds1K50Ihz4jYUT8RAlj0/UOp8liAnY+OVil5fNafMEEucfrxtnIj3IULnndX7hs04K/HT7FT/98+044JtuTJ0YVfIMUtAVs=
+	t=1706928970; cv=none; b=RMfqdE7Kyh50pnacb8s495bYRxkeBFJNBIpc4wa1TL1BhxVnZQbZZOpStfmOi7mXcpnpv7ik6b+izHiwUTBp8JOz7l4px0ACWflJYKzNuXQIOXtRGIcO/Cw5/OJDX2zT+2KRnEMu4nqQdfijSoogl33gwEgsdb1bGXqbIpl+yBQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706928558; c=relaxed/simple;
-	bh=vqfqX4Je0gQB6B1gJWda0z25IwH75ROT1dwdQ8kgeXQ=;
+	s=arc-20240116; t=1706928970; c=relaxed/simple;
+	bh=xMELGiQyDwDf0RQ64HMKT7PzlIKOviP2KoVQtgNM1Sk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=u482+Ec/OU2z2R4DXUbGAxJhR1qCFz9LrSuxfxAShxLPj0c/A09RMucPq3WiGkJZqj0kuIbVWjCn4RVkBOG29wjUl4mqSlv4OIXFs+MTze2UnfUqKTYJOolcoIqgIfjp3cSLN32HOnFUoIjW8Aqe/9mrsT0wTMx2umXbdLlQaOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4RIekuo4; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d5ce88b51cso106125ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 18:49:16 -0800 (PST)
+	 To:Cc:Content-Type; b=PUUK76XHS+8sguyaLdXV5FrO/r4rUd/sm1yhNTkoWtM3D89m5ggJ0fUZWwZge2qOnerIotjo7+sYjxUAG+11Me7nN4ZMn8zPWmakLvSV4qo7I8IssUZV4N6xorfF8qV4nupBtEOvY9pW18SLRDYJUjg43BiQKy9Qjxss77fda4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aQC5dk+P; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-603fdc46852so28285767b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 18:56:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706928556; x=1707533356; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nvsVXnyQc0YO6IUrb/2xe3r1pTADCgJR6S4V3R6UYko=;
-        b=4RIekuo40Rg57kSf25/JWvydGr2P1zivUJjYFjm9RsQqB3X0rGPOrwid4G8rPUNiUl
-         hEdZ/DBdNxy0Sz8zLLhsJFPp4/FsXWynIQsO3EmvyfxSZTT4o8DwkRaFH4dQM+XydZLO
-         m79MTl0/e/C3hg52AsV2QoGthtN8HmF51q+4NODgqxe9XFGS7alselxlSOEsaOqTMDLh
-         Mi8Sn3r7exigj2hDzlJsPLQkTurLCT4VjuM/fZZKvQW5vxP4uPaSJmUTamkbN5A1FDUt
-         tp25jKC5Sii/7xvGXRP8I2K2dvZu4BUp1Tn5dEqj5VEVESshk+eeyHGMp7vHNKkUivOH
-         F6xQ==
+        d=linaro.org; s=google; t=1706928966; x=1707533766; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lD8inCL3n27QmNoGKrfX9I7qIbx7Ok8T+KP8sX1X1QQ=;
+        b=aQC5dk+PnGsPJLv79niS9qCZr/hwOKYxASJKDBSNM68IcikUP7E5vdUc3dYBFN01QH
+         xK4/Ivd52cd+F53AstEI0KPxRtl21GtBAOlmvIpe77kuotT0GPJ12aMdFUpwxUcNSrE5
+         /h++D9/yvybrtRDTokS7rZYgLbS/Ca1b7mHIJzXDqGU+JylN/GvIO/FQpXbvednddS0y
+         sYHj+Gxn8udKqr9DSrp03AVf2MIQK4+bUxh9CZKU7E36IVVrThyOVgf7B7T/oYqgIuFv
+         EF/h3VclNFyubmssMzXTLscQDb2vANjcvoOGfMGN5eMz3GzWfkcn7eH53BfEI+xXqmhw
+         mlKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706928556; x=1707533356;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nvsVXnyQc0YO6IUrb/2xe3r1pTADCgJR6S4V3R6UYko=;
-        b=f37cFMxh3ueLtWycBBKe3oAqOH5clpD2mI4lWj8fiItkz9YZ5MMvhBH/3wsM/luq3L
-         GnhFAqLIuJcqqX50xf6P5FqrQgXXfPsoj6tHUHzKU+0s28r46e3vUjS4yrJnyrRDlsL2
-         zLX8/SoBKwkd4ZpEBq+AflK7dMRYK2suQDzkb/50Sy/R17knQBcgTEyiJSVVu4nA8xgD
-         jaYXXSzVhJfXz44eMroxi6P5HGW6xmuGDYDISjVMCnCnHB4W/Rsn2PmQNXuyivWlOj4M
-         QeahXiHB3wKcvV6opSGaUqe4KPFxPwQHBOtyfIw5f9ZbujUdl/43eGj6wFYIjsI2/skU
-         B3vA==
-X-Gm-Message-State: AOJu0YwSYoJgC5eu6MX1uB5/UqzOVKhMacdGPliczkd+iDJXmhkFwurE
-	+E6FA90HXMIbgwDGzpOE9fyIDoaICmCrcBa5G8C0KHAMNF63H2uPdihFGj38V2xMs35WmUxpGad
-	B/c0RULGyMaPS9zx1TUWyCI+YWUniSXwwOsW1
-X-Google-Smtp-Source: AGHT+IGbbgicdBm1h0d/v8sD2+ltNW742yQoOOvo5ZM08cWHQPOb2pTD1eq4PqCARehNRUriI+IzHbLkEW37lJN3X0k=
-X-Received: by 2002:a17:903:2284:b0:1d9:310c:73be with SMTP id
- b4-20020a170903228400b001d9310c73bemr66262plh.13.1706928556166; Fri, 02 Feb
- 2024 18:49:16 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706928966; x=1707533766;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lD8inCL3n27QmNoGKrfX9I7qIbx7Ok8T+KP8sX1X1QQ=;
+        b=V9TV5f2rdxrN9hVnLMnh2xQMBj/ZTUMsU8UMVHFVodcavGumLXPToYYCFTEz+B4OUJ
+         Ghi+wMrVwDK2oIgEZ+wtJ9XbVUIjC6Ke0emOgrMGN+PF7ZvyKh+62ayzZRcU5ufSLOym
+         0hDuJKmzziAT7ABH3zEHvmd+nam9tJO904JEwTJ6+lyLW8I4SDqYljc9j6Cq0T7o1k7b
+         UK+wA2FEYUP9Ozx5Yd1Ng1RK6rvAaETVpqUuCta+YiT7beIOfXMmSPnXZx2D5TRoCBPb
+         hQ/qMQZbNSrhVy7N0yx4NXftgMqUKjwbK9cim3O1+BTKs6h82xOMZyVnXOgqR6ibIz+0
+         aKpA==
+X-Gm-Message-State: AOJu0YxJprxT3IjCESv7mXIUyrLcqOcvhTSbyQpKGC/hC3/gCv9UkGWY
+	UU6EZJXxskUKEq8oCrZN4zsU0xPJ3/SojdOzIc7OFWo5Lz9VFwaJyoWygLRRkiUyJ8wCow6zcBA
+	FdF+QLG3LIAcaFECFTsszjQO9XtJ9h4zwCAXXxA==
+X-Google-Smtp-Source: AGHT+IHmlfW1+Y+uGaT2G3NHFhtiRRriUyg0EgG+M84bGJD/GcVW5/hm/XCO5OApuPCvWl03vUjaXZykG56jQolv2XU=
+X-Received: by 2002:a81:ac20:0:b0:5f1:f638:2bd8 with SMTP id
+ k32-20020a81ac20000000b005f1f6382bd8mr10182961ywh.31.1706928965823; Fri, 02
+ Feb 2024 18:56:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202220459.527138-1-namhyung@kernel.org> <20240202220459.527138-8-namhyung@kernel.org>
-In-Reply-To: <20240202220459.527138-8-namhyung@kernel.org>
-From: Ian Rogers <irogers@google.com>
-Date: Fri, 2 Feb 2024 18:49:05 -0800
-Message-ID: <CAP-5=fUWbe-owCHsjQfOuTyt8kEzM_M_4GqS_rqKwL9VY3tJOQ@mail.gmail.com>
-Subject: Re: [PATCH 07/14] perf annotate-data: Add update_insn_state()
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-perf-users@vger.kernel.org, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org, 
-	linux-trace-devel@vger.kernel.org
+References: <20240202222338.1652333-1-robh@kernel.org>
+In-Reply-To: <20240202222338.1652333-1-robh@kernel.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Sat, 3 Feb 2024 03:55:54 +0100
+Message-ID: <CAA8EJpooe=RsZSD_mRKH2S8NUxAEqVw_AcMyn68_AWwhovPFsg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: display: msm: sm8650-mdss: Add missing
+ explicit "additionalProperties"
+To: Rob Herring <robh@kernel.org>
+Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, linux-arm-msm@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 2, 2024 at 2:05=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
-rote:
+On Fri, 2 Feb 2024 at 23:23, Rob Herring <robh@kernel.org> wrote:
 >
-> The update_insn_state() function is to update the type state table after
-> processing each instruction.  For now, it handles MOV (on x86) insn
-> to transfer type info from the source location to the target.
+> In order to check schemas for missing additionalProperties or
+> unevaluatedProperties, cases allowing extra properties must be explicit.
 >
-> The location can be a register or a stack slot.  Check carefully when
-> memory reference happens and fetch the type correctly.  It basically
-> ignores write to a memory since it doesn't change the type info.  One
-> exception is writes to (new) stack slots for register spilling.
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-Just an aside, it seems a shame objdump can't do this tracking for us.
-objdump already augments its output with symbol and relocation data.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Thanks,
-Ian
+Rob, if you need it for some rework, please feel free to pick it into
+your tree, otherwise I'll pick it for msm-next in the next few days.
+
+
+> ---
+>  .../devicetree/bindings/display/msm/qcom,sm8650-mdss.yaml     | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/display/msm/qcom,sm8650-mdss.yaml b/Documentation/devicetree/bindings/display/msm/qcom,sm8650-mdss.yaml
+> index bd11119dc93d..24cece1e888b 100644
+> --- a/Documentation/devicetree/bindings/display/msm/qcom,sm8650-mdss.yaml
+> +++ b/Documentation/devicetree/bindings/display/msm/qcom,sm8650-mdss.yaml
+> @@ -37,18 +37,21 @@ properties:
+>  patternProperties:
+>    "^display-controller@[0-9a-f]+$":
+>      type: object
+> +    additionalProperties: true
+>      properties:
+>        compatible:
+>          const: qcom,sm8650-dpu
+>
+>    "^displayport-controller@[0-9a-f]+$":
+>      type: object
+> +    additionalProperties: true
+>      properties:
+>        compatible:
+>          const: qcom,sm8650-dp
+>
+>    "^dsi@[0-9a-f]+$":
+>      type: object
+> +    additionalProperties: true
+>      properties:
+>        compatible:
+>          items:
+> @@ -57,6 +60,7 @@ patternProperties:
+>
+>    "^phy@[0-9a-f]+$":
+>      type: object
+> +    additionalProperties: true
+>      properties:
+>        compatible:
+>          const: qcom,sm8650-dsi-phy-4nm
+> --
+> 2.43.0
+>
+
+
+--
+With best wishes
+Dmitry
 
