@@ -1,223 +1,148 @@
-Return-Path: <linux-kernel+bounces-50888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9107847FE0
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 04:19:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59D3A847FE5
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 04:21:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F182D1C21D19
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 03:19:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15F292881D4
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 03:21:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 594818C11;
-	Sat,  3 Feb 2024 03:19:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26E84D2FC;
+	Sat,  3 Feb 2024 03:20:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iNWdBxud"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ER/r5M5r"
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52B0A79FB
-	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 03:19:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20AAA79F9;
+	Sat,  3 Feb 2024 03:20:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706930382; cv=none; b=cj5uOGZZYxvw25chFT0TREhi8d1W94KCnOwLrvOUw9Zzsk+C7JoJQh0h9qtMFH3epbheoGwbnwQyc9at0wSahE8UsozQtQqWhQEuQxachJOog5nH/2gCskvysvLI7+S5e7HnZgZah6b7U+1qjeeNo2nrUAb/kHNWrntQi++QvEA=
+	t=1706930456; cv=none; b=Gv+er1rphhAZGib9E2aakWbWwIDG5xyhSaijA3iAI3tIfbmTgiiYK/eO6QykL9ECSkSB7APNs+E/TTnrl76okoUXh0ftRwS+aMFMxMcZkHlmh7ZFKQjapNY7eKR0zpMeM8wpiw191e+s2P19tP/0Zi1VXK6ycYYRcqWKMDb65xk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706930382; c=relaxed/simple;
-	bh=t9zWajDPNWAPFveChfDeaoSpQR3NYvuD6gImhjgcZsE=;
+	s=arc-20240116; t=1706930456; c=relaxed/simple;
+	bh=hCB8AYgSSbq6DNZj1ZRZk803oP0CfufNdeL7Gko1fYw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sE87yuX1wBFeknXGWXovX+McpgmYdTzXTaNgXz384wu4LQ7uEsFXT8X1g7oHni9SMYYp8ls3qOzZlqefbUCuWum+y9Y91q1ZpZfPet3HYkVfQO24+RRtuxVBMKnry9s+fRxLPreAjfvGbA431l/ezm2gYn63baqwJTQza1RUmmk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iNWdBxud; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706930379;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YScCYgn/YDm7KyE4VHg/k76RzBwfrchw7aPmjYSdxAY=;
-	b=iNWdBxudLnix99XO65jVfieZDYdOWFMKL+oQkMjXSCIpWBlp0mTW+1x9fY66yWwSDWuxH3
-	gi2W9PzqmKJ4/OqHK5x8m0LCKwFnyQbeDTfFeFfdPde08UjyyAkgrsZ6HRi4Qi+dm1aTQL
-	bnLS8V2Z5EqOsC5jP1S7OvtarsSwotM=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-681-_2-psdbHPO269oI85mlyEw-1; Fri,
- 02 Feb 2024 22:19:35 -0500
-X-MC-Unique: _2-psdbHPO269oI85mlyEw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 08DE43812014;
-	Sat,  3 Feb 2024 03:19:35 +0000 (UTC)
-Received: from bmarzins-01.fast.eng.rdu2.dc.redhat.com (bmarzins-01.fast.eng.rdu2.dc.redhat.com [10.6.23.12])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 9D5551BDB1;
-	Sat,  3 Feb 2024 03:19:34 +0000 (UTC)
-Received: from bmarzins-01.fast.eng.rdu2.dc.redhat.com (localhost [127.0.0.1])
-	by bmarzins-01.fast.eng.rdu2.dc.redhat.com (8.17.1/8.17.1) with ESMTPS id 4133JYtL105861
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Fri, 2 Feb 2024 22:19:34 -0500
-Received: (from bmarzins@localhost)
-	by bmarzins-01.fast.eng.rdu2.dc.redhat.com (8.17.1/8.17.1/Submit) id 4133JW0f105860;
-	Fri, 2 Feb 2024 22:19:32 -0500
-Date: Fri, 2 Feb 2024 22:19:32 -0500
-From: Benjamin Marzinski <bmarzins@redhat.com>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: mpatocka@redhat.com, heinzm@redhat.com, xni@redhat.com,
-        blazej.kucman@linux.intel.com, agk@redhat.com, snitzer@kernel.org,
-        dm-devel@lists.linux.dev, song@kernel.org, yukuai3@huawei.com,
-        jbrassow@f14.redhat.com, neilb@suse.de, shli@fb.com, akpm@osdl.org,
-        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH v5 00/14] dm-raid/md/raid: fix v6.7 regressions
-Message-ID: <Zb2wxIpf7uYV6Vya@bmarzins-01.fast.eng.rdu2.dc.redhat.com>
-References: <20240201092559.910982-1-yukuai1@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=EiLF1aBsoDZmFnsDXTVA3bAoNttG7kX68J0EZWC9HQF4syWttlimV8bgDam70eEXMW9iWTKXIGmI9KRIlqHpGkoDVk06LH+vKbfFST4ni8f/P3zIRGa37auzNGCgBY1ciVy/E7AR6yNGLG/kI7x90YCrzEs14SzAB0i+2q86AJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ER/r5M5r; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5d7005ea1d0so1046179a12.1;
+        Fri, 02 Feb 2024 19:20:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706930454; x=1707535254; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dULR4Q3RpC05Eojzx1RrNDTGijusTCcOzrGWFakXnPU=;
+        b=ER/r5M5rjNnlRX3OCRanBb/1/mcG0wYDWEvHL3gUAYqvThnXzbvWHHHt7luaRK0DbE
+         +pgA1DhqJAXoqSbaxLPtpjtz9ulBxLSfDDGm7nLJEY9ABjV1sJ3n0eOrC5jXD3VUaqTj
+         u5V/y2ASuELRzc6kn4CtkMXV9qy78aIT9y6SEm+lwnUQl1IykLmpYWAkgdEqDE8wr556
+         ljptGtWb/5tPPPAANKHlnZU9EOdUDIGmEeZztKSxPcirymXlU8YV9Jz5CwjjOm9paPaz
+         G1hR5w9Hr33wHEiFNMSRlVL5k6V6W/vcnUDRzasnIuGUSjM2CHN3wgWdbsbP86lOQV89
+         d4Qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706930454; x=1707535254;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dULR4Q3RpC05Eojzx1RrNDTGijusTCcOzrGWFakXnPU=;
+        b=B8vOPHRJWcyOKbUmNUHCEzbUgNB86WrRixZQUw49k6OEKKM1u+K2cSkExh33825SYH
+         x7D/68cWO9+IRZWQCyYA8YILkfXIr9z9FDqCYCgTWxA9db59j0g3r+VRP6A7AVn5hnYp
+         GZLvTSXbCBdD9g5Uq8F2fSu5dbLB97wUb8rrKfeUJu4lZCRjIf643eXbrclmo7NoxLGR
+         zHcdc2Li8aRmgieGaIyu/N3wfP70sYaot+8s+H0LagStLFuqhQ8pam3jjT+JKJMpf+6q
+         5l3prITzzDSAST5xpfD7XVDMMdz+Hr9LvuffzBg4dydKrqYyRa4hlkPFqlQAaijKbW1t
+         j+yA==
+X-Gm-Message-State: AOJu0YwpqCreZjjsJehHIm7p2CyRZpbcy/EJqqSXvVMLucVFHnee0xNS
+	lE6qk1DVgFkmcn9A54W2xYu8DlwUqIQwxi0spEWjcm14a5NEP/LTDnL8WQygKIY=
+X-Google-Smtp-Source: AGHT+IG1QsEB3Ess0MPjp+rbYYo3morcy88EvcGngfo9wfvO1wtdUp0liXYEcSEN991u1sAbDmx1WA==
+X-Received: by 2002:a05:6a20:939f:b0:19c:8673:77 with SMTP id x31-20020a056a20939f00b0019c86730077mr750410pzh.2.1706930453977;
+        Fri, 02 Feb 2024 19:20:53 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUDZi+nDceimBwN0CAJf6V5HxV+0R2TqggV/ax8ojyjXckgmP6fb+HL9Y14ubHMMJtxWWpKeeKdyj9KDEqn/olPrDYEKU8yd9zPtYXS+b9vQnNvoJKgqAFdze5MqGVkyp/UI6A3UR6LNibZ02xyZ9tHW8HQiykH11XImlD0AI46FCs5vuO9WbmwYs4Rj3re9gmcq9KfGBVWCaOBvGd4FzzSqr/YRjoED3RT/ykPGd52zRi6FRZbvJ2WL9x6vT3eOQwm4FTKkNECJ0cf3QJEq9EOk5OsktIRvHDBT7p0bwR5628+CfpeVepr9H4=
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id p13-20020a62ab0d000000b006d977f70cd5sm2370368pff.23.2024.02.02.19.20.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 19:20:53 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+	id CBC91183BF657; Sat,  3 Feb 2024 10:20:49 +0700 (WIB)
+Date: Sat, 3 Feb 2024 10:20:49 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: =?utf-8?Q?Micha=C5=82?= Jakubowski <kajanos@gmail.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Networking <netdev@vger.kernel.org>,
+	Linux RDMA <linux-rdma@vger.kernel.org>, shravankr@nvidia.com
+Subject: Re: Kernel - 6.7.3 - failed to compile the module
+Message-ID: <Zb2xEcMle-TXZwZ9@archie.me>
+References: <CAHOGJipx37tUoiSp87Np4b0qzREj60+FEkdi_0X0_JoQW8cYeA@mail.gmail.com>
+ <ZbzwgtGUHK2Dj5eo@archie.me>
+ <CAHOGJiotQxK7Kdq+MV=bMXku4DehMcWtq1uPeQxf8igEY1Zdxw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="D1brhLvD4YeQktqi"
 Content-Disposition: inline
-In-Reply-To: <20240201092559.910982-1-yukuai1@huaweicloud.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
-
-On Thu, Feb 01, 2024 at 05:25:45PM +0800, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
-> I apply this patchset on top of v6.8-rc1, and run lvm2 tests suite with
-> folling cmd for 24 round(for about 2 days):
-> 
-> for t in `ls test/shell`; do
->         if cat test/shell/$t | grep raid &> /dev/null; then
->                 make check T=shell/$t
->         fi
-> done
-> 
-> failed count                             failed test
->       1 ###       failed: [ndev-vanilla] shell/dmsecuretest.sh
->       1 ###       failed: [ndev-vanilla] shell/dmsetup-integrity-keys.sh
->       1 ###       failed: [ndev-vanilla] shell/dmsetup-keyring.sh
->       5 ###       failed: [ndev-vanilla] shell/duplicate-pvs-md0.sh
->       1 ###       failed: [ndev-vanilla] shell/duplicate-vgid.sh
->       2 ###       failed: [ndev-vanilla] shell/duplicate-vgnames.sh
->       1 ###       failed: [ndev-vanilla] shell/fsadm-crypt.sh
->       1 ###       failed: [ndev-vanilla] shell/integrity.sh
->       6 ###       failed: [ndev-vanilla] shell/lvchange-raid1-writemostly.sh
->       2 ###       failed: [ndev-vanilla] shell/lvchange-rebuild-raid.sh
->       5 ###       failed: [ndev-vanilla] shell/lvconvert-raid-reshape-stripes-load-reload.sh
->       4 ###       failed: [ndev-vanilla] shell/lvconvert-raid-restripe-linear.sh
->       1 ###       failed: [ndev-vanilla] shell/lvconvert-raid1-split-trackchanges.sh
->      20 ###       failed: [ndev-vanilla] shell/lvconvert-repair-raid.sh
->      20 ###       failed: [ndev-vanilla] shell/lvcreate-large-raid.sh
->      24 ###       failed: [ndev-vanilla] shell/lvextend-raid.sh
-> 
-> And I ramdomly pick some tests verified by hand that these test will
-> fail in v6.6 as well(not all tests):
-> 
-> shell/lvextend-raid.sh
-> shell/lvcreate-large-raid.sh
-> shell/lvconvert-repair-raid.sh
-> shell/lvchange-rebuild-raid.sh
-> shell/lvchange-raid1-writemostly.sh
-
-In my testing with this patchset on top of the head of linus's tree
-(5c24e4e9e708) I am seeing failures in
-shell/lvconvert-raid-reshape-stripes-load-reload.sh and
-shell/lvconvert-repair-raid.sh in about 20% of my runs. I have never
-seen either of these these fail running on the 6.6 kernel (ffc253263a13).
-
-lvconvert-repair-raid.sh creates a raid array and then disables one if
-its drives before there's enough time to finish the initial sync and
-tries to repair it. This is supposed to fail (it uses dm-delay devices
-to slow down the sync). When the test succeeds, I see things like this:
-
-[ 0:13.469] #lvconvert-repair-raid.sh:161+ lvcreate --type raid10 -m 1 -i 2 -L 64 -n LV1 LVMTEST191946vg /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv1 /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv2 /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv3 /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv4
-[ 0:13.469]   Using default stripesize 64.00 KiB.
-[ 0:13.483]   Logical volume "LV1" created.
-[ 0:14.042] 6,8908,1194343108,-;device-mapper: raid: Superblocks created for new raid set
-[ 0:14.042] 5,8909,1194348704,-;md/raid10:mdX: not clean -- starting background reconstruction
-[ 0:14.042] 6,8910,1194349443,-;md/raid10:mdX: active with 4 out of 4 devices
-[ 0:14.042] 4,8911,1194459161,-;mdX: bitmap file is out of date, doing full recovery
-[ 0:14.042] 6,8912,1194563810,-;md: resync of RAID array mdX
-[ 0:14.042]   WARNING: This metadata update is NOT backed up.
-[ 0:14.042] aux disable_dev "$dev4"
-[ 0:14.058] #lvconvert-repair-raid.sh:163+ aux disable_dev /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv4
-[ 0:14.058] Disabling device /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv4 (253:5)
-[ 0:14.101] not lvconvert -y --repair $vg/$lv1
-
-When it fails, I see:
-
-[ 0:13.831] #lvconvert-repair-raid.sh:161+ lvcreate --type raid10 -m 1 -i 2 -L 64 -n LV1 LVMTEST192248vg /tmp/LVMTEST192248.ATcecgSGfE/dev/mapper/LVMTEST192248pv1 /tmp/LVMTEST192248.ATcecgSGfE/dev/mapper/LVMTEST192248pv2 /tmp/LVMTEST192248.ATcecgSGfE/dev/mapper/LVMTEST192248pv3 /tmp/LVMTEST192248.ATcecgSGfE/dev/mapper/LVMTEST192248pv4
-[ 0:13.831]   Using default stripesize 64.00 KiB.
-[ 0:13.847]   Logical volume "LV1" created.
-[ 0:14.499]   WARNING: This metadata update is NOT backed up.
-[ 0:14.499] 6,8925,1187444256,-;device-mapper: raid: Superblocks created for new raid set
-[ 0:14.499] 5,8926,1187449525,-;md/raid10:mdX: not clean -- starting background reconstruction
-[ 0:14.499] 6,8927,1187450148,-;md/raid10:mdX: active with 4 out of 4 devices
-[ 0:14.499] 6,8928,1187452472,-;md: resync of RAID array mdX
-[ 0:14.499] 6,8929,1187453016,-;md: mdX: resync done.
-[ 0:14.499] 4,8930,1187555486,-;mdX: bitmap file is out of date, doing full recovery
-[ 0:14.499] aux disable_dev "$dev4"
-[ 0:14.515] #lvconvert-repair-raid.sh:163+ aux disable_dev /tmp/LVMTEST192248.AT
-cecgSGfE/dev/mapper/LVMTEST192248pv4
-[ 0:14.515] Disabling device /tmp/LVMTEST192248.ATcecgSGfE/dev/mapper/LVMTEST192
-248pv4 (253:5)
-[ 0:14.554] not lvconvert -y --repair $vg/$lv1
-
-To me the important looking difference (and I admit, I'm no RAID expert), is that in the
-case where the test passes (where lvconvert fails as expected), I see
-
-[ 0:14.042] 4,8911,1194459161,-;mdX: bitmap file is out of date, doing full recovery
-[ 0:14.042] 6,8912,1194563810,-;md: resync of RAID array mdX
-
-When it fails I see:
-
-[ 0:14.499] 6,8928,1187452472,-;md: resync of RAID array mdX
-[ 0:14.499] 6,8929,1187453016,-;md: mdX: resync done.
-[ 0:14.499] 4,8930,1187555486,-;mdX: bitmap file is out of date, doing full recovery
-
-Which appears to show a resync that takes no time, presumable because it happens before
-the device notices that the bitmaps are wrong and schedules a full recovery.
+In-Reply-To: <CAHOGJiotQxK7Kdq+MV=bMXku4DehMcWtq1uPeQxf8igEY1Zdxw@mail.gmail.com>
 
 
-lvconvert-raid-reshape-stripes-load-reload.sh repeatedly reloads the
-device table during a raid reshape, and then tests the filesystem for
-corruption afterwards. With this patchset, the filesystem is
-occasionally corrupted.  I do not see this with the 6.6 kernel.
+--D1brhLvD4YeQktqi
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--Ben
- 
-> Xiao Ni also test the last version on a real machine, see [1].
-> 
-> [1] https://lore.kernel.org/all/CALTww29QO5kzmN6Vd+jT=-8W5F52tJjHKSgrfUc1Z1ZAeRKHHA@mail.gmail.com/
-> 
-> Yu Kuai (14):
->   md: don't ignore suspended array in md_check_recovery()
->   md: don't ignore read-only array in md_check_recovery()
->   md: make sure md_do_sync() will set MD_RECOVERY_DONE
->   md: don't register sync_thread for reshape directly
->   md: don't suspend the array for interrupted reshape
->   md: fix missing release of 'active_io' for flush
->   md: export helpers to stop sync_thread
->   md: export helper md_is_rdwr()
->   dm-raid: really frozen sync_thread during suspend
->   md/dm-raid: don't call md_reap_sync_thread() directly
->   dm-raid: add a new helper prepare_suspend() in md_personality
->   md/raid456: fix a deadlock for dm-raid456 while io concurrent with
->     reshape
->   dm-raid: fix lockdep waring in "pers->hot_add_disk"
->   dm-raid: remove mddev_suspend/resume()
-> 
->  drivers/md/dm-raid.c |  78 +++++++++++++++++++--------
->  drivers/md/md.c      | 126 +++++++++++++++++++++++++++++--------------
->  drivers/md/md.h      |  16 ++++++
->  drivers/md/raid10.c  |  16 +-----
->  drivers/md/raid5.c   |  61 +++++++++++----------
->  5 files changed, 192 insertions(+), 105 deletions(-)
-> 
-> -- 
-> 2.39.2
-> 
+[restoring original address list. Please remember to keep it intact
+when replying.]
 
+On Fri, Feb 02, 2024 at 03:12:17PM +0100, Micha=C5=82 Jakubowski wrote:
+> On vanilla 6.7.3 and git 6.8-rc2 is the same
+>=20
+>  CC [M]  drivers/gpu/drm/amd/amdgpu/../display/modules/hdcp/hdcp1_executi=
+on.o
+>  CC [M]  drivers/gpu/drm/amd/amdgpu/../display/modules/hdcp/hdcp1_transit=
+ion.o
+>  CC [M]  drivers/gpu/drm/amd/amdgpu/../display/modules/hdcp/hdcp2_executi=
+on.o
+>  CC [M]  drivers/gpu/drm/amd/amdgpu/../display/modules/hdcp/hdcp2_transit=
+ion.o
+>  LD [M]  drivers/gpu/drm/amd/amdgpu/amdgpu.o
+>  AR      drivers/gpu/built-in.a
+>  AR      drivers/built-in.a
+> make[1]: *** [/usr/src/linux-6.8-rc2/Makefile:1921: .] Error 2
+> make: *** [Makefile:240: __sub-make] Error 2
+
+Hi Micha=C5=82,
+
+I can't reproduce the build failure on my Arch Linux system (gcc 13.2,
+binutils 2.41) with defconfig + CONFIG_MLX5_*. Can you attach full build log
+(preferably with V=3D1) and the .config used to bugzilla? And also, what is=
+ your
+gcc and binutils version?
+
+Thanks.
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--D1brhLvD4YeQktqi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZb2xDQAKCRD2uYlJVVFO
+ozfsAP0YC3oWz/9DAahVxbQos0fQ83zrcquhuNiJPVDlttv+uAD9GqJ+dL58q+DN
+RxbZcKMo/rxGfkbuL0mEEiyFgeJPUAM=
+=hAET
+-----END PGP SIGNATURE-----
+
+--D1brhLvD4YeQktqi--
 
