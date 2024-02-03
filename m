@@ -1,172 +1,201 @@
-Return-Path: <linux-kernel+bounces-50764-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50765-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D8B0847DAC
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:16:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E806B847DAF
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:17:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2817282767
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:16:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 25FDE1C22C43
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:17:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A43D7EC;
-	Sat,  3 Feb 2024 00:16:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 634187F4;
+	Sat,  3 Feb 2024 00:17:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YWDvwAaq"
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gkVh8rmg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB7C5636;
-	Sat,  3 Feb 2024 00:16:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DD8F62B;
+	Sat,  3 Feb 2024 00:17:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706919404; cv=none; b=mBazjiH5SZeeoP8QdAnhQmQ+WUA+yGmXUw7E2KZv4TvBecokI5BjBwM/u/dq8aWRrvb3QpAIdb1bHfhcs97SbKrrACeFu9UJvJ54ZzcNVmrF+o6AUabK513Rq4QdcQ0bcEG9vw/d+ZS7M7TlpK4OmSBsFn3CYa0l+4twpc4lYRo=
+	t=1706919426; cv=none; b=fM46A7gqqaij2pxDY1urIfERM9+EwSKSkkl7907H/2uvGtQaLB4EBo3ICoEg0DYrEd3w/0GauMaIlYVFc6kUukxsvkf/YgxWwkIOMHPlRUt9DAV8CFwnxSzGAjjsLDA+TzSecjiBpnwSTtpI0mTwWJItyjFGi9xU+VBJgWb7tK0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706919404; c=relaxed/simple;
-	bh=epzm4rKSoQDNoRiuIWpvjBk55Qy8kCJ5CzoSRUbMMws=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FcDbnq4boN3LvD1yI5gD+/Bmsncc/meIvvILezBBGNQ7i+QhvpHtJdU0r+PbZQX/5ir6vdFZEfbTKoZ7GOBVXs8afPOnusvtAZscMcyFBAV+UXS4OGmJJjfQKlIyZBTVfF5oEMq8CZNAUxCXt+Q9HpnHbXUW4CFKuo6Es8dvfhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YWDvwAaq; arc=none smtp.client-ip=209.85.222.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-783cd9ca29eso116801285a.1;
-        Fri, 02 Feb 2024 16:16:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706919401; x=1707524201; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=YE+GQEi4WgLdT6Ksz+vs2z8SJMiDC0kWDo1/vTv5WNc=;
-        b=YWDvwAaqWD0EcVaRjvS5Me4ikUVYEX42c+0D8hV9Qz/djz6l5SWsr7q9gw91zf4BCe
-         dc0uSddAhUFMEGI6Rzr7ZIcw8wemrkyVFDCmJx/xXueufdjMvOAa6YU4QV0y4GZ72NY2
-         6uygO3xt8iYEfXXwAFinf/PHgJj1GnvKnyby5wYDqULgK2/yIKMpBtKq6wiYOFVu+dA5
-         kAaugYDgrOagdwSG6fwcdsWmyMlAkPGw437n/dTE3w8o+RbbafY6IEgnCw+t5+6T93zc
-         NyhQCUIkD+m7O0IDEg0R7XjeVEXln2gfRhe9NTpVOev2G0K5w5NCggjGELPyY4MHkTeg
-         i/gQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706919401; x=1707524201;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YE+GQEi4WgLdT6Ksz+vs2z8SJMiDC0kWDo1/vTv5WNc=;
-        b=tKL3ZxEZzc8+T2qWrnAWi7mW84P1YdEeJBzRbcy45mbkIh0Ng47O0VBmDaj51s8lrQ
-         nnO8yFzJ3flwQTtSzeJ021n4iyFYHE2h3exfVbXwkgfiRJjiYR0wqcuDKgSLrUvWzsHt
-         qkmXBEURupA9dmYGyTWJ+Sd4DeiduMAXlM0YWqlPsuf4o1zxygiA1OnUmtZdg4MJvgHn
-         jfuXyYu7XPVl0hJY7MkrcoVnTomO86/yCsm3E+Wr4vzL4r5mqijT3IVQCFbJTzSu/1KV
-         +2i81eox0/IZW6NN73s+WrG6oU8ugPsYCcNyNgUeF3/7akN5UJL9muvQZxQAudWXJmtL
-         RU6Q==
-X-Gm-Message-State: AOJu0YxvSFGJmxgsIdsd05ahckvTE1rhBZl1WgpglgVSBnilR/1DtiyH
-	paqdWC+dimS3q+WsTJuN6ieFp0LEdP0eaeJ9ZUsPG2B4DZNroW6betoitTF+7wg=
-X-Google-Smtp-Source: AGHT+IEYgVRNZuQLJBlvxrjIwwkRNvRtBu/hLY6Ty1rwXqR6IjCnZxdYY0Tba4ughyz+cC16uF9wfw==
-X-Received: by 2002:a05:620a:1793:b0:785:5f4f:ac11 with SMTP id ay19-20020a05620a179300b007855f4fac11mr2061734qkb.48.1706919400696;
-        Fri, 02 Feb 2024 16:16:40 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU4XFUDz0mGvcqhN1/c30v6kTI5dCkzFfvoWe+as2YoEGZDpDQwT52NFR3S4/TIMEvyhrY8gEQmzBVABw5SJqSkAZo57ZWuJdtz7NZrwoUv53KXfJUYOFaRs8NdEKspoVVGQPkAEpm2MM0EggyMLgFArYWZed8=
-Received: from fionn.home ([174.88.88.13])
-        by smtp.gmail.com with ESMTPSA id vq25-20020a05620a559900b0078553970530sm967422qkn.89.2024.02.02.16.16.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 16:16:39 -0800 (PST)
-Sender: John Kacur <jkacur@gmail.com>
-From: John Kacur <jkacur@redhat.com>
-To: linux-trace-devel@vger.kernel.org,
-	lkml <linux-kernel@vger.kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Daniel Bristot de Oliveria <bristot@kernel.org>
-Cc: John Kacur <jkacur@redhat.com>
-Subject: [PATCH] rtla: osnoise: timerlat: exit with EXIT_SUCCESS when help is invoked
-Date: Fri,  2 Feb 2024 19:16:07 -0500
-Message-ID: <20240203001607.69703-1-jkacur@redhat.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706919426; c=relaxed/simple;
+	bh=nZQsPsqNPYYXxX4K2h4eMz+56hYUx5rcVPocfkID7bk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DNpJD0VQjahRg5JW1ulDntc0p5fLeJ0nDwJZCZTcKd+oxx0FY2zUmMx+Z1xktIkiUzAW/kgJUa+/nibPGiP2DTXVp5wFhDUhE+15VZrhhg/WpRE/LTW6sofebU54qaaiVU/2zgIh2WuRw8GTrQb40qZwzvln7AwRLsx6bUD2QUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gkVh8rmg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 871F1C433C7;
+	Sat,  3 Feb 2024 00:17:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706919426;
+	bh=nZQsPsqNPYYXxX4K2h4eMz+56hYUx5rcVPocfkID7bk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gkVh8rmg3XviEeH3EY8bNCfbVigkIJj9WT2Y5KnRTScNgFbnoBjbSnmABJOB8o0io
+	 mle8q4VPcWx5E4fVoDLFYjRvAdiCEJRkEWoAxi3c+t8YJ0GgPGX0blFma9D8oM+vMy
+	 +/WTnug5E9DkyMJWlO5gdxHhfudehvYjgPAX1bsuSjY9GnE0lMDk1NXw412a+Gri4Q
+	 kWZYV8TCESgMZkahnRzmA4QUPoLpe8C9oWKbwT+Z6U1f1Iyy+BRIi2lsk3xqut/Ea9
+	 Py6mRhFWBOW7bvDMCYT+/HRuh3J00fp8dhNhpGr4He7WW0gEl7LuJwSiP/tLNIScJu
+	 Mc1GnRfYytVPg==
+Date: Fri, 2 Feb 2024 17:17:03 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Baoquan He <bhe@redhat.com>
+Cc: kexec@lists.infradead.org, akpm@linux-foundation.org,
+	linux-kernel@vger.kernel.org, x86@kernel.org,
+	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+	linux-s390@vger.kernel.org, mhklinux@outlook.com
+Subject: Re: [PATCH linux-next 1/3] x86, crash: don't nest CONFIG_CRASH_DUMP
+ ifdef inside CONFIG_KEXEC_CODE ifdef scope
+Message-ID: <20240203001703.GA3735093@dev-arch.thelio-3990X>
+References: <20240129135033.157195-1-bhe@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240129135033.157195-1-bhe@redhat.com>
 
-Fix rtla so that the following commands exit with 0 when help is invoked
+This series resolves the build issues I was seeing. Please feel free to
+carry
 
-rtla osnoise top -h
-rtla osnoise hist -h
-rtla timerlat top -h
-rtla timerlat hist -h
+  Tested-by: Nathan Chancellor <nathan@kernel.org> # build
 
-Signed-off-by: John Kacur <jkacur@redhat.com>
----
- tools/tracing/rtla/src/osnoise_hist.c  | 6 +++++-
- tools/tracing/rtla/src/osnoise_top.c   | 6 +++++-
- tools/tracing/rtla/src/timerlat_hist.c | 6 +++++-
- tools/tracing/rtla/src/timerlat_top.c  | 6 +++++-
- 4 files changed, 20 insertions(+), 4 deletions(-)
+forward if there are any more revisions without drastic changes.
 
-diff --git a/tools/tracing/rtla/src/osnoise_hist.c b/tools/tracing/rtla/src/osnoise_hist.c
-index 8f81fa007364..839257e5925d 100644
---- a/tools/tracing/rtla/src/osnoise_hist.c
-+++ b/tools/tracing/rtla/src/osnoise_hist.c
-@@ -480,7 +480,11 @@ static void osnoise_hist_usage(char *usage)
- 
- 	for (i = 0; msg[i]; i++)
- 		fprintf(stderr, "%s\n", msg[i]);
--	exit(1);
-+
-+	if (usage)
-+		exit(EXIT_FAILURE);
-+
-+	exit(EXIT_SUCCESS);
- }
- 
- /*
-diff --git a/tools/tracing/rtla/src/osnoise_top.c b/tools/tracing/rtla/src/osnoise_top.c
-index f7c959be8677..457360db0767 100644
---- a/tools/tracing/rtla/src/osnoise_top.c
-+++ b/tools/tracing/rtla/src/osnoise_top.c
-@@ -331,7 +331,11 @@ static void osnoise_top_usage(struct osnoise_top_params *params, char *usage)
- 
- 	for (i = 0; msg[i]; i++)
- 		fprintf(stderr, "%s\n", msg[i]);
--	exit(1);
-+
-+	if (usage)
-+		exit(EXIT_FAILURE);
-+
-+	exit(EXIT_SUCCESS);
- }
- 
- /*
-diff --git a/tools/tracing/rtla/src/timerlat_hist.c b/tools/tracing/rtla/src/timerlat_hist.c
-index 47d3d8b53cb2..81c6160d1757 100644
---- a/tools/tracing/rtla/src/timerlat_hist.c
-+++ b/tools/tracing/rtla/src/timerlat_hist.c
-@@ -546,7 +546,11 @@ static void timerlat_hist_usage(char *usage)
- 
- 	for (i = 0; msg[i]; i++)
- 		fprintf(stderr, "%s\n", msg[i]);
--	exit(1);
-+
-+	if (usage)
-+		exit(EXIT_FAILURE);
-+
-+	exit(EXIT_SUCCESS);
- }
- 
- /*
-diff --git a/tools/tracing/rtla/src/timerlat_top.c b/tools/tracing/rtla/src/timerlat_top.c
-index 1640f121baca..3e9af2c38688 100644
---- a/tools/tracing/rtla/src/timerlat_top.c
-+++ b/tools/tracing/rtla/src/timerlat_top.c
-@@ -375,7 +375,11 @@ static void timerlat_top_usage(char *usage)
- 
- 	for (i = 0; msg[i]; i++)
- 		fprintf(stderr, "%s\n", msg[i]);
--	exit(1);
-+
-+	if (usage)
-+		exit(EXIT_FAILURE);
-+
-+	exit(EXIT_SUCCESS);
- }
- 
- /*
--- 
-2.43.0
-
+On Mon, Jan 29, 2024 at 09:50:31PM +0800, Baoquan He wrote:
+> Michael pointed out that the #ifdef CONFIG_CRASH_DUMP is nested inside
+> arch/x86/xen/enlighten_hvm.c.
+> 
+> Although the nesting works well too since CONFIG_CRASH_DUMP has
+> dependency on CONFIG_KEXEC_CORE, it may cause confuse because there
+> are places where it's not nested, and people may think it need be nested
+> even though it doesn't have to.
+> 
+> Fix that by moving  CONFIG_CRASH_DUMP ifdeffery of codes out of
+> CONFIG_KEXEC_CODE ifdeffery scope.
+> 
+> And also fix a building error Nathan reported as below by replacing
+> CONFIG_KEXEC_CORE ifdef with CONFIG_VMCORE_INFO ifdef.
+> 
+> ====
+> $ curl -LSso .config https://git.alpinelinux.org/aports/plain/community/linux-edge/config-edge.x86_64
+> $ make -skj"$(nproc)" ARCH=x86_64 CROSS_COMPILE=x86_64-linux- olddefconfig all
+> ...
+> x86_64-linux-ld: arch/x86/xen/mmu_pv.o: in function `paddr_vmcoreinfo_note':
+> mmu_pv.c:(.text+0x3af3): undefined reference to `vmcoreinfo_note'
+> ====
+> 
+> Link: https://lore.kernel.org/all/SN6PR02MB4157931105FA68D72E3D3DB8D47B2@SN6PR02MB4157.namprd02.prod.outlook.com/T/#u
+> Link: https://lore.kernel.org/all/20240126045551.GA126645@dev-arch.thelio-3990X/T/#u
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+> ---
+>  arch/x86/kernel/cpu/mshyperv.c | 10 ++++++----
+>  arch/x86/kernel/reboot.c       |  2 +-
+>  arch/x86/xen/enlighten_hvm.c   |  4 ++--
+>  arch/x86/xen/mmu_pv.c          |  2 +-
+>  4 files changed, 10 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
+> index f8163a59026b..2e8cd5a4ae85 100644
+> --- a/arch/x86/kernel/cpu/mshyperv.c
+> +++ b/arch/x86/kernel/cpu/mshyperv.c
+> @@ -209,6 +209,7 @@ static void hv_machine_shutdown(void)
+>  	if (kexec_in_progress)
+>  		hyperv_cleanup();
+>  }
+> +#endif /* CONFIG_KEXEC_CORE */
+>  
+>  #ifdef CONFIG_CRASH_DUMP
+>  static void hv_machine_crash_shutdown(struct pt_regs *regs)
+> @@ -222,8 +223,7 @@ static void hv_machine_crash_shutdown(struct pt_regs *regs)
+>  	/* Disable the hypercall page when there is only 1 active CPU. */
+>  	hyperv_cleanup();
+>  }
+> -#endif
+> -#endif /* CONFIG_KEXEC_CORE */
+> +#endif /* CONFIG_CRASH_DUMP */
+>  #endif /* CONFIG_HYPERV */
+>  
+>  static uint32_t  __init ms_hyperv_platform(void)
+> @@ -497,9 +497,11 @@ static void __init ms_hyperv_init_platform(void)
+>  	no_timer_check = 1;
+>  #endif
+>  
+> -#if IS_ENABLED(CONFIG_HYPERV) && defined(CONFIG_KEXEC_CORE)
+> +#if IS_ENABLED(CONFIG_HYPERV)
+> +#if defined(CONFIG_KEXEC_CORE)
+>  	machine_ops.shutdown = hv_machine_shutdown;
+> -#ifdef CONFIG_CRASH_DUMP
+> +#endif
+> +#if defined(CONFIG_CRASH_DUMP)
+>  	machine_ops.crash_shutdown = hv_machine_crash_shutdown;
+>  #endif
+>  #endif
+> diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
+> index 1287b0d5962f..f3130f762784 100644
+> --- a/arch/x86/kernel/reboot.c
+> +++ b/arch/x86/kernel/reboot.c
+> @@ -826,7 +826,7 @@ void machine_halt(void)
+>  	machine_ops.halt();
+>  }
+>  
+> -#ifdef CONFIG_KEXEC_CORE
+> +#ifdef CONFIG_CRASH_DUMP
+>  void machine_crash_shutdown(struct pt_regs *regs)
+>  {
+>  	machine_ops.crash_shutdown(regs);
+> diff --git a/arch/x86/xen/enlighten_hvm.c b/arch/x86/xen/enlighten_hvm.c
+> index 09e3db7ff990..0b367c1e086d 100644
+> --- a/arch/x86/xen/enlighten_hvm.c
+> +++ b/arch/x86/xen/enlighten_hvm.c
+> @@ -148,6 +148,7 @@ static void xen_hvm_shutdown(void)
+>  	if (kexec_in_progress)
+>  		xen_reboot(SHUTDOWN_soft_reset);
+>  }
+> +#endif
+>  
+>  #ifdef CONFIG_CRASH_DUMP
+>  static void xen_hvm_crash_shutdown(struct pt_regs *regs)
+> @@ -156,7 +157,6 @@ static void xen_hvm_crash_shutdown(struct pt_regs *regs)
+>  	xen_reboot(SHUTDOWN_soft_reset);
+>  }
+>  #endif
+> -#endif
+>  
+>  static int xen_cpu_up_prepare_hvm(unsigned int cpu)
+>  {
+> @@ -238,10 +238,10 @@ static void __init xen_hvm_guest_init(void)
+>  
+>  #ifdef CONFIG_KEXEC_CORE
+>  	machine_ops.shutdown = xen_hvm_shutdown;
+> +#endif
+>  #ifdef CONFIG_CRASH_DUMP
+>  	machine_ops.crash_shutdown = xen_hvm_crash_shutdown;
+>  #endif
+> -#endif
+>  }
+>  
+>  static __init int xen_parse_nopv(char *arg)
+> diff --git a/arch/x86/xen/mmu_pv.c b/arch/x86/xen/mmu_pv.c
+> index 218773cfb009..e21974f2cf2d 100644
+> --- a/arch/x86/xen/mmu_pv.c
+> +++ b/arch/x86/xen/mmu_pv.c
+> @@ -2520,7 +2520,7 @@ int xen_remap_pfn(struct vm_area_struct *vma, unsigned long addr,
+>  }
+>  EXPORT_SYMBOL_GPL(xen_remap_pfn);
+>  
+> -#ifdef CONFIG_KEXEC_CORE
+> +#ifdef CONFIG_VMCORE_INFO
+>  phys_addr_t paddr_vmcoreinfo_note(void)
+>  {
+>  	if (xen_pv_domain())
+> -- 
+> 2.41.0
+> 
 
