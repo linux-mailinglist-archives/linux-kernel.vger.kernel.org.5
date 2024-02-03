@@ -1,57 +1,44 @@
-Return-Path: <linux-kernel+bounces-51235-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2448E84882B
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 19:18:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2233B84882C
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 19:21:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C30EB2521F
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 18:18:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEE781C22561
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 18:21:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C4335FBAE;
-	Sat,  3 Feb 2024 18:18:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="y3ZNKGcF"
-Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68CC85FB8D;
-	Sat,  3 Feb 2024 18:18:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B00835FBA0;
+	Sat,  3 Feb 2024 18:21:10 +0000 (UTC)
+Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A6A95FDC4
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 18:20:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.10.14.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706984307; cv=none; b=oIkYgNwWXzhBcjzyMQHu3pX3ZC0z6qOWEKDm+6yfqqthyBQA2ByH/BIxuy6t05WOWjHQn4DlXvy0DWY0M/SknHvXGKIMFKpzy8K9XpFWU0S29njGlh0x/8ST61grZ0WeiabPJUXrioJgrJMngaFFTh5YRHDTklxCoPYlMjgB7y4=
+	t=1706984470; cv=none; b=WFdOUyn3zeqdx4CO01zTt9TJ3nxNTL+nlzZE/Yv5JMzTF5H4pP6DursC18JOV+KDOnnJ7mifpx7DPPQihqk7xg7/Kq/s1BQ7WuROJcyGwshnUq6jvPNHU8VLNyHrORA1VtT898CFF8g1m9/CEoyCCtHCIxLVz8yiEUrUhZWVzXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706984307; c=relaxed/simple;
-	bh=v18Uq25xFd0lAYlqmeeW1rPPUfvDN/gZuKrB7cBLNgk=;
+	s=arc-20240116; t=1706984470; c=relaxed/simple;
+	bh=qA865xa4elxfqR0ETOEGZ8wiHt8e6J9WOySJVfXBmz0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J1lXNUUiL4aBXovL0VKGeNnz6qBWk57l8p4euQSWSq4Qlhg4Nu1MyfcVtParGCXDGcZgx9yj1hLL21djHbhjdmW1NDgg/XBrU8yAwuzfAolwFB0LCGIm2n6oQ4oLQWP7sMk6XZVieeNmbWTfL+tQxCE/krPQT+CTjFwTce4bpok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=y3ZNKGcF; arc=none smtp.client-ip=195.181.215.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-	t=1706984294; bh=v18Uq25xFd0lAYlqmeeW1rPPUfvDN/gZuKrB7cBLNgk=;
-	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
-	b=y3ZNKGcFub4QSs9xq0iVNFE7+KJSaXXYyWbxvggkDoGYxo6ADvmOOyh3q97eGngaY
-	 7NqT787d2NhDpOozFjmHwAAiNLLNbVsbNOK/8+dYHxKsKZ8if65gNuI2FO5qbw8JSd
-	 8NRQYdjVNQAUC89HwrkKZJAbGcCaiysmIsGTVWWE=
-Date: Sat, 3 Feb 2024 19:18:13 +0100
-From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
-To: Pavel Machek <pavel@ucw.cz>
-Cc: phone-devel@vger.kernel.org, 
-	kernel list <linux-kernel@vger.kernel.org>, fiona.klute@gmx.de, martijn@brixit.nl, samuel@sholland.org, 
-	heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH] usb: typec: anx7688: Add driver for ANX7688 USB-C HDMI
- bridge
-Message-ID: <iikhv7e2z3pk7nr6bvtuepwyrmukym5fjtc2xspsmhxzz5jlwe@5vfs4i3w66kc>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
-	Pavel Machek <pavel@ucw.cz>, phone-devel@vger.kernel.org, 
-	kernel list <linux-kernel@vger.kernel.org>, fiona.klute@gmx.de, martijn@brixit.nl, samuel@sholland.org, 
-	heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
-References: <Zbt1dIByBZ2stzjm@mobian>
+	 Content-Type:Content-Disposition:In-Reply-To; b=kZxGxEE5xTuynBiWF0CFzuDqWT0y8DXXgcgSlSSLGBrJ4vwqwYvx/FgNWCQ3lxCcgdsnFZS75DcC9tIWQWFnkQ4m8q3LRkNnH0W9wLgQ16i5sMu+QJehZZefFlxOXZPD+n/3SBLdbZkKFkfQJPkQY4XLZ6mSmTcHR0D9R/LbahM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de; spf=pass smtp.mailfrom=c--e.de; arc=none smtp.client-ip=217.10.14.231
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c--e.de
+Received: by cae.in-ulm.de (Postfix, from userid 1000)
+	id 8144C140116; Sat,  3 Feb 2024 19:20:47 +0100 (CET)
+Date: Sat, 3 Feb 2024 19:20:47 +0100
+From: "Christian A. Ehrhardt" <lk@c--e.de>
+To: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Cc: Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+	linux-netdev@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: This is the fourth time =?utf-8?Q?I?=
+ =?utf-8?Q?=E2=80=99ve_tried_to_find_what_led_to_the_regression_of_outgoin?=
+ =?utf-8?Q?g_network_speed_and_each_time_I_fin?= =?utf-8?Q?d?= the merge
+ commit 8c94ccc7cd691472461448f98e2372c75849406c
+Message-ID: <Zb6D/5R8nNrxveAP@cae.in-ulm.de>
+References: <CABXGCsNnUfCCYVSb_-j-a-cAdONu1r6Fe8p2OtQ5op_wskOfpw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,85 +47,88 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zbt1dIByBZ2stzjm@mobian>
+In-Reply-To: <CABXGCsNnUfCCYVSb_-j-a-cAdONu1r6Fe8p2OtQ5op_wskOfpw@mail.gmail.com>
 
-Hi Pavel,
-
-On Thu, Feb 01, 2024 at 11:41:56AM +0100, Pavel Machek wrote:
-> From: Ondrej Jirman <megi@xff.cz>
+On Sat, Feb 03, 2024 at 06:02:15AM +0500, Mikhail Gavrilov wrote:
+> Hi,
+> I'm trying to find the first bad commit that led to a decreased
+> network outgoing speed.
+> And every time I come to a huge merge [Merge tag 'usb-6.8-rc1' of
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb]
+> I have already triple-checked all my answers and speed measurements.
+> I don't understand where I'm making a mistake.
 > 
-> This is driver for ANX7688 USB-C HDMI, with flashing and debugging
-> features removed. ANX7688 is rather criticial piece on PinePhone,
-> there's no display and no battery charging without it.
-
-Don't remove the flashing part. Some Pinephones come without the firmware
-in the past. Even recently, I've seen some people in the Pine chat
-asking how to flash the firmware on some old PinePhone.
-
-It's a safe operation that can be done at any time and can only be done
-from the kernel driver.
-
-> There's likely more work to be done here, but having basic support
-> in mainline is needed to be able to work on the other stuff
-> (networking, cameras, power management).
+> Let's try to figure it out together.
 > 
-> Signed-off-by: Ondrej Jirman <megi@xff.cz>
-
-I should be second in order of sign-offs. Martijn wrote a non-working skeleton
-https://megous.com/git/linux/commit/?h=pp-5.7&id=30e33cefd7956a2b49fb27008b4af9d868974e58
-driver. Then I picked it up and developed it over years to a working thing.
-Almost none of the skeleton remains.
-
-License is GPLv2.
-
-> Signed-off-by: Martijn Braam <martijn@brixit.nl>
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> Signed-off-by: Pavel Machek <pavel@ucw.cz>
+> Input data:
+> Two computers connected 1Gbps link.
+> Both have the same hardware.
+> Network: RTL8125 2.5GbE Controller (rev 05)
 > 
-> [...]
->
-> +static int anx7688_i2c_probe(struct i2c_client *client)
-> +{
-> +        struct anx7688 *anx7688;
-> +        struct device *dev = &client->dev;
-> +        struct typec_capability typec_cap = { };
-> +        int i, vid_h, vid_l;
-> +        int irq_cabledet;
-> +        int ret = 0;
-> +
-> +        anx7688 = devm_kzalloc(dev, sizeof(*anx7688), GFP_KERNEL);
-> +        if (!anx7688)
-> +                return -ENOMEM;
-> +
-> +        i2c_set_clientdata(client, anx7688);
-> +        anx7688->client = client;
-> +        anx7688->dev = &client->dev;
-> +        mutex_init(&anx7688->lock);
-> +        INIT_DELAYED_WORK(&anx7688->work, anx7688_work);
-> +	anx7688->last_extcon_state = -1;
-> +
-> +	ret = of_property_read_variable_u32_array(dev->of_node, "source-caps",
-> +						  anx7688->src_caps,
-> +						  1, ARRAY_SIZE(anx7688->src_caps));
-> +	if (ret < 0) {
-> +		dev_err(dev, "failed to get source-caps from DT\n");
-> +		return ret;
-> +	}
-> +	anx7688->n_src_caps = ret;
-> +
-> +	ret = of_property_read_variable_u32_array(dev->of_node, "sink-caps",
-> +						  anx7688->snk_caps,
-> +						  1, ARRAY_SIZE(anx7688->snk_caps));
-> +	if (ret < 0) {
-> +		dev_err(dev, "failed to get sink-caps from DT\n");
-> +		return ret;
-> +	}
+> When I copy files from one computer to another and kernel snapshot
+> builded from commit 296455ade1fd I have 97-110MB/sec which is almost
+> max speed of 1Gbps link.
+> When I move to commit 9d1694dc91ce I have only 66-70MB/sec which is
+> significantly slower.
+> 
+> I bisected the issue by measuring network speed on each step.
+> I save all results to file [1]
+> 
+> [1] file is attached as a zip archive.
+> 
+> # first bad commit: [8c94ccc7cd691472461448f98e2372c75849406c] Merge
+> tag 'usb-6.8-rc1' of
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb
 
-^^^ The driver will need to follow usb-c-connector bindings and it will need
-a bindings documentation for itself.
+So (simplified) the change history looks something like this:
 
-That's one of the missing things that I did not implement, yet.
+   branch point  296455ade1fd (good)     9d1694dc91ce (merge, bad)
+       |             |                         |
+ ----- * ----------- * ----------------------- * --------------  <- master
+        \                                     /
+	  ----------- * ---------------------   <- development branch
+	              |
+		  Bug introduced here
 
-Kind regards,
-	o.
+The straight line is Linus' master branch. At some point in the
+past a development branch was forked from Linus's branch (the
+lower line). During that development the regression was introduced
+and when the branch was merged back the master branch started to
+have the regression.
+
+To further pin point the bug in the development branch you'll have to
+bisect along the lower line.
+
+So how do you do this:
+
+Look at the merge:
+$ git cat-file -p 9d1694dc91ce | head -n3
+tree d9093aecb9261cccaea1f0a58887fcd9db542172
+parent e9a5a78d1ad8ceb4e3df6d6ad93360094c84ac40
+parent b2e792ae883a0aa976d4176dfa7dc933263440ea
+
+So the merge commit has two parent commits, one is on the master
+branch, the other is on the development branch. To find out which
+of the parents is on the development branch you can ask git to find
+the common ancestor of the two parent commits and your good commit
+on the master branch:
+
+$ git merge-base 296455ade1fd e9a5a78d1ad8ceb4e3df6d6ad93360094c84ac40
+296455ade1fdcf5f8f8c033201633b60946c589a
+$ git merge-base 296455ade1fd b2e792ae883a0aa976d4176dfa7dc933263440ea
+587371ed783b046f22ba7a5e1cc9a19ae35123b4
+
+So the second parent is not on the master branch and the merge base
+(i.e. the point where the development branch was forked from the master
+branch) is 587371ed783b046f22ba7a5e1cc9a19ae35123b4.
+
+So I'd assume that 587371ed783b046f22ba7a5e1cc9a19ae35123b4 is a good
+commit and b2e792ae883a0aa976d4176dfa7dc933263440ea is a bad commit.
+You can verify this and then start bisecting like this for better
+results:
+$ git bisect good 587371ed783b046f22ba7a5e1cc9a19ae35123b4
+$ git bisect bad b2e792ae883a0aa976d4176dfa7dc933263440ea
+
+      regards   Christian
+
 
