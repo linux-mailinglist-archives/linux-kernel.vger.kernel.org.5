@@ -1,72 +1,78 @@
-Return-Path: <linux-kernel+bounces-51277-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51278-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2271784889D
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 20:51:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A85A8488A0
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 20:55:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3305285585
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 19:51:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 997781C22051
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 19:55:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 065C85CDD3;
-	Sat,  3 Feb 2024 19:51:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86F675FBBC;
+	Sat,  3 Feb 2024 19:55:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HS+gxaJb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c2riJEf6"
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36E395D757;
-	Sat,  3 Feb 2024 19:51:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C5175EE68
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 19:55:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706989888; cv=none; b=KUbkux2MqyDkhSCkdpnV8RNYUw2+abD2Kl9S/HlUv3woTk2jUKhDz44ubvYZ7/vaQH+iVFeinulEzmofsT/YpZT7Wo7V7Kz8k2A7xhS+o5KgRdemYUm6VBmJfdR9+BLMgIgoUUlr7HFfxV6j73HZ8cLHK7JvnwpYywAWxpqXABg=
+	t=1706990135; cv=none; b=KBpmu7fFrhZuKEtE0QSHjHrtjLL2lYuTIlvLjZAWSFqqdut84hh5zf9HXMTJ6+T0zUWgtRzpkDB6KdmKSCicRdS67mLrCTqEj+hs8BSPwLrG3k054D8Keyn5/8eVfSoiUdInnIkPPRexntz5en8MXqFfFKq1htUtN0CQgBiQylw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706989888; c=relaxed/simple;
-	bh=CkL6qC5JZ5yo4X5o1O2oLxpExi8WJptCktnHcAcwneA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JFEaJDFrYF/5oiDYEjwYcWpKDqBFwO/m0v6DKzTsmoU5IzuHPDmmguCnRt+0YdOInJKDQd3Zqfv5e2KLy6eokWO5ADVJaVf22u1yhpmbGUFGaLrr/fO5fU3XZ6hz+eLcPJOirp9KvCyfMl56G4mxh36dZmB1YNcB1LdeeVguzYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HS+gxaJb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6ED9EC433F1;
-	Sat,  3 Feb 2024 19:51:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706989887;
-	bh=CkL6qC5JZ5yo4X5o1O2oLxpExi8WJptCktnHcAcwneA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HS+gxaJb3fXG+6PzyPsTfca3u1HdfzhfyeXRl/1/oS8GF6HSXnsoTX2il4Yj28Ic0
-	 NuaQl2BY8MJeXUKcWmgqYwTIMtP/5Gr1y6JisU2o8oJolf/ZIy9xNpEfebLUZQXv0M
-	 hM45M48wP1Rf+YFDj94mvDo3k06tCac/+VpLrvpzQs+Uysv2gg/BDkzdFWTEfa+CeE
-	 pdzkAALVZ+JrByVg5cyKgbs6MA40e4Z4CvDC9GkHCZ3ZNdTh++J45zco84wSs3Kh5m
-	 nv+AqMLjzZ/YGU3n1zNW5X69k/KlSo8LRBnSghJEqJYCINJXyUeU0l849L708A6UmU
-	 NMKxdvIx5rrSA==
-From: SeongJae Park <sj@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org,
-	patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org,
-	akpm@linux-foundation.org,
-	linux@roeck-us.net,
-	shuah@kernel.org,
-	patches@kernelci.org,
-	lkft-triage@lists.linaro.org,
-	pavel@denx.de,
-	jonathanh@nvidia.com,
-	f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net,
-	rwarsow@gmx.de,
-	conor@kernel.org,
-	allen.lkml@gmail.com,
-	damon@lists.linux.dev,
-	SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 6.6 000/326] 6.6.16-rc2 review
-Date: Sat,  3 Feb 2024 11:51:24 -0800
-Message-Id: <20240203195125.56639-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240203174810.768708706@linuxfoundation.org>
-References: 
+	s=arc-20240116; t=1706990135; c=relaxed/simple;
+	bh=XHvMjT6sPY3NTHcPmQA0vryOKP2XSLE2suiccvQg9wE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dMnELhQSBusDjBIBjUhRWt1CVQFvvgmX+uRjiMY2lDzWyrUORk28ak7aoOI6dFTu6V2DU5jmE4JGezq32L46eTBjbabOh1ZALJiLKTpZwLpbLQvvEQeq5DYZWjilMosxrhGhmRCE7CW4B5VxAYI+7mCz9RpmyiJSRKlMsdzsseA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c2riJEf6; arc=none smtp.client-ip=209.85.166.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-363ac28b375so6914985ab.3
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Feb 2024 11:55:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706990133; x=1707594933; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5sFMyFsZOm+ODvmdcqDqnNfPw5aI2/9OocYowkg3fU0=;
+        b=c2riJEf6QjNoijW1vRM9Yt26vAW+HgF4ArLkZYCy1+wjd9OwaG9LUimDQrHur4g7Hf
+         TRseILoABM2MzrXDdw6m/hdIr4j8a7OyDBUPfsMr/gZV1+RS4Kb01073LqQqYZgzQCr2
+         zJXJdJOWPi4VW5LX+RIoO24yScqICZbWJwbxviFBGworFoyGCoUglJ5wGWxcIbomJ080
+         +/lEz67ZgGhJMFW5PeyFAMW/yAKin2Oy1hUra27joQhcoa3egjyvwJGiXswye/7Kqu20
+         mJanlVD+/kJ2x6fwGlYmj5GfaV1WHxDSpVrTglnIKEkL0cifr2pPh7UfF8H/eh8X/Fsl
+         4lkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706990133; x=1707594933;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5sFMyFsZOm+ODvmdcqDqnNfPw5aI2/9OocYowkg3fU0=;
+        b=q0ZsjHYqaZZqnZSX9Rec1uTLgkiFPHQHLKe/ACJbaxYvrjQvF2YeVMVTgJ4zhhh53k
+         tACzI/yqXi4WgsS5gep+cTt2htn+lQ3yU9D5or8SoYPpVkNMKmrc9Mz+9qtTW/yzYh4N
+         CucAqKh7BViF+NgQFEY362tagQt1ENR8sonPliHi8x0kluqQoyM/4LyZNx6RJufNFUrZ
+         djHmLMJ35DrJ1tKF1DJxvhVkd0EPWXHHE6YHbruuMHGFeThP9jcIcIzXxEEX4F0J8cY+
+         Q+IV19UvrGMZ3YyhrZhnbYjSrOUDpxYZ5bYMeFlUS+PUgm+GRMyHDeWfXL6hdzhhsYp/
+         LVmA==
+X-Gm-Message-State: AOJu0YyY5VA3GhewvaNMq7oo7aiCLbLt63EAhfcdS9XdGbTKzj0lxoyt
+	JIRBzxv5I0hTEj+0LliONA0C3agdvfLzD3kjS+YhX3eBjljq4hKQ5LPU4us0
+X-Google-Smtp-Source: AGHT+IHgq787YPrXHrxEioTIvUhvOtvNHW6DOlhc1o3/JBeM8b14WbicmZP2JqoqHUq46JjuLrEvBg==
+X-Received: by 2002:a92:c5ce:0:b0:363:6da9:2bc3 with SMTP id s14-20020a92c5ce000000b003636da92bc3mr5533234ilt.11.1706990133082;
+        Sat, 03 Feb 2024 11:55:33 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUePlp0ivLh07xjFatzJ1LeDHvlhZT9okl13oJu65ThfD8E/kAteSIci0SbqkLhSkRdIZz8hKhA88m4d68OcuLcQzfmqX6er1SjlppO5xgEUvHjiy72K4IwJ8sQqROY
+Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
+        by smtp.googlemail.com with ESMTPSA id bd1-20020a056e02300100b003639075ae9asm1417232ilb.63.2024.02.03.11.55.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Feb 2024 11:55:32 -0800 (PST)
+From: Jim Cromie <jim.cromie@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	akpm@linuxfoundation.org
+Cc: joe@perches.com,
+	Jim Cromie <jim.cromie@gmail.com>
+Subject: [PATCH 0/2] checkpatch: relax >75 warning, adjust report format
+Date: Sat,  3 Feb 2024 12:55:25 -0700
+Message-ID: <20240203195527.212505-1-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,66 +81,64 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hello,
+1. current checkpatch warns: "Prefer a maximum 75 chars per line"
+on [1]:
 
-On Sat,  3 Feb 2024 09:52:59 -0800 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+[1] https://lore.kernel.org/lkml/20200825153338.17061-1-vincent.whitchurch@axis.com
 
-> This is the start of the stable review cycle for the 6.6.16 release.
-> There are 326 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Mon, 05 Feb 2024 17:47:20 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.16-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
+That is overly strict.  Instead allow long non-whitespace strings
+(\S+) to exceed 75 chars, after tolerating \s in 1st 10 chars.
 
-This rc kernel passes DAMON functionality test[1] on my test machine.
-Attaching the test results summary below.  Please note that I retrieved the
-kernel from linux-stable-rc tree[2].
+This is more permissive than the current Fixes/link detector (which I
+preserved), IMHO checkpatch shouldn't be that fussy; it doesn't verify
+URLs either.
 
-Tested-by: SeongJae Park <sj@kernel.org>
+2. adjust report format for nicer pararaphs.
 
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] 8e1719211b07 ("Linux 6.6.16-rc2")
+Current checkpatch format uses -------------- lines to segment the
+many per-patch reports, but then inserts a blank line just above the
+last per-patch report line, breaking the paragraph nature of that
+report.
 
-Thanks,
-SJ
+Move the blank line down, which places it just above the -------- line
+starting the next per-patch report.  Also wrap the per-patch summary
+line, so its columnar position is independent of the patch-name (and
+its length), and so your terminal window doesn't have to wrap the
+line.  This makes the report easier to visually scroll/scan, since the
+status is always in the same column.
 
-[...]
+IOW, from this:
 
----
+0001-checkpatch-report last line, looks part of 0002
+--------------------------------------------------------------
+0002-checkpatch-minor-whitespace-changes-for-readability.patch
+--------------------------------------------------------------
+total: 0 errors, 0 warnings, 15 lines checked
 
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 2 selftests: damon: debugfs_schemes.sh
-ok 3 selftests: damon: debugfs_target_ids.sh
-ok 4 selftests: damon: debugfs_empty_targets.sh
-ok 5 selftests: damon: debugfs_huge_count_read_write.sh
-ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
-ok 7 selftests: damon: debugfs_rm_non_contexts.sh
-ok 8 selftests: damon: sysfs.sh
-ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
-ok 10 selftests: damon: reclaim.sh
-ok 11 selftests: damon: lru_sort.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_arm64.sh
-ok 12 selftests: damon-tests: build_m68k.sh
-ok 13 selftests: damon-tests: build_i386_idle_flag.sh
-ok 14 selftests: damon-tests: build_i386_highpte.sh
-ok 15 selftests: damon-tests: build_nomemcg.sh
- [33m
- [92mPASS [39m
+0002-checkpatch-minor-whitespace-changes-for-readability.patch has ....
+-------------------------------------------------
+next-patch ...
+
+To this:
+
+--------------------------------------------------------------
+0002-checkpatch-minor-whitespace-changes-for-readability.patch
+--------------------------------------------------------------
+total: 0 errors, 0 warnings, 15 lines checked
+0002-checkpatch-minor-whitespace-changes-for-readability.patch 
+ has no obvious style problems and is ready for submission.
+
+-------------------------------------------------
+next-patch ...
+
+Jim Cromie (2):
+  checkpatch: tolerate long lines w/o spaces
+  checkpatch: minor whitespace changes for readability
+
+ scripts/checkpatch.pl | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+-- 
+2.43.0
+
 
