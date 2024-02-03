@@ -1,184 +1,198 @@
-Return-Path: <linux-kernel+bounces-50790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53F8B847DE8
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:36:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 795E7847DEC
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:39:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8E81B22876
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:36:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DE2D1C21DA9
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:39:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA9F51877;
-	Sat,  3 Feb 2024 00:35:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAB7710F9;
+	Sat,  3 Feb 2024 00:39:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="K1VW26R3";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="aH+rG5FA";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="GdPDP94m";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="5cM1fJFk"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Srn9fory"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23AC2110B;
-	Sat,  3 Feb 2024 00:35:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2C21626;
+	Sat,  3 Feb 2024 00:39:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706920553; cv=none; b=iHDazWz7+aC5qpE22Gg+OOAS9W7JzGnMy2ZvbMTip3kUxVXMcqnicOzv/ChAcQAEHSnZXC0a1U4Kh7UX6Y17BM/oZgTI10LOXWFhLF95jJUPpo1uYb1LJHwvJfqgpXHmzu6cmXC52L8LoQBXela8YRw1o4w5jK+QX1xrCeXxiuI=
+	t=1706920753; cv=none; b=f9qoLdSVEmSM/6wZKAirQZwy913MnaoaSMpfS7mI4D+f993gwlytnVmoZqfiM+Q7Q9kc2BJ5v01rY1+VEv1eWTaTICVxomaLqPXxp4agrJch0pWF3OGSnucyWLiB4p/ai0coZvDgivwcbS/GDcAXWjwmVuzomoNx9P8mw0wjEl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706920553; c=relaxed/simple;
-	bh=o3f8WBHFtsQSTs4pXd9D36LO7t0naP/Qwbn3G+gDoig=;
-	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
-	 References:Date:Message-id; b=kLRSyHcxuRe1nRTEfy5RCGKO9eWWBf741ArQywgSJza8yjUjVsMNfHNw6kbBtsaCXLle9uPmhTgsFLa2M2IWUQ+RqokJrtTgwdcq4XsVhFs6DXqh0kuJZ7xs/2OkQL+K3PJBdfRoQ1RViYkdjlmB10nUWgzWh7Vn6rT4+eRb0iI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=K1VW26R3; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=aH+rG5FA; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=GdPDP94m; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=5cM1fJFk; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 3E8EC1FD3F;
-	Sat,  3 Feb 2024 00:35:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1706920549; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3sybcZS63K+eW38EtNX7+G+dxH5WoMhRzCbG90F954k=;
-	b=K1VW26R3Juv1LGEMyV049BTxT7iEe0SErCjB4ROiHsFstp/iAI5UIUEAWIDqPCPMm6kOWi
-	19xPNJ6R9lAUdNxl9ilZdqfF4g9B0ng/EFm08JBNyws5WkhdUZsgeXpaburIiDd8qF3dLv
-	9AK9on1KT5jyDYHaDPHYIB0sDe3seGE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1706920549;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3sybcZS63K+eW38EtNX7+G+dxH5WoMhRzCbG90F954k=;
-	b=aH+rG5FAwNbmY00TerGQotgdu6Qlc2eC/TwxJorSSLfOKptDN+7RWqpX7KzsgaD7ACC8Jc
-	yDeagzxOOhjcTcAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1706920547; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3sybcZS63K+eW38EtNX7+G+dxH5WoMhRzCbG90F954k=;
-	b=GdPDP94mcxDh8841dBdZb7vr9WN3FkHX14QMyl+WyjCpKcVuocrkGWrr8g5ooPn5zdiA+h
-	RKet6c00gGJnthTuW8qUmOD91kmaw8GWqAm10wKw+bwmATFgnWcUXYknBBZg/TBmFyxvGJ
-	Ll+tZiBoVjv94FoUIm8uaeQs7ZVLp54=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1706920547;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3sybcZS63K+eW38EtNX7+G+dxH5WoMhRzCbG90F954k=;
-	b=5cM1fJFkS56O934lIPlsUkOfB3DYYQPsQpK0urRl4VsLKr5jhPz/t7LlRHANI264p+ez34
-	+erx3VkCi2CO8BAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4A21213A58;
-	Sat,  3 Feb 2024 00:35:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id G2utAGCKvWUdKwAAD6G6ig
-	(envelope-from <neilb@suse.de>); Sat, 03 Feb 2024 00:35:44 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1706920753; c=relaxed/simple;
+	bh=CDhdZtJRM4I5jnsGxAP6SnwAa6RKbZAw/Fvw+maWkNY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oZsMv/R99ejzo0C5FY3Ae0ct65PuS0zTUmVNfO69njqvum8FZB48090rtiYo+plCuxQbSlJ5dWw+PHRGAUK30e6kNg6ZnnhI72n4nXuIh1zLxgEtEiIB56/P3pyPVd6WYJFAKbnvaBgOsUcsepz+x9RGnn0LY8n/xt4qqvKS3wI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Srn9fory; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6031BC433C7;
+	Sat,  3 Feb 2024 00:39:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706920753;
+	bh=CDhdZtJRM4I5jnsGxAP6SnwAa6RKbZAw/Fvw+maWkNY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Srn9foryvIJS0xs4P8A+nbDK/UMUPIPdIrEvrTmEmvXmJGrCd4aROuFdXJG0C9EWi
+	 W7X2HidnRAH5brgcd/78Y7FReHPk2xqwF6bsm8yQ0CW8JEkIjn1K5c3uxgrgPiovmS
+	 H+If+q12AMFYoxWPEaC5/pmN3bWRCeGpQn2PAFeuJX8kJyD7fYNqrxlnwWnDHotdbr
+	 pS3GlimcfeApUKGAZeSCq7m+sRLk5PzlKBpTmd57B4xi7KKSqpayq4JcQG9FWORJEf
+	 qsv4UC4Js35rhLdxVUM6y0GvVHsP/PERKPxyLTL51zMmPCyb5FPxt6aJprlpYzWDAy
+	 Uf1XThzoYDL5Q==
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d08d9b9667so2258931fa.1;
+        Fri, 02 Feb 2024 16:39:13 -0800 (PST)
+X-Gm-Message-State: AOJu0Yx4RjFYu4qjnpNBMGyK61WxGJqXhj1YB6chRa6DhIVd+y3utOMa
+	hUVT9w5g3dpFjHctG6QMidwAsHaR9X9VY6Gnns1IkzmtrXmg1AE3Hh7s+TRxMx0A5m1KdDyO8lx
+	bcIsC1pCUHdQIajDJd5P4ACGkbIs=
+X-Google-Smtp-Source: AGHT+IHa4ZO2VYWT1mFTKA5zcN1ID/fl9uj+ci0IbUmuSvFG2RP3o0Caq0GTCM9Bplwg/QtZJRfRCtjULrwGAZocaX8=
+X-Received: by 2002:a05:6512:313b:b0:511:4643:d913 with SMTP id
+ p27-20020a056512313b00b005114643d913mr20056lfd.6.1706920751563; Fri, 02 Feb
+ 2024 16:39:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "NeilBrown" <neilb@suse.de>
-To: "Benjamin Coddington" <bcodding@redhat.com>
-Cc: "Kunwu Chan" <chentao@kylinos.cn>, chuck.lever@oracle.com,
- jlayton@kernel.org, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
- linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nfsd: Simplify the allocation of slab caches in
- nfsd_drc_slab_create
-In-reply-to: <94F7DA15-6D4C-4205-9A23-E4593A4A2312@redhat.com>
-References: <20240201081935.200031-1-chentao@kylinos.cn>,
- <94F7DA15-6D4C-4205-9A23-E4593A4A2312@redhat.com>
-Date: Sat, 03 Feb 2024 11:35:41 +1100
-Message-id: <170692054137.13976.14338822289976654430@noble.neil.brown.name>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -1.63
-X-Spamd-Result: default: False [-1.63 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.33)[75.81%]
-X-Spam-Flag: NO
+References: <20240102124747.21644-1-hao.qin@mediatek.com> <20240102124747.21644-2-hao.qin@mediatek.com>
+In-Reply-To: <20240102124747.21644-2-hao.qin@mediatek.com>
+From: Sean Wang <sean.wang@kernel.org>
+Date: Fri, 2 Feb 2024 18:39:00 -0600
+X-Gmail-Original-Message-ID: <CAGp9LzqejefGFLpuntAghHUsA58mN_2EQqKynBC-JCYXAEUSZg@mail.gmail.com>
+Message-ID: <CAGp9LzqejefGFLpuntAghHUsA58mN_2EQqKynBC-JCYXAEUSZg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] Bluetooth: btusb: mediatek: add a recovery method
+ for MT7922 and MT7925
+To: Hao Qin <hao.qin@mediatek.com>
+Cc: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, 
+	Luiz Von Dentz <luiz.dentz@gmail.com>, Sean Wang <sean.wang@mediatek.com>, 
+	Deren Wu <deren.Wu@mediatek.com>, Aaron Hou <aaron.hou@mediatek.com>, 
+	Chris Lu <chris.lu@mediatek.com>, Steve Lee <steve.lee@mediatek.com>, 
+	linux-bluetooth <linux-bluetooth@vger.kernel.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	linux-mediatek <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 03 Feb 2024, Benjamin Coddington wrote:
-> On 1 Feb 2024, at 3:19, Kunwu Chan wrote:
->=20
-> > Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-> > to simplify the creation of SLAB caches.
-> > Make the code cleaner and more readable.
-> >
-> > Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-> > ---
-> >  fs/nfsd/nfscache.c | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> >
-> > diff --git a/fs/nfsd/nfscache.c b/fs/nfsd/nfscache.c
-> > index 5c1a4a0aa605..64ce0cc22197 100644
-> > --- a/fs/nfsd/nfscache.c
-> > +++ b/fs/nfsd/nfscache.c
-> > @@ -166,8 +166,7 @@ nfsd_reply_cache_free(struct nfsd_drc_bucket *b, stru=
-ct nfsd_cacherep *rp,
-> >
-> >  int nfsd_drc_slab_create(void)
-> >  {
-> > -	drc_slab =3D kmem_cache_create("nfsd_drc",
-> > -				sizeof(struct nfsd_cacherep), 0, 0, NULL);
-> > +	drc_slab =3D KMEM_CACHE(nfsd_cacherep, 0);
-> >  	return drc_slab ? 0: -ENOMEM;
-> >  }
-> >
-> > --=20
-> > 2.39.2
->=20
-> I don't agree that the code is cleaner or more readable like this.  I really
-> dislike having to parse through the extra "simplification" to see what's
-> actually being called and sent.
->=20
-> Just my .02 worth.
->=20
+On Tue, Jan 2, 2024 at 6:49=E2=80=AFAM Hao Qin <hao.qin@mediatek.com> wrote=
+:
+>
+> From: "hao.qin" <hao.qin@mediatek.com>
+>
+> For MT7922 and MT7925, add USB reset retry to recover from patch
+> download failure, and perform a reset before patch download to
+> avoid unexpected problems caused by unkonwn status of dongle.
+>
+> Signed-off-by: hao.qin <hao.qin@mediatek.com>
+> ---
+>  drivers/bluetooth/btusb.c | 29 ++++++++++++++++++++++++-----
+>  1 file changed, 24 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> index abefcd1a089d..26ad4864d06c 100644
+> --- a/drivers/bluetooth/btusb.c
+> +++ b/drivers/bluetooth/btusb.c
+> @@ -3000,17 +3000,26 @@ static int btusb_mtk_subsys_reset(struct hci_dev =
+*hdev, u32 dev_id)
+>         u32 val;
+>         int err;
+>
+> -       if (dev_id =3D=3D 0x7925) {
+> +       if (dev_id =3D=3D 0x7922) {
+> +               btusb_mtk_uhw_reg_read(data, MTK_BT_SUBSYS_RST, &val);
+> +               val |=3D 0x00002020;
+> +               btusb_mtk_uhw_reg_write(data, MTK_BT_SUBSYS_RST, val);
+> +               btusb_mtk_uhw_reg_write(data, MTK_EP_RST_OPT, 0x00010001)=
+;
+> +               btusb_mtk_uhw_reg_read(data, MTK_BT_SUBSYS_RST, &val);
+> +               val |=3D BIT(0);
+> +               btusb_mtk_uhw_reg_write(data, MTK_BT_SUBSYS_RST, val);
+> +               msleep(100);
+> +       } else if (dev_id =3D=3D 0x7925) {
+>                 btusb_mtk_uhw_reg_read(data, MTK_BT_RESET_REG_CONNV3, &va=
+l);
+> -               val |=3D (1 << 5);
+> +               val |=3D BIT(5);
+>                 btusb_mtk_uhw_reg_write(data, MTK_BT_RESET_REG_CONNV3, va=
+l);
+>                 btusb_mtk_uhw_reg_read(data, MTK_BT_RESET_REG_CONNV3, &va=
+l);
+>                 val &=3D 0xFFFF00FF;
+> -               val |=3D (1 << 13);
+> +               val |=3D BIT(13);
+>                 btusb_mtk_uhw_reg_write(data, MTK_BT_RESET_REG_CONNV3, va=
+l);
+>                 btusb_mtk_uhw_reg_write(data, MTK_EP_RST_OPT, 0x00010001)=
+;
+>                 btusb_mtk_uhw_reg_read(data, MTK_BT_RESET_REG_CONNV3, &va=
+l);
+> -               val |=3D (1 << 0);
+> +               val |=3D BIT(0);
+>                 btusb_mtk_uhw_reg_write(data, MTK_BT_RESET_REG_CONNV3, va=
+l);
+>                 btusb_mtk_uhw_reg_write(data, MTK_UDMA_INT_STA_BT, 0x0000=
+00FF);
+>                 btusb_mtk_uhw_reg_read(data, MTK_UDMA_INT_STA_BT, &val);
+> @@ -3040,6 +3049,9 @@ static int btusb_mtk_subsys_reset(struct hci_dev *h=
+dev, u32 dev_id)
+>         if (err < 0)
+>                 bt_dev_err(hdev, "Reset timeout");
+>
+> +       if (dev_id =3D=3D 0x7922)
+> +               btusb_mtk_uhw_reg_write(data, MTK_UDMA_INT_STA_BT, 0x0000=
+00FF);
+> +
+>         btusb_mtk_id_get(data, 0x70010200, &val);
+>         if (!val)
+>                 bt_dev_err(hdev, "Can't get device id, subsys reset fail.=
+");
+> @@ -3128,8 +3140,10 @@ static int btusb_mtk_setup(struct hci_dev *hdev)
+>                 fwname =3D FIRMWARE_MT7668;
+>                 break;
+>         case 0x7922:
+> -       case 0x7961:
+>         case 0x7925:
+> +               btusb_mtk_subsys_reset(hdev, dev_id);
 
-In general I agree that wrappers like this can hinder as much as they
-help - if not more.
+Is there any reason we cannot perform a subsystem reset for 0x7961?
+I believe it would enhance robustness under any circumstance, such as
+cold reboot, warm reboot, or suspension,
+ensuring that the controller can be reset to its initial state
 
-In this particular case it doesn't seem to bother me.  This is probably
-because it is only used in initialisation code and I don't look at that
-nearly as much as code that uses the initialised things.
-Initialisation/cleanup code often has a lot of boilerplate which can
-make it look messy.  Reducing that, which I think this patch helps with,
-can be a good thing.
+> +               fallthrough;
+> +       case 0x7961:
+>                 if (dev_id =3D=3D 0x7925)
+>                         snprintf(fw_bin_name, sizeof(fw_bin_name),
+>                                  "mediatek/mt%04x/BT_RAM_CODE_MT%04x_1_%x=
+_hdr.bin",
+> @@ -3143,6 +3157,11 @@ static int btusb_mtk_setup(struct hci_dev *hdev)
+>                                                 btusb_mtk_hci_wmt_sync);
+>                 if (err < 0) {
+>                         bt_dev_err(hdev, "Failed to set up firmware (%d)"=
+, err);
+> +                       if (dev_id =3D=3D 0x7922 || dev_id =3D=3D 0x7925)=
+ {
 
-So I agree that we should be cautious about using (or creating) new
-wrapper macros, but in this case I am mildly in favour.
+Similarly, is there any reason we cannot apply the same approach for
+mt7961? Using a less specific condition would reduce maintenance
+effort in the future.
 
-Thanks,
-NeilBrown
+> +                               btusb_stop_traffic(data);
+> +                               usb_kill_anchored_urbs(&data->tx_anchor);
+> +                               usb_queue_reset_device(data->intf);
+
+If an error occurs during firmware download, I guess we can
+subsequently attempt to download the firmware again through several
+retries.
+This helps the controller to autonomously recover from any potential
+errors and ensure we can complete the initialization process.
+
+> +                       }
+>                         return err;
+>                 }
+>
+> --
+> 2.18.0
+>
+>
 
