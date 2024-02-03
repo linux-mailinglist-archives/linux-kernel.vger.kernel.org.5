@@ -1,122 +1,185 @@
-Return-Path: <linux-kernel+bounces-50762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50758-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17D1E847DA9
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:15:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DA7E847DA1
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:14:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C7E6B25BE7
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:15:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9AE81F27893
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:14:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38A5410A13;
-	Sat,  3 Feb 2024 00:13:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92EAD643;
+	Sat,  3 Feb 2024 00:11:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="m0ZcI6mv"
-Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WTaWMhq8"
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AAD7101D4
-	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 00:13:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEB016FB2
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 00:11:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706919207; cv=none; b=KLT4agUUhXshxNjmRnlhPe/2rgrAc4WbH734z1w2F2Z6agQr6ws5qrLLPULj86yLUxLFL1inlqm6BD6XBVzpn7VS1ttOHwkE1ETUDx1jG+EvT/t4Nv1B0XaGPfyRbsRUpKV0Kgj37abs416abL6FhINRs9KfTMgBi6GrjKXc4xM=
+	t=1706919111; cv=none; b=GMj141QrxpB5rG/1TiMRwPGYcLw7UI77f1dQgDcH1Lo3R1Ex2rIUIgnUDTr1FKfGcARMMJj6WFzTuncmfFSJAX0fvgXEWwbKEjXOfHVQsoyf0hUPXYR7ZL+N05LsdcQq/A+fg+l9ahWX0Vm5lvH+gOiJi7Wl0kvXlwgZNOOy2Cg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706919207; c=relaxed/simple;
-	bh=0UHnjpZa0/n5Wch+Vjh3VbZabsU3SfAQTGXXdQqFuNI=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Nnsna1uG+K8MPCQj0Npt0Wlq2sRFbdx5CStavswxDUkXg6DkBVT+dbuyb5ath4HSBzOs/awE48xV7KRXMRhxYd/DVRsMFwL6QJHixdaK2iA+VwExqX5aGdihV/dZ7Nk0WVme6nWYmWvJmBoXqu2KCge94on+Qijo/z444h8/T/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=m0ZcI6mv; arc=none smtp.client-ip=209.85.214.202
+	s=arc-20240116; t=1706919111; c=relaxed/simple;
+	bh=Fw5yc3KwqIkUpRbUG5IvtK1nJa179n0/6LQurRMjCCM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=R1tiXbqy1xNYYASJuRaAdZPMpZ1zcHHBWOfojDHQpCyaDt1W3O2gnm8+4MRfjtMCLW8qb5hpbuHPZmx7ejU+xUe92qArlrgx2sMdqSEMIFO7nQKkMOVUJGQ7XP42fGGSjXzG+Hpp5gwqWJNWENE5KhQ+BgbgVKWMksVurUmNWSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WTaWMhq8; arc=none smtp.client-ip=209.85.222.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-1d4212b6871so31233295ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 16:13:25 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-7d5bbbe57b9so1220876241.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 16:11:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706919205; x=1707524005; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UblZcdIbFFW166FC0SJ65RVKv7Yp//8SVMLiUJZhHNc=;
-        b=m0ZcI6mvrHlUQFmb3ztP/G/TtsHgSQ+WvOutvtpTsvEQnsJOqv/X7A6XRvzHaD519w
-         7CUUkPGKHh65Zb26rYu4oa3p8jnA2VQ3oGvpgplmGGI50yh+dh0Cze5oAqxPmK/pcDCp
-         i86zGNWluErHezEEka48bl3WHghHxX57SdJpdU/nepyQbF4qzK7vBmOTHKo0F02u6si6
-         J0WYWMjMJd0tKtWMey/IRPUGlwzEdF19XyRWajPdLmvAFGuy3gyEq/E7A/hJvJjsZWQL
-         1bQD4yccVYP+91is715oWDVSKYSyxfQCwqODdXXkzrxR2HA6sppvZegc1B++1KTq71hr
-         G9LQ==
+        d=google.com; s=20230601; t=1706919109; x=1707523909; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BPxmyRdExJEvcPRl0CWuqoDDXvPz9lLHrgamSw5zf9Y=;
+        b=WTaWMhq89HeEvXUsmLkjFJnqcsjFt3CuaW2hTkic2In+l2QXYZ7QsvOz/6HlI89oW3
+         k6bzeDfC9X4wwCl6AX7SuARWwj7F3b6kOnVHYAC7FAzzXN+sO0EzBwz4fgnHDuXmG6qT
+         HcoGW0GMXQSZGcnJJ/B3vljQyLMoWRWlqlxuvXsTnMXiy3FSBivljiM/yLVZDlYYVZJ4
+         UjiNykYyRpbe7yqsdAYFgyl+vl+Y26ugly+zw055MLmdLWlDSK8L7YLotQc/Kk/ytNzM
+         9yAhctSEtJt/3uJ6quhlQCKDiLD93meCIjFYJT6xsew894TODCDVpTWVJ1sKYH35FxNU
+         gWZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706919205; x=1707524005;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UblZcdIbFFW166FC0SJ65RVKv7Yp//8SVMLiUJZhHNc=;
-        b=I85e5aTlnHRiVL21z66WXP30JUKL8IQANGNCcyBWzS8JQxMyUtrb+QSmDPkZtCLgkH
-         hK1KamIt/9eWV4A4Y6045k6lxeeLnW7kmcZZFDnaswW5OUrqwki2rPn6fX+XLKgpyu51
-         V80gjFmMvyH1P5Mmw6DPqCsae4AnNg/rEe/pVQkrzxC2c3DdaD1tdMw/rsjE3PsXuH0z
-         I4HooGhROC29uBkNLygZsdLGyTER/tRs74be7jdAhcLXg5LGOgRtWeGMDpz9f5H7yUrb
-         qVj9l34+DEzVejvyZp2haZpyVobw4buZMJprGX/4Jh/s7BBerNNzuZbTF/Sm7rrf7gEu
-         onuw==
-X-Gm-Message-State: AOJu0YxgJvKPHyQ3o43/JmoacYRW1MTPpVvvWShCDgdcDuBCNS25uvzN
-	mQlnLlhHPiczNo9lDWCT7y9neJcxgQ5yG3fKl0XKcyIAoxlyqsGoBbIVorX0+WRsOYCFhkkrk8P
-	KCw==
-X-Google-Smtp-Source: AGHT+IEpA02eLXo5kivTLKOG0egFzivasL8l5/x4YkqvERVRNd7PfchGE4aayftMm/hGrKG0zH0YT9yO09A=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:c1cb:b0:1d9:8bb4:6c2b with SMTP id
- c11-20020a170902c1cb00b001d98bb46c2bmr27573plc.12.1706919205410; Fri, 02 Feb
- 2024 16:13:25 -0800 (PST)
-Date: Fri,  2 Feb 2024 16:11:35 -0800
-In-Reply-To: <20231110022857.1273836-1-seanjc@google.com>
+        d=1e100.net; s=20230601; t=1706919109; x=1707523909;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BPxmyRdExJEvcPRl0CWuqoDDXvPz9lLHrgamSw5zf9Y=;
+        b=VIiakI6TkGA5NN1sMEEFcA/uT+QzOKxfvVG30PP/bKA6Y7ti7a3mcK3e+MMKK6KnO6
+         ejreqWdt8m6GKr/zJPSwD3xlIigoCIgPoev6jhjIuOxIjiqkeURB2Ef8pVpx9unpzUmf
+         ZGBLn5IZ6VIOrPBRHnu7AugCqOwMKqz6+5jW6dpFAxmFH/jgsx8SOLlmlNqqV+phIdOg
+         llgnQdeUb10nWb6J8WRWXOcY2ldm7OHvSuOVokBfyYuwzkxuNnNmRSzsEXXRViYIQoIx
+         1fQsoJnHyDQQf0F//G/YbRV+X/VUfb/eIz8NumTYPqqRzt3coS0OOF2N1sVxacYUGGJV
+         vS3g==
+X-Gm-Message-State: AOJu0YzX/1lYMOa3w5iwxKotkC/sj82e+vhMujaHJRa9Yb2g/Urx6wGI
+	XXG6xsoOIjrhQyt2KPt8GmR/v0IdRirvSdbSOJmMxMB4DYEZfQcJg+xQ0KuGdGGAWc589z3pstv
+	XEfdEej4JSf3kOC78JtJEE8CO6NSGBHBFxRQX
+X-Google-Smtp-Source: AGHT+IG5YGYD/SvWKixRXTjsDK5srI/exvF5e/PZdXyguzPkATWPAwx4LtVWEHkt5wEgNBmX7AEbMCjq7BycjpF5Hzg=
+X-Received: by 2002:a67:fb52:0:b0:46d:5b7:f618 with SMTP id
+ e18-20020a67fb52000000b0046d05b7f618mr2584782vsr.24.1706919108610; Fri, 02
+ Feb 2024 16:11:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231110022857.1273836-1-seanjc@google.com>
-X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-Message-ID: <170691189173.332407.7692729833772898167.b4-ty@google.com>
-Subject: Re: [PATCH 00/10] KVM: x86/pmu: Optimize triggering of emulated events
-From: Sean Christopherson <seanjc@google.com>
-To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Konstantin Khorenko <khorenko@virtuozzo.com>, Jim Mattson <jmattson@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+References: <20240121182040.GBZa1geI5NxWSslvt0@fat_crate.local>
+ <20240130220845.1978329-2-kevinloughlin@google.com> <4ljfvg7c23g2wx4hcqz6x6tx7uvp6fffayqvu4ptsmfqajlujr@zngokbd2awma>
+ <CAGdbjm+dt2LMqsWkzME-Gya9F=pZMubTuW3Ad3dStj=L+MW+ng@mail.gmail.com> <CAMj1kXGSZkJ-1opx9mrpfhzyreCM+P616xM+MhPOaR+EgP5NNg@mail.gmail.com>
+In-Reply-To: <CAMj1kXGSZkJ-1opx9mrpfhzyreCM+P616xM+MhPOaR+EgP5NNg@mail.gmail.com>
+From: Kevin Loughlin <kevinloughlin@google.com>
+Date: Fri, 2 Feb 2024 16:11:37 -0800
+Message-ID: <CAGdbjmKO-XDmm-0kw0xm=58TFYdK8t6Yp8OfXCrXVAwWEh3m-A@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] x86/sev: enforce RIP-relative accesses in early
+ SEV/SME code
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Tom Lendacky <thomas.lendacky@amd.com>, Pankaj Gupta <pankaj.gupta@amd.com>, 
+	Hou Wenlong <houwenlong.hwl@antgroup.com>, Dionna Glaze <dionnaglaze@google.com>, 
+	Brijesh Singh <brijesh.singh@amd.com>, Michael Roth <michael.roth@amd.com>, 
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
+	linux-coco@lists.linux.dev, Ashish Kalra <ashish.kalra@amd.com>, 
+	Andi Kleen <ak@linux.intel.com>, Adam Dunlap <acdunlap@google.com>, 
+	Peter Gonda <pgonda@google.com>, Jacob Xu <jacobhxu@google.com>, 
+	Sidharth Telang <sidtelang@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 09 Nov 2023 18:28:47 -0800, Sean Christopherson wrote:
-> Optimize code used by, or which impacts, kvm_pmu_trigger_event() to try
-> and make a dent in the overhead of emulating PMU events in software, which
-> is quite noticeable due to it kicking in anytime the guest has a vPMU and
-> KVM is skipping an instruction.
-> 
-> Note, Jim has a proposal/idea[*] (that I supported) to make
-> kvm_pmu_trigger_event() even more performant.  I opted not to do that as
-> it's a bit more invasive, and I started chewing on this not so much because
-> I care _that_ much about performance, but because it irritates me that the
-> PMU code makes things way harder than they need to be.
-> 
-> [...]
+On Fri, Feb 2, 2024 at 2:47=E2=80=AFPM Ard Biesheuvel <ardb@kernel.org> wro=
+te:
+>
+> On Fri, 2 Feb 2024 at 23:00, Kevin Loughlin <kevinloughlin@google.com> wr=
+ote:
+> >
+> > On Wed, Jan 31, 2024 at 12:20=E2=80=AFAM Kirill A. Shutemov
+> > <kirill.shutemov@linux.intel.com> wrote:
+> > >
+> > > On Tue, Jan 30, 2024 at 10:08:44PM +0000, Kevin Loughlin wrote:
+> > > > diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/=
+asm/mem_encrypt.h
+> > > > index 359ada486fa9..b65e66ee79c4 100644
+> > > > --- a/arch/x86/include/asm/mem_encrypt.h
+> > > > +++ b/arch/x86/include/asm/mem_encrypt.h
+> > > > @@ -17,6 +17,20 @@
+> > > >
+> > > >  #include <asm/bootparam.h>
+> > > >
+> > > > +/*
+> > > > + * Like the address operator "&", evaluates to the address of a LH=
+S variable
+> > > > + * "var", but also enforces the use of RIP-relative logic. This ma=
+cro can be
+> > > > + * used to safely access global data variables prior to kernel rel=
+ocation.
+> > > > + */
+> > > > +#define RIP_RELATIVE_ADDR(var)               \
+> > > > +({                                   \
+> > > > +     void *rip_rel_ptr;              \
+> > > > +     asm ("lea "#var"(%%rip), %0"    \
+> > > > +             : "=3Dr" (rip_rel_ptr)    \
+> > > > +             : "p" (&var));          \
+> > > > +     rip_rel_ptr;                    \
+> > > > +})
+> > > > +
+> > >
+> > > I don't think it is the right place for the macro. The next patch use=
+s for
+> > > things unrelated to memory encryption.
+> >
+> > You're right; with the cleanup, I agree it becomes more general. We
+> > can move it to arch/x86/include/asm/asm.h.
+> >
+> > >
+> > > > @@ -239,14 +244,14 @@ unsigned long __head __startup_64(unsigned lo=
+ng physaddr,
+> > > >        */
+> > > >
+> > > >       next_pgt_ptr =3D fixup_pointer(&next_early_pgt, physaddr);
+> > > > -     pud =3D fixup_pointer(early_dynamic_pgts[(*next_pgt_ptr)++], =
+physaddr);
+> > > > -     pmd =3D fixup_pointer(early_dynamic_pgts[(*next_pgt_ptr)++], =
+physaddr);
+> > > > +     early_dynamic_pgts_ptr =3D fixup_pointer(early_dynamic_pgts, =
+physaddr);
+> > > > +     pud =3D (pudval_t *) early_dynamic_pgts_ptr[(*next_pgt_ptr)++=
+];
+> > > > +     pmd =3D (pmdval_t *) early_dynamic_pgts_ptr[(*next_pgt_ptr)++=
+];
+> > > >
+> > >
+> > > This change doesn't belong to this patch. Maybe move it into the next
+> > > patch and combine with removing fixup_pointer().
+> >
+> > I'll put it in a separate commit even preceding this one, as it's
+> > actually a bug in the existing fixup pointer logic that I noticed when
+> > transitioning to the use of the RIP-relative macro. Specifically,
+> > early_dynamic_pgts is a global variable just like next_early_pgt and
+> > thus also needs to be fixed up to guarantee the correct address is
+> > used across toolchains.
+>
+> No, this is not a bug.
+>
+> early_dynamic_pgts is a two dimensional array
+>
+> extern pmd_t early_dynamic_pgts[EARLY_DYNAMIC_PAGE_TABLES][PTRS_PER_PMD];
+>
+> and so this expression
+>
+> early_dynamic_pgts[(*next_pgt_ptr)++]
+>
+> produces the kernel virtual address of one of the top level elements,
+> which itself is an array, and so this can be fixed up as usual.
+> IOW, the [] operation does not result in pointer dereference here,
+> only in pointer arithmetic.
 
-Applied to kvm-x86 pmu, thanks!
-
-[01/10] KVM: x86/pmu: Zero out PMU metadata on AMD if PMU is disabled
-        https://github.com/kvm-x86/linux/commit/f933b88e2015
-[02/10] KVM: x86/pmu: Add common define to capture fixed counters offset
-        https://github.com/kvm-x86/linux/commit/be6b067dae15
-[03/10] KVM: x86/pmu: Move pmc_idx => pmc translation helper to common code
-        https://github.com/kvm-x86/linux/commit/b31880ca2f41
-[04/10] KVM: x86/pmu: Snapshot and clear reprogramming bitmap before reprogramming
-        https://github.com/kvm-x86/linux/commit/004a0aa56ede
-[05/10] KVM: x86/pmu: Add macros to iterate over all PMCs given a bitmap
-        https://github.com/kvm-x86/linux/commit/e5a65d4f723a
-[06/10] KVM: x86/pmu: Process only enabled PMCs when emulating events in software
-        https://github.com/kvm-x86/linux/commit/d2b321ea9380
-[07/10] KVM: x86/pmu: Snapshot event selectors that KVM emulates in software
-        https://github.com/kvm-x86/linux/commit/f19063b1ca05
-[08/10] KVM: x86/pmu: Expand the comment about what bits are check emulating events
-        https://github.com/kvm-x86/linux/commit/afda2d7666f8
-[09/10] KVM: x86/pmu: Check eventsel first when emulating (branch) insns retired
-        https://github.com/kvm-x86/linux/commit/e35529fb4ac9
-[10/10] KVM: x86/pmu: Avoid CPL lookup if PMC enabline for USER and KERNEL is the same
-        https://github.com/kvm-x86/linux/commit/83bdfe04c968
-
---
-https://github.com/kvm-x86/linux/tree/next
+Ah, yes, you're right. Thanks for the correction! I will just drop it then.
 
