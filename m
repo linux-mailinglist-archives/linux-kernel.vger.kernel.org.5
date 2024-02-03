@@ -1,63 +1,61 @@
-Return-Path: <linux-kernel+bounces-51212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 258C08487D4
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 18:07:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FFC98487D7
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 18:08:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57DD01C22B70
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 17:07:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7FBF1F2588F
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 17:08:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F56960B95;
-	Sat,  3 Feb 2024 17:06:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60CD260EDE;
+	Sat,  3 Feb 2024 17:06:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cQUOr7KA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M3WlRqmO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BC4960260;
-	Sat,  3 Feb 2024 17:06:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BE1A60DC5;
+	Sat,  3 Feb 2024 17:06:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706979990; cv=none; b=K48iwQ4B4scd2orShc63nIYky+W2RgtptDzS6zr4s/NInPnftWev3GGoTHAe4O4fXg3NH3LYZQzsfumz0TFzRs3c83YirlDXAheCtwMIMcqS/W+jCYiwssmY3YNaC1X/r8hOI6mzhWXdMWeK/tMKWRR2aiuFM+9NTMGP9pv0hkQ=
+	t=1706979991; cv=none; b=eROujc5JNGPoBW1/gWqZb5wjPQ65Ca0jv9bYVGjPQNcEYX4zLStymhdWbpHkpMkBYmQwa0coEnhDc41UCM1SU/RuMqtEpilvtA/jd/qzgfaVBF33vFdU1ktcr1B6SrgDgVlya6vTT2pdATeZMKD11bo1mo8n6blwDuURRDitpms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706979990; c=relaxed/simple;
-	bh=s6nZRbM0fTJL+N2c/ac4KqfCqy+WoklBkqv8viEYCMA=;
+	s=arc-20240116; t=1706979991; c=relaxed/simple;
+	bh=cYeOUvccqJV3/wsKIwMzmFFKBx+VtdlemVj8A0eNQ4Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=i5iLAnY53Wj735qV/pEo19ryysH5tfUqFAgTthMpqLjqyDL5fVyEwIT5FiO83xlHW9pbE+v4JSvLXJqjtG/INy1VuufJY9uS+gLXanb2EUMfIqhkjnaccNigYi8T15B1Si8xaba0bEe2lhc1vowrNoebtVHJFqtB/ljZ9LYiWnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cQUOr7KA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41FEEC433C7;
-	Sat,  3 Feb 2024 17:06:29 +0000 (UTC)
+	 MIME-Version:Content-Type; b=kcWdxmRbh67D7eWKnhWohM2p0sIpWKmAEsNs8LvVW34+YYsiP0tXWc1e9w3tPypb/BXThBi38EvLi4w5KpyeVq1x9dp9x2AtSPviMwgp9ZcSIM9Hf6p+ROP9EIOPnf26lSXe1OfEhoJQVsAKq832UoT8gEKXv5+KypXe/sO928E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M3WlRqmO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58FEDC43399;
+	Sat,  3 Feb 2024 17:06:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706979990;
-	bh=s6nZRbM0fTJL+N2c/ac4KqfCqy+WoklBkqv8viEYCMA=;
+	s=k20201202; t=1706979991;
+	bh=cYeOUvccqJV3/wsKIwMzmFFKBx+VtdlemVj8A0eNQ4Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cQUOr7KA6ItuhvvIPxQly6HS3T0rkdSMcOWUkDjEwBPL+LJu6JlV3uSXqpKGINKpA
-	 zhp4Zrzzcp1BotCx/eepZvAg6YFbb0PIBtQLuwXmtIwSAZtRjoFNquozAUItpF+/9T
-	 yiYi0T0YZcJ1BTiZ3fMHszvLY65A59Bxq9R5YqOsyG1zmbxit2UbXJtdhltY08x1jO
-	 wlo9xK9+6LJiDw5L1RxXVf9DPM5wwPP6CBblfb6w6UxOdhjgsuGwTWaQcDfrXXIwr5
-	 +hcl2zdG2Ad7upyEJ/hJZA5oXsPni0tAeIGIAWuma6FxIAoiLxyyNayHKBSr14HQCF
-	 XAiiAuvFa+JXQ==
+	b=M3WlRqmOcVMzHoL6C9ChcbzJaTseR6Tdg2qMA03aa2AqsYXk1v0tjQcWBgGQce7DY
+	 Y2IiYbAz2xAqGcFrgbKXWhMS02UYjSUCk+fGxlwL9qokYxeKNDzOJp92eNtyPyhpRS
+	 1A2GLUjWGjZlfb231Q7b1jGAIABtHlTIjA7YHw9Zr7Ynsfph+nyy0JWZk10SsuJkm8
+	 JvS7Bb8QEqpmobAsLelyrvt7+U/cvuBMDpX0S92Fc3XPsR3B5ZualTaC5DXd4mAvb7
+	 pU83UKMzWnLPocjdKgYKdMdLYCUuT3zTwZClqWP3VEQ3IrDItXDliLr850Oq5Ufr6D
+	 Px7F6ytON7PHg==
 From: Bjorn Andersson <andersson@kernel.org>
 To: konrad.dybcio@linaro.org,
-	mturquette@baylibre.com,
-	sboyd@kernel.org,
-	robh@kernel.org,
+	robh+dt@kernel.org,
 	krzysztof.kozlowski+dt@linaro.org,
 	conor+dt@kernel.org,
-	Jeffrey Hugo <quic_jhugo@quicinc.com>
+	Umang Chheda <quic_uchheda@quicinc.com>
 Cc: linux-arm-msm@vger.kernel.org,
-	linux-clk@vger.kernel.org,
 	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: clock: qcom: Fix @codeaurora email in Q6SSTOP
-Date: Sat,  3 Feb 2024 11:06:21 -0600
-Message-ID: <170697997759.332807.15158372274778421217.b4-ty@kernel.org>
+	linux-kernel@vger.kernel.org,
+	quic_kamalw@quicinc.com
+Subject: Re: [PATCH v2] arm64: dts: qcom: qcm6490-idp: Include PM7250B
+Date: Sat,  3 Feb 2024 11:06:22 -0600
+Message-ID: <170697997764.332807.18017045667072676673.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240202171915.4101842-1-quic_jhugo@quicinc.com>
-References: <20240202171915.4101842-1-quic_jhugo@quicinc.com>
+In-Reply-To: <20240125115300.3496783-1-quic_uchheda@quicinc.com>
+References: <20240125115300.3496783-1-quic_uchheda@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,20 +66,15 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Fri, 02 Feb 2024 10:19:15 -0700, Jeffrey Hugo wrote:
-> The servers for the @codeaurora domain are long retired and any messages
-> addressed there will bounce.  Govind Singh has left the company which
-> appears to leave the Q6SSTOP clock controller binding unmaintained.
+On Thu, 25 Jan 2024 17:23:00 +0530, Umang Chheda wrote:
+> Include PM7250B PMIC for qcm6490-idp.
 > 
-> Move maintenance of the binding to the Qualcomm Clock Drivers maintainer
-> as suggested by Bjorn Andersson.
 > 
-> [...]
 
 Applied, thanks!
 
-[1/1] dt-bindings: clock: qcom: Fix @codeaurora email in Q6SSTOP
-      commit: d22118f005231f543ef45e17342c3eb2a71cbfe3
+[1/1] arm64: dts: qcom: qcm6490-idp: Include PM7250B
+      commit: d967cc9cf37ea2a6c7cdb9779113f10d2910bb4c
 
 Best regards,
 -- 
