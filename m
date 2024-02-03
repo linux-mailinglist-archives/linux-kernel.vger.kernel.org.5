@@ -1,80 +1,94 @@
-Return-Path: <linux-kernel+bounces-51014-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51015-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DCCC848510
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 10:40:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95814848511
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 10:43:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 211031F28789
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 09:40:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C3B111C221EB
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 09:43:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D21DA5D49F;
-	Sat,  3 Feb 2024 09:40:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F9BC5D726;
+	Sat,  3 Feb 2024 09:43:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="lOP1NNvF"
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="GGikTWdu"
 Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22A984E1DE;
-	Sat,  3 Feb 2024 09:40:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60C615D47E;
+	Sat,  3 Feb 2024 09:43:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706953233; cv=none; b=ron3pYBoag4TPL6JtdEQnFx90SXHI0X9uCRVKPJSYpWUSjxPjD0p7BAULqA0WMqtc58jTmRwo/znfoOUKAUxH8tRHxv3M59fr9O1x+eSaWBPcWeaOObZDT3hcoHz5otLkmuQneIhcqpYH0OTD5AK3N/06z2aBki0FtiaA3R2e6o=
+	t=1706953413; cv=none; b=GWJUrfDrYe6iWNx+4zOLBV6gIWmPQzwLXc53gVu4nQHZJnrXfcG2F6+gcmlFXdm01kI0hZ/uYCd9XIKYTDqYu7LKRQtVmD/I8KHqwWemh83QwTLuJTP4N65X92vCBohgheo/amcSd2/Yrk47zqs98/PUIl8M5uBswDngUTUT+lQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706953233; c=relaxed/simple;
-	bh=Mf+FC70bEz34Ne9LI0bFgbzLhu9lure4rqnmn2jabz8=;
+	s=arc-20240116; t=1706953413; c=relaxed/simple;
+	bh=Vp48SAQNct4tT6bSE92UtHgVKXjC05Qo+Yzxqp94SGI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AUHfarFhWghaD6gSMZl5zq/gfR1G7g6fjW12Za1HXxWilsx1lVimg8I37MzJ5XzK78T5NQG7MQTgAkDwe/sz0DmusTapKg97qrGAVYcAGVJTs+/Fk5zV26D/TmsOMeltH+/o3fS3e06cCMLGgtaxFdUSxliakK6gLuB9lDN0YIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=lOP1NNvF; arc=none smtp.client-ip=65.109.113.108
+	 Content-Type:Content-Disposition:In-Reply-To; b=TfVT3aKxA+rEZWJvblA+gyq8lklucp64mMvTWNdmbpc00JhKpZuSSpkSoGt7UkHME8T9WwF4CGChD45cLfe4UZMOE9VsWlyGVCgotnGaCPuuqEdKnyc+KN4GG9X/707RlHNDasLHYkh1XmH4w3fY5sw3jtbAKr09d1nspaXRTmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=GGikTWdu; arc=none smtp.client-ip=65.109.113.108
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
 Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 2961F40E00C5;
-	Sat,  3 Feb 2024 09:40:29 +0000 (UTC)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4497240E016C;
+	Sat,  3 Feb 2024 09:43:29 +0000 (UTC)
 X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
 Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
 	header.d=alien8.de
 Received: from mail.alien8.de ([127.0.0.1])
 	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id dpn5HsdvUWlF; Sat,  3 Feb 2024 09:40:27 +0000 (UTC)
+	with ESMTP id coJ00F2PtT_b; Sat,  3 Feb 2024 09:43:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706953227; bh=o2/kkEvYopAiZxbDPfxFVKmvW7UOi+5Dlc6xEV9gu2M=;
+	t=1706953407; bh=mgZAg3GpwXZthnw1a16qEM2E56aABkLqL8sx7VGeWyU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lOP1NNvFmwMg3iqSzqQ3CnXdWJdIBoSRnGsqZFpkjTXl+qr14LAx1akeaOv7uVkiw
-	 udo8H0oi+0dpAy7zSkh4J1LKrmD/Qj5DqA0bha7tY9MZvJQN5l3pjvFWrVXOnKj5UN
-	 Fmk6rIDGycuztEh3UuFpdA86nxYsOtX657k2wbSkvCMI/h3GIO+YEbtbHK0Ug4RwKL
-	 IO5mQ+KGq+ny10QxjF9vvwfwUck2driT8+RSoRvC8QYH6SK9TmUOcmcCaqZLLMNUFo
-	 hCFQy8oQn+BFDyIfLFpO0igoyyVcEQ3r/pscZ2alRQ4ztRXN4qrKqXPT2G6L75hsW5
-	 ddUk+vs7gUlimwo/vh1JniGyTF3Tp5Mhoig7/wPBO6+lTdZRYJUsBPPJqHkDvOBu9f
-	 V8+7KtgqWDQe8eeqVVyQ8qZMpLrESB5L9umxwIWFxgQdWW3V9sszs0QM/FZZakmdmA
-	 xHHZRkSFrS8uk4BXvl1nrFxYZMhug+i6WWXodJJYjPTQwWzIK3b/Z4z/oH7bjkm2ag
-	 PKBcS+KaHY4U9daYBKq8tmHv2zoNLZ/0Vp8hSvri0xOexWA8jln+Bf1v0TFom9jZje
-	 EB/6vLDgFR4Iqcm4c0/atnC3Kxzs2mMfK8cva6eW9LWfF89XnVxgQ78QoxPwov3B0G
-	 NVmj9loqF9PUTizNwo+pNi0k=
+	b=GGikTWduUt14Id46rEGfYg2pfXHyGPp8xlv4N14UyuPD8YNDf6UOgMAjTsTUyYyjK
+	 MOLPiLT318Z9DFMA1aTRb6SJBy+7fDEWR5f6MhMzPmF2GuylCrHQL2GmOtWTK9qIMs
+	 d+6YH+AwHAB7ErsrN2j1dcaeyuxnWT/I2LQnTw9lI5JHAdgJFWzHoGkSGTTUNIQLi6
+	 HeUP7mdhZeAIWLEn5K8Nvl4MhFZO2G2gLX4ss8GO25g5jei5zz0MZS8E008Npe8DSq
+	 0ItDlBHY/abMUbde34QFbxPMe8BwEdNql319dPe8RxQy9uXe7X3ZbAMXEdYpoNqc1h
+	 MIXjc+eBEaWx//LfzjaDpiGPs4Ic/zyh/B6BuwNwgaqLSntMYP32cLOH06DpQ6SUPc
+	 U9Ez/cd/82Lldoqioyh361CAh6kGHUR9YN9clrJptf16ohjSAAT0uJ2cuUFkRTT2Ap
+	 qgyWlrUI1N4f4IGuxQ3QGmnLD6VYkgruUA5KdcoU8MJF4jRd0xd0CcGSJ+HrdKyq6V
+	 7V8b3vE7hvI7Zl23Xn9G6zVTNwvrF4V50QcDlTR70dkJL1REommUg3BkxPrEjFdKSA
+	 hK+yPzdu+s0WKduoSJu8HR1lQgyruuSdaQ8pRrSepjSzbWJTCPs79t4gzaegWlHQvu
+	 SoOlGpgprGToG3Pjzn1YegDg=
 Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1C7CF40E0081;
-	Sat,  3 Feb 2024 09:40:15 +0000 (UTC)
-Date: Sat, 3 Feb 2024 10:40:14 +0100
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E13F340E0081;
+	Sat,  3 Feb 2024 09:43:10 +0000 (UTC)
+Date: Sat, 3 Feb 2024 10:43:09 +0100
 From: Borislav Petkov <bp@alien8.de>
-To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Len Brown <len.brown@intel.com>,
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-	Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
-	Zhao Liu <zhao1.liu@intel.com>,
-	Zhuocheng Ding <zhuocheng.ding@intel.com>, x86@kernel.org,
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Zhao Liu <zhao1.liu@linux.intel.com>
-Subject: Re: [PATCH 9/9] x86/cpu: Introduce interface to reset hardware
- history
-Message-ID: <20240203094014.GCZb4J_loB5DEohHxT@fat_crate.local>
-References: <20240203040515.23947-1-ricardo.neri-calderon@linux.intel.com>
- <20240203040515.23947-10-ricardo.neri-calderon@linux.intel.com>
+To: Tong Tiangen <tongtiangen@huawei.com>
+Cc: "Luck, Tony" <tony.luck@intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	"wangkefeng.wang@huawei.com" <wangkefeng.wang@huawei.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"x86@kernel.org" <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Naoya Horiguchi <naoya.horiguchi@nec.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	Guohanjun <guohanjun@huawei.com>
+Subject: Re: [PATCH -next v4 2/3] x86/mce: rename MCE_IN_KERNEL_COPYIN to
+ MCE_IN_KERNEL_COPY_MC
+Message-ID: <20240203094309.GDZb4KrS2GWa5XtGeZ@fat_crate.local>
+References: <3009aadd-69d6-c797-20b4-95cf926b6dd9@huawei.com>
+ <20240201142016.GFZbuooG9CRoK90U2C@fat_crate.local>
+ <39c1e4d2-b1d0-91ae-595e-1add4698dd7f@huawei.com>
+ <20240202133911.GBZbzwf-M37M-J3EJX@fat_crate.local>
+ <SJ1PR11MB6083A60DE19FBFB1B0CA6B3DFC422@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <20240202194257.GFZb1FwcPPO8WXF86H@fat_crate.local>
+ <SJ1PR11MB6083BDC3A0596FA87BC25259FC422@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <20240202222220.GIZb1rHG3NiZKmdRXu@fat_crate.local>
+ <SJ1PR11MB6083FDC9D4661A9D94E26ABDFC422@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <4d974c1e-b3a8-8b21-88f4-e5f20b2fb654@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,16 +97,53 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240203040515.23947-10-ricardo.neri-calderon@linux.intel.com>
+In-Reply-To: <4d974c1e-b3a8-8b21-88f4-e5f20b2fb654@huawei.com>
 
-On Fri, Feb 02, 2024 at 08:05:15PM -0800, Ricardo Neri wrote:
-> +void reset_hardware_history(void)
-> +{
-> +	asm_inline volatile (ALTERNATIVE("", __ASM_HRESET, X86_FEATURE_HRESET)
-> +			     : : "a" (hardware_history_features) : "memory");
-> +}
+On Sat, Feb 03, 2024 at 03:56:04PM +0800, Tong Tiangen wrote:
+> The goal of this patch:
+>   When #MC is triggered by copy_mc_user_highpage(), #MC is directly
+> processed in the synchronously triggered do_machine_check() ->
+> kill_me_never() -> memory_failure().
+> 
+> And the current handling is to call memory_failure_queue() ->
+> schedule_work_on() in the execution context, I think that's what
+> "scheduling someone else to handle it at some future point is risky."
 
-This thing belongs in the header too, and it should be __always_inline.
+Ok, now take everything that was discussed on the thread and use it to
+rewrite all your commit messages to explain *why* you're doing this, not
+*what* you're doing - that is visible from the diff.
+
+A possible way to structure them is:
+
+1. Prepare the context for the explanation briefly.
+
+2. Explain the problem at hand.
+
+3. "It happens because of <...>"
+
+4. "Fix it by doing X"
+
+5. "(Potentially do Y)."
+
+And some of those above are optional depending on the issue being
+explained.
+
+For more detailed info, see
+Documentation/process/submitting-patches.rst,
+Section "2) Describe your changes".
+
+Also, to the tone, from Documentation/process/submitting-patches.rst:
+
+ "Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
+  instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
+  to do frotz", as if you are giving orders to the codebase to change
+  its behaviour."
+
+Also, do not talk about what your patch does - that should (hopefully) be
+visible from the diff itself. Rather, talk about *why* you're doing what
+you're doing.
+
+Thx.
 
 -- 
 Regards/Gruss,
