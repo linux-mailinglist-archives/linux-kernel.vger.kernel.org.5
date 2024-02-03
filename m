@@ -1,176 +1,161 @@
-Return-Path: <linux-kernel+bounces-50811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3D15847E3A
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 02:36:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4FF5847E3E
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 02:42:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A18E2826F8
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:36:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19F121F24EA3
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:42:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D36765232;
-	Sat,  3 Feb 2024 01:36:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3684253A1;
+	Sat,  3 Feb 2024 01:42:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TpVskmD+"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="D/WBXHhD"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55C9F1FDD
-	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 01:36:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14DEF2581
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 01:42:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706924192; cv=none; b=oyIlYLkiPmp9+BWcdtkoqKi+uBFcDEKXkFhehdt4xGFYnHfqo2auMGBsFPepwuK+YR51GnIsniyOJIMY/eILUs+/oECydJ0ity1QSSdYaveZI7KKRCaLNFRZXE6IY+5gK+sZIG6QSOeZVNdeogJYkzmcMVnmJ/JJLQO5kmQEPNk=
+	t=1706924529; cv=none; b=PjGV1fbjScrl+h4Bo+c/+CJh/WicrjHhbFY3oy9Zbu9AwD4PV++Fxrf7FwwHrZGcMU5ucY2RO6Pgm+ySoSK+TPDqz4CN2fH28ILWsX0AWEqXdeF9ItiogXaR3zsvredfr+HBLihZ0pdfUNbCwovxmqJn1fAzM2L3GGthOTcgGSY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706924192; c=relaxed/simple;
-	bh=Hf6uyk3PkhlfPyC3HRqmW4VM5M44oxj62qu0PS7I3jk=;
+	s=arc-20240116; t=1706924529; c=relaxed/simple;
+	bh=GL/NWsRNvwetg0ZgKm/CnIK8EZZYE3j8znwpXi+d+6k=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jyHGVpa6WC51nlRE6ICHV2KgA/M5Kk/+n9E3ODQjZCA0qFzhm7bXtpQ89R+oVivWPn6hKKcOoM1mYwRojbt+vNpz9LjQqlSanCLdlAdVH78AA1YpfJag96QWs18dYwH98C53drTf7pkjagLWn8266HsWzjMcva1QMseVhQvlNw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TpVskmD+; arc=none smtp.client-ip=209.85.218.52
+	 To:Cc:Content-Type; b=Nt2ODNB0Z57h70uupBF/jCC79TttMUeg56kPWLB6y6H6ZU+FAfdsblZSsE7yg2RkxlKdlSx0iqwq9lcjngS0ChswHEOT9y8CbnV/cHdGHKVDL3BICnIVZ4A/9bmrwG8NpTO6X4/hPPqVKV+o6ai9+tD/p1bQvbdzvUhPkTwMFik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=D/WBXHhD; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a318ccfe412so304920566b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 17:36:30 -0800 (PST)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d89f0ab02bso31065ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 17:42:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706924188; x=1707528988; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=+ZtJdSb7EI9zmC17ta56Eu+wHYjQhwSEAchKE32W20c=;
-        b=TpVskmD+gga1/dXm1v3DEPQN+/3QUZ2KjZC8QrTCoDjmIot4QuOKBGcCgjag+YMphE
-         BEwDcnrHJyoH0Y9wWoWr7am2FPPDr/P6rI2K9Epwke5tR62hBJMIUMZd7dRQoL0AMWzr
-         CGIqsB5T8GgOieFornDqQelozvoDRr4n9VDO1rEtbbBKSSmo9dwSZImdN+Luei2xyTck
-         j8zZxUm7+BEZegQ1m2rY2bqHRFnMk0v1fB4yvVrfrP7DWICSpzr+VO/y3ZzciLZeKx8k
-         Yk4psBLjtdwIbersIKf3mH2wAh9+hhDsqRyFBZJhrZIjCf1mA/WAcyYkejghdxE1uY/w
-         4yyA==
+        d=google.com; s=20230601; t=1706924527; x=1707529327; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W1tmXsSnp3camgDs1JiIWN7PNv+Db/yDFJhwZXZV06A=;
+        b=D/WBXHhDzyKrowiHj1GMrP31KK5M/OAnZsRTqSjBT438hdoJcLSiMQ8wGVoWjgBEKb
+         lCqzFLtXIHtrY/fuIhFYdy+9ledBCKhQMlPPMHMH+TAqoLn6kucLBW7aSNQsKrhLMYt1
+         Jv3iFm51hQ73wUqAkAJHa0ny1D7Bpbi6CkwhBeB6MlVKjcfzPtCP1doz/PL5F+iNR7yw
+         sK7QmlpUtBRuLPsuGZ4V/avM0VafKTgE+2A3gKy/vcq41XqLN5dCFc+XFh++Ig+R8JFr
+         9zI7SgNHzXOi/iFdWHAr+5vI7aVXesPoluqm87X8V8kiqHPznjJ7/SF0Pn0FnbKAWaNy
+         TG3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706924188; x=1707528988;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+ZtJdSb7EI9zmC17ta56Eu+wHYjQhwSEAchKE32W20c=;
-        b=Z5pTNdUj+TRQGm9lbBqfzx1ZU3NRnDUAnRUjxU5Xscly2KYM+YKFO/SfP4016X3bvw
-         I3hKubB45xG/QmZnirA6EU4YTJTiGQnbsEF+iLMXO+h1ODU817UYW915sHneUcAg0d8U
-         NBro+RVeoml2dvPAed2H3/p1bJ13FODa+W9lXjaB2HgfGFrRCwLYoN7nCVlyjSK0ygbG
-         L+F0WBSYI9aRsiX5hlpKEYsxuXICOmzON/14zlf5+q3uhz33tuAtepugqU62BZfaQUj5
-         78eyz42z9ONS98aiK344Uw3WRO2dZZ96AvRmckC2eR12ofty7gHfRqVThELSmc5W+eMA
-         WAEw==
-X-Gm-Message-State: AOJu0YzGQZ8ny8LFZ9sTcAEPktNLsw4HBV+S+AlyIrwqkNvzbo555EIU
-	DjH9SjBx4vVAkrtJy+TN9Fzr4DNVf2Pzn1AGGEPBspundzFcrNWo9mj0n3w0dUNNS4K+gEb4QoX
-	zkIaPXzCZ+sPKr/Ojrw0Bj8LsPyAOVLVNMGOx
-X-Google-Smtp-Source: AGHT+IESunm6BBZ+RT4xmmTLaeoG0U7tcSgV83ArDerCBOVGM3/ZzMDno9Ecy/mHegvx1S4l6wD5GMMFI3eEWh5MYUU=
-X-Received: by 2002:a17:906:36cd:b0:a36:55d5:2364 with SMTP id
- b13-20020a17090636cd00b00a3655d52364mr2781404ejc.21.1706924188353; Fri, 02
- Feb 2024 17:36:28 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706924527; x=1707529327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=W1tmXsSnp3camgDs1JiIWN7PNv+Db/yDFJhwZXZV06A=;
+        b=GgZzD3upn/tAjLeK9q2szHKT42SGOZBW3nc4CFJSkjyPp/s5SYSMr1hra08HcqpMrc
+         ax/Ve6kFM3r0io4ZPxr1bLZXlAfXiPXlw8hD+x9gTfCMXgmnacfLRkqv3ui24151EagJ
+         mvmmsVlDo1tJsSSfR99KyVt094fWRmXq6ASEEVv8db5PcZD72Hgt91IxusHaBW9R1qgg
+         ItANgcC07/wJ+qnp65VQKr+kkCekBtEa4Oii+X6S5Bn+LkCCNWimtwU9BpCAZbQtBt/z
+         WGMX7bOzDGTK253N+ZNUjEpDulR0hjAYGjbuyNDL5rOtgwc7TVPNVUXU336C4EFQRNc5
+         KX7w==
+X-Gm-Message-State: AOJu0YwRrm6tsmDadKfG6cUbEmWh4zPAkvbacZMrcXsv29RPslBD1Pdn
+	UUIOqJCWdGZpx8XIUC/Rm2QHIQIcgJ68xUqQhVFXuXgM/3BR1qYDWUnvHyio9xUsVJ5DJvVaNR7
+	5anHBg1j921CjR8KfB9TpUmladXn5HKUpiDBV
+X-Google-Smtp-Source: AGHT+IFvVXrppMHSh7EsMSe+LktgAY1bvnADV80hP2rmsBLFLZkqA4D0C/pdQHOx+A5VfLjdqqxNYj4YHwkYqewRHaI=
+X-Received: by 2002:a17:902:b489:b0:1d7:48ef:e239 with SMTP id
+ y9-20020a170902b48900b001d748efe239mr72459plr.18.1706924527056; Fri, 02 Feb
+ 2024 17:42:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201032718.1968208-1-nphamcs@gmail.com> <20240201032718.1968208-4-nphamcs@gmail.com>
- <Zbtfku0wVGXBHDTD@google.com> <CAKEwX=PH5abBFCjYHL+d99v8MMwiASqP83aF2vSv1iwezX3UHA@mail.gmail.com>
-In-Reply-To: <CAKEwX=PH5abBFCjYHL+d99v8MMwiASqP83aF2vSv1iwezX3UHA@mail.gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Fri, 2 Feb 2024 17:35:49 -0800
-Message-ID: <CAJD7tkbu+nGMuvkK3B9-Ekt9+P_wtwOM1A_9cAM0wLM7trO+CQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] selftests: add zswapin and no zswap tests
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: akpm@linux-foundation.org, riel@surriel.com, shuah@kernel.org, 
-	hannes@cmpxchg.org, tj@kernel.org, lizefan.x@bytedance.com, 
-	roman.gushchin@linux.dev, linux-mm@kvack.org, kernel-team@meta.com, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
+References: <20240202220459.527138-1-namhyung@kernel.org> <20240202220459.527138-5-namhyung@kernel.org>
+In-Reply-To: <20240202220459.527138-5-namhyung@kernel.org>
+From: Ian Rogers <irogers@google.com>
+Date: Fri, 2 Feb 2024 17:41:55 -0800
+Message-ID: <CAP-5=fU=P-ib+n+OfqJAbm8gS2RY-W-KcBskoSHkC+aCmXYcXQ@mail.gmail.com>
+Subject: Re: [PATCH 04/14] perf map: Add map__objdump_2rip()
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org, 
+	linux-trace-devel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> > > +{
-> > > +     size_t size = (size_t)arg;
-> > > +     char *mem = (char *)malloc(size);
-> > > +     int ret = 0;
-> > > +
-> > > +     if (!mem)
-> > > +             return -1;
-> > > +     for (int i = 0; i < size; i += 4095)
-> > > +             mem[i] = 'a';
-> >
-> > cgroup_util.h defines PAGE_SIZE, see alloc_anon() for example.
-> >
-> > On that note, alloc_anon() is awfully close to allocate_bytes() below,
-> > perhaps we should consolidate them. The only difference I see is that
-> > alloc_anon() does not check for the allocation failure, but a lot of
-> > functions in cgroup_helpers.c don't, so it seems intentional for
-> > simplification.
+On Fri, Feb 2, 2024 at 2:05=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
+rote:
 >
-> Hmm I didn't know about this function. I think it was Domenico who
-> added allocate_bytes() for the initial zswap tests, and I've just been
-> piggybacking on it ever since:
-> https://github.com/torvalds/linux/commit/d9cfaf405b8ffe2c716b1ce4c82e0a19d50951da
+> Sometimes we want to convert an address in objdump output to
+> map-relative address to match with a sample data.  Let's add
+> map__objdump_2rip() for that.
+
+Hi Namhyung,
+
+I think the naming can be better here. Aren't the objdump addresses
+DSO relative offsets? Is the relative IP relative to the map or the
+DSO?
+
+Thanks,
+Ian
+
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/util/map.c | 20 ++++++++++++++++++++
+>  tools/perf/util/map.h |  3 +++
+>  2 files changed, 23 insertions(+)
 >
-> I can send a separate patch to clean this up later :) Doesn't seem that bad.
-
-SGTM.
-
-[..]
-> >
-> > > +     if (cg_write(test_group, "memory.zswap.max", "0"))
-> > > +             goto out;
-> > > +
-> > > +     /* Allocate and read more than memory.max to trigger swapin */
-> > > +     if (cg_run(test_group, allocate_bytes_and_read, (void *)MB(32)))
-> > > +             goto out;
-> > > +
-> > > +     /* Verify that no zswap happened */
-> >
-> > If we want to be really meticulous, we can verify that we did swap out,
-> > but not to zswap. IOW, we can check memory.swap.current or something.
+> diff --git a/tools/perf/util/map.c b/tools/perf/util/map.c
+> index 54c67cb7ecef..66542864b7b5 100644
+> --- a/tools/perf/util/map.c
+> +++ b/tools/perf/util/map.c
+> @@ -594,6 +594,26 @@ u64 map__objdump_2mem(struct map *map, u64 ip)
+>         return ip + map__reloc(map);
+>  }
 >
-> Hmm would memory.swap.current go back to 0 once the memory-in-swap is
-> freed? It doesn't seem like we have any counters at the cgroup level
-> for swapout/swapin events. Maybe such counters were not useful enough
-> to justify the extra overhead of maintaining them? :)
+> +u64 map__objdump_2rip(struct map *map, u64 ip)
+> +{
+> +       const struct dso *dso =3D map__dso(map);
+> +
+> +       if (!dso->adjust_symbols)
+> +               return ip;
+> +
+> +       if (dso->rel)
+> +               return ip + map__pgoff(map);
+> +
+> +       /*
+> +        * kernel modules also have DSO_TYPE_USER in dso->kernel,
+> +        * but all kernel modules are ET_REL, so won't get here.
+> +        */
+> +       if (dso->kernel =3D=3D DSO_SPACE__USER)
+> +               return ip - dso->text_offset;
+> +
+> +       return map__map_ip(map, ip + map__reloc(map));
+> +}
+> +
+>  bool map__contains_symbol(const struct map *map, const struct symbol *sy=
+m)
+>  {
+>         u64 ip =3D map__unmap_ip(map, sym->start);
+> diff --git a/tools/perf/util/map.h b/tools/perf/util/map.h
+> index 49756716cb13..65e2609fa1b1 100644
+> --- a/tools/perf/util/map.h
+> +++ b/tools/perf/util/map.h
+> @@ -132,6 +132,9 @@ u64 map__rip_2objdump(struct map *map, u64 rip);
+>  /* objdump address -> memory address */
+>  u64 map__objdump_2mem(struct map *map, u64 ip);
 >
-> Anyway, I think checking zswpout should probably be enough here.
-> That's the spirit of the test anyway - make absolutely sure that no
-> zswap-out happened.
-
-The test is making sure that even though we used real swap, we did not
-use zswap. In other words, we may see a false positive if something
-goes wrong and we don't swap anything at all. I know I am probably
-being paranoid here :)
-
-How about we check memory.swap.peak?
-
-[..]
-> > > +     test_group = cg_name(root, "zswapin_test");
-> > > +     if (!test_group)
-> > > +             goto out;
-> > > +     if (cg_create(test_group))
-> > > +             goto out;
-> > > +     if (cg_write(test_group, "memory.max", "8M"))
-> > > +             goto out;
-> > > +     if (cg_write(test_group, "memory.zswap.max", "max"))
-> > > +             goto out;
-> > > +
-> > > +     /* Allocate and read more than memory.max to trigger (z)swap in */
-> > > +     if (cg_run(test_group, allocate_bytes_and_read, (void *)MB(32)))
-> > > +             goto out;
-> >
-> > We should probably check for a positive zswapin here, no?
+> +/* objdump address -> rip */
+> +u64 map__objdump_2rip(struct map *map, u64 ip);
+> +
+>  struct symbol;
+>  struct thread;
 >
-> Oh right. I'll just do a quick check here:
+> --
+> 2.43.0.594.gd9cf4e227d-goog
 >
-> zswpin = cg_read_key_long(test_group, "memory.stat", "zswpin ");
-> if (zswpin < 0) {
->    ksft_print_msg("Failed to get zswpin\n");
->    goto out;
-> }
->
-> if (zswpin == 0) {
->    ksft_print_msg("zswpin should not be 0\n");
->    goto out;
-> }
-
-SGTM.
-
-Thanks!
 
