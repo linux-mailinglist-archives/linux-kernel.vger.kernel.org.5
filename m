@@ -1,347 +1,127 @@
-Return-Path: <linux-kernel+bounces-50793-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50794-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4235847DF1
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:40:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 835FA847DF3
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:42:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0584E1C2480E
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:40:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB8C5B2982A
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:42:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A2F210E6;
-	Sat,  3 Feb 2024 00:40:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7851880A;
+	Sat,  3 Feb 2024 00:42:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E1RnFX3p"
-Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cj/5n6Qp"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F6FC6FB6;
-	Sat,  3 Feb 2024 00:40:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06A0D626
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 00:42:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706920806; cv=none; b=YZNA6p5QXnD6y8XF1QDYxO4O+6ODae7CJZ/lDZ2kebN3rkPwTX1gGT4f4m4ZJ65U/+Tsvg2NuikfF7G82UH5vFRAd41R2ATVnzM9kHSFfnFmWICEKcxfvNJSPL7N0ypsVEm/U5qkm7kXCjCh1SEzhnhKVmImbw2qsBk0YkIK5sE=
+	t=1706920942; cv=none; b=Uy+Gqpd0qWyKn6oJitHA9cXZ2B+ASYdkvClaT3yteFNFXovUB6scZxYlRh9mxcITElyZ83Qxw8BngnVPRUcK4UacZZibHXEcgzboNuLzHbhvAmejQZBDNTDW6wkj2MVYOEqyKpgN21w34vPdPJhpGOHJwgVJL49FhHtxLSZXyPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706920806; c=relaxed/simple;
-	bh=hY9D3IvgVlygL48OZ0YO4gZgMH1F6qxN5QAYMCEfR/k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=a8uifXmltN6gEKe3vHfho+4rPcNleGcljDY3NQl6PBXsMBFPQ6V8vrYsBpyQlh98mu/ctra4LQB8Xig4g223T2dhS+Vy6lseiw9l8NuMAiHG8g2DbWaI2YC0KtJRTRyeQ0m4+BXmTSsZJJ80Cwhb09ch+4GlHLktFz/TjtlrMhw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E1RnFX3p; arc=none smtp.client-ip=209.85.166.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-3638eb3ead6so10371155ab.0;
-        Fri, 02 Feb 2024 16:40:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706920803; x=1707525603; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yPmEee8EW9ZVTqL0gdWpHjFhQp8lEG44ByVdqeX0Gus=;
-        b=E1RnFX3p0qXFhB/yWyu9fbC8gdVyuTqplMHyWaE60mwt1HkLbTNMEyDctAkPwRENys
-         zLDgTqiSzzfuaHPqcZkhJZEB03N6LbOmHN41MtbNyCNEAdWxds/933pyNyXjV+p3l1Go
-         8A/z6gQRAPCG+/ToxXih1yQBfdOShfzvYyTzrCC6m/oqqZLjyhiW3VlHRC9OwZ53+pGz
-         HzoB7/BB7OC5bdjssciuNLw1TNAn7inE4FMPM+00iuz1ew5Beq35P2HjygXqnrq6B7y8
-         7MVWDL+CBTkADgArLkqq4toZCtlsY3xxnnR1s9/9SvflH6WnvH7wWni9LLv2loJxtLCW
-         mXFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706920803; x=1707525603;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yPmEee8EW9ZVTqL0gdWpHjFhQp8lEG44ByVdqeX0Gus=;
-        b=bxE7y66DvSMKWeta2QrbzUtKasbHkMEUVcUZiiGS86T2QiRP0e4JQFvddpDiZ5PWui
-         gK7xSNVZAK9LHGpwTd/hGFu91x2eWIycLRv6UMasiK9DfhoXUTEBImHdJ+xd8NqUOXCt
-         s32RHwy3JXQmzLcoFUoplK3kuVBdfmQIiU/H7kWsEkVvXf0db4IWRqN1aNPtjCSRZOkD
-         +63TwoHoJd2dzc4kf1v1VQmS410lkGyjsuOytTP1rFaJCsamA53syGnYJuhdaq7rTSXV
-         oRafYdaY0o8U4TsTQupTpBvP1ce4YyMYoiZdZkUprd+Jxu1+M9IzPouutnVo85mpT1M8
-         4XqA==
-X-Gm-Message-State: AOJu0YxqNT8cctP+A4aaeDvMTTzlQy61sR8p3Qi+dY7AStdusx4w7V3l
-	UukXkd98VriB0X0/+KaNaEWBXCwQalIxjybGUhdTT4TuQgD2YckpqUofCG9yALpUOMGd5N1FMf3
-	MdZRPVr0JUjHZh87QR7fKo5AA3KQ=
-X-Google-Smtp-Source: AGHT+IFgqdwHEV8JgvmsaWSumu8uHPzWdEdZa0O2YyVDQXw0gYpAVHhFLtVsDIFjRN0/CAeQGvTso/hxPnI2oKTHPOc=
-X-Received: by 2002:a92:c9cc:0:b0:363:b641:cd7f with SMTP id
- k12-20020a92c9cc000000b00363b641cd7fmr2599920ilq.8.1706920803622; Fri, 02 Feb
- 2024 16:40:03 -0800 (PST)
+	s=arc-20240116; t=1706920942; c=relaxed/simple;
+	bh=ssCnG9xaRdN/ZI5sWJHTsltoE07TElOIcIe3kWg205Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=W5JHnCZD9TmKM8DjHRK49jKfuqA2FoayCO4pQyiWSavxLxApEQpwsMYyZgK70QyXCUZlKLXEqNF9xQGm+lmiKhJhLBjtyTc0T3vY5bp59X7R/OM3QK/2fRmRThna2U0jSC2wo1XNpUla3Kqr6cOSvgfbmYZz+/u1/+o8jGAwkEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cj/5n6Qp; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706920941; x=1738456941;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ssCnG9xaRdN/ZI5sWJHTsltoE07TElOIcIe3kWg205Y=;
+  b=cj/5n6QpLdwdohC+ArsWsJd+B1GrVjS4HrNPNeuE5Ptjkpqy2vhTyJ6N
+   rp+JD4NEgsK99i4UxdZag6u4R9p5JA8Qi8U/HaEEkxB5m+VwIcrlaeL6G
+   aKl9l0UbRMaF6z3uOmUGlJ76xVYAdH6xRcgP4vnB3tIlDE094h9IFe+8w
+   f2u4oL+6xEsFjZ56y+7fvLt/qUPq7UVHKoxnO3P+bwi/Y0Na02wy5VWiO
+   0ECYxMF4zblyWEx5wS0TKVII7XboJSeLslKFu2kls635DB+vyFYIIIonE
+   h3lcGNeH5Uys2fPWoN7SFWgVMrJzRM+rCaRkTsIPosHG2q1GsUEKUcAgS
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="430428"
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="430428"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 16:42:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="23485788"
+Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
+  by fmviesa002.fm.intel.com with ESMTP; 02 Feb 2024 16:42:19 -0800
+Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rW46r-0004TM-0L;
+	Sat, 03 Feb 2024 00:42:17 +0000
+Date: Sat, 3 Feb 2024 08:41:11 +0800
+From: kernel test robot <lkp@intel.com>
+To: Max Kellermann <max.kellermann@ionos.com>, linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev,
+	Max Kellermann <max.kellermann@ionos.com>
+Subject: Re: [PATCH 10/28] uprobes.h: move declarations to uprobes_types.h
+Message-ID: <202402030843.CUng9PM7-lkp@intel.com>
+References: <20240131145008.1345531-11-max.kellermann@ionos.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201032718.1968208-1-nphamcs@gmail.com> <20240201032718.1968208-4-nphamcs@gmail.com>
- <Zbtfku0wVGXBHDTD@google.com>
-In-Reply-To: <Zbtfku0wVGXBHDTD@google.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Fri, 2 Feb 2024 16:39:52 -0800
-Message-ID: <CAKEwX=PH5abBFCjYHL+d99v8MMwiASqP83aF2vSv1iwezX3UHA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] selftests: add zswapin and no zswap tests
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: akpm@linux-foundation.org, riel@surriel.com, shuah@kernel.org, 
-	hannes@cmpxchg.org, tj@kernel.org, lizefan.x@bytedance.com, 
-	roman.gushchin@linux.dev, linux-mm@kvack.org, kernel-team@meta.com, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240131145008.1345531-11-max.kellermann@ionos.com>
 
-On Thu, Feb 1, 2024 at 1:08=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com> =
-wrote:
->
-> Hey Nhat,
->
-> I have a few more comments, sorry for not catching everything the first
-> time around.
+Hi Max,
 
-No worries :)
+kernel test robot noticed the following build errors:
 
->
-> Adding Roman to CC.
->
-> On Wed, Jan 31, 2024 at 07:27:18PM -0800, Nhat Pham wrote:
-> > Add a selftest to cover the zswapin code path, allocating more memory
-> > than the cgroup limit to trigger swapout/zswapout, then reading the
-> > pages back in memory several times. This is inspired by a recently
-> > encountered kernel crash on the zswapin path in our internal kernel,
-> > which went undetected because of a lack of test coverage for this path.
-> >
-> > Add a selftest to verify that when memory.zswap.max =3D 0, no pages can=
- go
-> > to the zswap pool for the cgroup.
-> >
-> > Suggested-by: Rik van Riel <riel@surriel.com>
-> > Suggested-by: Yosry Ahmed <yosryahmed@google.com>
-> > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
-> > ---
-> >  tools/testing/selftests/cgroup/test_zswap.c | 97 +++++++++++++++++++++
-> >  1 file changed, 97 insertions(+)
-> >
-> > diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testin=
-g/selftests/cgroup/test_zswap.c
-> > index 32ce975b21d1..14d1f18f1098 100644
-> > --- a/tools/testing/selftests/cgroup/test_zswap.c
-> > +++ b/tools/testing/selftests/cgroup/test_zswap.c
-> > @@ -60,6 +60,27 @@ static long get_zswpout(const char *cgroup)
-> >       return cg_read_key_long(cgroup, "memory.stat", "zswpout ");
-> >  }
-> >
-> > +static int allocate_bytes_and_read(const char *cgroup, void *arg)
->
-> I think allocate_and_read_bytes() is easier to read, but I don't feel
-> strongly about it.
+[auto build test ERROR on next-20240131]
+[cannot apply to mkp-scsi/for-next jejb-scsi/for-next axboe-block/for-next linus/master v6.8-rc2 v6.8-rc1 v6.7 v6.8-rc2]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Ah you're right. I'll fix that in the next version.
+url:    https://github.com/intel-lab-lkp/linux/commits/Max-Kellermann/include-add-missing-includes/20240131-231042
+base:   next-20240131
+patch link:    https://lore.kernel.org/r/20240131145008.1345531-11-max.kellermann%40ionos.com
+patch subject: [PATCH 10/28] uprobes.h: move declarations to uprobes_types.h
+config: csky-allnoconfig (https://download.01.org/0day-ci/archive/20240203/202402030843.CUng9PM7-lkp@intel.com/config)
+compiler: csky-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240203/202402030843.CUng9PM7-lkp@intel.com/reproduce)
 
->
-> > +{
-> > +     size_t size =3D (size_t)arg;
-> > +     char *mem =3D (char *)malloc(size);
-> > +     int ret =3D 0;
-> > +
-> > +     if (!mem)
-> > +             return -1;
-> > +     for (int i =3D 0; i < size; i +=3D 4095)
-> > +             mem[i] =3D 'a';
->
-> cgroup_util.h defines PAGE_SIZE, see alloc_anon() for example.
->
-> On that note, alloc_anon() is awfully close to allocate_bytes() below,
-> perhaps we should consolidate them. The only difference I see is that
-> alloc_anon() does not check for the allocation failure, but a lot of
-> functions in cgroup_helpers.c don't, so it seems intentional for
-> simplification.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402030843.CUng9PM7-lkp@intel.com/
 
-Hmm I didn't know about this function. I think it was Domenico who
-added allocate_bytes() for the initial zswap tests, and I've just been
-piggybacking on it ever since:
-https://github.com/torvalds/linux/commit/d9cfaf405b8ffe2c716b1ce4c82e0a19d5=
-0951da
+All errors (new ones prefixed by >>):
 
-I can send a separate patch to clean this up later :) Doesn't seem that bad=
-.
-
->
-> > +
-> > +     /* go through the allocated memory to (z)swap in and out pages */
-> > +     for (int i =3D 0; i < size; i +=3D 4095) {
-> > +             if (mem[i] !=3D 'a')
-> > +                     ret =3D -1;
-> > +     }
-> > +
-> > +     free(mem);
-> > +     return ret;
-> > +}
-> > +
-> >  static int allocate_bytes(const char *cgroup, void *arg)
-> >  {
-> >       size_t size =3D (size_t)arg;
-> > @@ -133,6 +154,80 @@ static int test_zswap_usage(const char *root)
-> >       return ret;
-> >  }
-> >
-> > +/*
-> > + * Check that when memory.zswap.max =3D 0, no pages can go to the zswa=
-p pool for
-> > + * the cgroup.
-> > + */
-> > +static int test_swapin_nozswap(const char *root)
-> > +{
-> > +     int ret =3D KSFT_FAIL;
-> > +     char *test_group;
-> > +     long zswpout;
-> > +
-> > +     /* Set up */
->
-> I think this comment is unnecessary.
-
-Fair!
-
->
-> > +     test_group =3D cg_name(root, "no_zswap_test");
-> > +
-> > +     if (!test_group)
-> > +             goto out;
-> > +     if (cg_create(test_group))
-> > +             goto out;
-> > +     if (cg_write(test_group, "memory.max", "8M"))
-> > +             goto out;
-> > +     /* Disable zswap */
->
-> I think this comment is unnecessary.
-
-Fair!
-
->
-> > +     if (cg_write(test_group, "memory.zswap.max", "0"))
-> > +             goto out;
-> > +
-> > +     /* Allocate and read more than memory.max to trigger swapin */
-> > +     if (cg_run(test_group, allocate_bytes_and_read, (void *)MB(32)))
-> > +             goto out;
-> > +
-> > +     /* Verify that no zswap happened */
->
-> If we want to be really meticulous, we can verify that we did swap out,
-> but not to zswap. IOW, we can check memory.swap.current or something.
-
-Hmm would memory.swap.current go back to 0 once the memory-in-swap is
-freed? It doesn't seem like we have any counters at the cgroup level
-for swapout/swapin events. Maybe such counters were not useful enough
-to justify the extra overhead of maintaining them? :)
-
-Anyway, I think checking zswpout should probably be enough here.
-That's the spirit of the test anyway - make absolutely sure that no
-zswap-out happened.
-
->
-> > +     zswpout =3D get_zswpout(test_group);
-> > +     if (zswpout < 0) {
-> > +             ksft_print_msg("Failed to get zswpout\n");
-> > +             goto out;
-> > +     } else if (zswpout > 0) {
->
-> nit: This can be a separate if condition, I think it would be more
-> inline with the style of separate consecutive if blocks we are
-> following.
-
-Yeah now that you point out the inconsistency, it starts to bug my
-brain too :) I'll fix it in the next version.
-
->
-> > +             ksft_print_msg(
-> > +                     "Pages should not go to zswap when memory.zswap.m=
-ax =3D 0\n");
->
-> We can probably avoid the line break with something more concise, for
-> example:
-> "zswapout > 0 when zswap is disabled"
-> or "zswapout > 0 when memory.zswap.max =3D 0"
->
-> > +             goto out;
-> > +     }
-> > +     ret =3D KSFT_PASS;
-> > +
-> > +out:
-> > +     cg_destroy(test_group);
-> > +     free(test_group);
-> > +     return ret;
-> > +}
-> > +
-> > +/* Simple test to verify the (z)swapin code paths */
-> > +static int test_zswapin_no_limit(const char *root)
->
-> I think test_zswapin() is enough to be distinct from
-> test_swapin_nozswap(). The limit is not a factor here AFAICT.
-
-Fair.
-
->
-> > +{
-> > +     int ret =3D KSFT_FAIL;
-> > +     char *test_group;
-> > +
-> > +     /* Set up */
->
-> I think this comment is unnecessary.
-
-Fair.
-
->
-> > +     test_group =3D cg_name(root, "zswapin_test");
-> > +     if (!test_group)
-> > +             goto out;
-> > +     if (cg_create(test_group))
-> > +             goto out;
-> > +     if (cg_write(test_group, "memory.max", "8M"))
-> > +             goto out;
-> > +     if (cg_write(test_group, "memory.zswap.max", "max"))
-> > +             goto out;
-> > +
-> > +     /* Allocate and read more than memory.max to trigger (z)swap in *=
-/
-> > +     if (cg_run(test_group, allocate_bytes_and_read, (void *)MB(32)))
-> > +             goto out;
->
-> We should probably check for a positive zswapin here, no?
-
-Oh right. I'll just do a quick check here:
-
-zswpin =3D cg_read_key_long(test_group, "memory.stat", "zswpin ");
-if (zswpin < 0) {
-   ksft_print_msg("Failed to get zswpin\n");
-   goto out;
-}
-
-if (zswpin =3D=3D 0) {
-   ksft_print_msg("zswpin should not be 0\n");
-   goto out;
-}
+   arch/csky/kernel/signal.c: In function 'do_notify_resume':
+>> arch/csky/kernel/signal.c:259:17: error: implicit declaration of function 'uprobe_notify_resume'; did you mean 'do_notify_resume'? [-Werror=implicit-function-declaration]
+     259 |                 uprobe_notify_resume(regs);
+         |                 ^~~~~~~~~~~~~~~~~~~~
+         |                 do_notify_resume
+   cc1: some warnings being treated as errors
 
 
->
-> > +
-> > +     ret =3D KSFT_PASS;
-> > +
-> > +out:
-> > +     cg_destroy(test_group);
-> > +     free(test_group);
-> > +     return ret;
-> > +}
-> > +
-> >  /*
-> >   * When trying to store a memcg page in zswap, if the memcg hits its m=
-emory
-> >   * limit in zswap, writeback should affect only the zswapped pages of =
-that
-> > @@ -309,6 +404,8 @@ struct zswap_test {
-> >       const char *name;
-> >  } tests[] =3D {
-> >       T(test_zswap_usage),
-> > +     T(test_swapin_nozswap),
-> > +     T(test_zswapin_no_limit),
-> >       T(test_no_kmem_bypass),
-> >       T(test_no_invasive_cgroup_shrink),
-> >  };
-> > --
-> > 2.39.3
+vim +259 arch/csky/kernel/signal.c
+
+e9564df753fd54 Guo Ren 2018-09-05  250  
+e9564df753fd54 Guo Ren 2018-09-05  251  /*
+bf241682936293 Guo Ren 2019-04-01  252   * notification of userspace execution resumption
+bf241682936293 Guo Ren 2019-04-01  253   * - triggered by the _TIF_WORK_MASK flags
+e9564df753fd54 Guo Ren 2018-09-05  254   */
+bf241682936293 Guo Ren 2019-04-01  255  asmlinkage void do_notify_resume(struct pt_regs *regs,
+bf241682936293 Guo Ren 2019-04-01  256  	unsigned long thread_info_flags)
+e9564df753fd54 Guo Ren 2018-09-05  257  {
+8f6bb793b2be82 Guo Ren 2020-04-02  258  	if (thread_info_flags & _TIF_UPROBE)
+8f6bb793b2be82 Guo Ren 2020-04-02 @259  		uprobe_notify_resume(regs);
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
