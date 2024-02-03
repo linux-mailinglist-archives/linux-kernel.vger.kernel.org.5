@@ -1,347 +1,204 @@
-Return-Path: <linux-kernel+bounces-50883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50885-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10EE9847FD7
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 04:08:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43D34847FDA
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 04:09:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7ACDA1F276EA
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 03:08:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76E75B21ABA
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 03:09:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A00879FE;
-	Sat,  3 Feb 2024 03:08:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AB4F883D;
+	Sat,  3 Feb 2024 03:09:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="hPuLUHxg"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hJ+thUtV"
+Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57D2879C0;
-	Sat,  3 Feb 2024 03:08:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88BA9101CE
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 03:09:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706929717; cv=none; b=EjlYOngMan7Rj8eRZzpRN+evte57vkKKYQfqZiapyV//Juh8O/Pqx7xmQRiRasJWVLL+zTQlwE7RNPBEsw+mY8HLQrYCdHBc08xIiCuVHRO2QJTBzLb97xiMYBkH8Rv85IgYD3jdGD5UG4YOsb8tFVGj/HuA3vd5GbGLk7pPndY=
+	t=1706929759; cv=none; b=be5RuwqK7tZcFe4qT89lS6z/u4GLXeJeIImj9jXbP1/YhOJS4Ad/DqF0P6AFFgaoBDpYWWYP/k63wB84pFZNtWz8EMa5dQyff9apM4AwsQeCUnaaHcaWsy709w6sLMpyG5kPnyRcZXZfJ05cyPNqMrl1cLN5e0wx2tS/jxx4yRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706929717; c=relaxed/simple;
-	bh=vK5dW/PRRoIO6MZcxfMO5hEmtNmPer552nVlJ/dQ3tM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FqhmtOgkm/h0zGxw+m9d8N9t3P+0F61ndZKOatMOrYvWB62Of6+ta14xyEk3/xqUR4kNAOVVaESxwGZQUGvgv5lNzdDRzOEZK2bdl6LQu+wp4xZZXafKk86ocBNyYlzRP6Bu2iDClV3903x+lp5AkDo6weHvuBaf9WJ66KRWan8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=hPuLUHxg; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41335oDM013030;
-	Fri, 2 Feb 2024 21:05:50 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706929550;
-	bh=993adIjBeKvC8pKrVaumjq+I7IEyGHVR7caepVpb+QI=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=hPuLUHxggKhRTIXdeNkGXgTIppqDNKdRPGkG5voEAPD02Qc6kdqA3uZ7tPtUXb7hc
-	 j3UUWSj9QYOGFFAHnyNyCNfZDzWaOSu1Oo/J1aVatSn6Vcwbm2OiE3zHL2UdvAaCOn
-	 KCgAwLZnVfNp5nzCb96POvuV1T+TfQDUqANuLCW0=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41335oTb022971
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 2 Feb 2024 21:05:50 -0600
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 2
- Feb 2024 21:05:50 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 2 Feb 2024 21:05:50 -0600
-Received: from LT5CG31242FY.dhcp.ti.com ([10.250.162.93])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 413358h8021917;
-	Fri, 2 Feb 2024 21:05:41 -0600
-From: Shenghao Ding <shenghao-ding@ti.com>
-To: <broonie@kernel.org>, <conor+dt@kernel.org>,
-        <krzysztof.kozlowski@linaro.org>, <devicetree@vger.kernel.org>,
-        <robh+dt@kernel.org>, <andriy.shevchenko@linux.intel.com>,
-        <linux-sound@vger.kernel.org>, <liam.r.girdwood@intel.com>,
-        <lgirdwood@gmail.com>, <linux-kernel@vger.kernel.org>
-CC: <kevin-lu@ti.com>, <baojun.xu@ti.com>, <v-po@ti.com>, <navada@ti.com>,
-        <perex@perex.cz>, <j-mcpherson@ti.com>,
-        <pierre-louis.bossart@linux.intel.com>, <13916275206@139.com>,
-        <mohit.chawla@ti.com>, <soyer@irl.hu>, <jkhuang3@ti.com>,
-        <tiwai@suse.de>, <pdjuandi@ti.com>, <manisha.agrawal@ti.com>,
-        <s-hari@ti.com>, <aviel@ti.com>, <hnagalla@ti.com>, <praneeth@ti.com>,
-        Shenghao Ding <shenghao-ding@ti.com>
-Subject: [PATCH v3 4/4] ASoc: dt-bindings: PCM6240: Add initial DT binding
-Date: Sat, 3 Feb 2024 11:05:02 +0800
-Message-ID: <20240203030504.1724-4-shenghao-ding@ti.com>
-X-Mailer: git-send-email 2.33.0.windows.2
-In-Reply-To: <20240203030504.1724-1-shenghao-ding@ti.com>
-References: <20240203030504.1724-1-shenghao-ding@ti.com>
+	s=arc-20240116; t=1706929759; c=relaxed/simple;
+	bh=KLM26Yfrtc8SeQCiqpSzGGfhWq7k+6JxiLtHj7A+bGk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hafhT1yrAFmnGIfaYHkCYZJF9BknUnkIPVqc++MWFdR2KxyUW67hefJmuduph/m6BZ1pKJ1Nt88tlnGdiu9gGo4r+sF1Ubsaz9HoOMKPBKPtAYzxJUjdNbaWzP//XF164X0IMkUUZiaf0uURj/bj2lmzr1Y3LLSG9qLW8okKSac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hJ+thUtV; arc=none smtp.client-ip=209.85.166.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-3638bd37107so52895ab.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 19:09:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706929756; x=1707534556; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b1DU4tok1X0r9bYtqZ6dNhjxfX0/7CKeHdYGkX55OSE=;
+        b=hJ+thUtVNbyUF1HPW0HiEbQmPcQUT9xO7AzHVMbe35f0DQD0WH8OXXfZrN+sfE+9Zy
+         hHucswnk+Z9laWpb9MD4LQ/8NSDHlJ5bU9ZKnM8mzJugG+WCdedOiVP7oz2JrJ9k4IlL
+         gbG6KAw5F/UrdBLFWqYnlILDcwRC+2Jv412iVdphCGUIbamOqVe7cPjkFssN4YWsT59L
+         Qsi3bwDtfrj33v3Z+s+9tyWM6JF4mL7ZgS3y/zM6N12tYSSfqgUBVfb9i3sQpGhQzIMU
+         vFMc+az0tOWt3W/LdKF9XOFN2bwcoZQohL9BVXOB33S5dRWqEIx8khaz4T6/gY4xnC6L
+         Jk0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706929756; x=1707534556;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b1DU4tok1X0r9bYtqZ6dNhjxfX0/7CKeHdYGkX55OSE=;
+        b=PqdsydjQ8+AxurLHXPTAcCLi5AiyrU7lXrVYNxkXogMtS45TKkdpYl7PbIs67zdd6K
+         VRzyKBZQDYFhNEW5JFGOz3PQebK6+m+DkiyTEIOnGNd5bQKJxJRSVQx9MWjsjYvcBVkg
+         3xk1YdPNmOmIZXGeJwLDwbop+lPm4YsgAY9yhsW50m3BYq26ykh6OWMatdzPBQhmhdIs
+         HwjsK85lgsETAZIUUWDOV/FrkNcdA07l59d95BhtfvFnEmv6xdTTtPOfBiJqfC49+d0w
+         XW/VRilZ17rm4ekuR3OS5To5EJOESl2pKvZVWUhmopmRlLkcjwV8VkdcNFmxkeWTZcvZ
+         zVkg==
+X-Gm-Message-State: AOJu0Yz7jxNZYQmdEvDNxGy6ZGWS5WgK7WJThnE17b6N2UnhOoANuoil
+	Fi/sVyJJCp+3JzaMy9jEwm0NeZwG0qbdwtKe0Tu8LWNn/baxiKskgCaR0hElyZzpXBJl5gsQZkA
+	tVIVH1ZIqSopT77Yw5VNB0ieWm91EHrM1ZAu/
+X-Google-Smtp-Source: AGHT+IG7wLGht0xNBz+bt/mG1e+4dxWnO7yhbSbVk/YuCf/7WkBuPoV05DoNtWLubTwidHCIpLEFOQAsMQDSUDgL4OA=
+X-Received: by 2002:a05:6e02:23c3:b0:363:8007:d7dd with SMTP id
+ br3-20020a056e0223c300b003638007d7ddmr71455ilb.3.1706929756513; Fri, 02 Feb
+ 2024 19:09:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240202220459.527138-1-namhyung@kernel.org> <20240202220459.527138-10-namhyung@kernel.org>
+In-Reply-To: <20240202220459.527138-10-namhyung@kernel.org>
+From: Ian Rogers <irogers@google.com>
+Date: Fri, 2 Feb 2024 19:09:05 -0800
+Message-ID: <CAP-5=fWhHb8iomEQ_rhwC50kGhPEVbDZv6X6riY_3pr787bhAQ@mail.gmail.com>
+Subject: Re: [PATCH 09/14] perf annotate-data: Handle call instructions
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org, 
+	linux-trace-devel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: quoted-printable
 
-PCM6240 family chips are popular among audio customers, in spite of only a
-portion of the functionality of codec, such as ADC or DAC, and so on, for
-different Specifications, range from Personal Electric to Automotive
-Electric, even some professional fields.yet their audio performance is far
-superior to the codec's, and cost is lower than codec, and much easier to
-program than codec.
+On Fri, Feb 2, 2024 at 2:05=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
+rote:
+>
+> When updating instruction states, the call instruction should play a
+> role since it can change the register states.  For simplicity, mark some
+> registers as scratch registers (should be arch-dependent), and
+> invalidate them all after a function call.
 
-Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
+nit: Volatile or caller-save would be a more conventional name than scratch=
+.
 
----
-Change in v3:
- - Rewrite the subject to match something similar to other commits.
- - And none of them are compatible with something.
- - minItems, then maxItems.
- - Drop reset-gpios description
- - Remove the repeated reg descriptions and reg constraints.
- - Drop redundant spaces.
- - Add missing line breaks between blocks and additionalProperties.
- - Correct compatibility issue on adc6120 and pcm6240.
- - All these chips have only a portion of the functionality of codec,
-   such as ADC or DAC, and so on, but their audio performance is far
-   superior to the codec's, and cost is lower than codec, and much easier
-   to program than codec. Simply one or two register settings can enable
-   them to work. Init for these chips are hardware reset or software reset.
-   As to some audio filter params for internal filters, it is up to the
-   special user cases, which can be saved into the bin file. The default
-   value also can work well.
- - Add blank line before reg.
- - remove unneeded items and if branches.
- - Add missing compatible devices, such as adc6120, etc.
- - Add necessary people into the list for DTS review
- - correct misaligned.
----
- .../devicetree/bindings/sound/ti,pcm6240.yaml | 214 ++++++++++++++++++
- 1 file changed, 214 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/ti,pcm6240.yaml
+Thanks,
+Ian
 
-diff --git a/Documentation/devicetree/bindings/sound/ti,pcm6240.yaml b/Documentation/devicetree/bindings/sound/ti,pcm6240.yaml
-new file mode 100644
-index 000000000000..c0f8e8cf1d06
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ti,pcm6240.yaml
-@@ -0,0 +1,214 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+# Copyright (C) 2022 - 2024 Texas Instruments Incorporated
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/ti,pcm6240.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Texas Instruments PCM6240 Family Audio ADC/DAC
-+
-+maintainers:
-+  - Shenghao Ding <shenghao-ding@ti.com>
-+
-+description: |
-+  The PCM6240 Family is a big family of Audio ADC/DAC for
-+  different Specifications, range from Personal Electric
-+  to Automotive Electric, even some professional fields.
-+
-+  Specifications about the audio chip can be found at:
-+    https://www.ti.com/lit/gpn/tlv320adc3120
-+    https://www.ti.com/lit/gpn/tlv320adc5120
-+    https://www.ti.com/lit/gpn/tlv320adc6120
-+    https://www.ti.com/lit/gpn/dix4192
-+    https://www.ti.com/lit/gpn/pcm1690
-+    https://www.ti.com/lit/gpn/pcm3120-q1
-+    https://www.ti.com/lit/gpn/pcm3140-q1
-+    https://www.ti.com/lit/gpn/pcm5120-q1
-+    https://www.ti.com/lit/gpn/pcm6120-q1
-+    https://www.ti.com/lit/gpn/pcm6260-q1
-+    https://www.ti.com/lit/gpn/pcm9211
-+    https://www.ti.com/lit/gpn/pcmd3140
-+    https://www.ti.com/lit/gpn/pcmd3180
-+    https://www.ti.com/lit/gpn/taa5212
-+    https://www.ti.com/lit/gpn/tad5212
-+
-+properties:
-+  compatible:
-+    description: |
-+      ti,adc3120: Stereo-channel, 768-kHz, Burr-Brown™ audio analog-to-
-+      digital converter (ADC) with 106-dB SNR.
-+
-+      ti,adc5120: 2-Channel, 768-kHz, Burr-Brown™ Audio ADC with 120-dB SNR.
-+
-+      ti,adc6120: Stereo-channel, 768-kHz, Burr-Brown™ audio analog-to-
-+      digital converter (ADC) with 123-dB SNR.
-+
-+      ti,pcm1690: Automotive Catalog 113dB SNR 8-Channel Audio DAC with
-+      Differential Outputs.
-+
-+      ti,pcm3120: Automotive, stereo, 106-dB SNR, 768-kHz, low-power
-+      software-controlled audio ADC.
-+
-+      ti,pcm3140: Automotive, Quad-Channel, 768-kHz, Burr-Brown™ Audio ADC
-+      with 106-dB SNR.
-+
-+      ti,pcm5120: Automotive, stereo, 120-dB SNR, 768-kHz, low-power
-+      software-controlled audio ADC.
-+
-+      ti,pcm5140: Automotive, Quad-Channel, 768-kHz, Burr-Brown™ Audio ADC
-+      with 120-dB SNR.
-+
-+      ti,pcm6120: Automotive, stereo, 123-dB SNR, 768-kHz, low-power
-+      software-controlled audio ADC.
-+
-+      ti,pcm6140: Automotive, Quad-Channel, 768-kHz, Burr-Brown™ Audio ADC
-+      with 123-dB SNR.
-+
-+      ti,pcm6240: Automotive 4-ch audio ADC with integrated programmable mic
-+      bias, boost and input diagnostics.
-+
-+      ti,pcm6260: Automotive 6-ch audio ADC with integrated programmable mic
-+      bias, boost and input diagnostics.
-+
-+      ti,pcm9211: 216-kHz Digital Audio Interface Transceiver (DIX)
-+      With Stereo ADC and Routing.
-+
-+      ti,pcmd3140: Four-channel PDM-input to TDM or I2S output converter.
-+
-+      ti,pcmd3180: Eight-channel pulse-density-modulation input to TDM or
-+      I2S output converter.
-+
-+      ti,taa5212: Low-power high-performance stereo audio ADC with 118-dB
-+      dynamic range.
-+
-+      ti,tad5212: Low-power stereo audio DAC with 120-dB dynamic range.
-+    oneOf:
-+      - items:
-+          - enum:
-+              - ti,adc3120
-+              - ti,adc5120
-+              - ti,pcm3120
-+              - ti,pcm5120
-+              - ti,pcm6120
-+          - const: ti,adc6120
-+      - items:
-+          - enum:
-+              - ti,pcm6260
-+              - ti,pcm6140
-+              - ti,pcm3140
-+              - ti,pcm5140
-+          - const: ti,pcm6240
-+      - items:
-+          - const: ti,dix4192
-+          - const: ti,pcm6240
-+      - items:
-+          - const: ti,adc6120
-+          - const: ti,pcmd512x
-+      - items:
-+          - const: ti,pcm1690
-+          - const: ti,pcm9211
-+      - items:
-+          - enum:
-+              - ti,pcmd3180
-+          - const: ti,pcmd3140
-+      - items:
-+          - enum:
-+              - ti,taa5412
-+          - const: ti,taa5212
-+      - items:
-+          - enum:
-+              - ti,tad5412
-+          - const: ti,tad5212
-+      - enum:
-+          - ti,pcm6240
-+          - ti,pcmd3140
-+          - ti,taa5212
-+          - ti,tad5212
-+          - ti,pcmd3180
-+
-+  reg:
-+    description:
-+      I2C address, in multiple pcmdevices case, all the i2c address
-+      aggregate as one Audio Device to support multiple audio slots.
-+    minItems: 1
-+    maxItems: 4
-+
-+  reset-gpios:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+    description:
-+      Invalid only for ti,pcm1690 because of no INT pin.
-+
-+  '#sound-dai-cells':
-+    const: 0
-+
-+required:
-+  - compatible
-+  - reg
-+
-+allOf:
-+  - $ref: dai-common.yaml#
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - ti,pcm1690
-+    then:
-+      properties:
-+        interrupts: false
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - ti,adc3120
-+              - ti,adc5120
-+              - ti,adc6120
-+              - ti,pcm3120
-+              - ti,pcm5120
-+              - ti,pcm6120
-+              - ti,pcmd3140
-+    then:
-+      properties:
-+        reg:
-+          maxItems: 1
-+          items:
-+            maximum: 0x4e
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+   #include <dt-bindings/gpio/gpio.h>
-+   i2c {
-+     /* example for two devices with interrupt support */
-+     #address-cells = <1>;
-+     #size-cells = <0>;
-+     pcm6240: audio-codec@48 {
-+       compatible = "ti,pcm6240";
-+       reg = <0x48>, /* primary-device */
-+             <0x4b>; /* secondary-device */
-+       #sound-dai-cells = <0>;
-+       reset-gpios = <&gpio1 10 GPIO_ACTIVE_HIGH>;
-+       interrupt-parent = <&gpio1>;
-+       interrupts = <15>;
-+     };
-+   };
-+  - |
-+   #include <dt-bindings/gpio/gpio.h>
-+   i2c {
-+     /* example for one device without interrupt support*/
-+     #address-cells = <1>;
-+     #size-cells = <0>;
-+     pcmd3180: audio-codec@4c {
-+       compatible = "ti,pcmd3180";
-+       reg = <0x4c>;
-+       #sound-dai-cells = <0>;
-+       reset-gpios = <&gpio1 10 GPIO_ACTIVE_HIGH>;
-+     };
-+   };
-+...
--- 
-2.34.1
-
+> If the function returns something, the designated register (ret_reg)
+> will have the type info.
+>
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/util/annotate-data.c | 45 +++++++++++++++++++++++++++++++--
+>  1 file changed, 43 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-d=
+ata.c
+> index e46e162c783f..185cb896b9d6 100644
+> --- a/tools/perf/util/annotate-data.c
+> +++ b/tools/perf/util/annotate-data.c
+> @@ -23,10 +23,14 @@
+>  #include "symbol.h"
+>  #include "symbol_conf.h"
+>
+> -/* Type information in a register, valid when ok is true */
+> +/*
+> + * Type information in a register, valid when @ok is true.
+> + * The @scratch registers are invalidated after a function call.
+> + */
+>  struct type_state_reg {
+>         Dwarf_Die type;
+>         bool ok;
+> +       bool scratch;
+>  };
+>
+>  /* Type information in a stack location, dynamically allocated */
+> @@ -50,6 +54,7 @@ struct type_state_stack {
+>  struct type_state {
+>         struct type_state_reg regs[TYPE_STATE_MAX_REGS];
+>         struct list_head stack_vars;
+> +       int ret_reg;
+>  };
+>
+>  static bool has_reg_type(struct type_state *state, int reg)
+> @@ -57,10 +62,23 @@ static bool has_reg_type(struct type_state *state, in=
+t reg)
+>         return (unsigned)reg < ARRAY_SIZE(state->regs);
+>  }
+>
+> -void init_type_state(struct type_state *state, struct arch *arch __maybe=
+_unused)
+> +void init_type_state(struct type_state *state, struct arch *arch)
+>  {
+>         memset(state, 0, sizeof(*state));
+>         INIT_LIST_HEAD(&state->stack_vars);
+> +
+> +       if (arch__is(arch, "x86")) {
+> +               state->regs[0].scratch =3D true;
+> +               state->regs[1].scratch =3D true;
+> +               state->regs[2].scratch =3D true;
+> +               state->regs[4].scratch =3D true;
+> +               state->regs[5].scratch =3D true;
+> +               state->regs[8].scratch =3D true;
+> +               state->regs[9].scratch =3D true;
+> +               state->regs[10].scratch =3D true;
+> +               state->regs[11].scratch =3D true;
+> +               state->ret_reg =3D 0;
+> +       }
+>  }
+>
+>  void exit_type_state(struct type_state *state)
+> @@ -417,6 +435,29 @@ void update_insn_state(struct type_state *state, str=
+uct data_loc_info *dloc,
+>         int fbreg =3D dloc->fbreg;
+>         int fboff =3D 0;
+>
+> +       if (ins__is_call(&dl->ins)) {
+> +               Dwarf_Die func_die;
+> +
+> +               /* __fentry__ will preserve all registers */
+> +               if (dl->ops.target.sym &&
+> +                   !strcmp(dl->ops.target.sym->name, "__fentry__"))
+> +                       return;
+> +
+> +               /* Otherwise invalidate scratch registers after call */
+> +               for (unsigned i =3D 0; i < ARRAY_SIZE(state->regs); i++) =
+{
+> +                       if (state->regs[i].scratch)
+> +                               state->regs[i].ok =3D false;
+> +               }
+> +
+> +               /* Update register with the return type (if any) */
+> +               if (die_find_realfunc(cu_die, dl->ops.target.addr, &func_=
+die) &&
+> +                   die_get_real_type(&func_die, &type_die)) {
+> +                       state->regs[state->ret_reg].type =3D type_die;
+> +                       state->regs[state->ret_reg].ok =3D true;
+> +               }
+> +               return;
+> +       }
+> +
+>         /* FIXME: remove x86 specific code and handle more instructions l=
+ike LEA */
+>         if (!strstr(dl->ins.name, "mov"))
+>                 return;
+> --
+> 2.43.0.594.gd9cf4e227d-goog
+>
 
