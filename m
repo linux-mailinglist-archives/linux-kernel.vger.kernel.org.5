@@ -1,195 +1,101 @@
-Return-Path: <linux-kernel+bounces-50757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB23D847DA0
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:13:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 341FA847DA2
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:14:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66B631F250A4
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:13:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9725B2134E
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:14:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A59AECC;
-	Sat,  3 Feb 2024 00:10:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 183075CA1;
+	Sat,  3 Feb 2024 00:12:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pwo5n540"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ua01M4jw"
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFBE3636
-	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 00:10:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EEA1468F
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 00:12:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706919019; cv=none; b=Bh1XhHUsQ+sITHfoAn6zEPxDf1WQiR5IXqWyEVw7LfDQwxdXLZCD8D/pWB0pMVlY8K3Ky1Xcz39YLm2RUWEKgoh6gpN9km9YQpOIylT9614qk6tRx/irGj/wlgaRmCjVKMc3Ps8D1mX+T2RgGveSdqGZvPts7eJgKXLCriv3Ko8=
+	t=1706919127; cv=none; b=mdBEA5OakOQbIsPUSgQOZTN76r1xYmWWbgLnY4AMgbdEQcvyr/3hNjE2oB2hqdE3ReBMAiy91IYnX4MYSHNl5hVcUYPFfVZ+EUF3Pt47USEPkzzKqDcirOdBsifelHU6okJAZ/E3Xn5PfS48zlqhRWRQ2W4SbxEkyiQ5raUiOho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706919019; c=relaxed/simple;
-	bh=lYrl0fMGsQMv4kqgDrYyuon4dy2WZcZ4nXzIifz7B8c=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=dv+G3FqugKSK5rURJllXn3NuPDqMjkS1oXlt5qa+3rFA1mm8nriktEkxPivErzOzc3Xn4Nz2hcj9oBra8gqamF28XW45qYlTp+UXu7e1Wkw+1ODDMFdAzY8/3ic1gWqnkEf7VTrI6Nrl+VI62hgLaIhxvOih0wqv/nHwOnC0f2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pwo5n540; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-5112a04c7acso4402831e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 16:10:17 -0800 (PST)
+	s=arc-20240116; t=1706919127; c=relaxed/simple;
+	bh=Q1o0DofRcMLTLWDBsn9giV1FxN9HMwZqB6JfLff9xJw=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=WYZ4rl4Ck9BIxra/V4gCkLN6DhNSEsVgw9hL1QDgYNy81O7UAWZV3Nw5LRC7XMs94ZWmWcAeUBjV733Vwx75eNnXPoSf6shTuHbJzKfJm32e+B6PduxOJe+wMpWMrG/TQbXnHinxrCDEpxw40829Yw52ggUfHFcV2FHcpAzyeaw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ua01M4jw; arc=none smtp.client-ip=209.85.210.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6de2116e7c2so2429713b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 16:12:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706919016; x=1707523816; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+i/pqntxef3SaSJAi399Z+K8zvxssthTj40vaMmV808=;
-        b=pwo5n540YiAMwmMzWpFLlg26V4gpBMvNVCvIeJQ9o/KXppQo23jhYWf911yi/TI2wx
-         Zt8Is5bkeQCHbyOk9UVUpvLkRKa4h5Cx4b60zQBppNgLhS+KDnxpqEZeFUpV7QfagqJ/
-         hKW8aCUP3aOhg7hjdTj3inybWbUyZTi8FBUY+Wfrzyjv3qudoDvo58/l2SMz7gYCbseB
-         77x802lxxkQThQFNk3kmxuFqNAqYl6Jau+2OnM59LRRRCP2/1u6aHMSAgEGOZdVZVHbe
-         phQGBJaxOym+FiZf0BNPG6ZxFuJGKSRHJOYpIz291L2kZlelrrVtxhs6R0X4JP951133
-         eNKQ==
+        d=google.com; s=20230601; t=1706919125; x=1707523925; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CXBUPXpWgAm5r1Pnwblz/7nmofC0KqBjONaFx44tX7w=;
+        b=ua01M4jwGIW06XAqfJ55qP01Y0fI+E4x+oVxmSkh+0wX8EL3Qr3iQNOvKxaSPwGu+C
+         AW7a5nGXh1s77c5p18hIwh1i5biLUmAWZ4FTU10p5BP97XHQgZg5aAKHxLnASFUCJd81
+         wDX3rePJRwQ81EloYsTWIHPACum+u+d2Qi85V0ukxUiXq5WnTOJqr7UxCONVA571eUTw
+         mzxwx+XGrtmQKMpkFe1m1L3t9TKTm1WG07qltU0/Mo9W6NybiTwe5loiM2kSg5nllzw0
+         rCoq06LLuEpIYAfnXTK1PqOdWrTTttFlZTmmM83FdZ2pMBp9NjzHX/+06r89nmeGakYc
+         iw4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706919016; x=1707523816;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+i/pqntxef3SaSJAi399Z+K8zvxssthTj40vaMmV808=;
-        b=W3Uwlgt8Y530XCD2O+jX5LWdVOkJcbDSrg4Iq8qBO3R6ff+SeWPslfCQv+ZokBxMxC
-         ceAb9Xm+oDT8bxtV917hNQtU3uofAi4LwEH9xlihc9xfITZtc494CtC48bNVscT/eejU
-         K3Y0ItoEZg55vKZpMh/4DObfH0WtynmkPKdIJM5oFkc3Av2PGEXfMHEwgK113fseyG2v
-         pGUPRdyO12WiCuzdvQygJFPG+T0/azhvGxuQkJHuImRL7S5WYJrfDaULl+qXMGNNGzP9
-         6Zmk0PtjCLghgQzYYRFlkogoabz44wKtNh/cveQu5VUFlbaxFjkeLDcyTc6ZCHRbsvfh
-         xgbg==
-X-Gm-Message-State: AOJu0Yz4niFZeE2Z8O7OwbF0MzVJro/AybCL9mZ4vkdoI2aQI9dAx8pA
-	6/iB2ZNbONqJBwkVHBRbVdQV669pAUvedBJaXkj0R3+fGoCCvrO2WP8ewETWyNM=
-X-Google-Smtp-Source: AGHT+IHv5rAc8QRwm75Y2Kq5VRPClPoZydxjw0V5JodbhYnOvc7BqLhI+FAL74jEj+E5+TpeQbpSdQ==
-X-Received: by 2002:ac2:531a:0:b0:511:83e:87f with SMTP id c26-20020ac2531a000000b00511083e087fmr2255293lfh.19.1706919015679;
-        Fri, 02 Feb 2024 16:10:15 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVpfq7nsHkCKDeY3juM7KxutkUuUjuCzsgvPID2b8QyfgEAxG4ulY6Koxp679pTujGedhIugehLP7Ve/jgmDajdAu9L2rdew2fCwZ1YJwsPzw2U/LMnMGJnAhvMGMTGv1DLAUNrbz5cpNo659A6CjmGVe2SFU+qReWnLUZ8TI2ohkOqwPnbkaj7/p4ThY+E3/FsDUN51ODHO6Ccj7Ek/pfh13ubKDF2ENEFptu2Hll3ZqsDPRUc492Tx3M7ELmrAFiJqXx4k0LfQD4ljbNCm7a7kB37p3Jrc2wPLfmIRQJtQeolQax05lbO/UejADEeqSo0SxzLjZ05Dp49lCmrPt5+UkaJOUA=
-Received: from [10.167.154.1] (037008245233.garwolin.vectranet.pl. [37.8.245.233])
-        by smtp.gmail.com with ESMTPSA id jy13-20020a170907762d00b00a2b1a20e662sm1396594ejc.34.2024.02.02.16.10.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 16:10:15 -0800 (PST)
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Date: Sat, 03 Feb 2024 01:10:11 +0100
-Subject: [PATCH v2] arm64: dts: qcom: sm8550: Switch UFS from opp-table-hz
- to opp-v2
+        d=1e100.net; s=20230601; t=1706919125; x=1707523925;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CXBUPXpWgAm5r1Pnwblz/7nmofC0KqBjONaFx44tX7w=;
+        b=qUWHP9Ne3G/QJn6KyKSE21Va9S7aSZ93lzg2hHmHB0Zj4PK9sgpwU/Gw45hEdB2lb6
+         z2migAmMfbFo+jR10EbvM/oA5WE3ERbmLWcu/FCqxbw4VfAisvbfWTXUqt1l9MEVOOz1
+         sttWAPNteV/q5ZGWntmYnAvPpsMxTr2jZV9qazZRU15V13ERJE0R7kgiAfV5EFrfnW3S
+         YkOFBTkW59rE4AJE0FvJo51XaedecsiVh/8JELJuE/UYzfsRWTNvGiI3mAL+Ew/yZWbE
+         rBZ6umZXibT2BYCCXcYFtd8MyC9XpR2TGRzNgTIpyJoDM4dLFLPfFNlWzOfzLDZx08/P
+         zZ/w==
+X-Gm-Message-State: AOJu0YwJsiyycPd8+2yDifDoxqOMN3sIEWZcrshrm2Qlc5LWSpZFU7Cb
+	q93/trCEzW0ws/alxiLxRUT+Nhx5Tsd6FaKMj/dFzVzO4fcdzbPKcyEhEOHFQ6n3f72wfXf9JxX
+	CIg==
+X-Google-Smtp-Source: AGHT+IErdY/aHbCZMaGScpUo+KPbsMLgvZWLiqTFMDl9S8nTCSiyYvbbxCi7nFL9smHWAhbI9VH2yM8yCtU=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:1744:b0:6e0:2755:e56 with SMTP id
+ j4-20020a056a00174400b006e027550e56mr19680pfc.3.1706919125499; Fri, 02 Feb
+ 2024 16:12:05 -0800 (PST)
+Date: Fri,  2 Feb 2024 16:11:29 -0800
+In-Reply-To: <20240123221220.3911317-1-mizhang@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+References: <20240123221220.3911317-1-mizhang@google.com>
+X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
+Message-ID: <170691180776.332020.3187581586977661860.b4-ty@google.com>
+Subject: Re: [PATCH] KVM: x86/pmu: Fix type length error when reading pmu->fixed_ctr_ctrl
+From: Sean Christopherson <seanjc@google.com>
+To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Mingwei Zhang <mizhang@google.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240203-topic-8550_ufs_oppv2-v2-1-b0bef2a73e6c@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAGKEvWUC/x2N0QqDMAwAf0XyvECJVsp+ZQxpa5wBaUszZSD++
- 4qPd3DcCcpVWOHZnVD5EJWcGtCjg7j69GGUuTGQocGQ6fGbi0R01pppX3TKpRyEITg3j70fonX
- Q0uCVMVSf4tritG9bk6XyIr/79Xpf1x9/k6ByewAAAA==
-To: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706919014; l=2714;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=lYrl0fMGsQMv4kqgDrYyuon4dy2WZcZ4nXzIifz7B8c=;
- b=D8EXau7qLW2FEu0QWtjBIB2g9tGLro6lg8B0M7x5mNj8s6R8DKRpY8zY+JUe1ksDpFPcAliVb
- VSrQ2IxN6o5CDOljZLF+ZgZl2DWuwBs+HVnXFOc4G945qznfSH6AqGl
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 
-Now that the non-legacy form of OPP is supported within the UFS driver,
-go ahead and switch to it, adding support for more intermediate freq/power
-states.
+On Tue, 23 Jan 2024 22:12:20 +0000, Mingwei Zhang wrote:
+> Fix type length error since pmu->fixed_ctr_ctrl is u64 but the local
+> variable old_fixed_ctr_ctrl is u8. Truncating the value leads to
+> information loss at runtime. This leads to incorrect value in old_ctrl
+> retrieved from each field of old_fixed_ctr_ctrl and causes incorrect code
+> execution within the for loop of reprogram_fixed_counters(). So fix this
+> type to u64.
+> 
+> [...]
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
-Extracted out of:
-https://lore.kernel.org/linux-arm-msm/15d2bd66-29f3-435b-8494-d82ec4036413@linaro.org/#t
+Applied to kvm-x86 fixes.  I'll let it stew in -next for a few days before
+sending a pull request to Paolo.  Thanks!
 
-Changes since v1:
-- Set the reference clock rate to 0 in opp entries, it doesn't support
-  ratesetting anyway. Confirmed UFS still works.
----
- arch/arm64/boot/dts/qcom/sm8550.dtsi | 50 +++++++++++++++++++++++++++++-------
- 1 file changed, 41 insertions(+), 9 deletions(-)
+[1/1] KVM: x86/pmu: Fix type length error when reading pmu->fixed_ctr_ctrl
+      https://github.com/kvm-x86/linux/commit/05519c86d699
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
-index c89d8f3dad21..144e20edf237 100644
---- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
-@@ -1966,6 +1966,7 @@ ufs_mem_hc: ufs@1d84000 {
- 			iommus = <&apps_smmu 0x60 0x0>;
- 			dma-coherent;
- 
-+			operating-points-v2 = <&ufs_opp_table>;
- 			interconnects = <&aggre1_noc MASTER_UFS_MEM 0 &mc_virt SLAVE_EBI1 0>,
- 					<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_UFS_MEM_CFG 0>;
- 
-@@ -1986,18 +1987,49 @@ ufs_mem_hc: ufs@1d84000 {
- 				 <&gcc GCC_UFS_PHY_TX_SYMBOL_0_CLK>,
- 				 <&gcc GCC_UFS_PHY_RX_SYMBOL_0_CLK>,
- 				 <&gcc GCC_UFS_PHY_RX_SYMBOL_1_CLK>;
--			freq-table-hz =
--				<75000000 300000000>,
--				<0 0>,
--				<0 0>,
--				<75000000 300000000>,
--				<100000000 403000000>,
--				<0 0>,
--				<0 0>,
--				<0 0>;
- 			qcom,ice = <&ice>;
- 
- 			status = "disabled";
-+
-+			ufs_opp_table: opp-table {
-+				compatible = "operating-points-v2";
-+
-+				opp-75000000 {
-+					opp-hz = /bits/ 64 <75000000>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <75000000>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <0>;
-+					required-opps = <&rpmhpd_opp_low_svs>;
-+				};
-+
-+				opp-150000000 {
-+					opp-hz = /bits/ 64 <150000000>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <150000000>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <0>;
-+					required-opps = <&rpmhpd_opp_svs>;
-+				};
-+
-+				opp-300000000 {
-+					opp-hz = /bits/ 64 <300000000>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <300000000>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <0>;
-+					required-opps = <&rpmhpd_opp_nom>;
-+				};
-+			};
- 		};
- 
- 		ice: crypto@1d88000 {
-
----
-base-commit: 076d56d74f17e625b3d63cf4743b3d7d02180379
-change-id: 20240203-topic-8550_ufs_oppv2-bb88d63a4c58
-
-Best regards,
--- 
-Konrad Dybcio <konrad.dybcio@linaro.org>
-
+--
+https://github.com/kvm-x86/linux/tree/next
 
