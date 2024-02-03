@@ -1,371 +1,131 @@
-Return-Path: <linux-kernel+bounces-51319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FA17848961
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 23:44:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89170848966
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 23:58:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94AEF1C22CF2
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 22:44:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2DDA1F2439F
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 22:58:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C292F168B1;
-	Sat,  3 Feb 2024 22:44:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 825D613AE9;
+	Sat,  3 Feb 2024 22:58:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WE6CCGSu"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b="g1zG+LoA"
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D041A13AD9;
-	Sat,  3 Feb 2024 22:44:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE6D0134AE
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 22:58:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707000263; cv=none; b=Erd9bXxerqsHj+fD4IUzfhHqVjsTMQGdhsulSMODu2gBBpOG2BDM7X28as5tuhLg0UhSkExuAel/v6jfAAKS5FN8aupY4v2WU1vh/iPOklXU2lb7sTGKRFxynjgYGUUwcoz8UWfwL2w/mExbNn01qKToJ1g1ZEB69AZdn+gzvps=
+	t=1707001119; cv=none; b=cTUANNN356u8e3vOulHxuV9mDZadBSUml5/OVvm7wFVqG6X0WYbnAzQwM8I7XFv6UBDRmteNrcoS+ncT6sCSAARzAt1bydayiPU/YfuYJBFs9Ju0BjArsu8jXfZXY5QizYK0hYJ7Qrail7rPapxSR9uVSrVG2vpDMuXxoLHEcuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707000263; c=relaxed/simple;
-	bh=vTxdqLgFdvD4CpFNezLDl/713rzZzglWwCSleRIyrw4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=na/H5ujk4rbcVVWAZ5/IyU+SKiqA5Cf02MCCxV6fwDlFrnL268O5nR1ur3QTsq2MfI3OptxGmlVcVzxNyZwpXiq9wt+3sHC934n7TaaTQu4PGEXRpCUNbre+8nlJN0UPSWL4EdKsEjx3yHziRbCUhM0watLL3YdI6T5eUuvjTMM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WE6CCGSu; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707000262; x=1738536262;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=vTxdqLgFdvD4CpFNezLDl/713rzZzglWwCSleRIyrw4=;
-  b=WE6CCGSu4onOWl8SmeCZwkNoIsVmXiiMUVGV6uSyGRgjh+EfiUxn2lmk
-   ByOw6oTuV9kzpTO8oHmu2Hj7UJElYBWMzrnUiPvVUR0VS070A4pkjx7pE
-   hRgugUvl2Nx9cHfMNHIFFwolRhi3xAFov2xvZlug0RwW4ktEgzxFnvz6a
-   vDCf/oxfIqYDsLNGhEtmeq+foB9Gpfqpo/ZIoZscHKQCN9RL13/jMvAuM
-   5QqbyZpqnslMgUQsTqOmahnZMHiQQ600oEbM5SPgXsrXyk5Qvp3Mpsi44
-   GkwDO79DDVahtQ2XkkWcBZilPQpz420x03KOvdt44RAHnvxNgey4wyGSp
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10973"; a="22820211"
-X-IronPort-AV: E=Sophos;i="6.05,241,1701158400"; 
-   d="scan'208";a="22820211"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2024 14:44:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,241,1701158400"; 
-   d="scan'208";a="670618"
-Received: from saalaiyo-mobl1.amr.corp.intel.com (HELO [10.255.229.204]) ([10.255.229.204])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2024 14:44:21 -0800
-Message-ID: <f572720b-353a-44b3-96c6-19be521d7e2d@linux.intel.com>
-Date: Sat, 3 Feb 2024 14:44:20 -0800
+	s=arc-20240116; t=1707001119; c=relaxed/simple;
+	bh=9XCEwNXOtd3gfH5JnXX1Mn8plFmt8A7TjyEul2rhlno=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rYFjI2E80cCE9ZgwmtYp/f0PhpArmZxNcbFOvpLLiKCtc43qS0YCrIdRBz1Gaa7nzKkwsL5l5NXK6gT5MnMY+Zvl1al1BaZ+53cI3ZrkdMK9dQ01w660SvUoA4BL3rhuGpPdMfbNX3PmWS5SCZSD7ueHLCn6h5fr1Xw3gy5O8GI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com; spf=pass smtp.mailfrom=futuring-girl.com; dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b=g1zG+LoA; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=futuring-girl.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-29080973530so2663720a91.1
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Feb 2024 14:58:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=futuring-girl-com.20230601.gappssmtp.com; s=20230601; t=1707001116; x=1707605916; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nzRLggOhgGcyJP2PFv5GAw1K1ynDOSTnUjo1ML5xufE=;
+        b=g1zG+LoA+n3NIlme6qiQwbthBJIMiCXGmjaZSlsimS6PQ3ab1X95lp6Dn1FrrT5Rva
+         4SNhlxKGTnurs1la/wHFO3CfPxXGJ634T2pPzLqz+hw76y0N7ldpUqDLNlTtHFvJqK36
+         TZaXezVCW1qeamwP3LlyL1nKCBEUIOdL6hYXYF3k4PhUaQHaQNfxZZ8ZlDRl3ITOYmbv
+         U54+a4DBTCRtDTMokC+43b5mh4oalnRBGKWxOoHc23XraTUFtgsTgwu/wL0GPSBFqU3R
+         zykFzDcj91U3dliIODLtAyHA5fudZCjsju9sC8hq0iwtifOAqho/4zXx20MkZZ4JgJNX
+         jsHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707001116; x=1707605916;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nzRLggOhgGcyJP2PFv5GAw1K1ynDOSTnUjo1ML5xufE=;
+        b=tBAg0+RlsxThfBaokOaOIniVENVl7YAgFvU8FkBfFQNPAfU90GcjpuYnBD0ZfX1MZV
+         Za8Rs84U/TSSvGiX/2fFwJ0wQmDhz+swZIufiiYDANz9XNHZOYJvQAHaJ/d38NQ8eeCG
+         vk9AhWz8rfuIgGlVlX4psc5oStdtfrJFsNV9j0QXskxOuO3wGSJ6r3TnEAPR3DVfHuMN
+         iPh4H+ccm+h5FeOQDEbmu6bBWxRVuQg7Z07t/7NWZ2RVGiEAlN2XOi6c5egdLNlp5oPH
+         2JOp6s00y30duoJ9zcrswta9Re7ymofQ7rIqXh/XZvpN6myKxWOXcayI+wmPMaTELWe4
+         iqdg==
+X-Gm-Message-State: AOJu0Yxv6RDjQW8DQ0rtr8NmdZ7bFuiqaRHkb1DqXV4gX4FXD9Y3EWny
+	s8rEScdrv2h1WAGtm/wEwZA/khxZ+eBV2xNcczuJQPkbGXwm0DYYhe56SxCVP2Ni+Xmm6AzJqjA
+	l4RTUR6zh3CgXx75XuytcSEy9dhZUZPwsWTxRuA==
+X-Google-Smtp-Source: AGHT+IHWWixaZzUEfvpK6e39qOuHLzQpqN8E7hRV7h68UZHwCnqjdYRWOopQDCpbqGA2fe+IlNtUWZ8LSX2Bstq1xmc=
+X-Received: by 2002:a17:90a:eb0f:b0:296:6eeb:ca2b with SMTP id
+ j15-20020a17090aeb0f00b002966eebca2bmr1543366pjz.26.1707001116163; Sat, 03
+ Feb 2024 14:58:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] efi/libstub: Add Confidential Computing (CC)
- measurement support
-Content-Language: en-US
-To: Ard Biesheuvel <ardb@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc: linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org
-References: <20240203075736.3982371-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAMj1kXEvNoFkSPL-tBUGxow7-FdsaRZ-0p7mVytJfZJzscUkjg@mail.gmail.com>
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <CAMj1kXEvNoFkSPL-tBUGxow7-FdsaRZ-0p7mVytJfZJzscUkjg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240203174810.768708706@linuxfoundation.org>
+In-Reply-To: <20240203174810.768708706@linuxfoundation.org>
+From: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
+Date: Sun, 4 Feb 2024 07:58:25 +0900
+Message-ID: <CAKL4bV7e9d6Q7KXpWMrvRvMfD0EkthH4NKSg-LtrvgpWm5yvuw@mail.gmail.com>
+Subject: Re: [PATCH 6.6 000/326] 6.6.16-rc2 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi Greg
 
-On 2/3/24 8:59 AM, Ard Biesheuvel wrote:
-> (cc Ilias)
+On Sun, Feb 4, 2024 at 2:53=E2=80=AFAM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> On Sat, 3 Feb 2024 at 08:58, Kuppuswamy Sathyanarayanan
-> <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
->> If the virtual firmware implements TPM support, TCG2 protocol will be
->> used for kernel measurements and event logging support. But in CC
->> environment, not all platforms support or enable the TPM feature. UEFI
->> specification [1] exposes protocol and interfaces used for kernel
->> measurements in CC platforms without TPM support.
->>
->> Currently, the efi-stub only supports the kernel related measurements
->> for the platform that supports TCG2 protocol. So, extend it add
->> CC measurement protocol (EFI_CC_MEASUREMENT_PROTOCOL) and event logging
->> support. Event logging format in the CC environment is the same as
->> TCG2.
->>
->> More details about the EFI CC measurements and logging can be found
->> in [1].
->>
->> Link: https://uefi.org/specs/UEFI/2.10/38_Confidential_Computing.html#efi-cc-measurement-protocol [1]
->> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
->> ---
->>  .../firmware/efi/libstub/efi-stub-helper.c    | 113 +++++++++++++-----
->>  drivers/firmware/efi/libstub/efistub.h        |  73 +++++++++++
->>  include/linux/efi.h                           |   1 +
->>  3 files changed, 159 insertions(+), 28 deletions(-)
->>
->> diff --git a/drivers/firmware/efi/libstub/efi-stub-helper.c b/drivers/firmware/efi/libstub/efi-stub-helper.c
->> index bfa30625f5d0..e323b768048f 100644
->> --- a/drivers/firmware/efi/libstub/efi-stub-helper.c
->> +++ b/drivers/firmware/efi/libstub/efi-stub-helper.c
->> @@ -219,50 +219,107 @@ static const struct {
->>         },
->>  };
->>
->> +static efi_status_t tcg2_efi_measure(efi_tcg2_protocol_t *tcg2,
->> +                                    unsigned long load_addr,
->> +                                    unsigned long load_size,
->> +                                    enum efistub_event event)
->> +{
->> +       struct efi_measured_event {
->> +               efi_tcg2_event_t        event_data;
->> +               efi_tcg2_tagged_event_t tagged_event;
->> +               u8                      tagged_event_data[];
->> +       } *evt;
->> +       int size = sizeof(*evt) + events[event].event_data_len;
->> +       efi_status_t status;
->> +
->> +       status = efi_bs_call(allocate_pool, EFI_LOADER_DATA, size,
->> +                            (void **)&evt);
->> +       if (status != EFI_SUCCESS)
->> +               return status;
->> +
->> +       evt->event_data = (struct efi_tcg2_event){
->> +               .event_size                     = size,
->> +               .event_header.header_size       = sizeof(evt->event_data.event_header),
->> +               .event_header.header_version    = EFI_TCG2_EVENT_HEADER_VERSION,
->> +               .event_header.pcr_index         = events[event].pcr_index,
->> +               .event_header.event_type        = EV_EVENT_TAG,
->> +       };
->> +
->> +       evt->tagged_event = (struct efi_tcg2_tagged_event){
->> +               .tagged_event_id                = events[event].event_id,
->> +               .tagged_event_data_size         = events[event].event_data_len,
->> +       };
->> +
->> +       memcpy(evt->tagged_event_data, events[event].event_data,
->> +              events[event].event_data_len);
->> +
->> +       status = efi_call_proto(tcg2, hash_log_extend_event, 0,
->> +                               load_addr, load_size, &evt->event_data);
->> +       efi_bs_call(free_pool, evt);
->> +
->> +       return status;
->> +}
->> +
->> +static efi_status_t cc_efi_measure(efi_cc_protocol_t *cc,
->> +                                  unsigned long load_addr,
->> +                                  unsigned long load_size,
->> +                                  enum efistub_event event)
->> +{
->> +       efi_cc_mr_index_t mr;
->> +       efi_cc_event_t *evt;
->> +       efi_status_t status;
->> +       size_t size;
->> +
->> +       status = efi_call_proto(cc, map_pcr_to_mr_index, events[event].pcr_index, &mr);
->> +       if (status != EFI_SUCCESS) {
->> +               efi_err("CC_MEASURE: PCR to MR mapping failed\n");
->> +               return status;
->> +       }
->> +
->> +       size = sizeof(*evt) + events[event].event_data_len;
->> +       status = efi_bs_call(allocate_pool, EFI_LOADER_DATA, size, (void **)&evt);
->> +       if (status != EFI_SUCCESS) {
->> +               efi_err("CC_MEASURE: Allocating event struct failed\n");
->> +               return status;
->> +       }
->> +
->> +       evt->event_size = size;
->> +       evt->event_header.header_size = sizeof(evt->event_header);
->> +       evt->event_header.header_version = EFI_CC_EVENT_HEADER_VERSION;
->> +       evt->event_header.mr_index = mr;
->> +       evt->event_header.event_type = EV_EVENT_TAG;
->> +       memcpy(evt->event_data, events[event].event_data, events[event].event_data_len);
->> +
-> Why does this look entirely different from the TCG2 version? What
-> happened to the tagged event?
+> This is the start of the stable review cycle for the 6.6.16 release.
+> There are 326 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Mon, 05 Feb 2024 17:47:20 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.6.16-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.6.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-Sorry, I misunderstood the event data related comment in the EFI_CC_EVENT
-definition in UEFI spec. I thought we have copy the event data directly. But
-after checking the EV_EVENT_TAG format in the TCG specification, I know
-that my understanding is incorrect. I will add tagged event info and send
-v2 version.
+6.6.16-rc2 tested.
 
-Copied from UEFI 2.10, section "38.2.4. EFI_CC_MEASUREMENT_PROTOCOL.HashLogExtendEvent"
+Build successfully completed.
+Boot successfully completed.
+No dmesg regressions.
+Video output normal.
+Sound output normal.
 
-typedef struct {
-  //
-  // Total size of the event including the Size component,
-  // the header and the Event data.
-  //
-  UINT32                Size;
-  EFI_CC_EVENT_HEADER   Header;
-  UINT8                 Event[1];
-} EFI_CC_EVENT;
+Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
 
->> +       status = efi_call_proto(cc, hash_log_extend_event, 0, load_addr, load_size, evt);
->> +       efi_bs_call(free_pool, evt);
->> +
->> +       return status;
->> +}
->>  static efi_status_t efi_measure_tagged_event(unsigned long load_addr,
->>                                              unsigned long load_size,
->>                                              enum efistub_event event)
->>  {
->>         efi_guid_t tcg2_guid = EFI_TCG2_PROTOCOL_GUID;
->> +       efi_guid_t cc_guid = EFI_CC_MEASUREMENT_PROTOCOL_GUID;
->> +       efi_cc_protocol_t *cc = NULL;
->>         efi_tcg2_protocol_t *tcg2 = NULL;
->>         efi_status_t status;
->>
->>         efi_bs_call(locate_protocol, &tcg2_guid, NULL, (void **)&tcg2);
->>         if (tcg2) {
->> -               struct efi_measured_event {
->> -                       efi_tcg2_event_t        event_data;
->> -                       efi_tcg2_tagged_event_t tagged_event;
->> -                       u8                      tagged_event_data[];
->> -               } *evt;
->> -               int size = sizeof(*evt) + events[event].event_data_len;
->> -
->> -               status = efi_bs_call(allocate_pool, EFI_LOADER_DATA, size,
->> -                                    (void **)&evt);
->> +               status = tcg2_efi_measure(tcg2, load_addr, load_size, event);
->>                 if (status != EFI_SUCCESS)
->>                         goto fail;
->>
->> -               evt->event_data = (struct efi_tcg2_event){
->> -                       .event_size                     = size,
->> -                       .event_header.header_size       = sizeof(evt->event_data.event_header),
->> -                       .event_header.header_version    = EFI_TCG2_EVENT_HEADER_VERSION,
->> -                       .event_header.pcr_index         = events[event].pcr_index,
->> -                       .event_header.event_type        = EV_EVENT_TAG,
->> -               };
->> -
->> -               evt->tagged_event = (struct efi_tcg2_tagged_event){
->> -                       .tagged_event_id                = events[event].event_id,
->> -                       .tagged_event_data_size         = events[event].event_data_len,
->> -               };
->> -
->> -               memcpy(evt->tagged_event_data, events[event].event_data,
->> -                      events[event].event_data_len);
->> -
->> -               status = efi_call_proto(tcg2, hash_log_extend_event, 0,
->> -                                       load_addr, load_size, &evt->event_data);
->> -               efi_bs_call(free_pool, evt);
->> +               return EFI_SUCCESS;
->> +       }
->>
->> +       efi_bs_call(locate_protocol, &cc_guid, NULL, (void **)&cc);
->> +       if (cc) {
->> +               status = cc_efi_measure(cc, load_addr, load_size, event);
->>                 if (status != EFI_SUCCESS)
->>                         goto fail;
->> +
->>                 return EFI_SUCCESS;
->>         }
->>
->> diff --git a/drivers/firmware/efi/libstub/efistub.h b/drivers/firmware/efi/libstub/efistub.h
->> index 212687c30d79..dbdeb2ad7a93 100644
->> --- a/drivers/firmware/efi/libstub/efistub.h
->> +++ b/drivers/firmware/efi/libstub/efistub.h
->> @@ -882,6 +882,79 @@ union efi_tcg2_protocol {
->>         } mixed_mode;
->>  };
->>
->> +typedef struct {
->> +       u8 major;
->> +       u8 minor;
->> +} efi_cc_version_t;
->> +
->> +typedef struct {
->> +       u8 type;
->> +       u8 sub_type;
->> +} efi_cc_type_t;
->> +
->> +/* EFI CC type/subtype defines */
->> +#define EFI_CC_TYPE_NONE               0
->> +#define EFI_CC_TYPE_AMD_SEV            1
->> +#define EFI_CC_TYPE_INTEL_TDX          2
->> +
->> +typedef u32 efi_cc_mr_index_t;
->> +
->> +typedef struct {
->> +       u32 event_size;
->> +       struct {
->> +               u32 header_size;
->> +               u16 header_version;
->> +               u32 mr_index;
->> +               u32 event_type;
->> +       } __packed event_header;
->> +       u8 event_data[0];
->> +} __packed efi_cc_event_t;
->> +
->> +typedef u32 efi_cc_event_log_bitmap_t;
->> +typedef u32 efi_cc_event_log_format_t;
->> +typedef u32 efi_cc_event_algorithm_bitmap_t;
->> +
->> +typedef struct {
->> +       u8 size;
->> +       efi_cc_version_t structure_version;
->> +       efi_cc_version_t protocol_version;
->> +       efi_cc_event_algorithm_bitmap_t hash_algorithm_bitmap;
->> +       efi_cc_event_log_bitmap_t supported_event_logs;
->> +       efi_cc_type_t cc_type;
->> +} efi_cc_boot_service_cap_t;
->> +
->> +#define EFI_CC_EVENT_HEADER_VERSION  1
->> +
->> +#define EFI_CC_BOOT_HASH_ALG_SHA384     0x00000004
->> +
->> +typedef union efi_cc_protocol efi_cc_protocol_t;
->> +
->> +union efi_cc_protocol {
->> +       struct {
->> +               efi_status_t (__efiapi *get_capability)(efi_cc_protocol_t *,
->> +                                                       efi_cc_boot_service_cap_t *);
->> +               efi_status_t (__efiapi *get_event_log)(efi_cc_protocol_t *,
->> +                                                      efi_cc_event_log_format_t,
->> +                                                      efi_physical_addr_t *,
->> +                                                      efi_physical_addr_t *,
->> +                                                      efi_bool_t *);
->> +               efi_status_t (__efiapi *hash_log_extend_event)(efi_cc_protocol_t *,
->> +                                                              u64,
->> +                                                              efi_physical_addr_t,
->> +                                                              u64,
->> +                                                              const efi_cc_event_t *);
->> +               efi_status_t (__efiapi *map_pcr_to_mr_index)(efi_cc_protocol_t *,
->> +                                                            u32,
->> +                                                            efi_cc_mr_index_t *);
->> +       };
->> +       struct {
->> +               u32 get_capability;
->> +               u32 get_event_log;
->> +               u32 hash_log_extend_event;
->> +               u32 map_pcr_to_mr_index;
->> +       } mixed_mode;
->> +};
->> +
->>  struct riscv_efi_boot_protocol {
->>         u64 revision;
->>
->> diff --git a/include/linux/efi.h b/include/linux/efi.h
->> index c74f47711f0b..2f57fec2e629 100644
->> --- a/include/linux/efi.h
->> +++ b/include/linux/efi.h
->> @@ -400,6 +400,7 @@ void efi_native_runtime_setup(void);
->>  #define EFI_CERT_X509_GUID                     EFI_GUID(0xa5c059a1, 0x94e4, 0x4aa7, 0x87, 0xb5, 0xab, 0x15, 0x5c, 0x2b, 0xf0, 0x72)
->>  #define EFI_CERT_X509_SHA256_GUID              EFI_GUID(0x3bd2a492, 0x96c0, 0x4079, 0xb4, 0x20, 0xfc, 0xf9, 0x8e, 0xf1, 0x03, 0xed)
->>  #define EFI_CC_BLOB_GUID                       EFI_GUID(0x067b1f5f, 0xcf26, 0x44c5, 0x85, 0x54, 0x93, 0xd7, 0x77, 0x91, 0x2d, 0x42)
->> +#define EFI_CC_MEASUREMENT_PROTOCOL_GUID       EFI_GUID(0x96751a3d, 0x72f4, 0x41a6, 0xa7, 0x94, 0xed, 0x5d, 0x0e, 0x67, 0xae, 0x6b)
->>
->>  /*
->>   * This GUID is used to pass to the kernel proper the struct screen_info
->> --
->> 2.25.1
->>
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+[    0.000000] Linux version 6.6.16-rc2rv
+(takeshi@ThinkPadX1Gen10J0764) (gcc (GCC) 13.2.1 20230801, GNU ld (GNU
+Binutils) 2.42.0) #1 SMP PREEMPT_DYNAMIC Sun Feb  4 05:25:23 JST 2024
 
+Thanks
+
+Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
 
