@@ -1,280 +1,230 @@
-Return-Path: <linux-kernel+bounces-50931-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F4488483E9
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 06:12:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAB488483EB
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 06:12:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6DED1F2C584
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 05:12:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62B5B288F57
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 05:12:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20FB810A29;
-	Sat,  3 Feb 2024 05:12:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TQoPt7CQ"
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9E4110A29;
+	Sat,  3 Feb 2024 05:12:29 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 987581118E;
-	Sat,  3 Feb 2024 05:12:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EE0510A09
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 05:12:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706937125; cv=none; b=QWTfNbk/vCZLYaarLEmjtNKK+uB92ECuW/sLUbldTZMt3z5pUqK5qpgdNvJ4x9d6d+sVJi3HAdx7Efc+DmT/8LF0qaGNUhrNrM9TD2U8iCOU4omr7RaWgliCTfDalOUxidO0+bqOhdCeH8VFb+8MaJOLKhIIgO9GV1s9KiZFIFM=
+	t=1706937149; cv=none; b=rUKCFUfHTdggvWZWz9nIcXRKmeYF1YCHBw1HerEcFSrNxlyEsLXqYpaRp/eKLKjPjiHbih9FDJjp+w29cDxC/VFCh3NGMYGFFtKhfS4VL0Qc8B/OKTeml68A4ZGsCK3JfCMNIZG3y7mypt9oWHpgiMcr+3oKl8GvlrKWk5UFC78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706937125; c=relaxed/simple;
-	bh=4dLl4CDv7vwF9NtM5/pRucmHtFnwy1yjPxPcezUwVIM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gPo/HQWwqfLz2MMq/HMuWtay3opkOXQMmaiMv4VM7d40UpxheoKE/qBEJf942MaRnFP9tsovA/vI4guk5qlfdTKqZ0EW3UEAengVZUB1fndW6938DsGAeBrIvALNBtNZHifPjPHuivitp0QrZxn5P+hwKbNHv+PsLFgA6UBIzTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TQoPt7CQ; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5cfd95130c6so1932708a12.1;
-        Fri, 02 Feb 2024 21:12:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706937123; x=1707541923; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DTV9gbg5MKn5RvztaG5+AnGINY2wWIUBOjQj4JgbKAs=;
-        b=TQoPt7CQ6yhR/Mf81VFrtLZF9S8/IosEPRY2ZD4Q1HRirzFi3kBQ79K4M9TUBBWl2m
-         Aygc0eV7DpoWtCxh6yShx40uYAG1kX83yblVtXckkxOK5z4w5InVsOtirN8AZhecJkxa
-         dOrRbr+T7FmqyB0NKnO4mQf9Lle7w+y5gjPBawb4uhdzIeteJaPhbGq3pKefnOIvCK/s
-         /nm7hCNx3C3+GoJYrHtCZeNDhLtkQyt5rVO9sxdEbJNd4U9zP4lzQGiA8ZWNSymORjtL
-         vcyQ5uATfVOS+FD7ysFeHly1AzV2rz8j4ydWXhjwk0AjQA6LVc2pacn+5pk68lO3qx9O
-         cFtQ==
+	s=arc-20240116; t=1706937149; c=relaxed/simple;
+	bh=rS76oOmDnuLA/zDX3+Q9a2q9Hrbio7C96VmS2Ut7XQk=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=C7eGk+0lR3gJRtROWC5hKteLJ/WvHRU6UrzxYI4aCPu6FdazSMhF95RUiXHVbFXbg+scwAMI41ZQpsSQ4L58Ds6zveoM68FPo2XDqveTgqU/9wC8gWgCA/x1GGN4tLAqHPdLlvWp+6KnrFViXQv0a6+bRPzunJKg8bQ1KHQXCvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-363b295deb1so12354175ab.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 21:12:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706937123; x=1707541923;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DTV9gbg5MKn5RvztaG5+AnGINY2wWIUBOjQj4JgbKAs=;
-        b=Y4e1L12pr21DQkiuzDopxxNU5CndvaUX+wZFBNfn7ltjNA5xU4LgO4vMZ/qjVfdtOb
-         qMGQSnDB1YJ+vp0ZYi//uqz10AFxdr6ibCrKTBxVdX4YU3+PE9CwRPXcTeOQKkjtTp9J
-         hKO2dtQc3ZbE7e48TrImUs+0AoLcad+X9YPtDyrPUSfev4173EvO2llkiamWc5rndrar
-         pU3FVz4P2urocI/CMlrhgEF1bbEpbOihMWCpBh7AscOt7x77bZnaOUw8xaXkwFRLS0YN
-         YlzNHorh+WdmnGcK/VNGIf6eoYHroZ1h6HShJKsHlx2EJ46wuA6xJKWfb0E7oTmIyaqf
-         y71w==
-X-Gm-Message-State: AOJu0YzR7hrT6f+zBkdPc0ap8KjJU99v9bhgH+vQaTQUI/+hd2mabNCW
-	MAlJV2IPkxOYekV4JwSYpFApWx0CXcC/4wVV8eK8M8qskXEiWSAA
-X-Google-Smtp-Source: AGHT+IH5+XC1/bcCppA4nFR7X2sj4P5Iy8Z0U/6nYySgkYLySzaYVQAPqHXoiQs4dnlg7lwlTMkbNg==
-X-Received: by 2002:a17:902:e807:b0:1d7:6d49:c78a with SMTP id u7-20020a170902e80700b001d76d49c78amr12547440plg.58.1706937122766;
-        Fri, 02 Feb 2024 21:12:02 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWTyx3Tb8ALnQnDfkcnBxx8lNHZQcdL5+5L97dSuORYHMNih1eREndOh7Pbm6/YwPLM88BBKE9zNrrHPVzc8uE8xdsFTmlNcIYSzf0TMQOBqR58x7INtYGp40T/2w6rLMdgID9zXSs+HgyFXrAwY5mIAM3zkGUjMc4SP628zNW4lYfPyBfdtUzca2SucvOVDt7+vBl8byGjlCYRl/38z5A18EunmLR9P02VqiX5LAllCDpHBSRzakp7wjFtoElTTTGFaNM/3aGHQ2d1Kj2u+mrwljYHMv+/5OogqJL7RI5Zhhdu3WhsUgQheyANoMP8QmJ0NONTRoN8YGf38Ru37AuW7T9v+tpdz34Iy2XMjQBk03e+daiCljZIE518h7t2Pjbn1FgrD8B2mG8g0egOMTTf0MqLaqFAV6vzpqTE5VknZxRc7uPWKlgI3F0i0Rw3w2e2TIl4lCu7hXzjir33FaEWl9Zj1odnltrn/UBmgE6nb5l+SiHGWn8VzqrS7uouGlLsx2TuLA==
-Received: from localhost ([129.146.253.192])
-        by smtp.gmail.com with ESMTPSA id r20-20020a170903411400b001d6ee9d8957sm2437664pld.281.2024.02.02.21.11.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 21:12:02 -0800 (PST)
-Date: Sat, 3 Feb 2024 13:11:54 +0800
-From: Furong Xu <0x1207@gmail.com>
-To: Serge Semin <fancer.lancer@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski
- <kuba@kernel.org>, Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose
- Abreu <joabreu@synopsys.com>, Eric Dumazet <edumazet@google.com>, Paolo
- Abeni <pabeni@redhat.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Joao Pinto <jpinto@synopsys.com>, Simon Horman <horms@kernel.org>,
- netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- xfr@outlook.com, rock.xu@nio.com
-Subject: Re: [PATCH net v3] net: stmmac: xgmac: fix handling of DPP safety
- error for DMA channels
-Message-ID: <20240203131154.00005898@gmail.com>
-In-Reply-To: <ksfs7uag4yukqbeygch7pxvr5axyrqz4gunq2xes3ppmtrgm5b@hwh5yx5qz3wl>
-References: <20240131020828.2007741-1-0x1207@gmail.com>
-	<ksfs7uag4yukqbeygch7pxvr5axyrqz4gunq2xes3ppmtrgm5b@hwh5yx5qz3wl>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-w64-mingw32)
+        d=1e100.net; s=20230601; t=1706937146; x=1707541946;
+        h=content-transfer-encoding:to:from:subject:message-id:date
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=f9qtWeK5w/0vxfxIW2f6JA8zjnJ7ABQj00L2RKys1YI=;
+        b=emnA8WSj/uydMMmKr8QvgIO1Rgzcubt0QUz3StI+DIJl3LTl9P9IdZ8NwhglJJa01f
+         IMyhGWvcZzxZMHD+E8e4hAstKvFOZ0xQhw7DLn4TepqB7WvVJV8CfFZmVnEmcTiHGIU3
+         KrL4mA2O1mZnCWPlIAnzcC90eLJsJ2zlshnuZMGEZSI6AmtcnaY/jThVS5CCEgYtU++W
+         1M+yDW/l6z+T/kewJRFyI5p8n2KloiVAfP4W+GIfDyBBmBKGPINDTe0ByZO7j0t9g2mZ
+         YadWJT6YAWMyJ1718uyAdfda6a8bPGm7VB/3vnUeeKULhCgXr7FzBmC/C/OaK4NfdnlY
+         cxSg==
+X-Gm-Message-State: AOJu0YzCUeFUsVNzQ8D8nzxo1oRtlNcN9fUQ8Nc2+P1fh4fiB3e4XqqB
+	XdaDNXWJppASbskqYzb01A0pjWeKfWS/x6LA+wzS8qmWSDRZZP+mbt47oYhtNa1DdTnBCtiBagu
+	V379GbGFytE6dEUvEzqVC64rWZMK0/90ONrM/fZpW1eq6aM4YIKunvlCr/Q==
+X-Google-Smtp-Source: AGHT+IEJ4NgFFk9Jxp6tm+Jvq1gbSGMteg9bwDdD0kqVdVuLkQ8HSvIsklzq8vgOxO0lfx8xBMYBhRd6XoTgtscIVxB+9L8N6bzN
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a92:c56c:0:b0:363:a059:670b with SMTP id
+ b12-20020a92c56c000000b00363a059670bmr288175ilj.4.1706937146794; Fri, 02 Feb
+ 2024 21:12:26 -0800 (PST)
+Date: Fri, 02 Feb 2024 21:12:26 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000049e78d061073467c@google.com>
+Subject: [syzbot] [kernel?] linux-next boot error: WARNING in wq_update_node_max_active
+From: syzbot <syzbot+f91f2ed0a5258704982f@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, linux-next@vger.kernel.org, 
+	sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 3 Feb 2024 00:58:39 +0300
-Serge Semin <fancer.lancer@gmail.com> wrote:
+Hello,
 
-> On Wed, Jan 31, 2024 at 10:08:28AM +0800, Furong Xu wrote:
-> > Commit 56e58d6c8a56 ("net: stmmac: Implement Safety Features in
-> > XGMAC core") checks and reports safety errors, but leaves the
-> > Data Path Parity Errors for each channel in DMA unhandled at all, lead to
-> > a storm of interrupt.
-> > Fix it by checking and clearing the DMA_DPP_Interrupt_Status register.
-> > 
-> > Fixes: 56e58d6c8a56 ("net: stmmac: Implement Safety Features in XGMAC core")
-> > Signed-off-by: Furong Xu <0x1207@gmail.com>
-> > ---
-> > Changes in v3:
-> >  - code style fix, thanks Paolo Abeni
-> > 
-> > Changes in v2:
-> >   - explicit enable Data Path Parity Protection
-> >   - add new counters to stmmac_safety_stats
-> >   - add detailed log
-> > ---
-> >  drivers/net/ethernet/stmicro/stmmac/common.h  |  1 +
-> >  .../net/ethernet/stmicro/stmmac/dwxgmac2.h    |  3 +
-> >  .../ethernet/stmicro/stmmac/dwxgmac2_core.c   | 57 ++++++++++++++++++-
-> >  3 files changed, 60 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
-> > index 721c1f8e892f..b4f60ab078d6 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/common.h
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/common.h
-> > @@ -216,6 +216,7 @@ struct stmmac_safety_stats {
-> >  	unsigned long mac_errors[32];
-> >  	unsigned long mtl_errors[32];
-> >  	unsigned long dma_errors[32];
-> > +	unsigned long dma_dpp_errors[32];
-> >  };
-> >  
-> >  /* Number of fields in Safety Stats */
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-> > index 207ff1799f2c..5c67a3f89f08 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-> > @@ -303,6 +303,8 @@
-> >  #define XGMAC_RXCEIE			BIT(4)
-> >  #define XGMAC_TXCEIE			BIT(0)
-> >  #define XGMAC_MTL_ECC_INT_STATUS	0x000010cc
-> > +#define XGMAC_MTL_DPP_CONTROL		0x000010e0  
-> 
-> > +#define XGMAC_DDPP_DISABLE		BIT(0)  
-> 
-> Is the double "D" a typo? Shouldn't this be XGMAC_DPP_DISABLE or just
-> XGMAC_DDPP (if the "DDPP" means "Disable DPP")?
-> 
-> If so, David/Jakub, is it possible to rebase the branch with the macro
-> fixed in the commit or a new cleanup patch is the only option?
-> 
-> Other than the nit above no more notes from my side:
-> 
-> Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-> 
-> -Serge(y)
-> 
+syzbot found the following issue on:
 
-Hi Serge:
+HEAD commit:    06f658aadff0 Add linux-next specific files for 20240131
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=3D14882997e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3D854ef3e6fbbe979=
+f
+dashboard link: https://syzkaller.appspot.com/bug?extid=3Df91f2ed0a52587049=
+82f
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Deb=
+ian) 2.40
 
-Sorry for my mistake.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/7b4f22c20549/disk-=
+06f658aa.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/9150a87d7432/vmlinux-=
+06f658aa.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a572351012f3/bzI=
+mage-06f658aa.xz
 
-DDPP is copied from Synopsys Data book: Disable Data path Parity Protection.
-When it is 0x0, Data path Parity Protection is enabled.
-When it is 0x1, Data path Parity Protection is disabled.
+IMPORTANT: if you fix the issue, please add the following tag to the commit=
+:
+Reported-by: syzbot+f91f2ed0a5258704982f@syzkaller.appspotmail.com
 
-I will send a new patch.
+Initmem setup node 0 [mem 0x0000000000001000-0x000000013fffffff]
+Initmem setup node 1 [mem 0x0000000140000000-0x000000023fffffff]
+On node 0, zone DMA: 1 pages in unavailable ranges
+On node 0, zone DMA: 97 pages in unavailable ranges
+On node 0, zone Normal: 3 pages in unavailable ranges
+kasan: KernelAddressSanitizer initialized
+ACPI: PM-Timer IO Port: 0xb008
+ACPI: LAPIC_NMI (acpi_id[0xff] dfl dfl lint[0x1])
+IOAPIC[0]: apic_id 0, version 17, address 0xfec00000, GSI 0-23
+ACPI: INT_SRC_OVR (bus 0 bus_irq 5 global_irq 5 high level)
+ACPI: INT_SRC_OVR (bus 0 bus_irq 9 global_irq 9 high level)
+ACPI: INT_SRC_OVR (bus 0 bus_irq 10 global_irq 10 high level)
+ACPI: INT_SRC_OVR (bus 0 bus_irq 11 global_irq 11 high level)
+ACPI: Using ACPI (MADT) for SMP configuration information
+smpboot: Allowing 2 CPUs, 0 hotplug CPUs
+PM: hibernation: Registered nosave memory: [mem 0x00000000-0x00000fff]
+PM: hibernation: Registered nosave memory: [mem 0x0009f000-0x0009ffff]
+PM: hibernation: Registered nosave memory: [mem 0x000a0000-0x000effff]
+PM: hibernation: Registered nosave memory: [mem 0x000f0000-0x000fffff]
+PM: hibernation: Registered nosave memory: [mem 0xbfffd000-0xbfffffff]
+PM: hibernation: Registered nosave memory:serialport: Connected to syzkalle=
+r.us-central1-c.ci-upstream-linux-next-kasan-gce-root-test-1 port 1 (sessio=
+n ID: 307732399ece189a8aef52b22bfe9e76c226ee4a91fad6ea856fd1c30fec1568, act=
+ive connections: 1).
+PM: hibernation: Registered nosave memory: [mem 0xfffbc000-0xffffffff]
+[mem 0xc0000000-0xfffbbfff] available for PCI devices
+Booting paravirtualized kernel on KVM
+clocksource: refined-jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_=
+idle_ns: 19112604462750000 ns
+setup_percpu: NR_CPUS:8 nr_cpumask_bits:2 nr_cpu_ids:2 nr_node_ids:2
+percpu: Embedded 72 pages/cpu s256200 r8192 d30520 u1048576
+kvm-guest: PV spinlocks enabled
+PV qspinlock hash table entries: 256 (order: 0, 4096 bytes, linear)
+Kernel command line: earlyprintk=3Dserial net.ifnames=3D0 sysctl.kernel.hun=
+g_task_all_cpu_backtrace=3D1 ima_policy=3Dtcb nf-conntrack-ftp.ports=3D2000=
+0 nf-conntrack-tftp.ports=3D20000 nf-conntrack-sip.ports=3D20000 nf-conntra=
+ck-irc.ports=3D20000 nf-conntrack-sane.ports=3D20000 binder.debug_mask=3D0 =
+rcupdate.rcu_expedited=3D1 rcupdate.rcu_cpu_stall_cputime=3D1 no_hash_point=
+ers page_owner=3Don sysctl.vm.nr_hugepages=3D4 sysctl.vm.nr_overcommit_huge=
+pages=3D4 secretmem.enable=3D1 sysctl.max_rcu_stall_to_panic=3D1 msr.allow_=
+writes=3Doff coredump_filter=3D0xffff root=3D/dev/sda console=3DttyS0 vsysc=
+all=3Dnative numa=3Dfake=3D2 kvm-intel.nested=3D1 spec_store_bypass_disable=
+=3Dprctl nopcid vivid.n_devs=3D16 vivid.multiplanar=3D1,2,1,2,1,2,1,2,1,2,1=
+,2,1,2,1,2 netrom.nr_ndevs=3D16 rose.rose_ndevs=3D16 smp.csd_lock_timeout=
+=3D100000 watchdog_thresh=3D55 workqueue.watchdog_thresh=3D140 sysctl.net.c=
+ore.netdev_unregister_timeout_secs=3D140 dummy_hcd.num=3D8 panic_on_warn=3D=
+1 BOOT_IMAGE=3D/boot/bzImage root=3D/dev/sda1 console=3DttyS0
+Unknown kernel command line parameters "spec_store_bypass_disable=3Dprctl B=
+OOT_IMAGE=3D/boot/bzImage", will be passed to user space.
+random: crng init done
+Fallback order for Node 0: 0 1=20
+Fallback order for Node 1: 1 0=20
+Built 2 zonelists, mobility grouping on.  Total pages: 2064125
+Policy zone: Normal
+mem auto-init: stack:all(zero), heap alloc:on, heap free:off
+stackdepot: allocating hash table via alloc_large_system_hash
+stackdepot hash table entries: 1048576 (order: 12, 16777216 bytes, linear)
+software IO TLB: area num 2.
+Memory: 6760000K/8388204K available (163840K kernel code, 38961K rwdata, 36=
+628K rodata, 25688K init, 33252K bss, 1627948K reserved, 0K cma-reserved)
+SLUB: HWalign=3D64, Order=3D0-3, MinObjects=3D0, CPUs=3D2, Nodes=3D2
+allocated 167772160 bytes of page_ext
+Node 0, zone      DMA: page owner found early allocated 0 pages
+Node 0, zone    DMA32: page owner found early allocated 20599 pages
+Node 0, zone   Normal: page owner found early allocated 0 pages
+Node 1, zone   Normal: page owner found early allocated 20484 pages
+Kernel/User page tables isolation: enabled
+Dynamic Preempt: full
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 0 at include/linux/cpumask.h:143 cpu_max_bits_warn inc=
+lude/linux/cpumask.h:143 [inline]
+WARNING: CPU: 0 PID: 0 at include/linux/cpumask.h:143 cpumask_check include=
+/linux/cpumask.h:150 [inline]
+WARNING: CPU: 0 PID: 0 at include/linux/cpumask.h:143 cpumask_test_cpu incl=
+ude/linux/cpumask.h:516 [inline]
+WARNING: CPU: 0 PID: 0 at include/linux/cpumask.h:143 wq_update_node_max_ac=
+tive+0x636/0x780 kernel/workqueue.c:1513
+Modules linked in:
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.8.0-rc2-next-20240131-syzkaller=
+ #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Goo=
+gle 11/17/2023
+RIP: 0010:cpu_max_bits_warn include/linux/cpumask.h:143 [inline]
+RIP: 0010:cpumask_check include/linux/cpumask.h:150 [inline]
+RIP: 0010:cpumask_test_cpu include/linux/cpumask.h:516 [inline]
+RIP: 0010:wq_update_node_max_active+0x636/0x780 kernel/workqueue.c:1513
+Code: ed 71 09 31 ff 89 c3 89 c6 e8 46 65 34 00 85 db 0f 85 0d fb ff ff e8 =
+59 6a 34 00 90 0f 0b 90 e9 ff fa ff ff e8 4b 6a 34 00 90 <0f> 0b 90 e9 1c f=
+b ff ff 48 89 df e8 fa f8 8e 00 e9 48 fd ff ff 48
+RSP: 0000:ffffffff8d407c08 EFLAGS: 00010093
+RAX: 0000000000000000 RBX: 00000000ffffffff RCX: ffffffff81585961
+RDX: ffffffff8d495a40 RSI: ffffffff81585e45 RDI: 0000000000000005
+RBP: ffff888014c91da0 R08: 0000000000000005 R09: 0000000000000007
+R10: 00000000ffffffff R11: 0000000000000001 R12: ffff888014c99000
+R13: 0000000000000200 R14: ffff888014c91db0 R15: 0000000000000002
+FS:  0000000000000000(0000) GS:ffff8880b9400000(0000) knlGS:000000000000000=
+0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffff88823ffff000 CR3: 000000000d57a000 CR4: 00000000000000b0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ apply_wqattrs_commit+0x430/0x590 kernel/workqueue.c:4844
+ apply_workqueue_attrs_locked+0xf3/0x160 kernel/workqueue.c:4871
+ apply_workqueue_attrs kernel/workqueue.c:4902 [inline]
+ alloc_and_link_pwqs kernel/workqueue.c:5023 [inline]
+ alloc_workqueue+0x1256/0x1a90 kernel/workqueue.c:5232
+ workqueue_init_early+0xcb4/0x1080 kernel/workqueue.c:7218
+ start_kernel+0x199/0x480 init/main.c:958
+ x86_64_start_reservations+0x18/0x30 arch/x86/kernel/head64.c:555
+ x86_64_start_kernel+0xb2/0xc0 arch/x86/kernel/head64.c:536
+ secondary_startup_64_no_verify+0x170/0x17b
+ </TASK>
 
-> >  #define XGMAC_MTL_TXQ_OPMODE(x)		(0x00001100 + (0x80 * (x)))
-> >  #define XGMAC_TQS			GENMASK(25, 16)
-> >  #define XGMAC_TQS_SHIFT			16
-> > @@ -385,6 +387,7 @@
-> >  #define XGMAC_DCEIE			BIT(1)
-> >  #define XGMAC_TCEIE			BIT(0)
-> >  #define XGMAC_DMA_ECC_INT_STATUS	0x0000306c
-> > +#define XGMAC_DMA_DPP_INT_STATUS	0x00003074
-> >  #define XGMAC_DMA_CH_CONTROL(x)		(0x00003100 + (0x80 * (x)))
-> >  #define XGMAC_SPH			BIT(24)
-> >  #define XGMAC_PBLx8			BIT(16)
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-> > index eb48211d9b0e..04d7c4dc2e35 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-> > @@ -830,6 +830,43 @@ static const struct dwxgmac3_error_desc dwxgmac3_dma_errors[32]= {
-> >  	{ false, "UNKNOWN", "Unknown Error" }, /* 31 */
-> >  };
-> >  
-> > +static const char * const dpp_rx_err = "Read Rx Descriptor Parity checker Error";
-> > +static const char * const dpp_tx_err = "Read Tx Descriptor Parity checker Error";
-> > +static const struct dwxgmac3_error_desc dwxgmac3_dma_dpp_errors[32] = {
-> > +	{ true, "TDPES0", dpp_tx_err },
-> > +	{ true, "TDPES1", dpp_tx_err },
-> > +	{ true, "TDPES2", dpp_tx_err },
-> > +	{ true, "TDPES3", dpp_tx_err },
-> > +	{ true, "TDPES4", dpp_tx_err },
-> > +	{ true, "TDPES5", dpp_tx_err },
-> > +	{ true, "TDPES6", dpp_tx_err },
-> > +	{ true, "TDPES7", dpp_tx_err },
-> > +	{ true, "TDPES8", dpp_tx_err },
-> > +	{ true, "TDPES9", dpp_tx_err },
-> > +	{ true, "TDPES10", dpp_tx_err },
-> > +	{ true, "TDPES11", dpp_tx_err },
-> > +	{ true, "TDPES12", dpp_tx_err },
-> > +	{ true, "TDPES13", dpp_tx_err },
-> > +	{ true, "TDPES14", dpp_tx_err },
-> > +	{ true, "TDPES15", dpp_tx_err },
-> > +	{ true, "RDPES0", dpp_rx_err },
-> > +	{ true, "RDPES1", dpp_rx_err },
-> > +	{ true, "RDPES2", dpp_rx_err },
-> > +	{ true, "RDPES3", dpp_rx_err },
-> > +	{ true, "RDPES4", dpp_rx_err },
-> > +	{ true, "RDPES5", dpp_rx_err },
-> > +	{ true, "RDPES6", dpp_rx_err },
-> > +	{ true, "RDPES7", dpp_rx_err },
-> > +	{ true, "RDPES8", dpp_rx_err },
-> > +	{ true, "RDPES9", dpp_rx_err },
-> > +	{ true, "RDPES10", dpp_rx_err },
-> > +	{ true, "RDPES11", dpp_rx_err },
-> > +	{ true, "RDPES12", dpp_rx_err },
-> > +	{ true, "RDPES13", dpp_rx_err },
-> > +	{ true, "RDPES14", dpp_rx_err },
-> > +	{ true, "RDPES15", dpp_rx_err },
-> > +};
-> > +
-> >  static void dwxgmac3_handle_dma_err(struct net_device *ndev,
-> >  				    void __iomem *ioaddr, bool correctable,
-> >  				    struct stmmac_safety_stats *stats)
-> > @@ -841,6 +878,13 @@ static void dwxgmac3_handle_dma_err(struct net_device *ndev,
-> >  
-> >  	dwxgmac3_log_error(ndev, value, correctable, "DMA",
-> >  			   dwxgmac3_dma_errors, STAT_OFF(dma_errors), stats);
-> > +
-> > +	value = readl(ioaddr + XGMAC_DMA_DPP_INT_STATUS);
-> > +	writel(value, ioaddr + XGMAC_DMA_DPP_INT_STATUS);
-> > +
-> > +	dwxgmac3_log_error(ndev, value, false, "DMA_DPP",
-> > +			   dwxgmac3_dma_dpp_errors,
-> > +			   STAT_OFF(dma_dpp_errors), stats);
-> >  }
-> >  
-> >  static int
-> > @@ -881,6 +925,12 @@ dwxgmac3_safety_feat_config(void __iomem *ioaddr, unsigned int asp,
-> >  	value |= XGMAC_TMOUTEN; /* FSM Timeout Feature */
-> >  	writel(value, ioaddr + XGMAC_MAC_FSM_CONTROL);
-> >  
-> > +	/* 5. Enable Data Path Parity Protection */
-> > +	value = readl(ioaddr + XGMAC_MTL_DPP_CONTROL);
-> > +	/* already enabled by default, explicit enable it again */
-> > +	value &= ~XGMAC_DDPP_DISABLE;
-> > +	writel(value, ioaddr + XGMAC_MTL_DPP_CONTROL);
-> > +
-> >  	return 0;
-> >  }
-> >  
-> > @@ -914,7 +964,11 @@ static int dwxgmac3_safety_feat_irq_status(struct net_device *ndev,
-> >  		ret |= !corr;
-> >  	}
-> >  
-> > -	err = dma & (XGMAC_DEUIS | XGMAC_DECIS);
-> > +	/* DMA_DPP_Interrupt_Status is indicated by MCSIS bit in
-> > +	 * DMA_Safety_Interrupt_Status, so we handle DMA Data Path
-> > +	 * Parity Errors here
-> > +	 */
-> > +	err = dma & (XGMAC_DEUIS | XGMAC_DECIS | XGMAC_MCSIS);
-> >  	corr = dma & XGMAC_DECIS;
-> >  	if (err) {
-> >  		dwxgmac3_handle_dma_err(ndev, ioaddr, corr, stats);
-> > @@ -930,6 +984,7 @@ static const struct dwxgmac3_error {
-> >  	{ dwxgmac3_mac_errors },
-> >  	{ dwxgmac3_mtl_errors },
-> >  	{ dwxgmac3_dma_errors },
-> > +	{ dwxgmac3_dma_dpp_errors },
-> >  };
-> >  
-> >  static int dwxgmac3_safety_feat_dump(struct stmmac_safety_stats *stats,
-> > -- 
-> > 2.34.1
-> >   
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
