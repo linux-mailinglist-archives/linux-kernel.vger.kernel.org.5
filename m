@@ -1,59 +1,81 @@
-Return-Path: <linux-kernel+bounces-51273-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 531D4848895
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 20:39:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DBFB848896
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 20:45:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 100C328512F
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 19:39:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CCD3285250
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 19:45:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92C345FBB4;
-	Sat,  3 Feb 2024 19:39:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65A905F54B;
+	Sat,  3 Feb 2024 19:45:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aYebAlo+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Nh9kTd7v"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC51D5FDB1;
-	Sat,  3 Feb 2024 19:39:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 325A05CDD3
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 19:45:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706989184; cv=none; b=Pcrdbk7dIrOSQWfwdukBiCaq8y2vu3RvmS7Mc+NpThli3umiG+jRDnuMpPUj8OjzIcjfQJ+G2F+t05l9oE5CHpiiZQZK+6sjR5wvpmwL5TFNQpxYa2ixCLn7uwd+JhZ0WXgrvoGh8d4JuaZw/ANP+cP9ut7lh6RNmHMFtF8/ACs=
+	t=1706989537; cv=none; b=PVUPbh2tfKZNMnh6ZWngabzsQt4yVsGp5TBasxQn0d16zsaXIJ38x0D/VwCdjrHJabPX0wlUpGoOjrLvcFKuIasgLB78ZLCp5/mu9FzCfd6QNWsOtLngP4EMQYpOqldDbNUsAtAeE99LMq+jy6bcX6u07RHK8qjq7nXY4MTycGA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706989184; c=relaxed/simple;
-	bh=oF/O0RgKO6FjhFeZq12tKC5kTirMGa/o9nYb4NrI7F0=;
+	s=arc-20240116; t=1706989537; c=relaxed/simple;
+	bh=OZ8tqHKMSnW/RLCgujHSxVnpe/vJVwNLA9V9eMIlOok=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gRmFnkwrSGjqCGkLbGxFOMHefGYvC7rGB1g1fdq3zNJ1UmCynNL6iHMmV/Dbrn2s5pAnbAcmNmSkEkyi7Iwz01nlDbvU1sQiWz0WYUsKNLeI+1QM6W72NmuXgnvHMCTEyCbqwDmUeHpJnzC+JbMu9RIlEwd+rjrDcwZqdOeofgw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aYebAlo+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12664C433F1;
-	Sat,  3 Feb 2024 19:39:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706989184;
-	bh=oF/O0RgKO6FjhFeZq12tKC5kTirMGa/o9nYb4NrI7F0=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=kRquZNB3FZyUYcTBKQkEhigU8OUzFzZGCtxEO272nVXNSfb/XNham5QmTVW5wgFqaAwSwvZxedGWFQcHqowjA0BhrGFPsKGHY5sqf0p2JHVv4ztQNGHi2iGbJdrvMUmVrdZCOrhTo/E66HbzlesHmUhh9QmJtwbdsEqWb1Hn5Ow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Nh9kTd7v; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D16F940E016C;
+	Sat,  3 Feb 2024 19:45:32 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id LL7Mp7vWCURW; Sat,  3 Feb 2024 19:45:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1706989529; bh=vt5PlNONgksbT19ob4ZS3LjM5BOwuQhzw7BUPoTXCes=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aYebAlo+zlzuBOzvuh+YauZ1AdWs0PFZ1omCK+q6QPADxo/ayoG6jdsFRuE1PD226
-	 KNwkNRssep+odoNoZrMboHJhOoHrWMjUTKsmoJijpnfxy31YJRNi4bSl8kvYKPo+IF
-	 9X3A7RVC+GaPuJnu1OxScp1CGdDGw1i3PmccE8g00VtOt2JY9HFzXEGloJNnpjGLeS
-	 trLca74HuvFXskjNGmmOj/FBpzQAQMxeYnYZsaEg4ZXrTYZzuytEOwLd7Mqjtk5LWq
-	 2zloqmuZW/fnplUvfydrbOOKcBqgQjSg1fX5omFAicT28lkxqwxCIgVte6KJkKnfW1
-	 IHl+MC2rwiSjA==
-Date: Sat, 3 Feb 2024 19:38:09 +0000
-From: Simon Horman <horms@kernel.org>
-To: Ravi Gunasekaran <r-gunasekaran@ti.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, andrew@lunn.ch, rogerq@kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	s-vadapalli@ti.com, srk@ti.com
-Subject: Re: [RFC PATCH net-next 2/2] net: ethernet: ti: inter-core-virt-eth:
- Register as network device
-Message-ID: <20240203193809.GA706477@kernel.org>
-References: <20240130110944.26771-1-r-gunasekaran@ti.com>
- <20240130110944.26771-3-r-gunasekaran@ti.com>
- <20240201131912.GB530335@kernel.org>
- <32f49a1d-7974-4dc6-be20-f21f5aabc264@ti.com>
+	b=Nh9kTd7vAUqVQnH8xoN0CI7kiALIESBMw3IJaxqVDcffloE5lXkTcXnWvXnta6nEC
+	 VxzBRDomI5iMsVOG1uy0n8FivpMqxF9RbClAGxKUejVFJDP4/ji65kmMuRY2mP21jO
+	 6JJljwoK9iQM20nYH1wXSlAjZVhzqefg1z8Go29I89rieyXcxVd6lKHBgFknDX91sz
+	 UWlJQsE08oWOLDkTsUBosh11YLDPJdpIlQROK+Nwx2hw9W5F5LIkAGxBA9fshiDEvE
+	 SKenGeaax8zXm/zD0gLcie6927LDGbtqvtJcyd06WO4cmKQiBhOUd4k5PgyeoULjwt
+	 Qi66UzpNZmR0Ed+qj4fA014LIvjtTBkuNdbWNTOamKCAN1zuDJilHhLRCHeixFBBH/
+	 bSei+pm2NZt3l+QGzZ3IjM3eAAMYe71zjhM6ud+4bL26UPrfKINlKsaec6UZ6LXV9s
+	 NLpHjYw7TVGDzJQZBUKkHpzi+QajERFSlfe3Jx0iocmQ6MBIWLxEsTadQHLDtYISAb
+	 ndHusx76kiyGtxYb5Ep/v3eLDCe6uI7tVqwr4kRUBmDb4tB/t1ieLaL7TxvoPqiEuE
+	 kL+FVzyTfG6SqxNowGATvc7wtMhQ0MQIOHq5szOBXD57WngBaA2qLQaH44laGaIS2L
+	 yZwj2HWo3TZ4yLjBAjPKRhbg=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BBD3E40E0081;
+	Sat,  3 Feb 2024 19:45:16 +0000 (UTC)
+Date: Sat, 3 Feb 2024 20:45:10 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+	dave.hansen@linux.intel.com, x86@kernel.org,
+	kirill.shutemov@linux.intel.com, ndesaulniers@google.com,
+	morbo@google.com, justinstitt@google.com,
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+	patches@lists.linux.dev
+Subject: Re: [PATCH] x86/coco: Define cc_vendor without
+ CONFIG_ARCH_HAS_CC_PLATFORM
+Message-ID: <20240203194510.GJZb6Xxh2h-cqqY27f@fat_crate.local>
+References: <20240202-provide-cc_vendor-without-arch_has_cc_platform-v1-1-09ad5f2a3099@kernel.org>
+ <20240203102925.GFZb4VhT1IwX-XRxTV@fat_crate.local>
+ <20240203160806.GA520926@dev-fedora.aadp>
+ <20240203190729.GHZb6O8UborcetShlw@fat_crate.local>
+ <20240203193552.GA655765@dev-fedora.aadp>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,25 +84,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <32f49a1d-7974-4dc6-be20-f21f5aabc264@ti.com>
+In-Reply-To: <20240203193552.GA655765@dev-fedora.aadp>
 
-On Thu, Feb 01, 2024 at 07:54:24PM +0530, Ravi Gunasekaran wrote:
+On Sat, Feb 03, 2024 at 12:35:52PM -0700, Nathan Chancellor wrote:
+> Yeah, that seems like a fair plan to me. I was a little concerned about
+> a future change that would require backporting to kernels that have
+> da86eb961184 (i.e., 6.6) that do not have a9ef277488cf and miss this fix
+> but that is a bridge that can be crossed if it ever appears, no point in
+> thinking too hard about it at this point.
 
-..
+Yep.
 
-> Thanks for taking time to review the patches.
+> I can send a v2 on Monday, unless Paolo wants to just add
 > 
-> The primary intention of this series was to know if the RPMsg based approach
-> would be upstream friendly or not. But I would not like to use that as an excuse
-> for not fixing checks/warnings/errors reported by checkpatch completely.
-> Even though if its RFC, I will treat it as an actual upstream patch  and address the
-> checkpatch/smatch/sparse findings or atleast mention in the cover letter that the
-> findings have not been fully addressed.
+> Fixes: a9ef277488cf ("x86/kvm: Fix SEV check in sev_map_percpu_data()")
+> 
+> directly during application. I think the rest of the patch is fine but
+> if there are any other changes that should be made, I am more than happy
+> do to so.
 
-Understood. TBH, I am unsure of the value of this kind of review for an RFC
-- I understand it is important to get the bigger picture questions out of
-the way at this point.
+Nah, LGTM.
 
-..
+Acked-by: Borislav Petkov (AMD) <bp@alien8.de>
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
