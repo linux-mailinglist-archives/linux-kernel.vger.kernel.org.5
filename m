@@ -1,82 +1,82 @@
-Return-Path: <linux-kernel+bounces-51144-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE088848710
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 16:17:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C98FE848712
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 16:18:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7547FB2571A
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 15:17:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37E64B23156
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 15:18:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C504B5F47F;
-	Sat,  3 Feb 2024 15:16:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 777845F47F;
+	Sat,  3 Feb 2024 15:17:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jM7Gvylb"
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VmviKh0M"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1B375EE93;
-	Sat,  3 Feb 2024 15:16:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77B255F479;
+	Sat,  3 Feb 2024 15:17:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706973419; cv=none; b=joe23Hw2WGBxGSXlNMaWvzRF5wKji7r7Cck155ukv3mz4yhUn8xpabAeDvwVxdTx9B6zixBVbE+sQ+DbJ4tvlAhw+kXOgrIouHxq5q1fidvWZSfYIlKBwx4d/wqfQUpzES+o5wTUrvsIixPeNKpZNxDeRkgFOmClIms2sYwlkcQ=
+	t=1706973473; cv=none; b=DlgAbUS3ZIj3+1r31fNcPLUm6YuFm7IKgwE+7Tn3xMlZVdpV/0KN+Ev9DRHN/qs6XgX4aRnkia0bbHFkbO7eJucmccbnkswcsXgi5U+n9zWDhZQtC9xi2UOmqVZ72ymnB0qWxpD4vd1udcMn7RcT/aZgl3iMStl4liI0sV+TYz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706973419; c=relaxed/simple;
-	bh=2Xp42R+bUMSJBGR1+TFAh3jQWwWrzM0UtoWaeJTvGRg=;
+	s=arc-20240116; t=1706973473; c=relaxed/simple;
+	bh=IUlOK6oOP99wQKuMhpqLYRYSvzT4AufyHCIUW8c1v2g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QOW5AXI0rT8rZ+GyTVhYvLUxT7bE+QGM8FdQ4zwnsoEl2ljFLJjU4dFBjIaQbe18tYx9RFEubrzJjz15vIDHnLEZ0cSG58XsQSfk/wVje8E6I059jp0zXkNrSx0IozDXJ+UFPMYm6RB8A557WwtWXsPK7N9+fOqZzwfJasDXYO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jM7Gvylb; arc=none smtp.client-ip=209.85.215.178
+	 Content-Type:Content-Disposition:In-Reply-To; b=s0AMhY1o1e5lUQWwvrQPT0ZzqSDLgZ2REL2gzXd48Rxh6Y4nnANL1D6laIpSjA1tHw1VoGy52SODg/U4L/VMBt+SJU67rJOTw/vRhZj/UgE4SFZxEEsLqxa54LdrlwgyJ2BNpiUMmPrOtAnvpNq2zFoSWbuPaZIam6njHGh4e2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VmviKh0M; arc=none smtp.client-ip=209.85.214.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5cf2d73a183so3061541a12.1;
-        Sat, 03 Feb 2024 07:16:57 -0800 (PST)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d99c5f6bfeso731325ad.1;
+        Sat, 03 Feb 2024 07:17:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706973417; x=1707578217; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706973472; x=1707578272; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=6G4UutG5LlRpQsaWdrVXJt92ktptJvAmhEIRIq5lY14=;
-        b=jM7GvylbzhuzgDUMN2c5wMl6EM5WATzZtUElXw3SF/5Fi+lMnxbCgg5uNKY4mldo8J
-         m2zVojNKEhrsR3OlwJielyjRfqvhmHJ4YxuEiJbnCJubpy216OrtON8MWDf2jqMBdwmT
-         HfktizrdaVXmvfLVoeDIpCtgleosTxaHw6PaGUlDdtyNmgZsZ+4ypw0wDHjqoh7tvFkx
-         PIpG/rcfXZ6FSX9TVwwiP9rRS2mMqiy8YXJDGA6v1LiZ/iSSGHD2ORJEsQmVPs0Z+v+g
-         153OUYegkvGQFryrxdX9XHlUxnyVKKrxDbWeplIUin2Bjp9M8dX4dNLU3rtjNfVzLWyr
-         UYLw==
+        bh=2lUzUF2MBNp5VCtXVAH46rRo9sIQAjaiGzL0rWPuBxk=;
+        b=VmviKh0MkzbJHp1wgSWX2HESFAWf5e2qYLz7e7ytDtXfE9Nde8T9xU9g5UgqwHsafU
+         M2FJDCudvcrYZf4V1hU9HRPbvDRjdQtjNSPDB/PGG5nsw4B4Ke3jNe5oMhS18xU/GxT7
+         Vjp2rDTW1eHNSgAgkYtpAnSpnvt1msV3bAKOzUWA7t187yy567zZpdgsCuCf3wJ0gZqu
+         UMMpFewEI28ZuMw9N9+DoMGz9TouGXG+i581CVT1wXJAhNGtd2iTIva1aLGKNCU3rvYe
+         vXTFQUNGr+bvWjuTnhcRSvUKYfxF6Gg8STL4BQrBcGYymgb4TPg2CfrY/FcEOQHmGFvR
+         esAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706973417; x=1707578217;
+        d=1e100.net; s=20230601; t=1706973472; x=1707578272;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6G4UutG5LlRpQsaWdrVXJt92ktptJvAmhEIRIq5lY14=;
-        b=XeBiViXHyXaNn+w2yCTiHF6IvqKgduaFWIJqKXKvhhOvzFuL9om437j+dgEIDrNE7u
-         WOA9E+WrbnQU7S9WUAFip1y1cZiCn9Pxjb2S+UL8AwlRudTxu4/8xSAuM2TdFLwzn/x3
-         9YiiQon+6uUyna1FknQrekzaze4GF//NkQ6gfQ7A9/zBXRTLr4Q1opNWxxHjkzYxJ6q+
-         BzQm7lJeHRk81qYA91dOyPU5KIK9kQlxDFwY7BaUXs7LXtY1C/vif0zicHxckg9H0Wcw
-         w5/tms8kaddY9z22A4LBhGWdr0r4O02w0cW3by43v5F/nHr2y6O6CoCs/YIWxXB5ZS2d
-         jSRw==
-X-Gm-Message-State: AOJu0Yzk2+KjKqHB0H3olV5BNnPdZunKq6QHWs9QQG38XK42fX9ag3Wz
-	oM4fqWtaKW6iD0b/C/HGY6bus8lCpDlnEllt8SigUcyVvUV4bcPy
-X-Google-Smtp-Source: AGHT+IFqjUMS+vD5OsUCxKNNmpd1K9urziAG5ucP65c/TKckWf3dmFLniHyOhcTCPhkKcpKvARrI/w==
-X-Received: by 2002:a05:6a00:99d:b0:6d9:955a:d3bb with SMTP id u29-20020a056a00099d00b006d9955ad3bbmr2486203pfg.10.1706973416892;
-        Sat, 03 Feb 2024 07:16:56 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVhuj0tc4ntpNk8y5TQ34DmLusagL4+VYiBB2qEenO8pXU84KhkPBCqQ05sxi5ck/hiEhoZkhSBPXnaFStVOAgPdI7fVQ8bv5vg2syb4uZ2OCBIn2kqiZ67EVR47fnqCXtPkJDycsIVznbw2CA4jKp3PVwP7Lhfw0K2wYovJt3S
+        bh=2lUzUF2MBNp5VCtXVAH46rRo9sIQAjaiGzL0rWPuBxk=;
+        b=S9LvfN++dwVlvo/mJ9OAULVMoLI6khlolOHikyQO/KlLLM0iwk0vIN/0kKtl4a4nI7
+         XmcpLIkIwUJDwff/NVduc9dPQl/CjzbOvJh06xvjYBzyAootwzEww1KJt/2ri1gC9xpX
+         v5KErNRmnhfSfulETv1aFP04rz4SgVhUvVtKDAPhBX5JIMAs/QbqKFicQkD5OoQzTzE1
+         mAVLCkEwIFjXZ3k4fGdZA1Dy7t1JJ+NlSj4pgcjFgvsxR6WTh1R9I+IJ0tOXpSDnex4R
+         wjIWptjutO1On99acMpsEApheRN0geAVZGl88kZPyeQD0HA2C9SLt5PZTwbfOBldPEAB
+         /W8g==
+X-Gm-Message-State: AOJu0Yw9WkKjgd+bpOwK+vFm0wdhhTkUQ16UvvEclIO2eEe3WdCFP1qr
+	zL2cwxOtAHMKT6GDrizoNtkRLpyM+BQhwwCXr7isVigdfs2ygzM+WNB7DKo0
+X-Google-Smtp-Source: AGHT+IEW2KW4nZwiBGgCcsLxy1SbfBczTtO90qzrOeBfw49XVDCt9jvVTCQDPSOdHa1RIJKxcy+6Mg==
+X-Received: by 2002:a17:902:d2ca:b0:1d9:7814:ae3b with SMTP id n10-20020a170902d2ca00b001d97814ae3bmr2211332plc.21.1706973471785;
+        Sat, 03 Feb 2024 07:17:51 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVF5Uh70ChZOG4rsDfNklgJXQDzdlL9/0NlTFDpm5MfSMYT9sOWuAHLoLZowXJMYfVtkN0Ib+xybTYMOl3zbDBFDfkAZOI3O0986UASbkaNDWA9OpX6skL9nt5Mc6lpyMhkWJjVwZHpsS0AhtAkAWc5eZxAEWfPvcu3ArSbYjFg
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q7-20020a056a00088700b006d638fd230bsm3615942pfj.93.2024.02.03.07.16.56
+        by smtp.gmail.com with ESMTPSA id g24-20020a1709029f9800b001d8e671e24asm3352806plq.254.2024.02.03.07.17.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Feb 2024 07:16:56 -0800 (PST)
+        Sat, 03 Feb 2024 07:17:51 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Sat, 3 Feb 2024 07:16:55 -0800
+Date: Sat, 3 Feb 2024 07:17:50 -0800
 From: Guenter Roeck <linux@roeck-us.net>
 To: Zhang Rui <rui.zhang@intel.com>
 Cc: jdelvare@suse.com, fenghua.yu@intel.com, linux-hwmon@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 02/11] hwmon: (coretemp) Fix bogus core_id to attr
- name mapping
-Message-ID: <70ca3e55-036b-4603-b744-f367f4de6344@roeck-us.net>
+Subject: Re: [PATCH V2 03/11] hwmon: (coretemp) Enlarge per package core
+ count limit
+Message-ID: <93654683-90b5-43b5-9bef-0427d0042c03@roeck-us.net>
 References: <20240202092144.71180-1-rui.zhang@intel.com>
- <20240202092144.71180-3-rui.zhang@intel.com>
+ <20240202092144.71180-4-rui.zhang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,47 +85,19 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240202092144.71180-3-rui.zhang@intel.com>
+In-Reply-To: <20240202092144.71180-4-rui.zhang@intel.com>
 
-On Fri, Feb 02, 2024 at 05:21:35PM +0800, Zhang Rui wrote:
-> Before commit 7108b80a542b ("hwmon/coretemp: Handle large core ID
-> value"), there is a fixed mapping between
-> 1. cpu_core_id
-> 2. the index in pdata->core_data[] array
-> 3. the sysfs attr name, aka "tempX_"
-> The later two always equal cpu_core_id + 2.
+On Fri, Feb 02, 2024 at 05:21:36PM +0800, Zhang Rui wrote:
+> Currently, coretemp driver supports only 128 cores per package.
+> This loses some core temperature information on systems that have more
+> than 128 cores per package.
+>  [   58.685033] coretemp coretemp.0: Adding Core 128 failed
+>  [   58.692009] coretemp coretemp.0: Adding Core 129 failed
+>  ...
 > 
-> After the commit, pdata->core_data[] index is got from ida so that it
-> can handle sparse core ids and support more cores within a package.
+> Enlarge the limitation to 512 because there are platforms with more than
+> 256 cores per package.
 > 
-> However, the commit erroneously maps the sysfs attr name to
-> pdata->core_data[] index instead of cpu_core_id + 2.
-> 
-> As a result, the code is not aligned with the comments, and brings user
-> visible changes in hwmon sysfs on systems with sparse core id.
-> 
-> For example, before commit 7108b80a542b ("hwmon/coretemp: Handle large
-> core ID value"),
-> /sys/class/hwmon/hwmon2/temp2_label:Core 0
-> /sys/class/hwmon/hwmon2/temp3_label:Core 1
-> /sys/class/hwmon/hwmon2/temp4_label:Core 2
-> /sys/class/hwmon/hwmon2/temp5_label:Core 3
-> /sys/class/hwmon/hwmon2/temp6_label:Core 4
-> /sys/class/hwmon/hwmon3/temp10_label:Core 8
-> /sys/class/hwmon/hwmon3/temp11_label:Core 9
-> after commit,
-> /sys/class/hwmon/hwmon2/temp2_label:Core 0
-> /sys/class/hwmon/hwmon2/temp3_label:Core 1
-> /sys/class/hwmon/hwmon2/temp4_label:Core 2
-> /sys/class/hwmon/hwmon2/temp5_label:Core 3
-> /sys/class/hwmon/hwmon2/temp6_label:Core 4
-> /sys/class/hwmon/hwmon2/temp7_label:Core 8
-> /sys/class/hwmon/hwmon2/temp8_label:Core 9
-> 
-> Restore the previous behavior and rework the code, comments and variable
-> names to avoid future confusions.
-> 
-> Fixes: 7108b80a542b ("hwmon/coretemp: Handle large core ID value")
 > Signed-off-by: Zhang Rui <rui.zhang@intel.com>
 
 Applied.
