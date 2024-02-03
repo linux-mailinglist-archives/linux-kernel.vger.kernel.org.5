@@ -1,78 +1,82 @@
-Return-Path: <linux-kernel+bounces-51278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A85A8488A0
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 20:55:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D29E8488A1
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 20:55:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 997781C22051
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 19:55:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C70451F22BF2
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 19:55:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86F675FBBC;
-	Sat,  3 Feb 2024 19:55:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD0D55FDD9;
+	Sat,  3 Feb 2024 19:55:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c2riJEf6"
-Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CDQEKYYe"
+Received: from mail-il1-f175.google.com (mail-il1-f175.google.com [209.85.166.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C5175EE68
-	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 19:55:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9072F5EE80
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 19:55:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706990135; cv=none; b=KBpmu7fFrhZuKEtE0QSHjHrtjLL2lYuTIlvLjZAWSFqqdut84hh5zf9HXMTJ6+T0zUWgtRzpkDB6KdmKSCicRdS67mLrCTqEj+hs8BSPwLrG3k054D8Keyn5/8eVfSoiUdInnIkPPRexntz5en8MXqFfFKq1htUtN0CQgBiQylw=
+	t=1706990137; cv=none; b=p/99Tpb5x+NoYxpiD0yY3VPPJKGjXZSGrAHwC8imJdCLfHMYyCDOS/8BfKL0940wbVksGITd/qdqZUcXdtjsDbhbaBtPoiQwNAJ0oCYbTbt1YLwslIt41bGQYgrM9Ou6rlw3cSNP4a9HVdg0mALR7iMa1KycPgqJSidcSb0iMGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706990135; c=relaxed/simple;
-	bh=XHvMjT6sPY3NTHcPmQA0vryOKP2XSLE2suiccvQg9wE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dMnELhQSBusDjBIBjUhRWt1CVQFvvgmX+uRjiMY2lDzWyrUORk28ak7aoOI6dFTu6V2DU5jmE4JGezq32L46eTBjbabOh1ZALJiLKTpZwLpbLQvvEQeq5DYZWjilMosxrhGhmRCE7CW4B5VxAYI+7mCz9RpmyiJSRKlMsdzsseA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c2riJEf6; arc=none smtp.client-ip=209.85.166.181
+	s=arc-20240116; t=1706990137; c=relaxed/simple;
+	bh=Ex6gM/NUTsP2e8s+swh9Obk9z0EfqvzADqG1nJKjn3Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=CDZxBqbuaj182v77Gm2n9drcN9adZjiPr+VSfxpZqg+vj/7z3ki5iZnkkbFTqypkhsrO8cea+lZRbBkLhvNzlJ1TsjxBhMRadGbCe2uqUm6Z1dGPXDUovixRbIVVSZRo9eNf0g12wlu7uBwkT1OSzf09fXnkdW7Hqt7hztZxEHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CDQEKYYe; arc=none smtp.client-ip=209.85.166.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-363ac28b375so6914985ab.3
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Feb 2024 11:55:34 -0800 (PST)
+Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-363b6fadff9so4560135ab.3
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Feb 2024 11:55:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706990133; x=1707594933; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5sFMyFsZOm+ODvmdcqDqnNfPw5aI2/9OocYowkg3fU0=;
-        b=c2riJEf6QjNoijW1vRM9Yt26vAW+HgF4ArLkZYCy1+wjd9OwaG9LUimDQrHur4g7Hf
-         TRseILoABM2MzrXDdw6m/hdIr4j8a7OyDBUPfsMr/gZV1+RS4Kb01073LqQqYZgzQCr2
-         zJXJdJOWPi4VW5LX+RIoO24yScqICZbWJwbxviFBGworFoyGCoUglJ5wGWxcIbomJ080
-         +/lEz67ZgGhJMFW5PeyFAMW/yAKin2Oy1hUra27joQhcoa3egjyvwJGiXswye/7Kqu20
-         mJanlVD+/kJ2x6fwGlYmj5GfaV1WHxDSpVrTglnIKEkL0cifr2pPh7UfF8H/eh8X/Fsl
-         4lkQ==
+        d=gmail.com; s=20230601; t=1706990134; x=1707594934; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i5O4gPRWME0qpw4p43cyejm6nlntjlGGd0ghS67oNKk=;
+        b=CDQEKYYeFC0Sz/lrl3RBnacWoB7I4+MZWyPNMVd8SU4RSbCuNGR6KTJ/T7UCTs+nYe
+         lwmvpFmk1OBVjFjqONaPCBVyCP5wOXOLC/Og4tvNvGzFsOJbdcksrDOf2RLIZyuJlYzF
+         A7aTk+wH5oOnGoVfqdmwH2P3307dzbOFDPdLKN+DIdf2FXHuFCTld0akWROZQPtOC4uO
+         FCdG2pLE/HglAB0DvguNQmMByE3hvy0AlSeaSQdCI3HPfoMIBjUq/XiWwaOBbVwnTXi2
+         03CKpPt6sVmGflhL/v8fcgNidKzXhzO2fuBVtDCckZnkKSbjd60tHecraTZH338xxRwM
+         GWoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706990133; x=1707594933;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5sFMyFsZOm+ODvmdcqDqnNfPw5aI2/9OocYowkg3fU0=;
-        b=q0ZsjHYqaZZqnZSX9Rec1uTLgkiFPHQHLKe/ACJbaxYvrjQvF2YeVMVTgJ4zhhh53k
-         tACzI/yqXi4WgsS5gep+cTt2htn+lQ3yU9D5or8SoYPpVkNMKmrc9Mz+9qtTW/yzYh4N
-         CucAqKh7BViF+NgQFEY362tagQt1ENR8sonPliHi8x0kluqQoyM/4LyZNx6RJufNFUrZ
-         djHmLMJ35DrJ1tKF1DJxvhVkd0EPWXHHE6YHbruuMHGFeThP9jcIcIzXxEEX4F0J8cY+
-         Q+IV19UvrGMZ3YyhrZhnbYjSrOUDpxYZ5bYMeFlUS+PUgm+GRMyHDeWfXL6hdzhhsYp/
-         LVmA==
-X-Gm-Message-State: AOJu0YyY5VA3GhewvaNMq7oo7aiCLbLt63EAhfcdS9XdGbTKzj0lxoyt
-	JIRBzxv5I0hTEj+0LliONA0C3agdvfLzD3kjS+YhX3eBjljq4hKQ5LPU4us0
-X-Google-Smtp-Source: AGHT+IHgq787YPrXHrxEioTIvUhvOtvNHW6DOlhc1o3/JBeM8b14WbicmZP2JqoqHUq46JjuLrEvBg==
-X-Received: by 2002:a92:c5ce:0:b0:363:6da9:2bc3 with SMTP id s14-20020a92c5ce000000b003636da92bc3mr5533234ilt.11.1706990133082;
-        Sat, 03 Feb 2024 11:55:33 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUePlp0ivLh07xjFatzJ1LeDHvlhZT9okl13oJu65ThfD8E/kAteSIci0SbqkLhSkRdIZz8hKhA88m4d68OcuLcQzfmqX6er1SjlppO5xgEUvHjiy72K4IwJ8sQqROY
+        d=1e100.net; s=20230601; t=1706990134; x=1707594934;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=i5O4gPRWME0qpw4p43cyejm6nlntjlGGd0ghS67oNKk=;
+        b=JQIATWxnAeuxq3QAmc2ghgJFUWpXwQUyAVA+7wuzlq3ZJDfNwDYdWVjY7vuyHQzdiW
+         rfxb1UV6s8UebpsKG2T7XZqOf1wh6E+rcENEXUnUPSzmiiZ80KRzmAtz7Gvn0A2FfUFQ
+         5n29ieptpnSykVxxPiQAbuQxz5ShE79RzQBtbKS700fqirE9fazADVc1+h1kaB1fCk4p
+         tUbflzfFQ8cEx0zqPH8A59RQHA4QGQQLkF6A4E8t3tZa6G8aW1wQqLTQFMEFOAAbraup
+         izF7yijuwl6M3vREYYeKOhlP5EtCP66ETS61CabPG54Ln9mkkXhxykTS6NqwbG0oURmk
+         NRZw==
+X-Gm-Message-State: AOJu0YxoATQEJRzWfdXcHt9r3HwWVITkUk14ziVZ0LxB4Nk9qxSb51py
+	k6SkdIEI2iyzbVGw4A2jyB9uIfugQKqI7PC9hBXbrzCMPbjXmN4rEeJzvRDW
+X-Google-Smtp-Source: AGHT+IHxMbgbOmNih2lNFXWV/2wMe7ily+THt5b/u9nAclSMPdaTeUbfnX5HnZlFVOc/tvmj0nw+bg==
+X-Received: by 2002:a92:cd82:0:b0:363:c1ce:1a6 with SMTP id r2-20020a92cd82000000b00363c1ce01a6mr1430870ilb.13.1706990134278;
+        Sat, 03 Feb 2024 11:55:34 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXR/VrgoYvp2XmHriqtrKxdmM3koeKTW2S9jIbvQV6xbexmDfxmoyjsV2GvAtibMcv8DniFh7j6z/2oYIALy0U9OvRg9xmZ2vIbL1D/a/RvLXOEr+gi7pWNV7wCdvuH
 Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
-        by smtp.googlemail.com with ESMTPSA id bd1-20020a056e02300100b003639075ae9asm1417232ilb.63.2024.02.03.11.55.32
+        by smtp.googlemail.com with ESMTPSA id bd1-20020a056e02300100b003639075ae9asm1417232ilb.63.2024.02.03.11.55.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Feb 2024 11:55:32 -0800 (PST)
+        Sat, 03 Feb 2024 11:55:33 -0800 (PST)
 From: Jim Cromie <jim.cromie@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	akpm@linuxfoundation.org
 Cc: joe@perches.com,
 	Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH 0/2] checkpatch: relax >75 warning, adjust report format
-Date: Sat,  3 Feb 2024 12:55:25 -0700
-Message-ID: <20240203195527.212505-1-jim.cromie@gmail.com>
+Subject: [PATCH 1/2] checkpatch: tolerate long lines w/o spaces
+Date: Sat,  3 Feb 2024 12:55:26 -0700
+Message-ID: <20240203195527.212505-2-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240203195527.212505-1-jim.cromie@gmail.com>
+References: <20240203195527.212505-1-jim.cromie@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,63 +85,39 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-1. current checkpatch warns: "Prefer a maximum 75 chars per line"
-on [1]:
+checkpatch complains about long lines (>75 chars), but allows a few
+exceptions:
+
+ file delta changes
+ filename then :
+ A Fixes:, link or signature tag line
+
+Add another exception, to allow a long "word" without whitespace.  The
+regex allows spaces in 1st 10 chars, so it allows the following [1],
+which current checkpatch carps about.
 
 [1] https://lore.kernel.org/lkml/20200825153338.17061-1-vincent.whitchurch@axis.com
 
-That is overly strict.  Instead allow long non-whitespace strings
-(\S+) to exceed 75 chars, after tolerating \s in 1st 10 chars.
+Dummy-tag: test-generic-tag-format-with-url-length-bla-bla-jeez-dont-give-up-now-there.
 
-This is more permissive than the current Fixes/link detector (which I
-preserved), IMHO checkpatch shouldn't be that fussy; it doesn't verify
-URLs either.
+Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+---
+ scripts/checkpatch.pl | 2 ++
+ 1 file changed, 2 insertions(+)
 
-2. adjust report format for nicer pararaphs.
-
-Current checkpatch format uses -------------- lines to segment the
-many per-patch reports, but then inserts a blank line just above the
-last per-patch report line, breaking the paragraph nature of that
-report.
-
-Move the blank line down, which places it just above the -------- line
-starting the next per-patch report.  Also wrap the per-patch summary
-line, so its columnar position is independent of the patch-name (and
-its length), and so your terminal window doesn't have to wrap the
-line.  This makes the report easier to visually scroll/scan, since the
-status is always in the same column.
-
-IOW, from this:
-
-0001-checkpatch-report last line, looks part of 0002
---------------------------------------------------------------
-0002-checkpatch-minor-whitespace-changes-for-readability.patch
---------------------------------------------------------------
-total: 0 errors, 0 warnings, 15 lines checked
-
-0002-checkpatch-minor-whitespace-changes-for-readability.patch has ....
--------------------------------------------------
-next-patch ...
-
-To this:
-
---------------------------------------------------------------
-0002-checkpatch-minor-whitespace-changes-for-readability.patch
---------------------------------------------------------------
-total: 0 errors, 0 warnings, 15 lines checked
-0002-checkpatch-minor-whitespace-changes-for-readability.patch 
- has no obvious style problems and is ready for submission.
-
--------------------------------------------------
-next-patch ...
-
-Jim Cromie (2):
-  checkpatch: tolerate long lines w/o spaces
-  checkpatch: minor whitespace changes for readability
-
- scripts/checkpatch.pl | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 9c4c4a61bc83..dc17c6da3af2 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3271,6 +3271,8 @@ sub process {
+ 					# filename then :
+ 		      $line =~ /^\s*(?:Fixes:|$link_tags_search|$signature_tags)/i ||
+ 					# A Fixes:, link or signature tag line
++		      $line =~ /^.{10}\S+$/ ||
++					# a long single "word" without whitespace
+ 		      $commit_log_possible_stack_dump)) {
+ 			WARN("COMMIT_LOG_LONG_LINE",
+ 			     "Prefer a maximum 75 chars per line (possible unwrapped commit description?)\n" . $herecurr);
 -- 
 2.43.0
 
