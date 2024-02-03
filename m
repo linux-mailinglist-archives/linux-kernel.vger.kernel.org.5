@@ -1,533 +1,114 @@
-Return-Path: <linux-kernel+bounces-51231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F0E1848823
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 19:00:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B70B1848824
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 19:02:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9E182829D7
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 18:00:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51766B23012
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 18:02:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8079A5FB8E;
-	Sat,  3 Feb 2024 17:59:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z+1xddEx"
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C59AC5F871;
+	Sat,  3 Feb 2024 18:02:27 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72BCD5FDAC;
-	Sat,  3 Feb 2024 17:59:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9E2F5F46B
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 18:02:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706983196; cv=none; b=VN5jmWmtUE0vQTZzorScWnezTOsWG0gF5jpZ0FImjd6e0PFoyWxga3IfPeeUDYXkJbR7QMz22wWKqFavU4stfVpuKsyTRgYvMO/Gou6Os6xqDuceFyb3jBX25NrX8WN6bRFZEnmX/ml0/UwhBf1/BQJzRMaicq0o6x5aB8D4o3o=
+	t=1706983347; cv=none; b=ZtPd1Sk8yaLaEYzVJ+gfUtqB9yYF0il8V33IG07OEQTqdwLzcUBCOKpBBwjaZaDhEzUDIChxTzXFiAqcCJMY906kMDqljxHwrINaZU0U18uN9eeRrxuVpZkzZq0vL3j5s6WuyFiDF1h2xLJtGFnvobWMkGTVBAC5hqM3gIdMghU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706983196; c=relaxed/simple;
-	bh=Fnd3KRhbChvoSsNx9ILYDctWtvhO91+k6Qo7lyd19aE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=AeAKkoUb/ZCkXxkxve3MULFUrs+2Is0HSjhZBUBfKK89xOUK0wII6DjYovVsRlgcGm2VvnBD8hoiy29fvTZp/aYspToishh0lYdHC5YGzjCKO+OyV9nYAikZ03LicdMBkB8JIPsVt88V1Vh6RW8JGijcah1568ExRQ3w2RL4og0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z+1xddEx; arc=none smtp.client-ip=209.85.219.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-6818a9fe3d4so16641496d6.0;
-        Sat, 03 Feb 2024 09:59:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706983193; x=1707587993; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TWeRYEky01ybUaTHLR82WF5CM5YsDcvQ/1BqkYniE8Y=;
-        b=Z+1xddExZUkqHngSfsKKsRpWKdW2RbRhcOvk4jyFHfkH0MyAnRMN+ZjZ/SmkHly55e
-         y866bqV+NISpcAgedhp4RSPpxnoDtCk6t6b8mtFlaR1zldykEUcdsTWHipwU2HGvjtGP
-         ElLY2lPSXjVa72B7Kt5IFiIgD4KG7jmHIUyfISSa1xXKgzJTkg72gDVN7lGE22n9sr5g
-         DDtbH0p8gImWdzlNrk2EypwJLFKx377or79RxRnD/eenMwxH6tG3GMMJxe+I9vZI6FGy
-         S7+WF6FRlBZ4n0VUhLgDT2nWSyC0ilOKvYc1V1gd7T8mrMkmYDBrmrR3khKSJ7/zo+Ug
-         WeCA==
+	s=arc-20240116; t=1706983347; c=relaxed/simple;
+	bh=OpCzJScOy0ans3iiys9Fl96fMziZDxp4Vey98NXQChM=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=kgx2M1gvH9eRJbRGiH9W+abjiS7sEQ3BynBsyBuQF+T1dI2v0Rx2TNfrSQeoQqlhJKBbK5aes8WkvYPr9jfn3N1HGUVmQ4eKmdeA+NSNG2ASHuUyAZ8usqEQVnOPCEk4MGarZ+vEzNSr8Kr0jj0nwGJHkCgFBfj8+8t0QuwVEEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-363930ba977so23100285ab.0
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Feb 2024 10:02:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706983193; x=1707587993;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TWeRYEky01ybUaTHLR82WF5CM5YsDcvQ/1BqkYniE8Y=;
-        b=qy/EUjUUIhVZkiigtyeaJ1oNbHCNLjVoJtOI5IbeEVSRH90oCfbltZxXFh+5yW3YcX
-         BiGriD99YDon03u4AmXohBe7Xv0/BtMZ/2ypnRuNGo+jD/cpP39cMtK+DM5XOcB/v5y9
-         O5SrO4UYVwe7ChW73bPDDGsB35wPDS9SSM3qenYmcvz796HF0YiVVJl9+CYkD+Cf+C68
-         woPi9SNqBWbxz07uas5zcnkijFkYxDlvzOSyFw/MEjmpPUjcNgzDG85/Y6bsh/h8u7B7
-         07dfpl61eTvPytuBsNKtaXdZuxPqQ9Qn/H4Umzvg5K/oceMADhePAl1O33IhhaMnCoUe
-         ca8g==
-X-Gm-Message-State: AOJu0YxZE+z+20UnmdSBKf+FAtvqj8ZvJzxPW1XLCdWDfww1bKdmjoFV
-	shItvP5mvZs2wq9JFvj5hlne0OQUwAV5uliTnx7crB+1yanbYREb
-X-Google-Smtp-Source: AGHT+IG66pX1zhfBjypPlqG6kQQjzx8mBSfxK9bVyeaP7mx0Utmz8KfPfAm6S2MMLVQ0TdThvJNBgA==
-X-Received: by 2002:a05:6214:20e8:b0:68c:3f60:f09a with SMTP id 8-20020a05621420e800b0068c3f60f09amr1815961qvk.47.1706983193082;
-        Sat, 03 Feb 2024 09:59:53 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUuOktI938JQVALyBa/N8cUoBf81Y+AIm7DQzzzyydHO1mc+RnzSOdIEPpOl8Yfs38tOdWJNdxssGo8N50e99IU+F5LHPAfE5SKfWzw1PYZr7KrqtVqxVsRIKz5n7d7HEt8jkf0+QT9ilqeG0gsm4Lmk3fd/ZVpboZPww3oZu8ZpgIHi1W3cbjS4jnWnlSngiuriNuj1Nd4tJYB3IocdCpJxElj/RIPuQ4nLe9KhjwhRMqm0AK03B6k8RhKT90CNDZT52LU0bDLZ6uocR8ENhocR8e1nPIYTPookcQl2gGW9j7YHmC0hdooSiBnoBP6t+D9a3SThuSQvWnaUdEB8fiEDlOERqPKeBiooni7aMlBOpIsEstWGaVYweA7Lco8YjZIa0H4ZRjuNOgcqsnclUrURU1SpiisKkz/81FSOl153tS9wvMFDovUjVUn5iFCdX/qJuj1VGaL+KuOyzyusYZlhm0dEJZHNcU8wIXPuOVKH5h2BNtgJf697LXt
-Received: from localhost.localdomain ([174.95.13.129])
-        by smtp.gmail.com with ESMTPSA id kf1-20020a056214524100b006879b82e6f0sm782639qvb.38.2024.02.03.09.59.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Feb 2024 09:59:52 -0800 (PST)
-From: Abdel Alkuor <alkuor@gmail.com>
-To: Pavel Machek <pavel@ucw.cz>,
-	Lee Jones <lee@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Abdel Alkuor <alkuor@gmail.com>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	Jean-Jacques Hiblot <jjhiblot@traphandler.com>,
-	ChiYuan Huang <cy_huang@richtek.com>,
-	=?UTF-8?q?Andr=C3=A9=20Apitzsch?= <git@apitzsch.eu>,
-	Alice Chen <alice_chen@richtek.com>
-Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-	ChiaEn Wu <chiaen_wu@richtek.com>,
-	linux-kernel@vger.kernel.org,
-	linux-leds@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: [PATCH 2/2] leds: Add NCP5623 multi-led driver
-Date: Sat,  3 Feb 2024 12:58:52 -0500
-Message-Id: <20240203175910.301099-2-alkuor@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240203175910.301099-1-alkuor@gmail.com>
-References: <20240203175910.301099-1-alkuor@gmail.com>
+        d=1e100.net; s=20230601; t=1706983345; x=1707588145;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=c8BIMaJkzTu28fgRsqkRky1lvWyIrpmgdUG1PvF/ySk=;
+        b=HiBelQTgE/x4WsN8phCuiVkykFjegMjlxmW7fUbLqFfKNGshJgZ49qt5JGH9gw1x0t
+         uYz/K0Qtdv+iNVML5YTGJkr+fx3HV/0PGavXnkyr3N1YMTJsvpPAiWL8Pj7qPvz93OZX
+         zScv2Ih96SH8LiihAjtiB1Uzao4+GT1Y3StzWSrgWSvlRQG4Kw+ll/gxVGEDpllypyr0
+         RGoBIWOiYYAlyCyv9tHphogdxhfWvzYh5S/R3HNt5rqdTM4ss4qQqOyFSsMXlvfKuDP/
+         vSEC7x6YZztEl6cvuvXLKOb+j8D8rGaAE3GTIEKaAECzDUJad/+QBwkwPhEqyA0n47/t
+         JI6g==
+X-Gm-Message-State: AOJu0Yweoz4gS9/KAEp0qAulSsSbOszAiauU71GTnUlYjpqQqw9gNJxO
+	fU+etvSYRiMpRuQc/Zle0Ji5Q3a5M93c+iQ+nKrSGlGhcyR7LYPr2Bg62zESlgf8q4HnE439iT7
+	odIDWRa+f80yTPn1Ud5xpwFA5aU9/4KupY6w9Y1D/coOt1s0xUbEqAdU=
+X-Google-Smtp-Source: AGHT+IFVH57x8djBTsWSbkgJpBPmul6zpkIYvLlGOKoSGp7EJ0VvzJhUZeG2pWp0ummMPOfUlSPC209EyFmq81ZT3+GYIcNZ2Opk
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:12e7:b0:363:9ffd:beca with SMTP id
+ l7-20020a056e0212e700b003639ffdbecamr493499iln.5.1706983345171; Sat, 03 Feb
+ 2024 10:02:25 -0800 (PST)
+Date: Sat, 03 Feb 2024 10:02:25 -0800
+In-Reply-To: <000000000000cb54de060d2cc266@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ed365206107e0783@google.com>
+Subject: Re: [syzbot] [riscv?] kernel panic: Kernel stack overflow (2)
+From: syzbot <syzbot+5c1ebfe49c5e8e998e75@syzkaller.appspotmail.com>
+To: aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, palmer@dabbelt.com, paul.walmsley@sifive.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-NCP5623 is DC-DC multi-LEDs driver with 94% peak
-efficiency. NCP5623 has three PWMs which can be
-programmed up to 32 steps giving 32768 colors hue.
+syzbot has found a reproducer for the following issue on:
 
-NCP5623 driver supports gradual dimming upward/downward
-with programmable delay steps. Also, the driver supports
-driving a single LED or multi-LED like RGB.
+HEAD commit:    6613476e225e Linux 6.8-rc1
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+console output: https://syzkaller.appspot.com/x/log.txt?x=144ac160180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=877e61347079aad5
+dashboard link: https://syzkaller.appspot.com/bug?extid=5c1ebfe49c5e8e998e75
+compiler:       riscv64-linux-gnu-gcc (Debian 12.2.0-13) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: riscv64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10c57b90180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15d369ffe80000
 
-Signed-off-by: Abdel Alkuor <alkuor@gmail.com>
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/a741b348759c/non_bootable_disk-6613476e.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/33ea806d02dd/vmlinux-6613476e.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/33195f72f823/Image-6613476e.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5c1ebfe49c5e8e998e75@syzkaller.appspotmail.com
+
+ s11: ff60000011241a00 t3 : 0000000000000004 t4 : 1fec00000224849b
+ t5 : 0000000000000002 t6 : 1fec0000022484c6
+status: 0000000200000100 badaddr: ff2000000493ffc0 cause: 000000000000000f
+Kernel panic - not syncing: Kernel stack overflow
+CPU: 1 PID: 3859 Comm: kworker/1:3 Not tainted 6.8.0-rc1-syzkaller #0
+Hardware name: riscv-virtio,qemu (DT)
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+[<ffffffff80010868>] dump_backtrace+0x2e/0x3c arch/riscv/kernel/stacktrace.c:121
+[<ffffffff858a9b60>] show_stack+0x34/0x40 arch/riscv/kernel/stacktrace.c:127
+[<ffffffff85904e9c>] __dump_stack lib/dump_stack.c:88 [inline]
+[<ffffffff85904e9c>] dump_stack_lvl+0xe8/0x154 lib/dump_stack.c:106
+[<ffffffff85904f24>] dump_stack+0x1c/0x24 lib/dump_stack.c:113
+[<ffffffff858aa5b2>] panic+0x33c/0x77a kernel/panic.c:344
+[<ffffffff80010396>] handle_bad_stack+0xe0/0xf4 arch/riscv/kernel/traps.c:412
+[<ffffffff80214a26>] mark_usage kernel/locking/lockdep.c:4599 [inline]
+[<ffffffff80214a26>] __lock_acquire+0xaa8/0x784c kernel/locking/lockdep.c:5091
+SMP: stopping secondary CPUs
+Rebooting in 86400 seconds..
+
+
 ---
- .../sysfs-class-led-multicolor-driver-ncp5623 |  46 +++
- drivers/leds/rgb/Kconfig                      |  11 +
- drivers/leds/rgb/Makefile                     |   1 +
- drivers/leds/rgb/leds-ncp5623.c               | 320 ++++++++++++++++++
- 4 files changed, 378 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-class-led-multicolor-driver-ncp5623
- create mode 100644 drivers/leds/rgb/leds-ncp5623.c
-
-diff --git a/Documentation/ABI/testing/sysfs-class-led-multicolor-driver-ncp5623 b/Documentation/ABI/testing/sysfs-class-led-multicolor-driver-ncp5623
-new file mode 100644
-index 000000000000..6b9f4849852b
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-class-led-multicolor-driver-ncp5623
-@@ -0,0 +1,46 @@
-+What:		/sys/class/leds/<led>/direction
-+Date:		Feb 2024
-+KernelVersion:	6.8
-+Contact:	Abdel Alkuor <alkuor@gmail.com>
-+Description:
-+		Set gradual dimming direction which
-+		can be either none, up, or down.
-+		After setting the direction, brightness
-+		can be set using one of 31 steps.
-+
-+		==== ======== ==== ======== ==== ========
-+		Step ILED(mA) Step ILED(mA) Step ILED(mA)
-+		0    0        11   1.38      22   3.06
-+		1    0.92     12   1.45      23   3.45
-+		2    0.95     13   1.53      24   3.94
-+		3    0.98     14   1.62      25   4.60
-+		4    1.02     15   1.72      26   5.52
-+		5    1.06     16   1.84      27   6.90
-+		6    1.10     17   1.97      28   9.20
-+		7    1.15     18   2.12      29   13.80
-+		8    1.20     19   2.30      30   27.60
-+		9    1.25     20   2.50      31   27.60
-+		10   1.31     21   2.76
-+		==== ======== ==== ======== ==== ========
-+
-+What:		/sys/class/leds/<led>/dim_step
-+Date:		Feb 2024
-+KernelVersion:	6.8
-+Contact:	Abdel Alkuor <alkuor@gmail.com>
-+Description:
-+		Set gradual dimming time.
-+
-+		==== ======== ==== ======== ==== ========
-+		Step Time(ms) Step Time(ms) Step Time(ms)
-+		0     0       11   88       22   176
-+		1     8       12   96       23   184
-+		2     16      13   104      24   192
-+		3     24      14   112      25   200
-+		4     32      15   120      26   208
-+		5     40      16   128      27   216
-+		6     48      17   136      28   224
-+		7     56      18   144      29   232
-+		8     64      19   152      30   240
-+		9     72      20   160      31   248
-+		10    80      21   168
-+		==== ======== ==== ======== ==== ========
-diff --git a/drivers/leds/rgb/Kconfig b/drivers/leds/rgb/Kconfig
-index a6a21f564673..81ab6a526a78 100644
---- a/drivers/leds/rgb/Kconfig
-+++ b/drivers/leds/rgb/Kconfig
-@@ -27,6 +27,17 @@ config LEDS_KTD202X
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called leds-ktd202x.
- 
-+config LEDS_NCP5623
-+	tristate "LED support for NCP5623"
-+	depends on I2C
-+	depends on OF
-+	help
-+	  This option enables support for ON semiconductor NCP5623
-+	  Triple Output I2C Controlled RGB LED Driver.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called leds-ncp5623.
-+
- config LEDS_PWM_MULTICOLOR
- 	tristate "PWM driven multi-color LED Support"
- 	depends on PWM
-diff --git a/drivers/leds/rgb/Makefile b/drivers/leds/rgb/Makefile
-index 243f31e4d70d..a501fd27f179 100644
---- a/drivers/leds/rgb/Makefile
-+++ b/drivers/leds/rgb/Makefile
-@@ -2,6 +2,7 @@
- 
- obj-$(CONFIG_LEDS_GROUP_MULTICOLOR)	+= leds-group-multicolor.o
- obj-$(CONFIG_LEDS_KTD202X)		+= leds-ktd202x.o
-+obj-$(CONFIG_LEDS_NCP5623)		+= leds-ncp5623.o
- obj-$(CONFIG_LEDS_PWM_MULTICOLOR)	+= leds-pwm-multicolor.o
- obj-$(CONFIG_LEDS_QCOM_LPG)		+= leds-qcom-lpg.o
- obj-$(CONFIG_LEDS_MT6370_RGB)		+= leds-mt6370-rgb.o
-diff --git a/drivers/leds/rgb/leds-ncp5623.c b/drivers/leds/rgb/leds-ncp5623.c
-new file mode 100644
-index 000000000000..e77dfca69ca3
---- /dev/null
-+++ b/drivers/leds/rgb/leds-ncp5623.c
-@@ -0,0 +1,320 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * leds-ncp5623.c - Multi-LED Driver
-+ *
-+ * Author: Abdel Alkuor <alkuor@gmail.com>
-+ * Datasheet: https://www.onsemi.com/pdf/datasheet/ncp5623-d.pdf
-+ */
-+
-+#include <linux/i2c.h>
-+#include <linux/module.h>
-+#include <linux/sysfs.h>
-+#include <linux/workqueue.h>
-+
-+#include <linux/led-class-multicolor.h>
-+
-+#define NCP5623_REG(x)			((x) << 0x5)
-+
-+#define NCP5623_SHUTDOWN_REG		NCP5623_REG(0x0)
-+#define NCP5623_ILED_REG		NCP5623_REG(0x1)
-+#define NCP5623_PWM_REG(index)		NCP5623_REG(0x2 + (index))
-+#define NCP5623_UPWARD_STEP_REG		NCP5623_REG(0x5)
-+#define NCP5623_DOWNWARD_STEP_REG	NCP5623_REG(0x6)
-+#define NCP5623_DIMMING_TIME_REG	NCP5623_REG(0x7)
-+
-+#define NCP5623_MAX_BRIGHTNESS		0x1f
-+
-+enum {
-+	NCP5623_DIR_NONE,
-+	NCP5623_DIR_UPWARD,
-+	NCP5623_DIR_DOWNWARD,
-+};
-+
-+static const char *const directions[] = {
-+	[NCP5623_DIR_NONE]     = "none",
-+	[NCP5623_DIR_UPWARD]   = "up",
-+	[NCP5623_DIR_DOWNWARD] = "down",
-+};
-+
-+struct ncp5623 {
-+	struct i2c_client *client;
-+	struct led_classdev_mc mc_dev;
-+	struct mutex lock;
-+
-+	u8 direction;
-+	u8 dim_step;
-+	u8 old_brightness;
-+	unsigned long delay;
-+};
-+
-+static int ncp5623_write(struct i2c_client *client, u8 reg, u8 data)
-+{
-+	return i2c_smbus_write_byte_data(client, reg | data, 0);
-+}
-+
-+static inline unsigned long
-+ncp5623_get_completion_steps(u8 dir, int brightness, int old_brightness)
-+{
-+	int diff = brightness - old_brightness;
-+
-+	if (dir == NCP5623_DIR_UPWARD)
-+		return diff <= 1 ? NCP5623_MAX_BRIGHTNESS + diff : diff;
-+
-+	return diff >= -1 ? NCP5623_MAX_BRIGHTNESS - diff : -diff;
-+
-+}
-+
-+static int ncp5623_brightness_set(struct led_classdev *cdev,
-+				  enum led_brightness brightness)
-+{
-+	struct led_classdev_mc *mc_cdev = lcdev_to_mccdev(cdev);
-+	struct ncp5623 *ncp = container_of(mc_cdev, struct ncp5623, mc_dev);
-+	int ret;
-+	u8 reg;
-+	int i;
-+
-+	guard(mutex)(&ncp->lock);
-+
-+	if (ncp->delay && time_is_after_jiffies(ncp->delay))
-+		return -EBUSY;
-+
-+	ncp->delay = 0;
-+
-+	for (i = 0; i < mc_cdev->num_colors; i++) {
-+		ret = ncp5623_write(ncp->client,
-+				    NCP5623_PWM_REG(mc_cdev->subled_info[i].channel),
-+				    min(mc_cdev->subled_info[i].intensity,
-+					NCP5623_MAX_BRIGHTNESS));
-+		if (ret)
-+			return ret;
-+	}
-+
-+	switch (ncp->direction) {
-+	case NCP5623_DIR_NONE:
-+		reg = NCP5623_ILED_REG;
-+		break;
-+	case NCP5623_DIR_UPWARD:
-+		reg = NCP5623_UPWARD_STEP_REG;
-+		break;
-+	case NCP5623_DIR_DOWNWARD:
-+		reg = NCP5623_DOWNWARD_STEP_REG;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	ret = ncp5623_write(ncp->client, reg, brightness);
-+	if (ret)
-+		return ret;
-+
-+	if ((ncp->direction != NCP5623_DIR_NONE) && ncp->dim_step) {
-+		ret = ncp5623_write(ncp->client,
-+				    NCP5623_DIMMING_TIME_REG, ncp->dim_step);
-+		if (ret)
-+			return ret;
-+
-+		ncp->delay = ncp5623_get_completion_steps(ncp->direction,
-+							  brightness,
-+							  ncp->old_brightness);
-+		/* dim step resolution is 8ms */
-+		ncp->delay *= ncp->dim_step * 8;
-+		ncp->delay = msecs_to_jiffies(ncp->delay) + jiffies;
-+	}
-+
-+	ncp->old_brightness = brightness;
-+
-+	return 0;
-+}
-+
-+static ssize_t dim_step_store(struct device *dev,
-+			      struct device_attribute *attr,
-+			      const char *buf, size_t count)
-+{
-+	struct led_classdev_mc *mc_cdev = lcdev_to_mccdev(dev_get_drvdata(dev));
-+	struct ncp5623 *ncp = container_of(mc_cdev, struct ncp5623, mc_dev);
-+	u8 value;
-+	int ret;
-+
-+	ret = kstrtou8(buf, 0, &value);
-+	if (ret)
-+		return ret;
-+
-+	if (value > 0x1f)
-+		return -EINVAL;
-+
-+	guard(mutex)(&ncp->lock);
-+	ncp->dim_step = value;
-+
-+	return count;
-+}
-+
-+static ssize_t dim_step_show(struct device *dev,
-+			     struct device_attribute *attr, char *buf)
-+{
-+	struct led_classdev_mc *mc_cdev = lcdev_to_mccdev(dev_get_drvdata(dev));
-+	struct ncp5623 *ncp = container_of(mc_cdev, struct ncp5623, mc_dev);
-+
-+	guard(mutex)(&ncp->lock);
-+
-+	return sysfs_emit(buf, "%u\n", ncp->dim_step);
-+}
-+
-+static ssize_t direction_store(struct device *dev,
-+			       struct device_attribute *attr,
-+			       const char *buf, size_t count)
-+{
-+	struct led_classdev_mc *mc_cdev = lcdev_to_mccdev(dev_get_drvdata(dev));
-+	struct ncp5623 *ncp = container_of(mc_cdev, struct ncp5623, mc_dev);
-+	int ret;
-+
-+	ret = __sysfs_match_string(directions, ARRAY_SIZE(directions), buf);
-+
-+	switch (ret) {
-+	case NCP5623_DIR_NONE:
-+	case NCP5623_DIR_UPWARD:
-+	case NCP5623_DIR_DOWNWARD:
-+		guard(mutex)(&ncp->lock);
-+		ncp->direction = ret;
-+		return count;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static ssize_t direction_show(struct device *dev,
-+			      struct device_attribute *attr, char *buf)
-+{
-+	struct led_classdev_mc *mc_cdev = lcdev_to_mccdev(dev_get_drvdata(dev));
-+	struct ncp5623 *ncp = container_of(mc_cdev, struct ncp5623, mc_dev);
-+
-+	guard(mutex)(&ncp->lock);
-+
-+	return sysfs_emit(buf, "%s\n", directions[ncp->direction]);
-+}
-+
-+
-+static DEVICE_ATTR_RW(direction);
-+static DEVICE_ATTR_RW(dim_step);
-+
-+static struct attribute *ncp5623_led_attrs[] = {
-+	&dev_attr_direction.attr,
-+	&dev_attr_dim_step.attr,
-+	NULL
-+};
-+
-+static const struct attribute_group ncp5623_led_group = {
-+	.attrs = ncp5623_led_attrs,
-+};
-+
-+static int ncp5623_probe(struct i2c_client *client)
-+{
-+	struct device *dev = &client->dev;
-+	struct fwnode_handle *mc_node, *led_node;
-+	struct led_init_data init_data = { };
-+	struct ncp5623 *ncp;
-+	struct mc_subled *subled_info;
-+	u32 color_index;
-+	u32 reg;
-+	int count = 0;
-+	int ret;
-+
-+	ncp = devm_kzalloc(dev, sizeof(*ncp), GFP_KERNEL);
-+	if (!ncp)
-+		return -ENOMEM;
-+
-+	ncp->client = client;
-+
-+	mc_node = device_get_named_child_node(dev, "multi-led");
-+	if (!mc_node)
-+		return -EINVAL;
-+
-+	fwnode_for_each_child_node(mc_node, led_node)
-+		count++;
-+
-+	subled_info = devm_kcalloc(dev, count, sizeof(*subled_info), GFP_KERNEL);
-+	if (!subled_info) {
-+		ret = -ENOMEM;
-+		goto release_mc_node;
-+	}
-+
-+	fwnode_for_each_available_child_node(mc_node, led_node) {
-+		ret = fwnode_property_read_u32(led_node, "color", &color_index);
-+		if (ret) {
-+			fwnode_handle_put(led_node);
-+			goto release_mc_node;
-+		}
-+
-+		ret = fwnode_property_read_u32(led_node, "reg", &reg);
-+		if (ret) {
-+			fwnode_handle_put(led_node);
-+			goto release_mc_node;
-+		}
-+
-+		subled_info[ncp->mc_dev.num_colors].channel = reg;
-+		subled_info[ncp->mc_dev.num_colors++].color_index = color_index;
-+	}
-+
-+	init_data.fwnode = mc_node;
-+
-+	ncp->mc_dev.led_cdev.max_brightness = NCP5623_MAX_BRIGHTNESS;
-+	ncp->mc_dev.subled_info = subled_info;
-+	ncp->mc_dev.led_cdev.brightness_set_blocking = ncp5623_brightness_set;
-+
-+	mutex_init(&ncp->lock);
-+	i2c_set_clientdata(client, ncp);
-+
-+	ret = devm_led_classdev_multicolor_register_ext(dev, &ncp->mc_dev, &init_data);
-+	if (ret)
-+		goto destroy_lock;
-+
-+	ret = sysfs_update_group(&ncp->mc_dev.led_cdev.dev->kobj, &ncp5623_led_group);
-+	if (ret)
-+		goto destroy_lock;
-+
-+	fwnode_handle_put(mc_node);
-+
-+	return 0;
-+
-+destroy_lock:
-+	mutex_destroy(&ncp->lock);
-+
-+release_mc_node:
-+	fwnode_handle_put(mc_node);
-+
-+	return ret;
-+}
-+
-+static void ncp5623_remove(struct i2c_client *client)
-+{
-+	struct ncp5623 *ncp = i2c_get_clientdata(client);
-+
-+	ncp5623_write(client, NCP5623_SHUTDOWN_REG, 0);
-+	mutex_destroy(&ncp->lock);
-+}
-+
-+static void ncp5623_shutdown(struct i2c_client *client)
-+{
-+	ncp5623_write(client, NCP5623_SHUTDOWN_REG, 0);
-+}
-+
-+static const struct of_device_id ncp5623_id[] = {
-+	{ .compatible = "onnn,ncp5623" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, ncp5623_id);
-+
-+static struct i2c_driver ncp5623_i2c_driver = {
-+	.driver	= {
-+		.name = "ncp5623",
-+		.of_match_table = ncp5623_id,
-+	},
-+	.probe = ncp5623_probe,
-+	.remove = ncp5623_remove,
-+	.shutdown = ncp5623_shutdown,
-+};
-+
-+module_i2c_driver(ncp5623_i2c_driver);
-+
-+MODULE_AUTHOR("Abdel Alkuor <alkuor@gmail.com>");
-+MODULE_DESCRIPTION("NCP5623 Multi-LED driver");
-+MODULE_LICENSE("GPL");
--- 
-2.34.1
-
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
