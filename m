@@ -1,817 +1,467 @@
-Return-Path: <linux-kernel+bounces-50808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 765CA847E2A
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 02:28:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BF70847E2F
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 02:32:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AD1F1C24D68
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:28:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BAEAD1F24D93
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:32:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0D571FA2;
-	Sat,  3 Feb 2024 01:27:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C089D5C9A;
+	Sat,  3 Feb 2024 01:32:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jnTBbdpk"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ULr/vmJd"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2554C63AE;
-	Sat,  3 Feb 2024 01:27:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6B4B2919
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 01:32:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706923674; cv=none; b=oy100GllZgWu1XCnYd1WO80KUX0N+hqBuUxwrrB6CZM+0fL0wD4KfLxFUOBSp6HIROdpW+LqKkMIcFHHRxnb54du21HITIepAGVQMKdgVAGpaXX36xkBdhxUCsVUXv7j2DuyQ4Q3502hqJg2obc1OgnD2JqVOhVsGjH7TfxvYF0=
+	t=1706923942; cv=none; b=eX+pNyqTf/Pqup3N4I9myat420fdKyeZhhlekPNzAnFM8PzjAZbTclPzAtz9GOQdXqBanzxHEoBEmN72Pks6pB+zsYQnKsb1XQM0ehakAEa13sBrJ1ur0IsYTDCuQFMwbnYhnT4jURAbuzP5+D3Lu0MmEnho+/qA70qP/PDRNU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706923674; c=relaxed/simple;
-	bh=Gl1G2fIsmLDZRV8pG0yE4+nlf0H6J3/BoRBolCHSNZQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u1vbL6tbGGzA7IJ84X5wpZbYc5kNSfSZq8+Yn9Fj3p9QeeQ3IYDN0lb3vVptlQTYUIXBTR8n5YgmPWY5kjAQDbm83lCMLGuPGEtjttfFvci2yE7r4aIm472CF3dqwkEMLJ1BuR6/ao7s1KaUgd+rmzJ+dTIYEwmuR9zAvdpMI10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jnTBbdpk; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6de070a4cadso1938810b3a.2;
-        Fri, 02 Feb 2024 17:27:51 -0800 (PST)
+	s=arc-20240116; t=1706923942; c=relaxed/simple;
+	bh=LDJw0ZJRtlJkdFySI0wOAPdQNZaGk/IUoMeT7OgSShs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=u1/MRkomMthH6u2rc0+bOxfvauu/iGfc8gGof9m9SkmjAG9JVEOnqMB2QGCAObnqBR4WxO39qXQPTFaLYVi5DK9NIZLbKjSNtPrDQ4kXO0RfpcQ8aS3UihA+myB+ur2zFWtpvB9AL0NymAWa6JifUTc0yL85390vpX86jXFzOHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ULr/vmJd; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d94691de1eso30595ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 17:32:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706923671; x=1707528471; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rfN7PEXKkbRajYyXkiAJhiqOd4ro2FrRiAL+D+SIWtk=;
-        b=jnTBbdpkDSzHJNOxRW4LivntQi81Z4J/J0NUpxZf1kcUjP5QvAhHEbcpsPCrx6zMiZ
-         BcGBJ+ZT/2ZbB9bkqmLY5/2jIy76b1DSXfyPP+iCgAn6MWZtYL2yCTzipmmUUnBJ6cpn
-         7tpHpkJOzD4mgu6jrb0yOkWjNRJm9eSL+pKj3Sufu4/gheeAftT1bLcZUvK0MjQOVNRW
-         xksxiwogFDDnSBPhNfGDgZ68AN4Th1jTHmAWKImVoEARJ2xQdglFFLSU5lp/a9EZiNlV
-         v57WiV3m+NINJpENT2V51F1B6mBpi3YbdXQo61c4VMIr3m02DxZ8Nan7vXs7h9e/gSfF
-         tlew==
+        d=google.com; s=20230601; t=1706923940; x=1707528740; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OEllp6xt+hG9OYbVYTRwXvaPtKG2vixg03RLhlAvHS8=;
+        b=ULr/vmJdr6NG1L7haJPhi7/4+DNFBmhUNUJDhfk7u2cW4a7IGGaJIPrLQ5v+gY0y6v
+         8j87ePBFNIL5KTP1drW8ThVAP98HIVpXVwu9tY8D5DPFqfek6SRrTXs5wDZ5/gI/l1b/
+         bRDadKP5KGcnviLPjBS1XlpnG4Hf2zocvOofnx/MU2mgi/y7IOUZlWzpoCFm787bl+OW
+         Z10gAD+T8UJb8xPd7hPJ6yJh0ynrCaInGCebByCQAEzBNSVeRpv5dzJC5y5oBGWaYU1U
+         sjYGiKvXu1jNJXA6DU/OY083cG3bp7EuCbpSlG+BY7gxvlB5VroX4WnxzMlbgTJEQzLu
+         +fGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706923671; x=1707528471;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1706923940; x=1707528740;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rfN7PEXKkbRajYyXkiAJhiqOd4ro2FrRiAL+D+SIWtk=;
-        b=Ri1ZQonyuFnJhbqT7EZOroJ3DInHq3prPL24n6k2+xdfwFd5h3lnNu7hgN1+IX9uxj
-         3S0hyHZwa5wnLjlaUMwHoBZ502lZc6NnQRF3lpxEKAQRGvRMQr0zl7DSgDQPSA6DP1zU
-         pMZsK8qubQTL1Oz51JKQqKePEAoqKyIHesgKQ/jn4uTZUgOGK8PapKjrUgvbhQdy4vng
-         IhjlzM/KcvWzWIvqRohYEAHNN84r5pfr6Ten4AMbrMKFMEQtJxwzzwC0rC9urbCJEqHK
-         TN4clR7NAs06LBd9IrJxjeyyLWjti3PrFUB9rm018rXQSr4rQZzNh2ggkLoNIHElkpDJ
-         vJ/g==
-X-Gm-Message-State: AOJu0Yw9YP392FgL+SMDMTXey+s2wCHKOD5cpfYDH8wHSwCr49a0czrh
-	aGJLJmpWLKJMStvh9oHyAyNKY4lp+s+vNUj9yD1pIg6z/JP+Hcla
-X-Google-Smtp-Source: AGHT+IFQfJ7fyb7+t1JdoP1NdLqyDn9eoAnVt1s4pkkNULctQkyaMxJRZPPk8YlHBqXEElfxciOkBw==
-X-Received: by 2002:aa7:9d10:0:b0:6dd:6caa:aecc with SMTP id k16-20020aa79d10000000b006dd6caaaeccmr3833419pfp.31.1706923671093;
-        Fri, 02 Feb 2024 17:27:51 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXMx9ySJG3R+xo+HPJtstnuBlU29DPUy1KOJi/kf+q9w4ch0uNSp5kGuwIJXGlLVZYR34SVx+ihsbKyT8ZgGgWEK4vYtpnNbAp0Jl9qYUtGtziaE+NYIICVV5K/9aNNJxDW306Yk/m+roVF5gW67zdlhla20dhRN8eLe4QW0x2z3MxK8IV3FNzHJwIh4ki/Li+eN1bRW8C1ZgynM9cVaVr6YjgM//cqB14CqPMUEEs5F34UuGM/w80=
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id bn7-20020a056a00324700b006db87354a8fsm2278170pfb.119.2024.02.02.17.27.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 17:27:50 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Fri, 2 Feb 2024 17:27:48 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: David Ober <dober6023@gmail.com>
-Cc: linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, jdelvare@suse.com, corbet@lwn.net,
-	dober@lenovo.com, mpearson-lenovo@squebb.ca
-Subject: Re: [PATCH v3] hwmon:Add MEC172x Micro Chip driver for Lenovo
- motherboards
-Message-ID: <b30d8725-5fe8-41bc-9f5d-253b090fc529@roeck-us.net>
-References: <20240109193557.4946-1-dober6023@gmail.com>
+        bh=OEllp6xt+hG9OYbVYTRwXvaPtKG2vixg03RLhlAvHS8=;
+        b=WxrTQV6PGfOpEu7lk3XgfkP65MAVb99Ly19p3v0+K03+Ui623VCICSsZVJze6iy65c
+         NmBaRcxR+BOWbYh7Xs4uk04E4/aTqNlbkFxdFOLfaTMLKPZKhp3zWTFq0AtbG5R6Atk8
+         iErmxS+eTmaAss/gSs3om4FHwtM1u94EUU+kAs+BBRI8QfDjpSpA6cDSIM+EGu/VH2DZ
+         N06p8qQZds6aCJzFEq4PFr0NILcIvGoOuU6PTHvy/3gfOxlKKl18CDYbfyIx6GI5QWXf
+         fE2CG+xDrK1zLTX0eTCqYOBZrVhtsMvl7FPhRXsVXV6VeJWH89nMAU4b+nABX03BCUkI
+         J80A==
+X-Gm-Message-State: AOJu0Yw8d2qOHZnsCMs6m1bRHbtN2jINfaVSiocqN0oo0ifewtD+YrP5
+	/1uhAAVaeEzWSzBb/EHnfBNnS9ttBizUplkI9WGsNc0Qx+LBbjuHMYC9ezYQFJjhFR9V2x1Eig1
+	i+bM0j3SV9MuGo/lRZMwELql8/3HumVSK3+8U
+X-Google-Smtp-Source: AGHT+IEyl82Hg3VFPZZlXyUwgpQogEWkAxahEhAwIFKbaGb5fy4bBRD0kVA10OreWVQXtVHsW/d+Xp4LHMHYfB4lY90=
+X-Received: by 2002:a17:903:22c2:b0:1d9:5229:989 with SMTP id
+ y2-20020a17090322c200b001d952290989mr70672plg.10.1706923939451; Fri, 02 Feb
+ 2024 17:32:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240109193557.4946-1-dober6023@gmail.com>
-
-On Tue, Jan 09, 2024 at 02:35:57PM -0500, David Ober wrote:
-> This addition adds in the ability for the system to scan the
-> MEC172x EC chip in Lenovo ThinkStation systems to get the
-> current fan RPM speeds and the Maximum speed value for each
-> fan also provides the current CPU and DIMM thermal status
-> 
-> Signed-off-by: David Ober <dober6023@gmail.com>
-> 
-> Written by David Ober from Lenovo using this gmail address since
-> my corporate email address does not comply with git email
-
-One way to handle that would be to use the coprporate e-mail address
-as author, your corporate e-mail address as first sign-off, and your
-gmail address as second sign-off.
-
-> 
-> v2 fixed mixcased naming
-> v2 add mutex protection
-> v2 removed references to ACPI as it is not used
-> v2 added comment to explain why returning a -1 is needed
-> v3 verify running on a ThinkStation before calling probe function
-> V3 replaced empty strings with N/A value in lable arrays
-> V3 rename p7_amd to p8 since the name is now changed formally
-> V3 removed returning -1 now returns ENODEV
-> V3 fixed compiler warning from version 2
-> ---
-
-Change log should be after "---".
-
->  drivers/hwmon/Kconfig             |  10 +
->  drivers/hwmon/Makefile            |   1 +
->  drivers/hwmon/lenovo-ec-sensors.c | 490 ++++++++++++++++++++++++++++++
-
-Documentation is missing.
-
->  3 files changed, 501 insertions(+)
->  create mode 100644 drivers/hwmon/lenovo-ec-sensors.c
-> 
-> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-> index ec38c8892158..821741ec0d2f 100644
-> --- a/drivers/hwmon/Kconfig
-> +++ b/drivers/hwmon/Kconfig
-> @@ -862,6 +862,16 @@ config SENSORS_LAN966X
->  	  This driver can also be built as a module. If so, the module
->  	  will be called lan966x-hwmon.
->  
-> +config SENSORS_LENOVO_EC
-> +        tristate "Microchip MEC172X Chip for Lenovo ThinkStation"
-
-It is completely irrelevant that the EC chip is MEC172X. This would work
-just as well on another Lenovo ThinkStation with an EC from another
-vendor as long as the API is the same.
-
-Didn't I say this before ? I am  quite sure I did.
-
-> +        depends on I2C
-> +        help
-> +          If you say yes here you get support for LENOVO
-> +          EC Sensors on newer ThinkStation systems
-> +
-> +          This driver can also be built as a module. If so, the module
-> +          will be called lenovo_ec_sensors.
-> +
->  config SENSORS_LINEAGE
->  	tristate "Lineage Compact Power Line Power Entry Module"
->  	depends on I2C
-> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-> index 4ac9452b5430..aa3c2dc390ec 100644
-> --- a/drivers/hwmon/Makefile
-> +++ b/drivers/hwmon/Makefile
-> @@ -104,6 +104,7 @@ obj-$(CONFIG_SENSORS_JC42)	+= jc42.o
->  obj-$(CONFIG_SENSORS_K8TEMP)	+= k8temp.o
->  obj-$(CONFIG_SENSORS_K10TEMP)	+= k10temp.o
->  obj-$(CONFIG_SENSORS_LAN966X)	+= lan966x-hwmon.o
-> +obj-$(CONFIG_SENSORS_LENOVO_EC)	+= lenovo-ec-sensors.o
->  obj-$(CONFIG_SENSORS_LINEAGE)	+= lineage-pem.o
->  obj-$(CONFIG_SENSORS_LOCHNAGAR)	+= lochnagar-hwmon.o
->  obj-$(CONFIG_SENSORS_LM63)	+= lm63.o
-> diff --git a/drivers/hwmon/lenovo-ec-sensors.c b/drivers/hwmon/lenovo-ec-sensors.c
-> new file mode 100644
-> index 000000000000..731d75e06977
-> --- /dev/null
-> +++ b/drivers/hwmon/lenovo-ec-sensors.c
-> @@ -0,0 +1,490 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * HWMON driver for MEC172x chip that publishes some sensor values
-
-Again, no, that is not what it is.
-
-> + * via the embedded controller registers specific to Lenovo Systems.
-> + *
-> + * Copyright (C) 2023 David Ober (Lenovo) <dober@lenovo.com>
-> + *
-> + * EC provides:
-> + * - CPU temperature
-> + * - DIMM temperature
-> + * - Chassis zone temperatures
-> + * - CPU fan RPM
-> + * - DIMM fan RPM
-> + * - Chassis fans RPM
-> + */
-> +
-> +#include <linux/acpi.h>
-> +#include <linux/delay.h>
-> +#include <linux/dmi.h>
-> +#include <linux/hwmon.h>
-> +#include <linux/io.h>
-> +#include <linux/ioport.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/units.h>
-> +
-> +#define MCHP_SING_IDX			0x0000
-> +#define MCHP_EMI0_APPLICATION_ID	0x090C
-> +#define MCHP_EMI0_EC_ADDRESS_LSB	0x0902
-> +#define MCHP_EMI0_EC_ADDRESS_MSB	0x0903
-> +#define MCHP_EMI0_EC_DATA_BYTE0		0x0904
-> +#define MCHP_EMI0_EC_DATA_BYTE1		0x0905
-> +#define MCHP_EMI0_EC_DATA_BYTE2		0x0906
-> +#define MCHP_EMI0_EC_DATA_BYTE3		0x0907
-> +
-
-The driver should reserve this i/o space using devm_request_region() or
-similar to ensure that it is not used by other drivers. It should also
-use acpi_check_resource_conflict() to ensure that there is no resource
-conflict with ACPI.
-
-> +#define io_write8(a, b)	outb_p(b, a)
-> +#define io_read8(a)	inb_p(a)
-> +
-> +static inline uint8_t
-> +get_ec_reg(unsigned char page, unsigned char index)
-
-Unnecessary line break
-
-> +{
-> +	u8 onebyte;
-> +	unsigned short m_index;
-> +	unsigned short phy_index = page * 256 + index;
-> +
-> +	io_write8(MCHP_EMI0_APPLICATION_ID, 0x01);
-> +
-> +	m_index = phy_index & 0x7FFC;
-> +	io_write8(MCHP_EMI0_EC_ADDRESS_LSB, m_index);
-> +	io_write8(MCHP_EMI0_EC_ADDRESS_MSB, m_index >> 8);
-> +
-> +	switch (phy_index & 0x0003) {
-> +	case 0:
-> +		onebyte = io_read8(MCHP_EMI0_EC_DATA_BYTE0);
-> +		break;
-> +	case 1:
-> +		onebyte = io_read8(MCHP_EMI0_EC_DATA_BYTE1);
-> +		break;
-> +	case 2:
-> +		onebyte = io_read8(MCHP_EMI0_EC_DATA_BYTE2);
-> +		break;
-> +	case 3:
-> +		onebyte = io_read8(MCHP_EMI0_EC_DATA_BYTE3);
-> +		break;
-> +	}
-
-Why not just something like the following ?
-	io_read8(MCHP_EMI0_EC_DATA_BYTE0 + (index & 3));
-
-> +
-> +	io_write8(MCHP_EMI0_APPLICATION_ID, 0x01);  /* write same data to clean */
-
-That comment doesn't explain anything. What is "same data" ?
-"write 0x01 again to clean" would be more useful if that is what it means.
-
-> +	return onebyte;
-> +}
-> +
-> +static const char * const systems[] = {
-> +	"Tomcat",
-> +	"Hornet",
-> +	"Falcon",
-> +	"Manta_",
-> +};
-> +
-> +static const char * const lenovo_px_ec_temp_label[] = {
-> +	"CPU1",
-> +	"CPU2",
-> +	"R_DIMM1",
-> +	"L_DIMM1",
-> +	"R_DIMM2",
-> +	"L_DIMM2",
-> +	"PCH",
-> +	"M2_R",
-> +	"M2_Z1R",
-> +	"M2_Z2R",
-> +	"PCI_Z1",
-> +	"PCI_Z2",
-> +	"PCI_Z3",
-> +	"PCI_Z4",
-> +	"AMB",
-> +};
-> +
-> +static const char * const lenovo_gen_ec_temp_label[] = {
-> +	"CPU1",
-> +	"N/A",
-> +	"R_DIMM",
-> +	"L_DIMM",
-> +	"N/A",
-> +	"N/A",
-> +	"PCH",
-> +	"M2_R",
-> +	"M2_Z1R",
-> +	"M2_Z2R",
-> +	"PCI_Z1",
-> +	"PCI_Z2",
-> +	"PCI_Z3",
-> +	"PCI_Z4",
-> +	"AMB",
-> +};
-> +
-> +static const char * const px_ec_fan_label[] = {
-> +	"CPU1_Fan",
-> +	"CPU2_Fan",
-> +	"Front_Fan1-1",
-> +	"Front_Fan1-2",
-> +	"Front_Fan2",
-> +	"Front_Fan3",
-> +	"MEM_Fan1",
-> +	"MEM_Fan2",
-> +	"Rear_Fan1",
-> +	"Rear_Fan2",
-> +	"Flex_Bay_Fan1",
-> +	"Flex_Bay_Fan2",
-> +	"Flex_Bay_Fan2",
-> +	"PSU_HDD_Fan",
-> +	"PSU1_Fan",
-> +	"PSU2_Fan",
-> +};
-> +
-> +static const char * const p7_ec_fan_label[] = {
-> +	"CPU1_Fan",
-> +	"N/A",
-> +	"HP_CPU_Fan1",
-> +	"HP_CPU_Fan2",
-> +	"PCIE1_4_Fan",
-> +	"PCIE5_7_Fan",
-> +	"MEM_Fan1",
-> +	"MEM_Fan2",
-> +	"Rear_Fan1",
-> +	"N/A",
-> +	"BCB_Fan",
-> +	"Flex_Bay_Fan",
-> +	"N/A",
-> +	"N/A",
-> +	"PSU_Fan",
-> +	"N/A",
-> +};
-> +
-> +static const char * const p5_ec_fan_label[] = {
-> +	"CPU_Fan",
-> +	"N/A",
-> +	"N/A",
-> +	"N/A",
-> +	"N/A",
-> +	"HDD_Fan",
-> +	"Duct_Fan1",
-> +	"MEM_Fan",
-> +	"Rear_Fan",
-> +	"N/A",
-> +	"Front_Fan",
-> +	"Flex_Bay_Fan",
-> +	"N/A",
-> +	"N/A",
-> +	"PSU_Fan",
-> +	"N/A",
-
-If "N/A" means that there are no such sensors, those should not be
-instantiated to start with. If the sensors exist but their use is unknown,
-there should be no label attribute. The label attribute is supposed to
-provide information about _known_ sensors, not some unspecified data.
-
-> +};
-> +
-> +static const char * const p8_ec_fan_label[] = {
-> +	"CPU1_Fan",
-> +	"CPU2_Fan",
-> +	"HP_CPU_Fan1",
-> +	"HP_CPU_Fan2",
-> +	"PCIE1_4_Fan",
-> +	"PCIE5_7_Fan",
-> +	"DIMM1_Fan1",
-> +	"DIMM1_Fan2",
-> +	"DIMM2_Fan1",
-> +	"DIMM2_Fan2",
-> +	"Rear_Fan",
-> +	"HDD_Bay_Fan",
-> +	"Flex_Bay_Fan",
-> +	"N/A",
-> +	"PSU_Fan",
-> +	"N/A",
-> +};
-> +
-> +struct ec_sensors_data {
-> +	struct mutex mec_mutex; /* lock for sensors write */
-
-Not really "lock for sensors write", because it is also used
-when reading sensor values. More like "lock for sensor access".
-
-> +	u8 platform_id;
-> +	const char *const *fan_labels;
-> +	const char *const *temp_labels;
-> +};
-> +
-> +static int
-> +lenovo_ec_do_read_temp(struct ec_sensors_data *data, u32 attr, int channel, long *val)
-> +{
-> +	u8   LSB;
-
-Please refrain from using upper case for variables. "lsb" is sufficient.
-Use upper case for definitions.
-
-> +
-> +	switch (attr) {
-> +	case hwmon_temp_input:
-> +		mutex_lock(&data->mec_mutex);
-> +		LSB = get_ec_reg(2, 0x81 + channel);
-> +		mutex_unlock(&data->mec_mutex);
-> +		if (LSB > 0x40)
-> +			*val = (LSB - 0x40) * 1000;
-> +		else
-> +			return -ENODEV;
-
-Wrong return code. This is not "No such device". -EIO, maybe.
-Also, error handling comes first.
-
-		if (lsb <= 0x40)
-			return -EIO;
-		*val = (LSB - 0x40) * 1000;
-
-
-> +		return 0;
-> +	default:
-> +		break;
-> +	}
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +static int
-> +lenovo_ec_do_read_fan(struct ec_sensors_data *data, u32 attr, int channel, long *val)
-> +{
-> +	u8    LSB, MSB;
-> +
-> +	channel *= 2;
-> +	switch (attr) {
-> +	case hwmon_fan_input:
-> +		mutex_lock(&data->mec_mutex);
-> +		LSB = get_ec_reg(4, 0x60 + channel);
-> +		MSB = get_ec_reg(4, 0x61 + channel);
-> +		mutex_unlock(&data->mec_mutex);
-> +		if (MSB || LSB) {
-> +			mutex_lock(&data->mec_mutex);
-> +			LSB = get_ec_reg(4, 0x20 + channel);
-> +			MSB = get_ec_reg(4, 0x21 + channel);
-> +			mutex_unlock(&data->mec_mutex);
-> +			*val = (MSB << 8) + LSB;
-> +			return 0;
-> +		}
-> +		return -ENODATA; /* enodata has the sensors tool mark the FAN speed as N/A */
-
-Again, should be reverse
-
-		if (!msb && !lsb)
-			return -ENODATA;
-		...
-		return 0;
-
-Also, please explain this sequence in more detail. It appears that
-the data is only valid (for both input and max speed) if at least
-one of the registers 0x60/0x61 + channel * 2 is valid. At the same
-time, it does not seem to matter if an unspecified amoutn of time passes
-between reading those registers and deading the current / max speed.
-
-If this is static, it could be read once. If not, it might make sense
-to have a function such as
-
-bool fan_valid(data, channel)
-{
-	mutex_lock(&data->mec_mutex);
-	lsb = get_ec_reg(4, 0x60 + channel);
-	lsb = get_ec_reg(4, 0x61 + channel);
-	mutex_unlock(&data->mec_mutex);
-
-	return lsb || msb;
-}
-
-but then the question is what happens if lsb and lsb are zero
-after the second mutex_lock().
-
-> +	case hwmon_fan_max:
-> +		mutex_lock(&data->mec_mutex);
-> +		LSB = get_ec_reg(4, 0x60 + channel);
-> +		MSB = get_ec_reg(4, 0x61 + channel);
-> +		mutex_unlock(&data->mec_mutex);
-> +		if (MSB || LSB) {
-> +			mutex_lock(&data->mec_mutex);
-> +			LSB = get_ec_reg(4, 0x40 + channel);
-> +			MSB = get_ec_reg(4, 0x41 + channel);
-> +			mutex_unlock(&data->mec_mutex);
-> +			*val = (MSB << 8) + LSB;
-> +		} else {
-> +			*val = 0;
-> +		}
-> +		return 0;
-> +	case hwmon_fan_min:
-> +	case hwmon_fan_div:
-> +	case hwmon_fan_alarm:
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +static int get_platform(struct ec_sensors_data *data)
-> +{
-> +	char system_type[6];
-> +	int ret = -1;
-
-Consider returning a valid error code.
-
-> +	int idx;
-> +
-> +	for (idx = 0 ; idx < 6 ; idx++) {
-> +		mutex_lock(&data->mec_mutex);
-> +		system_type[idx] = get_ec_reg(0xC, 0x10 + idx);
-> +		mutex_unlock(&data->mec_mutex);
-> +	}
-
-What is the point of the repeated lock / unlock sequence ? get_platform()
-is only called from the probe function, so I don't see why locking
-would be necessary to start with. Even if it is necessary, I don't see
-why it would make sense to lock for each read instead of for the entire
-loop.
-
-> +
-> +	for (idx = 0 ; idx < 4 ; idx++) {
-> +		if (!strncmp(systems[idx], system_type, 6)) {
-> +			ret = idx;
-> +			break;
-> +		}
-> +	}
-
-In my opinion it would make much more sense to declare system_type as
-	char system_type[7];
-zero-terminate it, and change the code to
-
-	for (idx = 0 ; idx < 4 ; idx++) {
-		if (!strcmp(systems[idx], system_type))
-			return idx;
-	}
-
-	dev_err(dev, "Unsupported ThinkStation Model %s", system_type);
-	return -ENODEV;
-
-> +	return ret;
-> +}
-> +
-> +static int
-> +lenovo_ec_hwmon_read_string(struct device *dev, enum hwmon_sensor_types type,
-> +			    u32 attr, int channel, const char **str)
-> +{
-> +	struct ec_sensors_data *state = dev_get_drvdata(dev);
-> +
-> +	switch (type) {
-> +	case hwmon_temp:
-> +		*str = state->temp_labels[channel];
-> +		break;
-> +
-> +	case hwmon_fan:
-> +		*str = state->fan_labels[channel];
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int
-> +lenovo_ec_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
-> +		     u32 attr, int channel, long *val)
-> +{
-> +	struct ec_sensors_data *data = dev_get_drvdata(dev);
-> +
-> +	switch (type) {
-> +	case hwmon_temp:
-> +		return lenovo_ec_do_read_temp(data, attr, channel, val);
-> +	case hwmon_fan:
-> +		return lenovo_ec_do_read_fan(data, attr, channel, val);
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static umode_t
-> +lenovo_ec_hwmon_is_visible(const void *data, enum hwmon_sensor_types type,
-> +			   u32 attr, int channel)
-> +{
-> +	switch (type) {
-> +	case hwmon_temp:
-> +		if (attr == hwmon_temp_input || attr == hwmon_temp_label)
-> +			return 0444;
-> +		break;
-> +	case hwmon_fan:
-> +		if (attr == hwmon_fan_input || attr == hwmon_fan_max || attr == hwmon_fan_label)
-> +			return 0444;
-> +		break;
-> +	default:
-> +		return 0;
-> +	}
-> +	return 0;
-> +}
-> +
-> +static const struct hwmon_channel_info *lenovo_ec_hwmon_info[] = {
-> +	HWMON_CHANNEL_INFO(temp,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL),
-> +	HWMON_CHANNEL_INFO(fan,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL | HWMON_F_MAX,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL | HWMON_F_MAX,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL | HWMON_F_MAX,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL | HWMON_F_MAX,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL | HWMON_F_MAX,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL | HWMON_F_MAX,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL | HWMON_F_MAX,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL | HWMON_F_MAX,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL | HWMON_F_MAX,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL | HWMON_F_MAX,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL | HWMON_F_MAX,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL | HWMON_F_MAX,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL | HWMON_F_MAX,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL | HWMON_F_MAX,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL | HWMON_F_MAX,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL | HWMON_F_MAX),
-> +	NULL
-> +};
-> +
-> +static const struct hwmon_ops lenovo_ec_hwmon_ops = {
-> +	.is_visible = lenovo_ec_hwmon_is_visible,
-> +	.read = lenovo_ec_hwmon_read,
-> +	.read_string = lenovo_ec_hwmon_read_string,
-> +};
-> +
-> +static struct hwmon_chip_info lenovo_ec_chip_info = {
-> +	.ops = &lenovo_ec_hwmon_ops,
-> +	.info = lenovo_ec_hwmon_info,
-> +};
-> +
-> +static int lenovo_ec_probe(struct platform_device *pdev)
-> +{
-> +	struct device *hwdev;
-> +	struct ec_sensors_data *ec_data;
-> +	const struct hwmon_chip_info *chip_info;
-> +	struct device *dev = &pdev->dev;
-> +
-> +	ec_data = devm_kzalloc(dev, sizeof(struct ec_sensors_data), GFP_KERNEL);
-> +	if (!ec_data)
-> +		return -ENOMEM;
-> +
-> +	dev_set_drvdata(dev, ec_data);
-> +
-> +	chip_info = &lenovo_ec_chip_info;
-> +
-> +	mutex_init(&ec_data->mec_mutex);
-> +
-> +	mutex_lock(&ec_data->mec_mutex);
-> +	if (io_read8(MCHP_EMI0_APPLICATION_ID) != 0) { /* check EMI Application BIT */
-
-This checks a byte, though, not a bit.
-
-> +		io_write8(0x90C, io_read8(0x90C)); /* set EMI Application BIT to 0 */
-
-Writing the value read from 0x90C back to 0x90C does that ?
-I mean, I have no choice but to believe that, but it seems odd.
-
-Also, why not use MCHP_EMI0_APPLICATION_ID instead of 0x90C,
-and why read the value twice ? Or, in other words, why not
-something like the following and a comment explaining what
-this actually does and why it is needed.
-
-	app_id = io_read8(MCHP_EMI0_APPLICATION_ID);
-	if (app_id)
-		io_write8(MCHP_EMI0_APPLICATION_ID, app_id);
-
-As a general comment, I hope this code works on _all_ thinkstations,
-not only on the ones supported by this driver. 
-
-> +	}
-> +	io_write8(MCHP_EMI0_EC_ADDRESS_LSB, MCHP_SING_IDX);
-> +	io_write8(MCHP_EMI0_EC_ADDRESS_MSB, MCHP_SING_IDX >> 8);
-> +	mutex_unlock(&ec_data->mec_mutex);
-
-What is the purpose of those locks ? Even if they were needed,
-this being the probe function, what would prevent other code
-from stepping in after the mutex_unlock() and changing the content
-of MCHP_EMI0_EC_DATA_BYTE[0123] ?
-
-> +
-> +	if ((io_read8(MCHP_EMI0_EC_DATA_BYTE0) == 'M') &&
-> +	    (io_read8(MCHP_EMI0_EC_DATA_BYTE1) == 'C') &&
-> +	    (io_read8(MCHP_EMI0_EC_DATA_BYTE2) == 'H') &&
-> +	    (io_read8(MCHP_EMI0_EC_DATA_BYTE3) == 'P')) {
-
-Error handling should be first.
-
-	if ((io_read8(MCHP_EMI0_EC_DATA_BYTE0) != 'M') ||
-	    (io_read8(MCHP_EMI0_EC_DATA_BYTE1) != 'C') ||
-	    (io_read8(MCHP_EMI0_EC_DATA_BYTE2) != 'H') ||
-	    (io_read8(MCHP_EMI0_EC_DATA_BYTE3) != 'P')) {
-		return -ENODEV;
-	
-	ec_data->platform_id = get_platform(ec_data);
-	...
-
-platform_id is defined as u8. While this technically works
-because the returned -1 is converted to 0xff or 255, it is still
-incorrect.
-
-> +		switch (ec_data->platform_id) {
-> +		case 0:
-> +			ec_data->fan_labels = px_ec_fan_label;
-> +			ec_data->temp_labels = lenovo_px_ec_temp_label;
-> +			break;
-> +		case 1:
-> +			ec_data->fan_labels = p7_ec_fan_label;
-> +			ec_data->temp_labels = lenovo_gen_ec_temp_label;
-> +			break;
-> +		case 2:
-> +			ec_data->fan_labels = p5_ec_fan_label;
-> +			ec_data->temp_labels = lenovo_gen_ec_temp_label;
-> +			break;
-> +		case 3:
-> +			ec_data->fan_labels = p8_ec_fan_label;
-> +			ec_data->temp_labels = lenovo_gen_ec_temp_label;
-> +			break;
-> +		default:
-> +			dev_err(dev, "Unsupported ThinkStation Model");
-> +			return -EINVAL;
-
-			return -ENODEV;
-
-> +		}
-> +
-> +		hwdev = devm_hwmon_device_register_with_info(dev, "lenovo_ec",
-> +							     ec_data,
-> +							     chip_info, NULL);
-> +
-> +		return PTR_ERR_OR_ZERO(hwdev);
-> +	}
-> +	return -ENODEV;
-> +}
-> +
-> +static struct platform_driver lenovo_ec_sensors_platform_driver = {
-> +	.driver = {
-> +		.name	= "lenovo-ec-sensors",
-> +	},
-> +	.probe = lenovo_ec_probe,
-> +};
-> +
-> +static struct platform_device *lenovo_ec_sensors_platform_device;
-> +
-> +static int __init lenovo_ec_init(void)
-> +{
-> +	char const *s;
-> +
-> +	s = dmi_get_system_info(DMI_PRODUCT_NAME);
-> +	if (s && !(strncasecmp(s, "ThinkStation", 12))) {
-
-Unnecessary () around strncasecmp()
-
-> +		lenovo_ec_sensors_platform_device =
-> +			platform_create_bundle(&lenovo_ec_sensors_platform_driver,
-> +					       lenovo_ec_probe, NULL, 0, NULL, 0);
-> +
-
-The i/o resource should be assigned and validated here,
-and be reserved in the probe function.
-
-> +		if (IS_ERR(lenovo_ec_sensors_platform_device))
-> +			return PTR_ERR(lenovo_ec_sensors_platform_device);
-> +
-> +		return 0;
-> +	}
-> +	return -ENODEV;
-
-Again, error handling first.
-
-	if (!s || strncasecmp(s, "ThinkStation", 12))
-		return -ENODEV;
-	...
-
-> +}
-> +
-> +static void __exit lenovo_ec_exit(void)
-> +{
-> +	platform_device_unregister(lenovo_ec_sensors_platform_device);
-> +	platform_driver_unregister(&lenovo_ec_sensors_platform_driver);
-> +}
-> +
-> +module_init(lenovo_ec_init);
-> +module_exit(lenovo_ec_exit);
-> +
-> +MODULE_AUTHOR("David Ober <dober@lenovo.com>");
-> +MODULE_DESCRIPTION("HWMON driver for MEC172x EC sensors on LENOVO motherboards");
-> +MODULE_LICENSE("GPL");
+References: <20240125164256.4147-1-alexandru.elisei@arm.com>
+ <20240125164256.4147-29-alexandru.elisei@arm.com> <CAMn1gO7M51QtxPxkRO3ogH1zasd2-vErWqoPTqGoPiEvr8Pvcw@mail.gmail.com>
+ <Zb0CRYSmQxJ_N4Sr@raptor>
+In-Reply-To: <Zb0CRYSmQxJ_N4Sr@raptor>
+From: Evgenii Stepanov <eugenis@google.com>
+Date: Fri, 2 Feb 2024 17:32:07 -0800
+Message-ID: <CAFKCwrg=+KEwPoc2FXshe2qF9kQJZDT0yit4+vJ5JhNUT8+sVA@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 28/35] arm64: mte: swap: Handle tag restoring when
+ missing tag storage
+To: Alexandru Elisei <alexandru.elisei@arm.com>
+Cc: Peter Collingbourne <pcc@google.com>, catalin.marinas@arm.com, will@kernel.org, 
+	oliver.upton@linux.dev, maz@kernel.org, james.morse@arm.com, 
+	suzuki.poulose@arm.com, yuzenghui@huawei.com, arnd@arndb.de, 
+	akpm@linux-foundation.org, mingo@redhat.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, 
+	vschneid@redhat.com, mhiramat@kernel.org, rppt@kernel.org, hughd@google.com, 
+	steven.price@arm.com, anshuman.khandual@arm.com, vincenzo.frascino@arm.com, 
+	david@redhat.com, kcc@google.com, hyesoo.yu@samsung.com, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, linux-mm@kvack.org, 
+	linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Feb 2, 2024 at 6:56=E2=80=AFAM Alexandru Elisei
+<alexandru.elisei@arm.com> wrote:
+>
+> Hi Peter,
+>
+> On Thu, Feb 01, 2024 at 08:02:40PM -0800, Peter Collingbourne wrote:
+> > On Thu, Jan 25, 2024 at 8:45=E2=80=AFAM Alexandru Elisei
+> > <alexandru.elisei@arm.com> wrote:
+> > >
+> > > Linux restores tags when a page is swapped in and there are tags asso=
+ciated
+> > > with the swap entry which the new page will replace. The saved tags a=
+re
+> > > restored even if the page will not be mapped as tagged, to protect ag=
+ainst
+> > > cases where the page is shared between different VMAs, and is tagged =
+in
+> > > some, but untagged in others. By using this approach, the process can=
+ still
+> > > access the correct tags following an mprotect(PROT_MTE) on the non-MT=
+E
+> > > enabled VMA.
+> > >
+> > > But this poses a challenge for managing tag storage: in the scenario =
+above,
+> > > when a new page is allocated to be swapped in for the process where i=
+t will
+> > > be mapped as untagged, the corresponding tag storage block is not res=
+erved.
+> > > mte_restore_page_tags_by_swp_entry(), when it restores the saved tags=
+, will
+> > > overwrite data in the tag storage block associated with the new page,
+> > > leading to data corruption if the block is in use by a process.
+> > >
+> > > Get around this issue by saving the tags in a new xarray, this time i=
+ndexed
+> > > by the page pfn, and then restoring them when tag storage is reserved=
+ for
+> > > the page.
+> > >
+> > > Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> > > ---
+> > >
+> > > Changes since rfc v2:
+> > >
+> > > * Restore saved tags **before** setting the PG_tag_storage_reserved b=
+it to
+> > > eliminate a brief window of opportunity where userspace can access un=
+initialized
+> > > tags (Peter Collingbourne).
+> > >
+> > >  arch/arm64/include/asm/mte_tag_storage.h |   8 ++
+> > >  arch/arm64/include/asm/pgtable.h         |  11 +++
+> > >  arch/arm64/kernel/mte_tag_storage.c      |  12 ++-
+> > >  arch/arm64/mm/mteswap.c                  | 110 +++++++++++++++++++++=
+++
+> > >  4 files changed, 140 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/arch/arm64/include/asm/mte_tag_storage.h b/arch/arm64/in=
+clude/asm/mte_tag_storage.h
+> > > index 50bdae94cf71..40590a8c3748 100644
+> > > --- a/arch/arm64/include/asm/mte_tag_storage.h
+> > > +++ b/arch/arm64/include/asm/mte_tag_storage.h
+> > > @@ -36,6 +36,14 @@ bool page_is_tag_storage(struct page *page);
+> > >
+> > >  vm_fault_t handle_folio_missing_tag_storage(struct folio *folio, str=
+uct vm_fault *vmf,
+> > >                                             bool *map_pte);
+> > > +vm_fault_t mte_try_transfer_swap_tags(swp_entry_t entry, struct page=
+ *page);
+> > > +
+> > > +void tags_by_pfn_lock(void);
+> > > +void tags_by_pfn_unlock(void);
+> > > +
+> > > +void *mte_erase_tags_for_pfn(unsigned long pfn);
+> > > +bool mte_save_tags_for_pfn(void *tags, unsigned long pfn);
+> > > +void mte_restore_tags_for_pfn(unsigned long start_pfn, int order);
+> > >  #else
+> > >  static inline bool tag_storage_enabled(void)
+> > >  {
+> > > diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/as=
+m/pgtable.h
+> > > index 0174e292f890..87ae59436162 100644
+> > > --- a/arch/arm64/include/asm/pgtable.h
+> > > +++ b/arch/arm64/include/asm/pgtable.h
+> > > @@ -1085,6 +1085,17 @@ static inline void arch_swap_invalidate_area(i=
+nt type)
+> > >                 mte_invalidate_tags_area_by_swp_entry(type);
+> > >  }
+> > >
+> > > +#ifdef CONFIG_ARM64_MTE_TAG_STORAGE
+> > > +#define __HAVE_ARCH_SWAP_PREPARE_TO_RESTORE
+> > > +static inline vm_fault_t arch_swap_prepare_to_restore(swp_entry_t en=
+try,
+> > > +                                                     struct folio *f=
+olio)
+> > > +{
+> > > +       if (tag_storage_enabled())
+> > > +               return mte_try_transfer_swap_tags(entry, &folio->page=
+);
+> > > +       return 0;
+> > > +}
+> > > +#endif
+> > > +
+> > >  #define __HAVE_ARCH_SWAP_RESTORE
+> > >  static inline void arch_swap_restore(swp_entry_t entry, struct folio=
+ *folio)
+> > >  {
+> > > diff --git a/arch/arm64/kernel/mte_tag_storage.c b/arch/arm64/kernel/=
+mte_tag_storage.c
+> > > index afe2bb754879..ac7b9c9c585c 100644
+> > > --- a/arch/arm64/kernel/mte_tag_storage.c
+> > > +++ b/arch/arm64/kernel/mte_tag_storage.c
+> > > @@ -567,6 +567,7 @@ int reserve_tag_storage(struct page *page, int or=
+der, gfp_t gfp)
+> > >                 }
+> > >         }
+> > >
+> > > +       mte_restore_tags_for_pfn(page_to_pfn(page), order);
+> > >         page_set_tag_storage_reserved(page, order);
+> > >  out_unlock:
+> > >         mutex_unlock(&tag_blocks_lock);
+> > > @@ -595,7 +596,8 @@ void free_tag_storage(struct page *page, int orde=
+r)
+> > >         struct tag_region *region;
+> > >         unsigned long page_va;
+> > >         unsigned long flags;
+> > > -       int ret;
+> > > +       void *tags;
+> > > +       int i, ret;
+> > >
+> > >         ret =3D tag_storage_find_block(page, &start_block, &region);
+> > >         if (WARN_ONCE(ret, "Missing tag storage block for pfn 0x%lx",=
+ page_to_pfn(page)))
+> > > @@ -605,6 +607,14 @@ void free_tag_storage(struct page *page, int ord=
+er)
+> > >         /* Avoid writeback of dirty tag cache lines corrupting data. =
+*/
+> > >         dcache_inval_tags_poc(page_va, page_va + (PAGE_SIZE << order)=
+);
+> > >
+> > > +       tags_by_pfn_lock();
+> > > +       for (i =3D 0; i < (1 << order); i++) {
+> > > +               tags =3D mte_erase_tags_for_pfn(page_to_pfn(page + i)=
+);
+> > > +               if (unlikely(tags))
+> > > +                       mte_free_tag_buf(tags);
+> > > +       }
+> > > +       tags_by_pfn_unlock();
+> > > +
+> > >         end_block =3D start_block + order_to_num_blocks(order, region=
+->block_size_pages);
+> > >
+> > >         xa_lock_irqsave(&tag_blocks_reserved, flags);
+> > > diff --git a/arch/arm64/mm/mteswap.c b/arch/arm64/mm/mteswap.c
+> > > index 2a43746b803f..e11495fa3c18 100644
+> > > --- a/arch/arm64/mm/mteswap.c
+> > > +++ b/arch/arm64/mm/mteswap.c
+> > > @@ -20,6 +20,112 @@ void mte_free_tag_buf(void *buf)
+> > >         kfree(buf);
+> > >  }
+> > >
+> > > +#ifdef CONFIG_ARM64_MTE_TAG_STORAGE
+> > > +static DEFINE_XARRAY(tags_by_pfn);
+> > > +
+> > > +void tags_by_pfn_lock(void)
+> > > +{
+> > > +       xa_lock(&tags_by_pfn);
+> > > +}
+> > > +
+> > > +void tags_by_pfn_unlock(void)
+> > > +{
+> > > +       xa_unlock(&tags_by_pfn);
+> > > +}
+> > > +
+> > > +void *mte_erase_tags_for_pfn(unsigned long pfn)
+> > > +{
+> > > +       return __xa_erase(&tags_by_pfn, pfn);
+> > > +}
+> > > +
+> > > +bool mte_save_tags_for_pfn(void *tags, unsigned long pfn)
+> > > +{
+> > > +       void *entry;
+> > > +       int ret;
+> > > +
+> > > +       ret =3D xa_reserve(&tags_by_pfn, pfn, GFP_KERNEL);
+> >
+> > copy_highpage can be called from an atomic context, so it isn't
+> > currently valid to pass GFP_KERNEL here.
+> >
+> > To give one example of a possible atomic context call, copy_pte_range
+> > will take a PTE spinlock and can call copy_present_pte, which can call
+> > copy_present_page, which will call copy_user_highpage.
+> >
+> > To give another example, __buffer_migrate_folio can call
+> > spin_lock(&mapping->private_lock), then call folio_migrate_copy, which
+> > will call folio_copy.
+>
+> That is very unfortunate from my part. I distinctly remember looking
+> precisely at copy_page_range() to double check that it doesn't call
+> copy_*highpage() from an atomic context, I can only assume that I missed
+> that it's called with the ptl lock held.
+>
+> With your two examples, and the khugepaged case in patch #31 ("khugepaged=
+:
+> arm64: Don't collapse MTE enabled VMAs"), it's crystal clear that the
+> convention for copy_*highpage() is that the function cannot sleep.
+>
+> There are two issues here: allocating the buffer in memory where the tags
+> will be copied, and xarray allocating memory for a new entry.
+>
+> One fix would be to allocate an entire page with __GFP_ATOMIC, and use th=
+at
+> as a cache for tag buffers (storing the tags for a page uses 1/32th of a
+> page). From what little I know about xarray, xarray stores would still ha=
+ve
+> to be GFP_ATOMIC. This should fix the sleeping in atomic context bug. But
+> the issue I see with this is that a memory allocation can fail, while
+> copy_*highpage() cannot. Send a fatal signal to the process if memory
+> allocation fails?
+>
+> Another approach would be to preallocate memory in a preemptible context,
+> something like copy_*highpage_prepare(), but that would mean a lot more
+> work: finding all the places where copy_*highpage is used and add
+> copy_*highpage_prepare() outside the critical section, releasing the memo=
+ry
+> in case of failure (like in the copy_pte_range() case - maybe
+> copy_*highpage_end()?). That's a pretty big maintenance burden for the MM
+> code. Although maybe other architectures can find a use for it?
+>
+> And yet another approach is reserve the needed memory (for the buffer and
+> in the xarray) when the page is allocated, if it doesn't have tag storage
+> reserved, regardless of the page being allocated as tagged or not. Then i=
+n
+> set_pte_at() free this memory if it's unused. But this would mean reservi=
+ng
+> memory for possibly all memory allocations in the system (including for t=
+ag
+> storage pages) if userspace doesn't use tags at all, though not all pages
+> in the system will have this memory reserved at the same time. Pretty big
+> downside.
+>
+> Out of the three, I prefer the first, but it's definitely not perfect. I'=
+ll
+> try to think of something else, maybe I can come up with something better=
+.
+>
+> What are your thoughts?
+>
+> Thanks,
+> Alex
+>
+> >
+> > Peter
+> >
+> > > +       if (ret)
+> > > +               return true;
+> > > +
+> > > +       tags_by_pfn_lock();
+> > > +
+> > > +       if (page_tag_storage_reserved(pfn_to_page(pfn))) {
+> > > +               xa_release(&tags_by_pfn, pfn);
+> > > +               tags_by_pfn_unlock();
+> > > +               return false;
+> > > +       }
+> > > +
+> > > +       entry =3D __xa_store(&tags_by_pfn, pfn, tags, GFP_ATOMIC);
+> > > +       if (xa_is_err(entry)) {
+> > > +               xa_release(&tags_by_pfn, pfn);
+> > > +               goto out_unlock;
+> > > +       } else if (entry) {
+> > > +               mte_free_tag_buf(entry);
+> > > +       }
+> > > +
+> > > +out_unlock:
+> > > +       tags_by_pfn_unlock();
+> > > +       return true;
+> > > +}
+> > > +
+> > > +void mte_restore_tags_for_pfn(unsigned long start_pfn, int order)
+> > > +{
+> > > +       struct page *page =3D pfn_to_page(start_pfn);
+> > > +       unsigned long pfn;
+> > > +       void *tags;
+> > > +
+> > > +       tags_by_pfn_lock();
+> > > +
+> > > +       for (pfn =3D start_pfn; pfn < start_pfn + (1 << order); pfn++=
+, page++) {
+> > > +               tags =3D mte_erase_tags_for_pfn(pfn);
+> > > +               if (unlikely(tags)) {
+> > > +                       /*
+> > > +                        * Mark the page as tagged so mte_sync_tags()=
+ doesn't
+> > > +                        * clear the tags.
+> > > +                        */
+> > > +                       WARN_ON_ONCE(!try_page_mte_tagging(page));
+> > > +                       mte_copy_page_tags_from_buf(page_address(page=
+), tags);
+> > > +                       set_page_mte_tagged(page);
+
+I hit a WARN_ON_ONCE inside `set_page_mte_tagged` at this call site,
+because the page does not have PG_tag_storage_reserved yet.
+Swap the order of calls in reserve_tag_storage?
+
+> > > +                       mte_free_tag_buf(tags);
+> > > +               }
+> > > +       }
+> > > +
+> > > +       tags_by_pfn_unlock();
+> > > +}
+> > > +
+> > > +/*
+> > > + * Note on locking: swap in/out is done with the folio locked, which=
+ eliminates
+> > > + * races with mte_save/restore_page_tags_by_swp_entry.
+> > > + */
+> > > +vm_fault_t mte_try_transfer_swap_tags(swp_entry_t entry, struct page=
+ *page)
+> > > +{
+> > > +       void *swap_tags, *pfn_tags;
+> > > +       bool saved;
+> > > +
+> > > +       /*
+> > > +        * mte_restore_page_tags_by_swp_entry() will take care of cop=
+ying the
+> > > +        * tags over.
+> > > +        */
+> > > +       if (likely(page_mte_tagged(page) || page_tag_storage_reserved=
+(page)))
+> > > +               return 0;
+> > > +
+> > > +       swap_tags =3D xa_load(&tags_by_swp_entry, entry.val);
+> > > +       if (!swap_tags)
+> > > +               return 0;
+> > > +
+> > > +       pfn_tags =3D mte_allocate_tag_buf();
+> > > +       if (!pfn_tags)
+> > > +               return VM_FAULT_OOM;
+> > > +
+> > > +       memcpy(pfn_tags, swap_tags, MTE_PAGE_TAG_STORAGE_SIZE);
+> > > +       saved =3D mte_save_tags_for_pfn(pfn_tags, page_to_pfn(page));
+> > > +       if (!saved)
+> > > +               mte_free_tag_buf(pfn_tags);
+> > > +
+> > > +       return 0;
+> > > +}
+> > > +#endif
+> > > +
+> > >  int mte_save_page_tags_by_swp_entry(struct page *page)
+> > >  {
+> > >         void *tags, *ret;
+> > > @@ -54,6 +160,10 @@ void mte_restore_page_tags_by_swp_entry(swp_entry=
+_t entry, struct page *page)
+> > >         if (!tags)
+> > >                 return;
+> > >
+> > > +       /* Tags will be restored when tag storage is reserved. */
+> > > +       if (tag_storage_enabled() && unlikely(!page_tag_storage_reser=
+ved(page)))
+> > > +               return;
+> > > +
+> > >         if (try_page_mte_tagging(page)) {
+> > >                 mte_copy_page_tags_from_buf(page_address(page), tags)=
+;
+> > >                 set_page_mte_tagged(page);
+> > > --
+> > > 2.43.0
+> > >
 
