@@ -1,134 +1,140 @@
-Return-Path: <linux-kernel+bounces-51265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51266-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AEBE848875
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 20:15:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DBC24848881
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 20:24:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36856B24C79
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 19:15:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76FA1B214D6
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 19:24:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 873B660258;
-	Sat,  3 Feb 2024 19:14:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DF985FDAE;
+	Sat,  3 Feb 2024 19:24:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="KRbdvwMG"
-Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bxwqdKhx"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4231A5FF1C;
-	Sat,  3 Feb 2024 19:14:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 132F15EE79
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 19:24:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706987681; cv=none; b=kLJFGGD1ZSrMeIGDrC+iCEou+D4ufPS/3wL41+ntcntRw5ZE+j3smxiyjQm6Xo3y47v/wMWxnGjj9TD3lW2yfuYNlwZ7Axrk1a1vO+1hVohD2mGfD2gELs4GH3tH0fNQKdqozKc+SUq0yCHR5oYZyvRw9zGTkXpL7Xx5L0HcWgo=
+	t=1706988269; cv=none; b=HPOkkyIIwn6tKSTiB190F085bRClGpP+tOTJ4TSJckBH4Ewhc+UjHpbo068URYFu5Go3g3DyY8HdGJSwmiFMUmWDzqYcHGRqg8SxeRLhwKDCsTIgQJqF0BVNO3rgJl1krftCPF2Ca+WnwEFmTnlfGTGZRBkYdLF+jjlGEd2yXd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706987681; c=relaxed/simple;
-	bh=M2yMvEd7apf6euaEi/MHIC/Ic/qD4VKhS5jPAVrikwA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=k2ZL6njkAA6NDScvZZzLiXNvaFrtYv56UzphJcxuyg+TvVG3ySdsbgVxXNDN2iPpiwg7wleN7gAaVbes30lHWMA5thh6q7fg7liGd+v493aPfv9beSrnE6CvqRyop6oF8ruNf77nkuNqIaESGZ3Buv0k924zvjq2eOXymCjfldA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=fail (0-bit key) header.d=marliere.net header.i=@marliere.net header.b=KRbdvwMG reason="key not found in DNS"; arc=none smtp.client-ip=209.85.167.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3bd72353d9fso2374901b6e.3;
-        Sat, 03 Feb 2024 11:14:40 -0800 (PST)
+	s=arc-20240116; t=1706988269; c=relaxed/simple;
+	bh=G8zdVE1C7ydUD8XZ97hPNR0zsmJUmtFW7X4zyOxFuNg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XbGXtLUvYEIELDKMnwxiMOkiwxufuR23r5Wusbye55QeOnp2QK/ZFc2Hft2JhwlwztJKk4CUFiRb7mmfyBCp5t2gHBzf6n08is0Ezfo3QCLEM4I7XTg7wOdMcmoAGqaI4tM/CoWwN4DJiBSaUokVVXFr/sriffv3xbhjdhvUMgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bxwqdKhx; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a293f2280c7so423516966b.1
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Feb 2024 11:24:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706988266; x=1707593066; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=aYyj1uk/bgka7K60dsvQj0Vg+7bcMyN2D6pY6lowqws=;
+        b=bxwqdKhxXwnHoL9vhwOJkvCwODwkAOCRlNroAb93y8foMeM5AU8mJb1SRS8Lpz2XwQ
+         ekKOoYwRnqyITsmnd20GY+T3kFM5Wx5AFPM3oGwa6wPqt0V0YExekeH0ubeepxwnO+Ac
+         9n7KcZeP2NpZaJ+hBMGTOZsPynI7KprKNybGaChhLMmZTv1wApU0Dmz/7WDtTHJkSVZv
+         BMiy8qXq4BDMPJckb900RjJQZgJwMNMhn5I8ptPueV+E4ccky1/hM36LMNB81zGKesRi
+         9rp6wIR/ySzygBoy1nSJoTzzHBExXtINQLeGRndZIHX4wsPd3HDZXWEkv2PAMhW0X648
+         eRlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706987679; x=1707592479;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:dkim-signature:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=L0me723O1wv9PKFRXBwhR3oYK5VM7+JumecBNWaeJjo=;
-        b=KsBD71UJ0gbuMCJruuVoadzDiRmFt/onGRiwMGYd1/4Va/d+Etvrqd7HYZHuyqdXZ7
-         NSX8i2ta46yOO2K7eqQwwBAGRX3RxzTvuaAKgauNHiFXVWB7AKiElWnAADdJzVu0nUBA
-         8PcVW+wOE558zyBUOHFtPR4Ufp8hQGStrUY0i8twUtBhSHQ8EU6LF3ihDXbBa4xROaqI
-         B5MWmMKNT7h56NE+VVtCvFkiOq00UWL6r693z5+6M5+I3ygxkZgLQfFpFugvCCTtKigh
-         QaGlN9rEuaFiBMRQpNhuaaYWuZV2x+df03Er4PJ61xC3eNR3mOB2nYac33hVcA0tzEj6
-         QZ6g==
-X-Gm-Message-State: AOJu0YxgJ+vi6sOWaV8pmuLg0LMU5Zr+ixFpK+ronSh8AwClEqMW1VMW
-	1axBahVnHs+dobkcH34Q2u7sxfaIFb5Xp4ZMNRC6b16Fk+uKIPqR
-X-Google-Smtp-Source: AGHT+IEJFYCQti3eyMzzs5AGetGOTDq0SqvyNM4rKsZVo2SRoSrwJzHykUyCBHnFe41ctOjC93NNSQ==
-X-Received: by 2002:a05:6358:d389:b0:176:b16a:f392 with SMTP id mp9-20020a056358d38900b00176b16af392mr13876718rwb.10.1706987679138;
-        Sat, 03 Feb 2024 11:14:39 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXGfKh5KmVF2ecxFgkGgZOOqDmQ0Xb8eDXW61jQi6uCGlMTi+IGgM0e8nXjeigDrGIx1pET62pvg02rmm3KAQR1s6RqdFsroLgwN6eNmB96OXAox9LnLBzBBcp28DAFKR1AkMyALZ4eSgpEhxUnCU87r5ubrz5vJ5CSw0JiDS8=
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id h26-20020aa79f5a000000b006e0350189f0sm481692pfr.91.2024.02.03.11.14.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Feb 2024 11:14:38 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2023; t=1706987677;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=L0me723O1wv9PKFRXBwhR3oYK5VM7+JumecBNWaeJjo=;
-	b=KRbdvwMGjFmLzkKWvOBSiZx4/a5iSc8qLp7e4xzLuiy/ltEaPZMi6TPWRREL4O1nBQSlWP
-	8RX5J0hZt9s3ieEeoluGQZ2FjEsg3kqQIp5LP7JGzrTDSYqKjnT447jJIEPrbR06WMwzvx
-	DmDwbAgAL8PRHOl6KiO7nciQ0ZkACt/V/sqz6xJbFStuiLWUbL6XVBKe9jmV+4G2VlN2kl
-	9gEtJ4iUk9qq7weLyqqRvA4B3QxgAGu3KtezI733s67jrRZVZD2OoQuyAmOr9Hb5F4EDKA
-	BCtvwrcsNpOachD9g+u9bb9Y2kLTI26BsfqPUnUQk5qmwjdaFUxQx/8/MNXXDQ==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Sat, 03 Feb 2024 16:14:51 -0300
-Subject: [PATCH 2/2] serial: core: make serial_base_bus_type const
+        d=1e100.net; s=20230601; t=1706988266; x=1707593066;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aYyj1uk/bgka7K60dsvQj0Vg+7bcMyN2D6pY6lowqws=;
+        b=AVQxUVxu9dJ98XstC76DzWPyfJlQDRwLJRNTnOGjYntLD0qk04l8PMspgeeVSFOuUF
+         8LlNCFQSGp87jeLl2ZO4SyQckAoKuYX92ig1riwjU8IcyTi3RXppDHCrStSnISibeIy5
+         IEjMRvJ68f/sYOoUh7dfvsKKF9LEyjpfs5F79fRyKxWgA6hBFGOwwssGdCFGoG4Ee9KV
+         uG9cala1tlgB72OlssJ3NwYdKBWPID5Ou0FdESUxZdE3gHSjb4Pgy3Iw3VtzTA4JKoV3
+         vKmnznS5o5zkruHz7+A36lsUGzSpAs4wf2/nMNrR6cOQDzxGdpthg2qnDH7gPPjk1fAt
+         R1mA==
+X-Gm-Message-State: AOJu0YzVFPfmRoq+5R8I/UcaYjKycH49oiqLpLY0jRs5IQQOlJeva4A8
+	yRDJAVEdl6CfL5O6LhUaoBTvipSnQtsM5H/MKEXQketbeZYOzmLeIEt0ZMPep6w=
+X-Google-Smtp-Source: AGHT+IGvR9LKsSROg0vpuwzzR27AK5HCLj70c2eyTDeffZJ4EzTgVr4TzrOB45CpWlLpT+s4khs9iA==
+X-Received: by 2002:a17:906:28cd:b0:a2d:bc90:de6b with SMTP id p13-20020a17090628cd00b00a2dbc90de6bmr9239898ejd.30.1706988266093;
+        Sat, 03 Feb 2024 11:24:26 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWOGQGuPS6JhmV49+IfQSP2ub32BgRRDFILPLp3L9YSIWGnGSwpIw6jlPDG58WT/he83843xoHLR67nFNCnpfCCRcoXNjgHr9hdAmzt4gwOiJtsouELe2I5ro2Ag38RSxwrH5xvNRYqL8S9pjQx0Wb0ydy2nGDQ3kEz+c2WgWsGYjsgAtYCvxtrKwGgVSUi04lj7HlznA94nVpvQrXXrGXdO3qnPOIGXHlC5XVEAjU2wJ1AOifpg06NSCl/Se0iu3L0OqwGnUYRatY5
+Received: from [192.168.159.104] ([37.8.245.233])
+        by smtp.gmail.com with ESMTPSA id gx2-20020a1709068a4200b00a35ed4fd4cesm2296206ejc.115.2024.02.03.11.24.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 03 Feb 2024 11:24:25 -0800 (PST)
+Message-ID: <33e6b6fb-4450-489f-8a7a-5840033df6e3@linaro.org>
+Date: Sat, 3 Feb 2024 20:24:20 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 5/6] arm64: dts: qcom: sc8180x-lenovo-flex-5g: set
+ touchpad i2c frequency to 1 MHz
+To: Anton Bambura <jenneron@postmarketos.org>,
+ Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240203191200.99185-1-jenneron@postmarketos.org>
+ <20240203191200.99185-6-jenneron@postmarketos.org>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240203191200.99185-6-jenneron@postmarketos.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240203-bus_cleanup-tty-v1-2-86b698c82efe@marliere.net>
-References: <20240203-bus_cleanup-tty-v1-0-86b698c82efe@marliere.net>
-In-Reply-To: <20240203-bus_cleanup-tty-v1-0-86b698c82efe@marliere.net>
-To: Rob Herring <robh@kernel.org>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Jiri Slaby <jirislaby@kernel.org>
-Cc: linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=962; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=M2yMvEd7apf6euaEi/MHIC/Ic/qD4VKhS5jPAVrikwA=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlvpCztwVltvFpD3TUgSJStNwrCcetxPEJ5vyt+
- ad3PmhHO0WJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZb6QswAKCRDJC4p8Y4ZY
- pknYEACESQ6oYokCzwH0ujTwvXPm5TBYLTI0n0aFskJmL4ZV261rrh9o9E/9k6fW/oeCmi9kevW
- /VHTFX44Qq9xKmOGI7DXxm5cOhZ/DVt/ZosJH697v81rZZXrr+ii7kBrs5jxL3NlOD7vtfvP+OG
- /5qndp1NqOmqf5WdRxHAy/libJfez95bXoCaCGSkRG+xZH7xuGaFuUFbO/bEKz9kB0Msdwg8lCG
- cgcjFLIc2MQnADTDBWgMDyU0T7nZtkCFb6JhKYnrKVqpZnHkJgh/8k6lgwMKV63WSjnQsLuW4Wl
- VI5CiIGt5Me2rtjOrByQ/r5cP4Sqno12EV6gAJkbYs3LDg/uIZHoXKc4xWaVhBLjsy1EYtchday
- a371/fjan8CSuD8gMGBew7X+zPI/JXQy4mYTKuNa8tG0StTXRSUgQ17d/WBfkKCQN+qeRHWDv67
- Wz31uXFe7LU/QoMeBV9GKheOqlRUpwzflbElWQ8FrOQm6FG5A0/yvuaUVkq2V4KyOdhadUx3nYs
- l6TWf32+tJ4y54GpN4iH522Q+Z5sMFp7jDdl/yb5woBldnbp3cZNUcxFekb0nOnu+bCEoX26IPf
- 7uXzoa7Gh0F/OhLxTyXFJ1c/NLlRc4gvdXi1s/+cdjXhZSVZGSxToXbGkW6TyhmQE0+Hd9Xsp6l
- HUqmrFTr9XYn4MQ==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-Now that the driver core can properly handle constant struct bus_type,
-move the serial_base_bus_type variable to be a constant structure as well,
-placing it into read-only memory which can not be modified at runtime.
+On 3.02.2024 20:11, Anton Bambura wrote:
+> This solves the issue when touchpad gets stuck on right or middle
+> click. This also makes touchpad working smoother.
+> 
+> Signed-off-by: Anton Bambura <jenneron@postmarketos.org>
+> ---
 
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- drivers/tty/serial/serial_base_bus.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-diff --git a/drivers/tty/serial/serial_base_bus.c b/drivers/tty/serial/serial_base_bus.c
-index 3dfcf20c4eb6..4df2a4b10445 100644
---- a/drivers/tty/serial/serial_base_bus.c
-+++ b/drivers/tty/serial/serial_base_bus.c
-@@ -41,7 +41,7 @@ static int serial_base_match(struct device *dev, struct device_driver *drv)
- 	return 0;
- }
- 
--static struct bus_type serial_base_bus_type = {
-+static const struct bus_type serial_base_bus_type = {
- 	.name = "serial-base",
- 	.match = serial_base_match,
- };
-
--- 
-2.43.0
-
+Konrad
 
