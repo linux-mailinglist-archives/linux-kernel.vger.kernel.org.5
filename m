@@ -1,182 +1,208 @@
-Return-Path: <linux-kernel+bounces-50736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E111D847D6A
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:59:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C562847D71
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:05:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1FA63B22CEE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Feb 2024 23:59:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A13111C22399
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:05:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BB7F7F4;
-	Fri,  2 Feb 2024 23:59:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB98965F;
+	Sat,  3 Feb 2024 00:05:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TydYEL6O"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m7H5wlvG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A966412C7FB
-	for <linux-kernel@vger.kernel.org>; Fri,  2 Feb 2024 23:59:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6478636;
+	Sat,  3 Feb 2024 00:05:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706918382; cv=none; b=oLRZAwidgkmQYLvSb9sTSmddvvGtLM0aW+e5uWbEEU+7jl64OtRvwyxlM+tzTDETU4PIrYWOkmVOeSpTVLzOv0ZVYpKGJfOUSiJP6e1u/SCdjoKQ4tUZEBC6ppsGubngKBAOaxwyh3KAg9AxqXq5dWM+1lCeYEeCrEL3ruxuvYY=
+	t=1706918725; cv=none; b=qRfgvA7KQxQaezVFEZ2JwwaItxIvbdPRf6D2WNN+2KKo1z8Il2ctcUqVIbrMkovOXu9EJYtSrkxuH7I/yVYCfXBDwdw4JtUdK9mEZAvp03G/WGX7qps89ekY+9+taPuZUeiao8W+iV3c12WLvL+Jw0RiSKPUDcFsY070HCCLYhI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706918382; c=relaxed/simple;
-	bh=5A9skUtFCK+UAqL2ThTfQPRkaTonC3kKQjH3wbP/VV0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ft7wkZLJ8Tdx76KCSHKw+81k4J6DXJCBfwKzcDcaUEtVV9+r7cmZkJQtUqv7Cb9yMGnJwXNFSzirwMzpkOelsJYRNXJ9m/wNBMBtLwGkbkS0W9GTS0p1JeheZwlOz0pPHTZ6F/01Gqs3gieQclazmzrV8ekD31FVbIWTR+EGzvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TydYEL6O; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706918381; x=1738454381;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=5A9skUtFCK+UAqL2ThTfQPRkaTonC3kKQjH3wbP/VV0=;
-  b=TydYEL6OQCaQ6ubDJj6kV6Sxvf609bTz8CUcp+C18hHdvSCcw/Na+nO5
-   VFSTpXOBzC/6FQr3m2O1FqvHeWjWG8tShrM93EIyRP2/kHfwnnRPnPKXo
-   MjJDBvAVlhKvFDYrPQHs/WKRvl9L9CI1h/1qyfsD11oMQF1Tn/zis+obl
-   HrXpoytJ416pz46XQx4Sn7LsFO2uc18waH/Voy7ey2Q8TZfQSoFEDrZmd
-   4NmQg82S68wdb4hPDobwtOtZkIeUDxzJGT0bMiMZ4NMn59RbI1chMZCj6
-   61l3UCd7d8jc9VKp8s6TSHDNSFrDBkszbMlVvEpvm80ByP4/XTJuznon+
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="173039"
-X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="173039"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 15:59:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="494957"
-Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
-  by orviesa006.jf.intel.com with ESMTP; 02 Feb 2024 15:59:38 -0800
-Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rW3RX-0004QK-3A;
-	Fri, 02 Feb 2024 23:59:35 +0000
-Date: Sat, 3 Feb 2024 07:58:42 +0800
-From: kernel test robot <lkp@intel.com>
-To: Max Kellermann <max.kellermann@ionos.com>, linux-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev,
-	Max Kellermann <max.kellermann@ionos.com>
-Subject: Re: [PATCH 02/28] include: remove unnecessary #include directives
-Message-ID: <202402030722.nMzDpW9K-lkp@intel.com>
-References: <20240131145008.1345531-3-max.kellermann@ionos.com>
+	s=arc-20240116; t=1706918725; c=relaxed/simple;
+	bh=ADET036q7av5d6Yajw8qW29bC06EEDm2pUfR64LXErM=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=EcDUw8rJKiNo8bh8O43XpUuZCmcmssaWWSo37p79p2t1ZstjB2/fIq2ULgtM72IAKpxvJSjI7v5NG78RHD88q301abMEywvCl8Ll60GG8xmEZ2/QaxVT3zafM5vyVqvXXE6jjxU2DNTwchyqDG1zMiRjoFy+KmYpSIigqMOOPKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m7H5wlvG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C955C433C7;
+	Sat,  3 Feb 2024 00:05:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706918724;
+	bh=ADET036q7av5d6Yajw8qW29bC06EEDm2pUfR64LXErM=;
+	h=From:Subject:Date:To:Cc:From;
+	b=m7H5wlvGMIflskB2V2LNCSlNdSOkBWhdrO38vDOjn0bD0CqcIIfyc/b7S85r8oQcT
+	 NQR1JVNgd7XAapTnhvd9TwepVLrgAM6EEB0tfGeTXPBssX9t/I0COeIyTXjLXZ6Dzn
+	 7f37ivgQQjPF9KC0ywtT5/3fK8eYAYfFKU0igo+bbKIhnX02T25I456qq51jhCji0B
+	 C0Ush9k4+qWeuNmO5kAm0auz6QZgunbzIrW7ty4vM8WDTJTFh7xFjMkG36GS+NGB4e
+	 E0ZSmfgWMF0tq6dXPjTbyajK2df8caqjlrcUUjDwgwwvouyFeOaLAp0SvEhazFH8Hm
+	 2FrndW3Sfq71w==
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH RFT v5 0/7] fork: Support shadow stacks in clone3()
+Date: Sat, 03 Feb 2024 00:04:56 +0000
+Message-Id: <20240203-clone3-shadow-stack-v5-0-322c69598e4b@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240131145008.1345531-3-max.kellermann@ionos.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIACiDvWUC/23Nu04DMRAF0F+JXGPkGT/WUFHxAREdovBjnLUSr
+ ZEdbUDR/jvWUhCULe9czblX1qhmaux5d2WV5txymXrQDzsWRjcdiOfYM0OBEgQ88XAqE0neRhf
+ LhbezC0cOOioR0SctDeufn5VS/lrVd7Z/fWMf/Tjmdi71e12aYa1+UZSb6Axc8GjNEIXvfhQvR
+ 6oTnR5LPazgjH8IgNpGsCPegEzWWACt7xB5g6DYRmRH3OAtRUnoQrhD1C1itxHVEevRpkQqmcH
+ 8Q5Zl+QHMEaZJiwEAAA==
+To: "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>, 
+ Deepak Gupta <debug@rivosinc.com>, Szabolcs Nagy <Szabolcs.Nagy@arm.com>, 
+ "H.J. Lu" <hjl.tools@gmail.com>, Florian Weimer <fweimer@redhat.com>, 
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
+ Vincent Guittot <vincent.guittot@linaro.org>, 
+ Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, 
+ Mel Gorman <mgorman@suse.de>, 
+ Daniel Bristot de Oliveira <bristot@redhat.com>, 
+ Valentin Schneider <vschneid@redhat.com>, 
+ Christian Brauner <brauner@kernel.org>, Shuah Khan <shuah@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>, 
+ Will Deacon <will@kernel.org>, Kees Cook <keescook@chromium.org>, 
+ jannh@google.com, bsegall@google.com, linux-kselftest@vger.kernel.org, 
+ linux-api@vger.kernel.org, Mark Brown <broonie@kernel.org>, 
+ David Hildenbrand <david@redhat.com>
+X-Mailer: b4 0.13-dev-a684c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5783; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=ADET036q7av5d6Yajw8qW29bC06EEDm2pUfR64LXErM=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlvYM3npsMX9TJ+rXiQ0MR0Q5jhU9ckhziWi5BnCOV
+ qmUQ+H6JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZb2DNwAKCRAk1otyXVSH0O0EB/
+ 9q7W39KKLWQLLXi4q1NOuQYVFhxUGNYybGDasHnhcRQElcx/0UJ7t6RIxdYvpsRR/CVm6k4WQLoM5i
+ wd9FlIPxvERr0Y1HGvktUQ4QKWTBWor9YvgEGjgvmVqR6IZlnrY2LMthdAyhP4mXto+2IQSXUOBLQa
+ 961D4KEDpcBeslzQ9t0yRMlIcyvq3ike15JsN55lowvAOe/LI0zyMEdI60UJFCIRnReUzpUaut30ac
+ igDJs+rKoF5JKwEAtMqgqAObX8UcEU6UOst/Ycwq1o9WsbocVpsYHPY6DNy/04usqX9Z1igSIjQUOL
+ dhLkftMeLi26qCqnHv49h53oAxILjS
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 
-Hi Max,
+The kernel has recently added support for shadow stacks, currently
+x86 only using their CET feature but both arm64 and RISC-V have
+equivalent features (GCS and Zicfiss respectively), I am actively
+working on GCS[1].  With shadow stacks the hardware maintains an
+additional stack containing only the return addresses for branch
+instructions which is not generally writeable by userspace and ensures
+that any returns are to the recorded addresses.  This provides some
+protection against ROP attacks and making it easier to collect call
+stacks.  These shadow stacks are allocated in the address space of the
+userspace process.
 
-kernel test robot noticed the following build warnings:
+Our API for shadow stacks does not currently offer userspace any
+flexiblity for managing the allocation of shadow stacks for newly
+created threads, instead the kernel allocates a new shadow stack with
+the same size as the normal stack whenever a thread is created with the
+feature enabled.  The stacks allocated in this way are freed by the
+kernel when the thread exits or shadow stacks are disabled for the
+thread.  This lack of flexibility and control isn't ideal, in the vast
+majority of cases the shadow stack will be over allocated and the
+implicit allocation and deallocation is not consistent with other
+interfaces.  As far as I can tell the interface is done in this manner
+mainly because the shadow stack patches were in development since before
+clone3() was implemented.
 
-[auto build test WARNING on next-20240131]
-[cannot apply to mkp-scsi/for-next jejb-scsi/for-next axboe-block/for-next linus/master v6.8-rc2 v6.8-rc1 v6.7 v6.8-rc2]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Since clone3() is readily extensible let's add support for specifying a
+shadow stack when creating a new thread or process in a similar manner
+to how the normal stack is specified, keeping the current implicit
+allocation behaviour if one is not specified either with clone3() or
+through the use of clone().  The user must provide a shadow stack
+address and size, this must point to memory mapped for use as a shadow
+stackby map_shadow_stack() with a shadow stack token at the top of the
+stack.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Max-Kellermann/include-add-missing-includes/20240131-231042
-base:   next-20240131
-patch link:    https://lore.kernel.org/r/20240131145008.1345531-3-max.kellermann%40ionos.com
-patch subject: [PATCH 02/28] include: remove unnecessary #include directives
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20240203/202402030722.nMzDpW9K-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240203/202402030722.nMzDpW9K-lkp@intel.com/reproduce)
+Please note that the x86 portions of this code are build tested only, I
+don't appear to have a system that can run CET avaible to me, I have
+done testing with an integration into my pending work for GCS.  There is
+some possibility that the arm64 implementation may require the use of
+clone3() and explicit userspace allocation of shadow stacks, this is
+still under discussion.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402030722.nMzDpW9K-lkp@intel.com/
+Please further note that the token consumption done by clone3() is not
+currently implemented in an atomic fashion, Rick indicated that he would
+look into fixing this if people are OK with the implementation.
 
-All warnings (new ones prefixed by >>):
+A new architecture feature Kconfig option for shadow stacks is added as
+here, this was suggested as part of the review comments for the arm64
+GCS series and since we need to detect if shadow stacks are supported it
+seemed sensible to roll it in here.
 
-   lib/kunit/string-stream-test.c: In function 'string_stream_variable_length_line_test':
-   lib/kunit/string-stream-test.c:230:26: error: storage size of 'rnd' isn't known
-     230 |         struct rnd_state rnd;
-         |                          ^~~
-   lib/kunit/string-stream-test.c:243:9: error: implicit declaration of function 'prandom_seed_state' [-Werror=implicit-function-declaration]
-     243 |         prandom_seed_state(&rnd, 3141592653589793238ULL);
-         |         ^~~~~~~~~~~~~~~~~~
-   lib/kunit/string-stream-test.c:246:26: error: implicit declaration of function 'prandom_u32_state' [-Werror=implicit-function-declaration]
-     246 |                 offset = prandom_u32_state(&rnd) % (sizeof(line) - 1);
-         |                          ^~~~~~~~~~~~~~~~~
->> lib/kunit/string-stream-test.c:230:26: warning: unused variable 'rnd' [-Wunused-variable]
-     230 |         struct rnd_state rnd;
-         |                          ^~~
-   cc1: some warnings being treated as errors
+[1] https://lore.kernel.org/r/20231009-arm64-gcs-v6-0-78e55deaa4dd@kernel.org/
 
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+Changes in v5:
+- Rebase onto v6.8-rc2.
+- Rework ABI to have the user allocate the shadow stack memory with
+  map_shadow_stack() and a token.
+- Force inlining of the x86 shadow stack enablement.
+- Move shadow stack enablement out into a shared header for reuse by
+  other tests.
+- Link to v4: https://lore.kernel.org/r/20231128-clone3-shadow-stack-v4-0-8b28ffe4f676@kernel.org
 
-vim +/rnd +230 lib/kunit/string-stream-test.c
+Changes in v4:
+- Formatting changes.
+- Use a define for minimum shadow stack size and move some basic
+  validation to fork.c.
+- Link to v3: https://lore.kernel.org/r/20231120-clone3-shadow-stack-v3-0-a7b8ed3e2acc@kernel.org
 
-4551caca6ab67f Richard Fitzgerald 2023-08-28  222  
-4551caca6ab67f Richard Fitzgerald 2023-08-28  223  /* Add a series of lines of variable length to a string_stream. */
-4551caca6ab67f Richard Fitzgerald 2023-08-28  224  static void string_stream_variable_length_line_test(struct kunit *test)
-4551caca6ab67f Richard Fitzgerald 2023-08-28  225  {
-4551caca6ab67f Richard Fitzgerald 2023-08-28  226  	static const char line[] =
-4551caca6ab67f Richard Fitzgerald 2023-08-28  227  		"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-4551caca6ab67f Richard Fitzgerald 2023-08-28  228  		" 0123456789!$%^&*()_-+={}[]:;@'~#<>,.?/|";
-4551caca6ab67f Richard Fitzgerald 2023-08-28  229  	struct string_stream *stream;
-4551caca6ab67f Richard Fitzgerald 2023-08-28 @230  	struct rnd_state rnd;
-4551caca6ab67f Richard Fitzgerald 2023-08-28  231  	char *concat_string, *pos, *string_end;
-4551caca6ab67f Richard Fitzgerald 2023-08-28  232  	size_t offset, total_len;
-4551caca6ab67f Richard Fitzgerald 2023-08-28  233  	int num_lines, i;
-4551caca6ab67f Richard Fitzgerald 2023-08-28  234  
-20631e154c78f4 Richard Fitzgerald 2023-08-28  235  	stream = kunit_alloc_string_stream(test, GFP_KERNEL);
-4551caca6ab67f Richard Fitzgerald 2023-08-28  236  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, stream);
-4551caca6ab67f Richard Fitzgerald 2023-08-28  237  
-4551caca6ab67f Richard Fitzgerald 2023-08-28  238  	/*
-4551caca6ab67f Richard Fitzgerald 2023-08-28  239  	 * Log many lines of varying lengths until we have created
-4551caca6ab67f Richard Fitzgerald 2023-08-28  240  	 * many fragments.
-4551caca6ab67f Richard Fitzgerald 2023-08-28  241  	 * The "randomness" must be repeatable.
-4551caca6ab67f Richard Fitzgerald 2023-08-28  242  	 */
-4551caca6ab67f Richard Fitzgerald 2023-08-28  243  	prandom_seed_state(&rnd, 3141592653589793238ULL);
-4551caca6ab67f Richard Fitzgerald 2023-08-28  244  	total_len = 0;
-4551caca6ab67f Richard Fitzgerald 2023-08-28  245  	for (i = 0; i < 100; ++i) {
-4551caca6ab67f Richard Fitzgerald 2023-08-28  246  		offset = prandom_u32_state(&rnd) % (sizeof(line) - 1);
-4551caca6ab67f Richard Fitzgerald 2023-08-28  247  		string_stream_add(stream, "%s\n", &line[offset]);
-4551caca6ab67f Richard Fitzgerald 2023-08-28  248  		total_len += sizeof(line) - offset;
-4551caca6ab67f Richard Fitzgerald 2023-08-28  249  	}
-4551caca6ab67f Richard Fitzgerald 2023-08-28  250  	num_lines = i;
-4551caca6ab67f Richard Fitzgerald 2023-08-28  251  
-4551caca6ab67f Richard Fitzgerald 2023-08-28  252  	concat_string = get_concatenated_string(test, stream);
-4551caca6ab67f Richard Fitzgerald 2023-08-28  253  	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, concat_string);
-4551caca6ab67f Richard Fitzgerald 2023-08-28  254  	KUNIT_EXPECT_EQ(test, strlen(concat_string), total_len);
-4551caca6ab67f Richard Fitzgerald 2023-08-28  255  
-4551caca6ab67f Richard Fitzgerald 2023-08-28  256  	/*
-4551caca6ab67f Richard Fitzgerald 2023-08-28  257  	 * Split the concatenated string at the newlines and check that
-4551caca6ab67f Richard Fitzgerald 2023-08-28  258  	 * all the original added strings are present.
-4551caca6ab67f Richard Fitzgerald 2023-08-28  259  	 */
-4551caca6ab67f Richard Fitzgerald 2023-08-28  260  	prandom_seed_state(&rnd, 3141592653589793238ULL);
-4551caca6ab67f Richard Fitzgerald 2023-08-28  261  	pos = concat_string;
-4551caca6ab67f Richard Fitzgerald 2023-08-28  262  	for (i = 0; i < num_lines; ++i) {
-4551caca6ab67f Richard Fitzgerald 2023-08-28  263  		string_end = strchr(pos, '\n');
-4551caca6ab67f Richard Fitzgerald 2023-08-28  264  		KUNIT_EXPECT_NOT_NULL(test, string_end);
-4551caca6ab67f Richard Fitzgerald 2023-08-28  265  
-4551caca6ab67f Richard Fitzgerald 2023-08-28  266  		/* Convert to NULL-terminated string */
-4551caca6ab67f Richard Fitzgerald 2023-08-28  267  		*string_end = '\0';
-4551caca6ab67f Richard Fitzgerald 2023-08-28  268  
-4551caca6ab67f Richard Fitzgerald 2023-08-28  269  		offset = prandom_u32_state(&rnd) % (sizeof(line) - 1);
-4551caca6ab67f Richard Fitzgerald 2023-08-28  270  		KUNIT_EXPECT_STREQ(test, pos, &line[offset]);
-4551caca6ab67f Richard Fitzgerald 2023-08-28  271  
-4551caca6ab67f Richard Fitzgerald 2023-08-28  272  		pos = string_end + 1;
-4551caca6ab67f Richard Fitzgerald 2023-08-28  273  	}
-4551caca6ab67f Richard Fitzgerald 2023-08-28  274  
-4551caca6ab67f Richard Fitzgerald 2023-08-28  275  	/* There shouldn't be any more data after this */
-4551caca6ab67f Richard Fitzgerald 2023-08-28  276  	KUNIT_EXPECT_EQ(test, strlen(pos), 0);
-4551caca6ab67f Richard Fitzgerald 2023-08-28  277  }
-4551caca6ab67f Richard Fitzgerald 2023-08-28  278  
+Changes in v3:
+- Rebase onto v6.7-rc2.
+- Remove stale shadow_stack in internal kargs.
+- If a shadow stack is specified unconditionally use it regardless of
+  CLONE_ parameters.
+- Force enable shadow stacks in the selftest.
+- Update changelogs for RISC-V feature rename.
+- Link to v2: https://lore.kernel.org/r/20231114-clone3-shadow-stack-v2-0-b613f8681155@kernel.org
 
+Changes in v2:
+- Rebase onto v6.7-rc1.
+- Remove ability to provide preallocated shadow stack, just specify the
+  desired size.
+- Link to v1: https://lore.kernel.org/r/20231023-clone3-shadow-stack-v1-0-d867d0b5d4d0@kernel.org
+
+---
+Mark Brown (7):
+      Documentation: userspace-api: Add shadow stack API documentation
+      selftests: Provide helper header for shadow stack testing
+      mm: Introduce ARCH_HAS_USER_SHADOW_STACK
+      fork: Add shadow stack support to clone3()
+      selftests/clone3: Factor more of main loop into test_clone3()
+      selftests/clone3: Allow tests to flag if -E2BIG is a valid error code
+      selftests/clone3: Test shadow stack support
+
+ Documentation/userspace-api/index.rst             |   1 +
+ Documentation/userspace-api/shadow_stack.rst      |  41 +++++
+ arch/x86/Kconfig                                  |   1 +
+ arch/x86/include/asm/shstk.h                      |  11 +-
+ arch/x86/kernel/process.c                         |   2 +-
+ arch/x86/kernel/shstk.c                           |  91 +++++++---
+ fs/proc/task_mmu.c                                |   2 +-
+ include/linux/mm.h                                |   2 +-
+ include/linux/sched/task.h                        |   2 +
+ include/uapi/linux/sched.h                        |  13 +-
+ kernel/fork.c                                     |  61 +++++--
+ mm/Kconfig                                        |   6 +
+ tools/testing/selftests/clone3/clone3.c           | 211 ++++++++++++++++++----
+ tools/testing/selftests/clone3/clone3_selftests.h |   8 +
+ tools/testing/selftests/ksft_shstk.h              |  63 +++++++
+ 15 files changed, 430 insertions(+), 85 deletions(-)
+---
+base-commit: 41bccc98fb7931d63d03f326a746ac4d429c1dd3
+change-id: 20231019-clone3-shadow-stack-15d40d2bf536
+
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Mark Brown <broonie@kernel.org>
+
 
