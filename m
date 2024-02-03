@@ -1,161 +1,255 @@
-Return-Path: <linux-kernel+bounces-50812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4FF5847E3E
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 02:42:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C558F847E3F
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 02:45:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19F121F24EA3
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:42:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 435C91F25551
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:45:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3684253A1;
-	Sat,  3 Feb 2024 01:42:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A646B6FCA;
+	Sat,  3 Feb 2024 01:44:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="D/WBXHhD"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BR4EZgOl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14DEF2581
-	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 01:42:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7EC66FB2;
+	Sat,  3 Feb 2024 01:44:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706924529; cv=none; b=PjGV1fbjScrl+h4Bo+c/+CJh/WicrjHhbFY3oy9Zbu9AwD4PV++Fxrf7FwwHrZGcMU5ucY2RO6Pgm+ySoSK+TPDqz4CN2fH28ILWsX0AWEqXdeF9ItiogXaR3zsvredfr+HBLihZ0pdfUNbCwovxmqJn1fAzM2L3GGthOTcgGSY=
+	t=1706924692; cv=none; b=UKJD9AfpusPJT6RrvXioR/WJRjTLVOQu4fN8dWV2j2FI9cqD/moeV8YwCbO+zdQ8YPVbiHf5N3H+gXJS/eaMf6etSS6RDrSabHb2OiG8JcHQ0A61pfqNHcyYXGgk751WgoLweKd/rq6Z9vx0ZqGLYYd/84wG/0sx03pRS5/Hvpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706924529; c=relaxed/simple;
-	bh=GL/NWsRNvwetg0ZgKm/CnIK8EZZYE3j8znwpXi+d+6k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Nt2ODNB0Z57h70uupBF/jCC79TttMUeg56kPWLB6y6H6ZU+FAfdsblZSsE7yg2RkxlKdlSx0iqwq9lcjngS0ChswHEOT9y8CbnV/cHdGHKVDL3BICnIVZ4A/9bmrwG8NpTO6X4/hPPqVKV+o6ai9+tD/p1bQvbdzvUhPkTwMFik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=D/WBXHhD; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d89f0ab02bso31065ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 17:42:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706924527; x=1707529327; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W1tmXsSnp3camgDs1JiIWN7PNv+Db/yDFJhwZXZV06A=;
-        b=D/WBXHhDzyKrowiHj1GMrP31KK5M/OAnZsRTqSjBT438hdoJcLSiMQ8wGVoWjgBEKb
-         lCqzFLtXIHtrY/fuIhFYdy+9ledBCKhQMlPPMHMH+TAqoLn6kucLBW7aSNQsKrhLMYt1
-         Jv3iFm51hQ73wUqAkAJHa0ny1D7Bpbi6CkwhBeB6MlVKjcfzPtCP1doz/PL5F+iNR7yw
-         sK7QmlpUtBRuLPsuGZ4V/avM0VafKTgE+2A3gKy/vcq41XqLN5dCFc+XFh++Ig+R8JFr
-         9zI7SgNHzXOi/iFdWHAr+5vI7aVXesPoluqm87X8V8kiqHPznjJ7/SF0Pn0FnbKAWaNy
-         TG3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706924527; x=1707529327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=W1tmXsSnp3camgDs1JiIWN7PNv+Db/yDFJhwZXZV06A=;
-        b=GgZzD3upn/tAjLeK9q2szHKT42SGOZBW3nc4CFJSkjyPp/s5SYSMr1hra08HcqpMrc
-         ax/Ve6kFM3r0io4ZPxr1bLZXlAfXiPXlw8hD+x9gTfCMXgmnacfLRkqv3ui24151EagJ
-         mvmmsVlDo1tJsSSfR99KyVt094fWRmXq6ASEEVv8db5PcZD72Hgt91IxusHaBW9R1qgg
-         ItANgcC07/wJ+qnp65VQKr+kkCekBtEa4Oii+X6S5Bn+LkCCNWimtwU9BpCAZbQtBt/z
-         WGMX7bOzDGTK253N+ZNUjEpDulR0hjAYGjbuyNDL5rOtgwc7TVPNVUXU336C4EFQRNc5
-         KX7w==
-X-Gm-Message-State: AOJu0YwRrm6tsmDadKfG6cUbEmWh4zPAkvbacZMrcXsv29RPslBD1Pdn
-	UUIOqJCWdGZpx8XIUC/Rm2QHIQIcgJ68xUqQhVFXuXgM/3BR1qYDWUnvHyio9xUsVJ5DJvVaNR7
-	5anHBg1j921CjR8KfB9TpUmladXn5HKUpiDBV
-X-Google-Smtp-Source: AGHT+IFvVXrppMHSh7EsMSe+LktgAY1bvnADV80hP2rmsBLFLZkqA4D0C/pdQHOx+A5VfLjdqqxNYj4YHwkYqewRHaI=
-X-Received: by 2002:a17:902:b489:b0:1d7:48ef:e239 with SMTP id
- y9-20020a170902b48900b001d748efe239mr72459plr.18.1706924527056; Fri, 02 Feb
- 2024 17:42:07 -0800 (PST)
+	s=arc-20240116; t=1706924692; c=relaxed/simple;
+	bh=1rXlYR6MQbjdkUidMNQ2ZgJBtfTvxRl63t/1sfRVxZ8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XSaBPp/EsQX1lEINn/Ut8fGspnp4gJPSeUmSXtpknk2NK8f1h1x9f7EIrglhB5GA1UGBQMqGyfaTfkw5X2Y1RqJB7ToIs4DH4yHvtO3XqfjGlYWjyn9BYPFM0/RTZSOM2otQ41Zl6r1UQRO2co4xiGfZx5sPj4Z6ei1URJ2OUGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BR4EZgOl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D38D6C433C7;
+	Sat,  3 Feb 2024 01:44:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706924692;
+	bh=1rXlYR6MQbjdkUidMNQ2ZgJBtfTvxRl63t/1sfRVxZ8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BR4EZgOlZlFlR2NaBlozaqPIczL7GyiupaHzVKLuDdSSgHyVeIZloPRGBauI+QwZl
+	 5HfHdnYPugfFYHP6P0TAUaVJAcI1vPM5nbzP5sDW9I2ZLH7Az8amnU0ClT7My1P+kj
+	 OVXNHe+HD1ktLLM4xru3VDg2M9kG3rP41B6va67EDikTRMoSphkhP04xtgxm22/1eU
+	 qq+EpbPBp4St74XfQcfkRoiTryVgWJO74RZ2kfHKY7aFVZ3o0ujOnhXOtedQ6uAEa4
+	 DJXf3X1xbKRiW7iUWlNfLh7f8r552n0AoQCt4BLHRg/IJE2gmlljtuzJM7XbNh6S3R
+	 srDyhj2/LODaQ==
+Date: Fri, 2 Feb 2024 17:44:50 -0800
+From: Namhyung Kim <namhyung@kernel.org>
+To: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+	Like Xu <like.xu.linux@gmail.com>, linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 2/2] perf symbols: Slightly improve module file
+ executable section mappings
+Message-ID: <Zb2akm1MGCv84T-7@google.com>
+References: <20240202110130.3553-1-adrian.hunter@intel.com>
+ <20240202110130.3553-3-adrian.hunter@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202220459.527138-1-namhyung@kernel.org> <20240202220459.527138-5-namhyung@kernel.org>
-In-Reply-To: <20240202220459.527138-5-namhyung@kernel.org>
-From: Ian Rogers <irogers@google.com>
-Date: Fri, 2 Feb 2024 17:41:55 -0800
-Message-ID: <CAP-5=fU=P-ib+n+OfqJAbm8gS2RY-W-KcBskoSHkC+aCmXYcXQ@mail.gmail.com>
-Subject: Re: [PATCH 04/14] perf map: Add map__objdump_2rip()
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-perf-users@vger.kernel.org, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org, 
-	linux-trace-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240202110130.3553-3-adrian.hunter@intel.com>
 
-On Fri, Feb 2, 2024 at 2:05=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
-rote:
->
-> Sometimes we want to convert an address in objdump output to
-> map-relative address to match with a sample data.  Let's add
-> map__objdump_2rip() for that.
+Hi Adrian,
 
-Hi Namhyung,
-
-I think the naming can be better here. Aren't the objdump addresses
-DSO relative offsets? Is the relative IP relative to the map or the
-DSO?
-
-Thanks,
-Ian
-
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+On Fri, Feb 02, 2024 at 01:01:30PM +0200, Adrian Hunter wrote:
+> Currently perf does not record module section addresses except for
+> the .text section. In general that means perf cannot get module section
+> mappings correct (except for .text) when loading symbols from a kernel
+> module file. (Note using --kcore does not have this issue)
+> 
+> Improve that situation slightly by identifying executable sections that
+> use the same mapping as the .text section. That happens when an
+> executable section comes directly after the .text section, both in memory
+> and on file, something that can be determined by following the same layout
+> rules used by the kernel, refer kernel layout_sections(). Note whether
+> that happens is somewhat arbitrary, so this is not a final solution.
+> 
+> Example from tracing a virtual machine process:
+> 
+>  Before:
+> 
+>   $ perf script | grep unknown
+>          CPU 0/KVM    1718   203.511270:     318341 cpu-cycles:P:  ffffffffc13e8a70 [unknown] (/lib/modules/6.7.2-local/kernel/arch/x86/kvm/kvm-intel.ko)
+>   $ perf script -vvv 2>&1 >/dev/null | grep kvm.intel | grep 'noinstr.text\|ffff'
+>   Map: 0-7e0 41430 [kvm_intel].noinstr.text
+>   Map: ffffffffc13a7000-ffffffffc1421000 a0 /lib/modules/6.7.2-local/kernel/arch/x86/kvm/kvm-intel.ko
+> 
+>  After:
+> 
+>   $ perf script | grep 203.511270
+>          CPU 0/KVM    1718   203.511270:     318341 cpu-cycles:P:  ffffffffc13e8a70 vmx_vmexit+0x0 (/lib/modules/6.7.2-local/kernel/arch/x86/kvm/kvm-intel.ko)
+>   $ perf script -vvv 2>&1 >/dev/null | grep kvm.intel | grep 'noinstr.text\|ffff'
+>   Map: ffffffffc13a7000-ffffffffc1421000 a0 /lib/modules/6.7.2-local/kernel/arch/x86/kvm/kvm-intel.ko
+> 
+> Reported-by: Like Xu <like.xu.linux@gmail.com>
+> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 > ---
->  tools/perf/util/map.c | 20 ++++++++++++++++++++
->  tools/perf/util/map.h |  3 +++
->  2 files changed, 23 insertions(+)
->
-> diff --git a/tools/perf/util/map.c b/tools/perf/util/map.c
-> index 54c67cb7ecef..66542864b7b5 100644
-> --- a/tools/perf/util/map.c
-> +++ b/tools/perf/util/map.c
-> @@ -594,6 +594,26 @@ u64 map__objdump_2mem(struct map *map, u64 ip)
->         return ip + map__reloc(map);
+>  tools/perf/util/symbol-elf.c | 75 +++++++++++++++++++++++++++++++++++-
+>  1 file changed, 73 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
+> index 9e7eeaf616b8..98bf0881aaf6 100644
+> --- a/tools/perf/util/symbol-elf.c
+> +++ b/tools/perf/util/symbol-elf.c
+> @@ -23,6 +23,7 @@
+>  #include <linux/ctype.h>
+>  #include <linux/kernel.h>
+>  #include <linux/zalloc.h>
+> +#include <linux/string.h>
+>  #include <symbol/kallsyms.h>
+>  #include <internal/lib.h>
+>  
+> @@ -1329,6 +1330,58 @@ int symsrc__init(struct symsrc *ss, struct dso *dso, const char *name,
+>  	return -1;
 >  }
->
-> +u64 map__objdump_2rip(struct map *map, u64 ip)
+>  
+> +static bool is_exe_text(int flags)
 > +{
-> +       const struct dso *dso =3D map__dso(map);
-> +
-> +       if (!dso->adjust_symbols)
-> +               return ip;
-> +
-> +       if (dso->rel)
-> +               return ip + map__pgoff(map);
-> +
-> +       /*
-> +        * kernel modules also have DSO_TYPE_USER in dso->kernel,
-> +        * but all kernel modules are ET_REL, so won't get here.
-> +        */
-> +       if (dso->kernel =3D=3D DSO_SPACE__USER)
-> +               return ip - dso->text_offset;
-> +
-> +       return map__map_ip(map, ip + map__reloc(map));
+> +	return (flags & (SHF_ALLOC | SHF_EXECINSTR)) == (SHF_ALLOC | SHF_EXECINSTR);
 > +}
 > +
->  bool map__contains_symbol(const struct map *map, const struct symbol *sy=
-m)
->  {
->         u64 ip =3D map__unmap_ip(map, sym->start);
-> diff --git a/tools/perf/util/map.h b/tools/perf/util/map.h
-> index 49756716cb13..65e2609fa1b1 100644
-> --- a/tools/perf/util/map.h
-> +++ b/tools/perf/util/map.h
-> @@ -132,6 +132,9 @@ u64 map__rip_2objdump(struct map *map, u64 rip);
->  /* objdump address -> memory address */
->  u64 map__objdump_2mem(struct map *map, u64 ip);
->
-> +/* objdump address -> rip */
-> +u64 map__objdump_2rip(struct map *map, u64 ip);
+> +/*
+> + * Some executable module sections like .noinstr.text might be laid out with
+> + * .text so they can use the same mapping (memory address to file offset).
+> + * Check if that is the case. Refer to kernel layout_sections(). Return the
+> + * maximum offset.
+> + */
+> +static u64 max_text_section(Elf *elf, GElf_Ehdr *ehdr)
+> +{
+> +	Elf_Scn *sec = NULL;
+> +	GElf_Shdr shdr;
+> +	u64 offs = 0;
 > +
->  struct symbol;
->  struct thread;
->
-> --
-> 2.43.0.594.gd9cf4e227d-goog
->
+> +	/* Doesn't work for some arch */
+> +	if (ehdr->e_machine == EM_PARISC ||
+> +	    ehdr->e_machine == EM_ALPHA)
+> +		return 0;
+> +
+> +	/* ELF is corrupted/truncated, avoid calling elf_strptr. */
+> +	if (!elf_rawdata(elf_getscn(elf, ehdr->e_shstrndx), NULL))
+> +		return 0;
+> +
+> +	while ((sec = elf_nextscn(elf, sec)) != NULL) {
+> +		char *sec_name;
+> +
+> +		if (!gelf_getshdr(sec, &shdr))
+> +			break;
+> +
+> +		if (!is_exe_text(shdr.sh_flags))
+> +			continue;
+> +
+> +		/* .init and .exit sections are not placed with .text */
+> +		sec_name = elf_strptr(elf, ehdr->e_shstrndx, shdr.sh_name);
+> +		if (!sec_name ||
+> +		    strstarts(sec_name, ".init") ||
+> +		    strstarts(sec_name, ".exit"))
+> +			break;
+
+Do we really need this?  It seems my module has .init.text section
+next to .text.
+
+  $ readelf -SW /lib/modules/`uname -r`/kernel/fs/ext4/ext4.ko
+  There are 77 section headers, starting at offset 0x252e90:
+  
+  Section Headers:
+    [Nr] Name              Type            Address          Off    Size   ES Flg Lk Inf Al
+    [ 0]                   NULL            0000000000000000 000000 000000 00      0   0  0
+    [ 1] .text             PROGBITS        0000000000000000 000040 079fa7 00  AX  0   0 16
+    [ 2] .rela.text        RELA            0000000000000000 13c348 04f0c8 18   I 74   1  8
+    [ 3] .init.text        PROGBITS        0000000000000000 079ff0 00060c 00  AX  0   0 16
+    ...
+
+
+ALIGN(0x40 + 0x79fa7, 16) = 0x79ff0, right?
+
+Thanks,
+Namhyung
+
+> +
+> +		/* Must be next to previous, assumes .text is first */
+> +		if (offs && PERF_ALIGN(offs, shdr.sh_addralign ?: 1) != shdr.sh_offset)
+> +			break;
+> +
+> +		offs = shdr.sh_offset + shdr.sh_size;
+> +	}
+> +
+> +	return offs;
+> +}
+> +
+>  /**
+>   * ref_reloc_sym_not_found - has kernel relocation symbol been found.
+>   * @kmap: kernel maps and relocation reference symbol
+> @@ -1368,7 +1421,8 @@ static int dso__process_kernel_symbol(struct dso *dso, struct map *map,
+>  				      struct maps *kmaps, struct kmap *kmap,
+>  				      struct dso **curr_dsop, struct map **curr_mapp,
+>  				      const char *section_name,
+> -				      bool adjust_kernel_syms, bool kmodule, bool *remap_kernel)
+> +				      bool adjust_kernel_syms, bool kmodule, bool *remap_kernel,
+> +				      u64 max_text_sh_offset)
+>  {
+>  	struct dso *curr_dso = *curr_dsop;
+>  	struct map *curr_map;
+> @@ -1425,6 +1479,17 @@ static int dso__process_kernel_symbol(struct dso *dso, struct map *map,
+>  	if (!kmap)
+>  		return 0;
+>  
+> +	/*
+> +	 * perf does not record module section addresses except for .text, but
+> +	 * some sections can use the same mapping as .text.
+> +	 */
+> +	if (kmodule && adjust_kernel_syms && is_exe_text(shdr->sh_flags) &&
+> +	    shdr->sh_offset <= max_text_sh_offset) {
+> +		*curr_mapp = map;
+> +		*curr_dsop = dso;
+> +		return 0;
+> +	}
+> +
+>  	snprintf(dso_name, sizeof(dso_name), "%s%s", dso->short_name, section_name);
+>  
+>  	curr_map = maps__find_by_name(kmaps, dso_name);
+> @@ -1499,6 +1564,7 @@ dso__load_sym_internal(struct dso *dso, struct map *map, struct symsrc *syms_ss,
+>  	Elf *elf;
+>  	int nr = 0;
+>  	bool remap_kernel = false, adjust_kernel_syms = false;
+> +	u64 max_text_sh_offset = 0;
+>  
+>  	if (kmap && !kmaps)
+>  		return -1;
+> @@ -1586,6 +1652,10 @@ dso__load_sym_internal(struct dso *dso, struct map *map, struct symsrc *syms_ss,
+>  		remap_kernel = true;
+>  		adjust_kernel_syms = dso->adjust_symbols;
+>  	}
+> +
+> +	if (kmodule && adjust_kernel_syms)
+> +		max_text_sh_offset = max_text_section(runtime_ss->elf, &runtime_ss->ehdr);
+> +
+>  	elf_symtab__for_each_symbol(syms, nr_syms, idx, sym) {
+>  		struct symbol *f;
+>  		const char *elf_name = elf_sym__name(&sym, symstrs);
+> @@ -1675,7 +1745,8 @@ dso__load_sym_internal(struct dso *dso, struct map *map, struct symsrc *syms_ss,
+>  
+>  		if (dso->kernel) {
+>  			if (dso__process_kernel_symbol(dso, map, &sym, &shdr, kmaps, kmap, &curr_dso, &curr_map,
+> -						       section_name, adjust_kernel_syms, kmodule, &remap_kernel))
+> +						       section_name, adjust_kernel_syms, kmodule,
+> +						       &remap_kernel, max_text_sh_offset))
+>  				goto out_elf_end;
+>  		} else if ((used_opd && runtime_ss->adjust_symbols) ||
+>  			   (!used_opd && syms_ss->adjust_symbols)) {
+> -- 
+> 2.34.1
+> 
 
