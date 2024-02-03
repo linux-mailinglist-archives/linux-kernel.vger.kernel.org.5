@@ -1,155 +1,186 @@
-Return-Path: <linux-kernel+bounces-50915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67A058483BD
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 05:34:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02B1D8483BE
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 05:34:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0986D287B63
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 04:34:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 937EF281BE8
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 04:34:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1138A125BC;
-	Sat,  3 Feb 2024 04:23:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7177CFBEE;
+	Sat,  3 Feb 2024 04:29:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="p+Xx0GOw"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="PsTZWgsd"
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F26B10965
-	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 04:23:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 792A12CA5
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 04:29:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706934203; cv=none; b=JTbUVTW4nl2H+weKFB6sNq6nWHuhJpZ94h7q9ZQyGd26s/IHfpOA53KcVQ5Lg846oblxQS1O2U6AhyDSQPd1oRWdcnFJiquO0Ir9Eul1NkdRMiz6lB4FEG63eZXkscMG5dkbWIMplIM+k/XA4EhfzDPeggl1VuX+euS6Ol1Wz9g=
+	t=1706934566; cv=none; b=oRJDyyRUaupkYzgYcMiuc2XOa4eeNP4oi7SUIN+FnCXcFr/y0+ejErADoRKWiGdXdIB8E+BEBNyU2jgh4kQFvlqz4KgCkZVql6/cKs0ALqbg26FNp6+aD9pBTSfgGbg5FMs5+FKzKzli7yVKyKxMiRoVUCXCF01EB2ftxlJbpxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706934203; c=relaxed/simple;
-	bh=p8DcI038LCJsFfjS2X5a3TzYgQ4CoD5oN3YW/KgGnIA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Th1C2cVQqwTT05chi+glr21glxPwHSXJUxR6lrxvIvRLXeCI98bSLBGGqxHIyW08wz5zW7vhP6txU9iT+o3kSLjJH481HsNZGVLL+UTOa1OBzg6aKKDwcJG+N10sJJTWwKDiD9XgxWuN+qXPFWXTHUwVKaG054QzyNQwJ+AOB+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=p+Xx0GOw; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-51124d86022so4443517e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 20:23:21 -0800 (PST)
+	s=arc-20240116; t=1706934566; c=relaxed/simple;
+	bh=4qqSaaEUaBxS/Ftpx5ut5gMjSpAATXUG2v3pxLtTKv0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Sfbze19L3l07eXEtkma4lADuxbf9WZtig91HDAr1pJvB3RPJID38ZEHl817fxLXAg+2d7hztSP9oLtutCrXBk3DwcDDZVqClTVBJ2U5rBsvLcoOU4KktBkos/2JXvRS3jqdqJmnGbS68bGpdfaqMVznOUAMbiRmidoQNItCAmhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=PsTZWgsd; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5d7005ea1d0so1061977a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 20:29:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706934199; x=1707538999; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DisFQpTn7TdXti+Sfq7OuBraM//Uzb0Fy3Abq9El6XY=;
-        b=p+Xx0GOwwrGruHma2C/KjDFHKT+6BXpw1qrsX+w+b5oE3Q2i++kYTipuDA5ZV0MILC
-         iYPJcCo93sW2X2N7wkw/jNo/goirEaY/OeVVjN3tLRkDCQvxM8D03lEcyT6589h8yrV6
-         lBB7brbF2fiXfujAQaZzfd3fc4xfup5p/QNEEFf1FH5XUEib1saiRD0Mnj8P2rw/Obp0
-         uWjjONzAchhsaOYI/pVqgxvdpbgec7hLRNHig9e376h9KptW0YatZgIlKCi07jHzhdky
-         S6heF0xjHPBLx3vTKc9PvoL4uDgqSEYRTw02UfNZdzFiWsc+Ly7nil4A5V/ZsN6BBQYD
-         QEFg==
+        d=bytedance.com; s=google; t=1706934564; x=1707539364; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1OOpEywyK6PX3KS+rQWL+L2zrjo4/gGzpSvMxyFSqgc=;
+        b=PsTZWgsdvj8z4doAvoejMFffuidiYXRo19Hv4RUjevLEbsn64+MrDYWTgCbGTvI9w0
+         zLU/OsOTMf/Qyt/CsRkLiOpM8Bhl0FiWnuzOZYbaCTXwg5uTZzPGfw7YMluj4eUlOckc
+         vznsBnsrEgSg/xE2RsRu3C6yiXP3WC4LK9LiMNWTi9Ht7YXsnLbE3VBXkcErH9O36T38
+         mLRj5Yrw17FFcycrsG2joUwjwpB7VpjNJM33wYmjp92XMCBR+h6i57qZVRokl4vvOif/
+         ZRYNaYPlsKf495Kf2YHM4Z7ZCqX0ONXoDPc5Rm3GEu7piGP25GZBMM9YUvbxS0nYQlMb
+         /fcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706934199; x=1707538999;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DisFQpTn7TdXti+Sfq7OuBraM//Uzb0Fy3Abq9El6XY=;
-        b=Qt0QdwAdq+sZH6fteB8bsPIf41JVSwAHHJ6CnWeR6U3N3at5SnT53Fn++hmcFI3Dt9
-         zrEB10iAASqMk5PLZ6/9g8+8hR1+HrsHGPhelj8/TXyKL/ftb3MrqY8624TsLcwlJ7t8
-         uQSciF7AyZNLk68lSHLMZwNKSzN2ku/EClu8shFUUSMC+BMZybZ0+Lr1Q+/z5Ddmgjyz
-         KPOVDdjRI9IHJP7P0XeCcx0c8xSpvXWsCgCqZYctMN15Vq8YrvgPOdRyiZgZ4JZ+yZPJ
-         vQrfK7Q5/iOX517CQiiYSnge72z5+/CEoZgahZCGtj93O2mwdNewoT9/G+Z0GK3hafgh
-         m6UA==
-X-Gm-Message-State: AOJu0YxIZGNMEImpbhr8umBDfthtKsIlz3BkKk4lHlhgW4vF/dbycmM0
-	I0Mojx1Pa7q7GspiFbLtDUW+PyOKAvFJw3GVdraxpc+QdXhWLs/pp05/VgHufabpbs6efTFIDq7
-	IeIN4uRs1RqVlpO7qy5H4kZVN23vV8SSxFEJ4
-X-Google-Smtp-Source: AGHT+IFKvCQbNc+6dMkuI6Vjtw4TQbEk7zZdSVlZeVuzj7bG2ePVf9y2VMDFzBqSsBXRO+Xfzwu4RxFm8cRemMnTvVY=
-X-Received: by 2002:a19:8c5a:0:b0:511:320d:872f with SMTP id
- i26-20020a198c5a000000b00511320d872fmr3316565lfj.37.1706934199201; Fri, 02
- Feb 2024 20:23:19 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706934564; x=1707539364;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1OOpEywyK6PX3KS+rQWL+L2zrjo4/gGzpSvMxyFSqgc=;
+        b=TgJC3KBWzvUNBu7LLDPhWwVKDvvSl+55mJS2mTZupXP78RKgR+gf3G8OnQRtxa+2LN
+         NV2/auvnMGrii2r9gTjP8EKetUUdMkchuV939v6K8SizFj37UcLTbIvOIaLMgBZqz0zC
+         mF6MGz8Ck/Zyele7SVeRXsmWXW4n9wcQqsULdiyE54BLT97GR1umCOzRXwgXaoHW7PRO
+         CJLDFno4P+rI583btAxspnB6h1popqvpDZ4FGi+PwcLLcSpfSY9DA5Z5vx6/uRzdc0sm
+         WSYAQJgic2tkk2yTXBOK4EVC8j/jw4Fxk+7m5r/1tAQZ2LQUOBuRuIK8re+FkzXoZ4F9
+         7urw==
+X-Gm-Message-State: AOJu0YzhE2R/PFdfbxglFwpnK7zNmW7brLz4jTgY6yiNAzn8sl42D4Fa
+	EcqHc/u6TyygaqubQv2PVG8JxQdWJpYUUmy8FL1ef8KQpfHdEL0yk4gReysESQ+p9B5Y6DuNnxP
+	e
+X-Google-Smtp-Source: AGHT+IGn4oPkO71WxukoX1CXReQti9d0soaDxuC8RLqOG10MY5XTB2tF6jUoHIozJFeEIXLwehIMOw==
+X-Received: by 2002:a05:6a21:328e:b0:19e:3839:4fc2 with SMTP id yt14-20020a056a21328e00b0019e38394fc2mr903713pzb.26.1706934563683;
+        Fri, 02 Feb 2024 20:29:23 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWsy5iHsgi0/7lWONXylSavwzjl3LXlbzwKWLoT4phVm66hn6dRJIu0Zsk73Zn+KR5t3KlfTlJJT9dwl8sNedyLikih3mUjodRzQQYkUzgJnGHEjfAzt5Ne5WfzEtQKW09m6YORcudd2qMHpjyd42WTZ2JkdhIWOrA48gSWhqmCAEFR/zu0Lu06oVMuGLHGAtPtaw==
+Received: from [10.4.12.121] ([139.177.225.224])
+        by smtp.gmail.com with ESMTPSA id u27-20020a63471b000000b005c259cef481sm2601789pga.59.2024.02.02.20.29.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Feb 2024 20:29:23 -0800 (PST)
+Message-ID: <80460fe5-baec-4e56-9e10-a233e5a3c8d3@bytedance.com>
+Date: Sat, 3 Feb 2024 12:29:16 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240203003414.1067730-1-yosryahmed@google.com> <CALvZod6pKLhLm6v7da1sm_axvSR07f_buOc9czRfLb5mpzOanw@mail.gmail.com>
-In-Reply-To: <CALvZod6pKLhLm6v7da1sm_axvSR07f_buOc9czRfLb5mpzOanw@mail.gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Fri, 2 Feb 2024 20:22:39 -0800
-Message-ID: <CAJD7tkaLs8JTdLEm1UcpO9amYHwDie=TW12f+7q1y_ipxC15cQ@mail.gmail.com>
-Subject: Re: [PATCH mm-hotfixes-unstable] mm: memcg: fix struct
- memcg_vmstats_percpu size and alignment
-To: Shakeel Butt <shakeelb@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, Greg Thelen <gthelen@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/6] mm/zswap: remove duplicate_entry debug value
+Content-Language: en-US
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Yosry Ahmed <yosryahmed@google.com>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org
+References: <20240201-b4-zswap-invalidate-entry-v1-0-56ed496b6e55@bytedance.com>
+ <20240201-b4-zswap-invalidate-entry-v1-4-56ed496b6e55@bytedance.com>
+ <CAKEwX=Pj9ms56zPaFznXrY0mF7E_q1hMXUkV-Fhnx5V17OY6og@mail.gmail.com>
+From: Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <CAKEwX=Pj9ms56zPaFznXrY0mF7E_q1hMXUkV-Fhnx5V17OY6og@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 2, 2024 at 8:13=E2=80=AFPM Shakeel Butt <shakeelb@google.com> w=
-rote:
->
-> On Fri, Feb 2, 2024 at 4:34=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com=
-> wrote:
-> >
-> > Commit da10d7e140196 ("mm: memcg: optimize parent iteration in
-> > memcg_rstat_updated()") added two additional pointers to the end of
-> > struct memcg_vmstats_percpu with CACHELINE_PADDING to put them in a
-> > separate cacheline. This caused the struct size to increase from 1200 t=
-o
-> > 1280 on my config (80 extra bytes instead of 16).
-> >
-> > Upon revisiting, the relevant struct members do not need to be on a
-> > separate cacheline, they just need to fit in a single one. This is a
-> > percpu struct, so there shouldn't be any contention on that cacheline
-> > anyway. Move the members to the beginning of the struct and cachealign
-> > the first member. Add a comment about the members that need to fit
-> > together in a cacheline.
-> >
-> > The struct size is now 1216 on my config with this change.
-> >
-> > Fixes: da10d7e140196 ("mm: memcg: optimize parent iteration in memcg_rs=
-tat_updated()")
-> > Reported-by: Greg Thelen <gthelen@google.com>
-> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> > ---
-> >  mm/memcontrol.c | 19 +++++++++----------
-> >  1 file changed, 9 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index d9ca0fdbe4ab0..09f09f37e397e 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -621,6 +621,15 @@ static inline int memcg_events_index(enum vm_event=
-_item idx)
-> >  }
-> >
-> >  struct memcg_vmstats_percpu {
-> > +       /* Stats updates since the last flush */
-> > +       unsigned int                    stats_updates ____cacheline_ali=
-gned;
->
-> Why do you need ____cacheline_aligned here? From what I understand for
-> the previous patch you want stats_updates, parent and vmstats on the
-> same cacheline, right?
+On 2024/2/3 06:28, Nhat Pham wrote:
+> On Thu, Feb 1, 2024 at 7:50 AM Chengming Zhou
+> <zhouchengming@bytedance.com> wrote:
+>>
+>> cat /sys/kernel/debug/zswap/duplicate_entry
+>> 2086447
+>>
+>> When testing, the duplicate_entry value is very high, but no warning
+>> message in the kernel log. From the comment of duplicate_entry
+>> "Duplicate store was encountered (rare)", it seems something goes wrong.
+>>
+>> Actually it's incremented in the beginning of zswap_store(), which found
+>> its zswap entry has already on the tree. And this is a normal case,
+>> since the folio could leave zswap entry on the tree after swapin,
+>> later it's dirtied and swapout/zswap_store again, found its original
+>> zswap entry. (Maybe we can reuse it instead of invalidating it?)
+> 
+> Interesting. So if we make invalidate load the only mode, this oddity
+> is gone as well?
 
-Yes. I am trying to ensure that stats_updates sits at the beginning of
-a cacheline to ensure they all fit in one cacheline. Is this
-implicitly guaranteed somehow?
+Good point!
+This oddity is why we need to invalidate it first at the beginning.
 
->
-> I would say just remove the CACHELINE_PADDING() from the previous
-> patch and we are good.
+But there is another oddity that a stored folio maybe dirtied again,
+so that folio needs to be writeback/stored for the second time, in
+which case, we still need to invalidate it first to avoid WARN_ON later.
 
-IIUC, without CACHELINE_PADDING(), they may end up on different cache
-lines, depending on the size of the arrays before them in the struct
-(which depends on several configs). Am I misunderstanding?
+Thanks.
 
->
-> In the followup I plan to add usage of __cacheline_group_begin() and
-> __cacheline_group_end() usage in memcg code. If you want, take a stab
-> at it.
-
-For now, I am just looking for something simple to fix the struct size
-proliferation for v6.8, but this would be interesting to see. I wonder
-how __cacheline_group_end() works since the end is decided already by
-__cacheline_group_begin() and the cacheline size.
+>>
+>> So duplicate_entry should be only incremented in the real bug case,
+>> which already have "WARN_ON(1)", it looks redundant to count bug case,
+>> so this patch just remove it.
+> 
+> But yeah, I have literally never checked this value (maybe I should
+> ha). I'm fine with removing it, unless someone has a strong case for
+> this counter?
+> 
+> For now:
+> Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+> 
+>>
+>> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+>> ---
+>>  mm/zswap.c | 9 +--------
+>>  1 file changed, 1 insertion(+), 8 deletions(-)
+>>
+>> diff --git a/mm/zswap.c b/mm/zswap.c
+>> index 4381b7a2d4d6..3fbb7e2c8b8d 100644
+>> --- a/mm/zswap.c
+>> +++ b/mm/zswap.c
+>> @@ -71,8 +71,6 @@ static u64 zswap_reject_compress_poor;
+>>  static u64 zswap_reject_alloc_fail;
+>>  /* Store failed because the entry metadata could not be allocated (rare) */
+>>  static u64 zswap_reject_kmemcache_fail;
+>> -/* Duplicate store was encountered (rare) */
+>> -static u64 zswap_duplicate_entry;
+>>
+>>  /* Shrinker work queue */
+>>  static struct workqueue_struct *shrink_wq;
+>> @@ -1571,10 +1569,8 @@ bool zswap_store(struct folio *folio)
+>>          */
+>>         spin_lock(&tree->lock);
+>>         entry = zswap_rb_search(&tree->rbroot, offset);
+>> -       if (entry) {
+>> +       if (entry)
+>>                 zswap_invalidate_entry(tree, entry);
+>> -               zswap_duplicate_entry++;
+>> -       }
+>>         spin_unlock(&tree->lock);
+>>         objcg = get_obj_cgroup_from_folio(folio);
+>>         if (objcg && !obj_cgroup_may_zswap(objcg)) {
+>> @@ -1661,7 +1657,6 @@ bool zswap_store(struct folio *folio)
+>>          */
+>>         while (zswap_rb_insert(&tree->rbroot, entry, &dupentry) == -EEXIST) {
+>>                 WARN_ON(1);
+>> -               zswap_duplicate_entry++;
+>>                 zswap_invalidate_entry(tree, dupentry);
+>>         }
+>>         if (entry->length) {
+>> @@ -1822,8 +1817,6 @@ static int zswap_debugfs_init(void)
+>>                            zswap_debugfs_root, &zswap_reject_compress_poor);
+>>         debugfs_create_u64("written_back_pages", 0444,
+>>                            zswap_debugfs_root, &zswap_written_back_pages);
+>> -       debugfs_create_u64("duplicate_entry", 0444,
+>> -                          zswap_debugfs_root, &zswap_duplicate_entry);
+>>         debugfs_create_u64("pool_total_size", 0444,
+>>                            zswap_debugfs_root, &zswap_pool_total_size);
+>>         debugfs_create_atomic_t("stored_pages", 0444,
+>>
+>> --
+>> b4 0.10.1
 
