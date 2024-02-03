@@ -1,63 +1,59 @@
-Return-Path: <linux-kernel+bounces-51209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E5F68487CB
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 18:07:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE4C78487CD
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 18:07:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7567B24696
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 17:06:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAF76283548
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 17:07:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74C935FDBB;
-	Sat,  3 Feb 2024 17:06:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 439F35FEF8;
+	Sat,  3 Feb 2024 17:06:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NWkH6GL/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SXjTks0x"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B33B65F549;
-	Sat,  3 Feb 2024 17:06:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8477B5F864;
+	Sat,  3 Feb 2024 17:06:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706979987; cv=none; b=n9ZC8hhVbZ75MLptAFxAgq1cKSE2/nwm3NL5aULpCWsxbGJqMStjyFzoRltqQxLteDWCWPvQvb+M1uY2fTJyU5/Ujcu5a1CW6D8S0LYMKUTz0/I/N6Az9z/E7L2EewPMIR0e2k+HG+mxfQswh85L3pKKPp8qOnyQVQqOswc5HGs=
+	t=1706979988; cv=none; b=aaZeB2bufah/ZwY2ceIopiPfav9dXGEWF/yYN1TTRmjN9mhzFkmfvtmdEuZhiycFTo+RdPh65kuhOyxhcIApSdockOMcOq6Pl3Ahh+Adb+NAh/wGFvLtc+XKM0gVSp1i2sbvlL56np61WiHc7tnPz9RC9xowJ2Z2rPgEpCcxyQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706979987; c=relaxed/simple;
-	bh=fuAoO5+dM7iUereIafdAkD1l5Uc8z2CT//6owE7RRrY=;
+	s=arc-20240116; t=1706979988; c=relaxed/simple;
+	bh=FakqdJXd18gGr7bkp1XDgzpchugoRG2ljapRrBM/XIg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GDNI2POEFrzB7Lssm4+jdaeyAnZycBTZN+RxVhcdRiqJapeVWX5e1WtUVq+k9xe+Jxv5CWpelqDnbaGykIaWXJq8tTUfEs0cFlnhAcjOZBlMBPAWLXG49W91yIMBKscWkb6DJY1iEaF7HORle0RWlqewl3g8cxC98f2rhaso4wY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NWkH6GL/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55B3AC433F1;
-	Sat,  3 Feb 2024 17:06:26 +0000 (UTC)
+	 MIME-Version:Content-Type; b=pt9wl7B+gXX+VwbyLPjtf/vzXSUSONIwpdfNoKlnPEGkce4eM/3P20IAQ0V7rYSI/A7RCI2X6VWgMSeYGoeeP6OU3KK7VUGRvsCfQFRG0iRSNm5YlMYXA4VhtUzVwSCUAS0PXONWebBvjczc2olQYDWv2WenMFoyzOdXZjFwxzs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SXjTks0x; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70A1DC433C7;
+	Sat,  3 Feb 2024 17:06:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706979987;
-	bh=fuAoO5+dM7iUereIafdAkD1l5Uc8z2CT//6owE7RRrY=;
+	s=k20201202; t=1706979988;
+	bh=FakqdJXd18gGr7bkp1XDgzpchugoRG2ljapRrBM/XIg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NWkH6GL/RwuO3rFM/hRRF9i0mqypWQihgQJ33AKXyHEdt7iq9X0dC1a09fhhi1DYv
-	 jcbyRBFwuCWo5Fy0Cs/8kRyX4s2nc1pQTJcMws6Zto9fLZCv2slAOIX81QAFHiBd+p
-	 rQJDyxlzT8LSYhNK6mBf4HTBetG+TAAZQYMW4ym/H1lczcrOVwFITXHfdMVDsDfjbr
-	 8L/T7pRL8btwSCcyID8ldPYh0gZ3o2ufMtPmvYpeNAaHliWlJtGbvEnZuqqNAw9sCD
-	 sDdglwJODKOxw6i1wwqww7sxp2taW9B7fdrILv/PrYhgQ78S35evSefjw3MOJRbLJW
-	 jW08QOXWX27Bg==
+	b=SXjTks0xg4k2R5ZUiyQMgaX8LDL/q3SJfcMpFXFeiKHMqYT2PbW4Z5cBQq6mGMp7y
+	 O4dxZJjlJpK5ByTZSvsZOhMNKiROjqmpjern9GhUoWh9WfnTMaRuSIyo4nOt08q9vE
+	 C++iiA31PkRSCXyTHv5C+8imx6O4/VCQQLxYcFbtlECHh3RoZ/jWiTsZLIH7j1iSjJ
+	 DpKhu3nOrpJrOpM70SIxQe6FfFZh3KYdy1Bxc0D5L1BzM82wjZph5iJQNfwkwHji48
+	 VIOF1M6EOlzG7r0IeAmgDxj5fmHb8cxy5vYhSCj89JIrwW8y9Xk/4Gf4PgOFn7U30A
+	 CjywDC1n4scGA==
 From: Bjorn Andersson <andersson@kernel.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
+To: Catalin Marinas <catalin.marinas@arm.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
 	Will Deacon <will@kernel.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org,
+	Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: (subset) [PATCH v3 0/2] arm64: qcom: sm8650: add support for USB-C Altmode
-Date: Sat,  3 Feb 2024 11:06:18 -0600
-Message-ID: <170697997764.332807.12206368060165117821.b4-ty@kernel.org>
+	linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] arm64: defconfig: Enable Qualcomm interconnect providers
+Date: Sat,  3 Feb 2024 11:06:19 -0600
+Message-ID: <170697997761.332807.15662247521680250940.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240123-topic-sm8650-upstream-altmode-v3-0-300a5ac80e1e@linaro.org>
-References: <20240123-topic-sm8650-upstream-altmode-v3-0-300a5ac80e1e@linaro.org>
+In-Reply-To: <20240201-enable-icc-8250-2290-v1-1-8ded02750521@quicinc.com>
+References: <20240201-enable-icc-8250-2290-v1-1-8ded02750521@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,17 +64,22 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Tue, 23 Jan 2024 14:21:14 +0100, Neil Armstrong wrote:
-> This adds the missing bits to support Display Port external
-> display over the USB-C Altmode support using the Redriver/Retimer
-> and WCD939x USBSS Mux/Switch to provide the correct switching.
+On Thu, 01 Feb 2024 13:31:19 -0800, Bjorn Andersson wrote:
+> With interconnect providers built as modules Qualcomm SM8250 and QCM2290
+> platforms launches init without /dev/console being backed by the debug
+> UART.
 > 
+> Build there drivers into the kernel, to make sure the dependencies for
+> the UART driver are available and thereby give userspace access to the
+> UART without having to re-open the console, once the deferred UART
+> driver has probed.
 > 
+> [...]
 
 Applied, thanks!
 
-[1/2] arm64: dts: qcom: sm8650-qrd: add USB-C Altmode Support
-      commit: 63b78ca1a7b83113c0147325013746dd2c2992a3
+[1/1] arm64: defconfig: Enable Qualcomm interconnect providers
+      commit: f2eace2b4db5037c617168152c9bfc5421026d3d
 
 Best regards,
 -- 
