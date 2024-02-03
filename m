@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-51083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57EF6848642
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 13:45:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44B48848644
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 13:45:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D34B11F275A9
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 12:45:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B27BB2609B
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 12:45:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AA525EE71;
-	Sat,  3 Feb 2024 12:38:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61C6D5EE99;
+	Sat,  3 Feb 2024 12:38:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZH1dwoNF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ewuf/6FW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24AC15DF37;
-	Sat,  3 Feb 2024 12:38:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D7555EE7F;
+	Sat,  3 Feb 2024 12:38:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706963887; cv=none; b=DZivfHzCLz8PUtaYZ16i9P62U73s5L5ZUnwNtqq7/jhGcq1FthmdWOb/TgWau1xjqLEF1aCqr+8JE1Kr0wvbajkIJUE+ZQOWtS+/sKvPFDIaPyM5zssRqNiyY3WNgm3n24LXg3vKhjuzoA4Wy848whruDKdjcNw/hL6vROt1Dpk=
+	t=1706963890; cv=none; b=gEbT5HX/WY4fhQGXNt7t+ACA+5w0DJBQQ2E/SBn4II+TmeMCXXr2bXebwHkEjBKXYxZvr1PvvDVc6/esfeCJlVrqHqjwEqDYJEKsu7wQaIycXkdpFkvmJOoCY0ndClGPVjIzmzLgN+m2s3l4mIbldKdMPx/hSy9OZC97gjNQSJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706963887; c=relaxed/simple;
-	bh=YMh9c4cIpq0VJ/3C0/VF+2qLQSb+Y9f+U6jF6pNe5lA=;
+	s=arc-20240116; t=1706963890; c=relaxed/simple;
+	bh=C4BJGS32ZKxgcTmEcR+hxDBxjCex7+/UXa6MS9Hmn1w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AGFJbA0tAJfAUcdvriQ2pLAfqzOeNU25sdGSCI06xE2kM3Kp+eSsxWfKbcaR3aMRp2MxkEMQ4MQjRGSVJ6ZQMadg2WJrSXw9Rvxn38XYr0YTmiVyRDcpV2haeDnjIAwVrHEfgIblBHiJO96Es/W5WkN64EEwTTVSolI+InQ4I/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZH1dwoNF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41656C433C7;
-	Sat,  3 Feb 2024 12:38:04 +0000 (UTC)
+	 MIME-Version; b=WZhp4lwGkYbkzqGenNofy/YGm+QR1oRbvrL5wk0i8U8IFQ59bwHE87fRTvG+/vYyPU74Q0fCbVHaz6Nhj37XKveAZymp7WazKf9DZ0di+G9ZlaB9c2RMdhsrd4G7Vpr5LFWDpebM1RloXISI2cDvoZDeANqjtzT2lUJYMKVKykc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ewuf/6FW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25D86C433B1;
+	Sat,  3 Feb 2024 12:38:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706963886;
-	bh=YMh9c4cIpq0VJ/3C0/VF+2qLQSb+Y9f+U6jF6pNe5lA=;
+	s=k20201202; t=1706963890;
+	bh=C4BJGS32ZKxgcTmEcR+hxDBxjCex7+/UXa6MS9Hmn1w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZH1dwoNFXfMOmlCbwpwvKvfAOkuWe4QL2I4J4MVKZKdQwBf0p5IOJ9vCVH30HPip5
-	 fK3ucehDS5jKML9QVMOci4pLQZrnD+aFHn4xE1auMofQqNS3bS1XtzJDyZWlhQ3jwQ
-	 mme7cOOogHZYHcf7uTu04+Zkh6F9k9cWl8R9Vop7oHlwzHAzf9XnudMdETvI1QpLa8
-	 nmUCMYJ8EJbAd7eb2Ze3eibJxxOGJNsM7H/Wn3OFnSsYhNLDyxb3g4QkKMWGR5hMTI
-	 ZWcLtRLoOrgcCkKqInXsocM63GLwLG2Casss58+Co0Ha3hieE6jY2UqLx4v6Mr0NZb
-	 wasYQ/Q+LNK8g==
+	b=Ewuf/6FW5GJeAgHUi/N836sL2vFr11LB2pRhVLGwqwlUw6P8XSJOaLfapFywVfSWH
+	 h69F+AFeimRe53vFHyj9BAgSf8fH3nHV9egkpeDLiVpFuVLJR4MshMb6Esu5ePF0H5
+	 /c5clh5NWq+REk4MofxQorKk+qP/NK+zlB4HaI44EX6C5h9+oRBeZUJ5lkm/woFE5O
+	 sxNmy4QdcGF/rit72vjNq/bxYu8QDhGdgHOSJtvM6n1nWV9JUb/oQGzpBBEsFSDa9g
+	 N67uSwzshomDi27wRnmgFgq7U5kEfrtAqXN++TkQd+thoGTLadJub/2tMlWtn6RuGJ
+	 PKWesS16y7/Lw==
 From: Jisheng Zhang <jszhang@kernel.org>
 To: Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -52,9 +52,9 @@ Cc: devicetree@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-sunxi@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] arm64: dts: allwinner: h616: Add Sipeed Longan SoM 3H and Pi 3H board support
-Date: Sat,  3 Feb 2024 20:25:01 +0800
-Message-ID: <20240203122502.1259-3-jszhang@kernel.org>
+Subject: [PATCH 2/2] arm64: dts: allwinner: h616: Add Sipeed Longan SoM 3H and Pi 3H board support
+Date: Sat,  3 Feb 2024 20:25:02 +0800
+Message-ID: <20240203122502.1259-4-jszhang@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240203122502.1259-1-jszhang@kernel.org>
 References: <20240203122502.1259-1-jszhang@kernel.org>
@@ -91,35 +91,41 @@ namely PMIC, LEDs, UART, SD card, eMMC, USB and Ethernet.
 Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 ---
  arch/arm64/boot/dts/allwinner/Makefile        |   1 +
- .../sun50i-h618-longan-module-3h.dtsi         |  77 ++++++++++
- .../dts/allwinner/sun50i-h618-longanpi-3h.dts | 143 ++++++++++++++++++
- 3 files changed, 221 insertions(+)
+ .../sun50i-h618-longan-module-3h.dtsi         |  82 +++++++++++
+ .../dts/allwinner/sun50i-h618-longanpi-3h.dts | 133 ++++++++++++++++++
+ 3 files changed, 216 insertions(+)
  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h618-longan-module-3h.dtsi
  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h618-longanpi-3h.dts
 
 diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
-index 91d505b385de..4b9173a16efe 100644
+index 3aca6787a167..00db504a9b8c 100644
 --- a/arch/arm64/boot/dts/allwinner/Makefile
 +++ b/arch/arm64/boot/dts/allwinner/Makefile
-@@ -42,5 +42,6 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-cb1-manta.dtb
+@@ -42,4 +42,5 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-cb1-manta.dtb
  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-pi.dtb
  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
 +dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h618-longanpi-3h.dtb
  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h618-orangepi-zero3.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h618-transpeed-8k618-t.dtb
 diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h618-longan-module-3h.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h618-longan-module-3h.dtsi
 new file mode 100644
-index 000000000000..5f0f48cf4f01
+index 000000000000..88a7d287b73c
 --- /dev/null
 +++ b/arch/arm64/boot/dts/allwinner/sun50i-h618-longan-module-3h.dtsi
-@@ -0,0 +1,77 @@
+@@ -0,0 +1,82 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
 + * Copyright (C) Jisheng Zhang <jszhang@kernel.org>
 + */
 +
++/dts-v1/;
++
 +#include "sun50i-h616.dtsi"
++
++/ {
++	model = "Sipeed Longan Module 3H";
++	compatible = "sipeed,longan-module-3h", "allwinner,sun50i-h618";
++};
 +
 +&mmc2 {
 +	pinctrl-names = "default";
@@ -140,24 +146,22 @@ index 000000000000..5f0f48cf4f01
 +	axp313: pmic@36 {
 +		compatible = "x-powers,axp313a";
 +		reg = <0x36>;
-+		#interrupt-cells = <1>;
-+		interrupt-controller;
-+		interrupt-parent = <&pio>;
-+		interrupts = <3 11 IRQ_TYPE_LEVEL_LOW>;	/* PD11 */
 +
 +		regulators {
++			/* Supplies VCC-PLL, so needs to be always on. */
 +			reg_aldo1: aldo1 {
 +				regulator-always-on;
 +				regulator-min-microvolt = <1800000>;
 +				regulator-max-microvolt = <1800000>;
-+				regulator-name = "vcc-1v8-pll";
++				regulator-name = "vcc1v8";
 +			};
 +
++			/* Supplies VCC-IO, so needs to be always on. */
 +			reg_dldo1: dldo1 {
 +				regulator-always-on;
 +				regulator-min-microvolt = <3300000>;
 +				regulator-max-microvolt = <3300000>;
-+				regulator-name = "vcc-3v3-io";
++				regulator-name = "vcc3v3";
 +			};
 +
 +			reg_dcdc1: dcdc1 {
@@ -193,10 +197,10 @@ index 000000000000..5f0f48cf4f01
 +};
 diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h618-longanpi-3h.dts b/arch/arm64/boot/dts/allwinner/sun50i-h618-longanpi-3h.dts
 new file mode 100644
-index 000000000000..08d3ad7114fb
+index 000000000000..245583881549
 --- /dev/null
 +++ b/arch/arm64/boot/dts/allwinner/sun50i-h618-longanpi-3h.dts
-@@ -0,0 +1,143 @@
+@@ -0,0 +1,133 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
 + * Copyright (C) Jisheng Zhang <jszhang@kernel.org>
@@ -241,18 +245,10 @@ index 000000000000..08d3ad7114fb
 +		};
 +	};
 +
-+	reg_vcc5v: regulator-vcc5v {
++	reg_vcc5v: vcc5v {
 +		/* board wide 5V supply directly from the USB-C socket */
 +		compatible = "regulator-fixed";
 +		regulator-name = "vcc-5v";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		regulator-always-on;
-+	};
-+
-+	reg_vcc3v3: regulator-vcc3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc-3v3";
 +		regulator-min-microvolt = <5000000>;
 +		regulator-max-microvolt = <5000000>;
 +		regulator-always-on;
@@ -281,7 +277,6 @@ index 000000000000..08d3ad7114fb
 +	status = "okay";
 +};
 +
-+/* WiFi & BT combo module is connected to this Host */
 +&ehci3 {
 +	status = "okay";
 +};
@@ -297,7 +292,7 @@ index 000000000000..08d3ad7114fb
 +	phy-handle = <&ext_rgmii_phy>;
 +	allwinner,rx-delay-ps = <3100>;
 +	allwinner,tx-delay-ps = <700>;
-+	phy-supply = <&reg_vcc3v3>;
++	phy-supply = <&reg_dldo1>;
 +	status = "okay";
 +};
 +
@@ -311,7 +306,7 @@ index 000000000000..08d3ad7114fb
 +&mmc0 {
 +	bus-width = <4>;
 +	cd-gpios = <&pio 5 6 GPIO_ACTIVE_HIGH>;	/* PF6 */
-+	vmmc-supply = <&reg_vcc3v3>;
++	vmmc-supply = <&reg_dldo1>;
 +	status = "okay";
 +};
 +
@@ -337,10 +332,9 @@ index 000000000000..08d3ad7114fb
 +
 +&usbphy {
 +	usb1_vbus-supply = <&reg_vcc5v>;
-+	usb2_vbus-supply = <&reg_vcc5v>;
 +	status = "okay";
 +};
 -- 
-2.43.0
+2.40.0
 
 
