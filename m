@@ -1,153 +1,404 @@
-Return-Path: <linux-kernel+bounces-51305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCA6C848912
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 22:57:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40D51848917
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 23:00:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1971F1F22D35
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 21:57:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F29DD284203
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 22:00:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 063D3134D1;
-	Sat,  3 Feb 2024 21:57:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFDAC134AE;
+	Sat,  3 Feb 2024 22:00:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DVQxEwZm"
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hl5T7dCU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA3E8134C6;
-	Sat,  3 Feb 2024 21:57:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E58C134C6;
+	Sat,  3 Feb 2024 22:00:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706997439; cv=none; b=K3OFUz3LgNpFolDCutFj7OpvP74Z1fj/Agh/vaoDTj9od3ct7i03icx/KPDT9+Ox5VeNfNNZrfNYenNzTXSDVlM7ybDO9aT0CFPcb4lS4iNfGNdw7dAeqHTusSro9cgs2ewYfDeCZSosFkx3bC0gO1ycFq0RCxiVwdErd5Cm6g8=
+	t=1706997608; cv=none; b=uSsS2D6sFEZCd0NWYNIDvINP2DCkD9DmCZhHHzoKmrH74DsSo4nFp1SLIza4TANkcWmkt9cUVyY9VPVJtSwbKD97pR8rHiIdkIp9kA0uFbQguo/4Xvm5ENN8VAY9cu3PXEcT52reN7Zlaz/dPvImwMTwpPdHL8cvkufNe0YgSJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706997439; c=relaxed/simple;
-	bh=lyHp8wLQstzCzlNPWs1HTrdybbdJ/t1MCH/dc51Y51Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TIROOTU9cBURLX+j64/m9+o9/09trKdD55Q/LCvvYqzC0IWkiY9dji9lKEBRDKbP15RfaSNQP9NFCBNQ2vzeLBxuGGNtDDKk2xaQgQHy8obdGCGp2I+TAij4r/cqGryHgUeMC3Q6CQB9vywivVq4QG4O9Uxqfcez8PkD/HGpac4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DVQxEwZm; arc=none smtp.client-ip=209.85.222.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-783e22a16d4so330370885a.0;
-        Sat, 03 Feb 2024 13:57:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706997436; x=1707602236; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0xiL1Z6KfFXP14fdmKAGU65p3FcgIDh0V3E0P0l9b9g=;
-        b=DVQxEwZmuBZx7Yms7+NuCkMz8vEbPRh32ba9vAcCz7PX75XhwWNgk08hEBeAXw9vz4
-         fr+0gXRGo17FGNDHV+YSYmRdxHwfvRm2yNoIy8xhYzOjfWU3TV/wMcmoIcQafuyyZ03c
-         yQ2sRxTwDPTuByAOZCN2lTVXF+H6H0mg+9xM5m801HZS4uDHUkhD9EGiLMzjT7UiNnJY
-         tdZgaXDVbX+Mf11bdWk64QiLcGAusYTeUnL7fWme5njqCMTE1MUp6tIhNoQzB94mAYej
-         91wzw64Z2EDq9SAIRV7xw0Zh2R5E+lgfTKfrKsGKl7kVuQTX+afEaz8zat9I3IzyAWbj
-         iaIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706997436; x=1707602236;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0xiL1Z6KfFXP14fdmKAGU65p3FcgIDh0V3E0P0l9b9g=;
-        b=FgH9G+9Uqz+uY9uqIGtYZCmTT61rQfEV/p96U/VPcbcU6i9KFnNPvS9i3ykWPbNSCX
-         Bd0vlmHt6rbI38AJDKVtt6wO91JR/d34975hhQJ2a/oNg+ceBnM/2HGyos2Rvki4jKem
-         4ulLD+6nQfZQPlN3Q//6lIQHZsy3vp0tRmXakxsT9b2pzfMAg768qQLWwyhZ6JRAbUyz
-         j8ywdIeAIJeElwcYKgOjSA7EkhTaR1ELAXAFR+5qjezkf37Wtf492t3zFJkb7jriXHiW
-         MGxx0fVvw7Q56QKn//DWHwOIehaYYdXFwgcsI/Et76esy/2ITA/JfvvUC5L0L1n9lnOt
-         ABug==
-X-Gm-Message-State: AOJu0YzzYrqlCzXCJBjR31GSt1MOCbmOcWhDzHY7V8ngXcuYQLJ1K7od
-	Fr8aYSFknxNUCl22LJy1Qk5v+nZ8mAmec0yAvlcZr6YXoqNfj1BV
-X-Google-Smtp-Source: AGHT+IGZZjeNgub5QaH9Fv0vuHw9eKGkEb0HsW66wIyt7WHsnLOZA28BpurzTr9sNTK1/gMuboCDPw==
-X-Received: by 2002:a05:620a:4586:b0:783:ddf9:ffd5 with SMTP id bp6-20020a05620a458600b00783ddf9ffd5mr4384165qkb.36.1706997436665;
-        Sat, 03 Feb 2024 13:57:16 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWtc/TER8rw8fAYtcxpzJdcRpyCj0NYDbS/GjVGiA51AWzN8RStFscidMC3reJBoffMDLRmaMelyPh/A4fRjhfYxG4H0+zbKx7VRYJ7DQR8Dfc0JmuMzM3faTweNJxZ6poXlJu1dAZ0xVT3c4aQgnjnR3zzv11rZBTA0J8NcEXM9tI72ygKoUkbnLKL7A9KdOGw8xLNAD4l3rSEeaJH5oLXPUWaXd9VVeX9Ag7XAoeRfR6lzVboJQm5+IUTADT1h8/cHwiE9A52ZcMQ5kCsLmjCfnN9XYr43AcWL/ti4fTsENMNa636IG4qq/Y/QJcuE7hS5q29gkJpTyXyfH6xwFM3Py7Fmn4iU4CRQ79KahgtNB1/ANU49+at4BIKbol6boDqJWeoRhxIlgeX1mruoi8zVlGk8DNS1HlZPR0dvkp5D1S2OyLd/+8ZzaNW33Uz8tVDfWZ9OpoQNfkfnITSHvhwrYW6sR+jWyj7w8xOC4rJ1jHrMgOKmjwtlnTcAAdwbLFEUds/uVl/
-Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
-        by smtp.gmail.com with ESMTPSA id o18-20020a05620a22d200b00783fb468e7bsm1732958qki.44.2024.02.03.13.57.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 03 Feb 2024 13:57:16 -0800 (PST)
-Message-ID: <39c4ebbf-c0f8-49ab-944b-a71bd85d8abf@gmail.com>
-Date: Sat, 3 Feb 2024 13:57:14 -0800
+	s=arc-20240116; t=1706997608; c=relaxed/simple;
+	bh=7XPY5aPtdjOpUT48dzCP8uj1o5iaIeQSyTChtYnMAQ0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oKR7UkocavMx7R/331pN2F76rfHNIK3qXUcb3z6L0WtiwWz1svv/8nmQe0jvh2dJ7Uk8PT2/EVFdGM1Wiynav5X/Y3zrbaELb/spjlVBZeuVlF3ixkcorP4Q3fjK5KLEx/c8qCc/NJuVW7xEucev8CIQvEYiBVn5cHaBIPA44wA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hl5T7dCU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E421BC433C7;
+	Sat,  3 Feb 2024 22:00:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706997608;
+	bh=7XPY5aPtdjOpUT48dzCP8uj1o5iaIeQSyTChtYnMAQ0=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=hl5T7dCU0kuz9U6TcpEvpW9lP1gjjPT7lZm+5FUNDqrZ/GnZZJ17TkC6xrgSLNfUy
+	 bqA4Kppi3VcaXFE+7IeDXJbIzPhlbUkvhLInLQkIThywIIGqDykGl3vh8OQsYNrO4W
+	 aIiKAC41dhDWL2lTH6yLwxJMTcwI6F6mKsUsL3E+PhHSoX2vOuN/nHJyRGL9lljCOl
+	 sYu50zHwtObAeeZJr7LsoWVNN/tLWp76EqUMtbkGa9VoZ+yP/P7S247J2xSv1Eo6wr
+	 dx9DTOnA/+BhH7P16ntFdhucv6y7XSj26do5nXlVT0ZCwjqxa9AHvgvp9PJIlvXRrs
+	 Ga6F5ui68dQYw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 66014CE0D05; Sat,  3 Feb 2024 14:00:03 -0800 (PST)
+Date: Sat, 3 Feb 2024 14:00:03 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Yang Jihong <yangjihong1@huawei.com>
+Cc: Chen Zhongjin <chenzhongjin@huawei.com>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, naveen.n.rao@linux.ibm.com,
+	anil.s.keshavamurthy@intel.com, davem@davemloft.net,
+	mhiramat@kernel.org, akpm@linux-foundation.org, tglx@linutronix.de,
+	peterz@infradead.org, pmladek@suse.com, dianders@chromium.org,
+	npiggin@gmail.com, mpe@ellerman.id.au, jkl820.git@gmail.com,
+	juerg.haefliger@canonical.com, rick.p.edgecombe@intel.com,
+	eric.devolder@oracle.com, mic@digikod.net
+Subject: Re: [RFC PATCH] kprobes: Use synchronize_rcu_tasks_rude in
+ kprobe_optimizer
+Message-ID: <d970cda7-bf17-49c5-85b9-7596beb3690b@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240102034024.256326-1-chenzhongjin@huawei.com>
+ <29eaed4d-c4e5-cf9b-113b-da146b719820@huawei.com>
+ <d7cb96d8-86e1-423d-a135-46b4e472fe9e@paulmck-laptop>
+ <d7dfe177-6bfb-63c2-9be5-6ad25c8c243e@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.6 000/326] 6.6.16-rc2 review
-Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
- conor@kernel.org, allen.lkml@gmail.com
-References: <20240203174810.768708706@linuxfoundation.org>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; keydata=
- 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
- HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <20240203174810.768708706@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d7dfe177-6bfb-63c2-9be5-6ad25c8c243e@huawei.com>
 
-
-
-On 2/3/2024 9:52 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.6.16 release.
-> There are 326 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, Jan 29, 2024 at 08:58:10AM +0800, Yang Jihong wrote:
+> Hello,
 > 
-> Responses should be made by Mon, 05 Feb 2024 17:47:20 +0000.
-> Anything received after that time might be too late.
+> On 2024/1/28 3:22, Paul E. McKenney wrote:
+> > On Tue, Jan 09, 2024 at 07:28:29PM +0800, Yang Jihong wrote:
+> > > Hello,
+> > > 
+> > > PING.
+> > > 
+> > > I had a similar problem. Is this solution feasible?
+> > 
+> > Sadly, no.
+> > 
+> > It fails on CONFIG_PREEMPT=y kernels because synchronize_rcu_tasks_rude()
+> > will not wait on tasks that have been preempted while executing in
+> > a trampoline.
+> > 
+> > But could you please try out the patch shown at the end of this email?
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.16-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> Thanks for the patch, yes, I've tested and it solves the problem.
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+Very good, and thank you for testing it!
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+May I apply your Tested-by to the commit to record your efforts for
+posterity?
+
+							Thanx, Paul
+
+> > > Thanks,
+> > > Yang
+> > > 
+> > > On 2024/1/2 11:40, Chen Zhongjin wrote:
+> > > > There is a deadlock scenario in kprobe_optimizer():
+> > > > 
+> > > > pid A				pid B			pid C
+> > > > kprobe_optimizer()		do_exit()		perf_kprobe_init()
+> > > > mutex_lock(&kprobe_mutex)	exit_tasks_rcu_start()	mutex_lock(&kprobe_mutex)
+> > > > synchronize_rcu_tasks()		zap_pid_ns_processes()	// waiting kprobe_mutex
+> > > > // waiting tasks_rcu_exit_srcu	kernel_wait4()
+> > > > 				// waiting pid C exit
+> > > > 
+> > > > To avoid this deadlock loop, use synchronize_rcu_tasks_rude() in kprobe_optimizer()
+> > > > rather than synchronize_rcu_tasks(). synchronize_rcu_tasks_rude() can also promise
+> > > > that all preempted tasks have scheduled, but it will not wait tasks_rcu_exit_srcu.
+> > > > 
+> > > > Signed-off-by: Chen Zhongjin <chenzhongjin@huawei.com>
+> > > > ---
+> > > >    arch/Kconfig     | 2 +-
+> > > >    kernel/kprobes.c | 2 +-
+> > > >    2 files changed, 2 insertions(+), 2 deletions(-)
+> > > > 
+> > > > diff --git a/arch/Kconfig b/arch/Kconfig
+> > > > index f4b210ab0612..dc6a18854017 100644
+> > > > --- a/arch/Kconfig
+> > > > +++ b/arch/Kconfig
+> > > > @@ -104,7 +104,7 @@ config STATIC_CALL_SELFTEST
+> > > >    config OPTPROBES
+> > > >    	def_bool y
+> > > >    	depends on KPROBES && HAVE_OPTPROBES
+> > > > -	select TASKS_RCU if PREEMPTION
+> > > > +	select TASKS_RUDE_RCU
+> > > >    config KPROBES_ON_FTRACE
+> > > >    	def_bool y
+> > > > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> > > > index d5a0ee40bf66..09056ae50c58 100644
+> > > > --- a/kernel/kprobes.c
+> > > > +++ b/kernel/kprobes.c
+> > > > @@ -623,7 +623,7 @@ static void kprobe_optimizer(struct work_struct *work)
+> > > >    	 * Note that on non-preemptive kernel, this is transparently converted
+> > > >    	 * to synchronoze_sched() to wait for all interrupts to have completed.
+> > > >    	 */
+> > > > -	synchronize_rcu_tasks();
+> > > > +	synchronize_rcu_tasks_rude();
+> > > >    	/* Step 3: Optimize kprobes after quiesence period */
+> > > >    	do_optimize_kprobes();
+> > 
+> > ------------------------------------------------------------------------
+> > 
+> > commit bc31e6cb27a9334140ff2f0a209d59b08bc0bc8c
+> > Author: Paul E. McKenney <paulmck@kernel.org>
+> > Date:   Sat Jan 20 07:07:08 2024 -0800
+> > 
+> >      rcu-tasks: Eliminate deadlocks involving do_exit() and RCU tasks
+> >      Holding a mutex across synchronize_rcu_tasks() and acquiring
+> >      that same mutex in code called from do_exit() after its call to
+> >      exit_tasks_rcu_start() but before its call to exit_tasks_rcu_stop()
+> >      results in deadlock.  This is by design, because tasks that are far
+> >      enough into do_exit() are no longer present on the tasks list, making
+> >      it a bit difficult for RCU Tasks to find them, let alone wait on them
+> >      to do a voluntary context switch.  However, such deadlocks are becoming
+> >      more frequent.  In addition, lockdep currently does not detect such
+> >      deadlocks and they can be difficult to reproduce.
+> >      In addition, if a task voluntarily context switches during that time
+> >      (for example, if it blocks acquiring a mutex), then this task is in an
+> >      RCU Tasks quiescent state.  And with some adjustments, RCU Tasks could
+> >      just as well take advantage of that fact.
+> >      This commit therefore eliminates these deadlock by replacing the
+> >      SRCU-based wait for do_exit() completion with per-CPU lists of tasks
+> >      currently exiting.  A given task will be on one of these per-CPU lists for
+> >      the same period of time that this task would previously have been in the
+> >      previous SRCU read-side critical section.  These lists enable RCU Tasks
+> >      to find the tasks that have already been removed from the tasks list,
+> >      but that must nevertheless be waited upon.
+> >      The RCU Tasks grace period gathers any of these do_exit() tasks that it
+> >      must wait on, and adds them to the list of holdouts.  Per-CPU locking
+> >      and get_task_struct() are used to synchronize addition to and removal
+> >      from these lists.
+> >      Link: https://lore.kernel.org/all/20240118021842.290665-1-chenzhongjin@huawei.com/
+> >      Reported-by: Chen Zhongjin <chenzhongjin@huawei.com>
+> >      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > 
+> > diff --git a/include/linux/sched.h b/include/linux/sched.h
+> > index cdb8ea53c365..4f0e9274da2d 100644
+> > --- a/include/linux/sched.h
+> > +++ b/include/linux/sched.h
+> > @@ -858,6 +858,8 @@ struct task_struct {
+> >   	u8				rcu_tasks_idx;
+> >   	int				rcu_tasks_idle_cpu;
+> >   	struct list_head		rcu_tasks_holdout_list;
+> > +	int				rcu_tasks_exit_cpu;
+> > +	struct list_head		rcu_tasks_exit_list;
+> >   #endif /* #ifdef CONFIG_TASKS_RCU */
+> >   #ifdef CONFIG_TASKS_TRACE_RCU
+> > diff --git a/init/init_task.c b/init/init_task.c
+> > index 7ecb458eb3da..4daee6d761c8 100644
+> > --- a/init/init_task.c
+> > +++ b/init/init_task.c
+> > @@ -147,6 +147,7 @@ struct task_struct init_task __aligned(L1_CACHE_BYTES) = {
+> >   	.rcu_tasks_holdout = false,
+> >   	.rcu_tasks_holdout_list = LIST_HEAD_INIT(init_task.rcu_tasks_holdout_list),
+> >   	.rcu_tasks_idle_cpu = -1,
+> > +	.rcu_tasks_exit_list = LIST_HEAD_INIT(init_task.rcu_tasks_exit_list),
+> >   #endif
+> >   #ifdef CONFIG_TASKS_TRACE_RCU
+> >   	.trc_reader_nesting = 0,
+> > diff --git a/kernel/fork.c b/kernel/fork.c
+> > index 47ff3b35352e..3eb86f30e664 100644
+> > --- a/kernel/fork.c
+> > +++ b/kernel/fork.c
+> > @@ -1975,6 +1975,7 @@ static inline void rcu_copy_process(struct task_struct *p)
+> >   	p->rcu_tasks_holdout = false;
+> >   	INIT_LIST_HEAD(&p->rcu_tasks_holdout_list);
+> >   	p->rcu_tasks_idle_cpu = -1;
+> > +	INIT_LIST_HEAD(&p->rcu_tasks_exit_list);
+> >   #endif /* #ifdef CONFIG_TASKS_RCU */
+> >   #ifdef CONFIG_TASKS_TRACE_RCU
+> >   	p->trc_reader_nesting = 0;
+> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > index 732ad5b39946..bd4a51fd5b1f 100644
+> > --- a/kernel/rcu/tasks.h
+> > +++ b/kernel/rcu/tasks.h
+> > @@ -32,6 +32,7 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
+> >    * @rtp_irq_work: IRQ work queue for deferred wakeups.
+> >    * @barrier_q_head: RCU callback for barrier operation.
+> >    * @rtp_blkd_tasks: List of tasks blocked as readers.
+> > + * @rtp_exit_list: List of tasks in the latter portion of do_exit().
+> >    * @cpu: CPU number corresponding to this entry.
+> >    * @rtpp: Pointer to the rcu_tasks structure.
+> >    */
+> > @@ -46,6 +47,7 @@ struct rcu_tasks_percpu {
+> >   	struct irq_work rtp_irq_work;
+> >   	struct rcu_head barrier_q_head;
+> >   	struct list_head rtp_blkd_tasks;
+> > +	struct list_head rtp_exit_list;
+> >   	int cpu;
+> >   	struct rcu_tasks *rtpp;
+> >   };
+> > @@ -144,8 +146,6 @@ static struct rcu_tasks rt_name =							\
+> >   }
+> >   #ifdef CONFIG_TASKS_RCU
+> > -/* Track exiting tasks in order to allow them to be waited for. */
+> > -DEFINE_STATIC_SRCU(tasks_rcu_exit_srcu);
+> >   /* Report delay in synchronize_srcu() completion in rcu_tasks_postscan(). */
+> >   static void tasks_rcu_exit_srcu_stall(struct timer_list *unused);
+> > @@ -275,6 +275,8 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
+> >   		rtpcp->rtpp = rtp;
+> >   		if (!rtpcp->rtp_blkd_tasks.next)
+> >   			INIT_LIST_HEAD(&rtpcp->rtp_blkd_tasks);
+> > +		if (!rtpcp->rtp_exit_list.next)
+> > +			INIT_LIST_HEAD(&rtpcp->rtp_exit_list);
+> >   	}
+> >   	pr_info("%s: Setting shift to %d and lim to %d rcu_task_cb_adjust=%d.\n", rtp->name,
+> > @@ -851,10 +853,12 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
+> >   //	number of voluntary context switches, and add that task to the
+> >   //	holdout list.
+> >   // rcu_tasks_postscan():
+> > -//	Invoke synchronize_srcu() to ensure that all tasks that were
+> > -//	in the process of exiting (and which thus might not know to
+> > -//	synchronize with this RCU Tasks grace period) have completed
+> > -//	exiting.
+> > +//	Gather per-CPU lists of tasks in do_exit() to ensure that all
+> > +//	tasks that were in the process of exiting (and which thus might
+> > +//	not know to synchronize with this RCU Tasks grace period) have
+> > +//	completed exiting.  The synchronize_rcu() in rcu_tasks_postgp()
+> > +//	will take care of any tasks stuck in the non-preemptible region
+> > +//	of do_exit() following its call to exit_tasks_rcu_stop().
+> >   // check_all_holdout_tasks(), repeatedly until holdout list is empty:
+> >   //	Scans the holdout list, attempting to identify a quiescent state
+> >   //	for each task on the list.  If there is a quiescent state, the
+> > @@ -867,8 +871,10 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
+> >   //	with interrupts disabled.
+> >   //
+> >   // For each exiting task, the exit_tasks_rcu_start() and
+> > -// exit_tasks_rcu_finish() functions begin and end, respectively, the SRCU
+> > -// read-side critical sections waited for by rcu_tasks_postscan().
+> > +// exit_tasks_rcu_finish() functions add and remove, respectively, the
+> > +// current task to a per-CPU list of tasks that rcu_tasks_postscan() must
+> > +// wait on.  This is necessary because rcu_tasks_postscan() must wait on
+> > +// tasks that have already been removed from the global list of tasks.
+> >   //
+> >   // Pre-grace-period update-side code is ordered before the grace
+> >   // via the raw_spin_lock.*rcu_node().  Pre-grace-period read-side code
+> > @@ -932,9 +938,13 @@ static void rcu_tasks_pertask(struct task_struct *t, struct list_head *hop)
+> >   	}
+> >   }
+> > +void call_rcu_tasks(struct rcu_head *rhp, rcu_callback_t func);
+> > +DEFINE_RCU_TASKS(rcu_tasks, rcu_tasks_wait_gp, call_rcu_tasks, "RCU Tasks");
+> > +
+> >   /* Processing between scanning taskslist and draining the holdout list. */
+> >   static void rcu_tasks_postscan(struct list_head *hop)
+> >   {
+> > +	int cpu;
+> >   	int rtsi = READ_ONCE(rcu_task_stall_info);
+> >   	if (!IS_ENABLED(CONFIG_TINY_RCU)) {
+> > @@ -948,9 +958,9 @@ static void rcu_tasks_postscan(struct list_head *hop)
+> >   	 * this, divide the fragile exit path part in two intersecting
+> >   	 * read side critical sections:
+> >   	 *
+> > -	 * 1) An _SRCU_ read side starting before calling exit_notify(),
+> > -	 *    which may remove the task from the tasklist, and ending after
+> > -	 *    the final preempt_disable() call in do_exit().
+> > +	 * 1) A task_struct list addition before calling exit_notify(),
+> > +	 *    which may remove the task from the tasklist, with the
+> > +	 *    removal after the final preempt_disable() call in do_exit().
+> >   	 *
+> >   	 * 2) An _RCU_ read side starting with the final preempt_disable()
+> >   	 *    call in do_exit() and ending with the final call to schedule()
+> > @@ -959,7 +969,18 @@ static void rcu_tasks_postscan(struct list_head *hop)
+> >   	 * This handles the part 1). And postgp will handle part 2) with a
+> >   	 * call to synchronize_rcu().
+> >   	 */
+> > -	synchronize_srcu(&tasks_rcu_exit_srcu);
+> > +
+> > +	for_each_possible_cpu(cpu) {
+> > +		unsigned long flags;
+> > +		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, cpu);
+> > +		struct task_struct *t;
+> > +
+> > +		raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
+> > +		list_for_each_entry(t, &rtpcp->rtp_exit_list, rcu_tasks_exit_list)
+> > +			if (list_empty(&t->rcu_tasks_holdout_list))
+> > +				rcu_tasks_pertask(t, hop);
+> > +		raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
+> > +	}
+> >   	if (!IS_ENABLED(CONFIG_TINY_RCU))
+> >   		del_timer_sync(&tasks_rcu_exit_srcu_stall_timer);
+> > @@ -1027,7 +1048,6 @@ static void rcu_tasks_postgp(struct rcu_tasks *rtp)
+> >   	 *
+> >   	 * In addition, this synchronize_rcu() waits for exiting tasks
+> >   	 * to complete their final preempt_disable() region of execution,
+> > -	 * cleaning up after synchronize_srcu(&tasks_rcu_exit_srcu),
+> >   	 * enforcing the whole region before tasklist removal until
+> >   	 * the final schedule() with TASK_DEAD state to be an RCU TASKS
+> >   	 * read side critical section.
+> > @@ -1035,9 +1055,6 @@ static void rcu_tasks_postgp(struct rcu_tasks *rtp)
+> >   	synchronize_rcu();
+> >   }
+> > -void call_rcu_tasks(struct rcu_head *rhp, rcu_callback_t func);
+> > -DEFINE_RCU_TASKS(rcu_tasks, rcu_tasks_wait_gp, call_rcu_tasks, "RCU Tasks");
+> > -
+> >   static void tasks_rcu_exit_srcu_stall(struct timer_list *unused)
+> >   {
+> >   #ifndef CONFIG_TINY_RCU
+> > @@ -1147,25 +1164,45 @@ struct task_struct *get_rcu_tasks_gp_kthread(void)
+> >   EXPORT_SYMBOL_GPL(get_rcu_tasks_gp_kthread);
+> >   /*
+> > - * Contribute to protect against tasklist scan blind spot while the
+> > - * task is exiting and may be removed from the tasklist. See
+> > - * corresponding synchronize_srcu() for further details.
+> > + * Protect against tasklist scan blind spot while the task is exiting and
+> > + * may be removed from the tasklist.  Do this by adding the task to yet
+> > + * another list.
+> >    */
+> > -void exit_tasks_rcu_start(void) __acquires(&tasks_rcu_exit_srcu)
+> > +void exit_tasks_rcu_start(void)
+> >   {
+> > -	current->rcu_tasks_idx = __srcu_read_lock(&tasks_rcu_exit_srcu);
+> > +	unsigned long flags;
+> > +	struct rcu_tasks_percpu *rtpcp;
+> > +	struct task_struct *t = current;
+> > +
+> > +	WARN_ON_ONCE(!list_empty(&t->rcu_tasks_exit_list));
+> > +	get_task_struct(t);
+> > +	preempt_disable();
+> > +	rtpcp = this_cpu_ptr(rcu_tasks.rtpcpu);
+> > +	t->rcu_tasks_exit_cpu = smp_processor_id();
+> > +	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
+> > +	if (!rtpcp->rtp_exit_list.next)
+> > +		INIT_LIST_HEAD(&rtpcp->rtp_exit_list);
+> > +	list_add(&t->rcu_tasks_exit_list, &rtpcp->rtp_exit_list);
+> > +	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
+> > +	preempt_enable();
+> >   }
+> >   /*
+> > - * Contribute to protect against tasklist scan blind spot while the
+> > - * task is exiting and may be removed from the tasklist. See
+> > - * corresponding synchronize_srcu() for further details.
+> > + * Remove the task from the "yet another list" because do_exit() is now
+> > + * non-preemptible, allowing synchronize_rcu() to wait beyond this point.
+> >    */
+> > -void exit_tasks_rcu_stop(void) __releases(&tasks_rcu_exit_srcu)
+> > +void exit_tasks_rcu_stop(void)
+> >   {
+> > +	unsigned long flags;
+> > +	struct rcu_tasks_percpu *rtpcp;
+> >   	struct task_struct *t = current;
+> > -	__srcu_read_unlock(&tasks_rcu_exit_srcu, t->rcu_tasks_idx);
+> > +	WARN_ON_ONCE(list_empty(&t->rcu_tasks_exit_list));
+> > +	rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, t->rcu_tasks_exit_cpu);
+> > +	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
+> > +	list_del_init(&t->rcu_tasks_exit_list);
+> > +	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
+> > +	put_task_struct(t);
+> >   }
+> >   /*
+> > 
+> Tested-by: Yang Jihong <yangjihong1@huawei.com>
+> 
+> Thanks,
+> Yang
 
