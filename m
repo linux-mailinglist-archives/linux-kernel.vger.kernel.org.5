@@ -1,136 +1,93 @@
-Return-Path: <linux-kernel+bounces-51105-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51106-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7483848689
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 14:39:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCFDE84868B
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 14:39:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5933C286571
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 13:39:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 648C51F237FD
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 13:39:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A456F5D733;
-	Sat,  3 Feb 2024 13:38:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E89F35CDCC;
+	Sat,  3 Feb 2024 13:39:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gl3tI9Q8"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=rwarsow@gmx.de header.b="YTXSe0IQ"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C86355D8FB;
-	Sat,  3 Feb 2024 13:38:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 766675DF01;
+	Sat,  3 Feb 2024 13:39:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706967534; cv=none; b=ZXHvD+G9Lnczw7wHW2YfIGsBTxLUvRAnSuSzg+VcfiHjQrpsAV98SgTQGFWo32K35oeO39l/eQdTqTZhaFjkzEuKN2oBSvISRcPFYjGYSDl18wt2iszXALXNvqbnSYjGA96EBh4r7QVLPMdmS7804IRrY/xU1+ossHo1eccYg8M=
+	t=1706967587; cv=none; b=liBLKa2kUr+m5ngPU7+fMEftEkPNBoSW0kjTY79uX+ykpro9HEDXaiBn3a8nIELidQUCmIJBPu8GMlPaMg1/sEb1MgaBmVG7WpydJFVtDB4Ux8N3PLMDNJbXAm3XDqre34+mZMWS8O0siijuqz2tyV6Xu1IdJ+F13wRXTbufaCw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706967534; c=relaxed/simple;
-	bh=YjOtAVRDfuPH8lpCCJ1yeiZiENIgmPX6pSBD0VtNlWo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d8IarNrjaPO+UQqTfsiSEwfLYCO9qh7rTIuEBxVUJhmB5VBx1A8xk92oZPrcsPe8hw/ugBZ+CfvYYymKlzr1WNhsy3eppJ3lyq34uOcccyUI2NDelUmVwz5YDQY+A8iVsePcd+htmzpZep+pGqadSl0lg8MQSgz+1y8kYO67ScM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gl3tI9Q8; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706967532; x=1738503532;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=YjOtAVRDfuPH8lpCCJ1yeiZiENIgmPX6pSBD0VtNlWo=;
-  b=gl3tI9Q8/q6BNdD2RUrYc6W6Pdo8fAlskcLwIPUxzOwrn4N/647c0W2K
-   R3yerKctoM5pZ6ANtJcFHvrg9dqjeSjC325CU7dB5gqIzwQWjT7n31vgg
-   uj19tm7F1nVCHf8SqHs5Gss7EOQocoZfDPlzvb2fWACiXDL0HEHR7HUoQ
-   kSEbjJACdQeL/BY5FWtMrA0Qv7cKjcU06Yp3X4xi3dNOKGmGY2vS9CjtU
-   /Ye8YWvmwtOW/+9EfNk+uzlLhHqgwx0M02Fja+KNDM0DN3Wg3A3in3i+k
-   J6Mn3cPyBRAqpPFGNClkERTSQeR+rAeFT6hC25zMCZTAZAUshadD0nDhx
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="10967211"
-X-IronPort-AV: E=Sophos;i="6.05,240,1701158400"; 
-   d="scan'208";a="10967211"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2024 05:38:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,240,1701158400"; 
-   d="scan'208";a="645392"
-Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
-  by orviesa008.jf.intel.com with ESMTP; 03 Feb 2024 05:38:48 -0800
-Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rWGEG-00057C-2l;
-	Sat, 03 Feb 2024 13:38:44 +0000
-Date: Sat, 3 Feb 2024 21:37:48 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jiaxun Yang <jiaxun.yang@flygoat.com>, Oleg Nesterov <oleg@redhat.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Ben Hutchings <bwh@kernel.org>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Xi Ruoyao <xry111@xry111.site>
-Subject: Re: [PATCH 3/3] mm/memory: Use exception ip to search exception
- tables
-Message-ID: <202402032112.NBimLx5h-lkp@intel.com>
-References: <20240201-exception_ip-v1-3-aa26ab3ee0b5@flygoat.com>
+	s=arc-20240116; t=1706967587; c=relaxed/simple;
+	bh=JM+qhCQHHHoXmUGLpcSRnertDD/feaRM25mS6GIRcWs=;
+	h=Message-ID:Date:MIME-Version:From:To:Cc:Subject:Content-Type; b=X1VeOGl3Y1GiK/v6SRhdamOl/l9TcTKGr3PHR4Z/V8AeoJzta+xXS1GVvGz1QbJ3v2kZBZmggEtVfggQrsI31VY7jgnoCIy6DAolYL4U0s3EV6K2CgnMclFuxy7tfsrqJC5qWrh9RtgSz+XEMc8yNdsBdwiNURFo4KNxJxTPn/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=rwarsow@gmx.de header.b=YTXSe0IQ; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1706967582; x=1707572382; i=rwarsow@gmx.de;
+	bh=JM+qhCQHHHoXmUGLpcSRnertDD/feaRM25mS6GIRcWs=;
+	h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
+	b=YTXSe0IQ5fehwM3rcLDp51QpdlKIlOe+RtlDVxKBkSPob+mxr3SQJZdK3epFyT8F
+	 nOiXERBPFKL/URKi+qEfBCFMiqfKPfUJ3JcU0+ydqP3Y/Z2Gge7uMfy6bp1jRNNBu
+	 7eT4hJsiStwN5xxRK4z/astsP061cUGOYx4bYfcpA64qiPzbtfsHjM15aim5he76P
+	 FRGVmqT2EbakMjVrgowKyRX4wqrXCGrK2y837hJlyaWtY7GLZJ9yOmh7ksurpKU2g
+	 LxHkpT235ZhWZEvjLIUwZxvyN5J5dhF1/CfneluaL5UAin9YusEi6sWOMRo3PopOI
+	 D+8JxwfM0rBCBvTuwg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.100.20] ([46.142.35.89]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1My32L-1r6mna41CJ-00zWng; Sat, 03
+ Feb 2024 14:39:42 +0100
+Message-ID: <295b099e-3b60-416f-a28c-6d58bb5564bb@gmx.de>
+Date: Sat, 3 Feb 2024 14:39:41 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240201-exception_ip-v1-3-aa26ab3ee0b5@flygoat.com>
+User-Agent: Mozilla Thunderbird
+From: Ronald Warsow <rwarsow@gmx.de>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Content-Language: de-DE, en-US
+Subject: Re: [PATCH 6.7 000/353] 6.7.4-rc1 review
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:rmtUvSKC406CC1RhZUVFRG9TFlHDwO5d981bPHk4/0QLr7AYA02
+ DxdGIbqlxSaGAG+cFOewY48JTq81nAUCVZ0Or06rYL6cNV/w4WZIEXjolQ20NUUf41UZBZa
+ REAh4tevdwgQVBj2CbRkH46bIO4TXJb2n9m4JLla0o4jvrBE3bh8ErUf1z51A17KsVjVsel
+ we2hYpbA0Ctn2jc4M1qWg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:fBkzQlnevZc=;v9V4EGAncxKlQ48daLaaLyOkK7W
+ TT7BzVxknHn1spSA5uweu7gClpgjgRtffVMxZoTWggmbrFLzr4kWRVqES/K9aCGSJe0L37gM5
+ iGKy0ykeNYAeKNzSN1QHeiPSxYc/8TaS1P+MBCerQ+alHXzB3m809U9x22TZt8sWj+M41+wON
+ KzW3Nov56QpbwOxyZTh93SSocUvm1kFRDaEQ3SN7yI9kiDE4y5NLIB7wybpyqhde94/pp+NQt
+ nvY1cGziU0FJAwvjOmGSDsL7cbefUnRXqRrxWZ63AKY9kQrfqraNdGVXi68FC6lSQJaPH7roK
+ LrlDlm98+LjASyqxd0XpwjGcjq/Cz6tldBjcrCdEb5gs90+n1xhDP5pvJCw/T1XW/du9mQksT
+ c13wWGsRlh2A28JESaFrFzkHnU1RvJ58KUbb1Bigmc1eOgyJS1ucugugaGGja9Sl+KeZrEASw
+ tsj87JS8ptQfVAaObn05+H1mrHVQ4z1orgyatptT3mLyeXQlWlEsRRJXWmS43lu4jfn8CetiW
+ A+ILKmSz9rvBfjuRoHN1k+diufRPe1DiAd8LGAa2n5erhOCCU+zclo26V8sioCC1Pjhv6Do+6
+ a9OMv8Y22hJrnmmmnduUyngobqxAqNHk2kyMfWCq38lKmVCo3MlxHPk1Y9RYTdf1h9Fykm4xk
+ 2W30FJve1gomjQhkhQH6OpcROV6VuQ0q174eEpr9a3TR6R10SlNQ9bXD6k41N67FK8hg7AGm2
+ A4Ih/kzjUyoq9KiUmh6f4hpwYJBMqvvQYAskdjdaitysB0OJ5vap/J6VLj5n3lIK8H/3lNzpp
+ l95AXyNnBe1ng4+daLB2y7qBk0KD1XiEaRzWuEwoWnehQ=
 
-Hi Jiaxun,
+Hi Greg
 
-kernel test robot noticed the following build errors:
+Kernel does *NOT* boot here on x86_64 (Intel Rocket Lake: i5-11400) and
+Fedora 39
 
-[auto build test ERROR on 06f658aadff0e483ee4f807b0b46c9e5cba62bfa]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Jiaxun-Yang/ptrace-Introduce-exception_ip-arch-hook/20240201-234906
-base:   06f658aadff0e483ee4f807b0b46c9e5cba62bfa
-patch link:    https://lore.kernel.org/r/20240201-exception_ip-v1-3-aa26ab3ee0b5%40flygoat.com
-patch subject: [PATCH 3/3] mm/memory: Use exception ip to search exception tables
-config: arm64-randconfig-001-20240203 (https://download.01.org/0day-ci/archive/20240203/202402032112.NBimLx5h-lkp@intel.com/config)
-compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240203/202402032112.NBimLx5h-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402032112.NBimLx5h-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> mm/memory.c:5484:22: error: call to undeclared function 'exception_ip'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
-                   unsigned long ip = exception_ip(regs);
-                                      ^
-   mm/memory.c:5509:22: error: call to undeclared function 'exception_ip'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
-                   unsigned long ip = exception_ip(regs);
-                                      ^
-   2 errors generated.
+just after grub the box is dead; not pingable, etc ...
 
 
-vim +/exception_ip +5484 mm/memory.c
+Thanks
 
-  5477	
-  5478	static inline bool get_mmap_lock_carefully(struct mm_struct *mm, struct pt_regs *regs)
-  5479	{
-  5480		if (likely(mmap_read_trylock(mm)))
-  5481			return true;
-  5482	
-  5483		if (regs && !user_mode(regs)) {
-> 5484			unsigned long ip = exception_ip(regs);
-  5485			if (!search_exception_tables(ip))
-  5486				return false;
-  5487		}
-  5488	
-  5489		return !mmap_read_lock_killable(mm);
-  5490	}
-  5491	
+Tested-by: Ronald Warsow <rwarsow@gmx.de>
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
