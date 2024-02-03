@@ -1,351 +1,139 @@
-Return-Path: <linux-kernel+bounces-51325-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F22D8489D0
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 00:57:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A338C8489D3
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 01:00:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79B7F1C21B76
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 23:57:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44F451F2379F
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 00:00:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EA6A168D2;
-	Sat,  3 Feb 2024 23:57:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22EDF13FEA;
+	Sun,  4 Feb 2024 00:00:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="t7ZuaMSv";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Myjn0a1u";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZfC9gOZv";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jqTdkXVQ"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KLpjouOr"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0951A16419
-	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 23:57:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B5E612E68;
+	Sun,  4 Feb 2024 00:00:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707004634; cv=none; b=fOskZwLXoW6551EHelNoOq6BynauDk6CnE17ErZKSX12Dl391QM4/oDVNuuX+JixRNjkUf/nSfM+i+45tIRrL1st7ikK7rWC9gDxQAGyc97ernLXYYGZ/ppbQGGinrKcxYa02k26ugKvNjaTCHwlV/WFY6jDT/pzQ2Ym+IXCwQg=
+	t=1707004806; cv=none; b=qrF2GEOt2jH/CHWJhLh3+8p2fEnx8PPOCLfggh+Ul/784+ByoNa+Avt4zAsVDLAHYcP2DaOpMCiMdcWLzix86KUr4fX8R8C+EnIxcxpGXPwoJ0Op5hhoabJZToYat/6fqhyGW/GWE6LpzGXM4dG0w6MB1XXNmYOc5YYoO0EyFXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707004634; c=relaxed/simple;
-	bh=/PO0AAyQLDJocBhY2BbDcAJoZs8XM/QZztCKSCysz/Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Tom15SaxgpkPbHr6GhDa+3dH9Olodi04weXFyCk2HA1LRRTVlGuSsid5H/T2/cCtppzqEHofLTDv6V+T7PzrvMINWOFwbwV0o2YjDbG22CaWquMY3wEbB+BGPrMsaLhWKvbWm6yO0MP+P/wN/WeZJHEDtOomZgeEmtNRmBAIWCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=t7ZuaMSv; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Myjn0a1u; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZfC9gOZv; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jqTdkXVQ; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E61FA22205;
-	Sat,  3 Feb 2024 23:57:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707004630;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=a6HV+PD6XzbNbLh19dcoh18KnJp8QHEKHWvwQzTfqRE=;
-	b=t7ZuaMSvdsKm+kMr/kUzWztDj09iLWVu4a0/Wtmh9zSdzI5cucgi2GmqivpGKk6To9/0He
-	iWqv4aMIWAcUI2nzhHzWo1+pC3O9b8pGnYuXo0UvF3+dy4ypPyNMtFhe4bE1TfdCmUBbYW
-	e3xhpwhsS8Ifki2no41PTIYSPtaBoYc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707004630;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=a6HV+PD6XzbNbLh19dcoh18KnJp8QHEKHWvwQzTfqRE=;
-	b=Myjn0a1udXLlgMpHmynYcLj8ulmDLuEVwp7eRh9sdbzQPztkHEVI+k0c+80Jph3An9rghL
-	v6nd1zX+xf5W/kCQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707004629;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=a6HV+PD6XzbNbLh19dcoh18KnJp8QHEKHWvwQzTfqRE=;
-	b=ZfC9gOZvQFnuZRbympBoBVWyDxmIVNeBdamGqb2aRTbvkVIQP0gFJFzr34xr6H2L0FoOqs
-	ARdcCvyj65RLZ9DaFqw1Tthpyfm3yONJJojr5LOMwQTyQIr6ay7laao4k7NV7vPCuHqwzi
-	5KlmlEdQPPRiZodiW7vQ8BxgNeehuCs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707004629;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=a6HV+PD6XzbNbLh19dcoh18KnJp8QHEKHWvwQzTfqRE=;
-	b=jqTdkXVQJoBroLmkHx7xnBrRPcnEECPSdo6hRzGGVDn8DST70/fv3gsjWwMmAE/shKyOZq
-	Ks7WSUshnqVu9nCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B50F7137FD;
-	Sat,  3 Feb 2024 23:57:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id zvKFKtXSvmUxHgAAD6G6ig
-	(envelope-from <pvorel@suse.cz>); Sat, 03 Feb 2024 23:57:09 +0000
-Date: Sun, 4 Feb 2024 00:57:08 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Cc: ltp@lists.linux.it, linux-kernel@vger.kernel.org,
-	libc-alpha@sourceware.org, lwn@lwn.net,
-	automated-testing@lists.yoctoproject.org
-Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been released for
- JANUARY 2024
-Message-ID: <20240203235708.GA164636@pevik>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-References: <ZbjZxy4vbxoXUJ-i@yuki>
+	s=arc-20240116; t=1707004806; c=relaxed/simple;
+	bh=tXr9ky8UtsOuDWckvd7CoxzFLX0vkSg6Y4sSD3JcVrU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FyFWeLWuYJf5f7g7snLv68CjMv2DXStgpF8AgfQREqk9Y+CCQS1Tj/b805Haqc3NqmqDYW/iQCIA+uZYQ2ReTvabNIAKa3M2h6m+P4QoZay5HW97jCaprKBrbceKTsEzZs4VDiQKWqRqKBD+/30LfHx2/tiCAHV5Kp91i2fYeX4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KLpjouOr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC054C433F1;
+	Sun,  4 Feb 2024 00:00:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707004805;
+	bh=tXr9ky8UtsOuDWckvd7CoxzFLX0vkSg6Y4sSD3JcVrU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=KLpjouOrXumGOeC4QTLx7U1xOrLI6W3gNZ3NaeLsMfJuNDqjqoGMMUeJH0UgHqtoV
+	 8BSiDQ9gJOsaEcom/m8AJi0RAbVrS74b2UX10gr4KGo0tqfT9393tNqej7PNEo66iD
+	 BiT+I9JeR1iB6YH8yp+9SgIDUoT3CuRLfZy3xHjl2SjroKU1Hm4u5fS58By29tf6kQ
+	 b7U610n0mriM2JJAbWdTXj/TxLtiqyKZbJkQVIkOeyEyUOcMKA1X6sd9w4Ok/VDEqN
+	 EJUMNkhr7qa6ERzfWKwrS7EsosRhawQlIfADPXEhd/p+9/hU5M2wWSWXUh0JgvG189
+	 VlyjDib2+FhWw==
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5114c05806eso118931e87.1;
+        Sat, 03 Feb 2024 16:00:05 -0800 (PST)
+X-Gm-Message-State: AOJu0YwUv6Eb7yz5GCwcczpRnbbCeeWeYQ8G6vYeRQA/H4Ea/QEx4edR
+	4DTgvXSI/VqSkMeWCOE995xO02wNOACfotB8RlEwDhIuHmh6QKjiCWTz8ZJqkdDEBdfkaC8Hwp1
+	fOa1+4JZFwTvHy1GzCKDicWTmIvU=
+X-Google-Smtp-Source: AGHT+IHqiVN5Q4DhSFt8rmH6sT7k815HshkRQDhdl0bRdYRjEUXqkuORs07V3ctdN6n0kgvYbR0OT4sMi0OGvB7mJcA=
+X-Received: by 2002:a05:6512:2384:b0:511:3489:507b with SMTP id
+ c4-20020a056512238400b005113489507bmr5454053lfv.19.1707004804364; Sat, 03 Feb
+ 2024 16:00:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbjZxy4vbxoXUJ-i@yuki>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -3.50
-X-Spamd-Result: default: False [-3.50 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[pvorel@suse.cz];
-	 REPLYTO_EQ_FROM(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 RCPT_COUNT_FIVE(0.00)[6];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
-
-Hi all,
-
-> Good news everyone,
-
-> the Linux Test Project test suite stable release for *January 2024* has been
-> released.
-
-> Since the last release 315 patches by 34 authors were merged.
-
-> Patch review is what most of the projects struggle with and LTP is no
-> different. If you can spare some effort helping with the patch review is more
-> than welcomed.
-
-> NOTABLE CHANGES
-> ===============
-
-FYI, there is missing removal of runtest/connectors [1], which can break some
-tooling.
-
-Kind regards,
-Petr
-
-[1] https://github.com/linux-test-project/ltp/commit/9b642d89c0bcf5885b051c2d5768fa94b61d86cb
-
-> * New tests
->   - splice07, accept03, readahead01:
-
->     Tests that feeds the syscall all kinds of invalid file descriptors and
->     checks that the syscall fails properly.
-
->    - proc_sched_rt01 a regression test for:
-
->      c1fc6484e1fb ("sched/rt: sysctl_sched_rr_timeslice show default timeslice after reset")
->      079be8fc6309 ("sched/rt: Disallow writing invalid values to sched_rt_period_us")
-
->   - ksm07 a test for KSM smart-scan.
-
->   - pathconf02 negative testcases for pathconf()
-
->   - pipe15 A regresson test for:
-
->     46c4c9d1beb7 ("pipe: increase minimum default pipe size to 2 pages")
-
->   - nft02 A regression test for:
-
->      515ad530795c ("netfilter: nf_tables: do not ignore genmask when looking up chain by id") aka CVE-2023-31248
-
->   - sched_setscheduler04 a test for SCHED_RESET_ON_FORK
-
->   - setsockopt10 2c02d41d71f9 ("net/ulp: prevent ULP without clone op from entering the LISTEN status") aka CVE-2023-0461
-
->   - gettid02 A basic gettid02 test.
-
->   - splice06 A test that splicing from a /proc files works.
-
-> * Increased coverage
-
->    - ioctl02 cover more modern termios ioctls() as well.
-
->    - fanotify13 More test coverage for overlayfs.
-
->    - input* test now check UI_GET_NAME ioctl() too.
-
-> * Removed tests
-
->    - fork12 Which was a naive fork bomb test, we do have other tests
->             (setrlimit01.c, ...) that better cover this scenario.
-
->    - mongo test framework
-
->      Which was test reiser, ext2 and jfs unmaintained for a decade.
-
->    - simple_tracer.c Tracing test from 2009 that does not compile anymore.
-
->    - runtest/fsx-linux This is consolidation of runtest files, since these test
->                        duplicated in ltp-aiodio.part3.
-
->    - testscripts/autofs{1,4}.sh, testscripts/sysfs.sh,
->      testscripts/ltp-scsi_debug.sh, testscripts/ltpdmmapper.sh
-
->      These were unmaintained and unused scripts.
-
->    - scsi/* A testsuite with a custom kernel module for kernel 2.5 that didn't
->             compile cleanly for decades.
-
->    - load_stress_all_kernel_modules.sh Broken for quite some time.
-
-> * The LTP library now has a functions to iterate over different
->   file descriptors. That allows us to easily implement more comprehensive tests
->   that feed various syscalls all possible file descriptors and check that the
->   syscall fails properly with invalid combinations. Most notable use of this
->   library is the newly introduced splice07.c test.
-
-> * The minimal size of the device for a few filesystem tests was increased to
->   1GB because modern filesystems, most notably Btrfs does not work properly on
->   smaller devices.
-
-> * LTP now tests bcachefs if kernel support and bcache.mkfs is present
-
-> * 30 testcases were converted to the new test library
-
-> + The usual amount of fixes and cleanups
-
-> NOTABLE CHANGES IN NETWORK TESTS
-> ================================
-> brought to you by Petr Vorel
-
-> The performance tests in net.features can be now skipped by setting
-> LTP_NET_FEATURES_IGNORE_PERFORMANCE_FAILURE=1 which is useful when testing is
-> executed on VMs on a overloaded host or if we are running tests with a
-> background load.
-
-> KIRK (previously RUNLTP-NG)
-> ===========================
-
-> Kirk was updated to v1.2
-
-> This version brings the following updates:
-
->  - show both stdout and stderr when executing tests on host
->  - support for external commands on different SUTs
->  - warning message when SUT doesn't support parallel execution
->  - more stable epoll() communication with LTX
->  - minor fixes
->  - updated documentation
-
-> DOWNLOAD AND LINKS
-> ==================
-
-> The latest version of the test-suite contains 3000+ tests for the Linux
-> and can be downloaded at:
-
-> https://github.com/linux-test-project/ltp/releases/tag/20240129
-
-> The project pages as well as GIT repository are hosted on GitHub:
-
-> https://github.com/linux-test-project/ltp
-> http://linux-test-project.github.io/
-
-> If you ever wondered how to write a LTP testcase, don't miss our developer
-> documentation at:
-
-> https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
-
-> https://github.com/linux-test-project/ltp/wiki/C-Test-API
-
-> https://github.com/linux-test-project/ltp/wiki/C-Test-Network-API
-
-> https://github.com/linux-test-project/ltp/wiki/Shell-Test-API
-
-> https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial
-
-> https://github.com/linux-test-project/ltp/wiki/Build-System
-
-> Patches, new tests, bugs, comments or questions should go to to our mailing
-> list at ltp@lists.linux.it.
-
-> CREDITS
-> =======
-
-> Many thanks to the people contributing to this release:
-
-> git shortlog -s -e -n 20230929..
-
->    147  Petr Vorel <pvorel@suse.cz>
->     25  Yang Xu <xuyang2018.jy@fujitsu.com>
->     21  Andrea Cervesato <andrea.cervesato@suse.com>
->     18  Martin Doucha <mdoucha@suse.cz>
->     12  Cyril Hrubis <chrubis@suse.cz>
->     11  Marius Kittler <mkittler@suse.de>
->      8  Wei Gao <wegao@suse.com>
->      7  Amir Goldstein <amir73il@gmail.com>
->      7  Richard Palethorpe <rpalethorpe@suse.com>
->      6  Avinesh Kumar <akumar@suse.de>
->      6  Edward Liaw <edliaw@google.com>
->      6  Jan Kara <jack@suse.cz>
->      5  Jan Stancek <jstancek@redhat.com>
->      4  Hongchen Zhang <zhanghongchen@loongson.cn>
->      4  Kevin Brodsky <kevin.brodsky@arm.com>
->      4  Xiao Yang <yangx.jy@fujitsu.com>
->      3  Shiyang Ruan <ruansy.fnst@fujitsu.com>
->      2  Li Wang <liwang@redhat.com>
->      2  Li Zhijian <lizhijian@fujitsu.com>
->      2  Pengfei Xu <pengfei.xu@intel.com>
->      2  Stefan Roesch <shr@devkernel.io>
->      1  Alexander Kanavin <alex@linutronix.de>
->      1  Brennan Ashton <bashton@brennanashton.com>
->      1  Korobeynikov Gleb <mathkgd@mail.ru>
->      1  Marcos Paulo de Souza <mpdesouza@suse.com>
->      1  Mengchi Cheng <mengcc@amazon.com>
->      1  Murphy Zhou <jencce.kernel@gmail.com>
->      1  Shizhao Chen <shichen@redhat.com>
->      1  Shoukui Zhang <zhangshoukui@xiaomi.com>
->      1  Subramanya Swamy <subramanya.swamy.linux@gmail.com>
->      1  haopengxiang <haopengxiang@xiaomi.com>
->      1  nietingting <nietingting@xiaomi.com>
->      1  wangxuewen <wangxuewen@kylinos.cn>
->      1  ybonatakis <ybonatakis@suse.com>
-
-> And also thanks to patch reviewers:
-
-> git log 20230929.. | grep -Ei '(reviewed|acked)-by:' | sed 's/.*by: //' | sort | uniq -c | sort -n -r
-
->     111 Petr Vorel <pvorel@suse.cz>
->      70 Cyril Hrubis <chrubis@suse.cz>
->      47 Li Wang <liwang@redhat.com>
->      35 Richard Palethorpe <rpalethorpe@suse.com>
->      14 Martin Doucha <mdoucha@suse.cz>
->       8 Amir Goldstein <amir73il@gmail.com>
->       7 Xiao Yang <yangx.jy@fujitsu.com>
->       7 Marius Kittler <mkittler@suse.de>
->       6 Jan Kara <jack@suse.cz>
->       4 Avinesh Kumar <akumar@suse.de>
->       3 Andrea Cervesato <andrea.cervesato@suse.com>
->       3 Jan Stancek <jstancek@redhat.com>
->       2 Yang Xu <xuyang2018.jy@fujitsu.com>
->       1 Petr Vorel <petr.vorel@gmail.com>
->       1 Christian Brauner <brauner@kernel.org>
+References: <CAK7LNASGqfMkTuzP28qydpYCC0ct3cAgMpbPpmgHuQHZbtLhbA@mail.gmail.com>
+ <CAHk-=whJKZNZWsa-VNDKafS_VfY4a5dAjG-r8BZgWk_a-xSepw@mail.gmail.com>
+ <CAK7LNARzZ07TX2obHSpCgsC=FPTbLx5J+kPBFUECT+N7V42i5g@mail.gmail.com>
+ <CAHk-=wg+3J8L4C7dcsZZNPEr3CJ49wKtJC0taVDBwGo9ZGot+Q@mail.gmail.com> <CAK7LNAQwcm9XfYAgcxOmGp9tvzj8kNbq8VUX09ZKscG1KEgE0g@mail.gmail.com>
+In-Reply-To: <CAK7LNAQwcm9XfYAgcxOmGp9tvzj8kNbq8VUX09ZKscG1KEgE0g@mail.gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sun, 4 Feb 2024 08:59:27 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQTbNv1C6sU2Z-gAofKZS=vPiGdV=V3Kd0iYFpR2qF4QA@mail.gmail.com>
+Message-ID: <CAK7LNAQTbNv1C6sU2Z-gAofKZS=vPiGdV=V3Kd0iYFpR2qF4QA@mail.gmail.com>
+Subject: Re: [GIT PULL] Kbuild fixes for v6.8-rc3
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hello Linus,
+
+On Fri, Feb 2, 2024 at 11:15=E2=80=AFAM Masahiro Yamada <masahiroy@kernel.o=
+rg> wrote:
+>
+> Hello Linus,
+>
+>
+> On Fri, Feb 2, 2024 at 9:43=E2=80=AFAM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > On Thu, 1 Feb 2024 at 15:57, Masahiro Yamada <masahiroy@kernel.org> wro=
+te:
+> > >
+> > > Is this your expectation?
+> >
+> > Commit 82175d1f9430 touched *only* the nested 'if' indentations.
+> >
+> > Your attached changed other indentations too, which I am not sure
+> > makes any sense.
+> >
+> > But honestly, that whole make rule wrt whitespace makes no sense to
+> > begin with, and I don't know why the conditional statement is so
+> > special to begin with, and why GNU make would then suddenly start
+> > messing with an insane rule with bad historical reasons.
+>
+>
+> In my understanding, the GNU Make parser is confused with
+> shell's 'else' keyword.
+>
+> So, GNU Make determined that 'else' indented with a tab
+> is not the Make's conditional directive.
+>
+>
+> >
+> > End result: all of this just reinforces how bad the Make rules for
+> > whitespace is, but I would suggest doing the *minimal* changes to make
+> > it work.
+> >
+> > Which commit 82175d1f9430 did, but your attached patch then does not.
+> >
+> > IOW, if the whole crazy makefile whitespace change was only about
+> > conditionals, let's keep all the stupid whitespace fixups as purely
+> > about conditionals too.
+> >
+> >              Linus
+> >
+>
+>
+> I attached a new patch.
+> I only changed the lines touch by 82175d1f9430
+
+
+Is the second patch fine with you?
+
+If so, will you pick it up, or do you want me
+to include it in the next pull request?
+
+
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
