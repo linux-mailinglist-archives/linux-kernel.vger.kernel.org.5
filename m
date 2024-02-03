@@ -1,288 +1,166 @@
-Return-Path: <linux-kernel+bounces-51040-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51041-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A5C7848574
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 13:09:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0F58848579
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 13:18:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3958AB24FEC
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 12:09:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9617C1C21703
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 12:18:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE3E35D902;
-	Sat,  3 Feb 2024 12:08:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 663015D90E;
+	Sat,  3 Feb 2024 12:17:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I4dSvAv0"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b3jUk3jE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1E4C5D8F8
-	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 12:08:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0CEE4C7E
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 12:17:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706962138; cv=none; b=t1n4Yb4RUAJKA58vnIG8H05tJBN+xPrrx4KfBNikNbvnjLkzC4Wz4cl+Yod/XcQmbEXv+Nguifid1y+BA7Aj4/3sdcXPjiAPot4jWlbjAVT0U/64JDiQpdWcwJPubc+mWh1l51Wi/6a0DLxI+Fv0gM/rIJt17dQS1i/E/3gbQC0=
+	t=1706962676; cv=none; b=jgwfkNj8F0QW0smuFs8sc0ETJMccUesPi6XAuTg6lr4VMNTyyg9m2ctrpD+5ybdnKeBlkpaNyE78SINizG6A99jRbvFEr/apAZ49uu2mdtXpHaJXMpxKDezQ72R+pKfrq417xrnWp+DHUHhvdB9AMWBs6HjCO7+uayewEF6i6k4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706962138; c=relaxed/simple;
-	bh=xMNpAhAsEry1vcYLjIuuEbsTzKSSIZ/3xxEaeYNs79o=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=i5Uv6wvDcFNhva0k0IuAA1mVh13VRRnpBlusSJYxnzMTFD7+0etWUz3GDvtedoxzKVN17AIMYym2giuBk0wVsnUjnQHhTtD/JWSdgN51D15wk1NDyeBrN6SBCRulCdvQ/iZBuODWmCIdpSaKxRUULyc60Hc5whGZ5MT4V+WylNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I4dSvAv0; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706962137; x=1738498137;
-  h=date:from:to:cc:subject:message-id;
-  bh=xMNpAhAsEry1vcYLjIuuEbsTzKSSIZ/3xxEaeYNs79o=;
-  b=I4dSvAv0yaEbGB0tgYT3TI2WfvC+xfcdUSBPZm+vgxUEtgU+YeFsWD0H
-   iVBpaV07HCtpg6pLpzPR++lPvpffccc6BDxe8U63uuxSmeecg0ej6R8Pu
-   P23rRDjimzvjbWvdj8/MfZdGHjuxvZPXtjSKwuJhlWoQieQ1Vov+uTIyw
-   AdIqMoQqho+ezXjYK+GNZKgdhAto7Sns5QNu+ZWgk/sQd51PSAPS2690U
-   u4ZqAp7v8w4GzzWRbBdK7ZPkOMJY2l2e21eLqrgeppQiPmMqJXy+0lDG1
-   347mBVMsE64GcqqADKSLMdiBPbP9sem/gWzFOoiAMYBjKPmYWVYqS0CLA
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="220740"
-X-IronPort-AV: E=Sophos;i="6.05,240,1701158400"; 
-   d="scan'208";a="220740"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2024 04:08:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,240,1701158400"; 
-   d="scan'208";a="4933851"
-Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
-  by fmviesa004.fm.intel.com with ESMTP; 03 Feb 2024 04:08:55 -0800
-Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rWEpI-00050m-2x;
-	Sat, 03 Feb 2024 12:08:52 +0000
-Date: Sat, 03 Feb 2024 20:08:50 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/fred] BUILD SUCCESS
- e13841907b8fda0ae0ce1ec03684665f578416a8
-Message-ID: <202402032048.pBxeHzOb-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1706962676; c=relaxed/simple;
+	bh=vy+gCofdcx6ll8+v76H/qPs2ENfC5pAt7yrvH4goBis=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=TEzpRB6+0o2+v10iowuhxq8ZpphhA5Yoi/wFQUfUeCyTopwYcOQXwsujTCHiTbNsBbeege0gRrwFbMcXjeldtIgnu6mn0W5kGuXgBSCQrFlciy+J90mqZj4HHxBO6AOESQbVqfLphHThUOa3CHfYJt14b2BcLsQsH7jCaJ3/LNM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b3jUk3jE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FE8FC433F1;
+	Sat,  3 Feb 2024 12:17:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706962676;
+	bh=vy+gCofdcx6ll8+v76H/qPs2ENfC5pAt7yrvH4goBis=;
+	h=From:Date:Subject:To:Cc:From;
+	b=b3jUk3jED00JB4d5ZmPLNOyP7PzXe0rsAAE5eTu1E1dcIA8DWQEKfaAzIrpcaYIIE
+	 Tzcg2CQv+SsSHq4iUWMvkbFe/boWL9GKTvOc0oWzq66kpntoQRo+XPHxUptLuWJgXN
+	 b/JLuDbLJIDSddt+pUY0qgm74Kz7c/A0H3a4F0FQtQM22d17UtNBLPd1EWk0c/3hU3
+	 EUqABCSUNtJTw9E1dniPW1FH1/bAx6ywPv1xn4wcgtqJAenCY46kjcwvoFS5Sa4JjQ
+	 PBDNdMkYKYz7F2ByG7ppCfBNXvTMnJwGavjKZLOb9UhnjXjInBr7TCsvHDaQwIJgwX
+	 Aeq8kS21P7EyA==
+From: Mark Brown <broonie@kernel.org>
+Date: Sat, 03 Feb 2024 12:16:49 +0000
+Subject: [PATCH] arm64/sve: Lower the maximum allocation for the SVE ptrace
+ regset
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240203-arm64-sve-ptrace-regset-size-v1-1-2c3ba1386b9e@kernel.org>
+X-B4-Tracking: v=1; b=H4sIALAuvmUC/x3MQQqEMAxG4atI1hNoi4j1KsMsqv5qFjqSiIji3
+ S1uHnybd5FBBUZNcZFiF5P/kuE/BXVTWkaw9NkUXChdDiedq5JtB6+bpg6sGA0bm5zg4FsXQx2
+ rCE95sSoGOd7993ffDz8dWJRuAAAA
+To: Will Deacon <will@kernel.org>, 
+ Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dave Martin <Dave.Martin@arm.com>, Oleg Nesterov <oleg@redhat.com>, 
+ Al Viro <viro@zeniv.linux.org.uk>, linux-arm-kernel@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, Doug Anderson <dianders@chromium.org>, 
+ Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-a684c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3817; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=vy+gCofdcx6ll8+v76H/qPs2ENfC5pAt7yrvH4goBis=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlvi7oIzODfqoTowIcCe0ki5UVSh/liF1VN7Wy4MNj
+ T8lOzlGJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZb4u6AAKCRAk1otyXVSH0BnmB/
+ oCvkdlZlBANeWVDPRv1h2mmoJStN4LjG3Hm7mUn095rc5PRLvvFqaOpOvHst2WtJ3CaFypw2a1hE2G
+ 0k2PKlQJJqdzA/0wJPun5esVVS11Sy5lIy36KWMiUWVNh1uAJdAuSX30seGw2J3jAzlDCBJ2WmMYkV
+ Q8bzdocPTcVjWvhZXk5Nad4lxh47ERNJbaZKW/T2RlYZxaaxXGNqezOlHo+7EkjGvPB9wI86Z4EUX8
+ Q/VNbxDkOWYu9YeE0ffzoCnYxL8xivKvwNDoGA4IxFFXVi3/maO35o6DeI1Qu1IS01viFoI4f4eCca
+ lQ5ZLbHUqWG5+jdHLabKFzLMMkun9X
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/fred
-branch HEAD: e13841907b8fda0ae0ce1ec03684665f578416a8  MAINTAINERS: Add a maintainer entry for FRED
+Doug Anderson observed that ChromeOS crashes are being reported which
+include failing allocations of order 7 during core dumps due to ptrace
+allocating storage for regsets:
 
-elapsed time: 1451m
+  chrome: page allocation failure: order:7,
+          mode:0x40dc0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO),
+          nodemask=(null),cpuset=urgent,mems_allowed=0
+   ...
+  regset_get_alloc+0x1c/0x28
+  elf_core_dump+0x3d8/0xd8c
+  do_coredump+0xeb8/0x1378
 
-configs tested: 200
-configs skipped: 3
+with further investigation showing that this is:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+   [   66.957385] DOUG: Allocating 279584 bytes
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240202   gcc  
-arc                   randconfig-001-20240203   gcc  
-arc                   randconfig-002-20240202   gcc  
-arc                   randconfig-002-20240203   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                     davinci_all_defconfig   clang
-arm                                 defconfig   clang
-arm                           h3600_defconfig   gcc  
-arm                   randconfig-001-20240202   gcc  
-arm                   randconfig-002-20240202   gcc  
-arm                   randconfig-003-20240202   gcc  
-arm                   randconfig-003-20240203   gcc  
-arm                   randconfig-004-20240202   clang
-arm                         socfpga_defconfig   gcc  
-arm                           u8500_defconfig   gcc  
-arm                       versatile_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240202   gcc  
-arm64                 randconfig-002-20240202   clang
-arm64                 randconfig-003-20240202   gcc  
-arm64                 randconfig-003-20240203   gcc  
-arm64                 randconfig-004-20240202   gcc  
-arm64                 randconfig-004-20240203   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240202   gcc  
-csky                  randconfig-001-20240203   gcc  
-csky                  randconfig-002-20240202   gcc  
-csky                  randconfig-002-20240203   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240202   clang
-hexagon               randconfig-002-20240202   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240203   clang
-i386         buildonly-randconfig-002-20240203   gcc  
-i386         buildonly-randconfig-003-20240203   clang
-i386         buildonly-randconfig-004-20240203   clang
-i386         buildonly-randconfig-005-20240203   clang
-i386         buildonly-randconfig-006-20240203   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240203   clang
-i386                  randconfig-002-20240203   gcc  
-i386                  randconfig-003-20240203   clang
-i386                  randconfig-004-20240203   gcc  
-i386                  randconfig-005-20240203   clang
-i386                  randconfig-006-20240203   gcc  
-i386                  randconfig-011-20240203   clang
-i386                  randconfig-012-20240203   gcc  
-i386                  randconfig-013-20240203   gcc  
-i386                  randconfig-014-20240203   gcc  
-i386                  randconfig-015-20240203   gcc  
-i386                  randconfig-016-20240203   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch                 loongson3_defconfig   gcc  
-loongarch             randconfig-001-20240202   gcc  
-loongarch             randconfig-001-20240203   gcc  
-loongarch             randconfig-002-20240202   gcc  
-loongarch             randconfig-002-20240203   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                         apollo_defconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                          sun3x_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-microblaze                      mmu_defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                     loongson2k_defconfig   gcc  
-mips                          rm200_defconfig   gcc  
-nios2                            alldefconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240202   gcc  
-nios2                 randconfig-001-20240203   gcc  
-nios2                 randconfig-002-20240202   gcc  
-nios2                 randconfig-002-20240203   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-openrisc                       virt_defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240202   gcc  
-parisc                randconfig-001-20240203   gcc  
-parisc                randconfig-002-20240202   gcc  
-parisc                randconfig-002-20240203   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                       ebony_defconfig   clang
-powerpc                          g5_defconfig   gcc  
-powerpc               mpc834x_itxgp_defconfig   clang
-powerpc                    mvme5100_defconfig   gcc  
-powerpc               randconfig-001-20240202   clang
-powerpc               randconfig-002-20240202   clang
-powerpc               randconfig-003-20240202   clang
-powerpc                  storcenter_defconfig   gcc  
-powerpc64             randconfig-001-20240202   clang
-powerpc64             randconfig-002-20240202   gcc  
-powerpc64             randconfig-002-20240203   gcc  
-powerpc64             randconfig-003-20240202   clang
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240202   gcc  
-riscv                 randconfig-002-20240202   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                          debug_defconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240202   clang
-s390                  randconfig-001-20240203   gcc  
-s390                  randconfig-002-20240202   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                             espt_defconfig   gcc  
-sh                          landisk_defconfig   gcc  
-sh                    randconfig-001-20240202   gcc  
-sh                    randconfig-001-20240203   gcc  
-sh                    randconfig-002-20240202   gcc  
-sh                    randconfig-002-20240203   gcc  
-sh                          rsk7203_defconfig   gcc  
-sh                           se7206_defconfig   gcc  
-sh                        sh7785lcr_defconfig   gcc  
-sh                              ul2_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240202   gcc  
-sparc64               randconfig-001-20240203   gcc  
-sparc64               randconfig-002-20240202   gcc  
-sparc64               randconfig-002-20240203   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                    randconfig-001-20240202   clang
-um                    randconfig-002-20240202   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-003-20240203   clang
-x86_64                randconfig-013-20240203   clang
-x86_64                randconfig-014-20240203   clang
-x86_64                randconfig-015-20240203   clang
-x86_64                randconfig-016-20240203   clang
-x86_64                randconfig-071-20240203   clang
-x86_64                randconfig-073-20240203   clang
-x86_64                randconfig-074-20240203   clang
-x86_64                randconfig-075-20240203   clang
-x86_64                randconfig-076-20240203   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                randconfig-001-20240202   gcc  
-xtensa                randconfig-001-20240203   gcc  
-xtensa                randconfig-002-20240202   gcc  
-xtensa                randconfig-002-20240203   gcc  
+which is the maximum size of the SVE regset. As Doug observes it is not
+entirely surprising that such a large allocation of contiguous memory might
+fail on a long running system.
 
+The SVE regset is currently sized to hold SVE registers with a VQ of
+SVE_VQ_MAX which is 512, substantially more than the architectural maximum
+of 16 which we might see even in a system emulating the limits of the
+architecture. Since we don't expose the size we tell the regset core
+externally let's define ARCH_SVE_VQ_MAX with the actual architectural
+maximum and use that for the regset, we'll still overallocate most of the
+time but much less so which will be helpful even if the core is fixed to
+not require contiguous allocations.
+
+We could also teach the ptrace core about runtime discoverable regset sizes
+but that would be a more invasive change and this is being observed in
+practical systems.
+
+Reported-by: Doug Anderson <dianders@chromium.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+We should probably also use the actual architectural limit for the
+bitmasks we use in the VL enumeration code, though that's both a little
+bit more involved and less immediately a problem.
+---
+ arch/arm64/include/asm/fpsimd.h | 10 +++++-----
+ arch/arm64/kernel/ptrace.c      |  3 ++-
+ 2 files changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/arch/arm64/include/asm/fpsimd.h b/arch/arm64/include/asm/fpsimd.h
+index 50e5f25d3024..cf5f31181bc8 100644
+--- a/arch/arm64/include/asm/fpsimd.h
++++ b/arch/arm64/include/asm/fpsimd.h
+@@ -62,12 +62,12 @@ static inline void cpacr_restore(unsigned long cpacr)
+  * When we defined the maximum SVE vector length we defined the ABI so
+  * that the maximum vector length included all the reserved for future
+  * expansion bits in ZCR rather than those just currently defined by
+- * the architecture. While SME follows a similar pattern the fact that
+- * it includes a square matrix means that any allocations that attempt
+- * to cover the maximum potential vector length (such as happen with
+- * the regset used for ptrace) end up being extremely large. Define
+- * the much lower actual limit for use in such situations.
++ * the architecture.  Using this length to allocate worst size buffers
++ * results in excessively large allocations, and this effect is even
++ * more pronounced for SME due to ZA.  Define more suitable VLs for
++ * these situations.
+  */
++#define ARCH_SVE_VQ_MAX 16
+ #define SME_VQ_MAX	16
+ 
+ struct task_struct;
+diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
+index dc6cf0e37194..e3bef38fc2e2 100644
+--- a/arch/arm64/kernel/ptrace.c
++++ b/arch/arm64/kernel/ptrace.c
+@@ -1500,7 +1500,8 @@ static const struct user_regset aarch64_regsets[] = {
+ #ifdef CONFIG_ARM64_SVE
+ 	[REGSET_SVE] = { /* Scalable Vector Extension */
+ 		.core_note_type = NT_ARM_SVE,
+-		.n = DIV_ROUND_UP(SVE_PT_SIZE(SVE_VQ_MAX, SVE_PT_REGS_SVE),
++		.n = DIV_ROUND_UP(SVE_PT_SIZE(ARCH_SVE_VQ_MAX,
++					      SVE_PT_REGS_SVE),
+ 				  SVE_VQ_BYTES),
+ 		.size = SVE_VQ_BYTES,
+ 		.align = SVE_VQ_BYTES,
+
+---
+base-commit: 41bccc98fb7931d63d03f326a746ac4d429c1dd3
+change-id: 20240202-arm64-sve-ptrace-regset-size-21b0928969e1
+
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Mark Brown <broonie@kernel.org>
+
 
