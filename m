@@ -1,75 +1,76 @@
-Return-Path: <linux-kernel+bounces-51128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51129-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 116C28486DE
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 15:57:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 099E68486E0
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 15:58:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91C951F234E0
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 14:57:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73D221F23464
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 14:58:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7701C5EE93;
-	Sat,  3 Feb 2024 14:57:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5E9B5EE9C;
+	Sat,  3 Feb 2024 14:57:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="L3XrIXfz"
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="AdAOTaOQ"
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ED1A5EE86;
-	Sat,  3 Feb 2024 14:57:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6080F5EE91;
+	Sat,  3 Feb 2024 14:57:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706972265; cv=none; b=f6PxMaDbILX6xbT7b5Bg0m5V4yeIm0kV2dIv+RxJcL5LxN1Y7SlMxHVi1CibAjFV7jG39bJCYLmo8qlWK6wAB+8G4xvYNJhOlBjJpfxFd+amT0IC7JoWE7TXaZyMtllOZuzSpw5pBUY1pt09tqfYzWbZe0nnNLKE74ScigBJdxk=
+	t=1706972268; cv=none; b=mCocpUGb7AsRWMy7TXN2I0MWn1dVMbOQEHlQAvPdk0+K0MayGjo322wbzHGHGf9xFBOC5Mtr6PYKG6om1JPWf/pcP38DlOVbNK3yC6mWiFIIWn05tQAL79kAu9Umu0pkJbth2CtUVFP3WXInkqlYfVhrI8UjdKNddI9ffG/UKWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706972265; c=relaxed/simple;
-	bh=5opwMHyS6hOmD9rUQ+qyqnc/soQP+69EJIln7q3aCi4=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=hlOOlED25k1BeQkoZDb7NfAHZyCGrlAvae8EkwwyyRxt7A96KbpESU9Th7FzbOfWVSvunzatEkREKybLtYH5ThXg5BGWhKHRIEhF4DO4HfqSIFvoOSDm4qLBbQzkRhHlYXafQ6WIYDW0Sop7iraZq6z0H5/Ef0lBNfcLRlMJBbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=fail (0-bit key) header.d=marliere.net header.i=@marliere.net header.b=L3XrIXfz reason="key not found in DNS"; arc=none smtp.client-ip=209.85.215.170
+	s=arc-20240116; t=1706972268; c=relaxed/simple;
+	bh=JL4nOZ57/NU8eLT7e2PNLAaEMoD5QGMoIz35/Kel4Cs=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=k5BUKTpbb3dDpHYfYzgaQvSJ9Y8/qaUMZxRxsJtQKuHmPu1qbpT+hdrm5qC+Dme+YToi7v6sDQojMORMqrVZSzeW9++y2brTAEucnGFjrGBDpJvLPnkn20EtrkwvDmumW7wCwq+CkZ2Lv3/XIcESP+OF7wzE4GDMbcCRusejB7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=fail (0-bit key) header.d=marliere.net header.i=@marliere.net header.b=AdAOTaOQ reason="key not found in DNS"; arc=none smtp.client-ip=209.85.215.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso2500443a12.3;
-        Sat, 03 Feb 2024 06:57:43 -0800 (PST)
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5dc11fdddd6so46254a12.1;
+        Sat, 03 Feb 2024 06:57:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706972263; x=1707577063;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:dkim-signature:from:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=YLak5sdyR6WjpREo34u8ut+AGeqi3y7JCPvVOvVF2Lc=;
-        b=Ek9vUDXKwAq5+9rU0Q9IuFWHVOBMPYwb7XMPZo07hDEvNCJWfCZc0VNh2iBhMejCQD
-         zPFMI0noRqwsx7ZZu9i+WWJME1uoDCNrHkU9CVc+tJYz7pzbAE3MwpiH//HDfwCyzG5H
-         cl8dlFIHXP1q9nG3qjGaG9WgDHKeuidVPquhTTozrWdDvOmE5U1S0Wi60x/QRP6I72LR
-         3S5Qe8grK/m+U5jI/9/mWjmQR1AwgRzRcS6rqXOXh+46k6hMWKOEEPENobUjdEF6amJX
-         yciIdiYGxRaVAKo53mH/XkbeK4m7XMb/+DXHPop4Vizf/qJgQdko6JlA3uA590owjtPj
-         3iEQ==
-X-Gm-Message-State: AOJu0YwL+FnNJFeGF7Kdd7K8tLyDcjc7/ws7aFxH//JP9OmDsmLpbQPk
-	85iXhcZcDcFEO41G4U2eV/mmHysfkIgpJVrSDPuDjeIpB+BRHbHs
-X-Google-Smtp-Source: AGHT+IHvNgCU2nsiSRZCKyVZZltAuAbhkuaFUHl/XrcvHgFT/GWlpCR0UEB0ZY8slpmMsZgEU2+qWQ==
-X-Received: by 2002:a05:6a20:bf16:b0:19c:ac6b:74af with SMTP id gc22-20020a056a20bf1600b0019cac6b74afmr7895696pzb.58.1706972262730;
-        Sat, 03 Feb 2024 06:57:42 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVZdA+1qNc9vVRKPZfCTZ73gS7zi51pGGom39qiHSs8FRnipPGIU+I5xhSS+4Szn4NOuJRuxu6mKoO3V3pkxCNoOAQX5hrPMnOAOYxBk3L0cVYnD0B0fTVpCEN0YpKXYdE643eD+fonxcUyOf7OgmlcbVjGKEYIJsrEx2oUAjp+QK/UZawn4NNd03mqCt3tU0oAj90IgsnBY9RZOF6cZq4a1yAGvXnGnPK2QwicsF8fQp7MZPLxBdkaNKecp0EtiXdOhgM/iniAGQeh+hp/xp1jRABr9ZKw+EQ7uh159CBo3H5YEZmgYj3E9P7ReeBp/Gzky96mc+RYflUzexacEyUnHEfjq3umn/yozACm6IhV0UIvwg5nZH9yrafC+YO4cJL+W2z+cZxU5iQloD+65CGcpC3Vs3t70Gqc1CyrBF562BJfWfLlgIk=
+        d=1e100.net; s=20230601; t=1706972265; x=1707577065;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:dkim-signature:from:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bDTqKC9fCb9FawpzFfnVp+z6Vq35bRpsuqTV29F0WVU=;
+        b=EjF8pghCpxs9PPh3Gt4Vkc0qxwfKNz0A4VaKBenFGJf+yjvfTeRfVYhlpWbWQNrENy
+         70Z8MsNz+uG9mBSfsY035ymFxdJqnhHkVwDwOp6tnaMxiVX0f8xn56c0REVwZNQSe6jZ
+         sYoUBJJeLsl3Vx1I0ywEGsdbkA3lMv7iYbjvZ9sUgoqmLSA5NSTH9+8aMikQgtjF9RL/
+         Ahi7Q/+8tYHteT9sfppQWyXEvYGhYUFPjPu2cQyvRmgDYfx+uji5YCDEx25vKibvfQDJ
+         C26n1sbwiILFSz5Kl1I0cKzP3LSyLggOOWYBsjZYSrLtkSErxJO3Um6LrWTLrPf8SnRH
+         nDlQ==
+X-Gm-Message-State: AOJu0YyTSnc+n25+RwD+eWcUKYfLXojqsV5ZXo4GY+y8eOchzHegArv1
+	s9SPB1hUW8eJex67xb3AuxboAuN+pGD4pcd9JtFkMkTOMNVG6ZHGCttIqpSdJS70Eg==
+X-Google-Smtp-Source: AGHT+IH9lLkfRr+nbZ5zdzPNi4R9ASln6Den8GChn8JNiK++cCzON2nBqEOzlm97wev1Fdeg44GeoA==
+X-Received: by 2002:a05:6a20:6f8b:b0:19c:99f1:bd5 with SMTP id gv11-20020a056a206f8b00b0019c99f10bd5mr9852995pzb.11.1706972265591;
+        Sat, 03 Feb 2024 06:57:45 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUXPT2GpJ3aTruQUHfakASBgmXdcqkJqUkxLjJE0uV7HsW6l5Bt05pk4f48BNBpwGTcQS/8cQ9mP8SglFFBcq8xSYh6d4PE9yPzx+gkLXCYU7T9+uRxbv7GCqgN2mWNgxR/CqAutVjuPkklJA7erJKG4rgZ6Xgl8zQZgkQwL5mvPKGJW+VyNJjWvTGfX8EGTIun9xYZp7PkBl5FuZdq9w4j5LZ1ZIelBCwAHrlaciF/WC4AcQWSbnP7zQCPv3Fkd/bVwiEOeHC7c680cEHz/7HGToaP8GcbF4buLn8xgImj9eL8hg0jHW0JQe40N8u6y1i1NgQwRSepOcFrgdY4t6objRcvcUaW6tO2I4RX9UZqccGzJK/td1flHSDqQnfskOLFsDCYzFBaLUtzFpZ7E3IY35rNReGqIXQ0COXDc+O0msC1EinZpcw=
 Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id le10-20020a056a004fca00b006e02f222c2esm860091pfb.30.2024.02.03.06.57.41
+        by smtp.gmail.com with ESMTPSA id t13-20020a63224d000000b005db76738ae2sm3682060pgm.58.2024.02.03.06.57.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Feb 2024 06:57:42 -0800 (PST)
+        Sat, 03 Feb 2024 06:57:45 -0800 (PST)
 From: "Ricardo B. Marliere" <ricardo@marliere.net>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2023; t=1706972260;
+	s=2023; t=1706972264;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=YLak5sdyR6WjpREo34u8ut+AGeqi3y7JCPvVOvVF2Lc=;
-	b=L3XrIXfzYU50vyoBiFTJxVGzJ9R1XP9313I7P3YwMAeYkLpSVs0FwLjwlPfYEu2hfRFoP9
-	bOlhO+ejzk0XNXnin1U9RJAGyOpJYwG4e01FqMO2g+oZZdzaDAZIefFbjVcyS5LZgGa0ud
-	qrKzqv6gDdvU4asayTVjznN9CPuSwkgF94xPaRwQYl3OBJbR7n2NhsIz5SMLet0w774HyK
-	19ehNOoaRObMM5GKovumMNC5Ch9qnzYEvQYdRPLNkQdbIXmuAxvwFdZdhx3Ps0gPOt9F9H
-	s6I3qZwqNNGGN8P811tsCtTmqZabx/Ti5T/0LjASw67hf5lMICrV1MTuUrwivw==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bDTqKC9fCb9FawpzFfnVp+z6Vq35bRpsuqTV29F0WVU=;
+	b=AdAOTaOQ/VUTEABaEK+GbMf1oKUhALAK5R67sliLowPu335d6vRfoKZzGV0hp4IZFsTu2C
+	/SE8k6Azh8vHrMjuNAaGRimIH0wPLLLfXq+6NtN73QDhpOsqOLN9u+G9SLFUjz4CgkSfPu
+	5XUjNC8q0GYOQGPUrcKyd04BspeOV4m9U9LRHwD09Ox3/xik4x1Ve+0ZrstXHdbAl3BSnY
+	MmG+pBKMfoGB0HPNAIedFVJwEuP4sPC2IsOeVmbbaFzP/w+t4xWR0gTzD5wJwzHnkyzaKT
+	vs5uVZ4xv5T8KljBG/xVMu2KbeZiHED0je3l7jy+3irYyoJMxVwXAI0f+ekURQ==
 Authentication-Results: ORIGINATING;
 	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Subject: [PATCH 0/6] s390: struct bus_type cleanup
-Date: Sat, 03 Feb 2024 11:57:57 -0300
-Message-Id: <20240203-bus_cleanup-s390-v1-0-ac891afc7282@marliere.net>
+Date: Sat, 03 Feb 2024 11:57:58 -0300
+Subject: [PATCH 1/6] s390: ccwgroup: make ccwgroup_bus_type const
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,9 +79,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAHVUvmUC/x3M0QpAQBBA0V/RPNsasxJ+RZJlMKWlnVZK/t3m8
- Tzc+4ByEFZoswcCX6Jy+IQiz2DaRr+ykTkZCKlEQmtc1GHaefTxNGobNDVhRc5ZcrRAys7Ai9z
- /suvf9wOZYfNNYgAAAA==
+Message-Id: <20240203-bus_cleanup-s390-v1-1-ac891afc7282@marliere.net>
+References: <20240203-bus_cleanup-s390-v1-0-ac891afc7282@marliere.net>
+In-Reply-To: <20240203-bus_cleanup-s390-v1-0-ac891afc7282@marliere.net>
 To: Vineeth Vijayan <vneethv@linux.ibm.com>, 
  Peter Oberparleiter <oberpar@linux.ibm.com>, 
  Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
@@ -93,56 +94,58 @@ To: Vineeth Vijayan <vneethv@linux.ibm.com>,
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
  linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org, 
  "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1352; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=5opwMHyS6hOmD9rUQ+qyqnc/soQP+69EJIln7q3aCi4=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlvlR/ek689TQpKgLRXuRnW5rbn5JS1lUyJ6CO1
- 6NrPm9hBOuJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZb5UfwAKCRDJC4p8Y4ZY
- pnXrD/0XE+FYw49QWpXkzCP5YJ+rX96ET8dXHbtMfzy1dGSO0F1gbKtyedBeAVdeOU95ERkdutk
- tmrxBpHfI+VvSD5BZfQpqHXtze6lyuR2w3b9k0HZ1Xx3lPMyByPU1RUKAK8W817NMb4V3DhWoSF
- UXLdLQLxP2XcnpptplnDLwXKROuanutiAVRBFF2EKyy7vx6fnndqEv7hX85+h9M9QunpZpA2g4R
- a/jtrGVnzUUW5XxWCGKSJSIatnnbWzqXy5Rqf6SwVkz4IYGMVDog/f+VovbMju4YiaDnPRz9mXo
- oIY2M0F2jEyqKZ/XG+9034c0Ie6JW8D3PITGyS0OuEEaBtg+ssn1pgxHTVn96EPVVKtQjzkL2w/
- Oh10uuzSALb0XMjKwFNpFeXiOu5QgohbjA7+DxSn65cJmgpDZW1EYijQ6vjrgC98hHOPgEJjcJC
- GvEMcVRpxMrZzmXr2Vqzny2tDZ5QMZDcKiOvyLRZFm3GkvFSHNW5zWe08wQOktBFHjT4VCivflS
- WMPGqMTJE+i2bEgoKbR3y5cha90gV7F4C5YE8AFkK/Rhd1ifq7L75tm8GGyOXrK7syrsgPF0IU3
- uRwNCFErZJfN5rx4fCXt4ctLRQxgon7pziLtigN0moFEjxKUhgTYS5EDjFLZ+b620CWdmBadTb7
- 3B6S41BKO07zOKQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1232; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=JL4nOZ57/NU8eLT7e2PNLAaEMoD5QGMoIz35/Kel4Cs=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlvlSALUZj1dUJ/U7DlzBSnic0Byl1/v0CeSSLt
+ 2TtkwrKU5+JAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZb5UgAAKCRDJC4p8Y4ZY
+ pvPTD/9jAn4l+iEjJU7+E9FTRXREGxex5MvlnsPkK4VddF4VppbICbqEpIBzoz8Ui0YkDb9CkOp
+ IIycLcih95t52XwtYSVVWstdO3MxY+yT79o8jB2yaH2JVB/UAm2XADYLlOJ+G6YLFvBTqjqGi05
+ o/pPwd8F5Ycfc+ZfE44F/X9pqY5tJUoSjo9h49G0tJsaVYswsd6q2LCoNLroqrUR8OxICC+ULMG
+ rLI774LglxTvOywaJjGQ8sjBnFqitbzXb8KXQwKe7D/qBpRvt2myiBU1MDmzIw1o6Vtg1AmoUV9
+ Zv24KRFNwymrcYv4/W85bKx+7uZxYSLoROJK5NnPhMh6lFXoG2wg/Mf9wWvdv95sB8Yk7pk3ASF
+ gP5J7xL6FiF54GEdE+Kz70sLwuKKK2mhZDBxL0aEkPB1qUjjpBt9gQwSF1zMf+0aj63soFN5Br0
+ 8I5q1T5WrzdY0QtIXH9S+CyTyMqZXxA+NrKUVB3QS9uOlNN9spHqHYoYIzbAhFqhMxqYRgyZhl+
+ MKp85VfG3OkvJX2KvtB203SGwnzm1hISzgdstY2WVQLifL2Z0z5MDETMXCnlY5T31dI2fapCoGI
+ +4rSHZ+f/QlgnhZZM5XsmVnYsju8f06zVe9xaYszH1QbD53d+NNfX+Mo65O05TIs87a6FCkLtfh
+ IOTP+8MYsvy23Xg==
 X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
  fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-This series is part of an effort to cleanup the users of the driver
-core, as can be seen in many recent patches authored by Greg across the
-tree (e.g. [1]). Specifically, this series is part of the task of
-splitting one of his TODOs [2].
+Now that the driver core can properly handle constant struct bus_type,
+move the ccwgroup_bus_type variable to be a constant structure as well,
+placing it into read-only memory which can not be modified at runtime.
 
----
-[1]: https://lore.kernel.org/lkml/?q=f%3Agregkh%40linuxfoundation.org+s%3A%22make%22+and+s%3A%22const%22
-[2]: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/commit/?h=bus_cleanup&id=26105f537f0c60eacfeb430abd2e05d7ddcdd8aa
-
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-
 ---
-Ricardo B. Marliere (6):
-      s390: ccwgroup: make ccwgroup_bus_type const
-      s390: cio: make css_bus_type const
-      s390: cio: make ccw_bus_type const
-      s390: cio: make scm_bus_type const
-      s390: AP: make ap_bus_type const
-      s390: vfio-ap: make matrix_bus const
+ drivers/s390/cio/ccwgroup.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- drivers/s390/cio/ccwgroup.c       | 4 ++--
- drivers/s390/cio/css.c            | 4 ++--
- drivers/s390/cio/device.c         | 4 ++--
- drivers/s390/cio/scm.c            | 2 +-
- drivers/s390/crypto/ap_bus.c      | 4 ++--
- drivers/s390/crypto/vfio_ap_drv.c | 2 +-
- 6 files changed, 10 insertions(+), 10 deletions(-)
----
-base-commit: 8eb3db95a8c8ecd6f8bb082a99ded3bbc79b023f
-change-id: 20240203-bus_cleanup-s390-82062bb32b2f
+diff --git a/drivers/s390/cio/ccwgroup.c b/drivers/s390/cio/ccwgroup.c
+index aa3292e57e38..6eb8bcd948dc 100644
+--- a/drivers/s390/cio/ccwgroup.c
++++ b/drivers/s390/cio/ccwgroup.c
+@@ -31,7 +31,7 @@
+  * to devices that use multiple subchannels.
+  */
+ 
+-static struct bus_type ccwgroup_bus_type;
++static const struct bus_type ccwgroup_bus_type;
+ 
+ static void __ccwgroup_remove_symlinks(struct ccwgroup_device *gdev)
+ {
+@@ -465,7 +465,7 @@ static void ccwgroup_shutdown(struct device *dev)
+ 		gdrv->shutdown(gdev);
+ }
+ 
+-static struct bus_type ccwgroup_bus_type = {
++static const struct bus_type ccwgroup_bus_type = {
+ 	.name   = "ccwgroup",
+ 	.dev_groups = ccwgroup_dev_groups,
+ 	.remove = ccwgroup_remove,
 
-Best regards,
 -- 
-Ricardo B. Marliere <ricardo@marliere.net>
+2.43.0
 
 
