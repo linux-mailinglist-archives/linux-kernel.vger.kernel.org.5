@@ -1,158 +1,142 @@
-Return-Path: <linux-kernel+bounces-51147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BCE8848717
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 16:25:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 017B384871C
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 16:28:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DA871C20F3A
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 15:25:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7EFA91F22789
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 15:28:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FCDE5F546;
-	Sat,  3 Feb 2024 15:25:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FB815F547;
+	Sat,  3 Feb 2024 15:28:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cTe+wfru"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gpf+gTlZ"
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A21A5F54A
-	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 15:25:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26A3E58206;
+	Sat,  3 Feb 2024 15:28:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706973917; cv=none; b=occrMhtY1+zuo2GGxTayU7vIo2QKruZSlkmiIY5xU6W2zarmvn5lLQ53uGMoZPU5LqfGjNd4M7xHZZR9umc5z5MgCNO8nT737XHFm2FprKM/syqH0w3Ita6Vioh/8X4iGUn8nQGKwmuqRTCWFqaq4/pbhloEdRZji0N2AZWuYPg=
+	t=1706974112; cv=none; b=jleVlb0C+ggGiyKLgKjE2HXn8I6agN0N/Im0MbkDLPPAFg+FX16vtUzrXH1F68PEfMly/mz3s97tqtb40kVzMnGaXq6Mbw3lAOotw2QEIB90hf2AGRylCCIPMHmLFr5PufJY6Dt/W3Kpax0/lQpPFw1GKxUIEpARasK4fwdbIjk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706973917; c=relaxed/simple;
-	bh=RtPXT9uJnRvUvzMIpDyqdjM8D8hOXa06jLXqA6g599Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kWXkJvik8h4l6KCvDo6AyQ6SiJiuUfrXOWwhWENSmBlGN7EKgDd/epd5gCo6k71cr5uJXe3XSGv1Od7NIYBLGVzemIQ2y0dOJneEpMY4jp8mJZNGM66g/oFSGmQjDPJin0Gl3vC3G9JtTG/26mLC+8APF/Kz50PKj92U4rMx3o4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cTe+wfru; arc=none smtp.client-ip=209.85.214.180
+	s=arc-20240116; t=1706974112; c=relaxed/simple;
+	bh=Z1eBrxNxqM/kyYRT6w23i+affJIwdsPZx5ypg5FDsec=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nlne+D0dJYCwOi4FKUZHhFyWivLv9Z1t3Wdu0wPKdPxwFRQnTPpuxM4adUy+zx27b5sVBsC2fUgASQ6VLb9TeIZPwgbHvLCUL0bfqVV2/6bgNXO+lrSfXqA+cC9yFl6KnaS1nLyy5hvrRn8vKqtKcWGCGV+BBWcICvMCZbWXigo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gpf+gTlZ; arc=none smtp.client-ip=209.85.161.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d731314e67so22269155ad.1
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Feb 2024 07:25:15 -0800 (PST)
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-59a910a1265so1674666eaf.1;
+        Sat, 03 Feb 2024 07:28:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706973914; x=1707578714; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=c88lqSxqRhgcdBuXBMm8xLbio2cc1M+G+N4XYcCvLJA=;
-        b=cTe+wfruQLdKJbG6YOQ+7xocjo9XFeQcdGZ7TrMkJHKMevUuJvAMj6lo8jLfzXhX7m
-         rcd1eyLuvgM5c7GZCvbcZlB++TgmvLDu+uZd0mPM79xKG0+3s+Fwij5R38nyY7/nm6kQ
-         2Cyf2s/YRQjVAdgbkNzeHXQdmxyJMHnYJpu/eBQcJia4U2XebUAHsAyysaVUIfLxOvtI
-         831tYbz/oNZ0mO5zc6tfzbeXIsizICmYmEOesdcz/dUTen1zNecWzDYQRsKloZwEv6kY
-         8aoM5uohQA9UdvxS+991A0YozN0moGBgbttna7FOYm9z+sgm2gNsh918gFoIu7WwNvMi
-         6XNQ==
+        d=gmail.com; s=20230601; t=1706974110; x=1707578910; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W4MXHNjW+3TW74SFPNk16h7YsfWAXkb7kmdm8q7xjLc=;
+        b=Gpf+gTlZq+lHFN2kD8I1N1CM1jAasNjhBWBFHDHFSMn7pt7K/UmrTQ7ynH864ETLaw
+         cICoT+Yf1udM6eR9eNSGdBR/mX+3GSjDXrCi0LAPMkLHQI1mv+0agfyS3IIknOYOpjjA
+         ZHJsuFom2EGDcGCyqUsNQrcWQa4VJ8w+bVfkITiXdnHzxgp2HxOa5HmlfKQ760OajEpx
+         DvvZrcYN/Zm53BKeHQsBSQhmy1DbObT9tcRvtRfFBPC4q5qqTpgUT0Tuda9XdZjt3uxw
+         jlCy8cGoxi+EOYey3z/E3HYds4d+Eq7XAnWRkQy5kghYapXgOLN5VWU1pDKjy2K4qgRd
+         ACzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706973914; x=1707578714;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=c88lqSxqRhgcdBuXBMm8xLbio2cc1M+G+N4XYcCvLJA=;
-        b=n8txYki2oPjYnjhYPIkjSO1GGvpgkNOoDMtGwqlai42ZnsDlsRCfx86SR/2q6+Wib8
-         Fv61xP9zxoZPWDSNWVIZ9jh1wyy8piP07uIFKoAkI80UwsvDy7/TOZR6IfkuymNXLt4W
-         vUJXQmMNolJJuvnjmsZ4iMP0yxBedrZphfLHlkW6qh9kr4samxC+WRTF99nZ05hzrhJ/
-         lH/XeOdcgObqiDj/07TB26egqS9s+uXcusesRmTi//LPP2cmmeYto92zbNe68hQG/56H
-         02vbuVbd2eqXjB5NK8cmVHmcI67RTvmXzTJzeNRIIsvaFrxtCAchP4ciLz27/H8Zw5kc
-         yIxQ==
-X-Gm-Message-State: AOJu0YyXs4Web3nAEJKW/2X1/AhrnnB+Clz/8xuUMVtUDkmvnR/gLP1s
-	5yvOpXvhe8qyvPoOY9DtqjJZrqhynRxACvRoeh/2Z/GjXgIYfldb
-X-Google-Smtp-Source: AGHT+IG+kFYkVfFa0+0Ujxvkv+4qhG9681TjiX9T+aWgsnpdHjM1XP2I2bR9X6WyjKDoVmH6dQgTfQ==
-X-Received: by 2002:a17:902:f545:b0:1d9:5d65:c1b with SMTP id h5-20020a170902f54500b001d95d650c1bmr7436906plf.41.1706973914367;
-        Sat, 03 Feb 2024 07:25:14 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUnaJiN3/oUVmOaXrf8A7R+Oc/J9rdZuq2hqa3OkuWuLiIUbcBwBO2NnGovu7VXgDk8iR2QXDi+ypeB0NGiZSA3yIp4tXmywVL5r/ZL7AeQPPOF9AAP5sZ3daQly/5/NcFpotuBCFavYnKgvhVGHiZxt96+cjL75gHi0HVp3fH+jb9RNNEBWut2/bo7ZxjWxr9QW2kqKsCCiiTSEZ8IHtZO9XnAb8VoAa6rZrEMfcF3Qg==
-Received: from localhost.localdomain ([112.38.163.83])
-        by smtp.gmail.com with ESMTPSA id ku12-20020a170903288c00b001d7284b9461sm3370081plb.128.2024.02.03.07.25.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Feb 2024 07:25:14 -0800 (PST)
-From: Wenjie Qi <qwjhust@gmail.com>
-To: jaegeuk@kernel.org,
-	chao@kernel.org,
-	yangyongpeng1@oppo.com,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org
-Cc: hustqwj@hust.edu.cn,
-	Wenjie Qi <qwjhust@gmail.com>
-Subject: [PATCH v4] f2fs: fix zoned block device information initialization
-Date: Sat,  3 Feb 2024 23:24:36 +0800
-Message-ID: <20240203152436.1352-1-qwjhust@gmail.com>
-X-Mailer: git-send-email 2.43.0.windows.1
+        d=1e100.net; s=20230601; t=1706974110; x=1707578910;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=W4MXHNjW+3TW74SFPNk16h7YsfWAXkb7kmdm8q7xjLc=;
+        b=vzHQdlT3zQwcSt/pmuIXExcP5rG1EkCUBcfmpv4Vh3Lzb7GXVdgz2V19ArQsqz60S1
+         /yjr3wgPHH6KinQfeJbqFUI7G/2xAdvlxPeZ4lxlwS1pG52aYpi4wdgbUofbLeL1mO9m
+         zEN2/encOYOM9wsjQ4h32/IGvVb6Q+5+CImqmjU1qgA0JOqJxgEFfNCquigAGBfS0NWA
+         qXXwvBQys+6JknuHeZdR4s8FDDgyyoCF9r3E3glNrk5Q8d296I3/G41+ZGf6g7N+bV0u
+         UX1EcRm8m4NujPyfba/fPjpJ/zfgkr+Bl2XNSKB3kmyqGJiax63nXkMmwMoSsfsJMpJ+
+         sR6w==
+X-Gm-Message-State: AOJu0YzoFuXI/GyjqYY3yokgbXieWisFOu6Z1GGJnS4S+V9K1E78xDWY
+	wjzoTyPW+td7S5Rg6QyPFUswWGocDLC5wCnd1uQND7b51H0OrWzrDiEmBUKjk13UzgbhZqpqABO
+	5SSIgnZ82Qf7oTcjnMhP9cy37zd0=
+X-Google-Smtp-Source: AGHT+IGejb+39506xYRD04If91RNf9v3LcAXOuCrzLQson7SehNnWvNWTnkJYS0utZcAT5pi3N6ieKNhEj937IpriAY=
+X-Received: by 2002:a05:6358:340f:b0:176:40fb:cf3a with SMTP id
+ h15-20020a056358340f00b0017640fbcf3amr10746219rwd.14.1706974109996; Sat, 03
+ Feb 2024 07:28:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240202093907.9465-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240202093907.9465-2-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240202-explain-harsh-b5d81cb5f59a@spud>
+In-Reply-To: <20240202-explain-harsh-b5d81cb5f59a@spud>
+From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date: Sat, 3 Feb 2024 15:27:52 +0000
+Message-ID: <CA+V-a8u--97k82xUdCnCRqo7cj+JAkmzAgcZqnD2neSGvtgznQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: interrupt-controller:
+ renesas,rzg2l-irqc: Update interrupts
+To: Conor Dooley <conor@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
+	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-If the max open zones of zoned devices are less than
-the active logs of F2FS, the device may error due to
-insufficient zone resources when multiple active logs are
-being written at the same time. If this value is 0,
-there is no limit.
+Hi Conor,
 
-Signed-off-by: Wenjie Qi <qwjhust@gmail.com>
----
- fs/f2fs/f2fs.h  |  1 +
- fs/f2fs/super.c | 21 +++++++++++++++++++++
- 2 files changed, 22 insertions(+)
+Thank you for the review.
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 543898482f8b..161107f2d3bd 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -1558,6 +1558,7 @@ struct f2fs_sb_info {
- 
- #ifdef CONFIG_BLK_DEV_ZONED
- 	unsigned int blocks_per_blkz;		/* F2FS blocks per zone */
-+	unsigned int max_open_zones;		/* max open zone resources of the zoned device */
- #endif
- 
- 	/* for node-related operations */
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 1b718bebfaa1..45e82d6016fc 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -2388,6 +2388,16 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
- 	if (err)
- 		goto restore_opts;
- 
-+#ifdef CONFIG_BLK_DEV_ZONED
-+	if (sbi->max_open_zones && sbi->max_open_zones < F2FS_OPTION(sbi).active_logs) {
-+		f2fs_err(sbi,
-+			"zoned: max open zones %u is too small, need at least %u open zones",
-+				 sbi->max_open_zones, F2FS_OPTION(sbi).active_logs);
-+		err = -EINVAL;
-+		goto restore_opts;
-+	}
-+#endif
-+
- 	/* flush outstanding errors before changing fs state */
- 	flush_work(&sbi->s_error_work);
- 
-@@ -3930,11 +3940,22 @@ static int init_blkz_info(struct f2fs_sb_info *sbi, int devi)
- 	sector_t nr_sectors = bdev_nr_sectors(bdev);
- 	struct f2fs_report_zones_args rep_zone_arg;
- 	u64 zone_sectors;
-+	unsigned int max_open_zones;
- 	int ret;
- 
- 	if (!f2fs_sb_has_blkzoned(sbi))
- 		return 0;
- 
-+	max_open_zones = bdev_max_open_zones(bdev);
-+	if (max_open_zones && (max_open_zones < sbi->max_open_zones || !sbi->max_open_zones))
-+		sbi->max_open_zones = max_open_zones;
-+	if (sbi->max_open_zones && sbi->max_open_zones < F2FS_OPTION(sbi).active_logs) {
-+		f2fs_err(sbi,
-+			"zoned: max open zones %u is too small, need at least %u open zones",
-+				 sbi->max_open_zones, F2FS_OPTION(sbi).active_logs);
-+		return -EINVAL;
-+	}
-+
- 	zone_sectors = bdev_zone_sectors(bdev);
- 	if (!is_power_of_2(zone_sectors)) {
- 		f2fs_err(sbi, "F2FS does not support non power of 2 zone sizes\n");
--- 
-2.34.1
+On Fri, Feb 2, 2024 at 5:07=E2=80=AFPM Conor Dooley <conor@kernel.org> wrot=
+e:
+>
+> On Fri, Feb 02, 2024 at 09:39:05AM +0000, Prabhakar wrote:
+> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> >
+> > RZ/{G2L, G2LC}, RZ/G2UL, RZ/V2L and RZ/G3S SoCs have ECCRAM0/1 interrup=
+ts,
+> > reflect the same in the DT binding doc.
+>
+> Renesas' naming scheme really does not help here, but using the
+> shorthands in the commit message when the diff uses the long form names
+> is not the easiest thing to follow. (:
+>
+Sure I'll elabore the SoCs according to the binding doc so that it's more c=
+lear.
+> >
+> > RZ/G3S SoC has ECCRAM0/1 interrupts combined into single interrupts so
+> > we just use the below to represent them:
+> > - ec7tie1-0
+> > - ec7tie2-0
+> > - ec7tiovf-0
+>
+> I think this information would be good in the itemised description,
+> since that claims these interrupt are only for ECCRAM0.
+>
+Sure 'll update as below:
 
++      - const: ec7tie1-0   # For RZ/G3S SoC ECCRAM0/1 interrupts combined
++      - const: ec7tie2-0   # For RZ/G3S SoC ECCRAM0/1 interrupts combined
++      - const: ec7tiovf-0  # For RZ/G3S SoC ECCRAM0/1 interrupts combined
+
+>
+> > Additionally mark 'interrupt-names' property as required for all the So=
+Cs
+> > and update the example node in the binding doc.
+>
+> Why? You've not given a reason for doing this, so it just seems
+> gratuitous.
+>
+Previous assumption was just the RZ/G2UL and RZ/G3S had the bus-err
+and eccram error interrupts, but where as in actual all the above SoCs
+have this interrupt so making interrupt-names as required so we can
+parse them based on names.
+
+Cheers,
+Prabhakar
 
