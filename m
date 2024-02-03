@@ -1,76 +1,118 @@
-Return-Path: <linux-kernel+bounces-51184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B583848779
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 17:33:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0417484877A
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 17:43:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE4501F22007
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 16:33:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 005292856C1
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 16:43:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1F1F5F84B;
-	Sat,  3 Feb 2024 16:33:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A36CD5F57D;
+	Sat,  3 Feb 2024 16:43:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="rUfkdcRq"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YhaX9zOd"
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCCEA5F549;
-	Sat,  3 Feb 2024 16:33:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A225C80B
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 16:43:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706978010; cv=none; b=SsMKktbxOOZhcgHc76v1LsryxySUATpmNafOqDcUB6zo7ZTJ9DNxJ08FRJWUBS/s9YNeqara6hocjJRm5OLXFQ0wz/ZkR9yJcKJ13yD2EPc3vNw9Sl00GOw8QyHYG9Wzh2XO3ut0XgIYWhTaHMJa//IVDf21De5pm/DceJOYX9o=
+	t=1706978589; cv=none; b=ocfL7JKCL++yghhQNKvJZVUawuWnsdXWN2iJyH6CkBihsPcBunukbNrfCyhpdyFs7T4QdjlKqJ8POtU8EAsL0NogIuvb1Kg3HiVILb2EQCwPN6mo1TvbXVrWIJjItKph6aaWvgVc2wWxvaVyoDBzJA8+PojxmLPPgGdqU7Cang4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706978010; c=relaxed/simple;
-	bh=USwZi+tenL+zWd7YTIE6nRVnYZIbj6mmBnK2ukvZmXo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DJf4CvGpWyrh5wg9ggBBvLzWifQmoCI7iQs/SQAkkdYRXlk2cWg06XzdM02uVkP5krJcGYSm8Xzlgef3N4J53uei26GEquRm9kOQt8bahzFd3HGnAV+96LHLf70h9ftnd2Wm3JSB1pzBzXeJOeU0KZSIPydxSwMXZ52TaTWJ3bE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=rUfkdcRq; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=Dku+vMvtmnMGHoYUlJi5yCzjF20d0vv8EAcUcglE/uo=; b=rUfkdcRqK1MFKlWfPmBRiw97rP
-	4H2AgjNN7ZfzBoore+qY8aMye9QASpSFoL09O/g0wvXKjiYo8RFT2pSbvXI31w8YZPUJ8PCy28Yqm
-	pzkjax/zZ2wnl/NXyee1rOiNEBUnUm3pYSJ43I0f7/utE1XJrHEBAN9UZ6S4zKynEKMo=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rWIxD-006ugn-Tr; Sat, 03 Feb 2024 17:33:19 +0100
-Date: Sat, 3 Feb 2024 17:33:19 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc: hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH net-next] net: micrel: Fix the frequency adjustments
-Message-ID: <5f123f39-efbd-44d6-b4cc-db33d175fa21@lunn.ch>
-References: <20240201204203.2691424-1-horatiu.vultur@microchip.com>
+	s=arc-20240116; t=1706978589; c=relaxed/simple;
+	bh=I562TcgqfQSMitQ564OtLTfBvmpYm6xrnSmNYWbGnI8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KQGR4zEjfuxYkQ2JmTb1Y8nmNGKmIIGd+nrKYDHmwdMGpKFl6B4qVZQhTQycUqGa0pylMA0UnPB295Kpz5SQYoe0NGYaOkDI+PWmHdGWgdWt0/GQ2Iz8Jz29MqztAyClK2Ee3wvZ1at4VKX/oQofmm0EZpMQUt5/0FivFhE4qno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YhaX9zOd; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-290a55f3feaso2540195a91.2
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Feb 2024 08:43:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706978587; x=1707583387; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=898cO/dLe9YkUvrZSvyaCxblTlterCxFQmMbGCZo940=;
+        b=YhaX9zOdpVMjctkx+XnxFBEIY75QdPbyeZWLigIKVoKtfQ8yeCyqr2rcr7RGqbRTij
+         XJ5F878ahStSsXG3mvy/UeoKqs6SH3THg6RMsqFENH3jFsHpA4+9b0UFsGrMcwoSzSdU
+         /evP0RWalFel7M5/e+y5prkSC4AxcJOqVFeFghAi3HXb3CMUJIHu7udW8YcYNxiLmP4X
+         yyqww9M4u4urdKVN9NxZJmXVKtvDfR3GR73t0RKVtbbjND/6yKSy7q2R/mC/DAL360jX
+         n72RRAOU+aKxNzeEb7Sc2GXBIMl91HOFt9XKHPl5nqjqgHm0kC6vLiZ+IjlrLugdOKWi
+         kIzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706978587; x=1707583387;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=898cO/dLe9YkUvrZSvyaCxblTlterCxFQmMbGCZo940=;
+        b=pj2Dy7qBJxAf0tpv5m3GKbOUVnRFMKL7/Kz4+ZD6g/sVtmnsjJzrgkNaQds5zficv0
+         +PBkHoOkcRLWMJ5S/LsY9BGlvAjH1m6CETApIqna4jZLZAIN2MsDLlOmh/rHJ+Gks+0q
+         cg2RoIgTtLX207C5yh2w6gQ7GUb7sPXjEEDcShZC785s6EEF+WNGr7BPytA0Sfw6gvhx
+         RcEcn7oPKdiUCuo2qIK/XPn9ktf3e5oiGz94S3+3HB1D8g1XwylX0mPg09bx1TQtXRQu
+         9j5uKAPouOLVLAnXTp7yr0RvB9uB4/DxFqiX19i56N7oyQSt0YbsVLOCtJ5lyt2G69EJ
+         vMEg==
+X-Gm-Message-State: AOJu0Yx7SLB/FsA7b6zvV6hD9qbZHXCcU+wz7+VZ+yj1FUVRrvTEV/M8
+	DPDqSOF9xCQSCNyRfsjY9Nk2eRR+0KbSLyB8E4XxjDAmlhoADYLL
+X-Google-Smtp-Source: AGHT+IGRwNqWb1j8WhVzJSsmKsD7nfnnGe6hfs5s5Z5DncYFnXaTAElemngb9TM/rJZMLoYEcPni2g==
+X-Received: by 2002:a17:903:32d1:b0:1d9:4eea:9afd with SMTP id i17-20020a17090332d100b001d94eea9afdmr10236103plr.10.1706978586797;
+        Sat, 03 Feb 2024 08:43:06 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVw71NKE9ALXCPyjJa8S8ASTrTsHgPb4QCKC4Z40/MSuWLKNeHaPuqag2s8DuriK0Mov6y96JG4CFrdzYgCVBOBi3TAzb/BESaT
+Received: from localhost.localdomain ([122.161.75.254])
+        by smtp.gmail.com with ESMTPSA id i18-20020a17090320d200b001d6f29c12f7sm3472963plb.135.2024.02.03.08.43.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Feb 2024 08:43:06 -0800 (PST)
+From: Abhinav Jain <jain.abhinav177@gmail.com>
+To: skhan@linuxfoundation.org
+Cc: linux-kernel@vger.kernel.org,
+	Abhinav Jain <jain.abhinav177@gmail.com>
+Subject: [PATCH] Task: Kselftests: LKMP Bug Fixing Spring 2024
+Date: Sat,  3 Feb 2024 16:42:30 +0000
+Message-Id: <20240203164230.149317-1-jain.abhinav177@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240201204203.2691424-1-horatiu.vultur@microchip.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 01, 2024 at 09:42:03PM +0100, Horatiu Vultur wrote:
-> By default lan8841's 1588 clock frequency is 125MHz. But when adjusting
-> the frequency, it is using the 1PPM format of the lan8814. Which is the
-> wrong format as lan8814 has a 1588 clock frequency of 250MHz. So then
-> for each 1PPM adjustment would adjust less than expected.
-> Therefore fix this by using the correct 1PPM format for lan8841.
-> 
-> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+-Added <stddef.h> header to fix implicit declaration warnings
+-Added ksft_exit_fail_msg() return value checks for fchdir and chroot
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Abhinav Jain <jain.abhinav177@gmail.com>
+---
+ .../filesystems/statmount/statmount_test.c          | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-    Andrew
+diff --git a/tools/testing/selftests/filesystems/statmount/statmount_test.c b/tools/testing/selftests/filesystems/statmount/statmount_test.c
+index 3eafd7da58e2..47ee57da9942 100644
+--- a/tools/testing/selftests/filesystems/statmount/statmount_test.c
++++ b/tools/testing/selftests/filesystems/statmount/statmount_test.c
+@@ -124,8 +124,17 @@ static uint32_t old_root_id, old_parent_id;
+ 
+ static void cleanup_namespace(void)
+ {
+-	fchdir(orig_root);
+-	chroot(".");
++	int ret;
++
++	ret = fchdir(orig_root);
++	if (ret == -1)
++		ksft_exit_fail_msg("changing current directory: %s\n",
++				strerror(errno));
++
++	ret = chroot(".");
++	if (ret == -1)
++		ksft_exit_fail_msg("chroot: %s\n", strerror(errno));
++
+ 	umount2(root_mntpoint, MNT_DETACH);
+ 	rmdir(root_mntpoint);
+ }
+-- 
+2.25.1
+
 
