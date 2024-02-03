@@ -1,232 +1,143 @@
-Return-Path: <linux-kernel+bounces-51323-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51324-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D615D8489CC
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 00:53:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AC488489CF
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 00:55:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06F631C222EB
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 23:53:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDED11C22269
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 23:55:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 218D4168D2;
-	Sat,  3 Feb 2024 23:53:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA5F2168C4;
+	Sat,  3 Feb 2024 23:54:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="PkoY5khO"
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="baKu5Kak"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32FA516419;
-	Sat,  3 Feb 2024 23:52:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6251016436;
+	Sat,  3 Feb 2024 23:54:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707004379; cv=none; b=FKr+QChgmXHJIKSQWvqItiEuDsTOyNhrCs7y5kO81E85FRASQtTt5r67dndLxaSZ6EFiumEU+KzsuA7JKWDkhutAvt/qPmeCzumPfj5FKMjnrG59hTvAeoA/ifUUQS0FrYYFGYbDig08aWZcqr+82OZ/JnB6racf/WCicqVAUgE=
+	t=1707004494; cv=none; b=Cri4WsqxcBQciDynv/+ZVj+ewvvvROG//5rd7NzW1c/+BtCrD/zXYJbeEXd57mONyV80aPFjMBgB8lCctK8Ml7L77slFoO6HE/W5YjbBEKyj+Aumqkn0d9Azr3or/SYyFJ4Jkv+Jjhz1H/7Ir5a4E6DTusrYWPCmi4wTy6gy8HQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707004379; c=relaxed/simple;
-	bh=fz3j3T6QBp4Co5opmQJUwlfOz3/9l9WqB/vGWuczmJE=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=KYAW8r1NDCfkUde6/QRZmDJa87DxbVlnI0UDJFtubcOqJ6azbnL2hKsGqk6fou1im2zUKb8Ny2tn/jb42RtWR8+OmhulRx5/FrCs9Qp8lWyT2NIMY5MP+EcF9AF0WLR9zok4N8MwWVGf5dwo6yGwv2jv7+DIZWpI537kM9g/s5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=PkoY5khO; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [127.0.0.1] ([76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 413Nq5HW1146943
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Sat, 3 Feb 2024 15:52:06 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 413Nq5HW1146943
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2024011201; t=1707004327;
-	bh=YF/9iFZbpkbzabBhj9h8rnC37CjWzXFTXAyjgT+GBTg=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=PkoY5khOBtvim52E7ockk/qEKs2cw2L0Ru8WUrNPV0WR3n79gOxxguuiJTMhuzvrD
-	 17dm2oobT+TtLFsVMfliXUlgyfo/KuA9iMIZynfFOVUR5KyzNdmBolfL1t0hCMS5S1
-	 9qTftaox1Pj+jWIl+ULeI1zWGdbs5bAiO06vjW51WxUz4yqO1ZtsLintORHpEPRCia
-	 7aV+xevQqi2gV8qawcrE8m6AdDzSAdCryQMntD6hFu2gzwPce4NM7RkAg3CP0iyRf/
-	 9S8c3ESa7fY0RFEWrvVxMLjxGvoZDmF+HfjcHQiIQIgkyJ31fvZBch4UXAPfRDFNNm
-	 I2KgvPuzjf13g==
-Date: Sat, 03 Feb 2024 15:52:03 -0800
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: linux-kernel@vger.kernel.org, tip-bot2 for Xin Li <tip-bot2@linutronix.de>,
-        linux-tip-commits@vger.kernel.org
-CC: Thomas Gleixner <tglx@linutronix.de>, Xin Li <xin3.li@intel.com>,
-        "Borislav Petkov (AMD)" <bp@alien8.de>,
-        Shan Kang <shan.kang@intel.com>, x86@kernel.org
-Subject: =?US-ASCII?Q?Re=3A_=5Btip=3A_x86/fred=5D_x86/ptrace=3A_Cleanup?= =?US-ASCII?Q?_the_definition_of_the_pt=5Fregs_structure?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <170673569232.398.15041548048531772130.tip-bot2@tip-bot2>
-References: <20231205105030.8698-14-xin3.li@intel.com> <170673569232.398.15041548048531772130.tip-bot2@tip-bot2>
-Message-ID: <2A59D51B-0AA0-4DFC-9957-67CC0C9E37B3@zytor.com>
+	s=arc-20240116; t=1707004494; c=relaxed/simple;
+	bh=eQyjHYQAZ/iU45xmzwCXi10gQml0ia8HLSDyflfKzIc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MeERyoloxTYmtvWDBtwWvAEEH1pk6ON1DhGEo13MwaJ+H4okd05dEA4se3jEwI2qikFcvgRAbYcDbfGlmysYHjeOWTJZaiQk4MWEwfEIn9GgmV4WA4vTtc+MTXkBklayiyd5R7dDUgfaK0TMDYbDwWsTY4bXSclhzxifEeykrzU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=baKu5Kak; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40ef64d8955so29803945e9.3;
+        Sat, 03 Feb 2024 15:54:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707004490; x=1707609290; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=m2UMKoFcK4wh3ZcVjxqCTfGH8GhWg4G2rR6ZKhHXo4Y=;
+        b=baKu5Kakmq4JnhMTTAkA9xFwsIYUimmuDAVgincQCg4i7tNfnyKNX0BHYUsRq94K7H
+         eNVRmxVpdcdddjNu+mr2+OLCFkva71MzElmyGGSTQGKnudwlFmpJFQwX7LQYQ+e6WGPR
+         iRCsLOP+b/q9TbTYXieW6u1/BDWKG+adw6eU8pBnMlqOLMjijbCW5LbfjzlfZgCSlJYv
+         PNpIi53QLw3sPwXd+TBNp0OI/PF/Ci8QfojlvqgeVlx9Xd4vmTkKoF9saHM0aeXH2YVl
+         3dLUKtZcUSVkSKAJF8FRmqMl1mua6bWJ05uP4XVk5cakddeyP7U32a8UYVlE0jW5VmYJ
+         Q7Tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707004490; x=1707609290;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m2UMKoFcK4wh3ZcVjxqCTfGH8GhWg4G2rR6ZKhHXo4Y=;
+        b=LvfOfElCRYzHqfHRAa/AS57sBvtIIdBPeVDmup12NMsCZsbrQJ8ydTt+xqbSZSSst7
+         qWdk3UPa1HaRJN7yw8bOB3ZuLhGal7GZ8lRXtryLE6itHsDZvve44qI7PRqLJyKP5gl0
+         fg/pXPqlP53xRE/XLDAiv7gGiGUJsauvjsugtr558HxtEOd9jaQUT7fnSOrXk/fDDEzc
+         nts1Xvc2rY+RgKJv/J0ODqzoxOkDMRMp/8lRvKmuIdgdng3xTQbr+A+AGKkuYPrCSrr7
+         B2JPxDZK/N1Uh0fJkv2XC+YK7Ukj5HQi3B2Tqo8ygqOR77EyLnnZ63ylp0wg141YVGsk
+         /78A==
+X-Gm-Message-State: AOJu0YxSShZNWuj0gIX10sy7Ggas+SC7w8+fprEgPdpk4K9YYD5EL+/s
+	JDJgzt4pWtv93Mt9V0p9SLxge8Mgw1IXRlxCSZj0fKknFisNYQYK
+X-Google-Smtp-Source: AGHT+IH8/8dQl8i3DvDOzAG1waxr9XwcgMTXpdlgsWwHdPY1U+MI5TwUQoQfMXx6OSI3ox9XNpr/gA==
+X-Received: by 2002:a05:600c:3594:b0:40e:a569:3555 with SMTP id p20-20020a05600c359400b0040ea5693555mr1815554wmq.35.1707004490421;
+        Sat, 03 Feb 2024 15:54:50 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWcLM6iuqsM7llfMG+jxZIMr/2tcxT71Wz2lUQgOSa8U7u3KjBDSxmX3m5oXtQc1a3lQgsNI1svoI9DQk1nAFXfANn5J7VcT9fm5tjliM5RLrKKQxkufl8k6971XOO/i83HKTgzcWa4BowQrXPscY1KoIjUuWvyzGpB9osHKog3TtFlDSR5ymax2WfECZnGstk9IJCwS1gqXwVMr4VUsrXdswY0/FlBdj49+Ax1y9wDly7h7Ty+bFCbmCd6g7o++sL7PA2UUtxR3pI3coXZoV5m0BHhHXGFlRtKxPUsm7pIiR6LaWJW013V7peQos+8E45W1zc2EBILQR5pDkRF88hunVnm6v/g
+Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.googlemail.com with ESMTPSA id g6-20020a05600c310600b0040fd1e2a773sm2659512wmo.47.2024.02.03.15.54.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Feb 2024 15:54:49 -0800 (PST)
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: Pavel Machek <pavel@ucw.cz>,
+	Lee Jones <lee@kernel.org>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Christian Marangi <ansuelsmth@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Daniel Golle <daniel@makrotopia.org>,
+	Li Zetao <lizetao1@huawei.com>,
+	linux-leds@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+Subject: [PATCH] leds: trigger: netdev: Fix kernel panic on interface rename trig notify
+Date: Sun,  4 Feb 2024 00:54:01 +0100
+Message-ID: <20240203235413.1146-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On January 31, 2024 1:14:52 PM PST, tip-bot2 for Xin Li <tip-bot2@linutroni=
-x=2Ede> wrote:
->The following commit has been merged into the x86/fred branch of tip:
->
->Commit-ID:     ee63291aa8287cb7ded767d340155fe8681fc075
->Gitweb:        https://git=2Ekernel=2Eorg/tip/ee63291aa8287cb7ded767d3401=
-55fe8681fc075
->Author:        Xin Li <xin3=2Eli@intel=2Ecom>
->AuthorDate:    Tue, 05 Dec 2023 02:50:02 -08:00
->Committer:     Borislav Petkov (AMD) <bp@alien8=2Ede>
->CommitterDate: Wed, 31 Jan 2024 22:01:13 +01:00
->
->x86/ptrace: Cleanup the definition of the pt_regs structure
->
->struct pt_regs is hard to read because the member or section related
->comments are not aligned with the members=2E
->
->The 'cs' and 'ss' members of pt_regs are type of 'unsigned long' while
->in reality they are only 16-bit wide=2E This works so far as the
->remaining space is unused, but FRED will use the remaining bits for
->other purposes=2E
->
->To prepare for FRED:
->
->  - Cleanup the formatting
->  - Convert 'cs' and 'ss' to u16 and embed them into an union
->    with a u64
->  - Fixup the related printk() format strings
->
->Suggested-by: Thomas Gleixner <tglx@linutronix=2Ede>
->Originally-by: H=2E Peter Anvin (Intel) <hpa@zytor=2Ecom>
->Signed-off-by: Xin Li <xin3=2Eli@intel=2Ecom>
->Signed-off-by: Thomas Gleixner <tglx@linutronix=2Ede>
->Signed-off-by: Borislav Petkov (AMD) <bp@alien8=2Ede>
->Tested-by: Shan Kang <shan=2Ekang@intel=2Ecom>
->Link: https://lore=2Ekernel=2Eorg/r/20231205105030=2E8698-14-xin3=2Eli@in=
-tel=2Ecom
->---
-> arch/x86/entry/vsyscall/vsyscall_64=2Ec |  2 +-
-> arch/x86/include/asm/ptrace=2Eh         | 48 ++++++++++++++++++--------
-> arch/x86/kernel/process_64=2Ec          |  2 +-
-> 3 files changed, 37 insertions(+), 15 deletions(-)
->
->diff --git a/arch/x86/entry/vsyscall/vsyscall_64=2Ec b/arch/x86/entry/vsy=
-scall/vsyscall_64=2Ec
->index e0ca812=2E=2Ea3c0df1 100644
->--- a/arch/x86/entry/vsyscall/vsyscall_64=2Ec
->+++ b/arch/x86/entry/vsyscall/vsyscall_64=2Ec
->@@ -76,7 +76,7 @@ static void warn_bad_vsyscall(const char *level, struct=
- pt_regs *regs,
-> 	if (!show_unhandled_signals)
-> 		return;
->=20
->-	printk_ratelimited("%s%s[%d] %s ip:%lx cs:%lx sp:%lx ax:%lx si:%lx di:%=
-lx\n",
->+	printk_ratelimited("%s%s[%d] %s ip:%lx cs:%x sp:%lx ax:%lx si:%lx di:%l=
-x\n",
-> 			   level, current->comm, task_pid_nr(current),
-> 			   message, regs->ip, regs->cs,
-> 			   regs->sp, regs->ax, regs->si, regs->di);
->diff --git a/arch/x86/include/asm/ptrace=2Eh b/arch/x86/include/asm/ptrac=
-e=2Eh
->index f4db78b=2E=2Eb268cd2 100644
->--- a/arch/x86/include/asm/ptrace=2Eh
->+++ b/arch/x86/include/asm/ptrace=2Eh
->@@ -57,17 +57,19 @@ struct pt_regs {
-> #else /* __i386__ */
->=20
-> struct pt_regs {
->-/*
->- * C ABI says these regs are callee-preserved=2E They aren't saved on ke=
-rnel entry
->- * unless syscall needs a complete, fully filled "struct pt_regs"=2E
->- */
->+	/*
->+	 * C ABI says these regs are callee-preserved=2E They aren't saved on
->+	 * kernel entry unless syscall needs a complete, fully filled
->+	 * "struct pt_regs"=2E
->+	 */
-> 	unsigned long r15;
-> 	unsigned long r14;
-> 	unsigned long r13;
-> 	unsigned long r12;
-> 	unsigned long bp;
-> 	unsigned long bx;
->-/* These regs are callee-clobbered=2E Always saved on kernel entry=2E */
->+
->+	/* These regs are callee-clobbered=2E Always saved on kernel entry=2E *=
-/
-> 	unsigned long r11;
-> 	unsigned long r10;
-> 	unsigned long r9;
->@@ -77,18 +79,38 @@ struct pt_regs {
-> 	unsigned long dx;
-> 	unsigned long si;
-> 	unsigned long di;
->-/*
->- * On syscall entry, this is syscall#=2E On CPU exception, this is error=
- code=2E
->- * On hw interrupt, it's IRQ number:
->- */
->+
->+	/*
->+	 * orig_ax is used on entry for:
->+	 * - the syscall number (syscall, sysenter, int80)
->+	 * - error_code stored by the CPU on traps and exceptions
->+	 * - the interrupt number for device interrupts
->+	 */
-> 	unsigned long orig_ax;
->-/* Return frame for iretq */
->+
->+	/* The IRETQ return frame starts here */
-> 	unsigned long ip;
->-	unsigned long cs;
->+
->+	union {
->+		/* The full 64-bit data slot containing CS */
->+		u64		csx;
->+		/* CS selector */
->+		u16		cs;
->+	};
->+
-> 	unsigned long flags;
-> 	unsigned long sp;
->-	unsigned long ss;
->-/* top of stack page */
->+
->+	union {
->+		/* The full 64-bit data slot containing SS */
->+		u64		ssx;
->+		/* SS selector */
->+		u16		ss;
->+	};
->+
->+	/*
->+	 * Top of stack on IDT systems=2E
->+	 */
-> };
->=20
-> #endif /* !__i386__ */
->diff --git a/arch/x86/kernel/process_64=2Ec b/arch/x86/kernel/process_64=
-=2Ec
->index 33b2687=2E=2E0f78b58 100644
->--- a/arch/x86/kernel/process_64=2Ec
->+++ b/arch/x86/kernel/process_64=2Ec
->@@ -117,7 +117,7 @@ void __show_regs(struct pt_regs *regs, enum show_regs=
-_mode mode,
->=20
-> 	printk("%sFS:  %016lx(%04x) GS:%016lx(%04x) knlGS:%016lx\n",
-> 	       log_lvl, fs, fsindex, gs, gsindex, shadowgs);
->-	printk("%sCS:  %04lx DS: %04x ES: %04x CR0: %016lx\n",
->+	printk("%sCS:  %04x DS: %04x ES: %04x CR0: %016lx\n",
-> 		log_lvl, regs->cs, ds, es, cr0);
-> 	printk("%sCR2: %016lx CR3: %016lx CR4: %016lx\n",
-> 		log_lvl, cr2, cr3, cr4);
+Commit d5e01266e7f5 ("leds: trigger: netdev: add additional specific link
+speed mode") in the various changes, reworked the way to set the LINKUP
+mode in commit cee4bd16c319 ("leds: trigger: netdev: Recheck
+NETDEV_LED_MODE_LINKUP on dev rename") and moved it to a generic function.
 
-Incidentally, the comment about callee-saved registers is long since both =
-obsolete and is now outright wrong=2E
+This changed the logic where, in the previous implementation the dev
+from the trigger event was used to check if the carrier was ok, but in
+the new implementation with the generic function, the dev in
+trigger_data is used instead.
 
-The next version of gcc (14 I think) will have an attribute to turn off sa=
-ving registers which we can use for top-level C functions=2E
+This is problematic and cause a possible kernel panic due to the fact
+that the dev in the trigger_data still reference the old one as the
+new one (passed from the trigger event) still has to be hold and saved
+in the trigger_data struct (done in the NETDEV_REGISTER case).
+
+On calling of get_device_state(), an invalid net_dev is used and this
+cause a kernel panic.
+
+To handle this correctly, move the call to get_device_state() after the
+new net_dev is correctly set in trigger_data (in the NETDEV_REGISTER
+case) and correctly parse the new dev.
+
+Fixes: d5e01266e7f5 ("leds: trigger: netdev: add additional specific link speed mode")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+---
+ drivers/leds/trigger/ledtrig-netdev.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/leds/trigger/ledtrig-netdev.c b/drivers/leds/trigger/ledtrig-netdev.c
+index 8e5475819590..df1b1d8468e6 100644
+--- a/drivers/leds/trigger/ledtrig-netdev.c
++++ b/drivers/leds/trigger/ledtrig-netdev.c
+@@ -504,12 +504,12 @@ static int netdev_trig_notify(struct notifier_block *nb,
+ 	trigger_data->duplex = DUPLEX_UNKNOWN;
+ 	switch (evt) {
+ 	case NETDEV_CHANGENAME:
+-		get_device_state(trigger_data);
+-		fallthrough;
+ 	case NETDEV_REGISTER:
+ 		dev_put(trigger_data->net_dev);
+ 		dev_hold(dev);
+ 		trigger_data->net_dev = dev;
++		if (evt == NETDEV_CHANGENAME)
++			get_device_state(trigger_data);
+ 		break;
+ 	case NETDEV_UNREGISTER:
+ 		dev_put(trigger_data->net_dev);
+-- 
+2.43.0
+
 
