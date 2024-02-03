@@ -1,183 +1,146 @@
-Return-Path: <linux-kernel+bounces-50776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BA4A847DCB
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:29:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 573E1847DE2
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:34:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36D5B1C22F40
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:29:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8FDE1F2BA83
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:34:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D358029A5;
-	Sat,  3 Feb 2024 00:29:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C7DD7EC;
+	Sat,  3 Feb 2024 00:34:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fkJShWdw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IeAPXW0V"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1194F625;
-	Sat,  3 Feb 2024 00:29:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D61D6FB2
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 00:34:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706920150; cv=none; b=GrYTu0r5yTsR3sWnRx1fCRcoNuAGd9GI+Oz/pxhEvBh4jmjCNXylybpw3IHU+w0xLT5TcuQMNF73FBurXQAY5tihUrqZV1yAIjShESH6EJk8eXRPMfI1rIU13LHOtNcXZdREe/iS46VsuJ2nq+WMoTpCodztwALalCl3fVOVuUg=
+	t=1706920458; cv=none; b=Iw6cJDKzpq6+aR5o4sUFMdIlWSEQPt0KxC85u3J+67uxC1ftF2qshyOKkIp4gBvXD5MTzTcbHnj/Zkk3k/fsH1Dt6hOCIVuFpKXDQH3C+mpArUIgeFS6CETtp9+Z87QJ/a+xPKsKHZmr8q5502JYwbnK7J4/AiyGkaimTCWEepE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706920150; c=relaxed/simple;
-	bh=9TtDN1r4VnqbVkMbIdvO5V9mK3wtnObkCogkcygbwo4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uSP13Hbgl36PQlfqk1LTqPDOJ0HHbO6lKbn/dxURimCT32P7G6B1EbNCDpK7ffoM6SVXidqEswqu9+Cnpq0XH3LmmT9MieU/41Sp+3qkL7M0GGzCX4r4CD4XDjO4PBvPYbqLKT51uhwzGdBXuU30RrG5LyszfF/hi9YRHAf8F/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fkJShWdw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94F22C43330;
-	Sat,  3 Feb 2024 00:29:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706920149;
-	bh=9TtDN1r4VnqbVkMbIdvO5V9mK3wtnObkCogkcygbwo4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=fkJShWdwEJvycdkTp0BR6okr208Rn+CRxEsYXN8dp8LGq20F5iMEMPf/LKG2rRSwU
-	 i86MAVC9Lg8lRpv87YNIHKkgSFn/WtbEVpDSLSVunszCH04cXeKk8NmmcTPvxyIUC4
-	 SBwOAug5vdJuF1W8jHSw3tCnThvEGK+4N/4r+FYRiYQkooe9ONd8axRsCk1cxmxgyS
-	 hg6wJnx7rYERvEeAvVQNHQ4WWTw899IsHWvCJQyJv5sKNmh0efJ/DFNc/vQmoKOCl4
-	 kT1uMjkJj1VHspspmatx/LYjW1DoPQn+CHWTbs2PAMgZAPRiAqPBETVlrZlNIerMmQ
-	 nM9+l0OcDUf+A==
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a352d9c0f9dso77298466b.0;
-        Fri, 02 Feb 2024 16:29:09 -0800 (PST)
-X-Gm-Message-State: AOJu0YwxFK22Xe5RRetNoLp+RyBph1rVUBUHOIJaSAAwVSrN0vsy9b3b
-	j8/MJcYvQnjPGrSI5qF2pdPo3s0FBZBRcKIYt5eDaIl9s/wK2XeKOHnKvOSktyta477aUxiYUaH
-	h49QYFrdCnyuxSgwOkv6w7xYV85I=
-X-Google-Smtp-Source: AGHT+IFZ3ZGMvuqs3thX1yxw7hTJ2qyHWlAIiaxSWDC0fd6vOK5H12/qSr7bNlL3hDdiX5obbzjZ0yxKiPDlE9ehK0A=
-X-Received: by 2002:a17:906:3c02:b0:a36:95cd:5e62 with SMTP id
- h2-20020a1709063c0200b00a3695cd5e62mr4340840ejg.7.1706920147920; Fri, 02 Feb
- 2024 16:29:07 -0800 (PST)
+	s=arc-20240116; t=1706920458; c=relaxed/simple;
+	bh=Z/cm2m18PsL8Vu1wWGOW1aO61N6+BbgnM41QboNb6Z0=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=W9KrZstmAu874AULxdxbIZ3RowsibHzLDF6NSnzbWN+GJYzkVXlaH9ReaGj+6RnTnDh0Cm7Wj8t46d2Q2VBzuqL1KYNItanvKbdV2eI9yzmQZDQWdiYd4BEvU19dgy1s01SjFTzv1oEtmFpvomVM1X7E9dFNLbcyUdaTK24nPKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IeAPXW0V; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5eba564eb3fso49236667b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 16:34:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706920456; x=1707525256; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=BCDzdkXKmcCm4b3zn1uKLp7BZ6kePV4TL8d+mF4c+RU=;
+        b=IeAPXW0VuvfS+wjiPjpLv4EX+pkt7nF/1G9Xrk/CuA8qsO3RVnx8Ab2dxNpI+IWjX3
+         9+W00wk+3rbi4v0p21xPZJcDqr14iP7/YXGdUTw+sK6UUDO9jukrZ6VPMRU6JNPfMRX3
+         TJHd+TyI7LWtyxAVjKX1UIG/+bddyHwaNwurbQ2DFfUCuUrFQxMvKwkVtm7allXaGF2a
+         L4B4rZc530n0Wt2TDbynOrpWJsqSNuy3JiQSc8RM0BaXQhFSUCKkzfw9rH3dcWzfOXdE
+         Jz+jC8uEb6vM4fxrt41EOe4KTg+PPU2vagp4VvjX4sgS5o6KJ6f9VLX2rXC4azD8L3Do
+         n0BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706920456; x=1707525256;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BCDzdkXKmcCm4b3zn1uKLp7BZ6kePV4TL8d+mF4c+RU=;
+        b=f8ifr0odlGb8fcxQO6mEH860QSqixMUTw+p13tOy0tEOJrysIVXMAvdFTMqtMB4QMf
+         jKoKy3naEyynBjoI6WPcJt3qpeyLHTqqbvBeOVceBxRkN+JsgJZbznsZJrNAOoJwxFNF
+         +zcmKTybajOGsDUe3ZtYirjnPifclFETb57BNCWf48Dr8yiUvgdjGG3ZlTqcx04BYVyi
+         n6ScxnRgw+505UFqDPkmEt34UmCVRYmWZLoPONh/7vlMupWgCPLv2y6SogMkeLnxP2WH
+         ZziWBNjSpz1X0aA7d+ocBkNytrDorAetWzmc1P5pSILDj0062FVSnIEUNcZMdD7oAr0d
+         b35w==
+X-Gm-Message-State: AOJu0YxMQJ8sjy/NOZOER9O6kUy4NeuP+xFW+wGli0pB9wrn3kTMaXov
+	pqxgk5FW49YA891FQWf7Ce2FLBFMdiW3FLfNBIJybx6Bto4epFRVm0KaFNcwsCLIYAW/OGYhrwr
+	16huabVN9mwtRxr+atw==
+X-Google-Smtp-Source: AGHT+IFD+IjFOQHibdEZhu5cMU8oPxcS9RMVwqQhE2xvOJKOdLFApGCusY2fdfTuFLUq9U4BvkSau2GMSgc0xy0p
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a05:6902:2192:b0:dc6:fec4:1c26 with
+ SMTP id dl18-20020a056902219200b00dc6fec41c26mr37502ybb.1.1706920456138; Fri,
+ 02 Feb 2024 16:34:16 -0800 (PST)
+Date: Sat,  3 Feb 2024 00:34:13 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240102124747.21644-1-hao.qin@mediatek.com>
-In-Reply-To: <20240102124747.21644-1-hao.qin@mediatek.com>
-From: Sean Wang <sean.wang@kernel.org>
-Date: Fri, 2 Feb 2024 18:28:56 -0600
-X-Gmail-Original-Message-ID: <CAGp9LzpuLr4vKGSfBoCdES9kKyduADw+2DZp8aZqbR78S_sOuQ@mail.gmail.com>
-Message-ID: <CAGp9LzpuLr4vKGSfBoCdES9kKyduADw+2DZp8aZqbR78S_sOuQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] Bluetooth: btusb: mediatek: refactor
- btusb_mtk_reset function
-To: Hao Qin <hao.qin@mediatek.com>
-Cc: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, 
-	Luiz Von Dentz <luiz.dentz@gmail.com>, Sean Wang <sean.wang@mediatek.com>, 
-	Deren Wu <deren.Wu@mediatek.com>, Aaron Hou <aaron.hou@mediatek.com>, 
-	Chris Lu <chris.lu@mediatek.com>, Steve Lee <steve.lee@mediatek.com>, 
-	linux-bluetooth <linux-bluetooth@vger.kernel.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	linux-mediatek <linux-mediatek@lists.infradead.org>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
+Message-ID: <20240203003414.1067730-1-yosryahmed@google.com>
+Subject: [PATCH mm-hotfixes-unstable] mm: memcg: fix struct
+ memcg_vmstats_percpu size and alignment
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
+	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>, 
+	Greg Thelen <gthelen@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 2, 2024 at 6:49=E2=80=AFAM Hao Qin <hao.qin@mediatek.com> wrote=
-:
->
-> From: "hao.qin" <hao.qin@mediatek.com>
->
-> Extract function btusb_mtk_subsys_reset from btusb_mtk_reset
-> for future handling of resetting bluetooth controller without
-> USB reset.
->
-> Signed-off-by: hao.qin <hao.qin@mediatek.com>
->
+Commit da10d7e140196 ("mm: memcg: optimize parent iteration in
+memcg_rstat_updated()") added two additional pointers to the end of
+struct memcg_vmstats_percpu with CACHELINE_PADDING to put them in a
+separate cacheline. This caused the struct size to increase from 1200 to
+1280 on my config (80 extra bytes instead of 16).
 
-The patch doesn't modify any logic; it simply divides the existing
-logic into two parts,
-each prepared to be called in a specific context. Thus,  Acked-by:
-Sean Wang <sean.wang@kernel.org>
+Upon revisiting, the relevant struct members do not need to be on a
+separate cacheline, they just need to fit in a single one. This is a
+percpu struct, so there shouldn't be any contention on that cacheline
+anyway. Move the members to the beginning of the struct and cachealign
+the first member. Add a comment about the members that need to fit
+together in a cacheline.
 
-> ---
-> V1 -> V2: refactor btusb_mtk_reset function
->
-> Link:
->   https://lore.kernel.org/all/20231215063714.7684-1-hao.qin@mediatek.com/
-> ---
->  drivers/bluetooth/btusb.c | 45 +++++++++++++++++++++++----------------
->  1 file changed, 27 insertions(+), 18 deletions(-)
->
-> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-> index 0926e4451802..abefcd1a089d 100644
-> --- a/drivers/bluetooth/btusb.c
-> +++ b/drivers/bluetooth/btusb.c
-> @@ -2994,28 +2994,13 @@ static u32 btusb_mtk_reset_done(struct hci_dev *h=
-dev)
->         return val & MTK_BT_RST_DONE;
->  }
->
-> -static int btusb_mtk_reset(struct hci_dev *hdev, void *rst_data)
-> +static int btusb_mtk_subsys_reset(struct hci_dev *hdev, u32 dev_id)
->  {
->         struct btusb_data *data =3D hci_get_drvdata(hdev);
-> -       struct btmediatek_data *mediatek;
->         u32 val;
->         int err;
->
-> -       /* It's MediaTek specific bluetooth reset mechanism via USB */
-> -       if (test_and_set_bit(BTUSB_HW_RESET_ACTIVE, &data->flags)) {
-> -               bt_dev_err(hdev, "last reset failed? Not resetting again"=
-);
-> -               return -EBUSY;
-> -       }
-> -
-> -       err =3D usb_autopm_get_interface(data->intf);
-> -       if (err < 0)
-> -               return err;
-> -
-> -       btusb_stop_traffic(data);
-> -       usb_kill_anchored_urbs(&data->tx_anchor);
-> -       mediatek =3D hci_get_priv(hdev);
-> -
-> -       if (mediatek->dev_id =3D=3D 0x7925) {
-> +       if (dev_id =3D=3D 0x7925) {
->                 btusb_mtk_uhw_reg_read(data, MTK_BT_RESET_REG_CONNV3, &va=
-l);
->                 val |=3D (1 << 5);
->                 btusb_mtk_uhw_reg_write(data, MTK_BT_RESET_REG_CONNV3, va=
-l);
-> @@ -3059,8 +3044,32 @@ static int btusb_mtk_reset(struct hci_dev *hdev, v=
-oid *rst_data)
->         if (!val)
->                 bt_dev_err(hdev, "Can't get device id, subsys reset fail.=
-");
->
-> -       usb_queue_reset_device(data->intf);
-> +       return err;
-> +}
->
-> +static int btusb_mtk_reset(struct hci_dev *hdev, void *rst_data)
-> +{
-> +       struct btusb_data *data =3D hci_get_drvdata(hdev);
-> +       struct btmediatek_data *mediatek;
-> +       int err;
-> +
-> +       /* It's MediaTek specific bluetooth reset mechanism via USB */
-> +       if (test_and_set_bit(BTUSB_HW_RESET_ACTIVE, &data->flags)) {
-> +               bt_dev_err(hdev, "last reset failed? Not resetting again"=
-);
-> +               return -EBUSY;
-> +       }
-> +
-> +       err =3D usb_autopm_get_interface(data->intf);
-> +       if (err < 0)
-> +               return err;
-> +
-> +       btusb_stop_traffic(data);
-> +       usb_kill_anchored_urbs(&data->tx_anchor);
-> +       mediatek =3D hci_get_priv(hdev);
-> +
-> +       err =3D btusb_mtk_subsys_reset(hdev, mediatek->dev_id);
-> +
-> +       usb_queue_reset_device(data->intf);
->         clear_bit(BTUSB_HW_RESET_ACTIVE, &data->flags);
->
->         return err;
-> --
-> 2.18.0
->
->
+The struct size is now 1216 on my config with this change.
+
+Fixes: da10d7e140196 ("mm: memcg: optimize parent iteration in memcg_rstat_updated()")
+Reported-by: Greg Thelen <gthelen@google.com>
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+---
+ mm/memcontrol.c | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index d9ca0fdbe4ab0..09f09f37e397e 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -621,6 +621,15 @@ static inline int memcg_events_index(enum vm_event_item idx)
+ }
+ 
+ struct memcg_vmstats_percpu {
++	/* Stats updates since the last flush */
++	unsigned int			stats_updates ____cacheline_aligned;
++
++	/* Cached pointers for fast iteration in memcg_rstat_updated() */
++	struct memcg_vmstats_percpu	*parent;
++	struct memcg_vmstats		*vmstats;
++
++	/* The above should fit a single cacheline for memcg_rstat_updated() */
++
+ 	/* Local (CPU and cgroup) page state & events */
+ 	long			state[MEMCG_NR_STAT];
+ 	unsigned long		events[NR_MEMCG_EVENTS];
+@@ -632,16 +641,6 @@ struct memcg_vmstats_percpu {
+ 	/* Cgroup1: threshold notifications & softlimit tree updates */
+ 	unsigned long		nr_page_events;
+ 	unsigned long		targets[MEM_CGROUP_NTARGETS];
+-
+-	/* Fit members below in a single cacheline for memcg_rstat_updated() */
+-	CACHELINE_PADDING(_pad1_);
+-
+-	/* Stats updates since the last flush */
+-	unsigned int		stats_updates;
+-
+-	/* Cached pointers for fast iteration in memcg_rstat_updated() */
+-	struct memcg_vmstats_percpu	*parent;
+-	struct memcg_vmstats		*vmstats;
+ };
+ 
+ struct memcg_vmstats {
+-- 
+2.43.0.594.gd9cf4e227d-goog
+
 
