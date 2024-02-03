@@ -1,107 +1,128 @@
-Return-Path: <linux-kernel+bounces-51108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6107E848691
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 14:44:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C0BD848692
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 14:46:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CB2E285AF7
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 13:44:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F964284BB8
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 13:46:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF97C5D909;
-	Sat,  3 Feb 2024 13:43:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xplTRPv5"
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B29A05D906;
+	Sat,  3 Feb 2024 13:46:02 +0000 (UTC)
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53B835CDC7
-	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 13:43:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4D695D72E
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 13:45:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706967833; cv=none; b=Vn/AXomyOI3YoYXQeJrWI28J3oNVrRxFtExdziQTyWwBB9w2qTy+JdD1teWy6yHQSY7EQbDhl8cZeX4LHk4EJNqIc7w1y9zpz1U6XynFbQHLyYNxT55s1dCsk7QNqhJCm3BhUGt30geamQ7BXDgIK/FwY3wrUDByUHO2+wnIDx4=
+	t=1706967962; cv=none; b=O0IA7J5p5zdODzzA0IikcoTbdJc0orCNPA7nCGQWx2Cnt0P0/MSSy8NAxjjZO/iZhj+2pZaleoBpjzI2ivYxOo/pvXU36WrdTk90061we6Lwd8u4xIwR8Y2MAQTL8RJxpIsicKbI5aXXDXEouTQG4jFy7/ZtQL+OYJOug3CFFis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706967833; c=relaxed/simple;
-	bh=bB5NkbMpLI0HMjQqKghAYbfh6kYTOIzuHFhSgRTqF8A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=G1LPqvGwIfi7pVjQSAALEeUCtMEOgUZEk2FzYtUpzUwN7LV8hghKaTtKuiOXYh7hFOe87WAINsHYEZLJnbKd7BXuYIbJbDT99+kNh21N0bWZ5h3YFK8jkTSsYysyT0wQS5pZ61ORlgPrKrE/euJoaZqAReZY2xodCZiShXlo7dY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xplTRPv5; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dc6d8f31930so1353642276.0
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Feb 2024 05:43:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706967830; x=1707572630; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Moz+VNtFoELbtekbvE4gjgVQwcWCMsMt8Pxrs1cix0U=;
-        b=xplTRPv57H9fHe6LnBMdCcERI3feAeaCo41jCCrPg2eze8Eoo/PsbSvOdrsZpmlfY3
-         F63PSW/SscYt8VhqjI5IC0AMtxjwfzVTQRsoA4CsGy90zZvnTkoOEXKzYiSu5PelOtit
-         I0ZZZtn8mSerCtIxjUgAAwVoH6W5Mim1nBZU2zhb1LK9usflDnx7GL2ks6Eq2SUoytcx
-         6DpChByqZsBdtiaiQRRAbOgjHQIcc1E/DmI7Qv7EDS6Vv/WZ5/mEpXJ6iTvrHDI+Xoau
-         3IO560cECUFt7IqWZeVC56fM14trVlNTdnVqgkEDPuOjj3sBL/8HZjQeL9jIKroEBRJP
-         AmUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706967830; x=1707572630;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Moz+VNtFoELbtekbvE4gjgVQwcWCMsMt8Pxrs1cix0U=;
-        b=vNJckOChVk9DRp3I8W4Qwaia0aEvgOjXL01quL7CTFHbFwF5S+Nsflh4BM9dZX3gUY
-         ziq6dJoCAi2ngY3fyZp6ddqTAN1gd6nCxLGchFAoj7AwCLvC52OwQ8NOY/uvUlxvxQX0
-         lzyAmMcvUoJXtPdMXEawB2Qx0SRNrkn+wT5yya+XBXwsjRNph9hTrCbqMg24Dt/PSKnC
-         8Y70lJ2zvFWbEqU9pk9DyHL26e1RMc3wT+ndBTH4avK5iAOcPabPNNg1MZShxEC0s9Zq
-         mgpitxBWvMAfmH9sTvwAzktfHHp09Fyc/B6ILCmxUZO9LWRUONtWf9+sOt+i274dPX8Y
-         8QMA==
-X-Gm-Message-State: AOJu0Yze/fQGdZw9XJed6QIx8NFX9ew+zsYFOkeuzEjnoL6+n8WvuMdD
-	Kwjpq74Th6he44ikWUlYdXufLhlVhnuG6E19gwFmxgsH60SZu96zgL3XL462udbop3ausNM1Kmo
-	GlglxI9U150ekmscU8m6eqXL6h4MM0N57XVg4Ww==
-X-Google-Smtp-Source: AGHT+IHC1Kjcdw2ForbRnh30ds48ubtWrAYlVUrU2czhMHf7NwzSUklUGHHrewM+CW4nYQ+906Zj9TjWidJCAslfPqs=
-X-Received: by 2002:a05:6902:dc9:b0:dc2:a46:3d29 with SMTP id
- de9-20020a0569020dc900b00dc20a463d29mr987960ybb.9.1706967830271; Sat, 03 Feb
- 2024 05:43:50 -0800 (PST)
+	s=arc-20240116; t=1706967962; c=relaxed/simple;
+	bh=W0wBnDoFWYFf/fgEW5y0mUsGhftarMHvphikt96cvcc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pXY3vonwWZ6hCETvsZWvnqB3xWifxWcuohAaL4S0obFdflL1eI/czHCEvpADTTjNM/WI3LfQeWt5Ey7PVJVEr/Fscux9Q++7xP7qelUvHxjb9XDZTJny6TvzM2E+DHpx0jSz1iuX95twVuoyF+fmd4OHMHEDzHdD3fJsuWd/UmY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from fsav115.sakura.ne.jp (fsav115.sakura.ne.jp [27.133.134.242])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 413Djv0F005712;
+	Sat, 3 Feb 2024 22:45:57 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav115.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav115.sakura.ne.jp);
+ Sat, 03 Feb 2024 22:45:57 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav115.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 413DjuwW005702
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Sat, 3 Feb 2024 22:45:57 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <1eab9734-8e4a-431b-8996-fb30f0c6b173@I-love.SAKURA.ne.jp>
+Date: Sat, 3 Feb 2024 22:45:53 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <eqepewdgp5k3ajusf3hk7nazi2eli2w6wgxlbjroldwyobzh3d@aewtie2d3ora> <20240203070008.15206-1-amadeus@jmu.edu.cn>
-In-Reply-To: <20240203070008.15206-1-amadeus@jmu.edu.cn>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Sat, 3 Feb 2024 14:43:39 +0100
-Message-ID: <CAA8EJppdG--2=pC=WjaK0HH3NDrh_HXLNmk8AMMMfCLvbtxpEw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] arm64: dts: qcom: ipq6018: enable sdhci node
-To: Chukun Pan <amadeus@jmu.edu.cn>
-Cc: andersson@kernel.org, conor+dt@kernel.org, devicetree@vger.kernel.org, 
-	konrad.dybcio@linaro.org, krzysztof.kozlowski+dt@linaro.org, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	robh+dt@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] tty: n_gsm: restrict tty devices to attach
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jiri Slaby <jirislaby@kernel.org>,
+        syzbot <syzbot+06fa1063cca8163ea541@syzkaller.appspotmail.com>,
+        syzkaller-bugs@googlegroups.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Starke, Daniel" <daniel.starke@siemens.com>,
+        Lee Jones <lee@kernel.org>, Fedor Pchelkin <pchelkin@ispras.ru>,
+        linux-kernel@vger.kernel.org,
+        linux-serial <linux-serial@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <00000000000039f237060f354ef7@google.com>
+ <83414cb6-df16-4b6d-92e3-d54d22ba26cc@I-love.SAKURA.ne.jp>
+ <9cd9d3eb-418f-44cc-afcf-7283d51252d6@I-love.SAKURA.ne.jp>
+ <82aa07d4-13ac-4b1d-80cd-0970c71752a5@kernel.org>
+ <7dc23b9d-5120-4966-b47b-fcabe270d498@I-love.SAKURA.ne.jp>
+ <42d17017-1d30-4c54-9c28-9d9ba2494e07@I-love.SAKURA.ne.jp>
+ <2024012418-passover-habitual-5a92@gregkh>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <2024012418-passover-habitual-5a92@gregkh>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, 3 Feb 2024 at 08:00, Chukun Pan <amadeus@jmu.edu.cn> wrote:
->
-> Hi, Bjorn
-> > That sounds good, but do we have any one of those boards that should
-> > reference &ipq6018_l2? Could make plug it into the sdhci node on some
-> > board?
->
-> Actually I have an ipq6010 sdcard device with pmic, which needs to
-> reference ipq6018_l2. Also on the downstream qsdk kernel, the sdhc
-> node writes 'vqmmc-supply = <&ipq6018_l2>;' by default.
->
-> > Essentially, why is it needed upstream, when there are no user?
->
-> Most ipq60xx devices have pmic chips, including some ipq6000 devices,
-> while another ipq6000 devices do not have the pmic chips. So it does not
-> mean there are no users but the supply is board specific. Maybe we should
-> move the mp5496 node outside of ipq6018.dtsi.
+On 2024/01/24 22:14, Greg Kroah-Hartman wrote:
+>> @@ -3630,6 +3631,17 @@ static int gsmld_open(struct tty_struct *tty)
+>>  	if (tty->ops->write == NULL)
+>>  		return -EINVAL;
+>>  
+>> +	major = tty->driver->major;
+>> +	/* Reject Virtual consoles */
+>> +	if (major == 4 && tty->driver->minor_start == 1)
+>> +		return -EINVAL;
+>> +	/* Reject Unix98 PTY masters/slaves */
+>> +	if (major >= 128 && major <= 143)
+>> +		return -EINVAL;
+>> +	/* Reject BSD PTY masters/slaves */
+>> +	if (major >= 2 && major <= 3)
+>> +		return -EINVAL;
+> 
+> That is a lot of hard-coded magic numbers, why aren't these defined
+> anywhere?
 
-Yes, please. In the end, mp5496 is not a part of the SoC.
+Well, include/uapi/linux/major.h defines
 
--- 
-With best wishes
-Dmitry
+  #define TTY_MAJOR 4
+  #define UNIX98_PTY_MASTER_MAJOR 128
+  #define UNIX98_PTY_MAJOR_COUNT 8
+  #define UNIX98_PTY_SLAVE_MAJOR (UNIX98_PTY_MASTER_MAJOR+UNIX98_PTY_MAJOR_COUNT)
+  #define PTY_MASTER_MAJOR 2
+  #define PTY_SLAVE_MAJOR 3
+
+but does not define end of UNIX98_PTY_SLAVE_MAJOR range, and
+no file defines start of minor number for virtual consoles.
+
+Does fixing this bug worth updating include/uapi/linux/major.h and adding
+include/uapi/linux/minor.h ? Since these numbers won't change, I feel that
+a line of comment is sufficient.
+
+> 
+> But really, this is only for fuzz testers, why can't they just not ever
+> bind this to a console?  Why do we have to have these checks in the
+> kernel to prevent userspace from doing dumb things that no real
+> userspace will ever do?
+
+Fuzz testing is for testing unexpected arguments. This bug is nothing but
+missing validation that should be fixed on the kernel side rather than
+trying to tune fuzzers.
+
+> 
+> thanks,
+> 
+> greg k-h
+
 
