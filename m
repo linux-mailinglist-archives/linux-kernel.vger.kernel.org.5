@@ -1,107 +1,131 @@
-Return-Path: <linux-kernel+bounces-50805-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50806-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDFE8847E15
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 02:16:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2271A847E17
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 02:16:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C7BF1C23C00
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:16:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B60E91F22451
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:16:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B78B8567F;
-	Sat,  3 Feb 2024 01:15:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB43D1C02;
+	Sat,  3 Feb 2024 01:16:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MeRX6SA0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="azwQ2XMI"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 005785396;
-	Sat,  3 Feb 2024 01:15:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CC2E7468;
+	Sat,  3 Feb 2024 01:16:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706922941; cv=none; b=C4FjnDOKUitJzPdM3KqGhMZrbkO2NRh3ntE6pQKyTiH6EMiEHq1nLMUagoYKVSQhF17YBZqQfasFYVVV+5tcvWYUeD8mmlzJ7cRGrInUUX/FSXMnmwfI5/1rcwNglOSrOPCCYVWsaKAfEPSBIHDc0jbTNGvvrPaCPKHME0mgOLI=
+	t=1706923005; cv=none; b=sLQCi7EwcqiXw3nB/U3JonFHLRXEOC3Fz7Y9HXUaYInGHLmPAxCZut9w1f+YWeit+7dmuYaiiGYR7HlMLH9c/OiTsBTIs0DFYc9iCWfy0DZ37nDfBhGFBV0R/pxYXYqirSJQymaeGCx6RxLxFfzrTpxBzcApOukHK333H8h0MSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706922941; c=relaxed/simple;
-	bh=fjX8Xfgg5p0P4PaQxAJSZ98Hw4JnxJn3l63CVEt4OWU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OIJb+BoRCAS54y9FUSx5q88C8jC3jxUQBkkSKETCT1XQ2/DlgSoCApIDhck312etVAkbc0y2u4cWsUHmZ4NgUvey35XQBvugyC3jq5dSGZDXNFEeG8LG6ubLdLpS2g47l65qZf1iMKlZu2BKai6DwpCh4kmYPMYZwCSLGjwS+E4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MeRX6SA0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05FE7C433C7;
-	Sat,  3 Feb 2024 01:15:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706922940;
-	bh=fjX8Xfgg5p0P4PaQxAJSZ98Hw4JnxJn3l63CVEt4OWU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=MeRX6SA0Sa3BWVoNlGLzxBuYcToaonVLfr8XNP0yKeh3t3esYQynx3y0D9KJD/mum
-	 i60EbTt+nGMNuT8iusV3x23kSySZJPqOaIaemfU8FFMlVLeKq1RdIS0AcF6bXad/e9
-	 jCftWOiSNcuq0a1PcoDYFKFvOnOJnngqPGekbCKDSExkdWu7EyZPxzWOcOiYlB1PvR
-	 26tAYOtGP1v4bDfqvHRGqfQ3QgzJuRqsUSJH9cUpSsAHSopWaOiCsFwQ2+wuamWTk/
-	 WmhgdlBgSoIbQxd1LFmyTy242goCh1814ADwiRsrHAVeiEVWZhVmJpLWnC4moddS4+
-	 5Hv9ktjTaRjbw==
-Date: Fri, 2 Feb 2024 17:15:39 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Joe Damato <jdamato@fastly.com>
-Cc: "Samudrala, Sridhar" <sridhar.samudrala@intel.com>, Eric Dumazet
- <edumazet@google.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
- linux-api@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
- alexander.duyck@gmail.com, Wei Wang <weiwan@google.com>, Amritha Nambiar
- <amritha.nambiar@intel.com>
-Subject: Re: [net-next 0/3] Per epoll context busy poll support
-Message-ID: <20240202171539.7347cb01@kernel.org>
-In-Reply-To: <20240202202344.GA9283@fastly.com>
-References: <20240124025359.11419-1-jdamato@fastly.com>
-	<CANn89i+YKwrgpt8VnHrw4eeVpqRamLkTSr4u+g1mRDMZa6b+7Q@mail.gmail.com>
-	<5faf88de-5063-421f-ad78-ad24d931fd17@intel.com>
-	<20240202032806.GA8708@fastly.com>
-	<f0b4d813-d7cb-428b-9c41-a2d86684f3f1@intel.com>
-	<20240202102239.274ca9bb@kernel.org>
-	<20240202193332.GA8932@fastly.com>
-	<20240202115828.6fd125bf@kernel.org>
-	<20240202202344.GA9283@fastly.com>
+	s=arc-20240116; t=1706923005; c=relaxed/simple;
+	bh=WBi5fjeQLzqu5VweIAi77aBO8Co5njeJwDmQl2Or8js=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=bSuTj+/spsozGffM/5JWPNBLzIPfp1F2pUCWo3VVFYUy0Wb+WzidCUzvsAnFf1jVkeIZJk+yPP3b2wx7KeVXEB0jA7np18WsCWjnsqjQi65F+OvPIwBukaZZhGuxwFM7NZ0TWQH8lNvJv8/9055JTbECu4ikX0NTJngkq9dsEd4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=azwQ2XMI; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:References:To:From:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Cc:Content-ID:Content-Description;
+	bh=qyXe97uWehxWlU06p4SzFgk45X8VJ8tYlQZAOutFjWg=; b=azwQ2XMIArUw1hOOO06YQT9IDk
+	vqBiqUqdsCTte5D5uUiDH3aB4LOqfjAM9hwrqSCig5hJi2LQd6oN9IYhzzfWKpBLF4LInpI3AO9eo
+	PCVSxSKxTMUMDaL6MdUvGRJtiM/PZcT5/G92JksaqMoY2JvMc9DChb9csp4zJgWu8bxuvTAWBeSYp
+	aGzUIXRu31BX4Yjbu5iWquaXOOHvhw5y53FIC7RJt6U/CkQAFeA7u8xVTXb5Ll2OFYpodvmTpBo6I
+	Mi9znn9XoOcyF4/l8CGiDluPPWkpueaQCERE+s/b44cRqWSpw7MG5DKvW8hSvoZ/RrW8ss3HfEkAH
+	S6yr2g3Q==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rW4eA-0000000E6Jj-0UOb;
+	Sat, 03 Feb 2024 01:16:42 +0000
+Message-ID: <881d47bf-5f5d-49d6-9502-3b22899eb253@infradead.org>
+Date: Fri, 2 Feb 2024 17:16:41 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: =?UTF-8?Q?Re=3A_This_is_the_fourth_time_I=E2=80=99ve_tried_to_find_?=
+ =?UTF-8?Q?what_led_to_the_regression_of_outgoing_network_speed_and_each_tim?=
+ =?UTF-8?Q?e_I_find_the_merge_commit_8c94ccc7cd691472461448f98e2372c75849406?=
+ =?UTF-8?Q?c?=
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+To: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
+ Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+ Greg KH <gregkh@linuxfoundation.org>,
+ Network Development <netdev@vger.kernel.org>
+References: <CABXGCsNnUfCCYVSb_-j-a-cAdONu1r6Fe8p2OtQ5op_wskOfpw@mail.gmail.com>
+ <43a769dd-aa09-4da3-a226-ecef98f32e0f@infradead.org>
+In-Reply-To: <43a769dd-aa09-4da3-a226-ecef98f32e0f@infradead.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On Fri, 2 Feb 2024 12:23:44 -0800 Joe Damato wrote:
-> > Did you see SO_PREFER_BUSY_POLL by any chance? (In combination with
-> > gro_flush_timeout IIRC). We added it a while back with Bjorn, it seems
-> > like a great idea to me at the time but I'm unclear if anyone uses it 
-> > in production..  
-> 
-> I have seen it while reading the code, yes. I think maybe I missed
-> something about its interaction with gro_flush_timeout. In my use case,
-> the machine has no traffic until after the app is started.
-> 
-> In this case, I haven't needed to worry about regular NAPI monopolizing the
-> CPU and preventing busy poll from working.
-> 
-> Maybe I am missing something more nuanced, though? I'll have another look
-> at the code, just incase.
+[correct the netdev mailing list address]
 
-We reused the gro_flush_timeout as an existing "user doesn't care if
-packets get delayed by this much in worst case" value. If you set
-SO_PREFER_BUSY_POLL the next time you busy pool the NAPI will be marked 
-as "already scheduled" and a timer is set (to gro_flush_timeout).
-If NIC IRQ fires before gro_flush_timeout it gets ignored, because NAPI
-is already marked as scheduled.
-If you busy poll again the timer gets postponed for another
-gro_flush_timeout nsec.
-If timer fires we go back to normal NAPI processing.
 
-The idea is that you set gro_flush_timeout to some high value, like 
-10 msec, and expect your app to poll more often than every 10 msec. 
+On 2/2/24 17:15, Randy Dunlap wrote:
+> Hi,
+> 
+> On 2/2/24 17:02, Mikhail Gavrilov wrote:
+>> Hi,
+>> I'm trying to find the first bad commit that led to a decreased
+>> network outgoing speed.
+>> And every time I come to a huge merge [Merge tag 'usb-6.8-rc1' of
+>> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb]
+>> I have already triple-checked all my answers and speed measurements.
+>> I don't understand where I'm making a mistake.
+>>
+>> Let's try to figure it out together.
+>>
+>> Input data:
+>> Two computers connected 1Gbps link.
+>> Both have the same hardware.
+>> Network: RTL8125 2.5GbE Controller (rev 05)
+>>
+>> When I copy files from one computer to another and kernel snapshot
+>> builded from commit 296455ade1fd I have 97-110MB/sec which is almost
+>> max speed of 1Gbps link.
+>> When I move to commit 9d1694dc91ce I have only 66-70MB/sec which is
+>> significantly slower.
+>>
+>> I bisected the issue by measuring network speed on each step.
+>> I save all results to file [1]
+>>
+>> [1] file is attached as a zip archive.
+>>
+>> # first bad commit: [8c94ccc7cd691472461448f98e2372c75849406c] Merge
+>> tag 'usb-6.8-rc1' of
+>> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb
+> 
+> a. Do you clean the object files between each test run?
+> or at least clean net/* and drivers/net/ethernet/* ?
+> 
+> b. I am far from a git expert, but in the bisects that I have
+> done, after each test run, I just say
+> $ git bisect good
+> or
+> $ git bisect bad
+> 
+> It looks like you are typing
+> $ git bisect [good | bad] hashID
+> 
+> Is that correct?
+> 
+> Anyway, I am interested in your outcome just to learn
+> how to handle this problem.
+> 
+> Good luck.
+> 
 
-Then the normal NAPI processing will never kick in, and there will 
-be only 1 NIC IRQ after which the HW IRQ remains masked.
-With high coalescing timer you technically still get an IRQ every
-so often and interrupt the app. Worst case (UDP flood) you may even
-get into an overload where the app gets starved out completely..
+-- 
+#Randy
 
