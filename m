@@ -1,168 +1,196 @@
-Return-Path: <linux-kernel+bounces-50773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13D9E847DC1
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:25:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 747A1847DC7
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:29:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DD811F25A73
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:25:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDDEF1F27D06
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:29:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5872EDDB5;
-	Sat,  3 Feb 2024 00:23:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B18E180A;
+	Sat,  3 Feb 2024 00:29:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Q/OYFDCz"
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="nVoSGtgI"
+Received: from relay.smtp-ext.broadcom.com (unknown [192.19.166.231])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BBF879D0
-	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 00:23:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BD2D622;
+	Sat,  3 Feb 2024 00:29:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.166.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706919835; cv=none; b=DMsfm/LdhTVZdwZbDfuPDPceAChBlP6yMbE7N7L9j5pcZs4LbiHoMNwiND9Zja6EcKHsTLUCuPCvE1G/UYlQn+ZsFQGBc097JaZzqEwysf9nFwTWjWAoS7LqItHGlmDg9AJ1KuVs3OoEtokerTUD4DfqL8ggVuwg1XTbyex32uk=
+	t=1706920143; cv=none; b=USxwAAgScTkOrZCfYXj19w31kmdc189iZbH2KcWOzjwNHuL+DhcpfJtixd2fiQTEEjPHOnR2cRqouIL6YSG/jkF22NWeCNE3wc6mmrInPpXxcqOUGvb2GOyvWldbE9WS6Fkmge3w3grUq8CAKwL8a4jd3il2W29YA+JzcdzdEjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706919835; c=relaxed/simple;
-	bh=bj+xt0tQx/aHe27FVFwz6GpRQEJPlX/TxMKuiSnFpKQ=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=YjqRen465QtgeAXBZisesg7xn5u3DT72+0UgYMWRcS8t11OYs7NcCHwn/lmZ4gb3LRfpH7fiFtyUdR2h0nORltwYFbDP770ovOwrb71EzUaRtU8x+akvLuZ728Qc1k4SviPDdgzOSRZML6nfWt1Nk3MSBnVfSrQrTejOQvyqBDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Q/OYFDCz; arc=none smtp.client-ip=209.85.210.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6de3141f061so2342497b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 16:23:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706919833; x=1707524633; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=YMTbLD7fakVliu9PWzNdDCpL894AL7erRJ6ZL070HUM=;
-        b=Q/OYFDCzEaEi2/ExUkal7KFup9u8uyc315UNMDCVabluK+X1gZhwFt8Onb9m8UR2Vv
-         0yKEA45jTgqAZP2Xtl3ZrJfrtxiouT4c1zQ3ByDHU4uJ4/apoeauRdt6eci/i5S77eoE
-         xCRMnuspDTra4KVyMUqucpKgita6vxg/seqSHhQMNFwqcdbCaZqpKRqFnngNY1MSQQtU
-         c+eO3+v3Y/K83to0GVC7d1OjxLJ8HT0LVRNbxEhMlLCu7jgwE1Axu/FhLQ7gv4iaTFcg
-         KfrTQskfdMkZSCdvTD/Bkw9Bp4HwUnhobQgqa6pezTCx249YsoElHKAscAoDjFuLp2LH
-         CVmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706919833; x=1707524633;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YMTbLD7fakVliu9PWzNdDCpL894AL7erRJ6ZL070HUM=;
-        b=OB8lKDncenlr5TTCh7MVIVns2xh4Z0bGZfqNKCrM/z6mIUUiIp3XqXeEABkeB1oCZg
-         1A93ojnGszcemXeinZXCYxhcCm1ESuwSds/xK2d/4R0vIiNKcREKTTj6660XZjTuqHGU
-         s6tvJ8gx36IT32q55BS4KOlT+ZcdE01adtOgYRXGYby7Wk6IcpS6fNFfDD796idsu/ex
-         jEW8zIvm/V4T0Sp0Ff63cAsxhKQzpssJIH8pqzxlsNwYC2WaigrbcomSxIRHhFqWiOzE
-         2BKjYqoT7Toxv/7cUbGThQ2u3UpHJ6lEOtc17696sypavY8u/DvPvRg1yiOr8t9gaHy9
-         HIrA==
-X-Gm-Message-State: AOJu0Yz34YHy/BcqmaNfLhxJHQOBRDeSNSbm/t/Wls5m1dVVj/7ObVql
-	Ysqa0nSpBDkiFaCC8wurGBWpZ/NKPgFz8kwzg+AwH5NnWZwJoph8Wd0ypUSK2dMmhAR4oIYM46X
-	nBA==
-X-Google-Smtp-Source: AGHT+IFdh99V2tM7O2ZTQjK+2KSFUG7mdx47/k6wCN3Dq6hcxr5sbk5Qwfu9yU7pPF5nEGWFotYGwzH+t3U=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:1797:b0:6df:eae5:79bd with SMTP id
- s23-20020a056a00179700b006dfeae579bdmr185067pfg.0.1706919833504; Fri, 02 Feb
- 2024 16:23:53 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Fri,  2 Feb 2024 16:23:43 -0800
-In-Reply-To: <20240203002343.383056-1-seanjc@google.com>
+	s=arc-20240116; t=1706920143; c=relaxed/simple;
+	bh=6IQ2jaFQHup3JsKNrVAd3gd6vlUrscEJfijinF/hldk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=j/jOnqCRUJdjOdqTGrp9OZHXrwG20HR3jedV1EPh3BO7v9FcAl77T2i7jvmGHaDhLnk5I8qoeebsJAgSba/6xFJg8rbmG75kE2xUjCoB+SULbMGjV7aNeGA2eBI2g7/xo63nWmrB2/K82QCAJAmD2JyWGnmZhjwS5Gg98LH57HA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=nVoSGtgI; arc=none smtp.client-ip=192.19.166.231
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 4E384C001668;
+	Fri,  2 Feb 2024 16:28:55 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 4E384C001668
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+	s=dkimrelay; t=1706920135;
+	bh=6IQ2jaFQHup3JsKNrVAd3gd6vlUrscEJfijinF/hldk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=nVoSGtgI+VGLYpVsku7u3qKIEEu4jKfcDFkG2JnJsn4rlXIIN5mS1AfXg8E8LcarT
+	 Q/0Df0cBhKderf+SST47yI3qWo1UUUtqD5TILU0ZZ31pgGC4Tju4NJCRKOCSjWWc0V
+	 IHcwbKjELiKVZxpvTXPlpbQrFaEoB2G3AbhtaSzk=
+Received: from bcacpedev-irv-3.lvn.broadcom.net (bcacpedev-irv-3.lvn.broadcom.net [10.173.232.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id C3D4A18041CAC4;
+	Fri,  2 Feb 2024 16:28:53 -0800 (PST)
+From: William Zhang <william.zhang@broadcom.com>
+To: Linux MTD List <linux-mtd@lists.infradead.org>,
+	Linux ARM List <linux-arm-kernel@lists.infradead.org>,
+	Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>
+Cc: f.fainelli@gmail.com,
+	kursad.oney@broadcom.com,
+	joel.peshkin@broadcom.com,
+	anand.gore@broadcom.com,
+	dregan@mail.com,
+	kamal.dasu@broadcom.com,
+	tomer.yacoby@broadcom.com,
+	dan.beygelman@broadcom.com,
+	William Zhang <william.zhang@broadcom.com>,
+	Andre Przywara <andre.przywara@arm.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Kamal Dasu <kdasu.kdev@gmail.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+	Shawn Guo <shawnguo@kernel.org>,
+	David Regan <dregan@broadcom.com>,
+	devicetree@vger.kernel.org,
+	Alexandre TORGUE <alexandre.torgue@st.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Brian Norris <computersforpeace@gmail.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	linux-kernel@vger.kernel.org,
+	Richard Weinberger <richard@nod.at>
+Subject: [PATCH v4 00/12] dt-bindings: mtd: brcmnand: Updates for bcmbca SoCs
+Date: Fri,  2 Feb 2024 16:28:21 -0800
+Message-Id: <20240203002834.171462-1-william.zhang@broadcom.com>
+X-Mailer: git-send-email 2.37.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240203002343.383056-1-seanjc@google.com>
-X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-Message-ID: <20240203002343.383056-5-seanjc@google.com>
-Subject: [PATCH v2 4/4] KVM: x86/mmu: Fix a *very* theoretical race in kvm_mmu_track_write()
-From: Sean Christopherson <seanjc@google.com>
-To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Jim Mattson <jmattson@google.com>, Mingwei Zhang <mizhang@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Add full memory barriers in kvm_mmu_track_write() and account_shadowed()
-to plug a (very, very theoretical) race where kvm_mmu_track_write() could
-miss a 0->1 transition of indirect_shadow_pages and fail to zap relevant,
-*stale* SPTEs.
+This patch series is an update from the previous version [1] after
+exex_op support and fixes (patch 1 to 4 from the previous version.)
 
-Without the barriers, because modern x86 CPUs allow (per the SDM):
+It updates all the BCMBCA SoC to support the nand controller and add
+functions to handle BCMBCA specific needs on ECC and Write Protection
+usage. The device tree document is also updated accordingly with the new
+properties needed by the driver.
 
-  Reads may be reordered with older writes to different locations but not
-  with older writes to the same location.
+In addition there is a bug fix for exec_op helper functions and log
+level adjustment on uncorrectable ECC error.
 
-it's (again, super theoretically) possible that the following could happen
-(terms of values being visible/resolved):
+[1] https://lore.kernel.org/lkml/20230606231252.94838-1-william.zhang@broadcom.com/
 
- CPU0                          CPU1
- read memory[gfn] (=Y)
-                               memory[gfn] Y=>X
-                               read indirect_shadow_pages (=0)
- indirect_shadow_pages 0=>1
+Changes in v4:
+- Split the yaml changes into three patches.
+- Move the WP pin property to a new patch and change it to boolean type.
+- Move ecc strap property to a new patch and remove some non-binding 
+related text from the description
+- Add a new patch for bcm4908 based router board dts update
+- Move the board related dts setting from SoC dtsi to board dts
+- Update the comments for ecc setting selection
+- Use the new brcm,wp-not-connected property based on the dts binding
+change
+- Fix the commit id in the fixes tag
+- Revert the log level change for correctable ecc error
 
-or conversely:
+Changes in v3:
+- Update brcm,nand-use-wp description
+- Revert the description change to BCM63168 SoC-specific NAND controller
+- Updated bcmbca_read_data_bus comment
 
- CPU0                          CPU1
- indirect_shadow_pages 0=>1
-                               read indirect_shadow_pages (=0)
- read memory[gfn] (=Y)
-                               memory[gfn] Y=>X
+Changes in v2:
+- Revert the new compatible string nand-bcmbca
+- Drop the BCM63168 compatible fix to avoid any potential ABI
+Incompatibility issue
+- Simplify the explanation for brcm,nand-use-wp
+- Keep the interrupt name requirement when interrupt number is specified
+- Add nand controller node label for 4908 so it is consistent with other
+SoC's and can be referenced by board dts file
+- Drop the is_param argument to the read data bus function now that we
+have the exec_op API to read the parameter page and ONFI data
+- Minor cosmetic fixes
+- Added patches 8, 9, 10 to patch series
 
-In practice, this bug is likely benign as both the 0=>1 transition and
-reordering of this scope are extremely rare occurrences.
+David Regan (2):
+  mtd: rawnand: brcmnand: exec_op helper functions return type fixes
+  mtd: rawnand: brcmnand: update log level messages
 
-Note, if the cost of the barrier (which is simply a locked ADD, see commit
-450cbdd0125c ("locking/x86: Use LOCK ADD for smp_mb() instead of MFENCE")),
-is problematic, KVM could avoid the barrier by bailing earlier if checking
-kvm_memslots_have_rmaps() is false.  But the odds of the barrier being
-problematic is extremely low, *and* the odds of the extra checks being
-meaningfully faster overall is also low.
+William Zhang (10):
+  dt-bindings: mtd: brcmnand: Updates for bcmbca SoCs
+  dt-bindings: mtd: brcmnand: Add WP pin connection property
+  dt-bindings: mtd: brcmnand: Add ecc strap property
+  ARM: dts: broadcom: bcmbca: Add NAND controller node
+  arm64: dts: broadcom: bcmbca: Add NAND controller node
+  arm64: dts: broadcom: bcmbca: Update router boards
+  mtd: rawnand: brcmnand: Rename bcm63138 nand driver
+  mtd: rawnand: brcmnand: Add BCMBCA read data bus interface
+  mtd: rawnand: brcmnand: Add support for getting ecc setting from strap
+  mtd: rawnand: brcmnand: Support write protection setting from dts
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/mmu/mmu.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+ .../bindings/mtd/brcm,brcmnand.yaml           |  29 +++-
+ arch/arm/boot/dts/broadcom/bcm47622.dtsi      |  14 ++
+ arch/arm/boot/dts/broadcom/bcm63138.dtsi      |   7 +-
+ arch/arm/boot/dts/broadcom/bcm63148.dtsi      |  14 ++
+ arch/arm/boot/dts/broadcom/bcm63178.dtsi      |  14 ++
+ arch/arm/boot/dts/broadcom/bcm6756.dtsi       |  14 ++
+ arch/arm/boot/dts/broadcom/bcm6846.dtsi       |  14 ++
+ arch/arm/boot/dts/broadcom/bcm6855.dtsi       |  14 ++
+ arch/arm/boot/dts/broadcom/bcm6878.dtsi       |  14 ++
+ arch/arm/boot/dts/broadcom/bcm947622.dts      |  10 ++
+ arch/arm/boot/dts/broadcom/bcm963138.dts      |  10 ++
+ arch/arm/boot/dts/broadcom/bcm963138dvt.dts   |  14 +-
+ arch/arm/boot/dts/broadcom/bcm963148.dts      |  10 ++
+ arch/arm/boot/dts/broadcom/bcm963178.dts      |  10 ++
+ arch/arm/boot/dts/broadcom/bcm96756.dts       |  10 ++
+ arch/arm/boot/dts/broadcom/bcm96846.dts       |  10 ++
+ arch/arm/boot/dts/broadcom/bcm96855.dts       |  10 ++
+ arch/arm/boot/dts/broadcom/bcm96878.dts       |  10 ++
+ .../bcmbca/bcm4906-netgear-r8000p.dts         |   5 +
+ .../bcmbca/bcm4906-tplink-archer-c2300-v1.dts |   5 +
+ .../bcmbca/bcm4908-asus-gt-ac5300.dts         |   6 +-
+ .../boot/dts/broadcom/bcmbca/bcm4908.dtsi     |   4 +-
+ .../boot/dts/broadcom/bcmbca/bcm4912.dtsi     |  14 ++
+ .../boot/dts/broadcom/bcmbca/bcm63146.dtsi    |  14 ++
+ .../boot/dts/broadcom/bcmbca/bcm63158.dtsi    |  14 ++
+ .../boot/dts/broadcom/bcmbca/bcm6813.dtsi     |  14 ++
+ .../boot/dts/broadcom/bcmbca/bcm6856.dtsi     |  14 ++
+ .../boot/dts/broadcom/bcmbca/bcm6858.dtsi     |  14 ++
+ .../boot/dts/broadcom/bcmbca/bcm94908.dts     |  10 ++
+ .../boot/dts/broadcom/bcmbca/bcm94912.dts     |  10 ++
+ .../boot/dts/broadcom/bcmbca/bcm963146.dts    |  10 ++
+ .../boot/dts/broadcom/bcmbca/bcm963158.dts    |  10 ++
+ .../boot/dts/broadcom/bcmbca/bcm96813.dts     |  10 ++
+ .../boot/dts/broadcom/bcmbca/bcm96856.dts     |  10 ++
+ .../boot/dts/broadcom/bcmbca/bcm96858.dts     |  10 ++
+ drivers/mtd/nand/raw/brcmnand/Makefile        |   2 +-
+ drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c |  99 --------------
+ drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c   | 126 ++++++++++++++++++
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c      | 126 +++++++++++++++---
+ drivers/mtd/nand/raw/brcmnand/brcmnand.h      |   2 +
+ 40 files changed, 623 insertions(+), 134 deletions(-)
+ delete mode 100644 drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c
+ create mode 100644 drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 3c193b096b45..86b85060534d 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -830,6 +830,14 @@ static void account_shadowed(struct kvm *kvm, struct kvm_mmu_page *sp)
- 	struct kvm_memory_slot *slot;
- 	gfn_t gfn;
- 
-+	/*
-+	 * Ensure indirect_shadow_pages is elevated prior to re-reading guest
-+	 * child PTEs in FNAME(gpte_changed), i.e. guarantee either in-flight
-+	 * emulated writes are visible before re-reading guest PTEs, or that
-+	 * an emulated write will see the elevated count and acquire mmu_lock
-+	 * to update SPTEs.  Pairs with the smp_mb() in kvm_mmu_track_write().
-+	 */
-+	smp_mb();
- 	kvm->arch.indirect_shadow_pages++;
- 	gfn = sp->gfn;
- 	slots = kvm_memslots_for_spte_role(kvm, sp->role);
-@@ -5747,10 +5755,15 @@ void kvm_mmu_track_write(struct kvm_vcpu *vcpu, gpa_t gpa, const u8 *new,
- 	bool flush = false;
- 
- 	/*
--	 * If we don't have indirect shadow pages, it means no page is
--	 * write-protected, so we can exit simply.
-+	 * When emulating guest writes, ensure the written value is visible to
-+	 * any task that is handling page faults before checking whether or not
-+	 * KVM is shadowing a guest PTE.  This ensures either KVM will create
-+	 * the correct SPTE in the page fault handler, or this task will see
-+	 * a non-zero indirect_shadow_pages.  Pairs with the smp_mb() in
-+	 * account_shadowed().
- 	 */
--	if (!READ_ONCE(vcpu->kvm->arch.indirect_shadow_pages))
-+	smp_mb();
-+	if (!vcpu->kvm->arch.indirect_shadow_pages)
- 		return;
- 
- 	write_lock(&vcpu->kvm->mmu_lock);
 -- 
-2.43.0.594.gd9cf4e227d-goog
+2.37.3
 
 
