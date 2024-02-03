@@ -1,187 +1,182 @@
-Return-Path: <linux-kernel+bounces-51308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D524E848919
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 23:04:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66B81848926
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 23:25:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8441F2842E2
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 22:04:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86F061C20D4F
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 22:25:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE6831640B;
-	Sat,  3 Feb 2024 22:04:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C3011755E;
+	Sat,  3 Feb 2024 22:25:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KMxiCfNB";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kQOGILAR";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KMxiCfNB";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kQOGILAR"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="UslhFOVg"
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A360134C6;
-	Sat,  3 Feb 2024 22:04:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89851134D2
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 22:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706997859; cv=none; b=VovvFEYmYbkKvd3vXc8IoIBmh7B4ON6uoI2jpUnBejLLVvnailajiPn8vyr3lP4TZqUjL1gN+4VPMzMhQOVqKEUMYnjMJCxJID3/vns/1/QK4YXSgjfYANPCCV7z1Jgsva8vVH8kSCnhk3WFb395A7J631YR+Z1oOeaNrTkMsKU=
+	t=1706999112; cv=none; b=QP9JbB0+ZP/DNgnJfedERtA+yogTMVZtyd/RY+XhZJ4tCbvObMZLtUqCr65mpzabIPla7API0SmT33NpQnrTU0/qfvZcvV5BRNrmtBvslehJKsvX1xHDFmRohP5PAbradDTpN+nOnpjDnxZjHt0RPCmPguzyCOXwL8HsTasbAT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706997859; c=relaxed/simple;
-	bh=4oNJDfxh60asCYceTHnZ+3VxEbkaJ68cGNVxuKB1nZk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YfaQmUxJNmLeuR/ZkLlYbMbM8QE3BzD37wQFIcvKNhY9Kjt77uKE+C1wa9S0fA5aS35+NHZLyEa0uJcy/NBZ/+I1O9YXqGub0u200d/cesV+bntWIvb2RIBDKFvOnHvz7+wPzzfAv4NDQzOrwx5gaa3SIQ6ajgIwI3bfzJw2Bmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KMxiCfNB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kQOGILAR; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KMxiCfNB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kQOGILAR; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 75FE621D58;
-	Sat,  3 Feb 2024 22:04:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706997854;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CBP6rxsvCRGoqNDs3If3+DWyofv58n0zrUDxNRyJ2QA=;
-	b=KMxiCfNBGDQ0KFkkd/hPqGhVI6AwK+pOSGKG0BPm2HjuBl/mPwviLKdEVQoP7cyRSs1VEH
-	RKJtLdkdfaXNEJ07C89U8wdkRKSm+MCC+Pjh6DgfUA95n0J/Nehn1iIAVlZfsNFOleZkHp
-	FaG78tS4ms5SUe198XxdUHXp4fPZ3UU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706997854;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CBP6rxsvCRGoqNDs3If3+DWyofv58n0zrUDxNRyJ2QA=;
-	b=kQOGILAR7b0NkZBOyQO7+HgAGAELb7WFLHpWhDNq4/ZH1TG1jfu4ITcOVjs+StPutHVNrd
-	dcBwvsd1A0grT5BA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706997854;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CBP6rxsvCRGoqNDs3If3+DWyofv58n0zrUDxNRyJ2QA=;
-	b=KMxiCfNBGDQ0KFkkd/hPqGhVI6AwK+pOSGKG0BPm2HjuBl/mPwviLKdEVQoP7cyRSs1VEH
-	RKJtLdkdfaXNEJ07C89U8wdkRKSm+MCC+Pjh6DgfUA95n0J/Nehn1iIAVlZfsNFOleZkHp
-	FaG78tS4ms5SUe198XxdUHXp4fPZ3UU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706997854;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CBP6rxsvCRGoqNDs3If3+DWyofv58n0zrUDxNRyJ2QA=;
-	b=kQOGILAR7b0NkZBOyQO7+HgAGAELb7WFLHpWhDNq4/ZH1TG1jfu4ITcOVjs+StPutHVNrd
-	dcBwvsd1A0grT5BA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4ECF1137FD;
-	Sat,  3 Feb 2024 22:04:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 2zEHE164vmXLCQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Sat, 03 Feb 2024 22:04:14 +0000
-Date: Sat, 3 Feb 2024 23:03:46 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: Anand Jain <anand.jain@oracle.com>, Alex Romosan <aromosan@gmail.com>,
-	CHECK_1234543212345@protonmail.com, brauner@kernel.org,
-	linux-btrfs <linux-btrfs@vger.kernel.org>,
-	linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	dsterba@suse.cz
-Subject: Re: [btrfs] commit bc27d6f0aa0e4de184b617aceeaf25818cc646de breaks
- update-grub
-Message-ID: <20240203220346.GA355@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <CAKLYgeJ1tUuqLcsquwuFqjDXPSJpEiokrWK2gisPKDZLs8Y2TQ@mail.gmail.com>
- <39e3a4fe-d456-4de4-b481-51aabfa02b8d@leemhuis.info>
- <20240111155056.GG31555@twin.jikos.cz>
- <20240111170644.GK31555@twin.jikos.cz>
- <f45e5b7c-4354-87d3-c7f1-d8dd5f4d2abd@oracle.com>
- <7d3cee75-ee74-4348-947a-7e4bce5484b2@leemhuis.info>
+	s=arc-20240116; t=1706999112; c=relaxed/simple;
+	bh=Akk3yfd0skBsyfpDvBuTijI4DTSE1uDMrPs5axVSpcY=;
+	h=Date:Message-ID:MIME-Version:Content-Type:Content-Disposition:
+	 From:To:Cc:Subject:References:In-Reply-To; b=fYdnHq/LfuPA2FZ5wJlniTJdTXmV6m3IzQNXMho4+4azVxPM1N34yAF9Ye5C2seI01vr9HxpVZRlExhvstNd9Qp+pObJPBKWrha3MfMe19ctInSRvBLvt8u0FXzyAsKAaWR317iXFnrMEkDTbrY1MDd3wpURlU7oKx7zhzpxaX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=UslhFOVg; arc=none smtp.client-ip=209.85.222.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-7853fcc314bso218479085a.1
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Feb 2024 14:25:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1706999109; x=1707603909; darn=vger.kernel.org;
+        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
+         :content-disposition:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=DnWesDs8xRNqrKgsSJ7fCUj/XnlBG4IvaiEQPBxCK/I=;
+        b=UslhFOVg8WFUzqld2FRyTxItmLSnj0ByEQAtAEokRfNrtL65h4jolouj4Q0KaXgy7I
+         dwWBbtq75NLmwEzjqHnxX6ovf74HGb/+eQ1u5u3cDuR962nRMBIQAHO2pklMJs5VEtFF
+         J2KCZKGZqiH1GAnqMx/jR6Kw1zADG154LUO/sPqRF9z5CqmPx0YjEUQsIW35qgmWb16q
+         3UaVjFXAR/V/Ibmrl6bz95E4lv1HC+gW2jdbko6h6uNedJrm2Y8zlf0v1gBV7qgbdbqz
+         HidKBzGH5j3uX3pnyQRpaiw5EN+leF/d42mepu7qrwQGlfYFPxBsNV0AKjK0W8M46hI/
+         AMkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706999109; x=1707603909;
+        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
+         :content-disposition:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DnWesDs8xRNqrKgsSJ7fCUj/XnlBG4IvaiEQPBxCK/I=;
+        b=goHcr5rnMsFU277YybG5O9n4qNtPgNORqPG6vod0Syv1E0UQV+AhKBsiU405GfMjIv
+         KPZkN1B3e4Ei4GmVRIjlptSrPW7gdPbUtFhbYOuUXgS5ZiP1MyGCIsufMFPBd+UMyqeq
+         cis442Pi1AL8YSJgBbuhZLnO4lTNQ2QUyeCmff5ab39Qes7wciMwrdiOiG2rIe7OURF9
+         FT2zYEdtzQte6Tcd0XMKka58Rmp9DUfO0rcoqI5Y0+YWDdFSMXdL3DpPF/1atqbJjv9n
+         PzMG+hHm8OGbi6xHH4Uyhu1KH9HQlNHTot5kYDQxt9AJpmbX8nXECV6+kXye/QavmDdE
+         bQrA==
+X-Gm-Message-State: AOJu0Yzawb75nSxO7wfnJgs8qehqGdzwzJ0h10R+nwmkOVqZ1uhmYe8D
+	idlZHURrZVP3/xcPPfHWtygelivqwVaBOO8bXGcIeJBJ7Uy82PgVED0druZs3g==
+X-Google-Smtp-Source: AGHT+IFtZe+Q8W1ePYytw7UeC4Jf2MOnkQ6RcSuccAbbwyK+ZuVbp0rOxBJSIWscsGRZX7r4oaJh+g==
+X-Received: by 2002:a05:620a:2e3:b0:783:b038:d1a1 with SMTP id a3-20020a05620a02e300b00783b038d1a1mr9095773qko.39.1706999109324;
+        Sat, 03 Feb 2024 14:25:09 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVwYaZbKyqip0VIR8GONQxXUcX8op8aMPNo2Ap1p+jdcI0F9O4QdFtfkXUh2izlay/UPxQX4uTdUnml1eWFaVIu3sl4cZN0o9MEZYPtDzuPUBt8ISFeQUgk//7oOgSqTo+LWz7pHI783WZUe7avWlFl2g4RV0ALfs6fSYnt9PmcP3V5e5UUC9OHfUN1hGOhFCEIHdwZdid79pfUdFyuN0HQ1asimEWyLDwYPGdfmyK0n3vX204PQ6L6I7qS+XYcc2+4FDbFfrLjHojE/EkYwAYSDsPcTayfqX5R0GGth4PTwEABerphUsn9JY6Cz1DdD0rhuTOjEi/XLpHp1AvDca0BRlY13p7V9uUBl5XxTmPDaaLTbmdbuj1e2I3b+GHRn4+Guw1TVTp0wlUYUAdXRnJPf1jp9/Mte8sgyYSGDJVgBLodRU8oGcMpA5MLWsHMPY5+8w5xv6eKGe3vsfBvHJH92nrGbL7ODZl7dWe1CNUDc7uQPTJqnToEqjD5Yl1fzWFBuCEy7dobme80FhUuQ9F8QqZX8GC19w5DGqXnrHRf6FF81Ob58I7Z4V+OoQ0FbylAMRBpa+pH
+Received: from localhost ([70.22.175.108])
+        by smtp.gmail.com with ESMTPSA id g4-20020a37e204000000b00783f534706esm1734412qki.61.2024.02.03.14.25.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Feb 2024 14:25:08 -0800 (PST)
+Date: Sat, 03 Feb 2024 17:25:08 -0500
+Message-ID: <b9ca171301d5abeb78922dd79d65136a@paul-moore.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7d3cee75-ee74-4348-947a-7e4bce5484b2@leemhuis.info>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -1.00
-X-Spamd-Result: default: False [-1.00 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com,protonmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[oracle.com,gmail.com,protonmail.com,kernel.org,vger.kernel.org,fb.com,toxicpanda.com,suse.com,suse.cz];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[19.53%]
-X-Spam-Flag: NO
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Disposition: inline 
+Content-Transfer-Encoding: 8bit
+From: Paul Moore <paul@paul-moore.com>
+To: Fan Wu <wufan@linux.microsoft.com>, corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org, eparis@redhat.com
+Cc: linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org, dm-devel@lists.linux.dev, audit@vger.kernel.org, linux-kernel@vger.kernel.org, Fan Wu <wufan@linux.microsoft.com>
+Subject: Re: [PATCH RFC v12 5/20] initramfs|security: Add security hook to  initramfs unpack
+References: <1706654228-17180-6-git-send-email-wufan@linux.microsoft.com>
+In-Reply-To: <1706654228-17180-6-git-send-email-wufan@linux.microsoft.com>
 
-On Thu, Feb 01, 2024 at 11:25:28AM +0100, Linux regression tracking (Thorsten Leemhuis) wrote:
-> Hi, Thorsten here, the Linux kernel's regression tracker. Top-posting
-> for once, to make this easily accessible to everyone.
+On Jan 30, 2024 Fan Wu <wufan@linux.microsoft.com> wrote:
 > 
-> Anand, what's the status wrt to below issue (which afaics seems to
-> affect quite a few people)? Things look stalled, but I might be missing
-> something, that's why I ask for a quick update.
+> This patch introduces a new hook to notify security system that the
+> content of initramfs has been unpacked into the rootfs.
+> 
+> Upon receiving this notification, the security system can activate
+> a policy to allow only files that originated from the initramfs to
+> execute or load into kernel during the early stages of booting.
+> 
+> This approach is crucial for minimizing the attack surface by
+> ensuring that only trusted files from the initramfs are operational
+> in the critical boot phase.
+> 
+> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
+> ---
+> v1-v11:
+>   + Not present
+> 
+> v12:
+>   + Introduced
+> ---
+>  include/linux/lsm_hook_defs.h |  4 ++++
+>  include/linux/security.h      | 10 ++++++++++
+>  init/initramfs.c              |  3 +++
+>  security/security.c           | 12 ++++++++++++
+>  4 files changed, 29 insertions(+)
+> 
+> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+> index 185924c56378..b247388786a9 100644
+> --- a/include/linux/lsm_hook_defs.h
+> +++ b/include/linux/lsm_hook_defs.h
+> @@ -425,3 +425,7 @@ LSM_HOOK(int, 0, uring_override_creds, const struct cred *new)
+>  LSM_HOOK(int, 0, uring_sqpoll, void)
+>  LSM_HOOK(int, 0, uring_cmd, struct io_uring_cmd *ioucmd)
+>  #endif /* CONFIG_IO_URING */
+> +
+> +#ifdef CONFIG_BLK_DEV_INITRD
+> +LSM_HOOK(void, LSM_RET_VOID, unpack_initramfs_security, void)
+> +#endif /* CONFIG_BLK_DEV_INITRD */
 
-Yeah it's affecting people and not stalled but we ran out of ideas.
+Let's just call it "unpack_initramfs", the "_security" part is somewhat
+implied since we are talking about a LSM hook ;)
 
-I'll present the latest fix that works for me (similar setup as the
-reporter), though not everybody may like it:
+> diff --git a/init/initramfs.c b/init/initramfs.c
+> index 76deb48c38cb..075a5794cde5 100644
+> --- a/init/initramfs.c
+> +++ b/init/initramfs.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/init_syscalls.h>
+>  #include <linux/task_work.h>
+>  #include <linux/umh.h>
+> +#include <linux/security.h>
+>  
+>  static __initdata bool csum_present;
+>  static __initdata u32 io_csum;
+> @@ -720,6 +721,8 @@ static void __init do_populate_rootfs(void *unused, async_cookie_t cookie)
+>  #endif
+>  	}
+>  
+> +	security_unpack_initramfs();
 
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2360,6 +2360,7 @@ static int btrfs_unfreeze(struct super_block *sb)
- static int btrfs_show_devname(struct seq_file *m, struct dentry *root)
- {
-        struct btrfs_fs_info *fs_info = btrfs_sb(root->d_sb);
-+       char real[4096] = { "/dev/" };
- 
-        /*
-         * There should be always a valid pointer in latest_dev, it may be stale
-@@ -2367,7 +2368,8 @@ static int btrfs_show_devname(struct seq_file *m, struct dentry *root)
-         * the end of RCU grace period.
-         */
-        rcu_read_lock();
--       seq_escape(m, btrfs_dev_name(fs_info->fs_devices->latest_dev), " \t\n\\");
-+       scnprintf(real + 5, sizeof(real) - 5, "%pg", fs_info->fs_devices->latest_dev->bdev);
-+       seq_puts(m, real);
-        rcu_read_unlock();
- 
-        return 0;
----
+Given the caller, what do you think of changing the hook name to
+"security_initramfs_populated()"?  I think this not only matches up
+better with the caller, "do_populate_rootfs()", but since in using the
+past tense we help indicate that this hook happens *after* the rootfs
+is populated with the initramfs data.
 
-The problem that was reported was a discrepancy in what show_devname
-returned (/proc/self/mountinfo) and what eg. mount showed. Both resolve
-the device name in a different way. The problem is that mountinfo relies
-on what btrfs remembers as the device path that was passed during
-scanning && at the mount time. Since then it's not updated due to
-changes done in 6.7 for temp_fsid (single devices don't have any cached
-representation of the device, so the new path is basically forgotten).
+>  done:
+>  	/*
+>  	 * If the initrd region is overlapped with crashkernel reserved region,
+> diff --git a/security/security.c b/security/security.c
+> index ddf2e69cf8f2..2a527d4c69bc 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -5581,3 +5581,15 @@ int security_uring_cmd(struct io_uring_cmd *ioucmd)
+>  	return call_int_hook(uring_cmd, 0, ioucmd);
+>  }
+>  #endif /* CONFIG_IO_URING */
+> +
+> +#ifdef CONFIG_BLK_DEV_INITRD
+> +/**
+> + * security_unpack_initramfs() - Notify LSM that initramfs has been loaded
+> + *
+> + * Tells the LSM the initramfs has been unpacked into the rootfs.
+> + */
+> +void security_unpack_initramfs(void)
+> +{
+> +	call_void_hook(unpack_initramfs_security);
+> +}
+> +#endif /* CONFIG_BLK_DEV_INITRD */
+> -- 
+> 2.43.0
 
-What the fix does: print the path of the same block device but not the
-cached (possibly stale) value.
+--
+paul-moore.com
 
