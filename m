@@ -1,139 +1,139 @@
-Return-Path: <linux-kernel+bounces-50896-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50897-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D422848005
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 04:57:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E73684800A
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 05:00:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC41D1F282A8
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 03:57:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1B6B1F27CAC
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 04:00:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1A45101E8;
-	Sat,  3 Feb 2024 03:56:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A940FBF2;
+	Sat,  3 Feb 2024 04:00:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="m/clajfx"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85594F9D7;
-	Sat,  3 Feb 2024 03:56:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="k2HRrMgL"
+Received: from smtp-fw-52004.amazon.com (smtp-fw-52004.amazon.com [52.119.213.154])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B659F9E4;
+	Sat,  3 Feb 2024 04:00:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706932616; cv=none; b=GTRhB69qjA7JAhShsrlvg157pXbr4NwEKNkj8MgLXIdXMEyqx907g8kZm+pr36LcPRlbkAncIBzLMtvhNntdFRjxXqffiz7VUCbBMOWcHJSDSluwV34GVHpd68f34wcyE62oGanO/ujG6ldhGjNHll6lfRdK92Gf2LJXRZs/elo=
+	t=1706932839; cv=none; b=k2Lv0rbv50mTSaDc/udh1LPzygIYEYjdKzZsQ774nHtTaC1YJT1ONb2qAipiKC9RWoqKpT35kWuOw4rN57LFrunk3XNXS1BeFwUg6SfxbodQIIIlF/UzUKs/36xw0UoNlC3/mlljjhie9Nc1diG5C5RCEO/RPUxR/zXqc/42M8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706932616; c=relaxed/simple;
-	bh=ZxPkhkdkh/qzOmQ6tzCINtYqo1Amarn570/0hPuCEws=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aZcddcnhpE5NA4Y65si7OfagtKnE3N3L6G4Yry+aC88qjaiY4u+P+vI1W2+UpNPpPxPo0OoSEGj2entHjZ+wsfXeJBQhBPxmhVum0BjvrQSi/bXTRL7Ff2gV6VQTmt3yfwMhNhNQESEVhCBgTWRlwvwLc+JyDZno4Tkv0Z9jRyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=m/clajfx; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [10.137.106.151] (unknown [131.107.8.87])
-	by linux.microsoft.com (Postfix) with ESMTPSA id E44F1206FD0D;
-	Fri,  2 Feb 2024 19:56:53 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E44F1206FD0D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1706932614;
-	bh=0jiNLQIjYZrK1snHh4U7Lo4wv1LyM7JCqFc7TqpIT2U=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=m/clajfxDfxFvAcTDd46NYouM6uhFugKVWR8uHm4sE6EFTynnuvqsAFU7GTarPWIH
-	 y7EQZ7z1rcxftAwNX6cuTOp1ixL13ykPZ5kzqZcWa3CA9w9UEpQl0TTQWWnYBc/fAu
-	 sCvZECuOFeoyIVWglZe2vjeuBACkQz0fknf7owY4=
-Message-ID: <dd6f4726-692b-4537-8bb4-a0466f24d713@linux.microsoft.com>
-Date: Fri, 2 Feb 2024 19:56:53 -0800
+	s=arc-20240116; t=1706932839; c=relaxed/simple;
+	bh=nPNcVMyJMqOzODkfQyo8r4ZLd/p2EiOmJqZC2GbOwHU=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=KKJOi3w2TsyqeXvsD6pObyDYTu0GulM57/OZne42WSnWnJaW8hUGKIrLwMTSCu62aTphousoEJ8LlueNIm9UZ3+lZRAeY757JGpIwBfYuVpD5ojX8pBNbdSOlNgo77TyuVCByy8sP/eHGu7W5TQlnQowVSE2zFUvoL4URBLR6w0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=k2HRrMgL; arc=none smtp.client-ip=52.119.213.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1706932838; x=1738468838;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=k41X4sc9DdtTYFgJF4SnAf1wbpUf7pf1w3fjGixgous=;
+  b=k2HRrMgLM30o5V9m/vT1Cd8hOBNNdiLIcXO86sRQLBygApFJCsepYH3L
+   YY8pKOzq6zmnfk/zCQz5eFxKDugm4PSciZKFeNCy0xcK+eqNW4t/6nkmN
+   C0N+brAs3gdObpDf6pTwQoxBxc0polZdVjrRNsRFhAcpK+jjMykqQ5TuY
+   E=;
+X-IronPort-AV: E=Sophos;i="6.05,238,1701129600"; 
+   d="scan'208";a="182307099"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.2])
+  by smtp-border-fw-52004.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2024 04:00:36 +0000
+Received: from EX19MTAUWC002.ant.amazon.com [10.0.21.151:15805]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.44.97:2525] with esmtp (Farcaster)
+ id 8e386eaa-6d50-4d8a-8bab-47c198efb151; Sat, 3 Feb 2024 04:00:35 +0000 (UTC)
+X-Farcaster-Flow-ID: 8e386eaa-6d50-4d8a-8bab-47c198efb151
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Sat, 3 Feb 2024 04:00:33 +0000
+Received: from 88665a182662.ant.amazon.com.com (10.106.101.14) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Sat, 3 Feb 2024 04:00:30 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <syzbot+fa3ef895554bdbfd1183@syzkaller.appspotmail.com>
+CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+	<linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<pabeni@redhat.com>, <syzkaller-bugs@googlegroups.com>
+Subject: Re: [syzbot] [net?] WARNING in __unix_gc
+Date: Fri, 2 Feb 2024 20:00:21 -0800
+Message-ID: <20240203040021.65783-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <0000000000003555920610660fbc@google.com>
+References: <0000000000003555920610660fbc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v12 12/20] dm verity: set DM_TARGET_SINGLETON feature
- flag
-To: Mike Snitzer <snitzer@kernel.org>
-Cc: corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
- tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk, agk@redhat.com,
- eparis@redhat.com, paul@paul-moore.com, linux-doc@vger.kernel.org,
- linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org,
- linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
- dm-devel@lists.linux.dev, audit@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1706654228-17180-1-git-send-email-wufan@linux.microsoft.com>
- <1706654228-17180-13-git-send-email-wufan@linux.microsoft.com>
- <Zb05y2cl3T9rxRJZ@redhat.com>
-Content-Language: en-US
-From: Fan Wu <wufan@linux.microsoft.com>
-In-Reply-To: <Zb05y2cl3T9rxRJZ@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D042UWB004.ant.amazon.com (10.13.139.150) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-
-
-On 2/2/2024 10:51 AM, Mike Snitzer wrote:
-> On Tue, Jan 30 2024 at  5:37P -0500,
-> Fan Wu <wufan@linux.microsoft.com> wrote:
+From: syzbot <syzbot+fa3ef895554bdbfd1183@syzkaller.appspotmail.com>
+Date: Fri, 02 Feb 2024 05:26:28 -0800
+> Hello,
 > 
->> The device-mapper has a flag to mark targets as singleton, which is a
->> required flag for immutable targets. Without this flag, multiple
->> dm-verity targets can be added to a mapped device, which has no
->> practical use cases and will let dm_table_get_immutable_target return
->> NULL. This patch adds the missing flag, restricting only one
->> dm-verity target per mapped device.
->>
->> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
->>
->> ---
->> v1-v10:
->>    + Not present
->>
->> v11:
->>    + Introduced
->>
->> v12:
->>    + No changes
->> ---
->>   drivers/md/dm-verity-target.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/md/dm-verity-target.c b/drivers/md/dm-verity-target.c
->> index 14e58ae70521..66a850c02be4 100644
->> --- a/drivers/md/dm-verity-target.c
->> +++ b/drivers/md/dm-verity-target.c
->> @@ -1507,7 +1507,7 @@ int dm_verity_get_root_digest(struct dm_target *ti, u8 **root_digest, unsigned i
->>   
->>   static struct target_type verity_target = {
->>   	.name		= "verity",
->> -	.features	= DM_TARGET_IMMUTABLE,
->> +	.features	= DM_TARGET_SINGLETON | DM_TARGET_IMMUTABLE,
->>   	.version	= {1, 9, 0},
->>   	.module		= THIS_MODULE,
->>   	.ctr		= verity_ctr,
->> -- 
->> 2.43.0
->>
->>
+> syzbot found the following issue on:
 > 
-> It is true this change will cause dm_table_get_immutable_target() to
-> not return NULL, but: I'm curious how that is meaningful in the
-> context of dm-verity? (given the only caller of
-> dm_table_get_immutable_target() is request-based DM code in DM core.)
+> HEAD commit:    1701940b1a02 Merge branch 'tools-net-ynl-add-features-for-..
+> git tree:       net-next
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=15cbca88180000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=43ed254f922f56d0
+> dashboard link: https://syzkaller.appspot.com/bug?extid=fa3ef895554bdbfd1183
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11b512ffe80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12d6927be80000
 > 
-> Thanks,
-> Mike
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/00090c03ed53/disk-1701940b.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/fc03bbe45eb3/vmlinux-1701940b.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/8a5b859954ca/bzImage-1701940b.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+fa3ef895554bdbfd1183@syzkaller.appspotmail.com
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 2863 at net/unix/garbage.c:345 __unix_gc+0xc74/0xe80 net/unix/garbage.c:345
+> Modules linked in:
+> CPU: 0 PID: 2863 Comm: kworker/u4:11 Not tainted 6.8.0-rc1-syzkaller-00583-g1701940b1a02 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+> Workqueue: events_unbound __unix_gc
+> RIP: 0010:__unix_gc+0xc74/0xe80 net/unix/garbage.c:345
+> Code: 8b 5c 24 50 e9 86 f8 ff ff e8 f8 e4 22 f8 31 d2 48 c7 c6 30 6a 69 89 4c 89 ef e8 97 ef ff ff e9 80 f9 ff ff e8 dd e4 22 f8 90 <0f> 0b 90 e9 7b fd ff ff 48 89 df e8 5c e7 7c f8 e9 d3 f8 ff ff e8
+> RSP: 0018:ffffc9000b03fba0 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: ffffc9000b03fc10 RCX: ffffffff816c493e
+> RDX: ffff88802c02d940 RSI: ffffffff896982f3 RDI: ffffc9000b03fb30
+> RBP: ffffc9000b03fce0 R08: 0000000000000001 R09: fffff52001607f66
+> R10: 0000000000000003 R11: 0000000000000002 R12: dffffc0000000000
+> R13: ffffc9000b03fc10 R14: ffffc9000b03fc10 R15: 0000000000000001
+> FS:  0000000000000000(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00005559c8677a60 CR3: 000000000d57a000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  process_one_work+0x889/0x15e0 kernel/workqueue.c:2633
+>  process_scheduled_works kernel/workqueue.c:2706 [inline]
+>  worker_thread+0x8b9/0x12a0 kernel/workqueue.c:2787
+>  kthread+0x2c6/0x3b0 kernel/kthread.c:388
+>  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+>  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:242
+>  </TASK>
 
-Sorry for the confusion. The reference of 
-dm_table_get_immutable_target() is only to justify an immutable target 
-should also be a 
-singleton(https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/md/dm-table.c#n982). 
-It is not directly related to dm-verity.
+Ugh, I should've noticed this before sending another series.
 
-In the context of dm-verity. I found although veritysetup does ensure 
-the dm-verity target as a singleton, users can still use dmsetup to 
-configure multiple dm-verity targets within a single map table. This 
-leads to a situation where only the first target can be accessed. 
-Therefore to prevent this and similar misuse, I propose introducing 
-DM_TARGET_SINGLETON to allow the kernel to enforce dm-verity targets as 
-singletons.
+It seems syzbot creates a self-ref cycle.
+I'll look into it.
 
-Thanks,
-Fan
+Thanks.
 
