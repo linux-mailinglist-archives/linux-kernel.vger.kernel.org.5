@@ -1,106 +1,114 @@
-Return-Path: <linux-kernel+bounces-51217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3F5C8487ED
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 18:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 00C0F8487F2
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 18:32:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9112C285D9D
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 17:31:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B22C228137D
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 17:32:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 690555B1F1;
-	Sat,  3 Feb 2024 17:31:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0A086024E;
+	Sat,  3 Feb 2024 17:32:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oUw2T3xf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VUPXLoTJ"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 999605FB83;
-	Sat,  3 Feb 2024 17:31:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 599965FEE7
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 17:32:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706981481; cv=none; b=tgGPSJ1SL7k7/UqnghdVNmApHBvBHFbmAPNiNo1Hz/3QQ+eCmYBPFnNsFBEhuYuw595etDSvSyG3l8IJvNNH4idatjiBwkgPb9C/+VjhCyHs60KyT+stRqHNboSSeXQRKJ2WLIjw2AAwzH++khdnlzIZzJ37V5fRoQRNoZUX6HM=
+	t=1706981529; cv=none; b=ioo3yih1EvogVf7cg/VulVjMAvjCw7Q53U9wpWjjvd35VqO59JLy8FRabRG0eJaimxvUWnJ7zL5KcLNmbQL+DlSIa1t4xQeHRWoZOm1rjXbzc64lM+6L4FQwXJS7RgllVJPNzuMPjON23QFb7yUByFJy6L8XReA82cje2PJGatk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706981481; c=relaxed/simple;
-	bh=9gqp+2Ljc8JtlBy1OWpUwEYnoIf1Gb1jf8TyTUU3epo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=prN1rAzRiVGuZn89/aGi488Uj7GoG6dCRQ+ky3yBARcL9bx/ge/eCeruCBFWUygzbaXW/pdyDI/lGxzLpOhnsHOzEIH4m8FcPP3Y68rvNOUVx4PZzzh8MizJqO0JHTcWbiLfW4MdKYkdurqEg0i13Sxfk3YS7Kid517bpylPr8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oUw2T3xf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2909EC433B2;
-	Sat,  3 Feb 2024 17:31:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706981481;
-	bh=9gqp+2Ljc8JtlBy1OWpUwEYnoIf1Gb1jf8TyTUU3epo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=oUw2T3xfWD+BcuKXa4La7vJY5CY+U65GwgWWCacbpQllCOvjW4McBgAYfL/dmLfgM
-	 C0nS5AiNAYBUEginHS5+mvm8Y6G7PWXQ8YRgqEQeALV+ED1BKD/GEwatbao7JQ16Yn
-	 ac57hMyJs0odxQ23bnikLSV+jzFMC86HgHxYYZcnwvJZK8S3zeFSiQxxZEig02MFzM
-	 KRK/qsRau6lwRGklZ9vJgqWOWQHhuowU+RFoSQR9+24S14U2ykK/0mnJHmUbP97mZa
-	 bFfKa5kZC0omiYE9z0+MyKzWYjIEmsSO3G4W0rQ2gs1afKQBEt9UjNK3jR4cPy2Ajd
-	 nslM5+sYbKacQ==
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51142b5b76dso1209431e87.2;
-        Sat, 03 Feb 2024 09:31:21 -0800 (PST)
-X-Gm-Message-State: AOJu0YxYbGKo7NuEMd7NqNmN5V6q+O/hCA2sC0LNi9sOVCLjSZuyopiD
-	Wb33WygYo6i5h7tgNRDqHE6pC9gbfItnnpQTujVFFLYwGETtXPEnP7ELmjEPwBWhyu0yJQ2rbGZ
-	Zaofu2bXgy3qLO7G2RHhry7J+PrM=
-X-Google-Smtp-Source: AGHT+IHukFg7dN0iuA7Gi2zwXtdNwJw7ZD3kr0OLumU/XZ6fGUc5R5UxzRKsRGshds/2kUozoM/Mu+3yrZ0+2ZydG1Q=
-X-Received: by 2002:ac2:5547:0:b0:511:3763:7f59 with SMTP id
- l7-20020ac25547000000b0051137637f59mr3027116lfk.26.1706981479305; Sat, 03 Feb
- 2024 09:31:19 -0800 (PST)
+	s=arc-20240116; t=1706981529; c=relaxed/simple;
+	bh=VwR3zutVS0uEKwi4VgzaB++PSbnmSrsNGy1s/umlIrU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iOWQZ4gKWzgKVw6omDDCyP/NT1jY1tL9qrEJrfburo7o2EQ0vsMlyC9PJXsJ/jGr6GJbs7sdt/BGIoE6BpsyZ27AouwWWphZvJ3KwShL9Pm8sRqY0gyx9ZASDug3WX0OQaqyfR98rif14GhbKRnrXyU2kcnKUf7cNI/TXIzXgtQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=VUPXLoTJ; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=MhL9OboriDWOQ/IcSl1XLlPTkzE8DwF7KcaXw2ZY+1A=; b=VUPXLoTJy8RGTCDnFjhGL6zvge
+	BAK4KgFptG56vRYxqSA4KS5UwHWchuF28gVik/e2WnvKRelmiiFs8IdJXl3U/qPUA2Kgy5AcaZ4Lh
+	SzvWmP0tbsA333Yz4bnSsskfDfYpJyo9Ftv/v4OfWEzfPBEFdgPtSvxBllP6KEFln8sjE2VJxykCl
+	Omql/gyf6lGjvx6PuzWHzo2M7kYNJI0n0xLYLtVouzhlSsWh6rdTmVrc56xL5k+nAnqVc6u/BPcLs
+	O8vuEj5QMFGjqPMb4xsjbvPk2S0qQ+2fIQeZEZMucl4ePpUuFM+c92546dYIa74x2KaLgoiQviUXA
+	x3xg9iZA==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rWJs4-0000000Gvrs-479K;
+	Sat, 03 Feb 2024 17:32:05 +0000
+Message-ID: <bbe127fc-11b3-4c0d-829f-c33654441401@infradead.org>
+Date: Sat, 3 Feb 2024 09:31:59 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131-cxl-cper-fixups-v1-0-335c85b1d77b@intel.com>
-In-Reply-To: <20240131-cxl-cper-fixups-v1-0-335c85b1d77b@intel.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Sat, 3 Feb 2024 18:31:07 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGjuzOMNADnUyobYqPfW-h4FkN_N+UHkXYvOKgqGrKgQQ@mail.gmail.com>
-Message-ID: <CAMj1kXGjuzOMNADnUyobYqPfW-h4FkN_N+UHkXYvOKgqGrKgQQ@mail.gmail.com>
-Subject: Re: [PATCH 0/2] cxl/cper: Fixes for CXL CPER event processing
-To: Ira Weiny <ira.weiny@intel.com>
-Cc: Dan Williams <dan.j.williams@intel.com>, 
-	Jonathan Cameron <jonathan.cameron@huawei.com>, Davidlohr Bueso <dave@stgolabs.net>, 
-	Dave Jiang <dave.jiang@intel.com>, Alison Schofield <alison.schofield@intel.com>, 
-	Vishal Verma <vishal.l.verma@intel.com>, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org, 
-	linux-cxl@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Task: Extra credit : LKMP Bug Fixing 2024 Spring :
+ Documentation
+Content-Language: en-US
+To: Abhinav Jain <jain.abhinav177@gmail.com>, skhan@linuxfoundation.org
+Cc: linux-kernel@vger.kernel.org
+References: <20240203130725.14802-1-jain.abhinav177@gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240203130725.14802-1-jain.abhinav177@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, 1 Feb 2024 at 00:55, Ira Weiny <ira.weiny@intel.com> wrote:
->
-> A couple of fixes for the new CXL CPER processing code.
->
-> The first is a real bug which should land in rc.  The second could wait
-> until the next merge window but it small enough it should be ok to land
-> in rc.
->
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Hi--
+
+On 2/3/24 05:07, Abhinav Jain wrote:
+> Added a prototype for dget() to fix the warning
+> 
+> Signed-off-by: Abhinav Jain <jain.abhinav177@gmail.com>
 > ---
-> Ira Weiny (2):
->       cxl/cper: Fix errant CPER prints for CXL events
->       cxl/trace: Remove unnecessary memcpy's
->
+>  include/linux/dcache.h | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/dcache.h b/include/linux/dcache.h
+> index 3da2f0545d5d..b082b48e7eb5 100644
+> --- a/include/linux/dcache.h
+> +++ b/include/linux/dcache.h
+> @@ -301,7 +301,7 @@ extern char *dentry_path(const struct dentry *, char *, int);
+>  /* Allocation counts.. */
+>  
+>  /**
+> - *	dget, dget_dlock -	get a reference to a dentry
+> + *	dget_dlock -	get a reference to a dentry
+>   *	@dentry: dentry to get a reference to
+>   *
+>   *	Given a dentry or %NULL pointer increment the reference count
+> @@ -315,6 +315,13 @@ static inline struct dentry *dget_dlock(struct dentry *dentry)
+>  	return dentry;
+>  }
+>  
+> +/**
+> + *	dget -	get a reference to a dentry
+> + *	@dentry: dentry to get a reference to
+> + *
+> + *	Given a dentry or %NULL pointer increment the reference count
+> + *	unconditionally and return it.
+> + */
+>  static inline struct dentry *dget(struct dentry *dentry)
+>  {
+>  	if (dentry)
 
-Thanks, I'll take these via the EFI tree.
+The function documentation now makes it look like these functions do the
+same thing, so why have both of them -- or am I misreading it?
 
+Anyway, this problem is already fixed in the linux-next tree (more specifically
+in the vfs tree).
 
->  drivers/acpi/apei/ghes.c    | 26 --------------------------
->  drivers/cxl/core/trace.h    |  6 +++---
->  drivers/firmware/efi/cper.c | 19 +++++++++++++++++++
->  include/linux/cper.h        | 23 +++++++++++++++++++++++
->  4 files changed, 45 insertions(+), 29 deletions(-)
-> ---
-> base-commit: 861c0981648f5b64c86fd028ee622096eb7af05a
-> change-id: 20240111-cxl-cper-fixups-dbf61790e4c8
->
-> Best regards,
-> --
-> Ira Weiny <ira.weiny@intel.com>
->
->
+Thanks.
+-- 
+#Randy
 
