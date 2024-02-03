@@ -1,255 +1,121 @@
-Return-Path: <linux-kernel+bounces-51138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 015FC8486FA
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 16:09:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1FA38486FE
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 16:10:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79E291F21F4D
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 15:09:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC28D1C2139A
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 15:10:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2A7C5DF2D;
-	Sat,  3 Feb 2024 15:09:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 646275F47B;
+	Sat,  3 Feb 2024 15:10:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="joSUV3VM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E/juOOCy"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7910386;
-	Sat,  3 Feb 2024 15:09:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB2E25EE9B;
+	Sat,  3 Feb 2024 15:09:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706972945; cv=none; b=AVCqsaXv8vY6LAdficpg2bhP+29S+aXA7vfyh0DCYxWipz5+/IH95NsHFCp0PT1LJvg41Ktbec7IXdyyEn6+KlyGUIai+a90z+R+7bVzsSolwhFmyQRvqhn6Hx/xaQwDArbiyzcxfVPsE8DX1cCHZVnNIHQWco6joOhM5pwWsVU=
+	t=1706973005; cv=none; b=s2ugzvtvvFQK8IxPieuzVL/n/zogbW51JYGYLzLW1v4Un3wt3iBMNN9KzYuolhHRB+aZZL+Zi2B1Y91RZQKeByMG787SYo6Iq7xfYOl9kSd+nNE5Y9fJjQgE90XqjR106MjDhY2og6xGd5t+qTReP7xzvahp502hWOwDiESrzvg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706972945; c=relaxed/simple;
-	bh=n3DQeWHJWDUnE82O0BBKSEXBBTFwmxZR2bU3dokNRDk=;
+	s=arc-20240116; t=1706973005; c=relaxed/simple;
+	bh=rm+33P086YaogmsaE3YG2LMaWJ2e0KMxXe5Si8IvvAA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kykSz8ks2RCQ3noMKuDnIYi1m5cKgu/0ZX6A70hUvRMmEbgB3p0XP7Z8MhmRdsluWAqdLkJyFWR7CqKgnlSOT40xDWuqF8t79G15uHSUfvnJu4X1t/fAdEdxW9atjpWSPOseEUI2+K+ZxYt9jcLHf3GaF/DLuoVfu5fEbUzPKxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=joSUV3VM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CCEAC433F1;
-	Sat,  3 Feb 2024 15:09:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706972944;
-	bh=n3DQeWHJWDUnE82O0BBKSEXBBTFwmxZR2bU3dokNRDk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=joSUV3VM4rycs/8+EsAkn7lP3I4OCEgqt2ns7lIRdED0K6MuzzofhIRoVC+/okzGn
-	 h2tSZcGOQ/ImpmRhUNDtjcXgEekW/dCsf4sxU6THHrXqKoX4p45YcpistEcNgWRHkr
-	 eG76v8xhQJPMi+3mKYz1fD5k5GZ8tIcwg3sekctRm+0DG+EF6qR+vYzTmV+QNxmRn3
-	 XkHIme5Ojf+GZE1ONq2wiN1yMj7QPFsMHFd6psU5HphGPF+75cvbwQjGsXfNCATfvq
-	 3VygN4Tn4qLmc04Nlwtq/+/d7HY8cqtHRMobhbXCPHCq5cYitzAkkCdRtJ0G9JfKVB
-	 x69x7aOqw4dcQ==
-Date: Sat, 3 Feb 2024 15:08:59 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Josua Mayer <josua@solid-run.com>
-Cc: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-	Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Alessandro Zummo <a.zummo@towertech.it>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Yazan Shhady <yazan.shhady@solid-run.com>,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org
-Subject: Re: [PATCH v4 2/5] dt-bindings: rtc: abx80x: convert to yaml
-Message-ID: <20240203-prolonged-backfield-c659e0016d70@spud>
-References: <20240202-add-am64-som-v4-0-5f8b12af5e71@solid-run.com>
- <20240202-add-am64-som-v4-2-5f8b12af5e71@solid-run.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fvtNN3eLdd787pzWlQQeG7tonUx9SJ9jg0LfbsZ6UhFALDBO+VsDqAJB0ImOLg+zKgIFVMKmGpiHyofMadP0EReA5FCVVciyYBnruWzOLW6W1v2yZljne5aq1/JYQ35kjX4+cM9Ckytko90yfEViVUup5L8MmOLBgATB8Ccsv3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E/juOOCy; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d746ce7d13so25451835ad.0;
+        Sat, 03 Feb 2024 07:09:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706972993; x=1707577793; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Y83Ve4uLOGO1Q1NCgtGVhF9CxcVhuT/kEdq7RalQ3Lw=;
+        b=E/juOOCyU/UvCCdUBdDIWOYoBIxhutFVaULCxTcGq1QjgOzpJ1JLaPr1x545MFrCKN
+         L7r9zyhVlWz3RvyJAVv3hohf0erOJHJN2r9GBdk2sIojY5RXlR1rI1J0HSenKvlPKxRc
+         RdQ1DUXWCYgh8Ip0wMkPENBnlJ0yTIDKMWpwQ5nXwubSe7OeUQm3SqGXx9OLt8ab67wv
+         tF1rptDXCTJV5Z9JGd6Icsry1ZOEMUa0u/Ogx8tVG9r8V/bfaB1SUQEs4DG4zgq6p1wc
+         hqa6AEPn8PmA3vp8ZRClnbQ1m1Dlqw7Ue0CbrITYRv0Wn0UYF8w6Hl4BMMcPeJtoJYZS
+         NpAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706972993; x=1707577793;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y83Ve4uLOGO1Q1NCgtGVhF9CxcVhuT/kEdq7RalQ3Lw=;
+        b=diqNjOjZ7NHTPOYlKT5qqnAjaaGz00DlFfdOMqwnvU7kY5oQe5iyuXOWJY/+UtvR3F
+         gd6K0JAbxKG4I4vsVX5tc+gGoSukUVg5B8VZkh9t1MlAO8S5t4AzMWtz0Z9WsEbjZjMX
+         IzXc1J5TTEUffITJZxM2ANQd4kjaXEXusGzL6QT8Hg0s7yAY/ncdVQKviB2moBpfHsAf
+         2mz00NJs8omLhEqGiCleHygYr4cSKx8FyLHXg2XOZOTlTSMz3uGnUtHKxHTzlamA8doL
+         PEhIn6TRAIhqrQr6pkl4LGn/PsQzKaASVVrn2Lw+rl3cgaSw4daG4dlC676qFRe+HZyi
+         BLrQ==
+X-Gm-Message-State: AOJu0YzRN1z8fBJjv8ZW3iSNVMOM56m2fvpUN0zrSYu4uBqH36YGPFMm
+	AgtsyI9uzS7UUgmWujyGkF+M/S3clcqUm03WmKn844cdlCuKE8m2ftaCMr6h
+X-Google-Smtp-Source: AGHT+IG3vELmvhTEQC3aDsXeNDl+XOLOu+5Y28d4UGVx1cpRm8e3bTPKToV6F+6k0h4JcfJSawTByA==
+X-Received: by 2002:a17:902:6b8a:b0:1d8:e4b8:95dc with SMTP id p10-20020a1709026b8a00b001d8e4b895dcmr6447144plk.41.1706972993536;
+        Sat, 03 Feb 2024 07:09:53 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCV6R3KrGu18pkdWp5X+zu2s9nKiSurYWIo5X4HUN1wO+X1iU2BRAy+vmLwO0O5gPMcEMMHkAIVMqN+jJtfyM1w8TyC6YwjdLkACDkXusqdLpAPzCBBjY/kJoATE8/R46HozV0jKWLkF2C/gF8RFgBMrw31kti4A7n0L8r8yMnpW4gUnqDwUl4cmW0Nk1Wp+7GSga1dxgEomJPw8H707TuKyE8HaBLUJVHxdRMa2nLH3F58EdL1LZNsnaU7x96oo3szK5+vHAa3hAmUFvm9hlkLnHj45UuebI9muViDVPfRo30J+DyJ904dDfT6krVamYtGsqIGp1kJZOA8wNDFLzO0h562PiTvmNRLsHaZ3xN6W1GsjrlM88Hs/N3OblnX3l0381U7ayD83gWvQKQNxwh6zeMjue8b1VNxTUVWPKyCkFwnnYsCwk0wiqNyWAcfLcVQY9Jc1oXTFnGH66iUGlfLnOa+Wh6NjADrzQirhk5yprQcyrTqjiD/uSVs5JkN8HhrAYmgEIFOhtj4krJXXgYYS6NxGhdI7Nca1R6JqBrQ0TfM3qFcDg08=
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w13-20020a170902d3cd00b001d93966b2acsm3360202plb.143.2024.02.03.07.09.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Feb 2024 07:09:53 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Sat, 3 Feb 2024 07:09:52 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: baneric926@gmail.com
+Cc: jdelvare@suse.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	corbet@lwn.net, linux-hwmon@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, openbmc@lists.ozlabs.org,
+	kwliu@nuvoton.com, kcfeng0@nuvoton.com, DELPHINE_CHIU@wiwynn.com,
+	Bonnie_Lo@wiwynn.com, naresh.solanki@9elements.com,
+	billy_tsai@aspeedtech.com
+Subject: Re: [PATCH v3 1/3] dt-bindings: hwmon: fan: Add fan binding to schema
+Message-ID: <5dd9d5f8-c909-4245-b37f-cfb0a8096a50@roeck-us.net>
+References: <20231222013352.3873689-1-kcfeng0@nuvoton.com>
+ <20231222013352.3873689-2-kcfeng0@nuvoton.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="17xXMyX9vB+FnccJ"
-Content-Disposition: inline
-In-Reply-To: <20240202-add-am64-som-v4-2-5f8b12af5e71@solid-run.com>
-
-
---17xXMyX9vB+FnccJ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20231222013352.3873689-2-kcfeng0@nuvoton.com>
 
-Hey,
+On Fri, Dec 22, 2023 at 09:33:50AM +0800, baneric926@gmail.com wrote:
+> From: Naresh Solanki <naresh.solanki@9elements.com>
+> 
+> Add common fan properties bindings to a schema.
+> 
+> Bindings for fan controllers can reference the common schema for the
+> fan
+> 
+> child nodes:
+> 
+>   patternProperties:
+>     "^fan@[0-2]":
+>       type: object
+>       $ref: fan-common.yaml#
+>       unevaluatedProperties: false
+> 
+> Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+> Signed-off-by: Ban Feng <kcfeng0@nuvoton.com>
 
-On Fri, Feb 02, 2024 at 05:10:49PM +0100, Josua Mayer wrote:
-> Convert the abracon abx80x rtc text bindings to dt-schema format.
->=20
-> In addition to the text description reference generic interrupts
-> properties and add an example.
->=20
-> Signed-off-by: Josua Mayer <josua@solid-run.com>
-> ---
->  .../devicetree/bindings/rtc/abracon,abx80x.txt     | 31 ---------
->  .../devicetree/bindings/rtc/abracon,abx80x.yaml    | 74 ++++++++++++++++=
-++++++
->  2 files changed, 74 insertions(+), 31 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/rtc/abracon,abx80x.txt b/D=
-ocumentation/devicetree/bindings/rtc/abracon,abx80x.txt
-> deleted file mode 100644
-> index 2405e35a1bc0..000000000000
-> --- a/Documentation/devicetree/bindings/rtc/abracon,abx80x.txt
-> +++ /dev/null
-> @@ -1,31 +0,0 @@
-> -Abracon ABX80X I2C ultra low power RTC/Alarm chip
-> -
-> -The Abracon ABX80X family consist of the ab0801, ab0803, ab0804, ab0805,=
- ab1801,
-> -ab1803, ab1804 and ab1805. The ab0805 is the superset of ab080x and the =
-ab1805
-> -is the superset of ab180x.
-> -
-> -Required properties:
-> -
-> - - "compatible": should one of:
-> -        "abracon,abx80x"
-> -        "abracon,ab0801"
-> -        "abracon,ab0803"
-> -        "abracon,ab0804"
-> -        "abracon,ab0805"
-> -        "abracon,ab1801"
-> -        "abracon,ab1803"
-> -        "abracon,ab1804"
-> -        "abracon,ab1805"
-> -        "microcrystal,rv1805"
-> -	Using "abracon,abx80x" will enable chip autodetection.
-> - - "reg": I2C bus address of the device
-> -
-> -Optional properties:
-> -
-> -The abx804 and abx805 have a trickle charger that is able to charge the
-> -connected battery or supercap. Both the following properties have to be =
-defined
-> -and valid to enable charging:
-> -
-> - - "abracon,tc-diode": should be "standard" (0.6V) or "schottky" (0.3V)
-> - - "abracon,tc-resistor": should be <0>, <3>, <6> or <11>. 0 disables th=
-e output
-> -                          resistor, the other values are in kOhm.
-> diff --git a/Documentation/devicetree/bindings/rtc/abracon,abx80x.yaml b/=
-Documentation/devicetree/bindings/rtc/abracon,abx80x.yaml
-> new file mode 100644
-> index 000000000000..405b386a54b0
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/rtc/abracon,abx80x.yaml
-> @@ -0,0 +1,74 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/rtc/abracon,abx80x.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Abracon ABX80X I2C ultra low power RTC/Alarm chip
-> +
-> +maintainers:
-> +  - devicetree@vger.kernel.org
+Unfortunately the dt maintainer's Reviewed-by: tag on the latest version
+of the fan schema patch got lost. I am not sure if I can add that back
+in on my own without violating some rules. That will need to get resolved
+before we can move forward with these patches.
 
-Ideally you put someone here, not the DT list. Usually the original
-author is a good choice, which I think happens to be the subsystem
-maintainer... Failing that, the rtc subsystem list is likely a better
-choice than the DT one.
-
-> +
-> +allOf:
-> +  - $ref: rtc.yaml#
-
-> +  - $ref: /schemas/interrupts.yaml#
-
-This should not be need.
-
-> +
-> +properties:
-> +  compatible:
-> +    description:
-> +      Select a specific compatible chip.
-
-I'd drop this line.
-
-> +      'abracon,abx80x' has special meaning,
-> +      it provides auto-dection based on ID register.
-
-And reword this. The compatible itself does not provide auto-detection,
-it's the opposite - the driver must perform auto detection if this
-compatible is used.
-
-> +    enum:
-> +      - abracon,abx80x
-> +      - abracon,ab0801
-> +      - abracon,ab0803
-> +      - abracon,ab0804
-> +      - abracon,ab0805
-> +      - abracon,ab1801
-> +      - abracon,ab1803
-> +      - abracon,ab1804
-> +      - abracon,ab1805
-> +      - microcrystal,rv1805
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  abracon,tc-diode:
-> +    description:
-> +      Trickle-charge diode type.
-> +      Required to enable charging backup battery.
-> +
-> +      Supported are 'standard' diodes with a 0.6V drop
-> +      and 'schottky' diodes with a 0.3V drop.
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    enum:
-> +      - standard
-> +      - schottky
-> +
-> +  abracon,tc-resistor:
-> +    description:
-> +      Trickle-charge resistor value in kOhm.
-> +      Required to enable charging backup battery.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [0, 3, 6, 11]
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +
-> +    rtc@69 {
-> +        compatible =3D "abracon,abx80x";
-> +        reg =3D <0x69>;
-
-You'll have to make a "fake" i2c bus here to satisfy the tooling. There
-should be lots of examples for how to do this in other rtc bindings.
-
-Thanks,
-Conor.
-
-> +        abracon,tc-diode =3D "schottky";
-> +        abracon,tc-resistor =3D <3>;
-> +        interrupt-parent =3D <&fake_intc0>;
-> +        interrupts =3D <44 IRQ_TYPE_EDGE_FALLING>;
-> +    };
->=20
-> --=20
-> 2.35.3
->=20
-
---17xXMyX9vB+FnccJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZb5XCwAKCRB4tDGHoIJi
-0irkAQCbUpXTrsuLcaoIcKjhRCjmidmeJEVH0ydbqhZIFCeipQD9GXWfXGxujmRu
-u+QORduBHw9wvIq0cTbVb8HcQlZ5TAE=
-=ZE4k
------END PGP SIGNATURE-----
-
---17xXMyX9vB+FnccJ--
+Guenter
 
