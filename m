@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-50770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E91E9847DBB
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:24:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 895E4847DBE
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:24:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60FC1B2546F
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:24:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44D242836AC
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:24:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBA5C2FB6;
-	Sat,  3 Feb 2024 00:23:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67FA77483;
+	Sat,  3 Feb 2024 00:23:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="E5M0nWAW"
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2EnIrlHC"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DCA164E
-	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 00:23:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0534646A4
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 00:23:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706919830; cv=none; b=QGBXXEo1a2dzQp6pgP1586vACeyaLElhnXJ3V4YFSCcoP0kxQC6OtzA3nNyOKuvikJqPei+lSTnCPlKY2vYJaexxEUn2aqQMb4T00vSpSi8qIyUfyb0nViYy9QA4m7eQZUjayBFpKpyNJ0mSBR4QxVjMlD/cTQ3g7VEGj8Mygiw=
+	t=1706919832; cv=none; b=ErdbMh+jjJYX/CyPZDnbhL2/MV/NdpBaH54BCvmfPTwmTnR+7ftsHINvlzKI7DpHPgO/esA9MjbTEgOSWjgWBkRsKg2cJsYeDWqWbwJfLI/OGc9HsD8Htfh09cSOZcOkNi0TvDU1O5XdztUk+KDNZE5RStcMAnmV1Xvzds3FUf8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706919830; c=relaxed/simple;
-	bh=F3gM+mRPBb7pChqqTVYezZoTdDnp7w6wvEhOfKxw6A8=;
+	s=arc-20240116; t=1706919832; c=relaxed/simple;
+	bh=+txod2hID5r4KzljZQHI8kZJi4ylAzG2GvBBhxnFqJs=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=LcU6U2cCmV/Bi0605/027EkEK7E7pK3a2HRHnaO/jPsur50IY0niR0QaSwrElIovr2P9GXzDcwWB2Z0Ddq4GZffbr1B4FTXkhMu9d9aYvKLefpaWEY8dm2kxpQ54wConzSMyOSu9W8n9/I7moenUl3JsNELveyOUWb0mlFj1h0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=E5M0nWAW; arc=none smtp.client-ip=209.85.216.73
+	 To:Cc:Content-Type; b=tiZwAOujONSWAw3DIE3Z0ZdGeyNnuqcLWEkH7XGmWNzlNWY03b5XryNRrFp15zWTUUfKL7p3kNIX3gLGr/hXAWOGnEeVlnJgZgNEtfgoY0el3JsC2YF810VKN3hNOVIy4YXL0805+U5UUd+SLzXoF1l8fVoYd33n4NOj6cwrLiA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2EnIrlHC; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-290e7a0a585so2657086a91.3
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 16:23:48 -0800 (PST)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b5d1899eso4899349276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 16:23:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706919828; x=1707524628; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1706919830; x=1707524630; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=uDSqele7NE0OONssRlZQ9urUuntmdp88j24rPAm3SJc=;
-        b=E5M0nWAW8IvkBQKGzVtATR37ylWds7zkYJd4IH6XutkuptQ0M4hYmSC3dQosiUo8+R
-         HGf1LRG6sUqcCNudx7Dn77aI1u9TgHXjQHZtstHL7yF8eK2d69XMjw7h7abYnr+e0uKj
-         sdBWRF/Jxo4Fux9X5yKCt7BanLpEkqNYdCvU0dENN+2dd912mych3zZoOiTKiRjqyefG
-         MSNjoghukRTpA8/DWANl5E6mfJsfoKBOwU0S2QCQOwbzYQnC00U1CjL+ZKfiWRdRwVwc
-         r+8XhjBBe1Ok5nJDGjpqRYFI2iAGja+ZHtci17sKzmy4sPPSxZ4iQdxisqsCigeptyeo
-         sYWQ==
+        bh=gdrXXYnWw+bLoNL2lm3uC9b/C5lFzeIuJK5MljquSco=;
+        b=2EnIrlHCTa0QDVqrK5SXKWbVSnY9Q5aNcoylD8hqad54bzA+m179YKbCBskIg2/sUu
+         J39i3Tyj35w9CR8T/ESiYE5mj8AtB3HR7/Re2s/7/EYq2q/jsKyVig49i9cxPpiomnru
+         yPwDEECDccrwfknqvvuRNUiLVE1Y3bs+e4vdAz7otOZC18sjmpMeF2XbW+dh9PtddqkT
+         uEsko5VPT1He9zFO19qWgfQNH6lbi9HzrmTUALmomZ8ZNznvZoKrY1+ICrL/uSW3Eihs
+         +D/jBkD4r0V4sx45sK6rxHyvc2dgH95wTDL8mn0qKeZjssnyp+O9Rwpi3YZjvtNP9Wj9
+         wSqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706919828; x=1707524628;
+        d=1e100.net; s=20230601; t=1706919830; x=1707524630;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=uDSqele7NE0OONssRlZQ9urUuntmdp88j24rPAm3SJc=;
-        b=WH51Qqjzao9DQoD2DLfItyYI762TUk349bFMB/bWe0RTO8iBB9u7MX+VBljE96TDvY
-         pCIJ+Chx4/n26Xqsn6XhuJpjyCNbiKzzMQ/nms++jH8HgTdIf7JmB+WyRgTVW8VnNlQy
-         VhQJ0y8QdhOtT7K8cxbmRpx8H691rgYpU8OgESZyWHWIQuBC0Vl+tONbidoPLm9MJ9yi
-         pbIOYlKBxJCDzM6ildr0rKV/h5XrmOrfAYiuVoZqCQJnor9VnvSblr2JwmllzRsh09YN
-         sxsz2+CEu+mtAOHlEKHScUSVcg0VZB44ZIizjHg8YZfZGiqSBZSqwop00vU+2NbKYQ0n
-         Mx+g==
-X-Gm-Message-State: AOJu0Yx1PgSTj1Rqst5QawcaoJlzfdv4FP6v6gFHF+u9oMEWZG/WSj27
-	a/GPqGJhQJvNFdi6/yybHqxLnTjyLkUV4zUWXMxGg1t2RaAWrPTHtbOxg4EtfHYecMyaMwiXDFX
-	WRA==
-X-Google-Smtp-Source: AGHT+IGZlK5BxEG1BMmbcQ2/Jse5hoja4Dn0N5mQwD6YTOdKWTQsBPE9VCAtqp/a8VZd29eQ2VMQMSDz1Ks=
+        bh=gdrXXYnWw+bLoNL2lm3uC9b/C5lFzeIuJK5MljquSco=;
+        b=k1K8CZ/t8yLOx6g8pHpJwR93EDyfsXfAkZWBUeJ7+rNzoXjewqyDnuzOl7k+y+2AAQ
+         KcIRacIRDGAHIHBHG4FHsm4bbDkmihanPaDdedz41aDumYYrq7roEiIQSar4EYn0cF6y
+         w4JAdQC0hsQm3479stsl85HJoDKwod1z2OzSv0piEmWgQtqot55HY1HTRslvKnEVtm91
+         L2JcsxcsdX91VgbqTqbes2wf7yxrQOw0WE5SbqaIYjgB/5/RK0/lCoHH8w/aIk4BBspI
+         GyGhqsPV55RhXcuzNIC20WXeX6mlyqxqq3HewgskBBUwgyEwqnBSxqKXIIo20TmZrC0g
+         smpw==
+X-Gm-Message-State: AOJu0YyELD6+ocW28HH/+Vo3N2MLWzz05if4fbn8Ps8klD/2nwSD5rvk
+	rCq0lcnjTdAgTq4rhzwLoBmX1r3+2nGf9AhrIfcbMOTbbCIXgl48yzKRZyhaFitA2FPiqUxHmZA
+	hCQ==
+X-Google-Smtp-Source: AGHT+IHvKP/rATiXeqKUH+UrRwvrsL9ZmSNIDc5BWAvnn33fK4l2sC00BL98oqRDtrhMCdV8x0/7YNdE4IQ=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90b:48cd:b0:296:30e4:2c2d with SMTP id
- li13-20020a17090b48cd00b0029630e42c2dmr82613pjb.6.1706919827886; Fri, 02 Feb
- 2024 16:23:47 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a05:6902:2208:b0:dc6:c9e8:8b0d with SMTP id
+ dm8-20020a056902220800b00dc6c9e88b0dmr43666ybb.1.1706919830060; Fri, 02 Feb
+ 2024 16:23:50 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Fri,  2 Feb 2024 16:23:40 -0800
+Date: Fri,  2 Feb 2024 16:23:41 -0800
 In-Reply-To: <20240203002343.383056-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,64 +74,79 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240203002343.383056-1-seanjc@google.com>
 X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-Message-ID: <20240203002343.383056-2-seanjc@google.com>
-Subject: [PATCH v2 1/4] KVM: x86/mmu: Don't acquire mmu_lock when using
- indirect_shadow_pages as a heuristic
+Message-ID: <20240203002343.383056-3-seanjc@google.com>
+Subject: [PATCH v2 2/4] KVM: x86: Drop dedicated logic for direct MMUs in reexecute_instruction()
 From: Sean Christopherson <seanjc@google.com>
 To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
 Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	Jim Mattson <jmattson@google.com>, Mingwei Zhang <mizhang@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-From: Mingwei Zhang <mizhang@google.com>
+Now that KVM doesn't pointlessly acquire mmu_lock for direct MMUs, drop
+the dedicated path entirely and always query indirect_shadow_pages when
+deciding whether or not to try unprotecting the gfn.  For indirect, a.k.a.
+shadow MMUs, checking indirect_shadow_pages is harmless; unless *every*
+shadow page was somehow zapped while KVM was attempting to emulate the
+instruction, indirect_shadow_pages is guaranteed to be non-zero.
 
-Drop KVM's completely pointless acquisition of mmu_lock when deciding
-whether or not to unprotect any shadow pages residing at the gfn before
-resuming the guest to let it retry an instruction that KVM failed to
-emulated.  In this case, indirect_shadow_pages is used as a coarse-grained
-heuristic to check if there is any chance of there being a relevant shadow
-page to unprotected.  But acquiring mmu_lock largely defeats any benefit
-to the heuristic, as taking mmu_lock for write is likely far more costly
-to the VM as a whole than unnecessarily walking mmu_page_hash.
+Well, unless the instruction used a direct hugepage with 2-level paging
+for its code page, but in that case, there's obviously nothing to
+unprotect.  And in the extremely unlikely case all shadow pages were
+zapped, there's again obviously nothing to unprotect.
 
-Furthermore, the current code is already prone to false negatives and
-false positives, as it drops mmu_lock before checking the flag and
-unprotecting shadow pages.  And as evidenced by the lack of bug reports,
-neither false positives nor false negatives are problematic.  A false
-positive simply means that KVM will try to unprotect shadow pages that
-have already been zapped.  And a false negative means that KVM will
-resume the guest without unprotecting the gfn, i.e. if a shadow page was
-_just_ created, the vCPU will hit the same page fault and do the whole
-dance all over again, and detect and unprotect the shadow page the second
-time around (or not, if something else zaps it first).
-
-Reported-by: Jim Mattson <jmattson@google.com>
-Signed-off-by: Mingwei Zhang <mizhang@google.com>
-[sean: drop READ_ONCE() and comment change, rewrite changelog]
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/x86.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ arch/x86/kvm/x86.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
 diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index c339d9f95b4b..2ec3e1851f2f 100644
+index 2ec3e1851f2f..c502121b7bee 100644
 --- a/arch/x86/kvm/x86.c
 +++ b/arch/x86/kvm/x86.c
-@@ -8787,13 +8787,7 @@ static bool reexecute_instruction(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+@@ -8785,27 +8785,27 @@ static bool reexecute_instruction(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
  
- 	/* The instructions are well-emulated on direct mmu. */
- 	if (vcpu->arch.mmu->root_role.direct) {
--		unsigned int indirect_shadow_pages;
--
--		write_lock(&vcpu->kvm->mmu_lock);
--		indirect_shadow_pages = vcpu->kvm->arch.indirect_shadow_pages;
--		write_unlock(&vcpu->kvm->mmu_lock);
--
--		if (indirect_shadow_pages)
-+		if (vcpu->kvm->arch.indirect_shadow_pages)
- 			kvm_mmu_unprotect_page(vcpu->kvm, gpa_to_gfn(gpa));
+ 	kvm_release_pfn_clean(pfn);
  
- 		return true;
+-	/* The instructions are well-emulated on direct mmu. */
+-	if (vcpu->arch.mmu->root_role.direct) {
+-		if (vcpu->kvm->arch.indirect_shadow_pages)
+-			kvm_mmu_unprotect_page(vcpu->kvm, gpa_to_gfn(gpa));
+-
+-		return true;
+-	}
+-
+ 	/*
+-	 * if emulation was due to access to shadowed page table
+-	 * and it failed try to unshadow page and re-enter the
+-	 * guest to let CPU execute the instruction.
++	 * If emulation may have been triggered by a write to a shadowed page
++	 * table, unprotect the gfn (zap any relevant SPTEs) and re-enter the
++	 * guest to let the CPU re-execute the instruction in the hope that the
++	 * CPU can cleanly execute the instruction that KVM failed to emulate.
+ 	 */
+-	kvm_mmu_unprotect_page(vcpu->kvm, gpa_to_gfn(gpa));
++	if (vcpu->kvm->arch.indirect_shadow_pages)
++		kvm_mmu_unprotect_page(vcpu->kvm, gpa_to_gfn(gpa));
+ 
+ 	/*
+-	 * If the access faults on its page table, it can not
+-	 * be fixed by unprotecting shadow page and it should
+-	 * be reported to userspace.
++	 * If the failed instruction faulted on an access to page tables that
++	 * are used to translate any part of the instruction, KVM can't resolve
++	 * the issue by unprotecting the gfn, as zapping the shadow page will
++	 * result in the instruction taking a !PRESENT page fault and thus put
++	 * the vCPU into an infinite loop of page faults.  E.g. KVM will create
++	 * a SPTE and write-protect the gfn to resolve the !PRESENT fault, and
++	 * then zap the SPTE to unprotect the gfn, and then do it all over
++	 * again.  Report the error to userspace.
+ 	 */
+-	return !(emulation_type & EMULTYPE_WRITE_PF_TO_SP);
++	return vcpu->arch.mmu->root_role.direct ||
++	       !(emulation_type & EMULTYPE_WRITE_PF_TO_SP);
+ }
+ 
+ static bool retry_instruction(struct x86_emulate_ctxt *ctxt,
 -- 
 2.43.0.594.gd9cf4e227d-goog
 
