@@ -1,155 +1,125 @@
-Return-Path: <linux-kernel+bounces-50920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DB0B8483C7
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 05:46:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63A818483CC
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 05:50:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AAEF285D16
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 04:46:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9330B21664
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 04:50:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DD5610795;
-	Sat,  3 Feb 2024 04:46:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 690C210976;
+	Sat,  3 Feb 2024 04:50:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1P+lO191"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OjXlsSjn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02EB6101C5
-	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 04:46:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F078FBFC;
+	Sat,  3 Feb 2024 04:50:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706935577; cv=none; b=pWc7oL4SE1jj6+JfFPN70dWeaAqSoaBjJJGuwTWEnNhjfkR/+k+0memfD2SFSdkybUS/qDrnVNiBGtZkMSpLbtwqmNi4KCJbYT6NLyqWlTbXftFckKoNXHN+jdzqtm0BUgBM4DrP531i0R/H+goziDdL3BTFcwolg/zAC3xyWvo=
+	t=1706935828; cv=none; b=J8gKgq8xFcmJwwowaprSgK/C3pG0xSdYcXpCz7PGACy3075Si0gK+s5WM5NaHCezry4fr7+tAZKf6ZfCQDnNOGXz7coWOI7JbjS8U91ebKPdZuUWEAZYsLF/t2nPxaWJP0z8qfL1tg57Z3AxANZRz40Ekc+D8l7DxAF3lU7wh3E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706935577; c=relaxed/simple;
-	bh=1uujFxMT7rMTPcIYZAAP5fuRR4EOncinGJBVCVidoCc=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=GebPRcLN3u15pWwHzQ3Kmkr5rPrFGuORhcn9cDrPEgQjHoZExCaFIcTWJ0nh3HOaDBuJgLdCqWTS83Kwo1ts1xEgxFE2O7nnqW9Kq1KHbwBaKaumOdpzyBuZlZRmoHCyMlWKjOt/A7Aqf6XtD8P63kRJzAQZniutRNZA4eT9EEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1P+lO191; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbe9e13775aso4612165276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 20:46:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706935575; x=1707540375; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=bIjjFEohc7BizHW5snB3BX6UTrsWYnDTvUNfCUqP8fo=;
-        b=1P+lO191PBjRv5LBilrKJMTxBvBjeZ2H6ayg9mNcif0SPYxW9wrTwlLPZI3NxKRRcH
-         Tw5dKKUI/9s9oNsszIUgVIOCtZ6xyE9/rCgQHVRp2N+h3S229z7Hd5kH+AIcxh9FOwUd
-         Rc84pmdbBC1wQCHWMi2SWBKlSL9d9rZq7filKe/uLVlgFdyc4gx3FnHhGgd35dTsiSfA
-         B3k4Su9K94HJsWzrusgEzfmnlK2MJs6dU6Rn1FtsA5OdopYmr3wT4RIgsPVPgqfkgxs0
-         FuiQVxKYkue+BvPx/q7hkd0lI8JuHbYuAUvl90kGIpSiQuUDvRRO5wYdPNEOhU311ntC
-         ZDDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706935575; x=1707540375;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bIjjFEohc7BizHW5snB3BX6UTrsWYnDTvUNfCUqP8fo=;
-        b=GzksOohD69LpTGjKuhHl6H7dfsw4ltlcAttzv61PnC5KmddzlveDnQkXtz86jFKYhj
-         EK8oeTZKM5SUaWJkxFN9pGtVmksH0AeBvSoT30TdEUj02R1Q7Q+t2JHGO0+4iUq+i5g6
-         s7Uq41v06gIvp0ZdJLnYHtywkGtc6LXIUpwX4FitaFQFJtaQByiI10NekdQm+U2qBeLB
-         w0G3Uu1KhBjIket0kJ4FAoq64OkNBHO+QJkrWSP0Igs/NScqzp9bJ3J0O+xc4brzMxFS
-         WD6r6rMc5dhAAhiHfyePcYCzoAgC/sHug9GrYZWeSDjwWFhdh35mlV/14+b6469Utw7M
-         p+FA==
-X-Gm-Message-State: AOJu0YymRs7kgdWgPieM8kTbDL/7fjVoD+7YdxvZnsUeUS1r3rv291gV
-	Cprl6QsrDTITZMt76J9Td3125ee3vA/FlTxXfqR/QClO727hiZZDiIcEusG2E4fuawrdwdwCD3c
-	2L0S0/P4O/cBVVjUevg==
-X-Google-Smtp-Source: AGHT+IGAenCSeE/ByPCnMPf0P8sNA6h6ocBEKdDYaJFQ9TcJgAm0rONYTdeZI9tq91q/gs/t0jXDXM0Zkaj7OSD5
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:1748:b0:dc6:f21f:64ac with
- SMTP id bz8-20020a056902174800b00dc6f21f64acmr761350ybb.12.1706935575018;
- Fri, 02 Feb 2024 20:46:15 -0800 (PST)
-Date: Sat,  3 Feb 2024 04:46:12 +0000
+	s=arc-20240116; t=1706935828; c=relaxed/simple;
+	bh=dxoDwdhwgsrylGbBAflkQtaQE7+NPSz4G5Mo6+1zpI8=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=NUit3SNEbDnEtTJPyi7UsGRpB/2oIMW+F6xtIX/DV0mu7Z6yJ9yG3QBRGVTbA+gW6Iw3GnDlwSt6Hkx/pYxjOy0DdijwmH1z0kfTv4XGnEt+B2AZaGJ8JbcEZiiwKXSdCv5RfT9RqrT8CpiU2Uu1fkh9FtGKUbVlz8mzO/UYiGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OjXlsSjn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id EB3ABC433C7;
+	Sat,  3 Feb 2024 04:50:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706935828;
+	bh=dxoDwdhwgsrylGbBAflkQtaQE7+NPSz4G5Mo6+1zpI8=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=OjXlsSjnJ+nK8NqVhAJfNAsh7f9ck81t4u1vSym5Xaqx/Vjmkp/LyOA5asi57TSNo
+	 lUG9PSCCx5DRRLMORsAJnxfMz5LUFQ6OHdtWULFI4+cG/RJwYWHbVnLC/STxoam6oM
+	 bkGUUEeE43zyAU006kLZ6Pn+Y4wf9BMIhnbRzQd/PXNLKSzmp9t9hOaAiFIXbkbVW1
+	 gVMYp9hCZaxafw+bQl+4YEL9Wlkdi9y0suXZuHbdK0MMOcQOWn5SWXWevHnrzF7Vjf
+	 //yj3abKakY8XUI7H+yAOwolGftyLQ9AM8nDw5nqO50UhgAHWF02QcIZ1VOdW968Hy
+	 4Zg3D9MTmRwIQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D1C10C04E32;
+	Sat,  3 Feb 2024 04:50:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-Message-ID: <20240203044612.1234216-1-yosryahmed@google.com>
-Subject: [PATCH mm-hotfixes-unstable v2] mm: memcg: fix struct
- memcg_vmstats_percpu size and alignment
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
-	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>, 
-	Greg Thelen <gthelen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net: atlantic: Fix DMA mapping for PTP hwts ring
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170693582785.20949.4926544018376508267.git-patchwork-notify@kernel.org>
+Date: Sat, 03 Feb 2024 04:50:27 +0000
+References: <20240201094752.883026-1-ivecera@redhat.com>
+In-Reply-To: <20240201094752.883026-1-ivecera@redhat.com>
+To: Ivan Vecera <ivecera@redhat.com>
+Cc: netdev@vger.kernel.org, epomozov@marvell.com, irusskikh@marvell.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ richardcochran@gmail.com, dmitry.bezrukov@aquantia.com,
+ sergey.samoilenko@aquantia.com, linux-kernel@vger.kernel.org
 
-Commit da10d7e140196 ("mm: memcg: optimize parent iteration in
-memcg_rstat_updated()") added two additional pointers to the end of
-struct memcg_vmstats_percpu with CACHELINE_PADDING to put them in a
-separate cacheline. This caused the struct size to increase from 1200 to
-1280 on my config (80 extra bytes instead of 16).
+Hello:
 
-Upon revisiting, the relevant struct members do not need to be on a
-separate cacheline, they just need to fit in a single one. This is a
-percpu struct, so there shouldn't be any contention on that cacheline
-anyway. Move the members to the beginning of the struct and make sure
-the struct itself is cacheline aligned. Add a comment about the members
-that need to fit together in a cacheline.
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-The struct size is now 1216 on my config with this change.
+On Thu,  1 Feb 2024 10:47:51 +0100 you wrote:
+> Function aq_ring_hwts_rx_alloc() maps extra AQ_CFG_RXDS_DEF bytes
+> for PTP HWTS ring but then generic aq_ring_free() does not take this
+> into account.
+> Create and use a specific function to free HWTS ring to fix this
+> issue.
+> 
+> Trace:
+> [  215.351607] ------------[ cut here ]------------
+> [  215.351612] DMA-API: atlantic 0000:4b:00.0: device driver frees DMA memory with different size [device address=0x00000000fbdd0000] [map size=34816 bytes] [unmap size=32768 bytes]
+> [  215.351635] WARNING: CPU: 33 PID: 10759 at kernel/dma/debug.c:988 check_unmap+0xa6f/0x2360
+> ...
+> [  215.581176] Call Trace:
+> [  215.583632]  <TASK>
+> [  215.585745]  ? show_trace_log_lvl+0x1c4/0x2df
+> [  215.590114]  ? show_trace_log_lvl+0x1c4/0x2df
+> [  215.594497]  ? debug_dma_free_coherent+0x196/0x210
+> [  215.599305]  ? check_unmap+0xa6f/0x2360
+> [  215.603147]  ? __warn+0xca/0x1d0
+> [  215.606391]  ? check_unmap+0xa6f/0x2360
+> [  215.610237]  ? report_bug+0x1ef/0x370
+> [  215.613921]  ? handle_bug+0x3c/0x70
+> [  215.617423]  ? exc_invalid_op+0x14/0x50
+> [  215.621269]  ? asm_exc_invalid_op+0x16/0x20
+> [  215.625480]  ? check_unmap+0xa6f/0x2360
+> [  215.629331]  ? mark_lock.part.0+0xca/0xa40
+> [  215.633445]  debug_dma_free_coherent+0x196/0x210
+> [  215.638079]  ? __pfx_debug_dma_free_coherent+0x10/0x10
+> [  215.643242]  ? slab_free_freelist_hook+0x11d/0x1d0
+> [  215.648060]  dma_free_attrs+0x6d/0x130
+> [  215.651834]  aq_ring_free+0x193/0x290 [atlantic]
+> [  215.656487]  aq_ptp_ring_free+0x67/0x110 [atlantic]
+> ...
+> [  216.127540] ---[ end trace 6467e5964dd2640b ]---
+> [  216.132160] DMA-API: Mapped at:
+> [  216.132162]  debug_dma_alloc_coherent+0x66/0x2f0
+> [  216.132165]  dma_alloc_attrs+0xf5/0x1b0
+> [  216.132168]  aq_ring_hwts_rx_alloc+0x150/0x1f0 [atlantic]
+> [  216.132193]  aq_ptp_ring_alloc+0x1bb/0x540 [atlantic]
+> [  216.132213]  aq_nic_init+0x4a1/0x760 [atlantic]
+> 
+> [...]
 
-Fixes: da10d7e14019 ("mm: memcg: optimize parent iteration in memcg_rstat_updated()")
-Reported-by: Greg Thelen <gthelen@google.com>
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
----
+Here is the summary with links:
+  - [net] net: atlantic: Fix DMA mapping for PTP hwts ring
+    https://git.kernel.org/netdev/net/c/2e7d3b67630d
 
-v1 -> v2:
-- Moved ____cacheline_aligned to the end of the struct definition as
-  recommended by Shakeel.
-v1: https://lore.kernel.org/lkml/20240203003414.1067730-1-yosryahmed@google.com/
-
----
- mm/memcontrol.c | 21 ++++++++++-----------
- 1 file changed, 10 insertions(+), 11 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index d9ca0fdbe4ab0..1ed40f9d3a277 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -621,6 +621,15 @@ static inline int memcg_events_index(enum vm_event_item idx)
- }
- 
- struct memcg_vmstats_percpu {
-+	/* Stats updates since the last flush */
-+	unsigned int			stats_updates;
-+
-+	/* Cached pointers for fast iteration in memcg_rstat_updated() */
-+	struct memcg_vmstats_percpu	*parent;
-+	struct memcg_vmstats		*vmstats;
-+
-+	/* The above should fit a single cacheline for memcg_rstat_updated() */
-+
- 	/* Local (CPU and cgroup) page state & events */
- 	long			state[MEMCG_NR_STAT];
- 	unsigned long		events[NR_MEMCG_EVENTS];
-@@ -632,17 +641,7 @@ struct memcg_vmstats_percpu {
- 	/* Cgroup1: threshold notifications & softlimit tree updates */
- 	unsigned long		nr_page_events;
- 	unsigned long		targets[MEM_CGROUP_NTARGETS];
--
--	/* Fit members below in a single cacheline for memcg_rstat_updated() */
--	CACHELINE_PADDING(_pad1_);
--
--	/* Stats updates since the last flush */
--	unsigned int		stats_updates;
--
--	/* Cached pointers for fast iteration in memcg_rstat_updated() */
--	struct memcg_vmstats_percpu	*parent;
--	struct memcg_vmstats		*vmstats;
--};
-+} ____cacheline_aligned;
- 
- struct memcg_vmstats {
- 	/* Aggregated (CPU and subtree) page state & events */
+You are awesome, thank you!
 -- 
-2.43.0.594.gd9cf4e227d-goog
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
