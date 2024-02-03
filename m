@@ -1,74 +1,73 @@
-Return-Path: <linux-kernel+bounces-50916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02B1D8483BE
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 05:34:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2680D8483BF
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 05:34:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 937EF281BE8
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 04:34:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B5C31F25E8A
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 04:34:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7177CFBEE;
-	Sat,  3 Feb 2024 04:29:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49C90101FA;
+	Sat,  3 Feb 2024 04:33:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="PsTZWgsd"
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="agCDKt48"
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 792A12CA5
-	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 04:29:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 618E0847E
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 04:33:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706934566; cv=none; b=oRJDyyRUaupkYzgYcMiuc2XOa4eeNP4oi7SUIN+FnCXcFr/y0+ejErADoRKWiGdXdIB8E+BEBNyU2jgh4kQFvlqz4KgCkZVql6/cKs0ALqbg26FNp6+aD9pBTSfgGbg5FMs5+FKzKzli7yVKyKxMiRoVUCXCF01EB2ftxlJbpxU=
+	t=1706934838; cv=none; b=EXiroeoYr6/ziTcGL6nKGrXle70SwtRjjAFL7rWxeOuKF5rxqgHFppGi+4aTO8YWw9pC7Aood9mh5z5WQrv7hTlIQzGDWsccY1rjvDsR6cAoUPIPiSThCcp0UsvNXuuNClZ3FqD9wU/W5XS+OuBiULa/Cg3/WebiQrpprXVahNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706934566; c=relaxed/simple;
-	bh=4qqSaaEUaBxS/Ftpx5ut5gMjSpAATXUG2v3pxLtTKv0=;
+	s=arc-20240116; t=1706934838; c=relaxed/simple;
+	bh=muinc+muTDvP66Z/unHVgr9NV9HT4I3ebanyQt4EKlk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Sfbze19L3l07eXEtkma4lADuxbf9WZtig91HDAr1pJvB3RPJID38ZEHl817fxLXAg+2d7hztSP9oLtutCrXBk3DwcDDZVqClTVBJ2U5rBsvLcoOU4KktBkos/2JXvRS3jqdqJmnGbS68bGpdfaqMVznOUAMbiRmidoQNItCAmhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=PsTZWgsd; arc=none smtp.client-ip=209.85.215.181
+	 In-Reply-To:Content-Type; b=U7wCUdvsoKfcTv2Rc7G78qttU7fQhobiBJLp7VzGNwJ0vhFkk/fxTMBKYRFkBKh/vU9RVkuBKYUDnF92bnyi7y0tVeG9Vb0Gxv3P4nLOs9cU+qal7fHea9/+W5/AG3Hj00YHFgz9HcZOz+is06msowp5ktx7VKVVIyyisu4D9P0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=agCDKt48; arc=none smtp.client-ip=209.85.215.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5d7005ea1d0so1061977a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 20:29:24 -0800 (PST)
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5ceb3fe708eso2183908a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 20:33:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1706934564; x=1707539364; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1706934835; x=1707539635; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=1OOpEywyK6PX3KS+rQWL+L2zrjo4/gGzpSvMxyFSqgc=;
-        b=PsTZWgsdvj8z4doAvoejMFffuidiYXRo19Hv4RUjevLEbsn64+MrDYWTgCbGTvI9w0
-         zLU/OsOTMf/Qyt/CsRkLiOpM8Bhl0FiWnuzOZYbaCTXwg5uTZzPGfw7YMluj4eUlOckc
-         vznsBnsrEgSg/xE2RsRu3C6yiXP3WC4LK9LiMNWTi9Ht7YXsnLbE3VBXkcErH9O36T38
-         mLRj5Yrw17FFcycrsG2joUwjwpB7VpjNJM33wYmjp92XMCBR+h6i57qZVRokl4vvOif/
-         ZRYNaYPlsKf495Kf2YHM4Z7ZCqX0ONXoDPc5Rm3GEu7piGP25GZBMM9YUvbxS0nYQlMb
-         /fcg==
+        bh=Nuiv03HcSNjIM1+hCP8lhQ3FlZeCD1OJRMjdxuvBL2Y=;
+        b=agCDKt48jtMmgZj+m3BTi5AkWzAK4LhPhKqfzk3m1lMMhb8b6Kro6XxpyAxTpxr+rN
+         kxLXjarKRuUAeCYqmwj/xHAMzUDi6Iysb9yV76gEHgLYAEsuo/NGHdgp7cHMPHLJMTHx
+         hJ6MX3G8VoXWxwpF2D5RArAfCIcPFwKukpNANLPPPXduGCr6kyXNJzYCG+wCqe7gwL56
+         DJJ+qWjzSBnso93rsfk9RBVVQ+Q+4Goo9R//MiBaTYcyDWiqApk2ANjpiBtJ3HJzxO5r
+         bq6aNC1Ku0fRdPX9vgv3ObqZXARMFdxzEy4u29FijAZbLbYgg5m275I9S9ymj1Kt35JA
+         WsRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706934564; x=1707539364;
+        d=1e100.net; s=20230601; t=1706934835; x=1707539635;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1OOpEywyK6PX3KS+rQWL+L2zrjo4/gGzpSvMxyFSqgc=;
-        b=TgJC3KBWzvUNBu7LLDPhWwVKDvvSl+55mJS2mTZupXP78RKgR+gf3G8OnQRtxa+2LN
-         NV2/auvnMGrii2r9gTjP8EKetUUdMkchuV939v6K8SizFj37UcLTbIvOIaLMgBZqz0zC
-         mF6MGz8Ck/Zyele7SVeRXsmWXW4n9wcQqsULdiyE54BLT97GR1umCOzRXwgXaoHW7PRO
-         CJLDFno4P+rI583btAxspnB6h1popqvpDZ4FGi+PwcLLcSpfSY9DA5Z5vx6/uRzdc0sm
-         WSYAQJgic2tkk2yTXBOK4EVC8j/jw4Fxk+7m5r/1tAQZ2LQUOBuRuIK8re+FkzXoZ4F9
-         7urw==
-X-Gm-Message-State: AOJu0YzhE2R/PFdfbxglFwpnK7zNmW7brLz4jTgY6yiNAzn8sl42D4Fa
-	EcqHc/u6TyygaqubQv2PVG8JxQdWJpYUUmy8FL1ef8KQpfHdEL0yk4gReysESQ+p9B5Y6DuNnxP
-	e
-X-Google-Smtp-Source: AGHT+IGn4oPkO71WxukoX1CXReQti9d0soaDxuC8RLqOG10MY5XTB2tF6jUoHIozJFeEIXLwehIMOw==
-X-Received: by 2002:a05:6a21:328e:b0:19e:3839:4fc2 with SMTP id yt14-20020a056a21328e00b0019e38394fc2mr903713pzb.26.1706934563683;
-        Fri, 02 Feb 2024 20:29:23 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWsy5iHsgi0/7lWONXylSavwzjl3LXlbzwKWLoT4phVm66hn6dRJIu0Zsk73Zn+KR5t3KlfTlJJT9dwl8sNedyLikih3mUjodRzQQYkUzgJnGHEjfAzt5Ne5WfzEtQKW09m6YORcudd2qMHpjyd42WTZ2JkdhIWOrA48gSWhqmCAEFR/zu0Lu06oVMuGLHGAtPtaw==
+        bh=Nuiv03HcSNjIM1+hCP8lhQ3FlZeCD1OJRMjdxuvBL2Y=;
+        b=xSYKBMrzU3Gi8nPFUm+8iPDfctcHs39n1OmLGF4Uw1tTxiLelzn2zzqhvhRN7gpE6b
+         mJ4P03e3lAOt/LKeowB/X/+hQTxltVCk1yxQOQ+PrOGxOqkS1v+WJ6dyvburq/h0yM2/
+         tu9w8hWExBazIfBsbG8qJk97kj9cpkFv6S1sA/4nnxJz5byUTFH3Xv5TNzwE2zJSt2ZX
+         /ML82zSrTasT6HNuNkRion8swpOf711oRKt2OHnjWBq19XVNnUVaZOtXNxO/jot+9Xs9
+         xG7Dg1FyZ/PC1Pu6E6ydT1iEdhRG8fIoPW5K5KIXDePY956PMxOzqsoJpFPMY3YIZKy6
+         xtTA==
+X-Gm-Message-State: AOJu0YydtRuRWzcvJq0Be0phwz6tMw32zMZfwiw45Gj47lRcuF02B2KN
+	+GpDRgb3Hdg0ps/AUO2li4qZEvFNIudns0dw51lt+hDRJUoKqnr+Gi0ToCIMYYM=
+X-Google-Smtp-Source: AGHT+IFQD/CkFtp3Qzg0FqH3IX1EqeR1CVYDzP3nkWAMtrC77i5GpJ/17TZMvdHUbtoD8JswIFBbJg==
+X-Received: by 2002:a17:902:ba98:b0:1d9:620b:89cb with SMTP id k24-20020a170902ba9800b001d9620b89cbmr5416553pls.13.1706934835371;
+        Fri, 02 Feb 2024 20:33:55 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCV4fQLXwQyYMQZyr8DkPUwiJI2qdSM4MiZgNDsyWv7XG2ndUtN15OB7n3y4C5tarfTl2TFzkG01rm7QKInRM7WsZmI8ZYIuSuzwzs9sZDyvVBgUrKhZAeQ4/O3cz5st1yjjTi3P+gzWbWTG3mLny7zzxy0RXd6yUBtg3nExDj9GqrMsByzrnQE2o1+Db2t5bPAokQ==
 Received: from [10.4.12.121] ([139.177.225.224])
-        by smtp.gmail.com with ESMTPSA id u27-20020a63471b000000b005c259cef481sm2601789pga.59.2024.02.02.20.29.21
+        by smtp.gmail.com with ESMTPSA id kt5-20020a170903088500b001d70af5be17sm2399344plb.229.2024.02.02.20.33.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Feb 2024 20:29:23 -0800 (PST)
-Message-ID: <80460fe5-baec-4e56-9e10-a233e5a3c8d3@bytedance.com>
-Date: Sat, 3 Feb 2024 12:29:16 +0800
+        Fri, 02 Feb 2024 20:33:55 -0800 (PST)
+Message-ID: <49a073bd-cb59-45c0-baf7-fcb1bc8af22e@bytedance.com>
+Date: Sat, 3 Feb 2024 12:33:47 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,111 +75,64 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/6] mm/zswap: remove duplicate_entry debug value
+Subject: Re: [PATCH 5/6] mm/zswap: only support zswap_exclusive_loads_enabled
 Content-Language: en-US
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
- Andrew Morton <akpm@linux-foundation.org>,
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Nhat Pham <nphamcs@gmail.com>, Andrew Morton <akpm@linux-foundation.org>,
  Yosry Ahmed <yosryahmed@google.com>, linux-kernel@vger.kernel.org,
  linux-mm@kvack.org
 References: <20240201-b4-zswap-invalidate-entry-v1-0-56ed496b6e55@bytedance.com>
- <20240201-b4-zswap-invalidate-entry-v1-4-56ed496b6e55@bytedance.com>
- <CAKEwX=Pj9ms56zPaFznXrY0mF7E_q1hMXUkV-Fhnx5V17OY6og@mail.gmail.com>
+ <20240201-b4-zswap-invalidate-entry-v1-5-56ed496b6e55@bytedance.com>
+ <20240201181240.GE321148@cmpxchg.org>
+ <d5455b43-aa22-4931-a6b3-062128f4d30f@bytedance.com>
+ <20240202162635.GF1227330@cmpxchg.org>
 From: Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <CAKEwX=Pj9ms56zPaFznXrY0mF7E_q1hMXUkV-Fhnx5V17OY6og@mail.gmail.com>
+In-Reply-To: <20240202162635.GF1227330@cmpxchg.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 2024/2/3 06:28, Nhat Pham wrote:
-> On Thu, Feb 1, 2024 at 7:50 AM Chengming Zhou
-> <zhouchengming@bytedance.com> wrote:
+On 2024/2/3 00:26, Johannes Weiner wrote:
+> On Fri, Feb 02, 2024 at 08:57:38PM +0800, Chengming Zhou wrote:
+>> On 2024/2/2 02:12, Johannes Weiner wrote:
+>>> Caching "swapout work" is helpful when the system is thrashing. Then
+>>> recently swapped in pages might get swapped out again very soon. It
+>>> certainly makes sense with conventional swap, because keeping a clean
+>>> copy on the disk saves IO work and doesn't cost any additional memory.
+>>>
+>>> But with zswap, it's different. It saves some compression work on a
+>>> thrashing page. But the act of keeping compressed memory contributes
+>>> to a higher rate of thrashing. And that can cause IO in other places
+>>> like zswap writeback and file memory.
 >>
->> cat /sys/kernel/debug/zswap/duplicate_entry
->> 2086447
+>> [...] A/B test kernel building in tmpfs directory, memory.max=2GB.
+>> (zswap writeback enabled and shrinker_enabled, one 50GB swapfile)
 >>
->> When testing, the duplicate_entry value is very high, but no warning
->> message in the kernel log. From the comment of duplicate_entry
->> "Duplicate store was encountered (rare)", it seems something goes wrong.
+>> From the below results, exclusive mode has fewer scan and refault.
 >>
->> Actually it's incremented in the beginning of zswap_store(), which found
->> its zswap entry has already on the tree. And this is a normal case,
->> since the folio could leave zswap entry on the tree after swapin,
->> later it's dirtied and swapout/zswap_store again, found its original
->> zswap entry. (Maybe we can reuse it instead of invalidating it?)
+>>                               zswap-invalidate-entry        zswap-invalidate-entry-exclusive
+>> real                          63.80                         63.01                         
+>> user                          1063.83                       1061.32                       
+>> sys                           290.31                        266.15                        
+>>                               zswap-invalidate-entry        zswap-invalidate-entry-exclusive
+>> workingset_refault_anon       2383084.40                    1976397.40                    
+>> workingset_refault_file       44134.00                      45689.40                      
+>> workingset_activate_anon      837878.00                     728441.20                     
+>> workingset_activate_file      4710.00                       4085.20                       
+>> workingset_restore_anon       732622.60                     639428.40                     
+>> workingset_restore_file       1007.00                       926.80                        
+>> workingset_nodereclaim        0.00                          0.00                          
+>> pgscan                        14343003.40                   12409570.20                   
+>> pgscan_kswapd                 0.00                          0.00                          
+>> pgscan_direct                 14343003.40                   12409570.20                   
+>> pgscan_khugepaged             0.00                          0.00                         
 > 
-> Interesting. So if we make invalidate load the only mode, this oddity
-> is gone as well?
-
-Good point!
-This oddity is why we need to invalidate it first at the beginning.
-
-But there is another oddity that a stored folio maybe dirtied again,
-so that folio needs to be writeback/stored for the second time, in
-which case, we still need to invalidate it first to avoid WARN_ON later.
-
-Thanks.
-
->>
->> So duplicate_entry should be only incremented in the real bug case,
->> which already have "WARN_ON(1)", it looks redundant to count bug case,
->> so this patch just remove it.
+> That's perfect. Thanks!
 > 
-> But yeah, I have literally never checked this value (maybe I should
-> ha). I'm fine with removing it, unless someone has a strong case for
-> this counter?
+> Would you mind adding all of the above into the changelog?
+Yeah, will do. Thanks!
+
 > 
-> For now:
-> Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+> With that,
 > 
->>
->> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
->> ---
->>  mm/zswap.c | 9 +--------
->>  1 file changed, 1 insertion(+), 8 deletions(-)
->>
->> diff --git a/mm/zswap.c b/mm/zswap.c
->> index 4381b7a2d4d6..3fbb7e2c8b8d 100644
->> --- a/mm/zswap.c
->> +++ b/mm/zswap.c
->> @@ -71,8 +71,6 @@ static u64 zswap_reject_compress_poor;
->>  static u64 zswap_reject_alloc_fail;
->>  /* Store failed because the entry metadata could not be allocated (rare) */
->>  static u64 zswap_reject_kmemcache_fail;
->> -/* Duplicate store was encountered (rare) */
->> -static u64 zswap_duplicate_entry;
->>
->>  /* Shrinker work queue */
->>  static struct workqueue_struct *shrink_wq;
->> @@ -1571,10 +1569,8 @@ bool zswap_store(struct folio *folio)
->>          */
->>         spin_lock(&tree->lock);
->>         entry = zswap_rb_search(&tree->rbroot, offset);
->> -       if (entry) {
->> +       if (entry)
->>                 zswap_invalidate_entry(tree, entry);
->> -               zswap_duplicate_entry++;
->> -       }
->>         spin_unlock(&tree->lock);
->>         objcg = get_obj_cgroup_from_folio(folio);
->>         if (objcg && !obj_cgroup_may_zswap(objcg)) {
->> @@ -1661,7 +1657,6 @@ bool zswap_store(struct folio *folio)
->>          */
->>         while (zswap_rb_insert(&tree->rbroot, entry, &dupentry) == -EEXIST) {
->>                 WARN_ON(1);
->> -               zswap_duplicate_entry++;
->>                 zswap_invalidate_entry(tree, dupentry);
->>         }
->>         if (entry->length) {
->> @@ -1822,8 +1817,6 @@ static int zswap_debugfs_init(void)
->>                            zswap_debugfs_root, &zswap_reject_compress_poor);
->>         debugfs_create_u64("written_back_pages", 0444,
->>                            zswap_debugfs_root, &zswap_written_back_pages);
->> -       debugfs_create_u64("duplicate_entry", 0444,
->> -                          zswap_debugfs_root, &zswap_duplicate_entry);
->>         debugfs_create_u64("pool_total_size", 0444,
->>                            zswap_debugfs_root, &zswap_pool_total_size);
->>         debugfs_create_atomic_t("stored_pages", 0444,
->>
->> --
->> b4 0.10.1
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
