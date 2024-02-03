@@ -1,147 +1,133 @@
-Return-Path: <linux-kernel+bounces-51202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB22C8487B7
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 17:58:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3768F8487B9
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 17:58:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B7792825CF
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 16:57:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7F3528325A
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 16:58:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D92065FDB1;
-	Sat,  3 Feb 2024 16:54:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 788DF5F87B;
+	Sat,  3 Feb 2024 16:55:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VoKXYxnD"
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="RbEwRR11"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA24A5F85B;
-	Sat,  3 Feb 2024 16:54:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C2DD5F84B
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 16:55:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706979279; cv=none; b=EZ5mdL+SK2m5lsVfGPb3Lhuoopel66GvM+hwpafqbqpRIBxvd6KEjZjHqLpKObz6uXI/FBr1zNWWak1a/aHdF5Kmqjjvj9R9xbbA8hudQQpMCwEc94Bw0QFvHgtt0WTyjN/plwEWLdV87R19f5z12B5/ZrP42q8aUsMRgD9is28=
+	t=1706979336; cv=none; b=qQB4qpj2lVvK4S9CQ41SZYdcSiq2eFTINL253VWe7rQKhVryQ0PKOUm2BmMN6GDpxNSmWEY9PjHyBo6NFhWxSEp2O3jv7VgTGgrT4BmUWPVEZKT1vkvilAJTz9ooqUF8C8Ib3itXy1aFInIw1L5TY3DGtoiyYf+wnjJXocThK4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706979279; c=relaxed/simple;
-	bh=EfxmtEkbo9lCm+BJRom2AXAVkSHkbXCkdqAhzEcn49Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CZrUwcAOKSHOdAUrQ1sWbUFU5E8k301lwBfxNlJr2qJE+NT3OCZa1Sjv8sgfn9aWI//nxfRZ/mnxWsS9FCSZKWhoAuvZrVJMy1wEJ6QtpctBXOGOXDPOJxEpK7cZF/oDukXXywJ3dvSkxcLDtvMn3iAx04exCVZoT6hcuBPxEjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VoKXYxnD; arc=none smtp.client-ip=209.85.166.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-363b8429f03so4019385ab.1;
-        Sat, 03 Feb 2024 08:54:37 -0800 (PST)
+	s=arc-20240116; t=1706979336; c=relaxed/simple;
+	bh=/NLVF1BRdTKdkNHovpu9sjD9dds+/D3zv5oCZ658snI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=grMSCQRpJScG0ITPr5g1KzxHVLQtVwsQaAZHF7OfKECbSB+ApSeXebBRbaGTsUZrViYBsc3GEBzb+McLO3sEGAnpGmz+GU1zme3zzwfaZHtgKj2XiA90Rg3mrJzQ6KzgWZfHAygKYiWlFizyz+dr3hCxDYW8dr/7N98pN1OImfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=RbEwRR11; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a37721e42feso16386566b.2
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Feb 2024 08:55:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706979276; x=1707584076; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vyFysKI+ulqGIrIVYWeP6alGWB5geZ7uKPOowV05Tlo=;
-        b=VoKXYxnD+w8H1qOyVPibYRrbrSuas4+F0M7ZGGDv3rUR4XBF85Zi6OAt57tH5odY2g
-         o30iDHXht0yqEdigbxaDSU+onXLXCcUF7NsvE+Xv6NdFjV8kkSGGKdJnQ+XFWuTumWMT
-         9ykQvCDp9ETmbrfb2g87WI76eUmM8mub33SY0CCYn03sySP1GNwJxFeLOMYO3Spdh5PK
-         hV1khHOx28aRykVv+7AJzYKqZf0aqUXPt2f1orojsjE0KFIFCcfABXTJQ8BkDIF+k3rH
-         DsL5RKpbkJEWucxtSc+8wMBl4d0LaVaU0em2uO6YxIJENvahQv5XA6tGqAFqXBBLY+Nl
-         QTUA==
+        d=tuxon.dev; s=google; t=1706979332; x=1707584132; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SIcfBI8j3SY4C6skX3RWuCYwc9RWkEzDm65JNEkKU2k=;
+        b=RbEwRR11n4CBUhllPqqtYcl2+TOwf72G5J5xsFp1druPAZB3s7WfcJt6y84W6Q3Vd0
+         1x0tI/x3vlEvm/ibqzcMkbYf0BIuAd/rLL8FXX+x2gn2v0ShjTj4Snfhh3y39KdtYnik
+         5hHNuq7jq3C/aldl4L++dpxbZI93Fp+88fqhHqT8El0QQNcigcwm2xE9Ly2NOQLcJgKj
+         gBHufPl07vzZoYpn3zb6TYg7yRfLZ9zpqPhFdOF+01NKPyGh+/DcLJMpi1VnCRUrw4bJ
+         V7OgVFqGg/eQiHHfnDildsW6e8xync39+8qvMiznRc4D+HSkGgOzUhAlAn9tAIkmIwXF
+         FKSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706979276; x=1707584076;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vyFysKI+ulqGIrIVYWeP6alGWB5geZ7uKPOowV05Tlo=;
-        b=pIEmNKBeGbOqWKH6RHPRlYZibzXkaD67YRN1rq9oXgBtlKj3wQT36Rt8dcGtk+br/i
-         4sE7kVC5acsDT2FSlA8StAd1+ivzBoWl8vBy7k6L1k9wqfQimVx1K1QtYZdJBLfcU1pi
-         fbkJsZYGdLWqH01OaOhiD5Rl9FRT3hoEJxna2yji9nYn82hGIJxUlyM0sCPl/oHsUauv
-         izL4h+mNPlWytnYJKhKW/Kd6F7GWObdR8xAuFt+ZVDxbXVwdqy0fnM0dUvlL9dkg52oM
-         1UaeBvmaM3D9/y/EPW61msycSyn5EOJQdid0pzIQy4kA8DjnmZjIJkkY6Iq2OvyBZuXD
-         ZbuA==
-X-Gm-Message-State: AOJu0Yx07j22DCxHQpyGSCDRglmRH/QqNi/5GjE6/9AHoF8gCYvEgOHF
-	rwxKxNlpDPLWrTO5QU2oM8vIJiudAUpZEFSb7HdfMb5iE7wGz5lb
-X-Google-Smtp-Source: AGHT+IF1aACYQI7zwb4q5hLiUZpptfXorBFS4iS5gGCHnkIEhvZqaIY+gUX6CxiigB4ll3DqgkpL/w==
-X-Received: by 2002:a05:6e02:1d01:b0:363:ac17:f529 with SMTP id i1-20020a056e021d0100b00363ac17f529mr8191065ila.9.1706979276564;
-        Sat, 03 Feb 2024 08:54:36 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVljTFGqHUSDda9IQphGIjLtMyFUmJsD5/fnOAFZYp2KpiC41NPfYVmEJNncZEAjdeLOrMUzdpOV5TbIlRuJLdiUGYnrmJbe41q13QCeCPiB4j+CHYs8WDll/NAuhl3pkt3eXzSWivXd/aXcCDCFBeeLXBvU9kyEhEqZZ/eUrewxxe2CwctMrTQYkJRL0xNw2AK3RX4xAeRXReeeWiCLNTAonyxyEAH4iiwBktEmXvbCu6eh58loDAY78XJsgrBp0gxfxxSB3KpbxvbznhG6ugQy0RHkFGg8ADrXOhxL7TPQBSRu2IqAyPopNRGXlwlzsOwD0Hg4RD8Ln2fjUD7uNk368Z1ZtaOuXnh/Z/g/W1hEnPiFUzLtP57Hl+G68yJ9OmYP5X0GGiMfmxdXJ3aa6YX+YTrhkgbUnjIPe4tBXyaNp2UN+qUZi8bGhE9ah9VRB6zKxAdunomFwGVngvOAwa5B9Dx2PILpUY0bfyN/ir6lzJCrsuyXO1o8F5T9S1cfriObbMiEPNHZa0qZ2okO/1w9JJj2sJ2sim4jLAsTOFDq+e/qxSfM9C6RI0bJImP57JqQg1G7O2wzDofYy+mf0ZuTCNYTHnAOIbqeAqvy896QqFaulKzd9yWq8IR99RiUFkRL0gJHob+80GOrvW5AJiQWS62k5Mtbh3O7ckOQfNveRcTw/E7XU5SouMLkcvsAdO5ePF12rv1Pzj3rLeMcHfyYgaWxiGs0i+IubvfyBABcO6xRt7LEHpYJijivKUpwW7juAGu939vJs0Fr/ebqBENphxakW6KwZYGtPja8EAxdRr9fVlrzgckTLX/szX2NxeyohtcmqIoPvt2vp1ld/eL258lQbGt3DiDGzr5ALeTbchKxeNt8vqIXl2zrSO9E6OcB+md7JB40W5GI9ByeKZI9AiA5d3NXhDNU81E7wOZt8PjCKtoWtF84pbIkA+2cKoD0g
- 3XwtNaf3IbP/ifREnAcq+5U3JXWrBWvuZg4Lm5VzSB+3EXvlL8OCnXdfpE5mp2peJ6R+cYt7c7baJLe25xPG0v4H8XAwA/pNVH1YuvC8oPK7Snx4QC/qXMw7M5l1WQN55hX+TVd5z6XkZX6KnyRHUiSMPvb17dSTk7B3F7ldYrcx+JrSkuAmx2OMjXShCBwUA2xbCQGwRrMBEp833JC+DPrJ1ZRzus5Q==
-Received: from aford-System-Version.lan ([2601:447:d002:5be:d9b2:bb4f:5531:6aa9])
-        by smtp.gmail.com with ESMTPSA id t30-20020a05663836de00b00470b29b82b1sm1086256jau.154.2024.02.03.08.54.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Feb 2024 08:54:32 -0800 (PST)
-From: Adam Ford <aford173@gmail.com>
-To: linux-arm-kernel@lists.infradead.org
-Cc: marex@denx.de,
-	alexander.stein@ew.tq-group.com,
-	frieder.schrempf@kontron.de,
-	Adam Ford <aford173@gmail.com>,
-	Andrzej Hajda <andrzej.hajda@intel.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Robert Foss <rfoss@kernel.org>,
-	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-	Jonas Karlman <jonas@kwiboo.se>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Liu Ying <victor.liu@nxp.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	dri-devel@lists.freedesktop.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-phy@lists.infradead.org,
-	linux-pm@vger.kernel.org
-Subject: [PATCH V8 12/12] arm64: defconfig: Enable DRM_IMX8MP_DW_HDMI_BRIDGE as module
-Date: Sat,  3 Feb 2024 10:52:52 -0600
-Message-ID: <20240203165307.7806-13-aford173@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240203165307.7806-1-aford173@gmail.com>
-References: <20240203165307.7806-1-aford173@gmail.com>
+        d=1e100.net; s=20230601; t=1706979332; x=1707584132;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SIcfBI8j3SY4C6skX3RWuCYwc9RWkEzDm65JNEkKU2k=;
+        b=VOUw5rMCChdzZUtQgoiLtWEgxqOR91iBWOg04GDpHal+IuqJphy71UuByOAT454R59
+         1brBF3XQVyJ7KDzEXxxzcxwPoJxTzZbw5B273TY6SbI4aeEmwdz3UfOLAuyxQk0APpO4
+         8yMjegGn90lRyYGePkdkJapY7EYz74Q6Syn1ngUnocerym6RBsDLYhbxd3ycfEayCI6w
+         qdduFCLZD6U0gFsC8WvukjVBWCoFZE61/Rv4ED4vVa5STo22bfBvTfcWA6WMWKzHaOHq
+         QN0L24MmfLoVzxHbidMpI9LNTIaaLxODS4b7qE+6NAmFJVFKcHPUOFXQFM/Y83l3aKOS
+         RM5A==
+X-Gm-Message-State: AOJu0YwDeTpLYwLRvUTfpCsLKSHvVJIWk8gKcLaY4ao3+F63NEpSwwKO
+	mwhCSv849qYTO54/Slima/qW6UEX/w011lUdlYF5UGTUOzYHo2z7ZsX1Nw4X7YM=
+X-Google-Smtp-Source: AGHT+IGYtksWuIrR9wJUNuVMQwflqn+XMSQ6BBLJCB/1rzkvxjElvfMu7LvbVq2CHey/CbhUBffpqA==
+X-Received: by 2002:a17:906:c209:b0:a35:cb41:33e0 with SMTP id d9-20020a170906c20900b00a35cb4133e0mr4056336ejz.27.1706979332302;
+        Sat, 03 Feb 2024 08:55:32 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCX85Mo40qUN1QCyrBwi8zLORNiRJbV+OGWgTGj7Rj+aUpUu0RnrPTtq2Ba/grDoaQC9fBT31tJ+VBTUX2z/xas2yIPrINYLP8z+mUZUdDKtt2Gwha59TJ2ZvDxZS4CB69KqgOD0hTaHkgwhI8b9n2Kqc3433T0/W4ZEA6f1DqETjvq3Q0S97Wu4BBCYoEbrtJkDfiFKL0bf/a17yjz9fiDqlKpb1L0TBu3xMq6kJf0feakwvOHDdR2Sw0Jxy8Gx+f1VG7ztMzFvYUz2BlJ4SWPkWpoDzFI1VBsX28E9ef4ZvskA7BNJcZXX61NJoE75Hx9gPJI1iFGXcsv1VM1l2JdNsepEmyLgOkrDUfl5TU7fAwAoVth8R6BeyBPr29Aq1/MwjhibaH03CY+Fv48z0CfWZoYLO319bdZUF/CY+i5blAeFWtoKX7wmy8ObN9nTATE=
+Received: from [192.168.50.4] ([82.78.167.154])
+        by smtp.gmail.com with ESMTPSA id ao3-20020a170907358300b00a36ca9cd705sm2174007ejc.75.2024.02.03.08.55.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 03 Feb 2024 08:55:31 -0800 (PST)
+Message-ID: <76ccbfd5-ed5e-4443-b741-d7b2e90f6c18@tuxon.dev>
+Date: Sat, 3 Feb 2024 18:55:30 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/8] ARM: dts: microchip: sam9x60_curiosity: Add
+ power-supply properties for sdmmc nodes
+Content-Language: en-US
+To: Mihai.Sain@microchip.com, krzysztof.kozlowski@linaro.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ Nicolas.Ferre@microchip.com, alexandre.belloni@bootlin.com,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240123083158.7339-1-mihai.sain@microchip.com>
+ <20240123083158.7339-2-mihai.sain@microchip.com>
+ <c289a167-031a-44cc-ab62-0fb0adcab2bb@linaro.org>
+ <PH8PR11MB68047F3DD9D23C6749D7F86082742@PH8PR11MB6804.namprd11.prod.outlook.com>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <PH8PR11MB68047F3DD9D23C6749D7F86082742@PH8PR11MB6804.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-The i.MX8M Plus has support for an HDMI transmitter.  The
-video is genereated by lcdif3, routed to the hdmi parallel
-video interface, then fed to a DW HDMI bridge to support
-up to 4K video output.
+Hi, Mihai,
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+On 23.01.2024 11:07, Mihai.Sain@microchip.com wrote:
+> Hi Krzysztof,
+> 
+> I'm sorry for quoting (email is sent from Outlook).
+> The sdmmc controller from SAM9 MPUs doesn't support the IO voltage signaling/switching required by the UHS sd-card.
+> On the electrical schematics of the boards the controller and sd-card power pins are connected to 3V3 regulator.
+> On the SAMA5 MPUs there is support for IO voltage switching but since we have issues with the tuning procedure required but the UHS cards,
+> we want to keep vqmmc at 3V3 in order to use high-speed mode.
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index e6cf3e5d63c3..3e33825f0ed7 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -880,6 +880,7 @@ CONFIG_DRM_ANALOGIX_ANX7625=m
- CONFIG_DRM_I2C_ADV7511=m
- CONFIG_DRM_I2C_ADV7511_AUDIO=y
- CONFIG_DRM_CDNS_MHDP8546=m
-+CONFIG_DRM_IMX8MP_DW_HDMI_BRIDGE=m
- CONFIG_DRM_DW_HDMI_AHB_AUDIO=m
- CONFIG_DRM_DW_HDMI_CEC=m
- CONFIG_DRM_IMX_DCSS=m
--- 
-2.43.0
+Can you capture this information in each patch description?
 
+> 
+> Best regards,
+> Mihai Sain
+> 
+> ----------------------------------------------------------------------
+> 
+>> diff --git a/arch/arm/boot/dts/microchip/at91-sam9x60_curiosity.dts 
+>> b/arch/arm/boot/dts/microchip/at91-sam9x60_curiosity.dts
+>> index c6fbdd29019f..457c54dde0b7 100644
+>> --- a/arch/arm/boot/dts/microchip/at91-sam9x60_curiosity.dts
+>> +++ b/arch/arm/boot/dts/microchip/at91-sam9x60_curiosity.dts
+>> @@ -452,6 +452,8 @@ &sdmmc0 {
+>>       pinctrl-0 = <&pinctrl_sdmmc0_default &pinctrl_sdmmc0_cd>;
+>>       cd-gpios = <&pioA 25 GPIO_ACTIVE_LOW>;
+>>       disable-wp;
+>> +     vmmc-supply = <&vdd1_3v3>;
+>> +     vqmmc-supply = <&vdd1_3v3>;
+> 
+> For this and all other patches:
+> 
+> It is surprising that you use the same supply for both. Looks like inaccurate description. It is possible, but I think unlikely because usually VQMMC has lower voltage than 3.3V.
+> 
+> Best regards,
+> Krzysztof
+> 
 
