@@ -1,82 +1,60 @@
-Return-Path: <linux-kernel+bounces-51145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51164-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C98FE848712
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 16:18:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AFEF848740
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 16:57:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37E64B23156
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 15:18:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E07D1C2292C
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 15:57:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 777845F47F;
-	Sat,  3 Feb 2024 15:17:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9477D5F85E;
+	Sat,  3 Feb 2024 15:57:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VmviKh0M"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ksPAVLFs"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77B255F479;
-	Sat,  3 Feb 2024 15:17:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 468B95F557;
+	Sat,  3 Feb 2024 15:57:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706973473; cv=none; b=DlgAbUS3ZIj3+1r31fNcPLUm6YuFm7IKgwE+7Tn3xMlZVdpV/0KN+Ev9DRHN/qs6XgX4aRnkia0bbHFkbO7eJucmccbnkswcsXgi5U+n9zWDhZQtC9xi2UOmqVZ72ymnB0qWxpD4vd1udcMn7RcT/aZgl3iMStl4liI0sV+TYz8=
+	t=1706975857; cv=none; b=mfSEj4+5odnmAog2Hcb+lP112AenXPIIR5Vt0rHRitJHoIn141aNJ4IDG0wrdkePurLpxKWdEPijRln7/DKK+hhZjv8uxCqw51pyf8SCViUfRI3/OqVVHU77zNpv5Ala7ePW4QdsdyGk48sOeFundLVxNSTe+pJXSRIPNSwu060=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706973473; c=relaxed/simple;
-	bh=IUlOK6oOP99wQKuMhpqLYRYSvzT4AufyHCIUW8c1v2g=;
+	s=arc-20240116; t=1706975857; c=relaxed/simple;
+	bh=dshOJS4N3pd4aPqoR2rq5Jh64ntgtbu8Mpn7QXGGWNg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s0AMhY1o1e5lUQWwvrQPT0ZzqSDLgZ2REL2gzXd48Rxh6Y4nnANL1D6laIpSjA1tHw1VoGy52SODg/U4L/VMBt+SJU67rJOTw/vRhZj/UgE4SFZxEEsLqxa54LdrlwgyJ2BNpiUMmPrOtAnvpNq2zFoSWbuPaZIam6njHGh4e2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VmviKh0M; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d99c5f6bfeso731325ad.1;
-        Sat, 03 Feb 2024 07:17:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706973472; x=1707578272; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2lUzUF2MBNp5VCtXVAH46rRo9sIQAjaiGzL0rWPuBxk=;
-        b=VmviKh0MkzbJHp1wgSWX2HESFAWf5e2qYLz7e7ytDtXfE9Nde8T9xU9g5UgqwHsafU
-         M2FJDCudvcrYZf4V1hU9HRPbvDRjdQtjNSPDB/PGG5nsw4B4Ke3jNe5oMhS18xU/GxT7
-         Vjp2rDTW1eHNSgAgkYtpAnSpnvt1msV3bAKOzUWA7t187yy567zZpdgsCuCf3wJ0gZqu
-         UMMpFewEI28ZuMw9N9+DoMGz9TouGXG+i581CVT1wXJAhNGtd2iTIva1aLGKNCU3rvYe
-         vXTFQUNGr+bvWjuTnhcRSvUKYfxF6Gg8STL4BQrBcGYymgb4TPg2CfrY/FcEOQHmGFvR
-         esAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706973472; x=1707578272;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2lUzUF2MBNp5VCtXVAH46rRo9sIQAjaiGzL0rWPuBxk=;
-        b=S9LvfN++dwVlvo/mJ9OAULVMoLI6khlolOHikyQO/KlLLM0iwk0vIN/0kKtl4a4nI7
-         XmcpLIkIwUJDwff/NVduc9dPQl/CjzbOvJh06xvjYBzyAootwzEww1KJt/2ri1gC9xpX
-         v5KErNRmnhfSfulETv1aFP04rz4SgVhUvVtKDAPhBX5JIMAs/QbqKFicQkD5OoQzTzE1
-         mAVLCkEwIFjXZ3k4fGdZA1Dy7t1JJ+NlSj4pgcjFgvsxR6WTh1R9I+IJ0tOXpSDnex4R
-         wjIWptjutO1On99acMpsEApheRN0geAVZGl88kZPyeQD0HA2C9SLt5PZTwbfOBldPEAB
-         /W8g==
-X-Gm-Message-State: AOJu0Yw9WkKjgd+bpOwK+vFm0wdhhTkUQ16UvvEclIO2eEe3WdCFP1qr
-	zL2cwxOtAHMKT6GDrizoNtkRLpyM+BQhwwCXr7isVigdfs2ygzM+WNB7DKo0
-X-Google-Smtp-Source: AGHT+IEW2KW4nZwiBGgCcsLxy1SbfBczTtO90qzrOeBfw49XVDCt9jvVTCQDPSOdHa1RIJKxcy+6Mg==
-X-Received: by 2002:a17:902:d2ca:b0:1d9:7814:ae3b with SMTP id n10-20020a170902d2ca00b001d97814ae3bmr2211332plc.21.1706973471785;
-        Sat, 03 Feb 2024 07:17:51 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVF5Uh70ChZOG4rsDfNklgJXQDzdlL9/0NlTFDpm5MfSMYT9sOWuAHLoLZowXJMYfVtkN0Ib+xybTYMOl3zbDBFDfkAZOI3O0986UASbkaNDWA9OpX6skL9nt5Mc6lpyMhkWJjVwZHpsS0AhtAkAWc5eZxAEWfPvcu3ArSbYjFg
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g24-20020a1709029f9800b001d8e671e24asm3352806plq.254.2024.02.03.07.17.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Feb 2024 07:17:51 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Sat, 3 Feb 2024 07:17:50 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Zhang Rui <rui.zhang@intel.com>
-Cc: jdelvare@suse.com, fenghua.yu@intel.com, linux-hwmon@vger.kernel.org,
+	 Content-Type:Content-Disposition:In-Reply-To; b=hdj7J78tRGL3uhDIlt30Zn0BhP+XE7pDR54PYN6N/TbDsWLufc/jSzY3x0y9AATLA+B2KK4mlOZLPzq9JePrAE7J2ffwr40C/dPCsPqzEjgreqYdsFTEt4ubL0Sp4ddGMhL/OcGNdTzgWYw+VDjDnJVWBAdN34ZIhlltePPdDCA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ksPAVLFs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4DDDC433F1;
+	Sat,  3 Feb 2024 15:57:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1706975856;
+	bh=dshOJS4N3pd4aPqoR2rq5Jh64ntgtbu8Mpn7QXGGWNg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ksPAVLFsGPjLOApCixqXuulqd/S2BjZWAAMUTsWRGrGeT7wGsTecHvX2GTc9PjaK9
+	 BW4ILM7Zw/VdSreDX6bkcm5bH6+Oi/rwr3t7dJPjUw6UT3LFvatOKlSgz8VmymOVTF
+	 MRnKcFo9zCdElTBfivjd6xPtRxyiRWv28p1EIvgs=
+Date: Sat, 3 Feb 2024 07:20:35 -0800
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: Vineeth Vijayan <vneethv@linux.ibm.com>,
+	Peter Oberparleiter <oberpar@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Harald Freudenberger <freude@linux.ibm.com>,
+	Tony Krowiak <akrowiak@linux.ibm.com>,
+	Halil Pasic <pasic@linux.ibm.com>,
+	Jason Herne <jjherne@linux.ibm.com>, linux-s390@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 03/11] hwmon: (coretemp) Enlarge per package core
- count limit
-Message-ID: <93654683-90b5-43b5-9bef-0427d0042c03@roeck-us.net>
-References: <20240202092144.71180-1-rui.zhang@intel.com>
- <20240202092144.71180-4-rui.zhang@intel.com>
+Subject: Re: [PATCH 0/6] s390: struct bus_type cleanup
+Message-ID: <2024020317-darkish-reboot-eeef@gregkh>
+References: <20240203-bus_cleanup-s390-v1-0-ac891afc7282@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,23 +63,21 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240202092144.71180-4-rui.zhang@intel.com>
+In-Reply-To: <20240203-bus_cleanup-s390-v1-0-ac891afc7282@marliere.net>
 
-On Fri, Feb 02, 2024 at 05:21:36PM +0800, Zhang Rui wrote:
-> Currently, coretemp driver supports only 128 cores per package.
-> This loses some core temperature information on systems that have more
-> than 128 cores per package.
->  [   58.685033] coretemp coretemp.0: Adding Core 128 failed
->  [   58.692009] coretemp coretemp.0: Adding Core 129 failed
->  ...
+On Sat, Feb 03, 2024 at 11:57:57AM -0300, Ricardo B. Marliere wrote:
+> This series is part of an effort to cleanup the users of the driver
+> core, as can be seen in many recent patches authored by Greg across the
+> tree (e.g. [1]). Specifically, this series is part of the task of
+> splitting one of his TODOs [2].
 > 
-> Enlarge the limitation to 512 because there are platforms with more than
-> 256 cores per package.
+> ---
+> [1]: https://lore.kernel.org/lkml/?q=f%3Agregkh%40linuxfoundation.org+s%3A%22make%22+and+s%3A%22const%22
+> [2]: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/commit/?h=bus_cleanup&id=26105f537f0c60eacfeb430abd2e05d7ddcdd8aa
 > 
-> Signed-off-by: Zhang Rui <rui.zhang@intel.com>
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 
-Applied.
+Thanks for doing this!
 
-Thanks,
-Guenter
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
