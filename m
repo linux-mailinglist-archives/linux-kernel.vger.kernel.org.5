@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-51124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51125-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78F0B8486D3
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 15:50:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A75C78486D5
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 15:51:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B0052852D1
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 14:50:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23CBE1F22583
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 14:51:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8929B5EE8E;
-	Sat,  3 Feb 2024 14:49:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 011B75EE8E;
+	Sat,  3 Feb 2024 14:51:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uSh5vQ8u"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kyU/GFd+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE6205D8E7;
-	Sat,  3 Feb 2024 14:49:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4237F5D47E;
+	Sat,  3 Feb 2024 14:51:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706971797; cv=none; b=GAxqcKYXDlcFkc+fMP6FnK5QKJZEXpGoIosKUI6gje3ex2+YFCO2CDwuANaR7oaAdZvNoz/BHjWM5hoKgb02ww38TWePKzrlIRT3tJSNZzpcu156iKFnX13Bl7tva85c/eejF0HamroB2dmHp5DJErafhXHIihzCdYeUK7PWQCM=
+	t=1706971868; cv=none; b=Yi5x2jryCNkZnugc1usdnfPEuIOf7t4X6fy8BIyhBNvMPFM6gp9NDE7UHSssrvqiPLVwnWardSMwwVjzwZAEyv8FJl9g54I9Uq6mS98s5IoDmpS3VBUhsvRzz3NPfOAxUmNnuMkurHZ5GXiMgZwRereS9JxoCirBi8yx6Fnji+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706971797; c=relaxed/simple;
-	bh=5ctG5h8mEiQAu9NdNXA4+XFyWIp25c6pytmgpTEtD2U=;
+	s=arc-20240116; t=1706971868; c=relaxed/simple;
+	bh=kZrg3ai602uwcG9r7fcunazV+Lut/tm/tBOnYvdvVwc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=snpFT7VF3i2rKY8jOR94rvsSmeW4jwIr8OSI1gd16or7/J9nQdrnvYAR4y1x3ug3eszPzBBm8RHGdq4xlglRtlnuX267k1zX/rlkvX1HGTOhJ7L4+uW7//oCDwJiQbd7bIfjoYkAdAM25Sz1LRiuJPVSl3HxJJWH/ur0pO51YmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uSh5vQ8u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D780C433F1;
-	Sat,  3 Feb 2024 14:49:52 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=CC49ZwPaURnZWjsWbIRdaFSDvmB0Eif0RPn9pIf5/OA0WdsjxypjpOHK9kdpAbqfnbhwFe6oY+Ka9zsFaNFVuV4WUZqM41PcQd3ycKKE3aShe1n4kwaZIamaZcrwzO01fHzYLbTw2PewIjRSubxgIn2hkTS5JOWRt1cXm/GjYW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kyU/GFd+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88AB0C433C7;
+	Sat,  3 Feb 2024 14:51:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706971797;
-	bh=5ctG5h8mEiQAu9NdNXA4+XFyWIp25c6pytmgpTEtD2U=;
+	s=k20201202; t=1706971867;
+	bh=kZrg3ai602uwcG9r7fcunazV+Lut/tm/tBOnYvdvVwc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uSh5vQ8usObzfCmqjYrQoE5B1ZtZ3tDCGsR4EBCuLPWMoozl4vy84blzVU9AJA4XT
-	 puueVthAvgqm5TXxSI5NPwIxq4W6cgJg7duKCBUpDO/9cwHe+hKSRcjaNi73dZ2ZzQ
-	 tQeMHvHKBfkVKea7kVSeA42jRL4P5ocf4d1Mh5DhoZ/Oa1FV8YdXsdRqcJLCefdL0w
-	 QtLYEnmrF0XjgrXbwsc8543J0UY3duyIrQLjAj22Iu20KE0cArltNnSjnHgUpra/ri
-	 KFmQk1qcxDQb4xNzOjkDGE2NGnef7J4tHp81ui6URq920Ghs5Hs5BTgNUH4ELNAnf2
-	 rCb8buZ0u6CYg==
-Date: Sat, 3 Feb 2024 14:49:50 +0000
+	b=kyU/GFd+9pKR7Kt/css9MJdmrcVnZ31dprRIGBrXJASerebXa55nK2X+PPYZ2+Kby
+	 jYc4JUwHZeOn7OozmHC3BHF0mOaSCRiCEr3y60yFSoyFvtLCeLcVZuvQtiSQDBtKV2
+	 0cVHAOMes0FI5vc0pf1SsLRzj5yf2xA/FycdT4GZGLAZPlYFgMWf4GK12E3gSPfiWm
+	 e4qx9TuXucn0q3Trv0+QSgEgyq+BhvdGeQNR9ztU29Y2KhWGtc37brmKRfWAvbylpL
+	 YUiPCCfpu2yfCgFSptOr9qtgLJIhSYg3zY/sFBXAbxymoKdmlXMLDG4mEnK91AJmTd
+	 0trNq/P0TLk6A==
+Date: Sat, 3 Feb 2024 14:51:01 +0000
 From: Conor Dooley <conor@kernel.org>
 To: William Zhang <william.zhang@broadcom.com>
 Cc: Linux MTD List <linux-mtd@lists.infradead.org>,
@@ -57,11 +57,11 @@ Cc: Linux MTD List <linux-mtd@lists.infradead.org>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Kamal Dasu <kdasu.kdev@gmail.com>, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v4 03/12] dt-bindings: mtd: brcmnand: Add ecc strap
- property
-Message-ID: <20240203-expenses-tarmac-c564bc7ae34f@spud>
+Subject: Re: [PATCH v4 02/12] dt-bindings: mtd: brcmnand: Add WP pin
+ connection property
+Message-ID: <20240203-unselfish-rewire-78cc0d3db0db@spud>
 References: <20240203002834.171462-1-william.zhang@broadcom.com>
- <20240203002834.171462-4-william.zhang@broadcom.com>
+ <20240203002834.171462-3-william.zhang@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,76 +69,37 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="z/AOuDAE/L8fKLSt"
+	protocol="application/pgp-signature"; boundary="qrjKC5ASGNxluNoU"
 Content-Disposition: inline
-In-Reply-To: <20240203002834.171462-4-william.zhang@broadcom.com>
+In-Reply-To: <20240203002834.171462-3-william.zhang@broadcom.com>
 
 
---z/AOuDAE/L8fKLSt
+--qrjKC5ASGNxluNoU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 02, 2024 at 04:28:24PM -0800, William Zhang wrote:
-> Add brcm,nand-ecc-use-strap to get ecc and spare area size settings from
-> board boot strap for broadband board designs because they do not specify
-> ecc setting in dts but rather using the strap setting.
+On Fri, Feb 02, 2024 at 04:28:23PM -0800, William Zhang wrote:
+> Add brcm,wp-not-connected property to have an option for disabling this
+> feature on broadband board design that does not connect WP pin.
 >=20
 > Signed-off-by: William Zhang <william.zhang@broadcom.com>
->=20
-> ---
->=20
-> Changes in v4:
-> - Move ecc strap property to this separate patch and remove some
-> non-binding related text from the description
->=20
-> Changes in v3: None
-> Changes in v2: None
->=20
->  Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml | 8 ++++++++
->  1 file changed, 8 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml b/D=
-ocumentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-> index d0168d55c73e..2599d902ec3a 100644
-> --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-> @@ -147,6 +147,14 @@ patternProperties:
->            layout.
->          $ref: /schemas/types.yaml#/definitions/uint32
-> =20
-> +      brcm,nand-ecc-use-strap:
-> +        description:
-> +          This flag indicates the ecc strength and spare area size should
-> +          be retrieved from the SoC NAND boot strap setting instead of
-> +          nand-ecc-strength and brcm,nand-oob-sector-size or auto detect=
-ion.
 
-I'm still on the fence about this being overly prescriptive about the
-operating systems behaviour. I think it would be good to say why the
-strap values are better than those explicitly provided in DT rather than
-just saying "these strap values should be used".
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
-> +          This is commonly used by the BCMBCA SoC board design.
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +
->      unevaluatedProperties: false
-> =20
->  allOf:
-> --=20
-> 2.37.3
->=20
+Thanks,
+Conor.
 
---z/AOuDAE/L8fKLSt
+--qrjKC5ASGNxluNoU
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZb5SjgAKCRB4tDGHoIJi
-0tWnAP9mesDP/aST3xwWYHD8YvKXyojpcT4bQMcvlk7eIb6bLQEA++HFzMX/8fDp
-xvzyDoEeIOF7mwJLYnJs2aHZBWDl3Qc=
-=qcHg
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZb5S1QAKCRB4tDGHoIJi
+0mOCAP9+H/eJznyn7suY07Ew8Ml+xZ9vSfwBboku/7M35uHXvgD/aybKwovhGgVC
+4DhLtmNGAk2tCCNzRnIEcGoX8bHOmwA=
+=E5iS
 -----END PGP SIGNATURE-----
 
---z/AOuDAE/L8fKLSt--
+--qrjKC5ASGNxluNoU--
 
