@@ -1,125 +1,177 @@
-Return-Path: <linux-kernel+bounces-50968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50969-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F04E84846C
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 08:56:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 124A884846E
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 08:57:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7363282441
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 07:56:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B96B5282EBC
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 07:57:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24EA44EB2A;
-	Sat,  3 Feb 2024 07:56:19 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BD944F20C;
+	Sat,  3 Feb 2024 07:57:32 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 424F84EB20;
-	Sat,  3 Feb 2024 07:56:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3B624EB3F
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 07:57:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706946978; cv=none; b=GW5YQWnF27clD2dUdpRhTa3fUem/e1i8CRbyp3k7aW7aeQjgZYZPUnGZoIMS9TZyDNPP+pfeAVsDEx/gWucf/RceRH+M8MiS+cK68oKbkEKu2KmTzYAWraOlA1BFCBeJnyBswh7NyQTD6WlV0xKNvDE+jstWwDuDcvDtXbbE6Ck=
+	t=1706947051; cv=none; b=j6Otoedp+EDCe9IDy3lMOWLI1V5Unh2F4vSoUOc5KGCNn4h43iG7roAKQaxlXXEJUlAv0Lkx2vCBDx6P9WDZo+cE2h+jhYpea9FSn0MScMT8e7UCVD/+KsoI9HplzqSgSAkpK02DvR4Us2AaAvFXvCWnibcxTr/uFq1wGCYnUxc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706946978; c=relaxed/simple;
-	bh=rknbrWqyTFoylMQcgohFkhB2XHIIcjYldwe8/qcVMG8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=qjZrNc+1bt9iB6/tadlCO/5dqlATiGt49VHCFfn5Rz18w/6Qp9/iY4ANG6VCGEXAXO/plTeaJ5O2lSSmkz5VPAc7hsNSOdX9c+315L2x4egaygOBuZFo2BSne60tUK6rSRRdZ4ZmQ5UngzvUdUYkg4E/GGBCiTJxivo8RsfQBlk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TRlFy2szwz1FK0t;
-	Sat,  3 Feb 2024 15:51:34 +0800 (CST)
-Received: from kwepemm600017.china.huawei.com (unknown [7.193.23.234])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8DE5914025A;
-	Sat,  3 Feb 2024 15:56:06 +0800 (CST)
-Received: from [10.174.179.234] (10.174.179.234) by
- kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sat, 3 Feb 2024 15:56:05 +0800
-Message-ID: <4d974c1e-b3a8-8b21-88f4-e5f20b2fb654@huawei.com>
-Date: Sat, 3 Feb 2024 15:56:04 +0800
+	s=arc-20240116; t=1706947051; c=relaxed/simple;
+	bh=hroIZKqVyIMMeicPNrsjwRZRLDKnJZ+qliuelIcNzX8=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=AOkS3sYdCQ0IwT3ztSt5mdl+8WRDMHal84DoADjkIO+uG1FlG3EKSO73AuLo0rS3I7geiBLcAXjrqbNleXz6j/EQgUnj0LvlOr1l7kwNoMwDPiq3+hZjbCDLQdkfkFbGWwXM2L6F/6bSV/uXsAjJzZ6InHJ66c0/mAjJaY6ypnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-363ab2648easo19199245ab.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 23:57:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706947049; x=1707551849;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/6nBQdvx1rkzyJkyFMyp4g5RXHBqZrOZM6xaBekHJyg=;
+        b=mRmKJe5m5dmeF8eHVqzxFvrFWyqA351y1jVObgZpUmCzrLg2An5CDvz4dhMlHk6yqM
+         3FWCDA3qxYy3AOgmdD7x4vfvDSr5gzb+WeLZ+dzNNJFZXaEknX3fVS2oYOs0EXYa8+YU
+         NJYL9QDo959tR1pbwK0EdFQ7PJbqOEC6GhudyCwVUfKPSi5qMFsFgWFBDdTe4ENmHrUp
+         PKx88c5WdYKsgCgTs7+fFtwO/KQn4Ue/SEy2aMM2SoIB1QJZmP9wTJC8Ew8v1Mu8MlLu
+         LseNZAW7xp/3k97iQLRG7oeEpUs68JinGN+oyXjKyA43sAgtBo7b0X2hJzos5mzAIUKz
+         JIZw==
+X-Gm-Message-State: AOJu0YyC7t9dRwjWckXh1F7NJNIQ8r/eLhlTBbsxegA43jAudkCQ7VwH
+	+NPIC1o7jCvcJ/yjpdVz6EpryogPVXxmjpyz5rO/7BU7arMykKDYn20pDYZ+P6kmh43Ck1+7br4
+	xILgMSZoT9/oeje07niJ87UyGimDkMKGfyGjUf5utRxf/ATarkb0fRn0=
+X-Google-Smtp-Source: AGHT+IG/81Ib99PMqzWj59NX8R5GBRq+ruAXmTaGG3acfiU4b7NcBEN+QysElG0EOQfr9Nm6d4BCDOAeXQO0Gg4iZUOcX7L6/ojv
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH -next v4 2/3] x86/mce: rename MCE_IN_KERNEL_COPYIN to
- MCE_IN_KERNEL_COPY_MC
-To: "Luck, Tony" <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>
-CC: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	"wangkefeng.wang@huawei.com" <wangkefeng.wang@huawei.com>, Dave Hansen
-	<dave.hansen@linux.intel.com>, "x86@kernel.org" <x86@kernel.org>, "H. Peter
- Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra
-	<peterz@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, Naoya
- Horiguchi <naoya.horiguchi@nec.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-edac@vger.kernel.org"
-	<linux-edac@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-	Guohanjun <guohanjun@huawei.com>
-References: <20240111135548.3207437-1-tongtiangen@huawei.com>
- <20240111135548.3207437-3-tongtiangen@huawei.com>
- <20240131070258.GGZbnwov0g918F-FGz@fat_crate.local>
- <3009aadd-69d6-c797-20b4-95cf926b6dd9@huawei.com>
- <20240201142016.GFZbuooG9CRoK90U2C@fat_crate.local>
- <39c1e4d2-b1d0-91ae-595e-1add4698dd7f@huawei.com>
- <20240202133911.GBZbzwf-M37M-J3EJX@fat_crate.local>
- <SJ1PR11MB6083A60DE19FBFB1B0CA6B3DFC422@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <20240202194257.GFZb1FwcPPO8WXF86H@fat_crate.local>
- <SJ1PR11MB6083BDC3A0596FA87BC25259FC422@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <20240202222220.GIZb1rHG3NiZKmdRXu@fat_crate.local>
- <SJ1PR11MB6083FDC9D4661A9D94E26ABDFC422@SJ1PR11MB6083.namprd11.prod.outlook.com>
-From: Tong Tiangen <tongtiangen@huawei.com>
-In-Reply-To: <SJ1PR11MB6083FDC9D4661A9D94E26ABDFC422@SJ1PR11MB6083.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600017.china.huawei.com (7.193.23.234)
+X-Received: by 2002:a05:6e02:1a4c:b0:363:812d:d6a5 with SMTP id
+ u12-20020a056e021a4c00b00363812dd6a5mr301584ilv.0.1706947049138; Fri, 02 Feb
+ 2024 23:57:29 -0800 (PST)
+Date: Fri, 02 Feb 2024 23:57:29 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000083b24f0610759407@google.com>
+Subject: [syzbot] [netfs?] kernel BUG in __fscache_relinquish_cookie (2)
+From: syzbot <syzbot+ccef0a87d907980eed03@syzkaller.appspotmail.com>
+To: dhowells@redhat.com, jlayton@kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, netfs@lists.linux.dev, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    596764183be8 Add linux-next specific files for 20240129
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1571092fe80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=584144ad19f381aa
+dashboard link: https://syzkaller.appspot.com/bug?extid=ccef0a87d907980eed03
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/b647c038857b/disk-59676418.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/729e26c3ac55/vmlinux-59676418.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/15aa5e287059/bzImage-59676418.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ccef0a87d907980eed03@syzkaller.appspotmail.com
+
+netfs: 
+netfs: Assertion failed
+netfs: ffffffffadacafae == 0 is false
+------------[ cut here ]------------
+kernel BUG at fs/netfs/fscache_cookie.c:985!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
+CPU: 1 PID: 22343 Comm: syz-executor.0 Not tainted 6.8.0-rc1-next-20240129-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+RIP: 0010:__fscache_relinquish_cookie+0x4e8/0x620 fs/netfs/fscache_cookie.c:985
+Code: e8 83 e0 07 83 c0 03 38 d0 7c 0c 84 d2 74 08 48 89 ef e8 cb d4 b8 ff 48 63 73 04 31 d2 48 c7 c7 c0 a2 22 8b e8 b9 29 40 ff 90 <0f> 0b e8 c1 51 5e ff 48 c7 c7 40 a2 22 8b e8 a5 29 40 ff 48 c7 c7
+RSP: 0018:ffffc90014417b00 EFLAGS: 00010282
+RAX: 0000000000000025 RBX: ffff88823bd40ee8 RCX: ffffc9000cded000
+RDX: 0000000000000000 RSI: ffffffff816eb7e6 RDI: 0000000000000005
+RBP: ffff88823bd40eec R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000080000000 R11: fffffffffffc94f8 R12: ffff88823bd40fd8
+R13: 00000000adacafae R14: 000000000003c0cc R15: ffff8880750f29c0
+FS:  00007f4f507ef6c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f41889747a0 CR3: 000000007c79e000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ fscache_relinquish_cookie include/linux/fscache.h:308 [inline]
+ v9fs_evict_inode+0x102/0x150 fs/9p/vfs_inode.c:356
+ evict+0x2ed/0x6c0 fs/inode.c:666
+ iput_final fs/inode.c:1740 [inline]
+ iput.part.0+0x573/0x7c0 fs/inode.c:1766
+ iput+0x5c/0x80 fs/inode.c:1756
+ v9fs_fid_iget_dotl+0x1b4/0x260 fs/9p/vfs_inode_dotl.c:96
+ v9fs_get_inode_from_fid fs/9p/v9fs.h:230 [inline]
+ v9fs_mount+0x515/0xa90 fs/9p/vfs_super.c:142
+ legacy_get_tree+0x109/0x220 fs/fs_context.c:662
+ vfs_get_tree+0x8f/0x380 fs/super.c:1784
+ do_new_mount fs/namespace.c:3352 [inline]
+ path_mount+0x14e6/0x1f20 fs/namespace.c:3679
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount fs/namespace.c:3875 [inline]
+ __x64_sys_mount+0x297/0x320 fs/namespace.c:3875
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f4f4fa7cda9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f4f507ef0c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f4f4fbabf80 RCX: 00007f4f4fa7cda9
+RDX: 0000000020000140 RSI: 0000000020000400 RDI: 0000000000000000
+RBP: 00007f4f4fac947a R08: 00000000200007c0 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f4f4fbabf80 R15: 00007ffd6430a4a8
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__fscache_relinquish_cookie+0x4e8/0x620 fs/netfs/fscache_cookie.c:985
+Code: e8 83 e0 07 83 c0 03 38 d0 7c 0c 84 d2 74 08 48 89 ef e8 cb d4 b8 ff 48 63 73 04 31 d2 48 c7 c7 c0 a2 22 8b e8 b9 29 40 ff 90 <0f> 0b e8 c1 51 5e ff 48 c7 c7 40 a2 22 8b e8 a5 29 40 ff 48 c7 c7
+RSP: 0018:ffffc90014417b00 EFLAGS: 00010282
+RAX: 0000000000000025 RBX: ffff88823bd40ee8 RCX: ffffc9000cded000
+RDX: 0000000000000000 RSI: ffffffff816eb7e6 RDI: 0000000000000005
+RBP: ffff88823bd40eec R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000080000000 R11: fffffffffffc94f8 R12: ffff88823bd40fd8
+R13: 00000000adacafae R14: 000000000003c0cc R15: ffff8880750f29c0
+FS:  00007f4f507ef6c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007efe021a8000 CR3: 000000007c79e000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-在 2024/2/3 6:46, Luck, Tony 写道:
->> Now, since you're explaining things today :) pls explain to me what this
->> patchset is all about? You having reviewed patch 3 and all?
->>
->> Why is this pattern:
->>
->>        if (copy_mc_user_highpage(dst, src, addr, vma)) {
->>                memory_failure_queue(page_to_pfn(src), 0);
->>
->> not good anymore?
->>
->> Or is the goal here to poison straight from the #MC handler and not
->> waste time and potentially get another #MC while memory_failure_queue()
->> on the source address is done?
->>
->> Or something completely different?
-> 
-> See the comment above memory_failure_queue()
-> 
-> * The function is primarily of use for corruptions that
->   * happen outside the current execution context (e.g. when
->   * detected by a background scrubber)
-> 
-> In the copy_mc_user_highpage() case the fault happens in
-> the current execution context. So scheduling someone else
-> to handle it at some future point is risky. Just deal with it
-> right away.
-> 
-> -Tony
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-The goal of this patch:
-   When #MC is triggered by copy_mc_user_highpage(), #MC is directly
-processed in the synchronously triggered do_machine_check() ->
-kill_me_never() -> memory_failure().
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-And the current handling is to call memory_failure_queue() ->
-schedule_work_on() in the execution context, I think that's what
-"scheduling someone else to handle it at some future point is risky."
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-Thanks.
-Tong.
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
