@@ -1,215 +1,161 @@
-Return-Path: <linux-kernel+bounces-50913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50914-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22FAB848329
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 05:30:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C8DE8483BB
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 05:33:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE4E828BF11
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 04:30:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E31101F23A72
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 04:33:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1071850271;
-	Sat,  3 Feb 2024 04:18:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4D1511CB7;
+	Sat,  3 Feb 2024 04:21:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ze0n6zBk"
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ob/JSzh4"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AE2950259
-	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 04:17:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27A22F9E9;
+	Sat,  3 Feb 2024 04:21:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706933880; cv=none; b=URQYL2K7o7Y9jpLGtPYgxd56EejXHLpkQFSaGJd5M5Sk2L88ZMN9wCyNnnDQiupPQT2jKDPQdnzFkvvrEvFPuNL4heCP+iWYmBxSHv1QGCCJrQG8CqhuGXbLNPJMpfDU6kWpjJ0WUenp69uRJ8bASy2lGaORgfdf6SekEzLNKMw=
+	t=1706934072; cv=none; b=hGm5cPbLFWPlzDVCn5UQcheK4SpZZpO2Zd3vg27wTqO0BqjQVmTBFyIL1U4dP7tIZQrMtbAc28Oh0YqXh8bm/UFG8yO29ysqx7MVSzPrkq5cUsopb9tZNPa8z0TT2onZBRx51YIiZXF1u86RxJtsPbvXkiuyY+fyZUkeWczIlxA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706933880; c=relaxed/simple;
-	bh=nsl3WqQ+k+ykbNiLwPF1PCJ3ZiKDT5+I14JPm9QENBQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AWja88qY7VIqxdkMC3J7QQLVIiQRy8Jb1lpxJrWEqw8USIhnMousw0EByfQDpvcmkODcpcBILoOxSoGi0eyf5r01gpoyi3ZIdm1XlkuH2/nDtLNcFIlCi+1XZ9Gf86Z5vMRg37THN4kwOXBGery8ng+i9jY4EBNhv27zGJRdV2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ze0n6zBk; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dc6cbe1ac75so1124348276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 20:17:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706933877; x=1707538677; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nsl3WqQ+k+ykbNiLwPF1PCJ3ZiKDT5+I14JPm9QENBQ=;
-        b=Ze0n6zBkzeNSaNLwYm5BbCvoQqA5KXXPSeEFPl5GnI6l10SXg7U9RWCT+srAQdmDsg
-         g5QR4swG+iD6R8wVAXDqz2aEhI3BjG/kckN3G/spsijE9V7P5Q+dDPFJlzSQC6fsVgJM
-         d7iTmgehVfNpJMJibF7L/XuIlOphB9JZCZ7LU9o7+Qgwv/uHo92WDPhajq9TeYq0fAY/
-         l7DnEy13uPGDKsYBmEz6GClYRJ7LVbcEra4mlfLcGqf261HSFw24RSX4kk+G6Xc/MIOF
-         DfR/+NMilgxx+Ca9UimUiNcgsBKqMXXUoPfhEFZCiCAhcQRAr9R0AQYjtmfcrm5nNXbI
-         BTMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706933877; x=1707538677;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nsl3WqQ+k+ykbNiLwPF1PCJ3ZiKDT5+I14JPm9QENBQ=;
-        b=gKFQ7gsLeieczrrlnMsO6+rszfbqiyeLKPl8JWGR3TlltOaheoR0qMneVo6rhxMpQP
-         3X+PStWNEYBbnILJpW+CzN1n8z+X0akw8pz9VfjaZXGC+dQFmoWBujTK8hqjPZxvKS1Y
-         T716MPLkIMYKxIVRD6lkiH2gbpzje10Gwi4VUxYAmoZBdbl3oqwPMQD6FatrofLh9xQO
-         uPioPkI7CIGJgncMg4Ti2EhfVhqKr2F714M7jQSsJUQmXT7cMoXW2sZHP+dnvVveHbys
-         hUCmL8kU1UkqeJoUEwkaz3knvoSjrwsNYSdDssoJ3oNFHJhHnNBM6SecLI5p4LWBQcge
-         ABng==
-X-Gm-Message-State: AOJu0Yx3XMlX4LmlSKzsPmZAxzYadcleT3NHaGdMafVfQeMsXMyd1B/r
-	oh1iFLhm6ZlBiPxXim+Gah9YbSXPv9/3YFUwLyalwEGSsqQK9Y+WJHN155VwCWn2LVKCxecxrNu
-	tRuQE+Y4HjzgqFBRaGm/4+8MRZ6c=
-X-Google-Smtp-Source: AGHT+IGDes7I6Lw5tNAKr41vy3Nm31KZ13xinGdJaeNu3Cj+y1qeCO20pV70xsfUrp9HTXKQPWob3FOvoTdbhzTRNRw=
-X-Received: by 2002:a25:8183:0:b0:dc6:5570:898e with SMTP id
- p3-20020a258183000000b00dc65570898emr353556ybk.17.1706933877392; Fri, 02 Feb
- 2024 20:17:57 -0800 (PST)
+	s=arc-20240116; t=1706934072; c=relaxed/simple;
+	bh=l8fqb95s8syuE8Cx9UHSXoTZx0Bim/EsdxuGX0FstWM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JlrzzMn17WcE2+omPjIlPfNkxA0NKTNLHLUghMgDF/+ZPCZDIVCkqZSTb/VKnsiAkcTvvDhgozch9yumz3cd1MH8jWlq6sQrKln6gcS/fClkKlTsU/YTny3GCO3iEH8tiaaBxfiZHrDHgDMWCSTAXHqk2Pajr47r0Ho/S32GrtQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ob/JSzh4; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706934070; x=1738470070;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=l8fqb95s8syuE8Cx9UHSXoTZx0Bim/EsdxuGX0FstWM=;
+  b=Ob/JSzh4WBeKLXmCRYHxj0k/fdIaMYdMwTw8tdPiN6OBBPCRuSofnoie
+   S1W2a9wUCnGYYPfO6jYcARhZ+lqAEe3Gl/OwtWWHAN0hotGLHnFB3Br5M
+   uSESZkJIcczAzGtKcgbjHv7KCE7PkqYcOVU+6oCessqMcJIX9FLyjM09M
+   H54X4/G5CPOSGm16CojGP7Kgr3BWLmXPdbZBuw+Mvp0U6EfYkvPIYVRUA
+   bijxowSmPI5RZbHPi4dCPhNXEwDKRQSAn4UC/xuA/WZS8A+1UpkAlsJsc
+   NAWyQngE3ZSfJtF1sZf1h+y1D2kapn2p27ZvPdM9MLVCDW9BEem6zoVWo
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="11655561"
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="11655561"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 20:21:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="31047732"
+Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
+  by orviesa002.jf.intel.com with ESMTP; 02 Feb 2024 20:21:04 -0800
+Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rW7WX-0004cQ-0G;
+	Sat, 03 Feb 2024 04:21:01 +0000
+Date: Sat, 3 Feb 2024 12:20:06 +0800
+From: kernel test robot <lkp@intel.com>
+To: Andrew Davis <afd@ti.com>, Sebastian Reichel <sre@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Sean Wang <sean.wang@mediatek.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-actions@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, Andrew Davis <afd@ti.com>
+Subject: Re: [PATCH 09/18] power: reset: rmobile-reset: Use
+ devm_register_sys_off_handler(RESTART)
+Message-ID: <202402031246.nZHDnDnf-lkp@intel.com>
+References: <20240201180102.70395-10-afd@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201125226.28372-1-ioworker0@gmail.com> <Zby-sHLDlmTRaUcd@tiehlicka>
- <CAK1f24=7sy_Bczpt5YeDbkhfriYUc1=zreSFdGCxfF3R0D6sRQ@mail.gmail.com>
- <ZbzfxNn4AYnTVFLh@tiehlicka> <CAK1f24mvBkc2c=fHL6UxMhL2mgLHVrSwZfE5516bOR0yVdfZpQ@mail.gmail.com>
- <ZbzmvwyTGeW18nJy@tiehlicka> <CAK1f24kdyOnUjcpnrk6j4cF6bSFXQwwzFk9tM+jD4RsO_Hc4hA@mail.gmail.com>
- <Zbz_ao0uBKabzKB1@tiehlicka> <CAK1f24nHmvqm1XD_UkWUB7DmNdH0NEOKzpLgKDJ=UuPWO=rEHw@mail.gmail.com>
- <CAHbLzkpYM3jGVP19hG6LcD0=C=LHgGXqjVhsMYhO4HQufsfy-g@mail.gmail.com>
-In-Reply-To: <CAHbLzkpYM3jGVP19hG6LcD0=C=LHgGXqjVhsMYhO4HQufsfy-g@mail.gmail.com>
-From: Lance Yang <ioworker0@gmail.com>
-Date: Sat, 3 Feb 2024 12:17:45 +0800
-Message-ID: <CAK1f24n_ahUoWvw1zJN3P9W-4cxuQVL=1cOZKNjiBhp-ortc5g@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm/khugepaged: skip copying lazyfree pages on collapse
-To: Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>, 
-	David Hildenbrand <david@redhat.com>
-Cc: akpm@linux-foundation.org, zokeefe@google.com, songmuchun@bytedance.com, 
-	peterx@redhat.com, minchan@kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240201180102.70395-10-afd@ti.com>
 
-Hey Michal, David, Yang,
+Hi Andrew,
 
-I sincerely appreciate your time!
+kernel test robot noticed the following build warnings:
 
-I still have two questions that are perplexing me.
+[auto build test WARNING on sre-power-supply/for-next]
+[also build test WARNING on mani-mhi/mhi-next soc/for-next linus/master v6.8-rc2 next-20240202]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-First question:
-Given that khugepaged doesn't treat MADV_FREE
-pages as pte_none, why skip the 2M block when all
-the pages within the range are old and unreferenced,
-but won't skip if the partial range is MADV_FREE,
-even if it's not redirtied? Why make this distinction?
-Would it not be more straightforward to maintain
-if either all were skipped or not?
+url:    https://github.com/intel-lab-lkp/linux/commits/Andrew-Davis/power-reset-atc260x-poweroff-Use-devm_register_sys_off_handler-RESTART/20240202-020809
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-supply.git for-next
+patch link:    https://lore.kernel.org/r/20240201180102.70395-10-afd%40ti.com
+patch subject: [PATCH 09/18] power: reset: rmobile-reset: Use devm_register_sys_off_handler(RESTART)
+config: hexagon-randconfig-r122-20240202 (https://download.01.org/0day-ci/archive/20240203/202402031246.nZHDnDnf-lkp@intel.com/config)
+compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 7dd790db8b77c4a833c06632e903dc4f13877a64)
+reproduce: (https://download.01.org/0day-ci/archive/20240203/202402031246.nZHDnDnf-lkp@intel.com/reproduce)
 
-Second question:
-Does copying lazyfree pages (not redirtied) to the
-new huge page during khugepaged collapse
-undermine the semantics of MADV_FREE?
-Users mark pages as lazyfree with MADV_FREE,
-expecting these pages to be eventually reclaimed.
-Even without subsequent writes, these pages will
-no longer be reclaimed, even if memory pressure
-occurs.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402031246.nZHDnDnf-lkp@intel.com/
 
-BR,
-Lance
+sparse warnings: (new ones prefixed by >>)
+>> drivers/power/reset/rmobile-reset.c:24:40: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void [noderef] __iomem *sysc_base2 @@     got void *cb_data @@
+   drivers/power/reset/rmobile-reset.c:24:40: sparse:     expected void [noderef] __iomem *sysc_base2
+   drivers/power/reset/rmobile-reset.c:24:40: sparse:     got void *cb_data
+>> drivers/power/reset/rmobile-reset.c:45:47: sparse: sparse: incorrect type in argument 5 (different address spaces) @@     expected void *cb_data @@     got void [noderef] __iomem *[assigned] sysc_base2 @@
+   drivers/power/reset/rmobile-reset.c:45:47: sparse:     expected void *cb_data
+   drivers/power/reset/rmobile-reset.c:45:47: sparse:     got void [noderef] __iomem *[assigned] sysc_base2
 
-On Sat, Feb 3, 2024 at 1:42=E2=80=AFAM Yang Shi <shy828301@gmail.com> wrote=
-:
->
-> On Fri, Feb 2, 2024 at 6:53=E2=80=AFAM Lance Yang <ioworker0@gmail.com> w=
-rote:
-> >
-> > How about blocking khugepaged from
-> > collapsing lazyfree pages? This way,
-> > is it not better to keep the semantics
-> > of MADV_FREE?
-> >
-> > What do you think?
->
-> First of all, khugepaged doesn't treat MADV_FREE pages as pte_none
-> IIUC. The khugepaged does skip the 2M block if all the pages are old
-> and unreferenced pages in the range in hpage_collapse_scan_pmd(), then
-> repeat the check in collapse_huge_page() again.
->
-> And MADV_FREE pages are just old and unreferenced. This is actually
-> what your first test case does. The whole 2M range is MADV_FREE range,
-> so they are skipped by khugepaged.
->
-> But if the partial range is MADV_FREE, khugepaged won't skip them.
-> This is what your second test case does.
->
-> Secondly, I think it depends on the semantics of MADV_FREE,
-> particularly how to treat the redirtied pages. TBH I'm always confused
-> by the semantics. For example, the page contained "abcd", then it was
-> MADV_FREE'ed, then it was written again with "1234" after "abcd". So
-> the user should expect to see "abcd1234" or "00001234".
->
-> I'm supposed it should be "abcd1234" since MADV_FREE pages are still
-> valid and available, if I'm wrong please feel free to correct me. If
-> so we should always copy MADV_FREE pages in khugepaged regardless of
-> whether it is redirtied or not otherwise it may incur data corruption.
-> If we don't copy, then the follow up redirty after collapse to the
-> hugepage may return "00001234", right?
->
-> The current behavior is copying the page.
->
-> >
-> > Thanks,
-> > Lance
-> >
-> > On Fri, Feb 2, 2024 at 10:42=E2=80=AFPM Michal Hocko <mhocko@suse.com> =
-wrote:
-> > >
-> > > On Fri 02-02-24 21:46:45, Lance Yang wrote:
-> > > > Here is a part from the man page explaining
-> > > > the MADV_FREE semantics:
-> > > >
-> > > > The kernel can thus free thesepages, but the
-> > > > freeing could be delayed until memory pressure
-> > > > occurs. For each of the pages that has been
-> > > > marked to be freed but has not yet been freed,
-> > > > the free operation will be canceled if the caller
-> > > > writes into the page. If there is no subsequent
-> > > > write, the kernel can free the pages at any time.
-> > > >
-> > > > IIUC, if there is no subsequent write, lazyfree
-> > > > pages will eventually be reclaimed.
-> > >
-> > > If there is no memory pressure then this might not
-> > > ever happen. User cannot make any assumption about
-> > > their content once madvise call has been done. The
-> > > content has to be considered lost. Sure the userspace
-> > > might have means to tell those pages from zero pages
-> > > and recheck after the write but that is about it.
-> > >
-> > > > khugepaged
-> > > > treats lazyfree pages the same as pte_none,
-> > > > avoiding copying them to the new huge page
-> > > > during collapse. It seems that lazyfree pages
-> > > > are reclaimed before khugepaged collapses them.
-> > > > This aligns with user expectations.
-> > > >
-> > > > However, IMO, if the content of MADV_FREE pages
-> > > > remains valid during collapse, then khugepaged
-> > > > treating lazyfree pages the same as pte_none
-> > > > might not be suitable.
-> > >
-> > > Why?
-> > >
-> > > Unless I am missing something (which is possible of
-> > > course) I do not really see why dropping the content
-> > > of those pages and replacing them with a THP is any
-> > > difference from reclaiming those pages and then faulting
-> > > in a non-THP zero page.
-> > >
-> > > Now, if khugepaged reused the original content of MADV_FREE
-> > > pages that would be a slightly different story. I can
-> > > see why users would expect zero pages to back madvised
-> > > area.
-> > > --
-> > > Michal Hocko
-> > > SUSE Labs
+vim +24 drivers/power/reset/rmobile-reset.c
+
+    21	
+    22	static int rmobile_reset_handler(struct sys_off_data *data)
+    23	{
+  > 24		void __iomem *sysc_base2 = data->cb_data;
+    25	
+    26		/* Let's assume we have acquired the HPB semaphore */
+    27		writel(RESCNT2_PRES, sysc_base2 + RESCNT2);
+    28	
+    29		return NOTIFY_DONE;
+    30	}
+    31	
+    32	static int rmobile_reset_probe(struct platform_device *pdev)
+    33	{
+    34		void __iomem *sysc_base2;
+    35		int error;
+    36	
+    37		sysc_base2 = devm_platform_ioremap_resource(pdev, 0);
+    38		if (IS_ERR(sysc_base2))
+    39			return PTR_ERR(sysc_base2);
+    40	
+    41		error = devm_register_sys_off_handler(&pdev->dev,
+    42						      SYS_OFF_MODE_RESTART,
+    43						      SYS_OFF_PRIO_HIGH,
+    44						      rmobile_reset_handler,
+  > 45						      sysc_base2);
+    46		if (error) {
+    47			dev_err(&pdev->dev,
+    48				"cannot register restart handler (err=%d)\n", error);
+    49			return error;
+    50		}
+    51	
+    52		return 0;
+    53	}
+    54	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
