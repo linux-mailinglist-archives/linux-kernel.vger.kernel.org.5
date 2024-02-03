@@ -1,114 +1,120 @@
-Return-Path: <linux-kernel+bounces-51176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04216848756
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 17:08:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 425B8848758
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 17:08:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36E6D1C22A3D
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 16:08:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3CB22840FE
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 16:08:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B5455F84F;
-	Sat,  3 Feb 2024 16:08:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F8F65F57C;
+	Sat,  3 Feb 2024 16:08:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cNLCdrJX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QnYmcDof"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B5025F54F;
-	Sat,  3 Feb 2024 16:08:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5415E5F54F;
+	Sat,  3 Feb 2024 16:08:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706976489; cv=none; b=k6da+W6S4lFNKOsHPXTiWyf/UIzADmHIndT0hNiSJ54buqumsuH0cZdLfumn0rwZkZJw4vUE9Xy3Iu5CmGctFDF2d5hlKKc9sgq/IayQa3l19Iv7vIEQYin/JFwqtmXQ7Jsw5znMgLBq9Ifv3g1HGlvxBODt4h7mQh2vnqZ9wkY=
+	t=1706976522; cv=none; b=ZhYfNPkiU7NeDEMQLzqlsWViR9x/VMLoh0CUQ07v/IGrjZ+ETpogh5obQWy5XRl3VHqTxwNMXEVfLUHI4a4B2/wtjDF0Gmi+Tn3IPM2k/ukes98ddxjqQPWqzGgAjX4XEoSlLVIQ9Uncmc1GYMgbklRJQRjGm4ViJRASSSAzhKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706976489; c=relaxed/simple;
-	bh=SeNku5MGwBucgE6V4WxWAhjMMTksXR8Sl9NiT84m2GU=;
+	s=arc-20240116; t=1706976522; c=relaxed/simple;
+	bh=TvfqkaY1z7E/EzEJYealS3QK6K6eb9XPzrgRJHOGDws=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uDCV0J/6mkCLf5ZpRTjh3CRHxcjFVCA3pg7iVHAQUNukgmrMwBKWVVgl+aSlLtlAVryTaG4IBCSB7sNwWs3NcahTa8l2L3m62Xv4q8GkZWZgPSmkYXlKuOeV0buO12PLp+fjj9h9mXvx+IHuL46wG+EMbam1S4z+rW8qNTOP3D0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cNLCdrJX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5C61C433F1;
-	Sat,  3 Feb 2024 16:08:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706976488;
-	bh=SeNku5MGwBucgE6V4WxWAhjMMTksXR8Sl9NiT84m2GU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cNLCdrJXOcG+9RKrNP47I0U78tgynQzyGmlQet7MdNKgSJiMvVok0SCpC5OF574Q9
-	 RQunhn+QQc80CD+I3Aj3CUkS+aGS0PHwV50lA3XYMEhjd+80zKHWblRv4pbulldaOg
-	 pONg+FWH2i1r+OjQ5fDTo8z673EAE0jNjKaMHDNQ/IkMpjEVctX8Y1sQqj45KFCDxf
-	 Kysx/DW/gfZedakNgOFsbRCDlhZqzMRs2ikM8slB9BojPDYPtIz8iD2vcX7UlbVdv/
-	 dwGMcw7EaDZ0cJ59I4WDNt33wkNYnM84dU7eBa9SnAceq3s+UWw8tu+W5aeXznj6xW
-	 JlWDZwHwgbGTg==
-Date: Sat, 3 Feb 2024 09:08:06 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Borislav Petkov <bp@alien8.de>
-Cc: pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-	dave.hansen@linux.intel.com, x86@kernel.org,
-	kirill.shutemov@linux.intel.com, ndesaulniers@google.com,
-	morbo@google.com, justinstitt@google.com,
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-	patches@lists.linux.dev
-Subject: Re: [PATCH] x86/coco: Define cc_vendor without
- CONFIG_ARCH_HAS_CC_PLATFORM
-Message-ID: <20240203160806.GA520926@dev-fedora.aadp>
-References: <20240202-provide-cc_vendor-without-arch_has_cc_platform-v1-1-09ad5f2a3099@kernel.org>
- <20240203102925.GFZb4VhT1IwX-XRxTV@fat_crate.local>
+	 Content-Type:Content-Disposition:In-Reply-To; b=OafEAy5LI+mcYj0GR6jfdW+vLAzbyWPd9Ba6MlUVjH69K+Zw+3Qcv9m+lmugT956Suav0uqk19eDrq6v1M4XKprvZWnwJbUAyDlilZJVmZR4oCmA9/qYUsUYv9CBwn3xMDKsm2LlbZzKlFoufwLEJlYty3dtpbtZBA/Ari/7Ulc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QnYmcDof; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a350bfcc621so369408066b.0;
+        Sat, 03 Feb 2024 08:08:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706976519; x=1707581319; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=yqxR1EvTMHsgAyMYGoVPWKfZjLT0ZE/JNwoz1peXESY=;
+        b=QnYmcDoftHqKZzNoPNwh2VkVR0jtM85MEE8DINca2l3LMcdxOG4b134q08xtRLVnHJ
+         +JnQDQaXZJ3gr8ungnS8nEaE+z2A9gn9wZElvGIAqBfPa4UXXhSviWqlGvy1C6ekPXkt
+         jxuNyFpuUWE2Bae7YoxFPDAV6ZMFLLJb6izevBLh/i0UPBK1r/oj+9wjqffHI8ofn2ER
+         H4bNzMl9QCU4X1obKiWB1Ape3KMK+DK27lUnec3l8Iya+669XGoHPwHjr2P/SR/ujFpk
+         enJQLFs/bKJWh8YaCja1a5IX2SCJEzm7IkeFW3jgW4kqsD2jQokSR3pyq4eDGPNrLOUm
+         0sMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706976519; x=1707581319;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yqxR1EvTMHsgAyMYGoVPWKfZjLT0ZE/JNwoz1peXESY=;
+        b=ZfvgOA80KUn0xbSv/DS6PxwG4JIKBl4sMl6CrJXUCBdLqRUh3NgqSWHIX/bLTkJpkn
+         +pKoGtFGRseU0Bblfy6rcCHGElwVBP9o1qms12IQ4Zi5Uf2AVeDCE6/WjMhJvFOYwQ62
+         Ko0fzRoHDCAPFursL4RpmoXIAWa2TLugT5DH1ePceG+0TAitaUckyXGLgtXhgB/qEB/N
+         LE6lZSJ4DMKeJZyIEGDMmI3H9q7PMeSrOi7xr3TvCVB2M8M5ktGF0Ap3SW0TVeAyjr0+
+         6N/G74VTwFvxZIpDnhrHu8oshKkU4+vbQVLbE7tP8cuomdgMnQ9e23a0GCvlCjDxObA4
+         jI/Q==
+X-Gm-Message-State: AOJu0YzVPpztst6lrj2nqs+rlH2WCNOO8p93bg3viADZT6mJMjvhsfzp
+	ORZoWj/10D9GNtP49Uq2F//6FAdCbW5YISu57IzKiYlnqqsrPdjw
+X-Google-Smtp-Source: AGHT+IEV7d2FsfRSLMK6a7dxjQNk/sLxnViRxBq5OTzJ2O7LLiHkXev+oosUiHbOyA2opP7IX/dtEA==
+X-Received: by 2002:a17:906:a90:b0:a36:7c3b:8489 with SMTP id y16-20020a1709060a9000b00a367c3b8489mr3918471ejf.42.1706976519228;
+        Sat, 03 Feb 2024 08:08:39 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUuHUp6KK7TLw+ODD5dqWW3j2sdAOJuk0nRArfTl1DCEeSfbYkeJAEyuR4JXQAgXI5LCNM4e5NycB9epZvUukXotFR29/IwESGGDLKTB6RbiSWZotfFi7ANVip5YtK2QvAAkvIEezBh2cyyoOfyapL9i4ZNtUXmp2BUvQwfl+oG1d5dmRKp+wU0Yb8=
+Received: from debian ([93.184.186.109])
+        by smtp.gmail.com with ESMTPSA id hd34-20020a17090796a200b00a36f314daa6sm2132144ejc.46.2024.02.03.08.08.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Feb 2024 08:08:38 -0800 (PST)
+Date: Sat, 3 Feb 2024 17:08:36 +0100
+From: Dimitri Fedrau <dima.fedrau@gmail.com>
+To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc: Li peiyu <579lpy@gmail.com>, Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: humidity: hdc3020: add threshold events support
+Message-ID: <20240203160836.GA21281@debian>
+References: <20240203090530.53374-1-dima.fedrau@gmail.com>
+ <1eb2034f-b1ef-474d-91f6-c562a5768bfd@gmail.com>
+ <20240203144205.GA3727@debian>
+ <871e7e7a-c987-4926-957e-5dfdb46d0740@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240203102925.GFZb4VhT1IwX-XRxTV@fat_crate.local>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <871e7e7a-c987-4926-957e-5dfdb46d0740@gmail.com>
 
-On Sat, Feb 03, 2024 at 11:29:25AM +0100, Borislav Petkov wrote:
-> On Fri, Feb 02, 2024 at 04:53:21PM -0700, Nathan Chancellor wrote:
-> > Commit a9ef277488cf ("x86/kvm: Fix SEV check in sev_map_percpu_data()")
-> > exposes this build error but I think it is really a problem with commit
-> > da86eb961184 ("x86/coco: Get rid of accessor functions"), although I am
-> > not positive so I left out the fixes tag.
+Am Sat, Feb 03, 2024 at 04:53:33PM +0100 schrieb Javier Carrasco:
+> On 03.02.24 15:42, Dimitri Fedrau wrote:
+> > Am Sat, Feb 03, 2024 at 10:30:09AM +0100 schrieb Javier Carrasco:
+> >> Hi Dimitri,
+> >>
+> > Hi Javier,
+> > 
+> >>> +	/* Supported temperature range is from –40 to 125 degree celsius */
+> >> Should that not be val < -40?
+> > yes, you are right. Will fix it.
+> >>> +	if (val < -45 || val > 125)
+> >>> +		return -EINVAL;
+> >>> +
+> > 
+> > Best regards,
+> > Dimitri
 > 
-> Well, which is it?
+> When at it, could you please rename the hdc3020_id variable you added to
+> the probe function? It shadows the i2c_device_id global variable (it is
+> not used in the probe function, but there is no need to use the exact
+> same name), and given that it is in the hdc3020_probe function,
+> mentioning the device name again is kind of redundant. Something like
+> just "id" or "dev_id" would suffice.
+>
+Sure.
 
-Perhaps I should have expanded more on this in the commit message or
-trailer.
-
-> If you're running those GCOV LLVM tests regularly and you haven't seen
-> it after da86eb961184, then it cannot be that one, can it?
-
-Well the issue is that at da86eb961184, all uses of cc_vendor is in code
-that is guarded by either CONFIG_AMD_MEM_ENCRYPT or
-CONFIG_INTEL_TDX_GUEST, which both select CONFIG_ARCH_HAS_CC_PLATFORM,
-so this build error cannot happen at that revision.
-
-$ git grep cc_vendor da86eb961184
-da86eb961184:arch/x86/coco/core.c:enum cc_vendor cc_vendor __ro_after_init = CC_VENDOR_NONE;
-da86eb961184:arch/x86/coco/core.c:        switch (cc_vendor) {
-da86eb961184:arch/x86/coco/core.c:        switch (cc_vendor) {
-da86eb961184:arch/x86/coco/core.c:        switch (cc_vendor) {
-da86eb961184:arch/x86/coco/tdx/tdx.c:        cc_vendor = CC_VENDOR_INTEL;
-da86eb961184:arch/x86/hyperv/ivm.c:        cc_vendor = CC_VENDOR_AMD;
-da86eb961184:arch/x86/include/asm/coco.h:enum cc_vendor {
-da86eb961184:arch/x86/include/asm/coco.h:extern enum cc_vendor cc_vendor;
-da86eb961184:arch/x86/include/asm/sev.h:        if (cc_vendor == CC_VENDOR_AMD &&
-da86eb961184:arch/x86/include/asm/sev.h:        if (cc_vendor == CC_VENDOR_AMD &&
-da86eb961184:arch/x86/include/asm/sev.h:        if (cc_vendor == CC_VENDOR_AMD &&
-da86eb961184:arch/x86/mm/mem_encrypt_identity.c:                cc_vendor = CC_VENDOR_AMD;
-
-However, is it really a9ef277488cf's fault that it happened to use
-cc_vendor in generic code where those same conditions may or may not
-satisfied? If it had used cc_get_vendor() instead if da86eb961184 had
-not existed, this issue would not have happened.
-
-I have no issues with blaming a9ef277488cf but I think da86eb961184 is
-equally blamable for removing the option to use cc_vendor in generic x86
-code where CONFIG_ARCH_HAS_CC_PLATFORM may not be set. Hopefully that at
-least carifies the "which is it?" question, I'll do whatever you think
-is best.
-
-Cheers,
-Nathan
+Best regards,
+Dimitri
 
