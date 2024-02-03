@@ -1,118 +1,112 @@
-Return-Path: <linux-kernel+bounces-50821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 717BB847E52
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 03:08:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 954B7847E69
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 03:30:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E5F91C21DC9
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 02:08:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81F591C2189D
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 02:30:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F08336127;
-	Sat,  3 Feb 2024 02:08:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF2574694;
+	Sat,  3 Feb 2024 02:30:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b="O0ul/Ycp"
-Received: from mail.codeweavers.com (mail.codeweavers.com [4.36.192.163])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="32mR5Qd5"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C237863AE;
-	Sat,  3 Feb 2024 02:08:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=4.36.192.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC5B41FCC
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 02:30:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706926126; cv=none; b=b/MPN7mgH1RTc6YsjikGauH9MWnT3EnAWlnAp8XA8oB+rZuHcRc3FwJbNZk92wwTzKNBzzxf0hBimdkNSGBakyJI30nTZJtAP++iR4iFfkaEMQ+335mrOUtYsqYc6937OzrJkZC+AH3Xex7IKdRVcntX2wRb6WovtkDaK/pUojE=
+	t=1706927423; cv=none; b=rJ/9jiJfes8R/cnt2+8BAvgveqVPA8ljOr3aCVXNZ2hH5Hz2shUBnEXo25/iuNP6yZqORpl88nanIUta5n6qPqCAbuNRtaQ80JFHeQavVPrwtmXnlGmSMKJhc9SwjG9MFWOfdLo6FFAEizrm1ofUcdQiorSym5YQNqatVhISgWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706926126; c=relaxed/simple;
-	bh=lTPYk3uP/7Hs53WTMe3kG3GlscZKfUoKB1OWY+JmyB0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pJ8kf7aRPD83urbXbX37O6JVi2123EFQHXDXgd+hNJXYRqMPP7qcA/RtMY6F8ifDO3X51cOeXzofwK9KLX5M6ue+DNItrRvRY/sqsykVmhnq5H1MJmXHD1rwAyPOKKt4AzwN8M8jdwiD6bdgs75f68I/p4lTj0U+3mkwCEonZ6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com; spf=pass smtp.mailfrom=codeweavers.com; dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b=O0ul/Ycp; arc=none smtp.client-ip=4.36.192.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeweavers.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=codeweavers.com; s=s1; h=Message-ID:Date:Subject:Cc:To:From:Sender;
-	bh=BISZmxAxuhGywf5Psgs5bYnINGRpQwP9TOf62KALg00=; b=O0ul/Ycp0twiaFNrgQRhvbYf9U
-	mKP/lf2M9IbeqHZdncibjWOB4y/TXBubUhfXY7OdwltC6Ug3kl5o2pLf//u6yBQA6483CQSOomTC+
-	mBnr4EC34Ta/fIuSLNMe/adQVSwhI0AXu8cbmuMlZ3FyJGk2WB6F+V2uJdhqMIdW+nRLuxNYGPRKg
-	JR8Xppl2zWfoQDh93Q8l6NWMOLqJGLtRtmm2JmVdEgZtePWIAyUKxe3f8vxBOpOm8Z1lNVO7y/hG4
-	JrrbyUIOaWuSpu9shYaCHQwP3wVDVkvvF9SZQaQDkK32pj/k8lcGIqAf11Ols0E0qR90qTXbhNnPU
-	UDUw5/NA==;
-Received: from cw137ip160.mn.codeweavers.com ([10.69.137.160] helo=camazotz.localnet)
-	by mail.codeweavers.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <zfigura@codeweavers.com>)
-	id 1rW5SJ-006FG8-2O;
-	Fri, 02 Feb 2024 20:08:32 -0600
-From: Elizabeth Figura <zfigura@codeweavers.com>
-To: Andi Kleen <ak@linux.intel.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
- linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
- wine-devel@winehq.org,
- =?ISO-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
- Wolfram Sang <wsa@kernel.org>, Arkadiusz Hiler <ahiler@codeweavers.com>,
- Peter Zijlstra <peterz@infradead.org>, Andy Lutomirski <luto@kernel.org>,
- linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject:
- Re: [RFC PATCH v2 19/29] selftests: ntsync: Add some tests for
- NTSYNC_IOC_WAIT_ANY.
-Date: Fri, 02 Feb 2024 20:08:31 -0600
-Message-ID: <8329156.T7Z3S40VBb@camazotz>
-In-Reply-To: <878r45khqc.fsf@linux.intel.com>
-References:
- <20240131021356.10322-1-zfigura@codeweavers.com>
- <20240131021356.10322-20-zfigura@codeweavers.com>
- <878r45khqc.fsf@linux.intel.com>
+	s=arc-20240116; t=1706927423; c=relaxed/simple;
+	bh=31MALDMSUlwza8Dx/4jdfU0IQzumSFSUtKLVbEOi408=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=gYp6ifBV+84N9Xm3uOCmoldBiclVGCkosYPgR6B1URqqa23odl3darSmCag8NCoUcOAi9j/b0PvEAHZ9BlDgdD9ws0LbY8DlZfb5uh/tATcYlIM/pM9SPU/Rmfwnd7GmBLQVh0ZJ2qsukNYOHu+yJP+9KcpnpSL6Mm28vvq0xiA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=32mR5Qd5; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d89f0ab02bso33735ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 18:30:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706927421; x=1707532221; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XiG6CHWcYdWsI51hB+FTszglKDybzSu63LtpZjDM7i0=;
+        b=32mR5Qd5K4IbmXXr65Gv5dvewTWAXdJ16FTFeTg0fwYXqMXS+inlGm0BfdQN20TfTV
+         zf6yfqIEKEI/9Q/2l+7k1vrAuVKENANxDv0VAB4z3sA4kJbEOsgYpAGuwl6VJIfgNX+U
+         2jhatu0ygruO0+ePvPy481s8JLhEjuRFR9DJ0aZtzlflGnHXW4lT6jTB2X7HDKLC2Lut
+         v5XV2whbZXQQvzhjUZBrpc6C12jVprcBrN1bAHBndSJGY/2AjMhJoQf2SCJxG/KuCblk
+         Qpn07AE1bDr8Zj8bPfb6ISBI24achdKf+5K7wT1nluOOmfbl0NA+1CrJ2vvCvib+lnEt
+         DdWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706927421; x=1707532221;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XiG6CHWcYdWsI51hB+FTszglKDybzSu63LtpZjDM7i0=;
+        b=M+Dgy1/fcDCgTi2WoeWzC8EJsvMuF6eXEw60pET59j9rxMiPuTZB3i6EJBjeCdtRVp
+         OMKmAvrbdPo2NKCrPLs6GO5jP1BEIrgB5+aLDRRE9BovfAxFkYLNS6UAQE0MKVEZZAEk
+         yyp3Tgu8995J0H2HjHemCVgHQQngLujXAJeyU/93XkiqZRvjXGHOkJupeWt46LAqGSSw
+         dil4RfZuXt9/g4oTt1R/FLx9tYOwK3PB7tO8iFFSc1x/wdeisiRfDxmg7sH1dcdOUyuy
+         evUEX3UsFZ+s3ulrBpFmat9RHdpnMGWbm5y2F6EPO9VC0zVIsPN5fZ3YKanSAsVowHME
+         KCCA==
+X-Gm-Message-State: AOJu0YxDQhv+lyn4xrhDgYkJ/nkHQWQ2KKQWVaikHY6lI+Dg7ICgB3Ck
+	I+dzVRCu5rLqBH46+MbCdqbbv5LFGqtplyWpJbsRJ4aQ2jSM4EBbgL2OFElUUA==
+X-Google-Smtp-Source: AGHT+IHg996dygyt9LnIiSvyqK9FLVoUTcVkp9Miw1CYvlt+COnosUlv02z5yOlwrNv7Cbz2O6gz9w==
+X-Received: by 2002:a17:902:fccc:b0:1d9:8e37:56cc with SMTP id mi12-20020a170902fccc00b001d98e3756ccmr24869plb.10.1706927420652;
+        Fri, 02 Feb 2024 18:30:20 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVTJg+AEeBfOkpo/qJURUeu9o91x/nT1ZbAlXanN+fx4CgxYbFsH5DaRxefHDJLKAYgGLQ9IF9TOBbXgio9d1sxnArAMI62kfjIQwVRJFFH1C9Ih6WTB1vIMmmUJuIENK0KKVsZQ4f704yNfhvb8lj6P0i5wwsr5hTBgf/Qp63kzfRV9uhpKaPlEc3BSUA1ANE+aU210RCJmd+3VGAQMclintHIwqZRC6nPSf5y5OBzfg==
+Received: from [2620:0:1008:15:5706:ac37:6d6d:7587] ([2620:0:1008:15:5706:ac37:6d6d:7587])
+        by smtp.gmail.com with ESMTPSA id t11-20020a17090ad50b00b0029658c7bd53sm747960pju.5.2024.02.02.18.30.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 18:30:20 -0800 (PST)
+Date: Fri, 2 Feb 2024 18:30:19 -0800 (PST)
+From: David Rientjes <rientjes@google.com>
+To: Pasha Tatashin <pasha.tatashin@soleen.com>
+cc: robin.murphy@arm.com, joro@8bytes.org, will@kernel.org, 
+    iommu@lists.linux.dev, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+    yosryahmed@google.com
+Subject: Re: [PATCH v2] iommu/iova: use named kmem_cache for iova magazines
+In-Reply-To: <20240202192820.536408-1-pasha.tatashin@soleen.com>
+Message-ID: <d506a467-8af7-dc26-709a-ba49e6c5a3a6@google.com>
+References: <20240202192820.536408-1-pasha.tatashin@soleen.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 
-On Wednesday, 31 January 2024 02:52:11 CST Andi Kleen wrote:
-> Elizabeth Figura <zfigura@codeweavers.com> writes:
+On Fri, 2 Feb 2024, Pasha Tatashin wrote:
+
+> The magazine buffers can take gigabytes of kmem memory, dominating all
+> other allocations. For observability purpose create named slab cache so
+> the iova magazine memory overhead can be clearly observed.
 > 
-> > +TEST(test_wait_any)
-> > +{
-> > +	struct ntsync_mutex_args mutex_args = {0};
-> > +	struct ntsync_wait_args wait_args = {0};
-> > +	struct ntsync_sem_args sem_args = {0};
-> > +	__u32 owner, index, count;
-> > +	struct timespec timeout;
-> > +	int objs[2], fd, ret;
-> > +
-> > +	clock_gettime(CLOCK_MONOTONIC, &timeout);
-> > +
-> > +	fd = open("/dev/ntsync", O_CLOEXEC | O_RDONLY);
-> > +	ASSERT_LE(0, fd);
-> > +
-> > +	sem_args.count = 2;
-> > +	sem_args.max = 3;
-> > +	sem_args.sem = 0xdeadbeef;
-> > +	ret = ioctl(fd, NTSYNC_IOC_CREATE_SEM, &sem_args);
-> > +	EXPECT_EQ(0, ret);
-> > +	EXPECT_NE(0xdeadbeef, sem_args.sem);
-> > +
-> > +	mutex_args.owner = 0;
-> > +	mutex_args.count = 0;
-> > +	mutex_args.mutex = 0xdeadbeef;
-> > +	ret = ioctl(fd, NTSYNC_IOC_CREATE_MUTEX, &mutex_args);
-> > +	EXPECT_EQ(0, ret);
-> > +	EXPECT_NE(0xdeadbeef, mutex_args.mutex);
+> With this change:
 > 
-> It seems your tests are missing test cases for exceeding any limits,
-> especially overflow/underflow cases. Since these are the most likely
-> for any security problems it would be good to have extra coverage here.
-> The fuzzers will hopefully hit it too.
+> > slabtop -o | head
+>  Active / Total Objects (% used)    : 869731 / 952904 (91.3%)
+>  Active / Total Slabs (% used)      : 103411 / 103974 (99.5%)
+>  Active / Total Caches (% used)     : 135 / 211 (64.0%)
+>  Active / Total Size (% used)       : 395389.68K / 411430.20K (96.1%)
+>  Minimum / Average / Maximum Object : 0.02K / 0.43K / 8.00K
 > 
-> Also some stress testing with multiple threads would be useful.
+> OBJS ACTIVE  USE OBJ SIZE  SLABS OBJ/SLAB CACHE SIZE NAME
+> 244412 244239 99%    1.00K  61103       4    244412K iommu_iova_magazine
+>  91636  88343 96%    0.03K    739     124      2956K kmalloc-32
+>  75744  74844 98%    0.12K   2367      32      9468K kernfs_node_cache
+> 
+> On this machine it is now clear that magazine use 242M of kmem memory.
+> 
+> Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
 
-Thanks, I'll add these.
+Very impressive!
 
-
+Acked-by: David Rientjes <rientjes@google.com>
 
