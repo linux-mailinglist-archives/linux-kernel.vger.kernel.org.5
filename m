@@ -1,91 +1,81 @@
-Return-Path: <linux-kernel+bounces-51115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CB8D8486B0
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 15:22:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CCE18486B8
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 15:36:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E8BC285EF8
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 14:22:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FE09B2334E
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 14:36:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E0CD5D8F8;
-	Sat,  3 Feb 2024 14:22:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9D625D919;
+	Sat,  3 Feb 2024 14:36:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mdM4/+k4"
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="YYN4u85c"
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1CD755E70;
-	Sat,  3 Feb 2024 14:21:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D52D12BAEF
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 14:36:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706970120; cv=none; b=PRmb/Y34vBMUTNzqD+6Mx6y7wWCo1rrgiAhkDNfQYLJjuHlkGbVGes/zCpGI6LcuMBRQO2epi7mZjcdA9NJncu1CQG9zT5JhhPkM2X3fHs0h+Vi0vv+IVigxV172TbIngR3fip2+m8rMZn9IWOzCMOmxrKpma1wfQzzDm2r7uVw=
+	t=1706970998; cv=none; b=UB4lUjZmw64KekFHjLMc23qFuDVxwPPqcLdSgjNJ/YEXjOxmGnn6A+esQ7jBPS7/e8wxEr+dYjmP01nhN9liijlznODdM2BJeF4RluzbANCG/UcFrlECF1y2gjosLlZFBo/OjhHBg7euDvQfST/zQ24FrDYL0HQcQ9LwRCdUsls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706970120; c=relaxed/simple;
-	bh=zYrf0P/Z30JJi7prvKKRaAdhW6IPCVPSFetbZi93Bt8=;
+	s=arc-20240116; t=1706970998; c=relaxed/simple;
+	bh=5zVRnjyDndBGcBDaYKnA/6ke/KUEwTKEduciNLtEb20=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hET0LXyyfWzcYWWNX0t28qAf/swb0cu4VW6P5F7sZbvFEbmROUaZtgnza42mejP3ygSkK7nJyoRxhn4JGgoFHth8r3TYbg1UGnPCdpwLRfDNMS9xYr18mBgivUEx8AlIX6/ukISWOica0JNW2/AkxDjdmdjyx/NrxnCzkE88SiY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mdM4/+k4; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-29631796acdso1327949a91.3;
-        Sat, 03 Feb 2024 06:21:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706970118; x=1707574918; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ToEVaWIZ0fuUtYtDuSCMzcdantFPoh+MRoifqahhM0A=;
-        b=mdM4/+k4aIBdegQ1Rigz3vbhjgH82MkxL1YVIKhf4VhWmEUaMb5qj8pzW7RsnYveYZ
-         pxHRT07kGaETnX9aJoIaEz+1zZKFHRj9QQi2Z0/dObskFtZMpeGMgX02sGQQRtUiosu+
-         TSYDT/nSzhq5GQehIYePmwddDDugDNNlgjwptz8DJDDfKBT3Bg0uaFR0kqiBHfVCSNzF
-         90pzWMjDv4CSHH5CsqNsY8XoH1gWZUIg97cT5mqWWOJ581eh3dZPi7UQk8mhPIMTuw42
-         T9By5yGNlV3EqIZA+A5R2jfhYOXwupullNfRyRagjEaXl7+LmPLnJmwJf03gNEfF9vxq
-         XqWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706970118; x=1707574918;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ToEVaWIZ0fuUtYtDuSCMzcdantFPoh+MRoifqahhM0A=;
-        b=wCHXQSuSUGbaJucA34GT2AE6MU6jLKx7mevidDenZMA6a0R7o1PWtjC/JT6j7+PvP+
-         VDzST3sEiQvjsJe6NqbRiXYgDfgV1rq3jrAwTcDlbeu5rBlrLEz/TBQlX+FfeoIOrPLI
-         DXYIxR5e0tRVYMPwkt1dddudP65823Te93iPgPySJ1HOq7s4QVar5+XRkhLM/dhNE9N+
-         ZsCXh3+yEGbnqrCclXylEXtySqs3r0GxBSv/07PPcqvax6hFrGF+miaDBhISfU42LYUW
-         TofQvUM0a9GnbT4TY3oJWojY9WM85znQyhkTeRDFoTOifFQxf8wQO7EDLdnLKwLb0xup
-         HUtQ==
-X-Gm-Message-State: AOJu0YwhalOWL81fCv8+93OUzC+U+renVQdbORxXuG6drq92LpIklhhv
-	CmyLZch1Xp2vFI3kiMc6G/62z1vQG9kSe2c/0KjvY+LkV6LyHhQE
-X-Google-Smtp-Source: AGHT+IH50Mulf3HD1zogOIaD4lEQL8c0b5BOoc10ZI605VLBz8YU65Vl1bg+qoF4yaKAtuIHIgYs3A==
-X-Received: by 2002:a17:90a:43a3:b0:296:42ef:b3ce with SMTP id r32-20020a17090a43a300b0029642efb3cemr4449584pjg.28.1706970117959;
-        Sat, 03 Feb 2024 06:21:57 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVpaILoBXRe6n7KCMUKDi5wsE0061FmwuOKEl8f0m4PFkkASp+8IAn4QcDehTnaYDfSvK9U0/Nr3cWoqLOaIOKxog/ZYNHoR249Y7XPrrB+GhfZPoZ97ZQEp73eKs/qdACjNCaaBsffOX9R9E4zJR9hlPmURm05MqQH90FTKMJTsnlR1BxVySBOzZ9Yuu1sjVhu6ar/Va3/xzq8d7E8XweZkqVV3IPoaFCNVG3NDEPtEkY30Hk2XctNfiTjr8APzpV0LS8QJ11EJxYFiJPO7qtZn+2c7C4H1pOiv9QMwJtAhBZ/eK/k3cWLP4G3nXDJex7/nMRhEPTrW5p6avAKfimXQWHp7hIA9007jrSNKyVYlemClkr9QFeH0NAnm53SaOyETX/NSEerURmce1ChPW0ZAwkBJ/QYNDVg2Ur/P2c7sj+p8eYKRBsKQsittfnYmX6oc1j+TyDaUBfOwJ5c+jxvvJBTx043Wqr7WUOunVfhlDBQ9JEmnx/hXMlofYehnW75JRwo4sn4faylL7/2
-Received: from dragon (45.78.63.125.16clouds.com. [45.78.63.125])
-        by smtp.gmail.com with ESMTPSA id lh4-20020a170903290400b001d8ecf5ff6csm3340292plb.147.2024.02.03.06.21.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Feb 2024 06:21:57 -0800 (PST)
-Date: Sat, 3 Feb 2024 22:21:49 +0800
-From: Shawn Guo <shawn.gsc@gmail.com>
-To: Kshitiz Varshney <kshitiz.varshney@nxp.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Varun Sethi <V.Sethi@nxp.com>, Gaurav Jain <gaurav.jain@nxp.com>,
-	Pankaj Gupta <pankaj.gupta@nxp.com>,
-	Sahil Malhotra <sahil.malhotra@nxp.com>,
-	Vabhav Sharma <vabhav.sharma@nxp.com>,
-	Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>,
-	Rahul Kumar Yadav <rahulkumar.yadav@nxp.com>,
-	Nikhil Singla <nikhil.singla@nxp.com>, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] imx_v6_v7_defconfig: Enable sm3, sm4, polyval, xctr
- cipher test support
-Message-ID: <20240203142149.GI463595@dragon>
-References: <20231220113857.1127598-1-kshitiz.varshney@nxp.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=l577PJBBSwDHBwLk9wa4MavSR2Br0xu/bG891gh6bdelyxdg0hvFFS7qiHhPPEOGfKOBUKJXOY12nWFL4IRECgVZ5hhktTuOWcs7jXd1jhyeBscz1iMIQnOTLNbvnEymJPqZrn4KjC9/uj4q68K889I4k++6uzL5ehy2BthN+Fw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=YYN4u85c; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-82-236.bstnma.fios.verizon.net [173.48.82.236])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 413EZl0m014620
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 3 Feb 2024 09:35:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1706970953; bh=W9QRnEoj1oim8rFp3GQ1Wc3cLjSRInO2QO0PatD71QY=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=YYN4u85clNWA8JLLCI02AQorfr9PBNeSBudlXfEAghMoEz0ZTBX7ghOZdHIcOLzER
+	 sso4j0KZjG5omETRiKLSrvvArg1CpQdW2ZKYU70F/1fp0It9dsx+x1eYjohjvHk+nf
+	 406gLLSAJ5fqnLdQ1gcAXvLTYBNF9SjoTKDI8WNOxTCktL/Onfows6h/+K6AcFK08V
+	 ZYvbJ/8duGPRC2fjNpSO9okEUmqeh8fSquvfsUZ+VDk243VZuek02iZIlznCVtdQS7
+	 xZDoCTyPpPoEfN2tP5um/biKDEPB4YKgDbbh1C4dH1GPafv2aU4xzocVoRJQDCKITn
+	 i/su3IuLPf62g==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 3ED9915C02FC; Sat,  3 Feb 2024 09:35:47 -0500 (EST)
+Date: Sat, 3 Feb 2024 09:35:47 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: James Bottomley <jejb@linux.ibm.com>
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kalra, Ashish" <ashish.kalra@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] x86/random: Retry on RDSEED failure
+Message-ID: <20240203143547.GC36616@mit.edu>
+References: <20240131140756.GB2356784@mit.edu>
+ <Zbpc8tppxuKr-hnN@zx2c4.com>
+ <20240131171042.GA2371371@mit.edu>
+ <DM8PR11MB5750C7D16DC566CD1329D5A5E77C2@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <CAHmME9q-eUXnXnpaDu0VOQemOYysst7SaJ-=b8-vCFP9h50Szg@mail.gmail.com>
+ <20240201045710.GD2356784@mit.edu>
+ <CAHmME9oqM2a766dBK22-yKr8=2-icg=UkQzmBOF8G5Zh_Y9E9w@mail.gmail.com>
+ <ad1a131a006bf98a506e767a01f5022358b3e291.camel@linux.ibm.com>
+ <20240202160515.GC119530@mit.edu>
+ <6ccd8c7998542f1ac68514700fb9e31049a3a3c7.camel@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,50 +84,31 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231220113857.1127598-1-kshitiz.varshney@nxp.com>
+In-Reply-To: <6ccd8c7998542f1ac68514700fb9e31049a3a3c7.camel@linux.ibm.com>
 
-On Wed, Dec 20, 2023 at 12:38:57PM +0100, Kshitiz Varshney wrote:
->     Enable config for sm3, sm4, polyval, xctr cipher test as built in module.
+On Fri, Feb 02, 2024 at 10:28:01PM +0100, James Bottomley wrote:
 > 
->     Issue:-
->     Multiple crypto tests like sm3, sm4 xctr and polyval failing.
-> 
->     skcipher: failed to allocate transform for xctr(aes): -2
->     alg: self-tests for xctr(aes) using xctr(aes) failed (rc=-2)
->     alg: self-tests for sm3 using sm3 failed (rc=-2)
->     tcrypt: failed to load transform for sm3: -2
->     alg: hash: failed to allocate transform for polyval: -2
->     alg: self-tests for polyval using polyval failed (rc=-2)
-> 
->     Resolution:-
->     Enabling CONFIG_CRYPTO_SM3_GENERIC, CONFIG_CRYPTO_SM4_GENERIC,
->     CONFIG_CRYPTO_HCTR2, CONFIG_CRYPTO_ARIA as module enables support of
->     sm3, sm4, aria, polyval & xctr.
-> 
->     Signed-off-by: Kshitiz Varshney <kshitiz.varshney@nxp.com>
+> My big concern is older cpus where rdrand/rdseed don't produce useful
+> entropy.  Exhaustion attacks are going to be largely against VMs not
+> physical systems, so I worry about physical systems with older CPUs
+> that might have rdrand issues which then trip our Confidential
+> Computing checks.
 
-The commit log and Signed-off-by lines shouldn't have leading
-spaces/indent.
+For (non-CC) VM's the answer is virtio-rng.  This solves the
+exhaustion problem, since if you can't trust the host, the VM's
+security is taost anyway (again, ignoring Confidential Compute).
 
-> ---
->  arch/arm/configs/imx_v6_v7_defconfig | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
-> index 0a90583f9f01..627f57da9d5b 100644
-> --- a/arch/arm/configs/imx_v6_v7_defconfig
-> +++ b/arch/arm/configs/imx_v6_v7_defconfig
-> @@ -484,3 +484,7 @@ CONFIG_DEBUG_FS=y
->  # CONFIG_SLUB_DEBUG is not set
->  # CONFIG_SCHED_DEBUG is not set
->  # CONFIG_FTRACE is not set
-> +CONFIG_CRYPTO_HCTR2=m
-> +CONFIG_CRYPTO_SM3_GENERIC=m
-> +CONFIG_CRYPTO_SM4_GENERIC=m
-> +CONFIG_CRYPTO_ARIA=m
+> The signal for rdseed failing is fairly clear, so if the node has other
+> entropy sources, it should continue otherwise it should signal failure.
+> Figuring out how a confidential computing environment signals that
+> failure is TBD.
 
-Instead of adding lines at the end of file, please use help from
-'make savedefconfig' to get them appear at the correct places.
+That's a design decision, and I believe we've been converging on a
+panic during early boot.  Post boot, if we've successfully succeeded
+in initializing the guest kernel's RNG, we're secure so long as the
+cryptographic primitives haven't been defeated --- and if we have,
+such as if Quantuum Computing because practical, we've got bigger
+problems anyway.
 
-Shawn
+					- Ted
 
