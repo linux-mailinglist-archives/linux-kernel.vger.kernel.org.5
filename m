@@ -1,127 +1,150 @@
-Return-Path: <linux-kernel+bounces-51289-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 563C18488C6
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 21:47:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A06808488D3
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 21:48:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AFC51C21CFB
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 20:47:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F6011F236ED
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 20:48:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CF3010A05;
-	Sat,  3 Feb 2024 20:47:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 273CE13AC6;
+	Sat,  3 Feb 2024 20:47:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="igjpNltN"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GN/4T/Rq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27A28171A6;
-	Sat,  3 Feb 2024 20:47:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23B6811C8B;
+	Sat,  3 Feb 2024 20:47:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706993256; cv=none; b=YKGCTwXqjOYwxXx5aSKP7m0TdvKtY0fx5j6+2+Ivp4EmcKj9CG7DUyEAuf1aL/e+1OEEdtYqKTiscuBEW253lmPT7OnWRdR+s5ajANV4aCUCLnoCMrlYgdhQamdnj55Am2TusG+EefyKlsegqcayV4G5ap+9JXScQ79Dtoq5FCY=
+	t=1706993264; cv=none; b=jlHohH7yfiqm1aODvTEoRzozoJHyHq1DQ7ES2BOcq9dVz2b+4SNndJB+s/+bk8J3g6DofQPr4y1npog3G2IG4G4mHLUVM2cxA/h4uk/6BMUqOIDNV7ie7I63ID0ZT2BZisuax44gcmHw1qfETMPElhTTUaUPmIWMGa7B90w/jjg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706993256; c=relaxed/simple;
-	bh=dFOJvRm/Dv2GJm9tcmr/rRrBF5xou9O/DPzBxkjeBCs=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=cbJd/lBjwQUNaEDCWD5Zndw3mQ+oMZ00KIGc9DVNHGDPAn8JsJGE4Gm6U3VH7ahVNlZS+PO36vB/g1fs4zq0oZmFbJFamuLqP8U5SiOUv6lcmUPfegyfU2HS6exFPNGqsc+tZwop3sVpquAGW9vM2zqrfHbSMe2EzfJ3qqQtaTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=igjpNltN; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-51124db6cf0so2336109e87.0;
-        Sat, 03 Feb 2024 12:47:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706993253; x=1707598053; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=E50Uf9G+1/EGFuipor0RfEYDS7SLOBDadNS0OFqIDYE=;
-        b=igjpNltNiqMJB2dHWubt0OMSsUXG4xTomBfYXI25ZbWioeC3pnzyscufc5+H+bOvtN
-         Imm5otQobSRv7dTe14jtzVBUY0fCt5I/wKGCGECWg9telpwl5+6Wp40Ilrxb2GF/gKF/
-         UdZGCM/LFTGnkrs0hjGG02y/sihqy2+Qz5OdAfTnkoriLiJCSG+CIprZqevW24S4i+gv
-         pnFNatJV/LphH51MZySppUIhaCNwb5s3fZ7OKX33rZE5Xk7Yf1TvE0Rp9RQ4n4ze9okJ
-         lTGZJq6n+lkT8VzmbcJki9jCOmF4ELBiMqs5ITG5NUhbtYfo5mtZN3YBR0MtKJqf7T1K
-         vlcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706993253; x=1707598053;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=E50Uf9G+1/EGFuipor0RfEYDS7SLOBDadNS0OFqIDYE=;
-        b=nav255bfMdv6zWt868RCpsnanmSBK0g1kdATjldFOAG7E9m9hKVJRhUSfoE0Etp69o
-         pszFhYcErbaBtEM3cCsUe9kwYeOt6ODWA5DJXs0M3EMNwJ3fdn2EgLw84Fq5FYZjmiv0
-         Zh4qb7jCaRFPAnJ/RRLLejZ/ldmNmpj61298/Q2c7WRXaQ6gWGTOfsjy6QjJhQYyzLZw
-         mVXVot3Y8wBECqUtsRURp7QVTHZ1wR1TH7BPIdNzbFEDSPSrVhYABskMgSswsRp828d+
-         ck8o7G53oHeCoHyAOLQEh/gkEKRJqC3MA4MTmmgJcPrrSFT4rYKCdmlVfk7PXe1F4FII
-         IDDQ==
-X-Gm-Message-State: AOJu0Yw2/eMcBTBgkE8FwaTSAYI2w5PgoZDOpg+f2Iko86Aql+DIBRyO
-	bdDriVE3VuvLNvgWyBdEYzIs1hshzbgZ6sudLuBQbKRm/j0DRuc83EaUpjcxdAbr2svMMazvOAM
-	l5/2EpaWKKGZu2gUv7sL6NWhvypYOzQ90k6o=
-X-Google-Smtp-Source: AGHT+IG6f3hmgfEQrdFOzDt63ZAHdfESpS0/wFYlA8mChiTdUPzDMSJzb/xIZUWAfKuonFf5E6s80629MvfxXv5TBCw=
-X-Received: by 2002:a19:c217:0:b0:50e:7b9c:4d97 with SMTP id
- l23-20020a19c217000000b0050e7b9c4d97mr606778lfc.8.1706993252920; Sat, 03 Feb
- 2024 12:47:32 -0800 (PST)
+	s=arc-20240116; t=1706993264; c=relaxed/simple;
+	bh=f2I8gWEzkwSZbGGlhrQHuwLADXjkshYxOtnScKHw11s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=M2ieEU5QHTImoDhGtfYNa29Wywi7gIvfmRQDOwqtEX7rQU3S70ZYCAa0Q37NDayfaw5QzJSdzRrwKGUDkcG+c0mOxfiuM6qN9KQ/GLWe4Kk9MBpW7RMnsPttj1gIs8KJjDm2MNRl4GAsJXdiHVc2GPNXG4wN40yX/1kkA+4unpU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GN/4T/Rq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA2F8C433F1;
+	Sat,  3 Feb 2024 20:47:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706993263;
+	bh=f2I8gWEzkwSZbGGlhrQHuwLADXjkshYxOtnScKHw11s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GN/4T/RqtAM5pPUfQihjK3Wa8sAV3pUsmPhYvA/cg2Mt2nro2ZyjanWbrJsFNV3X0
+	 z5BUbR+pQSMZAeHOP3sXKHIURcwPfLXvK10KTL7JVV6BMqAtJcWeBZZaUNH8BgEZwr
+	 WzCvc/4pSyEOOKjimaGiYIRPvzhm5cFZkClqVzDoxmb/PXTafnKB5XS5SvdpzINgmK
+	 q/IJVnPabe73UT5UmIzBjjFDfb7yi95qtdPjsD2ng69sNJ9Ox97m8liHEvjdKMoKE0
+	 QcQjfDe1BO9oUeMuwNyLPZn3s3kiyHosGSbJT7/8lpjlfsPnQ91fjVkcMwRyGM/tUl
+	 QPqwMl+qAzuzA==
+Date: Sat, 3 Feb 2024 21:47:39 +0100
+From: Wolfram Sang <wsa@kernel.org>
+To: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Cc: Oleksii_Moisieiev@epam.com, gregkh@linuxfoundation.org,
+	herbert@gondor.apana.org.au, davem@davemloft.net,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, alexandre.torgue@foss.st.com, vkoul@kernel.org,
+	jic23@kernel.org, olivier.moysan@foss.st.com,
+	arnaud.pouliquen@foss.st.com, mchehab@kernel.org,
+	fabrice.gasnier@foss.st.com, andi.shyti@kernel.org,
+	ulf.hansson@linaro.org, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, hugues.fruchet@foss.st.com, lee@kernel.org,
+	will@kernel.org, catalin.marinas@arm.com, arnd@kernel.org,
+	richardcochran@gmail.com, Frank Rowand <frowand.list@gmail.com>,
+	peng.fan@oss.nxp.com, lars@metafoo.de, rcsekar@samsung.com,
+	wg@grandegger.com, mkl@pengutronix.de, linux-crypto@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	dmaengine@vger.kernel.org, linux-i2c@vger.kernel.org,
+	linux-iio@vger.kernel.org, alsa-devel@alsa-project.org,
+	linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+	netdev@vger.kernel.org, linux-phy@lists.infradead.org,
+	linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
+	linux-usb@vger.kernel.org
+Subject: Re: [PATCH v8 02/13] dt-bindings: treewide: add access-controllers
+ description
+Message-ID: <Zb6ma9lHMu3SAe0U@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+	Gatien Chevallier <gatien.chevallier@foss.st.com>,
+	Oleksii_Moisieiev@epam.com, gregkh@linuxfoundation.org,
+	herbert@gondor.apana.org.au, davem@davemloft.net,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, alexandre.torgue@foss.st.com, vkoul@kernel.org,
+	jic23@kernel.org, olivier.moysan@foss.st.com,
+	arnaud.pouliquen@foss.st.com, mchehab@kernel.org,
+	fabrice.gasnier@foss.st.com, andi.shyti@kernel.org,
+	ulf.hansson@linaro.org, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, hugues.fruchet@foss.st.com, lee@kernel.org,
+	will@kernel.org, catalin.marinas@arm.com, arnd@kernel.org,
+	richardcochran@gmail.com, Frank Rowand <frowand.list@gmail.com>,
+	peng.fan@oss.nxp.com, lars@metafoo.de, rcsekar@samsung.com,
+	wg@grandegger.com, mkl@pengutronix.de, linux-crypto@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	dmaengine@vger.kernel.org, linux-i2c@vger.kernel.org,
+	linux-iio@vger.kernel.org, alsa-devel@alsa-project.org,
+	linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+	netdev@vger.kernel.org, linux-phy@lists.infradead.org,
+	linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
+	linux-usb@vger.kernel.org
+References: <20231212152356.345703-1-gatien.chevallier@foss.st.com>
+ <20231212152356.345703-3-gatien.chevallier@foss.st.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Steve French <smfrench@gmail.com>
-Date: Sat, 3 Feb 2024 14:47:21 -0600
-Message-ID: <CAH2r5mvqa_RSjwQ1oqXt0a51KVu46Bov6_X-x6FUH4s8H1wVRA@mail.gmail.com>
-Subject: [GIT PULL] smb3 client fixes
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: CIFS <linux-cifs@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-
-Please pull the following changes since commit
-41bccc98fb7931d63d03f326a746ac4d429c1dd3:
-
-  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
-
-are available in the Git repository at:
-
-  git://git.samba.org/sfrench/cifs-2.6.git tags/v6.8-rc3-smb-client-fixes
-
-for you to fetch changes up to 11d4d1dba3315f73d2d1d386f5bf4811a8241d45:
-
-  smb: client: increase number of PDUs allowed in a compound request
-(2024-02-01 12:15:51 -0600)
-
-----------------------------------------------------------------
-Five smb3 client fixes, mostly multichannel related
-- four multichannel fixes including fix for channel allocation when
-multiple inactive channels, fix for unneeded race in channel
-deallocation, correct redundant channel scaling, and redundant
-multichannel disabling scenarios
-- add warning if max compound requests reached
-
-This does not include some additional important fixes being tested for
-deferred close (on delete) and lease key reuse, and the password
-rotation fix (since making some minor changes to these).  There is
-also a larger patch series not included that improves special files
-and symlink support and improves reparse point handling (from Paulo)
-that looks reasonably low risk but is larger so is not included.  I am
-ok with sending that series earlier than 6.9-rc if requested.
-----------------------------------------------------------------
-Paulo Alcantara (1):
-      smb: client: increase number of PDUs allowed in a compound request
-
-Shyam Prasad N (4):
-      cifs: make sure that channel scaling is done only once
-      cifs: avoid redundant calls to disable multichannel
-      cifs: do not search for channel if server is terminating
-      cifs: failure to add channel on iface should bump up weight
-
- fs/smb/client/cifsglob.h  |  5 ++++-
- fs/smb/client/sess.c      |  6 ++++++
- fs/smb/client/smb2pdu.c   | 24 +++++++++++++++++++-----
- fs/smb/client/transport.c |  4 ++--
- 4 files changed, 31 insertions(+), 8 deletions(-)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="VPm+VxExOC+V7OZ+"
+Content-Disposition: inline
+In-Reply-To: <20231212152356.345703-3-gatien.chevallier@foss.st.com>
 
 
--- 
-Thanks,
+--VPm+VxExOC+V7OZ+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Steve
+On Tue, Dec 12, 2023 at 04:23:45PM +0100, Gatien Chevallier wrote:
+> access-controllers is an optional property that allows a peripheral to
+> refer to one or more domain access controller(s).
+>=20
+> Description of this property is added to all peripheral binding files of
+> the peripheral under the STM32 firewall controller. It allows an accurate
+> representation of the hardware, where various peripherals are connected
+> to a firewall bus. The firewall can then check the peripheral accesses
+> before allowing its device to probe.
+>=20
+> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+
+Acked-by: Wolfram Sang <wsa+renesas@sang-engineering.com> # for I2C
+
+
+--VPm+VxExOC+V7OZ+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmW+pmsACgkQFA3kzBSg
+KbY64RAAof4Gx7h4jhXu9UFvGgxDMB7nucJwU2vnrWAQqslpX78IIuHnDzQGSdx4
+YeqQnv3x5PquSqBz8x/rnE1ptR0LqnAgeJdEOQB0AAicQ+VFy75kPngr9dtiCJuf
+SrCwaIYQ13qIhhC6pa7HTEUSQN/KX6DVSffmeJmOJoHIqGa1L1ldEH5tujF71Plb
+q5ugpGi2Jkmb+UU5/EaXadNKZ5b3BSp/xWur8Eemy9Z4DqqoipzJRzSJHufFNZDR
+pRdNn14JQlzQ948vT+YdpGqPE6jrVpd48rygAjaXsPx3cVQx7ouU6tKPnFLjtgyp
+tb0R2ZIQNXVaQV36XLwhvv0qFqHEiY36q+GjYSEbMHbO1b0+zneKgmZXNSwCclEp
+WQ8DrD3UEKTXcDHmoRV5GVgzZyk7wmK8zq3jofTemYyfKhSvsmAiufzZCQLV/9GI
+ScuNib34aJrsiIXiD40DsFNcutPh2v+aBXQmtfpkA++3ZvY9aBQa5KeEqzrKPaa0
+AVXFtXPN4hnNkUzTogCTHEvL7dYtbi0h7W5fun3D5kOLdZuewR8vFAotIaDRG7tB
+S7AWJDu+x2RT2xAs2yJEfSHMwoBZRdq3nJVugmRDb+VELZmIDBdN4vwBRXfi+cHr
+ouzPgt76DcQhfF6JGRUhloWtVuWW3QRQ1uYMpWUrKztG+3WiqBU=
+=nMRV
+-----END PGP SIGNATURE-----
+
+--VPm+VxExOC+V7OZ+--
 
