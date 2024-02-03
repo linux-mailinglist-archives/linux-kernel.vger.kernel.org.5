@@ -1,178 +1,209 @@
-Return-Path: <linux-kernel+bounces-50737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA288847D6E
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:05:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65D01847D89
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 01:09:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 600E628B37A
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:05:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF6DFB23423
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 00:09:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2549C65F;
-	Sat,  3 Feb 2024 00:05:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAC1C10E6;
+	Sat,  3 Feb 2024 00:09:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BI7IupAl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fnz7lasK"
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57704625;
-	Sat,  3 Feb 2024 00:05:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FDCF64B
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 00:09:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706918712; cv=none; b=JzGlOPoKnvs65fnGg0wc2uo7BPCezIdfu4B2AwCSnkmC3KNNoAgVjlWFpoCcVZMRp9rLu4hXjHG1yMzudf/ozAP8THsouuRTzN+pdg4ofiqpYitmMZIWcp5KJz0PnCChKUNDTM1ENl1AUx/g21mC87W7StndN8z/3cMRK+i4cFE=
+	t=1706918963; cv=none; b=petBaYFrvWR8LwKaC5XdCxYsgk7BFcmCYvUEgjBPBUEtZ6b7MWPuik2LaRYoi6jFM4RUW8JxUXqqDVCevHoRLod6rOFKrZ/Rt3m0yVb07+Nsl+U87SLAiGhCeDPNuffJCl6N72qzbfwTqdl3yCvmY252FPAUdEHSqHOBZeMfTiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706918712; c=relaxed/simple;
-	bh=30NXHrEg3FK6BQ39cfSMRrxz2GANhbrY1bn8h8hUjSM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=R7lFbIgE8QfwPwhktQlRr0CXR+yO5UM91S5JPsXYWhEOrF/Kh5U2EcC0CdSM/GJ9G2lHxeAs4g0iJRa/UzajZ5cCU4CqkO0Mtk6GSVQ3M/qZKDsYBppwPlZvbLXbPjg1x63XE/TCCRvfg8lhELiUpzPHyK7jD+vdpwkzyltg4zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BI7IupAl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8798CC433C7;
-	Sat,  3 Feb 2024 00:05:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706918711;
-	bh=30NXHrEg3FK6BQ39cfSMRrxz2GANhbrY1bn8h8hUjSM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=BI7IupAlZJxxwlTraPZPHgUy2G+wNxm5B1zNLy8MRGv7jZDkYu9xRGsQHTpGfmALz
-	 ULNMvrkuprFyvMQzzuzIeiGGQ8Hrikj3ICvDgPmtQRFhdmSUwQBGW5nMnALJHswHc6
-	 vNAhhT+92v0nEiuz7EMPobJD3Lu/QDcLRzrMJlvJ2+IoRaPqiyfRXc+/jSxr3e5rFN
-	 R2Zqx/JTgsBLrYBfFoiZUppdT8er49HM/mSCFCQrhineuoxr2nBhMR3VnfDHUeSOgh
-	 1tb38ieCQg5U5zhrB2rAhHV+y7HkrGnmffx92pRtFrguQfXyh46m6shU4hqu6W2T6L
-	 qkANSMwAn2O9g==
-Date: Fri, 2 Feb 2024 18:05:10 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Jian-Hong Pan <jhp@endlessos.org>
-Cc: Johan Hovold <johan@kernel.org>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	David Box <david.e.box@linux.intel.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Niklas Cassel <cassel@kernel.org>,
-	Nirmal Patel <nirmal.patel@linux.intel.com>,
-	Jonathan Derrick <jonathan.derrick@linux.dev>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux@endlessos.org
-Subject: Re: [PATCH v2] PCI: vmd: Enable PCI PM's L1 substates of remapped
- PCIe Root Port and NVMe
-Message-ID: <20240203000510.GA738687@bhelgaas>
+	s=arc-20240116; t=1706918963; c=relaxed/simple;
+	bh=x1BTam7mSj4YBuat3i1LceUOU7iyCLkuBarnLQ8SIT8=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=LmwrmozJKGgXLmsEeAsCQQ26SJCZSbTiUhug2xuNNFkagLCr/PBKfAxeZmmqvQjM8Xrfp4caMAqu+Ak8VDKt8PQ/QFKhwEJDV3mW4OnuFT24ykTZoDewXJWsFcWfdIreOppU6WZs5PGjl3VuWCyWrFhLxU6cOgG0LrLvwnAt10o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fnz7lasK; arc=none smtp.client-ip=209.85.215.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5d8dbe37d56so2837181a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 16:09:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706918961; x=1707523761; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Tvzfq6Tb+/LmzZGCY47OcGl4Yg3FqwT4x8FVTh6/pw0=;
+        b=fnz7lasKqlUD1c6funXNmg8HkvxAZVDwO5fmWhA9NPEPcStttMDvXmbBAeAbmFP9ob
+         rfUcnFxNMmfeQdpFTihmXe+HPaRWhJXPsgdz2nC9uSjr6va7J6HL3TXc6DczvOcsWPVJ
+         nJy30ZQqSLPkwVziTAw/g1JGoLvwuxpCD6nnf/a06uEUR5a1Dbt6XPWRlWr/fglcR+NT
+         C6qCWOV9uSXGp/TKbMwQM+yKCS11hX/tR8vZ5ojdWhk/K7UYdOz76FqKeqQMIowfV/tL
+         8rGNv+vQ4djhSzUlIkTdXj4cviZ7eDUDVaNBypYrJJG+hUF6m/75iB1mdRojFwu6ryId
+         m4Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706918961; x=1707523761;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Tvzfq6Tb+/LmzZGCY47OcGl4Yg3FqwT4x8FVTh6/pw0=;
+        b=lx4IUeLizDKqZo3myo7XN5YLXPO6d9LESD7z37yWx+b6vtCy4y0Uc/UD90++UviEdF
+         i9NrranvW1Wy4tDaNXC7mkmmWwvNP28sYbyn/JYbxzfS40co0+DwaafMyRiai6UbUoEW
+         MCXKAEJwtDt+WCMIsHQkDlc9CwwBhApRpPVGXdZ0r5PeXIUjI3asFZKtBWMTLT5V8SkA
+         UCvSdHUWoDYZzUqX+YbTNglSfNWJ6k9wyU7zHhUbI9DLShA0+a7TGU8vHWfz58JmmBCa
+         zyPuQvhsE39mZR6vrOuEMfBzNaD969d9VU5IYyKjItKEQ/pnBYKWy90mKqB3phf7Upka
+         lkEA==
+X-Gm-Message-State: AOJu0YyMqBKf7otOCdx9W3xfJbmL9WQbZFfqAvEyCbpHaDZezGEyv8i0
+	bUsScs1hX3i3qQODA7Q3418UhUnZspc9UoBqwswIpLJbvrPk5p8lL3gfbqYvWjsxn1Oo84RAgsR
+	EDw==
+X-Google-Smtp-Source: AGHT+IEqzXCmN6ReYMmNGcuC8mmtBhOi0vEe5B/tBx3edOgmg4Vw4BtLnbB387naOpc+iWQYiMA/3I2Kvpo=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a65:670b:0:b0:5d7:9b27:8ad4 with SMTP id
+ u11-20020a65670b000000b005d79b278ad4mr18346pgf.3.1706918960728; Fri, 02 Feb
+ 2024 16:09:20 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date: Fri,  2 Feb 2024 16:09:06 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240202071110.8515-3-jhp@endlessos.org>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
+Message-ID: <20240203000917.376631-1-seanjc@google.com>
+Subject: [PATCH v8 00/10] KVM: selftests: Add SEV smoke test
+From: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>, 
+	Oliver Upton <oliver.upton@linux.dev>, Anup Patel <anup@brainfault.org>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Janosch Frank <frankja@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, 
+	Sean Christopherson <seanjc@google.com>
+Cc: kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	kvmarm@lists.linux.dev, kvm-riscv@lists.infradead.org, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	Vishal Annapurve <vannapurve@google.com>, Ackerley Tng <ackerleytng@google.com>, 
+	Andrew Jones <andrew.jones@linux.dev>, Tom Lendacky <thomas.lendacky@amd.com>, 
+	Michael Roth <michael.roth@amd.com>, Peter Gonda <pgonda@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Feb 02, 2024 at 03:11:12PM +0800, Jian-Hong Pan wrote:
-> The remapped PCIe Root Port and NVMe have PCI PM L1 substates
-> capability, but they are disabled originally:
-> 
-> Here is an example on ASUS B1400CEAE:
-> 
-> Capabilities: [900 v1] L1 PM Substates
->         L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1- L1_PM_Substates+
->                   PortCommonModeRestoreTime=32us PortTPowerOnTime=10us
->         L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
->                    T_CommonMode=0us LTR1.2_Threshold=0ns
->         L1SubCtl2: T_PwrOn=10us
-> 
-> Power on all of the VMD remapped PCI devices and quirk max snoop LTR
-> before enable PCI-PM L1 PM Substates by following "Section 5.5.4 of PCIe
-> Base Spec Revision 6.0". Then, PCI PM's L1 substates control are
-> initialized & enabled accordingly.
+Add a basic SEV smoke test.  Unlike the intra-host migration tests, this
+one actually runs a small chunk of code in the guest.
 
-> Also, update the comments of
-> pci_enable_link_state() and pci_enable_link_state_locked() for
-> kernel-doc, too.
+v8:
+ - Undo the kvm.h uAPI breakage.
+ - Take advantage of "struct vm_shape", introduced by the guest_memfd
+   selftests, to simply tracking the SEV/SEV-ES subtypes.
+ - Rename the test to "sev_smoke_test" instead of "sev_all_boot_test",
+   as the "all" is rather nonsensical, and the test isn't booting anything
+   in the traditional sense of the word.
+ - Drop vm->protected and instead add an arch hook to query if the VM has
+   protected memory.
+ - Assert that the target memory region supports protected memory when
+   allocating protected memory.
+ - Allocate protected_phy_pages for memory regions if and only if the VM
+   supports protected memory.
+ - Rename kvm_host.h to kvm_util_arch.h, and move it to selftests/kvm where
+   it belongs.
+ - Fix up some SoB goofs.
+ - Convert the intrahost SEV/SEV-ES migration tests to use common ioctl()
+   wrappers.
 
-The aspm.c changes should be in a separate patch.  Presumably the
-aspm.c code change fixes a defect, and that defect can be described in
-that patch.  That fix may be needed for non-VMD situations, and having
-it in this vmd patch means it won't be as easy to find and backport.
+V7
+ * https://lore.kernel.org/all/20231218161146.3554657-1-pgonda@google.com
+ * See https://github.com/sean-jc/linux/tree/x86/sev_selftests_for_peter.
+ * I kept is_pt_protected because without it the page tables are never
+ readable. Its used for the elf loading in kvm_vm_elf_load().
 
-Nit: rewrap commit log to fill 75 columns.
+V6
+ * Updated SEV VM create function based on Seanjc's feedback and new
+   changes to VM creation functions.
+ * Removed pte_me_mask based on feedback.
+ * Fixed s_bit usage based on TDX
+ * Fixed bugs and took Ackerly's code for enc_region setup code.
 
-> @@ -751,11 +751,9 @@ static int vmd_pm_enable_quirk(struct pci_dev *pdev, void *userdata)
->  	if (!(features & VMD_FEAT_BIOS_PM_QUIRK))
->  		return 0;
->  
-> -	pci_enable_link_state_locked(pdev, PCIE_LINK_STATE_ALL);
-> -
->  	pos = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_LTR);
->  	if (!pos)
-> -		return 0;
-> +		goto out_enable_link_state;
->  
->  	/*
->  	 * Skip if the max snoop LTR is non-zero, indicating BIOS has set it
-> @@ -763,7 +761,7 @@ static int vmd_pm_enable_quirk(struct pci_dev *pdev, void *userdata)
->  	 */
->  	pci_read_config_dword(pdev, pos + PCI_LTR_MAX_SNOOP_LAT, &ltr_reg);
->  	if (!!(ltr_reg & (PCI_LTR_VALUE_MASK | PCI_LTR_SCALE_MASK)))
-> -		return 0;
-> +		goto out_enable_link_state;
->  
->  	/*
->  	 * Set the default values to the maximum required by the platform to
-> @@ -775,6 +773,14 @@ static int vmd_pm_enable_quirk(struct pci_dev *pdev, void *userdata)
->  	pci_write_config_dword(pdev, pos + PCI_LTR_MAX_SNOOP_LAT, ltr_reg);
->  	pci_info(pdev, "VMD: Default LTR value set by driver\n");
+V5
+ * Rebase onto seanjc@'s latest ucall pool series.
+ * More review changes based on seanjc:
+ ** use protected instead of encrypted outside of SEV specific files
+ ** Swap memcrypt struct for kvm_vm_arch arch specific struct
+ ** Make protected page table data agnostic of address bit stealing specifics
+    of SEV
+ ** Further clean up for SEV library to just vm_sev_create_one_vcpu()
+ * Due to large changes moved more authorships from mroth@ to pgonda@. Gave
+   originally-by tags to mroth@ as suggested by Seanjc for this.
 
-You're not changing this part, and I don't understand exactly how LTR
-works, but it makes me a little bit queasy to read "set the LTR value
-to the maximum required to allow the deepest power management
-savings" and then we set the max snoop values to a fixed constant.
+V4
+ * Rebase ontop of seanjc@'s latest Ucall Pool series:
+   https://lore.kernel.org/linux-arm-kernel/20220825232522.3997340-8-seanjc@google.com/
+ * Fix up review comments from seanjc
+ * Switch authorship on 2 patches because of significant changes, added
+ * Michael as suggested-by or originally-by.
 
-I don't think the goal is to "allow the deepest power savings"; I
-think it's to enable L1.2 *when the device has enough buffering to
-absorb L1.2 entry/exit latencies*.
+V3
+ * Addressed more of andrew.jones@ in ucall patches.
+ * Fix build in non-x86 archs.
 
-The spec (PCIe r6.0, sec 7.8.2.2) says "Software should set this to
-the platform's maximum supported latency or less," so it seems like
-that value must be platform-dependent, not fixed.
+V2
+ * Dropped RFC tag
+ * Correctly separated Sean's ucall patches into 2 as originally
+   intended.
+ * Addressed andrew.jones@ in ucall patches.
+ * Fixed ucall pool usage to work for other archs
 
-And I assume the "_DSM for Latency Tolerance Reporting" is part of the
-way to get those platform-dependent values, but Linux doesn't actually
-use that yet.
+V1
+ * https://lore.kernel.org/all/20220715192956.1873315-1-pgonda@google.com/
 
-I assume that setting the max values incorrectly may lead to either
-being too conservative, so we don't use L1.2 when we could, or too
-aggressive, so we use L1.2 when we shouldn't, and the device loses
-data because it doesn't have enough internal buffering to absorb the
-entry/exit delays.
+Ackerley Tng (1):
+  KVM: selftests: Add a macro to iterate over a sparsebit range
 
-This paper has a lot of background and might help answer some of my
-questions:
-https://www.intel.co.za/content/dam/doc/white-paper/energy-efficient-platforms-white-paper.pdf
+Michael Roth (2):
+  KVM: selftests: Make sparsebit structs const where appropriate
+  KVM: selftests: Add support for protected vm_vaddr_* allocations
 
-> +out_enable_link_state:
-> +	/*
-> +	 * Make PCI devices at D0 when enable PCI-PM L1 PM Substates from
-> +	 * Section 5.5.4 of PCIe Base Spec Revision 6.0
-> +	 */
-> +	pci_set_power_state_locked(pdev, PCI_D0);
-> +	pci_enable_link_state_locked(pdev, PCIE_LINK_STATE_ALL);
+Peter Gonda (5):
+  KVM: selftests: Add support for allocating/managing protected guest
+    memory
+  KVM: selftests: Explicitly ucall pool from shared memory
+  KVM: selftests: Allow tagging protected memory in guest page tables
+  KVM: selftests: Add library for creating and interacting with SEV
+    guests
+  KVM: selftests: Add a basic SEV smoke test
 
-Hmmm.  PCIE_LINK_STATE_ALL includes ASPM L1.2.  We may do this even if
-the device doesn't have an LTR Capability.  ASPM L1.2 cannot work
-without LTR.
+Sean Christopherson (2):
+  KVM: selftests: Extend VM creation's @shape to allow control of VM
+    subtype
+  KVM: selftests: Use the SEV library APIs in the intra-host migration
+    test
 
-I only took a quick look but was not convinced that
-pci_enable_link_state() does the right thing when we enable
-PCIE_LINK_STATE_ALL (including ASPM L1.2) on a device that doesn't
-have LTR.  I think it *should* decline to set PCI_L1SS_CTL1_ASPM_L1_2,
-but I'm not sure it does.  Can you double check that path?  Maybe
-that's another defect in aspm.c.
+ tools/testing/selftests/kvm/Makefile          |   2 +
+ .../kvm/include/aarch64/kvm_util_arch.h       |   7 +
+ .../selftests/kvm/include/kvm_util_base.h     |  50 ++++++-
+ .../kvm/include/riscv/kvm_util_arch.h         |   7 +
+ .../kvm/include/s390x/kvm_util_arch.h         |   7 +
+ .../testing/selftests/kvm/include/sparsebit.h |  56 +++++---
+ .../kvm/include/x86_64/kvm_util_arch.h        |  23 ++++
+ .../selftests/kvm/include/x86_64/processor.h  |   8 ++
+ .../selftests/kvm/include/x86_64/sev.h        | 110 +++++++++++++++
+ tools/testing/selftests/kvm/lib/kvm_util.c    |  67 +++++++--
+ tools/testing/selftests/kvm/lib/sparsebit.c   |  48 +++----
+ .../testing/selftests/kvm/lib/ucall_common.c  |   3 +-
+ .../selftests/kvm/lib/x86_64/processor.c      |  32 ++++-
+ tools/testing/selftests/kvm/lib/x86_64/sev.c  | 128 ++++++++++++++++++
+ .../selftests/kvm/x86_64/sev_migrate_tests.c  |  67 +++------
+ .../selftests/kvm/x86_64/sev_smoke_test.c     |  58 ++++++++
+ 16 files changed, 570 insertions(+), 103 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/include/aarch64/kvm_util_arch.h
+ create mode 100644 tools/testing/selftests/kvm/include/riscv/kvm_util_arch.h
+ create mode 100644 tools/testing/selftests/kvm/include/s390x/kvm_util_arch.h
+ create mode 100644 tools/testing/selftests/kvm/include/x86_64/kvm_util_arch.h
+ create mode 100644 tools/testing/selftests/kvm/include/x86_64/sev.h
+ create mode 100644 tools/testing/selftests/kvm/lib/x86_64/sev.c
+ create mode 100644 tools/testing/selftests/kvm/x86_64/sev_smoke_test.c
 
-> @@ -1164,6 +1164,8 @@ static int __pci_enable_link_state(struct pci_dev *pdev, int state, bool locked)
->  		link->aspm_default |= ASPM_STATE_L1_1_PCIPM | ASPM_STATE_L1;
->  	if (state & PCIE_LINK_STATE_L1_2_PCIPM)
->  		link->aspm_default |= ASPM_STATE_L1_2_PCIPM | ASPM_STATE_L1;
-> +	if (state & ASPM_STATE_L1_2_MASK)
-> +		aspm_l1ss_init(link);
->  	pcie_config_aspm_link(link, policy_to_aspm_state(link));
->  
->  	link->clkpm_default = (state & PCIE_LINK_STATE_CLKPM) ? 1 : 0;
+
+base-commit: 60eedcfceda9db46f1b333e5e1aa9359793f04fb
+-- 
+2.43.0.594.gd9cf4e227d-goog
+
 
