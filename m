@@ -1,239 +1,474 @@
-Return-Path: <linux-kernel+bounces-50977-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50978-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63E7684848E
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 09:40:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 58FBD848495
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 10:00:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 130F228C3ED
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 08:40:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FE31288DA1
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 09:00:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 206E158ACA;
-	Sat,  3 Feb 2024 08:40:40 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A72DD5CDC7;
+	Sat,  3 Feb 2024 08:59:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PfZ2yI6x"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D845959B6A
-	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 08:40:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B32D55C8F8;
+	Sat,  3 Feb 2024 08:59:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706949639; cv=none; b=fpJXvzkoMXJtALdgqMggYXM/DSgEieFs0lr5ihucnUnE+nVpsv9VuaDDNnkTvP9PeR12HISbZq8UKpY3lgm2zrVoLiXWOB7iWpHeHscW6Kggb6JYoiu+A8aGav5EylEMJcK914YaN0IxptP7Y7dS6ipsNLsISd9woQW+iW3aZWo=
+	t=1706950789; cv=none; b=TvHLXgCjY5RbOc9jTQHMbR22Voc9WRhhm8+Yo2KSlIVF91F+yA4amu3Ywq4Bo9e+K3OUgTpvTfV/fNThi1idpEi3knaNu8YKgRNz0qiY/8DuZCIpMFilOHV95cgakSi0Impsgu3dUXw0YdWrorTEnEg7i+aJ7LykmfmvXFXR5rY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706949639; c=relaxed/simple;
-	bh=xXdbn6Th8/yeDhRqmzj0sSt8ciexr4KqOD/UcR5HxtY=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=rSYVzwJ2MxZZtd9IJg4dOPDY9zLHAL6U+52SBPzNlOa8l17fzVXw0pF7yGYU2iDOvvcKCJDBeeSKyRASaqbexnRcmUSEHxECw8LSUkn1ieBRay5mNZK+vLvdaMQkPKuai36M9ZHEe2/6KyJdDEho0AU1Ep/1jotb/fM5xlLgHMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-363bedeec4fso1434365ab.1
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Feb 2024 00:40:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706949637; x=1707554437;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JH0UWT1VuRwhxv8uLMOG4NLnKvFJPMKiFk/HBOsm7hQ=;
-        b=gN698jD9OGXqKGmPEBFl6y5jiBO+n8XAbG7qLCWsCaQM0n5V39EHsga120P4HFJAMR
-         Tg2U62QtyHLcTQZtwKf+J0VXBWqu9kMOUsGH3ytOEWRMr8jizWhIauCQmOdNrZ+8RMf/
-         bSm8p2vl0QlEecXdpWcjVadaYg4QNZD/sCJDuSvsWb3b6gqzJj0Ma5l48arZqIcOty+K
-         q1ugbVLQyGqdAQoov+Wc9bdPpUdryZ33LyhURo91tf4TEwNyXHzD4qM9o2Jj0Mk7TLWn
-         tBa/oyDaosBVRk0Ke6mZ5khwnXYfugRp8Tp6s5YpuKP5zJa5X1nWSx7GLRGLsVTd+mBJ
-         BmoQ==
-X-Gm-Message-State: AOJu0Yw7lhcZPBzbuLC+5ZAgE9fLVkxl//ZGU4QEa7FSBLsHRBAHj2mr
-	VjSIyRPJ5bz4s/23pdzNy/zRvZtfRoylvwwV0N/yOKaP/MVR/KloWlrDkmnrWtOyPEhXVvdV8nt
-	bD/ZuYL4lmv9KufSwlVm7aIQYsBftHjV/MC+7hkAcZlsQA6gg13s4WOQ=
-X-Google-Smtp-Source: AGHT+IEVD9aSEI5bN0h/gXEQTfUm8DdstSspgqVswzFZrvfGdC5J5hma4eh89yuk6yKhlgifRWapWI/0S/ntBHlEFGUO2Vh0CqTZ
+	s=arc-20240116; t=1706950789; c=relaxed/simple;
+	bh=LKoakP2uOG96te4ZMtRc1jGGRSz2ihtD5kvp0w2TncE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YxL8v3jGYOi6q1pEpkNN1h0iPJ9rKHo5hg79KmA9k1VSHNpWrGdqJo6X1idXKx9uALjEBgouD14q25oHQwmjgcGd5VxqL+wDxnKcu2ROYgkvNmLyO0AReflVKIU1qtFayQd9EhQalcT8mE/mxhjpNs/teLPUVdE6b/4IBsgZVso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PfZ2yI6x; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706950787; x=1738486787;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=LKoakP2uOG96te4ZMtRc1jGGRSz2ihtD5kvp0w2TncE=;
+  b=PfZ2yI6xJ9Q/lKp0aBeAbSeKssOOeR1miVccAsAsJfRCOqeSWavXQ+zS
+   Oi0bZN+zcHgRU8g3Oax/wEIQ8HTyGf6dykvSqdollu49wZ6ymmZasySvV
+   l/EZ9ykHyLTLXHAsj4e4J8nbOWp6SViY/wtGJFGQ14c1DjUGfnxCehRgm
+   jd8Ec5/9lPIRQy5k8XGcW3XmEjeUULhzgbH2t7GQ43B6x3sJ6cMTMzG+s
+   hYL91BjS8xaGgeUUMwNZBrn3e8R5aojEHVkDsH7HuWcavmX4sKdldI8Au
+   0vMpprotlNeB14XpH6qY0lxfVoodnoFE809L2bblBc8va96QTCHve7hWl
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="4131842"
+X-IronPort-AV: E=Sophos;i="6.05,240,1701158400"; 
+   d="scan'208";a="4131842"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2024 00:59:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,240,1701158400"; 
+   d="scan'208";a="291124"
+Received: from liuzhao-optiplex-7080.sh.intel.com ([10.239.160.36])
+  by fmviesa009.fm.intel.com with ESMTP; 03 Feb 2024 00:59:39 -0800
+From: Zhao Liu <zhao1.liu@linux.intel.com>
+To: Paolo Bonzini <pbonzini@redhat.com>,
+	Sean Christopherson <seanjc@google.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	kvm@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	x86@kernel.org
+Cc: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+	Len Brown <len.brown@intel.com>,
+	Zhang Rui <rui.zhang@intel.com>,
+	Zhenyu Wang <zhenyu.z.wang@intel.com>,
+	Zhuocheng Ding <zhuocheng.ding@intel.com>,
+	Dapeng Mi <dapeng1.mi@intel.com>,
+	Yanting Jiang <yanting.jiang@intel.com>,
+	Yongwei Ma <yongwei.ma@intel.com>,
+	Vineeth Pillai <vineeth@bitbyteword.org>,
+	Suleiman Souhlal <suleiman@google.com>,
+	Masami Hiramatsu <mhiramat@google.com>,
+	David Dai <davidai@google.com>,
+	Saravana Kannan <saravanak@google.com>,
+	Zhao Liu <zhao1.liu@intel.com>
+Subject: [RFC 00/26] Intel Thread Director Virtualization
+Date: Sat,  3 Feb 2024 17:11:48 +0800
+Message-Id: <20240203091214.411862-1-zhao1.liu@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:388a:b0:363:b877:a4c7 with SMTP id
- cn10-20020a056e02388a00b00363b877a4c7mr213432ilb.1.1706949637010; Sat, 03 Feb
- 2024 00:40:37 -0800 (PST)
-Date: Sat, 03 Feb 2024 00:40:36 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c37a740610762e55@google.com>
-Subject: [syzbot] [hfs?] KASAN: slab-out-of-bounds Write in hfsplus_bnode_read_key
-From: syzbot <syzbot+57028366b9825d8e8ad0@syzkaller.appspotmail.com>
-To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+From: Zhao Liu <zhao1.liu@intel.com>
 
-syzbot found the following issue on:
+Hi list,
 
-HEAD commit:    076d56d74f17 Add linux-next specific files for 20240202
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1773d5d3e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=428086ff1c010d9f
-dashboard link: https://syzkaller.appspot.com/bug?extid=57028366b9825d8e8ad0
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1692c160180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13bab004180000
+This is our RFC to virtualize Intel Thread Director (ITD) feature for
+Guest, which is based on Ricardo's patch series about ITD related
+support in HFI driver ("[PATCH 0/9] thermal: intel: hfi: Prework for the
+virtualization of HFI" [1]).
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/dece45d1a4b5/disk-076d56d7.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/4921e269b178/vmlinux-076d56d7.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/2a9156da9091/bzImage-076d56d7.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/a4851316d70a/mount_0.gz
+In short, the purpose of this patch set is to enable the ITD-based
+scheduling logic in Guest so that Guest can better schedule Guest tasks
+on Intel hybrid platforms.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+57028366b9825d8e8ad0@syzkaller.appspotmail.com
+Currently, ITD is necessary for Windows VMs. Based on ITD virtualization
+support, the Windows 11 Guest could have significant performance
+improvement (for example, on i9-13900K, up to 14%+ improvement on
+3DMARK).
 
-loop0: detected capacity change from 0 to 1024
-==================================================================
-BUG: KASAN: slab-out-of-bounds in memcpy_from_page include/linux/highmem.h:417 [inline]
-BUG: KASAN: slab-out-of-bounds in hfsplus_bnode_read fs/hfsplus/bnode.c:32 [inline]
-BUG: KASAN: slab-out-of-bounds in hfsplus_bnode_read_key+0x394/0x610 fs/hfsplus/bnode.c:70
-Write of size 3970 at addr ffff88802a197800 by task syz-executor339/5066
+Our ITD virtualization is not bound to VMs' hybrid topology or vCPUs'
+CPU affinity. However, in our practice, the ITD scheduling optimization
+for win11 VMs works best when combined with hybrid topology and CPU
+affinity (this is related to the specific implementation of Win11
+scheduling). For more details, please see the Section.1.2 "About hybrid
+topology and vCPU pinning".
 
-CPU: 0 PID: 5066 Comm: syz-executor339 Not tainted 6.8.0-rc2-next-20240202-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0x169/0x550 mm/kasan/report.c:488
- kasan_report+0x143/0x180 mm/kasan/report.c:601
- kasan_check_range+0x282/0x290 mm/kasan/generic.c:189
- __asan_memcpy+0x40/0x70 mm/kasan/shadow.c:106
- memcpy_from_page include/linux/highmem.h:417 [inline]
- hfsplus_bnode_read fs/hfsplus/bnode.c:32 [inline]
- hfsplus_bnode_read_key+0x394/0x610 fs/hfsplus/bnode.c:70
- hfsplus_brec_insert+0x6ea/0xde0 fs/hfsplus/brec.c:141
- hfsplus_create_attr+0x4a2/0x640 fs/hfsplus/attributes.c:252
- __hfsplus_setxattr+0x6fe/0x22d0 fs/hfsplus/xattr.c:354
- hfsplus_setxattr+0xb0/0xe0 fs/hfsplus/xattr.c:434
- hfsplus_security_setxattr+0x40/0x60 fs/hfsplus/xattr_security.c:31
- __vfs_setxattr+0x468/0x4a0 fs/xattr.c:201
- __vfs_setxattr_noperm+0x12e/0x5e0 fs/xattr.c:235
- vfs_setxattr+0x221/0x430 fs/xattr.c:322
- do_setxattr fs/xattr.c:630 [inline]
- setxattr+0x25d/0x2f0 fs/xattr.c:653
- path_setxattr+0x1c0/0x2a0 fs/xattr.c:672
- __do_sys_setxattr fs/xattr.c:688 [inline]
- __se_sys_setxattr fs/xattr.c:684 [inline]
- __x64_sys_setxattr+0xbb/0xd0 fs/xattr.c:684
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7fc180ad2639
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc6080f8c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
-RAX: ffffffffffffffda RBX: 0031656c69662f2e RCX: 00007fc180ad2639
-RDX: 0000000000000000 RSI: 0000000020000140 RDI: 0000000020000240
-RBP: 00007fc180b45610 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffc6080fa98 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
+To enable ITD related scheduling optimization in Win11 VM, some other
+thermal related support is also needed (HWP, CPPC), but we could emulate
+it with dummy value in the VMM (We'll also be sending out extra patches
+in the future for these).
 
-Allocated by task 5066:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
- poison_kmalloc_redzone mm/kasan/common.c:370 [inline]
- __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:387
- kasan_kmalloc include/linux/kasan.h:211 [inline]
- __do_kmalloc_node mm/slub.c:3982 [inline]
- __kmalloc+0x231/0x4a0 mm/slub.c:3995
- kmalloc include/linux/slab.h:594 [inline]
- hfsplus_find_init+0x85/0x1c0 fs/hfsplus/bfind.c:21
- hfsplus_create_attr+0x161/0x640 fs/hfsplus/attributes.c:216
- __hfsplus_setxattr+0x6fe/0x22d0 fs/hfsplus/xattr.c:354
- hfsplus_setxattr+0xb0/0xe0 fs/hfsplus/xattr.c:434
- hfsplus_security_setxattr+0x40/0x60 fs/hfsplus/xattr_security.c:31
- __vfs_setxattr+0x468/0x4a0 fs/xattr.c:201
- __vfs_setxattr_noperm+0x12e/0x5e0 fs/xattr.c:235
- vfs_setxattr+0x221/0x430 fs/xattr.c:322
- do_setxattr fs/xattr.c:630 [inline]
- setxattr+0x25d/0x2f0 fs/xattr.c:653
- path_setxattr+0x1c0/0x2a0 fs/xattr.c:672
- __do_sys_setxattr fs/xattr.c:688 [inline]
- __se_sys_setxattr fs/xattr.c:684 [inline]
- __x64_sys_setxattr+0xbb/0xd0 fs/xattr.c:684
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
-The buggy address belongs to the object at ffff88802a197800
- which belongs to the cache kmalloc-1k of size 1024
-The buggy address is located 0 bytes inside of
- allocated 536-byte region [ffff88802a197800, ffff88802a197a18)
-
-The buggy address belongs to the physical page:
-page:ffffea0000a86400 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2a190
-head:ffffea0000a86400 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-anon flags: 0xfff80000000840(slab|head|node=0|zone=1|lastcpupid=0xfff)
-page_type: 0xffffffff()
-raw: 00fff80000000840 ffff888014c41dc0 0000000000000000 dead000000000001
-raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 1, tgid 1 (swapper/0), ts 10670801188, free_ts 0
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x1ea/0x210 mm/page_alloc.c:1539
- prep_new_page mm/page_alloc.c:1546 [inline]
- get_page_from_freelist+0x34eb/0x3680 mm/page_alloc.c:3353
- __alloc_pages+0x256/0x680 mm/page_alloc.c:4609
- __alloc_pages_node include/linux/gfp.h:238 [inline]
- alloc_pages_node include/linux/gfp.h:261 [inline]
- alloc_slab_page+0x5f/0x160 mm/slub.c:2191
- allocate_slab mm/slub.c:2354 [inline]
- new_slab+0x84/0x2f0 mm/slub.c:2407
- ___slab_alloc+0xc73/0x1260 mm/slub.c:3541
- __slab_alloc mm/slub.c:3626 [inline]
- __slab_alloc_node mm/slub.c:3679 [inline]
- slab_alloc_node mm/slub.c:3851 [inline]
- __do_kmalloc_node mm/slub.c:3981 [inline]
- __kmalloc+0x2e3/0x4a0 mm/slub.c:3995
- kmalloc include/linux/slab.h:594 [inline]
- kzalloc include/linux/slab.h:711 [inline]
- alloc_workqueue+0x19b/0x1f40 kernel/workqueue.c:5196
- nf_flow_table_offload_init+0x3c/0xb0 net/netfilter/nf_flow_table_offload.c:1217
- nf_flow_table_module_init+0x2b/0x70 net/netfilter/nf_flow_table_core.c:662
- do_one_initcall+0x238/0x830 init/main.c:1233
- do_initcall_level+0x157/0x210 init/main.c:1295
- do_initcalls+0x3f/0x80 init/main.c:1311
- kernel_init_freeable+0x430/0x5d0 init/main.c:1542
- kernel_init+0x1d/0x2b0 init/main.c:1432
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
-page_owner free stack trace missing
-
-Memory state around the buggy address:
- ffff88802a197900: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff88802a197980: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff88802a197a00: 00 00 00 fc fc fc fc fc fc fc fc fc fc fc fc fc
-                            ^
- ffff88802a197a80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff88802a197b00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
+Welcome your feedback!
 
 
+1. Background and Motivation
+============================
+
+1.1. Background
+^^^^^^^^^^^^^^^
+
+We have the use case to run games in the client Windows VM as the cloud
+gaming solution.
+
+Gaming VMs are performance-sensitive VMs on Client, so that they usually
+have two characteristics to ensure interactivity and performance:
+
+i) There will be vCPUs equal to or close to the number of Host pCPUs.
+
+ii) The vCPUs of Gaming VM are often bound to the pCPUs to achieve
+exclusive resources and avoid the overhead of migration.
+
+In this case, Host can't provide effective scheduling for Guest, so we
+need to deliver more hardware-assisted scheduling capabilities to Guest
+to enhance Guest's scheduling.
+
+Windows 11 (and future Windows products) is heavily optimized for the
+Intel hybrid platform. To get the best performance, we need to
+virtualize hybrid scheduling features (HFI/ITD) for Windows Guest.
+
+
+1.2. About hybrid topology and vCPU pinning
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Our ITD virtualization can support most vCPU topologies (except multiple
+packages/dies, see details in 3.5 Restrictions on Guest Topology), and
+can also support the case of non-pinning vCPUs (i.e. it can handle vCPU
+thread migration).
+
+The following is our performance measuremnt on an i9-13900K machine
+(2995Mhz, 24Cores, 32Thread(8+16) RAM: 14GB (16GB Physical)), with
+iGPU passthrough, running 3DMARK in Win11 Professional Guest:
+
+
+compared with smp topo case       smp topo        smp topo        smp topo      hybrid topo       hybrid topo     hybrid topo     hybrid topo
+                                + affinity      + ITD           + ITD                           + affinity      + ITD           + ITD
+                                                                + affinity                                                      + affinity
+Time Spy - Overall                0.179%        -0.250%           0.179%        -0.107%           0.143%        -0.179%         -0.107%
+Graphics score                    0.124%        -0.249%           0.124%        -0.083%           0.124%        -0.166%         -0.249%
+CPU score                         0.916%        -0.485%           1.149%        -0.076%           0.722%        -0.324%         11.915%
+Fire Strike Extreme - Overall     0.149%         0.000%           0.224%        -1.021%          -3.361%        -1.319%         -3.361%
+Graphics score                    0.100%         0.050%           0.150%        -1.376%          -3.427%        -1.676%         -3.652%
+Physics score                     5.060%         0.759%           0.518%        -2.907%         -10.914%        -0.897%         14.638%
+Combined  score                   0.120%        -0.179%           0.418%         0.060%          -2.929%        -0.179%         -2.809%
+Fire Strike - Overall             0.350%        -0.085%           0.193%        -1.377%          -1.365%        -1.509%         -1.787%
+Graphics score                    0.256%        -0.047%           0.210%        -1.527%          -1.376%        -1.504%         -2.320%
+Physics score                     3.695%        -2.180%           0.629%        -1.581%          -6.846%        -1.444%         14.100%
+Combined  score                   0.415%        -0.128%           0.128%        -0.957%          -1.052%        -1.594%         -0.957%
+CPU Profile Max Threads           1.836%         0.298%           1.786%        -0.069%           1.545%         0.025%          9.472%
+16 Threads                        4.290%         0.989%           3.588%         0.595%           1.580%         0.848%         11.295%
+8 Threads                       -22.632%        -0.602%         -23.167%        -0.988%          -1.345%        -1.340%          8.648%
+4 Threads                       -21.598%         0.449%         -21.429%        -0.817%           1.951%        -0.832%          2.084%
+2 Threads                       -12.912%        -0.014%         -12.006%        -0.481%          -0.609%        -0.595%          1.161%
+1 Threads                        -3.793%        -0.137%          -3.793%        -0.495%          -3.189%        -0.495%          1.154%
+
+
+Based on the above result, we can find exposing only HFI/ITD to win11
+VMs without hybrid topology or CPU affinity (case "smp topo + ITD")
+won't hurt performance, but would also not get any performance
+improvement.
+
+Setting both hybrid topology and CPU affinity for ITD, then win11 VMs
+get significate performance improvement (up to 14%+, compared with the
+case setting smp topology without CPU affinity).
+
+Not only the numerical results of 3DMARK, but in practice, there is an
+significate improvement in the frame rate of the games.
+
+Also, the more powerful the machine, the more significate the
+performance gains!
+
+Therefore, the best practice for enabling ITD scheduling optimization
+is to set up both CPU affinity and hybrid topology for win11 Guest while
+enabling our ITD virtualization.
+
+Our earlier QEMU prototype RFC [2] presented the initial hybrid
+topology support for VMs. And currently our another proposal about
+"QOM topology" [3] has been raised in the QEMU community, which is the
+first step towards the hybrid topology implementation based on QOM
+approach.
+
+
+2. Introduction of HFI and ITD
+==============================
+
+Intel provides Hardware Feedback Interface (HFI) feature to allow
+hardware to provide guidance to the OS scheduler to perform optimal
+workload scheduling through a hardware feedback interface structure in
+memory [4]. This HFI structure is called HFI table.
+
+For now, the guidance includes performance and energy efficiency
+hints, and it could be update via thermal interrupt as the actual
+operating conditions of the processor change during run time.
+
+Intel Thread Director (ITD) feature extends the HFI to provide
+performance and energy efficiency data for advanced classes of
+instructions.
+
+Since ITD is an extension of HFI, our ITD virtualization also
+virtualizes the native HFI feature.
+
+
+3. Dependencies of ITD
+======================
+
+ITD is a thermal FEATURE that requires:
+* PTM (Package Thermal Management, alias, PTS)
+* HFI (Hardware Feedback Interface)
+
+In order to support the notification mechanism of ITD/HFI dynamic
+update, we also need to add thermal interrupt related support,
+including the following two features:
+* ACPI (Thermal Monitor and Software Controlled Clock Facilities)
+* TM (Thermal Monitor, alias, TM1/ACC)
+
+Therefore, we must also consider support for the emulation of all
+the above dependencies.
+
+
+3.1. ACPI emulation
+^^^^^^^^^^^^^^^^^^^
+
+For both ACPI, we can support it by emulating the RDMSR/WRMSR of the
+associated MSRs and adding the ability to inject thermal interrupts.
+But in fact, we don't really inject termal interrupts into Guest for
+the termal conditions corresponding to ACPI. Here the termal interrupt
+is prepared for the subsequent HFI/ITD.
+
+
+3.2. TM emulation
+^^^^^^^^^^^^^^^^^
+
+TM is a hardware feature and its CPUID bit only indicates the presence
+of the automatic thermal monitoring facilities. For TM, there's no
+interactive interface between OS and hardware, but its flag is one of
+the prerequisites for the OS to enable thermal interrupt.
+
+Thereby, as the support for TM, it is enough for us to expose its CPUID
+flag to Guest.
+
+
+3.3. PTM emulation
+^^^^^^^^^^^^^^^^^^
+
+PTM is a package-scope feature that includes package-level MSR and
+package-level thermal interrupt. Unfortunately, KVM currently only
+supports thread-scope MSR handling, and also doesn't care about the
+specific Guest's topology.
+
+But considering that our purpose of supporting PTM in KVM is to further
+support ITD, and the current platforms with ITD are all 1 package, so we
+emulate the MSRs of the package scope provided by PTM at the VM level.
+
+In this way, the VMM is required to set only one package topology for
+the PTM. In order to alleviate this limitation, we only expose the PTM
+feature bit to Guest when ITD needs to be supported.
+
+
+3.4. HFI emulation
+^^^^^^^^^^^^^^^^^^
+
+ITD is the extension of HFI, so both HFI and ITD depend on HFI table.
+HFI itself is used on the Host for power-related management control, so
+we should only expose HFI to Guest when we need to enable ITD.
+
+HFI also relies on PTM interrupt control, so it also has requirements
+for package topology, and we also emulate HFI (including ITD) at the VM
+level.
+
+In addition, because the HFI driver allocates HFI instances per die,
+this also affects HFI (and ITD) and must limit the Guest to only set one
+die.
+
+
+3.5. Restrictions on Guest Topology
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Due to KVM's incomplete support for MSR topology and the requirement for
+HFI instance management in the kernel, PTM, HFI, and ITD limit the
+topology of the Guest (mainly restricting the topology types created on
+the VMM side).
+
+Therefore, we only expose PTM, HFI, and ITD to userspace when we need to
+support ITD. At the same time, considering that currently, ITD is only
+used on the client platform with 1 package and 1 die, such temporary
+restrictions will not have too much impact.
+
+
+4. Overview of ITD (and HFI) virtualization
+===========================================
+
+The main tasks of ITD (including HFI) virtualization are:
+* maintain a virtual HFI table for VM.
+* inject thermal interrupt when HFI table updates.
+* handle related MSRs' emulation and adjust HFI table based on MSR's
+  control bits.
+* expose ITD/HFI configuration info in related CPUID leaves.
+
+The most important of these is the maintenance of the virtual HFI table.
+Although the HFI table should also be per package, since ITD/HFI related
+MSRs are treated as per VM in KVM, we also treat the virtual HFI table
+as per VM.
+
+
+4.1. HFI table building
+^^^^^^^^^^^^^^^^^^^^^^^
+
+HFI table contains a table header and many table entries. Each table
+entry is identified by an hfi table index, and each CPU corresponds to
+one of the hfi table indexes.
+
+ITD and HFI features both depend on the HFI table, but their HFI table
+are a little different. The HFI table provided by the ITD feature has
+more classes (in terms of more columns in the table) than the HFI table
+of native HFI feature.
+
+The virtual HFI table in KVM is built based on the actual HFI table,
+which is maintained by HFI instance in HFI driver. We extract the HFI
+data of the pCPUs, which vCPUs are running on, to form a virtual HFI
+table.
+
+
+4.2. HFI table index
+^^^^^^^^^^^^^^^^^^^^
+
+There are many entries in the HFI table, and the vCPU will be assigned
+an HFI table index to specify the entry it maps. KVM will fill the
+pCPU's HFI data (the pCPU that vCPU is running on) into the entry
+corresponding to the HFI table index of the vCPU in the vcitual HFI
+table.
+
+This index is set by VMM in CPUID.
+
+
+4.3. HFI table updating
+^^^^^^^^^^^^^^^^^^^^^^^
+
+On some platforms, the HFI table will be dynamically updated with
+thermal interrupts. In order to update the virtual HFI table in time, we
+added the per-VM notifier to the HFI driver to notify KVM to update the
+virtual HFI table for the VM, and then inject thermal interrupt into the
+VM to notify the Guest.
+
+There is another case that needs to update the virtual HFI table, that
+is, when the vCPU is migrated, the pCPU where it is located is changed,
+and the corresponding virtual HFI data should also be updated to the new
+pCPU's data. In this case, in order to reduce overhead, we can only
+update the data of a single vPCU without traversing the entire virtual
+HFI table.
+
+
+5. Patch Summary
+================
+
+Patch 01-03: Prepare the bit definition, the hfi helpers and hfi data
+             structures that KVM needs.
+Patch 04-05: Add the sched_out arch hook and reset the classification
+             history at sched_in()/schedu_out().
+Patch 06-10: Add emulations of ACPI, TM and PTM, mainly about CPUID and
+             related MSRs.
+Patch 11-20: Add the emulation support for HFI, including maintaining
+             the HFI table for VM.
+Patch 21-23: Add the emulation support for ITD, including extending HFI
+             to ITD and passing through the classification MSRs.
+Patch 24-25: Add HRESET emulation support, which is also used by IPC
+             classes feature.
+Patch 26:    Add the brief doc about the per-VM lock - pkg_therm_lock.
+
+
+6. References
+=============
+
+[1]: [PATCH 0/9] thermal: intel: hfi: Prework for the virtualization of HFI
+     https://lore.kernel.org/lkml/20240203040515.23947-1-ricardo.neri-calderon@linux.intel.com/
+[2]: [RFC 00/52] Introduce hybrid CPU topology,
+     https://lore.kernel.org/qemu-devel/20230213095035.158240-1-zhao1.liu@linux.intel.com/
+[3]: [RFC 00/41] qom-topo: Abstract Everything about CPU Topology,
+     https://lore.kernel.org/qemu-devel/20231130144203.2307629-1-zhao1.liu@linux.intel.com/
+[4]: SDM, vol. 3B, section 15.6 HARDWARE FEEDBACK INTERFACE AND INTEL
+     THREAD DIRECTOR
+
+
+Thanks and Best Regards,
+Zhao
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Zhao Liu (17):
+  thermal: Add bit definition for x86 thermal related MSRs
+  KVM: Add kvm_arch_sched_out() hook
+  KVM: x86: Reset hardware history at vCPU's sched_in/out
+  KVM: VMX: Add helpers to handle the writes to MSR's R/O and R/WC0 bits
+  KVM: x86: cpuid: Define CPUID 0x06.eax by kvm_cpu_cap_mask()
+  KVM: VMX: Introduce HFI description structure
+  KVM: VMX: Introduce HFI table index for vCPU
+  KVM: x86: Introduce the HFI dynamic update request and kvm_x86_ops
+  KVM: VMX: Allow to inject thermal interrupt without HFI update
+  KVM: VMX: Emulate HFI related bits in package thermal MSRs
+  KVM: VMX: Emulate the MSRs of HFI feature
+  KVM: x86: Expose HFI feature bit and HFI info in CPUID
+  KVM: VMX: Extend HFI table and MSR emulation to support ITD
+  KVM: VMX: Pass through ITD classification related MSRs to Guest
+  KVM: x86: Expose ITD feature bit and related info in CPUID
+  KVM: VMX: Emulate the MSR of HRESET feature
+  Documentation: KVM: Add description of pkg_therm_lock
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Zhuocheng Ding (9):
+  thermal: intel: hfi: Add helpers to build HFI/ITD structures
+  thermal: intel: hfi: Add HFI notifier helpers to notify HFI update
+  KVM: VMX: Emulate ACPI (CPUID.0x01.edx[bit 22]) feature
+  KVM: x86: Expose TM/ACC (CPUID.0x01.edx[bit 29]) feature bit to VM
+  KVM: VMX: Emulate PTM/PTS (CPUID.0x06.eax[bit 6]) feature
+  KVM: VMX: Support virtual HFI table for VM
+  KVM: VMX: Sync update of Host HFI table to Guest
+  KVM: VMX: Update HFI table when vCPU migrates
+  KVM: x86: Expose HRESET feature's CPUID to Guest
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+ Documentation/virt/kvm/locking.rst  |  13 +-
+ arch/arm64/include/asm/kvm_host.h   |   1 +
+ arch/mips/include/asm/kvm_host.h    |   1 +
+ arch/powerpc/include/asm/kvm_host.h |   1 +
+ arch/riscv/include/asm/kvm_host.h   |   1 +
+ arch/s390/include/asm/kvm_host.h    |   1 +
+ arch/x86/include/asm/hfi.h          |  28 ++
+ arch/x86/include/asm/kvm-x86-ops.h  |   3 +-
+ arch/x86/include/asm/kvm_host.h     |   2 +
+ arch/x86/include/asm/msr-index.h    |  54 +-
+ arch/x86/kvm/cpuid.c                | 201 +++++++-
+ arch/x86/kvm/irq.h                  |   1 +
+ arch/x86/kvm/lapic.c                |   9 +
+ arch/x86/kvm/svm/svm.c              |   8 +
+ arch/x86/kvm/vmx/vmx.c              | 751 +++++++++++++++++++++++++++-
+ arch/x86/kvm/vmx/vmx.h              |  79 ++-
+ arch/x86/kvm/x86.c                  |  18 +
+ drivers/thermal/intel/intel_hfi.c   | 212 +++++++-
+ drivers/thermal/intel/therm_throt.c |   1 -
+ include/linux/kvm_host.h            |   1 +
+ virt/kvm/kvm_main.c                 |   1 +
+ 21 files changed, 1343 insertions(+), 44 deletions(-)
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+-- 
+2.34.1
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
