@@ -1,50 +1,49 @@
-Return-Path: <linux-kernel+bounces-50927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BD838483DE
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 06:02:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFC9A8483E0
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 06:04:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B45941F2AF2B
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 05:02:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13D9E2820DE
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 05:04:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77F5410A05;
-	Sat,  3 Feb 2024 05:02:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8FBB10A1C;
+	Sat,  3 Feb 2024 05:04:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tvyl6QzV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m0vIOABk"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C96A410795;
-	Sat,  3 Feb 2024 05:02:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65C7C10976;
+	Sat,  3 Feb 2024 05:04:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706936533; cv=none; b=l0LD8Ap7pjYt8vP4rsyKceBQf/FJeATa2eoz8JNYZWz0tkH8DOMkIQeaW4+UoPyUFJCGoDfUMs0p4xqQM9qnhsEZjXO6x8WR6CEnstCcptk9byzIo3vfw1Bhdu9FbmVA8ld0pSfkUR9EspPFWOQyFG6iCZBhdz2Lhuxul6OSIQE=
+	t=1706936652; cv=none; b=oMoSUMVi+cnYHxoEeTOBehkpm8rBBmsjrcvRTgPGKURVLwT3Hd1VrEB07PpztZlGsaRUld2KPMR/LsjG4ZwRLW7qWkLjCC1xwpgDnT3ljelCgr7bxoRYq6hE+Tr2fscyd4aPfmhKf+xocEtWhyw//0Iv7RN7RGsOZBNhBHZqpio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706936533; c=relaxed/simple;
-	bh=3mSfA0UVRh7tGSXVB5TRw4h+W33JzkAhX/6gOE7RwuI=;
+	s=arc-20240116; t=1706936652; c=relaxed/simple;
+	bh=YkH2GN8kW1/3NvBsZ7O0/q0cDHVLsVvAp1UN//ku9Bs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lX923IJZ5fPAHLEpzS8WpLwbG47bdxAK1xgupxZvl6j1KWgMF9RlnNFyTsOHJPgAeNrhkQom6j3VicUjPbrikjQnccWEBsu8YfIdUTfHy4nZKBunZmxvvJX0aCVpuczZZrUzE7Cwn0mhZfb2w+odGlW/qKFE97cxqQO8Joa1akc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tvyl6QzV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38FC6C433F1;
-	Sat,  3 Feb 2024 05:02:08 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=JwXVydLd1FPjgTB9rfcSHinsMUHFxkPnIwwIz7/nRNyBfYVJqolWHTPa5DkHAl0ES82HTJ3iBtf3fwa8m7/+ovp1EFCcuTSMXdF1KhQULlpmJUZeROvaXC77Ulgb6AVPXp+5AVaKdVP2pY5sCljjwRam6QAvVaMPjrxlQKX+/Ec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m0vIOABk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11010C433C7;
+	Sat,  3 Feb 2024 05:04:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706936533;
-	bh=3mSfA0UVRh7tGSXVB5TRw4h+W33JzkAhX/6gOE7RwuI=;
+	s=k20201202; t=1706936651;
+	bh=YkH2GN8kW1/3NvBsZ7O0/q0cDHVLsVvAp1UN//ku9Bs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Tvyl6QzVRTKUOZcnn9Uz9aCQxGV87GMnkP7ZMinXcCKnWEMxmPXr4CtwaESPVCHNz
-	 jRgFajPCbKNsMCvJHDqCKksdG7Y3jd0zWmt/5g+SJL/gTRF6cOYI1agaFqUsjrjbbt
-	 U6rYZfvd7qePXBho8aJbt/jxzXNz+UpJ+uxKrEGzs0ZQD/fNHGUwwsfpUPwbFvTEbn
-	 Nyvw8FTS5bfAGI4sCJOV7M/O6wO+o/tkrzXYq4fYiW4U+OYFibXLFnsePmqPHnwrAU
-	 VFNvUBLfUw628uJ0JrcWDI2K8SjHVwNjOHE7iA0ty4JCm7sK8w4L1MQeaJlW6H2/ZZ
-	 cs0euhghBb1sQ==
-Date: Sat, 3 Feb 2024 10:32:05 +0530
+	b=m0vIOABkMeCpcKj/rh943Vygt54DcAsyvjecK0aRW634PjQbZ6tb8k575C0Qn+vGj
+	 7NonT0BQ6qPRkwPAm2zSuIXEJSclnq5JJMSekmhTB8i11TM1RlGUHLqDqSpYcrakpw
+	 GHMA7u37xLIqHfrYdpAi2gWQMEfoE/+d46tzRiqJlczi4Fr+MXuSNZDRzyVULxnI7y
+	 cU5KSrbvwsDAHHmM/yv6scLrCpbsLsEfY32DzKHcNzBfI2LhCtOzt59Plb988mhk4H
+	 a+cDwi4egSpHCJL8Mwr2GkHZGzlzXJ5vw2hBNxJuQlUto68RI9owmMne+2JNl29GD8
+	 wmcIQx6RhS12A==
+Date: Sat, 3 Feb 2024 10:34:03 +0530
 From: Manivannan Sadhasivam <mani@kernel.org>
 To: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Cc: Manivannan Sadhasivam <mani@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
+Cc: Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
 	linux-arm-msm@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
@@ -52,7 +51,7 @@ Cc: Manivannan Sadhasivam <mani@kernel.org>,
 	quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
 	quic_parass@quicinc.com
 Subject: Re: [PATCH v10] bus: mhi: host: Add tracing support
-Message-ID: <20240203050205.GC3038@thinkpad>
+Message-ID: <20240203050403.GD3038@thinkpad>
 References: <20240131-ftrace_support-v10-1-4349306b8f81@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -84,7 +83,7 @@ On Wed, Jan 31, 2024 at 09:54:04AM +0530, Krishna chaitanya chundru wrote:
 > 
 > Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+This fails to apply cleanly. Please rebase on top of mhi-next and resend.
 
 - Mani
 
