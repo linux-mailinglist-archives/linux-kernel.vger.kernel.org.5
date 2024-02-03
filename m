@@ -1,89 +1,82 @@
-Return-Path: <linux-kernel+bounces-51141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC647848707
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 16:13:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F368684870A
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 16:15:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA8AE1C21768
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 15:13:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B29E1C20444
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 15:15:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A76DC5F482;
-	Sat,  3 Feb 2024 15:13:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 335925F479;
+	Sat,  3 Feb 2024 15:15:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iKLifrvG"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xi17I5i/"
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EECB5EE93;
-	Sat,  3 Feb 2024 15:13:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2381B5D73F;
+	Sat,  3 Feb 2024 15:15:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706973192; cv=none; b=StIN976ZCmuzqSeL9D2Tl9RRJQMFUIQbdNJViRLRduHbXZYMAjUpybp7Dci6k5CylSkBqOWX95XigSctQYk0TSz0yf2On/GDYjMGgoBpEpWLiJNbQdfQ1quRY4IsVqMyH65/xHpEaAZAm9RCMk/vI0KQraIpYwZ0Th4ZWQ257YU=
+	t=1706973302; cv=none; b=ISiylRGaavFKFdNXXInyQRWYwz3ERB6trLTK4V9Hk+y1t7NDBHXTYI+cAvnYgHNPDs7SGcJ+tBgoDoIZPrERbxUHdV5dIXQ57dahALZhXOdDW6Ma7aqDK1aa/xXxiRTlSt5TsddnG/KEb28u9e8tYonwuOo8KcO1v3yOLlUOOeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706973192; c=relaxed/simple;
-	bh=JL+PSRmvVzKSLfAoJ77lkRIiOVNvdMZicj1Fohwv15Q=;
+	s=arc-20240116; t=1706973302; c=relaxed/simple;
+	bh=puqAONUd19UjQtLo17T/xtpxnued5tKsUnTK819XQbE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PDAzVSl5I0b5fIJQxnHVakDfVw/7SBjAQqKVtTeSGLfhbYTy3e7CmxXS985LwvhUQ/Gd5KhBDTLUcecCm1D2w91iEQiiXK/O1HURq2+rie7oufCsDvo6f55IApNfF6gyDjDU6StwbdjnN9A5/X9JtZAarAwvqjmtrYh78iVq5nA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iKLifrvG; arc=none smtp.client-ip=209.85.210.182
+	 Content-Type:Content-Disposition:In-Reply-To; b=i0eVh1z3J3ciGP6BEk2oDVCgNZu3fq5WMOq+X6JfMghjgHlEOuwz07BXBSHDvnTAn/gv6uKPqTLvtTlAF5TS75NCG6zekbZqWugRo3rLKHfR5p6J9WvMxllSHOr09zu/Np9vdMvxK3Y0vd3bbMb3v7rBc4BPFw5QmpgeQR6mekw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xi17I5i/; arc=none smtp.client-ip=209.85.161.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6ddc0c02593so2218488b3a.3;
-        Sat, 03 Feb 2024 07:13:10 -0800 (PST)
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5986d902ae6so1857256eaf.3;
+        Sat, 03 Feb 2024 07:15:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706973190; x=1707577990; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706973300; x=1707578100; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=xN9WkJF6hYDK+c2hghOyEcly1TR1Vl/4IjxK+gN4NfY=;
-        b=iKLifrvG1R8gJKfxMY3GybZae1WvWo+ir4mzrpA8Zzz5riK8/FAV+giD/nKT/cqfan
-         3RlSXFT0nH2Hm1JIC6zhqaQHCSdlyfMMft/zuP/b7SV6Ms17hcXfwLydJ8XFunq9kMEg
-         Mp4BrN9kFDALCblRYIbtcLckABx0wq7y7CSVNn+t61WPtNBR+/XZj/sfinwoPWjfk99j
-         umFAd4qAA0kf89UF2aZ5VXh27qAAsKYlaqn+YQIJYd0yIRU6BaKJHKdZlZIBqNTHMxyt
-         DdhEgxvmOx5WEdd4r3YkYrB+TPDIDj4sMETk54955O49stLZE+/4/v9x3P5pJSPeAH58
-         nvvg==
+        bh=cFuXP3UV1xnywaTqFOinvyF6IAzq5e2/c/XsGf493CE=;
+        b=Xi17I5i/Lfz7l3sbVF/NbYRrRWsZ/CYbf7Mwp37aNwkuMnLgyyU+kdMOm/2QROjn4x
+         43bAtuHuPa5KKfBHMjgrNQ6GatY6XqIVFVl/dsjgDahJ0TjpU0/iuWTYKHXEwBOWqbbg
+         tFYea5Re0fo6ftSU++qL0/OBg9cOhG6wqgd5W/8CVVXua8HZxXBtaKORTMcTzaNapvuq
+         qmhJymq5yJzDm/b8oZ/nc+OHz4yC310PBQv/StZauNdldGX5oVKPN+mUutBSHCJ0DSWn
+         unQl9AfZCt8khTmejXPOtsflPR2et8TE6kA+zYf47S2rolQe1G0QCLe5feJKS2eu3fsf
+         l9pQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706973190; x=1707577990;
+        d=1e100.net; s=20230601; t=1706973300; x=1707578100;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xN9WkJF6hYDK+c2hghOyEcly1TR1Vl/4IjxK+gN4NfY=;
-        b=THR/HdlGa4RzDLSKkzeHnZrukJ4e/MgBvRxBiWLyXrJ6oNfukrsogPZIBeLzk51o00
-         HHbczgA20AyJJPmgQXslg/qmZZaDGNvx54oDIk5pMzYJdIEKz2SyLWhxHvvp3upyOLYV
-         IQF25sqW4ZfTsq/Sxpqshqqzm9K3gPuyFoApJYK2EDUTO5AYd/EZr4yzXRMvHgfwknqv
-         CmyKU6VOa2xVNu8QAszLlfQJ42bEziwKlx+oKgFz4tILElTKpT4zbM2N6IK/js3pLmRY
-         9GFiPgZ/r3dpRVQvA8L3O/JXQJG64qbW6I76BuogIo1g+3jlGZ/8yyJ3TFIimw/ydcma
-         yKTQ==
-X-Gm-Message-State: AOJu0YxHYU9b9cizGRXfHFP2wAN8t++SIlbyUxjyOdM9VhpG5XrrqTz3
-	iSPS1hDsXehkw/1V85PxeL2ezKrhd0usaMciYUOMIJygUR6xJrlM
-X-Google-Smtp-Source: AGHT+IGzclwUEWMRrB7qUW7wMZUYvN4KbDaWuMK5T/g9+YsyjQ0OdD5a6sVLWIN+82c2yQmSgWYBeQ==
-X-Received: by 2002:a05:6a00:1407:b0:6df:f634:4f83 with SMTP id l7-20020a056a00140700b006dff6344f83mr6028980pfu.2.1706973189541;
-        Sat, 03 Feb 2024 07:13:09 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUqYJZtF0397o79UzP467rq+EAXWG13ZCkuGdHXaZvG71bKhtaZ87yr7V3NXIZ4NLnCp5BZJCtLrJoXZAvzCQja+f1KOfybqtNT3eANB/oh3C1NGHWrKwehgCcO1ZoJWFzCG8l9NENaMXsUitkqyCf+tBUR8DPmy0MzKRMF+fceGoyC07gWeQIC/+j8+A9AY2PUVsF/oR5RJG2OiYXEtUeAn9txBrXtmxbbctnYemk8oyh5Ds1FoopUbq8VbebCQlvPAMdoP1SL+8aMgJzY4bn8Y906L7Ln31LNTfXN32Y/7cLg/RtQN54lUDUCa59F9HSRZWMxOvy/E5NQf9HvxxK8wFMxgvAksmEkf59tqFRV3Z2NYW+G73xa3vhzLN3x8wMHUy36RY81K4pEVeHwaPF2m3jCz70uno3P3cGWYzD7w6WbTsfyh5+Y4k1QcnWMyTsaTp214+GkWDcqFV0LYvNpHTpn028grAIXbj05NYX5kjklvxeBjCPgndBnHoKVcRCDnnRqSzIUu51mTEdzgvI1Q2nZjBdDxkTvpNq07AsalOaiJ1/HqSt0PGeI1zEQOfauB6xDTFgRiBP1M4kuWN+uKOY4VEfi4oA22jZ4Cmb+NicUk9EJt4J85246qjNKaH1aRLitgP0sJQ4VlP8CuzyKJtZ91RcILRYmL1NxX7ZW0w0nuBUyRqKtYA==
+        bh=cFuXP3UV1xnywaTqFOinvyF6IAzq5e2/c/XsGf493CE=;
+        b=GnNLFkbvjGkEGCI7q4+lM1YU4xRZ9UGyDKe/eZXQx95Db67m4zKj0D3YkFduW884Vv
+         VG4857g6RnlK/lRUQ4Bd9W7PljYjEPVdlSZcTfio6IeYTlb0JSZ9B6Fj3G/zgX4+tgCD
+         O3W10SVdrRpxyInkJHKTdaaLIaORllOg0gJfDTZWUNHGeEGSBm7rZKgR0e0NZYorQe9F
+         EeOABd7exBV4M4ueWPYS6dHpv5ie2AOKg4n6D3s2smcHxLy90xSFfsBfA5Ce8qrDJPy0
+         mSczDIkQrWlihfbKMnOTBXiu22f1pjBeL4kvBb2SNhuRyTo38lwZdgn+0URWjlZ27i1Z
+         O3kw==
+X-Gm-Message-State: AOJu0YwHw+hSvV0w2KGL/g6+FtEyzuFMvzx1gvlUSHo7G7XVg+gutln3
+	JqiNfcDuWPl+2Qw7kti2wnWzb9N4g4qkE5y/szd1cwz9OEyiPWPZ
+X-Google-Smtp-Source: AGHT+IF40Z0pjbJVzRvxEw7OzgOmlZu9RvZZEAgaSfdBvk8bmmqKo0Aew1Kh+sLESnM1+9BvKO/F3g==
+X-Received: by 2002:a05:6358:3a0a:b0:178:99cc:e52e with SMTP id g10-20020a0563583a0a00b0017899cce52emr11976858rwe.20.1706973300201;
+        Sat, 03 Feb 2024 07:15:00 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXTS+Z3mcZ6h5OmaPznlOk7RjwoMElBSaLMG1YBYjQQ6o4PoiF+thK+DxD6vnP0WDdwlJcYAacZ070/13N631A0eQ13jBD3PxkyosoPkmu1XM8Q6IxFJXbbBwWEgmlQqoKVsOinluo6CwyRfvX0cjnAdzdzJrEGArzZVF9UWlrXf8/Ny2jMytCD4ORWzgFw1PtTati5JUiT3q+HCu0raH2R5Bu0CD4ctRKqPRl846UVu/0ji9It8ABe6m1Dmy1pu2x9BJTORKcrgrA3LOVGSY705xu9UchNnkG4By/PJuFFfogeb4k=
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id b129-20020a62cf87000000b006dfe45dfdb4sm3671627pfg.74.2024.02.03.07.13.08
+        by smtp.gmail.com with ESMTPSA id bs10-20020a63280a000000b005bd2b3a03eesm3658342pgb.6.2024.02.03.07.14.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Feb 2024 07:13:09 -0800 (PST)
+        Sat, 03 Feb 2024 07:14:59 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Sat, 3 Feb 2024 07:13:08 -0800
+Date: Sat, 3 Feb 2024 07:14:58 -0800
 From: Guenter Roeck <linux@roeck-us.net>
-To: Billy Tsai <billy_tsai@aspeedtech.com>
-Cc: jdelvare@suse.com, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	joel@jms.id.au, andrew@codeconstruct.com.au, corbet@lwn.net,
-	u.kleine-koenig@pengutronix.de, p.zabel@pengutronix.de,
-	naresh.solanki@9elements.com, linux-hwmon@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-pwm@vger.kernel.org,
-	BMC-SW@aspeedtech.com, patrick@stwcx.xyz
-Subject: Re: [PATCH v13 1/3] dt-bindings: hwmon: fan: Add fan binding to
- schema
-Message-ID: <e1b1c69f-a2ff-4fa5-80a6-3ff0a3de6ce6@roeck-us.net>
-References: <20240124060705.1342461-1-billy_tsai@aspeedtech.com>
- <20240124060705.1342461-2-billy_tsai@aspeedtech.com>
+To: Alexander Hansen <alexander.hansen@9elements.com>
+Cc: Jean Delvare <jdelvare@suse.com>, Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@aj.id.au>, Loic Prylli <lprylli@netflix.com>,
+	linux-hwmon@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] hwmon: (aspeed-pwm-tacho) mutex for tach reading
+Message-ID: <a70d020a-6289-4087-81eb-a4d6ea339b92@roeck-us.net>
+References: <121d888762a1232ef403cf35230ccf7b3887083a.1699007401.git.alexander.hansen@9elements.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,33 +85,19 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240124060705.1342461-2-billy_tsai@aspeedtech.com>
+In-Reply-To: <121d888762a1232ef403cf35230ccf7b3887083a.1699007401.git.alexander.hansen@9elements.com>
 
-On Wed, Jan 24, 2024 at 02:07:03PM +0800, Billy Tsai wrote:
-> From: Naresh Solanki <naresh.solanki@9elements.com>
+On Fri, Nov 03, 2023 at 11:30:55AM +0100, Alexander Hansen wrote:
+> From: Loic Prylli <lprylli@netflix.com>
 > 
-> Add common fan properties bindings to a schema.
+> the ASPEED_PTCR_RESULT Register can only hold the result for a
+> single fan input. Adding a mutex to protect the register until the
+> reading is done.
 > 
-> Bindings for fan controllers can reference the common schema for the
-> fan
-> 
-> child nodes:
-> 
->   patternProperties:
->     "^fan@[0-2]":
->       type: object
->       $ref: fan-common.yaml#
->       unevaluatedProperties: false
-> 
-> Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
-> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+> Signed-off-by: Loic Prylli <lprylli@netflix.com>
+> Signed-off-by: Alexander Hansen <alexander.hansen@9elements.com>
 
-v12 of this patch got a Reviewed-by: tag from Rob.
-The tag is gone in this version, presumably meaning that there
-was a substantial change.
-
-I don't normally do this, but I downloaded v12 and v13 and did not
-find a single change. Why did you drop Rob's Reviewed-by: tag ?
+Somehow this patch got lost. Sorry for that. Applied.
 
 Guenter
 
