@@ -1,78 +1,81 @@
-Return-Path: <linux-kernel+bounces-51196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51197-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8811F8487A5
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 17:56:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 574A88487A8
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 17:56:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5406B2616F
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 16:55:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3FA91F22416
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 16:56:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64DB060892;
-	Sat,  3 Feb 2024 16:54:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A305860DEA;
+	Sat,  3 Feb 2024 16:54:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Thr5BXqE"
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bkil52Y3"
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3847E605BD;
-	Sat,  3 Feb 2024 16:54:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EF9D60BAC;
+	Sat,  3 Feb 2024 16:54:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706979245; cv=none; b=YQcTK4papG5CkMn8gxxTBIN8LANbUP4AXrIem+F87b6yxx3Bh+P0o8KJVKKV9D1y5mees1QAtn0Cs/7HVNkaBkwaRzfFqpH2Oynq0K5a8urOqTQByWB/zGawm+SOgajNUWCYNK0hUzrt9Y3d6FqjPZacKRkfjaPhEiIW4UqlqLk=
+	t=1706979249; cv=none; b=Vd/igfm4F7mKgkX4VUpiEyCLqhvqPc5Hb11yyqKxMYC8EZqnC4QvXkFIlDtzLVve/EPhrNKkznoJLVB1FkAoW3vqLAzq7labZtXPW97aOYjwKZ+1zY864SmmG553FDKaCzOOY6eapv4k26QieEQzlzf1yPC49V9AGLBkBYdWoxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706979245; c=relaxed/simple;
-	bh=fgIPsj/1tK70Vcv4WrE/oy6r2RXF2E+B593o08QXYTg=;
+	s=arc-20240116; t=1706979249; c=relaxed/simple;
+	bh=kYNYlsb04jai6/LjmZrmEG8/03O2GktdBwFdXhJplJc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YBC4RVJoqAQ58NsUY+/Qgjx5qMUsn3i3FacNXBv6nbge8jlkCFvYO21lEoDjyfVHBvdYXVc7Y7ka+gwe1vcAIIpFsxP9pfEi8TB/vEWtSv8zAPhRaPW8rkpxAFiBo88/ThXzZ5bbSU4upsKZana3MPJz7ZRKpCSa/L1yT/M6eBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Thr5BXqE; arc=none smtp.client-ip=209.85.166.176
+	 MIME-Version; b=dsG/eH2+s8nzl3Oe/rW4VWW+Z9m9jJBTfQN6vbGhb8bYiBA+8CJAXP8i/3TQHU66Jeq71vok9pnGNfFzjyb9u1nkdjgo//ucZ7nSlvPfh3z/h6vmnrrj1YnWRYL9mSTMSPwjo9POuCsdiMudYr11CYf1TfLE7X0BVDmyBUSVMoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bkil52Y3; arc=none smtp.client-ip=209.85.166.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-363a7ba0b8aso10111755ab.0;
-        Sat, 03 Feb 2024 08:54:03 -0800 (PST)
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7bc332d3a8cso165665739f.2;
+        Sat, 03 Feb 2024 08:54:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706979243; x=1707584043; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706979247; x=1707584047; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JtGhKs15Hj8i5RJ5ho6JwLU0TmKEm52r/T9AweQyD3U=;
-        b=Thr5BXqEzrub8S2Xud2TNmJcxEq1fga6ZC7TTkvXgS36zf/4LgU1AHgVazmQKG1PUD
-         2nMwjO/G8sSJQvhbfFb20L66hS9Qa4QV5z299CzuUKSqjz++Q5X6VQWTSVqxBaVmvw6G
-         8oeR04NsqsQ2c08y8tl+sMmYj1t8Zj/Mew05Va/z9oJ6aR5+w/YTVo9uug6Si+T9OKjD
-         4F6OfNd4ZVb/oz2tPpE1Dary/uarQtkUO90tHgc8mTCBUbNKNyTnXtAMthbIT6GSryQe
-         hCxIyl5FV4L25eMyJ3QOBBRAFLuJmbTJxXfZt5/UQ9iKLAfoiY2g/Ye6ycX+QYLFfZTR
-         AELA==
+        bh=iN7CHiElDXoarw0CBzFnW/ft9HNctCbMZzIXIZ/bUo8=;
+        b=Bkil52Y39cxW+Uf2LvG9DvcQ/u6HHvkuiPOLn94ciW9msqOfTgVwj3KrZ5bZy2h6rb
+         UPpTvNAq+S20fUkg7BMrw1bFjdzbE/eYJDKb+j9hNZbacKkVDHD4fXtWMGlo/wocu/zt
+         u9fVfLzXbHx4TJJmdpqcWOpZP3hNv9NVBW5+bXnCf+1c4VlzVGt0R0ArCpeY6zLsWsMZ
+         maLVrqsTB9hKP6F9peK2dkOrsRY+QzMCdTFyNnygyPywcKGrYlUMyLt6JDw+nI/aoZIU
+         G5aiDNsU1KX9fuLBeOONJGbjn6v0Qp7pjymgvOhWEEnPR2QyKuB37FulsLOWm6eocopO
+         rMdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706979243; x=1707584043;
+        d=1e100.net; s=20230601; t=1706979247; x=1707584047;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JtGhKs15Hj8i5RJ5ho6JwLU0TmKEm52r/T9AweQyD3U=;
-        b=oUhhxZLm7pNhlytUadd/sqm/8nithvkEsKdjIKwFZinSfCmktqctLysTBtxXRndD8x
-         2h2+JZx188pEWkIQnLYkslHOsQoqFyl0Dp64y4L67R6oCOese91RmHEflSPQvZ0MBRB0
-         fqHakKKj8ut+BqV6yRsu6LbsybAtMrCphtZUpwfcwiKRxj7m+XtQkHrZK3qYb8E4Q4e7
-         ELOQnSHDOcopP5elj3czN5rNa9/wsw/i2+2aQZWdj6G8J4w/kPAxDWjz3JI+HeK3p5Jm
-         9pDEi20xdL1ixAToTT9bEvR218vFX5l173wnJnIsWHO/BiefnTIlVq6aQVZ94wOF/wCo
-         79GA==
-X-Gm-Message-State: AOJu0YyWJkPH7KH4otBJmS5R3lFwEaaxNjmIP8/VCueHMwOZf3IHiL5e
-	InMzQ99/zZ8JeL5OX8lbaRK+cLjoCvXPvW5Zvkr+F3AaqXDl16vD
-X-Google-Smtp-Source: AGHT+IEtUlUuWsf9Gbr9GJbRlc1FEcGkrsmzLVx90UiAKNG3C5GbacaJqKTLB3V+VnaauWFjXUN5Nw==
-X-Received: by 2002:a92:d3cf:0:b0:363:81df:3d3 with SMTP id c15-20020a92d3cf000000b0036381df03d3mr5301076ilh.4.1706979243145;
-        Sat, 03 Feb 2024 08:54:03 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU/UwDB46wLoYIFz3O6l5HXVdZUTuSGDGGNGDOBmA1nI1v32qlpxeuKPfkKPapsxAKPEyV6GPHaDnimTNr3DbJrYuloAkEnRbdSF2fb4CuRVyDXSHYK2eHAj/DTf82WRn6QOBFR5iwj2elDQNofClJ97c127Khba7hPCHaIlPasYNq2qlgRpAe3cwfen4EiVjlNaH4EfMYkZWjk/HYMl0zDZBa/UgXs6nqfuXwFARAOWRxFGSFfyowwZVJF3kfGTotEIkCx2VRUu5lOCSshBDa2s1TZVeZklv0lOBCQgeq2YYhVWTR0bj49etVariQ5188+WbNbo6s3wS0WDD27C7xTyep7AKf1ozf5xpunMCecoMQIZdeooVqkuvOeAarWQ6LbtFZldbUz1p4tfaiY/RL+R3e0HKdB0SEQfup7eprMSVdd2qtIMqi64bzq74UM3/P4HgBRcZlf16SZeUZ8oGeBnGKvp3E1GToJqiOk8A8K9SyHSsQXKJX/rVYQ/tfwLPDt3RTCtGUJZ7rmlNxDJXZu5etd7fWDAcCIJgiT3rXAlT4YRnFwWtdICYcfItQokTzmrNE5QZXYdSP6oc2uAkMUfqd2rYHvSzQpoi53MwL+SYArEuvYM5+ePpPj0XleBmwr6Q2aWPhEQiNFbT0UJFo9vkFus0VAOYDq4KJSKXXDvtp03Q8q6nfhzdIbf/ty5SeTXaiDo7vGDKgOARera2E+oLcjiw2QSr+7HzADqONxj94o8TWoUIjFN/+o6mvZbmaT5dwL95LBBD48M0cEGfDvHAF9Q6eaPC1CthonwR93ceLtw5fmr1u4ReEB9ENscdoRdfFjzMp26HdZhHmF7Kwb2AVHcafwsOLyjSdRUgGR2Ystz8uLQGuHxLwwS/pViR3hkiRxruq+4cKnGxmOnLyOgIUOL1Z93q2KFjHW9hJ9d0ntICMUPEbe4O/xrJzko/4NAo
- zKTMm/HRtldmfyvTUtcKEXGp1JpMp5rUj4zBHe5CyHWYwb8SeNSFH+sXwQPOBCSupIPgOw3CnTspR5lOggwYfaNWyhC7GD4aoUU0Irb4Dj7KPDYSGx7gRih9Mw4rrejlDGk57IACnM1O8zQE8s/o48ubKXEXq0CzXFZbAioDyJSkJ4R4u613NpycCar9bMYqVgC10=
+        bh=iN7CHiElDXoarw0CBzFnW/ft9HNctCbMZzIXIZ/bUo8=;
+        b=WIKAEXHoQ4hff3gXV3qz6go1vpj32sTvJM4HCsajXR8rSHxifETyuhb8EumgxE1qzf
+         vBLvuIV0XwpDO2K6AdAsLl3yRv1wZQQ5b/z3h5HThqPDaC8a60JIQ5AFFAKCyy51/MG3
+         dlJQCJc/XqTG9CNkV15QPHcWjaG4W91ET75zCf42De8jw8TlBT7KHbiznL0rPS7+4l1b
+         +BVG7q8qHmDQwxxeqXO/PZNYG0gEBZcCp4qLAWUEHz6qmCJl7/wZrKuHqeTdhsveiYNc
+         FyvnQM/ZVbNXitAHqls9Lh6N7JahxNO/i7y62R4S7FY52vbiaX+xDWFoUpsa7I1Kc2qH
+         sumQ==
+X-Gm-Message-State: AOJu0YztHKB6QjemGoMjfk+IdPeW8Wa0fd9jeoTr8ULgA2OBPeRAdcVH
+	jwlWRP2tnnVOx18g/Tk7x4N8tMNaIf9abYOfIhI8cgVzAJjiyP9q
+X-Google-Smtp-Source: AGHT+IHF9zh6CYjYVL5XR4aOsuCz2JWMZKXEuAxJLr9Xj8pwzfzLUwChQP/CnjWMh7hRgUYvMP22WA==
+X-Received: by 2002:a5e:d915:0:b0:7bc:3cb7:b68b with SMTP id n21-20020a5ed915000000b007bc3cb7b68bmr9293261iop.17.1706979247353;
+        Sat, 03 Feb 2024 08:54:07 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVWZ3cE3qI9Oj54mFr3sAnVJXSwCFl8jEzpL9ucr/wb7wJtIiD8UuODjyzAMUp0ByTuWPWRCY3gFUaj6Tl1QSSEoFmjcqHnSIJm/CcYV2fBCR2TzZs6oMwGgz5yIoAFA319P7Cu/VvHvowXSFkPvrNG9Nk/p1zhIlaMWQVBz3OSXWpNjQTYmfW/BQolQDULLpBgKPdzTdQSV0JBqGa3HHFXp7F4tkWXzXv1y6RIxVcEbZ3kiXP0iTHuyLXiXyDE4oE+kWbIvORuO/pbkidoXGyPiHMTqHlcHCP6RyLAHu+WtrTwo+g1+tIBsqmnd3WPmnxcuegvPP95EWGHrYIdQSQ5Idbi4CwazuUWx2XpS24CfIaw8kbQLVFgOMCHdlhz9Pvz9XROrEFXVxzlJ1bvLegZgn8gzI1xXH9W9HOzuq1PMFioWzwvJdcCATyJeg2qPCZ0qZmHTBpt4mrW4zoAK/0TSwlUiG4XVET3T0cSJu0+3pOg4A8dzMvmlv9bwJT/FzSWVlGCyECr0tPGwNLcgv5hJ6a0E9vBLE0gA+Zuo671skr3tDr+otnlIdQfBv84iJVTiq/BagoTPx5fjx91RezHWRZi4PLpR88/htGeuFRZKJmoFIW9O+A0i1CMkwW+tpboQCIaRk8nL/tEsGc5GwTjAYBBAYnxrTMIYXQe6J1iCDjMHb50yy0ys1CsDDDN9O/57CQQ4yNiXYw57qtRvh6wglVsdEk2/o9OSlbUtzmv5X+RKM6+Jo5v6ACtTp/2R3Kb5XJX8DBNHt8MLEpAE6H0oiw7YZMxPMfrqUrsQx0rM+vHkHSPYfqbFKv6kSt+4S7NC61JYbp/haR+aVmsLSl9dfvWtwtdXMop/gIejD9oK83qBw6/OQfe3Qd2eZvpRGa7q+KETghsHfoNPq9ANbXAHYAP1lzUKelCh9KJtcEdUT0G9eyxTOPnnWm++V0vH82B46
+ Op9yK3+Tazd+mB0eyGk7bUQiVbqEL1o+LnXA3pkY2OhBG/HNhjdGW/YhvFGDeSNAwHjh81LUNI122dg4+sDdF5D0ZfPnEwslU0jnCcOQ0rvvfxkXCjqSo0ypjOan2P0+R1Xtrho+l5/mS7NurD/WMxlLi/NHZGM3zN7RAGATKJEfT+oXCbdVquZgIBh5CsV6bN3/B7/E+jpc2JhNIVIy0qd4W//NRD7kGqGSt3b/48KAOc5HsaYPhWjAAPDDbPhE9SKMsAJIWwu5h+hYv8VkCh9cO6E/9aUkv7S+j0YQdt1N2R21dDVg==
 Received: from aford-System-Version.lan ([2601:447:d002:5be:d9b2:bb4f:5531:6aa9])
-        by smtp.gmail.com with ESMTPSA id t30-20020a05663836de00b00470b29b82b1sm1086256jau.154.2024.02.03.08.53.59
+        by smtp.gmail.com with ESMTPSA id t30-20020a05663836de00b00470b29b82b1sm1086256jau.154.2024.02.03.08.54.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Feb 2024 08:54:01 -0800 (PST)
+        Sat, 03 Feb 2024 08:54:06 -0800 (PST)
 From: Adam Ford <aford173@gmail.com>
 To: linux-arm-kernel@lists.infradead.org
 Cc: marex@denx.de,
 	alexander.stein@ew.tq-group.com,
 	frieder.schrempf@kontron.de,
 	Lucas Stach <l.stach@pengutronix.de>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Adam Ford <aford173@gmail.com>,
 	Andrzej Hajda <andrzej.hajda@intel.com>,
 	Neil Armstrong <neil.armstrong@linaro.org>,
 	Robert Foss <rfoss@kernel.org>,
@@ -104,9 +107,9 @@ Cc: marex@denx.de,
 	linux-kernel@vger.kernel.org,
 	linux-phy@lists.infradead.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH V8 06/12] arm64: dts: imx8mp: add HDMI irqsteer
-Date: Sat,  3 Feb 2024 10:52:46 -0600
-Message-ID: <20240203165307.7806-7-aford173@gmail.com>
+Subject: [PATCH V8 07/12] dt-bindings: display: imx: add binding for i.MX8MP HDMI PVI
+Date: Sat,  3 Feb 2024 10:52:47 -0600
+Message-ID: <20240203165307.7806-8-aford173@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240203165307.7806-1-aford173@gmail.com>
 References: <20240203165307.7806-1-aford173@gmail.com>
@@ -120,39 +123,119 @@ Content-Transfer-Encoding: 8bit
 
 From: Lucas Stach <l.stach@pengutronix.de>
 
-The HDMI irqsteer is a secondary interrupt controller within the HDMI
-subsystem that maps all HDMI peripheral IRQs into a single upstream
-IRQ line.
+Add binding for the i.MX8MP HDMI parallel video interface block.
 
 Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Signed-off-by: Adam Ford <aford173@gmail.com>
 ---
- arch/arm64/boot/dts/freescale/imx8mp.dtsi | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+V8:  Add interrupt-parent
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-index 5c54073de615..5e51a766f3d9 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-@@ -1399,6 +1399,19 @@ hdmi_blk_ctrl: blk-ctrl@32fc0000 {
- 						     "hdcp", "hrv";
- 				#power-domain-cells = <1>;
- 			};
+V7:  No Change
+
+V6:  Add s-o-b message for myself (Adam)
+
+V5:  I tried to help move this along, so I took Lucas' patch and
+     attempted to apply fixes based on feedback.  I don't have
+     all the history, so apologies for that.
+     Removed the pipe character from the Description.
+     Increased the register size from 0x40 to 0x44.
+---
+ .../display/imx/fsl,imx8mp-hdmi-pvi.yaml      | 84 +++++++++++++++++++
+ 1 file changed, 84 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,imx8mp-hdmi-pvi.yaml
+
+diff --git a/Documentation/devicetree/bindings/display/imx/fsl,imx8mp-hdmi-pvi.yaml b/Documentation/devicetree/bindings/display/imx/fsl,imx8mp-hdmi-pvi.yaml
+new file mode 100644
+index 000000000000..56da1636014c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/imx/fsl,imx8mp-hdmi-pvi.yaml
+@@ -0,0 +1,84 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/imx/fsl,imx8mp-hdmi-pvi.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+			irqsteer_hdmi: interrupt-controller@32fc2000 {
-+				compatible = "fsl,imx-irqsteer";
-+				reg = <0x32fc2000 0x44>;
-+				interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
-+				interrupt-controller;
-+				#interrupt-cells = <1>;
-+				fsl,channel = <1>;
-+				fsl,num-irqs = <64>;
-+				clocks = <&clk IMX8MP_CLK_HDMI_APB>;
-+				clock-names = "ipg";
-+				power-domains = <&hdmi_blk_ctrl IMX8MP_HDMIBLK_PD_IRQSTEER>;
-+			};
- 		};
- 
- 		aips5: bus@30c00000 {
++title: Freescale i.MX8MP HDMI Parallel Video Interface
++
++maintainers:
++  - Lucas Stach <l.stach@pengutronix.de>
++
++description:
++  The HDMI parallel video interface is a timing and sync generator block in the
++  i.MX8MP SoC, that sits between the video source and the HDMI TX controller.
++
++properties:
++  compatible:
++    const: fsl,imx8mp-hdmi-pvi
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  power-domains:
++    maxItems: 1
++
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++
++    properties:
++      port@0:
++        $ref: /schemas/graph.yaml#/properties/port
++        description: Input from the LCDIF controller.
++
++      port@1:
++        $ref: /schemas/graph.yaml#/properties/port
++        description: Output to the HDMI TX controller.
++
++    required:
++      - port@0
++      - port@1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - power-domains
++  - ports
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/power/imx8mp-power.h>
++
++    display-bridge@32fc4000 {
++        compatible = "fsl,imx8mp-hdmi-pvi";
++        reg = <0x32fc4000 0x44>;
++        interrupt-parent = <&irqsteer_hdmi>;
++        interrupts = <12 IRQ_TYPE_LEVEL_HIGH>;
++        power-domains = <&hdmi_blk_ctrl IMX8MP_HDMIBLK_PD_PVI>;
++
++        ports {
++            #address-cells = <1>;
++            #size-cells = <0>;
++
++            port@0 {
++                reg = <0>;
++                pvi_from_lcdif3: endpoint {
++                    remote-endpoint = <&lcdif3_to_pvi>;
++                };
++            };
++
++            port@1 {
++                reg = <1>;
++                pvi_to_hdmi_tx: endpoint {
++                    remote-endpoint = <&hdmi_tx_from_pvi>;
++                };
++            };
++        };
++    };
 -- 
 2.43.0
 
