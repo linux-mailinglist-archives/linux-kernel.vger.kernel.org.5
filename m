@@ -1,142 +1,201 @@
-Return-Path: <linux-kernel+bounces-50894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46BC1847FF0
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 04:39:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1496847FFB
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 04:55:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EA011F24B11
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 03:39:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1773C289CA9
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 03:55:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AF3EF9CE;
-	Sat,  3 Feb 2024 03:38:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UEBqtfNb"
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F016FC09;
+	Sat,  3 Feb 2024 03:55:26 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB027DF41;
-	Sat,  3 Feb 2024 03:38:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75D8BF9E9
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 03:55:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706931531; cv=none; b=h2sxxO7PZm5gUYDme6IhSDhQ7qjRxHgWMIvYDz8F525/1QSg5RtX+C0d9figb66dbmDCgpPreFGlvwJrgTDUoWXo6rapVmeEAylvcxsenTtr3FdLlmHZGeSCWfxBiezy8rpt1egHeMQS5I7tEPOsYtKBF3MEdOK4MjyNPggGURE=
+	t=1706932526; cv=none; b=glVk5bVGB8BveceR3LqX1gOpQczT/vGVosKftTfqjpy1SRi3IsFb12Q9hqSXcjII+kYPrFrGVgK2chVymrB0y3FgvIK4VZ63zzes/ymBBTjYaGvp5dT+EJI6Q6wszhov6FVYx3sKEc/B6PHMs2AIwlVXCF2JQB251eOa23rD3s0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706931531; c=relaxed/simple;
-	bh=nqwWgtE/fL2ujj4lvfVA6NZd4fGbX9uqHZHUZXbGDew=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=G/rEJz2ZuA0pYiDb9Ql6uCNxWIHvBseoWyITKjkJHou0CVOjLDmixprc3P5Y5Zm7AemQKQbG98yTcZuxbeZc99f58z1MiNPoUROZBTqBS+qUjzc1d9cWClj/GrRVgLwiZG8FkDtfYC48eNJgg7aFMA07Jr+C5bDAhP2wLapruHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UEBqtfNb; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-42a99cbb4bbso29927211cf.0;
-        Fri, 02 Feb 2024 19:38:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706931529; x=1707536329; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KKsrvAsitikwOuhyQLAP2x4wUfjKHQsvIwe/3J/7rb4=;
-        b=UEBqtfNbqI0X59H7HrnK9EzHa8SvxydZAIxQnRWOEmktra7ibTuYYlx2KaSv3wyNnN
-         EQYRndZftVEOB7vBwB9WQLkGFZplSiZ4lZ7N1Y1m+ljxSa1rC3IMg/LfiQNV0pFFktY8
-         tjQvIqzK0KG+vxgUAd2O+vjaaQiQlrqrNackqMPx8972mhNVRPXwGGFA/oROZrbwlHTm
-         wjggQYDVNf7P7oA5mT92ZigQP8YWqSKIxaqIt3hjNH2MbhDdHcYj3XL5w+KsUCz5NmTI
-         dIH6Ry7Ud2PGtVdK/V3cxk/lUvtudt6d/kgxxEzXK+HQgYgUAPowGKl9ooj+uHTHL2P/
-         9TWA==
+	s=arc-20240116; t=1706932526; c=relaxed/simple;
+	bh=pz3bTR4QPTBQGtNkck0ABnWfFg+OZqiAEH9+v+f9t5Q=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Ut4h0uA8mred/VgNpa+gThWXa9raXKVdBcRxOLAUO5bRn7NoLd4RXZXd7gsO05g6YPHpWZT5SJQU3xoh386h+SUh0flSSsR3r+uFJkisFKY7yMyLJKCY5ZBVIkp2Gau8DMY62igxGx9OCxvu5GhBxiwT8++M5fJ5y+V71cWLaes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-363bedeec4fso46055ab.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 19:55:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706931529; x=1707536329;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KKsrvAsitikwOuhyQLAP2x4wUfjKHQsvIwe/3J/7rb4=;
-        b=Hv0zEsOAbO+poYFQG72vne17NUb4t4msBWvem8EosgM25L/Fwaq3JeKkaY7QTGDSw8
-         TExHd/7nhgHwE2F9EblcCV4oXkpGnWgfRflWs/m0Bpt7wPgjNE1HLaqwV/NA9k+fBxOj
-         wDd4q9IPXwGDiEvSIb0okQn5gb2KaXqbR/2U59mMpFwyAuoTyt3aM7THvqa7bl0dx4Ei
-         4Qp6QbFJ3F/2eFENLvyq0POgXWrUka6f6X2yI+AssD6Ost0zw37T21SZGAMiEVjMgM/E
-         TP03W4dSzjr1LfFQmo8xH5SxKkLztkXgaR2Brf9wyOZYEXKvZAhNFQyVadoAo/VrPDNB
-         1pig==
-X-Gm-Message-State: AOJu0Yx4+8bZhyjYN7TfI1OX1JfEV8xZWF2Vkfn6cFM1zdakcGskWrVg
-	4zCujrqS+pGgx9iaO0tczHEI0fS1khMxs0uFWJ2KMikBWI1kYAFO
-X-Google-Smtp-Source: AGHT+IGGM9dkY/+brysTYvKeQ2xlY6m32JxdG+ngvzBn6srE7ShrGEqwBA1vsZP/fK31POdr/3PwTA==
-X-Received: by 2002:ac8:45cd:0:b0:42c:e85:f414 with SMTP id e13-20020ac845cd000000b0042c0e85f414mr191804qto.2.1706931528594;
-        Fri, 02 Feb 2024 19:38:48 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWX/VstDSdFOUfKfJK+/tpIVO82m2Mzq1tL/rYVSfDM00zHwcIVMmJ9oVwzLVYR5v4RgbSIis+TNjDPPhwhctQgxJWBKduv8G4lTKhxXbbpyK9r0Y9xhDThX2BR7DJKf0+7wIBulxW15bal8o7JHN0btAapUAOZom7aCRT1/y8umv1XPLO5Cmm0EI2+mS8e9VQeF9W+cXwTgR4qPfnQYPweMFdTY5yO0D9k+xEVY5pEXNPRMAWI7wuduSLg9iW7PV89bVnwsCAHqlbieCnOVYZOOVXwXSFc
-Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
-        by smtp.gmail.com with ESMTPSA id eo8-20020a05622a544800b0042ab4a129easm1445402qtb.73.2024.02.02.19.38.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Feb 2024 19:38:48 -0800 (PST)
-Message-ID: <231a894b-c982-499c-9d9b-2f56ebe97240@gmail.com>
-Date: Fri, 2 Feb 2024 19:38:42 -0800
+        d=1e100.net; s=20230601; t=1706932523; x=1707537323;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tvu4f2hTAGciBSeASfhgzvcyQRqm5qo/b1UAEIIZ4/k=;
+        b=sS7oT3go3j026FZ3GFa48d9IOtglYoPXGipq0FBkNrjwktf1NVVnoYQM0gWGFOPq4G
+         g/OMhgwkWBNY8ovEzQjFHhBOXDwP/8jA6XfhmI43KEgiKIdQYr9lnWzkcb7RRpB/ESko
+         8d2UJ0HAS2EqkGhbifvez1uoPyuDW7rNUEzZtWISipEfC75nXjkfv0NXGiFD7foZXVaz
+         4yRsrr3jZrjOlJ8AFrDMr/FdNxVOB1zC1aHSg2+gCgHki+ncTqfLkUeMuJqdHPi1C+ai
+         XeBiCVRmfnadBJ+Z+/vKvzri00RoDm87FQdj04WFGIs/gh7l05aSzrbsBeQbxjq/zaip
+         q8kw==
+X-Gm-Message-State: AOJu0Yzc7fYvpwYVQ6wGk9T0DgAXM9L4YvWtvV2EWDr/VE7CBYwDSrEL
+	4Z+gVry2yyB8FtWXJXLkLAPSDSvg3lAwjrHmUOVht6kSi5KagUTsgiaiOz1GVl9J0N8Ctyo4dlT
+	hjNepdkU7oEQw/mJSMIOb60e2H6BjO4Ik3daf0OJNF8UD7CsPHUAjcKk=
+X-Google-Smtp-Source: AGHT+IG0un7nsq8gsVaj02ca0MPJ8WyRCWpMuo/2TlQzUsAA+qmdaxJgq2jEY9Cfm2msySqWkjmKvT95yz/mlRab/O7GOflLUawi
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v2 1/2] net: sysfs: Fix /sys/class/net/<iface> path
-Content-Language: en-US
-To: Breno Leitao <leitao@debian.org>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- Bjorn Helgaas <bhelgaas@google.com>, Jonathan Corbet <corbet@lwn.net>,
- Randy Dunlap <rdunlap@infradead.org>
-References: <20240131102150.728960-1-leitao@debian.org>
- <20240131102150.728960-2-leitao@debian.org>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; keydata=
- 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
- HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <20240131102150.728960-2-leitao@debian.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1d0d:b0:35f:f01e:bb18 with SMTP id
+ i13-20020a056e021d0d00b0035ff01ebb18mr842612ila.6.1706932523680; Fri, 02 Feb
+ 2024 19:55:23 -0800 (PST)
+Date: Fri, 02 Feb 2024 19:55:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bacd1706107232cd@google.com>
+Subject: [syzbot] [net?] upstream boot error: KMSAN: use-after-free in stack_depot_save_flags
+From: syzbot <syzbot+7364c186cc00641845c5@syzkaller.appspotmail.com>
+To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    56897d51886f Merge tag 'trace-v6.8-rc2' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11ef8190180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c11709bae75cc702
+dashboard link: https://syzkaller.appspot.com/bug?extid=7364c186cc00641845c5
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/3f7d6226b85a/disk-56897d51.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/129ced2080da/vmlinux-56897d51.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/b0c58e85720b/bzImage-56897d51.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7364c186cc00641845c5@syzkaller.appspotmail.com
+
+io scheduler kyber registered
+io scheduler bfq registered
+input: Power Button as /devices/LNXSYSTM:00/LNXPWRBN:00/input/input0
+ACPI: button: Power Button [PWRF]
+input: Sleep Button as /devices/LNXSYSTM:00/LNXSLPBN:00/input/input1
+ACPI: button: Sleep Button [SLPF]
+ioatdma: Intel(R) QuickData Technology Driver 5.00
+ACPI: \_SB_.LNKC: Enabled at IRQ 11
+virtio-pci 0000:00:03.0: virtio_pci: leaving for legacy driver
+ACPI: \_SB_.LNKD: Enabled at IRQ 10
+virtio-pci 0000:00:04.0: virtio_pci: leaving for legacy driver
+ACPI: \_SB_.LNKB: Enabled at IRQ 10
+virtio-pci 0000:00:06.0: virtio_pci: leaving for legacy driver
+virtio-pci 0000:00:07.0: virtio_pci: leaving for legacy driver
+N_HDLC line discipline registered with maxframe=4096
+Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+00:03: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
+00:04: ttyS1 at I/O 0x2f8 (irq = 3, base_baud = 115200) is a 16550A
+00:05: ttyS2 at I/O 0x3e8 (irq = 6, base_baud = 115200) is a 16550A
+00:06: ttyS3 at I/O 0x2e8 (irq = 7, base_baud = 115200) is a 16550A
+Non-volatile memory driver v1.3
+Linux agpgart interface v0.103
+ACPI: bus type drm_connector registered
+[drm] Initialized vgem 1.0.0 20120112 for vgem on minor 0
+[drm] Initialized vkms 1.0.0 20180514 for vkms on minor 1
+Console: switching to colour frame buffer device 128x48
+platform vkms: [drm] fb0: vkmsdrmfb frame buffer device
+usbcore: registered new interface driver udl
+brd: module loaded
+loop: module loaded
+zram: Added device: zram0
+null_blk: disk nullb0 created
+null_blk: module loaded
+Guest personality initialized and is inactive
+VMCI host device registered (name=vmci, major=10, minor=118)
+Initialized host personality
+usbcore: registered new interface driver rtsx_usb
+usbcore: registered new interface driver viperboard
+usbcore: registered new interface driver dln2
+usbcore: registered new interface driver pn533_usb
+nfcsim 0.2 initialized
+usbcore: registered new interface driver port100
+usbcore: registered new interface driver nfcmrvl
+Loading iSCSI transport class v2.0-870.
+virtio_scsi virtio0: 1/0/0 default/read/poll queues
+scsi host0: Virtio SCSI HBA
+st: Version 20160209, fixed bufsize 32768, s/g segs 256
+Rounding down aligned max_sectors from 4294967295 to 4294967288
+db_root: cannot open: /etc/target
+=====================================================
+BUG: KMSAN: use-after-free in __list_del_entry_valid_or_report+0x19e/0x490 lib/list_debug.c:52
+ __list_del_entry_valid_or_report+0x19e/0x490 lib/list_debug.c:52
+ __list_del_entry_valid include/linux/list.h:124 [inline]
+ __list_del_entry include/linux/list.h:215 [inline]
+ list_del include/linux/list.h:229 [inline]
+ depot_pop_free lib/stackdepot.c:426 [inline]
+ depot_alloc_stack lib/stackdepot.c:445 [inline]
+ stack_depot_save_flags+0x3e9/0x7b0 lib/stackdepot.c:684
+ stack_depot_save+0x12/0x20 lib/stackdepot.c:722
+ ref_tracker_alloc+0x215/0x700 lib/ref_tracker.c:210
+ __netdev_tracker_alloc include/linux/netdevice.h:4147 [inline]
+ netdev_hold include/linux/netdevice.h:4176 [inline]
+ netdev_queue_add_kobject net/core/net-sysfs.c:1703 [inline]
+ netdev_queue_update_kobjects+0x24b/0x860 net/core/net-sysfs.c:1758
+ register_queue_kobjects net/core/net-sysfs.c:1819 [inline]
+ netdev_register_kobject+0x41e/0x520 net/core/net-sysfs.c:2059
+ register_netdevice+0x19ec/0x2230 net/core/dev.c:10261
+ bond_create+0x138/0x2a0 drivers/net/bonding/bond_main.c:6390
+ bonding_init+0x1a7/0x2d0 drivers/net/bonding/bond_main.c:6474
+ do_one_initcall+0x216/0x960 init/main.c:1236
+ do_initcall_level+0x140/0x350 init/main.c:1298
+ do_initcalls+0xf0/0x1d0 init/main.c:1314
+ do_basic_setup+0x22/0x30 init/main.c:1333
+ kernel_init_freeable+0x300/0x4b0 init/main.c:1551
+ kernel_init+0x2f/0x7e0 init/main.c:1441
+ ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+
+Uninit was created at:
+ free_pages_prepare mm/page_alloc.c:1094 [inline]
+ free_unref_page_prepare+0xc1/0xad0 mm/page_alloc.c:2346
+ free_unref_page+0x58/0x6d0 mm/page_alloc.c:2486
+ free_the_page mm/page_alloc.c:563 [inline]
+ __free_pages+0xb1/0x1f0 mm/page_alloc.c:4653
+ thread_stack_free_rcu+0x97/0xb0 kernel/fork.c:344
+ rcu_do_batch kernel/rcu/tree.c:2190 [inline]
+ rcu_core+0xa3c/0x1e00 kernel/rcu/tree.c:2465
+ rcu_core_si+0x12/0x20 kernel/rcu/tree.c:2482
+ __do_softirq+0x1b7/0x7c5 kernel/softirq.c:553
+
+CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.8.0-rc2-syzkaller-00397-g56897d51886f #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+=====================================================
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-On 1/31/2024 2:21 AM, Breno Leitao wrote:
-> The documentation is pointing to the wrong path for the interface.
-> Documentation is pointing to /sys/class/<iface>, instead of
-> /sys/class/net/<iface>.
-> 
-> Fix it by adding the `net/` directory before the interface.
-> 
-> Fixes: 1a02ef76acfa ("net: sysfs: add documentation entries for /sys/class/<iface>/queues")
-> Signed-off-by: Breno Leitao <leitao@debian.org>
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Acked-by: Florian Fainelli <florian.fainelli@broadcom.com>
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-Thanks Breno!
--- 
-Florian
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
