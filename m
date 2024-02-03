@@ -1,256 +1,130 @@
-Return-Path: <linux-kernel+bounces-50933-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-50934-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEF1E8483EF
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 06:15:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57D148483F9
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 06:20:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F6371C224CE
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 05:15:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EB6A2893B4
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 05:20:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1183C10A31;
-	Sat,  3 Feb 2024 05:15:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64FDB1097D;
+	Sat,  3 Feb 2024 05:19:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qe/IftEM"
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="l62OrDZK"
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A335610A09;
-	Sat,  3 Feb 2024 05:15:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DC9D10A1C
+	for <linux-kernel@vger.kernel.org>; Sat,  3 Feb 2024 05:19:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706937316; cv=none; b=I66CjnDOyyLNmWso+onOosceBwJSDJoZq3Dvsw1XW2T0bdMXDFiUkYMQRLtyku3Tp/D8fpCFuiGG/KRzD3VDw+AyxxvFHvqtXYm4a96uQQb0hxcAIzO+2f/aDDCKkErFxT29xai0LiJPqLiuaUpPYaAxyEmteuO4KItQOIX0JW8=
+	t=1706937594; cv=none; b=Gf3Gt1K2KhVREjf87v/o1TXKGQkCUoJoEv8VroJjwGn5waanjieX/HH38STn4mdjTcYhV0SL+rqdCNto9QLLKcdTN71exglGWeOk3yq0mA4hOfScRtgEnseNnpzMwXUR4mbiaPP4r8WYpl22R2wNGpVcehVJnz7doYSl1wtUtMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706937316; c=relaxed/simple;
-	bh=fPbOGXg77mkW7kyUJXKhTzJ1xw3ULkg9SC3yMUThOdc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=G3S2qKyz9bxFkcZGFjCsrh73MoNOsPGI1fgTzOAb//Oeic1pCMXksXRMfC+qR8oFM+x9UDaL1uTPNzZnjA8XI1OUpqOkYDaKvoxFUOugUYFyd3Z+aR1PFD+kodrpc9cdzj/qHgt5nw5KEnvcy2d+6pbuNO6I3tm9xpl+EvUvqpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qe/IftEM; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so2749572a12.1;
-        Fri, 02 Feb 2024 21:15:14 -0800 (PST)
+	s=arc-20240116; t=1706937594; c=relaxed/simple;
+	bh=aV3RAoxJAIIl/L41qxXGSFWaFYi0w5bCiFnptXPK/IE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NGi4lGlYEaEMhSLNGWuD8ab6JD6GdCZ/qqK7gjBxOBP/qmnMlw2D/whXAJVqjVxL8pZp7aH/dD1NWG5gfbj+tEbi7OHSQk85zfS0yxmz6txo1Cj8G6HC8wARXAfkcRzVWbLSlNyr7F11BAHmM6J+C786Y4WtiODzjJECauDso/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=l62OrDZK; arc=none smtp.client-ip=209.85.219.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-68c7f482f8eso9468606d6.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Feb 2024 21:19:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706937314; x=1707542114; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=h3LoOjm98tL5WXwbrdlM6AeAwrTcH5b9oPsvdNs4GLQ=;
-        b=Qe/IftEMxSrdWNakb3xH42Jim9U3PsEOnUUxXvb1Ow4GiMzGpsxMcKc1vQM+eeINpo
-         LW1hUxcFcSy2VJaoSnbv9t7bVEMFUjmDkiMm30l+y6wmHioiVuFJvxWBbGTcJmifjUqa
-         ZO9/glvG8ohgUDFLDml2EfFshGjSsxSnhrW7n1rS4sHMCfRauHCaTsDB41BBQBqEcFiM
-         WKlaFopOxYIVQZbeQhUMc5Izzi9X4w436z0DrI5JnkgdBZUFMw9kcgdyjDrYhy0N9F4H
-         N3RfudHEsdHFHB1kn3rezTXFqCRZtdsFoOwm1+/yRao47bDeJ93goUyxIVQQc1bGBXsE
-         vSWg==
+        d=google.com; s=20230601; t=1706937592; x=1707542392; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hxZUisTRnkCHmoXtIIiIE5AFQkxg9hNXueoX4FT1IyU=;
+        b=l62OrDZK9YxbcV8Jlk+51HjizekLGOT8xMDBYsyY+w6YMV1YEE8UC5FvOEOpb2qnKS
+         jmt5Z0o/nQPyPKwHDjyUReV79b/hxWpR2b4QKd644+v2QqIN9LLTsrr1Up/f5cI6S9R5
+         M7g9+u9An+wnmEs5/U46Ebqb5szZrUS7ukYvVxMMtN/nMSnEfnERQwmENy7oz0ChSa0U
+         oYDC498w2tUaCQA0NXXKgzH2P/1U/tQFcpji+ViehH8DTuWdM2LaBEIV3YK6vLRxx7je
+         NRGSKGYna8eOuGXFZ+ofBL0rsdRPS8iIDaP41Bfjy3yI7eqDtFqm5VmXK8tYq5cqD9Jf
+         4ONA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706937314; x=1707542114;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=h3LoOjm98tL5WXwbrdlM6AeAwrTcH5b9oPsvdNs4GLQ=;
-        b=d5FHxa48VoXib4my7127x8zgHukOIJfytZQtM7sL48WXLx7OTrB5pZA1Fwnr6tMld4
-         3PJWe9BA5sm1FzC9U0TJPAQaWGccyO33Xnll4G+RLG/F8l0aMRsk1WBieO4kgaOcVG6G
-         2b1qpbtriyoMnQGQiQ4n8wjsL76R5G4OI5zCHhb0dzzGIXZZfbqLMuefvXId+N9DyCpM
-         wbUOPTaaJVg5AwfuUAXrDkulDVzxlQnJGml4QDPq0fm+usu4PhzVTlkljbSc1DCVEQxh
-         cDB6zc9xIfk51rGszu1/oj/d6pMH+/RU2hrHKKKgGSUXOeP3pIVB7czbNCrDK/9vgvv8
-         /5iQ==
-X-Gm-Message-State: AOJu0Yx3qURVkERN3x5pkDlR+OejjXmgMPbWJvzgP2TtGvWuFylJux+7
-	ZLGkBBuNlCSyt9K9yu/vWe+gp4lDiL4ETytZhXTrDYcnsrzPyC9J
-X-Google-Smtp-Source: AGHT+IFsy7NC+LwbxSXX8nF+xBy8EuKZb6n7QVzT5gmpWcym33b+5C9mcmKhQ6iXSb0+ZhywsQW+9g==
-X-Received: by 2002:a05:6a20:d045:b0:19c:6ce1:d62b with SMTP id hv5-20020a056a20d04500b0019c6ce1d62bmr5425326pzb.9.1706937313814;
-        Fri, 02 Feb 2024 21:15:13 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCW9ZlMmLRvZqAZIKfYVt8wIf1hWyHEwVksGBn/sJCDsSEwkn3duMXTCzXzUsjCr5zXg3lg5jIJd3pgJN3vZT6Kv24gSwXt6Ir5t9DBDrPNNzl9ds/uhd8bsLWcG/jv6ei1omk9dtluYcvtCRhuDxl1TmSqR/e9yl/3duLEBW/4zFqeQR2vHzmDRDyV2jRDxYmYbIjnvc6/SKXnplPDjyeMRnWZGm7KwLYKqoc1pyJa8vnlT6ed+54PHfnnUGpdl7vOizBiNoZLuMGwOTW/rwrFmjAxip23k0bbzRa6XFX02AWi2IB1gRzUdaK6fL+nCnC3pCwwmg/bMXfo6EOroI2pO5lh7n9SktGAcYCfbhSl6yLeJgAxtPpdpMwUhhoXBwQSLkK+DTfCbsNC8vQ6LZb0ftPRPdIXetETbDTRbaLvEh7Yd51RIgQnChOuR0Ix61cbLc5JGryvmILGqXeYCanyE2mtgfUzcrEfSx9EF85rktPtSuf5sh427WKmu6rDrN7cr8DXXciBiSUy1q3bQFhILMbwe+1UprEU=
-Received: from localhost.localdomain ([129.146.253.192])
-        by smtp.googlemail.com with ESMTPSA id lw10-20020a056a00750a00b006d9aa6592d0sm2549206pfb.82.2024.02.02.21.15.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 21:15:13 -0800 (PST)
-From: Furong Xu <0x1207@gmail.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Joao Pinto <jpinto@synopsys.com>,
-	Simon Horman <horms@kernel.org>,
-	Serge Semin <fancer.lancer@gmail.com>
-Cc: netdev@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	xfr@outlook.com,
-	rock.xu@nio.com,
-	Furong Xu <0x1207@gmail.com>
-Subject: [PATCH net v4] net: stmmac: xgmac: fix handling of DPP safety error for DMA channels
-Date: Sat,  3 Feb 2024 13:14:39 +0800
-Message-Id: <20240203051439.1127090-1-0x1207@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1706937592; x=1707542392;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hxZUisTRnkCHmoXtIIiIE5AFQkxg9hNXueoX4FT1IyU=;
+        b=r/4Jw3QAxXxQ3WM6rbUioaHSpWAXiSLKZPf8attNkzS+mrNTPsJNlqTZsB/vIpkgag
+         +rehFUILVBtg3bWXOw/vo8ygTXwbsDzm681ntfbzW/RM/jqoGn/bknQDUoLBdO2vIy3N
+         pl9A2sUG7/c9iyptCzetpfYjCGHG1sOvt19oh2nhhDVcZL7YK2zfTfCFq+KaS3ugWlFW
+         27jvAHPzYKH6w5ssWGhkcTIoDaQMVs8f9/175235f7xy9JoavLNSjNX7Vh01cDBmexh9
+         EKw1dPUezQAU5scdLALzPVT14q+uXDXfBlfXeTQFtdHhxHdlvOYeRJvlkGK5bjeBztWi
+         Et+w==
+X-Gm-Message-State: AOJu0YyZ4tAfnaAFyP0JTphBi1y9GUE4/yvIWYbSi7yk+PoiTk+2xM6t
+	bq9/LWPJJR+vz6qfDA+M4n7c2/VrebmJoUbLIe9fT5pZoSqWD8P4BcOe7fVSS84fkq+UYY5IoWM
+	7ATpEMy9dH6B7gqvP2GXE7lN9y0vo+f6aGBJz
+X-Google-Smtp-Source: AGHT+IEZAAPF64V9fhwb83mtq8fxx2bw72Ju+9SxlvorBwmV39Npwwn5YZ+MgV2PpJ35mYdpTaZi8VMsqxbbJHCx/cY=
+X-Received: by 2002:a0c:aa1a:0:b0:685:edc7:62c0 with SMTP id
+ d26-20020a0caa1a000000b00685edc762c0mr285138qvb.30.1706937591794; Fri, 02 Feb
+ 2024 21:19:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240112055251.36101-1-vannapurve@google.com> <20240112055251.36101-6-vannapurve@google.com>
+ <6709a57c-48a0-4ddd-b64e-a1e34ae2b763@intel.com> <CAGtprH_ANUVU+Dh1KOq0vpT7BGbCEvD2ab9B=sxjzHYsKxFGeA@mail.gmail.com>
+ <1d9d3372-825a-417a-8811-ffa501c83936@linux.microsoft.com>
+ <CAGtprH8r0kYYqGoumsVeZq42cX8CN3cchkuRYhQULqtb-1nKww@mail.gmail.com>
+ <3313c886-e964-48c3-8277-b47cb1955de9@linux.microsoft.com>
+ <CAGtprH9X0Yz_Z+QaYcLpLNXtY_Ye68aqvx-G1pOWZxv9SiRRoQ@mail.gmail.com> <746d2448-3adc-467b-a39c-5585f33bd740@intel.com>
+In-Reply-To: <746d2448-3adc-467b-a39c-5585f33bd740@intel.com>
+From: Vishal Annapurve <vannapurve@google.com>
+Date: Sat, 3 Feb 2024 10:49:38 +0530
+Message-ID: <CAGtprH8X96enAOmgu60q0N6L=NEB29PBu_0yEuS8u1U=C4VO3g@mail.gmail.com>
+Subject: Re: [RFC V1 5/5] x86: CVMs: Ensure that memory conversions happen at
+ 2M alignment
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>, x86@kernel.org, 
+	linux-kernel@vger.kernel.org, pbonzini@redhat.com, rientjes@google.com, 
+	seanjc@google.com, erdemaktas@google.com, ackerleytng@google.com, 
+	jxgao@google.com, sagis@google.com, oupton@google.com, peterx@redhat.com, 
+	vkuznets@redhat.com, dmatlack@google.com, pgonda@google.com, 
+	michael.roth@amd.com, kirill@shutemov.name, thomas.lendacky@amd.com, 
+	dave.hansen@linux.intel.com, linux-coco@lists.linux.dev, 
+	chao.p.peng@linux.intel.com, isaku.yamahata@gmail.com, andrew.jones@linux.dev, 
+	corbet@lwn.net, hch@lst.de, m.szyprowski@samsung.com, rostedt@goodmis.org, 
+	iommu@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Commit 56e58d6c8a56 ("net: stmmac: Implement Safety Features in
-XGMAC core") checks and reports safety errors, but leaves the
-Data Path Parity Errors for each channel in DMA unhandled at all, lead to
-a storm of interrupt.
-Fix it by checking and clearing the DMA_DPP_Interrupt_Status register.
+On Fri, Feb 2, 2024 at 10:06=E2=80=AFPM Dave Hansen <dave.hansen@intel.com>=
+ wrote:
+>
+> On 2/2/24 08:22, Vishal Annapurve wrote:
+> >> If you must - focus on getting swiotlb conversions to happen at the de=
+sired
+> >> granularity but don't try to force every single conversion to be >4K.
+> > If any conversion within a guest happens at 4K granularity, then this
+> > will effectively cause non-hugepage aligned EPT/NPT entries. This
+> > series is trying to get all private and shared memory regions to be
+> > hugepage aligned to address the problem statement.
+>
+> Yeah, but the series is trying to do that by being awfully myopic at
+> this stage and without being _declared_ to be so myopic.
+>
 
-Fixes: 56e58d6c8a56 ("net: stmmac: Implement Safety Features in XGMAC core")
-Signed-off-by: Furong Xu <0x1207@gmail.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
----
-Changes in v4:
- - fix a typo name of DDPP bit, thanks Serge Semin
+Agreed. I was being overly optimistic when I mentioned following in
+the cover message:
+"** This series leaves out some of the conversion sites which might not
+be 2M aligned but should be easy to fix once the approach is finalized. **"
 
-Changes in v3:
- - code style fix, thanks Paolo Abeni
+> Take a look at all of the set_memory_decrypted() calls.  How many of
+> them even operate on the part of the guest address space rooted in the
+> memfd where splits matter?  They're not doing conversions.  They're just
+> setting up shared mappings in the page tables of gunk that was never
+> private in the first place.
 
-Changes in v2:
-  - explicit enable Data Path Parity Protection
-  - add new counters to stmmac_safety_stats
-  - add detailed log
----
- drivers/net/ethernet/stmicro/stmmac/common.h  |  1 +
- .../net/ethernet/stmicro/stmmac/dwxgmac2.h    |  3 +
- .../ethernet/stmicro/stmmac/dwxgmac2_core.c   | 57 ++++++++++++++++++-
- 3 files changed, 60 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
-index 721c1f8e892f..b4f60ab078d6 100644
---- a/drivers/net/ethernet/stmicro/stmmac/common.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/common.h
-@@ -216,6 +216,7 @@ struct stmmac_safety_stats {
- 	unsigned long mac_errors[32];
- 	unsigned long mtl_errors[32];
- 	unsigned long dma_errors[32];
-+	unsigned long dma_dpp_errors[32];
- };
- 
- /* Number of fields in Safety Stats */
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-index 207ff1799f2c..5c67a3f89f08 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-@@ -303,6 +303,8 @@
- #define XGMAC_RXCEIE			BIT(4)
- #define XGMAC_TXCEIE			BIT(0)
- #define XGMAC_MTL_ECC_INT_STATUS	0x000010cc
-+#define XGMAC_MTL_DPP_CONTROL		0x000010e0
-+#define XGMAC_DPP_DISABLE		BIT(0)
- #define XGMAC_MTL_TXQ_OPMODE(x)		(0x00001100 + (0x80 * (x)))
- #define XGMAC_TQS			GENMASK(25, 16)
- #define XGMAC_TQS_SHIFT			16
-@@ -385,6 +387,7 @@
- #define XGMAC_DCEIE			BIT(1)
- #define XGMAC_TCEIE			BIT(0)
- #define XGMAC_DMA_ECC_INT_STATUS	0x0000306c
-+#define XGMAC_DMA_DPP_INT_STATUS	0x00003074
- #define XGMAC_DMA_CH_CONTROL(x)		(0x00003100 + (0x80 * (x)))
- #define XGMAC_SPH			BIT(24)
- #define XGMAC_PBLx8			BIT(16)
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-index eb48211d9b0e..04d7c4dc2e35 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-@@ -830,6 +830,43 @@ static const struct dwxgmac3_error_desc dwxgmac3_dma_errors[32]= {
- 	{ false, "UNKNOWN", "Unknown Error" }, /* 31 */
- };
- 
-+static const char * const dpp_rx_err = "Read Rx Descriptor Parity checker Error";
-+static const char * const dpp_tx_err = "Read Tx Descriptor Parity checker Error";
-+static const struct dwxgmac3_error_desc dwxgmac3_dma_dpp_errors[32] = {
-+	{ true, "TDPES0", dpp_tx_err },
-+	{ true, "TDPES1", dpp_tx_err },
-+	{ true, "TDPES2", dpp_tx_err },
-+	{ true, "TDPES3", dpp_tx_err },
-+	{ true, "TDPES4", dpp_tx_err },
-+	{ true, "TDPES5", dpp_tx_err },
-+	{ true, "TDPES6", dpp_tx_err },
-+	{ true, "TDPES7", dpp_tx_err },
-+	{ true, "TDPES8", dpp_tx_err },
-+	{ true, "TDPES9", dpp_tx_err },
-+	{ true, "TDPES10", dpp_tx_err },
-+	{ true, "TDPES11", dpp_tx_err },
-+	{ true, "TDPES12", dpp_tx_err },
-+	{ true, "TDPES13", dpp_tx_err },
-+	{ true, "TDPES14", dpp_tx_err },
-+	{ true, "TDPES15", dpp_tx_err },
-+	{ true, "RDPES0", dpp_rx_err },
-+	{ true, "RDPES1", dpp_rx_err },
-+	{ true, "RDPES2", dpp_rx_err },
-+	{ true, "RDPES3", dpp_rx_err },
-+	{ true, "RDPES4", dpp_rx_err },
-+	{ true, "RDPES5", dpp_rx_err },
-+	{ true, "RDPES6", dpp_rx_err },
-+	{ true, "RDPES7", dpp_rx_err },
-+	{ true, "RDPES8", dpp_rx_err },
-+	{ true, "RDPES9", dpp_rx_err },
-+	{ true, "RDPES10", dpp_rx_err },
-+	{ true, "RDPES11", dpp_rx_err },
-+	{ true, "RDPES12", dpp_rx_err },
-+	{ true, "RDPES13", dpp_rx_err },
-+	{ true, "RDPES14", dpp_rx_err },
-+	{ true, "RDPES15", dpp_rx_err },
-+};
-+
- static void dwxgmac3_handle_dma_err(struct net_device *ndev,
- 				    void __iomem *ioaddr, bool correctable,
- 				    struct stmmac_safety_stats *stats)
-@@ -841,6 +878,13 @@ static void dwxgmac3_handle_dma_err(struct net_device *ndev,
- 
- 	dwxgmac3_log_error(ndev, value, correctable, "DMA",
- 			   dwxgmac3_dma_errors, STAT_OFF(dma_errors), stats);
-+
-+	value = readl(ioaddr + XGMAC_DMA_DPP_INT_STATUS);
-+	writel(value, ioaddr + XGMAC_DMA_DPP_INT_STATUS);
-+
-+	dwxgmac3_log_error(ndev, value, false, "DMA_DPP",
-+			   dwxgmac3_dma_dpp_errors,
-+			   STAT_OFF(dma_dpp_errors), stats);
- }
- 
- static int
-@@ -881,6 +925,12 @@ dwxgmac3_safety_feat_config(void __iomem *ioaddr, unsigned int asp,
- 	value |= XGMAC_TMOUTEN; /* FSM Timeout Feature */
- 	writel(value, ioaddr + XGMAC_MAC_FSM_CONTROL);
- 
-+	/* 5. Enable Data Path Parity Protection */
-+	value = readl(ioaddr + XGMAC_MTL_DPP_CONTROL);
-+	/* already enabled by default, explicit enable it again */
-+	value &= ~XGMAC_DPP_DISABLE;
-+	writel(value, ioaddr + XGMAC_MTL_DPP_CONTROL);
-+
- 	return 0;
- }
- 
-@@ -914,7 +964,11 @@ static int dwxgmac3_safety_feat_irq_status(struct net_device *ndev,
- 		ret |= !corr;
- 	}
- 
--	err = dma & (XGMAC_DEUIS | XGMAC_DECIS);
-+	/* DMA_DPP_Interrupt_Status is indicated by MCSIS bit in
-+	 * DMA_Safety_Interrupt_Status, so we handle DMA Data Path
-+	 * Parity Errors here
-+	 */
-+	err = dma & (XGMAC_DEUIS | XGMAC_DECIS | XGMAC_MCSIS);
- 	corr = dma & XGMAC_DECIS;
- 	if (err) {
- 		dwxgmac3_handle_dma_err(ndev, ioaddr, corr, stats);
-@@ -930,6 +984,7 @@ static const struct dwxgmac3_error {
- 	{ dwxgmac3_mac_errors },
- 	{ dwxgmac3_mtl_errors },
- 	{ dwxgmac3_dma_errors },
-+	{ dwxgmac3_dma_dpp_errors },
- };
- 
- static int dwxgmac3_safety_feat_dump(struct stmmac_safety_stats *stats,
--- 
-2.34.1
-
+Thinking it over again, yeah the conversions that are happening
+outside SWIOTLB should be impacting significantly less memory ranges.
+As Jeremi and you are suggesting, it would be a big step forward if
+memory conversions happening for just DMA requests are aligned to
+hugepage sizes.
 
