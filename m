@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-51085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE4F7848646
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 13:45:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A886848653
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 13:50:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3D841C20CE2
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 12:45:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C082B213BE
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 12:50:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAED05DF3E;
-	Sat,  3 Feb 2024 12:42:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA4764E1D2;
+	Sat,  3 Feb 2024 12:49:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rvV/mmdr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WRQov7XJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2C215EE8D;
-	Sat,  3 Feb 2024 12:42:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 129AC1AAD7;
+	Sat,  3 Feb 2024 12:49:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706964170; cv=none; b=O1qoS/21flLYU+tWkGcz7MgYS1FcdrT9grLDcoPmZmiTn7eV2xNeQDHWHOIFVU4GoAIgf8W7zGhzGnzQTMkRsPa/O6Q7tKF8WJ8HDVFafScZJpst48yfjzneQmvoiJZzoN5l2x10h1YZxGe3YFZGq6afMEQYzrSx25ip+vdCtv8=
+	t=1706964581; cv=none; b=Us9n6GOTFWiUsWDxbAPS9hpS+MACJrXwDp+BvhqQEr6mS22YrW4VpvgJf5LGk5tx6E98k2XYI614ORA9zdVEaNg/F9ozp3LJxy89I15yBEDl2wDhgehfcI1KqsmauufLszG29a0oyxGIo0pRmysEnxnlpDOLfXKm+LCemqt4yjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706964170; c=relaxed/simple;
-	bh=7oLPSmtkoQ6P6DMyuvMBZlynlRHiIMrkvLypxFHFXsM=;
+	s=arc-20240116; t=1706964581; c=relaxed/simple;
+	bh=6kjbl1g7BDMcRDmouRbEqBe7/mwlwpaki1999XL76Ro=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g+rkioOzAY6qEW2P4Wc9Rof8HuXb4HaxcuEy3+rytH5YlDPp/zcwSDbnkwZok7NIHyUVu54sWw8k+Osc0rmxNbFOrKIhzS/hU5YmcZQOTv7ryB25B3iJUWWZPIEmlvWezffIIm6ktDZNW3m3HBWaCTpHN46LEMfmENCQpMEhyFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rvV/mmdr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C621EC433C7;
-	Sat,  3 Feb 2024 12:42:47 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=JevQEGyQ8yTlWUvNw1Qw+OC1lmgJXglSST+SgWJFoC8zxEFHLbjWj5veTZ/f/g/hGdgtq8F+kLc1AT1dmNezTq/zfRYvwbNjh+LL89L7ij5j2DcZCbuzAjdPfXcANxZtXu1pa0oBHiZRYyaFdJz5kQ82G4GF1ihb0QdR+5nrEkw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WRQov7XJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A4C6C433F1;
+	Sat,  3 Feb 2024 12:49:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706964170;
-	bh=7oLPSmtkoQ6P6DMyuvMBZlynlRHiIMrkvLypxFHFXsM=;
+	s=k20201202; t=1706964580;
+	bh=6kjbl1g7BDMcRDmouRbEqBe7/mwlwpaki1999XL76Ro=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rvV/mmdrZrc9wOV8dJDmbjI+v5JeeO6rBVdVXumirmroXv4hKTscBEPvL7HchSltX
-	 lp4p0GqV1bh4NH7Rp6bK6CsJXHhpgjswWSpNTPolIQfsGZGp+B4pju3lvUpIN2VKmp
-	 drXF3ruTK6Q0jGJBWOy1cZ8D2GwSEjT+AwV2DhSez0D648OghGfBlLwdB4ix2R8sux
-	 ja9WIpoVkagl0k9CZHSBnih6MGkoDOjuJ7qgghImGYmihJci6ZEhYN9P6/9z65IYkO
-	 mEpmX7z2yDcrRloKEx0qq9BKoM+9mOe59P1u8aUt3+Hi052k18LE+m6UJ8wO9I4o/m
-	 nBn8KYblt7tuA==
-Date: Sat, 3 Feb 2024 20:29:46 +0800
+	b=WRQov7XJJaoO1pTdZYIANiPOhqu5OfpbYQjaxkhAssDFUdcEjK//Ayr0Zd3hgYElJ
+	 E4ran6/wk6VBGQnJZ58/uxbecM/YNLTY4daybqrZSKEoc0qC4rO0i0Voo5lQLwv9ro
+	 AGuCeNSOeXXIvVekI9F5PlxO+C960yMlWjx0syW6xnugsNM4rQsXpx/lwg6yZv3ard
+	 VA2n4uJAM3k0BM8LR/MG6baw5UBjdokk74RUVqot5cUL3pjpK6vqJQ4Sh1i+m9yL9n
+	 AuOGSF5lYGlt2hOeQEQ7k8FPcw11zKPk8U49UEyDpZuW8Sy+o9iuKDWskJl4Cms/Fh
+	 OnSQY66IPnyuQ==
+Date: Sat, 3 Feb 2024 20:36:42 +0800
 From: Jisheng Zhang <jszhang@kernel.org>
-To: Andre Przywara <andre.przywara@arm.com>
+To: Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>
 Cc: Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
 	Samuel Holland <samuel@sholland.org>,
+	Andre Przywara <andre.przywara@arm.com>,
 	Icenowy Zheng <uwu@icenowy.me>, devicetree@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
 	linux-kernel@vger.kernel.org
 Subject: Re: [PATCH 2/2] arm64: dts: allwinner: h616: Add Sipeed Longan SoM
  3H and Pi 3H board support
-Message-ID: <Zb4xui9QtKvilSZh@xhacker>
+Message-ID: <Zb4zWsfzgJkZa2KQ@xhacker>
 References: <20231228145647.1470-1-jszhang@kernel.org>
  <20231228145647.1470-3-jszhang@kernel.org>
- <20231229235543.7548cafa@minigeek.lan>
+ <2589997.Lt9SDvczpP@jernej-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,14 +65,19 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231229235543.7548cafa@minigeek.lan>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2589997.Lt9SDvczpP@jernej-laptop>
 
-On Fri, Dec 29, 2023 at 11:55:43PM +0000, Andre Przywara wrote:
-> On Thu, 28 Dec 2023 22:56:47 +0800
-> Jisheng Zhang <jszhang@kernel.org> wrote:
+On Tue, Jan 09, 2024 at 09:37:03PM +0100, Jernej Škrabec wrote:
+> Hi Jisheng,
+
+Hi Jernej,
+
 > 
-> Hi,
+> Andre gave you thorough review already, so just one additional comment
+> below.
 > 
+> Dne četrtek, 28. december 2023 ob 15:56:47 CET je Jisheng Zhang napisal(a):
 > > The Sipeed Longan SoM 3H is a system on module based on the Allwinner
 > > H618 SoC. The SoM features:
 > > 
@@ -126,301 +131,39 @@ On Fri, Dec 29, 2023 at 11:55:43PM +0000, Andre Przywara wrote:
 > > + */
 > > +
 > > +/dts-v1/;
-> 
-> I don't see how the SoM could be used on its own, without a hosting
-> board. So we don't need the dts version tag in the .dtsi, that would
-> just be double when we are going to compile any actual .dtb.
-> 
 > > +
 > > +#include "sun50i-h616.dtsi"
 > > +
 > > +/ {
 > > +	model = "Sipeed Longan Module 3H";
 > > +	compatible = "sipeed,longan-module-3h", "allwinner,sun50i-h618";
-> 
-> Same here, any model or compatible string would only be overwritten by
-> the board versions, so you don't need those two in the SoM .dtsi.
-> Compare the SoPine and BTT CB1 .dtsi files.
-> 
 > > +};
 > > +
 > > +&mmc2 {
 > > +	pinctrl-names = "default";
 > > +	pinctrl-0 = <&mmc2_pins>;
-> 
-> Can you please add the DS pin here? At the moment the sunxi Linux
-> driver doesn't support HS-400, but that can a) change and b) doesn't
-> affect the DT anyway, since that describes the hardware. The connection
-> is definitely there, according to the schematics.
-
-Hi Andre,
-
-Thank you so much for the review and comments, could you please review?
-Except DS pin, other comments are adopted and updated in v2.
-DS pin is already there, IIUC, PC0 is emmc DS pin
-
-Thanks
-
-> 
 > > +	vmmc-supply = <&reg_dldo1>;
 > > +	vqmmc-supply = <&reg_aldo1>;
 > > +	bus-width = <8>;
 > > +	non-removable;
 > > +	cap-mmc-hw-reset;
 > > +	mmc-ddr-1_8v;
+> 
+> I think above is superfluous if hs200 is also defined.
+
+I read the mmc code again, IMHO, mmc-ddr-1_8v and mmc-hs200-1_8v
+are for different caps, the former is for MMC_CAP_1_8V_DDR and
+the later is for MMC_CAP2_HS200_1_8V_SDR, I must admit that
+mmc-hs200-1_8v does imply mmc-ddr-1_8v in normal host controllers
+but they are different, and I found other dts files also contain
+both, so I kept this as is in v2.
+
+Thanks
+
+> 
 > > +	mmc-hs200-1_8v;
 > > +	status = "okay";
 > > +};
 > > +
-> > +&r_i2c {
-> > +	status = "okay";
-> > +
-> > +	axp313: pmic@36 {
-> > +		compatible = "x-powers,axp313a";
-> 
-> According to the bindings you need:
-> 
-> 	interrupt-controller;
-> 	#interrupt-cells = <1>;
-> 
-> Even without the IRQ line connected. dt-validate complains about that.
-> 
-> Actually, do you know of any reason why it is not connected? I see it on
-> the SoM pins, is the idea that any *board* could dedicate a GPIO pin for
-> it, if needed?
-> 
-> > +		reg = <0x36>;
-> > +
-> > +		regulators {
-> > +			/* Supplies VCC-PLL, so needs to be always on. */
-> > +			reg_aldo1: aldo1 {
-> > +				regulator-always-on;
-> > +				regulator-min-microvolt = <1800000>;
-> > +				regulator-max-microvolt = <1800000>;
-> > +				regulator-name = "vcc1v8";
-> 
-> Can you please use "vcc-1v8-pll" instead? Then you don't need the
-> comment.
-> 
-> > +			};
-> > +
-> > +			/* Supplies VCC-IO, so needs to be always on. */
-> > +			reg_dldo1: dldo1 {
-> > +				regulator-always-on;
-> > +				regulator-min-microvolt = <3300000>;
-> > +				regulator-max-microvolt = <3300000>;
-> > +				regulator-name = "vcc3v3";
-> 
-> Same here, "vcc-3v3-io" is the name we used lately, to avoid the
-> comment.
-> 
-> > +			};
-> > +
-> > +			reg_dcdc1: dcdc1 {
-> > +				regulator-always-on;
-> > +				regulator-min-microvolt = <810000>;
-> > +				regulator-max-microvolt = <990000>;
-> > +				regulator-name = "vdd-gpu-sys";
-> > +			};
-> > +
-> > +			reg_dcdc2: dcdc2 {
-> > +				regulator-always-on;
-> > +				regulator-min-microvolt = <810000>;
-> > +				regulator-max-microvolt = <1100000>;
-> > +				regulator-name = "vdd-cpu";
-> > +			};
-> > +
-> > +			reg_dcdc3: dcdc3 {
-> > +				regulator-always-on;
-> > +				regulator-min-microvolt = <1100000>;
-> > +				regulator-max-microvolt = <1100000>;
-> > +				regulator-name = "vdd-dram";
-> > +			};
-> > +		};
-> > +	};
-> > +};
-> > +
-> > +&pio {
-> > +	vcc-pc-supply = <&reg_dldo1>;
-> > +	vcc-pf-supply = <&reg_dldo1>;
-> > +	vcc-pg-supply = <&reg_aldo1>;
-> > +	vcc-ph-supply = <&reg_dldo1>;
-> > +	vcc-pi-supply = <&reg_dldo1>;
-> > +};
-> > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h618-longanpi-3h.dts b/arch/arm64/boot/dts/allwinner/sun50i-h618-longanpi-3h.dts
-> > new file mode 100644
-> > index 000000000000..245583881549
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h618-longanpi-3h.dts
-> > @@ -0,0 +1,133 @@
-> > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> > +/*
-> > + * Copyright (C) Jisheng Zhang <jszhang@kernel.org>
-> > + */
-> > +
-> > +/dts-v1/;
-> > +
-> > +#include "sun50i-h618-longan-module-3h.dtsi"
-> > +
-> > +#include <dt-bindings/gpio/gpio.h>
-> > +#include <dt-bindings/interrupt-controller/arm-gic.h>
-> > +#include <dt-bindings/leds/common.h>
-> > +
-> > +/ {
-> > +	model = "Sipeed Longan Pi 3H";
-> > +	compatible = "sipeed,longan-pi-3h", "sipeed,longan-module-3h", "allwinner,sun50i-h618";
-> > +
-> > +	aliases {
-> > +		ethernet0 = &emac0;
-> > +		serial0 = &uart0;
-> > +	};
-> > +
-> > +	chosen {
-> > +		stdout-path = "serial0:115200n8";
-> > +	};
-> > +
-> > +	leds {
-> > +		compatible = "gpio-leds";
-> > +
-> > +		led-0 {
-> > +			color = <LED_COLOR_ID_ORANGE>;
-> > +			function = LED_FUNCTION_INDICATOR;
-> > +			function-enumerator = <0>;
-> > +			gpios = <&pio 6 2 GPIO_ACTIVE_LOW>; /* PG2 */
-> > +		};
-> > +
-> > +		led-1 {
-> > +			color = <LED_COLOR_ID_ORANGE>;
-> > +			function = LED_FUNCTION_INDICATOR;
-> > +			function-enumerator = <1>;
-> > +			gpios = <&pio 6 4 GPIO_ACTIVE_LOW>; /* PG4 */
-> > +		};
-> > +	};
-> > +
-> > +	reg_vcc5v: vcc5v {
-> > +		/* board wide 5V supply directly from the USB-C socket */
-> > +		compatible = "regulator-fixed";
-> > +		regulator-name = "vcc-5v";
-> > +		regulator-min-microvolt = <5000000>;
-> > +		regulator-max-microvolt = <5000000>;
-> > +		regulator-always-on;
-> > +	};
-> 
-> According to the schematic, there is a discrete 5V->3.3V regulator, can
-> you please describe this here as well?
-> 
-> > +};
-> > +
-> > +&axp313 {
-> > +	vin1-supply = <&reg_vcc5v>;
-> > +	vin2-supply = <&reg_vcc5v>;
-> > +	vin3-supply = <&reg_vcc5v>;
-> > +};
-> > +
-> > +&ehci1 {
-> > +	status = "okay";
-> > +};
-> > +
-> > +&ohci1 {
-> > +	status = "okay";
-> > +};
-> > +
-> > +&ehci2 {
-> > +	status = "okay";
-> > +};
-> > +
-> > +&ohci2 {
-> > +	status = "okay";
-> > +};
-> > +
-> 
-> Maybe worth adding a comment here that there is a USB WiFi chip
-> connected to those pins.
-> 
-> > +&ehci3 {
-> > +	status = "okay";
-> > +};
-> > +
-> > +&ohci3 {
-> > +	status = "okay";
-> > +};
-> > +
-> > +&emac0 {
-> > +	pinctrl-names = "default";
-> > +	pinctrl-0 = <&ext_rgmii_pins>;
-> > +	phy-mode = "rgmii";
-> > +	phy-handle = <&ext_rgmii_phy>;
-> > +	allwinner,rx-delay-ps = <3100>;
-> > +	allwinner,tx-delay-ps = <700>;
-> > +	phy-supply = <&reg_dldo1>;
-> 
-> If I get the schematic correctly, the PHY is powered from the discrete
-> 3.3V regulator? In fact, the 3V3-DLDO-OUT/1V8-ALDO-OUT pins on the SoM
-> do not seem to be connected, so anything using 3.3V or 1.8V on the
-> board needs to be fed from this regulator, and everything on the SoM is
-> supplied by the AXP?
-> 
-> > +	status = "okay";
-> > +};
-> > +
-> > +&mdio0 {
-> > +	ext_rgmii_phy: ethernet-phy@1 {
-> > +		compatible = "ethernet-phy-ieee802.3-c22";
-> > +		reg = <1>;
-> > +	};
-> > +};
-> > +
-> > +&mmc0 {
-> > +	bus-width = <4>;
-> > +	cd-gpios = <&pio 5 6 GPIO_ACTIVE_HIGH>;	/* PF6 */
-> > +	vmmc-supply = <&reg_dldo1>;
-> 
-> According to the schematic, the SD card is supplied by the discrete
-> 3.3V regulator on the board.
-> 
-> > +	status = "okay";
-> > +};
-> > +
-> > +&uart0 {
-> > +	status = "okay";
-> > +};
-> > +
-> > +&usbotg {
-> > +	/*
-> > +	 * PHY0 pins are connected to a USB-C socket, but a role switch
-> > +	 * is not implemented: both CC pins are pulled to GND.
-> > +	 * The VBUS pins power the device, so a fixed peripheral mode
-> > +	 * is the best choice.
-> > +	 * The board can be powered via GPIOs, in this case port0 *can*
-> > +	 * act as a host (with a cable/adapter ignoring CC), as VBUS is
-> > +	 * then provided by the GPIOs. Any user of this setup would
-> > +	 * need to adjust the DT accordingly: dr_mode set to "host",
-> > +	 * enabling OHCI0 and EHCI0.
-> > +	 */
-> > +	dr_mode = "peripheral";
-> > +	status = "okay";
-> > +};
-> > +
-> > +&usbphy {
-> > +	usb1_vbus-supply = <&reg_vcc5v>;
-> 
-> The same seems to be true for USB2 as well, and the WiFi chip on USB3 is
-> powered by the discrete 3.3V regulator. But I think we don't need these
-> properties at all if it's directly connected to the input and so always
-> powered. Or maybe we should do this anyway, and be it to make it clear
-> where the bus power is coming from?
-> 
-> Cheers,
-> Andre
-> 
-> P.S. I saw some U-Boot patches on some github. Most of them are
-> merged, but feel free to post the DT (same ones as here) and the
-> defconfig to the U-Boot list as well. You can use "make savedefconfig"
-> when you have configured the board, this will create a file "defconfig"
-> in the build directory that contains the minimal items, this can be
-> directly used as a defconfig.
-> 
-> > +	status = "okay";
-> > +};
-> 
+ 
 
