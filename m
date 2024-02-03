@@ -1,171 +1,169 @@
-Return-Path: <linux-kernel+bounces-51019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E73584851B
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 11:06:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AD89848521
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 11:12:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15C43286486
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 10:06:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF3311F24915
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Feb 2024 10:12:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C8E44F1E0;
-	Sat,  3 Feb 2024 10:06:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E73834CB41;
+	Sat,  3 Feb 2024 10:12:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O5m0WFvI"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="jUTnY4su"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5F0933994;
-	Sat,  3 Feb 2024 10:06:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA4A15D72E;
+	Sat,  3 Feb 2024 10:12:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706954773; cv=none; b=pum1k/0DaTAYvl5agpaoGZCNWzgQETIX5dBkm/UofwovEaKpXJjlY9RZx4kHWpLDXNfNToxFUTACsDaw/U/Ve9RlHKxTm7u5SQiZ/O2vG7V2o5cYbNrl4Z/6v4rfvjOl2fLSd/Yfi6kaeimg+D2Ti8SgpK7Se4y/+G4oKejj0Dg=
+	t=1706955164; cv=none; b=He6pLdDwcw+YTBRjHoHh7FWcUUiTBUnlF4ZBR/tC1z75TwT/FmHBOYg06pHeXKmkvmqQo6yKmJeYAqkDgh3rYOWoTiO/GAzol2F+eiLrd6VBg1MDSroW62kp0ncSiY1vqJygH3ha0NrFc924oMIDT7FgV3e5oPtW+F26TB1SknA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706954773; c=relaxed/simple;
-	bh=oPAEzF8CDVOYqn3t/t5uf+dZKZLWv+Oe87OeIfHZ+HY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AWz2CfzE2/kfB1/dp5ku74NQKhyr4O+6IZTnvcQD67YK7Weha+rRq6Kc+o/8KKN/6kFbTmkbPeMYIFtIzgNHMNTPvx/Ng6rrXnLjjboePK133bIMP6vJ63f4t/Y3beGVcYLiMg0ds7zJCnS3fkoG2R7ZEV3DrgY6XtWj7Cdn/RM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O5m0WFvI; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a35b32bd055so365012066b.2;
-        Sat, 03 Feb 2024 02:06:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706954765; x=1707559565; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=73qJzyiTI8VZIPgsa6gzzVGbxNV07sdBPIz48dmfQNw=;
-        b=O5m0WFvIVOtC7PImDgi9sO/4Wn84as6p+uXhTqrf8dXJf2gNjv5oysId2I90Ps2367
-         ihL8qQRKQeyM1xWHm46RdOUwy/aVTv+6m9tE/v++VXhp9LmKJ1/uRqpbBWIMS1ttO3Jv
-         rZlQIieQjAKLaAij1MB6VaI4O/ilI9wvBtH2Dy6k/Pwbl4uetCD8b/1NvyaTido/SYQU
-         Mdpx5pP3/xDn0oKfe3NPgnFiJZXPXjH0kWw2rUQopgDXQNv942l4ZZItJRcQOW1DrhJW
-         00TRYZn5//ha0y/8oZh4iHMPOquOiH67Ne30cA0SfDpNjlKA9827hpNmI1zi5BSAlfco
-         5mgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706954765; x=1707559565;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=73qJzyiTI8VZIPgsa6gzzVGbxNV07sdBPIz48dmfQNw=;
-        b=PKmitJZo7s0O7zsHaaouWhjMCLMJnob0q8I3hG60cVg6zFklkeRoUyFSH5D2q+rFtf
-         fDNuW5Qa0oKWP2FDw+nH9jq7OYGLigNXwkffMXI0vwazjpzbWhlmyuF4wfU3oaUh2FhI
-         qzwlgm1Z8dhvcccWvLTOeLbnc6n2U2RtLqRKrtdCt2HBojCYYWHfq/1CViTUMuhp5wou
-         usFhFB9qzMz516ow99hjsKac+p5QW8e+BW9Yk9Db7erlmw9nHcsNTcPtykwZHznp4j31
-         zbolL/LDz3fL2HD7vv0h+dPuMLAtM4QbZa0IqONm8MQlZtAeQCPkqJsMFCEpCDxn+jT7
-         GVZQ==
-X-Gm-Message-State: AOJu0Yy3w1wdxLTibMHcUXvtiNOO01MtCAm5DCdzCUGggqTTjjP5KscS
-	CzXBs39vyuixwOSwSXUaLDYAFrfC4yNISgdFPt2Fns5r0CApYvT0
-X-Google-Smtp-Source: AGHT+IHSe2XBq1Y07e+IOL79Dj/DZM03rpIk5JetATiVqzXwcy3kyXwBAO9ASVa3YUwkG3hU3nHdqQ==
-X-Received: by 2002:a17:906:43:b0:a35:becf:4320 with SMTP id 3-20020a170906004300b00a35becf4320mr3141355ejg.29.1706954764746;
-        Sat, 03 Feb 2024 02:06:04 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWS0xGpvC/3SrRPsL4T01FfPenSRi8haKAWV3n7bK7tAIKX4ZdBWlDEuLUJDf9uq1PnkNzcUgoWz4EMC4KbH2qKvmt8BtKiSA0IxnzOx69nS/isYtG56oCbJITR906hy1VWi4dqaTrdc/xmVhUIKckOSVKgqlxIOlzQa4oXO3X7V3WfHCvk1LD68MJIzs9/WfH75g7XU6OnboaTeB+bE4Mfqw==
-Received: from ?IPV6:2a02:8389:41cf:e200:62e5:c423:15b3:7608? (2a02-8389-41cf-e200-62e5-c423-15b3-7608.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:62e5:c423:15b3:7608])
-        by smtp.gmail.com with ESMTPSA id l8-20020a1709061c4800b00a372b8ac53fsm1029668ejg.169.2024.02.03.02.06.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 03 Feb 2024 02:06:04 -0800 (PST)
-Message-ID: <b789eb01-5b5d-4513-88d2-1f14e95969d9@gmail.com>
-Date: Sat, 3 Feb 2024 11:06:02 +0100
+	s=arc-20240116; t=1706955164; c=relaxed/simple;
+	bh=DvXqZtbYFVinLivL3K4A/ClltCGxOW4cow1fDLrjL9A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HCEHmCdeIoAKFsMF4yDZr8L8Bmn/NIAf5zoiqbxlqrcB7Qb+L4oQkxll2ZJ2VkevjZUmzLfHoTTuuamGmGvuxDFjoH6PaEL50yMGh4OyPqc9nKi37Zfz2kXHVqRrNfzeHb2WGoRDMQ0alXlDUcXXJeUyKnKlZ3RvnhOk8WWWTB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=jUTnY4su; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9402BC433F1;
+	Sat,  3 Feb 2024 10:12:42 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="jUTnY4su"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1706955161;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Fyk47rv6PoXblVb+58I9Tj/qLrH+SfbKgfIIMGJ0GzE=;
+	b=jUTnY4su1U7l4f/7BLAhdUi1vD/Oo6HHZp5XMY5o3SvJ0sasDgJTMby5wxjTzpIsXSjRbt
+	zMYNSdoHnQaFRj5S54sERYGFkowrbnduWTcpq7o8vrE2BErJMTjfKmTYZ8NKQQk8yRi941
+	lIjlYerzkuq0HNN8mnPkQD1pz1IAi4M=
+Received: 
+	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id be5d1e7e (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Sat, 3 Feb 2024 10:12:40 +0000 (UTC)
+Date: Sat, 3 Feb 2024 11:12:37 +0100
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: "Reshetova, Elena" <elena.reshetova@intel.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	"H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	"Nakajima, Jun" <jun.nakajima@intel.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	"Kalra, Ashish" <ashish.kalra@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] x86/random: Retry on RDSEED failure
+Message-ID: <Zb4RlTzq_LV7AzsH@zx2c4.com>
+References: <CAHmME9oJvbZgT4yT9Vydc2ZQVSo3Ea65G5aVK7gFxphkV00BnQ@mail.gmail.com>
+ <20240131140756.GB2356784@mit.edu>
+ <Zbpc8tppxuKr-hnN@zx2c4.com>
+ <20240131171042.GA2371371@mit.edu>
+ <DM8PR11MB5750C7D16DC566CD1329D5A5E77C2@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <CAHmME9q-eUXnXnpaDu0VOQemOYysst7SaJ-=b8-vCFP9h50Szg@mail.gmail.com>
+ <20240201045710.GD2356784@mit.edu>
+ <CAHmME9oqM2a766dBK22-yKr8=2-icg=UkQzmBOF8G5Zh_Y9E9w@mail.gmail.com>
+ <DM8PR11MB57505F657A8F08E15DC34673E7422@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <20240202153927.GA119530@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] iio: humidity: hdc3020: add threshold events support
-Content-Language: en-US
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, dima.fedrau@gmail.com
-Cc: 579lpy@gmail.com, jic23@kernel.org, lars@metafoo.de,
- linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240203090530.53374-1-dima.fedrau@gmail.com>
- <236dc9db-8525-413e-a77b-54df198c86f5@wanadoo.fr>
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-In-Reply-To: <236dc9db-8525-413e-a77b-54df198c86f5@wanadoo.fr>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240202153927.GA119530@mit.edu>
 
-On 03.02.24 10:58, Christophe JAILLET wrote:
-> Le 03/02/2024 à 10:05, Dimitri Fedrau a écrit :
->> Add threshold events support for temperature and relative humidity. To
->> enable them the higher and lower threshold registers must be programmed
->> and the higher threshold must be greater then or equal to the lower
->> threshold. Otherwise the event is disabled. Invalid hysteresis values
->> are ignored by the device. There is no further configuration possible.
->>
->> Tested by setting thresholds/hysteresis and turning the heater on/off.
->> Used iio_event_monitor in tools/iio to catch events while constantly
->> displaying temperature and humidity values.
->> Threshold and hysteresis values are cached in the driver, used i2c-tools
->> to read the threshold and hysteresis values from the device and make
->> sure cached values are consistent to values written to the device.
->>
->> Based on Fix:
->> a69eeaad093d "iio: humidity: hdc3020: fix temperature offset" in branch
->> fixes-togreg
->>
->> Signed-off-by: Dimitri Fedrau
->> <dima.fedrau-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
->> ---
->>   drivers/iio/humidity/hdc3020.c | 339 +++++++++++++++++++++++++++++++++
->>   1 file changed, 339 insertions(+)
+Hi Ted, Kirill,
 
-..
-
->> +    guard(mutex)(&data->lock);
->> +    switch (chan->type) {
->> +    case IIO_TEMP:
->> +        /*
->> +         * Store truncated temperature threshold into 9 LSBs while
->> +         * keeping the old humidity threshold in the 7 MSBs.
->> +         */
->> +        val = (((val + 45) * 65535 / 175) >> HDC3020_THRESH_TEMP_SHIFT);
+On Fri, Feb 02, 2024 at 10:39:27AM -0500, Theodore Ts'o wrote:
+> On Fri, Feb 02, 2024 at 07:25:42AM +0000, Reshetova, Elena wrote:
+> > This is a great summary of options, thank you Jason!
+> > My proposal would be to wait on result of our internal investigation 
+> > before proceeding to choose the approach. 
 > 
-> Why 175?
-> If the span is -40/+120, I guess it should be 160 and if it is -45/+120,
-> 165. No?
+> I'm happy for the option "Do nothing for now", but if we do want to do
+> something in the absence of more detailed information, I'd suggest
+> doing something simple for first, on the theory that it doesn't make
+> things worse, and we can always do something more complicated if it
+> turns out to be needed.
 > 
-> Maybe something like:
->   #define MIN_TEMP -45 (or -40)
->   #define MAX_TEMP 120
-> in order to avoid hard coded constant?
+> In that vein, my suggestion is:
 > 
+> > > Solution B) BUG_ON(is_early_boot && is_coco_system) in the RDRAND
+> > > failure path (> 10 retries).
+> > > 
+> > > This is slightly less simple than A, because we have to plumb
+> > > CoCo-detection through to the RDRAND helper. [Side note: I feel
+> > > ridiculous typing 'CoCo'.] Systems-wise, I don't see drawbacks.
+> > > RNG-wise, the drawback is that this doesn't help deal with secure
+> > > reseeding later in time, which is a RNG property that we otherwise
+> > > enjoy.
+> 
+> If there isn't a global variable we can test to see if Confidential
+> Compute is enabled, I suspect we should just add one.  I would assume
+> that /dev/random isn't the only place where we might need to do
+> whether Confidential Compute is enabled.
+> 
+> So I don't think plumbing CC into the /dev/random code, and since we
+> are only doing this in early boot, I wouldn't put it in the RDRAND
+> helper, but rather in the caller of the RDRAND helper that gets used
+> in the early boot path.
 
-the 45 and 175 values come from the conversion formula provided in the
-datasheet (page 13), even though the sensor range is from –40°C to 125°C.
+Yea, actually, I had a pretty similar idea for something like that
+that's very non-invasive, where none of this even touches the RDRAND
+core code, much less random.c. Specifically, we consider "adding some
+extra RDRAND to the pool" like any other driver that wants to add some
+of its own seeds to the pool, with add_device_randomness(), a call that
+lives in various driver code, doesn't influence any entropy readiness
+aspects of random.c, and can safely be sprinkled in any device or
+platform driver.
 
->> +        val &= HDC3020_THRESH_TEMP_MASK;
->> +        val |= (*thresh & HDC3020_THRESH_HUM_MASK);
->> +        break;
->> +    case IIO_HUMIDITYRELATIVE:
->> +        /*
->> +         * Store truncated humidity threshold into 7 MSBs while
->> +         * keeping the old temperature threshold in the 9 LSBs.
->> +         */
->> +        val = ((val * 65535 / 100) & HDC3020_THRESH_HUM_MASK);
->> +        val |= (*thresh & HDC3020_THRESH_TEMP_MASK);
->> +        break;
->> +    default:
->> +        return -EOPNOTSUPP;
->> +    }
->> +
->> +    put_unaligned_be16(val, &buf[2]);
->> +    buf[4] = crc8(hdc3020_crc8_table, buf + 2, 2, CRC8_INIT_VALUE);
->> +    ret = hdc3020_write_bytes(data, buf, 5);
->> +    if (ret)
->> +        return ret;
->> +
->> +    /* Update threshold */
->> +    *thresh = val;
->> +
->> +    return 0;
->> +}
-> 
-> CJ
-> 
+Specifically what I'm thinking about is something like:
 
-Best regards,
-Javier Carrasco
+void coco_main_boottime_init_function_somewhere_deep_in_arch_code(void)
+{
+  // [...]
+  // bring up primary CoCo nuts
+  // [...]
+
+  /* CoCo requires an explicit RDRAND seed, because the host can make the
+   * rest of the system deterministic.
+   */
+  unsigned long seed[32 / sizeof(long)];
+  size_t i, longs;
+  for (i = 0; i < ARRAY_SIZE(seed); i += longs) {
+    longs = arch_get_random_longs(&seed[i], ARRAY_SIZE(seed) - i);
+    /* If RDRAND is being DoS'd, panic, because we can't ensure
+     * confidentiality.
+     */
+    BUG_ON(!longs);
+  }
+  add_device_randomness(seed, sizeof(seed));
+  memzero_explicit(seed, sizeof(seed));
+
+  // [...]
+  // do other CoCo things
+  // [...]
+}
+
+I would have no objection to the CoCo people adding something like this
+and would give it my Ack, but more importantly, my Ack for that doesn't
+even matter, because add_device_randomness() is pretty innocuous.
+
+So Kirill, if nobody else here objects to that approach, and you want to
+implement it in some super minimal way like that, that would be fine
+with me. Or maybe we want to wait for that internal inquiry at Intel to
+return some answers first. But either way, this might be an easy
+approach that doesn't add too much complexity.
+
+Jason
 
