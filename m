@@ -1,56 +1,46 @@
-Return-Path: <linux-kernel+bounces-51529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0BFB848C35
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 09:35:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A62D848C34
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 09:35:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48A28B244AC
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 08:35:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB7531F2439E
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 08:35:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 493B114296;
-	Sun,  4 Feb 2024 08:35:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LChvhoaI"
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D5EE1428E;
+	Sun,  4 Feb 2024 08:34:58 +0000 (UTC)
+Received: from mail-m155101.qiye.163.com (mail-m155101.qiye.163.com [101.71.155.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51C011427A
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 08:35:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38BF714277
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 08:34:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=101.71.155.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707035733; cv=none; b=EZ5IdQApmjTifnQGsVAzME++N2eQ5ETon4lnUDvnnx4tqPnX9wnRQ/gVH6Mk8vxpm4XFShXp/jPBfdpioJAzCS72cNkVz2UBqhTsjQ0gubwIR5bKs8njyysNY+GgUL0KRhA/NkDGwhBF+Lu8LUaNUb+7C+4yvDyQClwfSZvO/Js=
+	t=1707035697; cv=none; b=p2NboSnbXsXFp7jNSu/iJptCihFfjvR+KwAh7w6S/tFgWx/yBfKkCCACpvOWMWSdY9XIijnDm0TQ3lGqn2KYZYYtZHp17jWngFIxU5bkvTx3S2btKVnMMe2MBoFXbgev8w2/pRB2F8NXdD/L8po+C2swjxZBELOoOYXD9K/HzEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707035733; c=relaxed/simple;
-	bh=MCPeAivxQ0qxlpWbWJvDut4U8iutpFpR6TzSF2LDF1s=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DK0frTV7udZBItmUUeHibRGIfRX9t49OmQgQbmU0jfuEWvuymkz/EficcmukCh0wh6KL0ogIUDG5GCKRtVrlN4f8FDrVSY+voCMheK9Nythd7i7EAeIZLrTJa3nD1fa95hjARDwf+UfE1J4+mvKfBL6rhybu1r+z057a7eKrVE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LChvhoaI; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707035727;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=Pbt84SQ0eMAct0yO+KuRCNRVPEgcExEkWU6nZFC8ea8=;
-	b=LChvhoaIhcZ6/hsqUPJEAUZUHV/gRdrP42CjAcuvwiYvTOsVaLLc6efBOMJk+LpmTog1wQ
-	pOm5xY1EOmu42MeHI95DQcyqYCQ588RUrZQD/l1Yvj+HkWCihFqZ9KntIDAlmJJ640OYSR
-	iaAGKZn+vdSF+CHtaOX71CxoxmjGVKU=
-From: chengming.zhou@linux.dev
-To: hannes@cmpxchg.org,
-	yosryahmed@google.com,
-	nphamcs@gmail.com,
-	akpm@linux-foundation.org
-Cc: linux-mm@kvack.org,
+	s=arc-20240116; t=1707035697; c=relaxed/simple;
+	bh=52IuM5w4zXtuLhzfWQ+0wIQOBvpLw9tXlOp2CIEBv1E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dbB11rs5IvyeYH8tbTfMSoTivxTIilUFH7Y4UK5rCaEXW1wGFN/Ap+jhb73ecAT0GIDZEW0FAx++4FA+0jZiHEY03e1qjadbhMLTjpX12CxAG8c1AXAxc6AgobG2QRHKinGQQjzuq7YQqlft4C9Wcenu0UxyyCg7/eCgr/aW+WE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ustc.edu; spf=pass smtp.mailfrom=ustc.edu; arc=none smtp.client-ip=101.71.155.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ustc.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ustc.edu
+Received: from localhost.localdomain (unknown [111.206.94.146])
+	by smtp.qiye.163.com (Hmail) with ESMTPA id E6B9C7E011C;
+	Sun,  4 Feb 2024 16:34:16 +0800 (CST)
+From: Chunsheng Luo <luochunsheng@ustc.edu>
+To: gregkh@linuxfoundation.org
+Cc: rafael@kernel.org,
+	akpm@linux-foundation.org,
 	linux-kernel@vger.kernel.org,
-	chengming.zhou@linux.dev,
-	Chengming Zhou <zhouchengming@bytedance.com>
-Subject: [PATCH] mm/zswap: invalidate old entry when store fail or !zswap_enabled
-Date: Sun,  4 Feb 2024 08:34:11 +0000
-Message-Id: <20240204083411.3762683-1-chengming.zhou@linux.dev>
+	linux-mm@kvack.org,
+	Chunsheng Luo <luochunsheng@ustc.edu>
+Subject: [PATCH] meminfo: provide estimated per-node's available memory
+Date: Sun,  4 Feb 2024 03:34:14 -0500
+Message-ID: <20240204083414.107799-1-luochunsheng@ustc.edu>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,110 +48,142 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkZS0pOVk0eGEJOSR5KH04eGVUTARMWGhIXJBQOD1
+	lXWRgSC1lBWUpKSlVJS01VQk9VSk9NWVdZFhoPEhUdFFlBWU9LSFVKTU9JTE5VSktLVUpCS0tZBg
+	++
+X-HM-Tid: 0a8d7341047e03a2kunme6b9c7e011c
+X-HM-MType: 10
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PT46Hhw6GjMLHz8VH0wWAjw9
+	PCIKCwlVSlVKTEtMS0hOTU5MTENOVTMWGhIXVRcOFBgTDhUIEx4VHDsOCA8YVR4fDkVZV1kSC1lB
+	WUpKSlVJS01VQk9VSk9NWVdZCAFZQU5IQks3Bg++
 
-From: Chengming Zhou <zhouchengming@bytedance.com>
+The system offers an estimate of the per-node's available memory,
+in addition to the system's available memory provided by /proc/meminfo.
 
-We may encounter duplicate entry in the zswap_store():
+like commit 34e431b0ae39("/proc/meminfo: provide estimated available
+memory"), it is more convenient to provide such an estimate in
+/sys/bus/node/devices/nodex/meminfo. If things change in the future,
+we only have to change it in one place.
 
-1. swap slot that freed to per-cpu swap cache, doesn't invalidate
-   the zswap entry, then got reused. This has been fixed.
+Shown below:
+/sys/bus/node/devices/node1/meminfo:
+Node 1 MemTotal:        4084480 kB
+Node 1 MemFree:         3348820 kB
+Node 1 MemAvailable:    3647972 kB
+Node 1 MemUsed:          735660 kB
+...
 
-2. !exclusive load mode, swapin folio will leave its zswap entry
-   on the tree, then swapout again. This has been removed.
+Link: https://github.com/numactl/numactl/issues/210
 
-3. one folio can be dirtied again after zswap_store(), so need to
-   zswap_store() again. This should be handled correctly.
-
-So we must invalidate the old duplicate entry before insert the
-new one, which actually doesn't have to be done at the beginning
-of zswap_store(). And this is a normal situation, we shouldn't
-WARN_ON(1) in this case, so delete it. (The WARN_ON(1) seems want
-to detect swap entry UAF problem? But not very necessary here.)
-
-The good point is that we don't need to lock tree twice in the
-store success path.
-
-Note we still need to invalidate the old duplicate entry in the
-store failure path, otherwise the new data in swapfile could be
-overwrite by the old data in zswap pool when lru writeback.
-
-We have to do this even when !zswap_enabled since zswap can be
-disabled anytime. If the folio store success before, then got
-dirtied again but zswap disabled, we won't invalidate the old
-duplicate entry in the zswap_store(). So later lru writeback
-may overwrite the new data in swapfile.
-
-This fix is not good, since we have to grab lock to check everytime
-even when zswap is disabled, but it's simple.
-
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+Signed-off-by: Chunsheng Luo <luochunsheng@ustc.edu>
 ---
- mm/zswap.c | 33 +++++++++++++++------------------
- 1 file changed, 15 insertions(+), 18 deletions(-)
+ drivers/base/node.c |  4 ++++
+ include/linux/mm.h  |  1 +
+ mm/show_mem.c       | 43 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 48 insertions(+)
 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index cd67f7f6b302..0b7599f4116d 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -1518,18 +1518,8 @@ bool zswap_store(struct folio *folio)
- 		return false;
+diff --git a/drivers/base/node.c b/drivers/base/node.c
+index 1c05640461dd..ba27f25d2b81 100644
+--- a/drivers/base/node.c
++++ b/drivers/base/node.c
+@@ -372,11 +372,13 @@ static ssize_t node_read_meminfo(struct device *dev,
+ 	int len = 0;
+ 	int nid = dev->id;
+ 	struct pglist_data *pgdat = NODE_DATA(nid);
++	long available;
+ 	struct sysinfo i;
+ 	unsigned long sreclaimable, sunreclaimable;
+ 	unsigned long swapcached = 0;
  
- 	if (!zswap_enabled)
--		return false;
-+		goto check_old;
+ 	si_meminfo_node(&i, nid);
++	available = si_mem_node_available(nid);
+ 	sreclaimable = node_page_state_pages(pgdat, NR_SLAB_RECLAIMABLE_B);
+ 	sunreclaimable = node_page_state_pages(pgdat, NR_SLAB_UNRECLAIMABLE_B);
+ #ifdef CONFIG_SWAP
+@@ -385,6 +387,7 @@ static ssize_t node_read_meminfo(struct device *dev,
+ 	len = sysfs_emit_at(buf, len,
+ 			    "Node %d MemTotal:       %8lu kB\n"
+ 			    "Node %d MemFree:        %8lu kB\n"
++			    "Node %d MemAvailable:   %8lu kB\n"
+ 			    "Node %d MemUsed:        %8lu kB\n"
+ 			    "Node %d SwapCached:     %8lu kB\n"
+ 			    "Node %d Active:         %8lu kB\n"
+@@ -397,6 +400,7 @@ static ssize_t node_read_meminfo(struct device *dev,
+ 			    "Node %d Mlocked:        %8lu kB\n",
+ 			    nid, K(i.totalram),
+ 			    nid, K(i.freeram),
++			    nid, K(available),
+ 			    nid, K(i.totalram - i.freeram),
+ 			    nid, K(swapcached),
+ 			    nid, K(node_page_state(pgdat, NR_ACTIVE_ANON) +
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index f5a97dec5169..3caef083fe5b 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -3202,6 +3202,7 @@ static inline void show_mem(void)
+ extern long si_mem_available(void);
+ extern void si_meminfo(struct sysinfo * val);
+ extern void si_meminfo_node(struct sysinfo *val, int nid);
++extern long si_mem_node_available(int nid);
+ #ifdef __HAVE_ARCH_RESERVED_KERNEL_PAGES
+ extern unsigned long arch_reserved_kernel_pages(void);
+ #endif
+diff --git a/mm/show_mem.c b/mm/show_mem.c
+index 8dcfafbd283c..37d4c7212b06 100644
+--- a/mm/show_mem.c
++++ b/mm/show_mem.c
+@@ -86,6 +86,49 @@ void si_meminfo(struct sysinfo *val)
+ EXPORT_SYMBOL(si_meminfo);
  
--	/*
--	 * If this is a duplicate, it must be removed before attempting to store
--	 * it, otherwise, if the store fails the old page won't be removed from
--	 * the tree, and it might be written back overriding the new data.
--	 */
--	spin_lock(&tree->lock);
--	entry = zswap_rb_search(&tree->rbroot, offset);
--	if (entry)
--		zswap_invalidate_entry(tree, entry);
--	spin_unlock(&tree->lock);
- 	objcg = get_obj_cgroup_from_folio(folio);
- 	if (objcg && !obj_cgroup_may_zswap(objcg)) {
- 		memcg = get_mem_cgroup_from_objcg(objcg);
-@@ -1608,15 +1598,11 @@ bool zswap_store(struct folio *folio)
- 	/* map */
- 	spin_lock(&tree->lock);
- 	/*
--	 * A duplicate entry should have been removed at the beginning of this
--	 * function. Since the swap entry should be pinned, if a duplicate is
--	 * found again here it means that something went wrong in the swap
--	 * cache.
-+	 * The folio could be dirtied again, invalidate the possible old entry
-+	 * before insert this new entry.
- 	 */
--	while (zswap_rb_insert(&tree->rbroot, entry, &dupentry) == -EEXIST) {
--		WARN_ON(1);
-+	while (zswap_rb_insert(&tree->rbroot, entry, &dupentry) == -EEXIST)
- 		zswap_invalidate_entry(tree, dupentry);
--	}
- 	if (entry->length) {
- 		INIT_LIST_HEAD(&entry->lru);
- 		zswap_lru_add(&entry->pool->list_lru, entry);
-@@ -1638,6 +1624,17 @@ bool zswap_store(struct folio *folio)
- reject:
- 	if (objcg)
- 		obj_cgroup_put(objcg);
-+check_old:
+ #ifdef CONFIG_NUMA
++long si_mem_node_available(int nid)
++{
++	int zone_type;
++	long available;
++	unsigned long pagecache;
++	unsigned long wmark_low = 0;
++	unsigned long reclaimable;
++	pg_data_t *pgdat = NODE_DATA(nid);
++
++	for (zone_type = 0; zone_type < MAX_NR_ZONES; zone_type++)
++		wmark_low += low_wmark_pages((&pgdat->node_zones[zone_type]));
++
 +	/*
-+	 * If zswap store fail or zswap disabled, we must invalidate possible
-+	 * old entry which previously stored by this folio. Otherwise, later
-+	 * writeback could overwrite the new data in swapfile.
++	 * Estimate the amount of memory available for userspace allocations,
++	 * without causing swapping for mbind process.
 +	 */
-+	spin_lock(&tree->lock);
-+	entry = zswap_rb_search(&tree->rbroot, offset);
-+	if (entry)
-+		zswap_invalidate_entry(tree, entry);
-+	spin_unlock(&tree->lock);
- 	return false;
- 
- shrink:
++	available = sum_zone_node_page_state(nid, NR_FREE_PAGES) - pgdat->totalreserve_pages;
++
++	/*
++	 * Not all the page cache can be freed, otherwise the system will
++	 * start swapping or thrashing. Assume at least half of the page
++	 * cache, or the low watermark worth of cache, needs to stay.
++	 */
++	pagecache = node_page_state(pgdat, NR_ACTIVE_FILE) +
++		node_page_state(pgdat, NR_INACTIVE_FILE);
++	pagecache -= min(pagecache / 2, wmark_low);
++	available += pagecache;
++
++	/*
++	 * Part of the reclaimable slab and other kernel memory consists of
++	 * items that are in use, and cannot be freed. Cap this estimate at the
++	 * low watermark.
++	 */
++	reclaimable = node_page_state_pages(pgdat, NR_SLAB_RECLAIMABLE_B) +
++		node_page_state(pgdat, NR_KERNEL_MISC_RECLAIMABLE);
++	reclaimable -= min(reclaimable / 2, wmark_low);
++	available += reclaimable;
++
++	if (available < 0)
++		available = 0;
++	return available;
++}
++
+ void si_meminfo_node(struct sysinfo *val, int nid)
+ {
+ 	int zone_type;		/* needs to be signed */
 -- 
-2.40.1
+2.43.0
 
 
