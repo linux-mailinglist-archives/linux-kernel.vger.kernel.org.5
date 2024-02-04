@@ -1,1592 +1,261 @@
-Return-Path: <linux-kernel+bounces-51454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA28C848B73
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 07:16:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BB19848B77
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 07:18:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 904921C21430
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 06:16:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C11BB23EBB
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 06:18:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E0A3BE4C;
-	Sun,  4 Feb 2024 06:16:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0B7C79CC;
+	Sun,  4 Feb 2024 06:18:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="R0vld6iC"
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="pIkMSe/Q";
+	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="lTIi7wqN"
 Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39D35613C;
-	Sun,  4 Feb 2024 06:16:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707027372; cv=none; b=mP9lYR2drznmvlR00SHC6suK9nSTYZGxQ781tQuP0ufd1y4yU/kKp1PhaMgPpidmUyOQGNW1ioI2mKnuZRYQ8s3bDqFk0ONRIhuYcfwe7uj+t2OFVtwnR+/36p7o4xn4oEB1ZJieT4M8N2aP2p0vJny6SmLOMQ4uAGt69alRnTg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707027372; c=relaxed/simple;
-	bh=ThxR6F6vvLlNBq47jt0DOg7sQaqCgZRRRISsDTlYxIM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ht9A3tkEW/FIAZkfXJbikX9cNAn6fgNll7nCLlEXjqJ2TBFppJvQeshL7cd1DcXu7qbguDqMny4Yu+DjN0XCKAO1AWGtBJYVUJCzHvJn63JW636GB/Zm55CCSmMx/PtluMr7bI0P+W+rS0ZCDiJktioEkM+z15chBrtKNFmnnXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=R0vld6iC; arc=none smtp.client-ip=210.61.82.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43CBD6FC5;
+	Sun,  4 Feb 2024 06:18:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=210.61.82.184
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707027487; cv=fail; b=Jc1SWpGlf6bkISCc/UC27Hqi9i8y9zve+aDxdkaRN/5BayK4gEEt/Sn1TJlO5KufQghrGgJ0JRSBUU1oAJ+TEJQDJptzD9cfeKU0wpU+3rYnYdH/knVN8yw8wFgKZXDKKQeHcGe7LqWBzfyTFpTNSN1HmCwNlCIMI76sworOGIk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707027487; c=relaxed/simple;
+	bh=biY563V5vizlAgY9+vh5xsoLqvaK1DLciQZpRl9GmA0=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=of5pT3W+QlODWxbJLGNidFuKYpAScCEm7/JuetOw6x7LReHm52IaUImYxdVJWhqTG9PzI1EkHe1WRnVzMBee1U2W91Lr/SYqKK9zdKSSgcoCFsEj/3YsfPNM4Uwl9F239vdkAQiu+Cz2YLVKxbBGh7G04c70O8zRwdE7bxGgHGk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=pIkMSe/Q; dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b=lTIi7wqN; arc=fail smtp.client-ip=210.61.82.184
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: df4410dac32411eea2298b7352fd921d-20240204
+X-UUID: 23dd0044c32511eea2298b7352fd921d-20240204
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=EpVfcbI668DiJUI7edjOclBlQ8mzKXz2mqNVj5CzcVk=;
-	b=R0vld6iCgTNGgds5ELrpsxWF/gZmk8SuLP4BbrvQcNe56BLTjqVTfagcz6Hwrl2KQa6kfeGK1sNo512JKnSZHsXGG6M3EqtSzK/dSLH7n9xoHJ1f00BXl23TASrZkcEnTPBuALvFmN/CXKNIjWI3tgThsSxOwp9bLg+cMuXl+N8=;
+	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:To:From; bh=biY563V5vizlAgY9+vh5xsoLqvaK1DLciQZpRl9GmA0=;
+	b=pIkMSe/QZ29i5b2BFHZQNI7pSm18y/1pX/sTLMDzbzT2TxkoVeQMtqGlmj98LV4A7/9Old7Y3g1QOOnFrXu2Mt4BlvCF5H8EWuGRNlvk1U3XK8pGWHIgyZJoMaryBEfVYyi4JfhNxPfi1CMLMeQjupo9Gc102/WZWcx/C6TwxMs=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.36,REQID:c86f81c8-8088-4a04-a38e-5a4aad851e62,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:6e16cf4,CLOUDID:82c9fe8e-e2c0-40b0-a8fe-7c7e47299109,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:1,EDM:-3,IP:nil,U
+X-CID-O-INFO: VERSION:1.1.36,REQID:33980c43-91af-4c44-b18f-91fc5a7935f8,IP:0,U
+	RL:25,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:25
+X-CID-META: VersionHash:6e16cf4,CLOUDID:ebe81780-4f93-4875-95e7-8c66ea833d57,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
 	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
 	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
 X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: df4410dac32411eea2298b7352fd921d-20240204
-Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw02.mediatek.com
-	(envelope-from <zhi.mao@mediatek.com>)
+X-UUID: 23dd0044c32511eea2298b7352fd921d-20240204
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+	(envelope-from <chunfeng.yun@mediatek.com>)
 	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 2041697715; Sun, 04 Feb 2024 14:16:02 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
+	with ESMTP id 1216901359; Sun, 04 Feb 2024 14:17:57 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ MTKMBS14N2.mediatek.inc (172.21.101.76) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Sun, 4 Feb 2024 14:16:01 +0800
-Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
- mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Sun, 4 Feb 2024 14:15:59 +0800
-From: Zhi Mao <zhi.mao@mediatek.com>
-To: <mchehab@kernel.org>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <sakari.ailus@linux.intel.com>
-CC: <laurent.pinchart@ideasonboard.com>, <shengnan.wang@mediatek.com>,
-	<yaya.chang@mediatek.com>, <10572168@qq.com>,
-	<Project_Global_Chrome_Upstream_Group@mediatek.com>, <yunkec@chromium.org>,
-	<conor+dt@kernel.org>, <matthias.bgg@gmail.com>,
-	<angelogioacchino.delregno@collabora.com>, <jacopo.mondi@ideasonboard.com>,
-	<zhi.mao@mediatek.com>, <hverkuil-cisco@xs4all.nl>, <heiko@sntech.de>,
-	<jernej.skrabec@gmail.com>, <macromorgan@hotmail.com>,
-	<linus.walleij@linaro.org>, <hdegoede@redhat.com>,
-	<tomi.valkeinen@ideasonboard.com>, <gerald.loacker@wolfvision.net>,
-	<andy.shevchenko@gmail.com>, <bingbu.cao@intel.com>,
-	<dan.scally@ideasonboard.com>, <linux-media@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
-Subject: [PATCH v4 2/2] media: i2c: Add GC08A3 image sensor driver
-Date: Sun, 4 Feb 2024 14:15:38 +0800
-Message-ID: <20240204061538.2105-3-zhi.mao@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240204061538.2105-1-zhi.mao@mediatek.com>
-References: <20240204061538.2105-1-zhi.mao@mediatek.com>
+ 15.2.1118.26; Sun, 4 Feb 2024 14:17:55 +0800
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Sun, 4 Feb 2024 14:17:55 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SUP1NvdYO8kdIZTp4bM+SFoStpEVkhVaH5Fl4IucIqkVonNMsaeN2GxZihi7k17xdYJVFcZAbzVloiEHZxpQr6jCGW8IZRjZxNLb4lCUf+SzupWbNRUucgnprEljzAm1FHZ49/+o5J75Xf+nx295E4llXHUUvoNmZJep8PNOL3yyNWr7P+Z09BTNn7aTptOp8/fmugQbZ3ZgtAP/H8aiKVfwb0OWE3LWIjc8TJy581yClxSFqGZ72UMIhTZU0PQm2wPvZc4WAaX8rLzjWFqrf1QpZ1/X3pSkBpOFQr6JMVXNkOPgm/6pajCj/aIEspDZMdyCXmHiKtPCoUoDmwoj0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=biY563V5vizlAgY9+vh5xsoLqvaK1DLciQZpRl9GmA0=;
+ b=IMAIg+hcG6LCu+/J88l2z1OCmfaExQHgQEb8a/hw7w1dqodCVEFTQIVkKRij0Y60W9JepZpVKftmtUYwlmBiAUqpJH3BrZPLGSwwcppOmBuSB+5nIy/5rYC0jkDj0TBcjjL2yGjfJNHv2Z9Xl9XTUdf8CecoLpviFPmX9xIUEzRb7JBIPAh4kBbgZkPiZv+GJ4iCDDSRvAWxWZlGnTXq+Fc/In2ticP3ylZ0/FijmoMLv7vJUMtVIIoc9tECUAMUkN0F38DEka/KGsSQXV9kXaTfwv0/wsA5lmJX0/tDT1DJX5/JyHuOd003qoROEYcm+3YE0yfzrmvbX/+IQ76WJg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=biY563V5vizlAgY9+vh5xsoLqvaK1DLciQZpRl9GmA0=;
+ b=lTIi7wqNrE22f2p6upQ9zxsMauDxpHIEU8+juYHYDz5x8aGDf8+LOhvCUD862o2KHNbuSPTeRbRb8vRsm720k530GbF3941JhBgppQECoQu3BIFZ0CzpCVQnF6tQcjuMQQaRWn5CmRtWcvxeP/sC2SdXtasGWUSGSoThn96wLz4=
+Received: from TYZPR03MB7153.apcprd03.prod.outlook.com (2603:1096:400:33c::6)
+ by TYZPR03MB6820.apcprd03.prod.outlook.com (2603:1096:400:200::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.33; Sun, 4 Feb
+ 2024 06:17:53 +0000
+Received: from TYZPR03MB7153.apcprd03.prod.outlook.com
+ ([fe80::8146:6419:98ce:83a2]) by TYZPR03MB7153.apcprd03.prod.outlook.com
+ ([fe80::8146:6419:98ce:83a2%6]) with mapi id 15.20.7249.027; Sun, 4 Feb 2024
+ 06:17:53 +0000
+From: =?utf-8?B?Q2h1bmZlbmcgWXVuICjkupHmmKXls7Ap?= <Chunfeng.Yun@mediatek.com>
+To: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	=?utf-8?B?U2t5TGFrZSBIdWFuZyAo6buD5ZWf5r6kKQ==?=
+	<SkyLake.Huang@mediatek.com>, "kishon@kernel.org" <kishon@kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "john@phrozen.org"
+	<john@phrozen.org>, "krzysztof.kozlowski@linaro.org"
+	<krzysztof.kozlowski@linaro.org>, "p.zabel@pengutronix.de"
+	<p.zabel@pengutronix.de>, "conor+dt@kernel.org" <conor+dt@kernel.org>,
+	"robh@kernel.org" <robh@kernel.org>,
+	=?utf-8?B?QmMtYm9jdW4gQ2hlbiAo6Zmz5p+P5p2RKQ==?=
+	<bc-bocun.chen@mediatek.com>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>,
+	=?utf-8?B?U3RldmVuIExpdSAo5YqJ5Lq66LGqKQ==?= <steven.liu@mediatek.com>,
+	"vkoul@kernel.org" <vkoul@kernel.org>, "matthias.bgg@gmail.com"
+	<matthias.bgg@gmail.com>, "krzysztof.kozlowski+dt@linaro.org"
+	<krzysztof.kozlowski+dt@linaro.org>, "daniel@makrotopia.org"
+	<daniel@makrotopia.org>, "linux-phy@lists.infradead.org"
+	<linux-phy@lists.infradead.org>, "dqfext@gmail.com" <dqfext@gmail.com>,
+	"angelogioacchino.delregno@collabora.com"
+	<angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH 1/2] dt-bindings: phy: mediatek,xfi-tphy: add new bindings
+Thread-Topic: [PATCH 1/2] dt-bindings: phy: mediatek,xfi-tphy: add new
+ bindings
+Thread-Index: AQHaVVlE/mVAVPojXUW5T1b2W+Q2ELD2tvwAgAMCFQA=
+Date: Sun, 4 Feb 2024 06:17:53 +0000
+Message-ID: <031944545677573672000aee8f97149e56c15f83.camel@mediatek.com>
+References: <702afb0c1246d95c90b22e57105304028bdd3083.1706823233.git.daniel@makrotopia.org>
+	 <adf20671-2f1d-43ea-8584-df0c0b095865@linaro.org>
+In-Reply-To: <adf20671-2f1d-43ea-8584-df0c0b095865@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYZPR03MB7153:EE_|TYZPR03MB6820:EE_
+x-ms-office365-filtering-correlation-id: 6134b7d3-c643-4b4d-9b4b-08dc254905bc
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: OsTx1K3VOzl+FFVaV3ylzDnNHShtLEA/AJJrKYdeaQf2ptb9BJn6PSAeScYhs+fMQ7VPSySzhLZFL59XwBR55L5jA8ihlX33pErKXK4EGmILkvHUTVRNr1ZYxLz+JzjLtOgzuYerBDvCJL103T5K82DCkgxMhU4pQj4S5r42eCGCwW9sW4vtkSV1BSBdwKKNjG1qM2fnoUmu0HKIwjWNng7oLY+/vr5Oura2znYhXFh59lsoQjv+1OOn7EyVeQFwy5L35OtBZk6r2Z5tdBhSCd6laJN2eu0yFsG9ZnOSRzphJdssJ1+1siW1c58F+MVQkCyt9/H9cZEMyLL7N5qhXH5v35AZbZXcBb8mYdlZ+q8QFnW0E5jeZCXnZkGyhXx6R2bKJj6zIzECeTvWmMTwPb6TZanz/pC6GYpg59mYDvgH1kK7Cse72MQFhCpOdSNKY5rL8bOZUNLd5/Hg9ZDT/h7NCvYSA9bavlbOxZukn0IJpRiaguS4l9KEM1/2dekZZZUQ6JrAW/2anLFOP5LMyD0sbJDb+9lJvYMS0ympsTCrB9BMSB4/0dlybkf1sy2BUEm+D0mixD3iFdqmjsCeZIf8wnwaktIJ0KAE4Y9P6MlcTulznfppp2JI8OoRXSLH8MW0NauYyAD0fxGkbM4r0ffJhn1tXnnq3f7FzrvOQDpjTJcuui5bcp3XQ3oPzUtM
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB7153.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(346002)(366004)(396003)(376002)(230922051799003)(230273577357003)(1800799012)(451199024)(186009)(64100799003)(83380400001)(26005)(2616005)(38100700002)(122000001)(8676002)(8936002)(76116006)(110136005)(316002)(66946007)(66446008)(66476007)(66556008)(64756008)(5660300002)(7416002)(2906002)(71200400001)(6506007)(53546011)(6512007)(6486002)(478600001)(966005)(38070700009)(85182001)(36756003)(86362001)(41300700001)(921011)(99106002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MkhpRVhVdkt6QU11T1p1YXZmMW8vZXNkek5iUkdTNVFSUVRwN3gyUk1PVzFo?=
+ =?utf-8?B?SjltdnRYQTJTT3U4WkhtcmVJZmhCVUxiWlRQTENsdjF2OG9HQlA2a2dSYmcz?=
+ =?utf-8?B?YkVxd2dQc3REMUFNRVdHTmI5eDkzY2JYY0d3TEVLOEladWYvenhIM0pvSDgz?=
+ =?utf-8?B?akhOcFpTZjlwZlZBaThqMHB6d2w1SENLdTIwWUtmRDlRN3dwVGkwQTBYMzJh?=
+ =?utf-8?B?aHlqMWRackJVRjEwN2oxc01yQ1VqQk0vZE9keDlCNFJLakZQaHk1bkpKOWVU?=
+ =?utf-8?B?aTZXeDJISDVyb1lzZzlSWkFta0RyenJIN2M4dTBtQ21WUTRJd0xGZ21ibVp6?=
+ =?utf-8?B?NmNtTVU5c2g5dkhQeU5Zb3c2NWJqbnBIbWY2d003WTNnckp4TWxsZFl1aS9a?=
+ =?utf-8?B?QmdLcGNnM2FrallGOXgwN3g4NkVVVDl5WjNja3pGQk5FU1Nyb1FCZXVualR6?=
+ =?utf-8?B?U1U3NkdySmp3dlBXNS85Z2dkRytJaHNLZS9jM2NlSXhjbW1hRGtldGJ6WUo3?=
+ =?utf-8?B?c1l4MHRDUFJ0YkNQSmN0d203cUVzUjU2cXNLRlROQkt3VFZYTlM4YXZ4MGVC?=
+ =?utf-8?B?blhRWi9RQ2ZYQXNsZDdOenY3M3ZZNDhFZUZXbEtVQVlSOHBBUE9JWHEwWHhx?=
+ =?utf-8?B?VllqRWlzd0t3MXZZUE1WQm5aYU1uZUI5OEF3dHBpT05aVjRIOENDVEFJcVNG?=
+ =?utf-8?B?TnNkcWdSUkdHRERMR1h5cFBiUFMxNjRTU3VHWXZwd2ZEMkVVUjVIdllNcUh3?=
+ =?utf-8?B?aG9ja3FnNm5VRloydzV1KzdkWmxwTEFZb2xTaXF0SzNyV2Q5YXhBSERkSk5x?=
+ =?utf-8?B?dzIzRkwwQlFEbkJkYkQ1VW40V2F1bXNrOVhTbkVEaVpvQnZRYmhGQmk2WnlB?=
+ =?utf-8?B?eU83VlRyT2k4VGJSbFltdjFTeDNNWldmNFduT0FzWVo2NTIyMnlhWmMxZUdo?=
+ =?utf-8?B?MzRTdWVCWHhsdVNzSHc2RFc4WFc2L3BlR0hJYzRqRmwzVzUzVzFyOWRmUTJt?=
+ =?utf-8?B?cWJQTDdXdzBRcGlSSEdkSDQraEtvS29hbjQ2ZGV4TXBocVo3QWQwdG1yMm9Q?=
+ =?utf-8?B?VC91K1k3bDZJWVorT25OUkNac0ZRU1k4OG9sUGFJVjlHY1E1WHVjWG4yM2Rv?=
+ =?utf-8?B?MkM3dmNWaHdBRzBLd29SRXQ3WURjL2txWW14cTRvV01ybVVJd1JuSG8wRU9z?=
+ =?utf-8?B?bFBoTjI2WXpMNkNiUEZVcXpadm9zM3RFUVBYeDRlNStDNnU3QThtZzh5eHMr?=
+ =?utf-8?B?dHV2TWdsc05uV0pyQnhsSGFDd1RISlRoMXI3b3FzTG5Wb1JHeDhEOU9qTnZC?=
+ =?utf-8?B?cmhLOGVudzJaS1JXZFA4eEhMUHZDZTJWN0JpR2xjbTNpaEhHTXFyR2NKTG9a?=
+ =?utf-8?B?V1IzQllvN2NPM1E3WEQyKzhTZDgrSUszVzIyZmJDZC9xbXlieW9INy9VMnJi?=
+ =?utf-8?B?a1VBVXV3ang1bzZCRkdpTUtIL2hmUTUwRHM3ZUtKdFF1azMvcit5ZzkyUHZs?=
+ =?utf-8?B?b1d6dG1zcHhBbHVjT092SCt6SmpxM1RlZFZta2FlMzhVS0s3TTRSN0Jsclhp?=
+ =?utf-8?B?YWdZdkd4amdxMk1kaEphUFo4b0hFVUpHQmVOT281cXM2VHNjWm44VWMzdWto?=
+ =?utf-8?B?YVppeCttaVdkT25CVmJWa2VsTXlwR01NWE1iUFhESHhuVXpSYXNrU0R4ZlJE?=
+ =?utf-8?B?VXRZVU9qNk5NMFdhdnozclAwNU8yWkh2MVQ5WFBOanFzRXp1NzdDS2xOUC9N?=
+ =?utf-8?B?UlNyd0xGNUFZT2dCeC9FVjNMUkR1LzFIeDRteG14a3BjR1R3dm5IZWlKUW1C?=
+ =?utf-8?B?L0FSYWNrN2R1WFVSaXRGanQwMFJvZERtTVNkQlhsd3JnVzllQ2ZTdUlFQ2Qw?=
+ =?utf-8?B?WEt4TCtYdE53eTdHSWF4a2RpQXlKSjc3UXpFWTFzejdaZjFXOHpPdjZOTm5l?=
+ =?utf-8?B?S1BReGs0OFNxdE16SDNWZmE5MmU4VTZOQ2NQUE12UjdDU3F5Y28vNG9MeHhk?=
+ =?utf-8?B?cTRGb011UE1UdU80ek9hOFlUcFNxdkYvOUlYaWxmM3ljWkkxQk5TTm5GMUpa?=
+ =?utf-8?B?bjFtT2ZzZ0NOS2tXblZZa2RpelNIQisra2VxOXFqcWtYUWVSZnY1ZmJhR1Uw?=
+ =?utf-8?B?cjZGTThkOUx5aDdBalJRYWJiV3VncjZyclp4YU9VbjAxOGgvQXVyeDBtTnBJ?=
+ =?utf-8?B?ZHc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <2F42B1597B4A304C98713741946551B0@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB7153.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6134b7d3-c643-4b4d-9b4b-08dc254905bc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Feb 2024 06:17:53.8601
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4fIxCgLdowjyFm4ztbzl0ju3YZfRXcItrph6SmA8TJSpXb0ymCozoUf69z2uISLMdx3seFbjcHtOxPajXJq06ZZJKeSktJVeBEchZardRIE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR03MB6820
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--20.821400-8.000000
+X-TMASE-MatchedRID: UWn79NfEZzbUL3YCMmnG4ia1MaKuob8PCJpCCsn6HCHBnyal/eRn3gzR
+	CsGHURLuwpcJm2NYlPAF6GY0Fb6yCifZYRtbOr2tXP5rFAucBUHegqK9F+QonFa2o9UdV1eY2ab
+	ZmsutUlsFGPl7f2/94awxH8BPFMeNJa+FAG1BTBPJ5W6OZe5hhf7KE7XIKgt8M/dZg2GSzOUcAJ
+	RwO9xbIGIwBbALicP1oBOLpnEahLSNlkEs7t8193RP3YYzvGvkAZn/4A9db2RHZg0gWH5yUVCEa
+	CCoG+rrDQJ3T99g06sZ1yrvKxpUVggpNt5EgFbMbc297PAGtWYF15s6prCIu87EPIkVcg+OWaGV
+	MLZ5ERLi8zVgXoAltj2Xsf5MVCB1BLPx9cDMrKax5amWK2anSPoLR4+zsDTtEU1sg5GpXeU=
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--20.821400-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP:
+	7BDA6CE123544022FAC17518D47A66646CFB5867CF55772369CB942D5E0B6D542000:8
 X-MTK: N
 
-Add a V4L2 sub-device driver for Galaxycore GC08A3 image sensor.
-
-Signed-off-by: Zhi Mao <zhi.mao@mediatek.com>
----
- drivers/media/i2c/Kconfig  |   10 +
- drivers/media/i2c/Makefile |    1 +
- drivers/media/i2c/gc08a3.c | 1448 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 1459 insertions(+)
- create mode 100644 drivers/media/i2c/gc08a3.c
-
-diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
-index 56f276b920ab..e4da68835683 100644
---- a/drivers/media/i2c/Kconfig
-+++ b/drivers/media/i2c/Kconfig
-@@ -70,6 +70,16 @@ config VIDEO_GC0308
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called gc0308.
- 
-+config VIDEO_GC08A3
-+	tristate "GalaxyCore gc08a3 sensor support"
-+	select V4L2_CCI_I2C
-+	help
-+	  This is a Video4Linux2 sensor driver for the GalaxyCore gc08a3
-+	  camera.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called gc08a3.
-+
- config VIDEO_GC2145
- 	select V4L2_CCI_I2C
- 	tristate "GalaxyCore GC2145 sensor support"
-diff --git a/drivers/media/i2c/Makefile b/drivers/media/i2c/Makefile
-index dfbe6448b549..b82e99ca7578 100644
---- a/drivers/media/i2c/Makefile
-+++ b/drivers/media/i2c/Makefile
-@@ -38,6 +38,7 @@ obj-$(CONFIG_VIDEO_DW9768) += dw9768.o
- obj-$(CONFIG_VIDEO_DW9807_VCM) += dw9807-vcm.o
- obj-$(CONFIG_VIDEO_ET8EK8) += et8ek8/
- obj-$(CONFIG_VIDEO_GC0308) += gc0308.o
-+obj-$(CONFIG_VIDEO_GC08A3) += gc08a3.o
- obj-$(CONFIG_VIDEO_GC2145) += gc2145.o
- obj-$(CONFIG_VIDEO_HI556) += hi556.o
- obj-$(CONFIG_VIDEO_HI846) += hi846.o
-diff --git a/drivers/media/i2c/gc08a3.c b/drivers/media/i2c/gc08a3.c
-new file mode 100644
-index 000000000000..3fc7fffb815c
---- /dev/null
-+++ b/drivers/media/i2c/gc08a3.c
-@@ -0,0 +1,1448 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * gc08a3.c - gc08a3 sensor driver
-+ *
-+ * Copyright 2023 MediaTek
-+ *
-+ * Zhi Mao <zhi.mao@mediatek.com>
-+ */
-+
-+#include <asm/unaligned.h>
-+#include <linux/clk.h>
-+#include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/i2c.h>
-+#include <linux/module.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/regulator/consumer.h>
-+#include <media/media-entity.h>
-+#include <media/v4l2-ctrls.h>
-+#include <media/v4l2-fwnode.h>
-+#include <media/v4l2-subdev.h>
-+#include <media/v4l2-cci.h>
-+#include <media/v4l2-event.h>
-+
-+#define GC08A3_REG_CHIP_ID CCI_REG16(0x03f0)
-+#define GC08A3_CHIP_ID 0x08a3
-+
-+#define GC08A3_NATIVE_WIDTH 3264
-+#define GC08A3_NATIVE_HEIGHT 2448
-+
-+#define GC08A3_REG_TEST_PATTERN_EN CCI_REG8(0x008c)
-+#define GC08A3_REG_TEST_PATTERN_IDX CCI_REG8(0x008d)
-+#define GC08A3_TEST_PATTERN_EN 0x01
-+
-+#define GC08A3_STRAEMING_REG CCI_REG8(0x0100)
-+
-+#define GC08A3_DEFAULT_CLK_FREQ 24000000
-+#define GC08A3_MBUS_CODE MEDIA_BUS_FMT_SRGGB10_1X10
-+#define GC08A3_DATA_LANES 4
-+
-+/* for 1920*1080 */
-+#define GC08A3_LINK_FREQ_207MHZ 207000000ULL
-+/* for 3264*2448 */
-+#define GC08A3_LINK_FREQ_336MHZ 336000000ULL
-+
-+#define GC08A3_RGB_DEPTH 10
-+
-+#define GC08A3_FRAME_LENGTH_REG CCI_REG16(0x0340)
-+#define GC08A3_VTS_30FPS 2548
-+#define GC08A3_VTS_30FPS_MIN 2548
-+#define GC08A3_VTS_60FPS 1276
-+#define GC08A3_VTS_60FPS_MIN 1276
-+#define GC08A3_VTS_MAX 0xfff0
-+
-+#define GC08A3_HTS_30FPS 3640
-+#define GC08A3_HTS_60FPS 3640
-+
-+#define GC08A3_EXP_REG CCI_REG16(0x0202)
-+#define GC08A3_EXP_MARGIN 16
-+#define GC08A3_EXP_MIN 4
-+#define GC08A3_EXP_STEP 1
-+
-+#define GC08A3_FLIP_REG CCI_REG8(0x0101)
-+#define GC08A3_FLIP_H_MASK 0x1
-+#define GC08A3_FLIP_V_MASK 0x2
-+
-+#define GC08A3_AGAIN_REG CCI_REG16(0x0204)
-+#define GC08A3_AGAIN_MIN 1024
-+#define GC08A3_AGAIN_MAX (1024 * 16)
-+#define GC08A3_AGAIN_STEP 1
-+
-+#define GC08A3_MIN_SLEEP_US  2000
-+#define GC08A3_MAX_SLEEP_US  3000
-+
-+static const char *const gc08a3_test_pattern_menu[] = {
-+	"No Pattern", "Solid Black", "Colour Bar", "Solid White",
-+	"Solid Red", "Solid Green", "Solid Blue", "Solid Yellow",
-+};
-+
-+enum {
-+	GC08A3_LINK_FREQ_336MHZ_INDEX,
-+	GC08A3_LINK_FREQ_207MHZ_INDEX,
-+};
-+
-+static const s64 link_freq_menu_items[] = {
-+	GC08A3_LINK_FREQ_336MHZ,
-+	GC08A3_LINK_FREQ_207MHZ,
-+};
-+
-+static const char *const gc08a3_supply_name[] = {
-+	"avdd",
-+	"dvdd",
-+	"dovdd",
-+};
-+
-+struct gc08a3 {
-+	struct device *dev;
-+	struct v4l2_subdev sd;
-+	struct media_pad pad;
-+	struct i2c_client *client;
-+
-+	struct clk *xclk;
-+	struct regulator_bulk_data supplies[ARRAY_SIZE(gc08a3_supply_name)];
-+	struct gpio_desc *reset_gpio;
-+
-+	struct v4l2_ctrl_handler ctrls;
-+	struct v4l2_ctrl *pixel_rate;
-+	struct v4l2_ctrl *link_freq;
-+	struct v4l2_ctrl *exposure;
-+	struct v4l2_ctrl *vblank;
-+	struct v4l2_ctrl *hblank;
-+
-+	struct regmap *regmap;
-+
-+	bool streaming;
-+	unsigned long link_freq_bitmap;
-+
-+	/* Current mode */
-+	const struct gc08a3_mode *cur_mode;
-+};
-+
-+struct gc08a3_reg_list {
-+	u32 num_of_regs;
-+	const struct cci_reg_sequence *regs;
-+};
-+
-+struct gc08a3_link_freq_config {
-+	const struct gc08a3_reg_list reg_list;
-+};
-+
-+static const struct cci_reg_sequence mode_3264x2448[] = {
-+	/* system */
-+	{ CCI_REG8(0x0336), 0x70 },
-+	{ CCI_REG8(0x0383), 0xbb },
-+	{ CCI_REG8(0x0344), 0x00 },
-+	{ CCI_REG8(0x0345), 0x06 },
-+	{ CCI_REG8(0x0346), 0x00 },
-+	{ CCI_REG8(0x0347), 0x04 },
-+	{ CCI_REG8(0x0348), 0x0c },
-+	{ CCI_REG8(0x0349), 0xd0 },
-+	{ CCI_REG8(0x034a), 0x09 },
-+	{ CCI_REG8(0x034b), 0x9c },
-+	{ CCI_REG8(0x0202), 0x09 },
-+	{ CCI_REG8(0x0203), 0x04 },
-+	{ CCI_REG8(0x0340), 0x09 },
-+	{ CCI_REG8(0x0341), 0xf4 },
-+	{ CCI_REG8(0x0342), 0x07 },
-+	{ CCI_REG8(0x0343), 0x1c },
-+
-+	{ CCI_REG8(0x0226), 0x00 },
-+	{ CCI_REG8(0x0227), 0x28 },
-+	{ CCI_REG8(0x0e38), 0x49 },
-+	{ CCI_REG8(0x0210), 0x13 },
-+	{ CCI_REG8(0x0218), 0x00 },
-+	{ CCI_REG8(0x0241), 0x88 },
-+	{ CCI_REG8(0x0392), 0x60 },
-+
-+	/* ISP */
-+	{ CCI_REG8(0x00a2), 0x00 },
-+	{ CCI_REG8(0x00a3), 0x00 },
-+	{ CCI_REG8(0x00ab), 0x00 },
-+	{ CCI_REG8(0x00ac), 0x00 },
-+
-+	/* GAIN */
-+	{ CCI_REG8(0x0204), 0x04 },
-+	{ CCI_REG8(0x0205), 0x00 },
-+	{ CCI_REG8(0x0050), 0x5c },
-+	{ CCI_REG8(0x0051), 0x44 },
-+
-+	/* out window */
-+	{ CCI_REG8(0x009a), 0x66 },
-+	{ CCI_REG8(0x0351), 0x00 },
-+	{ CCI_REG8(0x0352), 0x06 },
-+	{ CCI_REG8(0x0353), 0x00 },
-+	{ CCI_REG8(0x0354), 0x08 },
-+	{ CCI_REG8(0x034c), 0x0c },
-+	{ CCI_REG8(0x034d), 0xc0 },
-+	{ CCI_REG8(0x034e), 0x09 },
-+	{ CCI_REG8(0x034f), 0x90 },
-+
-+	/* MIPI */
-+	{ CCI_REG8(0x0114), 0x03 },
-+	{ CCI_REG8(0x0180), 0x65 },
-+	{ CCI_REG8(0x0181), 0xf0 },
-+	{ CCI_REG8(0x0185), 0x01 },
-+	{ CCI_REG8(0x0115), 0x30 },
-+	{ CCI_REG8(0x011b), 0x12 },
-+	{ CCI_REG8(0x011c), 0x12 },
-+	{ CCI_REG8(0x0121), 0x06 },
-+	{ CCI_REG8(0x0122), 0x06 },
-+	{ CCI_REG8(0x0123), 0x15 },
-+	{ CCI_REG8(0x0124), 0x01 },
-+	{ CCI_REG8(0x0125), 0x0b },
-+	{ CCI_REG8(0x0126), 0x08 },
-+	{ CCI_REG8(0x0129), 0x06 },
-+	{ CCI_REG8(0x012a), 0x08 },
-+	{ CCI_REG8(0x012b), 0x08 },
-+
-+	{ CCI_REG8(0x0a73), 0x60 },
-+	{ CCI_REG8(0x0a70), 0x11 },
-+	{ CCI_REG8(0x0313), 0x80 },
-+	{ CCI_REG8(0x0aff), 0x00 },
-+	{ CCI_REG8(0x0aff), 0x00 },
-+	{ CCI_REG8(0x0aff), 0x00 },
-+	{ CCI_REG8(0x0aff), 0x00 },
-+	{ CCI_REG8(0x0aff), 0x00 },
-+	{ CCI_REG8(0x0aff), 0x00 },
-+	{ CCI_REG8(0x0aff), 0x00 },
-+	{ CCI_REG8(0x0aff), 0x00 },
-+	{ CCI_REG8(0x0a70), 0x00 },
-+	{ CCI_REG8(0x00a4), 0x80 },
-+	{ CCI_REG8(0x0316), 0x01 },
-+	{ CCI_REG8(0x0a67), 0x00 },
-+	{ CCI_REG8(0x0084), 0x10 },
-+	{ CCI_REG8(0x0102), 0x09 },
-+};
-+
-+static const struct cci_reg_sequence mode_1920x1080[] = {
-+	/* system */
-+	{ CCI_REG8(0x0336), 0x45 },
-+	{ CCI_REG8(0x0383), 0x8b },
-+	{ CCI_REG8(0x0344), 0x02 },
-+	{ CCI_REG8(0x0345), 0xa6 },
-+	{ CCI_REG8(0x0346), 0x02 },
-+	{ CCI_REG8(0x0347), 0xb0 },
-+	{ CCI_REG8(0x0348), 0x07 },
-+	{ CCI_REG8(0x0349), 0x90 },
-+	{ CCI_REG8(0x034a), 0x04 },
-+	{ CCI_REG8(0x034b), 0x44 },
-+	{ CCI_REG8(0x0202), 0x03 },
-+	{ CCI_REG8(0x0203), 0x00 },
-+	{ CCI_REG8(0x0340), 0x04 },
-+	{ CCI_REG8(0x0341), 0xfc },
-+	{ CCI_REG8(0x0342), 0x07 },
-+	{ CCI_REG8(0x0343), 0x1c },
-+	{ CCI_REG8(0x0226), 0x00 },
-+	{ CCI_REG8(0x0227), 0x88 },
-+	{ CCI_REG8(0x0e38), 0x49 },
-+	{ CCI_REG8(0x0210), 0x13 },
-+	{ CCI_REG8(0x0218), 0x00 },
-+	{ CCI_REG8(0x0241), 0x88 },
-+	{ CCI_REG8(0x0392), 0x60 },
-+
-+	/* ISP */
-+	{ CCI_REG8(0x00a2), 0xac },
-+	{ CCI_REG8(0x00a3), 0x02 },
-+	{ CCI_REG8(0x00ab), 0xa0 },
-+	{ CCI_REG8(0x00ac), 0x02 },
-+
-+	/* GAIN */
-+	{ CCI_REG8(0x0204), 0x04 },
-+	{ CCI_REG8(0x0205), 0x00 },
-+	{ CCI_REG8(0x0050), 0x38 },
-+	{ CCI_REG8(0x0051), 0x20 },
-+
-+	/* out window */
-+	{ CCI_REG8(0x009a), 0x66 },
-+	{ CCI_REG8(0x0351), 0x00 },
-+	{ CCI_REG8(0x0352), 0x06 },
-+	{ CCI_REG8(0x0353), 0x00 },
-+	{ CCI_REG8(0x0354), 0x08 },
-+	{ CCI_REG8(0x034c), 0x07 },
-+	{ CCI_REG8(0x034d), 0x80 },
-+	{ CCI_REG8(0x034e), 0x04 },
-+	{ CCI_REG8(0x034f), 0x38 },
-+
-+	/* MIPI */
-+	{ CCI_REG8(0x0114), 0x03 },
-+	{ CCI_REG8(0x0180), 0x65 },
-+	{ CCI_REG8(0x0181), 0xf0 },
-+	{ CCI_REG8(0x0185), 0x01 },
-+	{ CCI_REG8(0x0115), 0x30 },
-+	{ CCI_REG8(0x011b), 0x12 },
-+	{ CCI_REG8(0x011c), 0x12 },
-+	{ CCI_REG8(0x0121), 0x02 },
-+	{ CCI_REG8(0x0122), 0x03 },
-+	{ CCI_REG8(0x0123), 0x0c },
-+	{ CCI_REG8(0x0124), 0x00 },
-+	{ CCI_REG8(0x0125), 0x09 },
-+	{ CCI_REG8(0x0126), 0x06 },
-+	{ CCI_REG8(0x0129), 0x04 },
-+	{ CCI_REG8(0x012a), 0x03 },
-+	{ CCI_REG8(0x012b), 0x06 },
-+
-+	{ CCI_REG8(0x0a73), 0x60 },
-+	{ CCI_REG8(0x0a70), 0x11 },
-+	{ CCI_REG8(0x0313), 0x80 },
-+	{ CCI_REG8(0x0aff), 0x00 },
-+	{ CCI_REG8(0x0aff), 0x00 },
-+	{ CCI_REG8(0x0aff), 0x00 },
-+	{ CCI_REG8(0x0aff), 0x00 },
-+	{ CCI_REG8(0x0aff), 0x00 },
-+	{ CCI_REG8(0x0aff), 0x00 },
-+	{ CCI_REG8(0x0aff), 0x00 },
-+	{ CCI_REG8(0x0aff), 0x00 },
-+	{ CCI_REG8(0x0a70), 0x00 },
-+	{ CCI_REG8(0x00a4), 0x80 },
-+	{ CCI_REG8(0x0316), 0x01 },
-+	{ CCI_REG8(0x0a67), 0x00 },
-+	{ CCI_REG8(0x0084), 0x10 },
-+	{ CCI_REG8(0x0102), 0x09 },
-+};
-+
-+static const struct cci_reg_sequence mode_table_common[] = {
-+	{ GC08A3_STRAEMING_REG, 0x00 },
-+	/* system */
-+	{ CCI_REG8(0x031c), 0x60 },
-+	{ CCI_REG8(0x0337), 0x04 },
-+	{ CCI_REG8(0x0335), 0x51 },
-+	{ CCI_REG8(0x0336), 0x70 },
-+	{ CCI_REG8(0x0383), 0xbb },
-+	{ CCI_REG8(0x031a), 0x00 },
-+	{ CCI_REG8(0x0321), 0x10 },
-+	{ CCI_REG8(0x0327), 0x03 },
-+	{ CCI_REG8(0x0325), 0x40 },
-+	{ CCI_REG8(0x0326), 0x23 },
-+	{ CCI_REG8(0x0314), 0x11 },
-+	{ CCI_REG8(0x0315), 0xd6 },
-+	{ CCI_REG8(0x0316), 0x01 },
-+	{ CCI_REG8(0x0334), 0x40 },
-+	{ CCI_REG8(0x0324), 0x42 },
-+	{ CCI_REG8(0x031c), 0x00 },
-+	{ CCI_REG8(0x031c), 0x9f },
-+	{ CCI_REG8(0x039a), 0x13 },
-+	{ CCI_REG8(0x0084), 0x30 },
-+	{ CCI_REG8(0x02b3), 0x08 },
-+	{ CCI_REG8(0x0057), 0x0c },
-+	{ CCI_REG8(0x05c3), 0x50 },
-+	{ CCI_REG8(0x0311), 0x90 },
-+	{ CCI_REG8(0x05a0), 0x02 },
-+	{ CCI_REG8(0x0074), 0x0a },
-+	{ CCI_REG8(0x0059), 0x11 },
-+	{ CCI_REG8(0x0070), 0x05 },
-+	{ CCI_REG8(0x0101), 0x00 },
-+
-+	/* analog */
-+	{ CCI_REG8(0x0344), 0x00 },
-+	{ CCI_REG8(0x0345), 0x06 },
-+	{ CCI_REG8(0x0346), 0x00 },
-+	{ CCI_REG8(0x0347), 0x04 },
-+	{ CCI_REG8(0x0348), 0x0c },
-+	{ CCI_REG8(0x0349), 0xd0 },
-+	{ CCI_REG8(0x034a), 0x09 },
-+	{ CCI_REG8(0x034b), 0x9c },
-+	{ CCI_REG8(0x0202), 0x09 },
-+	{ CCI_REG8(0x0203), 0x04 },
-+
-+	{ CCI_REG8(0x0219), 0x05 },
-+	{ CCI_REG8(0x0226), 0x00 },
-+	{ CCI_REG8(0x0227), 0x28 },
-+	{ CCI_REG8(0x0e0a), 0x00 },
-+	{ CCI_REG8(0x0e0b), 0x00 },
-+	{ CCI_REG8(0x0e24), 0x04 },
-+	{ CCI_REG8(0x0e25), 0x04 },
-+	{ CCI_REG8(0x0e26), 0x00 },
-+	{ CCI_REG8(0x0e27), 0x10 },
-+	{ CCI_REG8(0x0e01), 0x74 },
-+	{ CCI_REG8(0x0e03), 0x47 },
-+	{ CCI_REG8(0x0e04), 0x33 },
-+	{ CCI_REG8(0x0e05), 0x44 },
-+	{ CCI_REG8(0x0e06), 0x44 },
-+	{ CCI_REG8(0x0e0c), 0x1e },
-+	{ CCI_REG8(0x0e17), 0x3a },
-+	{ CCI_REG8(0x0e18), 0x3c },
-+	{ CCI_REG8(0x0e19), 0x40 },
-+	{ CCI_REG8(0x0e1a), 0x42 },
-+	{ CCI_REG8(0x0e28), 0x21 },
-+	{ CCI_REG8(0x0e2b), 0x68 },
-+	{ CCI_REG8(0x0e2c), 0x0d },
-+	{ CCI_REG8(0x0e2d), 0x08 },
-+	{ CCI_REG8(0x0e34), 0xf4 },
-+	{ CCI_REG8(0x0e35), 0x44 },
-+	{ CCI_REG8(0x0e36), 0x07 },
-+	{ CCI_REG8(0x0e38), 0x49 },
-+	{ CCI_REG8(0x0210), 0x13 },
-+	{ CCI_REG8(0x0218), 0x00 },
-+	{ CCI_REG8(0x0241), 0x88 },
-+	{ CCI_REG8(0x0e32), 0x00 },
-+	{ CCI_REG8(0x0e33), 0x18 },
-+	{ CCI_REG8(0x0e42), 0x03 },
-+	{ CCI_REG8(0x0e43), 0x80 },
-+	{ CCI_REG8(0x0e44), 0x04 },
-+	{ CCI_REG8(0x0e45), 0x00 },
-+	{ CCI_REG8(0x0e4f), 0x04 },
-+	{ CCI_REG8(0x057a), 0x20 },
-+	{ CCI_REG8(0x0381), 0x7c },
-+	{ CCI_REG8(0x0382), 0x9b },
-+	{ CCI_REG8(0x0384), 0xfb },
-+	{ CCI_REG8(0x0389), 0x38 },
-+	{ CCI_REG8(0x038a), 0x03 },
-+	{ CCI_REG8(0x0390), 0x6a },
-+	{ CCI_REG8(0x0391), 0x0b },
-+	{ CCI_REG8(0x0392), 0x60 },
-+	{ CCI_REG8(0x0393), 0xc1 },
-+	{ CCI_REG8(0x0396), 0xff },
-+	{ CCI_REG8(0x0398), 0x62 },
-+
-+	/* cisctl reset */
-+	{ CCI_REG8(0x031c), 0x80 },
-+	{ CCI_REG8(0x03fe), 0x10 },
-+	{ CCI_REG8(0x03fe), 0x00 },
-+	{ CCI_REG8(0x031c), 0x9f },
-+	{ CCI_REG8(0x03fe), 0x00 },
-+	{ CCI_REG8(0x03fe), 0x00 },
-+	{ CCI_REG8(0x03fe), 0x00 },
-+	{ CCI_REG8(0x03fe), 0x00 },
-+	{ CCI_REG8(0x031c), 0x80 },
-+	{ CCI_REG8(0x03fe), 0x10 },
-+	{ CCI_REG8(0x03fe), 0x00 },
-+	{ CCI_REG8(0x031c), 0x9f },
-+	{ CCI_REG8(0x0360), 0x01 },
-+	{ CCI_REG8(0x0360), 0x00 },
-+	{ CCI_REG8(0x0316), 0x09 },
-+	{ CCI_REG8(0x0a67), 0x80 },
-+	{ CCI_REG8(0x0313), 0x00 },
-+	{ CCI_REG8(0x0a53), 0x0e },
-+	{ CCI_REG8(0x0a65), 0x17 },
-+	{ CCI_REG8(0x0a68), 0xa1 },
-+	{ CCI_REG8(0x0a58), 0x00 },
-+	{ CCI_REG8(0x0ace), 0x0c },
-+	{ CCI_REG8(0x00a4), 0x00 },
-+	{ CCI_REG8(0x00a5), 0x01 },
-+	{ CCI_REG8(0x00a7), 0x09 },
-+	{ CCI_REG8(0x00a8), 0x9c },
-+	{ CCI_REG8(0x00a9), 0x0c },
-+	{ CCI_REG8(0x00aa), 0xd0 },
-+	{ CCI_REG8(0x0a8a), 0x00 },
-+	{ CCI_REG8(0x0a8b), 0xe0 },
-+	{ CCI_REG8(0x0a8c), 0x13 },
-+	{ CCI_REG8(0x0a8d), 0xe8 },
-+	{ CCI_REG8(0x0a90), 0x0a },
-+	{ CCI_REG8(0x0a91), 0x10 },
-+	{ CCI_REG8(0x0a92), 0xf8 },
-+	{ CCI_REG8(0x0a71), 0xf2 },
-+	{ CCI_REG8(0x0a72), 0x12 },
-+	{ CCI_REG8(0x0a73), 0x64 },
-+	{ CCI_REG8(0x0a75), 0x41 },
-+	{ CCI_REG8(0x0a70), 0x07 },
-+	{ CCI_REG8(0x0313), 0x80 },
-+
-+	/* ISP */
-+	{ CCI_REG8(0x00a0), 0x01 },
-+	{ CCI_REG8(0x0080), 0xd2 },
-+	{ CCI_REG8(0x0081), 0x3f },
-+	{ CCI_REG8(0x0087), 0x51 },
-+	{ CCI_REG8(0x0089), 0x03 },
-+	{ CCI_REG8(0x009b), 0x40 },
-+	{ CCI_REG8(0x05a0), 0x82 },
-+	{ CCI_REG8(0x05ac), 0x00 },
-+	{ CCI_REG8(0x05ad), 0x01 },
-+	{ CCI_REG8(0x05ae), 0x00 },
-+	{ CCI_REG8(0x0800), 0x0a },
-+	{ CCI_REG8(0x0801), 0x14 },
-+	{ CCI_REG8(0x0802), 0x28 },
-+	{ CCI_REG8(0x0803), 0x34 },
-+	{ CCI_REG8(0x0804), 0x0e },
-+	{ CCI_REG8(0x0805), 0x33 },
-+	{ CCI_REG8(0x0806), 0x03 },
-+	{ CCI_REG8(0x0807), 0x8a },
-+	{ CCI_REG8(0x0808), 0x50 },
-+	{ CCI_REG8(0x0809), 0x00 },
-+	{ CCI_REG8(0x080a), 0x34 },
-+	{ CCI_REG8(0x080b), 0x03 },
-+	{ CCI_REG8(0x080c), 0x26 },
-+	{ CCI_REG8(0x080d), 0x03 },
-+	{ CCI_REG8(0x080e), 0x18 },
-+	{ CCI_REG8(0x080f), 0x03 },
-+	{ CCI_REG8(0x0810), 0x10 },
-+	{ CCI_REG8(0x0811), 0x03 },
-+	{ CCI_REG8(0x0812), 0x00 },
-+	{ CCI_REG8(0x0813), 0x00 },
-+	{ CCI_REG8(0x0814), 0x01 },
-+	{ CCI_REG8(0x0815), 0x00 },
-+	{ CCI_REG8(0x0816), 0x01 },
-+	{ CCI_REG8(0x0817), 0x00 },
-+	{ CCI_REG8(0x0818), 0x00 },
-+	{ CCI_REG8(0x0819), 0x0a },
-+	{ CCI_REG8(0x081a), 0x01 },
-+	{ CCI_REG8(0x081b), 0x6c },
-+	{ CCI_REG8(0x081c), 0x00 },
-+	{ CCI_REG8(0x081d), 0x0b },
-+	{ CCI_REG8(0x081e), 0x02 },
-+	{ CCI_REG8(0x081f), 0x00 },
-+	{ CCI_REG8(0x0820), 0x00 },
-+	{ CCI_REG8(0x0821), 0x0c },
-+	{ CCI_REG8(0x0822), 0x02 },
-+	{ CCI_REG8(0x0823), 0xd9 },
-+	{ CCI_REG8(0x0824), 0x00 },
-+	{ CCI_REG8(0x0825), 0x0d },
-+	{ CCI_REG8(0x0826), 0x03 },
-+	{ CCI_REG8(0x0827), 0xf0 },
-+	{ CCI_REG8(0x0828), 0x00 },
-+	{ CCI_REG8(0x0829), 0x0e },
-+	{ CCI_REG8(0x082a), 0x05 },
-+	{ CCI_REG8(0x082b), 0x94 },
-+	{ CCI_REG8(0x082c), 0x09 },
-+	{ CCI_REG8(0x082d), 0x6e },
-+	{ CCI_REG8(0x082e), 0x07 },
-+	{ CCI_REG8(0x082f), 0xe6 },
-+	{ CCI_REG8(0x0830), 0x10 },
-+	{ CCI_REG8(0x0831), 0x0e },
-+	{ CCI_REG8(0x0832), 0x0b },
-+	{ CCI_REG8(0x0833), 0x2c },
-+	{ CCI_REG8(0x0834), 0x14 },
-+	{ CCI_REG8(0x0835), 0xae },
-+	{ CCI_REG8(0x0836), 0x0f },
-+	{ CCI_REG8(0x0837), 0xc4 },
-+	{ CCI_REG8(0x0838), 0x18 },
-+	{ CCI_REG8(0x0839), 0x0e },
-+	{ CCI_REG8(0x05ac), 0x01 },
-+	{ CCI_REG8(0x059a), 0x00 },
-+	{ CCI_REG8(0x059b), 0x00 },
-+	{ CCI_REG8(0x059c), 0x01 },
-+	{ CCI_REG8(0x0598), 0x00 },
-+	{ CCI_REG8(0x0597), 0x14 },
-+	{ CCI_REG8(0x05ab), 0x09 },
-+	{ CCI_REG8(0x05a4), 0x02 },
-+	{ CCI_REG8(0x05a3), 0x05 },
-+	{ CCI_REG8(0x05a0), 0xc2 },
-+	{ CCI_REG8(0x0207), 0xc4 },
-+
-+	/* GAIN */
-+	{ CCI_REG8(0x0208), 0x01 },
-+	{ CCI_REG8(0x0209), 0x72 },
-+	{ CCI_REG8(0x0204), 0x04 },
-+	{ CCI_REG8(0x0205), 0x00 },
-+
-+	{ CCI_REG8(0x0040), 0x22 },
-+	{ CCI_REG8(0x0041), 0x20 },
-+	{ CCI_REG8(0x0043), 0x10 },
-+	{ CCI_REG8(0x0044), 0x00 },
-+	{ CCI_REG8(0x0046), 0x08 },
-+	{ CCI_REG8(0x0047), 0xf0 },
-+	{ CCI_REG8(0x0048), 0x0f },
-+	{ CCI_REG8(0x004b), 0x0f },
-+	{ CCI_REG8(0x004c), 0x00 },
-+	{ CCI_REG8(0x0050), 0x5c },
-+	{ CCI_REG8(0x0051), 0x44 },
-+	{ CCI_REG8(0x005b), 0x03 },
-+	{ CCI_REG8(0x00c0), 0x00 },
-+	{ CCI_REG8(0x00c1), 0x80 },
-+	{ CCI_REG8(0x00c2), 0x31 },
-+	{ CCI_REG8(0x00c3), 0x00 },
-+	{ CCI_REG8(0x0460), 0x04 },
-+	{ CCI_REG8(0x0462), 0x08 },
-+	{ CCI_REG8(0x0464), 0x0e },
-+	{ CCI_REG8(0x0466), 0x0a },
-+	{ CCI_REG8(0x0468), 0x12 },
-+	{ CCI_REG8(0x046a), 0x12 },
-+	{ CCI_REG8(0x046c), 0x10 },
-+	{ CCI_REG8(0x046e), 0x0c },
-+	{ CCI_REG8(0x0461), 0x03 },
-+	{ CCI_REG8(0x0463), 0x03 },
-+	{ CCI_REG8(0x0465), 0x03 },
-+	{ CCI_REG8(0x0467), 0x03 },
-+	{ CCI_REG8(0x0469), 0x04 },
-+	{ CCI_REG8(0x046b), 0x04 },
-+	{ CCI_REG8(0x046d), 0x04 },
-+	{ CCI_REG8(0x046f), 0x04 },
-+	{ CCI_REG8(0x0470), 0x04 },
-+	{ CCI_REG8(0x0472), 0x10 },
-+	{ CCI_REG8(0x0474), 0x26 },
-+	{ CCI_REG8(0x0476), 0x38 },
-+	{ CCI_REG8(0x0478), 0x20 },
-+	{ CCI_REG8(0x047a), 0x30 },
-+	{ CCI_REG8(0x047c), 0x38 },
-+	{ CCI_REG8(0x047e), 0x60 },
-+	{ CCI_REG8(0x0471), 0x05 },
-+	{ CCI_REG8(0x0473), 0x05 },
-+	{ CCI_REG8(0x0475), 0x05 },
-+	{ CCI_REG8(0x0477), 0x05 },
-+	{ CCI_REG8(0x0479), 0x04 },
-+	{ CCI_REG8(0x047b), 0x04 },
-+	{ CCI_REG8(0x047d), 0x04 },
-+	{ CCI_REG8(0x047f), 0x04 },
-+};
-+
-+static const struct gc08a3_link_freq_config gc08a3_link_freq_336m_configs = {
-+	.reg_list = {
-+		.num_of_regs = ARRAY_SIZE(mode_table_common),
-+		.regs = mode_table_common,
-+	}
-+};
-+
-+static const struct gc08a3_link_freq_config gc08a3_link_freq_207m_configs = {
-+	.reg_list = {
-+		.num_of_regs = ARRAY_SIZE(mode_table_common),
-+		.regs = mode_table_common,
-+	}
-+};
-+
-+struct gc08a3_mode {
-+	u32 width;
-+	u32 height;
-+	const struct gc08a3_reg_list reg_list;
-+
-+	u32 hts; /* Horizontal timining size */
-+	u32 vts_def; /* Default vertical timining size */
-+	u32 vts_min; /* Min vertical timining size */
-+	u32 max_framerate;
-+	const struct gc08a3_link_freq_config *link_freq_configs;
-+};
-+
-+/*
-+ * Declare modes in order, from biggest
-+ * to smallest height.
-+ */
-+static const struct gc08a3_mode gc08a3_modes[] = {
-+	{
-+		.width = GC08A3_NATIVE_WIDTH,
-+		.height = GC08A3_NATIVE_HEIGHT,
-+		.reg_list = {
-+			.num_of_regs = ARRAY_SIZE(mode_3264x2448),
-+			.regs = mode_3264x2448,
-+		},
-+		.link_freq_configs = &gc08a3_link_freq_336m_configs,
-+
-+		.hts = GC08A3_HTS_30FPS,
-+		.vts_def = GC08A3_VTS_30FPS,
-+		.vts_min = GC08A3_VTS_30FPS_MIN,
-+		.max_framerate = 300,
-+	},
-+	{
-+		.width = 1920,
-+		.height = 1080,
-+		.reg_list = {
-+			.num_of_regs = ARRAY_SIZE(mode_1920x1080),
-+			.regs = mode_1920x1080,
-+		},
-+		.link_freq_configs = &gc08a3_link_freq_207m_configs,
-+
-+		.hts = GC08A3_HTS_60FPS,
-+		.vts_def = GC08A3_VTS_60FPS,
-+		.vts_min = GC08A3_VTS_60FPS_MIN,
-+		.max_framerate = 600,
-+	},
-+};
-+
-+static u64 to_pixel_rate(u32 f_index)
-+{
-+	u64 pixel_rate = link_freq_menu_items[f_index] * 2 * GC08A3_DATA_LANES;
-+
-+	do_div(pixel_rate, GC08A3_RGB_DEPTH);
-+
-+	return pixel_rate;
-+}
-+
-+static int gc08a3_identify_module(struct gc08a3 *gc08a3)
-+{
-+	struct i2c_client *client = v4l2_get_subdevdata(&gc08a3->sd);
-+	u64 val = 0;
-+	int ret;
-+
-+	ret = cci_read(gc08a3->regmap, GC08A3_REG_CHIP_ID, &val, NULL);
-+	if (ret) {
-+		dev_err(&client->dev,
-+			"failed to read chip id: 0x%x", GC08A3_CHIP_ID);
-+		return ret;
-+	}
-+
-+	if (val != GC08A3_CHIP_ID) {
-+		dev_err(&client->dev, "chip id mismatch: 0x%x!=0x%llx",
-+			GC08A3_CHIP_ID, val);
-+		return -ENXIO;
-+	}
-+
-+	return 0;
-+}
-+
-+static inline struct gc08a3 *to_gc08a3(struct v4l2_subdev *sd)
-+{
-+	return container_of(sd, struct gc08a3, sd);
-+}
-+
-+static int gc08a3_power_on(struct device *dev)
-+{
-+	struct i2c_client *client = to_i2c_client(dev);
-+	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-+	struct gc08a3 *gc08a3 = to_gc08a3(sd);
-+	int ret;
-+
-+	ret = regulator_bulk_enable(ARRAY_SIZE(gc08a3_supply_name),
-+				    gc08a3->supplies);
-+	if (ret < 0) {
-+		dev_err(gc08a3->dev, "failed to enable regulators: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = clk_prepare_enable(gc08a3->xclk);
-+	if (ret < 0) {
-+		regulator_bulk_disable(ARRAY_SIZE(gc08a3_supply_name),
-+				       gc08a3->supplies);
-+		dev_err(gc08a3->dev, "clk prepare enable failed\n");
-+		return ret;
-+	}
-+
-+	usleep_range(GC08A3_MIN_SLEEP_US, GC08A3_MAX_SLEEP_US);
-+
-+	gpiod_set_value_cansleep(gc08a3->reset_gpio, 1);
-+	usleep_range(GC08A3_MIN_SLEEP_US, GC08A3_MAX_SLEEP_US);
-+
-+	return 0;
-+}
-+
-+static int gc08a3_power_off(struct device *dev)
-+{
-+	struct i2c_client *client = to_i2c_client(dev);
-+	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-+	struct gc08a3 *gc08a3 = to_gc08a3(sd);
-+
-+	clk_disable_unprepare(gc08a3->xclk);
-+
-+	usleep_range(GC08A3_MIN_SLEEP_US, GC08A3_MAX_SLEEP_US);
-+
-+	gpiod_set_value_cansleep(gc08a3->reset_gpio, 0);
-+	usleep_range(GC08A3_MIN_SLEEP_US, GC08A3_MAX_SLEEP_US);
-+
-+	regulator_bulk_disable(ARRAY_SIZE(gc08a3_supply_name),
-+			       gc08a3->supplies);
-+	usleep_range(GC08A3_MIN_SLEEP_US, GC08A3_MAX_SLEEP_US);
-+
-+	return 0;
-+}
-+
-+static int gc08a3_enum_mbus_code(struct v4l2_subdev *sd,
-+				 struct v4l2_subdev_state *sd_state,
-+				 struct v4l2_subdev_mbus_code_enum *code)
-+{
-+	if (code->index > 0)
-+		return -EINVAL;
-+
-+	code->code = GC08A3_MBUS_CODE;
-+
-+	return 0;
-+}
-+
-+static int gc08a3_enum_frame_size(struct v4l2_subdev *subdev,
-+				  struct v4l2_subdev_state *sd_state,
-+				  struct v4l2_subdev_frame_size_enum *fse)
-+{
-+	if (fse->code != GC08A3_MBUS_CODE)
-+		return -EINVAL;
-+
-+	if (fse->index >= ARRAY_SIZE(gc08a3_modes))
-+		return -EINVAL;
-+
-+	fse->min_width = gc08a3_modes[fse->index].width;
-+	fse->max_width = gc08a3_modes[fse->index].width;
-+	fse->min_height = gc08a3_modes[fse->index].height;
-+	fse->max_height = gc08a3_modes[fse->index].height;
-+
-+	return 0;
-+}
-+
-+static int gc08a3_update_cur_mode_controls(struct gc08a3 *gc08a3,
-+					   const struct gc08a3_mode *mode)
-+{
-+	s64 exposure_max, h_blank;
-+	int ret = 0;
-+
-+	ret = __v4l2_ctrl_modify_range(gc08a3->vblank,
-+				       mode->vts_min - mode->height,
-+				       GC08A3_VTS_MAX - mode->height, 1,
-+				       mode->vts_def - mode->height);
-+	if (ret)
-+		dev_err(gc08a3->dev, "VB ctrl range update failed\n");
-+
-+	h_blank = mode->hts - mode->width;
-+	ret = __v4l2_ctrl_modify_range(gc08a3->hblank, h_blank, h_blank, 1,
-+				       h_blank);
-+	if (ret)
-+		dev_err(gc08a3->dev, "HB ctrl range update failed\n");
-+
-+	exposure_max = mode->vts_def - GC08A3_EXP_MARGIN;
-+	ret = __v4l2_ctrl_modify_range(gc08a3->exposure, GC08A3_EXP_MIN,
-+				       exposure_max, GC08A3_EXP_STEP,
-+				       exposure_max);
-+	if (ret)
-+		dev_err(gc08a3->dev, "exposure ctrl range update failed\n");
-+
-+	return ret;
-+}
-+
-+static void gc08a3_update_pad_format(struct gc08a3 *gc08a3,
-+				     const struct gc08a3_mode *mode,
-+				     struct v4l2_mbus_framefmt *fmt)
-+{
-+	fmt->width = mode->width;
-+	fmt->height = mode->height;
-+	fmt->code = GC08A3_MBUS_CODE;
-+	fmt->field = V4L2_FIELD_NONE;
-+	fmt->colorspace = V4L2_COLORSPACE_SRGB;
-+	fmt->ycbcr_enc = V4L2_MAP_YCBCR_ENC_DEFAULT(fmt->colorspace);
-+	fmt->quantization =
-+		V4L2_MAP_QUANTIZATION_DEFAULT(true,
-+					      fmt->colorspace,
-+					      fmt->ycbcr_enc);
-+	fmt->xfer_func = V4L2_MAP_XFER_FUNC_DEFAULT(fmt->colorspace);
-+}
-+
-+static int gc08a3_set_format(struct v4l2_subdev *sd,
-+			     struct v4l2_subdev_state *state,
-+			     struct v4l2_subdev_format *fmt)
-+{
-+	struct gc08a3 *gc08a3 = to_gc08a3(sd);
-+	struct v4l2_mbus_framefmt *mbus_fmt;
-+	struct v4l2_rect *crop;
-+	const struct gc08a3_mode *mode;
-+
-+	mode = v4l2_find_nearest_size(gc08a3_modes, ARRAY_SIZE(gc08a3_modes),
-+				      width, height, fmt->format.width,
-+				      fmt->format.height);
-+
-+	/*update crop info to subdev state*/
-+	crop = v4l2_subdev_state_get_crop(state, 0);
-+	crop->width = mode->width;
-+	crop->height = mode->height;
-+
-+	/*update fmt info to subdev state*/
-+	gc08a3_update_pad_format(gc08a3, mode, &fmt->format);
-+	mbus_fmt = v4l2_subdev_state_get_format(state, 0);
-+	*mbus_fmt = fmt->format;
-+
-+	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY)
-+		return 0;
-+
-+	gc08a3->cur_mode = mode;
-+	gc08a3_update_cur_mode_controls(gc08a3, mode);
-+
-+	return 0;
-+}
-+
-+static int gc08a3_get_selection(struct v4l2_subdev *sd,
-+				struct v4l2_subdev_state *state,
-+				struct v4l2_subdev_selection *sel)
-+{
-+	struct gc08a3 *gc08a3 = to_gc08a3(sd);
-+
-+	switch (sel->target) {
-+	case V4L2_SEL_TGT_CROP:
-+		sel->r = *v4l2_subdev_state_get_crop(state, 0);
-+		break;
-+	case V4L2_SEL_TGT_CROP_BOUNDS:
-+		sel->r.top = 0;
-+		sel->r.left = 0;
-+		sel->r.width = GC08A3_NATIVE_WIDTH;
-+		sel->r.height = GC08A3_NATIVE_HEIGHT;
-+		break;
-+	case V4L2_SEL_TGT_CROP_DEFAULT:
-+		if (gc08a3->cur_mode->width == GC08A3_NATIVE_WIDTH) {
-+			sel->r.top = 0;
-+			sel->r.left = 0;
-+			sel->r.width = gc08a3_modes[0].width;
-+			sel->r.height = gc08a3_modes[0].height;
-+		} else {
-+			sel->r.top = 0;
-+			sel->r.left = 0;
-+			sel->r.width = gc08a3_modes[1].width;
-+			sel->r.height = gc08a3_modes[1].height;
-+		}
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int gc08a3_init_state(struct v4l2_subdev *sd,
-+			     struct v4l2_subdev_state *state)
-+{
-+	struct v4l2_subdev_format fmt = {
-+		.which = V4L2_SUBDEV_FORMAT_TRY,
-+		.pad = 0,
-+		.format = {
-+			.code = GC08A3_MBUS_CODE,
-+			.width = gc08a3_modes[0].width,
-+			.height = gc08a3_modes[0].height,
-+		},
-+	};
-+
-+	gc08a3_set_format(sd, state, &fmt);
-+
-+	return 0;
-+}
-+
-+static int gc08a3_set_ctrl_hflip(struct gc08a3 *gc08a3, u32 ctrl_val)
-+{
-+	int ret;
-+	u64 val;
-+
-+	ret = cci_read(gc08a3->regmap, GC08A3_FLIP_REG, &val, NULL);
-+	if (ret) {
-+		dev_err(gc08a3->dev, "read hflip register failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	val = ctrl_val ? (val | GC08A3_FLIP_H_MASK) :
-+			   (val & ~GC08A3_FLIP_H_MASK);
-+	ret = cci_write(gc08a3->regmap, GC08A3_FLIP_REG, val, NULL);
-+	if (ret < 0)
-+		dev_err(gc08a3->dev, "Error %d\n", ret);
-+
-+	return ret;
-+}
-+
-+static int gc08a3_set_ctrl_vflip(struct gc08a3 *gc08a3, u32 ctrl_val)
-+{
-+	int ret;
-+	u64 val;
-+
-+	ret = cci_read(gc08a3->regmap, GC08A3_FLIP_REG, &val, NULL);
-+	if (ret) {
-+		dev_err(gc08a3->dev, "read vflip register failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	val = ctrl_val ? (val | GC08A3_FLIP_V_MASK) :
-+			   (val & ~GC08A3_FLIP_V_MASK);
-+	ret = cci_write(gc08a3->regmap, GC08A3_FLIP_REG, val, NULL);
-+	if (ret < 0)
-+		dev_err(gc08a3->dev, "Error %d\n", ret);
-+
-+	return ret;
-+}
-+
-+static int gc08a3_test_pattern(struct gc08a3 *gc08a3, u32 pattern_menu)
-+{
-+	u32 pattern = 0;
-+	int ret;
-+
-+	if (pattern_menu) {
-+		switch (pattern_menu) {
-+		case 1:
-+			pattern = 0x00;
-+			break;
-+		case 2:
-+			pattern = 0x10;
-+			break;
-+		case 3:
-+		case 4:
-+		case 5:
-+		case 6:
-+		case 7:
-+			pattern = pattern_menu + 1;
-+			break;
-+		}
-+
-+		ret = cci_write(gc08a3->regmap, GC08A3_REG_TEST_PATTERN_EN,
-+				GC08A3_TEST_PATTERN_EN, NULL);
-+		if (ret)
-+			return ret;
-+
-+		ret = cci_write(gc08a3->regmap, GC08A3_REG_TEST_PATTERN_IDX,
-+				pattern, NULL);
-+
-+	} else {
-+		ret = cci_write(gc08a3->regmap, GC08A3_REG_TEST_PATTERN_EN,
-+				0x00, NULL);
-+	}
-+
-+	return ret;
-+}
-+
-+static int gc08a3_set_ctrl(struct v4l2_ctrl *ctrl)
-+{
-+	struct gc08a3 *gc08a3 =
-+		container_of(ctrl->handler, struct gc08a3, ctrls);
-+	int ret = 0;
-+	s64 exposure_max;
-+
-+	if (ctrl->id == V4L2_CID_VBLANK) {
-+		/* Update max exposure while meeting expected vblanking */
-+		exposure_max = gc08a3->cur_mode->height + ctrl->val -
-+			       GC08A3_EXP_MARGIN;
-+		__v4l2_ctrl_modify_range(gc08a3->exposure,
-+					 gc08a3->exposure->minimum,
-+					 exposure_max, gc08a3->exposure->step,
-+					 exposure_max);
-+	}
-+
-+	/*
-+	 * Applying V4L2 control value only happens
-+	 * when power is on for streaming
-+	 */
-+	if (!pm_runtime_get_if_in_use(gc08a3->dev))
-+		return 0;
-+
-+	switch (ctrl->id) {
-+	case V4L2_CID_EXPOSURE:
-+		ret = cci_write(gc08a3->regmap, GC08A3_EXP_REG,
-+				ctrl->val, NULL);
-+		break;
-+
-+	case V4L2_CID_ANALOGUE_GAIN:
-+		ret = cci_write(gc08a3->regmap, GC08A3_AGAIN_REG,
-+				ctrl->val, NULL);
-+		break;
-+
-+	case V4L2_CID_VBLANK:
-+		ret = cci_write(gc08a3->regmap, GC08A3_FRAME_LENGTH_REG,
-+				gc08a3->cur_mode->height + ctrl->val, NULL);
-+		break;
-+
-+	case V4L2_CID_HFLIP:
-+		ret = gc08a3_set_ctrl_hflip(gc08a3, ctrl->val);
-+		break;
-+
-+	case V4L2_CID_VFLIP:
-+		ret = gc08a3_set_ctrl_vflip(gc08a3, ctrl->val);
-+		break;
-+
-+	case V4L2_CID_TEST_PATTERN:
-+		ret = gc08a3_test_pattern(gc08a3, ctrl->val);
-+		break;
-+
-+	default:
-+		break;
-+	}
-+
-+	pm_runtime_put(gc08a3->dev);
-+
-+	return ret;
-+}
-+
-+static const struct v4l2_ctrl_ops gc08a3_ctrl_ops = {
-+	.s_ctrl = gc08a3_set_ctrl,
-+};
-+
-+static int gc08a3_start_streaming(struct gc08a3 *gc08a3)
-+{
-+	const struct gc08a3_mode *mode;
-+	const struct gc08a3_reg_list *reg_list;
-+	const struct gc08a3_link_freq_config *link_freq_cfg;
-+	int ret;
-+
-+	ret = pm_runtime_resume_and_get(gc08a3->dev);
-+	if (ret < 0)
-+		return ret;
-+
-+	link_freq_cfg = gc08a3->cur_mode->link_freq_configs;
-+
-+	reg_list = &link_freq_cfg->reg_list;
-+	ret = cci_multi_reg_write(gc08a3->regmap,
-+				  reg_list->regs, reg_list->num_of_regs, NULL);
-+	if (ret) {
-+		dev_err(gc08a3->dev, "could not sent common table %d\n", ret);
-+		goto err_rpm_put;
-+	}
-+
-+	mode = gc08a3->cur_mode;
-+	reg_list = &mode->reg_list;
-+	ret = cci_multi_reg_write(gc08a3->regmap,
-+				  reg_list->regs, reg_list->num_of_regs, NULL);
-+	if (ret < 0) {
-+		dev_err(gc08a3->dev, "could not sent mode table %d\n", ret);
-+		goto err_rpm_put;
-+	}
-+
-+	ret = __v4l2_ctrl_handler_setup(&gc08a3->ctrls);
-+	if (ret < 0) {
-+		dev_err(gc08a3->dev, "could not sync v4l2 controls\n");
-+		goto err_rpm_put;
-+	}
-+
-+	ret = cci_write(gc08a3->regmap, GC08A3_STRAEMING_REG, 1, NULL);
-+	if (ret < 0) {
-+		dev_err(gc08a3->dev, "write STRAEMING_REG failed: %d\n", ret);
-+		goto err_rpm_put;
-+	}
-+
-+	return 0;
-+
-+err_rpm_put:
-+	pm_runtime_put(gc08a3->dev);
-+	return ret;
-+}
-+
-+static int gc08a3_stop_streaming(struct gc08a3 *gc08a3)
-+{
-+	int ret;
-+
-+	ret = cci_write(gc08a3->regmap, GC08A3_STRAEMING_REG, 0, NULL);
-+	if (ret < 0)
-+		dev_err(gc08a3->dev, "could not sent stop streaming %d\n", ret);
-+
-+	pm_runtime_put(gc08a3->dev);
-+	return ret;
-+}
-+
-+static int gc08a3_s_stream(struct v4l2_subdev *subdev, int enable)
-+{
-+	struct gc08a3 *gc08a3 = to_gc08a3(subdev);
-+	struct v4l2_subdev_state *state;
-+	int ret;
-+
-+	state = v4l2_subdev_lock_and_get_active_state(subdev);
-+
-+	if (enable)
-+		ret = gc08a3_start_streaming(gc08a3);
-+	else
-+		ret = gc08a3_stop_streaming(gc08a3);
-+
-+	gc08a3->streaming = enable;
-+	v4l2_subdev_unlock_state(state);
-+
-+	return ret;
-+}
-+
-+static int
-+gc08a3_enum_frame_interval(struct v4l2_subdev *subdev,
-+			   struct v4l2_subdev_state *sd_state,
-+			   struct v4l2_subdev_frame_interval_enum *fie)
-+{
-+	unsigned int index = fie->index;
-+	unsigned int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(gc08a3_modes); i++) {
-+		if (fie->width != gc08a3_modes[i].width ||
-+		    fie->height != gc08a3_modes[i].height)
-+			continue;
-+
-+		if (index-- == 0) {
-+			fie->interval.numerator = 1;
-+			fie->interval.denominator =
-+				gc08a3_modes[i].max_framerate / 10;
-+			return 0;
-+		}
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static const struct v4l2_subdev_video_ops gc08a3_video_ops = {
-+	.s_stream = gc08a3_s_stream,
-+};
-+
-+static const struct v4l2_subdev_pad_ops gc08a3_subdev_pad_ops = {
-+	.enum_mbus_code = gc08a3_enum_mbus_code,
-+	.enum_frame_size = gc08a3_enum_frame_size,
-+	.enum_frame_interval = gc08a3_enum_frame_interval,
-+	.get_fmt = v4l2_subdev_get_fmt,
-+	.set_fmt = gc08a3_set_format,
-+	.get_selection = gc08a3_get_selection,
-+};
-+
-+static const struct v4l2_subdev_core_ops gc08a3_core_ops = {
-+	.subscribe_event = v4l2_ctrl_subdev_subscribe_event,
-+	.unsubscribe_event = v4l2_event_subdev_unsubscribe,
-+};
-+
-+static const struct v4l2_subdev_ops gc08a3_subdev_ops = {
-+	.core = &gc08a3_core_ops,
-+	.video = &gc08a3_video_ops,
-+	.pad = &gc08a3_subdev_pad_ops,
-+};
-+
-+static const struct v4l2_subdev_internal_ops gc08a3_internal_ops = {
-+	.init_state = gc08a3_init_state,
-+};
-+
-+static int gc08a3_get_regulators(struct device *dev, struct gc08a3 *gc08a3)
-+{
-+	unsigned int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(gc08a3_supply_name); i++)
-+		gc08a3->supplies[i].supply = gc08a3_supply_name[i];
-+
-+	return devm_regulator_bulk_get(dev, ARRAY_SIZE(gc08a3_supply_name),
-+				       gc08a3->supplies);
-+}
-+
-+static int gc08a3_parse_fwnode(struct device *dev, struct gc08a3 *gc08a3)
-+{
-+	struct fwnode_handle *endpoint;
-+	struct v4l2_fwnode_endpoint bus_cfg = {
-+		.bus_type = V4L2_MBUS_CSI2_DPHY,
-+	};
-+	int ret;
-+
-+	endpoint = fwnode_graph_get_next_endpoint(dev_fwnode(dev), NULL);
-+	if (!endpoint) {
-+		dev_err(dev, "endpoint node not found\n");
-+		return -EINVAL;
-+	}
-+
-+	ret = v4l2_fwnode_endpoint_alloc_parse(endpoint, &bus_cfg);
-+	if (ret) {
-+		dev_err(dev, "parsing endpoint node failed\n");
-+		goto done;
-+	}
-+
-+	ret = v4l2_link_freq_to_bitmap(dev, bus_cfg.link_frequencies,
-+				       bus_cfg.nr_of_link_frequencies,
-+				       link_freq_menu_items,
-+				       ARRAY_SIZE(link_freq_menu_items),
-+				       &gc08a3->link_freq_bitmap);
-+	if (ret)
-+		goto done;
-+
-+done:
-+	v4l2_fwnode_endpoint_free(&bus_cfg);
-+	fwnode_handle_put(endpoint);
-+	return ret;
-+}
-+
-+static int gc08a3_init_controls(struct gc08a3 *gc08a3)
-+{
-+	struct i2c_client *client = v4l2_get_subdevdata(&gc08a3->sd);
-+	const struct gc08a3_mode *mode = &gc08a3_modes[0];
-+	const struct v4l2_ctrl_ops *ops = &gc08a3_ctrl_ops;
-+	struct v4l2_fwnode_device_properties props;
-+	struct v4l2_ctrl_handler *ctrl_hdlr;
-+	s64 exposure_max, h_blank;
-+	int ret;
-+
-+	ctrl_hdlr = &gc08a3->ctrls;
-+	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 10);
-+	if (ret)
-+		return ret;
-+
-+	gc08a3->link_freq =
-+		v4l2_ctrl_new_int_menu(ctrl_hdlr,
-+				       &gc08a3_ctrl_ops,
-+				       V4L2_CID_LINK_FREQ,
-+				       ARRAY_SIZE(link_freq_menu_items) - 1,
-+				       0, link_freq_menu_items);
-+	if (gc08a3->link_freq)
-+		gc08a3->link_freq->flags |= V4L2_CTRL_FLAG_READ_ONLY;
-+
-+	gc08a3->pixel_rate =
-+		v4l2_ctrl_new_std(ctrl_hdlr,
-+				  &gc08a3_ctrl_ops,
-+				  V4L2_CID_PIXEL_RATE, 0,
-+				  to_pixel_rate(GC08A3_LINK_FREQ_336MHZ_INDEX),
-+				  1,
-+				  to_pixel_rate(GC08A3_LINK_FREQ_336MHZ_INDEX));
-+
-+	gc08a3->vblank =
-+		v4l2_ctrl_new_std(ctrl_hdlr,
-+				  &gc08a3_ctrl_ops, V4L2_CID_VBLANK,
-+				  mode->vts_min - mode->height,
-+				  GC08A3_VTS_MAX - mode->height, 1,
-+				  mode->vts_def - mode->height);
-+
-+	h_blank = mode->hts - mode->width;
-+	gc08a3->hblank = v4l2_ctrl_new_std(ctrl_hdlr, &gc08a3_ctrl_ops,
-+					   V4L2_CID_HBLANK, h_blank, h_blank, 1,
-+					   h_blank);
-+	if (gc08a3->hblank)
-+		gc08a3->hblank->flags |= V4L2_CTRL_FLAG_READ_ONLY;
-+
-+	v4l2_ctrl_new_std(ctrl_hdlr, &gc08a3_ctrl_ops,
-+			  V4L2_CID_ANALOGUE_GAIN, GC08A3_AGAIN_MIN,
-+			  GC08A3_AGAIN_MAX, GC08A3_AGAIN_STEP,
-+			  GC08A3_AGAIN_MIN);
-+
-+	exposure_max = mode->vts_def - GC08A3_EXP_MARGIN;
-+	gc08a3->exposure = v4l2_ctrl_new_std(ctrl_hdlr, &gc08a3_ctrl_ops,
-+					     V4L2_CID_EXPOSURE, GC08A3_EXP_MIN,
-+					     exposure_max, GC08A3_EXP_STEP,
-+					     exposure_max);
-+
-+	v4l2_ctrl_new_std_menu_items(ctrl_hdlr, &gc08a3_ctrl_ops,
-+				     V4L2_CID_TEST_PATTERN,
-+				     ARRAY_SIZE(gc08a3_test_pattern_menu) - 1,
-+				     0, 0, gc08a3_test_pattern_menu);
-+
-+	v4l2_ctrl_new_std(ctrl_hdlr, &gc08a3_ctrl_ops, V4L2_CID_HFLIP, 0,
-+			  1, 1, 0);
-+
-+	v4l2_ctrl_new_std(ctrl_hdlr, &gc08a3_ctrl_ops, V4L2_CID_VFLIP, 0,
-+			  1, 1, 0);
-+
-+	/* register properties to fwnode (e.g. rotation, orientation) */
-+	ret = v4l2_fwnode_device_parse(&client->dev, &props);
-+	if (ret)
-+		goto error_ctrls;
-+
-+	ret = v4l2_ctrl_new_fwnode_properties(ctrl_hdlr, ops, &props);
-+	if (ret)
-+		goto error_ctrls;
-+
-+	if (ctrl_hdlr->error) {
-+		ret = ctrl_hdlr->error;
-+		goto error_ctrls;
-+	}
-+
-+	gc08a3->sd.ctrl_handler = ctrl_hdlr;
-+
-+	return 0;
-+
-+error_ctrls:
-+	v4l2_ctrl_handler_free(ctrl_hdlr);
-+
-+	return ret;
-+}
-+
-+static int gc08a3_probe(struct i2c_client *client)
-+{
-+	struct device *dev = &client->dev;
-+	struct gc08a3 *gc08a3;
-+	int ret;
-+
-+	gc08a3 = devm_kzalloc(dev, sizeof(*gc08a3), GFP_KERNEL);
-+	if (!gc08a3)
-+		return -ENOMEM;
-+
-+	gc08a3->dev = dev;
-+
-+	ret = gc08a3_parse_fwnode(dev, gc08a3);
-+	if (ret)
-+		return ret;
-+
-+	gc08a3->regmap = devm_cci_regmap_init_i2c(client, 16);
-+	if (IS_ERR(gc08a3->regmap))
-+		return dev_err_probe(dev, PTR_ERR(gc08a3->regmap),
-+				     "failed to init CCI\n");
-+
-+	gc08a3->xclk = devm_clk_get(dev, NULL);
-+	if (IS_ERR(gc08a3->xclk))
-+		return dev_err_probe(dev, PTR_ERR(gc08a3->xclk),
-+				     "failed to get xclk\n");
-+
-+	ret = clk_set_rate(gc08a3->xclk, GC08A3_DEFAULT_CLK_FREQ);
-+	if (ret)
-+		return dev_err_probe(dev, ret,
-+				     "failed to set xclk frequency\n");
-+
-+	ret = gc08a3_get_regulators(dev, gc08a3);
-+	if (ret < 0)
-+		return dev_err_probe(dev, ret,
-+				     "failed to get regulators\n");
-+
-+	gc08a3->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
-+	if (IS_ERR(gc08a3->reset_gpio))
-+		return dev_err_probe(dev, PTR_ERR(gc08a3->reset_gpio),
-+				     "failed to get gpio\n");
-+
-+	v4l2_i2c_subdev_init(&gc08a3->sd, client, &gc08a3_subdev_ops);
-+	gc08a3->sd.internal_ops = &gc08a3_internal_ops;
-+	gc08a3->cur_mode = &gc08a3_modes[0];
-+
-+	ret = gc08a3_power_on(gc08a3->dev);
-+	if (ret)
-+		return dev_err_probe(dev, ret,
-+				     "failed to sensor power on\n");
-+
-+	ret = gc08a3_identify_module(gc08a3);
-+	if (ret) {
-+		dev_err(&client->dev, "failed to find sensor: %d\n", ret);
-+		goto err_power_off;
-+	}
-+
-+	ret = gc08a3_init_controls(gc08a3);
-+	if (ret) {
-+		dev_err(&client->dev, "failed to init controls: %d", ret);
-+		goto err_power_off;
-+	}
-+
-+	gc08a3->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE |
-+			    V4L2_SUBDEV_FL_HAS_EVENTS;
-+	gc08a3->pad.flags = MEDIA_PAD_FL_SOURCE;
-+	gc08a3->sd.dev = &client->dev;
-+	gc08a3->sd.entity.function = MEDIA_ENT_F_CAM_SENSOR;
-+
-+	ret = media_entity_pads_init(&gc08a3->sd.entity, 1, &gc08a3->pad);
-+	if (ret < 0) {
-+		dev_err(dev, "could not register media entity\n");
-+		goto err_v4l2_ctrl_handler_free;
-+	}
-+
-+	gc08a3->sd.state_lock = gc08a3->ctrls.lock;
-+	ret = v4l2_subdev_init_finalize(&gc08a3->sd);
-+	if (ret < 0) {
-+		dev_err(dev, "v4l2 subdev init error: %d\n", ret);
-+		goto err_media_entity_cleanup;
-+	}
-+
-+	pm_runtime_set_active(gc08a3->dev);
-+	pm_runtime_enable(gc08a3->dev);
-+	pm_runtime_idle(gc08a3->dev);
-+
-+	ret = v4l2_async_register_subdev_sensor(&gc08a3->sd);
-+	if (ret < 0) {
-+		dev_err(dev, "could not register v4l2 device\n");
-+		goto err_rpm;
-+	}
-+
-+	return 0;
-+
-+err_rpm:
-+	pm_runtime_disable(gc08a3->dev);
-+	v4l2_subdev_cleanup(&gc08a3->sd);
-+
-+err_media_entity_cleanup:
-+	media_entity_cleanup(&gc08a3->sd.entity);
-+
-+err_v4l2_ctrl_handler_free:
-+	v4l2_ctrl_handler_free(gc08a3->sd.ctrl_handler);
-+
-+err_power_off:
-+	gc08a3_power_off(gc08a3->dev);
-+
-+	return ret;
-+}
-+
-+static void gc08a3_remove(struct i2c_client *client)
-+{
-+	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-+	struct gc08a3 *gc08a3 = to_gc08a3(sd);
-+
-+	v4l2_async_unregister_subdev(&gc08a3->sd);
-+	v4l2_subdev_cleanup(sd);
-+	media_entity_cleanup(&gc08a3->sd.entity);
-+	v4l2_ctrl_handler_free(&gc08a3->ctrls);
-+
-+	pm_runtime_disable(&client->dev);
-+	if (!pm_runtime_status_suspended(&client->dev))
-+		gc08a3_power_off(gc08a3->dev);
-+	pm_runtime_set_suspended(&client->dev);
-+}
-+
-+static const struct of_device_id gc08a3_of_match[] = {
-+	{ .compatible = "galaxycore,gc08a3" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, gc08a3_of_match);
-+
-+static const struct dev_pm_ops gc08a3_pm_ops = {
-+	SET_RUNTIME_PM_OPS(gc08a3_power_off, gc08a3_power_on, NULL)
-+};
-+
-+static struct i2c_driver gc08a3_i2c_driver = {
-+	.driver = {
-+		.of_match_table = gc08a3_of_match,
-+		.pm = &gc08a3_pm_ops,
-+		.name  = "gc08a3",
-+	},
-+	.probe  = gc08a3_probe,
-+	.remove = gc08a3_remove,
-+};
-+
-+module_i2c_driver(gc08a3_i2c_driver);
-+
-+MODULE_DESCRIPTION("GalaxyCore gc08a3 Camera driver");
-+MODULE_AUTHOR("Zhi Mao <zhi.mao@mediatek.com>");
-+MODULE_LICENSE("GPL");
--- 
-2.25.1
-
+T24gRnJpLCAyMDI0LTAyLTAyIGF0IDA5OjIxICswMTAwLCBLcnp5c3p0b2YgS296bG93c2tpIHdy
+b3RlOg0KPiAgCSANCj4gRXh0ZXJuYWwgZW1haWwgOiBQbGVhc2UgZG8gbm90IGNsaWNrIGxpbmtz
+IG9yIG9wZW4gYXR0YWNobWVudHMgdW50aWwNCj4geW91IGhhdmUgdmVyaWZpZWQgdGhlIHNlbmRl
+ciBvciB0aGUgY29udGVudC4NCj4gIE9uIDAxLzAyLzIwMjQgMjI6NTIsIERhbmllbCBHb2xsZSB3
+cm90ZToNCj4gPiBBZGQgYmluZGluZ3MgZm9yIHRoZSBNZWRpYVRlayBYRkkgVC1QSFkgRXRoZXJu
+ZXQgU2VyRGVzIFBIWSBmb3VuZA0KPiBpbiB0aGUNCj4gPiBNZWRpYVRlayBNVDc5ODggU29DIHdo
+aWNoIGNhbiBvcGVyYXRlIGF0IHZhcmlvdXMgaW50ZXJmYWNlcyBtb2RlczoNCj4gPiANCj4gPiB2
+aWEgVVNYR01JSSBQQ1M6DQo+ID4gICogVVNYR01JSQ0KPiA+ICAqIDEwR0Jhc2UtUg0KPiA+ICAq
+IDVHQmFzZS1SDQo+ID4gDQo+ID4gdmlhIEx5bnhJIFNHTUlJIFBDUzoNCj4gPiAgKiAyNTAwQmFz
+ZS1YDQo+ID4gICogMTAwMEJhc2UtWA0KPiA+ICAqIENpc2NvIFNHTUlJIChNQUMgc2lkZSkNCj4g
+PiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgR29sbGUgPGRhbmllbEBtYWtyb3RvcGlhLm9y
+Zz4NCj4gPiAtLS0NCj4gPiAgLi4uL2JpbmRpbmdzL3BoeS9tZWRpYXRlayx4ZmktdHBoeS55YW1s
+ICAgICAgIHwgODANCj4gKysrKysrKysrKysrKysrKysrKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwg
+ODAgaW5zZXJ0aW9ucygrKQ0KPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQNCj4gRG9jdW1lbnRhdGlv
+bi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BoeS9tZWRpYXRlayx4ZmktdHBoeS55YW1sDQo+ID4gDQo+
+ID4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9waHkvbWVk
+aWF0ZWsseGZpLQ0KPiB0cGh5LnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
+Z3MvcGh5L21lZGlhdGVrLHhmaS0NCj4gdHBoeS55YW1sDQo+ID4gbmV3IGZpbGUgbW9kZSAxMDA2
+NDQNCj4gPiBpbmRleCAwMDAwMDAwMDAwMDAwLi5lODk3MTE4ZGNmN2U2DQo+ID4gLS0tIC9kZXYv
+bnVsbA0KPiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9waHkvbWVk
+aWF0ZWsseGZpLXRwaHkueWFtbA0KPiA+IEBAIC0wLDAgKzEsODAgQEANCj4gPiArIyBTUERYLUxp
+Y2Vuc2UtSWRlbnRpZmllcjogKEdQTC0yLjAtb25seSBPUiBCU0QtMi1DbGF1c2UpDQo+ID4gKyVZ
+QU1MIDEuMg0KPiA+ICstLS0NCj4gPiArJGlkOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1h
+cy9waHkvbWVkaWF0ZWsseGZpLXRwaHkueWFtbCMNCj4gDQo+IFBsZWFzZSB1c2UgY29tcGF0aWJs
+ZSBhcyBmaWxlbmFtZS4gWW91ciBiaW5kaW5nIHNheXMgb25seSBvbmUgaXMNCj4gcG9zc2libGUg
+KGNvbnN0LCBub3QgZW51bSksIHNvIHRoZXJlIGlzIG5vIHJlYXNvbmluZyBmb3IgZGlmZmVyZW50
+DQo+IGZpbGVuYW1lLg0KPiANCj4gPiArJHNjaGVtYTogaHR0cDovL2RldmljZXRyZWUub3JnL21l
+dGEtc2NoZW1hcy9jb3JlLnlhbWwjDQo+ID4gKw0KPiA+ICt0aXRsZTogTWVkaWFUZWsgWEZJIFQt
+UEhZDQo+ID4gKw0KPiA+ICttYWludGFpbmVyczoNCj4gPiArICAtIERhbmllbCBHb2xsZSA8ZGFu
+aWVsQG1ha3JvdG9waWEub3JnPg0KPiA+ICsNCj4gPiArZGVzY3JpcHRpb246DQo+ID4gKyAgVGhl
+IE1lZGlhVGVrIFhGSSBTZXJEZXMgVC1QSFkgcHJvdmlkZXMgdGhlIHBoeXNpY2FsIFNlckRlcyBs
+YW5lcw0KPiA+ICsgIHVzZWQgYnkgdGhlICgxMEcvNUcpIFVTWEdNSUkgUENTIGFuZCAoMUcvMi41
+RykgTHlueEkgUENTIGZvdW5kDQo+IGluDQo+ID4gKyAgTWVkaWFUZWsncyAxMEctY2FwYWJhbGUg
+U29Dcy4NCj4gPiArDQo+ID4gK3Byb3BlcnRpZXM6DQo+ID4gKyAgJG5vZGVuYW1lOg0KPiA+ICsg
+ICAgcGF0dGVybjogIl5waHlAWzAtOWEtZl0rJCINCj4gDQo+IE5vIG5lZWQgZm9yIG5vZGVuYW1l
+IGluIGluZGl2aWR1YWwgYmluZGluZ3MgZmlsZS4NCj4gDQo+ID4gKw0KPiA+ICsgIGNvbXBhdGli
+bGU6DQo+ID4gKyAgICBjb25zdDogbWVkaWF0ZWssbXQ3OTg4LXhmaS10cGh5DQpBZGQgYSBnZW5l
+cmljIGNvbXBhdGlibGUgIm1lZGlhdGVrLHhmaS10cGh5Ij8NCg0KT3RoZXIgc29jcyBhbHNvIHVz
+ZSB0aGlzIHBoeSBidXQgbm90IHVwc3RyZWFtLg0KDQo+ID4gKw0KPiA+ICsgIHJlZzoNCj4gPiAr
+ICAgIG1heEl0ZW1zOiAxDQo+ID4gKw0KPiA+ICsgIGNsb2NrczoNCj4gPiArICAgIGl0ZW1zOg0K
+PiA+ICsgICAgICAtIGRlc2NyaXB0aW9uOiBYRkkgUEhZIGNsb2NrDQo+ID4gKyAgICAgIC0gZGVz
+Y3JpcHRpb246IFhGSSByZWdpc3RlciBjbG9jaw0KPiA+ICsNCj4gPiArICBjbG9jay1uYW1lczoN
+Cj4gPiArICAgIGl0ZW1zOg0KPiA+ICsgICAgICAtIGNvbnN0OiB4ZmlwbGwNCj4gPiArICAgICAg
+LSBjb25zdDogdG9weHRhbA0KPiA+ICsNCj4gPiArICByZXNldHM6DQo+ID4gKyAgICBpdGVtczoN
+Cj4gPiArICAgICAgLSBkZXNjcmlwdGlvbjogUEVYVFAgcmVzZXQNCj4gPiArDQo+ID4gKyAgbWVk
+aWF0ZWssdXN4Z21paS1wZXJmb3JtYW5jZS1lcnJhdGE6DQo+ID4gKyAgICAkcmVmOiAvc2NoZW1h
+cy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy9mbGFnDQo+ID4gKyAgICBkZXNjcmlwdGlvbjoNCj4g
+PiArICAgICAgT25lIGluc3RhbmNlIG9mIHRoZSBULVBIWSBvbiBNVDc5ODggc3VmZmVycyBmcm9t
+IGENCj4gcGVyZm9ybWFuY2UNCj4gPiArICAgICAgcHJvYmxlbSBpbiAxMEdCYXNlLVIgbW9kZSB3
+aGljaCBuZWVkcyBhIHdvcmstYXJvdW5kIGluIHRoZQ0KPiBkcml2ZXIuDQo+IA0KPiBDYW4geW91
+IGV4cGxhaW4gd2hhdCBpcyB0aGlzIGlzc3VlIGFuZCBlcnJhdGEgYWJvdXQgKGV4Y2VwdA0KPiBw
+ZXJmb3JtYW5jZSk/DQo+IA0KPiA+ICsgICAgICBUaGUgd29yay1hcm91bmQgaXMgZW5hYmxlZCB1
+c2luZyB0aGlzIGZsYWcuDQo+ID4gKw0KPiA+ICsgICIjcGh5LWNlbGxzIjoNCj4gPiArICAgIGNv
+bnN0OiAwDQo+ID4gKw0KPiA+ICtyZXF1aXJlZDoNCj4gPiArICAtIGNvbXBhdGlibGUNCj4gPiAr
+ICAtIHJlZw0KPiA+ICsgIC0gY2xvY2tzDQo+ID4gKyAgLSBjbG9jay1uYW1lcw0KPiA+ICsgIC0g
+cmVzZXRzDQo+ID4gKyAgLSAiI3BoeS1jZWxscyINCj4gPiArDQo+ID4gK2FkZGl0aW9uYWxQcm9w
+ZXJ0aWVzOiBmYWxzZQ0KPiANCj4gDQo+IEJlc3QgcmVnYXJkcywNCj4gS3J6eXN6dG9mDQo+IA0K
 
