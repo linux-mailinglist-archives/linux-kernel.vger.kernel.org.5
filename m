@@ -1,158 +1,108 @@
-Return-Path: <linux-kernel+bounces-51544-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51545-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8A08848C5B
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 10:08:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 204F7848C5C
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 10:09:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D98F5B21444
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 09:08:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D11AF282053
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 09:09:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 097AD15AD0;
-	Sun,  4 Feb 2024 09:08:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D69415AD0;
+	Sun,  4 Feb 2024 09:09:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="c7kSfMDH";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="WAqqFhlt";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="el4UZjvr";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="oMPicvEC"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="gncM030U"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86B2714A8F;
-	Sun,  4 Feb 2024 09:08:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6624614AA0
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 09:09:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707037713; cv=none; b=h83qlFwfcjLmIqkcYo9mmFLf8bCsvwNA/PJFTbj8CYBiYzxFNAVgLE3m6EG317va4ZoqL/YbCSklidhcuv4220hzEf71RFkAakeJTiHxUDdnOvzD1S5GxMAhDzPinKiVY5xMDET+ai3F6im1YOkOTbGoVXG+K0tOFOvIKV9uziQ=
+	t=1707037778; cv=none; b=T2hs9FGPkm5FqZCjNNwg8CH957qibJykAsLUTDgCasO/NFLO+FXnu2LJabra3b7oGm/K1XTQSO0PjGYnp63eUrZ1Sy38HRF4c1eOFJcbOrM3wkB8qPb5mvrjLt8n+yBlLujk+pP+qtvOcbv+sT9ZIeIIOD+v2eARIB9Dxd3i9YY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707037713; c=relaxed/simple;
-	bh=fnRsaTlq67FXcTEhJ5s4Dz1L+z/4ixVqsmLdVNLWIYU=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PZePdYYjzNcYE0cBKczLeRgYSdJiDLU3rm9ihs5CXqyYQUgPpfcGEzth3/qB3AsmnkxrgNR36w5bgNKF3sRjjA2Ql5plwWhTCDrgJzChDFSKS1pPdyhpmYxy5UR9Iw0HN8qk8QbfU1FHoqRR1kf+7p78zhtvkFgklBPzUN49LDk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=c7kSfMDH; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=WAqqFhlt; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=el4UZjvr; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=oMPicvEC; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E341D21DB9;
-	Sun,  4 Feb 2024 09:08:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707037709; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8zZk9am+/llx2FeDEWS0fQshv+0W3QWllyxtRYVXBUY=;
-	b=c7kSfMDHkhansuGk//Ywvc9n3uV2hjOg1xdoSl3UnVA3o8v2+r+F9eoTEIsyWBbli78L7N
-	B43N0XlV44iKZCN3a7T8Hq5cekbUz5wp5MI0UzfC6wlTDszTH1epxqmr/UltA5OVMaM9N+
-	M1/5jctR15UNB6lUOgSV0jfMmz5uzOM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707037709;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8zZk9am+/llx2FeDEWS0fQshv+0W3QWllyxtRYVXBUY=;
-	b=WAqqFhltMafA4AyC9dND7m83GW4DuPPWJ+stcc/9FM3DXCzbULegQVc3QsqoN0/u1Imsid
-	Bqd9TpHBPxAdHZDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707037708; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8zZk9am+/llx2FeDEWS0fQshv+0W3QWllyxtRYVXBUY=;
-	b=el4UZjvrhG0sBWO0+GlJ6cG2lIXfPin5ssbVMLevkFFghAA1ZUm0+7HI5zNm0YkhN9mjRX
-	QKrquvdDakw7l6/gPpy8c4wCYfDqhTTDjDMDQfwSJXUrYu4XVahfNkvNcMq9AXhblgKcDC
-	rulzzSPGKiGLnO1N5oJTstk03g5WC/w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707037708;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8zZk9am+/llx2FeDEWS0fQshv+0W3QWllyxtRYVXBUY=;
-	b=oMPicvEC3PfeSgpbcVPPh3oM/MTk1spcYnquD69ZgISO9T0lKwby9eGZp8loU0sPxG+emz
-	SkV91NV3J4GmNHBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 84BD91338E;
-	Sun,  4 Feb 2024 09:08:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 1yNmHgxUv2UvAQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Sun, 04 Feb 2024 09:08:28 +0000
-Date: Sun, 04 Feb 2024 10:08:28 +0100
-Message-ID: <87a5ogbnqr.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	linux-sound@vger.kernel.org,
-	Daniel Mack <daniel@zonque.org>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	Robert Jarzmik <robert.jarzmik@free.fr>,
-	linux-arm-kernel@lists.infradead.org,
-	Mark Brown <broonie@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sound: remove duplicated CONFIG_SND_PXA2XX_AC97 entry
-In-Reply-To: <CAK7LNAQExdrSmucgzj8UHcgvXjKjdLqkiww+cuUN6EBzkJAy3w@mail.gmail.com>
-References: <20240204090223.37621-1-masahiroy@kernel.org>
-	<CAK7LNAQExdrSmucgzj8UHcgvXjKjdLqkiww+cuUN6EBzkJAy3w@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1707037778; c=relaxed/simple;
+	bh=QBfO/fVBUGbd2B+gQQfdgwvVTKuSgWnOSx8bYhh8dmQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=N/mbnSLyM5p/i+X/mYpLCp0/b+IqytkwazOXjmKFW7Dr/39I9dmJ4Zf30mjhtHhB5XhUSkv2pAQTIvfGVwv6WRgRhVQO1H9h2YZgYx62zXrrnd7fcSyHeMg/ojWbSu5cjLfLil4CRe6pWieWVRm37c74HODodJi3K/Lc09MJseE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=gncM030U; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a359e6fde44so358039666b.3
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 01:09:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1707037774; x=1707642574; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=x+bOGtvhSdoCBkpFP05S+UJkiX09M/YWlTNg9SFndfw=;
+        b=gncM030UZAvl2LB2ccvmneHHmycj76VEuddzmT1PE7mWq/IrGHLGNa/KnJ9siLgn/p
+         0Sv7PI8XZmDqhI7Qokokz4uOV7SoNpeiHmzVA1HwoyrYqu/CAtqlJGyz+vy8uSx87kh5
+         /GQtFA/MzQIe8Ln0EqV4rStiC6A6ZF6MkOayk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707037774; x=1707642574;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=x+bOGtvhSdoCBkpFP05S+UJkiX09M/YWlTNg9SFndfw=;
+        b=VHqcbAxRlLKyxjb19kLrNHZq4NdrTFmwiEtL5OIAfolA9Z/7DT33JO0ZxJFXseLlYR
+         Jy1JMkF6TpyCyDofSYyan5g8RSMnMxazXxi70ngJWyq6nfTWU2/LnpXn9AtNfk/Dqu5L
+         0DXygH46FxJ+4fjIGpVtRcy/XxQ7dbCUYkGVei78cHn6IvfIqSk7K18dVgztS4IWQ189
+         Cs5RAbnck6IXkUWq7HPh0QtI6zFfbwLMJdGOwBlREM4caw3xC3xRjjKCElsdCFW7asSj
+         O621RGdAiDr1ql2sV3Tq3w5aNDrtVDhzojc2sYTD3W6zf4l4pWQMyF1Zvca4kYRqiLZ1
+         rtIg==
+X-Gm-Message-State: AOJu0YysAg/rUYo2EnII5OCv53M5oxt1ESWR0TvGZrJbeciHkLgP+tkh
+	tcaUGfHMDOc2XC0fFbgEWEUZPANh/o+UOg0tqCh2j6rFIYyEBVO0fcvK6XJeiYl+Bu1WUYY2voP
+	i170=
+X-Google-Smtp-Source: AGHT+IFpDeGOADLd1n5XnCCdM49/S2LiTPsOVRh4/ToYxFYMxP/QWlr9wQu2eKxt8f8+J7s84+WSjQ==
+X-Received: by 2002:a17:907:994a:b0:a36:5b3c:be40 with SMTP id kl10-20020a170907994a00b00a365b3cbe40mr10212115ejc.58.1707037774322;
+        Sun, 04 Feb 2024 01:09:34 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUu5oPxkeCr0ZvH4X3YbotbcA6P4pIlPqrS0ChPpnGMuf9csOxZOTq5Pec0EAb8y0qDfOJ3bvMFyoiPjkMIlnI9szLLX9g6xsj0vOgk
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
+        by smtp.gmail.com with ESMTPSA id ld4-20020a1709079c0400b00a3634a461f9sm2911307ejc.109.2024.02.04.01.09.33
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Feb 2024 01:09:33 -0800 (PST)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55783b7b47aso4687593a12.0
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 01:09:33 -0800 (PST)
+X-Received: by 2002:aa7:d4d1:0:b0:55e:eb81:2db0 with SMTP id
+ t17-20020aa7d4d1000000b0055eeb812db0mr2894600edr.38.1707037772839; Sun, 04
+ Feb 2024 01:09:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Level: 
-X-Spamd-Bar: /
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=el4UZjvr;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=oMPicvEC
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-0.80 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-1.79)[93.71%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[free.fr,gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[perex.cz,suse.com,vger.kernel.org,zonque.org,gmail.com,free.fr,lists.infradead.org,kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -0.80
-X-Rspamd-Queue-Id: E341D21DB9
-X-Spam-Flag: NO
+MIME-Version: 1.0
+References: <20240204085155.6745-1-sanpeqf@gmail.com>
+In-Reply-To: <20240204085155.6745-1-sanpeqf@gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sun, 4 Feb 2024 09:09:16 +0000
+X-Gmail-Original-Message-ID: <CAHk-=wgxkAgRPb7ZZ+w7UHhp2OuV=pc_C7D+hEYcA65ieMFt0g@mail.gmail.com>
+Message-ID: <CAHk-=wgxkAgRPb7ZZ+w7UHhp2OuV=pc_C7D+hEYcA65ieMFt0g@mail.gmail.com>
+Subject: Re: [PATCH] lib/bch.c: increase bitrev single conversion length
+To: John Sanpe <sanpeqf@gmail.com>
+Cc: linux-mm@kvack.org, akpm@linux-foundation.org, rdunlap@infradead.org, 
+	unixbhaskar@gmail.com, mm-commits@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Sun, 04 Feb 2024 10:04:32 +0100,
-Masahiro Yamada wrote:
-> 
-> Maybe, the patch subject "ASoC: pxa:" might be better than "sound:"
-> so it matches the change history in this directory.
+On Sun, 4 Feb 2024 at 08:52, John Sanpe <sanpeqf@gmail.com> wrote:
+>
+> Optimized the performance of the three functions (load_ecc8 store_ecc8
+> and bch_encode) using a larger calculation length.
 
-Yes, care to resubmit with that prefix?
+Honestly, with any optimization, you should quote performance numbers.
 
+Also, it's questionable how meaningful this is, considering that most
+architectures dop the bit swap with a byte lookup, and the 32-bit bit
+swap is just four byte lookups. For all we know, this only makes
+things worse.
 
-thanks,
+Finally, if you actually want to do things in bigger chunks, that
+->swap_bits conditional should probably be moved out of the loops, not
+just have that questionable 8->32 bit expansion.
 
-Takashi
+            Linus
 
