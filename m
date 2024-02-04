@@ -1,58 +1,56 @@
-Return-Path: <linux-kernel+bounces-51526-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 228F8848C30
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 09:32:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0BFB848C35
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 09:35:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBC281F22C0A
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 08:32:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48A28B244AC
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 08:35:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ADD5171A4;
-	Sun,  4 Feb 2024 08:31:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 493B114296;
+	Sun,  4 Feb 2024 08:35:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="JaQRKEh9"
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA71715AE0;
-	Sun,  4 Feb 2024 08:31:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LChvhoaI"
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51C011427A
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 08:35:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707035505; cv=none; b=KSUI0KAR8spBUseVr7jNHIkJGOMBCsIREc41iOnxnv8GhF81xyVPrulNjpKlTRcThNAIHv8OkBtoAJmJv3jKzxkUGbFqGdni41mBpkbqD98E+kO2qlCO+TY4R2F5GhwZmtaROWDb/qdpo37jhTUlfcdaRurSb7mCbcoN03N6IAY=
+	t=1707035733; cv=none; b=EZ5IdQApmjTifnQGsVAzME++N2eQ5ETon4lnUDvnnx4tqPnX9wnRQ/gVH6Mk8vxpm4XFShXp/jPBfdpioJAzCS72cNkVz2UBqhTsjQ0gubwIR5bKs8njyysNY+GgUL0KRhA/NkDGwhBF+Lu8LUaNUb+7C+4yvDyQClwfSZvO/Js=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707035505; c=relaxed/simple;
-	bh=zuZ16cXlvgwszlj4UY3oSjQsOuqVS9Gy8T9k3jLpus4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TCl551nN79dE9HGJhR2tik3t2NFYsoxZd84fcMa7T7YJ4FMw2JbCQ7HKNIFRFebLYtaOmjEbKdMVA39skGEun2c3MPUCBkK6NAxJXvu/qjus3Ij9aqnF39yyEkH1HFAwc40+QfGlAuTxuyPOLl+cUjyQmoIsrbSa3onC0mohOVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=JaQRKEh9; arc=none smtp.client-ip=220.197.31.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=14TOX
-	UYYbIa7nuVrv7wPD6Hm67H8jXpzC51fRcD2YDI=; b=JaQRKEh9BwNt7ESr+7YWP
-	16ewiOYq3OUnVLx+mE5ZgxGytIvGcvSaGohW+d0v75n7TKDyiKA5G5LQpC+XJFw/
-	MsuZJOyr9WMrAfJ/10S+WuSq++Lj0xnyG1AWoCIq5/S8FqZ/5Frc7cm5Gaq8W3aN
-	CYUGg3yjryAqEXnzGKHplc=
-Received: from localhost.localdomain (unknown [39.144.137.116])
-	by gzga-smtp-mta-g1-0 (Coremail) with SMTP id _____wDnM2Y+S79lBerCAg--.45702S3;
-	Sun, 04 Feb 2024 16:30:58 +0800 (CST)
-From: Xing Tong Wu <xingtong_wu@163.com>
-To: Pavel Machek <pavel@ucw.cz>,
-	Lee Jones <lee@kernel.org>,
-	linux-leds@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Hans de Goede <hdegoede@redhat.com>,
-	Xing Tong Wu <xingtong.wu@siemens.com>,
-	Tobias Schaffner <tobias.schaffner@siemens.com>,
-	Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-	Henning Schild <henning@hennsch.de>
-Subject: [PATCH RESEND 1/1] leds: simatic-ipc-leds-gpio: add support for module BX-59A
-Date: Sun,  4 Feb 2024 16:30:48 +0800
-Message-Id: <20240204083048.2458-2-xingtong_wu@163.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240204083048.2458-1-xingtong_wu@163.com>
-References: <20240204083048.2458-1-xingtong_wu@163.com>
+	s=arc-20240116; t=1707035733; c=relaxed/simple;
+	bh=MCPeAivxQ0qxlpWbWJvDut4U8iutpFpR6TzSF2LDF1s=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DK0frTV7udZBItmUUeHibRGIfRX9t49OmQgQbmU0jfuEWvuymkz/EficcmukCh0wh6KL0ogIUDG5GCKRtVrlN4f8FDrVSY+voCMheK9Nythd7i7EAeIZLrTJa3nD1fa95hjARDwf+UfE1J4+mvKfBL6rhybu1r+z057a7eKrVE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LChvhoaI; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707035727;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Pbt84SQ0eMAct0yO+KuRCNRVPEgcExEkWU6nZFC8ea8=;
+	b=LChvhoaIhcZ6/hsqUPJEAUZUHV/gRdrP42CjAcuvwiYvTOsVaLLc6efBOMJk+LpmTog1wQ
+	pOm5xY1EOmu42MeHI95DQcyqYCQ588RUrZQD/l1Yvj+HkWCihFqZ9KntIDAlmJJ640OYSR
+	iaAGKZn+vdSF+CHtaOX71CxoxmjGVKU=
+From: chengming.zhou@linux.dev
+To: hannes@cmpxchg.org,
+	yosryahmed@google.com,
+	nphamcs@gmail.com,
+	akpm@linux-foundation.org
+Cc: linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	chengming.zhou@linux.dev,
+	Chengming Zhou <zhouchengming@bytedance.com>
+Subject: [PATCH] mm/zswap: invalidate old entry when store fail or !zswap_enabled
+Date: Sun,  4 Feb 2024 08:34:11 +0000
+Message-Id: <20240204083411.3762683-1-chengming.zhou@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,110 +58,110 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDnM2Y+S79lBerCAg--.45702S3
-X-Coremail-Antispam: 1Uf129KBjvJXoWxXr1kurWUJw15Xry7JFy7Jrb_yoWrXF1fpF
-	nrJ39YkFW5J3Zrtw13CFW7ZF93u3WxKr97tFZrGa90g3Wjvr10qF9rAFW3XFZ5J3ykuF17
-	GF1rtFyUur4DAwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jqxRfUUUUU=
-X-CM-SenderInfo: p0lqw35rqjs4rx6rljoofrz/xtbBEAd60GVOCGzapQAAsN
+X-Migadu-Flow: FLOW_OUT
 
-From: Xing Tong Wu <xingtong.wu@siemens.com>
+From: Chengming Zhou <zhouchengming@bytedance.com>
 
-This is used for the Siemens Simatic IPC BX-59A, which has its LEDs
-connected to GPIOs provided by the Nuvoton NCT6126D
+We may encounter duplicate entry in the zswap_store():
 
-Signed-off-by: Xing Tong Wu <xingtong.wu@siemens.com>
+1. swap slot that freed to per-cpu swap cache, doesn't invalidate
+   the zswap entry, then got reused. This has been fixed.
+
+2. !exclusive load mode, swapin folio will leave its zswap entry
+   on the tree, then swapout again. This has been removed.
+
+3. one folio can be dirtied again after zswap_store(), so need to
+   zswap_store() again. This should be handled correctly.
+
+So we must invalidate the old duplicate entry before insert the
+new one, which actually doesn't have to be done at the beginning
+of zswap_store(). And this is a normal situation, we shouldn't
+WARN_ON(1) in this case, so delete it. (The WARN_ON(1) seems want
+to detect swap entry UAF problem? But not very necessary here.)
+
+The good point is that we don't need to lock tree twice in the
+store success path.
+
+Note we still need to invalidate the old duplicate entry in the
+store failure path, otherwise the new data in swapfile could be
+overwrite by the old data in zswap pool when lru writeback.
+
+We have to do this even when !zswap_enabled since zswap can be
+disabled anytime. If the folio store success before, then got
+dirtied again but zswap disabled, we won't invalidate the old
+duplicate entry in the zswap_store(). So later lru writeback
+may overwrite the new data in swapfile.
+
+This fix is not good, since we have to grab lock to check everytime
+even when zswap is disabled, but it's simple.
+
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 ---
- .../leds/simple/simatic-ipc-leds-gpio-core.c  |  1 +
- .../simple/simatic-ipc-leds-gpio-f7188x.c     | 42 ++++++++++++++++---
- 2 files changed, 37 insertions(+), 6 deletions(-)
+ mm/zswap.c | 33 +++++++++++++++------------------
+ 1 file changed, 15 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/leds/simple/simatic-ipc-leds-gpio-core.c b/drivers/leds/simple/simatic-ipc-leds-gpio-core.c
-index 667ba1bc3a30..85003fd7f1aa 100644
---- a/drivers/leds/simple/simatic-ipc-leds-gpio-core.c
-+++ b/drivers/leds/simple/simatic-ipc-leds-gpio-core.c
-@@ -56,6 +56,7 @@ int simatic_ipc_leds_gpio_probe(struct platform_device *pdev,
- 	case SIMATIC_IPC_DEVICE_127E:
- 	case SIMATIC_IPC_DEVICE_227G:
- 	case SIMATIC_IPC_DEVICE_BX_21A:
-+	case SIMATIC_IPC_DEVICE_BX_59A:
- 		break;
- 	default:
- 		return -ENODEV;
-diff --git a/drivers/leds/simple/simatic-ipc-leds-gpio-f7188x.c b/drivers/leds/simple/simatic-ipc-leds-gpio-f7188x.c
-index c7c3a1f986e6..783e74e9a805 100644
---- a/drivers/leds/simple/simatic-ipc-leds-gpio-f7188x.c
-+++ b/drivers/leds/simple/simatic-ipc-leds-gpio-f7188x.c
-@@ -17,7 +17,10 @@
+diff --git a/mm/zswap.c b/mm/zswap.c
+index cd67f7f6b302..0b7599f4116d 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -1518,18 +1518,8 @@ bool zswap_store(struct folio *folio)
+ 		return false;
  
- #include "simatic-ipc-leds-gpio.h"
+ 	if (!zswap_enabled)
+-		return false;
++		goto check_old;
  
--static struct gpiod_lookup_table simatic_ipc_led_gpio_table = {
-+static struct gpiod_lookup_table *led_lookup_table;
-+static struct gpiod_lookup_table *led_lookup_table_extra;
-+
-+static struct gpiod_lookup_table simatic_ipc_led_gpio_table_227g = {
- 	.dev_id = "leds-gpio",
- 	.table = {
- 		GPIO_LOOKUP_IDX("gpio-f7188x-2", 0, NULL, 0, GPIO_ACTIVE_LOW),
-@@ -30,7 +33,7 @@ static struct gpiod_lookup_table simatic_ipc_led_gpio_table = {
- 	},
- };
+-	/*
+-	 * If this is a duplicate, it must be removed before attempting to store
+-	 * it, otherwise, if the store fails the old page won't be removed from
+-	 * the tree, and it might be written back overriding the new data.
+-	 */
+-	spin_lock(&tree->lock);
+-	entry = zswap_rb_search(&tree->rbroot, offset);
+-	if (entry)
+-		zswap_invalidate_entry(tree, entry);
+-	spin_unlock(&tree->lock);
+ 	objcg = get_obj_cgroup_from_folio(folio);
+ 	if (objcg && !obj_cgroup_may_zswap(objcg)) {
+ 		memcg = get_mem_cgroup_from_objcg(objcg);
+@@ -1608,15 +1598,11 @@ bool zswap_store(struct folio *folio)
+ 	/* map */
+ 	spin_lock(&tree->lock);
+ 	/*
+-	 * A duplicate entry should have been removed at the beginning of this
+-	 * function. Since the swap entry should be pinned, if a duplicate is
+-	 * found again here it means that something went wrong in the swap
+-	 * cache.
++	 * The folio could be dirtied again, invalidate the possible old entry
++	 * before insert this new entry.
+ 	 */
+-	while (zswap_rb_insert(&tree->rbroot, entry, &dupentry) == -EEXIST) {
+-		WARN_ON(1);
++	while (zswap_rb_insert(&tree->rbroot, entry, &dupentry) == -EEXIST)
+ 		zswap_invalidate_entry(tree, dupentry);
+-	}
+ 	if (entry->length) {
+ 		INIT_LIST_HEAD(&entry->lru);
+ 		zswap_lru_add(&entry->pool->list_lru, entry);
+@@ -1638,6 +1624,17 @@ bool zswap_store(struct folio *folio)
+ reject:
+ 	if (objcg)
+ 		obj_cgroup_put(objcg);
++check_old:
++	/*
++	 * If zswap store fail or zswap disabled, we must invalidate possible
++	 * old entry which previously stored by this folio. Otherwise, later
++	 * writeback could overwrite the new data in swapfile.
++	 */
++	spin_lock(&tree->lock);
++	entry = zswap_rb_search(&tree->rbroot, offset);
++	if (entry)
++		zswap_invalidate_entry(tree, entry);
++	spin_unlock(&tree->lock);
+ 	return false;
  
--static struct gpiod_lookup_table simatic_ipc_led_gpio_table_extra = {
-+static struct gpiod_lookup_table simatic_ipc_led_gpio_table_extra_227g = {
- 	.dev_id = NULL, /* Filled during initialization */
- 	.table = {
- 		GPIO_LOOKUP_IDX("gpio-f7188x-3", 6, NULL, 6, GPIO_ACTIVE_HIGH),
-@@ -39,16 +42,43 @@ static struct gpiod_lookup_table simatic_ipc_led_gpio_table_extra = {
- 	},
- };
- 
-+static struct gpiod_lookup_table simatic_ipc_led_gpio_table_bx_59a = {
-+	.dev_id = "leds-gpio",
-+	.table = {
-+		GPIO_LOOKUP_IDX("gpio-f7188x-2", 0, NULL, 0, GPIO_ACTIVE_LOW),
-+		GPIO_LOOKUP_IDX("gpio-f7188x-2", 3, NULL, 1, GPIO_ACTIVE_LOW),
-+		GPIO_LOOKUP_IDX("gpio-f7188x-5", 3, NULL, 2, GPIO_ACTIVE_LOW),
-+		GPIO_LOOKUP_IDX("gpio-f7188x-5", 2, NULL, 3, GPIO_ACTIVE_LOW),
-+		GPIO_LOOKUP_IDX("gpio-f7188x-7", 7, NULL, 4, GPIO_ACTIVE_LOW),
-+		GPIO_LOOKUP_IDX("gpio-f7188x-7", 4, NULL, 5, GPIO_ACTIVE_LOW),
-+		{} /* Terminating entry */
-+	}
-+};
-+
- static int simatic_ipc_leds_gpio_f7188x_probe(struct platform_device *pdev)
- {
--	return simatic_ipc_leds_gpio_probe(pdev, &simatic_ipc_led_gpio_table,
--					   &simatic_ipc_led_gpio_table_extra);
-+	const struct simatic_ipc_platform *plat = pdev->dev.platform_data;
-+
-+	switch (plat->devmode) {
-+	case SIMATIC_IPC_DEVICE_227G:
-+		led_lookup_table = &simatic_ipc_led_gpio_table_227g;
-+		led_lookup_table_extra = &simatic_ipc_led_gpio_table_extra_227g;
-+		break;
-+	case SIMATIC_IPC_DEVICE_BX_59A:
-+		led_lookup_table = &simatic_ipc_led_gpio_table_bx_59a;
-+		break;
-+	default:
-+		return -ENODEV;
-+	}
-+
-+	return simatic_ipc_leds_gpio_probe(pdev, led_lookup_table,
-+					   led_lookup_table_extra);
- }
- 
- static void simatic_ipc_leds_gpio_f7188x_remove(struct platform_device *pdev)
- {
--	simatic_ipc_leds_gpio_remove(pdev, &simatic_ipc_led_gpio_table,
--				     &simatic_ipc_led_gpio_table_extra);
-+	simatic_ipc_leds_gpio_remove(pdev, led_lookup_table,
-+				     led_lookup_table_extra);
- }
- 
- static struct platform_driver simatic_ipc_led_gpio_driver = {
+ shrink:
 -- 
-2.25.1
+2.40.1
 
 
