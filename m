@@ -1,70 +1,71 @@
-Return-Path: <linux-kernel+bounces-51852-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4729849005
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 20:12:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 227E7849007
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 20:13:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75434283DE1
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 19:12:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B1A21C22255
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 19:13:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A807824A0E;
-	Sun,  4 Feb 2024 19:12:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EF25250E2;
+	Sun,  4 Feb 2024 19:13:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxtx.org header.i=@linuxtx.org header.b="P/8ZRWQM"
-Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
+	dkim=pass (1024-bit key) header.d=linuxtx.org header.i=@linuxtx.org header.b="ACxJ2jgU"
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 368FE286A6
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 19:12:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D671D2C68D
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 19:13:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707073946; cv=none; b=QF+v71xn6A4ZCZ317zUUPL45ylFqEyXVFjG9vtPZeAelpGNmJ9mx25rlUZVgffmmydDyupfhFdgQib1ehjX1oEaCrzNKrCyFLMEjkrnb4B7iQ3MytB/oy4H4aF3bPkK8i3hCHqIPRmbIRpL521se8xbAylTh3D5+uJt4pqc6ybA=
+	t=1707074010; cv=none; b=A5rEXqZcJsPBLQc+9Hh255NpRCJVNLLZKcTIwyYqQ30E4dEBjmT8QPzHU6UQNEb1dizwJQTj5m4c1CmKrkj/L0pQSG2zPCXsFMYNXkQgGvhJD5hBhk9HdAG9VEA7XzHhxF8bl3VI8V89AQogXpsg9eaSUF1sP2I/erU6d0W6Bfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707073946; c=relaxed/simple;
-	bh=dngDwt7GkUFW+WOmryEM+0Fgzxw9VBep+5sR6Yc+KaU=;
+	s=arc-20240116; t=1707074010; c=relaxed/simple;
+	bh=uIV8yPCaemCWYTYhcbTQ1E03RuVcD/V4XsP6G25t6qI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ctx8nRkpteaEKgychUcV+nUj5pa1QsOk9ZJhSJpURixMafQjYaU/6N7S3J98srM0fsRV08VS2DTcUEN7U9tJ+KbN9Aiy/jWtpAn9m1Vy94fcKXn8TRg2h2YYo0+d0PeykcxEDSN7dyvRB3eVIE0/ggitKGyBg08evJoupGx8Zho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org; spf=pass smtp.mailfrom=linuxtx.org; dkim=pass (1024-bit key) header.d=linuxtx.org header.i=@linuxtx.org header.b=P/8ZRWQM; arc=none smtp.client-ip=209.85.160.45
+	 Content-Type:Content-Disposition:In-Reply-To; b=H0fvsi/GT//4qxq2xV/SMABE0bKkC7yxvIZ2Zfz+Eq9QCXtv64qChqIjSNvbssLpDXudwDXhGi5g8+k2O2ipsNMYrLjax0IERB2T9OGUuS+hQynUz6vCLnd7oaGrnZeOMLIS2vslFM1xxa2xW/AUf+6Yh8a2qDIHEUwNoWJLIGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org; spf=pass smtp.mailfrom=linuxtx.org; dkim=pass (1024-bit key) header.d=linuxtx.org header.i=@linuxtx.org header.b=ACxJ2jgU; arc=none smtp.client-ip=209.85.167.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxtx.org
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-219452bdf81so927680fac.2
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 11:12:22 -0800 (PST)
+Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3bbc649c275so2152225b6e.0
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 11:13:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google; t=1707073942; x=1707678742; darn=vger.kernel.org;
+        d=linuxtx.org; s=google; t=1707074007; x=1707678807; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=V44kuTI4FeYeOE4w4kZfQ70l9tJbUKoHppYD0bU5HxY=;
-        b=P/8ZRWQMOGMn1kflKmy5+OThGksNkddefC+x42NRklbCPa3vNDXTficGCswtV3Vgo9
-         Qg4oE4bZ1UnoI6PCRO0sEBF1CgZJOodbEJE4dgjcTI86qk8sQVZ7TyPSP9Z6dkOg69uw
-         dw4xcIAiAsKUKs2UiYATCbo44T4X5/hm4ArsQ=
+        bh=NMBJLxdzCUZHxNgMCXY6EWQNsSIVxqVC+bCOw3rRrgY=;
+        b=ACxJ2jgUpoPNjdSj7c9y7bYrxmcRIx7Rj/MOXQ+ER3DuhJXAfHSENohemzrsPMmYGf
+         MFqhELuc24rhwFjT8neny+EBrmjdDmnaNgDxoks7fjlE3s2EKixtoeUTBGijlP4x37Gn
+         LpQHAw41+ShI4R6mrUdwLreN89/1ehL2LC+EU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707073942; x=1707678742;
+        d=1e100.net; s=20230601; t=1707074007; x=1707678807;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=V44kuTI4FeYeOE4w4kZfQ70l9tJbUKoHppYD0bU5HxY=;
-        b=WGvRG9Fv/yVpdJbA4SLfyLfoEY8JMGSa3XAwlMiCcvNC1RPpc181svYdEgpcNU0b+R
-         xhu1/UYrillzN+FN/NuB3dEmmm2FxB77fmDFj5vWdq3yCaD+jyL35h0EMuafJsWz0N2Q
-         ImtD2Lpfh/aTCAlcRfcZSCBXA+QBLAQVvfMgXSGcsnwmBg6q0KxohBV+fQ8TOu2fREUk
-         AL43jEFeF9pC7jv1OYxHp7OKd7m+FCxduxIk2fl6S/FEqitSyZvkTlQ21vT7KhhEEh/w
-         A0nY2B3e/iQKuO6wnmw7+x5Zk+2azZjHunFLU37z2QjOYfgUu7tVm0+9pdrXEIkbLPW+
-         vsQA==
-X-Gm-Message-State: AOJu0Ywq0BrOpbvGo2eP78QFIaQ9AAPO3SGQ56zNBt4VdVTAnH+JqDWS
-	+dTAWIToX/1VFyvgI3fbsM9pzVKuI3v/zDJMPL2asaGX022hLUCc8hJcT4Bmog==
-X-Google-Smtp-Source: AGHT+IFoEciXkOIxqYaFmAtiSWx0h8TIbtqnJK5kEkuGL+7L0S4ewX6yPv3lNosmjQGo1MMjvUuHqQ==
-X-Received: by 2002:a05:6870:1701:b0:214:fd96:486c with SMTP id h1-20020a056870170100b00214fd96486cmr6032758oae.9.1707073942104;
-        Sun, 04 Feb 2024 11:12:22 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWO8RmiC+RtGkwYhNatmlbTWBlloUcajZi95XxaWBOXJMihd79u++kzwXZH3kRwlc4YKUENOKRbHogGbhU9S8evxw1ddy/F7j6uxUAhOLbU5QcGyrXxJ0qX7JXUn5YUsiW/ROwbZt0NiIyQDwBW2f1fzuoLHHE4bEKUYVYfA5n5zfmdSYOm4RaRt6pzRt+4mAmv/w5rsloSXRjE+VTaZQxCHjPZ0F4A1aafMAT37YLLrVgWAW/psOGtN6lfkuNhPurGtT4Zo17Rd7XeRFN/wym4g9ywcyLpPc90+sdf5iFc8UhgMs+oNryzGPeqXcw89o+kqo1MOrg3lvAUdxWu6A2veO9M+q6F11d22KHFyvTr+HKiD4LoDFlUh3k5aie0UpdvNDJ6jD9DJWGdoOed5IBqT22JCK+yoqcJmhc7LqpF5m6X0ZV+C/M4VrVrMDu7mFCnrMSjjc31pXLYoRRCNHeqbRE88Hn/2kgUgEK3CcZmcU21bVssX9PmjQNYSqW1CXgyC3pBRJMwepSesYgpz7uMhaPlz31FWBYDPkZWtQY=
+        bh=NMBJLxdzCUZHxNgMCXY6EWQNsSIVxqVC+bCOw3rRrgY=;
+        b=lX/Z2N6ThDN1mrdCbttnwTljG8M2BQh/qkb21VHuJp9ONWJJYGdX8AHiEMkbWydBGy
+         YfO2JnJouOyJZj4pNZeaVA70eVsJD5/v+FUMb+N8StEa4Kbvn34tu718av2DkfTX1obZ
+         PKHhVuqEdvWmaZrduETAmHCuEZgpP6uh6nqrWIqNPHCEKzmHE1aZIhzc67jWWAeT/bLy
+         vL+eyTulLG1IUm7Se3uvOPoba7FxFi1lDlbvopuNvSilYU6w6lfGRBkoO4dV7noibCxy
+         y3NH7FOKIncjK8alBzPR1Do+pErkQTZ1vFofO44JUFNtG0kkJchrGB8ZkJ7lO+cwqVju
+         Qnug==
+X-Gm-Message-State: AOJu0YwZSzydtfVq8Qqk4Sjt8tZcNquAJMUj7v6yCgY2b2LuB7hV1orv
+	XuOAxN73S11O/y2eetbys/o6grKG/t+ymkYbBeEYKhUia0iiDC7fFMxkS++p4+3AdyzEKJVKOUZ
+	JfA==
+X-Google-Smtp-Source: AGHT+IGo31j0jIpkAEHiVdLI7JeKIGy0HJllS+fUocPk7/M/HdV7aTBaTqP9J/7yJ/WanpX/V7N0Dw==
+X-Received: by 2002:a05:6808:f88:b0:3bf:de0b:9f63 with SMTP id o8-20020a0568080f8800b003bfde0b9f63mr713785oiw.33.1707074006892;
+        Sun, 04 Feb 2024 11:13:26 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWLpSN/WYyo7c9MNor0eUjlUztnqDWJF3+qBwDHfDvsB+3nWU1pnzjR6lbuKX3TJ0QtFUZvt0kokrAGVVZ0qETTQ9wkxykjbRdGqVruOT3GJUECg5y1qiRH0pnSD4F+zjx7URxtKZSBoNcIhqYwFrQJatUInCeUuNk5uKykR1MogCCCr5340pWpfZKVX3Mn7lC1f4W9uLpvJHfxG4S6PAftv8kH6MAFVtIQkTAKDHoAj5D5UsTiqrUPlFD4/+LtvND3WfQjmafHnzwF5JHImfb3V4sCbqx8dtCbdlvy2uhZbvWvtlQNtxM1pPG2UB08w8fAK1zJiQp7o2VrROwmrNmCX8KsN5Csluq843e7uKdMMk9P2h2z7t5HYo1b453I/1t+p+vxGGNOfnfg1r1N3gWxwgoCjXanp8qXqehyRVUiVv3Pu1r293iB17IaKAKZyZBNBIyS2ZZM+w/ef7s9BZNTC97CU8qynMQVMJDt7Ed3XEgM0VluaRbIanO84dVfEo7MB9wQW6+HinDnsllRQ4LbyJZ41v/jCJFweT1sWTk=
 Received: from fedora64.linuxtx.org ([99.47.93.78])
-        by smtp.gmail.com with ESMTPSA id py11-20020a056871e40b00b0021982d72c22sm174396oac.43.2024.02.04.11.12.21
+        by smtp.gmail.com with ESMTPSA id k20-20020a544714000000b003be5eb79182sm1181015oik.49.2024.02.04.11.13.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Feb 2024 11:12:21 -0800 (PST)
+        Sun, 04 Feb 2024 11:13:26 -0800 (PST)
 Sender: Justin Forbes <jmforbes@linuxtx.org>
-Date: Sun, 4 Feb 2024 13:12:20 -0600
+Date: Sun, 4 Feb 2024 13:13:25 -0600
 From: Justin Forbes <jforbes@fedoraproject.org>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: stable@vger.kernel.org, patches@lists.linux.dev,
@@ -74,9 +75,9 @@ Cc: stable@vger.kernel.org, patches@lists.linux.dev,
 	jonathanh@nvidia.com, f.fainelli@gmail.com,
 	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
 	conor@kernel.org, allen.lkml@gmail.com
-Subject: Re: [PATCH 6.7 000/355] 6.7.4-rc2 review
-Message-ID: <Zb_hlG236deI3R4O@fedora64.linuxtx.org>
-References: <20240203174813.681845076@linuxfoundation.org>
+Subject: Re: [PATCH 6.6 000/326] 6.6.16-rc2 review
+Message-ID: <Zb_h1YwV1rt7Rx5S@fedora64.linuxtx.org>
+References: <20240203174810.768708706@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,11 +86,11 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240203174813.681845076@linuxfoundation.org>
+In-Reply-To: <20240203174810.768708706@linuxfoundation.org>
 
-On Sat, Feb 03, 2024 at 09:53:10AM -0800, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.7.4 release.
-> There are 355 patches in this series, all will be posted as a response
+On Sat, Feb 03, 2024 at 09:52:59AM -0800, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.6.16 release.
+> There are 326 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
@@ -97,9 +98,9 @@ On Sat, Feb 03, 2024 at 09:53:10AM -0800, Greg Kroah-Hartman wrote:
 > Anything received after that time might be too late.
 > 
 > The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.4-rc2.gz
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.16-rc2.gz
 > or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
 > and the diffstat can be found below.
 > 
 > thanks,
