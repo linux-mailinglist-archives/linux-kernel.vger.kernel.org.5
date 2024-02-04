@@ -1,43 +1,43 @@
-Return-Path: <linux-kernel+bounces-51520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0941B848C23
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 09:26:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 034D3848C24
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 09:26:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B25DE1F23DC2
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 08:26:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7EDEC1F23E45
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 08:26:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74BC8125B7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D881125BB;
 	Sun,  4 Feb 2024 08:26:40 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5302512B87;
-	Sun,  4 Feb 2024 08:26:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75F1C12B6C;
+	Sun,  4 Feb 2024 08:26:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707035199; cv=none; b=Bz5W+aaiTboPF4ijT9v4gI4LdyRkMFsfqL0VSAWgvx7fng8vhHSHljHa69ZVjV6REz/pxsIoxId6WsjoaFMoXgwAZbDsW7pr5I9ZgaNMlTG8lNy8DIbfpf9KA0CqZh8Ju4bhH1RPwQI0T66Nviz0zJ3zXfFGPz3hk0Y0NSxC8Hs=
+	t=1707035200; cv=none; b=LchtFqPj9NwU9A3AHese6ms0DY+GSBff6e22B3G4xXlf5Vak6gbsm21aXT3cUxey7x8SpftC51NH3+PuxztQsjlIuOXHmOw/svm+G5rZ2YdNd0OqgOhRcEeaRm/SWp4cgR6ftpIKgMYn6DxB1t8AC/PlUbin7eeOmupAsM0mPzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707035199; c=relaxed/simple;
-	bh=YjOazet17udlSB/hXsciOQX5vFpcDQxolOh3Op7toD4=;
+	s=arc-20240116; t=1707035200; c=relaxed/simple;
+	bh=4zXDJkLQztiGlvBIDP7y8d8iYlaOAyzhpsC76GSWYcE=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=K7soT5uY+L2vRJvGubzudqyNAbJS9sjvJR4th6sSQnwx0eUXqGm6FXLEfTfTwG0OuxdkPKnLHykZMt5wssCZaSASaDDwtCpb5ZlX72sqIgt5hiQjnrRJDGbaOXfR7Whp/jY9QiLQvYcNJ3Ubq+uozf+PGcGjdP9+KtJl1L8pvXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+	 MIME-Version:Content-Type; b=Le25qlFP+rPIsm0yypZKpC762HD3w3ElZxYmlvXQ4HOvFD6FU+LkrGAZGiENeuOP/8FbxR8SClKdjMhvcc48yHCdcUM4eTtcr4AifUqVywkAxNxkYEoC043kinBjint0mf2mjSFdji31HEo78ZAvG0ExkMSXr6DEudMyr4DmjG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TSMyd6KVnz1xmyC;
-	Sun,  4 Feb 2024 16:25:29 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TSMyQ0lJtzsWrZ;
+	Sun,  4 Feb 2024 16:25:18 +0800 (CST)
 Received: from kwepemm600017.china.huawei.com (unknown [7.193.23.234])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0FA311A016C;
-	Sun,  4 Feb 2024 16:26:34 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 3DF7618001A;
+	Sun,  4 Feb 2024 16:26:35 +0800 (CST)
 Received: from localhost.localdomain (10.175.112.125) by
  kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 4 Feb 2024 16:26:32 +0800
+ 15.1.2507.35; Sun, 4 Feb 2024 16:26:33 +0800
 From: Tong Tiangen <tongtiangen@huawei.com>
 To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
 	Borislav Petkov <bp@alien8.de>, <wangkefeng.wang@huawei.com>, Dave Hansen
@@ -48,9 +48,9 @@ To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
 CC: <linux-kernel@vger.kernel.org>, <linux-edac@vger.kernel.org>,
 	<linux-mm@kvack.org>, Tong Tiangen <tongtiangen@huawei.com>, Guohanjun
 	<guohanjun@huawei.com>
-Subject: [PATCH -next v5 1/3] x86/mce: remove redundant fixup type EX_TYPE_COPY
-Date: Sun, 4 Feb 2024 16:26:25 +0800
-Message-ID: <20240204082627.3892816-2-tongtiangen@huawei.com>
+Subject: [PATCH -next v5 2/3] x86/mce: set MCE_IN_KERNEL_COPYIN for DEFAULT_MCE_SAFE exception
+Date: Sun, 4 Feb 2024 16:26:26 +0800
+Message-ID: <20240204082627.3892816-3-tongtiangen@huawei.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240204082627.3892816-1-tongtiangen@huawei.com>
 References: <20240204082627.3892816-1-tongtiangen@huawei.com>
@@ -65,84 +65,108 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemm600017.china.huawei.com (7.193.23.234)
 
-Since commit 034ff37d3407 ("x86: rewrite '__copy_user_nocache' function")
-rewrited __copy_user_nocache() uses EX_TYPE_UACCESS instead of
-EX_TYPE_COPY, there is no user for EX_TYPE_COPY, so remove it.
+From: Kefeng Wang <wangkefeng.wang@huawei.com>
 
+Currently, some kernel memory copy scenarios[1][2][3] which use
+copy_mc_{user_}highpage() to safely abort copy and report 'bytes not copied'
+when accessing the poisoned source page, a recoverable synchronous exception
+generated in the processing and the fixup type EX_TYPE_DEFAULT_MCE_SAFE is
+used to distinguish from other exceptions, and an asynchronous
+memory_failure_queue() is called to handle memory failure of the source page
+, but scheduling someone else to handle it at some future point is
+unpredictable and risky.
+
+The better way is immediately deal with it during current context,
+fortunately, there is already a framework to synchronously call
+memory_failure(), see kill_me_never() in do_machine_check(), a task work is
+triggered once MCE_IN_KERNEL_COPYIN is set, in order to fix above issue,
+setting MCE_IN_KERNEL_COPYIN for EX_TYPE_DEFAULT_MCE_SAFE case too.
+
+[1] commit d302c2398ba2 ("mm, hwpoison: when copy-on-write hits poison, take page offline")
+[2] commit 1cb9dc4b475c ("mm: hwpoison: support recovery from HugePage copy-on-write faults")
+[3] commit 6b970599e807 ("mm: hwpoison: support recovery from ksm_might_need_to_copy()")
+
+Reviewed-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
 ---
- arch/x86/include/asm/asm.h                 | 3 ---
- arch/x86/include/asm/extable_fixup_types.h | 2 +-
- arch/x86/kernel/cpu/mce/severity.c         | 1 -
- arch/x86/mm/extable.c                      | 9 ---------
- 4 files changed, 1 insertion(+), 14 deletions(-)
+ arch/x86/kernel/cpu/mce/severity.c |  4 ++--
+ mm/ksm.c                           |  1 -
+ mm/memory.c                        | 13 ++++---------
+ 3 files changed, 6 insertions(+), 12 deletions(-)
 
-diff --git a/arch/x86/include/asm/asm.h b/arch/x86/include/asm/asm.h
-index fbcfec4dc4cc..692409ea0c37 100644
---- a/arch/x86/include/asm/asm.h
-+++ b/arch/x86/include/asm/asm.h
-@@ -215,9 +215,6 @@ register unsigned long current_stack_pointer asm(_ASM_SP);
- #define _ASM_EXTABLE_UA(from, to)				\
- 	_ASM_EXTABLE_TYPE(from, to, EX_TYPE_UACCESS)
- 
--#define _ASM_EXTABLE_CPY(from, to)				\
--	_ASM_EXTABLE_TYPE(from, to, EX_TYPE_COPY)
--
- #define _ASM_EXTABLE_FAULT(from, to)				\
- 	_ASM_EXTABLE_TYPE(from, to, EX_TYPE_FAULT)
- 
-diff --git a/arch/x86/include/asm/extable_fixup_types.h b/arch/x86/include/asm/extable_fixup_types.h
-index 7acf0383be80..906b0d5541e8 100644
---- a/arch/x86/include/asm/extable_fixup_types.h
-+++ b/arch/x86/include/asm/extable_fixup_types.h
-@@ -36,7 +36,7 @@
- #define	EX_TYPE_DEFAULT			 1
- #define	EX_TYPE_FAULT			 2
- #define	EX_TYPE_UACCESS			 3
--#define	EX_TYPE_COPY			 4
-+/* unused, was: #define EX_TYPE_COPY	 4 */
- #define	EX_TYPE_CLEAR_FS		 5
- #define	EX_TYPE_FPU_RESTORE		 6
- #define	EX_TYPE_BPF			 7
 diff --git a/arch/x86/kernel/cpu/mce/severity.c b/arch/x86/kernel/cpu/mce/severity.c
-index c4477162c07d..bca780fa5e57 100644
+index bca780fa5e57..b2cce1b6c96d 100644
 --- a/arch/x86/kernel/cpu/mce/severity.c
 +++ b/arch/x86/kernel/cpu/mce/severity.c
-@@ -290,7 +290,6 @@ static noinstr int error_context(struct mce *m, struct pt_regs *regs)
- 
- 	switch (fixup_type) {
+@@ -292,11 +292,11 @@ static noinstr int error_context(struct mce *m, struct pt_regs *regs)
  	case EX_TYPE_UACCESS:
--	case EX_TYPE_COPY:
  		if (!copy_user)
  			return IN_KERNEL;
++		fallthrough;
++	case EX_TYPE_DEFAULT_MCE_SAFE:
  		m->kflags |= MCE_IN_KERNEL_COPYIN;
-diff --git a/arch/x86/mm/extable.c b/arch/x86/mm/extable.c
-index b522933bfa56..51986e8a9d35 100644
---- a/arch/x86/mm/extable.c
-+++ b/arch/x86/mm/extable.c
-@@ -164,13 +164,6 @@ static bool ex_handler_uaccess(const struct exception_table_entry *fixup,
- 	return ex_handler_default(fixup, regs);
+ 		fallthrough;
+-
+ 	case EX_TYPE_FAULT_MCE_SAFE:
+-	case EX_TYPE_DEFAULT_MCE_SAFE:
+ 		m->kflags |= MCE_IN_KERNEL_RECOV;
+ 		return IN_KERNEL_RECOV;
+ 
+diff --git a/mm/ksm.c b/mm/ksm.c
+index 8c001819cf10..ba9d324ea1c6 100644
+--- a/mm/ksm.c
++++ b/mm/ksm.c
+@@ -3084,7 +3084,6 @@ struct folio *ksm_might_need_to_copy(struct folio *folio,
+ 		if (copy_mc_user_highpage(folio_page(new_folio, 0), page,
+ 								addr, vma)) {
+ 			folio_put(new_folio);
+-			memory_failure_queue(folio_pfn(folio), 0);
+ 			return ERR_PTR(-EHWPOISON);
+ 		}
+ 		folio_set_dirty(new_folio);
+diff --git a/mm/memory.c b/mm/memory.c
+index 8d14ba440929..ee06a8f766ab 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -2846,10 +2846,8 @@ static inline int __wp_page_copy_user(struct page *dst, struct page *src,
+ 	unsigned long addr = vmf->address;
+ 
+ 	if (likely(src)) {
+-		if (copy_mc_user_highpage(dst, src, addr, vma)) {
+-			memory_failure_queue(page_to_pfn(src), 0);
++		if (copy_mc_user_highpage(dst, src, addr, vma))
+ 			return -EHWPOISON;
+-		}
+ 		return 0;
+ 	}
+ 
+@@ -6179,10 +6177,8 @@ static int copy_user_gigantic_page(struct folio *dst, struct folio *src,
+ 
+ 		cond_resched();
+ 		if (copy_mc_user_highpage(dst_page, src_page,
+-					  addr + i*PAGE_SIZE, vma)) {
+-			memory_failure_queue(page_to_pfn(src_page), 0);
++					  addr + i*PAGE_SIZE, vma))
+ 			return -EHWPOISON;
+-		}
+ 	}
+ 	return 0;
+ }
+@@ -6199,10 +6195,9 @@ static int copy_subpage(unsigned long addr, int idx, void *arg)
+ 	struct page *dst = nth_page(copy_arg->dst, idx);
+ 	struct page *src = nth_page(copy_arg->src, idx);
+ 
+-	if (copy_mc_user_highpage(dst, src, addr, copy_arg->vma)) {
+-		memory_failure_queue(page_to_pfn(src), 0);
++	if (copy_mc_user_highpage(dst, src, addr, copy_arg->vma))
+ 		return -EHWPOISON;
+-	}
++
+ 	return 0;
  }
  
--static bool ex_handler_copy(const struct exception_table_entry *fixup,
--			    struct pt_regs *regs, int trapnr)
--{
--	WARN_ONCE(trapnr == X86_TRAP_GP, "General protection fault in user access. Non-canonical address?");
--	return ex_handler_fault(fixup, regs, trapnr);
--}
--
- static bool ex_handler_msr(const struct exception_table_entry *fixup,
- 			   struct pt_regs *regs, bool wrmsr, bool safe, int reg)
- {
-@@ -341,8 +334,6 @@ int fixup_exception(struct pt_regs *regs, int trapnr, unsigned long error_code,
- 		return ex_handler_fault(e, regs, trapnr);
- 	case EX_TYPE_UACCESS:
- 		return ex_handler_uaccess(e, regs, trapnr, fault_addr);
--	case EX_TYPE_COPY:
--		return ex_handler_copy(e, regs, trapnr);
- 	case EX_TYPE_CLEAR_FS:
- 		return ex_handler_clear_fs(e, regs);
- 	case EX_TYPE_FPU_RESTORE:
 -- 
 2.25.1
 
