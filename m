@@ -1,146 +1,181 @@
-Return-Path: <linux-kernel+bounces-51638-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51639-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDE89848DA8
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:33:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2294A848DC2
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:38:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F089A1C21568
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:33:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C20C1F21D29
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:38:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52516224E0;
-	Sun,  4 Feb 2024 12:33:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99CFD224D1;
+	Sun,  4 Feb 2024 12:38:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BI9dNCw6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gpssMelk"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97B7B224CB;
-	Sun,  4 Feb 2024 12:33:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F037219FF;
+	Sun,  4 Feb 2024 12:38:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707049999; cv=none; b=qXmOXN5DcuXbmPYDK7GAE6ydfXHEBAXctQmu1EXF+YzBq3OXZzXulBtNFp2tdRqWjZ2WLjtSwtT2kmTYTVzkxn1AiRqHZpQ89ZALTDRgOAmhlZE83Yuc0NOZx9Hxtnpyaf07HRd4N+RNB8NhbHvTuOIWiEjvt6glxjsZvhs0b5U=
+	t=1707050313; cv=none; b=iRerOzcIRVZDFbEpFsL0B83BzSyR7r2VsWF78chSDI3gJFArjz2rSrYaUw9hWikjg9iZX558xaClEH8TEWdhgGqt6Y9U8PSSLHT8279yFVCzrSAhR9cMM69mIgUllS+4IFZM4mahrdqAl9Y5KGFaL0Lb8ugiEkBBRDMPenAzvts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707049999; c=relaxed/simple;
-	bh=tUb84TlzXHt1IU/2JXj468FUS1oRysS/ztfYJPoYHp4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=fDyj0RSFSg48SCOM0cHIFEud+y+mLdHgyx+DQ3CLijHCJHFEYZW/IJKYKB2g/yU9FUau8CtC9AKhLZwsQMhF7A3v8GFoh2H0eav2GabEeRJf902SieukWC5L54kBM9xZKkMgu69Lyi4CgbyzSaUoHXsE7dPGHFQsQ9cQDhUF2ac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BI9dNCw6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A13CC433F1;
-	Sun,  4 Feb 2024 12:33:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707049999;
-	bh=tUb84TlzXHt1IU/2JXj468FUS1oRysS/ztfYJPoYHp4=;
-	h=From:Date:Subject:To:Cc:From;
-	b=BI9dNCw6srBdVv2d6s4fdVRyF6Q5nj8TgLOoHUgs6OiICA9dexhGykAxw5imT3QLU
-	 clUOjqspg17cwmhJuGP/8b3FNtkEfEuEM4bK7qM7pV76bSeQMvnO6jnpip3fq7MHvf
-	 BAR7VgFZ/RyYx5TELqFfR0wRPa2ST3/Pcc/AA0VP6m9zw+9DvuKVvQRpqYnrUrSjvI
-	 r1o8lTUe9/zE2oBqNYyIuvBHKTXr2yJMpadoM34IuWlGJf4Ud925WQ9qnT47BZs3cH
-	 D3rkZhda+B9QDT0RaJBz8bpmlWdcgByOhttIv18/ObDpTiB0kQdJ2HEZcwTksjVKFN
-	 u7Lkx1NrIVS5w==
-From: Jeff Layton <jlayton@kernel.org>
-Date: Sun, 04 Feb 2024 07:32:55 -0500
-Subject: [PATCH] filelock: add stubs for new functions when
- CONFIG_FILE_LOCKING=n
+	s=arc-20240116; t=1707050313; c=relaxed/simple;
+	bh=j+ToRiFZpvnLu9Ht1tTMEMUSBVsacitkWJKTnRiDMNg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q8VvttihpyRmh9IE4QFwo6qdBgbEW3WUEf0xBIVECWDry+g3c0PPxssgO7oxSiDBxbJdKbpyp7h6gXT5q7v9WYS1kkudMiacrP8oejnZkrzSW4XzZ14EY1RGtTav1M4in96BoJ4gRy6r9ezKm0YOxePlAC/LXUU9rzd8x/jYJ6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gpssMelk; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-56001b47285so2049777a12.1;
+        Sun, 04 Feb 2024 04:38:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707050310; x=1707655110; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=32Q6YTS5ws6raYaIT2GcHgl2b3PwHkFzIfRPKAaxQHg=;
+        b=gpssMelk0nGq2waJR8Vz0VYps5x1/KwZL6GqDLMhAW8e/Dw9t86b59jQa7OU0m+7uP
+         iSSt2qqrTr2qFsd0dRgYksfHQG4wtJ8Qm1GuTozAOtTJwEjF3I/W2r4ugy6BPMANctuT
+         Zy2hH+hmmW76IofdbVuHK4amzNW53QlhPpO1dXWcj4q8Xk48HUVBqidRMqHau0Y4tQa3
+         N05wGO6H320JErFoLECSP/SgeSnJ8WuI/JP6lWLPXVO32Qw9xKqptwq+LNt0vCG5rMgX
+         JrNFt9XrH71t8jq1v+GvjNHR6Z4pvI6DaXijHHU3oyc7OikwPseQLz0L5NZeUCtwgtAv
+         Jeqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707050310; x=1707655110;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=32Q6YTS5ws6raYaIT2GcHgl2b3PwHkFzIfRPKAaxQHg=;
+        b=oOzuvHGI54aCLymvmHt6KjibgHW1UTmz8EtyiOWCcTVhUzc1JPzZ5RwggR6lxNa0wT
+         kAtWcFFJP5kxVWYSMXQnnW42SHyrX9WEOc9/mwWp8+PXm5ch8gPWamurc1L2C6QaC2hL
+         GHpI2MslybAt+BKz26Yo/qYqwda3ZE818KN0ynGdXFA4txnESoxRzCDUo/lxkBu7DrxI
+         17ulI4V6I77pej8WauJzeRp0Q4R6iQChZzWYTTMAghpTs2CJG2EEH/gJI1AWyNvC5w5J
+         /QsssTO3wFjugt623a2UU7WMIHhR4n5t+Hf52ZqtaJfjjEgLH8ADsfiTgWmiu6bzMixO
+         92/g==
+X-Gm-Message-State: AOJu0YzBnaisVB2++QEDRETFL4NckPnkfiB+RuFADibB1YywhKNzEdlz
+	WCizHKn1zRl4VuI8vSXTHy1bXx4FUKE9qGHW1+gGy1MjpFojLBPlUAGQkKOY
+X-Google-Smtp-Source: AGHT+IFaQ/5Y44l2RFYN8PfQKsVAI97M6RYbaDK+cpf46WDGaFjZnmSmxWaHi+SGGwHJnOuYFs0ckg==
+X-Received: by 2002:a05:6402:180a:b0:560:5fc:9f10 with SMTP id g10-20020a056402180a00b0056005fc9f10mr2964665edy.28.1707050310003;
+        Sun, 04 Feb 2024 04:38:30 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXQpZz8xGBntVIkRZfxhKsmZbs5QSxcb9XSMW5PeHNB68RjLVTcV8maTn6dYAmYqrjpAKlAqlMg70nxireZLoeGRMcsTGIyOAHdtyPAWac2EqLfXgUGpyHPtB7i0M7NXw4lH6bjsFS687T/CxBR/1tYMbJjEOqCg39tNMYcqIqKzPPRDOwYBc9yvgU=
+Received: from debian ([93.184.186.109])
+        by smtp.gmail.com with ESMTPSA id b99-20020a509f6c000000b0055fdaf9ceb2sm2846043edf.91.2024.02.04.04.38.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Feb 2024 04:38:29 -0800 (PST)
+Date: Sun, 4 Feb 2024 13:38:27 +0100
+From: Dimitri Fedrau <dima.fedrau@gmail.com>
+To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc: Li peiyu <579lpy@gmail.com>, Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iio: humidity: hdc3020: add threshold events support
+Message-ID: <20240204123827.GA19525@debian>
+References: <20240204103710.19212-1-dima.fedrau@gmail.com>
+ <194ed4ce-bb2e-404e-a716-ec2e9876c740@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240204-flsplit3-v1-1-9820c7d9ce16@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAPaDv2UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDIwMT3bSc4oKczBJj3ZREMzOzFAujJPMkEyWg8oKi1LTMCrBR0bG1tQA
- 3JXiZWgAAAA==
-To: Christian Brauner <brauner@kernel.org>, 
- Al Viro <viro@zeniv.linux.org.uk>, Chuck Lever <chuck.lever@oracle.com>
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
- kernel test robot <lkp@intel.com>, Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2028; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=tUb84TlzXHt1IU/2JXj468FUS1oRysS/ztfYJPoYHp4=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBlv4QHX6KksZ4zQY7QHs4PamLpO9ItNSIcm/Xlu
- JYUjeZHVIGJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZb+EBwAKCRAADmhBGVaC
- FQ8FD/4mvgATOGCSC4QBT43oj6d4HGsFeiX7kppaIBfKAaXZS6BAxwH0/glK7jGhFLuKwnI0vHi
- 2TZoCdGeaLY5KUjhMTUzpg8zrzYRTFZBQvBbFRFvarLTEdXkqjrMFuSdw8KIqONnWIm2xkIOlgO
- 8Usr7m+Sozb211U7aASJpnsD0Elu2IQvlNf4O8NsaemBPtzAf0YtqFKNcXa4F/ZhFNIc3ETKl7J
- 9Jr5sFgwifCdCbpUF6rECc//W4bpPd3EJBSiI/+25mtR7bYWo2l9pKAnacftcxpydTFl6ligUDv
- U7LfXnYX5anjso0vor6moqyxJ8oVQxQIaLmV/2RQovX5ZThw7PwkI5TP2ncpkS8ixb5ZsD+Kh6C
- UJPjh/HqWhmMI608RFSPelhFBZrdSZbRLu2xL89xWRuZU9BxR0hNtjuapTmOP6IIngTl1mnaWtO
- Ws+gAlYzd/DDXsbXisl5PjbUIYymzvVMiyysULzkD35mMu3v4mMPNfpRl527l/uswPWcqzGr1gx
- sEfFKOp46g/b6Q808YIhr/5YFPe4wmjjjqIZ4clujx2yck8tb/SkwCbRkaz7rBczWEQgkr+n9eE
- q7ApE3Q1LP8NloMM9rZ9sz3+aOtU6Epb8bnOgJT9Fsjz1wymtXlRUtm+QjsrqDzii20Jrit2t8r
- k8eR1ThyZrTdowg==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <194ed4ce-bb2e-404e-a716-ec2e9876c740@gmail.com>
 
-We recently added several functions to the file locking API. Add stubs
-for those functions for when CONFIG_FILE_LOCKING is set to n.
+Am Sun, Feb 04, 2024 at 12:26:53PM +0100 schrieb Javier Carrasco:
+> Hi Dimitri,
+>
+Hi Javier,
+> On 04.02.24 11:37, Dimitri Fedrau wrote:
+> >  
+> > +static int hdc3020_write_thresh(struct iio_dev *indio_dev,
+> > +				const struct iio_chan_spec *chan,
+> > +				enum iio_event_type type,
+> > +				enum iio_event_direction dir,
+> > +				enum iio_event_info info,
+> > +				int val, int val2)
+> > +{
+> > +	struct hdc3020_data *data = iio_priv(indio_dev);
+> > +	u16 *thresh;
+> > +	u8 buf[5];
+> > +	int ret;
+> > +
+> I tested your patch right now and I noticed that you are only writing
+> integer values, which means that for example 19.9999 turns into 18.9169.
+> It seems that you are not using val2 (the decimal part).
+> 
+> Is there any reason for that? The displayed thresholds are decimal, though.
+thanks for testing. I wanted to allow only integers because of the
+truncated threshold values.(Still there is the resolution loss) On the other
+side I missed to return integers. I think you are right, have to evaluate
+val2. It's better to be as accurate as possible. I will fix this.
 
-Fixes: 403594111407 ("filelock: add some new helper functions")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202402041412.6YvtlflL-lkp@intel.com/
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
-Just a small follow-on fix for CONFIG_FILE_LOCKING=n builds for the
-file_lease split. Christian, it might be best to squash this into
-the patch it Fixes.
-
-That said, I'm starting to wonder if we ought to just hardcode
-CONFIG_FILE_LOCKING to y. Does anyone ship kernels with it disabled? I
-guess maybe people with stripped-down embedded builds might?
-
-Another thought too: "locks_" as a prefix is awfully generic. Might it be
-better to rename these new functions with a "filelock_" prefix instead?
-That would better distinguish to the casual reader that this is dealing
-with a file_lock object. I'm happy to respin the set if that's the
-consensus.
----
- include/linux/filelock.h | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
-
-diff --git a/include/linux/filelock.h b/include/linux/filelock.h
-index 4a5ad26962c1..553d65a88048 100644
---- a/include/linux/filelock.h
-+++ b/include/linux/filelock.h
-@@ -263,6 +263,27 @@ static inline int fcntl_getlease(struct file *filp)
- 	return F_UNLCK;
- }
- 
-+static inline bool lock_is_unlock(struct file_lock *fl)
-+{
-+	return false;
-+}
-+
-+static inline bool lock_is_read(struct file_lock *fl)
-+{
-+	return false;
-+}
-+
-+static inline bool lock_is_write(struct file_lock *fl)
-+{
-+	return false;
-+}
-+
-+static inline void locks_wake_up(struct file_lock *fl)
-+{
-+}
-+
-+#define for_each_file_lock(_fl, _head)	while(false)
-+
- static inline void
- locks_free_lock_context(struct inode *inode)
- {
-
----
-base-commit: 1499e59af376949b062cdc039257f811f6c1697f
-change-id: 20240204-flsplit3-da666d82b7b4
+> > +	/* Supported temperature range is from –40 to 125 degree celsius */
+> > +	if (val < HDC3020_MIN_TEMP || val > HDC3020_MAX_TEMP)
+> > +		return -EINVAL;
+> > +
+> > +	/* Select threshold and associated register */
+> > +	if (info == IIO_EV_INFO_VALUE) {
+> > +		if (dir == IIO_EV_DIR_RISING) {
+> > +			thresh = &data->t_rh_thresh_high;
+> > +			memcpy(buf, HDC3020_S_T_RH_THRESH_HIGH, 2);
+> > +		} else {
+> > +			thresh = &data->t_rh_thresh_low;
+> > +			memcpy(buf, HDC3020_S_T_RH_THRESH_LOW, 2);
+> > +		}
+> > +	} else {
+> > +		if (dir == IIO_EV_DIR_RISING) {
+> > +			thresh = &data->t_rh_thresh_high_clr;
+> > +			memcpy(buf, HDC3020_S_T_RH_THRESH_HIGH_CLR, 2);
+> > +		} else {
+> > +			thresh = &data->t_rh_thresh_low_clr;
+> > +			memcpy(buf, HDC3020_S_T_RH_THRESH_LOW_CLR, 2);
+> > +		}
+> > +	}
+> > +
+> > +	guard(mutex)(&data->lock);
+> > +	switch (chan->type) {
+> > +	case IIO_TEMP:
+> > +		/*
+> > +		 * Store truncated temperature threshold into 9 LSBs while
+> > +		 * keeping the old humidity threshold in the 7 MSBs.
+> > +		 */
+> > +		val = (((val + 45) * 65535 / 175) >> HDC3020_THRESH_TEMP_SHIFT);
+> > +		val &= HDC3020_THRESH_TEMP_MASK;
+> > +		val |= (*thresh & HDC3020_THRESH_HUM_MASK);
+> > +		break;
+> > +	case IIO_HUMIDITYRELATIVE:
+> > +		/*
+> > +		 * Store truncated humidity threshold into 7 MSBs while
+> > +		 * keeping the old temperature threshold in the 9 LSBs.
+> > +		 */
+> > +		val = ((val * 65535 / 100) & HDC3020_THRESH_HUM_MASK);
+> > +		val |= (*thresh & HDC3020_THRESH_TEMP_MASK);
+> > +		break;
+> > +	default:
+> > +		return -EOPNOTSUPP;
+> > +	}
+> > +
+> > +	put_unaligned_be16(val, &buf[2]);
+> > +	buf[4] = crc8(hdc3020_crc8_table, buf + 2, 2, CRC8_INIT_VALUE);
+> > +	ret = hdc3020_write_bytes(data, buf, 5);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* Update threshold */
+> > +	*thresh = val;
+> > +
+> > +	return 0;
+> > +}
+> 
+> Best regards,
+> Javier Carrasco
 
 Best regards,
--- 
-Jeff Layton <jlayton@kernel.org>
-
+Dimitri Fedrau
 
