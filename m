@@ -1,59 +1,75 @@
-Return-Path: <linux-kernel+bounces-51434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A59D848B2C
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 06:15:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FBE6848B30
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 06:19:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8504B24122
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 05:15:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06F611F22A44
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 05:19:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9BA67460;
-	Sun,  4 Feb 2024 05:15:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E8986FC7;
+	Sun,  4 Feb 2024 05:19:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="d7sDOq+D"
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DVkmGt+L"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47CFD613C
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 05:15:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED12A6119;
+	Sun,  4 Feb 2024 05:19:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707023735; cv=none; b=eyf8JY+NKhIfaZf49DTDh91tT3Yo+NaWRkdefLnuOk+AYlE9D4GlZq9hRkqHKhELjOmmRvSazQmPO3jatydzS7JnIRKvWrCZrxLVQDNQRn8pjvBgbC72O3kiwgeYX6P0KF6bafiS+jsjHZPc5dFuntyKyORY87Ns8CBSGQuuHmg=
+	t=1707023953; cv=none; b=FwWIp9xkCNdm5oqzMPHVAfNL+ullsOoUEYRw7BdrSW+FaoMc9YvCsUkNlElT5uexFiUSfTo+lk2Z/SeKsE/y3+vOboUh3aG2/OCewfg7iDGUb+5XZSEhgjTZ4ZibcjCm+GSAdy6L99NKs8BfQop1YNfNP0swRvAED97gb5mvd6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707023735; c=relaxed/simple;
-	bh=xFmlI7vywnpnkwopJt9hfOdzW2XX4SrrGwOuJsKfjAo=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=telFChIi2DvujtnJRFv8jarXsCZuyZcZHnhV5vZFfldO0tclLqVjyrN8yb+ykpTWebhAeoRdYrZ/qI83viUz2JpmUzyvo7y0Dsp9iWbsq9X3GIMb1pRuCVeFoZ8+MjtUgLik3QRQ1ewLMGkpxPxMPz4c4CxRVhInwmy1QKSDIlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=d7sDOq+D; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-82-236.bstnma.fios.verizon.net [173.48.82.236])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 4145FOJY022461
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 4 Feb 2024 00:15:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1707023726; bh=3GSeuIDQxaZam0abvCGZGnkGb3dP6aSsbWbXsXQ7sFo=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=d7sDOq+DtafdLu+k31UgVAK8y5QHZeipM1DujG3nj2HzLrfh5ssb1SJtC78rIlNH2
-	 I2Mi6Qcg3U8CTWR67h/ebfQS4RSIOjnEh53mPFVrYCFPJR1W4yWT+u+MVS52gzu85J
-	 h+eWktTajVLKerR+xE/Vabt38TX780PeFUURPY5chC/gysLV9E1uWNlHfJzA+zXW7u
-	 2CqVtmefKY1oXuud41OPCQzjCUEF0nuz5Dp3y3W8mieUYLXb5pIF2NaMIC3SGc+2op
-	 kgro7AhXiNhw0FtlVG1nKeh+JCPYLGghqFaSBnJTAY5amsNNbr5dnn41FXoJCmfAbW
-	 pHgQTEuTUA02Q==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id A584B15C02FD; Sun,  4 Feb 2024 00:15:24 -0500 (EST)
-Date: Sun, 4 Feb 2024 00:15:24 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Kernel Developers List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] ext4 bug fixes for v6.8-rc3
-Message-ID: <20240204051524.GA206753@mit.edu>
+	s=arc-20240116; t=1707023953; c=relaxed/simple;
+	bh=P6VGiDl0jduaJYu6jiH+VhGE0WfXIZzpvflkq0mKjH4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TiwuX0CWgeqXJuwVM9JA60kpe3mhM3WMIMCWvk3x/sBd5bPHcnh7HLq8bj6tiQF+WKJHLQ9G2s5qdPS61ssdC5fn46GV2TudhDZ8QsOLgCI2+dOzPgkKz6pcQGMcqnIkmF22PgCzyIiPlrMaFslziPYRTjtb+JCZFocea7t4wBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DVkmGt+L; arc=none smtp.client-ip=134.134.136.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707023952; x=1738559952;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=P6VGiDl0jduaJYu6jiH+VhGE0WfXIZzpvflkq0mKjH4=;
+  b=DVkmGt+L+gvx+1jrSn94ZVGw7jn9EePrfnUiO1KIMFg7nyXQ9NdwaSaP
+   yLUfc84f8vCNqxbHAGkaX/Cv2dLEu4qHq4W3VFEoxVQlEsISGO6A9N95U
+   i/ZFh+rFQH/Gfgm9V5IEhcksH/pN7glLC7Bu1hGgjX0hNhZKWkCF09hhZ
+   +ROFFYK5yz1GxETiQFU+lUdIXuP5oq1LmJQaldgEcF6bgzCW37vma+BYT
+   llVdOfdUjVajkWzlBFje2jHli1x+c5YurDYqbKryI6tX1S2w+sXE9dJ5c
+   o2WLvoToBs0Va3t1GGP5e1yn4aZiaaecpXK8dp0HhS/2SaJk27EcRHr7L
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10973"; a="394787343"
+X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
+   d="scan'208";a="394787343"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2024 21:19:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
+   d="scan'208";a="23694652"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmviesa002.fm.intel.com with ESMTP; 03 Feb 2024 21:19:08 -0800
+Date: Sun, 4 Feb 2024 13:15:35 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Marco Pagani <marpagan@redhat.com>
+Cc: Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Alan Tull <atull@opensource.altera.com>,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-fpga@vger.kernel.org
+Subject: Re: [RFC PATCH v5 1/1] fpga: add an owner and use it to take the
+ low-level module's refcount
+Message-ID: <Zb8dd9af0Ru/fzGi@yilunxu-OptiPlex-7050>
+References: <20240111160242.149265-1-marpagan@redhat.com>
+ <20240111160242.149265-2-marpagan@redhat.com>
+ <Zbh7iO9wlm9ekzB7@yilunxu-OptiPlex-7050>
+ <0720eb91-72f9-4781-8558-8a1b0a3691c2@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,63 +78,70 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <0720eb91-72f9-4781-8558-8a1b0a3691c2@redhat.com>
 
-The following changes since commit 0d19d9e14687ff6f43d6c4806ace9ff682d7703f:
+On Fri, Feb 02, 2024 at 06:44:01PM +0100, Marco Pagani wrote:
+> 
+> 
+> On 2024-01-30 05:31, Xu Yilun wrote:
+> >> +#define fpga_mgr_register_full(parent, info) \
+> >> +	__fpga_mgr_register_full(parent, info, THIS_MODULE)
+> >>  struct fpga_manager *
+> >> -fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info);
+> >> +__fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info,
+> >> +			 struct module *owner);
+> >>  
+> >> +#define fpga_mgr_register(parent, name, mops, priv) \
+> >> +	__fpga_mgr_register(parent, name, mops, priv, THIS_MODULE)
+> >>  struct fpga_manager *
+> >> -fpga_mgr_register(struct device *parent, const char *name,
+> >> -		  const struct fpga_manager_ops *mops, void *priv);
+> >> +__fpga_mgr_register(struct device *parent, const char *name,
+> >> +		    const struct fpga_manager_ops *mops, void *priv, struct module *owner);
+> >> +
+> >>  void fpga_mgr_unregister(struct fpga_manager *mgr);
+> >>  
+> >> +#define devm_fpga_mgr_register_full(parent, info) \
+> >> +	__devm_fpga_mgr_register_full(parent, info, THIS_MODULE)
+> >>  struct fpga_manager *
+> >> -devm_fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info);
+> >> +__devm_fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info,
+> >> +			      struct module *owner);
+> > 
+> > Add a line here. I can do it myself if you agree.
+> 
+> Sure, that is fine by me. I also spotted a typo in the commit log body
+> (in taken -> is taken). Do you want me to send a v6, or do you prefer
+> to fix that in place?
 
-  Merge tag 'ext4_for_linus-6.8-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4 (2024-01-10 16:09:14 -0800)
+No need, I can fix it.
 
-are available in the Git repository at:
+> 
+> > 
+> > There is still a RFC prefix for this patch. Are you ready to get it merged?
+> > If yes, Acked-by: Xu Yilun <yilun.xu@intel.com>
+> 
+> I'm ready for the patch to be merged. However, I recently sent an RFC
+> to propose a safer implementation of try_module_get() that would
+> simplify the code and may also benefit other subsystems. What do you
+> think?
+> 
+> https://lore.kernel.org/linux-modules/20240130193614.49772-1-marpagan@redhat.com/
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/for-linus-6.8-rc3
+I suggest take your fix to linux-fpga/for-next now. If your try_module_get()
+proposal is applied before the end of this cycle, we could re-evaluate
+this patch.
 
-for you to fetch changes up to ec9d669eba4c276d00af88951947fe0e82a6b84c:
+Thanks,
+Yilun
 
-  ext4: make ext4_set_iomap() recognize IOMAP_DELALLOC map type (2024-02-01 23:59:21 -0500)
-
-----------------------------------------------------------------
-Miscellaneous bug fixes and cleanups in ext4's multi-block allocator
-and extent handling code.
-
-----------------------------------------------------------------
-Baokun Li (8):
-      ext4: fix double-free of blocks due to wrong extents moved_len
-      ext4: do not trim the group with corrupted block bitmap
-      ext4: regenerate buddy after block freeing failed if under fc replay
-      ext4: avoid bb_free and bb_fragments inconsistency in mb_free_blocks()
-      ext4: avoid dividing by 0 in mb_update_avg_fragment_size() when block bitmap corrupt
-      ext4: avoid allocating blocks from corrupted group in ext4_mb_try_best_found()
-      ext4: avoid allocating blocks from corrupted group in ext4_mb_find_by_goal()
-      ext4: mark the group block bitmap as corrupted before reporting an error
-
-Kemeng Shi (9):
-      ext4: remove unused return value of __mb_check_buddy
-      ext4: remove unused parameter ngroup in ext4_mb_choose_next_group_*()
-      ext4: remove unneeded return value of ext4_mb_release_context
-      ext4: remove unused ext4_allocation_context::ac_groups_considered
-      ext4: remove unused return value of ext4_mb_release
-      ext4: remove unused return value of ext4_mb_release_inode_pa
-      ext4: remove unused return value of ext4_mb_release_group_pa
-      ext4: remove unnecessary parameter "needed" in ext4_discard_preallocations
-      ext4: remove 'needed' in trace_ext4_discard_preallocations
-
-Zhang Yi (6):
-      ext4: refactor ext4_da_map_blocks()
-      ext4: convert to exclusive lock while inserting delalloc extents
-      ext4: correct the hole length returned by ext4_map_blocks()
-      ext4: add a hole extent entry in cache after punch
-      ext4: make ext4_map_blocks() distinguish delalloc only extent
-      ext4: make ext4_set_iomap() recognize IOMAP_DELALLOC map type
-
- fs/ext4/ext4.h              |   8 +--
- fs/ext4/extents.c           | 124 ++++++++++++++++++++++++++++-----------------
- fs/ext4/file.c              |   2 +-
- fs/ext4/indirect.c          |   2 +-
- fs/ext4/inode.c             |  90 +++++++++++----------------------
- fs/ext4/ioctl.c             |   2 +-
- fs/ext4/mballoc.c           | 140 ++++++++++++++++++++++++++++-----------------------
- fs/ext4/mballoc.h           |   1 -
- fs/ext4/move_extent.c       |  10 ++--
- fs/ext4/super.c             |   2 +-
- include/trace/events/ext4.h |  11 ++--
- 11 files changed, 203 insertions(+), 189 deletions(-)
+> 
+> > Next time if you think patches are ready for serious review and merge, drop
+> > the RFC prefix. That avoids an extra query.
+> 
+> Okay, I'll do it like that next time.
+> 
+> Thanks,
+> Marco
+> 
 
