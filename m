@@ -1,155 +1,130 @@
-Return-Path: <linux-kernel+bounces-51947-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51950-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DC5D8491B9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 00:38:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 167A08491CC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 00:41:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A853D282750
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 23:38:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22896B2153C
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 23:41:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 658E5C139;
-	Sun,  4 Feb 2024 23:37:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9CD211188;
+	Sun,  4 Feb 2024 23:40:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IrBALcvN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="eBhb6YHz"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A62BFBE5A;
-	Sun,  4 Feb 2024 23:37:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45F69BE5B;
+	Sun,  4 Feb 2024 23:40:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707089873; cv=none; b=mioRwusR6sgTL2SamgL4HwosnHqUfIFYA3aHfPss2+bMbEcu+f/iNX163xlbpi5iAJmneeSdqTXLwhjB9qMRkM470Xg0hWzhj28SDFpw9s/IypxzfycMHbKTgaBJblKKcweXQHJxXaTPiiYWvt8ged4257G2ePo9RnactQVGmEs=
+	t=1707090046; cv=none; b=QzQxaqYKFQQZzr2kGr3lhGzBKP10157V8AwXwNyZkGlY4GND/t+lLIQucncrlTGU1qis9Nqex59y3AVEdu3zp1bfetLz4v42kRxyYZr0ssb0CGUXC3hcD1fVjBsZ7waMJeDxYpTsVycXhBlfR8M1IOfE2x0eb8HJheQcaC3GumE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707089873; c=relaxed/simple;
-	bh=xMuEX2HhSOWhMjSoGbp5fz3b2E6nd36eVhjFe8HoL38=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Kfn5pBl76gXRQdLKHx/vhH5LkLBKE9tD++lxluwoRzEsmoXINpTu+ewNS8iCdXCG6BZ73diT4kjo+z3FPx5jSFG+QKwuuYal6zwhiPNgTGYR0AAhOCvm5YUpQRIeFfIZ2AfSPC3dW9tA3pXE4DENbBE0QwgCRNLWP/O/B8edqTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IrBALcvN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23F6CC43394;
-	Sun,  4 Feb 2024 23:37:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707089873;
-	bh=xMuEX2HhSOWhMjSoGbp5fz3b2E6nd36eVhjFe8HoL38=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=IrBALcvNbwMwYTt/GqUh4UnKd/8Xf54XeNhdJHVGGXCkEf6Tjuh8RjSs95BijMqsB
-	 9Yip2ZsFOXHb4dAMk2aD5FEhaQ6t1572WYq4dEsNguG+gpjY5tRKNwWQw6cG1Ln7Gj
-	 jhU3cyo6rtNvC9Dx5t/l1btd1NvRf5dTS5TxpgZTJo2VEb8+1iGU2kbVsUyiWii3kq
-	 zLZCAgWbORD+nIAeHnQ+AYH0m+9ePTldDSimTjmgLG96A2elONzv8IN1yYjrBvSq9M
-	 sfTq5t2/8dr7ZxbxOU2GZV7GjQ6uQiW/xjdaMDzAJTfE8U8pXEcV0DZAEcbDNaIBaL
-	 YVAj5wNN2x5rQ==
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-51032058f17so4337893e87.3;
-        Sun, 04 Feb 2024 15:37:53 -0800 (PST)
-X-Gm-Message-State: AOJu0YwqODpNtKVdwRH37esJvHL8qt809oNYQdEKeWzq7z+u7Y012FwR
-	djp6LjxtCgYTIpaWLy6opRwHyAHEbIPKaCILCwR0L8qoYTUxvuSidO5OZO71opv0MiELzclrJyC
-	ko+3UhD3eCJXwjgAOLw7IXBDfO6Y=
-X-Google-Smtp-Source: AGHT+IHtkWru/up13iHyvWFxO8oQEUipK4WnOY8CJZFPxIrVWaeLANbZx0U4CByTW3mJfdxicWs7Eevh8OSiGVnp6OA=
-X-Received: by 2002:a05:6512:2384:b0:511:3489:507b with SMTP id
- c4-20020a056512238400b005113489507bmr7300367lfv.19.1707089871527; Sun, 04 Feb
- 2024 15:37:51 -0800 (PST)
+	s=arc-20240116; t=1707090046; c=relaxed/simple;
+	bh=xTLNlRe9zpFCH+NSfLBy79yr+GAoL3YfMnIrGZaTLxU=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Qjzj74sndKTkRTBL+hdJYrdBaqEGCygr6LrvvsfgVGP9COkmxtGxJVD7rPRmw0MN/pdNE5Gdr+0y699inZHyhId6E+tCcvsOb29mFWPPm3Oj5rL1JOPo0qEsQKW63KcgG/WCR6/5M4lsUF9U6oRWyHLc+aqqNGlXUiMaAkEpUJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=eBhb6YHz; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=Cc:To:Content-Transfer-Encoding:Content-Type:MIME-Version:
+	Message-Id:Date:Subject:From:From:Sender:Reply-To:Subject:Date:Message-ID:To:
+	Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=ofMfbIjqFytnpEYWawM8vASgAHDc01IrEgzRrZALl3A=; b=eBhb6YHzTA0gYHZgNDf9Zod3lL
+	7NQnM5GNtN6wANB+ki7+CQSFvuLosaBr92vdf+M+HTUXxqSVha4SS8Ch3vm2K0x5oVQgwPiG0pmyw
+	mvkoLInmj5SV1jQfNgp1oEZEN5sGAWatxlYodEXiYtBDaXgTenF5pDtodGSN/yBC0fL8=;
+Received: from c-76-156-36-110.hsd1.mn.comcast.net ([76.156.36.110] helo=thinkpad.home.lunn.ch)
+	by vps0.lunn.ch with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rWm6A-006z7T-0Z; Mon, 05 Feb 2024 00:40:30 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+Subject: [PATCH 0/8] drivers: net: Convert EEE handling to use linkmode
+ bitmaps
+Date: Sun, 04 Feb 2024 17:40:17 -0600
+Message-Id: <20240204-keee-u32-cleanup-v1-0-fb6e08329d9a@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240204075634.32969-1-masahiroy@kernel.org> <25615f41-a725-4276-bc0a-a3e7fe47b864@linux.dev>
-In-Reply-To: <25615f41-a725-4276-bc0a-a3e7fe47b864@linux.dev>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Mon, 5 Feb 2024 08:37:14 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQiz1uMxHZ9K9=g=4goQB0TTFrdOcjgN=ZemU6BfYWqnQ@mail.gmail.com>
-Message-ID: <CAK7LNAQiz1uMxHZ9K9=g=4goQB0TTFrdOcjgN=ZemU6BfYWqnQ@mail.gmail.com>
-Subject: Re: [PATCH] bpf: merge two CONFIG_BPF entries
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org, 
-	Andrii Nakryiko <andrii@kernel.org>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAGEgwGUC/x3M0QpAMBSH8VfRuXZqZrS8ilxgf5xotEVK3t1y+
+ bv4vocigiBSkz0UcEmU3ScUeUbj0vsZLC6ZtNJGaWV4BcBnqXnc0Pvz4MHWrramss4qStkRMMn
+ 9L9vufT8UihgyYgAAAA==
+To: "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Ariel Elior <aelior@marvell.com>, 
+ Manish Chopra <manishc@marvell.com>, 
+ Jesse Brandeburg <jesse.brandeburg@intel.com>, 
+ Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc: linux-usb@vger.kernel.org, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org, 
+ Andrew Lunn <andrew@lunn.ch>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1999; i=andrew@lunn.ch;
+ h=from:subject:message-id; bh=xTLNlRe9zpFCH+NSfLBy79yr+GAoL3YfMnIrGZaTLxU=;
+ b=owEBbQKS/ZANAwAKAea/DcumaUyEAcsmYgBlwCBn8ggPNVIXSaz7IAvAixB8ka53ggNMSY2Zc
+ vicaxrWtMeJAjMEAAEKAB0WIQRh+xAly1MmORb54bfmvw3LpmlMhAUCZcAgZwAKCRDmvw3LpmlM
+ hG+VD/0TtJaWfgHoLdXUBMZQUhJbJSj69wqg80e7HoEDOYeyGWGwJ2wkFhMXkTzvjg011y2gFgj
+ zALmvZsfxriALcG44ySLy82tVTE4Hij9IAV8rAcgn8msp1M7p708ctj8xZU+p1G1R9Tt0XtPF8M
+ hI1f4AnAdPCAz3Wx0b6cKMl6P6LAYnYG+vLsjTWCiEp6WnW9V+CFgVAGeIrfoRvXTHKAkM4vnqe
+ 1DVzDxkalb2adpWWyhqGQmQY+N+dlERDDV8Cdfrw0z5ax2NIiZa3eIf1ovgz/SNgqzF5s2vmvot
+ x9T/aoJ7qMBAazsfF4Z3sarXBWkOehFlBQZD0bBkN7MWVx6fBKp9t+f/6jNJRF6ZgIgJWapwGoz
+ pa+dv3jwI77GHHq2VXO0kMe5sde/XpLzmavHeuCBZ0a0a//CkuMvjc+eHMVwYpqVAvd7sLrJTOW
+ 2yfZX4lt9/RsnCfrhNBjIht7H9KnGSpPShFfvNSKOJ5JRdFYhEbJ3tMdV5ZLNlnifaK5I+uSwVC
+ swAFQBR1rgwp3dyCvH8PYwbHorQkGR8+uGphBacdWtMSveS588U5tzQSXaZ1aLosyBvT0Rnenpe
+ jsRprUFXHnumRUuSEZnq4IRBK7RxhGYrUjgPRaJjRV2Pf3kv4fYRIR/o1G6NjaUfnf9vKjpEha9
+ mLrKi2q/9IJSeBA==
+X-Developer-Key: i=andrew@lunn.ch; a=openpgp;
+ fpr=61FB1025CB53263916F9E1B7E6BF0DCBA6694C84
 
-On Mon, Feb 5, 2024 at 3:11=E2=80=AFAM Yonghong Song <yonghong.song@linux.d=
-ev> wrote:
->
->
-> On 2/3/24 11:56 PM, Masahiro Yamada wrote:
-> > 'config BPF' exists in both init/Kconfig and kernel/bpf/Kconfig.
-> >
-> > Commit b24abcff918a ("bpf, kconfig: Add consolidated menu entry for bpf
-> > with core options") added the second one to kernel/bpf/Kconfig instead
-> > of moving the existing one.
-> >
-> > Merge them together.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
-> >
-> >   init/Kconfig       | 5 -----
-> >   kernel/bpf/Kconfig | 1 +
-> >   2 files changed, 1 insertion(+), 5 deletions(-)
-> >
-> > diff --git a/init/Kconfig b/init/Kconfig
-> > index 8d4e836e1b6b..46ccad83a664 100644
-> > --- a/init/Kconfig
-> > +++ b/init/Kconfig
-> > @@ -1457,11 +1457,6 @@ config SYSCTL_ARCH_UNALIGN_ALLOW
-> >   config HAVE_PCSPKR_PLATFORM
-> >       bool
-> >
-> > -# interpreter that classic socket filters depend on
-> > -config BPF
-> > -     bool
-> > -     select CRYPTO_LIB_SHA1
-> > -
-> >   menuconfig EXPERT
-> >       bool "Configure standard kernel features (expert users)"
-> >       # Unhide debug options, to make the on-by-default options visible
-> > diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
-> > index 6a906ff93006..bc25f5098a25 100644
-> > --- a/kernel/bpf/Kconfig
-> > +++ b/kernel/bpf/Kconfig
-> > @@ -3,6 +3,7 @@
-> >   # BPF interpreter that, for example, classic socket filters depend on=
-.
-> >   config BPF
-> >       bool
-> > +     select CRYPTO_LIB_SHA1
->
-> Currently, the kernel/bpf directory is guarded with CONFIG_BPF
->    obj-$(CONFIG_BPF) +=3D bpf/
-> in kernel/bpf/Makefile.
+EEE has until recently been limited to lower speeds due to the use of
+the legacy u32 for link speeds. This restriction has been lifted, with
+the use of linkmode bitmaps. This patchset convert some MAC drivers
+still using the old _u32 to link modes, with the aim of soon being
+able to remove the legacy _u32 members in the keee structure.
 
+A couple of Intel drivers do odd things with EEE, setting the autoneg
+bit. It is unclear why, no other driver does, ethtool does not display
+it, and EEE is always negotiated. One patch in this series deletes
+this code. Comments on why its actually useful and should be kept are
+gratefully received.
 
-Wrong.
+Signed-off-by: Andrew Lunn <andrew@lunn.ch>
+---
+Andrew Lunn (8):
+      net: usb: r8152: Use linkmode helpers for EEE
+      net: usb: ax88179_178a: Use linkmode helpers for EEE
+      net: qlogic: qede: Use linkmode helpers for EEE
+      net: ethernet: ixgbe: Convert EEE to use linkmodes
+      net: intel: i40e/igc: Remove setting Autoneg in EEE capabilities
+      net: intel: e1000e: Use linkmode helpers for EEE
+      net: intel: igb: Use linkmode helpers for EEE
+      net: intel: igc: Use linkmode helpers for EEE
 
-"in kernel/Makefile".
+ drivers/net/ethernet/intel/e1000e/ethtool.c      | 17 +++++--
+ drivers/net/ethernet/intel/i40e/i40e_ethtool.c   |  7 +--
+ drivers/net/ethernet/intel/igb/igb_ethtool.c     | 33 ++++++++-----
+ drivers/net/ethernet/intel/igc/igc_ethtool.c     | 13 ++---
+ drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c | 48 ++++++++++---------
+ drivers/net/ethernet/qlogic/qede/qede_ethtool.c  | 60 +++++++++++++++---------
+ drivers/net/usb/Kconfig                          |  1 +
+ drivers/net/usb/ax88179_178a.c                   |  9 ++--
+ drivers/net/usb/r8152.c                          | 31 ++++++------
+ 9 files changed, 123 insertions(+), 96 deletions(-)
+---
+base-commit: ffabe98cb576097b77d404d39e8b3df03caa986a
+change-id: 20240204-keee-u32-cleanup-b86d68458d80
 
+Best regards,
+-- 
+Andrew Lunn <andrew@lunn.ch>
 
-Why is it related to this patch?
-
-
-
-> Your patch probably works since there are lots of some other BPF related
-> configurations which requires CONFIG_BPF. But maybe we sould
-> keep 'config BPF' in init/Kconfig and remove 'config BPF'
-> in kernel/bpf/Kconfig. This will be less confusing?
-
-
-Why?
-
-
-
-> >
-> >   # Used by archs to tell that they support BPF JIT compiler plus which
-> >   # flavour. Only one of the two can be selected for a specific arch si=
-nce
-
-
-
---=20
-Best Regards
-Masahiro Yamada
 
