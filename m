@@ -1,591 +1,141 @@
-Return-Path: <linux-kernel+bounces-51707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 265A1848E77
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 15:29:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C7FE848E7A
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 15:32:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F6001F21B3A
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 14:29:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEC931C21221
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 14:32:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80C2422627;
-	Sun,  4 Feb 2024 14:29:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F0AB1DFEC;
+	Sun,  4 Feb 2024 14:32:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="fV2Mter2"
-Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2057.outbound.protection.outlook.com [40.107.241.57])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="RtNHom6J"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DA00225A8;
-	Sun,  4 Feb 2024 14:29:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.241.57
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707056951; cv=fail; b=Y65ed9djj4lnfbm0zXsfhfzB2zelP9zfc4aa5BnCVQS0gMQyJKaMe8Rm605/DFpzEk1ZxLLUJRWlUVJf1lphceyANOTKGBZAYfTW3ITyB9KvJmyp9bwBGKBqy/rdxF6C5VlJdVwzsYXdLPJ4m3OpbxVnnRAdVNWoAHYFR6soRcU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707056951; c=relaxed/simple;
-	bh=FXs46/EMxRVJjJubWc/WI2LIJI3vyby3I9H3Uk/dk3g=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=qBde1x8c49PXwhZlSVCOulR03nV2f/wDyROdFFhFnBJyNfIDt8l88DjqFlCUgp/rSJ1dtdjmsAZ9e1njIy31jUVLoDDfYtb7EzWT02QmI0as4kNVs2jR8eimu3p8uR+aSXp0FBS2ByY8Gz0oWDD8ElwK6Qq3QVWMt/+xaYLj/Ag=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=fV2Mter2; arc=fail smtp.client-ip=40.107.241.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ajHwFAc4x6eOGFZ/+fKMd8fe8jtf4tRrHnRfIMDIOv1rY/rQg9MlETYEz3XKjCL9veOmXPpuf5M9LENdmk6aR/R/8cEICR6F7Ev6XP/OTgXgNX/J66pQ+UvuLTGf83SwTX7jZaGRIDJlUFEfupy7784kw150jrvUHT+4+RN1x3Ub7pf+fkeZecqeZpLHo5HK0dXjWVhew+8Rqy46fRYGdeDtbY9NFAQRlpYgpLWgzkIJ7yAtvQPm3UV6OFV+AJIIxJVjhUGTilpedct4lzEstrAApn8/FtQxzHgTW3wx8smd++YR5K85hLAz7tOSQ0G50rs6Lz6+ycHBTBlTLlUNBg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ReO8c+mqtOo8d0rMLyA0rG2MEMDsJup2eT+ZyrzK7VM=;
- b=DRg0WRs/J9J5L0muC3DX/cNYTWrQoizJcO0XDnuNXRWIgF7MK2KSmrUCwZ4BRrC3KcbdoY2BXcU9TR1WdJ45i1OV5/OiHa9c5eb+ubaavo9yngmaTzA3C+kclS7iwPfmzszDjp4qnCig060Vd0TTlNX7BlhrLjxup+i/rXOWUPyxqBSJBNkbYHnGoOV7lJ0zjNNpS1DLjCR+xYIe5tNnvWiq3YcoeOEpvfGLvDciDvya5oDUbBgf488C6ydVdnL8zEhFJG2+sp/IXxflODgrxX/mBplzSxI0zZsxb1IwAEBE2g5b8/Qy1MhUDllcqVdJOiLc+gYW64s5YT1foYQNmQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ReO8c+mqtOo8d0rMLyA0rG2MEMDsJup2eT+ZyrzK7VM=;
- b=fV2Mter2g0la2n577RHoiMTnjVeEyOYQTY1603D+ewS86xKkncaP1SFd9E4JKoA7FUiiRJKmIOeBw7WIWPzsMsbGaims/vmnlaseTTd6/4adyehme9R4fX+cJIemqRfG6RrE1uwQh2h85G00hKKXDmebyCjVeekiAURPLWYEwH0=
-Received: from PAXPR04MB9448.eurprd04.prod.outlook.com (2603:10a6:102:2b1::21)
- by DU2PR04MB8709.eurprd04.prod.outlook.com (2603:10a6:10:2dc::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.33; Sun, 4 Feb
- 2024 14:29:05 +0000
-Received: from PAXPR04MB9448.eurprd04.prod.outlook.com
- ([fe80::b24c:5d0d:bb15:3e9]) by PAXPR04MB9448.eurprd04.prod.outlook.com
- ([fe80::b24c:5d0d:bb15:3e9%5]) with mapi id 15.20.7249.032; Sun, 4 Feb 2024
- 14:29:05 +0000
-From: Sandor Yu <sandor.yu@nxp.com>
-To: Alexander Stein <alexander.stein@ew.tq-group.com>,
-	"dmitry.baryshkov@linaro.org" <dmitry.baryshkov@linaro.org>,
-	"andrzej.hajda@intel.com" <andrzej.hajda@intel.com>,
-	"neil.armstrong@linaro.org" <neil.armstrong@linaro.org>, Laurent Pinchart
-	<laurent.pinchart@ideasonboard.com>, "jonas@kwiboo.se" <jonas@kwiboo.se>,
-	"jernej.skrabec@gmail.com" <jernej.skrabec@gmail.com>, "airlied@gmail.com"
-	<airlied@gmail.com>, "daniel@ffwll.ch" <daniel@ffwll.ch>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"shawnguo@kernel.org" <shawnguo@kernel.org>, "s.hauer@pengutronix.de"
-	<s.hauer@pengutronix.de>, "festevam@gmail.com" <festevam@gmail.com>,
-	"vkoul@kernel.org" <vkoul@kernel.org>, "dri-devel@lists.freedesktop.org"
-	<dri-devel@lists.freedesktop.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-phy@lists.infradead.org"
-	<linux-phy@lists.infradead.org>
-CC: "kernel@pengutronix.de" <kernel@pengutronix.de>, dl-linux-imx
-	<linux-imx@nxp.com>, Oliver Brown <oliver.brown@nxp.com>, "sam@ravnborg.org"
-	<sam@ravnborg.org>
-Subject: RE: [EXT] Re: [PATCH v12 4/7] drm: bridge: Cadence: Add MHDP8501
- DP/HDMI driver
-Thread-Topic: [EXT] Re: [PATCH v12 4/7] drm: bridge: Cadence: Add MHDP8501
- DP/HDMI driver
-Thread-Index: AQHaQtz7BFi3wCFUXk621i2JJ9y4pLDdznSAgBw/xxA=
-Date: Sun, 4 Feb 2024 14:29:05 +0000
-Message-ID:
- <PAXPR04MB94485C09E619D404CBF96891F4402@PAXPR04MB9448.eurprd04.prod.outlook.com>
-References: <cover.1704785836.git.Sandor.yu@nxp.com>
- <d2d5d5bbde972eee5417c3e04db33895cf5ee88b.1704785836.git.Sandor.yu@nxp.com>
- <9223210.CDJkKcVGEf@steina-w>
-In-Reply-To: <9223210.CDJkKcVGEf@steina-w>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PAXPR04MB9448:EE_|DU2PR04MB8709:EE_
-x-ms-office365-filtering-correlation-id: 5435efc3-eef9-4f31-19ab-08dc258da416
-x-ld-processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- puPFFHpoKg6af+Gmjb8fQlAd8xyXvDOEjrXzEra8Bh6JUS61INmcR8SC34xjTxshP/kyPvadD9fp4NBg2lS1aIpUbkLgCxSKxkWEsGbPxm80S3fhTQHLX07scPcJxsPFKUHTA0c2QaHOz2lz0X/VgttMRzYgorGrmVphO9Gx8ElSym8o+2lG4h8F0xKwYNElN+QtikEaEujEPg3/bN3T9PsjXDF/ah63GHRYOdk+O3YDYTEUdRwCkJ5u96V3qwJG34H3CPdpE60jxTtVvb4Fkvcq1Z64wn7sw8eM0R3LHYfnEj5N2rZs9tJkToy8WWbyLf71jO27YGX+qbZLoX/zDoDXfyblquSEx/W7G3mempz8GDF3p5PygH4msRUyasjYPDa+GElfK9zXGQGz0DE4O9I4uGPFZ4tVJ/JnSZPlj0LJsFGlysu8U6FeDO3GKjkgZsUJmCtfpBoUaxdQv7C+cE9Zuu6hb4zx6aoX0osE8dXRLrMBtMZtV/lWyRf+HYLttmf2ggp5MyuLk2xuZsDo44QZfk/5qP7s7khm2yBCzpd3dnUOQjflO0lFd9QY/FqQmarvqqI/T6XA3Z/NP7IVIP8bFrcG4ic3S0ZujhzKFi22xnHDRaap7hTGs5wLXuSs
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9448.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(366004)(39850400004)(376002)(396003)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(26005)(83380400001)(66574015)(8676002)(38100700002)(7696005)(316002)(8936002)(4326008)(122000001)(110136005)(76116006)(66946007)(71200400001)(66556008)(64756008)(66446008)(2906002)(7416002)(5660300002)(30864003)(52536014)(66476007)(44832011)(54906003)(6506007)(966005)(9686003)(38070700009)(478600001)(45080400002)(86362001)(41300700001)(33656002)(921011)(55016003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-1?Q?GCAWt7aCMSMUT6RUhDhqoNDb3qBxCpWtLyp4F/igI57wcTaCuUxu0ZGsnB?=
- =?iso-8859-1?Q?oUqw6NCWyaN4ybORGd2jld1nGl4fIM1FBQnniaPW8vZvZvbaDamsnhF7EL?=
- =?iso-8859-1?Q?aT3ZWIuPIrxYhVubtk92zLBRDipswBbKWV2TO0+xYmhj++7HkV9kOQ+Ry/?=
- =?iso-8859-1?Q?q4xhhGz+xaI/qXEKxfZ5cCMEEr+Pkb84hzS5ZwpZbzcgJ5PDXFmBWU8Cee?=
- =?iso-8859-1?Q?X4bZH4yID/QhOXvUzSG31mCUirqnPxJw8PxW7ozdnGx+dRYdIeB4UscEsA?=
- =?iso-8859-1?Q?87jPHf47D3uaxIWZSDsyeqqT9bK5a/XtLNinRu+hOy9miZI8vqBhfar39+?=
- =?iso-8859-1?Q?FMD6LMnUVUzUkkOExbvgXgODmbhh65mpO3ZVgdLH6CChOaZjzcQHc6B3yr?=
- =?iso-8859-1?Q?zq1Gnp3EmTFJf1vIyEHD38Uu9Ga9UYyimLJwSCu2F4KKh0ez9wVCMa9w9i?=
- =?iso-8859-1?Q?Lo/UQKSWdqm349VWQ3wEtz/5qduC3GlASDxDgx5vZ6u9xq2VQMxzJFknYL?=
- =?iso-8859-1?Q?TMi+4AxOIYj9abxZhnDCpIIlf3NaNxeIHLEwPELx8QFOFmVarKjLlWYQAf?=
- =?iso-8859-1?Q?AWs3yotbZFP3D1BeVX2K75XppIegxOlhwKxI+K/uVDjMT6wDFlv9rhJi+r?=
- =?iso-8859-1?Q?y6NuU0nN18WMwk9zaRh8DkOiX5xjWkNLFHBn3UQTEq/SbPRy/FXWPEbSXw?=
- =?iso-8859-1?Q?PZK4HMEi3/MCTbhDoZkj2BrFt3z317ZkTVPPRZZCfWlgXuTXNu6pBHrnyI?=
- =?iso-8859-1?Q?2PwdMa1TVwjQNG7Jq1e8k4svI4IETWSp1Ukvwz2lTnarR7gpBqi4ifXIel?=
- =?iso-8859-1?Q?QpO1p8MreFQTIHgLakT2JE8mVFbmcCrefMU+8Bo0Q5yCnuUFe2gwJIzZ1e?=
- =?iso-8859-1?Q?iiNTLTee4MUkc+/TXuyJjPjbWx2TtftAbnMlM6TcszEML3Zc5lexDH7DjN?=
- =?iso-8859-1?Q?EiHMVQeHZEkZqx7jNwZhJE39CJ02uMNmfy2niZBnjSCpMZTyUy8l/TvuHZ?=
- =?iso-8859-1?Q?1JeCVFNsVw8SUm3rgcLDhfN8Q0iJQXo0VD4xu8AFrfYr1wUtl5qdYCjPhu?=
- =?iso-8859-1?Q?NzAp8drbsADlLnI5cCX1Ad+0j7L3ZfGQePT3S5kaWYJiAzXXHsJ5NbjVNO?=
- =?iso-8859-1?Q?oWL0t/sTp2FR2R+UTesONvouSzgFus+ned2pqmVjGGVU8NwClC1ShpXsOI?=
- =?iso-8859-1?Q?roet8LSSCVVvCX7YGrSboufN2P7lrgsORsYS5GM3RzGucoS2AUuV/tF455?=
- =?iso-8859-1?Q?S+AjaxSuEl5BQLPWZCQKO7Uc3lC6OllfUsPFD08m0hvZbmS07Mly/381AY?=
- =?iso-8859-1?Q?a3F1evbGtCHtRFst8QIpTW8Iuc8mqFSNK+kSPYiJN5xh/XNH0zGqnIlnuD?=
- =?iso-8859-1?Q?7F7zrE6Sgqkba/+TgpmcLwcJUWnusa2PQ0eA2mb0ukLriLRlY8mICio98G?=
- =?iso-8859-1?Q?U6CNfFYS9JATJbGBMqmNcJfIGXRAm/Fm1bDdKa4pKJJ+fS71DS9Rkxj6oB?=
- =?iso-8859-1?Q?RyTr/BZLq26nwxJiNBA1JqK7qpsspSCIhEXsXFeRfnPKAg2HfUCAeGoHlE?=
- =?iso-8859-1?Q?GCm0OhFMNF8AldF8cYWJj4u06ytopTTjh565QnyQq7zuEoXBZeyWVcQBl6?=
- =?iso-8859-1?Q?0osJtx/1Vb68g=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7DB21DDDB;
+	Sun,  4 Feb 2024 14:32:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707057123; cv=none; b=qvxPIpIaKZCSMPyQdGWTYWWwpdC6M/j1itv61qiYk1UjyTuEFtPuC7ODXhpFLV3pLE7eYGG+t3RdinV+wbVnlGyafdvEWcm0erIjOYpPfNcMOWN8urI5feu8uThwrHQZS564w7XS9gVU0BdTEuZm48GbjDhPt1SOAxVjZH0+mkg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707057123; c=relaxed/simple;
+	bh=bUoLgCW4qDj2Uqe1nE0GJYpMsDm2UIDql8AeznRxBV0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=XEgQbKAlUhZdaFW1sU45ILvJ7Yha0HknXKxpCug4sQ3T4Y2g1xgZIb76Preba8iMlYmjrWRdQxbKuTv6Ud0XIfx1sqtO+vZz9K073/rU/9HaJZJFMo5g6ek9AcGRPA9WlADR7QaqlnG5Gl8QO2duqdbzB8o+dcRiRkLRLiKcPX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=fail (0-bit key) header.d=marliere.net header.i=@marliere.net header.b=RtNHom6J reason="key not found in DNS"; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d932f6ccfaso26929115ad.1;
+        Sun, 04 Feb 2024 06:32:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707057121; x=1707661921;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qJ87ib5NalQBsE0FEcn0KlRmTdklRyj6MKZDkNe11vQ=;
+        b=XSE/6J6/VbPfhvJzsZ/FlHAUO8v6EYlp33KHkVF8rCqeBjZZ/RDIHuBxx0MQdh7VFG
+         VV+lEe7f8gY2AP90BDfOJ2O9W0u//K/d4wJbb+/apFCCRyKASUFue3/6Jw1AoqlxyR9d
+         mAC7oGSUnOmrULE100qsvWxmJqWvdRuolizrjr1miReAcdjOyFh/MozcSzuVgzqpBLc0
+         W3hyh+askWJOGbjoPzJ6JcBt822+O2KK3TQBRQYrnzPqZIIeytF2etmhK0M+6RXEikVW
+         cOSGnH0r14OILXJ8a/fiLQXoHXAeSQc7+cL/RtIjRe7Xo1zkio6jHdwLOuoexOkU99tR
+         c8xA==
+X-Gm-Message-State: AOJu0YzairoAGFODOFE7zx0LPSfHByhDmQ2CuImImTJJ7DoLPv5cr8s3
+	GFxdBrm3aTYxcQfRaOgfeIHKrAygDkiflnWm/Inu4W9p8WyqGjRS
+X-Google-Smtp-Source: AGHT+IEyhQNXn4QBpck2IX1vWw2TrgLz30aIdddRlMaNnQcT7tliXVjDwlUQJ1m38UZfJDkdLaCnEQ==
+X-Received: by 2002:a17:902:f7c3:b0:1d9:a148:48a with SMTP id h3-20020a170902f7c300b001d9a148048amr1409279plw.24.1707057121219;
+        Sun, 04 Feb 2024 06:32:01 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXF7dcjfPQrpaAYRMjtME3iwBSs1Q4fbZFJhirIe6pbIWgx+SSTroE6plAVKKYBOrab4SdZ/IUWjpO+a9VT6+IOctPKkc5d57urZ3yhCd59ucy18m4SNMtR/XcLGhT9qKkJqj5ToOjQLElgY+V/2f0T+E1u7w1cPfHPnfMGJ22PrOQDXUYVO06kT8uhldJn11DWhFqE/ucEaHOshe/9Xfi9wtQzUwuyya8ePgoJ9bL9RpM6MOa8e2bFW67rSbkZu5GK0K+c9/EI4DK10MfFY8nnBAzM2izd8Yc=
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id l4-20020a170903244400b001d9620dd3fdsm4569296pls.206.2024.02.04.06.32.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Feb 2024 06:32:00 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2023; t=1707057119;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=qJ87ib5NalQBsE0FEcn0KlRmTdklRyj6MKZDkNe11vQ=;
+	b=RtNHom6JI6RkmMeXzH6a+49AZmKXwaKkirC5Iwil6gWqfFfrxerCPDs3x9HhVd4pC8p/uu
+	YGtZWqvRyBNq45ZHdycRXIp9reQ3A4xzKO6xBYL4LjUTXDJ3Nf2s/+eGeR7FDu3I3aLY7+
+	1XznKspbCoavxbiyVGuaSLVt3KGQ3hfiSxPV6/sSFgiRTa1V+Ku91PG3d4SziN85n3nPkt
+	fsH0dUcNFwz1KVmrNiannn//7gzJZzvGbKqQqjrIcBK7D2cfjolMZQ7ZB5pX6J+4wdY7S9
+	3TemVograxUKJwp6FFiXWRzFk8K3uVa+oahbTjNLJsPiN6nE1iTRF9cLpr1gVQ==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Date: Sun, 04 Feb 2024 11:32:29 -0300
+Subject: [PATCH] x86: mce: make mce_subsys const
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9448.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5435efc3-eef9-4f31-19ab-08dc258da416
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Feb 2024 14:29:05.2906
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: xDUWd5SVc5NQnLp6BxJsjG2x/SntIA/PI3uCmTnRs3QYIgwUinkOmXzZJY+TK5nlzCY8gtIRoXRbRBoWGqHD5A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8709
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240204-bus_cleanup-x86-v1-1-4e7171be88e8@marliere.net>
+X-B4-Tracking: v=1; b=H4sIAPyfv2UC/x3MQQqAIBBA0avErBNsMLGuEhFlYw2EhWIE0t2Tl
+ m/xf4ZIgSlCX2UIdHPk0xc0dQV2n/1GgtdiQIlKolRiSXGyB80+XeIxWjhsTYdWN8oZKNUVyPH
+ zH4fxfT/CoSCZYQAAAA==
+To: Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>, 
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+ "H. Peter Anvin" <hpa@zytor.com>
+Cc: linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1103; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=bUoLgCW4qDj2Uqe1nE0GJYpMsDm2UIDql8AeznRxBV0=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlv5/8537zX6l2Is1D9nWshJ9YkX2/EORuLAleN
+ /gjLqYY0ACJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZb+f/AAKCRDJC4p8Y4ZY
+ pirXEACtl2pH/pB4h7ybWOUKkAeEnII2gqhOlBGWBX+nAtEJCuXysXgk+9j1AhZBwL9bMw/bR2T
+ zylkTxyMBku1o8x8h2JJ6RV6I0RqBJDFUmKYUqeU/2OQJi4aHd/WwTq0tY2hmn9DM3GVgWSXO56
+ YJCMv5wipe8A6r9gcwnj96Jxmsm0/i7zOvX/4OagXRyVl6Z6nnuSUAPHHq6vEQ8TIzLE9nhfFZl
+ lMwIxrrJgqZfiUQK5wP5v3v5wZgJvZL2FBPOAaMlJJcnYbWsrbQmb5caBVoRZBByRUlrrWjQzZf
+ XnI7pnBf0J7TXHGp66qP17Zfm9xyBRnyFVqKQgx0Er0AybdGz5n1WGgjW48o5W7uzrIVocxCyxE
+ Djn3oNXWopLiUcfBgq0sLZ9zk3AoJBsG/lcentrz1cAo4ZitxQZswB4zk1TiBExAehNgYphGow0
+ 1WUO8togPILVyCwCMMjG9iHAgb11M59X0WKKEZYpnDnQC/64Jm0TKLrxNUY5coyg766TFXix3s7
+ +F2AmydwNtr7BFUQkE+S+5s5Wj8lJ0lyNPRCQtg++T/xBKbVMA0E3XPBFnudevmcOF/yPYIzLUx
+ iHcqmlOKxavPh+NBYdQQlGobY/+HCignK7vOcF6MxiWdsDskrFDUetnAz2wqpVP+ZP07bMA45HY
+ Rynio7/gPSqW/EQ==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-Hi Alexander,
+Now that the driver core can properly handle constant struct bus_type,
+move the mce_subsys variable to be a constant structure as well,
+placing it into read-only memory which can not be modified at runtime.
 
-Thanks your comments,
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+---
+ arch/x86/kernel/cpu/mce/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->
->
-> Hi Sandor,
->
-> thanks for the update.
->
-> Am Mittwoch, 10. Januar 2024, 02:08:45 CET schrieb Sandor Yu:
-> > Add a new DRM DisplayPort and HDMI bridge driver for Candence
-> MHDP8501
-> > used in i.MX8MQ SOC. MHDP8501 could support HDMI or DisplayPort
-> > standards according embedded Firmware running in the uCPU.
-> >
-> > For iMX8MQ SOC, the DisplayPort/HDMI FW was loaded and activated by
-> > SOC's ROM code. Bootload binary included respective specific firmware
-> > is required.
-> >
-> > Driver will check display connector type and then load the
-> > corresponding driver.
-> >
-> > Signed-off-by: Sandor Yu <Sandor.yu@nxp.com>
-> > Tested-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-> > ---
-> > v11->v12:
-> > - Replace DRM_INFO with dev_info or dev_warn.
-> > - Replace DRM_ERROR with dev_err.
-> > - Return ret when cdns_mhdp_dpcd_read failed in function
-> > cdns_dp_aux_transferi(). - Remove unused parmeter in function
-> > cdns_dp_get_msa_misc
-> >   and use two separate variables for color space and bpc.
-> > - Add year 2024 to copyright.
-> >
-> >  drivers/gpu/drm/bridge/cadence/Kconfig        |  16 +
-> >  drivers/gpu/drm/bridge/cadence/Makefile       |   2 +
-> >  .../drm/bridge/cadence/cdns-mhdp8501-core.c   | 315 ++++++++
-> >  .../drm/bridge/cadence/cdns-mhdp8501-core.h   | 365 +++++++++
-> >  .../gpu/drm/bridge/cadence/cdns-mhdp8501-dp.c | 699
-> ++++++++++++++++++
-> >  .../drm/bridge/cadence/cdns-mhdp8501-hdmi.c   | 678
-> +++++++++++++++++
-> >  6 files changed, 2075 insertions(+)
-> >  create mode 100644
-> > drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-core.c
-> >  create mode 100644
-> > drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-core.h
-> >  create mode 100644
-> drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-dp.c
-> >  create mode 100644
-> > drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-hdmi.c
-> >
-> > diff --git a/drivers/gpu/drm/bridge/cadence/Kconfig
-> > b/drivers/gpu/drm/bridge/cadence/Kconfig index
-> > e0973339e9e33..45848e741f5f4
-> > 100644
-> > --- a/drivers/gpu/drm/bridge/cadence/Kconfig
-> > +++ b/drivers/gpu/drm/bridge/cadence/Kconfig
-> > @@ -51,3 +51,19 @@ config DRM_CDNS_MHDP8546_J721E
-> >         initializes the J721E Display Port and sets up the
-> >         clock and data muxes.
-> >  endif
-> > +
-> > +config DRM_CDNS_MHDP8501
-> > +     tristate "Cadence MHDP8501 DP/HDMI bridge"
-> > +     select DRM_KMS_HELPER
-> > +     select DRM_PANEL_BRIDGE
-> > +     select DRM_DISPLAY_DP_HELPER
-> > +     select DRM_DISPLAY_HELPER
-> > +     select CDNS_MHDP_HELPER
-> > +     select DRM_CDNS_AUDIO
-> > +     depends on OF
-> > +     help
-> > +       Support Cadence MHDP8501 DisplayPort/HDMI bridge.
-> > +       Cadence MHDP8501 support one or more protocols,
-> > +       including DisplayPort and HDMI.
-> > +       To use the DP and HDMI drivers, their respective
-> > +       specific firmware is required.
-> > diff --git a/drivers/gpu/drm/bridge/cadence/Makefile
-> > b/drivers/gpu/drm/bridge/cadence/Makefile index
-> > 087dc074820d7..02c1a9f3cf6fc 100644
-> > --- a/drivers/gpu/drm/bridge/cadence/Makefile
-> > +++ b/drivers/gpu/drm/bridge/cadence/Makefile
-> > @@ -6,3 +6,5 @@ obj-$(CONFIG_CDNS_MHDP_HELPER) +=3D
-> cdns-mhdp-helper.o
-> >  obj-$(CONFIG_DRM_CDNS_MHDP8546) +=3D cdns-mhdp8546.o
-> cdns-mhdp8546-y
-> > :=3D cdns-mhdp8546-core.o cdns-mhdp8546-hdcp.o
-> >  cdns-mhdp8546-$(CONFIG_DRM_CDNS_MHDP8546_J721E) +=3D
-> > cdns-mhdp8546-j721e.o
-> > +obj-$(CONFIG_DRM_CDNS_MHDP8501) +=3D cdns-mhdp8501.o
-> cdns-mhdp8501-y :=3D
-> > +cdns-mhdp8501-core.o cdns-mhdp8501-dp.o
-> > cdns-mhdp8501-hdmi.o diff --git
-> > a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-core.c
-> > b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-core.c new file mode
-> > 100644 index 0000000000000..3080c7507a012
-> > --- /dev/null
-> > +++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-core.c
-> > @@ -0,0 +1,315 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Cadence Display Port Interface (DP) driver
-> > + *
-> > + * Copyright (C) 2023, 2024 NXP Semiconductor, Inc.
-> > + *
-> > + */
-> > +#include <drm/drm_of.h>
-> > +#include <drm/drm_print.h>
-> > +#include <linux/clk.h>
-> > +#include <linux/irq.h>
-> > +#include <linux/mutex.h>
-> > +#include <linux/of_device.h>
->
-> Since commit d57d584ef69de ("of: Stop circularly including of_device.h an=
-d
-> of_platform.h") you to explicitly include linux/platform_device.h here. P=
-lease
-> compile against next tree.
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 7b397370b4d6..9bb208ba7ff4 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -2399,7 +2399,7 @@ static void mce_enable_ce(void *all)
+ 		__mcheck_cpu_init_timer();
+ }
+ 
+-static struct bus_type mce_subsys = {
++static const struct bus_type mce_subsys = {
+ 	.name		= "machinecheck",
+ 	.dev_name	= "machinecheck",
+ };
 
-OK, I will check it on next tree.
+---
+base-commit: edc8fc01f608108b0b7580cb2c29dfb5135e5f0e
+change-id: 20240204-bus_cleanup-x86-f25892c614f8
 
->
-> > +#include <linux/phy/phy.h>
-> > +
-> > +#include "cdns-mhdp8501-core.h"
-> > +
-> > [snip]
-> > diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-dp.c
-> > b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-dp.c new file mode
-> > 100644 index 0000000000000..6963c7143a3b0
-> > --- /dev/null
-> > +++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-dp.c
-> > @@ -0,0 +1,699 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Cadence MHDP8501 DisplayPort(DP) bridge driver
-> > + *
-> > + * Copyright (C) 2019-2024 NXP Semiconductor, Inc.
-> > + *
-> > + */
-> > +#include <drm/drm_atomic_helper.h>
-> > +#include <drm/drm_edid.h>
-> > +#include <drm/drm_print.h>
-> > +#include <linux/phy/phy.h>
-> > +#include <linux/phy/phy-dp.h>
-> > +
-> > +#include "cdns-mhdp8501-core.h"
-> > +
-> > +#define LINK_TRAINING_TIMEOUT_MS     500
-> > +#define LINK_TRAINING_RETRY_MS               20
-> > +
-> > +ssize_t cdns_dp_aux_transfer(struct drm_dp_aux *aux,
-> > +                          struct drm_dp_aux_msg *msg) {
-> > +     struct cdns_mhdp8501_device *mhdp =3D dev_get_drvdata(aux->dev);
-> > +     bool native =3D msg->request & (DP_AUX_NATIVE_WRITE &
-> DP_AUX_NATIVE_READ);
-> > +     int ret;
-> > +
-> > +     /* Ignore address only message */
-> > +     if (!msg->size || !msg->buffer) {
-> > +             msg->reply =3D native ?
-> > +                     DP_AUX_NATIVE_REPLY_ACK :
-> DP_AUX_I2C_REPLY_ACK;
-> > +             return msg->size;
-> > +     }
-> > +
-> > +     if (!native) {
-> > +             dev_err(mhdp->dev, "%s: only native messages
-> > + supported\n",
-> __func__);
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     /* msg sanity check */
-> > +     if (msg->size > DP_AUX_MAX_PAYLOAD_BYTES) {
-> > +             dev_err(mhdp->dev, "%s: invalid msg: size(%zu),
-> request(%x)\n",
-> > +                     __func__, msg->size, (unsigned int)msg-
-> >request);
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     if (msg->request =3D=3D DP_AUX_NATIVE_WRITE) {
-> > +             const u8 *buf =3D msg->buffer;
-> > +             int i;
-> > +
-> > +             for (i =3D 0; i < msg->size; ++i) {
-> > +                     ret =3D cdns_mhdp_dpcd_write(&mhdp->base,
-> > +                                                msg->address +
-> i, buf[i]);
-> > +                     if (ret < 0) {
-> > +                             dev_err(mhdp->dev, "Failed to write
-> DPCD\n");
-> > +                             return ret;
-> > +                     }
-> > +             }
-> > +             msg->reply =3D DP_AUX_NATIVE_REPLY_ACK;
-> > +             return msg->size;
-> > +     }
-> > +
-> > +     if (msg->request =3D=3D DP_AUX_NATIVE_READ) {
-> > +             ret =3D cdns_mhdp_dpcd_read(&mhdp->base, msg->address,
-> > +                                       msg->buffer, msg->size);
-> > +             if (ret < 0)
-> > +                     return ret;
-> > +             msg->reply =3D DP_AUX_NATIVE_REPLY_ACK;
-> > +             return msg->size;
-> > +     }
-> > +     return 0;
-> > +}
-> > +
-> > +int cdns_dp_aux_destroy(struct cdns_mhdp8501_device *mhdp) {
-> > +     drm_dp_aux_unregister(&mhdp->dp.aux);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int cdns_dp_get_msa_misc(struct video_info *video) {
-> > +     u32 msa_misc;
-> > +     u8 color_space =3D 0;
-> > +     u8 bpc =3D 0;
-> > +
-> > +     switch (video->color_fmt) {
-> > +     /* set YUV default color space conversion to BT601 */
-> > +     case DRM_COLOR_FORMAT_YCBCR444:
-> > +             color_space =3D 6 + BT_601 * 8;
-> > +             break;
-> > +     case DRM_COLOR_FORMAT_YCBCR422:
-> > +             color_space =3D 5 + BT_601 * 8;
-> > +             break;
-> > +     case DRM_COLOR_FORMAT_YCBCR420:
-> > +             color_space =3D 5;
-> > +             break;
-> > +     case DRM_COLOR_FORMAT_RGB444:
-> > +     default:
-> > +             color_space =3D 0;
-> > +             break;
-> > +     };
-> > +
-> > +     switch (video->bpc) {
-> > +     case 6:
-> > +             bpc =3D 0;
-> > +             break;
-> > +     case 10:
-> > +             bpc =3D 2;
-> > +             break;
-> > +     case 12:
-> > +             bpc =3D 3;
-> > +             break;
-> > +     case 16:
-> > +             bpc =3D 4;
-> > +             break;
-> > +     case 8:
-> > +     default:
-> > +             bpc =3D 1;
-> > +             break;
-> > +     };
-> > +
-> > +     msa_misc =3D (color_space << 1) | (bpc << 5);
->
-> This looks much nicer, thanks. But please order them in descending shift
-> width: bpc first then color_space.
->
-
-OK.
-
-> > +
-> > +     return msa_misc;
-> > +}
-> > +
-> > [snip]
-> > +int cdns_dp_set_host_cap(struct cdns_mhdp8501_device *mhdp)
->
-> This can be made static.
-
-OK.
-
->
-> > +{
-> > +     u8 msg[8];
-> > +     int ret;
-> > +
-> > +     msg[0] =3D drm_dp_link_rate_to_bw_code(mhdp->dp.rate);
-> > +     msg[1] =3D mhdp->dp.num_lanes | SCRAMBLER_EN;
-> > +     msg[2] =3D VOLTAGE_LEVEL_2;
-> > +     msg[3] =3D PRE_EMPHASIS_LEVEL_3;
-> > +     msg[4] =3D PTS1 | PTS2 | PTS3 | PTS4;
-> > +     msg[5] =3D FAST_LT_NOT_SUPPORT;
-> > +     msg[6] =3D mhdp->lane_mapping;
-> > +     msg[7] =3D ENHANCED;
-> > +
-> > +     mutex_lock(&mhdp->mbox_mutex);
-> > +
-> > +     ret =3D cdns_mhdp_mailbox_send(&mhdp->base,
-> MB_MODULE_ID_DP_TX,
-> > +                                  DPTX_SET_HOST_CAPABILITIES,
-> > +                                  sizeof(msg), msg);
-> > +
-> > +     mutex_unlock(&mhdp->mbox_mutex);
-> > +
-> > +     if (ret)
-> > +             dev_err(mhdp->dev, "set host cap failed: %d\n", ret);
-> > +
-> > +     return ret;
-> > +}
-> > [snip]
-> > diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-hdmi.c
-> > b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-hdmi.c new file mode
-> > 100644 index 0000000000000..ae21f7dfe5e94
-> > --- /dev/null
-> > +++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-hdmi.c
-> > @@ -0,0 +1,678 @@
-> > [snip]
-> > +bool cdns_hdmi_bridge_mode_fixup(struct drm_bridge *bridge,
-> > +                              const struct drm_display_mode
-> *mode,
-> > +                              struct drm_display_mode
-> *adjusted_mode)
->
-> This can be made static.
-
-OK, thanks!
-
-Sandor
-
->
-> Thanks and best regards,
-> Alexander
->
-> > +{
-> > +     struct cdns_mhdp8501_device *mhdp =3D bridge->driver_private;
-> > +     struct video_info *video =3D &mhdp->video_info;
-> > +
-> > +     /* The only currently supported format */
-> > +     video->bpc =3D 8;
-> > +     video->color_fmt =3D DRM_COLOR_FORMAT_RGB444;
-> > +
-> > +     return true;
-> > +}
-> > +
-> > +static enum drm_connector_status
-> > +cdns_hdmi_bridge_detect(struct drm_bridge *bridge) {
-> > +     struct cdns_mhdp8501_device *mhdp =3D bridge->driver_private;
-> > +
-> > +     return cdns_mhdp8501_detect(mhdp); }
-> > +
-> > +static struct edid *cdns_hdmi_bridge_get_edid(struct drm_bridge *bridg=
-e,
-> > +                                           struct drm_connector
-> *connector)
-> > +{
-> > +     struct cdns_mhdp8501_device *mhdp =3D bridge->driver_private;
-> > +
-> > +     return drm_do_get_edid(connector, cdns_hdmi_get_edid_block,
-> > +mhdp); }
-> > +
-> > +static void cdns_hdmi_bridge_atomic_disable(struct drm_bridge *bridge,
-> > +                                         struct drm_bridge_state
-> *old_state)
-> > +{
-> > +     struct cdns_mhdp8501_device *mhdp =3D bridge->driver_private;
-> > +
-> > +     mhdp->curr_conn =3D NULL;
-> > +
-> > +     /* Mailbox protect for HDMI PHY access */
-> > +     mutex_lock(&mhdp->mbox_mutex);
-> > +     phy_power_off(mhdp->phy);
-> > +     mutex_unlock(&mhdp->mbox_mutex); }
-> > +
-> > +static void cdns_hdmi_bridge_atomic_enable(struct drm_bridge *bridge,
-> > +                                        struct drm_bridge_state
-> *old_state)
-> > +{
-> > +     struct cdns_mhdp8501_device *mhdp =3D bridge->driver_private;
-> > +     struct drm_atomic_state *state =3D old_state->base.state;
-> > +     struct drm_connector *connector;
-> > +     struct drm_crtc_state *crtc_state;
-> > +     struct drm_connector_state *conn_state;
-> > +     const struct drm_display_mode *mode;
-> > +
-> > +     connector =3D drm_atomic_get_new_connector_for_encoder(state,
-> > +
-> bridge->encoder);
-> > +     if (WARN_ON(!connector))
-> > +             return;
-> > +
-> > +     mhdp->curr_conn =3D connector;
-> > +
-> > +     conn_state =3D drm_atomic_get_new_connector_state(state,
-> connector);
-> > +     if (WARN_ON(!conn_state))
-> > +             return;
-> > +
-> > +     crtc_state =3D drm_atomic_get_new_crtc_state(state,
-> conn_state->crtc);
-> > +     if (WARN_ON(!crtc_state))
-> > +             return;
-> > +
-> > +     mode =3D &crtc_state->adjusted_mode;
-> > +     dev_dbg(mhdp->dev, "Mode: %dx%dp%d\n",
-> > +             mode->hdisplay, mode->vdisplay, mode->clock);
-> > +     memcpy(&mhdp->mode, mode, sizeof(struct drm_display_mode));
-> > +
-> > +     cdns_hdmi_mode_set(mhdp);
-> > +}
-> > +
-> > +const struct drm_bridge_funcs cdns_hdmi_bridge_funcs =3D {
-> > +     .attach =3D cdns_hdmi_bridge_attach,
-> > +     .detect =3D cdns_hdmi_bridge_detect,
-> > +     .get_edid =3D cdns_hdmi_bridge_get_edid,
-> > +     .mode_valid =3D cdns_hdmi_bridge_mode_valid,
-> > +     .mode_fixup =3D cdns_hdmi_bridge_mode_fixup,
-> > +     .atomic_enable =3D cdns_hdmi_bridge_atomic_enable,
-> > +     .atomic_disable =3D cdns_hdmi_bridge_atomic_disable,
-> > +     .atomic_duplicate_state =3D
-> drm_atomic_helper_bridge_duplicate_state,
-> > +     .atomic_destroy_state =3D drm_atomic_helper_bridge_destroy_state,
-> > +     .atomic_reset =3D drm_atomic_helper_bridge_reset, };
->
->
-> --
-> TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
-> Amtsgericht M=FCnchen, HRB 105018
-> Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
-> http://www.tq-/
-> group.com%2F&data=3D05%7C02%7CSandor.yu%40nxp.com%7Cb23e376f27494
-> 9cdb46c08dc17413d46%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0
-> %7C638410816178929125%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjA
-> wMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7
-> C%7C&sdata=3DtYc81WajNJAOmUvSD06cto0i%2FhVe%2BuLFxIeYm0uyMDM%3
-> D&reserved=3D0
->
+Best regards,
+-- 
+Ricardo B. Marliere <ricardo@marliere.net>
 
 
