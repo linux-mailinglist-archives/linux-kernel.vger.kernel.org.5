@@ -1,248 +1,142 @@
-Return-Path: <linux-kernel+bounces-51369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51371-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 286E0848A3C
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 02:35:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B45EE848A4A
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 02:48:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7AC11F21B24
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 01:35:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7282B1F2344F
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 01:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A745D138C;
-	Sun,  4 Feb 2024 01:35:26 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CA208C0A;
+	Sun,  4 Feb 2024 01:47:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gzsBCThk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25DEEEBE;
-	Sun,  4 Feb 2024 01:35:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EEEB8BEB
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 01:47:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707010526; cv=none; b=TMLC/fdU3+iuLlkOgfNnWIU6snUSDYamt+4Fl0JC/laHshmm6MY1+kdAjwQQuJbR7JP1xT/AWqo9RAcaitKPUch6J23m5boZWbzvKJQOxDuOFPz289/fGOVGDfbswddODrHifsoeDKoX3EPFTnQiFfKKsOOEECJkp3G0q6NUqWM=
+	t=1707011274; cv=none; b=gGzLJmnz5DKD/YgxNQ0xBt390WCOjA2VKIOhUk1dXVru3IC1UGchvP2KaqNHgnDMG9ELfslvkx/lnOerk20bqiWVJYqtxPdTp7Avru0PrC8ccARq0vc4TwmCk9saBCySSM+uQ5UyMVGxYMPOpvvR9sPF27MDun/ytjdXXqFVO2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707010526; c=relaxed/simple;
-	bh=KQkZtPc3Eys4j6v8gCXCHGDmJyPKKgZ3gFxxf0iZbT4=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=qRxjzUGzyhSHDoZxug/b9Li3RZgZUayfSDW17Sm55uOsLbjU/ZKZ/6d/gKfw7XuVPXAdhnp1AylQF24BaCGFRtaf8PhRtnVvinMr9NU1XLTV49BI5KKlCs7UKQQ6/moqSLHeFwEaea2u7nm/w7bNec0zX8FtiX+KvrOlBBQ63v8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TSBsB6sHYz4f3k6L;
-	Sun,  4 Feb 2024 09:35:10 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id A00A21A027B;
-	Sun,  4 Feb 2024 09:35:13 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgAn9g7N6b5lt1WeCw--.38132S3;
-	Sun, 04 Feb 2024 09:35:11 +0800 (CST)
-Subject: Re: [PATCH v5 00/14] dm-raid/md/raid: fix v6.7 regressions
-To: Benjamin Marzinski <bmarzins@redhat.com>,
- Yu Kuai <yukuai1@huaweicloud.com>
-Cc: mpatocka@redhat.com, heinzm@redhat.com, xni@redhat.com,
- blazej.kucman@linux.intel.com, agk@redhat.com, snitzer@kernel.org,
- dm-devel@lists.linux.dev, song@kernel.org, jbrassow@f14.redhat.com,
- neilb@suse.de, shli@fb.com, akpm@osdl.org, linux-kernel@vger.kernel.org,
- linux-raid@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <20240201092559.910982-1-yukuai1@huaweicloud.com>
- <Zb2wxIpf7uYV6Vya@bmarzins-01.fast.eng.rdu2.dc.redhat.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <528ce926-6f17-c1ea-8e77-c7d5d7f56022@huaweicloud.com>
-Date: Sun, 4 Feb 2024 09:35:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1707011274; c=relaxed/simple;
+	bh=2AQnPmoKsbbhPHWUPAdwATTf/lebIxhhjhdFZEHTX+o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UFAVLhqJr+EZTDBEaP1146ouw/e4OjxGdNBKFs4sm1i0mV6aLtBw4f9MByVPyii2k0C8d1/ZD7wrsYrPmyQ3HPubpNeGutlu/Edr1nXyy3DHonVXjPDwnJGJpgQqGP7BJJJ5EJgXBYvJH1eODlnG6lDKi9ER+Uzn9me8vew6q20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gzsBCThk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50390C433C7;
+	Sun,  4 Feb 2024 01:47:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707011273;
+	bh=2AQnPmoKsbbhPHWUPAdwATTf/lebIxhhjhdFZEHTX+o=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=gzsBCThkcBb2Mjc90NH8US4+wnXWJVvpFsmZG0tEJ2ytPqPw8/RqZ+dDR502goRB+
+	 xucxJS/a7ZEeh8J1fFXtjOqeFBOByBGifO2JXxcbivmKU0P0yeaOjfarL/BoLidJKD
+	 mJy3DIfkssHOrrAg8eK8j/JRr7fTxWN+kkVsYf4DoIy1o8xZezHRgNOpDOqA3iva45
+	 ajrC1OuY8v6JQZ5bgBiTYCo6JWI7Q6V6u3unvoNmiGPv34a+rogpZkAai1FOf34ker
+	 jZy8wIWeYv85fZjIzYSz/+bFrFBrbu58LmKIFrL+hRrgXProgXdoGj0oZfj/IsUKhE
+	 0W5LRIC1X0fFg==
+Message-ID: <8eaf59a4-1aaa-460e-a3cc-b798ed5e0f63@kernel.org>
+Date: Sun, 4 Feb 2024 09:47:49 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <Zb2wxIpf7uYV6Vya@bmarzins-01.fast.eng.rdu2.dc.redhat.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAn9g7N6b5lt1WeCw--.38132S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3WF4UXw47GryUGFy8AryrWFg_yoW3tFWDpa
-	9xKa1ft340kw1IqrnxAa40qrWftF13J395Ca1fWr4xAry5u392yrs3tF1F9FnIy3sY9a42
-	q3yDJryrCF12gFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
-	3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
-	sGvfC2KfnxnUUI43ZEXa7VUbQVy7UUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] f2fs: fix zoned block device information
+ initialization
+Content-Language: en-US
+To: Wenjie Qi <qwjhust@gmail.com>, jaegeuk@kernel.org,
+ yangyongpeng1@oppo.com, linux-f2fs-devel@lists.sourceforge.net,
+ linux-kernel@vger.kernel.org
+Cc: hustqwj@hust.edu.cn
+References: <20240203152436.1352-1-qwjhust@gmail.com>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <20240203152436.1352-1-qwjhust@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi,
-
-ÔÚ 2024/02/03 11:19, Benjamin Marzinski Ð´µÀ:
-> On Thu, Feb 01, 2024 at 05:25:45PM +0800, Yu Kuai wrote:
->> From: Yu Kuai <yukuai3@huawei.com>
->> I apply this patchset on top of v6.8-rc1, and run lvm2 tests suite with
->> folling cmd for 24 round(for about 2 days):
->>
->> for t in `ls test/shell`; do
->>          if cat test/shell/$t | grep raid &> /dev/null; then
->>                  make check T=shell/$t
->>          fi
->> done
->>
->> failed count                             failed test
->>        1 ###       failed: [ndev-vanilla] shell/dmsecuretest.sh
->>        1 ###       failed: [ndev-vanilla] shell/dmsetup-integrity-keys.sh
->>        1 ###       failed: [ndev-vanilla] shell/dmsetup-keyring.sh
->>        5 ###       failed: [ndev-vanilla] shell/duplicate-pvs-md0.sh
->>        1 ###       failed: [ndev-vanilla] shell/duplicate-vgid.sh
->>        2 ###       failed: [ndev-vanilla] shell/duplicate-vgnames.sh
->>        1 ###       failed: [ndev-vanilla] shell/fsadm-crypt.sh
->>        1 ###       failed: [ndev-vanilla] shell/integrity.sh
->>        6 ###       failed: [ndev-vanilla] shell/lvchange-raid1-writemostly.sh
->>        2 ###       failed: [ndev-vanilla] shell/lvchange-rebuild-raid.sh
->>        5 ###       failed: [ndev-vanilla] shell/lvconvert-raid-reshape-stripes-load-reload.sh
->>        4 ###       failed: [ndev-vanilla] shell/lvconvert-raid-restripe-linear.sh
->>        1 ###       failed: [ndev-vanilla] shell/lvconvert-raid1-split-trackchanges.sh
->>       20 ###       failed: [ndev-vanilla] shell/lvconvert-repair-raid.sh
->>       20 ###       failed: [ndev-vanilla] shell/lvcreate-large-raid.sh
->>       24 ###       failed: [ndev-vanilla] shell/lvextend-raid.sh
->>
->> And I ramdomly pick some tests verified by hand that these test will
->> fail in v6.6 as well(not all tests):
->>
->> shell/lvextend-raid.sh
->> shell/lvcreate-large-raid.sh
->> shell/lvconvert-repair-raid.sh
->> shell/lvchange-rebuild-raid.sh
->> shell/lvchange-raid1-writemostly.sh
+On 2024/2/3 23:24, Wenjie Qi wrote:
+> If the max open zones of zoned devices are less than
+> the active logs of F2FS, the device may error due to
+> insufficient zone resources when multiple active logs are
+> being written at the same time. If this value is 0,
+> there is no limit.
 > 
-> In my testing with this patchset on top of the head of linus's tree
-> (5c24e4e9e708) I am seeing failures in
-> shell/lvconvert-raid-reshape-stripes-load-reload.sh and
-> shell/lvconvert-repair-raid.sh in about 20% of my runs. I have never
-> seen either of these these fail running on the 6.6 kernel (ffc253263a13).
+> Signed-off-by: Wenjie Qi <qwjhust@gmail.com>
+> ---
+>   fs/f2fs/f2fs.h  |  1 +
+>   fs/f2fs/super.c | 21 +++++++++++++++++++++
+>   2 files changed, 22 insertions(+)
+> 
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index 543898482f8b..161107f2d3bd 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -1558,6 +1558,7 @@ struct f2fs_sb_info {
+>   
+>   #ifdef CONFIG_BLK_DEV_ZONED
+>   	unsigned int blocks_per_blkz;		/* F2FS blocks per zone */
+> +	unsigned int max_open_zones;		/* max open zone resources of the zoned device */
+>   #endif
+>   
+>   	/* for node-related operations */
+> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> index 1b718bebfaa1..45e82d6016fc 100644
+> --- a/fs/f2fs/super.c
+> +++ b/fs/f2fs/super.c
+> @@ -2388,6 +2388,16 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+>   	if (err)
+>   		goto restore_opts;
+>   
+> +#ifdef CONFIG_BLK_DEV_ZONED
+> +	if (sbi->max_open_zones && sbi->max_open_zones < F2FS_OPTION(sbi).active_logs) {
+> +		f2fs_err(sbi,
+> +			"zoned: max open zones %u is too small, need at least %u open zones",
+> +				 sbi->max_open_zones, F2FS_OPTION(sbi).active_logs);
+> +		err = -EINVAL;
+> +		goto restore_opts;
+> +	}
+> +#endif
+> +
+>   	/* flush outstanding errors before changing fs state */
+>   	flush_work(&sbi->s_error_work);
+>   
+> @@ -3930,11 +3940,22 @@ static int init_blkz_info(struct f2fs_sb_info *sbi, int devi)
+>   	sector_t nr_sectors = bdev_nr_sectors(bdev);
+>   	struct f2fs_report_zones_args rep_zone_arg;
+>   	u64 zone_sectors;
+> +	unsigned int max_open_zones;
+>   	int ret;
+>   
+>   	if (!f2fs_sb_has_blkzoned(sbi))
+>   		return 0;
+>   
+> +	max_open_zones = bdev_max_open_zones(bdev);
 
-This sounds quite different in my testing, as I said, the test
+Wenjie,
 
-shell/lvconvert-repair-raid.sh is very likely to fail in v6.6 already,
-I don't know why it never fail in your testing, test log in v6.6:
-
-| [ 1:38.162] #lvconvert-repair-raid.sh:1+ aux teardown
-| [ 1:38.162] ## teardown.......## removing stray mapped devices with 
-names beginning with LVMTEST3474:
-| [ 1:39.207] .set +vx; STACKTRACE; set -vx
-| [ 1:41.448] ##lvconvert-repair-raid.sh:1+ set +vx
-| [ 1:41.448] ## - /mnt/test/lvm2/test/shell/lvconvert-repair-raid.sh:1
-| [ 1:41.449] ## 1 STACKTRACE() called from 
-/mnt/test/lvm2/test/shell/lvconvert-repair-raid.sh:1
-| [ 1:41.449] ## ERROR: The test started dmeventd (3718) unexpectedly.
-
-And the same in v6.8-rc1. Perhaps do you know how to fix this error?
+max_open_zones can always be zero? then sbi->max_open_zones will be zero,
+is this a valid case?
 
 Thanks,
-Kuai
 
-> 
-> lvconvert-repair-raid.sh creates a raid array and then disables one if
-> its drives before there's enough time to finish the initial sync and
-> tries to repair it. This is supposed to fail (it uses dm-delay devices
-> to slow down the sync). When the test succeeds, I see things like this:
-> 
-> [ 0:13.469] #lvconvert-repair-raid.sh:161+ lvcreate --type raid10 -m 1 -i 2 -L 64 -n LV1 LVMTEST191946vg /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv1 /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv2 /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv3 /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv4
-> [ 0:13.469]   Using default stripesize 64.00 KiB.
-> [ 0:13.483]   Logical volume "LV1" created.
-> [ 0:14.042] 6,8908,1194343108,-;device-mapper: raid: Superblocks created for new raid set
-> [ 0:14.042] 5,8909,1194348704,-;md/raid10:mdX: not clean -- starting background reconstruction
-> [ 0:14.042] 6,8910,1194349443,-;md/raid10:mdX: active with 4 out of 4 devices
-> [ 0:14.042] 4,8911,1194459161,-;mdX: bitmap file is out of date, doing full recovery
-> [ 0:14.042] 6,8912,1194563810,-;md: resync of RAID array mdX
-> [ 0:14.042]   WARNING: This metadata update is NOT backed up.
-> [ 0:14.042] aux disable_dev "$dev4"
-> [ 0:14.058] #lvconvert-repair-raid.sh:163+ aux disable_dev /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv4
-> [ 0:14.058] Disabling device /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv4 (253:5)
-> [ 0:14.101] not lvconvert -y --repair $vg/$lv1
-> 
-> When it fails, I see:
-> 
-> [ 0:13.831] #lvconvert-repair-raid.sh:161+ lvcreate --type raid10 -m 1 -i 2 -L 64 -n LV1 LVMTEST192248vg /tmp/LVMTEST192248.ATcecgSGfE/dev/mapper/LVMTEST192248pv1 /tmp/LVMTEST192248.ATcecgSGfE/dev/mapper/LVMTEST192248pv2 /tmp/LVMTEST192248.ATcecgSGfE/dev/mapper/LVMTEST192248pv3 /tmp/LVMTEST192248.ATcecgSGfE/dev/mapper/LVMTEST192248pv4
-> [ 0:13.831]   Using default stripesize 64.00 KiB.
-> [ 0:13.847]   Logical volume "LV1" created.
-> [ 0:14.499]   WARNING: This metadata update is NOT backed up.
-> [ 0:14.499] 6,8925,1187444256,-;device-mapper: raid: Superblocks created for new raid set
-> [ 0:14.499] 5,8926,1187449525,-;md/raid10:mdX: not clean -- starting background reconstruction
-> [ 0:14.499] 6,8927,1187450148,-;md/raid10:mdX: active with 4 out of 4 devices
-> [ 0:14.499] 6,8928,1187452472,-;md: resync of RAID array mdX
-> [ 0:14.499] 6,8929,1187453016,-;md: mdX: resync done.
-> [ 0:14.499] 4,8930,1187555486,-;mdX: bitmap file is out of date, doing full recovery
-> [ 0:14.499] aux disable_dev "$dev4"
-> [ 0:14.515] #lvconvert-repair-raid.sh:163+ aux disable_dev /tmp/LVMTEST192248.AT
-> cecgSGfE/dev/mapper/LVMTEST192248pv4
-> [ 0:14.515] Disabling device /tmp/LVMTEST192248.ATcecgSGfE/dev/mapper/LVMTEST192
-> 248pv4 (253:5)
-> [ 0:14.554] not lvconvert -y --repair $vg/$lv1
-> 
-> To me the important looking difference (and I admit, I'm no RAID expert), is that in the
-> case where the test passes (where lvconvert fails as expected), I see
-> 
-> [ 0:14.042] 4,8911,1194459161,-;mdX: bitmap file is out of date, doing full recovery
-> [ 0:14.042] 6,8912,1194563810,-;md: resync of RAID array mdX
-> 
-> When it fails I see:
-> 
-> [ 0:14.499] 6,8928,1187452472,-;md: resync of RAID array mdX
-> [ 0:14.499] 6,8929,1187453016,-;md: mdX: resync done.
-> [ 0:14.499] 4,8930,1187555486,-;mdX: bitmap file is out of date, doing full recovery
-> 
-> Which appears to show a resync that takes no time, presumable because it happens before
-> the device notices that the bitmaps are wrong and schedules a full recovery.
-> 
-> 
-> lvconvert-raid-reshape-stripes-load-reload.sh repeatedly reloads the
-> device table during a raid reshape, and then tests the filesystem for
-> corruption afterwards. With this patchset, the filesystem is
-> occasionally corrupted.  I do not see this with the 6.6 kernel.
-> 
-> -Ben
->   
->> Xiao Ni also test the last version on a real machine, see [1].
->>
->> [1] https://lore.kernel.org/all/CALTww29QO5kzmN6Vd+jT=-8W5F52tJjHKSgrfUc1Z1ZAeRKHHA@mail.gmail.com/
->>
->> Yu Kuai (14):
->>    md: don't ignore suspended array in md_check_recovery()
->>    md: don't ignore read-only array in md_check_recovery()
->>    md: make sure md_do_sync() will set MD_RECOVERY_DONE
->>    md: don't register sync_thread for reshape directly
->>    md: don't suspend the array for interrupted reshape
->>    md: fix missing release of 'active_io' for flush
->>    md: export helpers to stop sync_thread
->>    md: export helper md_is_rdwr()
->>    dm-raid: really frozen sync_thread during suspend
->>    md/dm-raid: don't call md_reap_sync_thread() directly
->>    dm-raid: add a new helper prepare_suspend() in md_personality
->>    md/raid456: fix a deadlock for dm-raid456 while io concurrent with
->>      reshape
->>    dm-raid: fix lockdep waring in "pers->hot_add_disk"
->>    dm-raid: remove mddev_suspend/resume()
->>
->>   drivers/md/dm-raid.c |  78 +++++++++++++++++++--------
->>   drivers/md/md.c      | 126 +++++++++++++++++++++++++++++--------------
->>   drivers/md/md.h      |  16 ++++++
->>   drivers/md/raid10.c  |  16 +-----
->>   drivers/md/raid5.c   |  61 +++++++++++----------
->>   5 files changed, 192 insertions(+), 105 deletions(-)
->>
->> -- 
->> 2.39.2
->>
-> 
-> .
-> 
-
+> +	if (max_open_zones && (max_open_zones < sbi->max_open_zones || !sbi->max_open_zones))
+> +		sbi->max_open_zones = max_open_zones;
+> +	if (sbi->max_open_zones && sbi->max_open_zones < F2FS_OPTION(sbi).active_logs) {
+> +		f2fs_err(sbi,
+> +			"zoned: max open zones %u is too small, need at least %u open zones",
+> +				 sbi->max_open_zones, F2FS_OPTION(sbi).active_logs);
+> +		return -EINVAL;
+> +	}
+> +
+>   	zone_sectors = bdev_zone_sectors(bdev);
+>   	if (!is_power_of_2(zone_sectors)) {
+>   		f2fs_err(sbi, "F2FS does not support non power of 2 zone sizes\n");
 
