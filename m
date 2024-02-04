@@ -1,41 +1,46 @@
-Return-Path: <linux-kernel+bounces-51830-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51821-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8A90848FC4
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 18:32:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11FF9848FB3
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 18:27:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95030284413
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 17:32:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 443741C21A70
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 17:27:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BD8F2C69A;
-	Sun,  4 Feb 2024 17:32:08 +0000 (UTC)
-Received: from m-r2.th.seeweb.it (m-r2.th.seeweb.it [5.144.164.171])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69E2B24B29;
+	Sun,  4 Feb 2024 17:27:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="ePzs/au5"
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D4CB2C691
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 17:32:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.144.164.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C66D6249EE;
+	Sun,  4 Feb 2024 17:27:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707067928; cv=none; b=OyZmiFCvLdSHaGiAn55pxgJ9e7KAJkOO9SEjj3/YFwNCikdhuuVIl84uYugikVm1eWFX31nGl5M3WOvFc4aZjRdUInp+Wf3oDOrwFy7ffXUZfseBM3sTODEaxiq5vdPcXwnDNhhnxf65tmInCDDVfRrAUPYyldW54bkkC1/STJY=
+	t=1707067628; cv=none; b=TtafHKgjM/as162A/uJraamIFld80nbLyXBNYk4MXuSVGkZ9Hwsy4fvlxYdacqdVOImWlAaLthrHq7HKnOPMG6mgjNYJ/w25whH1IhiIaAXabJ7RJ09FgYEejBTv7y1vqn8gxNq/JkzxgpNGRlGOwMdH3y6YiCuzNsrCcS2HwL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707067928; c=relaxed/simple;
-	bh=bcNFXOXgVZBEkNCwZd1X9XvtwNPnxgf0ip+0KH9NcyE=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=ARC+aa8hwNZb+Uw5SDNCLkBB3TKMoSMu81kTwvBtunIMrNLql8XVe5y2/XmeYTrO7oiogMJsSrmlOGExShDyMGlEFZUBjojBvggMxE8NpE6e/DLS+jfgAPoj+B12nENl0X7CKQpuHsBlGuy0cccV6a4UGG7mztgNPWolMCNzUQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org; spf=pass smtp.mailfrom=somainline.org; arc=none smtp.client-ip=5.144.164.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=somainline.org
-Received: from Marijn-Arch-Book.localdomain (2a02-a420-67-c93f-164f-8aff-fee4-5930.mobile6.kpn.net [IPv6:2a02:a420:67:c93f:164f:8aff:fee4:5930])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by m-r2.th.seeweb.it (Postfix) with ESMTPSA id D639D3E74E;
-	Sun,  4 Feb 2024 18:24:31 +0100 (CET)
-From: Marijn Suijten <marijn.suijten@somainline.org>
-Date: Sun, 04 Feb 2024 18:24:20 +0100
-Subject: [PATCH v5] leds: qcom-lpg: Add PM660L configuration and compatible
+	s=arc-20240116; t=1707067628; c=relaxed/simple;
+	bh=6wpOlSUJjb9Y16FHTSpbQGEf+52/IpYFTBtj/sIlmL8=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=AVJ8NY0l8ghDqjODTS7y4/EKgB8CYdg4iw70bs7DThJ2PG2FraGfd3VWQFqNdNhGWioN/h4BsnFl2KyX0gfCyucPbtsUHzWSKzVUXEG97VGsFVyJf+WG8ahG4PQIa587+40rjYkngLFWSFP0LiwA4Rm3xEc2GdXZR1IK4CZzHrA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=ePzs/au5; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1707067616;
+	bh=6wpOlSUJjb9Y16FHTSpbQGEf+52/IpYFTBtj/sIlmL8=;
+	h=From:Subject:Date:To:Cc:From;
+	b=ePzs/au5TCEzZfOgsIg5Jg675VoOf8rhc6hVAG8kbBsjNLyMTtfv2/noV8yBXwbBh
+	 tb6t+saHJ2bl0gi8UrYR3Uv8Lac2tR1s8pGskvXmAe3fgFStM2dvbYYZrprlD3Wwxx
+	 /G+K0v9c0X9te2P2JaJdBoFGEYpDko2iPphWGqcA=
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Subject: [PATCH 0/4] power: supply: core: align charge_behaviour format
+ with docs
+Date: Sun, 04 Feb 2024 18:26:46 +0100
+Message-Id: <20240204-power_supply-charge_behaviour_prop-v1-0-06a20c958f96@weissschuh.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -43,84 +48,54 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240204-pm660l-lpg-v5-1-2f54d1a0894b@somainline.org>
-X-B4-Tracking: v=1; b=H4sIAEPIv2UC/zXMTQ6CMBBA4auQWVsy/QELK+9hXFQdYAhtSYvGh
- HB3GxOX3+K9HTIlpgx9tUOiN2eOoaA5VfCYXBhJ8LMYFCqDCo1YfdviIpZ1FINu7tZpp61BKMG
- aaODPb3a9FQ8perFNidx/ofAsOyWlNbaWbaM7hUIK7xLPoc4vnjcKlxy947BwoDqmEY7jC0BOA
- K6lAAAA
-To: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>
-Cc: linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org, 
- Bjorn Andersson <andersson@kernel.org>, Johan Hovold <johan@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@somainline.org>, 
- Martin Botka <martin.botka@somainline.org>, 
- Jami Kettunen <jami.kettunen@somainline.org>, 
- ~postmarketos/upstreaming@lists.sr.ht, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>, 
- Marijn Suijten <marijn.suijten@somainline.org>, 
- Bjorn Andersson <andersson@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIANbIv2UC/x2N7QqEIBAAXyX29wlmINirHIeYbbVw5LLSF9K7J
+ /0cGGYKZBTCDH1TQHCnTGmt0H4aiEtYZ1Q0VgajTaedcYrTgeLzxvy/VFVkRj/gEnZKm3iWxKr
+ VMU6js8FaCzXEghOd7+T7u+8HaxeUyXQAAAA=
+To: Sebastian Reichel <sre@kernel.org>, Hans de Goede <hdegoede@redhat.com>, 
+ Konrad Dybcio <konradybcio@kernel.org>
+Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Sebastian Reichel <sebastian.reichel@collabora.com>, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
 X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1707067615; l=1305;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=6wpOlSUJjb9Y16FHTSpbQGEf+52/IpYFTBtj/sIlmL8=;
+ b=qlXa33twbUd1D3UPwT05217J51xiKeF+Tubfs/zdvjIdb5+Qn3f4HBw7oryM3d+iR4amGOwZx
+ f5Hru5vv5r9CX4qYMVgR7XbDakPBm2YBiRVT1U4a+3phMkW0m+0iWKd
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-Inherit PM660L PMIC LPG/triled block configuration from downstream
-drivers and DT sources, consisting of a triled block with automatic
-trickle charge control and source selection, three colored led channels
-belonging to the synchronized triled block and one loose PWM channel.
+The original submission of the charge_behaviour property did not
+implement proper formatting in the default formatting handler in
+power_supply_sysfs.c.
 
-Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+At that time it was not a problem because the only provider of the UAPI,
+thinkpad_acpi, did its own formatting.
+
+Now there is an in-tree driver, mm8013, and out-of-tree driver which use
+the normal power-supply properties and are affected by the wrong
+formatting.
+
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
-Changes since v4:
+Thomas Weißschuh (4):
+      power: supply: core: fix charge_behaviour formatting
+      power: supply: test-power: implement charge_behaviour property
+      power: supply: mm8013: implement POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR_AVAILABLE
+      power: supply: core: drop workaround for missing POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR_AVAILABLE
 
-- Rebased on -next and resolve conflict with removed lpg_remove();
-- v4: https://lore.kernel.org/linux-leds/20220719211848.1653920-2-marijn.suijten@somainline.org/
+ drivers/power/supply/mm8013.c             |  5 +++++
+ drivers/power/supply/power_supply_sysfs.c | 28 ++++++++++++++++++++++++++++
+ drivers/power/supply/test_power.c         | 10 ++++++++++
+ include/linux/power_supply.h              |  1 +
+ 4 files changed, 44 insertions(+)
 ---
- drivers/leds/rgb/leds-qcom-lpg.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
-
-diff --git a/drivers/leds/rgb/leds-qcom-lpg.c b/drivers/leds/rgb/leds-qcom-lpg.c
-index 156b73d1f4a2..ab298391f9e0 100644
---- a/drivers/leds/rgb/leds-qcom-lpg.c
-+++ b/drivers/leds/rgb/leds-qcom-lpg.c
-@@ -1360,6 +1360,23 @@ static int lpg_probe(struct platform_device *pdev)
- 	return lpg_add_pwm(lpg);
- }
- 
-+static const struct lpg_data pm660l_lpg_data = {
-+	.lut_base = 0xb000,
-+	.lut_size = 49,
-+
-+	.triled_base = 0xd000,
-+	.triled_has_atc_ctl = true,
-+	.triled_has_src_sel = true,
-+
-+	.num_channels = 4,
-+	.channels = (const struct lpg_channel_data[]) {
-+		{ .base = 0xb100, .triled_mask = BIT(5) },
-+		{ .base = 0xb200, .triled_mask = BIT(6) },
-+		{ .base = 0xb300, .triled_mask = BIT(7) },
-+		{ .base = 0xb400 },
-+	},
-+};
-+
- static const struct lpg_data pm8916_pwm_data = {
- 	.num_channels = 1,
- 	.channels = (const struct lpg_channel_data[]) {
-@@ -1502,6 +1519,7 @@ static const struct lpg_data pmk8550_pwm_data = {
- };
- 
- static const struct of_device_id lpg_of_table[] = {
-+	{ .compatible = "qcom,pm660l-lpg", .data = &pm660l_lpg_data },
- 	{ .compatible = "qcom,pm8150b-lpg", .data = &pm8150b_lpg_data },
- 	{ .compatible = "qcom,pm8150l-lpg", .data = &pm8150l_lpg_data },
- 	{ .compatible = "qcom,pm8350c-pwm", .data = &pm8350c_pwm_data },
-
----
-base-commit: 01af33cc9894b4489fb68fa35c40e9fe85df63dc
-change-id: 20240204-pm660l-lpg-f35b8a3a3840
+base-commit: 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478
+change-id: 20230929-power_supply-charge_behaviour_prop-10ccfd96a666
 
 Best regards,
 -- 
-Marijn Suijten <marijn.suijten@somainline.org>
+Thomas Weißschuh <linux@weissschuh.net>
 
 
