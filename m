@@ -1,112 +1,169 @@
-Return-Path: <linux-kernel+bounces-51665-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51667-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B0EE848E11
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 14:31:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5556848E15
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 14:33:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E144B21FE4
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:30:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3DC82842D0
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:33:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AA7A225DE;
-	Sun,  4 Feb 2024 13:30:28 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F53E224FA;
+	Sun,  4 Feb 2024 13:33:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QS2hPjmB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7885C224E0
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 13:30:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D1E0224DF;
+	Sun,  4 Feb 2024 13:33:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707053428; cv=none; b=LuLJiGZm4rJVzrgk28kFw4a1QbnE0VxL0ZC9FMdW4pBNMuNuUWnChYVx/tZvM2MBDZUh01gOdXT4sib+r2drYhwLcjhL4/hNdaFI8WWati6e5uO7molABepmSu6caua24/27BKfslhZWL74dD6nAHDrvzyAsmX7vPNsZT+BJzwM=
+	t=1707053585; cv=none; b=GUiG6xyRUQijxrUOuECVsbx/oR7JnlDkkbPasPkLANtaOoJeTLX++ntkxlKzkp2zT5Lq3mY4wYQywAk1Axo6987SWeatOuPmNs30W2S2GZextRZ1EgT3OWm9t6UpM++43nQ8kCfDNc9pbjFCG7XTd9C8QPSxdomniM98ktQCwKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707053428; c=relaxed/simple;
-	bh=UaMSnAIomP0d4/QVoz2dzuPbz+yAssf64Z9+owHSSDo=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ZbEHMRJLUiEIGNm66XBXFF+nDP83pHJzxN7MniscewTcmQBNlQcCyP8TdVWA83rgu+O+3BQSNwRnBUdtzn/saVPMFvnHQlv8bdORD+vbLylcoy2xjaX13RJdk1HJsdLpagh3flC8H+IKQXjEcdLwPheudYd1/TWoTrepWaMNAFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7baa6cc3af2so395438139f.2
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 05:30:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707053425; x=1707658225;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tzM0gFWX358jgiBmOqZtwQSB/F2tsNwCbyAEBJz63Vc=;
-        b=PYWYLwZ6yU4u8z5hImUX+gktgHUdn5nd/r8VBWZEoKqzMJDmJ+K6m5Ihpen5I7Mw1r
-         2LwEkfrGvm5M1FBdsN8I9pxwOdkIRxDZaCMU4veZpUhyHWhWCzWvT4beGDaQ0l8yCCRB
-         hUlTFcDH6SF2kcpP6BPEZ2RpbdxKpkd+1V/ueVxUjWOXu2zunNdNZMRxjpd1kMddL+Gz
-         Z8vas+zkxheSKNf3Dd5qFikAk/9m77CzfqFhhaKEuAwmpb5rQ5ZcQgv2Wguc4nH8HvXt
-         zoxzVcThnvbkQI5wk34Kgv9F5vj9M9p0CCs70+bX4xuyY6ZAALuA6B606Iiy8XtOYIfR
-         Pzfg==
-X-Gm-Message-State: AOJu0Yzng6amB2j/Oo/e1SyEkgbp71VtbPPzaUtIYWDZyKs98BQAj6un
-	GNEEPBsh6ZN2Yr6TOmKXFjDgFdzeF3u2JZP59AiaAGNtnB2pvXS2XLHlOrEj+G8amPNTl8hmerj
-	BNtq5Eqj9IQq//E3stHIrasUF3MenLQDN+g43pBcm46LGci/cq6B5RjI=
-X-Google-Smtp-Source: AGHT+IHCw+64iELG79qhBXYxXl02VqldZ1Z1z7ljzrHWmEXSfj/t9tLgEWnk5meIw7bn7d7KKARtlDI3i6cpUlTad/3ij0mEVaHC
+	s=arc-20240116; t=1707053585; c=relaxed/simple;
+	bh=GAyOVmT3o8s5Xn39yHx3dVRzIPatpJVg80X3kvg4h6I=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=iwxkJ7wnLprRHdt4CeMgFyjUH0EMwucZGUx0TY1bfW4FchPaITO/Bx0dF8GyULsUF3P6eJ1vLUGdyzMB+lVLiTijwDF+pJk1n7h0D+zNZK0VdOEWrnQ3nI1283yCrYacFAZ9SZe4ftzr9Ow1OggeYktuoVkxxEB3aavzJ+7YGjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QS2hPjmB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35699C433F1;
+	Sun,  4 Feb 2024 13:33:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707053584;
+	bh=GAyOVmT3o8s5Xn39yHx3dVRzIPatpJVg80X3kvg4h6I=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=QS2hPjmBScI+6OqWyU3IBHRaEgLSQDXl4jvA/fJSOd7Sp02h19bmaD3lDsDwPNqoJ
+	 sOXh1PA29f9XNkmbyxO1PXPrWmVy8joBCdtM46N94hyhVcwsG9gyfS7yR2SD+5vvAz
+	 zsW/6hobr3iccFWNUAZL/v/96oCpAGkHOg3ZwSQxWQJJVAipHGqG2QYRkoefqxNCFA
+	 Mi5NI/pXM6PuJf8yN3xPo6iqOpouA09j7sUWag+uo7Tlu9izALSQgoMOY6axpuLvEE
+	 diXCcqWOK+67TdB5ITDS1J+oMJe1UDBB4QmDuJ91NHjG+iYkqmr3Rl23Y++S0T6Jew
+	 GJAW4NDhEXRiA==
+Date: Sun, 4 Feb 2024 13:32:49 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Mike Looijmans <mike.looijmans@topic.nl>
+Cc: Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+ devicetree@vger.kernel.org, linux-iio@vger.kernel.org, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>, Haibo
+ Chen <haibo.chen@nxp.com>, Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+ Lars-Peter Clausen <lars@metafoo.de>, Lee Jones <lee@kernel.org>, Leonard
+ =?UTF-8?B?R8O2aHJz?= <l.goehrs@pengutronix.de>, Liam Beguin
+ <liambeguin@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Maksim Kiselev
+ <bigunclemax@gmail.com>, Marcus Folkesson <marcus.folkesson@gmail.com>,
+ Marius Cristea <marius.cristea@microchip.com>, Mark Brown
+ <broonie@kernel.org>, Niklas Schnelle <schnelle@linux.ibm.com>, Okan Sahin
+ <okan.sahin@analog.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] iio: adc: ti-ads1298: Add driver
+Message-ID: <20240204133249.48cb0a10@jic23-huawei>
+In-Reply-To: <48f3d8cf-3a56-481e-9eab-4fc1573cfe02@topic.nl>
+References: <20231213094722.31547-1-mike.looijmans@topic.nl>
+	<1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.27993507-256d-4b05-88df-c8643e7f1a68@emailsignatures365.codetwo.com>
+	<20231213094722.31547-2-mike.looijmans@topic.nl>
+	<20231214110618.00007783@Huawei.com>
+	<48f3d8cf-3a56-481e-9eab-4fc1573cfe02@topic.nl>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d11:b0:363:c8ba:ea5a with SMTP id
- i17-20020a056e021d1100b00363c8baea5amr46326ila.6.1707053425706; Sun, 04 Feb
- 2024 05:30:25 -0800 (PST)
-Date: Sun, 04 Feb 2024 05:30:25 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000d4e8006108e5989@google.com>
-Subject: [syzbot] Monthly jfs report (Feb 2024)
-From: syzbot <syzbot+list857c7d203040989b10bd@syzkaller.appspotmail.com>
-To: jfs-discussion@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, shaggy@kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello jfs maintainers/developers,
+On Wed, 31 Jan 2024 17:24:18 +0100
+Mike Looijmans <mike.looijmans@topic.nl> wrote:
 
-This is a 31-day syzbot report for the jfs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/jfs
+> On 14-12-2023 12:06, Jonathan Cameron wrote:
+> > On Wed, 13 Dec 2023 10:47:22 +0100
+> > Mike Looijmans <mike.looijmans@topic.nl> wrote:
+> >  
+> >> Skeleton driver for the TI ADS1298 medical ADC. This device is
+> >> typically used for ECG and similar measurements. Supports data
+> >> acquisition at configurable scale and sampling frequency.
+> >>
+> >> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+> >>  
+> > Hi Mike,
+> >
+> > Various small things inline - some of which probably overlap with Andy's
+> > comments.  
+> 
+> 
+> Working on it - Assume "yes to all" as my response on all suggestions, 
+> except for the IRQ handling...
+> 
+> >
+> > The larger one is I don't follow why this does manual protection against
+> > concurrent handling of the result of an IRQ.  Much easier to just use
+> > an IRQ threaded handler and IRQF_ONESHOT to mask the irq entirely until
+> > after the initial handling is done.  If that doesn't work for some reason
+> > then more comments needed to explain why!  
+> 
+> Yeah, definitely needs comments, and a bit of code too...
+> 
+> This chip doesn't have a buffer, but it does "latch" the sample data 
+> when it receives a RDATA command (hence I use that in favor of RDATAC, 
+> which does not latch and might return corrupted data).
+> 
+> To keep the latency as low as possible, I want to immediately start the 
+> SPI transfer when the DRDY interrupt arrives. My experiments have shown 
+> a big difference there, when using a ONESHOT trigger, it failed to meet 
+> the deadline at even the lowest frequencies.
 
-During the period, 2 new issues were detected and 0 were fixed.
-In total, 34 issues are still open and 31 have been fixed so far.
+That's interesting to hear.  I wonder why - the overhead should be small.
 
-Some of the still happening issues:
+Potentially it kicks the interrupt thread which then might kick an spi
+controller thread rather than kicking the spi controller directly.
+I think that depends on the SPI controller driver implementation choices
+assuming things aren't contended - the defaults in the spi core
+will take a fast path in current context if no contention - so it'll
+happen in the interrupt thread.  So in general case there should be
+very little difference in the timing needed to kick off the actual
+SPI transfer starting via the two paths. The bit you mention below
+on overlapping is a gain.  One trick we do to try and grab that back
+if it's occasional is to poll the device in the trigger reenable
+callback (only works if there is a register to say there is new data).
 
-Ref  Crashes Repro Title
-<1>  1661    Yes   general protection fault in lmLogSync (2)
-                   https://syzkaller.appspot.com/bug?extid=e14b1036481911ae4d77
-<2>  1416    Yes   kernel BUG in jfs_evict_inode
-                   https://syzkaller.appspot.com/bug?extid=9c0c58ea2e4887ab502e
-<3>  985     Yes   general protection fault in write_special_inodes
-                   https://syzkaller.appspot.com/bug?extid=c732e285f8fc38d15916
-<4>  574     Yes   WARNING in inc_nlink (3)
-                   https://syzkaller.appspot.com/bug?extid=2b3af42c0644df1e4da9
-<5>  527     Yes   kernel BUG in txUnlock
-                   https://syzkaller.appspot.com/bug?extid=a63afa301d1258d09267
-<6>  357     Yes   general protection fault in jfs_flush_journal
-                   https://syzkaller.appspot.com/bug?extid=194bfe3476f96782c0b6
-<7>  279     Yes   KASAN: use-after-free Read in release_metapage
-                   https://syzkaller.appspot.com/bug?extid=f1521383cec5f7baaa94
-<8>  109     Yes   KASAN: user-memory-access Write in __destroy_inode
-                   https://syzkaller.appspot.com/bug?extid=dcc068159182a4c31ca3
-<9>  104     Yes   kernel BUG in dbFindLeaf
-                   https://syzkaller.appspot.com/bug?extid=dcea2548c903300a400e
-<10> 84      Yes   kernel BUG in lbmIODone
-                   https://syzkaller.appspot.com/bug?extid=52ddb6c83a04ca55f975
+Maybe something odd going on in the interrupt controller driver...
+It might not be useable for the higher frequencies, but should work
+at reasonably low ones.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+> 
+> The next SPI transfer can start immediately after the data has been 
+> copied into the intermediate buffer for IIO, the handler need not wait 
+> for IIO to process the data.
 
-You may send multiple commands in a single email message.
+I'd be surprised if the processing time was significant (compared to the SPI
+transfer times) - so this 'feels' like a bit of over the top micro
+optimization.
+
+> 
+> When the DRDY interrupt arrives, and there's an SPI transfer still in 
+> progress, it's not too late yet, the "latch" may save us still. Once the 
+> SPI transfer completes and the data is in the intermediate buffer, we 
+> should immediately start a new SPI transaction to latch and fetch the 
+> next set. (This code is still missing in the current version)
+> 
+> Only when DRDY arrives a second time during an SPI transaction we missed 
+> the deadline and sample data was lost.
+
+If you are running anywhere near speeds where this happens, things aren't
+going to be reliable anyway. Whether that is a problem depends on your usecase.
+
+So in conclusion, I'm surprised you are seeing such a difference in the
+rates you can capture at.  Might be worth trying to grab some debug info
+to understand this a bit more given you are proposing an unusual structure
+with maintenance costs etc.
+
+> 
+> No further comments below from me, just kept the history for reference
+Don't bother :)  Better to crop as much as possible. We have archives for
+history.
+
+Jonathan
+> 
 
