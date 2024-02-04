@@ -1,260 +1,224 @@
-Return-Path: <linux-kernel+bounces-51766-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51767-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11AD6848F10
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 16:58:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 507A6848F13
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 16:59:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC12528328B
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 15:58:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8866DB2120A
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 15:59:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A4CD22615;
-	Sun,  4 Feb 2024 15:58:31 +0000 (UTC)
-Received: from sonata.ens-lyon.org (domu-toccata.ens-lyon.fr [140.77.166.138])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E2E722301;
+	Sun,  4 Feb 2024 15:58:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r7W2QHsS"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4655B225DA
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 15:58:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.77.166.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68FF1225DA;
+	Sun,  4 Feb 2024 15:58:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707062310; cv=none; b=VJtVr/74a0wJLgE+KwKLQiGkfL+DkFJS2kxcOmtzF27KvgQtDGYF2Iz3E4ck54/0iBtUjuEygerhy+EoCe8KO+Uk5lofw1AGzVsG0XqlQtrx3DtwahwQx6KSPHRvrD1f5Uf5JFTmL4R0VzarNMAX+Nzx+jkQ6RnpFhX+VZnjaIw=
+	t=1707062334; cv=none; b=EsAE1ahqWouhjZ+t40eq9YiWFtF58gEbZ505srJTuYzGMXDLUiDCxOliwWFSYjxuPcIOOnPBQKQo8APXsn+jQj87sq99XiV1lm3Ui3Ojd1xz1MEBH9fUwOjdwRkvencbZk6bGnRykN5ByOR8aZpYAlYKMk8sTG2/PyTRcubNoGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707062310; c=relaxed/simple;
-	bh=ALsEQC4oH3o3JFLcLHmjtQLZFxFagvtdIAtWyTHCwsU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=h6X1AegyfHXp8/VmNaG97jITIpZ7drq50aESay0GaItwTu2yTa3ZGkVJ6syv5MTssd0NdRsxrYg8zBnr555ysFVcM9UVJVxy2GOc/rK0fzeEUe4jdBwxkK8/ZNHHeh91l0PITuLMbmLoG/NT1YSlmBmXkl6PpVnHXFkN2cxyyik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ens-lyon.org; spf=pass smtp.mailfrom=bounce.ens-lyon.org; arc=none smtp.client-ip=140.77.166.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ens-lyon.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bounce.ens-lyon.org
-Received: from localhost (localhost [127.0.0.1])
-	by sonata.ens-lyon.org (Postfix) with ESMTP id 4939EA02C1;
-	Sun,  4 Feb 2024 16:58:26 +0100 (CET)
-Received: from sonata.ens-lyon.org ([127.0.0.1])
-	by localhost (sonata.ens-lyon.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 18gu54NFlpsa; Sun,  4 Feb 2024 16:58:26 +0100 (CET)
-Received: from begin (aamiens-653-1-111-57.w83-192.abo.wanadoo.fr [83.192.234.57])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by sonata.ens-lyon.org (Postfix) with ESMTPSA id 2901FA02C0;
-	Sun,  4 Feb 2024 16:58:26 +0100 (CET)
-Received: from samy by begin with local (Exim 4.97)
-	(envelope-from <samuel.thibault@ens-lyon.org>)
-	id 1rWesz-0000000ERmW-3Sj8;
-	Sun, 04 Feb 2024 16:58:25 +0100
-Date: Sun, 4 Feb 2024 16:58:25 +0100
-From: Samuel Thibault <samuel.thibault@ens-lyon.org>
-To: gregkh@linuxfoundation.org
-Cc: linux-kernel@vger.kernel.org, speakup@linux-speakup.org
-Subject: [PATCH] speakup: Add /dev/synthu device
-Message-ID: <20240204155825.ditstifsbqndnce3@begin>
-Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
-	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-	speakup@linux-speakup.org
+	s=arc-20240116; t=1707062334; c=relaxed/simple;
+	bh=2TPTwSG7qmk4I4m5yMTg+gaY5sPSQAw8W0fY1U4bLRY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jagFl/OBuOgT+WRdtt69XxD2fPHcmd7MeOo+TECcajTUjlFDmOJcqY0B2fqn0usdVHpzp4kV1qGgbPhCPhfTTSbL8CaaODlrWA8hQUOQ44HtEpNSKNkmFwBy/NXShJ8O+WjbsxvrwZ90gIULwGVnOQxo5kBYwMk65AWXsIb0RQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r7W2QHsS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C574DC433F1;
+	Sun,  4 Feb 2024 15:58:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707062333;
+	bh=2TPTwSG7qmk4I4m5yMTg+gaY5sPSQAw8W0fY1U4bLRY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=r7W2QHsSLXh2uJBDeyua0dBpg1G/oEq2fD08H2bfTXETy7aPPox/M1TGXtdfnlyBx
+	 L4Ww7p076YXQSpzoqhUK2wzVFOZpvt0PLBdwnR1EmukuaMpOQSzRgixC3ddsuqGDUt
+	 S9K6kK+KAa3bXD5muNiS2oWW+ULgIYPgYWJKzYh/4UIHuHpFR/+xHZr1MEEnFVT1VZ
+	 UWJj9ahW6DpHfFS9/qeUw7MsjV8qLnA7JulVz3JmiJlD9KdtIkG8HixeYgzppFeTdn
+	 H8cB2rTasKmpYxYR1o9I/jmHvbOdERrPgqHl/gYktNyKByA1q7oHCc0wQXnH6tMeh8
+	 PqCpJExbhXe/A==
+Date: Sun, 4 Feb 2024 15:58:39 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: jikos@kernel.org, lars@metafoo.de, Basavaraj.Natikar@amd.com,
+ linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/4] iio: hid-sensor-als: Assign channels dynamically
+Message-ID: <20240204155839.3dd1d639@jic23-huawei>
+In-Reply-To: <20240204130332.2635760-2-srinivas.pandruvada@linux.intel.com>
+References: <20240204130332.2635760-1-srinivas.pandruvada@linux.intel.com>
+	<20240204130332.2635760-2-srinivas.pandruvada@linux.intel.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: NeoMutt/20170609 (1.8.3)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-/dev/synth has always been 8bit, but applications nowadays mostly
-expect to be using utf-8 encoding.  This adds /dev/synthu to be able
-to synthesize non-latin1 characters.  This however remains limited
-to 16bit unicode like the rest of speakup.  Any odd input or input
-beyond 16bit is just discarded.
+On Sun,  4 Feb 2024 05:03:29 -0800
+Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com> wrote:
 
-Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+> Instead of assuming that every channel defined statically by
+> als_channels[] is present, assign dynamically based on presence of the
+> respective usage id in the descriptor. This will allow to register ALS
+> with limited channel support. Append the timestamp as the last channel.
+> 
+> Update available_scan_mask to specify all channels which are present.
+> 
+> There is no intentional function changes done.
+> 
+> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Hi Srinivas,
 
-Index: linux-6.4/drivers/accessibility/speakup/devsynth.c
-===================================================================
---- linux-6.4.orig/drivers/accessibility/speakup/devsynth.c
-+++ linux-6.4/drivers/accessibility/speakup/devsynth.c
-@@ -7,9 +7,10 @@
- #include "speakup.h"
- #include "spk_priv.h"
- 
--static int misc_registered;
-+static int synth_registered, synthu_registered;
- static int dev_opened;
- 
-+/* Latin1 version */
- static ssize_t speakup_file_write(struct file *fp, const char __user *buffer,
- 				  size_t nbytes, loff_t *ppos)
- {
-@@ -34,6 +35,97 @@ static ssize_t speakup_file_write(struct
- 	return (ssize_t)nbytes;
- }
- 
-+/* UTF-8 version */
-+static ssize_t speakup_file_writeu(struct file *fp, const char __user *buffer,
-+				   size_t nbytes, loff_t *ppos)
-+{
-+	size_t count = nbytes, want;
-+	const char __user *ptr = buffer;
-+	size_t bytes;
-+	unsigned long flags;
-+	unsigned char buf[256];
-+	u16 ubuf[256];
-+	size_t in, in2, out;
-+
-+	if (!synth)
-+		return -ENODEV;
-+
-+	want = 1;
-+	while (count >= want) {
-+		/* Copy some UTF-8 piece from userland */
-+		bytes = min(count, sizeof(buf));
-+		if (copy_from_user(buf, ptr, bytes))
-+			return -EFAULT;
-+
-+		/* Convert to u16 */
-+		for (in = 0, out = 0; in < bytes; in++) {
-+			unsigned char c = buf[in];
-+			int nbytes = 8 - fls(c ^ 0xff);
-+			u32 value;
-+
-+			switch (nbytes) {
-+			case 8: /* 0xff */
-+			case 7: /* 0xfe */
-+			case 1: /* 0x80 */
-+				/* Invalid, drop */
-+				goto drop;
-+
-+			case 0:
-+				/* ASCII, copy */
-+				ubuf[out++] = c;
-+				continue;
-+
-+			default:
-+				/* 2..6-byte UTF-8 */
-+
-+				if (bytes - in < nbytes) {
-+					/* We don't have it all yet, stop here
-+					 * and wait for the rest
-+					 */
-+					bytes = in;
-+					want = nbytes;
-+					continue;
-+				}
-+
-+				/* First byte */
-+				value = c & ((1u << (7 - nbytes)) - 1);
-+
-+				/* Other bytes */
-+				for (in2 = 2; in2 <= nbytes; in2++) {
-+					c = buf[in + 1];
-+					if ((c & 0xc0) != 0x80)	{
-+						/* Invalid, drop the head */
-+						want = 1;
-+						goto drop;
-+					}
-+					value = (value << 6) | (c & 0x3f);
-+					in++;
-+				}
-+
-+				if (value < 0x10000)
-+					ubuf[out++] = value;
-+				want = 1;
-+				break;
-+			}
-+drop:
-+		}
-+
-+		count -= bytes;
-+		ptr += bytes;
-+
-+		/* And speak this up */
-+		if (out) {
-+			spin_lock_irqsave(&speakup_info.spinlock, flags);
-+			for (in = 0; in < out; in++)
-+				synth_buffer_add(ubuf[in]);
-+			synth_start();
-+			spin_unlock_irqrestore(&speakup_info.spinlock, flags);
-+		}
-+	}
-+
-+	return (ssize_t)(nbytes - count);
-+}
-+
- static ssize_t speakup_file_read(struct file *fp, char __user *buf,
- 				 size_t nbytes, loff_t *ppos)
- {
-@@ -62,31 +154,57 @@ static const struct file_operations synt
- 	.release = speakup_file_release,
- };
- 
-+static const struct file_operations synthu_fops = {
-+	.read = speakup_file_read,
-+	.write = speakup_file_writeu,
-+	.open = speakup_file_open,
-+	.release = speakup_file_release,
-+};
-+
- static struct miscdevice synth_device = {
- 	.minor = MISC_DYNAMIC_MINOR,
- 	.name = "synth",
- 	.fops = &synth_fops,
- };
- 
-+static struct miscdevice synthu_device = {
-+	.minor = MISC_DYNAMIC_MINOR,
-+	.name = "synthu",
-+	.fops = &synthu_fops,
-+};
-+
- void speakup_register_devsynth(void)
- {
--	if (misc_registered != 0)
--		return;
--/* zero it so if register fails, deregister will not ref invalid ptrs */
--	if (misc_register(&synth_device)) {
--		pr_warn("Couldn't initialize miscdevice /dev/synth.\n");
--	} else {
--		pr_info("initialized device: /dev/synth, node (MAJOR %d, MINOR %d)\n",
--			MISC_MAJOR, synth_device.minor);
--		misc_registered = 1;
-+	if (!synth_registered) {
-+		if (misc_register(&synth_device)) {
-+			pr_warn("Couldn't initialize miscdevice /dev/synth.\n");
-+		} else {
-+			pr_info("initialized device: /dev/synth, node (MAJOR %d, MINOR %d)\n",
-+				MISC_MAJOR, synth_device.minor);
-+			synth_registered = 1;
-+		}
-+	}
-+	if (!synthu_registered) {
-+		if (misc_register(&synthu_device)) {
-+			pr_warn("Couldn't initialize miscdevice /dev/synthu.\n");
-+		} else {
-+			pr_info("initialized device: /dev/synthu, node (MAJOR %d, MINOR %d)\n",
-+				MISC_MAJOR, synthu_device.minor);
-+			synthu_registered = 1;
-+		}
- 	}
- }
- 
- void speakup_unregister_devsynth(void)
- {
--	if (!misc_registered)
--		return;
--	pr_info("speakup: unregistering synth device /dev/synth\n");
--	misc_deregister(&synth_device);
--	misc_registered = 0;
-+	if (synth_registered) {
-+		pr_info("speakup: unregistering synth device /dev/synth\n");
-+		misc_deregister(&synth_device);
-+		synth_registered = 0;
-+	}
-+	if (synthu_registered) {
-+		pr_info("speakup: unregistering synth device /dev/synthu\n");
-+		misc_deregister(&synthu_device);
-+		synthu_registered = 0;
-+	}
- }
+Logic looks fine, but not that global variable...
+
+> ---
+> v4:
+> Addressed comments from Jonthan:
+> 	- Use available_scan_masks
+> 	- timestamp location is fixed and left gaps in sample data for absent channels
+> 	- Use CHANNEL_SCAN_INDEX_MAX as limit to check presence of usage ids, otherwise
+> 	  it will miss newer channels added in subsequent patches.
+> v3:
+> Addressed comments from Jonthan:
+> 	- Remove channel allocation and move to iio_priv()
+> 	- Parse all usage IDs in a single loop and continue
+> 	for failure. This way the temperature and chromaticity
+> 	will not need any special processing to parse usage ids.
+> 	- Don't leave empty channel indexes
+> 
+> v2:
+> New change
+> 
+>  drivers/iio/light/hid-sensor-als.c | 52 +++++++++++++++++++++---------
+>  1 file changed, 36 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/iio/light/hid-sensor-als.c b/drivers/iio/light/hid-sensor-als.c
+> index b6c4bef2a7bb..d3b892c0e307 100644
+> --- a/drivers/iio/light/hid-sensor-als.c
+> +++ b/drivers/iio/light/hid-sensor-als.c
+> @@ -25,6 +25,7 @@ struct als_state {
+>  	struct hid_sensor_hub_callbacks callbacks;
+>  	struct hid_sensor_common common_attributes;
+>  	struct hid_sensor_hub_attribute_info als[CHANNEL_SCAN_INDEX_MAX];
+> +	struct iio_chan_spec channels[CHANNEL_SCAN_INDEX_MAX + 1];
+>  	struct {
+>  		u32 illum[CHANNEL_SCAN_INDEX_MAX];
+>  		u64 timestamp __aligned(8);
+> @@ -33,9 +34,16 @@ struct als_state {
+>  	int scale_post_decml;
+>  	int scale_precision;
+>  	int value_offset;
+> +	int num_channels;
+>  	s64 timestamp;
+>  };
+>  
+> +/* The order of usage ids must match scan index starting from CHANNEL_SCAN_INDEX_INTENSITY */
+> +static const u32 als_usage_ids[] = {
+> +	HID_USAGE_SENSOR_LIGHT_ILLUM,
+> +	HID_USAGE_SENSOR_LIGHT_ILLUM,
+> +};
+> +
+>  static const u32 als_sensitivity_addresses[] = {
+>  	HID_USAGE_SENSOR_DATA_LIGHT,
+>  	HID_USAGE_SENSOR_LIGHT_ILLUM,
+> @@ -68,6 +76,8 @@ static const struct iio_chan_spec als_channels[] = {
+>  	IIO_CHAN_SOFT_TIMESTAMP(CHANNEL_SCAN_INDEX_TIMESTAMP)
+>  };
+>  
+> +static unsigned long als_scan_mask[] = {0, 0};
+
+Global? No. Could be multiple instances with different sensors supported.
+Needs to be embedded in the als_state structure so it is per instance.
+
+> +
+>  /* Adjust channel real bits based on report descriptor */
+>  static void als_adjust_channel_bit_mask(struct iio_chan_spec *channels,
+>  					int channel, int size)
+> @@ -238,27 +248,38 @@ static int als_capture_sample(struct hid_sensor_hub_device *hsdev,
+>  /* Parse report which is specific to an usage id*/
+>  static int als_parse_report(struct platform_device *pdev,
+>  				struct hid_sensor_hub_device *hsdev,
+> -				struct iio_chan_spec *channels,
+>  				unsigned usage_id,
+>  				struct als_state *st)
+>  {
+> -	int ret;
+> +	struct iio_chan_spec *channels;
+> +	int ret, index = 0;
+>  	int i;
+>  
+> -	for (i = 0; i <= CHANNEL_SCAN_INDEX_ILLUM; ++i) {
+> +	channels = st->channels;
+> +
+> +	for (i = 0; i < CHANNEL_SCAN_INDEX_MAX; ++i) {
+>  		ret = sensor_hub_input_get_attribute_info(hsdev,
+>  						HID_INPUT_REPORT,
+>  						usage_id,
+> -						HID_USAGE_SENSOR_LIGHT_ILLUM,
+> +						als_usage_ids[i],
+>  						&st->als[i]);
+>  		if (ret < 0)
+> -			return ret;
+> -		als_adjust_channel_bit_mask(channels, i, st->als[i].size);
+> +			continue;
+> +
+> +		channels[index] = als_channels[i];
+> +		als_scan_mask[0] |= BIT(i);
+> +		als_adjust_channel_bit_mask(channels, index, st->als[i].size);
+> +		++index;
+>  
+>  		dev_dbg(&pdev->dev, "als %x:%x\n", st->als[i].index,
+>  			st->als[i].report_id);
+>  	}
+>  
+> +	st->num_channels = index;
+> +	/* Return success even if one usage id is present */
+> +	if (index)
+> +		ret = 0;
+> +
+>  	st->scale_precision = hid_sensor_format_scale(usage_id,
+>  				&st->als[CHANNEL_SCAN_INDEX_INTENSITY],
+>  				&st->scale_pre_decml, &st->scale_post_decml);
+> @@ -294,15 +315,7 @@ static int hid_als_probe(struct platform_device *pdev)
+>  		return ret;
+>  	}
+>  
+> -	indio_dev->channels = devm_kmemdup(&pdev->dev, als_channels,
+> -					   sizeof(als_channels), GFP_KERNEL);
+> -	if (!indio_dev->channels) {
+> -		dev_err(&pdev->dev, "failed to duplicate channels\n");
+> -		return -ENOMEM;
+> -	}
+> -
+>  	ret = als_parse_report(pdev, hsdev,
+> -			       (struct iio_chan_spec *)indio_dev->channels,
+>  			       hsdev->usage,
+>  			       als_state);
+>  	if (ret) {
+> @@ -310,8 +323,15 @@ static int hid_als_probe(struct platform_device *pdev)
+>  		return ret;
+>  	}
+>  
+> -	indio_dev->num_channels =
+> -				ARRAY_SIZE(als_channels);
+> +	/* Add timestamp channel */
+> +	als_state->channels[als_state->num_channels] = als_channels[CHANNEL_SCAN_INDEX_TIMESTAMP];
+> +
+> +	/* +1 for adding timestamp channel */
+> +	indio_dev->num_channels = als_state->num_channels + 1;
+> +
+> +	indio_dev->channels = als_state->channels;
+> +	indio_dev->available_scan_masks = als_scan_mask;
+> +
+>  	indio_dev->info = &als_info;
+>  	indio_dev->name = name;
+>  	indio_dev->modes = INDIO_DIRECT_MODE;
+
 
