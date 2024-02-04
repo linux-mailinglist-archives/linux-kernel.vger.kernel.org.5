@@ -1,125 +1,139 @@
-Return-Path: <linux-kernel+bounces-51900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51901-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D7DC849088
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 22:06:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7A5E84908A
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 22:07:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58C95282B14
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 21:06:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A22F8282A62
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 21:07:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5796428E3F;
-	Sun,  4 Feb 2024 21:06:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF0D1286BC;
+	Sun,  4 Feb 2024 21:06:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b="Lg3Mqzm4"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="UpCK5J4b";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="v+5kFjRt"
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F6E22868D
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 21:06:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85BB32C697;
+	Sun,  4 Feb 2024 21:06:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707080791; cv=none; b=hkccPh7r9NeDSRLjokFtQWPv+eb2aOPFaw+ILMxtKH+/KbfaeVe1tPvu02CM1VsxxYCWpfLyA6tIqIqMtGyPx5RZDfR0ltzilXpe3wijJryX34h5rG7iJgOetgrfPcTg1PsOZaWR12I75DQH6Ehn77kMN9mIdKxDhgpruWFzvdY=
+	t=1707080813; cv=none; b=Bf//zMmU7Q+hKm01PYCrwwGVFcTou4UNqeWA4l3i8s7DAnJIcf6ksjEsO8rSezwIeecoPPvg0nUiiBJaPRnVqJHPlolCEjVtWTMih53/9WZp+LqxGOL8ZBXvZSJnoIYLg9PWSXadgdIOvvQsEO+QCLEw36K/kdeNlHXWUVbAHC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707080791; c=relaxed/simple;
-	bh=PTpkAQYaiEd/H/K1pEJCdiG03wTlBPR/xvUqZnaKzc0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mzr7rl5JEeRS8MfgaFU53+qNuTKXgmrTRQfv4gi895s8Cg+VCUrCBBuqcFCUMk1OFvv61WWWk8YQvnWARoQqISf9Rh2BD+K3Ji3HsKtcjgKn+X7DWLpOB9UbA/++Fdwv9d3nnM9MXSKrY11KOzEKlJzbojERjpWz9i0Zs1uxNlA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org; spf=pass smtp.mailfrom=ieee.org; dkim=pass (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b=Lg3Mqzm4; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ieee.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a372a3773a5so183682466b.3
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 13:06:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google; t=1707080786; x=1707685586; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wIBefr9jY7okRpcwBBo6tcStVqxml+OF8xjJACWyuys=;
-        b=Lg3Mqzm4WzfQFGhaQV7dhSQzdFhfvPtZFdlMePwUtZ6xuJm1XRh41ZOGdCj+aWTzFj
-         3saA9+S5jaa/vfqEYxVFc5e32mEzkvvwIKVkaXybEoH91lWy3DWTfmuTepaia4phvUFY
-         zXPdJwk2pUMjsnenipIOvB9cg5fCpeCrYFFAI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707080786; x=1707685586;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wIBefr9jY7okRpcwBBo6tcStVqxml+OF8xjJACWyuys=;
-        b=FTqUAmLppPHLQ31ywbAYThe2TX/MIOLrMjgFlMHyyU67tiGM9HRmx/Ft2Y/yXFiLVG
-         ebi9wVjOsBruMHQJkqE0JZG/BGjTqcb6gq8IA9zYReHON8xFiQ0sCv2i/P9PiejSWhvc
-         RpoF3pDTs2fFRpkvdtub9+jcLQxtQJY4BUgusOKMVJyXOU3oBpBJhs71zSLBKfqMkFTZ
-         UxhBFixI5kIukr8eAOwqSukqNxhKcUa9iYNFT2YIYQMl7DLV2SKRS64QanA6g3mnHvvE
-         vwfWOKPhtHm4sHW5advI8C55RwZ/+BguUxG+UomYLMC496lllcS2UM1/iGA7D+0aQpDc
-         3xrA==
-X-Gm-Message-State: AOJu0YzjALqRxCKdzGvWRAtUYjti1AwfTHGGnXxVOJUejohRQ80rKh58
-	Jz5Dybkd9Xy3SlSu4T9WXAp9SBD7sWsH6UIAAL/wRhDrD2SnBoLx5Vndhb5geA==
-X-Google-Smtp-Source: AGHT+IGkokpPEnIXbIHAoQGWdATZZl6xxNcxvTGj+iXBZGdRkSBb+EOhzYTxOFZwHRqw5vByITGcig==
-X-Received: by 2002:a17:906:d554:b0:a2f:b9be:66df with SMTP id cr20-20020a170906d55400b00a2fb9be66dfmr6807154ejc.17.1707080786682;
-        Sun, 04 Feb 2024 13:06:26 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWYQQKl7q9Vn/UAOvmcfLyfIm/GrO4H0ab7oKfZi3tiJb5xm9pQBy5eKYEK9Y5UtIAYZIiIf7GPnT7ICt9fZB2Gbj1S9tYBufvayaV0UNZT7lNjuRgwC6md504LsmvAcMIQA5qokHZxyioBRVAeeTFnwaAdxlnq4wdOr4e6h/5vEz5PBUFUF99x3BEC1i/PQkn8l6rbSNa8OVrqFws9eByrURodsF5OINMhSc9H1CIrIYAciSrS/r1TkGwklgb0A1yoPBFgyZ78
-Received: from [10.211.55.3] ([94.107.229.70])
-        by smtp.googlemail.com with ESMTPSA id hw16-20020a170907a0d000b00a372330e834sm2872890ejc.102.2024.02.04.13.06.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Feb 2024 13:06:26 -0800 (PST)
-Message-ID: <fccd3a15-b3a1-4ea2-ad0f-a6c0d3a8e134@ieee.org>
-Date: Sun, 4 Feb 2024 15:06:25 -0600
+	s=arc-20240116; t=1707080813; c=relaxed/simple;
+	bh=NITE3fXCxmz6inqylAbpuLy1NnudrR7Xh5aJmakNCSY=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=laJTUcho06msqNSf2fBaL4q0NSjcyy62XyVwaHK3nxCPTHhBx8uAV9foX2XWEtcsJOE+ZBrcRYrXBEmbDdkiV7EKJOcr+JECKBB5tGdDNej7J2c3oqan8MEdjvXRvj3G0DPJO11RiiWIFJxgDqr6s1eORzKK1T12bbp4aacz7RE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=UpCK5J4b; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=v+5kFjRt; arc=none smtp.client-ip=64.147.123.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.west.internal (Postfix) with ESMTP id 322083200A7A;
+	Sun,  4 Feb 2024 16:06:49 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Sun, 04 Feb 2024 16:06:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm2; t=1707080808; x=1707167208; bh=Vmlk2shLBNaJQiu3F7Uia
+	uOWXFbhtVDGsu5iEKGc7NY=; b=UpCK5J4byE50PZP5uEGDMgjSwyBOxPB5mtapU
+	zrtIlAlZGIYSViGFu+zxHEeG7NfnDdjQQ+M4xYd5Z1bOTmQodNSIddrroRSVZoyZ
+	MjtQ9XTspCgRlyGqBzFrAbXxiRsLD3ZpD9/7shCzfRZtbS3Esqc+8kf2hRg4MqPF
+	xMG399ms7C58Iz+lbPbIeBQC5K4WWVp4O6VezzDj+PTbUD+SLSMgLR46I86KXuWe
+	pqq1Gu2m5rEOuF4Ebvz5NKhmYlS9DfGtygYP1Czgb651ZdP4iJNYkk64YLsdXXHk
+	lkl8RoV0r/3LETV0XwtNPFD3YjSvgbj6CWvTaOqIt4GSESWag==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:date:date:feedback-id:feedback-id:from:from:in-reply-to
+	:message-id:mime-version:reply-to:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707080808; x=1707167208; bh=Vmlk2shLBNaJQiu3F7UiauOWXFbh
+	tVDGsu5iEKGc7NY=; b=v+5kFjRtzVN3RGYLZx9B0kjl5JPaPcvjc9StFkbmW/4E
+	g5l1a2TnUDvf08/49b8F05HsodksJFY7p07S/niQocIabEyd3ZaBGpdO6/cf7nkZ
+	xExMPRzWtdb25PDfJ9mrjdIg3xXCPtB3EppCS8wwynUOY8Hogxfue1DR25bJTs2j
+	D9AlN8yiDjvWZTcKPG5KAfV5FgJE8smMLw8mfsqyvNwtDtaMgpjn5lFErNyqr+N6
+	RIgiWYphmOjzOgWhJsZ8qYZLH1QSIxJTgggPfC2dYoRgqZZcKLn/rjVgRF8MkPzD
+	qGRM/zDRiyPw5s3NGdZHfvKHkdKCZA7zEj50efB7HQ==
+X-ME-Sender: <xms:aPy_ZTCct1RvSicDyj4foPY2vDXh6cwsUOHg5pEwdVwaFApgx1mwug>
+    <xme:aPy_ZZi8tuxPSsdq0wEGeEEINYCmSxvMG8mM2XWvmPEY_f0cGYxO3gdxew3ZrEsfJ
+    oChfwZnZf__N_ygWg>
+X-ME-Received: <xmr:aPy_Zek0v5pYq9kR0-j_ZWZP07mSUPz9-yi06FD3vDt1B8N36vGSn-o1KPah5Dz5hR_MaK1bFiPlalWfAozoT1aAk9BQ4rMwSBWdTKQu7mS5AA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedukedgudeggecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdefhedmnecujfgurhephf
+    fvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceougig
+    uhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepteefheetvdeugedtiedtfe
+    duhedufeejteefjeffjeeugfehtdehveelvedufeejnecuffhomhgrihhnpehkvghrnhgv
+    lhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:aPy_ZVxJosbymUtB9t-mxYDIuEdNVz01qZ_ZsfeZpSMe2J9Z8GW0oA>
+    <xmx:aPy_ZYSoFQYhBeaR5vjIvJjluYX5lWCrMbn-me5OCUuYJ3-ZokGCtg>
+    <xmx:aPy_ZYb0NV_GYbNFGPyGNUDbFh7igEJUU0h8xUL6wzVwGZ6VuQalIA>
+    <xmx:aPy_ZePfkFwMMgyHbSUNTNx5zB0-isuj-RKmdKkY0uNtzA3I-lR7Zg>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 4 Feb 2024 16:06:47 -0500 (EST)
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	andrii@kernel.org,
+	olsajiri@gmail.com,
+	quentin@isovalent.com,
+	alan.maguire@oracle.com
+Subject: [PATCH bpf-next v2 0/2] bpf, bpftool: Support dumping kfunc prototypes from BTF
+Date: Sun,  4 Feb 2024 14:06:33 -0700
+Message-ID: <cover.1707080349.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] block: rbd: make rbd_bus_type const
-Content-Language: en-US
-To: "Ricardo B. Marliere" <ricardo@marliere.net>,
- Ilya Dryomov <idryomov@gmail.com>,
- Dongsheng Yang <dongsheng.yang@easystack.cn>, Jens Axboe <axboe@kernel.dk>
-Cc: ceph-devel@vger.kernel.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20240204-bus_cleanup-block-v1-1-fc77afd8d7cc@marliere.net>
-From: Alex Elder <elder@ieee.org>
-In-Reply-To: <20240204-bus_cleanup-block-v1-1-fc77afd8d7cc@marliere.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 2/4/24 9:31 AM, Ricardo B. Marliere wrote:
-> Now that the driver core can properly handle constant struct bus_type,
-> move the rbd_bus_type variable to be a constant structure as well,
-> placing it into read-only memory which can not be modified at runtime.
-> 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+This patchset enables dumping kfunc prototypes from bpftool. This is
+useful b/c with this patchset, end users will no longer have to manually
+define kfunc prototypes. For the kernel tree, this also means we can
+drop kfunc prototypes from:
 
-Great!
+        tools/testing/selftests/bpf/bpf_kfuncs.h
+        tools/testing/selftests/bpf/bpf_experimental.h
 
-Reviewed-by: Alex Elder <elder@linaro.org>
+Example usage:
 
-> ---
->   drivers/block/rbd.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
-> index 0202a4e5d6cf..21f2b9e9b9ff 100644
-> --- a/drivers/block/rbd.c
-> +++ b/drivers/block/rbd.c
-> @@ -575,7 +575,7 @@ static const struct attribute_group rbd_bus_group = {
->   };
->   __ATTRIBUTE_GROUPS(rbd_bus);
->   
-> -static struct bus_type rbd_bus_type = {
-> +static const struct bus_type rbd_bus_type = {
->   	.name		= "rbd",
->   	.bus_groups	= rbd_bus_groups,
->   };
-> 
-> ---
-> base-commit: aa826a9b19b93bf8aabc462381ae436a60b2a320
-> change-id: 20240204-bus_cleanup-block-9986bfea7975
-> 
-> Best regards,
+        $ make PAHOLE=/home/dxu/dev/pahole/build/pahole -j30 vmlinux
+
+        $ ./tools/bpf/bpftool/bpftool btf dump file ./vmlinux format c | rg "__ksym;" | head -3
+        extern void cgroup_rstat_updated(struct cgroup *cgrp, int cpu) __weak __ksym;
+        extern void cgroup_rstat_flush(struct cgroup *cgrp) __weak __ksym;
+        extern struct bpf_key *bpf_lookup_user_key(u32 serial, u64 flags) __weak __ksym;
+
+Note that this patchset is only effective after the enabling pahole [0]
+change is merged and the resulting feature enabled with
+--btf_features=decl_tag_kfuncs.
+
+[0]: https://lore.kernel.org/bpf/cover.1707071969.git.dxu@dxuuu.xyz/
+
+=== Changelog ===
+
+From v1:
+* Add __weak annotation
+* Use btf_dump for kfunc prototypes
+* Update kernel bpf_rdonly_cast() signature
+
+Daniel Xu (2):
+  bpf: Have bpf_rdonly_cast() take a const pointer
+  bpftool: Support dumping kfunc prototypes from BTF
+
+ kernel/bpf/helpers.c    |  4 ++--
+ tools/bpf/bpftool/btf.c | 45 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 47 insertions(+), 2 deletions(-)
+
+-- 
+2.42.1
 
 
