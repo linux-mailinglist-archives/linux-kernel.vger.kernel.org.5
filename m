@@ -1,290 +1,282 @@
-Return-Path: <linux-kernel+bounces-51579-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDE76848CC4
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 11:23:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82D47848CD9
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 11:27:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4FAFB20C9E
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 10:23:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F019FB20517
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 10:27:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5681F1B81E;
-	Sun,  4 Feb 2024 10:23:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FC121B7F0;
+	Sun,  4 Feb 2024 10:27:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hg47hjLn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kafq9Iek"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C02A1B805;
-	Sun,  4 Feb 2024 10:23:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 716C71B7E8;
+	Sun,  4 Feb 2024 10:27:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707042184; cv=none; b=YYVUHbPYzYtnzwly+8ys1GeQLVjBuObpzbwAIW0vXzuL6l2J9UBPH7zNv36QAfc9K6doNrnjv8jmYc4qJzzgoNsrS0RcII6Zh1jS4t0+8+jJqaqr3IT7rTtcvAAhapsx4FzJQFHxOZXv5cUhufSHiph5LXrzd524O520IPx3wAs=
+	t=1707042444; cv=none; b=dtW2aDu/vvfSfIj8IY882H2fJuPuecck8HEPZisfBuiOIjLdeX+k3wP6O3t1wDmWouJHDvaLibwD/5L2ZcZdmUrZmLIldvlFjchKZo++cFVH8awnB91ikcDBCXfZeKfTu6d+SGIW8y7VparFfjpYxJjyNjRN6VDTJZvBlIShqOU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707042184; c=relaxed/simple;
-	bh=0zCWK6HdQBfmh3+SGF+GwJXgFP8dMvoTrINLfE+0WAs=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=plMlJLJepWMVyff4cGoqgzevoWyNTBXcefFMYSNsiYjuavVb/Zxr+1FRLlIxLZFYEmhZLon8p63DY/cmciR9YG05fQIjNzrYpnpieYif2+tQ+QnSCejHxsL1yuUtK3Lxa+8LAFj5MuCdW4z+X725lDgzKME9d34sJamTAKw5r88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hg47hjLn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4C1BC43399;
-	Sun,  4 Feb 2024 10:23:03 +0000 (UTC)
+	s=arc-20240116; t=1707042444; c=relaxed/simple;
+	bh=eRn6mGis/5MC/A4ZLbE2ZigSPKpwJQDM2mzbPkMGT0s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Lx01gq6elmut68rKHvt/BdPuYL1bXpPoWJBVTVdcmBxWcllUyIm5HDVMBbwSyvr/ueoImthjzxfnZ+YQhyv4Z/fwHW4e4WP4L3mDuZSq95WxtoOtQOGEQh2jR/VqwR/+dIgxSq5TAjKz51bWCDUH45mOIpED54LQCB/E2V/W+rs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kafq9Iek; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59E1CC433F1;
+	Sun,  4 Feb 2024 10:27:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707042183;
-	bh=0zCWK6HdQBfmh3+SGF+GwJXgFP8dMvoTrINLfE+0WAs=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Hg47hjLnfaorhta56RniaOneYtEmHv7UKURF5pSmBzgj0lfdkBPbqOaxQvf9isVaN
-	 g2xWLsTMe0GSWatfM0BJmKINm5415AMkgVC/QqANVLnKI/Uik1+bmGvPI6xWEoKgYN
-	 QYihBwPdYJEFuWdzwRNQfCwfWZhqarqOulAO5tLZFLFjS13fWRDct2Qx95RVJAqqpB
-	 nvuqrzttae6Z/O/IWi/uiV1fdeLq9BGGce6a+0L4ChwbWTt68OEsnRCdKb0NUzhHPR
-	 RyQ1h9Pk+WUCqJe5uphaCuGpOqIXthnsWCpBcqewzpJuDQwRDHwHmcOCC+f27Dwoa1
-	 iYZlD71jsESFw==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rWZeO-0009UD-UD;
-	Sun, 04 Feb 2024 10:23:01 +0000
-Date: Sun, 04 Feb 2024 10:23:00 +0000
-Message-ID: <86a5og7cl7.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Rob Herring <robh@kernel.org>
-Cc: Saravana Kannan <saravanak@google.com>,
-	David Dai <davidai@google.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Viresh Kumar <viresh.kumar@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Quentin Perret <qperret@google.com>,
-	Masami Hiramatsu <mhiramat@google.com>,
-	Will Deacon <will@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Pavan Kondeti <quic_pkondeti@quicinc.com>,
-	Gupta Pankaj <pankaj.gupta@amd.com>,
-	Mel Gorman <mgorman@suse.de>,
-	kernel-team@android.com,
-	linux-pm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/2] dt-bindings: cpufreq: add virtual cpufreq device
-In-Reply-To: <20240202155352.GA37864-robh@kernel.org>
-References: <20240127004321.1902477-1-davidai@google.com>
-	<20240127004321.1902477-2-davidai@google.com>
-	<20240131170608.GA1441369-robh@kernel.org>
-	<CAGETcx8S0oS67oMZsPKk6_MGAtygoHEf_LN1gbcNDEBqRJ4PPg@mail.gmail.com>
-	<20240202155352.GA37864-robh@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=k20201202; t=1707042443;
+	bh=eRn6mGis/5MC/A4ZLbE2ZigSPKpwJQDM2mzbPkMGT0s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Kafq9IekWwYhs0YfkLChWrJRxH+nD6MJ3ClCNld27T580Vo4EiSzg4iOib6L44jn9
+	 jHsUpWoUIarEDLktRKn8q0OOdI3XYR1s9V1/MubO9GYbFoESgLCQanXMfCxYB95qKH
+	 nc92SiNV99F/pzBKHfutrnC9v7NhFT1aI28aQ8YGG6j8AYZjg8a/n8zAFvnC29EPhw
+	 LEFzM6b1LIiwfgKJY/KpTHldlH2e4yfqtCMTNR274K6DhcbawQZQ8iYF9iI4yrkoGO
+	 spsRRPO/DDfXyurAf96DpxtB2DfUq2wjzceddWITQn/m1oZUIE84FxI9RpbT8gjeTe
+	 iFCFd+zdktptA==
+Date: Sun, 4 Feb 2024 11:27:12 +0100
+From: Mike Rapoport <rppt@kernel.org>
+To: Lokesh Gidra <lokeshgidra@google.com>
+Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>, akpm@linux-foundation.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, selinux@vger.kernel.org,
+	surenb@google.com, kernel-team@android.com, aarcange@redhat.com,
+	peterx@redhat.com, david@redhat.com, axelrasmussen@google.com,
+	bgeffon@google.com, willy@infradead.org, jannh@google.com,
+	kaleshsingh@google.com, ngeoffray@google.com, timmurray@google.com
+Subject: Re: [PATCH v2 2/3] userfaultfd: protect mmap_changing with rw_sem in
+ userfaulfd_ctx
+Message-ID: <Zb9mgL8XHBZpEVe7@kernel.org>
+References: <20240129193512.123145-1-lokeshgidra@google.com>
+ <20240129193512.123145-3-lokeshgidra@google.com>
+ <20240129210014.troxejbr3mzorcvx@revolver>
+ <CA+EESO6XiPfbUBgU3FukGvi_NG5XpAQxWKu7vg534t=rtWmGXg@mail.gmail.com>
+ <20240130034627.4aupq27mksswisqg@revolver>
+ <Zbi5bZWI3JkktAMh@kernel.org>
+ <20240130172831.hv5z7a7bhh4enoye@revolver>
+ <CA+EESO7W=yz1DyNsuDRd-KJiaOg51QWEQ_MfpHxEL99ZeLS=AA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: robh@kernel.org, saravanak@google.com, davidai@google.com, rafael@kernel.org, viresh.kumar@linaro.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, sudeep.holla@arm.com, qperret@google.com, mhiramat@google.com, will@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org, oliver.upton@linux.dev, dietmar.eggemann@arm.com, quic_pkondeti@quicinc.com, pankaj.gupta@amd.com, mgorman@suse.de, kernel-team@android.com, linux-pm@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+EESO7W=yz1DyNsuDRd-KJiaOg51QWEQ_MfpHxEL99ZeLS=AA@mail.gmail.com>
 
-On Fri, 02 Feb 2024 15:53:52 +0000,
-Rob Herring <robh@kernel.org> wrote:
->=20
-> On Wed, Jan 31, 2024 at 10:23:03AM -0800, Saravana Kannan wrote:
-> > On Wed, Jan 31, 2024 at 9:06=E2=80=AFAM Rob Herring <robh@kernel.org> w=
-rote:
-> > >
-> > > On Fri, Jan 26, 2024 at 04:43:15PM -0800, David Dai wrote:
-> > > > Adding bindings to represent a virtual cpufreq device.
+On Tue, Jan 30, 2024 at 06:24:24PM -0800, Lokesh Gidra wrote:
+> On Tue, Jan 30, 2024 at 9:28 AM Liam R. Howlett <Liam.Howlett@oracle.com> wrote:
+> >
+> > * Mike Rapoport <rppt@kernel.org> [240130 03:55]:
+> > > On Mon, Jan 29, 2024 at 10:46:27PM -0500, Liam R. Howlett wrote:
+> > > > * Lokesh Gidra <lokeshgidra@google.com> [240129 17:35]:
 > > > >
-> > > > Virtual machines may expose MMIO regions for a virtual cpufreq devi=
-ce
-> > > > for guests to read frequency information or to request frequency
-> > > > selection. The virtual cpufreq device has an individual controller =
-for
-> > > > each frequency domain. Performance points for a given domain can be
-> > > > normalized across all domains for ease of allowing for virtual mach=
-ines
-> > > > to migrate between hosts.
+> > > > > > > diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+> > > > > > > index 58331b83d648..c00a021bcce4 100644
+> > > > > > > --- a/fs/userfaultfd.c
+> > > > > > > +++ b/fs/userfaultfd.c
+> > > > > > > @@ -685,12 +685,15 @@ int dup_userfaultfd(struct vm_area_struct *vma, struct list_head *fcs)
+> > > > > > >               ctx->flags = octx->flags;
+> > > > > > >               ctx->features = octx->features;
+> > > > > > >               ctx->released = false;
+> > > > > > > +             init_rwsem(&ctx->map_changing_lock);
+> > > > > > >               atomic_set(&ctx->mmap_changing, 0);
+> > > > > > >               ctx->mm = vma->vm_mm;
+> > > > > > >               mmgrab(ctx->mm);
+> > > > > > >
+> > > > > > >               userfaultfd_ctx_get(octx);
+> > > > > > > +             down_write(&octx->map_changing_lock);
+> > > > > > >               atomic_inc(&octx->mmap_changing);
+> > > > > > > +             up_write(&octx->map_changing_lock);
 > > > >
-> > > > Co-developed-by: Saravana Kannan <saravanak@google.com>
-> > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > > Signed-off-by: David Dai <davidai@google.com>
-> > > > ---
-> > > >  .../cpufreq/qemu,cpufreq-virtual.yaml         | 110 ++++++++++++++=
-++++
+> > > > On init, I don't think taking the lock is strictly necessary - unless
+> > > > there is a way to access it before this increment?  Not that it would
+> > > > cost much.
 > > >
-> > > > +    const: qemu,virtual-cpufreq
+> > > It's fork, the lock is for the context of the parent process and there
+> > > could be uffdio ops running in parallel on its VM.
+> >
+> > Is this necessary then?  We are getting the octx from another mm but the
+> > mm is locked for forking.  Why does it matter if there are readers of
+> > the octx?
+> >
+> > I assume, currently, there is no way the userfaultfd ctx can
+> > be altered under mmap_lock held for writing. I would think it matters if
+> > there are writers (which, I presume are blocked by the mmap_lock for
+> > now?)  Shouldn't we hold the write lock for the entire dup process, I
+> > mean, if we remove the userfaultfd from the mmap_lock, we cannot let the
+> > structure being duplicated change half way through the dup process?
+> >
+> > I must be missing something with where this is headed?
+> >
+> AFAIU, the purpose of mmap_changing is to serialize uffdio operations
+> with non-cooperative events if and when such events are being
+> monitored by userspace (in case you missed, in all the cases of writes
+> to mmap_changing, we only do it if that non-cooperative event has been
+> requested by the user). As you pointed out there are no correctness
+> concerns as far as userfaultfd operations are concerned. But these
+> events are essential for the uffd monitor's functioning.
+> 
+> For example: say the uffd monitor wants to be notified for REMAP
+> operations while doing uffdio_copy operations. When COPY ioctls start
+> failing with -EAGAIN and uffdio_copy.copy == 0, then it knows it must
+> be due to mremap(), in which case it waits for the REMAP event
+> notification before attempting COPY again.
+> 
+> But there are few things that I didn't get after going through the
+> history of non-cooperative events. Hopefully Mike (or someone else
+> familiar) can clarify:
+> 
+> IIUC, the idea behind non-cooperative events was to block uffdio
+> operations from happening *before* the page tables are manipulated by
+> the event (like mremap), and that the uffdio ops are resumed after the
+> event notification is received by the monitor.
+
+The idea was to give userspace some way to serialize processing of
+non-cooperative event notifications and uffdio operations running in
+parallel. It's not necessary to block uffdio operations from happening
+before changes to the memory map, but with the mmap_lock synchronization
+that already was there adding mmap_chaning that will prevent uffdio
+operations when mmap_lock is taken for write was the simplest thing to do.
+
+When CRIU does post-copy restore of a process, its uffd monitor reacts to
+page fault and non-cooperative notifications and also performs a background
+copy of the memory contents from the saved state to the address space of
+the process being restored.
+
+Since non-cooperative events may happen completely independent from the
+uffd monitor, there are cases when the uffd monitor couldn't identify the
+order of events, like  e.g. what won the race on mmap_lock, the process
+thread doing fork or the uffd monitor's uffdio_copy.
+
+In the fork vs uffdio_copy example, without mmap_changing, if the
+uffdio_copy takes the mmap_lock first, the new page will be present in the
+parent by the time copy_page_range() is called and the page will appear in
+the child's memory mappings by the time uffd monitor gets notification
+about the fork event. However, if the fork() is the first to take the
+mmap_lock, the new page will appear in the parent address space after
+copy_page_range() and it won't be mapped in the child's address space.
+
+With mmap_changing and current locking with mmap_lock, we have a guarantee
+that uffdio_copy will bail out if fork already took mmap_lock and the
+monitor can act appropriately.
+ 
+> 1) Why in the case of REMAP prep() is done after page-tables are
+> moved? Shouldn't it be done before? All other non-cooperative
+> operations do the prep() before.
+
+mremap_userfaultfd_prep() is done after page tables are moved because it
+initializes uffd context on the new_vma and if the actual remap fails,
+there's no point of doing it.
+Since mrpemap holds mmap_lock for write it does not matter if mmap_changed
+is updated before or after page tables are moved. In the time between
+mmap_lock is released and the UFFD_EVENT_REMAP is delivered to the uffd
+monitor, mmap_chaging will remain >0 and uffdio operations will bail out.
+
+> 2) UFFD_FEATURE_EVENT_REMOVE only notifies user space. It is not
+> consistently blocking uffdio operations (as both sides are acquiring
+> mmap_lock in read-mode) when remove operation is taking place. I can
+> understand this was intentionally left as is in the interest of not
+> acquiring mmap_lock in write-mode during madvise. But is only getting
+> the notification any useful? Can we say this patch fixes it? And in
+> that case shouldn't I split userfaultfd_remove() into two functions
+> (like other non-cooperative operations)?
+
+The notifications are useful because uffd monitor knows what memory should
+not be filled with uffdio_copy. Indeed there was no interest in taking
+mmap_lock for write in madvise, so there could be race between madvise and
+uffdio operations. This race essentially prevents uffd monitor from running
+the background copy in a separate thread, and with your change this should
+be possible.
+
+> 3) Based on [1] I see how mmap_changing helps in eliminating duplicate
+> work (background copy) by uffd monitor, but didn't get if there is a
+> correctness aspect too that I'm missing? I concur with Amit's point in
+> [1] that getting -EEXIST when setting up the pte will avoid memory
+> corruption, no?
+
+In the fork case without mmap_changing the child process may be get data or
+zeroes depending on the race for mmap_lock between the fork and
+uffdio_copy and -EEXIST is not enough for monitor to detect what was the
+ordering between fork and uffdio_copy.
+ 
+> > > > > > > @@ -783,7 +788,9 @@ bool userfaultfd_remove(struct vm_area_struct *vma,
+> > > > > > >               return true;
+> > > > > > >
+> > > > > > >       userfaultfd_ctx_get(ctx);
+> > > > > > > +     down_write(&ctx->map_changing_lock);
+> > > > > > >       atomic_inc(&ctx->mmap_changing);
+> > > > > > > +     up_write(&ctx->map_changing_lock);
+> > > > > > >       mmap_read_unlock(mm);
+> > > > > > >
+> > > > > > >       msg_init(&ewq.msg);
+> > > >
+> > > > If this happens in read mode, then why are you waiting for the readers
+> > > > to leave?  Can't you just increment the atomic?  It's fine happening in
+> > > > read mode today, so it should be fine with this new rwsem.
 > > >
-> > > Well, the filename almost matches the compatible.
+> > > It's been a while and the details are blurred now, but if I remember
+> > > correctly, having this in read mode forced non-cooperative uffd monitor to
+> > > be single threaded. If a monitor runs, say uffdio_copy, and in parallel a
+> > > thread in the monitored process does MADV_DONTNEED, the latter will wait
+> > > for userfaultfd_remove notification to be processed in the monitor and drop
+> > > the VMA contents only afterwards. If a non-cooperative monitor would
+> > > process notification in parallel with uffdio ops, MADV_DONTNEED could
+> > > continue and race with uffdio_copy, so read mode wouldn't be enough.
 > > >
-> > > > +
-> > > > +  reg:
-> > > > +    maxItems: 1
-> > > > +    description:
-> > > > +      Address and size of region containing frequency controls for=
- each of the
-> > > > +      frequency domains. Regions for each frequency domain is plac=
-ed
-> > > > +      contiguously and contain registers for controlling DVFS(Dyna=
-mic Frequency
-> > > > +      and Voltage) characteristics. The size of the region is prop=
-ortional to
-> > > > +      total number of frequency domains. This device also needs th=
-e CPUs to
-> > > > +      list their OPPs using operating-points-v2 tables. The OPP ta=
-bles for the
-> > > > +      CPUs should use normalized "frequency" values where the OPP =
-with the
-> > > > +      highest performance among all the vCPUs is listed as 1024 KH=
-z. The rest
-> > > > +      of the frequencies of all the vCPUs should be normalized bas=
-ed on their
-> > > > +      performance relative to that 1024 KHz OPP. This makes it muc=
-h easier to
-> > > > +      migrate the VM across systems which might have different phy=
-sical CPU
-> > > > +      OPPs.
-> > > > +
-> > > > +required:
-> > > > +  - compatible
-> > > > +  - reg
-> > > > +
-> > > > +additionalProperties: false
-> > > > +
-> > > > +examples:
-> > > > +  - |
-> > > > +    // This example shows a two CPU configuration with a frequency=
- domain
-> > > > +    // for each CPU showing normalized performance points.
-> > > > +    cpus {
-> > > > +      #address-cells =3D <1>;
-> > > > +      #size-cells =3D <0>;
-> > > > +
-> > > > +      cpu@0 {
-> > > > +        compatible =3D "arm,armv8";
-> > > > +        device_type =3D "cpu";
-> > > > +        reg =3D <0x0>;
-> > > > +        operating-points-v2 =3D <&opp_table0>;
-> > > > +      };
-> > > > +
-> > > > +      cpu@1 {
-> > > > +        compatible =3D "arm,armv8";
-> > > > +        device_type =3D "cpu";
-> > > > +        reg =3D <0x0>;
-> > > > +        operating-points-v2 =3D <&opp_table1>;
-> > > > +      };
-> > > > +    };
-> > > > +
-> > > > +    opp_table0: opp-table-0 {
-> > > > +      compatible =3D "operating-points-v2";
-> > > > +
-> > > > +      opp64000 { opp-hz =3D /bits/ 64 <64000>; };
+> >
+> > Right now this function won't stop to wait for readers to exit the
+> > critical section, but with this change there will be a pause (since the
+> > down_write() will need to wait for the readers with the read lock).  So
+> > this is adding a delay in this call path that isn't necessary (?) nor
+> > existed before.  If you have non-cooperative uffd monitors, then you
+> > will have to wait for them to finish to mark the uffd as being removed,
+> > where as before it was a fire & forget, this is now a wait to tell.
+> >
+> I think a lot will be clearer once we get a response to my questions
+> above. IMHO not only this write-lock is needed here, we need to fix
+> userfaultfd_remove() by splitting it into userfaultfd_remove_prep()
+> and userfaultfd_remove_complete() (like all other non-cooperative
+> operations) as well. This patch enables us to do that as we remove
+> mmap_changing's dependency on mmap_lock for synchronization.
+
+The write-lock is not a requirement here for correctness and I don't see
+why we would need userfaultfd_remove_prep().
+
+As I've said earlier, having a write-lock here will let CRIU to run
+background copy in parallel with processing of uffd events, but I don't
+feel strongly about doing it.
+
+> > > There was no much sense to make MADV_DONTNEED take mmap_lock in write mode
+> > > just for this, but now taking the rwsem in write mode here sounds
+> > > reasonable.
 > > >
-> > > opp-64000 is the preferred form.
-> > >
-> > > > +      opp128000 { opp-hz =3D /bits/ 64 <128000>; };
-> > > > +      opp192000 { opp-hz =3D /bits/ 64 <192000>; };
-> > > > +      opp256000 { opp-hz =3D /bits/ 64 <256000>; };
-> > > > +      opp320000 { opp-hz =3D /bits/ 64 <320000>; };
-> > > > +      opp384000 { opp-hz =3D /bits/ 64 <384000>; };
-> > > > +      opp425000 { opp-hz =3D /bits/ 64 <425000>; };
-> > > > +    };
-> > > > +
-> > > > +    opp_table1: opp-table-1 {
-> > > > +      compatible =3D "operating-points-v2";
-> > > > +
-> > > > +      opp64000 { opp-hz =3D /bits/ 64 <64000>; };
-> > > > +      opp128000 { opp-hz =3D /bits/ 64 <128000>; };
-> > > > +      opp192000 { opp-hz =3D /bits/ 64 <192000>; };
-> > > > +      opp256000 { opp-hz =3D /bits/ 64 <256000>; };
-> > > > +      opp320000 { opp-hz =3D /bits/ 64 <320000>; };
-> > > > +      opp384000 { opp-hz =3D /bits/ 64 <384000>; };
-> > > > +      opp448000 { opp-hz =3D /bits/ 64 <448000>; };
-> > > > +      opp512000 { opp-hz =3D /bits/ 64 <512000>; };
-> > > > +      opp576000 { opp-hz =3D /bits/ 64 <576000>; };
-> > > > +      opp640000 { opp-hz =3D /bits/ 64 <640000>; };
-> > > > +      opp704000 { opp-hz =3D /bits/ 64 <704000>; };
-> > > > +      opp768000 { opp-hz =3D /bits/ 64 <768000>; };
-> > > > +      opp832000 { opp-hz =3D /bits/ 64 <832000>; };
-> > > > +      opp896000 { opp-hz =3D /bits/ 64 <896000>; };
-> > > > +      opp960000 { opp-hz =3D /bits/ 64 <960000>; };
-> > > > +      opp1024000 { opp-hz =3D /bits/ 64 <1024000>; };
-> > > > +
-> > > > +    };
-> > >
-> > > I don't recall your prior versions having an OPP table. Maybe it was
-> > > incomplete. You are designing the "h/w" interface. Why don't you make=
- it
-> > > discoverable or implicit (fixed for the h/w)?
-> >=20
-> > We also need the OPP tables to indicate which CPUs are part of the
-> > same cluster, etc. Don't want to invent a new "protocol" and just use
-> > existing DT bindings.
->=20
-> Topology binding is for that.
->=20
-> What about when x86 and other ACPI systems need to do this too? You=20
-> define a discoverable interface, then it works regardless of firmware.=20
-> KVM, Virtio, VFIO, etc. are all their own protocols.
+> >
+> > I see why there was no need for a mmap_lock in write mode, but I think
+> > taking the new rwsem in write mode is unnecessary.
+> >
+> > Basically, I see this as a signal to new readers to abort, but we don't
+> > need to wait for current readers to finish before this one increments
+> > the atomic.
+> >
+> > Unless I missed something, I don't think you want to take the write lock
+> > here.
+> What I understood from the history of mmap_changing is that the
+> intention was to enable informing the uffd monitor about the correct
+> state of which pages are filled and which aren't. Going through this
+> thread was very helpful [2]
+> 
+> [2] https://lore.kernel.org/lkml/1527061324-19949-1-git-send-email-rppt@linux.vnet.ibm.com/
 
-Describing the emulated HW in ACPI would seem appropriate to me. We
-are talking about the guest here, so whether this is KVM or not is not
-relevant. If this was actually using any soft of data transfer, using
-virtio would have been acceptable. But given how simple this is,
-piggybacking on virtio is hardly appropriate.
-
->=20
-> > > Do you really need it if the frequency is normalized?
-> >=20
-> > Yeah, we can have little and big CPUs and want to emulate different
-> > performance levels. So while the Fmax on big is 1024, we still want to
-> > be able to say little is 425. So we definitely need frequency tables.
->=20
-> You need per CPU Fmax, sure. But all the frequencies? I don't follow why =
-
-> you don't just have a max available capacity and then request the=20
-> desired capacity. Then the host maps that to an underlying OPP. Why have =
-
-> an intermediate set of fake frequencies?
->=20
-> As these are normalized, I guess you are normalizing for capacity as=20
-> well? Or you are using "capacity-dmips-mhz"?=20
->=20
-> I'm also lost how this would work when you migrate and the underlying=20
-> CPU changes. The DT is fixed.
->=20
-> > > Also, we have "opp-level" for opaque values that aren't Hz.
-> >=20
-> > Still want to keep it Hz to be compatible with arch_freq_scale and
-> > when virtualized CPU perf counters are available.
->=20
-> Seems like no one would want "opp-level" then. Shrug.
->=20
-> Anyway, if Viresh and Marc are fine with all this, I'll shut up.
-
-Well, I've said it before, and I'll say it again: the use of
-*frequencies* makes no sense. It is a lie (it doesn't describe any
-hardware, physical nor virtual), and doesn't reflect the way the
-emulated cpufreq controller behaves either (since it scales everything
-back to what the host can potentially do)
-
-The closest abstraction we have to this is the unit-less capacity. And
-*that* reflects the way the emulated cpufreq controller works while
-avoiding lying to the guest about some arbitrary frequency.
-
-In practice, this changes nothing to either the code or the behaviour.
-But it changes the binding.
-
-	M.
-
---=20
-Without deviation from the norm, progress is not possible.
+-- 
+Sincerely yours,
+Mike.
 
