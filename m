@@ -1,127 +1,139 @@
-Return-Path: <linux-kernel+bounces-51527-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 303B7848C33
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 09:33:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 08FF6848C2A
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 09:30:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 633E61C2274F
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 08:33:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E7761C225FF
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 08:30:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04DB714284;
-	Sun,  4 Feb 2024 08:33:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C5BD13FF5;
+	Sun,  4 Feb 2024 08:30:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="N3ALNsLK"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ERpNI16O";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="VMFGa6vv";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ERpNI16O";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="VMFGa6vv"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ED9C1426B;
-	Sun,  4 Feb 2024 08:33:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC7EC134C8;
+	Sun,  4 Feb 2024 08:30:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707035624; cv=none; b=gqQK+ob9p+oQbYbr16Q5bJhAWVSOAY8WoAuRYF3GvWg6IKsxEFF9XCY74SWicCH8CWZ6/uQslfC/DIHRI8+AhbeXBiurz4sd3hT0MHfsNYfe4ynDbVkt59e6HUm3FIIdZq4gC83nFo/th9Q9E2DtLfWJEcnAUzlu2KWcpQsbj1E=
+	t=1707035424; cv=none; b=ZrUHHb+/1aKozTewz7okFW+VbCZyeJZHdcRJdzTo4lXvd6ntVPDcLRGwZ1QBKCx7vZx/oys3aOrqwpoXFdS9yhACO3/CvoWxTkt4qLFY1h81ORCO6NqsQ517L4sMw/06qK8PuVZmHsaIsh2iHaf4Ih2KjuamUXWvcxCiTFgZxeM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707035624; c=relaxed/simple;
-	bh=6hnOSJLUGircKMBizQ5z9dUDIidd26XLeYApieCrnlA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i53u2/k7TxxEQR7zunfT4FyP2rALKSNviCKE8+ej6t7WrBMkKrMoQPg4rP5himX8mtQVLMEx93lL/ltg+PUzeZawggJfLogmUMPbjtPof21ettspzzeQaOTnpqC2v3sYSQwJwyPsaHLH/L2L/lAGCUsk9no1t8Psc57nAvgyPIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=N3ALNsLK; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707035623; x=1738571623;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=6hnOSJLUGircKMBizQ5z9dUDIidd26XLeYApieCrnlA=;
-  b=N3ALNsLKSUQq2kw1m+mJNidksnRm5BZh8FCtmy4QJ3W6Z83JHrdNPIWQ
-   iLY+wZJWuIHbVae+fz7kbZaGzk+wxPKHYW0sI4BXIJEzP7xGZjs1yJGly
-   h39f+pVjSnQt5W8BOSmCxS7ks7I8O7NY3xt8ltDOGMi4TpLAUbf6D38DA
-   UhjG7kQwGVWJt2wpDIFY3vlb3RWdAd52dRTGYET9alYKfRTLlW1cTFhQ+
-   qOw4tQi8kGZatm4wKpwmd4cS7Aup4dQ+9vNuCppvPpOKwMZqgbag2lR9s
-   neMLhgIoVxQOKLnJCWplKeaYohgLDjbi9m1BnVyRod0rFC8BCHh8LnOlE
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10973"; a="25823114"
-X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
-   d="scan'208";a="25823114"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 00:33:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
-   d="scan'208";a="781505"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orviesa008.jf.intel.com with ESMTP; 04 Feb 2024 00:33:38 -0800
-Date: Sun, 4 Feb 2024 16:30:05 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Kris Chaplin <kris.chaplin@amd.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Charles Perry <charles.perry@savoirfairelinux.com>, mdf@kernel.org,
-	"michal.simek@amd.com" <michal.simek@amd.com>, hao.wu@intel.com,
-	yilun.xu@intel.com, trix@redhat.com,
-	krzysztof.kozlowski+dt@linaro.org, bcody@markem-imaje.com,
-	avandiver@markem-imaje.com, linux-fpga@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] dt-bindings: fpga: xlnx,fpga-slave-selectmap: add DT
- schema
-Message-ID: <Zb9LDQP3xzrv6LWr@yilunxu-OptiPlex-7050>
-References: <20240129225602.3832449-1-charles.perry@savoirfairelinux.com>
- <20240129225602.3832449-2-charles.perry@savoirfairelinux.com>
- <9b0680b6-1952-41d3-82f4-88c60469dc3a@linaro.org>
- <471d9438-e2c0-4881-8ace-778c9d14669c@amd.com>
+	s=arc-20240116; t=1707035424; c=relaxed/simple;
+	bh=9N/yJ7y8H6y1WqEagbxcNeH/yIVeDjm6wuvCcT+jqJs=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=WsG3f8/Q9gy61Di0vtRQcGAWH5QyAPE/xELHawvFoikpOougBKD53NSRGGmJg687sw45ZByDb4UhNNaVQEyE596AYb/TsyN3jYtll+FIbm8cNYZjm3HZhecpRC3R8OA48qCYtunlVYQT7pcMv2xe7Mt0qF4dkBMffW88zTPfeUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ERpNI16O; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=VMFGa6vv; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ERpNI16O; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=VMFGa6vv; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A653B21E24;
+	Sun,  4 Feb 2024 08:30:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707035419; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SUWpvVlbtmQV6vlPcjlI3MUn/yKN5SBWzWr1t051fJw=;
+	b=ERpNI16O1j4T8rc4JVXOORjMTM0KzR35yqytDPmmUBXdkDnEK8j4j4pqqNODEXXHT1UO+v
+	95qlFDXY6hG6TcgYVkn3O4J6WCEkDFh1vr+iDFfvNaqx9nCkikMP27V/u+oFQlJcyC6EnL
+	G21hMyWdecNKSFfdvIAXoDJ4nL2qK9U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707035419;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SUWpvVlbtmQV6vlPcjlI3MUn/yKN5SBWzWr1t051fJw=;
+	b=VMFGa6vvVpxApVvrlxsVnHQLy/lursItxcFDLW3iHijaPyBaXpjSau0BPzPuSvaAUdTomv
+	t4B3Rpvq20oRQoBQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707035419; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SUWpvVlbtmQV6vlPcjlI3MUn/yKN5SBWzWr1t051fJw=;
+	b=ERpNI16O1j4T8rc4JVXOORjMTM0KzR35yqytDPmmUBXdkDnEK8j4j4pqqNODEXXHT1UO+v
+	95qlFDXY6hG6TcgYVkn3O4J6WCEkDFh1vr+iDFfvNaqx9nCkikMP27V/u+oFQlJcyC6EnL
+	G21hMyWdecNKSFfdvIAXoDJ4nL2qK9U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707035419;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SUWpvVlbtmQV6vlPcjlI3MUn/yKN5SBWzWr1t051fJw=;
+	b=VMFGa6vvVpxApVvrlxsVnHQLy/lursItxcFDLW3iHijaPyBaXpjSau0BPzPuSvaAUdTomv
+	t4B3Rpvq20oRQoBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 68EFC132DD;
+	Sun,  4 Feb 2024 08:30:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id mx76FxtLv2UpeAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Sun, 04 Feb 2024 08:30:19 +0000
+Date: Sun, 04 Feb 2024 09:30:19 +0100
+Message-ID: <87h6iobpic.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Stefan Binding <sbinding@opensource.cirrus.com>
+Cc: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	<alsa-devel@alsa-project.org>,
+	<linux-sound@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>,
+	<patches@opensource.cirrus.com>
+Subject: Re: [PATCH v2] ALSA: hda/realtek: Remove two HP Laptops using CS35L41
+In-Reply-To: <20240202170842.321818-1-sbinding@opensource.cirrus.com>
+References: <20240202170842.321818-1-sbinding@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <471d9438-e2c0-4881-8ace-778c9d14669c@amd.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [0.47 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.43)[78.54%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: 0.47
 
-On Wed, Jan 31, 2024 at 11:03:25AM +0000, Kris Chaplin wrote:
-> Hello Krzysztof,
+On Fri, 02 Feb 2024 18:08:42 +0100,
+Stefan Binding wrote:
 > 
-> On 30/01/2024 16:09, Krzysztof Kozlowski wrote:
+> The SKUs, and associated SSIDs, are no longer going to include the
+> CS35L41. They may come back, but will need a different quirk.
 > 
-> > > +
-> > > +description: |
-> > > +  Xilinx 7 Series FPGAs support a method of loading the bitstream over a
-> > > +  parallel port named the slave SelectMAP interface in the documentation. Only
-> > > +  the x8 mode is supported where data is loaded at one byte per rising edge of
-> > > +  the clock, with the MSB of each byte presented to the D0 pin.
-> > > +
-> > > +  Datasheets:
-> > > +    https://www.xilinx.com/support/documentation/user_guides/ug470_7Series_Config.pdf
-> > 
-> > I am surprised that AMD/Xilinx still did not update the document to
-> > modern naming (slave->secondary).
-> 
-> Thank you for bringing this up.
-> 
-> We are moving away from using non-inclusive technical terminology and are
-> removing non-inclusive language from our products and related collateral.
-> You will for some time find examples of non-inclusive language, especially
-> in our older products as we work to make these changes and align with
-> industry standards.  For new IP we're ensuring that we switch and stick to
-> inclusive terminology, as you may have seen with my recent w1 driver
-> submission.
-> 
-> SelectMAP is a decades-old interface and as such it is unlikely that we will
-> update this in all documentation dating back this time.  I shall however
-> look to understand what is planned here for active documentation and new
-> driver submissions.
+> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 
-Yes, I need review from AMD/Xilinx side. Especially the HW parts, and
-some namings of variables, e.g. if xilinx-core is proper for what products
-it supports, and won't be an issue in future.
+Thanks, applied with Fixes tag now.
 
-Thanks,
-Yilun
 
-> 
-> regards
-> Kris
-> 
+Takashi
 
