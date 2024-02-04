@@ -1,87 +1,228 @@
-Return-Path: <linux-kernel+bounces-51814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 861AC848F9D
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 18:13:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F39A848F9F
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 18:15:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9820FB2193F
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 17:13:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF98D1F2265C
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 17:15:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46843249EA;
-	Sun,  4 Feb 2024 17:13:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12849249F9;
+	Sun,  4 Feb 2024 17:14:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IM9QI711"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="F1ga4EHC"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79324249E4;
-	Sun,  4 Feb 2024 17:13:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2703249EE;
+	Sun,  4 Feb 2024 17:14:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707066826; cv=none; b=k9XQlt6Fct+I2PLW7o770VScAxRSogZXir/NJBjXQjyyhMuv7HTxzUNFPxWHGhpxG/wJXB0pcEAA46us8K2h0v1H6YURQaCXu9WlPHwnQcL3GHsY3I+ER/PlxK0FknYBLudwgOErq3v6QgL9zz1DaWH01XG3mVN7bh6DPAXq/FY=
+	t=1707066886; cv=none; b=G5mYxdCQfao7/vTCoVDYfDwrVRmmHUZ6c/mVAa9qL0bVFse3MG7VjA9Mn8xJeftUy1Zx1AKHbGf31FBQNCBGuUataQvKf0W0YQO/pXg9KEXI3opZtefX8vP3L4WYxsc5U6sXPoio/Ng57wmp/V1JFghtZnRKETxVrAitAgwMNX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707066826; c=relaxed/simple;
-	bh=ZQ2DMEHRwpKEUaPhTRDYc2Fgx4gCYeXdZWQ097yqZc4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CZRYZ0AWQOw64cyxXI75MC8DF2PdVxiuZ5diLiEsCk2IlVzC5bfKXa41P973VJEU0iLU143GHjWrinQdNLIutJmwdsytREBwPqT+JYcpSf+njNg44wehCSZBHmKjF5Ej2Ei/+Yx6ROkfMxbbJ6L7/MTSRpBXVWms1bODp/LFTAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IM9QI711; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61A51C433F1;
-	Sun,  4 Feb 2024 17:13:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707066825;
-	bh=ZQ2DMEHRwpKEUaPhTRDYc2Fgx4gCYeXdZWQ097yqZc4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IM9QI7116Jm3VyHq9VbDxUhz3Da4gWv3p0wDcI6KD1vIECBGAoMnN4R2DMij2mwUf
-	 rehukUSqXUMrCYJJBucWZsF7YxpTPEsoa8Kpgo/yqn039gCWFNljr8cx2ydxW3S3xt
-	 qSc9xB4PZ9XtUmSNmsoXcFRf1XITOP8XkJXZ9PXQGKThlEPP72Yc4s1bu6e4RGWnVk
-	 LxXvavBAjqF7TFW4+SVfvHIkl0opqxqYmsAO7sgLLVKOR0qBORsrsunFcaQqCdviua
-	 87kxELvAv8OfP6RQG7N6YopS+v7/QAg3re3yZpDJPDmeytXdy7BNLH/Zlsz+Gfw8tM
-	 DZ6bmZsyyLfKg==
-From: SeongJae Park <sj@kernel.org>
-To: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
-Cc: shuah@kernel.org,
-	sj@kernel.org,
-	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	damon@lists.linux.dev
-Subject: Re: [PATCH] selftest: damon: fix minor typos in test logs
-Date: Sun,  4 Feb 2024 09:13:43 -0800
-Message-Id: <20240204171343.58820-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240204122523.14160-1-vincenzo.mezzela@gmail.com>
-References: 
+	s=arc-20240116; t=1707066886; c=relaxed/simple;
+	bh=ufnpAJtjNlPY8LSmrUh8Ne15mi556Fg30IBELlzG22w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=O1NJtsoLIn748mnK8xYMAt6JrITFwpurUsqTpGWxnYRAPDGZefQjkjLKBTigxRwVvqV3la0FNy6WqK0Tyx4Pk6RC8yY07aFs4eabvhQkh6tMu3qyDL+R2JtXCafwRRjyTcb3NAzbIY8aicxPWdSakbrMolV0qg2Rvm9MQqA6YV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=F1ga4EHC; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 71C321C0004;
+	Sun,  4 Feb 2024 17:14:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1707066875;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=K5upyVZOvpW2/geHP/GaiSZGDEybCBhpCuzrkfpNdl4=;
+	b=F1ga4EHC3mh7g9nlACaFpYPo5+C81utzCbHu1mmSS7H1uaAg4K1jGIVkorJcOpUlKXUING
+	cnpO2caNz17H6NM0cLEMGS4oJolHtcbF+EH3dDs5iqXoO2xyLmUsUOfdjPz9xnAllxzZag
+	zjhpSXX3d+RmBRLPDdVERD8mdi0qAeJwyIG52PaBtCmO1ZNBA3wbQ2cN3fzo9JKC0lcrwG
+	t+CnsJNdDNIpQNhjuefQNB0NUQTiXvdaaQNncn/5CiD0YTDcK+V3BSyDSSIjU3ybVDS0g2
+	GLy6nhwbjv8dUOv4QXSuIbJlugJ95uF48bGRB15vjDPgNNJ6jqVcLAun9X95hw==
+Message-ID: <24ce3ff9-22b3-4d5d-ade4-3b8521aeadfe@arinc9.com>
+Date: Sun, 4 Feb 2024 20:14:27 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v3 4/7] net: dsa: mt7530: move XTAL check to
+ mt7530_setup()
+Content-Language: en-US
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
+ Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+ Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean
+ <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+ Bartel Eerdekens <bartel.eerdekens@constell8.be>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20240202-for-netnext-mt7530-improvements-2-v3-0-63d5adae99ca@arinc9.com>
+ <20240202-for-netnext-mt7530-improvements-2-v3-4-63d5adae99ca@arinc9.com>
+ <ZbzWpmZrukknMsYf@shell.armlinux.org.uk>
+ <5b744f7f-2f63-4219-a0e9-8f08267b1fdd@arinc9.com>
+ <Zb021ozEQSbU-gPd@makrotopia.org>
+ <f6234b46-ce30-4b2a-9681-15633a06feff@arinc9.com>
+ <Zb+ctEe9TVA3zhv8@shell.armlinux.org.uk>
+ <4fa2ff0d-2804-4a58-980f-162e62b3dc9c@arinc9.com>
+ <Zb+9jQUqaha3Idsi@shell.armlinux.org.uk>
+ <850064fb-59c6-4e07-962a-6a213e9e7f90@arinc9.com>
+ <Zb/EZSqwChexAuso@shell.armlinux.org.uk>
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <Zb/EZSqwChexAuso@shell.armlinux.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
 
-Hello,
-
-On Sun,  4 Feb 2024 13:25:23 +0100 Vincenzo Mezzela <vincenzo.mezzela@gmail.com> wrote:
-
-> This patch resolves a spelling error in the test log, preventing potential
-> confusion.
+On 4.02.2024 20:07, Russell King (Oracle) wrote:
+> On Sun, Feb 04, 2024 at 07:51:49PM +0300, Arınç ÜNAL wrote:
+>> On 4.02.2024 19:38, Russell King (Oracle) wrote:
+>>> On Sun, Feb 04, 2024 at 06:55:14PM +0300, Arınç ÜNAL wrote:
+>>>> On 4.02.2024 17:18, Russell King (Oracle) wrote:
+>>>>> On Sun, Feb 04, 2024 at 04:55:40PM +0300, Arınç ÜNAL wrote:
+>>>>>> This is not about laziness. This is before patch 2:
+>>>>>>
+>>>>>> phylink_mac_ops :: mac_config() -> dsa_port_phylink_mac_config()
+>>>>>> -> dsa_switch_ops :: phylink_mac_config() -> mt753x_phylink_mac_config()
+>>>>>>       -> mt753x_mac_config()
+>>>>>>          -> mt753x_info :: mac_port_config() -> mt7530_mac_config()
+>>>>>>             -> mt7530_setup_port5()
+>>>>>>       -> mt753x_pad_setup()
+>>>>>>          -> mt753x_info :: pad_setup() -> mt7530_pad_clk_setup()
+>>>>>>
+>>>>>> This is after:
+>>>>>>
+>>>>>> phylink_mac_ops :: mac_config() -> dsa_port_phylink_mac_config()
+>>>>>> -> dsa_switch_ops :: phylink_mac_config() -> mt753x_phylink_mac_config()
+>>>>>>       -> mt753x_mac_config()
+>>>>>>          -> mt753x_info :: mac_port_config() -> mt7530_mac_config()
+>>>>>>             -> mt7530_setup_port5()
+>>>>>>             -> mt7530_setup_port6()
+>>>>>>
+>>>>>> Patch 2 does not move mt7530_setup_port6() to be called from
+>>>>>> phylink_mac_ops :: mac_config(), it already is. There is no valid reason to
+>>>>>> reorder the patches.
+>>>>>>
+>>>>>> My response to Russell should've stated this instead of focusing on his
+>>>>>> second sentence.
+>>>>>
+>>>>> This patch moves the test for a 20MHz crystal to mt7530_setup(),
+>>>>> which is something that is entirely orthogonal to patch 2, which
+>>>>> can be done cleanly (I've just applied the patches in the original
+>>>>> order and then reordered them:
+>>>>>
+>>>>> 98c481f5d706 net: dsa: mt7530: do not clear config->supported_interfaces
+>>>>> 93c6b53b17f4 net: dsa: mt7530: correct port capabilities of MT7988
+>>>>> c9c6d4c51a1d net: dsa: mt7530: simplify mt7530_setup_port6() and change to void
+>>>>> adfa948253e0 net: dsa: mt7530: remove pad_setup function pointer
+>>>>> 57e21e6c2fc0 net: dsa: mt7530: call port 6 setup from mt7530_mac_config()
+>>>>> 959a0f9323c8 net: dsa: mt7530: move XTAL check to mt7530_setup()
+>>>>> 856ab64a22ef net: dsa: mt7530: empty default case on mt7530_setup_port5()
+>>>>>
+>>>>> No problems. The end result is identical comparing the git tree at the
+>>>>> original "move XTAL" patch with adfa948253e0.
+>>>>>
+>>>>> Now, if we look at "net: dsa: mt7530: remove pad_setup function pointer"
+>>>>> we can see that yes, the pad_setup() method was called from mac_confing,
+>>>>> but this is the exact contents of that patch removing the callsite:
+>>>>>
+>>>>> -               mt753x_pad_setup(ds, state);
+>>>>>
+>>>>> This returns an integer, which may be an error code, which is ignored.
+>>>>> Therefore, if the XTAL frequency check fires, and mt753x_pad_setup()
+>>>>> returns an error, it is ignored today.
+>>>>>
+>>>>> After "net: dsa: mt7530: call port 6 setup from mt7530_mac_config()"
+>>>>> the renamed pad_setup() method is now called from mac_config() thusly:
+>>>>>
+>>>>> +               ret = mt7530_setup_port6(priv->ds, interface);
+>>>>> +               if (ret)
+>>>>> +                       return ret;
+>>>>>
+>>>>> So now the error checks cause mt7530_mac_config() to return an error
+>>>>> which in turn causes mt753x_mac_config() to fail, and therefore
+>>>>> mt753x_phylink_mac_config() has different behaviour.
+>>>>>
+>>>>> So, patch 2 changes the driver behaviour in the case of a 20MHz XTAL,
+>>>>> which is then changed again by patch 4.
+>>>>>
+>>>>> It would be better to have only one change of behaviour by moving
+>>>>> patch 4 before patch 2.
+>>>>
+>>>> If the idea is to not bring any more error returns to mt753x_mac_config()
+>>>> because the return code is actually checked for that, I should do a bit
+>>>> more effort and put patch 5 before patch 2 as well, to live up to what you
+>>>> originally requested.
+>>>
+>>> I assume you are referring to getting rid of the default case in
+>>> mt7530_pad_clk_setup().
+>>>
+>>> In patch "net: dsa: mt7530: call port 6 setup from mt7530_mac_config()"
+>>> where you move this to be called from mt7530_mac_config(), you add it
+>>> as:
+>>>
+>>> +       } else if (port == 6) {
+>>> +               ret = mt7530_setup_port6(priv->ds, interface);
+>>> +               if (ret)
+>>> +                       return ret;
+>>> +       }
+>>>
+>>> So it is only called for port 6. The switch within the called function
+>>> deals with PHY_INTERFACE_MODE_RGMII and PHY_INTERFACE_MODE_TRGMII.
+>>> Anything else results in the use of the default case, and thus
+>>> returning an error.
+>>>
+>>> Since mt7530_mac_port_get_caps() does this for port 6:
+>>>
+>>>                   __set_bit(PHY_INTERFACE_MODE_RGMII,
+>>>                             config->supported_interfaces);
+>>>                   __set_bit(PHY_INTERFACE_MODE_TRGMII,
+>>>                             config->supported_interfaces);
+>>>
+>>> mt7530_setup_port6() will only ever be called for these two modes,
+>>> which means that the default case is unreachable, thus we will never
+>>> execute that path, thus whether that path returns an error or not is
+>>> completely irrelevant.
+>>>
+>>> The only case in mt7530_setup_port6() / mt7530_pad_clk_setup() which
+>>> can today return an error is the XTAL check.
+>>>
+>>> Therefore, my suggestion makes complete sense, and there is no need
+>>> to also move patch 5.
+>>
+>> Understood. I've already submitted v4 which moves patch 5. The remaining
+>> benefit is that there're fewer code changes as I don't need to add an error
+>> return for mt7530_setup_port6() and then remove it.
 > 
-> It is submitted as part of my application to the "Linux Kernel
-> Bug Fixing Spring Unpaid 2024" mentorship program of the Linux
-> Foundation.
-
-Thank you for fixing this :)
-
+> I'm pretty sure netdev has a rule _not_ to submit the next version of
+> a patch series if discussion about the previous is still ongoing...
+> but I can't find any of the netdev rules in Documentation/networking
+> anymore, and nothing stands out in Documentation/process... ah,
+> Documentation/process/maintainer-netdev.rst, and here we are:
 > 
-> Signed-off-by: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
+> "Make sure you address all the feedback in your new posting. Do not post
+> a new
+> version of the code if the discussion about the previous version is
+> still
+> ongoing, unless directly instructed by a reviewer."
+> 
+> Discussion was still ongoing over this point, so ideally you should
+> have waited instead of presenting a fait-accompli _during_ the
+> ongoing discussion.
 
-Reviewed-by: SeongJae Park <sj@kernel.org>
+Thank you for bringing this to my attention. Next time I will be more
+careful when deciding whether the discussion was over.
 
-Thanks,
-SJ
-
-[...]
+Arınç
 
