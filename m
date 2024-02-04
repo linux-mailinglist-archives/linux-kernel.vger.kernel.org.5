@@ -1,209 +1,192 @@
-Return-Path: <linux-kernel+bounces-51634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A604848D8F
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D54A848D93
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:27:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 896621F22240
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:26:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC4831F21A25
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:27:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D1A22233A;
-	Sun,  4 Feb 2024 12:26:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E277122331;
+	Sun,  4 Feb 2024 12:27:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M6N8QCNq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="if2a57vL";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="L1DPQy3X";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="if2a57vL";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="L1DPQy3X"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 389A722325;
-	Sun,  4 Feb 2024 12:25:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58FE22232E;
+	Sun,  4 Feb 2024 12:27:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707049559; cv=none; b=Asq2LpGLrtoSTdDNTfzNQV4QkZcDuDCd5l2kYdGrjHuythYCKDx7Qr4SDm770mmJcmkc6OBYLpHclv2DdKSJYTllxkCYqFmZ+YlEWyoOCPrM+Njz+/rOSJIqnFcEL0t1ah2X+dKJmrKtALfd5FYBW7ceN/hghO7JlScP01GGmTI=
+	t=1707049664; cv=none; b=WzroVoPEkIgq75BToKlli/AqeoNTHWthXB/elm2JIbVhDhyZZhdCmJs07tRArx5+3fZlUmFmohpofVXaZqI2bmxMnwJXyWDBUX9jJlxSdwzjtFrCcfaK7FHwfqa4m80+IvecbK037c/1j7dXMsBYQfaddsmJ0TTe1y4bdVe2Dyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707049559; c=relaxed/simple;
-	bh=pPkf1DjZwyl0CMDdtkeUm5Qfo49cb+VRkkoce2BPE/k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ozeZrSgzDb+eW5Pkp7zgS8ydYdkpMEf6SXSEnJpPA2V40Dz/Ek7ToozEtATy3K4rfIEJIZIy+w9n2omc7s1ZYqlCBcE9m2b482ylRozvdTYrvLT+UZr9SAoUejC/Dyhy+jURP41jjDbZzgYIRzHuD/ExMPGEgfYNhdC4Ubc0lcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M6N8QCNq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2596EC433C7;
-	Sun,  4 Feb 2024 12:25:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707049557;
-	bh=pPkf1DjZwyl0CMDdtkeUm5Qfo49cb+VRkkoce2BPE/k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=M6N8QCNqdUQ7sKy0vNfBU9o4N/7ZRidzigYw9zDrRFp6ILbmzILPnTy1aH0BRS0Gg
-	 twmwa5bB8M9fHV0CJVFuoiK9rvJzTSPqQdxYQMqesarr41ONIbhZqfRG2F4NnZDff3
-	 ynirJDU1WFKzjwinzaDb6XpYzGmzVIqDB8swfL5lpVioCN1aOH0E6V7MUU8XNuwdMZ
-	 8jOSdSpEPkrUw3tTTLAQnYpu2VT8sm0qCa5fh6uHVjoe5gQJDD89FqVQaZLtNrowR7
-	 sBbWF8RlGWSsXahqC9dg9RkiLZTww5neqND79lNA+yfKihF7+JUlI7m+XUt/IwiGME
-	 iSPzhirxGQPgA==
-Date: Sun, 4 Feb 2024 14:25:52 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Konstantin Taranov <kotaranov@linux.microsoft.com>
-Cc: kotaranov@microsoft.com, sharmaajay@microsoft.com, longli@microsoft.com,
-	jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+	s=arc-20240116; t=1707049664; c=relaxed/simple;
+	bh=sk8cuBAyWQHenmPv7AkWtabIhbrkDRqObzdPUm9ZGKk=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=FKWu2CtzhKS+YsSzJ6uGxNyxOcbLjWLv9G8sLTIDbYtJ3M5eXF2lg7TLzqTbauMKQ1tJGFyObsYFxzfEWF3hta8xAk8YxNPovamloG3q29dc5o+f3pOvst8fwSGtg5y/ZFi/cIE2S2N8Jsfm0oZvcDdHTPU2uKIay/NcgjsI7uE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=if2a57vL; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=L1DPQy3X; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=if2a57vL; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=L1DPQy3X; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id AD98A21F92;
+	Sun,  4 Feb 2024 12:27:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707049660; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QhkhJIt8openUCHgF2QKZ7kta7GJxD0PzmAypQY7rM4=;
+	b=if2a57vLMPSPXf0ySWFNJA9Iys68L1X3AN4r7HeZuzOssObRRM+FRmn4fugj7POOR/j/HJ
+	mWAPFClTe0V2I56jvno5hxnhTCFpTn5MAd/H1XGhRbfGWdR39sZDCUoZRnlBh4VYiXRvss
+	KSCEtz9auKPbzKMeOBYiC6hfUDkivjs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707049660;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QhkhJIt8openUCHgF2QKZ7kta7GJxD0PzmAypQY7rM4=;
+	b=L1DPQy3XrDncH6UUCSSpFgo453k5TmFnBAmT0/L864A5QOtuYiH2WyX0JZN3dVLhIBg/Vt
+	QevhYh1D3Dy2GsDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707049660; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QhkhJIt8openUCHgF2QKZ7kta7GJxD0PzmAypQY7rM4=;
+	b=if2a57vLMPSPXf0ySWFNJA9Iys68L1X3AN4r7HeZuzOssObRRM+FRmn4fugj7POOR/j/HJ
+	mWAPFClTe0V2I56jvno5hxnhTCFpTn5MAd/H1XGhRbfGWdR39sZDCUoZRnlBh4VYiXRvss
+	KSCEtz9auKPbzKMeOBYiC6hfUDkivjs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707049660;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QhkhJIt8openUCHgF2QKZ7kta7GJxD0PzmAypQY7rM4=;
+	b=L1DPQy3XrDncH6UUCSSpFgo453k5TmFnBAmT0/L864A5QOtuYiH2WyX0JZN3dVLhIBg/Vt
+	QevhYh1D3Dy2GsDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7F987132DD;
+	Sun,  4 Feb 2024 12:27:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 6VrRHbyCv2WyJgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Sun, 04 Feb 2024 12:27:40 +0000
+Date: Sun, 04 Feb 2024 13:27:40 +0100
+Message-ID: <874jeobeir.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: bo liu <bo.liu@senarytech.com>
+Cc: perex@perex.cz,
+	tiwai@suse.com,
+	linux-sound@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH rdma-next v2 1/5] RDMA/mana_ib: Add EQ creation for rnic
- adapter
-Message-ID: <20240204122552.GD5400@unreal>
-References: <1706886397-16600-1-git-send-email-kotaranov@linux.microsoft.com>
- <1706886397-16600-2-git-send-email-kotaranov@linux.microsoft.com>
+Subject: Re: [PATCH] ALSA: hda/conexant: Add quirk for SWS JS201D
+In-Reply-To: <20240204045344.48397-1-bo.liu@senarytech.com>
+References: <20240204045344.48397-1-bo.liu@senarytech.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1706886397-16600-2-git-send-email-kotaranov@linux.microsoft.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-0.24 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCPT_COUNT_FIVE(0.00)[5];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-1.14)[88.57%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -0.24
 
-On Fri, Feb 02, 2024 at 07:06:33AM -0800, Konstantin Taranov wrote:
-> This patch introduces functions for RNIC creation
-> and creates one EQ for RNIC creation.
-
-Please invest more time in commit messages, it is obvious that this
-patch "introduces functions for RNIC creation"" by looking in the code.
-
+On Sun, 04 Feb 2024 05:53:44 +0100,
+bo liu wrote:
 > 
-> Signed-off-by: Konstantin Taranov <kotaranov@linux.microsoft.com>
+> The SWS JS201D need a different pinconfig from windows driver.
+> Add a quirk to use a specific pinconfig to SWS JS201D.
+> 
+> Signed-off-by: bo liu <bo.liu@senarytech.com>
 > ---
->  drivers/infiniband/hw/mana/device.c  |  9 ++++--
->  drivers/infiniband/hw/mana/main.c    | 53 ++++++++++++++++++++++++++++++++++++
->  drivers/infiniband/hw/mana/mana_ib.h |  5 ++++
->  3 files changed, 64 insertions(+), 3 deletions(-)
+>  sound/pci/hda/patch_conexant.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
 > 
-> diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
-> index 6fa902e..d8e8b10 100644
-> --- a/drivers/infiniband/hw/mana/device.c
-> +++ b/drivers/infiniband/hw/mana/device.c
-> @@ -92,15 +92,19 @@ static int mana_ib_probe(struct auxiliary_device *adev,
->  		goto deregister_device;
->  	}
->  
-> +	mana_ib_gd_create_rnic_adapter(dev);
-> +
->  	ret = ib_register_device(&dev->ib_dev, "mana_%d",
->  				 mdev->gdma_context->dev);
->  	if (ret)
-> -		goto deregister_device;
-> +		goto destroy_rnic_adapter;
->  
->  	dev_set_drvdata(&adev->dev, dev);
->  
->  	return 0;
->  
-> +destroy_rnic_adapter:
-> +	mana_ib_gd_destroy_rnic_adapter(dev);
->  deregister_device:
->  	mana_gd_deregister_device(dev->gdma_dev);
->  free_ib_device:
-> @@ -113,9 +117,8 @@ static void mana_ib_remove(struct auxiliary_device *adev)
->  	struct mana_ib_dev *dev = dev_get_drvdata(&adev->dev);
->  
->  	ib_unregister_device(&dev->ib_dev);
-> -
-> +	mana_ib_gd_destroy_rnic_adapter(dev);
->  	mana_gd_deregister_device(dev->gdma_dev);
-> -
->  	ib_dealloc_device(&dev->ib_dev);
->  }
->  
-> diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-> index 29dd243..c64d569 100644
-> --- a/drivers/infiniband/hw/mana/main.c
-> +++ b/drivers/infiniband/hw/mana/main.c
-> @@ -548,3 +548,56 @@ int mana_ib_gd_query_adapter_caps(struct mana_ib_dev *dev)
->  
->  	return 0;
->  }
-> +
-> +static int mana_ib_create_eqs(struct mana_ib_dev *mdev)
-> +{
-> +	struct gdma_context *gc = mdev_to_gc(mdev);
-> +	struct gdma_queue_spec spec = {};
-> +	int err;
-> +
-> +	spec.type = GDMA_EQ;
-> +	spec.monitor_avl_buf = false;
-> +	spec.queue_size = EQ_SIZE;
-> +	spec.eq.callback = NULL;
-> +	spec.eq.context = mdev;
-> +	spec.eq.log2_throttle_limit = LOG2_EQ_THROTTLE;
-> +	spec.eq.msix_index = 0;
-> +
-> +	err = mana_gd_create_mana_eq(&gc->mana_ib, &spec, &mdev->fatal_err_eq);
-> +	if (err)
-> +		return err;
-> +
-> +	return 0;
-> +}
-> +
-> +static void mana_ib_destroy_eqs(struct mana_ib_dev *mdev)
-> +{
-> +	if (!mdev->fatal_err_eq)
-> +		return;
-> +
-> +	mana_gd_destroy_queue(mdev_to_gc(mdev), mdev->fatal_err_eq);
-> +	mdev->fatal_err_eq = NULL;
-
-Please don't set NULL to the pointers if they are not used anymore.
-
-> +}
-> +
-> +void mana_ib_gd_create_rnic_adapter(struct mana_ib_dev *mdev)
-> +{
-> +	int err;
-> +
-> +	err = mana_ib_create_eqs(mdev);
-> +	if (err) {
-> +		ibdev_err(&mdev->ib_dev, "Failed to create EQs for RNIC err %d", err);
-> +		goto cleanup;
-> +	}
-> +
-> +	return;
-> +
-> +cleanup:
-> +	ibdev_warn(&mdev->ib_dev,
-> +		   "RNIC is not available. Only RAW QPs are supported");
-> +	mana_ib_destroy_eqs(mdev);
-
-If mana_ib_create_eqs() fails, you shouldn't call to mana_ib_destroy_eqs().
-mana_ib_create_eqs() needs to clean everything when it fails.
-
-Thanks
-
-> +}
-> +
-> +void mana_ib_gd_destroy_rnic_adapter(struct mana_ib_dev *mdev)
-> +{
-> +	mana_ib_destroy_eqs(mdev);
-> +}
-> diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-> index 6a03ae6..a4b94ee 100644
-> --- a/drivers/infiniband/hw/mana/mana_ib.h
-> +++ b/drivers/infiniband/hw/mana/mana_ib.h
-> @@ -48,6 +48,7 @@ struct mana_ib_adapter_caps {
->  struct mana_ib_dev {
->  	struct ib_device ib_dev;
->  	struct gdma_dev *gdma_dev;
-> +	struct gdma_queue *fatal_err_eq;
->  	struct mana_ib_adapter_caps adapter_caps;
+> diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+> index e8819e8a9876..a0bb4d91502b 100644
+> --- a/sound/pci/hda/patch_conexant.c
+> +++ b/sound/pci/hda/patch_conexant.c
+> @@ -344,6 +344,7 @@ enum {
+>  	CXT_FIXUP_HP_ZBOOK_MUTE_LED,
+>  	CXT_FIXUP_HEADSET_MIC,
+>  	CXT_FIXUP_HP_MIC_NO_PRESENCE,
+> +	CXT_PINCFG_SWS_JS201D,
 >  };
 >  
-> @@ -228,4 +229,8 @@ int mana_ib_query_gid(struct ib_device *ibdev, u32 port, int index,
->  void mana_ib_disassociate_ucontext(struct ib_ucontext *ibcontext);
+>  /* for hda_fixup_thinkpad_acpi() */
+> @@ -841,6 +842,17 @@ static const struct hda_pintbl cxt_pincfg_lemote[] = {
+>  	{}
+>  };
 >  
->  int mana_ib_gd_query_adapter_caps(struct mana_ib_dev *mdev);
+> +/* SuoWoSi/South-holding JS201D with sn6140 */
+> +static const struct hda_pintbl cxt_pincfg_sws_js201d[] = {
+> +	{ 0x16, 0x03211040 }, /* hp out */
+> +	{ 0x17, 0x91170110 }, /* SPK/Class_D */
+> +	{ 0x18, 0x95a70130 }, /* Internal mic */
+> +	{ 0x19, 0x03a11020 }, /* Headset Mic */
+> +	{ 0x1a, 0x40f001f0 }, /* Not used */
+> +	{ 0x21, 0x40f001f0 }, /* Not used */
+> +	{}
+> +};
 > +
-> +void mana_ib_gd_create_rnic_adapter(struct mana_ib_dev *mdev);
-> +
-> +void mana_ib_gd_destroy_rnic_adapter(struct mana_ib_dev *mdev);
->  #endif
-> -- 
-> 1.8.3.1
-> 
+>  static const struct hda_fixup cxt_fixups[] = {
+>  	[CXT_PINCFG_LENOVO_X200] = {
+>  		.type = HDA_FIXUP_PINS,
+> @@ -996,6 +1008,10 @@ static const struct hda_fixup cxt_fixups[] = {
+>  		.chained = true,
+>  		.chain_id = CXT_FIXUP_HEADSET_MIC,
+>  	},
+> +	[CXT_PINCFG_SWS_JS201D] = {
+> +		.type = HDA_FIXUP_PINS,
+> +		.v.pins = cxt_pincfg_sws_js201d,
+> +	},
+>  };
+>  
+>  static const struct snd_pci_quirk cxt5045_fixups[] = {
+> @@ -1091,6 +1107,7 @@ static const struct snd_pci_quirk cxt5066_fixups[] = {
+>  	SND_PCI_QUIRK_VENDOR(0x17aa, "Thinkpad", CXT_FIXUP_THINKPAD_ACPI),
+>  	SND_PCI_QUIRK(0x1c06, 0x2011, "Lemote A1004", CXT_PINCFG_LEMOTE_A1004),
+>  	SND_PCI_QUIRK(0x1c06, 0x2012, "Lemote A1205", CXT_PINCFG_LEMOTE_A1205),
+> +	SND_PCI_QUIRK(0x14f1, 0x0265, "SWS JS201D", CXT_PINCFG_SWS_JS201D),
+>  	{}
+>  };
+
+The table is sorted in PCI SSID order.  Please try to put at the right
+position.
+
+
+thanks,
+
+Takashi
 
