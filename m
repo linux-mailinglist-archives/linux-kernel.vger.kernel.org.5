@@ -1,132 +1,127 @@
-Return-Path: <linux-kernel+bounces-51522-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51527-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97E3D848C26
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 09:27:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 303B7848C33
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 09:33:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AA221F23DFF
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 08:27:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 633E61C2274F
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 08:33:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57E5E12E50;
-	Sun,  4 Feb 2024 08:26:41 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04DB714284;
+	Sun,  4 Feb 2024 08:33:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="N3ALNsLK"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B068A12B69;
-	Sun,  4 Feb 2024 08:26:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ED9C1426B;
+	Sun,  4 Feb 2024 08:33:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707035200; cv=none; b=skJEYcVmLABtAd2JoZ47L+yNweRmJ9/hMzWjlIXJ1O7RmA2gIhVPeYnJidDcHWbyMV8Kyx5dBup/qRyqZaBnaWI+hRTGIZ2m7Kh1p/nzOfx6laAE1LTHgqSBBXN27zBmOT1lgrBipPBeBuilhCvNUCnukIx0S+JHDkfRCpOpkds=
+	t=1707035624; cv=none; b=gqQK+ob9p+oQbYbr16Q5bJhAWVSOAY8WoAuRYF3GvWg6IKsxEFF9XCY74SWicCH8CWZ6/uQslfC/DIHRI8+AhbeXBiurz4sd3hT0MHfsNYfe4ynDbVkt59e6HUm3FIIdZq4gC83nFo/th9Q9E2DtLfWJEcnAUzlu2KWcpQsbj1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707035200; c=relaxed/simple;
-	bh=p/f7riMkZxcC6ClGf9vpDtgKU0i1cmddSajVqTGwbYI=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=a6MclFVXZl6Y48bPFk/rQIs8x5X2GypSjbIGaW4POs4733tl6tK3JxG+Z1dFMarNG/TEl1el/GrhXYmk6xjjDtv0WGL7lNTHRJbaUrpXURK9Qi3czlVHs33QIIvvUXiJzkI/3umwE+dPTPoLVQFPuHrPKvg+xPvlRCWbSavJ3Xg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TSMyh23QKz1xnCm;
-	Sun,  4 Feb 2024 16:25:32 +0800 (CST)
-Received: from kwepemm600017.china.huawei.com (unknown [7.193.23.234])
-	by mail.maildlp.com (Postfix) with ESMTPS id 71B6814013B;
-	Sun,  4 Feb 2024 16:26:36 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.125) by
- kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 4 Feb 2024 16:26:35 +0800
-From: Tong Tiangen <tongtiangen@huawei.com>
-To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>, <wangkefeng.wang@huawei.com>, Dave Hansen
-	<dave.hansen@linux.intel.com>, <x86@kernel.org>, "H. Peter Anvin"
-	<hpa@zytor.com>, Tony Luck <tony.luck@intel.com>, Andy Lutomirski
-	<luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Andrew Morton
-	<akpm@linux-foundation.org>, Naoya Horiguchi <naoya.horiguchi@nec.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-edac@vger.kernel.org>,
-	<linux-mm@kvack.org>, Tong Tiangen <tongtiangen@huawei.com>, Guohanjun
-	<guohanjun@huawei.com>
-Subject: [PATCH -next v5 3/3] x86/mce: rename MCE_IN_KERNEL_COPYIN to MCE_IN_KERNEL_COPY_MC
-Date: Sun, 4 Feb 2024 16:26:27 +0800
-Message-ID: <20240204082627.3892816-4-tongtiangen@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240204082627.3892816-1-tongtiangen@huawei.com>
-References: <20240204082627.3892816-1-tongtiangen@huawei.com>
+	s=arc-20240116; t=1707035624; c=relaxed/simple;
+	bh=6hnOSJLUGircKMBizQ5z9dUDIidd26XLeYApieCrnlA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=i53u2/k7TxxEQR7zunfT4FyP2rALKSNviCKE8+ej6t7WrBMkKrMoQPg4rP5himX8mtQVLMEx93lL/ltg+PUzeZawggJfLogmUMPbjtPof21ettspzzeQaOTnpqC2v3sYSQwJwyPsaHLH/L2L/lAGCUsk9no1t8Psc57nAvgyPIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=N3ALNsLK; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707035623; x=1738571623;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=6hnOSJLUGircKMBizQ5z9dUDIidd26XLeYApieCrnlA=;
+  b=N3ALNsLKSUQq2kw1m+mJNidksnRm5BZh8FCtmy4QJ3W6Z83JHrdNPIWQ
+   iLY+wZJWuIHbVae+fz7kbZaGzk+wxPKHYW0sI4BXIJEzP7xGZjs1yJGly
+   h39f+pVjSnQt5W8BOSmCxS7ks7I8O7NY3xt8ltDOGMi4TpLAUbf6D38DA
+   UhjG7kQwGVWJt2wpDIFY3vlb3RWdAd52dRTGYET9alYKfRTLlW1cTFhQ+
+   qOw4tQi8kGZatm4wKpwmd4cS7Aup4dQ+9vNuCppvPpOKwMZqgbag2lR9s
+   neMLhgIoVxQOKLnJCWplKeaYohgLDjbi9m1BnVyRod0rFC8BCHh8LnOlE
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10973"; a="25823114"
+X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
+   d="scan'208";a="25823114"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 00:33:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
+   d="scan'208";a="781505"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by orviesa008.jf.intel.com with ESMTP; 04 Feb 2024 00:33:38 -0800
+Date: Sun, 4 Feb 2024 16:30:05 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Kris Chaplin <kris.chaplin@amd.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Charles Perry <charles.perry@savoirfairelinux.com>, mdf@kernel.org,
+	"michal.simek@amd.com" <michal.simek@amd.com>, hao.wu@intel.com,
+	yilun.xu@intel.com, trix@redhat.com,
+	krzysztof.kozlowski+dt@linaro.org, bcody@markem-imaje.com,
+	avandiver@markem-imaje.com, linux-fpga@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] dt-bindings: fpga: xlnx,fpga-slave-selectmap: add DT
+ schema
+Message-ID: <Zb9LDQP3xzrv6LWr@yilunxu-OptiPlex-7050>
+References: <20240129225602.3832449-1-charles.perry@savoirfairelinux.com>
+ <20240129225602.3832449-2-charles.perry@savoirfairelinux.com>
+ <9b0680b6-1952-41d3-82f4-88c60469dc3a@linaro.org>
+ <471d9438-e2c0-4881-8ace-778c9d14669c@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600017.china.huawei.com (7.193.23.234)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <471d9438-e2c0-4881-8ace-778c9d14669c@amd.com>
 
-In the x86 mce processing, error_context() use MCE_IN_KERNEL_COPYIN for
-user-to-kernel copy(EX_TYPE_UACCESS) and kernel-to-kernel copy
-(EX_TYPE_DEFAULT_MCE_SAFE).
+On Wed, Jan 31, 2024 at 11:03:25AM +0000, Kris Chaplin wrote:
+> Hello Krzysztof,
+> 
+> On 30/01/2024 16:09, Krzysztof Kozlowski wrote:
+> 
+> > > +
+> > > +description: |
+> > > +  Xilinx 7 Series FPGAs support a method of loading the bitstream over a
+> > > +  parallel port named the slave SelectMAP interface in the documentation. Only
+> > > +  the x8 mode is supported where data is loaded at one byte per rising edge of
+> > > +  the clock, with the MSB of each byte presented to the D0 pin.
+> > > +
+> > > +  Datasheets:
+> > > +    https://www.xilinx.com/support/documentation/user_guides/ug470_7Series_Config.pdf
+> > 
+> > I am surprised that AMD/Xilinx still did not update the document to
+> > modern naming (slave->secondary).
+> 
+> Thank you for bringing this up.
+> 
+> We are moving away from using non-inclusive technical terminology and are
+> removing non-inclusive language from our products and related collateral.
+> You will for some time find examples of non-inclusive language, especially
+> in our older products as we work to make these changes and align with
+> industry standards.  For new IP we're ensuring that we switch and stick to
+> inclusive terminology, as you may have seen with my recent w1 driver
+> submission.
+> 
+> SelectMAP is a decades-old interface and as such it is unlikely that we will
+> update this in all documentation dating back this time.  I shall however
+> look to understand what is planned here for active documentation and new
+> driver submissions.
 
-"COPYIN" only stands for user-to-kernel copy and can't stands for
-kernel-to-kernel copy, this can cause some misunderstandings. So rename
-MCE_IN_KERNEL_COPYIN to MCE_IN_KERNEL_COPY_MC.
+Yes, I need review from AMD/Xilinx side. Especially the HW parts, and
+some namings of variables, e.g. if xilinx-core is proper for what products
+it supports, and won't be an issue in future.
 
-Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
----
- arch/x86/include/asm/mce.h         | 8 ++++----
- arch/x86/kernel/cpu/mce/core.c     | 2 +-
- arch/x86/kernel/cpu/mce/severity.c | 2 +-
- 3 files changed, 6 insertions(+), 6 deletions(-)
+Thanks,
+Yilun
 
-diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
-index de3118305838..cb628ab2f32f 100644
---- a/arch/x86/include/asm/mce.h
-+++ b/arch/x86/include/asm/mce.h
-@@ -151,11 +151,11 @@
- 
- /*
-  * Indicates an MCE that happened in kernel space while copying data
-- * from user. In this case fixup_exception() gets the kernel to the
-- * error exit for the copy function. Machine check handler can then
-- * treat it like a fault taken in user mode.
-+ * from user or kernel. In this case fixup_exception() gets the kernel
-+ * to the error exit for the copy function. Machine check handler can
-+ * then treat it like a fault taken in user or kernel mode.
-  */
--#define MCE_IN_KERNEL_COPYIN	BIT_ULL(7)
-+#define MCE_IN_KERNEL_COPY_MC	BIT_ULL(7)
- 
- /*
-  * This structure contains all data related to the MCE log.  Also
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 04acdc3534c8..644748a5d98e 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1608,7 +1608,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
- 				mce_panic("Failed kernel mode recovery", &m, msg);
- 		}
- 
--		if (m.kflags & MCE_IN_KERNEL_COPYIN)
-+		if (m.kflags & MCE_IN_KERNEL_COPY_MC)
- 			queue_task_work(&m, msg, kill_me_never);
- 	}
- 
-diff --git a/arch/x86/kernel/cpu/mce/severity.c b/arch/x86/kernel/cpu/mce/severity.c
-index b2cce1b6c96d..b4b1d028cbb3 100644
---- a/arch/x86/kernel/cpu/mce/severity.c
-+++ b/arch/x86/kernel/cpu/mce/severity.c
-@@ -294,7 +294,7 @@ static noinstr int error_context(struct mce *m, struct pt_regs *regs)
- 			return IN_KERNEL;
- 		fallthrough;
- 	case EX_TYPE_DEFAULT_MCE_SAFE:
--		m->kflags |= MCE_IN_KERNEL_COPYIN;
-+		m->kflags |= MCE_IN_KERNEL_COPY_MC;
- 		fallthrough;
- 	case EX_TYPE_FAULT_MCE_SAFE:
- 		m->kflags |= MCE_IN_KERNEL_RECOV;
--- 
-2.25.1
-
+> 
+> regards
+> Kris
+> 
 
