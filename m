@@ -1,220 +1,106 @@
-Return-Path: <linux-kernel+bounces-51430-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8406848B17
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 05:53:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDE4A848B1D
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 05:58:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A08CB22EDB
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 04:53:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17B211C224DA
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 04:58:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DC0F6FA8;
-	Sun,  4 Feb 2024 04:53:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB116610E;
+	Sun,  4 Feb 2024 04:58:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b="t1ZECBAY"
-Received: from HK2PR02CU002.outbound.protection.outlook.com (mail-eastasiaazon11022011.outbound.protection.outlook.com [52.101.128.11])
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="TfEqg8zS"
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CEA8610E
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 04:53:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.128.11
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707022394; cv=fail; b=Klv4c0OOZ9ETYv0SDI80VXlN5SxRPTDbWQqQTml6rUm91vj9qJw80OJUH+HGOrxhNUNhvMVe3iuYOdspqGriFJxqGW+YR/uMiNeccr+WfOWT50pRI6e/eJZgGxPyV773oQYWY2VRdiJDDiPcysBr1KxOEQ8e1Svsq0edlRLAOfM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707022394; c=relaxed/simple;
-	bh=eZyMwDGpEJXoec5GY0o0WSdijKb0DPt2RDhgbRTRuEI=;
-	h=Message-ID:Date:From:Subject:To:Cc:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=h3S0aBABIKJTfx1x7Zr/Pyn1OQw+h/WEQ62e1zwNy2V3l6d0TFkSYAjSUiKgeR1brUsOYIGQNdlAUOVHI3mp17oDtBY1gUdNMEODkoWrIGe6qiX7r7+ja0ePUy5rGlcKQ8GwvtZPS2ZqYTqp4W0bNGqDUdYinNvtS8Ape74vrEY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com; spf=pass smtp.mailfrom=oppo.com; dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b=t1ZECBAY; arc=fail smtp.client-ip=52.101.128.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oppo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ad07c3fF/tQJOlG7my/vDKZDs+FrAgocJynBNHtXbuprilmtPlMclHvne7q+KBMI9csmd0UlOnbEEkxgY7bqGMnfyX0p58mdDLLf8E1NkO9xP/+id7mJm0D75vtOcCaAVuje2Su+DmCPGkJQLTEJTfAuaH9sGT68pnS6h0OCIAbbxN3P8YaBtJa+uI4Bxdn2M4RUZfylkuLMK0ax5QpokvG8A9fpt7MjHJ4/J/qjg/gHC8CVvTyAkeV9B1K6BUNrDYo+3sSU/Lz7hyGVXRgVr1gyS7JvSNm2eXMBjnuGWzU2AN6JF3f7bTtslQYwJ1oSF2wGP3TQPE3cjIPGyxCz6Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pN720aajgdFrIykoJ+Qi4JE3rjsj5ePFnTN9TJyPK4Q=;
- b=fGxx62V6VlD8zxfukT/CH83bKzETs67VB7n1r83UzzGXG/vwM5xSHTxt4Nl3nE/t11HojXBAC4d59/+iqbF4fUViAGZNS/DFz0wKSnjv1rgjlhkY71T4Sl6rc/pd2V+Smi+95EaFnwJE+vXuvqp8aGUgTb7rP3IHT0tBsdXwHiYWWt6UBMkBdyOQswzzdmsTmEE+nIPZgtxAFtn4ALpDMD6cSzS2nFNov8N6T73E4magRz7FBQyUZyt+HMd3BWRGd4eHBI3S7DX51/HJRe9tAlpbJp5vWqOlyRiDz8szYJu8tZN5D1brT7ti0h+mkE+kretnT8I8OwdOGw3N7yZ9uw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
- dkim=pass header.d=oppo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pN720aajgdFrIykoJ+Qi4JE3rjsj5ePFnTN9TJyPK4Q=;
- b=t1ZECBAY5uluRjbR7O1rZAerZoLPn0lxBOIUF3PHSOgFMW1xA3JUvn9rbI6WHKyccIaw/46rCXPC3satd1eSCsaCDDaJ6zJEYGoKDYm6koFCZVjmxxC0gFhhjykCRiAlIzlaaBi74WJCa+KVduhMzI37Fixy+LyA9FTQi4NUt74=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oppo.com;
-Received: from PSAPR02MB4727.apcprd02.prod.outlook.com (2603:1096:301:90::7)
- by TYZPR02MB4655.apcprd02.prod.outlook.com (2603:1096:405:5::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.31; Sun, 4 Feb
- 2024 04:53:07 +0000
-Received: from PSAPR02MB4727.apcprd02.prod.outlook.com
- ([fe80::a815:49db:df99:5461]) by PSAPR02MB4727.apcprd02.prod.outlook.com
- ([fe80::a815:49db:df99:5461%5]) with mapi id 15.20.7249.032; Sun, 4 Feb 2024
- 04:53:07 +0000
-Message-ID: <e6cffb6e-3228-415d-890c-76fe0a9ac08b@oppo.com>
-Date: Sun, 4 Feb 2024 12:53:02 +0800
-User-Agent: Mozilla Thunderbird
-From: Yongpeng Yang <yangyongpeng1@oppo.com>
-Subject: Re: [PATCH v5] f2fs: fix zoned block device information
- initialization
-To: Wenjie Qi <qwjhust@gmail.com>, jaegeuk@kernel.org, chao@kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Cc: hustqwj@hust.edu.cn
-References: <20240204031022.1189-1-qwjhust@gmail.com>
-Content-Language: en-US
-In-Reply-To: <20240204031022.1189-1-qwjhust@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR01CA0177.apcprd01.prod.exchangelabs.com
- (2603:1096:4:28::33) To PSAPR02MB4727.apcprd02.prod.outlook.com
- (2603:1096:301:90::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 723C18C0B
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 04:58:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707022698; cv=none; b=pisPOgqZ5adb2s9nZVKX+C47GX+Mu1Zd3TZxSb5KMnlDrvOhI2f/ybwYgH91ttw/bGtXfctWkjVo0eFI4iTlRVUp+r5tZi3XvGZl+7njp9Ru+qWBPb6yeYbtVxPVMQyaRdaWbVKBJeE8lojKDtlJ8mIF4s2pfwz2ybUzUEsfUlw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707022698; c=relaxed/simple;
+	bh=MM3MOto1zlu39y1jV9m4Xjz7/BS0oEHqaTOfKjIdVa0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=SvW+kMoQRvfuCJ4vzhKcAD1dGrXsAB3WSq6KoD3pQ1weIe9kYmvfSn/nDTjGMXHKHQIuZpgCIihmA2euW+kZAmAUPcNDG7QVGG6OPby9yQ33aBqwPVZOvSKKFHJPy3Y8c+wW0w82AaSAMKme74uoOyOiI1IwtXZunboUoBqwyec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=TfEqg8zS; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-82-236.bstnma.fios.verizon.net [173.48.82.236])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 4144vfvf014319
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 3 Feb 2024 23:57:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1707022666; bh=73nG5emiLho6o2L78eCep2kYVU6SzMamnnyIbcxLMfU=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=TfEqg8zSj4I9fkNQNMMHLcRFuRDfOnWoajgs92AHROByuHvtqK4jzjLEXN0SCR4BT
+	 /REqFRRKK/lHxUfr5g6VG5PFTMRt6D8Xt1g1y6tTUCzCPowMh82on2zw39AdExhT1T
+	 51l/UFFq5xIsHwu92Jfk72gou94ChlUAGdxdNvrzNNn0u8d7TQQ63bYo3826Vst7+D
+	 eKFNaYIySzuY3mPNo/1asVYdwI8zU+PHyBia4QdZyJr1TB8d32gc7hYNq5Uty+UveB
+	 nhu35wIwYKj+waeEViLWHW0KgbtnMdnHG5hNbypfKKGuHo2eKUgwuDmnhQP7Yjbd8B
+	 jrTrydYkkbmSw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id A656E15C02FD; Sat,  3 Feb 2024 23:57:41 -0500 (EST)
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: linux-ext4@vger.kernel.org, Baokun Li <libaokun1@huawei.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca, jack@suse.cz,
+        ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH v3 0/8] ext4: fix divide error in mb_update_avg_fragment_size()
+Date: Sat,  3 Feb 2024 23:57:36 -0500
+Message-ID: <170702219298.205725.12570295713288350540.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240104142040.2835097-1-libaokun1@huawei.com>
+References: <20240104142040.2835097-1-libaokun1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PSAPR02MB4727:EE_|TYZPR02MB4655:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3d385430-0fec-4eb0-3889-08dc253d2d96
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	nEgkRVdoBIoP9ztUq7gE230QzwENlE5ldV61B+Tm2CsdoM298UNAhjxJqcSVfMF0IPEmWLOy0g8nm84qp8Ka1GNo1RRDDSdn+42ufgfhh3mhetMKTM2ExtH2qFEVIYHA9IVPtofoHhZfSB6nw7Hm3T4GYvkRCrBywNsjRCGr/19DDUTfXlEoDcdOn9FJtVu2WdKOMbjvVxdkz8ngnZ9C9AwEy3rC5/ZiVq1/dtzCKDpENiivIaLImx5A6JTYXslZBnkMv4mEXR2qB10jLlHV159Qg7C8diB6T8sTl5CavPrC7sVqE0sFoISsjj+vUC/JNudnBo9k8EskRcstNzJSItcsKln4/FndQwgsqaMoMtjHm4l76o2JH8pkd5S0uIfp4dnHhGo38XcpRxx15OvLWbbcIE5cq/CJYvVJbSRKrCbrCQGQsgDt16Ralnfmxl5416BfITIJ3JjlT6AiOlOMd0L+NhYsnjubmseINkq3waWh3VRbTudFhjc2zODWSv+3TxsNSBSv0VeiL3cejW8GKqztXyD3SL7RLZZZ/cT/+V6zy+HgsMul3BsBEDQaoi4vVL5tJ5baDgWCfPDPMRX5e8gNCDk2E3YGMxMlP+GoRvGU76xWfOuPKyTKfxsExIaQy6bIlCPM3iPvQOGgNJ8mdg==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PSAPR02MB4727.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(39860400002)(376002)(136003)(366004)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(8936002)(4326008)(8676002)(2906002)(5660300002)(36756003)(41300700001)(31696002)(86362001)(6486002)(478600001)(2616005)(83380400001)(26005)(6512007)(6506007)(38100700002)(66946007)(53546011)(316002)(66556008)(6666004)(66476007)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?K0pCaWZ3V01CVjFRNm54RnNJZlN0WFpuTDhPd3grbGF0VGNxcEkrc010ZGlt?=
- =?utf-8?B?dHcxZjRGb0ZRWHVqNkQrN1VmL293NXR3S0xNUTRtNTlMODdxTDJZTlNibGRz?=
- =?utf-8?B?dTB4aXJPSitpWHp2OTVXYXlGWWVkUWwzdXZuQndpc1Fod0sxdDlHWW9Yc3U4?=
- =?utf-8?B?cERQZjJoWGpIVFFZdWhFbkVVT0xrRlhhaEF2U1FuSHRvckR1MjZ0V2d3TWFi?=
- =?utf-8?B?eUZ2YytMd1FIVUU3dHFlWndEekRIVlFIMHFyMnNoK29sbkJtYW9NYlh1YnpJ?=
- =?utf-8?B?VFdXU1RBa3NKb0o2QUdVMHVOWHY4UmxUaU9hQkNyTVdKcUdTWW05eE1VWUIr?=
- =?utf-8?B?c0dnMnBFcGNOcnQ5ZHJ0U1AvaUVjNG42bEdJeVZGZXp3WEpiME1zdU1HUElq?=
- =?utf-8?B?SlRIY2pFM2dsR1FFQ2tmWFUvL3dCQXEzUUJBelpFSi9NSzMxTXR1VkRrVzE2?=
- =?utf-8?B?VlRDUjZTNVh3d003TTZPeDg5WUpPTEFzbFd5c2pwNUlZUjZwbFkwWVVPVFl2?=
- =?utf-8?B?KzZVRjlTK0p6YkFjeXF4MUFQdEFtaExiVFJqaFM4aWJFVFJjb1ppaFE1KzQ0?=
- =?utf-8?B?RkQxVVJKTnkwc0h4cWx5VUhTbFNadVBwbEVaL3hUSGFsRS9GaTNWN0tQM3gw?=
- =?utf-8?B?Uy9mTk5RWkpBV01lV0RJNVFZcWorV3RRWXlQZ0ZtRmhFTmw3MTVIc0dselJl?=
- =?utf-8?B?NVZmWVNMQ1ZwZUR6bWFhWVlnWmN1TkVGRnMrTi9WaEFaQWNIb2RZblRrQWow?=
- =?utf-8?B?TGhYWFR6WFdXS3dCb2lBVmJaTTIvMXlZVk44bk14aTdvRnNDNDJIaytQUWNl?=
- =?utf-8?B?aVNWNVI4L3VybHJoUHVXai8xeHdHQi8rQm1MYUtDMzJzTWZVbEROa2JLVEww?=
- =?utf-8?B?VzBKTDhtQ2NscUxRSVB6OHo0bVU3c1JGRDZGUzExTm52MW1pMWxmbFNpbE9a?=
- =?utf-8?B?ME10NFJDODA4ay9Wb1lLMUNDcUsxT1B0RFkyU1RaTmZyUEdkTy9jRVhjVDcz?=
- =?utf-8?B?L0dUOERHc0JlV2w2aHdENFU5dmdDSDdjS1hCcytTZzdiTXRwMU9XczltdWZS?=
- =?utf-8?B?U003QlVzdGsyS0Fubzkrd1VFbmliKzBPbUdBN3Q4Y0JJc0VvUWV1bmUyYXA5?=
- =?utf-8?B?cE52Yml4RXMyaW41SFNPZmNsVUZjT01aVVgzam4waWpONXhoZFA0bG11Wi8y?=
- =?utf-8?B?dDJkdjEyWmZXLzU5V2NrTUpUbFpFZW1laHFYSS9jWWg5b1ViRU0yNGxkYUl4?=
- =?utf-8?B?SExaTjR2S1ZuNnhURTlhQmVIVmVYcFVZTjVJV3NJQmtDcXhqNXlIalI0ejMz?=
- =?utf-8?B?MmZTTEhMcmxaM2ZZWUVHdHdwNng5K1hsc0lLdGJNR3VpZWRzS3FMamE0bDZk?=
- =?utf-8?B?STU5WGVWYnp1QUxpZnJVU1RrdHdoWmxtMGJDZW5vZnl3VmYwc21GOXZ3QWhx?=
- =?utf-8?B?NW1EcE9telcvamxQVW5nbDZwR29XNXFiL29WNHhUZGJRVytLY2NML3NPRFlo?=
- =?utf-8?B?VFdra0JhQmVpMjdUOTNOWDllNklRYS9vaWFqVngrV3JHRzB6R3l3Q29IS01O?=
- =?utf-8?B?VzV6Rnk5Rk9zQ3VmRmRFNkZJYTh1cG1Pa1pXOWJHMjAxTzdTRDQ2NG81Uysx?=
- =?utf-8?B?UVpDREd6dVkwUFNuQUw3ZXNVWmI3YXRKSk9MRFB1UGpiRm9EWENtS1Y2MTZC?=
- =?utf-8?B?RHVvdDh5VlpLTkc2MUd0SjVRL0hTUERJQldYdkFncUE0TVlBeWZYa2JQOCtK?=
- =?utf-8?B?MHVzSnNiMnFyZWFoZlJJcUE1bHVpa1V3V1UwakNaZmEzejN5VHhnTncyaTlR?=
- =?utf-8?B?R3JvSUZ3clh6aUduemJjOVM3WWlIRStVS0NJcVJ4bkFaWVAwcWRobjUrUkRq?=
- =?utf-8?B?UFZxWThsR2Y1eTUyS21rMGRtTU14NmdHNUVCSWY1NmJhUFY0RWZ5Y0tCdmFm?=
- =?utf-8?B?WGliZ1JzQ2hBdGovTmNoZ3JLSGJCeVQxZHRzbXNRa2lNUG1MZDdZQzBtRkxZ?=
- =?utf-8?B?THZBUElHYmFpdnNPQWNCYStyZEg0ZnRBQ1RaMGdHZnNvVDFMUWxwVWJQSWZv?=
- =?utf-8?B?WkFCZDQvVUs3OUZEQm5Da0sxWGxaSjIyU29EemtDb0dzcVkrbjc5T2dYbjRV?=
- =?utf-8?B?TUI5d2dLZVV1QnhNN0xzV29RZzVnVk9LaFM5SjNiWFJqYmVkMU5CZkV5VFho?=
- =?utf-8?B?ekE9PQ==?=
-X-OriginatorOrg: oppo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3d385430-0fec-4eb0-3889-08dc253d2d96
-X-MS-Exchange-CrossTenant-AuthSource: PSAPR02MB4727.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Feb 2024 04:53:06.9803
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pxpKjjowoLjxrQkwEqZUcytB0BLK5mvsQ8lh1Fwv2Paa3SJ5prX8Hvpb5md76l2S+ZZoNxow3GaXWLfc3kV9eA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR02MB4655
-
-1. f2fs_scan_devices call init_blkz_info for each zoned device, is it 
-reasonable that every device need to have 6 open zones at least?
-2. we should add all open_zones of every zoned device to 
-sbi->max_open_zones, sbi->max_open_zones will be UINT_MAX or accumulated 
-open_zones. Is it more reasonable?
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
 
-On 2/4/2024 11:10 AM, Wenjie Qi wrote:
-> If the max open zones of zoned devices are less than
-> the active logs of F2FS, the device may error due to
-> insufficient zone resources when multiple active logs
-> are being written at the same time.
+On Thu, 04 Jan 2024 22:20:32 +0800, Baokun Li wrote:
+> V2->V3:
+>   Replace patch 3's changelog with the one suggested by Jan Kara.
+>   Refactor the code in patch 4 to make it more readable, as suggested by Jan Kara.
+>   Patch 8 is adapted based on patch 4 after modification.
+>   Add Reviewed-by tag.
 > 
-> Signed-off-by: Wenjie Qi <qwjhust@gmail.com>
-> ---
->   fs/f2fs/f2fs.h  |  1 +
->   fs/f2fs/super.c | 24 ++++++++++++++++++++++++
->   2 files changed, 25 insertions(+)
+> V1->V2:
+>   Fixed some things pointed out by Jan Kara.
+>   Fixed more cases where blocks could be allocated from corrupted groups.
 > 
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index 543898482f8b..161107f2d3bd 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -1558,6 +1558,7 @@ struct f2fs_sb_info {
->   
->   #ifdef CONFIG_BLK_DEV_ZONED
->   	unsigned int blocks_per_blkz;		/* F2FS blocks per zone */
-> +	unsigned int max_open_zones;		/* max open zone resources of the zoned device */
->   #endif
->   
->   	/* for node-related operations */
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index 1b718bebfaa1..c6709efbc294 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -2388,6 +2388,16 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
->   	if (err)
->   		goto restore_opts;
->   
-> +#ifdef CONFIG_BLK_DEV_ZONED
-> +	if (sbi->max_open_zones < F2FS_OPTION(sbi).active_logs) {
-> +		f2fs_err(sbi,
-> +			"zoned: max open zones %u is too small, need at least %u open zones",
-> +				 sbi->max_open_zones, F2FS_OPTION(sbi).active_logs);
-> +		err = -EINVAL;
-> +		goto restore_opts;
-> +	}
-> +#endif
-> +
->   	/* flush outstanding errors before changing fs state */
->   	flush_work(&sbi->s_error_work);
->   
-> @@ -3930,11 +3940,22 @@ static int init_blkz_info(struct f2fs_sb_info *sbi, int devi)
->   	sector_t nr_sectors = bdev_nr_sectors(bdev);
->   	struct f2fs_report_zones_args rep_zone_arg;
->   	u64 zone_sectors;
-> +	unsigned int max_open_zones;
->   	int ret;
->   
->   	if (!f2fs_sb_has_blkzoned(sbi))
->   		return 0;
->   
-> +	max_open_zones = bdev_max_open_zones(bdev);
-> +	if (max_open_zones && (max_open_zones < sbi->max_open_zones))
-> +		sbi->max_open_zones = max_open_zones;
-> +	if (sbi->max_open_zones < F2FS_OPTION(sbi).active_logs) {
-> +		f2fs_err(sbi,
-> +			"zoned: max open zones %u is too small, need at least %u open zones",
-> +				 sbi->max_open_zones, F2FS_OPTION(sbi).active_logs);
-> +		return -EINVAL;
-> +	}
-> +
->   	zone_sectors = bdev_zone_sectors(bdev);
->   	if (!is_power_of_2(zone_sectors)) {
->   		f2fs_err(sbi, "F2FS does not support non power of 2 zone sizes\n");
-> @@ -4253,6 +4274,9 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
->   
->   	logical_blksize = bdev_logical_block_size(sbi->sb->s_
+> [...]
+
+Applied, thanks!
+
+[1/8] ext4: fix double-free of blocks due to wrong extents moved_len
+      commit: 55583e899a53
+[2/8] ext4: do not trim the group with corrupted block bitmap
+      commit: 172202152a12
+[3/8] ext4: regenerate buddy after block freeing failed if under fc replay
+      commit: c9b528c35795
+[4/8] ext4: avoid bb_free and bb_fragments inconsistency in mb_free_blocks()
+      commit: 2331fd4a4986
+[5/8] ext4: avoid dividing by 0 in mb_update_avg_fragment_size() when block bitmap corrupt
+      commit: 993bf0f4c393
+[6/8] ext4: avoid allocating blocks from corrupted group in ext4_mb_try_best_found()
+      commit: 4530b3660d39
+[7/8] ext4: avoid allocating blocks from corrupted group in ext4_mb_find_by_goal()
+      commit: 832698373a25
+[8/8] ext4: mark the group block bitmap as corrupted before reporting an error
+      commit: c5f3a3821de4
+
+Best regards,
+-- 
+Theodore Ts'o <tytso@mit.edu>
 
