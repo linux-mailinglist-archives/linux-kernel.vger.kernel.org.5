@@ -1,101 +1,120 @@
-Return-Path: <linux-kernel+bounces-51599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9238F848D0F
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:17:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CBF1848D19
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:21:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC3C92828CB
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 11:17:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18341B21930
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 11:21:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01B6F22081;
-	Sun,  4 Feb 2024 11:17:48 +0000 (UTC)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F0022209A;
+	Sun,  4 Feb 2024 11:20:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R+YYUSPc"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1D3421A0B;
-	Sun,  4 Feb 2024 11:17:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70CCC219F6;
+	Sun,  4 Feb 2024 11:20:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707045467; cv=none; b=lIRH7AgceuvgES17MM9IiywvXHJDyFBi5PpL9FXLBftn3ODDD9urPqE+puYRyEVXcEnJ4v9R/KbapZ7RpIM9nUAzBcxOKTSl2qLJNkVNwL+LRstZdoSduv8MFuMcA9nm8c4LFkqq8EkUm6zhNKNeaZ2exS/lTHBxyidx7O/ifro=
+	t=1707045649; cv=none; b=ZewVojqVhnq6zDokFZrBAchaOsYMcucMpXYNyvRC8Q2bUc631Vj6pFEcn9NXzANga1fIfw0KN8/qcc1G964YgsJFza+dhS03A2e6LfT24tm4/UqqVBZ9PqxuU5qGAqzLE88cBCQqdHG8tbQCqrh2dioZ++Y2is2XtuQJYb/im0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707045467; c=relaxed/simple;
-	bh=HLi6qiYI3ScE3SqyEmd+G0EqimCKMkgSKEPxljgFyRs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=C4yPJDk+QgZDHr/DF+ywYrvvQ1+NAWLaddTCqwm7Rfd6wKrO3nYq3iaoJG/gjDUy5PbqO6+BmTy3ldxzx/wbxBp4rwaOKrtlzDZ6Sn3xNrSyiRk/0fL70o47PNEuuUAUMXfiOIyzh5CiWLefUBlIOtssa6wTpTqyfD3t0fyOi+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from [185.175.219.2] (helo=phil.fosdem.net)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1rWaUq-00051V-9E; Sun, 04 Feb 2024 12:17:12 +0100
-From: Heiko Stuebner <heiko@sntech.de>
-To: Mark Yao <markyao0591@gmail.com>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	David Airlie <airlied@gmail.com>,
-	Diederik de Haas <didi.debian@cknow.org>,
-	Ondrej Jirman <megi@xff.cz>,
-	Maxime Ripard <mripard@kernel.org>,
-	Segfault <awarnecke002@hotmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Manuel Traut <manut@mecka.net>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Sandy Huang <hjc@rock-chips.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Arnaud Ferraris <aferraris@debian.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Danct12 <danct12@riseup.net>
-Cc: Heiko Stuebner <heiko@sntech.de>,
-	linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linux-rockchip@lists.infradead.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org
-Subject: Re: (subset) [PATCH v4 0/4] arm64: rockchip: Pine64 PineTab2 support
-Date: Sun,  4 Feb 2024 12:17:08 +0100
-Message-Id: <170704542194.2517832.14847139781169519437.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240127-pinetab2-v4-0-37aab1c39194@mecka.net>
-References: <20240127-pinetab2-v4-0-37aab1c39194@mecka.net>
+	s=arc-20240116; t=1707045649; c=relaxed/simple;
+	bh=gyDst7/eGUNtEbvcd5veYryHJOS12fm91uoZLHb14BY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YI79rEolNZAOy61J3LSXv7xXuxBkbAYmMeb8G6PZWdrTWcouTTrVy7mowfhNj+1RGh5RW7CHnv1WCrEaVDLpvMzot5ZDTkSOdUvysxVemckobF+evw21iwYdKeF0tyfgZXJPpnuYecPiqiHmkcaDdVPeDj27bOsvc1QnrV+5e+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R+YYUSPc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FE51C433C7;
+	Sun,  4 Feb 2024 11:20:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707045649;
+	bh=gyDst7/eGUNtEbvcd5veYryHJOS12fm91uoZLHb14BY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=R+YYUSPcUyCeeEuzTDppzp9xZG+icLMMEHXtSxhqpkft2PiUdh6qYQ8whR9lTiSR0
+	 xHd9H7MwMkCMQ+EL9PoGwVO/JnyNa0EPBNX53KzLDzT1pNJvxOVIBZX9XkCT+sE8Fo
+	 Zmlwjrew/UHuoA3lfBzKb0QJiTxlWnuqZLZc46v26gNvYNRUZYIiEriEkJZM/mc4kJ
+	 4mmjp+8GPE77M62rfoXXKzxZAojqHYr+ti8z0Qh+93RLe/w9Td2Eaz0h6SOd490ROU
+	 SIZksWQZ9rB6stHZf+L87+F4o+8Kuf6R/ICWa3SIrgUXdXvsQj4GFpn2a+plNns+e9
+	 qOAErYX3CzUUA==
+Date: Sun, 4 Feb 2024 13:20:44 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Emily Deng <Emily.Deng@amd.com>
+Cc: amd-gfx@lists.freedesktop.org, bhelgaas@google.com,
+	alex.williamson@redhat.com, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH] PCI: Add vf reset notification for pf
+Message-ID: <20240204112044.GC5400@unreal>
+References: <20240204061257.1408243-1-Emily.Deng@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240204061257.1408243-1-Emily.Deng@amd.com>
 
-On Sat, 27 Jan 2024 10:48:41 +0100, Manuel Traut wrote:
-> This adds support for the BOE TH101MB31IG002 LCD Panel used in PineTab2 [1] and
-> PineTab-V [2] as well as the devictrees for the PineTab2 v0.1 and v2.0.
+On Sun, Feb 04, 2024 at 02:12:57PM +0800, Emily Deng wrote:
+> When a vf has been reset, the pf wants to get notification to remove the vf
+> out of schedule.
+
+It is very questionable if this is right thing to do. The idea of SR-IOV
+is that VFs represent a physical device and they should be treated
+separately from the PF.
+
+In addition to that Keith said, this patch needs better justification.
+
+Thanks
+
 > 
-> The BOE LCD Panel patch was retrieved from [3]. The function-name prefix has
-> been adapted and the LCD init section was simplified.
+> Solution:
+> Add the callback function in pci_driver sriov_vf_reset_notification. When
+> vf reset happens, then call this callback function.
 > 
-> The PineTab2 devicetree patch was retrieved from [4]. Some renaming was needed
-> to pass the dtb-checks, the brightness-levels are specified as range and steps
-> instead of a list of values.
+> Signed-off-by: Emily Deng <Emily.Deng@amd.com>
+> ---
+>  drivers/pci/pci.c   | 8 ++++++++
+>  include/linux/pci.h | 1 +
+>  2 files changed, 9 insertions(+)
 > 
-> [...]
-
-Applied, thanks!
-
-[3/4] dt-bindings: arm64: rockchip: Add Pine64 PineTab2
-      commit: 6a0a5a2a71b3e3c4ae1ee0b34a496cbf2d980832
-[4/4] arm64: dts: rockchip: Add devicetree for Pine64 PineTab2
-      commit: 1b7e19448f8fbeee23111795f67a003431c40b27
-
-Best regards,
--- 
-Heiko Stuebner <heiko@sntech.de>
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 60230da957e0..aca937b05531 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -4780,6 +4780,14 @@ EXPORT_SYMBOL_GPL(pcie_flr);
+>   */
+>  int pcie_reset_flr(struct pci_dev *dev, bool probe)
+>  {
+> +	struct pci_dev *pf_dev;
+> +
+> +	if (dev->is_virtfn) {
+> +		pf_dev = dev->physfn;
+> +		if (pf_dev->driver->sriov_vf_reset_notification)
+> +			pf_dev->driver->sriov_vf_reset_notification(pf_dev, dev);
+> +	}
+> +
+>  	if (dev->dev_flags & PCI_DEV_FLAGS_NO_FLR_RESET)
+>  		return -ENOTTY;
+>  
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index c69a2cc1f412..4fa31d9b0aa7 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -926,6 +926,7 @@ struct pci_driver {
+>  	int  (*sriov_configure)(struct pci_dev *dev, int num_vfs); /* On PF */
+>  	int  (*sriov_set_msix_vec_count)(struct pci_dev *vf, int msix_vec_count); /* On PF */
+>  	u32  (*sriov_get_vf_total_msix)(struct pci_dev *pf);
+> +	void  (*sriov_vf_reset_notification)(struct pci_dev *pf, struct pci_dev *vf);
+>  	const struct pci_error_handlers *err_handler;
+>  	const struct attribute_group **groups;
+>  	const struct attribute_group **dev_groups;
+> -- 
+> 2.36.1
+> 
+> 
 
