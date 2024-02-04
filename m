@@ -1,57 +1,65 @@
-Return-Path: <linux-kernel+bounces-51912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91E408490A6
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 22:27:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F73D8490A7
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 22:28:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51D1D282B52
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 21:27:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19F0E1F21D01
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 21:28:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64C142C1BA;
-	Sun,  4 Feb 2024 21:27:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 364CF32C96;
+	Sun,  4 Feb 2024 21:27:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=o2.pl header.i=@o2.pl header.b="D+H2rcFS"
-Received: from mx-out.tlen.pl (mx-out.tlen.pl [193.222.135.140])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="Z5jdxB4I"
+Received: from omta36.uswest2.a.cloudfilter.net (omta36.uswest2.a.cloudfilter.net [35.89.44.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD3E32C1A7
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 21:27:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.222.135.140
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF26332C60
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 21:27:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707082038; cv=none; b=VREsS79277OKooBjhd786ORxG3KvTo75rbx+0D9gAQKa753oYvUk/dbGbQn9anQeSdsWslmEb2mIhVP7AZ1wkVYj56LQgoQpqZhDT+N3Mj/QAkWmbYPgCxYvt+iq78Vfmlj0J++aULdEcUBz/KqaKSN35CECD3hR1/8bt8bBNDY=
+	t=1707082073; cv=none; b=ZNcOv7e4OuX+/nb4aEu8rJl+3m84uAZ8pPlSW71sek9VSds1nH2NKnR7qB6eVbmDbBaFjcONEwq4fFPPR1vKzB9yZLv4+FZP6KZmCffYljCxhKjXTeCYHfMjY28E1IFsMha6Z6J1rtgqKPWBU9IpyBEegufnvMd3tpiaj0vbTSU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707082038; c=relaxed/simple;
-	bh=LUlrgJz18o9KJqJG7IuYyn8FmI3UltapoK5rh+HPJWU=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=D4g8oOkIWwxPreBZ/nAZPmzjN9BttQeBGzSfwMJ+mTs8NCZMmTFvfCeK63r7e+Jf9oAd+EYhBUHAgCyxa/otNLqP8xWfancvZ9TOg605WuMXVHDqH70+GZdAhD0Mk2CoN8cNNh1hLpF6bJTro9DL6wUP71JyFCjV0nhNmtFDPXU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=o2.pl; spf=pass smtp.mailfrom=o2.pl; dkim=pass (1024-bit key) header.d=o2.pl header.i=@o2.pl header.b=D+H2rcFS; arc=none smtp.client-ip=193.222.135.140
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=o2.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=o2.pl
-Received: (wp-smtpd smtp.tlen.pl 26750 invoked from network); 4 Feb 2024 22:27:05 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
-          t=1707082025; bh=ewIuHQmdWZ/T4IDehw1MX7Z1a4OC8Yu8CZToZGj945c=;
-          h=From:Subject:To:Cc;
-          b=D+H2rcFSzQ/61rC76B2nq+LOd7MylQfNeCaT7k4hRho5PKId7RMX6oJ3NkLKyI0SO
-           3GSbIEDutcyy31kLqpLjDOO9gfTOYmJ2imAbc4DcG7defYmIO3BCx2o+f/KkL9R/i2
-           LzGkD/dJkpdqNGHJAylLT6eWBDJYYl0Zei4XStlY=
-Received: from aafa224.neoplus.adsl.tpnet.pl (HELO [192.168.1.22]) (mat.jonczyk@o2.pl@[83.4.130.224])
-          (envelope-sender <mat.jonczyk@o2.pl>)
-          by smtp.tlen.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <gregkh@linuxfoundation.org>; 4 Feb 2024 22:27:05 +0100
-Message-ID: <30066ce7-0f8a-40a7-b5b2-5494940c4cd5@o2.pl>
-Date: Sun, 4 Feb 2024 22:27:00 +0100
-Precedence: bulk
-X-Mailing-List: linux-kernel@vger.kernel.org
-List-Id: <linux-kernel.vger.kernel.org>
-List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: =?UTF-8?Q?Mateusz_Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
-Subject: Re: [PATCH 6.1 000/221] 6.1.77-rc2 review
+	s=arc-20240116; t=1707082073; c=relaxed/simple;
+	bh=gyjH0ExK1biiDEok7kg7dY4j4lY4tkvXTMB2sK/el+w=;
+	h=Subject:To:Cc:References:In-Reply-To:From:Message-ID:Date:
+	 MIME-Version:Content-Type; b=tTKiBrhaBMopTg89251Z6HPLGf3qvW6eEwksTdcAIc16L5YmoqyI4q7vbbqvSLPM3h5cOHAHkWETWceZNpVI7NqnRUTLTbbGLS8kN8zhAmKfLIiGIoOre7/LrQxJDjn6f2HQXWAzCBv9J0M5SW8fDEF4TufJWsY0wRGgXxw2wsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=Z5jdxB4I; arc=none smtp.client-ip=35.89.44.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
+Received: from eig-obgw-6009a.ext.cloudfilter.net ([10.0.30.184])
+	by cmsmtp with ESMTPS
+	id WiD2rgqxGCF6GWk1lrPMbO; Sun, 04 Feb 2024 21:27:49 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+	by cmsmtp with ESMTPS
+	id Wk1kr0f5bKSzAWk1krIWwy; Sun, 04 Feb 2024 21:27:48 +0000
+X-Authority-Analysis: v=2.4 cv=PK+s+uqC c=1 sm=1 tr=0 ts=65c00154
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=EKXS84hPPaXBVOSEZCVDK5hIlR6tW++R26HeHha+bks=; b=Z5jdxB4IasZrO5+oNnVw0yMWjV
+	N2Vnc1opv55vsBQ6LAYA2eYhXgo2YdEilFl+/k5ufRda8wOTgDYDO0nNyP/uC4Ii7X1nyC6vzTUUj
+	Re/aL4fXLv5gKwpDVT6R/EYJr9BY8K/J83aaTyJbDko7ScDcc9VWzC9qyWcQzcbjy25ujUv87Xkd7
+	0lpMS1Gm9z0vr0+4Ri7sDdHCWvhoFDFnbqP3FCqrnmVTj8+rFD34moBBs2bAylj0GQKoLLDIqtYwT
+	lRx2lHy4jvHGMqzyb26iEBK3Zu2qsivtRnjPgg4kiDBvenG163yD8rUH4bzKcINDmZTThP2MvaJJm
+	IvxgZKJQ==;
+Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:38204 helo=[10.0.1.47])
+	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <re@w6rz.net>)
+	id 1rWk1i-001HeI-07;
+	Sun, 04 Feb 2024 14:27:46 -0700
+Subject: Re: [PATCH 6.6 000/326] 6.6.16-rc2 review
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
 Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
  torvalds@linux-foundation.org, akpm@linux-foundation.org,
@@ -59,61 +67,46 @@ Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
  lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
  f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
  rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-References: <20240203174756.358721205@linuxfoundation.org>
-Content-Language: en-GB
-Autocrypt: addr=mat.jonczyk@o2.pl; keydata=
- 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
- TANkZ3QqXNX2
-In-Reply-To: <20240203174756.358721205@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-WP-MailID: ad3470a62378a6444059b57b457f8ad1
-X-WP-AV: skaner antywirusowy Poczty o2
-X-WP-SPAM: NO 0000000 [QdO0]                               
+References: <20240203174810.768708706@linuxfoundation.org>
+In-Reply-To: <20240203174810.768708706@linuxfoundation.org>
+From: Ron Economos <re@w6rz.net>
+Message-ID: <402173d5-ba39-dc5f-5a01-6a5e19a3d131@w6rz.net>
+Date: Sun, 4 Feb 2024 13:27:43 -0800
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+Precedence: bulk
+X-Mailing-List: linux-kernel@vger.kernel.org
+List-Id: <linux-kernel.vger.kernel.org>
+List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 98.207.139.8
+X-Source-L: No
+X-Exim-ID: 1rWk1i-001HeI-07
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:38204
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Org: HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfOYsq+2/4oAnrogtKx4JUn8sHpFl2XSJbDXxXnWdGflgPIZSf26yTzI4aj+4Vc0BVplsnFQdyylU8T3eOI6i1OqpHJaEjhC/xTPiLh+TCRFObqJVRLq8
+ HtKbjrX5apbZlFHOf5x0AkdPL99+Lf7W25WkiZdq6uqCvqGr55XL8VsV5KKOneZ0GLGqNJi+0p0jhfHAlWsaldPt5FI05fpZmyk=
 
-W dniu 3.02.2024 o 18:52, Greg Kroah-Hartman pisze:
-> This is the start of the stable review cycle for the 6.1.77 release.
-> There are 221 patches in this series, all will be posted as a response
+On 2/3/24 9:52 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.6.16 release.
+> There are 326 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 >
@@ -121,54 +114,17 @@ W dniu 3.02.2024 o 18:52, Greg Kroah-Hartman pisze:
 > Anything received after that time might be too late.
 >
 > The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.77-rc2.gz
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.16-rc2.gz
 > or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
 > and the diffstat can be found below.
 >
 > thanks,
 >
 > greg k-h
 
-Hello,
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
 
-Tested-on a HP 17-by0001nw laptop with an Intel Kaby Lake CPU and Ubuntu 20.04.
-
-Used technologies: ext4, vfat, mdraid on top of a NVMe and SATA drive (in a
-write-mostly mode).
-
-Suspend to disk and suspend to RAM work.
-
-Nitpicks:
-
-- the laptop once failed to shut down completely, it hung with a black screen
-(the kernel messages from the shutdown disappeared). This did not happen again
-with 2-3 tries. IIRC this has happened on this laptop in the past.
-
-- I have been running long SMART tests on 2 external USB hard drives.
-One of them, a TOSHIBA USB 3.0 hard drive briefly disconnected with the
-following dmesg messages:
-
-usb 2-2: USB disconnect, device number 4
-xhci_hcd 0000:00:14.0: WARN Set TR Deq Ptr cmd failed due to incorrect slot or ep state.
-sd 2:0:0:0: [sdc] tag#0 FAILED Result: hostbyte=DID_ERROR driverbyte=DRIVER_OK cmd_age=0s
-sd 2:0:0:0: [sdc] tag#0 CDB: ATA command pass through(16) 85 06 20 00 00 00 00 00 00 00 00 00 00 00 e5 00
-device offline error, dev sdc, sector 263659521 op 0x1:(WRITE) flags 0x0 phys_seg 1 prio class 2
-Buffer I/O error on dev sdc2, logical block 1, lost async page write
-sd 2:0:0:0: [sdc] Synchronizing SCSI cache
-sd 2:0:0:0: [sdc] Synchronize Cache(10) failed: Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK
-usb 2-2: new SuperSpeed USB device number 5 using xhci_hcd
-
-The hard drive was later reset out of the blue:
-
-usb 2-1: reset SuperSpeed USB device number 7 using xhci_hcd
-
-This may have been caused by faulty cabling / USB sockets.
-
-Tested-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
-
-Greetings,
-
-Mateusz Jończyk
+Tested-by: Ron Economos <re@w6rz.net>
 
 
