@@ -1,164 +1,121 @@
-Return-Path: <linux-kernel+bounces-51380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33A8D848AA2
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 03:24:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEA1E848AA7
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 03:26:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A0B9B21150
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 02:24:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 785FD285007
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 02:26:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28025138C;
-	Sun,  4 Feb 2024 02:24:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B677217F7;
+	Sun,  4 Feb 2024 02:26:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NKPLco9j"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OHX2fOkL"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66F8810EB
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 02:24:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AA2B10F1;
+	Sun,  4 Feb 2024 02:26:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707013473; cv=none; b=uiUElE/fT0AsWWoT0+1Jz9UF+KWHD605txZx4SAZE/bHlPNzFpgbZmPQwiBD+vNO0XZb9Ji026a0DBhko0+ql/B/YbS/TvLM3dyX4jcl4fxRTb8LTUVLeggIfk0sJpuf7HKVS6jK4l5SHutMPBn3Cn34KjKnqUkGLnLgGw5wTOU=
+	t=1707013600; cv=none; b=IUllzHwjBmIfQzGRk8vvgwNmZRj0rdQ9Vo8IEgVn7OyfPUlj+OOat81hj/wyAAYIT9yzN5FS1fj2jR1q7yp0au0uSPYZQ0OJHTMyM8OIjc0lfmSAiOOSEOlqHvDUV1rfeCPEXZD3TwQO667K1ULygsYZP6QoXW2iFVa+NSsMhoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707013473; c=relaxed/simple;
-	bh=w/HWrR+lQGWzJxB85ky3dmWebYzJu5r/BKHq8uRrEXA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VGMzjCtbHXH7VG+X7aw9mntwOva+B4uoqdC2BQbODeN26CIuLbrC6ce4Bwm8ZCIb959nB4ltG5+g/3mkybjoC+DNrTqpWCwVQvdPagq3PWOeG4+wtMPCJRVv1awHU+eSKrxz1RFkbBO2w9RbE8vrgfA+GgSou1QoYp+G9nNlApw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NKPLco9j; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D7C8C433F1;
-	Sun,  4 Feb 2024 02:24:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707013472;
-	bh=w/HWrR+lQGWzJxB85ky3dmWebYzJu5r/BKHq8uRrEXA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=NKPLco9jJb9cP8o5a92KUMkiFYpFazPUfaqQtGVqbgSUT5dpcwoHB9O9A4o8amDD6
-	 8EIGv4wlDzvIGfhZmOKwkugzpabWmi8dM7Fh7YxMgRGGKl15pyosbeGIWnUGI/wfLm
-	 0I6icbSDsIakO/bqVci64zacXyRV1BqKzJk2G4e4zql1H8uX3Ez/0OQZorJL7IDD/F
-	 XCtd61ilA29P4RymD8j0fOcK9J3JpAZ3AalFl0IjqXFtFcnPgQHg0PBHC3jTgO/TB4
-	 uuICc1ns/4M7uGEnhpIh4u1LYu42zCu73oyfXjDCs91IOc6HghP07+UQIeoBSNNDtC
-	 RRbrrv/V57jng==
-Message-ID: <e42ae14e-88b8-41de-9693-1513bf335fc2@kernel.org>
-Date: Sun, 4 Feb 2024 10:24:28 +0800
+	s=arc-20240116; t=1707013600; c=relaxed/simple;
+	bh=MZuUD704UrOLgccaN1b2cCtt8f2iQc2TlTIT1NofrqM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Gr5TzF2+VNaio57Y76E6TlMSzQjyhtgAj6dIARCyC6HBawrRgJ45tbBNiiJWyDigtcxuooU+iZkpMuXvnxewVSKsoM16aRvxygl3RbGNlX5SODI/+cx7zdFvN7JvGT7rYPpeAxShSF0FGTXSqkDFxF2HusY8T86iw0hlYFJF28s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OHX2fOkL; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707013598; x=1738549598;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=MZuUD704UrOLgccaN1b2cCtt8f2iQc2TlTIT1NofrqM=;
+  b=OHX2fOkLXCW1KtVUJqoUyoN+ud+HZ5hfubYggwalRpNenq/HSoGa6cUx
+   v2T+1ij8btF/OboBCIlH1TgYkkzTAuvu8E8weiSWJpSyeMD/iFnylqnpZ
+   ieoC8R9PHGVAjeFI2Yrc3rFCIn2p+nrO04QOGk2p+/P4o+kzidgzPIytX
+   CA427PFMdcoITAbNmNHvMGTeT+5CpqlUoI6rrIQvlPjpr9GDQab+IAD/C
+   Vrk59yckSQ0vTzdkluCNyyBRdmPigSHvaF2tsAZhyoJWnnnmVrL8+65v3
+   Liyo6pzF4qzzDWSQK4to+hvcJgBJ79hHxRn9fI5UV+n2/gFQGzFzkqgFu
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10973"; a="10948395"
+X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
+   d="scan'208";a="10948395"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2024 18:26:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10973"; a="908957191"
+X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
+   d="scan'208";a="908957191"
+Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 03 Feb 2024 18:26:34 -0800
+Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rWSDH-0005tm-2y;
+	Sun, 04 Feb 2024 02:26:31 +0000
+Date: Sun, 4 Feb 2024 10:25:32 +0800
+From: kernel test robot <lkp@intel.com>
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>,
+	alexandre.belloni@bootlin.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	jdelvare@suse.com, linux@roeck-us.net, antoniu.miclaus@analog.com,
+	noname.nuno@gmail.com
+Cc: oe-kbuild-all@lists.linux.dev, linux-rtc@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hwmon@vger.kernel.org,
+	Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
+	Zeynep Arslanbenzer <Zeynep.Arslanbenzer@analog.com>,
+	Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: Re: [PATCH v6 1/2] drivers: rtc: add max313xx series rtc driver
+Message-ID: <202402041027.jyioXP7e-lkp@intel.com>
+References: <20240202025241.834283-2-chris.packham@alliedtelesis.co.nz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] f2fs: fix zoned block device information
- initialization
-Content-Language: en-US
-To: Wenjie Qi <qwjhust@gmail.com>
-Cc: jaegeuk@kernel.org, yangyongpeng1@oppo.com,
- linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
- hustqwj@hust.edu.cn
-References: <20240203152436.1352-1-qwjhust@gmail.com>
- <8eaf59a4-1aaa-460e-a3cc-b798ed5e0f63@kernel.org>
- <CAGFpFsTz_9Zaj0PuptjBxOJwxF68geAUfd1qtx9--Tczh+jZww@mail.gmail.com>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <CAGFpFsTz_9Zaj0PuptjBxOJwxF68geAUfd1qtx9--Tczh+jZww@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240202025241.834283-2-chris.packham@alliedtelesis.co.nz>
 
-On 2024/2/4 10:18, Wenjie Qi wrote:
-> Hi Chao,
-> 
-> It seems to me that when mounting multiple zoned devices,
-> if their max_open_zones are all 0, then sbi->max_open_zones is 0.
-> This suggests that all of the mounted devices can open an unlimited
-> number of zones,
-> and that we don't need to compare sbi->max_open_zones with
-> F2FS_OPTION( sbi).active_logs.
+Hi Chris,
 
-Yes, but I'm curious about how this case (sbi->max_open_zones is zero)
-works w/ following patch, do we need to initialized sbi->max_open_zones
-w/ UINT_MAX to indicate the unlimited open zone status of device if
-all zoned devices' max_open_zones is zero?
+kernel test robot noticed the following build errors:
 
-> 
-> Thanks,
-> 
-> Chao Yu <chao@kernel.org> 于2024年2月4日周日 09:47写道：
->>
->> On 2024/2/3 23:24, Wenjie Qi wrote:
->>> If the max open zones of zoned devices are less than
->>> the active logs of F2FS, the device may error due to
->>> insufficient zone resources when multiple active logs are
->>> being written at the same time. If this value is 0,
->>> there is no limit.
->>>
->>> Signed-off-by: Wenjie Qi <qwjhust@gmail.com>
->>> ---
->>>    fs/f2fs/f2fs.h  |  1 +
->>>    fs/f2fs/super.c | 21 +++++++++++++++++++++
->>>    2 files changed, 22 insertions(+)
->>>
->>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->>> index 543898482f8b..161107f2d3bd 100644
->>> --- a/fs/f2fs/f2fs.h
->>> +++ b/fs/f2fs/f2fs.h
->>> @@ -1558,6 +1558,7 @@ struct f2fs_sb_info {
->>>
->>>    #ifdef CONFIG_BLK_DEV_ZONED
->>>        unsigned int blocks_per_blkz;           /* F2FS blocks per zone */
->>> +     unsigned int max_open_zones;            /* max open zone resources of the zoned device */
->>>    #endif
->>>
->>>        /* for node-related operations */
->>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
->>> index 1b718bebfaa1..45e82d6016fc 100644
->>> --- a/fs/f2fs/super.c
->>> +++ b/fs/f2fs/super.c
->>> @@ -2388,6 +2388,16 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
->>>        if (err)
->>>                goto restore_opts;
->>>
->>> +#ifdef CONFIG_BLK_DEV_ZONED
->>> +     if (sbi->max_open_zones && sbi->max_open_zones < F2FS_OPTION(sbi).active_logs) {
->>> +             f2fs_err(sbi,
->>> +                     "zoned: max open zones %u is too small, need at least %u open zones",
->>> +                              sbi->max_open_zones, F2FS_OPTION(sbi).active_logs);
->>> +             err = -EINVAL;
->>> +             goto restore_opts;
->>> +     }
->>> +#endif
->>> +
->>>        /* flush outstanding errors before changing fs state */
->>>        flush_work(&sbi->s_error_work);
->>>
->>> @@ -3930,11 +3940,22 @@ static int init_blkz_info(struct f2fs_sb_info *sbi, int devi)
->>>        sector_t nr_sectors = bdev_nr_sectors(bdev);
->>>        struct f2fs_report_zones_args rep_zone_arg;
->>>        u64 zone_sectors;
->>> +     unsigned int max_open_zones;
->>>        int ret;
->>>
->>>        if (!f2fs_sb_has_blkzoned(sbi))
->>>                return 0;
->>>
->>> +     max_open_zones = bdev_max_open_zones(bdev);
->>
->> Wenjie,
->>
->> max_open_zones can always be zero? then sbi->max_open_zones will be zero,
->> is this a valid case?
->>
->> Thanks,
->>
->>> +     if (max_open_zones && (max_open_zones < sbi->max_open_zones || !sbi->max_open_zones))
->>> +             sbi->max_open_zones = max_open_zones;
->>> +     if (sbi->max_open_zones && sbi->max_open_zones < F2FS_OPTION(sbi).active_logs) {
->>> +             f2fs_err(sbi,
->>> +                     "zoned: max open zones %u is too small, need at least %u open zones",
->>> +                              sbi->max_open_zones, F2FS_OPTION(sbi).active_logs);
->>> +             return -EINVAL;
->>> +     }
->>> +
->>>        zone_sectors = bdev_zone_sectors(bdev);
->>>        if (!is_power_of_2(zone_sectors)) {
->>>                f2fs_err(sbi, "F2FS does not support non power of 2 zone sizes\n");
+[auto build test ERROR on abelloni/rtc-next]
+[also build test ERROR on robh/for-next linus/master v6.8-rc2 next-20240202]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Chris-Packham/drivers-rtc-add-max313xx-series-rtc-driver/20240202-105538
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git rtc-next
+patch link:    https://lore.kernel.org/r/20240202025241.834283-2-chris.packham%40alliedtelesis.co.nz
+patch subject: [PATCH v6 1/2] drivers: rtc: add max313xx series rtc driver
+config: parisc-randconfig-r051-20240204 (https://download.01.org/0day-ci/archive/20240204/202402041027.jyioXP7e-lkp@intel.com/config)
+compiler: hppa-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240204/202402041027.jyioXP7e-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402041027.jyioXP7e-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   hppa-linux-ld: drivers/rtc/rtc-max313xx.o: in function `max313xx_probe':
+>> (.text+0x16b0): undefined reference to `devm_clk_hw_register'
+>> hppa-linux-ld: (.text+0x16c8): undefined reference to `devm_of_clk_add_hw_provider'
+   hppa-linux-ld: drivers/rtc/rtc-max313xx.o: in function `.LC19':
+>> (.rodata.cst4+0x4): undefined reference to `of_clk_hw_simple_get'
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
