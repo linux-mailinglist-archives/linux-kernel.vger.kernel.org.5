@@ -1,108 +1,139 @@
-Return-Path: <linux-kernel+bounces-51882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51883-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51E9B84905F
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 21:32:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0436B849061
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 21:32:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52B461C21CA8
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 20:32:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97C901F22209
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 20:32:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E29C832C6C;
-	Sun,  4 Feb 2024 20:31:36 +0000 (UTC)
-Received: from fgw20-7.mail.saunalahti.fi (fgw20-7.mail.saunalahti.fi [62.142.5.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C64733CC9;
+	Sun,  4 Feb 2024 20:31:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="BS4Mt9V4"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C97425627
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 20:31:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49CE03399C;
+	Sun,  4 Feb 2024 20:31:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707078696; cv=none; b=sD/AjuFg2xyrRrJS2qkCWLJg81L7CmpLB2oKxBMqydgDF4mpKKgSADH9w82RxaN9lFlmkR2RfW9lgLHYxPxKOd15FefDTPbf2XABS70PiNyBWyRnChjlOPmQCC47oBuqGEGj/Y5zwl8+hTQeCLUA2oWZz2J+rge6Jw9JX0CAcho=
+	t=1707078699; cv=none; b=bPKHX/vR0ZvJ+ZsFTp1uIaGmr9/438nZFG7TZ4t2ZK2tRWy/AX5/d10tjPxUaho5i7DAQU9T7DtxsjaEbkxR26u3QlyNPsX13cEKS/vYRkL0SlVBziFbrGWfEc751nyvBFRb7qyb0iNHT0EkmS9P+d/uGC0rOWFGVUh6zCiaVz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707078696; c=relaxed/simple;
-	bh=XLDi5/MAVt+bIe/YQBcfp7eO7Bz7U9KmRyihYGtcmdA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MBpP4bASHLFs58a/OecaW5H4jpCkllTrB2C1MVsl80k8RuEIbYm0MlfKZ7E332OXzz6NKah8209+UDuhfK8zynF7iohXl+PZi34ocLCKSuDZmj7hR/hocswxdwxqwLm/hevvq/H3nluD2Q7Vz2Mn15Yeg+1aRE/jpxugWS6oPZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=62.142.5.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
-Received: from localhost (88-113-26-30.elisa-laajakaista.fi [88.113.26.30])
-	by fgw20.mail.saunalahti.fi (Halon) with ESMTP
-	id 61e52b80-c39c-11ee-b3cf-005056bd6ce9;
-	Sun, 04 Feb 2024 22:31:31 +0200 (EET)
-From: andy.shevchenko@gmail.com
-To: Mark Brown <broonie@kernel.org>,
-	linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Vladimir Oltean <olteanv@gmail.com>,
-	Minjie Du <duminjie@vivo.com>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v2 2/2] spi: fsl-dspi: Unify error messaging in dspi_request_dma()
-Date: Sun,  4 Feb 2024 22:29:19 +0200
-Message-ID: <20240204203127.1186621-3-andy.shevchenko@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240204203127.1186621-1-andy.shevchenko@gmail.com>
-References: <20240204203127.1186621-1-andy.shevchenko@gmail.com>
+	s=arc-20240116; t=1707078699; c=relaxed/simple;
+	bh=VRoTYpwLZnzgBXaKD3r0QAPslmakchudfuNhoaBd8ag=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=c/Sh/NnFsS3y8uPzuf5JCQFqvCqR135mC8Pmo5XyYgYS4uB3Era5DZHnWMQr4OOOxMw2tY1xKle0+8lHH8iViNQFQtba0Xy2vcoQamPQhscaEqFT4z7Yne70OSltCeb1/EE94N1FUVlH8yr/CMzIXDe9Z94CWFG4fL0722DgfMI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=fail (0-bit key) header.d=marliere.net header.i=@marliere.net header.b=BS4Mt9V4 reason="key not found in DNS"; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d934c8f8f7so30750415ad.2;
+        Sun, 04 Feb 2024 12:31:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707078697; x=1707683497;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7WCglIy8ayd+eS45f/mgaJU4SOqdCX8ta1jEh6jlM9Y=;
+        b=mYPQd3uvWf9fqJQ2KST4bmmOiUm6gK8om5/Y5/x3Pqh6aFEEBpt1w+JGIex04fqFBY
+         kfDe9DOLplPZ/p9OWTxPe9W5eQNORyRTDzhuNbu8Li8isy3NlG3XQ06PqcdkBvwvYxg4
+         ltUYmfEkLxUAsPSN5GqUJKszDEg01HH1MTXCoEY6ar4Yn+jewOJtaHbfp9+7CHsdvXhk
+         HY3OLcDYHRX/1T+fbJoWC3K3EF2W+aRkHg0DahlEAR1NGBL4NvY/SaH4mblffLT/Hi5I
+         n7Y4/c7qrZeG6YERZQ2id0GNAe8X44EbLZlsdJ/WCgyjqGA44Zj9u9WQxjBqgJFQr+tR
+         SvWg==
+X-Gm-Message-State: AOJu0YynuyzIxYoZfSSPOSNhHbXGClYWxdG6irOZeXy5LMPkuf5V48nO
+	nlwAzb5YX0s0yPxjjeebEhwaOFlEQqTxW7MPLjw/Hkr9ybCQbLe41mnIuEsMeCLFiw==
+X-Google-Smtp-Source: AGHT+IGOFMWqyEF2S7mE9GgPQ7KY0tlqaOJKnouwCEmMsXR9wqiWr6mw+Q35LGczyogzhM7E/2hlCw==
+X-Received: by 2002:a17:902:dac6:b0:1d9:e40:39cd with SMTP id q6-20020a170902dac600b001d90e4039cdmr13871383plx.2.1707078697585;
+        Sun, 04 Feb 2024 12:31:37 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCW0dKuM9rWCldH2/Aco3eurHVoZKC0HdeNmTY2y//6cwop/ppm/eYlLWoeQhNAR1wjd0VxX9LoL0nxidUzwHatgCLJYNZZKCzUuV943NpL4YNmX6obyFyc3Y4FCd3VnHA5gHZDyVhLQWrjqX9vn5eXmIyZxYelYmuVqKb8QJ15fIlpuT+Y=
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id n9-20020a170902d0c900b001d8f82c61cdsm1032035pln.231.2024.02.04.12.31.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Feb 2024 12:31:36 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2023; t=1707078695;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=7WCglIy8ayd+eS45f/mgaJU4SOqdCX8ta1jEh6jlM9Y=;
+	b=BS4Mt9V4Ksjo1frOWqBlPnGuxLId5k35qCM6Fc78hGs4Svi751DEj/NJnBtqmd7yeAhKuV
+	aT1sREZG4hbdkcLZ4tHAhJzaq7/CT6pwEdNfezaa3cgxZu7Ff5QhG5CfNPWH0DGNkq+FdL
+	wT7aC74DryhOOFW55Rdk6/xYhLmHm1v5kV24vi+DWM4o5s3VrHsXNS+5+VHOA9irNrrq8C
+	TYwnZkh+VbKFTe1iKMe4hkug77JeKDcvyd0lr5Hc6P37ABC3DedbeA4BinAASGYyPGySR8
+	b2lt0lOQ3YmwhiYsI2rFcSbPIsSsh5Kwmy43lnZ/3D8JamHEU2gRvbCU9RSfRA==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Date: Sun, 04 Feb 2024 17:32:05 -0300
+Subject: [PATCH] rpmsg: core: make rpmsg_bus const
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240204-bus_cleanup-rpmsg-v1-1-1703508c23b7@marliere.net>
+X-B4-Tracking: v=1; b=H4sIAET0v2UC/x3MQQqAIBBA0avErBNMTKirRMRUkw2UiUMRRHdPW
+ r7F/w8IJSaBtngg0cXCR8ioygKmFYMnxXM2GG2sNtqq8ZRh2gjDGVWKu3hVYb04HF2DxkLuYqK
+ F7//Z9e/7AQYAhfZjAAAA
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1118; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=VRoTYpwLZnzgBXaKD3r0QAPslmakchudfuNhoaBd8ag=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlv/RFYNEW1n3ot2vWTihcOBpkI5Fk3rVxR9ybp
+ xagfA5klj6JAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZb/0RQAKCRDJC4p8Y4ZY
+ plBkD/sHLuhFv5Dazsz1xPzZr48dawO4hgXKd2Gu4AfZ8OXua/802YDCEzvZViJ8AJBT1mEov5T
+ YjoYGlf9Hkzy7KaAo8yMMJ68+hH8J/7itQlzhHAZQYVxSnAEu/k1kDXWbSBl9Xvxprpe/Vk3O6a
+ b1NvHqMuTE1h6op7e9zdNh8bBsHtZszL6rbeje9x8TkkwgKenGdvwN6dRbr6izi4yzFU7Q/uVGd
+ Y+awDg7F+mDzYkRCUwkyj8ZcSKXOZt59Y7PAoT3AXaEqg9tX+iBaDgkcumqmmoIF/5cKlpom3li
+ Miku8isq24GTgkyWAcD9pt9vyS4XM1FvI3ZjYNQDXROubzkuhfkPA/3kbR0GjyqDrH6mxEsqv7q
+ r4qg2Rct9xCdB+gudlBHCM9+g/vaFyptZnP7BHetAtf8Tf+WpEYTzLXjcjoMfc20jzQUfyRFsG9
+ hsaor9MXE5uOqyLciDyIeVnAPdHQFgAH0lv9QC39nqIsx9RpjJoJ+QnRuX3Zt9mHPRtZbsSFqA4
+ 8sIe+lJGa1A+5EF77a+OwnC1KdIV/Spk7qgHof4AmaUyMQbuVnEEwOXyK1VmED+u8uJdaVWsnzI
+ gUWtn+eWz1nrX8xdeU2+BvXqoH5OBPG8oNeHcVOSzrBpPKT8Y+Zb/vpXxhJlACC+ypkuF0GqDGO
+ srSs/312swjlLSg==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-Use dev_err_probe() for all messages in dspi_request_dma() for the sake of
-making them uniform. While at it, fix indentation issue reported by Vladimir
-Oltean.
+Now that the driver core can properly handle constant struct bus_type,
+move the rpmsg_bus variable to be a constant structure as well,
+placing it into read-only memory which can not be modified at runtime.
 
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 ---
- drivers/spi/spi-fsl-dspi.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ drivers/rpmsg/rpmsg_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
-index 0b5ea7a7da71..38defdcf9370 100644
---- a/drivers/spi/spi-fsl-dspi.c
-+++ b/drivers/spi/spi-fsl-dspi.c
-@@ -502,15 +502,12 @@ static int dspi_request_dma(struct fsl_dspi *dspi, phys_addr_t phy_addr)
- 		return -ENOMEM;
+diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
+index 8abc7d022ff7..4295c01a2861 100644
+--- a/drivers/rpmsg/rpmsg_core.c
++++ b/drivers/rpmsg/rpmsg_core.c
+@@ -605,7 +605,7 @@ static void rpmsg_dev_remove(struct device *dev)
+ 		rpmsg_destroy_ept(rpdev->ept);
+ }
  
- 	dma->chan_rx = dma_request_chan(dev, "rx");
--	if (IS_ERR(dma->chan_rx)) {
--		return dev_err_probe(dev, PTR_ERR(dma->chan_rx),
--			"rx dma channel not available\n");
--	}
-+	if (IS_ERR(dma->chan_rx))
-+		return dev_err_probe(dev, PTR_ERR(dma->chan_rx), "rx dma channel not available\n");
- 
- 	dma->chan_tx = dma_request_chan(dev, "tx");
- 	if (IS_ERR(dma->chan_tx)) {
--		ret = PTR_ERR(dma->chan_tx);
--		dev_err_probe(dev, ret, "tx dma channel not available\n");
-+		ret = dev_err_probe(dev, PTR_ERR(dma->chan_tx), "tx dma channel not available\n");
- 		goto err_tx_channel;
- 	}
- 
-@@ -541,14 +538,14 @@ static int dspi_request_dma(struct fsl_dspi *dspi, phys_addr_t phy_addr)
- 	cfg.direction = DMA_DEV_TO_MEM;
- 	ret = dmaengine_slave_config(dma->chan_rx, &cfg);
- 	if (ret) {
--		dev_err(dev, "can't configure rx dma channel\n");
-+		dev_err_probe(dev, ret, "can't configure rx dma channel\n");
- 		goto err_slave_config;
- 	}
- 
- 	cfg.direction = DMA_MEM_TO_DEV;
- 	ret = dmaengine_slave_config(dma->chan_tx, &cfg);
- 	if (ret) {
--		dev_err(dev, "can't configure tx dma channel\n");
-+		dev_err_probe(dev, ret, "can't configure tx dma channel\n");
- 		goto err_slave_config;
- 	}
- 
+-static struct bus_type rpmsg_bus = {
++static const struct bus_type rpmsg_bus = {
+ 	.name		= "rpmsg",
+ 	.match		= rpmsg_dev_match,
+ 	.dev_groups	= rpmsg_dev_groups,
+
+---
+base-commit: 80255b24efbe83a6a01600484b6959259a30ded5
+change-id: 20240204-bus_cleanup-rpmsg-1a5f6ab69a24
+
+Best regards,
 -- 
-2.43.0
+Ricardo B. Marliere <ricardo@marliere.net>
 
 
