@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-51674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B400848E26
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 14:41:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24897848E27
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 14:41:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06FF2284588
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:41:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC23F1F225F5
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:41:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CF60225CB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9506B2261A;
 	Sun,  4 Feb 2024 13:40:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QdlsK2hj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oihRNg4B"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 945DE22064;
-	Sun,  4 Feb 2024 13:40:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C155C224E0;
+	Sun,  4 Feb 2024 13:40:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707054026; cv=none; b=fT/LJb8xyXQBX02KgDB6/as668JUNBRmwJT+wf8DteQIgmGoOGeKe7bIvq6vKtCyHEiaN2PsOrpLEqqX9qO9UssMQdPP9stUPl9hRLwc8iFNYYpXED2ksdnsLZ/f0Xc/Qn64hRVHXjWHPKgrrCz03OrlpIU8ZIwviCtBJsVv21I=
+	t=1707054026; cv=none; b=KJ+lXN3F+TNRO3oAXfuOS6ciIaASzXxOdHY2VHTFYPSuin+Ev3StiN8ajzKOdS3sv9DXMTKY/Jl1id3FMAaAXocVoOY6h6apNYgR84tG5soLkAJquIoRG2e1jdINSx0/Xomu+zaRW261Vmy329xXyxjdbW+xcYxWgiAZDPota+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707054026; c=relaxed/simple;
-	bh=w5QM7+1JPXBZU46T1reJ00UqrQ3v4Gvwy+gpzb0INUU=;
+	bh=BMAQS7+vqkNKpPINrsTI6Gle5RLZn3L2OWtrc8K77iA=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=gGLS9virNXV7tZVuhpH3WEsWn8e9Q3fi85bo6LXezlTpzaRYyeghzCVUy0bPVKE780/IXNzzO1D32W8Q60VjoRvnhreCpLYcynQgUU+52X/iC14JPziTFkpl/i94/0krXC3AITOHEHGzd47eqzzTOFSs42sWtLSwnx+y8WXeCgg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QdlsK2hj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9DAA2C433C7;
-	Sun,  4 Feb 2024 13:40:25 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=ZjepmGqYkk+VO3w39kLk/SV3uSEKXu7VUq3yHRwtV9fMekqdhzDZjS7Vako6gJfxzd029oBWE0mjh68qlsZLxeX4ICwnHnNGCXC+iGkm+RPi1WfMv9m3IJ4I1OSbhmtW97S/uSQL0IztF8n5atvK2oYEwxxv3NkCL7BOfBZMLb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oihRNg4B; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 4DD9FC43390;
+	Sun,  4 Feb 2024 13:40:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707054025;
-	bh=w5QM7+1JPXBZU46T1reJ00UqrQ3v4Gvwy+gpzb0INUU=;
+	s=k20201202; t=1707054026;
+	bh=BMAQS7+vqkNKpPINrsTI6Gle5RLZn3L2OWtrc8K77iA=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=QdlsK2hj6TNjhFUKcVOBt7Gi001hj9Gq0j5y8/rb2v9cG19A4DxIwB+gb3KwdvI3Q
-	 EtDs4CtXt6zBAiTqTs8W/r+CmbNg/dbHdAqPgiyeJ/G9GJRSg2BhfxNlS7yFaxGLvZ
-	 jWh82wjzmQ/zOn/OmT9JlnDuYXyW70l94Jpt/eyIgPS2FiYudDs/wLcgc7TU+itXgC
-	 /ulTaTbpSKWLojgoXM8TS2NsenDdbiKYnXfdk4EegtT9uesoCelMLiEPWONR/SbJKm
-	 6dBMDuLatEZQw2NNvwc11rf/4pOF0iaP6+cehEidibBamqGbVzhVm9wmSb1pjiQ8oY
-	 tyQHKWMZUxfkQ==
+	b=oihRNg4BCPc6Fsr3tUvkYmcpW/QFQYMe8r2EzNqKaezOinghFfKrRLIKL+Ad464Pu
+	 N7yHRlIF/hSgKLXobNpxb3SBylVC7/+Xz079luScNrDW5msDIA/gUyrLib4MDdsosL
+	 WINXNHZ7gwEFFvn2dZTAetzm2Qh4JOGsu/l9tJfi93nMygFxrTRAaXR3RAydozbkzW
+	 YTL4unwV+ofC496EjyDACGGZfhfhcx7SSYNgD9Imbl7mehYaagEAw9C6/Xfs4EPyTw
+	 T0DJvbqN0o48MEGszgRDByuRKh0zDVrgSvEdYOJyOSjf3gxba6e08V0dtlkd66vdHI
+	 DmKE4fJEd/Arg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8429EE2F2EC;
-	Sun,  4 Feb 2024 13:40:25 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3941BE2F2EC;
+	Sun,  4 Feb 2024 13:40:26 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -51,41 +51,38 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net,v2] hv_netvsc: Register VF in netvsc_probe if
- NET_DEVICE_REGISTER missed
+Subject: Re: [PATCH net-next] net: micrel: Fix the frequency adjustments
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <170705402553.16095.3173468091429343383.git-patchwork-notify@kernel.org>
-Date: Sun, 04 Feb 2024 13:40:25 +0000
-References: <1706848838-24848-1-git-send-email-shradhagupta@linux.microsoft.com>
-In-Reply-To: <1706848838-24848-1-git-send-email-shradhagupta@linux.microsoft.com>
-To: Shradha Gupta <shradhagupta@linux.microsoft.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
- decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, wojciech.drewek@intel.com,
- linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, shradhagupta@microsoft.com,
- stable@vger.kernel.org
+ <170705402623.16095.16131459625270724303.git-patchwork-notify@kernel.org>
+Date: Sun, 04 Feb 2024 13:40:26 +0000
+References: <20240201204203.2691424-1-horatiu.vultur@microchip.com>
+In-Reply-To: <20240201204203.2691424-1-horatiu.vultur@microchip.com>
+To: Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc: andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ UNGLinuxDriver@microchip.com
 
 Hello:
 
-This patch was applied to netdev/net.git (main)
+This patch was applied to netdev/net-next.git (main)
 by David S. Miller <davem@davemloft.net>:
 
-On Thu,  1 Feb 2024 20:40:38 -0800 you wrote:
-> If hv_netvsc driver is unloaded and reloaded, the NET_DEVICE_REGISTER
-> handler cannot perform VF register successfully as the register call
-> is received before netvsc_probe is finished. This is because we
-> register register_netdevice_notifier() very early( even before
-> vmbus_driver_register()).
-> To fix this, we try to register each such matching VF( if it is visible
-> as a netdevice) at the end of netvsc_probe.
+On Thu, 1 Feb 2024 21:42:03 +0100 you wrote:
+> By default lan8841's 1588 clock frequency is 125MHz. But when adjusting
+> the frequency, it is using the 1PPM format of the lan8814. Which is the
+> wrong format as lan8814 has a 1588 clock frequency of 250MHz. So then
+> for each 1PPM adjustment would adjust less than expected.
+> Therefore fix this by using the correct 1PPM format for lan8841.
+> 
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - [net,v2] hv_netvsc: Register VF in netvsc_probe if NET_DEVICE_REGISTER missed
-    https://git.kernel.org/netdev/net/c/9cae43da9867
+  - [net-next] net: micrel: Fix the frequency adjustments
+    https://git.kernel.org/netdev/net-next/c/7d7bf30f031b
 
 You are awesome, thank you!
 -- 
