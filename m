@@ -1,144 +1,111 @@
-Return-Path: <linux-kernel+bounces-51780-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83020848F36
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 17:22:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEA13848F39
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 17:25:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B69941C21FB7
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 16:22:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2EC01283AEB
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 16:25:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B8F424A08;
-	Sun,  4 Feb 2024 16:21:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="CxdMg+vk"
-Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5804822EF9;
+	Sun,  4 Feb 2024 16:25:10 +0000 (UTC)
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F086F249EA
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 16:21:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E487722EE0
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 16:25:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707063705; cv=none; b=C+8p7GEVj8rEK01rUKBjj15E8Ho9OCor+t5ORzKJva29dynTszXrVkEBqQEVeyodqLQyfaZmS4c1cqB2vNq7MgJpB4EmThNSfwnTxAnIVjGegeiU+HPw9mgYARfgm8oDCGViadaO5ROfhSolG/d3erB0oMSpLvclI+uI7WGr/jY=
+	t=1707063909; cv=none; b=Go1yHGQgt/VZDrw/tmSIc4ymZI6y+YPvMq4pMKjU0Z+FoPqtz4xOgFzP0vXNupTB6C9L6OpPCFQOsroZn+hsVxEOgaXe0mN/M5iVrUvcTcPWX3C58Ond/h/6iNhH0DJS+xKXcRCXuaRjTRVsXgTx5fqcX1da+Fhx2qOtcUy+aec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707063705; c=relaxed/simple;
-	bh=whCsz08h0i58RqyKp8ULdq/KffGrpkytr5XrDDac73A=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=TQJw7LdBBfGvZ1uN0adOofM1YlYRLxhnnHasD9JCDOLoezz9ihlzc6BKXJZY9PGCVmPPu4cyO5SnddzErEcAHdOzX/AMRLU8BEiCvLyha+G6PlbUz/yIpQTuLV8ikiSVqSYLmrhZi9zGCWDdm36qG1V6FwzT2McuQCe8va29Qws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=fail (0-bit key) header.d=marliere.net header.i=@marliere.net header.b=CxdMg+vk reason="key not found in DNS"; arc=none smtp.client-ip=209.85.161.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-59a8b9b327aso1564659eaf.2
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 08:21:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707063703; x=1707668503;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:dkim-signature:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=K1azqWxlvOqGmzrUiDwgL9sXxCK8hJ79amUwNn8f5PI=;
-        b=YfO5q2D3pj/iFKb65TeylW4gLS8qI1/oKEYF40cx0eM1R2D9oKyM09rgIcB6bZdpGX
-         W19l0Ll13DFVs664jlxxDy3A3XXd4HREJnH9SINlVwuU0fRsBnVgWnXzEsBMAs3Z0lQo
-         +WYPJ9pAQUhSnvNwy9JX/XrtLsQLxBie20EiGOJlLGh5pgUQ6NMAVVHAaxfBtWK9cwW6
-         l6iWynILsswxPmwqPj5krVkQoVY0da5JGyHDaqkA8Ad5Fd3j9pVzBGLTKHOUnoQY7on9
-         IZIu6z9Wf7tL9nPoIWG58laXpqkjdHVorlpgqcSJuufEp4/mjZiJh+ayl8p9Xjta/BVI
-         G0+Q==
-X-Gm-Message-State: AOJu0YxXtV5nYLwHLMNTHKOHMbE9/AF3t4sVdLMictrmONL94/UrnjZ3
-	If+jAWKv6D/GxQMExyNiln3f/S7gxElgJvPUxU067E5K7iEZLyop
-X-Google-Smtp-Source: AGHT+IFdEpUr4Xm+ktfWdWoY0RlDODYRlAPL/Wr0wrViAu0CesHzb8MPB2oEl74NUDZW8U2iSUiwRw==
-X-Received: by 2002:a05:6359:1011:b0:176:6141:48e5 with SMTP id ib17-20020a056359101100b00176614148e5mr8432454rwb.10.1707063702762;
-        Sun, 04 Feb 2024 08:21:42 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVzNmELDhKDwAdF7fxU3VjkJGOMlEATJVhXSMYG8QGPVYN4cFTsVOanXxWm/h64jMko6taWjgDoFDEVdYmccwcmTWycUrSi0RzKcbi2mLsBaNIGjQhsseX4bGGFcptoXBrJ9ZudX++zzZdIStnJixk1yulb2H39xGEgX5/NcTSx7erXJneHW9HAcBMi+Sm/t85H
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id d12-20020a634f0c000000b005d8b89bbf20sm5232335pgb.63.2024.02.04.08.21.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Feb 2024 08:21:41 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2023; t=1707063701;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=K1azqWxlvOqGmzrUiDwgL9sXxCK8hJ79amUwNn8f5PI=;
-	b=CxdMg+vkB4kY9oEf/zuX2BfMsjMCxy2adbhuqXrgoOCnlmtCsMnb9hIDND0f0moqG3nmko
-	jydFr/JTUaZVENlTXTMKYAzABYY5W9O5qBgpyNbcQLhuamJsLmQqMm79qn4WoM62opjyv7
-	mSqu/q0bXZJ42Cv6tFjPpLR8MewRY4jy8q7Q0HhhZkMNs2C9M8XnKNPxXN8wWNa/b/HGrg
-	MDz2pguascEUqGHJzIBHYl7Q5KbHMmZA0g2OB3ugSdTiO1wAU7eRIMtkcsGKEQpdeMyr21
-	/cNzrpl1tKCYhvCa0SLa9DSPJcHOwwCSa5f1Kl+bcn3hKjy8x7HDhJkyRTOA9Q==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Sun, 04 Feb 2024 13:22:01 -0300
-Subject: [PATCH 2/2] ntb: core: make ntb_bus const
+	s=arc-20240116; t=1707063909; c=relaxed/simple;
+	bh=plU8UoPkzCaurb47JhN6xQzr89BfEnqggC31tveZ0go=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Cc/BeD5fyR1OtaDnHFK4VwxeVpHciJ6xe8y+Xx0t0cuZOfQB9sYgdJgecVRE5SHakcjjaqeDCHbgM/mMRWZVuWYgTAO2URrI9KnJjjSGfyd57KRVIFEP5lOBqaTo/T+9ILvI+SholaECQedf17Qz3tUwkGdGaMnAdhzV47wgbjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D244D240003;
+	Sun,  4 Feb 2024 16:24:54 +0000 (UTC)
+Message-ID: <035070c6-7adf-4a38-bb5a-fdc4be353c93@ghiti.fr>
+Date: Sun, 4 Feb 2024 17:24:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [riscv?] kernel panic: Kernel stack overflow (2)
+Content-Language: en-US
+To: syzbot <syzbot+5c1ebfe49c5e8e998e75@syzkaller.appspotmail.com>,
+ aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org,
+ linux-riscv@lists.infradead.org, palmer@dabbelt.com,
+ paul.walmsley@sifive.com, syzkaller-bugs@googlegroups.com
+References: <000000000000ed365206107e0783@google.com>
+From: Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <000000000000ed365206107e0783@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240204-bus_cleanup-ntb-v1-2-155184f60d5f@marliere.net>
-References: <20240204-bus_cleanup-ntb-v1-0-155184f60d5f@marliere.net>
-In-Reply-To: <20240204-bus_cleanup-ntb-v1-0-155184f60d5f@marliere.net>
-To: Jon Mason <jdmason@kudzu.us>, Dave Jiang <dave.jiang@intel.com>, 
- Allen Hubbe <allenbh@gmail.com>
-Cc: ntb@lists.linux.dev, linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1215; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=whCsz08h0i58RqyKp8ULdq/KffGrpkytr5XrDDac73A=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlv7msZcSD4qoPu9zwiVBcachyuBTMd9GvMQabu
- JmJUIfJi0KJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZb+5rAAKCRDJC4p8Y4ZY
- pkqLEACGTjC2kEyiouj+vFMWhl6ZY5OArxAOjO4RjgPcmnC4Qw/aR5riG36KNV/Q27Z1PBdiE8r
- cd2uelujSEOhlcEZBStiqoeQ6djMCvYfRS/+39SJT2dg9sp6ytRtABTQJ8eJbXqH1TXNNFayxAB
- Y3yrsuvXTgwnC3pH6DUDhrHsTqam9162EEfMefKcPb9d+aLLb55JHriIvW3xVPr/11NTLhpijUJ
- xjOAJGCu7IVzDH9hvkVxaigXbja1aSjKrLfsMNOdC+eN7g/FBSasyDsqylGskOx85xFYX9kEmk/
- l3sE2zDg8Z+f7RVb4Itk23nYF6Q0AcAaDjCU//Bb+bXbLj74Qa5rmY7J6S5MvFgsg+BmEt5mj+H
- /RslGj+/G0gUaUozu4ZYyiLw+1Ir7pfP9xbDaWn26PliGmE5QDGu01S8kwCF1e7784cOfpCHEy6
- vuRhPc76HnLS7hwAKbpS4J5IofFSwBiSHzRIVWkNT5Pe07uH1EBBdcVu40ZayrMEbTdD5wIJ8uX
- jWyCPvg15C4ZM/FHUEASsR3fKkW6Mw79CZZvpdMpWe9uBm9LNANAp/Iz898JrQYvzTVVx1/tFaA
- 256HZ0DWl0SMW+7eUAb+uVd2aONhFsU24WNl7gDSXshNnS8U80WDlm5SWZerQCqL/5kLVdlQ2sh
- xrf7mJYpUbWb/+g==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+X-GND-Sasl: alex@ghiti.fr
 
-Now that the driver core can properly handle constant struct bus_type,
-move the ntb_bus variable to be a constant structure as well,
-placing it into read-only memory which can not be modified at runtime.
+On 03/02/2024 19:02, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
+>
+> HEAD commit:    6613476e225e Linux 6.8-rc1
+> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+> console output: https://syzkaller.appspot.com/x/log.txt?x=144ac160180000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=877e61347079aad5
+> dashboard link: https://syzkaller.appspot.com/bug?extid=5c1ebfe49c5e8e998e75
+> compiler:       riscv64-linux-gnu-gcc (Debian 12.2.0-13) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> userspace arch: riscv64
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10c57b90180000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15d369ffe80000
+>
+> Downloadable assets:
+> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/a741b348759c/non_bootable_disk-6613476e.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/33ea806d02dd/vmlinux-6613476e.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/33195f72f823/Image-6613476e.xz
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+5c1ebfe49c5e8e998e75@syzkaller.appspotmail.com
+>
+>   s11: ff60000011241a00 t3 : 0000000000000004 t4 : 1fec00000224849b
+>   t5 : 0000000000000002 t6 : 1fec0000022484c6
+> status: 0000000200000100 badaddr: ff2000000493ffc0 cause: 000000000000000f
+> Kernel panic - not syncing: Kernel stack overflow
+> CPU: 1 PID: 3859 Comm: kworker/1:3 Not tainted 6.8.0-rc1-syzkaller #0
+> Hardware name: riscv-virtio,qemu (DT)
+> Workqueue: usb_hub_wq hub_event
+> Call Trace:
+> [<ffffffff80010868>] dump_backtrace+0x2e/0x3c arch/riscv/kernel/stacktrace.c:121
+> [<ffffffff858a9b60>] show_stack+0x34/0x40 arch/riscv/kernel/stacktrace.c:127
+> [<ffffffff85904e9c>] __dump_stack lib/dump_stack.c:88 [inline]
+> [<ffffffff85904e9c>] dump_stack_lvl+0xe8/0x154 lib/dump_stack.c:106
+> [<ffffffff85904f24>] dump_stack+0x1c/0x24 lib/dump_stack.c:113
+> [<ffffffff858aa5b2>] panic+0x33c/0x77a kernel/panic.c:344
+> [<ffffffff80010396>] handle_bad_stack+0xe0/0xf4 arch/riscv/kernel/traps.c:412
+> [<ffffffff80214a26>] mark_usage kernel/locking/lockdep.c:4599 [inline]
+> [<ffffffff80214a26>] __lock_acquire+0xaa8/0x784c kernel/locking/lockdep.c:5091
+> SMP: stopping secondary CPUs
+> Rebooting in 86400 seconds..
+>
+>
+> ---
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- drivers/ntb/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/ntb/core.c b/drivers/ntb/core.c
-index 27dd93deff6e..f32b77c7e00d 100644
---- a/drivers/ntb/core.c
-+++ b/drivers/ntb/core.c
-@@ -72,7 +72,7 @@ MODULE_VERSION(DRIVER_VERSION);
- MODULE_AUTHOR(DRIVER_AUTHOR);
- MODULE_DESCRIPTION(DRIVER_DESCRIPTION);
- 
--static struct bus_type ntb_bus;
-+static const struct bus_type ntb_bus;
- static void ntb_dev_release(struct device *dev);
- 
- int __ntb_register_client(struct ntb_client *client, struct module *mod,
-@@ -292,7 +292,7 @@ static void ntb_dev_release(struct device *dev)
- 	complete(&ntb->released);
- }
- 
--static struct bus_type ntb_bus = {
-+static const struct bus_type ntb_bus = {
- 	.name = "ntb",
- 	.probe = ntb_probe,
- 	.remove = ntb_remove,
-
--- 
-2.43.0
+I ran the reproducer locally all week-end but not luck, it did not 
+trigger any panic.
 
 
