@@ -1,82 +1,81 @@
-Return-Path: <linux-kernel+bounces-51724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51725-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B222848E9C
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 15:49:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A30D848E9E
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 15:49:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFFAD1F21952
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 14:49:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C939B222A2
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 14:49:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 965A7224E3;
-	Sun,  4 Feb 2024 14:47:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2547B22EF2;
+	Sun,  4 Feb 2024 14:48:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A4Ge1Czm"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RXE9ZS7E"
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6444A9465;
-	Sun,  4 Feb 2024 14:47:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED86C22EE9;
+	Sun,  4 Feb 2024 14:48:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707058047; cv=none; b=aR+NBuIcscKsqadTx8MDAGP2nn9HYAdNdhbafYmMd+hnBMrWaHa8+h4ONE60qMqZxWLcCIGzzL1eVCNAfc4Kq+xF5HOoz8SvV+Z9zt4j1ZjaBfvinWla0KlZjiByn85HpQ08RJatymQl3SzkfwwFmPBkuw6bOqLA7BJIMcHqTZM=
+	t=1707058082; cv=none; b=AtgEJWTq+8c97lMIvYK3tk3nOE8Ukdx20UAlgJCqAHx1+Hpit3EjUinpJDbCdHDc/IIswLSsmvkAW0yscrPInt3uDG0RDJoAtl3K6oGhgiEa6kXeRXkFHtG9B/wnWNOdx3xJl7DZVkkgJwBwYDqKzdybqEtGY+sHpl+KxaoBB20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707058047; c=relaxed/simple;
-	bh=m3Jy76PhMLlcHJABd3sQLeIQ6gDRssB/iSvJUUFUYNk=;
+	s=arc-20240116; t=1707058082; c=relaxed/simple;
+	bh=90KNTWxfgeziFDQ/3TZ0B5vtg7ngUvLnBCrxOucvty4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sqV4/3Bw+4im3shTSu04pXTAXAPz050zi0sphsxr0ZMVJ6LZxrJmwzbWso1xC2M5/pfK/OgdRHlpPJQm2YGrgLJs4P4FJrr0a1Jpq+0ENRuBd4f2nck5nIQEFu2DRXb6r6V+ZwyuYSf3IGMfdeG96bxRMPrYmwW0wcLoyDJGxY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A4Ge1Czm; arc=none smtp.client-ip=209.85.210.178
+	 Content-Type:Content-Disposition:In-Reply-To; b=g5bRrDhoH6eiT3zOPkPUzQvZed7/aF4wlcLu6cmVOOiAHvRGzVVocuAAoHfoBGbKU1oHJjnd3ZNduyP3m7c5bxbRW3LvqlHYdjQ2oX6Zlsh76z1RK2XDwIGgdN6X1ooEfVByujK40mIYNY5QLT1nLgyl9Ar33i7dQRQfnp8NlX4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RXE9ZS7E; arc=none smtp.client-ip=209.85.215.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e03ab56e75so128594b3a.2;
-        Sun, 04 Feb 2024 06:47:26 -0800 (PST)
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso2997919a12.3;
+        Sun, 04 Feb 2024 06:48:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707058045; x=1707662845; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707058080; x=1707662880; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=lwReRzXXpjYUlVCgbTG0gMEwWsRKLH7sLsnRayuqFqo=;
-        b=A4Ge1CzmBtoILVIWYHD7zxFQb89gqxpw9mFwUNZuIRvU4Me5sLUFJvPsMIEjEXzXuN
-         icKRO+WXhxAvIbNd/LbArqw1fPw66dTZWcQ06+3vRUPC6VC9FyxdCFFkeUAhPEGqudEc
-         +sy/lQF7Pz9BAcB3MDyqU1CHXWK6P+tISlOb3ri/IeMmsEhl24JTR/qdXnFRnmBOqzn0
-         23gkh88eh5g0N1vJDohZV+v5rkMpsIMAjg1nlt2yHpE3uNju1JBJlrQXTqVVwMdf2njh
-         U0eKk0YjfE5RqUek+v9uw8TvCwhSwK8uuolPCkaxAc6Ftzu3OvQQoEE6/KDqoPD8mk8U
-         TbYg==
+        bh=Z+SGUHbr9Bwe1092OOL4Vmw2wvzHSTzn/lVZ6fgcAdk=;
+        b=RXE9ZS7E6Qqs7H3IGsJuEnsDw9Ffx94WjKYmvtKQr/NAjXdQmIBpoXC6cY7NG+QSOa
+         4hkOoRKWe3oLvAYBL/2RPuUoGtVVP/UShzMOVWFRn+S2N20v+aLV1LHMYTwkhU1ovs2M
+         HzJB2FIQF41ryhyg/CMQonf6aQuH5CZCMoPQNhnvL8DsGoY5Ssi5AUiYFM/WbZq17a5a
+         TudGOXi5vUuZO5fZYrXtW8C8WgnOMK5uaawxwY7PC9/EqEqyEZu6/71zont/VlOe8N+L
+         CrgdRklOx5VDwyOcLxQ6X0vhlsJGTlN8d7Oes+lGmSP3L12XIaqgMzhK9uZGXz683iLI
+         aryw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707058045; x=1707662845;
+        d=1e100.net; s=20230601; t=1707058080; x=1707662880;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lwReRzXXpjYUlVCgbTG0gMEwWsRKLH7sLsnRayuqFqo=;
-        b=od2SO1MPBMaJO3NWTnGgQtPAmlZTfMeCOcfHHxQXeGnR10l62434bWAd/v/U+os08X
-         OM5fWevXGTJL3sRXboq3MrTEweGIKlbGqdCCI1Er94jTymA0bMr0Q3I13nJmcTR1rYDo
-         /gk02r7SDJ+GXvM2qundZSlGa6HTZXycfFKATFFyOAfSCHxoLwR8934QYT7HlZFSqLyp
-         g4zZmYvcuy2w8VdcLRoMDmXp84zYLFaYm4qPZQ5SSj5Xha9itrE9LROPYYw3vP/IyHTa
-         LGlg89GDbmA2SQfwsgmfobKP5lbQryv3Q3FYMTgDR5KREKbwE2dkMU0+V/xyMVsLgxP0
-         YK7A==
-X-Gm-Message-State: AOJu0YxcmhnNHDM8YgPKAUs39x4oYgH2+qtdNIuDyrYmPHDeTiBMgXls
-	H/oEqE9BA5Y6BSk3128I5yzjaXw33jX2k8LoBXDwyAR0PnV371A/DMgQVOg6
-X-Google-Smtp-Source: AGHT+IE40eDopAIGPJ/kRruMbFaLdVCaGvjEmPV9ckRuXbME5f+ZBfsyYlr1+BfUKsXI3M4ZVEAl6A==
-X-Received: by 2002:a05:6a00:4b4f:b0:6e0:3b40:e375 with SMTP id kr15-20020a056a004b4f00b006e03b40e375mr1080467pfb.31.1707058045663;
-        Sun, 04 Feb 2024 06:47:25 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVfDIMj2jBme42JG+7xO3ZxjjZKEG9rV0+aX9UPlzwfIKkUYgqsx46kWhKRorU1ew8gCW+zfVPxPD9BR6a63fUl/U6QBwYw9e4TI/LGJYHzDHmJQRkTHOJW8dDH6j+mUQWJRxHWXOW8712RBsG7ssQY8hnaS5OSaBCfu6PSyIH/
+        bh=Z+SGUHbr9Bwe1092OOL4Vmw2wvzHSTzn/lVZ6fgcAdk=;
+        b=tMWeP5ry61eYwMNtGychwgPsrX6HN+UezZCz7FBACbRJdMLHbPdqUx8P7ahNP7kCSl
+         BSLC8ZZXfVMhwHR9c8rKqB0EkQsGzxBxFd633s2xsIeWA+CjoOhsNAbCN7noL4lr2+zo
+         O4PZJozK6z48wepfjXx2hwVJG7hELn3SWmAa5rTK6olZGKcqXiWoQtAtCDgKCEjmCIay
+         A25pBBMB/9BzJ5JFX2jZaQ4yngrAoFnAB5PW1qS8MWeVPDvsop44/pU5ks+za8QVaUu4
+         FwB9+9tSPvsfHTsvlyyc5iLkaixb67784rxoxYPOAnSb4RM70g46aNIBV+rkcRO+DMBe
+         e2Lg==
+X-Gm-Message-State: AOJu0YywiVe8DBcSJnwQItwhRWjuBE9CRDzHRULYA7FePvfayhB9mvMK
+	niR/sn2eKxXegEki7+RN05gmHi0ZlCBsVHW97LMOQ6DoCVm2P9Pfxw0delnX
+X-Google-Smtp-Source: AGHT+IEKP4BNyWXwpmnAU/mHdFxdUYuAINsrQSzHRyZtNaT2Jij+W9Qba7oFgZmcVHeYBuA05o4xxw==
+X-Received: by 2002:aa7:9836:0:b0:6de:1d46:1fa5 with SMTP id q22-20020aa79836000000b006de1d461fa5mr10660201pfl.13.1707058080198;
+        Sun, 04 Feb 2024 06:48:00 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWUAgaXESL9XM7mQry5j0qM6YMcVKNlkkdM6qLJu5roLhXds4kCzGYxMjEFEQwsn1jwPFlOcLJgS+IMVV+0qY872o2U4A5cH6XIfpTkGXHnOH1peZfWkMhmdy4hOqcJGV3pM/yuIARQtFrgtFN1blJekHo/ZOqmaYjpmhC1z3DG
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a7-20020a056a0011c700b006dfe402357bsm4836193pfu.120.2024.02.04.06.47.24
+        by smtp.gmail.com with ESMTPSA id y18-20020aa79e12000000b006e0418993cesm512599pfq.8.2024.02.04.06.47.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Feb 2024 06:47:25 -0800 (PST)
+        Sun, 04 Feb 2024 06:47:59 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Sun, 4 Feb 2024 06:47:24 -0800
+Date: Sun, 4 Feb 2024 06:47:58 -0800
 From: Guenter Roeck <linux@roeck-us.net>
 To: Zhang Rui <rui.zhang@intel.com>
 Cc: jdelvare@suse.com, fenghua.yu@intel.com, linux-hwmon@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 07/11] hwmon: (coretemp) Remove redundant
- pdata->cpu_map[]
-Message-ID: <d414ba25-c541-4036-b442-9e53f16ea02a@roeck-us.net>
+Subject: Re: [PATCH V2 08/11] hwmon: (coretemp) Abstract core_temp helpers
+Message-ID: <717bdf59-4556-49d7-8c73-5e02c0f3df90@roeck-us.net>
 References: <20240202092144.71180-1-rui.zhang@intel.com>
- <20240202092144.71180-8-rui.zhang@intel.com>
+ <20240202092144.71180-9-rui.zhang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,15 +84,13 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240202092144.71180-8-rui.zhang@intel.com>
+In-Reply-To: <20240202092144.71180-9-rui.zhang@intel.com>
 
-On Fri, Feb 02, 2024 at 05:21:40PM +0800, Zhang Rui wrote:
-> pdata->cpu_map[] saves the mapping between cpu core id and the index in
-> pdata->core_data[]. This is used to find the temp_data structure using
-> cpu_core_id, by traversing the pdata->cpu_map[] array. But the same goal
-> can be achieved by traversing the pdata->core_temp[] array directly.
+On Fri, Feb 02, 2024 at 05:21:41PM +0800, Zhang Rui wrote:
+> coretemp driver has an obscure and fragile logic for handling package
+> and core temperature data.
 > 
-> Remove redundant pdata->cpu_map[].
+> Place the logic in newly introduced helpers for further optimizations.
 > 
 > No functional change.
 > 
@@ -103,70 +100,4 @@ Applied.
 
 Thanks,
 Guenter
-
-> ---
->  drivers/hwmon/coretemp.c | 16 ++++++----------
->  1 file changed, 6 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/hwmon/coretemp.c b/drivers/hwmon/coretemp.c
-> index cdd1e069d5c1..29ee8e0c0fe9 100644
-> --- a/drivers/hwmon/coretemp.c
-> +++ b/drivers/hwmon/coretemp.c
-> @@ -96,7 +96,6 @@ struct temp_data {
->  struct platform_data {
->  	struct device		*hwmon_dev;
->  	u16			pkg_id;
-> -	u16			cpu_map[NUM_REAL_CORES];
->  	struct ida		ida;
->  	struct cpumask		cpumask;
->  	struct temp_data	*core_data[MAX_CORE_DATA];
-> @@ -517,7 +516,6 @@ static int create_core_data(struct platform_device *pdev, unsigned int cpu,
->  		if (index < 0)
->  			return index;
->  
-> -		pdata->cpu_map[index] = topology_core_id(cpu);
->  		index += BASE_SYSFS_ATTR_NO;
->  	}
->  
-> @@ -696,7 +694,7 @@ static int coretemp_cpu_offline(unsigned int cpu)
->  	struct platform_device *pdev = coretemp_get_pdev(cpu);
->  	struct platform_data *pd;
->  	struct temp_data *tdata;
-> -	int i, indx = -1, target;
-> +	int i, target;
->  
->  	/* No need to tear down any interfaces for suspend */
->  	if (cpuhp_tasks_frozen)
-> @@ -707,18 +705,16 @@ static int coretemp_cpu_offline(unsigned int cpu)
->  	if (!pd->hwmon_dev)
->  		return 0;
->  
-> -	for (i = 0; i < NUM_REAL_CORES; i++) {
-> -		if (pd->cpu_map[i] == topology_core_id(cpu)) {
-> -			indx = i + BASE_SYSFS_ATTR_NO;
-> +	for (i = BASE_SYSFS_ATTR_NO; i < MAX_CORE_DATA; i++) {
-> +		if (pd->core_data[i] && pd->core_data[i]->cpu_core_id == topology_core_id(cpu))
->  			break;
-> -		}
->  	}
->  
->  	/* Too many cores and this core is not populated, just return */
-> -	if (indx < 0)
-> +	if (i == MAX_CORE_DATA)
->  		return 0;
->  
-> -	tdata = pd->core_data[indx];
-> +	tdata = pd->core_data[i];
->  
->  	cpumask_clear_cpu(cpu, &pd->cpumask);
->  
-> @@ -729,7 +725,7 @@ static int coretemp_cpu_offline(unsigned int cpu)
->  	 */
->  	target = cpumask_any_and(&pd->cpumask, topology_sibling_cpumask(cpu));
->  	if (target >= nr_cpu_ids) {
-> -		coretemp_remove_core(pd, indx);
-> +		coretemp_remove_core(pd, i);
->  	} else if (tdata && tdata->cpu == cpu) {
->  		mutex_lock(&tdata->update_lock);
->  		tdata->cpu = target;
 
