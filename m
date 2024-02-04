@@ -1,128 +1,151 @@
-Return-Path: <linux-kernel+bounces-51878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51879-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74F31849057
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 21:28:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D311849059
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 21:28:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AA451C20F30
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 20:28:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D68671F2286B
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 20:28:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAC162562C;
-	Sun,  4 Feb 2024 20:28:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82B5325578;
+	Sun,  4 Feb 2024 20:28:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GBn5Ddon"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="ALaAIbcx"
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BBF625622;
-	Sun,  4 Feb 2024 20:28:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4910F25561;
+	Sun,  4 Feb 2024 20:28:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707078483; cv=none; b=qiSMRKMNC2+LQcTHPkTaTBTb4kw1clN6F5X0lgDl2aA9N2RxgWduqIPlmujbjkwAVlwrJuXuS8gH9Wn57bK5CgpOiPWVNMj+i+EX0YcEyOQviRItd8ckgcF3WI09qccFgshaLxe96p4BrJ3T71TQlapggK6S2saS5jGDh5Y8MzM=
+	t=1707078511; cv=none; b=jOMwaSRtWLZSZPvtgKW1IjoZRFGLpQyhsmcoCB/T8KIhIDdawvRywadxRCH4agsRW3eNubqjdWTMv4zgCkm8GUD3qIlv3xXi/3KvGYD7xJ0Nng/N0pjpc5P6vP/pJ8G4JpG5CV2UcL9p6hmvlMo0fMoP6ESRd7op+mrfhmWT6Rg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707078483; c=relaxed/simple;
-	bh=pYUDma7IeNGn5sB0DMsKBMM7M0vpq2RmkTAySdwqiIE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nNz1PizMfxv5bcZncFp/07OYpGPpKD9KAvoe62h4bSdNZ+TNgls/neyIKuVTg7P7oInHiItQyr/IU5ns00pBlL071WJE3BH0vZmnzwUppQyhtk7ctVuQzwRSjmZIvuUp9x9Pzzjra6Ryv4QNbQGuVPu/nwLzu9pLGqC5BX5xX60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GBn5Ddon; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707078481; x=1738614481;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=pYUDma7IeNGn5sB0DMsKBMM7M0vpq2RmkTAySdwqiIE=;
-  b=GBn5Ddon6IYh7nSYE0umg5jhZSJS7avPinYl+hA/n7NQS1WaUMN4NQTA
-   LatmrEfVZPim9LRhTBtfx9yFNFgy1ZIiHkk4KTDwrfRDr2GW5S3JBPXmf
-   I0hNRCbeqp30yjmwgIl0p/sQF3Ep25YncIYQh+ESqoR8s9KPu0pPrp/87
-   YBoR7FyPSHRJx70pqk2E71rNQeAFNevjbupZqDyfR89hOF/xTxH+njLbq
-   RvS3+yKIAMrWOTJAsjVRg7K+0RBKpJwvc02XHXoqZ/Bd7eSSxsAKJKbjE
-   5SeDod4vDaHlRueb4U+TkhVLDmBlyygFxRIZMU1FqgE1lqqCPO9or1+O+
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10973"; a="25864383"
-X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
-   d="scan'208";a="25864383"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 12:28:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10973"; a="909116928"
-X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
-   d="scan'208";a="909116928"
-Received: from cluevan6-mobl.amr.corp.intel.com (HELO [10.209.72.230]) ([10.209.72.230])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 12:28:00 -0800
-Message-ID: <6a696340-b57c-4fa5-bb2e-b3a0257453bc@linux.intel.com>
-Date: Sun, 4 Feb 2024 12:27:59 -0800
+	s=arc-20240116; t=1707078511; c=relaxed/simple;
+	bh=RRCLSllk/dva2G67ul2MmtyLcjpVRvPRfARykcNQ2Tg=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=H5tcsNOunzn05KIB/vXR7JVsAcvXufI5GgsDlj0P0lpogZmS/OCyXzI8j+F5nc1s0nZUzvXCNsn4OnnKQSuM/RjDNafSZIv8WJ3Tfo0eaFTBS6FBk956tKbq52nMjh5lMsP1oDCFS2oD/1qrPPX4TgL2hDlGcG31+OCZ0mJhQOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=fail (0-bit key) header.d=marliere.net header.i=@marliere.net header.b=ALaAIbcx reason="key not found in DNS"; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-296855c0d71so324924a91.1;
+        Sun, 04 Feb 2024 12:28:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707078509; x=1707683309;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AZyzkVisa85tXBmaGDAlY9JwNyrAUGZi87nExzLR28k=;
+        b=WVImLoxih3fLEySGm2BrO5uwPRBqd/oly2NP732rIZhLaEb+elAjPa6VP0LyHt6HBH
+         CUVZ9G4XMF+hs/Du0nGZGh6KGoiSqE82SDTmDiabsd8ZS/FmWNvbfsLfm9N9H14ye4i3
+         RrDtiQ2IAWJDe3hD44IkFXstqoxKycGmlBg7SzSoe28xvtHJDWw1hneTdNj9vnBmvSBK
+         jmKXkX2kGnPU+CiTQFCmvGYeedEr5W/uWbIBEmAztQkkQuFOkSOBD0VhqLiWXgui2Di9
+         G7LN3Oj2Vm7xH5JVppch30Ltafw2lt+7crdd0e3s/C8WNZItggfNZbCOGwebw7ExDIOj
+         8qIw==
+X-Gm-Message-State: AOJu0YyG63LlLUruaZnypyjXcWGFTi6wHLlJikAbrwao7yMWH96f6+JE
+	DNtekY8bCrEQUTSaVQKpWLUoVzuJNwI+0wPIWGvVT6/GBEVNhGTtF5mmtCwNg5uzrw==
+X-Google-Smtp-Source: AGHT+IE32prgA+85zzPEW6sOrhd9fBWgUfwAA5LQ2uAbi9+DCSuJyhy7UzWrtayKsN8EqHoTlx3faQ==
+X-Received: by 2002:a17:90b:1283:b0:296:4188:10f1 with SMTP id fw3-20020a17090b128300b00296418810f1mr5604863pjb.7.1707078509537;
+        Sun, 04 Feb 2024 12:28:29 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUeNGgYx9QfQ/v0FzSyhM5876GqlTTI4bi03Fw7oTwBz7X4cSslm6/PRhwaAget4SS4ZPv+qtDqaMUzRv+C0d2X3onlDlkXhiDqr5afsTDbeGzfsT4Y60UkfnCuty53v7jMkYpl/JCHyhzXeDatGApRW/UML4GtK5lZ26DTtSYcbEUlREsNbEJwIuB8SiAAagHg7FhumiWRJNvvfCqFRK+y8HDRq6nbLyKAAYhEDckhCMOKUuEb69zYxwD/gGGgFpM=
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id v5-20020a17090a898500b00295fac343cfsm3692160pjn.8.2024.02.04.12.28.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Feb 2024 12:28:29 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2023; t=1707078507;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=AZyzkVisa85tXBmaGDAlY9JwNyrAUGZi87nExzLR28k=;
+	b=ALaAIbcxjDxefM7vgoumnBR4vqsaVCwGPs1yRdo6leEP16Ah6qa0mPHpAbbpHKCU/9ulu0
+	4AhKX9EAfwuhRX+KLWapezYOPb2Z1Xi2/PNdjNXscYW3OPcXY4siH/2/VCyaQ9fJrgeK/p
+	AzhClPqK2i6z3QpE/xvl59zH0Z4uwjcu7IXasJPxum0ZB1G6hsJOUk+vjT+3UIqczIxZVo
+	k8xWGq2VItde3+CMlTg7wWKK7dBxGokZ3oQ5WGh5OjIxQQXf07AUpJYKGe3wN8RV/YnGJJ
+	1qD5XrFe7raTjlp7RfiZDhtnx6x834PgUm/X7O0QnY9AvJaDvNb7TiMHlykUVA==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Date: Sun, 04 Feb 2024 17:28:58 -0300
+Subject: [PATCH] pci: endpoint: make pci_epf_bus_type const
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] efi/libstub: Add Confidential Computing (CC)
- measurement support
-Content-Language: en-US
-To: James Bottomley <James.Bottomley@HansenPartnership.com>,
- Ard Biesheuvel <ardb@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
- "Yao, Jiewen" <jiewen.yao@intel.com>, "Lu, Ken" <ken.lu@intel.com>
-References: <20240203075736.3982371-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <82a84e769875c70279348179c1b2b63a16770c8e.camel@HansenPartnership.com>
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <82a84e769875c70279348179c1b2b63a16770c8e.camel@HansenPartnership.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20240204-bus_cleanup-pci-v1-1-300267a1e99e@marliere.net>
+X-B4-Tracking: v=1; b=H4sIAInzv2UC/x3MTQqAIBBA4avErBNMrKCrRIQ/Yw2EiYMRRHdPW
+ n6L9x5gzIQMU/NAxouYzljRtQ243cQNBflqUFJpqaQWtvDqDjSxJJEciTBKO/je9NYFqFXKGOj
+ +j/Pyvh/oZwPmYQAAAA==
+To: Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+ =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>, 
+ Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1398; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=RRCLSllk/dva2G67ul2MmtyLcjpVRvPRfARykcNQ2Tg=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlv/OKdIMGul4wCgFnoEfeI7KtsNOS+66/OYPmn
+ tGCpi9ety6JAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZb/zigAKCRDJC4p8Y4ZY
+ pjCMEACMmaS1QqpGmPkkUEdiwf23FwtT0cLiFl0ZOIvAW+4mrY7tx6a9ibnvxJ8WAtkC2nn+H5n
+ XiJBRx45+FhXh+P/KW7bookQK2B0wEoWG+457jMWClv/921OdJlwWZ/Ol95AgGJAb2slVFcrHaz
+ FXcWWwJM1iBUh+gBhK6Gl4ShYdjBXTDq5GSCTXW5JvHKGElpzhO0QKOSbs6RykA9fAMQg4XXqHs
+ AlM5BOYVVSViE9zGSQmh5ykW4kaIiv1k/Oo2tpkwNJnMnesADE5pu2t4ygb9iH+bnkcHRJqA4gW
+ 4SbwWGCqoswVd4FFU2PdslQsc3rJBl2mGeBbuM1RSk44HvtIy8N1UOUwzNwnHelUkmKZwmpUWem
+ B9NDRPkBPd1pFNjmtai4nepcdRCrVbEEeo6ykm766E7OS1zGsN5dJxeqxmYJXjV/N+GEgqurYyz
+ dSlW3rgBkoioIXlpaHC5mppEge8j6WhOVj6yMhWhozyXnD8Eyvo2XEvYZ6piR8X5E5fXgnOPDE3
+ TJJRqvp5e8e/RvKstDzbRJVTPGpNfUrncixrcLMZyZ5rHpqR4341Dtf2pEFd0AR+o/Soegl3yIZ
+ cHSq1s9BGxnRQP+FCdVuhu3Qf9uQ9ncXNd1saJhJ99IMt4bWf/ZFRQX5vcU9gJpduPDDMo7sWJc
+ 5ELFGl7GxiIUPBA==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-+Jiewen & Ken (RTMR firmware owner)
+Now that the driver core can properly handle constant struct bus_type,
+move the pci_epf_bus_type variable to be a constant structure as well,
+placing it into read-only memory which can not be modified at runtime.
 
-On 2/3/24 10:46 PM, James Bottomley wrote:
-> On Sat, 2024-02-03 at 07:57 +0000, Kuppuswamy Sathyanarayanan wrote:
->> If the virtual firmware implements TPM support, TCG2 protocol will be
->> used for kernel measurements and event logging support. But in CC
->> environment, not all platforms support or enable the TPM feature.
->> UEFI specification [1] exposes protocol and interfaces used for
->> kernel measurements in CC platforms without TPM support.
->>
->> Currently, the efi-stub only supports the kernel related measurements
->> for the platform that supports TCG2 protocol. So, extend it add
->> CC measurement protocol (EFI_CC_MEASUREMENT_PROTOCOL) and event
->> logging support. Event logging format in the CC environment is the
->> same as TCG2.
-> Why do we have to do this anymore?  Given that you're already pushing
-> patches that map RTMRs to TPM PCRs:
->
-> https://lore.kernel.org/lkml/20240128212532.2754325-4-sameo@rivosinc.com/
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+---
+ drivers/pci/endpoint/pci-epf-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-IMHO, I am not sure whether we need this mapping support . I have already
-mentioned the same comment in [1]. If we support extension and logging
-via configFS ABI, why again support PCR mapping?
+diff --git a/drivers/pci/endpoint/pci-epf-core.c b/drivers/pci/endpoint/pci-epf-core.c
+index 2c32de667937..bf655383e5ed 100644
+--- a/drivers/pci/endpoint/pci-epf-core.c
++++ b/drivers/pci/endpoint/pci-epf-core.c
+@@ -17,7 +17,7 @@
+ 
+ static DEFINE_MUTEX(pci_epf_mutex);
+ 
+-static struct bus_type pci_epf_bus_type;
++static const struct bus_type pci_epf_bus_type;
+ static const struct device_type pci_epf_type;
+ 
+ /**
+@@ -507,7 +507,7 @@ static void pci_epf_device_remove(struct device *dev)
+ 	epf->driver = NULL;
+ }
+ 
+-static struct bus_type pci_epf_bus_type = {
++static const struct bus_type pci_epf_bus_type = {
+ 	.name		= "pci-epf",
+ 	.match		= pci_epf_device_match,
+ 	.probe		= pci_epf_device_probe,
 
-https://lore.kernel.org/lkml/2bd7c80b-9cd8-4450-a410-c3739d224167@linux.intel.com/ [1]
+---
+base-commit: 1281aa073d3701b03cc6e716dc128df5ba47509d
+change-id: 20240204-bus_cleanup-pci-f70b6d5a5bcf
 
->
-> Can't you just add a stub TCG2 driver to EFI that exposes only the
-> ability to log and measure using this mapping?  That way all our
-> existing code will "just work" without the need to understand anything
-> about confidential computing or add new code to do the measurement?
-
-I am not familiar with the EFI implementation, but I think a new protocol
-is added to handle future CC extensions (which could deviate from
-TCG2) and to support platforms that does not support or enable TPM
-feature. So modifying the TCG2 driver in EFI may not work for the
-above-mentioned cases. I think the EFI driver part of this support
-is already merged.
-
-Jiewen/Ken may have more comments about this proposal.
-
->
-> James
->
+Best regards,
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Ricardo B. Marliere <ricardo@marliere.net>
 
 
