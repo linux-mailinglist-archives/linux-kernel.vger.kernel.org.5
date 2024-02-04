@@ -1,102 +1,138 @@
-Return-Path: <linux-kernel+bounces-51864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51863-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28274849034
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 20:57:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA5A9849032
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 20:56:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59F7C1C2127A
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 19:57:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D6831F2142A
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 19:56:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BFA02555D;
-	Sun,  4 Feb 2024 19:56:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED0902562F;
+	Sun,  4 Feb 2024 19:56:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XuAUdfeg"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T3Oyl7kd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17BBC2C691;
-	Sun,  4 Feb 2024 19:56:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21CCE288D9;
+	Sun,  4 Feb 2024 19:56:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707076605; cv=none; b=lurX59EL7QVQandVJFuPLuzGWjJYKvqLFyqld4omokSaZsnYdY9dcI2GEH7n6kQLEBs4F0T850BLYrgJQXxsIsn54osq7FywZjxJbZHQepJ6FcIntCl+jtIptvQxGo7KFJJpD0deD2JGQOIrPhqZ2MPDO7DrFRPefEU50CJELMI=
+	t=1707076587; cv=none; b=C0hwGmIUyCkv1kAZ/9kdL8hukqzKeIrABmWY9Ua9IGW8xnJpE4CyuCvvlucXM3EUtnZwYIp2zS0lzxRJNDX3bEq7YG+ws/Fv6pMiVnfutePmDpc9rxzvlM6d3lC4zGD//5tBWc3BCUFBmdiCpxrJEBsVftlQcfCJjHfEisdtFM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707076605; c=relaxed/simple;
-	bh=/+l6/765kG6B9Mu7MXZkESLzo4g1kehbY5deEfe7GWU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=K0jgdJq3I8ywrwiZSncREhwP6z5K/c8cNGfrwiNk7ajv0oCeopCJTvUvQw38cHTOZjV3vogSZRGO19136czflEdeZEU+wLKeNOsSfZWz2PMReBlVQVaBokh20bX4VajCk3cU0ekNxoJ5HmXWpNGwnrBJfO04RcTFb139HbvVLnU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XuAUdfeg; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a28a6cef709so512062966b.1;
-        Sun, 04 Feb 2024 11:56:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707076602; x=1707681402; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/+l6/765kG6B9Mu7MXZkESLzo4g1kehbY5deEfe7GWU=;
-        b=XuAUdfegGDY+fTgeDSNcgwULAwLNJZalko3Id8eTf5FI4LMEEsHL3ahSMfGvEZ/rI2
-         GMBLuip6QpxN0NZgemC8YJjlI0fQsN+HfqEUEw3A0cubwzVht3Tzpuc/17EBvpmboCEp
-         blDOwGY+rfnopIbTYsb342EFvFQSwYVgkqywgS7Y+cnzRK11oGWQzdX+d7rS4xjtifHJ
-         z7NZ67RoMX50l9ghSlegSsByQh5vQLCIIjeuWSKzT6LQp/KTCKjHhMehyQFmkKlqpo3U
-         JI1UoZ2/9NXoxH5ijNJAvCzgOJocdYXoBYFJOtkEK35emgIABHFMp8rvTTkxiUBFzN2V
-         MWSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707076602; x=1707681402;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/+l6/765kG6B9Mu7MXZkESLzo4g1kehbY5deEfe7GWU=;
-        b=Gg/NFnZwJZk9h2ZDMi+Io9dn41KbeDD9FDBcs9hPO/goDuLnjstcladr8Oq2YEHu1Y
-         7CwYHdnJD6AIBdbjunO4h7NaK65Dt83QGyCmN/XapEPpQCyab3XC3m9f+bp88vY2iGyT
-         hq1IUzF4sULohCSQ/MnVKzEpPxw1lck0Cr3gwg55jjcIudiqxt9sPtXf2wQ6SeI5o6dP
-         55iOZZzgBcGI74krHqqhOtxHwHAfCwZVUOuFQ+FIy8SyQZ8lA6Xh2J7FwARMp45JCW/B
-         UdUHkEjtUhj4jE4xzhEQj/KovfYqSgFBmY6oj/Kp199ygdR62U47sAgqHs8WoIBgBt9w
-         nc8A==
-X-Gm-Message-State: AOJu0YxbDFSGIcv85GyXlUEA0YkmtvPykJEwoluiE/boh7e8B3RxHcmp
-	cUrfoeMnEwqMdki99up1SS+Vygj1kTNHWy3/3pIZ4Zlp4Ok/PUyuJRvU8mDpXiCwbfxFVHCRx4+
-	/VDuNdCnBkGXKGe4+TDhWG3CM73k=
-X-Google-Smtp-Source: AGHT+IES+gSHX3AF2YZCrPXjHBltxja/FIKX5n43RAM4+3Ig5PsU9BFiCcwUWbYwuzb/5JZ6udD3PHRKgZICBIO3oZg=
-X-Received: by 2002:a17:906:cc0e:b0:a37:4bce:ca00 with SMTP id
- ml14-20020a170906cc0e00b00a374bceca00mr3048088ejb.59.1707076601871; Sun, 04
- Feb 2024 11:56:41 -0800 (PST)
+	s=arc-20240116; t=1707076587; c=relaxed/simple;
+	bh=G3+CP77UbJCipyCA87pI2FMze2ZRBhHlill3yS+hHpI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=UY7Pz5eU2JoLhgYIlykAwsktzkNtfDvHWYBNKP98JWuxOmJW33Buql4Hn81+oIObQrwpaNOIgOH0Ybzvkzlj/NrmqpGtjbGz5uqN4ASxk9E+9kyuAg3RZsfL4qnolVK+mfkyHKa1CoD1CufAqjObRy3EOtdNfHhmP5Cc5KZ+8aI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T3Oyl7kd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3335C43390;
+	Sun,  4 Feb 2024 19:56:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707076586;
+	bh=G3+CP77UbJCipyCA87pI2FMze2ZRBhHlill3yS+hHpI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=T3Oyl7kd0uyQgK+BwaZgUuA/ztfCkYYNnFHtCzEXhfQazojUnDCZNnaxE+HSD61b3
+	 Qumhr29+SuoHio+Jx9YdTU6Ck/KGn4ve3u6o0T4Mi5/wGypryOVdF6rIwkHi0fQSJ6
+	 se5JHhGJ1v1WsRtRpixiCy9q4j+rWIZhuVCNgX5kPKuATBCstjBbfneE8fYwv8xGsg
+	 bJ+qcmiFiEnhA5dGST7m4Lhc3GKddjHwZWcW1VtG8kuagf+0HhGsByLK+T9TZkUBQw
+	 x+3IM2W8y8cL+oBDLbBJnvxOEUJUoINfjBwR+33TqBAtKJyvD9bZrAk2mEEcQXkrgH
+	 GC7uxwJM2FkjQ==
+Date: Sun, 4 Feb 2024 19:56:11 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: David Lechner <dlechner@baylibre.com>
+Cc: linux-iio@vger.kernel.org, Rob Herring <robh@kernel.org>, Frank Rowand
+ <frowand.list@gmail.com>, linux-kernel@vger.kernel.org, Julia Lawall
+ <Julia.Lawall@inria.fr>, Nicolas Palix <nicolas.palix@imag.fr>, Sumera
+ Priyadarsini <sylphrenadin@gmail.com>, "Rafael J . Wysocki"
+ <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+ linux-acpi@vger.kernel.org, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: Re: [RFC PATCH 2/5] of: Introduce for_each_child_of_node_scoped()
+ to automate of_node_put() handling
+Message-ID: <20240204195611.2bb6ff58@jic23-huawei>
+In-Reply-To: <CAMknhBEL3cv4L0A-W=_1EcDmD3Cj8apheDcpnqjyJjKBZuPYew@mail.gmail.com>
+References: <20240128160542.178315-1-jic23@kernel.org>
+	<20240128160542.178315-3-jic23@kernel.org>
+	<CAMknhBEL3cv4L0A-W=_1EcDmD3Cj8apheDcpnqjyJjKBZuPYew@mail.gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240204162106.1179621-1-andy.shevchenko@gmail.com> <20240204182601.kg2hwc7heo4l42si@skbuf>
-In-Reply-To: <20240204182601.kg2hwc7heo4l42si@skbuf>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Sun, 4 Feb 2024 21:56:05 +0200
-Message-ID: <CAHp75VfYRGQ0bZQ3mYXq5PH1YonXyuz3xR0vcPZyonTAd8SXMA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] spi: fsl-dspi: Unify error messaging in dspi_request_dma()
-To: Vladimir Oltean <olteanv@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Minjie Du <duminjie@vivo.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Feb 4, 2024 at 8:26=E2=80=AFPM Vladimir Oltean <olteanv@gmail.com> =
-wrote:
->
-> On Sun, Feb 04, 2024 at 06:21:06PM +0200, andy.shevchenko@gmail.com wrote=
-:
-> > Use `ret =3D dev_err_probe(...);` pattern for all messages in dspi_requ=
-est_dma()
-> > for the sake of uniforming them. While at it, fix indentation issue rep=
-orted
-> > by Vladimir Oltean.
->
-> "making them uniform" sounds better than "uniforming them".
+On Sun, 28 Jan 2024 15:11:01 -0600
+David Lechner <dlechner@baylibre.com> wrote:
 
-Sure, thanks for the suggestion.
+> On Sun, Jan 28, 2024 at 10:06=E2=80=AFAM Jonathan Cameron <jic23@kernel.o=
+rg> wrote:
+> >
+> > From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> >
+> > To avoid issues with out of order cleanup, or ambiguity about when the
+> > auto freed data is first instantiated, do it within the for loop defini=
+tion.
+> >
+> > The disadvantage is that the struct device_node *child variable creation
+> > is not immediately obvious where this is used.
+> > However, in many cases, if there is another definition of
+> > struct device_node *child; the compiler / static analysers will notify =
+us
+> > that it is unused, or uninitialized.
+> >
+> > Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > ---
+> >  include/linux/of.h | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/include/linux/of.h b/include/linux/of.h
+> > index 50e882ee91da..f822226eac6d 100644
+> > --- a/include/linux/of.h
+> > +++ b/include/linux/of.h
+> > @@ -1434,6 +1434,12 @@ static inline int of_property_read_s32(const str=
+uct device_node *np,
+> >         for (child =3D of_get_next_available_child(parent, NULL); child=
+ !=3D NULL; \
+> >              child =3D of_get_next_available_child(parent, child))
+> >
+> > +#define for_each_child_of_node_scoped(parent, child) \
+> > +       for (struct device_node *child __free(device_node) =3D         =
+   \
+> > +            of_get_next_child(parent, NULL);                          =
+ \
+> > +            child !=3D NULL;                                          =
+   \
+> > +            child =3D of_get_next_available_child(parent, child)) =20
+>=20
+> Doesn't this need to match the initializer (of_get_next_child)?
+> Otherwise it seems like the first node could be a disabled node but no
+> other disabled nodes would be included in the iteration.
 
---=20
-With Best Regards,
-Andy Shevchenko
+FwIW that was was entirely unintentional.  Not sure how it happened :(
+Anyhow, now will be for_each_available_child_of_node_scoped() with the
+right first call.
+
+>=20
+> It seems like we would want two macros, one for each variation,
+> analogous to for_each_child_of_node() and
+> for_each_available_child_of_node().
+>=20
+>=20
+> > +
+> >  #define for_each_of_cpu_node(cpu) \
+> >         for (cpu =3D of_get_next_cpu_node(NULL); cpu !=3D NULL; \
+> >              cpu =3D of_get_next_cpu_node(cpu))
+> > --
+> > 2.43.0
+> >
+> > =20
+
 
