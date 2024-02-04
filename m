@@ -1,134 +1,105 @@
-Return-Path: <linux-kernel+bounces-51743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0298848ECC
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 16:07:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DA440848ECE
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 16:09:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 520DCB22076
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 15:07:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B657B216C1
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 15:09:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEE0923750;
-	Sun,  4 Feb 2024 15:06:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A1E5224F2;
+	Sun,  4 Feb 2024 15:08:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="ge7NGRcF"
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CMDiEiCo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96A2522EF5;
-	Sun,  4 Feb 2024 15:06:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E3A8224E3;
+	Sun,  4 Feb 2024 15:08:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707059209; cv=none; b=XY1p8eeVhnwGw5i4IljoIGoaTXaXdUWqs+uXc4cedLZkUKgIMizrlZGpO+HO6fbLGPilGK9nfVz3NjyTVF7i+c6X5yuAVaZGz9/v3/Dxb1MFMXCvo+nm+OVQXA4zzBZ+DSZ2/8OMJ2T2dGhncLlp8cxmJ/bN9z4S4FxksZbcbgc=
+	t=1707059338; cv=none; b=dSXsFCQAR939n75qL9tfwkudycDlMKK92tra5UCMsQC5cDCvbm7hCXNv465gLDm/8xc0aE7BH84WkxqevLvAVz9nbP2Z1FKbdhKR//XbLf9AVNTE9F5uHBUDkEsMcXzpqKLmTaAVErF+RzAq6ceVUQjEsdn1KkSk4sdXIds/nt0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707059209; c=relaxed/simple;
-	bh=DtL/rj48QTd9lRPw6xPNjYPtR2GFBn9tAGzHB4G/qVc=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=hLD1zWYMF30he6TgVdJXHloNMxvFnny1AMzGx/yeu3DLCaRuEUXOFhyEIWiyffyysJu7N9JeL71KNI/Qji2UNk9PdsGN9+SocyinI3FqNxjGCbu25GOMQRJcKTT38aRzGLfzilc1esNHCmTDPUIMSQS7Uprb4AqQT1bJ9foP7yc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=fail (0-bit key) header.d=marliere.net header.i=@marliere.net header.b=ge7NGRcF reason="key not found in DNS"; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2969da3e5a7so37532a91.3;
-        Sun, 04 Feb 2024 07:06:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707059207; x=1707664007;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:dkim-signature:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4WWcBCgV3xgF0CDiZiVH3sUpocLC2BkMhO8gBV3rBII=;
-        b=YFRlUd+Eoyp/n+7IBoI7jP4gsHHT/5FANbqNSGtp8xUYDNLwy2f4D/VeHiAonjxKTQ
-         O+Cfyiov+iNw8PMuoMw74ajCZUUul6fr8Topi0FhuutZe7YXN8nk2WiyHA5w6EeZb/Pm
-         mM00FBlJy/Gg4le8jP7roxcxB5j0/fleEqA6BoOI9MpDsBQ5UUY4VE66lf/FYEpg8+x5
-         A7C10jEMKagkp3TzxhxhhyHSYsqI20y4AE0uFyRn/rSC7L13oqCXz1rmJeH8D4TXYzsT
-         AL8Ug9K+4EKOViJjYFUcs1YAYERkEy8fAWZbLcFiCpj55w5ZRFyL9cIgjwNmUsUM2fvi
-         wvpw==
-X-Gm-Message-State: AOJu0Yx25+XjQv6POtaULMz/LRGGGCNkTBCugC4fdXjeocPdag9xk5a9
-	2I6m0/NtErxAnxCkZih4pACGwJXNmNPNs6oTKO1YX+oYRon5ljHz
-X-Google-Smtp-Source: AGHT+IFc4czdYvOMZb8c9+pJJvDnMGvicZEaQaJQAfTiZNapJ7KlgRICzOgbsLUMOw+P6++12UUXKg==
-X-Received: by 2002:a05:6a20:a323:b0:19c:88c3:f400 with SMTP id x35-20020a056a20a32300b0019c88c3f400mr9662281pzk.51.1707059206986;
-        Sun, 04 Feb 2024 07:06:46 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU1I5Wfzp1zyaw3J5xeL7RVOfNWZJc61b6w8KibHJEaoADx4XjCLPTSUOrFsN3ykA5BO1vhUowrHf0vsA9K6BesHntKdl+TXjwgULFCAQolWXeT2QHYIgbUGRNRpYBCII17efWcBUsULw==
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id s17-20020a635251000000b005dbed0ffb10sm5229058pgl.83.2024.02.04.07.06.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Feb 2024 07:06:46 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2023; t=1707059205;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4WWcBCgV3xgF0CDiZiVH3sUpocLC2BkMhO8gBV3rBII=;
-	b=ge7NGRcFhpBopShOEWSMVucyqk8ZJNaqG8vpC4jwDYsFVpMbnMr9CDFvlpH3t5HdsWJF8J
-	dk63cE18Ssrdgo6TdTAdKLd7kNJnNZVi5tKHAruzlq4wWwbPbkxqYr8sNaEjzpkArSMJtP
-	+syKNAcSLVo0c41CKSu4t4b0sJqmJouHx8t4kCjRfFdcLET+Bl+uR77uaUUIvreKC4vdRW
-	pUXGRhm1FTwmKmjeJpQ4SwZ+HiNyMAtMX7/Zc5Qo/ONhCJeVeP8DoVmsyg8BORreLV1aL1
-	MBhpyAq2jDPxtycLGQR/V2WU6BE5M7XnQmwyH4OpJZwHw9XfdbDXr6B0ETNqLw==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Sun, 04 Feb 2024 12:06:58 -0300
-Subject: [PATCH 2/2] mips: txx9: make txx9_sramc_subsys const
+	s=arc-20240116; t=1707059338; c=relaxed/simple;
+	bh=diWs3n7BcEuYEZpCWt4QRWyW21+UNJGnGq5SYsQ7F/M=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=D0d5552CJDnsPaW9NWZVS21IguIJcozWy0Vt/LZ7M6iomqNvK8XEOhEueUWYRvN2igkZMCO1g/EMn4CyrqS/eZ+53hTpExcKIucrAVt5m8r2ykNwKHeRD3SnxhVbQpi9sxTdYztGXmgwzEU1M4vGK2QHUbn3RpVR7VsT0PSSF9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CMDiEiCo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 712F9C433C7;
+	Sun,  4 Feb 2024 15:08:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707059337;
+	bh=diWs3n7BcEuYEZpCWt4QRWyW21+UNJGnGq5SYsQ7F/M=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=CMDiEiCoShhFWaDKBgKT3zcw8DLeWsPhdrEwqM8OV5nPqcRGY4Sas8LTHorAY9GOE
+	 1od/nEiNUobZGmSraGcd7naeGZesBdZHvVlHL/VvwWbK/0DR8Z4yIq5giSZKfL3JAr
+	 BE5Lw1HWn2BhAMabGwlkTuA9IvC0OhN77hcYpYhkxaWHaLz0TocbHy6ZG10Zzpua50
+	 +5gVWF757qcXYvgZyJLnNm1fbDa7DAJnvPVZ/FahYy+98oM/TTHs/FmmB1YFxAVwF/
+	 LzhyxG8dBnJ9GTQv9lcwDGKjy2o6hyClFvn7ztm3To5rOslG07QpbcH9Dfw56OHgdX
+	 WJByZlA4FhFiQ==
+Date: Sun, 4 Feb 2024 15:08:43 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Nikita Mikhailevich <ermyril@gmail.com>
+Cc: lars@metafoo.de, linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: accel: mxc4005: new ACPI ID for the MXC6655
+ accelerometer
+Message-ID: <20240204150843.79f76071@jic23-huawei>
+In-Reply-To: <20240201151848.1666245-1-ermyril@gmail.com>
+References: <20240201151848.1666245-1-ermyril@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240204-bus_cleanup-mips-v1-2-05af5e9a7ead@marliere.net>
-References: <20240204-bus_cleanup-mips-v1-0-05af5e9a7ead@marliere.net>
-In-Reply-To: <20240204-bus_cleanup-mips-v1-0-05af5e9a7ead@marliere.net>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=948; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=DtL/rj48QTd9lRPw6xPNjYPtR2GFBn9tAGzHB4G/qVc=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlv6gcKbCWSvWamcZU4OHB9cGcXKbzrtTB4v/xo
- qj0Dv3TYY6JAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZb+oHAAKCRDJC4p8Y4ZY
- pt9SD/0RGAK7HDjICxB9fAie13GpRWS7ndpzkwqxpwzOfja51FUWuC5yx9CzeilPgCgd+OFXT08
- 2HWaZfiCWEN0mjvsVHsVJt4ewsXuBT04bWleOZ/1UFRX086SvSress64ScWC051NdsXq489nNFf
- o3/RI9VC+dRmmP0HEfYHurTYYEL/eHtIzpOCqY0uwLu54gGC8RQW0ROJcCBY+CcH3h6xPTXFx//
- OMmsXUJRxBverMNAchGczMSpx/MOPQPVLi6JKxD/Zzu8ciCdctUtdTAiafO7LUvJJW1nldWcv+F
- BvkA1M+9Fsk2+TWayU+nyViqCj8lkaXARSspBbjkCEBT89nKV26vP459xXNRyKs3lLm+W4udp3U
- DFzhlbfyI07aaiQqADsUr4GaVVRFEYZG45Z2KD+eZ+ymtntfW1vvPM4f1yohR7hdQ3oUv7kc8pe
- Pai7+au8lBUwtROSChjZawhDiFTSIIYnrDPxGhKL9CaI0M6ITdR431RzjuRL/IAtzGo7FZ3spJn
- 1XMt7pacwLEPtLayTnVOwYaqjWg6bi8juds38KNNex4bCc+jSdEWGO5/OVUu/3Y/qp08y/dmEUW
- w8YN6DtaYlSHAsaIyBUk2A5iXVxYCFDBpzyfCQQvY0DemNUwkzja08GNA2cG0HPTcri7UPYs1Jb
- 9qSAzyLP6AFqvQA==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-Now that the driver core can properly handle constant struct bus_type,
-move the txx9_sramc_subsys variable to be a constant structure as well,
-placing it into read-only memory which can not be modified at runtime.
+On Thu,  1 Feb 2024 16:18:48 +0100
+Nikita Mikhailevich <ermyril@gmail.com> wrote:
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- arch/mips/txx9/generic/setup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> New ID was introduced by Chuwi on Minibook X 2023.
 
-diff --git a/arch/mips/txx9/generic/setup.c b/arch/mips/txx9/generic/setup.c
-index b098a3c76ae9..1e67fecd466e 100644
---- a/arch/mips/txx9/generic/setup.c
-+++ b/arch/mips/txx9/generic/setup.c
-@@ -762,7 +762,7 @@ void __init txx9_aclc_init(unsigned long baseaddr, int irq,
- {
- }
- 
--static struct bus_type txx9_sramc_subsys = {
-+static const struct bus_type txx9_sramc_subsys = {
- 	.name = "txx9_sram",
- 	.dev_name = "txx9_sram",
- };
+So interestingly MDA is a valid PNP ID. But an old one from 1997 for
+Media4 Inc. 
 
--- 
-2.43.0
+Let's hope they never used that device number in a way that will bite us.
+
+Applied to the togreg branch of iio.git and pushed out as testing for 0-day
+to play with it.
+
+Note that if anyone has a path to Chuwi to educate them on how to do
+ACPI ids correctly then feel free to pass it on!
+
+The MXC ones are also invalid btw - in that case there is no such PNP
+ID unless it's been very recently granted which seems unlikely.
+
+Jonathan
+
+> 
+> Signed-off-by: Nikita Mikhailevich <ermyril@gmail.com>
+> ---
+>  drivers/iio/accel/mxc4005.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/iio/accel/mxc4005.c b/drivers/iio/accel/mxc4005.c
+> index 82e8d0b39..09764ef8b 100644
+> --- a/drivers/iio/accel/mxc4005.c
+> +++ b/drivers/iio/accel/mxc4005.c
+> @@ -472,6 +472,7 @@ static int mxc4005_probe(struct i2c_client *client)
+>  static const struct acpi_device_id mxc4005_acpi_match[] = {
+>  	{"MXC4005",	0},
+>  	{"MXC6655",	0},
+> +	{"MDA6655",	0},
+>  	{ },
+>  };
+>  MODULE_DEVICE_TABLE(acpi, mxc4005_acpi_match);
+> --
+> 2.43.0
+> 
 
 
