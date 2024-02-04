@@ -1,144 +1,220 @@
-Return-Path: <linux-kernel+bounces-51429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44D92848B16
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 05:47:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D8406848B17
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 05:53:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7CDC8B2635D
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 04:47:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A08CB22EDB
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 04:53:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24992BE5B;
-	Sun,  4 Feb 2024 04:46:41 +0000 (UTC)
-Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DC0F6FA8;
+	Sun,  4 Feb 2024 04:53:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b="t1ZECBAY"
+Received: from HK2PR02CU002.outbound.protection.outlook.com (mail-eastasiaazon11022011.outbound.protection.outlook.com [52.101.128.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D760AD2C
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 04:46:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707022000; cv=none; b=bBdm4oGIU1LEySEuDbthW4zJQbP3t7Pan0MZpEGG8ruiNDEh4MAPB2LfgqVvKc6gEZw+959BNpQ9CmYYZgvNDQBIy5fOv5diIPEAmW0Y2JYynWsrO+lU1FARkLEzF5BTrgT0qKZSrYJUIKy6R2zWirkT1jvXxRqL1NCQdv7usa4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707022000; c=relaxed/simple;
-	bh=GBDuC2MMlodSGYgMpqhLqVLYKeiXXyE2UugGI1ne59c=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=N59MPrW4hDra+nylt6Zlhp8ZRvPD1CcudzUb23DGVdWVpYj0aseZHG50iji2lEyQC/OAW+T6pmK8Knephgd86UWG5T78csWt+Jl4mYsxxLc74jJUuJErZUZ8/TtXk/kZjy90VdJcFDzRTGFyVddEXgWuIlY41VWOirKltY78sY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-7853fcc314bso230585785a.1
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Feb 2024 20:46:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707021998; x=1707626798;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HK9De5V8Wj4AOhyTbBnyxY3PU+lWzfPRkJg9zP8Toqw=;
-        b=H0D0V+2VxUpBbYLWYonbgaxWPt4c3JseQIAgzOb4hcHviSr++WqYtMwlBv0MacpwFk
-         j2n3LnRKtEydngXyvRF3pMJcc1nbI4pr/VbAnvy0Kw/SyM45XoFA353ldiHf/3U0ivmb
-         25qBy8JR3AMBC+TZLykFoEKqR8LE921n8dU1XqWGcSkVQfNH5EYaSuOYPi1ElaVOCdxd
-         V28H5Q3FkRLBEWoQZCTKGFMnLsxRtWJTyvPVllT6bynGL5ad/thtlAiUe8jlJjDP1Y4i
-         qmyLB0k/fqaHUxuZgLJ+rIZ/PXjzQyq2nbl443M47u3Wt2TgKiBW8artxResv5gxo4sO
-         j5mg==
-X-Gm-Message-State: AOJu0YxE2QoD+s33zxCyIgObcJyu2EaRpfOZKgTPOv1mTt31TOynF3j8
-	09ixS2LjCxBnBFVSoiqAJ5OzGny/6K1n8OjkNQdwse7Q7bKXQQ7zPWVq5EmqlEo=
-X-Google-Smtp-Source: AGHT+IF2bp4VaWwcqfok5xwgDgXd0enf3F0oDenCa3fHN8G9A1HKYe5WD0vCUrHmKSBHYIRfjKePQA==
-X-Received: by 2002:a05:620a:4491:b0:785:74f5:62c6 with SMTP id x17-20020a05620a449100b0078574f562c6mr2054025qkp.75.1707021997687;
-        Sat, 03 Feb 2024 20:46:37 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXGl3JbzLVNqpgamXMxGC9Ktt0InVG7HyzAo5fpqIsVtpQB3xxR3TmlZ+Gv2Q8VkttKpMEdfkL/hjEETJzapPDONom4RAysBdlOxaHwbgm/Vo39se8va+YPG4khpJFCV1A/MafdL9t4xlUwD7khEq/5ENYjW+ZPREUIcPhdCkXzZcrFbWyd8tHbvop9LG1u+webymOLAGNhlVDS80oItv4JG9Gp+ZnrQTRoqlfwbyl5scOUmf0EBfieitvfyVA7FYACTC1GcrKqmW++xingPkprbz0rBkEKa8Y23VoyB4NvnkungDrvGkH1+2n1PblJ0raHzkcJ+JU9KnrL6+aoiGOYdl2cdymcW6KIJg==
-Received: from localhost (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id c15-20020a05620a11af00b007840137670csm1923778qkk.24.2024.02.03.20.46.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Feb 2024 20:46:36 -0800 (PST)
-From: David Vernet <void@manifault.com>
-To: linux-kernel@vger.kernel.org
-Cc: mingo@redhat.com,
-	peterz@infradead.org,
-	juri.lelli@redhat.com,
-	vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com,
-	rostedt@goodmis.org,
-	bsegall@google.com,
-	mgorman@suse.de,
-	bristot@redhat.com,
-	vschneid@redhat.com,
-	kernel-team@meta.com
-Subject: [PATCH v2 3/3] sched/fair: Simplify some logic in update_sd_pick_busiest()
-Date: Sat,  3 Feb 2024 22:46:18 -0600
-Message-ID: <20240204044618.46100-4-void@manifault.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240204044618.46100-1-void@manifault.com>
-References: <20240204044618.46100-1-void@manifault.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CEA8610E
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 04:53:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.128.11
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707022394; cv=fail; b=Klv4c0OOZ9ETYv0SDI80VXlN5SxRPTDbWQqQTml6rUm91vj9qJw80OJUH+HGOrxhNUNhvMVe3iuYOdspqGriFJxqGW+YR/uMiNeccr+WfOWT50pRI6e/eJZgGxPyV773oQYWY2VRdiJDDiPcysBr1KxOEQ8e1Svsq0edlRLAOfM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707022394; c=relaxed/simple;
+	bh=eZyMwDGpEJXoec5GY0o0WSdijKb0DPt2RDhgbRTRuEI=;
+	h=Message-ID:Date:From:Subject:To:Cc:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=h3S0aBABIKJTfx1x7Zr/Pyn1OQw+h/WEQ62e1zwNy2V3l6d0TFkSYAjSUiKgeR1brUsOYIGQNdlAUOVHI3mp17oDtBY1gUdNMEODkoWrIGe6qiX7r7+ja0ePUy5rGlcKQ8GwvtZPS2ZqYTqp4W0bNGqDUdYinNvtS8Ape74vrEY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com; spf=pass smtp.mailfrom=oppo.com; dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b=t1ZECBAY; arc=fail smtp.client-ip=52.101.128.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oppo.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ad07c3fF/tQJOlG7my/vDKZDs+FrAgocJynBNHtXbuprilmtPlMclHvne7q+KBMI9csmd0UlOnbEEkxgY7bqGMnfyX0p58mdDLLf8E1NkO9xP/+id7mJm0D75vtOcCaAVuje2Su+DmCPGkJQLTEJTfAuaH9sGT68pnS6h0OCIAbbxN3P8YaBtJa+uI4Bxdn2M4RUZfylkuLMK0ax5QpokvG8A9fpt7MjHJ4/J/qjg/gHC8CVvTyAkeV9B1K6BUNrDYo+3sSU/Lz7hyGVXRgVr1gyS7JvSNm2eXMBjnuGWzU2AN6JF3f7bTtslQYwJ1oSF2wGP3TQPE3cjIPGyxCz6Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pN720aajgdFrIykoJ+Qi4JE3rjsj5ePFnTN9TJyPK4Q=;
+ b=fGxx62V6VlD8zxfukT/CH83bKzETs67VB7n1r83UzzGXG/vwM5xSHTxt4Nl3nE/t11HojXBAC4d59/+iqbF4fUViAGZNS/DFz0wKSnjv1rgjlhkY71T4Sl6rc/pd2V+Smi+95EaFnwJE+vXuvqp8aGUgTb7rP3IHT0tBsdXwHiYWWt6UBMkBdyOQswzzdmsTmEE+nIPZgtxAFtn4ALpDMD6cSzS2nFNov8N6T73E4magRz7FBQyUZyt+HMd3BWRGd4eHBI3S7DX51/HJRe9tAlpbJp5vWqOlyRiDz8szYJu8tZN5D1brT7ti0h+mkE+kretnT8I8OwdOGw3N7yZ9uw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
+ dkim=pass header.d=oppo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pN720aajgdFrIykoJ+Qi4JE3rjsj5ePFnTN9TJyPK4Q=;
+ b=t1ZECBAY5uluRjbR7O1rZAerZoLPn0lxBOIUF3PHSOgFMW1xA3JUvn9rbI6WHKyccIaw/46rCXPC3satd1eSCsaCDDaJ6zJEYGoKDYm6koFCZVjmxxC0gFhhjykCRiAlIzlaaBi74WJCa+KVduhMzI37Fixy+LyA9FTQi4NUt74=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oppo.com;
+Received: from PSAPR02MB4727.apcprd02.prod.outlook.com (2603:1096:301:90::7)
+ by TYZPR02MB4655.apcprd02.prod.outlook.com (2603:1096:405:5::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.31; Sun, 4 Feb
+ 2024 04:53:07 +0000
+Received: from PSAPR02MB4727.apcprd02.prod.outlook.com
+ ([fe80::a815:49db:df99:5461]) by PSAPR02MB4727.apcprd02.prod.outlook.com
+ ([fe80::a815:49db:df99:5461%5]) with mapi id 15.20.7249.032; Sun, 4 Feb 2024
+ 04:53:07 +0000
+Message-ID: <e6cffb6e-3228-415d-890c-76fe0a9ac08b@oppo.com>
+Date: Sun, 4 Feb 2024 12:53:02 +0800
+User-Agent: Mozilla Thunderbird
+From: Yongpeng Yang <yangyongpeng1@oppo.com>
+Subject: Re: [PATCH v5] f2fs: fix zoned block device information
+ initialization
+To: Wenjie Qi <qwjhust@gmail.com>, jaegeuk@kernel.org, chao@kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Cc: hustqwj@hust.edu.cn
+References: <20240204031022.1189-1-qwjhust@gmail.com>
+Content-Language: en-US
+In-Reply-To: <20240204031022.1189-1-qwjhust@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR01CA0177.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:28::33) To PSAPR02MB4727.apcprd02.prod.outlook.com
+ (2603:1096:301:90::7)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PSAPR02MB4727:EE_|TYZPR02MB4655:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3d385430-0fec-4eb0-3889-08dc253d2d96
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	nEgkRVdoBIoP9ztUq7gE230QzwENlE5ldV61B+Tm2CsdoM298UNAhjxJqcSVfMF0IPEmWLOy0g8nm84qp8Ka1GNo1RRDDSdn+42ufgfhh3mhetMKTM2ExtH2qFEVIYHA9IVPtofoHhZfSB6nw7Hm3T4GYvkRCrBywNsjRCGr/19DDUTfXlEoDcdOn9FJtVu2WdKOMbjvVxdkz8ngnZ9C9AwEy3rC5/ZiVq1/dtzCKDpENiivIaLImx5A6JTYXslZBnkMv4mEXR2qB10jLlHV159Qg7C8diB6T8sTl5CavPrC7sVqE0sFoISsjj+vUC/JNudnBo9k8EskRcstNzJSItcsKln4/FndQwgsqaMoMtjHm4l76o2JH8pkd5S0uIfp4dnHhGo38XcpRxx15OvLWbbcIE5cq/CJYvVJbSRKrCbrCQGQsgDt16Ralnfmxl5416BfITIJ3JjlT6AiOlOMd0L+NhYsnjubmseINkq3waWh3VRbTudFhjc2zODWSv+3TxsNSBSv0VeiL3cejW8GKqztXyD3SL7RLZZZ/cT/+V6zy+HgsMul3BsBEDQaoi4vVL5tJ5baDgWCfPDPMRX5e8gNCDk2E3YGMxMlP+GoRvGU76xWfOuPKyTKfxsExIaQy6bIlCPM3iPvQOGgNJ8mdg==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PSAPR02MB4727.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(39860400002)(376002)(136003)(366004)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(8936002)(4326008)(8676002)(2906002)(5660300002)(36756003)(41300700001)(31696002)(86362001)(6486002)(478600001)(2616005)(83380400001)(26005)(6512007)(6506007)(38100700002)(66946007)(53546011)(316002)(66556008)(6666004)(66476007)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?K0pCaWZ3V01CVjFRNm54RnNJZlN0WFpuTDhPd3grbGF0VGNxcEkrc010ZGlt?=
+ =?utf-8?B?dHcxZjRGb0ZRWHVqNkQrN1VmL293NXR3S0xNUTRtNTlMODdxTDJZTlNibGRz?=
+ =?utf-8?B?dTB4aXJPSitpWHp2OTVXYXlGWWVkUWwzdXZuQndpc1Fod0sxdDlHWW9Yc3U4?=
+ =?utf-8?B?cERQZjJoWGpIVFFZdWhFbkVVT0xrRlhhaEF2U1FuSHRvckR1MjZ0V2d3TWFi?=
+ =?utf-8?B?eUZ2YytMd1FIVUU3dHFlWndEekRIVlFIMHFyMnNoK29sbkJtYW9NYlh1YnpJ?=
+ =?utf-8?B?VFdXU1RBa3NKb0o2QUdVMHVOWHY4UmxUaU9hQkNyTVdKcUdTWW05eE1VWUIr?=
+ =?utf-8?B?c0dnMnBFcGNOcnQ5ZHJ0U1AvaUVjNG42bEdJeVZGZXp3WEpiME1zdU1HUElq?=
+ =?utf-8?B?SlRIY2pFM2dsR1FFQ2tmWFUvL3dCQXEzUUJBelpFSi9NSzMxTXR1VkRrVzE2?=
+ =?utf-8?B?VlRDUjZTNVh3d003TTZPeDg5WUpPTEFzbFd5c2pwNUlZUjZwbFkwWVVPVFl2?=
+ =?utf-8?B?KzZVRjlTK0p6YkFjeXF4MUFQdEFtaExiVFJqaFM4aWJFVFJjb1ppaFE1KzQ0?=
+ =?utf-8?B?RkQxVVJKTnkwc0h4cWx5VUhTbFNadVBwbEVaL3hUSGFsRS9GaTNWN0tQM3gw?=
+ =?utf-8?B?Uy9mTk5RWkpBV01lV0RJNVFZcWorV3RRWXlQZ0ZtRmhFTmw3MTVIc0dselJl?=
+ =?utf-8?B?NVZmWVNMQ1ZwZUR6bWFhWVlnWmN1TkVGRnMrTi9WaEFaQWNIb2RZblRrQWow?=
+ =?utf-8?B?TGhYWFR6WFdXS3dCb2lBVmJaTTIvMXlZVk44bk14aTdvRnNDNDJIaytQUWNl?=
+ =?utf-8?B?aVNWNVI4L3VybHJoUHVXai8xeHdHQi8rQm1MYUtDMzJzTWZVbEROa2JLVEww?=
+ =?utf-8?B?VzBKTDhtQ2NscUxRSVB6OHo0bVU3c1JGRDZGUzExTm52MW1pMWxmbFNpbE9a?=
+ =?utf-8?B?ME10NFJDODA4ay9Wb1lLMUNDcUsxT1B0RFkyU1RaTmZyUEdkTy9jRVhjVDcz?=
+ =?utf-8?B?L0dUOERHc0JlV2w2aHdENFU5dmdDSDdjS1hCcytTZzdiTXRwMU9XczltdWZS?=
+ =?utf-8?B?U003QlVzdGsyS0Fubzkrd1VFbmliKzBPbUdBN3Q4Y0JJc0VvUWV1bmUyYXA5?=
+ =?utf-8?B?cE52Yml4RXMyaW41SFNPZmNsVUZjT01aVVgzam4waWpONXhoZFA0bG11Wi8y?=
+ =?utf-8?B?dDJkdjEyWmZXLzU5V2NrTUpUbFpFZW1laHFYSS9jWWg5b1ViRU0yNGxkYUl4?=
+ =?utf-8?B?SExaTjR2S1ZuNnhURTlhQmVIVmVYcFVZTjVJV3NJQmtDcXhqNXlIalI0ejMz?=
+ =?utf-8?B?MmZTTEhMcmxaM2ZZWUVHdHdwNng5K1hsc0lLdGJNR3VpZWRzS3FMamE0bDZk?=
+ =?utf-8?B?STU5WGVWYnp1QUxpZnJVU1RrdHdoWmxtMGJDZW5vZnl3VmYwc21GOXZ3QWhx?=
+ =?utf-8?B?NW1EcE9telcvamxQVW5nbDZwR29XNXFiL29WNHhUZGJRVytLY2NML3NPRFlo?=
+ =?utf-8?B?VFdra0JhQmVpMjdUOTNOWDllNklRYS9vaWFqVngrV3JHRzB6R3l3Q29IS01O?=
+ =?utf-8?B?VzV6Rnk5Rk9zQ3VmRmRFNkZJYTh1cG1Pa1pXOWJHMjAxTzdTRDQ2NG81Uysx?=
+ =?utf-8?B?UVpDREd6dVkwUFNuQUw3ZXNVWmI3YXRKSk9MRFB1UGpiRm9EWENtS1Y2MTZC?=
+ =?utf-8?B?RHVvdDh5VlpLTkc2MUd0SjVRL0hTUERJQldYdkFncUE0TVlBeWZYa2JQOCtK?=
+ =?utf-8?B?MHVzSnNiMnFyZWFoZlJJcUE1bHVpa1V3V1UwakNaZmEzejN5VHhnTncyaTlR?=
+ =?utf-8?B?R3JvSUZ3clh6aUduemJjOVM3WWlIRStVS0NJcVJ4bkFaWVAwcWRobjUrUkRq?=
+ =?utf-8?B?UFZxWThsR2Y1eTUyS21rMGRtTU14NmdHNUVCSWY1NmJhUFY0RWZ5Y0tCdmFm?=
+ =?utf-8?B?WGliZ1JzQ2hBdGovTmNoZ3JLSGJCeVQxZHRzbXNRa2lNUG1MZDdZQzBtRkxZ?=
+ =?utf-8?B?THZBUElHYmFpdnNPQWNCYStyZEg0ZnRBQ1RaMGdHZnNvVDFMUWxwVWJQSWZv?=
+ =?utf-8?B?WkFCZDQvVUs3OUZEQm5Da0sxWGxaSjIyU29EemtDb0dzcVkrbjc5T2dYbjRV?=
+ =?utf-8?B?TUI5d2dLZVV1QnhNN0xzV29RZzVnVk9LaFM5SjNiWFJqYmVkMU5CZkV5VFho?=
+ =?utf-8?B?ekE9PQ==?=
+X-OriginatorOrg: oppo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3d385430-0fec-4eb0-3889-08dc253d2d96
+X-MS-Exchange-CrossTenant-AuthSource: PSAPR02MB4727.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Feb 2024 04:53:06.9803
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pxpKjjowoLjxrQkwEqZUcytB0BLK5mvsQ8lh1Fwv2Paa3SJ5prX8Hvpb5md76l2S+ZZoNxow3GaXWLfc3kV9eA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR02MB4655
 
-When comparing the current struct sched_group with the yet-busiest
-domain in update_sd_pick_busiest(), if the two groups have the same
-group type, we're currently doing a bit of unnecessary work for any
-group >= group_misfit_task. We're comparing the two groups, and then
-returning only if false (the group in question is not the busiest).
-Othewise, we break, do an extra unnecessary conditional check that's
-vacuously false for any group type > group_fully_busy, and then always
-return true.
+1. f2fs_scan_devices call init_blkz_info for each zoned device, is it 
+reasonable that every device need to have 6 open zones at least?
+2. we should add all open_zones of every zoned device to 
+sbi->max_open_zones, sbi->max_open_zones will be UINT_MAX or accumulated 
+open_zones. Is it more reasonable?
 
-Let's just return directly in the switch statement instead. This doesn't
-change the size of vmlinux with llvm 17 (not surprising given that all
-of this is inlined in load_balance()), but it does shrink load_balance()
-by 88 bytes on x86. Given that it also improves readability, this seems
-worth doing.
 
-As a bonus, remove an unnecessary goto in update_sd_lb_stats().
-
-Reviewed-by: Valentin Schneider <vschneid@redhat.com>
-Signed-off-by: David Vernet <void@manifault.com>
----
- kernel/sched/fair.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 76d03106040d..fa049f866461 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -10006,9 +10006,7 @@ static bool update_sd_pick_busiest(struct lb_env *env,
- 	switch (sgs->group_type) {
- 	case group_overloaded:
- 		/* Select the overloaded group with highest avg_load. */
--		if (sgs->avg_load <= busiest->avg_load)
--			return false;
--		break;
-+		return sgs->avg_load > busiest->avg_load;
- 
- 	case group_imbalanced:
- 		/*
-@@ -10019,18 +10017,14 @@ static bool update_sd_pick_busiest(struct lb_env *env,
- 
- 	case group_asym_packing:
- 		/* Prefer to move from lowest priority CPU's work */
--		if (sched_asym_prefer(sg->asym_prefer_cpu, sds->busiest->asym_prefer_cpu))
--			return false;
--		break;
-+		return sched_asym_prefer(sds->busiest->asym_prefer_cpu, sg->asym_prefer_cpu);
- 
- 	case group_misfit_task:
- 		/*
- 		 * If we have more than one misfit sg go with the biggest
- 		 * misfit.
- 		 */
--		if (sgs->group_misfit_task_load <= busiest->group_misfit_task_load)
--			return false;
--		break;
-+		return sgs->group_misfit_task_load > busiest->group_misfit_task_load;
- 
- 	case group_smt_balance:
- 		/*
--- 
-2.43.0
-
+On 2/4/2024 11:10 AM, Wenjie Qi wrote:
+> If the max open zones of zoned devices are less than
+> the active logs of F2FS, the device may error due to
+> insufficient zone resources when multiple active logs
+> are being written at the same time.
+> 
+> Signed-off-by: Wenjie Qi <qwjhust@gmail.com>
+> ---
+>   fs/f2fs/f2fs.h  |  1 +
+>   fs/f2fs/super.c | 24 ++++++++++++++++++++++++
+>   2 files changed, 25 insertions(+)
+> 
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index 543898482f8b..161107f2d3bd 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -1558,6 +1558,7 @@ struct f2fs_sb_info {
+>   
+>   #ifdef CONFIG_BLK_DEV_ZONED
+>   	unsigned int blocks_per_blkz;		/* F2FS blocks per zone */
+> +	unsigned int max_open_zones;		/* max open zone resources of the zoned device */
+>   #endif
+>   
+>   	/* for node-related operations */
+> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> index 1b718bebfaa1..c6709efbc294 100644
+> --- a/fs/f2fs/super.c
+> +++ b/fs/f2fs/super.c
+> @@ -2388,6 +2388,16 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+>   	if (err)
+>   		goto restore_opts;
+>   
+> +#ifdef CONFIG_BLK_DEV_ZONED
+> +	if (sbi->max_open_zones < F2FS_OPTION(sbi).active_logs) {
+> +		f2fs_err(sbi,
+> +			"zoned: max open zones %u is too small, need at least %u open zones",
+> +				 sbi->max_open_zones, F2FS_OPTION(sbi).active_logs);
+> +		err = -EINVAL;
+> +		goto restore_opts;
+> +	}
+> +#endif
+> +
+>   	/* flush outstanding errors before changing fs state */
+>   	flush_work(&sbi->s_error_work);
+>   
+> @@ -3930,11 +3940,22 @@ static int init_blkz_info(struct f2fs_sb_info *sbi, int devi)
+>   	sector_t nr_sectors = bdev_nr_sectors(bdev);
+>   	struct f2fs_report_zones_args rep_zone_arg;
+>   	u64 zone_sectors;
+> +	unsigned int max_open_zones;
+>   	int ret;
+>   
+>   	if (!f2fs_sb_has_blkzoned(sbi))
+>   		return 0;
+>   
+> +	max_open_zones = bdev_max_open_zones(bdev);
+> +	if (max_open_zones && (max_open_zones < sbi->max_open_zones))
+> +		sbi->max_open_zones = max_open_zones;
+> +	if (sbi->max_open_zones < F2FS_OPTION(sbi).active_logs) {
+> +		f2fs_err(sbi,
+> +			"zoned: max open zones %u is too small, need at least %u open zones",
+> +				 sbi->max_open_zones, F2FS_OPTION(sbi).active_logs);
+> +		return -EINVAL;
+> +	}
+> +
+>   	zone_sectors = bdev_zone_sectors(bdev);
+>   	if (!is_power_of_2(zone_sectors)) {
+>   		f2fs_err(sbi, "F2FS does not support non power of 2 zone sizes\n");
+> @@ -4253,6 +4274,9 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
+>   
+>   	logical_blksize = bdev_logical_block_size(sbi->sb->s_
 
