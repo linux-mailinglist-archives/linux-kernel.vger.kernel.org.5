@@ -1,169 +1,248 @@
-Return-Path: <linux-kernel+bounces-51368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51369-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9881E848A3A
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 02:33:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 286E0848A3C
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 02:35:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB4F81C2281A
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 01:33:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7AC11F21B24
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 01:35:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E602210F5;
-	Sun,  4 Feb 2024 01:33:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VoAxtBvh"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A745D138C;
+	Sun,  4 Feb 2024 01:35:26 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6C7C816;
-	Sun,  4 Feb 2024 01:33:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25DEEEBE;
+	Sun,  4 Feb 2024 01:35:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707010401; cv=none; b=XSjotE5OQbFcajiZJO607nHve3j0r4BtbBGB5dFY1YVZNiunPz1rIZy77m3xiXG4CdPGR93DiQPD0pjnvjGy1lbBOJUX7G7w6VRUoMUsJhH5ZKAUCC/H59MAFxyPTQd1b3bBvPsshu2fHXYGAijVNIsUmtbWsPGnC8cIeucCFbQ=
+	t=1707010526; cv=none; b=TMLC/fdU3+iuLlkOgfNnWIU6snUSDYamt+4Fl0JC/laHshmm6MY1+kdAjwQQuJbR7JP1xT/AWqo9RAcaitKPUch6J23m5boZWbzvKJQOxDuOFPz289/fGOVGDfbswddODrHifsoeDKoX3EPFTnQiFfKKsOOEECJkp3G0q6NUqWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707010401; c=relaxed/simple;
-	bh=Iw/fEuyQ7mi/lXa3d20ylxNcCWQhhKBXMwjanLwFV3s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oJQ2cbRnwSjch7IxI68Ndf2tzxlFBeEqkFLKAfu/V3gLnhnmk/uu/Bv0IuJTNtGPPpW/RuNMZTXYfNTrymWMTHpB9ho7UNzq6AY8tlzWsSrQbHAqNVxd1Eo/pveMOQWv/68yS+3luit/g1I7Y/yCSndeKkLYj0AUnZJOWrMElNs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=VoAxtBvh; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=g/e21LICe/FNUov3txLgNkHBc/RFMYIe48KaXgpnzOM=; b=VoAxtBvhL+JmLBoXdctdEbQwPd
-	IrbezwTR6Lj9IqpfmGjRi/81ae1JiGXyAgqoC1CuW7aUFFM7vKeRtBUIJSSpYYEhH2SUbR3gi3EGL
-	pkiWs6xYlDWMIuP7GjeYmNJ0AxPxUfVWkFJnnKYgnt4BZU5RYMy9CGiAg78GvAmBIQrrDc3JkptMy
-	OHDEJ1GBQ9Hs9TL1om3iaJOWoVzv+DgtxPDP256f+eeAIgz46JkI454jgGx7ZWNvnxVP1Mh/Zg0Xs
-	lLBsu8TZjh3wLl/mEafPGF8O8VxiVBwhn3fBAs4RmT7jtqDOEygHSGgeEHHOnxPfyu9c1OgB9M9zK
-	akSWs3Ng==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rWRNY-0000000HWm3-1uVM;
-	Sun, 04 Feb 2024 01:33:04 +0000
-Message-ID: <0371ffc5-f6c9-4352-89d5-0e98afa9ad7f@infradead.org>
-Date: Sat, 3 Feb 2024 17:33:02 -0800
+	s=arc-20240116; t=1707010526; c=relaxed/simple;
+	bh=KQkZtPc3Eys4j6v8gCXCHGDmJyPKKgZ3gFxxf0iZbT4=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=qRxjzUGzyhSHDoZxug/b9Li3RZgZUayfSDW17Sm55uOsLbjU/ZKZ/6d/gKfw7XuVPXAdhnp1AylQF24BaCGFRtaf8PhRtnVvinMr9NU1XLTV49BI5KKlCs7UKQQ6/moqSLHeFwEaea2u7nm/w7bNec0zX8FtiX+KvrOlBBQ63v8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TSBsB6sHYz4f3k6L;
+	Sun,  4 Feb 2024 09:35:10 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id A00A21A027B;
+	Sun,  4 Feb 2024 09:35:13 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgAn9g7N6b5lt1WeCw--.38132S3;
+	Sun, 04 Feb 2024 09:35:11 +0800 (CST)
+Subject: Re: [PATCH v5 00/14] dm-raid/md/raid: fix v6.7 regressions
+To: Benjamin Marzinski <bmarzins@redhat.com>,
+ Yu Kuai <yukuai1@huaweicloud.com>
+Cc: mpatocka@redhat.com, heinzm@redhat.com, xni@redhat.com,
+ blazej.kucman@linux.intel.com, agk@redhat.com, snitzer@kernel.org,
+ dm-devel@lists.linux.dev, song@kernel.org, jbrassow@f14.redhat.com,
+ neilb@suse.de, shli@fb.com, akpm@osdl.org, linux-kernel@vger.kernel.org,
+ linux-raid@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
+ "yukuai (C)" <yukuai3@huawei.com>
+References: <20240201092559.910982-1-yukuai1@huaweicloud.com>
+ <Zb2wxIpf7uYV6Vya@bmarzins-01.fast.eng.rdu2.dc.redhat.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <528ce926-6f17-c1ea-8e77-c7d5d7f56022@huaweicloud.com>
+Date: Sun, 4 Feb 2024 09:35:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFT v5 1/7] Documentation: userspace-api: Add shadow stack
- API documentation
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>,
- "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
- Deepak Gupta <debug@rivosinc.com>, Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
- "H.J. Lu" <hjl.tools@gmail.com>, Florian Weimer <fweimer@redhat.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
- <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
- Christian Brauner <brauner@kernel.org>, Shuah Khan <shuah@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will@kernel.org>, Kees Cook <keescook@chromium.org>,
- jannh@google.com, linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org
-References: <20240203-clone3-shadow-stack-v5-0-322c69598e4b@kernel.org>
- <20240203-clone3-shadow-stack-v5-1-322c69598e4b@kernel.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240203-clone3-shadow-stack-v5-1-322c69598e4b@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <Zb2wxIpf7uYV6Vya@bmarzins-01.fast.eng.rdu2.dc.redhat.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgAn9g7N6b5lt1WeCw--.38132S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3WF4UXw47GryUGFy8AryrWFg_yoW3tFWDpa
+	9xKa1ft340kw1IqrnxAa40qrWftF13J395Ca1fWr4xAry5u392yrs3tF1F9FnIy3sY9a42
+	q3yDJryrCF12gFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+	67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+	3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
+	sGvfC2KfnxnUUI43ZEXa7VUbQVy7UUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
 Hi,
 
-On 2/2/24 16:04, Mark Brown wrote:
-> There are a number of architectures with shadow stack features which we are
-> presenting to userspace with as consistent an API as we can (though there
-> are some architecture specifics). Especially given that there are some
-> important considerations for userspace code interacting directly with the
-> feature let's provide some documentation covering the common aspects.
+ÔÚ 2024/02/03 11:19, Benjamin Marzinski Ð´µÀ:
+> On Thu, Feb 01, 2024 at 05:25:45PM +0800, Yu Kuai wrote:
+>> From: Yu Kuai <yukuai3@huawei.com>
+>> I apply this patchset on top of v6.8-rc1, and run lvm2 tests suite with
+>> folling cmd for 24 round(for about 2 days):
+>>
+>> for t in `ls test/shell`; do
+>>          if cat test/shell/$t | grep raid &> /dev/null; then
+>>                  make check T=shell/$t
+>>          fi
+>> done
+>>
+>> failed count                             failed test
+>>        1 ###       failed: [ndev-vanilla] shell/dmsecuretest.sh
+>>        1 ###       failed: [ndev-vanilla] shell/dmsetup-integrity-keys.sh
+>>        1 ###       failed: [ndev-vanilla] shell/dmsetup-keyring.sh
+>>        5 ###       failed: [ndev-vanilla] shell/duplicate-pvs-md0.sh
+>>        1 ###       failed: [ndev-vanilla] shell/duplicate-vgid.sh
+>>        2 ###       failed: [ndev-vanilla] shell/duplicate-vgnames.sh
+>>        1 ###       failed: [ndev-vanilla] shell/fsadm-crypt.sh
+>>        1 ###       failed: [ndev-vanilla] shell/integrity.sh
+>>        6 ###       failed: [ndev-vanilla] shell/lvchange-raid1-writemostly.sh
+>>        2 ###       failed: [ndev-vanilla] shell/lvchange-rebuild-raid.sh
+>>        5 ###       failed: [ndev-vanilla] shell/lvconvert-raid-reshape-stripes-load-reload.sh
+>>        4 ###       failed: [ndev-vanilla] shell/lvconvert-raid-restripe-linear.sh
+>>        1 ###       failed: [ndev-vanilla] shell/lvconvert-raid1-split-trackchanges.sh
+>>       20 ###       failed: [ndev-vanilla] shell/lvconvert-repair-raid.sh
+>>       20 ###       failed: [ndev-vanilla] shell/lvcreate-large-raid.sh
+>>       24 ###       failed: [ndev-vanilla] shell/lvextend-raid.sh
+>>
+>> And I ramdomly pick some tests verified by hand that these test will
+>> fail in v6.6 as well(not all tests):
+>>
+>> shell/lvextend-raid.sh
+>> shell/lvcreate-large-raid.sh
+>> shell/lvconvert-repair-raid.sh
+>> shell/lvchange-rebuild-raid.sh
+>> shell/lvchange-raid1-writemostly.sh
 > 
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
->  Documentation/userspace-api/index.rst        |  1 +
->  Documentation/userspace-api/shadow_stack.rst | 41 ++++++++++++++++++++++++++++
->  2 files changed, 42 insertions(+)
+> In my testing with this patchset on top of the head of linus's tree
+> (5c24e4e9e708) I am seeing failures in
+> shell/lvconvert-raid-reshape-stripes-load-reload.sh and
+> shell/lvconvert-repair-raid.sh in about 20% of my runs. I have never
+> seen either of these these fail running on the 6.6 kernel (ffc253263a13).
+
+This sounds quite different in my testing, as I said, the test
+
+shell/lvconvert-repair-raid.sh is very likely to fail in v6.6 already,
+I don't know why it never fail in your testing, test log in v6.6:
+
+| [ 1:38.162] #lvconvert-repair-raid.sh:1+ aux teardown
+| [ 1:38.162] ## teardown.......## removing stray mapped devices with 
+names beginning with LVMTEST3474:
+| [ 1:39.207] .set +vx; STACKTRACE; set -vx
+| [ 1:41.448] ##lvconvert-repair-raid.sh:1+ set +vx
+| [ 1:41.448] ## - /mnt/test/lvm2/test/shell/lvconvert-repair-raid.sh:1
+| [ 1:41.449] ## 1 STACKTRACE() called from 
+/mnt/test/lvm2/test/shell/lvconvert-repair-raid.sh:1
+| [ 1:41.449] ## ERROR: The test started dmeventd (3718) unexpectedly.
+
+And the same in v6.8-rc1. Perhaps do you know how to fix this error?
+
+Thanks,
+Kuai
+
+> 
+> lvconvert-repair-raid.sh creates a raid array and then disables one if
+> its drives before there's enough time to finish the initial sync and
+> tries to repair it. This is supposed to fail (it uses dm-delay devices
+> to slow down the sync). When the test succeeds, I see things like this:
+> 
+> [ 0:13.469] #lvconvert-repair-raid.sh:161+ lvcreate --type raid10 -m 1 -i 2 -L 64 -n LV1 LVMTEST191946vg /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv1 /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv2 /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv3 /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv4
+> [ 0:13.469]   Using default stripesize 64.00 KiB.
+> [ 0:13.483]   Logical volume "LV1" created.
+> [ 0:14.042] 6,8908,1194343108,-;device-mapper: raid: Superblocks created for new raid set
+> [ 0:14.042] 5,8909,1194348704,-;md/raid10:mdX: not clean -- starting background reconstruction
+> [ 0:14.042] 6,8910,1194349443,-;md/raid10:mdX: active with 4 out of 4 devices
+> [ 0:14.042] 4,8911,1194459161,-;mdX: bitmap file is out of date, doing full recovery
+> [ 0:14.042] 6,8912,1194563810,-;md: resync of RAID array mdX
+> [ 0:14.042]   WARNING: This metadata update is NOT backed up.
+> [ 0:14.042] aux disable_dev "$dev4"
+> [ 0:14.058] #lvconvert-repair-raid.sh:163+ aux disable_dev /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv4
+> [ 0:14.058] Disabling device /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv4 (253:5)
+> [ 0:14.101] not lvconvert -y --repair $vg/$lv1
+> 
+> When it fails, I see:
+> 
+> [ 0:13.831] #lvconvert-repair-raid.sh:161+ lvcreate --type raid10 -m 1 -i 2 -L 64 -n LV1 LVMTEST192248vg /tmp/LVMTEST192248.ATcecgSGfE/dev/mapper/LVMTEST192248pv1 /tmp/LVMTEST192248.ATcecgSGfE/dev/mapper/LVMTEST192248pv2 /tmp/LVMTEST192248.ATcecgSGfE/dev/mapper/LVMTEST192248pv3 /tmp/LVMTEST192248.ATcecgSGfE/dev/mapper/LVMTEST192248pv4
+> [ 0:13.831]   Using default stripesize 64.00 KiB.
+> [ 0:13.847]   Logical volume "LV1" created.
+> [ 0:14.499]   WARNING: This metadata update is NOT backed up.
+> [ 0:14.499] 6,8925,1187444256,-;device-mapper: raid: Superblocks created for new raid set
+> [ 0:14.499] 5,8926,1187449525,-;md/raid10:mdX: not clean -- starting background reconstruction
+> [ 0:14.499] 6,8927,1187450148,-;md/raid10:mdX: active with 4 out of 4 devices
+> [ 0:14.499] 6,8928,1187452472,-;md: resync of RAID array mdX
+> [ 0:14.499] 6,8929,1187453016,-;md: mdX: resync done.
+> [ 0:14.499] 4,8930,1187555486,-;mdX: bitmap file is out of date, doing full recovery
+> [ 0:14.499] aux disable_dev "$dev4"
+> [ 0:14.515] #lvconvert-repair-raid.sh:163+ aux disable_dev /tmp/LVMTEST192248.AT
+> cecgSGfE/dev/mapper/LVMTEST192248pv4
+> [ 0:14.515] Disabling device /tmp/LVMTEST192248.ATcecgSGfE/dev/mapper/LVMTEST192
+> 248pv4 (253:5)
+> [ 0:14.554] not lvconvert -y --repair $vg/$lv1
+> 
+> To me the important looking difference (and I admit, I'm no RAID expert), is that in the
+> case where the test passes (where lvconvert fails as expected), I see
+> 
+> [ 0:14.042] 4,8911,1194459161,-;mdX: bitmap file is out of date, doing full recovery
+> [ 0:14.042] 6,8912,1194563810,-;md: resync of RAID array mdX
+> 
+> When it fails I see:
+> 
+> [ 0:14.499] 6,8928,1187452472,-;md: resync of RAID array mdX
+> [ 0:14.499] 6,8929,1187453016,-;md: mdX: resync done.
+> [ 0:14.499] 4,8930,1187555486,-;mdX: bitmap file is out of date, doing full recovery
+> 
+> Which appears to show a resync that takes no time, presumable because it happens before
+> the device notices that the bitmaps are wrong and schedules a full recovery.
+> 
+> 
+> lvconvert-raid-reshape-stripes-load-reload.sh repeatedly reloads the
+> device table during a raid reshape, and then tests the filesystem for
+> corruption afterwards. With this patchset, the filesystem is
+> occasionally corrupted.  I do not see this with the 6.6 kernel.
+> 
+> -Ben
+>   
+>> Xiao Ni also test the last version on a real machine, see [1].
+>>
+>> [1] https://lore.kernel.org/all/CALTww29QO5kzmN6Vd+jT=-8W5F52tJjHKSgrfUc1Z1ZAeRKHHA@mail.gmail.com/
+>>
+>> Yu Kuai (14):
+>>    md: don't ignore suspended array in md_check_recovery()
+>>    md: don't ignore read-only array in md_check_recovery()
+>>    md: make sure md_do_sync() will set MD_RECOVERY_DONE
+>>    md: don't register sync_thread for reshape directly
+>>    md: don't suspend the array for interrupted reshape
+>>    md: fix missing release of 'active_io' for flush
+>>    md: export helpers to stop sync_thread
+>>    md: export helper md_is_rdwr()
+>>    dm-raid: really frozen sync_thread during suspend
+>>    md/dm-raid: don't call md_reap_sync_thread() directly
+>>    dm-raid: add a new helper prepare_suspend() in md_personality
+>>    md/raid456: fix a deadlock for dm-raid456 while io concurrent with
+>>      reshape
+>>    dm-raid: fix lockdep waring in "pers->hot_add_disk"
+>>    dm-raid: remove mddev_suspend/resume()
+>>
+>>   drivers/md/dm-raid.c |  78 +++++++++++++++++++--------
+>>   drivers/md/md.c      | 126 +++++++++++++++++++++++++++++--------------
+>>   drivers/md/md.h      |  16 ++++++
+>>   drivers/md/raid10.c  |  16 +-----
+>>   drivers/md/raid5.c   |  61 +++++++++++----------
+>>   5 files changed, 192 insertions(+), 105 deletions(-)
+>>
+>> -- 
+>> 2.39.2
+>>
+> 
+> .
 > 
 
-
-> diff --git a/Documentation/userspace-api/shadow_stack.rst b/Documentation/userspace-api/shadow_stack.rst
-> new file mode 100644
-> index 000000000000..c6e5ab795b60
-> --- /dev/null
-> +++ b/Documentation/userspace-api/shadow_stack.rst
-> @@ -0,0 +1,41 @@
-> +=============
-> +Shadow Stacks
-> +=============
-> +
-> +Introduction
-> +============
-> +
-> +Several architectures have features which provide backward edge
-> +control flow protection through a hardware maintained stack, only
-> +writeable by userspace through very limited operations.  This feature
-> +is referred to as shadow stacks on Linux, on x86 it is part of Intel
-
-                                   on Linux. On x86
-
-> +Control Enforcement Technology (CET), on arm64 it is Guarded Control
-> +Stacks feature (FEAT_GCS) and for RISC-V it is the Zicfiss extension.> +It is expected that this feature will normally be managed by the
-> +system dynamic linker and libc in ways broadly transparent to
-> +application code, this document covers interfaces and considerations
-
-               code. This                                considerations.
-
-> +
-> +
-> +Enabling
-> +========
-> +
-> +Shadow stacks default to disabled when a userspace process is
-> +executed, they can be enabled for the current thread with a syscall:
-
-   executed. They
-
-> +
-> + - For x86 the ARCH_SHSTK_ENABLE arch_prctl()
-> +
-> +It is expected that this will normally be done by the dynamic linker.
-> +Any new threads created by a thread with shadow stacks enabled will
-> +themsleves have shadow stacks enabled.
-
-   themselves
-
-> +
-> +
-> +Enablement considerations
-> +=========================
-> +
-> +- Returning from the function that enables shadow stacks without first
-> +  disabling them will cause a shadow stack exception.  This includes
-> +  any syscall wrapper or other library functions, the syscall will need
-
-                                          functions. The
-
-> +  to be inlined.
-> +- A lock feature allows userspace to prevent disabling of shadow stacks.
-> +- This that change the stack context like longjmp() or use of ucontext
-
-     Those
-?
-
-> +  changes on signal return will need support from libc.
-> 
-
--- 
-#Randy
 
