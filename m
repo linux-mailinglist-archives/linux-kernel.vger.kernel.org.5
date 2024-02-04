@@ -1,120 +1,103 @@
-Return-Path: <linux-kernel+bounces-51531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83F89848C3E
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 09:46:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D02D3848C40
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 09:47:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77EA0B21D1E
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 08:46:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BCB4282225
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 08:47:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14AE514A94;
-	Sun,  4 Feb 2024 08:46:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76F7314A8F;
+	Sun,  4 Feb 2024 08:47:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nL1W88nU"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="Qm3xI9KP"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEC5A14275;
-	Sun,  4 Feb 2024 08:46:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01F8914275;
+	Sun,  4 Feb 2024 08:47:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707036403; cv=none; b=SA7pckbAKX0nS2fhvoyG7DcHpfNWT1uhEtwN/cjw8whykuonSxWzmj9WV2ZpFB5+BZaBPIq5LrusfPNNlD7DIU3sNiLpFeewbVPJZ1ku2naM0l1my+PP7lzVhYbL/JwDLa9RcbTZrf+02z2ncyjri0yrgEsgXL5iXhbxAY53i1Y=
+	t=1707036434; cv=none; b=ag00qJnSnz2NnMnFrYn9cENypeEAb5d/q1NXLKlGvJuU/+VqHf/cVbw8dINlVH8Gy03b4LgC/VKuW8d8O8bWShD8LwiIMSvjx3N8fiK33or5ZeaJ6pfM0jQxumNBfyOWqQJjNW9Ins6An5JdUCBHyCg7PZFB+yRqZ5BvqPEQCWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707036403; c=relaxed/simple;
-	bh=Cpy3CKuYNywdrx8Zum44pEFdPYhqxi2fjTOZk38Zifk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JEwMtx8L+dSd2Nbkd5I8+ZuoUCUe6wSz0DFAHg/o1LQgwz47UZR3AeAkVomTVdCK0dqpvrjQR+aBWjOfWGAC/CVsTnDsA14wFSYMmBR58b68+bHion+jpxy8Hjvo2bAUpRqu2cPvio3Rsd2cYe8CHlCZ6oRCsLmaIlLjnV6Shq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nL1W88nU; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707036402; x=1738572402;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Cpy3CKuYNywdrx8Zum44pEFdPYhqxi2fjTOZk38Zifk=;
-  b=nL1W88nUfdRjOkUSjTPQy1lIvFGqsLTqVQG/bOzWLDP2yTXgl3FD1CpN
-   aCcCR4qkRzXJE5Glmqmk8KE7TvM2FHn/ejLsMlyfdsUqFEbz3L8PjnPq5
-   /Gsrd3RPAq6rNvugyIsL0yNQ6EBkSk8rT/g2QQAicX9bKvmnrlISHzzaL
-   ebzXqUEFN2/OXxQordWS/eYEkXdshz8QyQM02KpxRM+PmOpEcGgz4XlLb
-   53pH4Ok6bWdYoEORo/N03Ai/71q+CtVdrzywlNUMLz4PnwWT1GcWeyXhG
-   3s4+yJzd+tE9SqSy/VrqHs99OSJJalMi1R+CH+h0pgb8vKuDAd0FWZTQ1
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10973"; a="528900"
-X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
-   d="scan'208";a="528900"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 00:46:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
-   d="scan'208";a="515985"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.49]) ([10.238.10.49])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 00:46:37 -0800
-Message-ID: <4f35f658-bd0a-4461-b9db-992bef0e57a9@linux.intel.com>
-Date: Sun, 4 Feb 2024 16:46:35 +0800
+	s=arc-20240116; t=1707036434; c=relaxed/simple;
+	bh=RUA9DVZTSMUYUSqiFziWdhCqEzBXnuZwYGQG1Psuc2o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=f3fmIhX/WriKjx/pWHBmF6ilN9aXW6KlhGJaw6ySO9xR0DLXc4bfDzg7bzdcO+vYVgzaUwabT9HWV5J9IcPPrwJfiSBEehkv/hZ8mCYc5UrYe7ZqlWARWwb/XVPHQV/2Y8GSUNbPL0YgKJhlhz9Z4C30KABZpVN4EJyQfV0atKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=Qm3xI9KP; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (unknown [109.128.141.99])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 62F02B3;
+	Sun,  4 Feb 2024 09:45:49 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1707036349;
+	bh=RUA9DVZTSMUYUSqiFziWdhCqEzBXnuZwYGQG1Psuc2o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Qm3xI9KPWatgZx9Vfp2ZGTt2BbrLo7KFQl25FZXXnR39FSUXqShk9f4xgiozv93GZ
+	 Y0wdCQWEq8aqKnau6t0WFypndsdujMXuVmjEwb3r3SxAFrhWY+OvHoxwImOwwE3o7O
+	 kyxBTFzbCzY4XLFdY6fIGuLunLLEA89SVbWzqVyY=
+Date: Sun, 4 Feb 2024 10:47:12 +0200
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] media: media-devnode: make media_bus_type const
+Message-ID: <20240204084712.GE3094@pendragon.ideasonboard.com>
+References: <20240203-bus_cleanup-media-v1-0-33e8feeab912@marliere.net>
+ <20240203-bus_cleanup-media-v1-2-33e8feeab912@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v18 053/121] KVM: x86/mmu: TDX: Do not enable page track
- for TD guest
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
- Yan Zhao <yan.y.zhao@intel.com>, Yuan Yao <yuan.yao@linux.intel.com>
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <ba65644eb8327600c393bc3a3dc71c49e872d29f.1705965635.git.isaku.yamahata@intel.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <ba65644eb8327600c393bc3a3dc71c49e872d29f.1705965635.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240203-bus_cleanup-media-v1-2-33e8feeab912@marliere.net>
 
+Hi Ricardo,
 
+Thank you for the patch.
 
-On 1/23/2024 7:53 AM, isaku.yamahata@intel.com wrote:
-> From: Yan Zhao <yan.y.zhao@intel.com>
->
-> TDX does not support write protection and hence page track.
-> Though !tdp_enabled and kvm_shadow_root_allocated(kvm) are always false
-> for TD guest, should also return false when external write tracking is
-> enabled.
+On Sat, Feb 03, 2024 at 12:31:27PM -0300, Ricardo B. Marliere wrote:
+> Now that the driver core can properly handle constant struct bus_type,
+> move the media_bus_type variable to be a constant structure as well,
+> placing it into read-only memory which can not be modified at runtime.
+> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 
-Nit:
-The preferred shortlog prefix format is "KVM: <topic>:", remove "TDX" from
-the shortlog?
-"KVM: x86/mmu: Do not enable page track for TD guest" should be OK.
+Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
 
-Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
-
->
-> Cc: Yuan Yao <yuan.yao@linux.intel.com>
-> Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
 > ---
->   arch/x86/kvm/mmu/page_track.c | 3 +++
->   1 file changed, 3 insertions(+)
->
-> diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
-> index c87da11f3a04..ce698ab213c1 100644
-> --- a/arch/x86/kvm/mmu/page_track.c
-> +++ b/arch/x86/kvm/mmu/page_track.c
-> @@ -22,6 +22,9 @@
->   
->   bool kvm_page_track_write_tracking_enabled(struct kvm *kvm)
->   {
-> +	if (kvm->arch.vm_type == KVM_X86_TDX_VM)
-> +		return false;
-> +
->   	return IS_ENABLED(CONFIG_KVM_EXTERNAL_WRITE_TRACKING) ||
->   	       !tdp_enabled || kvm_shadow_root_allocated(kvm);
->   }
+>  drivers/media/mc/mc-devnode.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/mc/mc-devnode.c b/drivers/media/mc/mc-devnode.c
+> index 680fbb3a9340..90646805bd81 100644
+> --- a/drivers/media/mc/mc-devnode.c
+> +++ b/drivers/media/mc/mc-devnode.c
+> @@ -63,7 +63,7 @@ static void media_devnode_release(struct device *cd)
+>  	pr_debug("%s: Media Devnode Deallocated\n", __func__);
+>  }
+>  
+> -static struct bus_type media_bus_type = {
+> +static const struct bus_type media_bus_type = {
+>  	.name = MEDIA_NAME,
+>  };
+>  
+> 
 
+-- 
+Regards,
+
+Laurent Pinchart
 
