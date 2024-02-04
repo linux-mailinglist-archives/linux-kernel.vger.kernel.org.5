@@ -1,47 +1,51 @@
-Return-Path: <linux-kernel+bounces-51367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51368-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D45D1848A35
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 02:31:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9881E848A3A
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 02:33:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87B771F240C3
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 01:31:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB4F81C2281A
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 01:33:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 979964C9F;
-	Sun,  4 Feb 2024 01:31:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E602210F5;
+	Sun,  4 Feb 2024 01:33:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mvm2Cjrf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VoAxtBvh"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D65924683;
-	Sun,  4 Feb 2024 01:31:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6C7C816;
+	Sun,  4 Feb 2024 01:33:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707010267; cv=none; b=lus0ab1SNFB8mpLE1jDQrJRiXeLN5YqvKxH9FKv7LfUNaE25dOIw1Hcn7yyB4zGRPNqwotpHm/L/UbPN2BHTkIPDu4oY7qvN/lsPajOtOB6b7aGpWhf6ATZ1ks9tM7vhVIiZO6C6JsXkZC18dLzyEyh153PudpNFjMYP6qQYKTQ=
+	t=1707010401; cv=none; b=XSjotE5OQbFcajiZJO607nHve3j0r4BtbBGB5dFY1YVZNiunPz1rIZy77m3xiXG4CdPGR93DiQPD0pjnvjGy1lbBOJUX7G7w6VRUoMUsJhH5ZKAUCC/H59MAFxyPTQd1b3bBvPsshu2fHXYGAijVNIsUmtbWsPGnC8cIeucCFbQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707010267; c=relaxed/simple;
-	bh=XRW28h1fQMp8IU8VcQUi378iF8sFOP6ADhPjPhUJycw=;
+	s=arc-20240116; t=1707010401; c=relaxed/simple;
+	bh=Iw/fEuyQ7mi/lXa3d20ylxNcCWQhhKBXMwjanLwFV3s=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rWBbDL/ygX0vFP4dHDlyMeOdAe6qhStRDh+QtsgsPbco9eLG9D0wek6Zru6IKQLFwmfN1A7jm7t6q0KtBidPPxYzRb0B980S2OZXpckWtL3dSG8fMVYHHHLbnzGu4bq9WYq6skx8XGEHGybwFvLpXn7V+1cSwWSjvWP/MyhhZ4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mvm2Cjrf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71873C433F1;
-	Sun,  4 Feb 2024 01:31:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707010267;
-	bh=XRW28h1fQMp8IU8VcQUi378iF8sFOP6ADhPjPhUJycw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Mvm2Cjrff6kLlvw7YJRIqZS0RSQn7QOA1WlIafq0CmiDZtte763VES5GGPWVngY6V
-	 z5INN/2cFCnts+chu+KSypqYyvveIvhFcWGGj+SpA3ok7ysY7+whHiDjNXsoZJTb48
-	 YAn38Zb/8ix4jLScTiH1k127m8yAS3/3D7rxglPARzEJo5AMHThEEqGoSvT5Oma4cn
-	 kKSmBtf3Q0w951HRPZZ5cXjSdLxoS4+vjO+5C+N5Y4JGlQ1d3C1I+0Dv4DB5hWMBKh
-	 pA81bcIgBATQLmEg6/9XOjJoT6pOYOQXX3aj5go7OQXGiWXYmj2Eg3amCOhlpIsRAM
-	 rFYwJCP/scRqw==
-Message-ID: <3ecb999c-8933-4181-a9ea-45116583bd9c@kernel.org>
-Date: Sun, 4 Feb 2024 09:31:02 +0800
+	 In-Reply-To:Content-Type; b=oJQ2cbRnwSjch7IxI68Ndf2tzxlFBeEqkFLKAfu/V3gLnhnmk/uu/Bv0IuJTNtGPPpW/RuNMZTXYfNTrymWMTHpB9ho7UNzq6AY8tlzWsSrQbHAqNVxd1Eo/pveMOQWv/68yS+3luit/g1I7Y/yCSndeKkLYj0AUnZJOWrMElNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=VoAxtBvh; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=g/e21LICe/FNUov3txLgNkHBc/RFMYIe48KaXgpnzOM=; b=VoAxtBvhL+JmLBoXdctdEbQwPd
+	IrbezwTR6Lj9IqpfmGjRi/81ae1JiGXyAgqoC1CuW7aUFFM7vKeRtBUIJSSpYYEhH2SUbR3gi3EGL
+	pkiWs6xYlDWMIuP7GjeYmNJ0AxPxUfVWkFJnnKYgnt4BZU5RYMy9CGiAg78GvAmBIQrrDc3JkptMy
+	OHDEJ1GBQ9Hs9TL1om3iaJOWoVzv+DgtxPDP256f+eeAIgz46JkI454jgGx7ZWNvnxVP1Mh/Zg0Xs
+	lLBsu8TZjh3wLl/mEafPGF8O8VxiVBwhn3fBAs4RmT7jtqDOEygHSGgeEHHOnxPfyu9c1OgB9M9zK
+	akSWs3Ng==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rWRNY-0000000HWm3-1uVM;
+	Sun, 04 Feb 2024 01:33:04 +0000
+Message-ID: <0371ffc5-f6c9-4352-89d5-0e98afa9ad7f@infradead.org>
+Date: Sat, 3 Feb 2024 17:33:02 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,28 +53,117 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] f2fs: doc: Fix bouncing email address for Sahitya Tummala
+Subject: Re: [PATCH RFT v5 1/7] Documentation: userspace-api: Add shadow stack
+ API documentation
 Content-Language: en-US
-To: Jeffrey Hugo <quic_jhugo@quicinc.com>, jaegeuk@kernel.org,
- quic_stummala@quicinc.com, quic_bjorande@quicinc.com
-Cc: linux-arm-msm@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-kernel@vger.kernel.org
-References: <20240202165208.4091800-1-quic_jhugo@quicinc.com>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <20240202165208.4091800-1-quic_jhugo@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Mark Brown <broonie@kernel.org>,
+ "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+ Deepak Gupta <debug@rivosinc.com>, Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+ "H.J. Lu" <hjl.tools@gmail.com>, Florian Weimer <fweimer@redhat.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
+ <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
+ Christian Brauner <brauner@kernel.org>, Shuah Khan <shuah@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>, Kees Cook <keescook@chromium.org>,
+ jannh@google.com, linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org
+References: <20240203-clone3-shadow-stack-v5-0-322c69598e4b@kernel.org>
+ <20240203-clone3-shadow-stack-v5-1-322c69598e4b@kernel.org>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240203-clone3-shadow-stack-v5-1-322c69598e4b@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 2024/2/3 0:52, Jeffrey Hugo wrote:
-> The servers for the @codeaurora domain are long retired and any messages
-> addressed there will bounce.  Sahitya Tummala has a .mailmap entry to an
-> updated address, but the documentation files still list @codeaurora
-> which might be a problem for anyone reading the documentation directly.
-> Update the documentation files to match the .mailmap update.
+Hi,
+
+On 2/2/24 16:04, Mark Brown wrote:
+> There are a number of architectures with shadow stack features which we are
+> presenting to userspace with as consistent an API as we can (though there
+> are some architecture specifics). Especially given that there are some
+> important considerations for userspace code interacting directly with the
+> feature let's provide some documentation covering the common aspects.
 > 
-> Signed-off-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> ---
+>  Documentation/userspace-api/index.rst        |  1 +
+>  Documentation/userspace-api/shadow_stack.rst | 41 ++++++++++++++++++++++++++++
+>  2 files changed, 42 insertions(+)
+> 
 
-Reviewed-by: Chao Yu <chao@kernel.org>
 
-Thanks,
+> diff --git a/Documentation/userspace-api/shadow_stack.rst b/Documentation/userspace-api/shadow_stack.rst
+> new file mode 100644
+> index 000000000000..c6e5ab795b60
+> --- /dev/null
+> +++ b/Documentation/userspace-api/shadow_stack.rst
+> @@ -0,0 +1,41 @@
+> +=============
+> +Shadow Stacks
+> +=============
+> +
+> +Introduction
+> +============
+> +
+> +Several architectures have features which provide backward edge
+> +control flow protection through a hardware maintained stack, only
+> +writeable by userspace through very limited operations.  This feature
+> +is referred to as shadow stacks on Linux, on x86 it is part of Intel
+
+                                   on Linux. On x86
+
+> +Control Enforcement Technology (CET), on arm64 it is Guarded Control
+> +Stacks feature (FEAT_GCS) and for RISC-V it is the Zicfiss extension.> +It is expected that this feature will normally be managed by the
+> +system dynamic linker and libc in ways broadly transparent to
+> +application code, this document covers interfaces and considerations
+
+               code. This                                considerations.
+
+> +
+> +
+> +Enabling
+> +========
+> +
+> +Shadow stacks default to disabled when a userspace process is
+> +executed, they can be enabled for the current thread with a syscall:
+
+   executed. They
+
+> +
+> + - For x86 the ARCH_SHSTK_ENABLE arch_prctl()
+> +
+> +It is expected that this will normally be done by the dynamic linker.
+> +Any new threads created by a thread with shadow stacks enabled will
+> +themsleves have shadow stacks enabled.
+
+   themselves
+
+> +
+> +
+> +Enablement considerations
+> +=========================
+> +
+> +- Returning from the function that enables shadow stacks without first
+> +  disabling them will cause a shadow stack exception.  This includes
+> +  any syscall wrapper or other library functions, the syscall will need
+
+                                          functions. The
+
+> +  to be inlined.
+> +- A lock feature allows userspace to prevent disabling of shadow stacks.
+> +- This that change the stack context like longjmp() or use of ucontext
+
+     Those
+?
+
+> +  changes on signal return will need support from libc.
+> 
+
+-- 
+#Randy
 
