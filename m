@@ -1,151 +1,78 @@
-Return-Path: <linux-kernel+bounces-51568-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51569-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 908AB848C9A
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 10:56:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 165B5848C9D
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 10:57:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9AA71F22443
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 09:56:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C525C2828C6
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 09:57:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48AA71B59F;
-	Sun,  4 Feb 2024 09:56:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53DE91B5A0;
+	Sun,  4 Feb 2024 09:57:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="rKIYI/sM"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="utPpMcZS"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 177BF1B599
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 09:56:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C6C41B592
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 09:57:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707040583; cv=none; b=C5t9sbntTbxnq3/rZyCjhxr6g1Bj1GgGawSgraNH7Dy4fuKkJBpatw+OLW7koy9P+LHc9j8I0ESUWNHqnZD8bm5PcKPccuAKYOopn5ftQQFgdsaNnjqU6jtMWMSq3ydHGGeKH5iTCSg3tYto01sOs1X36gz6w8vQ0mYoVykdQZ8=
+	t=1707040651; cv=none; b=aXeNVnBAXq4Q+tCoCiySqEtQ/qQAXfskxL61swfVV09ebDcWVCBCDUlH++zEc+kveyBLJy42DhMziNCw26k6+Lh9yn0bBDlrZwn0duBqUWalGlS3ykfd3Tx0xaqqd9l0IN1zP3UvnipKsDDwx/PFoE7XO1E5Iu+u5swNXxP2+1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707040583; c=relaxed/simple;
-	bh=bLEtq/aD7sTN15wBQSJLh78FButN/RwMUxQsJv0VAhA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ScgzzT12Tf1SLfU7vu+c/p/dENBd5Yv3GIygrC+rs/8WMgP4pBq11TsJKpkn2FhiJYt8ahRV/vLBjiAS7Ra7DmU822Xux9gDS5+GGtxTmr0FmfJWd8XYhtu4HqNmBcKf6KeZTHVma4LqeaxLpd4KzfbVm8OrRm03zNUUhlxU5vE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=rKIYI/sM; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (unknown [109.128.141.99])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1D3176F2;
-	Sun,  4 Feb 2024 10:54:56 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1707040496;
-	bh=bLEtq/aD7sTN15wBQSJLh78FButN/RwMUxQsJv0VAhA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rKIYI/sM/4cVrqaY/OAGrW+iB09FiUc2vW7vBygJHgJ2hN9M67DWj3A35RJ1eMqKa
-	 QMbT5wsHSNb1f7uie5JbGkh8uAb4FjrEY0TmInHoHzWbgWAEF6BNX/INiv5o1sJ62L
-	 MERnsPYgjuCvB74aHpPhqxwW20FjGXvCZIkw9A1Q=
-Date: Sun, 4 Feb 2024 11:56:18 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Maxime Ripard <mripard@kernel.org>
-Cc: "Klymenko, Anatoliy" <Anatoliy.Klymenko@amd.com>,
-	"maarten.lankhorst@linux.intel.com" <maarten.lankhorst@linux.intel.com>,
-	"tzimmermann@suse.de" <tzimmermann@suse.de>,
-	"airlied@gmail.com" <airlied@gmail.com>,
-	"daniel@ffwll.ch" <daniel@ffwll.ch>,
-	"Simek, Michal" <michal.simek@amd.com>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: RE: Re: [PATCH 0/4] Fixing live video input in ZynqMP DPSUB
-Message-ID: <20240204095618.GJ3094@pendragon.ideasonboard.com>
-References: <20240112234222.913138-1-anatoliy.klymenko@amd.com>
- <6jhwss2wego6yoo5mwmphwawhsj5bbj62gwrzcpapoixwkrkli@g4fbxdooopby>
- <20240117142343.GD17920@pendragon.ideasonboard.com>
- <u5mngxudtdgy3vqkfbpgqng6tdahijnet2jtj345hrowbt47ce@t3e7hul45mr3>
- <MW4PR12MB7165D35189BEECA8769552AFE6792@MW4PR12MB7165.namprd12.prod.outlook.com>
- <2ytxhpti53e743b5pca3oa5jmscffi4vpsyeh727bcoh4v6cuw@zkz5pqkcv7v2>
+	s=arc-20240116; t=1707040651; c=relaxed/simple;
+	bh=1a/18m8aWACDG3JH7A3osAHapKeJBpsbrh6a8Bw7mDE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VDux02uAsnCiJjGE1ZIuJ5JpyTswd4/tVQTjvDlWAOcFUSXN5ZtZzmaRPmqaAI68/Ok26O/BAQ1UaUUpdw7gJeIRg2JG0OmkwmyCxhrE/cbzWpeofNltx00PRYAAUZLaxoAz9T5yKurri9AtqKzjc65DQpUpE9dSCzlzGLEy5Ag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=utPpMcZS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D483CC433F1;
+	Sun,  4 Feb 2024 09:57:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707040651;
+	bh=1a/18m8aWACDG3JH7A3osAHapKeJBpsbrh6a8Bw7mDE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=utPpMcZSrIfJKn/VOqwSZid26sdGLBT7jLF7djuLRlF6NonziJBO34m66M8HW55AB
+	 1zEZdExTzJ94IySse+rTvEaJF3P5WU+hITF2DIZckoEmPaLS2tcR4jIFSFZwJ7V7e7
+	 eHB5RY1Aq9ZgMe4mZGAgTeAMSCEGt+d1iCY9rG+wWd4bp7jN11bkCKclsvIeiWjkl5
+	 kZRSHe1A66BasJrW8nq32I6mX4BVaLXtxLUVxDTNjII8SBR8W279cw9Nkvm18JKFLh
+	 rbgzGRooiouKV/N7TwrEXmGZtN308HEmWBTEvzg55d51H8yYIjBE++KIuccTCjzIeg
+	 LlscORnplMkNw==
+Message-ID: <22bd1968-5ab1-4f4c-843e-03e4b74d7023@kernel.org>
+Date: Sun, 4 Feb 2024 17:57:23 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2ytxhpti53e743b5pca3oa5jmscffi4vpsyeh727bcoh4v6cuw@zkz5pqkcv7v2>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] f2fs: sysfs: support gc_io_aware
+Content-Language: en-US
+To: liujinbao1 <jinbaoliu365@gmail.com>, jaegeuk@kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+ liujinbao1 <liujinbao1@xiaomi.com>
+References: <3b2852b3d404ecbb53d9affa781d12d0e9ea3951.1707022643.git.liujinbao1@xiaomi.com>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <3b2852b3d404ecbb53d9affa781d12d0e9ea3951.1707022643.git.liujinbao1@xiaomi.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 01, 2024 at 06:01:01PM +0100, Maxime Ripard wrote:
-> On Fri, Jan 26, 2024 at 11:18:30PM +0000, Klymenko, Anatoliy wrote:
-> > On Friday, January 26, 2024 4:26 AM, Maxime Ripard wrote:
-> > > On Wed, Jan 17, 2024 at 04:23:43PM +0200, Laurent Pinchart wrote:
-> > > > On Mon, Jan 15, 2024 at 09:28:39AM +0100, Maxime Ripard wrote:
-> > > > > On Fri, Jan 12, 2024 at 03:42:18PM -0800, Anatoliy Klymenko wrote:
-> > > > > > Patches 1/4,2/4,3/4 are minor fixes.
-> > > > > >
-> > > > > > DPSUB requires input live video format to be configured.
-> > > > > > Patch 4/4: The DP Subsystem requires the input live video format to be
-> > > > > > configured. In this patch we are assuming that the CRTC's bus format is fixed
-> > > > > > and comes from the device tree. This is a proposed solution, as there are no api
-> > > > > > to query CRTC output bus format.
-> > > > > >
-> > > > > > Is this a good approach to go with?
-> > > > >
-> > > > > I guess you would need to expand a bit on what "live video input" is? Is
-> > > > > it some kind of mechanism to bypass memory and take your pixels straight
-> > > > > from a FIFO from another device, or something else?
-> > > >
-> > > > Yes and no.
-> > > >
-> > > > The DPSUB integrates DMA engines, a blending engine (two planes), and a
-> > > > DP encoder. The dpsub driver supports all of this, and creates a DRM
-> > > > device. The DP encoder hardware always takes its input data from the
-> > > > output of the blending engine.
-> > > >
-> > > > The blending engine can optionally take input data from a bus connected
-> > > > to the FPGA fabric, instead of taking it from the DPSUB internal DMA
-> > > > engines. When operating in that mode, the dpsub driver exposes the DP
-> > > > encoder as a bridge, and internally programs the blending engine to
-> > > > disable blending. Typically, the FPGA fabric will then contain a CRTC of
-> > > > some sort, with a driver that will acquire the DP encoder bridge as
-> > > > usually done.
-> > > >
-> > > > In this mode of operation, it is typical for the IP cores in FPGA fabric
-> > > > to be synthesized with a fixed format (as that saves resources), while
-> > > > the DPSUB supports multiple input formats.
-> > > 
-> > > Where is that CRTC driver? It's not clear to me why the format would
-> > > need to be in the device tree at all. Format negociation between the
-> > > CRTC and whatever comes next is already done in a number of drivers so
-> > > it would be useful to have that kind of API outside of the bridge
-> > > support.
-> >
-> > One example of such CRTC driver:
-> > https://github.com/Xilinx/linux-xlnx/blob/master/drivers/gpu/drm/xlnx/xlnx_mixer.c It's not
-> > upstreamed yet. Bus format negotiations here are handled by utilizing Xilinx-specific bridge
-> > framework. Ideally, it would be nice to rework this to comply with the upstream DRM bridge
-> > framework.
-> >
-> > > > Bridge drivers in the upstream kernel work the other way around, with
-> > > > the bridge hardware supporting a limited set of formats, and the CRTC
-> > > > then being programmed with whatever the bridges chain needs. Here, the
-> > > > negotiation needs to go the other way around, as the CRTC is the
-> > > > limiting factor, not the bridge.
-> > > 
-> > > Sounds like there's something to rework in the API then?
-> > > 
-> > Adding an optional CRTC callback imposing CRTC specific bus format restrictions, which may be
-> > called from here https://github.com/torvalds/linux/blob/master/drivers/gpu/drm/drm_bridge.c#L935
-> > would solve the problem.
+On 2024/2/4 12:58, liujinbao1 wrote:
+> From: liujinbao1 <liujinbao1@xiaomi.com>
 > 
-> CRTCs and bridges are orthogonal. If anything, I'd expect that callback
-> to be set at the CRTC, encoder and connector levels and filled by the
-> drm_bridge code if relevant.
+> Currently, IO can only be ignored when GC_URGENT_HIGH is set,
+> and the default algorithm used for GC_URGENT_HIGH is greedy.
+> It gives a way to enable/disable IO aware feature for background
+> gc, so that we can tune background gc more precisely. e.g.
+> force to disable IO aware and choose more suitable algorithm
+> if there are large number of dirty segments.
+> 
+> Signed-off-by: liujinbao1 <liujinbao1@xiaomi.com>
 
-I'm thinking about a new CRTC operation that would be called by the
-bridge chain format negotiation helper
-drm_atomic_bridge_chain_select_bus_fmts() (or one of the functions it
-calls), to filter the list of formats supported by the chain based on
-what the CRTC supports, or possibly to pick a format in that list. This
-needs to be prototyped
+Reviewed-by: Chao Yu <chao@kernel.org>
 
--- 
-Regards,
-
-Laurent Pinchart
+Thanks,
 
