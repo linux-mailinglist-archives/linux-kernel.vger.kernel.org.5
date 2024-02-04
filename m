@@ -1,128 +1,107 @@
-Return-Path: <linux-kernel+bounces-51756-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51757-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57274848EF8
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 16:43:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2A13848EFA
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 16:45:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E166B1F220AD
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 15:43:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 014FB1C21E39
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 15:45:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C6362261A;
-	Sun,  4 Feb 2024 15:43:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58A2922615;
+	Sun,  4 Feb 2024 15:45:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="T+dbddqf"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wem4/7TM"
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 906F9225CE;
-	Sun,  4 Feb 2024 15:43:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52BCB225D4;
+	Sun,  4 Feb 2024 15:45:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707061415; cv=none; b=acGXjvMVnQI8n/N+E1jmOcEUJouJm6VsAc1iqvrEEsy1HF7XVxiIMCxYK8kRGGI83bgwNZyEWWL1E3Ao2UdrA5WvI0bD9W4EVueGfgdUxyR7ty+CNfftm2/p1scJDWAV7R7ncMNEvA3r5Fxts38oKPIxNZX3uy8uzXRB1laekfY=
+	t=1707061514; cv=none; b=FLGksgNVCoSQk1PuyA7P3ccB0341EX1IOWwl1+OefebcCdKGH5LwEtsyA8RlHEc6zenHrAsSM7Y2KSyZgl6eklu/pnypiBKIM+PJQc7WYx3TzHDnQ0QJx45etEm+zWx4cSCAxx1nH90kqapjrO7OeOvaeEQOGuBB+tNNC/brMg4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707061415; c=relaxed/simple;
-	bh=j8bT92korZPHKU9UJD58DKUuXoIYCuBG26pqbJmYj/Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=g+EntRXWg57nL484s8JnwcXqf/1STmddp1WedsB/gIp2or9grMtJdLQO6HzIVOG5JyvWFM8dJvV6IwP5pF/haHUa4jt9yUhUiLRdgHrLFXRX3xsFMrlhwIjRNcnp7JmlfLaaPZHFhZ2UHf09s2qpL+alqCOgGvWpLYZP214Tps0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=T+dbddqf; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=HPr856mnIn7UchtaSPmbDT13xvs3uix0kLrT0nAz+H8=; b=T+dbddqfIFAZ0ZeL3RVZjQnB4g
-	ZNoTgQJSGq/5zCYsWqAPV1YQiYKCGpvkIXjV/SfBiWNVkZjfJP6/5iitKD5J83fwADBOY4voShV8d
-	yHBHzQs0TtiDpGA97fs5S7Xq5H0UjOTW36fE05FeFh+EJTIJUT+Bo9DJxbzA0/uKcnaqGC9UQPvUO
-	NbCmcoBvaZqUFB2Z+95BkqAZ5Bk9/+UCGq8FkRWbE9Hd3rxMCe3k43rncM1KXuqxY+9HGiUoEC7b8
-	Q39I9JMnH86N69gmICJTObM3/JLGwz2wiTgP18PmnR1N9mFCBhkpPg5PvjVzJkLauQLHJ4dZhhbLE
-	x8+WXYMA==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rWeeW-000000014T6-2LMA;
-	Sun, 04 Feb 2024 15:43:29 +0000
-Message-ID: <fe192b1d-da96-4f58-abe2-c3447adf0676@infradead.org>
-Date: Sun, 4 Feb 2024 07:43:28 -0800
+	s=arc-20240116; t=1707061514; c=relaxed/simple;
+	bh=X0WZl01M04vKAE6e5fKNFcPAKq0K9IQbxUjG3GRobpU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nmmdVLK7FYDXCWMNI32Ax72D2jtYxpbSrt6ofl+4xcPcLkyAgjr2sxJkVlqdDh3g4G3qjy287/VlhpGs13UXdGmO0fzofGd5f2/sDL4dBKvOMm6Y4joqxGxC+m0uCsh92uvIHSnNtP3GwZAovFsbHcbcR0wEuP9wjEliObSYV3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wem4/7TM; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2909978624eso2054709a91.1;
+        Sun, 04 Feb 2024 07:45:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707061512; x=1707666312; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=T89ni4EzY5w7dyl+NoNR8dZeAoG6qyzh4j7CcOWYREE=;
+        b=Wem4/7TM9BlyxAnc6+X2nZy70HJzRiBbAmVyxpUF6qVwO5w7PSxDZVvPr+brBQsTwy
+         7+5VqeXdLvp7N1PwssMEaSI6dP/sSa3vnK6nPhMMRHGORil8cPobGl2v5MvFFFl1NNfq
+         2VncHF78gPe0BB8c02EawofKoM0Boels/SiYvEtnsjISaZygnWHy/qzu80StPGJSebU1
+         pb42R6R6KCOl8CTndBV9zwAQ09+OsF/8c9ByKLhsHz7ns8Zf0KWXp8ZoSHtfhUBq38He
+         ANLQUSUjWpK1E/flaIqFEK70qxd8Bzkm27j+Yw0nrzOY0VGyezZyl+lyGF3xWS61fSw6
+         Q63A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707061512; x=1707666312;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T89ni4EzY5w7dyl+NoNR8dZeAoG6qyzh4j7CcOWYREE=;
+        b=PtAvF0TQwaCn5d2c2oljYVTWCgFKvWso8nlhWStlbpH/9SSrDEHU6l6LE7NWXwxHfS
+         w/6+zNKII3QyefWtGOtD2Sv0M1B4S01qGkB5eiuNlc72eFA4o32QGfzlW1O/WxvlcbW2
+         ZhLc3Q2JwJmUl9fxHz/jN8H58SN86YqSNO94+Fmz5UbHkbqVd3AYOG13Yx+EnZYdWYbf
+         kcKp2wlRKc2oJKHjAyi6+XGeXOz2Hbgzb4wy+2aFcW6zYu9I5CEJCbM5zCGtUXOGhmoS
+         kcJAlJF5IRg9uKe8iVbpIEt5S1rsfp2LDptQ8qaMF/mEy/qHXAISV2cVIJLvV/gVW4Dw
+         vlOg==
+X-Gm-Message-State: AOJu0YzO+JbVdI9ft7/CimH4rQgMz5Unnr5RY405GfjrFOyLwTnNrZKj
+	55RtOQ0hPXtTrOT1d3sZEtiOeaGdstb/GaYeLrGY7JmEjhXAMyHl
+X-Google-Smtp-Source: AGHT+IEgvL92tjQ/gTIzTcYVoxFksNkah14vLpe5Jmhbe9m0pqzYa5Cj6rpfqSPOCTGt+a4jgFX6qA==
+X-Received: by 2002:a17:90b:120a:b0:296:1343:c79f with SMTP id gl10-20020a17090b120a00b002961343c79fmr8883744pjb.39.1707061512513;
+        Sun, 04 Feb 2024 07:45:12 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWKASF+c48bzBWV+HZGIqvYj/Nf8Ry4mx7dIASSUav5W/y0AfcQt0lasYyFCffMk6fGVf5DU1/gBlVSfSuAMjF/HApCEBvClEIevXH5PSgGRYndujQW5qLKXax/M0UNPgfVTqTsh9M=
+Received: from kernel.. ([2402:e280:214c:86:6632:1f1f:62f:40f1])
+        by smtp.gmail.com with ESMTPSA id lj2-20020a17090b344200b002968eb4fffdsm779273pjb.24.2024.02.04.07.45.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Feb 2024 07:45:12 -0800 (PST)
+From: R SUNDAR <prosunofficial@gmail.com>
+To: broonie@kernel.org
+Cc: linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	R SUNDAR <prosunofficial@gmail.com>
+Subject: [PATCH] Remove the @multi_cs_cap to prevent kernel-doc warnings
+Date: Sun,  4 Feb 2024 21:15:06 +0530
+Message-Id: <20240204154506.3561-1-prosunofficial@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net: tipc: remove redundant 'bool' from
- CONFIG_TIPC_{MEDIA_UDP,CRYPTO}
-Content-Language: en-US
-To: Masahiro Yamada <masahiroy@kernel.org>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org
-Cc: Jon Maloy <jmaloy@redhat.com>, Ying Xue <ying.xue@windriver.com>,
- linux-kernel@vger.kernel.org, tipc-discussion@lists.sourceforge.net
-References: <20240204131226.57865-1-masahiroy@kernel.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240204131226.57865-1-masahiroy@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+/include/linux/spi/spi.h:778: warning: Excess struct member 'multi_cs_cap' description in 'spi_controller'
 
+Signed-off-by: R SUNDAR <prosunofficial@gmail.com>
+---
+ include/linux/spi/spi.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-On 2/4/24 05:12, Masahiro Yamada wrote:
-> The 'bool' is already specified for these options.
-> 
-> The second 'bool' under the help message is redundant.
-> 
-> While I am here, I moved 'default y' above, as it is common to place
-> the help text last.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-> ---
-> 
->  net/tipc/Kconfig | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/net/tipc/Kconfig b/net/tipc/Kconfig
-> index be1c4003d67d..bb0d71eb02a6 100644
-> --- a/net/tipc/Kconfig
-> +++ b/net/tipc/Kconfig
-> @@ -32,16 +32,17 @@ config TIPC_MEDIA_UDP
->  	bool "IP/UDP media type support"
->  	depends on TIPC
->  	select NET_UDP_TUNNEL
-> +	default y
->  	help
->  	  Saying Y here will enable support for running TIPC over IP/UDP
-> -	bool
-> -	default y
-> +
->  config TIPC_CRYPTO
->  	bool "TIPC encryption support"
->  	depends on TIPC
->  	select CRYPTO
->  	select CRYPTO_AES
->  	select CRYPTO_GCM
-> +	default y
->  	help
->  	  Saying Y here will enable support for TIPC encryption.
->  	  All TIPC messages will be encrypted/decrypted by using the currently most
-> @@ -49,8 +50,6 @@ config TIPC_CRYPTO
->  	  entering the TIPC stack.
->  	  Key setting from user-space is performed via netlink by a user program
->  	  (e.g. the iproute2 'tipc' tool).
-> -	bool
-> -	default y
->  
->  config TIPC_DIAG
->  	tristate "TIPC: socket monitoring interface"
-
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 600fbd5daf68..0b0616b2a9f9 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -422,8 +422,6 @@ extern struct spi_device *spi_new_ancillary_device(struct spi_device *spi, u8 ch
+  * @bus_lock_spinlock: spinlock for SPI bus locking
+  * @bus_lock_mutex: mutex for exclusion of multiple callers
+  * @bus_lock_flag: indicates that the SPI bus is locked for exclusive use
+- * @multi_cs_cap: indicates that the SPI Controller can assert/de-assert
+- *	more than one chip select at once.
+  * @setup: updates the device mode and clocking records used by a
+  *	device's SPI controller; protocol code may call this.  This
+  *	must fail if an unrecognized or unsupported mode is requested.
 -- 
-#Randy
+2.34.1
+
 
