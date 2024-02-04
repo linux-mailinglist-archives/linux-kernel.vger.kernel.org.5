@@ -1,110 +1,110 @@
-Return-Path: <linux-kernel+bounces-51335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B62148489EA
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 02:17:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E704848A15
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 02:22:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0036B23C6B
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 01:16:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9143AB23FE9
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 01:22:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD99CEBE;
-	Sun,  4 Feb 2024 01:16:49 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 694B517585;
+	Sun,  4 Feb 2024 01:18:11 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03C7B10F1;
-	Sun,  4 Feb 2024 01:16:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5200B10A25;
+	Sun,  4 Feb 2024 01:18:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707009409; cv=none; b=ngTch6DKx//eJQcwFGVeNUKQ+tcmrqMlmREJ4C5SIOenOHt4CZUgGp185oB5T9ZrJbUx4G8rfarAIyesRYLCnrvXR184udkFLLIweDRI32x2ZZQffr+ja3aDc0ZACKk2fgbp8fj+1RQjZ3rEStGVXeVr6RhP/5cn/JY6nxKB0zo=
+	t=1707009488; cv=none; b=RR89i/l9BtgJrS9raimPAbs2C1DgU4pAqYOsu+4/hS5nRVIflkKYH4vOEAf5zG/IgtZOluC51nX3zknnt+wFjaRrXbtbL5E4ZkXjaMBSv3dZQTxKpMqFIU38T6F45aj3xId4abcsRj8LxR+bZmf907EelX6wDRF3c4Cv1SRFVXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707009409; c=relaxed/simple;
-	bh=kXAxuf/NRu62ybdEKHkf0EJhPGPJTi5CpcwG4gK4aNs=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=PsGZRdX9x9etZDKVdJ9R+wsMXeVqMU1/4w3dGo8j2cpNuxruIayCztBJDA/EMYRTMUCjGqgZ8wQ4vNc3APMDR+2FRjo9z8aCgy5E07E+obs8O20+qmGZfoynXfpl/IiT0wijVqpYN/LUEmert8aJN0/bfCYcVEBuRX0visDP4iQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TSBPp0JJlzvRdm;
-	Sun,  4 Feb 2024 09:14:54 +0800 (CST)
-Received: from kwepemm600003.china.huawei.com (unknown [7.193.23.202])
-	by mail.maildlp.com (Postfix) with ESMTPS id A934B140258;
-	Sun,  4 Feb 2024 09:16:37 +0800 (CST)
-Received: from [10.67.111.205] (10.67.111.205) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 4 Feb 2024 09:16:36 +0800
-Subject: Re: [RFC PATCH] kprobes: Use synchronize_rcu_tasks_rude in
- kprobe_optimizer
-To: <paulmck@kernel.org>
-CC: Chen Zhongjin <chenzhongjin@huawei.com>, <linux-kernel@vger.kernel.org>,
-	<linux-trace-kernel@vger.kernel.org>, <naveen.n.rao@linux.ibm.com>,
-	<anil.s.keshavamurthy@intel.com>, <davem@davemloft.net>,
-	<mhiramat@kernel.org>, <akpm@linux-foundation.org>, <tglx@linutronix.de>,
-	<peterz@infradead.org>, <pmladek@suse.com>, <dianders@chromium.org>,
-	<npiggin@gmail.com>, <mpe@ellerman.id.au>, <jkl820.git@gmail.com>,
-	<juerg.haefliger@canonical.com>, <rick.p.edgecombe@intel.com>,
-	<eric.devolder@oracle.com>, <mic@digikod.net>
-References: <20240102034024.256326-1-chenzhongjin@huawei.com>
- <29eaed4d-c4e5-cf9b-113b-da146b719820@huawei.com>
- <d7cb96d8-86e1-423d-a135-46b4e472fe9e@paulmck-laptop>
- <d7dfe177-6bfb-63c2-9be5-6ad25c8c243e@huawei.com>
- <d970cda7-bf17-49c5-85b9-7596beb3690b@paulmck-laptop>
-From: Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <bbeebd04-f8c2-866b-0016-79778c64cab8@huawei.com>
-Date: Sun, 4 Feb 2024 09:16:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+	s=arc-20240116; t=1707009488; c=relaxed/simple;
+	bh=c2ljJPiZws6OX2OlljjxZ50rg8MQ1U9fnX0GsF88OI4=;
+	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type; b=TVNyQHvMqmgO1uK6SMHMhwt7xBWthSBKgO8nM/Zq54OIkDIOPNfsNnMVn2ShIRFpMBjCezCTiu0LbifiqH048yHkau2coiAA/R8XrKHX5ZhI9p+JPi5ThUyH9aAsQdNwpfOdjrQLdzRSWlFadI1qeTRQyIUdo1juTLPGUlEchJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5298C43141;
+	Sun,  4 Feb 2024 01:18:07 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.97)
+	(envelope-from <rostedt@goodmis.org>)
+	id 1rWR9S-00000006OvN-2bzX;
+	Sat, 03 Feb 2024 20:18:30 -0500
+Message-ID: <20240204011830.479095089@goodmis.org>
+User-Agent: quilt/0.67
+Date: Sat, 03 Feb 2024 20:16:37 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Sasha Levin <sashal@kernel.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Christian Brauner <brauner@kernel.org>,
+ Al Viro <viro@ZenIV.linux.org.uk>,
+ Ajay Kaher <ajay.kaher@broadcom.com>,
+ Al Viro <viro@zeniv.linux.org.uk>
+Subject: [v6.7][PATCH 22/23] eventfs: Remove fsnotify*() functions from lookup()
+References: <20240204011615.703023949@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <d970cda7-bf17-49c5-85b9-7596beb3690b@paulmck-laptop>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600003.china.huawei.com (7.193.23.202)
+Content-Type: text/plain; charset=UTF-8
 
-Hello,
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-On 2024/2/4 6:00, Paul E. McKenney wrote:
-> On Mon, Jan 29, 2024 at 08:58:10AM +0800, Yang Jihong wrote:
->> Hello,
->>
->> On 2024/1/28 3:22, Paul E. McKenney wrote:
->>> On Tue, Jan 09, 2024 at 07:28:29PM +0800, Yang Jihong wrote:
->>>> Hello,
->>>>
->>>> PING.
->>>>
->>>> I had a similar problem. Is this solution feasible?
->>>
->>> Sadly, no.
->>>
->>> It fails on CONFIG_PREEMPT=y kernels because synchronize_rcu_tasks_rude()
->>> will not wait on tasks that have been preempted while executing in
->>> a trampoline.
->>>
->>> But could you please try out the patch shown at the end of this email?
->>
->> Thanks for the patch, yes, I've tested and it solves the problem.
-> 
-> Very good, and thank you for testing it!
-> 
-> May I apply your Tested-by to the commit to record your efforts for
-> posterity?
-> 
-Sure absolutely.
+The dentries and inodes are created when referenced in the lookup code.
+There's no reason to call fsnotify_*() functions when they are created by
+a reference. It doesn't make any sense.
 
-Tested-by: Yang Jihong <yangjihong1@huawei.com>
+Link: https://lore.kernel.org/linux-trace-kernel/20240201002719.GS2087318@ZenIV/
+Link: https://lore.kernel.org/linux-trace-kernel/20240201161617.166973329@goodmis.org
 
-Thanks,
-Yang
+Cc: stable@vger.kernel.org
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Al Viro <viro@ZenIV.linux.org.uk>
+Cc: Ajay Kaher <ajay.kaher@broadcom.com>
+Fixes: a376007917776 ("eventfs: Implement functions to create files and dirs when accessed");
+Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ fs/tracefs/event_inode.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index ca7daee7c811..9e031e5a2713 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -366,7 +366,6 @@ static struct dentry *lookup_file(struct eventfs_inode *parent_ei,
+ 	dentry->d_fsdata = get_ei(parent_ei);
+ 
+ 	d_add(dentry, inode);
+-	fsnotify_create(dentry->d_parent->d_inode, dentry);
+ 	return NULL;
+ };
+ 
+@@ -408,7 +407,6 @@ static struct dentry *lookup_dir_entry(struct dentry *dentry,
+ 	inc_nlink(inode);
+ 	d_add(dentry, inode);
+ 	inc_nlink(dentry->d_parent->d_inode);
+-	fsnotify_mkdir(dentry->d_parent->d_inode, dentry);
+ 	return NULL;
+ }
+ 
+-- 
+2.43.0
+
+
 
