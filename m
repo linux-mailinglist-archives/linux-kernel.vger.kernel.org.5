@@ -1,125 +1,108 @@
-Return-Path: <linux-kernel+bounces-51890-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51892-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D2EC849071
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 21:47:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B20AF849075
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 21:48:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C9BA51C2101D
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 20:47:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 673F51F227FB
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 20:48:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A57562868D;
-	Sun,  4 Feb 2024 20:47:25 +0000 (UTC)
-Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5155E25567
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 20:47:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.10.14.231
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83ED13399C;
+	Sun,  4 Feb 2024 20:48:11 +0000 (UTC)
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9FFA33997
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 20:48:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707079645; cv=none; b=mM7yK9qIWJvYl8Q055MXZawBpXZfUh181E5ZWvbCug5MMzA8i9LKIzZ5iMzX9gBTcCduGaNc6zmkgvlGzQRUC5xAm5vrPqNuSZbVlTKeF/daucN8AekRt/9cZAzOQp7ZGjmVwGS5ZJEQWn2nYWtQ9blqYafaGqhz7G7ATSOhdXk=
+	t=1707079691; cv=none; b=ZzNVsSGqixZeLUM4LS/kRJpw9T2B3lCMFxn9k/2Srzb8f4Haj6Las1XeZHGx2YK8wf+3Bx181wdYjVRpAzuLXdiAP/HL9cowh/MRHnPeHoCvumkthcBEtJf7CVxXUSOrim8uFIB67cYFYKyG8Kf58uu2XKGxL8s1zZDyme1aY4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707079645; c=relaxed/simple;
-	bh=gnyUR+f0Jp/5Ju8DmJrohRl2Q2I57247GaxMyU+VSn0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FXk5I0iUjVriiJC7NFng0h75TtK6COtazabbnN7rykvPyAJcVOmeL+/F3jg8m80kuqEkS9Vk/l4HPRzfbr5H1JtkTKbuYmzoicj8ymYjuGNiANwolnNTK9tSab6LNYNG4zniHYRL+r6WbaEk6kfdYhevJSIhAZ0QENmpHj4MYZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de; spf=pass smtp.mailfrom=c--e.de; arc=none smtp.client-ip=217.10.14.231
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c--e.de
-Received: by cae.in-ulm.de (Postfix, from userid 1000)
-	id 9E88F140255; Sun,  4 Feb 2024 21:47:14 +0100 (CET)
-Date: Sun, 4 Feb 2024 21:47:14 +0100
-From: "Christian A. Ehrhardt" <lk@c--e.de>
-To: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Cc: Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-	linux-netdev@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: This is the fourth time =?utf-8?Q?I?=
- =?utf-8?Q?=E2=80=99ve_tried_to_find_what_led_to_the_regression_of_outgoin?=
- =?utf-8?Q?g_network_speed_and_each_time_I_fin?= =?utf-8?Q?d?= the merge
- commit 8c94ccc7cd691472461448f98e2372c75849406c
-Message-ID: <Zb/30qOGYAH4j6Mn@cae.in-ulm.de>
-References: <CABXGCsNnUfCCYVSb_-j-a-cAdONu1r6Fe8p2OtQ5op_wskOfpw@mail.gmail.com>
- <Zb6D/5R8nNrxveAP@cae.in-ulm.de>
+	s=arc-20240116; t=1707079691; c=relaxed/simple;
+	bh=R/I7dk8sqQgMHMTdsGzqQK7XxNsAJud+1AIwiPgLJwQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DF/uObRbQiC99PxrGc96W1b+GCTho3BbjFj5DS9Qno5Tx43QGVACeoAIXfztgVC84IBesA/8/K1FLGApx9Ml3hLSlTwLXhxbKZf4wvlBXW6PAoFxN+f8mRU0+BGsNWv0cPuF7xLkGt0SR4CKzqWQnzfVdKucEWb4En4ETm4hSVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-60406da718aso38135217b3.1
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 12:48:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707079688; x=1707684488;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WuZCS9y13xUQN18d8Gu/e8RowOQI4ytQlPYFh0yEfC8=;
+        b=JVrC2/q66PA8WY4jCTUFQl9tyT1RDyJwFtJ0oES0rY+MncpwK9c4z3hsI9HUNtHxIC
+         +eJN+DJOlsEaPxlc4i96kn6jxb5fWdBu+GzySkeqIYKo+E2fKokPVwb0fSZAiA5Mwui8
+         LnyL12/1PhzXhDAlbstyD72pxJpJcDhgv7UZNFXcNF3y/WfJAvMtxBcldZgnpsy+cGsT
+         quINhHOBGs9axEh5mNRe5IRcpFWcDG2nHtQj6Kc1uWp9ktyRfRa+43ykQDiM6F4htUUN
+         hxGnzr1zqfS0DFzNFmZJ4HcyeJZCUbHvWMOJ+abkeJ8uP6W78MvswgLURSBQxafQ97ye
+         kMFA==
+X-Gm-Message-State: AOJu0Yy7/GVu57nIvbm7JTewBlqwrafTUXYOl9f5nwq4qL9vOYLh5+sw
+	9ZIb3PoQNmjKRKWMPJ6bV7oMR05deBNjEGDCX9LVYAOynanfQolMOHJhLuLdr9U=
+X-Google-Smtp-Source: AGHT+IGB1GFjAFsXU7aufGDQDxAovjLso5yym24xc/CcfK1188ZyBD8xY9+cx1c9Ie7pB9QIqgjTXg==
+X-Received: by 2002:a81:5258:0:b0:5ff:d4c1:48f9 with SMTP id g85-20020a815258000000b005ffd4c148f9mr7471685ywb.0.1707079687980;
+        Sun, 04 Feb 2024 12:48:07 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVJMCYt1xzIxbNMTOT9GbJQicIND754JzTnG8lvsNMgwidETUhuILWUnMKjoi97npZMF1sAmCCNTJBrsfBZIFtwD3/30jC2WUXSy32o
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
+        by smtp.gmail.com with ESMTPSA id k125-20020a816f83000000b005ff9b3e6dd4sm1638162ywc.116.2024.02.04.12.48.07
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Feb 2024 12:48:07 -0800 (PST)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-60412866c36so37161367b3.2
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 12:48:07 -0800 (PST)
+X-Received: by 2002:a81:f205:0:b0:604:3ee2:f258 with SMTP id
+ i5-20020a81f205000000b006043ee2f258mr4071749ywm.45.1707079687488; Sun, 04 Feb
+ 2024 12:48:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zb6D/5R8nNrxveAP@cae.in-ulm.de>
+References: <20240204-bus_cleanup-powerpc-v1-0-c763f0e142e9@marliere.net> <20240204-bus_cleanup-powerpc-v1-2-c763f0e142e9@marliere.net>
+In-Reply-To: <20240204-bus_cleanup-powerpc-v1-2-c763f0e142e9@marliere.net>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Sun, 4 Feb 2024 21:47:55 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWmFZjWK483JhAuq1GTk0GOH_urRdWdxSB9EwR+YNaqww@mail.gmail.com>
+Message-ID: <CAMuHMdWmFZjWK483JhAuq1GTk0GOH_urRdWdxSB9EwR+YNaqww@mail.gmail.com>
+Subject: Re: [PATCH 2/4] powerpc: ps3: make ps3_system_bus_type const
+To: "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: Arnd Bergmann <arnd@arndb.de>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	Geoff Levand <geoff@infradead.org>, linuxppc-dev@lists.ozlabs.org, 
+	linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Sun, Feb 4, 2024 at 3:23=E2=80=AFPM Ricardo B. Marliere <ricardo@marlier=
+e.net> wrote:
+> Now that the driver core can properly handle constant struct bus_type,
+> move the ps3_system_bus_type variable to be a constant structure as
+> well, placing it into read-only memory which can not be modified at
+> runtime.
+>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 
-[ sorry, replying to myself ]
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-On Sat, Feb 03, 2024 at 07:20:47PM +0100, Christian A. Ehrhardt wrote:
-> On Sat, Feb 03, 2024 at 06:02:15AM +0500, Mikhail Gavrilov wrote:
-> > Hi,
-> > I'm trying to find the first bad commit that led to a decreased
-> > network outgoing speed.
-> > And every time I come to a huge merge [Merge tag 'usb-6.8-rc1' of
-> > git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb]
-> > I have already triple-checked all my answers and speed measurements.
-> > I don't understand where I'm making a mistake.
-> > 
-> > Let's try to figure it out together.
-> > 
-> > Input data:
-> > Two computers connected 1Gbps link.
-> > Both have the same hardware.
-> > Network: RTL8125 2.5GbE Controller (rev 05)
-> > 
-> > When I copy files from one computer to another and kernel snapshot
-> > builded from commit 296455ade1fd I have 97-110MB/sec which is almost
-> > max speed of 1Gbps link.
-> > When I move to commit 9d1694dc91ce I have only 66-70MB/sec which is
-> > significantly slower.
-> > 
-> > I bisected the issue by measuring network speed on each step.
-> > I save all results to file [1]
-> > 
-> > [1] file is attached as a zip archive.
-> > 
-> > # first bad commit: [8c94ccc7cd691472461448f98e2372c75849406c] Merge
-> > tag 'usb-6.8-rc1' of
-> > git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb
-> 
-> So (simplified) the change history looks something like this:
-> [ ... ]
+Gr{oetje,eeting}s,
 
-Sorry, I was looking at the wrong merge commit and when using
-the commit pinpointed by your bisect your log shows
-that _both_ parents of the bad merge commit are marked as good
-which is somewhat strange.
+                        Geert
 
-However, it should be possible to bisect further if you do a rebase
-like this:
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
 
-$ git cat-file -p
-8c94ccc7cd691472461448f98e2372c75849406c  | head -n 3
-tree d3907cad2a1fbbbcf71847274fdbdcf5a2aeb9a2
-parent bd736f38c014ba70ba7ec3bdc6af6fe5368d6612
-parent 933bb7b878ddd0f8c094db45551a7daddf806e00
-$ git branch m bd736f38c014ba70ba7ec3bdc6af6fe5368d6612
-$ git branch d933bb7b878ddd0f8c094db45551a7daddf806e000
-$ git checkout d 
-Updating files: 100% (11666/11666), done.
-Switched to branch 'd'
-$ git rebase m 
-Successfully rebased and updated refs/heads/d.
-
-Now, "m" must be good as per your bisect log and "d" must be bad
-because it is the same tree as the bad merge commit (8c94ccc7cd69).
-
-Due to the rebase there's a liner history between the two, thus
-starting a bisect like this might yield more information:
-
-$ git bisect good m
-$ git bisect bad d
-
-     regards   Christian
-
-
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
