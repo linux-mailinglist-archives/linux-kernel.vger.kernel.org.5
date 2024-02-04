@@ -1,75 +1,66 @@
-Return-Path: <linux-kernel+bounces-51612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11CA0848D37
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:45:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CED4848D34
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:45:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3F1FB2207C
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 11:45:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D051E1F224C6
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 11:45:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90FC4224D7;
-	Sun,  4 Feb 2024 11:45:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA27A22309;
+	Sun,  4 Feb 2024 11:45:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="gvDqrOcG"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hJqmGnWi"
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C9CE2231A
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 11:45:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D42622081
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 11:45:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707047134; cv=none; b=N1SvYaF1C9cCkgZDIy4DLkeUlaayhUJmc/7diFoNr2vAcQ0BKIBA5/l7P4HaUAGf6c4Joga5Dj+w72X1p2fUkjEE3BRkvevx0rt8cvJlsGLmWq2Z1IPy/51dV+2J3ljSjSvdJDDWI9rY5Mr72El3vLGEL7qwzUpB/KhaqJt+Who=
+	t=1707047132; cv=none; b=Xa8OftqYfhdrZVZAcixQsPE3VzbMfkBDTUZdM+jGczmYl6lhrteJaW+PbOHyAYGyQzf2aXIEbDvs7CaqmPCcS3uQLoReywwQMavZk/4MgckQEJYPyZhzeFdMqqVHjD1Hr4lB86qzg4b8tw86QzprjyGrMeFzblRQnL1XYLGIRNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707047134; c=relaxed/simple;
-	bh=qgF9mgJuwBON3XPXrWsmUJR+tGrDKBmgIGDGKxUWbwg=;
+	s=arc-20240116; t=1707047132; c=relaxed/simple;
+	bh=XR83UQlwxz6s5+olPT6yncgAKlHegp9awIw+AN/9VJk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=a+bOXBYZJ+gwwAA16WV7Jl3YPFEwy7WXfEOUsO743jnc/fWovrQc0wJ6jEz74TuPr69IF2BdfQE9fv6nrJ2LyQfkvMYLRxV3TPzONQYAbmec9xOReG7gL+odrn/2y1iBkVQIGLv3c6aXN+epNnz1/npHkumvzOh07boB7evU9k8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=gvDqrOcG; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a36126e7459so453439466b.2
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 03:45:32 -0800 (PST)
+	 To:Cc:Content-Type; b=A7iGc+kwrEuAInV4vPuciPD20088zePAgJvMvNcFIJuz1ZwvIq4zJnSV3f3RlIlxme9k9iO5slwanrilYhKnjwG4s+2sPCWqtSZKS3S13ImZQnawNi12qz1uyyFrVHdgP/1FXvl2YESnNs6Q/Issd9dLh4jVC9DQ8u2PeMrjBrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hJqmGnWi; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-290b37bb7deso2888200a91.0
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 03:45:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1707047131; x=1707651931; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1707047130; x=1707651930; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VWi8x1miBJ1PGJBMtpIeIYYJwAHPliiF8cHXBoeQK6g=;
-        b=gvDqrOcGI+qfW2Yg1FJSAzMhM5mvboG757dGgBtsDT0Lh5JQWT6oeHO58uMWtg4ow9
-         UQkRjgYXyTq1p6kDCKMASLMum4BM5tHsWDN9JV5ghrKi/5HW/kvbDbuVZtke3CI1rdgd
-         X7aOOM0hEbdRGMjYLjcO7fd2BID/J5GN8L1Yg=
+        bh=3rkWxkZIZnZS6vY+tGpyDAUE64mPHdya01WcnVrnuEU=;
+        b=hJqmGnWiSGKsObJ17nQvT2TUvf++PC+WopYLn2Qea5ly9WIx9XDVYhOU5iS1NsMlyh
+         RLPg7i0tqXZTKwSUTi965ARrGK7sQuZ8XCH9erhHXDkeEx+ip94KNEeHQp8HQKCzCUiO
+         bdqP56+70M9K5ll8dA43vSOxY6OBTfZiZ5dZWjfMnvVphx9aQX73oxy7kRS80kmXDA0d
+         mMFXo8HyRnj9vmq2v35b5ju7E20YMDNrWA1pV0ZDGsgXFOK31+X7ofbcpRHt4YSJqLSy
+         PQFV4EqETn8B6sFcE2D693GR6vLBv5xt8g8ZPj/soQAU4x8jyFf0anaKehpQMYLK2cz1
+         i9bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707047131; x=1707651931;
+        d=1e100.net; s=20230601; t=1707047130; x=1707651930;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=VWi8x1miBJ1PGJBMtpIeIYYJwAHPliiF8cHXBoeQK6g=;
-        b=uWUM6bD4V3dV+my8++jkj7qta7IA4Seirrw2j4FLuWf7S9UAvZOHO273DTVxR56Mgj
-         OQEuPnzK8U6sxm4rNu5cgidPdYe4y+qal0p00M6pkq8XWr/Tr1xt5AQbem2d2jqKPqgh
-         LwU/8uYsbGXMPU/NwslZdvHq8JA3xHDncSi4ROjiqBQNFO5TV7MsIK+0wji79kl4Lvjl
-         CwJKFg6I+M8W82gARZJrZtb6D/x2KO3//cbRTkNluOtdZlEwgDswUySfTXYQZC51dxo7
-         2HmjaR3lNjJ6I/udcDYokxi+7+tG9trD7732mkIsZUdrZ/3wtWRdftnYvTASTTEXNFtK
-         x6ww==
-X-Forwarded-Encrypted: i=0; AJvYcCUexottMHgTAp5+zRncQ2A96Hhv77oJUFms8nHxrr90y9eJ3mAPsWIUBkIWfVciJ2YeocHaZjyLbmC8Bib3ffzM1k/EzjDFKPflGxoE
-X-Gm-Message-State: AOJu0YxHfF1xFDX7+uPvPLSlC/CvIsDC9Nq1nMsL9dTlDZsSTyDkeVvA
-	cch9WkX0sdweNBxoQ+BV0FHpWUorxv+LHiVo6zrOpUWwoemTPaEhM2ha192wkMBds5PMw4wjZ1R
-	540I=
-X-Google-Smtp-Source: AGHT+IFvU0+fp66rG356ahWBK1M8aq1VvHsV509YLlq3Dekct58or4ApSu4TBUh7ZN8Qyce93jhz1g==
-X-Received: by 2002:a17:906:2dd5:b0:a37:4d06:50b8 with SMTP id h21-20020a1709062dd500b00a374d0650b8mr3378987eji.64.1707047131205;
-        Sun, 04 Feb 2024 03:45:31 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUkjRR4KRMJAwOUGsjXMVhFzdXSd+z4CUcx1FqVSl6LAtAfUEa/paGJinq7nl9yT35eZJUH069X4dy3qKhJMVWZmOA+8TQ12JtYU7Fn
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
-        by smtp.gmail.com with ESMTPSA id vw3-20020a170907a70300b00a35920de35dsm3044945ejc.188.2024.02.04.03.45.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Feb 2024 03:45:30 -0800 (PST)
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55a8fd60af0so4712132a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 03:45:29 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCViDzaygXQGKtAF9zFWZLTIgoPi2s0h6ibXIuish/zMvgPOK/mv/FefE8UHf5ayxkHzcZDpKDjFlF+ypOlwguortSHbY6WBvFVEwiM4
-X-Received: by 2002:aa7:d294:0:b0:55f:8bba:d0ae with SMTP id
- w20-20020aa7d294000000b0055f8bbad0aemr3329700edq.23.1707047129481; Sun, 04
+        bh=3rkWxkZIZnZS6vY+tGpyDAUE64mPHdya01WcnVrnuEU=;
+        b=BhuuxRpkyid0CERLqZiH/E/wpzyi85aOArJ5qPHGUiTGpsbT9614W/mli+J5CnkSEH
+         u9XQryX26IrM1m5eXl6UGIDLXfDaIvqcTKUnH0QdCDBO20dpCy4/mgNZqzeG8mkZkUhr
+         5WigEw53EOwdhLN4LxFrCfTgzR25viQwnQ0Pd1Fx3Fep4Vg3RuGKO7XwmXJ7qPLRzUgk
+         6FUdq2WqOB2RWwDkUIMVFtZmkiqf+DEm7wF9uS6tbU/0Q2xtWMN8j7Dt2XS4rVNVAm8z
+         aoRStuw8RUjhlDTZAxMSMC5dDmvJ6QjXV2EOykjqwplgBG7WRKRlR4VI5ilMinrAGlji
+         Ut2A==
+X-Gm-Message-State: AOJu0YyZRH/gCzyiEDH8ZFkg2YrIb1MdmYJgqyVVVJwt3gfSaFLM+CsE
+	5wJKbVhdc64KQVKUNibScJ0gncu2ucDEgA/Rj4InhRfFcZJ9wpgS4Ao1mPZakN5wApo57k9I0DQ
+	z36upl+nREksVfvThZwbaLzvSYUwuP6phcawI4w==
+X-Google-Smtp-Source: AGHT+IFQ956jj3duj7CC1HL8RzD/3WY3ppBJ8h9We6XCfshFDd2wvtLUPw57DbwDftTOs83VDBkgckb8iXKe0MVmm38=
+X-Received: by 2002:a17:90b:e0c:b0:295:d722:a420 with SMTP id
+ ge12-20020a17090b0e0c00b00295d722a420mr6260158pjb.6.1707047129757; Sun, 04
  Feb 2024 03:45:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -77,34 +68,58 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202-exception_ip-v2-0-e6894d5ce705@flygoat.com>
- <CAHk-=wiaSjYApqmUYCdCyYfr_bRsfVKDkwU6r6FMmoZzrxHrKQ@mail.gmail.com>
- <eeb92d70-44d6-47f4-a059-66546be5f62a@flygoat.com> <CAHk-=wiUb1oKMHqrxZ6pA7OjNmtgw6giTKWiagUC2kt-ePCakg@mail.gmail.com>
- <716af17c-136b-4852-86ce-a23bafe34fbb@flygoat.com>
-In-Reply-To: <716af17c-136b-4852-86ce-a23bafe34fbb@flygoat.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sun, 4 Feb 2024 11:45:13 +0000
-X-Gmail-Original-Message-ID: <CAHk-=wjvt75XFUWxPQQJZE0Wdi8HtSLtqQm2L-ZrqH7=2g3ByQ@mail.gmail.com>
-Message-ID: <CAHk-=wjvt75XFUWxPQQJZE0Wdi8HtSLtqQm2L-ZrqH7=2g3ByQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] Handle delay slot for extable lookup
-To: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: Oleg Nesterov <oleg@redhat.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	Andrew Morton <akpm@linux-foundation.org>, Ben Hutchings <ben@decadent.org.uk>, 
-	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-mm@kvack.org, 
-	Xi Ruoyao <xry111@xry111.site>
+References: <20240204044618.46100-1-void@manifault.com> <20240204044618.46100-3-void@manifault.com>
+In-Reply-To: <20240204044618.46100-3-void@manifault.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Sun, 4 Feb 2024 12:45:18 +0100
+Message-ID: <CAKfTPtCGfUSa4trbCPnbhDqwqM9jL-qpfg=_E6G9amRuhm4NHg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] sched/fair: Do strict inequality check for busiest
+ misfit task group
+To: David Vernet <void@manifault.com>
+Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
+	kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 
-On Sun, 4 Feb 2024 at 11:03, Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+On Sun, 4 Feb 2024 at 05:46, David Vernet <void@manifault.com> wrote:
 >
-> Well this is the tricky part of my assumption.
-> In `exception_epc()` `__isa_exception_epc()` stuff is only called if we
-> are in delay slot.
-> It is impossible for a invalid instruction_pointer to be considered as
-> "in delay slot" by hardware.
+> In update_sd_pick_busiest(), when comparing two sched groups that are
+> both of type group_misfit_task, we currently consider the new group as
+> busier than the current busiest group even if the new group has the
+> same misfit task load as the current busiest group. We can avoid some
+> unnecessary writes if we instead only consider the newest group to be
+> the busiest if it has a higher load than the current busiest. This
+> matches the behavior of other group types where we compare load, such as
+> two groups that are both overloaded.
+>
+> Let's update the group_misfit_task type comparison to also only update
+> the busiest group in the event of strict inequality.
 
-Ok, I guess I'm convinced this is all safe. Not great, and not exactly
-giving me the warm fuzzies, but not buggy.
+fair enough
 
-         Linus
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+
+>
+> Signed-off-by: David Vernet <void@manifault.com>
+> ---
+>  kernel/sched/fair.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index e7519ea434b1..76d03106040d 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -10028,7 +10028,7 @@ static bool update_sd_pick_busiest(struct lb_env *env,
+>                  * If we have more than one misfit sg go with the biggest
+>                  * misfit.
+>                  */
+> -               if (sgs->group_misfit_task_load < busiest->group_misfit_task_load)
+> +               if (sgs->group_misfit_task_load <= busiest->group_misfit_task_load)
+>                         return false;
+>                 break;
+>
+> --
+> 2.43.0
+>
 
