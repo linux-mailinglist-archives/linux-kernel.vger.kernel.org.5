@@ -1,138 +1,106 @@
-Return-Path: <linux-kernel+bounces-51863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA5A9849032
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 20:56:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F284B849036
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 20:57:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D6831F2142A
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 19:56:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 307EF1C215D8
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 19:57:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED0902562F;
-	Sun,  4 Feb 2024 19:56:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9E7525564;
+	Sun,  4 Feb 2024 19:57:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T3Oyl7kd"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZkXM9n1H"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21CCE288D9;
-	Sun,  4 Feb 2024 19:56:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0F9B24B59;
+	Sun,  4 Feb 2024 19:57:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707076587; cv=none; b=C0hwGmIUyCkv1kAZ/9kdL8hukqzKeIrABmWY9Ua9IGW8xnJpE4CyuCvvlucXM3EUtnZwYIp2zS0lzxRJNDX3bEq7YG+ws/Fv6pMiVnfutePmDpc9rxzvlM6d3lC4zGD//5tBWc3BCUFBmdiCpxrJEBsVftlQcfCJjHfEisdtFM8=
+	t=1707076634; cv=none; b=iBRxbIg/NULUkckdjE7NiEGiRCD6FskAth2iS3kp+OQY2RacDda+45ISu9dzBTJ/xLyKuoR6kfM5kQuvCh9+/035a7M+m6nz/0tDRfkGwAemWCSg5sDEbuP5+T9JKh8eNHTEYY2hLIBb6jG/xBDp9JpekaEobAJgVcGfUHplTgM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707076587; c=relaxed/simple;
-	bh=G3+CP77UbJCipyCA87pI2FMze2ZRBhHlill3yS+hHpI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UY7Pz5eU2JoLhgYIlykAwsktzkNtfDvHWYBNKP98JWuxOmJW33Buql4Hn81+oIObQrwpaNOIgOH0Ybzvkzlj/NrmqpGtjbGz5uqN4ASxk9E+9kyuAg3RZsfL4qnolVK+mfkyHKa1CoD1CufAqjObRy3EOtdNfHhmP5Cc5KZ+8aI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T3Oyl7kd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3335C43390;
-	Sun,  4 Feb 2024 19:56:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707076586;
-	bh=G3+CP77UbJCipyCA87pI2FMze2ZRBhHlill3yS+hHpI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=T3Oyl7kd0uyQgK+BwaZgUuA/ztfCkYYNnFHtCzEXhfQazojUnDCZNnaxE+HSD61b3
-	 Qumhr29+SuoHio+Jx9YdTU6Ck/KGn4ve3u6o0T4Mi5/wGypryOVdF6rIwkHi0fQSJ6
-	 se5JHhGJ1v1WsRtRpixiCy9q4j+rWIZhuVCNgX5kPKuATBCstjBbfneE8fYwv8xGsg
-	 bJ+qcmiFiEnhA5dGST7m4Lhc3GKddjHwZWcW1VtG8kuagf+0HhGsByLK+T9TZkUBQw
-	 x+3IM2W8y8cL+oBDLbBJnvxOEUJUoINfjBwR+33TqBAtKJyvD9bZrAk2mEEcQXkrgH
-	 GC7uxwJM2FkjQ==
-Date: Sun, 4 Feb 2024 19:56:11 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: David Lechner <dlechner@baylibre.com>
-Cc: linux-iio@vger.kernel.org, Rob Herring <robh@kernel.org>, Frank Rowand
- <frowand.list@gmail.com>, linux-kernel@vger.kernel.org, Julia Lawall
- <Julia.Lawall@inria.fr>, Nicolas Palix <nicolas.palix@imag.fr>, Sumera
- Priyadarsini <sylphrenadin@gmail.com>, "Rafael J . Wysocki"
- <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
- linux-acpi@vger.kernel.org, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: Re: [RFC PATCH 2/5] of: Introduce for_each_child_of_node_scoped()
- to automate of_node_put() handling
-Message-ID: <20240204195611.2bb6ff58@jic23-huawei>
-In-Reply-To: <CAMknhBEL3cv4L0A-W=_1EcDmD3Cj8apheDcpnqjyJjKBZuPYew@mail.gmail.com>
-References: <20240128160542.178315-1-jic23@kernel.org>
-	<20240128160542.178315-3-jic23@kernel.org>
-	<CAMknhBEL3cv4L0A-W=_1EcDmD3Cj8apheDcpnqjyJjKBZuPYew@mail.gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707076634; c=relaxed/simple;
+	bh=zvwlEGr3Cm41VvB1vK4xccHaj+bW2/dqXLVV3griGLc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AHkl1HaKtn1a4UM5lL7/rkcRyFyURThc49HCWZgtPsC9gpTwPgeiiOzXnAr471JXEwVP9QzKPWDnuyd3SW2T2mLrVoLe6LRGXFBKKS3NKeyjWYqdifAlUqZkfaVcpz/O2iEXziQB2/+igjN8qsQJoBpUtVQejSZj67NB99jvGLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZkXM9n1H; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5111c7d40deso6155579e87.1;
+        Sun, 04 Feb 2024 11:57:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707076630; x=1707681430; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zvwlEGr3Cm41VvB1vK4xccHaj+bW2/dqXLVV3griGLc=;
+        b=ZkXM9n1HOHn3N2pyP8aVRFUASiDz9OJdm2rvIMFgbtjDBSFthrJXTCIzThi0GSPm2A
+         9VstwhEWeJtcZF08QkbQvt/gI0FPZ91c0hRTBiabIU55Dchmr84uC2uAILdPR1bewru7
+         qrdGNmxR86gjwh6iD+HUfmfO7O0IuXVRuxPQ9GtYMjg2XXSxWf+Y4E2nuuL4wFQnhksT
+         IXdqAiGySslnpOxB0lQHDso5W3N2/C3rZcZD3ZnnCHsuLpcTcQvzOE30OAmXwU+yPN7I
+         GTqsnh4YuGN1U68d8A1OEOieWA3znQRtODGt62I2JpOYdguVa7XvKavOQW60Y6Jt8dzm
+         yZIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707076630; x=1707681430;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zvwlEGr3Cm41VvB1vK4xccHaj+bW2/dqXLVV3griGLc=;
+        b=LULWJ5uVAbEazcEhbT/mN3XJydbcFwXe/n6mvc2GZHYd0ksExtkyHmH5Wpx7GUuHbQ
+         OadxZgCHn0644TMLvbVSZkvNTB7lPi4kYT6Kuv0Re/xwsQIaA1leKp6uzjuJ9ngARSBw
+         eGKuv3IJOkDt+G/FArd6aaqiBCizTLbQQ/jNCToheoFyUWxKSs0B9AksKlzIRuopDuAT
+         E+hfG7waVpWOGDApWhsXnRbmJ4wF+WTOC0pIhQi/sF6zgCS+yvYvTjdxGpwYnxcvclDe
+         VEXJxwi+8mZ/yrV6PKnnaJcCaTANNL1pN/Ox95hJ2b5YjoJCDuaBzONvdcHMC7cVH7oB
+         Vdnw==
+X-Gm-Message-State: AOJu0YxxicxN1S6x+zCKMJfiGkar5ziHesx6V4LURCLbeBTBztcUVkz3
+	HDetGY7oSMmpRhiAClDQzi/j/Y9Qvs9wkhcJSB+/P+XJUhkXmqthb1EHognIlw/vHGjibCX6hgZ
+	pJzVluUBZNTDxtbL33mFgue/oIak=
+X-Google-Smtp-Source: AGHT+IG5k1VsFWdKw3oG352GHjuAT9Qf03kt7/4yNlpr5CFWwN5tpoab6IVaAAsrk54CjBmouwMuyy2tzPj0RxWCvok=
+X-Received: by 2002:ac2:4da6:0:b0:511:499d:5dda with SMTP id
+ h6-20020ac24da6000000b00511499d5ddamr1981379lfe.10.1707076630601; Sun, 04 Feb
+ 2024 11:57:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20240204162106.1179621-1-andy.shevchenko@gmail.com>
+ <20240204182417.jnw4iuqgghxynq3v@skbuf> <20240204183130.r4rdggcqx6czuzoc@skbuf>
+In-Reply-To: <20240204183130.r4rdggcqx6czuzoc@skbuf>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Sun, 4 Feb 2024 21:56:34 +0200
+Message-ID: <CAHp75VcLtzJ7heNxfEGxNJbkjbnHSLJTSHCcMnEQfLUTnbwkRw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] spi: fsl-dspi: Unify error messaging in dspi_request_dma()
+To: Vladimir Oltean <olteanv@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Minjie Du <duminjie@vivo.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, 28 Jan 2024 15:11:01 -0600
-David Lechner <dlechner@baylibre.com> wrote:
+On Sun, Feb 4, 2024 at 8:31=E2=80=AFPM Vladimir Oltean <olteanv@gmail.com> =
+wrote:
+> On Sun, Feb 04, 2024 at 08:24:17PM +0200, Vladimir Oltean wrote:
 
-> On Sun, Jan 28, 2024 at 10:06=E2=80=AFAM Jonathan Cameron <jic23@kernel.o=
-rg> wrote:
-> >
-> > From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> >
-> > To avoid issues with out of order cleanup, or ambiguity about when the
-> > auto freed data is first instantiated, do it within the for loop defini=
-tion.
-> >
-> > The disadvantage is that the struct device_node *child variable creation
-> > is not immediately obvious where this is used.
-> > However, in many cases, if there is another definition of
-> > struct device_node *child; the compiler / static analysers will notify =
-us
-> > that it is unused, or uninitialized.
-> >
-> > Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > ---
-> >  include/linux/of.h | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/include/linux/of.h b/include/linux/of.h
-> > index 50e882ee91da..f822226eac6d 100644
-> > --- a/include/linux/of.h
-> > +++ b/include/linux/of.h
-> > @@ -1434,6 +1434,12 @@ static inline int of_property_read_s32(const str=
-uct device_node *np,
-> >         for (child =3D of_get_next_available_child(parent, NULL); child=
- !=3D NULL; \
-> >              child =3D of_get_next_available_child(parent, child))
-> >
-> > +#define for_each_child_of_node_scoped(parent, child) \
-> > +       for (struct device_node *child __free(device_node) =3D         =
-   \
-> > +            of_get_next_child(parent, NULL);                          =
- \
-> > +            child !=3D NULL;                                          =
-   \
-> > +            child =3D of_get_next_available_child(parent, child)) =20
->=20
-> Doesn't this need to match the initializer (of_get_next_child)?
-> Otherwise it seems like the first node could be a disabled node but no
-> other disabled nodes would be included in the iteration.
+..
 
-FwIW that was was entirely unintentional.  Not sure how it happened :(
-Anyhow, now will be for_each_available_child_of_node_scoped() with the
-right first call.
+> > Passing -EINVAL to dev_err_probe() here doesn't work. It overwrites the=
+ "ret"
+> > from dmaengine_slave_config().
 
->=20
-> It seems like we would want two macros, one for each variation,
-> analogous to for_each_child_of_node() and
-> for_each_available_child_of_node().
->=20
->=20
-> > +
-> >  #define for_each_of_cpu_node(cpu) \
-> >         for (cpu =3D of_get_next_cpu_node(NULL); cpu !=3D NULL; \
-> >              cpu =3D of_get_next_cpu_node(cpu))
-> > --
-> > 2.43.0
-> >
-> > =20
+> Ah, the original code also ignores the dmaengine_slave_config() return
+> code and replaces it with -EINVAL? I wonder why that is... It doesn't
+> appear to be a widespread pattern. Pretty arbitrary. Could you please
+> make 2 patches, one which preserves the original return code and another
+> which uses dev_err_probe()?
 
+Sure.
+
+--=20
+With Best Regards,
+Andy Shevchenko
 
