@@ -1,171 +1,173 @@
-Return-Path: <linux-kernel+bounces-51604-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0380848D26
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:27:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2152848D28
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:32:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E23F51C21055
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 11:27:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01E641C21183
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 11:32:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07CDB2233A;
-	Sun,  4 Feb 2024 11:27:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F1662209A;
+	Sun,  4 Feb 2024 11:32:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OUkxvh0t"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I/FJDf1S"
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8053522098;
-	Sun,  4 Feb 2024 11:26:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C29B219F3;
+	Sun,  4 Feb 2024 11:32:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707046020; cv=none; b=HJUe2sSSi9OwJa6OIsv560smrFA7cRnPf4OGo4wp7RapwSzMWoy0E3IggCjkP8dMxIvGIZZJc9BsBp5tiMEEzexCa1JGEPQhf/HD0rq/4Zf4MdljWjPwHqzXzShedwEGy34u/NCW5qaGQ/YuYsLg13VyDpXF/r6M0OjGlTl6yzc=
+	t=1707046321; cv=none; b=aaYAW3YNjePGzy26orFfVDyQVjVpEi1/tUOKn34LA+DDDVz4/WnS0uu0rxUlCBEBvn6c5tTfSjLPkZa7xtMr+QNVDRlmaFsJWN+VzVeVNPLXzw28NW1JQJ/Ao70De5eEQ7G8YUiZQmSQt3twF+QDr9r1h1y0/DnEXUoqNXfKpC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707046020; c=relaxed/simple;
-	bh=s/rRFhoHbxWmWjQ38N/sBZ3CQGHizWDvoGT9DkrcZ+E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=b1lrHcFZKmDObyMz+yaQb6jfxN61ZUsTUGJq5v67Qco59//op2TdV57fsAMCHKznVwvPMNBhrRktjPZTDVkENlrPFmxA98+uvPnQGv/C+0RJrJOunKGsWMFvZTvdjzEiwmIX2M1cBQZEBwOcqhr/YYoD+ArDc1hl709lkAyXYCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OUkxvh0t; arc=none smtp.client-ip=209.85.218.53
+	s=arc-20240116; t=1707046321; c=relaxed/simple;
+	bh=OysxHNR/8MLJKJoi2a1JRId6KQOu7obGUqwfNQ5mXP0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rNxWFmVtudA9t9C6cr1tJJkhi/p5uqcLQnZx6Rz+9lPzM+2NCV1tgtbG+m/1525CF9+a19eXbnhmbXA+9JYO8xXE+QvJfMNNYNp4F8EapTqzzS0E/BgbLqNeemsBlSyuDHrLdX/2y44hwknF4+iL/zqGVh3bQpTCKZQ0V6vOwv8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I/FJDf1S; arc=none smtp.client-ip=209.85.128.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3122b70439so467509166b.3;
-        Sun, 04 Feb 2024 03:26:58 -0800 (PST)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-60410da20a2so33957957b3.1;
+        Sun, 04 Feb 2024 03:32:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707046017; x=1707650817; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NHKAaoFRco1xyHqsX5oYKAyy8rLTvdJKQZ5uWsLPDP0=;
-        b=OUkxvh0trg3FCsxQPeOHwfOYfcw2lma3lVqAxpt+GG6LjTE++XAQsotPJ23oBZcbmV
-         cwQSw5pAcU2flJb2TdCOR7qhqBhd9rlw5oTRPUE+N12ozSEz7JBt18UY/aEXx4TIaK33
-         5EM/ETU7wvULr1UQ3uCuO1d9uc70Y7ctFBTgwmPH1GqoAjkfEA76onl3pN+4liDjrK7F
-         BSlKLMK339gCdF2fqlBWksChrNlYKhU2KWZ31m54aSU4lffAIMNz1Zfp9vMUS235wrJE
-         sYiVHTPCGCdNObFe8ce+/MRioEZU7wzuq0SPP9raHe33U2Ws+jeGx32fELba/X1/kRmw
-         YhLA==
+        d=gmail.com; s=20230601; t=1707046319; x=1707651119; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7QkyTj57SM8MQl+b85mT92R7QgyO+Dz+wOf6Kb6ozwQ=;
+        b=I/FJDf1SGbodhq0DkXcdEkIDmuYItqAdThdwyCGOslg9TLenD6G19eU6fydKKMpAIX
+         hdl/GeHOLM2t2LMxCwqh2WUWl6syuQq0Vr7Lv0WryhbPf5dUC2WgkKV1H/rbT94VvjCd
+         ISU25U4IzwUwr4fjgf12p8cO28bSABtdNtjYrqy9B8khVX4DiFvtlwykOwyqAQaI3rE8
+         yc9+g+R4F4/FGSCpQcMEIvRp9e3EfNHatgmVmun07THjD9VUsHZfdYzb0bRY+ID+55mp
+         c43OSfp6MNDLxUV/B00ifYj8pzcGTteUADarnrHNarHjMvY1GwtGIaA+SMOZ6ob7mj/j
+         MPNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707046017; x=1707650817;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NHKAaoFRco1xyHqsX5oYKAyy8rLTvdJKQZ5uWsLPDP0=;
-        b=qyeKveXaclPQOc+i/w/c0rzXUCu+huKmt5dRb/Dmg5YfLe+e3Gl3LDB8oE7R93rqrq
-         8CYoqryQzIFygxZWyQRetKy0SZPU/3lb/WF8Nb2MsPd5XtfpYdyfEY6W+fU9RaorzRd3
-         NBXBdHDIvnYaTjdGYE0cpmdZTIV2T8mcNzY+nPRl6rMB7aAwYstQukccyLOVgd1SoSLW
-         Zo1XKiYz3zzxzbJaCeWlkJN2Wcn3LHH+vm+U4GrfDFOmwkr4pQwDInXeFaGLX62CPGN+
-         mfSC5f7LvOx04z2CGNtWRoC5W2hDQN1P1mPye1abvcKufsmwY7HfW0zWj0kY5FOOXV9Q
-         h3nQ==
-X-Gm-Message-State: AOJu0Yyf5RW6xbTWmXXbdUgELO1U2MRRIDWzngSAL70ZA25aGlnuNQmc
-	1uFTjbmsNMEMjy5h/CmjjpEQgrAtZKDHqBRBHruyCU/kV77vUdYW
-X-Google-Smtp-Source: AGHT+IGO518xLSlLSiSmhJo6GuGfs1XjYuvgOUF8avrOe6PONxbewJ6ItPKTtYTEbg0mzvgv30eoXQ==
-X-Received: by 2002:a17:906:f811:b0:a35:50c7:8b41 with SMTP id kh17-20020a170906f81100b00a3550c78b41mr7602397ejb.72.1707046016452;
-        Sun, 04 Feb 2024 03:26:56 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU4XkjkiZEqJdLlqFUXkVrka1INE/MCIsoQewjEO9AZ7C6g+Cm3YPf4VIuZ/ut7ryL9tG8KBpnO/LUz0idlN8JmY6046Y6/AqfZC+iY9c+7GXctP1/8YqUGJLp8wGO2dweycbS4RuS6u18HgrmvXHRIVqA9O7iVS8Ko16WdZd0i7t+V7KSPTgbK6Nk=
-Received: from ?IPV6:2a02:8389:41cf:e200:87b6:6450:71c5:6e1d? (2a02-8389-41cf-e200-87b6-6450-71c5-6e1d.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:87b6:6450:71c5:6e1d])
-        by smtp.gmail.com with ESMTPSA id oz35-20020a1709077da300b00a361c1375absm2998038ejc.133.2024.02.04.03.26.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Feb 2024 03:26:56 -0800 (PST)
-Message-ID: <194ed4ce-bb2e-404e-a716-ec2e9876c740@gmail.com>
-Date: Sun, 4 Feb 2024 12:26:53 +0100
+        d=1e100.net; s=20230601; t=1707046319; x=1707651119;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7QkyTj57SM8MQl+b85mT92R7QgyO+Dz+wOf6Kb6ozwQ=;
+        b=krDq8h6bPPPqMHk2CbRiuPzvf02Y3XsWj91u4uGNrezLYdnlVpjCL/1k1cnh6KuAeZ
+         2n1kJWmWanjtX64bKRIDuvwlai80hvlbjUsVy+IUWzx0gBR9aiBUSbPMqR9SIUR8keWW
+         YUALSiCtE6815stWQaLrONqkikKsmB2QBtO80ov3rLcRAyF6k5QRpgp0LdaQTew6M3t8
+         MUM9ec8kSStPp2DB89p3hAJL9G1sy7S2ZNJa+KQ/O3P3OMWUqSSoCP/MRIF8yqRg0rCd
+         ClTMEfP40Vf2jY4XFqKHNA5zz0GuHhUXI2A9mdDkLG3FRoMUe8eN1UIVDg7QIwggSsM0
+         grbg==
+X-Gm-Message-State: AOJu0YypOboAADaBShe2WzmS98P/220ZhVEI5AVm8wxZYjXZkmPAhiXl
+	ZYu2tfUrljjfXYuedaS6JO+ZpbBHsf98c0kXDb+yA99juwtzZq7YcN+fT8PTJcB6NTKP8IBkGcV
+	aCJs1gjvWGPFiPw2VP39tDyfaY4uble9iGdELKHb+RxSHuQ==
+X-Google-Smtp-Source: AGHT+IExAGT2STpMmSagXa312ySYM4FXedxHnwenSsbEcIAQwvxzb87TuWuoNliCrp97oW7+j/HHNWiZTlrSm5/23Co=
+X-Received: by 2002:a81:4325:0:b0:5ff:a9bc:b7f with SMTP id
+ q37-20020a814325000000b005ffa9bc0b7fmr12348406ywa.21.1707046319112; Sun, 04
+ Feb 2024 03:31:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] iio: humidity: hdc3020: add threshold events support
-To: Dimitri Fedrau <dima.fedrau@gmail.com>
-Cc: Li peiyu <579lpy@gmail.com>, Jonathan Cameron <jic23@kernel.org>,
- Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240204103710.19212-1-dima.fedrau@gmail.com>
-Content-Language: en-US
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-In-Reply-To: <20240204103710.19212-1-dima.fedrau@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240117114350.3105-1-maimon.sagi@gmail.com> <8a6c5297-6e86-4f0d-a85e-1a93b2215d68@linux.dev>
+In-Reply-To: <8a6c5297-6e86-4f0d-a85e-1a93b2215d68@linux.dev>
+From: Sagi Maimon <maimon.sagi@gmail.com>
+Date: Sun, 4 Feb 2024 13:31:48 +0200
+Message-ID: <CAMuE1bFEbrY2PiDB6OdZGzDNijPAhoGBircTpqiyVs0Qq6bOig@mail.gmail.com>
+Subject: Re: [PATCH v5] ptp: ocp: add Adva timecard support
+To: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+Cc: richardcochran@gmail.com, jonathan.lemon@gmail.com, vadfed@fb.com, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, kuba@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Dimitri,
+Hi Vadim,
+Sorry but I was on vacation for the last two weeks.
+So What should I do now:
+1) Do you want me to set my changes into the main linux git tree:
+    git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+    and use  use '[PATCH v6] ...' prefix
+2) Or
+    set my changes into the net-next git tree:
+    git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git
+    and use  use '[PATCH net-next v6] ...' prefix
 
-On 04.02.24 11:37, Dimitri Fedrau wrote:
->  
-> +static int hdc3020_write_thresh(struct iio_dev *indio_dev,
-> +				const struct iio_chan_spec *chan,
-> +				enum iio_event_type type,
-> +				enum iio_event_direction dir,
-> +				enum iio_event_info info,
-> +				int val, int val2)
-> +{
-> +	struct hdc3020_data *data = iio_priv(indio_dev);
-> +	u16 *thresh;
-> +	u8 buf[5];
-> +	int ret;
-> +
-I tested your patch right now and I noticed that you are only writing
-integer values, which means that for example 19.9999 turns into 18.9169.
-It seems that you are not using val2 (the decimal part).
+BR,
+Sagi
 
-Is there any reason for that? The displayed thresholds are decimal, though.
-> +	/* Supported temperature range is from –40 to 125 degree celsius */
-> +	if (val < HDC3020_MIN_TEMP || val > HDC3020_MAX_TEMP)
-> +		return -EINVAL;
-> +
-> +	/* Select threshold and associated register */
-> +	if (info == IIO_EV_INFO_VALUE) {
-> +		if (dir == IIO_EV_DIR_RISING) {
-> +			thresh = &data->t_rh_thresh_high;
-> +			memcpy(buf, HDC3020_S_T_RH_THRESH_HIGH, 2);
-> +		} else {
-> +			thresh = &data->t_rh_thresh_low;
-> +			memcpy(buf, HDC3020_S_T_RH_THRESH_LOW, 2);
-> +		}
-> +	} else {
-> +		if (dir == IIO_EV_DIR_RISING) {
-> +			thresh = &data->t_rh_thresh_high_clr;
-> +			memcpy(buf, HDC3020_S_T_RH_THRESH_HIGH_CLR, 2);
-> +		} else {
-> +			thresh = &data->t_rh_thresh_low_clr;
-> +			memcpy(buf, HDC3020_S_T_RH_THRESH_LOW_CLR, 2);
-> +		}
-> +	}
-> +
-> +	guard(mutex)(&data->lock);
-> +	switch (chan->type) {
-> +	case IIO_TEMP:
-> +		/*
-> +		 * Store truncated temperature threshold into 9 LSBs while
-> +		 * keeping the old humidity threshold in the 7 MSBs.
-> +		 */
-> +		val = (((val + 45) * 65535 / 175) >> HDC3020_THRESH_TEMP_SHIFT);
-> +		val &= HDC3020_THRESH_TEMP_MASK;
-> +		val |= (*thresh & HDC3020_THRESH_HUM_MASK);
-> +		break;
-> +	case IIO_HUMIDITYRELATIVE:
-> +		/*
-> +		 * Store truncated humidity threshold into 7 MSBs while
-> +		 * keeping the old temperature threshold in the 9 LSBs.
-> +		 */
-> +		val = ((val * 65535 / 100) & HDC3020_THRESH_HUM_MASK);
-> +		val |= (*thresh & HDC3020_THRESH_TEMP_MASK);
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	put_unaligned_be16(val, &buf[2]);
-> +	buf[4] = crc8(hdc3020_crc8_table, buf + 2, 2, CRC8_INIT_VALUE);
-> +	ret = hdc3020_write_bytes(data, buf, 5);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Update threshold */
-> +	*thresh = val;
-> +
-> +	return 0;
-> +}
-
-Best regards,
-Javier Carrasco
+On Wed, Jan 17, 2024 at 11:23=E2=80=AFPM Vadim Fedorenko
+<vadim.fedorenko@linux.dev> wrote:
+>
+> On 17/01/2024 11:43, Sagi Maimon wrote:
+> > Adding support for the Adva timecard.
+> > The card uses different drivers to provide access to the
+> > firmware SPI flash (Altera based).
+> > Other parts of the code are the same and could be reused.
+> >
+>
+> Hi Sagi,
+>
+> Thanks for adjusting the code. One signle still have to be
+> adjusted, see comments below. And this is treated as net-next
+> material, but net-next is closed now until merge window ends,
+> you will have to submit new version next week.
+>
+> Please, also use '[PATCH net-next v6] ...' prefix for it.
+>
+> > Signed-off-by: Sagi Maimon <maimon.sagi@gmail.com>
+> > ---
+> >   Changes since version 4:
+> >   - alignment fix.
+> >
+>
+> Please, preserve changes from all previous versions for next submissions.
+>
+> >   drivers/ptp/ptp_ocp.c | 302 ++++++++++++++++++++++++++++++++++++++++-=
+-
+> >   1 file changed, 293 insertions(+), 9 deletions(-)
+> >
+>
+> [ ..skip.. ]
+>
+> > @@ -2603,7 +2819,44 @@ ptp_ocp_art_board_init(struct ptp_ocp *bp, struc=
+t ocp_resource *r)
+> >       if (err)
+> >               return err;
+> >
+> > -     return ptp_ocp_init_clock(bp);
+> > +     return ptp_ocp_init_clock(bp, r->extra);
+> > +}
+> > +
+> > +/* ADVA specific board initializers; last "resource" registered. */
+> > +static int
+> > +ptp_ocp_adva_board_init(struct ptp_ocp *bp, struct ocp_resource *r)
+> > +{
+> > +     int err;
+> > +     u32 version;
+> > +
+> > +     bp->flash_start =3D 0xA00000;
+> > +     bp->eeprom_map =3D fb_eeprom_map;
+> > +     bp->sma_op =3D &ocp_adva_sma_op;
+> > +
+> > +     version =3D ioread32(&bp->image->version);
+> > +     /* if lower 16 bits are empty, this is the fw loader. */
+> > +     if ((version & 0xffff) =3D=3D 0) {
+> > +             version =3D version >> 16;
+> > +             bp->fw_loader =3D true;
+> > +     }
+> > +     bp->fw_tag =3D 1;
+>
+> Please, use fw_tag =3D 3 here, other tags are for other vendors.
+>
+> Thanks,
+> Vadim
+>
+> > +     bp->fw_version =3D version & 0xffff;
+> > +     bp->fw_cap =3D OCP_CAP_BASIC | OCP_CAP_SIGNAL | OCP_CAP_FREQ;
+> > +
+> > +     ptp_ocp_tod_init(bp);
+> > +     ptp_ocp_nmea_out_init(bp);
+> > +     ptp_ocp_signal_init(bp);
+> > +
+>
 
