@@ -1,147 +1,161 @@
-Return-Path: <linux-kernel+bounces-51784-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51786-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61BC5848F42
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 17:27:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15B3C848F49
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 17:29:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05659B21F8E
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 16:26:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4376D1C22003
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 16:29:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D63622F03;
-	Sun,  4 Feb 2024 16:26:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A419922EEA;
+	Sun,  4 Feb 2024 16:29:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="D9SAOIZL"
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IH3PLuu9"
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8828022EE9
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 16:26:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D73E22EE5
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 16:29:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707064011; cv=none; b=iL8BHuiT85zV8fqWuOCt79K2UQNYztGPEjcxCL3FiPbWHEXQpvy5N1UKXt6kNJATky+MsQhFVgKSS4AlLnOpbLmPIrD3loekg83IliSqc11fxPaLlqphbFUzK4Ve6bK4PEeUhCaJdIdNFa9klMEiARaeN2XUabIbn4gvdcXhHCs=
+	t=1707064179; cv=none; b=Y6A7mLSWUvBeJoR8QaLuNU2VZj1jp5iC/+BN1n5OoeiLUS+oQbnSmwSI2Dx+iYMcYFlT5JjHaU3C4mjZNmjACfBhoG2g6J3tLrekoImI2+qwOUH/qs3r/aZFvwrzqEvL/2X2/jLMXB59YwfR+Nc7OIAatJJ68CBvagZhUX/fO4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707064011; c=relaxed/simple;
-	bh=YWptjRpXcGqKrXDeLb0WkkVr46kdOit9xa7JmKCgiVc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XfADBmJA5afxQj8j8gk168cUA2aQhgNlSEpH/kQ34p5Rd9gGPnPeOre8xaKCTN4R3gifLUGrE0ka5nEXGxX7f0YakcEvUvR8OHGbkCKmm+IojRoO5SECZOH6tab8t+oDHyS9cXfTV4gIwk3LOnqIaD4KiGNWrMoquot4qw9pz9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=D9SAOIZL; arc=none smtp.client-ip=209.85.215.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5d862e8b163so1187756a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 08:26:48 -0800 (PST)
+	s=arc-20240116; t=1707064179; c=relaxed/simple;
+	bh=HclOV+rrCZDwOVlAAJSRoojO0aSBe/fa1KdBQod+1Q8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sShabzXFWdv5GtaelzWn0cs1pf/DFi/fVMN0Hlq5GtIaP9ssx+RGVWDqAkVRLPj8duDRt0FhSGNOO/6q8aYRfP0Cold1Zhz7fw6o6dM5dDqdpe6ZjSp2eUFkR062wBISBEaery+hj1Y9QmJMQVi5MBPqO+a5rPDKlAvxafESoeI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IH3PLuu9; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-6002317a427so31649977b3.2
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 08:29:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1707064008; x=1707668808; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4QsMafIxNnK2tT3E+d+X68HEoyZ0oqU7kYpJhvEviWU=;
-        b=D9SAOIZLBnfzT+V42SiOJpeBJedg7s54vGo6VNBdLeKH+w74cVMQHHlp1bcsg3pL8Z
-         7SBehekzqbrZ56dqUw/kYHwTBPH53ZuXPsUn/LmFhpOxfqLI/LctXa5b56QxFbfTCON8
-         3p5bWDxCLkitkDEXth3xVg05o6SqgCHP0l3NhInLGvOe3D4IiwFIpSbB/2L/93ekY1M/
-         xTET+NhyrdT5L3Hw1MiwelPd0YFqEwzMt6eE5YDgCBTuFrWB4+s+2gM7cZNJFaJ2VNQG
-         u0XgILtVTOciWF4MdLW+IbskBOmkhYTjf7lbD5iMKIUBSXxuKxqYg8M4naLhVwOoAwqL
-         4fuQ==
+        d=linaro.org; s=google; t=1707064177; x=1707668977; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=WLm7YiWrpLuC8lMxG3SB3hDe/1zoUfNMJZQo8qUZp+s=;
+        b=IH3PLuu9+bSa1tO4Is+lBcPajOQtQsdLINEAFekq3AR/qcVyGpkZtA6dYQXLgcYHPa
+         Y5A4WuCtI86FY812aOpG6IfWQ3xT6XWEtc8xMjpDkPOkQP07u1jsQ8WSMh39OuHJ38Kg
+         nX6GVLm6ZRdpRmQt84jNVIDmm4kZawS1MyfMIiydX0AfDyCecBVDQutSGoR3J4jCBcvh
+         4YEO+IXs6tIwvrsVJ8ULD9QC+eF/5v1FQ/OqOhBTGzIH84qlNblBGkJOY7FeycxyjW9N
+         9t4dj/iP0w06pbzRTOWAqi0rnZZn4tbr/eBEIdOqguTVjQgJTKz8Xkj+aatftx8ADW4+
+         O/rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707064008; x=1707668808;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4QsMafIxNnK2tT3E+d+X68HEoyZ0oqU7kYpJhvEviWU=;
-        b=gwWWSYfeAmDGNA3SX5K2lIQ4UvCyHYMlqNKK0wL2hkIHybusA/gG5qfEUj7GwWhfdB
-         ufblup9ScOiQSlJCnKHOFcwfkRFdhwGZZSM8g6SRw94D30kyZ8pxOw4smFeL0PJqanxx
-         cwzbMcZKqMy1AK/GXX1HzV+l5ZSKye9/llBXvJnL+u6cBD1rME33M/y8+1+ncYEUKOHZ
-         9RgbZBJ3PHSLbMw/nsIB7/B6o4MnEeme6N/wvsebYygLrkk0v5v7QIc7CbH2fb+EySGL
-         AEjtnfqUwPxy1NtPVtIjDs6ZgF12HNUNoK6HCY53POXERcrueoOs5Cp7V8ISgW0C6ZtE
-         qCTA==
-X-Gm-Message-State: AOJu0YyuHKvGEKkz1oHKF2V6Ecvm+lj4FQCQ3CIxKCI33Yb+aBlFi6Xc
-	OYjqdPWqroox0K0F0OdVIJMiXWVAJShUahX2Ua5fgFyUcLvm/+JQ0mgLMJZN03E=
-X-Google-Smtp-Source: AGHT+IEdB6lRIkC8WPcW3s7wCnfJKQgWD9aaW6Yu/gYI+XGczVtWRxwYpKHIB5xk2H1n3y5Z+6xAqA==
-X-Received: by 2002:a05:6a00:1c96:b0:6e0:4576:f7e0 with SMTP id y22-20020a056a001c9600b006e04576f7e0mr370773pfw.2.1707064007870;
-        Sun, 04 Feb 2024 08:26:47 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU9qlQk1dly9VAoSOboZq8pD9fGdkndwUSu5KrIAO6PNtnP46oyJGHeHIyH+DvRKfTzIMJcU96Bx1CySYzoOBaXrFdAs2TALd7W+GPWDEbC489PvGofGEYv0UdJg8EEhDOQ9ncmUsiq2z+mwcxI/mOQ5qY24hPGhlBe31bPf1SlU2SNOZ05k+mzYfOHFZ+1TM56vqi3gYtxI05PClD7RAzdUXOl5gDx1pqzBgI9BpmiaE3GWerHCKo5mdp3d5u30tva/nghn9B92yuyZMdsQXfzLUQqiLo=
-Received: from [10.254.132.93] ([139.177.225.248])
-        by smtp.gmail.com with ESMTPSA id le10-20020a056a004fca00b006e02f222c2esm2331289pfb.30.2024.02.04.08.26.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Feb 2024 08:26:47 -0800 (PST)
-Message-ID: <9ef34638-a3e3-4e86-a96e-bc4694661adb@bytedance.com>
-Date: Mon, 5 Feb 2024 00:26:37 +0800
+        d=1e100.net; s=20230601; t=1707064177; x=1707668977;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WLm7YiWrpLuC8lMxG3SB3hDe/1zoUfNMJZQo8qUZp+s=;
+        b=Jn03RAjSdtdTGEBQwFNbbw9lY0ufySe1SWuDCDY27554Pkn56rca9fwTKqpizMWNCa
+         PFj0F/+oCD8DgCR4f1Lh+06OP8I2ax5iZDZN75FNZiudWka45AvfcYzYBYptCxMIX8Bu
+         GkRZIXX56192zTt+cHcfNasyZ2/3WIHCnWyp1m2x5bjhdIwye9PZLZzmAmIaReL6v5Zt
+         S1X75Z4d+w8aR0f228TyKmzxcer6QRXjIRPfOMPoOmhLx4HYVX0kSjGesupKe4XRax4W
+         1bWxcf9X9xHA2Icdazsl1/LuYuhaTIzcW1NZTTtHp12osren+2EfQ2TxAkL2fmQV5Z6q
+         bM1g==
+X-Gm-Message-State: AOJu0YyTydYuCeyagBOgJ5yijfrAlXAUhH8LdkKb94bRKdIB3zSQIZoO
+	sbFZgomcfvDcg2iVcU7UFbZoauIrauBFfRbKbAYSffVhyQgEpNbVbxJFWLA5vKJFQnudykiCUbr
+	cH6n3iXiYP3Ft0oro2eQO878X4WbXKRkp+hzUgA==
+X-Google-Smtp-Source: AGHT+IEdKmZwmDiJR3yzuB5XfjzAGu+fELDwSN691Nf/rx1nyhSnDyGaSWKglskcCeWmwA4QPXVUltXw5iD6qvaiMXQ=
+X-Received: by 2002:a81:9197:0:b0:604:5cd0:a79c with SMTP id
+ i145-20020a819197000000b006045cd0a79cmr583017ywg.16.1707064177328; Sun, 04
+ Feb 2024 08:29:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] mm: pgtable: add missing flag and statistics for
- kernel PTE page
-Content-Language: en-US
-To: Mike Rapoport <rppt@kernel.org>, akpm@linux-foundation.org
-Cc: arnd@arndb.de, muchun.song@linux.dev, david@redhat.com,
- willy@infradead.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- linux-arch@vger.kernel.org
-References: <f023a6687b9f2109401e7522b727aa4708dc05f1.1706774109.git.zhengqi.arch@bytedance.com>
- <Zb9t7WtFbZofN5WZ@kernel.org>
- <3b7e9435-d78e-4430-98d1-f4a839899425@bytedance.com>
- <Zb9_3K2Kp9d-dtcV@kernel.org>
-From: Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <Zb9_3K2Kp9d-dtcV@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240119100621.11788-1-quic_tengfan@quicinc.com> <20240119100621.11788-2-quic_tengfan@quicinc.com>
+In-Reply-To: <20240119100621.11788-2-quic_tengfan@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Sun, 4 Feb 2024 17:29:26 +0100
+Message-ID: <CAA8EJprpMjK03rKPK6wgfVuDvBikYsKZjMc0Wusa1BxFOBnXhQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/6] dt-bindings: arm: qcom: Document QCM8550, QCS8550
+ SoC and board
+To: Tengfei Fan <quic_tengfan@quicinc.com>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, kernel@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
+
+On Fri, 19 Jan 2024 at 11:07, Tengfei Fan <quic_tengfan@quicinc.com> wrote:
+>
+> Document QCM8550, QCS8550 SoC and the AIM300 AIoT board bindings.
+> QCS8550 and QCM8550 processor combines powerful computing, extreme edge
+> AI processing, Wi-Fi 7, and robust video and graphics for a wide range
+> of use cases for the Internet of Things (IoT). QCS8550 is a QCS version
+> for QCM8550. Modem RF only in QCM8550 but not in QCS8550.
+> AIM300 Series is a highly optimized family of modules designed to
+> support AIoT applications. The module is mounted onto Qualcomm AIoT
+> carrier board to support verification, evaluation and development. It
+> integrates QCS8550 SoC, UFS and PMIC chip etc.
+> AIM stands for Artificial Intelligence Module. AIoT stands for AI IoT.
+>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+> ---
+>  Documentation/devicetree/bindings/arm/qcom.yaml | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+> index 1a5fb889a444..9cee874a8eae 100644
+> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
+> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+> @@ -49,8 +49,10 @@ description: |
+>          msm8996
+>          msm8998
+>          qcs404
+> +        qcs8550
+>          qcm2290
+>          qcm6490
+> +        qcm8550
+
+Drop
+
+>          qdu1000
+>          qrb2210
+>          qrb4210
+> @@ -93,6 +95,7 @@ description: |
+>    The 'board' element must be one of the following strings:
+>
+>          adp
+> +        aim300-aiot
+
+We probably need to drop this list, it doesn't surve its purposes.
+
+>          cdp
+>          dragonboard
+>          idp
+> @@ -904,6 +907,14 @@ properties:
+>            - const: qcom,qcs404-evb
+>            - const: qcom,qcs404
+>
+> +      - items:
+> +          - enum:
+> +              - qcom,qcs8550-aim300-aiot
+> +          - const: qcom,qcs8550-aim300
+> +          - const: qcom,qcs8550
+> +          - const: qcom,qcm8550
+
+In the review comments for v3 you have been asked to add qcom,sm8550.
+But not the qcom,qcm8550. I don't think that there is any need to
+mention qcm8550 here.
+
+> +          - const: qcom,sm8550
+> +
+>        - items:
+>            - enum:
+>                - qcom,sa8155p-adp
+> --
+> 2.17.1
+>
 
 
-
-On 2024/2/4 20:15, Mike Rapoport wrote:
-> On Sun, Feb 04, 2024 at 07:39:38PM +0800, Qi Zheng wrote:
->> Hi Mike,
->>
->> On 2024/2/4 18:58, Mike Rapoport wrote:
->>> On Thu, Feb 01, 2024 at 04:05:40PM +0800, Qi Zheng wrote:
->>>> For kernel PTE page, we do not need to allocate and initialize its split
->>>> ptlock, but as a page table page, it's still necessary to add PG_table
->>>> flag and NR_PAGETABLE statistics for it.
->>>>
->>>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->>>> ---
->>>>    include/asm-generic/pgalloc.h |  7 ++++++-
->>>>    include/linux/mm.h            | 21 ++++++++++++++++-----
->>>>    2 files changed, 22 insertions(+), 6 deletions(-)
->>>
->>> This should also update the architectures that define
->>> __HAVE_ARCH_PTE_ALLOC_ONE_KERNEL, otherwise NR_PAGETABLE counts will get
->>> wrong.
->>
->> Yes, this patchset only focuses on the generic implementation. For those
->> architectures that define __HAVE_ARCH_PTE_ALLOC_ONE_KERNEL, some reuse
->> the generic __pte_alloc_one_kernel(), but some have their own customized
->> implementations, which indeed need to be fixed.
->>
->> I wasn't familiar with those architectures and didn't investigate why
->> they couldn't reuse the generic __pte_alloc_one_kernel(), so I didn't
->> fix them.
-> 
-> But with your patch NR_PAGETABLE will underflow e.g. on arm and it'd be a
-> regression for no good reason.
-
-Oh, I see. In some architectures, they implement their own
-pte_alloc_one_kernel() and do not call generic __pte_alloc_one_kernel(),
-but still reuse generic pte_free_kernel(). So it needs to be fixed
-together.
-
-I will try to fix them and send the v2. But since I'm on vacation
-recently, updates may not be quick.
-
-Hi Andrew, please help to temporarily remove this patchset from the
-mm-unstable.
-
-Thanks!
-
-> 
->> It would be better if there are maintainers corresponding to
->> the architecture who can help fix it. After all, they have a better
->> understanding of the historical background and have a testing
->> environment. ;)
-> 
+-- 
+With best wishes
+Dmitry
 
