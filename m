@@ -1,222 +1,282 @@
-Return-Path: <linux-kernel+bounces-51903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37CAF849091
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 22:07:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 12F96849094
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 22:08:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5ED94B226BD
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 21:07:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6DFD6B2238D
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 21:08:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC63D33CC9;
-	Sun,  4 Feb 2024 21:07:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25CCA28DB7;
+	Sun,  4 Feb 2024 21:08:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="gtQxJm4k";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="vJZe1EsH"
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uBPdy4/M"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D27D532C9C;
-	Sun,  4 Feb 2024 21:06:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4634F250ED;
+	Sun,  4 Feb 2024 21:08:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707080821; cv=none; b=R7crLjqtx/396ByLciCf9D0Iu3D4np3LlRTD7VRbXqWpU6mZB1wllRy6c2seQ6n2zyGsD7JpnLObHo4aY3jnAHgetW0tI7nAfFe4Rsp0G8nkRjtz1lZbhfc5N9lxJe6ZZY49lbHw74WSdlgbsOaMMmI7BIgDN3Nzh1WW68rE7OA=
+	t=1707080898; cv=none; b=FTWwEpDonrBj3fPkva6ABCU0Oc1xFaulBNd8u6R2BSYRvXcxq2+O585wzTQ8oQzvbIrG8JyrATMc24P5mri0dKm3ucimZXoFBQZ2opVnDTUKIPZBjtjiC2u4NypuRMMHbSgy13KiNkcvCdhPg2cImKGdwg/v7V1TtPftpthqvSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707080821; c=relaxed/simple;
-	bh=YAsD/PAFWTIjhY4PrFZj7zLRMfr6sUXw/riMUTifiN4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VFJ2vHGZgmtqYBfV8Bfaq6bZeFjNZsGowdHUWxh/JyixAnwfUTTFc9l8pDYK/CnVhxMb7wYJiG46YQN5QnoSsYBLuYRz/UOP31xIa6eMOe2SoC7Bh5UBS7t+q6MYNrHc9BBJIkOwjG83nVWe/73hPnbcuqVN8NamoV1tHSwEXxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=gtQxJm4k; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=vJZe1EsH; arc=none smtp.client-ip=64.147.123.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailout.west.internal (Postfix) with ESMTP id 3A5423200A0A;
-	Sun,  4 Feb 2024 16:06:56 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Sun, 04 Feb 2024 16:06:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1707080815; x=
-	1707167215; bh=EFrOfStAu11VQIYVVSfiFO1xvDu+gV2R6+8jhfL5s5o=; b=g
-	tQxJm4k0Sj763PETXN1Uzl2sXs2LMt+C+Vr98PxiG8kb4V6crVeuT0VD2tJC4GBk
-	4aMdpZCArNVmFAHLOkoLMFCpexMdu7Z+5lCKhgfof1N9gLUNURVxXDerMxtMg4Tj
-	tDwQ6iF++PEu6fEq9BsgKhrGn2h5HE9AmonRp42Wvtcfw7kiagSGP3iA+uIabYzt
-	dKkEm3Ge7FA3IsHyhCvSwiJmaWasoFed3f9slCAy14GnONlolJxwz+wQjpEie0+J
-	RLq7e4OS6RUg+D7Pyqysrw39wGyeTKVEBx5IcbPPNL+6p7QtON++uqKuZ1HM5gZ/
-	aEj4CMFnoMa+F+uhjSGYQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1707080815; x=
-	1707167215; bh=EFrOfStAu11VQIYVVSfiFO1xvDu+gV2R6+8jhfL5s5o=; b=v
-	JZe1EsHKEPtaQ+cteY2V62aWGtSKOYBPH3vVtv93WFUt3z6RfxmkTz7Asv8pKy+3
-	LBVZA2uRhZnzSH0xrTLWeL4GlT+RgKj0TIDHQcaPxIntAeBBJYllBXUixL2IrbfT
-	Z2IJSf4sgyOf8CyJc3FM5Vb2GDJGpSoNgqQira/JSm4JL665ULVi4rVq8/bK23f+
-	/PjDNwl19q8uTn6adHjJj2jdG82xP/AsIZGBUJy8pgUhYgMv/iiNJdAFmnLcKZCa
-	4NH7RksWyE3NFs9Katt4gSmZxhp1AjzVfELJ28AlPO//NasIbfoeWhXPWYmHxu9p
-	sLXeJ0ZqKiopGr9MQIsUA==
-X-ME-Sender: <xms:b_y_ZQIArogJs48sibfel0f2VPWXnTUVEazCIuAP1HfBTuxh_mcFkA>
-    <xme:b_y_ZQLp5YudTFi_Xf21UB53O2PzOyfggUzNWxQ4N1k_LMW7oo4IqNKB4sO7fX5lz
-    KUG6zRC_ZOvhlw2_w>
-X-ME-Received: <xmr:b_y_ZQtadKFe3c0oIaRKxrfl7OWCruWZqixA3ZCi_7v7j3VVpjoXmTWT2KMvnkqBnQ9xgmD-ts7R_joREdBsFg2ypx9ng5wAOhstTOBDvXBwoQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedukedgudeggecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdefhedmnecujfgurhephf
-    fvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcu
-    oegugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeelieduhefhteffie
-    dutdejgfdutdekudelueelveekjeeitdefueeutdelhedvfeenucffohhmrghinhepkhgv
-    rhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:b_y_ZdakdxiqjAt-sSjUi32LilLIgalL0XgNC5EzOU-b3Gt3-Kg74A>
-    <xmx:b_y_ZXY3la5q8ln4CPYcss_Tq4etDlNI-1y9cFprxRLTnlU3ZE7r9A>
-    <xmx:b_y_ZZA9C1vbAhdgHHtgyEvprHooJFvAZZjqE-ieWCMDghfN455AzQ>
-    <xmx:b_y_ZYK9bRDGWnj2O0yEUlKUzU_ygaX04SzgtYGI2fBpyK63KTxnpA>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 4 Feb 2024 16:06:53 -0500 (EST)
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: quentin@isovalent.com,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	andrii@kernel.org,
-	olsajiri@gmail.com,
-	alan.maguire@oracle.com
-Cc: martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 2/2] bpftool: Support dumping kfunc prototypes from BTF
-Date: Sun,  4 Feb 2024 14:06:35 -0700
-Message-ID: <9b8ebd13300e28bd92a2e6de4fb04f85c1b6ce7c.1707080349.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <cover.1707080349.git.dxu@dxuuu.xyz>
-References: <cover.1707080349.git.dxu@dxuuu.xyz>
+	s=arc-20240116; t=1707080898; c=relaxed/simple;
+	bh=rfUupCgxNCK7zuJHjVaM0TpAXHJ+BQUJ+7gaQtxVHpk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=nrI7Y/RFUry2gT0+mwXsFn8s5l3v4Hxik8+YDh9b6lOd0pVfHV1QFsflYSaiTClY/kEcTB1dhQ55D3gL1HqNOOE66xRwtxidX5nR5bHl6WaJ/eNYKhYxHzqVbJmVAaB6ohaJmZ/JBOm2V7Uw23nejXHTbE8FKk0H5iivpVcYiRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uBPdy4/M; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45713C433F1;
+	Sun,  4 Feb 2024 21:08:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707080897;
+	bh=rfUupCgxNCK7zuJHjVaM0TpAXHJ+BQUJ+7gaQtxVHpk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=uBPdy4/MjPndRzU45guGaBqHAkICEchwbkTh4HiVQR4khMOikAwePSw4fqmGah3pA
+	 GGKqEuuQNiw3I6I/UihzpwzFOPCsclXFKoEvp8zgFWjWIbKWphnDonMI8beDQhZTtF
+	 m+zdqkESt7+cFJlM75ynBOgxgelUuOIn695lMnP832a9LopAwTKi0i03O+YUkf7Dvm
+	 Z7lOJ4Yt2m/DzRFf2oeQhaWKXBdRSaztO/CwmMDxxfYnF9k9Xkyk+Mn7A6JC/41Qw/
+	 tXIyBGm4+8atFYm8UW+0FfNoWU5+Y/eRWU6bWw4PlwdGy1SNqjrSKFkWirKKV+AuB8
+	 YaOYZ/7zA/fEA==
+Date: Sun, 4 Feb 2024 21:08:04 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Julia Lawall <julia.lawall@inria.fr>
+Cc: Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+ linux-iio@vger.kernel.org, Rob Herring <robh@kernel.org>, Frank Rowand
+ <frowand.list@gmail.com>, linux-kernel@vger.kernel.org, Nicolas Palix
+ <nicolas.palix@imag.fr>, Sumera Priyadarsini <sylphrenadin@gmail.com>,
+ "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+ linux-acpi@vger.kernel.org, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>
+Subject: Re: [RFC PATCH 0/5] of: automate of_node_put() - new approach to
+ loops.
+Message-ID: <20240204210804.0febf2fc@jic23-huawei>
+In-Reply-To: <alpine.DEB.2.22.394.2401312234250.3245@hadrien>
+References: <20240128160542.178315-1-jic23@kernel.org>
+	<alpine.DEB.2.22.394.2401281903550.3119@hadrien>
+	<20240129114218.00003c34@Huawei.com>
+	<alpine.DEB.2.22.394.2401291455430.8649@hadrien>
+	<20240129195227.3c3adae1@jic23-huawei>
+	<alpine.DEB.2.22.394.2401292120260.32795@hadrien>
+	<20240130093854.00000acc@Huawei.com>
+	<alpine.DEB.2.22.394.2401312234250.3245@hadrien>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-This patch enables dumping kfunc prototypes from bpftool. This is useful
-b/c with this patch, end users will no longer have to manually define
-kfunc prototypes. For the kernel tree, this also means we can drop
-kfunc prototypes from:
+On Wed, 31 Jan 2024 22:38:21 +0100 (CET)
+Julia Lawall <julia.lawall@inria.fr> wrote:
 
-        tools/testing/selftests/bpf/bpf_kfuncs.h
-        tools/testing/selftests/bpf/bpf_experimental.h
+> Here are some loop cases.  The semantic patch is as follows:
+> 
+> #spatch --allow-inconsistent-paths
+> 
+> @@
+> expression node;
+> identifier child;
+> symbol drop_me;
+> iterator name for_each_child_of_node;
+> @@
+> 
+> for_each_child_of_node(node,child) {
+>   ...
+> + of_node_put(drop_me, child);
+> }
+> 
+> @@
+> expression node;
+> identifier child;
+> symbol drop_me;
+> iterator name for_each_child_of_node, for_each_child_of_node_scoped;
+> identifier L;
+> @@
+> 
+> - struct device_node *child;
+>  ... when != child
+> -for_each_child_of_node
+> +for_each_child_of_node_scoped
+>   (node,child) {
+>    ... when strict
+> (
+> -   {
+> -   of_node_put(child);
+>     return ...;
+> -   }
+> |
+> -   {
+> -   of_node_put(child);
+>     goto L;
+> -   }
+> |
+> -   {
+> -   of_node_put(child);
+>     break;
+> -   }
+> |
+>     continue;
+> |
+> -   of_node_put(child);
+>     return ...;
+> |
+> -   of_node_put(child);
+>     break;
+> |
+> -  of_node_put(drop_me, child);
+> )
+> }
+>  ... when != child
+> 
+> @@
+> expression child;
+> @@
+> 
+> - of_node_put(drop_me, child);
+> 
+> -------------------------------
+> 
+> This is quite conservative, in that it requires the only use of the child
+> variable to be in a single for_each_child_of_node loop at top level.
+> 
+> The drop_me thing is a hack to be able to refer to the bottom of the loop
+> in the same way as of_node_puts in front of returns etc are referenced.
+> 
+> This works fine when multiple device_node variables are declared at once.
+> 
+> The result is below.
+> 
+Very nice!
 
-Example usage:
+One issue is that Rob is keen that we also take this opportunity to
+evaluate if the _available_ form is the more appropriate one.
 
-        $ make PAHOLE=/home/dxu/dev/pahole/build/pahole -j30 vmlinux
+Given that access either no defined "status" in the child node or
+it being set to "okay" it is what should be used in the vast majority of
+cases.
 
-        $ ./tools/bpf/bpftool/bpftool btf dump file ./vmlinux format c | rg "__ksym;" | head -3
-        extern void cgroup_rstat_updated(struct cgroup *cgrp, int cpu) __weak __ksym;
-        extern void cgroup_rstat_flush(struct cgroup *cgrp) __weak __ksym;
-        extern struct bpf_key *bpf_lookup_user_key(u32 serial, u64 flags) __weak __ksym;
+For reference, the property.h version only uses the available form.
 
-Note that this patch is only effective after the enabling pahole [0]
-change is merged and the resulting feature enabled with
---btf_features=decl_tag_kfuncs.
+So I think we'll need some hand checking of each case but for vast majority
+it will be very straight forward.
 
-[0]: https://lore.kernel.org/bpf/cover.1707071969.git.dxu@dxuuu.xyz/
+One question is whether it is worth the scoped loops in cases
+where there isn't a patch where we break out of or return from the loop
+before it finishes.  Do we put them in as a defensive measure?
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- tools/bpf/bpftool/btf.c | 45 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+Sometimes we are going to want to combine this refactor with
+some of the ones your previous script caught in a single patch given
+it's roughly the same sort of change.
 
-diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-index 91fcb75babe3..0fd78a476286 100644
---- a/tools/bpf/bpftool/btf.c
-+++ b/tools/bpf/bpftool/btf.c
-@@ -20,6 +20,8 @@
- #include "json_writer.h"
- #include "main.h"
- 
-+#define KFUNC_DECL_TAG		"bpf_kfunc"
-+
- static const char * const btf_kind_str[NR_BTF_KINDS] = {
- 	[BTF_KIND_UNKN]		= "UNKNOWN",
- 	[BTF_KIND_INT]		= "INT",
-@@ -454,6 +456,39 @@ static int dump_btf_raw(const struct btf *btf,
- 	return 0;
- }
- 
-+static int dump_btf_kfuncs(struct btf_dump *d, const struct btf *btf)
-+{
-+	DECLARE_LIBBPF_OPTS(btf_dump_emit_type_decl_opts, opts);
-+	int cnt = btf__type_cnt(btf);
-+	int i;
-+
-+	for (i = 1; i < cnt; i++) {
-+		const struct btf_type *t = btf__type_by_id(btf, i);
-+		const struct btf_type *kft;
-+		const char *name;
-+		int err;
-+
-+		if (!btf_is_decl_tag(t))
-+			continue;
-+
-+		name = btf__name_by_offset(btf, t->name_off);
-+		if (strncmp(name, KFUNC_DECL_TAG, sizeof(KFUNC_DECL_TAG)))
-+			continue;
-+
-+		printf("extern ");
-+
-+		kft = btf__type_by_id(btf, t->type);
-+		opts.field_name = btf__name_by_offset(btf, kft->name_off);
-+		err = btf_dump__emit_type_decl(d, kft->type, &opts);
-+		if (err)
-+			return err;
-+
-+		printf(" __weak __ksym;\n\n");
-+	}
-+
-+	return 0;
-+}
-+
- static void __printf(2, 0) btf_dump_printf(void *ctx,
- 					   const char *fmt, va_list args)
- {
-@@ -476,6 +511,12 @@ static int dump_btf_c(const struct btf *btf,
- 	printf("#ifndef BPF_NO_PRESERVE_ACCESS_INDEX\n");
- 	printf("#pragma clang attribute push (__attribute__((preserve_access_index)), apply_to = record)\n");
- 	printf("#endif\n\n");
-+	printf("#ifndef __ksym\n");
-+	printf("#define __ksym __attribute__((section(\".ksyms\")))\n");
-+	printf("#endif\n\n");
-+	printf("#ifndef __weak\n");
-+	printf("#define __weak __attribute__((weak))\n");
-+	printf("#endif\n\n");
- 
- 	if (root_type_cnt) {
- 		for (i = 0; i < root_type_cnt; i++) {
-@@ -491,6 +532,10 @@ static int dump_btf_c(const struct btf *btf,
- 			if (err)
- 				goto done;
- 		}
-+
-+		err = dump_btf_kfuncs(d, btf);
-+		if (err)
-+			goto done;
- 	}
- 
- 	printf("#ifndef BPF_NO_PRESERVE_ACCESS_INDEX\n");
--- 
-2.42.1
 
+> julia
+> 
+> diff -u -p a/drivers/of/unittest.c b/drivers/of/unittest.c
+> --- a/drivers/of/unittest.c
+> +++ b/drivers/of/unittest.c
+> @@ -2789,7 +2789,7 @@ static int unittest_i2c_mux_probe(struct
+>  	int i, nchans;
+>  	struct device *dev = &client->dev;
+>  	struct i2c_adapter *adap = client->adapter;
+> -	struct device_node *np = client->dev.of_node, *child;
+> +	struct device_node *np = client->dev.of_node;
+>  	struct i2c_mux_core *muxc;
+>  	u32 reg, max_reg;
+> 
+> @@ -2801,7 +2801,7 @@ static int unittest_i2c_mux_probe(struct
+>  	}
+> 
+>  	max_reg = (u32)-1;
+> -	for_each_child_of_node(np, child) {
+> +	for_each_child_of_node_scoped(np, child) {
+
+This was a case I left alone in the original series because the auto
+cleanup doesn't end up doing anything in any paths.
+
+>  		if (of_property_read_u32(child, "reg", &reg))
+>  			continue;
+>  		if (max_reg == (u32)-1 || reg > max_reg)
+>
+
+
+
+> diff -u -p a/drivers/regulator/scmi-regulator.c b/drivers/regulator/scmi-regulator.c
+> --- a/drivers/regulator/scmi-regulator.c
+> +++ b/drivers/regulator/scmi-regulator.c
+> @@ -297,7 +297,7 @@ static int process_scmi_regulator_of_nod
+>  static int scmi_regulator_probe(struct scmi_device *sdev)
+>  {
+>  	int d, ret, num_doms;
+> -	struct device_node *np, *child;
+> +	struct device_node *np;
+>  	const struct scmi_handle *handle = sdev->handle;
+>  	struct scmi_regulator_info *rinfo;
+>  	struct scmi_protocol_handle *ph;
+> @@ -341,13 +341,11 @@ static int scmi_regulator_probe(struct s
+>  	 */
+>  	of_node_get(handle->dev->of_node);
+>  	np = of_find_node_by_name(handle->dev->of_node, "regulators");
+> -	for_each_child_of_node(np, child) {
+> +	for_each_child_of_node_scoped(np, child) {
+>  		ret = process_scmi_regulator_of_node(sdev, ph, child, rinfo);
+>  		/* abort on any mem issue */
+> -		if (ret == -ENOMEM) {
+> -			of_node_put(child);
+> +		if (ret == -ENOMEM)
+>  			return ret;
+> -		}
+Current code leaks np in this path :(
+
+>  	}
+>  	of_node_put(np);
+>  	/*
+
+
+> diff -u -p a/drivers/crypto/nx/nx-common-powernv.c b/drivers/crypto/nx/nx-common-powernv.c
+> --- a/drivers/crypto/nx/nx-common-powernv.c
+> +++ b/drivers/crypto/nx/nx-common-powernv.c
+> @@ -907,7 +907,6 @@ static int __init nx_powernv_probe_vas(s
+>  {
+>  	int chip_id, vasid, ret = 0;
+>  	int ct_842 = 0, ct_gzip = 0;
+> -	struct device_node *dn;
+> 
+>  	chip_id = of_get_ibm_chip_id(pn);
+>  	if (chip_id < 0) {
+> @@ -921,7 +920,7 @@ static int __init nx_powernv_probe_vas(s
+>  		return -EINVAL;
+>  	}
+> 
+> -	for_each_child_of_node(pn, dn) {
+> +	for_each_child_of_node_scoped(pn, dn) {
+>  		ret = find_nx_device_tree(dn, chip_id, vasid, NX_CT_842,
+>  					"ibm,p9-nx-842", &ct_842);
+> 
+> @@ -929,10 +928,8 @@ static int __init nx_powernv_probe_vas(s
+>  			ret = find_nx_device_tree(dn, chip_id, vasid,
+>  				NX_CT_GZIP, "ibm,p9-nx-gzip", &ct_gzip);
+The handling in here is odd (buggy?). There is an of_node_put()
+in the failure path inside find_nx_device_tree() as well as out here.
+> 
+> -		if (ret) {
+> -			of_node_put(dn);
+> +		if (ret)
+>  			return ret;
+> -		}
+>  	}
+> 
+>  	if (!ct_842 || !ct_gzip) {
+
+I've glanced at a few of the others and some of them are hard.
+This refactor is fine, but the other device_node handling often
+is complex and I think fragile.  So definitely room for improvement!
+
+Jonathan
 
