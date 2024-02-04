@@ -1,57 +1,69 @@
-Return-Path: <linux-kernel+bounces-51647-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F03F3848DDE
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:57:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DA75848DE3
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 14:03:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84DB42821C4
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:57:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC0BE1F22729
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:03:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46DE3219FF;
-	Sun,  4 Feb 2024 12:57:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C045121363;
+	Sun,  4 Feb 2024 13:03:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mzp8kCor"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OZaTUHxJ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83AC51E51A;
-	Sun,  4 Feb 2024 12:57:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8402322085;
+	Sun,  4 Feb 2024 13:03:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707051447; cv=none; b=bhD2+5zrzQ5MjbxSiUouGNYtwo0nPHF4aHu+AecZNxuzGvtndGFzhofpgubHu7QVD71f/MkfCyuxdI6BT/uX8fr141+LzaX4U3U6hAsjwzyiFcYEanbMqL8iDF8PxONtYlWJGvNYpsUW++37Ah81wk/0CyK1BaMdPLl+dTv+Z5s=
+	t=1707051817; cv=none; b=WFF0y3Z7EmE27HReiniZvs47khh/tSJpKfYIJJ/6V8vTKKvR4yLAO7KFxg3aIde2WZoxRY5n8iTvkPWD6ae7af19gGs2U5wL1pqlb7vATmN8QSonx5XLXVjPyVasfJIf1nW+Ba33mU70TAoFUKQ31EI8OGo18K0lfzYdVI7hmDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707051447; c=relaxed/simple;
-	bh=11ALOU6VsnZCMQ97q7QMgNjhbRhAQUuFE5x9Bwr0dTM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JOJjp8llLgQPqLxSkFGt7ERBss3nJuziWoZKFipnjyDr+PDl8A2ckhbjl9Rec9W4muaXvOmJTkUfXAPbQGt4rFqIsbEOu4Qh0Udbuwe51a9oU/7RJwYhV2kzoGLeDrF2uBXwcrHPz/734sM6NF8mF6mrtgrK+3EahR8R8UEbu4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mzp8kCor; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71DE8C43142;
-	Sun,  4 Feb 2024 12:57:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707051447;
-	bh=11ALOU6VsnZCMQ97q7QMgNjhbRhAQUuFE5x9Bwr0dTM=;
-	h=From:To:Cc:Subject:Date:From;
-	b=mzp8kCorouXZNIh5YdE3P/9BIzS8g0hVdJWYDPZ03Ux+V0TvVbltKZyt/1VvuRoMB
-	 O46zrP/E03XVxp+e5ztdOV+Q53avZoO9m25AqfRWpWvD48OE5u9AnA+onDvW8uOaCj
-	 TMA27NWgcJUkdl3D4gGQJ3NsQOQ4YiXn7awrd42pxPREhu9gmdhyYNoGHBm+gRw7Of
-	 6SYY0AME+hrsr1J8vMiqIm5DU766wXQpcQK7+i9dNaYyohq6zoASo9YR3ZDdq7JcF4
-	 Am01y4r6d+tcrzT1K7gmBS101DI3zDMFtiBHXY4cvTD/wMr1B6o0Bx7GYql7J+78K+
-	 5MVyGX+SCPwIg==
-From: Masahiro Yamada <masahiroy@kernel.org>
-To: Aaro Koskinen <aaro.koskinen@iki.fi>,
-	Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-	Tony Lindgren <tony@atomide.com>,
-	linux-omap@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Russell King <linux@armlinux.org.uk>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] arm: omap1: remove duplicated 'select ARCH_OMAP'
-Date: Sun,  4 Feb 2024 21:57:16 +0900
-Message-Id: <20240204125716.56756-1-masahiroy@kernel.org>
+	s=arc-20240116; t=1707051817; c=relaxed/simple;
+	bh=lo/lRKSchpFgmgBMpdWzE5wDAxMBkriW7GDjqrwUQBI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=N9j8aY1NLk6Egyz3cvJi0T0M1kEx+K1k7N8VxMxGThwiqHQY9LeEwykx8M7cJK5lRHkPs65Syyt+EQW9I935TBpw+5htNPrBeqNtHUCi2+5tmisivMe2/0ZoZcWi4WJw/aC5rOZlsN7GZlK/eNgtJWC8z9JDJumOtODtnEr+nk8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OZaTUHxJ; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707051816; x=1738587816;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=lo/lRKSchpFgmgBMpdWzE5wDAxMBkriW7GDjqrwUQBI=;
+  b=OZaTUHxJL258+Xvq8aF/ynJzesLRQqqdThJyjEtgjaZ5iU3D82GOPPkv
+   Sv7PlnZeL50wA3ovw9wElf5RaU2z3VcptSClBom26qhasv+ooODwlBnkO
+   RR4ZMf9nA+Kd/22y7OZujXwBO8zYQ9fUed4Hv2tLAhUMIEbI1OvzI6Hd7
+   fGGuL12zTEviWVPL1xvDUlbTVuL8p+c70wR/8+9l2U1LbS84CfSBFqt7D
+   D6vdO4qbT3uJC9eY5y9a1XIXYyMkeEYozomi9Qu5Yva/WmQf+GIPKQKyu
+   iZn3ndoo9QaT+mYRFPL7z/H7yMG5ZKNUzRP5dUHKRdn2mMKOI2c3haAyu
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10973"; a="4283230"
+X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
+   d="scan'208";a="4283230"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 05:03:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
+   d="scan'208";a="37918235"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.14])
+  by orviesa001.jf.intel.com with ESMTP; 04 Feb 2024 05:03:34 -0800
+From: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To: jikos@kernel.org,
+	jic23@kernel.org,
+	lars@metafoo.de,
+	Basavaraj.Natikar@amd.com
+Cc: linux-input@vger.kernel.org,
+	linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH v4 0/4] Add support of color temperature and chromaticity
+Date: Sun,  4 Feb 2024 05:03:28 -0800
+Message-Id: <20240204130332.2635760-1-srinivas.pandruvada@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -61,28 +73,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Commit 980a637d11fe ("ARM: omap1: fix !ARCH_OMAP1_ANY link failures")
-added one more 'select ARCH_OMAP'.
+The original series submitted to 6.7 (before revert) is modified to
+solve regression issues on several platforms. There are two changes
+introduced before adding support for new features to allow dynamic
+addition of channels.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+v4:
+Addressed comments from Jonathan and Basavaraj
+v3:
+Addressed comments for v2, details in each patch.
+v2:
+New change to add channels dynamically
+Modified color temperature and chromaticity to skip in case
+of failures
 
- arch/arm/mach-omap1/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm/mach-omap1/Kconfig b/arch/arm/mach-omap1/Kconfig
-index cbf703f0d850..a643b71e30a3 100644
---- a/arch/arm/mach-omap1/Kconfig
-+++ b/arch/arm/mach-omap1/Kconfig
-@@ -4,7 +4,6 @@ menuconfig ARCH_OMAP1
- 	depends on ARCH_MULTI_V4T || ARCH_MULTI_V5
- 	depends on CPU_LITTLE_ENDIAN
- 	depends on ATAGS
--	select ARCH_OMAP
- 	select ARCH_HAS_HOLES_MEMORYMODEL
- 	select ARCH_OMAP
- 	select CLKSRC_MMIO
+Basavaraj Natikar (2):
+  iio: hid-sensor-als: Add light color temperature support
+  iio: hid-sensor-als: Add light chromaticity support
+
+Srinivas Pandruvada (2):
+  iio: hid-sensor-als: Assign channels dynamically
+  iio: hid-sensor-als: Remove hardcoding of values for enums
+
+ drivers/iio/light/hid-sensor-als.c | 123 ++++++++++++++++++++++++-----
+ include/linux/hid-sensor-ids.h     |   4 +
+ 2 files changed, 109 insertions(+), 18 deletions(-)
+
 -- 
-2.40.1
+2.43.0
 
 
