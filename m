@@ -1,167 +1,161 @@
-Return-Path: <linux-kernel+bounces-51616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5235848D44
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:57:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0D84848D45
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:57:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 708FF1F2173E
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 11:57:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5B6D1C20DBA
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 11:57:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D67422301;
-	Sun,  4 Feb 2024 11:56:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B14322319;
+	Sun,  4 Feb 2024 11:57:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZY/WEtGX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T2y3m2fs"
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4DE82208E;
-	Sun,  4 Feb 2024 11:56:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BDE622309
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 11:57:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707047817; cv=none; b=fHiWY+7b7Zs3RikbUbtlAo13XXvfMXvXN4mr4DQxEQ/ezvfzQacm2U6420PLiV+rL9vxDVS2+41x6FprIBQGMHZx6RypxuxiVfKP81L/k9PJI/ZWoX15+YJqsJe/5LlNk9PJEJJv3Xh0f4yFUTp0xuIEhSKtXBD6d+H5K4PbnuM=
+	t=1707047846; cv=none; b=t+MzDAJN9DwjsGJlLCusv8hHamfzdij0594J+RDCUWkwYtE+vjqJWfL2JkHgDSdh9hXFVF0u9Erl71jhVbDTrW7bTEYapzwR27OOZPTW6OyFId8Sm8SsWhbjFAKgciOO0AdLuRX+qwXonvZLeAGCeLuRfwQ+vLTyeET+aJ+uVgE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707047817; c=relaxed/simple;
-	bh=4MfqGCuyTV/WsAyZLhKLgr6v3KIUjtNQFKaYShJa5D0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FNlJLv5n50kKawFOK7kyT90GGb2KKqwavivynQhPtFlcmR4wL7aR0Gy7quMBSh77wlFuHIVPcr3RsNVidqDin+dIvt6YNLmgKZqeFp0nvo/3IMdwR5xkJ5e/HRW0VaX3CHab9uCwecG4oLm6AkBoiIo68RW+g3yttKAY6ZSPLAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZY/WEtGX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DE05C433C7;
-	Sun,  4 Feb 2024 11:56:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707047817;
-	bh=4MfqGCuyTV/WsAyZLhKLgr6v3KIUjtNQFKaYShJa5D0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZY/WEtGXriFjgcbMxABWAI4nFRroyGqI2w96wGZ9ydXf9+uL8mdZqzi+dGzo4Lf9A
-	 bQTQ7bhibCdYAIAU9P2v7NgeMdVO2JwRrFhz1EBhCZUkivhQ9ale4dK+SQyCpL9ltY
-	 vR1mZgXbXe+c3RC+Ef75Wj5FDvuvJPWzVIoPSwilsDgWUUgAw1PPqmbAFE2GJZaVjR
-	 PP958f8YXAXj91IZo569uUsbJsm+M2tLGiEKOfBTSY1pvkOSxezO/kp6V8/0P83l5H
-	 bue5JvBedmel6vfTkGxy4W5d7RMgyQqSAvKOxlpcl9IC1nTWZ+O5BlMlkpjEXbZ/bW
-	 gwK2DWtg278SA==
-Date: Sun, 4 Feb 2024 12:56:41 +0100
-From: Mike Rapoport <rppt@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-	Deepak Gupta <debug@rivosinc.com>,
-	Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-	"H.J. Lu" <hjl.tools@gmail.com>,
-	Florian Weimer <fweimer@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Kees Cook <keescook@chromium.org>,
-	jannh@google.com, linux-kselftest@vger.kernel.org,
-	linux-api@vger.kernel.org, David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH RFT v3 1/5] mm: Introduce ARCH_HAS_USER_SHADOW_STACK
-Message-ID: <Zb97eROjky1DIaiv@kernel.org>
-References: <20231120-clone3-shadow-stack-v3-0-a7b8ed3e2acc@kernel.org>
- <20231120-clone3-shadow-stack-v3-1-a7b8ed3e2acc@kernel.org>
+	s=arc-20240116; t=1707047846; c=relaxed/simple;
+	bh=zfHxKnze1zst7lS0M6qYgHzsqoY0Z67CTQM5r25muvY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=DXKN2OURfC5LWwVFj7UXaqn6/5VCDVrKfn3APONlcEW6uFfchCOlXs76vvUETZdaxP2Jyb7vAIP4be+Mswb3n3Pn9jxwOPjkVn3hh2x0xsLh6aWhfNOpoOE/zhGHqtFM6q6SEnKrZuufLg/4MeRruIBVus1BkriR9+AE+ahXDKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T2y3m2fs; arc=none smtp.client-ip=209.85.210.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6e1270e8cd3so1678092a34.1
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 03:57:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707047844; x=1707652644; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FdnC+0PjgyOKa+pKvPd4AQCjcLpAyk4MtGcD9BnAIFI=;
+        b=T2y3m2fs59WuQRyiCYNUiYGF/CS7tRI48/VKAxxjAK5fobOubYUfYObIE3gkdRwx3V
+         jiFr0Ey0DfxwF5fFUArG2iB+3CS2ite4kv4/L3zOUS9jdCZKr5L0kSdivKsTTiJClksW
+         Bxm/ZEz/Se4VOF2wd8+uovZvUDH3ZonXXd185YqhhecKQHcn3kYOQ5uIvq7urEwVN1/T
+         /gJn9tKSF3GFOOY8Fy3KWVzNShNvfkQC1gkOM2eg2cTi5qL9abz5M3qMiyPZ8PCRIeFi
+         DM4v5/QnGFdukzYf8ux4sCCevujGCvBDU36MCZdlrSNkT8LFLNNQ99H2XeVODxMtXhe+
+         BoCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707047844; x=1707652644;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FdnC+0PjgyOKa+pKvPd4AQCjcLpAyk4MtGcD9BnAIFI=;
+        b=Bwai6d8REhMZ/oza6W5hS+AlPNE0WszSnMOqA31UZVBUDijwYmXC+dcIbzjuQ4IgCZ
+         lv7x5mk80rJVJWUC6wvqwxzuYwcjMrleyB6ZYKBtXJNtvnjEKS9eItqI/N4SFy/oJ26F
+         cig+4pxeUgng9hWJlceiFJ6ABARbA9qJ/I8spriylfVKtKolufN4lL6bsnNAqa+i2KRc
+         WS+8AwbdIUMilNN2FW09717H8Bgpuy2b4TShETpkRMM3IcE8WxbZLJinM2Ff9lvaCB81
+         iTVnLNabM+s7IW79DG0FpqSTm4Zk8HWTlXWt5+sNgK668ji+mtmGW9KKcnK+NUNjfn62
+         TN7A==
+X-Gm-Message-State: AOJu0YzulswtOmubNcCesQB7hGkACsE83r7vXqhbggEKSV+0PhYjM/z+
+	hg/0biirCYaiLmCiJLRKo8yPcAOMJqMCM4Pf4iNT7vsWbO/oUJ6K
+X-Google-Smtp-Source: AGHT+IEXi/xHFeohYu4bF9t/k2Y/CK3N2OEnkEjg17oJ8Jjl08ngGrx2syyQMsQJv4YAX6oO1qu/FA==
+X-Received: by 2002:a05:6830:1448:b0:6db:ee16:6254 with SMTP id w8-20020a056830144800b006dbee166254mr7487028otp.33.1707047843974;
+        Sun, 04 Feb 2024 03:57:23 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVCZhuThsYJVmF8a4H0UyW5qrOgJb2pOCCqoOk2xjmcurbiAHzsYVAgLnv4i1MeQnjTKnXQMIULe/asyOvB1Vejeso0KZ/ZCZ2Oa0z8YyU1bwYBOIUCKXmSrsvfUVc3C53/yYpXfrP6zl175481AhoKJQud+OgTo69ChQDY+BTdWouuD3uhtAzLOu6yH37nTyh28XjLRPXVHqeeMKQLb3fWpDDvo0wsLW32B4+0Rt/zfA9xpbO1qzstbQo+2ma06Sb8Sa1aaYW8dBYnWM0jh1uaKlxA0LBh6+7f9QSjalpsUrEhytbeDQXCkLeQQGxXnglFS152rmDeawdI+wQq1pKbrnRTTAsbrJvYW1DqArXSb6Opou7sUpmD7cnjMONgOqRmwvc3lBBFVE+RjItd2tv0d1NBf2gOcuBSVOLGlDlSZ9ZOcFKxsx65bxEshCdO
+Received: from [192.168.255.10] ([43.132.141.26])
+        by smtp.gmail.com with ESMTPSA id h1-20020a056a00170100b006e0414d7cf8sm385450pfc.95.2024.02.04.03.57.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Feb 2024 03:57:23 -0800 (PST)
+Message-ID: <0b1f1de7-9394-40df-9b5c-c8c1cb1239d4@gmail.com>
+Date: Sun, 4 Feb 2024 19:57:19 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231120-clone3-shadow-stack-v3-1-a7b8ed3e2acc@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/4] sched/fair: add SD_CLUSTER in comments
+Content-Language: en-US
+To: Valentin Schneider <vschneid@redhat.com>, alexs@kernel.org,
+ Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Daniel Bristot de Oliveira <bristot@redhat.com>,
+ linux-kernel@vger.kernel.org, ricardo.neri-calderon@linux.intel.com,
+ sshegde@linux.ibm.com
+References: <20240201115447.522627-1-alexs@kernel.org>
+ <xhsmhzfwjgcvf.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+From: kuiliang Shi <seakeel@gmail.com>
+In-Reply-To: <xhsmhzfwjgcvf.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Nov 20, 2023 at 11:54:29PM +0000, Mark Brown wrote:
-> Since multiple architectures have support for shadow stacks and we need to
-> select support for this feature in several places in the generic code
-> provide a generic config option that the architectures can select.
+
+
+On 2/2/24 10:27 PM, Valentin Schneider wrote:
 > 
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> Acked-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
->  arch/x86/Kconfig   | 1 +
->  fs/proc/task_mmu.c | 2 +-
->  include/linux/mm.h | 2 +-
->  mm/Kconfig         | 6 ++++++
->  4 files changed, 9 insertions(+), 2 deletions(-)
+> Subject nit: the prefix should be sched/topology
 > 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 3762f41bb092..14b7703a9a2b 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -1952,6 +1952,7 @@ config X86_USER_SHADOW_STACK
->  	depends on AS_WRUSS
->  	depends on X86_64
->  	select ARCH_USES_HIGH_VMA_FLAGS
-> +	select ARCH_HAS_USER_SHADOW_STACK
->  	select X86_CET
->  	help
->  	  Shadow stack protection is a hardware feature that detects function
-> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> index ef2eb12906da..f0a904aeee8e 100644
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-> @@ -699,7 +699,7 @@ static void show_smap_vma_flags(struct seq_file *m, struct vm_area_struct *vma)
->  #ifdef CONFIG_HAVE_ARCH_USERFAULTFD_MINOR
->  		[ilog2(VM_UFFD_MINOR)]	= "ui",
->  #endif /* CONFIG_HAVE_ARCH_USERFAULTFD_MINOR */
-> -#ifdef CONFIG_X86_USER_SHADOW_STACK
-> +#ifdef CONFIG_ARCH_HAS_USER_SHADOW_STACK
->  		[ilog2(VM_SHADOW_STACK)] = "ss",
->  #endif
->  	};
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 418d26608ece..10462f354614 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -341,7 +341,7 @@ extern unsigned int kobjsize(const void *objp);
->  #endif
->  #endif /* CONFIG_ARCH_HAS_PKEYS */
->  
-> -#ifdef CONFIG_X86_USER_SHADOW_STACK
-> +#ifdef CONFIG_ARCH_HAS_USER_SHADOW_STACK
->  /*
->   * VM_SHADOW_STACK should not be set with VM_SHARED because of lack of
->   * support core mm.
-> diff --git a/mm/Kconfig b/mm/Kconfig
-> index 89971a894b60..6713bb3b0b48 100644
-> --- a/mm/Kconfig
-> +++ b/mm/Kconfig
-> @@ -1270,6 +1270,12 @@ config LOCK_MM_AND_FIND_VMA
->  	bool
->  	depends on !STACK_GROWSUP
->  
-> +config ARCH_HAS_USER_SHADOW_STACK
-> +	bool
-> +	help
-> +	  The architecture has hardware support for userspace shadow call
-> +          stacks (eg, x86 CET, arm64 GCS or RISC-V Zicfiss).
-
-The whitespace looks suspicious, I think there should be a leading tab.
-Otherwise
-
-Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
-
-> +
->  source "mm/damon/Kconfig"
->  
->  endmenu
+> On 01/02/24 19:54, alexs@kernel.org wrote:
+>> From: Alex Shi <alexs@kernel.org>
+>>
+>> The description of SD_CLUSTER is missing. Add it.
+>>
+>> Signed-off-by: Alex Shi <alexs@kernel.org>
+>> To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+>> To: Valentin Schneider <vschneid@redhat.com>
+>> To: Vincent Guittot <vincent.guittot@linaro.org>
+>> To: Juri Lelli <juri.lelli@redhat.com>
+>> To: Peter Zijlstra <peterz@infradead.org>
+>> To: Ingo Molnar <mingo@redhat.com>
+>> ---
+>>  kernel/sched/topology.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+>> index 10d1391e7416..8b45f16a1890 100644
+>> --- a/kernel/sched/topology.c
+>> +++ b/kernel/sched/topology.c
+>> @@ -1554,6 +1554,7 @@ static struct cpumask		***sched_domains_numa_masks;
+>>   * function:
+>>   *
+>>   *   SD_SHARE_CPUCAPACITY   - describes SMT topologies
+>> + *   SD_CLUSTER             - describes CPU Cluster topologies
 > 
-> -- 
-> 2.30.2
+> So I know this is the naming we've gone for the "Cluster" naming, but this
+> comment isn't really explaining anything.
 > 
+> include/linux/sched/sd_flags.h has a bit more info already:
+>  * Domain members share CPU cluster (LLC tags or L2 cache)
+> 
+> I had to go through a bit of git history to remember what the CLUSTER thing
+> was about, how about this:
+> 
+> * SD_CLUSTER             - describes shared shared caches, cache tags or busses
 
--- 
-Sincerely yours,
-Mike.
+Double "shared", so could we use:
+* SD_CLUSTER             - describes shared caches, cache tags or busses?
+
+
+> * SD_SHARE_PKG_RESOURCES - describes shared LLC cache
+> 
+> And looking at this it would make sense to:
+>   rename SD_CLUSTER into SD_SHARE_PKG_RESOURCES
+>   rename SD_SHARE_PKG_RESOURCES into SD_SHARE_LLC
+> but that's another topic...
+
+Uh, naming is a hard things. :)
+
+Thanks
+Alex
+> 
+>>   *   SD_SHARE_PKG_RESOURCES - describes shared caches
+>>   *   SD_NUMA                - describes NUMA topologies
+>>   *
+>> --
+>> 2.43.0
+> 
 
