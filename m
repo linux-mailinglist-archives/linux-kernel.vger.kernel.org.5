@@ -1,202 +1,273 @@
-Return-Path: <linux-kernel+bounces-51641-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51643-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC4E2848DD0
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:43:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BDDF848DD8
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:49:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F16631C20E05
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:43:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8AD2F1F22096
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:49:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 118AA224CF;
-	Sun,  4 Feb 2024 12:43:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E17F224FD;
+	Sun,  4 Feb 2024 12:49:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XN8JDThR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BzdITjEh"
+Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com [209.85.217.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49433224CC;
-	Sun,  4 Feb 2024 12:43:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D654F225A6
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 12:49:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707050585; cv=none; b=Qv93xEK+2lOw9A2SL0xtjMV+na3yq10XZftcIUN8iVbnkxr4uooPIYz1CR5OdOZ+F/DoeErPjmJcTxnorBhCCImx0gYonO0ZLbf5AwsHckyxDAcZwPOlIKt3Uk96mA8QtxfhEy+tnCaXhsbNXfsylFSqjblRmyNPCowb+7/QSTo=
+	t=1707050980; cv=none; b=MsNNHekMjtBgZHk3HvKI8yYWM3dNB/xa0S1JqyjRjqzxYpOkS5UJLFTMUCs67tRG0O8Tz/kLIA+FLrksAQ5pWPaLbfi56Y7/AhqY7AqaBPuXOLSYjMpVWK0AHWKaRZ8J4rwQt0JidZaTjmo8PnEEyhT+W/idhPRtNM3j8ypgwEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707050585; c=relaxed/simple;
-	bh=Hw1JSj7Svr9NDriyZTOYa5SeuNIxmJs1p7/MQEcpG5k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HWfYxv8oxF5pW9oH5v0VTV1QEnVWjFlDweMR1B0RjUeVdaN76EmyP0qwZhlgk8rIy9JegXVpo6eUW9j+4DEOiU1dj5ORpNCUvoxb/qvg87l8TiWd/gOUXy8DlFP8uMY+TzbtO11mTmUB8Wbi96F188qZgDOKvKb6ILxqkjNEO3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XN8JDThR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F173C433F1;
-	Sun,  4 Feb 2024 12:43:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707050584;
-	bh=Hw1JSj7Svr9NDriyZTOYa5SeuNIxmJs1p7/MQEcpG5k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XN8JDThRgLbR2WCugVyteS/nZkNFE59QSb0setvhDk2sH7w+2d5Uj/B3JpHnc7Qzc
-	 mG3GxIc3CoxHdnDes4rhEzjGPKK4KE+Utheq4fwwQJzdO7UPUTGbxrMmRrlS4WWzFZ
-	 PzF117HhsH4RCpA8S/7PSZRUkH9TZ3a6lIk+qoTaWqk3Y4fU2qUMbKzSIf+ogbOj5a
-	 MjsHJV5e8cJrBlljpKKShg41OkiST/u/FRF810vjevLuTlMXQ1oVZmBXZTszITO3Wx
-	 tep8Wkw36nkFCx+dgfbH9SMwDRdr+7YbUnXDWCzZtoCePULKLG4hX9v7Yn5i7mUqnU
-	 aSS9aWziVwmfQ==
-Date: Sun, 4 Feb 2024 14:43:00 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Konstantin Taranov <kotaranov@linux.microsoft.com>
-Cc: kotaranov@microsoft.com, sharmaajay@microsoft.com, longli@microsoft.com,
-	jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH rdma-next v2 5/5] RDMA/mana_ib: Adding and deleting GIDs
-Message-ID: <20240204124300.GF5400@unreal>
-References: <1706886397-16600-1-git-send-email-kotaranov@linux.microsoft.com>
- <1706886397-16600-6-git-send-email-kotaranov@linux.microsoft.com>
+	s=arc-20240116; t=1707050980; c=relaxed/simple;
+	bh=7wTFTnO+F0NScoiCeS/b1XS3lcSN7OeKUBMFETX8PgE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mJutKanE8K2CJsQhqVjjAghj2WcKGu2Nuza9hXgJMUkHverO1ComxMPHukIdC2/kVbIxwaFTFAU0lkPcZAZL8/M/ENRUCCXThG23rIXJB7ksXPo7MS63YHSCK1zdhHkI375oHWDbDJBLDAZn+j5/CsZdOsurF7HRg7X+mwgk7WU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BzdITjEh; arc=none smtp.client-ip=209.85.217.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vs1-f45.google.com with SMTP id ada2fe7eead31-46b24280725so1159131137.0
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 04:49:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707050977; x=1707655777; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TQFJiOCeyvW9AxAcex5su40KCd58YjeLn27g5qNpIqg=;
+        b=BzdITjEhAqYk7DCubLnwp1+dKsypbpIHLAHu4+BQ3tQAbSJLsyoj31PJikGcjunBEZ
+         exFSoVifwJ/NLUtiFCX1fNk2U+VW9oW0MMM/GYOeCK2/nFYJBeG+2hIcCmCZIibmQYYq
+         ZMfmNBKaqH9IPoZQiHGoG0O8L0IWzZ2LS7k/i12/fXbDiZCKkhR+11XnvMKNRbiD5IHa
+         4S2V19A56OOgDQDHMACkTjuZ2bFtyfKLpBetbLijCgtSmo2ro5Bwz+PFsyBmACyRF/HJ
+         TxTLMQgoUMSpXkDVl/Hdjd+WpUzALiptwISvARMB56w+Gv+096e+8HNLuqX8J4BEYvg3
+         tOKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707050977; x=1707655777;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TQFJiOCeyvW9AxAcex5su40KCd58YjeLn27g5qNpIqg=;
+        b=vHB1dplAYzFE/An5KaiZ9h/Fvkk//q3SO1Vh6tLBjFwFVN9dOGbdFFxrLnWDFCrAVt
+         3jzk4IgDQpErUAEVHib3PuDaMiYCh2BYr4Iv0PuzjEVqm7sYm0d/iMA0b3F6sZFTSGsH
+         iJyMeHNUCIV/JR2xipHDhN8m7ooot8BrskW/ocmngXqOB2j6Uqtp/ICsec/Jb5lXGNd8
+         YRRPKd3R3w8zMJyzGGjjSO/T+fp/WcLvYtZAh77oG7VYcQMjZzOqmZT7ey8CGXQ+uVkB
+         w+g2liVv67lsxeo7YW67qpMU8FDWUBeleWJkl4P9m8G3JxNMSoZNMFE1WIVVzNaK/sk5
+         pw9A==
+X-Gm-Message-State: AOJu0YxU636E3GYmQ86d11/nmILZokhE30iVfK2TgBave7ZQ/mb+6k6L
+	0w/P/8qbeZ6R7WC4yZaJMLbhnWO0lR01sbDIe29WXgiP9Bq2XSc0KCr6iUVQe6OBBfDbX7sLI2I
+	OCosGjA05Qjw5oBMc8T45F5Th7QJhEQRHRb8Nzg==
+X-Google-Smtp-Source: AGHT+IE7K1f5hGsHb9o85lZC4k0opLUhxhUSdn9gGK7i6T9mDmjIQVk2iYv/bqC4EKvLPtWBe8CbMBp1HdjDZIdRlB0=
+X-Received: by 2002:a05:6102:1620:b0:46d:2b67:98a6 with SMTP id
+ cu32-20020a056102162000b0046d2b6798a6mr203160vsb.7.1707050976486; Sun, 04 Feb
+ 2024 04:49:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1706886397-16600-6-git-send-email-kotaranov@linux.microsoft.com>
+References: <20240203174813.681845076@linuxfoundation.org>
+In-Reply-To: <20240203174813.681845076@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Sun, 4 Feb 2024 18:19:25 +0530
+Message-ID: <CA+G9fYuTn0xFwbK0+5pFNQND6wx3ezZWJjLuyktCXKEOK24EPA@mail.gmail.com>
+Subject: Re: [PATCH 6.7 000/355] 6.7.4-rc2 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 02, 2024 at 07:06:37AM -0800, Konstantin Taranov wrote:
-> Implement add_gid and del_gid for RNIC.
-> We support ipv4 and ipv6 addresses.
-> 
-> Signed-off-by: Konstantin Taranov <kotaranov@linux.microsoft.com>
-> ---
->  drivers/infiniband/hw/mana/device.c  |  2 ++
->  drivers/infiniband/hw/mana/main.c    | 66 ++++++++++++++++++++++++++++++++++++
->  drivers/infiniband/hw/mana/mana_ib.h | 37 ++++++++++++++++++++
->  3 files changed, 105 insertions(+)
-> 
-> diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
-> index 2b362f5..9fb515b 100644
-> --- a/drivers/infiniband/hw/mana/device.c
-> +++ b/drivers/infiniband/hw/mana/device.c
-> @@ -15,6 +15,7 @@
->  	.driver_id = RDMA_DRIVER_MANA,
->  	.uverbs_abi_ver = MANA_IB_UVERBS_ABI_VERSION,
->  
-> +	.add_gid = mana_ib_gd_add_gid,
->  	.alloc_pd = mana_ib_alloc_pd,
->  	.alloc_ucontext = mana_ib_alloc_ucontext,
->  	.create_cq = mana_ib_create_cq,
-> @@ -23,6 +24,7 @@
->  	.create_wq = mana_ib_create_wq,
->  	.dealloc_pd = mana_ib_dealloc_pd,
->  	.dealloc_ucontext = mana_ib_dealloc_ucontext,
-> +	.del_gid = mana_ib_gd_del_gid,
->  	.dereg_mr = mana_ib_dereg_mr,
->  	.destroy_cq = mana_ib_destroy_cq,
->  	.destroy_qp = mana_ib_destroy_qp,
-> diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-> index 645abf3..282c024 100644
-> --- a/drivers/infiniband/hw/mana/main.c
-> +++ b/drivers/infiniband/hw/mana/main.c
-> @@ -675,3 +675,69 @@ void mana_ib_gd_destroy_rnic_adapter(struct mana_ib_dev *mdev)
->  	mdev->adapter_handle = INVALID_MANA_HANDLE;
->  	mana_ib_destroy_eqs(mdev);
->  }
-> +
-> +int mana_ib_gd_add_gid(const struct ib_gid_attr *attr, void **context)
-> +{
-> +	struct mana_ib_dev *mdev = container_of(attr->device, struct mana_ib_dev, ib_dev);
-> +	enum rdma_network_type ntype = rdma_gid_attr_network_type(attr);
-> +	struct mana_rnic_config_addr_resp resp = {};
-> +	struct gdma_context *gc = mdev_to_gc(mdev);
-> +	struct mana_rnic_config_addr_req req = {};
-> +	int err;
-> +
-> +	if (!rnic_is_enabled(mdev))
-> +		return -EINVAL;
+On Sat, 3 Feb 2024 at 23:23, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.7.4 release.
+> There are 355 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Mon, 05 Feb 2024 17:47:20 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.7.4-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.7.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Set .add_gid./del_gid callbacks only when RNIC is enabled.
-ib_set_device_ops() allows partial set of the callbacks.
 
-> +
-> +	if (ntype != RDMA_NETWORK_IPV4 && ntype != RDMA_NETWORK_IPV6) {
-> +		ibdev_dbg(&mdev->ib_dev, "Unsupported rdma network type %d", ntype);
-> +		return -EINVAL;
-> +	}
-> +
-> +	mana_gd_init_req_hdr(&req.hdr, MANA_IB_CONFIG_IP_ADDR, sizeof(req), sizeof(resp));
-> +	req.hdr.dev_id = gc->mana_ib.dev_id;
-> +	req.adapter = mdev->adapter_handle;
-> +	req.op = ADDR_OP_ADD;
-> +	req.sgid_type = (ntype == RDMA_NETWORK_IPV6) ? SGID_TYPE_IPV6 : SGID_TYPE_IPV4;
-> +	copy_in_reverse(req.ip_addr, attr->gid.raw, sizeof(union ib_gid));
-> +
-> +	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
-> +	if (err) {
-> +		ibdev_err(&mdev->ib_dev, "Failed to config IP addr err %d\n", err);
-> +		return err;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +int mana_ib_gd_del_gid(const struct ib_gid_attr *attr, void **context)
-> +{
-> +	struct mana_ib_dev *mdev = container_of(attr->device, struct mana_ib_dev, ib_dev);
-> +	enum rdma_network_type ntype = rdma_gid_attr_network_type(attr);
-> +	struct mana_rnic_config_addr_resp resp = {};
-> +	struct gdma_context *gc = mdev_to_gc(mdev);
-> +	struct mana_rnic_config_addr_req req = {};
-> +	int err;
-> +
-> +	if (!rnic_is_enabled(mdev))
-> +		return -EINVAL;
-> +
-> +	if (ntype != RDMA_NETWORK_IPV4 && ntype != RDMA_NETWORK_IPV6) {
-> +		ibdev_dbg(&mdev->ib_dev, "Unsupported rdma network type %d", ntype);
-> +		return -EINVAL;
-> +	}
-> +
-> +	mana_gd_init_req_hdr(&req.hdr, MANA_IB_CONFIG_IP_ADDR, sizeof(req), sizeof(resp));
-> +	req.hdr.dev_id = gc->mana_ib.dev_id;
-> +	req.adapter = mdev->adapter_handle;
-> +	req.op = ADDR_OP_REMOVE;
-> +	req.sgid_type = (ntype == RDMA_NETWORK_IPV6) ? SGID_TYPE_IPV6 : SGID_TYPE_IPV4;
-> +	copy_in_reverse(req.ip_addr, attr->gid.raw, sizeof(union ib_gid));
-> +
-> +	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
-> +	if (err) {
-> +		ibdev_err(&mdev->ib_dev, "Failed to config IP addr err %d\n", err);
-> +		return err;
-> +	}
-> +
-> +	return 0;
-> +}
-> diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-> index 196f3c8..2a3e3b0 100644
-> --- a/drivers/infiniband/hw/mana/mana_ib.h
-> +++ b/drivers/infiniband/hw/mana/mana_ib.h
-> @@ -118,6 +118,7 @@ enum mana_ib_command_code {
->  	MANA_IB_GET_ADAPTER_CAP = 0x30001,
->  	MANA_IB_CREATE_ADAPTER  = 0x30002,
->  	MANA_IB_DESTROY_ADAPTER = 0x30003,
-> +	MANA_IB_CONFIG_IP_ADDR	= 0x30004,
->  };
->  
->  struct mana_ib_query_adapter_caps_req {
-> @@ -167,6 +168,30 @@ struct mana_rnic_destroy_adapter_resp {
->  	struct gdma_resp_hdr hdr;
->  }; /* HW Data */
->  
-> +enum mana_ib_addr_op {
-> +	ADDR_OP_ADD = 1,
-> +	ADDR_OP_REMOVE,
-> +};
-> +
-> +enum sgid_entry_type {
-> +	SGID_TYPE_INVALID = 0,
-> +	SGID_TYPE_IPV4 = 1,
-> +	SGID_TYPE_IPV6 = 2,
-> +	SGID_TYPE_HYBRID = 3
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-This is not used, please remove it.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Thanks
+NOTE:
+----
+Following Powerpc defconfig clang nightly build errors noticed linux-6.7.y,
+linux-6.6.y, linux-6.1.y and Linux next-20240201 tag.
+
+  error: option '-msoft-float' cannot be specified with '-maltivec'
+  make[5]: *** [scripts/Makefile.build:243: arch/powerpc/lib/xor_vmx.o] Err=
+or 1
+
+We may have to wait for the following clang fix patch to get accepted
+into mainline
+ - https://lore.kernel.org/llvm/20240127-ppc-xor_vmx-drop-msoft-float-v1-1-=
+f24140e81376@kernel.org/
+
+## Build
+* kernel: 6.7.4-rc2
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-6.7.y
+* git commit: 10be46ba2b8a6653255c23ef52186db20723a01a
+* git describe: v6.7.3-356-g10be46ba2b8a
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.7.y/build/v6.7.3=
+-356-g10be46ba2b8a
+
+## Test Regressions (compared to v6.7.3)
+
+## Metric Regressions (compared to v6.7.3)
+
+## Test Fixes (compared to v6.7.3)
+
+## Metric Fixes (compared to v6.7.3)
+
+## Test result summary
+total: 149088, pass: 128906, fail: 2231, skip: 17791, xfail: 160
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 145 total, 143 passed, 2 failed
+* arm64: 51 total, 50 passed, 1 failed
+* i386: 41 total, 38 passed, 3 failed
+* mips: 26 total, 26 passed, 0 failed
+* parisc: 4 total, 4 passed, 0 failed
+* powerpc: 36 total, 34 passed, 2 failed
+* riscv: 18 total, 18 passed, 0 failed
+* s390: 13 total, 13 passed, 0 failed
+* sh: 10 total, 10 passed, 0 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 46 total, 45 passed, 1 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* network-basic-tests
+* perf
+* rcutorture
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
