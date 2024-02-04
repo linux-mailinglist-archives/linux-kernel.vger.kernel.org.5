@@ -1,199 +1,140 @@
-Return-Path: <linux-kernel+bounces-51695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B884848E58
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 15:19:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 699FF848E59
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 15:21:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF4EA1C20E5D
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 14:19:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24CD51C214EF
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 14:21:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C53F2260B;
-	Sun,  4 Feb 2024 14:18:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AFF1225CD;
+	Sun,  4 Feb 2024 14:21:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="czEZ28UZ"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="iP//cYTz"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EA92225AE;
-	Sun,  4 Feb 2024 14:18:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79DB7225A9
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 14:21:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707056336; cv=none; b=HE2TiRuPwhhSC/ISrEBbpSpWDxwwQGZk/ATeeLOaadAICLDoFRuAzq8+KdsN4eQPzC45oB4m8aK7eQh2XymQKMzQyGuJGx9fyMjL1QcrwSpCuxau6TB696y4emWQnV4lirtXfqbIrSTEeZXOy5uboCcKOq48YAq5h00gMXkc6oc=
+	t=1707056498; cv=none; b=GX9oEUyz+p1/cFvHmB3W3U4C860Xg2rlkEfwHJovLOTEgbidRol0sXoCaWRbSj/4D+SblyJIUgINKhsmUD0nveNRgx3aohk7J3yKZuS6qJH2nyMZfODf9HLVCWCo/Ur90h5IvjXQaxyhbjE679Bv8fUbWnXhF941b5gwxtfuiFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707056336; c=relaxed/simple;
-	bh=quF0sI4yyVsv4XVcnTDTvpd+pofVhyqDVTIKsul4VjU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I/YJbu716kUNG/yDVensxfjSIucXJnQXmVR4IGue/TmzcwecXwwBFLn9Qf29yAku1i31kI6nroQuOAyK5zfnvy+/hVKQqIt7Ckc8pVBrtnhcnTs7jSSApz3YBPF2xwlAH+RhxQIK0M68IjelVNrUDpZRluQk3r+LFQ3TJw9vpCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=czEZ28UZ; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=h/meM589cBbKRoq1Yh/j2VWjBxZZoI+3UVuISqojP0I=; b=czEZ28UZCVcwyVfK6IYz46L35k
-	oS8E6Vz8Ji1Vpyh5NGltpe245f77llZAn+oQy9b/Jizwz/ipsrnMhl/7sNilHLxnPSWMwmsytR4MO
-	MxUfbMhGTcqkh9D05VB0YsWC5lBprBPZEi4rkcqesMHn0VzvAtzc64Nhad2bK0jP8NqSN3D8gf0Zp
-	BdCu3xE676JJgPE7B0DwmqNJZFtOtREgTtm7YGkBLRLON+1xnuzQQ5DjuTGu4uxfvO6QBAeNJw8qh
-	Hcvc3QeGOUuQ2CekJmxPnY/IHRdOF6/RNPAMPNpBX0xMIDE/vke9ENAPrljLKA2KAtkgqwNnbe+HD
-	Jda3b1yg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54308)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rWdKM-00082q-1a;
-	Sun, 04 Feb 2024 14:18:34 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rWdKG-0001qF-5w; Sun, 04 Feb 2024 14:18:28 +0000
-Date: Sun, 4 Feb 2024 14:18:28 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
-	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
-	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next v3 4/7] net: dsa: mt7530: move XTAL check to
- mt7530_setup()
-Message-ID: <Zb+ctEe9TVA3zhv8@shell.armlinux.org.uk>
-References: <20240202-for-netnext-mt7530-improvements-2-v3-0-63d5adae99ca@arinc9.com>
- <20240202-for-netnext-mt7530-improvements-2-v3-4-63d5adae99ca@arinc9.com>
- <ZbzWpmZrukknMsYf@shell.armlinux.org.uk>
- <5b744f7f-2f63-4219-a0e9-8f08267b1fdd@arinc9.com>
- <Zb021ozEQSbU-gPd@makrotopia.org>
- <f6234b46-ce30-4b2a-9681-15633a06feff@arinc9.com>
+	s=arc-20240116; t=1707056498; c=relaxed/simple;
+	bh=iahNaCAw9x35B3s1XY/K+RpDIjbPDPVEVSA4vTRhVu8=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=sosv3BMvfPJjth7+9eAf2EwpmxVYytJCBLpx1fnNbE8eOZ8TeUkyOlVV3xvoC+pGrsOCEknmTZtgskjcNBWiMPWFUGH2zHYWlvWjMdE13yXh0NiM72ZwJRxWMvDDqm+3nDVr1NGy+6xb82aZ0/YoQDtMg/nkkjbGru5+7QMhSV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=fail (0-bit key) header.d=marliere.net header.i=@marliere.net header.b=iP//cYTz reason="key not found in DNS"; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d73066880eso31460285ad.3
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 06:21:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707056496; x=1707661296;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:dkim-signature:from:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=UyoXp/8QYdgxWLoRQB6OIS41/J+8oPM3qkFDqrn6KSQ=;
+        b=tKir2t8KW+VctO7RMod5TLNemhIQuXHrEB7HEnbY/gpcZPMRlAhipaZat4Z6n4s5W5
+         l6zXl4vPDKfNslGJbE+EjmDuX4OfC9Je89gCgTwaLGUgupaqzhlb7zcmr59BR4DWdgM+
+         T1KmjpnXI1tfgUUc6KfVYtBnt3rOYnQnfLTmU8U9fTJz/H1JcFxfgg/4XeTWEEL0azbu
+         kO3+b/kXUng9fllAJUlMzINXdFiO94j//WsF0aHMJxo5UPTLWW6VKLWYk2j0yrPwbudT
+         p2igavf/npmDwP00Pr9yK+OvTfWIFaRgsGajtvyKqGbKrr+dRezXxeOCTp1bfRWIWj+r
+         VIvA==
+X-Gm-Message-State: AOJu0YxVzwqBXLF8wtezVd8ITEhHxJtaX8BiDV+wDxHQO8lsORF5M2KX
+	FxNtdpb/zM2ahH/cfltOw5d2ersiaSFE1Qw+6ki6oifzPCVOCEfP
+X-Google-Smtp-Source: AGHT+IH0NjA6VU+9PQZ5WKP9L2fAgDWu6h5Yb7luZQCwoVBPRIfE3fYTikWLmB64G8Z2QFGaoCs2Wg==
+X-Received: by 2002:a17:902:c412:b0:1d8:f202:2e26 with SMTP id k18-20020a170902c41200b001d8f2022e26mr17817888plk.48.1707056495788;
+        Sun, 04 Feb 2024 06:21:35 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWIZR+/JPp+Rkl4I9agNPvayvxHEANuaQ0k/CTuOylfTj5besd8eLl9iwqRb2Po4rZNpgT6jcuxVyYEgmIxepk+0bHeTEDmGPsRcmyu8xnz8gsZcWcJE7zDFGf5mVSKvsEC3ZGWXeQanUiPpHx6jfl/BsnjJ5WR2JENa6dStvnfkxY7sU+uYZ73cVYjX58awIpKkEIhiK9gIUUX9YOnFGUIFvgWfnu6Acm6PX4CC8l4yEHxSodv2n+EebepuNe+b/4U
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id je5-20020a170903264500b001d8a80cbb15sm4569808plb.238.2024.02.04.06.21.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Feb 2024 06:21:35 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2023; t=1707056493;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=UyoXp/8QYdgxWLoRQB6OIS41/J+8oPM3qkFDqrn6KSQ=;
+	b=iP//cYTz2EBlm4D/IAmcu3Gb2J+ahsv8JdtKZ/rfCw+lxxatjUX2RAr/mpjnUa7CevcUlY
+	vgJQtVvheyzNt69dAKlkrL1HIsVVvf9clf04u+k55NeMBGkedWFZc6PyuOkvLQKzRH1w4N
+	gfYnKEiQ5S0YZikSRdIm64gNk+DU++2IBu+vt9kFomKYaluLSvzASS1PLT8rCu55CNntiw
+	Ryt4BmWMItgtrk2fjmUdQIPGawMFPwOz3wBCgHImYJ/slfIvZz031aVIGGC1hrMXs6wu/a
+	49eUiaIAGvHHWxI9pP/4kwOAqzPtUpwnDWRQzp7xoI1wzcejJojTGaZP9lm4wA==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Subject: [PATCH 0/4] powerpc: struct bus_type cleanup
+Date: Sun, 04 Feb 2024 11:21:54 -0300
+Message-Id: <20240204-bus_cleanup-powerpc-v1-0-c763f0e142e9@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f6234b46-ce30-4b2a-9681-15633a06feff@arinc9.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAIKdv2UC/x3MTQqAIBBA4avErBNsKIquEhE2jTUQJko/IN09a
+ fkt3ksQOQhH6IsEgS+JcriMqiyANuNWVrJkA2qsNepazWecaGfjTq/8cXPwpFrUhO3S2aohyKU
+ PbOX5r8P4vh/yveOqZQAAAA==
+To: Arnd Bergmann <arnd@arndb.de>, Michael Ellerman <mpe@ellerman.id.au>, 
+ Nicholas Piggin <npiggin@gmail.com>, 
+ Christophe Leroy <christophe.leroy@csgroup.eu>, 
+ Geoff Levand <geoff@infradead.org>
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1272; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=iahNaCAw9x35B3s1XY/K+RpDIjbPDPVEVSA4vTRhVu8=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlv52ILOpbsRHWiEOk3oWovwY2gvTTp4p2xo3mX
+ YJ1akfIwluJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZb+diAAKCRDJC4p8Y4ZY
+ plOhEACmO2ogmhmLilOE6SHmErWs/7G0IDnQjLIcD5osz6jC6KJHOtXnVZxVabtuB6tDpkhGAjH
+ eheA7iVVxFDv2NK4nR6zPxahrFHYO5AtSFFgQLexzpxg4P6hHIPhWVpsbsxMaYkkaIxrFIUYtgp
+ 40IuW50a7LjaBI1DdO8hlpBp5f8iVLJzp1JGenIu8xSUlMbFMHHzT/7g9UJTKvrj1sgEuKQ8A0q
+ q8Oi3eXEC2L6yjALkMnkFeexEJiLwN7rKZ6AqrnrLjNnW93DB+5v2J1xG5sfBtY46PPcXu9onFh
+ j0ArD46z78eQj4ki4K4v8PcisEtRPxkgrjsWJCMbUQyKa6ItrnSx8RUjfJweApBWg0Sh8NVBOZr
+ wmV+rroOw58ndS6pr5EZLLhflo8OtS4oLuZ4FiMpx1Hui41zT8oCVKXx9Ze/wYRvTIeLAo90TEX
+ 5aM00mwnQ09Lnfv+vHOHN7glfo4Az5yxQfN0CVj5wPXbe4JBvYTEYvhtfIM96LtgpF45T7zAJOQ
+ FZQOk/POgA0Rfajki8r5He7tzac5jqNoa4oHoFYOk8tJISa3QCCBtDjtx8fGw7QMaGHsDanvF8t
+ KIavvsBf6DQpds0/QbI33yf9n967xEBhpfk+/cOn+qKcDkmYrIhbIaY2qeCvi+8mwvPTwcQEpOT
+ 7uMsnof/Z4Q/Thg==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-On Sun, Feb 04, 2024 at 04:55:40PM +0300, Arınç ÜNAL wrote:
-> On 2.02.2024 21:39, Daniel Golle wrote:
-> > On Fri, Feb 02, 2024 at 09:16:02PM +0300, Arınç ÜNAL wrote:
-> > > On 2.02.2024 14:48, Russell King (Oracle) wrote:
-> > > > On Fri, Feb 02, 2024 at 12:19:10PM +0300, Arınç ÜNAL via B4 Relay wrote:
-> > > > > From: Arınç ÜNAL <arinc.unal@arinc9.com>
-> > > > > 
-> > > > > The crystal frequency concerns the switch core. The frequency should be
-> > > > > checked when the switch is being set up so the driver can reject the
-> > > > > unsupported hardware earlier and without requiring port 6 to be used.
-> > > > > 
-> > > > > Move it to mt7530_setup(). Drop the unnecessary function printing.
-> > > > > 
-> > > > > Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-> > > > > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> > > > > Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-> > > > 
-> > > > I would prefer this to be earlier in the series, before patch 2 which
-> > > > moves mt7530_setup_port6() to be called from mac_config(). mac_config()
-> > > > is supposed to be configuration error-free - in other words, all state
-> > > > should have been checked before hand.
-> > > 
-> > > I agree but mt7530_mac_config() is not a void function yet. The
-> > > mac_port_config member of the mt753x_info structure points to this
-> > > function. My next patch series gets rid of all useless error returns on the
-> > > phylink path and change mac_port_config to void. So I don't think working
-> > > on this patch series further will worth the effort. I'd rather have this
-> > > version applied as is.
-> > 
-> > I agree regarding not changing the patch itself, but I also agree
-> > with Russell regarding the patch ordering. I know it's a 10-minute
-> > git headache to rebase the patches on top of each other in a different
-> > order, but you can easily compare the end result being identical to
-> > what you had before and hence don't need to retest.
-> 
-> This is not about laziness. This is before patch 2:
-> 
-> phylink_mac_ops :: mac_config() -> dsa_port_phylink_mac_config()
-> -> dsa_switch_ops :: phylink_mac_config() -> mt753x_phylink_mac_config()
->    -> mt753x_mac_config()
->       -> mt753x_info :: mac_port_config() -> mt7530_mac_config()
->          -> mt7530_setup_port5()
->    -> mt753x_pad_setup()
->       -> mt753x_info :: pad_setup() -> mt7530_pad_clk_setup()
-> 
-> This is after:
-> 
-> phylink_mac_ops :: mac_config() -> dsa_port_phylink_mac_config()
-> -> dsa_switch_ops :: phylink_mac_config() -> mt753x_phylink_mac_config()
->    -> mt753x_mac_config()
->       -> mt753x_info :: mac_port_config() -> mt7530_mac_config()
->          -> mt7530_setup_port5()
->          -> mt7530_setup_port6()
-> 
-> Patch 2 does not move mt7530_setup_port6() to be called from
-> phylink_mac_ops :: mac_config(), it already is. There is no valid reason to
-> reorder the patches.
-> 
-> My response to Russell should've stated this instead of focusing on his
-> second sentence.
+This series is part of an effort to cleanup the users of the driver
+core, as can be seen in many recent patches authored by Greg across the
+tree (e.g. [1]). Specifically, this series is part of the task of
+splitting one of his TODOs [2].
 
-This patch moves the test for a 20MHz crystal to mt7530_setup(),
-which is something that is entirely orthogonal to patch 2, which
-can be done cleanly (I've just applied the patches in the original
-order and then reordered them:
+---
+[1]: https://lore.kernel.org/lkml/?q=f%3Agregkh%40linuxfoundation.org+s%3A%22make%22+and+s%3A%22const%22
+[2]: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/commit/?h=bus_cleanup&id=26105f537f0c60eacfeb430abd2e05d7ddcdd8aa
 
-98c481f5d706 net: dsa: mt7530: do not clear config->supported_interfaces
-93c6b53b17f4 net: dsa: mt7530: correct port capabilities of MT7988
-c9c6d4c51a1d net: dsa: mt7530: simplify mt7530_setup_port6() and change to void
-adfa948253e0 net: dsa: mt7530: remove pad_setup function pointer
-57e21e6c2fc0 net: dsa: mt7530: call port 6 setup from mt7530_mac_config()
-959a0f9323c8 net: dsa: mt7530: move XTAL check to mt7530_setup()
-856ab64a22ef net: dsa: mt7530: empty default case on mt7530_setup_port5()
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 
-No problems. The end result is identical comparing the git tree at the
-original "move XTAL" patch with adfa948253e0.
+---
+Ricardo B. Marliere (4):
+      powerpc: cell: make spu_subsys const
+      powerpc: ps3: make ps3_system_bus_type const
+      powerpc: pseries: make cmm_subsys const
+      powerpc: pseries: make suspend_subsys const
 
-Now, if we look at "net: dsa: mt7530: remove pad_setup function pointer"
-we can see that yes, the pad_setup() method was called from mac_confing,
-but this is the exact contents of that patch removing the callsite:
+ arch/powerpc/platforms/cell/spu_base.c   | 2 +-
+ arch/powerpc/platforms/ps3/system-bus.c  | 2 +-
+ arch/powerpc/platforms/pseries/cmm.c     | 2 +-
+ arch/powerpc/platforms/pseries/suspend.c | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+---
+base-commit: 44a1aad2fe6c10bfe0589d8047057b10a4c18a19
+change-id: 20240204-bus_cleanup-powerpc-720c27d8f15c
 
--               mt753x_pad_setup(ds, state);
-
-This returns an integer, which may be an error code, which is ignored.
-Therefore, if the XTAL frequency check fires, and mt753x_pad_setup()
-returns an error, it is ignored today.
-
-After "net: dsa: mt7530: call port 6 setup from mt7530_mac_config()"
-the renamed pad_setup() method is now called from mac_config() thusly:
-
-+               ret = mt7530_setup_port6(priv->ds, interface);
-+               if (ret)
-+                       return ret;
-
-So now the error checks cause mt7530_mac_config() to return an error
-which in turn causes mt753x_mac_config() to fail, and therefore
-mt753x_phylink_mac_config() has different behaviour.
-
-So, patch 2 changes the driver behaviour in the case of a 20MHz XTAL,
-which is then changed again by patch 4.
-
-It would be better to have only one change of behaviour by moving
-patch 4 before patch 2.
-
+Best regards,
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Ricardo B. Marliere <ricardo@marliere.net>
+
 
