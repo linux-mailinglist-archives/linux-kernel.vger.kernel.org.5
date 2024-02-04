@@ -1,99 +1,114 @@
-Return-Path: <linux-kernel+bounces-51658-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51659-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19752848DFE
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 14:09:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87243848E00
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 14:12:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27127B21F72
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:09:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD9C4283BD7
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:12:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C372E224E8;
-	Sun,  4 Feb 2024 13:09:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06DC224EA;
+	Sun,  4 Feb 2024 13:12:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hd49GKW0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VIaceN9s"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CA1E224D5;
-	Sun,  4 Feb 2024 13:09:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA1F0224CF;
+	Sun,  4 Feb 2024 13:12:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707052181; cv=none; b=SskZoAVcE1c+Ll2yk2VXgYQiX7cRrevAYzAepiHgQPfJrbQbbR5QSBxuWH57rZ3P1jPXrJwYEW6/RbUT4USNHrxLb0J+ZT9oyoYgKXQcMEMI4vVYEGnPHCyBBc8kBfYlHmLmLyVF1oEo3rX6zxwFfrbs3+zKt5H0d1rP2NxyAKg=
+	t=1707052366; cv=none; b=grW3OP+93LqH3VxzCOWC8+ah85EyXXHHWOmb3x+7Hf7wEp96mpcEJqahwghyRngEYwPvWBu6BaE88NB6Yz4VGxRqstvdDB4bChUWnx/hBxxeLLdzqAr84e3AmhDkQiWltLBnjF/VqCKPxCzPCJbSYba9nAaaw0h9Bp6sBSdXE38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707052181; c=relaxed/simple;
-	bh=m65aPL8WYBFsI6G3xB+7VUwH3k2y+3oo8t98SWh5vqA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mjdQThfUiquCXAqc3GkCKylyg80RmYpY9kz16z6AAoUSzZXq1ZCY1h5H27447j62TlKMkbE/GlQ/SWrb/1mHPQOh4DoE6ve37dGcTmMqA/+CojUqRbhRXPiTrIL+bGf8MJBVi5+JHe3ie1tqUHLW21KJ3sOpFWFoZOuUZO3bXV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hd49GKW0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE6A9C433C7;
-	Sun,  4 Feb 2024 13:09:40 +0000 (UTC)
+	s=arc-20240116; t=1707052366; c=relaxed/simple;
+	bh=nH3NzbqLBwHOgGrDWdI4FNLuMls7cfEBPoA/IJE2soY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OTt+mEtlFrSCqVJyZHb6RHcMZN8MMg06gWoVvVX34N5gekTPIIpexrgADxe3+/3jBPB5crIFEbesm4tLqhY7nNtv5+A8TJc4Z/6oz7bICT+MBYK5CiRvNkVDqyngCKHaLUuubh+wEy0f5nqK5HUxzFn9mVu+Zlf5n9iLQun/u68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VIaceN9s; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A993CC433C7;
+	Sun,  4 Feb 2024 13:12:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707052180;
-	bh=m65aPL8WYBFsI6G3xB+7VUwH3k2y+3oo8t98SWh5vqA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Hd49GKW0SF4TxcKLF2R0Znobet3PfPJG6a0ZlphJKmi8VdbptQNn9U3y3FK1V3HUX
-	 UogBfPBYYyF0wr1WAsGndxQOFyos5ionU+lbZZh97wYCY2ZOy/D9dmEddt6MZuWRYV
-	 8zBTB7WA+Pt6sE929eq3rehstCBoR/Fw7ZC1+D9txsaEtFv9qsr3m0ltExfVsZfLqk
-	 sc4yqnsOlWzfwMI5yA+xr5uY7E8ewmAjKlhOkExdXWJAcQtrb3G2KqIvo+HXz1Y35R
-	 QrNEm65HpmDcyPRe6oBiOXZvey6HlsX2W0oYNIfTr5r3yK5gdjDyBedrrU8FJEAGiA
-	 8U6mLjYqYilnQ==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=valley-girl.lan)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rWcFe-000B2k-9M;
-	Sun, 04 Feb 2024 13:09:38 +0000
-From: Marc Zyngier <maz@kernel.org>
-To: Masahiro Yamada <masahiroy@kernel.org>,
-	James Morse <james.morse@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	kvmarm@lists.linux.dev
-Cc: Will Deacon <will@kernel.org>,
+	s=k20201202; t=1707052365;
+	bh=nH3NzbqLBwHOgGrDWdI4FNLuMls7cfEBPoA/IJE2soY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=VIaceN9sj2XJBTxfjnVqZxm5olOLj0i7ar4eoSRTRAIuViaqWfQOLqrLWvfMQg8s1
+	 OEGpICA3DP8Ba/xWdNlk9E3/XCFmeRXTKz7i0FfGO05apbv7/sEl9LpGL0j5XtvV2T
+	 VUCQPHsrn59POjCDRhvbL29sRQa4O3Wnn0e6Vl7MpKqtJ+5cS5q+YGw/FMbnwqX+vk
+	 YWQEuvl2dz0rvIlmcv7kAohq2ekpg8Sgwddk+d6hJEYyBGFGEkZ72nLndtq/77LaDB
+	 42cnySgcEcPEnHoHar85Rq0AV8tMD2dLMoWcwm0er+8TFdigEss1EmULJNxvfZ8OEd
+	 8d1Kjb4zxUpew==
+From: Masahiro Yamada <masahiroy@kernel.org>
+To: "David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org
+Cc: Masahiro Yamada <masahiroy@kernel.org>,
+	Jon Maloy <jmaloy@redhat.com>,
+	Ying Xue <ying.xue@windriver.com>,
 	linux-kernel@vger.kernel.org,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] KVM: arm64: do not source virt/lib/Kconfig twice
-Date: Sun,  4 Feb 2024 13:09:35 +0000
-Message-Id: <170705216023.856444.15648014100978026603.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240204074305.31492-1-masahiroy@kernel.org>
-References: <20240204074305.31492-1-masahiroy@kernel.org>
+	tipc-discussion@lists.sourceforge.net
+Subject: [PATCH] net: tipc: remove redundant 'bool' from CONFIG_TIPC_{MEDIA_UDP,CRYPTO}
+Date: Sun,  4 Feb 2024 22:12:26 +0900
+Message-Id: <20240204131226.57865-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: masahiroy@kernel.org, james.morse@arm.com, yuzenghui@huawei.com, suzuki.poulose@arm.com, oliver.upton@linux.dev, kvmarm@lists.linux.dev, will@kernel.org, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Sun, 4 Feb 2024 16:43:05 +0900, Masahiro Yamada wrote:
-> For ARCH=arm64, virt/lib/Kconfig is sourced twice,
-> from arch/arm64/kvm/Kconfig and from drivers/vfio/Kconfig.
-> There is no good reason to parse virt/lib/Kconfig twice.
-> 
-> Commit 2412405b3141 ("KVM: arm/arm64: register irq bypass consumer
-> on ARM/ARM64") should not have added this 'source' directive.
+The 'bool' is already specified for these options.
 
-Applied to fixes, thanks!
+The second 'bool' under the help message is redundant.
 
-[1/1] KVM: arm64: do not source virt/lib/Kconfig twice
-      commit: 42dfa94d802a48c871e2017cbf86153270c86632
+While I am here, I moved 'default y' above, as it is common to place
+the help text last.
 
-Cheers,
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-	M.
+ net/tipc/Kconfig | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/net/tipc/Kconfig b/net/tipc/Kconfig
+index be1c4003d67d..bb0d71eb02a6 100644
+--- a/net/tipc/Kconfig
++++ b/net/tipc/Kconfig
+@@ -32,16 +32,17 @@ config TIPC_MEDIA_UDP
+ 	bool "IP/UDP media type support"
+ 	depends on TIPC
+ 	select NET_UDP_TUNNEL
++	default y
+ 	help
+ 	  Saying Y here will enable support for running TIPC over IP/UDP
+-	bool
+-	default y
++
+ config TIPC_CRYPTO
+ 	bool "TIPC encryption support"
+ 	depends on TIPC
+ 	select CRYPTO
+ 	select CRYPTO_AES
+ 	select CRYPTO_GCM
++	default y
+ 	help
+ 	  Saying Y here will enable support for TIPC encryption.
+ 	  All TIPC messages will be encrypted/decrypted by using the currently most
+@@ -49,8 +50,6 @@ config TIPC_CRYPTO
+ 	  entering the TIPC stack.
+ 	  Key setting from user-space is performed via netlink by a user program
+ 	  (e.g. the iproute2 'tipc' tool).
+-	bool
+-	default y
+ 
+ config TIPC_DIAG
+ 	tristate "TIPC: socket monitoring interface"
 -- 
-Without deviation from the norm, progress is not possible.
-
+2.40.1
 
 
