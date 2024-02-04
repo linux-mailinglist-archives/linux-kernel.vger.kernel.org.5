@@ -1,97 +1,164 @@
-Return-Path: <linux-kernel+bounces-51379-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51380-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9CC1848AA1
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 03:20:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33A8D848AA2
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 03:24:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 590B61F24894
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 02:20:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A0B9B21150
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 02:24:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D407617F7;
-	Sun,  4 Feb 2024 02:20:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28025138C;
+	Sun,  4 Feb 2024 02:24:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dEuAxbF7"
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NKPLco9j"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8AA6A92D;
-	Sun,  4 Feb 2024 02:20:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66F8810EB
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 02:24:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707013218; cv=none; b=ZK8Iju0PkMwA9qCV+0JMpllclJWoSTMGvKD5m8U4GpOie6hAavBUFsMJaChzjwrfkanWB4BUuQaazP9U5eNIYqNT+V4mZypkNnYDgbXNkBNRjfuZDepQRjuTwRGc8vslbMobffhH7+94kfxdm7riQVmKF1N9GRGeGvGek8SjKH8=
+	t=1707013473; cv=none; b=uiUElE/fT0AsWWoT0+1Jz9UF+KWHD605txZx4SAZE/bHlPNzFpgbZmPQwiBD+vNO0XZb9Ji026a0DBhko0+ql/B/YbS/TvLM3dyX4jcl4fxRTb8LTUVLeggIfk0sJpuf7HKVS6jK4l5SHutMPBn3Cn34KjKnqUkGLnLgGw5wTOU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707013218; c=relaxed/simple;
-	bh=RNZszhUT+/uT5RZG8XHRUQyhEcAG02BRiswwS8Rwglg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aIvFjrAzFLjOauLWRcCeCbt7w+itngStma4iYvP8iVXp1+YdutyWA4q6edTwmPRwlkfJnqeJZrGSMQFnsHVA5zQ+mRjFGi0K3aTuJBhSa8rnRvcx9kG0ziGiezybzdofrRw6J4LaHQ0bUa+cK87mDtDwsEvhlP0gtpvImrQCdn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dEuAxbF7; arc=none smtp.client-ip=209.85.161.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-59a58ef4a04so1766851eaf.2;
-        Sat, 03 Feb 2024 18:20:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707013216; x=1707618016; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RNZszhUT+/uT5RZG8XHRUQyhEcAG02BRiswwS8Rwglg=;
-        b=dEuAxbF7kI4RhR4+C+NuJ3Qm1xiv0hHE0ZpTH52mz55TuVkLIhVM4zvmem0yjiNJ6n
-         iYdwzRu6eAuqyzp4TY8kTuH1Xfc8P2HuVdHXNG6sDup6Ca+spcLhN8y+YEMHMt6tak3Y
-         jgSRW5RflmAMu2B44f6FpccfjYJxY4kIgT0D1Vy5ZT7zkyvTytrI1J4WKOOn1OBu60Fe
-         Qd9S+9Y8IAUyx7ku7bqVwEQYcr3Oxrf1sBCFqGQO9EYB9sWTeZcQTsxFVL+Dv5Dpn8Wu
-         LuPIhxQcu4FTk9O0U6+/NEYyC7E84z92zQpPaWJlbrg5zy/jZ2lA4ngsEVLGX3OfHQSR
-         uMLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707013216; x=1707618016;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RNZszhUT+/uT5RZG8XHRUQyhEcAG02BRiswwS8Rwglg=;
-        b=RYzJzp2+alI5jOqWL3P9uTpDJ2reph+qyQ1fUi7m0QZwWfdjYxpwsuviDzWE0A0Nfn
-         IynrL2wPTXwOo5n3UAqWvTyMs62vQQndgU3J3MgqC5RKWXb24MwCAtS2rbhmA0TYshSJ
-         +C/6cJlLKR3Eo3JWNNKzmJyh32IZYOrfQH5D+JjHnxQ+wR7likFkvBXhhOPu8y3DlB9N
-         OaWQpVIEymcuSpIHq5M3RyHe3LhFArQn5aMs+lBcCdzRT7VPG1Knzz/jFl8wlBWng+SN
-         1B3d9aO1P6ocfECvJuTCNmrLRRacKQNmIK4LiTPHadULPS4iTD0QCxzyQO5Jo4rMoD1f
-         4ZRA==
-X-Gm-Message-State: AOJu0YyWcZjef8ekzdYWhEH8eJ4lVMUDMNlZGMsT/UkQj/IvxwVVs5G3
-	8nlINqUq8eiHLqH5WJXs72slBOqQl6puRkIjo43iGLDCD369xkCx/fAUMnCKLxfIBZx8wARB08I
-	XwfSugQr7yZ+mvWDp/N49eIrb8lo=
-X-Google-Smtp-Source: AGHT+IE6uaJ4j4gXd0PdBc9PG5H9mjDej9XZyb/pAfNrHduzabrLT5oY7pCGhTfjHAPn8Fph8jQ1h05Sj4tEV2i8Lr8=
-X-Received: by 2002:a05:6358:71d:b0:178:a197:15e with SMTP id
- e29-20020a056358071d00b00178a197015emr6990879rwj.32.1707013215695; Sat, 03
- Feb 2024 18:20:15 -0800 (PST)
+	s=arc-20240116; t=1707013473; c=relaxed/simple;
+	bh=w/HWrR+lQGWzJxB85ky3dmWebYzJu5r/BKHq8uRrEXA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VGMzjCtbHXH7VG+X7aw9mntwOva+B4uoqdC2BQbODeN26CIuLbrC6ce4Bwm8ZCIb959nB4ltG5+g/3mkybjoC+DNrTqpWCwVQvdPagq3PWOeG4+wtMPCJRVv1awHU+eSKrxz1RFkbBO2w9RbE8vrgfA+GgSou1QoYp+G9nNlApw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NKPLco9j; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D7C8C433F1;
+	Sun,  4 Feb 2024 02:24:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707013472;
+	bh=w/HWrR+lQGWzJxB85ky3dmWebYzJu5r/BKHq8uRrEXA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=NKPLco9jJb9cP8o5a92KUMkiFYpFazPUfaqQtGVqbgSUT5dpcwoHB9O9A4o8amDD6
+	 8EIGv4wlDzvIGfhZmOKwkugzpabWmi8dM7Fh7YxMgRGGKl15pyosbeGIWnUGI/wfLm
+	 0I6icbSDsIakO/bqVci64zacXyRV1BqKzJk2G4e4zql1H8uX3Ez/0OQZorJL7IDD/F
+	 XCtd61ilA29P4RymD8j0fOcK9J3JpAZ3AalFl0IjqXFtFcnPgQHg0PBHC3jTgO/TB4
+	 uuICc1ns/4M7uGEnhpIh4u1LYu42zCu73oyfXjDCs91IOc6HghP07+UQIeoBSNNDtC
+	 RRbrrv/V57jng==
+Message-ID: <e42ae14e-88b8-41de-9693-1513bf335fc2@kernel.org>
+Date: Sun, 4 Feb 2024 10:24:28 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130091300.2968534-1-tj@kernel.org> <20240130091300.2968534-4-tj@kernel.org>
- <ZbxCHZzA6Uiw2Eq_@slm.duckdns.org>
-In-Reply-To: <ZbxCHZzA6Uiw2Eq_@slm.duckdns.org>
-From: Lai Jiangshan <jiangshanlai@gmail.com>
-Date: Sun, 4 Feb 2024 10:20:04 +0800
-Message-ID: <CAJhGHyBUGmarSSuGpiBOWvVZ4RW5f7_rb2uJZ7_gZCGBp+rpDg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/8] workqueue: Implement BH workqueues to eventually
- replace tasklets
-To: Tejun Heo <tj@kernel.org>
-Cc: torvalds@linux-foundation.org, mpatocka@redhat.com, 
-	linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev, msnitzer@redhat.com, 
-	ignat@cloudflare.com, damien.lemoal@wdc.com, bob.liu@oracle.com, 
-	houtao1@huawei.com, peterz@infradead.org, mingo@kernel.org, 
-	netdev@vger.kernel.org, allen.lkml@gmail.com, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] f2fs: fix zoned block device information
+ initialization
+Content-Language: en-US
+To: Wenjie Qi <qwjhust@gmail.com>
+Cc: jaegeuk@kernel.org, yangyongpeng1@oppo.com,
+ linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+ hustqwj@hust.edu.cn
+References: <20240203152436.1352-1-qwjhust@gmail.com>
+ <8eaf59a4-1aaa-460e-a3cc-b798ed5e0f63@kernel.org>
+ <CAGFpFsTz_9Zaj0PuptjBxOJwxF68geAUfd1qtx9--Tczh+jZww@mail.gmail.com>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <CAGFpFsTz_9Zaj0PuptjBxOJwxF68geAUfd1qtx9--Tczh+jZww@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 2, 2024 at 9:15=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
+On 2024/2/4 10:18, Wenjie Qi wrote:
+> Hi Chao,
+> 
+> It seems to me that when mounting multiple zoned devices,
+> if their max_open_zones are all 0, then sbi->max_open_zones is 0.
+> This suggests that all of the mounted devices can open an unlimited
+> number of zones,
+> and that we don't need to compare sbi->max_open_zones with
+> F2FS_OPTION( sbi).active_logs.
 
-Hello, Tejun
+Yes, but I'm curious about how this case (sbi->max_open_zones is zero)
+works w/ following patch, do we need to initialized sbi->max_open_zones
+w/ UINT_MAX to indicate the unlimited open zone status of device if
+all zoned devices' max_open_zones is zero?
 
-Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
-
-Thanks
-Lai
+> 
+> Thanks,
+> 
+> Chao Yu <chao@kernel.org> 于2024年2月4日周日 09:47写道：
+>>
+>> On 2024/2/3 23:24, Wenjie Qi wrote:
+>>> If the max open zones of zoned devices are less than
+>>> the active logs of F2FS, the device may error due to
+>>> insufficient zone resources when multiple active logs are
+>>> being written at the same time. If this value is 0,
+>>> there is no limit.
+>>>
+>>> Signed-off-by: Wenjie Qi <qwjhust@gmail.com>
+>>> ---
+>>>    fs/f2fs/f2fs.h  |  1 +
+>>>    fs/f2fs/super.c | 21 +++++++++++++++++++++
+>>>    2 files changed, 22 insertions(+)
+>>>
+>>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>>> index 543898482f8b..161107f2d3bd 100644
+>>> --- a/fs/f2fs/f2fs.h
+>>> +++ b/fs/f2fs/f2fs.h
+>>> @@ -1558,6 +1558,7 @@ struct f2fs_sb_info {
+>>>
+>>>    #ifdef CONFIG_BLK_DEV_ZONED
+>>>        unsigned int blocks_per_blkz;           /* F2FS blocks per zone */
+>>> +     unsigned int max_open_zones;            /* max open zone resources of the zoned device */
+>>>    #endif
+>>>
+>>>        /* for node-related operations */
+>>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+>>> index 1b718bebfaa1..45e82d6016fc 100644
+>>> --- a/fs/f2fs/super.c
+>>> +++ b/fs/f2fs/super.c
+>>> @@ -2388,6 +2388,16 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+>>>        if (err)
+>>>                goto restore_opts;
+>>>
+>>> +#ifdef CONFIG_BLK_DEV_ZONED
+>>> +     if (sbi->max_open_zones && sbi->max_open_zones < F2FS_OPTION(sbi).active_logs) {
+>>> +             f2fs_err(sbi,
+>>> +                     "zoned: max open zones %u is too small, need at least %u open zones",
+>>> +                              sbi->max_open_zones, F2FS_OPTION(sbi).active_logs);
+>>> +             err = -EINVAL;
+>>> +             goto restore_opts;
+>>> +     }
+>>> +#endif
+>>> +
+>>>        /* flush outstanding errors before changing fs state */
+>>>        flush_work(&sbi->s_error_work);
+>>>
+>>> @@ -3930,11 +3940,22 @@ static int init_blkz_info(struct f2fs_sb_info *sbi, int devi)
+>>>        sector_t nr_sectors = bdev_nr_sectors(bdev);
+>>>        struct f2fs_report_zones_args rep_zone_arg;
+>>>        u64 zone_sectors;
+>>> +     unsigned int max_open_zones;
+>>>        int ret;
+>>>
+>>>        if (!f2fs_sb_has_blkzoned(sbi))
+>>>                return 0;
+>>>
+>>> +     max_open_zones = bdev_max_open_zones(bdev);
+>>
+>> Wenjie,
+>>
+>> max_open_zones can always be zero? then sbi->max_open_zones will be zero,
+>> is this a valid case?
+>>
+>> Thanks,
+>>
+>>> +     if (max_open_zones && (max_open_zones < sbi->max_open_zones || !sbi->max_open_zones))
+>>> +             sbi->max_open_zones = max_open_zones;
+>>> +     if (sbi->max_open_zones && sbi->max_open_zones < F2FS_OPTION(sbi).active_logs) {
+>>> +             f2fs_err(sbi,
+>>> +                     "zoned: max open zones %u is too small, need at least %u open zones",
+>>> +                              sbi->max_open_zones, F2FS_OPTION(sbi).active_logs);
+>>> +             return -EINVAL;
+>>> +     }
+>>> +
+>>>        zone_sectors = bdev_zone_sectors(bdev);
+>>>        if (!is_power_of_2(zone_sectors)) {
+>>>                f2fs_err(sbi, "F2FS does not support non power of 2 zone sizes\n");
 
