@@ -1,40 +1,40 @@
-Return-Path: <linux-kernel+bounces-51344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48615848A06
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 02:20:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B42EB848A0C
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 02:20:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57BE01C229AA
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 01:20:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7162E285A62
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 01:20:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5010E1078B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F21111706;
 	Sun,  4 Feb 2024 01:18:08 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E81E7522E;
-	Sun,  4 Feb 2024 01:18:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DD226FB5;
+	Sun,  4 Feb 2024 01:18:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707009486; cv=none; b=jW+0ClRf9WhnuiiCTOICm8PqE5r+niv+dKq8ViHqY3hK0r9rYZAsVW0TAKjGIXakrw+4z3Oii31D1SMyBRfDsJYYLJeMbpmtRhK4xDwaIzc3wI0HgwOKYnvM2JSmE3Hc9eGdUAq7OKgOggI3KBVdEpQloT1be81ejlGV7xPuN2Y=
+	t=1707009486; cv=none; b=FMCWZgOz79ZTiH5/hmTapw4Dcyup0xI6XNNxiPlCqq355Dt2c3OkZh+JcAq+KFs1LnyQEKIfwBNcU+/wbRd34yde2bxkriGF4Tk8N2ar7mQPIyTuxf16FfeG8aM4AXZ4T7PLMdx05jV96trUhqV/qvURjeGuzPxGCdnS7yvJ8iE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707009486; c=relaxed/simple;
-	bh=kdVBorZqhrlAzJnHue7J/bMpS46boW/Qgz6CQs5DZdw=;
+	bh=GD76TU70lFmz5imut84Og/YwBOUVo8vHQeAC83rp8IM=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=iMi8ATxgXBkw+R3knOrQoPa761K4FgyqB96l0vmsj7mPalyB9lyn4Y00Rp8hFYbJ7OBD7cQYneYkTbyEZ7mpxtrZ0DmIsO9z7vMQWlTS8Yzs1wWPCf0lp7rQ+/M/zdcKQmtbRt1gOEu54J4RV37uSAW7lNcflS378z36uKOsLK0=
+	 Content-Type; b=WBOoVIfQwaDjVCpet7mz0fKNmYG9ZLleHveUw6zTnrH6Vv8QTNwrWud97dFtPdGgf8oHkRFenaM1s48zSJV4r7Xl1JZ+v+GRGY/Ue1ptwELBD6ny+dqeD6a82cYRzsl/1kNl6kDAVL78oQphoukvBxoy3bHaHrdSZiaEfAWimmA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE30EC3278E;
-	Sun,  4 Feb 2024 01:18:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03F68C433B1;
+	Sun,  4 Feb 2024 01:18:06 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1rWR9Q-00000006Oor-23iK;
+	id 1rWR9Q-00000006OpL-2kK1;
 	Sat, 03 Feb 2024 20:18:28 -0500
-Message-ID: <20240204011828.349167176@goodmis.org>
+Message-ID: <20240204011828.512011833@goodmis.org>
 User-Agent: quilt/0.67
-Date: Sat, 03 Feb 2024 20:16:24 -0500
+Date: Sat, 03 Feb 2024 20:16:25 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  stable@vger.kernel.org
@@ -45,11 +45,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
  Mark Rutland <mark.rutland@arm.com>,
  Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
  Andrew Morton <akpm@linux-foundation.org>,
- Christian Brauner <brauner@kernel.org>,
- Al  Viro <viro@ZenIV.linux.org.uk>,
- Ajay Kaher <ajay.kaher@broadcom.com>,
- kernel test robot <oliver.sang@intel.com>
-Subject: [v6.7][PATCH 09/23] eventfs: Do not create dentries nor inodes in iterate_shared
+ Erick Archer <erick.archer@gmx.com>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [v6.7][PATCH 10/23] eventfs: Use kcalloc() instead of kzalloc()
 References: <20240204011615.703023949@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -59,141 +57,65 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+From: Erick Archer <erick.archer@gmx.com>
 
-The original eventfs code added a wrapper around the dcache_readdir open
-callback and created all the dentries and inodes at open, and increment
-their ref count. A wrapper was added around the dcache_readdir release
-function to decrement all the ref counts of those created inodes and
-dentries. But this proved to be buggy[1] for when a kprobe was created
-during a dir read, it would create a dentry between the open and the
-release, and because the release would decrement all ref counts of all
-files and directories, that would include the kprobe directory that was
-not there to have its ref count incremented in open. This would cause the
-ref count to go to negative and later crash the kernel.
+As noted in the "Deprecated Interfaces, Language Features, Attributes,
+and Conventions" documentation [1], size calculations (especially
+multiplication) should not be performed in memory allocator (or similar)
+function arguments due to the risk of them overflowing. This could lead
+to values wrapping around and a smaller allocation being made than the
+caller was expecting. Using those allocations could lead to linear
+overflows of heap memory and other misbehaviors.
 
-To solve this, the dentries and inodes that were created and had their ref
-count upped in open needed to be saved. That list needed to be passed from
-the open to the release, so that the release would only decrement the ref
-counts of the entries that were incremented in the open.
+So, use the purpose specific kcalloc() function instead of the argument
+size * count in the kzalloc() function.
 
-Unfortunately, the dcache_readdir logic was already using the
-file->private_data, which is the only field that can be used to pass
-information from the open to the release. What was done was the eventfs
-created another descriptor that had a void pointer to save the
-dcache_readdir pointer, and it wrapped all the callbacks, so that it could
-save the list of entries that had their ref counts incremented in the
-open, and pass it to the release. The wrapped callbacks would just put
-back the dcache_readdir pointer and call the functions it used so it could
-still use its data[2].
+[1] https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
 
-But Linus had an issue with the "hijacking" of the file->private_data
-(unfortunately this discussion was on a security list, so no public link).
-Which we finally agreed on doing everything within the iterate_shared
-callback and leave the dcache_readdir out of it[3]. All the information
-needed for the getents() could be created then.
-
-But this ended up being buggy too[4]. The iterate_shared callback was not
-the right place to create the dentries and inodes. Even Christian Brauner
-had issues with that[5].
-
-An attempt was to go back to creating the inodes and dentries at
-the open, create an array to store the information in the
-file->private_data, and pass that information to the other callbacks.[6]
-
-The difference between that and the original method, is that it does not
-use dcache_readdir. It also does not up the ref counts of the dentries and
-pass them. Instead, it creates an array of a structure that saves the
-dentry's name and inode number. That information is used in the
-iterate_shared callback, and the array is freed in the dir release. The
-dentries and inodes created in the open are not used for the iterate_share
-or release callbacks. Just their names and inode numbers.
-
-Linus did not like that either[7] and just wanted to remove the dentries
-being created in iterate_shared and use the hard coded inode numbers.
-
-[ All this while Linus enjoyed an unexpected vacation during the merge
-  window due to lack of power. ]
-
-[1] https://lore.kernel.org/linux-trace-kernel/20230919211804.230edf1e@gandalf.local.home/
-[2] https://lore.kernel.org/linux-trace-kernel/20230922163446.1431d4fa@gandalf.local.home/
-[3] https://lore.kernel.org/linux-trace-kernel/20240104015435.682218477@goodmis.org/
-[4] https://lore.kernel.org/all/202401152142.bfc28861-oliver.sang@intel.com/
-[5] https://lore.kernel.org/all/20240111-unzahl-gefegt-433acb8a841d@brauner/
-[6] https://lore.kernel.org/all/20240116114711.7e8637be@gandalf.local.home/
-[7] https://lore.kernel.org/all/20240116170154.5bf0a250@gandalf.local.home/
-
-Link: https://lore.kernel.org/linux-trace-kernel/20240116211353.573784051@goodmis.org
+Link: https://lore.kernel.org/linux-trace-kernel/20240115181658.4562-1-erick.archer@gmx.com
 
 Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Al  Viro <viro@ZenIV.linux.org.uk>
-Cc: Ajay Kaher <ajay.kaher@broadcom.com>
-Fixes: 493ec81a8fb8 ("eventfs: Stop using dcache_readdir() for getdents()")
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202401152142.bfc28861-oliver.sang@intel.com
+Cc: Mark Rutland <mark.rutland@arm.com>
+Link: https://github.com/KSPP/linux/issues/162
+Signed-off-by: Erick Archer <erick.archer@gmx.com>
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- fs/tracefs/event_inode.c | 20 +++++---------------
- 1 file changed, 5 insertions(+), 15 deletions(-)
+ fs/tracefs/event_inode.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index 5edf0b96758b..10580d6b5012 100644
+index 10580d6b5012..6795fda2af19 100644
 --- a/fs/tracefs/event_inode.c
 +++ b/fs/tracefs/event_inode.c
-@@ -727,8 +727,6 @@ static int eventfs_iterate(struct file *file, struct dir_context *ctx)
- 	struct eventfs_inode *ei_child;
- 	struct tracefs_inode *ti;
- 	struct eventfs_inode *ei;
--	struct dentry *ei_dentry = NULL;
--	struct dentry *dentry;
- 	const char *name;
- 	umode_t mode;
- 	int idx;
-@@ -749,11 +747,11 @@ static int eventfs_iterate(struct file *file, struct dir_context *ctx)
+@@ -97,7 +97,7 @@ static int eventfs_set_attr(struct mnt_idmap *idmap, struct dentry *dentry,
+ 	/* Preallocate the children mode array if necessary */
+ 	if (!(dentry->d_inode->i_mode & S_IFDIR)) {
+ 		if (!ei->entry_attrs) {
+-			ei->entry_attrs = kzalloc(sizeof(*ei->entry_attrs) * ei->nr_entries,
++			ei->entry_attrs = kcalloc(ei->nr_entries, sizeof(*ei->entry_attrs),
+ 						  GFP_NOFS);
+ 			if (!ei->entry_attrs) {
+ 				ret = -ENOMEM;
+@@ -874,7 +874,7 @@ struct eventfs_inode *eventfs_create_dir(const char *name, struct eventfs_inode
+ 	}
  
- 	mutex_lock(&eventfs_mutex);
- 	ei = READ_ONCE(ti->private);
--	if (ei && !ei->is_freed)
--		ei_dentry = READ_ONCE(ei->dentry);
-+	if (ei && ei->is_freed)
-+		ei = NULL;
- 	mutex_unlock(&eventfs_mutex);
+ 	if (size) {
+-		ei->d_children = kzalloc(sizeof(*ei->d_children) * size, GFP_KERNEL);
++		ei->d_children = kcalloc(size, sizeof(*ei->d_children), GFP_KERNEL);
+ 		if (!ei->d_children) {
+ 			kfree_const(ei->name);
+ 			kfree(ei);
+@@ -941,7 +941,7 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
+ 		goto fail;
  
--	if (!ei || !ei_dentry)
-+	if (!ei)
- 		goto out;
- 
- 	/*
-@@ -780,11 +778,7 @@ static int eventfs_iterate(struct file *file, struct dir_context *ctx)
- 		if (r <= 0)
- 			continue;
- 
--		dentry = create_file_dentry(ei, i, ei_dentry, name, mode, cdata, fops);
--		if (!dentry)
--			goto out;
--		ino = dentry->d_inode->i_ino;
--		dput(dentry);
-+		ino = EVENTFS_FILE_INODE_INO;
- 
- 		if (!dir_emit(ctx, name, strlen(name), ino, DT_REG))
- 			goto out;
-@@ -808,11 +802,7 @@ static int eventfs_iterate(struct file *file, struct dir_context *ctx)
- 
- 		name = ei_child->name;
- 
--		dentry = create_dir_dentry(ei, ei_child, ei_dentry);
--		if (!dentry)
--			goto out_dec;
--		ino = dentry->d_inode->i_ino;
--		dput(dentry);
-+		ino = EVENTFS_DIR_INODE_INO;
- 
- 		if (!dir_emit(ctx, name, strlen(name), ino, DT_DIR))
- 			goto out_dec;
+ 	if (size) {
+-		ei->d_children = kzalloc(sizeof(*ei->d_children) * size, GFP_KERNEL);
++		ei->d_children = kcalloc(size, sizeof(*ei->d_children), GFP_KERNEL);
+ 		if (!ei->d_children)
+ 			goto fail;
+ 	}
 -- 
 2.43.0
 
