@@ -1,192 +1,195 @@
-Return-Path: <linux-kernel+bounces-51635-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51636-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D54A848D93
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:27:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3996A848D98
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:30:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC4831F21A25
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:27:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA76A2833CF
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:30:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E277122331;
-	Sun,  4 Feb 2024 12:27:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E332224D6;
+	Sun,  4 Feb 2024 12:30:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="if2a57vL";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="L1DPQy3X";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="if2a57vL";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="L1DPQy3X"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DyYjJ83u"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58FE22232E;
-	Sun,  4 Feb 2024 12:27:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46D671642F;
+	Sun,  4 Feb 2024 12:30:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707049664; cv=none; b=WzroVoPEkIgq75BToKlli/AqeoNTHWthXB/elm2JIbVhDhyZZhdCmJs07tRArx5+3fZlUmFmohpofVXaZqI2bmxMnwJXyWDBUX9jJlxSdwzjtFrCcfaK7FHwfqa4m80+IvecbK037c/1j7dXMsBYQfaddsmJ0TTe1y4bdVe2Dyo=
+	t=1707049818; cv=none; b=CkdDgC1j0turIh2Sw7Ce1YnyK65ReSobWawtOVPm7lPi9Gk1k0YRCuL20QbGjl9SbXLFbpfWcfl3TtHNEbN7jk88uHXddRtMBwy/gl8D7t0al4cpwQnupdSQNzANuZNX/7/wN8HuoavN9/Yigc4Vbj6k5x4qLvFrB6TMmRvzgAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707049664; c=relaxed/simple;
-	bh=sk8cuBAyWQHenmPv7AkWtabIhbrkDRqObzdPUm9ZGKk=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FKWu2CtzhKS+YsSzJ6uGxNyxOcbLjWLv9G8sLTIDbYtJ3M5eXF2lg7TLzqTbauMKQ1tJGFyObsYFxzfEWF3hta8xAk8YxNPovamloG3q29dc5o+f3pOvst8fwSGtg5y/ZFi/cIE2S2N8Jsfm0oZvcDdHTPU2uKIay/NcgjsI7uE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=if2a57vL; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=L1DPQy3X; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=if2a57vL; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=L1DPQy3X; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id AD98A21F92;
-	Sun,  4 Feb 2024 12:27:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707049660; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QhkhJIt8openUCHgF2QKZ7kta7GJxD0PzmAypQY7rM4=;
-	b=if2a57vLMPSPXf0ySWFNJA9Iys68L1X3AN4r7HeZuzOssObRRM+FRmn4fugj7POOR/j/HJ
-	mWAPFClTe0V2I56jvno5hxnhTCFpTn5MAd/H1XGhRbfGWdR39sZDCUoZRnlBh4VYiXRvss
-	KSCEtz9auKPbzKMeOBYiC6hfUDkivjs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707049660;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QhkhJIt8openUCHgF2QKZ7kta7GJxD0PzmAypQY7rM4=;
-	b=L1DPQy3XrDncH6UUCSSpFgo453k5TmFnBAmT0/L864A5QOtuYiH2WyX0JZN3dVLhIBg/Vt
-	QevhYh1D3Dy2GsDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707049660; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QhkhJIt8openUCHgF2QKZ7kta7GJxD0PzmAypQY7rM4=;
-	b=if2a57vLMPSPXf0ySWFNJA9Iys68L1X3AN4r7HeZuzOssObRRM+FRmn4fugj7POOR/j/HJ
-	mWAPFClTe0V2I56jvno5hxnhTCFpTn5MAd/H1XGhRbfGWdR39sZDCUoZRnlBh4VYiXRvss
-	KSCEtz9auKPbzKMeOBYiC6hfUDkivjs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707049660;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QhkhJIt8openUCHgF2QKZ7kta7GJxD0PzmAypQY7rM4=;
-	b=L1DPQy3XrDncH6UUCSSpFgo453k5TmFnBAmT0/L864A5QOtuYiH2WyX0JZN3dVLhIBg/Vt
-	QevhYh1D3Dy2GsDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7F987132DD;
-	Sun,  4 Feb 2024 12:27:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 6VrRHbyCv2WyJgAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Sun, 04 Feb 2024 12:27:40 +0000
-Date: Sun, 04 Feb 2024 13:27:40 +0100
-Message-ID: <874jeobeir.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: bo liu <bo.liu@senarytech.com>
-Cc: perex@perex.cz,
-	tiwai@suse.com,
-	linux-sound@vger.kernel.org,
+	s=arc-20240116; t=1707049818; c=relaxed/simple;
+	bh=Pb7/TOXMPhP8wCM0xEbRDHLAVDHixu4nEALYru47Eb4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZSnGurIHUhs8zYSVDTm5B1X4ai2T9QIlnjtB+4dGP2iI3gtjjignc0RTYMjH5+NQxCrEhyt1aZnmQIDQi/DCN8ihUQBbpK66+AJwCJ9LPYP/p9Q1vcEtIEpOr1wZJiXP5hNRkzHWU6nfNNVYQeQjVWgOlIrY7Awl80enbawJZvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DyYjJ83u; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48FD2C433C7;
+	Sun,  4 Feb 2024 12:30:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707049817;
+	bh=Pb7/TOXMPhP8wCM0xEbRDHLAVDHixu4nEALYru47Eb4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DyYjJ83ucjaAIB4MujZ+CsY1YG4tLrqtarlfLC0XIc5b9zfIU97s+zkDJCFo/9jQ3
+	 cl4iTEmY7c2bIvC9k7xq3UNiY+KUkaJDZ/wwopNsPghhQ3f2dICJHWgztCaiNcTLZD
+	 ZJGZ5+E0Yng4crbUT+aRYjxo/nYJ1vgxF1xYv3eLmi/ktsM4PUnGdhgaFav85voZ2o
+	 CgxA9jEQmhMbzHIbLdwWffEs0jhdUlrtgMGlB452FzKSKpnOOXPbaqGO/zF0E/A3Op
+	 jh5zFD3fSifFSgpg2MZM8+Iu6ZGCrq/mwcz5W0GvX1p3O9nkVrQGoh/7G2OKC/x7si
+	 E1I2IfLTFAHXA==
+Date: Sun, 4 Feb 2024 14:30:13 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Konstantin Taranov <kotaranov@linux.microsoft.com>
+Cc: kotaranov@microsoft.com, sharmaajay@microsoft.com, longli@microsoft.com,
+	jgg@ziepe.ca, linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ALSA: hda/conexant: Add quirk for SWS JS201D
-In-Reply-To: <20240204045344.48397-1-bo.liu@senarytech.com>
-References: <20240204045344.48397-1-bo.liu@senarytech.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+Subject: Re: [PATCH rdma-next v2 2/5] RDMA/mana_ib: Create and destroy rnic
+ adapter
+Message-ID: <20240204123013.GE5400@unreal>
+References: <1706886397-16600-1-git-send-email-kotaranov@linux.microsoft.com>
+ <1706886397-16600-3-git-send-email-kotaranov@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-0.24 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.14)[88.57%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -0.24
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1706886397-16600-3-git-send-email-kotaranov@linux.microsoft.com>
 
-On Sun, 04 Feb 2024 05:53:44 +0100,
-bo liu wrote:
+On Fri, Feb 02, 2024 at 07:06:34AM -0800, Konstantin Taranov wrote:
+> This patch adds RNIC creation and destruction.
+> If creation of RNIC fails, we support only RAW QPs as they are served by
+> ethernet driver.
+
+So please make sure that you are creating RNIC only when you are
+supporting it. The idea that some function tries-and-fails with dmesg
+errors is not good idea.
+
+Thanks
+
 > 
-> The SWS JS201D need a different pinconfig from windows driver.
-> Add a quirk to use a specific pinconfig to SWS JS201D.
-> 
-> Signed-off-by: bo liu <bo.liu@senarytech.com>
+> Signed-off-by: Konstantin Taranov <kotaranov@linux.microsoft.com>
 > ---
->  sound/pci/hda/patch_conexant.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
+>  drivers/infiniband/hw/mana/main.c    | 31 +++++++++++++++++++++++++++++++
+>  drivers/infiniband/hw/mana/mana_ib.h | 29 +++++++++++++++++++++++++++++
+>  2 files changed, 60 insertions(+)
 > 
-> diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-> index e8819e8a9876..a0bb4d91502b 100644
-> --- a/sound/pci/hda/patch_conexant.c
-> +++ b/sound/pci/hda/patch_conexant.c
-> @@ -344,6 +344,7 @@ enum {
->  	CXT_FIXUP_HP_ZBOOK_MUTE_LED,
->  	CXT_FIXUP_HEADSET_MIC,
->  	CXT_FIXUP_HP_MIC_NO_PRESENCE,
-> +	CXT_PINCFG_SWS_JS201D,
->  };
+> diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
+> index c64d569..33cd69e 100644
+> --- a/drivers/infiniband/hw/mana/main.c
+> +++ b/drivers/infiniband/hw/mana/main.c
+> @@ -581,14 +581,31 @@ static void mana_ib_destroy_eqs(struct mana_ib_dev *mdev)
 >  
->  /* for hda_fixup_thinkpad_acpi() */
-> @@ -841,6 +842,17 @@ static const struct hda_pintbl cxt_pincfg_lemote[] = {
->  	{}
->  };
+>  void mana_ib_gd_create_rnic_adapter(struct mana_ib_dev *mdev)
+>  {
+> +	struct mana_rnic_create_adapter_resp resp = {};
+> +	struct mana_rnic_create_adapter_req req = {};
+> +	struct gdma_context *gc = mdev_to_gc(mdev);
+>  	int err;
 >  
-> +/* SuoWoSi/South-holding JS201D with sn6140 */
-> +static const struct hda_pintbl cxt_pincfg_sws_js201d[] = {
-> +	{ 0x16, 0x03211040 }, /* hp out */
-> +	{ 0x17, 0x91170110 }, /* SPK/Class_D */
-> +	{ 0x18, 0x95a70130 }, /* Internal mic */
-> +	{ 0x19, 0x03a11020 }, /* Headset Mic */
-> +	{ 0x1a, 0x40f001f0 }, /* Not used */
-> +	{ 0x21, 0x40f001f0 }, /* Not used */
-> +	{}
-> +};
+> +	mdev->adapter_handle = INVALID_MANA_HANDLE;
 > +
->  static const struct hda_fixup cxt_fixups[] = {
->  	[CXT_PINCFG_LENOVO_X200] = {
->  		.type = HDA_FIXUP_PINS,
-> @@ -996,6 +1008,10 @@ static const struct hda_fixup cxt_fixups[] = {
->  		.chained = true,
->  		.chain_id = CXT_FIXUP_HEADSET_MIC,
->  	},
-> +	[CXT_PINCFG_SWS_JS201D] = {
-> +		.type = HDA_FIXUP_PINS,
-> +		.v.pins = cxt_pincfg_sws_js201d,
-> +	},
+>  	err = mana_ib_create_eqs(mdev);
+>  	if (err) {
+>  		ibdev_err(&mdev->ib_dev, "Failed to create EQs for RNIC err %d", err);
+>  		goto cleanup;
+>  	}
+>  
+> +	mana_gd_init_req_hdr(&req.hdr, MANA_IB_CREATE_ADAPTER, sizeof(req), sizeof(resp));
+> +	req.hdr.req.msg_version = GDMA_MESSAGE_V2;
+> +	req.hdr.dev_id = gc->mana_ib.dev_id;
+> +	req.notify_eq_id = mdev->fatal_err_eq->id;
+> +
+> +	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
+> +	if (err) {
+> +		ibdev_err(&mdev->ib_dev, "Failed to create RNIC adapter err %d", err);
+> +		goto cleanup;
+> +	}
+> +	mdev->adapter_handle = resp.adapter;
+> +
+>  	return;
+>  
+>  cleanup:
+> @@ -599,5 +616,19 @@ void mana_ib_gd_create_rnic_adapter(struct mana_ib_dev *mdev)
+>  
+>  void mana_ib_gd_destroy_rnic_adapter(struct mana_ib_dev *mdev)
+>  {
+> +	struct mana_rnic_destroy_adapter_resp resp = {};
+> +	struct mana_rnic_destroy_adapter_req req = {};
+> +	struct gdma_context *gc;
+> +
+> +	if (!rnic_is_enabled(mdev))
+> +		return;
+> +
+> +	gc = mdev_to_gc(mdev);
+> +	mana_gd_init_req_hdr(&req.hdr, MANA_IB_DESTROY_ADAPTER, sizeof(req), sizeof(resp));
+> +	req.hdr.dev_id = gc->mana_ib.dev_id;
+> +	req.adapter = mdev->adapter_handle;
+> +
+> +	mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
+> +	mdev->adapter_handle = INVALID_MANA_HANDLE;
+>  	mana_ib_destroy_eqs(mdev);
+>  }
+> diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
+> index a4b94ee..96454cf 100644
+> --- a/drivers/infiniband/hw/mana/mana_ib.h
+> +++ b/drivers/infiniband/hw/mana/mana_ib.h
+> @@ -48,6 +48,7 @@ struct mana_ib_adapter_caps {
+>  struct mana_ib_dev {
+>  	struct ib_device ib_dev;
+>  	struct gdma_dev *gdma_dev;
+> +	mana_handle_t adapter_handle;
+>  	struct gdma_queue *fatal_err_eq;
+>  	struct mana_ib_adapter_caps adapter_caps;
+>  };
+> @@ -115,6 +116,8 @@ struct mana_ib_rwq_ind_table {
+>  
+>  enum mana_ib_command_code {
+>  	MANA_IB_GET_ADAPTER_CAP = 0x30001,
+> +	MANA_IB_CREATE_ADAPTER  = 0x30002,
+> +	MANA_IB_DESTROY_ADAPTER = 0x30003,
 >  };
 >  
->  static const struct snd_pci_quirk cxt5045_fixups[] = {
-> @@ -1091,6 +1107,7 @@ static const struct snd_pci_quirk cxt5066_fixups[] = {
->  	SND_PCI_QUIRK_VENDOR(0x17aa, "Thinkpad", CXT_FIXUP_THINKPAD_ACPI),
->  	SND_PCI_QUIRK(0x1c06, 0x2011, "Lemote A1004", CXT_PINCFG_LEMOTE_A1004),
->  	SND_PCI_QUIRK(0x1c06, 0x2012, "Lemote A1205", CXT_PINCFG_LEMOTE_A1205),
-> +	SND_PCI_QUIRK(0x14f1, 0x0265, "SWS JS201D", CXT_PINCFG_SWS_JS201D),
->  	{}
->  };
-
-The table is sorted in PCI SSID order.  Please try to put at the right
-position.
-
-
-thanks,
-
-Takashi
+>  struct mana_ib_query_adapter_caps_req {
+> @@ -143,6 +146,32 @@ struct mana_ib_query_adapter_caps_resp {
+>  	u32 max_inline_data_size;
+>  }; /* HW Data */
+>  
+> +struct mana_rnic_create_adapter_req {
+> +	struct gdma_req_hdr hdr;
+> +	u32 notify_eq_id;
+> +	u32 reserved;
+> +	u64 feature_flags;
+> +}; /*HW Data */
+> +
+> +struct mana_rnic_create_adapter_resp {
+> +	struct gdma_resp_hdr hdr;
+> +	mana_handle_t adapter;
+> +}; /* HW Data */
+> +
+> +struct mana_rnic_destroy_adapter_req {
+> +	struct gdma_req_hdr hdr;
+> +	mana_handle_t adapter;
+> +}; /*HW Data */
+> +
+> +struct mana_rnic_destroy_adapter_resp {
+> +	struct gdma_resp_hdr hdr;
+> +}; /* HW Data */
+> +
+> +static inline bool rnic_is_enabled(struct mana_ib_dev *mdev)
+> +{
+> +	return mdev->adapter_handle != INVALID_MANA_HANDLE;
+> +}
+> +
+>  static inline struct gdma_context *mdev_to_gc(struct mana_ib_dev *mdev)
+>  {
+>  	return mdev->gdma_dev->gdma_context;
+> -- 
+> 1.8.3.1
+> 
 
