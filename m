@@ -1,158 +1,99 @@
-Return-Path: <linux-kernel+bounces-51825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F08AD848FBA
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 18:29:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7776848FBE
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 18:31:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 647BC28378E
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 17:29:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6A551F227B2
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 17:31:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E10AD249ED;
-	Sun,  4 Feb 2024 17:29:50 +0000 (UTC)
-Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [5.144.164.169])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51AB0249F3;
+	Sun,  4 Feb 2024 17:30:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="trI3WmwG"
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40C8F24205;
-	Sun,  4 Feb 2024 17:29:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.144.164.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 434E2249E8;
+	Sun,  4 Feb 2024 17:30:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707067790; cv=none; b=gDoTohjXrSCTrkD0KX0a7MWD4mgPMbjCe1BUyS5fmdzSQoZ28L6UvuWbNGg93Ki0DYGRlALNxL1jnN+8NbzFKzCXiJi9wAQpysSQmuxROnliD29d0bEg/GiXRuD48focEJly6jqEHuKm/tv+g3VboA0TccdtNFHebBC/jgM1oT4=
+	t=1707067850; cv=none; b=YnolxMNY1yGGCJgiVB3T3X/plQvRWJDQJ/RicR7gm9VKgwvlRlLZ5RvqF11ULpZPnxvYVnA5AiuSiWI4LhijGjDK8ZY2QPqrUJN0nu4WWbZ4wOudwx5ObLaDp0rIvHC9plBbIKRhjKQk12JR0THanELe5r6HpMRac2QwEHUAXoE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707067790; c=relaxed/simple;
-	bh=lzSrv4+0HNUHwkpIOl2xT9ERzLM/rHgR5h5G3ipP+LI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BhSlZWpW3IxAEFybWnKW//Ek8c/YrpaNjyYkVJ+0wX9gGkYLQF6SVVFIkKkleF7uFyZCdM9SnRJzreR/7pvFIh/YByxca20nfO9XAP1B0UUJHh7kfcl65+R7eN+6KBk6x5lXxzG57sdbW0VG6BU8DteyAQs9WBPYmsnFMYM/rKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org; spf=pass smtp.mailfrom=somainline.org; arc=none smtp.client-ip=5.144.164.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=somainline.org
-Received: from SoMainline.org (2a02-a420-67-c93f-164f-8aff-fee4-5930.mobile6.kpn.net [IPv6:2a02:a420:67:c93f:164f:8aff:fee4:5930])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 348BA3EF26;
-	Sun,  4 Feb 2024 18:29:45 +0100 (CET)
-Date: Sun, 4 Feb 2024 18:29:43 +0100
-From: Marijn Suijten <marijn.suijten@somainline.org>
-To: Johan Hovold <johan@kernel.org>
-Cc: Lee Jones <lee@kernel.org>, phone-devel@vger.kernel.org, 
-	Pavel Machek <pavel@ucw.cz>, Bjorn Andersson <bjorn.andersson@linaro.org>, 
-	~postmarketos/upstreaming@lists.sr.ht, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>, Konrad Dybcio <konrad.dybcio@somainline.org>, 
-	Martin Botka <martin.botka@somainline.org>, Jami Kettunen <jami.kettunen@somainline.org>, 
-	linux-arm-msm@vger.kernel.org, linux-leds@vger.kernel.org, Rob Herring <robh@kernel.org>, 
-	Bhupesh Sharma <bhupesh.sharma@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Stephen Boyd <swboyd@chromium.org>, Satya Priya <quic_c_skakit@quicinc.com>
-Subject: Re: [PATCH v4 2/2] leds: qcom-lpg: Add PM660L configuration and
- compatible
-Message-ID: <vj7mlrrvn7y45fpavdy37eqfxrz3anq43qh4n2flktckuaoeo7@ynlw5rexyi27>
-References: <20220719211848.1653920-1-marijn.suijten@somainline.org>
- <20220719211848.1653920-2-marijn.suijten@somainline.org>
- <ZYFS04cznE5bhOeV@hovoldconsulting.com>
- <3lsapoxlqijes5m4nqcbhdfhhs4chq3mcq3jaty7v2zihsqnwu@nn67a4h6425k>
+	s=arc-20240116; t=1707067850; c=relaxed/simple;
+	bh=I3g9WDQRF5vBIUqmbuExMuLRf1s6UoZuTmaXbeShB5U=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=NvwIlKzGJg9QGkUr6mBsl3vEr2SlaRG4ehvOECTZ/BTYnVJmG9ojM1ZbCslV91FWYZyy+/PYZpLUXNl4K1kh4dbClTy0RdhZvfdQavVKSrWgHssAVTYxIIWWnEYreZpI8KvSjueHjr78J/SauRp/YJYRCNTKoKQlpC1jHJaM6FY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=trI3WmwG; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1707067846;
+	bh=I3g9WDQRF5vBIUqmbuExMuLRf1s6UoZuTmaXbeShB5U=;
+	h=From:Date:Subject:To:Cc:From;
+	b=trI3WmwGD9DstJVbJ42DsrZ2yGW+N8TGmJ99mI82T4uk5vm4UaDS7WpGHC3cmQrou
+	 JKA8QMkARvFcvnTWxa/t9qo+pHsWYWDTMRFyOHjHvBMYeBF0V3dCxv7Xo0XprkkaCE
+	 0PAb8CNgHfo9e9wLe+aGEdMzy5q+wTuLRA/IfH3c=
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date: Sun, 04 Feb 2024 18:30:43 +0100
+Subject: [PATCH] power: supply: mm8013: select REGMAP_I2C
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3lsapoxlqijes5m4nqcbhdfhhs4chq3mcq3jaty7v2zihsqnwu@nn67a4h6425k>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240204-mm8013-regmap-v1-1-7cc6b619b7d3@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIAMLJv2UC/x3MQQqAIBBA0avIrBNGE5KuEi1EJ5uFJgoRhHdPW
+ r7F/y80qkwNVvFCpZsbX3lATQL86XIkyWEYNGqDGo1MyaKaZaWYXJHBBmVdcLh4DaMplQ5+/t+
+ 29/4BqgCIG18AAAA=
+To: Sebastian Reichel <sre@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Sebastian Reichel <sebastian.reichel@collabora.com>, 
+ linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ stable@vger.kernel.org, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1707067844; l=975;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=I3g9WDQRF5vBIUqmbuExMuLRf1s6UoZuTmaXbeShB5U=;
+ b=y2EcWG8Rw69t7dC9mJC/9uObCqm14upCgRqgzcqgT2gCvLcAK3j0SvE6gXEfG5AgjvQzJKEgR
+ ldqHKNmV6TcAs1Rht4AGs4nXIvsDyhF/BHhvV63SH3SI03DTfRISKfh
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-On 2023-12-19 10:17:21, Marijn Suijten wrote:
-> Hi Johan and Lee,
-> 
-> On 2023-12-19 09:22:43, Johan Hovold wrote:
-> > Hi Marijn and Lee,
-> > 
-> > On Tue, Jul 19, 2022 at 11:18:48PM +0200, Marijn Suijten wrote:
-> > > Inherit PM660L PMIC LPG/triled block configuration from downstream
-> > > drivers and DT sources, consisting of a triled block with automatic
-> > > trickle charge control and source selection, three colored led channels
-> > > belonging to the synchronized triled block and one loose PWM channel.
-> > > 
-> > > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> > > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > ---
-> > > 
-> > > Changes since v3:
-> > > - Rebased on -next;
-> > > - (series) dropped DTS patches that have been applied through the
-> > >   Qualcomm DTS tree, leaving only leds changes (driver and
-> > >   accompanying dt-bindings).
-> > 
-> > > diff --git a/drivers/leds/rgb/leds-qcom-lpg.c b/drivers/leds/rgb/leds-qcom-lpg.c
-> > > index 02f51cc61837..102ab0c33887 100644
-> > > --- a/drivers/leds/rgb/leds-qcom-lpg.c
-> > > +++ b/drivers/leds/rgb/leds-qcom-lpg.c
-> > > @@ -1304,6 +1304,23 @@ static int lpg_remove(struct platform_device *pdev)
-> > >  	return 0;
-> > >  }
-> > >  
-> > > +static const struct lpg_data pm660l_lpg_data = {
-> > > +	.lut_base = 0xb000,
-> > > +	.lut_size = 49,
-> > > +
-> > > +	.triled_base = 0xd000,
-> > > +	.triled_has_atc_ctl = true,
-> > > +	.triled_has_src_sel = true,
-> > > +
-> > > +	.num_channels = 4,
-> > > +	.channels = (const struct lpg_channel_data[]) {
-> > > +		{ .base = 0xb100, .triled_mask = BIT(5) },
-> > > +		{ .base = 0xb200, .triled_mask = BIT(6) },
-> > > +		{ .base = 0xb300, .triled_mask = BIT(7) },
-> > > +		{ .base = 0xb400 },
-> > > +	},
-> > > +};
-> > > +
-> > >  static const struct lpg_data pm8916_pwm_data = {
-> > >  	.num_channels = 1,
-> > >  	.channels = (const struct lpg_channel_data[]) {
-> > > @@ -1424,6 +1441,7 @@ static const struct lpg_data pm8350c_pwm_data = {
-> > >  };
-> > >  
-> > >  static const struct of_device_id lpg_of_table[] = {
-> > > +	{ .compatible = "qcom,pm660l-lpg", .data = &pm660l_lpg_data },
-> > >  	{ .compatible = "qcom,pm8150b-lpg", .data = &pm8150b_lpg_data },
-> > >  	{ .compatible = "qcom,pm8150l-lpg", .data = &pm8150l_lpg_data },
-> > >  	{ .compatible = "qcom,pm8350c-pwm", .data = &pm8350c_pwm_data },
-> > 
-> > When reviewing the Qualcomm SPMI PMIC bindings I noticed that this patch
-> > was never picked up by the LEDs maintainer, while the binding and dtsi
-> > changes made it in:
-> > 
-> > 	https://lore.kernel.org/r/20220719211848.1653920-2-marijn.suijten@somainline.org
-> > 
-> > Looks like it may still apply cleanly, but otherwise, would you mind
-> > rebasing and resending so that Lee can pick this one up?
-> > 
-> > Johan
-> 
-> Coincidentally I haven't touched this device/platform for months... until last
-> weekend where I noticed the same.  It does not apply cleanly and I had to solve
-> some conflicts:
-> 
-> https://github.com/SoMainline/linux/commit/8ec5d02eaffcec24fcab6a989ab117a5b72b96b6
-> 
-> I'll gladly resend this!
+The driver uses regmap APIs so it should make sure they are available.
 
-Apologies for taking more time than necessary.  According to b4 the patch should
-become available at:
+Fixes: c75f4bf6800b ("power: supply: Introduce MM8013 fuel gauge driver")
+Cc:  <stable@vger.kernel.org>
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+ drivers/power/supply/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-https://lore.kernel.org/r/20240204-pm660l-lpg-v5-1-2f54d1a0894b@somainline.org
+diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
+index f21cb05815ec..3e31375491d5 100644
+--- a/drivers/power/supply/Kconfig
++++ b/drivers/power/supply/Kconfig
+@@ -978,6 +978,7 @@ config CHARGER_QCOM_SMB2
+ config FUEL_GAUGE_MM8013
+ 	tristate "Mitsumi MM8013 fuel gauge driver"
+ 	depends on I2C
++	select REGMAP_I2C
+ 	help
+ 	  Say Y here to enable the Mitsumi MM8013 fuel gauge driver.
+ 	  It enables the monitoring of many battery parameters, including
 
-> Note that I have one more unmerged leds patch around, that hasn't been looked
-> at either.  Would it help to send this once again, perhaps with more reviewers/
-> testing (Johan, would you mind taking a look too)?
-> 
-> https://lore.kernel.org/linux-leds/20220719213034.1664056-1-marijn.suijten@somainline.org/
+---
+base-commit: 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478
+change-id: 20240204-mm8013-regmap-d8d18ada07c2
 
-I'll continue looking into clarifying this patch before resending it.
+Best regards,
+-- 
+Thomas Weißschuh <linux@weissschuh.net>
 
-- Marijn
 
