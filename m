@@ -1,69 +1,57 @@
-Return-Path: <linux-kernel+bounces-51646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51647-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 820C2848DDD
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:56:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F03F3848DDE
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:57:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C2CC1F21F8E
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:56:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84DB42821C4
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:57:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D274922337;
-	Sun,  4 Feb 2024 12:56:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46DE3219FF;
+	Sun,  4 Feb 2024 12:57:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="H6qo3HUu"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mzp8kCor"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BBE8224D1;
-	Sun,  4 Feb 2024 12:56:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83AC51E51A;
+	Sun,  4 Feb 2024 12:57:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707051402; cv=none; b=bLFVm27VKPGhy5tLG9iviPcWFxjMD6fWNGAHoL7wJx2Sjo90TcaqXRORo0EQ+H2IaSpoRtmkhTMH+eIcyKxLgQjXQDRLyVQwl2Fw4UiNjwRd+MtoCbEgXmHqltw+QAQ3ppwC5o0LrZUBERED/4gksI7sTrwUakrVpG6Binuevzk=
+	t=1707051447; cv=none; b=bhD2+5zrzQ5MjbxSiUouGNYtwo0nPHF4aHu+AecZNxuzGvtndGFzhofpgubHu7QVD71f/MkfCyuxdI6BT/uX8fr141+LzaX4U3U6hAsjwzyiFcYEanbMqL8iDF8PxONtYlWJGvNYpsUW++37Ah81wk/0CyK1BaMdPLl+dTv+Z5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707051402; c=relaxed/simple;
-	bh=JlEQKVnat7ucMHTCOzhnemzea07e6AFMCTU5Wlpz8NU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NklUfdKKHGmxRmANqt+3gF8y301ezXI7L0ekBaT4eLUOaqu5ucozIjEFc2+n0Oxyqs0F4lQbdJLVQ8vzjqKUfuEY4XdFP8jqV9ConMQZomFXUZ7uGd0F4wlNmrDupYHq9oJZLLuAVMRgfLYlNyUSceHG2z69K65PVsxnRrSDG/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=H6qo3HUu; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707051400; x=1738587400;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=JlEQKVnat7ucMHTCOzhnemzea07e6AFMCTU5Wlpz8NU=;
-  b=H6qo3HUuXQWPpCXBxtPwSWqQYZJna+zv7yL/TDDumCM6H2USessrfYUK
-   Xy+kNhDaH89G/QtNtWG2TqP29s9sg8hF76LyCC1PnYwLPWyG82S78NpNr
-   II6fLZvgFym1Asj3C28jrUI06b0F7zZi3bhWztXQkX+HSdbukWRbMBDTk
-   ItFRlAqA+1VeOHx/a7kOVfoLwL1yQbyfKMWjr+Ao2Pp75nV/66LrOBZFL
-   qtWF9J42rcRXxfYNSWbtAt6MlRJoWzExQOFrSRDjxY9l+kfWDpsC1nDWw
-   0JD3lOlHRUuvLzXknl7rceeau3WU4iETF0J3WDANvlfON8zjIArnCtppm
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10973"; a="4211098"
-X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
-   d="scan'208";a="4211098"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 04:56:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
-   d="scan'208";a="498546"
-Received: from spandruv-desk.jf.intel.com ([10.54.75.14])
-  by fmviesa010.fm.intel.com with ESMTP; 04 Feb 2024 04:56:39 -0800
-From: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To: jikos@kernel.org,
-	jic23@kernel.org,
-	lars@metafoo.de,
-	Basavaraj.Natikar@amd.com
-Cc: linux-input@vger.kernel.org,
-	linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH] iio: hid-sensor-als: Return 0 for HID_USAGE_SENSOR_TIME_TIMESTAMP
-Date: Sun,  4 Feb 2024 04:56:17 -0800
-Message-Id: <20240204125617.2635574-1-srinivas.pandruvada@linux.intel.com>
+	s=arc-20240116; t=1707051447; c=relaxed/simple;
+	bh=11ALOU6VsnZCMQ97q7QMgNjhbRhAQUuFE5x9Bwr0dTM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JOJjp8llLgQPqLxSkFGt7ERBss3nJuziWoZKFipnjyDr+PDl8A2ckhbjl9Rec9W4muaXvOmJTkUfXAPbQGt4rFqIsbEOu4Qh0Udbuwe51a9oU/7RJwYhV2kzoGLeDrF2uBXwcrHPz/734sM6NF8mF6mrtgrK+3EahR8R8UEbu4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mzp8kCor; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71DE8C43142;
+	Sun,  4 Feb 2024 12:57:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707051447;
+	bh=11ALOU6VsnZCMQ97q7QMgNjhbRhAQUuFE5x9Bwr0dTM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=mzp8kCorouXZNIh5YdE3P/9BIzS8g0hVdJWYDPZ03Ux+V0TvVbltKZyt/1VvuRoMB
+	 O46zrP/E03XVxp+e5ztdOV+Q53avZoO9m25AqfRWpWvD48OE5u9AnA+onDvW8uOaCj
+	 TMA27NWgcJUkdl3D4gGQJ3NsQOQ4YiXn7awrd42pxPREhu9gmdhyYNoGHBm+gRw7Of
+	 6SYY0AME+hrsr1J8vMiqIm5DU766wXQpcQK7+i9dNaYyohq6zoASo9YR3ZDdq7JcF4
+	 Am01y4r6d+tcrzT1K7gmBS101DI3zDMFtiBHXY4cvTD/wMr1B6o0Bx7GYql7J+78K+
+	 5MVyGX+SCPwIg==
+From: Masahiro Yamada <masahiroy@kernel.org>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>,
+	Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+	Tony Lindgren <tony@atomide.com>,
+	linux-omap@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Russell King <linux@armlinux.org.uk>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] arm: omap1: remove duplicated 'select ARCH_OMAP'
+Date: Sun,  4 Feb 2024 21:57:16 +0900
+Message-Id: <20240204125716.56756-1-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,34 +61,28 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When als_capture_sample() is called with usage ID
-HID_USAGE_SENSOR_TIME_TIMESTAMP, return 0. The HID sensor core ignores
-the return value for capture_sample() callback, so return value doesn't
-make difference. But correct the return value to return success instead
-of -EINVAL.
+Commit 980a637d11fe ("ARM: omap1: fix !ARCH_OMAP1_ANY link failures")
+added one more 'select ARCH_OMAP'.
 
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
-As part of review comments for series "Add support of color temperature
-and chromaticity". This is separate from the series as this is
-unrelated.
 
- drivers/iio/light/hid-sensor-als.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/mach-omap1/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/iio/light/hid-sensor-als.c b/drivers/iio/light/hid-sensor-als.c
-index 5cd27f04b45e..b6c4bef2a7bb 100644
---- a/drivers/iio/light/hid-sensor-als.c
-+++ b/drivers/iio/light/hid-sensor-als.c
-@@ -226,6 +226,7 @@ static int als_capture_sample(struct hid_sensor_hub_device *hsdev,
- 	case HID_USAGE_SENSOR_TIME_TIMESTAMP:
- 		als_state->timestamp = hid_sensor_convert_timestamp(&als_state->common_attributes,
- 								    *(s64 *)raw_data);
-+		ret = 0;
- 		break;
- 	default:
- 		break;
+diff --git a/arch/arm/mach-omap1/Kconfig b/arch/arm/mach-omap1/Kconfig
+index cbf703f0d850..a643b71e30a3 100644
+--- a/arch/arm/mach-omap1/Kconfig
++++ b/arch/arm/mach-omap1/Kconfig
+@@ -4,7 +4,6 @@ menuconfig ARCH_OMAP1
+ 	depends on ARCH_MULTI_V4T || ARCH_MULTI_V5
+ 	depends on CPU_LITTLE_ENDIAN
+ 	depends on ATAGS
+-	select ARCH_OMAP
+ 	select ARCH_HAS_HOLES_MEMORYMODEL
+ 	select ARCH_OMAP
+ 	select CLKSRC_MMIO
 -- 
-2.43.0
+2.40.1
 
 
