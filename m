@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-51441-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51442-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C948848B42
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 06:33:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7136E848B45
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 06:33:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9BEEB23CB5
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 05:33:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28476281F1A
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 05:33:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A723E749A;
-	Sun,  4 Feb 2024 05:31:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67EDCE570;
+	Sun,  4 Feb 2024 05:31:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="VHkAwBfZ"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="BYP+DAX6"
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4561ED517;
-	Sun,  4 Feb 2024 05:31:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5610EAE6;
+	Sun,  4 Feb 2024 05:31:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707024705; cv=none; b=RwuDxkJteyc4YrSawXttqpJqlhzuKBlv6cJT8mYLfqgSHmLzeWSHRNCMnq8KtQYlhwqq8Vj/yE1RTh3hQ7sHit69eqKPhUrzcKZJAe6nP03hVhFBGFALz4FzKfBSHxUJfTnguk+EQuSU0uYaGeW+DgY6AkEDHWfmDDcl0Iz8y3A=
+	t=1707024712; cv=none; b=bx2NWOdQjP0X1rjHFTCW7BTfPH84tqbabRnIhpwu13O7IfJCM7hPNW9hLSCElE91epCOt15tLyZHsWCbVsDiwsbNcUqjsY1PAnjBTHZU6IsK8Yb+2xVE1tDmpQmWfDiZ9d/cOXxbazcjgWW7qb1CdtDnnFZ8g1nOAGPAt/Uirzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707024705; c=relaxed/simple;
-	bh=2cz8QxazTlom7D6/lUC/JjzQX3hc8N8ZJyqOiCEVixg=;
+	s=arc-20240116; t=1707024712; c=relaxed/simple;
+	bh=KdvzGbxOpUNovjwyJUgef8Mdi221VR2Ca/NcT0m276g=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hB4JhQ81LvtNCIkI5lIpu/OsAgyXsKYDDQFQm4zp3niqmxoYD9YVij20/jvCnHiEWhiUFdC3CNPLpMXx7UfzyuHozgCeBJ+GQN6XcAwzwPZqoCRAks33xNFWESInCmAz9t0wZaZkZTGaCjQgyeJHiapoKBsuZmgWhBDlTWh/Vf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=VHkAwBfZ; arc=none smtp.client-ip=205.220.180.131
+	 MIME-Version:Content-Type; b=EEGNFij1SZhrQSg35JwJvTVTYMFLZekx3mH4pUjAmS63NhYfRvjsGO4At/Ed0wvDZmrPJj51GglybN0pl2bj069o2BHF5Ymfi1AFZXTvDm5eq6C22KRTl6eAMrXmoHQLnWPD59OkHQFpiKp/X79fG2JsCUuQQCBaLPioQX7wlUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=BYP+DAX6; arc=none smtp.client-ip=205.220.180.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4145JC92018004;
-	Sun, 4 Feb 2024 05:31:33 GMT
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41452rHB019175;
+	Sun, 4 Feb 2024 05:31:38 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=qAQRPVLt3Q4DEovXyjvA
-	de+pVgFOFHTgqD2iMKFnwJQ=; b=VHkAwBfZ9gGbzky2xPwGfati5E8LddA8mNs2
-	PNQI1HvFxKUAQDoLpApyInZS+fSJ40ZvcAk5EAmNaIJAhco7vnDesiQqWHMmu9Vp
-	RHY54CyhuUf9lf0b66BgLAXar7Io2S49aYsycOGNYTAN9JE4ImrpyHJX3nw9wxmx
-	f7/mzUhtc4CMVSRXpeL0ZAUtUbwPl8aNTvb1m26s5JQvPsFkP6llnejYkJqji9D/
-	++Kthd3qEcMGC/cEZucWvECHopXLrUWA3KMLsnBVLwcasSCF51vt/qnnuZHxYIf1
-	v7w9sVOIalLM2UkmrV2EULdjZwV7nXvKSER8/6purLnCQ03TpQ==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w1gd1h7sy-1
+	:mime-version:content-type; s=qcppdkim1; bh=uLbh7Y4Z574VBpaCsLBb
+	9oR7yHxS2OyRflvuPWX1wl8=; b=BYP+DAX6jbWz/43HdAZAVSE8f4irO33lRFug
+	wx8JKowq8tTAX/EEkZqLZZRkPaGEP9W+rSXwReGIodC0slAiEXuw98GNjcOtbte0
+	yxJ5kEMXb4JEPqrCLNqXTGpw/fi3RfulPku6NN6j8rVlOb0nGPSFO7UkVG61kKO4
+	ACSQnHZlNqBal0XiKr18IsbZ8ZMp5WRwA2tDjqLqfYvM8pwvv1vWAFOxLEEl7Le+
+	vv2NWDyWm91C8RuHYcDtbztfPQO6+/ccEBwtGzniTgG1E15/OTGenI2Md7HedvTI
+	jvzILjXyB7CkN6bHGKqLzHlritDEILO3Jsr6FG4ivWqeuUrFaA==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w1f1rsav5-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 04 Feb 2024 05:31:33 +0000 (GMT)
+	Sun, 04 Feb 2024 05:31:38 +0000 (GMT)
 Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4145VWBq004262
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4145Vb7u003390
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 4 Feb 2024 05:31:32 GMT
+	Sun, 4 Feb 2024 05:31:37 GMT
 Received: from taozha-gv.qualcomm.com (10.80.80.8) by
  nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Sat, 3 Feb 2024 21:31:27 -0800
+ 15.2.1118.40; Sat, 3 Feb 2024 21:31:32 -0800
 From: Tao Zhang <quic_taozha@quicinc.com>
 To: Mathieu Poirier <mathieu.poirier@linaro.org>,
         Suzuki K Poulose
@@ -76,9 +76,9 @@ CC: Tao Zhang <quic_taozha@quicinc.com>,
 	<quic_tsoni@quicinc.com>,
         Song Chai <quic_songchai@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
         <andersson@kernel.org>
-Subject: [PATCH v7 04/10] coresight-tpdm: Add CMB dataset support
-Date: Sun, 4 Feb 2024 13:30:35 +0800
-Message-ID: <1707024641-22460-5-git-send-email-quic_taozha@quicinc.com>
+Subject: [PATCH v7 05/10] coresight-tpda: Add support to configure CMB element
+Date: Sun, 4 Feb 2024 13:30:36 +0800
+Message-ID: <1707024641-22460-6-git-send-email-quic_taozha@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1707024641-22460-1-git-send-email-quic_taozha@quicinc.com>
 References: <1707024641-22460-1-git-send-email-quic_taozha@quicinc.com>
@@ -93,129 +93,251 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01c.na.qualcomm.com (10.47.97.35)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: m5n_NUla1Td5DBwARXeChq5MAB8hJ216
-X-Proofpoint-ORIG-GUID: m5n_NUla1Td5DBwARXeChq5MAB8hJ216
+X-Proofpoint-GUID: YEYRl7FhRrba9FaF51a2UXX29MNFXWgk
+X-Proofpoint-ORIG-GUID: YEYRl7FhRrba9FaF51a2UXX29MNFXWgk
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-02-04_02,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
- lowpriorityscore=0 clxscore=1015 adultscore=0 mlxscore=0 malwarescore=0
- mlxlogscore=999 priorityscore=1501 bulkscore=0 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401310000
- definitions=main-2402040039
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 mlxscore=0 suspectscore=0 mlxlogscore=905 phishscore=0
+ impostorscore=0 adultscore=0 spamscore=0 lowpriorityscore=0 clxscore=1015
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402040039
 
-CMB (continuous multi-bit) is one of TPDM's dataset type. CMB subunit
-can be enabled for data collection by writing 1 to the first bit of
-CMB_CR register. This change is to add enable/disable function for
-CMB dataset by writing CMB_CR register.
+Read the CMB element size from the device tree. Set the register
+bit that controls the CMB element size of the corresponding port.
 
 Reviewed-by: James Clark <james.clark@arm.com>
 Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
-Signed-off-by: Jinlong Mao <quic_jinlmao@quicinc.com>
+Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
 ---
- drivers/hwtracing/coresight/coresight-tpdm.c | 28 ++++++++++++++++++++
- drivers/hwtracing/coresight/coresight-tpdm.h | 13 +++++++++
- 2 files changed, 41 insertions(+)
+ drivers/hwtracing/coresight/coresight-tpda.c | 130 +++++++++++--------
+ drivers/hwtracing/coresight/coresight-tpda.h |   6 +
+ 2 files changed, 81 insertions(+), 55 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c b/drivers/hwtracing/coresight/coresight-tpdm.c
-index 4b1296d11360..1bb1d8e83501 100644
---- a/drivers/hwtracing/coresight/coresight-tpdm.c
-+++ b/drivers/hwtracing/coresight/coresight-tpdm.c
-@@ -263,6 +263,19 @@ static void tpdm_enable_dsb(struct tpdm_drvdata *drvdata)
- 	writel_relaxed(val, drvdata->base + TPDM_DSB_CR);
+diff --git a/drivers/hwtracing/coresight/coresight-tpda.c b/drivers/hwtracing/coresight/coresight-tpda.c
+index 4ac954f4bc13..2d35059ec697 100644
+--- a/drivers/hwtracing/coresight/coresight-tpda.c
++++ b/drivers/hwtracing/coresight/coresight-tpda.c
+@@ -18,6 +18,7 @@
+ #include "coresight-priv.h"
+ #include "coresight-tpda.h"
+ #include "coresight-trace-id.h"
++#include "coresight-tpdm.h"
+ 
+ DEFINE_CORESIGHT_DEVLIST(tpda_devs, "tpda");
+ 
+@@ -28,24 +29,59 @@ static bool coresight_device_is_tpdm(struct coresight_device *csdev)
+ 			CORESIGHT_DEV_SUBTYPE_SOURCE_TPDM);
  }
  
-+static void tpdm_enable_cmb(struct tpdm_drvdata *drvdata)
++static void tpda_clear_element_size(struct coresight_device *csdev)
 +{
-+	u32 val;
++	struct tpda_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
 +
-+	if (!tpdm_has_cmb_dataset(drvdata))
-+		return;
++	drvdata->dsb_esize = 0;
++	drvdata->cmb_esize = 0;
++}
 +
-+	val = readl_relaxed(drvdata->base + TPDM_CMB_CR);
-+	/* Set the enable bit of CMB control register to 1 */
-+	val |= TPDM_CMB_CR_ENA;
-+	writel_relaxed(val, drvdata->base + TPDM_CMB_CR);
++static void tpda_set_element_size(struct tpda_drvdata *drvdata, u32 *val)
++{
++	/* Clear all relevant fields */
++	*val &= ~(TPDA_Pn_CR_DSBSIZE | TPDA_Pn_CR_CMBSIZE);
++
++	if (drvdata->dsb_esize == 64)
++		*val |= TPDA_Pn_CR_DSBSIZE;
++	else if (drvdata->dsb_esize == 32)
++		*val &= ~TPDA_Pn_CR_DSBSIZE;
++
++	if (drvdata->cmb_esize == 64)
++		*val |= FIELD_PREP(TPDA_Pn_CR_CMBSIZE, 0x2);
++	else if (drvdata->cmb_esize == 32)
++		*val |= FIELD_PREP(TPDA_Pn_CR_CMBSIZE, 0x1);
++	else if (drvdata->cmb_esize == 8)
++		*val &= ~TPDA_Pn_CR_CMBSIZE;
 +}
 +
  /*
-  * TPDM enable operations
-  * The TPDM or Monitor serves as data collection component for various
-@@ -276,6 +289,7 @@ static void __tpdm_enable(struct tpdm_drvdata *drvdata)
- 	CS_UNLOCK(drvdata->base);
- 
- 	tpdm_enable_dsb(drvdata);
-+	tpdm_enable_cmb(drvdata);
- 
- 	CS_LOCK(drvdata->base);
- }
-@@ -312,12 +326,26 @@ static void tpdm_disable_dsb(struct tpdm_drvdata *drvdata)
- 	writel_relaxed(val, drvdata->base + TPDM_DSB_CR);
- }
- 
-+static void tpdm_disable_cmb(struct tpdm_drvdata *drvdata)
-+{
-+	u32 val;
-+
-+	if (!tpdm_has_cmb_dataset(drvdata))
-+		return;
-+
-+	val = readl_relaxed(drvdata->base + TPDM_CMB_CR);
-+	/* Set the enable bit of CMB control register to 0 */
-+	val &= ~TPDM_CMB_CR_ENA;
-+	writel_relaxed(val, drvdata->base + TPDM_CMB_CR);
-+}
-+
- /* TPDM disable operations */
- static void __tpdm_disable(struct tpdm_drvdata *drvdata)
- {
- 	CS_UNLOCK(drvdata->base);
- 
- 	tpdm_disable_dsb(drvdata);
-+	tpdm_disable_cmb(drvdata);
- 
- 	CS_LOCK(drvdata->base);
- }
-diff --git a/drivers/hwtracing/coresight/coresight-tpdm.h b/drivers/hwtracing/coresight/coresight-tpdm.h
-index ddaf333fa1c2..a442d9c6e4ac 100644
---- a/drivers/hwtracing/coresight/coresight-tpdm.h
-+++ b/drivers/hwtracing/coresight/coresight-tpdm.h
-@@ -9,6 +9,12 @@
- /* The max number of the datasets that TPDM supports */
- #define TPDM_DATASETS       7
- 
-+/* CMB Subunit Registers */
-+#define TPDM_CMB_CR		(0xA00)
-+
-+/* Enable bit for CMB subunit */
-+#define TPDM_CMB_CR_ENA		BIT(0)
-+
- /* DSB Subunit Registers */
- #define TPDM_DSB_CR		(0x780)
- #define TPDM_DSB_TIER		(0x784)
-@@ -79,10 +85,12 @@
-  *
-  * PERIPHIDR0[0] : Fix to 1 if ImplDef subunit present, else 0
-  * PERIPHIDR0[1] : Fix to 1 if DSB subunit present, else 0
-+ * PERIPHIDR0[2] : Fix to 1 if CMB subunit present, else 0
+- * Read the DSB element size from the TPDM device
++ * Read the element size from the TPDM device. One TPDM must have at least one of the
++ * element size property.
+  * Returns
+- *    The dsb element size read from the devicetree if available.
+- *    0 - Otherwise, with a warning once.
++ *    0 - The element size property is read
++ *    Others - Cannot read the property of the element size
   */
- 
- #define TPDM_PIDR0_DS_IMPDEF	BIT(0)
- #define TPDM_PIDR0_DS_DSB	BIT(1)
-+#define TPDM_PIDR0_DS_CMB	BIT(2)
- 
- #define TPDM_DSB_MAX_LINES	256
- /* MAX number of EDCR registers */
-@@ -224,4 +232,9 @@ static bool tpdm_has_dsb_dataset(struct tpdm_drvdata *drvdata)
+-static int tpdm_read_dsb_element_size(struct coresight_device *csdev)
++static int tpdm_read_element_size(struct tpda_drvdata *drvdata,
++				  struct coresight_device *csdev)
  {
- 	return (drvdata->datasets & TPDM_PIDR0_DS_DSB);
- }
+-	int rc = 0;
+-	u8 size = 0;
++	int rc = -EINVAL;
++	struct tpdm_drvdata *tpdm_data = dev_get_drvdata(csdev->dev.parent);
 +
-+static bool tpdm_has_cmb_dataset(struct tpdm_drvdata *drvdata)
-+{
-+	return (drvdata->datasets & TPDM_PIDR0_DS_CMB);
-+}
- #endif  /* _CORESIGHT_CORESIGHT_TPDM_H */
++	if (tpdm_has_dsb_dataset(tpdm_data)) {
++		rc = fwnode_property_read_u8(dev_fwnode(csdev->dev.parent),
++				"qcom,dsb-element-size", &drvdata->dsb_esize);
++	}
++	if (tpdm_has_cmb_dataset(tpdm_data)) {
++		rc = fwnode_property_read_u32(dev_fwnode(csdev->dev.parent),
++				"qcom,cmb-element-bits", &drvdata->cmb_esize);
++	}
+ 
+-	rc = fwnode_property_read_u8(dev_fwnode(csdev->dev.parent),
+-			"qcom,dsb-element-size", &size);
+ 	if (rc)
+ 		dev_warn_once(&csdev->dev,
+-			"Failed to read TPDM DSB Element size: %d\n", rc);
++			"Failed to read TPDM Element size: %d\n", rc);
+ 
+-	return size;
++	return rc;
+ }
+ 
+ /*
+@@ -56,11 +92,12 @@ static int tpdm_read_dsb_element_size(struct coresight_device *csdev)
+  * Parameter "inport" is used to pass in the input port number
+  * of TPDA, and it is set to -1 in the recursize call.
+  */
+-static int tpda_get_element_size(struct coresight_device *csdev,
++static int tpda_get_element_size(struct tpda_drvdata *drvdata,
++				 struct coresight_device *csdev,
+ 				 int inport)
+ {
+-	int dsb_size = -ENOENT;
+-	int i, size;
++	int rc = 0;
++	int i;
+ 	struct coresight_device *in;
+ 
+ 	for (i = 0; i < csdev->pdata->nr_inconns; i++) {
+@@ -69,30 +106,26 @@ static int tpda_get_element_size(struct coresight_device *csdev,
+ 			continue;
+ 
+ 		/* Ignore the paths that do not match port */
+-		if (inport > 0 &&
++		if (inport >= 0 &&
+ 		    csdev->pdata->in_conns[i]->dest_port != inport)
+ 			continue;
+ 
+ 		if (coresight_device_is_tpdm(in)) {
+-			size = tpdm_read_dsb_element_size(in);
++			if (drvdata->dsb_esize || drvdata->cmb_esize)
++				return -EEXIST;
++			rc = tpdm_read_element_size(drvdata, in);
++			if (rc)
++				return rc;
+ 		} else {
+ 			/* Recurse down the path */
+-			size = tpda_get_element_size(in, -1);
+-		}
+-
+-		if (size < 0)
+-			return size;
+-
+-		if (dsb_size < 0) {
+-			/* Found a size, save it. */
+-			dsb_size = size;
+-		} else {
+-			/* Found duplicate TPDMs */
+-			return -EEXIST;
++			rc = tpda_get_element_size(drvdata, in, -1);
++			if (rc)
++				return rc;
+ 		}
+ 	}
+ 
+-	return dsb_size;
++
++	return rc;
+ }
+ 
+ /* Settings pre enabling port control register */
+@@ -109,37 +142,24 @@ static void tpda_enable_pre_port(struct tpda_drvdata *drvdata)
+ static int tpda_enable_port(struct tpda_drvdata *drvdata, int port)
+ {
+ 	u32 val;
+-	int size;
++	int rc;
+ 
+ 	val = readl_relaxed(drvdata->base + TPDA_Pn_CR(port));
+-	/*
+-	 * Configure aggregator port n DSB data set element size
+-	 * Set the bit to 0 if the size is 32
+-	 * Set the bit to 1 if the size is 64
+-	 */
+-	size = tpda_get_element_size(drvdata->csdev, port);
+-	switch (size) {
+-	case 32:
+-		val &= ~TPDA_Pn_CR_DSBSIZE;
+-		break;
+-	case 64:
+-		val |= TPDA_Pn_CR_DSBSIZE;
+-		break;
+-	case 0:
+-		return -EEXIST;
+-	case -EEXIST:
++	tpda_clear_element_size(drvdata->csdev);
++	rc = tpda_get_element_size(drvdata, drvdata->csdev, port);
++	if (!rc && (drvdata->dsb_esize || drvdata->cmb_esize)) {
++		tpda_set_element_size(drvdata, &val);
++		/* Enable the port */
++		val |= TPDA_Pn_CR_ENA;
++		writel_relaxed(val, drvdata->base + TPDA_Pn_CR(port));
++	} else if (rc == -EEXIST)
+ 		dev_warn_once(&drvdata->csdev->dev,
+-			"Detected multiple TPDMs on port %d", -EEXIST);
+-		return -EEXIST;
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	/* Enable the port */
+-	val |= TPDA_Pn_CR_ENA;
+-	writel_relaxed(val, drvdata->base + TPDA_Pn_CR(port));
++			      "Detected multiple TPDMs on port %d", port);
++	else
++		dev_warn_once(&drvdata->csdev->dev,
++			      "Didn't find TPDM element size");
+ 
+-	return 0;
++	return rc;
+ }
+ 
+ static int __tpda_enable(struct tpda_drvdata *drvdata, int port)
+diff --git a/drivers/hwtracing/coresight/coresight-tpda.h b/drivers/hwtracing/coresight/coresight-tpda.h
+index b3b38fd41b64..19af64120fcf 100644
+--- a/drivers/hwtracing/coresight/coresight-tpda.h
++++ b/drivers/hwtracing/coresight/coresight-tpda.h
+@@ -10,6 +10,8 @@
+ #define TPDA_Pn_CR(n)		(0x004 + (n * 4))
+ /* Aggregator port enable bit */
+ #define TPDA_Pn_CR_ENA		BIT(0)
++/* Aggregator port CMB data set element size bit */
++#define TPDA_Pn_CR_CMBSIZE		GENMASK(7, 6)
+ /* Aggregator port DSB data set element size bit */
+ #define TPDA_Pn_CR_DSBSIZE		BIT(8)
+ 
+@@ -25,6 +27,8 @@
+  * @csdev:      component vitals needed by the framework.
+  * @spinlock:   lock for the drvdata value.
+  * @enable:     enable status of the component.
++ * @dsb_esize   Record the DSB element size.
++ * @cmb_esize   Record the CMB element size.
+  */
+ struct tpda_drvdata {
+ 	void __iomem		*base;
+@@ -32,6 +36,8 @@ struct tpda_drvdata {
+ 	struct coresight_device	*csdev;
+ 	spinlock_t		spinlock;
+ 	u8			atid;
++	u8			dsb_esize;
++	u32			cmb_esize;
+ };
+ 
+ #endif  /* _CORESIGHT_CORESIGHT_TPDA_H */
 -- 
 2.17.1
 
