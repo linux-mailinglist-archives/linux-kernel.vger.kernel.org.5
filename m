@@ -1,177 +1,262 @@
-Return-Path: <linux-kernel+bounces-51420-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51388-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E95B848B05
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 05:36:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D781E848ABD
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 04:05:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 589FC1F241DD
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 04:36:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 826FA283EB2
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 03:05:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 851386FA8;
-	Sun,  4 Feb 2024 04:36:31 +0000 (UTC)
-Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2110.outbound.protection.partner.outlook.cn [139.219.17.110])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9003517F7;
+	Sun,  4 Feb 2024 03:05:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N5DVIbiV"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A05C615E5C8;
-	Sun,  4 Feb 2024 04:36:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.110
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707021390; cv=fail; b=GEbVvUXUJh7et/0JxSZSHcHfZzOrL9coNN9yYdg5jIO4lHueKBQ0rIKul4CpykU+gySdS36zAU4DtVylQLDsc7ZbR0OJ54xhrhNk3gKzTFt/at3VzPapenxtz1TCTCVQWRN3FlgNGDjXQdhucrGF/T41fBUeEWlTK4W4IUSdyIo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707021390; c=relaxed/simple;
-	bh=xM0rQQqpdXIeXMTyOrJSDM/ll7BB3p58wx2q8HkvxK4=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=kAt+QwBRTu0MmdSjHvnJ+A28Clt4prfaZgRtZaESlNbnyjyROHRlfRl/8SSqEr/74gvmWysqvX96WdwdTu5b3T2QryfSMWQCpZwD1wUKT7eUuf8GwSVHWlwU3dpvcSYEziYWAJOdyG1/xNMYUagkETpOoC/OmUw9v5LrFyF5uxI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.110
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DB8bvlEyV8v4AklccW1zZ9niNzxNux/cph26O+sNMShZ2GIUBcjOZoprHRNYUugDBAmgpE0Pkfdz+MpdVkxOn6RjwFWXWNYTlAFGoVVkIw1U73rHf56ZiLtfHZ4xR6UynSBTzG9DT/h4aOt1eFq5M8t99CtmhTCpIisP3iJadFg6bDvzTK+21wp4PyReiZeDJL1h4sHlmu6+wmFE91bRl4ZgimFCQD+Z4Fq2mHswU1nB8VlnzMSrRee9vF4/W1jO1pP/p07TI+I/FvJBKytWkN3/9pN6v5YOMRJqkLZJtDRjVpj4dKsM+9wY8Ic87+Zy0T8cFibszS4YEicC7lqCrQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xM0rQQqpdXIeXMTyOrJSDM/ll7BB3p58wx2q8HkvxK4=;
- b=LlAOPOq/j5LA79SLGBMBDEmEHEo2eTcj7xzqwmmYrT3dJLYM6j6bzImNnywNG37xgRXh0BpgAQY1RcAJYx72WNmU3KKApPxhqM5fHA3jaD4r7UBqhbBVzneNRvB2D3lln2TXKKWzHSIw5F7kBmWKYGNymFKqkHPHLoN/kWAVChlFgjpZGlqq3fXecfKU/8Uu3tRs9QMpPP5fmxHj9GPiMEYGGIdUorj8popmIr1mIf2WkxUv9kjoYFHg/V0+tX2zO8bVHdI6UnTOyeMgiSxxTOVj9vkuP6A8pWmiQmRvSY3fPPaxVV0s36OM+amlJJAy4FXSutSNBhcFMpDK5odrwQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Received: from SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:25::10) by SHXPR01MB0880.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:1d::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.28; Sun, 4 Feb
- 2024 02:01:04 +0000
-Received: from SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
- ([fe80::b0af:4c9d:2058:a344]) by
- SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn ([fe80::b0af:4c9d:2058:a344%6])
- with mapi id 15.20.7249.025; Sun, 4 Feb 2024 02:01:04 +0000
-From: Changhuang Liang <changhuang.liang@starfivetech.com>
-To: Conor Dooley <conor@kernel.org>
-CC: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Emil
- Renner Berthing <kernel@esmil.dk>, Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Jack
- Zhu <jack.zhu@starfivetech.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-riscv@lists.infradead.org"
-	<linux-riscv@lists.infradead.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>
-Subject:
- =?gb2312?B?u9i4tDogu9i4tDogu9i4tDogW3YyXSByaXNjdjogZHRzOiBzdGFyZml2ZTog?=
- =?gb2312?Q?jh7110:_Add_camera_subsystem_nodes?=
-Thread-Topic:
- =?gb2312?B?u9i4tDogu9i4tDogW3YyXSByaXNjdjogZHRzOiBzdGFyZml2ZTogamg3MTEw?=
- =?gb2312?Q?:_Add_camera_subsystem_nodes?=
-Thread-Index:
- AQHaU1XbC4h2Cxa8Q0qBcekBfbY08LDz/xMAgAC4KBCAAR2gAIAAguQQgADwi4CAAixdsA==
-Date: Sun, 4 Feb 2024 02:01:03 +0000
-Message-ID:
- <SHXPR01MB0671F4FA0292CDF3034FEE48F240A@SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn>
-References: <20240130082509.217683-1-changhuang.liang@starfivetech.com>
- <20240131-recycling-entering-b742e0e835eb@spud>
- <SH0PR01MB06675EF7ACD1452C4DEBE45FF243A@SH0PR01MB0667.CHNPR01.prod.partner.outlook.cn>
- <20240201-handiwork-excretion-36aa2eea0709@spud>
- <SHXPR01MB0671975B6B2455E43A5C7D86F242A@SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn>
- <20240202-spoiler-deceit-0e9ac720fd2c@spud>
-In-Reply-To: <20240202-spoiler-deceit-0e9ac720fd2c@spud>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SHXPR01MB0671:EE_|SHXPR01MB0880:EE_
-x-ms-office365-filtering-correlation-id: d07fa423-eb82-46b5-1623-08dc252524b3
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 6ZGrGks22nVeZuArXZuw3aKAJEhp+WztYrsA8Y1MK+VQ14kj+CYe44JUioPGeLnMmo7YM6G/eoKfpjKD/xJjps30JMwis+o8P92cUE8LYB53s6wpgvC87uOsV0Pj3ow5ZpPWP/yxCssomCg6YJmX27ZCdsENrhiqtOSpaBLs1OjL1ljbqHOVK53Rc6j8Uh/FTfvb78WiXE/dkLtoaYD5/nRadBFnlmIDjtzAajZYng42DnRq1f76bn2yKZ3bUh78OYRo0Jbq+cShRIIeHgFB8ss+3VTdnam8FuRlkTLte01170nJRKvEJIXdxlRiQ5vk6SsIxEpl5QomUHted26ZUA6JB/icmW3oN/WQQ12mKf0SG9SESSpvgHFyrucMdF29ul9JJkXp1+B92mjwk1qwSOU8IY1o3/FvCKZR4aJ40zhf/bS7ZELclJQaQ6CzWvj74Ny8CoIMY9QhPuhmeLUhHVaRA1VWuyMN+XS5bMz26rZAwezOolNe9Gwsjz0ZZbx1dps9zp3AYXvwOri92V1zMlOMqtn/WU+MSXSDzr6RIEK0VtaJcYLhFivHf1sCNZQs
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(39830400003)(136003)(396003)(346002)(366004)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(508600001)(64756008)(6916009)(41320700001)(38070700009)(224303003)(76116006)(8936002)(66446008)(66556008)(33656002)(4326008)(66946007)(44832011)(2906002)(66476007)(7416002)(86362001)(7696005)(9686003)(40180700001)(38100700002)(122000001)(5660300002)(40160700002)(83380400001)(966005)(54906003)(71200400001)(41300700001)(26005)(55016003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?gb2312?B?dk85Y1h2YzhHY3ZmZ1FUT1NnK09zdlBLVFpuZVJ0c2VOenQ5NW1oZURwNkdB?=
- =?gb2312?B?QnByUmFvbFpoVWxhM0NNaVRlS1hMM0RvOFdPMjZpUEhycXU4ck83d0xIZVJ5?=
- =?gb2312?B?ZjR2QkZwN3V3UU04VEJ3aXp4bGhjc2cvRmd1dlFIVjU0NTRPb3ZPY2pIeEg0?=
- =?gb2312?B?NWRBQjFVeklYa1l4dWRKU3J0VEp1dWZzd0FoQlFmNk9BaFJOQTVwMDd0L20y?=
- =?gb2312?B?bE5yYzFGT0g4S1M1UTBpQWJZcGp2cFFYZ1YvZFIvUE1mUll6N1BlYlZiT2Rp?=
- =?gb2312?B?MUV3alo1Yjk0a1F3UTU2a3lXZFM0Nk9zcUxCYThoNjdzT28rWEJ3Y3p6OC9V?=
- =?gb2312?B?Smc3aFVIQmRWa1JNUG8rVWdobGZmTTE0VXRseUdOVzJzb1E2MTNRL05EY2Fj?=
- =?gb2312?B?T2t5QjFhTHRUd1hFckFBVU1rY1Q5VXpiMktkVkgzY1JxTG9zRU1wTU5tcnZ4?=
- =?gb2312?B?VnpHdk1oVG9POTF5TUttOWtRc0I3ekdHS2Z6c25tOEo5WDJ4Wi96Y1hHZHhZ?=
- =?gb2312?B?QWR4V1kxbHNOVDhsSy9RWEdaTzJOaDdlNG5RdE9aemhUVGNVRktqeWR0MGpG?=
- =?gb2312?B?MjVXVUJXQjFZem5yS3Z1bGhzZm9HWnU4bG12bnNGSVMzSzdmcm1peGpleHFs?=
- =?gb2312?B?M3VEZk9vNllTWHE3Z0pvSmNCeGNvNWYrb2poM3p3Tmxnc3F5S1dTTTlubDVn?=
- =?gb2312?B?N3N2ZE5haXZBVTBuT2E4VTIrTUV5RGthNkdKZkpHeXJvRnBOcHdrdXhWZ1BP?=
- =?gb2312?B?Uk1uWUg0dUpFOEk2emZsUVVvaFFyNVh3MHJ5bjRnOXliVy9HeEdjWEpLdktX?=
- =?gb2312?B?Nit6M0htZ3VxdUdzUUt5bmd6RXVpQ1dyL1F3MVFEcTIvdk9PS3IyTDVJV0lj?=
- =?gb2312?B?cVpPUGRGeUMzbWdnRlFhZDcrNjlCdytxZXRORjZ6UXZvcVJ0Wk5yQzJVR2Rt?=
- =?gb2312?B?UER0MHo4UHlxK2xhY1drb0hKSjNRdjE2NThWN1JYdERiVC9tUjczaFpkdU9B?=
- =?gb2312?B?eExYSGhnVjJSd09IS3dwQWlsZURkOUE0R0o5NkRWOFRGekp6c0RLWVREdnZX?=
- =?gb2312?B?cWJ1L2l2a1I1OUtUSEFHQVVyd0lnWmhUN09kdkVsMFFCazdxUGc5Nkh0RDFX?=
- =?gb2312?B?bkd5dHhaU2tDT2xoZEtoaHl6MUE1WUlwRStRMFpId3IxOXFOT0Z5dEdnUFhW?=
- =?gb2312?B?U1VrY0YrYWRCWHU0N3RxQm80QzBoRE42aXQ4a2l4THBOTEYvNVBBRXA3RVR3?=
- =?gb2312?B?aUVOV3VGYnBCY0hoZGtlMWR0VjZ0c2IzQnFRVmxmeExTUHVBU0FxNi90K0Nw?=
- =?gb2312?B?OVVvYUwyM0F3ZlZMUktwdmNKK3g2b1BuZUM3RXZWN1B4MExVQ3daclQxamFa?=
- =?gb2312?B?a3RZbkFnKzM3aVNFSjBrSEZjdUlmV3lJbDVXMUZUYks4VkJmbG00MWk3bkc0?=
- =?gb2312?B?aEh1RE8rR0doR3ZFQkJWT3cySmpud3d4SWZFaVUxc3lidUMvNlFjbUplK1ZM?=
- =?gb2312?B?c2QrMXFCMVZMSmdzc1BlV2VIaFI0ZjZxcVFCWVFwd05nMG1lVmw4SGc2YVJC?=
- =?gb2312?B?RWFrKzg1SkNvaC82dmtuWmRqL3JpT1ltcjdYSytYRTJ5cU5Ha0JZTHNZKzRG?=
- =?gb2312?B?dWkzRnN0L0dCSm1QMllMN3ZqTVJMQ0ttV2t4Rm1PQ2lBbHZjRjZWMWhGNFpT?=
- =?gb2312?B?SHFmUHRlK1BDMXlscitOVE1naTBuaHFOUmJhUHVCa1RkbE5MR0tweG9jNnlT?=
- =?gb2312?B?aWFOWTh3RGJ6RlZKa1BTczF6MWRzcTAvTmZVWCtJY2lhWnhRNjhSTy9BTHdF?=
- =?gb2312?B?S05zamMxN3BKeXUweU1XUzVnOHFrUzhOd0t6ZXdWQXFUQ2lKYnVxN0pEVWx3?=
- =?gb2312?B?bjUrNUwvOFU0aExML3hoT1NWb3lVdkRNRittTW5ibGNxV1hJeThwMXhZTGNV?=
- =?gb2312?B?WWc1U0M4SUQ3SmpGRjc3ZmtySXk0N2dWV3hzUGhaVVRZejNkYzFmaEFneWc2?=
- =?gb2312?B?M29qaHFKUFdyLzAzZVQ4S2o2R3NTcU5OY0NyZTJxc21jMjBqU0NCaHIwYnRR?=
- =?gb2312?B?T0xnMXptZ0hhTHZoY2Q1NVZJMWJ0QVYzN0ZobUFVZzNnOXkwWXRvc3ZCSG5p?=
- =?gb2312?B?ejI2Ti9IU1JqR2JGaU83QVI3K3NDZnNIbk5VMlQrdmNXUkR3dGxzOTBMQlZB?=
- =?gb2312?B?S3c9PQ==?=
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF61C10F1
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 03:05:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707015938; cv=none; b=nz/67wipakkLM63Hze3eWIOyDw4ULEwgdxE7rEJx7m20n5kGq+nxsPwhZf3yMVfDpaPh26RNqnBlCNMhanFskQvHihCY1P4onjxVbRqorb3XSMjmPDSNrKyLYDIObFKkcQ0lYZKeCGKD7MjreriBOwy8Mh8/r4/Ch3hDjodwpWA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707015938; c=relaxed/simple;
+	bh=fUpRvrVqzMGHonVwJIMLpWXS89N3pkGnstZUODMyxGs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=reQLHrWNJtGWRGOSQMNHPM5dK6UsDJ6+gLdPadNQcTtoQU8QV3EG78QG6h/bSymQrCVbCa7ExpJ2/57ueQV6QhQAhkMmeD25zbrQ18/ceVDCE9YiOefAMwwqZkut5EhzcyLxuFKZNwlHBufOJxAyikfNkm8S9l6dbmabirLPmqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N5DVIbiV; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d09b21a8bbso7680951fa.3
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Feb 2024 19:05:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707015934; x=1707620734; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4NN/K7IhxXzsBHTVulwBrsBDyCVizAqr7SrV7CXrA/Y=;
+        b=N5DVIbiVSZM90yyXgD3sEopNRWSBtE3qWexAVtOmqZDxWBQGdwFY9UJ7U53ne1VyZ6
+         O/nJEkNWK9S7bzcNPrn8B+1hzwmVMSGgwJBt7z4iKFUwqFzG/XXbUkOT9nJElpZeObII
+         u/yDj7trQ2wqs6y0vPzn8Q0TsILQIi4ycVI94d46keP1BwI27W8O3BwwyuPFwtR/W+nc
+         LFaIujyZ3aPaNIuJEWeHI8sOCjuHZXJ6NJMUvRCmTHwRfZ16Tq4+H/FyCtf4tXRECxFg
+         aer9cM7E7lUatfPXud0SwqlyDim3U8OqlrSWvT6/IV2wuDeJQfnB+ERAhbTeyyk2hgFk
+         psxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707015934; x=1707620734;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4NN/K7IhxXzsBHTVulwBrsBDyCVizAqr7SrV7CXrA/Y=;
+        b=JNR1ZOiCI62Lc9BhXYT2ChZy1MtIcHOIcLM0qIRsHAaI3r9wLyooy7UtUmnYvHZ38S
+         cFlDTDHqFHdkcAR/N/Ex4X/2/eCFG6RbnuPboYZos/L6zKu4DVF7EmzG7aHsHaWnuSkq
+         17zY0vchsHHnmmLWjmrv43v1GIoh9V+7llL2fntSahxaBxPv/nWlqIGLTsXUcwsPfDzC
+         V3e6Oue5CpUXvVjhR1nmdnWaSG87GqASo/l2ukLfnVo1Xu4G1eBkYOQA/5SVE6hclBNt
+         /eIr4n/L8XXvB9ljmf3CnK6Ysa/S/4BjkqIwipq995esv/s3QDKsiqWt7+e7ruHpDE7s
+         gb7Q==
+X-Gm-Message-State: AOJu0Yy6pg8D68UbyCyxyEgAyubpGdGAGPKkUp4YXXhUXzy8qgTBgH6Q
+	r9sTtPqBxOxGIfF3XjIO+7rOaWmZ5/62YqrJogo+tXk+8rgQ3aXYPLoFRUruvtx7DZjKREFlrow
+	c/IKxZb1XUY7wHyuboQ7fTOKpfyY=
+X-Google-Smtp-Source: AGHT+IGbzx/O71WURzc122m7Jm1Hq+fce5vgcckWE4nORhLY/NO9xcDvYhPZGGE3wiR/0vUaBdaHA3FyYJQndxFxInE=
+X-Received: by 2002:a2e:8e89:0:b0:2cc:d889:8d97 with SMTP id
+ z9-20020a2e8e89000000b002ccd8898d97mr7804987ljk.14.1707015934213; Sat, 03 Feb
+ 2024 19:05:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-Network-Message-Id: d07fa423-eb82-46b5-1623-08dc252524b3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Feb 2024 02:01:03.9248
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: uHWwIRNVGyw+zNkdofUDBRhi3kvapoN4NIL1ztv16dFFdA+rNz8K69KB8d49AabzFOE79T/eVZ3cv+evINja2l05WQIgyuc+lGGXrO4D9YA1+tv0QdoJ6GxwHgAGSJV4
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SHXPR01MB0880
+References: <20240111115745.62813-2-zegao@tencent.com> <Za-0HCP7WG3PIe7h@linux.ibm.com>
+ <CAD8CoPAJh9ggK8ODYFiUaF2WXPG4d5ERDUdpL532N5kc=-xuSw@mail.gmail.com> <ZbzW6EuJ1gFTi80U@linux.ibm.com>
+In-Reply-To: <ZbzW6EuJ1gFTi80U@linux.ibm.com>
+From: Ze Gao <zegao2021@gmail.com>
+Date: Sun, 4 Feb 2024 11:05:22 +0800
+Message-ID: <CAD8CoPD1edPmqgDVS1X6G2z-k4aPnCxm=KyCaf9PteOUm=--QQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] sched/eevdf: Use tunable knob sysctl_sched_base_slice
+ as explicit time quanta
+To: Vishal Chourasia <vishalc@linux.ibm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ben Segall <bsegall@google.com>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>, Mel Gorman <mgorman@suse.de>, 
+	Steven Rostedt <rostedt@goodmis.org>, Valentin Schneider <vschneid@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, linux-kernel@vger.kernel.org, 
+	Ze Gao <zegao@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-DQpIaSwgQ29ub3IsDQoNClsuLi5dDQo+ID4gPiA+ID4gPiArCWlteDIxOV9jbGs6IGlteDIxOS1j
-bG9jayB7DQo+ID4gPiA+ID4gPiArCQljb21wYXRpYmxlID0gImZpeGVkLWNsb2NrIjsNCj4gPiA+
-ID4gPiA+ICsJCWNsb2NrLW91dHB1dC1uYW1lcyA9ICJpbXgyMTlfY2xrIjsNCj4gPiA+ID4gPiA+
-ICsJCWNsb2NrLWZyZXF1ZW5jeSA9IDwyNDAwMDAwMD47DQo+ID4gPiA+ID4gPiArCQkjY2xvY2st
-Y2VsbHMgPSA8MD47DQo+ID4gPiA+ID4gPiArCX07DQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBXaHkg
-ZG8geW91IG5lZWQgYW4gb3V0cHV0IG5hbWUgaGVyZT8NCj4gPiA+ID4NCj4gPiA+ID4gVGhlIG91
-dHB1dCBuYW1lIGNhbiBiZSB1bm5lY2Vzc2FyeS4NCj4gPiA+ID4NCj4gPiA+ID4gPiBBbHNvLCB3
-aGVyZSBkb2VzIHRoaXMgY2xvY2sgY29tZSBmcm9tPyBJcyBpdCBhbiBvc2NpbGxhdG9yIG9uIHRo
-ZSBib2FyZD8NCj4gPiA+ID4gPg0KPiA+ID4gPg0KPiA+ID4gPiBUaGlzIGNsb2NrIGNvbWUgZnJv
-bSBpbXgyMTksIG5vdCB0aGUgVmlzaW9uRml2ZSAyIGJvYXJkLg0KPiA+ID4NCj4gPiA+IElmIHRo
-ZSBjYW1lcmEgaXMgbm90IG9uIHRoZSB2aXNpb25maXZlIDIgYm9hcmQsIHdoeSBhcmUgeW91IGFk
-ZGluZw0KPiA+ID4gdGhpcyB0byB2aXNpb25maXZlLTIuZHRzaT8NCj4gPg0KPiA+IEl0IHNlZW1z
-IHRoYXQgSSBuZWVkIHRvIHVzZSBkdHNvLiBSaWdodD8NCj4gDQo+IFllcy4gRldJVywgdGhlIHNh
-bWUgY29tbWVudHMgYXMgYXBwbGllZCBmb3IgdGhlIHNvdW5kIGNhcmQgV2Fsa2VyIHRyaWVkIHRv
-DQo+IGFkZCBhcHBsaWVzIGhlcmUgdG9vLCB1bmxlc3MgdGhpcyBzaGlwcyB3aXRoIHRoZSBib2Fy
-ZHM6DQo+IHwgSSdtIG5vdCBhZ2FpbnN0IGFsbG93aW5nIGluLXRyZWUgb3ZlcmxheXMgZm9yDQo+
-IHwgaGF0cy9jYXBlcy9kYXVnaHRlci1ib2FyZHMgdGhhdCBjb21lIGJ1bmRsZWQgd2l0aCBhIGJv
-YXJkLCBidXQNCj4gfCBhY2NlcHRpbmcgb25lcyBmb3IgYSBoYXQgdGhhdCBzb21lb25lIGRlY2lk
-ZWQgdG8gdXNlIHRoZW9yZXRpY2FsbHkgaGFzDQo+IHwgbm8gbGltaXQhIFRoZSAic29tZW9uZSIg
-aW4gdGhpcyBjYXNlIG1pZ2h0IGJlIGEgU3RhckZpdmUgZGV2ZWxvcGVyLA0KPiB8IGJ1dCBpdCBj
-b3VsZCBiZSBhbnkgcmFuZG9tIG9uZSBvZiB5b3VyIGN1c3RvbWVycyBuZXh0IQ0KPiBodHRwczov
-L2xvcmUua2VybmVsLm9yZy9saW51eC1yaXNjdi8yMDIzMDUxMC1yaXZldGVyLXJpZGRlbi0zZjA1
-NjI1MWU2MjNAcw0KPiBwdWQvDQo+IA0KPiBJIGZpZ3VyZSB0aGlzIGlzIGEgc2ltaWxhciBjYXNl
-IGFzIHRoYXQ/DQoNClllcywgSSB3aWxsIGRyb3AgdGhlIElNWDIxOSBub2RlIGluIG5leHQgdmVy
-c2lvbi4NCg0K
+On Fri, Feb 2, 2024 at 7:50=E2=80=AFPM Vishal Chourasia <vishalc@linux.ibm.=
+com> wrote:
+>
+> On Wed, Jan 24, 2024 at 10:32:08AM +0800, Ze Gao wrote:
+> > > Hi, How are you setting custom request values for process A and B?
+> >
+> > I cherry-picked peter's commit[1], and adds a SCHED_QUANTA feature cont=
+rol
+> > for testing w/o my patch.  You can check out [2] to see how it works.
+> >
+> Thank you sharing your setup.
+>
+> Built the kernel according to [2] keeping v6.8.0-rc1 as base
+>
+> // NO_SCHED_QUANTA
+> # perf script -i perf.data.old  -s perf-latency.py
+> PID 355045: Average Delta =3D 87.72726154385964 ms, Max Delta =3D 110.015=
+044 ms, Count =3D 57
+> PID 355044: Average Delta =3D 92.2655679245283 ms, Max Delta =3D 110.0171=
+82 ms, Count =3D 53
+>
+> // SCHED_QUANTA
+> # perf script -i perf.data  -s perf-latency.py
+> PID 355065: Average Delta =3D 10.00 ms, Max Delta =3D 10.012708 ms, Count=
+ =3D 500
+> PID 355064: Average Delta =3D 9.959 ms, Max Delta =3D 10.023588 ms, Count=
+ =3D 501
+>
+> #  cat /sys/kernel/debug/sched/base_slice_ns
+> 3000000
+>
+> base slice is not being enforced.
+>
+> Next, Looking closing at the perf.data file
+>
+> # perf script -i perf.data -C 1 | grep switch
+> ...
+>  stress-ng-cpu 355064 [001] 776706.003222:       sched:sched_switch: stre=
+ss-ng-cpu:355064 [120] R =3D=3D> stress-ng-cpu:355065 [120]
+>  stress-ng-cpu 355065 [001] 776706.013218:       sched:sched_switch: stre=
+ss-ng-cpu:355065 [120] R =3D=3D> stress-ng-cpu:355064 [120]
+>  stress-ng-cpu 355064 [001] 776706.023218:       sched:sched_switch: stre=
+ss-ng-cpu:355064 [120] R =3D=3D> stress-ng-cpu:355065 [120]
+>  stress-ng-cpu 355065 [001] 776706.033218:       sched:sched_switch: stre=
+ss-ng-cpu:355065 [120] R =3D=3D> stress-ng-cpu:355064 [120]
+> ...
+>
+> Delta wait time is approx 0.01s or 10ms
+
+You can check out your HZ, which should be 100 in your settings
+in my best guess.That explains your results.
+
+> So, switch is not happening at base_slice_ns boundary.
+>
+> But why? is it possible base_slice_ns is not properly used in
+> arch !=3D x86 ?
+
+The thing is  in my RFC the effective quanta is actually
+
+   max_t(u64, TICK_NSEC, sysctl_sched_base_slice)
+
+where sysctl_sched_base_slice is precisely a handy tunable knob
+for users ( maybe i should make it loud and clear more ).
+
+See what I do in update_entity_lag(), you will understand.
+
+Note we have 3 time related concepts here:
+1. TIME TICK: (schedule) accounting time unit.
+2. TIME QUANTA =EF=BC=88not necessarily the effective one): scheduling time=
+ unit
+3. USER SLICE: time slice per request
+
+To implement latency-nice while being as fair as possible, We must
+carefully consider the size relationship between them, and especially
+the value range of USER SLICE due to the cold fact that the lag(
+unfairness) is literally subject to both time quanta and user requested
+slices.
+
+
+Regards,
+        -- Ze
+
+> >
+> > echo NO_SCHED_QUANTA > /sys/kernel/debug/sched/features
+> > test
+> > sleep 2
+> > echo SCHED_QUANTA > /sys/kernel/debug/sched/features
+> > test
+> >
+> >
+> > [1]: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/c=
+ommit/kernel/sched?h=3Dsched/eevdf&id=3D98866150f92f268a2f08eb1d884de9677eb=
+4ec8f
+> > [2]: https://github.com/zegao96/linux/tree/sched-eevdf
+> >
+> >
+> > Regards,
+> >         -- Ze
+> >
+> > > >
+> > > >                       stress-ng-cpu:10705     stress-ng-cpu:10706
+> > > > -------------------------------------------------------------------=
+--
+> > > > Slices(ms)            100                     0.1
+> > > > Runtime(ms)           4934.206                5025.048
+> > > > Switches              58                      67
+> > > > Average delay(ms)     87.074                  73.863
+> > > > Maximum delay(ms)     101.998                 101.010
+> > > >
+> > > > In contrast, using sysctl_sched_base_slice as the size of a 'quantu=
+m'
+> > > > in this patch gives us a better control of the allocation accuracy =
+and
+> > > > the avg latency:
+> > > >
+> > > >                       stress-ng-cpu:10584     stress-ng-cpu:10583
+> > > > -------------------------------------------------------------------=
+--
+> > > > Slices(ms)            100                     0.1
+> > > > Runtime(ms)           4980.309                4981.356
+> > > > Switches              1253                    1254
+> > > > Average delay(ms)     3.990                   3.990
+> > > > Maximum delay(ms)     5.001                   4.014
+> > > >
+> > > > Furthmore, with sysctl_sched_base_slice =3D 10ms, we might benefit =
+from
+> > > > less switches at the cost of worse delay:
+> > > >
+> > > >                       stress-ng-cpu:11208     stress-ng-cpu:11207
+> > > > -------------------------------------------------------------------=
+--
+> > > > Slices(ms)            100                     0.1
+> > > > Runtime(ms)           4983.722                4977.035
+> > > > Switches              456                     456
+> > > > Average delay(ms)     10.963                  10.939
+> > > > Maximum delay(ms)     19.002                  21.001
+> > > >
+> > > > By being able to tune sysctl_sched_base_slice knob, we can achieve
+> > > > the goal to strike a good balance between throughput and latency by
+> > > > adjusting the frequency of context switches, and the conclusions ar=
+e
+> > > > much close to what's covered in [1] with the explicit definition of
+> > > > a time quantum. And it aslo gives more freedom to choose the eligib=
+le
+> > > > request length range(either through nice value or raw value)
+> > > > without worrying about overscheduling or underscheduling too much.
+> > > >
+> > > > Note this change should introduce no obvious regression because all
+> > > > processes have the same request length as sysctl_sched_base_slice a=
+s
+> > > > in the status quo. And the result of benchmarks proves this as well=
+.
+> > > >
+> > > > schbench -m2 -F128 -n10       -r90    w/patch tip/6.7-rc7
+> > > > Wakeup  (usec): 99.0th:               3028    95
+> > > > Request (usec): 99.0th:               14992   21984
+> > > > RPS    (count): 50.0th:               5864    5848
+> > > >
+> > > > hackbench -s 512 -l 200 -f 25 -P      w/patch  tip/6.7-rc7
+> > > > -g 10                                         0.212   0.223
+> > > > -g 20                                 0.415   0.432
+> > > > -g 30                                 0.625   0.639
+> > > > -g 40                                 0.852   0.858
+> > > >
+> > > > [1]: https://dl.acm.org/doi/10.5555/890606
+> > > > [2]: https://lore.kernel.org/all/20230420150537.GC4253@hirez.progra=
+mming.kicks-ass.net/T/#u
+> > > >
+> > > > Signed-off-by: Ze Gao <zegao@tencent.com>
+> > > > ---
+> > >
+> >
 
