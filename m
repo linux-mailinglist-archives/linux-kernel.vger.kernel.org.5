@@ -1,119 +1,117 @@
-Return-Path: <linux-kernel+bounces-51542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9C8A848C59
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 10:04:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25997848C5A
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 10:05:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40176281C9A
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 09:04:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A91F12818C6
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 09:05:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9E5414AA0;
-	Sun,  4 Feb 2024 09:04:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 112B014A8F;
+	Sun,  4 Feb 2024 09:05:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="pgjn5A/A"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e1PgbuxE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32C32171A4;
-	Sun,  4 Feb 2024 09:03:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5614D16419;
+	Sun,  4 Feb 2024 09:05:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707037442; cv=none; b=uDb/phw0mBUrM+qMjksUJ3ESjaHaiolaKxlQeSeTtvubA47XlEyHz+rURPOo1eTr3BkYAecTdSLQx3WoMiaxwYkxKkLkzfafpWMQ61w1NgCHfNdvJBXAkh77AiZd40WO+QShkr7kr0cXgtiXqqzwCzRhK2CdppENtEB//vRc8Cw=
+	t=1707037511; cv=none; b=enC9IrA6GdT3NvQKhE4eLY1pcnB4VqiyQoeND/vedyiogTfx0M2FL4dk3x9QxHdaq0cfD01wZPTWHHCKQhNB599CQF5XPXObrAqWULV4IEyoR21oiwWUM7PwqyNEWJRU5rGuO8Y694HKnf5blf//CrgzToX6wBa9nulDhxkE/aI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707037442; c=relaxed/simple;
-	bh=jF0w1R3K6lY6TNEDoBHEPF68k8xKzvT4f6kJeXJ6fbE=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Ux38d4C4dFb9J2bDhEtf0xE6M5U3QoYHLQARBpMTp5BRQ3IJulW0X6TBcTc3r4lMJIoGLcHzM5UOoOO5Z0bmvK5kbp5vbUp34NCJ98OvU4fwGqdagkI29N4semdo301XI7R62ddHfqrcrQfilDUQ9BJHdDy4Igk4cu+bRhwdpj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=pgjn5A/A; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41493eVh075412;
-	Sun, 4 Feb 2024 03:03:40 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707037420;
-	bh=d7UPPrPOD40sPgSNdfcsyxepCid0SjSq84tpHp7IiJ8=;
-	h=From:To:CC:Subject:Date;
-	b=pgjn5A/AtQAEpw7f0PqQtCKLLwKjl/gHnRwDqsYnNm7lw+oO0W0WTgu6SlreuFudL
-	 5rTPeA3nEGELzQbYOOkiBrQTDoDiOjceq9D8bHl5scB5EXX2rX/X7EN3VF+f3U5FMs
-	 nwA6TCxOY47Sp95auTeFk/0H4Nidw+E3kwbTfows=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41493eXV005601
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Sun, 4 Feb 2024 03:03:40 -0600
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 4
- Feb 2024 03:03:40 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Sun, 4 Feb 2024 03:03:40 -0600
-Received: from uda0492258.dhcp.ti.com (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41493a97125185;
-	Sun, 4 Feb 2024 03:03:37 -0600
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-To: <lee@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <afd@ti.com>, <srk@ti.com>,
-        <s-vadapalli@ti.com>
-Subject: [PATCH v2] dt-bindings: mfd: syscon: Add ti,j784s4-pcie-ctrl compatible
-Date: Sun, 4 Feb 2024 14:33:36 +0530
-Message-ID: <20240204090336.3209063-1-s-vadapalli@ti.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1707037511; c=relaxed/simple;
+	bh=PpMQUkIvbUJJcD9sjioO5DzOWwA59EhQZWArD7QiRFU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pgLuhzc0rPKJHHCAF1HTRh7cY70UrYCgX+KDJT9nQFrYCgw5LPeXrY7700yvnRU+2QAzoW3ePChA75tYVaKdS7yWCs7A3vn8jN7RD2ivx16hJi6MVitVKGDInZuEIJeDb+8rK4ChnZTUMdHbzNLVBaVrv8/2V/22HNzU/zFmpaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e1PgbuxE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD14EC43394;
+	Sun,  4 Feb 2024 09:05:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707037510;
+	bh=PpMQUkIvbUJJcD9sjioO5DzOWwA59EhQZWArD7QiRFU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=e1PgbuxERyiKjDKbKAAYo13KkOdHnlPRROPXQbgTP/wS/f6quvdJvwyBZ2ievdBJR
+	 ppw5HPP3CozHpWNN7U3nOI6x58XcUg9LNm2Qzem2aASPMnF22SnW+zcimytYz3TQj/
+	 0UdXPd3Z6B3G0kADMe96eA48w1k+UNNZUHPUdUmQ+43ZDFL/Mej+GIr+u/vAO/QDeg
+	 GrblHiv86bYTvKB8vrgAFJ5h6DLf2P4vICsEqq5JEkByTpoCIwCVJqsIXvRUecrRiK
+	 GHzWwXfDxHbzFThMffaCyMGuA7Oyg3XE0XNsIyZgmrjHN+mr9MzosXPPW9WNenxc4S
+	 gTL7T5mjVt6PA==
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5114cd44fdbso337658e87.2;
+        Sun, 04 Feb 2024 01:05:10 -0800 (PST)
+X-Gm-Message-State: AOJu0YwVgvqP7KMaRX98GlOGklIrNGKIBwpOZPCPouebyQQN+4CUn4YG
+	Y7F93tY+IzHvLCojuaXA9u1eOwIRzCgMD9jPqu9bHEcMGCpC/6ih0UUn/8RhkL567fO09ViVU/6
+	ASqtWIFRG8gOyJ3H7P1r8WWTxfWg=
+X-Google-Smtp-Source: AGHT+IFUbcG1fcbBl/y42lfmxlF6FQBVFmx5ngxsoX0yGzVUghsuPZs0hTJQOr93QQPT8lKlhygq79ZOF5Ptk6CIySs=
+X-Received: by 2002:a05:6512:522:b0:50e:76cd:f3f with SMTP id
+ o2-20020a056512052200b0050e76cd0f3fmr6722479lfc.54.1707037509338; Sun, 04 Feb
+ 2024 01:05:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20240204090223.37621-1-masahiroy@kernel.org>
+In-Reply-To: <20240204090223.37621-1-masahiroy@kernel.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sun, 4 Feb 2024 18:04:32 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQExdrSmucgzj8UHcgvXjKjdLqkiww+cuUN6EBzkJAy3w@mail.gmail.com>
+Message-ID: <CAK7LNAQExdrSmucgzj8UHcgvXjKjdLqkiww+cuUN6EBzkJAy3w@mail.gmail.com>
+Subject: Re: [PATCH] sound: remove duplicated CONFIG_SND_PXA2XX_AC97 entry
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-sound@vger.kernel.org, 
+	Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, 
+	Robert Jarzmik <robert.jarzmik@free.fr>, linux-arm-kernel@lists.infradead.org, 
+	Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The PCIE_CTRL registers within the CTRL_MMR space of TI's J784S4 SoC
-are used to configure the link speed, lane count and mode of operation
-of the respective PCIe instance. Add compatible for allowing the PCIe
-driver to obtain a regmap for the PCIE_CTRL register within the System
-Controller device-tree node in order to configure the PCIe instance
-accordingly.
+Maybe, the patch subject "ASoC: pxa:" might be better than "sound:"
+so it matches the change history in this directory.
 
-The Technical Reference Manual for J784S4 SoC with details of the
-PCIE_CTRL registers is available at: https://www.ti.com/lit/zip/spruj52
 
-Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
----
-Hello,
 
-This patch is based on linux-next tagged next-20240202.
-v1:
-https://lore.kernel.org/r/20240131112342.1300893-1-s-vadapalli@ti.com/
-Changes since v1:
-- Changed compatible to be SoC specific.
-- Updated commit message to be SoC specific.
+On Sun, Feb 4, 2024 at 6:02=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.or=
+g> wrote:
+>
+> 'config SND_PXA2XX_AC97' is already present in sound/arm/Kconfig with
+> a prompt.
+>
+> Commit 734c2d4bb7cf ("[ALSA] ASoC pxa2xx build support") redundantly
+> added the second one to sound/soc/pxa/Kconfig.
+>
+> Remove it.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+>
+>  sound/soc/pxa/Kconfig | 3 ---
+>  1 file changed, 3 deletions(-)
+>
+> diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
+> index f03c74809324..e05d6ce4c8fa 100644
+> --- a/sound/soc/pxa/Kconfig
+> +++ b/sound/soc/pxa/Kconfig
+> @@ -8,9 +8,6 @@ config SND_PXA2XX_SOC
+>           the PXA2xx AC97, I2S or SSP interface. You will also need
+>           to select the audio interfaces to support below.
+>
+> -config SND_PXA2XX_AC97
+> -       tristate
+> -
+>  config SND_PXA2XX_SOC_AC97
+>         tristate "SoC AC97 support for PXA2xx"
+>         depends on SND_PXA2XX_SOC
+> --
+> 2.40.1
+>
 
-Regards,
-Siddharth.
 
- Documentation/devicetree/bindings/mfd/syscon.yaml | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml b/Documentation/devicetree/bindings/mfd/syscon.yaml
-index 084b5c2a2a3c..2376b612f94e 100644
---- a/Documentation/devicetree/bindings/mfd/syscon.yaml
-+++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
-@@ -73,6 +73,7 @@ properties:
-               - rockchip,rv1126-qos
-               - starfive,jh7100-sysmain
-               - ti,am654-dss-oldi-io-ctrl
-+              - ti,j784s4-pcie-ctrl
- 
-           - const: syscon
- 
--- 
-2.34.1
-
+--=20
+Best Regards
+Masahiro Yamada
 
