@@ -1,156 +1,199 @@
-Return-Path: <linux-kernel+bounces-51629-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51630-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB066848D7B
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:15:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2393848D7E
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:16:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 500161F2247E
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:15:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D9962830EA
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:16:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9F20224D5;
-	Sun,  4 Feb 2024 12:13:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FB36224CA;
+	Sun,  4 Feb 2024 12:14:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="iI24y+8V"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2059.outbound.protection.outlook.com [40.107.237.59])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="anNfT7iK"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6053524A13;
-	Sun,  4 Feb 2024 12:13:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.59
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707048819; cv=fail; b=c7TdyxxzKMC/OSgP+TLk8qAdNMM22HMmPeXgGBRzD0GOCf6r/to1H9/COUzv5foIfJAa94A5lIZo/F7BzUE+EnVpOx0CUMnvps0g4xRX6x/n1p+34PKve9NQeUZKdVmp83uPmK8VwXSa4wFuXZgMtkOqxwuTEAJRAPYmNHFekQk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707048819; c=relaxed/simple;
-	bh=SfOMU7sqP7IWAY5QPMluTtzgpipdi53spr0DF8MYbgw=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GHCj5qNs5aOjlyeveLHTZC2kFGu178KxL53creWgY8oLL/Dq65y5jqGvzJD08y9VSTjC6V7GTADiu+IEsxTO70jK6Nch1xRun1j6azssFU7poXiknG73Yf8qX7kjm5wd/nS8SwtShttCX2KH+pSv6spMiqW/9dK4gWsfs6wNtac=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=iI24y+8V; arc=fail smtp.client-ip=40.107.237.59
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oc8wz98gbTxDnzTwGrZTwK1JGzRHk/FsORNYPCP3zJkw52SZo2Qy4BkkH2wyzp2Dt9mZGtwNtY1cRaQZ1i/QKqOD1EBH7cJGLIM7y7s5LzKb8fFyPqyPr0i8Qmub+GDxadZny4ccQ5Mpr8KYP402D/uQSqgAOnFP2Ct5dh/kRW5rzeAeedgHk7l3sNKVc1l8/YtS+boL0Np+5NyIsPmQ5T5aR8fKidLL201bp5+j2pKcOR9O/osYZ6ena69mH2WIoaYP/L83soGkw12424jYEjOszrNAWljeNudCS2+PoKbl01ff1iostY8alyUWFR9GyS0I9msjhq+T4IqDfPkpXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5zCI8pIG614ER69xydgIMnJNCLI28gBf+TOBAAw0E8I=;
- b=cbG0uVrdjbM3/chOKjqEs1tNkeuQGY8Y+7hwWemJqUwzCRpdISLafuHGzm6Dxm5wrlnBUb2OjW8b5017gPyNxCG1l4I1vnTC2WriK/k9om3RngsQK5QVJhDxxbt1aI/wy9fjuixryqcfgi2irO08ZzjdgbyNzm63Bc205pNVsj/zfPI8oDwWwwunXyuFVrwUUSolJ8ppqGTRW1+G3wuxFZRJNRcqrbKVZzleS9m1+V3Vj51rE+5j9ZpZggFpdq3OhSLkwgQY2Ls/xBJ4JKIc0i+hgpUJ95SGQsX3GhniPLYLowMzgZcViZjZ3aI60PRfgcJY9IjcWNIYwJMeF0/Uvw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5zCI8pIG614ER69xydgIMnJNCLI28gBf+TOBAAw0E8I=;
- b=iI24y+8VDyNvsvfDpCL4GeYOMWaw68Ef9pwcqvH2e1oiiRnQSELg5eC1F8byCYQgtBFrO6YQfAvXtWZNhqhDACb3y7tc342Fy8EItp5i6gyQ9IUJK+CSo3vDfLR/1IEcNs5eTQ1ctg7lH/X9n5JCbZD1NkDQ41J83a+eNzHBqvU=
-Received: from BL1PR13CA0133.namprd13.prod.outlook.com (2603:10b6:208:2bb::18)
- by IA1PR12MB7733.namprd12.prod.outlook.com (2603:10b6:208:423::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.15; Sun, 4 Feb
- 2024 12:13:31 +0000
-Received: from MN1PEPF0000ECD8.namprd02.prod.outlook.com
- (2603:10b6:208:2bb:cafe::b4) by BL1PR13CA0133.outlook.office365.com
- (2603:10b6:208:2bb::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.22 via Frontend
- Transport; Sun, 4 Feb 2024 12:13:31 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MN1PEPF0000ECD8.mail.protection.outlook.com (10.167.242.137) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7249.19 via Frontend Transport; Sun, 4 Feb 2024 12:13:31 +0000
-Received: from pyuan-Chachani-VN.amd.com (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Sun, 4 Feb 2024 06:13:28 -0600
-From: Perry Yuan <perry.yuan@amd.com>
-To: <rafael.j.wysocki@intel.com>, <Mario.Limonciello@amd.com>,
-	<viresh.kumar@linaro.org>, <Ray.Huang@amd.com>, <gautham.shenoy@amd.com>,
-	<Borislav.Petkov@amd.com>
-CC: <Alexander.Deucher@amd.com>, <Xinmei.Huang@amd.com>,
-	<Xiaojian.Du@amd.com>, <Li.Meng@amd.com>, <linux-pm@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 6/6] cpufreq: amd-pstate: remove legacy set_boost callback for passive mode
-Date: Sun, 4 Feb 2024 20:12:57 +0800
-Message-ID: <e0746643c781f638c9e9cb8a6d2ceebeeb906f95.1707047943.git.perry.yuan@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1707047943.git.perry.yuan@amd.com>
-References: <cover.1707047943.git.perry.yuan@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ED7F22314
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 12:14:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707048872; cv=none; b=ZGPWQxVx1vxXkR5DqKh6Uvo+zakZuRrG2uzaKA3uFHWh+2AL2x22kJjbn05uiuPp6oxV9JNUw0ycJ7PEfQOqpxVH4vYU8ZYKKn04lFZDFVdeURaEiDCk6KCC6neXLfTAxeHsZC5pQ5pp+WJ2tfaNjGiEAwvtBV2tOcUO/dJNSRw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707048872; c=relaxed/simple;
+	bh=LhBXAdqdbG1vcfn5JzVGcw1W6OmmWRM+PAK11sMrSUA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=rd0Qbi3fhQxOW8RvAl9TmnILuTu7UVLOEEZhqTUgx2qmGI1U27n3BN0bAf/hK1tXXwv5gnF1Evo7ID5l9+e+2g3a9/Dq0ubea+tEXwGPXE0DKfBmwdrElFy/kfdvxZ9KoaueR6LKSACKikuccnfNQ+ZyjGgeSyt8afmrEScj138=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=anNfT7iK; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707048869; x=1738584869;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=LhBXAdqdbG1vcfn5JzVGcw1W6OmmWRM+PAK11sMrSUA=;
+  b=anNfT7iKCCMj3gEAECz9YBsxcOt+A0deSHaoxKdgV4aiXt2Ac95BJ+lQ
+   //c15yyubRF2Bm62eYSEces8RrpxRy/cdhcyfAuQ5Djs1p/WxdP5lH7k+
+   ScsYLbbi6R7uDIAL2bSL89DAhzQ9Nt4+ZYyuF4Tidri9bUrU3SVGv9zTu
+   +5WJK9dfHVlQcSgpL9ku0QdBvyMuqeDWohsvbdFRLNWLDNm/x55A4o0TX
+   TFAOAhqjpKc2ROMbdoDHkSiLRPHkmr3cqv3wQgPInGXT6UxSE0zVdZWb6
+   KzOBHuMwkk5HaM24Q5oX3IMGr+CANNwOv5MbDYBYms2KpsEIIfm0mmEPF
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10973"; a="540000"
+X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
+   d="scan'208";a="540000"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 04:14:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
+   d="scan'208";a="774194"
+Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
+  by fmviesa006.fm.intel.com with ESMTP; 04 Feb 2024 04:14:26 -0800
+Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rWbOC-0006JU-0b;
+	Sun, 04 Feb 2024 12:14:24 +0000
+Date: Sun, 4 Feb 2024 20:14:23 +0800
+From: kernel test robot <lkp@intel.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: arch/arm/mm/proc-v7.S:545: Error: invalid constant
+ (fffffffffffffbd8) after fixup
+Message-ID: <202402042025.f9AcUiMP-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN1PEPF0000ECD8:EE_|IA1PR12MB7733:EE_
-X-MS-Office365-Filtering-Correlation-Id: bc7b8f1f-c431-4935-d081-08dc257ab3dc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	PGN+z9lFddyRb9dwOyeBboYezJn+V+tTVQDMxdVq3lKVc9/XBgf+KYHiSRbC1oId4KXZ8+4kb0RrUpF9S/xfRd/5O38wNvv4zjvoG0gvFjUesxfRzwk/iehGgAutyeCZQjcMuGUW1iM/MXOnDFFhJAFNf4bjgO5NsLzPl0T3oRtcFhzOnKfQ1n2bDppDTaNHrQrT5sJKEFgkNKi9XiZtZIBOvo/pU7+AHVQzv0QgJLzAEzdqawtpi/JIuRNCxTqq/k7/7sVvF0c/yU6UJ1ugKTsc294CYwg4YYVcZhAiibXBuT67iOWYu/GrTUsOBUjQKGQUkRk9OtTUhxA4yxMt3o6eNRMYhkAp6cizoV9QW6e6URZ2z9lfDPFwbHsk0fWRlLnlagfvwXyxLKdzrJZEWjyupGHDHYGzyTH3fmG4q6e5w2oBz5/AqlH0WKDMQM23fG6pxKOkTVDt/SDKutWhCw5/5dtNdie08sciF79j/mf3VaHSbMLxR15J6BDFXK5+mvHRFriOoMw1tSHoR75ioWV+YCdRw3MtfwifdrB37Erf5hVyLFoFxZsyyyZBLCTacihj3xuoBzxISk8c0ubaICj/YvxUq1AHGfIR4YeQMu/xSFTxr+HNgypFwgcBDOuvaDiGwBNe0FShm7hbuH1ahvT9TQ45D4aCz1taDhDZyy5DBRXBNwRnlx2hh1kE5evnb/xaA2gxkaPVsj20aUvS9Ua5avReRdN0APUee0OouUoC6f/Oh95vCLlvKKn0vSUs/W/ug4GlStwmKFoiWnyXHg==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(39860400002)(136003)(396003)(376002)(230922051799003)(186009)(1800799012)(451199024)(82310400011)(64100799003)(36840700001)(40470700004)(46966006)(478600001)(47076005)(16526019)(26005)(2616005)(336012)(426003)(83380400001)(356005)(41300700001)(82740400003)(36860700001)(8676002)(8936002)(54906003)(110136005)(70206006)(316002)(6636002)(5660300002)(2906002)(4326008)(70586007)(44832011)(6666004)(7696005)(81166007)(86362001)(36756003)(40460700003)(40480700001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Feb 2024 12:13:31.3129
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc7b8f1f-c431-4935-d081-08dc257ab3dc
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MN1PEPF0000ECD8.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7733
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-With new freqency boost interface supported, legacy boost control
-doesn't make sense any more which only support passive mode.
-so it can remove the legacy set_boost interface from amd-pstate driver
-in case of there is conflict with new boost control logic.
+Hi Arnd,
 
-Signed-off-by: Perry Yuan <perry.yuan@amd.com>
----
- drivers/cpufreq/amd-pstate.c | 1 -
- include/linux/amd-pstate.h   | 1 -
- 2 files changed, 2 deletions(-)
+First bad commit (maybe != root cause):
 
-diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
-index 02a76b8fb298..4e377efdd4ed 100644
---- a/drivers/cpufreq/amd-pstate.c
-+++ b/drivers/cpufreq/amd-pstate.c
-@@ -1492,7 +1492,6 @@ static struct cpufreq_driver amd_pstate_driver = {
- 	.exit		= amd_pstate_cpu_exit,
- 	.suspend	= amd_pstate_cpu_suspend,
- 	.resume		= amd_pstate_cpu_resume,
--	.set_boost	= amd_pstate_set_boost,
- 	.name		= "amd-pstate",
- 	.attr		= amd_pstate_attr,
- };
-diff --git a/include/linux/amd-pstate.h b/include/linux/amd-pstate.h
-index 446394f84606..66d939a344b1 100644
---- a/include/linux/amd-pstate.h
-+++ b/include/linux/amd-pstate.h
-@@ -80,7 +80,6 @@ struct amd_cpudata {
- 	struct amd_aperf_mperf prev;
- 
- 	u64	freq;
--	bool	boost_supported;
- 
- 	/* EPP feature related attributes*/
- 	s16	epp_policy;
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   3f24fcdacd40c70dd2949c1cfd8cc2e75942a9e3
+commit: 84fc863606239d8b434e59e6bbbe805f457e5767 ARM: make ARCH_MULTIPLATFORM user-visible
+date:   1 year, 5 months ago
+config: arm-randconfig-004-20240204 (https://download.01.org/0day-ci/archive/20240204/202402042025.f9AcUiMP-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240204/202402042025.f9AcUiMP-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402042025.f9AcUiMP-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   arch/arm/mm/proc-v7.S: Assembler messages:
+>> arch/arm/mm/proc-v7.S:545: Error: invalid constant (fffffffffffffbd8) after fixup
+
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for TEGRA20_APB_DMA
+   Depends on [n]: DMADEVICES [=n] && (ARCH_TEGRA [=y] || COMPILE_TEST [=y])
+   Selected by [y]:
+   - SOC_TEGRA_FUSE [=y] && ARCH_TEGRA [=y] && ARCH_TEGRA_2x_SOC [=y]
+
+
+vim +545 arch/arm/mm/proc-v7.S
+
+de4901933f6dfc Gregory CLEMENT 2012-10-03  483  
+14eff1812679c7 Daniel Walker   2010-09-17  484  __v7_setup:
+95731b8ee63ec9 Ard Biesheuvel  2021-02-11  485  	do_invalidate_l1
+1946d6ef9d7bd4 Russell King    2009-06-01  486  
+bac51ad9d14f6b Russell King    2015-07-09  487  __v7_setup_cont:
+c76f238e261b8d Russell King    2015-04-04  488  	and	r0, r9, #0xff000000		@ ARM?
+c76f238e261b8d Russell King    2015-04-04  489  	teq	r0, #0x41000000
+17e7bf86690eaa Russell King    2015-04-04  490  	bne	__errata_finish
+4419496884ed16 Russell King    2015-04-04  491  	and	r3, r9, #0x00f00000		@ variant
+4419496884ed16 Russell King    2015-04-04  492  	and	r6, r9, #0x0000000f		@ revision
+b2c3e38a54714e Russell King    2015-04-04  493  	orr	r6, r6, r3, lsr #20-4		@ combine variant and revision
+4419496884ed16 Russell King    2015-04-04  494  	ubfx	r0, r9, #4, #12			@ primary part number
+1946d6ef9d7bd4 Russell King    2009-06-01  495  
+6491848d1ab246 Will Deacon     2010-09-14  496  	/* Cortex-A8 Errata */
+6491848d1ab246 Will Deacon     2010-09-14  497  	ldr	r10, =0x00000c08		@ Cortex-A8 primary part number
+6491848d1ab246 Will Deacon     2010-09-14  498  	teq	r0, r10
+17e7bf86690eaa Russell King    2015-04-04  499  	beq	__ca8_errata
+9f05027c7cb3cf Will Deacon     2010-09-14  500  
+9f05027c7cb3cf Will Deacon     2010-09-14  501  	/* Cortex-A9 Errata */
+17e7bf86690eaa Russell King    2015-04-04  502  	ldr	r10, =0x00000c09		@ Cortex-A9 primary part number
+9f05027c7cb3cf Will Deacon     2010-09-14  503  	teq	r0, r10
+17e7bf86690eaa Russell King    2015-04-04  504  	beq	__ca9_errata
+1946d6ef9d7bd4 Russell King    2009-06-01  505  
+62c0f4a53447bc Doug Anderson   2016-04-07  506  	/* Cortex-A12 Errata */
+62c0f4a53447bc Doug Anderson   2016-04-07  507  	ldr	r10, =0x00000c0d		@ Cortex-A12 primary part number
+62c0f4a53447bc Doug Anderson   2016-04-07  508  	teq	r0, r10
+62c0f4a53447bc Doug Anderson   2016-04-07  509  	beq	__ca12_errata
+62c0f4a53447bc Doug Anderson   2016-04-07  510  
+62c0f4a53447bc Doug Anderson   2016-04-07  511  	/* Cortex-A17 Errata */
+62c0f4a53447bc Doug Anderson   2016-04-07  512  	ldr	r10, =0x00000c0e		@ Cortex-A17 primary part number
+62c0f4a53447bc Doug Anderson   2016-04-07  513  	teq	r0, r10
+62c0f4a53447bc Doug Anderson   2016-04-07  514  	beq	__ca17_errata
+62c0f4a53447bc Doug Anderson   2016-04-07  515  
+84b6504f560157 Will Deacon     2013-08-20  516  	/* Cortex-A15 Errata */
+17e7bf86690eaa Russell King    2015-04-04  517  	ldr	r10, =0x00000c0f		@ Cortex-A15 primary part number
+84b6504f560157 Will Deacon     2013-08-20  518  	teq	r0, r10
+17e7bf86690eaa Russell King    2015-04-04  519  	beq	__ca15_errata
+84b6504f560157 Will Deacon     2013-08-20  520  
+17e7bf86690eaa Russell King    2015-04-04  521  __errata_finish:
+17e7bf86690eaa Russell King    2015-04-04  522  	mov	r10, #0
+bbe888864ec324 Catalin Marinas 2007-05-08  523  	mcr	p15, 0, r10, c7, c5, 0		@ I+BTB cache invalidate
+2eb8c82bc492d5 Catalin Marinas 2007-07-20  524  #ifdef CONFIG_MMU
+bbe888864ec324 Catalin Marinas 2007-05-08  525  	mcr	p15, 0, r10, c8, c7, 0		@ invalidate I + D TLBs
+b2c3e38a54714e Russell King    2015-04-04  526  	v7_ttb_setup r10, r4, r5, r8, r3	@ TTBCR, TTBRx setup
+b2c3e38a54714e Russell King    2015-04-04  527  	ldr	r3, =PRRR			@ PRRR
+f6b0fa02e8b070 Russell King    2011-02-06  528  	ldr	r6, =NMRR			@ NMRR
+b2c3e38a54714e Russell King    2015-04-04  529  	mcr	p15, 0, r3, c10, c2, 0		@ write PRRR
+3f69c0c1af288d Russell King    2008-09-15  530  	mcr	p15, 0, r6, c10, c2, 1		@ write NMRR
+078c04545ba56d Jonathan Austin 2012-04-12  531  #endif
+bae0ca2bc550d1 Will Deacon     2014-02-07  532  	dsb					@ Complete invalidations
+078c04545ba56d Jonathan Austin 2012-04-12  533  #ifndef CONFIG_ARM_THUMBEE
+078c04545ba56d Jonathan Austin 2012-04-12  534  	mrc	p15, 0, r0, c0, c1, 0		@ read ID_PFR0 for ThumbEE
+078c04545ba56d Jonathan Austin 2012-04-12  535  	and	r0, r0, #(0xf << 12)		@ ThumbEE enabled field
+078c04545ba56d Jonathan Austin 2012-04-12  536  	teq	r0, #(1 << 12)			@ check if ThumbEE is present
+078c04545ba56d Jonathan Austin 2012-04-12  537  	bne	1f
+b2c3e38a54714e Russell King    2015-04-04  538  	mov	r3, #0
+b2c3e38a54714e Russell King    2015-04-04  539  	mcr	p14, 6, r3, c1, c0, 0		@ Initialize TEEHBR to 0
+078c04545ba56d Jonathan Austin 2012-04-12  540  	mrc	p14, 6, r0, c0, c0, 0		@ load TEECR
+078c04545ba56d Jonathan Austin 2012-04-12  541  	orr	r0, r0, #1			@ set the 1st bit in order to
+078c04545ba56d Jonathan Austin 2012-04-12  542  	mcr	p14, 6, r0, c0, c0, 0		@ stop userspace TEEHBR access
+078c04545ba56d Jonathan Austin 2012-04-12  543  1:
+bdaaaec39792ee Catalin Marinas 2009-07-24  544  #endif
+b2c3e38a54714e Russell King    2015-04-04 @545  	adr	r3, v7_crval
+b2c3e38a54714e Russell King    2015-04-04  546  	ldmia	r3, {r3, r6}
+457c2403c513c7 Ben Dooks       2013-02-12  547   ARM_BE8(orr	r6, r6, #1 << 25)		@ big-endian page tables
+64d2dc384e41e2 Leif Lindholm   2010-09-16  548  #ifdef CONFIG_SWP_EMULATE
+b2c3e38a54714e Russell King    2015-04-04  549  	orr     r3, r3, #(1 << 10)              @ set SW bit in "clear"
+64d2dc384e41e2 Leif Lindholm   2010-09-16  550  	bic     r6, r6, #(1 << 10)              @ clear it in "mmuset"
+26584853a44c58 Catalin Marinas 2009-05-30  551  #endif
+bbe888864ec324 Catalin Marinas 2007-05-08  552     	mrc	p15, 0, r0, c1, c0, 0		@ read control register
+b2c3e38a54714e Russell King    2015-04-04  553  	bic	r0, r0, r3			@ clear bits them
+2eb8c82bc492d5 Catalin Marinas 2007-07-20  554  	orr	r0, r0, r6			@ set them
+347c8b70b1d525 Catalin Marinas 2009-07-24  555   THUMB(	orr	r0, r0, #1 << 30	)	@ Thumb exceptions
+6ebbf2ce437b33 Russell King    2014-06-30  556  	ret	lr				@ return to head.S:__ret
+93ed3970114983 Catalin Marinas 2008-08-28  557  ENDPROC(__v7_setup)
+bbe888864ec324 Catalin Marinas 2007-05-08  558  
+5085f3ff458521 Russell King    2010-10-01  559  	__INITDATA
+5085f3ff458521 Russell King    2010-10-01  560  
+f5fe12b1eaee22 Russell King    2018-05-14  561  	.weak cpu_v7_bugs_init
+f5fe12b1eaee22 Russell King    2018-05-14  562  
+78a8f3c365b885 Dave Martin     2011-06-23  563  	@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
+f5fe12b1eaee22 Russell King    2018-05-14  564  	define_processor_functions v7, dabort=v7_early_abort, pabort=v7_pabort, suspend=1, bugs=cpu_v7_bugs_init
+06c23f5ffe7ad4 Russell King    2018-04-20  565  
+
+:::::: The code at line 545 was first introduced by commit
+:::::: b2c3e38a54714e917c9e8675ff5812dca1c0f39d ARM: redo TTBR setup code for LPAE
+
+:::::: TO: Russell King <rmk+kernel@arm.linux.org.uk>
+:::::: CC: Russell King <rmk+kernel@arm.linux.org.uk>
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
