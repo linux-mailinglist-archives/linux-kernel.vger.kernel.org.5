@@ -1,114 +1,133 @@
-Return-Path: <linux-kernel+bounces-51740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51741-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1D28848EC3
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 16:00:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B3EB848EC8
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 16:06:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CE561C21ED7
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 15:00:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C62FB21A2A
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 15:06:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8C06224FB;
-	Sun,  4 Feb 2024 15:00:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47E5B225B2;
+	Sun,  4 Feb 2024 15:06:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="dUGOJxVv"
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="MOdtd64h"
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF5E3224C7
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 15:00:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEACC224E0;
+	Sun,  4 Feb 2024 15:06:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707058842; cv=none; b=MJ1OcFgy1OnNnM4oxj3DBTncK4qxL/itQkFFrP3x+IptUk9SYOgw6Whv5+URekhgmrSRTc6LwDLtMjdnYnSD0mlyD39Clb5kga+QvjCx+9x9xhokj372RpL2lQAYmASfMj2MWDhfBsD6EecfCVdg00/9ha8OaGGKsC9MXUaUSSM=
+	t=1707059203; cv=none; b=tQk5B05+yCa7afR9z5czkqwZfyoyKr+isKbJAEJRLIk0g0G7+hn7cRCG+c00P/yNCNeGCsOt+hI1VagUryEUWPPRQSOdkPljAt3qWKnNf+5X9o29pEjkKEObbxl7X/dyxTluziULt7V8jT/M/G2h6VhhQdJcP9SN/Uh+Mr16Q9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707058842; c=relaxed/simple;
-	bh=xdSeQvV05nn5L8vGt2d4VTs22D9fCwHOm1ANUT2yxn0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BjoGlxB8SFGxvVnIZsnDGRUXKXoR8DDbRGOyvdEESmG7U2kZm3YINtiq/ipR/GydX7SKk0LiSelvXeL4lf20hBojMeW2HGhL/Ga0JJRpHm8Wq/sL7ttAcB5KMgF4mAt5ddwoHyFRYQDvwI4m98OS6Xo/XA53RmqTvcy+v5mLgMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=dUGOJxVv; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dc6d8bd612dso3283476276.1
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 07:00:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1707058839; x=1707663639; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d3lqw9guILXTXW+HHup3WqoC7VU2sfl3wXM0hqsaEkk=;
-        b=dUGOJxVvIFyaOE/esF1lx2c/aJ8UIlpFFzw9Bugjv00/V4xjDrVUKwCxRoEKGliqvy
-         qpAKBABK/CzRE9rMS2V62znJ9uL8vD5BpUOL11NkesMvPY5+PJDCiVSw1ui0Y0Ivr2N1
-         EiMTZzUMUiREpK7xPsbXBuseqsRNybWg9Ch9XbKZjdlNQAvIxV4qITYgjrHBwn49B9rw
-         F7GoWMm+Vb3IQrzVrhcRwxgim35KIPEsS4WybNbSaNitkU/Qd01OV1Q9V1fy0iWx7kJo
-         JIhDGqOuoz3urEvcR7m68E8b0wfCOE8DkIA6tD4fzelxHvF9QSy8tIvM+ZKy34RPHZJQ
-         T6wA==
+	s=arc-20240116; t=1707059203; c=relaxed/simple;
+	bh=ZN6JpnKgsg6TAuxH18C8IUu1XeyPKn8TemC5O9spX14=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=laAx/+fq4bxjNO8ERKT5yzwcsqb2SbWUbsga8VA1yk5B6f2xcl1+PXGeEVEV9jNWWI+BEVhhrQyWJXht5/33qesxDjPcWsTetKlnHoxKQb77V+ungdEqdj1AN8K+VJXRDLU/onsa2bd6DXDVppmaGHY+Y3z71ys6WDHa48MpKPU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=fail (0-bit key) header.d=marliere.net header.i=@marliere.net header.b=MOdtd64h reason="key not found in DNS"; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5c229dabbb6so2300922a12.0;
+        Sun, 04 Feb 2024 07:06:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707058839; x=1707663639;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d3lqw9guILXTXW+HHup3WqoC7VU2sfl3wXM0hqsaEkk=;
-        b=nXtkcrJBaENe6HShAqGMVSEtdOopBcmrswRE20jJpvsWts4t57x30dfgWcTkK7D81v
-         xJo8uXwP1coMEOR/HdK3Ov3eU2l9AYC+1aJFCsufhaOQmEEA8Clz6NbEc6O5v5dKJUBX
-         HbHYFgNsKhKE4kjol3uNRAqSxXndjLYodWCsOja+H8iDKb5LYD9zNI8GY25AETalvsES
-         EkDyevl0ieBM9gJtPY5Z7mDx+gXWfxl5Fx94mVz8ynhUgQ+005EuIFAyc0eQdzNVVtb5
-         mesl4d0s6A8vU6YB5/cLf9Mm2IWvtFvszDlRq//bmwegbyJoTlZbRonSZpbnKfBMTWXZ
-         0u9g==
-X-Gm-Message-State: AOJu0YxDaADNRYhJaJp4mvDuzXWoBiY3+l7nUYYsSLEmXBVA9cWW36Mr
-	W1qeizRY9QIM9SK9T2wFebZxVD80rrZ5Tqn9CvqdT1HGrtTEkrVf3zErnKbsCenaBrg8yEFtz/O
-	3JHSvK+tQUGzeR78VboiPemSitOoJ29JiEGeM
-X-Google-Smtp-Source: AGHT+IHg+0gPpQzlZZ3TALwjYC82frTLQELFYbkrSVOd3QmDViI01eEHMCvlkaUcUAORp4NaJVjUuqgO9iSCHdLFGqw=
-X-Received: by 2002:a25:e08c:0:b0:dc2:46ca:e968 with SMTP id
- x134-20020a25e08c000000b00dc246cae968mr6398171ybg.4.1707058838640; Sun, 04
- Feb 2024 07:00:38 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707059201; x=1707664001;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:dkim-signature:from:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=vi/JlahQB7RMdLZiZn6ffPYKmMKaMXk+BX02n7bUJBE=;
+        b=AkA15VC+P0uovY/MOXQa1iWYoICN3bStCnnhtx3X2iXG//1C2GQbQuCkwOcOBVb6Kg
+         +Yyyb63o3r/FEsflit1WOm75etG2EH/p4HlA2NhQFgqj9PqHOMIopFXhBEE1YT3LoX5H
+         AaKfxIR1iKyRQiqhhZNtUaGHzqvumueTfHRe8v+r1ILNwri6wWUHRJIIrZVMK+InYJco
+         wJI4k3TDbPGsVS3T+5Beb/UwmwB/zziQp8ReOTTmkkIBqhtKNReqW0QhnavvuKH4kame
+         n1P+LdBDDLCor6aS7VhpEQx8PYVQ/9AilHjaviItIuJB86htQkSbzsiYimJJoVIOI67u
+         LrxQ==
+X-Gm-Message-State: AOJu0YxpFv3Pmr3R0PTBxsx5ThzKdBnoJbJwdOgfFU3GFJeX/3Yvwtsh
+	G4AnSLGurny/wwsRHSzJHj8A+q9c4AgBziKTiUUqYe7v3a8Nxce2WFkC801xzLGk7g==
+X-Google-Smtp-Source: AGHT+IH4OiIa6kPSiTbZITimK0Cy8yEbZMRiR9vYpd0fm0ArCmadY0wmrfOwy3zeZ6mo7dMpRrjpXg==
+X-Received: by 2002:a17:902:708c:b0:1d9:63d1:e619 with SMTP id z12-20020a170902708c00b001d963d1e619mr6955526plk.29.1707059201073;
+        Sun, 04 Feb 2024 07:06:41 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVViz/wPuNcf9MMFZ6PY9JhxAL21iEhguc32HLTSbWBVnuEWq5t7ImOul7k32jl9SzjGVfv0Ush89uZPa3R6izxD/32O8H9XEeaR9ke5Rl7CfLJDMyzprt1JGQqsGSj6rf9A/BtdLclpA==
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id z17-20020a170903409100b001c407fac227sm4678883plc.41.2024.02.04.07.06.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Feb 2024 07:06:40 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2023; t=1707059198;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=vi/JlahQB7RMdLZiZn6ffPYKmMKaMXk+BX02n7bUJBE=;
+	b=MOdtd64h71G7MXVIFX9QkxlvIgahH8E0hxa4JWVd1ebLq3hn2soeSSLWBun0QqQCCh9exh
+	a7eVbsSQsrPXORD7rXItdoi989JHKTtXTpIaSjXb3sPah7cukw8CsB2IfcRDAuCVBDIApB
+	MD4uyOXgh2PsmC/cewhzu4kU9lfNlwfG1a4EE9WJkBnTApfLkBJQ+3bjcGAw4cxG3hcvPH
+	+0vraQxCRZbJA9OG6SuC+PF+h58fXk+0qKjnJkGkSXPLW9Bz6KjluKok8t56SK4LTKcS1g
+	CujC7w4RHWC0SN9BAoc971nXSnLdtqijM6OB1w867WV9t/RtPxDzRfFhcShHOQ==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Subject: [PATCH 0/2] mips: struct bus_type cleanup
+Date: Sun, 04 Feb 2024 12:06:56 -0300
+Message-Id: <20240204-bus_cleanup-mips-v1-0-05af5e9a7ead@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240204023531.2225264-1-dongtai.guo@linux.dev>
-In-Reply-To: <20240204023531.2225264-1-dongtai.guo@linux.dev>
-From: Paul Moore <paul@paul-moore.com>
-Date: Sun, 4 Feb 2024 10:00:27 -0500
-Message-ID: <CAHC9VhQUkUvpj+c0r3vZvfn7djQ5kuBej9RE2L7TZwfxg-L7UQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] netlabel: cleanup struct netlbl_lsm_catmap
-To: George Guo <dongtai.guo@linux.dev>
-Cc: Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-	George Guo <guodongtai@kylinos.cn>, netdev@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIABCov2UC/x3M0QpAMBSA4VfRubaaYxSvImnm4BSzdiIl7265/
+ C7+/wGhyCTQZg9Eulj48AlFnoFbrV9I8ZQMqNFo1EaNpwxuI+vPoHYOokYqpwpdU1OJkLIQaeb
+ 7X3b9+36sdJsoYgAAAA==
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1052; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=ZN6JpnKgsg6TAuxH18C8IUu1XeyPKn8TemC5O9spX14=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlv6gcpCYU248jEkaXwLbzadv/JrsdNGqTmkE5U
+ +7e01xKuQ6JAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZb+oHAAKCRDJC4p8Y4ZY
+ pv6jD/9g4KmFRZU9tGMw8Trdiy/iNVAvj+z++ip1GpLvst78VTJh75v+cakxYJD7i7z22DIsC+G
+ fZzr+H1fYzcagA8muYm4Mw2BtsK+6yR3Jk9LMZ7H/yVMS7dFXnPS5m+oaTVBrDG8FXdx1c9szBb
+ 8OIwfjEHfYskv1nxK31lzeG6AC8ruw5jr/VhWFfXG9crUj7ghr5EqVM6baCggN39/2EJanY6vEX
+ WueQzKcJ82rBk1OrTMWt3yAxna86+4bw72/w6rliVE9+kbr7uYKFOTxwb9F60aDvmRO+aqmNYN0
+ ZYvUW2WlbzJTCrMGIA+8tQ9RIStQbWFT2RB9I4xylokmusLLhi/7GX5VCt1p19pA/Aa4mSdsqik
+ n1nc3QoSHs7toURXR+3FefZ0dWNpEWSyEDc97xludSBqUR1HtisdDWlu6ejeNiSY4yWcRIXcLmI
+ r0i9ut5uYgiDM7wOV/OFvsiUPpv/nOsLUUNXee8QlBtIBwKgE1+uhoK+RijbP4RuCADJ6Wd70r/
+ CxYKwnNCrJoRWHidjPwlPuaY1fBd+btf3vFtzbRAkn7V6NxqG3flsRSlK0yobJN7LkXasMdS3SW
+ 3ocljnbWYd76JMzMblZQFK6aHqFUWKiXwyzMElcpTWUDJRBFIh6NNA5nG1SkhmqxkJKg6FGvqHQ
+ x4tzBV0V2jIV5RQ==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-On Sat, Feb 3, 2024 at 9:35=E2=80=AFPM George Guo <dongtai.guo@linux.dev> w=
-rote:
->
-> From: George Guo <guodongtai@kylinos.cn>
->
-> Simplify the code from macro NETLBL_CATMAP_MAPTYPE to u64, and fix
-> warning "Macros with complex values should be enclosed in parentheses"
-> on "#define NETLBL_CATMAP_BIT (NETLBL_CATMAP_MAPTYPE)0x01", which is
-> modified to "#define NETLBL_CATMAP_BIT ((u64)0x01)".
->
-> Signed-off-by: George Guo <guodongtai@kylinos.cn>
-> ---
-> V2:
-> Yes, I understand what you are saying.
-> Actually, there is a compile warnings on "#define NETLBL_CATMAP_BIT (NETL=
-BL_CATMAP_MAPTYPE)0x01"
-> which is missing parentheses.
-> ---
->  include/net/netlabel.h       | 7 +++----
->  net/netlabel/netlabel_kapi.c | 8 ++++----
->  2 files changed, 7 insertions(+), 8 deletions(-)
+This series is part of an effort to cleanup the users of the driver
+core, as can be seen in many recent patches authored by Greg across the
+tree (e.g. [1]). Specifically, this series is part of the task of
+splitting one of his TODOs [2].
 
-This is a much better approach, thank you.
+---
+[1]: https://lore.kernel.org/lkml/?q=f%3Agregkh%40linuxfoundation.org+s%3A%22make%22+and+s%3A%22const%22
+[2]: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/commit/?h=bus_cleanup&id=26105f537f0c60eacfeb430abd2e05d7ddcdd8aa
 
-Acked-by: Paul Moore <paul@paul-moore.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 
---=20
-paul-moore.com
+---
+Ricardo B. Marliere (2):
+      mips: sgi-ip22: make gio_bus_type const
+      mips: txx9: make txx9_sramc_subsys const
+
+ arch/mips/sgi-ip22/ip22-gio.c  | 4 ++--
+ arch/mips/txx9/generic/setup.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+---
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+change-id: 20240204-bus_cleanup-mips-be3d52c96e32
+
+Best regards,
+-- 
+Ricardo B. Marliere <ricardo@marliere.net>
+
 
