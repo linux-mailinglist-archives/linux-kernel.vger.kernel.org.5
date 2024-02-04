@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-51393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 545B3848AC2
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 04:07:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E30C9848AC3
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 04:07:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 088D21F234E1
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 03:07:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 945D31F23544
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 03:07:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 957F2DDCD;
-	Sun,  4 Feb 2024 03:06:27 +0000 (UTC)
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 754D610A2A;
+	Sun,  4 Feb 2024 03:06:29 +0000 (UTC)
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6237EBE4C
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 03:06:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EEADD26B
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 03:06:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707015987; cv=none; b=LLqb2iaf5y6he+5wiskzCi/Ta/noJgITzG1ySh8UUwpT5sApVrQzSvn3gTHFZassSHnKMkNvYgs0rlTOcCcDwOIlIshLNWTY74AmveMpm9+hN1I+W3i0M6X/WmK3qK893bkv9yioA+gcP5WVZMZdsYYEYmGzEf83DiQMZ6BuRlM=
+	t=1707015989; cv=none; b=aj/qcWhs1YmsLgaa5w0b39ubmMs3uuVURNkSYE5THgSRrOcLKUpIFO0KaPQPJTGEMqdnGCFhXkuhLt3mabMfhyJM1aS3VrHSalPRZtV9o4+m5iuFr/aQVsU9s5bFf7JC3mwa8ASnBUoOil1ZnpMQuDMS+l8JS4x4BTbOhnW24LE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707015987; c=relaxed/simple;
-	bh=Iwy2TxI1TgOBTx+y9m1xIIKgohEFXyY3VOBZsXNpH5M=;
+	s=arc-20240116; t=1707015989; c=relaxed/simple;
+	bh=5FnRXUvDpUMWv/ll26B1goohLOKe8SR6AvNT36pdX1U=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=rgao2Xj9UKdrUYCY384h6qcL8eihBMeIEBwPQX00vPk7y5wk06/ELQTd92Eo6s/0KZb90hhp/nLNaiUHUUkxTHlaCRRiF5DtQoQ8Q3cVLF6Kypm2uNH0L/depgWBgefYLjgZtYIgdUvUxEUerTrcUcXPMGv1Xe3n3VId0U1HJU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=95.215.58.189
+	 In-Reply-To:To:Cc; b=kYxtKU+j3hgQo7zXrHfNDI10Gf3shiaJ+7CWqD7uTZ1cp+NNAlNQVbsEWimhWZZo8Cp0hZUxJ69yS3cMBz5JKdrZknoxXp8B8ZpeQCul0HB5qHV5/vwXWt/Kv2G5s09ni9a9566ZQvQdtWegq5j3bXOkNjL3nr7WFVCvpnCRgtI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=95.215.58.185
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Chengming Zhou <zhouchengming@bytedance.com>
-Date: Sun, 04 Feb 2024 03:06:02 +0000
-Subject: [PATCH v2 4/6] mm/zswap: remove duplicate_entry debug value
+Date: Sun, 04 Feb 2024 03:06:03 +0000
+Subject: [PATCH v2 5/6] mm/zswap: only support zswap_exclusive_loads_enabled
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -40,7 +40,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240201-b4-zswap-invalidate-entry-v2-4-99d4084260a0@bytedance.com>
+Message-Id: <20240201-b4-zswap-invalidate-entry-v2-5-99d4084260a0@bytedance.com>
 References: <20240201-b4-zswap-invalidate-entry-v2-0-99d4084260a0@bytedance.com>
 In-Reply-To: <20240201-b4-zswap-invalidate-entry-v2-0-99d4084260a0@bytedance.com>
 To: Nhat Pham <nphamcs@gmail.com>, Yosry Ahmed <yosryahmed@google.com>, Andrew Morton <akpm@linux-foundation.org>,
@@ -49,73 +49,128 @@ Cc: linux-mm@kvack.org, Nhat Pham <nphamcs@gmail.com>, Chengming Zhou <zhoucheng
  linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>, Johannes Weiner <hannes@cmpxchg.org>
 X-Migadu-Flow: FLOW_OUT
 
-cat /sys/kernel/debug/zswap/duplicate_entry
-2086447
+The !zswap_exclusive_loads_enabled mode will leave compressed copy in
+the zswap tree and lru list after the folio swapin.
 
-When testing, the duplicate_entry value is very high, but no warning
-message in the kernel log. From the comment of duplicate_entry
-"Duplicate store was encountered (rare)", it seems something goes wrong.
+There are some disadvantages in this mode:
+1. It's a waste of memory since there are two copies of data, one is
+   folio, the other one is compressed data in zswap. And it's unlikely
+   the compressed data is useful in the near future.
 
-Actually it's incremented in the beginning of zswap_store(), which found
-its zswap entry has already on the tree. And this is a normal case,
-since the folio could leave zswap entry on the tree after swapin,
-later it's dirtied and swapout/zswap_store again, found its original
-zswap entry.
+2. If that folio is dirtied, the compressed data must be not useful,
+   but we don't know and don't invalidate the trashy memory in zswap.
 
-So duplicate_entry should be only incremented in the real bug case,
-which already have "WARN_ON(1)", it looks redundant to count bug case,
-so this patch just remove it.
+3. It's not reclaimable from zswap shrinker since zswap_writeback_entry()
+   will always return -EEXIST and terminate the shrinking process.
 
+On the other hand, the only downside of zswap_exclusive_loads_enabled
+is a little more cpu usage/latency when compression, and the same if
+the folio is removed from swapcache or dirtied.
+
+More explanation by Johannes on why we should consider exclusive load
+as the default for zswap:
+
+  Caching "swapout work" is helpful when the system is thrashing. Then
+  recently swapped in pages might get swapped out again very soon. It
+  certainly makes sense with conventional swap, because keeping a clean
+  copy on the disk saves IO work and doesn't cost any additional memory.
+
+  But with zswap, it's different. It saves some compression work on a
+  thrashing page. But the act of keeping compressed memory contributes
+  to a higher rate of thrashing. And that can cause IO in other places
+  like zswap writeback and file memory.
+
+And the A/B test results of the kernel build in tmpfs with limited memory
+can support this theory:
+
+			!exclusive	exclusive
+real                       63.80         63.01
+user                       1063.83       1061.32
+sys                        290.31        266.15
+
+workingset_refault_anon    2383084.40    1976397.40
+workingset_refault_file    44134.00      45689.40
+workingset_activate_anon   837878.00     728441.20
+workingset_activate_file   4710.00       4085.20
+workingset_restore_anon    732622.60     639428.40
+workingset_restore_file    1007.00       926.80
+workingset_nodereclaim     0.00          0.00
+pgscan                     14343003.40   12409570.20
+pgscan_kswapd              0.00          0.00
+pgscan_direct              14343003.40   12409570.20
+pgscan_khugepaged          0.00          0.00
+
+Acked-by: Yosry Ahmed <yosryahmed@google.com>
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 Reviewed-by: Nhat Pham <nphamcs@gmail.com>
-Acked-by: Yosry Ahmed <yosryahmed@google.com>
 Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 ---
- mm/zswap.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+ mm/Kconfig | 16 ----------------
+ mm/zswap.c | 14 +++-----------
+ 2 files changed, 3 insertions(+), 27 deletions(-)
 
+diff --git a/mm/Kconfig b/mm/Kconfig
+index ffc3a2ba3a8c..673b35629074 100644
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -45,22 +45,6 @@ config ZSWAP_DEFAULT_ON
+ 	  The selection made here can be overridden by using the kernel
+ 	  command line 'zswap.enabled=' option.
+ 
+-config ZSWAP_EXCLUSIVE_LOADS_DEFAULT_ON
+-	bool "Invalidate zswap entries when pages are loaded"
+-	depends on ZSWAP
+-	help
+-	  If selected, exclusive loads for zswap will be enabled at boot,
+-	  otherwise it will be disabled.
+-
+-	  If exclusive loads are enabled, when a page is loaded from zswap,
+-	  the zswap entry is invalidated at once, as opposed to leaving it
+-	  in zswap until the swap entry is freed.
+-
+-	  This avoids having two copies of the same page in memory
+-	  (compressed and uncompressed) after faulting in a page from zswap.
+-	  The cost is that if the page was never dirtied and needs to be
+-	  swapped out again, it will be re-compressed.
+-
+ config ZSWAP_SHRINKER_DEFAULT_ON
+ 	bool "Shrink the zswap pool on memory pressure"
+ 	depends on ZSWAP
 diff --git a/mm/zswap.c b/mm/zswap.c
-index 4381b7a2d4d6..3fbb7e2c8b8d 100644
+index 3fbb7e2c8b8d..cbf379abb6c7 100644
 --- a/mm/zswap.c
 +++ b/mm/zswap.c
-@@ -71,8 +71,6 @@ static u64 zswap_reject_compress_poor;
- static u64 zswap_reject_alloc_fail;
- /* Store failed because the entry metadata could not be allocated (rare) */
- static u64 zswap_reject_kmemcache_fail;
--/* Duplicate store was encountered (rare) */
--static u64 zswap_duplicate_entry;
+@@ -139,10 +139,6 @@ static bool zswap_non_same_filled_pages_enabled = true;
+ module_param_named(non_same_filled_pages_enabled, zswap_non_same_filled_pages_enabled,
+ 		   bool, 0644);
  
- /* Shrinker work queue */
- static struct workqueue_struct *shrink_wq;
-@@ -1571,10 +1569,8 @@ bool zswap_store(struct folio *folio)
- 	 */
+-static bool zswap_exclusive_loads_enabled = IS_ENABLED(
+-		CONFIG_ZSWAP_EXCLUSIVE_LOADS_DEFAULT_ON);
+-module_param_named(exclusive_loads, zswap_exclusive_loads_enabled, bool, 0644);
+-
+ /* Number of zpools in zswap_pool (empirically determined for scalability) */
+ #define ZSWAP_NR_ZPOOLS 32
+ 
+@@ -1722,16 +1718,12 @@ bool zswap_load(struct folio *folio)
+ 		count_objcg_event(entry->objcg, ZSWPIN);
+ 
  	spin_lock(&tree->lock);
- 	entry = zswap_rb_search(&tree->rbroot, offset);
--	if (entry) {
-+	if (entry)
- 		zswap_invalidate_entry(tree, entry);
--		zswap_duplicate_entry++;
+-	if (zswap_exclusive_loads_enabled) {
+-		zswap_invalidate_entry(tree, entry);
+-		folio_mark_dirty(folio);
+-	} else if (entry->length) {
+-		zswap_lru_del(&entry->pool->list_lru, entry);
+-		zswap_lru_add(&entry->pool->list_lru, entry);
 -	}
++	zswap_invalidate_entry(tree, entry);
+ 	zswap_entry_put(entry);
  	spin_unlock(&tree->lock);
- 	objcg = get_obj_cgroup_from_folio(folio);
- 	if (objcg && !obj_cgroup_may_zswap(objcg)) {
-@@ -1661,7 +1657,6 @@ bool zswap_store(struct folio *folio)
- 	 */
- 	while (zswap_rb_insert(&tree->rbroot, entry, &dupentry) == -EEXIST) {
- 		WARN_ON(1);
--		zswap_duplicate_entry++;
- 		zswap_invalidate_entry(tree, dupentry);
- 	}
- 	if (entry->length) {
-@@ -1822,8 +1817,6 @@ static int zswap_debugfs_init(void)
- 			   zswap_debugfs_root, &zswap_reject_compress_poor);
- 	debugfs_create_u64("written_back_pages", 0444,
- 			   zswap_debugfs_root, &zswap_written_back_pages);
--	debugfs_create_u64("duplicate_entry", 0444,
--			   zswap_debugfs_root, &zswap_duplicate_entry);
- 	debugfs_create_u64("pool_total_size", 0444,
- 			   zswap_debugfs_root, &zswap_pool_total_size);
- 	debugfs_create_atomic_t("stored_pages", 0444,
+ 
++	folio_mark_dirty(folio);
++
+ 	return true;
+ }
+ 
 
 -- 
 b4 0.10.1
