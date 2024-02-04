@@ -1,195 +1,100 @@
-Return-Path: <linux-kernel+bounces-51636-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51637-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3996A848D98
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:30:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC0C9848DA3
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:32:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA76A2833CF
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:30:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90D761F21FF4
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:32:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E332224D6;
-	Sun,  4 Feb 2024 12:30:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72F78224D6;
+	Sun,  4 Feb 2024 12:31:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DyYjJ83u"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nIq4csWA"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46D671642F;
-	Sun,  4 Feb 2024 12:30:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B59FA1642F;
+	Sun,  4 Feb 2024 12:31:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707049818; cv=none; b=CkdDgC1j0turIh2Sw7Ce1YnyK65ReSobWawtOVPm7lPi9Gk1k0YRCuL20QbGjl9SbXLFbpfWcfl3TtHNEbN7jk88uHXddRtMBwy/gl8D7t0al4cpwQnupdSQNzANuZNX/7/wN8HuoavN9/Yigc4Vbj6k5x4qLvFrB6TMmRvzgAU=
+	t=1707049916; cv=none; b=GeDvXFZDezAO/YN+MchVuRQVA/989vHNsaEWTVsezIxTB76nulTlWPr0bk4v6LjrL0D+H44KAlp7lrv06+bvDjwg4MizXOavEOUgdDg92OHTbT8dTG1wPywlp7LVdjEKoAhLoIl4hV++vz+MznsgXOYnnYyU++6eqFglXYZUIJ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707049818; c=relaxed/simple;
-	bh=Pb7/TOXMPhP8wCM0xEbRDHLAVDHixu4nEALYru47Eb4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZSnGurIHUhs8zYSVDTm5B1X4ai2T9QIlnjtB+4dGP2iI3gtjjignc0RTYMjH5+NQxCrEhyt1aZnmQIDQi/DCN8ihUQBbpK66+AJwCJ9LPYP/p9Q1vcEtIEpOr1wZJiXP5hNRkzHWU6nfNNVYQeQjVWgOlIrY7Awl80enbawJZvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DyYjJ83u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48FD2C433C7;
-	Sun,  4 Feb 2024 12:30:17 +0000 (UTC)
+	s=arc-20240116; t=1707049916; c=relaxed/simple;
+	bh=vDBDZYzI/5OSxWeet1wmyNK83emKECxcsNO1ezZ40ak=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=X7nEPnGletoXXivc6Eoe7TFHX/KQw+QOWbrwbifuvDtzMmmbY4dunlm84GZwUbv7CJxWew7FsbmuH+ivH2rwcpiaxRXiSgXrV1GNeGFmLgdo0bJikpJZLzYr1f+jmAzlSZUNBMsDEn3pQyQ1ka62ptJZxm4Q3cpPUsrKoKJC+5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nIq4csWA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 021A1C433C7;
+	Sun,  4 Feb 2024 12:31:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707049817;
-	bh=Pb7/TOXMPhP8wCM0xEbRDHLAVDHixu4nEALYru47Eb4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DyYjJ83ucjaAIB4MujZ+CsY1YG4tLrqtarlfLC0XIc5b9zfIU97s+zkDJCFo/9jQ3
-	 cl4iTEmY7c2bIvC9k7xq3UNiY+KUkaJDZ/wwopNsPghhQ3f2dICJHWgztCaiNcTLZD
-	 ZJGZ5+E0Yng4crbUT+aRYjxo/nYJ1vgxF1xYv3eLmi/ktsM4PUnGdhgaFav85voZ2o
-	 CgxA9jEQmhMbzHIbLdwWffEs0jhdUlrtgMGlB452FzKSKpnOOXPbaqGO/zF0E/A3Op
-	 jh5zFD3fSifFSgpg2MZM8+Iu6ZGCrq/mwcz5W0GvX1p3O9nkVrQGoh/7G2OKC/x7si
-	 E1I2IfLTFAHXA==
-Date: Sun, 4 Feb 2024 14:30:13 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Konstantin Taranov <kotaranov@linux.microsoft.com>
-Cc: kotaranov@microsoft.com, sharmaajay@microsoft.com, longli@microsoft.com,
-	jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+	s=k20201202; t=1707049916;
+	bh=vDBDZYzI/5OSxWeet1wmyNK83emKECxcsNO1ezZ40ak=;
+	h=From:To:Cc:Subject:Date:From;
+	b=nIq4csWA1HUpfBdPjf1xAVT22cLtTusYfNrZQUKZiX7VWI4PQZc/YRPbRVCsVC2iZ
+	 gopPQRr21Z9X3pfQ8QYHRWPbdrQqG3gz0m0XwGBs3AAdQdh2CEoAxrPZYPYcqvImsY
+	 V+6NabFIAaIdKH8IDU6Vf/oEi+HTtzPq74ynVFsB685Aj7Q/x89C/b6gik+UBuTq7A
+	 co+RrTjYt1MkvbhLIu73kxi17Hd6IEbrdYk1jpLKnIbBv3epWxkDLHKZuKWYZ9OxnM
+	 BEiFL4j4Lm2g6gnfFd/Da5So8vcNhit24p+cqjnuHy1A66q1aWMBipVP1yO1znM3q7
+	 D7dQY70gLVueQ==
+From: Masahiro Yamada <masahiroy@kernel.org>
+To: "David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org
+Cc: Masahiro Yamada <masahiroy@kernel.org>,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH rdma-next v2 2/5] RDMA/mana_ib: Create and destroy rnic
- adapter
-Message-ID: <20240204123013.GE5400@unreal>
-References: <1706886397-16600-1-git-send-email-kotaranov@linux.microsoft.com>
- <1706886397-16600-3-git-send-email-kotaranov@linux.microsoft.com>
+Subject: [PATCH] net: ethernet: remove duplicated CONFIG_SUNGEM_PHY entry
+Date: Sun,  4 Feb 2024 21:31:51 +0900
+Message-Id: <20240204123151.55005-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1706886397-16600-3-git-send-email-kotaranov@linux.microsoft.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 02, 2024 at 07:06:34AM -0800, Konstantin Taranov wrote:
-> This patch adds RNIC creation and destruction.
-> If creation of RNIC fails, we support only RAW QPs as they are served by
-> ethernet driver.
+Both drivers/net/Kconfig and drivers/net/ethernet/Kconfig contain the
+same config entry:
 
-So please make sure that you are creating RNIC only when you are
-supporting it. The idea that some function tries-and-fails with dmesg
-errors is not good idea.
+  config SUNGEM_PHY
+          tristate
 
-Thanks
+Commit f860b0522f65 ("drivers/net: Kconfig and Makefile cleanup") moved
+SUNGEM_PHY from drivers/net/Kconfig to drivers/net/ethernet/Kconfig.
 
-> 
-> Signed-off-by: Konstantin Taranov <kotaranov@linux.microsoft.com>
-> ---
->  drivers/infiniband/hw/mana/main.c    | 31 +++++++++++++++++++++++++++++++
->  drivers/infiniband/hw/mana/mana_ib.h | 29 +++++++++++++++++++++++++++++
->  2 files changed, 60 insertions(+)
-> 
-> diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-> index c64d569..33cd69e 100644
-> --- a/drivers/infiniband/hw/mana/main.c
-> +++ b/drivers/infiniband/hw/mana/main.c
-> @@ -581,14 +581,31 @@ static void mana_ib_destroy_eqs(struct mana_ib_dev *mdev)
->  
->  void mana_ib_gd_create_rnic_adapter(struct mana_ib_dev *mdev)
->  {
-> +	struct mana_rnic_create_adapter_resp resp = {};
-> +	struct mana_rnic_create_adapter_req req = {};
-> +	struct gdma_context *gc = mdev_to_gc(mdev);
->  	int err;
->  
-> +	mdev->adapter_handle = INVALID_MANA_HANDLE;
-> +
->  	err = mana_ib_create_eqs(mdev);
->  	if (err) {
->  		ibdev_err(&mdev->ib_dev, "Failed to create EQs for RNIC err %d", err);
->  		goto cleanup;
->  	}
->  
-> +	mana_gd_init_req_hdr(&req.hdr, MANA_IB_CREATE_ADAPTER, sizeof(req), sizeof(resp));
-> +	req.hdr.req.msg_version = GDMA_MESSAGE_V2;
-> +	req.hdr.dev_id = gc->mana_ib.dev_id;
-> +	req.notify_eq_id = mdev->fatal_err_eq->id;
-> +
-> +	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
-> +	if (err) {
-> +		ibdev_err(&mdev->ib_dev, "Failed to create RNIC adapter err %d", err);
-> +		goto cleanup;
-> +	}
-> +	mdev->adapter_handle = resp.adapter;
-> +
->  	return;
->  
->  cleanup:
-> @@ -599,5 +616,19 @@ void mana_ib_gd_create_rnic_adapter(struct mana_ib_dev *mdev)
->  
->  void mana_ib_gd_destroy_rnic_adapter(struct mana_ib_dev *mdev)
->  {
-> +	struct mana_rnic_destroy_adapter_resp resp = {};
-> +	struct mana_rnic_destroy_adapter_req req = {};
-> +	struct gdma_context *gc;
-> +
-> +	if (!rnic_is_enabled(mdev))
-> +		return;
-> +
-> +	gc = mdev_to_gc(mdev);
-> +	mana_gd_init_req_hdr(&req.hdr, MANA_IB_DESTROY_ADAPTER, sizeof(req), sizeof(resp));
-> +	req.hdr.dev_id = gc->mana_ib.dev_id;
-> +	req.adapter = mdev->adapter_handle;
-> +
-> +	mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
-> +	mdev->adapter_handle = INVALID_MANA_HANDLE;
->  	mana_ib_destroy_eqs(mdev);
->  }
-> diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-> index a4b94ee..96454cf 100644
-> --- a/drivers/infiniband/hw/mana/mana_ib.h
-> +++ b/drivers/infiniband/hw/mana/mana_ib.h
-> @@ -48,6 +48,7 @@ struct mana_ib_adapter_caps {
->  struct mana_ib_dev {
->  	struct ib_device ib_dev;
->  	struct gdma_dev *gdma_dev;
-> +	mana_handle_t adapter_handle;
->  	struct gdma_queue *fatal_err_eq;
->  	struct mana_ib_adapter_caps adapter_caps;
->  };
-> @@ -115,6 +116,8 @@ struct mana_ib_rwq_ind_table {
->  
->  enum mana_ib_command_code {
->  	MANA_IB_GET_ADAPTER_CAP = 0x30001,
-> +	MANA_IB_CREATE_ADAPTER  = 0x30002,
-> +	MANA_IB_DESTROY_ADAPTER = 0x30003,
->  };
->  
->  struct mana_ib_query_adapter_caps_req {
-> @@ -143,6 +146,32 @@ struct mana_ib_query_adapter_caps_resp {
->  	u32 max_inline_data_size;
->  }; /* HW Data */
->  
-> +struct mana_rnic_create_adapter_req {
-> +	struct gdma_req_hdr hdr;
-> +	u32 notify_eq_id;
-> +	u32 reserved;
-> +	u64 feature_flags;
-> +}; /*HW Data */
-> +
-> +struct mana_rnic_create_adapter_resp {
-> +	struct gdma_resp_hdr hdr;
-> +	mana_handle_t adapter;
-> +}; /* HW Data */
-> +
-> +struct mana_rnic_destroy_adapter_req {
-> +	struct gdma_req_hdr hdr;
-> +	mana_handle_t adapter;
-> +}; /*HW Data */
-> +
-> +struct mana_rnic_destroy_adapter_resp {
-> +	struct gdma_resp_hdr hdr;
-> +}; /* HW Data */
-> +
-> +static inline bool rnic_is_enabled(struct mana_ib_dev *mdev)
-> +{
-> +	return mdev->adapter_handle != INVALID_MANA_HANDLE;
-> +}
-> +
->  static inline struct gdma_context *mdev_to_gc(struct mana_ib_dev *mdev)
->  {
->  	return mdev->gdma_dev->gdma_context;
-> -- 
-> 1.8.3.1
-> 
+Shortly after it was applied, commit 19e2f6fe9601 ("net: Fix sungem_phy
+sharing.") added the second one to drivers/net/Kconfig.
+
+I kept the one in drivers/net/Kconfig because this CONFIG option controls
+the compilation of drivers/net/sungem_phy.c.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ drivers/net/ethernet/Kconfig | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/Kconfig b/drivers/net/ethernet/Kconfig
+index 5a274b99f299..6a19b5393ed1 100644
+--- a/drivers/net/ethernet/Kconfig
++++ b/drivers/net/ethernet/Kconfig
+@@ -15,9 +15,6 @@ if ETHERNET
+ config MDIO
+ 	tristate
+ 
+-config SUNGEM_PHY
+-	tristate
+-
+ source "drivers/net/ethernet/3com/Kconfig"
+ source "drivers/net/ethernet/actions/Kconfig"
+ source "drivers/net/ethernet/adaptec/Kconfig"
+-- 
+2.40.1
+
 
