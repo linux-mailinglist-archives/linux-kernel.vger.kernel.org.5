@@ -1,136 +1,148 @@
-Return-Path: <linux-kernel+bounces-51489-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51490-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4405D848BD2
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 08:24:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 978F2848BD5
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 08:26:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5FF3284C18
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 07:24:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F233D28513F
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 07:26:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A3938BF9;
-	Sun,  4 Feb 2024 07:24:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D56CB651;
+	Sun,  4 Feb 2024 07:26:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fEe9UF/O"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jTSi/5ss"
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA615B651
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 07:24:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28FEE8F72
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 07:25:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707031457; cv=none; b=V6fI3Atq4xmCOCG/NYOYWRWkXOZjozl39nWa/BGawRf667Z+/lXfhWydanXBMF4fsEVtb/JM7Wr3usuEs0Slq0fGdHUwvsKULt9nbwCHuUVYkeEkADmKbBRxaHYH999/MrlZkIu9eERK8guMKPTOaHb2durs/zEGfBFRrMm2nzk=
+	t=1707031560; cv=none; b=WgrR1LKqf99v6P4WzH/fpuvyDxN/5llubSmnG6YFDKM9Tv+RATF9EGYkMWVDgXAS5psXNc/eNICRE0k7ihqd0mSJQxzMb/Jw4vMvYyUAh7H95J0b6DTLHju4AUD25s7VTcf6MdR0HnpLgDGa+yPkhasu5KQnX6QalPkTAEXDE4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707031457; c=relaxed/simple;
-	bh=PpXmBZu/ttOrrnuRCVGr3y72VEUBIDGQLIInsAyMWEg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CLWAI3BvltkZCLn1BJCm3wUkBPJ8JjFO1bfRROgaD3xvxhZvLt59T0fQk18kmg1dPFByW9NVLGEYIWDB6rmHuVFSI/1wvi1grMDpucQB4TUZhFXOWxBUrsfXkpweKKB/8AsDjrFLzXd2GNTNkcLQ4CSGP+YdoWda9+x0yA2zffk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fEe9UF/O; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707031454;
+	s=arc-20240116; t=1707031560; c=relaxed/simple;
+	bh=XCrF050gBkNnvs/zW5kUe24x6uor+IW7v7gGuky9BFs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=b4MlbeB+/XdFXiX+h+XyPZSig34C2Nfos3S9girNTA1fgpKQgyuZ5sbjDD5hRkEGSGMpUxKn3Gjhr//Qb/nmjiDHTIk/tYeAai4v1YZzCRw5cSxMeZ8FIKiNWOc61B1YZdS5+hQxrcdHxbWL22VdQO7baBgYY16qBl8NkzywPfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jTSi/5ss; arc=none smtp.client-ip=95.215.58.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707031555;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mLETy/iNSKfFzyXqJhNJJwR2MY8g0ACyfE+gPoZ7mPo=;
-	b=fEe9UF/OUpAcwzTtF5DEl4neTu+Jcvq5FpaJZS/Ox7KLxf+l4D27abfYHRdgYps36qlA+h
-	UDWfKv2ENygJ/rtCnazGgXRXQJ9p2Krek0G/J6JKbsYEcfFdpEm1VH9U3qBzJ1Dll5LWY9
-	zJPWQOOn1IH5ZiUgy9AdoE3IayYR8ws=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-349-Xns6el5JMfWYABviphyyfw-1; Sun, 04 Feb 2024 02:24:13 -0500
-X-MC-Unique: Xns6el5JMfWYABviphyyfw-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33b2238ce45so854867f8f.1
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Feb 2024 23:24:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707031452; x=1707636252;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mLETy/iNSKfFzyXqJhNJJwR2MY8g0ACyfE+gPoZ7mPo=;
-        b=b1Um5fkQuVI196eTXAQyIVncm+u8zcijeutb7BC1oo3TQI/qqjr966AIsZT5XXdMVv
-         WmBdtVX/viQzDl4KBK2n3rwf/WxdlykoPLsqyTQVl4Nd9mfDlYw5/Wl00Ju9q5SZTb3t
-         bgOYITh+mVDU/hfk9EinnLq4OZMqIH/Xs6aQdwL87yGjnSLTA6xX9qTlZNHUWEgBSJoQ
-         v9nPjxVqMZWH96bxvqtS/jj8FLHTeDY3TT5nXCyjQKUTg3UUoFsits7YSvGmiU4zFdhd
-         YLqwM+kIc+LHauikIfBwwjLt3D+z7ZTqJN4C+aG98anwmtr5L1WJ8fvTA1eZfjXqhwvt
-         z/0w==
-X-Gm-Message-State: AOJu0Yy3vEXLhivDFiINFnmmOpF2FlEu+/IYmC7ITczGLt/rUe7fznL0
-	eQqOP8BMT5TCidtGh2CD0IWLgwbC64CeyGzs/E4+ZP0fE1uelHxHsZKqXloBPCxjY5Ms1WwYNBW
-	LVzyOC9pFtKrlY6cf5sILFdvG+RbgVuMSR1lleHWC95SKvz7TDwf5NnElbWB3eg==
-X-Received: by 2002:adf:e985:0:b0:33b:2471:9ff5 with SMTP id h5-20020adfe985000000b0033b24719ff5mr3256114wrm.46.1707031451975;
-        Sat, 03 Feb 2024 23:24:11 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGMw5edd8lPXARt8A2JFbHjrwLPmBc12RNW0e5ysvLp152+mHyQquq7fCBabJATf0C76BdENA==
-X-Received: by 2002:adf:e985:0:b0:33b:2471:9ff5 with SMTP id h5-20020adfe985000000b0033b24719ff5mr3256107wrm.46.1707031451643;
-        Sat, 03 Feb 2024 23:24:11 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXYrNuqjyi5br+xZFq0OWe3dCqS9NovmmPjW6l/DKHV/zC0AYf+MMsBbowh7c60uXqe7pA3mWSNfg7qpg/VCOARIebqG8UH5NF+cMb75FCo5B7KV0QmBpr05KpZiF6N8N9Npi8VsUHmftypKEE2phJwkpeqwHU+G4h69RUxHqJ20WCMNIOuG4B8lWgq+fe9DdMDR8AFr6rxqSNxVX9FM2ZFROG66MzZPbw2t4v2Ov+nHQMEVrXaSPK+cXECpZPbq3f0OKK04z7xF35K6uPfECTJ
-Received: from [192.168.1.149] ([212.76.254.34])
-        by smtp.gmail.com with ESMTPSA id q11-20020a5d574b000000b0033ae4a3b285sm5440377wrw.36.2024.02.03.23.24.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 03 Feb 2024 23:24:11 -0800 (PST)
-Message-ID: <a6093a70-29bf-458d-b981-bcd95af7b472@redhat.com>
-Date: Sun, 4 Feb 2024 08:24:10 +0100
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=XjdCCFvLZWXa+p6w0grRH8helkAbuAcZzUNjMEzv69g=;
+	b=jTSi/5ssnW+B2nZEdWTkraj+NF2JCrWuvd7e4JHe7/hl/HGvc17fKTh1a9EEBhUmJ1eZuB
+	IV+7vK5AwGnnzGePtP11nEJeG/oz0XWhA7hfYhzPjMNdi0smuMpmmce88hja0a/2MpU6BR
+	GhRfx1q4MHJCktItjGy6MfTjjsUQkkc=
+From: Gang Li <gang.li@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Muchun Song <muchun.song@linux.dev>,
+	Gang Li <gang.li@linux.dev>,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	Randy Dunlap <rdunlap@infradead.org>,
+	kernel test robot <lkp@intel.com>
+Cc: Gang Li <ligang.bdlg@bytedance.com>
+Subject: [PATCH 1/1] hugetlb: fix CONFIG_PADATA dependency for non-SMP system
+Date: Sun,  4 Feb 2024 15:25:24 +0800
+Message-Id: <20240204072525.1986626-1-gang.li@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: + XPS 13 9343
-Content-Language: en-US
-To: Antoine <debian@r2rien.net>
-Cc: Dell.Client.Kernel@dell.com, linux-input@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
- pmenzel@molgen.mpg.de, regressions@lists.linux.dev, 1061521@bugs.debian.org
-References: <0aa4a61f-c939-46fe-a572-08022e8931c7@molgen.mpg.de>
- <f27b491c-2f1c-4e68-804c-24eeaa8d10de@redhat.com>
- <bc166c19-8da3-cd42-b749-e35eaebe7822@r2rien.net>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <bc166c19-8da3-cd42-b749-e35eaebe7822@r2rien.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi Antoine,
+Randy Dunlap and kernel test robot reported a warning:
 
-On 2/3/24 17:16, Antoine wrote:
-> On 1/20/24 21:26, Hans de Goede wrote:
->> Can you try adding "i8042.dumbkbd=1" to your kernel commandline?
->>
->> The next question is if the keyboard will still actually
->> work after suspend/resume with "i8042.dumbkbd=1". If it
->> stays in the list, but no longer works
-> 
-> Hi, thanks a lot for taking into account our hardware,
-> just a supplementary feedback:
-> 
-> In my case (Dell XPS 13 9343/i5-5200U):
-> - Dell Inc. XPS 13 9343/0TM99H, BIOS A19 12/24/2018
-> - Linux version 6.6.13-1 (2024-01-20)
-> 
-> commandline with `i8042.dumbkbd=1` fixes the issue,
-> with capslock functional but without led
-> + as a side note, hibernate doesn't trigger any issue
-> 
-> (before getting informed of and testing `i8042.dumbkbd=1`)
-> I had attached logs before/after suspend against 6.6.11 and 6.6.13 :
-> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1061521#30
-> 
-> I remain at your disposal for any further infos/testing
+```
+WARNING: unmet direct dependencies detected for PADATA
+  Depends on [n]: SMP [=n]
+  Selected by [y]:
+  - HUGETLBFS [=y] && (X86 [=y] || SPARC64 || ARCH_SUPPORTS_HUGETLBFS [=n] || BROKEN [=n]) && (SYSFS [=y] || SYSCTL [=n])
+```
 
-The issue of the kbd on some Dell XPS models no longer
-working after a suspend/resume cycle should be fixed by
-these 2 patches which are on their way to Linus' tree:
+hugetlb parallelization depends on PADATA, and PADATA depends on SMP, so
+when the SMP config is disabled, the dependency of hugetlb on padata
+should be downgraded to single thread.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git/commit/?h=for-linus&id=683cd8259a9b883a51973511f860976db2550a6e
-https://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git/commit/?h=for-linus&id=9cf6e24c9fbf17e52de9fff07f12be7565ea6d61
+Fixes: f2f635264b98 ("hugetlb: have CONFIG_HUGETLBFS select CONFIG_PADATA")
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Closes: https://lore.kernel.org/lkml/ec5dc528-2c3c-4444-9e88-d2c48395b433@infradead.org/
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202402020454.6EPkP1hi-lkp@intel.com/
+Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
+```
+Hi Andrew, this fix patch is based on mm/mm-unstable.
+Thanks!
+```
+---
+ fs/Kconfig   | 2 +-
+ mm/hugetlb.c | 9 ++++++++-
+ 2 files changed, 9 insertions(+), 2 deletions(-)
 
-Regards,
-
-Hans
+diff --git a/fs/Kconfig b/fs/Kconfig
+index 3abc107ab2fbd..f2bc73fc0417e 100644
+--- a/fs/Kconfig
++++ b/fs/Kconfig
+@@ -261,7 +261,7 @@ menuconfig HUGETLBFS
+ 	depends on X86 || SPARC64 || ARCH_SUPPORTS_HUGETLBFS || BROKEN
+ 	depends on (SYSFS || SYSCTL)
+ 	select MEMFD_CREATE
+-	select PADATA
++	select PADATA if SMP
+ 	help
+ 	  hugetlbfs is a filesystem backing for HugeTLB pages, based on
+ 	  ramfs. For architectures that support it, say Y here and read
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index bf3d5dfb921e6..1b01b244fb50b 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -3457,6 +3457,7 @@ static void __init gather_bootmem_prealloc_node(unsigned long start, unsigned lo
+ 
+ static void __init gather_bootmem_prealloc(void)
+ {
++#ifdef CONFIG_PADATA
+ 	struct padata_mt_job job = {
+ 		.thread_fn	= gather_bootmem_prealloc_node,
+ 		.fn_arg		= NULL,
+@@ -3469,6 +3470,9 @@ static void __init gather_bootmem_prealloc(void)
+ 	};
+ 
+ 	padata_do_multithreaded(&job);
++#else
++	gather_bootmem_prealloc_node(0, 0, NULL);
++#endif
+ }
+ 
+ static void __init hugetlb_hstate_alloc_pages_onenode(struct hstate *h, int nid)
+@@ -3568,6 +3572,7 @@ static unsigned long __init hugetlb_gigantic_pages_alloc_boot(struct hstate *h)
+ 
+ static unsigned long __init hugetlb_pages_alloc_boot(struct hstate *h)
+ {
++#ifdef CONFIG_PADATA
+ 	struct padata_mt_job job = {
+ 		.fn_arg		= h,
+ 		.align		= 1,
+@@ -3600,7 +3605,9 @@ static unsigned long __init hugetlb_pages_alloc_boot(struct hstate *h)
+ 	job.max_threads	= num_node_state(N_MEMORY) * 2;
+ 	job.min_chunk	= h->max_huge_pages / num_node_state(N_MEMORY) / 2;
+ 	padata_do_multithreaded(&job);
+-
++#else
++	hugetlb_pages_alloc_boot_node(0, h->max_huge_pages, h);
++#endif
+ 	return h->nr_huge_pages;
+ }
+ 
+-- 
+2.20.1
 
 
