@@ -1,142 +1,110 @@
-Return-Path: <linux-kernel+bounces-51357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01003848A17
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 02:22:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B62148489EA
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 02:17:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98E12B24F30
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 01:22:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0036B23C6B
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 01:16:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 693C417584;
-	Sun,  4 Feb 2024 01:18:11 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD99CEBE;
+	Sun,  4 Feb 2024 01:16:49 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42F5F101FA;
-	Sun,  4 Feb 2024 01:18:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03C7B10F1;
+	Sun,  4 Feb 2024 01:16:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707009488; cv=none; b=baHu0vwkzBR0gYKnYacZ96zEsLEe4OXT7d+lchAYJY5421xBTz8XFDTRYaIkrjM7ee3I05x0UE2rCLNbMK8rj9r6kqnQc0qoIjViT/SI6oR92arEvhP5C0F++qXaNO2T9xesV6GwCb1FXUNj4sSifJ5S7R++D3yvDNlpg6bm8/A=
+	t=1707009409; cv=none; b=ngTch6DKx//eJQcwFGVeNUKQ+tcmrqMlmREJ4C5SIOenOHt4CZUgGp185oB5T9ZrJbUx4G8rfarAIyesRYLCnrvXR184udkFLLIweDRI32x2ZZQffr+ja3aDc0ZACKk2fgbp8fj+1RQjZ3rEStGVXeVr6RhP/5cn/JY6nxKB0zo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707009488; c=relaxed/simple;
-	bh=1bWv9KlxHQzO4IJ5J8Xlt8xuUk/3QGMai5L7xRHgYPA=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=biJZ+0qtNlzu7Y098Z4rxo7BzuoQX8QjlNd9JdvaY/KojfJupkWW24G5k0fDr29v24gIvXqHr43j7EVTN0lD6LY615/vvOjrL/GmDK6HkIV8k6oJdBdJvBOtBXHfjr09ikLVJ4xUZbkBs8SS24Sv5R8G8rgD6gDL6NwfbqmXBP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C497BC32799;
-	Sun,  4 Feb 2024 01:18:07 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97)
-	(envelope-from <rostedt@goodmis.org>)
-	id 1rWR9S-00000006Our-1vXx;
-	Sat, 03 Feb 2024 20:18:30 -0500
-Message-ID: <20240204011830.314244430@goodmis.org>
-User-Agent: quilt/0.67
-Date: Sat, 03 Feb 2024 20:16:36 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Sasha Levin <sashal@kernel.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Christian Brauner <brauner@kernel.org>,
- Al Viro <viro@ZenIV.linux.org.uk>,
- Ajay Kaher <ajay.kaher@broadcom.com>
-Subject: [v6.7][PATCH 21/23] eventfs: Restructure eventfs_inode structure to be more condensed
-References: <20240204011615.703023949@goodmis.org>
+	s=arc-20240116; t=1707009409; c=relaxed/simple;
+	bh=kXAxuf/NRu62ybdEKHkf0EJhPGPJTi5CpcwG4gK4aNs=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=PsGZRdX9x9etZDKVdJ9R+wsMXeVqMU1/4w3dGo8j2cpNuxruIayCztBJDA/EMYRTMUCjGqgZ8wQ4vNc3APMDR+2FRjo9z8aCgy5E07E+obs8O20+qmGZfoynXfpl/IiT0wijVqpYN/LUEmert8aJN0/bfCYcVEBuRX0visDP4iQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TSBPp0JJlzvRdm;
+	Sun,  4 Feb 2024 09:14:54 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (unknown [7.193.23.202])
+	by mail.maildlp.com (Postfix) with ESMTPS id A934B140258;
+	Sun,  4 Feb 2024 09:16:37 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sun, 4 Feb 2024 09:16:36 +0800
+Subject: Re: [RFC PATCH] kprobes: Use synchronize_rcu_tasks_rude in
+ kprobe_optimizer
+To: <paulmck@kernel.org>
+CC: Chen Zhongjin <chenzhongjin@huawei.com>, <linux-kernel@vger.kernel.org>,
+	<linux-trace-kernel@vger.kernel.org>, <naveen.n.rao@linux.ibm.com>,
+	<anil.s.keshavamurthy@intel.com>, <davem@davemloft.net>,
+	<mhiramat@kernel.org>, <akpm@linux-foundation.org>, <tglx@linutronix.de>,
+	<peterz@infradead.org>, <pmladek@suse.com>, <dianders@chromium.org>,
+	<npiggin@gmail.com>, <mpe@ellerman.id.au>, <jkl820.git@gmail.com>,
+	<juerg.haefliger@canonical.com>, <rick.p.edgecombe@intel.com>,
+	<eric.devolder@oracle.com>, <mic@digikod.net>
+References: <20240102034024.256326-1-chenzhongjin@huawei.com>
+ <29eaed4d-c4e5-cf9b-113b-da146b719820@huawei.com>
+ <d7cb96d8-86e1-423d-a135-46b4e472fe9e@paulmck-laptop>
+ <d7dfe177-6bfb-63c2-9be5-6ad25c8c243e@huawei.com>
+ <d970cda7-bf17-49c5-85b9-7596beb3690b@paulmck-laptop>
+From: Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <bbeebd04-f8c2-866b-0016-79778c64cab8@huawei.com>
+Date: Sun, 4 Feb 2024 09:16:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <d970cda7-bf17-49c5-85b9-7596beb3690b@paulmck-laptop>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Hello,
 
-Some of the eventfs_inode structure has holes in it. Rework the structure
-to be a bit more condensed, and also remove the no longer used llist
-field.
+On 2024/2/4 6:00, Paul E. McKenney wrote:
+> On Mon, Jan 29, 2024 at 08:58:10AM +0800, Yang Jihong wrote:
+>> Hello,
+>>
+>> On 2024/1/28 3:22, Paul E. McKenney wrote:
+>>> On Tue, Jan 09, 2024 at 07:28:29PM +0800, Yang Jihong wrote:
+>>>> Hello,
+>>>>
+>>>> PING.
+>>>>
+>>>> I had a similar problem. Is this solution feasible?
+>>>
+>>> Sadly, no.
+>>>
+>>> It fails on CONFIG_PREEMPT=y kernels because synchronize_rcu_tasks_rude()
+>>> will not wait on tasks that have been preempted while executing in
+>>> a trampoline.
+>>>
+>>> But could you please try out the patch shown at the end of this email?
+>>
+>> Thanks for the patch, yes, I've tested and it solves the problem.
+> 
+> Very good, and thank you for testing it!
+> 
+> May I apply your Tested-by to the commit to record your efforts for
+> posterity?
+> 
+Sure absolutely.
 
-Link: https://lore.kernel.org/linux-trace-kernel/20240201161617.002321438@goodmis.org
+Tested-by: Yang Jihong <yangjihong1@huawei.com>
 
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Al Viro <viro@ZenIV.linux.org.uk>
-Cc: Ajay Kaher <ajay.kaher@broadcom.com>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- fs/tracefs/internal.h | 27 ++++++++++++---------------
- 1 file changed, 12 insertions(+), 15 deletions(-)
-
-diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
-index 1886f1826cd8..beb3dcd0e434 100644
---- a/fs/tracefs/internal.h
-+++ b/fs/tracefs/internal.h
-@@ -32,40 +32,37 @@ struct eventfs_attr {
- /*
-  * struct eventfs_inode - hold the properties of the eventfs directories.
-  * @list:	link list into the parent directory
-+ * @rcu:	Union with @list for freeing
-+ * @children:	link list into the child eventfs_inode
-  * @entries:	the array of entries representing the files in the directory
-  * @name:	the name of the directory to create
-- * @children:	link list into the child eventfs_inode
-  * @events_dir: the dentry of the events directory
-  * @entry_attrs: Saved mode and ownership of the @d_children
-- * @attr:	Saved mode and ownership of eventfs_inode itself
-  * @data:	The private data to pass to the callbacks
-+ * @attr:	Saved mode and ownership of eventfs_inode itself
-  * @is_freed:	Flag set if the eventfs is on its way to be freed
-  *                Note if is_freed is set, then dentry is corrupted.
-+ * @is_events:	Flag set for only the top level "events" directory
-  * @nr_entries: The number of items in @entries
-+ * @ino:	The saved inode number
-  */
- struct eventfs_inode {
--	struct kref			kref;
--	struct list_head		list;
-+	union {
-+		struct list_head	list;
-+		struct rcu_head		rcu;
-+	};
-+	struct list_head		children;
- 	const struct eventfs_entry	*entries;
- 	const char			*name;
--	struct list_head		children;
- 	struct dentry			*events_dir;
- 	struct eventfs_attr		*entry_attrs;
--	struct eventfs_attr		attr;
- 	void				*data;
-+	struct eventfs_attr		attr;
-+	struct kref			kref;
- 	unsigned int			is_freed:1;
- 	unsigned int			is_events:1;
- 	unsigned int			nr_entries:30;
- 	unsigned int			ino;
--	/*
--	 * Union - used for deletion
--	 * @llist:	for calling dput() if needed after RCU
--	 * @rcu:	eventfs_inode to delete in RCU
--	 */
--	union {
--		struct llist_node	llist;
--		struct rcu_head		rcu;
--	};
- };
- 
- static inline struct tracefs_inode *get_tracefs(const struct inode *inode)
--- 
-2.43.0
-
-
+Thanks,
+Yang
 
