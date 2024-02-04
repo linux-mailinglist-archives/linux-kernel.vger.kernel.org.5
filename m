@@ -1,173 +1,299 @@
-Return-Path: <linux-kernel+bounces-51605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51606-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2152848D28
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:32:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41E59848D2A
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:33:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01E641C21183
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 11:32:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4F8C281821
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 11:32:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F1662209A;
-	Sun,  4 Feb 2024 11:32:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CABD22098;
+	Sun,  4 Feb 2024 11:32:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I/FJDf1S"
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IJ+OQIem"
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C29B219F3;
-	Sun,  4 Feb 2024 11:32:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95553111A0
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 11:32:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707046321; cv=none; b=aaYAW3YNjePGzy26orFfVDyQVjVpEi1/tUOKn34LA+DDDVz4/WnS0uu0rxUlCBEBvn6c5tTfSjLPkZa7xtMr+QNVDRlmaFsJWN+VzVeVNPLXzw28NW1JQJ/Ao70De5eEQ7G8YUiZQmSQt3twF+QDr9r1h1y0/DnEXUoqNXfKpC0=
+	t=1707046371; cv=none; b=oG/AmqubLPLWGdmDdYl/jztjJ1FZ//Rl6NLYyCsLiOlbSDkZghtiF2R7vzxualhPNwZ8WGNA1aIrBNEILFTxz5gxBuLCFrmHe1nj3I1JXhm1UJj/fJHSyfxK6UoXFt3zg3lz8fZyM0OD2semIb9T+TIz9lsk6UmBpfnjrd95c8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707046321; c=relaxed/simple;
-	bh=OysxHNR/8MLJKJoi2a1JRId6KQOu7obGUqwfNQ5mXP0=;
+	s=arc-20240116; t=1707046371; c=relaxed/simple;
+	bh=dtJJMeLuY0bUbyEmCpnifVzW91I/05i2WH+f3om8AVs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rNxWFmVtudA9t9C6cr1tJJkhi/p5uqcLQnZx6Rz+9lPzM+2NCV1tgtbG+m/1525CF9+a19eXbnhmbXA+9JYO8xXE+QvJfMNNYNp4F8EapTqzzS0E/BgbLqNeemsBlSyuDHrLdX/2y44hwknF4+iL/zqGVh3bQpTCKZQ0V6vOwv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I/FJDf1S; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-60410da20a2so33957957b3.1;
-        Sun, 04 Feb 2024 03:32:00 -0800 (PST)
+	 To:Cc:Content-Type; b=gQFdiYarCXyk+R0U004ZdnqJ+V0gyG1aytMZ8/M0wUIHhh8qftalrZL45I9/kPnyRBAMOM0hUht2s3MACtkt8tT30Qs0IFamlrHo1h1YL1odFmn/SDPa8wenEcpNtvak1ix2pyAdRyVNIOfn+0Ggv0mJBCd/EE3+A42KD1Bc21E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IJ+OQIem; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2907a17fa34so2952437a91.1
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 03:32:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707046319; x=1707651119; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1707046369; x=1707651169; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7QkyTj57SM8MQl+b85mT92R7QgyO+Dz+wOf6Kb6ozwQ=;
-        b=I/FJDf1SGbodhq0DkXcdEkIDmuYItqAdThdwyCGOslg9TLenD6G19eU6fydKKMpAIX
-         hdl/GeHOLM2t2LMxCwqh2WUWl6syuQq0Vr7Lv0WryhbPf5dUC2WgkKV1H/rbT94VvjCd
-         ISU25U4IzwUwr4fjgf12p8cO28bSABtdNtjYrqy9B8khVX4DiFvtlwykOwyqAQaI3rE8
-         yc9+g+R4F4/FGSCpQcMEIvRp9e3EfNHatgmVmun07THjD9VUsHZfdYzb0bRY+ID+55mp
-         c43OSfp6MNDLxUV/B00ifYj8pzcGTteUADarnrHNarHjMvY1GwtGIaA+SMOZ6ob7mj/j
-         MPNQ==
+        bh=U2rNtFddvkApJpasULvwKrDNjZfPFrzhjGQ7pCq+oMU=;
+        b=IJ+OQIem6+tq2AhYn6wcoIbfTABfo5BfOb0W5A0jv798UOlaGKpnv1ki6M/crWvpry
+         7Gxp8RS8gtskdIdv6VTBZMLTFqYD+etT+msrVlaZANzN4Fe8TgdRc6ifpXjflpHaDlQx
+         ra4Bx1GcMCdWKYKxD4bit24v+bdVL6xhYk5Ep4tyZ8GhDLLeZAzZ69fCCiusN5au4dpV
+         Pmwzh1ShCVijUHU1bNfCbPFvLbMKJYemkQxqok5vKUIutG2Y6ftN//w3PTlSE4pcgK4W
+         ZGjLM8wBjR2bgTO7kOItPKJ/L8dwN0DZaHgWiZEfDFR9vVJHgR4PU8e0jaELwUC3ghRu
+         nb1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707046319; x=1707651119;
+        d=1e100.net; s=20230601; t=1707046369; x=1707651169;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7QkyTj57SM8MQl+b85mT92R7QgyO+Dz+wOf6Kb6ozwQ=;
-        b=krDq8h6bPPPqMHk2CbRiuPzvf02Y3XsWj91u4uGNrezLYdnlVpjCL/1k1cnh6KuAeZ
-         2n1kJWmWanjtX64bKRIDuvwlai80hvlbjUsVy+IUWzx0gBR9aiBUSbPMqR9SIUR8keWW
-         YUALSiCtE6815stWQaLrONqkikKsmB2QBtO80ov3rLcRAyF6k5QRpgp0LdaQTew6M3t8
-         MUM9ec8kSStPp2DB89p3hAJL9G1sy7S2ZNJa+KQ/O3P3OMWUqSSoCP/MRIF8yqRg0rCd
-         ClTMEfP40Vf2jY4XFqKHNA5zz0GuHhUXI2A9mdDkLG3FRoMUe8eN1UIVDg7QIwggSsM0
-         grbg==
-X-Gm-Message-State: AOJu0YypOboAADaBShe2WzmS98P/220ZhVEI5AVm8wxZYjXZkmPAhiXl
-	ZYu2tfUrljjfXYuedaS6JO+ZpbBHsf98c0kXDb+yA99juwtzZq7YcN+fT8PTJcB6NTKP8IBkGcV
-	aCJs1gjvWGPFiPw2VP39tDyfaY4uble9iGdELKHb+RxSHuQ==
-X-Google-Smtp-Source: AGHT+IExAGT2STpMmSagXa312ySYM4FXedxHnwenSsbEcIAQwvxzb87TuWuoNliCrp97oW7+j/HHNWiZTlrSm5/23Co=
-X-Received: by 2002:a81:4325:0:b0:5ff:a9bc:b7f with SMTP id
- q37-20020a814325000000b005ffa9bc0b7fmr12348406ywa.21.1707046319112; Sun, 04
- Feb 2024 03:31:59 -0800 (PST)
+        bh=U2rNtFddvkApJpasULvwKrDNjZfPFrzhjGQ7pCq+oMU=;
+        b=CTbGj4WQcIqTkx89Tk/btw121S4dBAp+/z25TGYKQ2BXE+4ntiJSUXDD/XqbF02xUj
+         dGOVh3DrCVoZ4HMChCXGLDKIhPCmdNQVG54sVr2tqIndf0MZmGBh+6RO1iSuC+W6/Pr7
+         MdQAYGh6/UHm/9yNQycMXo0swPDLThadVJTCEzirrv9Hg5k6REyHPJFjVlDXg/zIOPE4
+         P5gAEZnbDLFEu2LiQ/834+2+ZLWBiIM9GYn8GqvI7y9UnuwtgsPP4rIR5ke1dgch2Y6B
+         9SucRZaRXZ1QV1vti/M5OQxw133drP6oy8HEfnpF4n93duq1/V9Rd9yyHomlkOHQE8Ko
+         o6+w==
+X-Gm-Message-State: AOJu0Yxg6BZM6VVgwgNSudpuRFW6cY4OjNvdF/nqaDvxvYIo+RZBx+ru
+	3QY2xRMDoU7fovTK1tUHOiesTnuKsYiFS9dcJnOc0SZlX4505ez90of155ENX/2m4ApAdbFHFbU
+	UlOMHXVvqNttzErdNzAhbXkEeg6GjFhvtf9D4dA==
+X-Google-Smtp-Source: AGHT+IF6EuzW5/ZBE9dzhHMQpazM/7+4392PolAM+1PoR9T9WKAjfN9BKYSPwtpIiijND0l+lqZ852QiGESF3BW3mog=
+X-Received: by 2002:a17:90b:100e:b0:296:20fb:9d0d with SMTP id
+ gm14-20020a17090b100e00b0029620fb9d0dmr9930551pjb.28.1707046368838; Sun, 04
+ Feb 2024 03:32:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117114350.3105-1-maimon.sagi@gmail.com> <8a6c5297-6e86-4f0d-a85e-1a93b2215d68@linux.dev>
-In-Reply-To: <8a6c5297-6e86-4f0d-a85e-1a93b2215d68@linux.dev>
-From: Sagi Maimon <maimon.sagi@gmail.com>
-Date: Sun, 4 Feb 2024 13:31:48 +0200
-Message-ID: <CAMuE1bFEbrY2PiDB6OdZGzDNijPAhoGBircTpqiyVs0Qq6bOig@mail.gmail.com>
-Subject: Re: [PATCH v5] ptp: ocp: add Adva timecard support
-To: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-Cc: richardcochran@gmail.com, jonathan.lemon@gmail.com, vadfed@fb.com, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, kuba@kernel.org
+References: <20231208002342.367117-1-qyousef@layalina.io> <20231208002342.367117-9-qyousef@layalina.io>
+ <Zbk0DhibX0oDLk1s@vingu-book> <20240201222428.xd2sylnz66wrczal@airbuntu>
+In-Reply-To: <20240201222428.xd2sylnz66wrczal@airbuntu>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Sun, 4 Feb 2024 12:32:36 +0100
+Message-ID: <CAKfTPtBeiqgndxzVu=hu3awbejpsKehww5GvNcB3p57A9mmg=g@mail.gmail.com>
+Subject: Re: [PATCH v2 8/8] sched/pelt: Introduce PELT multiplier
+To: Qais Yousef <qyousef@layalina.io>
+Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Viresh Kumar <viresh.kumar@linaro.org>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>, Wei Wang <wvw@google.com>, 
+	Rick Yiu <rickyiu@google.com>, Chung-Kai Mei <chungkai@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Vadim,
-Sorry but I was on vacation for the last two weeks.
-So What should I do now:
-1) Do you want me to set my changes into the main linux git tree:
-    git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-    and use  use '[PATCH v6] ...' prefix
-2) Or
-    set my changes into the net-next git tree:
-    git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git
-    and use  use '[PATCH net-next v6] ...' prefix
+On Thu, 1 Feb 2024 at 23:24, Qais Yousef <qyousef@layalina.io> wrote:
+>
+> On 01/30/24 18:38, Vincent Guittot wrote:
+> > Le vendredi 08 d=C3=A9c. 2023 =C3=A0 00:23:42 (+0000), Qais Yousef a =
+=C3=A9crit :
+> > > From: Vincent Donnefort <vincent.donnefort@arm.com>
+> > >
+> > > The new sched_pelt_multiplier boot param allows a user to set a clock
+> > > multiplier to x2 or x4 (x1 being the default). This clock multiplier
+> > > artificially speeds up PELT ramp up/down similarly to use a faster
+> > > half-life than the default 32ms.
+> > >
+> > >   - x1: 32ms half-life
+> > >   - x2: 16ms half-life
+> > >   - x4: 8ms  half-life
+> > >
+> > > Internally, a new clock is created: rq->clock_task_mult. It sits in t=
+he
+> > > clock hierarchy between rq->clock_task and rq->clock_pelt.
+> > >
+> > > The param is set as read only and can only be changed at boot time vi=
+a
+> > >
+> > >     kernel.sched_pelt_multiplier=3D[1, 2, 4]
+> > >
+> > > PELT has a big impact on the overall system response and reactiveness=
+ to
+> > > change. Smaller PELT HF means it'll require less time to reach the
+> > > maximum performance point of the system when the system become fully
+> > > busy; and equally shorter time to go back to lowest performance point
+> > > when the system goes back to idle.
+> > >
+> > > This faster reaction impacts both dvfs response and migration time
+> > > between clusters in HMP system.
+> > >
+> > > Smaller PELT values are expected to give better performance at the co=
+st
+> > > of more power. Under powered systems can particularly benefit from
+> > > smaller values. Powerful systems can still benefit from smaller value=
+s
+> > > if they want to be tuned towards perf more and power is not the major
+> > > concern for them.
+> > >
+> > > This combined with respone_time_ms from schedutil should give the use=
+r
+> > > and sysadmin a deterministic way to control the triangular power, per=
+f
+> > > and thermals for their system. The default response_time_ms will half
+> > > as PELT HF halves.
+> > >
+> > > Update approximate_{util_avg, runtime}() to take into account the PEL=
+T
+> > > HALFLIFE multiplier.
+> > >
+> > > Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
+> > > Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> > > [Converted from sysctl to boot param and updated commit message]
+> > > Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+> > > ---
+> > >  kernel/sched/core.c  |  2 +-
+> > >  kernel/sched/pelt.c  | 52 ++++++++++++++++++++++++++++++++++++++++++=
+--
+> > >  kernel/sched/pelt.h  | 42 +++++++++++++++++++++++++++++++----
+> > >  kernel/sched/sched.h |  1 +
+> > >  4 files changed, 90 insertions(+), 7 deletions(-)
+> > >
+> >
+> > ...
+> >
+> > > +__read_mostly unsigned int sched_pelt_lshift;
+> > > +static unsigned int sched_pelt_multiplier =3D 1;
+> > > +
+> > > +static int set_sched_pelt_multiplier(const char *val, const struct k=
+ernel_param *kp)
+> > > +{
+> > > +   int ret;
+> > > +
+> > > +   ret =3D param_set_int(val, kp);
+> > > +   if (ret)
+> > > +           goto error;
+> > > +
+> > > +   switch (sched_pelt_multiplier)  {
+> > > +   case 1:
+> > > +           fallthrough;
+> > > +   case 2:
+> > > +           fallthrough;
+> > > +   case 4:
+> > > +           WRITE_ONCE(sched_pelt_lshift,
+> > > +                      sched_pelt_multiplier >> 1);
+> > > +           break;
+> > > +   default:
+> > > +           ret =3D -EINVAL;
+> > > +           goto error;
+> > > +   }
+> > > +
+> > > +   return 0;
+> > > +
+> > > +error:
+> > > +   sched_pelt_multiplier =3D 1;
+> > > +   return ret;
+> > > +}
+> > > +
+> > > +static const struct kernel_param_ops sched_pelt_multiplier_ops =3D {
+> > > +   .set =3D set_sched_pelt_multiplier,
+> > > +   .get =3D param_get_int,
+> > > +};
+> > > +
+> > > +#ifdef MODULE_PARAM_PREFIX
+> > > +#undef MODULE_PARAM_PREFIX
+> > > +#endif
+> > > +/* XXX: should we use sched as prefix? */
+> > > +#define MODULE_PARAM_PREFIX "kernel."
+> > > +module_param_cb(sched_pelt_multiplier, &sched_pelt_multiplier_ops, &=
+sched_pelt_multiplier, 0444);
+> > > +MODULE_PARM_DESC(sched_pelt_multiplier, "PELT HALFLIFE helps control=
+ the responsiveness of the system.");
+> > > +MODULE_PARM_DESC(sched_pelt_multiplier, "Accepted value: 1 32ms PELT=
+ HALIFE - roughly 200ms to go from 0 to max performance point (default).");
+> > > +MODULE_PARM_DESC(sched_pelt_multiplier, "                2 16ms PELT=
+ HALIFE - roughly 100ms to go from 0 to max performance point.");
+> > > +MODULE_PARM_DESC(sched_pelt_multiplier, "                4  8ms PELT=
+ HALIFE - roughly  50ms to go from 0 to max performance point.");
+> > > +
+> > >  /*
+> > >   * Approximate the new util_avg value assuming an entity has continu=
+ed to run
+> > >   * for @delta us.
+> >
+> > ...
+> >
+> > > +
+> > >  static inline void
+> > > -update_rq_clock_pelt(struct rq *rq, s64 delta) { }
+> > > +update_rq_clock_task_mult(struct rq *rq, s64 delta) { }
+> > >
+> > >  static inline void
+> > >  update_idle_rq_clock_pelt(struct rq *rq) { }
+> > > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> > > index bbece0eb053a..a7c89c623250 100644
+> > > --- a/kernel/sched/sched.h
+> > > +++ b/kernel/sched/sched.h
+> > > @@ -1029,6 +1029,7 @@ struct rq {
+> > >     u64                     clock;
+> > >     /* Ensure that all clocks are in the same cache line */
+> > >     u64                     clock_task ____cacheline_aligned;
+> > > +   u64                     clock_task_mult;
+> >
+> > I'm not sure that we want yet another clock and this doesn't apply for =
+irq_avg.
+> >
+> > What about the below is simpler and I think cover all cases ?
+>
+> Looks better, yes. I'll change to this and if no issues come up I'll add =
+your
+> signed-off-by if that's okay with you for the next version.
 
-BR,
-Sagi
+Yes, that's okay
 
-On Wed, Jan 17, 2024 at 11:23=E2=80=AFPM Vadim Fedorenko
-<vadim.fedorenko@linux.dev> wrote:
 >
-> On 17/01/2024 11:43, Sagi Maimon wrote:
-> > Adding support for the Adva timecard.
-> > The card uses different drivers to provide access to the
-> > firmware SPI flash (Altera based).
-> > Other parts of the code are the same and could be reused.
+>
+> Thanks!
+>
+> --
+> Qais Yousef
+>
 > >
->
-> Hi Sagi,
->
-> Thanks for adjusting the code. One signle still have to be
-> adjusted, see comments below. And this is treated as net-next
-> material, but net-next is closed now until merge window ends,
-> you will have to submit new version next week.
->
-> Please, also use '[PATCH net-next v6] ...' prefix for it.
->
-> > Signed-off-by: Sagi Maimon <maimon.sagi@gmail.com>
-> > ---
-> >   Changes since version 4:
-> >   - alignment fix.
+> > diff --git a/kernel/sched/pelt.c b/kernel/sched/pelt.c
+> > index f951c44f1d52..5cdd147b7abe 100644
+> > --- a/kernel/sched/pelt.c
+> > +++ b/kernel/sched/pelt.c
+> > @@ -180,6 +180,7 @@ static __always_inline int
+> >  ___update_load_sum(u64 now, struct sched_avg *sa,
+> >                 unsigned long load, unsigned long runnable, int running=
+)
+> >  {
+> > +     int time_shift;
+> >       u64 delta;
 > >
->
-> Please, preserve changes from all previous versions for next submissions.
->
-> >   drivers/ptp/ptp_ocp.c | 302 ++++++++++++++++++++++++++++++++++++++++-=
--
-> >   1 file changed, 293 insertions(+), 9 deletions(-)
+> >       delta =3D now - sa->last_update_time;
+> > @@ -195,12 +196,17 @@ ___update_load_sum(u64 now, struct sched_avg *sa,
+> >       /*
+> >        * Use 1024ns as the unit of measurement since it's a reasonable
+> >        * approximation of 1us and fast to compute.
+> > +      * On top of this, we can change the half-time period from the de=
+fault
+> > +      * 32ms to a shorter value. This is equivalent to left shifting t=
+he
+> > +      * time.
+> > +      * Merge both right and left shifts in one single right shift
+> >        */
+> > -     delta >>=3D 10;
+> > +     time_shift =3D 10 - sched_pelt_lshift;
+> > +     delta >>=3D time_shift;
+> >       if (!delta)
+> >               return 0;
 > >
->
-> [ ..skip.. ]
->
-> > @@ -2603,7 +2819,44 @@ ptp_ocp_art_board_init(struct ptp_ocp *bp, struc=
-t ocp_resource *r)
-> >       if (err)
-> >               return err;
+> > -     sa->last_update_time +=3D delta << 10;
+> > +     sa->last_update_time +=3D delta << time_shift;
 > >
-> > -     return ptp_ocp_init_clock(bp);
-> > +     return ptp_ocp_init_clock(bp, r->extra);
-> > +}
-> > +
-> > +/* ADVA specific board initializers; last "resource" registered. */
-> > +static int
-> > +ptp_ocp_adva_board_init(struct ptp_ocp *bp, struct ocp_resource *r)
-> > +{
-> > +     int err;
-> > +     u32 version;
-> > +
-> > +     bp->flash_start =3D 0xA00000;
-> > +     bp->eeprom_map =3D fb_eeprom_map;
-> > +     bp->sma_op =3D &ocp_adva_sma_op;
-> > +
-> > +     version =3D ioread32(&bp->image->version);
-> > +     /* if lower 16 bits are empty, this is the fw loader. */
-> > +     if ((version & 0xffff) =3D=3D 0) {
-> > +             version =3D version >> 16;
-> > +             bp->fw_loader =3D true;
-> > +     }
-> > +     bp->fw_tag =3D 1;
->
-> Please, use fw_tag =3D 3 here, other tags are for other vendors.
->
-> Thanks,
-> Vadim
->
-> > +     bp->fw_version =3D version & 0xffff;
-> > +     bp->fw_cap =3D OCP_CAP_BASIC | OCP_CAP_SIGNAL | OCP_CAP_FREQ;
-> > +
-> > +     ptp_ocp_tod_init(bp);
-> > +     ptp_ocp_nmea_out_init(bp);
-> > +     ptp_ocp_signal_init(bp);
-> > +
->
+> >       /*
+> >        * running is a subset of runnable (weight) so running can't be s=
+et if
+> >
+> >
+> >
+> > >     u64                     clock_pelt;
+> > >     unsigned long           lost_idle_time;
+> > >     u64                     clock_pelt_idle;
+> > > --
+> > > 2.34.1
+> > >
 
