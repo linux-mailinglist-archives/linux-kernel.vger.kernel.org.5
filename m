@@ -1,127 +1,137 @@
-Return-Path: <linux-kernel+bounces-51466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C193D848B95
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 07:51:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9690848B9D
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 07:59:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 004601C21F21
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 06:51:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 213591C21559
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 06:59:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 180AD79D8;
-	Sun,  4 Feb 2024 06:51:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j6jxkDyE"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27A2E881E;
+	Sun,  4 Feb 2024 06:59:51 +0000 (UTC)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 062657491;
-	Sun,  4 Feb 2024 06:51:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A9C079CC;
+	Sun,  4 Feb 2024 06:59:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707029495; cv=none; b=AJVbWA0zJJrUeZ85QmSe5J4Ly4f2x1yVBK4SLmjmtBHuVLOahe5cxmiUPPcvS/SnOXxotoF9Y3bzmodBy8Zt6Fbq/O5uIJJXqLJuidTNxr430+TWwIlqOQc+EjAYSKJQW7qpA3yPJRgGorD0RdN1NYbWtnh7Q1UoSpj/KmuZRqs=
+	t=1707029990; cv=none; b=ah5zfRgQ1+7l9CwWeHoP1zyd/UtQsucusXzmBCy895K3aahc/TGrGlVA76ZVrpiEXtQ6VBapNj50m5BMCqAgRViHnwXpMKdEQgOAjZXJN/kfYqnk+YDjv/UT4ZwGvlNcxVZnSsYuZWAE47TQcSoi8vetlWbp3ibpPeOUY0EM7uc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707029495; c=relaxed/simple;
-	bh=TWYStyek2yVFcxjdK1fNZqAcriCNEswKCVwF/MvulMI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TdVd0MNXwl7yNv9HTtIpG3NQkwXXWxk0ICNX6IjlI2UXBF1toC6ZK1MMZBG9ImDGQ+WHbBP0pgN0gin4dTrv2DWHV3pw96XFgCv1gGlwJs1xg+NmvKQ2bw5ReBHsqU/fE1Tsmr+lKrVBG0TqyD3/8uMejbpg9f+Q7PvmNEnr/FA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j6jxkDyE; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d51ba18e1bso31599195ad.0;
-        Sat, 03 Feb 2024 22:51:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707029493; x=1707634293; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=806upVwJJIqrdHZYBEdu7UNncPOKx7M8gRsklLDCWtw=;
-        b=j6jxkDyEIac4KBjUrCDP6i4CAziYLHfUw/vIMSm6YZxaRa5rDei4ls74DRIN5pE6Md
-         Wc/wfU06LUiFFS32IauSaBSxMtoNVjVp6oz1e27DJX5uH/n4MxrUjTvgGCNaa27284iT
-         156o0E8ECtGwliqdGdMtfFsOHJei8O1OZ47w7NTxxsm5yyNxomyg6UuL+A5W25amQf6b
-         6E0t+cOYHT7kwrK3tAXH2qTmWHU6Kv8F8tVOzI2TSBOIPV0lGMIHanFaEXxMSDZgBpA2
-         dJtOIUk12zgnebQKn68/CBLaf7evwZkytBMq2CUjMSsPlpk1qXA7XdLDGp93IgMzsu5V
-         xsCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707029493; x=1707634293;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=806upVwJJIqrdHZYBEdu7UNncPOKx7M8gRsklLDCWtw=;
-        b=wVNoMl7K46i+nV52rVaPnDGLilqGy03fJw2m+tp+OTy2FgrEXcSFzzpGMlNMfD1WkM
-         TkQiCL3QaR4SLHgjG2f5f7dDDChrTEkPcP3k8N3SP1vyRCdCEGqZtz4euv9HMi54vy1d
-         B9XrdVM6wWeOoEQY+ApghfEhFbMgD24wQf1MmTa5c9HAuL0WLiIZI5heBY/4ICLeO/5R
-         qWT6GT5QsjshHKKkjkd4Is/VHskyXmpd4Rr6lyCm3n/fTnSz0VIJLDPQl4q2y/dn/6zf
-         j3syFUJR4WQT9Bw+CUmOtOWRRA3kaZHCZVdXk4jKAzJl/cKYBlA9QxqGb6Zwx1bR1PTp
-         KRyQ==
-X-Gm-Message-State: AOJu0YwDGzrkO34rNClt96SPLJO0cU/A9uUla2XOYlaH73CqIW5R+Chh
-	LlgxvRFFSZ1U1CQyq696xucIlQrsNYZMwh9cLNsklkHE4CLArwgB
-X-Google-Smtp-Source: AGHT+IGk/vsXMjb+tMFduJVmtfptw5PVcP57IfsIzRz+/YTnLvCX0NAD1/hLjsceQNZjqKmRTY9lkQ==
-X-Received: by 2002:a17:903:1cf:b0:1d9:8b4f:909e with SMTP id e15-20020a17090301cf00b001d98b4f909emr4233496plh.35.1707029493167;
-        Sat, 03 Feb 2024 22:51:33 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUPUiSTLGMAbftianwgz4yYTknTZoq4FcECIUAbj0CjVv+k6+ciAQmNSPsrorUm+hDz5JkfOzYZ/wDPDhAYo9q3SPdNdh40QWKaIz0cmN3Bw2bllRKFbNYLa33QLJcJL89KyxQeqaHCc7fjVfeMa+Qfh8/OKzAtbTr4PrTOkz3fpSLHZcStMhROybWPe3qMU/ivVz+PXg248OKIXqDqJ2DKjZQTwiCsf/ICidO+LVAQVaN5swcAD84d3hyX88qTMQB2BYikZZ5oBI4F782XjUiftUzm07wiNZ9EahcZQ/Xa8RCynKHgSd/V6vk2uoPHz+FbhjwJzVgq4nkU8SUOLQLUpw0coNpbe5TRLf56TYBPz/acuT8L/JIbx5ezQ/obtaoONxddIPkuiHHIVmjMCb+GpD2kPIlXEwyBbKDAw7oHvPquMvqh++jgSJo65HKbyDKXlKmxiBH/S9tDCmvX9pCOlGrxu9bwyNFbKUWA6/OiJ1wXyOqc+FNDpuahx6VR/ubibe/NpJaTPZNvGy4eR6/EavX7iUsJO7LtMtvYjA==
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id h12-20020a170902f7cc00b001d8ffe741basm4125133plw.36.2024.02.03.22.51.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Feb 2024 22:51:32 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id 5D5441846855D; Sun,  4 Feb 2024 13:51:28 +0700 (WIB)
-Date: Sun, 4 Feb 2024 13:51:28 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-	allen.lkml@gmail.com
-Subject: Re: [PATCH 6.6 000/326] 6.6.16-rc2 review
-Message-ID: <Zb8z8OBV0CI8ZSVB@archie.me>
-References: <20240203174810.768708706@linuxfoundation.org>
+	s=arc-20240116; t=1707029990; c=relaxed/simple;
+	bh=nXreGAjrFbd8QOMMOtwFbxJI53YV7XOtsiSG8Cl+1sw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GYOKMUkxV+GngK9WUc8QlAhhisLAvdWMjdfcr08XPqBM7KSHjGj7vlsBchbdiDNAsIi4nbSmOpMDmAQhfwZqSqk64FE8s3W1fl8znZt3r+MrrgY04NoSCzDnTOSadKZWDCWQyikoW0clBDqjmYXXod1lkqmtajOizhAJsEGjh2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.de; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 363D021FAA;
+	Sun,  4 Feb 2024 06:59:47 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 136131338E;
+	Sun,  4 Feb 2024 06:59:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id X25xAuM1v2V4ZwAAD6G6ig
+	(envelope-from <aporta@suse.de>); Sun, 04 Feb 2024 06:59:47 +0000
+From: Andrea della Porta <andrea.porta@suse.com>
+To: Vinod Koul <vkoul@kernel.org>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>,
+	Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	dmaengine@vger.kernel.org,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Maxime Ripard <maxime@cerno.tech>,
+	Dom Cobley <popcornmix@gmail.com>,
+	Phil Elwell <phil@raspberrypi.com>,
+	Andrea della Porta <andrea.porta@suse.com>
+Subject: [PATCH 00/12] Add support for BCM2712 DMA engine
+Date: Sun,  4 Feb 2024 07:59:28 +0100
+Message-ID: <cover.1706948717.git.andrea.porta@suse.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="YW6O7mIOwnm0dUVX"
-Content-Disposition: inline
-In-Reply-To: <20240203174810.768708706@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: ****
+X-Spam-Score: 4.10
+X-Spamd-Result: default: False [4.10 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 MIME_GOOD(-0.10)[text/plain];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 NEURAL_HAM_SHORT(-0.20)[-0.999];
+	 RCPT_COUNT_TWELVE(0.00)[13];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FORGED_SENDER(0.30)[andrea.porta@suse.com,aporta@suse.de];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[cerno.tech,gmail.com,raspberrypi.com,suse.com];
+	 FROM_NEQ_ENVFROM(0.10)[andrea.porta@suse.com,aporta@suse.de];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
 
+This patchset aims to update the dma engine for BCM* chipset with respect
+to current advancements in downstream vendor tree. In particular:
 
---YW6O7mIOwnm0dUVX
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+* Added support for BCM2712 DMA.
+* Extended DMA addressing to 40 bit. Since BCM2711 also supports 40 bit addressing,
+it will also benefit from the update.
+* Handled the devicetree node from vendor dts (e.g. "dma40").
 
-On Sat, Feb 03, 2024 at 09:52:59AM -0800, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.6.16 release.
-> There are 326 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->=20
+The only difference between the application of this patch and the relative code
+in vendor tree is the dropping of channel reservation for BCM2708 DMA legacy
+driver, that seems to have not made its way to upstream anyway, and it's
+probably used only from deprecated subsystems.
 
-Successfully compiled and installed the kernel on my computer (Acer
-Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
+Compile tested and runtime tested on RPi4B only.
 
-Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
+Dom Cobley (4):
+  bcm2835-dma: Support dma flags for multi-beat burst
+  bcm2835-dma: Need to keep PROT bits set in CS on 40bit controller
+  dmaengine: bcm2835: Rename to_bcm2711_cbaddr to to_40bit_cbaddr
+  bcm2835-dma: Fixes for dma_abort
 
---=20
-An old man doll... just what I always wanted! - Clara
+Maxime Ripard (2):
+  dmaengine: bcm2835: Use to_bcm2711_cbaddr where relevant
+  dmaengine: bcm2835: Support DMA-Lite channels
 
---YW6O7mIOwnm0dUVX
-Content-Type: application/pgp-signature; name="signature.asc"
+Phil Elwell (6):
+  bcm2835-dma: Add support for per-channel flags
+  bcm2835-dma: Add proper 40-bit DMA support
+  bcm2835-dma: Add NO_WAIT_RESP, DMA_WIDE_SOURCE and DMA_WIDE_DEST flag
+  bcm2835-dma: Advertise the full DMA range
+  bcm2835-dma: Derive slave DMA addresses correctly
+  dmaengine: bcm2835: Add BCM2712 support
 
------BEGIN PGP SIGNATURE-----
+ drivers/dma/bcm2835-dma.c | 701 ++++++++++++++++++++++++++++++++------
+ 1 file changed, 588 insertions(+), 113 deletions(-)
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZb8z6gAKCRD2uYlJVVFO
-ozUlAPwNme3FmvCgq4hk0g36NC3AOYHMFgFALcsVW5ExqnvHpQEA2UJJpwWlDJk1
-VuPdN08hMaqU15neYQjlKPujZshscQk=
-=DtpE
------END PGP SIGNATURE-----
+-- 
+2.41.0
 
---YW6O7mIOwnm0dUVX--
 
