@@ -1,142 +1,137 @@
-Return-Path: <linux-kernel+bounces-51371-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51372-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B45EE848A4A
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 02:48:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8025848A4E
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 02:52:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7282B1F2344F
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 01:48:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9CF11C22CE0
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 01:52:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CA208C0A;
-	Sun,  4 Feb 2024 01:47:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gzsBCThk"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2878C10F5;
+	Sun,  4 Feb 2024 01:52:53 +0000 (UTC)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EEEB8BEB
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 01:47:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C136F10EB;
+	Sun,  4 Feb 2024 01:52:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707011274; cv=none; b=gGzLJmnz5DKD/YgxNQ0xBt390WCOjA2VKIOhUk1dXVru3IC1UGchvP2KaqNHgnDMG9ELfslvkx/lnOerk20bqiWVJYqtxPdTp7Avru0PrC8ccARq0vc4TwmCk9saBCySSM+uQ5UyMVGxYMPOpvvR9sPF27MDun/ytjdXXqFVO2I=
+	t=1707011572; cv=none; b=pxXhzkz+TtuPBhlNln7LUwXVuhSmkzVp8Nk7nR/9/YRtkCn/NiVIqfPl7hK3WKejeAYTWHXG0a6Zyx67+QgEZD5uPDUVAV2CqAJMbBBySXyC133f8XgBR8+5Pb8ZOufuu8OdzMzc1fNI0IWu2WafZzjpAOlwkm1BplxZBcIdEok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707011274; c=relaxed/simple;
-	bh=2AQnPmoKsbbhPHWUPAdwATTf/lebIxhhjhdFZEHTX+o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UFAVLhqJr+EZTDBEaP1146ouw/e4OjxGdNBKFs4sm1i0mV6aLtBw4f9MByVPyii2k0C8d1/ZD7wrsYrPmyQ3HPubpNeGutlu/Edr1nXyy3DHonVXjPDwnJGJpgQqGP7BJJJ5EJgXBYvJH1eODlnG6lDKi9ER+Uzn9me8vew6q20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gzsBCThk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50390C433C7;
-	Sun,  4 Feb 2024 01:47:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707011273;
-	bh=2AQnPmoKsbbhPHWUPAdwATTf/lebIxhhjhdFZEHTX+o=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=gzsBCThkcBb2Mjc90NH8US4+wnXWJVvpFsmZG0tEJ2ytPqPw8/RqZ+dDR502goRB+
-	 xucxJS/a7ZEeh8J1fFXtjOqeFBOByBGifO2JXxcbivmKU0P0yeaOjfarL/BoLidJKD
-	 mJy3DIfkssHOrrAg8eK8j/JRr7fTxWN+kkVsYf4DoIy1o8xZezHRgNOpDOqA3iva45
-	 ajrC1OuY8v6JQZ5bgBiTYCo6JWI7Q6V6u3unvoNmiGPv34a+rogpZkAai1FOf34ker
-	 jZy8wIWeYv85fZjIzYSz/+bFrFBrbu58LmKIFrL+hRrgXProgXdoGj0oZfj/IsUKhE
-	 0W5LRIC1X0fFg==
-Message-ID: <8eaf59a4-1aaa-460e-a3cc-b798ed5e0f63@kernel.org>
-Date: Sun, 4 Feb 2024 09:47:49 +0800
+	s=arc-20240116; t=1707011572; c=relaxed/simple;
+	bh=oE4L/+SIwj1YnhEh0Z69Zeulu/L7Qo8g7er8gO/zOX0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ZySGn02cb9TZ/eFl0j93oE7LRuAA3LQN+Gd6+L/KnynEwEQTi4YISxoJzHycaxjTh3IdcvwoUFp3oxKdtPnfMkwfNp24M0a5CIXkxHQeAoRyPQD7RSCquVdjJlQpA6vF9F8sEtu/H/OkwgfDGYk7PX4sqz1jhaZsuU0IbPMtgNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4TSCCt3V3Nz1Q8gk;
+	Sun,  4 Feb 2024 09:51:22 +0800 (CST)
+Received: from kwepemm600017.china.huawei.com (unknown [7.193.23.234])
+	by mail.maildlp.com (Postfix) with ESMTPS id 1D9D31404FE;
+	Sun,  4 Feb 2024 09:52:39 +0800 (CST)
+Received: from [10.174.179.234] (10.174.179.234) by
+ kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sun, 4 Feb 2024 09:52:37 +0800
+Message-ID: <90576a70-9ab3-dca7-f5cc-67e430dbe460@huawei.com>
+Date: Sun, 4 Feb 2024 09:52:36 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] f2fs: fix zoned block device information
- initialization
-Content-Language: en-US
-To: Wenjie Qi <qwjhust@gmail.com>, jaegeuk@kernel.org,
- yangyongpeng1@oppo.com, linux-f2fs-devel@lists.sourceforge.net,
- linux-kernel@vger.kernel.org
-Cc: hustqwj@hust.edu.cn
-References: <20240203152436.1352-1-qwjhust@gmail.com>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <20240203152436.1352-1-qwjhust@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH -next v4 2/3] x86/mce: rename MCE_IN_KERNEL_COPYIN to
+ MCE_IN_KERNEL_COPY_MC
+To: Borislav Petkov <bp@alien8.de>
+CC: "Luck, Tony" <tony.luck@intel.com>, Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, "wangkefeng.wang@huawei.com"
+	<wangkefeng.wang@huawei.com>, Dave Hansen <dave.hansen@linux.intel.com>,
+	"x86@kernel.org" <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Andy
+ Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Andrew
+ Morton <akpm@linux-foundation.org>, Naoya Horiguchi
+	<naoya.horiguchi@nec.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-edac@vger.kernel.org"
+	<linux-edac@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
+	Guohanjun <guohanjun@huawei.com>
+References: <3009aadd-69d6-c797-20b4-95cf926b6dd9@huawei.com>
+ <20240201142016.GFZbuooG9CRoK90U2C@fat_crate.local>
+ <39c1e4d2-b1d0-91ae-595e-1add4698dd7f@huawei.com>
+ <20240202133911.GBZbzwf-M37M-J3EJX@fat_crate.local>
+ <SJ1PR11MB6083A60DE19FBFB1B0CA6B3DFC422@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <20240202194257.GFZb1FwcPPO8WXF86H@fat_crate.local>
+ <SJ1PR11MB6083BDC3A0596FA87BC25259FC422@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <20240202222220.GIZb1rHG3NiZKmdRXu@fat_crate.local>
+ <SJ1PR11MB6083FDC9D4661A9D94E26ABDFC422@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <4d974c1e-b3a8-8b21-88f4-e5f20b2fb654@huawei.com>
+ <20240203094309.GDZb4KrS2GWa5XtGeZ@fat_crate.local>
+From: Tong Tiangen <tongtiangen@huawei.com>
+In-Reply-To: <20240203094309.GDZb4KrS2GWa5XtGeZ@fat_crate.local>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600017.china.huawei.com (7.193.23.234)
 
-On 2024/2/3 23:24, Wenjie Qi wrote:
-> If the max open zones of zoned devices are less than
-> the active logs of F2FS, the device may error due to
-> insufficient zone resources when multiple active logs are
-> being written at the same time. If this value is 0,
-> there is no limit.
+
+
+在 2024/2/3 17:43, Borislav Petkov 写道:
+> On Sat, Feb 03, 2024 at 03:56:04PM +0800, Tong Tiangen wrote:
+>> The goal of this patch:
+>>    When #MC is triggered by copy_mc_user_highpage(), #MC is directly
+>> processed in the synchronously triggered do_machine_check() ->
+>> kill_me_never() -> memory_failure().
+>>
+>> And the current handling is to call memory_failure_queue() ->
+>> schedule_work_on() in the execution context, I think that's what
+>> "scheduling someone else to handle it at some future point is risky."
 > 
-> Signed-off-by: Wenjie Qi <qwjhust@gmail.com>
-> ---
->   fs/f2fs/f2fs.h  |  1 +
->   fs/f2fs/super.c | 21 +++++++++++++++++++++
->   2 files changed, 22 insertions(+)
+> Ok, now take everything that was discussed on the thread and use it to
+> rewrite all your commit messages to explain *why* you're doing this, not
+> *what* you're doing - that is visible from the diff.
 > 
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index 543898482f8b..161107f2d3bd 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -1558,6 +1558,7 @@ struct f2fs_sb_info {
->   
->   #ifdef CONFIG_BLK_DEV_ZONED
->   	unsigned int blocks_per_blkz;		/* F2FS blocks per zone */
-> +	unsigned int max_open_zones;		/* max open zone resources of the zoned device */
->   #endif
->   
->   	/* for node-related operations */
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index 1b718bebfaa1..45e82d6016fc 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -2388,6 +2388,16 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
->   	if (err)
->   		goto restore_opts;
->   
-> +#ifdef CONFIG_BLK_DEV_ZONED
-> +	if (sbi->max_open_zones && sbi->max_open_zones < F2FS_OPTION(sbi).active_logs) {
-> +		f2fs_err(sbi,
-> +			"zoned: max open zones %u is too small, need at least %u open zones",
-> +				 sbi->max_open_zones, F2FS_OPTION(sbi).active_logs);
-> +		err = -EINVAL;
-> +		goto restore_opts;
-> +	}
-> +#endif
-> +
->   	/* flush outstanding errors before changing fs state */
->   	flush_work(&sbi->s_error_work);
->   
-> @@ -3930,11 +3940,22 @@ static int init_blkz_info(struct f2fs_sb_info *sbi, int devi)
->   	sector_t nr_sectors = bdev_nr_sectors(bdev);
->   	struct f2fs_report_zones_args rep_zone_arg;
->   	u64 zone_sectors;
-> +	unsigned int max_open_zones;
->   	int ret;
->   
->   	if (!f2fs_sb_has_blkzoned(sbi))
->   		return 0;
->   
-> +	max_open_zones = bdev_max_open_zones(bdev);
+> A possible way to structure them is:
+> 
+> 1. Prepare the context for the explanation briefly.
+> 
+> 2. Explain the problem at hand.
+> 
+> 3. "It happens because of <...>"
+> 
+> 4. "Fix it by doing X"
+> 
+> 5. "(Potentially do Y)."
+> 
+> And some of those above are optional depending on the issue being
+> explained.
+> 
+> For more detailed info, see
+> Documentation/process/submitting-patches.rst,
+> Section "2) Describe your changes".
+> 
+> Also, to the tone, from Documentation/process/submitting-patches.rst:
+> 
+>   "Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
+>    instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
+>    to do frotz", as if you are giving orders to the codebase to change
+>    its behaviour."
+> 
+> Also, do not talk about what your patch does - that should (hopefully) be
+> visible from the diff itself. Rather, talk about *why* you're doing what
+> you're doing.
 
-Wenjie,
+OK, will improved next version.
 
-max_open_zones can always be zero? then sbi->max_open_zones will be zero,
-is this a valid case?
+Thank.
+Tong.
 
-Thanks,
-
-> +	if (max_open_zones && (max_open_zones < sbi->max_open_zones || !sbi->max_open_zones))
-> +		sbi->max_open_zones = max_open_zones;
-> +	if (sbi->max_open_zones && sbi->max_open_zones < F2FS_OPTION(sbi).active_logs) {
-> +		f2fs_err(sbi,
-> +			"zoned: max open zones %u is too small, need at least %u open zones",
-> +				 sbi->max_open_zones, F2FS_OPTION(sbi).active_logs);
-> +		return -EINVAL;
-> +	}
-> +
->   	zone_sectors = bdev_zone_sectors(bdev);
->   	if (!is_power_of_2(zone_sectors)) {
->   		f2fs_err(sbi, "F2FS does not support non power of 2 zone sizes\n");
+> 
+> Thx.
+> 
 
