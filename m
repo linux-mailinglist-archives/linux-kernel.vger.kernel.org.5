@@ -1,95 +1,99 @@
-Return-Path: <linux-kernel+bounces-51657-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51658-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0056F848DFD
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 14:09:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19752848DFE
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 14:09:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FA4D1F23666
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:09:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27127B21F72
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:09:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC6BB224DB;
-	Sun,  4 Feb 2024 13:09:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C372E224E8;
+	Sun,  4 Feb 2024 13:09:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="M4Um41+t"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hd49GKW0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 281EC224CE
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 13:09:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CA1E224D5;
+	Sun,  4 Feb 2024 13:09:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707052160; cv=none; b=fUqciupeUg53tg6KV/NPNz20+0093gTdBO69ZxlI3IAcFa2IkdddCZA4yqHLhwnWOpDNuEmG5GXuBRsetICW5ToN6i2eYkSd5sI3DqzfTBLkEZS//kVRVnQw7d7GVzrmwrm6+xPmOph2/4aQYPEQCFSNo+hCq6yed7eAgt+ZSgE=
+	t=1707052181; cv=none; b=SskZoAVcE1c+Ll2yk2VXgYQiX7cRrevAYzAepiHgQPfJrbQbbR5QSBxuWH57rZ3P1jPXrJwYEW6/RbUT4USNHrxLb0J+ZT9oyoYgKXQcMEMI4vVYEGnPHCyBBc8kBfYlHmLmLyVF1oEo3rX6zxwFfrbs3+zKt5H0d1rP2NxyAKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707052160; c=relaxed/simple;
-	bh=wS5G8p7qKOmOMkyKYFO2M4ZLkfVca+B/dMqr4h+AJCs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hqDQ4HQBvWejouvHpb5dCMOaEmctNHCrd9XFd3iGOrB9McjMoznI8VpcnaZU8pmenaulBNlKVUvP2ffnvVvHKfdi/IMuuxnWgX9W+zDLFULVKWlWC/VPw6F9iPfEdhoX96SGV00JQGv6lJKxV0VA+NvcD9HSze75vqOJnpc2oPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=M4Um41+t; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98F4EC433F1;
-	Sun,  4 Feb 2024 13:09:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1707052159;
-	bh=wS5G8p7qKOmOMkyKYFO2M4ZLkfVca+B/dMqr4h+AJCs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=M4Um41+tWedkPEUIYTt1vo58ax57nGthjHG4mdjIl0VWInh0tJS8T2kBHdy5nHx/b
-	 H2tJkjwtUEVNmr6lpgWOO4n4y61V1EcXjLPWDJqE6bLBHP6dC79ENJj3zLzDRnAo96
-	 SE2mueivUyNojMY4BP++VzsONomZLK84UtyCnZDg=
-Date: Sun, 4 Feb 2024 05:09:18 -0800
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Fangzheng Zhang <fangzheng.zhang@unisoc.com>
-Cc: Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
-	David Rientjes <rientjes@google.com>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
+	s=arc-20240116; t=1707052181; c=relaxed/simple;
+	bh=m65aPL8WYBFsI6G3xB+7VUwH3k2y+3oo8t98SWh5vqA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=mjdQThfUiquCXAqc3GkCKylyg80RmYpY9kz16z6AAoUSzZXq1ZCY1h5H27447j62TlKMkbE/GlQ/SWrb/1mHPQOh4DoE6ve37dGcTmMqA/+CojUqRbhRXPiTrIL+bGf8MJBVi5+JHe3ie1tqUHLW21KJ3sOpFWFoZOuUZO3bXV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hd49GKW0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE6A9C433C7;
+	Sun,  4 Feb 2024 13:09:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707052180;
+	bh=m65aPL8WYBFsI6G3xB+7VUwH3k2y+3oo8t98SWh5vqA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Hd49GKW0SF4TxcKLF2R0Znobet3PfPJG6a0ZlphJKmi8VdbptQNn9U3y3FK1V3HUX
+	 UogBfPBYYyF0wr1WAsGndxQOFyos5ionU+lbZZh97wYCY2ZOy/D9dmEddt6MZuWRYV
+	 8zBTB7WA+Pt6sE929eq3rehstCBoR/Fw7ZC1+D9txsaEtFv9qsr3m0ltExfVsZfLqk
+	 sc4yqnsOlWzfwMI5yA+xr5uY7E8ewmAjKlhOkExdXWJAcQtrb3G2KqIvo+HXz1Y35R
+	 QrNEm65HpmDcyPRe6oBiOXZvey6HlsX2W0oYNIfTr5r3yK5gdjDyBedrrU8FJEAGiA
+	 8U6mLjYqYilnQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=valley-girl.lan)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rWcFe-000B2k-9M;
+	Sun, 04 Feb 2024 13:09:38 +0000
+From: Marc Zyngier <maz@kernel.org>
+To: Masahiro Yamada <masahiroy@kernel.org>,
+	James Morse <james.morse@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	kvmarm@lists.linux.dev
+Cc: Will Deacon <will@kernel.org>,
 	linux-kernel@vger.kernel.org,
-	Fangzheng Zhang <fangzheng.zhang1003@gmail.com>,
-	Yuming Han <yuming.han@unisoc.com>,
-	Chunyan Zhang <zhang.lyra@gmail.com>
-Subject: Re: [PATCH] mm/slab: Add slabreclaim flag to slabinfo
-Message-ID: <2024020441-version-chihuahua-1067@gregkh>
-References: <20240131094442.28834-1-fangzheng.zhang@unisoc.com>
+	Catalin Marinas <catalin.marinas@arm.com>,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] KVM: arm64: do not source virt/lib/Kconfig twice
+Date: Sun,  4 Feb 2024 13:09:35 +0000
+Message-Id: <170705216023.856444.15648014100978026603.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240204074305.31492-1-masahiroy@kernel.org>
+References: <20240204074305.31492-1-masahiroy@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240131094442.28834-1-fangzheng.zhang@unisoc.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: masahiroy@kernel.org, james.morse@arm.com, yuzenghui@huawei.com, suzuki.poulose@arm.com, oliver.upton@linux.dev, kvmarm@lists.linux.dev, will@kernel.org, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Wed, Jan 31, 2024 at 05:44:42PM +0800, Fangzheng Zhang wrote:
-> In order to enhance slab debugging, we add slabreclaim flag to
-> slabinfo. Slab type is also an important analysis point in slabinfo
-> for per slab, when various problems such as memory leaks or memory
-> statistics occur.
+On Sun, 4 Feb 2024 16:43:05 +0900, Masahiro Yamada wrote:
+> For ARCH=arm64, virt/lib/Kconfig is sourced twice,
+> from arch/arm64/kvm/Kconfig and from drivers/vfio/Kconfig.
+> There is no good reason to parse virt/lib/Kconfig twice.
 > 
-> Signed-off-by: Fangzheng Zhang <fangzheng.zhang@unisoc.com>
-> ---
->  mm/slab_common.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index 238293b1dbe1..aeeb2bfe6dda 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -1038,7 +1038,7 @@ static void print_slabinfo_header(struct seq_file *m)
->  	seq_puts(m, "slabinfo - version: 2.1\n");
->  	seq_puts(m, "# name            <active_objs> <num_objs> <objsize> <objperslab> <pagesperslab>");
->  	seq_puts(m, " : tunables <limit> <batchcount> <sharedfactor>");
-> -	seq_puts(m, " : slabdata <active_slabs> <num_slabs> <sharedavail>");
-> +	seq_puts(m, " : slabdata <active_slabs> <num_slabs> <sharedavail> <slabreclaim>");
+> Commit 2412405b3141 ("KVM: arm/arm64: register irq bypass consumer
+> on ARM/ARM64") should not have added this 'source' directive.
 
-Doesn't this change the slabinfo version number above?  Where is this
-change documented so that userspace knows about it?
+Applied to fixes, thanks!
 
-thanks,
+[1/1] KVM: arm64: do not source virt/lib/Kconfig twice
+      commit: 42dfa94d802a48c871e2017cbf86153270c86632
 
-greg k-h
+Cheers,
+
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
+
+
 
