@@ -1,114 +1,106 @@
-Return-Path: <linux-kernel+bounces-51854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51855-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF95784900E
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 20:19:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CD63849017
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 20:23:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 891C8283635
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 19:19:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 067F01F232F5
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 19:23:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C16825561;
-	Sun,  4 Feb 2024 19:19:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29E47250E0;
+	Sun,  4 Feb 2024 19:22:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="OoyrtVtH"
-Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="H64FwgkV";
+	dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="80V/cH2H"
+Received: from mailrelay2-1.pub.mailoutpod2-cph3.one.com (mailrelay2-1.pub.mailoutpod2-cph3.one.com [46.30.211.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CD9C24B23
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 19:18:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81E1E250ED
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 19:22:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.211.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707074340; cv=none; b=DDdKtoSn2jQe5JdCQ4eYSwoRpiJUKdbyJGfw47b/yAf+cL35YWrC3MOUIwrRCchsJNuAnBOzKpL6W/a6vZbpKrABNyy3qdHmVLSHgRzCJGUFQ/m0RsC5PKliZCkyx3dKQOzijrE++uyPUV6eWqT/i8wyohyFlrbcVQ65K9KBedQ=
+	t=1707074567; cv=none; b=MsuIqXzNQBghkSHHBU8iDbFf1/wbfC5LfU/CR6Dp/ngmWwhZANJpG3bPMqZ0UZjWzo7TmEhRTlcy7+lZ30rVFA20zWpGST4d19koiNhU5hJt6RWuM6QzCKSqzv2Ifp2am3qrPJKg9gjg/v5PRar+sxxvZLhSCSmQHWf8WqFFMbU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707074340; c=relaxed/simple;
-	bh=U7fuHKCS7P0gibNRuhCi/+lWNbl//hi+bf2tD9GrdHo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uEO5j7K2ghBGEyF+3R/Ioj4x4Q3/BkTgPEQfDCz3DShE5KGXRaazWCnWJmBTA4F0CLd+W8XymOLQ/k7dlqimRZwmDSG1tM2W6+ONP9ODzc9lMagxlEcLXJFxXpkyDmGtAft/2OSExJca6494PT6y4FeTjwhZn67Et8E7gsRdFto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=OoyrtVtH; arc=none smtp.client-ip=209.85.166.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7c00ce1e005so142381639f.0
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 11:18:59 -0800 (PST)
+	s=arc-20240116; t=1707074567; c=relaxed/simple;
+	bh=BhS7llerz0XxSfqMKsPaxpwBnH6uQCzYexdrBKauA7c=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Lv4vd2sgTWK4cZWyfbBkbUrS91a/oziIObDthUXKxEj+OOzzjOW/xGdApH7IljR3EMKrj5CzUKK5crn4tl2lT2g+G0pYLJfQBvWDm34ozq4vvKpcz6Ci5RztpJghOfwrQkAjdtGSmvhLu4Cc3ZTXveOa+7KYX1ZhyUaCjHEwF3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org; spf=none smtp.mailfrom=ravnborg.org; dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=H64FwgkV; dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=80V/cH2H; arc=none smtp.client-ip=46.30.211.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ravnborg.org
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1707074338; x=1707679138; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U7fuHKCS7P0gibNRuhCi/+lWNbl//hi+bf2tD9GrdHo=;
-        b=OoyrtVtHrVGc2XeI/zv7GteSD0rgrVV7Zm1CKj+zBeRYXCnoqxy4GZvG395QtuC7/X
-         g1/T27YUxx0t8Ua3E8lghdv0Hd+69QaWAjOePCbSxo6Uppk0DsuFN2WI+6C2EO9px4PN
-         eyrsYFqKPl74A5ktS2WvogEmKlMkugznf7jQRyk755BFPktvr1ce6GLWv7od0EipZ3DN
-         xe/SB0vHCxS3oOL7qSr+Xmvaqr4KdWqEdSr6wOIzbnHcEcwoQwSLiY/flcOa+1wVnson
-         DIjdM5C9cNypkvbwtSS6bhNuYixH+PmkQcR7VKsGPayjha7oFSwu6RmTNRoqj4IOj2Er
-         in0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707074338; x=1707679138;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=U7fuHKCS7P0gibNRuhCi/+lWNbl//hi+bf2tD9GrdHo=;
-        b=ZKRsiXSV/ux1aQlw5FJP9Xs8tOTj+vI4G255SVaEu+r7rp7GkJM/R0JXCSMTZCLgsY
-         KglEIp1IWg3y9HBlw0o/OGbk45Mp7UYHlsDd2b4C7b4AOeRhuCr8Px9qZ4bpTAXvAns9
-         5IkHzEJznFfjdupfS1vuAn7A3Q1QHj+bvFYVRuB3Qdc2y2FbCExUiYaCQaOCO8wsuTfM
-         84SwYXI/OW2nlxcN6Mfgo3mhUM+zzRS8nDoHf7nCUe0gGo+Mn6eNmEftJcjgg0ChKS0N
-         sHZVYWvCSrboN0M/5MsrZBZVEfayy5iMQrQh0+HwjHCxTcTvGCyZPugtYJNIsLEIV2KC
-         3BpQ==
-X-Gm-Message-State: AOJu0YxBzm8lTIt3HxU4JjhghrUQXhT4WmpZZocfM+rfFejEkM7NywDv
-	ZLw8rJZ2loYf+lsjO5P/UgUOYwlEJ4DQfJbrfFUfdAAdFC3y4+bX4rci+uhsmJzdTBLsREFOj6s
-	wZSmSAppkWK4iwbNd9BJqf9k8Slef3km+xltihg==
-X-Google-Smtp-Source: AGHT+IG030GFNoRO+D9HsQtpRkpxOEHuKCB6i5c74CD190x3V48aR41aB7RFrMKEewt7N4ui/ox4/rbyj64984Kw2d8=
-X-Received: by 2002:a05:6e02:2184:b0:363:bf96:560 with SMTP id
- j4-20020a056e02218400b00363bf960560mr4301345ila.15.1707074338436; Sun, 04 Feb
- 2024 11:18:58 -0800 (PST)
+	d=ravnborg.org; s=rsa2;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:to:from:
+	 date:from;
+	bh=fpJe+ZWxuYGRqiTWDJhGrptuD0C5OKl3hDjFax0lIjw=;
+	b=H64FwgkV5WZ4jw3sVS4I3jHDmdQheACk3uS6z+GzDDnTxABipZMyPZqiiDkP95NduZDXM5Yv/53Yo
+	 1I1QRB/kF8RIohD6zt2MgYsB0H0mT5fu37fHJfGFZejhH8Kc6EYpqtD+9jD1J8ZBYKC0wkUjPB3kZz
+	 eyJpZHIOUTb1s9oYe+tOYOWjgSCkx7KSe8ox3F3ct2CYEiMlwE1uJq+doULNvx43AllqL+GeKqUnLT
+	 2b6l0cXMDNCN024IsspAijbf/ZEfs6nXpAQPFFkosmOGKsyMTQKp1WI5m1mqnNTHNiRdTEtc+u6xXN
+	 Arn8bHYgBZopHj8qCQZxPbRBFUs5EHQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+	d=ravnborg.org; s=ed2;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:to:from:
+	 date:from;
+	bh=fpJe+ZWxuYGRqiTWDJhGrptuD0C5OKl3hDjFax0lIjw=;
+	b=80V/cH2HNCxHVLy7b/Oi7n46poVf24quLfcg0PY17uNn3UYE7AtbM/m5JYa7O28gsIXzj9K8gf0D4
+	 IuBv35bAg==
+X-HalOne-ID: 9c002278-c392-11ee-980a-b520e3c7e1da
+Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
+	by mailrelay2.pub.mailoutpod2-cph3.one.com (Halon) with ESMTPSA
+	id 9c002278-c392-11ee-980a-b520e3c7e1da;
+	Sun, 04 Feb 2024 19:21:35 +0000 (UTC)
+Date: Sun, 4 Feb 2024 20:21:34 +0100
+From: Sam Ravnborg <sam@ravnborg.org>
+To: "David S. Miller" <davem@davemloft.net>,
+	Arnd Bergmann <arnd@kernel.org>,
+	Andreas Larsson <andreas@gaisler.com>, Helge Deller <deller@gmx.de>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linux-sound@vger.kernel.org
+Subject: Re: [PATCH 00/27] sparc32: sunset sun4m and sun4d
+Message-ID: <20240204192134.GB896678@ravnborg.org>
+References: <20231219-sam-sparc32-sunset-v3-v1-0-64bb44b598c5@ravnborg.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201155532.49707-1-brgl@bgdev.pl> <20240201155532.49707-2-brgl@bgdev.pl>
- <CAL_JsqKq8AngeC7ohsbYB0w70uALD+PX-df53cswTDUY-Rrdgw@mail.gmail.com>
-In-Reply-To: <CAL_JsqKq8AngeC7ohsbYB0w70uALD+PX-df53cswTDUY-Rrdgw@mail.gmail.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Sun, 4 Feb 2024 20:18:47 +0100
-Message-ID: <CAMRc=MdxgETs-Zx3Njao3msmE3T+DeKkPc0YMD3CvVW-Lj2qoQ@mail.gmail.com>
-Subject: Re: [RFC 1/9] of: provide a cleanup helper for OF nodes
-To: Rob Herring <robh@kernel.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Alex Elder <elder@linaro.org>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Abel Vesa <abel.vesa@linaro.org>, Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
-	linux-pci@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231219-sam-sparc32-sunset-v3-v1-0-64bb44b598c5@ravnborg.org>
 
-On Thu, Feb 1, 2024 at 11:18=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
-:
->
-> On Thu, Feb 1, 2024 at 9:55=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl=
-> wrote:
-> >
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > Allow to use __free() to automatically put references to OF nodes.
->
-> Jonathan has already been working on this[1].
->
-> Rob
->
-> [1] https://lore.kernel.org/all/20240128160542.178315-1-jic23@kernel.org/
+Hi Andreas.
 
-Thanks, I will watch this but for now I'll have to stick to carrying
-it in my series until it gets upstream.
+Congratulation being the new sparc co-maintainer!
 
-Bart
+On Tue, Dec 19, 2023 at 11:03:05PM +0100, Sam Ravnborg via B4 Relay wrote:
+> This is the second attempt to sunset sun4m and sun4d.
+> See [1] for the inital attempt.
+
+I have now verified that the kernel can boot with qemu.
+There was a bug in the uart driver that is fixed and upstream, and then
+using the instructions you provided I could use buildroot with an
+external kernel tree to get a booting kernel.
+
+Assuming you agree with the patchset how do you want me to move forward?
+I can rebase on top of the latest -rc and collect acks if that helps.
+
+Arnd promised to pick up the patches until you got a git tree up,
+but I do not expect Arnd to pick up anything unless you have acked or
+reviewed said patch(es).
+
+If I rebase the patch-set I will likely include a few bug-fix patches that
+was prepared in the meantime.
+I can also send them as a separate series, no worries.
+
+	Sam
 
