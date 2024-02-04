@@ -1,138 +1,141 @@
-Return-Path: <linux-kernel+bounces-51866-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8783D84903D
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 20:59:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C831A849048
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 21:06:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B91FC1C2164F
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 19:59:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69D67B2211F
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 20:06:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37EEE25567;
-	Sun,  4 Feb 2024 19:59:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="B5zKljTb"
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADAC525567;
+	Sun,  4 Feb 2024 20:06:49 +0000 (UTC)
+Received: from irl.hu (irl.hu [95.85.9.111])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F7E425542
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 19:59:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C38025558;
+	Sun,  4 Feb 2024 20:06:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.85.9.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707076789; cv=none; b=iIhWLld8RxqcnLUDyK3R3EPxJj1zfTIdbZK8ODg+7YFJbUMiKSLIcWT1whja0G7ij0rCQ+Y/vIoDRoPAp9jneXFPgsxZWaAYggALsvFXsfuFBfm1w64F058a+0alh4dN4XBnfvndRIo52n4XvRGNKWOeNjPwcOY3xEk7DfkUsy8=
+	t=1707077209; cv=none; b=uk5LMuteNNAlhFLfZcnp/zLA1D00O9v9MxetZiGslD0r+fhNWa9fB4jG702MRb7ECRKCYiUbR3OuF+MLaPEeRe2I/zptHy24nUtKVkfnAXEBrosc2Ag1FUn9Ln/N4V56RQU0hE6bkFfn8g3Ublwr+n3h5ZrASxFFpuFikzklo6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707076789; c=relaxed/simple;
-	bh=kiJZm4wcXa1B+I5trmXEIwmSwZMiWeOAqzJ4LvYhcHA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=eg1zYy1yXash/cSEG+yliYQNQJxWVZv+/TTg6IyQ8tOOW7+GYdMc+ajibCmPCdbCSNCgOOXn0VABqszqrVuHNVSQmGtA41wUlFhgxT3UhxV/ylKKTdrhiPI21kVR3gLbuaBqD7xFk2SGN2pAMxEv38qeULCro0lgLAHZoVIVuUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=fail (0-bit key) header.d=marliere.net header.i=@marliere.net header.b=B5zKljTb reason="key not found in DNS"; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5d4a1e66750so2914666a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 11:59:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707076787; x=1707681587;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K8BTH4uSJK5VLlyRZp4zK2rdV7F6EDvysDCPB0/W6F8=;
-        b=YeE9jgMWyz5FT8DF+BytqIAOtFhQ/MgX1RSyHhGJg/ZF4GglExZZWY6ljZyG93TWzn
-         FnK2PJDpj6HyJqr5+JNzThPiLCZ8DXQHni6xY2cd1nbLugxG1K7gvOogrbgipEaIWvk0
-         NUrlv6DXxFuZy7IZFvD8jgFHVU+qTyj1ag5yC+F5f02CQjWmIphUH4BrZo6QJO4hG4JY
-         iTmEybESxbRVBKGsG+OQcw+OqxQcmYtVl0p74YfvJiBQglBSzPXBh7qL7eJxM3Xoq7Sl
-         +nwQA8O2Ob6LRBXTV6HkOiEtQIGlrUPN8xYAbIMEfrGp3cNNy35GziGraNL+dd70awuF
-         yG7g==
-X-Gm-Message-State: AOJu0Yzmrt3K7hKDLTQAjfO5om5KElgF+SpMEj9s8siIoZWobX1mIm/W
-	2kIMVH/rVaQ/COjv/eTvhJc4jHWbN3ZByLTwqGz6h+7i7yGVbpGm
-X-Google-Smtp-Source: AGHT+IGZe3/5sH4A2QF1xjvr9pAuWRkR3UQBZ2jj5MuHHYwQgnkU3FCyVvNwaBYgiE0s+zbCthMXhQ==
-X-Received: by 2002:a05:6a20:9f4e:b0:19e:3a9f:f925 with SMTP id ml14-20020a056a209f4e00b0019e3a9ff925mr12258679pzb.14.1707076787267;
-        Sun, 04 Feb 2024 11:59:47 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCV9DXBuCEsYM69/54OIWpGogSc3OiEmq+wKJ8seEr2VcT3lx0sYo4kUB1OzE9yerX6YrAg0WE6w4XHOMRLsgwwfJNYXLbApIMUUhsYQ1Seh9TaqOr1UXXSojuGXBDHO/+3i7sw7UhBzQU9U7s+GHYScj3OBmM+Mgf2xRZKX/ZJDGg2uzrI=
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id j13-20020a170902c3cd00b001d9a422e0c0sm1340567plj.20.2024.02.04.11.59.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Feb 2024 11:59:46 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2023; t=1707076785;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=K8BTH4uSJK5VLlyRZp4zK2rdV7F6EDvysDCPB0/W6F8=;
-	b=B5zKljTbZF2EZB3O4wjQTtkTaMss+5/vc503yu0sRf7uMw2uXJeR8BAc/kOqzutAAykQ0v
-	8n1F7ExiO09AwW9cwel6PTjgfYmYByJWIQv9QdicAHNdJJBnV2k5m5wkJ8kuKCaSoISabL
-	6vmYpegiKfwkoMMkEIaz3QY7OEcS91Oc4PWgPIyIliwMKB9AWZ8vsLlIf2RsfC7tKLjjOF
-	HQejNwElMeT/bgNsjdfdCLAL1d3KlVxhlw7U7jEL4qU4BDvCYnxFOKBhwpOcOXrlU8rNsP
-	7wX6LVasUhbH4D5EDE4nAMHhaxEyFQHrmSauVrUw+DGchgWlOy6paNDfiypGyg==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Sun, 04 Feb 2024 17:00:13 -0300
-Subject: [PATCH] ipack: make ipack_bus_type const
+	s=arc-20240116; t=1707077209; c=relaxed/simple;
+	bh=tpbjTw4X23EhfXeKly94uyy0NFWMMOuT2ePsQRoyPa0=;
+	h=From:To:Cc:Subject:Date:Message-ID:Mime-Version:Content-Type; b=ZgslfUj0tW8w1rOP61nEEo1di2cuBRSBjF6OCimdXqHQptFSZyAsBG/3qz9aZLKCBKhXUjIq/YNfg9GIm9gTaYuLyAQOro49rPP72yFmHaNzmRciL+M97/SvC//zq4q9ZigLXjlk8QmRItzzXeHczAIW+6sE+MPbAvkMPUPm77w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu; spf=pass smtp.mailfrom=irl.hu; arc=none smtp.client-ip=95.85.9.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=irl.hu
+Received: from fedori.lan (51b68916.dsl.pool.telekom.hu [::ffff:81.182.137.22])
+  (AUTH: CRAM-MD5 soyer@irl.hu, )
+  by irl.hu with ESMTPSA
+  id 000000000007429F.0000000065BFED1F.001A84E5; Sun, 04 Feb 2024 21:01:35 +0100
+From: Gergo Koteles <soyer@irl.hu>
+To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+  Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
+  Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+  Mark Brown <broonie@kernel.org>
+Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+  alsa-devel@alsa-project.org, Gergo Koteles <soyer@irl.hu>,
+  stable@vger.kernel.org
+Subject: [PATCH] ASoC: tas2781: add module parameter to tascodec_init()
+Date: Sun,  4 Feb 2024 21:01:17 +0100
+Message-ID: <118dad922cef50525e5aab09badef2fa0eb796e5.1707076603.git.soyer@irl.hu>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240204-bus_cleanup-ipack-v1-1-aef5e8f84d01@marliere.net>
-X-B4-Tracking: v=1; b=H4sIAMzsv2UC/x2MWwqAIBAArxL7naBiBF0lInystRQmShGId0/6H
- IaZAhkTYYapK5DwoUxXaCD6Duyuw4aMXGOQXCouuWLmzqs9UYc7MoraHmzEoRkpnBEeWhcTenr
- /57zU+gHEPjmeYwAAAA==
-To: Vaibhav Gupta <vaibhavgupta40@gmail.com>, 
- Jens Taprogge <jens.taprogge@taprogge.org>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: industrypack-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1047; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=kiJZm4wcXa1B+I5trmXEIwmSwZMiWeOAqzJ4LvYhcHA=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlv+zPU3u2VSdljkQv1wkG1xVdFooTEbCkut9gw
- QrGXMxbjiGJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZb/szwAKCRDJC4p8Y4ZY
- pqrQD/9plIEwfL5aEv+ZyBjh6nQwoXcClbBkiXrdoFuN2ZfCzqBG0qaNmO0EWbawtI9tJel8O1Z
- NJOyDAPVq3gDquiU+RLCVWPpFFt3QNz+XcS8eMifKCYnOCaFdueKFyAIdaoqu0F5Veux0W5QbMb
- +3XYKtajyROvKeiLjC5RLwqx4gXShbibRgEqf7p/BGyI5RSofF2puL3fhPm1rK5W0F12bhssB9G
- f8GSofOo/6SMfORoZNujfUAAu8fHgHe4mNaI3tpiTekNC3ZjkxmHLm7OR/9pflFohm1G4WrSzNe
- GV2HmcT5WimTwbX05s75trowCw1afG2lkBDcFD/7JYsRw2B/Vu3IcT/++Umcwqmsn5PhtbDP7Ps
- me47hG2eLOQ0aLvIZhSgnRtnEpAMXIccQlTCn+YwIIPUXyPak8Bj0rniBHZOgDwkTYy+E4AOuMa
- nitWaRVjl4V65KXZ+l+/QhmOf2Qn+9K7Z1e/Ji9crVNCFxDobpubAjm7EVqtpkvekiXRnScO5hm
- PyZ4DtOCUM8VjDLy5xmBrwpDp/cmDeVLTGHi3PVvXTV96DnbgegyxNoDwXEolpCV0YlxS7mloJn
- 6ZZLBMxRdTnAdD1IAVial2npqeCMQH5Ee+fdPM2wRnDMH2UCTVrpDqzqDGhXrnX3O9XdE64GHBL
- Lt2Mf7WvnS375MA==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
 
-Now that the driver core can properly handle constant struct bus_type,
-move the ipack_bus_type variable to be a constant structure as well,
-placing it into read-only memory which can not be modified at runtime.
+The tascodec_init() of the snd-soc-tas2781-comlib module is called from
+snd-soc-tas2781-i2c and snd-hda-scodec-tas2781-i2c modules. It calls
+request_firmware_nowait() with parameter THIS_MODULE and a cont/callback
+from the latter modules.
 
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+The latter modules can be removed while their callbacks are running,
+resulting in a general protection failure.
+
+Add module parameter to tascodec_init() so request_firmware_nowait() can
+be called with the module of the callback.
+
+Fixes: ef3bcde75d06 ("ASoC: tas2781: Add tas2781 driver")
+CC: stable@vger.kernel.org
+Signed-off-by: Gergo Koteles <soyer@irl.hu>
 ---
- drivers/ipack/ipack.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/sound/tas2781.h           | 1 +
+ sound/pci/hda/tas2781_hda_i2c.c   | 2 +-
+ sound/soc/codecs/tas2781-comlib.c | 3 ++-
+ sound/soc/codecs/tas2781-i2c.c    | 2 +-
+ 4 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/ipack/ipack.c b/drivers/ipack/ipack.c
-index b1471ba016a5..866bf48d803b 100644
---- a/drivers/ipack/ipack.c
-+++ b/drivers/ipack/ipack.c
-@@ -187,7 +187,7 @@ static struct attribute *ipack_attrs[] = {
- };
- ATTRIBUTE_GROUPS(ipack);
+diff --git a/include/sound/tas2781.h b/include/sound/tas2781.h
+index b00d65417c31..9aff384941de 100644
+--- a/include/sound/tas2781.h
++++ b/include/sound/tas2781.h
+@@ -142,6 +142,7 @@ struct tasdevice_priv {
  
--static struct bus_type ipack_bus_type = {
-+static const struct bus_type ipack_bus_type = {
- 	.name      = "ipack",
- 	.probe     = ipack_bus_probe,
- 	.match     = ipack_bus_match,
+ void tas2781_reset(struct tasdevice_priv *tas_dev);
+ int tascodec_init(struct tasdevice_priv *tas_priv, void *codec,
++	struct module *module,
+ 	void (*cont)(const struct firmware *fw, void *context));
+ struct tasdevice_priv *tasdevice_kzalloc(struct i2c_client *i2c);
+ int tasdevice_init(struct tasdevice_priv *tas_priv);
+diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
+index 2dd809de62e5..1bfb00102a77 100644
+--- a/sound/pci/hda/tas2781_hda_i2c.c
++++ b/sound/pci/hda/tas2781_hda_i2c.c
+@@ -710,7 +710,7 @@ static int tas2781_hda_bind(struct device *dev, struct device *master,
+ 
+ 	strscpy(comps->name, dev_name(dev), sizeof(comps->name));
+ 
+-	ret = tascodec_init(tas_hda->priv, codec, tasdev_fw_ready);
++	ret = tascodec_init(tas_hda->priv, codec, THIS_MODULE, tasdev_fw_ready);
+ 	if (!ret)
+ 		comps->playback_hook = tas2781_hda_playback_hook;
+ 
+diff --git a/sound/soc/codecs/tas2781-comlib.c b/sound/soc/codecs/tas2781-comlib.c
+index b7e56ceb1acf..5d0e5348b361 100644
+--- a/sound/soc/codecs/tas2781-comlib.c
++++ b/sound/soc/codecs/tas2781-comlib.c
+@@ -267,6 +267,7 @@ void tas2781_reset(struct tasdevice_priv *tas_dev)
+ EXPORT_SYMBOL_GPL(tas2781_reset);
+ 
+ int tascodec_init(struct tasdevice_priv *tas_priv, void *codec,
++	struct module *module,
+ 	void (*cont)(const struct firmware *fw, void *context))
+ {
+ 	int ret = 0;
+@@ -280,7 +281,7 @@ int tascodec_init(struct tasdevice_priv *tas_priv, void *codec,
+ 		tas_priv->dev_name, tas_priv->ndev);
+ 	crc8_populate_msb(tas_priv->crc8_lkp_tbl, TASDEVICE_CRC8_POLYNOMIAL);
+ 	tas_priv->codec = codec;
+-	ret = request_firmware_nowait(THIS_MODULE, FW_ACTION_UEVENT,
++	ret = request_firmware_nowait(module, FW_ACTION_UEVENT,
+ 		tas_priv->rca_binaryname, tas_priv->dev, GFP_KERNEL, tas_priv,
+ 		cont);
+ 	if (ret)
+diff --git a/sound/soc/codecs/tas2781-i2c.c b/sound/soc/codecs/tas2781-i2c.c
+index 32913bd1a623..b5abff230e43 100644
+--- a/sound/soc/codecs/tas2781-i2c.c
++++ b/sound/soc/codecs/tas2781-i2c.c
+@@ -566,7 +566,7 @@ static int tasdevice_codec_probe(struct snd_soc_component *codec)
+ {
+ 	struct tasdevice_priv *tas_priv = snd_soc_component_get_drvdata(codec);
+ 
+-	return tascodec_init(tas_priv, codec, tasdevice_fw_ready);
++	return tascodec_init(tas_priv, codec, THIS_MODULE, tasdevice_fw_ready);
+ }
+ 
+ static void tasdevice_deinit(void *context)
 
----
-base-commit: 41b9fb381a486360b2daaec0c7480f8e3ff72bc7
-change-id: 20240204-bus_cleanup-ipack-7e502021db1f
-
-Best regards,
+base-commit: d4ea2bd1bb502c54380cc44a4130660494679bb8
 -- 
-Ricardo B. Marliere <ricardo@marliere.net>
+2.43.0
 
 
