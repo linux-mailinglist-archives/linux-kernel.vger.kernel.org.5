@@ -1,104 +1,110 @@
-Return-Path: <linux-kernel+bounces-51631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51632-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3867848D86
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:16:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7456848D88
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:20:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EF272831D5
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:16:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED4D81C20D07
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 12:20:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 979F322627;
-	Sun,  4 Feb 2024 12:15:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2958A22337;
+	Sun,  4 Feb 2024 12:20:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TPKMz2Ub"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KzuwQi07"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBE472260C;
-	Sun,  4 Feb 2024 12:15:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72DC722325
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 12:20:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707048933; cv=none; b=uJYh3aBXTjaogIMJHWnzbYSaH0YvrC4BREI499fn2uQKiLRyl5aJfRhMiLrInh1TvnPyc624dfCVNrMtUCCsTZCuylQ1BV/WcMl/hePfcjCmXYm5rNA3MYHKqiBKVp29lrDxM8Dx5WCdD4AyBrLKiuyGgraHve/PQin87iSpbmM=
+	t=1707049208; cv=none; b=CfeGljtfQi5hFQx4TH86GiYzWBP0qNQT5pHXT0tukRgBtFNXsFHKUXthB2dqtQVGGQGsQL+c2arZGXE/CEzCp0Fx2T/7GyPxpldrx2WoyQizO9JprLaDM7fmFnnZZ/R5uHjmEaaqiVMHu0/n8Sps9BqpXn6YYK8oDtg1nfzYzAA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707048933; c=relaxed/simple;
-	bh=4wQVnyZkqM9ZkKkYrxE4cjx2wJXAt5jGMzRqxojtYTg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sA2/cDg/7XjhkZFmFcOQvjZyFwgH1IK7BSGtuemo1Stm8wMSYb6Ilv5UBdALW6ej9zVwcuRQIbijTRrb1hAWAnkMocOI2l/zigLk1El8oLVAkuk2Bs9O9369+LVB6dbFTIMKp/2whyYbfZk1RSLBLjIstFV6P1Ckx5kyRxqlBrw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TPKMz2Ub; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70FD5C433F1;
-	Sun,  4 Feb 2024 12:15:30 +0000 (UTC)
+	s=arc-20240116; t=1707049208; c=relaxed/simple;
+	bh=MjKwZovmZ5kVOTYgFx5syEe4MSxQyg3TO0GlyMpv9x8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QyDqiAtetU9LM3OStksvQ1sW/zOu8dszo/zBP0/VeR7UfLdqPdaiYehaUbofeQl93D34azyg/fAqxtJOyBIHTPMuwZ8eU3CGZMhJw69ShumprVIRgtaGmXJhEIM4T/DNdoDzN3HaJfWI1iZivS2aPe7LU8qCgg7ZQTjDfkrHUEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KzuwQi07; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82DB4C433F1;
+	Sun,  4 Feb 2024 12:20:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707048933;
-	bh=4wQVnyZkqM9ZkKkYrxE4cjx2wJXAt5jGMzRqxojtYTg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TPKMz2Ubcsw3jIma98yrbStdwh3KVrJIe0DpVO2pr10RTT41XeeKHATPQy5TkPeL7
-	 3nsQi9VE87S5ksghMe5LDHP8uqrDNlDaL8iVNHJnvk6qJFvjYhYTsu7oXQi2DSEISI
-	 TrVPWwtW/5VZNJK3UhXv9IVFl78OAP7d04j+D09v4zdskPXpAOtR2bhfrcLlB/5qCt
-	 clbOWmRgNmOTjfZAs7hJCvLYSBSVOq8ldozOcEGDD+hU57W/WZnC61z4B0hKP9xMxf
-	 /OXQQlx7cUPaK0nvR6Vwd8pl9bcKqg2gFhEVmi3L33a5KW6LiVXnxgGtD85d/oeEuA
-	 A7Jz5+A+0jhig==
-Date: Sun, 4 Feb 2024 13:15:24 +0100
-From: Mike Rapoport <rppt@kernel.org>
-To: Qi Zheng <zhengqi.arch@bytedance.com>
-Cc: akpm@linux-foundation.org, arnd@arndb.de, muchun.song@linux.dev,
-	david@redhat.com, willy@infradead.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: Re: [PATCH 1/2] mm: pgtable: add missing flag and statistics for
- kernel PTE page
-Message-ID: <Zb9_3K2Kp9d-dtcV@kernel.org>
-References: <f023a6687b9f2109401e7522b727aa4708dc05f1.1706774109.git.zhengqi.arch@bytedance.com>
- <Zb9t7WtFbZofN5WZ@kernel.org>
- <3b7e9435-d78e-4430-98d1-f4a839899425@bytedance.com>
+	s=k20201202; t=1707049208;
+	bh=MjKwZovmZ5kVOTYgFx5syEe4MSxQyg3TO0GlyMpv9x8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=KzuwQi07A15IyLk0/OZ8dhh/n+/YG3pjC6SE2AU+6MlC2vfC7IAmcfbUa1miuNCcC
+	 PYDp5pq6YBEB+h44kLlJf03VKMIhkcaS4Kh3Nx8ZmuKfyY0SWjhdbJnSgqnSh8KZ/X
+	 SCBLdTcSvIYe3FT0/pzIp0jHPbDU7MjLFBAg2DpzJo7F1w7WjzCMwNXn9NvA+Gg+lc
+	 XsH74wucBiSiWKyBdfOdEd67zvvjPqZ9TV5yEWFFAcvu3aus5gXBxg9HkEwYU/JNYa
+	 eKoSNxF26kB5uyolA4WsPk4N8w7Yjbs0Wct4sek6gZ1m6oJ/sLS9AJfuP5WF4sLbIv
+	 iisfrI6DkbVKA==
+From: Masahiro Yamada <masahiroy@kernel.org>
+To: x86@kernel.org
+Cc: Josh Poimboeuf <jpoimboe@kernel.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] x86: select ARCH_WANT_FRAME_POINTERS again when UNWINDER_FRAME_POINTER=y
+Date: Sun,  4 Feb 2024 21:20:03 +0900
+Message-Id: <20240204122003.53795-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3b7e9435-d78e-4430-98d1-f4a839899425@bytedance.com>
+Content-Transfer-Encoding: 8bit
 
-On Sun, Feb 04, 2024 at 07:39:38PM +0800, Qi Zheng wrote:
-> Hi Mike,
-> 
-> On 2024/2/4 18:58, Mike Rapoport wrote:
-> > On Thu, Feb 01, 2024 at 04:05:40PM +0800, Qi Zheng wrote:
-> > > For kernel PTE page, we do not need to allocate and initialize its split
-> > > ptlock, but as a page table page, it's still necessary to add PG_table
-> > > flag and NR_PAGETABLE statistics for it.
-> > > 
-> > > Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> > > ---
-> > >   include/asm-generic/pgalloc.h |  7 ++++++-
-> > >   include/linux/mm.h            | 21 ++++++++++++++++-----
-> > >   2 files changed, 22 insertions(+), 6 deletions(-)
-> > 
-> > This should also update the architectures that define
-> > __HAVE_ARCH_PTE_ALLOC_ONE_KERNEL, otherwise NR_PAGETABLE counts will get
-> > wrong.
-> 
-> Yes, this patchset only focuses on the generic implementation. For those
-> architectures that define __HAVE_ARCH_PTE_ALLOC_ONE_KERNEL, some reuse
-> the generic __pte_alloc_one_kernel(), but some have their own customized
-> implementations, which indeed need to be fixed.
-> 
-> I wasn't familiar with those architectures and didn't investigate why
-> they couldn't reuse the generic __pte_alloc_one_kernel(), so I didn't
-> fix them.
+It took me some time to understand the purpose of the tricky code at
+the end of arch/x86/Kconfig.debug.
 
-But with your patch NR_PAGETABLE will underflow e.g. on arm and it'd be a
-regression for no good reason.
+Without it, the following would be shown:
 
-> It would be better if there are maintainers corresponding to
-> the architecture who can help fix it. After all, they have a better
-> understanding of the historical background and have a testing
-> environment. ;)
+  WARNING: unmet direct dependencies detected for FRAME_POINTER
 
+because commit 81d387190039 ("x86/kconfig: Consolidate unwinders into
+multiple choice selection") removed 'select ARCH_WANT_FRAME_POINTERS'.
+
+The correct and more straightforward approach should have been to move
+it where 'select FRAME_POINTER' is located.
+
+Several architectures properly handle the conditional selection of
+ARCH_WANT_FRAME_POINTERS. For example, 'config UNWINDER_FRAME_POINTER'
+in arch/arm/Kconfig.debug.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ arch/x86/Kconfig.debug | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/arch/x86/Kconfig.debug b/arch/x86/Kconfig.debug
+index c5d614d28a75..74777a97e394 100644
+--- a/arch/x86/Kconfig.debug
++++ b/arch/x86/Kconfig.debug
+@@ -248,6 +248,7 @@ config UNWINDER_ORC
+ 
+ config UNWINDER_FRAME_POINTER
+ 	bool "Frame pointer unwinder"
++	select ARCH_WANT_FRAME_POINTERS
+ 	select FRAME_POINTER
+ 	help
+ 	  This option enables the frame pointer unwinder for unwinding kernel
+@@ -271,7 +272,3 @@ config UNWINDER_GUESS
+ 	  overhead.
+ 
+ endchoice
+-
+-config FRAME_POINTER
+-	depends on !UNWINDER_ORC && !UNWINDER_GUESS
+-	bool
 -- 
-Sincerely yours,
-Mike.
+2.40.1
+
 
