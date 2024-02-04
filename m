@@ -1,161 +1,139 @@
-Return-Path: <linux-kernel+bounces-51786-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51785-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15B3C848F49
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 17:29:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CA9D848F45
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 17:29:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4376D1C22003
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 16:29:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4204E283A50
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 16:29:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A419922EEA;
-	Sun,  4 Feb 2024 16:29:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDDD0249E6;
+	Sun,  4 Feb 2024 16:29:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IH3PLuu9"
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="oQtL5POX"
+Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D73E22EE5
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 16:29:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42A7322EEA;
+	Sun,  4 Feb 2024 16:29:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707064179; cv=none; b=Y6A7mLSWUvBeJoR8QaLuNU2VZj1jp5iC/+BN1n5OoeiLUS+oQbnSmwSI2Dx+iYMcYFlT5JjHaU3C4mjZNmjACfBhoG2g6J3tLrekoImI2+qwOUH/qs3r/aZFvwrzqEvL/2X2/jLMXB59YwfR+Nc7OIAatJJ68CBvagZhUX/fO4A=
+	t=1707064157; cv=none; b=fUzBqZptbxUVwLfcepCkk+cg3ZkHPh1nsQbj8H/QlL3NrsABBqYUS8BaYmEYxio0gNgPvvsvo0wzHYWIbUpLupaFQVEr9i6fkVFP/u7ei362GGZE5lpuT9ggw7zfTy1kadH0olIwX0daB/8x2T4yeLN2dTZT4bM+bJU87rcOekw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707064179; c=relaxed/simple;
-	bh=HclOV+rrCZDwOVlAAJSRoojO0aSBe/fa1KdBQod+1Q8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sShabzXFWdv5GtaelzWn0cs1pf/DFi/fVMN0Hlq5GtIaP9ssx+RGVWDqAkVRLPj8duDRt0FhSGNOO/6q8aYRfP0Cold1Zhz7fw6o6dM5dDqdpe6ZjSp2eUFkR062wBISBEaery+hj1Y9QmJMQVi5MBPqO+a5rPDKlAvxafESoeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IH3PLuu9; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-6002317a427so31649977b3.2
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 08:29:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707064177; x=1707668977; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WLm7YiWrpLuC8lMxG3SB3hDe/1zoUfNMJZQo8qUZp+s=;
-        b=IH3PLuu9+bSa1tO4Is+lBcPajOQtQsdLINEAFekq3AR/qcVyGpkZtA6dYQXLgcYHPa
-         Y5A4WuCtI86FY812aOpG6IfWQ3xT6XWEtc8xMjpDkPOkQP07u1jsQ8WSMh39OuHJ38Kg
-         nX6GVLm6ZRdpRmQt84jNVIDmm4kZawS1MyfMIiydX0AfDyCecBVDQutSGoR3J4jCBcvh
-         4YEO+IXs6tIwvrsVJ8ULD9QC+eF/5v1FQ/OqOhBTGzIH84qlNblBGkJOY7FeycxyjW9N
-         9t4dj/iP0w06pbzRTOWAqi0rnZZn4tbr/eBEIdOqguTVjQgJTKz8Xkj+aatftx8ADW4+
-         O/rQ==
+	s=arc-20240116; t=1707064157; c=relaxed/simple;
+	bh=7Aa3vHYQq1Cas6qCMgssrF4OfAvkTLYL4PbhRMnJOpM=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=q0lPojIYvnQIQ1WZJADxOKIkDf95OzyMr91Szye5xwKVIxUis7HEn0P2AlIXMraBDRN4w2pUaalU9WmJ6jWF97+ITPQykLkQpAyRtlsez7IQrDg5Mgm1i65vFPaOBLiZOUtAGinZYZX9YWGc6AFB3sYGTYwKQSgDqmzuOjaN2ac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=fail (0-bit key) header.d=marliere.net header.i=@marliere.net header.b=oQtL5POX reason="key not found in DNS"; arc=none smtp.client-ip=209.85.161.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-595aa5b1fe0so2523402eaf.2;
+        Sun, 04 Feb 2024 08:29:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707064177; x=1707668977;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WLm7YiWrpLuC8lMxG3SB3hDe/1zoUfNMJZQo8qUZp+s=;
-        b=Jn03RAjSdtdTGEBQwFNbbw9lY0ufySe1SWuDCDY27554Pkn56rca9fwTKqpizMWNCa
-         PFj0F/+oCD8DgCR4f1Lh+06OP8I2ax5iZDZN75FNZiudWka45AvfcYzYBYptCxMIX8Bu
-         GkRZIXX56192zTt+cHcfNasyZ2/3WIHCnWyp1m2x5bjhdIwye9PZLZzmAmIaReL6v5Zt
-         S1X75Z4d+w8aR0f228TyKmzxcer6QRXjIRPfOMPoOmhLx4HYVX0kSjGesupKe4XRax4W
-         1bWxcf9X9xHA2Icdazsl1/LuYuhaTIzcW1NZTTtHp12osren+2EfQ2TxAkL2fmQV5Z6q
-         bM1g==
-X-Gm-Message-State: AOJu0YyTydYuCeyagBOgJ5yijfrAlXAUhH8LdkKb94bRKdIB3zSQIZoO
-	sbFZgomcfvDcg2iVcU7UFbZoauIrauBFfRbKbAYSffVhyQgEpNbVbxJFWLA5vKJFQnudykiCUbr
-	cH6n3iXiYP3Ft0oro2eQO878X4WbXKRkp+hzUgA==
-X-Google-Smtp-Source: AGHT+IEdKmZwmDiJR3yzuB5XfjzAGu+fELDwSN691Nf/rx1nyhSnDyGaSWKglskcCeWmwA4QPXVUltXw5iD6qvaiMXQ=
-X-Received: by 2002:a81:9197:0:b0:604:5cd0:a79c with SMTP id
- i145-20020a819197000000b006045cd0a79cmr583017ywg.16.1707064177328; Sun, 04
- Feb 2024 08:29:37 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707064154; x=1707668954;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wkEWH6gvNpDijd7cA4NPnUTuDEXBhNQ1QH3JdnlFRIg=;
+        b=RLnPwXRTyxpB3TaONGBZtZvZJ6OC/FKf4QuO+PEw9SNJE3zvQnHnmS1nfcX2OOsi2U
+         02bBvmhTf/b0XGpViPYwUPAwVm2MNmTJvO28gGOhGZTO5vJ2zzTMF59NMkpPufyfaH93
+         ENS/+BzG2BT9XzPANLznFISHAcRSOPHHa0bqES2uafDHJfsBEvezKiuo4gZh3myDpRkB
+         GHXW4DM3ey8PH9T3KXzyXp/ukz91dmLX+IFdCpbmJNx/K68jKTNlGtDBnAS+Um07wA0k
+         gwix75JfD4RKnMTIZkjs0qOocv5083+SwQ20dZc9QJnmMzql2Jos5w9ldLVLpAOQxkd6
+         jYPQ==
+X-Gm-Message-State: AOJu0YwgR84dM79QKjmQgVeU9rM2nG6L2YUSej8lGEwcMvELT2wZ+lLJ
+	CKodDuEH7L+p83z/ISBfPXRoVyoTWJWhKRYmMJ7WZfkR2ZvML3lTVj3beciHsOi22Q==
+X-Google-Smtp-Source: AGHT+IFDd/2hkl8QGVjFRhHVZTK6ORjYHDAKtWp7a58YWgyhQvTjSfM3ja8SuDBFix4LeKYkEzYskQ==
+X-Received: by 2002:a05:6358:7e13:b0:178:778a:30e1 with SMTP id o19-20020a0563587e1300b00178778a30e1mr16107803rwm.11.1707064154123;
+        Sun, 04 Feb 2024 08:29:14 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUrYVc2ig8vzFUVeWoc6V4P/bVaX7DS/UP63Ko5rlj/MrCPLREYUbp7wugUcViWySfIxUIOU8aPGdyrRji8q8Gt9SxNfvntKg4i2PsWz1hsPJeo0Ixl1l4/QoB+Ub3Jo5glUXI+OwXSAYlx6rbWpvQUBMqkGBlmUA==
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id g3-20020aa79dc3000000b006e02eb7fb05sm2359374pfq.160.2024.02.04.08.29.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Feb 2024 08:29:13 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2023; t=1707064151;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=wkEWH6gvNpDijd7cA4NPnUTuDEXBhNQ1QH3JdnlFRIg=;
+	b=oQtL5POX6P4wsS9sk+vECFOCc1zVsFHanQzNpYbPLrASGnrcid4tCmdexHx2sYu5I924Kf
+	+rqLpOvdq0jTqEKIUByuHHwE7uA3MoTnIEYIF18mR4R0xNkcUbLqqVZw6ObQfxO14GENQm
+	gBr3CY2pnhuz2NBvdD0ENQOAfxO65o7sYii3IAfUW4fmAoP563gNjPxcZdFApGosp926aT
+	z4GIQMLaBicp0jBXjTVeLYgKPFt3OI4c8Sx6KV+fv+rugGhfBIwC7B1ZNG51q6GQ31i+tS
+	XFfkU+lSi4fjNSQVv3b1P/ectK7hoB/V9cfrWtr0wdBBgKG+GAk8WkkqNRpKvw==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Date: Sun, 04 Feb 2024 13:29:42 -0300
+Subject: [PATCH] gpio: gpiolib: make gpio_bus_type const
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240119100621.11788-1-quic_tengfan@quicinc.com> <20240119100621.11788-2-quic_tengfan@quicinc.com>
-In-Reply-To: <20240119100621.11788-2-quic_tengfan@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Sun, 4 Feb 2024 17:29:26 +0100
-Message-ID: <CAA8EJprpMjK03rKPK6wgfVuDvBikYsKZjMc0Wusa1BxFOBnXhQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/6] dt-bindings: arm: qcom: Document QCM8550, QCS8550
- SoC and board
-To: Tengfei Fan <quic_tengfan@quicinc.com>
-Cc: andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kernel@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240204-bus_cleanup-gpio-v1-1-82d91b4ee1de@marliere.net>
+X-B4-Tracking: v=1; b=H4sIAHW7v2UC/x3MQQqAIBBA0avErBPMjKKrRMRUkw2EimIE0t2Tl
+ m/xf4ZIgSnCWGUIdHNkZwuauoLtRGtI8F4MSiotldRiTXHZLkKbvDCeneh6Ihz2VmGHUDIf6OD
+ nX07z+34nU20CYgAAAA==
+To: Linus Walleij <linus.walleij@linaro.org>, 
+ Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1075; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=7Aa3vHYQq1Cas6qCMgssrF4OfAvkTLYL4PbhRMnJOpM=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlv7t262tpxtjoDfiGTQJSHx4/rnZhb6DFY3+It
+ uP1aECE3ZeJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZb+7dgAKCRDJC4p8Y4ZY
+ pkf2D/9SUPLxQHC4Wa76gTRLTGHSDdWvDnfklXGa3QPBrZwKCUooTXmdeAmFsB5IVTMvYWwEFtm
+ VqEp94xV2R3yDrXaChSnrTtO5UkWGRxI2DGHLpt2+wM3bbDegPWHso2hArkbK1xyIok0FVEil8G
+ 7VvhQf9Yoeom7etDEW4QPbUEJ41W9gUPs0clWRVWrpBl5iAcDqd4DrXNaEWG9MCA2GhxjXu7imk
+ LKe2xxRuPsWjxIECqfNoctz8n9PIH9iGhv5YKbXDelUaWJ3GMa449RqGWxsm1Knjb+XoZxNts40
+ 14X3WDae1Jy0qGqHii5GAdG/x2C7QqOuXQaCW59Tdobv7u8oY8PzDVQa+GDk8PIVmpdqC6KJPHl
+ vGNX7RmPqdP3mRSq5mg0c+HGiCNYLcls7/mipdFp59NKIuqUxuJaSztMfKXyR7q9tcaJXEhtmPL
+ Ae4ctUQ37QK6smHQGYqyiR1kSuQabtBwGLaYTmi4p3nm5HEucCa7381BL4ZdpHpqEPQs68lpZV6
+ 9iXV+JqnRhX4K96g5N3p3jWzmMXfPBSDz79pc1+K1Czswfej+oBYK04Aw7rnJBaDOn/bWuT38U+
+ W9b1LWnXOrcqGPzS7mw5L5xgzvvRP5J8YTEFYjS9K0o+88ZSifj6n+ESy/i+tSbjAr4JfpCZqVt
+ /6xNfXm02LIcQvg==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-On Fri, 19 Jan 2024 at 11:07, Tengfei Fan <quic_tengfan@quicinc.com> wrote:
->
-> Document QCM8550, QCS8550 SoC and the AIM300 AIoT board bindings.
-> QCS8550 and QCM8550 processor combines powerful computing, extreme edge
-> AI processing, Wi-Fi 7, and robust video and graphics for a wide range
-> of use cases for the Internet of Things (IoT). QCS8550 is a QCS version
-> for QCM8550. Modem RF only in QCM8550 but not in QCS8550.
-> AIM300 Series is a highly optimized family of modules designed to
-> support AIoT applications. The module is mounted onto Qualcomm AIoT
-> carrier board to support verification, evaluation and development. It
-> integrates QCS8550 SoC, UFS and PMIC chip etc.
-> AIM stands for Artificial Intelligence Module. AIoT stands for AI IoT.
->
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
-> ---
->  Documentation/devicetree/bindings/arm/qcom.yaml | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
-> index 1a5fb889a444..9cee874a8eae 100644
-> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
-> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
-> @@ -49,8 +49,10 @@ description: |
->          msm8996
->          msm8998
->          qcs404
-> +        qcs8550
->          qcm2290
->          qcm6490
-> +        qcm8550
+Now that the driver core can properly handle constant struct bus_type,
+move the gpio_bus_type variable to be a constant structure as well,
+placing it into read-only memory which can not be modified at runtime.
 
-Drop
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+---
+ drivers/gpio/gpiolib.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->          qdu1000
->          qrb2210
->          qrb4210
-> @@ -93,6 +95,7 @@ description: |
->    The 'board' element must be one of the following strings:
->
->          adp
-> +        aim300-aiot
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index d50a786f8176..24d046268a01 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -63,7 +63,7 @@ static int gpio_bus_match(struct device *dev, struct device_driver *drv)
+ 	return 1;
+ }
+ 
+-static struct bus_type gpio_bus_type = {
++static const struct bus_type gpio_bus_type = {
+ 	.name = "gpio",
+ 	.match = gpio_bus_match,
+ };
 
-We probably need to drop this list, it doesn't surve its purposes.
+---
+base-commit: 3eac8bbed22e940ac1645a884f221bef408f675c
+change-id: 20240204-bus_cleanup-gpio-57eea8d32a5a
 
->          cdp
->          dragonboard
->          idp
-> @@ -904,6 +907,14 @@ properties:
->            - const: qcom,qcs404-evb
->            - const: qcom,qcs404
->
-> +      - items:
-> +          - enum:
-> +              - qcom,qcs8550-aim300-aiot
-> +          - const: qcom,qcs8550-aim300
-> +          - const: qcom,qcs8550
-> +          - const: qcom,qcm8550
-
-In the review comments for v3 you have been asked to add qcom,sm8550.
-But not the qcom,qcm8550. I don't think that there is any need to
-mention qcm8550 here.
-
-> +          - const: qcom,sm8550
-> +
->        - items:
->            - enum:
->                - qcom,sa8155p-adp
-> --
-> 2.17.1
->
-
-
+Best regards,
 -- 
-With best wishes
-Dmitry
+Ricardo B. Marliere <ricardo@marliere.net>
+
 
