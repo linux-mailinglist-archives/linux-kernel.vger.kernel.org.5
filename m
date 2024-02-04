@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-51426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D9E4848B13
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 05:46:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3322F848B14
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 05:47:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8576B2565C
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 04:46:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98D4A1F22E1B
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 04:47:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 353A57465;
-	Sun,  4 Feb 2024 04:46:36 +0000 (UTC)
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3A3F8BFC;
+	Sun,  4 Feb 2024 04:46:37 +0000 (UTC)
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F38666FB9
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 04:46:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89F586FA8
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 04:46:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707021995; cv=none; b=cE9ePIX5R2r1gwwPOyIXK2ZSuYELslPETMLIXHCzW487ILj4oFeno7Vr7OLGRt5RQHdTP/P0GZcVUvckIxzLtEtvvdtwZXlzUHfHJ9kteLe7VJz+264/hBIz7/+kKsUMJCJdLnwl5He9tpxS+kDCL2y8wS3aNPOTdGaqtW8GNs0=
+	t=1707021997; cv=none; b=HPbpDryiNI7SidDvWt9nZHv330871qsryTIYGSLGPTasddOvNO1xMyldweUFklKFfK6jJ9/SruapIW+TOfC84fI8/MtOBtREeDQHm8bvkmIMDd2uhpjs8cxNGa9AZcGIUT57zDBYeyn4gANzyd/q3yWRFWkgrzFibf7iRPnzDzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707021995; c=relaxed/simple;
-	bh=pYurAIAdDs3zqLyccEjZYVhP849U5nz3V7/2Uz0E/kE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PAPd2m8516eyY+/bT40CpXZ19WsBO8M1tf/sjLkbKvodJ9IUs5wN1oeglv6VUeWgQJy9FDpflPVIo6Zr7TtpRObN76a6UCm53kq39BqrLOAfrII+cENpcXCmfVvANjV4gUEKNddhFjnbmeKtwfjiBxDDP1l8aGQZwv7ceSydh7I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.173
+	s=arc-20240116; t=1707021997; c=relaxed/simple;
+	bh=esJff9D3QxDKh73OdhoQpybzSp8tl3pv5yUOn5L2Or0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=oPhyZx6BCcBjOGiOILtAU3t6dFBNB55ProfJIs41NTNWLD6DurfB19PdRnJ38efnPDiLkIR7J9lN2OtL4RyDfiZQugQHPmt/o7MoYP6thcLsD7xkM0azVPCdOXXT0Elz0UVomfPEa+eQn42o+f4KYreqyB9DObuIT1meMmY2k14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-42bf29aff0dso24196371cf.3
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Feb 2024 20:46:33 -0800 (PST)
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-783ef8ae70aso247544485a.2
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Feb 2024 20:46:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707021992; x=1707626792;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=geUmMcTX8p4NRKeidELidreXuEDuXbffq2eplBFLGBM=;
-        b=BiO41MWF7dyB+h9XyIgEurt4eQqZhtW3X0LIVoAy9NMTp/JGFhj4G3PG0AMYMTa0OD
-         XQL5HodVE25kAEX3V1N0N47z61n3JV1RrDubTYWOw4Ntu712Oab3mll/jX6MtHq2hVEr
-         3HOQtnuXmZcAty5WE7dr0OOyMqUqn+352rAsY5DBq1oHpiUwuR0fa6rKlbaLNVXRjPWq
-         rfT9w5N3Gr9a/ylNO5vDX7fLYD/8Hg5Qmv/zeQk69Pcd+20/eD22HYcTaPneEigvZPI8
-         CJTEVWOKQc1j/Shg2g480sb7mX+DTdhxOcFb6VnVqem09amh1YdROGBwssPmI/thijvD
-         b90w==
-X-Gm-Message-State: AOJu0YydcbgClOMfEhl5G+LGRWtDV3GTDnlfQoiWxSpbdZkspS3JxJvl
-	ga87jzNYp6LLc5nFdg2Pq8jy8yP3B2Qq9Qhh912noOYXDCISM8RhximYGd681q0=
-X-Google-Smtp-Source: AGHT+IECA3hDqjyWiTbm6pF4WjZmsJ+loipk3IJd2n85QmBlqNfQ/YyTbxwPJEdO+9GW0IHFrm4fdg==
-X-Received: by 2002:ac8:4582:0:b0:42b:ef49:5e07 with SMTP id l2-20020ac84582000000b0042bef495e07mr2933315qtn.46.1707021992461;
-        Sat, 03 Feb 2024 20:46:32 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVdDn8OaVbbUDCJRc/x2ofrtYIWuuJr0iQtTx3w4xPSKMjXMv84Ii7mM75I3UKeAl345Ogw52ElOxpzateVykYX6VvVRAjPEVEyX7LuxbxTr5r7m3b0Xq66GVGt1ouX48sPM1gMOAuQEbw9jJeADWwsp+SOItbuDFMrxIFZxuho2ISewWA6YItWy9Dmf+RAO+QYDKDgNRg31JcIxnRmMngrSla9RNs/GoEDp1khQlJK0PBedTso+bkan/A7ze5Drv8+YnGZL9WJ5vcOiIQ2lYo4xaWYQOaUaQ5Drk6O1csfO3iHFbpaIAp4xgHm4jtNJpSW9RBopyNHCeczVrIkcSaEXx/2E5HaI8uArQ==
+        d=1e100.net; s=20230601; t=1707021994; x=1707626794;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hTl2D4iOo0GV1DAY/ZjWEvwTNDLK6aFt78YqxSZPvBQ=;
+        b=C1Z0tjsMTcXNvyQ0l4P5j3ERERGxJDEWDAe9WaVgxYx7sZ2fKD757JmlTu6qFT35fv
+         HI5SsLeWyU+aFld7AgQpL9bXE8rjgnHkeFNX1DssmcMQkoEYnCInMxex2OvnoRRg9EOb
+         VkyK1gJpd5ktvMYAeZ1i9BOBfpZLOwPIVPCnwWoyGC/j5kOwOQznNZzlqAM6TwLD7+pv
+         /AE65wFTbm2lY+ImoWwCdUgLJGRQcey+cZgpm8FgbarkJgL2mSeBX7y76h2ocfWKPT3t
+         edm5JbqZTFAvOVoLKXrU4bkpmt9hdtTlczUwst2N93dSi+dXJbkgtusuni2UiRy+Xkgk
+         C/xw==
+X-Gm-Message-State: AOJu0Yz9SDsXM7gRj44wfxhmH/pyGXy+4+vWtxS5K6MO01qa5WHV4pDY
+	p5XshD+0CUqQRHVoeRcfSjdnD1sUTZ7vjAzCDkqrW2NU0iYQbsrRuUXCRlZu9Y8=
+X-Google-Smtp-Source: AGHT+IHY+ayHYkGzoNKi9AUfjjJw3yZrERG3kPAAS6HF43SQ7uMfILchiNl4eEuK5xIxARONgntRxQ==
+X-Received: by 2002:a0c:e082:0:b0:686:a185:dc11 with SMTP id l2-20020a0ce082000000b00686a185dc11mr2339381qvk.55.1707021993889;
+        Sat, 03 Feb 2024 20:46:33 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXEw3NEGoax1wKTMcPEjLAOa+mI6JFt9Fn9dr/BacCCq/KLmBIwJglX11ETVmzHeqLm7qluTBvMjTx5KBbBEH0DMJPk25rtJEbif1AowmGxrK+a4z7BcUSxCyG+3mL01bcsMIBa5JkJ6gDplxUMnmB0FLMflqp7e7ggdpiUgx8rdVJPhJXXKcehp1s1+Nkh+bNs71h9J4th8kHpGOjm8cL7QoLc8hokaQW3GFcDmy9oqqsSug+rvKmpt/7xvkfig5eY9dcbLb1TE67qK+kncPpzAb2KoZnbh/samfk5Z2puv4O+FH/Cyw2KoZSG3ieGGeSWN1w7f1/sg0uQuZHjMZsKHxna27YLbiaX7A==
 Received: from localhost (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id fx12-20020a05622a4acc00b0042a6e6792basm2409321qtb.69.2024.02.03.20.46.31
+        by smtp.gmail.com with ESMTPSA id ny6-20020a056214398600b00681785c95e0sm2434781qvb.46.2024.02.03.20.46.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Feb 2024 20:46:32 -0800 (PST)
+        Sat, 03 Feb 2024 20:46:33 -0800 (PST)
 From: David Vernet <void@manifault.com>
 To: linux-kernel@vger.kernel.org
 Cc: mingo@redhat.com,
@@ -64,10 +65,12 @@ Cc: mingo@redhat.com,
 	bristot@redhat.com,
 	vschneid@redhat.com,
 	kernel-team@meta.com
-Subject: [PATCH v2 0/3] sched/fair: Simplify and optimize update_sd_pick_busiest()
-Date: Sat,  3 Feb 2024 22:46:15 -0600
-Message-ID: <20240204044618.46100-1-void@manifault.com>
+Subject: [PATCH v2 1/3] sched/fair: Remove unnecessary goto in update_sd_lb_stats()
+Date: Sat,  3 Feb 2024 22:46:16 -0600
+Message-ID: <20240204044618.46100-2-void@manifault.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240204044618.46100-1-void@manifault.com>
+References: <20240204044618.46100-1-void@manifault.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,45 +79,42 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-update_sd_pick_busiest() (and its caller) has some room for small
-optimizations, and some improvements in readability.
+In update_sd_lb_stats(), when we're iterating over the sched groups that
+comprise a sched domain, we're skipping the call to
+update_sd_pick_busiest() for the sched group that contains the local /
+destination CPU. We use a goto to skip the call, but we could just as
+easily check !local_group, as there's no other logic that we need to
+skip with the goto. Let's remove the goto, and check for !local_group in
+the if statement instead.
 
-
-- In update_sd_lb_stats(), we're using a goto to skip a single if check.
-  Let's remove the goto and just add another condition to the if.
-
-- In update_sd_pick_busiest(), only update a group_misfit_task group to
-  be the busiest if it has strictly more load than the current busiest
-  task, rather than >= the load.
-
-- When comparing the current struct sched_group with the yet-busiest
-  domain in update_sd_pick_busiest(), if the two groups have the same
-  group type, we're currently doing a bit of unnecessary work for any
-  group >= group_misfit_task. We're comparing the two groups, and then
-  returning only if false (the group in question is not the busiest).
-  Othewise, we break, do an extra unnecessary conditional check that's
-  vacuously false for any group type > group_fully_busy, and then always
-  return true. This patch series has us instead simply return directly
-  in the switch statement, saving some bytes in load_balance().
-
+Reviewed-by: Valentin Schneider <vschneid@redhat.com>
+Signed-off-by: David Vernet <void@manifault.com>
 ---
+ kernel/sched/fair.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-v1: https://lore.kernel.org/lkml/20240202070216.2238392-1-void@manifault.com/
-
-v1 -> v2 changes:
-
-- Split the patch series into separate patches (Valentin)
-- Update the group_misfit_task busiest check to use strict inequality
-
-
-David Vernet (3):
-  sched/fair: Remove unnecessary goto in update_sd_lb_stats()
-  sched/fair: Do strict inequality check for busiest misfit task group
-  sched/fair: Simplify some logic in update_sd_pick_busiest()
-
- kernel/sched/fair.c | 19 ++++---------------
- 1 file changed, 4 insertions(+), 15 deletions(-)
-
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index b803030c3a03..e7519ea434b1 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -10578,16 +10578,11 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
+ 
+ 		update_sg_lb_stats(env, sds, sg, sgs, &sg_status);
+ 
+-		if (local_group)
+-			goto next_group;
+-
+-
+-		if (update_sd_pick_busiest(env, sds, sg, sgs)) {
++		if (!local_group && update_sd_pick_busiest(env, sds, sg, sgs)) {
+ 			sds->busiest = sg;
+ 			sds->busiest_stat = *sgs;
+ 		}
+ 
+-next_group:
+ 		/* Now, start updating sd_lb_stats */
+ 		sds->total_load += sgs->group_load;
+ 		sds->total_capacity += sgs->group_capacity;
 -- 
 2.43.0
 
