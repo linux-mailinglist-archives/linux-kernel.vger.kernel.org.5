@@ -1,139 +1,83 @@
-Return-Path: <linux-kernel+bounces-51524-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08FF6848C2A
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 09:30:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15015848C2D
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 09:31:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E7761C225FF
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 08:30:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6892281D6B
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 08:31:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C5BD13FF5;
-	Sun,  4 Feb 2024 08:30:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6B8614AA5;
+	Sun,  4 Feb 2024 08:31:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ERpNI16O";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="VMFGa6vv";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ERpNI16O";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="VMFGa6vv"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC7EC134C8;
-	Sun,  4 Feb 2024 08:30:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="drVazA+j"
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CAFB14003;
+	Sun,  4 Feb 2024 08:31:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707035424; cv=none; b=ZrUHHb+/1aKozTewz7okFW+VbCZyeJZHdcRJdzTo4lXvd6ntVPDcLRGwZ1QBKCx7vZx/oys3aOrqwpoXFdS9yhACO3/CvoWxTkt4qLFY1h81ORCO6NqsQ517L4sMw/06qK8PuVZmHsaIsh2iHaf4Ih2KjuamUXWvcxCiTFgZxeM=
+	t=1707035501; cv=none; b=lCdwemW/pIKRgGJK6Mf2H87nh93V+8m86qNZvcIAzhg7Y6P5kLalTv1Y19sEtSY13Wxd3jGaFpnChbjCj8l0PAMY9B5oiGASV6qUVipJ5z+pky6IFV/yG2GkJkBaWST4eBImsQPjBbIO5i0SSIV5toGjRmS+KQUA3YKksgWxa8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707035424; c=relaxed/simple;
-	bh=9N/yJ7y8H6y1WqEagbxcNeH/yIVeDjm6wuvCcT+jqJs=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WsG3f8/Q9gy61Di0vtRQcGAWH5QyAPE/xELHawvFoikpOougBKD53NSRGGmJg687sw45ZByDb4UhNNaVQEyE596AYb/TsyN3jYtll+FIbm8cNYZjm3HZhecpRC3R8OA48qCYtunlVYQT7pcMv2xe7Mt0qF4dkBMffW88zTPfeUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ERpNI16O; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=VMFGa6vv; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ERpNI16O; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=VMFGa6vv; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A653B21E24;
-	Sun,  4 Feb 2024 08:30:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707035419; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SUWpvVlbtmQV6vlPcjlI3MUn/yKN5SBWzWr1t051fJw=;
-	b=ERpNI16O1j4T8rc4JVXOORjMTM0KzR35yqytDPmmUBXdkDnEK8j4j4pqqNODEXXHT1UO+v
-	95qlFDXY6hG6TcgYVkn3O4J6WCEkDFh1vr+iDFfvNaqx9nCkikMP27V/u+oFQlJcyC6EnL
-	G21hMyWdecNKSFfdvIAXoDJ4nL2qK9U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707035419;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SUWpvVlbtmQV6vlPcjlI3MUn/yKN5SBWzWr1t051fJw=;
-	b=VMFGa6vvVpxApVvrlxsVnHQLy/lursItxcFDLW3iHijaPyBaXpjSau0BPzPuSvaAUdTomv
-	t4B3Rpvq20oRQoBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707035419; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SUWpvVlbtmQV6vlPcjlI3MUn/yKN5SBWzWr1t051fJw=;
-	b=ERpNI16O1j4T8rc4JVXOORjMTM0KzR35yqytDPmmUBXdkDnEK8j4j4pqqNODEXXHT1UO+v
-	95qlFDXY6hG6TcgYVkn3O4J6WCEkDFh1vr+iDFfvNaqx9nCkikMP27V/u+oFQlJcyC6EnL
-	G21hMyWdecNKSFfdvIAXoDJ4nL2qK9U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707035419;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SUWpvVlbtmQV6vlPcjlI3MUn/yKN5SBWzWr1t051fJw=;
-	b=VMFGa6vvVpxApVvrlxsVnHQLy/lursItxcFDLW3iHijaPyBaXpjSau0BPzPuSvaAUdTomv
-	t4B3Rpvq20oRQoBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 68EFC132DD;
-	Sun,  4 Feb 2024 08:30:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id mx76FxtLv2UpeAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Sun, 04 Feb 2024 08:30:19 +0000
-Date: Sun, 04 Feb 2024 09:30:19 +0100
-Message-ID: <87h6iobpic.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Stefan Binding <sbinding@opensource.cirrus.com>
-Cc: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	<alsa-devel@alsa-project.org>,
-	<linux-sound@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>,
-	<patches@opensource.cirrus.com>
-Subject: Re: [PATCH v2] ALSA: hda/realtek: Remove two HP Laptops using CS35L41
-In-Reply-To: <20240202170842.321818-1-sbinding@opensource.cirrus.com>
-References: <20240202170842.321818-1-sbinding@opensource.cirrus.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1707035501; c=relaxed/simple;
+	bh=u9+LHPfAZ13cth/hrwDBhd7Qz2h0oIqYNx0hTMM0Nko=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RFzEK0GaRZHThTlLELPgYmvdiVBbKMcnd5c+ZyHRCXbv2BGn3Yof3WxvYOMUj9YUBRVij0N1KPI1wofnn3RyqmMRV6Ov195Wz5VZlt70QY0EtPZaDawhDPgKpEzuVic7YiF625cPO7078nZGsPpRafuz2+UJnOnIQ9PgBlY7Z8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=drVazA+j; arc=none smtp.client-ip=220.197.31.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=c7uxM
+	1jI1D1xIwEXNqg79GIf4v7VHzmWovvZMLD/Jg8=; b=drVazA+joUoTleI92XNTA
+	z927UDhi7DKUqvhlz8xK0ATiS+oY5Z84pX1YO6/O5TlVz4J4tcG5MVpTB68Cg7AI
+	Ah3o0DMlQBzlfXjsWWEVcmHWHAoxdi+ibsz7t9vcHzfNeVq09968XGToQBzO0xT0
+	zNkfZXYsbg2MdPNuiEOUrY=
+Received: from localhost.localdomain (unknown [39.144.137.116])
+	by gzga-smtp-mta-g1-0 (Coremail) with SMTP id _____wDnM2Y+S79lBerCAg--.45702S2;
+	Sun, 04 Feb 2024 16:30:56 +0800 (CST)
+From: Xing Tong Wu <xingtong_wu@163.com>
+To: Pavel Machek <pavel@ucw.cz>,
+	Lee Jones <lee@kernel.org>,
+	linux-leds@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Hans de Goede <hdegoede@redhat.com>,
+	Xing Tong Wu <xingtong.wu@siemens.com>,
+	Tobias Schaffner <tobias.schaffner@siemens.com>,
+	Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+	Henning Schild <henning@hennsch.de>
+Subject: [PATCH RESEND 0/1] Patch Resent: Enabling LED Support for Siemens IPC BX-59A
+Date: Sun,  4 Feb 2024 16:30:47 +0800
+Message-Id: <20240204083048.2458-1-xingtong_wu@163.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [0.47 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.43)[78.54%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: 0.47
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wDnM2Y+S79lBerCAg--.45702S2
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUzl19UUUUU
+X-CM-SenderInfo: p0lqw35rqjs4rx6rljoofrz/xtbB0gJ60GWXv4SRBwAAsl
 
-On Fri, 02 Feb 2024 18:08:42 +0100,
-Stefan Binding wrote:
-> 
-> The SKUs, and associated SSIDs, are no longer going to include the
-> CS35L41. They may come back, but will need a different quirk.
-> 
-> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+From: Xing Tong Wu <xingtong.wu@siemens.com>
 
-Thanks, applied with Fixes tag now.
+This patch has been resent to incorporate the necessary changes for
+enabling LED control on the Siemens IPC BX-59A.
 
+Based on:
+ eccc489ef68d70cfdd850ba24933f1febbf2893e
 
-Takashi
+Xing Tong Wu (1):
+  leds: simatic-ipc-leds-gpio: add support for module BX-59A
+
+ .../leds/simple/simatic-ipc-leds-gpio-core.c  |  1 +
+ .../simple/simatic-ipc-leds-gpio-f7188x.c     | 42 ++++++++++++++++---
+ 2 files changed, 37 insertions(+), 6 deletions(-)
+
+-- 
+2.25.1
+
 
