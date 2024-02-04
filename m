@@ -1,149 +1,134 @@
-Return-Path: <linux-kernel+bounces-51858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3240849023
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 20:41:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C313E849025
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 20:47:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C8B3B22ABD
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 19:41:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FBD428424A
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 19:47:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB1722511E;
-	Sun,  4 Feb 2024 19:41:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35DAE25568;
+	Sun,  4 Feb 2024 19:47:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="HbIRc+Y+"
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HqRbpNgg"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 274EF250E0;
-	Sun,  4 Feb 2024 19:41:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFB3A2555B
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 19:47:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707075689; cv=none; b=fGkA8lSPpw1h5wYXeCmSnUhda4rSt40Q6MLa9vsqA9Xs4RCvNAG/hfSIdPb5kO2u+7xBWnZAAOvVGySX4TW02lmNHstNZDEcWqHqUwKU+6YEJgxSApTx/IqoDlsE5QUxUvb3taFLjeZu8pFfSLSw2etDqQDJiInOWN65l9BmKSw=
+	t=1707076033; cv=none; b=VcU9Iw96UODfh3CKOtyM2wgWtTVZui8qyMYHR8PBeJJQxWrVIDvUIlSFb3NffpmcRfZyuwOCPYRgOMjMRstGHYi5KZ/Yk6ooUi1aDVRd13xwQLLlBOQUhzyD8xeqG9KVqajwoXhn6fdFTrH0eUxFRZ9QX2qJyV5Hy0J9D/Qz6yo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707075689; c=relaxed/simple;
-	bh=3XS7DO9aX3sho0zkyQuoDuzbfqhk1EcjrAHCP4x8oMU=;
+	s=arc-20240116; t=1707076033; c=relaxed/simple;
+	bh=dh5aUZbxgC6lmdPp6g0ZVDbzAffH5qeyfeOaJ86xRak=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oJKIZMrODaDSJMzA30qPYwJy2ghn6QwYL3SJJqAbhnZr+9++/AVlbD8Y+zQkgcLxeP112NvCDzd8UQmzX6OibiNGbObJlQobH1mfQiyZPTqGKYn4+NcEy31pz2ECclanx0zvvIA3ag6dA330a2s/3eIpp4ikKN3ebPuCWtGvx5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=fail (0-bit key) header.d=marliere.net header.i=@marliere.net header.b=HbIRc+Y+ reason="key not found in DNS"; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net
+	 Content-Type:Content-Disposition:In-Reply-To; b=uy3yohkrbYmGHoz7GQIzJQoj+hrm/Tg9wUFY4XqglMe7Rt+0/YPhtUriZ5wuw1UjNR0+D/RAiDnYzV9eme6bOGCxIjRG472RcSmyrORnsYeomcpgUC8VBYsQEZhNaMcrmsv6oFsuZKpuvpB0wcotqmYAxnxxNC12ZsPjSRSb5ww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HqRbpNgg; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-295d22bd625so2470634a91.1;
-        Sun, 04 Feb 2024 11:41:26 -0800 (PST)
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40fd72f721dso5524755e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 11:47:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707076030; x=1707680830; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5xfuEOvNkpMrvgeaTj0gZfx3Z6HaCNzQxxz5WJ1g3Tk=;
+        b=HqRbpNggDQMqf9g5C8RnkDXNCuFKYLaYLqZ1KohrLT8vURFRgFt4rm3IXxAGemz7Rl
+         NVZG3/oOQM35m3YgBaV8F1xN0+DJiN0BGA1bkBwNn8FXEQpIWKBTMmU2We86Ww80tnVV
+         09UmtR7BFdpGSIDeVBo6n5Is9IacfIXTyQ37air2R6O3iOK7uHW0ArwUGgb/UsvsuzfW
+         SmbScYgXtdhW1X8FeF9W3c2ga08jl2ayFZXVcHRQripqTdRPmx1JTWgjgXWX5UX/qIPG
+         +aSAmTCi/gaVzaB9EpcPrKX3liYudvAiOUGwpZ32DizPwxzoo1w5/pCR3km742YZbfWc
+         +T8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707075686; x=1707680486;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from
-         :dkim-signature:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1707076030; x=1707680830;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EoxGmMshbV8Z5WIzuYAQy8r+fTG8koe9kiuY0grIflQ=;
-        b=Qq+q6UGhyQTuaejtOOqwcymwGv1eD6MkqguyHIjshNccxkrB/bSC4wUGYNRRL3a2wg
-         0gqnkXnGTjLbOK09LhMYC2PfOdfQtidWf3Vc1xXLTkWydHnct56xqtB47tiFeoKmujkC
-         E+BM3MGasb0ag3dkBifrdCEF4tKhkXJAFjXaok3BLXNQ2YZ4n9+L53JuuOtCSfOm6HZu
-         PctXYr3vZYPvslBVwxytFLBUdpkd/K43SZ9V1z85qg95Sxz65KE03KjSYUYNtMtTzUYT
-         sfMblxVffnWuMgMdFB5kKZe3DgyHeZB2faUCjqZbAWu22gnFkyijvnw5mT44Ry9VcBYZ
-         XvIQ==
-X-Gm-Message-State: AOJu0Yy7N5dxnF+ocTtRs4gJjU0wdz/hVJm/OaW4rc54gFjCXUOdVwSO
-	SL5pbn5cvc7lEe6IbZxnDlh73OhgV/GBO1g7o0r76xfpyI/dblnE
-X-Google-Smtp-Source: AGHT+IF3dpSqYv9TOi3O0OV3QI4GrNj/u6aCz7wZ6UftI0O9ioNMhEfkDxt+tvxWvy0TKkOcguPzag==
-X-Received: by 2002:a17:90a:970b:b0:296:ed4:99b with SMTP id x11-20020a17090a970b00b002960ed4099bmr6585527pjo.43.1707075686303;
-        Sun, 04 Feb 2024 11:41:26 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWR/qomCL4H4khNb70DnEodzKW9EssbPYuB5rMdY7xRW6Qy9cXjFGLY/9Qs1iXHS1ZQJ6npguewS0VKBwq0D0igJCMz5fLT3t0MVkjCflDjzl43nGT4HBU/9aPrsKWPcCsJYiet8xn4+ddHcrmAejLEQYR4auq4zVG8+eWl3zClsbEvob8=
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id gj8-20020a17090b108800b0029604b0b7d1sm3637858pjb.15.2024.02.04.11.41.24
+        bh=5xfuEOvNkpMrvgeaTj0gZfx3Z6HaCNzQxxz5WJ1g3Tk=;
+        b=KBiybln18ZBSq97eU28rPwgtHPaaZPX5zuNA2ZSPH45HyJdNRgMUWhstgMcAKTtn1N
+         HjBUi6v1/52SytMdp9Av5l2YUTJDB58r+0rL/hSTW1DiUfwNtG3+nS830XrqSgQnJd0P
+         9oPwgv8FmPxKsQcDDQ47s/yVwZuC5xoBRZg6E376yKSHn442GT0dKpWcb6ODh2wLz1AA
+         brB39KVyIu31OXSYJR1XxYnkyT43aJw+BI9AcZJ7nOa9o0MT6pV7uzHnGeY1Kej5qW1v
+         66yPTHZYztmL0fs8bYOwy3nwjueBwk9ft+zTMLVM6GR5r8MsLIn0KTjEiSgJrsHt8nxe
+         kGNQ==
+X-Gm-Message-State: AOJu0YwhzwT/VqfWf1x1pCaATIJHDvsQuDngd9HGD5+SvyiEK9NIfs6F
+	hraeaZgiLRvwl0FAY3lB9pC6l9hwN9JefCjn9AEd7zVi3x/vEmG6
+X-Google-Smtp-Source: AGHT+IFJwMO115l0nbWMfn/jjOsvAs7jH6l/wfBwF/C6Y258tA8EmwObt6q49PLWRe6Gr0jvGe2hxA==
+X-Received: by 2002:a05:600c:3585:b0:40f:c234:1fcc with SMTP id p5-20020a05600c358500b0040fc2341fccmr3034205wmq.29.1707076029788;
+        Sun, 04 Feb 2024 11:47:09 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVWx8pZheC091wJB9SwKMVSGQhcbLv+vOnxpwSAwPWFBeOVfqwpVU5CORd/n6wfIYic/owsO/n4VC6E9yk2TkQyRXATn4YnveOM0auQskKUl+tZkijwTZCnMhUj0aGncXc5LcTzHRu8CHSupeux5MmX2TuOYypRQmTujGjCHkkdJ5VjO2zDcY3OiXZqdBDT6M8s8qEWsdPPq31DQsXRgclFohb7oMKRSfNwuVAaNmc+SxSu0RIUmZDvCUrdaaKZNHMPwCek81t3u7e7+Gx0k9+sL6w=
+Received: from localhost (host109-150-53-182.range109-150.btcentralplus.com. [109.150.53.182])
+        by smtp.gmail.com with ESMTPSA id p13-20020a05600c1d8d00b0040fb30f17e8sm6631270wms.38.2024.02.04.11.47.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Feb 2024 11:41:25 -0800 (PST)
-Date: Sun, 4 Feb 2024 16:41:52 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2023; t=1707075683;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EoxGmMshbV8Z5WIzuYAQy8r+fTG8koe9kiuY0grIflQ=;
-	b=HbIRc+Y+N1kwlI2deLNNE1nTZtki4Yis+Z81wXzrmmuHIVHi6zmHZK4+IwR2IN7WHN8aLD
-	gdjrGfoCo0L8Ba+K7kvKXoSXjqt6DTktSRzGoG5xQOUVlbX4tJuWV8w7zD3Er7U1AFz1e5
-	sCPCMtyVJyqOI9ZR3BxvAnmzSNjZjsRn5TV11SGNc1S69jxUHXXFZCUVSYp0b36p2LD62h
-	Tcyzx9UnuGb8f7bKB6EoYQEX5Z4NAUjacEXpzd9NUO7/GnMkSL14DLpoeEQRPVE4KPVQfX
-	ntGG4JqK9ejgE/UudW7q26rp+bHVS78nNMCAiDp/Z95cmQSdPIy7bemv4sAfhw==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] gpio: gpiolib: make gpio_bus_type const
-Message-ID: <v5cgkajd7vqz63jsflpx56lvofozh77w4kwomlm5kkwcb36uxs@yqlkx2eduqhk>
-References: <20240204-bus_cleanup-gpio-v1-1-82d91b4ee1de@marliere.net>
- <CAMRc=MdSApjK2b66LxLE9XZufvT-+SThuqjdr+yG-hsKEb4sVw@mail.gmail.com>
+        Sun, 04 Feb 2024 11:47:08 -0800 (PST)
+Date: Sun, 4 Feb 2024 19:44:55 +0000
+From: Lorenzo Stoakes <lstoakes@gmail.com>
+To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Dave Chinner <david@fromorbit.com>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH 1/1] mm: vmalloc: Add a scan area of VA only once
+Message-ID: <dd3ce359-1caf-4eaf-8464-ec17284487a3@lucifer.local>
+References: <20240202190628.47806-1-urezki@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=MdSApjK2b66LxLE9XZufvT-+SThuqjdr+yG-hsKEb4sVw@mail.gmail.com>
+In-Reply-To: <20240202190628.47806-1-urezki@gmail.com>
 
-Hi Bartosz,
+On Fri, Feb 02, 2024 at 08:06:28PM +0100, Uladzislau Rezki (Sony) wrote:
+> Invoke a kmemleak_scan_area() function only for newly allocated
+> objects to add a scan area within that object. There is no reason
+> to add a same scan area(pointer to beginning or inside the object)
+> several times. If a VA is obtained from the cache its scan area
+> has already been associated.
+>
+> Fixes: 7db166b4aa0d ("mm: vmalloc: offload free_vmap_area_lock lock")
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> ---
+>  mm/vmalloc.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index 449f45b0e474..25a8df497255 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -1882,13 +1882,13 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
+>  		va = kmem_cache_alloc_node(vmap_area_cachep, gfp_mask, node);
+>  		if (unlikely(!va))
+>  			return ERR_PTR(-ENOMEM);
+> -	}
+>
+> -	/*
+> -	 * Only scan the relevant parts containing pointers to other objects
+> -	 * to avoid false negatives.
+> -	 */
+> -	kmemleak_scan_area(&va->rb_node, SIZE_MAX, gfp_mask);
+> +		/*
+> +		 * Only scan the relevant parts containing pointers to other objects
+> +		 * to avoid false negatives.
+> +		 */
+> +		kmemleak_scan_area(&va->rb_node, SIZE_MAX, gfp_mask);
+> +	}
+>
+>  retry:
+>  	if (addr == vend) {
+> --
+> 2.39.2
+>
 
-On  4 Feb 19:34, Bartosz Golaszewski wrote:
-> On Sun, Feb 4, 2024 at 5:29 PM Ricardo B. Marliere <ricardo@marliere.net> wrote:
-> >
-> > Now that the driver core can properly handle constant struct bus_type,
-> > move the gpio_bus_type variable to be a constant structure as well,
-> > placing it into read-only memory which can not be modified at runtime.
-> >
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-> > ---
-> >  drivers/gpio/gpiolib.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> > index d50a786f8176..24d046268a01 100644
-> > --- a/drivers/gpio/gpiolib.c
-> > +++ b/drivers/gpio/gpiolib.c
-> > @@ -63,7 +63,7 @@ static int gpio_bus_match(struct device *dev, struct device_driver *drv)
-> >         return 1;
-> >  }
-> >
-> > -static struct bus_type gpio_bus_type = {
-> > +static const struct bus_type gpio_bus_type = {
-> >         .name = "gpio",
-> >         .match = gpio_bus_match,
-> >  };
-> >
-> > ---
-> > base-commit: 3eac8bbed22e940ac1645a884f221bef408f675c
-> > change-id: 20240204-bus_cleanup-gpio-57eea8d32a5a
-> >
-> > Best regards,
-> > --
-> > Ricardo B. Marliere <ricardo@marliere.net>
-> >
-> 
-> Ha! Does the same work now for struct device_type?
+Looks good to me, feel free to add:
 
-From a quick grep it seems to be the case, but maybe you should wait for
-Greg for confirmation. Also found this:
-https://lore.kernel.org/all/1305850262-9575-5-git-send-email-gregkh@suse.de/
-
-Best regards,
--	Ricardo.
-
-
-
-> 
-> Because I just sent this:
-> https://lore.kernel.org/linux-gpio/20240201162758.50733-1-brgl@bgdev.pl/
-> 
-> And maybe I should make it const right away.
-> 
-> Bart
+Reviewed-by: Lorenzo Stoakes <lstoakes@gmail.com>
 
