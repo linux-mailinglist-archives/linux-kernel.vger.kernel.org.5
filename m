@@ -1,60 +1,62 @@
-Return-Path: <linux-kernel+bounces-51909-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1ECC84909E
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 22:22:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B339C84909F
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 22:22:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1367B1C21459
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 21:22:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 659851F21BEC
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 21:22:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 738F328E26;
-	Sun,  4 Feb 2024 21:22:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E8552BD1C;
+	Sun,  4 Feb 2024 21:22:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QpBAgEim"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="myFRwBFw"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B10152C689;
-	Sun,  4 Feb 2024 21:22:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E03362C68F;
+	Sun,  4 Feb 2024 21:22:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707081733; cv=none; b=AW95gDCgKzk47GIxvDsArpTy4N+qtEEonl1GW0Nn0/g0813J9HwBdG+Pj/Lob8cz1UwAT8bkGR7WC+eMaH1gY4a6BQhO6uECRIQ5OoqqXfl370Pl73pVVqDVMT3itP/DqkIvgZhWKHMzC8RuP2uUCJrRck5HlCqVLHLWBF7SIgU=
+	t=1707081756; cv=none; b=KnWoO+Poqq8S7Edq/JjxPBjlRldu6W+AM9IipgsRQWHZtpJ0P8c3BKZ+oPmT46fMysBWpDitYKK+A1i0Ggjf55VrH4tFZ4vSAEoY92z8lY4INDLstLgcWlVcuHQugPtfleEBPYe1PQ4tfY7hXghhhVWQRvfgBoXloZL+Um6chik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707081733; c=relaxed/simple;
-	bh=2Zo6tJdnJLLYyOEE56f5GLNyJyZ0OqgdoZ3rpPbquSE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=llY8Y6GRGX33Q5p9sOIQjHnffvyLoEWxAKija8xy+Zs1aa9eAtFpWcKJm5LUNkeyEnEWZQ24iZauneyPgCnWMZZ3K5+tfjPsiVp3AWF+ZkJp5jyW72Vmvk4BpvPqTFRyE/SAUUObAy06cT1mHr5pixbx65MvT2l1ya4k/0SPWNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QpBAgEim; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA86FC433C7;
-	Sun,  4 Feb 2024 21:22:10 +0000 (UTC)
+	s=arc-20240116; t=1707081756; c=relaxed/simple;
+	bh=19YsFeFhaGh/mSKxE5Vjn63fd5qD0OXsxFoyJDZmE8I=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=mHkuZoJ+iy2XzNMzUqvTcEI1mBwqaZ00ElP5584iXs4Np1EnzXRAuuJJM+UK1lBsXk9Ou7nD5oJ1DQlBUhcelRBqErirIrbDCXkLlJoB0F6UxgVGafIoSdKHaBU7Smw+gLuKC+YoEnW4vkPHThcDOTyOQIXtsPX/9S7iIBITvSQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=myFRwBFw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76C63C433F1;
+	Sun,  4 Feb 2024 21:22:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707081733;
-	bh=2Zo6tJdnJLLYyOEE56f5GLNyJyZ0OqgdoZ3rpPbquSE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=QpBAgEimW9lj4KBX6zvXnRbyLjtsLiISw3I20FK/8ZTy80NEO2sKA2C7N4B+kfptk
-	 l9slqZTzb44th2iYH7ltC9ScQoFNM5fWNsihZu2Rm2cqVkzeb+mC3unY9/fjPIadoV
-	 SIorREYecfj9CtoNjLtOMi24NpBAVPaCQw/0eCvUeUWyk8P8FVHiqfObfo2Ybz8P5M
-	 BvCmnl3BNANVoYVYYP8AGh1xv54RBKlKaN6Kg0CdLrQkMnOjpngXK8OF1+omiAbR+4
-	 FBelWEGiv+Sdat46Fzx6b3LJG5b01hT9HPecoKXOj3EEp7Yz+9xazLgoiNEE/ov+de
-	 QPjVhonpZ0soQ==
+	s=k20201202; t=1707081755;
+	bh=19YsFeFhaGh/mSKxE5Vjn63fd5qD0OXsxFoyJDZmE8I=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=myFRwBFwMCZmakox81paGcwuF+C8pJP+j6xPXIsuXVlyPjXZrHpsz/cPsbBSXwf81
+	 d3YEFKFiOyKeCSiKVm1TkNXBamw4R2oyivuX7qvwN9Vkw6UBRqXNQMGNLUn38TTeRU
+	 R7U46kLUkG1m2nIAuCzoQZlXJ5nUe1tN53CynyKDGYf/iwJnFw/GAAdMXTsEx0oXpf
+	 Q8VQ/zLIZxGyfC5I175QLoVSY9HdVqV7zQGiv9a/IYYvDWAs5X9pVUHA+Xpcdk4hkb
+	 DWnCK7/6YfKVlWpr2qfv+FXCXSrboC3cArvXdujC4TTRX9sHKBJXdK691t5hhs0D3c
+	 ReXX9WH9P0B2g==
 From: Arnd Bergmann <arnd@kernel.org>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>,
-	Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+	Neil Armstrong <neil.armstrong@linaro.org>
 Cc: Arnd Bergmann <arnd@arndb.de>,
-	Syed Saba Kareem <Syed.SabaKareem@amd.com>,
-	Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
-	Vinod Koul <vkoul@kernel.org>,
+	Weidong Wang <wangweidong.a@awinic.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
 	linux-sound@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] ASoC: SOF: amd: fix SND_AMD_SOUNDWIRE_ACPI dependencies
-Date: Sun,  4 Feb 2024 22:22:01 +0100
-Message-Id: <20240204212207.3158914-1-arnd@kernel.org>
+Subject: [PATCH 2/2] ASoC: fix SND_SOC_WCD939X dependencies
+Date: Sun,  4 Feb 2024 22:22:02 +0100
+Message-Id: <20240204212207.3158914-2-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240204212207.3158914-1-arnd@kernel.org>
+References: <20240204212207.3158914-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,68 +67,42 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The snd-amd-sdw-acpi.ko module is under CONFIG_SND_SOC_AMD_ACP_COMMON but
-selected from SoF, which causes build failures in some randconfig builds
-that enable SOF but not ACP:
+SND_SOC_WCD939X has an optional dependency on TYPEC, so the newly added
+SND_SOC_WCD939X_SDW option that selects it needs the same dependency, otherwise
+it can fail randconfig builds like:
 
-WARNING: unmet direct dependencies detected for SND_AMD_SOUNDWIRE_ACPI
-  Depends on [n]: SOUND [=m] && SND [=m] && SND_SOC [=m] && SND_SOC_AMD_ACP_COMMON [=n] && ACPI [=y]
-  Selected by [m]:
-  - SND_SOC_SOF_AMD_SOUNDWIRE_LINK_BASELINE [=m] && SOUND [=m] && SND [=m] && SND_SOC [=m] && SND_SOC_SOF_TOPLEVEL [=y] && SND_SOC_SOF_AMD_TOPLEVEL [=m] && ACPI [=y]
-ERROR: modpost: "amd_sdw_scan_controller" [sound/soc/sof/amd/snd-sof-amd-acp.ko] undefined!
+WARNING: unmet direct dependencies detected for SND_SOC_WCD939X
+  Depends on [m]: SOUND [=y] && SND [=y] && SND_SOC [=y] && SND_SOC_WCD939X_SDW [=y] && (SOUNDWIRE [=y] || !SOUNDWIRE [=y]) && (TYPEC [=m]
+ || !TYPEC [=m])
+  Selected by [y]:
+  - SND_SOC_WCD939X_SDW [=y] && SOUND [=y] && SND [=y] && SND_SOC [=y] && SOUNDWIRE [=y]
+arm-linux-gnueabi-ld: sound/soc/codecs/wcd939x.o: in function `wcd939x_soc_codec_remove':
+wcd939x.c:(.text+0x1950): undefined reference to `wcd_clsh_ctrl_free'
+arm-linux-gnueabi-ld: sound/soc/codecs/wcd939x.o: in function `wcd939x_codec_ear_dac_event':
+wcd939x.c:(.text+0x35d8): undefined reference to `wcd_clsh_ctrl_set_state'
+arm-linux-gnueabi-ld: sound/soc/codecs/wcd939x.o: in function `wcd939x_codec_enable_hphr_pa':
+wcd939x.c:(.text+0x39b0): undefined reference to `wcd_clsh_ctrl_set_state'
+arm-linux-gnueabi-ld: wcd939x.c:(.text+0x39dc): undefined reference to `wcd_clsh_set_hph_mode'
+arm-linux-gnueabi-ld: wcd939x.c:(.text+0x3bc0): undefined reference to `wcd_clsh_ctrl_set_state'
 
-Change the Makefile and Kconfig to allow it to get built regardless
-of CONFIG_SND_SOC_AMD_ACP_COMMON.
-
-Fixes: d948218424bf ("ASoC: SOF: amd: add code for invoking soundwire manager helper functions")
+Fixes: be2af391cea0 ("ASoC: codecs: Add WCD939x Soundwire devices driver")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- sound/soc/amd/Makefile    |  2 +-
- sound/soc/amd/acp/Kconfig | 14 +++++++-------
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/codecs/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/amd/Makefile b/sound/soc/amd/Makefile
-index 82e1cf864a40..ebbe49c2bbff 100644
---- a/sound/soc/amd/Makefile
-+++ b/sound/soc/amd/Makefile
-@@ -15,7 +15,7 @@ obj-$(CONFIG_SND_SOC_AMD_RV_RT5682_MACH) += snd-soc-acp-rt5682-mach.o
- obj-$(CONFIG_SND_SOC_AMD_RENOIR) += renoir/
- obj-$(CONFIG_SND_SOC_AMD_ACP5x) += vangogh/
- obj-$(CONFIG_SND_SOC_AMD_ACP6x) += yc/
--obj-$(CONFIG_SND_SOC_AMD_ACP_COMMON) += acp/
-+obj-$(CONFIG_SND_AMD_ACP_CONFIG) += acp/
- obj-$(CONFIG_SND_AMD_ACP_CONFIG) += snd-acp-config.o
- obj-$(CONFIG_SND_SOC_AMD_RPL_ACP6x) += rpl/
- obj-$(CONFIG_SND_SOC_AMD_PS) += ps/
-diff --git a/sound/soc/amd/acp/Kconfig b/sound/soc/amd/acp/Kconfig
-index b3105ba9c3a3..30590a23ad63 100644
---- a/sound/soc/amd/acp/Kconfig
-+++ b/sound/soc/amd/acp/Kconfig
-@@ -101,13 +101,6 @@ config SND_SOC_AMD_MACH_COMMON
- 	help
- 	  This option enables common Machine driver module for ACP.
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 75d88bd1dc6f..58ee431edfd8 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -2084,6 +2084,7 @@ config SND_SOC_WCD939X
  
--config SND_AMD_SOUNDWIRE_ACPI
--	tristate "AMD SoundWire ACPI Support"
--	depends on ACPI
--	help
--	  This options enables ACPI helper functions for SoundWire
--	  interface for AMD platforms.
--
- config SND_SOC_AMD_LEGACY_MACH
- 	tristate "AMD Legacy Machine Driver Support"
- 	depends on X86 && PCI && I2C
-@@ -123,3 +116,10 @@ config SND_SOC_AMD_SOF_MACH
- 	  This option enables SOF sound card support for ACP audio.
- 
- endif # SND_SOC_AMD_ACP_COMMON
-+
-+config SND_AMD_SOUNDWIRE_ACPI
-+	tristate
-+	depends on ACPI
-+	help
-+	  This options enables ACPI helper functions for SoundWire
-+	  interface for AMD platforms.
+ config SND_SOC_WCD939X_SDW
+ 	tristate "WCD9390/WCD9395 Codec - SDW"
++	depends on TYPEC || !TYPEC
+ 	select SND_SOC_WCD939X
+ 	select SND_SOC_WCD_MBHC
+ 	select REGMAP_IRQ
 -- 
 2.39.2
 
