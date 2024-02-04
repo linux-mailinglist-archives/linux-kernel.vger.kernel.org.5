@@ -1,62 +1,60 @@
-Return-Path: <linux-kernel+bounces-51374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56E8C848A57
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 02:58:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C898848A58
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 03:01:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DC02285511
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 01:58:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 763C41C212C2
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 02:01:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B172417F7;
-	Sun,  4 Feb 2024 01:58:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1320617E9;
+	Sun,  4 Feb 2024 02:00:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="pK8tPQmy"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XheSH94v"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E3A410E9;
-	Sun,  4 Feb 2024 01:58:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 540E910F7;
+	Sun,  4 Feb 2024 02:00:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707011924; cv=none; b=LV2+mhF5Y1x7GbFN3pt0P3VPdeDiiwtMKjaKaZL/dupyb5PuIM89fLqtpZ0LiZ1pKCl0hnK3JE3K1IM4IAS89eQ4+yGlK0jCzVIK0dp1cHkxLZyuCh2re85jX8tZidocMmQvtqgzcCGLy1JwLU7ff/D/ZOkV6LIF1qSf/e5OO18=
+	t=1707012054; cv=none; b=D5eteMyG6cOqPTTEH6Y0Ek4/MLW8wIhC+eoIWTKx+00M61BLJp9vtJha8Yz7vEHVBsU2jRhHXSXqJWPGFnYyqhOAmGiCc2801qVNuBWmHzTQ2Ls42DSa/yV5mJY/ED2RJxLOrTw4Xzs2Hm+pyRP1Qr0CbotLwprYHT4NQJlOi6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707011924; c=relaxed/simple;
-	bh=NTPNh3cTeRSfoTwS5A1S08W8Ljz1Zk+2HLab1hdZ1/g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=JXeFEKj+0ofQmSXSWr/YclXgvXwkb/8d9Bt7n+6C/bF+VKYwrHbCupilT3gAIRPTRgv9aZeDh69eooP3mXEUaFFel0kcYjjIf5KOPxGsDMuSH+epTsf7QWRCtAjbZQHAPB3PprREnRmFCzW/vMj3r/Enh2e3aMM/S5S1BJGAu/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=pK8tPQmy; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4141vT4A027391;
-	Sun, 4 Feb 2024 01:58:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=jQWeAX/wHe5PGCAHtIyZQ9edqlpURtUg44s0chHXtMY=; b=pK
-	8tPQmy+i46q3Ct0EZejeOS/5cFArM8H8jC++SV4eYm3WVW3MYeR3hY8nzawC4aTN
-	luDTLBmu28GFR0rzWE787aJQj+g6E1d+zgOryzNZh95ujV8SWQW7qA86T8BKSd30
-	0Dr/96qZH0uv9s33Ox1hxIJeIQC72BQ7yQJxvR3OHOeY2k8GLAHLWsyhK9o4/AhM
-	Ed+EAHHvArjffFpi/SCi5rHFQJ/p8uXRt3BEsHTwPqlxfPTjDEFsPdXMFrrc8T5a
-	K8fqTjYJ0mjdSEtS0LCm50OSi+gDP0boo2MFnjfZyrE8a1Fs53KjiI/PsF6vzUo7
-	hOstI1qI3tkAunHG+6Uw==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w1eyah4qh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 04 Feb 2024 01:58:09 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4141w8kn002650
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 4 Feb 2024 01:58:08 GMT
-Received: from [10.239.133.211] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sat, 3 Feb
- 2024 17:58:03 -0800
-Message-ID: <54292059-9ecf-4e9d-b1ca-4c4ff2425189@quicinc.com>
-Date: Sun, 4 Feb 2024 09:58:01 +0800
+	s=arc-20240116; t=1707012054; c=relaxed/simple;
+	bh=+rf6PU3RLo3ZUiTjf43C+X38tPNp6EdKyNz3q5sslBY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=q1DEW1PKIH/kwLvu3ERE5wjMoSbNXzThUGPOrml394PGsWrMhUWT6KwzfLM4XMenaLXsZcHx9EzQfDosmQ+T4jDo3LACNkomTenOVdjhAdntITTzKwrNQkADkoev3q7QtSyULBsFlvzJlXK/W/hM6TQ2bqDlqMdiD4KEJlkbSCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XheSH94v; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707012052; x=1738548052;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=+rf6PU3RLo3ZUiTjf43C+X38tPNp6EdKyNz3q5sslBY=;
+  b=XheSH94vOOu1ygLOumL237N+PlPksSCYHlNMdgB6PlaHkzMzpR/DzOad
+   bGeFJkI1OA5oLyxCw3fd3kODybkhELxH9SyOxvmYRBMC6w9x5NgXhvPBm
+   7kBF3GCaWQczzVXx+rD0cpQP6PUNC53IMUPP6QFbeXctTIFmPG/A/mfs7
+   hpH1bIdwaltFg7NghzRhepWqIIAopUj7erHm6TJHAF8vGiBCIxGAltVxP
+   NUG8KbTpRouSYDhFZOm6OKoZR+9E3DaTkKDWOPQOF4mYe/cJQi4putnho
+   +mjE73PANCr5FyL720+ySwx5l6g8EGwcKbHGmXmIpLhs0G6eKoUtCX5EY
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10973"; a="531191"
+X-IronPort-AV: E=Sophos;i="6.05,241,1701158400"; 
+   d="scan'208";a="531191"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2024 18:00:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,241,1701158400"; 
+   d="scan'208";a="403427"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.49]) ([10.238.10.49])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2024 18:00:48 -0800
+Message-ID: <33ef0842-f91f-4c70-821c-0fa41b1d5e6e@linux.intel.com>
+Date: Sun, 4 Feb 2024 10:00:45 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,309 +62,229 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 05/10] coresight-tpda: Add support to configure CMB
- element
-Content-Language: en-US
-To: Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mathieu Poirier
-	<mathieu.poirier@linaro.org>,
-        Alexander Shishkin
-	<alexander.shishkin@linux.intel.com>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Mike Leach <mike.leach@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-CC: Jinlong Mao <quic_jinlmao@quicinc.com>, Leo Yan <leo.yan@linaro.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Tingwei Zhang
-	<quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Song Chai <quic_songchai@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <andersson@kernel.org>
-References: <1706866364-19861-1-git-send-email-quic_taozha@quicinc.com>
- <1706866364-19861-6-git-send-email-quic_taozha@quicinc.com>
- <58e91497-1794-46d9-a935-fc23f327f32b@arm.com>
- <265086d1-8398-49f8-b873-36194c44505a@arm.com>
-From: Tao Zhang <quic_taozha@quicinc.com>
-In-Reply-To: <265086d1-8398-49f8-b873-36194c44505a@arm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: wJpAe87x3wVRgxDamBL_HbzTJZGp_nk4
-X-Proofpoint-ORIG-GUID: wJpAe87x3wVRgxDamBL_HbzTJZGp_nk4
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-03_18,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- bulkscore=0 phishscore=0 spamscore=0 mlxscore=0 adultscore=0
- lowpriorityscore=0 impostorscore=0 mlxlogscore=943 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402040013
+Subject: Re: [PATCH v18 023/121] KVM: TDX: Make KVM_CAP_MAX_VCPUS backend
+ specific
+To: Yuan Yao <yuan.yao@linux.intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+ Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+ Sean Christopherson <seanjc@google.com>, Sagi Shahar <sagis@google.com>,
+ Kai Huang <kai.huang@intel.com>, chen.bo@intel.com, hang.yuan@intel.com,
+ tina.zhang@intel.com
+References: <cover.1705965634.git.isaku.yamahata@intel.com>
+ <ed33ebe29b231e8e657cd610a983fa603b10f530.1705965634.git.isaku.yamahata@intel.com>
+ <7cc28677-f7d1-4aba-8557-66c685115074@linux.intel.com>
+ <20240201061622.hvun7amakvbplmsb@yy-desk-7060>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <20240201061622.hvun7amakvbplmsb@yy-desk-7060>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
-On 2/2/2024 6:06 PM, Suzuki K Poulose wrote:
-> On 02/02/2024 09:45, Suzuki K Poulose wrote:
->> On 02/02/2024 09:32, Tao Zhang wrote:
->>> Read the CMB element size from the device tree. Set the register
->>> bit that controls the CMB element size of the corresponding port.
+
+On 2/1/2024 2:16 PM, Yuan Yao wrote:
+> On Wed, Jan 24, 2024 at 09:17:15AM +0800, Binbin Wu wrote:
+>>
+>> On 1/23/2024 7:52 AM, isaku.yamahata@intel.com wrote:
+>>> From: Isaku Yamahata <isaku.yamahata@intel.com>
 >>>
->>> Reviewed-by: James Clark <james.clark@arm.com>
->>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
->>> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
+>>> TDX has its own limitation on the maximum number of vcpus that the guest
+>>> can accommodate.  Allow x86 kvm backend to implement its own KVM_ENABLE_CAP
+>>> handler and implement TDX backend for KVM_CAP_MAX_VCPUS.  user space VMM,
+>>> e.g. qemu, can specify its value instead of KVM_MAX_VCPUS.
+>> For legacy VM, KVM just provides the interface to query the max_vcpus.
+>> Why TD needs to provide a interface for userspace to set the limitation?
+>> What's the scenario?
+> I think the reason is TDH.MNG.INIT needs it:
+>
+> TD_PARAMS:
+>      MAX_VCPUS:
+>          offset: 16 bytes.
+>          type: Unsigned 16b Integer.
+>          size: 2.
+>          Description: Maximum number of VCPUs.
+Thanks for explanation.
+
+I am also wondering if this info can be passed via KVM_TDX_INIT_VM.
+Because userspace is allowed to set the value no greater than
+min(KVM_MAX_VCPUS, TDX_MAX_VCPUS), providing the extra cap KVM_CAP_MAX_VCPUS
+doesn't make more restriction comparing to providing it in KVM_TDX_INIT_VM.
+
+>
+> May better to clarify this in the commit yet.
+>
+>>
+>>> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
 >>> ---
->>>   drivers/hwtracing/coresight/coresight-tpda.c | 125 
->>> +++++++++++--------
->>>   drivers/hwtracing/coresight/coresight-tpda.h |   6 +
->>>   2 files changed, 81 insertions(+), 50 deletions(-)
+>>> v18:
+>>> - use TDX instead of "x86, tdx" in subject
+>>> - use min(max_vcpu, TDX_MAX_VCPU) instead of
+>>>     min3(max_vcpu, KVM_MAX_VCPU, TDX_MAX_VCPU)
+>>> - make "if (KVM_MAX_VCPU) and if (TDX_MAX_VCPU)" into one if statement
+>>> ---
+>>>    arch/x86/include/asm/kvm-x86-ops.h |  2 ++
+>>>    arch/x86/include/asm/kvm_host.h    |  2 ++
+>>>    arch/x86/kvm/vmx/main.c            | 22 ++++++++++++++++++++++
+>>>    arch/x86/kvm/vmx/tdx.c             | 29 +++++++++++++++++++++++++++++
+>>>    arch/x86/kvm/vmx/x86_ops.h         |  5 +++++
+>>>    arch/x86/kvm/x86.c                 |  4 ++++
+>>>    6 files changed, 64 insertions(+)
 >>>
->>> diff --git a/drivers/hwtracing/coresight/coresight-tpda.c 
->>> b/drivers/hwtracing/coresight/coresight-tpda.c
->>> index 4ac954f4bc13..27d567f4c8bf 100644
->>> --- a/drivers/hwtracing/coresight/coresight-tpda.c
->>> +++ b/drivers/hwtracing/coresight/coresight-tpda.c
->>> @@ -18,6 +18,7 @@
->>>   #include "coresight-priv.h"
->>>   #include "coresight-tpda.h"
->>>   #include "coresight-trace-id.h"
->>> +#include "coresight-tpdm.h"
->>>   DEFINE_CORESIGHT_DEVLIST(tpda_devs, "tpda");
->>> @@ -28,24 +29,59 @@ static bool coresight_device_is_tpdm(struct 
->>> coresight_device *csdev)
->>>               CORESIGHT_DEV_SUBTYPE_SOURCE_TPDM);
->>>   }
->>> +static void tpdm_clear_element_size(struct coresight_device *csdev)
->>
->> I just noticed this anomaly. This is supposed to be :
->>
->> tpda_clear_element_size() ? I can fix it up locally.
->>
->>
->> Suzuki
->>
->>
+>>> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
+>>> index 943b21b8b106..2f976c0f3116 100644
+>>> --- a/arch/x86/include/asm/kvm-x86-ops.h
+>>> +++ b/arch/x86/include/asm/kvm-x86-ops.h
+>>> @@ -21,6 +21,8 @@ KVM_X86_OP(hardware_unsetup)
+>>>    KVM_X86_OP(has_emulated_msr)
+>>>    KVM_X86_OP(vcpu_after_set_cpuid)
+>>>    KVM_X86_OP(is_vm_type_supported)
+>>> +KVM_X86_OP_OPTIONAL(max_vcpus);
+>>> +KVM_X86_OP_OPTIONAL(vm_enable_cap)
+>>>    KVM_X86_OP(vm_init)
+>>>    KVM_X86_OP_OPTIONAL(vm_destroy)
+>>>    KVM_X86_OP_OPTIONAL_RET0(vcpu_precreate)
+>>> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+>>> index 26f4668b0273..db44a92e5659 100644
+>>> --- a/arch/x86/include/asm/kvm_host.h
+>>> +++ b/arch/x86/include/asm/kvm_host.h
+>>> @@ -1602,7 +1602,9 @@ struct kvm_x86_ops {
+>>>    	void (*vcpu_after_set_cpuid)(struct kvm_vcpu *vcpu);
+>>>    	bool (*is_vm_type_supported)(unsigned long vm_type);
+>>> +	int (*max_vcpus)(struct kvm *kvm);
+>>>    	unsigned int vm_size;
+>>> +	int (*vm_enable_cap)(struct kvm *kvm, struct kvm_enable_cap *cap);
+>>>    	int (*vm_init)(struct kvm *kvm);
+>>>    	void (*vm_destroy)(struct kvm *kvm);
+>>> diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
+>>> index 50da807d7aea..4611f305a450 100644
+>>> --- a/arch/x86/kvm/vmx/main.c
+>>> +++ b/arch/x86/kvm/vmx/main.c
+>>> @@ -6,6 +6,7 @@
+>>>    #include "nested.h"
+>>>    #include "pmu.h"
+>>>    #include "tdx.h"
+>>> +#include "tdx_arch.h"
+>>>    static bool enable_tdx __ro_after_init;
+>>>    module_param_named(tdx, enable_tdx, bool, 0444);
+>>> @@ -16,6 +17,17 @@ static bool vt_is_vm_type_supported(unsigned long type)
+>>>    		(enable_tdx && tdx_is_vm_type_supported(type));
+>>>    }
+>>> +static int vt_max_vcpus(struct kvm *kvm)
 >>> +{
->>> +    struct tpda_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
+>>> +	if (!kvm)
+>>> +		return KVM_MAX_VCPUS;
 >>> +
->>> +    drvdata->dsb_esize = 0;
->>> +    drvdata->cmb_esize = 0;
+>>> +	if (is_td(kvm))
+>>> +		return min(kvm->max_vcpus, TDX_MAX_VCPUS);
+>>> +
+>>> +	return kvm->max_vcpus;
 >>> +}
 >>> +
->>> +static void tpda_set_element_size(struct tpda_drvdata *drvdata, u32 
->>> *val)
+>>>    static int vt_hardware_enable(void)
+>>>    {
+>>>    	int ret;
+>>> @@ -54,6 +66,14 @@ static void vt_hardware_unsetup(void)
+>>>    	vmx_hardware_unsetup();
+>>>    }
+>>> +static int vt_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
 >>> +{
->>> +    /* Clear all relevant fields */
->>> +    *val &= ~(TPDA_Pn_CR_DSBSIZE | TPDA_Pn_CR_CMBSIZE);
+>>> +	if (is_td(kvm))
+>>> +		return tdx_vm_enable_cap(kvm, cap);
 >>> +
->>> +    if (drvdata->dsb_esize == 64)
->>> +        *val |= TPDA_Pn_CR_DSBSIZE;
->>> +    else if (drvdata->dsb_esize == 32)
->>> +        *val &= ~TPDA_Pn_CR_DSBSIZE;
->>> +
->>> +    if (drvdata->cmb_esize == 64)
->>> +        *val |= FIELD_PREP(TPDA_Pn_CR_CMBSIZE, 0x2);
->>> +    else if (drvdata->cmb_esize == 32)
->>> +        *val |= FIELD_PREP(TPDA_Pn_CR_CMBSIZE, 0x1);
->>> +    else if (drvdata->cmb_esize == 8)
->>> +        *val &= ~TPDA_Pn_CR_CMBSIZE;
+>>> +	return -EINVAL;
 >>> +}
 >>> +
->>>   /*
->>> - * Read the DSB element size from the TPDM device
->>> + * Read the element size from the TPDM device. One TPDM must have 
->>> at least one of the
->>> + * element size property.
->>>    * Returns
->>> - *    The dsb element size read from the devicetree if available.
->>> - *    0 - Otherwise, with a warning once.
->>> + *    0 - The element size property is read
->>> + *    Others - Cannot read the property of the element size
->>>    */
->>> -static int tpdm_read_dsb_element_size(struct coresight_device *csdev)
->>> +static int tpdm_read_element_size(struct tpda_drvdata *drvdata,
->>> +                  struct coresight_device *csdev)
->>>   {
->>> -    int rc = 0;
->>> -    u8 size = 0;
->>> +    int rc = -EINVAL;
->>> +    struct tpdm_drvdata *tpdm_data = 
->>> dev_get_drvdata(csdev->dev.parent);
+>>>    static int vt_vm_init(struct kvm *kvm)
+>>>    {
+>>>    	if (is_td(kvm))
+>>> @@ -91,7 +111,9 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
+>>>    	.has_emulated_msr = vmx_has_emulated_msr,
+>>>    	.is_vm_type_supported = vt_is_vm_type_supported,
+>>> +	.max_vcpus = vt_max_vcpus,
+>>>    	.vm_size = sizeof(struct kvm_vmx),
+>>> +	.vm_enable_cap = vt_vm_enable_cap,
+>>>    	.vm_init = vt_vm_init,
+>>>    	.vm_destroy = vmx_vm_destroy,
+>>> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+>>> index 8c463407f8a8..876ad7895b88 100644
+>>> --- a/arch/x86/kvm/vmx/tdx.c
+>>> +++ b/arch/x86/kvm/vmx/tdx.c
+>>> @@ -100,6 +100,35 @@ struct tdx_info {
+>>>    /* Info about the TDX module. */
+>>>    static struct tdx_info *tdx_info;
+>>> +int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
+>>> +{
+>>> +	int r;
 >>> +
->>> +    if (tpdm_has_dsb_dataset(tpdm_data)) {
->>> +        rc = fwnode_property_read_u8(dev_fwnode(csdev->dev.parent),
->>> +                "qcom,dsb-element-size", &drvdata->dsb_esize);
->>> +    }
->>> +    if (tpdm_has_cmb_dataset(tpdm_data)) {
->>> +        rc = fwnode_property_read_u32(dev_fwnode(csdev->dev.parent),
->>> +                "qcom,cmb-element-bits", &drvdata->cmb_esize);
->>> +    }
->>> -    rc = fwnode_property_read_u8(dev_fwnode(csdev->dev.parent),
->>> -            "qcom,dsb-element-size", &size);
->>>       if (rc)
->>>           dev_warn_once(&csdev->dev,
->>> -            "Failed to read TPDM DSB Element size: %d\n", rc);
->>> +            "Failed to read TPDM Element size: %d\n", rc);
->>> -    return size;
->>> +    return rc;
->>>   }
->>>   /*
->>> @@ -56,11 +92,12 @@ static int tpdm_read_dsb_element_size(struct 
->>> coresight_device *csdev)
->>>    * Parameter "inport" is used to pass in the input port number
->>>    * of TPDA, and it is set to -1 in the recursize call.
->>>    */
->>> -static int tpda_get_element_size(struct coresight_device *csdev,
->>> +static int tpda_get_element_size(struct tpda_drvdata *drvdata,
->>> +                 struct coresight_device *csdev,
->>>                    int inport)
->>>   {
->>> -    int dsb_size = -ENOENT;
->>> -    int i, size;
->>> +    int rc = 0;
->>> +    int i;
->>>       struct coresight_device *in;
->>>       for (i = 0; i < csdev->pdata->nr_inconns; i++) {
->>> @@ -69,30 +106,26 @@ static int tpda_get_element_size(struct 
->>> coresight_device *csdev,
->>>               continue;
->>>           /* Ignore the paths that do not match port */
->>> -        if (inport > 0 &&
->>> +        if (inport >= 0 &&
->>>               csdev->pdata->in_conns[i]->dest_port != inport)
->>>               continue;
->>>           if (coresight_device_is_tpdm(in)) {
->>> -            size = tpdm_read_dsb_element_size(in);
->>> +            if (drvdata->dsb_esize || drvdata->cmb_esize)
->>> +                return -EEXIST;
->>> +            rc = tpdm_read_element_size(drvdata, in);
->>> +            if (rc)
->>> +                return rc;
->>>           } else {
->>>               /* Recurse down the path */
->>> -            size = tpda_get_element_size(in, -1);
->>> -        }
->>> -
->>> -        if (size < 0)
->>> -            return size;
->>> -
->>> -        if (dsb_size < 0) {
->>> -            /* Found a size, save it. */
->>> -            dsb_size = size;
->>> -        } else {
->>> -            /* Found duplicate TPDMs */
->>> -            return -EEXIST;
->>> +            rc = tpda_get_element_size(drvdata, in, -1);
->>> +            if (rc)
->>> +                return rc;
->>>           }
->>>       }
->>> -    return dsb_size;
+>>> +	switch (cap->cap) {
+>>> +	case KVM_CAP_MAX_VCPUS: {
+>>> +		if (cap->flags || cap->args[0] == 0)
+>>> +			return -EINVAL;
+>>> +		if (cap->args[0] > KVM_MAX_VCPUS ||
+>>> +		    cap->args[0] > TDX_MAX_VCPUS)
+>>> +			return -E2BIG;
 >>> +
->>> +    return rc;
->>>   }
->>>   /* Settings pre enabling port control register */
->>> @@ -109,7 +142,7 @@ static void tpda_enable_pre_port(struct 
->>> tpda_drvdata *drvdata)
->>>   static int tpda_enable_port(struct tpda_drvdata *drvdata, int port)
->>>   {
->>>       u32 val;
->>> -    int size;
->>> +    int rc;
->>>       val = readl_relaxed(drvdata->base + TPDA_Pn_CR(port));
->>>       /*
->>> @@ -117,29 +150,21 @@ static int tpda_enable_port(struct 
->>> tpda_drvdata *drvdata, int port)
->>>        * Set the bit to 0 if the size is 32
->>>        * Set the bit to 1 if the size is 64
->>>        */
->
-> The comment above is stale, you need to remove it. I noticed it
-> after I applied the series for my build tests.
->
-> Please could you respin the series with the two issues above fixed ?
-
-Sure, I will update them to the new patch series soon.
-
-
-Best,
-
-Tao
-
->
-> Suzuki
->
->
->>> -    size = tpda_get_element_size(drvdata->csdev, port);
->>> -    switch (size) {
->>> -    case 32:
->>> -        val &= ~TPDA_Pn_CR_DSBSIZE;
->>> -        break;
->>> -    case 64:
->>> -        val |= TPDA_Pn_CR_DSBSIZE;
->>> -        break;
->>> -    case 0:
->>> -        return -EEXIST;
->>> -    case -EEXIST:
->>> +    tpdm_clear_element_size(drvdata->csdev);
->>> +    rc = tpda_get_element_size(drvdata, drvdata->csdev, port);
->>> +    if (!rc && (drvdata->dsb_esize || drvdata->cmb_esize)) {
->>> +        tpda_set_element_size(drvdata, &val);
->>> +        /* Enable the port */
->>> +        val |= TPDA_Pn_CR_ENA;
->>> +        writel_relaxed(val, drvdata->base + TPDA_Pn_CR(port));
->>> +    } else if (rc == -EEXIST)
->>>           dev_warn_once(&drvdata->csdev->dev,
->>> -            "Detected multiple TPDMs on port %d", -EEXIST);
->>> -        return -EEXIST;
->>> -    default:
->>> -        return -EINVAL;
->>> -    }
->>> -
->>> -    /* Enable the port */
->>> -    val |= TPDA_Pn_CR_ENA;
->>> -    writel_relaxed(val, drvdata->base + TPDA_Pn_CR(port));
->>> +                  "Detected multiple TPDMs on port %d", port);
->>> +    else
->>> +        dev_warn_once(&drvdata->csdev->dev,
->>> +                  "Didn't find TPDM element size");
->>> -    return 0;
->>> +    return rc;
->>>   }
->>>   static int __tpda_enable(struct tpda_drvdata *drvdata, int port)
->>> diff --git a/drivers/hwtracing/coresight/coresight-tpda.h 
->>> b/drivers/hwtracing/coresight/coresight-tpda.h
->>> index b3b38fd41b64..19af64120fcf 100644
->>> --- a/drivers/hwtracing/coresight/coresight-tpda.h
->>> +++ b/drivers/hwtracing/coresight/coresight-tpda.h
->>> @@ -10,6 +10,8 @@
->>>   #define TPDA_Pn_CR(n)        (0x004 + (n * 4))
->>>   /* Aggregator port enable bit */
->>>   #define TPDA_Pn_CR_ENA        BIT(0)
->>> +/* Aggregator port CMB data set element size bit */
->>> +#define TPDA_Pn_CR_CMBSIZE        GENMASK(7, 6)
->>>   /* Aggregator port DSB data set element size bit */
->>>   #define TPDA_Pn_CR_DSBSIZE        BIT(8)
->>> @@ -25,6 +27,8 @@
->>>    * @csdev:      component vitals needed by the framework.
->>>    * @spinlock:   lock for the drvdata value.
->>>    * @enable:     enable status of the component.
->>> + * @dsb_esize   Record the DSB element size.
->>> + * @cmb_esize   Record the CMB element size.
->>>    */
->>>   struct tpda_drvdata {
->>>       void __iomem        *base;
->>> @@ -32,6 +36,8 @@ struct tpda_drvdata {
->>>       struct coresight_device    *csdev;
->>>       spinlock_t        spinlock;
->>>       u8            atid;
->>> +    u8            dsb_esize;
->>> +    u32            cmb_esize;
->>>   };
->>>   #endif  /* _CORESIGHT_CORESIGHT_TPDA_H */
+>>> +		mutex_lock(&kvm->lock);
+>>> +		if (kvm->created_vcpus)
+>>> +			r = -EBUSY;
+>>> +		else {
+>>> +			kvm->max_vcpus = cap->args[0];
+>>> +			r = 0;
+>>> +		}
+>>> +		mutex_unlock(&kvm->lock);
+>>> +		break;
+>>> +	}
+>>> +	default:
+>>> +		r = -EINVAL;
+>>> +		break;
+>>> +	}
+>>> +	return r;
+>>> +}
+>>> +
+>>>    static int tdx_get_capabilities(struct kvm_tdx_cmd *cmd)
+>>>    {
+>>>    	struct kvm_tdx_capabilities __user *user_caps;
+>>> diff --git a/arch/x86/kvm/vmx/x86_ops.h b/arch/x86/kvm/vmx/x86_ops.h
+>>> index 6e238142b1e8..3a3be66888da 100644
+>>> --- a/arch/x86/kvm/vmx/x86_ops.h
+>>> +++ b/arch/x86/kvm/vmx/x86_ops.h
+>>> @@ -139,12 +139,17 @@ int __init tdx_hardware_setup(struct kvm_x86_ops *x86_ops);
+>>>    void tdx_hardware_unsetup(void);
+>>>    bool tdx_is_vm_type_supported(unsigned long type);
+>>> +int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap);
+>>>    int tdx_vm_ioctl(struct kvm *kvm, void __user *argp);
+>>>    #else
+>>>    static inline int tdx_hardware_setup(struct kvm_x86_ops *x86_ops) { return -EOPNOTSUPP; }
+>>>    static inline void tdx_hardware_unsetup(void) {}
+>>>    static inline bool tdx_is_vm_type_supported(unsigned long type) { return false; }
+>>> +static inline int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
+>>> +{
+>>> +	return -EINVAL;
+>>> +};
+>>>    static inline int tdx_vm_ioctl(struct kvm *kvm, void __user *argp) { return -EOPNOTSUPP; }
+>>>    #endif
+>>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>>> index dd3a23d56621..a1389ddb1b33 100644
+>>> --- a/arch/x86/kvm/x86.c
+>>> +++ b/arch/x86/kvm/x86.c
+>>> @@ -4726,6 +4726,8 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>>>    		break;
+>>>    	case KVM_CAP_MAX_VCPUS:
+>>>    		r = KVM_MAX_VCPUS;
+>>> +		if (kvm_x86_ops.max_vcpus)
+>>> +			r = static_call(kvm_x86_max_vcpus)(kvm);
+>>>    		break;
+>>>    	case KVM_CAP_MAX_VCPU_ID:
+>>>    		r = KVM_MAX_VCPU_IDS;
+>>> @@ -6683,6 +6685,8 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
+>>>    		break;
+>>>    	default:
+>>>    		r = -EINVAL;
+>>> +		if (kvm_x86_ops.vm_enable_cap)
+>>> +			r = static_call(kvm_x86_vm_enable_cap)(kvm, cap);
+>>>    		break;
+>>>    	}
+>>>    	return r;
 >>
->
+
 
