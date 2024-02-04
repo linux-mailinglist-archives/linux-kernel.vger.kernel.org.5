@@ -1,114 +1,103 @@
-Return-Path: <linux-kernel+bounces-51659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87243848E00
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 14:12:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18A46848E04
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 14:15:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD9C4283BD7
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:12:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C8ED1C22E0D
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 13:15:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06DC224EA;
-	Sun,  4 Feb 2024 13:12:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62243224E3;
+	Sun,  4 Feb 2024 13:15:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VIaceN9s"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TXbjzDrO"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA1F0224CF;
-	Sun,  4 Feb 2024 13:12:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 205BD224DF;
+	Sun,  4 Feb 2024 13:15:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707052366; cv=none; b=grW3OP+93LqH3VxzCOWC8+ah85EyXXHHWOmb3x+7Hf7wEp96mpcEJqahwghyRngEYwPvWBu6BaE88NB6Yz4VGxRqstvdDB4bChUWnx/hBxxeLLdzqAr84e3AmhDkQiWltLBnjF/VqCKPxCzPCJbSYba9nAaaw0h9Bp6sBSdXE38=
+	t=1707052541; cv=none; b=nned5PcfssR8lojXLZeb0MFNPh0oGzwOu5hC3WoVmq11UPrekP+WjQltowLMiGDPkUQzmpCfDvMPEzqE4QJyGCtuC/zwgKCyRTLXjWzyabaMAv51p3S54B1h8QCnznwU0I8SZ6fqwLwv1V3g+sAwEb65sU+oZ1FvKmPcPXLXq2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707052366; c=relaxed/simple;
-	bh=nH3NzbqLBwHOgGrDWdI4FNLuMls7cfEBPoA/IJE2soY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OTt+mEtlFrSCqVJyZHb6RHcMZN8MMg06gWoVvVX34N5gekTPIIpexrgADxe3+/3jBPB5crIFEbesm4tLqhY7nNtv5+A8TJc4Z/6oz7bICT+MBYK5CiRvNkVDqyngCKHaLUuubh+wEy0f5nqK5HUxzFn9mVu+Zlf5n9iLQun/u68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VIaceN9s; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A993CC433C7;
-	Sun,  4 Feb 2024 13:12:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707052365;
-	bh=nH3NzbqLBwHOgGrDWdI4FNLuMls7cfEBPoA/IJE2soY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=VIaceN9sj2XJBTxfjnVqZxm5olOLj0i7ar4eoSRTRAIuViaqWfQOLqrLWvfMQg8s1
-	 OEGpICA3DP8Ba/xWdNlk9E3/XCFmeRXTKz7i0FfGO05apbv7/sEl9LpGL0j5XtvV2T
-	 VUCQPHsrn59POjCDRhvbL29sRQa4O3Wnn0e6Vl7MpKqtJ+5cS5q+YGw/FMbnwqX+vk
-	 YWQEuvl2dz0rvIlmcv7kAohq2ekpg8Sgwddk+d6hJEYyBGFGEkZ72nLndtq/77LaDB
-	 42cnySgcEcPEnHoHar85Rq0AV8tMD2dLMoWcwm0er+8TFdigEss1EmULJNxvfZ8OEd
-	 8d1Kjb4zxUpew==
-From: Masahiro Yamada <masahiroy@kernel.org>
-To: "David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org
-Cc: Masahiro Yamada <masahiroy@kernel.org>,
-	Jon Maloy <jmaloy@redhat.com>,
-	Ying Xue <ying.xue@windriver.com>,
-	linux-kernel@vger.kernel.org,
-	tipc-discussion@lists.sourceforge.net
-Subject: [PATCH] net: tipc: remove redundant 'bool' from CONFIG_TIPC_{MEDIA_UDP,CRYPTO}
-Date: Sun,  4 Feb 2024 22:12:26 +0900
-Message-Id: <20240204131226.57865-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1707052541; c=relaxed/simple;
+	bh=g2jbrjV4YVKZArXjxv+hh0KopDOZiOf8xClOr5h8ezU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SKPSAMjrBPQoLZgRvEILHBgb95x8PVpqTdiaEfbme+1Ef/FBtLbNuL3mX8NgiaE/Ic77LTCKTUXIFAkjpfwrUsicZeFU9zwYXhie0O9LhXMoZwkmu79aoZaoE6TtMLtB0j5N5wCB+d28piS/Som37s9p5Q4V1vzBG9+Mv7PRuRQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TXbjzDrO; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5602500d1a6so958262a12.3;
+        Sun, 04 Feb 2024 05:15:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707052538; x=1707657338; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g2jbrjV4YVKZArXjxv+hh0KopDOZiOf8xClOr5h8ezU=;
+        b=TXbjzDrOEI/T5vWzMZb8mTu0jTK7g2SoUj4DGPu6OoZQZeHweMw/dILqnrRdrnNE+K
+         9gEbhme1uuqTuJ2W4QSf+tA9OZvYQM2tMw3R3eUAfGiRRwt8yMsJgbvMEp+MY9Tc2mR4
+         Ub8gZ2GLbeSaaxY0pheDMj5lABEUEGvCpx9S/Wl7XHZnNx/RZKVIOncE0kQnH2P/4dAb
+         /SCfVWK4JNbZLxmqqv7jUh+VxBhTnHO56K5kXyQMOYnq+9DOQFdx3J5d0WJDSc9fp48/
+         E9AYWrHzPi2UJ73vqOIV5C0x6h5VT6lhV5LOkm05n6yTX6ucZJAgcleaCNAVjovgEsoe
+         6ZgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707052538; x=1707657338;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g2jbrjV4YVKZArXjxv+hh0KopDOZiOf8xClOr5h8ezU=;
+        b=aZ9JXnema95GDUAl6OqE504tncQT9PKXCciaRWDEZkA27YnicLlJ037lzvA6ThBy02
+         ztIv7KGtyTL32yfWWWS0YDZRfWuskRfrp6W7zA3a5HhHOmqL7ymTOboPioPwmIrl1qFv
+         Orhob0NAbWJZxnjc4oOgqIcPF2l5ABlgzok+FlT3ZYZD8SIbBV1ZyhqTDcN3gDkrMKcJ
+         7IG/CWyHLvU1NbHDFxXr4ez/i71KMMn1ZgBUGkyIJtQfWLE3AvqOH5ovMxdO7jWXMJ+q
+         Nic8kbE5dbBjmPf28fdNV2Q9NTFz9HQO1HCEvQqr1HL68aypxLt36MsPvJwu+jqAUqeQ
+         vQ+g==
+X-Gm-Message-State: AOJu0YyK2kVllZMdCQbfWWBgsMZjAp8O3cDVBSgBtlLOn0iFqKCdoejc
+	LO9L8r1emmYI8/m9IcJXXebzbgKajc6+MfghTQtIQa6hYreDtYa/ZshORjKAhb1zv4SkHs8CRMT
+	Bm0RReQPIAaRTrLQQrSmMEeqRNsmPYETfnCP3UA==
+X-Google-Smtp-Source: AGHT+IHwnbzWX8OqeCzfgxv7SL6rFDuMhCQ1TOfwaS9X1wRRAujfcitfhIecRDbDwfRkk9XJWOXziM7MJcGnfMG1nNU=
+X-Received: by 2002:aa7:df14:0:b0:55e:e9f3:4f63 with SMTP id
+ c20-20020aa7df14000000b0055ee9f34f63mr3341436edy.3.1707052538059; Sun, 04 Feb
+ 2024 05:15:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAH37n11s_8qjBaDrao3PKct4FriCWNXHWBBHe-ddMYHSw4wK0Q@mail.gmail.com>
+ <2024020410-bungee-number-f643@gregkh>
+In-Reply-To: <2024020410-bungee-number-f643@gregkh>
+From: =?UTF-8?B?0KHRgtCw0YEg0J3QuNGH0LjQv9C+0YDQvtCy0LjRhw==?= <stasn77@gmail.com>
+Date: Sun, 4 Feb 2024 16:15:43 +0300
+Message-ID: <CAH37n11rbpaxzmt03FXQpC0Ue=_J4W4eG12PxvF3ung+uLv8Qg@mail.gmail.com>
+Subject: Re: [PATCH 6.6 000/326] 6.6.16-rc2 review
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The 'bool' is already specified for these options.
+this issue also in 6.8-rc3 and 6.7.4-rc2 (
 
-The second 'bool' under the help message is redundant.
-
-While I am here, I moved 'default y' above, as it is common to place
-the help text last.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- net/tipc/Kconfig | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/net/tipc/Kconfig b/net/tipc/Kconfig
-index be1c4003d67d..bb0d71eb02a6 100644
---- a/net/tipc/Kconfig
-+++ b/net/tipc/Kconfig
-@@ -32,16 +32,17 @@ config TIPC_MEDIA_UDP
- 	bool "IP/UDP media type support"
- 	depends on TIPC
- 	select NET_UDP_TUNNEL
-+	default y
- 	help
- 	  Saying Y here will enable support for running TIPC over IP/UDP
--	bool
--	default y
-+
- config TIPC_CRYPTO
- 	bool "TIPC encryption support"
- 	depends on TIPC
- 	select CRYPTO
- 	select CRYPTO_AES
- 	select CRYPTO_GCM
-+	default y
- 	help
- 	  Saying Y here will enable support for TIPC encryption.
- 	  All TIPC messages will be encrypted/decrypted by using the currently most
-@@ -49,8 +50,6 @@ config TIPC_CRYPTO
- 	  entering the TIPC stack.
- 	  Key setting from user-space is performed via netlink by a user program
- 	  (e.g. the iproute2 'tipc' tool).
--	bool
--	default y
- 
- config TIPC_DIAG
- 	tristate "TIPC: socket monitoring interface"
--- 
-2.40.1
-
+=D0=B2=D1=81, 4 =D1=84=D0=B5=D0=B2=D1=80. 2024=E2=80=AF=D0=B3. =D0=B2 15:49=
+, Greg KH <gregkh@linuxfoundation.org>:
+>
+> On Sun, Feb 04, 2024 at 07:43:24AM +0300, =D0=A1=D1=82=D0=B0=D1=81 =D0=9D=
+=D0=B8=D1=87=D0=B8=D0=BF=D0=BE=D1=80=D0=BE=D0=B2=D0=B8=D1=87 wrote:
+> > After trying again to create the ipset with timeout option I get a kern=
+el panic
+> > # ipset create throttled-ips hash:ip family inet hashsize 1024 maxelem
+> > 100000 timeout 600 bucketsize 12 initval 0x22b96e3a
+> > ipset v7.20: Set cannot be created: set with the same name already exis=
+ts
+>
+> Odd, is this also an issue in Linus's tree, or only this one branch?
+>
+> thanks,
+>
+> greg k-h
 
