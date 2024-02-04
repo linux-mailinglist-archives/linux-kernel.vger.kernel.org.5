@@ -1,76 +1,59 @@
-Return-Path: <linux-kernel+bounces-51575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCF4E848CB0
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 11:15:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 90919848CB7
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 11:19:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13B341C21A35
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 10:15:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1D701C21941
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 10:19:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A902E1B592;
-	Sun,  4 Feb 2024 10:15:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D48EC1B7F7;
+	Sun,  4 Feb 2024 10:19:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nsdGf1Ge"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KQgOHvon"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FA991B598
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 10:15:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F23C1B597;
+	Sun,  4 Feb 2024 10:19:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707041726; cv=none; b=mTjbRXLpjC1GrdgnzrmZXrxThi5v2Gnb7RUYaFt0sx8nV5K3+YBjN64+SNXxk4euN0mpfx2WiUF/PFMeYroSwfE1K+NmKoDXsgzEYCx4t8OP92XW9WqdwYzy45JnPt+HK4Eqjvs5mzJAFpbp0Z2B8KF3DTJcD3kJYTbSD6vTDtw=
+	t=1707041949; cv=none; b=q9OsZIzFEHmnVd4AJf+Ug5PFOoZFgOmpEnpz4ySqOD5bnFccjqYc9VJcy2I4CLNVZadGbQTVFMxRQwmYh14Bhk08f6f4+cUY30JB59btjcYAPr4O5ELDTH/HubHuEdtPbIw0Not9Pmkxe8euNTg+C9hyvg4Por7vvvCerZ/jN3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707041726; c=relaxed/simple;
-	bh=J1IJekIv2g4l/4cGH0z6H/to6TdkZ7VEOP1OcZEfTSY=;
+	s=arc-20240116; t=1707041949; c=relaxed/simple;
+	bh=+QVKIMfXxRR3UDPdfEy7+LD2ngsSXV9PfGI90MZVdm0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QZEvU3d18muXC8T7i4fzgcpz325+8mXumfK8uS88dGoXrKuBfmJougwApb9GzJzXCysY67FdF5PwzHLnEz+1qilGPCGxoSVrFy3zYd9H/sWIilIMpgfO2gSHj5yERD5Q3MHtzUjYman5YR60GIlHau7WsyI563R1Y4H2t3GDgDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nsdGf1Ge; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707041724; x=1738577724;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=J1IJekIv2g4l/4cGH0z6H/to6TdkZ7VEOP1OcZEfTSY=;
-  b=nsdGf1GeGOaSyVhqHkold4HbFiJpGj3KD8Qh8hy3f5gpb6xWPtGaxRyO
-   ATz4vriT+3F6tACDwqvdysuI3XroJuqFsWBw5ITgYlm5xTkg8YT6aD2sT
-   6DtdtIN32bhnticQ+WpZMLOc8U6gb9EDaoeaosBhFl9OEZaTGSLcQ9PgK
-   k88B4wQkYOixL2piMxx0JmFRuH0kKry3BJIONGBmvmxcjcfhwibmGMkdG
-   1F27k0dITGHnpt+y9EmS7FKYNxoZO6JRxrHlSj/qIIaVSxPnioeQ47+P5
-   ZuGW6mimYyJJ9ETRR4UAKxhYOYiuoaVYMkP+G/xibP511gndXGhm4fCzz
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10973"; a="534205"
-X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
-   d="scan'208";a="534205"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 02:15:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
-   d="scan'208";a="759713"
-Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
-  by orviesa006.jf.intel.com with ESMTP; 04 Feb 2024 02:15:20 -0800
-Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rWZWw-0006EQ-0K;
-	Sun, 04 Feb 2024 10:15:18 +0000
-Date: Sun, 4 Feb 2024 18:15:11 +0800
-From: kernel test robot <lkp@intel.com>
-To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Cestmir Kalina <ckalina@redhat.com>,
-	Alex Gladkov <agladkov@redhat.com>, Phil Auld <pauld@redhat.com>,
-	Costa Shulyupin <cshulyup@redhat.com>,
-	Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH-wq v2 3/5] workqueue: Thaw frozen pwq in
- workqueue_apply_unbound_cpumask()
-Message-ID: <202402041854.YeHAF3wV-lkp@intel.com>
-References: <20240203154334.791910-4-longman@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=YCy2DrvlBB/k//v+zOJSsJtJo+2+BWz2CDWoQYvnVYc2ysSeTdpKm+wu/GZ68UiyyAgO2nlmrkbukkWvNDd5PEbOgts7uvUwRcsYw3pTr6MKKwUrQn91K+2m72fmEJKr+qq96OdYhQ5JtPO17zYvgfbzWPsNv/CvaVQhCB9jbm0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KQgOHvon; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25E70C433C7;
+	Sun,  4 Feb 2024 10:19:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707041948;
+	bh=+QVKIMfXxRR3UDPdfEy7+LD2ngsSXV9PfGI90MZVdm0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KQgOHvonjUYF7WDtiCyKLIICm5Mfzv7t0SLZaE33RF8ih3MVMA0wVWGYzU0OL4T3Z
+	 U00S7WzSCew/WAguzKK/0kAc2l+C0DqVh3n5Luk9tz74lf2w0DtvYv1cXSlC7ZOcqR
+	 IfhYR1euMdX+BMCFvhTDdn7wvrMUYrVZhBKPVVYlBQj05PnL+RetoBPjvwn+0dpJa3
+	 XBrjfU3V75qj0e5lSyJ/3x44nwcKNlBvK7Z5RwUDlhRXMEQvx4LFgRWFz4UT3mozTi
+	 YvGg5llPIFppn2YVXOvW6sUWQ01FOenuU7dfHxjojJUueMnEs32bsvxk1FxTsm1rLb
+	 Vow3KggUPXKuA==
+Date: Sun, 4 Feb 2024 10:19:03 +0000
+From: Simon Horman <horms@kernel.org>
+To: Chris Leech <cleech@redhat.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Nilesh Javali <njavali@marvell.com>, Christoph Hellwig <hch@lst.de>,
+	John Meneghini <jmeneghi@redhat.com>, Lee Duncan <lduncan@suse.com>,
+	Mike Christie <michael.christie@oracle.com>,
+	Hannes Reinecke <hare@kernel.org>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+	GR-QLogic-Storage-Upstream@marvell.com
+Subject: Re: [PATCH v5 4/4] uio_dmem_genirq: UIO_MEM_DMA_COHERENT conversion
+Message-ID: <20240204101903.GA916983@kernel.org>
+References: <20240201233400.3394996-1-cleech@redhat.com>
+ <20240201233400.3394996-5-cleech@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,70 +62,45 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240203154334.791910-4-longman@redhat.com>
+In-Reply-To: <20240201233400.3394996-5-cleech@redhat.com>
 
-Hi Waiman,
+On Thu, Feb 01, 2024 at 03:34:00PM -0800, Chris Leech wrote:
+> Conversion of this driver to use UIO_MEM_DMA_COHERENT for
+> dma_alloc_coherent memory instead of UIO_MEM_PHYS.
+> 
+> Signed-off-by: Chris Leech <cleech@redhat.com>
+> ---
+>  drivers/uio/uio_dmem_genirq.c | 22 ++++++++--------------
+>  1 file changed, 8 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/uio/uio_dmem_genirq.c b/drivers/uio/uio_dmem_genirq.c
 
-kernel test robot noticed the following build warnings:
+..
 
-[auto build test WARNING on tj-wq/for-next]
-[also build test WARNING on next-20240202]
-[cannot apply to linus/master v6.8-rc2]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> @@ -264,7 +257,8 @@ static int uio_dmem_genirq_probe(struct platform_device *pdev)
+>  					" dynamic and fixed memory regions.\n");
+>  			break;
+>  		}
+> -		uiomem->memtype = UIO_MEM_PHYS;
+> +		uiomem->memtype = UIO_MEM_DMA_COHERENT;
+> +		uiomem->dma_device = &pdev->dev,
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Waiman-Long/workqueue-Skip-__WQ_DESTROYING-workqueues-when-updating-global-unbound-cpumask/20240203-234626
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-next
-patch link:    https://lore.kernel.org/r/20240203154334.791910-4-longman%40redhat.com
-patch subject: [PATCH-wq v2 3/5] workqueue: Thaw frozen pwq in workqueue_apply_unbound_cpumask()
-config: x86_64-randconfig-122-20240204 (https://download.01.org/0day-ci/archive/20240204/202402041854.YeHAF3wV-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240204/202402041854.YeHAF3wV-lkp@intel.com/reproduce)
+Hi Chris,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402041854.YeHAF3wV-lkp@intel.com/
+a nit from my side.
 
-sparse warnings: (new ones prefixed by >>)
-   kernel/workqueue.c:361:40: sparse: sparse: duplicate [noderef]
-   kernel/workqueue.c:361:40: sparse: sparse: multiple address spaces given: __percpu & __rcu
->> kernel/workqueue.c:6373:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/workqueue.c:6373:25: sparse:    struct pool_workqueue *
-   kernel/workqueue.c:6373:25: sparse:    struct pool_workqueue [noderef] __rcu *
+Probably the ',' would be better written as a ';' here.
+I don't think this is a bug, but using comma like this is
+somewhat unexpected and confusing.
 
-vim +6373 kernel/workqueue.c
+Flagged by clang-17 with -Wcomma
 
-  6356	
-  6357	/*
-  6358	 * Check the given ordered workqueue to see if its non-default pwq's have
-  6359	 * zero reference count and if so thaw the frozen default pwq.
-  6360	 *
-  6361	 * Return:
-  6362	 * %true if dfl_pwq has been thawed or %false otherwise.
-  6363	 */
-  6364	static bool ordered_workqueue_ref_check(struct workqueue_struct *wq)
-  6365	{
-  6366		int refs = 0;
-  6367		struct pool_workqueue *pwq;
-  6368	
-  6369		if (!READ_ONCE(wq->dfl_pwq->frozen))
-  6370			return true;
-  6371		mutex_lock(&wq->mutex);
-  6372		for_each_pwq(pwq, wq) {
-> 6373			if (pwq == wq->dfl_pwq)
-  6374				continue;
-  6375			refs += pwq->refcnt;
-  6376		}
-  6377		if (!refs)
-  6378			thaw_pwq(wq->dfl_pwq);
-  6379		mutex_unlock(&wq->mutex);
-  6380		return !refs;
-  6381	}
-  6382	
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>  		uiomem->addr = DMEM_MAP_ERROR;
+>  		uiomem->size = pdata->dynamic_region_sizes[i];
+>  		++uiomem;
+> -- 
+> 2.43.0
+> 
+> 
 
