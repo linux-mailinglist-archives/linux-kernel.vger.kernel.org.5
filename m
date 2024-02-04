@@ -1,138 +1,131 @@
-Return-Path: <linux-kernel+bounces-51860-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4087849029
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 20:52:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 502AA84902F
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 20:56:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E7F11F2162C
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 19:52:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E301AB22B42
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 19:56:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 899A325558;
-	Sun,  4 Feb 2024 19:51:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 709B325561;
+	Sun,  4 Feb 2024 19:56:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="IXM5dO/4"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OIrwuX5Y"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C561250E2
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 19:51:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 263E82555F;
+	Sun,  4 Feb 2024 19:56:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707076313; cv=none; b=qXhzKvswwr0XWPWwn+K/Cdne0YH99m/Hm5fz2UMcfUoH5DoADvnhwLtSeNGLtcyEn9HbOTQApPWrt/laI8JGESI6tKRzWa1p31JadNfuyJq93SB8/h4QeZoz6xE9blfnpmQPURoNv7HmKEZglQ4KLHY6hc4iWewHf71cCeA437c=
+	t=1707076583; cv=none; b=hFNzmu1MN0/nj1naPkTa8bic2tkGehmf8tg9dD1wN+2ujvzoEXph0XM00DdkJ7vpWq05gYH5vWa/WPH0kDrY2vzM1Kqe6q3woZpLuMlwbxCvRyYjO71mgJNhSQ1fJrEATtVcCIxFf2H448lbP1T4tt5GIPhZZNHid+uF7A6aXN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707076313; c=relaxed/simple;
-	bh=IFGJxHx2foEPhvFQU7sM0GpN2LJlqR4qLVoO7StADyE=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=I6u/LMBpAWxr3ycDkV8OrcwNtbhuev2KHQUzTbPSQBRymQSEduHJPWeQMb/BzVLtnjsyPprJW6O+KbEEK0g3sbZ8A6FRORYqkO3xs0zVT2CB3Puy/zUrhx6TWFPzTY8kZkWnnF29ftOnlEjAQVElVrC3EwkGfItnIooAzbsPEQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=fail (0-bit key) header.d=marliere.net header.i=@marliere.net header.b=IXM5dO/4 reason="key not found in DNS"; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net
+	s=arc-20240116; t=1707076583; c=relaxed/simple;
+	bh=Ir6z+xVwOsQ2LW4AEWy9lLOFWzujLBKhtUsu1zM+Y/0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qivbgXBlbxuL8qWbOLslFNchR99vFcEltAdHFb3+241p6E4dKLIidpxmQ3sebHPzrqaGpHlyihXxwfF7GzchehPcZUlEXwMVOk4XyBopuZ8biqanWO8pxMSVNzYgDBgN6hsORamIFpqzLLivVK1sM37NH9GtCiPkcZXD0IBLgAY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OIrwuX5Y; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d7393de183so26855195ad.3
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 11:51:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707076311; x=1707681111;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a370328e8b8so293937566b.3;
+        Sun, 04 Feb 2024 11:56:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707076580; x=1707681380; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=m/VZER7gPfVe5svDXHye7OkZXrLijBRk2e2Xh6GGgdQ=;
-        b=KihY7LlDm8L7mbZ+fq0lTte3yIaiGhQxaf9OcCZc0bHigCVVSzQPPJCxKEa9nxrD3S
-         FiEllOaoq6cujMENSPjtHyNNdFkXm9W+GemQWG2f7gBBHock8dkF2mxdvvi/BgzkB5Ha
-         yEDYbpeLArPR9EQ09etE/gIKmPMrCOe56hRu7NOkOxvtXaLPdqju5zmlh0LRrCzwynNA
-         dtybE0y68spYK+c6JUlP3x9aT6gHY5Osfll6Czsw7M2aIZDNkVp7sD4p8EUKcXJ1hBD5
-         LD2ncFIohrULd+zLjuY1vZGlexE8lVSpJaFIhxL6Lqj41XJYt/JKJep1/eMei+XTqzp0
-         75Dw==
-X-Gm-Message-State: AOJu0YxPBHcNpCLmqtrjClf/kKz5IaJnvYzcvsB7p4V2HVDwIIduB4k7
-	2BgV9OLEokG5OGJiWXvHIKJJJAsZ4RaZJHgzSvTfof43+gEkCWLF2Db+pY6s06X1lw==
-X-Google-Smtp-Source: AGHT+IELouHz1u2E8BfCjxMHYJVLdhaBKPdQlsG+TenyZJdYo0QNtq1PI//3Cil7hbT5DOeZRmq/tg==
-X-Received: by 2002:a17:902:c084:b0:1d9:624e:126d with SMTP id j4-20020a170902c08400b001d9624e126dmr8377157pld.62.1707076311353;
-        Sun, 04 Feb 2024 11:51:51 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWLon5groo4jnw4/mZbU+Z+fUcODlwd0FpsBATMWMDY9nvN9tcp5E2kLQsuZI6R6CfvwkU83uxZesBaJuEYUvxeBIesoxTiN06ibg==
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id v7-20020a170903238700b001d960a29da2sm4866223plh.62.2024.02.04.11.51.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Feb 2024 11:51:50 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2023; t=1707076309;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=m/VZER7gPfVe5svDXHye7OkZXrLijBRk2e2Xh6GGgdQ=;
-	b=IXM5dO/4n53v0C99ssxTCdC4Y0W0soa+LR4Np/AZkoTsCPIbT6+SfuM9rncvFN/lgJdqpd
-	LFsawKwH5K/KL7UsxYN6rnmpzZgfm136ixXkx+LbJfUsIcI+H1ZbDZtZUQp8QUe7/hxsjc
-	8f/M1INN5Mgy4MQtqGvb/JFWht6t13w/FOXPHLh3Sf38dtLSlEPqxeLHQDCMS1WkoFGV/X
-	86DF1fdzVfUFOfsGHDzV6hZyXQm+3zJrsqkQKP+3SlIl6bCd9XrBRlZ1ZIF7sCjnGM5Kot
-	2Y0+0pe/98t+5/FTc3xHnRfsQvatIFa//kvLvgYWcnWMZPLrzvtlb0wwWrIOvg==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Sun, 04 Feb 2024 16:52:18 -0300
-Subject: [PATCH] intel_th: make intel_th_bus const
+        bh=zs+qxtO5vVsWLBpaLfeAt1H/HB/kiIo3M9LoKDTDa6Y=;
+        b=OIrwuX5Y/QxP1LOCu0tlqYRer4gR4YQP5cdFxVjwOU+OFH5N4do8iAOAvC3laRtmI0
+         E0xjmd6ZeEPQ0R5iA1XOJB4idnE4b8giLGkUKZsmS/18UdNXHbdO2A7WYgEJgm9IDfbB
+         YaWWuIN+89ExAsW3Ay5TRffEtuR1gQkbJQ6L6ZByU4xWEgxU+p/PsbUfWqTmfsDPOuPl
+         /I093UXcsiI/n+ttXDYFATNkuO8XScqjmjrAWOn1aVTiesh7/KmmCL/12F7+bmkOx1Ed
+         uLBvo1eHmCzhTLYndtFUOBccd6BfRLpzb+UEHP40ma8X2Q7bNRgx/aQQcvH5fTmZgaox
+         PmuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707076580; x=1707681380;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zs+qxtO5vVsWLBpaLfeAt1H/HB/kiIo3M9LoKDTDa6Y=;
+        b=DppzL4PHdPILZ/gcKQQnRCU/CvFp/+g4htjRyvVZhQLwrCcQ6A0mKiIPn9Ji0tw9f4
+         PdO672IW9ur6BpCNPNgqHyHW+Zecby9l4J9yWvycrNd5DGxSX+zqRGd8YAVCOfN1qgMI
+         LUdT97B5PfL4JznIQUmJENa/RGVMVTgm8gc48Dmf94yT87aaasks9ErA0LfcUgoZuA04
+         c5ciZgNf6ClHkxSllJgmhov1gvgR+1Sj9smcDVvrncuEI5LDQW1nlvirhiw7rb0RGRub
+         JWy/ThRyYBY2PA8rR9uymwast3newsLlT1EdlrlxAytET0owwyJTr74FZzuV8MNvolQ5
+         uY/w==
+X-Gm-Message-State: AOJu0Yzx9GZZrtCBIpK8FLDn+BaOPggSwW+n7mHV8/C17z7M52spQobR
+	cpMvjs4mcnIT7GXGinCaZxSua0ZgJwKBuqQ2LVxwUbSJh76sDrAdUw4mmkRrn7g+nZdhA6Zw6op
+	sHD75/0aWMjPsNWwnvC7M1kVKuSesFMLhYII=
+X-Google-Smtp-Source: AGHT+IHNuxwyGRjAi9Jm6lfjqr6BCmaoH5k+K1/qRGcqak62a1CfetUMPMZ2kcia0Zy5kWkr18yUyMm48RdKluqYfiE=
+X-Received: by 2002:a17:907:9548:b0:a35:f3bc:455b with SMTP id
+ ex8-20020a170907954800b00a35f3bc455bmr4275617ejc.33.1707076579981; Sun, 04
+ Feb 2024 11:56:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240204-bus_cleanup-hwtracing-v1-1-23adbf4e6bb5@marliere.net>
-X-B4-Tracking: v=1; b=H4sIAPHqv2UC/x3MQQqAIBBA0avErBPMpKirRITZWANhoVmBePek5
- Vv8H8GjI/TQFxEc3uTpsBlVWYDelF2R0ZINggvJBZdsDn7SOyobTrY9l1Oa7MpkZ6q2mQ2va4T
- cng4Nvf93GFP6AA/lXIFnAAAA
-To: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1153; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=IFGJxHx2foEPhvFQU7sM0GpN2LJlqR4qLVoO7StADyE=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlv+r0cQBlxYlJ4A2ynSWr/rScgjJwaakJqRf6z
- /kKBp2TCteJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZb/q9AAKCRDJC4p8Y4ZY
- piZpEACl/cSgbf644uTzaFaXigNtdVLSPoB2pZb4OeqW5f/6UgSNaCOqidA1EDIB9M+yiF5SEeL
- Vdu9qjE5x1fI/+Buia12TkPcsyLLAxAt7PiLLqYvTzuLUf+Xp7hOX/0JIcIdaC1XnrhaFKOznJB
- /0EX1+beZPzNB5Ytcz7VDehtGPig2qscBtnv1Gc3XvaMIEkWiWU+4fJMGE5FepV1dMdbHg3qAIB
- kSeblxIHe3i0xXdOLY0YV51jla39zwen2PM1ZXXVnK5oqbh0nP0+Yl7JzfiziLZh6A3evtPXAI3
- 7fkh4hPCFAC+H/w92gTzDeCJ7mKST9anGkPxOHWGaqRoenRuVcJTQM8DvDh0WBVaMx0+oo1NywE
- /U1/P8re7RtV9SKBcvS6CSqwKgIZDZSpWjughkPIQLVGPihNJbvNSJYyT+P4vJXz7ovd7uOYPsM
- 8LnV0kj+5M4NWTSS/MXOE/1/8zybSAw0y2fXqMNVfRl5rxlBP+aXtYhmjWqvPeFzG/wspeMhxu1
- aaLZ6b/pkJE54BeNdFvz0x4ojClQg+zSqG949BVCJODBCvZnWUIxjlWwHDs2sOYElDT9rtECk2D
- sXbuUycGe2YYMD0ZQTCphS/bqgv4logoGS8ALxWGIa3WCWm+32mDSy4qo2tbGhYBGCq52IrrgA6
- UtvHuoahpn34IvQ==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+References: <20240204162106.1179621-1-andy.shevchenko@gmail.com> <20240204182417.jnw4iuqgghxynq3v@skbuf>
+In-Reply-To: <20240204182417.jnw4iuqgghxynq3v@skbuf>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Sun, 4 Feb 2024 21:55:43 +0200
+Message-ID: <CAHp75VeKyvec=xpfmyNrpqg5szFjD6FfbQNUFXN2Y4__j1B_UQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] spi: fsl-dspi: Unify error messaging in dspi_request_dma()
+To: Vladimir Oltean <olteanv@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Minjie Du <duminjie@vivo.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Now that the driver core can properly handle constant struct bus_type,
-move the intel_th_bus variable to be a constant structure as well,
-placing it into read-only memory which can not be modified at runtime.
+On Sun, Feb 4, 2024 at 8:24=E2=80=AFPM Vladimir Oltean <olteanv@gmail.com> =
+wrote:
+> On Sun, Feb 04, 2024 at 06:21:06PM +0200, andy.shevchenko@gmail.com wrote=
+:
+> > Use `ret =3D dev_err_probe(...);` pattern for all messages in dspi_requ=
+est_dma()
+> > for the sake of uniforming them. While at it, fix indentation issue rep=
+orted
+> > by Vladimir Oltean.
+>
+> When did I do that? This is v1.
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- drivers/hwtracing/intel_th/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+In the original submission (v2 of it to be precise) by Minjie.
 
-diff --git a/drivers/hwtracing/intel_th/core.c b/drivers/hwtracing/intel_th/core.c
-index cc7f879bb175..7df56b4093f8 100644
---- a/drivers/hwtracing/intel_th/core.c
-+++ b/drivers/hwtracing/intel_th/core.c
-@@ -166,7 +166,7 @@ static void intel_th_remove(struct device *dev)
- 	pm_runtime_enable(dev);
- }
- 
--static struct bus_type intel_th_bus = {
-+static const struct bus_type intel_th_bus = {
- 	.name		= "intel_th",
- 	.match		= intel_th_match,
- 	.probe		= intel_th_probe,
+..
 
----
-base-commit: 41b9fb381a486360b2daaec0c7480f8e3ff72bc7
-change-id: 20240204-bus_cleanup-hwtracing-49f176bf033e
+> >       ret =3D dmaengine_slave_config(dma->chan_rx, &cfg);
+> >       if (ret) {
+> > -             dev_err(dev, "can't configure rx dma channel\n");
+> > -             ret =3D -EINVAL;
+> > +             ret =3D dev_err_probe(dev, -EINVAL, "can't configure rx d=
+ma channel\n");
+>
+> Passing -EINVAL to dev_err_probe() here doesn't work. It overwrites the "=
+ret"
+> from dmaengine_slave_config().
 
-Best regards,
--- 
-Ricardo B. Marliere <ricardo@marliere.net>
+True, but this patch doesn't change the behaviour.
 
+..
+
+> >       if (ret) {
+> > -             dev_err(dev, "can't configure tx dma channel\n");
+> > -             ret =3D -EINVAL;
+> > +             ret =3D dev_err_probe(dev, -EINVAL, "can't configure tx d=
+ma channel\n");
+>
+> Same here.
+
+Same answer here.
+
+> >               goto err_slave_config;
+> >       }
+
+--=20
+With Best Regards,
+Andy Shevchenko
 
