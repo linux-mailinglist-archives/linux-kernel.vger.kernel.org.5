@@ -1,100 +1,126 @@
-Return-Path: <linux-kernel+bounces-51818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEA4A848FA9
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 18:24:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8A90848FC4
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 18:32:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F02111C213DB
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 17:24:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95030284413
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 17:32:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31BDD24215;
-	Sun,  4 Feb 2024 17:24:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FfYqXvSw"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BD8F2C69A;
+	Sun,  4 Feb 2024 17:32:08 +0000 (UTC)
+Received: from m-r2.th.seeweb.it (m-r2.th.seeweb.it [5.144.164.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84F7D249FC
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 17:24:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D4CB2C691
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 17:32:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.144.164.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707067454; cv=none; b=u4CXmmSsvGPPI76Z2bf2eAc85JCBaC+9cQWF//rGCngCMpwx/jnJkZgTum6OzBK6MeUkKeCLxZr7sBL/cd1nWDJZWiIRcZQJsyyoGwdA/SuGVuZWjTQcL2vD1y698P4gRJld4ZViRWSTvt5TqKjJzMlA7wWS4VyMvBYz8WJwWOI=
+	t=1707067928; cv=none; b=OyZmiFCvLdSHaGiAn55pxgJ9e7KAJkOO9SEjj3/YFwNCikdhuuVIl84uYugikVm1eWFX31nGl5M3WOvFc4aZjRdUInp+Wf3oDOrwFy7ffXUZfseBM3sTODEaxiq5vdPcXwnDNhhnxf65tmInCDDVfRrAUPYyldW54bkkC1/STJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707067454; c=relaxed/simple;
-	bh=ge61ygw4PmZXaFKzfXuyvYCrts6fN3YIespn9P5gMzI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iwpQpKziacsm75qc5+vshzhFEwZRTUDudwp5ysbe/pvuXj51ua+whipHSzuqtwNAAqY5Q4Fl1qhz2GiOgmtdrL5a5+fmr7lmrgrf9xvUZk9ENmXmAuP/OPpq33uf9kR8thSmK1Kc70O2onuGoyNjtz4qA99MkpGXWPjQNlpGW6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FfYqXvSw; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc6dcd9124bso3131122276.1
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 09:24:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707067450; x=1707672250; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=T1P19T303L/B43bwnD9+Y7IOxEcnJdUhgKJO0qIHJpc=;
-        b=FfYqXvSw/1arNlPxIyfFAnejcpwmBuL3gLjQXL9d/eDpzXdnDQbEKNW2U4DjAMUEvF
-         OcGYEHzkaiiMWF23P6kmtyLZvwYXprq9JqCjO6cYeyUerQ/dUG5APQV5cJ9Kk6kKbulA
-         vWBLUNEzvXRpx6BFkw1cL51o3nBLF0iS81uyWeD5yhzD3qBjfOeYi28IPL84dt73RvYD
-         nvI9ZdDvJR43dXoCKSrt0B1T1D8sYAk5npVl5OL4FP7SJbK5kq6FSgmO9FO7juyUsXVk
-         1XDWG4X4TdkfOlKIthGKP7CdimfyIk/j59bs1vQwG7MJL174Afr8SQX12pQDUBuyajcy
-         3fHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707067450; x=1707672250;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=T1P19T303L/B43bwnD9+Y7IOxEcnJdUhgKJO0qIHJpc=;
-        b=Z5OVLFRGvbsJ9E7QIK8DSWfUTyYwLceOzTwzvmVymSlMkV2UmkndEN5J4HMEZRfi6t
-         Sc0I7TUQqvWY/TcNccxoPS6bmPDmr7WMAJiQHKNQpUyLnDBVxlgosDAtWFOZ8yeVy/yn
-         cIkjuHA1NUY1TjVE2qJABuCypy7wZjCRleHMYuZmWDAK47mLjmNvOIYFhxxyReQWCECe
-         g8IKRaFmsrPm5wwB9S58A7uKqjFMKjt8apJEz6pHN0tPE/WwH28c1qKGTcsZoyRGFFxm
-         jDXyVGpPHuLneDJ9BaO2PbQXBOCSjkJ6EPcuJ/iiQ73+jE/XbyEIxXOOc9e7j5lNonOg
-         8oHA==
-X-Gm-Message-State: AOJu0Yw7cHAi/KCwmRj5wVInC1Web7NUsZ3JyEhMwG7kGvo0xw7dfPVM
-	cMyOGPWr/qTI36CG6T3Hhz+ct6ag7Sx04uiJ8NUkTNbTqgQfzTsNR7Da4WjXYXk+yPq4HrNIXme
-	MlGvpTcEF8mldDbLVera7o7X70fjRFXOc2+gzlQ==
-X-Google-Smtp-Source: AGHT+IHZYVkC99LHGk0ItLne/MvFpBr+BVnK1MV9EqBBA9F3ArKp+lRF7UX8mtilpk16mlV1PhE7o33VzQh5K0Ob39s=
-X-Received: by 2002:a25:ac5e:0:b0:dc6:4b37:e95 with SMTP id
- r30-20020a25ac5e000000b00dc64b370e95mr7149348ybd.26.1707067450280; Sun, 04
- Feb 2024 09:24:10 -0800 (PST)
+	s=arc-20240116; t=1707067928; c=relaxed/simple;
+	bh=bcNFXOXgVZBEkNCwZd1X9XvtwNPnxgf0ip+0KH9NcyE=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=ARC+aa8hwNZb+Uw5SDNCLkBB3TKMoSMu81kTwvBtunIMrNLql8XVe5y2/XmeYTrO7oiogMJsSrmlOGExShDyMGlEFZUBjojBvggMxE8NpE6e/DLS+jfgAPoj+B12nENl0X7CKQpuHsBlGuy0cccV6a4UGG7mztgNPWolMCNzUQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org; spf=pass smtp.mailfrom=somainline.org; arc=none smtp.client-ip=5.144.164.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=somainline.org
+Received: from Marijn-Arch-Book.localdomain (2a02-a420-67-c93f-164f-8aff-fee4-5930.mobile6.kpn.net [IPv6:2a02:a420:67:c93f:164f:8aff:fee4:5930])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by m-r2.th.seeweb.it (Postfix) with ESMTPSA id D639D3E74E;
+	Sun,  4 Feb 2024 18:24:31 +0100 (CET)
+From: Marijn Suijten <marijn.suijten@somainline.org>
+Date: Sun, 04 Feb 2024 18:24:20 +0100
+Subject: [PATCH v5] leds: qcom-lpg: Add PM660L configuration and compatible
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240204-drm-msm-dsi-remove-open-coded-get-bpp-v1-1-c16212de7e86@somainline.org>
-In-Reply-To: <20240204-drm-msm-dsi-remove-open-coded-get-bpp-v1-1-c16212de7e86@somainline.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Sun, 4 Feb 2024 18:23:59 +0100
-Message-ID: <CAA8EJprcdzEzYKzscyB0J5VrWfF77xJs1SZaoCpP-GQZ2AFmpw@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/dsi: Replace dsi_get_bpp() with mipi_dsi header function
-To: Marijn Suijten <marijn.suijten@somainline.org>
-Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
-	Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240204-pm660l-lpg-v5-1-2f54d1a0894b@somainline.org>
+X-B4-Tracking: v=1; b=H4sIAEPIv2UC/zXMTQ6CMBBA4auQWVsy/QELK+9hXFQdYAhtSYvGh
+ HB3GxOX3+K9HTIlpgx9tUOiN2eOoaA5VfCYXBhJ8LMYFCqDCo1YfdviIpZ1FINu7tZpp61BKMG
+ aaODPb3a9FQ8perFNidx/ofAsOyWlNbaWbaM7hUIK7xLPoc4vnjcKlxy947BwoDqmEY7jC0BOA
+ K6lAAAA
+To: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>
+Cc: linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org, 
+ Bjorn Andersson <andersson@kernel.org>, Johan Hovold <johan@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@somainline.org>, 
+ Martin Botka <martin.botka@somainline.org>, 
+ Jami Kettunen <jami.kettunen@somainline.org>, 
+ ~postmarketos/upstreaming@lists.sr.ht, 
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>, 
+ Marijn Suijten <marijn.suijten@somainline.org>, 
+ Bjorn Andersson <andersson@kernel.org>
+X-Mailer: b4 0.12.4
 
-On Sun, 4 Feb 2024 at 18:04, Marijn Suijten
-<marijn.suijten@somainline.org> wrote:
->
-> drm_mipi_dsi.h already provides a conversion function from MIPI_DSI_FMT_
-> to bpp, named mipi_dsi_pixel_format_to_bpp().
->
-> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> ---
->  drivers/gpu/drm/msm/dsi/dsi_host.c | 18 ++++--------------
->  1 file changed, 4 insertions(+), 14 deletions(-)
+Inherit PM660L PMIC LPG/triled block configuration from downstream
+drivers and DT sources, consisting of a triled block with automatic
+trickle charge control and source selection, three colored led channels
+belonging to the synchronized triled block and one loose PWM channel.
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+Changes since v4:
 
+- Rebased on -next and resolve conflict with removed lpg_remove();
+- v4: https://lore.kernel.org/linux-leds/20220719211848.1653920-2-marijn.suijten@somainline.org/
+---
+ drivers/leds/rgb/leds-qcom-lpg.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/drivers/leds/rgb/leds-qcom-lpg.c b/drivers/leds/rgb/leds-qcom-lpg.c
+index 156b73d1f4a2..ab298391f9e0 100644
+--- a/drivers/leds/rgb/leds-qcom-lpg.c
++++ b/drivers/leds/rgb/leds-qcom-lpg.c
+@@ -1360,6 +1360,23 @@ static int lpg_probe(struct platform_device *pdev)
+ 	return lpg_add_pwm(lpg);
+ }
+ 
++static const struct lpg_data pm660l_lpg_data = {
++	.lut_base = 0xb000,
++	.lut_size = 49,
++
++	.triled_base = 0xd000,
++	.triled_has_atc_ctl = true,
++	.triled_has_src_sel = true,
++
++	.num_channels = 4,
++	.channels = (const struct lpg_channel_data[]) {
++		{ .base = 0xb100, .triled_mask = BIT(5) },
++		{ .base = 0xb200, .triled_mask = BIT(6) },
++		{ .base = 0xb300, .triled_mask = BIT(7) },
++		{ .base = 0xb400 },
++	},
++};
++
+ static const struct lpg_data pm8916_pwm_data = {
+ 	.num_channels = 1,
+ 	.channels = (const struct lpg_channel_data[]) {
+@@ -1502,6 +1519,7 @@ static const struct lpg_data pmk8550_pwm_data = {
+ };
+ 
+ static const struct of_device_id lpg_of_table[] = {
++	{ .compatible = "qcom,pm660l-lpg", .data = &pm660l_lpg_data },
+ 	{ .compatible = "qcom,pm8150b-lpg", .data = &pm8150b_lpg_data },
+ 	{ .compatible = "qcom,pm8150l-lpg", .data = &pm8150l_lpg_data },
+ 	{ .compatible = "qcom,pm8350c-pwm", .data = &pm8350c_pwm_data },
+
+---
+base-commit: 01af33cc9894b4489fb68fa35c40e9fe85df63dc
+change-id: 20240204-pm660l-lpg-f35b8a3a3840
+
+Best regards,
 -- 
-With best wishes
-Dmitry
+Marijn Suijten <marijn.suijten@somainline.org>
+
 
