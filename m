@@ -1,81 +1,68 @@
-Return-Path: <linux-kernel+bounces-51396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51410-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55BF4848AC5
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 04:11:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68A27848AEA
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 04:45:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB55A289492
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 03:11:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 066F3B24192
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 03:45:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6E5115BF;
-	Sun,  4 Feb 2024 03:11:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 308AB17E9;
+	Sun,  4 Feb 2024 03:45:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nZL3VzbJ"
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=illinois.edu header.i=@illinois.edu header.b="VuBoUPpO"
+Received: from mx0a-00007101.pphosted.com (mx0a-00007101.pphosted.com [148.163.135.28])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D21B410EB
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 03:11:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E0AC1C0F;
+	Sun,  4 Feb 2024 03:45:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.135.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707016281; cv=none; b=lsTitqEG2C+zVSyby65m0v0vgn+ULagOjOlWUEB13phLvv+D3U/zst1o4ofr65aUeuSCJLTltJYy1r29JVHalnQ6P+1nlUoyoBbjGKPAJxTT06BDyY7QLpJh12w+tKIG196Ur4J8J6u4vJF8Sx8XCvMAA7Oy/3fQs2l/6gO9Hlo=
+	t=1707018342; cv=none; b=qZASpeTjiL+KoWq6GDh2GPM4Ozf0z9l7MFB7PgBcNZaRk4kAvflsUOZl+55ChfAZkPn00BFl614cblKDkTxh2qya6+AvprymPwQdofEnMfn0U5WtTx81B+T0PEZbn4j9zXMSbZvEWp62k7ZjoAuVql/TNNOw7NSHC3Oous6y1gk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707016281; c=relaxed/simple;
-	bh=Rg/Q7uvffcTHZcJlhEx+89mKvetaAH1fSbnyGWrBPAA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XFjShDEiwvSoSrOvR3R0If+RiT0RncFYoaCkD7a3bDDLh4DoripJ1z0z6pOOLn94doBxywOyvzlWtBPaKAV8E1k1Q5W4C3TYqu6StdwnyrVm2+nFoLQupK3dkq9K4/6n2iRkeQ2JBHG6nRGuEIAnluO1IM1rTKXeeROgxOWjPwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nZL3VzbJ; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-295f9a4a656so2751875a91.1
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Feb 2024 19:11:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707016279; x=1707621079; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+usYO9kmYXbpy+mniJppEmKl5G0Ak9hnYSfizal5zIo=;
-        b=nZL3VzbJV/rXQ0FX/JKmvjNuzxnUnitafz+mDtTnLXt7PnLA7u5aaX30h52BV5JeCw
-         2QQp4/s/+vugWhZTqgRJUdXA3/KsGdgIh7sxVN4ARSgmyiPgAc7ktqslWTI/lnWnDUQv
-         5B3JsY+4rLO3UxGJHfe756BnDxHELgu6qZfYHvjnW49w06BQvHpSQR8q+8nVBBo6BLWy
-         ku5tsYeE/gm0wjSOneUbWcjoHmzNpnAHg0SBKRpBOX5SadIzFtVoGv2as2Baec3mzq5O
-         munPtu3JP5ctRNL14yeNw6wRA27CwRtX3qtnDPp7cp6E4Zc48hQ/2Uu0F2cv81Daw8w/
-         TklA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707016279; x=1707621079;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+usYO9kmYXbpy+mniJppEmKl5G0Ak9hnYSfizal5zIo=;
-        b=A8WLAfX4YnYlDl7dD0a2zAgrbw4UEA//27WskYxMxw2HY2ojgYpWDVb1ZfJSGdPvPy
-         c58Ue9piu+jl3OD34/jLCsfOanfn/ewnO2JOXo6RUKLq91cn+1gM0yDEyv4LXCtO21Ch
-         dyqeO0nFYB0/bMIFkcWdtQG1UmIcTreLOvSFC6Cl3ZWVz5nF803OsTZQYnjrM0EFmWQK
-         xSfDTlQgD8fU0BUXg7yZ+VH1j5u9PD9eam5aMtHmeyfIb7oNhS3NHrUOEyARg0bpt3K5
-         TlhJN+qa9qByf/aEGPV3oSO4I3KqX+ijkaoFG//4qzHjp1MUU4NjzEaNDYZxNpQm9E0g
-         bE5g==
-X-Gm-Message-State: AOJu0Yx8lvlIjMqt8LsByFUD+Yopt/MInkWizu2Ig0R6ZQkYYfVCuwbB
-	E8jrBe3bQ24THRS14I57bOQRMZ55Lj0lB83nzO+WeolBGdlu0KGd
-X-Google-Smtp-Source: AGHT+IGx2qqIW96Pfh8jonNWQmOXBn1OWquAQPwRPRYif17747FkB7bAA3tCN3Te7DS2ydaz7PcPxQ==
-X-Received: by 2002:a17:90a:17e2:b0:296:3779:813c with SMTP id q89-20020a17090a17e200b002963779813cmr6504495pja.4.1707016278986;
-        Sat, 03 Feb 2024 19:11:18 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVzR7hi5WM5nw9LaiP+Ix1SnjAyaZWBh8NaFdwA6BLv2FwdR/AUj/+M5eCWX0EQVYaPyN39+RXrUfByI0ST/ePJETynEugUz4p5XLd5USeD2fjh0VFfPkup7Jug8KdywlviXnNuiBzWbOaUTyVrrWdQBrSu+v9HnnK4fR9hrakRzRVA0Ni9RPnVTCoG6/J5mP+wGIM++byp8K74lCXM+rqaQSqDcKePM58DRq2IrSSM6A==
-Received: from localhost.localdomain ([112.38.163.83])
-        by smtp.gmail.com with ESMTPSA id n9-20020a170902d0c900b001d8f82c61cdsm7312pln.231.2024.02.03.19.11.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Feb 2024 19:11:18 -0800 (PST)
-From: Wenjie Qi <qwjhust@gmail.com>
-To: jaegeuk@kernel.org,
-	chao@kernel.org,
-	yangyongpeng1@oppo.com,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org
-Cc: hustqwj@hust.edu.cn,
-	Wenjie Qi <qwjhust@gmail.com>
-Subject: [PATCH v5] f2fs: fix zoned block device information initialization
-Date: Sun,  4 Feb 2024 11:10:22 +0800
-Message-ID: <20240204031022.1189-1-qwjhust@gmail.com>
-X-Mailer: git-send-email 2.43.0.windows.1
+	s=arc-20240116; t=1707018342; c=relaxed/simple;
+	bh=bp3+moavKJUOU9+YcZZ62WFzPtg6yWFvn6eFkIqmXdQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=g0sT6s/vcudNnYZ6w7G6KnV5QYlLfnByTd0Nd2pHIkViYQ4NV0NYpeKX++vuE2+xGnrIRwrio3lIqZFK+6Y8C3YMlqKcJOZ+TFEyPf88JEQSyr1h2TFgMiNwrd0zcpgwh4YRv0Wj7Oz8bCZNmNy5to/O7dGX96tDw3DkE+cyISs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=illinois.edu; spf=pass smtp.mailfrom=illinois.edu; dkim=pass (2048-bit key) header.d=illinois.edu header.i=@illinois.edu header.b=VuBoUPpO; arc=none smtp.client-ip=148.163.135.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=illinois.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=illinois.edu
+Received: from pps.filterd (m0166257.ppops.net [127.0.0.1])
+	by mx0a-00007101.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41432XDK027752;
+	Sun, 4 Feb 2024 03:13:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=illinois.edu; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=campusrelays; bh=ed8waYid509TfcIsLqBzgp/9YodzRQmW/h6oOEGt1rk=;
+ b=VuBoUPpOtJ3EOrtirkhidspd7kjf8Yb3fLEPLU/54q1tfk38gQUZq46pdEbnzAq3Xnhe
+ YlfjixALde/JlgA0Q2CGDSVXmGUPnjr9yyussiP5mj/QtyHoS77Y4+JY0NnERnSr5XUZ
+ scFC7otRSHgpHuAKib6R0it9d2qCPGPqt26D2IsEBl8gngHcvA53lSum4CjW/ym2NA2j
+ Pv5y3ctpPK59qoQKT7wryF4aYBpEOUMWqDPJnPesQQmU0DI31vmzEDOkV4O2cTLG1myk
+ SKjVB9ZVpvmncPmiVbs+jfZ69Ml2Ts/7OZuiHt+b7Ow1w8jdBb3F8+8ZvVvM7WgT1Sxl pA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-00007101.pphosted.com (PPS) with ESMTPS id 3w1e8n4ktp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sun, 04 Feb 2024 03:13:04 +0000
+Received: from m0166257.ppops.net (m0166257.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4143D4Fu010150;
+	Sun, 4 Feb 2024 03:13:04 GMT
+Received: from localhost.localdomain (oasis.cs.illinois.edu [130.126.137.13])
+	by mx0a-00007101.pphosted.com (PPS) with ESMTP id 3w1e8n4ktm-1;
+	Sun, 04 Feb 2024 03:13:03 +0000
+From: Jinghao Jia <jinghao7@illinois.edu>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>, Xin Li <xin@zytor.com>
+Cc: linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jinghao Jia <jinghao7@illinois.edu>
+Subject: [PATCH v2 0/3] x86/kprobes: add exception opcode detector and boost more opcodes
+Date: Sat,  3 Feb 2024 21:12:57 -0600
+Message-ID: <20240204031300.830475-1-jinghao7@illinois.edu>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,85 +70,71 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: mn5VSJ0mvjV8e4iC5xZSg_c-bVZsA20H
+X-Proofpoint-ORIG-GUID: 904boGWkVLvojL-KnoPb6Eo3_D3d1Dp0
+X-Spam-Details: rule=cautious_plus_nq_notspam policy=cautious_plus_nq score=0
+ lowpriorityscore=0 malwarescore=0 phishscore=0 bulkscore=0 spamscore=0
+ impostorscore=0 mlxscore=0 suspectscore=0 mlxlogscore=999
+ priorityscore=1501 adultscore=0 clxscore=1015 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402040022
+X-Spam-Score: 0
+X-Spam-OrigSender: jinghao7@illinois.edu
+X-Spam-Bar: 
 
-If the max open zones of zoned devices are less than
-the active logs of F2FS, the device may error due to
-insufficient zone resources when multiple active logs
-are being written at the same time.
+Hi everyone,
 
-Signed-off-by: Wenjie Qi <qwjhust@gmail.com>
+This patch set makes the following 3 changes:
+
+- It refactors the can_probe and can_boost function to make them return
+  bool instead of int. Both functions are just using int as bool so let's
+  make them return a real boolean value.
+
+- It adds an exception opcode detector to prevent kprobing on INTs and UDs.
+  These opcodes serves special purposes in the kernel and kprobing them
+  will also cause the stack trace to be polluted by the copy buffer
+  address. This is suggested by Masami.
+
+- At the same time, this patch set also boosts more opcodes from the group
+  2/3/4/5. The newly boosted opcodes are all arithmetic instructions with
+  semantics that are easy to reason about, and therefore, they are able to
+  be boosted and executed out-of-line. These instructions were not boosted
+  previously because they use opcode extensions that are not handled by the
+  kernel. But now with the instruction decoder they can be easily handled.
+  Boosting (and further jump optimizing) these instructions leads to a 10x
+  performance gain for a single probe on QEMU.
+
+Changelog:
 ---
- fs/f2fs/f2fs.h  |  1 +
- fs/f2fs/super.c | 24 ++++++++++++++++++++++++
- 2 files changed, 25 insertions(+)
+v1 -> v2
+v1: https://lore.kernel.org/linux-trace-kernel/20240127044124.57594-1-jinghao7@illinois.edu/
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 543898482f8b..161107f2d3bd 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -1558,6 +1558,7 @@ struct f2fs_sb_info {
- 
- #ifdef CONFIG_BLK_DEV_ZONED
- 	unsigned int blocks_per_blkz;		/* F2FS blocks per zone */
-+	unsigned int max_open_zones;		/* max open zone resources of the zoned device */
- #endif
- 
- 	/* for node-related operations */
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 1b718bebfaa1..c6709efbc294 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -2388,6 +2388,16 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
- 	if (err)
- 		goto restore_opts;
- 
-+#ifdef CONFIG_BLK_DEV_ZONED
-+	if (sbi->max_open_zones < F2FS_OPTION(sbi).active_logs) {
-+		f2fs_err(sbi,
-+			"zoned: max open zones %u is too small, need at least %u open zones",
-+				 sbi->max_open_zones, F2FS_OPTION(sbi).active_logs);
-+		err = -EINVAL;
-+		goto restore_opts;
-+	}
-+#endif
-+
- 	/* flush outstanding errors before changing fs state */
- 	flush_work(&sbi->s_error_work);
- 
-@@ -3930,11 +3940,22 @@ static int init_blkz_info(struct f2fs_sb_info *sbi, int devi)
- 	sector_t nr_sectors = bdev_nr_sectors(bdev);
- 	struct f2fs_report_zones_args rep_zone_arg;
- 	u64 zone_sectors;
-+	unsigned int max_open_zones;
- 	int ret;
- 
- 	if (!f2fs_sb_has_blkzoned(sbi))
- 		return 0;
- 
-+	max_open_zones = bdev_max_open_zones(bdev);
-+	if (max_open_zones && (max_open_zones < sbi->max_open_zones))
-+		sbi->max_open_zones = max_open_zones;
-+	if (sbi->max_open_zones < F2FS_OPTION(sbi).active_logs) {
-+		f2fs_err(sbi,
-+			"zoned: max open zones %u is too small, need at least %u open zones",
-+				 sbi->max_open_zones, F2FS_OPTION(sbi).active_logs);
-+		return -EINVAL;
-+	}
-+
- 	zone_sectors = bdev_zone_sectors(bdev);
- 	if (!is_power_of_2(zone_sectors)) {
- 		f2fs_err(sbi, "F2FS does not support non power of 2 zone sizes\n");
-@@ -4253,6 +4274,9 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
- 
- 	logical_blksize = bdev_logical_block_size(sbi->sb->s_bdev);
- 	sbi->aligned_blksize = true;
-+#ifdef CONFIG_BLK_DEV_ZONED
-+	sbi->max_open_zones = UINT_MAX;
-+#endif
- 
- 	for (i = 0; i < max_devices; i++) {
- 		if (i == 0)
--- 
-2.34.1
+- Address feedback from Xin:
+  - Change return type of is_exception_insn from int to bool.
+
+- Address feedback from Masami:
+  - Improve code style in is_exception_insn.
+  - Move instruction boundary check of the target address (addr == paddr)
+    right after the decoding loop to avoid decoding if the target address
+    is not a valid instruction boundary.
+  - Document instruction encoding differences between AMD and Intel for
+    instruction group 2 and 3 in can_boost.
+
+- Add an extra patch to change the return type of can_probe and can_boost
+  from int to bool based on v1 discussion.
+
+- Improve code comments in general.
+
+Jinghao Jia (3):
+  x86/kprobes: Refactor can_{probe,boost} return type to bool
+  x86/kprobes: Prohibit kprobing on INT and UD
+  x86/kprobes: Boost more instructions from grp2/3/4/5
+
+ arch/x86/kernel/kprobes/common.h |  2 +-
+ arch/x86/kernel/kprobes/core.c   | 98 ++++++++++++++++++++++----------
+ 2 files changed, 69 insertions(+), 31 deletions(-)
+
+--
+2.43.0
 
 
