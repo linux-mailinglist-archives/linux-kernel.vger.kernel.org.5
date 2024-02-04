@@ -1,122 +1,140 @@
-Return-Path: <linux-kernel+bounces-51772-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4743848F23
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 17:07:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 118B4848F24
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 17:10:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6D611C212DD
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 16:07:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9408CB210D1
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Feb 2024 16:10:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AB6F22EE4;
-	Sun,  4 Feb 2024 16:07:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F48F22EE5;
+	Sun,  4 Feb 2024 16:09:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FdtbKKCq"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="QoLNkxv0"
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FB0F22EE9
-	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 16:07:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 058802263E
+	for <linux-kernel@vger.kernel.org>; Sun,  4 Feb 2024 16:09:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707062845; cv=none; b=DWViwALui3zdbpEiL0TvxyJ12h6Ylnsm29mGVy5+Ff3e96XWko04OsW08Ks0pQNsZh8JBVU4ajW9mgHSjlfOc5SplWcUoTScMefeOg61Si2lGpVmzceiao98TgtEgDz1eP5YGwraweDa2/R+y9Xl+ykzi09mHmHBMsuyeUkYVrk=
+	t=1707062995; cv=none; b=kPpYP25lrU5pTO7wnhpr4BYae1j2CxsATmHNbitOqjAuEaFPIosNpvJMgr/tIPeIQZIQZ0Gc9KVPq/uGLgkPQoITDoi2lFshNsDx+kGt/s/iZroKmXVagesOLbuF9zVoFaOiykRZ2lbEwvcia4q95a91iR7AXesFTK85r/a/LY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707062845; c=relaxed/simple;
-	bh=beEMEPxTnmhGmIynDJ6rtVnEmNm3uQWc7Wq1nr3UZyc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eUbb8kT+vFQarFubym2vW+o+LTYUa85Jeh4R93DMUHe5/o6MaL5tNichhEtpEOZPRV5nP6m6NdCjphBL1p3fGP3b6l+/5JD4tngqBmpw1kYBVYg7VDyHTpK3JKtKqJQUPCQWw0axCnQwpMyzAcy0uRFkp5hgCwfmzAKg0+oB7yI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FdtbKKCq; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707062842;
+	s=arc-20240116; t=1707062995; c=relaxed/simple;
+	bh=yT6J0fuV2sy5FT+Ua1YIv78ljWDgj24fSnY8XpK8Ggg=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=MP+WGsrFKKiYiEtGHlVx2m807zTsXoxofABEiiFjq0fcHDACLfA+ZI1L0gzT5TaSpLj090aVv8uOjEUjFoF3Dw8txsCeTYVP5QFRmMSaAvywsjCd2XPUjys/8qanOsjMET+n2KEIjBwMUStOdEmvwAXaI05vj/TadDU6MDBCe/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=fail (0-bit key) header.d=marliere.net header.i=@marliere.net header.b=QoLNkxv0 reason="key not found in DNS"; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso3029700a12.3
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 08:09:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707062993; x=1707667793;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rWqMJ/jRctxyHiUbWPmjsOM1QzXA4zMH0ym4Baam8co=;
+        b=ZIu/xwOGRNzxEFz/scXYqxJt2oEfJdqTsACRNa+qK3s0Om53+OeCwjIWr3oSX5csHf
+         uP8NGjO3PVeysKurrXj8FsaU6uBsGjz2gcrHeg6OWwR/ETxxTDPdSbg0LRiqdkpmFujn
+         h113h2tE9hXk7qiUvVkAJjhie5jV9AjBlNI2OByVDi9BvsQyCrOOCGGPT2tyRwQyyo6c
+         3sszuBA8i3yzngb612+bTCCFRjQT7mAU7FgXLzpR85/JJV/2Scq6D2hnu/kU3QNBsKrB
+         2Oe0b75AxZwlQDHELDw6wi19oH++vzTYa/apuptZhJBdEGJAfpzTZJbzF2jgt8QSPhcM
+         lf9A==
+X-Gm-Message-State: AOJu0YwxRkJLqyusU6OKXg1nyQr/6Fuuxe4XZFGuSBA8YZOX/0LE30en
+	cBT2jVcorAtf7R5ZLseJGMY/KKFjdWj4LuS55s4dN6gJo5OQ3mUC
+X-Google-Smtp-Source: AGHT+IF3flFTHd6K6edLpNmAFSNjuA1IKaxBFgxvH3+lgmQKoTbdXT/oE6xIM7kRe9HaQxRwY4HXAw==
+X-Received: by 2002:a05:6a21:3984:b0:19e:4816:e71a with SMTP id ad4-20020a056a21398400b0019e4816e71amr12017186pzc.27.1707062993209;
+        Sun, 04 Feb 2024 08:09:53 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCU0sivYn1COiDhZZ+tKc/D5cERyQ+JIG9Et3X6isu25w/21FaucbNexqwHt3etdffRJG9qXSYC8k2BM1CNHkWcwyE+WpqrQd1/bk2xUb6f9Zq7fvNsDyVIAyfJlPRI5LA9I2SOhXXzlpsLtNcPEfKaGxD9JbZJWBwgC6pLblXU4g6frJrs5eaPGgebk6O/qbg7YuxJSDEmbrA==
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id y184-20020a62cec1000000b006e02ff27fe6sm2293043pfg.121.2024.02.04.08.09.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Feb 2024 08:09:52 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2023; t=1707062991;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tJbzKOQG5Y0HNZGsJaBEogo5XOc3ovFLiwYQiXooh+I=;
-	b=FdtbKKCqlJ/M6EDzA8N/8gHDk01Q17YRBKHtx0+S/W6oisG7jLVMfSgrR6W7kI/ynr2sfC
-	9tRXc+T014KK5C8QabgiRFcwePB5EDMP9sjqoZmg+bgTql/hmKUllKs0ETBCrJZoFTSZpL
-	t/y8ot2oJ9NNbrmpacQZDrIdkzYOR8Q=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-47-Mvr3fQ2kMRyyZruMacBRBQ-1; Sun, 04 Feb 2024 11:07:18 -0500
-X-MC-Unique: Mvr3fQ2kMRyyZruMacBRBQ-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EDD8D1013767;
-	Sun,  4 Feb 2024 16:07:17 +0000 (UTC)
-Received: from [10.22.8.85] (unknown [10.22.8.85])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 6B078492BC6;
-	Sun,  4 Feb 2024 16:07:17 +0000 (UTC)
-Message-ID: <149cbb48-ad60-4817-b464-ad53418aadd0@redhat.com>
-Date: Sun, 4 Feb 2024 11:07:17 -0500
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=rWqMJ/jRctxyHiUbWPmjsOM1QzXA4zMH0ym4Baam8co=;
+	b=QoLNkxv0e2xWnQMW2JQ8AfxBzwnfJ5QvRjDVbxExUnEFR4PZ5Y53gw4mGj2SddY6BGCy+T
+	/RWSeFCdTDcSON8hkaazjN6jWCklqyE1gTmZ3hRBzhP1iCGZ8faR2GDpttm+nCOwlNhKla
+	PQS19r1schtKbn/Khksofg0uGDQ8hBKWFseVXhe6vSKjFJ5+sSUsrFdxYk5cbC4JDDyOA0
+	88u0gbIPBIP4a6Q70GLSENKCo/fwBv/YagkcEHv51vtqcbR7VW1CKoE3loCX58+TY6FukL
+	KNXlKwjjmZ0yjMC/nBEkviCfl3Qovggp/zUSsxP6wwcEFWuNMUhufzOcPsixiA==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Date: Sun, 04 Feb 2024 13:10:18 -0300
+Subject: [PATCH] firmware: coreboot: make coreboot_bus_type const
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH-wq v2 3/5] workqueue: Thaw frozen pwq in
- workqueue_apply_unbound_cpumask()
-Content-Language: en-US
-To: kernel test robot <lkp@intel.com>, Tejun Heo <tj@kernel.org>,
- Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
- Juri Lelli <juri.lelli@redhat.com>, Cestmir Kalina <ckalina@redhat.com>,
- Alex Gladkov <agladkov@redhat.com>, Phil Auld <pauld@redhat.com>,
- Costa Shulyupin <cshulyup@redhat.com>
-References: <20240203154334.791910-4-longman@redhat.com>
- <202402041854.YeHAF3wV-lkp@intel.com>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <202402041854.YeHAF3wV-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+Message-Id: <20240204-bus_cleanup-firmware-v1-1-d1bff946606d@marliere.net>
+X-B4-Tracking: v=1; b=H4sIAOm2v2UC/x3MTQqAIBBA4avErBMmEcGuEhFWUw2UxUg/EN49a
+ fkt3nshkjBFqIsXhC6OvIeMqixgWHyYSfGYDRq1QY1G9WfshpV8OA81sWy3F1LOjYi2QmO1hZw
+ eQhM//7ZpU/oA5utJsmYAAAA=
+To: Tzung-Bi Shih <tzungbi@kernel.org>, 
+ Brian Norris <briannorris@chromium.org>, 
+ Julius Werner <jwerner@chromium.org>
+Cc: chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1213; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=yT6J0fuV2sy5FT+Ua1YIv78ljWDgj24fSnY8XpK8Ggg=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlv7buAhLuTmKEID3LBRKEmHRjCq+WHjAExS/b5
+ w9rn2SfqLOJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZb+27gAKCRDJC4p8Y4ZY
+ pjr+EACBSX/uoVX4aHiUwP4CwddHD6HrgguSY7UqiO/BBdEz5ZlBCoDppZBbIkD4G6GlD3SAoih
+ RbHezlso8x2cUulOcgBuF8R5RbEk0gy9pSIE4Y7hMYxHkr6gV6bNuXzXVJMitfDRTDJy6sl0pm+
+ So+XuRnJMK4dqJY+mGBN4inMOKWigPY7QAqZbslb1zHzhvfAtRAZe0Bv6pME8yYY4/79sC3P58L
+ 3xfzoWpuEAaL4YPczYloeEXr+Drv0mYj6HBI1zN2d3ayc+gHv7dNoOpINfAGx/z6aUSD5swIHMS
+ 602ZcF9G68LSUE4898x7jxoqjB6jehbakbpIWFqCaqkK/UrymmXXtY38hqZw1GdFpejWX/M0sm/
+ kUoNIJaPA/LGi31oF72l1rEEWJx/vNjye3HFcRjCoOoNm/XJ5o+/safzQlZUWQliartjJKWKI4M
+ vqCIh95Lsmw92HvhaIZPXNp59WXW6tr6VD/b6vBR4RdO0hK4Go/YVwvfj8mbx1ml6elsEx/NEoA
+ WNpcjIbcKPDqx8uLlffIzBcKKBPnM+g4eSSMwF2Mh/ObzTVfEVhox8qVNYpfn+aeFJZTt/pjwJC
+ fNKbXxfNsaf6PtjFR47MdSeVp71GhDQSYXKSu/t6U8Lt1pXhHpzP9+l4EOQqD8WidIRujmWrMhb
+ ZwZOmD8YI+nAxcQ==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-On 2/4/24 05:15, kernel test robot wrote:
-> Hi Waiman,
->
-> kernel test robot noticed the following build warnings:
->
-> [auto build test WARNING on tj-wq/for-next]
-> [also build test WARNING on next-20240202]
-> [cannot apply to linus/master v6.8-rc2]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Waiman-Long/workqueue-Skip-__WQ_DESTROYING-workqueues-when-updating-global-unbound-cpumask/20240203-234626
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-next
-> patch link:    https://lore.kernel.org/r/20240203154334.791910-4-longman%40redhat.com
-> patch subject: [PATCH-wq v2 3/5] workqueue: Thaw frozen pwq in workqueue_apply_unbound_cpumask()
-> config: x86_64-randconfig-122-20240204 (https://download.01.org/0day-ci/archive/20240204/202402041854.YeHAF3wV-lkp@intel.com/config)
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240204/202402041854.YeHAF3wV-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202402041854.YeHAF3wV-lkp@intel.com/
->
-> sparse warnings: (new ones prefixed by >>)
->     kernel/workqueue.c:361:40: sparse: sparse: duplicate [noderef]
->     kernel/workqueue.c:361:40: sparse: sparse: multiple address spaces given: __percpu & __rcu
->>> kernel/workqueue.c:6373:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
->     kernel/workqueue.c:6373:25: sparse:    struct pool_workqueue *
->     kernel/workqueue.c:6373:25: sparse:    struct pool_workqueue [noderef] __rcu *
+Now that the driver core can properly handle constant struct bus_type,
+move the coreboot_bus_type variable to be a constant structure as well,
+placing it into read-only memory which can not be modified at runtime.
 
-OK, I didn't realize that a __rcu tag is added to the dfl_pwq in 6.9. 
-Will change the patch series to use the appropriate helpers to avoid 
-this kind of warnings.
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+---
+ drivers/firmware/google/coreboot_table.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Cheers,
-Longman
+diff --git a/drivers/firmware/google/coreboot_table.c b/drivers/firmware/google/coreboot_table.c
+index 2a4469bf1b81..fcdc387ae7aa 100644
+--- a/drivers/firmware/google/coreboot_table.c
++++ b/drivers/firmware/google/coreboot_table.c
+@@ -53,7 +53,7 @@ static void coreboot_bus_remove(struct device *dev)
+ 		driver->remove(device);
+ }
+ 
+-static struct bus_type coreboot_bus_type = {
++static const struct bus_type coreboot_bus_type = {
+ 	.name		= "coreboot",
+ 	.match		= coreboot_bus_match,
+ 	.probe		= coreboot_bus_probe,
+
+---
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+change-id: 20240204-bus_cleanup-firmware-99d006104626
+
+Best regards,
+-- 
+Ricardo B. Marliere <ricardo@marliere.net>
 
 
