@@ -1,328 +1,397 @@
-Return-Path: <linux-kernel+bounces-53825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A1B184A704
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:21:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B001784A702
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:20:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 930D9B26E8D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:20:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3E2A1C26BBF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:20:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DFF55F853;
-	Mon,  5 Feb 2024 19:36:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87E7F5F482;
+	Mon,  5 Feb 2024 19:36:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Rrgu2Q9x"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BGM9f7ZX"
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24E375F561
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 19:36:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.9
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707161773; cv=fail; b=LedUuvoL4nNShZ+PD2Fgd2Yw1RF+gVDr1K8+gMtYMfulk7S5fHJc27qClPfxkrKKjbTpu0Gse0b3MFYYfjFns0T69UzQlYmbgWXMU7Iv9Xjfu8Fsf8xw3OpjUMlZ7srq9DE1OxqrZBuatvKtc4zprWEZ+y8c/hqySmR2ShPfZQE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707161773; c=relaxed/simple;
-	bh=laFYIejDqAet4jcNaMbLXfEEnXU+vzm5v80qYvu6+H0=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Z8hXXI4PVtSpB+Uw3ewjrnZ7qFyNcuueqhXAsQgq+fTJJcVqb0a8nSE0DdNiCu7ciHesV+6RIFHDz7TPEZDDGku9fxW+APw+sGeH103iz1n7NU9uxcyUc+OfOPSRsNcExPpwaR5ERHwFdSEKF2tAAZcGSQei6u1W8tRHHs01R00=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Rrgu2Q9x; arc=fail smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707161771; x=1738697771;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=laFYIejDqAet4jcNaMbLXfEEnXU+vzm5v80qYvu6+H0=;
-  b=Rrgu2Q9x3axVg6j6/EICd2rNoc6p78hR+RGM1pACZBlwSbXWJYFQah9R
-   iiZIbzVYy1xkiTWMh3dD4bLl1X/rikmRjLNZ4+HstPT4HkTJb/vFAGn2/
-   T50/H0Qnz6+OMJfYVkM49niB0D/zbCFItohBMIV1+MeQQuvEcLZGWj5mj
-   LOx+A6EcixoE3/MorzpdwezDKHQc3pMJmyzcA2Xf7/hur+5knvuxfDcEU
-   0rI05IQFfTO5/lStWqVAJ3knq+kXL/9f6cpHzDhverMzHUEe1AeieiYqf
-   nvUOHYcczlBgrjjY+9K53qngf5jYKdjJXfeakzAkkRmq89cWOvEz7Amo/
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="23071926"
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="23071926"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 11:36:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="5555324"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Feb 2024 11:36:10 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 5 Feb 2024 11:36:09 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 5 Feb 2024 11:36:09 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 5 Feb 2024 11:36:09 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BmMN3NoJCnzS2sAp1z20CRaq3Bl8NFONStGdcbCzt9skAZQmnzLYaDjL27KTsdQ9bFMXrD3kwANY1n+X2Lbpm0G2mE34rRRzP8Q/6ckIuARt7y724i7Kx1yzzg5INMilRblK8rsQT3P5w836/GikepC//hzntK7JX2N0tCG8Yv0TVxafUeLj5NYFbNm0Cw/H6J/AeKV/myDMRqJ8zbmSi0GXdEW9/7FuXBJngLnRbdvARLOJ3xQkWoHkWmdP6gbjdsx5Y+nKkrY2Ipja17RYobSRLjbyX4DoU27hfs3CAKhaABdZ+Scjh9unM1ZWnSFp5ZKgUFFP0nGNfkDWCBgi0A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Qw45NhELFwazpu1JYpr57cjALiibbqwVeM7O5xhbMpA=;
- b=Be2AbO+3M2sMwZQFNnqPssP+N3x6/3PuxOiKsFDCs3uXkfDzv8ymKA2YOpH7L9Svp1A3PHXUhiONyp5vOThlxwku/nNAJWHpa5yjyOyU2EU2T28vfPn20XhIBMt9KaE7MCDId0W81xBx2ptjmyc0stg6q6D66D3cMtZdXate3xyQi2ObIZQN88LhTPss/x/1lFFCVPaags6Vm5efKmcQM5giXiM9LBXWH6JRP/IpHsWup4fNwuEekXOMRl6FJHAt060LpL/iO54fS0k2AOYsJSAmzPj0zxLQwhHN7HJ1uNA2PJ/Bu9UrS6nyFbn0WaK+b9ovHaUtRBoSEP8z1y0SuA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by MW4PR11MB5776.namprd11.prod.outlook.com (2603:10b6:303:183::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36; Mon, 5 Feb
- 2024 19:36:02 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::c903:6ee5:ed69:f4fa]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::c903:6ee5:ed69:f4fa%7]) with mapi id 15.20.7249.032; Mon, 5 Feb 2024
- 19:36:02 +0000
-Message-ID: <255118a7-73e6-4b7c-b3b4-c93eaa7cbdd9@intel.com>
-Date: Mon, 5 Feb 2024 11:36:00 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/resctrl: Add tracepoint for llc_occupancy tracking
-To: Haifeng Xu <haifeng.xu@shopee.com>
-CC: <fenghua.yu@intel.com>, <babu.moger@amd.com>, <peternewman@google.com>,
-	<james.morse@arm.com>, <x86@kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240126130213.159339-1-haifeng.xu@shopee.com>
-Content-Language: en-US
-From: Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <20240126130213.159339-1-haifeng.xu@shopee.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR03CA0197.namprd03.prod.outlook.com
- (2603:10b6:303:b8::22) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9961C5F541;
+	Mon,  5 Feb 2024 19:36:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707161772; cv=none; b=R90JhTt368AvqAALyxZzbEARZK0OPeuTSCjPu97RIcaGUvnROTlqxoCWFA8IkAvUs10GcFwWXSCXOHImdYN+nePz6HvOUtEJ4I4MqcnqO1Ysbrx3hhBApCRuj/0HrpJ0iGyKJ4l2pmEEMqoPm/n4cnpJJFPQKeLOijzOmReTtbk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707161772; c=relaxed/simple;
+	bh=gJbzs18/acjy43NodZVJxpUKbqu2JQrasjbqLq+tgn8=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=YRtczszPJGSBqwcqMxcYhMeV5fQWyttpoXUl/I6eHFTQVvX6o2b9ptIpK36el0RMS7rkrz1q1s4xcn2yxEanOrq3kWEaQM2X8ZA9fCCF3ydVJ8MVJIAzDyDTL8N2QpIJdo8NV66AOOYP8FctT/0E+7mlKgEXhpeM/v4bdprwdrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BGM9f7ZX; arc=none smtp.client-ip=209.85.219.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-68c37bf73aaso23154346d6.2;
+        Mon, 05 Feb 2024 11:36:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707161769; x=1707766569; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hyKtLjISsgsA4Pc0uf3hvWpRXC7emZfo1RqZ5lH/KE0=;
+        b=BGM9f7ZX8VyHCqwh06pHzfmk+med/WM8qYDXuj5puG/oBaUwxAts8wicYZW1aO5jWI
+         nSCZBUGgQ5bRMTEuNrR8F+2uWOZnWHB9NWV2n8CG9Q2QtMS5xIKuchpxNJBuWQnJsyWP
+         B0AE4qhjarEnnZoM6rX4fqUnWpReLqruUPuQPzLn7OtJO4QxWQkJppnN9AD0HslV4hse
+         NieWWfYWw6QKxIvO3cMIfp1jXx4qcefIym6Te2zAMqZvEhmuXop4aS6e7fmLml/kHXhL
+         i8ApihV2GwJMqIdim4bJumL6lFPNK4SaJ2Icc+8LheCHBITylb9iFmwL4bGXsrwmH4pP
+         w57w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707161769; x=1707766569;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=hyKtLjISsgsA4Pc0uf3hvWpRXC7emZfo1RqZ5lH/KE0=;
+        b=PbZCUYxKCnbfzNrmB4JItEUUetylTRLmeeNZuPzCCyVS0rNFgeP4TRKEHiCzlUx8D2
+         BMQO27KQE+UrROMU0Pn7X+JhrNWQWxVD+eOxNCa0gb53ipYUZjMywSOXa1dG4dfsQrMt
+         AKcMw82Rm81y565msz0R+zUJt0A1+/8ddWetEHvjeA3D2/aJG6YCCXKJom4wYCT83jAN
+         yF3R2BUCDG+nfR1fX3GYGVOkp+K7UIymRP3pm823tfo1X/4f0LCyxOjzwixk2O8wvE9w
+         sJt1S9gTcR6z+xoHib3A3uSeYWyWhgSm62kZh0WjnM62pHIdAaVQenRxjbp5kaqxVKv0
+         CtgA==
+X-Gm-Message-State: AOJu0YwobW5V5U6M/SmIcOgZgWq9OI/HQhqiz1LKeXOd8VMAvGaDP7Iv
+	c+uB4Z2iCyuKgOCPoASF1SKBUxxP37GsLLYai91tr2PPuagZ5/vW
+X-Google-Smtp-Source: AGHT+IFkYBnjxfUnYZFyHzALB8fb8u27KmrxjghwpTkp7fqbMqXpiU4XSlXPKpJAxBD4VhEftdvKiw==
+X-Received: by 2002:ad4:5c4e:0:b0:68c:a48b:1837 with SMTP id a14-20020ad45c4e000000b0068ca48b1837mr438169qva.56.1707161769319;
+        Mon, 05 Feb 2024 11:36:09 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUbuUCENedczyASvNvgOsZLGNELhJsJf54VqklTvrmDRQrN8mFrDocwp7r7k2AUb04QpPCzZUBHfvPwIAdwfIh0VBEnjAkAKj7dmqZXMEfhEgaHKwv7i9j4Ix+yhK9z6awxzyRwJj9Vr5O0WKC5MeTessBMSQd8yBF7pvkHAD1YuK8lhqKcNgQNXTlKvXqfdCMjzynwyUEg2LaJ5M2MbJxoRFhzYSxiNiGlIKNP54bHPU4ZxUrezdxw+Jvbj4+QllSfMoXlM4jtpiJHzyEX0Oxs7Hb/oPHJdYVht+MLx1klC5XWqaj8zHOhbUCsuiQmnxbxE+gXFCN2WNLoMsHRMLW2Fw==
+Received: from localhost (131.65.194.35.bc.googleusercontent.com. [35.194.65.131])
+        by smtp.gmail.com with ESMTPSA id lx1-20020a0562145f0100b006869e0eed00sm273122qvb.26.2024.02.05.11.36.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 11:36:09 -0800 (PST)
+Date: Mon, 05 Feb 2024 14:36:08 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Chenyuan Yang <chenyuan0y@gmail.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: davem@davemloft.net, 
+ dsahern@kernel.org, 
+ edumazet@google.com, 
+ kuba@kernel.org, 
+ pabeni@redhat.com, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ syzkaller@googlegroups.com, 
+ Zijie Zhao <zzjas98@gmail.com>
+Message-ID: <65c138a8be1ba_7b2e02945e@willemb.c.googlers.com.notmuch>
+In-Reply-To: <CALGdzuqnnpc9PK0dJ9vW-n9oo3aM52yu44wr7-Gqf5cKQ2OfPQ@mail.gmail.com>
+References: <CALGdzurnLbn6vL28qb07iLMtFjiNUJPygJvwAWoT2D3E7B71jg@mail.gmail.com>
+ <65b6d03957960_3fec8b294a0@willemb.c.googlers.com.notmuch>
+ <CALGdzuqnnpc9PK0dJ9vW-n9oo3aM52yu44wr7-Gqf5cKQ2OfPQ@mail.gmail.com>
+Subject: Re: [Linux Kernel Bug][ipv6/udp] memory leak in __ip6_append_data
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|MW4PR11MB5776:EE_
-X-MS-Office365-Filtering-Correlation-Id: 115b65f7-ea5e-46a3-f396-08dc2681afe4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TDI7w7z1st/wqb3iYI/mLTp4cg0cpKlyM4SHZdalx05kkx+p9xFkN8+PobzjnOZ6AHAjI8kLm9tYVkodisZvtXSpWOcdA9zQs+kvzeWLlHoBW6N19UaQot6X6tkICQTmGIDJ1TLLbGPikzZdFfbBw2/qHD9ymRfGk1uxyDDp/0Gny94c5PMdhdVptoLmDP3S+Kr1belsbl3WPhLKYoFfUxVYX5czJnhHH6YhAY3bl9NanwzfDv4zz+EGilJVPVxjFuQDPCuJ6VT5bEnp3PY/c1wCZfCQMA7+WqviZLPqUzhk15VrgDltJnwpG9UpPxWR181TD4y5tiFgH8BSF/k1vIEjEi+JDCJ1C93aJL4I32hHPjzUccA1/4Ax3yhe+GlZUTx63hXFWphewG1c1UmEnRfrCwRldFylkp1PIJTggoZV1BHus+sGu1ajrIDGjt2qh6khtxWjroQqCRhM96cmquNi16Myfh8CkUMWShPuiMhNuref1JRxlU7IXw0IVmaXoe+w9StnqAyVDlpDlQsaMc7ZH8kGH8PCR4k8snN8cFkqcn9WIsII8OlqQ0tZcb2R8+zAmtKVcxLUIzXon+Uk0Ja4WgJ09R6WQMSgK6gtcw+FwMWPco9n2JWMuy/1mIuqWg9ZbBObGcQItT3DjZasTg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(396003)(346002)(136003)(39860400002)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(44832011)(2906002)(31686004)(41300700001)(5660300002)(31696002)(83380400001)(26005)(86362001)(2616005)(6512007)(6506007)(36756003)(6916009)(53546011)(478600001)(6486002)(316002)(66556008)(66946007)(38100700002)(82960400001)(66476007)(4326008)(8936002)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RE9zZ1lWSmljVG02OXA3N09ZUUJ1T0dOQUd6OFNnOFFGZlpKWWpONXJmNXhI?=
- =?utf-8?B?U3RMVGpNT3h0TktGZVVEUnBNQmRXTmVyU0F1LzErVjFEOThkakk1UWJtQzJi?=
- =?utf-8?B?c29PTHdiY0E2TVoxRFFLQ1BrZ3A2NGZadENYZGhPRWo1cWoyQWxxZms2dGZa?=
- =?utf-8?B?b3V5U0NvQWJwMWhFL2dnMDg4NG13eVNpS1BKR0pFamV6dXE0TWplRVhnMVd6?=
- =?utf-8?B?Y2I0YUZoMjE0TUc1SmM3djlyMGd0OEJLR01LblNMUDhPV25veWZkbGRueFZY?=
- =?utf-8?B?Z1ZUODhSbHBHZkdkR2I3b0w1SllWVHdQUndPU09NbjVqdHFNSjZiNWhNSTBJ?=
- =?utf-8?B?THg0NnNwQ3pVRTdORlN5QkMvamVZQTdrMkh6Nlg5aHdLdHppZXFJNGtxZTJk?=
- =?utf-8?B?V0ZXRldQUnNwT1dlL256WENpVm1TY2dEOTZsRHM5REJtU0VydzAvWUlJam10?=
- =?utf-8?B?SFNaVllwSXphbEVRKzlWM0ZXelJwVUpzZnc4a3BuNlg0emgyTWRtV3NKWlZU?=
- =?utf-8?B?NkQwQnFWVjRPb3FiTFZ5U2dpV0RreDkzbWJ6MWlodkM1b3R2em5wKy9IODI2?=
- =?utf-8?B?b0xmRmtkNjlBUHJHZHZlZXFHVTUzV2hzWmJrZ29VUU5WS2VBbm9neEVyRTQ1?=
- =?utf-8?B?RjUya09nc2hoQUxESEYwdHBDeUNVSUhOS1EreFJpVWxwS0hFcklONFpWLzM0?=
- =?utf-8?B?eDNRam1tSmdXa0J6cXRSYWQ4VDVYT1dKY0ZKeFBkdmE3SzhLZmErditQRXBH?=
- =?utf-8?B?YXlYWjcwb00wWGhPZXBKQ1hDSVR6NnEzUm55WE9Ub294MjRMSWUxbC9JMklO?=
- =?utf-8?B?cGtpQkhlQ2lYNm8zWHJHUUExVjUvT3VwKzFSeDdWMHM4bUdJelZWUzVTMEJi?=
- =?utf-8?B?VXd4dFUzQnhFVkh0NzA3YW00VFdjMkdaL0haNFFxdmZ5NGIxMmNXSEN1ak9t?=
- =?utf-8?B?SEZhRWU5UXdoRTlyYU1RaVYxbUM3VWtUTlpFUVFzak4yOWtBVnAwT083Mmpt?=
- =?utf-8?B?dGx3NmxISm9JUStVQUhlOG1WMWp5QnhtZmhOQjdFUzBpQ1ZENEpFNmVha0xE?=
- =?utf-8?B?b2ZSSnBaLzVTY0JId3pWSitIWVpKY0xxOVVENWc2UmN1ZEVNQTNvc0IyWjhG?=
- =?utf-8?B?VzI3a3dwSVhVUC9BUFR0WG9TU3FXN0tWc083TEt3VHg0WDlFM2R5UDhzUC9S?=
- =?utf-8?B?amtVd2hKOWJBRmxlRUNQKyt2LzFUMDc2N0FDSDdqL3d5dTF4emwzOUtCWDQy?=
- =?utf-8?B?NW8zWnhYemVTYmdHeTFMdjZVc1NmYlZLTlpwM0FtV3pMN1c5VjN3eFZoUWVU?=
- =?utf-8?B?akNBeEUwQXMxQnJkeUFWWnptMVRBMGFLVVlLVDdUSjNwTDZRODRyUHBTNDdj?=
- =?utf-8?B?VjZwVG15M0I1d0RyMy9SWlVxc1RtYXN1WVFueW9qRTRlL3V3dWdrcW1vOHNX?=
- =?utf-8?B?ZjhEby8yRDhuUzQzNklwY1BLdW5WU1BweGJvcUZGNlNLMnRIY3orUElDZ2R0?=
- =?utf-8?B?ZDlPVHNUYVg3VldkZXA1eGtwaFkzWjl2eE8rVVUrTHd2TjZ1bVI5YjI0MEtI?=
- =?utf-8?B?ZUtZbWo0UVlBWm05VzlWVi94K0FIODNRYjhPNWtkNDV6TjAzL29Zck45ZXhE?=
- =?utf-8?B?ZXJ4d3djRjNCYmpzSnhna3g1azFwMlNJdVpvNmZENVRyV2cxUW9FcnRqc2gy?=
- =?utf-8?B?TlA2bnRTUzJpTWhGRzJBNVJvUHI1dXdQSnBuaksraXRJNWlXalFJbTQvSUVr?=
- =?utf-8?B?US9uKzJ0VDNHRnpqdG13dnVkQ0dHOFFWU1hhMU5PMEtkS0UvTVZTaThCRFAw?=
- =?utf-8?B?Q05KYXVJMnR1QzBQaTF1dVFCZW1ZRUZYK1U5eUZsSXEyMGtqbEM3Mno3bWpt?=
- =?utf-8?B?ZGxwT3hLdnl3RXpJTGF3d2FRUHMyM1pGSVJBdld6TFpnV3RmWWZoMWxxay91?=
- =?utf-8?B?TmJYUkRhUVBKeUEwbTRpM2k0M3UwR0dKWkJoRnhCcXdyL1czcHcrTkxJZEdC?=
- =?utf-8?B?ZlRyWWxKUXB3Si9nOFRtSkNSYUplZVhqbUtsSGtqZzVpU2xvb0xVZDZLeXZH?=
- =?utf-8?B?ZGNIU08rVmZUWjJUZGNZVkZnYnNibk45NFBETDdJNmNvaGRtM0xpMEVveWxJ?=
- =?utf-8?B?TVkwZ3VSQUd1bWx4VjRxQUxqbVZ4a3VJVVFVdElUWmtTOElPaFUxdmcrdzdD?=
- =?utf-8?B?UFE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 115b65f7-ea5e-46a3-f396-08dc2681afe4
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2024 19:36:02.5094
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9fpAYaTcRbKlONjFWmQvTN76bIGLI0X4ZZCbqe11aBONqa3SEoeKBayy+SabKZ/j+MRjzl4PtQfLh5AK+TewcSjQzhrozkTkvLZxfY63pzs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB5776
-X-OriginatorOrg: intel.com
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Haifeng,
+Chenyuan Yang wrote:
+> Hello Willem,
+> =
 
-Thank you for proposing this feature. I think it is a useful addition.
-I tried it out after removing a monitor group and it was insightful
-to be able to see how the cache occupancy of a removed group
-shrinks over time.
+> Thanks for your reply!
+> =
 
-On 1/26/2024 5:02 AM, Haifeng Xu wrote:
-> If llc_occupany is enabled, the rmid may not be freed immediately unless
+> I double-checked the reproducer and ensured it could reproduce on the
+> latest kernel (hash: 3eb5ca857d38ae7a694de6e59a3de7990af87919) with
+> the config attached.
+> =
 
-(llc_occupany -> llc_occupancy ... one more instance below)
+> ```
+> root@syzkaller:~# gcc -pthread repro.c -o exe
+> root@syzkaller:~# ./exe
+> BUG: memory leak
+> unreferenced object 0xffff88801a80c700 (size 240):
+>   comm "exe", pid 12074, jiffies 4295684229 (age 11.520s)
+>   hex dump (first 32 bytes):
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>     00 00 00 00 00 00 00 00 40 1a ad 1a 80 88 ff ff  ........@.......
+>   backtrace:
+>     [<ffffffff81625419>] kmem_cache_alloc_node+0x2e9/0x440
+>     [<ffffffff83e747e7>] __alloc_skb+0x1f7/0x220
+>     [<ffffffff83e6a06b>] sock_omalloc+0x5b/0xa0
+>     [<ffffffff83e7d702>] msg_zerocopy_realloc+0xf2/0x340
+>     [<ffffffff8430d3a2>] __ip6_append_data.isra.0+0x1432/0x1e50
+>     [<ffffffff8430decf>] ip6_append_data+0x10f/0x2e0
+>     [<ffffffff84352bd1>] udpv6_sendmsg+0x851/0x1690
+>     [<ffffffff84305b39>] inet6_sendmsg+0x49/0x70
+>     [<ffffffff83e5e954>] __sock_sendmsg+0x54/0xb0
+>     [<ffffffff83e61982>] __sys_sendto+0x172/0x220
+>     [<ffffffff83e61a58>] __x64_sys_sendto+0x28/0x30
+>     [<ffffffff84ae676f>] do_syscall_64+0x3f/0x110
+>     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> =
 
-Please use caps (RMID) for acronym.
+> BUG: memory leak
+> unreferenced object 0xffff88801f2e1400 (size 640):
+>   comm "exe", pid 12074, jiffies 4295684229 (age 11.520s)
+>   hex dump (first 32 bytes):
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<ffffffff81625419>] kmem_cache_alloc_node+0x2e9/0x440
+>     [<ffffffff83e70b20>] kmalloc_reserve+0xe0/0x170
+>     [<ffffffff83e746c1>] __alloc_skb+0xd1/0x220
+>     [<ffffffff83e6a06b>] sock_omalloc+0x5b/0xa0
+>     [<ffffffff83e7d702>] msg_zerocopy_realloc+0xf2/0x340
+>     [<ffffffff8430d3a2>] __ip6_append_data.isra.0+0x1432/0x1e50
+>     [<ffffffff8430decf>] ip6_append_data+0x10f/0x2e0
+>     [<ffffffff84352bd1>] udpv6_sendmsg+0x851/0x1690
+>     [<ffffffff84305b39>] inet6_sendmsg+0x49/0x70
+>     [<ffffffff83e5e954>] __sock_sendmsg+0x54/0xb0
+>     [<ffffffff83e61982>] __sys_sendto+0x172/0x220
+>     [<ffffffff83e61a58>] __x64_sys_sendto+0x28/0x30
+>     [<ffffffff84ae676f>] do_syscall_64+0x3f/0x110
+>     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> ```
+> =
 
-> its llc_occupany is less than the resctrl_rmid_realloc_threshold.
+> The C reproducer needs some time while the syz program can reproduce
+> the issue more quickly.
+> =
 
-I think it will help to highlight that this is related to monitor group
-removal.
+> Let me know if you need further information to reproduce or debug.
+> =
 
-> 
-> In our production environment, those unused rmids get stuck in the limbo
-> list forever because their llc_occupancy are larger than the threshold.
-> After turning it up, we can successfully free unused rmids and create
-> new monitor groups. In order to acquire the llc_occupancy of rmids in
-> each rdt domain, we use perf tool to track and filter the log manually.
+> Best,
+> Chenyuan
+> =
 
-Could you please elaborate how you "use perf tool to track and
-filter the log manually"?
+> On Sun, Jan 28, 2024 at 4:07=E2=80=AFPM Willem de Bruijn
+> <willemdebruijn.kernel@gmail.com> wrote:
+> >
+> > Chenyuan Yang wrote:
+> > > Dear Linux Developers for Ipv6 Network,
+> > >
+> > > We encountered "memory leak in __ip6_append_data" when testing the
+> > > ipv6 udp socket with Syzkaller and our generated specifications.
+> > >
+> > > The reproducers and config for the kernel are attached.
+> > >
+> > > ```
+> > > BUG: memory leak
+> > > unreferenced object 0xffff888018322900 (size 240):
+> > >   comm "syz-executor115", pid 8030, jiffies 4294985782 (age 11.650s=
+)
+> > >   hex dump (first 32 bytes):
+> > >     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ..............=
+.
+> > >     00 00 00 00 00 00 00 00 40 5a 8b 14 80 88 ff ff  ........@Z....=
+.
+> > >   backtrace:
+> > >     [<ffffffff81625419>] kmemleak_alloc_recursive
+> > > include/linux/kmemleak.h:42 [inline]
+> > >     [<ffffffff81625419>] slab_post_alloc_hook mm/slab.h:766 [inline=
+]
+> > >     [<ffffffff81625419>] slab_alloc_node mm/slub.c:3478 [inline]
+> > >     [<ffffffff81625419>] kmem_cache_alloc_node+0x2e9/0x440 mm/slub.=
+c:3523
+> > >     [<ffffffff83e747e7>] __alloc_skb+0x1f7/0x220 net/core/skbuff.c:=
+641
+> > >     [<ffffffff83e6a06b>] alloc_skb include/linux/skbuff.h:1286 [inl=
+ine]
+> > >     [<ffffffff83e6a06b>] sock_omalloc+0x5b/0xa0 net/core/sock.c:265=
+7
+> > >     [<ffffffff83e7d702>] msg_zerocopy_alloc net/core/skbuff.c:1552 =
+[inline]
+> > >     [<ffffffff83e7d702>] msg_zerocopy_realloc+0xf2/0x340 net/core/s=
+kbuff.c:1628
+> > >     [<ffffffff8430d3a2>] __ip6_append_data.isra.0+0x1432/0x1e50
+> > > net/ipv6/ip6_output.c:1517
+> > >     [<ffffffff8430decf>] ip6_append_data+0x10f/0x2e0 net/ipv6/ip6_o=
+utput.c:1832
+> > >     [<ffffffff84352bd1>] udpv6_sendmsg+0x851/0x1690 net/ipv6/udp.c:=
+1602
+> > >     [<ffffffff84305b39>] inet6_sendmsg+0x49/0x70 net/ipv6/af_inet6.=
+c:657
+> > >     [<ffffffff83e5e954>] sock_sendmsg_nosec net/socket.c:730 [inlin=
+e]
+> > >     [<ffffffff83e5e954>] __sock_sendmsg+0x54/0xb0 net/socket.c:745
+> > >     [<ffffffff83e61982>] __sys_sendto+0x172/0x220 net/socket.c:2194=
 
-> 
-> It's not efficient enough. Therefore, we can add a new tracepoint that
+> > >     [<ffffffff83e61a58>] __do_sys_sendto net/socket.c:2206 [inline]=
 
-"It's not efficient enough." is a vague statement. How was efficiency measured?
-and what is "enough"?
+> > >     [<ffffffff83e61a58>] __se_sys_sendto net/socket.c:2202 [inline]=
 
-Please do not impersonate code ("we can add a new ...") and stick to the 
-imperative tone. Please see the "Changelog" section in 
-Documentation/process/maintainer-tip.rst for more details.
+> > >     [<ffffffff83e61a58>] __x64_sys_sendto+0x28/0x30 net/socket.c:22=
+02
+> > >     [<ffffffff84ae676f>] do_syscall_x64 arch/x86/entry/common.c:51 =
+[inline]
+> > >     [<ffffffff84ae676f>] do_syscall_64+0x3f/0x110 arch/x86/entry/co=
+mmon.c:82
+> > >     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> > >
+> > > BUG: memory leak
+> > > unreferenced object 0xffff888014a58280 (size 640):
+> > >   comm "syz-executor115", pid 8030, jiffies 4294985782 (age 11.650s=
+)
+> > >   hex dump (first 32 bytes):
+> > >     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ..............=
+.
+> > >     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ..............=
+.
+> > >   backtrace:
+> > >     [<ffffffff81625419>] kmemleak_alloc_recursive
+> > > include/linux/kmemleak.h:42 [inline]
+> > >     [<ffffffff81625419>] slab_post_alloc_hook mm/slab.h:766 [inline=
+]
+> > >     [<ffffffff81625419>] slab_alloc_node mm/slub.c:3478 [inline]
+> > >     [<ffffffff81625419>] kmem_cache_alloc_node+0x2e9/0x440 mm/slub.=
+c:3523
+> > >     [<ffffffff83e70b20>] kmalloc_reserve+0xe0/0x170 net/core/skbuff=
+c:560
+> > >     [<ffffffff83e746c1>] __alloc_skb+0xd1/0x220 net/core/skbuff.c:6=
+51
+> > >     [<ffffffff83e6a06b>] alloc_skb include/linux/skbuff.h:1286 [inl=
+ine]
+> > >     [<ffffffff83e6a06b>] sock_omalloc+0x5b/0xa0 net/core/sock.c:265=
+7
+> > >     [<ffffffff83e7d702>] msg_zerocopy_alloc net/core/skbuff.c:1552 =
+[inline]
+> > >     [<ffffffff83e7d702>] msg_zerocopy_realloc+0xf2/0x340 net/core/s=
+kbuff.c:1628
+> > >     [<ffffffff8430d3a2>] __ip6_append_data.isra.0+0x1432/0x1e50
+> > > net/ipv6/ip6_output.c:1517
+> > >     [<ffffffff8430decf>] ip6_append_data+0x10f/0x2e0 net/ipv6/ip6_o=
+utput.c:1832
+> > >     [<ffffffff84352bd1>] udpv6_sendmsg+0x851/0x1690 net/ipv6/udp.c:=
+1602
+> > >     [<ffffffff84305b39>] inet6_sendmsg+0x49/0x70 net/ipv6/af_inet6.=
+c:657
+> > >     [<ffffffff83e5e954>] sock_sendmsg_nosec net/socket.c:730 [inlin=
+e]
+> > >     [<ffffffff83e5e954>] __sock_sendmsg+0x54/0xb0 net/socket.c:745
+> > >     [<ffffffff83e61982>] __sys_sendto+0x172/0x220 net/socket.c:2194=
+
+> > >     [<ffffffff83e61a58>] __do_sys_sendto net/socket.c:2206 [inline]=
+
+> > >     [<ffffffff83e61a58>] __se_sys_sendto net/socket.c:2202 [inline]=
+
+> > >     [<ffffffff83e61a58>] __x64_sys_sendto+0x28/0x30 net/socket.c:22=
+02
+> > >     [<ffffffff84ae676f>] do_syscall_x64 arch/x86/entry/common.c:51 =
+[inline]
+> > >     [<ffffffff84ae676f>] do_syscall_64+0x3f/0x110 arch/x86/entry/co=
+mmon.c:82
+> > >     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> > >
+> > > Syzkaller reproducer:
+> > > # {Threaded:true Repeat:true RepeatTimes:0 Procs:1 Slowdown:1 Sandb=
+ox:
+> > > SandboxArg:0 Leak:true NetInjection:false NetDevices:false
+> > > NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false
+> > > KCSAN:false DevlinkPCI:false NicVF:false USB:false VhciInjection:fa=
+lse
+> > > Wifi:false IEEE802154:false Sysctl:false Swap:false UseTmpDir:false=
+
+> > > HandleSegv:false Repro:false Trace:false LegacyOptions:{Collide:fal=
+se
+> > > Fault:false FaultCall:0 FaultNth:0}}
+> > > r0 =3D socket$KGPT_inet6_udp(0xa, 0x2, 0x11)
+> > > setsockopt$sock_int(r0, 0x1, 0x3c, &(0x7f0000000000)=3D0x1, 0x4)
+> > > sendto$KGPT_inet6_dgram_ops(r0, 0x0, 0x0, 0x24008006,
+> > > &(0x7f0000000180)=3D{0xa, 0x4e20, 0x0, @loopback, 0x6}, 0x1c) (asyn=
+c)
+> > > sendto$KGPT_inet6_dgram_ops(r0, &(0x7f00000015c0)=3D"98", 0x1,
+> > > 0x4000040, &(0x7f0000000040)=3D{0xa, 0x4e24, 0x0, @empty, 0x1}, 0x1=
+c)
+> > > (rerun: 64)
+> > > ```
+> >
+> > TL;DR: I haven't reproduced or found a bug through analysis yet.
+> >
+> > A race, as the program requires threaded mode.
+> >
+> > Short program:
+> >
+> >     socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP) =3D 3
+> >
+> >     setsockopt(3, SOL_SOCKET, SO_ZEROCOPY, [1], 4) =3D 0
+> >
+> >     for (i =3D 0; i < UDP_MAX_SEGMENTS /* 64 */; i++)
+> >             sendto(3, "\230", 1, MSG_DONTWAIT|MSG_ZEROCOPY,
+> >                    {sa_family=3DAF_INET6, sin6_port=3Dhtons(20004), s=
+in6_flowinfo=3Dhtonl(0),
+> >                     inet_pton(AF_INET6, "::", &sin6_addr), sin6_scope=
+_id=3D1}, 28) =3D 1
+> >
+> >     sendto(3, NULL, 0, MSG_PEEK|MSG_DONTROUTE|MSG_MORE|MSG_ZEROCOPY|M=
+SG_FASTOPEN,
+> >            {sa_family=3DAF_INET6, sin6_port=3Dhtons(20000), sin6_flow=
+ info=3Dhtonl(0),
+> >             inet_pton(AF_INET6, "::1", &sin6_addr), sin6_scope_id=3D6=
+}, 28) =3D 0
+> >
+> > Where each of the four blocks run in separate threads. In effect the =
+two sendto
+> > calls race.
+> >
+> > They differ in their sendto destination addresses. But on corked sock=
+ets
+> > only the addr argument of the first call is used.
+> >
+> > Only the second call calls MSG_MORE, so can setup a udp packet that p=
+ersists
+> > between the calls. Kind of odd to even allocate an skb if length is 0=
+B?
+> >
+> > The MSG_ZEROCOPY path is only taken for non-zero length, so can be ig=
+nored on
+> > the 0B call. In __ip6_append_data:
+> >
+> >         if ((flags & MSG_ZEROCOPY) && length) {
+> >
+> > So one uarg reference is taken on the second call. For corked udp soc=
+kets, the
+> > total refcount on uarg also remains 1 regardless of the number of MSG=
+_MORE
+> > send calls, each of which calls msg_zerocopy_realloc.
+> >
+> > So an skb gets created and sent, using two calls (one MSG_MORE, one n=
+ot). Both
+> > calls return without error.
+> >
+> > Question is where the uarg can get lost or acquire an extra reference=
+.
+
+Still no root cause. But I ran some variations to narrow down the possibi=
+lities.
+
+Besides the reported ubuf_info leak, kmemleak also reports an sk_alloc le=
+ak (and
+associated apparmor_sk_alloc_security leak).
+
+Most MSG_.. flags passed are irrelevant, as can be expected as many are i=
+gnored
+on UDP rx.
+
+Required are MSG_ZEROCOPY on both sendto calls, MSG_MORE on the 0B call a=
+nd
+MSG_DONTWAIT on the 1B call. Remove any of these as the issue no longer
+reproduces.
+
+The leak happens on a sendto 1B with MSG_ZEROCOPY | MSG_DONTWAIT. No prio=
+r skb
+exists. So this is not an append to the sendto 0B with MSG_MORE.
+
+The underlying issue is a race and it is very brief. Adding even a little=
+
+instrumentation to store some state in ubuf_info (e.g., whether this is a=
+
+new skb or an append to a 0B payload skb), makes kmemleak stop reporting =
+the
+ubuf_info leak. Interestingly, it does still report the sk_alloc leak.
 
 
-> shows the llc_occupancy of busy rmids when scanning the limbo list. It
-> can help us to adjust the resctrl_rmid_realloc_threshold to a reasonable
-> value.
-> 
-> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
-> ---
->  arch/x86/kernel/cpu/resctrl/Makefile        |  1 +
->  arch/x86/kernel/cpu/resctrl/monitor.c       |  5 ++++
->  arch/x86/kernel/cpu/resctrl/monitor_event.h | 30 +++++++++++++++++++++
->  3 files changed, 36 insertions(+)
->  create mode 100644 arch/x86/kernel/cpu/resctrl/monitor_event.h
-> 
-> diff --git a/arch/x86/kernel/cpu/resctrl/Makefile b/arch/x86/kernel/cpu/resctrl/Makefile
-> index 4a06c37b9cf1..0d3031850d26 100644
-> --- a/arch/x86/kernel/cpu/resctrl/Makefile
-> +++ b/arch/x86/kernel/cpu/resctrl/Makefile
-> @@ -1,4 +1,5 @@
->  # SPDX-License-Identifier: GPL-2.0
->  obj-$(CONFIG_X86_CPU_RESCTRL)	+= core.o rdtgroup.o monitor.o
->  obj-$(CONFIG_X86_CPU_RESCTRL)	+= ctrlmondata.o pseudo_lock.o
-> +CFLAGS_monitor.o = -I$(src)
->  CFLAGS_pseudo_lock.o = -I$(src)
 
-From what I understand only one of the c files should define CREATE_TRACE_POINTS
-and it is that c file that should have its CFLAGS modified.
-
-I do not think it is necessary to preemptively fragment the resctrl tracing by creating
-a separate header file for the monitor tracepoints. This is something that may be
-needed as part of current re-design but I think it best to have a simple start that
-places all tracepoints in the same header file.
-
-I would thus like to propose that this work starts by renaming pseudo_lock_event.h
-to a more generic (trace.h?) that will contain all the tracepoints. pseudo-lock.c
-is the file that define's CREATE_TRACE_POINTS so it should remain as the only
-one with its CFLAGS modified. monitor.c should be able to just include "trace.h"
-(after "trace.h" is updated with the new tracepoint) without needing to define
-CREATE_TRACE_POINTS.
-
-
-> diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-> index f136ac046851..a6f94fcae174 100644
-> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
-> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-> @@ -24,6 +24,10 @@
->  
->  #include "internal.h"
->  
-> +#define CREATE_TRACE_POINTS
-> +#include "monitor_event.h"
-> +#undef CREATE_TRACE_POINTS
-> +
->  struct rmid_entry {
->  	u32				rmid;
->  	int				busy;
-> @@ -302,6 +306,7 @@ void __check_limbo(struct rdt_domain *d, bool force_free)
->  			}
->  		}
->  		crmid = nrmid + 1;
-> +		trace_rmid_llc_occupancy(nrmid, d->id, val);
->  	}
->  }
->  
-> diff --git a/arch/x86/kernel/cpu/resctrl/monitor_event.h b/arch/x86/kernel/cpu/resctrl/monitor_event.h
-> new file mode 100644
-> index 000000000000..91265a2dd2c9
-> --- /dev/null
-> +++ b/arch/x86/kernel/cpu/resctrl/monitor_event.h
-> @@ -0,0 +1,30 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#undef TRACE_SYSTEM
-> +#define TRACE_SYSTEM resctrl
-> +
-> +#if !defined(_TRACE_MONITOR_H) || defined(TRACE_HEADER_MULTI_READ)
-> +#define _TRACE_MONITOR_H
-> +
-> +#include <linux/tracepoint.h>
-> +
-> +TRACE_EVENT(rmid_llc_occupancy,
-> +	    TP_PROTO(u32 rmid, int id, u64 occupancy),
-> +	    TP_ARGS(rmid, id, occupancy),
-> +	    TP_STRUCT__entry(__field(u32, rmid)
-> +			     __field(int, id)
-> +			     __field(u64, occupancy)),
-> +	    TP_fast_assign(__entry->rmid = rmid;
-> +			   __entry->id = id;
-> +			   __entry->occupancy = occupancy;),
-> +	    TP_printk("rmid=%u domain=%d occupancy=%llu",
-> +		      __entry->rmid, __entry->id, __entry->occupancy)
-> +	   );
-> +
-
-Naming is always complicated but I would like to make two proposals with
-motivation:
-a) Please prefix this event with "mon_" as the first member of a new
-   "monitor" category of resctrl tracepoints. Users can then interact
-   with monitor tracepoints with convenience of "mon*". Later we could
-   perhaps add a new "alloc*" category.
-b) Please replace all "rmid" exposure to user space with a more generic
-   "mon_hw_id", or if "mon" is clear, just "hw_id". For reference you
-   can search for "mon_hw_id" in Documentation/arch/x86/resctrl.rst.
-   This is needed because resctrl is in the process of being able to
-   be an interface for Arm's MPAM and "rmid" is an x86 specific term.
-
-Considering this, what do you think of something like:
-tracepoint name: mon_llc_occupancy_limbo
-print: "mon_hw_id=%u domain=%d llc_occupancy=%llu"
-
-> +#endif /* _TRACE_MONITOR_H */
-> +
-> +#undef TRACE_INCLUDE_PATH
-> +#define TRACE_INCLUDE_PATH .
-> +#define TRACE_INCLUDE_FILE monitor_event
-> +
-> +/* This part must be outside protection */
-> +#include <trace/define_trace.h>
-
-Thank you.
-
-Reinette
 
