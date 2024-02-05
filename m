@@ -1,75 +1,74 @@
-Return-Path: <linux-kernel+bounces-52616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDB5D849A72
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:36:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68E34849A73
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:37:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63BE01F20F2B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:36:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EE9328113D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:37:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD00620DC8;
-	Mon,  5 Feb 2024 12:35:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 902C422F0E;
+	Mon,  5 Feb 2024 12:35:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="L4VxypKJ"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="htpe0+ww"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 632541C6B2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAB141CA8D
 	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 12:35:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707136530; cv=none; b=Gc2u4YbSprJCYfhQQmt3n2MQPlZj9PN3xF9sUiUbsB2DYOEeTXyl1Q+g+T33PPUA1cAi8tXNsed/HhI4IIvpynP+TOhQ3ygPckD1uL+mwDody8dsCSg9iH+soUhYYEEOMij/Ks18gVYFgKlAuJKay3aWL2L95VExTDdUsBP2IH8=
+	t=1707136531; cv=none; b=tB2/QeFsjKF6Ao1A3SsI+8BRPEpaF7EBjrF6cZ0hZOTlFGTKcwxLjT8LdOebg+Q1ezODagwTzfpoabvxxkDn4nwjtV1KCGXWmppaqzf0hBr0XwqvI1R4bFOsrd8Z6I6mHbXcSQ3WKeabnCZtD6v9jz4NEsBKqtyNtEinRJgzwD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707136530; c=relaxed/simple;
-	bh=TEqXeG3EE5r0HJJI2aXfyZ+mDUoPdveS85d+Fo7JBf4=;
+	s=arc-20240116; t=1707136531; c=relaxed/simple;
+	bh=mJaVHVptIigPFzZ/zR9JERbMLBqYYNcKpf70/6AE0qw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=LPiV94GvPd1yXB2OK0PealigD8a7pgiYJFV/IEWmsCu9R14DMZ9/5Hc4fxQl04p8yIx+2dEc8GMFI/f2zxaC2hsNEkMl6JoURLYhlXpUU5IUFUC3pqGwIoAwvjZ9rYo1jZuBkyxVVwzD+kZ4c3zD0jHfZdIHQXrMHrWoWyrqOoU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=L4VxypKJ; arc=none smtp.client-ip=209.85.210.174
+	 MIME-Version; b=D+hTb/0n1XoiGggAH8IBKB5JTxlehMTv1+bify4beOpXfK6JVjakI62IrU8jl1SSMocLN8Dcnsp8rDdZT+6TSLq5GPuhW/rxR1e1AmqasKGOQgPDJHY4TGI6vct7/5GqLI1gP4nXJRBj0pHaSW/qQFdx87EXWZJ+SBb3ugp8VZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=htpe0+ww; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e038bdf6b1so738630b3a.3
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d74045c463so33461385ad.3
         for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 04:35:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707136528; x=1707741328; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1707136529; x=1707741329; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FH86lG6MyR7uXWPlPZaZQtj5zclv3S/IDeQNDhD0wsU=;
-        b=L4VxypKJ7KRXVpUCrAk89VOHjkk462r/l9kQsHKwYwuuEVGsndX6FCzgGt7B5sA7zA
-         xHYna+NdYFR9Nunfiz0FwpyIItLQk9yEhuBhj1ZammQoC1LoykfJzlo9f/rx9mJQZJ+0
-         l2yKO0XY/9l96hib65YzYdmMa0NZKlfOnl7P8=
+        bh=xBM9WxTj4Xh4iFKbJAS9nYsTd9tTRHElbt7v/kERb54=;
+        b=htpe0+wwzmD3Td7ZdFLPmXsoewp9HjDWEK0jFxt7Xy15b1u9y1nRwuRPXCMMwC2TEs
+         IapY5DBQ4lE6Gsy8lsej9UbOJTCWI8K5MLxVvyd6fMa50ph8yEd13AqA/umdQ4kus4E2
+         FAs7JYyM1A/HukuB+s5oe1NOt/6Wit1Sjaksk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707136528; x=1707741328;
+        d=1e100.net; s=20230601; t=1707136529; x=1707741329;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FH86lG6MyR7uXWPlPZaZQtj5zclv3S/IDeQNDhD0wsU=;
-        b=lDYwtaQwkt9zKo6F4dspDaX8PoUeCr4IKeMlbLoLwHDCwqlNqaavB2T1IC69XoB2eu
-         oNCtYuSKfkh7j8WIYe/DeHnERYRXpuiIhonTYEyCh6DuhMhOrcrDImKJ2KzP5JbJR0vm
-         oosR1HCwvlTcQs5fWvpZGstPsDp5gdpiGXOsqQ+5IlMItUN16ZIRAFbWurJuE6lHo7Be
-         l/6ldqX4wpmscSCzJvcYNR3pak9N+Sl76C731TBx31WJGpVeExNi5qEvxRC2+nGpCuQh
-         TPGLDF64x75e/L7rIaw7cVR4DzoGcuGp9QpY2DnjLncdE2pcEEft4rFw7BKWzKVtU/fY
-         NcAw==
-X-Gm-Message-State: AOJu0YwsvpOSBX4l2c51RPaoSUfFVYiDjoH1T0gKgQ53fL3IrmRk0WBZ
-	+YjGOjf6piL86/rsYEA2/sXVcL7QjfWrRqp88Yome+ebwyvENB4SklYoj1SVbQ==
-X-Google-Smtp-Source: AGHT+IFlfffgYQK5YYez78+IfsArDP07cdit0XksGG6AD/xQaqmTxf1lIWlhL3nllltxLu/AYqTxfA==
-X-Received: by 2002:aa7:87d3:0:b0:6e0:4e58:f21b with SMTP id i19-20020aa787d3000000b006e04e58f21bmr761630pfo.15.1707136528648;
-        Mon, 05 Feb 2024 04:35:28 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWwHha8YxvP2aoIRIZZ8PXriiDHebzEwEPdQS1GCiUmNtMp7csrX2Vw+AKCDxmAxF83WOZEXOVnTruJgzWNTBTfEcH8if2KGpE7zm4SbpGoDOFecCGttc6XrjLdg+cwsWTIBGQh5Rag9UuMLglMTn4D74UUHRXvOc9Lgxs2hHtrGRIksJx1ww110fVmUquqOsQMM6L2QFLzpfH8nI0wGJAuw5Xbe4J2yH9Zc/aKfbVbhNvsAMXOxtfmY+qPqxqsh1/x8z6/VrRBthvrmE5xAbFTX0XoD6rJILJyX5/84ez76SejdmlFWiwS/CfnQ+rizfNNf09XD4CkbEEAICIoGTB+wpJtmAlY8zC5RTRIH9/ypAT7vPEwWXPaQZnPL3l/gXTt2ZjvKM/gh6wI2WUCCrkx5DUphblH+z9OfbXszwBmF4xlPjUvePU6T0W/RaCdgw+0iIb4zBpJ7rkGof6jWgeKjfRGG3D9MPokDa17rA8H6FNyR6Z7cIqpEbhw
+        bh=xBM9WxTj4Xh4iFKbJAS9nYsTd9tTRHElbt7v/kERb54=;
+        b=Nqzsm2uanzSjCn6Xsmj/0ggILqs88lhcmSNy6BNB4+OlAygyil6e/5dSDTrCl5u+M4
+         0enjdGVPi4QIVjMZf+5tbvoPzx4rndPffaRUl6YThDF+9VXpLoAHl04tmqmQdyUmE0Gv
+         yRF2c+fE4+WPwcKWPXJSwXNEYNcB9kFAVIrhk16MJffrC+BZCZLUqUTPuiBfkhZdQ9Sf
+         vZU87cH/6VNCT5XmpztvEdd1kQzMH7hutn/n7Kvdzadj89l6ymoFENZ6/BAdkb/W81xD
+         6yURuWvDfWgKu/yfT7u5e9/xREjoX7cgG5ugZBDVdmwRjppkVuDohvNcNugm5A+byPd/
+         dtHw==
+X-Gm-Message-State: AOJu0YzMHcdaE0dOCAh1m7IluL/+AxQv1a+NOOeAApobOWDh6nZBqXRu
+	FSTXxjPS8NIUeCH2LiOpDR4ZILGHWqCRdWNU8mpmfHnvLyyFAmZ0Km+Rxz0o7Q==
+X-Google-Smtp-Source: AGHT+IFTTqqrWRJgFFkuhIFSdxjlp5gIlB3CMmmYW9dZei/xGuN95raXdDCg689tZTBtii8Fqz2Myw==
+X-Received: by 2002:a17:903:22cd:b0:1d9:4d3f:cbf6 with SMTP id y13-20020a17090322cd00b001d94d3fcbf6mr10142104plg.48.1707136529264;
+        Mon, 05 Feb 2024 04:35:29 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUEpbF+H7yLOzWQv3G1vKnFCs8F/5pEM6MLM7TrUj9SdzHZsyLibhM5xXVRRyDcejgeQiWnpb8oJnfnXihVhQW2C798wt69vVsErM1ODCVO9CidizGakcPoqklr/hbJT5aEqQLPiBy8xxlAZNBcDUDfzc0s3Pfr1Voeq2FEdi4diDaOMNaUkXS+L3GIfnkmJCCIIzzieh1FnIT+dKhDrR3tqjz0QS3fq4n5tVEJtag7FX/Sfl3Q4e8gJlXFzkSQfpCrDmfw1HHCwJe3wT/nQAHqHvq8euSoxQ2CFSIO8u/QcDZsTJvA/HZmQvl+B2LkQ6Ofh6Zd8MwUXbERl5/oxxJLIHe5H7DxrOHUYspbu6FIjz8kpQsjH1Hmazh1HGtwXwN3B1fXigaPI6/nIYz41yL3pZ1tfclMwv2lhAQj723qoZKcTsmAGgqXlvKYDS7ehwWPssK5Ha35kfr7EANSZyN8
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id j32-20020a632320000000b005cd821a01d4sm6877508pgj.28.2024.02.05.04.35.25
+        by smtp.gmail.com with ESMTPSA id iy5-20020a170903130500b001d944e8f0fdsm6204478plb.32.2024.02.05.04.35.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 05 Feb 2024 04:35:26 -0800 (PST)
 From: Kees Cook <keescook@chromium.org>
 To: Andy Shevchenko <andy@kernel.org>
 Cc: Kees Cook <keescook@chromium.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
+	Justin Stitt <justinstitt@google.com>,
 	linux-hardening@vger.kernel.org,
 	Richard Weinberger <richard@nod.at>,
-	Justin Stitt <justinstitt@google.com>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	Johannes Berg <johannes@sipsolutions.net>,
 	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
@@ -79,9 +78,9 @@ Cc: Kees Cook <keescook@chromium.org>,
 	Azeem Shaikh <azeemshaikh38@gmail.com>,
 	linux-kernel@vger.kernel.org,
 	linux-um@lists.infradead.org
-Subject: [PATCH v2 1/4] string: Redefine strscpy_pad() as a macro
-Date: Mon,  5 Feb 2024 04:35:21 -0800
-Message-Id: <20240205123525.1379299-1-keescook@chromium.org>
+Subject: [PATCH v2 2/4] string: Allow 2-argument strscpy()
+Date: Mon,  5 Feb 2024 04:35:22 -0800
+Message-Id: <20240205123525.1379299-2-keescook@chromium.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240205122916.it.909-kees@kernel.org>
 References: <20240205122916.it.909-kees@kernel.org>
@@ -91,125 +90,173 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3873; i=keescook@chromium.org;
- h=from:subject; bh=TEqXeG3EE5r0HJJI2aXfyZ+mDUoPdveS85d+Fo7JBf4=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlwNYLoPV5NTQ5GwRGCijGU/aLTVRbyEZipneuU
- MRho0SleAeJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZcDWCwAKCRCJcvTf3G3A
- JjLlD/977C+XMdrLxO0tkJtnq9nO/lyXGwJ3l1LW0AnI2sQrcE8MvllgCnv8jv/II3aTMd2vN9I
- xgwhNpMJ4NRgwd/aQT3EcXg7gegX4oXTTo5Cr44s9gCAMWcNouxVQLVO1OFC83tBUNnkVXxNVnN
- PaATkrRl3yMdrcA2BEP7vtPJ239fB/ZzU0a4wGgIJ/A1+AvNy4L4M2GIYQf0vowoT2g769325Qw
- u0uXMqpFubwmpTBbFKkQPUb/lNkZKSq87HnXXOmTSFyqvZEa5mrXoTl10VCF86rmQyIN1fwj7GL
- QbQVjt9Bou0wk8qUR0pkjoRA4q+z95bzhsx4vftom9CzgugBJzNdo0tzZ/4rM/iRIdwanBfUcvg
- loh2poV/udgDFcMlOiP8J/gM8ty7rRlFIEsc/ZIwTz9qFXFDgQzneRVBfq/pQ5wVAHBHmM3Msts
- hnz3lXsTCSCyJusPtxPVqqwh1wO/3fIxp+SPqjbTzBucFtG2by68KAuQShhC8LtCFqG690T5h2b
- mQIU2FZgmjwEzErgF37A6wSigJ1+eQRblZsMQrMVIZej/ALqfadFztxgiF5Qc4SfC8p8YiWUbPN
- 7s/9oP/Imsnzy24+O1UMvEaRTX4bAVV1nMq05nP7DuB9/Jk4AMp/bY24MWR+3XEdB4leJ4KJbVp fhcKDnAmLXTx9Aw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6105; i=keescook@chromium.org;
+ h=from:subject; bh=mJaVHVptIigPFzZ/zR9JERbMLBqYYNcKpf70/6AE0qw=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlwNYLWD0Xozo5J+xTTvfw+MfKqBkxQCUARxBeI
+ UMtcoHx5rmJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZcDWCwAKCRCJcvTf3G3A
+ JtCJD/4hwxxn2am+sHHbObqVTYQbb4y+Jpm7wgzrqcFhv4UmfzqMvuqRRqoxDHzkJsp1hacbVTJ
+ K6hWg4adcpeNJMYH4H1Xt+YxwDSMUPO+6BDZo3zQZBXI088Sa/2uw52X5hUPd5dC0S2erW8Z9nh
+ +6XajX+dBTtbFwYc1D7NhWxp5gplKA2PfhmX1mE6JecX79snifY2o+UN5MNw9u/ar2U6AzIdiaH
+ FvSCjNAVhyNZmbkSdMV5qtiscZ6iXAbFmAtkaYYOthNgTmG9JPJGYqkoW43tKeVp+66jx7eylHy
+ 2GChRBCMIlIUK/8zXwevu4wRzpXfVVVeLQlRj/B2G60XFIFt7kpWjZ1dPCDtXqbK4L3b9ZmF22F
+ zgvbGcoG35MgHtijYSTg2K+6noY77qzG8OXVGYY6vE8V1sukn+PG6DV/rBCSxRuysrWi/RjwroS
+ T02QCvY4jfm5ucmnz8tFBRfo1uaBzqSaBkKYdbS2mZo4u34kJrsBf4r2YI2Ab2yWkLFGPoWbJzz
+ zujgvMOu4Y5t5ZoBK5QYH3X1SARTmWRJVERp8KUnUq4OHfPRMc2l0IqJXX/e1myzDyZzKeDbMh4
+ JSujIp/sfCzqdgCpxSvSn/z4eiFlJg0f6h92lMxovebpoLXQgUHfMfkjr/XYJP9t92yCCR/KoLL cfiYj2mSD9fbCcA==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
-In preparation for making strscpy_pad()'s 3rd argument optional, redefine
-it as a macro. This also has the benefit of allowing greater FORITFY
-introspection, as it couldn't see into the strscpy() nor the memset()
-within strscpy_pad().
+Using sizeof(dst) for the "size" argument in strscpy() is the
+overwhelmingly common case. Instead of requiring this everywhere, allow a
+2-argument version to be used that will use the sizeof() internally. There
+are other functions in the kernel with optional arguments[1], so this
+isn't unprecedented, and improves readability. Update and relocate the
+kern-doc for strscpy() too.
 
+Adjust ARCH=um build to notice the changed export name, as it doesn't
+do full header includes for the string helpers.
+
+This could additionally let us save a few hundred lines of code:
+ 1177 files changed, 2455 insertions(+), 3026 deletions(-)
+with a treewide cleanup using Coccinelle:
+
+@needless_arg@
+expression DST, SRC;
+@@
+
+        strscpy(DST, SRC
+-, sizeof(DST)
+        )
+
+Link: https://elixir.bootlin.com/linux/v6.7/source/include/linux/pci.h#L1517 [1]
+Reviewed-by: Justin Stitt <justinstitt@google.com>
 Cc: Andy Shevchenko <andy@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: linux-hardening@vger.kernel.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- include/linux/string.h | 33 +++++++++++++++++++++++++++++++--
- lib/string_helpers.c   | 34 ----------------------------------
- 2 files changed, 31 insertions(+), 36 deletions(-)
+ arch/um/include/shared/user.h  |  3 ++-
+ include/linux/fortify-string.h | 22 ++-------------------
+ include/linux/string.h         | 35 +++++++++++++++++++++++++++++++++-
+ lib/string.c                   |  4 ++--
+ 4 files changed, 40 insertions(+), 24 deletions(-)
 
+diff --git a/arch/um/include/shared/user.h b/arch/um/include/shared/user.h
+index 981e11d8e025..9568cc04cbb7 100644
+--- a/arch/um/include/shared/user.h
++++ b/arch/um/include/shared/user.h
+@@ -51,7 +51,8 @@ static inline int printk(const char *fmt, ...)
+ 
+ extern int in_aton(char *str);
+ extern size_t strlcat(char *, const char *, size_t);
+-extern size_t strscpy(char *, const char *, size_t);
++extern size_t sized_strscpy(char *, const char *, size_t);
++#define strscpy(dst, src, size)	sized_strscpy(dst, src, size)
+ 
+ /* Copied from linux/compiler-gcc.h since we can't include it directly */
+ #define barrier() __asm__ __volatile__("": : :"memory")
+diff --git a/include/linux/fortify-string.h b/include/linux/fortify-string.h
+index 89a6888f2f9e..06b3aaa63724 100644
+--- a/include/linux/fortify-string.h
++++ b/include/linux/fortify-string.h
+@@ -215,26 +215,8 @@ __kernel_size_t __fortify_strlen(const char * const POS p)
+ }
+ 
+ /* Defined after fortified strnlen() to reuse it. */
+-extern ssize_t __real_strscpy(char *, const char *, size_t) __RENAME(strscpy);
+-/**
+- * strscpy - Copy a C-string into a sized buffer
+- *
+- * @p: Where to copy the string to
+- * @q: Where to copy the string from
+- * @size: Size of destination buffer
+- *
+- * Copy the source string @q, or as much of it as fits, into the destination
+- * @p buffer. The behavior is undefined if the string buffers overlap. The
+- * destination @p buffer is always NUL terminated, unless it's zero-sized.
+- *
+- * Preferred to strncpy() since it always returns a valid string, and
+- * doesn't unnecessarily force the tail of the destination buffer to be
+- * zero padded. If padding is desired please use strscpy_pad().
+- *
+- * Returns the number of characters copied in @p (not including the
+- * trailing %NUL) or -E2BIG if @size is 0 or the copy of @q was truncated.
+- */
+-__FORTIFY_INLINE ssize_t strscpy(char * const POS p, const char * const POS q, size_t size)
++extern ssize_t __real_strscpy(char *, const char *, size_t) __RENAME(sized_strscpy);
++__FORTIFY_INLINE ssize_t sized_strscpy(char * const POS p, const char * const POS q, size_t size)
+ {
+ 	/* Use string size rather than possible enclosing struct size. */
+ 	const size_t p_size = __member_size(p);
 diff --git a/include/linux/string.h b/include/linux/string.h
-index ab148d8dbfc1..03f59cf7fe72 100644
+index 03f59cf7fe72..a21371aa2fd6 100644
 --- a/include/linux/string.h
 +++ b/include/linux/string.h
-@@ -70,8 +70,37 @@ extern char * strncpy(char *,const char *, __kernel_size_t);
- ssize_t strscpy(char *, const char *, size_t);
+@@ -67,9 +67,42 @@ extern char * strcpy(char *,const char *);
+ extern char * strncpy(char *,const char *, __kernel_size_t);
+ #endif
+ #ifndef __HAVE_ARCH_STRSCPY
+-ssize_t strscpy(char *, const char *, size_t);
++ssize_t sized_strscpy(char *, const char *, size_t);
  #endif
  
--/* Wraps calls to strscpy()/memset(), no arch specific code required */
--ssize_t strscpy_pad(char *dest, const char *src, size_t count);
-+/**
-+ * strscpy_pad() - Copy a C-string into a sized buffer
-+ * @dest: Where to copy the string to
-+ * @src: Where to copy the string from
-+ * @count: Size of destination buffer
-+ *
-+ * Copy the string, or as much of it as fits, into the dest buffer. The
-+ * behavior is undefined if the string buffers overlap. The destination
-+ * buffer is always %NUL terminated, unless it's zero-sized.
-+ *
-+ * If the source string is shorter than the destination buffer, zeros
-+ * the tail of the destination buffer.
-+ *
-+ * For full explanation of why you may want to consider using the
-+ * 'strscpy' functions please see the function docstring for strscpy().
-+ *
-+ * Returns:
-+ * * The number of characters copied (not including the trailing %NULs)
-+ * * -E2BIG if count is 0 or @src was truncated.
++/*
++ * The 2 argument style can only be used when dst is an array with a
++ * known size.
 + */
-+#define strscpy_pad(dest, src, count)	({			\
-+	char *__dst = (dest);						\
-+	const char *__src = (src);					\
-+	const size_t __count = (count);					\
-+	ssize_t __wrote;						\
-+									\
-+	__wrote = strscpy(__dst, __src, __count);			\
-+	if (__wrote >= 0 && __wrote < __count)				\
-+		memset(__dst + __wrote + 1, 0, __count - __wrote - 1);	\
-+	__wrote;							\
-+})
- 
- #ifndef __HAVE_ARCH_STRCAT
- extern char * strcat(char *, const char *);
-diff --git a/lib/string_helpers.c b/lib/string_helpers.c
-index 7713f73e66b0..606c3099013f 100644
---- a/lib/string_helpers.c
-+++ b/lib/string_helpers.c
-@@ -825,40 +825,6 @@ char **devm_kasprintf_strarray(struct device *dev, const char *prefix, size_t n)
- }
- EXPORT_SYMBOL_GPL(devm_kasprintf_strarray);
- 
--/**
-- * strscpy_pad() - Copy a C-string into a sized buffer
-- * @dest: Where to copy the string to
-- * @src: Where to copy the string from
-- * @count: Size of destination buffer
-- *
-- * Copy the string, or as much of it as fits, into the dest buffer.  The
-- * behavior is undefined if the string buffers overlap.  The destination
-- * buffer is always %NUL terminated, unless it's zero-sized.
-- *
-- * If the source string is shorter than the destination buffer, zeros
-- * the tail of the destination buffer.
-- *
-- * For full explanation of why you may want to consider using the
-- * 'strscpy' functions please see the function docstring for strscpy().
-- *
-- * Returns:
-- * * The number of characters copied (not including the trailing %NUL)
-- * * -E2BIG if count is 0 or @src was truncated.
-- */
--ssize_t strscpy_pad(char *dest, const char *src, size_t count)
--{
--	ssize_t written;
--
--	written = strscpy(dest, src, count);
--	if (written < 0 || written == count - 1)
--		return written;
--
--	memset(dest + written + 1, 0, count - written - 1);
--
--	return written;
--}
--EXPORT_SYMBOL(strscpy_pad);
--
++#define __strscpy0(dst, src, ...)	\
++	sized_strscpy(dst, src, sizeof(dst) + __must_be_array(dst))
++#define __strscpy1(dst, src, size)	sized_strscpy(dst, src, size)
++
++/**
++ * strscpy - Copy a C-string into a sized buffer
++ * @dst: Where to copy the string to
++ * @src: Where to copy the string from
++ * @...: Size of destination buffer (optional)
++ *
++ * Copy the source string @src, or as much of it as fits, into the
++ * destination @dst buffer. The behavior is undefined if the string
++ * buffers overlap. The destination @dst buffer is always NUL terminated,
++ * unless it's zero-sized.
++ *
++ * The size argument @... is only required when @dst is not an array, or
++ * when the copy needs to be smaller than sizeof(@dst).
++ *
++ * Preferred to strncpy() since it always returns a valid string, and
++ * doesn't unnecessarily force the tail of the destination buffer to be
++ * zero padded. If padding is desired please use strscpy_pad().
++ *
++ * Returns the number of characters copied in @dst (not including the
++ * trailing %NUL) or -E2BIG if @size is 0 or the copy from @src was
++ * truncated.
++ */
++#define strscpy(dst, src, ...)	\
++	CONCATENATE(__strscpy, COUNT_ARGS(__VA_ARGS__))(dst, src, __VA_ARGS__)
++
  /**
-  * skip_spaces - Removes leading whitespace from @str.
-  * @str: The string to be stripped.
+  * strscpy_pad() - Copy a C-string into a sized buffer
+  * @dest: Where to copy the string to
+diff --git a/lib/string.c b/lib/string.c
+index 6891d15ce991..2869895a1180 100644
+--- a/lib/string.c
++++ b/lib/string.c
+@@ -104,7 +104,7 @@ EXPORT_SYMBOL(strncpy);
+ #endif
+ 
+ #ifndef __HAVE_ARCH_STRSCPY
+-ssize_t strscpy(char *dest, const char *src, size_t count)
++ssize_t sized_strscpy(char *dest, const char *src, size_t count)
+ {
+ 	const struct word_at_a_time constants = WORD_AT_A_TIME_CONSTANTS;
+ 	size_t max = count;
+@@ -170,7 +170,7 @@ ssize_t strscpy(char *dest, const char *src, size_t count)
+ 
+ 	return -E2BIG;
+ }
+-EXPORT_SYMBOL(strscpy);
++EXPORT_SYMBOL(sized_strscpy);
+ #endif
+ 
+ /**
 -- 
 2.34.1
 
