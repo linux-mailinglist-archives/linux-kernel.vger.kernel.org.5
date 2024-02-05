@@ -1,120 +1,242 @@
-Return-Path: <linux-kernel+bounces-52117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45C5384944D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:19:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AE57F84944B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:19:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA9B91F24522
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:19:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 361E91F2102D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:19:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A82F9D524;
-	Mon,  5 Feb 2024 07:19:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86B5610799;
+	Mon,  5 Feb 2024 07:18:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="M2L9jptv"
-Received: from mout.web.de (mout.web.de [212.227.17.12])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Jq/mZXry"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 646D011190;
-	Mon,  5 Feb 2024 07:18:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B555110A11;
+	Mon,  5 Feb 2024 07:18:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707117540; cv=none; b=nSphi5CRqpYXC+SE+JX861bciXhJwlip07wqENndk66J6M2c4wBYMaJFZiQHMCK3HCD9Pg62cVAtfhpGVoAFBu120S3RKKsqUdLweYZzUcwMTkrB39LHN5dcKRRJ/d6PAcUg4hehEsD52v5vubpRdnfdywDNWf1+ewv0HsY5szw=
+	t=1707117527; cv=none; b=hZW5n4rZizC+BEkDeSjDvF8lOCX6PVY5X/gCLF3771WLFblr3kmKyLvj4ZidxFaO6X6ivX0euW3WpSaLipKRFu36W0LQ11zgOWFgbCnQzl8kGbpCKYIRogHJ6a3O6T/d4q57VPuGg7Eftr6wzuVNkdoGc9kmJp5GOTComjem9So=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707117540; c=relaxed/simple;
-	bh=73k30Uuu2I0nXwmzN/giEsYyYLykqNOzfOvlrrvM9QI=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=jUXCCdz4+jvhNA6MeXAVUHd+8+Lnc/6UdzEqojGPm43C7NaWtPEr8yz4FmefHYANqki00+7if57VgyOHQMQLvDAVAyDIGwV60u3ddjWsYIzNuU/nxtN7PfovqtSrwfUvjdQNS4KAzrBwjNVxw+luNlzYv9ZpAese0EFu4nBfh64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=M2L9jptv; arc=none smtp.client-ip=212.227.17.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1707117514; x=1707722314; i=markus.elfring@web.de;
-	bh=73k30Uuu2I0nXwmzN/giEsYyYLykqNOzfOvlrrvM9QI=;
-	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
-	b=M2L9jptvoI4I7+K/EudTNtJrCo0CPh8GMvqhLw1GZXVWPw7519nQigtlsdsflvKj
-	 rID500k2cNuaQYce/tTHZi/nagQasi/P36aEfd+bMER9Z1psZ8xmcP1XsjJjDpmD+
-	 If1DhcgKtHvqpFIGibeD2sLrkhJbynu/hR1vhmYsRqyzBtkFreY8t39DA3B5WwJmR
-	 W3/a8I3DyWuzpvjmCDgGjjglQd6a8rJTtf5rfjs7V2zFQkkhoijM1acAzQFsg+ki8
-	 JMs7PRZk5ELEXCza8+uUHGma0g7r0Si/Tz4Ho/ysHd2r9FXaaijRaVMe7xy4ImusB
-	 m/JNDLfCsQMCTc/Zcg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1M7Nmo-1rebQ610LE-007sv2; Mon, 05
- Feb 2024 08:18:34 +0100
-Message-ID: <0b255d17-deab-4d6e-bf44-d950b512dc14@web.de>
-Date: Mon, 5 Feb 2024 08:18:31 +0100
+	s=arc-20240116; t=1707117527; c=relaxed/simple;
+	bh=gkdmc8lA4q8aWADtHilHVzHU5JvdhJ3Qy1IP3zrRi5Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=F/Uw3ngqwQy9iVGbKLMwPS4ds2kc++UxEwFdznZR+WILWxudJWyTqa0ucqU+iyO6ylzkR+7Iq0rrIds5vWZ5KXmuwcTHRd8LpCBxBbTt1esXUCt3S3yHJ2sufA4zJOae1T/h7ZK41lvfrRy2m00ZUu7nF/3swI+NskaTP2kAHRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Jq/mZXry; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707117525; x=1738653525;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=gkdmc8lA4q8aWADtHilHVzHU5JvdhJ3Qy1IP3zrRi5Y=;
+  b=Jq/mZXrytytnI9q2YCeyxdISJMoK+ncI2ndC+9fo/fTfa1+GKJKXYTCd
+   nHolw+ZenL8NqwAg+mrN8JEqFS/2hUqRn17ejg2TC3/zhqMb2mlHZY5zn
+   HL0Jrrg06d/N09yzEidZdJdYTgcXaYNvPVbOUJ2D0t4EsOhBWT6g9X/eY
+   oTx3L7wLDi1nM4DT/2hUXg9XEdwmKXfNd9Hdb4uUdlnLd/cXGEzzIt3r1
+   QskIl2HJIL6b4ped2p6YMndQX2xQbG9uo/Ki6qcDSovSvHobtxwvrcrgD
+   ttqu9hJGXNvDh9GcEafnT9dBQtzt8Fuyi+ZvKkJNU162gaUZfiywe9kUu
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="11110045"
+X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
+   d="scan'208";a="11110045"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 23:18:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
+   d="scan'208";a="848756"
+Received: from tdspence-mobl1.amr.corp.intel.com (HELO desk) ([10.251.0.86])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 23:18:43 -0800
+Date: Sun, 4 Feb 2024 23:18:42 -0800
+From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Andy Lutomirski <luto@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+	Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+	ak@linux.intel.com, tim.c.chen@linux.intel.com,
+	Andrew Cooper <andrew.cooper3@citrix.com>,
+	Nikolay Borisov <nik.borisov@suse.com>
+Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	kvm@vger.kernel.org,
+	Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+	antonio.gomez.iglesias@linux.intel.com,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Alyssa Milburn <alyssa.milburn@intel.com>, stable@kernel.org,
+	Dave Hansen <dave.hansen@intel.com>
+Subject: [PATCH v7 0/6] Delay VERW
+Message-ID: <20240204-delay-verw-v7-0-59be2d704cb2@linux.intel.com>
+X-B4-Tracking: v=1; b=H4sIAIyKwGUC/23QzWrDMBAE4FcJOldB2tWfe+p7lBxkad0IXDvIq
+ ZIQ/O5VXQo29XEG5jvMk02UE03s9fBkmUqa0jjUYF8OLJz98EE8xZoZCEAppOSRev/ghfKNR6G
+ sapxpISCrg0umLt0X7J2xU23OabqO+bHoRS79LwRiDRXJBQ9dp5VoDIKJb30avu7HNFypP4bxc
+ 8EKrAG1AaACnXROohLBCbsP4BrQGwAroMEYNNYSod4H9B+g6hWbL4qugMcWUDWI5M0+YFYA4AY
+ wP4ADYVofvI34H5jn+Rto/D88sAEAAA==
+X-Mailer: b4 0.12.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-edac@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Borislav Petkov <bp@alien8.de>, James Morse <james.morse@arm.com>,
- Khuong Dinh <khuong@os.amperecomputing.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Robert Richter
- <rric@kernel.org>, Tony Luck <tony.luck@intel.com>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] EDAC/xgene: Use devm_platform_get_and_ioremap_resource() in
- xgene_edac_probe()
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:4hV7VJ0mx1v/VvrknYWWyPT1r0T07XTywcSSrrjZxNUELMe+hag
- MeVbBYU5q/nEhNx0LZ7rfm9tMQ25/pPdOPBlfB1mBPbH9bElk7c0sEEwTOv/QNFYXPkUDg1
- gm25BR26WYV5zBjKKVEJgGH6u3I+VFXERsXymYkVexBoij3lSv9dbX7Wti/2ct06xa1n+tz
- ob6G05muvdrywSLVHp0eA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:ZAg9M4qwheQ=;c5zCXkRmxY+UGlNIsKrF+g1zke3
- fGPzSLCw34v1RPBeYLeN09uPFDiiYIpivGB7A10GlwaBdEEVLe5gyKoXB4E2yGEu+4+p44Pgt
- M0JQyESTNaySDqnd3yADb7GSYB+2nVPU9/9X20FELbf7jAN1qoDyLyUTYmYKCcvU+mPnNv3HL
- qFevPiEzOe1zesSmEfUa5Wt1HaxGszvx/jsXqQm9BTRSbGROVwmGkOGOjAnIYij1C2OP+n9lw
- xWcD8y0XwqWL66YtZ7IIXAuD6adgkuK5aqgYvejaog2rRg+KWGINnQbI22UrEmg9nOwisGn7+
- azcBlFOpON1E6uAePbgEmuMUkt376Ggtg52udxWoDl/nxlRonv4QdqhZWkpWMsKqSPvXGwqv5
- S35o3A5zlGnO2lpgvtAKPMvftHrqJbXELqI/VOFZGJovEVftAIcAEbIN31bubkUB3S3KnPwbA
- kVU+9SK5IzW2aXHzZkDZtNURbD2G/0rVVjd6emS00QicvaZUQdeQqhgTo1MbnssG5hINMzbHr
- nbXNXdWRw2tXSPnnLwIIpEBAPsFlO6I/1/V9b715fJT2lVFHWpYlefEcmPFEKmRYRUpGfUiae
- ciM0FlPkf/ACR6mldBDse1WOy1jFsEeELznNvvjgyn19w49GvC8gIw7GN3UpWQntIJKUDL6qO
- eXMRgYBr9cSUUt7qp6ejQTvgb1YSQatV0z5U/SUk8JrQZ70XYrLrjYwO4Jw0a0q4Ys43lGAPn
- +a/w0J+ix4UfjIrQas3RrCdbxLHpvT5ZuLj/J6V1KpGkw9nJT7YjLmWF3qrNRWLNUSN4ai5P3
- 6eqqLxTzfUoLtVhE/ScEPA5mqf18CI4rLVjMHex0xhF6s=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Mon, 5 Feb 2024 08:12:24 +0100
+v7:
+- Rebase to v6.8-rc3.
+- Resolved merge conflict for X86_FEATURE_CLEAR_CPU_BUF definition, bit position
+  was already taken.
+- Resolved merge conflict with 1e4d3001f59f ("x86/entry: Harden
+  return-to-user") and c516213726fb ("x86/entry: Optimize common_interrupt_return()").
 
-A wrapper function is available since the commit 890cc39a879906b63912482df=
-c41944579df2dc6
-("drivers: provide devm_platform_get_and_ioremap_resource()").
-Thus reuse existing functionality instead of keeping duplicate source code=
-.
+v6: https://lore.kernel.org/r/20240123-delay-verw-v6-0-a8206baca7d3@linux.intel.com
+- Simplify FB_CLEAR checks in vmx_update_fb_clear_dis() and the comment. (Sean)
 
-This issue was detected by using the Coccinelle software.
+v5: https://lore.kernel.org/r/20240111-delay-verw-v5-0-a3b234933ea6@linux.intel.com
+- Added comment to SYM_CODE_START_NOALIGN(mds_verw_sel) explaining VERW
+  operand is in code segment so that VERW at works with KPTI. (Josh/Borislav).
+- Fixed changelog for patch 1/6. (Borislav)
+- Clarify CLEAR_CPU_BUFFERS macro documentation. (Josh)
+- KVM: Move the check to skip FB_CLEAR_CTRL optimization for guests when
+  X86_FEATURE_CLEAR_CPU_BUF is set. (Josh)
+- Rebased to v6.7
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/edac/xgene_edac.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+v4: https://lore.kernel.org/all/20231027-delay-verw-v4-0-9a3622d4bcf7@linux.intel.com/
+- Fill unused part of mds_verw_sel cacheline with int3. (Andrew)
+- Fix the formatting in documentation (0-day).
+- s/inspite/in spite/ (Sean).
+- Explicitly skip FB_CLEAR optimization when MDS affected (Sean).
 
-diff --git a/drivers/edac/xgene_edac.c b/drivers/edac/xgene_edac.c
-index 1b50f8160013..8776765b6d2e 100644
-=2D-- a/drivers/edac/xgene_edac.c
-+++ b/drivers/edac/xgene_edac.c
-@@ -1903,8 +1903,7 @@ static int xgene_edac_probe(struct platform_device *=
-pdev)
- 		edac->rb_map =3D NULL;
- 	}
+v3: https://lore.kernel.org/r/20231025-delay-verw-v3-0-52663677ee35@linux.intel.com
+- Use .entry.text section for VERW memory operand. (Andrew/PeterZ)
+- Fix the duplicate header inclusion. (Chao)
 
--	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	edac->pcp_csr =3D devm_ioremap_resource(&pdev->dev, res);
-+	edac->pcp_csr =3D devm_platform_get_and_ioremap_resource(pdev, 0, &res);
- 	if (IS_ERR(edac->pcp_csr)) {
- 		dev_err(&pdev->dev, "no PCP resource address\n");
- 		rc =3D PTR_ERR(edac->pcp_csr);
-=2D-
-2.43.0
+v2: https://lore.kernel.org/r/20231024-delay-verw-v2-0-f1881340c807@linux.intel.com
+- Removed the extra EXEC_VERW macro layers. (Sean)
+- Move NOPL before VERW. (Sean)
+- s/USER_CLEAR_CPU_BUFFERS/CLEAR_CPU_BUFFERS/. (Josh/Dave)
+- Removed the comments before CLEAR_CPU_BUFFERS. (Josh)
+- Remove CLEAR_CPU_BUFFERS from NMI returning to kernel and document the
+  reason. (Josh/Dave)
+- Reformat comment in md_clear_update_mitigation(). (Josh)
+- Squash "x86/bugs: Cleanup mds_user_clear" patch. (Nikolay)
+- s/GUEST_CLEAR_CPU_BUFFERS/CLEAR_CPU_BUFFERS/. (Josh)
+- Added a patch from Sean to use CFLAGS.CF for VMLAUNCH/VMRESUME
+  selection. This facilitates a single CLEAR_CPU_BUFFERS location for both
+  VMLAUNCH and VMRESUME. (Sean)
+
+v1: https://lore.kernel.org/r/20231020-delay-verw-v1-0-cff54096326d@linux.intel.com
+
+Hi,
+
+Legacy instruction VERW was overloaded by some processors to clear
+micro-architectural CPU buffers as a mitigation of CPU bugs. This series
+moves VERW execution to a later point in exit-to-user path. This is
+needed because in some cases it may be possible for kernel data to be
+accessed after VERW in arch_exit_to_user_mode(). Such accesses may put
+data into MDS affected CPU buffers, for example:
+
+  1. Kernel data accessed by an NMI between VERW and return-to-user can
+     remain in CPU buffers (since NMI returning to kernel does not
+     execute VERW to clear CPU buffers).
+  2. Alyssa reported that after VERW is executed,
+     CONFIG_GCC_PLUGIN_STACKLEAK=y scrubs the stack used by a system
+     call. Memory accesses during stack scrubbing can move kernel stack
+     contents into CPU buffers.
+  3. When caller saved registers are restored after a return from
+     function executing VERW, the kernel stack accesses can remain in
+     CPU buffers(since they occur after VERW).
+
+Although these cases are less practical to exploit, moving VERW closer
+to ring transition reduces the attack surface.
+
+Overview of the series:
+
+Patch 1: Prepares VERW macros for use in asm.
+Patch 2: Adds macros to 64-bit entry/exit points.
+Patch 3: Adds macros to 32-bit entry/exit points.
+Patch 4: Enables the new macros.
+Patch 5: Uses CFLAGS.CF for VMLAUNCH/VMRESUME selection.
+Patch 6: Adds macro to VMenter.
+
+Below is some performance data collected on a Skylake client
+compared with previous implementation:
+
+Baseline: v6.6-rc5
+
+| Test               | Configuration          | v1   | v3   |
+| ------------------ | ---------------------- | ---- | ---- |
+| build-linux-kernel | defconfig              | 1.00 | 1.00 |
+| hackbench          | 32 - Process           | 1.02 | 1.06 |
+| nginx              | Short Connection - 500 | 1.01 | 1.04 |
+
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-doc@vger.kernel.org
+Cc: kvm@vger.kernel.org
+Cc: Alyssa Milburn <alyssa.milburn@linux.intel.com>
+Cc: Daniel Sneddon <daniel.sneddon@linux.intel.com>
+Cc: antonio.gomez.iglesias@linux.intel.com
+To: Thomas Gleixner <tglx@linutronix.de>
+To: Ingo Molnar <mingo@redhat.com>
+To: Borislav Petkov <bp@alien8.de>
+To: Dave Hansen <dave.hansen@linux.intel.com>
+To: x86@kernel.org
+To: "H. Peter Anvin" <hpa@zytor.com>
+To: Peter Zijlstra <peterz@infradead.org>
+To: Josh Poimboeuf <jpoimboe@kernel.org>
+To: Andy Lutomirski <luto@kernel.org>
+To: Jonathan Corbet <corbet@lwn.net>
+To: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+To: tony.luck@intel.com
+To: ak@linux.intel.com
+To: tim.c.chen@linux.intel.com
+To: Andrew Cooper <andrew.cooper3@citrix.com>
+To: Nikolay Borisov <nik.borisov@suse.com>
+
+Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+---
+Pawan Gupta (5):
+      x86/bugs: Add asm helpers for executing VERW
+      x86/entry_64: Add VERW just before userspace transition
+      x86/entry_32: Add VERW just before userspace transition
+      x86/bugs: Use ALTERNATIVE() instead of mds_user_clear static key
+      KVM: VMX: Move VERW closer to VMentry for MDS mitigation
+
+Sean Christopherson (1):
+      KVM: VMX: Use BT+JNC, i.e. EFLAGS.CF to select VMRESUME vs. VMLAUNCH
+
+ Documentation/arch/x86/mds.rst       | 38 +++++++++++++++++++++++++-----------
+ arch/x86/entry/entry.S               | 22 +++++++++++++++++++++
+ arch/x86/entry/entry_32.S            |  3 +++
+ arch/x86/entry/entry_64.S            | 11 +++++++++++
+ arch/x86/entry/entry_64_compat.S     |  1 +
+ arch/x86/include/asm/cpufeatures.h   |  2 +-
+ arch/x86/include/asm/entry-common.h  |  1 -
+ arch/x86/include/asm/nospec-branch.h | 29 +++++++++++++++------------
+ arch/x86/kernel/cpu/bugs.c           | 15 ++++++--------
+ arch/x86/kernel/nmi.c                |  3 ---
+ arch/x86/kvm/vmx/run_flags.h         |  7 +++++--
+ arch/x86/kvm/vmx/vmenter.S           |  9 ++++++---
+ arch/x86/kvm/vmx/vmx.c               | 20 +++++++++++++++----
+ 13 files changed, 115 insertions(+), 46 deletions(-)
+---
+base-commit: 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478
+change-id: 20231011-delay-verw-d0474986b2c3
+
+Best regards,
+-- 
+Thanks,
+Pawan
+
 
 
