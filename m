@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-53883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53884-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C08B84A79C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:37:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A6AD84A79F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:38:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7998283D8A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:37:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC9071F2AF2E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:38:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF778128821;
-	Mon,  5 Feb 2024 20:02:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB9231292F1;
+	Mon,  5 Feb 2024 20:03:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XOci+CJg"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CIQPBF1D"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6A4612881B
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 20:02:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 717701292E3
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 20:03:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707163324; cv=none; b=LEqA+5PwEEcGz/509zCGShnjxP5pOfK8IAprM71u7cB5NM9vNc3f5jyA2BwHzGO2L3vV/pHqyeHBeG9lz3pKP6saXkca5ITDMtKqtaXJGvM7xbSnpWMm9bTnCtPjValtbY7C36pK0LhBD5OGE7eEFFZPsovpoFjsm8g93aKRQOs=
+	t=1707163390; cv=none; b=nbu8KGjlltMaxvAwuPb4ws7+HTpov1sMjwcolfIy8JlNImzVjKaJqRFiEaWc73Btnqm8z1GtNg1IRCinx/yGgCIlNBBTGs3L2l7iZuAcfWBI4V9TBJ/6MHLHVIzo7m0n8SlsgJ/jICZe6mBx5WvId1ta6a9ovxbfvnxvWHAlOu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707163324; c=relaxed/simple;
-	bh=/2F+Sqat3Ko5wi/4JmycWRWYNNOWf+ZQKZsSpCoS6r4=;
+	s=arc-20240116; t=1707163390; c=relaxed/simple;
+	bh=/V90lZZSRGXXf05+8SHxHi+6QRtY/DfvuW/SQHQYyIY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BTCVGNBB4aB6WfmaDZqzSGgkD83uiAObSsWhCWCnrzND9Y9h6ymlJ/2vwV2pn6UubNql4HI28HrqkmfaN7mp48Iu+5FANkeWlNc+SKKo8R8Et7giMdEIiTcVTY8ft1Nclw9aYKM7CYktZji9DCAUWhRxnBkFDRkwILLOtf9B16c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XOci+CJg; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=ZP0T75tXUj1FfpspTAditNkWXX5xqfYOhO4NGnt5YfMkXcfQhgteixUFWpQ1OV4YkmAnJpfR2jDEw6qUXOM7GiZcmaM/9fEOGC4VT8hAL2ZgET3uUQpSWGpBlR0vgaUi+Uli3tlNGMh+GLnRc2vdSbYOsYhhZ0J39OMiVYhOrm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CIQPBF1D; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707163321;
+	s=mimecast20190719; t=1707163387;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=E8zENVDSDVSHR2uqkr4zv65dSkFxFna4B1bFIhcbej0=;
-	b=XOci+CJgpR7rDCsAYKe7zCWV2OmUxorvkMec68fGH2C1n3kV0H//i97WfYa7AQA6BiIcfx
-	gh96UT4cFcZ9BU1OqE1mbB29hsKFuXwyHZugtdvnHECqczZwm9/ISW6E77+LywF3hfYM8t
-	WxAqgXNoHpofY+3SQzq/W0WfNUnxZyg=
+	bh=dJpKJpfoOFFg221gkKrq7FzbeWyIhT5uB2Ecy/dVoZU=;
+	b=CIQPBF1DtkXpWY5I6D/I+NrizGwxwWcfhCDG+WM+viLDT6VO/102ww/DNPmtX70TtUUsyN
+	hlaCqe89r2SXDKaVQhshP0I9Gszcd2gAogDe7c3zeGXxV9u+2xbpkfc4SQdJXJqpuXLOTO
+	wdC9lGQrWnqVPGd44hyAKuVsP1glzxg=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-385-KzCqOMJQPj-9b5m3zOmyKg-1; Mon, 05 Feb 2024 15:01:53 -0500
-X-MC-Unique: KzCqOMJQPj-9b5m3zOmyKg-1
+ us-mta-187-nVCxjYcQNTC-R1a0ywzJvg-1; Mon, 05 Feb 2024 15:03:02 -0500
+X-MC-Unique: nVCxjYcQNTC-R1a0ywzJvg-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9926985A58A;
-	Mon,  5 Feb 2024 20:01:52 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 38C93846D6F;
+	Mon,  5 Feb 2024 20:03:01 +0000 (UTC)
 Received: from rhel-developer-toolbox-latest.redhat.com (unknown [10.2.16.180])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 476215012;
-	Mon,  5 Feb 2024 20:01:51 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id E67F55012;
+	Mon,  5 Feb 2024 20:02:59 +0000 (UTC)
 From: Chris Leech <cleech@redhat.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Nilesh Javali <njavali@marvell.com>
@@ -67,11 +67,11 @@ Cc: Christoph Hellwig <hch@lst.de>,
 	linux-scsi@vger.kernel.org,
 	GR-QLogic-Storage-Upstream@marvell.com,
 	Simon Horman <horms@kernel.org>
-Subject: [PATCH v6 1/4] uio: introduce UIO_MEM_DMA_COHERENT type
-Date: Mon,  5 Feb 2024 12:01:37 -0800
-Message-ID: <20240205200137.138302-1-cleech@redhat.com>
-In-Reply-To: <20240201233400.3394996-2-cleech@redhat.com>
-References: <20240201233400.3394996-2-cleech@redhat.com>
+Subject: [PATCH v6 4/4] uio_dmem_genirq: UIO_MEM_DMA_COHERENT conversion
+Date: Mon,  5 Feb 2024 12:02:57 -0800
+Message-ID: <20240205200257.138376-1-cleech@redhat.com>
+In-Reply-To: <20240201233400.3394996-5-cleech@redhat.com>
+References: <20240201233400.3394996-5-cleech@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,138 +81,86 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-Add a UIO memtype specifically for sharing dma_alloc_coherent
-memory with userspace, backed by dma_mmap_coherent.
+Conversion of this driver to use UIO_MEM_DMA_COHERENT for
+dma_alloc_coherent memory instead of UIO_MEM_PHYS.
 
-This is mainly for the bnx2/bnx2x/bnx2i "cnic" interface, although there
-are a few other uio drivers which map dma_alloc_coherent memory and will
-be converted to use dma_mmap_coherent as well.
-
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
 Signed-off-by: Chris Leech <cleech@redhat.com>
 ---
-v6: added kdoc comments
+v6: fixed single char ',' -> ';' typo
 
- drivers/uio/uio.c          | 47 ++++++++++++++++++++++++++++++++++++++
- include/linux/uio_driver.h | 13 +++++++++++
- 2 files changed, 60 insertions(+)
+ drivers/uio/uio_dmem_genirq.c | 22 ++++++++--------------
+ 1 file changed, 8 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/uio/uio.c b/drivers/uio/uio.c
-index 2d572f6c8ec83..bb77de6fa067e 100644
---- a/drivers/uio/uio.c
-+++ b/drivers/uio/uio.c
-@@ -24,6 +24,7 @@
- #include <linux/kobject.h>
- #include <linux/cdev.h>
- #include <linux/uio_driver.h>
-+#include <linux/dma-mapping.h>
- 
- #define UIO_MAX_DEVICES		(1U << MINORBITS)
- 
-@@ -759,6 +760,49 @@ static int uio_mmap_physical(struct vm_area_struct *vma)
- 			       vma->vm_page_prot);
- }
- 
-+static int uio_mmap_dma_coherent(struct vm_area_struct *vma)
-+{
-+	struct uio_device *idev = vma->vm_private_data;
-+	struct uio_mem *mem;
-+	void *addr;
-+	int ret = 0;
-+	int mi;
-+
-+	mi = uio_find_mem_index(vma);
-+	if (mi < 0)
-+		return -EINVAL;
-+
-+	mem = idev->info->mem + mi;
-+
-+	if (mem->addr & ~PAGE_MASK)
-+		return -ENODEV;
-+	if (mem->dma_addr & ~PAGE_MASK)
-+		return -ENODEV;
-+	if (!mem->dma_device)
-+		return -ENODEV;
-+	if (vma->vm_end - vma->vm_start > mem->size)
-+		return -EINVAL;
-+
-+	dev_warn(mem->dma_device,
-+		 "use of UIO_MEM_DMA_COHERENT is highly discouraged");
-+
-+	/*
-+	 * UIO uses offset to index into the maps for a device.
-+	 * We need to clear vm_pgoff for dma_mmap_coherent.
-+	 */
-+	vma->vm_pgoff = 0;
-+
-+	addr = (void *)mem->addr;
-+	ret = dma_mmap_coherent(mem->dma_device,
-+				vma,
-+				addr,
-+				mem->dma_addr,
-+				vma->vm_end - vma->vm_start);
-+	vma->vm_pgoff = mi;
-+
-+	return ret;
-+}
-+
- static int uio_mmap(struct file *filep, struct vm_area_struct *vma)
- {
- 	struct uio_listener *listener = filep->private_data;
-@@ -806,6 +850,9 @@ static int uio_mmap(struct file *filep, struct vm_area_struct *vma)
- 	case UIO_MEM_VIRTUAL:
- 		ret = uio_mmap_logical(vma);
- 		break;
-+	case UIO_MEM_DMA_COHERENT:
-+		ret = uio_mmap_dma_coherent(vma);
-+		break;
- 	default:
- 		ret = -EINVAL;
- 	}
-diff --git a/include/linux/uio_driver.h b/include/linux/uio_driver.h
-index 47c5962b876b0..18238dc8bfd35 100644
---- a/include/linux/uio_driver.h
-+++ b/include/linux/uio_driver.h
-@@ -28,19 +28,26 @@ struct uio_map;
-  *			logical, virtual, or physical & phys_addr_t
-  *			should always be large enough to handle any of
-  *			the address types)
-+ * @dma_addr:		DMA handle set by dma_alloc_coherent, used with
-+ *			UIO_MEM_DMA_COHERENT only (@addr should be the
-+ *			void * returned from the same dma_alloc_coherent call)
-  * @offs:               offset of device memory within the page
-  * @size:		size of IO (multiple of page size)
-  * @memtype:		type of memory addr points to
-  * @internal_addr:	ioremap-ped version of addr, for driver internal use
-+ * @dma_device:		device struct that was passed to dma_alloc_coherent,
-+ *			used with UIO_MEM_DMA_COHERENT only
-  * @map:		for use by the UIO core only.
-  */
- struct uio_mem {
- 	const char		*name;
- 	phys_addr_t		addr;
-+	dma_addr_t		dma_addr;
- 	unsigned long		offs;
- 	resource_size_t		size;
- 	int			memtype;
- 	void __iomem		*internal_addr;
-+	struct device		*dma_device;
- 	struct uio_map		*map;
+diff --git a/drivers/uio/uio_dmem_genirq.c b/drivers/uio/uio_dmem_genirq.c
+index 5313307c2754a..d5f9384df1255 100644
+--- a/drivers/uio/uio_dmem_genirq.c
++++ b/drivers/uio/uio_dmem_genirq.c
+@@ -36,7 +36,6 @@ struct uio_dmem_genirq_platdata {
+ 	struct platform_device *pdev;
+ 	unsigned int dmem_region_start;
+ 	unsigned int num_dmem_regions;
+-	void *dmem_region_vaddr[MAX_UIO_MAPS];
+ 	struct mutex alloc_lock;
+ 	unsigned int refcnt;
  };
+@@ -50,7 +49,6 @@ static int uio_dmem_genirq_open(struct uio_info *info, struct inode *inode)
+ {
+ 	struct uio_dmem_genirq_platdata *priv = info->priv;
+ 	struct uio_mem *uiomem;
+-	int dmem_region = priv->dmem_region_start;
  
-@@ -158,6 +165,12 @@ extern int __must_check
- #define UIO_MEM_LOGICAL	2
- #define UIO_MEM_VIRTUAL 3
- #define UIO_MEM_IOVA	4
-+/*
-+ * UIO_MEM_DMA_COHERENT exists for legacy drivers that had been getting by with
-+ * improperly mapping DMA coherent allocations through the other modes.
-+ * Do not use in new drivers.
-+ */
-+#define UIO_MEM_DMA_COHERENT	5
+ 	uiomem = &priv->uioinfo->mem[priv->dmem_region_start];
  
- /* defines for uio_port->porttype */
- #define UIO_PORT_NONE	0
+@@ -61,11 +59,8 @@ static int uio_dmem_genirq_open(struct uio_info *info, struct inode *inode)
+ 			break;
+ 
+ 		addr = dma_alloc_coherent(&priv->pdev->dev, uiomem->size,
+-				(dma_addr_t *)&uiomem->addr, GFP_KERNEL);
+-		if (!addr) {
+-			uiomem->addr = DMEM_MAP_ERROR;
+-		}
+-		priv->dmem_region_vaddr[dmem_region++] = addr;
++					  &uiomem->dma_addr, GFP_KERNEL);
++		uiomem->addr = addr ? (phys_addr_t) addr : DMEM_MAP_ERROR;
+ 		++uiomem;
+ 	}
+ 	priv->refcnt++;
+@@ -80,7 +75,6 @@ static int uio_dmem_genirq_release(struct uio_info *info, struct inode *inode)
+ {
+ 	struct uio_dmem_genirq_platdata *priv = info->priv;
+ 	struct uio_mem *uiomem;
+-	int dmem_region = priv->dmem_region_start;
+ 
+ 	/* Tell the Runtime PM code that the device has become idle */
+ 	pm_runtime_put_sync(&priv->pdev->dev);
+@@ -93,13 +87,12 @@ static int uio_dmem_genirq_release(struct uio_info *info, struct inode *inode)
+ 	while (!priv->refcnt && uiomem < &priv->uioinfo->mem[MAX_UIO_MAPS]) {
+ 		if (!uiomem->size)
+ 			break;
+-		if (priv->dmem_region_vaddr[dmem_region]) {
+-			dma_free_coherent(&priv->pdev->dev, uiomem->size,
+-					priv->dmem_region_vaddr[dmem_region],
+-					uiomem->addr);
++		if (uiomem->addr) {
++			dma_free_coherent(uiomem->dma_device, uiomem->size,
++					  (void *) uiomem->addr,
++					  uiomem->dma_addr);
+ 		}
+ 		uiomem->addr = DMEM_MAP_ERROR;
+-		++dmem_region;
+ 		++uiomem;
+ 	}
+ 
+@@ -264,7 +257,8 @@ static int uio_dmem_genirq_probe(struct platform_device *pdev)
+ 					" dynamic and fixed memory regions.\n");
+ 			break;
+ 		}
+-		uiomem->memtype = UIO_MEM_PHYS;
++		uiomem->memtype = UIO_MEM_DMA_COHERENT;
++		uiomem->dma_device = &pdev->dev;
+ 		uiomem->addr = DMEM_MAP_ERROR;
+ 		uiomem->size = pdata->dynamic_region_sizes[i];
+ 		++uiomem;
 -- 
 2.43.0
 
