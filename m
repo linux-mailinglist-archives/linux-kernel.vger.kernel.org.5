@@ -1,113 +1,165 @@
-Return-Path: <linux-kernel+bounces-51985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F7BB84924D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 03:14:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDDC6849257
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 03:20:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EAF91F21F12
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 02:14:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E0E4282AEC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 02:20:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895528F47;
-	Mon,  5 Feb 2024 02:14:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99AF8A93A;
+	Mon,  5 Feb 2024 02:20:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="R74ULAnN"
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="0ljlF0hX"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E99879E4
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 02:14:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EAA49449
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 02:20:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707099275; cv=none; b=HnKDV64J0IX4MvgH3CG0WhwdgvpLj6pP8Wdo/kXx5dHGQRaTbkTRykT/yMH/cuV/cLpB4TGkxhtuow7YiVVfqg9NCgwEz2h2fcS79EEzQHp3QbKhBbRKipv6ZLiC66XK2mNbHK/Z5/5cSih1Uax/xZmTxV0gSrp5tkQv7bm8PcU=
+	t=1707099616; cv=none; b=PODZGTQc5FmT34IzfRREQLzqFbf+sFrBDRwv738YkfOx113A95m+hycQHBTwYKWwOI0iC/+w3L8mIgqlW6BcvHXluBfxpfGxOcTjlCDMPdeZgHssjXKximPEf9T2ELEK56IdH59VFMQ9b+OBS2uFfLhA3oEFhH2NRTOZ287q8Oo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707099275; c=relaxed/simple;
-	bh=pvgV0YknqsQnvCyHtVH/GSHnUSA++yYfdumu8uYYEbA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BaspdO1EMu5jYp7JxvydHU2QN8MlZAL3f2GzoCioFJumooxfT7aymef10AVIowHLDfg6wTJd4serS7rYhOtHS/J8JrrTDIENURykPp4RtN/6ud/Y5xW2IlOIqfG5latVZfiv1UM/vSxJ+NYNSNRVCmS9rV/w+J+E6dsKUHDUqbw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=R74ULAnN; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-295f339df52so764333a91.1
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 18:14:34 -0800 (PST)
+	s=arc-20240116; t=1707099616; c=relaxed/simple;
+	bh=+Gm5/FRVNIqSgfwLG6CPyYSiHApJbtMFJNODMFhgmEY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fwMR2nU9PAIytnH2y/9oJgPZzXZ0xN1pZEXbxyepzOmO6awUAR/RC8Gq4FzCki93I8as6breSBwIJsVfInWesN8HldvC6zVmPi79B01/sQo6x5P2A3sSQbsLOxEgYeLFb1fx5yGt6eTOVoZRQcvtN6PABBqUElhPJ4NFgKTVGKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=0ljlF0hX; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40fcb4ef7bcso19735055e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 18:20:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1707099274; x=1707704074; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tFyXg82UWmlPE+ig9jow6pwJAF00791AsGoKKK0IIVU=;
-        b=R74ULAnNyRaspEwTcXk8u6zl1mJkUns22APMaSfjfQLXvpOn3ajo2nTylRiYakCvmk
-         6IA8ngpaUQNnEiUTjtRKmbKktbK9VZvshDLLBfSTr7zOli0T72waXnIZuVDrBb+Hhv16
-         lxP5ZpynbovyXm97ASMw6ugYYV98bnZwm4hqdy4seAJdpwzuO/5BLHpS3lZDLosu3+0V
-         fKy6g60lxTnoyw7Zy15xDj8iuyy5+uORblYxQEiAfvdA3XCoQuVD+4fGc3UrVE7s7hzj
-         QpvFtBlGC1+YXmiSkS/mP2tShjwAXPUegYgJH/WD23K8Dmk3G6C4bCOxqWjK5pejTpqE
-         4KZw==
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1707099613; x=1707704413; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vI17x8NVIjMeQipAli/VEaOzE57qtHLbYyH8WdOAchg=;
+        b=0ljlF0hXt6pnnUB8M/zichPZTgjgVjKobFLF7cxY1kcpxLKsec+XObdZeur07jlGQw
+         Ml0nNJcS3yIHRLmhvgWLJ7/0jPOIyikvcFoM4a6YxuhfzA4yKnaX9t/5PKs5CInMY+20
+         /sH9MsvbogBhqyCOs/dUvNFOKOt2jaMxVcUA8z3ggWCQ6h4UNCjdodaT9SqY+mQZpf7n
+         8c58LguB+57grXaSZCR00WV7KUs8g6UeRbZyCOQwTRSz/vTrcSK317OY1ee/QYJ8vfs5
+         h+9mN1BBndY7H+nDpeG/mcTaHIKOJQbXrZr0lgnSfalJZyHZYshXv9Vb4sxpmbJ+3WiM
+         edcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707099274; x=1707704074;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tFyXg82UWmlPE+ig9jow6pwJAF00791AsGoKKK0IIVU=;
-        b=LawzRd9/fnaynEak0jWHT1YqwxN8LYqe7tlX3onp8EBYEDf1IsBplCkLVyYmAMXqu+
-         O6cXOROGKnatuICMc7cnW8ERn/ZgJs71aL93cK8glsBm+miUdjbMQXDY+D7ayruvfB7k
-         DBTp6KwWe7eXyz5r+qSnPCb+5B3GDAxhfCMDk07MSaiDrr0KATK0nCh5mSUFmrqZ0Zyv
-         A2mhgHPWY6xbIPZcti7/OedMGuwH9chxrHaFPSO1nA2PBslxvNamvta4oCz8PmpXOadP
-         w7+LahPI540kXGgQ3L7xQRkrnlFRGxaimC6b4brkxHSoHjAr8WwlMBGzT9TkNaXr3Lk8
-         AQgg==
-X-Gm-Message-State: AOJu0YxfX/ad7NAmOItlAZ2N6x16jFimF2vo00X3EzkKoibVQA1w/jVa
-	WRbBNB5Ew6A4LxtrBUONOB6NYzMoy2ZeXCsADl4aWJs4hKvmGZf+Rn87HYbbAyc=
-X-Google-Smtp-Source: AGHT+IEwQIC7jXtmYLSmgwxADVxy/6gqZeq63vbYZBJwSehUDq2LkFNeFIhCOM0IeNs5Pauzd+/fJA==
-X-Received: by 2002:a17:902:ee85:b0:1d8:f06a:9b6f with SMTP id a5-20020a170902ee8500b001d8f06a9b6fmr13589434pld.1.1707099273829;
-        Sun, 04 Feb 2024 18:14:33 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXzaWXF1IGiLYQqU3QdZbMeWQAsPFYeTxr6WYf8piiX+Rb9cBUevGUYHNHanDzwgeBQAVOlflGkKjXDG1Qk9WzOYcCg8rxTD7t4AqTTUuvvvF5pPp3QE+heGBjMfpyObA62NSgQ63kf8omEk+qZAPuRwG+f2G8CtR9rq1vycChrW7KFlhIkQ0XqnBUC6wIQCaDNC09tMzQ3o6gfIWhpemvLBy7nvh69So3UtDe1jFBv6zH3Pxo=
-Received: from [10.255.134.6] ([139.177.225.228])
-        by smtp.gmail.com with ESMTPSA id j13-20020a170902c3cd00b001d9a422e0c0sm1602110plj.20.2024.02.04.18.14.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Feb 2024 18:14:33 -0800 (PST)
-Message-ID: <d464ef84-fe06-4279-a7fb-5a0cadef4064@bytedance.com>
-Date: Mon, 5 Feb 2024 10:14:28 +0800
+        d=1e100.net; s=20230601; t=1707099613; x=1707704413;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vI17x8NVIjMeQipAli/VEaOzE57qtHLbYyH8WdOAchg=;
+        b=GeZmJvtQ3WVrFuZETJBNkiJHVy4/CKP+oNLmFyL0GXT+wQP63LQkkjBpXqLqyzAAZh
+         vFxzTvqMjm5nzFu/dSi9A44XZRt+cR6YsAf6P8Htef2uiylihRrz84+X1tgR/k8uan/K
+         b3hzq9R4O5ffWUHLbNJ8klRS1Di43buzKjLPsi2aIckfZNoNEOqG0di72C1HlmL46FbS
+         35EdGSB1y/B7K0M03kx20xJMqUJJ+mfPdU8JzW10aHb1uAOh0mFDtjbx1CdO7I4xAWuV
+         XuBdWF6+iOb1XyU3e53Ya5CE+p8gx59oGt+YYUbq5+sFxp9Qy83jeQrhom7pyzJ2FLir
+         LV4g==
+X-Gm-Message-State: AOJu0YzaPEWGeFugorWP6HYjPjEVloozqGSsdB682AkvDbr+BMpUvqLr
+	xSgRTtIE/+62tb+QiLyvglmFnA8Z6trAgZecBFyzSzfrh0bUdsSWk274fuvxLwk=
+X-Google-Smtp-Source: AGHT+IGCqtYb4qgZN1VkNtpPuU07LJ45oZV3LYEY28TcsQMJbW71zwTdd8rKaOpj9b4J6zfyHQdEOA==
+X-Received: by 2002:a05:600c:511b:b0:40f:b5d2:1b16 with SMTP id o27-20020a05600c511b00b0040fb5d21b16mr3131031wms.25.1707099613407;
+        Sun, 04 Feb 2024 18:20:13 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXsEiiGcu+HK5q33+UleB6113bUi1O0AeNouFF7kLCEmVI9poP+qcVQ4nLPu7j7SXaXMEth6FFhIDzKayNF3HeslyXQtRVYmkGkJt1/Kvlw5xyEj6e14/q0ZGDNid5PjdxkvlYHdgRdpoHPa0ms79YyOUR8TT89N1FftNGTmvATaiU+cdRhavvb4f5GoBOAHATEmP8faf4YEvhR+WIM2KLoJdAzPjapFLG14+mmY923vWYA+0cONcW/uSgeDVL5QLRxsjpBSNeNHN4wUb4Cs7shQIYsKc0=
+Received: from airbuntu.. (host109-154-238-234.range109-154.btcentralplus.com. [109.154.238.234])
+        by smtp.gmail.com with ESMTPSA id d10-20020a05600c4c0a00b0040efa7e0ef6sm3156075wmp.1.2024.02.04.18.20.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Feb 2024 18:20:13 -0800 (PST)
+From: Qais Yousef <qyousef@layalina.io>
+To: Ingo Molnar <mingo@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Viresh Kumar <viresh.kumar@linaro.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	Qais Yousef <qyousef@layalina.io>
+Subject: [PATCH] sched: cpufreq: Rename map_util_perf to apply_dvfs_headroom
+Date: Mon,  5 Feb 2024 02:20:06 +0000
+Message-Id: <20240205022006.2229877-1-qyousef@layalina.io>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] mm: pgtable: remove unnecessary split ptlock for
- kernel PMD page
-Content-Language: en-US
-To: Matthew Wilcox <willy@infradead.org>
-Cc: akpm@linux-foundation.org, arnd@arndb.de, muchun.song@linux.dev,
- david@redhat.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- linux-arch@vger.kernel.org
-References: <f023a6687b9f2109401e7522b727aa4708dc05f1.1706774109.git.zhengqi.arch@bytedance.com>
- <63f0b3d2f9124ae5076963fb5505bd36daba0393.1706774109.git.zhengqi.arch@bytedance.com>
- <Zb_dT43-oPsRplhi@casper.infradead.org>
-From: Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <Zb_dT43-oPsRplhi@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi Matthew,
+We are providing headroom for the utilization to grow until the next
+decision point to pick the next frequency. Give the function a better
+name and give it some documentation. It is not really mapping anything.
 
-On 2024/2/5 02:54, Matthew Wilcox wrote:
-> On Thu, Feb 01, 2024 at 04:05:41PM +0800, Qi Zheng wrote:
->> For kernel PMD entry, we use init_mm.page_table_lock to protect it, so
->> there is no need to allocate and initialize the split ptlock for kernel
->> PMD page.
-> 
-> I don't think this is a great idea.  Maybe there's no need to initialise
-> it, but keeping things the same between kernel & user page tables is a
-> usually better.  We don't normally allocate memory for the spinlock,
-> it's only in debugging scenarios like LOCKDEP.  I would drop this unless
-> you have a really compelling argument to make.
+Also move it to sched.h. This function relies on updating util signal
+appropriately to give a headroom to grow. This is more of a scheduler
+functionality than cpufreq. Move it to sched.h where all the other util
+handling code belongs.
 
-The reason I first noticed this is that we didn't allocate and
-initialize the ptlock in __pte_alloc_one_kernel(). So in at the PTE
-level, the implementation of kernel & user page tables is already
-different.
+Signed-off-by: Qais Yousef <qyousef@layalina.io>
+---
+ include/linux/sched/cpufreq.h    |  5 -----
+ kernel/sched/cpufreq_schedutil.c |  2 +-
+ kernel/sched/sched.h             | 17 +++++++++++++++++
+ 3 files changed, 18 insertions(+), 6 deletions(-)
 
-Thanks.
+diff --git a/include/linux/sched/cpufreq.h b/include/linux/sched/cpufreq.h
+index bdd31ab93bc5..d01755d3142f 100644
+--- a/include/linux/sched/cpufreq.h
++++ b/include/linux/sched/cpufreq.h
+@@ -28,11 +28,6 @@ static inline unsigned long map_util_freq(unsigned long util,
+ {
+ 	return freq * util / cap;
+ }
+-
+-static inline unsigned long map_util_perf(unsigned long util)
+-{
+-	return util + (util >> 2);
+-}
+ #endif /* CONFIG_CPU_FREQ */
+ 
+ #endif /* _LINUX_SCHED_CPUFREQ_H */
+diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+index 95c3c097083e..abbd1ddb0359 100644
+--- a/kernel/sched/cpufreq_schedutil.c
++++ b/kernel/sched/cpufreq_schedutil.c
+@@ -179,7 +179,7 @@ unsigned long sugov_effective_cpu_perf(int cpu, unsigned long actual,
+ 				 unsigned long max)
+ {
+ 	/* Add dvfs headroom to actual utilization */
+-	actual = map_util_perf(actual);
++	actual = apply_dvfs_headroom(actual);
+ 	/* Actually we don't need to target the max performance */
+ 	if (actual < max)
+ 		max = actual;
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index e58a54bda77d..0da3425200b1 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -3002,6 +3002,23 @@ unsigned long sugov_effective_cpu_perf(int cpu, unsigned long actual,
+ 				 unsigned long min,
+ 				 unsigned long max);
+ 
++/*
++ * DVFS decision are made at discrete points. If CPU stays busy, the util will
++ * continue to grow, which means it could need to run at a higher frequency
++ * before the next decision point was reached. IOW, we can't follow the util as
++ * it grows immediately, but there's a delay before we issue a request to go to
++ * higher frequency. The headroom caters for this delay so the system continues
++ * to run at adequate performance point.
++ *
++ * This function provides enough headroom to provide adequate performance
++ * assuming the CPU continues to be busy.
++ *
++ * At the moment it is a constant multiplication with 1.25.
++ */
++static inline unsigned long apply_dvfs_headroom(unsigned long util)
++{
++	return util + (util >> 2);
++}
+ 
+ /*
+  * Verify the fitness of task @p to run on @cpu taking into account the
+-- 
+2.34.1
+
 
