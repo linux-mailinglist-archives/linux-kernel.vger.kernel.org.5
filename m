@@ -1,251 +1,100 @@
-Return-Path: <linux-kernel+bounces-52521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D80B84993B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:51:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2B70849941
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:53:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 394AA1C21950
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:51:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96831281359
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:53:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2E1A199AB;
-	Mon,  5 Feb 2024 11:51:38 +0000 (UTC)
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29EE21946C;
+	Mon,  5 Feb 2024 11:53:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="siqK75NV"
+Received: from mout.web.de (mout.web.de [212.227.15.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 680A2199A2;
-	Mon,  5 Feb 2024 11:51:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FFC21B7E4;
+	Mon,  5 Feb 2024 11:53:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707133898; cv=none; b=HOdKcx6cKtVxBOm1g7nV1vmRU7evXSNG/ml3kf3fLticHWfXcBJZZw89q0tTPbelTq6kT+mq2HhqhSboqgSoTx/XgoGpgC82VEjSq4hFoWu4eDOpvNgxLiVaO5mZnhqpsSB4AcMPyHVsf3Il71Zl56wHZOKnj6OQX/dRKg4//AA=
+	t=1707134024; cv=none; b=BtOIUF4yi3udh1K8uLrP7j8IztpXeL4O41M44ztrluUJJ/wCqZaWiDyUHtf/cHLYRHKmnvroLgLh2F2QS+7pTdxDHy/VnmA9V5lt4rVk649kZXmXKvbmmQvLWswY6fx+VfqEqjdze+SDfOeEdoSENKoViXl+4qMfB/ZhEUk4AkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707133898; c=relaxed/simple;
-	bh=ASfvrXH8e1G8RsxuNNs2S3dZf0mRTg3lWDzFAkWTOyQ=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u5LqWKvj8EAAtTI+AvspRqvHbgmGNla51l1C379sSQWTB/OKipxx3WBnjjbocHIgX5IpQlCA4fMTrWK0pr19jkIQ5D59RSAz+Cd3XKJvAKA57eDXz7VVw5jvDZrLGO2+9/JB/xl2b9KIvZca8bJxVvWDbdPjr71HF/Zr9HHeZbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TT4TL2HX7z1vt2p;
-	Mon,  5 Feb 2024 19:51:02 +0800 (CST)
-Received: from kwepemd100002.china.huawei.com (unknown [7.221.188.184])
-	by mail.maildlp.com (Postfix) with ESMTPS id 92F551402E0;
-	Mon,  5 Feb 2024 19:51:29 +0800 (CST)
-Received: from M910t (10.110.54.157) by kwepemd100002.china.huawei.com
- (7.221.188.184) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Mon, 5 Feb
- 2024 19:51:28 +0800
-Date: Mon, 5 Feb 2024 19:51:11 +0800
-From: Changbin Du <changbin.du@huawei.com>
-To: Adrian Hunter <adrian.hunter@intel.com>
-CC: Changbin Du <changbin.du@huawei.com>, Peter Zijlstra
-	<peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de
- Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander
- Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
-	<linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>, Andi
- Kleen <ak@linux.intel.com>, Thomas Richter <tmricht@linux.ibm.com>,
-	<changbin.du@gmail.com>
-Subject: Re: [PATCH v5 1/5] perf: build: introduce the libcapstone
-Message-ID: <20240205115111.n6vvi4wvu72e6r5c@M910t>
-References: <20240122112054.1576835-1-changbin.du@huawei.com>
- <20240122112054.1576835-2-changbin.du@huawei.com>
- <fbd131d2-a4c2-4b7a-95ae-6593b7a3a997@intel.com>
+	s=arc-20240116; t=1707134024; c=relaxed/simple;
+	bh=mZgak3wd7sP/8YP0PUhMwClPhbg0YKX/cOYKWUE+Bq0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HGn5WzOD4q1neg+QFOJk4fcGyaWHXse9vBXVVmU01z+t/Y1DwiOXwel5erSDvTyqyN38LnWBT6im4f2sE9AdKJ+P3YwEhlwn6LfZ4FT3FefLNOaqAigvjNpBaFDBM1Ag+Jxvk+pSXNzgldibYjN5brAXfMS4x4gyl80gMpOvZe4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=siqK75NV; arc=none smtp.client-ip=212.227.15.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1707133999; x=1707738799; i=markus.elfring@web.de;
+	bh=mZgak3wd7sP/8YP0PUhMwClPhbg0YKX/cOYKWUE+Bq0=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=siqK75NVVacoNo9yPVF8GnsraFLx/dbc4H4kAlsCj/m/IyfxJOXzegY3npA+YDzH
+	 9c3O6KCKdyk07svNfJUbjU5ARHD5zwJUDMQlwT4zIQra/2ybpj+Ln27C7jUGyXKFE
+	 cWEXPhQoTuMVZbnWyxY/txucnG+pmzFoxrpc1K0tEARG7dJFsci3LPrambXRktWLL
+	 22gdxHRcc+hS33NanawtvHEYA7cB7kYMS7dcNk5Pw3L97fOT7r1ZcajZEt0qccMcc
+	 l/QQs7X7To3huXELl8iCOSj3flzYnZRWMj+yo4CjKsWFROnharXcYSw45+QIolzu8
+	 L6aULQTQrDKu/Sz4JA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1My6lX-1qoUOP3r0Z-00zZsa; Mon, 05
+ Feb 2024 12:53:18 +0100
+Message-ID: <49fc6a59-2c07-4366-b32f-0599c2418916@web.de>
+Date: Mon, 5 Feb 2024 12:52:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <fbd131d2-a4c2-4b7a-95ae-6593b7a3a997@intel.com>
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemd100002.china.huawei.com (7.221.188.184)
+User-Agent: Mozilla Thunderbird
+Subject: Re: iommu/ipmmu-vmsa: Use devm_platform_get_and_ioremap_resource() in
+ ipmmu_probe()
+To: Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
+ kernel-janitors@vger.kernel.org, =?UTF-8?B?SsO2cmcgUsO2ZGVs?=
+ <joro@8bytes.org>, Will Deacon <will@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <e01cdb99-8497-4fec-b423-a0bfb483ac75@web.de>
+ <324d4e02-6a5a-4112-a3a7-d7aeb5876acc@arm.com>
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <324d4e02-6a5a-4112-a3a7-d7aeb5876acc@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:+826gXMyLcStg3Xy/PzCqSu6s3UWOFdtPyMNHhZPcTyAcapjuwc
+ hY2bkVLsGjiA45FLXmNuKyQhl3KxJeizwFMw8ZZKb8x/OlgRTI3ady07tT8N2d68XozXEoY
+ lUgGr0kBYXOPJlpHgIXobTVC04TJRVRPgzEg/dNBKTrRzR9YmQoka6IJ08ne1koDwZ7H+52
+ Vi0+T7POPR5LTfklD+q8g==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:PPzBUwye1A4=;yZje3G6p8eaUY9thc/9Y8vZXB31
+ vmpZ815y67a0ftY9N8F39Pid+ttPfQXWICaCnm7/f6LrGxbh1Fo7CM/bCNpkq2ml7KyPsvKWv
+ hwp62fK+FEmdGWmoAw1xQ6n4Albd1f8O320e19jYNLBrPzRPJimBPLU6i3XWtHodnsFas9WuE
+ bhWmYS14GT/yiioM5/76+yzxPnaFVZi8ezvZBbpSTHLEly3J7Af3GAaATThZXF89NYyZlGhlL
+ fja3XHGqvO76kqX7k2BGuG+6zjcoubPg6lpnKJHZEVdmzzsyNUF7VJXXsda4fkTWlMAF4W6yY
+ Kkv3dSEDQNZ25poFldyfmvmOuXcYTL0WQN1hnwlu+6+Bt6b/mgqJskromvcZ1BkuY9DR1gNQM
+ JNU5ho6HeA+vYDi18HrPHfWJCe22zQoW2XhTN8oXU5JxA8I6YMsm4qXr7XZk7yVU30R++wYqt
+ AhjEWw4QdMTSDUNXRUMA8tKtp59RN+SplrdJLTnlyfzYcRjps7BUI4D9Wl+5ANkzkeXZzWf1+
+ a9SxeUKza99awL6LDpC7XWVGf/P6t597i3xolPz9VbU3hhVr/4dTd7nAx3/Fw8s3M9ZZG9Jfk
+ zkgm4KLGIFSN/cEfLh8sZ8Llnp9FAUyLHzPoZt4Up7YT0UZoqjPoigj/aywmWMNvawHiwQ7t7
+ Zu8epuMjD2hILWBh2Ir6sFvVwEdqg444+H2ZaNpVHNnW5/OxGhLYMz5lQEplX9Q7vlyTTddTo
+ 2NzmLB0E+nwVVzPU405z3Z9usNgE2wv6jOHUp5n7iDuysZdPNmmJxgedstIorf3GLVPQvoLNh
+ eU9DJhYSDgztxPHQYwU934c2nN3BTXvn5HDjiKZexDy9w=
 
-On Mon, Feb 05, 2024 at 11:21:23AM +0200, Adrian Hunter wrote:
-> On 22/01/24 13:20, Changbin Du wrote:
-> > Later we will use libcapstone to disassemble instructions of samples.
-> > 
-> > Signed-off-by: Changbin Du <changbin.du@huawei.com>
-> > 
-> > ---
-> > v2:
-> >   - change tools/perf/tests/make also.
-> > ---
-> >  tools/build/Makefile.feature           |  2 ++
-> >  tools/build/feature/Makefile           |  4 ++++
-> >  tools/build/feature/test-all.c         |  4 ++++
-> >  tools/build/feature/test-libcapstone.c | 11 +++++++++++
-> >  tools/perf/Makefile.config             | 21 +++++++++++++++++++++
-> >  tools/perf/Makefile.perf               |  3 +++
-> >  tools/perf/tests/make                  |  2 ++
-> >  7 files changed, 47 insertions(+)
-> >  create mode 100644 tools/build/feature/test-libcapstone.c
-> 
-> Perhaps add it also to display with perf version --build-options
+>> Thus reuse existing functionality instead of keeping duplicate source c=
+ode.
 >
-no problem.
+> Much as I detest the get_and_ioremap_resource obfuscator, it's not even =
+appropriate here since nothing else is using "res".
 
-> > 
-> > diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-> > index 64df118376df..1e2ab148d5db 100644
-> > --- a/tools/build/Makefile.feature
-> > +++ b/tools/build/Makefile.feature
-> > @@ -87,6 +87,7 @@ FEATURE_TESTS_EXTRA :=                  \
-> >           gtk2-infobar                   \
-> >           hello                          \
-> >           libbabeltrace                  \
-> > +         libcapstone                    \
-> >           libbfd-liberty                 \
-> >           libbfd-liberty-z               \
-> >           libopencsd                     \
-> > @@ -134,6 +135,7 @@ FEATURE_DISPLAY ?=              \
-> >           libcrypto              \
-> >           libunwind              \
-> >           libdw-dwarf-unwind     \
-> > +         libcapstone            \
-> >           zlib                   \
-> >           lzma                   \
-> >           get_cpuid              \
-> > diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-> > index 37722e509eb9..ed54cef450f5 100644
-> > --- a/tools/build/feature/Makefile
-> > +++ b/tools/build/feature/Makefile
-> > @@ -54,6 +54,7 @@ FILES=                                          \
-> >           test-timerfd.bin                       \
-> >           test-libdw-dwarf-unwind.bin            \
-> >           test-libbabeltrace.bin                 \
-> > +         test-libcapstone.bin			\
-> >           test-compile-32.bin                    \
-> >           test-compile-x32.bin                   \
-> >           test-zlib.bin                          \
-> > @@ -286,6 +287,9 @@ $(OUTPUT)test-libdw-dwarf-unwind.bin:
-> >  $(OUTPUT)test-libbabeltrace.bin:
-> >  	$(BUILD) # -lbabeltrace provided by $(FEATURE_CHECK_LDFLAGS-libbabeltrace)
-> >  
-> > +$(OUTPUT)test-libcapstone.bin:
-> > +	$(BUILD) # -lcapstone provided by $(FEATURE_CHECK_LDFLAGS-libcapstone)
-> > +
-> >  $(OUTPUT)test-compile-32.bin:
-> >  	$(CC) -m32 -o $@ test-compile.c
-> >  
-> > diff --git a/tools/build/feature/test-all.c b/tools/build/feature/test-all.c
-> > index 6f4bf386a3b5..dd0a18c2ef8f 100644
-> > --- a/tools/build/feature/test-all.c
-> > +++ b/tools/build/feature/test-all.c
-> > @@ -134,6 +134,10 @@
-> >  #undef main
-> >  #endif
-> >  
-> > +#define main main_test_libcapstone
-> > +# include "test-libcapstone.c"
-> > +#undef main
-> > +
-> >  #define main main_test_lzma
-> >  # include "test-lzma.c"
-> >  #undef main
-> > diff --git a/tools/build/feature/test-libcapstone.c b/tools/build/feature/test-libcapstone.c
-> > new file mode 100644
-> > index 000000000000..fbe8dba189e9
-> > --- /dev/null
-> > +++ b/tools/build/feature/test-libcapstone.c
-> > @@ -0,0 +1,11 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +#include <capstone/capstone.h>
-> > +
-> > +int main(void)
-> > +{
-> > +	csh handle;
-> > +
-> > +	cs_open(CS_ARCH_X86, CS_MODE_64, &handle);
-> > +	return 0;
-> > +}
-> > diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> > index aa55850fbc21..3e1072c59757 100644
-> > --- a/tools/perf/Makefile.config
-> > +++ b/tools/perf/Makefile.config
-> > @@ -191,6 +191,15 @@ endif
-> >  FEATURE_CHECK_CFLAGS-libbabeltrace := $(LIBBABELTRACE_CFLAGS)
-> >  FEATURE_CHECK_LDFLAGS-libbabeltrace := $(LIBBABELTRACE_LDFLAGS) -lbabeltrace-ctf
-> >  
-> > +# for linking with debug library, run like:
-> > +# make DEBUG=1 LIBCAPSTONE_DIR=/opt/capstone/
-> > +ifdef LIBCAPSTONE_DIR
-> > +  LIBCAPSTONE_CFLAGS  := -I$(LIBCAPSTONE_DIR)/include
-> > +  LIBCAPSTONE_LDFLAGS := -L$(LIBCAPSTONE_DIR)/
-> > +endif
-> > +FEATURE_CHECK_CFLAGS-libcapstone := $(LIBCAPSTONE_CFLAGS)
-> > +FEATURE_CHECK_LDFLAGS-libcapstone := $(LIBCAPSTONE_LDFLAGS) -lcapstone
-> > +
-> >  ifdef LIBZSTD_DIR
-> >    LIBZSTD_CFLAGS  := -I$(LIBZSTD_DIR)/lib
-> >    LIBZSTD_LDFLAGS := -L$(LIBZSTD_DIR)/lib
-> > @@ -1094,6 +1103,18 @@ ifndef NO_LIBBABELTRACE
-> >    endif
-> >  endif
-> >  
-> > +ifndef NO_CAPSTONE
-> > +  $(call feature_check,libcapstone)
-> > +  ifeq ($(feature-libcapstone), 1)
-> > +    CFLAGS += -DHAVE_LIBCAPSTONE_SUPPORT $(LIBCAPSTONE_CFLAGS)
-> > +    LDFLAGS += $(LICAPSTONE_LDFLAGS)
-> > +    EXTLIBS += -lcapstone
-> > +    $(call detected,CONFIG_LIBCAPSTONE)
-> > +  else
-> > +    msg := $(warning No libcapstone found, disables disasm engine support for 'perf script', please install libcapstone-dev/capstone-devel);
-> > +  endif
-> > +endif
-> > +
-> >  ifndef NO_AUXTRACE
-> >    ifeq ($(SRCARCH),x86)
-> >      ifeq ($(feature-get_cpuid), 0)
-> > diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> > index 27e7c478880f..56c2720c1d0f 100644
-> > --- a/tools/perf/Makefile.perf
-> > +++ b/tools/perf/Makefile.perf
-> > @@ -84,6 +84,9 @@ include ../scripts/utilities.mak
-> >  # Define NO_LIBBABELTRACE if you do not want libbabeltrace support
-> >  # for CTF data format.
-> >  #
-> > +# Define NO_CAPSTONE if you do not want libcapstone support
-> > +# for disasm engine.
-> > +#
-> >  # Define NO_LZMA if you do not want to support compressed (xz) kernel modules
-> >  #
-> >  # Define NO_AUXTRACE if you do not want AUX area tracing support
-> > diff --git a/tools/perf/tests/make b/tools/perf/tests/make
-> > index 8a4da7eb637a..b08026f5d4e7 100644
-> > --- a/tools/perf/tests/make
-> > +++ b/tools/perf/tests/make
-> > @@ -83,6 +83,7 @@ make_no_libelf      := NO_LIBELF=1
-> >  make_no_libunwind   := NO_LIBUNWIND=1
-> >  make_no_libdw_dwarf_unwind := NO_LIBDW_DWARF_UNWIND=1
-> >  make_no_backtrace   := NO_BACKTRACE=1
-> > +make_no_libcapstone := NO_CAPSTONE=1
-> >  make_no_libnuma     := NO_LIBNUMA=1
-> >  make_no_libaudit    := NO_LIBAUDIT=1
-> >  make_no_libbionic   := NO_LIBBIONIC=1
-> 
-> Also needs to be added to make_minimal
-> 
-okay. thanks!
+I got the impression that this local variable is needed to perform
+a desired function call.
 
-> > @@ -152,6 +153,7 @@ run += make_no_libelf
-> >  run += make_no_libunwind
-> >  run += make_no_libdw_dwarf_unwind
-> >  run += make_no_backtrace
-> > +run += make_no_libcapstone
-> >  run += make_no_libnuma
-> >  run += make_no_libaudit
-> >  run += make_no_libbionic
-> 
-
--- 
-Cheers,
-Changbin Du
+Regards,
+Markus
 
