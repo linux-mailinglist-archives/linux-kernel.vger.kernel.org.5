@@ -1,92 +1,57 @@
-Return-Path: <linux-kernel+bounces-52636-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FF82849ABC
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:46:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C10EB849AEB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:51:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7CAB1F207C2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:46:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E565B1C2150F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:51:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 210CC1BDC4;
-	Mon,  5 Feb 2024 12:45:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZaqNWtV+"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C63CF47F55;
+	Mon,  5 Feb 2024 12:46:08 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 345521C6B4
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 12:45:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A6914595C;
+	Mon,  5 Feb 2024 12:46:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707137126; cv=none; b=ar6rCAmUz3aIErMw0yLBTApt6rh70kd3lgfAn2I30Ne/SIy2wvw87vP56mF73qn12ZqrPjzi0uFF5RcezWmaoQiU+PhY8UEBnNKbW3OCJuUPjknxcj/3rcTo09NEDHOfHI0FHyJ/hAOH+Q+6u33aDYM8DjdyWLUMNLkPjM5mE5A=
+	t=1707137168; cv=none; b=BYtBZqfZOeq7w/gAYRMIMGjVvBSPM5kDkLS7tuqhv2vZQ8rmfiIQwnDEr6oONsBga8wYvkqJAzAgbc/1LRavfo2UNsbahaH0OmBoQH28fKzscBWEadeydndrm6Gt6RFTUuY8GrGJDPgfTw/BaRRHgQARDNG5CC0jT3J0hAqxjic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707137126; c=relaxed/simple;
-	bh=uN4pmSgYbRXI2jvqo6UzvAcRTx54tWVkaWx0En1evXA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=O2ggiS2HX+TMh2mqiqz6xodW5y/PcgDVSyqXHNJyDbCWJmqdoJpb7uJ0QUBFNUO16dmNloCiqz7N88oMWCxZY0OeDzja3wxSNDyx/xf8JYELF986/6rNz3AQlPjuPsMqU9TqgTYVziPGPzFNFV7SDpIy6Uz7SaiQIPud/nNlKnU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZaqNWtV+; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3394b892691so1719692f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 04:45:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707137122; x=1707741922; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dR8F8TtLujJzML+VHbYFd966gNYU8tLxVBTCD/Qpmho=;
-        b=ZaqNWtV+PIeH/DoZrTyOqgIBIeqcDVuC4BIb2sMNv0aCfubHXOnvNnQPgv7zN/XlTc
-         isjlKtovaCOc1y7IvXjFdhlmFML8ixdb8KpW86oNP6+brY+OSeclBO1kqV3DuLOMH4kB
-         TKazF5fvChRPJnO12Ut2Mijz+zgfKjyDC2WNLKIf/jXDppc13MVHIRDy/+lhngDBNjU8
-         XVTpPhk7VPK/8z2S81xA1z9BfBBsZA28clzNko+zQFBL4+xOlSrXvZV7lkVMekLX+TVd
-         x9WSTzRZtjjOG9RPYptKMyW36ZMnfzIEEuhZedD3B4VqJLKsEtN2c2KZBbSHsak1XNVW
-         nU2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707137122; x=1707741922;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dR8F8TtLujJzML+VHbYFd966gNYU8tLxVBTCD/Qpmho=;
-        b=qDc2CirPhCgfnsdXnNhvUF9wcHq0+Qr/dQINr+o8/batDW19uRIugcdX6xbvBiS9FU
-         nfyGcVYVjaTltcFMgNw3dNNoYbrGfTw3LOsurPZX+PXJfrvPgOx34lSmnZsj2FvfTQm1
-         dklw0ab6zP/OYzbULlvM50dBmIhisih8pM/9k9xdyDsSF7AOAvABd/o/6xp9EKL7I4gC
-         mqD2rWiva6gX0cuPDeYv+sTwUisK2Fw2Xhfw4jJ+QGe3LZoo3MMLLwbU02szMbnW7zfg
-         u4CMuQJe16WFeuVMSlMocowt+IrHZuJuACgYKFv+a9GONAJplD1EG0aSt9ge+NOs1mdT
-         Rf7A==
-X-Gm-Message-State: AOJu0Yww2gtC67ZlRy8ZIPtY/aZZz5W4zrsj4F8bMF1ng5tdLmPwr+vN
-	cXaUsUqXMeuNzdL9eWS8GRAvE1wHmipq79GVHVI/6xWfSUgc21mJR+lNVwEBbhU=
-X-Google-Smtp-Source: AGHT+IHCuUmi+aZgBfk65jmiz0AIwSuZ9vOXcT90pjJQzz+4Bn7QZ2XAsQmQC/0j7e9WxwoFjwSkYg==
-X-Received: by 2002:a5d:400c:0:b0:33a:ebf1:2bf9 with SMTP id n12-20020a5d400c000000b0033aebf12bf9mr3498784wrp.21.1707137122511;
-        Mon, 05 Feb 2024 04:45:22 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXl4yO1d8qcT/Zxvb0lobqGRNH7mNE0zJaKCteLlrfEU+JyL5wm+nZfgc3HDif717jZhnK8AwmpbghCtGct+2Q4SODKEIqEnCEHt/sPiym8+bPgxcAfnqA02Ugtre04fhpiMpg0MNX1JE1IVOgtRrWroBjq7Qj5MjMpKpu5CcWwA592/JgYX3AAxwL9HXrQ/3vuohqfTyORMqCNSlS0EaxsQ0ciJKjXwAhR/1GhvyYKmmlVixm8B+MAFM43NEvIKPIHWZmO41pvSnas7pfGoocPlN2I1qUWwExsUfHAvRR3ae9tSP2+VDIAMWLD8UycDNRRe+qlsnzfMctaHdmcWLQzk+hkQuyveQHQiTQyRRNIXNFSquM7JhAeKRy5pezKZ5tuTkkvn8PAUinD4LHmMOmyuqwkknpYtNubu5rdUBAV7N3zU8BHQ6rn9wvXbctFHxNjvS3V2tmvud97IGGFNigC4qmZmRx+bda4Rdt3ZZrAKj0K3XNHhA3/liOBog==
-Received: from ta2.c.googlers.com.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id n9-20020adff089000000b0033b35da384fsm3650812wro.33.2024.02.05.04.45.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 04:45:21 -0800 (PST)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: broonie@kernel.org,
-	andi.shyti@kernel.org,
-	semen.protsenko@linaro.org
-Cc: krzysztof.kozlowski@linaro.org,
-	alim.akhtar@samsung.com,
-	linux-spi@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	andre.draszik@linaro.org,
-	peter.griffin@linaro.org,
-	kernel-team@android.com,
-	willmcvicker@google.com,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v4 06/16] spi: s3c64xx: remove unneeded (void *) casts in of_match_table
-Date: Mon,  5 Feb 2024 12:45:03 +0000
-Message-ID: <20240205124513.447875-7-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-In-Reply-To: <20240205124513.447875-1-tudor.ambarus@linaro.org>
-References: <20240205124513.447875-1-tudor.ambarus@linaro.org>
+	s=arc-20240116; t=1707137168; c=relaxed/simple;
+	bh=EkOVPmyG8AwI1ztH4WPEnwo5N1dm4jflvATq8fvXt7Q=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ZXqCWR0+LWanZHWwsrVfQGcjLhAS5kFQqcgrW7cTE2SNBCO2lxWG7hfgCqoelSsv/4uq72DTIguJbffXKY0mrLYFHdSDvt+tJoQ85cXH6gMg4+E2a9r0L4MnCtCyKnCQQd8ZPbCNCcleeu8nHr0K8UpIWSpxmxH1/oGEWbkKmb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TT5hJ6QZGz1vt7q;
+	Mon,  5 Feb 2024 20:45:36 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id 34B96140429;
+	Mon,  5 Feb 2024 20:46:04 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 5 Feb 2024 20:46:03 +0800
+From: Yunsheng Lin <linyunsheng@huawei.com>
+To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
+CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yunsheng Lin
+	<linyunsheng@huawei.com>, Jason Wang <jasowang@redhat.com>, "Michael S.
+ Tsirkin" <mst@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, <kvm@vger.kernel.org>,
+	<virtualization@lists.linux.dev>, <bpf@vger.kernel.org>
+Subject: [PATCH net-next v5 4/5] vhost/net: remove vhost_net_page_frag_refill()
+Date: Mon, 5 Feb 2024 20:45:04 +0800
+Message-ID: <20240205124506.57670-5-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20240205124506.57670-1-linyunsheng@huawei.com>
+References: <20240205124506.57670-1-linyunsheng@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,62 +59,194 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 
-of_device_id::data is an opaque pointer. No explicit cast is needed.
-Remove unneeded (void *) casts in of_match_table.
+The page frag in vhost_net_page_frag_refill() uses the
+'struct page_frag' from skb_page_frag_refill(), but it's
+implementation is similar to page_frag_alloc_align() now.
 
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+This patch removes vhost_net_page_frag_refill() by using
+'struct page_frag_cache' instead of 'struct page_frag',
+and allocating frag using page_frag_alloc_align().
+
+The added benefit is that not only unifying the page frag
+implementation a little, but also having about 0.5% performance
+boost testing by using the vhost_net_test introduced in the
+last patch.
+
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/spi/spi-s3c64xx.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/vhost/net.c | 91 ++++++++++++++-------------------------------
+ 1 file changed, 27 insertions(+), 64 deletions(-)
 
-diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-index ccb700312d64..807270ec3c8a 100644
---- a/drivers/spi/spi-s3c64xx.c
-+++ b/drivers/spi/spi-s3c64xx.c
-@@ -1512,31 +1512,31 @@ static const struct platform_device_id s3c64xx_spi_driver_ids[] = {
- 
- static const struct of_device_id s3c64xx_spi_dt_match[] = {
- 	{ .compatible = "samsung,s3c2443-spi",
--			.data = (void *)&s3c2443_spi_port_config,
-+			.data = &s3c2443_spi_port_config,
- 	},
- 	{ .compatible = "samsung,s3c6410-spi",
--			.data = (void *)&s3c6410_spi_port_config,
-+			.data = &s3c6410_spi_port_config,
- 	},
- 	{ .compatible = "samsung,s5pv210-spi",
--			.data = (void *)&s5pv210_spi_port_config,
-+			.data = &s5pv210_spi_port_config,
- 	},
- 	{ .compatible = "samsung,exynos4210-spi",
--			.data = (void *)&exynos4_spi_port_config,
-+			.data = &exynos4_spi_port_config,
- 	},
- 	{ .compatible = "samsung,exynos7-spi",
--			.data = (void *)&exynos7_spi_port_config,
-+			.data = &exynos7_spi_port_config,
- 	},
- 	{ .compatible = "samsung,exynos5433-spi",
--			.data = (void *)&exynos5433_spi_port_config,
-+			.data = &exynos5433_spi_port_config,
- 	},
- 	{ .compatible = "samsung,exynos850-spi",
--			.data = (void *)&exynos850_spi_port_config,
-+			.data = &exynos850_spi_port_config,
- 	},
- 	{ .compatible = "samsung,exynosautov9-spi",
--			.data = (void *)&exynosautov9_spi_port_config,
-+			.data = &exynosautov9_spi_port_config,
- 	},
- 	{ .compatible = "tesla,fsd-spi",
--			.data = (void *)&fsd_spi_port_config,
-+			.data = &fsd_spi_port_config,
- 	},
- 	{ },
+diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
+index e574e21cc0ca..4b2fcb228a0a 100644
+--- a/drivers/vhost/net.c
++++ b/drivers/vhost/net.c
+@@ -141,10 +141,8 @@ struct vhost_net {
+ 	unsigned tx_zcopy_err;
+ 	/* Flush in progress. Protected by tx vq lock. */
+ 	bool tx_flush;
+-	/* Private page frag */
+-	struct page_frag page_frag;
+-	/* Refcount bias of page frag */
+-	int refcnt_bias;
++	/* Private page frag cache */
++	struct page_frag_cache pf_cache;
  };
+ 
+ static unsigned vhost_net_zcopy_mask __read_mostly;
+@@ -655,41 +653,6 @@ static bool tx_can_batch(struct vhost_virtqueue *vq, size_t total_len)
+ 	       !vhost_vq_avail_empty(vq->dev, vq);
+ }
+ 
+-static bool vhost_net_page_frag_refill(struct vhost_net *net, unsigned int sz,
+-				       struct page_frag *pfrag, gfp_t gfp)
+-{
+-	if (pfrag->page) {
+-		if (pfrag->offset + sz <= pfrag->size)
+-			return true;
+-		__page_frag_cache_drain(pfrag->page, net->refcnt_bias);
+-	}
+-
+-	pfrag->offset = 0;
+-	net->refcnt_bias = 0;
+-	if (SKB_FRAG_PAGE_ORDER) {
+-		/* Avoid direct reclaim but allow kswapd to wake */
+-		pfrag->page = alloc_pages((gfp & ~__GFP_DIRECT_RECLAIM) |
+-					  __GFP_COMP | __GFP_NOWARN |
+-					  __GFP_NORETRY | __GFP_NOMEMALLOC,
+-					  SKB_FRAG_PAGE_ORDER);
+-		if (likely(pfrag->page)) {
+-			pfrag->size = PAGE_SIZE << SKB_FRAG_PAGE_ORDER;
+-			goto done;
+-		}
+-	}
+-	pfrag->page = alloc_page(gfp);
+-	if (likely(pfrag->page)) {
+-		pfrag->size = PAGE_SIZE;
+-		goto done;
+-	}
+-	return false;
+-
+-done:
+-	net->refcnt_bias = USHRT_MAX;
+-	page_ref_add(pfrag->page, USHRT_MAX - 1);
+-	return true;
+-}
+-
+ #define VHOST_NET_RX_PAD (NET_IP_ALIGN + NET_SKB_PAD)
+ 
+ static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
+@@ -699,7 +662,6 @@ static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
+ 	struct vhost_net *net = container_of(vq->dev, struct vhost_net,
+ 					     dev);
+ 	struct socket *sock = vhost_vq_get_backend(vq);
+-	struct page_frag *alloc_frag = &net->page_frag;
+ 	struct virtio_net_hdr *gso;
+ 	struct xdp_buff *xdp = &nvq->xdp[nvq->batched_xdp];
+ 	struct tun_xdp_hdr *hdr;
+@@ -710,6 +672,7 @@ static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
+ 	int sock_hlen = nvq->sock_hlen;
+ 	void *buf;
+ 	int copied;
++	int ret;
+ 
+ 	if (unlikely(len < nvq->sock_hlen))
+ 		return -EFAULT;
+@@ -719,18 +682,17 @@ static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
+ 		return -ENOSPC;
+ 
+ 	buflen += SKB_DATA_ALIGN(len + pad);
+-	alloc_frag->offset = ALIGN((u64)alloc_frag->offset, SMP_CACHE_BYTES);
+-	if (unlikely(!vhost_net_page_frag_refill(net, buflen,
+-						 alloc_frag, GFP_KERNEL)))
++	buf = page_frag_alloc_align(&net->pf_cache, buflen, GFP_KERNEL,
++				    SMP_CACHE_BYTES);
++	if (unlikely(!buf))
+ 		return -ENOMEM;
+ 
+-	buf = (char *)page_address(alloc_frag->page) + alloc_frag->offset;
+-	copied = copy_page_from_iter(alloc_frag->page,
+-				     alloc_frag->offset +
+-				     offsetof(struct tun_xdp_hdr, gso),
+-				     sock_hlen, from);
+-	if (copied != sock_hlen)
+-		return -EFAULT;
++	copied = copy_from_iter(buf + offsetof(struct tun_xdp_hdr, gso),
++				sock_hlen, from);
++	if (copied != sock_hlen) {
++		ret = -EFAULT;
++		goto err;
++	}
+ 
+ 	hdr = buf;
+ 	gso = &hdr->gso;
+@@ -743,27 +705,30 @@ static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
+ 			       vhost16_to_cpu(vq, gso->csum_start) +
+ 			       vhost16_to_cpu(vq, gso->csum_offset) + 2);
+ 
+-		if (vhost16_to_cpu(vq, gso->hdr_len) > len)
+-			return -EINVAL;
++		if (vhost16_to_cpu(vq, gso->hdr_len) > len) {
++			ret = -EINVAL;
++			goto err;
++		}
+ 	}
+ 
+ 	len -= sock_hlen;
+-	copied = copy_page_from_iter(alloc_frag->page,
+-				     alloc_frag->offset + pad,
+-				     len, from);
+-	if (copied != len)
+-		return -EFAULT;
++	copied = copy_from_iter(buf + pad, len, from);
++	if (copied != len) {
++		ret = -EFAULT;
++		goto err;
++	}
+ 
+ 	xdp_init_buff(xdp, buflen, NULL);
+ 	xdp_prepare_buff(xdp, buf, pad, len, true);
+ 	hdr->buflen = buflen;
+ 
+-	--net->refcnt_bias;
+-	alloc_frag->offset += buflen;
+-
+ 	++nvq->batched_xdp;
+ 
+ 	return 0;
++
++err:
++	page_frag_free(buf);
++	return ret;
+ }
+ 
+ static void handle_tx_copy(struct vhost_net *net, struct socket *sock)
+@@ -1353,8 +1318,7 @@ static int vhost_net_open(struct inode *inode, struct file *f)
+ 			vqs[VHOST_NET_VQ_RX]);
+ 
+ 	f->private_data = n;
+-	n->page_frag.page = NULL;
+-	n->refcnt_bias = 0;
++	n->pf_cache.va = NULL;
+ 
+ 	return 0;
+ }
+@@ -1422,8 +1386,7 @@ static int vhost_net_release(struct inode *inode, struct file *f)
+ 	kfree(n->vqs[VHOST_NET_VQ_RX].rxq.queue);
+ 	kfree(n->vqs[VHOST_NET_VQ_TX].xdp);
+ 	kfree(n->dev.vqs);
+-	if (n->page_frag.page)
+-		__page_frag_cache_drain(n->page_frag.page, n->refcnt_bias);
++	page_frag_cache_drain(&n->pf_cache);
+ 	kvfree(n);
+ 	return 0;
+ }
 -- 
-2.43.0.594.gd9cf4e227d-goog
+2.33.0
 
 
