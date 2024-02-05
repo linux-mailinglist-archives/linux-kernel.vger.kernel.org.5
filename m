@@ -1,120 +1,117 @@
-Return-Path: <linux-kernel+bounces-52406-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52407-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 848B48497B5
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:24:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9593B8497B8
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:25:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40CAD283746
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:24:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32A681F228AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:25:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96CF9171B8;
-	Mon,  5 Feb 2024 10:24:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="v+IqlpIG"
-Received: from mout.web.de (mout.web.de [217.72.192.78])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EEC5171A2;
+	Mon,  5 Feb 2024 10:25:11 +0000 (UTC)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54AA6171A2;
-	Mon,  5 Feb 2024 10:24:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 528BE16436;
+	Mon,  5 Feb 2024 10:25:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707128666; cv=none; b=evb+LrDZ8L0JW3XsiNby2xWV8akbJnUlRIN+0c3qhCQVWaALg4k0SZsUcfvtBYDWS51hJU12m0sgh4ylYnCwirTFGhdkTVIfKKWVb0bBJQMf9whRGW72yqwJo13q6LeJqj3w5ryy2b93L/DmVVYCsL3tKuXAzL+NdDnwJdSwitI=
+	t=1707128711; cv=none; b=XkXgvVEw+ViGMEqF/w3bh4MUV/A/YlSMZYNKD+j+Rrq2dh5IYOp1YlzIrZfvviU/+GWQDgFWcPwZY38yMKAePrR5EsHZUWVkkSWSBk1sm5MNAztlSI7PIxXwfPuZL+KX7XcC8dE1WyMxOl55MJ2ZQ8xqFqAWQZ/PrkZscAhhsJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707128666; c=relaxed/simple;
-	bh=NnYE8bbILAW26+vAJtdRxYeGAAdC5YtkedHUkzckdD4=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=hQ6zq9TSyFk3aBO7RCZcvNvRhf2LD8oAkUCxv9HN6WLhH6ADwqSURFYqkS/LBJiS8wlqAOt0KW8okLhyi1GQgFuSOWkyXAUsqfDPs5SB4rtttKccZpmzZ+K7NVl9GJQxsAxhPVW/MUReyqEeBtunq1wLAeUzrE+Shn5VdRYKpI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=v+IqlpIG; arc=none smtp.client-ip=217.72.192.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1707128635; x=1707733435; i=markus.elfring@web.de;
-	bh=NnYE8bbILAW26+vAJtdRxYeGAAdC5YtkedHUkzckdD4=;
-	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
-	b=v+IqlpIGM8LcYdlXGr8tIgZSbkYiaspbbGkDShtupIzcT/crkwMrynT1G4KeNUF5
-	 V6WWF+r4/m6FzNZxIAVamOvWTJYUII+D7TbVmT79OTkyCDHRjpVGGoZsHhU/HRuG/
-	 OZ1u1v+hCn0j7U1t+N1AcN4oTS8IlClHY6Mtyc8wfr5KSmDgDDPGJ6+cGT+bgaJ34
-	 lyOVZQun0MeSMGUHhNo4VdGahne+YibjO2QSlHSAhsV/gucSb0PAxecU7CCp9RIfG
-	 yB3CvZCOyj+He6vtd9/yv7IzTk+RGVsn0nCkO3q/dTMWLhnc9iTPxuZNWo3wV8WKr
-	 ph+15O1kpyYaX4W+9w==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1M7epr-1retgl3bRN-007wSM; Mon, 05
- Feb 2024 11:23:54 +0100
-Message-ID: <e1458683-1270-4b9f-afdb-2f0112d66245@web.de>
-Date: Mon, 5 Feb 2024 11:23:46 +0100
+	s=arc-20240116; t=1707128711; c=relaxed/simple;
+	bh=ivo3TXLyfqZY03CFtOPd2ttNNvE/OP+/puwD5Z1Q6tA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=N/oEPCzFZuuj4pzou+Eys7LaEWdeDgIBJYLSYpMq9o2/sQxNhjwbqiE9PlS37CfqqJ1WxnLtJ0hk0fP3Q/IiUBpXxELzO04rdV4iD5B83zkKhZPMnRaRPucBnlSxEPJ5Anf7ElV9/W+UutvT/nX+lh8fwVnumwxkZyb48O8oc2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.de; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 698441F8BA;
+	Mon,  5 Feb 2024 10:25:07 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4A659132DD;
+	Mon,  5 Feb 2024 10:25:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id R0sLEIO3wGWMLQAAD6G6ig
+	(envelope-from <aporta@suse.de>); Mon, 05 Feb 2024 10:25:07 +0000
+From: Andrea della Porta <andrea.porta@suse.com>
+To: florian.fainelli@broadcom.com
+Cc: andrea.porta@suse.com,
+	bcm-kernel-feedback-list@broadcom.com,
+	dmaengine@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-rpi-kernel@lists.infradead.org,
+	maxime@cerno.tech,
+	phil@raspberrypi.com,
+	popcornmix@gmail.com,
+	rjui@broadcom.com,
+	sbranden@broadcom.com,
+	vkoul@kernel.org
+Subject: Re: [PATCH 06/12] dmaengine: bcm2835: Use to_bcm2711_cbaddr where relevant
+Date: Mon,  5 Feb 2024 11:25:06 +0100
+Message-ID: <20240205102506.30039-1-andrea.porta@suse.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <04fa6114-3394-4e1e-84b8-9552f3ec398d@broadcom.com>
+References: <04fa6114-3394-4e1e-84b8-9552f3ec398d@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: dri-devel@lists.freedesktop.org, kernel-janitors@vger.kernel.org,
- Alexey Brodkin <abrodkin@synopsys.com>, Daniel Vetter <daniel@ffwll.ch>,
- David Airlie <airlied@gmail.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] drm/arcpgu: Use devm_platform_get_and_ioremap_resource() in
- arcpgu_load()
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:KVeAwmoXQTlXGed7bvDvvu5QWlrOEBIVyiLqAsV4nn+zEWWsXx0
- pb7SJ3z6qkW57aHeqg2cb394t85Soe3Lwn8qG2P0WO1yvfKf4jxgF4qT6H9aRyyWA4NBlI4
- 7DgQavedJMooj60TH7uSxE1hc8nl3oPbcjVsCfOb5/K1WYr2iNURnHOb/xxQqaPfgYRSBjf
- ekGNL8KJ7mDUFOBRV+9UA==
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out2.suse.de;
+	dkim=none
+X-Spamd-Result: default: False [4.55 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 R_MISSING_CHARSET(2.50)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 TO_DN_NONE(0.00)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 MX_GOOD(-0.01)[];
+	 BAYES_HAM(-2.94)[99.75%];
+	 RCPT_COUNT_TWELVE(0.00)[13];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FORGED_SENDER(0.30)[andrea.porta@suse.com,aporta@suse.de];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 R_DKIM_NA(2.20)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[suse.com,broadcom.com,vger.kernel.org,lists.infradead.org,cerno.tech,raspberrypi.com,gmail.com,kernel.org];
+	 FROM_NEQ_ENVFROM(0.10)[andrea.porta@suse.com,aporta@suse.de];
+	 RCVD_TLS_ALL(0.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: 4.55
+X-Rspamd-Queue-Id: 698441F8BA
+X-Spam-Level: ****
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:iCCk1+Z8zWQ=;IVOtri+y3nb3aQV+8+sKiAHKG/N
- Is8V2hQrHwSRwxenxyJiwvTOKq+40YvLeHkRr2ayfMNQrZ91lWkNnUt8IIwDKNu/K0Oq64bgP
- Y3ouzPC3ohS8lG1u2n8NMhiUUThcccOztYQfWwmrIjcc0aUU/VpjmfpHXmTeA98DFoInfRaqP
- TZYn5VAkCOLXCBvI7b8LNgyGb45UEbYAyZrhG9R+WitF58vcC2wvoWxuKfXJvz7e+tlXEnUNR
- Qqd5rcDBW/7i88k939/l0z8k/vpzRkChjyoIowYJzCVezi2vRp5COE3mk02tkMr5fGIctyqTG
- TZ8e05cE7j14oMZ9UGsPZLIw9VbNhFzRGnvtLBHfCLgWHfr4iCmC+b2qov+LUY4TQGDQiMTGE
- gACAfONy3JlJg24ssdkM1Z+WiAwVPmQKb1FKMiCp3qcS2ma6+CyZbkwiTbMai0GzVlFDtUCjC
- pTeEoCQofZVgf/cgtWyYI7RSe6a/0gz3DnboFQX97Q+zn2bQd38H0565X1Lv34dcbjbH7Qo0s
- DvQ6WV34s+cWAKtP4XCWDBtn9g175m5493IGCM7e/yRQQkT5KkyMbTKqWK7W4gymWkeQpkv75
- Y/nJAzQdytijbKKFQe6K5U8+pFKHCwoBmSytxSOsx5GDstvCL4JB2RJxWhf8vJJpqjL/pss8h
- hND6b8P3aZl5/mcTTe0SkJ65FCy9V+Kfd0pojQqnaRbRocncUHpsCCxOKbTzo1xTs2ycasfC0
- 5HBNpPbXtPL/QwqkTqMvF9oQWeI4+brwutP86b0Yxnqzaf3ODrt9YlFSLujPVrL/bymvN8pWV
- ZHmXI0xbVZYlbCzrjZdZ1s1JJx2Zv+xxGW263iEekrAn4=
+X-Spamd-Bar: ++++
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Mon, 5 Feb 2024 11:16:27 +0100
+>> From: Maxime Ripard <maxime@cerno.tech>
+>> 
+>> bcm2711_dma40_memcpy has some code strictly equivalent to the
+>> to_bcm2711_cbaddr() function. Let's use it instead.
+>> 
+>> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-A wrapper function is available since the commit 890cc39a879906b63912482df=
-c41944579df2dc6
-("drivers: provide devm_platform_get_and_ioremap_resource()").
-Thus reuse existing functionality instead of keeping duplicate source code=
-.
+>Where is the full patch series?
 
-This issue was detected by using the Coccinelle software.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/gpu/drm/tiny/arcpgu.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/tiny/arcpgu.c b/drivers/gpu/drm/tiny/arcpgu.c
-index 4f8f3172379e..29929f093d55 100644
-=2D-- a/drivers/gpu/drm/tiny/arcpgu.c
-+++ b/drivers/gpu/drm/tiny/arcpgu.c
-@@ -268,8 +268,7 @@ static int arcpgu_load(struct arcpgu_drm_private *arcp=
-gu)
- 	drm->mode_config.max_height =3D 1080;
- 	drm->mode_config.funcs =3D &arcpgu_drm_modecfg_funcs;
-
--	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	arcpgu->regs =3D devm_ioremap_resource(&pdev->dev, res);
-+	arcpgu->regs =3D devm_platform_get_and_ioremap_resource(pdev, 0, &res);
- 	if (IS_ERR(arcpgu->regs))
- 		return PTR_ERR(arcpgu->regs);
-
-=2D-
-2.43.0
-
+Hi Florian,
+sorry, what do you mean with 'where is the full patch series', exactly?
 
