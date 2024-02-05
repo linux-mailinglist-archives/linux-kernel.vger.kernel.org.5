@@ -1,256 +1,147 @@
-Return-Path: <linux-kernel+bounces-52498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30422849906
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:41:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C497849908
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:41:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9F05284D93
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:41:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF612B224B5
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:41:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D93C18EAD;
-	Mon,  5 Feb 2024 11:41:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 604FB18EB0;
+	Mon,  5 Feb 2024 11:41:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oYSqRifo"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XFB4YWft"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AD1718E1E
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 11:41:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C7E18C3B
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 11:41:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707133272; cv=none; b=UxsHUaysrQCB6aRgVUbXiFKJDO6uQ5DggUSjJ9iDQAGhygw3+jQ2xt4CQj+iziLXAvUECYu6zX0ls7idbUQ8vIutBRdAFH/lb90zWrDmyrW/en4Y4CKGisghSzE3dE1RaeZ1XqD7yQCrznnqDLXW/H0Xu90pp0f+7DpzEh0mTAQ=
+	t=1707133299; cv=none; b=IsZB4SeFrSqR/VevXRurhdjm0ZJqYXKDTFkvk8wZU/UiyEuk03N2k4e/ZSAV/z4uEK5QqxkaHXkNEiB1fz2RqNCYn1j7Qr3Y4WdCs6qFTM8oZqSI93jDCyl6na7k62Z2J/O2DZS+YCMiCvwoMpAzGq0kGGqsUW9MV3BxYxIxol4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707133272; c=relaxed/simple;
-	bh=VoW3whsdIu6vZsz8npvZyTC66/rJHpfHtp4NTFQ9DEY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=lStiUhLir2VkIIEAyAxgH4kzkWJzmOYRq5nxLokkCh4A1fCMW0EVYoAB/a7AMT3+Fwq2kuYO2gKKmKRApo8bX2BRWeq1n/Z5DslIlVGZ0UzsSTjsmOD22D4VGrqG6Ql1L2E3D/SAXZNxHU79UiSVveXLx7JV3s5Y9sVhrTFN83w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oYSqRifo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 982C7C43390;
-	Mon,  5 Feb 2024 11:41:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707133272;
-	bh=VoW3whsdIu6vZsz8npvZyTC66/rJHpfHtp4NTFQ9DEY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=oYSqRifo11ky9u/KqgYB3jd809jSdYf8kepFH+twUrN8V+elsmOdNat2isPHwKU+F
-	 fHtk7FWA82SEJ/Vs8LHSJ3CXt0Rdyizc8W3eFEVSWgN18Sv+2/VE+PIqL0cobGkfE2
-	 Bc7lIKSq6u7BDhb4fjyNdvRuSrLJwoBUPXYGUKinAsP7+QbdoBBv5rwZHET5Y5WXgg
-	 vr199tagrDnWGWJDk8WSjPdqoN77n7goUFXS1dJud5AxaRmKwXknMs/VXBgm3jdnk2
-	 Axp6nADXphLhMJUZ8S/x+rZ31pJuylpe17hrPyaMTumVakWc29WdbwTW09hWLVHSSO
-	 8B+6mn++4WugQ==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Anup Patel <apatel@ventanamicro.com>
-Cc: Alexandre Ghiti <alex@ghiti.fr>, Palmer Dabbelt <palmer@dabbelt.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Anup Patel
- <anup@brainfault.org>, linux-kernel@vger.kernel.org, Atish Patra
- <atishp@atishpatra.org>, linux-riscv@lists.infradead.org, Andrew Jones
- <ajones@ventanamicro.com>
-Subject: Re: [PATCH] RISC-V: Don't use IPIs in flush_icache_all() when
- patching text
-In-Reply-To: <CAK9=C2U9K+u2r8xNcguqpROKeDhKSBoQCrDW1Y_Qa_MU-SBqnw@mail.gmail.com>
-References: <20240205042955.833752-1-apatel@ventanamicro.com>
- <d5e21238-89f4-444e-9c35-f4a28e01052e@ghiti.fr>
- <CAK9=C2XEmFBDB6R5f+L9++7ojhWb8rJK-e-vgFrDmsi2=DMOBw@mail.gmail.com>
- <87y1bzch0u.fsf@all.your.base.are.belong.to.us>
- <CAK9=C2U9K+u2r8xNcguqpROKeDhKSBoQCrDW1Y_Qa_MU-SBqnw@mail.gmail.com>
-Date: Mon, 05 Feb 2024 12:41:08 +0100
-Message-ID: <87wmrj9m0b.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1707133299; c=relaxed/simple;
+	bh=cawbObaeTNPoPHLs3wzViPvaUp+m9ZRIyvZEw1PShiY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jld2uosSr7sZE+tR1T+b6f5Dnhw7POann5+3JEdnohLGtf7NF9AACP7hjKJO/UWAVuQoH48GQIbKfHeeLaUS+TTnVGN8Wee61hziBD60YTlqkiDdlYHUpekPWoLpRxTt3vHIdr4urcP+kap263NRLUvJryvqxih3IhxLKyNbRaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XFB4YWft; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a37878ac4f4so138498366b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 03:41:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707133296; x=1707738096; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JdDNzXnnmgs4CmoJ3xT93XgtQHbqN413J4+6ID4w1fc=;
+        b=XFB4YWftQbbWpmT0ZWLYHPzSR17tOnNmzPWok3Z/prJVg7btxo8lznFgUgPk21i/l4
+         tdSXyKc/k3dvL9/YHzzkkNSxW38lqZFGyM8tDsWRvfXA/P8WoMMUIzmR2DAuAV+Sizb3
+         6mr5PtusOJ6xH//Na+UmGKHtK6WGH5zkj8hwYJIjluZuzeMkYbmKcu2CWHzJS+QjeoAi
+         HYSjG/BH6ybb9ada13cjnluW3J+zhlEbekvcBsZh4CpYLqFWKa7683/Yy7Q15KmOB4L+
+         /0nIRxgSVSrLvmKb642NSQuX4+bdGa3xHdIe/Rsls+JqAgpnPNH4wNdNrnZ+CsWJ3koS
+         JUbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707133296; x=1707738096;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JdDNzXnnmgs4CmoJ3xT93XgtQHbqN413J4+6ID4w1fc=;
+        b=MC/hV1XlsNa9RodIgsMlagXlbTbg7OiVs55YF3EpkuxTYa6Vjglh1NuP1E1ODz526m
+         Wch4YHPf4pN2QXL3FWTiXLRzU/Q8mfaAHIf+nseCpQha0KLmciWLZIZylhUL6+w7fodB
+         XmXruoUPHFPXhwIQF7IzlQZf6/VrfdkAPQyr9Eb23sTozZgu8/yEIEOsak0HyPLWrT3K
+         cxCLUqq3mTzU9akSwV2eWAvtk62ZuP1jlogYl24ZavLVIxMWVgorqD7y7DNvHYu1l2YT
+         gTtxg/6JEvK1C8ka5ABtgL+nrYVenPssEptXtd1ENdzGGfcP6NpplWLfvHG/dNZchusA
+         be1w==
+X-Gm-Message-State: AOJu0YxHA4C1lnQXU95yEiKdmB0QG5NSCmHjhB+xx0wRR9QV3Cflo9ek
+	kFHOc2WJi5xwEmn2e2J0dYwHAru0qFcNrcW6MP9mYxydiz29/PDuGD0X+ZcdZsg=
+X-Google-Smtp-Source: AGHT+IEyGaT1GowqBYI/yEWBSuyvilmzJZdwtRyvCm3j7vrIGTt/Z5+W8p0t37oecuPRpTp1jJPcOg==
+X-Received: by 2002:a17:906:4:b0:a37:2e82:3c4a with SMTP id 4-20020a170906000400b00a372e823c4amr5262475eja.52.1707133295889;
+        Mon, 05 Feb 2024 03:41:35 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWk2Tsa9AcqE288WYA7nQCODiqIwyfsENZYHM6ugZTYVKR73yYLsjo1KuQvNKEYli/z4wkh7/hPu+bM/QnQ9Z8ZX2QTlAe8Dpq5DiOA2MBHxtbtO8oeYe1yX/K5ktIBGYgKO9cQ5HiHa0mO2YYMZlGd/FSbyl4+APaQRjrFcgPTa1X+0IPEMqbsI8lmihDhvfem+APbn6leQUS9xOzpAkwNXMai8ps/oRQHJw==
+Received: from [192.168.159.104] (037008245233.garwolin.vectranet.pl. [37.8.245.233])
+        by smtp.gmail.com with ESMTPSA id a20-20020a170906671400b00a34d0a865ecsm4177184ejp.163.2024.02.05.03.41.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Feb 2024 03:41:34 -0800 (PST)
+Message-ID: <4cdf9c9c-c4fb-48a2-be17-8191aaecb2fe@linaro.org>
+Date: Mon, 5 Feb 2024 12:41:32 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/4] power: supply: mm8013: implement
+ POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR_AVAILABLE
+Content-Language: en-US
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+ Sebastian Reichel <sre@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
+ Konrad Dybcio <konradybcio@kernel.org>
+Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Sebastian Reichel <sebastian.reichel@collabora.com>
+References: <20240204-power_supply-charge_behaviour_prop-v1-0-06a20c958f96@weissschuh.net>
+ <20240204-power_supply-charge_behaviour_prop-v1-3-06a20c958f96@weissschuh.net>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240204-power_supply-charge_behaviour_prop-v1-3-06a20c958f96@weissschuh.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Anup Patel <apatel@ventanamicro.com> writes:
+On 4.02.2024 18:26, Thomas Weißschuh wrote:
+> The sysfs is documented to report both the current and all available
+> behaviours. For this POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR_AVAILABLE needs
+> to be implemented.
+> 
+> Note that this changes the format of the sysfs file
+> (to the documented format):
+> 
+> Before: "auto"
+> After:  "[auto] inhibit-charge"
+> 
+> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> ---
 
-> On Mon, Feb 5, 2024 at 4:30=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@kerne=
-l.org> wrote:
->>
->> Anup Patel <apatel@ventanamicro.com> writes:
->>
->> > On Mon, Feb 5, 2024 at 11:52=E2=80=AFAM Alexandre Ghiti <alex@ghiti.fr=
-> wrote:
->> >>
->> >> Hi Anup,
->> >>
->> >> On 05/02/2024 05:29, Anup Patel wrote:
->> >> > If some of the HARTs are parked by stop machine then IPI-based
->> >> > flushing in flush_icache_all() will hang. This hang is observed
->> >> > when text patching is invoked by various debug and BPF features.
->> >> >
->> >> > To avoid this hang, we force use of SBI-based icache flushing
->> >> > when patching text.
->> >> >
->> >> > Fixes: 627922843235 ("RISC-V: Use IPIs for remote icache flush when=
- possible")
->> >> > Reported-by: Bjorn Topel <bjorn@kernel.org>
->> >> > Closes: https://gist.github.com/bjoto/04a580568378f3b5483af07cd9d22=
-501
->> >> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
->> >> > ---
->> >> >   arch/riscv/include/asm/cacheflush.h | 7 ++++---
->> >> >   arch/riscv/kernel/hibernate.c       | 2 +-
->> >> >   arch/riscv/kernel/patch.c           | 4 ++--
->> >> >   arch/riscv/mm/cacheflush.c          | 7 ++++---
->> >> >   4 files changed, 11 insertions(+), 9 deletions(-)
->> >> >
->> >> > diff --git a/arch/riscv/include/asm/cacheflush.h b/arch/riscv/inclu=
-de/asm/cacheflush.h
->> >> > index a129dac4521d..561e079f34af 100644
->> >> > --- a/arch/riscv/include/asm/cacheflush.h
->> >> > +++ b/arch/riscv/include/asm/cacheflush.h
->> >> > @@ -32,7 +32,8 @@ static inline void flush_dcache_page(struct page =
-*page)
->> >> >    * RISC-V doesn't have an instruction to flush parts of the instr=
-uction cache,
->> >> >    * so instead we just flush the whole thing.
->> >> >    */
->> >> > -#define flush_icache_range(start, end) flush_icache_all()
->> >> > +#define flush_icache_range(start, end) flush_icache_all(true)
->> >> > +#define flush_icache_patch_range(start, end) flush_icache_all(fals=
-e)
->> >> >   #define flush_icache_user_page(vma, pg, addr, len) \
->> >> >       flush_icache_mm(vma->vm_mm, 0)
->> >> >
->> >> > @@ -43,12 +44,12 @@ static inline void flush_dcache_page(struct pag=
-e *page)
->> >> >
->> >> >   #ifndef CONFIG_SMP
->> >> >
->> >> > -#define flush_icache_all() local_flush_icache_all()
->> >> > +#define flush_icache_all(want_ipi) local_flush_icache_all()
->> >> >   #define flush_icache_mm(mm, local) flush_icache_all()
->> >> >
->> >> >   #else /* CONFIG_SMP */
->> >> >
->> >> > -void flush_icache_all(void);
->> >> > +void flush_icache_all(bool want_ipi);
->> >> >   void flush_icache_mm(struct mm_struct *mm, bool local);
->> >> >
->> >> >   #endif /* CONFIG_SMP */
->> >> > diff --git a/arch/riscv/kernel/hibernate.c b/arch/riscv/kernel/hibe=
-rnate.c
->> >> > index 671b686c0158..388f10e187ba 100644
->> >> > --- a/arch/riscv/kernel/hibernate.c
->> >> > +++ b/arch/riscv/kernel/hibernate.c
->> >> > @@ -153,7 +153,7 @@ int swsusp_arch_suspend(void)
->> >> >       } else {
->> >> >               suspend_restore_csrs(hibernate_cpu_context);
->> >> >               flush_tlb_all();
->> >> > -             flush_icache_all();
->> >> > +             flush_icache_all(true);
->> >> >
->> >> >               /*
->> >> >                * Tell the hibernation core that we've just restored=
- the memory.
->> >> > diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
->> >> > index 37e87fdcf6a0..721e144a7847 100644
->> >> > --- a/arch/riscv/kernel/patch.c
->> >> > +++ b/arch/riscv/kernel/patch.c
->> >> > @@ -182,7 +182,7 @@ int patch_text_set_nosync(void *addr, u8 c, siz=
-e_t len)
->> >> >       ret =3D patch_insn_set(tp, c, len);
->> >> >
->> >> >       if (!ret)
->> >> > -             flush_icache_range((uintptr_t)tp, (uintptr_t)tp + len=
-);
->> >> > +             flush_icache_patch_range((uintptr_t)tp, (uintptr_t)tp=
- + len);
->> >> >
->> >> >       return ret;
->> >> >   }
->> >> > @@ -217,7 +217,7 @@ int patch_text_nosync(void *addr, const void *i=
-nsns, size_t len)
->> >> >       ret =3D patch_insn_write(tp, insns, len);
->> >> >
->> >> >       if (!ret)
->> >> > -             flush_icache_range((uintptr_t) tp, (uintptr_t) tp + l=
-en);
->> >> > +             flush_icache_patch_range((uintptr_t) tp, (uintptr_t) =
-tp + len);
->> >> >
->> >> >       return ret;
->> >> >   }
->> >> > diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
->> >> > index 55a34f2020a8..03cd3d4831ef 100644
->> >> > --- a/arch/riscv/mm/cacheflush.c
->> >> > +++ b/arch/riscv/mm/cacheflush.c
->> >> > @@ -17,11 +17,12 @@ static void ipi_remote_fence_i(void *info)
->> >> >       return local_flush_icache_all();
->> >> >   }
->> >> >
->> >> > -void flush_icache_all(void)
->> >> > +void flush_icache_all(bool want_ipi)
->> >> >   {
->> >> >       local_flush_icache_all();
->> >> >
->> >> > -     if (IS_ENABLED(CONFIG_RISCV_SBI) && !riscv_use_ipi_for_rfence=
-())
->> >> > +     if (IS_ENABLED(CONFIG_RISCV_SBI) &&
->> >> > +         (!want_ipi || !riscv_use_ipi_for_rfence()))
->> >> >               sbi_remote_fence_i(NULL);
->> >> >       else
->> >> >               on_each_cpu(ipi_remote_fence_i, NULL, 1);
->> >> > @@ -87,7 +88,7 @@ void flush_icache_pte(pte_t pte)
->> >> >       struct folio *folio =3D page_folio(pte_page(pte));
->> >> >
->> >> >       if (!test_bit(PG_dcache_clean, &folio->flags)) {
->> >> > -             flush_icache_all();
->> >> > +             flush_icache_all(true);
->> >> >               set_bit(PG_dcache_clean, &folio->flags);
->> >> >       }
->> >> >   }
->> >>
->> >>
->> >> Since patch_text_cb() is run on all cpus, couldn't we completely avoid
->> >> any remote icache flush by slightly changing patch_text_cb() instead =
-as
->> >> follows?
->> >
->> > Unfortunately patch_text_cb() is not the only user of patch_text_nosync
->> > since patch_text_nosync() and patch_text_set_nosync() are called direc=
-tly
->> > from other places as well.
->>
->> Yeah. There is one more stop_machine() text patching user, and that's
->> ftrace. ftrace is using stop_machine() with the last argument set to
->> NULL, so only patching on *any* hart. Continuing on Alex' idea would be
->> to place an IPI flush in ftrace_arch_code_modify_post_process(),
->> unfortately that's too late since we're already moved on from
->> stop_machine().
->>
->> > We have to update all users of patch_text_nosync() and
->> > patch_text_set_nosync() to move to local icache flushes which
->> > is a much bigger change.
->>
->> Only the ftrace stop_machine() user, right? Alex solution is sufficient
->> for patch_text(). I'm not a super fan of conditionally calling into SBI
->> and passing around boolean context flags as a workaround... :-( Any
->> other alternatives?
->
-> I was seeing hang because of patch_text_nosync() getting called from
-> the BPF path in my debug sessions.
+LGTM, thanks
 
-Yeah, and this is ftrace's stop_machine() path. All ftrace() paths,
-and all kprobe paths (patch_text) will have this hang with the IMSIC
-series unless the fixup is done. :-(
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-> I am certainly not a fan of the approach taken by this patch but this is
-> the smallest amount of change I could come-up as FIXUP. We should
-> certainly have a separate patch to do this in a proper way.
-
-Yup (and thanks for working on it BTW!). Hmm, making it possible for
-Charlie's work [1] to attach to cpu_stopper? But maybe that's more
-work...
-
-Unless anyone can comeup with a cleaner (non-SBI), working solution, I'd
-say go for this one...
-
-
-Bj=C3=B6rn
+Konrad
 
