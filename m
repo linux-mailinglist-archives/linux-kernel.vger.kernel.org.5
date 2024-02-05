@@ -1,231 +1,148 @@
-Return-Path: <linux-kernel+bounces-51981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39147849247
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 03:06:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A13C849249
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 03:11:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8B541F21053
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 02:06:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A36E6282AB9
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 02:11:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 767488F44;
-	Mon,  5 Feb 2024 02:06:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEFB1945A;
+	Mon,  5 Feb 2024 02:11:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lWZcksxu"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="LlPgrLUO"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DB0479CD;
-	Mon,  5 Feb 2024 02:06:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 399C38F49
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 02:11:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707098769; cv=none; b=PDJ94uc/yUaoGBsHJDRL3FieHtE0D6angHFrtikBGOH54UTZ+YRAnenVkIaER5zIqN7lWehVtWYZg8DGbHtyft0S0NIn3HrHEwwA5ipgxWkz5m1KEfQQ4Gwy2H0l8d5dEWWyA802Yd3eXURJfNcregDFL2UyhRu8J9AAMfZAMGw=
+	t=1707099101; cv=none; b=K0iOJumGVvdzD7nXolLAZGVKzLo+C6tIF0FJ0mm7hBpM8LLbCN9g13Cfe6LYEqLQuEsJizsl2Ubo1yK9GCw4HGJ9ceDaJr7zG3QRdReFB1CRuM7n+lBM4qfaBnsGa9K/iFVGE+CYXk7Hph8lOd5e3uiwaIWVLws+reXpC08v3wA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707098769; c=relaxed/simple;
-	bh=72Mp5Km391G5I9c0xcHLEHQKsivJywlaXaDcYG9JVnc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nxn8X4YT+BAKbShhlQM6JPQ2xq8WTDZQg+m7uG9P4fRXqEGdo99/IQmSkIdRYajteP4R/kjUGpEc1jzvQ5xXdM+f/9gUk0E1XBdz3GuxBV6gN/F5w0I3vTr2TBPcX3i5v5NSHVog6PBId1+Us2PdmlnRxbX9vDOgFY9jilLZf9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lWZcksxu; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d71cb97937so34450165ad.3;
-        Sun, 04 Feb 2024 18:06:07 -0800 (PST)
+	s=arc-20240116; t=1707099101; c=relaxed/simple;
+	bh=2NgDJ8/HDNOwizSviQcXNeE9bKTPPWdbZ1pH9F5mHnA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pTa8LrClOF4ae4TqTrtp4ICVTCwSeCayP14knpMER3+PC2HbwhNslImihFwdr1XbwLxulmxORTs0zlmmvY1FFvvyGnaYO5GNuPueGdhcgUF4nux+n0G8JejhC3W1blBcodkRYySqAw8A3/2Wz9TedloJXehTMAtYuVqME6ffFOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=LlPgrLUO; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40ef3f351d2so27673015e9.1
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 18:11:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707098767; x=1707703567; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VwBy5xwYDXg+JhcdUGchx202mCPMDEZkLQoSR/Z/AEQ=;
-        b=lWZcksxuZhobs24fFp48WAVBJeBVi0cUokjVrHKrcOp3/oWYizLZARdMN1mtxDG51a
-         OZ27l2/kKYBD+qzJ6+KxQ3HR7yvxjmC7qXUMXyT/wGO830LGWeowdA9B5JdO4yYezMDw
-         ZT2m5X02ysPzNrv8yY7bOIyL5QFgxprHWoVjJzuNW3flxCm9A23HW0ct3T3P6tZxBRcE
-         Hytw/bKXlom9HfelN+29RXtst0/VbTsFrFrxKlfyvLPJffowcKb423mw3nQSlJ16Qao1
-         hfhjskHyTHvaWg/dQmJuViAcUkw2SrEVJg87bkQhu9TPJWMcmmeN+jWcTaoYmgmTk1I4
-         TV7Q==
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1707099097; x=1707703897; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cMLDSwUmuCQOcnQUdhO7xQk8o6D05wkVH28BQsiOrHs=;
+        b=LlPgrLUOGd8FTUZtQaLFiFWiA2gzUS+Inl1Ft/wWeZtnZbxyFAIfxFxNd056E3vR4B
+         mWC5MSPZVZ0fM26rPzOPFXV4vjxb10X2IgpMq+mOgusBuB0dxOwEP7HiHyQ6l2NNGv+I
+         G1aY0cVr6GVXmBmK43vptZbOd/6bXN0QB2Ks7B0mYbQ3ndr3zBdth9tk5XWhWrVeFFci
+         t0zA/JUxc8YSLT5E3ohtuDQ8aYggftxFBR1mgafhZazPagWJ9GQSpJD4Co4uRuhKzQBV
+         pwKzv+IRF/DrL1BoCcctTOZ019CH1ZnScIqf+c3ic09JspHQBDOFhww/NHzPo/3hsAxQ
+         u/Pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707098767; x=1707703567;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VwBy5xwYDXg+JhcdUGchx202mCPMDEZkLQoSR/Z/AEQ=;
-        b=S0FMBpoBupyc48zJY0IWVm6YfsN+O+j9ucxZ42NtmIwAJSMnf84hI0GQzfdJyhBzRi
-         ZUKs34W/yeyVrDWKhz2GlkIVs3hq8GM5v6vDiPGvG/tueMC4iAi4a1CHE4FT6E79GMad
-         BymJWwREC5nEma+In5zBYjzKkW/CBYsIy0gS3EZ+QvBKr6vhbxazwdt3soZu83THQ/By
-         54F0+zsz8gGeLoEeRsPTR6cjTo562Lk+KKJ8l1fYhKuWW0hLEkQ469ixhMsuvLAZ76aq
-         e/uRW9Nmk4MaGgDGL2vDSErh2dAnsJB2S/SkWCShhITPXOKaReLYT2p0Kt2L8ddVYGy5
-         XbTw==
-X-Gm-Message-State: AOJu0Ywr16E9PlSFvWH3z2bAcyLLDm0u2IqC/tCm+UaZwtr2iScAitr6
-	DJi5Wx4iZN7cZdjgwOmcm5GXa01MWmFd2013VKalolMKxvYtplKv
-X-Google-Smtp-Source: AGHT+IET1mJI83C9OIp7iAuyP68jh/Ii0202M6Di6DAzLb7rGa7+7lMqVdfgGukYWvaRAVCvnPs2tA==
-X-Received: by 2002:a17:902:76c7:b0:1d9:5596:ffe8 with SMTP id j7-20020a17090276c700b001d95596ffe8mr9490543plt.66.1707098767248;
-        Sun, 04 Feb 2024 18:06:07 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVTFzBviBlJ1jR9YRA8eQ2WMWA1/ZW8jPHvFMnu7Q4Sv9AbkjrarTTNzoSd12uu9dtPhAaop+d7DCne7U03yAO9bS7TCj+CfVmHDrCci3qnI8C/lBK/HU+9/CoQcwqa42m10vmF+DbDLc1JwIXTPDY15IkIaIHyAL6UOJ6Gsm/BHzkjYoSNyCbG7+mFtAUggHtzE8kv1YRohZdtU7RiJgvp
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id l5-20020a170902e2c500b001d974ffa1fcsm4674292plc.173.2024.02.04.18.06.06
+        d=1e100.net; s=20230601; t=1707099097; x=1707703897;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cMLDSwUmuCQOcnQUdhO7xQk8o6D05wkVH28BQsiOrHs=;
+        b=jphVZi1I9CcBXr9J4N6N1twzlJT+cw6EAQ7UMe4Ncnhjzd/p8znIgEdGb3Tgp/duBF
+         o6RxUxGBc98Js83ZnF3RMZIqx2XaMjliAbGx1TBaBuHKPAqUW9pJ9U8iydO/kYY+iX+9
+         D826dLheilksiWWHQu4TzEKgAsx9uZJbTeKsAbDDYJxtOfZC0buC4W0xQ68hvxMtwphS
+         bCy55GrSEPpD1cqPsj8q19/+E1sK0nHOtfmmWABkteu69PUzs+2riFt0yVWmBCSLzGa2
+         bWeZ3HJgMLws8lnkOMBBE9fcX8gVsLo63QDYtflx4/EfR4XrZR0PeZ0AyDdV22I5kQLX
+         Oo4w==
+X-Gm-Message-State: AOJu0YxJtJilDhqSLFLkkeH3PXAOYbJiwBac18h2Hyvg6Kz0JCOo7JVy
+	zCkIJZ/S8uu69H9ExvuH2i2K9VJySLhN1vygWCBTDzqUUQfsa2SdzLKroKLf+Bg=
+X-Google-Smtp-Source: AGHT+IGMmEfGIcZmHgz0ioTYMg57cNjt7Miy7jydWMVCJELT9z9Ji1559VQqL6J4M3AbOzcHsXmh1Q==
+X-Received: by 2002:adf:fa85:0:b0:337:b9ad:14d with SMTP id h5-20020adffa85000000b00337b9ad014dmr3766961wrr.19.1707099097036;
+        Sun, 04 Feb 2024 18:11:37 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCX/9V0o5fbtCKrx6NURy7p4JhuSwwt9UGY+sg3iWKrfEyHCC5LbmqovegHEmtP6HkgZW1gRxs485qneeIu3rkgzUVFEL4DR5TdE7+ctwWNx56RgMEwFIWPCYub+r8DsHVVxoazRTLwYPUUvGKhqjIBWu/w+h2Up62ylUziKDrVszFnBebxP6/jgu0w+V3ZzZSiWTWtZNxGps9yDKxKdgUajggx9CEqQvw==
+Received: from airbuntu.. (host109-154-238-234.range109-154.btcentralplus.com. [109.154.238.234])
+        by smtp.gmail.com with ESMTPSA id j4-20020a5d4524000000b0033addeabd6fsm6999800wra.18.2024.02.04.18.11.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Feb 2024 18:06:06 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id E4702180EC46F; Mon,  5 Feb 2024 09:06:02 +0700 (WIB)
-Date: Mon, 5 Feb 2024 09:06:02 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Mike Beaton <mjsbeaton@gmail.com>,
-	Linux EFI <linux-efi@vger.kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc: Ard Biesheuvel <ardb@kernel.org>, Ivan Hu <ivan.hu@canonical.com>,
-	Jeremy Kerr <jk@ozlabs.org>, Peter Jones <pjones@redhat.com>
-Subject: Re: Broken section alignment in 6.7 and 6.8rc EFI stub
-Message-ID: <ZcBCiqOroolz1hoh@archie.me>
-References: <CAHzAAWQ6srV6LVNdmfbJhOwhBw5ZzxxZZ07aHt9oKkfYAdvuQQ@mail.gmail.com>
+        Sun, 04 Feb 2024 18:11:36 -0800 (PST)
+From: Qais Yousef <qyousef@layalina.io>
+To: Ingo Molnar <mingo@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: linux-kernel@vger.kernel.org,
+	"Pierre Gondois" <Pierre.Gondois@arm.com>,
+	Qais Yousef <qyousef@layalina.io>
+Subject: [PATCH v5 0/2] sched: Don't trigger misfit if affinity is restricted
+Date: Mon,  5 Feb 2024 02:11:21 +0000
+Message-Id: <20240205021123.2225933-1-qyousef@layalina.io>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="7o0GjoQloJffUDX7"
-Content-Disposition: inline
-In-Reply-To: <CAHzAAWQ6srV6LVNdmfbJhOwhBw5ZzxxZZ07aHt9oKkfYAdvuQQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
+Changes since v4:
 
---7o0GjoQloJffUDX7
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+	* Store max_allowed_capacity in task_struct and populate it when
+	  affinity changes to avoid iterating through the capacities list in the
+	  fast path (Vincent)
+	* Use rq->rd->max_cpu_capacity which is updated after hotplug
+	  operations to check biggest allowed capacity in the system.
+	* Undo the change to check_misfit_status() and improve the function to
+	  avoid similar confusion in the future.
+	* Split the patches differently. Export the capacity list and sort it
+	  is now patch 1, handling of affinity for misfit detection is patch 2.
 
-On Mon, Feb 05, 2024 at 12:08:00AM +0000, Mike Beaton wrote:
-> Good evening.
->=20
-> Linux kernels from 6.7 upwards (including 6.8rc) appear to have broken
-> PE section alignment in their EFI stub.
->=20
-> Up to 6.6, we see monotonically increasing and contiguous VMA and LMA,
-> as  expected for a well-formed PE/COFF file.
->=20
-> In 6.7 and 6.8 these addresses basically jump around all over the place.
->=20
-> At least one loader which is believed to be enforcing strong but
-> reasonable rules on PE section layout refuses to load these:
-> https://github.com/acidanthera/bugtracker/issues/2371#issuecomment-192580=
-1292
->=20
-> objdumps of some example kernels (two good, three bad) follow:
->=20
-> $ objdump -h vmlinuz-5.15.0-92-generic
->=20
-> vmlinuz-5.15.0-92-generic:     file format pei-x86-64
->=20
-> Sections:
-> Idx Name          Size      VMA               LMA               File off =
- Algn
->   0 .setup        00003bc0  0000000001000200  0000000001000200  00000200 =
- 2**4
->                   CONTENTS, ALLOC, LOAD, READONLY, CODE
->   1 .reloc        00000020  0000000001003dc0  0000000001003dc0  00003dc0 =
- 2**0
->                   CONTENTS, ALLOC, LOAD, READONLY, DATA
->   2 .compat       00000020  0000000001003de0  0000000001003de0  00003de0 =
- 2**0
->                   CONTENTS, ALLOC, LOAD, READONLY, DATA
->   3 .text         00b0f4c0  0000000001003e00  0000000001003e00  00003e00 =
- 2**4
->                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-> $ objdump -h vmlinuz-6.6.11-zabbly+
->=20
-> vmlinuz-6.6.11-zabbly+:     file format pei-x86-64
->=20
-> Sections:
-> Idx Name          Size      VMA               LMA               File off =
- Algn
->   0 .setup        00003dc0  0000000001000200  0000000001000200  00000200 =
- 2**4
->                   CONTENTS, ALLOC, LOAD, READONLY, CODE
->   1 .reloc        00000020  0000000001003fc0  0000000001003fc0  00003fc0 =
- 2**0
->                   CONTENTS, ALLOC, LOAD, READONLY, DATA
->   2 .compat       00000020  0000000001003fe0  0000000001003fe0  00003fe0 =
- 2**0
->                   CONTENTS, ALLOC, LOAD, READONLY, DATA
->   3 .text         00d6e400  0000000001004000  0000000001004000  00004000 =
- 2**4
->                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-> $ objdump -h vmlinuz-6.7.3-3-liquorix-amd64
->=20
-> vmlinuz-6.7.3-3-liquorix-amd64:     file format pei-x86-64
->=20
-> Sections:
-> Idx Name          Size      VMA               LMA               File off =
- Algn
->   0 .setup        00003000  0000000000001000  0000000000001000  00001000 =
- 2**2
->                   CONTENTS, ALLOC, LOAD, READONLY, DATA
->   1 .compat       00000008  0000000000c0e000  0000000000c0e000  00004000 =
- 2**2
->                   CONTENTS, ALLOC, LOAD, READONLY, DATA
->   2 .text         00baa000  0000000000005000  0000000000005000  00005000 =
- 2**4
->                   CONTENTS, ALLOC, LOAD, READONLY, CODE
->   3 .data         00001200  0000000000baf000  0000000000baf000  00baf000 =
- 2**4
->                   CONTENTS, ALLOC, LOAD, DATA
-> $ objdump -h vmlinuz-6.7.3-zabbly+
->=20
-> vmlinuz-6.7.3-zabbly+:     file format pei-x86-64
->=20
-> Sections:
-> Idx Name          Size      VMA               LMA               File off =
- Algn
->   0 .setup        00003000  0000000000001000  0000000000001000  00001000 =
- 2**2
->                   CONTENTS, ALLOC, LOAD, READONLY, DATA
->   1 .compat       00000008  0000000000df0000  0000000000df0000  00004000 =
- 2**2
->                   CONTENTS, ALLOC, LOAD, READONLY, DATA
->   2 .text         00d84000  0000000000005000  0000000000005000  00005000 =
- 2**4
->                   CONTENTS, ALLOC, LOAD, READONLY, CODE
->   3 .data         00001200  0000000000d89000  0000000000d89000  00d89000 =
- 2**4
->                   CONTENTS, ALLOC, LOAD, DATA
-> $ objdump -h vmlinuz-6.8.0-0.rc3.225.vanilla.fc39.x86_64
->=20
-> vmlinuz-6.8.0-0.rc3.225.vanilla.fc39.x86_64:     file format pei-x86-64
->=20
-> Sections:
-> Idx Name          Size      VMA               LMA               File off =
- Algn
->   0 .setup        00003000  0000000000001000  0000000000001000  00001000 =
- 2**2
->                   CONTENTS, ALLOC, LOAD, READONLY, DATA
->   1 .compat       00000008  0000000000e8b000  0000000000e8b000  00004000 =
- 2**2
->                   CONTENTS, ALLOC, LOAD, READONLY, DATA
->   2 .text         00e1f000  0000000000005000  0000000000005000  00005000 =
- 2**4
->                   CONTENTS, ALLOC, LOAD, READONLY, CODE
->   3 .data         00001200  0000000000e24000  0000000000e24000  00e24000 =
- 2**4
->                   CONTENTS, ALLOC, LOAD, DATA
-> $
+Changes since v3:
 
-So v6.7 onwards misses .reloc section, right?
+	* Update commit message of patch 2 to be less verbose
 
-Confused...
+Changes since v2:
 
---=20
-An old man doll... just what I always wanted! - Clara
+	* Convert access of asym_cap_list to be rcu protected
+	* Add new patch to sort the list in descending order
+	* Move some declarations inside affinity check block
+	* Remove now redundant check against max_cpu_capacity in check_misfit_status()
 
---7o0GjoQloJffUDX7
-Content-Type: application/pgp-signature; name="signature.asc"
+Changes since v1:
 
------BEGIN PGP SIGNATURE-----
+	* Use asym_cap_list (thanks Dietmar) to iterate instead of iterating
+	  through every cpu which Vincent was concerned about.
+	* Use uclamped util to compare with capacity instead of util_fits_cpu()
+	  when iterating through capcities (Dietmar).
+	* Update commit log with test results to better demonstrate the problem
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZcBChQAKCRD2uYlJVVFO
-o4w9AP9xMY/O9TuiKf2JgeY2804jn2jrCJ8Zi5GLokzRyglekAD+NqQv8VgcxviL
-1ge5j+G6WydDvUJmVd5j6g3BLLebvg8=
-=Sv10
------END PGP SIGNATURE-----
+v1 discussion: https://lore.kernel.org/lkml/20230820203429.568884-1-qyousef@layalina.io/
+v2 discussion: https://lore.kernel.org/lkml/20231212154056.626978-1-qyousef@layalina.io/
+v3 discussion: https://lore.kernel.org/lkml/20231231175218.510721-1-qyousef@layalina.io/
+v4 discussion: https://lore.kernel.org/lkml/20240105222014.1025040-1-qyousef@layalina.io/
 
---7o0GjoQloJffUDX7--
+I will send another patch to prevent failures to handle misfit from increasing
+load balance as it seemed from previous discussion this is desirable.
+
+There was another problem discussed in v4 that can cause delayed misfit
+handling that is still being debugged and investigated.
+
+Thanks!
+
+--
+Qais Yousef
+
+Qais Yousef (2):
+  sched/topology: Export asym_capacity_list
+  sched/fair: Check a task has a fitting cpu when updating misfit
+
+ include/linux/sched.h   |  1 +
+ init/init_task.c        |  1 +
+ kernel/sched/fair.c     | 84 ++++++++++++++++++++++++++++++++---------
+ kernel/sched/sched.h    | 14 +++++++
+ kernel/sched/topology.c | 43 ++++++++++++---------
+ 5 files changed, 107 insertions(+), 36 deletions(-)
+
+-- 
+2.34.1
+
 
