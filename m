@@ -1,166 +1,135 @@
-Return-Path: <linux-kernel+bounces-52868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68635849D9E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:01:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C867E849DA3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:01:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1ED0F286BBB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:01:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA9A81C24DF6
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:01:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FF292C6A6;
-	Mon,  5 Feb 2024 15:00:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A4602D04C;
+	Mon,  5 Feb 2024 15:00:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Lf3Rbl7P"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CXv6nVK/"
+Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com [209.85.217.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 714E32C69F;
-	Mon,  5 Feb 2024 15:00:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE28B32C93
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 15:00:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707145224; cv=none; b=QhbOyXFwfaA0baIMrZ/P8qUrtCRvyGaHSvEItqTNh2PnlMAPn6lpR+Dzs8XPRRUNRz1nuNQD11tkKTovBwntxW+kgl1BdyFUjMcm5eAswdAtne/R7WrYOpLTc1yBLnVBJZRsws7vloCM/JRLMZRJ01Y1qFygpbqxqRZ8xsr6sVI=
+	t=1707145256; cv=none; b=NHb4bMslRfDgqz5EgWIYN/gZ4LDZz6oDnS/ShhfqdUpQnqDZJZVfsGU7t3vKqJeTJPc6MemzrOKlRGCuQChE3V1xUESdkpmpCbtnGS7OgfUMnoPvDmn26VHVFdv1E29/BYiwG2Mw1xXONTkkzZ7qsIqYqKBMxh4In7L4s+Zt7pw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707145224; c=relaxed/simple;
-	bh=ve1L7CJmm2ZDVFsiashWwCWlGeakd6/4ipF1GmNi4hg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VxXr1vYX9zLf2os1JLl4e1LVHyys4VkNOr9BL6UuecrgSlCMnHCwsjZMCQj0ndrL6R7Zo4KXVsCZB+yfcCqiG9Cc+rVLJPCYk8u7Ki9yZb1UNaM0tY00gHvjlXLYsgogfFznbeTt6aluz2JDF/VqjIqmkxVmN0BjJzqllZxNL5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Lf3Rbl7P; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 678FA60017;
-	Mon,  5 Feb 2024 15:00:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707145218;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1WPodUhe/h+mqC6ZYnqckKI3xdNBGby9JuWEoJjCPXA=;
-	b=Lf3Rbl7PyJ+xoxB5TMoTgADhXfAF+j3HyBn3Fd54N2T0hcnu2H+XNimSgEoJ28iOJNa52i
-	BP8f8r3mm8ivXD5O95q2aUQ9MddM6hq/7yNLrGENLJoZrAcqFAKAES98soOM5Sp8k1VvrD
-	XccJAMcJ7NF+HtHUfXTjbCrwiquhg+AuVDYOxhSeImQzbUu6wxERIW+YrevxKh8hCjWPdM
-	HxFJ2dI4G7z1LjLd/f6IveA0Cv0WMEAstuJsFR4TXWVbYjh1vP0bAimJdX5Y3n7+lriAjN
-	VxlcFjpralO/VadvUCI2Sv9VnSm+op07LZyouk71uEbrA6jGV/MEIiw+0p5yUQ==
-Date: Mon, 5 Feb 2024 16:00:11 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Michael Pratt <mcpratt@pm.me>
-Cc: devicetree@vger.kernel.org, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- saravanak@google.com, abel.vesa@linaro.org,
- alexander.stein@ew.tq-group.com, andriy.shevchenko@linux.intel.com,
- bigunclemax@gmail.com, brgl@bgdev.pl, colin.foster@in-advantage.com,
- djrscally@gmail.com, dmitry.baryshkov@linaro.org, festevam@gmail.com,
- fido_max@inbox.ru, frowand.list@gmail.com, geert@linux-m68k.org,
- heikki.krogerus@linux.intel.com, kernel@pengutronix.de,
- linus.walleij@linaro.org, linux@roeck-us.net, luca.weiss@fairphone.com,
- magnus.damm@gmail.com, martin.kepplinger@puri.sm, rafal@milecki.pl,
- ansuelsmth@gmail.com, richard@nod.at, sakari.ailus@linux.intel.com,
- sudeep.holla@arm.com, tglx@linutronix.de, tony@atomide.com,
- vigneshr@ti.com, dianders@chromium.org, jpb@kernel.org, rafael@kernel.org
-Subject: Re: [PATCH v1 2/4] driver core: fw_devlink: Link to supplier
- ancestor if no device
-Message-ID: <20240205160011.42d1cf80@xps-13>
-In-Reply-To: <20240123014517.5787-3-mcpratt@pm.me>
-References: <20240123014517.5787-1-mcpratt@pm.me>
- <20240123014517.5787-3-mcpratt@pm.me>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707145256; c=relaxed/simple;
+	bh=4x/pL/LexyK+4wqZZH/6gBXshFnDy2QZXDAbJnIwUqM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RW9YQRDwOL/TSFJmM4Luq/Lu9xzqbUWxUTaj+S9yyH2OGXuGxB5uH8DoNT4AZfY84M0cv7DFt8uDJUTa2TKwgaZFXKlT2wi9lcP6/otX8hHqzEwn0p5aMtjO91uf+oTzL/H0aUde3FNVszbnBna/xiVmeW+tid0gMpSJclqwlT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CXv6nVK/; arc=none smtp.client-ip=209.85.217.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vs1-f52.google.com with SMTP id ada2fe7eead31-46d246e1ebfso249588137.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 07:00:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707145254; x=1707750054; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SdJNeue2Wv0xiehiEald+OUh21W9eFlv7KMsoDs8oU8=;
+        b=CXv6nVK/NtQ0TRotQaF8GyMgdPby6UPMK7Y0wkjW56Lx1IpFExmMB4zm2fmO6d2R6B
+         8rCbxnjOsCrQffUh3EZKZh3hHyFUbMV/AvyiuVyhY/JKhEhTQQopu5JgGds2ZPkULBLv
+         Kxfz8GKvQx2SwMTEfPPjuqDft9/toFNQCSy/sBWdX+2+saRIyCtAWEfCN6eWUeIiudwD
+         KIRge7BNSL+AScZd1gh5ZCr/vgCLw8M3H38i+tSfX4KIugGt0h/tGMnlcgJFwqKPzHHO
+         kxhhb3ZdokFnoSUoJ1hSrAoQEWC1L530eaDADN9U1U9opeZv01BJQIPE9wytblQgoGyv
+         PZHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707145254; x=1707750054;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SdJNeue2Wv0xiehiEald+OUh21W9eFlv7KMsoDs8oU8=;
+        b=fUlZGU7+VOAsi5gElQrsy/MfZR3uGS9rn6Shv1PogxLeIvTvOXK0OQKw/0TXxlGz8V
+         ljHgxEtrTe7YuDiKs+UDCJNn5aJlXAv2iTvKklQhlgTr+ZsqT77J4vctGuTuOnOwiw23
+         unUWPKWCNMOmZitlwaWjOjMqYdtIfAlgpW6Lz8Mnwy1ap24VuRBwEjMmG5Hzo/jLIbn/
+         cJPjH2Zz/dEKUnmXOHdJf9h5UITqd4aido9xj3bzdqwgAYMpCTVoXPmPQ3usyxfu2jZe
+         9tfbv/DIY34IIvrwnK/UNlLIbZUf9FDQ6zdbyEZ38XDFpRlljAhsDLDVZT7lrS3+IyH6
+         9KvA==
+X-Gm-Message-State: AOJu0YwiLljVJLbFqYGfOd2ggJ43ejTyddycs9xTPeDC1u8lAYfEdteZ
+	qxlHVJgYRTPrpahs8ERo/X6TFB9zwuIifR0gEx5Gwq88Whfpe7ZlxrX0n9h8yhYNsbGq2ul31pd
+	YWlUo4ftybzwgFiK2NTbKJf8WZISeoUFgh62A
+X-Google-Smtp-Source: AGHT+IGyGdxgsP9UcWiEJx0V/pq8uMBpCddwlbwcThZVJXxE7PBJjn7CzGAgysVY689BVIMKpe8Rx7vH/upebwniUjA=
+X-Received: by 2002:a67:cf8c:0:b0:46d:27ba:526b with SMTP id
+ g12-20020a67cf8c000000b0046d27ba526bmr22209vsm.34.1707145252109; Mon, 05 Feb
+ 2024 07:00:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20240131141858.1149719-1-elver@google.com> <b500bb70-aa3f-41d3-b058-2b634471ffef@linux.dev>
+In-Reply-To: <b500bb70-aa3f-41d3-b058-2b634471ffef@linux.dev>
+From: Marco Elver <elver@google.com>
+Date: Mon, 5 Feb 2024 16:00:15 +0100
+Message-ID: <CANpmjNPKACDwXMnZRw9=CAgWNaMWAyFZ2W7KY2s4ck0s_ue1ag@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Separate bpf_local_storage_lookup() fast and slow paths
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
 
-Hi Michael,
+On Wed, 31 Jan 2024 at 20:52, Martin KaFai Lau <martin.lau@linux.dev> wrote=
+:
+[...]
+> > | num_maps: 1000
+> > |  local_storage cache sequential  get:
+> > |                              <before>                | <after>
+> > |   hits throughput:           0.357 =C2=B1 0.005 M ops/s   | 0.325 =C2=
+=B1 0.005 M ops/s        (-9.0%)
+> > |   hits latency:              2803.738 ns/op          | 3076.923 ns/op=
+               (+9.7%)
+>
+> Is it understood why the slow down here? The same goes for the "num_maps:=
+ 32"
+> case above but not as bad as here.
 
-First, I want to say, this is a great job as fw_devlinks in mtd and
-nvmem are really not easy to handle. I am willing to help, despite my
-very light understanding of what the core actually does with these
-flags.
+It turned out that there's a real slowdown due to the outlined
+slowpath. If I inline everything except for inserting the entry into
+the cache (cacheit_lockit codepath is still outlined), the results
+look much better even for the case where it always misses the cache.
 
-mcpratt@pm.me wrote on Tue, 23 Jan 2024 01:46:40 +0000:
+[...]
+> > diff --git a/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c b/to=
+ols/testing/selftests/bpf/progs/cgrp_ls_recursion.c
+> > index a043d8fefdac..9895087a9235 100644
+> > --- a/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c
+> > +++ b/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c
+> > @@ -21,7 +21,7 @@ struct {
+> >       __type(value, long);
+> >   } map_b SEC(".maps");
+> >
+> > -SEC("fentry/bpf_local_storage_lookup")
+> > +SEC("fentry/bpf_local_storage_lookup_slowpath")
+>
+> The selftest is trying to catch recursion. The change here cannot test th=
+e same
+> thing because the slowpath will never be hit in the test_progs.  I don't =
+have a
+> better idea for now also.
 
-> Driver core currently supports linking to the next parent fwnode,
-> but is not yet handling cases where that parent
-> is also a firmware child node not representing a real device,
-> which can lead to an indefinite deferred probe in some cases.
-> In this case, the fwnode that should actually be linked to
-> is multiple ancestors up which presents a challenge where
-> it is unknown how many ancestors up the node that
-> represents the real probing device is. This makes the usage of
-> fwnode_get_next_parent_dev() insufficient because the real device's
-> fwnode may or may not be an ancestor of the next parent fwnode as well.
->=20
-> Introduce flag FWNODE_FLAG_PARENT_IS_DEV
-> in order to mark child firmware nodes of a device
-> as having a parent device that can probe.
->=20
-> Allow fwnode link creation to the original supplier fwnode's ancestors
-> when the original supplier fwnode and any fwnodes in between are flagged
-> as FWNODE_FLAG_NOT_DEVICE and/or FWNODE_FLAG_PARENT_IS_DEV
-> with a new function __fwnode_link_add_parents() which then creates
-> the fwnode link to a real device that provides the supplier's function.
->=20
-> This depends on other functions to label a supplier fwnode
-> as not a real device, which must be done before the fwnode links
-> are created, and if after that, relevant links to the supplier
-> would have to be deleted and have links recreated, otherwise,
-> the fwnode link would be dropped before the device link is attempted
-> or a fwnode link would not be able to become a device link at all,
-> because they were created before these fwnode flags can have any effect.
->=20
-> It also depends on the supplier device to actually probe first
-> in order to have the fwnode flags in place to know for certain
-> which fwnodes are non-probing child nodes
-> of the fwnode for the supplier device.
->=20
-> The use case of function __fw_devlink_pickup_dangling_consumers()
-> is designed so that the parameters are always a supplier fwnode
-> and one of it's parent fwnodes, so it is safer to assume and more specific
-> that the flag PARENT_IS_DEV should be added there, rather than
-> declaring the original supplier fwnode as NOT_DEVICE at that point.
-> Because this function is called when the real supplier device probes
-> and recursively calls itself for all child nodes of the device's fwnode,
-> set the new flag here in order to let it propagate down
-> to all descendant nodes, thereby providing the info needed later
-> in order to link to the proper fwnode representing the supplier device.
->=20
-> If a fwnode is flagged as FWNODE_FLAG_NOT_DEVICE
-> by the time a device link is to be made with it,
-> but not flagged as FWNODE_FLAG_PARENT_IS_DEV,
-> the link is dropped, otherwise the device link
-> is still made with the original supplier fwnode.
-> Theoretically, we can also handle linking to an ancestor
-> of the supplier fwnode when forming device links, but there
-> are still cases where the necessary fwnode flags are still missing
-> because the real supplier device did not probe yet.
+Trying to prepare a v2, and for the test, the only option I see is to
+introduce a tracepoint ("bpf_local_storage_lookup"). If unused, should
+be a no-op due to static branch.
 
-I am not sure I follow this. In the following case, I would expect any
-dependency towards node-c to be made against node-a. But the above
-paragraph seems to tell otherwise: that the the link would be dropped
-(and thus, not enforced) because recursively searching for a parent
-that would be a device could be endless? It feels wrong, so I probably
-mis
+Or can you suggest different functions to hook to for the recursion test?
 
-node-a {
-	# IS DEV
-	node-b {
-		# PARENT IS DEV
-		node-c {
-			# PARENT IS DEV
-		};
-	};
-};
-
-Besides that, the commit feels like a good idea.
-
-Thanks,
-Miqu=C3=A8l
+Preferences?
 
