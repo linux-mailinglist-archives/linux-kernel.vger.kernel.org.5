@@ -1,192 +1,99 @@
-Return-Path: <linux-kernel+bounces-53143-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53144-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AB9684A135
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:46:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 757E584A136
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:46:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29B341C2212E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:46:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 147911F22424
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:46:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 683A945035;
-	Mon,  5 Feb 2024 17:45:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 665B047F71;
+	Mon,  5 Feb 2024 17:45:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O8TtvNPa"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="esyUeP8R"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D69B045956;
-	Mon,  5 Feb 2024 17:45:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A498647F5B;
+	Mon,  5 Feb 2024 17:45:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707155133; cv=none; b=gWAVcSIk+3cXwTgmekC8Ornns8vgrw0OmE1Op19fiILIvpFKnAfXWkftQoJk8B+eyPr0oHVxc2L96fVXiY2X/KU10ozNcpl+XclO9YSstHypDuRcRzfltsFrZySHtSDUiiqLOCYpI6dpAG7Ha3xN8MxP+uXfTBz2sUiKexETUSc=
+	t=1707155155; cv=none; b=ZpnNvAv5yCwd6kyCZWsWBYOkISKrAX/XlS5n0Ail9fT7pJPkRYSxenH0nyCT5r7lg9wtkoLYVqdVguoA4ncPYFtqd6Lkxk+x+kvUpf2FjwrfZxIRZOvFQS9ryItwDhGF0bgEVZP+QbRLmOEzrUTDCfIUYX15yVhMTB/A8xlaf9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707155133; c=relaxed/simple;
-	bh=q8q3Eg7TN3B/c8h/YhNFwlgyrORWB5GQFswTspm1G8Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=p98myQJAwAhLq4ClS1Jsb7qeBdv/mB/6S2wuQiGi6wEIcSIumgCbCfnVyEj2ZCtMyJZ5v+eBOoSotuoACG9ejt//h05mzSb4ylhWweAm5uPr4y45ppxJnRcLoVh7/apZ2xblY9X/Im6qrjUdK0s/0GCYOs6umuRoC19sWtH4yYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O8TtvNPa; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40fdc653665so8792105e9.3;
-        Mon, 05 Feb 2024 09:45:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707155130; x=1707759930; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m0wzRpVZw3TnGWQm+s3AU8BkpazXaoqZkM6kOW1G/WQ=;
-        b=O8TtvNPagV6vJGSIsqRQVVTHIDq79CZ7BQZFH183e6cw1j8XPq6UAZVFncblFeMiNz
-         6tj5Rjc7klGl3XjKij8/j0FPgKikOxuDcgPaRLmicmLLkh6jn1pcyT4iL00/Q9aST9kX
-         WqlQbMqAhEXZQ25AqpcYJxCYBDPIVxf4JtnIxlGb9W2ol6TVF4yu6swxsnfbiUIXwJR3
-         miXkW+7dL8us9umPE5ngxyAhczVg5czUn87bLldu7OfmayafYGIZ88j4idNGhn2DVYR/
-         zGiKOmrXuz7nICZgLhMNPLKwAX6Njg1cnv0NdWO7/ryzFOSCBKFebvtsqC+5mTNqLBAI
-         YBbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707155130; x=1707759930;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m0wzRpVZw3TnGWQm+s3AU8BkpazXaoqZkM6kOW1G/WQ=;
-        b=QCGRXjwHCNDmuPMifA7orUqToFRPJtx2kJWsymbvv5EzCVLmAUQiftOZ5lfw5Y4F36
-         qntQS8vPNzdCEyjVxKgxyeL7W+TwK1z14G0kOsEunsUtflChUTm/vMvX6sU1hk2rtQcc
-         lS+26Y9VqLIyzzHmt9dhsn1j0Y72tB98EtD2B/cQtHDkrZxzS4xIAoYhwcsv5LD3DGcj
-         l6ldBoUCaXvEvnkcpyENqWiD8w1284CEJbJDeP8rOKihGijgrXt1GCASnMBcfEHGAxGI
-         wytpocOKcrDoh6wWkUy993Ty/7LgRjsLJL/c7naJHcrgIP0UIUOpSfpRzjDR4zz12fk2
-         g7VA==
-X-Gm-Message-State: AOJu0Yzk0/BaDxxKjzvgFRcLmWshkdVCs92Q8tjtAEVKyBrtl+SZVGHp
-	8SdYcBpbQRlO7B12ltUjCpit+7ZbUJ0QFybwyWzl6pN5pVJpFp5r
-X-Google-Smtp-Source: AGHT+IHDzn+x37VJ4FfaK12jdyWyrj6HN0Ue2YwTRPprISDD+A1uWFfuwbmrJ9tOHYqi9adBbIFrKQ==
-X-Received: by 2002:a05:600c:3011:b0:40f:ddb1:dff6 with SMTP id j17-20020a05600c301100b0040fddb1dff6mr376290wmh.28.1707155129866;
-        Mon, 05 Feb 2024 09:45:29 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCW0iRwJ4iK/1l5nccg8ejnbUpry1gNIfzjuLEOOT/5O1SnadHX8mF30Lt3dBquSMQ9iBWZaAoK5LYPVtw1BvDa73qNxIRIEekrw9/tuSsE5FzQt8XqtRIPnpXQ5cBWwzSiyse3B9eo51Np58H2ro7TB/GI/P/+CiHaHz9l4Le+ywVgofn63hBmTW+4vTMr9if42Vwn/dFxY+ZoTJO/4Bbs7c2Pmq4TiVExtmgujQocrxxEfWCd87n9GOQkCjgtFaKP/4JvXK+xvBpDrHK4CNj2wgp8h2GcBza2Gryvws8wnBOfFmbl1fL0/Cki6IYQ/19GQzIiRsikzV1xeytnJRhJzMjXH/HgPSktAktmvacMmOrTc27BBfSsxAcKCD/RwdZdN6utM9vwri1vyVZFbjwetOyIut79zZ+5d4g6jB1n4zLn1puq56QGYEHZVkxdnVD6UfOBCEMjn3FDx+gMRd1AgLnMuyWx/m1ENdeCIhAEdosVo2qjy9NEJlCNXhcpHWTP0Xk9O1mVBuJfKvCqNe+9ibSfD5ULoPlfEY7EzcpDDSDCNWa+nWgN6gC2dI7Hx1NlJXasSQMEDTDJZtP/CVz57zJIbVlcGNKGpgGof8Fv5KYPm03vyNz6Q2m+mMgPqqO69hb240frSev4L8YN8ugz7sHcK2k0XYvOn48j3wO+GP6KwVjX7XHv3AQ5KNx+fiauVQqvytkLaskwKk8P3CQRoi3zlNdwsuY4qSgZRAIl7VDRi/9pVggsxdyZfaqTsgbT9c5hy+uXxRA==
-Received: from jernej-laptop.localnet (82-149-13-182.dynamic.telemach.net. [82.149.13.182])
-        by smtp.gmail.com with ESMTPSA id l18-20020a05600c1d1200b0040e541ddcb1sm499607wms.33.2024.02.05.09.45.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 09:45:29 -0800 (PST)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
- Samuel Holland <samuel@sholland.org>,
- Guido =?ISO-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
- Purism Kernel Team <kernel@puri.sm>, Ondrej Jirman <megi@xff.cz>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Frank Oltmanns <frank@oltmanns.dev>
-Cc: linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
- Frank Oltmanns <frank@oltmanns.dev>
-Subject:
- Re: [PATCH v2 1/6] clk: sunxi-ng: nkm: Support constraints on m/n ratio and
- parent rate
-Date: Mon, 05 Feb 2024 18:45:27 +0100
-Message-ID: <2717565.mvXUDI8C0e@jernej-laptop>
-In-Reply-To: <20240205-pinephone-pll-fixes-v2-1-96a46a2d8c9b@oltmanns.dev>
-References:
- <20240205-pinephone-pll-fixes-v2-0-96a46a2d8c9b@oltmanns.dev>
- <20240205-pinephone-pll-fixes-v2-1-96a46a2d8c9b@oltmanns.dev>
+	s=arc-20240116; t=1707155155; c=relaxed/simple;
+	bh=KcGTEv/HJsgkRxOGRgiheWBXXvA+5x5HPQ7c/2TaC4o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DrDZldLJpNSNHxUhwWGxw1s11vjis8MDq7J1MBVZw0GBLluzoq9Qb4RwyVucLq7/GQB0bePnDdxH2bFkmwjgIH+AalXOvidhtWixcPHaDUULegT/opOIh5x5/NyZwi/RdyWVMgBF70iKkytUW/r4h3WC7vPYBqgCBLYpc2r5p7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=esyUeP8R; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AB57C433F1;
+	Mon,  5 Feb 2024 17:45:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707155155;
+	bh=KcGTEv/HJsgkRxOGRgiheWBXXvA+5x5HPQ7c/2TaC4o=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=esyUeP8RXiXkP/m0BWRCxX+rSK2QgWHx7kp5MVXepqQ4IzuzrOvWLVm+h31SuOr39
+	 AnaK4/i03ppBkS4QvzabFUUr/uyipetvgVeqexoGrI/eAG4med7Dg7Tw3Lu4YSDeNe
+	 fhS+Qn1vZgJHY99ZvwVF5swtqekp9kLOUCxGSvq4KAMtngJAJ8yxUzeU4/shf6e9hc
+	 MNLwLBIqmScjUZQMaKvu+9vVQsLRD6az+vOx8j1HCQF+iE7eMkMue/jWxWsuMJ7COf
+	 +jGOitklx12Sq5ihuGRzA0htBS8gGRbKgVKxY4qwqv4UA6NZqELPsG8y5vIBFmaQu3
+	 eRGUOfIWzanFQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 0BD1BCE1BB6; Mon,  5 Feb 2024 09:45:53 -0800 (PST)
+Date: Mon, 5 Feb 2024 09:45:53 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Petr Mladek <pmladek@suse.com>, Tejun Heo <tj@kernel.org>,
+	Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [BUG] workqueues and printk not playing nice since next-20240130
+Message-ID: <a6762ad5-62f2-41d4-bba7-c2d9dcb12498@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <410d6a87-bf34-457e-b714-1e6149d48532@paulmck-laptop>
+ <c6ce8816-c4ff-4668-8cbb-88285330057d@huaweicloud.com>
+ <25fd8537-5a27-4b62-9bf9-1ee7ca59b5b8@paulmck-laptop>
+ <Zb0evDquygkDI_8P@slm.duckdns.org>
+ <c5d5ad66-da86-447b-8014-820d2c67382d@paulmck-laptop>
+ <ZcDdlRzpofn2cAuO@alley>
+ <20240205132515.GF69174@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240205132515.GF69174@google.com>
 
-Dne ponedeljek, 05. februar 2024 ob 16:22:24 CET je Frank Oltmanns napisal(a):
-> The Allwinner A64 manual lists the following constraints for the
-> PLL-MIPI clock:
->  - M/N <= 3
->  - (PLL_VIDEO0)/M >= 24MHz
+On Mon, Feb 05, 2024 at 10:25:15PM +0900, Sergey Senozhatsky wrote:
+> On (24/02/05 14:07), Petr Mladek wrote:
+> > > Good point, if it does recur, I could try it on bare metal.
+> > 
+> > Please, me, John, and Sergey know if anyone see this again. I do not
+> > feel comfortable when there is problem which might make consoles calm.
 > 
-> The PLL-MIPI clock is implemented as ccu_nkm. Therefore, add support for
-> these constraints.
+> Agreed.
 > 
-> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
-
-Haven't we discussed that this patch is unnecessary because same effect can
-be reached by limiting minimum frequency?
-
-Best regards,
-Jernej
-
-> ---
->  drivers/clk/sunxi-ng/ccu_nkm.c | 21 +++++++++++++++++++++
->  drivers/clk/sunxi-ng/ccu_nkm.h |  2 ++
->  2 files changed, 23 insertions(+)
+> > Bisection identified this commit:
+> > 5797b1c18919 ("workqueue: Implement system-wide nr_active enforcement for unbound workqueues")
 > 
-> diff --git a/drivers/clk/sunxi-ng/ccu_nkm.c b/drivers/clk/sunxi-ng/ccu_nkm.c
-> index 853f84398e2b..1168d894d636 100644
-> --- a/drivers/clk/sunxi-ng/ccu_nkm.c
-> +++ b/drivers/clk/sunxi-ng/ccu_nkm.c
-> @@ -16,6 +16,20 @@ struct _ccu_nkm {
->  	unsigned long	m, min_m, max_m;
->  };
->  
-> +static bool ccu_nkm_is_valid_rate(struct ccu_common *common, unsigned long parent,
-> +				  unsigned long n, unsigned long m)
-> +{
-> +	struct ccu_nkm *nkm = container_of(common, struct ccu_nkm, common);
-> +
-> +	if (nkm->max_m_n_ratio && (m > nkm->max_m_n_ratio * n))
-> +		return false;
-> +
-> +	if (nkm->min_parent_m_ratio && (parent < nkm->min_parent_m_ratio * m))
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
->  static unsigned long ccu_nkm_find_best_with_parent_adj(struct ccu_common *common,
->  						       struct clk_hw *parent_hw,
->  						       unsigned long *parent, unsigned long rate,
-> @@ -31,6 +45,10 @@ static unsigned long ccu_nkm_find_best_with_parent_adj(struct ccu_common *common
->  				unsigned long tmp_rate, tmp_parent;
->  
->  				tmp_parent = clk_hw_round_rate(parent_hw, rate * _m / (_n * _k));
-> +
-> +				if (!ccu_nkm_is_valid_rate(common, tmp_parent, _n, _m))
-> +					continue;
-> +
->  				tmp_rate = tmp_parent * _n * _k / _m;
->  
->  				if (ccu_is_better_rate(common, rate, tmp_rate, best_rate) ||
-> @@ -64,6 +82,9 @@ static unsigned long ccu_nkm_find_best(unsigned long parent, unsigned long rate,
->  	for (_k = nkm->min_k; _k <= nkm->max_k; _k++) {
->  		for (_n = nkm->min_n; _n <= nkm->max_n; _n++) {
->  			for (_m = nkm->min_m; _m <= nkm->max_m; _m++) {
-> +				if (!ccu_nkm_is_valid_rate(common, parent, _n, _m))
-> +					continue;
-> +
->  				unsigned long tmp_rate;
->  
->  				tmp_rate = parent * _n * _k / _m;
-> diff --git a/drivers/clk/sunxi-ng/ccu_nkm.h b/drivers/clk/sunxi-ng/ccu_nkm.h
-> index 6601defb3f38..c409212ee40e 100644
-> --- a/drivers/clk/sunxi-ng/ccu_nkm.h
-> +++ b/drivers/clk/sunxi-ng/ccu_nkm.h
-> @@ -27,6 +27,8 @@ struct ccu_nkm {
->  	struct ccu_mux_internal	mux;
->  
->  	unsigned int		fixed_post_div;
-> +	unsigned long		max_m_n_ratio;
-> +	unsigned long		min_parent_m_ratio;
->  
->  	struct ccu_common	common;
->  };
-> 
-> 
+> That commit triggered early boot use-after-free (per kasan) on
+> my system, which probably could derail some things.
 
+And enabling KASAN on next-20240130 got me that same KASAN report and
+also suppressed the misbehavior, which is not surprising given that
+KASAN quarantines free memory for some time.  Plus enabling KASAN
+on recent -next does not trigger that KASAN report.
 
+So my guess is that we can attribute my oddball test failures to
+that use after free.  But I will of course continue testing.
 
-
+							Thanx, Paul
 
