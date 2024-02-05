@@ -1,211 +1,161 @@
-Return-Path: <linux-kernel+bounces-54009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F196D84A914
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:21:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8037D84A919
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:21:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 887B21F29BB8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:21:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04BC81F2BF9D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:21:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B231612E1;
-	Mon,  5 Feb 2024 22:08:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DD371AB80D;
+	Mon,  5 Feb 2024 22:13:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QaLmcP14"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="HGdW1sy9"
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C649D54BDD
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 22:08:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE2DD1DA37
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 22:13:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707170901; cv=none; b=Vcup1xtLXY5Vvu/gmDrK1SuDoOMpg6S/p6D9XW5mpOlIs63C3xosrpidST4Zj0qKE7//XBY4K6aZzmX9rABdlZmnkf+cN+qu9s5Re0YO3e4WWhBWkHJ4bgnFSWEgH0B0S3XalToVJZ4Bmcyy++DTWVaOApCDeCVy2dfI3oHrD+w=
+	t=1707171202; cv=none; b=sPZ3rnkcK0AbJfUP9jGKszfPu3wXRB8tpETac6j8nUv1vCmsE/hS07tpjrHUcuTDDOwRmn2Q/YyjEV//kkHJLnQIJLIZXsup+yKFBzkb2TRJbRrTEdkYGo8D287AhzTXFkxnMavOwCkaiYRmJ9t45LFsCSrGPLQy2rcPlLcwRf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707170901; c=relaxed/simple;
-	bh=RrSWJcIMOpvp8iF4MESqsbgUebW/MJHaPPXB+csoGG0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D/TRhDoqIWo2HqMzV550ayjh9xblkAUxDD/PBhfeuY+NFXf90mT3Rs/kqSqfUZ2NUeVM509WHJwpb/G7833AhN4CDIEm1esrewoTmKK4yk3kqYvuN5rw+sNA27SgUzbbBUmV/FwYSZOVi+YfZ0dHDn58/tZDIiJMmouu4pzvBfY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QaLmcP14; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707170900; x=1738706900;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=RrSWJcIMOpvp8iF4MESqsbgUebW/MJHaPPXB+csoGG0=;
-  b=QaLmcP14H5flVdEY1YQoNWcd0vaVmDhPlsZQiZinpZ+kmrfisGz7502A
-   3+2ZzdWQ5B3kL9QrxhyoOElDXMNHHwYvIqCskUNhQyMDRD2sVTzQxndmb
-   qFE6C2k1rxQCv7XKzJMsWy5dCWSYahxHpLWMRps7qHuFVCN4hptLEzJuk
-   ws1B7Tghqw1D+dnGC/V6guRHkLM4Pj2aBWru2x//HprskYCPoxUl+L+Zz
-   NOsA+LCSsSr2OpQsEDgvB2OB2Ud1knwC67dcdn0AUfVW46cJI0cmlKDPf
-   OQ6pW//hX2a/UHEsHz9AzWbKJ8idoeytkwoIORkga114O7z2KK9n7pAxo
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="4410326"
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="4410326"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 14:07:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="933269761"
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="933269761"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 14:07:55 -0800
-Date: Mon, 5 Feb 2024 14:09:14 -0800
-From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To: alexs@kernel.org
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	linux-kernel@vger.kernel.org, sshegde@linux.ibm.com
-Subject: Re: [PATCH v3 3/4] sched/fair: packing func
- sched_use_asym_prio()/sched_asym_prefer()
-Message-ID: <20240205220914.GA17602@ranerica-svr.sc.intel.com>
-References: <20240201115447.522627-1-alexs@kernel.org>
- <20240201115447.522627-3-alexs@kernel.org>
+	s=arc-20240116; t=1707171202; c=relaxed/simple;
+	bh=jdd1RTnsCbK9CBh+Tor3vhucPu9sttBLgqAG8qJCD9Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=AoJbpjDuZCZyQgV7YHEUdDvlGGj+oMKdDhX8e/LUt1wxBCoc6/1yX65ZbZvRAFZZdMY9LeaLxzx1ZSp9GNzb0U44/Fob6+m1wzOO7LbrRJ/6Gg3s9LbH4sV3QfkN0kyGnioaon65mXRwzBIPU4qXRY9OFvDQ3rN7vGfvexU/K3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HGdW1sy9; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-60406f4e1d0so42996117b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 14:13:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707171200; x=1707776000; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l+wc7Sgfr0FX1NUK9lSF8NbngE4sfyd8aYAoXi3MmuY=;
+        b=HGdW1sy94car4fYnXdy3DYt9kTJQqZkFGoDoomMrHTRezfSkMgDOHSIdZZ8+swYV/X
+         uIKTZbzQ9fmiIZykn1fqK2RG5RSRizuNd+vtq5UHWE9GPo7WtWERAWu9qMHputgvVvaF
+         5Ea3pUJYbH0/QrQ8CUF9eB/CWfihWBEsfeQsMomvPrExQ3XqKAqqdauEjmzA3b9HsBFa
+         WerCYgEMTK6smljgIS4dZ4racsB2Past1PVXeWunWwIpyAxdqPxD83A06MXGkH3HHb47
+         CinGTW4xKU93oOkmRUM+R0uX0WYeYW2PbYE86ILcP9IITl3DwH/BuAANWbhjccSF4spN
+         InBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707171200; x=1707776000;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l+wc7Sgfr0FX1NUK9lSF8NbngE4sfyd8aYAoXi3MmuY=;
+        b=BbvnPNy6SoJRcql5OjFcF/0r6mF/TJibIF0dgi5+A0a+crRWqBc62iTD66lHfreSyt
+         su6qKcavz1X5CT8X36syGsyasKPQQptsdRla3MUAgOu2qfVybn81y+trcKVXRYrCe8Gp
+         ymGNdbjVO7z09m9t2smFYgc27xk8GRYNtqTmkTBSesowmiikZT6guhSKM/xVWZ40BWXM
+         Sv3NDAdsVsXIDHzag1F1WrlYsGR6oYs74dse4ntdsD2HpgWLpGaEaNEYxrKxdoT1KiXH
+         +eCSP/p8s16uUX3NnFGD16hia035if0t240UVnJHb4a4BgCw3x+iKHgTz2Z68yDJt24S
+         UsUw==
+X-Gm-Message-State: AOJu0YyUjghIJDQwqWPbQfoT3WyqXnKcJ3hAZ1o0Q1vfLw3zK+pyPGWn
+	Q2XuipXg1wLeJ6SvRYf1CIN0f8X8IPq/l+QQ8C2TTSOulhnTo06ls8nOH/5/+KxK4EYuqI4aY2h
+	dUeSmvZI4flT8WQQWNwZObH3DUv3E4KSGUV/o
+X-Google-Smtp-Source: AGHT+IE3Q8rQ7p44qPRhpPecrcgKN57uf9gFqW1Q2sgeAXqYfYu/n/QNxOLHPNun1c2+nnvHUGp3OOQurFj1SVrbBZ0=
+X-Received: by 2002:a81:b715:0:b0:604:ea3:6525 with SMTP id
+ v21-20020a81b715000000b006040ea36525mr1064920ywh.0.1707171199364; Mon, 05 Feb
+ 2024 14:13:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240201115447.522627-3-alexs@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com>
+ <20240201204512.ht3e33yj77kkxi4q@revolver> <CALmYWFupdK_wc6jaamjbrZf-PzHwJ_4=b69yCtAik_7uu3hZug@mail.gmail.com>
+ <20240202151345.kj4nhb5uog4aknsp@revolver> <CABi2SkUSWLHM5KD=eK9bJrt3bBsEaB3gEpvJgr0LSTAE2G00Tg@mail.gmail.com>
+ <20240202192137.6lupguvhtdt72rbr@revolver> <85714.1706902336@cvs.openbsd.org>
+ <CAHk-=wjNXcqDVxDBJW8hEVpHHAE0odJEf63+oigabtpU6GoCBg@mail.gmail.com>
+ <20240202211807.6sca4ppezma7cyev@revolver> <CAHk-=whhmasHcmaS0MZkBe2NohjF7Wb3F3pdW4vqyaSbSzQ75g@mail.gmail.com>
+ <20240203044534.wkyfkxdlnskxctsq@revolver>
+In-Reply-To: <20240203044534.wkyfkxdlnskxctsq@revolver>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Mon, 5 Feb 2024 14:13:08 -0800
+Message-ID: <CAJuCfpHPk282ttjwEn0A39cHuUgsVTCDsSGzvG3hnFVV+G7edg@mail.gmail.com>
+Subject: Re: [PATCH v8 0/4] Introduce mseal
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
+	Jeff Xu <jeffxu@chromium.org>, Jeff Xu <jeffxu@google.com>, 
+	Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org, keescook@chromium.org, 
+	jannh@google.com, sroettger@google.com, willy@infradead.org, 
+	gregkh@linuxfoundation.org, usama.anjum@collabora.com, rdunlap@infradead.org, 
+	jorgelo@chromium.org, groeck@chromium.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, pedro.falcato@gmail.com, 
+	dave.hansen@intel.com, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 01, 2024 at 07:54:46PM +0800, alexs@kernel.org wrote:
-> From: Alex Shi <alexs@kernel.org>
+On Fri, Feb 2, 2024 at 8:46=E2=80=AFPM Liam R. Howlett <Liam.Howlett@oracle=
+com> wrote:
+>
+> * Linus Torvalds <torvalds@linux-foundation.org> [240202 18:36]:
+> > On Fri, 2 Feb 2024 at 13:18, Liam R. Howlett <Liam.Howlett@oracle.com> =
+wrote:
+> > >
+> > > There will be a larger performance cost to checking up front without
+> > > allowing the partial completion.
+> >
+> > I suspect that for mseal(), the only half-way common case will be
+> > sealing an area that is entirely contained within one vma.
+>
+> Agreed.
+>
+> >
+> > So the cost will be the vma splitting (if it's not the whole vma), and
+> > very unlikely to be any kind of "walk the vma's to check that they can
+> > all be sealed" loop up-front.
+>
+> That's the cost of calling mseal(), and I think that will be totally
+> reasonable.
+>
+> I'm more concerned with the other calls that do affect more than one vma
+> that will now have to ensure there is not an mseal'ed vma among the
+> affected area.
+>
+> As you pointed out, we don't do atomic updates and so we have to add a
+> loop at the beginning to check this new special case, which is what this
+> patch set does today.  That means we're going to be looping through
+> twice for any call that could fail if one is mseal'ed. This includes
+> munmap() and mprotect().
+>
+> The impact will vary based on how many vma's are handled. I'd like some
+> numbers on this so we can see if it is a concern, which Jeff has agreed
+> to provide in the future - Thank you, Jeff.
 
-subject:
+Yes please. The additional walk Liam points to seems to be happening
+even if we don't use mseal at all. Android apps often create thousands
+of VMAs, so a small regression to a syscall like mprotect might cause
+a very visible regression to app launch times (one of the key metrics
+for Android). Having performance impact numbers here would be very
+helpful.
 
-sched/fair: packing func sched_use_asym_prio()/sched_asym_prefer()
-
-Do not use gerund mood in the subject. Better to say:
-sched/fair: Rework sched_use_asym_prio() and sched_asym_prefer()
-> 
-> Consolidate the functions sched_use_asym_prio() and sched_asym_prefer()
-> into one. and rename sched_asym() as sched_group_asym().
-> This makes the code easier to read. No functional changes.
-
-Maybe giving more reasons?
-
-sched_use_asym_prio() sched_asym_prefer() are used together in various
-places. Consolidate them into a single function sched_asym().
-
-The existing sched_group_asym() is only used when collecting statistics
-of a scheduling group. Rename it as sched_group_asym().
-
-> 
-> Signed-off-by: Alex Shi <alexs@kernel.org>
-> To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-> To: Valentin Schneider <vschneid@redhat.com>
-> To: Vincent Guittot <vincent.guittot@linaro.org>
-> To: Peter Zijlstra <peterz@infradead.org>
-> To: Ingo Molnar <mingo@redhat.com>
-> ---
->  kernel/sched/fair.c | 35 ++++++++++++++++++-----------------
->  1 file changed, 18 insertions(+), 17 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 8d70417f5125..44fd5e2ca642 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -9747,8 +9747,15 @@ static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
->  	return sd->flags & SD_SHARE_CPUCAPACITY || is_core_idle(cpu);
->  }
->  
-> +static inline bool sched_asym(struct sched_domain *sd, int dst_cpu, int src_cpu)
-> +{
-> +	/* Check if asym balance applicable, then check priorities.*/
-
-Perhaps the comment can be made more descriptive:
-	/*
-	 * First check if @dst_cpu can do asym_packing load balance. Only do it
-	 * if it has higher priority than @src_cpu.
-	 */
-> +	return sched_use_asym_prio(sd, dst_cpu) &&
-> +		sched_asym_prefer(dst_cpu, src_cpu);
-> +}
-> +
->  /**
-> - * sched_asym - Check if the destination CPU can do asym_packing load balance
-> + * sched_group_asym - Check if the destination CPU can do asym_packing balance
->   * @env:	The load balancing environment
->   * @sgs:	Load-balancing statistics of the candidate busiest group
->   * @group:	The candidate busiest group
-> @@ -9768,22 +9775,18 @@ static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
->   * otherwise.
->   */
->  static inline bool
-> -sched_asym(struct lb_env *env, struct sg_lb_stats *sgs, struct sched_group *group)
-> +sched_group_asym(struct lb_env *env, struct sg_lb_stats *sgs, struct sched_group *group)
->  {
-> -	/* Ensure that the whole local core is idle, if applicable. */
-> -	if (!sched_use_asym_prio(env->sd, env->dst_cpu))
-> -		return false;
-> -
->  	/*
-> -	 * CPU priorities does not make sense for SMT cores with more than one
-> +	 * CPU priorities do not make sense for SMT cores with more than one
->  	 * busy sibling.
->  	 */
-> -	if (group->flags & SD_SHARE_CPUCAPACITY) {
-> -		if (sgs->group_weight - sgs->idle_cpus != 1)
-> -			return false;
-> -	}
->  
-> -	return sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu);
-
-After applying this patch there is a blank line between the comment and the
-return statement. Can you remove it?
-
-> +	if ((group->flags & SD_SHARE_CPUCAPACITY) &&
-> +	    (sgs->group_weight - sgs->idle_cpus != 1))
-> +		return false;
-> +
-> +	return sched_asym(env->sd, env->dst_cpu, group->asym_prefer_cpu);
->  }
->  
->  /* One group has more than one SMT CPU while the other group does not */
-> @@ -9939,7 +9942,7 @@ static inline void update_sg_lb_stats(struct lb_env *env,
->  	/* Check if dst CPU is idle and preferred to this group */
->  	if (!local_group && env->sd->flags & SD_ASYM_PACKING &&
->  	    env->idle != CPU_NOT_IDLE && sgs->sum_h_nr_running &&
-> -	    sched_asym(env, sgs, group)) {
-> +	    sched_group_asym(env, sgs, group)) {
->  		sgs->group_asym_packing = 1;
->  	}
->  
-> @@ -11038,8 +11041,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
->  		 * SMT cores with more than one busy sibling.
->  		 */
->  		if ((env->sd->flags & SD_ASYM_PACKING) &&
-> -		    sched_use_asym_prio(env->sd, i) &&
-> -		    sched_asym_prefer(i, env->dst_cpu) &&
-> +		    sched_asym(env->sd, i, env->dst_cpu) &&
->  		    nr_running == 1)
->  			continue;
->  
-> @@ -11909,8 +11911,7 @@ static void nohz_balancer_kick(struct rq *rq)
->  		 * preferred CPU must be idle.
->  		 */
->  		for_each_cpu_and(i, sched_domain_span(sd), nohz.idle_cpus_mask) {
-> -			if (sched_use_asym_prio(sd, i) &&
-> -			    sched_asym_prefer(i, cpu)) {
-> +			if (sched_asym(sd, i, cpu)) {
->  				flags = NOHZ_STATS_KICK | NOHZ_BALANCE_KICK;
->  				goto unlock;
->  			}
-> -- 
-> 2.43.0
-> 
+>
+> It also means we're modifying the behaviour of those calls so they could
+> fail before anything changes (regardless of where the failure would
+> occur), and we could still fail later when another aspect of a vma would
+> cause a failure as we do today.  We are paying the price for a more
+> atomic update, but we aren't trying very hard to be atomic with our
+> updates - we don't have many (virtually no) vma checks before
+> modifications start.
+>
+> For instance, we could move the mprotect check for map_deny_write_exec()
+> to the pre-update loop to make it more atomic in nature.  This one seems
+> somewhat related to mseal, so it would be better if they were both
+> checked atomic(ish) together.  Although, I wonder if the user visible
+> changes would be acceptable and worth the risk.
+>
+> We will have two classes of updates to vma's: the more atomic view and
+> the legacy view.  The question of what happens when the two mix, or
+> where a specific check should go will get (more) confusing.
+>
+> Thanks,
+> Liam
+>
 
