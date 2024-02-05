@@ -1,117 +1,87 @@
-Return-Path: <linux-kernel+bounces-52439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81A3B849823
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:52:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FFD1849828
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:56:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3991A28323B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:52:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95D35B267AD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:56:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F916175BC;
-	Mon,  5 Feb 2024 10:52:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="mnT6BSXb"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8405E175A5;
+	Mon,  5 Feb 2024 10:56:12 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 780761758C;
-	Mon,  5 Feb 2024 10:52:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1B931758F;
+	Mon,  5 Feb 2024 10:56:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707130370; cv=none; b=VkiH6dZdCOccyIuiKfOnLQEgrnkexKeyZ7Ac1GINWbEcEK3ViX950c8Pxh5thzs0jmQKRUmduz1o+YyCYKH6vKAeeDpgBy1u3I3PYXLCOmr5lyyQTvBhhmAxxydjGG+mfQbXwFPgBIJL1cyvReCJDSzkTlK0cZxBjmJq9kEqW3Q=
+	t=1707130572; cv=none; b=V5NtjQzaYDgRUhnuAYo0sWYD6epQEXpj5G8n3d2txCcyB1/YvotZ3iODImxC+oCUkVR+TZmJ/RBlhrX39P+j3ZW83YDAQe0Mnkzlm4VU3nDsEs+4GFGBJf/3WCQsnP/gRxQCRb34HzAVjYIuYLAYIsG8RGGvlb/1onz6w7SVZa0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707130370; c=relaxed/simple;
-	bh=OoxdaFQj/xPguPbjAhoi8W1Hwqp+a2TelEoY0w5int4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cblSTVGigP5R+ni93WZvOcTgaFMW7HxePmmOBEoIMru3xa7Qlqlcde2lJblDoNwFFEXzr+1JUanCgda3H/B0uQVW58wWTfFFjWm3va8ZF0g/CTjhtRqWtjRfDAfYDkIMXTo/j4hx5qlC13JGvOkIynKfTJWPg9uu+YJ+4Sae+xk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=mnT6BSXb; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1707130368; x=1738666368;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=OoxdaFQj/xPguPbjAhoi8W1Hwqp+a2TelEoY0w5int4=;
-  b=mnT6BSXbzqh0nRA0Id4bszZnzD1ypjJclkuchG3nmZYcjLFEWfimAcdk
-   QluKhCOcWOo4YsX2dCeTvBypFEqikpHKnN1rSDr01wsvW/a/U/J+WAavj
-   6kEEVB5JcfXc5vIUQwA5HLD6h9n1HByr13ezANOqMxyJdVIofLKRmuTKQ
-   ZJuzITRLOypB+bbbFnCJyhEnCsBSC0/Cq1m2KdKoreyrKN5P/oJUPh1E2
-   hQA1jwT2gW2+Wi0vmxkPIqDCI4a94+9rp5/KBjP5vNXEdQ3N8ez6t8Eet
-   T+xd0Eq8TyyOzhYXkaBF6YSc7hIQdNBNnqzh2NEFYTmVbY55YIV0czWB4
-   A==;
-X-CSE-ConnectionGUID: en2EpxwLQDuVOCyI9OpQuw==
-X-CSE-MsgGUID: cZQiVEcWRLSBLV6E78EZZQ==
-X-IronPort-AV: E=Sophos;i="6.05,245,1701154800"; 
-   d="scan'208";a="15780387"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Feb 2024 03:52:47 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 5 Feb 2024 03:52:07 -0700
-Received: from che-lt-i63539.microchip.com (10.10.85.11) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Mon, 5 Feb 2024 03:52:02 -0700
-From: Hari Prasath Gujulan Elango <Hari.PrasathGE@microchip.com>
-To: <dlemoal@kernel.org>, <cassel@kernel.org>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC: <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-	<claudiu.beznea@tuxon.dev>, <linux-ide@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, Hari Prasath Gujulan Elango
-	<Hari.PrasathGE@microchip.com>
-Subject: [PATCH] dt-bindings: ata: atmel: remove at91 compact flash documentation
-Date: Mon, 5 Feb 2024 16:22:01 +0530
-Message-ID: <20240205105201.81060-1-Hari.PrasathGE@microchip.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1707130572; c=relaxed/simple;
+	bh=oRvBm9nh5zhoHBy90FmSGP1rxQpWRExwh5iQCVgboqA=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BuUvsYPZ557J11XkwG7x8zRDK9HDOUvzHcAfRJMN7ajX4hT+tyBwM0eeSRad1F65jLXUUMBwsGvU61TWkoBQz4KEzbtQYycAbTNV/OmV3uMVnPucNhcQCz4qNG+tjuSZTZZZclz0qVy6+ec3pqdAa2fA9muTqext6pUSaH7Wi6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TT3BG5Pbhz6K9LR;
+	Mon,  5 Feb 2024 18:52:54 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 48F7C140D1A;
+	Mon,  5 Feb 2024 18:56:08 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 5 Feb
+ 2024 10:56:07 +0000
+Date: Mon, 5 Feb 2024 10:56:06 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
+CC: Peter Zijlstra <peterz@infradead.org>, Dan Williams
+	<dan.j.williams@intel.com>, <linux-kernel@vger.kernel.org>, Ingo Molnar
+	<mingo@kernel.org>, <linux-cxl@vger.kernel.org>, Ira Weiny
+	<ira.weiny@intel.com>
+Subject: Re: [PATCH 0/2] Add cond_guard() to conditional guards
+Message-ID: <20240205105606.00000546@Huawei.com>
+In-Reply-To: <20240204173105.935612-1-fabio.maria.de.francesco@linux.intel.com>
+References: <20240204173105.935612-1-fabio.maria.de.francesco@linux.intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-The compatible "at91rm9200-cf" is not used by any driver,hence remove the
-corresponding documentation.
+On Sun,  4 Feb 2024 18:31:03 +0100
+"Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com> wrote:
 
-Signed-off-by: Hari Prasath Gujulan Elango <Hari.PrasathGE@microchip.com>
----
- .../devicetree/bindings/ata/atmel-at91_cf.txt | 19 -------------------
- 1 file changed, 19 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/ata/atmel-at91_cf.txt
+> Add cond_guard() macro to conditional guards and use it to replace an
+> open-coded up_read() in show_targetN().
+> 
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Suggested-by: Dan Williams <dan.j.williams@intel.com>
+> Suggested-by: Ira Weiny <ira.weiny@intel.com>
 
-diff --git a/Documentation/devicetree/bindings/ata/atmel-at91_cf.txt b/Documentation/devicetree/bindings/ata/atmel-at91_cf.txt
-deleted file mode 100644
-index c1d22b3ae134..000000000000
---- a/Documentation/devicetree/bindings/ata/atmel-at91_cf.txt
-+++ /dev/null
-@@ -1,19 +0,0 @@
--Atmel AT91RM9200 CompactFlash
--
--Required properties:
--- compatible : "atmel,at91rm9200-cf".
--- reg : should specify localbus address and size used.
--- gpios : specifies the gpio pins to control the CF device. Detect
--  and reset gpio's are mandatory while irq and vcc gpio's are
--  optional and may be set to 0 if not present.
--
--Example:
--compact-flash@50000000 {
--	compatible = "atmel,at91rm9200-cf";
--	reg = <0x50000000 0x30000000>;
--	gpios = <&pioC 13 0	/* irq */
--		 &pioC 15 0 	/* detect */
--		 0		/* vcc */
--		 &pioC  5 0	/* reset */
--		>;
--};
--- 
-2.34.1
+Change log since RFC v5?
+
+> 
+> Fabio M. De Francesco (2):
+>   cleanup: Add cond_guard() to conditional guards
+>   cxl/region: Use cond_guard() in show_targetN()
+> 
+>  drivers/cxl/core/region.c | 16 ++++------------
+>  include/linux/cleanup.h   | 14 ++++++++++++++
+>  2 files changed, 18 insertions(+), 12 deletions(-)
+> 
 
 
