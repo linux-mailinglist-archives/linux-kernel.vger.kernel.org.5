@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-53842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53843-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C1EE84A72F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:24:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8918884A734
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:25:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 582FB28D3B6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:24:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBF401C25D24
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:25:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8ABB67C4D;
-	Mon,  5 Feb 2024 19:45:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FAD36519F;
+	Mon,  5 Feb 2024 19:45:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="X27fViWT"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="pxWjPzPl"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7551963509;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02E7463120;
 	Mon,  5 Feb 2024 19:44:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707162300; cv=none; b=Fs8Ygh337t0wbAmbO0GTHEuApksXKksqaRQkCFadi8qMgAtqzKr5PXNt6k4IiMpUE2jSxmSRZe7wnsyG8hXbz9UJ7038cGlKIhmcPWiTWRD+rfridhBlJ72ULUG6VuiOaabgIKknZh0/wXvDRekDn3m/cIiMb252wnrmMMU6dGQ=
+	t=1707162300; cv=none; b=kGBgBHa/mWrCNU1gDWdentemLW1wwr3dpuTPsyHbp6hKtrNHsUeUgH0W0tT0JGhc7q0qKHpq9BmlpYTOTuoLhAcYSbveIvKn0UEaSL5Bz/RYtxJAWFKkBEC1qduIZyuQHH9YdatveBEo1yN+zTrYAHTU3EZ3qQ8r3VaMVyc4pFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707162300; c=relaxed/simple;
-	bh=ig53Er0IQr8J52R1XJK5g8TmLfD/5crHUpIF26cVFwU=;
+	bh=BvK8IwqnEFboy699PAEmSTVNPQ3C5pW/mK6yHdKKsaA=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PkJjZjIYQrJs1EgUubbp+3RYRGaqANRRG2/fZ3jTTvgFsW6gqoAqNNW6X8JbfXuIHjpjHRLt0t2sq6Q/EkD0k30LUvJ6BExIfeQcGU8pqXTXH9p3nXkEAI1JnzpkBFxQ9a23XlUTk+OntNvD9SCdwCmWIClWCx23jGty4vpAgUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=X27fViWT; arc=none smtp.client-ip=198.47.23.248
+	 MIME-Version:Content-Type; b=JIjcw0Y/FJ2Ddkv6N48OUJtUR0VTGTusf5H/Xa+MHSdVtLdUJeQT2etVrWU9OhnFy0ALLQYx4qucvotosJkfkOZ1rKihX9gmzF7txcF6dt8BcSc2meuOikvikIFIchcryTeETGPwaC35vcaWDOArnKnkvBnSlje9DeFsMhxZvpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=pxWjPzPl; arc=none smtp.client-ip=198.47.19.142
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
 Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 415Jik8o016359;
-	Mon, 5 Feb 2024 13:44:46 -0600
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 415JilQq019205;
+	Mon, 5 Feb 2024 13:44:47 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707162286;
-	bh=ngOnUmcKUfVk/SqAddQuFt8kMzihNR+9E3bjKI3tkA8=;
+	s=ti-com-17Q1; t=1707162287;
+	bh=+iboSw0kHr/XQ2F6mUqPjCZdFfbDSD+ql6zjttiLFSU=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=X27fViWTupMnmxzyJy/auFJDnRqASH9CxNqLFuGZJk/+yYFjhGgHB1glVDBgk5B/S
-	 mQIDuDBNodhOiXQWmQI8BkPx6H+KqwHWlF2zHA6szR2w1W8kfZq1jpm1yHfIjJUGqf
-	 aEWS53lYyCCq05bLUW2msoG9vRorTDJgTANochWw=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 415Jik4o073183
+	b=pxWjPzPlQJYhH1Zc4qnwsLtnX/Y5OfFu9DpbD9A0sa5WfVySkdz8nt+W+Q9IaRp/W
+	 pcUr+Gw+WRmmWS9H3ERHsYSIsevbSsmXWXA4PkUwwM6Xer7ppREWG1Jwo7NUlhm5DM
+	 1Ss6DaJg8qAyAb1DtMKQTyMSrmkDC4muqJtULvp0=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 415Jil1l073190
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 5 Feb 2024 13:44:46 -0600
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+	Mon, 5 Feb 2024 13:44:47 -0600
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 5
  Feb 2024 13:44:46 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
  Frontend Transport; Mon, 5 Feb 2024 13:44:46 -0600
 Received: from lelvsmtp5.itg.ti.com ([10.249.42.149])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 415JicQY028467;
-	Mon, 5 Feb 2024 13:44:45 -0600
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 415JicQZ028467;
+	Mon, 5 Feb 2024 13:44:46 -0600
 From: Andrew Davis <afd@ti.com>
 To: Sebastian Reichel <sre@kernel.org>,
         Manivannan Sadhasivam
@@ -76,9 +76,9 @@ CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-actions@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>, Andrew Davis <afd@ti.com>
-Subject: [PATCH v2 11/19] power: reset: mt6323-poweroff: Use devm_register_sys_off_handler(POWER_OFF)
-Date: Mon, 5 Feb 2024 13:44:29 -0600
-Message-ID: <20240205194437.180802-12-afd@ti.com>
+Subject: [PATCH v2 12/19] power: reset: msm-poweroff: Use devm_register_sys_off_handler(POWER_OFF)
+Date: Mon, 5 Feb 2024 13:44:30 -0600
+Message-ID: <20240205194437.180802-13-afd@ti.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240205194437.180802-1-afd@ti.com>
 References: <20240205194437.180802-1-afd@ti.com>
@@ -92,94 +92,43 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Use device life-cycle managed register function to simplify probe and
-exit paths.
+Use this helper to register sys_off handler. Drivers should move away from
+setting pm_power_off directly as it only allows for one handler. The new
+way allows for trying multiple if the first one doesn't work.
 
 Signed-off-by: Andrew Davis <afd@ti.com>
 ---
- drivers/power/reset/mt6323-poweroff.c | 28 ++++++++++++++-------------
- 1 file changed, 15 insertions(+), 13 deletions(-)
+ drivers/power/reset/msm-poweroff.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/power/reset/mt6323-poweroff.c b/drivers/power/reset/mt6323-poweroff.c
-index 57a63c0ab7fb7..ca5d11b17ff03 100644
---- a/drivers/power/reset/mt6323-poweroff.c
-+++ b/drivers/power/reset/mt6323-poweroff.c
-@@ -14,6 +14,7 @@
- #include <linux/platform_device.h>
- #include <linux/mfd/mt6397/core.h>
- #include <linux/mfd/mt6397/rtc.h>
-+#include <linux/reboot.h>
- 
- struct mt6323_pwrc {
- 	struct device *dev;
-@@ -21,11 +22,9 @@ struct mt6323_pwrc {
- 	u32 base;
+diff --git a/drivers/power/reset/msm-poweroff.c b/drivers/power/reset/msm-poweroff.c
+index d96d248a6e25b..bcf04491e7022 100644
+--- a/drivers/power/reset/msm-poweroff.c
++++ b/drivers/power/reset/msm-poweroff.c
+@@ -28,9 +28,11 @@ static struct notifier_block restart_nb = {
+ 	.priority = 128,
  };
  
--static struct mt6323_pwrc *mt_pwrc;
--
--static void mt6323_do_pwroff(void)
-+static int mt6323_do_pwroff(struct sys_off_data *data)
+-static void do_msm_poweroff(void)
++static int do_msm_poweroff(struct sys_off_data *data)
  {
--	struct mt6323_pwrc *pwrc = mt_pwrc;
-+	struct mt6323_pwrc *pwrc = data->cb_data;
- 	unsigned int val;
- 	int ret;
- 
-@@ -44,6 +43,8 @@ static void mt6323_do_pwroff(void)
- 	mdelay(1000);
- 
- 	WARN_ONCE(1, "Unable to power off system\n");
+ 	deassert_pshold(&restart_nb, 0, NULL);
 +
 +	return NOTIFY_DONE;
  }
  
- static int mt6323_pwrc_probe(struct platform_device *pdev)
-@@ -51,6 +52,7 @@ static int mt6323_pwrc_probe(struct platform_device *pdev)
- 	struct mt6397_chip *mt6397_chip = dev_get_drvdata(pdev->dev.parent);
- 	struct mt6323_pwrc *pwrc;
- 	struct resource *res;
-+	int ret;
+ static int msm_restart_probe(struct platform_device *pdev)
+@@ -41,7 +43,9 @@ static int msm_restart_probe(struct platform_device *pdev)
  
- 	pwrc = devm_kzalloc(&pdev->dev, sizeof(*pwrc), GFP_KERNEL);
- 	if (!pwrc)
-@@ -63,19 +65,20 @@ static int mt6323_pwrc_probe(struct platform_device *pdev)
- 	pwrc->base = res->start;
- 	pwrc->regmap = mt6397_chip->regmap;
- 	pwrc->dev = &pdev->dev;
--	mt_pwrc = pwrc;
+ 	register_restart_handler(&restart_nb);
  
--	pm_power_off = &mt6323_do_pwroff;
-+	ret = devm_register_sys_off_handler(pwrc->dev,
-+					    SYS_OFF_MODE_POWER_OFF,
-+					    SYS_OFF_PRIO_DEFAULT,
-+					    mt6323_do_pwroff,
-+					    pwrc);
-+	if (ret) {
-+		dev_err(pwrc->dev, "failed to register power-off handler: %d\n", ret);
-+		return ret;
-+	}
+-	pm_power_off = do_msm_poweroff;
++	devm_register_sys_off_handler(&pdev->dev, SYS_OFF_MODE_POWER_OFF,
++				      SYS_OFF_PRIO_DEFAULT, do_msm_poweroff,
++				      msm_ps_hold);
  
  	return 0;
  }
- 
--static void mt6323_pwrc_remove(struct platform_device *pdev)
--{
--	if (pm_power_off == &mt6323_do_pwroff)
--		pm_power_off = NULL;
--}
--
- static const struct of_device_id mt6323_pwrc_dt_match[] = {
- 	{ .compatible = "mediatek,mt6323-pwrc" },
- 	{},
-@@ -84,7 +87,6 @@ MODULE_DEVICE_TABLE(of, mt6323_pwrc_dt_match);
- 
- static struct platform_driver mt6323_pwrc_driver = {
- 	.probe          = mt6323_pwrc_probe,
--	.remove_new     = mt6323_pwrc_remove,
- 	.driver         = {
- 		.name   = "mt6323-pwrc",
- 		.of_match_table = mt6323_pwrc_dt_match,
 -- 
 2.39.2
 
