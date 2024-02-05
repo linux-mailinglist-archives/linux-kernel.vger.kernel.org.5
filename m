@@ -1,132 +1,129 @@
-Return-Path: <linux-kernel+bounces-52823-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 259F6849D0F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:29:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC4FE849D14
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:31:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C907AB250D2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:29:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9C53B21694
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:31:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B837F2C19E;
-	Mon,  5 Feb 2024 14:29:00 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B1782C197;
+	Mon,  5 Feb 2024 14:31:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DI0Xd/8S"
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C0671CD0C;
-	Mon,  5 Feb 2024 14:28:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 858002C19C;
+	Mon,  5 Feb 2024 14:31:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707143340; cv=none; b=taXfU72SVmWPseDqb1wakhm2vKNXvUgdWNeyYPK7DCGN60+lfHOcXDxmMUy9WJpuOGrhHMbU++Jy0TIsazC4aErAxMk/Gao7pxVfsK189hgTrTnaSF1u5jHCcZeJMgyPcCGouOriESIFtY31z8Kh2umZQT3spDolRBMxvqQsQ/E=
+	t=1707143487; cv=none; b=BNSow1HwB3M/aHT3rncoAgFInmC1NGfvp9yNyt/DDEAw/4Ylrt8w8nKc0GKF99lFaXUcSCuWl3mKWbUFZ4hFUiZ0pH9kP8z1wtFq+axLtyqdlMllo+3dgeBxJn+L6rNomSWPDIMOG/FtBkqp7MybeaW0HEbGmCckz0SGiHd22C4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707143340; c=relaxed/simple;
-	bh=1TuBlPp+4WAxPwp0NyqSzCaFlu4c7lpHxFzqKwnZtpE=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Kd7sVRSCkSwbxQ4d4tzGV0+IlGdy2x+whhVrct0Z61jDWj7z4HJmmqS1QNMIP9ytX2OsPJBHI28fkFDEoLbYktLP72NCVO4Rv+rUTDmdO4fCgcdhwKCCMGPk/v2gyukghsX286AS0ikC9+oUDDPR0gGzlTUKy/6VFjWqqIlR/4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TT7vQ1prQz6JB84;
-	Mon,  5 Feb 2024 22:25:22 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 76FB0140B73;
-	Mon,  5 Feb 2024 22:28:56 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 5 Feb
- 2024 14:28:56 +0000
-Date: Mon, 5 Feb 2024 14:28:55 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
-CC: Peter Zijlstra <peterz@infradead.org>, Dan Williams
-	<dan.j.williams@intel.com>, <linux-kernel@vger.kernel.org>,
-	<linux-cxl@vger.kernel.org>, Ingo Molnar <mingo@kernel.org>, Ira Weiny
-	<ira.weiny@intel.com>
-Subject: Re: [PATCH 1/2 v2] cleanup: Add cond_guard() to conditional guards
-Message-ID: <20240205142855.0000414e@Huawei.com>
-In-Reply-To: <20240205142613.23914-2-fabio.maria.de.francesco@linux.intel.com>
-References: <20240205142613.23914-1-fabio.maria.de.francesco@linux.intel.com>
-	<20240205142613.23914-2-fabio.maria.de.francesco@linux.intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1707143487; c=relaxed/simple;
+	bh=vB2CucJIHYQw9yXikZUQXpzjmRCNVBBJ96ZHLmXzccA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rHhoBuA6BoccLrmT3hcAXBZn0S4gGwxFIBmt8ih/U9lq/9bvc/Uezqm0ULfIeVhLomrbxdG/74VzBp8XJjA19FR7bbbqJoc4mQyZsdfeYAuici7+RyacfGR0PQ7ij0QIEp3Dt7N/ELONHQLhsRB+hz2reRCiuJuuTTbvvyan8kg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DI0Xd/8S; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-29080973530so3635156a91.1;
+        Mon, 05 Feb 2024 06:31:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707143485; x=1707748285; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xeN9yJ2dQGs6jig9OgjqCQqlFO+WtiSIe/SoY3+XhmQ=;
+        b=DI0Xd/8SIL1OVHB/ENhm6vG5GaBzrkIghKr5sZ5Z07Jsna+Y7Z50yiARDZwpe7O0j9
+         ig9TwbDGmnISqSEKnTeuEynZcHUzP3N1WTfuN/vOjwiCArrwUi41KcfwKSZXnM0my7Da
+         Q9G3cSwY04ewdNxckUecPr/elZKkzwWoe+UMhCkZM3Vm4GpL5LzbEQuF8Aed0KJDnpl1
+         DRYB1S8t2MC+Vw/dYEQUuESJCR7v39RkuzCd/OXAPq48ILRgx5kbVFtymhdBSqlIvoC6
+         KzVIYgoHNVQz1aX5PH0Akbk844Y024HMGtnD1+mhP6DKWo7kNutKl8cI9aR489nx6sQ+
+         9fcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707143485; x=1707748285;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xeN9yJ2dQGs6jig9OgjqCQqlFO+WtiSIe/SoY3+XhmQ=;
+        b=JpuLDi1tIFTU9Tp1PW+5S7Ic5zELptTAPK+mNC+mgpuTXADxe3DwfthvevjkpJgLE+
+         4vXBypA2NWq470sH6BKlYKp7Cp0EzdFEkbbNirXAGCBVPW69fUIPcUh0jlo/5q0Ut3Eb
+         OxXIy90PzEdafiHjah+NH1yY75r7sAJ/tsT3Se0RHPUxuq4HS8DguKXw7nZNOYxLSZCv
+         LUgT+cEJ1cAr5Q+CQ9+9+D6K4F0chgFqzD3DhaG/2BB4rhkaJ40vEMe20Mr+azetFsDG
+         zTN4D0K/MKqS2o09INdF9g9cn5TqRejGYAB/zJ+sIj6OOaF3jnkpWnkhVUk6lIs9lhru
+         ybXQ==
+X-Gm-Message-State: AOJu0YwMPREis+HL71hcbwOUX/hGgLOqw3HKJI28KcF4Hb4gX2EKSxfq
+	G7hGCzQdkSk+OzGa7SchYBXu+N2di9A11T2bR3J8UmMQKLT20J1JhGLMgSaCPp2kfMjCr/py0IQ
+	kOSpz4uvZE+Iv+mkudJaBGwMG+BltGYC+
+X-Google-Smtp-Source: AGHT+IEioUX3dA1lS9t0kJPFYTkeeTRGjpJdaW6VcH7dBGLqReC45Rwpm07BQxt7Nf8HS0ucwqnC87U+i3GIdvyYQuE=
+X-Received: by 2002:a17:90a:fc83:b0:296:2d0f:bba8 with SMTP id
+ ci3-20020a17090afc8300b002962d0fbba8mr9992598pjb.43.1707143485338; Mon, 05
+ Feb 2024 06:31:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+References: <20240118150637.660461-1-jcmvbkbc@gmail.com>
+In-Reply-To: <20240118150637.660461-1-jcmvbkbc@gmail.com>
+From: Max Filippov <jcmvbkbc@gmail.com>
+Date: Mon, 5 Feb 2024 06:31:13 -0800
+Message-ID: <CAMo8BfL+j5XUit2b7UjmZfZJCGd-gyh3Aia4FhLAm7YHNm0Fdg@mail.gmail.com>
+Subject: Re: [PATCH] fs: binfmt_elf_efpic: don't use missing interpreter's properties
+To: linux-kernel@vger.kernel.org
+Cc: Chris Zankel <chris@zankel.net>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Eric Biederman <ebiederm@xmission.com>, 
+	Kees Cook <keescook@chromium.org>, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	Greg Ungerer <gerg@linux-m68k.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon,  5 Feb 2024 15:26:12 +0100
-"Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com> wrote:
+Ping?
 
-> Add cond_guard() macro to conditional guards.
-> 
-> cond_guard() is a guard to be used with the conditional variants of locks,
-> like down_read_trylock() or mutex_lock_interruptible().
-> 
-> It takes a statement (or more statements in a block) that is passed to its
-> second argument. That statement (or block) is executed if waiting for a
-> lock is interrupted or if a _trylock() fails in case of contention.
-> 
-> Usage example:
-> 
-> 	cond_guard(rwsem_read_try, { printk(...); return 0; }, &semaphore);
-> 
-> Consistently with the other guards, locks are unlocked at the exit of the
-> scope where cond_guard() is called.
-> 
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Suggested-by: Dan Williams <dan.j.williams@intel.com>
-> Suggested-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Fabio M. De Francesco <fabio.maria.de.francesco@linux.intel.com>
-
-This version looks good to me, but these are still fairly new to me so good to get
-inputs from others.
-
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
+On Thu, Jan 18, 2024 at 7:07=E2=80=AFAM Max Filippov <jcmvbkbc@gmail.com> w=
+rote:
+>
+> Static FDPIC executable may get an executable stack even when it has
+> non-executable GNU_STACK segment. This happens when STACK segment has rw
+> permissions, but does not specify stack size. In that case FDPIC loader
+> uses permissions of the interpreter's stack, and for static executables
+> with no interpreter it results in choosing the arch-default permissions
+> for the stack.
+>
+> Fix that by using the interpreter's properties only when the interpreter
+> is actually used.
+>
+> Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
 > ---
->  include/linux/cleanup.h | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
-> index c2d09bc4f976..88af56600325 100644
-> --- a/include/linux/cleanup.h
-> +++ b/include/linux/cleanup.h
-> @@ -134,6 +134,16 @@ static inline class_##_name##_t class_##_name##ext##_constructor(_init_args) \
->   *	an anonymous instance of the (guard) class, not recommended for
->   *	conditional locks.
->   *
-> + * cond_guard(name, fail, args...):
-> + *	a guard to be used with the conditional variants of locks, like
-> + *	down_read_trylock() or mutex_lock_interruptible. 'fail' are one or more
-> + *	statements that are executed when waiting for a lock is interrupted or
-> + *	when a _trylock() fails in case of contention.
-> + *
-> + *	Example:
-> + *
-> + *		cond_guard(rwsem_read_try, { printk(...); return 0; }, &semaphore);
-> + *
->   * scoped_guard (name, args...) { }:
->   *	similar to CLASS(name, scope)(args), except the variable (with the
->   *	explicit name 'scope') is declard in a for-loop such that its scope is
-> @@ -165,6 +175,10 @@ static inline class_##_name##_t class_##_name##ext##_constructor(_init_args) \
->  
->  #define __guard_ptr(_name) class_##_name##_lock_ptr
->  
-> +#define cond_guard(_name, _fail, args...) \
-> +	CLASS(_name, scope)(args); \
-> +	if (!__guard_ptr(_name)(&scope)) _fail
-> +
->  #define scoped_guard(_name, args...)					\
->  	for (CLASS(_name, scope)(args),					\
->  	     *done = NULL; __guard_ptr(_name)(&scope) && !done; done = (void *)1)
+>  fs/binfmt_elf_fdpic.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/binfmt_elf_fdpic.c b/fs/binfmt_elf_fdpic.c
+> index be4e7ac3efbc..f6d72fe3998c 100644
+> --- a/fs/binfmt_elf_fdpic.c
+> +++ b/fs/binfmt_elf_fdpic.c
+> @@ -322,7 +322,7 @@ static int load_elf_fdpic_binary(struct linux_binprm =
+*bprm)
+>         else
+>                 executable_stack =3D EXSTACK_DEFAULT;
+>
+> -       if (stack_size =3D=3D 0) {
+> +       if (stack_size =3D=3D 0 && interp_params.flags & ELF_FDPIC_FLAG_P=
+RESENT) {
+>                 stack_size =3D interp_params.stack_size;
+>                 if (interp_params.flags & ELF_FDPIC_FLAG_EXEC_STACK)
+>                         executable_stack =3D EXSTACK_ENABLE_X;
+> --
+> 2.39.2
+>
 
+
+--=20
+Thanks.
+-- Max
 
