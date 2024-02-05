@@ -1,186 +1,127 @@
-Return-Path: <linux-kernel+bounces-52806-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F210849CE3
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:22:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AFA7849CF7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:24:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C07D1F255D3
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:22:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3ED6E284657
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:24:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFC0B24A19;
-	Mon,  5 Feb 2024 14:22:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 069C228E26;
+	Mon,  5 Feb 2024 14:23:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="WdMAS6Pl"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AShhOTyW"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 866A2208CF;
-	Mon,  5 Feb 2024 14:22:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB1A922F11
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 14:23:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707142947; cv=none; b=Sm+i+4ywVn4nKcmFPsP+597qPzc/A70bQLMoFe1fsCuo66WcQolvDxJQi4PQEOtvPvwyt6AHi9H1OtEMf/+B9Bz+hbDp+L41r9rAlIIrU0FOR4r9ShBPpN+0eDd6mpgv3eJiWYKEKzcphjJk/T30M5bKAeyKUKvcwC3wSoS8PJA=
+	t=1707143036; cv=none; b=l8v2eS0cWyh12o4qfWmU2NLC2WLfUg4z0uX57pboyyCxtVtGxttBuwdaYz1gpXKZPhNIYNg4akTSMc8HTFNmT5jtva9a7n7uNZH4pXpBTt65LJqSJz9CUVv81yrxAZTRddw0DdavyinfZ/go1pjtgebcilwxllhgUFwoyKE0iMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707142947; c=relaxed/simple;
-	bh=Vw2SAecBla8SZnOrBn7LhxnEfGK2jVWevzfkWLpQbyI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DYnzvStT9kkQq2BA/6FfIvioZy6QCiXQGyWPJNBuI28VaVikcmY8Ox23i/RWhkmFtLYGy+n6bfEQCUwfauSMBowA4Hm/V48Xxstl3DaEi4PnKY8CRG5yMvncAOydBgA6FDK6lJC7tGkuRgM+p38jQjeSNDAGwp84yYHEsR7PmPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=WdMAS6Pl; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7B0CD1BF207;
-	Mon,  5 Feb 2024 14:22:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707142935;
+	s=arc-20240116; t=1707143036; c=relaxed/simple;
+	bh=6/5mKIj8fn/l/2zcBE1I76cqFTdIUIkRulboZYl02L4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FPGxF+8ZA+LadWGKZHEesDIu0TikEoOKKFTRD/F0czVU6tdydtgoOQGjbVIkc5PZFY19865gSZn/QBUOJMGCCqR7yQUwzdd8PsMz1rbbeu0STizHMns5iPC8AgsbuUXdityy8Yc99Y2vJFKrOVd9jTM7CiM9WNSfliqGGn0N/2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AShhOTyW; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707143033;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=X2lRUb3hksFq0yfXVR20ELEXLC5m7R4eEvD1161wPtg=;
-	b=WdMAS6PlW2bnMePzgM6xEUHFKbQpsK4l7I/RklZs+yFf7G3x3LNLqzH6/eXQ4wk/qSV+ZH
-	+6qibOM+9FntESYWxTuAcQNBqOq3A5Nd2SlaeYqAFsibQnE4roQHGyKDfvxFJi0uFhupVr
-	RGMjwnie8DBep4z5og7UbQDoAHhlz4eJe7gcGw2todrNHvxTE/l3bBGzmXFHKaBOK2foLC
-	VEW/3doORkGTr+/mrjW4QsxUMoloETwRldasNYuCYKYXi5Ef8iwxH0g9yISE3yk5fM/D6x
-	TtwHGzwLvp/N7+U5KLqkYV5pxIl4ZFent2eL2dtTVVeacPk8iVDVQ2J6g34iZA==
-Date: Mon, 5 Feb 2024 15:22:08 +0100
-From: Herve Codina <herve.codina@bootlin.com>
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: Vadim Fedorenko  <vadim.fedorenko@linux.dev>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
- <kuba@kernel.org>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, Andrew Lunn <andrew@lunn.ch>, Mark Brown
- <broonie@kernel.org>, Christophe Leroy <christophe.leroy@csgroup.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 1/6] net: wan: Add support for QMC HDLC
-Message-ID: <20240205152208.73535549@bootlin.com>
-In-Reply-To: <b1968b5c7e88edd448d5f55b57dfa40257b2b06c.camel@redhat.com>
-References: <20240130084035.115086-1-herve.codina@bootlin.com>
-	<20240130084035.115086-2-herve.codina@bootlin.com>
-	<b1968b5c7e88edd448d5f55b57dfa40257b2b06c.camel@redhat.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+	bh=9vD4cczi13MuDg3gk2/XtBn2JMSKQaW/Vs1BWrM2cQA=;
+	b=AShhOTyWieQhtLU0DPki5e6AkrsqIqlWHxUYQHiug0COlJtD9leHdqdibNrL/BiWyiM0rZ
+	EJIN+hoDuX7J7w/FsoHgSWbf78BVKS+6KzWokF3IAfSuOmH2jgIaYXAIpuqADVc8LHkkor
+	f2iz+2VzyTm4F5Jx56LY9dbNZw7QDPQ=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-668-hm6g-lS1M9iKInPMpQE9nw-1; Mon,
+ 05 Feb 2024 09:23:47 -0500
+X-MC-Unique: hm6g-lS1M9iKInPMpQE9nw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 21C783CBDF61;
+	Mon,  5 Feb 2024 14:23:47 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.165])
+	by smtp.corp.redhat.com (Postfix) with SMTP id A9A1E40C95AD;
+	Mon,  5 Feb 2024 14:23:45 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Mon,  5 Feb 2024 15:22:31 +0100 (CET)
+Date: Mon, 5 Feb 2024 15:22:29 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Andy Lutomirski <luto@amacapital.net>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	Tycho Andersen <tycho@tycho.pizza>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pidfd: change do_notify_pidfd() to use
+ __wake_up(poll_to_key(EPOLLIN))
+Message-ID: <20240205142229.GA16757@redhat.com>
+References: <20240205141050.GA16278@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240205141050.GA16278@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-Hi Paolo,
+Argh, sorry for noise Christian, I have sent the same patch twice.
 
-On Thu, 01 Feb 2024 12:41:32 +0100
-Paolo Abeni <pabeni@redhat.com> wrote:
+Please ignore this email, the next email from me with the same
+subject adds the reference to our discussion into the changelog.
 
-[...]
-> > +static inline struct qmc_hdlc *netdev_to_qmc_hdlc(struct net_device *netdev)
-> > +{
-> > +	return dev_to_hdlc(netdev)->priv;
-> > +}  
+On 02/05, Oleg Nesterov wrote:
+>
+> rather than wake_up_all(). This way do_notify_pidfd() won't wakeup the
+> POLLHUP-only waiters which wait for pid_task() == NULL.
 > 
-> Please, no 'inline' function in c files. You could move this function
-> and the struct definition into a new, local, header file.
-
-'inline' function specifier will be removed in the next iteration on the series.
-
+> TODO:
+>     - as Christian pointed out, this asks for the new wake_up_all_poll()
+>       helper, it can already have other users.
 > 
-> > +static int qmc_hdlc_recv_queue(struct qmc_hdlc *qmc_hdlc, struct qmc_hdlc_desc *desc, size_t size);
-> > +
-> > +#define QMC_HDLC_RX_ERROR_FLAGS (QMC_RX_FLAG_HDLC_OVF | \
-> > +				 QMC_RX_FLAG_HDLC_UNA | \
-> > +				 QMC_RX_FLAG_HDLC_ABORT | \
-> > +				 QMC_RX_FLAG_HDLC_CRC)
-> > +
-> > +static void qmc_hcld_recv_complete(void *context, size_t length, unsigned int flags)
-> > +{
-> > +	struct qmc_hdlc_desc *desc = context;
-> > +	struct net_device *netdev = desc->netdev;
-> > +	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
-> > +	int ret;  
+>     - we can probably discriminate the PIDFD_THREAD and non-PIDFD_THREAD
+>       waiters, but this needs more work.
 > 
-> Please, respect the reverse x-mas tree order for local variable
-> definition.
-
-desc depends on context, netdev depends on desc and qmc_hdlc depends on netdev.
-I think the declaration order is correct here even it doesn't respect the reverse
-x-mas tree.
-
-[...]
-> > +static netdev_tx_t qmc_hdlc_xmit(struct sk_buff *skb, struct net_device *netdev)
-> > +{
-> > +	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
-> > +	struct qmc_hdlc_desc *desc;
-> > +	unsigned long flags;
-> > +	int ret;
-> > +
-> > +	spin_lock_irqsave(&qmc_hdlc->tx_lock, flags);
-> > +	desc = &qmc_hdlc->tx_descs[qmc_hdlc->tx_out];
-> > +	if (WARN_ONCE(!desc->skb, "No tx descriptors available\n")) {
-> > +		/* Should never happen.
-> > +		 * Previous xmit should have already stopped the queue.
-> > +		 */
-> > +		netif_stop_queue(netdev);
-> > +		spin_unlock_irqrestore(&qmc_hdlc->tx_lock, flags);
-> > +		return NETDEV_TX_BUSY;
-> > +	}
-> > +	spin_unlock_irqrestore(&qmc_hdlc->tx_lock, flags);
-> > +
-> > +	desc->netdev = netdev;
-> > +	desc->dma_size = skb->len;
-> > +	desc->skb = skb;
-> > +	ret = qmc_hdlc_xmit_queue(qmc_hdlc, desc);
-> > +	if (ret) {
-> > +		desc->skb = NULL; /* Release the descriptor */
-> > +		if (ret == -EBUSY) {
-> > +			netif_stop_queue(netdev);
-> > +			return NETDEV_TX_BUSY;
-> > +		}
-> > +		dev_kfree_skb(skb);
-> > +		netdev->stats.tx_dropped++;
-> > +		return NETDEV_TX_OK;
-> > +	}
-> > +
-> > +	qmc_hdlc->tx_out = (qmc_hdlc->tx_out + 1) % ARRAY_SIZE(qmc_hdlc->tx_descs);
-> > +
-> > +	spin_lock_irqsave(&qmc_hdlc->tx_lock, flags);
-> > +	if (qmc_hdlc->tx_descs[qmc_hdlc->tx_out].skb)
-> > +		netif_stop_queue(netdev);
-> > +	spin_unlock_irqrestore(&qmc_hdlc->tx_lock, flags);  
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+> ---
+>  kernel/signal.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 > 
-> The locking schema is quite bad, as the drivers acquires and releases 3
-> locks for each tx packet. You could improve that using the qmc_chan-
-> >tx_lock to protect the whole qmc_hdlc_xmit() function, factoring out a  
-> lockless variant of qmc_hdlc_xmit_queue(), and using it here.
-
-I will change on next iteration and keep 2 lock/unlock instead of 3:
-  - one in qmc_hdlc_xmit()
-  - one in qmc_hdlc_xmit_complete() 
-to protect the descriptors accesses.
-
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index 9b40109f0c56..c3fac06937e2 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -2021,11 +2021,12 @@ int send_sigqueue(struct sigqueue *q, struct pid *pid, enum pid_type type)
+>  
+>  void do_notify_pidfd(struct task_struct *task)
+>  {
+> -	struct pid *pid;
+> +	struct pid *pid = task_pid(task);
+>  
+>  	WARN_ON(task->exit_state == 0);
+> -	pid = task_pid(task);
+> -	wake_up_all(&pid->wait_pidfd);
+> +
+> +	__wake_up(&pid->wait_pidfd, TASK_NORMAL, 0,
+> +			poll_to_key(EPOLLIN | EPOLLRDNORM));
+>  }
+>  
+>  /*
+> -- 
+> 2.25.1.362.g51ebf55
 > 
-> In general is quite bad that the existing infra does not allow
-> leveraging NAPI. Have you considered expanding the QMC to accomodate
-> such user?
+> 
 
-I cannot mask/unmask the 'end of transfer' interrupt.
-Indeed, other streams use this interrupt among them audio streams and so
-masking the interrupt for HDLC data will also mask the interrupt for audio
-data.
-
-At the HDLC driver level, the best I can to is to store a queue of complete
-HDLC skbs (queue filled on interrupts) and send them to the network stack
-when the napi poll() is called.
-
-I am not sure that this kind of queue (additional level between always
-enabled interrupts and the network stack) makes sense.
-
-Do you have any opinion about this additional queue management for NAPI
-support?
-
-Best regards,
-Hervé
 
