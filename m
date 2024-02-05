@@ -1,245 +1,147 @@
-Return-Path: <linux-kernel+bounces-53972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53964-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C37984A89C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:07:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3641484A883
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:05:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C486629889D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:07:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58A451C2A1AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:05:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 675DD51C44;
-	Mon,  5 Feb 2024 21:21:20 +0000 (UTC)
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B56511AB81A;
+	Mon,  5 Feb 2024 21:16:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="k2QTPAlp";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="k2QTPAlp"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 075CD4F898;
-	Mon,  5 Feb 2024 21:21:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E7451AB806;
+	Mon,  5 Feb 2024 21:16:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707168079; cv=none; b=J7nNoSBWLTB1BfxaxGGVqo+3/Ucu6NYBDIiBlR3OwqmEohRrtLAt1EdQR83BnoCGYpDCzit+V+0Vs16VPRot0FI0hgqwUdfL50HzNInAIxELOnt+suF58jUroY+alQtnt7RNSteolyUVSl9T8oDpBsEfV3fN531+Ak7Hg1C7XbI=
+	t=1707167799; cv=none; b=l55TFodvNvHpU+AIfFiBJdfyuY3NRr4x1sNPYz9cZdhHex0csTlMJQLqSs9eZIqE9tcRuY/+ahDGpnXKWNyQxxp0QGBZeyh+2J4EKrM0xHA/bl8jQFZCFT5ypfc6oUPXtl/vr0NkR689iDh6hFWPwr4hWosLUrAHfhaDiPm/tvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707168079; c=relaxed/simple;
-	bh=DicFjbK0KyRbyqfwIeZfHbnCpPLrOKK0Q5P+e2M32j0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EGUmVsoJ4oVli5Skg2mvkkBlkcxhQe43AOx7BF2E2z8fio+75IWJa63NI7vP+CZmgntNcEa1L1R5lOkXls7IQzX+CZdGmBjZu4tugUuWhGicXkzBN5G/W8oUk8pSEIOPXs46zJag+UNctdTr7gWLjfT4KimZGThlODmZbK07QJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id fc8446dbc483e72d; Mon, 5 Feb 2024 22:21:09 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
+	s=arc-20240116; t=1707167799; c=relaxed/simple;
+	bh=w+LuAn4eMxEN1OrwnjXfkUZofNi+HXJroO9FLryNtL4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D4v8WBqwuh/JcQzY9v/cCXx/sR9ShlmsxKgb9891QHFrk//HQMjc/kAkCucbYUow/5SIJt4SsEVzGneuzJp+yahnbrYEQ74KJFIIAJ3d0xh36IKnLdYs6LcmscWFxAoT1ELi9kMEk47vG1IOKYs2rCbGbJdPjWahcKmq5ao1BIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=k2QTPAlp; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=k2QTPAlp; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id C1FA9669A1B;
-	Mon,  5 Feb 2024 22:21:08 +0100 (CET)
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>,
- LKML <linux-kernel@vger.kernel.org>, Linux ACPI <linux-acpi@vger.kernel.org>,
- Lukasz Luba <lukasz.luba@arm.com>, Zhang Rui <rui.zhang@intel.com>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
- Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Subject:
- [PATCH v1 2/6] thermal: ACPI: Discard trip table after zone registration
-Date: Mon, 05 Feb 2024 22:15:50 +0100
-Message-ID: <4905992.31r3eYUQgx@kreacher>
-In-Reply-To: <2728491.mvXUDI8C0e@kreacher>
-References: <2728491.mvXUDI8C0e@kreacher>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 52B1021FB3;
+	Mon,  5 Feb 2024 21:16:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707167795; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UqjQ8uzPWkoXvaP3jSmRX0mX+6vg7iSnhNElmOf67RA=;
+	b=k2QTPAlpUZx9xWdcIwXtXXDq0RS18tpEXYVMAwgeXgBnBYJefWMYQ93JLDFkCalSq3ycUy
+	VZAEpeop+Dxd1H2y4UYD/k2bR0lxrH87nVnAGgfJdz4CSRW/671XL7U+K2ActeCA0IKwI6
+	nBokQeUPwfSSneyy/npR/ngpYbv+j+0=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707167795; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UqjQ8uzPWkoXvaP3jSmRX0mX+6vg7iSnhNElmOf67RA=;
+	b=k2QTPAlpUZx9xWdcIwXtXXDq0RS18tpEXYVMAwgeXgBnBYJefWMYQ93JLDFkCalSq3ycUy
+	VZAEpeop+Dxd1H2y4UYD/k2bR0lxrH87nVnAGgfJdz4CSRW/671XL7U+K2ActeCA0IKwI6
+	nBokQeUPwfSSneyy/npR/ngpYbv+j+0=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2F00A132DD;
+	Mon,  5 Feb 2024 21:16:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id tIwCCTNQwWWHUwAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Mon, 05 Feb 2024 21:16:35 +0000
+Date: Mon, 5 Feb 2024 22:16:34 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Efly Young <yangyifei03@kuaishou.com>, android-mm@google.com,
+	yuzhao@google.com, mkoutny@suse.com,
+	Yosry Ahmed <yosryahmed@google.com>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mm: memcg: Use larger batches for proactive reclaim
+Message-ID: <ZcFQMru5_oATGbuP@tiehlicka>
+References: <20240202233855.1236422-1-tjmercier@google.com>
+ <ZcC7Kgew3GDFNIux@tiehlicka>
+ <CABdmKX3HbSxX6zLF4z3f+=Ybiq1bA71jckkeHv5QJxAjSexgaA@mail.gmail.com>
+ <ZcE5n9cTdTGJChmq@tiehlicka>
+ <CABdmKX0Du2F+bko=hjLBqdQO-bJSFcG3y1Bbuu2v6J8aVB39sw@mail.gmail.com>
+ <ZcFG2JoXI7i8XzQY@tiehlicka>
+ <CABdmKX0t1LXj80Awe20TrmY5gQB6v2E4bGfW8WXr2i84o+k6ow@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrfedvuddgheehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepledprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
- thhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=9 Fuz1=9 Fuz2=9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABdmKX0t1LXj80Awe20TrmY5gQB6v2E4bGfW8WXr2i84o+k6ow@mail.gmail.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [0.28 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-0.12)[66.62%];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: 0.28
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Mon 05-02-24 12:47:47, T.J. Mercier wrote:
+> On Mon, Feb 5, 2024 at 12:36 PM Michal Hocko <mhocko@suse.com> wrote:
+[...]
+> > This of something like
+> > timeout $TIMEOUT echo $TARGET > $MEMCG_PATH/memory.reclaim
+> > where timeout acts as a stop gap if the reclaim cannot finish in
+> > TIMEOUT.
+> 
+> Yeah I get the desired behavior, but using sc->nr_reclaimed to achieve
+> it is what's bothering me.
 
-Because the thermal core creates and uses its own copy of the trips
-table passed to thermal_zone_device_register_with_trips(), it is not
-necessary to hold on to a local copy of it any more after the given
-thermal zone has been registered.
+I am not really happy about this subtlety. If we have a better way then
+let's do it. Better in its own patch, though.
 
-Accordingly, modify the ACPI thermal driver to store the trips table
-passed to thermal_zone_device_register_with_trips() in a local variable
-which is automatically discarded after the zone registration.
+> It's already wired up that way though, so if you want to make this
+> change now then I can try to test for the difference using really
+> large reclaim targets.
 
-Also make some additional code simplifications unlocked by the above
-change.
+Yes, please. If you want it a separate patch then no objection from me
+of course. If you do no like the nr_to_reclaim bailout then maybe we can
+go with a simple break out flag in scan_control.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/thermal.c |   57 +++++++++++++++++--------------------------------
- 1 file changed, 20 insertions(+), 37 deletions(-)
-
-Index: linux-pm/drivers/acpi/thermal.c
-===================================================================
---- linux-pm.orig/drivers/acpi/thermal.c
-+++ linux-pm/drivers/acpi/thermal.c
-@@ -47,6 +47,8 @@
- 
- #define ACPI_THERMAL_TRIP_PASSIVE	(-1)
- 
-+#define ACPI_THERMAL_MAX_NR_TRIPS	(ACPI_THERMAL_MAX_ACTIVE + 3)
-+
- /*
-  * This exception is thrown out in two cases:
-  * 1.An invalid trip point becomes invalid or a valid trip point becomes invalid
-@@ -112,7 +114,6 @@ struct acpi_thermal {
- 	unsigned long polling_frequency;
- 	volatile u8 zombie;
- 	struct acpi_thermal_trips trips;
--	struct thermal_trip *trip_table;
- 	struct thermal_zone_device *thermal_zone;
- 	int kelvin_offset;	/* in millidegrees */
- 	struct work_struct thermal_check_work;
-@@ -451,26 +452,19 @@ fail:
- 	return false;
- }
- 
--static int acpi_thermal_get_trip_points(struct acpi_thermal *tz)
-+static void acpi_thermal_get_trip_points(struct acpi_thermal *tz)
- {
--	unsigned int count = 0;
- 	int i;
- 
--	if (acpi_thermal_init_trip(tz, ACPI_THERMAL_TRIP_PASSIVE))
--		count++;
-+	acpi_thermal_init_trip(tz, ACPI_THERMAL_TRIP_PASSIVE);
- 
- 	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++) {
--		if (acpi_thermal_init_trip(tz, i))
--			count++;
--		else
-+		if (!acpi_thermal_init_trip(tz, i))
- 			break;
--
- 	}
- 
- 	while (++i < ACPI_THERMAL_MAX_ACTIVE)
- 		tz->trips.active[i].trip.temp_dk = THERMAL_TEMP_INVALID;
--
--	return count;
- }
- 
- /* sys I/F for generic thermal sysfs support */
-@@ -662,13 +656,14 @@ static void acpi_thermal_zone_sysfs_remo
- }
- 
- static int acpi_thermal_register_thermal_zone(struct acpi_thermal *tz,
-+					      const struct thermal_trip *trip_table,
- 					      unsigned int trip_count,
- 					      int passive_delay)
- {
- 	int result;
- 
- 	tz->thermal_zone = thermal_zone_device_register_with_trips("acpitz",
--								   tz->trip_table,
-+								   trip_table,
- 								   trip_count,
- 								   0, tz,
- 								   &acpi_thermal_zone_ops,
-@@ -823,10 +818,10 @@ static void acpi_thermal_free_thermal_zo
- 
- static int acpi_thermal_add(struct acpi_device *device)
- {
-+	struct thermal_trip trip_table[ACPI_THERMAL_MAX_NR_TRIPS] = { 0 };
- 	struct acpi_thermal_trip *acpi_trip;
- 	struct thermal_trip *trip;
- 	struct acpi_thermal *tz;
--	unsigned int trip_count;
- 	int crit_temp, hot_temp;
- 	int passive_delay = 0;
- 	int result;
-@@ -848,21 +843,10 @@ static int acpi_thermal_add(struct acpi_
- 	acpi_thermal_aml_dependency_fix(tz);
- 
- 	/* Get trip points [_CRT, _PSV, etc.] (required). */
--	trip_count = acpi_thermal_get_trip_points(tz);
-+	acpi_thermal_get_trip_points(tz);
- 
- 	crit_temp = acpi_thermal_get_critical_trip(tz);
--	if (crit_temp != THERMAL_TEMP_INVALID)
--		trip_count++;
--
- 	hot_temp = acpi_thermal_get_hot_trip(tz);
--	if (hot_temp != THERMAL_TEMP_INVALID)
--		trip_count++;
--
--	if (!trip_count) {
--		pr_warn(FW_BUG "No valid trip points!\n");
--		result = -ENODEV;
--		goto free_memory;
--	}
- 
- 	/* Get temperature [_TMP] (required). */
- 	result = acpi_thermal_get_temperature(tz);
-@@ -881,13 +865,7 @@ static int acpi_thermal_add(struct acpi_
- 
- 	acpi_thermal_guess_offset(tz, crit_temp);
- 
--	trip = kcalloc(trip_count, sizeof(*trip), GFP_KERNEL);
--	if (!trip) {
--		result = -ENOMEM;
--		goto free_memory;
--	}
--
--	tz->trip_table = trip;
-+	trip = trip_table;
- 
- 	if (crit_temp != THERMAL_TEMP_INVALID) {
- 		trip->type = THERMAL_TRIP_CRITICAL;
-@@ -923,9 +901,17 @@ static int acpi_thermal_add(struct acpi_
- 		trip++;
- 	}
- 
--	result = acpi_thermal_register_thermal_zone(tz, trip_count, passive_delay);
-+	if (trip == trip_table) {
-+		pr_warn(FW_BUG "No valid trip points!\n");
-+		result = -ENODEV;
-+		goto free_memory;
-+	}
-+
-+	result = acpi_thermal_register_thermal_zone(tz, trip_table,
-+						    trip - trip_table,
-+						    passive_delay);
- 	if (result)
--		goto free_trips;
-+		goto free_memory;
- 
- 	refcount_set(&tz->thermal_check_count, 3);
- 	mutex_init(&tz->thermal_check_lock);
-@@ -944,8 +930,6 @@ static int acpi_thermal_add(struct acpi_
- flush_wq:
- 	flush_workqueue(acpi_thermal_pm_queue);
- 	acpi_thermal_unregister_thermal_zone(tz);
--free_trips:
--	kfree(tz->trip_table);
- free_memory:
- 	acpi_thermal_free_thermal_zone(tz);
- 
-@@ -966,7 +950,6 @@ static void acpi_thermal_remove(struct a
- 
- 	flush_workqueue(acpi_thermal_pm_queue);
- 	acpi_thermal_unregister_thermal_zone(tz);
--	kfree(tz->trip_table);
- 	acpi_thermal_free_thermal_zone(tz);
- }
- 
-
-
-
+Thanks!
+-- 
+Michal Hocko
+SUSE Labs
 
