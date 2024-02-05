@@ -1,203 +1,129 @@
-Return-Path: <linux-kernel+bounces-52989-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B2E9849F35
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:03:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADB03849F3D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:05:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C59711F2381B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:03:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65456283A30
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:05:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 761153A1DE;
-	Mon,  5 Feb 2024 16:02:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FB7E33CCC;
+	Mon,  5 Feb 2024 16:05:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="NpsUEChh"
-Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="NF3suySk"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B57A32C9C;
-	Mon,  5 Feb 2024 16:02:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1BD532C91;
+	Mon,  5 Feb 2024 16:05:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707148925; cv=none; b=mlyInoWtauKi0MJlvVgAgPbzDqpGnkNqvqMQqa0KH4NCw0DG29uCK0F5HC4cj10d44eXKDiIAB46qTsGlItjW2u74oDuAvf9cJAp+pn7fECKvSArFrco/PsbS0Y9t1aCgNCTUibsm1RQ7OEINVIqVwX26pssWlhPJ+i929tH2fg=
+	t=1707149104; cv=none; b=r5550po5ee4WPvBu6WRYriqdZiMbKxB2g1OccKRecStoDT+g/6nE+NJzWXgqsRPRvQUmKzvEs3HWhlDnRpWQwSMt/AnQlt9rT+6N1nkoL6Ek4bYGUOy6ILfuUGyF5WPZwKJUxBB4wIvjyXCGeFD9P1uO6I3RsCyMn07w3spGuUY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707148925; c=relaxed/simple;
-	bh=GZ/QrUYoWHJZzCpyI+a8pGcqG7MuwYWLC0kpCm+GmS8=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZvAOSc98qqiREGc7DWiIHbT4GwzZE7k2vJRFNWt5ano0c30csu16v4Nr2ErpnU5X+RLfQJW5vKmEm65Qmo5UXCqO/NBZNrT/444YGtDtLTPR3gGiHwJFXcdyKKG+uAqYXVXy2HsJTCCColScrRPBTFPgUvTRc64v/3QkrgF0wys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=NpsUEChh; arc=none smtp.client-ip=195.181.215.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-	t=1707148921; bh=GZ/QrUYoWHJZzCpyI+a8pGcqG7MuwYWLC0kpCm+GmS8=;
-	h=Date:From:To:Subject:X-My-GPG-KeyId:References:From;
-	b=NpsUEChhU9gd0quVquwhz9BL0um6DVapV5Mpz54Q+Os7uRpbtYhVgr75LFVW2Bjyb
-	 ije6tg/et7yVyZFkIjdB8luezZ7HJjEFWin1TfEiHXvuoYIvbxuAwxvrUcajFG3REK
-	 oUWXa9jHrNJByezx0xWEofG1Q7rMawy675GqnhhA=
-Date: Mon, 5 Feb 2024 17:02:00 +0100
-From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
-To: Frank Oltmanns <frank@oltmanns.dev>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
-	Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>, Purism Kernel Team <kernel@puri.sm>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
-	Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] Pinephone video out fixes (flipping between two
- frames)
-Message-ID: <bgyyemyi4shj3spo6qy4icvk56nrp5sihnzqurnozqdyktwugc@ikurx4ojoxpi>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
-	Frank Oltmanns <frank@oltmanns.dev>, Michael Turquette <mturquette@baylibre.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
-	Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>, Purism Kernel Team <kernel@puri.sm>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
-	Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	devicetree@vger.kernel.org
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
-References: <20240205-pinephone-pll-fixes-v2-0-96a46a2d8c9b@oltmanns.dev>
- <jzl3mlzk4j7qvgcedvipgale5nhinznefodrnaehwsqfnseiwc@7zzlxd4dpueh>
+	s=arc-20240116; t=1707149104; c=relaxed/simple;
+	bh=lXKYpTmLgw1j4/d7GG6QE+sU+7ac5YLlDTZEayRbTUk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=PKAO4oGUlwCucEu98oTy6xgYR6HQgCNUZqHwm3/kxGaMNXmMwIgLbslntlV/9lCKgbuo/VwZVe3mV1zyUEAP3JZ9jhGD+M8oWvrOPIPHkoiKRhFskto1yL5UhkMavbsBadqPeusTOSakpBrg5VooDDjopqbq8T5veMuI+MzhaqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=NF3suySk; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 415FvDcC021156;
+	Mon, 5 Feb 2024 16:04:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=pG8rij9LxfwOI9nuObj/Zow5GL3EBeLTwBmCRKr65Zs=;
+ b=NF3suySklPjAoPPHYcDVr7iRUxTAtG1uVOaRs1e9obGV0yMl9+xin/Y/Lm5CmC20Nfok
+ KK0aO+bK3fpCcPZdTeT6ArnGNzyPCWW2RYqCMZuVL2XvNmF1GImDRoDQJKYeOd6lRLVd
+ 0VuhXBb9/UtdPjHWZh45Cs8SPRV1Qt7km+/XHM20EN/TnOwSSA8O0l8fLYAXm4ET1hdv
+ NBxia0KRdQ4AN7mJUbELgRnSzjcOaQu881Gg5xZeU0zfDbUag5roEoYkW6/kuGdNgLlY
+ qN/UBsR+VAPMrthZsRHZeT3t2/EbjQPOhS1c8tA1f6UjofHnJORL1unQFkyza3JNpSXH Zw== 
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w32s107ff-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 05 Feb 2024 16:04:57 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 415FU9Lu016184;
+	Mon, 5 Feb 2024 16:02:34 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w22h1ry6u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 05 Feb 2024 16:02:34 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 415G2WlY45482532
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 5 Feb 2024 16:02:32 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 058C32004D;
+	Mon,  5 Feb 2024 16:02:32 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3057820043;
+	Mon,  5 Feb 2024 16:02:31 +0000 (GMT)
+Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.171.87.217])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with SMTP;
+	Mon,  5 Feb 2024 16:02:31 +0000 (GMT)
+Date: Mon, 5 Feb 2024 17:02:29 +0100
+From: Halil Pasic <pasic@linux.ibm.com>
+To: "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Peter Oberparleiter
+ <oberpar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik
+ <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian
+ Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle
+ <svens@linux.ibm.com>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        Tony
+ Krowiak <akrowiak@linux.ibm.com>,
+        Jason Herne <jjherne@linux.ibm.com>,
+        Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [PATCH 6/6] s390: vfio-ap: make matrix_bus const
+Message-ID: <20240205170229.44871ec7.pasic@linux.ibm.com>
+In-Reply-To: <20240203-bus_cleanup-s390-v1-6-ac891afc7282@marliere.net>
+References: <20240203-bus_cleanup-s390-v1-0-ac891afc7282@marliere.net>
+	<20240203-bus_cleanup-s390-v1-6-ac891afc7282@marliere.net>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <jzl3mlzk4j7qvgcedvipgale5nhinznefodrnaehwsqfnseiwc@7zzlxd4dpueh>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: XsotM_IhRkLdQwHgXc0_CguzKQy-sX08
+X-Proofpoint-ORIG-GUID: XsotM_IhRkLdQwHgXc0_CguzKQy-sX08
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-05_10,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
+ clxscore=1011 priorityscore=1501 mlxlogscore=751 mlxscore=0 malwarescore=0
+ lowpriorityscore=0 adultscore=0 suspectscore=0 bulkscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402050122
 
-On Mon, Feb 05, 2024 at 04:54:07PM +0100, Ondřej Jirman wrote:
-> On Mon, Feb 05, 2024 at 04:22:23PM +0100, Frank Oltmanns wrote:
-> > On some pinephones the video output sometimes freezes (flips between two
-> > frames) [1]. It seems to be that the reason for this behaviour is that
-> > PLL-MIPI, PLL-GPU and GPU are operating outside their limits.
-> > 
-> > In this patch series I propose the followin changes:
-> >   1. sunxi-ng: Adhere to the following constraints given in the
-> >      Allwinner A64 Manual regarding PLL-MIPI:
-> >       * M/N <= 3
-> >       * (PLL_VIDEO0)/M >= 24MHz
-> >       * 500MHz <= clockrate <= 1400MHz
-> > 
-> >   2. Choose a higher clock rate for the ST7703 based XDB599 panel, so
-> >      that the panel function well with the Allwinner A64 SOC. PLL-MIPI
-> >      must run between 500 MHz and 1.4 GHz. As PLL-MIPI runs at 6 times
-> >      the panel's clock rate, we need the panel's clock to be at least
-> >      83.333 MHz.
-> > 
-> >   3. Increase the minimum frequency in the A64 DTS OPPs from 120 MHz to
-> >      192 MHz. This further reduces the issue.
-> > 
-> > Unfortunately, with these patches the issue [1] is not completely gone,
-> > but becomes less likely.
-> > 
-> > Note, that when pinning the GPU to 432 MHz the issue completely
-> > disappears for me. I've searched the BSP and could not find any
-> > indication that supports the idea of having the three OPPs. The only
-> > frequency I found in the BPSs for A64 is 432 MHz, that has also proven
-> > stable for me. So, while increasing the minimum frequency to 192 MHz
-> > reduces the issue, should we maybe instead set the GPU to a fixed 432
-> > MHz instead?
-> 
-> Per A64 User Manual 1.1 page 81:
-> 
-> (9). Clock output of PLL_GPU can be used for GPU;and dynamic frequency scaling is not supported;
+On Sat, 03 Feb 2024 11:58:03 -0300
+"Ricardo B. Marliere" <ricardo@marliere.net> wrote:
 
-You may be able to elegantly work around this by pinning PLL_GPU to a certain
-frequency (assing it in DT and then don't decalre gpu clock as
-CLK_SET_RATE_PARENT). Say 432 MHz for PLL and then do the scaling via GPU_CLK_REG
-N divider between 432MHz and 216MHz and maybe 108MHz if that brings any gains.
+> Now that the driver core can properly handle constant struct bus_type,
+> move the matrix_bus variable to be a constant structure as well,
+> placing it into read-only memory which can not be modified at runtime.
+> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 
-Then you can perhaps sidestep all these potential issues with PLL_GPU and
-lack of DVFS support decalred in the manual.
-
-regards,
-	o.
-
-> Also sunxi-ng clk driver does apply NM factors at once to PLL_GPU clock,
-> which can cause sudden frequency increase beyond intended output frequency,
-> because division is applied immediately while multiplication is reflected
-> slowly.
-> 
-> Eg. if you're changing divider from 7 to 1, you can get a sudden 7x output
-> frequency spike, before PLL VCO manages to lower the frequency through N clk
-> divider feedback loop and lock on again. This can mess up whatever's connected
-> to the output quite badly.
-> 
-> You'd have to put logging on kernel writes to PLL_GPU register to see what
-> is written in there and if divider is lowered significantly on some GPU
-> devfreq frequency transitions.
-> 
-> It's also unclear what happens when FRAC_CLK_OUT or PLL_MODE_SEL changes.
-> Maybe not much because M is supposed to be set to 1, but you still need to
-> care when enabling fractional mode, and setting M to 1 because that's exactly
-> the bad scenario if M was previously higher than 1.
-> 
-> It's tricky.
-> 
-> Having GPU module clock gated during PLL config changes may help! You can
-> do that without locking yourself out, unlike with the CPU PLL.
-> 
-> There's a gate enable bit for it at GPU_CLK_REG.SCLK_GATING. (page 122)
-> 
-> Kind regards,
-> 	o.
-> 
-> > I very much appreciate your feedback!
-> > 
-> > [1] https://gitlab.com/postmarketOS/pmaports/-/issues/805
-> > 
-> > Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
-> > ---
-> > Changes in v2:
-> > - dts: Increase minimum GPU frequency to 192 MHz.
-> > - nkm and a64: Add minimum and maximum rate for PLL-MIPI.
-> > - nkm: Use the same approach for skipping invalid rates in
-> >   ccu_nkm_find_best() as in ccu_nkm_find_best_with_parent_adj().
-> > - nkm: Improve names for ratio struct members and hence get rid of
-> >   describing comments.
-> > - nkm and a64: Correct description in the commit messages: M/N <= 3
-> > - Remove patches for nm as they were not needed.
-> > - st7703: Rework the commit message to cover more background for the
-> >   change.
-> > - Link to v1: https://lore.kernel.org/r/20231218-pinephone-pll-fixes-v1-0-e238b6ed6dc1@oltmanns.dev
-> > 
-> > ---
-> > Frank Oltmanns (6):
-> >       clk: sunxi-ng: nkm: Support constraints on m/n ratio and parent rate
-> >       clk: sunxi-ng: a64: Add constraints on PLL-MIPI's n/m ratio and parent rate
-> >       clk: sunxi-ng: nkm: Support minimum and maximum rate
-> >       clk: sunxi-ng: a64: Set minimum and maximum rate for PLL-MIPI
-> >       drm/panel: st7703: Drive XBD599 panel at higher clock rate
-> >       arm64: dts: allwinner: a64: Fix minimum GPU OPP rate
-> > 
-> >  arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi |  4 ++--
-> >  drivers/clk/sunxi-ng/ccu-sun50i-a64.c         | 14 +++++++----
-> >  drivers/clk/sunxi-ng/ccu_nkm.c                | 34 +++++++++++++++++++++++++++
-> >  drivers/clk/sunxi-ng/ccu_nkm.h                |  4 ++++
-> >  drivers/gpu/drm/panel/panel-sitronix-st7703.c | 14 +++++------
-> >  5 files changed, 56 insertions(+), 14 deletions(-)
-> > ---
-> > base-commit: 059c53e877ca6e723e10490c27c1487a63e66efe
-> > change-id: 20231218-pinephone-pll-fixes-0ccdfde273e4
-> > 
-> > Best regards,
-> > -- 
-> > Frank Oltmanns <frank@oltmanns.dev>
-> > 
+Acked-by: Halil Pasic <pasic@linux.ibm.com>
 
