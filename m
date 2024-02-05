@@ -1,102 +1,104 @@
-Return-Path: <linux-kernel+bounces-52187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3C7E849519
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:10:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B27D84951F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:10:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31106B20DA6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:10:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26AAF1F24F1B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:10:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D0A6111AE;
-	Mon,  5 Feb 2024 08:09:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GTiLfbGJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55B5E111AE;
+	Mon,  5 Feb 2024 08:10:37 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A3DA11185;
-	Mon,  5 Feb 2024 08:09:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 751F811184;
+	Mon,  5 Feb 2024 08:10:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707120590; cv=none; b=r9FAy7cf6a1hltxMuCtYDzDeorDu6IS6aLpVWYygdqMTaBMIO3I+dEpCA4dnq9E29vyhvXkLvYuZlCeJuUEu+NOURD2X2rvfWw54sN7CZ8HSN0jahqFSbMcz3neojoO6jSFbewvesYwyXxl22GCq5L+LUGmeckuWjBxseD9Osko=
+	t=1707120636; cv=none; b=ZnsWOHe32bSq3YcbRiEasmnAgO2KWuOWwyLuBVZcmRB2RZrWjPKXEM1ujh9aDh2rNYYEgeu/yZ9MFn+EN1OvagDIC2i79hWNZszlmlEULRiY+OrGbtRIasb9HI+8yhh8F99i3e5AudWBojmuprmuN/T5C+CFyjUnGg8CMvcQWVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707120590; c=relaxed/simple;
-	bh=tjnc9TCmrK1oUMDhylwqt1frva0l2latksdf20OLonI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JwnpcobIKXrytyhdeyBeSksnNpeTsm6fgiCWmGnzLw2mYJJPCg1RqBQsB/AurewtIQ7Pp5ZC3dy6CuT6D92ZiFeg4AWm/CEXQJlJ9VgjrOTkiXmhVicLzBjJWu+wQZ4HgtjCSflzZysMy5p2R1dk6BBYEqy+MokYhULDRZaDWgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GTiLfbGJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01ECAC433C7;
-	Mon,  5 Feb 2024 08:09:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707120590;
-	bh=tjnc9TCmrK1oUMDhylwqt1frva0l2latksdf20OLonI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GTiLfbGJRMd1+e0OKid4AWN6lQY8CEaTyYUIznZQoQ/HwaI7A7XJEM/UCkwSljBGe
-	 GJZPHPVCVSep1ftzfS43KB32fr3Y8bhTqOS/GZbBEtOKsj6oP1QZLr6duyWXbfu+m+
-	 6L7TZ8rLMU7gkilZZPK87QTu2YNqMJ1t0g9Su5bDfXYpPdux2warMTCkKQyMFwdMpQ
-	 iVc+FV69wwiCLUbpXfl3RacrD44tFfD4/SSelZ944Iy0yaiL63wEooW5R7F1AarK28
-	 X4fZoZbpek3tZWnrJIlfFdS5A6fcrSmRbAVzVZ1pOghwRPrx7TfyVDG1pK4gz/W3tj
-	 CC3IJSIMrlEKA==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rWu38-000000000W5-0y2L;
-	Mon, 05 Feb 2024 09:09:54 +0100
-Date: Mon, 5 Feb 2024 09:09:54 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Steev Klimaszewski <steev@kali.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: qcom: sc8280xp-x13s: correct analogue
- microphone route
-Message-ID: <ZcCX0hDGrWqRXr9R@hovoldconsulting.com>
-References: <20240125154531.417098-1-krzysztof.kozlowski@linaro.org>
- <c34dd7ca-01b5-4424-a8ec-a525b8d722a3@linaro.org>
- <5497d428-cdc1-4057-afda-6861d2e3860a@linaro.org>
- <e9b6f790-831c-4df6-b16c-8d7a2f8ddc26@linaro.org>
- <CAKXuJqjDM3P4wOKz3CaAB9DUyemqQ6ks=FPnfL7OsHnnyoyn=A@mail.gmail.com>
+	s=arc-20240116; t=1707120636; c=relaxed/simple;
+	bh=lJfLls5gfxNink17J4VWmEfa8CGJgcmPdq9FvLEAIgA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=EY1e67ffKQn5ZFR5wJc1R/LmZwyMIWd/YDiMCjoA65P1fQEjdQt2YjNKBuGzX0kIL2rdqGtBgYKJFpU8OqsjeInVRYJq/+7hbgDFf8rMQ62tQ+db+5ejdU8aCUns3GXb/81DUaydEayZbiFfBFv2rzhhhR74lQH+qHUYuTF5oZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 1d47c6aa2b3747909181acbb0103231e-20240205
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:e90204c5-e0b1-407d-855a-d1d3f5b1baaf,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:1
+X-CID-INFO: VERSION:1.1.35,REQID:e90204c5-e0b1-407d-855a-d1d3f5b1baaf,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:1
+X-CID-META: VersionHash:5d391d7,CLOUDID:23702180-4f93-4875-95e7-8c66ea833d57,B
+	ulkID:240205161028035G384B,BulkQuantity:0,Recheck:0,SF:17|19|42|74|66|38|2
+	4|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil
+	,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-UUID: 1d47c6aa2b3747909181acbb0103231e-20240205
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 968780155; Mon, 05 Feb 2024 16:10:25 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id 1BE1FE000EBC;
+	Mon,  5 Feb 2024 16:10:25 +0800 (CST)
+X-ns-mid: postfix-65C097F0-91013334
+Received: from kernel.. (unknown [172.20.15.254])
+	by mail.kylinos.cn (NSMail) with ESMTPA id 539BFE000EBC;
+	Mon,  5 Feb 2024 16:10:24 +0800 (CST)
+From: Kunwu Chan <chentao@kylinos.cn>
+To: dlemoal@kernel.org,
+	naohiro.aota@wdc.com,
+	jth@kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH] zonefs: Simplify the allocation of slab caches in zonefs_init_inodecache
+Date: Mon,  5 Feb 2024 16:10:22 +0800
+Message-Id: <20240205081022.433945-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKXuJqjDM3P4wOKz3CaAB9DUyemqQ6ks=FPnfL7OsHnnyoyn=A@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Feb 04, 2024 at 11:30:54PM -0600, Steev Klimaszewski wrote:
-> On Mon, Jan 29, 2024 at 8:27 AM Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
+Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+to simplify the creation of SLAB caches.
 
-> > so I will go with that approach. Please ignore this DTS patch. I will
-> > send ASoC changes which won't affect sc8280xp.
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+ fs/zonefs/super.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-> I somehow missed that patchset or conversation; As an owner of an
-> X13s, which is sc8280xp, I can say, neither pre-dts patch, nor post,
-> seem to do much good.  When I attempt to do a voice chat in armcord,
-> the responses I get to how I sound when using the mic on the X13s
-> itself range from "You sound like hot trash" to "You sound like a
-> robot with hiccups".
+diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
+index 93971742613a..9b578e7007e9 100644
+--- a/fs/zonefs/super.c
++++ b/fs/zonefs/super.c
+@@ -1387,10 +1387,8 @@ static struct file_system_type zonefs_type =3D {
+=20
+ static int __init zonefs_init_inodecache(void)
+ {
+-	zonefs_inode_cachep =3D kmem_cache_create("zonefs_inode_cache",
+-			sizeof(struct zonefs_inode_info), 0,
+-			(SLAB_RECLAIM_ACCOUNT | SLAB_MEM_SPREAD | SLAB_ACCOUNT),
+-			NULL);
++	zonefs_inode_cachep =3D KMEM_CACHE(zonefs_inode_info,
++			SLAB_RECLAIM_ACCOUNT | SLAB_MEM_SPREAD | SLAB_ACCOUNT);
+ 	if (zonefs_inode_cachep =3D=3D NULL)
+ 		return -ENOMEM;
+ 	return 0;
+--=20
+2.39.2
 
-That's a separate issue entirely. Both the digital and analog microphone
-(jack) is working on the X13s as long as you use pulseaudio.
-
-As I've mentioned before, there are problems with both playback and
-capture when you use pipewire however ("robot with hiccups" one could
-indeed describe it as).
-
-That suggests a more general problem with the Qualcomm audio drivers,
-but that has nothing to do with the audio routing.
-
-Johan
 
