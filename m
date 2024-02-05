@@ -1,202 +1,155 @@
-Return-Path: <linux-kernel+bounces-53253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53252-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FFEC84A2B8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:52:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0157984A2B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:51:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE8851C2245A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:52:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F6B41F25617
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:51:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5EEB48780;
-	Mon,  5 Feb 2024 18:51:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F757482CD;
+	Mon,  5 Feb 2024 18:51:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="W8ZMFNjr"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="kI10tHfW"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29069482F5;
-	Mon,  5 Feb 2024 18:51:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC2A9481B5
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 18:51:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707159101; cv=none; b=EeGbGeLZVoWbMEOom2FDhxClWSO8QyrvzTOka1e7uCSvx7S2ySWADKSyrAegw+hDoVX7KLttY/I8JLfTakwf/CODvNaCWJ2BrQg56XfrpbcPCVlaJAEllsthjHV/wPgfofxpsp3QAvA7sFqH1xrhRMZKwKAx6qAm9spdL5jajvo=
+	t=1707159096; cv=none; b=buvBOAgIZQF/lfrXuC5Jpu7Jo9XdClCGxc8H2y6tXQTzaG/3DdaM3zKVLaQowtDmQPJ7mQ4BFBeH404kkXqp6d01R41rc5a8g0i4uCwoXyjD+A5htGVV/eP2FgAw5RzCdns4EDGIAjZSdrsFf6YDIY7CMn72tJznQVo75bdKC3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707159101; c=relaxed/simple;
-	bh=1Yz0aDGADYgQdE2doyv2rtAIBB6bqY8anSRMkEBl85s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=s76z6637RdPYAd5btmkbhxT/4OzLxXe2GPXRO9C+WJKHtVGnLmecLq7SeQs1EZzce/siLtdM3nvJuVa9smhN9Zx+1c1bgUgllRdFpcQe2ZAhcgmmB1tprMMC7c8d2PPjEGBDvZV95HVnu3/IjkDQrc4IDbmyzgcGus3XwQ2zsYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=W8ZMFNjr; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 415IpUZB009480;
-	Mon, 5 Feb 2024 12:51:30 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707159090;
-	bh=aXOMJrqtHKHMeefJeHoXGLCjylOfaN2TWjTF1AKGefk=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=W8ZMFNjrDyGar8GX3tVH/R3BbAVvLeOWLfHP/y65n0Fl/XrQuebF6mTXN5ud8ehSM
-	 CIbpCP1ji0B9PUXE2iZ1WSOhz29n4IKIj6kE3KlOTcu2tpUtD5dzOwsC8EJHmEsIho
-	 uDzyEjjukZGXQ7ZhYLf7nrd/qC/qcQQleNomCQ24=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 415IpTIT016407
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 5 Feb 2024 12:51:29 -0600
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 5
- Feb 2024 12:51:29 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 5 Feb 2024 12:51:29 -0600
-Received: from [10.249.42.149] ([10.249.42.149])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 415IpSRs088536;
-	Mon, 5 Feb 2024 12:51:29 -0600
-Message-ID: <4aa84df1-af69-4ecb-94ce-536286e907fc@ti.com>
-Date: Mon, 5 Feb 2024 12:51:28 -0600
+	s=arc-20240116; t=1707159096; c=relaxed/simple;
+	bh=YRLvcN9CSCBV0BFZJgyI3M9B7d5hDjTdl+eOK8xw9TU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KhJ7yp/4MTcYh/cxrB/0yO3aYlOMquyWRLUyPWqfNQKjrVZoF+hJgfITu/inzM8hxhTMNtnY3dcd1uQYdQbUUDVMZDIBrXcu0SscqY8O2COeZqR1aE/AEtYAJ5PL8X6M2KmjzR5DRPoZuvapE3krlGYGgR/TGIltNorq+70i0cg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=kI10tHfW; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d93f2c3701so24531845ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 10:51:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1707159094; x=1707763894; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OOjV1gXJ7yW6QwEyKkVtGPB0y6fpvUh/vBUx9bdiItE=;
+        b=kI10tHfWp4zAEYeu4x2+QcyIuhYCJtNhOjd077+nYImca8UtTWhi/c0Y7/ik63Y1hj
+         YIkwA0zfvrUryjfEDAP9wZ1FwAdmHJlO0jr7kVUVF+N+lU2j/oJw1rMjCPdsxQVS2Ea/
+         Nzn9vx2Bd2/8ouojdXpZah5q9XNLa0Lydghag=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707159094; x=1707763894;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OOjV1gXJ7yW6QwEyKkVtGPB0y6fpvUh/vBUx9bdiItE=;
+        b=HWUdvvZ6kufCbr7SqXr0U46gGJqfSccRp61KopOO3J7RPgZiN4XTq3LQCKEJkcu6SK
+         eIlHZT/cpWYhCivjaFXb7Z/kI7yGTvF/1pU2wuM+EpWR0G4Y65dCK+KGCT8QdMtCdbye
+         bMfQiWlerdPNQ48xgi3ea1DzG5mkLyFy3UHucGI57C3v0YjKewO9QgNUpBgVAoW89lW/
+         02qMAmus+qc4uyeEZlsPtPlR1YbYchEqfF2dBX6Tts4NrAz4lzNcX0syKrcyrh51K0UK
+         fPlCMrojui6mc2J58K1+zMGIM6+a7+tG4HDOlMzn1+oVCI6UbyIOTeqg1KsoT8rDErLG
+         4sgQ==
+X-Gm-Message-State: AOJu0Yy20MhByJUL+upkB9RKmALOCuTlW8yGaC0HtJLufcEXjuv7IP1Q
+	4X/jIvu5unp/PomsNDNFfHqm8QvWLt4WyK5y9pEO57AyLR2oMZ4RIvcrfGtPl8o=
+X-Google-Smtp-Source: AGHT+IHpVFCNoHwA10pfYXFqdcT5vM2l0+xFNFBhTBQjKZ74TWGiQprOTFulXZSLL1k7B78D0T1ZRg==
+X-Received: by 2002:a17:902:ed45:b0:1d9:2a26:d4fa with SMTP id y5-20020a170902ed4500b001d92a26d4famr442390plb.50.1707159094008;
+        Mon, 05 Feb 2024 10:51:34 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUV92h4DiOCBdCc6zj1PuI/ULHWjgYrzV4rTNn41DCqn+B9x6eWVUrk+ADYysx+vyi309dzHSfqjSiHER4MNGQ5IYQXaT78BDBQQ7ynb1H9CUhL1TVlrosSS7f1t8+JMnb6+7MBsbzaq7SmiwwEtIF2GTDiqOUCFjrBQll0xW7eDRXq9vjCUe3Cf6LzbGDxtpzQm0n7BI4p4tC6u/6px8l0sIUMMc1f0V8G9eB8GDbxox1beqo/1/M7d/aaRo9R76v72riHGX5wgcqA1C1jcEliFQcaRDYOX4N8pqADGcvq6hP1U5s6JmxvX2AMifpzDM5kdugY6DffjDfMfR/LuUjLZNuUt83rDKPnFWyN0uwrS9Z7yTx6cJflff5Jbrndl/+b+9TRRGDJs3FUUIYOTH6KMqo=
+Received: from fastly.com (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id s1-20020a170902ea0100b001d958f8ab2bsm195912plg.107.2024.02.05.10.51.32
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 05 Feb 2024 10:51:33 -0800 (PST)
+Date: Mon, 5 Feb 2024 10:51:30 -0800
+From: Joe Damato <jdamato@fastly.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: "Samudrala, Sridhar" <sridhar.samudrala@intel.com>,
+	Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, chuck.lever@oracle.com,
+	jlayton@kernel.org, linux-api@vger.kernel.org, brauner@kernel.org,
+	davem@davemloft.net, alexander.duyck@gmail.com,
+	Wei Wang <weiwan@google.com>,
+	Amritha Nambiar <amritha.nambiar@intel.com>
+Subject: Re: [net-next 0/3] Per epoll context busy poll support
+Message-ID: <20240205185130.GB10463@fastly.com>
+References: <20240124025359.11419-1-jdamato@fastly.com>
+ <CANn89i+YKwrgpt8VnHrw4eeVpqRamLkTSr4u+g1mRDMZa6b+7Q@mail.gmail.com>
+ <5faf88de-5063-421f-ad78-ad24d931fd17@intel.com>
+ <20240202032806.GA8708@fastly.com>
+ <f0b4d813-d7cb-428b-9c41-a2d86684f3f1@intel.com>
+ <20240202102239.274ca9bb@kernel.org>
+ <20240202193332.GA8932@fastly.com>
+ <20240202115828.6fd125bf@kernel.org>
+ <20240202202344.GA9283@fastly.com>
+ <20240202171539.7347cb01@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] dt-bindings: media: Add sram-size Property for Wave5
-Content-Language: en-US
-To: Nishanth Menon <nm@ti.com>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski@linaro.org>
-CC: Brandon Brnich <b-brnich@ti.com>, Nas Chung <nas.chung@chipsnmedia.com>,
-        Jackson Lee <jackson.lee@chipsnmedia.com>,
-        Mauro Carvalho Chehab
-	<mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, <linux-media@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Darren
- Etheridge <detheridge@ti.com>
-References: <20240201184238.2542695-1-b-brnich@ti.com>
- <1209b7cf-5be2-4107-aa6b-d67a32ea3737@linaro.org>
- <20240202125257.p4astjuxpzr5ltjs@dragster>
- <8091a8cf-c1c0-49b0-b136-1ad0d185aa6a@linaro.org>
- <20240202155813.szxvi7bfp5xh7rvw@babble>
- <adfef53c-d64e-4855-ab61-101b6fa419e5@linaro.org>
- <20240205141255.z5kybm42qld44tdz@portfolio>
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <20240205141255.z5kybm42qld44tdz@portfolio>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240202171539.7347cb01@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 
-On 2/5/24 8:12 AM, Nishanth Menon wrote:
-> On 17:08-20240202, Krzysztof Kozlowski wrote:
->> On 02/02/2024 16:58, Nishanth Menon wrote:
->>> On 14:56-20240202, Krzysztof Kozlowski wrote:
->>>> On 02/02/2024 13:52, Nishanth Menon wrote:
->>>>> On 11:47-20240202, Krzysztof Kozlowski wrote:
->>>>>> On 01/02/2024 19:42, Brandon Brnich wrote:
->>>>>>> Wave521c has capability to use SRAM carveout to store reference data with
->>>>>>> purpose of reducing memory bandwidth. To properly use this pool, the driver
->>>>>>> expects to have an sram and sram-size node. Without sram-size node, driver
->>>>>>> will default value to zero, making sram node irrelevant.
->>>>>>
->>>>>> I am sorry, but what driver expects should not be rationale for new
->>>>>> property. This justification suggests clearly it is not a property for DT.
->>>>>>
->>>>>
->>>>> Yup, the argumentation in the commit message is from the wrong
->>>>> perspective. bindings are OS agnostic hardware description, and what
->>>>> driver does with the description is driver's problem.
->>>>>
->>>>> I will at least paraphrase my understanding:
->>>>> In this case, however, the hardware block will limp along with
->>>>> the usage of DDR (as is the current description), due to the
->>>>> latencies involved for DDR accesses. However, the hardware block
->>>>> has capability to use a substantially lower latency SRAM to provide
->>>>> proper performance and hence for example, deal with higher resolution
->>>>> data streams. This SRAM is instantiated at SoC level rather than
->>>>> embedded within the hardware block itself.
->>>>
->>>> That sounds like OS policy. Why would different boards with the same
->>>> component have this set differently? Based on amount of available
->>>> memory? This, I believe, is runtime configuration because it might
->>>> depend on user-space you run. Based on purpose (e.g. optimize for
->>>> decoding or general usage)? Again, run-time because same hardware board
->>>> can be used for different purposes.
->>>>
->>>
->>> Why is this OS policy? It is a hardware capability.
->>
->> How amount of SRAM size is hardware capability? Each hardware can work
->> probably with 1, 2 or 100 pages.
->>
->>> Traditionally
->>> many similar hardware blocks would have allocated local SRAM for
->>> worst case inside the hardware block itself and don't need to use
->>> DDR in the first place. However, for this hardware block, it has
->>> capability to use some part of one of the many SRAM blocks in the SoC,
->>> not be shared for some part of the system - so from a hardware
->>> description perspective, we will need to call that out as to which
->>> SRAM is available for the hardware block.
->>
->> Just because more than one device wants some memory, does not mean this
->> is hardware property. Drivers can ask how much memory available there
->> is. OS knows how many users of memory there is, so knows how much to
->> allocate for each device.
->>
->>>
->>> Why would different boards need this differently? simply because
->>> different cameras have different resolution and framerates - and you
->>> dont want to pay the worst case sram penalty for all product
->>> configuration.
->>
->> Choice of resolution and framerate is runtime choice or use-case
->> dependent, not board level configuration, therefore amount of SRAM size
->> to use is as well.
+On Fri, Feb 02, 2024 at 05:15:39PM -0800, Jakub Kicinski wrote:
+> On Fri, 2 Feb 2024 12:23:44 -0800 Joe Damato wrote:
+> > > Did you see SO_PREFER_BUSY_POLL by any chance? (In combination with
+> > > gro_flush_timeout IIRC). We added it a while back with Bjorn, it seems
+> > > like a great idea to me at the time but I'm unclear if anyone uses it 
+> > > in production..  
+> > 
+> > I have seen it while reading the code, yes. I think maybe I missed
+> > something about its interaction with gro_flush_timeout. In my use case,
+> > the machine has no traffic until after the app is started.
+> > 
+> > In this case, I haven't needed to worry about regular NAPI monopolizing the
+> > CPU and preventing busy poll from working.
+> > 
+> > Maybe I am missing something more nuanced, though? I'll have another look
+> > at the code, just incase.
 > 
-> I am arguing this is similar to what we have for remote-procs. Yes,
-> usecases usage come to a conclusion that sram size X is needed. Sure.
-> Lets even argue that sram = <&sram> has X+100 bytes available, so as
-> far as allocator is concerned, it can allocate. But how does the driver
-> know that 1k of that sram is already used by a remote core or some other
-> function?
+> We reused the gro_flush_timeout as an existing "user doesn't care if
+> packets get delayed by this much in worst case" value. If you set
+> SO_PREFER_BUSY_POLL the next time you busy pool the NAPI will be marked 
+> as "already scheduled" and a timer is set (to gro_flush_timeout).
+> If NIC IRQ fires before gro_flush_timeout it gets ignored, because NAPI
+> is already marked as scheduled.
+> If you busy poll again the timer gets postponed for another
+> gro_flush_timeout nsec.
+> If timer fires we go back to normal NAPI processing.
 
-The driver could ask the SRAM provider all that info (gen_pool_avail()).
-The driver should at runtime determine the amount of SRAM it needs and
-only then attempt to allocate the amount it needed. (and free it after
-it is done too)
+Ah, I see. From my reading of the code in busy_poll_stop (which could be
+wrong), defer_hard_irqs_count must also be non-zero to postpone the timer.
 
-There is no need to hardcode the amount we think our usecase will need
-into DT. Sure it may fail to get as much as it wants if we don't carveout
-some out up front, but that is true for any memory allocation. Let's not
-turn DT into a static memory allocator tool..
+Is that right?
 
-> 
-> This is no different from a remote proc usecase, following which, I
-> wonder if "memory-region" is the right way to describe this usage? That
-> would be a very specific bucket that is made available to the driver.
-> And I'd say sram and memory-region are two mutually exclusive option?
-> 
+If so, I think the tricky thing with this is that these settings are
+system-wide, so they'd affect non-busy poll apps, too.
 
-Our use of "memory-region" for remote proc memory was also a questionable
-thing to do IMHO. Something we will have to cleanup at some point. Might be
-good to not call too much attention to that :)
+I think in the ideal case being able to set these on a per-NAPI basis would
+be very helpful. Maybe something for me to try working on next.
 
-Andrew
+> The idea is that you set gro_flush_timeout to some high value, like 
+> 10 msec, and expect your app to poll more often than every 10 msec. 
 
->>
->>>
->>> Further, Linux is not the only thing that runs on these SoCs.. these are
->>> mixed systems with autonomous operations of uC cores who may or maynot
->>> (typically not) even need to communicate with MPU to state which part of
->>> resource they are hogging (hence the board level definition).
->>
->> OK that could be the case but I could also say choice of RTOS or any
->> other is also board-independent.
+Yea, that makes sense.
+
+> Then the normal NAPI processing will never kick in, and there will 
+> be only 1 NIC IRQ after which the HW IRQ remains masked.
+> With high coalescing timer you technically still get an IRQ every
+> so often and interrupt the app. Worst case (UDP flood) you may even
+> get into an overload where the app gets starved out completely..
+
+Yup, this is true. I had been using a modified version of a patch from a
+research paper to avoid enabling NIC IRQs [1][2], but I think making
+defer_hard_irqs_count and gro_flush_timeout per NAPI parameters would make
+more sense.
+
+[1]: https://gitlab.uwaterloo.ca/p5cai/netstack-exp/-/raw/master/kernel-polling-5.15.79-base.patch?ref_type=heads
+[2]: https://dl.acm.org/doi/pdf/10.1145/3626780
 
