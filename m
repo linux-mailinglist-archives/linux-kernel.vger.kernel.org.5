@@ -1,136 +1,96 @@
-Return-Path: <linux-kernel+bounces-52512-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52513-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BC2E84992A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:47:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2231784992B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:47:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF04FB2380A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:47:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1CE428A724
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:47:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E1501947D;
-	Mon,  5 Feb 2024 11:46:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="P8kq9JFG"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFE0D1AAA9;
+	Mon,  5 Feb 2024 11:47:29 +0000 (UTC)
+Received: from out0-209.mail.aliyun.com (out0-209.mail.aliyun.com [140.205.0.209])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6709118EAF;
-	Mon,  5 Feb 2024 11:46:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E73A01AAB9
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 11:47:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.205.0.209
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707133614; cv=none; b=E8lWAkkibUmIx6oCxJ4gSYgdiMbOk1+8oU++hVizYs4GvGGdi+/M+4bTm1Z81CrxapzNOMVvJNL4sIiSU2jXSNTOv4kLBeanD062+vcvnO/d2xMrSYD+EUMtEMcJeFyF04AdFSsD+FVkmnNQxTWGv6aljrsIr6JyLIvStn/vQ/8=
+	t=1707133649; cv=none; b=i34xm8AC2DFyr1eU2w1BKG24D+IkKU+ucO/3dJ6exAyK70Rj5hoIEvg02G5VyPZBVDhOQcVOzIU7FfWRTRjudIpExVIcgRuXneP66lsjoXEm+LcIRDL60vL38ZHmqc1gZsJPrFH4z5p9dzQdEMuzujNqfZT0810/yzUC4AQxzn0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707133614; c=relaxed/simple;
-	bh=HFCq9wu6W08QNaLCx54DPS2en/X1Oy8pyJpYJABA99U=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=iTI6rKHWdwP7g1qFLyLfIkW3Hgvg62QMYi4wS8wjabEET1RHMqnyXpLSbdFMsRW1CnvhGc0ug9JDE7TUEa3PfPGx1D+uk4IyxpkLOKDYg8EZYObCwH62VtstkAbh6EktXzQWogM6oUo1pKD7j2udATsr1HPnkwI2e/hjVf454m8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=P8kq9JFG; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707133613; x=1738669613;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=HFCq9wu6W08QNaLCx54DPS2en/X1Oy8pyJpYJABA99U=;
-  b=P8kq9JFG1NV2tkTWFZAScWzZmLigJbHRoZ7WUiS+Jprdv0lip5b4reJh
-   d3Gb3c/9fgft+DodLnBGLe5CPkMUAW1isxg78cI3q9ycFQK6Aqnd5fzBz
-   hvgfBeyTAUORAzUiPW3uqMvbXZwwPK1fJmDLDMvrtzKSmHCwMnb8asnJn
-   58HTmL2WVHA8NDHjsYNO7HiDTdsZ22YcltSxdyootacyHbQstQAARNa3G
-   lYfne//bEl1NyD2NMY3lp8PyP3eijT2/PZ6ETHQzvM+n+JACddbylKpGD
-   Wv1TcOmx5kPlBJZx5P+sErnj+IPODnxlPcNCoQ5w37mnOXG1uuqUQNWxo
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="18030066"
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="18030066"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 03:46:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="706293"
-Received: from bixichen-mobl.ccr.corp.intel.com (HELO [10.254.215.64]) ([10.254.215.64])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 03:46:49 -0800
-Message-ID: <e41bbed5-fb22-43c3-9354-d797a2c7aaaa@linux.intel.com>
-Date: Mon, 5 Feb 2024 19:46:46 +0800
+	s=arc-20240116; t=1707133649; c=relaxed/simple;
+	bh=z6IhGnhSPC1q5SH2k68uA0M5HTX/zBRN+v0ZXJZVVHM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=VhAO7X2VXtRkz3kOthWyr41R+ATexbkKQ1DSlbepG4iVn+Vc9AH+gAgIp32ciTpB0YSG1ShOFv73HZs8XBkxjk+JdHmLNzX5sTlBSOeXqLhdQ7JEELNxecRHT8OxlxvTKUb/E5wdMj0//7FytDTbQxlcDbG6lqiOyV9Q+1R+Lhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com; spf=pass smtp.mailfrom=antgroup.com; arc=none smtp.client-ip=140.205.0.209
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=antgroup.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047194;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---.WNt.HlX_1707133633;
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.WNt.HlX_1707133633)
+          by smtp.aliyun-inc.com;
+          Mon, 05 Feb 2024 19:47:17 +0800
+From: "Tiwei Bie" <tiwei.btw@antgroup.com>
+To: richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net
+Cc:  <linux-um@lists.infradead.org>,
+   <linux-kernel@vger.kernel.org>,
+  "Tiwei Bie" <tiwei.btw@antgroup.com>
+Subject: [PATCH v2 0/6] um: Minor fixes and cleanups
+Date: Mon, 05 Feb 2024 19:47:02 +0800
+Message-Id: <20240205114708.25235-1-tiwei.btw@antgroup.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, "Liu, Yi L" <yi.l.liu@intel.com>,
- Jacob Pan <jacob.jun.pan@linux.intel.com>,
- Longfang Liu <liulongfang@huawei.com>, "Zhao, Yan Y" <yan.y.zhao@intel.com>,
- Joel Granados <j.granados@samsung.com>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH v11 12/16] iommu: Use refcount for fault data access
-To: "Tian, Kevin" <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Jason Gunthorpe <jgg@ziepe.ca>,
- Jean-Philippe Brucker <jean-philippe@linaro.org>,
- Nicolin Chen <nicolinc@nvidia.com>
-References: <20240130080835.58921-1-baolu.lu@linux.intel.com>
- <20240130080835.58921-13-baolu.lu@linux.intel.com>
- <BN9PR11MB52764927C3C56127F4B9B9DE8C472@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB52764927C3C56127F4B9B9DE8C472@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 2024/2/5 16:37, Tian, Kevin wrote:
->> From: Lu Baolu <baolu.lu@linux.intel.com>
->> Sent: Tuesday, January 30, 2024 4:09 PM
->>
->> The per-device fault data structure stores information about faults
->> occurring on a device. Its lifetime spans from IOPF enablement to
->> disablement. Multiple paths, including IOPF reporting, handling, and
->> responding, may access it concurrently.
->>
->> Previously, a mutex protected the fault data from use after free. But
->> this is not performance friendly due to the critical nature of IOPF
->> handling paths.
->>
->> Refine this with a refcount-based approach. The fault data pointer is
->> obtained within an RCU read region with a refcount. The fault data
->> pointer is returned for usage only when the pointer is valid and a
->> refcount is successfully obtained. The fault data is freed with
->> kfree_rcu(), ensuring data is only freed after all RCU critical regions
->> complete.
->>
->> An iopf handling work starts once an iopf group is created. The handling
->> work continues until iommu_page_response() is called to respond to the
->> iopf and the iopf group is freed. During this time, the device fault
->> parameter should always be available. Add a pointer to the device fault
->> parameter in the iopf_group structure and hold the reference until the
->> iopf_group is freed.
->>
->> Make iommu_page_response() static as it is only used in io-pgfault.c.
->>
->> Co-developed-by: Jason Gunthorpe <jgg@nvidia.com>
->> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
->> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
->> Tested-by: Yan Zhao <yan.y.zhao@intel.com>
-> 
-> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
-> 
->>    * struct iommu_fault_param - per-device IOMMU fault data
->>    * @lock: protect pending faults list
->> + * @users: user counter to manage the lifetime of the data
->> + * @ruc: rcu head for kfree_rcu()
-> 
-> s/ruc/rcu
+A series of minor fixes and cleanups for UML.
 
-Fixed. Thank you!
+Changes since v1:
+https://lore.kernel.org/lkml/20240123110347.1274217-1-tiwei.btw@antgroup.com/
+- Add "um: Stop tracking host PID in cpu_tasks";
+- Add missing headers for i386;
 
-Best regards,
-baolu
+Tiwei Bie (6):
+  um: Make local functions and variables static
+  um: Fix the declaration of vfree
+  um: Remove unused functions
+  um: Fix the return type of __switch_to
+  um: Add missing headers
+  um: Stop tracking host PID in cpu_tasks
+
+ arch/um/drivers/pcap_kern.c              |  4 +--
+ arch/um/drivers/ubd_user.c               |  2 +-
+ arch/um/include/shared/as-layout.h       |  1 -
+ arch/um/include/shared/um_malloc.h       |  2 +-
+ arch/um/kernel/kmsg_dump.c               |  2 +-
+ arch/um/kernel/mem.c                     |  2 ++
+ arch/um/kernel/process.c                 | 46 ++++++------------------
+ arch/um/kernel/reboot.c                  |  1 +
+ arch/um/kernel/skas/mmu.c                |  1 +
+ arch/um/kernel/skas/process.c            |  5 +--
+ arch/um/kernel/time.c                    |  6 ++--
+ arch/um/kernel/tlb.c                     |  7 +---
+ arch/um/os-Linux/drivers/ethertap_kern.c |  2 +-
+ arch/um/os-Linux/drivers/tuntap_kern.c   |  2 +-
+ arch/um/os-Linux/signal.c                |  4 +--
+ arch/x86/um/bugs_32.c                    |  1 +
+ arch/x86/um/bugs_64.c                    |  1 +
+ arch/x86/um/elfcore.c                    |  1 +
+ arch/x86/um/fault.c                      |  1 +
+ arch/x86/um/os-Linux/mcontext.c          |  1 +
+ arch/x86/um/os-Linux/registers.c         |  2 +-
+ arch/x86/um/os-Linux/tls.c               |  1 +
+ 22 files changed, 35 insertions(+), 60 deletions(-)
+
+-- 
+2.34.1
+
 
