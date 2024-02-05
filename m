@@ -1,99 +1,111 @@
-Return-Path: <linux-kernel+bounces-53027-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53028-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82120849FA1
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:39:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74810849FA3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:40:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B4DD11C220AB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:39:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75CB91C222FB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:40:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E96263C097;
-	Mon,  5 Feb 2024 16:39:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 772553C46F;
+	Mon,  5 Feb 2024 16:40:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EapCvRE0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ePYJ5/Uh"
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BF2940BE9;
-	Mon,  5 Feb 2024 16:39:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B9F36123;
+	Mon,  5 Feb 2024 16:40:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707151185; cv=none; b=fUFCeAWCmF79CLj2DqN8fOE8aVilpjTZpzQyKm69zJV5EBQlyrwlvwhbwxvwXyQY3K6GVXh2v9yiVep6tWgimndoT9Y1BOV5r8HXpik9n2T8KKnf0jfjXCnTJq9CwFBSWiB3G+kTLUWuIZyDP8Wz+ya90oSXfEdEk4ekjBAPNNY=
+	t=1707151236; cv=none; b=ssK3oXfQ9fGZ7rqYq3LCmi3ld/8WgouylQ8lUzPCTRPX920r96S/QqS74sebZLmjquAvonWY3A8UbTnLdUJQIndV11jG6rKcdyXCT+x4lLaxAH1BJWLWSqWmxR+Qg3YPWBYPKp/RA/VDyTVFd+6MsYb50FF8DJJ5jlaW2BzZrug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707151185; c=relaxed/simple;
-	bh=vbJaA4bFEq0xaB8nSdUrPFpAPgo9fDn4OpEJB7Tqa4k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bDHnpMlKApfXX7Yl6Y/UA5tax08D8Ols5zpYhfwIvLnUxS/BMOI2LB7yxmliMw3lGKEf/ArLO5og4AqeLg4jWK+nPX2gSO1unKHkiKW7Z8YNAQ2+Y6KQsyASvqAAXKXdTGb5q3zCrXY2DD22NvLqvPUvoCVQbzZwnnmrfKXdloI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EapCvRE0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AB99C433F1;
-	Mon,  5 Feb 2024 16:39:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707151184;
-	bh=vbJaA4bFEq0xaB8nSdUrPFpAPgo9fDn4OpEJB7Tqa4k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EapCvRE0C693RyV4rZwsfX3jguWW+avvhqEyO4J1qIFPZdoYhrZd0riKVTrhZ5/wb
-	 GtahUhLKtsq5QdBYP/1O0j8m/Ilf77Jn3M4efXo/Bmazke2Z+4eRwklBo3b72jxwsN
-	 B8cvEAwSsqKla14Y751cuedoUy1dle+8e5gHURJn7VUu6Yya7cyRudQKTOyfzwv2pr
-	 5gOQbUs9wgcNyNqfOQ+qj6uWRITf87TDDv87I1P5QOFu6ApzPd8EasOV2z4Wv5D8qd
-	 fTqRCfY1A4SYkZ7fPLuv8nOpR6GtiGaUXWyCHfe4z2JZDMdA7JZuOGSTXaRC6WvZwW
-	 TOd1b9X1jqOCA==
-Date: Mon, 5 Feb 2024 16:39:41 +0000
-From: Rob Herring <robh@kernel.org>
-To: Viresh Kumar <viresh.kumar@linaro.org>
-Cc: Saravana Kannan <saravanak@google.com>, David Dai <davidai@google.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Quentin Perret <qperret@google.com>,
-	Masami Hiramatsu <mhiramat@google.com>,
-	Will Deacon <will@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Marc Zyngier <maz@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Pavan Kondeti <quic_pkondeti@quicinc.com>,
-	Gupta Pankaj <pankaj.gupta@amd.com>, Mel Gorman <mgorman@suse.de>,
-	kernel-team@android.com, linux-pm@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/2] dt-bindings: cpufreq: add virtual cpufreq device
-Message-ID: <20240205163941.GA3474226-robh@kernel.org>
-References: <20240127004321.1902477-1-davidai@google.com>
- <20240127004321.1902477-2-davidai@google.com>
- <20240131170608.GA1441369-robh@kernel.org>
- <CAGETcx8S0oS67oMZsPKk6_MGAtygoHEf_LN1gbcNDEBqRJ4PPg@mail.gmail.com>
- <20240202155352.GA37864-robh@kernel.org>
- <20240205083830.4werub5e76kudjq4@vireshk-i7>
+	s=arc-20240116; t=1707151236; c=relaxed/simple;
+	bh=ary512A6BfTSJQxaZq8dpsFJkve0is15pesW2o9sbOg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Riv9YNy7ltmDr2AFSY2g5rQp4LukcbbixS/HK12w8pvzggRPoDNGNFqp86VaGD15p0r8jFvqaoVFElhlfR+E1tV0JWGLNsDn6We1aJ5CstaIHfQleNU1CPL8Ox+V0X/KmXFvr4RYRKn6zeR30eTLsSct0MOl86800tH1EadDX5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ePYJ5/Uh; arc=none smtp.client-ip=209.85.222.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-7d2a78c49d1so1916177241.0;
+        Mon, 05 Feb 2024 08:40:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707151234; x=1707756034; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0f/X+Bpl57XsTrknK+4uXaivkt+xwyCd4mmJCtIejiM=;
+        b=ePYJ5/Uh+P13E1QEpHFk22ulYAYtW+tbiz1RFrBwxzfNbkyv6GPrOBvPZ0M308pKzt
+         ZaQ4Ef/LYVTdNCPWwXBDj18XTO9NTTknd8+TdCPtgySSkZ7wXjisn1VJlIWXdNrN6AD2
+         JOP1b7I01+NmNEupnLoDMk8HOFTzm9SCuKU7f6GKRqE1bGT0KomuUcFZaVGwMQOKNrar
+         vs88VpS2qUuhJ70F2/HSTQ7Fv4BEsUba6rQ67ZOaRCcYVjUlitkBUtB7VryLmQuh+Tiu
+         9DaOgCAMVR1vyRFuA7yMdLdNxsUDbLwWmPMxeAiJYPVw5VbfZMYKagWLCGqPHr3/R8Cf
+         lIdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707151234; x=1707756034;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0f/X+Bpl57XsTrknK+4uXaivkt+xwyCd4mmJCtIejiM=;
+        b=w4sQRQElKM6kh+3k+IhWE+b8JWz3fgWRQMsZc7VGyHLbSEOf+fga+oy/xi1U6ZXsvJ
+         nhGJtJne1uxG3E/D9SZAPhyBrvQt5igNL+q5s6iVyTTSx8tS6Ho3vSyDu+EKVLR8PKjZ
+         L3pWF05Kqjpc93RTvoFCJKXz2tGuC9XycpuJrSJPZpDAKDAeoVy91YZddwDVV6RbdxlH
+         xDBAcn+ySNzDX9hFI3ObBL2fbGHsR/UmP0uZCMtHMOoInX4VVoPCR80zoflOlaCeHB8d
+         ZINlrqTASBlXgCBzbus0IhQH6zPffxsPCQaco+PcgexQXi8C3/nwRMmnICbBF52wCC7Q
+         /6cw==
+X-Gm-Message-State: AOJu0YxusIQlaG2c6GzSu8GFUU4+PzaDotaqr467iID5VKIcdv6AnpLr
+	LlDYWTXsnXyFIu4DbMHnjSr90PZ5fZUJBKk/mWa2cpd5J/OsEJ8jLXMoSlFqIQ7fQgIqiTo0/Sf
+	LIztzaJJhE+oB1CjC9NXLleLgkUk=
+X-Google-Smtp-Source: AGHT+IHCWnn1ZmXqR/KTVDYIdL/mIfnCd2sufWbS3uvury9Hap2qV49xHkO5y9vmWqzP5fKSi+OO+EuP2cx8AkCmVmU=
+X-Received: by 2002:a05:6102:50a6:b0:46d:2f69:c772 with SMTP id
+ bl38-20020a05610250a600b0046d2f69c772mr236851vsb.11.1707151234080; Mon, 05
+ Feb 2024 08:40:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240205083830.4werub5e76kudjq4@vireshk-i7>
+References: <20240203174810.768708706@linuxfoundation.org>
+In-Reply-To: <20240203174810.768708706@linuxfoundation.org>
+From: Allen <allen.lkml@gmail.com>
+Date: Mon, 5 Feb 2024 08:40:22 -0800
+Message-ID: <CAOMdWS+9caKLFejS3mmhg1p09PcRgMTBep5waxhjEv50TPrbbQ@mail.gmail.com>
+Subject: Re: [PATCH 6.6 000/326] 6.6.16-rc2 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Feb 05, 2024 at 02:08:30PM +0530, Viresh Kumar wrote:
-> On 02-02-24, 09:53, Rob Herring wrote:
-> > On Wed, Jan 31, 2024 at 10:23:03AM -0800, Saravana Kannan wrote:
-> > > We also need the OPP tables to indicate which CPUs are part of the
-> > > same cluster, etc. Don't want to invent a new "protocol" and just use
-> > > existing DT bindings.
-> > 
-> > Topology binding is for that.
-> 
-> This one, right ?
-> 
-> Documentation/devicetree/bindings/dvfs/performance-domain.yaml
+> This is the start of the stable review cycle for the 6.6.16 release.
+> There are 326 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Mon, 05 Feb 2024 17:47:20 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.16-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-No, Documentation/devicetree/bindings/cpu/cpu-topology.txt (or the 
-schema version of it in dtschema)
+Compiled and booted on my x86_64 and ARM64 test systems. No errors or
+regressions.
 
-Rob
+Tested-by: Allen Pais <apais@linux.microsoft.com>
 
+Thanks.
 
