@@ -1,152 +1,82 @@
-Return-Path: <linux-kernel+bounces-52913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 743A7849E33
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:32:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E5C6849E4C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:33:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2EE11288A69
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:32:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22CC0B28093
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:33:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF5AF2DF9D;
-	Mon,  5 Feb 2024 15:32:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Talj3SxN"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61CF732C91;
-	Mon,  5 Feb 2024 15:32:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFF8D2FE2D;
+	Mon,  5 Feb 2024 15:32:48 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A664F3A1CC
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 15:32:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707147161; cv=none; b=JFKmYeSdYUDaUkAOkJGm3UGmWsX3U9pf8DhwhTXxxVDEoIeRXT5SCNyPrFGI5+6i5Rut0SYRkfhY5k3MmjmDhjwmNbG4eTtnUihMfwVyvF6idWQSNtSjlUXaPqtn4Fmq5MIDXXVpuqrFKS3+uNVt3VmLFAFHQ2cNe3pp36cNUNc=
+	t=1707147168; cv=none; b=uFqlXWXyQR8CeFj0tO/bzlSw4vyAtMeMGZWGylIBdiarBuzgqNxTj7zl/BZdf6baH/vBUVCKCOLIH5ytnn0sRYt/aws8GntIwC9Q0Yz+EqkX2sweHXtWwHSCxYebAB85tR5F0+gYdL87oBKNSb0MBk2hXJjOeirKVY9bN+WeIvA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707147161; c=relaxed/simple;
-	bh=/zcq73sYVUW+h0jnwspQL/RXLud8ceA7/Ln5O42NPho=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kGzWs0NF+LINa9s6JD6QFBfRI+7sww51M4PLlkVXwDYNXJkAAbwiNOKAJmseVF2t/NgDsuyKOvTfaz9XqW9myjDC14gMWd6KXSqe+4iTVoJPP5bawpHawryV84Ld9td3wAsZJ2Ejyl7cwbcXt6MgCbQ5gkWr1+PUMktW1AK5GjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Talj3SxN; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707147159; x=1738683159;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=/zcq73sYVUW+h0jnwspQL/RXLud8ceA7/Ln5O42NPho=;
-  b=Talj3SxNm35vEMjlAIfTXmsGslXhDuMOo72i0upM6ABGUC8dgpTBZ1cS
-   3db3iz+mhA814qRR94iuvqvmA0vksrse67b6eFYNeNJASxt5LFFcKOccP
-   gEkSz0BhWRTVI9tTaIwlBnwKepD32dhtgvHzCQG1f254ZBscnVv6aXTKm
-   H0LQ4zW3LS/2dwk+bAavCN2qzk3f/qICEPhXP1eVssctab5k3bmXrWhOz
-   h+oh875GTaV8f2p43gcOzK2EwYUPiTf6YIF0vynC9yWQkHsHeljNVDKZn
-   /l2luxJFaq/PMsa4GnzteSBi5BiQz7CwIbMfEC50ta8jetpWUJSs4pj19
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="17965270"
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="17965270"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 07:32:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="31829884"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmviesa001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 07:32:38 -0800
-Received: from [10.212.74.66] (kliang2-mobl1.ccr.corp.intel.com [10.212.74.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by linux.intel.com (Postfix) with ESMTPS id 6A84D580ABB;
-	Mon,  5 Feb 2024 07:32:36 -0800 (PST)
-Message-ID: <82dbb7de-8211-4bab-8289-eb2573d8ef1d@linux.intel.com>
-Date: Mon, 5 Feb 2024 10:32:35 -0500
+	s=arc-20240116; t=1707147168; c=relaxed/simple;
+	bh=KmaKj/FrqhODuXe1TaDfgqvAe8TWKw+amUWGmKbLRCU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ButnB937uNJqO88QJlmLS+ITrpGqFT3pdMb/36T73MUYGUIAmlXhImOF3zBEaZ3ORR593sewAzx5cQ4cgxlH6Yq/6W1Sv9sMOk+5KE9fPfmZaPRakq5hg5DvPv4U/08oIarFbOWWrh6gRaK4jcSdfl2vnZxLZxcdfEJY1fdP1sQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CF7771FB;
+	Mon,  5 Feb 2024 07:33:28 -0800 (PST)
+Received: from e121345-lin.cambridge.arm.com (e121345-lin.cambridge.arm.com [10.1.196.40])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 05AD03F5A1;
+	Mon,  5 Feb 2024 07:32:44 -0800 (PST)
+From: Robin Murphy <robin.murphy@arm.com>
+To: joro@8bytes.org
+Cc: will@kernel.org,
+	pasha.tatashin@soleen.com,
+	iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	rientjes@google.com,
+	yosryahmed@google.com,
+	john.g.garry@oracle.com
+Subject: [PATCH v3 0/3] iommu/iova: use named kmem_cache for iova magazines
+Date: Mon,  5 Feb 2024 15:32:38 +0000
+Message-Id: <cover.1707144953.git.robin.murphy@arm.com>
+X-Mailer: git-send-email 2.39.2.101.g768bb238c484.dirty
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] perf/x86/uncore: avoid null-ptr-deref on error in
- pmu_alloc_topology
-Content-Language: en-US
-To: Fedor Pchelkin <pchelkin@ispras.ru>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>, x86@kernel.org,
- Alexander Antonov <alexander.antonov@linux.intel.com>,
- linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
- lvc-project@linuxtesting.org
-References: <20240204134841.80003-1-pchelkin@ispras.ru>
- <a5e8e3fe-a8c2-45e7-9139-84967cba06eb@linux.intel.com>
- <2b5c4fbc-67c8-42f6-84a0-2adb4fbb0a2a-pchelkin@ispras.ru>
-From: "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <2b5c4fbc-67c8-42f6-84a0-2adb4fbb0a2a-pchelkin@ispras.ru>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+
+Hi all,
+
+I decided that Pasha's patch[1] was a good excuse to tackle a bit more
+cleanup of the existing IOVA code, so it can fit in more neatly. Thus
+to save time and effort I've taken the liberty of putting together this
+mini-series as the version I'd like to merge.
+
+Cheers,
+Robin.
+
+[1] https://lore.kernel.org/linux-iommu/20240202192820.536408-1-pasha.tatashin@soleen.com/
 
 
+Pasha Tatashin (1):
+  iommu/iova: use named kmem_cache for iova magazines
 
-On 2024-02-05 10:18 a.m., Fedor Pchelkin wrote:
-> Hello,
-> 
-> On 24/02/05 10:08AM, Liang, Kan wrote:
->>
->>
->> On 2024-02-04 8:48 a.m., Fedor Pchelkin wrote:
->>> If topology[die] array allocation fails then topology[die][idx] elements
->>> can't be accessed on error path.
->>>
->>> Checking this on the error path probably looks more readable than
->>> decrementing the counter in the allocation loop.
->>>
->>> Found by Linux Verification Center (linuxtesting.org).
->>>
->>> Fixes: 4d13be8ab5d4 ("perf/x86/intel/uncore: Generalize IIO topology support")
->>> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
->>> ---
->>
->> It seems the code just jumps to the wrong kfree on the error path.
->> Does the below patch work?
->>
->> diff --git a/arch/x86/events/intel/uncore_snbep.c
->> b/arch/x86/events/intel/uncore_snbep.c
->> index 8250f0f59c2b..5481fd00d861 100644
->> --- a/arch/x86/events/intel/uncore_snbep.c
->> +++ b/arch/x86/events/intel/uncore_snbep.c
->> @@ -3808,7 +3808,7 @@ static int pmu_alloc_topology(struct
->> intel_uncore_type *type, int topology_type)
->>  	for (die = 0; die < uncore_max_dies(); die++) {
->>  		topology[die] = kcalloc(type->num_boxes, sizeof(**topology), GFP_KERNEL);
->>  		if (!topology[die])
->> -			goto clear;
->> +			goto free_topology;
->>  		for (idx = 0; idx < type->num_boxes; idx++) {
->>  			topology[die][idx].untyped = kcalloc(type->num_boxes,
->>  							     topology_size[topology_type],
->> @@ -3827,6 +3827,7 @@ static int pmu_alloc_topology(struct
->> intel_uncore_type *type, int topology_type)
->>  			kfree(topology[die][idx].untyped);
->>  		kfree(topology[die]);
->>  	}
->> +free_topology:
->>  	kfree(topology);
->>  err:
->>  	return -ENOMEM;
->>
->> Thanks,
->> Kan
->>
-> 
-> In this way the already allocated topology[die] elements won't be freed.
->
+Robin Murphy (2):
+  iommu/iova: Tidy up iova_cache_get() failure
+  iommu/iova: Reorganise some code
 
-Ah, right. The patch looks good to me.
+ drivers/iommu/iova.c | 143 +++++++++++++++++++++++--------------------
+ 1 file changed, 76 insertions(+), 67 deletions(-)
 
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+-- 
+2.39.2.101.g768bb238c484.dirty
 
-Thanks,
-Kan
-> --
-> Fedor
-> 
 
