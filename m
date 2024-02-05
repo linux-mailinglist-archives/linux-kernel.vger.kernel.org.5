@@ -1,322 +1,203 @@
-Return-Path: <linux-kernel+bounces-54100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54099-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85D0F84AABB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:41:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42C0084AAB7
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:40:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1F27B20F2B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:41:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63EE01C23207
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:40:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5C7F4EB29;
-	Mon,  5 Feb 2024 23:40:35 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04E8B4BA8D;
+	Mon,  5 Feb 2024 23:40:32 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90CE34C3DE
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 23:40:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D66D4F5E6
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 23:40:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707176435; cv=none; b=dCOBA/PBFOkEhnC3n/ABnrXgom5Pi/D7y0XJkJMcrYX/q8CvB03R+/kTBRD1E0j7K/BJxF+PT5VbnnK1KjCcbjn9mtElgTijiexng0LleUclmESy5Sbg2H2LqgsbGfrx0NxC03Xodssp6CS7mtI03zMsVGC1qqNund5aveAHrew=
+	t=1707176431; cv=none; b=e8sI0VxMWw8i5B31CzMHJbxH5MXK6E/ffTHDt/0sLVH1nxis+HlX5JACO/xwphQv7bJ+QW4iqd08PBSfKxHr/ZisbCHZjZINtLGjUvQTHmtaiTn+NU8YFxcA/znUrcOxvaPXpNH+dkuDCPe5lhQAy64qZnyPHYy3Lbb7Ceb+Ovk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707176435; c=relaxed/simple;
-	bh=xPE7313tGa36WXt8zAWU+JWd3UaGL/fTkOi3lRYG8Qs=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=YUu0Ubu1UNDQ0o3Auc6b/U0Drf+BBzRx4/O2/MQLlG3LB9HY2zI26+AxVffV47Ck+DCj08ixXaFerqXeJY1ieF2kAPuQGMTBiFuE9Y2WKLSLhwW/XjDYWNIwBKtaLSxdi3crRRGPS0erHjYu2fl2mDy/njoxya8Rr6f4Q/pw2ko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mgr@pengutronix.de>)
-	id 1rX8Zh-00082y-3L; Tue, 06 Feb 2024 00:40:29 +0100
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mgr@pengutronix.de>)
-	id 1rX8Zg-004ifQ-7E; Tue, 06 Feb 2024 00:40:28 +0100
-Received: from mgr by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <mgr@pengutronix.de>)
-	id 1rX8Zg-00CtLW-0R;
-	Tue, 06 Feb 2024 00:40:28 +0100
-Date: Tue, 6 Feb 2024 00:40:28 +0100
-From: Michael Grzeschik <m.grzeschik@pengutronix.de>
-To: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Cc: linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: duplicate requests on host side while streaming via uvcvideo gadget
-Message-ID: <ZcFx7P30Su_Mx4AV@pengutronix.de>
+	s=arc-20240116; t=1707176431; c=relaxed/simple;
+	bh=/l/BbcOUP7bWr5jYI8yoNu18RrCE0pxiWCQZSl+HmC8=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=rLGDKdl5J81Egx1PbknZKHfzNq9zM+GwV/m9BG1iZ/dxvEaZ6yBYI3HDH4TaNCcep6+SIzJnzE3219H9v+n+qLXFD+7R7rzeHZWQ79j2ttQUqzGO1JmfSQAHpSOl2hQWnmWcA8wRB4G4y9TU/boS533WqwdCaaHNV8UAIDrVPS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-35fc6976630so44648515ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 15:40:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707176428; x=1707781228;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/ngrkC+Ev5kse1bjFQ2pRxP1v852GqG+2VMvhIKcpOs=;
+        b=tE3HMNb34p8ft1mjNPCvv4S8+c8rima/OM6WqFbDfuBSFhnrKtJtimhnm1xSN2dAtU
+         HM0TK3M2TGPAXDj3/+fF2t7MTLWiYir1punNDRykgeE39MYY78Y9ThQ19kpyUb/KrdRO
+         sX00HDfTB5nrQu1Qi0/LswjyN9lPb9UjGfx3UtVhJ6Sf/f49n8l5rmpcd2qKEm/WuTcV
+         tqlt1A/2/FICuHzdCNkY9WmmHcDWp7kchFZLTMjG/AEHhNZIEa/8i4uAKQ85/orY0b9f
+         muvfT+cqvrH0du7RUymYV8lSHT4N+eg24E57otiSdZaIGmsRNqJ7W7rlxM3y8hHsWITa
+         mx0A==
+X-Gm-Message-State: AOJu0Ywz65MafeD0++Mj1B7n+MpA8e7oqkgdYOrT5Mqb6s5RJgLveZvk
+	HYfKioC5WecYpqo1arrFgibv3hNjs4bPRts/pldYVUVyAp7wsZ5uIBLA5a+fuiPc7Z2KDaP+BRy
+	13bhYTb4ALjujSM/S3g+QILQ/rwH9DZ4pyBYmIXSauXMrp/Q+8T14RDA=
+X-Google-Smtp-Source: AGHT+IFEPa59otgEiS/TUoOMi9OMKmjSD0/Jbb+a85mDrxwfB6enbNsW0h2YRNaVdnPOxr/obL1YCHDE2GtJ77CNHM3Iol/0TImu
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="DBDd8WemaKPkFy1h"
-Content-Disposition: inline
-X-URL: http://www.pengutronix.de/
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mgr@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Received: by 2002:a05:6e02:221d:b0:363:819c:926d with SMTP id
+ j29-20020a056e02221d00b00363819c926dmr80890ilf.1.1707176428457; Mon, 05 Feb
+ 2024 15:40:28 -0800 (PST)
+Date: Mon, 05 Feb 2024 15:40:28 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009655270610aafce1@google.com>
+Subject: [syzbot] [netfilter?] WARNING: suspicious RCU usage in hash_netportnet6_destroy
+From: syzbot <syzbot+bcd44ebc3cd2db18f26c@syzkaller.appspotmail.com>
+To: coreteam@netfilter.org, davem@davemloft.net, edumazet@google.com, 
+	fw@strlen.de, kadlec@netfilter.org, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	netfilter-devel@vger.kernel.org, pabeni@redhat.com, pablo@netfilter.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    021533194476 Kconfig: Disable -Wstringop-overflow for GCC ..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=144caa38180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f204e0b6490f4419
+dashboard link: https://syzkaller.appspot.com/bug?extid=bcd44ebc3cd2db18f26c
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16329057e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15b8fe7be80000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/0fcac44f7d25/disk-02153319.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ec3e3d0e222c/vmlinux-02153319.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/11bfd95eb918/bzImage-02153319.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bcd44ebc3cd2db18f26c@syzkaller.appspotmail.com
+
+=============================
+WARNING: suspicious RCU usage
+6.8.0-rc2-syzkaller-00199-g021533194476 #0 Not tainted
+-----------------------------
+net/netfilter/ipset/ip_set_hash_gen.h:455 suspicious rcu_dereference_protected() usage!
+
+other info that might help us debug this:
 
 
---DBDd8WemaKPkFy1h
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+rcu_scheduler_active = 2, debug_locks = 1
+1 lock held by swapper/0/0:
+ #0: ffffffff8e130ba0 (rcu_callback){....}-{0:0}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
+ #0: ffffffff8e130ba0 (rcu_callback){....}-{0:0}, at: rcu_do_batch kernel/rcu/tree.c:2184 [inline]
+ #0: ffffffff8e130ba0 (rcu_callback){....}-{0:0}, at: rcu_core+0xcfc/0x1810 kernel/rcu/tree.c:2465
 
-Hi Thinh
-
-I found some strange situation while streaming via uvc-gadget to some
-usb host. It happens when some requests are missed due to higher load on
-the gadget machine. In some cases some requests will reach the host
-twice. In my special case, I added the following changes [1] for the
-host and gadget side.
-
-When applying the patches you will find all requests marked as errors on
-the host and gadget side reported. However, the odd thing is that the
-error counter on the host side will rise higher than the number of
-requests we have actually marked as errornous on the gadget side. You
-check the number of errors found on the host by looking in the
-statistics and compare it with the numer of requests that are actually
-marked with UVC_STREAM_ERR.
-
-[1] applied hunks:
-
-diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/functio=
-n/uvc.h
-index 6bdcf3bdd62a9..63515fc949880 100644
---- a/drivers/usb/gadget/function/uvc.h
-+++ b/drivers/usb/gadget/function/uvc.h
-@@ -91,6 +91,8 @@ struct uvc_video {
-         struct work_struct pump;
-         struct workqueue_struct *async_wq;
-
-+       int errorcount;
-+
-         /* Frame parameters */
-         u8 bpp;
-         u32 fcc;
-
-diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/f=
-unction/uvc_video.c
-index eb1f7cee4a0af..f45dd53fde7ef 100644
---- a/drivers/usb/gadget/function/uvc_video.c
-+++ b/drivers/usb/gadget/function/uvc_video.c
-@@ -35,6 +35,12 @@ uvc_video_encode_header(struct uvc_video *video, struct =
-uvc_buffer *buf,
-
-         data[1] =3D UVC_STREAM_EOH | video->fid;
-
-+       if (video->queue.flags & UVC_QUEUE_DROP_INCOMPLETE) {
-+               video->errorcount++;
-+               printk("dropping frame! %d\n", video->errorcount);
-+               data[1] |=3D UVC_STREAM_ERR;
-+       }
-+
-         if (video->queue.buf_used =3D=3D 0 && ts.tv_sec) {
-                 /* dwClockFrequency is 48 MHz */
-                 u32 pts =3D ((u64)ts.tv_sec * USEC_PER_SEC + ts.tv_nsec / =
-NSEC_PER_USEC) * 48;
-
-@@ -47,6 +47,8 @@ uvc_video_encode_header(struct uvc_video *video, struct u=
-vc_buffer *buf,
- =20
-                 data[1] |=3D UVC_STREAM_PTS;
-                 put_unaligned_le32(pts, &data[pos]);
-+               if (data[1] & UVC_STREAM_ERR)
-+                       trace_printk("PTS: %u\n", data[pos]);
-                 pos +=3D 4;
-         }
- =20
-@@ -60,6 +62,10 @@ uvc_video_encode_header(struct uvc_video *video, struct =
-uvc_buffer *buf,
-                 data[1] |=3D UVC_STREAM_SCR;
-                 put_unaligned_le32(stc, &data[pos]);
-                 put_unaligned_le16(sof, &data[pos+4]);
-+               if (data[1] & UVC_STREAM_ERR) {
-+                       trace_printk("SCR: %u\n", data[pos]);
-+                       trace_printk("SCR: %hu\n", data[pos+4]);
-+               }
-                 pos +=3D 6;
-         }
- =20
-
-@@ -731,6 +734,7 @@ int uvcg_video_enable(struct uvc_video *video)
-         struct usb_gadget *gadget =3D cdev->gadget;
-         int ret;
-
-+       video->errorcount =3D 0;
-         if (video->ep =3D=3D NULL) {
-                 uvcg_info(&video->uvc->func,
-                           "Video enable failed, device is uninitialized.\n=
-");
-
-diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_=
-video.c
-index 28dde08ec6c5d..40eafe43d1888 100644
---- a/drivers/media/usb/uvc/uvc_video.c
-+++ b/drivers/media/usb/uvc/uvc_video.c
-@@ -916,8 +916,24 @@ static void uvc_video_stats_decode(struct uvc_streamin=
-g *stream,
-         if (len <=3D header_size)
-                 stream->stats.frame.nb_empty++;
-
--       if (data[1] & UVC_STREAM_ERR)
-+       if (data[1] & UVC_STREAM_ERR) {
-                 stream->stats.frame.nb_errors++;
-+               printk("error on uvc package!\n");
-+               if (data[1] & UVC_STREAM_PTS) {
-+                       printk("PTS: %u\n", data[2]);
-+                       if (data[1] & UVC_STREAM_SCR) {
-+                               printk("SCR: %u\n", data[6]);
-+                               printk("SCR: %hu\n", data[10]);
-+                       }
-+               } else {
-+                       if (data[1] & UVC_STREAM_SCR) {
-+                               printk("SCR: %u\n", data[2]);
-+                               printk("SCR: %hu\n", data[6]);
-+                       }
-+               }
-+
-+
-+       }
-  }
-
--- Host:
-
-[ 1769.213387] error on uvc package!
-[ 1769.213396] PTS: 16
-[ 1769.213400] SCR: 64
-[ 1769.213402] SCR: 229
-
-[ 1769.461386] error on uvc package!
-[ 1769.461394] PTS: 96
-[ 1769.461398] SCR: 80
-[ 1769.461401] SCR: 33
-
-[ 1769.461405] error on uvc package! <- duplicate
-[ 1769.461408] PTS: 96
-[ 1769.461410] SCR: 80
-[ 1769.461413] SCR: 33
-
-[ 1769.657405] error on uvc package!
-[ 1769.657442] PTS: 224
-[ 1769.657449] SCR: 64
-[ 1769.657453] SCR: 81
-
-[ 1769.657460] error on uvc package! <- duplicate
-[ 1769.657465] PTS: 224
-[ 1769.657470] SCR: 64
-[ 1769.657476] SCR: 81
-
-[ 1779.525368] error on uvc package!
-[ 1779.525374] PTS: 128
-[ 1779.525378] SCR: 224
-[ 1779.525380] SCR: 157
-
-[ 1784.637359] error on uvc package!
-[ 1784.637367] PTS: 0
-[ 1784.637371] SCR: 208
-[ 1784.637374] SCR: 89
-
-[ 1784.825357] error on uvc package!
-[ 1784.825394] PTS: 224
-[ 1784.825401] SCR: 192
-[ 1784.825406] SCR: 63
-
-[ 1784.841362] error on uvc package!
-[ 1784.841394] PTS: 144
-[ 1784.841403] SCR: 48
-[ 1784.841410] SCR: 186
-
-[ 1784.841418] error on uvc package! <- duplicate
-[ 1784.841424] PTS: 144
-[ 1784.841430] SCR: 48
-[ 1784.841436] SCR: 186
-
-host$ grep errors /sys/kernel/debug/usb/uvcvideo/*/stats
-/sys/kernel/debug/usb/uvcvideo/4-81-1/stats:errors:  10
+stack backtrace:
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.8.0-rc2-syzkaller-00199-g021533194476 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
+ lockdep_rcu_suspicious+0x220/0x340 kernel/locking/lockdep.c:6712
+ hash_netportnet6_destroy+0xf0/0x2c0 net/netfilter/ipset/ip_set_hash_gen.h:455
+ ip_set_destroy_set net/netfilter/ipset/ip_set_core.c:1180 [inline]
+ ip_set_destroy_set_rcu+0x6a/0xe0 net/netfilter/ipset/ip_set_core.c:1190
+ rcu_do_batch kernel/rcu/tree.c:2190 [inline]
+ rcu_core+0xd76/0x1810 kernel/rcu/tree.c:2465
+ __do_softirq+0x2bb/0x942 kernel/softirq.c:553
+ invoke_softirq kernel/softirq.c:427 [inline]
+ __irq_exit_rcu+0xf1/0x1c0 kernel/softirq.c:632
+ irq_exit_rcu+0x9/0x30 kernel/softirq.c:644
+ sysvec_apic_timer_interrupt+0x97/0xb0 arch/x86/kernel/apic/apic.c:1076
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:649
+RIP: 0010:native_irq_disable arch/x86/include/asm/irqflags.h:37 [inline]
+RIP: 0010:arch_local_irq_disable arch/x86/include/asm/irqflags.h:72 [inline]
+RIP: 0010:acpi_safe_halt+0x20/0x30 drivers/acpi/processor_idle.c:113
+Code: 90 90 90 90 90 90 90 90 90 90 65 48 8b 05 58 ea a5 74 48 f7 00 08 00 00 00 75 10 66 90 0f 00 2d c6 5c a9 00 f3 0f 1e fa fb f4 <fa> c3 cc cc cc cc 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90 90
+RSP: 0018:ffffffff8de07ca8 EFLAGS: 00000246
+RAX: ffffffff8de94680 RBX: ffff88801628e864 RCX: 00000000000148c9
+RDX: 0000000000000001 RSI: ffff88801628e800 RDI: ffff88801628e864
+RBP: 0000000000038f78 R08: ffff8880b9436d8b R09: 1ffff11017286db1
+R10: dffffc0000000000 R11: ffffffff8b5dd030 R12: ffff888015b47000
+R13: 0000000000000000 R14: 0000000000000001 R15: ffffffff8e885a20
+ acpi_idle_enter+0xe4/0x140 drivers/acpi/processor_idle.c:707
+ cpuidle_enter_state+0x118/0x490 drivers/cpuidle/cpuidle.c:267
+ cpuidle_enter+0x5d/0xa0 drivers/cpuidle/cpuidle.c:388
+ call_cpuidle kernel/sched/idle.c:134 [inline]
+ cpuidle_idle_call kernel/sched/idle.c:215 [inline]
+ do_idle+0x374/0x5d0 kernel/sched/idle.c:312
+----------------
+Code disassembly (best guess):
+   0:	90                   	nop
+   1:	90                   	nop
+   2:	90                   	nop
+   3:	90                   	nop
+   4:	90                   	nop
+   5:	90                   	nop
+   6:	90                   	nop
+   7:	90                   	nop
+   8:	90                   	nop
+   9:	90                   	nop
+   a:	65 48 8b 05 58 ea a5 	mov    %gs:0x74a5ea58(%rip),%rax        # 0x74a5ea6a
+  11:	74
+  12:	48 f7 00 08 00 00 00 	testq  $0x8,(%rax)
+  19:	75 10                	jne    0x2b
+  1b:	66 90                	xchg   %ax,%ax
+  1d:	0f 00 2d c6 5c a9 00 	verw   0xa95cc6(%rip)        # 0xa95cea
+  24:	f3 0f 1e fa          	endbr64
+  28:	fb                   	sti
+  29:	f4                   	hlt
+* 2a:	fa                   	cli <-- trapping instruction
+  2b:	c3                   	ret
+  2c:	cc                   	int3
+  2d:	cc                   	int3
+  2e:	cc                   	int3
+  2f:	cc                   	int3
+  30:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
+  37:	00 00 00
+  3a:	90                   	nop
+  3b:	90                   	nop
+  3c:	90                   	nop
+  3d:	90                   	nop
+  3e:	90                   	nop
+  3f:	90                   	nop
 
 
--- Gadget:
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-[=A0 126.826517] dropping frame! 1
-[=A0 126.829658] PTS: 16
-[=A0 126.831761] SCR: 64
-[=A0 126.833858] SCR: 229
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-[=A0 127.090069] dropping frame! 2
-[=A0 127.093059] PTS: 96
-[=A0 127.095164] SCR: 80
-[=A0 127.097261] SCR: 33
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-[=A0 127.288045] dropping frame! 3
-[=A0 127.291041] PTS: 224
-[=A0 127.293233] SCR: 64
-[=A0 127.295330] SCR: 81
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
-[=A0 137.153499] dropping frame! 4
-[=A0 137.156494] PTS: 128
-[=A0 137.158687] SCR: 224
-[=A0 137.160871] SCR: 157
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-[=A0 142.265135] dropping frame! 5
-[=A0 142.268131] PTS: 0
-[=A0 142.270148] SCR: 208
-[=A0 142.272332] SCR: 89
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-[=A0 142.453636] dropping frame! 6
-[=A0 142.456634] PTS: 224
-[=A0 142.458825] SCR: 192
-[=A0 142.461009] SCR: 63
-
-[=A0 142.469131] dropping frame! 7
-[=A0 142.472118] PTS: 144
-[=A0 142.474310] SCR: 48
-[=A0 142.476407] SCR: 186
-
-Now I am totally unsure what could cause such error, but would expect
-the issue to be somewhere in the gadget driver and the mapped trb memory
-content. For the uvc_video layer, I compared and tested the enqueued
-request list for duplicates but could not find any. I also reverted all
-recent patches that changed request handling in the past year. I still
-find these request duplicates on the host side show up.
-
-Any Ideas?
-
-Regards,
-Michael
-
---=20
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
---DBDd8WemaKPkFy1h
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEElXvEUs6VPX6mDPT8C+njFXoeLGQFAmXBcewACgkQC+njFXoe
-LGTcoQ/8CH+HMxAw3N8p4z+XyEEb0Z4OnD7ICOQE/1EoFoi5MY83gfzS+vDVEb0k
-yqCYcLTLZfzAciPQpFWmvwaQeNy8A9yjFbcQ6d5vzWE2NdPuctcgfynZenCCx7pF
-QyWcOlJRS72esk/mk++gHuS297piTAUDofTJGfzkrNb6iYTppA/IFEgpPcx+kjuU
-S/3MwuTK3VdlK42SDtrT0HfTYLrvMXyMfa38ya/DC2HSdjUiBj7IQFHWQJNJAIiY
-eeHYlYubiMWfZktIF+/Vj9UdtFcKR4WYGJePPj62YvUX1Xokgve5GiwJRllU7Q9g
-zMYuUZTmIHOa7+f9kCw0NLh6qhWGyiARJyld5x+IsK9MiV8OPK12Eudko2iqNWvU
-5z6IYh0ohWZXlGtdGosJZz1roENfTBq0R768C1heD0Gkga77k4pxONXzagbZNM/i
-E+GIWzOZ1rA3kjLoW7heOF+yRVFmDPG0rhIEg2QZqHHAtp9S2U1P2XftA7hgJgKM
-6E6/r8w/xwGrixJg2SOHMy74hvlwIhF4mnr+ENfNk8OIhU+ayzQscWQPz7ENRdJl
-rMKb9RtJdXHREtzQSOotnlr1kJlQd9GmBt4VjUksux3yclY13dxWDdcKjBEESKlz
-OYGUOoeVCa7ahldUSt2oesH9L/Yt9sRsaIu/Qh0ekwrhBcgCrRI=
-=5xjG
------END PGP SIGNATURE-----
-
---DBDd8WemaKPkFy1h--
+If you want to undo deduplication, reply with:
+#syz undup
 
