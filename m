@@ -1,140 +1,225 @@
-Return-Path: <linux-kernel+bounces-52216-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C87E9849582
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:38:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E3E52849589
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:39:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBB7E1C22F58
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:38:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14CCC1C21FED
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:39:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1F2311CB3;
-	Mon,  5 Feb 2024 08:38:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C971125A7;
+	Mon,  5 Feb 2024 08:39:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="T+cXlPZd"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sigma-star.at header.i=@sigma-star.at header.b="USQm8JgA"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 963531171A
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 08:38:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1141411CAD
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 08:39:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707122315; cv=none; b=aDkZp0krWljDIDYWfKKLIpfMLIq7+Qf7Io33ngywjqfa/ny8WlVEdf7zSuN1lA/+f9EtMSDbi69QfJm29Tl4oogGI3HMj5CDVBgyhMjrPbYSqJziqncOd+fousPsHpBsOByPcow/ARyLcXjdKy77FkMt2GvlDMd/IeUZIKG2jLQ=
+	t=1707122365; cv=none; b=pcDD9ssDQpc/Z+XnBtywA7kT7VPoHZEsJk8Uy+6ZMELRWN7TW70iPet1Iv7wxrzygLM1EkrHmoSs4/oPVYzxG4CtTsgb7GVg7yz+CfgbBA00JU5PUOi+hFkHPCwong3aXdioyWGRo87Yu2+FH8E6P/Kx/s3zf9UzGm6x6dBlHh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707122315; c=relaxed/simple;
-	bh=3LmgSibEXomUKPO63HkaRhVDpYnceZtyNFTYsQfKJns=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CC+W9ZJOICwkxl8sbEwx4yQWBIDP4fkhv75XL18+lfKmK84DMHBDwbs7D0YP2qN/V8NlMIOHtCT/v6ZZQ1yCffwKGFNNKS4yBYd7XRif7uikPNAY/hiS9vTKCakPX9aHiindg01lqIA1BIK+njhsjJHL05YCkh4GYFnqSyB9T0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=T+cXlPZd; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d91397bd22so31174455ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 00:38:33 -0800 (PST)
+	s=arc-20240116; t=1707122365; c=relaxed/simple;
+	bh=vWCUg5e3ZEMZK/WPs6t0bqEagLm8F2BxIwdVLhxnKZU=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=kIRE1Fl9pjHtgm8gvWBLvN7pmr43fYoASLgLNy4+L6oe6YDZTRenXqA5BI7SkxMeHrfB7GJ4ODr6YzkbK68+ASnUyiGdSU/vYz/Zpy+Ndbq4h98Y7TmkNKlWWgz+uYh4XtT/oWkEQWmUzojuYQYYoLLtKo5D4UaS4eCBoHE3+5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sigma-star.at; spf=pass smtp.mailfrom=sigma-star.at; dkim=pass (2048-bit key) header.d=sigma-star.at header.i=@sigma-star.at header.b=USQm8JgA; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sigma-star.at
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sigma-star.at
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a363961b96aso518611866b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 00:39:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707122313; x=1707727113; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TzUq0QU1iLhov+1WYKZ5iVgod62Dx1DjglJhN8m0PAE=;
-        b=T+cXlPZd367U7+rLzfZlkoCBnSkX3j5R/RrgiVeGJgG8C/w43zhoKETYv2aOSPbpUR
-         fuAkSK0nhpc/tSA92w9+qQGCuWmNY4xelwxxrIZl8Y1BJiv/FySG3xd+bC0MQTDlKPo5
-         4a3hUMeIwAbNOWggeBW3n58+kYi/xC/31yZPY1gfpomSKtYvg/sSFSIIkqgBw5OXlvqj
-         FKdl3UUJ0Qudk3KRplXnnUMvMziSrF9/NwWq6FmgyyY1f949Zt2VVRPrhCLit6N5ld1s
-         EWqigldIcCxBQ0r3vMFER8gnHFvQet6b0Zc4wLBT1izPvYis0jbJB5y/7snL7h+LjA8T
-         mS1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707122313; x=1707727113;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=sigma-star.at; s=google; t=1707122360; x=1707727160; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TzUq0QU1iLhov+1WYKZ5iVgod62Dx1DjglJhN8m0PAE=;
-        b=GBO570a5MO+aivk3p8MX9MoQpCx1OveNKQz0b19aRabThV7Rz6J0fqXfxUcvdKgtI6
-         Gmq6/UhHODeO01xDnMZBlT24vn7+Xrr/895fE0EunhEn1fBABcpzYO7I+3+F9xhHuj+G
-         v7i/FnyHAGkUEikqZZY145XUpckSpiC5w/ZtNx0YyPfUszW+VyhyOc7Q1hdg+Rya84i/
-         HPktIv/3b9C1zleq0c37eJLmdAVx2vZasKXZDvuBB/ex8hlZxcb1phe9lycH5I7c28An
-         qxAmUFo/F29pcsGMNfbzfto+0U+XSmbdwLimKaxdCOX0GoUGIKr+P1or4rxojuNrfX6K
-         jMQg==
-X-Gm-Message-State: AOJu0YzDnXCIn9Yh18r9ad01dumzToD4pt2S8jNwLoI0LmajXPT6LhUt
-	iRgLgKy+7qa/bE3YLelauA3EzngCRAVUzFjn+/1VDaGr1/+dh1wnIuZRpRLOXHE=
-X-Google-Smtp-Source: AGHT+IFlHMcwipPv/5fS9RA0N7CHAoHC9ENOUI7UQ64mLeAdNBX232vnbn/8H284Q02YLTeeS+jlhw==
-X-Received: by 2002:a17:902:e5c7:b0:1d9:7a7a:3d01 with SMTP id u7-20020a170902e5c700b001d97a7a3d01mr7580530plf.23.1707122312801;
-        Mon, 05 Feb 2024 00:38:32 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXfI2w+6dUAdaog5bJtoPlJM3p3ukBSikiWgzTm8BAqW0h7zGRqU7hx3UCGq7cTibBB8HARSP/XisA0uN+w9+FqdvqdeHJcVO0mfGc7ziQoQyXOZ7grsTx10xaypoxwpyExjkSzrysipLtwsKTy/DbFHWb/pjQ/VaDQNP54POfBXXfc50N8c0dSeCQnnZDV1rQl/GwCcqymS4cy0e+KMRoATbWVS7VNFUoxcTxHrbbl/iJAtaQsCjIaisPJnVzlyGemCHDWDX+U0bniwkNxCWC6gkHYWuSZyKtEMLtsXupZnvMhqwFiXpzivjLHsAd9eAj71NRm/mAc32aaParxZPwNgj6b36hqk6Rd+MaDSLQtzEAjoChdChpKMUkafF8b+2Kd6vQ85HUy8XN6hBQMWrEH9hLIUeY9osriah/T3E2rh5eyHYWHezWPu9gpgkmMdbR3ZteEpUbi3l3AIe4XCcCdNLQgS2msiz/gCyf1/ugvQQLXJHzcA9h/mlNPxgdIzNNUqfRPV1a1hQ46+WgKwIskB+QDnn047Ob6XWdb1Y7zgHlFQU7xr/ipwWjZzunXXHEX2S8lZFGOXlWpI1F/cWzUXZAnprTHQ5/nNf6MUd97ty8YnKrrEpD8adDaa0Z8eps8kNajrf8F46HOl2qu05YBjty2nRwOK4Pm5BIh/OQJAKYudC5xAor0TzHqgedJpd1c66sWfdshOdQ=
-Received: from localhost ([122.172.83.95])
-        by smtp.gmail.com with ESMTPSA id mm4-20020a1709030a0400b001d60a70809bsm5782825plb.168.2024.02.05.00.38.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 00:38:32 -0800 (PST)
-Date: Mon, 5 Feb 2024 14:08:30 +0530
-From: Viresh Kumar <viresh.kumar@linaro.org>
-To: Rob Herring <robh@kernel.org>
-Cc: Saravana Kannan <saravanak@google.com>, David Dai <davidai@google.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Quentin Perret <qperret@google.com>,
-	Masami Hiramatsu <mhiramat@google.com>,
-	Will Deacon <will@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Marc Zyngier <maz@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Pavan Kondeti <quic_pkondeti@quicinc.com>,
-	Gupta Pankaj <pankaj.gupta@amd.com>, Mel Gorman <mgorman@suse.de>,
-	kernel-team@android.com, linux-pm@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/2] dt-bindings: cpufreq: add virtual cpufreq device
-Message-ID: <20240205083830.4werub5e76kudjq4@vireshk-i7>
-References: <20240127004321.1902477-1-davidai@google.com>
- <20240127004321.1902477-2-davidai@google.com>
- <20240131170608.GA1441369-robh@kernel.org>
- <CAGETcx8S0oS67oMZsPKk6_MGAtygoHEf_LN1gbcNDEBqRJ4PPg@mail.gmail.com>
- <20240202155352.GA37864-robh@kernel.org>
+        bh=9fYC3H+9fhYO7ZOc/qX6rq1afQIQ11uUH5tLK3IWpXc=;
+        b=USQm8JgAsU+bvggwhfSL5ljcQ5Z14tU+aidl4amOwC7ZtSddvc9cEIU5FQDAtpdiZt
+         00xL062bRmN7OPRxqr9e3hhhQP2KxWABZr8Ma9bEsukUP/+XfBdKrxS8u8xvWWr8r2VP
+         UxZhDLZ4BtL4L3Hy+SGvRO9Zo7LX77N1QosSuLMUgDOa7fp2NEBZlRX8TlRHzfj2xsHg
+         ruw24jXiiwcaiq+nC/CJZi0HDUybbK0aKr+39odEyNF9Ke1tux69a9NVWHrTn2sGHRUW
+         SZ6dIdM1EKfOG0F+J9NXyLx/pz+JwMNCxlMay3J1rr9zgJTm+WrXQnjvV4L2LLRkUFpB
+         W1XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707122360; x=1707727160;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9fYC3H+9fhYO7ZOc/qX6rq1afQIQ11uUH5tLK3IWpXc=;
+        b=OO7CppcFDfloYlBdXcCrrflgu2aJBi//WaDg5MGeNO0S/M8zMQ7vPHF2Qa7XhQpwlk
+         ny3QiGsFvIsamlTWHcyq4O6wmV9PwNQb0e+xUKzxhiulxe5OawVvTzFC5FFI88M8VMS5
+         8fiaqu5eyLb4ezYQztB3pdg1wj4nT41GGEZ8jrq5oo6qgekgYRnhZcMZCX767raSMxmG
+         MaE8X8slhrm5wNsRfSM+k4Ed6Dh8kzPn37ezBU1HQFN86TbVVXNhi0RKmf4/Fo7LvAyg
+         iPQrzXhs6Fu0h/VD0I8QG7kLZPx3W3uHZrodhtrXnUv/ajx2I4mDTD1U+oNGrvh51B4e
+         qyMQ==
+X-Gm-Message-State: AOJu0YxoJXzMxMnLzMySF7KVYybM/5kPlpQmpgXVR1B/qYFW76HcWWy5
+	0CBLL3b3LfBqkCAzVE20E254LHB0XN1zzzjFuDz/c37mIGTjuG0/HjotZkxZrsc=
+X-Google-Smtp-Source: AGHT+IHLVlIqTHZQT4uS2cWMqHQ2/IKc/41epP/Cs1vBSz9FD6909OEjZv22ODsI8EUgs+fyzA4YHw==
+X-Received: by 2002:a17:906:16c8:b0:a37:bdc2:e4e6 with SMTP id t8-20020a17090616c800b00a37bdc2e4e6mr1530645ejd.10.1707122360096;
+        Mon, 05 Feb 2024 00:39:20 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUTINvkr7TdZxNV3zYWkm9NGPQZ3GBX+JIgmxygvgv41SJzvPqoxxCTp3Tc5PUMHqQw6PbrIpUJx88b3E4cjK5SpUhXe9GIOdkr+YAeq65K7GeGBl1IcKBE3vDLsUsnuV2IbaG0QNY2n7bIZmG6EvZe1SBcWh+cXAGLPTi+gsHzLIB4Ek4PUYTx4gU+ytkjrCv9icm50Zeb3mURGFiiEDIG7cEFIv8APYkltJkm2gyR7ujeOD214DLsYXioA4GA+mfSAn1zE6cUXN3gEY+rLpkmUpLjD2iJPbzDVzGNISNprHIg7SmguU4h2FdVVnwSTySpbdJdWbY3O73k0isTb+fW+2BhqgbYzLQP4Th8toVBowOkBsWLuiIMTWzYAOhJmk6ekd906b1/N5qCiiP0jMcDqGHNHD66is0Ey/uYHly9YuPt9eh1AjwKjjwF5b/qpsQ704D/FfKIJGUGgJ1LvvVEDZ4wkLobm4MWzCyKR42KQu0JY9qwDmsVCk+CmP2XiCJQ8kF2e1uHxU2m6jE1Jk/PCyOQgU3eOv7zuzVmmRlrTGC97+WwZ9lMD8jIvBNhTVIoLbb6F+28AgmyFJsGRwnuvmQaQIBSDluu/HVeamiL/BJF4j44dxmUseTJh1DPAFnwb8JEHWSiMWx8TUueFEYA879cQmBtXxDqUYJWkmFVkkCePJ36slN9TE80+JJXJ1Z0bJJAZkbT5axJshtLmW1nYM/cCaLufm5IJ62p4nLFPkfgMBdpMO6VDWIOUm45cYxAY+QEZfwBlvJpE8Lld5T1ciB/mRzSVLQhcT3wgMswJ4SIQG0CdlYdDMod8umwfxAvQ5eVNuJZUIxogGlCwuZkzTMDTNJW11/MvqvmrxyUY2liKdTG8Q37KBJklaQPX7hBwW80miWJmXOgOFH/ZR0c8gSG0jlvmwQvhcM3zN3VOh/65AVlQsT6eAoJaDQm1u4hW4
+ /DnIJlK+OUtw19HfTP17A+oLh+MUcCC6cXuft5pI0Syr4CJfj5Mt2O/zB3IJax/LQQuYmm
+Received: from smtpclient.apple ([82.150.214.1])
+        by smtp.gmail.com with ESMTPSA id vu11-20020a170907a64b00b00a37a38737d5sm1316761ejc.89.2024.02.05.00.39.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 05 Feb 2024 00:39:19 -0800 (PST)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240202155352.GA37864-robh@kernel.org>
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
+Subject: Re: [PATCH v5 0/6] DCP as trusted keys backend
+From: David Gstir <david@sigma-star.at>
+In-Reply-To: <20231215110639.45522-1-david@sigma-star.at>
+Date: Mon, 5 Feb 2024 09:39:07 +0100
+Cc: Shawn Guo <shawnguo@kernel.org>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ "kernel@pengutronix.de" <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>,
+ NXP Linux Team <linux-imx@nxp.com>,
+ Ahmad Fatoum <a.fatoum@pengutronix.de>,
+ sigma star Kernel Team <upstream+dcp@sigma-star.at>,
+ David Howells <dhowells@redhat.com>,
+ Li Yang <leoyang.li@nxp.com>,
+ Paul Moore <paul@paul-moore.com>,
+ James Morris <jmorris@namei.org>,
+ "Serge E. Hallyn" <serge@hallyn.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Randy Dunlap <rdunlap@infradead.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+ Tejun Heo <tj@kernel.org>,
+ "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+ linux-doc@vger.kernel.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+ "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+ "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+ linux-arm-kernel@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org,
+ "linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <7AED262F-9387-446D-B11A-C549C02542F9@sigma-star.at>
+References: <20231215110639.45522-1-david@sigma-star.at>
+To: Mimi Zohar <zohar@linux.ibm.com>,
+ James Bottomley <jejb@linux.ibm.com>,
+ Jarkko Sakkinen <jarkko@kernel.org>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ "David S. Miller" <davem@davemloft.net>
+X-Mailer: Apple Mail (2.3774.400.31)
 
-On 02-02-24, 09:53, Rob Herring wrote:
-> On Wed, Jan 31, 2024 at 10:23:03AM -0800, Saravana Kannan wrote:
-> > We also need the OPP tables to indicate which CPUs are part of the
-> > same cluster, etc. Don't want to invent a new "protocol" and just use
-> > existing DT bindings.
-> 
-> Topology binding is for that.
+Hi,
 
-This one, right ?
+> On 15.12.2023, at 12:06, David Gstir <david@sigma-star.at> wrote:
+>=20
+> This is a revival of the previous patch set submitted by Richard =
+Weinberger:
+> =
+https://lore.kernel.org/linux-integrity/20210614201620.30451-1-richard@nod=
+at/
+>=20
+> v4 is here:
+> =
+https://lore.kernel.org/keyrings/20231024162024.51260-1-david@sigma-star.a=
+t/
+>=20
+> v4 -> v5:
+> - Make Kconfig for trust source check scalable as suggested by Jarkko =
+Sakkinen
+> - Add Acked-By from Herbert Xu to patch #1 - thanks!
+> v3 -> v4:
+> - Split changes on MAINTAINERS and documentation into dedicated =
+patches
+> - Use more concise wording in commit messages as suggested by Jarkko =
+Sakkinen
+> v2 -> v3:
+> - Addressed review comments from Jarkko Sakkinen
+> v1 -> v2:
+> - Revive and rebase to latest version
+> - Include review comments from Ahmad Fatoum
+>=20
+> The Data CoProcessor (DCP) is an IP core built into many NXP SoCs such
+> as i.mx6ull.
+>=20
+> Similar to the CAAM engine used in more powerful SoCs, DCP can AES-
+> encrypt/decrypt user data using a unique, never-disclosed,
+> device-specific key. Unlike CAAM though, it cannot directly wrap and
+> unwrap blobs in hardware. As DCP offers only the bare minimum feature
+> set and a blob mechanism needs aid from software. A blob in this case
+> is a piece of sensitive data (e.g. a key) that is encrypted and
+> authenticated using the device-specific key so that unwrapping can =
+only
+> be done on the hardware where the blob was wrapped.
+>=20
+> This patch series adds a DCP based, trusted-key backend and is similar
+> in spirit to the one by Ahmad Fatoum [0] that does the same for CAAM.
+> It is of interest for similar use cases as the CAAM patch set, but for
+> lower end devices, where CAAM is not available.
+>=20
+> Because constructing and parsing the blob has to happen in software,
+> we needed to decide on a blob format and chose the following:
+>=20
+> struct dcp_blob_fmt {
+> __u8 fmt_version;
+> __u8 blob_key[AES_KEYSIZE_128];
+> __u8 nonce[AES_KEYSIZE_128];
+> __le32 payload_len;
+> __u8 payload[];
+> } __packed;
+>=20
+> The `fmt_version` is currently 1.
+>=20
+> The encrypted key is stored in the payload area. It is AES-128-GCM
+> encrypted using `blob_key` and `nonce`, GCM auth tag is attached at
+> the end of the payload (`payload_len` does not include the size of
+> the auth tag).
+>=20
+> The `blob_key` itself is encrypted in AES-128-ECB mode by DCP using
+> the OTP or UNIQUE device key. A new `blob_key` and `nonce` are =
+generated
+> randomly, when sealing/exporting the DCP blob.
+>=20
+> This patchset was tested with dm-crypt on an i.MX6ULL board.
+>=20
+> [0] =
+https://lore.kernel.org/keyrings/20220513145705.2080323-1-a.fatoum@pengutr=
+onix.de/
+>=20
+> David Gstir (6):
+>  crypto: mxs-dcp: Add support for hardware-bound keys
+>  KEYS: trusted: improve scalability of trust source config
+>  KEYS: trusted: Introduce NXP DCP-backed trusted keys
+>  MAINTAINERS: add entry for DCP-based trusted keys
+>  docs: document DCP-backed trusted keys kernel params
+>  docs: trusted-encrypted: add DCP as new trust source
+>=20
+> .../admin-guide/kernel-parameters.txt         |  13 +
+> .../security/keys/trusted-encrypted.rst       |  85 +++++
+> MAINTAINERS                                   |   9 +
+> drivers/crypto/mxs-dcp.c                      | 104 +++++-
+> include/keys/trusted_dcp.h                    |  11 +
+> include/soc/fsl/dcp.h                         |  17 +
+> security/keys/trusted-keys/Kconfig            |  18 +-
+> security/keys/trusted-keys/Makefile           |   2 +
+> security/keys/trusted-keys/trusted_core.c     |   6 +-
+> security/keys/trusted-keys/trusted_dcp.c      | 311 ++++++++++++++++++
+> 10 files changed, 562 insertions(+), 14 deletions(-)
+> create mode 100644 include/keys/trusted_dcp.h
+> create mode 100644 include/soc/fsl/dcp.h
+> create mode 100644 security/keys/trusted-keys/trusted_dcp.c
 
-Documentation/devicetree/bindings/dvfs/performance-domain.yaml
+Jarkko, Mimi, David do you need anything from my side for these patches =
+to get them merged?
 
-> You need per CPU Fmax, sure. But all the frequencies? I don't follow why 
-> you don't just have a max available capacity and then request the 
-> desired capacity. Then the host maps that to an underlying OPP. Why have 
-> an intermediate set of fake frequencies?
+Thanks,
+- David
 
-+1
-
-> As these are normalized, I guess you are normalizing for capacity as 
-> well? Or you are using "capacity-dmips-mhz"? 
-> 
-> I'm also lost how this would work when you migrate and the underlying 
-> CPU changes. The DT is fixed.
-> 
-> > > Also, we have "opp-level" for opaque values that aren't Hz.
-> > 
-> > Still want to keep it Hz to be compatible with arch_freq_scale and
-> > when virtualized CPU perf counters are available.
-
-These are all specific to a driver only, that can be handled easily I guess. I
-don't see a value to using Hz for this to be honest.
-
--- 
-viresh
 
