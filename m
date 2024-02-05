@@ -1,447 +1,225 @@
-Return-Path: <linux-kernel+bounces-52265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F768849611
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:11:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EABB3849615
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:12:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94A401C219F8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:11:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D00B1F22CE7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:12:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AD2912B85;
-	Mon,  5 Feb 2024 09:09:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC4C7125B3;
+	Mon,  5 Feb 2024 09:11:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QZBcbNO2"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="NYgcllhd"
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2049.outbound.protection.outlook.com [40.107.105.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CFF8125A4;
-	Mon,  5 Feb 2024 09:09:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707124189; cv=none; b=Zm8NlZtgH63gOo0Vcw+vHSpBI7BWrMfLKYu5L3bSjHxO7Yp5YLBLakcp1K1DfDc+PsVVTEvKM/MOu9RE0q+I2iWgQKVrQWxEC4TuyYHkqkzCAiPgJNetOfTtg/KE7QiOgRVV5yMBKzcfcBFY4bv9vMRcsTjHxcPxMiayM4MmVec=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707124189; c=relaxed/simple;
-	bh=i6f2X23X+uCcTe9YICOWAooGvVviOVmq0LOsLJRDpAM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MQhAxhII4mz1tCK0qVkRuo2Egll7wWQr69wRJs4932rUPhrQZ2y7d3ExUV5MB0BYFniAeaPDs8PrxOdgPnCBZu/o6NyitdG/texWVcR7UVFYuDAZWAtectX/Tw7EypKFE+vWPiaXnedmmlUafk+2Qu4Z1EQRWfI4VgKN3dItkz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QZBcbNO2; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-511344235c6so4676503e87.0;
-        Mon, 05 Feb 2024 01:09:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707124185; x=1707728985; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s8w06G0X7yIoSXZScOxoBiqjUMaYjQk83NXqtXbrmGo=;
-        b=QZBcbNO2Q72Ufawve9c1mTkMrS/ZCVtYfDwDFKTT/mEjPCRr7qfNxsmg5lboS7jGki
-         K5mMvYjoXDhNTDx+oz2l2gtgQj8ZO0z7DGIqvMQFD3vym7dmxRLz6cCrd5bSbsuZLtU2
-         FBMfrSgLeqyAmMrTtoqMiCZ72Hss8U3GFUE7vJOFAqxAZiDWOLdjpHU0EdL6XOcRnaWt
-         fJxKitFu178faFBUKAq20VOpDInES2ChOPgZuqodCwEYsM0Iu/qcO3Z/8SI0MiPJiYeU
-         tRLFSdeoPYL/9gIAgBEnku/38H66EJELTMhXvzIjAN/ANEskIEZb70G9ocmAH19m6MAP
-         vdlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707124185; x=1707728985;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s8w06G0X7yIoSXZScOxoBiqjUMaYjQk83NXqtXbrmGo=;
-        b=o5nGPZ8A39qUtTyJ7aJvZxFYmzC7i4jekusQF3fnJIKvZJzI4f0Ny+o61npChoHdjr
-         PT9B/5Pw1XUkHSpR9ZHrSHN7BBVoJu/5vlcZek6Hs1A2euveLNew0gNCbViqJQrHaJto
-         OEZ5Y17BqxGCsImXmC/+F4go9f2+WCrff/j3hBZdMH+SKkwqQRuwrMpvwKVBC0BfEmhX
-         wNBJBQDggy5StDkAbultwjYcvF4TybWwPwq4QQ0w0wwe1Ege9O0r3Lrs/ei9SyXv1Foj
-         xE0F2qaYuojtHOtYX4xrLVR8/on2qoyN/L0Qs9ILabJcJxB4Fgf4tFAWtyGZ4b2LN8IC
-         N4og==
-X-Gm-Message-State: AOJu0YxjUwdP92ROHJvqhLAgwxZfBVxLOwUrGH2W60lqghYjGYWMWLJy
-	uOV4fhjev1ydc/D0+FvpJufipbrFt2B7l5n+Kc6KWIbDrOHG+fhbgomRQ8NxuacMhi0mVa7arKj
-	umJXy9LaXp4T/NGYCn1g7Uyno36V9gCeS04Y=
-X-Google-Smtp-Source: AGHT+IEp2Fyw3kyCRgzHv0QN+TXUrgMZYK8Pb9IXx6JU+xD8Prc10dCnTzdL9bmyansE1HXl74VmcISttMHmm7OiSrU=
-X-Received: by 2002:a05:6512:3d87:b0:511:18f5:947a with SMTP id
- k7-20020a0565123d8700b0051118f5947amr6950020lfv.65.1707124185098; Mon, 05 Feb
- 2024 01:09:45 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C66D125A4;
+	Mon,  5 Feb 2024 09:11:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.105.49
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707124299; cv=fail; b=mlSxltihRrnueR1sX16skw/KJ32Im4VL8i+7p1Wfy8dXTUK9D1ultLVakqokJw3InqmYALcPahK7rnZkUUpsxeF8lo5IioB5Ty9aABYIifh3hI6X3WhqYBLWPGB9bT1GWRHHd9me4KZnm7TbZqcHRWL+myjzcBRJJ/eTGKOnEw4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707124299; c=relaxed/simple;
+	bh=gta1oeVfZV4uUpx7R2YddSf5Fl57u7vbhrOWaTMM1iQ=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=W63W9/0YzIxhbDmU+qRgc7Jh4LaZ+QIyx6wU4ucdIs5dgDbcxlCX5/pf/Uiczqkru7Yv6qeKgR7hl/Z1/skgm/6lPreVmjmwjkYAR3U5+o/+hroACv+SVLK4kqWVEj2ZKJ26JSKYOy3+wjf0Km5vZIEH4kOTaycpHmsy4b6Uvb4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=NYgcllhd; arc=fail smtp.client-ip=40.107.105.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ifgwXt7qSxfAihwJQI1xMUgkLbcAA/X5/RmtQCgaSQFVxBdksIZdszTc1EYz2jLzsy+Xxniz9oHUHwlhyXP5zozktxv2Og6c5Jo8ArkEj0CMIcbN5eJ5qvsMc4xZScPDvHdG1uKzKsinvmaBQ0EDyivb1Gh1ykGxcBZEgFvBh8gZrryefjJdY6WwLvk7m+t6sPx/ahJ3EKZIQxc/F17Ydy9mDv0haBWLFajQuLGE8CPK6vO/VJ/s1gSRVK+oJEVTrvsL7rA2yUbWC0YNhjsqIifYKpyH3prDur65S+yy6OgP+0wlaVC+0k5SK9khzv2meLQfQyAf0L+b4QA8Fz+O3A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gta1oeVfZV4uUpx7R2YddSf5Fl57u7vbhrOWaTMM1iQ=;
+ b=jIulqm+0+P0Say/Gn13RovtjNl8/thvgaIPhecAdKt7FeJ7DCgbSdqCpzAYyUYG6RV3b6bF9AbhG7tWUNCEZIkK6e+e5JWLSv5jybUEtZkgOzHWO/lUMnqD0x8gHNMeTxrdgA4KG0fi19fBQMvlYEPZD1WBUec7/XniNPS8fRaGdWAbX+uX8p9ENi82dq7J8JbBN4kq+Zl1ncQUeWm3zDXH4HCh+rfjWSREYUQtrdBnrlUiesR2HYzfAlZF6qDth9Jcf4WoUM/FDmBSMab57X5GN7Ayi1payvedmvgjJqFCuOYLRSfBSvHHproHas+UFzlsiWlp/Sy3DjX2f2RtPIQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gta1oeVfZV4uUpx7R2YddSf5Fl57u7vbhrOWaTMM1iQ=;
+ b=NYgcllhdFzubDeLov9wPZa2D6yMfV9lqiME9pAUQT7/LA8jLF+2EVVJMfRwvUBliIcqGPVDHts0z8V0X2tncKBtujmbBlefhQCxGiMo9naXWmPQw6i1lvyPi0xbv87zLddaa82FOTXCs0lrJ680hkOh5JJy5eI3zZqi4UgAxERQ=
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by DB9PR04MB9674.eurprd04.prod.outlook.com (2603:10a6:10:306::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.34; Mon, 5 Feb
+ 2024 09:11:34 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::c499:8cef:9bb1:ced6]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::c499:8cef:9bb1:ced6%3]) with mapi id 15.20.7249.032; Mon, 5 Feb 2024
+ 09:11:33 +0000
+From: Peng Fan <peng.fan@nxp.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+CC: Cristian Marussi <cristian.marussi@arm.com>, Sudeep Holla
+	<sudeep.holla@arm.com>, "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+	"souvik.chakravarty@arm.com" <Souvik.Chakravarty@arm.com>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	Oleksii Moisieiev <oleksii_moisieiev@epam.com>, Shawn Guo
+	<shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix
+ Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>,
+	dl-linux-imx <linux-imx@nxp.com>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-gpio@vger.kernel.org"
+	<linux-gpio@vger.kernel.org>, AKASHI Takahiro <takahiro.akashi@linaro.org>,
+	Rob Herring <robh@kernel.org>, Nitin Garg <nitin.garg_3@nxp.com>
+Subject: RE: [PATCH v3 0/6] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+ protocol basic support
+Thread-Topic: [PATCH v3 0/6] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+ protocol basic support
+Thread-Index:
+ AQHaTFMXfSW/KLMkFECgD1P261LWWrDwxwIAgAAQxgCABEqJkIAARhUAgASMwWCAAKqegIAA6plQ
+Date: Mon, 5 Feb 2024 09:11:33 +0000
+Message-ID:
+ <DU0PR04MB9417335A3A41BE4E373B915188472@DU0PR04MB9417.eurprd04.prod.outlook.com>
+References: <20240121-pinctrl-scmi-v3-0-8d94ba79dca8@nxp.com>
+ <f88d07ef-83b2-4d14-976a-6dbbd71e036f@oss.nxp.com>
+ <CACRpkdYV=qYQ9qDUWYTLDAV1niay30gYH5S=zjfi31GpeY5o-A@mail.gmail.com>
+ <DU0PR04MB9417A9074C5DC49AE689E65288432@DU0PR04MB9417.eurprd04.prod.outlook.com>
+ <Zbt-QkWhz5d9P-v6@pluto>
+ <DU0PR04MB9417CA6CF089B264112C32A088402@DU0PR04MB9417.eurprd04.prod.outlook.com>
+ <CACRpkdYCrbNB8wu4rO3Yx0qomxR3kTt0P7YH7kc2HPCbrgt=tg@mail.gmail.com>
+In-Reply-To:
+ <CACRpkdYCrbNB8wu4rO3Yx0qomxR3kTt0P7YH7kc2HPCbrgt=tg@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|DB9PR04MB9674:EE_
+x-ms-office365-filtering-correlation-id: b9a17002-0945-4e16-1e83-08dc262a72f6
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ i3T9vArM753OmasOdiL/S8pjeqFDASvLU48iBZB105JqtQoVJZmU2OMrOCDgRJ9hEouYS2/qHTJPBh1RkRCwILjdPJ4ugAKDX/DM1FuuRvis27FoA4Mp9THd1pBnSsoMMLQqbo8Z97gwq1Ennh4KmW1kBwQlVK8lctu+XtQqMMvwIp7mULthDEQfE2HgnVC8JloNBsVlQzA6v9fzJW2CgAoP5ZUpLeJZdiv27fjnatYBLzW0z7ldh5ssrHuyBEFh6qGBpzcxY2yKxThPGInJW4PVPh7+t0HGNMXYEyHPVn6fjiJ0v9etIvekWfCdp0N3H/454LzmNmYAhT/kO55pqnbx3cFrLqqy5xmILnUFRaxM0MoLkwUBLe3Q1TDYL8ZGzWdga4IUTrYddGvrxOtIQtKcLhZ9I8dA0afRfLaxh11BIbWjkxjDqPhuXq8klZEnyy7MmXQwc98jpV3zwe2xbRl76AgawAl3n//HXFmye4HHoZ4J3qmlhwxQ93ttjcJPUTi33oDyqhJGmgbUdwv9ypxoiXClCmvoe1Y1+hAgqVl4Wtq97pHDpnaoxGJVgn/QriUPCi0xXdlAu+FXzKIHTvRwTLQR0HyRHt+GV193tHg=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(396003)(376002)(136003)(39860400002)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(83380400001)(66556008)(38100700002)(8936002)(122000001)(4326008)(966005)(45080400002)(478600001)(8676002)(64756008)(66446008)(54906003)(66476007)(6916009)(66946007)(52536014)(76116006)(316002)(5660300002)(7416002)(2906002)(71200400001)(6506007)(44832011)(26005)(9686003)(53546011)(7696005)(38070700009)(33656002)(86362001)(41300700001)(55016003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?SVdSK3ZTb2VoNzNWZllFMzhnWkJrcU5ydCs3WWJ6NER1WXZiMHp2UDZZdGJE?=
+ =?utf-8?B?eVpnUE00NllCKzF3ZW9md1lad3RLcVl2RitUcDNZT1JITlRDTzkrT0tsSUNw?=
+ =?utf-8?B?Q0pFMEhCeE54RXZqWFUvUVJGdUpXZWs3bkR4Si9WNVFIVHBmYjZRMlIxZ21R?=
+ =?utf-8?B?Sk56UlJ4cTU5ZVFyaSs0SFoyY2gzRWZjVkxKeXJnYm1STEcrVHdselNnQlVi?=
+ =?utf-8?B?VTFIZWZmZXREN1RGQ00zYXdPL2FLeW14a0xQdTdWd1RoMDZldDRFZTRiUDBZ?=
+ =?utf-8?B?d2pnRUFxOWE4YlVjcmZkb3UvelhrVEdCbnR2WTVJMStCc1VDeFJRNXBsT3cr?=
+ =?utf-8?B?Mzkvb0wzN1hSM2Zyd3FkS1FRN05QdnRFQXcrc0dPNFZsb1hYWm4vZmxoYmJi?=
+ =?utf-8?B?YU9XZ2lDU0RySUVrS0VOT0RLL3B4VzE3dStPRmdYSkp2dHhpZDdtdFlaRWJp?=
+ =?utf-8?B?ci9uVVBzd1RzWjBjUTRVVk4yb2UxUWNSdGpHVTBIbFVYbWczbHZkSkI5b1JF?=
+ =?utf-8?B?NW14NkZ0Rkt4T0RZZWZkZDlpTXhDaDBKZ0g5aUpCam9uYWthN29mck9FNFV1?=
+ =?utf-8?B?WXRhYnRHNGY5alNJd0FJWnA5S1lsVlZOTlNKUmc0RllodS83bjZScmhtWG91?=
+ =?utf-8?B?OXRsZGJoQWlXRU54RWNOZVZ1WjYxK2x4ZDJZeUZaMTVMSGp5eU9kWStTUGZw?=
+ =?utf-8?B?RkhJUEtBQkhxR044MkZrZHVFNmJkaFhUSDdwdXU0T05PTkFhd2FvWVJVSGZC?=
+ =?utf-8?B?MHJHc1BSZDJxUy9saERxRmFiTDNWWTBuMk8zSzlHZk9RcHJ3YjM3bE04VGFl?=
+ =?utf-8?B?QXVKb2puV1JBcnBCNXVaUDRoT3RST2dxaVZxbk9QQ2oxdktPNlBMcjVHaVNC?=
+ =?utf-8?B?dm9Gd3RJaXpsMFc3UU1qU09QT2FlaTJ5Skg0U21FbnhPT2dUYXBoZG1STnNC?=
+ =?utf-8?B?d2JNemUzdUpsRVBoaWNsaHp1dzJPaFNEU3JKTjNYcXNyaE5iS01tU2k1Mldh?=
+ =?utf-8?B?QkJKL0kvekJ1YzNSQjA0WkxyRkgzREFvaFdhendJdmpWMGJ5NGloQStwdCt6?=
+ =?utf-8?B?b2NLbnN6Z1dJZGtqUkg3N3pQRjRsaDI3UzdhT3lvSWo3UUZzNmxKUW5pcVRL?=
+ =?utf-8?B?OEhEc2pqOTM1bC8xcEZyTnptaVZoZDBxbGdyREw4NFJFbC9Hc0Rsd29MNWVS?=
+ =?utf-8?B?TTU0VTNhNzZIM3dMTWoya0paOXFYSHppU2RRa1ZrS3lnT0NxY2tMdVpBKytV?=
+ =?utf-8?B?K1JLL2F2QVkwZ0RDWnE4L0QyUVBkWDRPUW83RE5DZzRoZXhYYmVNUmg1aDEw?=
+ =?utf-8?B?WW81dTdLb2xMUGV5WjRDVlpZSS8xaG1WTURZLzVyc1YrNXF0WThLN3dyZVJ1?=
+ =?utf-8?B?REpYRFh4Yi90UE5uaW1zaCtGc1JJOXF1MXc2SHJxYkFYMHZWc0Zhak55SnZ6?=
+ =?utf-8?B?cUZOWHgyVXp4RDRDejc1N245WjlGNHIyYlNIem9OU0NoNUxVYnVsRWNHNTRM?=
+ =?utf-8?B?TThTdzUxYzFrVnVtMlNXMS9kZHpCOWtTcklCMTg2MHBKb3Jyd2RYM2hvTFNs?=
+ =?utf-8?B?UHhRSTgyMkZaQzZ2YW1MWnkzQ1pjTHE3ZWs4WmEwQWpUekg1NXpzZzNDOU9W?=
+ =?utf-8?B?dDF0V3RRbENOVS9qQjhzZ3NhcWR1bExDc2ZPSFlWbVkzQ2tIdG84QjFsR1hW?=
+ =?utf-8?B?TVBhTnRjQ0djaUVhbjJvUUdwWHFFRERodzhPVEswWmdLMUV5eHhjb0RwaWNk?=
+ =?utf-8?B?cUNsWTM2Ri84dmJSVnN6emh0RVVNYjVzNkVaSkJ0UVViTlFqcUpUK2VKeDAz?=
+ =?utf-8?B?SVhIRWowaWZ0ZHZJSG1ibzJ0NXh0Skk4MU9uUHJsd2FKVkZDekUwSnVQKzd0?=
+ =?utf-8?B?ME9uZ0RMeGxhT3ZDV2gwWmEzSi9kbGowc0IzMnp0eFU2b2lielZ2SWJKNll2?=
+ =?utf-8?B?WGxINDJOTnJiNGVkWTZ4Si9JemFMdUsySExBVmhGRUtiYUZhWm9oaTlqNnk4?=
+ =?utf-8?B?NFNvWUo0eE1ISTc0SVFRdXJoWmZwWU9zeXMwUmRsMVNFMDRpZTdldmpaZzRD?=
+ =?utf-8?B?RmNhdXZmeUFJalVaanRSNG52SXA0VHZUbEp1RjBFck1CSGF4bnl4MTk3Uk43?=
+ =?utf-8?Q?RRSA=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205090552.40567-1-zhaoyang.huang@unisoc.com>
-In-Reply-To: <20240205090552.40567-1-zhaoyang.huang@unisoc.com>
-From: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date: Mon, 5 Feb 2024 17:09:33 +0800
-Message-ID: <CAGWkznEGKFWdvSfa87BveT_=yfQQpzerOCFn=x+a7PJTDNJUYA@mail.gmail.com>
-Subject: Re: [PATCHv8 1/1] block: introduce content activity based ioprio
-To: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
-Cc: Jens Axboe <axboe@kernel.dk>, Matthew Wilcox <willy@infradead.org>, Yu Zhao <yuzhao@google.com>, 
-	linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, steve.kang@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b9a17002-0945-4e16-1e83-08dc262a72f6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Feb 2024 09:11:33.8409
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: TV3slXMs+K3IOoasRqv+XPfm02KURapQTSeKmGi1hm+gDMyls6SsxxvJrli/uVT+rTFuo/YXXl3ZaUQDJbDe0A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9674
 
-On Mon, Feb 5, 2024 at 5:06=E2=80=AFPM zhaoyang.huang <zhaoyang.huang@uniso=
-c.com> wrote:
->
-> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
->
-> Currently, request's ioprio are set via task's schedule priority(when no
-> blkcg configured), which has high priority tasks possess the privilege on
-> both of CPU and IO scheduling. Furthermore, most of the write requestes
-> are launched asynchronosly from kworker which can't know the submitter's
-> priorities.
-> This commit works as a hint of original policy by promoting the request
-> ioprio based on the page/folio's activity. The original idea comes from
-> LRU_GEN which provides more precised folio activity than before. This
-> commit try to adjust the request's ioprio when certain part of its folios
-> are hot, which indicate that this request carry important contents and
-> need be scheduled ealier.
->
-> This commit provide two sets of exclusive APIs.
->
-> *counting activities by iterating the bio's pages
-> The filesystem should call bio_set_active_ioprio() before submit_bio on t=
-he
-> spot where they want(buffered read/write/sync etc).
->
-> *counting activities during each call
-> The filesystem should call bio_set_active_ioprio_page/folio() after
-> calling bio_add_page/folio. Please be noted that this set of API can not
-> handle bvec_try_merge_page cases.
->
-> This commit is verified on a v6.6 6GB RAM android14 system via 4 test cas=
-es
-> by calling bio_set_active_ioprio in erofs, ext4, f2fs and blkdev(raw
-> partition of gendisk)
->
-> Case 1:
-> script[a] which get significant improved fault time as expected[b]*
-> where dd's cost also shrink from 55s to 40s.
-> (1). fault_latency.bin is an ebpf based test tool which measure all task'=
-s
->    iowait latency during page fault when scheduled out/in.
-> (2). costmem generate page fault by mmaping a file and access the VA.
-> (3). dd generate concurrent vfs io.
->
-> [a]
-> ./fault_latency.bin 1 5 > /data/dd_costmem &
-> costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-> costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-> costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-> costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-> dd if=3D/dev/block/sda of=3D/data/ddtest bs=3D1024 count=3D2048000 &
-> dd if=3D/dev/block/sda of=3D/data/ddtest1 bs=3D1024 count=3D2048000 &
-> dd if=3D/dev/block/sda of=3D/data/ddtest2 bs=3D1024 count=3D2048000 &
-> dd if=3D/dev/block/sda of=3D/data/ddtest3 bs=3D1024 count=3D2048000
-> [b]
->                        mainline         commit
-> io wait                736us            523us
->
-> * provide correct result for test case 1 in v7 which was compared between
-> EMMC and UFS wrongly.
->
-> Case 2:
-> fio -filename=3D/dev/block/by-name/userdata -rw=3Drandread -direct=3D0 -b=
-s=3D4k -size=3D2000M -numjobs=3D8 -group_reporting -name=3Dmytest
-> mainline: 513MiB/s
-> READ: bw=3D531MiB/s (557MB/s), 531MiB/s-531MiB/s (557MB/s-557MB/s), io=3D=
-15.6GiB (16.8GB), run=3D30137-30137msec
-> READ: bw=3D543MiB/s (569MB/s), 543MiB/s-543MiB/s (569MB/s-569MB/s), io=3D=
-15.6GiB (16.8GB), run=3D29469-29469msec
-> READ: bw=3D474MiB/s (497MB/s), 474MiB/s-474MiB/s (497MB/s-497MB/s), io=3D=
-15.6GiB (16.8GB), run=3D33724-33724msec
-> READ: bw=3D535MiB/s (561MB/s), 535MiB/s-535MiB/s (561MB/s-561MB/s), io=3D=
-15.6GiB (16.8GB), run=3D29928-29928msec
-> READ: bw=3D523MiB/s (548MB/s), 523MiB/s-523MiB/s (548MB/s-548MB/s), io=3D=
-15.6GiB (16.8GB), run=3D30617-30617msec
-> READ: bw=3D492MiB/s (516MB/s), 492MiB/s-492MiB/s (516MB/s-516MB/s), io=3D=
-15.6GiB (16.8GB), run=3D32518-32518msec
-> READ: bw=3D533MiB/s (559MB/s), 533MiB/s-533MiB/s (559MB/s-559MB/s), io=3D=
-15.6GiB (16.8GB), run=3D29993-29993msec
-> READ: bw=3D524MiB/s (550MB/s), 524MiB/s-524MiB/s (550MB/s-550MB/s), io=3D=
-15.6GiB (16.8GB), run=3D30526-30526msec
-> READ: bw=3D529MiB/s (554MB/s), 529MiB/s-529MiB/s (554MB/s-554MB/s), io=3D=
-15.6GiB (16.8GB), run=3D30269-30269msec
-> READ: bw=3D449MiB/s (471MB/s), 449MiB/s-449MiB/s (471MB/s-471MB/s), io=3D=
-15.6GiB (16.8GB), run=3D35629-35629msec
->
-> commit: 633MiB/s
-> READ: bw=3D668MiB/s (700MB/s), 668MiB/s-668MiB/s (700MB/s-700MB/s), io=3D=
-15.6GiB (16.8GB), run=3D23952-23952msec
-> READ: bw=3D589MiB/s (618MB/s), 589MiB/s-589MiB/s (618MB/s-618MB/s), io=3D=
-15.6GiB (16.8GB), run=3D27164-27164msec
-> READ: bw=3D638MiB/s (669MB/s), 638MiB/s-638MiB/s (669MB/s-669MB/s), io=3D=
-15.6GiB (16.8GB), run=3D25071-25071msec
-> READ: bw=3D714MiB/s (749MB/s), 714MiB/s-714MiB/s (749MB/s-749MB/s), io=3D=
-15.6GiB (16.8GB), run=3D22409-22409msec
-> READ: bw=3D600MiB/s (629MB/s), 600MiB/s-600MiB/s (629MB/s-629MB/s), io=3D=
-15.6GiB (16.8GB), run=3D26669-26669msec
-> READ: bw=3D592MiB/s (621MB/s), 592MiB/s-592MiB/s (621MB/s-621MB/s), io=3D=
-15.6GiB (16.8GB), run=3D27036-27036msec
-> READ: bw=3D691MiB/s (725MB/s), 691MiB/s-691MiB/s (725MB/s-725MB/s), io=3D=
-15.6GiB (16.8GB), run=3D23150-23150msec
-> READ: bw=3D569MiB/s (596MB/s), 569MiB/s-569MiB/s (596MB/s-596MB/s), io=3D=
-15.6GiB (16.8GB), run=3D28142-28142msec
-> READ: bw=3D563MiB/s (590MB/s), 563MiB/s-563MiB/s (590MB/s-590MB/s), io=3D=
-15.6GiB (16.8GB), run=3D28429-28429msec
-> READ: bw=3D712MiB/s (746MB/s), 712MiB/s-712MiB/s (746MB/s-746MB/s), io=3D=
-15.6GiB (16.8GB), run=3D22478-22478msec
->
-> Case 3:
-> This commit is also verified by the case of launching camera APP which is
-> usually considered as heavy working load on both of memory and IO, which
-> shows 12%-24% improvement.
->
->                 ttl =3D 0         ttl =3D 50        ttl =3D 100
-> mainline        2267ms          2420ms          2316ms
-> commit          1992ms          1806ms          1998ms
->
-> case 4:
-> androbench has no improvment as well as regression in RD/WR test item
-> while make a 3% improvement in sqlite items.
->
-> Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> ---
-> change of v2: calculate page's activity via helper function
-> change of v3: solve layer violation by move API into mm
-> change of v4: keep block clean by removing the page related API
-> change of v5: introduce the macros of bio_add_folio/page for read dir.
-> change of v6: replace the macro of bio_add_xxx by submit_bio which
->                 iterating the bio_vec before launching bio to block layer
-> change of v7: introduce the function bio_set_active_ioprio
->               provide updated test result
-> change of v8: provide two sets of APIs for bio_set_active_ioprio_xxx
-> ---
-> ---
->  block/Kconfig             | 27 +++++++++++
->  block/bio.c               | 94 +++++++++++++++++++++++++++++++++++++++
->  include/linux/bio.h       |  3 ++
->  include/linux/blk_types.h |  7 ++-
->  4 files changed, 130 insertions(+), 1 deletion(-)
->
-> diff --git a/block/Kconfig b/block/Kconfig
-> index f1364d1c0d93..5e721678ea3d 100644
-> --- a/block/Kconfig
-> +++ b/block/Kconfig
-> @@ -228,6 +228,33 @@ config BLOCK_HOLDER_DEPRECATED
->  config BLK_MQ_STACKING
->         bool
->
-> +config BLK_CONT_ACT_BASED_IOPRIO
-> +       bool "Enable content activity based ioprio"
-> +       depends on LRU_GEN
-> +       default n
-> +       help
-> +         This item enable the feature of adjust bio's priority by
-> +         calculating its content's activity.
-> +         This feature works as a hint of original bio_set_ioprio
-> +         which means rt task get no change of its bio->bi_ioprio
-> +         while other tasks have the opportunity to raise the ioprio
-> +         if the bio take certain numbers of active pages.
-> +         The file system should use this by modifying their buffered
-> +         read/write/sync function to raise the bio->bi_ioprio before
-> +         calling submit_bio or after bio_add_page/folio
-> +
-> +config BLK_CONT_ACT_BASED_IOPRIO_ITER_BIO
-> +       bool "Counting bio's activity by iterating bio's pages"
-> +       depends on BLK_CONT_ACT_BASED_IOPRIO
-> +       help
-> +         The API under this config counts bio's activity by iterating th=
-e bio.
-> +
-> +config BLK_CONT_ACT_BASED_IOPRIO_ADD_PAGE
-> +       bool "Counting bio's activity when adding page or folio"
-> +       depends on BLK_CONT_ACT_BASED_IOPRIO && !BLK_CONT_ACT_BASED_IOPRI=
-O_ITER_BIO
-> +       help
-> +         The API under this config count activity during each call buy c=
-an't
-> +          handle bvec_try_merge_page cases, please be sure you are ok wi=
-th that.
-counting activities during each call can not handle
-bvec_try_merge_page cases as it returns the valid value. So I provide
-two sets of exclusive APIs by keeping the iteration one
-int bio_add_page(struct bio *bio, struct page *page,
-                 unsigned int len, unsigned int offset)
-{
-        bool same_page =3D false;
-
-        if (WARN_ON_ONCE(bio_flagged(bio, BIO_CLONED)))
-                return 0;
-        if (bio->bi_iter.bi_size > UINT_MAX - len)
-                return 0;
-
-        if (bio->bi_vcnt > 0 &&
-            bvec_try_merge_page(&bio->bi_io_vec[bio->bi_vcnt - 1],
-                                page, len, offset, &same_page)) {
-                bio->bi_iter.bi_size +=3D len;
-                return len;
-        }
-
-        if (bio->bi_vcnt >=3D bio->bi_max_vecs)
-                return 0;
-        __bio_add_page(bio, page, len, offset);
-        return len;
-}
-
->  source "block/Kconfig.iosched"
->
->  endif # BLOCK
-> diff --git a/block/bio.c b/block/bio.c
-> index 816d412c06e9..73916a6c319f 100644
-> --- a/block/bio.c
-> +++ b/block/bio.c
-> @@ -1476,6 +1476,100 @@ void bio_set_pages_dirty(struct bio *bio)
->  }
->  EXPORT_SYMBOL_GPL(bio_set_pages_dirty);
->
-> +/*
-> + * bio_set_active_ioprio() is helper function for fs to adjust the bio's=
- ioprio via
-> + * calculating the content's activity which measured from MGLRU.
-> + * The file system should call this function before submit_bio for the b=
-uffered
-> + * read/write/sync.
-> + */
-> +#ifdef CONFIG_BLK_CONT_ACT_BASED_IOPRIO
-> +#ifdef CONFIG_BLK_CONT_ACT_BASED_IOPRIO_ITER_BIO
-> +void bio_set_active_ioprio(struct bio *bio)
-> +{
-> +       struct bio_vec bv;
-> +       struct bvec_iter iter;
-> +       struct page *page;
-> +       int class, level, hint;
-> +       int activity =3D 0;
-> +       int cnt =3D 0;
-> +
-> +       class =3D IOPRIO_PRIO_CLASS(bio->bi_ioprio);
-> +       level =3D IOPRIO_PRIO_LEVEL(bio->bi_ioprio);
-> +       hint =3D IOPRIO_PRIO_HINT(bio->bi_ioprio);
-> +       /*apply legacy ioprio policy on RT task*/
-> +       if (task_is_realtime(current)) {
-> +               bio->bi_ioprio =3D IOPRIO_PRIO_VALUE_HINT(IOPRIO_CLASS_RT=
-, level, hint);
-> +               return;
-> +       }
-> +       bio_for_each_bvec(bv, bio, iter) {
-> +               page =3D bv.bv_page;
-> +               activity +=3D PageWorkingset(page) ? 1 : 0;
-> +               cnt++;
-> +               if (activity > bio->bi_vcnt / 2) {
-> +                       class =3D IOPRIO_CLASS_RT;
-> +                       break;
-> +               } else if (activity > bio->bi_vcnt / 4) {
-> +                       /*
-> +                        * all itered pages are all active so far
-> +                        * then raise to RT directly
-> +                        */
-> +                       if (activity =3D=3D cnt) {
-> +                               class =3D IOPRIO_CLASS_RT;
-> +                               break;
-> +                       } else
-> +                               class =3D max(IOPRIO_PRIO_CLASS(get_curre=
-nt_ioprio()),
-> +                                               IOPRIO_CLASS_BE);
-> +               }
-> +       }
-> +       if (!class && activity > cnt / 2)
-> +               class =3D IOPRIO_CLASS_RT;
-> +       else if (!class && activity > cnt / 4)
-> +               class =3D max(IOPRIO_PRIO_CLASS(get_current_ioprio()), IO=
-PRIO_CLASS_BE);
-> +
-> +       bio->bi_ioprio =3D IOPRIO_PRIO_VALUE_HINT(class, level, hint);
-> +}
-> +void bio_set_active_ioprio_folio(struct bio *bio, struct folio *folio) {=
-}
-> +void bio_set_active_ioprio_page(struct bio *bio, struct page *page) {}
-> +#endif
-> +#ifdef CONFIG_BLK_CONT_ACT_BASED_IOPRIO_ADD_PAGE
-> +/*
-> + * bio_set_active_ioprio_page/folio are helper functions for counting
-> + * the bio's activity during each all. However, it can't handle the
-> + * scenario of bvec_try_merge_page. The submitter can use them if there
-> + * is no such case in the system(block size < page size)
-> + */
-> +void bio_set_active_ioprio_page(struct bio *bio, struct page *page)
-> +{
-> +       int class, level, hint;
-> +
-> +       class =3D IOPRIO_PRIO_CLASS(bio->bi_ioprio);
-> +       level =3D IOPRIO_PRIO_LEVEL(bio->bi_ioprio);
-> +       hint =3D IOPRIO_PRIO_HINT(bio->bi_ioprio);
-> +       bio->bi_cont_act +=3D PageWorkingset(page) ? 1 : 0;
-> +
-> +       if (bio->bi_cont_act > bio->bi_vcnt / 2)
-> +               class =3D IOPRIO_CLASS_RT;
-> +       else if (bio->bi_cont_act > bio->bi_vcnt / 4)
-> +               class =3D max(IOPRIO_PRIO_CLASS(get_current_ioprio()), IO=
-PRIO_CLASS_BE);
-> +
-> +       bio->bi_ioprio =3D IOPRIO_PRIO_VALUE_HINT(class, level, hint);
-> +}
-> +
-> +void bio_set_active_ioprio_folio(struct bio *bio, struct folio *folio)
-> +{
-> +       bio_set_active_ioprio_page(bio, &folio->page);
-> +}
-> +void bio_set_active_ioprio(struct bio *bio) {}
-> +#endif
-> +#else
-> +void bio_set_active_ioprio(struct bio *bio) {}
-> +void bio_set_active_ioprio_page(struct bio *bio, struct page *page) {}
-> +void bio_set_active_ioprio_folio(struct bio *bio, struct folio *folio) {=
-}
-> +#endif
-> +EXPORT_SYMBOL_GPL(bio_set_active_ioprio);
-> +EXPORT_SYMBOL_GPL(bio_set_active_ioprio_page);
-> +EXPORT_SYMBOL_GPL(bio_set_active_ioprio_folio);
-> +
->  /*
->   * bio_check_pages_dirty() will check that all the BIO's pages are still=
- dirty.
->   * If they are, then fine.  If, however, some pages are clean then they =
-must
-> diff --git a/include/linux/bio.h b/include/linux/bio.h
-> index 41d417ee1349..35221ee3dd54 100644
-> --- a/include/linux/bio.h
-> +++ b/include/linux/bio.h
-> @@ -487,6 +487,9 @@ void bio_iov_bvec_set(struct bio *bio, struct iov_ite=
-r *iter);
->  void __bio_release_pages(struct bio *bio, bool mark_dirty);
->  extern void bio_set_pages_dirty(struct bio *bio);
->  extern void bio_check_pages_dirty(struct bio *bio);
-> +extern void bio_set_active_ioprio(struct bio *bio);
-> +extern void bio_set_active_ioprio_folio(struct bio *bio, struct folio *f=
-olio);
-> +extern void bio_set_active_ioprio_page(struct bio *bio, struct page *pag=
-e);
->
->  extern void bio_copy_data_iter(struct bio *dst, struct bvec_iter *dst_it=
-er,
->                                struct bio *src, struct bvec_iter *src_ite=
-r);
-> diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
-> index d5c5e59ddbd2..a3a18b9a5168 100644
-> --- a/include/linux/blk_types.h
-> +++ b/include/linux/blk_types.h
-> @@ -314,7 +314,12 @@ struct bio {
->         struct bio_vec          *bi_io_vec;     /* the actual vec list */
->
->         struct bio_set          *bi_pool;
-> -
-> +#ifdef CONFIG_BLK_CONT_ACT_BASED_IOPRIO
-> +       /*
-> +        * bi_cont_act record total activities of bi_io_vec->pages
-> +        */
-> +       u64                     bi_cont_act;
-> +#endif
->         /*
->          * We can inline a number of vecs at the end of the bio, to avoid
->          * double allocations for a small number of bio_vecs. This member
-> --
-> 2.25.1
->
+PiBTdWJqZWN0OiBSZTogW1BBVENIIHYzIDAvNl0gZmlybXdhcmU6IGFybV9zY21pOiBBZGQgU0NN
+SSB2My4yIHBpbmNvbnRyb2wNCj4gcHJvdG9jb2wgYmFzaWMgc3VwcG9ydA0KPg0KPiBPbiBTdW4s
+IEZlYiA0LCAyMDI0IGF0IDEwOjI54oCvQU0gUGVuZyBGYW4gPHBlbmcuZmFuQG54cC5jb20+IHdy
+b3RlOg0KPg0KPiA+IFVzaW5nIGdlbmVyaWMgcGluY29uZiBtZWFucyB0aGUgZmlybXdhcmUgbmVl
+ZHMgZXhwb3J0aW5nDQo+ID4gZ3JvdXBzL2Z1bmN0aW9ucy9waW5zIGFuZCBldGMsIHRoZSBmaXJt
+d2FyZSBkZXNpZ24gd2lsbCBiZSBjb21wbGljYXRlZCBhbmQNCj4gY29kZSBzaXplIGVubGFyZ2Vk
+Lg0KPg0KPiBUaGlzIGlzIHZlcnkgbXVjaCB0byB0aGUgY29yZSBvZiB0aGUgcHJvYmxlbSBpc24n
+dCBpdD8NCg0KWWVzLiBDb2RlIHNpemUgc2hvdWxkIGJlIGFzIHNtYWxsIGFzIHBvc3NpYmxlLg0K
+DQpBbmQgdXNpbmcgU0NNSSBnZW5lcmljIHBpbmNvbmYsIHRoZXJlIHdpbGwgYmUgbXVsdGlwbGUN
+ClNDTUkgY2FsbHMobm90IE1NSU8gYWNjZXNzKSwgc3VjaCBhcyBzZXR0aW5nIG11eChvcHMtPnNl
+dF9tdXgpDQpuZWVkcyBhbiBTQ01JIGNhbGwsIHBhZCBzZXR0aW5ncyhvcHMtPnBpbl9jb25maWdf
+c2V0KSBuZWVkcyBhbiBTQ01JIGNhbGwuDQpBbmQgbWF5YmUgb3BzLT5nZXRfZnVuY3Rpb25fbmFt
+ZSAgbmVlZHMgYW4gZXh0cmEgU0NNSSBjYWxsLg0KDQpXaXRoIGN1cnJlbnQgaS5NWCBkZXNpZ24s
+IG9ubHkgb25lIFNDTUkgY2FsbCBpcyB1c2VkLCB3aGljaA0KdXNlIGxlc3MgdGltZS4NCg0KPg0K
+PiBTbyB0aGUgYXJndW1lbnQgaXMgdG8gc2F2ZSBjb2RlIGVmZm9ydCBhbmQgc2l6ZSBpbiB0aGUg
+ZmlybXdhcmUuDQo+DQo+IFRoaXMgcmVmbGVjdHMgc29tZSBvZiB0aGUgcmVhc29uaW5nIGJlaGlu
+ZCB0aGUgZGV2aWNlIHRyZWUgYmluZGluZ3MgdGhhdA0KPiBlbmNvZGUgIm1hZ2ljIG51bWJlcnMi
+IGluIHRoZSBEVCBub2RlcyB0byBtdXggYW5kIGNvbmZpZ3VyZSBwaW5zLiBPZnRlbg0KPiB0aGUg
+YXJndW1lbnQgaXMgdGhhdCBpdCBzYXZlcyBzcGFjZSBhbmQgZWZmb3J0Lg0KPg0KPiBXaGVuIHRo
+ZSBpLk1YIGRyaXZlciB3YXMgZmlyc3QgZGlzY3Vzc2VkIGl0IHVzZWQgdGhlIHN0YW5kYXJkIHNj
+aGVtZSBhY3R1YWxseS4NCj4gTG9vayBhdCBpLk1YIDUzIGZvciBleGFtcGxlOg0KPiBodHRwczov
+L2xvcmUua2UvDQo+IHJuZWwub3JnJTJGbGludXgta2VybmVsJTJGMTMyMjk5OTM4NC03ODg2LTIt
+Z2l0LXNlbmQtZW1haWwtDQo+IGIyOTM5NiU0MGZyZWVzY2FsZS5jb20lMkYmZGF0YT0wNSU3QzAy
+JTdDcGVuZy5mYW4lNDBueHAuY29tJTdDDQo+IGRiMDYwNGIxMzY2MzQ2YTBkYTExMDhkYzI1YjM2
+MDdkJTdDNjg2ZWExZDNiYzJiNGM2ZmE5MmNkOTljNWMzDQo+IDAxNjM1JTdDMCU3QzAlN0M2Mzg0
+MjY2OTk1NTE4NDgwNzYlN0NVbmtub3duJTdDVFdGcGJHWnNiMw0KPiBkOGV5SldJam9pTUM0d0xq
+QXdNREFpTENKUUlqb2lWMmx1TXpJaUxDSkJUaUk2SWsxaGFXd2lMQ0pYVkNJNk1uMA0KPiAlM0Ql
+N0MwJTdDJTdDJTdDJnNkYXRhPWolMkZBJTJCYWdvTDJFWFV6RFNrZzF3dFNFTlBrdXhiMFlMMQ0K
+PiBuVFRCN3hDSUJURSUzRCZyZXNlcnZlZD0wDQo+DQo+IEdyb3VwcyBhbmQgZnVuY3Rpb25zISBB
+cyBzdHJpbmdzIQ0KPg0KPiBUaGVuIHRoZSBEVCBiaW5kaW5ncyB3ZXJlIGRpc2N1c3NlZCBiYWNr
+IGFuZCBmb3J0aCBiZXR3ZWVuIERvbmcgQWlzaGVuZw0KPiAodGhlIG9yaWdpbmFsIGRyaXZlciBh
+dXRob3IpLCBTYXNoYSBIYXVlciBhbmQgU2hhd24gR3VvIGJlZm9yZSBhcnJpdmluZyBhdA0KPiB0
+aGUgZnNsLHBpbnMgc2NoZW1lLg0KPg0KPiBCYWNrIGluIHRoZSBkYXkgSSB3YXMgcHJldHR5IG11
+Y2ggY2x1ZWxlc3MgYWJvdXQgZGV2aWNlIHRyZWUgYW5kIHJlbGllZCBvbg0KPiBvdGhlcnMgdG8g
+cmV2aWV3IHRoZSBiaW5kaW5ncywgd2hpY2ggZW5kZWQgdXAgbGlrZSB0aGlzOg0KPiBEb2N1bWVu
+dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGluY3RybC9mc2wsaW14LXBpbmN0cmwudHh0DQo+
+DQo+IFRoaXMgd2FzIGluIDIwMTEvMjAxMiBzbyBtYW55IHRoaW5ncyB3ZXJlIG5vdCBjb25zaWRl
+cmVkLiBJdCBpcyBjbGVhciB0aGF0DQo+IHRoaXMgc2NoZW1lIHdpdGggYSBudW1iZXIgb2YgaW50
+ZWdlcnMgdGhhdCBnZXQgcG9rZWQgaW50byByZWdpc3RlcnMgaXMNCj4gY29udmVuaWVudCBmb3Ig
+c29tZSBEVCBhdXRob3JzLCBhbHNvIHBpbmN0cmwtc2luZ2xlIHVzZXMgdGhpcyBhcyB3ZWxsIGFz
+IEkgdGhpbmsNCj4gTWVkaWF0ZWsgYW5kIG1heWJlIGEgZmV3IG90aGVycy4NCj4NCj4gT3ZlciB0
+aGUgeWVhcnMgSSBoYXZlIGNvbWUgdG8gcmVncmV0IGl0IGEgYml0LCBJIHRoaW5rIGluc2lzdGlu
+ZyBvbiBncm91cHMgYW5kDQo+IGZ1bmN0aW9ucyBhcyBzdHJpbmdzIGlzIGJldHRlciBmb3IgYWJz
+dHJhY3Rpb24uIEFuZCB0aGUgcG9pbnQgb2YgZmlybXdhcmUgaXMgdG8NCj4gYWJzdHJhY3QgdGhp
+bmdzIHNvIHRoZXkgd29yayB0aGUgc2FtZSBvbiBhbGwgc3lzdGVtcy4NCg0KV2l0aCBjdXJyZW50
+Og0KICAgICAgICBwaW5jdHJsX3VhcnQxOiB1YXJ0MWdycCB7DQogICAgICAgICAgICAgICAgZnNs
+LHBpbnMgPSA8DQogICAgICAgICAgICAgICAgICAgICAgICBJTVg5NV9QQURfVUFSVDFfUlhEX19B
+T05NSVhfVE9QX0xQVUFSVDFfUlggICAgICAweDMxZQ0KICAgICAgICAgICAgICAgICAgICAgICAg
+SU1YOTVfUEFEX1VBUlQxX1RYRF9fQU9OTUlYX1RPUF9MUFVBUlQxX1RYICAgICAgMHgzMWUNCiAg
+ICAgICAgICAgICAgICA+Ow0KICAgICAgICB9Ow0KDQpJdCBpcyB2ZXJ5IGVhc3kgZm9yIHBlb3Bs
+ZSB0byBrbm93IHRoZSBtZWFuaW5nIGZyb20gcmVhZGluZyByZWZlcmVuY2UgbWFudWFsLg0KDQpJ
+ZiB1c2luZyBnZW5lcmljIHBpbmNvbmYsIHRoZSBkdCBub2RlIHdpbGwgYmUgbGlrZQ0KVWFydGdy
+cCB7DQogICAgICAgIHBpbnMgPSAidWFydDF0eGQiLCAidWFydDFyeGQiOw0KICAgICAgICBmdW5j
+dGlvbnMgPSAidWFydDEiOw0KICAgICAgICBiaWFzLXh4DQogICAgICAgIGRyaXZlLXN0cmVuZ3Ro
+ID0NCn07DQoNClRoZSBmaXJtd2FyZSBuZWVkcyBhZGQgbW9yZSBjb2RlIHRvIGV4cG9ydCBmdW5j
+dGlvbnMsIHBhY2sgdGhlIGNvbmYgc2V0dGluZ3MsDQplYWNoIHBpbnMgbmVlZHMgYSBmdW5jdGlv
+biBuYW1lIHBlciBjdXJyZW50IGkuTVggSFcgbG9naWMuDQoNCkFuZCBhcyBJIHNhaWQgYWJvdmUs
+IG1vcmUgU0NNSSBjYWxscyBuZWVkZWQgZm9yIGNvbmZpZ3VyZSBhIHBpbi4NCg0KU28gaXQgaXMg
+bm90IGEgZ29vZCBmaXQgZm9yIGkuTVggcGxhdGZvcm0gdXNpbmcgU0NQIHByb2Nlc3NvciB0byB1
+c2UgZ2VuZXJpYw0KcGluY29uZiBmb3IgU0NNSSBhcyBJIHRoaW5rLg0KDQpUaGFua3MsDQpQZW5n
+Lg0KDQo+DQo+IFlvdXJzLA0KPiBMaW51cyBXYWxsZWlqDQo=
 
