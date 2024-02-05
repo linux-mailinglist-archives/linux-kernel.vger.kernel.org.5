@@ -1,39 +1,65 @@
-Return-Path: <linux-kernel+bounces-52772-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BAE5849C80
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:01:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 031D0849C89
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:02:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9ED551C24C6C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:01:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 340BC1C2532A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:02:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F0E228E26;
-	Mon,  5 Feb 2024 14:01:02 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F01A628E31;
-	Mon,  5 Feb 2024 14:00:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 084922C1AD;
+	Mon,  5 Feb 2024 14:01:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="nhvuxBxD"
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A39B028DD1;
+	Mon,  5 Feb 2024 14:01:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707141662; cv=none; b=nAAr60vZFfolU8XN8i0RQx7V+WG37YCT0zsdyTHJdeVNAsbVBJt4mYdVvjjgJSd7hw+DlsrBQnMdklhP8+EzkzdR15GVf1PNShs8YQwdMlvMjRkjP68Lq9MTBZzDh4ajVxFvrqIvpqlH4LOF7x4wTnBZtOHM0KeLSgy1xKHlA9Y=
+	t=1707141705; cv=none; b=bqguUDMIsMhnAcCn04wG7RA4p3ulTrMwu1XuTW5/0e/PxOBjJ1XxCkqSQkOcR0QDSqane1B7TPPA9sWKXBsTuWaGIZHQoSjrhRQqzBFPYWZFcRawErb7FYQsdraSO4K2mMBbTbrc+bc+Tm/Oal7dY2iWVLWgX3lyWj+zyE+SiAM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707141662; c=relaxed/simple;
-	bh=xgowrTg+bv/6Aac3oAYid5kbpWTggKw8G0dKmP7Pfac=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LlrVHymK2KDSoIatHm86Lls/uZoFdDiu4mtTlve/JELQaLjDSIJsEkrXn0ECnbNL3sX1r88+biOLlV2k01GNFUenKpqGumtMi1G7TY82bXnryp+hi9k8ttXrR5DQJFf9Q4JSa3OD3yKauS6cSpmzNIsfj24T3s5WhZGBBZgg6tg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E67211FB;
-	Mon,  5 Feb 2024 06:01:41 -0800 (PST)
-Received: from [10.57.48.140] (unknown [10.57.48.140])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5EB3B3F5A1;
-	Mon,  5 Feb 2024 06:00:58 -0800 (PST)
-Message-ID: <f27d7b45-89d9-4b5c-9bde-806b57bbe8e7@arm.com>
-Date: Mon, 5 Feb 2024 14:00:57 +0000
+	s=arc-20240116; t=1707141705; c=relaxed/simple;
+	bh=AQ9rJJsSMiX+vo7iSm3VkhpLNuASv5tw8v6zztJtpa8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=TjYTv2H38q8ZD/p7fr8O9uJyLFM9Gn53trc0Ebi8jaLeohknm6XfspzxBtp3u2WfxEI+PxmbtvAHLQelNj3WEdpwFzGKOEZUbBnxr9MfnL1dihlAP6uvTnZ6DXjTf56H452nLdostGkL1o5/G4U4oZPVCb3xWMVu4p+DuxPIJ/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=nhvuxBxD; arc=none smtp.client-ip=67.231.149.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4155VpcZ002122;
+	Mon, 5 Feb 2024 08:01:08 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	PODMain02222019; bh=KkdSVvZBpNy6UICQTjzXbhDmnHH8Se+KrDnsL2G3J/E=; b=
+	nhvuxBxD495qcJk3Dwfn+Er1TmmkZ7aJl4efkUIbbRZgzbGmi15fN6u6L0pQsS8m
+	oizA2n3YqQi918+XB4wYEvGZbCAZERLf6z7PoPWBL6CgeUn6VnT6NmDupNW9GTvT
+	1OutoakT1s0SKSbllebVm5FLZy+RPSpylL3B8goAarXiDQeLi9Yu5opBm006u0vh
+	Rin8D06cqaadWvMwBHLeKHYsAlC1Ai1/JzEvNBGygzmXFKBcMTCXDg34tPFL74JS
+	da4YSkg3HXId+hWhheJZBLCFkmgPuukxddu7ePknDbuGLoiTJSsKW9cZyuuPBjEM
+	GZ4YM+x5ksEclSEt6EyFIg==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3w1ks29ybc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 05 Feb 2024 08:01:05 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 5 Feb
+ 2024 14:01:03 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40 via Frontend Transport; Mon, 5 Feb 2024 14:01:03 +0000
+Received: from [198.90.208.18] (ediswws06.ad.cirrus.com [198.90.208.18])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 8A88B820241;
+	Mon,  5 Feb 2024 14:01:03 +0000 (UTC)
+Message-ID: <5a2872d4-7eb3-465a-aace-c848919b1f2a@opensource.cirrus.com>
+Date: Mon, 5 Feb 2024 14:01:03 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,54 +67,52 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: iommu/ipmmu-vmsa: Use devm_platform_get_and_ioremap_resource() in
- ipmmu_probe()
+Subject: Re: [PATCH] ASoC: cs35l56: fix reversed if statement in
+ cs35l56_dspwait_asp1tx_put()
+To: Dan Carpenter <dan.carpenter@linaro.org>
+CC: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>
+References: <0c254c07-d1c0-4a5c-a22b-7e135cab032c@moroto.mountain>
 Content-Language: en-GB
-To: Markus Elfring <Markus.Elfring@web.de>, iommu@lists.linux.dev,
- kernel-janitors@vger.kernel.org, =?UTF-8?B?SsO2cmcgUsO2ZGVs?=
- <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <e01cdb99-8497-4fec-b423-a0bfb483ac75@web.de>
- <324d4e02-6a5a-4112-a3a7-d7aeb5876acc@arm.com>
- <49fc6a59-2c07-4366-b32f-0599c2418916@web.de>
- <51315925-21ac-427c-abea-4d652ed5280f@arm.com>
- <0c757d69-ec60-477c-a978-a94118a571a2@web.de>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <0c757d69-ec60-477c-a978-a94118a571a2@web.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <0c254c07-d1c0-4a5c-a22b-7e135cab032c@moroto.mountain>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-GUID: 5xdR__uDpewbfPRVIWR6S2KgtvLy6a5n
+X-Proofpoint-ORIG-GUID: 5xdR__uDpewbfPRVIWR6S2KgtvLy6a5n
+X-Proofpoint-Spam-Reason: safe
 
-On 2024-02-05 1:02 pm, Markus Elfring wrote:
->>>>> Thus reuse existing functionality instead of keeping duplicate source code.
->>>>
->>>> Much as I detest the get_and_ioremap_resource obfuscator, it's not even appropriate here since nothing else is using "res".
->>>
->>> I got the impression that this local variable is needed to perform
->>> a desired function call.
->>
->> Yes, the call to devm_ioremap_resource(). Which you're proposing to remove...
+On 05/02/2024 12:44, Dan Carpenter wrote:
+> It looks like the "!" character was added accidentally.  The
+> regmap_update_bits_check() function is normally going to succeed.  This
+> means the rest of the function is unreachable and we don't handle the
+> situation where "changed" is true correctly.
 > 
-> I propose to replace a specific function call combination
-> by an other single call for a known wrapper function.
-> The mentioned variable is preserved for this purpose.
+> Fixes: 07f7d6e7a124 ("ASoC: cs35l56: Fix for initializing ASP1 mixer registers")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> ---
+>>From static analysis and review, not tested.
+> ---
+>   sound/soc/codecs/cs35l56.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
+> index c23e29da4cfb..ebed5ab1245b 100644
+> --- a/sound/soc/codecs/cs35l56.c
+> +++ b/sound/soc/codecs/cs35l56.c
+> @@ -115,7 +115,7 @@ static int cs35l56_dspwait_asp1tx_put(struct snd_kcontrol *kcontrol,
+>   
+>   	ret = regmap_update_bits_check(cs35l56->base.regmap, addr,
+>   				       CS35L56_ASP_TXn_SRC_MASK, val, &changed);
+> -	if (!ret)
+> +	if (ret)
+>   		return ret;
+>   
+>   	if (changed)
 
-No. If you believe in cleaning up code, please apply your brain and 
-clean up code *meaningfully* - others seem to have managed it just fine 
-(e.g. [1][2] at random from a quick search on lore). Hell, I think even 
-the original now-deleted script could auto-generate a proper patch for 
-situations where devm_platform_ioremap_resource() was appropriate - 
-there is zero excuse for doing a *worse* job 4 years later.
+Reviewed-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-If on the other hand your interest is not to actually clean up the code 
-for the good of the community, but to stoke your own ego as a 
-"contributor" of shitty patches that annoy people and reinforce the 
-popular impression that you are in fact an AI, please stop, or at the 
-very least please refrain from doing so in any areas I review or maintain.
-
-Thanks,
-Robin.
-
-[1] https://lore.kernel.org/all/20191013152716.1830911-1-jic23@kernel.org/
-[2] 
-https://lore.kernel.org/all/20200412135023.3831-1-aishwaryarj100@gmail.com/
 
