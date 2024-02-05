@@ -1,182 +1,102 @@
-Return-Path: <linux-kernel+bounces-52795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52796-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A6B0849CB9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:14:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 704B0849CBD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:15:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E6781F25DDB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:14:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF0A3286D81
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:15:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2A492C19C;
-	Mon,  5 Feb 2024 14:13:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="OWGXeHac"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C4FC2C6AD;
+	Mon,  5 Feb 2024 14:13:52 +0000 (UTC)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C75F24B35;
-	Mon,  5 Feb 2024 14:13:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF73A2C69E;
+	Mon,  5 Feb 2024 14:13:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707142390; cv=none; b=KVrDjZLNJST4WAt5RPc0YFdg7VdV4ETPj1LAz7yTo6O09avQFyKXJRzDRKn1GLutVXjgV5TfqjZ4eqL1ehuLiZZHcAalreCTGomYITTVU45t9gXnpoPDviD3e5DJfQN9dUprpS+6oVSAVjLBx1LUw/e1vzqhHJvEJRph2up8sSk=
+	t=1707142431; cv=none; b=R+9o4KYxjgTJvWvDahkX6JZ9TMaJ3bN/lsfhy2XwGEYALz1qAE93bSx5zrAHYaM/Ju9VDJf2MV0iUpiFs1Rwq9JRNchsiCh1lu5wVaUB6vE657S518wxbCy5VmC8knZLjV0ux+k6s6yUO1h/rEnMd3HwNTsh8gqlz+zQp6Wqd58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707142390; c=relaxed/simple;
-	bh=Hi8wZwCud4mhV0w2TuyWLR03k6FBUKCj+AHEjVG6Jp4=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e45BxVKZeP+4mA7ssv8feFHFvvvkR/CqTt/LR/wf6nAQWAK8jI6DujHoIgJuYgBAHVToh9IM9krfxnz9aVRaqsjpVCD+VZIDdklz3nS/ZSSyc9pSIZKSGOHR7hEgIoWh2I8D5oyCwuEF4NpE5RBLw3utBTKd2Q/6JuX3UNgeKDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=OWGXeHac; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 415ECuQB130717;
-	Mon, 5 Feb 2024 08:12:56 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707142376;
-	bh=BAI8eu9V2b7DZkyRp5PokTcyumX/wQVTZ0C2zBeEpmw=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=OWGXeHac6O42zXEFSbFFN1ctU0EU0XMp9+Z7eaVggKrDltWAZGU5QjW847gip3UGf
-	 QmHDDMolVyaovjyiRzlnnKfRMihqJI3iK14xP/c1Y6C6BCE7NKGAJfWg+SbPNo78gh
-	 0C5RM+KzTYtNXSjtA4xjudjlateV1ycVfC986LcA=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 415ECu5e014515
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 5 Feb 2024 08:12:56 -0600
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 5
- Feb 2024 08:12:55 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 5 Feb 2024 08:12:55 -0600
-Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 415ECtgD060316;
-	Mon, 5 Feb 2024 08:12:55 -0600
-Date: Mon, 5 Feb 2024 08:12:55 -0600
-From: Nishanth Menon <nm@ti.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC: Brandon Brnich <b-brnich@ti.com>, Nas Chung <nas.chung@chipsnmedia.com>,
-        Jackson Lee <jackson.lee@chipsnmedia.com>,
-        Mauro Carvalho Chehab
-	<mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, <linux-media@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Darren
- Etheridge <detheridge@ti.com>
-Subject: Re: [PATCH v2] dt-bindings: media: Add sram-size Property for Wave5
-Message-ID: <20240205141255.z5kybm42qld44tdz@portfolio>
-References: <20240201184238.2542695-1-b-brnich@ti.com>
- <1209b7cf-5be2-4107-aa6b-d67a32ea3737@linaro.org>
- <20240202125257.p4astjuxpzr5ltjs@dragster>
- <8091a8cf-c1c0-49b0-b136-1ad0d185aa6a@linaro.org>
- <20240202155813.szxvi7bfp5xh7rvw@babble>
- <adfef53c-d64e-4855-ab61-101b6fa419e5@linaro.org>
+	s=arc-20240116; t=1707142431; c=relaxed/simple;
+	bh=KUfFaTnVcuPK7F5qH9QCHcEyVuC0AaGY+Jw1pHyJEqg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BG1AULtwwzvF/13OxX7BgDjRRpk1mQLR+K5lGXnYQ7chjisqNQ4W1laFDKXUCCGFw3D3g+kbkg+BoiyTX/inre45zyLAVJDx8Ouj0iPn7OKkR4eclfsfnsZdX78OxoFX6kDEd+4BNIqNG/ikNXNyp3+km2E/HRlxBb+EwnmbwmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-51124e08565so6809017e87.3;
+        Mon, 05 Feb 2024 06:13:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707142428; x=1707747228;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QjZklipkmdXJhUNXYZTkvKzntyfYj7woEZ5k2D/zz2g=;
+        b=r/vv+GzicXZVhCNYgJS3EQ1FZV0P5e1Y3R28Fw3HyvSRxNtljmLZkEzoj9d3zytc+9
+         d6iKJmV6YCnP8t8fPvVx5HyekdpfUgYB90mYBISK3dPF9HTqMErM3q1rUGPfCPFdBDoJ
+         jOwct5lXOWV15qPGRtW8y2jIAt9AMIxrfRrssro4MNC1iLayGP4dinJbceve+fH3QW1p
+         AGm0jgylmKq2ICSa+N1TVQHZxLn5W8jvkMnjSkpF2g2IJy1gDGMKDRJ5dzaS2cl2vpuW
+         TgdG9kPJERGM2vMOydvbSvv14GX1cHus7ICMcYKmKilslarMkV77Xu9debfJzRx5VHSA
+         scAA==
+X-Gm-Message-State: AOJu0Yx5FZO56mqqzHXYF75j04ePimHCe+L+IuwWGsr9GH1vIOkaDNtU
+	DAEZMVwc7mDKP+xh0Dj3jc9O7ThBuGKRaEpWetjUGJXUn/y+AY2U
+X-Google-Smtp-Source: AGHT+IFfz7N06CRxAkudHv29g5IbD95knXgAY5otzcmaknrMnsvP1nrc4pifk7LvLhw/WJSBXE9ugQ==
+X-Received: by 2002:ac2:4eca:0:b0:511:5353:2ace with SMTP id p10-20020ac24eca000000b0051153532acemr1285652lfr.22.1707142427564;
+        Mon, 05 Feb 2024 06:13:47 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVZPSlNuCnBtq9VsUUsxRgdYjVaIR64sZyNdi1stJYMIeFlt+p0BgNm4uLZgJ+iSP3IbF+Y8fmyjmPWMJ2LCtGs6lWYsuagUDrP+z6A1boNXhHIWEaVoxcYoUxBdXigwGynxUP8cBdbl3sli6KzXoU/eMaLhuVn4mkmRAECl7ip3PRq0Fy4+3xrk1khwVJDOpJwZxcv0te6a7uFDsUDpnQoO56g8fB6mz4vknBv8z3UABNIHf8AxK+PhzFb5vjsvVuVW9DKK4ssXBw12QeuqJF3OQkird8UX2zgUSvOJqoNW9T1iHoTw6YKD9wYI3kEgxbwk9q8WIguBaCDwbqn5HWuvAFAuJPq88M99Cl+KWaUZw==
+Received: from gmail.com (fwdproxy-cln-017.fbsv.net. [2a03:2880:31ff:11::face:b00c])
+        by smtp.gmail.com with ESMTPSA id j20-20020a170906475400b00a353ca3d907sm4361222ejs.217.2024.02.05.06.13.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 06:13:47 -0800 (PST)
+Date: Mon, 5 Feb 2024 06:13:40 -0800
+From: Breno Leitao <leitao@debian.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
+	edumazet@google.com, Alexander Aring <alex.aring@gmail.com>,
+	Stefan Schmidt <stefan@datenfreihafen.org>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, horms@kernel.org, andrew@lunn.ch,
+	"open list:IEEE 802.15.4 SUBSYSTEM" <linux-wpan@vger.kernel.org>
+Subject: Re: [PATCH net 08/10] net: fill in MODULE_DESCRIPTION()s for
+ ieee802154
+Message-ID: <ZcDs/GFkZ881bJR7@gmail.com>
+References: <20240205101400.1480521-1-leitao@debian.org>
+ <20240205101400.1480521-9-leitao@debian.org>
+ <20240205144118.12cdc824@xps-13>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <adfef53c-d64e-4855-ab61-101b6fa419e5@linaro.org>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20240205144118.12cdc824@xps-13>
 
-On 17:08-20240202, Krzysztof Kozlowski wrote:
-> On 02/02/2024 16:58, Nishanth Menon wrote:
-> > On 14:56-20240202, Krzysztof Kozlowski wrote:
-> >> On 02/02/2024 13:52, Nishanth Menon wrote:
-> >>> On 11:47-20240202, Krzysztof Kozlowski wrote:
-> >>>> On 01/02/2024 19:42, Brandon Brnich wrote:
-> >>>>> Wave521c has capability to use SRAM carveout to store reference data with
-> >>>>> purpose of reducing memory bandwidth. To properly use this pool, the driver
-> >>>>> expects to have an sram and sram-size node. Without sram-size node, driver
-> >>>>> will default value to zero, making sram node irrelevant.
-> >>>>
-> >>>> I am sorry, but what driver expects should not be rationale for new
-> >>>> property. This justification suggests clearly it is not a property for DT.
-> >>>>
-> >>>
-> >>> Yup, the argumentation in the commit message is from the wrong
-> >>> perspective. bindings are OS agnostic hardware description, and what
-> >>> driver does with the description is driver's problem.
-> >>>
-> >>> I will at least paraphrase my understanding:
-> >>> In this case, however, the hardware block will limp along with
-> >>> the usage of DDR (as is the current description), due to the
-> >>> latencies involved for DDR accesses. However, the hardware block
-> >>> has capability to use a substantially lower latency SRAM to provide
-> >>> proper performance and hence for example, deal with higher resolution
-> >>> data streams. This SRAM is instantiated at SoC level rather than
-> >>> embedded within the hardware block itself.
-> >>
-> >> That sounds like OS policy. Why would different boards with the same
-> >> component have this set differently? Based on amount of available
-> >> memory? This, I believe, is runtime configuration because it might
-> >> depend on user-space you run. Based on purpose (e.g. optimize for
-> >> decoding or general usage)? Again, run-time because same hardware board
-> >> can be used for different purposes.
-> >>
-> > 
-> > Why is this OS policy? It is a hardware capability.
-> 
-> How amount of SRAM size is hardware capability? Each hardware can work
-> probably with 1, 2 or 100 pages.
-> 
-> > Traditionally
-> > many similar hardware blocks would have allocated local SRAM for
-> > worst case inside the hardware block itself and don't need to use
-> > DDR in the first place. However, for this hardware block, it has
-> > capability to use some part of one of the many SRAM blocks in the SoC,
-> > not be shared for some part of the system - so from a hardware
-> > description perspective, we will need to call that out as to which
-> > SRAM is available for the hardware block.
-> 
-> Just because more than one device wants some memory, does not mean this
-> is hardware property. Drivers can ask how much memory available there
-> is. OS knows how many users of memory there is, so knows how much to
-> allocate for each device.
-> 
-> > 
-> > Why would different boards need this differently? simply because
-> > different cameras have different resolution and framerates - and you
-> > dont want to pay the worst case sram penalty for all product
-> > configuration.
-> 
-> Choice of resolution and framerate is runtime choice or use-case
-> dependent, not board level configuration, therefore amount of SRAM size
-> to use is as well.
+Hello Miquel,
 
-I am arguing this is similar to what we have for remote-procs. Yes,
-usecases usage come to a conclusion that sram size X is needed. Sure.
-Lets even argue that sram = <&sram> has X+100 bytes available, so as
-far as allocator is concerned, it can allocate. But how does the driver
-know that 1k of that sram is already used by a remote core or some other
-function?
-
-This is no different from a remote proc usecase, following which, I
-wonder if "memory-region" is the right way to describe this usage? That
-would be a very specific bucket that is made available to the driver.
-And I'd say sram and memory-region are two mutually exclusive option?
-
+On Mon, Feb 05, 2024 at 02:41:18PM +0100, Miquel Raynal wrote:
+> Hi Breno,
 > 
-> > 
-> > Further, Linux is not the only thing that runs on these SoCs.. these are
-> > mixed systems with autonomous operations of uC cores who may or maynot
-> > (typically not) even need to communicate with MPU to state which part of
-> > resource they are hogging (hence the board level definition).
-> 
-> OK that could be the case but I could also say choice of RTOS or any
-> other is also board-independent.
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+> Please be more cautious with your titles. It's your second or third
+> e-mail with this content without version number. And you also forgot to
+> collect Stefan Ack.
+
+Sorry, in fact, the commit you are referring to is already in landed
+net-next:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=6aa89bf8ac9a
+
+The problem here is that this commit shouldn't be against net, since it
+is already net-next.
+
+This workstream was applied part in net, and part in net-next. I am
+trying to focus in fixing all the warning in "net" and not touch those in
+net-next. This commit is already in net-next, but, and shouldn't be in
+`net`. I will resend the patch without it.
+
+Sorry if this caused any confusion.
 
