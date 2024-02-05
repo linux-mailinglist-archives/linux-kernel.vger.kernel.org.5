@@ -1,211 +1,94 @@
-Return-Path: <linux-kernel+bounces-52149-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F6CD84949C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:36:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C0AC84949E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:37:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 743D51C21296
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:36:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE7EE1F24DC7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:37:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 877EE10A2A;
-	Mon,  5 Feb 2024 07:36:11 +0000 (UTC)
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0235F10A2E;
+	Mon,  5 Feb 2024 07:37:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XnUl+Rih"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFFBF10A13
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 07:36:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE0B910A09;
+	Mon,  5 Feb 2024 07:37:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707118571; cv=none; b=Ply5OlZOnrgIia8AdjVTVGqxWVSoU/NFv+D7/89VJhPQivYnuuOlTOyoZ7wz4A9OJiNrfg4W/YY4bSQZWbjXKon3wAxB4Kl3T1nq/fdCd7bAT/KE4Dqu0nokeRFb+yUzoXCpoPDLwRN9BS1VS+0IayjUCqW+DHqxPyt+/tnjIB8=
+	t=1707118622; cv=none; b=RZRkYOi8DugM9CCCqiIrEAYXrECVPhK6oz9n1dGi94tI4PSYHc/9avwjMuYEGOOgRWXy+I1F9ByRyiJTOhS5mdp5t/2aVD/+sBWH0tbbJ29nu5jji93zzSoeEf6pkTaFaemsrTBwvm804PU2noqC8hG02lCAXQA2iSm7y2xPoZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707118571; c=relaxed/simple;
-	bh=i24okl9lM0YxnXO1UvcNBqaTIYKqkzXLd/fUwko9lRY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=i+/YAdJB8fsiNnqoqSdCBA3PfqOOyzx57kL1vxMHve0N/N7mBGsBfsUn7OSeqgB9LtjqVhWuxnUXYmJ1gCobRuwlar+F6QiNWRaK0zkou2F07rcwdpS97WymDezQRPaXdkE2K1RLaEviXS7/MD0j9QmfXyFzqqT2l4xpAEK9suU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TSypc1Vggz1vt7C;
-	Mon,  5 Feb 2024 15:35:36 +0800 (CST)
-Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6481A18002F;
-	Mon,  5 Feb 2024 15:36:03 +0800 (CST)
-Received: from [10.174.179.160] (10.174.179.160) by
- kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 5 Feb 2024 15:36:02 +0800
-Message-ID: <e6eaac81-f957-0f03-0907-4448c7065b5a@huawei.com>
-Date: Mon, 5 Feb 2024 15:36:01 +0800
+	s=arc-20240116; t=1707118622; c=relaxed/simple;
+	bh=BPkGUXb8Db73vyi/iXpd2E7WrpCEy5UHocmk+p6hWB0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XbOn3WuHzo14Cdb1MaDYS6lEvY5n1qWN5WjvVYfX7JHpcxjcH4miA6r4cIsuVUuNaZ9cmhp0x8QKvR2FZcSuu+szb3oQX4883sys1ito5442KYWX8yMgoKn+kMFyrNaFmGPjZSIVsoa0gxNHN0lkD8vCbOrBZBfoHHziFYuULVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XnUl+Rih; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40fdc653665so3305485e9.3;
+        Sun, 04 Feb 2024 23:37:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707118619; x=1707723419; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=BPkGUXb8Db73vyi/iXpd2E7WrpCEy5UHocmk+p6hWB0=;
+        b=XnUl+RihLFNj+jnMGo7C9bjgcciK47TYmSdFgC5L9CQPoziYpRhkAvwQ35ycHFthXs
+         G6viRACGoNZ5tpaEL3efhLRKRUlxRO2LS4ISy7WCZSXTkli2I+xiyID0LbH1WSg/kMDu
+         66gU9O93Y0nOhTzj8RBlHhpKfO1835k7tliJrWlutY8+YhyThy7Un1zrdo5TkZWcxvdj
+         D8FL06lN917kZEd1ntyFV8YV5fAeTzUX176n2GyOOJTd25pjIgpdtexKnOoMacyiaO+R
+         gSWNHYcwvMKa717OiwE2PdMufPtUMA6GyL2O6ElBsM75JXDYEXcegsj/4pypZ9EUZsWu
+         iojA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707118619; x=1707723419;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BPkGUXb8Db73vyi/iXpd2E7WrpCEy5UHocmk+p6hWB0=;
+        b=CSiKKJWE6Jgg7b/tGN2BpzsKqkM6GIw2BGjivpncvJNLW+2ysMIuWiriKwLwa1cujp
+         TtWw2iJWGmGUeCUmFlVaRyRXZcqd/oE3udpzVJBaV/4Lca65P4JyUoukkH41bRqYX1bn
+         dy9u6EMOEDvie5RBjQ2UvRPncBzb8MmYOf4mNSPbvtPLLs47jGl7wDd0o3nETCEiVoTr
+         kjcVbA0ASX0lMiOuPM/1EgXRTsooJpNzp1MJoj4YYEVTCr9dLW+YlUdPDBJsvK3dQ8pM
+         NIUPWlXSOx0kOskt/cExAIhGxXTQzKUzfK/X0SPZLVnC4leceBaVBYEfok+QtKsoDdX/
+         blvw==
+X-Gm-Message-State: AOJu0YwqA3yITWRWGoQKt0yAhg1K0rSIZAvXXuUtxooP5lZGKQShAKBE
+	r4mGDqRuzkVyu4rP1qchDHcLHz2/jHzcdFUjWIr0GUvjbmjF3a4wKlZQ3gMf7OY7pu5qdZ7wbks
+	O84J3igyJlg8CGutzfmZQl8uYE1E=
+X-Google-Smtp-Source: AGHT+IEUuH46zUBSjcPNtg+1yODWUPbBwUbbmWypPfYL1bYGOACxgV8x2ng2cx7wu0Fbxz/yfWihFdEW5eRZe/rq80c=
+X-Received: by 2002:adf:f150:0:b0:33b:365e:b10 with SMTP id
+ y16-20020adff150000000b0033b365e0b10mr2845843wro.31.1707118618860; Sun, 04
+ Feb 2024 23:36:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH] filemap: avoid unnecessary major faults in
- filemap_fault()
-Content-Language: en-US
-To: David Hildenbrand <david@redhat.com>, "Huang, Ying" <ying.huang@intel.com>
-CC: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-	<akpm@linux-foundation.org>, <willy@infradead.org>, <fengwei.yin@intel.com>,
-	<aneesh.kumar@linux.ibm.com>, <shy828301@gmail.com>, <hughd@google.com>,
-	<wangkefeng.wang@huawei.com>
-References: <20240204093526.212636-1-zhangpeng362@huawei.com>
- <87zfwf39ha.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <85e03dd9-8bd7-d516-ebe4-84dd449a9fb2@huawei.com>
- <87mssf2yiv.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <25de8872-ad79-e5e6-054c-9ac5e7191416@huawei.com>
- <1a967b8d-7218-4d3f-9dd2-ae1c66f626c7@redhat.com>
-From: "zhangpeng (AS)" <zhangpeng362@huawei.com>
-In-Reply-To: <1a967b8d-7218-4d3f-9dd2-ae1c66f626c7@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600020.china.huawei.com (7.193.23.147)
+References: <CAHzAAWQ6srV6LVNdmfbJhOwhBw5ZzxxZZ07aHt9oKkfYAdvuQQ@mail.gmail.com>
+ <ZcBCiqOroolz1hoh@archie.me>
+In-Reply-To: <ZcBCiqOroolz1hoh@archie.me>
+From: Mike Beaton <mjsbeaton@gmail.com>
+Date: Mon, 5 Feb 2024 07:36:48 +0000
+Message-ID: <CAHzAAWQ2snWppQK_D3cSR6m35htVqM+4Su9f1JT9oWZ2A9Vznw@mail.gmail.com>
+Subject: Re: Broken section alignment in 6.7 and 6.8rc EFI stub
+To: Bagas Sanjaya <bagasdotme@gmail.com>
+Cc: Linux EFI <linux-efi@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Ard Biesheuvel <ardb@kernel.org>, 
+	Ivan Hu <ivan.hu@canonical.com>, Jeremy Kerr <jk@ozlabs.org>, Peter Jones <pjones@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 2024/2/5 15:31, David Hildenbrand wrote:
-
-> On 05.02.24 08:24, zhangpeng (AS) wrote:
->> On 2024/2/5 14:52, Huang, Ying wrote:
->>
->>> "zhangpeng (AS)" <zhangpeng362@huawei.com> writes:
->>>> On 2024/2/5 10:56, Huang, Ying wrote:
->>>>> Peng Zhang <zhangpeng362@huawei.com> writes:
->>>>>> From: ZhangPeng <zhangpeng362@huawei.com>
->>>>>>
->>>>>> The major fault occurred when using mlockall(MCL_CURRENT | 
->>>>>> MCL_FUTURE)
->>>>>> in application, which leading to an unexpected performance issue[1].
->>>>>>
->>>>>> This caused by temporarily cleared PTE during a read/modify/write 
->>>>>> update
->>>>>> of the PTE, eg, do_numa_page()/change_pte_range().
->>>>>>
->>>>>> For the data segment of the user-mode program, the global 
->>>>>> variable area
->>>>>> is a private mapping. After the pagecache is loaded, the private 
->>>>>> anonymous
->>>>>> page is generated after the COW is triggered. Mlockall can lock 
->>>>>> COW pages
->>>>>> (anonymous pages), but the original file pages cannot be locked 
->>>>>> and may
->>>>>> be reclaimed. If the global variable (private anon page) is 
->>>>>> accessed when
->>>>>> vmf->pte is zeroed in numa fault, a file page fault will be 
->>>>>> triggered.
->>>>>>
->>>>>> At this time, the original private file page may have been 
->>>>>> reclaimed.
->>>>>> If the page cache is not available at this time, a major fault 
->>>>>> will be
->>>>>> triggered and the file will be read, causing additional overhead.
->>>>>>
->>>>>> Fix this by rechecking the PTE without acquiring PTL in 
->>>>>> filemap_fault()
->>>>>> before triggering a major fault.
->>>>>>
->>>>>> Testing file anonymous page read and write page fault performance 
->>>>>> in ext4
->>>>>> and ramdisk using will-it-scale[2] on a x86 physical machine. The 
->>>>>> data
->>>>>> is the average change compared with the mainline after the patch is
->>>>>> applied. The test results are within the range of fluctuation, 
->>>>>> and there
->>>>>> is no obvious difference. The test results are as follows:
->>>>>>             processes processes_idle threads threads_idle
->>>>>> ext4 file write:    -1.14%    -0.08%         -1.87% 0.13%
->>>>>> ext4 file read:         0.03%      -0.65% -0.51%    -0.08%
->>>>>> ramdisk file write:    -1.21%    -0.21%         -1.12% 0.11%
->>>>>> ramdisk file read:     0.00%    -0.68%         -0.33% -0.02%
->>>>>>
->>>>>> [1] 
->>>>>> https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
->>>>>> [2] https://github.com/antonblanchard/will-it-scale/
->>>>>>
->>>>>> Suggested-by: "Huang, Ying" <ying.huang@intel.com>
->>>>>> Suggested-by: Yin Fengwei <fengwei.yin@intel.com>
->>>>>> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
->>>>>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->>>>>> ---
->>>>>> RFC->v1:
->>>>>> - Add error handling when ptep == NULL per Huang, Ying and 
->>>>>> Matthew Wilcox
->>>>>> - Check the PTE without acquiring PTL in filemap_fault(), 
->>>>>> suggested by
->>>>>>      Huang, Ying and Yin Fengwei
->>>>>> - Add pmd_none() check before PTE map
->>>>>> - Update commit message and add performance test information
->>>>>>
->>>>>>     mm/filemap.c | 18 ++++++++++++++++++
->>>>>>     1 file changed, 18 insertions(+)
->>>>>>
->>>>>> diff --git a/mm/filemap.c b/mm/filemap.c
->>>>>> index 142864338ca4..b29cdeb6a03b 100644
->>>>>> --- a/mm/filemap.c
->>>>>> +++ b/mm/filemap.c
->>>>>> @@ -3238,6 +3238,24 @@ vm_fault_t filemap_fault(struct vm_fault 
->>>>>> *vmf)
->>>>>>                 mapping_locked = true;
->>>>>>             }
->>>>>>         } else {
->>>>>> +        if (!pmd_none(*vmf->pmd)) {
->>>>>> +            pte_t *ptep;
->>>>>> +
->>>>>> +            ptep = pte_offset_map_nolock(vmf->vma->vm_mm, vmf->pmd,
->>>>>> +                             vmf->address, &vmf->ptl);
->>>>>> +            if (unlikely(!ptep))
->>>>>> +                return VM_FAULT_NOPAGE;
->>>>>> +            /*
->>>>>> +             * Recheck pte as the pte can be cleared temporarily
->>>>>> +             * during a read/modify/write update.
->>>>>> +             */
->>>>> I think that we should add some comments here about the racy 
->>>>> checking.
->>>> I'll add comments in a v2 as follows:
->>>> /*
->>>>    * Recheck PTE as the PTE can be cleared temporarily
->>>>    * during a read/modify/write update of the PTE, eg,
->>>>    * do_numa_page()/change_pte_range(). This will trigger
->>>>    * a major fault, even if we use mlockall, which may
->>>>    * affect performance.
->>>>    */
->>> Sorry, my previous words aren't clear enough.  I mean some comments as
->>> follows,
->>>
->>> We don't hold PTL here, so the check is still racy.  But acquiring PTL
->>> hurts performance and the race window seems small enough.
->>
->> Got it. I'll add comments in a v2 as follows:
->> /*
->>    * Recheck PTE as the PTE can be cleared temporarily
->>    * during a read/modify/write update of the PTE.
->>    * We don't hold PTL here as acquiring PTL hurts
->>    * performance. So the check is still racy, but
->>    * the race window seems small enough.
->>    */
+On Mon, 5 Feb 2024 at 02:06, Bagas Sanjaya <bagasdotme@gmail.com> wrote:
 >
-> It'd be worth spelling out what happens when we lose the race.
+> So v6.7 onwards misses .reloc section, right?
 >
-I'll add what happens when we lose the race as follows:
-/*
-  * Recheck PTE as the PTE can be cleared temporarily
-  * during a read/modify/write update of the PTE, eg,
-  * do_numa_page()/change_pte_range(). This will trigger
-  * a major fault, even if we use mlockall, which may
-  * affect performance.
-  * We don't hold PTL here as acquiring PTL hurts
-  * performance. So the check is still racy, but
-  * the race window seems small enough.
-  */
+> Confused...
 
--- 
-Best Regards,
-Peng
-
+Reloc info is still present as normal in data directories, e.g.
+`llvm-objdump -p` shows NumberOfRvaAndSizes = 6. Reloc info is taken
+from index 5 https://github.com/tianocore/edk2/blob/master/MdePkg/Include/IndustryStandard/PeImage.h#L128
+ (I've been told a dummy .reloc section was dumped recently?)
 
