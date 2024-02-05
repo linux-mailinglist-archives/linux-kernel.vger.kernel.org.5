@@ -1,265 +1,156 @@
-Return-Path: <linux-kernel+bounces-52165-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 806578494DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:51:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5C058494E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:52:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5E7B1F213A6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:51:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C73651C218AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:52:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7FD410A33;
-	Mon,  5 Feb 2024 07:51:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="DZZxgC3z"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 985CB11739;
+	Mon,  5 Feb 2024 07:52:07 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EFC011188;
-	Mon,  5 Feb 2024 07:50:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06B2811188
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 07:52:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707119463; cv=none; b=RdQMIs2hwDs4jEcwmrgQIVP0uyBFQVb2nfBuQYnIz/2CTGCkzkoIDsJbtMXTq2NnXErM1jpG8IMVksuF2rSYpkDEWTgIIGsn+E3o5lE1xMYLpdy7kjc1z33x38gLob+5FRsntz9cXQQoEEnCjnMqX3Jxaq6oP8JaQqcgfIHcj1Q=
+	t=1707119527; cv=none; b=kBMUNtRkdTvguXFgIRYhW4jpOQRYB81Wr6xgJ56ZXj4dW6ggGRQpy5W3cGYhFBN/tqib8njw6adVLDKwCkxXqVfJ99kV7gPXjc7TJKYhtB/gR1O2lzcfMsZBJAmnvWH9+HkGDQ5WZj5UTmcJ/W8j1DOqdu+/AwtUUqI1U52A3Xs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707119463; c=relaxed/simple;
-	bh=S2xBjKjY1LGTJgJd4nXlaZSTeDejAJKnqwuXSuZsozM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=abveTzxqnAYfcopIzIVuQB9VQ6AHXka3X4+QmWKDaDQclZqFWassclLDdz1BZn3By7vC7eZjc9o7f8Hp2Xvz1W7lOX5h4D4pBwPv92GfFDqdsF1WXLfW0nH925B4BjMIn9EE/1Oa76Is+6hl0UxbpUZwvY94RrehY9+okpMWLfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=DZZxgC3z; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E417260008;
-	Mon,  5 Feb 2024 07:50:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707119458;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ttQ4uDt0B0MWz9Y2OYBfdOsR8cq/5uUelC94dh61iTE=;
-	b=DZZxgC3z/SAhCFg7Oojb3mU4qZ2BwsdhLuZ6dOWjQAMLeIDp1BQ0mP8t2g9uNe0rgLYSRZ
-	fgnLj18+PZSCVUwFN77NRnXVob4ElSpA3gq5gpN1UAfcDhuVbnsCIMuYpP2vMfQObTnGBw
-	IkFhfuhEFpA+sdBmkEQRKeRRIn0AsgFKYz3hjeZP6BdU688kLWionAXZ+OhV/CodiPMJz1
-	CMIN2AJqk4zDYvlZqBpji8zjNLVXASZPQkHbAX4sJQ4ThzJW5VYSQKVfPWuVD22ccpuUht
-	EkiHr5ribVdDq/SUp37+DAFUEDXuJOKGb/2Q9Kcdd/QqUudmJZRmbVX2kusISw==
-Date: Mon, 5 Feb 2024 08:50:56 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Simon Glass <sjg@chromium.org>
-Cc: Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>, Michael Walle
- <mwalle@kernel.org>, U-Boot Mailing List <u-boot@lists.denx.de>, Conor
- Dooley <conor+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Pratyush Yadav <ptyadav@amazon.de>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 1/3] dt-bindings: mtd: partitions: Add binman
- compatible
-Message-ID: <20240205085056.44278f2c@xps-13>
-In-Reply-To: <CAFLszTimaFw9sf=JKvQXG4fS6V_2T=2n+pfvYLCiuG1o+7cHPA@mail.gmail.com>
-References: <20231116172859.393744-1-sjg@chromium.org>
-	<20231208150042.GA1278773-robh@kernel.org>
-	<CAPnjgZ2i4gvgiUeHPOfHuOdBooV4e=QQEq6iMo0JbDwOS6dCwA@mail.gmail.com>
-	<CAL_Jsq+xMZ8yz4H9D59uCSyX4h5W+4ruGF++=wVA=msXz+Y01A@mail.gmail.com>
-	<CAPnjgZ1uW8T6woXSqFUNm301=W3zBYOrADREkrz=DuwSW87qZg@mail.gmail.com>
-	<20231214172702.GA617226-robh@kernel.org>
-	<CAPnjgZ2oJSGPO91Y_aLbe+v250WFrND4n3T0mOvhERYidVu=eQ@mail.gmail.com>
-	<CAFLszTizRRVbRO6_ygE2X-Lp5dENWSc4uMGL5GPJAFGAbRdCyQ@mail.gmail.com>
-	<CAL_Jsq+j7_KZtQ2ENq9+vsw0LOZF=spu293_G=AxOmBM+m_f-g@mail.gmail.com>
-	<CAFLszTimaFw9sf=JKvQXG4fS6V_2T=2n+pfvYLCiuG1o+7cHPA@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707119527; c=relaxed/simple;
+	bh=mhvQyuJsctI1f+B/SMGnKItaoPt1JLY75GynnViuBks=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mDcjzLqfo4oqRwzM3fmOyxgcwvplHT5vnA8tYyINh4LSiTG7dZAIeC8Vn7DXyRK6EFG9WE1J5+sh35jwaSwd/fLWGTO7m1cB/aPa6fs/iIPWvTaWP8nGkPhPJ4JcTx3wZWkaviY/jw/sFwh0g3nRp/aV/JLt4/pAyduCEpdF0SE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: f919dcbcbb4b43f9abf1b544be7db836-20240205
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:d3ad5f33-cdb8-4c57-a427-73bda7883833,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:-5
+X-CID-INFO: VERSION:1.1.35,REQID:d3ad5f33-cdb8-4c57-a427-73bda7883833,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:5d391d7,CLOUDID:442c2180-4f93-4875-95e7-8c66ea833d57,B
+	ulkID:2402051551570XL61VY3,BulkQuantity:0,Recheck:0,SF:44|66|38|24|17|19|1
+	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
+	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-UUID: f919dcbcbb4b43f9abf1b544be7db836-20240205
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 1038818982; Mon, 05 Feb 2024 15:51:56 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id 4A4E1E000EBC;
+	Mon,  5 Feb 2024 15:51:56 +0800 (CST)
+X-ns-mid: postfix-65C0939C-2060462
+Received: from kernel.. (unknown [172.20.15.254])
+	by mail.kylinos.cn (NSMail) with ESMTPA id 80BCAE000EBC;
+	Mon,  5 Feb 2024 15:51:53 +0800 (CST)
+From: Kunwu Chan <chentao@kylinos.cn>
+To: dwmw2@infradead.org,
+	richard@nod.at
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH] jffs2: Simplify the allocation of slab caches
+Date: Mon,  5 Feb 2024 15:51:44 +0800
+Message-Id: <20240205075144.431567-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
 
-Hi Simon,
+Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+to simplify the creation of SLAB caches.
+And change cache name from 'jffs2_tmp_dnode' to 'jffs2_tmp_dnode_info'.
 
-sjg@chromium.org wrote on Sun, 4 Feb 2024 05:07:38 -0700:
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+ fs/jffs2/malloc.c | 32 ++++++++------------------------
+ 1 file changed, 8 insertions(+), 24 deletions(-)
 
-> Hi Rob,
->=20
-> On Wed, 17 Jan 2024 at 08:56, Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Thu, Jan 4, 2024 at 3:54=E2=80=AFPM Simon Glass <sjg@chromium.org> w=
-rote: =20
-> > >
-> > > Hi Rob,
-> > >
-> > > On Thu, Dec 14, 2023 at 2:09=E2=80=AFPM Simon Glass <sjg@chromium.org=
-> wrote: =20
-> > > >
-> > > > Hi Rob,
-> > > >
-> > > > On Thu, 14 Dec 2023 at 10:27, Rob Herring <robh@kernel.org> wrote: =
+diff --git a/fs/jffs2/malloc.c b/fs/jffs2/malloc.c
+index ce1189793288..411de8b361b2 100644
+--- a/fs/jffs2/malloc.c
++++ b/fs/jffs2/malloc.c
+@@ -33,27 +33,19 @@ static struct kmem_cache *xattr_ref_cache;
 =20
-> > > > >
-> > > > > On Fri, Dec 08, 2023 at 03:58:10PM -0700, Simon Glass wrote: =20
-> > > > > > Hi Rob,
-> > > > > >
-> > > > > > On Fri, 8 Dec 2023 at 14:56, Rob Herring <robh@kernel.org> wrot=
-e: =20
-> > > > > > >
-> > > > > > > On Fri, Dec 8, 2023 at 11:47=E2=80=AFAM Simon Glass <sjg@chro=
-mium.org> wrote: =20
-> > > > > > > >
-> > > > > > > > Hi Rob,
-> > > > > > > >
-> > > > > > > > On Fri, 8 Dec 2023 at 08:00, Rob Herring <robh@kernel.org> =
-wrote: =20
-> > > > > > > > >
-> > > > > > > > > On Thu, Nov 16, 2023 at 10:28:50AM -0700, Simon Glass wro=
-te: =20
-> > > > > > > > > > Add a compatible string for binman, so we can extend fi=
-xed-partitions
-> > > > > > > > > > in various ways.
-> > > > > > > > > >
-> > > > > > > > > > Signed-off-by: Simon Glass <sjg@chromium.org>
-> > > > > > > > > > ---
-> > > > > > > > > >
-> > > > > > > > > > (no changes since v5)
-> > > > > > > > > >
-> > > > > > > > > > Changes in v5:
-> > > > > > > > > > - Add #address/size-cells and parternProperties
-> > > > > > > > > > - Drop $ref to fixed-partitions.yaml
-> > > > > > > > > > - Drop 'select: false'
-> > > > > > > > > >
-> > > > > > > > > > Changes in v4:
-> > > > > > > > > > - Change subject line
-> > > > > > > > > >
-> > > > > > > > > > Changes in v3:
-> > > > > > > > > > - Drop fixed-partition additional compatible string
-> > > > > > > > > > - Drop fixed-partitions from the example
-> > > > > > > > > > - Mention use of compatible instead of label
-> > > > > > > > > >
-> > > > > > > > > > Changes in v2:
-> > > > > > > > > > - Drop mention of 'enhanced features' in fixed-partitio=
-ns.yaml
-> > > > > > > > > > - Mention Binman input and output properties
-> > > > > > > > > > - Use plain partition@xxx for the node name
-> > > > > > > > > >
-> > > > > > > > > >  .../bindings/mtd/partitions/binman.yaml       | 68 +++=
-++++++++++++++++
-> > > > > > > > > >  .../bindings/mtd/partitions/partitions.yaml   |  1 +
-> > > > > > > > > >  MAINTAINERS                                   |  5 ++
-> > > > > > > > > >  3 files changed, 74 insertions(+)
-> > > > > > > > > >  create mode 100644 Documentation/devicetree/bindings/m=
-td/partitions/binman.yaml
-> > > > > > > > > >
-> > > > > > > > > > diff --git a/Documentation/devicetree/bindings/mtd/part=
-itions/binman.yaml b/Documentation/devicetree/bindings/mtd/partitions/binma=
-n.yaml
-> > > > > > > > > > new file mode 100644
-> > > > > > > > > > index 000000000000..329217550a98
-> > > > > > > > > > --- /dev/null
-> > > > > > > > > > +++ b/Documentation/devicetree/bindings/mtd/partitions/=
-binman.yaml
-> > > > > > > > > > @@ -0,0 +1,68 @@
-> > > > > > > > > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > > > > > > > > > +# Copyright 2023 Google LLC
-> > > > > > > > > > +
-> > > > > > > > > > +%YAML 1.2
-> > > > > > > > > > +---
-> > > > > > > > > > +$id: http://devicetree.org/schemas/mtd/partitions/binm=
-an.yaml#
-> > > > > > > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > > > > > > > +
-> > > > > > > > > > +title: Binman firmware layout
-> > > > > > > > > > +
-> > > > > > > > > > +maintainers:
-> > > > > > > > > > +  - Simon Glass <sjg@chromium.org>
-> > > > > > > > > > +
-> > > > > > > > > > +description: |
-> > > > > > > > > > +  The binman node provides a layout for firmware, used=
- when packaging firmware
-> > > > > > > > > > +  from multiple projects. It is based on fixed-partiti=
-ons, with some
-> > > > > > > > > > +  extensions, but uses 'compatible' to indicate the co=
-ntents of the node, to
-> > > > > > > > > > +  avoid perturbing or confusing existing installations=
- which use 'label' for a
-> > > > > > > > > > +  particular purpose.
-> > > > > > > > > > +
-> > > > > > > > > > +  Binman supports properties used as inputs to the fir=
-mware-packaging process,
-> > > > > > > > > > +  such as those which control alignment of partitions.=
- This binding addresses
-> > > > > > > > > > +  these 'input' properties. For example, it is common =
-for the 'reg' property
-> > > > > > > > > > +  (an 'output' property) to be set by Binman, based on=
- the alignment requested
-> > > > > > > > > > +  in the input.
-> > > > > > > > > > +
-> > > > > > > > > > +  Once processing is complete, input properties have m=
-ostly served their
-> > > > > > > > > > +  purpose, at least until the firmware is repacked lat=
-er, e.g. due to a
-> > > > > > > > > > +  firmware update. The 'fixed-partitions' binding shou=
-ld provide enough
-> > > > > > > > > > +  information to read the firmware at runtime, includi=
-ng decompression if
-> > > > > > > > > > +  needed. =20
-> > > > > > > > >
-> > > > > > > > > How is this going to work exactly? binman reads these nod=
-es and then
-> > > > > > > > > writes out 'fixed-partitions' nodes. But then you've lost=
- the binman
-> > > > > > > > > specifc parts needed for repacking. =20
-> > > > > > > >
-> > > > > > > > No, they are the same node. I do want the extra information=
- to stick
-> > > > > > > > around. So long as it is compatible with fixed-partition as=
- well, this
-> > > > > > > > should work OK. =20
-> > > > > > >
-> > > > > > > How can it be both? The partitions node compatible can be eit=
-her
-> > > > > > > 'fixed-partitions' or 'binman'. =20
-> > > > > >
-> > > > > > Can we not allow it to be both? I have tried to adjust things in
-> > > > > > response to feedback but perhaps the feedback was leading me do=
-wn the
-> > > > > > wrong path? =20
-> > > > >
-> > > > > Sure, but then the schema has to and that means extending
-> > > > > fixed-partitions. =20
-> > > >
-> > > > Can we cross that bridge later? There might be resistance to it. I'm
-> > > > not sure. For now, perhaps just a binman compatible works well enou=
-gh
-> > > > to make progress. =20
-> > >
-> > > Is there any way to make progress on this? I would like to have
-> > > software which doesn't understand the binman compatible to at least be
-> > > able to understand the fixed-partition compatible. Is that acceptable=
-? =20
-> >
-> > There's only 2 ways that it can work. Either binman writes out
-> > fixed-partition nodes dropping/replacing anything only defined for
-> > binman or fixed-partition is extended to include what binman needs. =20
->=20
-> OK, then I suppose the best way is to add a new binman compatible, as
-> is done with this v6 series. People then need to choose it instead of
-> fixed-partition.
+ int __init jffs2_create_slab_caches(void)
+ {
+-	full_dnode_slab =3D kmem_cache_create("jffs2_full_dnode",
+-					    sizeof(struct jffs2_full_dnode),
+-					    0, 0, NULL);
++	full_dnode_slab =3D KMEM_CACHE(jffs2_full_dnode, 0);
+ 	if (!full_dnode_slab)
+ 		goto err;
+=20
+-	raw_dirent_slab =3D kmem_cache_create("jffs2_raw_dirent",
+-					    sizeof(struct jffs2_raw_dirent),
+-					    0, SLAB_HWCACHE_ALIGN, NULL);
++	raw_dirent_slab =3D KMEM_CACHE(jffs2_raw_dirent, SLAB_HWCACHE_ALIGN);
+ 	if (!raw_dirent_slab)
+ 		goto err;
+=20
+-	raw_inode_slab =3D kmem_cache_create("jffs2_raw_inode",
+-					   sizeof(struct jffs2_raw_inode),
+-					   0, SLAB_HWCACHE_ALIGN, NULL);
++	raw_inode_slab =3D KMEM_CACHE(jffs2_raw_inode, SLAB_HWCACHE_ALIGN);
+ 	if (!raw_inode_slab)
+ 		goto err;
+=20
+-	tmp_dnode_info_slab =3D kmem_cache_create("jffs2_tmp_dnode",
+-						sizeof(struct jffs2_tmp_dnode_info),
+-						0, 0, NULL);
++	tmp_dnode_info_slab =3D KMEM_CACHE(jffs2_tmp_dnode_info, 0);
+ 	if (!tmp_dnode_info_slab)
+ 		goto err;
+=20
+@@ -63,28 +55,20 @@ int __init jffs2_create_slab_caches(void)
+ 	if (!raw_node_ref_slab)
+ 		goto err;
+=20
+-	node_frag_slab =3D kmem_cache_create("jffs2_node_frag",
+-					   sizeof(struct jffs2_node_frag),
+-					   0, 0, NULL);
++	node_frag_slab =3D KMEM_CACHE(jffs2_node_frag, 0);
+ 	if (!node_frag_slab)
+ 		goto err;
+=20
+-	inode_cache_slab =3D kmem_cache_create("jffs2_inode_cache",
+-					     sizeof(struct jffs2_inode_cache),
+-					     0, 0, NULL);
++	inode_cache_slab =3D KMEM_CACHE(jffs2_inode_cache, 0);
+ 	if (!inode_cache_slab)
+ 		goto err;
+=20
+ #ifdef CONFIG_JFFS2_FS_XATTR
+-	xattr_datum_cache =3D kmem_cache_create("jffs2_xattr_datum",
+-					     sizeof(struct jffs2_xattr_datum),
+-					     0, 0, NULL);
++	xattr_datum_cache =3D KMEM_CACHE(jffs2_xattr_datum, 0);
+ 	if (!xattr_datum_cache)
+ 		goto err;
+=20
+-	xattr_ref_cache =3D kmem_cache_create("jffs2_xattr_ref",
+-					   sizeof(struct jffs2_xattr_ref),
+-					   0, 0, NULL);
++	xattr_ref_cache =3D KMEM_CACHE(jffs2_xattr_ref, 0);
+ 	if (!xattr_ref_cache)
+ 		goto err;
+ #endif
+--=20
+2.39.2
 
-I'm sorry this is not at all what Rob suggested, or did I totally
-misunderstand his answer?
-
-In both cases the solution is to generate a "fixed-partition" node. Now
-up to you to decide whether binman should adapt the output to the
-current schema, or if the current schema should be extended to
-understand all binman's output.
-
-At least that is my understanding and also what I kind of agree with.
-
-Thanks,
-Miqu=C3=A8l
 
