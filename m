@@ -1,204 +1,132 @@
-Return-Path: <linux-kernel+bounces-52834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DA7A849D33
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:39:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FBFA849D3E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:42:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 707901C22535
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:39:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A5691F2349E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:42:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A7B72C1A8;
-	Mon,  5 Feb 2024 14:39:47 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 227E724B4A;
-	Mon,  5 Feb 2024 14:39:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA9722C1A9;
+	Mon,  5 Feb 2024 14:41:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LrpKqihx"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 683322C19C
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 14:41:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707143986; cv=none; b=nsSFxv/4EI63JPrhb3vj4p3g7DbPEh0L1xfrEJbtEiqojgUQ2gxkvG1iWDCu3p/kp8MliQIE80TVUEmc1EC5xMjGAlRq5WSw/mnqWVKRiBYqbsr2VnWEFmpComRs1v/zRXdloeCe+xxpDqCMRklQj0C0t9mIdRCtLDM8/nRZV1w=
+	t=1707144118; cv=none; b=Lpf/2w2nKqBzEtMIZDxu4PdCSao4CLNoCSchTMPMdQvFXwGCQv4WhnaiKOIM8tm6PCHQFutc75OqoZg3Boc0H0+wJnL0ZTAXzQFPb4H2aeiNpdUePaXDdMeMpURoztTtuzM6NFtfqcf0DUbtSdqqmI3vkhw2bUGNJt/ds9hVZ3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707143986; c=relaxed/simple;
-	bh=HNpZgFINo5CuPlmAVI1ccSarJBMiy/d4BsWA5ccPASk=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=St7NLBjF9Moy/sLG6UPpybJ3y90E6K8VGK7F43nAwKqJJlR9wXG9V9fpLmmwvHQ+/qcJ6JEFbGlUbDY9Vr8INKiPpwp4YH+34XKH2FklO7HafZM414s9+KqEEf+FMzXan41Tn82tG3pSBxs8Ic5AM8aO7fRLCJbRg0iNd+y2RA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CA37F1FB;
-	Mon,  5 Feb 2024 06:40:25 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.66.84])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DD60D3F5A1;
-	Mon,  5 Feb 2024 06:39:41 -0800 (PST)
-Date: Mon, 5 Feb 2024 14:39:31 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: richard clark <richard.xnu.clark@gmail.com>, nico@fluxnic.net,
-	mhiramat@kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Valentin Schneider <vschneid@redhat.com>
-Subject: Re: Question about the ipi_raise filter usage and output
-Message-ID: <ZcDwoce6Ok25K6Dm@FVFF77S0Q05N>
+	s=arc-20240116; t=1707144118; c=relaxed/simple;
+	bh=KQhMNIwFvZsF0OT2RO5FnPqalWb/YnWmBS845Z+2/X8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SGHwc8929woiuBG3YqXqTH+k12kc/gGeqvSP8zIY/R02Ke9Ftpbyts27m2o3V20I9J92HF4ByT5QhyhHEOlDmN/g8/kW+Zgcgc6KQkm94MExjaPpCr2z8OnS7ifC5Cx3HeQi2Xq4GLn5EoJx+duBPrUKPLpYgGKY9p9eIo+G98M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LrpKqihx; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-51121637524so6731527e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 06:41:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707144114; x=1707748914; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fKULY3uf5fnHzulcbB3qwz6JapwOEnl8pUfTbYYscHU=;
+        b=LrpKqihxJnR4haw1flXHENkJ0rk331V/cMTUIDai6tZmaTRzg5K4O4i0WUHLfu+Ymv
+         MlJr9uAfe0JlxelSRFkJBMGe+o+A3LTUt2MmJFf366dX/qPzZMZmHgYhkrH3HD7L/w/H
+         Nw55enMb9WmzkWVPCc5X+c1Zt8NbLpYoR34OnKl/c0UVYLtxbXFWE4bpyVIv0FIQUreC
+         m1YHxvur+ZGd99x1vlwVgOU165S0bwn4h4OGbuc/fkzv+1ROBOQ7mpDdmSA7A7sxTWVn
+         KUHehxT9eEsnwc8lMri4KAw+i8a0YL2OTvTt8g9ZXAedb+zUts+5vUzANHrFL8iQHiH4
+         b/Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707144114; x=1707748914;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fKULY3uf5fnHzulcbB3qwz6JapwOEnl8pUfTbYYscHU=;
+        b=EUXgzmVmUmGijxEjqq2fK2fCO8AyEC7xKkbZd6L2qGxEYSluR0YHX9yDy/f2tQ71WC
+         Mm+pRgn9/oo0lJndei1wjCTX1lcUTKmJgebxs30EtkIpYCAXzrlqkOibj/I7pIyOBtgd
+         0a/LpDXi69IbeyrsPPsgUuBcghVq3G6QffEjM9uXvtyB0XGZR12zAa7Idx3eWvWHByja
+         CSTZjvE+Y2pxWbd2mnbJG2y15nC1BIG1pua7iRYrc0lMlOCXKEwsGE2JeFN43ihE/8+R
+         J/ONB/oqSEwu1LMzU2mSSyA1KyOV24G/D3VNhli33Cttuv58XfThbAt+E7eFZuKB+p/Z
+         YZmg==
+X-Gm-Message-State: AOJu0YzGiU4ikHg9y0ZCtrph0l9MO0mcAOfj8c+IFd5pbiYbm2m48ujZ
+	wyH8+zLmAarch8I8NMzHuhNl/QL/SzDRh961YWoruvhjQCQ3UrLL
+X-Google-Smtp-Source: AGHT+IFVaO6UfEGZZs7onSCc6yna2Eo5pz7ReZec3ds7nPmJRI5cGABtimENzRY2tqxJnmvmTbBFow==
+X-Received: by 2002:a05:6512:e9c:b0:511:4307:f6a4 with SMTP id bi28-20020a0565120e9c00b005114307f6a4mr5923350lfb.60.1707144114191;
+        Mon, 05 Feb 2024 06:41:54 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCX88uqq94ctAtYY5c7sacDO/mc/xq1yTBt7MutneLk1fxbDFxFnrUqfkfrX+/2NysP2iQsjW4xonxT3KE1kF5MpjwTILsBzMOdea7ne+ly7oBGKjsfe0xlEya8irgAVwN+dF19f/0q3TnHmtjG5DuSnRZ6TCFYYkFc8T3MpwW16VBoiPxpcbW8k0ztIXJnlxvF9FvLhDr6pXjrhJOpKcqqOJmsUlbOfzfqADyFN
+Received: from gmail.com ([2001:1458:204:1::101:b2a1])
+        by smtp.gmail.com with ESMTPSA id d13-20020a170906640d00b00a35d7b6cb63sm4377770ejm.28.2024.02.05.06.41.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 06:41:53 -0800 (PST)
+Date: Mon, 5 Feb 2024 15:41:52 +0100
+From: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To: "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: Jens Taprogge <jens.taprogge@taprogge.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	industrypack-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ipack: make ipack_bus_type const
+Message-ID: <ZcDzsP8mRl3Rp9bx@gmail.com>
+References: <20240204-bus_cleanup-ipack-v1-1-aef5e8f84d01@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240205080609.563df00f@rorschach.local.home>
+In-Reply-To: <20240204-bus_cleanup-ipack-v1-1-aef5e8f84d01@marliere.net>
 
-[adding Valentin]
-
-On Mon, Feb 05, 2024 at 08:06:09AM -0500, Steven Rostedt wrote:
-> On Mon, 5 Feb 2024 10:28:57 +0000
-> Mark Rutland <mark.rutland@arm.com> wrote:
+On Sun, Feb 04, 2024 at 05:00:13PM -0300, Ricardo B. Marliere wrote:
+> Now that the driver core can properly handle constant struct bus_type,
+> move the ipack_bus_type variable to be a constant structure as well,
+> placing it into read-only memory which can not be modified at runtime.
 > 
-> > > I try to write below:
-> > > echo 'target_cpus == 11 && reason == "Function call interrupts"' >
-> > > events/ipi/ipi_raise/filter  
-> > 
-> > The '=' checks if the target_cpus bitmap *only* contains CPU 11. If the cpumask
-> > contains other CPUs, the filter will skip the call.
-> > 
-> > I believe you can use '&' to check whether a cpumask contains a CPU, e.g.
-> > 
-> > 	'target_cpus & 11'
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> ---
+>  drivers/ipack/ipack.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> 11 == 0xb = b1011
+> diff --git a/drivers/ipack/ipack.c b/drivers/ipack/ipack.c
+> index b1471ba016a5..866bf48d803b 100644
+> --- a/drivers/ipack/ipack.c
+> +++ b/drivers/ipack/ipack.c
+> @@ -187,7 +187,7 @@ static struct attribute *ipack_attrs[] = {
+>  };
+>  ATTRIBUTE_GROUPS(ipack);
+>  
+> -static struct bus_type ipack_bus_type = {
+> +static const struct bus_type ipack_bus_type = {
+>  	.name      = "ipack",
+>  	.probe     = ipack_bus_probe,
+>  	.match     = ipack_bus_match,
 > 
-> So the above would only be true for CPUs 0,1 and 3 ;-)
-
-Sorry, I misunderstood the scalar logic and thought that we treated:
-
-	'$mask $OP $scalar', e.g. 'target_cpus & 11'
-
-.. as a special case meaning a cpumask with that scalar bit set, i.e.
-
-	'$mask $OP CPUS{$scalar}', e.g. 'target_cpus & CPUS{11}'
-
-.. but evidently I was wrong.
-
-> I think you meant: 'target_cpus & 0x800' 
+> ---
+> base-commit: 41b9fb381a486360b2daaec0c7480f8e3ff72bc7
+> change-id: 20240204-bus_cleanup-ipack-7e502021db1f
 > 
-> I tried "1 << 11' but it appears to not allow shifts. I wonder if we should add that?
+> Best regards,
+> -- 
+> Ricardo B. Marliere <ricardo@marliere.net>
+> 
 
-Hmm... shouldn't we make 'CPUS{11}' work for that?
+Hello Ricardo,
 
-From a quick test (below), that doesn't seem to work, though I think it
-probably should?
+Thank you for your patch.
 
-  # cat /sys/devices/system/cpu/online 
-  0-3
-  # echo 1 > /sys/kernel/tracing/events/ipi/ipi_raise/enable 
-  # echo 'target_cpus & CPUS{3}' > /sys/kernel/tracing/events/ipi/ipi_raise/filter 
-  # grep IPI /proc/interrupts 
-  IPI0:        54         41         32         42       Rescheduling interrupts
-  IPI1:      1202       1035        893        909       Function call interrupts
-  IPI2:         0          0          0          0       CPU stop interrupts
-  IPI3:         0          0          0          0       CPU stop (for crash dump) interrupts
-  IPI4:         0          0          0          0       Timer broadcast interrupts
-  IPI5:         0          0          0          0       IRQ work interrupts
-  # sleep 1
-  # grep IPI /proc/interrupts 
-  IPI0:        54         42         32         42       Rescheduling interrupts
-  IPI1:      1209       1037        912        927       Function call interrupts
-  IPI2:         0          0          0          0       CPU stop interrupts
-  IPI3:         0          0          0          0       CPU stop (for crash dump) interrupts
-  IPI4:         0          0          0          0       Timer broadcast interrupts
-  IPI5:         0          0          0          0       IRQ work interrupts
-  # cat /sys/devices/system/cpu/online 
-  0-3
-  # cat /sys/kernel/tracing/trace
-  # tracer: nop
-  #
-  # entries-in-buffer/entries-written: 0/0   #P:4
-  #
-  #                                _-----=> irqs-off/BH-disabled
-  #                               / _----=> need-resched
-  #                              | / _---=> hardirq/softirq
-  #                              || / _--=> preempt-depth
-  #                              ||| / _-=> migrate-disable
-  #                              |||| /     delay
-  #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
-  #              | |         |   |||||     |         |
-  # 
+Acked-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
 
-More confusingly, if I use '8', I get events with cpumasks which shouldn't
-match AFAICT:
+Greg, would you please add it to your misc tree.
 
-  echo 'target_cpus & 8' > /sys/kernel/tracing/events/ipi/ipi_raise/filter 
-  # echo '' > /sys/kernel/tracing/trace
-  # grep IPI /proc/interrupts 
-  IPI0:        55         46         34         43       Rescheduling interrupts
-  IPI1:      1358       1155        994       1021       Function call interrupts
-  IPI2:         0          0          0          0       CPU stop interrupts
-  IPI3:         0          0          0          0       CPU stop (for crash dump) interrupts
-  IPI4:         0          0          0          0       Timer broadcast interrupts
-  IPI5:         0          0          0          0       IRQ work interrupts
-  # sleep 1
-  # grep IPI /proc/interrupts 
-  IPI0:        56         46         34         43       Rescheduling interrupts
-  IPI1:      1366       1158       1005       1038       Function call interrupts
-  IPI2:         0          0          0          0       CPU stop interrupts
-  IPI3:         0          0          0          0       CPU stop (for crash dump) interrupts
-  IPI4:         0          0          0          0       Timer broadcast interrupts
-  IPI5:         0          0          0          0       IRQ work interrupts
-  # cat /sys/kernel/tracing/trace
-  # tracer: nop
-  #
-  # entries-in-buffer/entries-written: 91/91   #P:4
-  #
-  #                                _-----=> irqs-off/BH-disabled
-  #                               / _----=> need-resched
-  #                              | / _---=> hardirq/softirq
-  #                              || / _--=> preempt-depth
-  #                              ||| / _-=> migrate-disable
-  #                              |||| /     delay
-  #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
-  #              | |         |   |||||     |         |
-            <idle>-0       [000] d.h4.   480.720312: ipi_raise: target_mask=00000000,00000004 (Function call interrupts)
-      kworker/u8:1-37      [002] d..3.   480.720763: ipi_raise: target_mask=00000000,00000008 (Function call interrupts)
-                sh-144     [003] d.h1.   480.721584: ipi_raise: target_mask=00000000,00000001 (Function call interrupts)
-            <idle>-0       [000] d.h4.   481.552179: ipi_raise: target_mask=00000000,00000004 (Function call interrupts)
-      kworker/u8:1-37      [002] d..3.   481.552742: ipi_raise: target_mask=00000000,00000008 (Function call interrupts)
-            <idle>-0       [000] dNs4.   481.553728: ipi_raise: target_mask=00000000,00000004 (Function call interrupts)
-                sh-144     [003] d.h1.   481.553742: ipi_raise: target_mask=00000000,00000002 (Function call interrupts)
-            <idle>-0       [000] d.h4.   481.730502: ipi_raise: target_mask=00000000,00000004 (Function call interrupts)
-      kworker/u8:1-37      [002] d..3.   481.730917: ipi_raise: target_mask=00000000,00000008 (Function call interrupts)
-            <idle>-0       [000] d.h4.   481.800820: ipi_raise: target_mask=00000000,00000004 (Function call interrupts)
-      kworker/u8:1-37      [002] d..3.   481.801249: ipi_raise: target_mask=00000000,00000008 (Function call interrupts)
-      kworker/u8:1-37      [002] d.h2.   481.801483: ipi_raise: target_mask=00000000,00000001 (Function call interrupts)
-            <idle>-0       [000] d.h4.   481.916178: ipi_raise: target_mask=00000000,00000004 (Function call interrupts)
-      kworker/u8:1-37      [002] d..3.   481.916610: ipi_raise: target_mask=00000000,00000008 (Function call interrupts)
-                sh-144     [003] d.h1.   481.917581: ipi_raise: target_mask=00000000,00000001 (Function call interrupts)
-            <idle>-0       [000] d.h4.   482.280864: ipi_raise: target_mask=00000000,00000004 (Function call interrupts)
-      kworker/u8:1-37      [002] d..3.   482.281310: ipi_raise: target_mask=00000000,00000008 (Function call interrupts)
-      kworker/u8:1-37      [002] d.h2.   482.281514: ipi_raise: target_mask=00000000,00000001 (Function call interrupts)
-                sh-144     [003] d.h1.   482.285681: ipi_raise: target_mask=00000000,00000001 (Function call interrupts)
-                sh-144     [003] d..2.   482.287634: ipi_raise: target_mask=00000000,00000001 (Rescheduling interrupts)
-                sh-144     [003] d.h1.   482.289705: ipi_raise: target_mask=00000000,00000002 (Function call interrupts)
-              grep-183     [000] d.h1.   482.293649: ipi_raise: target_mask=00000000,00000002 (Function call interrupts)
-              grep-183     [000] d.s3.   482.301758: ipi_raise: target_mask=00000000,00000008 (Function call interrupts)
-              grep-183     [000] d.h1.   482.325713: ipi_raise: target_mask=00000000,00000002 (Function call interrupts)
-              grep-183     [000] d..4.   482.349025: ipi_raise: target_mask=00000000,00000008 (Function call interrupts)
-            <idle>-0       [000] d.h4.   482.701197: ipi_raise: target_mask=00000000,00000004 (Function call interrupts)
-      kworker/u8:1-37      [002] d..3.   482.701856: ipi_raise: target_mask=00000000,00000008 (Function call interrupts)
-            <idle>-0       [000] d.h4.   482.921567: ipi_raise: target_mask=00000000,00000004 (Function call interrupts)
-      kworker/u8:1-37      [002] d..3.   482.921998: ipi_raise: target_mask=00000000,00000008 (Function call interrupts)
-            <idle>-0       [000] d.h4.   483.044683: ipi_raise: target_mask=00000000,00000004 (Function call interrupts)
-      kworker/u8:1-37      [002] d..3.   483.045123: ipi_raise: target_mask=00000000,00000008 (Function call interrupts)
-            <idle>-0       [000] d.h4.   483.154449: ipi_raise: target_mask=00000000,00000004 (Function call interrupts)
-      kworker/u8:1-37      [002] d..3.   483.154896: ipi_raise: target_mask=00000000,00000008 (Function call interrupts)
-            <idle>-0       [000] d.h4.   483.296925: ipi_raise: target_mask=00000000,00000004 (Function call interrupts)
-      kworker/u8:1-37      [002] d.h2.   483.297455: ipi_raise: target_mask=00000000,00000001 (Function call interrupts)
-      kworker/u8:1-37      [002] d..3.   483.297719: ipi_raise: target_mask=00000000,00000008 (Function call interrupts)
-            <idle>-0       [000] d.h4.   483.602777: ipi_raise: target_mask=00000000,00000004 (Function call interrupts)
-
-Have I completely misunderstood how this is supposed to work, or is that a bug?
-
-Mark.
+Thanks and regards,
+Vaibhav Gupta
 
