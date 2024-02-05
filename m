@@ -1,145 +1,120 @@
-Return-Path: <linux-kernel+bounces-52712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0243A849BB7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:26:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E5ECE849BC2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:28:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34C441C223B1
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:26:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 240EA1C22A11
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:28:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A6551CD0C;
-	Mon,  5 Feb 2024 13:26:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6CC220DC9;
+	Mon,  5 Feb 2024 13:28:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="RvR2Io/m"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="g9WM9paX"
+Received: from mout.web.de (mout.web.de [212.227.15.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93FA51CD05;
-	Mon,  5 Feb 2024 13:26:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B19B1CD05;
+	Mon,  5 Feb 2024 13:28:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707139607; cv=none; b=gSKQQzUmXktLQSwsu9IJAso0W/BWqUetxQCKjSCLII2C1lIcMr0+ZgP0hf6XEHbHAev2YsGEGw/f/zqKV3Oj7vGgmQk5eDW++y7nTAmcnBEuDbNLDM+FZYZakfS4lpNAMBw0Bb8teBLh6QznnVHbSwCCpf6NLd+O2Da1Ey7ATlk=
+	t=1707139717; cv=none; b=sy5ejbwy8kB+rhZXZUrYnUyOJ/Lw6Xo2//jWg+/zoeiV6MtW0/JH7jTlMPi4PfGQpIUu3QR3SPv8BBxe9nKzUBDZ+We8CgP1hjJ3kHZy7zaMPQh58vJ3W4Q3Y0oz+Ig5Po2qBdDaSnMHmomq6p6UPZOLq8eVQcdXsftqWRNJlvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707139607; c=relaxed/simple;
-	bh=oWPwmRLnCaYF8YZEOMfP6FByoUIRBfdx2gAukBKsmAM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lAm/nZhuye2UL8G7PhCKM3aKDWsOjPniB0LYfmiWzaiA4gZfd/8vxZayh1mBKZMzVOszwN/tOqfkrsTrsra27pHin6/gjCqJ6CoSSH7IBEE8YTwOJZoAoHiIrCaoioMDqWwftG12xx7iipsUIdd9G+t2va73BPCRWfa3dDhrUNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=RvR2Io/m; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8ED9BFF811;
-	Mon,  5 Feb 2024 13:26:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707139601;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1mJeoLvrMZja6m+m7EbjiMgme3HRnrMEAgds1gESvyI=;
-	b=RvR2Io/mFkUOlAI951aA+ed3sDSo1QIzzLxgeg0nB/mmNg96VV9t7LmbyH4flPNVGPrQrl
-	3yAOAfohYN73qbkQVkSIlvkX5rv7EHi/Ncn49HOyoHRmJlaI/ozEK/XXngzEMDgTal7tzv
-	xKNua8XrpGFgv2/cPgjguRAUmp+tAEcSZTaBd9b5dWh5cHdLOEdm+wm1KtXMEKcJvhSKX9
-	TYkAf+D2gHR6opO2wQRE3jSSSktakW48XTIG8d/w5oKiT/nhbjWuA9o0tG59OtVcvnM1Su
-	nyP8KpAYL2bKeNsfrlpZxOwricqsAtPWAtO/ujLgEb8B6SIdICgYrebKM+3TCg==
-Date: Mon, 5 Feb 2024 14:26:39 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Conor Dooley <conor@kernel.org>
-Cc: William Zhang <william.zhang@broadcom.com>, Linux MTD List
- <linux-mtd@lists.infradead.org>, Linux ARM List
- <linux-arm-kernel@lists.infradead.org>, Broadcom Kernel List
- <bcm-kernel-feedback-list@broadcom.com>, f.fainelli@gmail.com,
- kursad.oney@broadcom.com, joel.peshkin@broadcom.com,
- anand.gore@broadcom.com, dregan@mail.com, kamal.dasu@broadcom.com,
- tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com,
- devicetree@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
- linux-kernel@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Vignesh Raghavendra
- <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>, Kamal Dasu
- <kdasu.kdev@gmail.com>, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v4 03/12] dt-bindings: mtd: brcmnand: Add ecc strap
- property
-Message-ID: <20240205142639.5d7c70f0@xps-13>
-In-Reply-To: <20240203-expenses-tarmac-c564bc7ae34f@spud>
-References: <20240203002834.171462-1-william.zhang@broadcom.com>
-	<20240203002834.171462-4-william.zhang@broadcom.com>
-	<20240203-expenses-tarmac-c564bc7ae34f@spud>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707139717; c=relaxed/simple;
+	bh=YOHneSgCtSbbCAEEWSDGu9l2zrgvc3/nDi0e9391Wz0=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=l5/03DFgHgvz6gavF0onHEKADJftONKLU3zjcy4oN+Hrnq5oubRWrLS+ZhcTg9Udh5EukJRGi35F/PivRn5CRFwt26e8WMzD5sPl64kF1tl+nZCa0nuBkH0iZdwhEvTzRsQIOiCBOg3yFDLeWa0QG/LzXWeTJSYe8MsYhiJZT7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=g9WM9paX; arc=none smtp.client-ip=212.227.15.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1707139698; x=1707744498; i=markus.elfring@web.de;
+	bh=YOHneSgCtSbbCAEEWSDGu9l2zrgvc3/nDi0e9391Wz0=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=g9WM9paXjX9wywiuC5nYS8ycoFA8SfmefVc3BzD/de7CgVa5xl428ZKV3T2K/rXR
+	 a3uiJ6giTkCdc1D9V/3Sih5jKBSKoR7VgFXvaplcCgCyTeGI9ML58d8JjWw/UQgRH
+	 YmyvT9Tx4UeAl4VXa/Bp7QNXitL2ynZgr2pAZfUraj0eAmm/wT5Q5lqldor8SZ9Qq
+	 SGpOpdECNvPAPl7KDNpVD+MMJyNO0ANtEKWxlx2EjKR90jm1EJi2QXqYLlWIPWlY7
+	 mrsYWBAUnjwzMMZ/rQFQgDbSs+UCOJNflpSbeUBK92X945/jymU3f2FHHj/C/SRN6
+	 jhcxr1VKT8GzigsTSA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1N5lnT-1qwC8P30jj-0170l7; Mon, 05
+ Feb 2024 14:28:18 +0100
+Message-ID: <46f64db3-3f8f-4c6c-8d70-38daeefccac1@web.de>
+Date: Mon, 5 Feb 2024 14:28:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+To: netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] ethernet: wiznet: Use
+ devm_platform_get_and_ioremap_resource() in w5300_hw_probe()
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+X-Provags-ID: V03:K1:4kOjvGr+eOI8kHD1c1zu6LXaME5jhgkOkZMJfdQiWaPO+hwI4+V
+ 1c2xPp5WClaUGRqNxb4QwwylZTeYI3ecagsR2nLhEev5Wgk+uR9ef30UbqlRzzbvAltYQUn
+ aR1iGEWAks1T4Rj2kA/Afc8K16tQ24UXK5WjkEZBjDUppBZM57BXAKt/Bsmu8u88kRLc2u8
+ dZ+uNdjSMMSVU7D9/qjlQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:4Ac7b6On9jk=;4ivussFx913jbC6WDFNJonKUDMR
+ RTAavQciVlj3k8PuQ4w9/Nr5QcB+YnV+6crIhImjI3/YeAvQdK5xhu7v/jUbW1lh0mrKJd+LZ
+ DJTBersgp2hQgNZGB0pKdxzsIyEZIDHS/FuUfFIExwzpVkGpiYpMRwp5d7IGe0pyJhanZa7Mf
+ yr/CVeBpfC8+zqYgFksNNsrY6NK3Lr801dJPej85YuNjTRXZgBfZtW8ceQiz2ZFLUhEDTJ3WE
+ rF75wTPgjF17D+jHvIkVHKHb3mz0fdLrKXHgucEtPEsMLDkzAZdhcgvD/bUOAffEP2+YZu8EA
+ QiuL4EjQ3SdElBsTMtFBiimMU+1zpQ/sQzBiHcPuScpKRb9hyYW4Liq5BrX7khyWggIeFz2l5
+ rGg4T9R+Lf2tvh17lOTN9pA6prLqXUW2xVD/eMO2iyauWz1OoXNI4P9RQr/0Ey7DWJGyBgzRz
+ mXAZg02oBQKwlVyE6fAjy6T6xcfuBiFcJCku6IJ7Oy90e7JLot9wGzK5VQzqEhMsoNHPOecCj
+ +L7Z/7FyLi4wz+/LTNnd6e4GBnPYLycTkbPvSAnVsJo0r+6sV5IWR2aio2uqzjsdV9d0DkgZ5
+ Oxd4DPh+0jAmqp5ZLgvXBK1YPZNTif8+idWI0RR1mkknX27WJLKGi9/eZltTorYC1NbBEohVG
+ H/fdzra39ratSLB5h7twMuKip3V9Mfoy9QuKYmueKSHIGdJLV5Ua7rkqAr3ob3GAm4C2A/7hM
+ YVLUtCc/SJF4ygcnQGzyXzSWckd82iDebD+Xwvzg8KqF6SE5OLgYC5MCJsi4fAKqHhlgC0VoX
+ XimXV2409vqXyEenchjP888MTbdx41aJMPtm20bCOejeY=
 
-Hi,
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Mon, 5 Feb 2024 14:22:32 +0100
 
-conor@kernel.org wrote on Sat, 3 Feb 2024 14:49:50 +0000:
+A wrapper function is available since the commit 890cc39a879906b63912482df=
+c41944579df2dc6
+("drivers: provide devm_platform_get_and_ioremap_resource()").
+Thus reuse existing functionality instead of keeping duplicate source code=
+.
 
-> On Fri, Feb 02, 2024 at 04:28:24PM -0800, William Zhang wrote:
-> > Add brcm,nand-ecc-use-strap to get ecc and spare area size settings from
-> > board boot strap for broadband board designs because they do not specify
-> > ecc setting in dts but rather using the strap setting.
-> >=20
-> > Signed-off-by: William Zhang <william.zhang@broadcom.com>
-> >=20
-> > ---
-> >=20
-> > Changes in v4:
-> > - Move ecc strap property to this separate patch and remove some
-> > non-binding related text from the description
-> >=20
-> > Changes in v3: None
-> > Changes in v2: None
-> >=20
-> >  Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml b=
-/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-> > index d0168d55c73e..2599d902ec3a 100644
-> > --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-> > +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-> > @@ -147,6 +147,14 @@ patternProperties:
-> >            layout.
-> >          $ref: /schemas/types.yaml#/definitions/uint32
-> > =20
-> > +      brcm,nand-ecc-use-strap:
-> > +        description:
-> > +          This flag indicates the ecc strength and spare area size sho=
-uld
-> > +          be retrieved from the SoC NAND boot strap setting instead of
-> > +          nand-ecc-strength and brcm,nand-oob-sector-size or auto dete=
-ction. =20
->=20
-> I'm still on the fence about this being overly prescriptive about the
-> operating systems behaviour. I think it would be good to say why the
-> strap values are better than those explicitly provided in DT rather than
-> just saying "these strap values should be used".
+This issue was detected by using the Coccinelle software.
 
-I don't know if there is a point is saying why they would be better, as
-they are not. It is a -questionable- design choice. However I would
-just get rid of any mention to other properties. Just say one should
-expect the strap value to be read and applied by the system when this
-property is present.
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ drivers/net/ethernet/wiznet/w5300.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> > +          This is commonly used by the BCMBCA SoC board design.
-> > +        $ref: /schemas/types.yaml#/definitions/flag
-> > +
-> >      unevaluatedProperties: false
-> > =20
-> >  allOf:
-> > --=20
-> > 2.37.3
-> >  =20
+diff --git a/drivers/net/ethernet/wiznet/w5300.c b/drivers/net/ethernet/wi=
+znet/w5300.c
+index 3318b50a5911..f165616f36fe 100644
+=2D-- a/drivers/net/ethernet/wiznet/w5300.c
++++ b/drivers/net/ethernet/wiznet/w5300.c
+@@ -539,8 +539,7 @@ static int w5300_hw_probe(struct platform_device *pdev=
+)
+ 		eth_hw_addr_random(ndev);
+ 	}
 
+-	mem =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	priv->base =3D devm_ioremap_resource(&pdev->dev, mem);
++	priv->base =3D devm_platform_get_and_ioremap_resource(pdev, 0, &mem);
+ 	if (IS_ERR(priv->base))
+ 		return PTR_ERR(priv->base);
 
-Thanks,
-Miqu=C3=A8l
+=2D-
+2.43.0
+
 
