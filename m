@@ -1,277 +1,229 @@
-Return-Path: <linux-kernel+bounces-53829-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED19B84A70C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:21:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F109384A70E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:22:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95A2028D47F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:21:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8CC428A94B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:22:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40186604C1;
-	Mon,  5 Feb 2024 19:40:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13FCA60BA4;
+	Mon,  5 Feb 2024 19:41:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jXLOZEY9";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jXLOZEY9"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Lk3IsXrS"
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009A7604AF;
-	Mon,  5 Feb 2024 19:40:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9659960B82
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 19:41:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707162020; cv=none; b=bklcEW3Sg3XngJfJiitfy4a/sU+32L5hh23VoNDyHlXIDM32hIOmExD7kzJsn6a6u+x7KFniFgqxOoLbsXXF04ed1Kg75QIP+w99jacOVT6xJv2334ENJ0FJ9ecG/ZW4Ox81c6xw/mUdALhXvxLE5niOuX817uYitSpdL31v0JA=
+	t=1707162078; cv=none; b=T+Vd8P5AUFIeDfK4r/xGU5B6ydiHyhTC5Xa/WxXsifvEaydzbYaZJax0U0q4PeKJWS7kP4J5fke2cJZxBeuXcWuYLqCnciCl7/ch523tt/Ai///mqxbdrynFbw5/FhxSvUr4KzPCUdb0G/Fx4O3k/P6EYPOiIf3J9WH7p6uwYqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707162020; c=relaxed/simple;
-	bh=h6fok/j/rmgFRaC3OERQa17hPFRvFNJ50J0rE1rRM8Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rHynur2xR6UiMdIIEgMbquuteG/q0TFLwTJphv5iqze9uJ+WO8HgE3wq1Cul6zfj68ah/3bx+RNOZ8kVgru8ubsa0OAaCI5GVNrBycvDbPSAeKub76Q2LGL0DQo9y2Y7FFge82Ze+EhRcJ0pMDaG1saT0KN/Guv3x4Xch4M/32g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jXLOZEY9; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jXLOZEY9; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 22C09220B0;
-	Mon,  5 Feb 2024 19:40:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707162016; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eCAYeFTv9u2wjsEQ0QvNWNJYtGTTkhyunrC4I8efVjs=;
-	b=jXLOZEY9Z2nbF3cV3dJl5rwDUFbl2dcqCqu8TRF67gsqNLDQshVfcuJWsWaDShiR0IuZ6b
-	bnEjTM4ktfLocee/0/zAOfnvIMHzJMUQyYStG4EGmrkombgYg7aksMk7fXNO4SBhsfrytr
-	33pK9FIQGv86hOyIRx1jeryQxk7/Bzw=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707162016; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eCAYeFTv9u2wjsEQ0QvNWNJYtGTTkhyunrC4I8efVjs=;
-	b=jXLOZEY9Z2nbF3cV3dJl5rwDUFbl2dcqCqu8TRF67gsqNLDQshVfcuJWsWaDShiR0IuZ6b
-	bnEjTM4ktfLocee/0/zAOfnvIMHzJMUQyYStG4EGmrkombgYg7aksMk7fXNO4SBhsfrytr
-	33pK9FIQGv86hOyIRx1jeryQxk7/Bzw=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F128E136F5;
-	Mon,  5 Feb 2024 19:40:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id bifAOJ85wWWgPgAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Mon, 05 Feb 2024 19:40:15 +0000
-Date: Mon, 5 Feb 2024 20:40:15 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: "T.J. Mercier" <tjmercier@google.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Efly Young <yangyifei03@kuaishou.com>, android-mm@google.com,
-	yuzhao@google.com, mkoutny@suse.com,
-	Yosry Ahmed <yosryahmed@google.com>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] mm: memcg: Use larger batches for proactive reclaim
-Message-ID: <ZcE5n9cTdTGJChmq@tiehlicka>
-References: <20240202233855.1236422-1-tjmercier@google.com>
- <ZcC7Kgew3GDFNIux@tiehlicka>
- <CABdmKX3HbSxX6zLF4z3f+=Ybiq1bA71jckkeHv5QJxAjSexgaA@mail.gmail.com>
+	s=arc-20240116; t=1707162078; c=relaxed/simple;
+	bh=3b6oeS+sd5xoZNeIJEQUdkAN1RG5u3Jd70MTpYqp6SQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CG5zbWkPyv3uZlyx6+2CF79ToGYIWzkZd0ZqpdwU0ojVPOjzVISLTjG4uQoW7St8ftSEg4WBkQS5q5vjHfsmG6lfrp4XaPEAfbSqPlvjqt2oUxgozTC6FMaw/6c8iyE4LEmEnT9YDwU9wpy/Z4sxPcqClBVqY5sg9KcETH8V43A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Lk3IsXrS; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-295c8b795e2so3531538a91.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 11:41:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707162076; x=1707766876; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3b6oeS+sd5xoZNeIJEQUdkAN1RG5u3Jd70MTpYqp6SQ=;
+        b=Lk3IsXrSX4wqxMlMk7cri4M6IUXcDa2FnzoZ/TKm30119aM0SuBdhFGEvRboC94oK5
+         kzLhb9t1fAmTyXZY6/yQDXwbkKQkWOkdDka7jMz2D2LQ3Ze6+w1L6GTOXfQgcMxrPyoC
+         04uc2A1UcalW87jBF3R+bq3nkrX3DQz/aw4NgMq8kv70u6hCW1zpPA33VfsYDDpHyiyr
+         zuyk+llMkzLH6qHj7YpJoS4xSEsLfB4M313GJjs51sl7B7khLDE//kRtOQcnCS7W7cfi
+         pjUL9oM+juG+A5yfL7wePr6WrpD+RdT3ics95PNj1zIt4XY7BRVI/LU1898pmHWyLs8q
+         a+Fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707162076; x=1707766876;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3b6oeS+sd5xoZNeIJEQUdkAN1RG5u3Jd70MTpYqp6SQ=;
+        b=k3EjvpEcUyynmPagrhezzdRTK/HawhTfx7jx+5LHnENhzWTA8qhdW1fcEQjmdHGL7m
+         rIckz08RhoQQYLjFEkDOo7ufbW++A5O8XFSF0Xg81Ffs+nRSt3So5oGVcYJ0rbZyR7R2
+         gIiF001ZqwKiKSAqLeuaItYmFfeyxmLZSGNWKi3jlReOfgv/HscPalvU4kA/mUbpc/Dt
+         O0tYLVglpM8ZXo0sNneVvco/ORH6pdBQhB/Ana/V5Gd1efBEK0M2HMr0Fbp2p22JWlxM
+         BNeSAt25f9SCL1YzvH/fJUgsOnLvYUUdHI2piWONXwkTZfJYqWEIrMhM7aPfVoe9dPmI
+         tkfg==
+X-Gm-Message-State: AOJu0YxSUJvOAaiysvdDb2x/u4iSCE69ydkbb97H9wQ+9NAEZ3zvmiiE
+	HWD1OSQloGUhzaPsOxi5TFWOtAMKus4weyUERBVmMzDDd0nGnJRmD1RSNqYNYCmBwGrMkcePfFj
+	GPImdNaVrbEXL6tEa71rTd9u/K7g=
+X-Google-Smtp-Source: AGHT+IGZcG8Y0PjKAioDsv7aAA6ZG2FjD0D14DE2NUFI5ykKeMGcmCUrJ2PIWDJdVOpxzinNN2Cjm/ZRFPVZGoOahrc=
+X-Received: by 2002:a17:90b:4b41:b0:296:1979:cc61 with SMTP id
+ mi1-20020a17090b4b4100b002961979cc61mr492646pjb.0.1707162075750; Mon, 05 Feb
+ 2024 11:41:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABdmKX3HbSxX6zLF4z3f+=Ybiq1bA71jckkeHv5QJxAjSexgaA@mail.gmail.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=jXLOZEY9
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 NEURAL_HAM_SHORT(-0.20)[-0.998];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DWL_DNSWL_BLOCKED(0.00)[suse.com:dkim];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[14];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: -4.01
-X-Rspamd-Queue-Id: 22C09220B0
-X-Spam-Flag: NO
+References: <20240201125226.28372-1-ioworker0@gmail.com> <Zby-sHLDlmTRaUcd@tiehlicka>
+ <CAK1f24=7sy_Bczpt5YeDbkhfriYUc1=zreSFdGCxfF3R0D6sRQ@mail.gmail.com>
+ <ZbzfxNn4AYnTVFLh@tiehlicka> <CAK1f24mvBkc2c=fHL6UxMhL2mgLHVrSwZfE5516bOR0yVdfZpQ@mail.gmail.com>
+ <ZbzmvwyTGeW18nJy@tiehlicka> <CAK1f24kdyOnUjcpnrk6j4cF6bSFXQwwzFk9tM+jD4RsO_Hc4hA@mail.gmail.com>
+ <Zbz_ao0uBKabzKB1@tiehlicka> <CAK1f24nHmvqm1XD_UkWUB7DmNdH0NEOKzpLgKDJ=UuPWO=rEHw@mail.gmail.com>
+ <CAHbLzkpYM3jGVP19hG6LcD0=C=LHgGXqjVhsMYhO4HQufsfy-g@mail.gmail.com> <CAK1f24n_ahUoWvw1zJN3P9W-4cxuQVL=1cOZKNjiBhp-ortc5g@mail.gmail.com>
+In-Reply-To: <CAK1f24n_ahUoWvw1zJN3P9W-4cxuQVL=1cOZKNjiBhp-ortc5g@mail.gmail.com>
+From: Yang Shi <shy828301@gmail.com>
+Date: Mon, 5 Feb 2024 11:41:02 -0800
+Message-ID: <CAHbLzkqMTpja+RuePjy4Oz=0Eq2j7LP8hwApGZWu9v6MkKs+Ag@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm/khugepaged: skip copying lazyfree pages on collapse
+To: Lance Yang <ioworker0@gmail.com>
+Cc: Michal Hocko <mhocko@suse.com>, David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org, 
+	zokeefe@google.com, songmuchun@bytedance.com, peterx@redhat.com, 
+	minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon 05-02-24 11:29:49, T.J. Mercier wrote:
-> On Mon, Feb 5, 2024 at 2:40 AM Michal Hocko <mhocko@suse.com> wrote:
+On Fri, Feb 2, 2024 at 8:17=E2=80=AFPM Lance Yang <ioworker0@gmail.com> wro=
+te:
+>
+> Hey Michal, David, Yang,
+>
+> I sincerely appreciate your time!
+>
+> I still have two questions that are perplexing me.
+>
+> First question:
+> Given that khugepaged doesn't treat MADV_FREE
+> pages as pte_none, why skip the 2M block when all
+> the pages within the range are old and unreferenced,
+> but won't skip if the partial range is MADV_FREE,
+> even if it's not redirtied? Why make this distinction?
+> Would it not be more straightforward to maintain
+> if either all were skipped or not?
+
+It is just some heuristic in the code and may be some arbitrary
+choice. It could controlled in a more fine-grained way if we really
+see some workloads get benefit.
+
+>
+> Second question:
+> Does copying lazyfree pages (not redirtied) to the
+> new huge page during khugepaged collapse
+> undermine the semantics of MADV_FREE?
+> Users mark pages as lazyfree with MADV_FREE,
+> expecting these pages to be eventually reclaimed.
+> Even without subsequent writes, these pages will
+> no longer be reclaimed, even if memory pressure
+> occurs.
+
+Yeah, it just means khugepaged wins the race against page reclaim. I'm
+supposed the delayed free is one of the design goals of MADV_FREE, and
+the risk is the pages may not be freed eventually. If you want
+immediate free or more deterministic behavior, you should use
+MADV_DONTNEED or munmap IIUC.
+
+>
+> BR,
+> Lance
+>
+> On Sat, Feb 3, 2024 at 1:42=E2=80=AFAM Yang Shi <shy828301@gmail.com> wro=
+te:
 > >
-> > On Fri 02-02-24 23:38:54, T.J. Mercier wrote:
-> > > Before 388536ac291 ("mm:vmscan: fix inaccurate reclaim during proactive
-> > > reclaim") we passed the number of pages for the reclaim request directly
-> > > to try_to_free_mem_cgroup_pages, which could lead to significant
-> > > overreclaim. After 0388536ac291 the number of pages was limited to a
-> > > maximum 32 (SWAP_CLUSTER_MAX) to reduce the amount of overreclaim.
-> > > However such a small batch size caused a regression in reclaim
-> > > performance due to many more reclaim start/stop cycles inside
-> > > memory_reclaim.
+> > On Fri, Feb 2, 2024 at 6:53=E2=80=AFAM Lance Yang <ioworker0@gmail.com>=
+ wrote:
+> > >
+> > > How about blocking khugepaged from
+> > > collapsing lazyfree pages? This way,
+> > > is it not better to keep the semantics
+> > > of MADV_FREE?
+> > >
+> > > What do you think?
 > >
-> > You have mentioned that in one of the previous emails but it is good to
-> > mention what is the source of that overhead for the future reference.
-> 
-> I can add a sentence about the restart cost being amortized over more
-> pages with a large batch size. It covers things like repeatedly
-> flushing stats, walking the tree, evaluating protection limits, etc.
-> 
-> > > Reclaim tries to balance nr_to_reclaim fidelity with fairness across
-> > > nodes and cgroups over which the pages are spread. As such, the bigger
-> > > the request, the bigger the absolute overreclaim error. Historic
-> > > in-kernel users of reclaim have used fixed, small sized requests to
-> > > approach an appropriate reclaim rate over time. When we reclaim a user
-> > > request of arbitrary size, use decaying batch sizes to manage error while
-> > > maintaining reasonable throughput.
+> > First of all, khugepaged doesn't treat MADV_FREE pages as pte_none
+> > IIUC. The khugepaged does skip the 2M block if all the pages are old
+> > and unreferenced pages in the range in hpage_collapse_scan_pmd(), then
+> > repeat the check in collapse_huge_page() again.
 > >
-> > These numbers are with MGLRU or the default reclaim implementation?
-> 
-> These numbers are for both. root uses the memcg LRU (MGLRU was
-> enabled), and /uid_0 does not.
-
-Thanks it would be nice to outline that in the changelog.
-
-> > > root - full reclaim       pages/sec   time (sec)
-> > > pre-0388536ac291      :    68047        10.46
-> > > post-0388536ac291     :    13742        inf
-> > > (reclaim-reclaimed)/4 :    67352        10.51
-> > >
-> > > /uid_0 - 1G reclaim       pages/sec   time (sec)  overreclaim (MiB)
-> > > pre-0388536ac291      :    258822       1.12            107.8
-> > > post-0388536ac291     :    105174       2.49            3.5
-> > > (reclaim-reclaimed)/4 :    233396       1.12            -7.4
-> > >
-> > > /uid_0 - full reclaim     pages/sec   time (sec)
-> > > pre-0388536ac291      :    72334        7.09
-> > > post-0388536ac291     :    38105        14.45
-> > > (reclaim-reclaimed)/4 :    72914        6.96
-> > >
-> > > Fixes: 0388536ac291 ("mm:vmscan: fix inaccurate reclaim during proactive reclaim")
-> > > Signed-off-by: T.J. Mercier <tjmercier@google.com>
-> > > Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
-> > > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> > >
-> > > ---
-> > > v3: Formatting fixes per Yosry Ahmed and Johannes Weiner. No functional
-> > > changes.
-> > > v2: Simplify the request size calculation per Johannes Weiner and Michal Koutný
-> > >
-> > >  mm/memcontrol.c | 6 ++++--
-> > >  1 file changed, 4 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > index 46d8d02114cf..f6ab61128869 100644
-> > > --- a/mm/memcontrol.c
-> > > +++ b/mm/memcontrol.c
-> > > @@ -6976,9 +6976,11 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
-> > >               if (!nr_retries)
-> > >                       lru_add_drain_all();
-> > >
-> > > +             /* Will converge on zero, but reclaim enforces a minimum */
-> > > +             unsigned long batch_size = (nr_to_reclaim - nr_reclaimed) / 4;
+> > And MADV_FREE pages are just old and unreferenced. This is actually
+> > what your first test case does. The whole 2M range is MADV_FREE range,
+> > so they are skipped by khugepaged.
 > >
-> > This doesn't fit into the existing coding style. I do not think there is
-> > a strong reason to go against it here.
-> 
-> There's been some back and forth here. You'd prefer to move this to
-> the top of the while loop, under the declaration of reclaimed? It's
-> farther from its use there, but it does match the existing style in
-> the file better.
-
-This is not something I deeply care about but generally it is better to
-not mix styles unless that is a clear win. If you want to save one LOC
-you can just move it up - just couple of lines up, or you can keep the
-definition closer and have a separate declaration.
-
-> > > +
-> > >               reclaimed = try_to_free_mem_cgroup_pages(memcg,
-> > > -                                     min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
-> > > -                                     GFP_KERNEL, reclaim_options);
-> > > +                                     batch_size, GFP_KERNEL, reclaim_options);
+> > But if the partial range is MADV_FREE, khugepaged won't skip them.
+> > This is what your second test case does.
 > >
-> > Also with the increased reclaim target do we need something like this?
+> > Secondly, I think it depends on the semantics of MADV_FREE,
+> > particularly how to treat the redirtied pages. TBH I'm always confused
+> > by the semantics. For example, the page contained "abcd", then it was
+> > MADV_FREE'ed, then it was written again with "1234" after "abcd". So
+> > the user should expect to see "abcd1234" or "00001234".
 > >
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index 4f9c854ce6cc..94794cf5ee9f 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -1889,7 +1889,7 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
+> > I'm supposed it should be "abcd1234" since MADV_FREE pages are still
+> > valid and available, if I'm wrong please feel free to correct me. If
+> > so we should always copy MADV_FREE pages in khugepaged regardless of
+> > whether it is redirtied or not otherwise it may incur data corruption.
+> > If we don't copy, then the follow up redirty after collapse to the
+> > hugepage may return "00001234", right?
 > >
-> >                 /* We are about to die and free our memory. Return now. */
-> >                 if (fatal_signal_pending(current))
-> > -                       return SWAP_CLUSTER_MAX;
-> > +                       return sc->nr_to_reclaim;
-> >         }
+> > The current behavior is copying the page.
 > >
-> >         lru_add_drain();
 > > >
-> > >               if (!reclaimed && !nr_retries--)
-> > >                       return -EAGAIN;
-> > > --
-> 
-> This is interesting, but I don't think it's closely related to this
-> change. This section looks like it was added to delay OOM kills due to
-> apparent lack of reclaim progress when pages are isolated and the
-> direct reclaimer is scheduled out. A couple things:
-> 
-> In the context of proactive reclaim, current is not really undergoing
-> reclaim due to memory pressure. It's initiated from userspace. So
-> whether it has a fatal signal pending or not doesn't seem like it
-> should influence the return value of shrink_inactive_list for some
-> probably unrelated process. It seems more straightforward to me to
-> return 0, and add another fatal signal pending check to the caller
-> (shrink_lruvec) to bail out early (dealing with OOM kill avoidance
-> there if necessary) instead of waiting to accumulate fake
-> SWAP_CLUSTER_MAX values from shrink_inactive_list.
-
-The point of this code is to bail out early if the caller has fatal
-signals pending. That could be SIGTERM sent to the process performing
-the reclaim for whatever reason. The bail out is tuned for
-SWAP_CLUSTER_MAX as you can see and your patch is increasing the reclaim
-target which means that bailout wouldn't work properly and you wouldn't
-get any useful work done but not really bail out. 
-
-> As far as changing the value, SWAP_CLUSTER_MAX puts the final value of
-> sc->nr_reclaimed pretty close to sc->nr_to_reclaim. Since there's a
-> loop for each evictable lru in shrink_lruvec, we could end up with 4 *
-> sc->nr_to_reclaim in sc->nr_reclaimed if we switched to
-> sc->nr_to_reclaim from SWAP_CLUSTER_MAX... an even bigger lie. So I
-> don't think we'd want to do that.
-
-The actual number returned from the reclaim is not really important
-because memory_reclaim would break out of the loop and userspace would
-never see the result.
-
--- 
-Michal Hocko
-SUSE Labs
+> > > Thanks,
+> > > Lance
+> > >
+> > > On Fri, Feb 2, 2024 at 10:42=E2=80=AFPM Michal Hocko <mhocko@suse.com=
+> wrote:
+> > > >
+> > > > On Fri 02-02-24 21:46:45, Lance Yang wrote:
+> > > > > Here is a part from the man page explaining
+> > > > > the MADV_FREE semantics:
+> > > > >
+> > > > > The kernel can thus free thesepages, but the
+> > > > > freeing could be delayed until memory pressure
+> > > > > occurs. For each of the pages that has been
+> > > > > marked to be freed but has not yet been freed,
+> > > > > the free operation will be canceled if the caller
+> > > > > writes into the page. If there is no subsequent
+> > > > > write, the kernel can free the pages at any time.
+> > > > >
+> > > > > IIUC, if there is no subsequent write, lazyfree
+> > > > > pages will eventually be reclaimed.
+> > > >
+> > > > If there is no memory pressure then this might not
+> > > > ever happen. User cannot make any assumption about
+> > > > their content once madvise call has been done. The
+> > > > content has to be considered lost. Sure the userspace
+> > > > might have means to tell those pages from zero pages
+> > > > and recheck after the write but that is about it.
+> > > >
+> > > > > khugepaged
+> > > > > treats lazyfree pages the same as pte_none,
+> > > > > avoiding copying them to the new huge page
+> > > > > during collapse. It seems that lazyfree pages
+> > > > > are reclaimed before khugepaged collapses them.
+> > > > > This aligns with user expectations.
+> > > > >
+> > > > > However, IMO, if the content of MADV_FREE pages
+> > > > > remains valid during collapse, then khugepaged
+> > > > > treating lazyfree pages the same as pte_none
+> > > > > might not be suitable.
+> > > >
+> > > > Why?
+> > > >
+> > > > Unless I am missing something (which is possible of
+> > > > course) I do not really see why dropping the content
+> > > > of those pages and replacing them with a THP is any
+> > > > difference from reclaiming those pages and then faulting
+> > > > in a non-THP zero page.
+> > > >
+> > > > Now, if khugepaged reused the original content of MADV_FREE
+> > > > pages that would be a slightly different story. I can
+> > > > see why users would expect zero pages to back madvised
+> > > > area.
+> > > > --
+> > > > Michal Hocko
+> > > > SUSE Labs
 
