@@ -1,152 +1,100 @@
-Return-Path: <linux-kernel+bounces-52918-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52919-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51CED849E53
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:34:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3F36849E58
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:34:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EBFB28A265
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:34:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AEE9C28A755
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:34:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AE5F2DF9D;
-	Mon,  5 Feb 2024 15:32:56 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0AFF3FE51
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 15:32:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC91732C89;
+	Mon,  5 Feb 2024 15:33:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r8eReduE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEC0344C64;
+	Mon,  5 Feb 2024 15:33:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707147175; cv=none; b=SmMF5IxsbVLpd42P/1QCiuUVoTNZj9C8YdmftFsRxbdGgcwjf9BHs7OEByEnDjBRydhDBMfREApLDWZ8HezXfuL3yiiJ6reHId9gyJ020+D898nTvnHIW5l6RnoWjCRA6hppZaUYZkJYiS5dszLetFWtHuBs4N5MX+0H3u+T1ww=
+	t=1707147198; cv=none; b=iTTt3kanBHdtUHL4LVqYWOc0R4pBNlyUkwsLH+heP5MXKCn0smujHnCLBya8A3W91d8OXHfzLTQnALHvgWMraS8V4dtUmS//Tu0IfmZcmEHn2d3kJt31uXMgkn1NN1BmzXIDqIJrOpESP7/6W9OGbSGXktOSYn/drDpLwUsM8UI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707147175; c=relaxed/simple;
-	bh=gp8tv3IVxGAchewnqQ11OPRI0Ycp1XlYtKMxh98HcZ8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XBgGj4ZxVrDwUVuC7cPkTqBsOTHRC+mNByKt8QenrA5OZFDkZd2E8qLD+Z93zR6qgzJcgNuIiG6Zc5mNaTO5QTXu3mHo7goeZSO77QYdO76ORi5hBs6AUov52Nxj+Zrk342gGOmcBOJUGIvcQf0O25qIMiWVJJXU4fHPT11QpSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 14C211FB;
-	Mon,  5 Feb 2024 07:33:36 -0800 (PST)
-Received: from e121345-lin.cambridge.arm.com (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 483403F5A1;
-	Mon,  5 Feb 2024 07:32:52 -0800 (PST)
-From: Robin Murphy <robin.murphy@arm.com>
-To: joro@8bytes.org
-Cc: will@kernel.org,
-	pasha.tatashin@soleen.com,
-	iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	rientjes@google.com,
-	yosryahmed@google.com,
-	john.g.garry@oracle.com
-Subject: [PATCH v3 3/3] iommu/iova: use named kmem_cache for iova magazines
-Date: Mon,  5 Feb 2024 15:32:41 +0000
-Message-Id: <dc5c51aaba50906a92b9ba1a5137ed462484a7be.1707144953.git.robin.murphy@arm.com>
-X-Mailer: git-send-email 2.39.2.101.g768bb238c484.dirty
-In-Reply-To: <cover.1707144953.git.robin.murphy@arm.com>
-References: <cover.1707144953.git.robin.murphy@arm.com>
+	s=arc-20240116; t=1707147198; c=relaxed/simple;
+	bh=gCOn8lMXqIZY6GPLwFd8/YtzqKXfBD7yFS+3U2224/g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=U22xDIwmaJEx5devJoxis2Gczgdkg/A28hMctsG7UCPrrcE0lDp9I1nSvzbtwgUvozhD6ABum6I6kRYW1520yDS+OCQ54PlftyaY6jqs0fSBCMKF+QDok4V5qGLFaNHDPnG2Qv0iZ/mYrYETA5cmWr9NTGNsrQwzZJCA4t+U56I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r8eReduE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D3C7C43143;
+	Mon,  5 Feb 2024 15:33:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707147197;
+	bh=gCOn8lMXqIZY6GPLwFd8/YtzqKXfBD7yFS+3U2224/g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=r8eReduEZ+f6KXaR/+jcK39d1YjPp5n+Z8VFfRDNq995dvPbGCVE6/6PdS3nJv0M5
+	 HJrObsU2g/betHwRD6q78rBNyCyc86XOtPMmo5JQy2be8t7EZF/uH2S0A5A4ESbvF4
+	 1Qw0ft7VGLyacKZdwEDLYkGQo6whN61bl7v64Jw6h81R169cgXZwZFfIs8nNc1o1xG
+	 H1nugkQvSYf5tkBObyybrEuHf6IuYJMzMhUtOCeezr+FDx0X98dq/sQBRJFebXjRIu
+	 rulgkgXaYDMam9qYx457W+IYEkJ9bkcPWjLtZCI1i1S9JqXcAvxIiLX1hUYbaOCrLL
+	 XAUT0P/DgeaYg==
+Date: Mon, 5 Feb 2024 09:33:14 -0600
+From: Bjorn Andersson <andersson@kernel.org>
+To: Anjelique Melendez <quic_amelende@quicinc.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, lee@kernel.org, 
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	agross@kernel.org, konrad.dybcio@linaro.org, linux-leds@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	linux-pwm@vger.kernel.org
+Subject: Re: Re: [PATCH 1/2] dt-bindings: soc: qcom: Add qcom,pbs bindings
+Message-ID: <jnn5hxa5nj26ocmdectpg5dq6cxrcd5d22x3kffhd4jc7i4nh6@fqgxlcwgj5th>
+References: <20240201204421.16992-2-quic_amelende@quicinc.com>
+ <20240201204421.16992-4-quic_amelende@quicinc.com>
+ <1de7cfbc-3507-459f-842e-c9349b2f05ac@linaro.org>
+ <4a9b6d7b-70ab-cd18-770c-37993b0ccc63@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4a9b6d7b-70ab-cd18-770c-37993b0ccc63@quicinc.com>
 
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
+On Fri, Feb 02, 2024 at 09:49:21AM -0800, Anjelique Melendez wrote:
+> 
+> 
+> On 2/1/2024 11:29 PM, Krzysztof Kozlowski wrote:
+> > On 01/02/2024 21:44, Anjelique Melendez wrote:
+> >> Add binding for the Qualcomm Programmable Boot Sequencer device.
+> >>
+> >> Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
+> >> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > 
+> > How is it possible? This is v1, not a resend, and I never give review
+> > tags not in public.
+> > 
+> > Best regards,
+> > Krzysztof
+> > 
+> Sorry for the confusion, this patch was originally in this series:
+> https://lore.kernel.org/all/20231221185838.28440-2-quic_amelende@quicinc.com/,
+> where you gave your reviewed by tag in v3:
+> https://lore.kernel.org/all/102328fa-5699-4731-d639-079bce8863a5@linaro.org/.
+> This was separated into a new series since half of the original
+> patches were already applied. I mentioned this in the cover
+> letter but in future should I keep version the same as the original
+> series?
+> 
 
-The magazine buffers can take gigabytes of kmem memory, dominating all
-other allocations. For observability purpose create named slab cache so
-the iova magazine memory overhead can be clearly observed.
+Marking the patch(es) v9 makes it clear that they have been on the list
+already. This would be true either if you rebased v8 (and git dropped
+the applied patches from your series), or if you resubmitted some patch
+on it's own.
 
-With this change:
-
-> slabtop -o | head
- Active / Total Objects (% used)    : 869731 / 952904 (91.3%)
- Active / Total Slabs (% used)      : 103411 / 103974 (99.5%)
- Active / Total Caches (% used)     : 135 / 211 (64.0%)
- Active / Total Size (% used)       : 395389.68K / 411430.20K (96.1%)
- Minimum / Average / Maximum Object : 0.02K / 0.43K / 8.00K
-
-OBJS ACTIVE  USE OBJ SIZE  SLABS OBJ/SLAB CACHE SIZE NAME
-244412 244239 99%    1.00K  61103       4    244412K iommu_iova_magazine
- 91636  88343 96%    0.03K    739     124      2956K kmalloc-32
- 75744  74844 98%    0.12K   2367      32      9468K kernfs_node_cache
-
-On this machine it is now clear that magazine use 242M of kmem memory.
-
-Acked-by: David Rientjes <rientjes@google.com>
-Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-[ rm: adjust to rework of iova_cache_{get,put} ]
-Signed-off-by: Robin Murphy <robin.murphy@arm.com>
----
- drivers/iommu/iova.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
-index b5de865ee50b..d59d0ea2fd21 100644
---- a/drivers/iommu/iova.c
-+++ b/drivers/iommu/iova.c
-@@ -590,6 +590,8 @@ struct iova_rcache {
- 	struct delayed_work work;
- };
- 
-+static struct kmem_cache *iova_magazine_cache;
-+
- unsigned long iova_rcache_range(void)
- {
- 	return PAGE_SIZE << (IOVA_RANGE_CACHE_MAX_SIZE - 1);
-@@ -599,7 +601,7 @@ static struct iova_magazine *iova_magazine_alloc(gfp_t flags)
- {
- 	struct iova_magazine *mag;
- 
--	mag = kmalloc(sizeof(*mag), flags);
-+	mag = kmem_cache_alloc(iova_magazine_cache, flags);
- 	if (mag)
- 		mag->size = 0;
- 
-@@ -608,7 +610,7 @@ static struct iova_magazine *iova_magazine_alloc(gfp_t flags)
- 
- static void iova_magazine_free(struct iova_magazine *mag)
- {
--	kfree(mag);
-+	kmem_cache_free(iova_magazine_cache, mag);
- }
- 
- static void
-@@ -953,6 +955,12 @@ int iova_cache_get(void)
- 		if (!iova_cache)
- 			goto out_err;
- 
-+		iova_magazine_cache = kmem_cache_create("iommu_iova_magazine",
-+							sizeof(struct iova_magazine),
-+							0, SLAB_HWCACHE_ALIGN, NULL);
-+		if (!iova_magazine_cache)
-+			goto out_err;
-+
- 		err = cpuhp_setup_state_multi(CPUHP_IOMMU_IOVA_DEAD, "iommu/iova:dead",
- 					      NULL, iova_cpuhp_dead);
- 		if (err) {
-@@ -968,6 +976,7 @@ int iova_cache_get(void)
- 
- out_err:
- 	kmem_cache_destroy(iova_cache);
-+	kmem_cache_destroy(iova_magazine_cache);
- 	mutex_unlock(&iova_cache_mutex);
- 	return err;
- }
-@@ -984,6 +993,7 @@ void iova_cache_put(void)
- 	if (!iova_cache_users) {
- 		cpuhp_remove_multi_state(CPUHP_IOMMU_IOVA_DEAD);
- 		kmem_cache_destroy(iova_cache);
-+		kmem_cache_destroy(iova_magazine_cache);
- 	}
- 	mutex_unlock(&iova_cache_mutex);
- }
--- 
-2.39.2.101.g768bb238c484.dirty
-
+Regards,
+Bjorn
 
