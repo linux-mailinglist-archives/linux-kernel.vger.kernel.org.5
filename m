@@ -1,89 +1,90 @@
-Return-Path: <linux-kernel+bounces-52064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52065-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E4238493AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:04:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32BC98493AB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:05:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5E19B20B11
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 06:04:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D9AE1C2029A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 06:05:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08F00BE65;
-	Mon,  5 Feb 2024 06:04:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99007BE67;
+	Mon,  5 Feb 2024 06:04:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="kei2qE6/"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2083.outbound.protection.outlook.com [40.107.237.83])
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="Wh9uleSd";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="j+aIWJi4"
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65B8010A09;
-	Mon,  5 Feb 2024 06:04:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.83
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707113058; cv=fail; b=S3mKy2hEXp8agIBPj3xnse6KXnPL/SaaU/mkmwJuhN16OHBxz01w7fETqbCdi+XJt6nb6lc1qtMLndNRIvoYBj2ef/aWKWDrqpnkr5oN8SkMaXlRANSbkMojgmDXPOzMMazLuuKc6Kf8veUT/CL6Q0k+ZcRclhHnrRHR/dYfdSM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707113058; c=relaxed/simple;
-	bh=5bdAiRAk/l152HqTBwD2uoe7FkXNh1INEkyYl9QjsRU=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mDE/cW4b15vKew3qnPGdVv+U6/PNuonU07TKTRLbX+d1+Z2ri2/7Nm2fz41tq2hGGOWF+UGO5daJEbJNX43Begtvu1jEPcG04+fBWdRZ/J1hjYRd7R/ZdS4jIeJJiOiYvb9o1ZJYaSH638PxzH+5NJbeSYcfaX4btC0WPjKYaOw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=kei2qE6/; arc=fail smtp.client-ip=40.107.237.83
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O4GAC7QkUJBTtRcf5bCRibqxTeUp4JB5RfT49vk1EPgKD8t8zZKXQC2VIF95NziuUmeR0m7Hg09vnmu+v04lNt9ntwcN3NvEW0kK+KtKYegF/NdXylP4Zv8rCa/p8L4U80wSUmmwRikMFkkWxp94vw4NgdzIRd2nVB2ZleTL5wqxvmTSEJMM4UNRNTOl1aU1wUjrR+Tpc+jEq3MtOZ2YjUk258w8Bw061y7jm8Fly1IRU+C9UnR+0BFWMRh6E42FpXzhCP/F52194/zBWyL8XhArH3p1IoFJuj592cfux7UOykVEvIkeM+6goheAYvlpCS1v8FItCR5gSfwq0R/YVw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=t8/TJOxeoX5B1QWRHui5UbGv+vdgRdbntv/9SDefCE0=;
- b=QpDsaKjAZMclU3aXUbfpNIgRXZF6fmg/saJddRsBRmIuc4DG7zQSF7chtYqkifZYlSLALmPZWGFImu5k5Dlv7Vt2G21onuSdhNAD/59MbzO8xAPfkIqiga7Xq4+Es51bzX3ipChQx974rAysKw2/+ZOyPtPtMGCriXNaYglVywrA+OCDUZWuEJK1mgW64J3iB53urK/+rYMHfkr/2OtuGzVUsZp+ckBJG9XOUSmbUznP9gmnwxpS2tSecXpX/5iG0C+gndsS1FY9CENS/t/WSFB0xOpSUz1qV2ACT0ccJdC5jiTeV87avOeK/enQ7/7mRP5oQm+p623OPw4jQCvJ/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=t8/TJOxeoX5B1QWRHui5UbGv+vdgRdbntv/9SDefCE0=;
- b=kei2qE6/y4zujNZW59lKTqs5Z3Z0k78RSy02RN4KaXSTh1gAjpREnTYS4XBP4dgJ/9Pr4eZVp/fjJPD7+3mpw1KCCX7f/au3RD5CU4xLo76sIlmoicdDPNcyRlp90RkpopWAmB/SRPoiOg1VdiILm3TLteNUBlZIx0IWi/VJNfg=
-Received: from MN2PR13CA0019.namprd13.prod.outlook.com (2603:10b6:208:160::32)
- by MN2PR12MB4359.namprd12.prod.outlook.com (2603:10b6:208:265::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.14; Mon, 5 Feb
- 2024 06:04:14 +0000
-Received: from BL02EPF0001A0FC.namprd03.prod.outlook.com
- (2603:10b6:208:160:cafe::15) by MN2PR13CA0019.outlook.office365.com
- (2603:10b6:208:160::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.26 via Frontend
- Transport; Mon, 5 Feb 2024 06:04:13 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL02EPF0001A0FC.mail.protection.outlook.com (10.167.242.103) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7249.19 via Frontend Transport; Mon, 5 Feb 2024 06:04:13 +0000
-Received: from jasmine-meng.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Mon, 5 Feb
- 2024 00:04:07 -0600
-From: Meng Li <li.meng@amd.com>
-To: "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Borislav Petkov
-	<bpetkov@amd.com>, Huang Rui <ray.huang@amd.com>
-CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<x86@kernel.org>, <linux-acpi@vger.kernel.org>, Shuah Khan
-	<skhan@linuxfoundation.org>, <linux-kselftest@vger.kernel.org>, "Nathan
- Fontenot" <nathan.fontenot@amd.com>, Deepak Sharma <deepak.sharma@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>, Mario Limonciello
-	<mario.limonciello@amd.com>, Shimmer Huang <shimmer.huang@amd.com>, "Perry
- Yuan" <Perry.Yuan@amd.com>, Xiaojian Du <Xiaojian.Du@amd.com>, Viresh Kumar
-	<viresh.kumar@linaro.org>, Borislav Petkov <bp@alien8.de>, "Oleksandr
- Natalenko" <oleksandr@natalenko.name>, Meng Li <li.meng@amd.com>
-Subject: [PATCH] Fix the warning of amd-pstate.rst.
-Date: Mon, 5 Feb 2024 14:03:05 +0800
-Message-ID: <20240205060305.3594942-1-li.meng@amd.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7F94BE4B
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 06:04:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.26
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707113097; cv=none; b=XioIoBF7LZDqZIgLZ1Gdntzbv3UQYd88qXSQYMiSZQ+Ol2YT3u2byKqMQtTbacNNiFe3cjEfjVTuxZ+p+MkZ/wpRWaS6FxEzQt/6cVjLrB52etQ5IBAG8fhSyX63NgVlR2KqSlKRMdXKrqCpCLJNYjcWUcxgPm6E5GieN4JPjyw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707113097; c=relaxed/simple;
+	bh=xwFTrIlrAls4xajJqJT9lIoJy/mgAuyVcs+oDEyeAus=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=qAhR047LNSWt0wNOmgOBLYddcukj1JsHXbGSpS0CHr2HT3piG4OWtGMRDPhNB5vQ5wGugfTtoQD/8C9h9yurikHKFYcO38h+hGJF38D4Du6gAx1r7Nktg3l1MNldrmnlBaOBnpHP9CzcUSV6LW4RwBSn2yRwTK1gTV+DZqu5pto=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=Wh9uleSd; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=j+aIWJi4; arc=none smtp.client-ip=66.111.4.26
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailout.nyi.internal (Postfix) with ESMTP id B954B5C00F7;
+	Mon,  5 Feb 2024 01:04:53 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Mon, 05 Feb 2024 01:04:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:cc:content-transfer-encoding:content-type:date:date:from
+	:from:in-reply-to:message-id:mime-version:reply-to:subject
+	:subject:to:to; s=fm3; t=1707113093; x=1707199493; bh=L96t1AozAo
+	YK/Cnj9rCJdZC5N9mB5YiS8vFpPwYqvVk=; b=Wh9uleSdER1WIq612o/QY7/9Y+
+	nKgd7R+/Nwwkln6Z0fmDCdBwjfa6ZwZTWo+yIPc5xgS8RJ03LI8H0Ua9Im5D/i5o
+	+rxvchr9wGxPt8EMKz0IVHigC/ARgDaNHyBWIZEHMZ2z3ZL489OjaKDMABXUX+mJ
+	YNcsAM8k/7bwSC+LxdWC79fhohOleUxEunV36gpzTVlp/+v4mcyU4XBBspq7iDKz
+	mzzoiT5qnSIO+6W07v6yHjBrcXiL4vzr6uaXGkcyD1H86HqCzLCdobtfgeH2kP8+
+	0K0IzphW/4CZbTyjLCqTIbG6UY9lpD4dc9LAnTj13DNN9ecq+47VheEMW9eA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707113093; x=1707199493; bh=L96t1AozAoYK/Cnj9rCJdZC5N9mB
+	5YiS8vFpPwYqvVk=; b=j+aIWJi4T0LLCBeSzZaNjxHR5JfcsGUjEbNEqRy2YZDE
+	mKfnGe7KPJGdMpnHOMg2AFbRnBMlp4+fxoYpVpw6VEZt7VnBMk2zYFSkbx0tgHoC
+	WaJV6Ysut9+ESKjOyEW3gCJpEXaND0lPhjopUULjfv/PHAemw+8NZTeXP0uGawp2
+	frvFO7IkgrM0fdnnN7rnlawGXLw0ObZbexTSjeaC7ltSZJKdb9RkQU0vpcunbPn9
+	eQ1BF+eHYZZwYK6NxfbjgFY4qmHhRNK1ezRTxmitu7//uNkfhOCLN5ELGkq9T/js
+	FMm5nDw2jr/DzvlIgUIihS2eREEBEt+cDN8zTy8vgA==
+X-ME-Sender: <xms:hHrAZXZtVmrAv8YI8iiQLQTBp0qhBYnnKGpMrry5d6VYuEclTv6uOg>
+    <xme:hHrAZWa74nHA-WDYvl54U8pbGjeKpZibpK-bZBi2Ltz-4ibTnoniyD4o71oIT60O9
+    q3Yu-e-vNHHeB3DYlA>
+X-ME-Received: <xmr:hHrAZZ_GT1-IvXfayq86jgrJaodt9izmPlGczJru6L68w2lEMxot6WeqeyqAmPl4UrySf3HooCG8YbusgNre_LzRI9Vd_E8OsIWrBtQjtNmr0Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeduledgleduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghs
+    hhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeeggfehleehje
+    eileehveefkefhtdeffedtfeeghfekffetudevjeegkeevhfdvueenucffohhmrghinhep
+    khgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:hXrAZdrX4YIie-QgL1m1sOgo27a2m5_k4CBMV4N0ict1aqkAOSjpJw>
+    <xmx:hXrAZSqIUufHrNxx1OjEFG20B5HoyDllvRxwHAtiF37R1RO1-3jpkA>
+    <xmx:hXrAZTRSGBjvFCKos3Ia8CHSqRjla0E1GpCzx0pE9im1Cjx5C9KkIA>
+    <xmx:hXrAZZ2wEpXL7dnEDYjUl35-tSkZRwWPeFQQLPbIoYKJJlYT5mtdyg>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 5 Feb 2024 01:04:51 -0500 (EST)
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: linux1394-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+	kernel test robot <lkp@intel.com>
+Subject: [PATCH] firewire: core: fix build failure due to the caller of fw_csr_string()
+Date: Mon,  5 Feb 2024 15:04:48 +0900
+Message-Id: <20240205060448.13881-1-o-takashi@sakamocchi.jp>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,53 +92,38 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0001A0FC:EE_|MN2PR12MB4359:EE_
-X-MS-Office365-Filtering-Correlation-Id: 61b640e8-5d4c-405f-8206-08dc2610476e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	AFxNiy0LW1mFXxpkKr+hHM+0lryalU3nxP54abietZc4XXzblZhhHXif3p+M1UDIs89FmC3D4k5gdllA7+JR/3mgM8azi98SAIbIAcyrsOaScUPT43dcQPtRjzogui+3vLvZb083ekDwMLZkfLRL44EXUzJIByhFakr4Fz6BPXwwL+PEfCe5sS0sjVVLW0ZXGymEH6Y4QD9wFl3hmyzzUiYAOjpbPBhQmgoVKfoITqkWsOgzyx14ptBWvXr355m24PJyMzKLLKuf1wQUxKJZ1DKUBqzWLv5/P/WpY0AfYU6BtoEYa+I7sXURfrPZKartXm1tPd8Nj2o+PWSaGfux5+l/WTXgcyRNkshdhKvG+i411rn9Pcrmb40H4YRNhieHM/nfNGVyqz2TT7cJZBZJlt/Y2krIp4mq4h8e1oMYbOqyUBQ5JbTWu5vWEQ2JXvq17Ya0xa+T4hKkq3YA7yFm1bd+G0uQOByYqX1EmBNMQrTHqtZtxpLVTLVCZlU1Sacsmbjl5Us09UYXCtSkSNGPtNk6qloiw5j80PXQ1JjMzG6yBMTB6lyD9AX5lN2LRGLn3AvZkuLUoOu8UXRYrd//WUrFnz9jG1qjQ+yfjm+KWoEBKFyRl7dUrHBPtsLFCCU5D2t10AOzxlP5tc7tivxZBH4ezd+uA2l9FlEhjqc5JMC+Xu/WQjgUubUj0pmTmwfqB4R//V4+Lh0ijUmYRryM1eDPmgYPxm2EW08VUlYmoZVyYhkh1qEmI0ghCFaMpMq/rTK6GSVa4vJMkXwvkLBf+Q==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(39860400002)(376002)(396003)(136003)(230922051799003)(64100799003)(1800799012)(82310400011)(186009)(451199024)(36840700001)(46966006)(40470700004)(110136005)(316002)(6636002)(83380400001)(54906003)(81166007)(82740400003)(356005)(2616005)(26005)(70206006)(7696005)(4326008)(86362001)(2906002)(5660300002)(4744005)(7416002)(70586007)(478600001)(426003)(47076005)(16526019)(1076003)(336012)(8676002)(8936002)(36756003)(40480700001)(40460700003)(36860700001)(41300700001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2024 06:04:13.9055
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 61b640e8-5d4c-405f-8206-08dc2610476e
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BL02EPF0001A0FC.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4359
 
-Title under line too short
+A commit 47dc55181dcb ("firewire: core: search descriptor leaf just after
+vendor directory entry in root directory") for v6.8-rc3 and a commit
+67a5a58c0443 ("firewire: Kill unnecessary buf check in
+device_attribute.show") for v6.9 bring build failure in for-next tree due
+to the change of the name of local variable.
 
-Signed-off-by: Meng Li <li.meng@amd.com>
+This commit fixes it.
+
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Closes: https://lore.kernel.org/lkml/20240202111602.6f6e2c1a@canb.auug.org.au/
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202402022343.NkgsMITA-lkp@intel.com/
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- Documentation/admin-guide/pm/amd-pstate.rst | 2 +-
+ drivers/firewire/core-device.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/pm/amd-pstate.rst b/Documentation/admin-guide/pm/amd-pstate.rst
-index 0a3aa6b8ffd5..1e0d101b020a 100644
---- a/Documentation/admin-guide/pm/amd-pstate.rst
-+++ b/Documentation/admin-guide/pm/amd-pstate.rst
-@@ -381,7 +381,7 @@ driver receives a message with the highest performance change, it will
- update the core ranking and set the cpu's priority.
- 
- ``amd-pstate`` Preferred Core Switch
--=================================
-+=====================================
- Kernel Parameters
- -----------------
- 
+diff --git a/drivers/firewire/core-device.c b/drivers/firewire/core-device.c
+index a802c6d4f4fd..c0976f6268d3 100644
+--- a/drivers/firewire/core-device.c
++++ b/drivers/firewire/core-device.c
+@@ -366,7 +366,7 @@ static ssize_t show_text_leaf(struct device *dev,
+ 			// in the root directory follows to the directory entry for vendor ID
+ 			// instead of the immediate value for vendor ID.
+ 			result = fw_csr_string(directories[i], CSR_DIRECTORY | attr->key, buf,
+-					       bufsize);
++					       PAGE_SIZE - 1);
+ 			if (result >= 0)
+ 				ret = result;
+ 		}
 -- 
-2.34.1
+2.40.1
 
 
