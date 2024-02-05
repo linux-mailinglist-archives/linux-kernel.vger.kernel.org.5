@@ -1,148 +1,136 @@
-Return-Path: <linux-kernel+bounces-52136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 771AA84947C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:26:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F1AF849486
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:27:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 331B4286FE6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:26:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B2692867CC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:27:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 132DD101CE;
-	Mon,  5 Feb 2024 07:26:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4683C11183;
+	Mon,  5 Feb 2024 07:26:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="CuzPOd4Q";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="wYJQrgn/";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="CuzPOd4Q";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="wYJQrgn/"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="OImmV+qq"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 673F410A0F;
-	Mon,  5 Feb 2024 07:26:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5463E10A13;
+	Mon,  5 Feb 2024 07:26:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707117982; cv=none; b=gv6FLhzK37UKgVSVA9BJ7xLxz0bE5K+2uSY6ZYw4VDMfvADA7uj2XCMy+WRDWx2Gfhqk/dVXQ0QwxyZSu82t2E3gzIPbGAmDKo4Q7T8k9phMjy22T132RhJWtD1Dr62i6oikRPC+NW93QXfzysexPZl+GfryriAAWqHcXzAcZbw=
+	t=1707118018; cv=none; b=IXIRgOe0BeNyeKw82jLoILxVz4PvxbB/a7Q1RQivwXMw0XApcwcyqiGAJ8PWFLoPg6BwxlVJkDco7TSAAFOx3YLhNKn0XF06QEgacmAyWC95cU5LI6aLwq/KP9q/K1CkHmhkbabqQnxYfz+bqRLxCer/B5ORUX44Ya/6HeTNJSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707117982; c=relaxed/simple;
-	bh=FKzo+iDb4GSIYbAuvyhQyvsbKcySjX23LRYwxAQVApE=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MSdovNcW7m95NeVSAedfjtm7VKuuniCPo54WM3uAOGeAjuoHJ0sH/VAMEvafCc9TfcCPUiT+fJFy9xN5edbHim9UE5vEK+JU/RW/BZruCNBdUPMMGPOMndRk3hLp3Xco0jbiNNNCPRCSEjCnwMl5SE18yGQY43F9h4nzwTEy/3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=CuzPOd4Q; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=wYJQrgn/; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=CuzPOd4Q; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=wYJQrgn/; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	s=arc-20240116; t=1707118018; c=relaxed/simple;
+	bh=kRT1iRva3jEctcJDdeC1pic3Z5WISrbP9tA2yXUngyg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=POMtrrq53+nz3gBVFKuKr031fVwcBXJt+kOVCrgKyzP840WQ6jiZ3zSNlF6VUKjtXKTXqFniaipBAvdaMu6dArxvalZiTSrWDZvL+rFKnp2dfjOusiXuWkrA+5XzJn3GAuG8i4/cFw47h6QuWW0Yw6kGIi2DCV/0tUFZXV3mZwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=OImmV+qq; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1707118016; x=1738654016;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=HoFc6DCxoaUD+73aoVDy20A8vyUJTHyM4bWOxf2XCbc=;
+  b=OImmV+qqNcl6axv5BQpMBjXxIttDLbFAGVN4VY6I9ZO5ZHkOcN2Hp5P9
+   gm0HSqOYKVB0DWi7SXQI7SgknV9MOPNNSd3RoVNBqniQXP5SrYZG7BamD
+   h8wcpno1EKnEYDG8zw4dBlSLe356jq8JzBvF8C7eAyKeukVLGzkLAoiTJ
+   rKsFyCwzN5XeRPoLIHdOS17dVfAgNTXJrr5R3bPtONE6BrnqvnE2Im3Ni
+   5vzosBIXo/leBWL2rX84MUX6xI7LEmGaERhpYyTP1yy1Bv18w714nE7MN
+   VwgTd0ay9Vq6ZRrCjNO+k0Xim7Dfffbhy+Y5ywr/Mi/ZL2I9+ybmQjszD
+   A==;
+X-IronPort-AV: E=Sophos;i="6.05,242,1701126000"; 
+   d="scan'208";a="35238230"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 05 Feb 2024 08:26:53 +0100
+Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.25])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 75DB221F18;
-	Mon,  5 Feb 2024 07:26:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707117977; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=au0mlfS5y3gIEFvklIKhtZf/nyYZ3PkgsCXwnAl+Z1A=;
-	b=CuzPOd4Q6kLZO1MITou6ZPb5oW08eLEG+OwqPfK1z/NNCpUykg6YPDBR5B2Dr6B7KQyYj4
-	vjuxyAqMlAs/vJ61Mo8f0hdJM9hkZ1AULNjy/QMjNW/tS9gVWjxxj0nkQ6YcAbd3LLx9Ey
-	eSYDQ52HGcqfWdA8zGWZHwSsW1w+0Yk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707117977;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=au0mlfS5y3gIEFvklIKhtZf/nyYZ3PkgsCXwnAl+Z1A=;
-	b=wYJQrgn/KF5dUKjODE/yPMig+QWqIN7E7q0xG5vSFW51p16zXyZ0m9zfJWfqR3+YQ0nJrM
-	U5Xm0+rgpqqO8lDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707117977; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=au0mlfS5y3gIEFvklIKhtZf/nyYZ3PkgsCXwnAl+Z1A=;
-	b=CuzPOd4Q6kLZO1MITou6ZPb5oW08eLEG+OwqPfK1z/NNCpUykg6YPDBR5B2Dr6B7KQyYj4
-	vjuxyAqMlAs/vJ61Mo8f0hdJM9hkZ1AULNjy/QMjNW/tS9gVWjxxj0nkQ6YcAbd3LLx9Ey
-	eSYDQ52HGcqfWdA8zGWZHwSsW1w+0Yk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707117977;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=au0mlfS5y3gIEFvklIKhtZf/nyYZ3PkgsCXwnAl+Z1A=;
-	b=wYJQrgn/KF5dUKjODE/yPMig+QWqIN7E7q0xG5vSFW51p16zXyZ0m9zfJWfqR3+YQ0nJrM
-	U5Xm0+rgpqqO8lDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3FEF4136F5;
-	Mon,  5 Feb 2024 07:26:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id qCqJDZmNwGVefgAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Mon, 05 Feb 2024 07:26:17 +0000
-Date: Mon, 05 Feb 2024 08:26:16 +0100
-Message-ID: <87r0hr9xt3.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: bo liu <bo.liu@senarytech.com>
-Cc: perex@perex.cz,
-	tiwai@suse.com,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] ALSA: hda/conexant: Add quirk for SWS JS201D
-In-Reply-To: <20240205013802.51907-1-bo.liu@senarytech.com>
-References: <20240205013802.51907-1-bo.liu@senarytech.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 4B324280075;
+	Mon,  5 Feb 2024 08:26:52 +0100 (CET)
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
+To: linux-arm-kernel@lists.infradead.org, Adam Ford <aford173@gmail.com>
+Cc: marex@denx.de, frieder.schrempf@kontron.de, Lucas Stach <l.stach@pengutronix.de>, Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, Philipp Zabel <p.zabel@pengutronix.de>, Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, Catalin Marinas <catalin.marina
+ s@arm.com>, Will Deacon <will@kernel.org>, Liu Ying <victor.liu@nxp.com>, Ulf Hansson <ulf.hansson@linaro.org>, dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH V8 06/12] arm64: dts: imx8mp: add HDMI irqsteer
+Date: Mon, 05 Feb 2024 08:26:53 +0100
+Message-ID: <2175280.irdbgypaU6@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <20240203165307.7806-7-aford173@gmail.com>
+References: <20240203165307.7806-1-aford173@gmail.com> <20240203165307.7806-7-aford173@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=CuzPOd4Q;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="wYJQrgn/"
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-5.23 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.72)[98.76%]
-X-Spam-Score: -5.23
-X-Rspamd-Queue-Id: 75DB221F18
-X-Spam-Flag: NO
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 
-On Mon, 05 Feb 2024 02:38:02 +0100,
-bo liu wrote:
-> 
-> The SWS JS201D need a different pinconfig from windows driver.
-> Add a quirk to use a specific pinconfig to SWS JS201D.
-> 
-> Signed-off-by: bo liu <bo.liu@senarytech.com>
+Hi Adam,
 
-Thanks, applied now.
+thanks for working on this.
+
+Am Samstag, 3. Februar 2024, 17:52:46 CET schrieb Adam Ford:
+> From: Lucas Stach <l.stach@pengutronix.de>
+>=20
+> The HDMI irqsteer is a secondary interrupt controller within the HDMI
+> subsystem that maps all HDMI peripheral IRQs into a single upstream
+> IRQ line.
+>=20
+> Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+> ---
+>  arch/arm64/boot/dts/freescale/imx8mp.dtsi | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+>=20
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> b/arch/arm64/boot/dts/freescale/imx8mp.dtsi index
+> 5c54073de615..5e51a766f3d9 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> @@ -1399,6 +1399,19 @@ hdmi_blk_ctrl: blk-ctrl@32fc0000 {
+>  						     "hdcp",=20
+"hrv";
+>  				#power-domain-cells =3D <1>;
+>  			};
+> +
+> +			irqsteer_hdmi: interrupt-controller@32fc2000 {
+> +				compatible =3D "fsl,imx-irqsteer";
+> +				reg =3D <0x32fc2000 0x44>;
+> +				interrupts =3D <GIC_SPI 43=20
+IRQ_TYPE_LEVEL_HIGH>;
+> +				interrupt-controller;
+> +				#interrupt-cells =3D <1>;
+> +				fsl,channel =3D <1>;
+> +				fsl,num-irqs =3D <64>;
+> +				clocks =3D <&clk IMX8MP_CLK_HDMI_APB>;
+> +				clock-names =3D "ipg";
+> +				power-domains =3D <&hdmi_blk_ctrl=20
+IMX8MP_HDMIBLK_PD_IRQSTEER>;
+> +			};
+
+According to RM this block is part of HDMI_TX which is part of AIPS4, so it=
+=20
+should be below hsio_blk_ctrl.
+
+Best regards,
+Alexander
+
+>  		};
+>=20
+>  		aips5: bus@30c00000 {
 
 
-Takashi
+=2D-=20
+TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht M=FCnchen, HRB 105018
+Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+http://www.tq-group.com/
+
+
 
