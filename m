@@ -1,120 +1,115 @@
-Return-Path: <linux-kernel+bounces-52828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44BDF849D21
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:34:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5938C849D27
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:36:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED3D61F22B18
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:34:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BF001C2201B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:36:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14DAF2C19A;
-	Mon,  5 Feb 2024 14:34:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D7502C6A9;
+	Mon,  5 Feb 2024 14:35:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sJX3U8uv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="UP0EPS4B"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5377D2C688;
-	Mon,  5 Feb 2024 14:34:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF56E2C1AF;
+	Mon,  5 Feb 2024 14:35:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707143645; cv=none; b=J8+8JYTnGyg/n+dfe8Z1T/YkdwAB/41yS8MF9CI89ji7XH4djvVTjXww1a7vHZALFD1nn0e3xMYTJ5AWKDDIRxb08M9MnbzhV8NQutsvkeRfV4eg2gRGnAImZDTaP24Yz7qvJpgI4DYbjwFLKLKwO57+3A803x6bUH4Pttj2LNo=
+	t=1707143751; cv=none; b=Ze7E+e1Uvh+6coSQglUUTiRC8AM5oz0haqRSZGJmkYKl7muX1tbN6Kr+ZGEZYbPKFJV2O9EFvO6xbevxfsQFcryRFzMKSm8Lh/mpPcnuTNqbM04YoDcJNwCnYE91vytiPnFgbn3fky4XnYFkrhi1LBYHnEOHeGj1xqaVYo3C3gE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707143645; c=relaxed/simple;
-	bh=iBEoat+OSUZc6lnPLh2AanULhM+rpP8BzE4RZbNK5z8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ksB1nhIbxyTMvCQQUYbePXpaAAeWHiSbbK++zDvWfu6a3F+DIbXZo8nwRyyhFX9jgmZxN4VRO7jKR2YEFxW5OKHthk24Tou7dybafvbFMcwkjpILayYst/w8oyCgATVUiEg34XhNisU2sudW9dFBFHB6Zl70bZUnWJR6/qTqvLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sJX3U8uv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DD81C433F1;
-	Mon,  5 Feb 2024 14:34:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707143644;
-	bh=iBEoat+OSUZc6lnPLh2AanULhM+rpP8BzE4RZbNK5z8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sJX3U8uvH5HXjL4C/OEXRtNtDYD89dJ7oms9PFEVAaAn8XVtPBMXKQr5hvTm+y9Gy
-	 gfBL4Jcez1RpKXmz0LWF0lDwKf6ZS1AsPEIWK/KozH6g3X1cjz5EM4BwlUOAwHuqm6
-	 wf4ZGvcc/ZObkBLVKAT9yfIf9FLSBxOYC/zp0K231vnLs8ynig29DsqXzSlK92p6i4
-	 QX+BIjk0HV4/W2uuiOfeXlmte/RFV2UZdhJIdORjBwGKm6A6lt7n9OBepiLcwOCvna
-	 IKAp2QLORaRKAAd/mzaDhArRXFYo8MP6Bq+PUjLvNKW6uHakgeTMHHjbKgQ0LG7+Ak
-	 WosUh47y4XRig==
-Date: Mon, 5 Feb 2024 14:33:59 +0000
-From: Lee Jones <lee@kernel.org>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Daniel Golle <daniel@makrotopia.org>,
-	Li Zetao <lizetao1@huawei.com>, linux-leds@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] leds: trigger: netdev: Fix kernel panic on interface
- rename trig notify
-Message-ID: <20240205143359.GB53266@google.com>
-References: <20240203235413.1146-1-ansuelsmth@gmail.com>
- <8d51f09b-e6d2-4ee1-9e7d-b545d561798a@lunn.ch>
- <20240205085007.GA19855@google.com>
- <2cf84815-f9b6-4a0a-a3b4-d23628a89aa4@lunn.ch>
- <65c0e874.df0a0220.257a.43b1@mx.google.com>
+	s=arc-20240116; t=1707143751; c=relaxed/simple;
+	bh=VftlQV/0Nz85qEFGVCEfbLKWEzmB59s/VkZg4x/j3xA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=HbxRkO+o5/qhU1wXbfwmgxIMF372RdMEHjroI1KKqlcKCAIymSzlzBeqnAnxb+/YomCfOF6xpGv+p5XcmI3FKxhynVBnnMjsPi6AS7hNp9T7uPWlj9mWf09ToI8IGBGbd55O9+0jelDSD7Wy8OFqV0qgqzjmG9rQl6NZOxo86as=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=UP0EPS4B; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 415EZXBQ055004;
+	Mon, 5 Feb 2024 08:35:33 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707143733;
+	bh=xwgxhraPwsNiLY+gig+/w1kE47Cnd1dvjtVmfSWQiro=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=UP0EPS4BcD9ePs1z/3PUVle9Ti0xd08fKUonSkq2W/4q4GApym58zrwIdG9hxoEBb
+	 qqsEdSW9TfFpGCi24ikEhQ7u0Zrd8kD7YxD7exGw6YDkXFeAFJ4I6XOdYhhi7Kl58+
+	 pDFQZkOUyDzi0LvJ0Ok0y4vnst9Nd8NyFFDSxXr4=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 415EZXpO122232
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 5 Feb 2024 08:35:33 -0600
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 5
+ Feb 2024 08:35:33 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 5 Feb 2024 08:35:32 -0600
+Received: from [172.24.227.94] (uda0132425.dhcp.ti.com [172.24.227.94])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 415EZT4B093484;
+	Mon, 5 Feb 2024 08:35:29 -0600
+Message-ID: <ffeb1902-332c-445b-a16a-7fc293cad2eb@ti.com>
+Date: Mon, 5 Feb 2024 20:05:28 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <65c0e874.df0a0220.257a.43b1@mx.google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] Add PCIe DT support for TI's J784S4 SoC
+To: Siddharth Vadapalli <s-vadapalli@ti.com>, <nm@ti.com>, <kristo@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <u-kumar1@ti.com>,
+        <srk@ti.com>
+References: <20240129114749.1197579-1-s-vadapalli@ti.com>
+Content-Language: en-US
+From: Vignesh Raghavendra <vigneshr@ti.com>
+In-Reply-To: <20240129114749.1197579-1-s-vadapalli@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Mon, 05 Feb 2024, Christian Marangi wrote:
 
-> On Mon, Feb 05, 2024 at 02:41:46PM +0100, Andrew Lunn wrote:
-> > > > This should have 'net' in the subject line, to indicate which tree its
-> > > > for.
-> > > 
-> > > No, it shouldn't.
-> > > 
-> > > Contributors aren't obliged to know anything about merging strategies.
-> > 
-> > With netdev, we tend to assume they do, or at least can contribute to
-> > the discussion. They often know about any dependencies etc which could
-> > influence the decision. When there are multiple subsystem maintainers
-> > involved, i tend to use To: to indicate the maintainer i think should
-> > merge the patch, and Cc: for the rest.
-> >
+
+On 29/01/24 17:17, Siddharth Vadapalli wrote:
+> Hello,
 > 
-> I'm always a bit confused when I have to send patch to mixed subsystem
-> (not the case but for net trigger it's almost that). Sorry for the
-> confusion/noise.
-
-When you have a truly cross-subsystem patch, it's up to you.
-
- - Mention both e.g. leds/net:
- - Mention neither e.g. <device>:
- - Mention the one that is most relevant
-
- An example of the last option might be when the lion's share of the
- changes occur in one subsystem and only header files are changed in the
- other.
-
-In an ideal world i.e. when there are no build-time/runtime deps between
-them, changes should be separated out into their own commits.
-
-> > > Why does this need to go in via net?
-> > 
-> > It does not, as far as i'm aware. Christian, do you know of any
-> > reason?
-> > 
+> TI's J784S4 SoC has two Gen3 x4 Lane PCIe Controllers. This series adds
+> the necessary device-tree support to enable both PCIe instances in Root
+> Complex mode of operation by default. The device-tree overlay to enable
+> both instances in Endpoint mode of operation is also present in this
+> series.
 > 
-> This is strictly a fix, no dependency or anything like that. Maybe using
-> net as target would make this faster to merge (since net is for fix only
-> and this has to be backported) than using leds-next?
+> **NOTE**
+> This series depends on:
+> 1. https://patchwork.kernel.org/project/linux-arm-kernel/patch/20240124122936.816142-1-s-vadapalli@ti.com/
+>    for adding the Device ID in the bindings for J784S4 SoC.
+> 
+> 2. https://patchwork.kernel.org/project/linux-arm-kernel/patch/20240129104958.1139787-1-s-vadapalli@ti.com/
+>    for enabling support for configuring the PCIe mode of operation,
+>    number of lanes and link speed when the System Controller node
+>    in the device-tree is modelled as a "simple-bus" which happens to
+>    be the case for J784S4 SoC:
+>    https://github.com/torvalds/linux/blob/master/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi#L45
+> 
+> 3. https://patchwork.kernel.org/project/linux-arm-kernel/patch/20240125100501.4137977-2-c-vankar@ti.com/
+>    for fixing the "serdes_ln_ctrl" node in order to ensure that the PCIe
+>    lanes are mapped correctly to the corresponding Serdes Lanes.
 
-We have leds-fixes for that.
+Sorry, too many dependencies for me to keep track of. I am ignoring  the
+ series, please resubmit once dependencies are resolved.
 
 -- 
-Lee Jones [李琼斯]
+Regards
+Vignesh
 
