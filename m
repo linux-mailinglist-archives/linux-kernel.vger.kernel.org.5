@@ -1,208 +1,265 @@
-Return-Path: <linux-kernel+bounces-52164-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52165-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB11E8494D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 806578494DC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:51:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20BC81F21329
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:50:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5E7B1F213A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:51:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3597D11183;
-	Mon,  5 Feb 2024 07:50:11 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBE9F10A11;
-	Mon,  5 Feb 2024 07:50:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7FD410A33;
+	Mon,  5 Feb 2024 07:51:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="DZZxgC3z"
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EFC011188;
+	Mon,  5 Feb 2024 07:50:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707119410; cv=none; b=LwtfA8mYpWYWxP7q1sknVg4YhdbD6RsiEPnwJCNV/1QmDJCdMncYUwF0F5qjkzAKWfcnFlPpzXtlNe4OSvdspSJ00hszlK9vuih7PxsdK/EBJ5rXbwLHw39/m4O1xy7WgZlJt2pb08ttQjE+PHLRCowGaURTIwIEy6HH3c79pjk=
+	t=1707119463; cv=none; b=RdQMIs2hwDs4jEcwmrgQIVP0uyBFQVb2nfBuQYnIz/2CTGCkzkoIDsJbtMXTq2NnXErM1jpG8IMVksuF2rSYpkDEWTgIIGsn+E3o5lE1xMYLpdy7kjc1z33x38gLob+5FRsntz9cXQQoEEnCjnMqX3Jxaq6oP8JaQqcgfIHcj1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707119410; c=relaxed/simple;
-	bh=s/DcuOGFR/+eSImApTA3KtjZxPydZqpVORSw3JubMF8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FYepYskYK8MYr88rGMDkP7ryaZf/XCjhJWGRQkScdnz9BCp+TWz7BmDNbFrvQOx8mHxq8cm6MwSSwRVUrpUr6cVGIDPrQxB1H6C93DvcdsihkOiEfThncjSr2h6ZUip+x/XrbyolUVScSXB0G1nYuzeX/1KZuf4+UFbfDUTEt+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.2.5.213])
-	by gateway (Coremail) with SMTP id _____8Bx3+suk8Blic8KAA--.30263S3;
-	Mon, 05 Feb 2024 15:50:06 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.2.5.213])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8CxrhMrk8BlsfwvAA--.59749S2;
-	Mon, 05 Feb 2024 15:50:03 +0800 (CST)
-From: Bibo Mao <maobibo@loongson.cn>
-To: Tianrui Zhao <zhaotianrui@loongson.cn>,
-	Huacai Chen <chenhuacai@kernel.org>
-Cc: kvm@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] LoongArch: KVM: Add software breakpoint support
-Date: Mon,  5 Feb 2024 15:50:03 +0800
-Message-Id: <20240205075003.3970281-1-maobibo@loongson.cn>
-X-Mailer: git-send-email 2.39.3
+	s=arc-20240116; t=1707119463; c=relaxed/simple;
+	bh=S2xBjKjY1LGTJgJd4nXlaZSTeDejAJKnqwuXSuZsozM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=abveTzxqnAYfcopIzIVuQB9VQ6AHXka3X4+QmWKDaDQclZqFWassclLDdz1BZn3By7vC7eZjc9o7f8Hp2Xvz1W7lOX5h4D4pBwPv92GfFDqdsF1WXLfW0nH925B4BjMIn9EE/1Oa76Is+6hl0UxbpUZwvY94RrehY9+okpMWLfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=DZZxgC3z; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E417260008;
+	Mon,  5 Feb 2024 07:50:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1707119458;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ttQ4uDt0B0MWz9Y2OYBfdOsR8cq/5uUelC94dh61iTE=;
+	b=DZZxgC3z/SAhCFg7Oojb3mU4qZ2BwsdhLuZ6dOWjQAMLeIDp1BQ0mP8t2g9uNe0rgLYSRZ
+	fgnLj18+PZSCVUwFN77NRnXVob4ElSpA3gq5gpN1UAfcDhuVbnsCIMuYpP2vMfQObTnGBw
+	IkFhfuhEFpA+sdBmkEQRKeRRIn0AsgFKYz3hjeZP6BdU688kLWionAXZ+OhV/CodiPMJz1
+	CMIN2AJqk4zDYvlZqBpji8zjNLVXASZPQkHbAX4sJQ4ThzJW5VYSQKVfPWuVD22ccpuUht
+	EkiHr5ribVdDq/SUp37+DAFUEDXuJOKGb/2Q9Kcdd/QqUudmJZRmbVX2kusISw==
+Date: Mon, 5 Feb 2024 08:50:56 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Simon Glass <sjg@chromium.org>
+Cc: Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>, Michael Walle
+ <mwalle@kernel.org>, U-Boot Mailing List <u-boot@lists.denx.de>, Conor
+ Dooley <conor+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Pratyush Yadav <ptyadav@amazon.de>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 1/3] dt-bindings: mtd: partitions: Add binman
+ compatible
+Message-ID: <20240205085056.44278f2c@xps-13>
+In-Reply-To: <CAFLszTimaFw9sf=JKvQXG4fS6V_2T=2n+pfvYLCiuG1o+7cHPA@mail.gmail.com>
+References: <20231116172859.393744-1-sjg@chromium.org>
+	<20231208150042.GA1278773-robh@kernel.org>
+	<CAPnjgZ2i4gvgiUeHPOfHuOdBooV4e=QQEq6iMo0JbDwOS6dCwA@mail.gmail.com>
+	<CAL_Jsq+xMZ8yz4H9D59uCSyX4h5W+4ruGF++=wVA=msXz+Y01A@mail.gmail.com>
+	<CAPnjgZ1uW8T6woXSqFUNm301=W3zBYOrADREkrz=DuwSW87qZg@mail.gmail.com>
+	<20231214172702.GA617226-robh@kernel.org>
+	<CAPnjgZ2oJSGPO91Y_aLbe+v250WFrND4n3T0mOvhERYidVu=eQ@mail.gmail.com>
+	<CAFLszTizRRVbRO6_ygE2X-Lp5dENWSc4uMGL5GPJAFGAbRdCyQ@mail.gmail.com>
+	<CAL_Jsq+j7_KZtQ2ENq9+vsw0LOZF=spu293_G=AxOmBM+m_f-g@mail.gmail.com>
+	<CAFLszTimaFw9sf=JKvQXG4fS6V_2T=2n+pfvYLCiuG1o+7cHPA@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8CxrhMrk8BlsfwvAA--.59749S2
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxGw13uw1DJw48KryfWryxXrc_yoWrZw1UpF
-	9rArn5Kr4rKrZ3C34xtws8ur43ta93Kr1Iqa4293ySyF12vw1rJrW09rZ8AFy5tw4rXFyI
-	qFn5Kw1YgFs8twbCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv
-	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
-	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
-	vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
-	42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
-	kF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jUsqXUUUUU=
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-When VM runs in kvm mode, system will not exit to host mode if
-executing general software breakpoint instruction, one trap exception
-happens in guest mode rather than host mode. In order to debug guest
-kernel on host side, one mechanism should be used to let vm exit to
-host mode.
+Hi Simon,
 
-Here one special hypercall code is used for software breakpoint usage,
-vm exists to host mode and kvm hypervisor identifies the special hypercall
-code and set exit_reason with KVM_EXIT_DEBUG, and then let qemu handle it.
+sjg@chromium.org wrote on Sun, 4 Feb 2024 05:07:38 -0700:
 
-This patch uses hypercall code and needs hypercall instruction emulation
-handling, and it is dependent on this patchset:
-https://lore.kernel.org/all/20240201031950.3225626-1-maobibo@loongson.cn/
+> Hi Rob,
+>=20
+> On Wed, 17 Jan 2024 at 08:56, Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Thu, Jan 4, 2024 at 3:54=E2=80=AFPM Simon Glass <sjg@chromium.org> w=
+rote: =20
+> > >
+> > > Hi Rob,
+> > >
+> > > On Thu, Dec 14, 2023 at 2:09=E2=80=AFPM Simon Glass <sjg@chromium.org=
+> wrote: =20
+> > > >
+> > > > Hi Rob,
+> > > >
+> > > > On Thu, 14 Dec 2023 at 10:27, Rob Herring <robh@kernel.org> wrote: =
+=20
+> > > > >
+> > > > > On Fri, Dec 08, 2023 at 03:58:10PM -0700, Simon Glass wrote: =20
+> > > > > > Hi Rob,
+> > > > > >
+> > > > > > On Fri, 8 Dec 2023 at 14:56, Rob Herring <robh@kernel.org> wrot=
+e: =20
+> > > > > > >
+> > > > > > > On Fri, Dec 8, 2023 at 11:47=E2=80=AFAM Simon Glass <sjg@chro=
+mium.org> wrote: =20
+> > > > > > > >
+> > > > > > > > Hi Rob,
+> > > > > > > >
+> > > > > > > > On Fri, 8 Dec 2023 at 08:00, Rob Herring <robh@kernel.org> =
+wrote: =20
+> > > > > > > > >
+> > > > > > > > > On Thu, Nov 16, 2023 at 10:28:50AM -0700, Simon Glass wro=
+te: =20
+> > > > > > > > > > Add a compatible string for binman, so we can extend fi=
+xed-partitions
+> > > > > > > > > > in various ways.
+> > > > > > > > > >
+> > > > > > > > > > Signed-off-by: Simon Glass <sjg@chromium.org>
+> > > > > > > > > > ---
+> > > > > > > > > >
+> > > > > > > > > > (no changes since v5)
+> > > > > > > > > >
+> > > > > > > > > > Changes in v5:
+> > > > > > > > > > - Add #address/size-cells and parternProperties
+> > > > > > > > > > - Drop $ref to fixed-partitions.yaml
+> > > > > > > > > > - Drop 'select: false'
+> > > > > > > > > >
+> > > > > > > > > > Changes in v4:
+> > > > > > > > > > - Change subject line
+> > > > > > > > > >
+> > > > > > > > > > Changes in v3:
+> > > > > > > > > > - Drop fixed-partition additional compatible string
+> > > > > > > > > > - Drop fixed-partitions from the example
+> > > > > > > > > > - Mention use of compatible instead of label
+> > > > > > > > > >
+> > > > > > > > > > Changes in v2:
+> > > > > > > > > > - Drop mention of 'enhanced features' in fixed-partitio=
+ns.yaml
+> > > > > > > > > > - Mention Binman input and output properties
+> > > > > > > > > > - Use plain partition@xxx for the node name
+> > > > > > > > > >
+> > > > > > > > > >  .../bindings/mtd/partitions/binman.yaml       | 68 +++=
+++++++++++++++++
+> > > > > > > > > >  .../bindings/mtd/partitions/partitions.yaml   |  1 +
+> > > > > > > > > >  MAINTAINERS                                   |  5 ++
+> > > > > > > > > >  3 files changed, 74 insertions(+)
+> > > > > > > > > >  create mode 100644 Documentation/devicetree/bindings/m=
+td/partitions/binman.yaml
+> > > > > > > > > >
+> > > > > > > > > > diff --git a/Documentation/devicetree/bindings/mtd/part=
+itions/binman.yaml b/Documentation/devicetree/bindings/mtd/partitions/binma=
+n.yaml
+> > > > > > > > > > new file mode 100644
+> > > > > > > > > > index 000000000000..329217550a98
+> > > > > > > > > > --- /dev/null
+> > > > > > > > > > +++ b/Documentation/devicetree/bindings/mtd/partitions/=
+binman.yaml
+> > > > > > > > > > @@ -0,0 +1,68 @@
+> > > > > > > > > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > > > > > > > > > +# Copyright 2023 Google LLC
+> > > > > > > > > > +
+> > > > > > > > > > +%YAML 1.2
+> > > > > > > > > > +---
+> > > > > > > > > > +$id: http://devicetree.org/schemas/mtd/partitions/binm=
+an.yaml#
+> > > > > > > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > > > > > > > +
+> > > > > > > > > > +title: Binman firmware layout
+> > > > > > > > > > +
+> > > > > > > > > > +maintainers:
+> > > > > > > > > > +  - Simon Glass <sjg@chromium.org>
+> > > > > > > > > > +
+> > > > > > > > > > +description: |
+> > > > > > > > > > +  The binman node provides a layout for firmware, used=
+ when packaging firmware
+> > > > > > > > > > +  from multiple projects. It is based on fixed-partiti=
+ons, with some
+> > > > > > > > > > +  extensions, but uses 'compatible' to indicate the co=
+ntents of the node, to
+> > > > > > > > > > +  avoid perturbing or confusing existing installations=
+ which use 'label' for a
+> > > > > > > > > > +  particular purpose.
+> > > > > > > > > > +
+> > > > > > > > > > +  Binman supports properties used as inputs to the fir=
+mware-packaging process,
+> > > > > > > > > > +  such as those which control alignment of partitions.=
+ This binding addresses
+> > > > > > > > > > +  these 'input' properties. For example, it is common =
+for the 'reg' property
+> > > > > > > > > > +  (an 'output' property) to be set by Binman, based on=
+ the alignment requested
+> > > > > > > > > > +  in the input.
+> > > > > > > > > > +
+> > > > > > > > > > +  Once processing is complete, input properties have m=
+ostly served their
+> > > > > > > > > > +  purpose, at least until the firmware is repacked lat=
+er, e.g. due to a
+> > > > > > > > > > +  firmware update. The 'fixed-partitions' binding shou=
+ld provide enough
+> > > > > > > > > > +  information to read the firmware at runtime, includi=
+ng decompression if
+> > > > > > > > > > +  needed. =20
+> > > > > > > > >
+> > > > > > > > > How is this going to work exactly? binman reads these nod=
+es and then
+> > > > > > > > > writes out 'fixed-partitions' nodes. But then you've lost=
+ the binman
+> > > > > > > > > specifc parts needed for repacking. =20
+> > > > > > > >
+> > > > > > > > No, they are the same node. I do want the extra information=
+ to stick
+> > > > > > > > around. So long as it is compatible with fixed-partition as=
+ well, this
+> > > > > > > > should work OK. =20
+> > > > > > >
+> > > > > > > How can it be both? The partitions node compatible can be eit=
+her
+> > > > > > > 'fixed-partitions' or 'binman'. =20
+> > > > > >
+> > > > > > Can we not allow it to be both? I have tried to adjust things in
+> > > > > > response to feedback but perhaps the feedback was leading me do=
+wn the
+> > > > > > wrong path? =20
+> > > > >
+> > > > > Sure, but then the schema has to and that means extending
+> > > > > fixed-partitions. =20
+> > > >
+> > > > Can we cross that bridge later? There might be resistance to it. I'm
+> > > > not sure. For now, perhaps just a binman compatible works well enou=
+gh
+> > > > to make progress. =20
+> > >
+> > > Is there any way to make progress on this? I would like to have
+> > > software which doesn't understand the binman compatible to at least be
+> > > able to understand the fixed-partition compatible. Is that acceptable=
+? =20
+> >
+> > There's only 2 ways that it can work. Either binman writes out
+> > fixed-partition nodes dropping/replacing anything only defined for
+> > binman or fixed-partition is extended to include what binman needs. =20
+>=20
+> OK, then I suppose the best way is to add a new binman compatible, as
+> is done with this v6 series. People then need to choose it instead of
+> fixed-partition.
 
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
----
- arch/loongarch/include/asm/kvm_para.h |  2 ++
- arch/loongarch/include/uapi/asm/kvm.h |  3 +++
- arch/loongarch/kvm/exit.c             | 12 ++++++++++--
- arch/loongarch/kvm/vcpu.c             | 16 ++++++++++++++--
- arch/loongarch/kvm/vm.c               |  1 +
- 5 files changed, 30 insertions(+), 4 deletions(-)
+I'm sorry this is not at all what Rob suggested, or did I totally
+misunderstand his answer?
 
-diff --git a/arch/loongarch/include/asm/kvm_para.h b/arch/loongarch/include/asm/kvm_para.h
-index a25a84e372b9..c44412feabb3 100644
---- a/arch/loongarch/include/asm/kvm_para.h
-+++ b/arch/loongarch/include/asm/kvm_para.h
-@@ -10,8 +10,10 @@
- #define HYPERCALL_CODE(vendor, code)	((vendor << HYPERVISOR_VENDOR_SHIFT) + code)
- 
- #define KVM_HC_CODE_SERVICE		0
-+#define KVM_HC_CODE_SWDBG		1
- #define KVM_HC_SERVICE			HYPERCALL_CODE(HYPERVISOR_KVM, KVM_HC_CODE_SERVICE)
- #define  KVM_HC_FUNC_IPI		1
-+#define KVM_HC_SWDBG			HYPERCALL_CODE(HYPERVISOR_KVM, KVM_HC_CODE_SWDBG)
- 
- /*
-  * LoongArch hypcall return code
-diff --git a/arch/loongarch/include/uapi/asm/kvm.h b/arch/loongarch/include/uapi/asm/kvm.h
-index 923d0bd38294..ad6d79ff6742 100644
---- a/arch/loongarch/include/uapi/asm/kvm.h
-+++ b/arch/loongarch/include/uapi/asm/kvm.h
-@@ -15,10 +15,13 @@
-  */
- 
- #define __KVM_HAVE_READONLY_MEM
-+#define __KVM_HAVE_GUEST_DEBUG
- 
- #define KVM_COALESCED_MMIO_PAGE_OFFSET	1
- #define KVM_DIRTY_LOG_PAGE_OFFSET	64
- 
-+#define KVM_GUESTDBG_USE_SW_BP		0x00010000
-+
- /*
-  * for KVM_GET_REGS and KVM_SET_REGS
-  */
-diff --git a/arch/loongarch/kvm/exit.c b/arch/loongarch/kvm/exit.c
-index 189b70bad825..01e3f30f041b 100644
---- a/arch/loongarch/kvm/exit.c
-+++ b/arch/loongarch/kvm/exit.c
-@@ -758,23 +758,31 @@ static int kvm_handle_hypcall(struct kvm_vcpu *vcpu)
- {
- 	larch_inst inst;
- 	unsigned int code;
-+	int ret;
- 
- 	inst.word = vcpu->arch.badi;
- 	code = inst.reg0i15_format.immediate;
--	update_pc(&vcpu->arch);
-+	ret = RESUME_GUEST;
- 
- 	switch (code) {
- 	case KVM_HC_SERVICE:
- 		vcpu->stat.hvcl_exits++;
- 		kvm_handle_pv_hcall(vcpu);
- 		break;
-+	case KVM_HC_SWDBG:
-+		vcpu->run->exit_reason = KVM_EXIT_DEBUG;
-+		ret = RESUME_HOST;
-+		break;
- 	default:
- 		/* Treat it as noop intruction, only set return value */
- 		vcpu->arch.gprs[LOONGARCH_GPR_A0] = KVM_HC_INVALID_CODE;
- 		break;
- 	}
- 
--	return RESUME_GUEST;
-+	if (ret == RESUME_GUEST)
-+		update_pc(&vcpu->arch);
-+
-+	return ret;
- }
- 
- /*
-diff --git a/arch/loongarch/kvm/vcpu.c b/arch/loongarch/kvm/vcpu.c
-index 80e05ba9b48d..aa0d2eaddafe 100644
---- a/arch/loongarch/kvm/vcpu.c
-+++ b/arch/loongarch/kvm/vcpu.c
-@@ -245,10 +245,22 @@ int kvm_arch_vcpu_ioctl_set_mpstate(struct kvm_vcpu *vcpu,
- 	return ret;
- }
- 
-+#define KVM_GUESTDBG_VALID_MASK (KVM_GUESTDBG_ENABLE | \
-+			KVM_GUESTDBG_USE_SW_BP | KVM_GUESTDBG_SINGLESTEP)
- int kvm_arch_vcpu_ioctl_set_guest_debug(struct kvm_vcpu *vcpu,
--					struct kvm_guest_debug *dbg)
-+			struct kvm_guest_debug *dbg)
- {
--	return -EINVAL;
-+	if (dbg->control & ~KVM_GUESTDBG_VALID_MASK)
-+		return -EINVAL;
-+
-+	if (dbg->control & KVM_GUESTDBG_ENABLE) {
-+		vcpu->guest_debug = dbg->control;
-+		/* No hardware breakpoint */
-+	} else {
-+		vcpu->guest_debug = 0;
-+	}
-+
-+	return 0;
- }
- 
- static int _kvm_getcsr(struct kvm_vcpu *vcpu, unsigned int id, u64 *val)
-diff --git a/arch/loongarch/kvm/vm.c b/arch/loongarch/kvm/vm.c
-index 6fd5916ebef3..44fb18118442 100644
---- a/arch/loongarch/kvm/vm.c
-+++ b/arch/loongarch/kvm/vm.c
-@@ -77,6 +77,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 	case KVM_CAP_IMMEDIATE_EXIT:
- 	case KVM_CAP_IOEVENTFD:
- 	case KVM_CAP_MP_STATE:
-+	case KVM_CAP_SET_GUEST_DEBUG:
- 		r = 1;
- 		break;
- 	case KVM_CAP_NR_VCPUS:
--- 
-2.39.3
+In both cases the solution is to generate a "fixed-partition" node. Now
+up to you to decide whether binman should adapt the output to the
+current schema, or if the current schema should be extended to
+understand all binman's output.
 
+At least that is my understanding and also what I kind of agree with.
+
+Thanks,
+Miqu=C3=A8l
 
