@@ -1,189 +1,209 @@
-Return-Path: <linux-kernel+bounces-52135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52138-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15EA184947A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:25:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D22A8849482
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:27:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95A0B1F26539
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:25:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 482081F26B1A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:27:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28F9C111A0;
-	Mon,  5 Feb 2024 07:25:08 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C82A01118F;
+	Mon,  5 Feb 2024 07:26:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="Nw3iPI2V"
+Received: from EUR03-VI1-obe.outbound.protection.outlook.com (mail-vi1eur03on2079.outbound.protection.outlook.com [40.107.103.79])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EDC711198
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 07:25:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707117907; cv=none; b=UDi0p6bGAKhX6j70Su79hZTm6DpGNYDqtWxaqKsWMEtE4m8ZF5nHJSinH0/x90yQ+Gh2FI4u4e9SeA5+7Ee4eEIMePWfE8g3NvAGK9LwYrCB2dmCL2BaFvF8ioCeINPBo2plgWs5rFw60NyRbcllJW7OGQvurWALnYexMjRY7TU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707117907; c=relaxed/simple;
-	bh=kXIiViVczn2OKW14zNwf56BRUdl6PZg5wCcUqWj0CZ4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=XXR50joljYG9odVTDJGJy9jJgTsK50op5F1Fw1uS06K+ByVsHMku/Fu2xZodd7qUWxK28XnwPzxEsw1Trisr/JHHxA5uofZK0gicIBGRGLMdjVit4gU66ijtjPEx+JX4d6+0JYQS5CaWUlaeiufH59TPc1UkHJMSOddsdkym/40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TSyT65J6Cz1FKLQ;
-	Mon,  5 Feb 2024 15:20:26 +0800 (CST)
-Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
-	by mail.maildlp.com (Postfix) with ESMTPS id 10CCC1A0172;
-	Mon,  5 Feb 2024 15:25:01 +0800 (CST)
-Received: from [10.174.179.160] (10.174.179.160) by
- kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 5 Feb 2024 15:24:59 +0800
-Message-ID: <25de8872-ad79-e5e6-054c-9ac5e7191416@huawei.com>
-Date: Mon, 5 Feb 2024 15:24:59 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A779111715;
+	Mon,  5 Feb 2024 07:26:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.103.79
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707117993; cv=fail; b=BH0elNqg/U84BV7nd8HMZaNhbnaE8gmoYkZ4ndwH/CS+yX8RgB7GeI1Yk1Bm/pq/cSQV4OX6uX3yTUDwhjrJZsv6CA7FCdRke0judhz6xW9+WswKSg2aC7zxvvtZCk9vOhAFSh2RZtNwAWZAdikLpLxxz7vDGwGQt1YJLxlcIFc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707117993; c=relaxed/simple;
+	bh=DKyKuhgJFcm2ZsKVbN9maEnu59UmHXHiH/PTdUHKGwk=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=FLTu1uWthG7C7JB8t230gJi1OOppwNYOB6cMHZSOKv5LiVcJrUHx/FJCNTEEmjTBvNCkjZrPABmaP+5Hq3PBElrYlJY/THYKk+j5JWw5fd/N8rIJ90b/MMDBOX0Z/T6VAGl+zXce7Tr/nXlZp/BYlFngb3MgAJ/a1DnJR+cv6Hk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=Nw3iPI2V; arc=fail smtp.client-ip=40.107.103.79
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Y7FWRhTYxIf0Ywvt7PXO6/fxfbknfv6HRdD/xWZm2KUbKs7VgL9ezzlZd+9BNTbrrcl/e4EW6RdGtqbQUrEDHIq1B8jmpbMVrkyQu4gw0XKDg9575U09wlGrb5A1wM/Za0LZLviCt2VvUorRd8eGduIPUk9PT9kTdDK/se+dukKjoHOxl5CUGUUwY3JMOQHgS+QRNEg+ZR/kLbC3rMgbK0zx7JkZFSSvTXkZmHNgHXnallLrugA0KfJYvLSXBxR6tES8aLco6NsxsPMYnSyvkcTWKlHD/XIwCXPgMUcn2xkK20RZKvMKSnz1+I387wxwqA5blwmNY5nKm6BmiUBfng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BrRIk2ZmcuHBO/ZjaF704N2O9wU9HcJ9zfCNODPuRzw=;
+ b=F9bzWaNcoG8jIAgEFwNiSvE10YqzSqJl8CmSidx9X8BWZ+tZskZ6CLxgOcmitXBLPV8m8w1QByBo8SVCQ85CJ6NkuSEag6dcI24UIa/tuiGecTQDRTPJ6BlXTceS9oS7UfiF/pwhvT06BgsH9/0+5WPnqHvgdqhWtAGleYmYui3/dPbBtrNuCZUSuUdC4SywPEx+7JaPzkTF/WDIGsR2+gduc8DmZ4qf6MAOZU2my0dJ5OUaqzGzDrFB8p4HC7nNOeCMfcd+Af0N3WLnpGOYR+epL3BINw/pXTQdR67hCQBS0AieZoyQnbHU/ANUPmcgP2N3hASYsjTEjQL40UfrgA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BrRIk2ZmcuHBO/ZjaF704N2O9wU9HcJ9zfCNODPuRzw=;
+ b=Nw3iPI2V0/tS7h8pWjZZyl9ipTkhKtPMnC4hifFJRduDiwsvMDB15bzKLudJXO9l7EPlg1Q9oH854esetmZEXijnZbuiB9PFAx88ihv54v4n9WPNZ50dUvm7ebMvV6cF7yLTV1Ff247SrDyUBs+/SJ4uLTCN9jdqOc5oUcRHG1M=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB8254.eurprd04.prod.outlook.com (2603:10a6:102:1cd::24)
+ by DB8PR04MB7082.eurprd04.prod.outlook.com (2603:10a6:10:129::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.34; Mon, 5 Feb
+ 2024 07:26:28 +0000
+Received: from PAXPR04MB8254.eurprd04.prod.outlook.com
+ ([fe80::1a48:b74b:ee2c:d2e7]) by PAXPR04MB8254.eurprd04.prod.outlook.com
+ ([fe80::1a48:b74b:ee2c:d2e7%6]) with mapi id 15.20.7249.032; Mon, 5 Feb 2024
+ 07:26:28 +0000
+From: Ming Qian <ming.qian@nxp.com>
+To: mchehab@kernel.org,
+	mirela.rabulea@oss.nxp.com,
+	hverkuil-cisco@xs4all.nl
+Cc: shawnguo@kernel.org,
+	s.hauer@pengutronix.de,
+	kernel@pengutronix.de,
+	festevam@gmail.com,
+	xiahong.bao@nxp.com,
+	eagle.zhou@nxp.com,
+	tao.jiang_2@nxp.com,
+	ming.zhou@nxp.com,
+	ming.qian@oss.nxp.com,
+	linux-imx@nxp.com,
+	linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] media: imx-jpeg: Support for negotiating bytesperline with client
+Date: Mon,  5 Feb 2024 16:25:56 +0900
+Message-ID: <20240205072556.804809-1-ming.qian@nxp.com>
+X-Mailer: git-send-email 2.43.0-rc1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SGXP274CA0009.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::21)
+ To PAXPR04MB8254.eurprd04.prod.outlook.com (2603:10a6:102:1cd::24)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH] filemap: avoid unnecessary major faults in
- filemap_fault()
-Content-Language: en-US
-To: "Huang, Ying" <ying.huang@intel.com>
-CC: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-	<akpm@linux-foundation.org>, <willy@infradead.org>, <fengwei.yin@intel.com>,
-	<aneesh.kumar@linux.ibm.com>, <shy828301@gmail.com>, <hughd@google.com>,
-	<david@redhat.com>, <wangkefeng.wang@huawei.com>
-References: <20240204093526.212636-1-zhangpeng362@huawei.com>
- <87zfwf39ha.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <85e03dd9-8bd7-d516-ebe4-84dd449a9fb2@huawei.com>
- <87mssf2yiv.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From: "zhangpeng (AS)" <zhangpeng362@huawei.com>
-In-Reply-To: <87mssf2yiv.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600020.china.huawei.com (7.193.23.147)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB8254:EE_|DB8PR04MB7082:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7908d6b0-9279-4a1f-74fc-08dc261bc491
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	8Z9OnbQNulOAYMOhxBPzkWAOfajy5rCfCoi1Ck/0W1dlhzOsHd9g70Bom6udfJg9JAxKGVVpK8kzT8YTAtLA59T/zUrOnxi/goFskcibtEKk3isFWg92iRWagggPEyq1JQXcLf/ONonZDxK3jFZ7OdP4+UhbvCWPGWupGfdp+oIxWw+waTKKYVlQmKhRbAXphcsWNMiIrs56lMzdwu/+ax9lELnHUSuKKSivle5YAfAq0UVWLExe78B3fcQxWiPFa/HXE/i5p0zkePVNx0mpoB5ugDXTyJ3bKgWpPTcMQviZPF+L50OASPQCGkl5mGXXhMGQ+ni20eWFWV4pLM1qwWcMfccO8jyuBQGZsPXKSWHIlAvXcxrIqETCR61ucVGPEky+Ox/saqGmOjTvMEMu+n4jBldfdhxVVkb8fTbwiTq302OM3thqKUXzaRH/YVFndKXn7Rq4jLhoBCem6VAAI+QVQ/LjN5tNgVWstAzqcs/OrGKF/CmBrl/gthceBHrkLRuqTRSmWGwpzd6c297TnVBuYu1FqRFNJmfAlq+AW/dYiurvxJgG3XzYt8rVynAUnt015z2zVstfJN3gSsMtrBKSzXrF05bShTQZ98hYOO2hzxeCDzJotjMmZYL45J1f
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB8254.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(39860400002)(136003)(396003)(376002)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(41300700001)(38350700005)(36756003)(2906002)(2616005)(478600001)(66946007)(66556008)(1076003)(6666004)(52116002)(6512007)(6506007)(6486002)(86362001)(44832011)(5660300002)(316002)(26005)(4326008)(8676002)(8936002)(66476007)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?z82RBD2iR4iHgI4U5CnctB/qQNf3XxRUEb4nCSAk7HHWu4MU48+TBAgx/5Or?=
+ =?us-ascii?Q?GpOb2gV+BkxxbVXRzJMEwNTaR/cfghi9a3FgbyD0CYrKmAFVgrDgliJDIOso?=
+ =?us-ascii?Q?KOdGM5Uz58m9Mjk4XkwAasG+cqnChPIgQz8LTVyfdBbjRyqcEa59Ouz3Iv5j?=
+ =?us-ascii?Q?WNShkHyG7bJjlbhwAPKjUe8Lmk3i6E35o4cIr/TkWQuciT830ICuvMlB2Cyr?=
+ =?us-ascii?Q?du51gjwcK6461nJGaZu+MaxYlzSP4AfB8Zt2bPvZn37N8gQk1gY6ZUUcSie8?=
+ =?us-ascii?Q?cet7bxh1nwPqFOcz5Hm1vTa7DpU2Xl6By3PVPZaQ4XakH+1q7+SsoZn40cg7?=
+ =?us-ascii?Q?2nQDmRAnfU9cVb1Ga9YzTPaCdmo4t3acoQ49UCSG5zRGjKbP4ix29MdUC4Dd?=
+ =?us-ascii?Q?U+XrGFiWObsLHBBnZfiRZetQYQ86ufFftq6tnCODv2IqiuHYmXucxjEhEx41?=
+ =?us-ascii?Q?2Bu86b8H26ttk7Gx8CyACqkM5hgUO/zG8F4jEz6nV1TWgiPtAfc2ZAZ2dsNX?=
+ =?us-ascii?Q?tXDeCsjp1bSTWa0nikrmWvME4jDJSKpKSFE00Lf8m4ZjsDG2YcadC2bdePy6?=
+ =?us-ascii?Q?N1fprNHDmyemvNVXQY1LLwKCq3rIUUPpOI82TbFjkM+n9l1fs1N/BmaV1P2t?=
+ =?us-ascii?Q?xMTmruNbjC4VF7K9AHzln6ah6nBtKNmH/Epc4YMQUOyCaxEEue2RTXmxBwfO?=
+ =?us-ascii?Q?FakpXfc3PTxCn/r3IRZPyDJAe1MnDXDpoAf/SwDQPZ42ihXXyW2zBNDGeYHp?=
+ =?us-ascii?Q?8x3wNIzDUVP9w4N/yAIf4NpeRbv54HHELPEF8v3RIio3LjKa/zxHj+WY1xoG?=
+ =?us-ascii?Q?R70phOblqnFL8o3MmyWSYUtbpSe1KGeDVoSUG8SbYrmcAVSOYC67eSdXg0E8?=
+ =?us-ascii?Q?bFk+T0RtqHN4cfz1dzJI5CsObCv9R8Tf4r2qhlgDi4k8rjvHnNMQFAro9qp1?=
+ =?us-ascii?Q?zRKF6uC15VnmRbzJCI7fZqCZUshwbFpWnP9GCCKUK8rY3V5sIX2+gVysdpGK?=
+ =?us-ascii?Q?kt3gLVeD2mozdAjE9sCZRBO00kvgd8arbxMNnYPvg9XefXQKKjV0yQdUpwy1?=
+ =?us-ascii?Q?z/gp5Hh6c5QbFih5h+l11WlavAArx3P4z1ZvliGnkLTc988Y42KgFgpibm/U?=
+ =?us-ascii?Q?1BAL8fQyXOZiv0rYefqybrm5pST0IUEIxL2ZihmIiH2R46opmry0a4JbYrmZ?=
+ =?us-ascii?Q?AgBZCWujAGjY9reuOokwH7GkuhErVcsQqQMk+AMvrToZYYgkWRT7X+oUuY12?=
+ =?us-ascii?Q?yZPnla9FvoCe1OKZJ1HQkVN4JI6tDqWk6HshuAH3Fiw6znUqTzNkKKuv3RtT?=
+ =?us-ascii?Q?hB+qlA+r4n6ie/Nal3w0HuKzPzjJSjgLk2X7QhYCHMcNnwTy6Ay8/AdNb299?=
+ =?us-ascii?Q?RkgjbgLt7NFfLjYZooICIiRNx3uaz+4aXsfyrQ5kAaliSYgHXIVDjOzykcwK?=
+ =?us-ascii?Q?1n6RFMf14KTh+fsEKsCVdud6VOjYLzFTWQjnvKEmrT43JMdEsCSXQe1MZhtc?=
+ =?us-ascii?Q?GOPIyb/uHZ0JFjz/Q/yIGb0QccsWeTv6C5oqtIGuBES9IZcMwMIMHfkFPzkx?=
+ =?us-ascii?Q?cap+yV1c+LdVNucBVS8kkKvuJ/b5NbhHYhoaBMRV?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7908d6b0-9279-4a1f-74fc-08dc261bc491
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB8254.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2024 07:26:28.5268
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1Gq7SOlHC1EVNEEZ2wZMd6QAobpMhD/h3FDnRjr5Bl8lG+Fa6fgMqFR6/rrIwxIxtQ8+lMNfxwVAkj5KcXlRww==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB7082
 
-On 2024/2/5 14:52, Huang, Ying wrote:
+This mxc-jpeg driver doesn't allow the client to set the bytesperline,
+but for some android cts case, it need to negotiate the bytesperline
+between decoder and display, and fail the case if driver doesn't support
+negotiating bytesperline
 
-> "zhangpeng (AS)" <zhangpeng362@huawei.com> writes:
->> On 2024/2/5 10:56, Huang, Ying wrote:
->>> Peng Zhang <zhangpeng362@huawei.com> writes:
->>>> From: ZhangPeng <zhangpeng362@huawei.com>
->>>>
->>>> The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
->>>> in application, which leading to an unexpected performance issue[1].
->>>>
->>>> This caused by temporarily cleared PTE during a read/modify/write update
->>>> of the PTE, eg, do_numa_page()/change_pte_range().
->>>>
->>>> For the data segment of the user-mode program, the global variable area
->>>> is a private mapping. After the pagecache is loaded, the private anonymous
->>>> page is generated after the COW is triggered. Mlockall can lock COW pages
->>>> (anonymous pages), but the original file pages cannot be locked and may
->>>> be reclaimed. If the global variable (private anon page) is accessed when
->>>> vmf->pte is zeroed in numa fault, a file page fault will be triggered.
->>>>
->>>> At this time, the original private file page may have been reclaimed.
->>>> If the page cache is not available at this time, a major fault will be
->>>> triggered and the file will be read, causing additional overhead.
->>>>
->>>> Fix this by rechecking the PTE without acquiring PTL in filemap_fault()
->>>> before triggering a major fault.
->>>>
->>>> Testing file anonymous page read and write page fault performance in ext4
->>>> and ramdisk using will-it-scale[2] on a x86 physical machine. The data
->>>> is the average change compared with the mainline after the patch is
->>>> applied. The test results are within the range of fluctuation, and there
->>>> is no obvious difference. The test results are as follows:
->>>> 			processes processes_idle threads threads_idle
->>>> ext4 file write:	-1.14%    -0.08%         -1.87%  0.13%
->>>> ext4 file read:		 0.03%	  -0.65%         -0.51%	-0.08%
->>>> ramdisk file write:	-1.21%    -0.21%         -1.12%  0.11%
->>>> ramdisk file read:	 0.00%    -0.68%         -0.33% -0.02%
->>>>
->>>> [1] https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
->>>> [2] https://github.com/antonblanchard/will-it-scale/
->>>>
->>>> Suggested-by: "Huang, Ying" <ying.huang@intel.com>
->>>> Suggested-by: Yin Fengwei <fengwei.yin@intel.com>
->>>> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
->>>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->>>> ---
->>>> RFC->v1:
->>>> - Add error handling when ptep == NULL per Huang, Ying and Matthew Wilcox
->>>> - Check the PTE without acquiring PTL in filemap_fault(), suggested by
->>>>     Huang, Ying and Yin Fengwei
->>>> - Add pmd_none() check before PTE map
->>>> - Update commit message and add performance test information
->>>>
->>>>    mm/filemap.c | 18 ++++++++++++++++++
->>>>    1 file changed, 18 insertions(+)
->>>>
->>>> diff --git a/mm/filemap.c b/mm/filemap.c
->>>> index 142864338ca4..b29cdeb6a03b 100644
->>>> --- a/mm/filemap.c
->>>> +++ b/mm/filemap.c
->>>> @@ -3238,6 +3238,24 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
->>>>    			mapping_locked = true;
->>>>    		}
->>>>    	} else {
->>>> +		if (!pmd_none(*vmf->pmd)) {
->>>> +			pte_t *ptep;
->>>> +
->>>> +			ptep = pte_offset_map_nolock(vmf->vma->vm_mm, vmf->pmd,
->>>> +						     vmf->address, &vmf->ptl);
->>>> +			if (unlikely(!ptep))
->>>> +				return VM_FAULT_NOPAGE;
->>>> +			/*
->>>> +			 * Recheck pte as the pte can be cleared temporarily
->>>> +			 * during a read/modify/write update.
->>>> +			 */
->>> I think that we should add some comments here about the racy checking.
->> I'll add comments in a v2 as follows:
->> /*
->>   * Recheck PTE as the PTE can be cleared temporarily
->>   * during a read/modify/write update of the PTE, eg,
->>   * do_numa_page()/change_pte_range(). This will trigger
->>   * a major fault, even if we use mlockall, which may
->>   * affect performance.
->>   */
-> Sorry, my previous words aren't clear enough.  I mean some comments as
-> follows,
->
-> We don't hold PTL here, so the check is still racy.  But acquiring PTL
-> hurts performance and the race window seems small enough.
+The jpegdec and jpegenc does support to set bytesperline which is
+multiple of 2, and greater than the value calulated by driver.
 
-Got it. I'll add comments in a v2 as follows:
-/*
-  * Recheck PTE as the PTE can be cleared temporarily
-  * during a read/modify/write update of the PTE.
-  * We don't hold PTL here as acquiring PTL hurts
-  * performance. So the check is still racy, but
-  * the race window seems small enough.
-  */
+Signed-off-by: Ming Qian <ming.qian@nxp.com>
+---
+ drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c | 16 ++++++++++++++++
+ drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.h |  1 +
+ 2 files changed, 17 insertions(+)
 
->
-> --
-> Best Regards,
-> Huang, Ying
->
->>>> +			if (unlikely(!pte_none(ptep_get_lockless(ptep))))
->>>> +				ret = VM_FAULT_NOPAGE;
->>>> +			pte_unmap(ptep);
->>>> +			if (unlikely(ret))
->>>> +				return ret;
->>>> +		}
->>>> +
->>>>    		/* No page in the page cache at all */
->>>>    		count_vm_event(PGMAJFAULT);
->>>>    		count_memcg_event_mm(vmf->vma->vm_mm, PGMAJFAULT);
-
+diff --git a/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c b/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c
+index 64112b63298c..cc97790ed30f 100644
+--- a/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c
++++ b/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c
+@@ -1373,6 +1373,8 @@ static bool mxc_jpeg_source_change(struct mxc_jpeg_ctx *ctx,
+ 		q_data_cap->crop.top = 0;
+ 		q_data_cap->crop.width = jpeg_src_buf->w;
+ 		q_data_cap->crop.height = jpeg_src_buf->h;
++		q_data_cap->bytesperline[0] = 0;
++		q_data_cap->bytesperline[1] = 0;
+ 
+ 		/*
+ 		 * align up the resolution for CAST IP,
+@@ -1752,6 +1754,14 @@ static u32 mxc_jpeg_get_image_format(struct device *dev,
+ 
+ static void mxc_jpeg_bytesperline(struct mxc_jpeg_q_data *q, u32 precision)
+ {
++	u32 bytesperline[2];
++
++	bytesperline[0] = q->bytesperline[0];
++	bytesperline[1] = q->bytesperline[0];	/*imx-jpeg only support the same line pitch*/
++	v4l_bound_align_image(&bytesperline[0], 0, MXC_JPEG_MAX_LINE, 2,
++			      &bytesperline[1], 0, MXC_JPEG_MAX_LINE, 2,
++			      0);
++
+ 	/* Bytes distance between the leftmost pixels in two adjacent lines */
+ 	if (q->fmt->fourcc == V4L2_PIX_FMT_JPEG) {
+ 		/* bytesperline unused for compressed formats */
+@@ -1775,6 +1785,12 @@ static void mxc_jpeg_bytesperline(struct mxc_jpeg_q_data *q, u32 precision)
+ 		q->bytesperline[0] = q->w_adjusted * DIV_ROUND_UP(precision, 8);
+ 		q->bytesperline[1] = 0;
+ 	}
++
++	if (q->fmt->fourcc != V4L2_PIX_FMT_JPEG) {
++		q->bytesperline[0] = max(q->bytesperline[0], bytesperline[0]);
++		if (q->fmt->mem_planes > 1)
++			q->bytesperline[1] = max(q->bytesperline[1], bytesperline[1]);
++	}
+ }
+ 
+ static void mxc_jpeg_sizeimage(struct mxc_jpeg_q_data *q)
+diff --git a/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.h b/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.h
+index dc4afeeff5b6..86e324b21aed 100644
+--- a/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.h
++++ b/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.h
+@@ -22,6 +22,7 @@
+ #define MXC_JPEG_MIN_HEIGHT		64
+ #define MXC_JPEG_MAX_WIDTH		0x2000
+ #define MXC_JPEG_MAX_HEIGHT		0x2000
++#define MXC_JPEG_MAX_LINE		0x8000
+ #define MXC_JPEG_MAX_CFG_STREAM		0x1000
+ #define MXC_JPEG_H_ALIGN		3
+ #define MXC_JPEG_W_ALIGN		3
 -- 
-Best Regards,
-Peng
+2.43.0-rc1
 
 
