@@ -1,81 +1,53 @@
-Return-Path: <linux-kernel+bounces-52256-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52257-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6523F8495FD
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:09:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF0ED849600
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:09:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88C5F1C23F93
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:09:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F0711F2147D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:09:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91B1E134AF;
-	Mon,  5 Feb 2024 09:06:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="t1zJ1HHA"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39437125A1;
+	Mon,  5 Feb 2024 09:06:35 +0000 (UTC)
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB2E7134BD;
-	Mon,  5 Feb 2024 09:06:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9249A179A7;
+	Mon,  5 Feb 2024 09:06:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707123971; cv=none; b=eIAEewtFWLOri/POiz6v09DRCdyNIUS4l+Per2W2zw3tQCK9qKNPCFnjSGWHVZdJL3ctK/4vJZNfVGLkAOG7Kc99APrmJQbpOA0Y2lG26s2frw9LlAgzuE432XyPDEsw4Zv/6c1bxJaQLovHWWo5PdIMkoirMHozaF5UEsReRDY=
+	t=1707123994; cv=none; b=K5abp4V3chBxvU4bTPszI4wJEYGAUl6oS3RWC6xQVDBCW1QBhZet95r5Ig1SXArsUxta/VM5dVabaCIR/2HudlkJxPL5rFwuNMJSt8qs8aGbeArL8j7YmwXq6uFWeQhauSLYpk2nItGcwsuiDLzirKb6MiNxADq2kO6a0THSR3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707123971; c=relaxed/simple;
-	bh=m4yAS05F2hPOQeoaBg/yMbo1c9dD+9BGN0QiIM3aGys=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=W2FioXbf7kKPpYDMLZw+UAS1QmtrmsJ4BrE/0GeSd6S3g0l2Q9VU3oHdiW/FxyRRpBN+B03quC0pcdQJ6qV0rwJBzwt+iZaUN8SRIPScd5RGG61CVO1c6Qpo5JIYvl6poWQDrwMFqmp1ISrEsFg5emt2f86SejaLVE9OW9e4tew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=t1zJ1HHA; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41595t5Y075701;
-	Mon, 5 Feb 2024 03:05:55 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707123955;
-	bh=65G/oP3OKBkjm3MHvEPpuHLL85400HhGUG6h3yWo2ME=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=t1zJ1HHAcMmL2u5X070/qoLa67JGUMaspZBk9fUkE398tyVr16Z4R7Jw0xMePtHGm
-	 mWR/H7gsh8hSvfWOLk5wbTd2nUJx60NnuDsd8/JWic+fGN3U8nuogUl0m/Wp1EqLwb
-	 +oTWowIQbTGa1LfXwB4kCmWlg4vuWlHFU7D2sFss=
-Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41595tLj024149
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 5 Feb 2024 03:05:55 -0600
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 5
- Feb 2024 03:05:55 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 5 Feb 2024 03:05:55 -0600
-Received: from fllv0122.itg.ti.com (fllv0122.itg.ti.com [10.247.120.72])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41595tor009569;
-	Mon, 5 Feb 2024 03:05:55 -0600
-Received: from localhost (danish-tpc.dhcp.ti.com [10.24.69.25])
-	by fllv0122.itg.ti.com (8.14.7/8.14.7) with ESMTP id 41595srQ032292;
-	Mon, 5 Feb 2024 03:05:55 -0600
-From: MD Danish Anwar <danishanwar@ti.com>
-To: Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>
-CC: Andrew Lunn <andrew@lunn.ch>, Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring
-	<robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        Tero
- Kristo <kristo@kernel.org>, <srk@ti.com>, <r-gunasekaran@ti.com>,
-        Roger
- Quadros <rogerq@kernel.org>,
-        MD Danish Anwar <danishanwar@ti.com>
-Subject: [PATCH v4 3/3] arm64: dts: ti: k3-am642-evm: add overlay for icssg1 2nd port
-Date: Mon, 5 Feb 2024 14:35:46 +0530
-Message-ID: <20240205090546.4000446-4-danishanwar@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240205090546.4000446-1-danishanwar@ti.com>
-References: <20240205090546.4000446-1-danishanwar@ti.com>
+	s=arc-20240116; t=1707123994; c=relaxed/simple;
+	bh=PDAFWnh9a+ea8WSwjnOVDSSW9QVnF4JmFry3dryJTpk=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dmogophe3enVVdfDNT5DFQEh2jwgGXF9XJ8MYr2+kLQPUaM363WVdopkuVpvzXLzOpMXkER9gB7A5f2a2D5he8wItM/JNZyU4o3I0JREgHrXuLxAUIFsBP9LQrxeyMapL4dSvTGOkBqAtO0o4yHUGQtjYQj8H9TjOzvNGn+5R4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 41595xRB088167;
+	Mon, 5 Feb 2024 17:05:59 +0800 (+08)
+	(envelope-from zhaoyang.huang@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TT0pq29X7z2SQS27;
+	Mon,  5 Feb 2024 17:05:55 +0800 (CST)
+Received: from bj03382pcu01.spreadtrum.com (10.0.73.40) by
+ BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Mon, 5 Feb 2024 17:05:57 +0800
+From: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
+To: Jens Axboe <axboe@kernel.dk>, Matthew Wilcox <willy@infradead.org>,
+        Yu
+ Zhao <yuzhao@google.com>, <linux-block@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Zhaoyang
+ Huang <huangzhaoyang@gmail.com>, <steve.kang@unisoc.com>
+Subject: [PATCHv8 1/1] block: introduce content activity based ioprio
+Date: Mon, 5 Feb 2024 17:05:52 +0800
+Message-ID: <20240205090552.40567-1-zhaoyang.huang@unisoc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,170 +56,298 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ BJMBX01.spreadtrum.com (10.0.64.7)
+X-MAIL:SHSQR01.spreadtrum.com 41595xRB088167
 
-The am642-evm doesn't allow to enable 2 x CPSW3g ports and 2 x ICSSG1 ports
-all together, so base k3-am642-evm.dts enables by default 2 x CPSW3g ports
-and 1 x ICSSG1 ports, but it is also possible to support 1 x CPSW3g ports
-and 2 x ICSSG1 ports configuration.
+From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
-This patch adds overlay to support 1 x CPSW3g ports and 2 x ICSSG1 ports
-configuration:
-- Renames 'mdio-mux-1' node to 'mdio-mux@1'
-- Add label name 'mdio_mux_1' for 'mdio-mux@1' node so that the node
-  'mdio-mux@1' can be disabled in the overlay using the label name.
-- disable 2nd CPSW3g port
-- update CPSW3g pinmuxes to not use RGMII2
-- disable mdio-mux-1 and define mdio-mux-2 to route ICSSG1 MDIO to the
-  shared DP83869 PHY
-- add and enable ICSSG1 RGMII2 pinmuxes
-- enable ICSSG1 MII1 port
+Currently, request's ioprio are set via task's schedule priority(when no
+blkcg configured), which has high priority tasks possess the privilege on
+both of CPU and IO scheduling. Furthermore, most of the write requestes
+are launched asynchronosly from kworker which can't know the submitter's
+priorities.
+This commit works as a hint of original policy by promoting the request
+ioprio based on the page/folio's activity. The original idea comes from
+LRU_GEN which provides more precised folio activity than before. This
+commit try to adjust the request's ioprio when certain part of its folios
+are hot, which indicate that this request carry important contents and
+need be scheduled ealier.
 
-Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
-Reviewed-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
+This commit provide two sets of exclusive APIs.
+
+*counting activities by iterating the bio's pages
+The filesystem should call bio_set_active_ioprio() before submit_bio on the
+spot where they want(buffered read/write/sync etc).
+
+*counting activities during each call
+The filesystem should call bio_set_active_ioprio_page/folio() after
+calling bio_add_page/folio. Please be noted that this set of API can not
+handle bvec_try_merge_page cases.
+
+This commit is verified on a v6.6 6GB RAM android14 system via 4 test cases
+by calling bio_set_active_ioprio in erofs, ext4, f2fs and blkdev(raw
+partition of gendisk)
+
+Case 1:
+script[a] which get significant improved fault time as expected[b]*
+where dd's cost also shrink from 55s to 40s.
+(1). fault_latency.bin is an ebpf based test tool which measure all task's
+   iowait latency during page fault when scheduled out/in.
+(2). costmem generate page fault by mmaping a file and access the VA.
+(3). dd generate concurrent vfs io.
+
+[a]
+/fault_latency.bin 1 5 > /data/dd_costmem &
+costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
+costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
+costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
+costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
+dd if=/dev/block/sda of=/data/ddtest bs=1024 count=2048000 &
+dd if=/dev/block/sda of=/data/ddtest1 bs=1024 count=2048000 &
+dd if=/dev/block/sda of=/data/ddtest2 bs=1024 count=2048000 &
+dd if=/dev/block/sda of=/data/ddtest3 bs=1024 count=2048000
+[b]
+                       mainline		commit
+io wait                736us            523us
+
+* provide correct result for test case 1 in v7 which was compared between
+EMMC and UFS wrongly.
+
+Case 2:
+fio -filename=/dev/block/by-name/userdata -rw=randread -direct=0 -bs=4k -size=2000M -numjobs=8 -group_reporting -name=mytest
+mainline: 513MiB/s
+READ: bw=531MiB/s (557MB/s), 531MiB/s-531MiB/s (557MB/s-557MB/s), io=15.6GiB (16.8GB), run=30137-30137msec
+READ: bw=543MiB/s (569MB/s), 543MiB/s-543MiB/s (569MB/s-569MB/s), io=15.6GiB (16.8GB), run=29469-29469msec
+READ: bw=474MiB/s (497MB/s), 474MiB/s-474MiB/s (497MB/s-497MB/s), io=15.6GiB (16.8GB), run=33724-33724msec
+READ: bw=535MiB/s (561MB/s), 535MiB/s-535MiB/s (561MB/s-561MB/s), io=15.6GiB (16.8GB), run=29928-29928msec
+READ: bw=523MiB/s (548MB/s), 523MiB/s-523MiB/s (548MB/s-548MB/s), io=15.6GiB (16.8GB), run=30617-30617msec
+READ: bw=492MiB/s (516MB/s), 492MiB/s-492MiB/s (516MB/s-516MB/s), io=15.6GiB (16.8GB), run=32518-32518msec
+READ: bw=533MiB/s (559MB/s), 533MiB/s-533MiB/s (559MB/s-559MB/s), io=15.6GiB (16.8GB), run=29993-29993msec
+READ: bw=524MiB/s (550MB/s), 524MiB/s-524MiB/s (550MB/s-550MB/s), io=15.6GiB (16.8GB), run=30526-30526msec
+READ: bw=529MiB/s (554MB/s), 529MiB/s-529MiB/s (554MB/s-554MB/s), io=15.6GiB (16.8GB), run=30269-30269msec
+READ: bw=449MiB/s (471MB/s), 449MiB/s-449MiB/s (471MB/s-471MB/s), io=15.6GiB (16.8GB), run=35629-35629msec
+
+commit: 633MiB/s
+READ: bw=668MiB/s (700MB/s), 668MiB/s-668MiB/s (700MB/s-700MB/s), io=15.6GiB (16.8GB), run=23952-23952msec
+READ: bw=589MiB/s (618MB/s), 589MiB/s-589MiB/s (618MB/s-618MB/s), io=15.6GiB (16.8GB), run=27164-27164msec
+READ: bw=638MiB/s (669MB/s), 638MiB/s-638MiB/s (669MB/s-669MB/s), io=15.6GiB (16.8GB), run=25071-25071msec
+READ: bw=714MiB/s (749MB/s), 714MiB/s-714MiB/s (749MB/s-749MB/s), io=15.6GiB (16.8GB), run=22409-22409msec
+READ: bw=600MiB/s (629MB/s), 600MiB/s-600MiB/s (629MB/s-629MB/s), io=15.6GiB (16.8GB), run=26669-26669msec
+READ: bw=592MiB/s (621MB/s), 592MiB/s-592MiB/s (621MB/s-621MB/s), io=15.6GiB (16.8GB), run=27036-27036msec
+READ: bw=691MiB/s (725MB/s), 691MiB/s-691MiB/s (725MB/s-725MB/s), io=15.6GiB (16.8GB), run=23150-23150msec
+READ: bw=569MiB/s (596MB/s), 569MiB/s-569MiB/s (596MB/s-596MB/s), io=15.6GiB (16.8GB), run=28142-28142msec
+READ: bw=563MiB/s (590MB/s), 563MiB/s-563MiB/s (590MB/s-590MB/s), io=15.6GiB (16.8GB), run=28429-28429msec
+READ: bw=712MiB/s (746MB/s), 712MiB/s-712MiB/s (746MB/s-746MB/s), io=15.6GiB (16.8GB), run=22478-22478msec
+
+Case 3:
+This commit is also verified by the case of launching camera APP which is
+usually considered as heavy working load on both of memory and IO, which
+shows 12%-24% improvement.
+
+		ttl = 0		ttl = 50	ttl = 100
+mainline        2267ms		2420ms		2316ms
+commit          1992ms          1806ms          1998ms
+
+case 4:
+androbench has no improvment as well as regression in RD/WR test item
+while make a 3% improvement in sqlite items.
+
+Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 ---
- arch/arm64/boot/dts/ti/Makefile               |  5 ++
- .../dts/ti/k3-am642-evm-icssg1-dualemac.dtso  | 79 +++++++++++++++++++
- arch/arm64/boot/dts/ti/k3-am642-evm.dts       |  2 +-
- 3 files changed, 85 insertions(+), 1 deletion(-)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac.dtso
+change of v2: calculate page's activity via helper function
+change of v3: solve layer violation by move API into mm
+change of v4: keep block clean by removing the page related API
+change of v5: introduce the macros of bio_add_folio/page for read dir.
+change of v6: replace the macro of bio_add_xxx by submit_bio which
+                iterating the bio_vec before launching bio to block layer
+change of v7: introduce the function bio_set_active_ioprio
+	      provide updated test result
+change of v8: provide two sets of APIs for bio_set_active_ioprio_xxx
+---
+---
+ block/Kconfig             | 27 +++++++++++
+ block/bio.c               | 94 +++++++++++++++++++++++++++++++++++++++
+ include/linux/bio.h       |  3 ++
+ include/linux/blk_types.h |  7 ++-
+ 4 files changed, 130 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index 52c1dc910308..320b2fae5730 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -43,6 +43,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-am642-sk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-am64-tqma64xxl-mbax4xxl-wlan.dtbo
-+dtb-$(CONFIG_ARCH_K3) += k3-am642-evm-icssg1-dualemac.dtbo
+diff --git a/block/Kconfig b/block/Kconfig
+index f1364d1c0d93..5e721678ea3d 100644
+--- a/block/Kconfig
++++ b/block/Kconfig
+@@ -228,6 +228,33 @@ config BLOCK_HOLDER_DEPRECATED
+ config BLK_MQ_STACKING
+ 	bool
  
- # Boards with AM65x SoC
- k3-am654-gp-evm-dtbs := k3-am654-base-board.dtb k3-am654-base-board-rocktech-rk101-panel.dtbo
-@@ -105,6 +106,8 @@ k3-am642-tqma64xxl-mbax4xxl-sdcard-dtbs := \
- 	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
- k3-am642-tqma64xxl-mbax4xxl-wlan-dtbs := \
- 	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-wlan.dtbo
-+k3-am642-evm-icssg1-dualemac-dtbs := \
-+	k3-am642-evm.dtb k3-am642-evm-icssg1-dualemac.dtbo
- k3-j721e-evm-pcie0-ep-dtbs := k3-j721e-common-proc-board.dtb \
- 	k3-j721e-evm-pcie0-ep.dtbo
- k3-j721s2-evm-pcie1-ep-dtbs := k3-j721s2-common-proc-board.dtb \
-@@ -120,6 +123,7 @@ dtb- += k3-am625-beagleplay-csi2-ov5640.dtb \
- 	k3-am62a7-sk-csi2-ov5640.dtb \
- 	k3-am642-tqma64xxl-mbax4xxl-sdcard.dtb \
- 	k3-am642-tqma64xxl-mbax4xxl-wlan.dtb \
-+	k3-am642-evm-icssg1-dualemac.dtb \
- 	k3-j721e-evm-pcie0-ep.dtb \
- 	k3-j721s2-evm-pcie1-ep.dtb
++config BLK_CONT_ACT_BASED_IOPRIO
++	bool "Enable content activity based ioprio"
++	depends on LRU_GEN
++	default n
++	help
++	  This item enable the feature of adjust bio's priority by
++	  calculating its content's activity.
++	  This feature works as a hint of original bio_set_ioprio
++	  which means rt task get no change of its bio->bi_ioprio
++	  while other tasks have the opportunity to raise the ioprio
++	  if the bio take certain numbers of active pages.
++	  The file system should use this by modifying their buffered
++	  read/write/sync function to raise the bio->bi_ioprio before
++	  calling submit_bio or after bio_add_page/folio
++
++config BLK_CONT_ACT_BASED_IOPRIO_ITER_BIO
++	bool "Counting bio's activity by iterating bio's pages"
++	depends on BLK_CONT_ACT_BASED_IOPRIO
++	help
++	  The API under this config counts bio's activity by iterating the bio.
++
++config BLK_CONT_ACT_BASED_IOPRIO_ADD_PAGE
++	bool "Counting bio's activity when adding page or folio"
++	depends on BLK_CONT_ACT_BASED_IOPRIO && !BLK_CONT_ACT_BASED_IOPRIO_ITER_BIO
++	help
++	  The API under this config count activity during each call buy can't
++	   handle bvec_try_merge_page cases, please be sure you are ok with that.
+ source "block/Kconfig.iosched"
  
-@@ -129,6 +133,7 @@ DTC_FLAGS_k3-am625-sk += -@
- DTC_FLAGS_k3-am62-lp-sk += -@
- DTC_FLAGS_k3-am62a7-sk += -@
- DTC_FLAGS_k3-am642-tqma64xxl-mbax4xxl += -@
-+DTC_FLAGS_k3-am642-evm += -@
- DTC_FLAGS_k3-am6548-iot2050-advanced-m2 += -@
- DTC_FLAGS_k3-j721e-common-proc-board += -@
- DTC_FLAGS_k3-j721s2-common-proc-board += -@
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac.dtso b/arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac.dtso
-new file mode 100644
-index 000000000000..f653a8eb820e
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac.dtso
-@@ -0,0 +1,79 @@
-+// SPDX-License-Identifier: GPL-2.0-only OR MIT
-+/**
-+ * DT overlay for enabling 2nd ICSSG1 port on AM642 EVM
-+ *
-+ * Copyright (C) 2020-2024 Texas Instruments Incorporated - https://www.ti.com/
+ endif # BLOCK
+diff --git a/block/bio.c b/block/bio.c
+index 816d412c06e9..73916a6c319f 100644
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -1476,6 +1476,100 @@ void bio_set_pages_dirty(struct bio *bio)
+ }
+ EXPORT_SYMBOL_GPL(bio_set_pages_dirty);
+ 
++/*
++ * bio_set_active_ioprio() is helper function for fs to adjust the bio's ioprio via
++ * calculating the content's activity which measured from MGLRU.
++ * The file system should call this function before submit_bio for the buffered
++ * read/write/sync.
 + */
++#ifdef CONFIG_BLK_CONT_ACT_BASED_IOPRIO
++#ifdef CONFIG_BLK_CONT_ACT_BASED_IOPRIO_ITER_BIO
++void bio_set_active_ioprio(struct bio *bio)
++{
++	struct bio_vec bv;
++	struct bvec_iter iter;
++	struct page *page;
++	int class, level, hint;
++	int activity = 0;
++	int cnt = 0;
 +
-+/dts-v1/;
-+/plugin/;
++	class = IOPRIO_PRIO_CLASS(bio->bi_ioprio);
++	level = IOPRIO_PRIO_LEVEL(bio->bi_ioprio);
++	hint = IOPRIO_PRIO_HINT(bio->bi_ioprio);
++	/*apply legacy ioprio policy on RT task*/
++	if (task_is_realtime(current)) {
++		bio->bi_ioprio = IOPRIO_PRIO_VALUE_HINT(IOPRIO_CLASS_RT, level, hint);
++		return;
++	}
++	bio_for_each_bvec(bv, bio, iter) {
++		page = bv.bv_page;
++		activity += PageWorkingset(page) ? 1 : 0;
++		cnt++;
++		if (activity > bio->bi_vcnt / 2) {
++			class = IOPRIO_CLASS_RT;
++			break;
++		} else if (activity > bio->bi_vcnt / 4) {
++			/*
++			 * all itered pages are all active so far
++			 * then raise to RT directly
++			 */
++			if (activity == cnt) {
++				class = IOPRIO_CLASS_RT;
++				break;
++			} else
++				class = max(IOPRIO_PRIO_CLASS(get_current_ioprio()),
++						IOPRIO_CLASS_BE);
++		}
++	}
++	if (!class && activity > cnt / 2)
++		class = IOPRIO_CLASS_RT;
++	else if (!class && activity > cnt / 4)
++		class = max(IOPRIO_PRIO_CLASS(get_current_ioprio()), IOPRIO_CLASS_BE);
 +
-+#include <dt-bindings/gpio/gpio.h>
-+#include "k3-pinctrl.h"
++	bio->bi_ioprio = IOPRIO_PRIO_VALUE_HINT(class, level, hint);
++}
++void bio_set_active_ioprio_folio(struct bio *bio, struct folio *folio) {}
++void bio_set_active_ioprio_page(struct bio *bio, struct page *page) {}
++#endif
++#ifdef CONFIG_BLK_CONT_ACT_BASED_IOPRIO_ADD_PAGE
++/*
++ * bio_set_active_ioprio_page/folio are helper functions for counting
++ * the bio's activity during each all. However, it can't handle the
++ * scenario of bvec_try_merge_page. The submitter can use them if there
++ * is no such case in the system(block size < page size)
++ */
++void bio_set_active_ioprio_page(struct bio *bio, struct page *page)
++{
++	int class, level, hint;
 +
-+&{/} {
-+	aliases {
-+		ethernet1 = "/icssg1-eth/ethernet-ports/port@1";
-+	};
++	class = IOPRIO_PRIO_CLASS(bio->bi_ioprio);
++	level = IOPRIO_PRIO_LEVEL(bio->bi_ioprio);
++	hint = IOPRIO_PRIO_HINT(bio->bi_ioprio);
++	bio->bi_cont_act += PageWorkingset(page) ? 1 : 0;
 +
-+	mdio-mux@0 {
-+		compatible = "mdio-mux-multiplexer";
-+		mux-controls = <&mdio_mux>;
-+		mdio-parent-bus = <&icssg1_mdio>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
++	if (bio->bi_cont_act > bio->bi_vcnt / 2)
++		class = IOPRIO_CLASS_RT;
++	else if (bio->bi_cont_act > bio->bi_vcnt / 4)
++		class = max(IOPRIO_PRIO_CLASS(get_current_ioprio()), IOPRIO_CLASS_BE);
 +
-+		mdio@0 {
-+			reg = <0x0>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
++	bio->bi_ioprio = IOPRIO_PRIO_VALUE_HINT(class, level, hint);
++}
 +
-+			icssg1_phy2: ethernet-phy@3 {
-+				reg = <3>;
-+				tx-internal-delay-ps = <250>;
-+				rx-internal-delay-ps = <2000>;
-+			};
-+		};
-+	};
-+};
++void bio_set_active_ioprio_folio(struct bio *bio, struct folio *folio)
++{
++	bio_set_active_ioprio_page(bio, &folio->page);
++}
++void bio_set_active_ioprio(struct bio *bio) {}
++#endif
++#else
++void bio_set_active_ioprio(struct bio *bio) {}
++void bio_set_active_ioprio_page(struct bio *bio, struct page *page) {}
++void bio_set_active_ioprio_folio(struct bio *bio, struct folio *folio) {}
++#endif
++EXPORT_SYMBOL_GPL(bio_set_active_ioprio);
++EXPORT_SYMBOL_GPL(bio_set_active_ioprio_page);
++EXPORT_SYMBOL_GPL(bio_set_active_ioprio_folio);
 +
-+&main_pmx0 {
-+	icssg1_rgmii2_pins_default: icssg1-rgmii2-default-pins {
-+		pinctrl-single,pins = <
-+			AM64X_IOPAD(0x0108, PIN_INPUT, 2) /* (W11) PRG1_PRU1_GPO0.RGMII2_RD0 */
-+			AM64X_IOPAD(0x010c, PIN_INPUT, 2) /* (V11) PRG1_PRU1_GPO1.RGMII2_RD1 */
-+			AM64X_IOPAD(0x0110, PIN_INPUT, 2) /* (AA12) PRG1_PRU1_GPO2.RGMII2_RD2 */
-+			AM64X_IOPAD(0x0114, PIN_INPUT, 2) /* (Y12) PRG1_PRU1_GPO3.RGMII2_RD3 */
-+			AM64X_IOPAD(0x0120, PIN_INPUT, 2) /* (U11) PRG1_PRU1_GPO6.RGMII2_RXC */
-+			AM64X_IOPAD(0x0118, PIN_INPUT, 2) /* (W12) PRG1_PRU1_GPO4.RGMII2_RX_CTL */
-+			AM64X_IOPAD(0x0134, PIN_OUTPUT, 2) /* (AA10) PRG1_PRU1_GPO11.RGMII2_TD0 */
-+			AM64X_IOPAD(0x0138, PIN_OUTPUT, 2) /* (V10) PRG1_PRU1_GPO12.RGMII2_TD1 */
-+			AM64X_IOPAD(0x013c, PIN_OUTPUT, 2) /* (U10) PRG1_PRU1_GPO13.RGMII2_TD2 */
-+			AM64X_IOPAD(0x0140, PIN_OUTPUT, 2) /* (AA11) PRG1_PRU1_GPO14.RGMII2_TD3 */
-+			AM64X_IOPAD(0x0148, PIN_OUTPUT, 2) /* (Y10) PRG1_PRU1_GPO16.RGMII2_TXC */
-+			AM64X_IOPAD(0x0144, PIN_OUTPUT, 2) /* (Y11) PRG1_PRU1_GPO15.RGMII2_TX_CTL */
-+		>;
-+	};
-+};
-+
-+&cpsw3g {
-+	pinctrl-0 = <&rgmii1_pins_default>;
-+};
-+
-+&cpsw_port2 {
-+	status = "disabled";
-+};
-+
-+&mdio_mux_1 {
-+	status = "disabled";
-+};
-+
-+&icssg1_eth {
-+	pinctrl-0 = <&icssg1_rgmii1_pins_default>, <&icssg1_rgmii2_pins_default>;
-+};
-+
-+&icssg1_emac1 {
-+	status = "okay";
-+	phy-handle = <&icssg1_phy2>;
-+	phy-mode = "rgmii-id";
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-index 6b97e447c486..35ed5b5aab63 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-@@ -199,7 +199,7 @@ mdio_mux: mux-controller {
- 		mux-gpios = <&exp1 12 GPIO_ACTIVE_HIGH>;
- 	};
+ /*
+  * bio_check_pages_dirty() will check that all the BIO's pages are still dirty.
+  * If they are, then fine.  If, however, some pages are clean then they must
+diff --git a/include/linux/bio.h b/include/linux/bio.h
+index 41d417ee1349..35221ee3dd54 100644
+--- a/include/linux/bio.h
++++ b/include/linux/bio.h
+@@ -487,6 +487,9 @@ void bio_iov_bvec_set(struct bio *bio, struct iov_iter *iter);
+ void __bio_release_pages(struct bio *bio, bool mark_dirty);
+ extern void bio_set_pages_dirty(struct bio *bio);
+ extern void bio_check_pages_dirty(struct bio *bio);
++extern void bio_set_active_ioprio(struct bio *bio);
++extern void bio_set_active_ioprio_folio(struct bio *bio, struct folio *folio);
++extern void bio_set_active_ioprio_page(struct bio *bio, struct page *page);
  
--	mdio-mux-1 {
-+	mdio_mux_1: mdio-mux@1 {
- 		compatible = "mdio-mux-multiplexer";
- 		mux-controls = <&mdio_mux>;
- 		mdio-parent-bus = <&cpsw3g_mdio>;
+ extern void bio_copy_data_iter(struct bio *dst, struct bvec_iter *dst_iter,
+ 			       struct bio *src, struct bvec_iter *src_iter);
+diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
+index d5c5e59ddbd2..a3a18b9a5168 100644
+--- a/include/linux/blk_types.h
++++ b/include/linux/blk_types.h
+@@ -314,7 +314,12 @@ struct bio {
+ 	struct bio_vec		*bi_io_vec;	/* the actual vec list */
+ 
+ 	struct bio_set		*bi_pool;
+-
++#ifdef CONFIG_BLK_CONT_ACT_BASED_IOPRIO
++	/*
++	 * bi_cont_act record total activities of bi_io_vec->pages
++	 */
++	u64			bi_cont_act;
++#endif
+ 	/*
+ 	 * We can inline a number of vecs at the end of the bio, to avoid
+ 	 * double allocations for a small number of bio_vecs. This member
 -- 
-2.34.1
+2.25.1
 
 
