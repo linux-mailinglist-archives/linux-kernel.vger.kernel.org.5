@@ -1,122 +1,118 @@
-Return-Path: <linux-kernel+bounces-53832-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53833-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 114EA84A712
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:22:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7882E84A716
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:22:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1E32283635
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:22:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A36761C239D9
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:22:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26D7360DF8;
-	Mon,  5 Feb 2024 19:41:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 796BF612D6;
+	Mon,  5 Feb 2024 19:42:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="DdgTTn8E"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b+E2+kkc"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C92660DF2;
-	Mon,  5 Feb 2024 19:41:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 541E660EEF
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 19:42:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707162096; cv=none; b=Oh7Gd9v9Jib3+tXFAW6QNLmHQ8miHX095HLtG9H0wUlfkhr6TNeBWxfLdVzr5TwsH8n9WVmUERvqanJ6jCY9JxsR+zwoEA6rAppt9s1SUbGhlscujkS0eXw/WSOLeKx1DomZOHEk6/kh5+y6QaZSTDIaGXGJUF5J8fyZxrdDssY=
+	t=1707162145; cv=none; b=DhtxP8JpqNKzCvIBiZuZq54Qg12I8qrQGKImg3gBIM2LkZeU26xSh0nyCMqcejNw2sAbd3nwPS4skKO0JTRXJXuiSW0K6WFcSXb7BhUtEPHJBz46gt9ZuPE3b9vFsssVJs8JD6SorvRmQot16RI0cNopl5uVzCxFJ5Tia44Md5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707162096; c=relaxed/simple;
-	bh=gwNsUaGGaqv8vHcEre9Xj6V4R/eUrjnrSdACMEeFbI0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jj8IqB2ovcjrbk2DruwP14uNveA29qM2l2ZDLeHcWu0T0tv+84nOqXnnCncDC0VZ3BvyDQFiUVK38uGzrqnD8lQaQ8C954bZMOQMutsELTVamIldgdQ8S5YeyoMXpnRWsyV9zBqUS9oRX8ylLTcKFeCw+Z3TjC4ByLViS1QCFXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=DdgTTn8E; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 82A6540E00B2;
-	Mon,  5 Feb 2024 19:41:29 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id NP_oJnZ5KlIR; Mon,  5 Feb 2024 19:41:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707162086; bh=R7Pr/RRw/kKo0+V44VWePgEa5COJIWtlsvccbXKuuLg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DdgTTn8EhXbDQwcy9aF5OiE0bR9RrAAhcvznERiA54w2FwnBS42Sa93mT/Dn//IWB
-	 CppjyaDnWIk5UIOgrnMPNRnLBFMs+rlCTUPQ1UpZRLLbcUiPJY99tyJ/vcuDVLHQ8O
-	 SNO1mo+4PnS30AMvNbyM6jgEdCUWz1CCCVDJyIu7tW72Ho6e2lN1umiNYruuJT96lo
-	 Is6hTjfDm8GUFG0peMG259zIeRYjR6T3QwNE97tcvHqwXM8gCd9UzFv7aF4fLa3Fg1
-	 vE6Cx2DengLdjS/0GBNupx8HhE+xvwnlmnx0W/OxReEqpN1aYlwah6mMsilk0tCl6H
-	 oSHvFLy3qXGfGVyg7KNLwqvbdrND19JxT6XrYY6v226IGUf2gDd3qhDlgSI4GEgr1m
-	 K7V3sjWmZnN4/eQnPTbfiW/2pDvOUMCz4TOhlzDyEAeXohaZXJa06ROPed4pgWyfcD
-	 WbIPb2EbLEumkjlwHHlFTNPs3gXcozv0su9yGrwDYFKtPWiHeiXxdrk1w0ra+S5JBT
-	 eKIh3WLzb2PxZ1fb2SpCwnUyxQHW0ftKS9kQeheHhZcDX0b3qMZi38V3IYuqgDyxD8
-	 TdcaG8xntoVHxT9QoWCD/hxHRaQgXnkEmoqQhnCQXNlqHefoCqnrx5m6d7U9TdeHwO
-	 ttkkKG0+BzKXQSbA6AWQ0V7k=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2CC9440E01A9;
-	Mon,  5 Feb 2024 19:41:18 +0000 (UTC)
-Date: Mon, 5 Feb 2024 20:41:12 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Jonathan Corbet <corbet@lwn.net>
-Cc: Tony Luck <tony.luck@intel.com>, Yazen Ghannam <yazen.ghannam@amd.com>,
-	Muralidhara M K <muralimk@amd.com>, linux-edac@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Muralidhara M K <muralidhara.mk@amd.com>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH] Documentation: Begin a RAS section
-Message-ID: <20240205194112.GGZcE52DXtK2lr0-14@fat_crate.local>
-References: <20231102114225.2006878-1-muralimk@amd.com>
- <20231102114225.2006878-2-muralimk@amd.com>
- <20231128142049.GTZWX3QQTSaQk/+u53@fat_crate.local>
- <87a5pes8jy.fsf@meer.lwn.net>
- <20240109183646.GAZZ2SPiMZv83J3f0a@fat_crate.local>
- <87wmsiqok6.fsf@meer.lwn.net>
- <20240109200434.GBZZ2m0vWjm9v795YX@fat_crate.local>
- <20240124124030.GDZbEFPo4APcggdE33@fat_crate.local>
+	s=arc-20240116; t=1707162145; c=relaxed/simple;
+	bh=jHHhwO4XYFOznV01fWKiZQZMx41O0oaVZ/WUu3ZSsOE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=P8WxBGaPLpqsvnWbiwEbxPfEH7njtNq/UVM5kTxkIkx+9k6f0gcUlXR1Gt/piboCAXu3/5uywK0lZy7TPOecJGgX/2++hZ3A5S1aTKoucdWlBhQPoUKnLT2uFZaqHJ057RYV22rWYN+JLK6BM94YKKQGVXLkQi+DBQ3DALTDuLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=b+E2+kkc; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707162143;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jHHhwO4XYFOznV01fWKiZQZMx41O0oaVZ/WUu3ZSsOE=;
+	b=b+E2+kkcXXkO9cFlc37XLh0ckla5pGINizKWGH+qeKOGqZ21Tozp5E5wmCesx4K4a0JiRu
+	9zjPo0Ko4Z3/IOpiTon3Wj2FtL/OaqG8VP4jg7QW/Pi5mOkKfs9FUUHI4OWsEp3w3J7lcM
+	h1NYpQJycSmeKZJaqNfMfLopFQIas08=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-638-jN3SojraOZm9mP3k7kobkQ-1; Mon, 05 Feb 2024 14:42:21 -0500
+X-MC-Unique: jN3SojraOZm9mP3k7kobkQ-1
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-55fabc6adefso5217944a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 11:42:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707162140; x=1707766940;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jHHhwO4XYFOznV01fWKiZQZMx41O0oaVZ/WUu3ZSsOE=;
+        b=RDnSBluSPNqjhkPUXP5U6z8I7tWO0qbvN9dl+5MfN9gr3aRhgROxskUmbSVGPvNW19
+         5WlQl7Nfny3c+N39wDb7KAiRUIFvqQrxci6s5K2Xz6Ak4Twc+E2/WjpbR6xzd8DwlF1m
+         MG6xlNR0W/TRRmSzlCJZuPkbcmq1jgSJRL4slUeCE+Bag0WRcwedIZmCV9QyCkOmZdTF
+         zNxkmErD557Fn3sDpZCea5V2J/XWaJcl3YQW2gvQWMXARoGmyGtfOVc5Q1JsrmNydDth
+         CPNswbFvBTS99B9lAWhUtcFtp5lrAm6beHxu4yUKuX21+1Ner9C5WkqaAoHGclJfl9xY
+         HvqA==
+X-Gm-Message-State: AOJu0Yzr2dX1lz157lzqK/ZdsGqJx4itq6HcT9823ShvmY9iiBr4dxU/
+	vOBXoC49X23MoLROyuto2rabffVo9YMdimqpicb8h0pMI8NoftHLQiUQ3urmwZAibiYWbwSi8sc
+	3/W6UAAO5gbZUE7glHJv7Uab7IGW5aLqbbROAJ+xKWXJ7Qf5x1NvrffarpkLY3JLyv1JD+nA3bu
+	2uxdCmB9kFrXsoIli4FC33lgquE+fcQuCHNewvM4uv/Hp1
+X-Received: by 2002:aa7:d893:0:b0:55f:e543:b006 with SMTP id u19-20020aa7d893000000b0055fe543b006mr689423edq.13.1707162140578;
+        Mon, 05 Feb 2024 11:42:20 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGrKHN+f7FGpriqh0DUpVTEJoFk6gp1bibeEGrhZ3Z0mW7IbHPTLkTvDCIiZ5rH1Tk1sf5oIM7QHRmM+sb3QmA=
+X-Received: by 2002:aa7:d893:0:b0:55f:e543:b006 with SMTP id
+ u19-20020aa7d893000000b0055fe543b006mr689407edq.13.1707162140360; Mon, 05 Feb
+ 2024 11:42:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240124124030.GDZbEFPo4APcggdE33@fat_crate.local>
+References: <20240202064512.39259-1-liubo03@inspur.com> <20240202085547.46c81c96@xps-13>
+In-Reply-To: <20240202085547.46c81c96@xps-13>
+From: Alexander Aring <aahringo@redhat.com>
+Date: Mon, 5 Feb 2024 14:42:09 -0500
+Message-ID: <CAK-6q+jnZOkSAM8_BQH=CaQhfCQwm0P+segZ+0E6oLeX=BhLHQ@mail.gmail.com>
+Subject: Re: [PATCH] net: ieee802154: at86rf230: convert to use maple tree
+ register cache
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Bo Liu <liubo03@inspur.com>, alex.aring@gmail.com, stefan@datenfreihafen.org, 
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	linux-wpan@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 24, 2024 at 01:40:30PM +0100, Borislav Petkov wrote:
-> From: "Borislav Petkov (AMD)" <bp@alien8.de>
-> Date: Wed, 24 Jan 2024 13:37:52 +0100
-> Subject: [PATCH] Documentation: Move RAS section to admin-guide
-> 
-> This is where this stuff should be.
-> 
-> Requested-by: Jonathan Corbet <corbet@lwn.net>
-> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-> ---
->  Documentation/RAS/index.rst                        | 14 --------------
->  .../{ => admin-guide}/RAS/address-translation.rst  |  0
->  .../{ => admin-guide}/RAS/error-decoding.rst       |  0
->  Documentation/admin-guide/RAS/index.rst            |  7 +++++++
->  .../admin-guide/{ras.rst => RAS/main.rst}          | 10 +++++++---
->  Documentation/admin-guide/index.rst                |  2 +-
->  Documentation/index.rst                            |  1 -
->  7 files changed, 15 insertions(+), 19 deletions(-)
->  delete mode 100644 Documentation/RAS/index.rst
->  rename Documentation/{ => admin-guide}/RAS/address-translation.rst (100%)
->  rename Documentation/{ => admin-guide}/RAS/error-decoding.rst (100%)
->  create mode 100644 Documentation/admin-guide/RAS/index.rst
->  rename Documentation/admin-guide/{ras.rst => RAS/main.rst} (99%)
+Hi,
 
-Now queued.
+On Fri, Feb 2, 2024 at 2:56=E2=80=AFAM Miquel Raynal <miquel.raynal@bootlin=
+com> wrote:
+>
+> Hi Bo,
+>
+> liubo03@inspur.com wrote on Fri, 2 Feb 2024 01:45:12 -0500:
+>
+> > The maple tree register cache is based on a much more modern data struc=
+ture
+> > than the rbtree cache and makes optimisation choices which are probably
+> > more appropriate for modern systems than those made by the rbtree cache=
+.
+>
+> What are the real intended benefits? Shall we expect any drawbacks?
+>
 
-Thx.
+I doubt it has really any benefits, only the slowpath is using regmap
+to set some registers. Maybe if you change phy setting frequently it
+might have an impact, but this isn't even a path considered to run
+fast.
 
--- 
-Regards/Gruss,
-    Boris.
+- Alex
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
