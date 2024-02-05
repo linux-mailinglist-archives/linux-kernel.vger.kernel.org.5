@@ -1,142 +1,144 @@
-Return-Path: <linux-kernel+bounces-52836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49F5A849D42
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:44:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F924849D44
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:44:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 841DA2822BE
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:44:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3C581F2354E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:44:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43E642C1BA;
-	Mon,  5 Feb 2024 14:44:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66F032C1AF;
+	Mon,  5 Feb 2024 14:44:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TZnA9K7q"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="vznOIzCW"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E242C19E;
-	Mon,  5 Feb 2024 14:44:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 048A22C1A3;
+	Mon,  5 Feb 2024 14:44:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707144248; cv=none; b=lVYf/mqOX1vDa8Ac6vnu/j/gl+XoWBCwfLDJFIhqZ98cQmXn6jRalRH/tfw23iXleCazJ6ha9hShUgAN72fFHPlnj242WEinZnM1V++ra2zoYh9zk/rCIvZpOD972LyLX3RhulzMLunqoqU8jyw5g8A3z7iDZe8/TiaevAjVxpw=
+	t=1707144267; cv=none; b=qoA/CF36ZZpn8BHXiDIevjiaLIJzC76nCfMW+Pf5oJk6oNkmW2M7u6JBQUNco7nA7sY9WqArxvy3GxNPgkoXc9dncrzq5GVBf5/P56QP6P2qqpW82zLtc7wZ26Lg6DVEDAgRRdP9YVvFOpft/dqFu6SH9Whqx2WXwO4r+6C5CpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707144248; c=relaxed/simple;
-	bh=cQnh+MeiQmdzvtMCYAa40uDRrJY4G2mp+bIqGXf8FJY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XRwcWn7vs41GeEGXWYc0PxIrobm+Ux0Qlqa/NaaA4AW0TqsM3uYEzGacbVDWjhg9wjfBniWFwrA/sVjzrzHKmSCoJDEG47t48iHrUBax1HiN3Y5kxvwcFlCYsQMjLIYdwaPIUFJJsGDP27SPXHkr3jjkWOJJR7WxdWrQUsDxZwE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TZnA9K7q; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d0a4e8444dso15089611fa.2;
-        Mon, 05 Feb 2024 06:44:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707144245; x=1707749045; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bF+ioF4rU6hYdKskdmBXlkag6Ll/8Irxamnq5jEhMXI=;
-        b=TZnA9K7qWi59dzk0FLjuvn+ZlhQ+qkaaMkYFx2/3h9QIuzzFQ6V+9LtwWCOPh7auiN
-         Uj1afEy7jDdZIGSashEyig6wbq0pq7jdqrrpCIPkt29W7jUTpAaUVOqN86X9223U4FRD
-         sKW9WEg09xkfUUXA7aGRH1SPUiajZLL1Ss/JA7ctbFGe/0cGNZVRXDFrGrU9YyHO/Fts
-         1p5OOtMvvlXuyu/Lq+2cnxb2aDYb6Ee5m/Xd/Xw0NY3en05OI8EN2+TbAqs7PzPPRMfQ
-         bwd/9sE7zsjlDr3yqXpmVMVjzTMXT1521Ur6OjAdVA0yRp7kDCudzxPo6ZjoZxzrXU16
-         m54g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707144245; x=1707749045;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bF+ioF4rU6hYdKskdmBXlkag6Ll/8Irxamnq5jEhMXI=;
-        b=MGdJfSKCDzbGHl7lV9qTmV4AZEsVIpO5WTiZ3gz4W8IADrVWYj1T4/Mpcl3c3krB2E
-         ztE62jqnNlxp7sJ+KfkME6W7/mkd4hfDf36vBwR9xSYtBaloMfhmQG3QTngXhOv++5OB
-         bRKEgQF8yb9QtIN5fX9tsfUMX8oA0f+0StJd2xlY8DaU8v+15/Wy5MZq+5RugUTK7Xil
-         TBAf3AirruGUnxF/u1icYzcvkhDWToFpx52vqLaq4RS6lYvuubIZCH/nVMXpAS8Q4aiT
-         Wnk93yUfvmeaG2I26Yj1Sy4B9GfT1O64rUsRC5O1nP/wlzfptcDteLJShRHa7w/n3frO
-         0j1A==
-X-Gm-Message-State: AOJu0Yw4WbeTpOJUqWl0ChjsaFxBM1//Nq5BCXn5HViJDFDeoFk6FknL
-	YJbJd973LpWH6FIVaWSZAqsQVjjyNt4osGpmLK5r4QHcquvbUUkaGzJQvqopKpIjvk2T7cxuOio
-	DbJPKzBW3pm1uR3NhxUNr570/qQ==
-X-Google-Smtp-Source: AGHT+IGmWKx8ItqhTYnDkpaf28i4Fx1v2apIgAI/fIL955Sgbj0u6jNf4TZdLG7QNW8CbT27NNtf1zL8vJxNXjynXgY=
-X-Received: by 2002:a05:651c:214:b0:2d0:aae6:bf2e with SMTP id
- y20-20020a05651c021400b002d0aae6bf2emr2255789ljn.34.1707144244549; Mon, 05
- Feb 2024 06:44:04 -0800 (PST)
+	s=arc-20240116; t=1707144267; c=relaxed/simple;
+	bh=QdE5XO1z+ZN2JUWva3tD0crieFT8WVbx2jzcJcMgouw=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qpurpgGPTo04TRBRYA0hgv6xGXuGbfh+dz0qJSWAjSr4nOXrV67dPZZJ8YucIj4deca0jMumUtdqMeCFkM+0eiC/2CeltafGF8Tgd6oxPPWZjmqFZrax1aO5RRDLpP8xVFnsPSoxfLrlDgYVWbG0BLOeylzxZ662o1O8nd8Wdww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=vznOIzCW; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 415EiIoH007466;
+	Mon, 5 Feb 2024 08:44:18 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707144258;
+	bh=R+IZhbouHeTBfhkol51yl3a65E5pUYRPm1UVLkEApAE=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=vznOIzCWeN3ld5XTmi6CuC0wRMfu+MIh58sW+fJE8rGfICIbGWmhsPh+PHNzTCtU3
+	 +8dTbbN9SJh9k+x8BK/oVd9/IwgFmkNDvsZi4Uwxob6CBVl0Lc9/sgi5fvKyX80Ewl
+	 fh5LN5Mw2UWmTucRQo5g/DVOXU2/XtZ1MUMhgvhc=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 415EiIBl001532
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 5 Feb 2024 08:44:18 -0600
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 5
+ Feb 2024 08:44:18 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 5 Feb 2024 08:44:18 -0600
+Received: from localhost (dhruva.dhcp.ti.com [172.24.227.68])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 415EiHLG104241;
+	Mon, 5 Feb 2024 08:44:18 -0600
+Date: Mon, 5 Feb 2024 20:14:17 +0530
+From: Dhruva Gole <d-gole@ti.com>
+To: =?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>
+CC: Mark Brown <broonie@kernel.org>, Apurva Nandan <a-nandan@ti.com>,
+        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Gregory CLEMENT
+	<gregory.clement@bootlin.com>,
+        Vladimir Kondratiev
+	<vladimir.kondratiev@mobileye.com>,
+        Thomas Petazzoni
+	<thomas.petazzoni@bootlin.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Subject: Re: [PATCH v2 0/5] spi: cadence-qspi: Fix runtime PM and system-wide
+ suspend
+Message-ID: <20240205144417.44jidulexgyccodv@dhruva>
+References: <20240205-cdns-qspi-pm-fix-v2-0-c59ac6996428@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205104905.24929-1-alice.chao@mediatek.com>
-In-Reply-To: <20240205104905.24929-1-alice.chao@mediatek.com>
-From: Stanley Jhu <chu.stanley@gmail.com>
-Date: Mon, 5 Feb 2024 22:43:53 +0800
-Message-ID: <CAGaU9a8EQDdrrgzuaqBYk6h-r4u6spozH3cHeHO-98dNjEv-AA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] ufs: core: fix shift issue in ufshcd_clear_cmd
-To: alice.chao@mediatek.com
-Cc: Alim Akhtar <alim.akhtar@samsung.com>, Avri Altman <avri.altman@wdc.com>, 
-	Bart Van Assche <bvanassche@acm.org>, "James E.J. Bottomley" <jejb@linux.ibm.com>, 
-	"Martin K. Petersen" <martin.petersen@oracle.com>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, wsd_upstream@mediatek.com, 
-	stanley.chu@mediatek.com, peter.wang@mediatek.com, powen.kao@mediatek.com, 
-	naomi.chu@mediatek.com, cc.chou@mediatek.com, tun-yu.yu@mediatek.com, 
-	chun-hung.wu@mediatek.com, casper.li@mediatek.com, linux-scsi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240205-cdns-qspi-pm-fix-v2-0-c59ac6996428@bootlin.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Mon, Feb 5, 2024 at 7:27=E2=80=AFPM <alice.chao@mediatek.com> wrote:
->
-> From: Alice Chao <alice.chao@mediatek.com>
->
-> When task_tag > 32 (in mcq mode), 1U << task_tag will out of bound
-> for u32 mask. Fix this bug to prevent SHIFT_ISSUE (Bitwise shifts
-> that are out of bounds for their data type).
->
-> [name:debug_monitors&]Unexpected kernel BRK exception at EL1
-> [name:traps&]Internal error: BRK handler: 00000000f2005514 [#1] PREEMPT S=
-MP
-> [name:mediatek_cpufreq_hw&]cpufreq stop DVFS log done
-> [name:mrdump&]Kernel Offset: 0x1ba5800000 from 0xffffffc008000000
-> [name:mrdump&]PHYS_OFFSET: 0x80000000
-> [name:mrdump&]pstate: 22400005 (nzCv daif +PAN -UAO)
-> [name:mrdump&]pc : [0xffffffdbaf52bb2c] ufshcd_clear_cmd+0x280/0x288
-> [name:mrdump&]lr : [0xffffffdbaf52a774] ufshcd_wait_for_dev_cmd+0x3e4/0x8=
-2c
-> [name:mrdump&]sp : ffffffc0081471b0
-> <snip>
-> Workqueue: ufs_eh_wq_0 ufshcd_err_handler
-> Call trace:
->  dump_backtrace+0xf8/0x144
->  show_stack+0x18/0x24
->  dump_stack_lvl+0x78/0x9c
->  dump_stack+0x18/0x44
->  mrdump_common_die+0x254/0x480 [mrdump]
->  ipanic_die+0x20/0x30 [mrdump]
->  notify_die+0x15c/0x204
->  die+0x10c/0x5f8
->  arm64_notify_die+0x74/0x13c
->  do_debug_exception+0x164/0x26c
->  el1_dbg+0x64/0x80
->  el1h_64_sync_handler+0x3c/0x90
->  el1h_64_sync+0x68/0x6c
->  ufshcd_clear_cmd+0x280/0x288
->  ufshcd_wait_for_dev_cmd+0x3e4/0x82c
->  ufshcd_exec_dev_cmd+0x5bc/0x9ac
->  ufshcd_verify_dev_init+0x84/0x1c8
->  ufshcd_probe_hba+0x724/0x1ce0
->  ufshcd_host_reset_and_restore+0x260/0x574
->  ufshcd_reset_and_restore+0x138/0xbd0
->  ufshcd_err_handler+0x1218/0x2f28
->  process_one_work+0x5fc/0x1140
->  worker_thread+0x7d8/0xe20
->  kthread+0x25c/0x468
->  ret_from_fork+0x10/0x20
->
-> Signed-off-by: Alice Chao <alice.chao@mediatek.com>
+On Feb 05, 2024 at 15:22:34 +0100, Théo Lebrun wrote:
+> Hi,
+> 
+> This fixes runtime PM and system-wide suspend for the cadence-qspi
+> driver. Seeing how runtime PM and autosuspend are enabled by default, I
+> believe this affects all users of the driver.
+> 
+> The initial change has been split into three commits and a fourth commit
+> is added to add system-wide suspend/resume callbacks.
+> 
+> The MIPS platform at hand, used for debugging and testing, is currently
+> not supported by the driver. It is the Mobileye EyeQ5 [0]. No code
+> changes are required for support, only a new compatible and appropriate
+> match data + flags. That will come later, with some performance-related
+> patches.
+> 
+> TODO: changelog below
 
-Reviewed-by: Stanley Jhu <chu.stanley@gmail.com>
+Accidental "git-sent" email? ;)
+
+> 
+> Thanks all,
+> Théo
+> 
+> [0]: https://lore.kernel.org/lkml/20240118155252.397947-1-gregory.clement@bootlin.com/
+> 
+> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+> ---
+> Changes in v2:
+> - EDxxITME: describe what is new in this series revision.
+> - EDxxITME: use bulletpoints and terse descriptions.
+> - Link to v1: https://lore.kernel.org/r/20240202-cdns-qspi-pm-fix-v1-1-3c8feb2bfdd8@bootlin.com
+> 
+> ---
+> Théo Lebrun (5):
+>       spi: cadence-qspi: put runtime in runtime PM hooks names
+>       spi: cadence-qspi: fix pointer reference in runtime PM hooks
+>       spi: cadence-qspi: remove system-wide suspend helper calls from runtime PM hooks
+>       spi: cadence-qspi: add system-wide suspend and resume callbacks
+>       WIP: spi: cadence-qspi: add debug logs for PM
+
+I don't seem to have recieved any of these FYI
+
+> 
+>  drivers/spi/spi-cadence-quadspi.c | 45 ++++++++++++++++++++++++++++-----------
+>  1 file changed, 33 insertions(+), 12 deletions(-)
+> ---
+> base-commit: 13acce918af915278e49980a3038df31845dbf39
+> change-id: 20240202-cdns-qspi-pm-fix-29600cc6d7bf
+> 
+> Best regards,
+> -- 
+> Théo Lebrun <theo.lebrun@bootlin.com>
+> 
+
+-- 
+Best regards,
+Dhruva Gole <d-gole@ti.com>
 
