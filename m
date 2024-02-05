@@ -1,182 +1,155 @@
-Return-Path: <linux-kernel+bounces-52699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A843B849B9D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:20:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 872E9849B92
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:17:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6EAF5B22A99
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:16:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAA131C22337
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:16:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1A941CAAF;
-	Mon,  5 Feb 2024 13:16:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE2420DF7;
+	Mon,  5 Feb 2024 13:16:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b9Oqc+Yo"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="SOeVKHx2"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B71061CA9A;
-	Mon,  5 Feb 2024 13:16:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0929E1CD1C;
+	Mon,  5 Feb 2024 13:16:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707138997; cv=none; b=JMjMN78SiLybAJWWM0qXtMKGQcTEvppaMapf/EgJ3joUQCJ6Oooj0O4kUbpkpC/5BgI3p/804gz5p/uWrdU6IpcqI0GS12TBXbaeiq4mA8TIIAIFLgLob7uOeV1YgAFdRJiYaaFLYdMepE4EPtpvz7SFTfkOD67XafynS0O8/aw=
+	t=1707139001; cv=none; b=doHVOObdKxCDteMgOIlilzRJkzvJ50Dqdg59eFDh42Tnlp2Yht1olzhYsJNowXjmBhoupaSBjYj3iQsdkF99dFyExg1mNUTF6KaGb4iho8D/mNcsU+o9W66a/tMM057+K/aalr7X/85n1LUV8RVl8iwfIeqYzOYcqizMNBv3vQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707138997; c=relaxed/simple;
-	bh=MHrgHTy57EOm4Y3WpMXf6Mix5n50cOHzPR6QJN3nMBk=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=JD1evXzfaic60u9EO6sqwGhe4rPD2zqj9kjC8VsSKd/XDQfqXR74sN86eGvga/OjS9tr0Yj627cwIlDAv3yhXtpE942nzIMj54s3vgYLb5gru5vprTmQRluvF2waCRXdqK5QViEP4oE46bgEORqWplX4hjvT4uYWIzLkP9zTWts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=b9Oqc+Yo; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707138996; x=1738674996;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=MHrgHTy57EOm4Y3WpMXf6Mix5n50cOHzPR6QJN3nMBk=;
-  b=b9Oqc+YoPQU2/ixJ7itywBT1bVqUdTLIxaue0thuclkT96TPa7sYdctp
-   YfTFVi58DtP8uQ6+qELmoNqjj6SusArgdbeHN/SD3ks4Rvk8TxTYHjUwr
-   QZc1K61ZZCzJix6l+u+Yaa3c+FTSXo8lwq+2M+mPPWbubVc7T6VjvCRvh
-   I47CxyCSNwjh/68J3bc38IDYqOKBUWA2uPBlV+OESszef8bzOD+L3ix/Z
-   +LB0Sysme+S6oIf36/qlsSnlaZOOC+AFlKwIKJqdH+H7MMwKzZMFxQQIM
-   mWn7hegPtSQvZ8OS0I7UHWR+5RABOV0bfW6Oj+B3nyMbxsWOQXYTKq7l3
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="11609369"
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="11609369"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 05:16:36 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="691313"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.35.237])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 05:16:32 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Mon, 5 Feb 2024 15:16:27 +0200 (EET)
-To: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-cc: fenghua.yu@intel.com, reinette.chatre@intel.com, shuah@kernel.org, 
-    linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
-    ilpo.jarvinen@linux.intel.com
-Subject: Re: [PATCH v4 2/5] selftests/resctrl: Add helpers for the non-contiguous
- test
-In-Reply-To: <89b8965d563e4e61b95b20be55c26475d830b245.1707130307.git.maciej.wieczor-retman@intel.com>
-Message-ID: <7cfff3da-b476-4f24-aa16-428c79bd81e2@linux.intel.com>
-References: <cover.1707130307.git.maciej.wieczor-retman@intel.com> <89b8965d563e4e61b95b20be55c26475d830b245.1707130307.git.maciej.wieczor-retman@intel.com>
+	s=arc-20240116; t=1707139001; c=relaxed/simple;
+	bh=phFE0J5htpNCpRR8HNzbHVFzQ7uv/MuQlbk2fQvCWH8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=OgwCYto237oA7d4i2/Z4UqCjiD8lCcGnH8St0d0pDAWZN5LsHqb+WTK9lIScYzc8vTVXm5xgO14TVCYt/79IQMR+njcm3ypfYE/M+hlJN62IdJ+14kUZvLTq9JEL+gKNOMg9e3ZNQJaKISo6UXtGdpQ/oge4aqg7FEqjFGmr/a0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=SOeVKHx2; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 415D807c022337;
+	Mon, 5 Feb 2024 13:16:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=ky2sP7LC9ehECK2EtOMlyelCxIov3dSWzHcvB/YNGhs=;
+ b=SOeVKHx2rsVkW2qPu9iDzKJBTWysxuv64PilpuOkIT57Omgdki2uIVVyQggcKjJ0oZuH
+ u3pgWJUVNolekILVwWAwfaD6ywi/vJPXOgvy68bGc+EiqswF7ydBepJjYDIJM0Jcxajl
+ Rlc7ES7JPFJ1JvVYHkWCfIkS9RAhDOTUSaYnX2cw7fzbOzwDIcXi9AMPZhemhPcoBsT5
+ OzwWn1B1Bv3o57618QmDWXk5vNpJjzPoSg0bfiIhJGvQpJ+C0Z1owHzAhFz6C549/Sk6
+ 2ccXEvtQdtm4qdpEKU10ah8oVtuIbbdr+vGCY84uRtVsIay0/RBpCNTR3PP/FlbdbpVJ Ww== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w309q88nv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 05 Feb 2024 13:16:33 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 415CmN57020469;
+	Mon, 5 Feb 2024 13:16:33 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w1ytsrvab-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 05 Feb 2024 13:16:32 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 415DGVHn40567042
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 5 Feb 2024 13:16:31 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 411A52004B;
+	Mon,  5 Feb 2024 13:16:31 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 08C7920040;
+	Mon,  5 Feb 2024 13:16:31 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Mon,  5 Feb 2024 13:16:30 +0000 (GMT)
+From: Sven Schnelle <svens@linux.ibm.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+        Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        Mete Durlu <meted@linux.ibm.com>
+Subject: Re: [PATCH] tracing: use ring_buffer_record_is_set_on() in
+ tracer_tracing_is_on()
+In-Reply-To: <20240205075504.1b55f29c@rorschach.local.home> (Steven Rostedt's
+	message of "Mon, 5 Feb 2024 07:55:04 -0500")
+References: <20240205065340.2848065-1-svens@linux.ibm.com>
+	<20240205075504.1b55f29c@rorschach.local.home>
+Date: Mon, 05 Feb 2024 14:16:30 +0100
+Message-ID: <yt9djznj3vbl.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-1807511629-1707138987=:1027"
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 0EOqI_za7h_Y6-9CYERr7KRQCuGyNNCr
+X-Proofpoint-GUID: 0EOqI_za7h_Y6-9CYERr7KRQCuGyNNCr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-05_08,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ lowpriorityscore=0 suspectscore=0 adultscore=0 mlxlogscore=999
+ malwarescore=0 priorityscore=1501 spamscore=0 phishscore=0 clxscore=1015
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402050101
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hi Steven,
 
---8323328-1807511629-1707138987=:1027
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Steven Rostedt <rostedt@goodmis.org> writes:
 
-On Mon, 5 Feb 2024, Maciej Wieczor-Retman wrote:
+> On Mon,  5 Feb 2024 07:53:40 +0100
+> Sven Schnelle <svens@linux.ibm.com> wrote:
+>
+>> tracer_tracing_is_on() checks whether record_disabled is not zero. This
+>> checks both the record_disabled counter and the RB_BUFFER_OFF flag.
+>> Reading the source it looks like this function should only check for
+>> the RB_BUFFER_OFF flag. Therefore use ring_buffer_record_is_set_on().
+>> This fixes spurious fails in the 'test for function traceon/off triggers'
+>> test from the ftrace testsuite when the system is under load.
+>> 
+>
+> I've seen these spurious failures too, but haven't looked deeper into
+> it. Thanks,
 
-> The CAT non-contiguous selftests have to read the file responsible for
-> reporting support of non-contiguous CBMs in kernel (resctrl). Then the
-> test compares if that information matches what is reported by CPUID
-> output.
->=20
-> Add a generic helper function to read an unsigned number from a file in
-> /sys/fs/resctrl/info/<RESOURCE>/<FILE>.
->=20
-> Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-> ---
-> Changelog v4:
-> - Rewrite function comment.
-> - Redo ksft_perror() as ksft_print_msg(). (Reinette)
->=20
-> Changelog v3:
-> - Rewrite patch message.
-> - Add documentation and rewrote the function. (Reinette)
->=20
-> Changelog v2:
-> - Add this patch.
->=20
->  tools/testing/selftests/resctrl/resctrl.h   |  1 +
->  tools/testing/selftests/resctrl/resctrlfs.c | 36 +++++++++++++++++++++
->  2 files changed, 37 insertions(+)
->=20
-> diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/se=
-lftests/resctrl/resctrl.h
-> index a1462029998e..5116ea082d03 100644
-> --- a/tools/testing/selftests/resctrl/resctrl.h
-> +++ b/tools/testing/selftests/resctrl/resctrl.h
-> @@ -162,6 +162,7 @@ unsigned int count_contiguous_bits(unsigned long val,=
- unsigned int *start);
->  int get_full_cbm(const char *cache_type, unsigned long *mask);
->  int get_mask_no_shareable(const char *cache_type, unsigned long *mask);
->  int get_cache_size(int cpu_no, const char *cache_type, unsigned long *ca=
-che_size);
-> +int resource_info_unsigned_get(const char *resource, const char *filenam=
-e, unsigned int *val);
->  void ctrlc_handler(int signum, siginfo_t *info, void *ptr);
->  int signal_handler_register(void);
->  void signal_handler_unregister(void);
-> diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/=
-selftests/resctrl/resctrlfs.c
-> index 5750662cce57..e0fbc46a917a 100644
-> --- a/tools/testing/selftests/resctrl/resctrlfs.c
-> +++ b/tools/testing/selftests/resctrl/resctrlfs.c
-> @@ -249,6 +249,42 @@ static int get_bit_mask(const char *filename, unsign=
-ed long *mask)
->  =09return 0;
->  }
-> =20
-> +/**
-> + * resource_info_unsigned_get - Read an unsigned value from
-> + * /sys/fs/resctrl/info/RESOURCE/FILENAME
-> + * @resource:=09Resource name that matches directory name in
-> + *=09=09/sys/fs/resctrl/info
-> + * @filename:=09File in /sys/fs/resctrl/info/@resource
-> + * @val:=09Contains read value on success.
-> + *
-> + * Return: =3D 0 on success, < 0 on failure. On success the read
-> + * value is saved into the @val.
-> + */
-> +int resource_info_unsigned_get(const char *resource, const char *filenam=
-e,
-> +=09=09=09       unsigned int *val)
-> +{
-> +=09char file_path[PATH_MAX];
-> +=09FILE *fp;
-> +
-> +=09snprintf(file_path, sizeof(file_path), "%s/%s/%s", INFO_PATH, resourc=
-e,
-> +=09=09 filename);
-> +
-> +=09fp =3D fopen(file_path, "r");
-> +=09if (!fp) {
-> +=09=09ksft_print_msg("Error in opening %s\n: %m\n", file_path);
+Another issue i'm hitting sometimes is this part:
 
-Adding the extra \n in between there will likely mess up the test output=20
-formatting (the expected prefixes will not appear). Therefore, manually=20
-adding newlines should be avoided.
+csum1=`md5sum trace`
+sleep $SLEEP_TIME
+csum2=`md5sum trace`
 
-> +=09=09return -1;
-> +=09}
-> +
-> +=09if (fscanf(fp, "%u", val) <=3D 0) {
-> +=09=09ksft_print_msg("Could not get contents of %s\n: %m\n", file_path);
+if [ "$csum1" != "$csum2" ]; then
+    fail "Tracing file is still changing"
+fi
 
-Ditto.
+This is because the command line was replaced in the
+saved_cmdlines_buffer, an example diff between both files
+is:
 
-With those two fixed,
+       ftracetest-17950   [005] ..... 344507.002490: sched_process_wait: comm=ftracetest pid=0 prio=120
+       ftracetest-17950   [005] ..... 344507.002492: sched_process_wait: comm=ftracetest pid=0 prio=120
+- stress-ng-fanot-17820   [006] d.h.. 344507.009901: sched_stat_runtime: comm=stress-ng-fanot pid=17820 runtime=10000054 [ns]
++           <...>-17820   [006] d.h.. 344507.009901: sched_stat_runtime: comm=stress-ng-fanot pid=17820 runtime=10000054 [ns]
+       ftracetest-17950   [005] d.h.. 344507.009901: sched_stat_runtime: comm=ftracetest pid=17950 runtime=7417915 [ns]
+  stress-ng-fanot-17819   [003] d.h.. 344507.009901: sched_stat_runtime: comm=stress-ng-fanot pid=17819 runtime=9983473 [ns]
+- stress-ng-fanot-17820   [007] d.h.. 344507.079900: sched_stat_runtime: comm=stress-ng-fanot pid=17820 runtime=9999865 [ns]
++           <...>-17820   [007] d.h.. 344507.079900: sched_stat_runtime: comm=stress-ng-fanot pid=17820 runtime=9999865 [ns]
+  stress-ng-fanot-17819   [004] d.h.. 344507.079900: sched_stat_runtime: comm=stress-ng-fanot pid=17819 runtime=8388039 [ns]
 
-Reviewed-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
+This can be improved by:
 
+echo 32768 > /sys/kernel/tracing/saved_cmdlines_size
 
---=20
- i.
+But this is of course not a fix - should we maybe replace the program
+name with <...> before comparing, remove the check completely, or do
+anything else? What do you think?
 
---8323328-1807511629-1707138987=:1027--
+Thanks,
+Sven
 
