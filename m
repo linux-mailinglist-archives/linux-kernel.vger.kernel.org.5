@@ -1,139 +1,187 @@
-Return-Path: <linux-kernel+bounces-53134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8AF384A11A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:42:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8814884A11E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:43:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27D4F1C21F78
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:42:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C443EB2554B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:42:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E30A44C8A;
-	Mon,  5 Feb 2024 17:42:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8675E45956;
+	Mon,  5 Feb 2024 17:42:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ARFN7smw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="YSDkBdlq"
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8387F446D7
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 17:42:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA8944594B
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 17:42:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707154933; cv=none; b=ESW8VDzxokmAQ4WS8SVGEkT9I7BatO5zMnhV6BdSnEhlgrDXZaYSVL2CJPytwHAUMGUhzNlm2YvlgEBmGEUMsF9fQ8RcRnhMNYtuLJpOo6nAxpCGF9IZo9h1YcSsDPDTO1BA0VTt3PimPU1zGSRFKh4m3cvRMHkv0v9fyODkIqY=
+	t=1707154962; cv=none; b=c4dPrJVKqQ9lxJ25lapB2OcOASKpiz86yB3ek5Ii7/6cMeJVCfA+HO9MsC6utYHh7xlIYn9yAdOBtiEPpuH/FGFxQE+zEsppUV8hTJOrdRI3Tjf38wfKqGNC3B9aLbylRhndaydQsOwphmzPudGfmlxW+ijrPotx6STDNlyGVxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707154933; c=relaxed/simple;
-	bh=DzJpzqa6HKjeBMkDi3252zL6zF4x9+HiippWvWe6ZT0=;
+	s=arc-20240116; t=1707154962; c=relaxed/simple;
+	bh=8HE4Ga8BSdBO6M6GmqVFa+HwwrrcZFVY3gTfyQML7uA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p3N2CAH1w0Dc2HFUM8XGKJDmu0WGsZlnWVzTvJTDh0WVQy9lvMcrhRn9XIJO+tYZqArqs/Wf+7yJ7qlQljT9CZ86UU+kE9ODiaMqxljH68rEOz9zRjgtS3fcwc47qmxTANv4uIh5piEbAIR+/AH7mw3HzpJ/gHvlVmGuq5quEYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ARFN7smw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BCC8C433F1;
-	Mon,  5 Feb 2024 17:42:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707154933;
-	bh=DzJpzqa6HKjeBMkDi3252zL6zF4x9+HiippWvWe6ZT0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ARFN7smwTE4fB0CjHhchc3CGJqDVRjeV7WowYO7gJ8Mr7D4N0C+oJWK9zbGqlW9RZ
-	 H0liApFKIFynLGIP0unGxVFTPgygJZBLiJgiVyhX79K7XxrbgfZDVCheG/2IY6JNY1
-	 Q6PLPBhwSZopyo5C3nQA5imofe6iIlryOffOfo/M7R7mFR2tlqpYY0XyhTe/csCbLF
-	 yuDHke39RfEk9/GyGjt3Z/hpa7wgHEea/Wnd0RsbRSqrOF3iYUuWlX7Rd4MmpLW91I
-	 wiA0pTfQLFeVggH0jgGzhUdsZckkGcuCLZ3A+55adHTHIGQDLsBWFnhRXSYmI/LWA0
-	 eJ7WSWjURHnpg==
-Date: Mon, 5 Feb 2024 17:41:47 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Dave Martin <Dave.Martin@arm.com>
-Cc: Will Deacon <will@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Oleg Nesterov <oleg@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Doug Anderson <dianders@chromium.org>
-Subject: Re: [PATCH] arm64/sve: Lower the maximum allocation for the SVE
- ptrace regset
-Message-ID: <ZcEd2zU/JpeIwn5f@finisterre.sirena.org.uk>
-References: <20240203-arm64-sve-ptrace-regset-size-v1-1-2c3ba1386b9e@kernel.org>
- <ZcEW3y0IlEctOYBA@e133380.arm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=tMbA2gd5M8elwy8xSDnl0c0e6YfLR3yMG3fP52xNL/Rj4Eq0uqUNRSMLO4JNy+TTUX2uWpFZq26MvlMOtpUXQH/GzsVTLkXyeRiIo+7DfyuV+706xCPRC23st2++fC6Z5GX+/mr9K+b66Wmf03Qu6uGV8pL0DtXqLw1mz5h042c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=YSDkBdlq; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-42c2998d3a3so5468271cf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 09:42:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1707154960; x=1707759760; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=8HE4Ga8BSdBO6M6GmqVFa+HwwrrcZFVY3gTfyQML7uA=;
+        b=YSDkBdlqh+RdEfZVeIPD5O0bw8zJoptlcqlngUBEXj/6l+uwzv4Ibe/PZhDGET0cHt
+         LWMIfk/s0RAOGiReC1q969qyY6NlkJQhSCGSPJOne9c0gwLDQoWHyxkOMROmG3FWNo8C
+         tW2stCvOx90JO3GQcLvJ3ZC1ywR8VX5Jy5zAzNuM5wxLd2D/xqhzkWdfPAGmgBPdzXQP
+         KYJ5pEqbX1WA2CqLMwEi4l2c8LaYxkhHA+QoGfCV0S/p1aoSdK055MnmMu4lXMTNGtPL
+         zlh6XgbqwbZZGaCE4WygoV2RfqWwiKIRgBwqzYF3GEySL0Bz6I3TrFDEL50qKYg/tQO6
+         5rjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707154960; x=1707759760;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8HE4Ga8BSdBO6M6GmqVFa+HwwrrcZFVY3gTfyQML7uA=;
+        b=idEacOPXbocmr0DSoPKXGzkD2WOeA7G3NZ5ouia9/cPaTs5ADrBPRVq8e3TspDc5UG
+         4XeUwrPaGx5X2Qr36gxaCJnfXFWsO8qTwnOIv6usVhEVKtakRPju9o8dkJf7RcCk8MBA
+         QTkczCJvElBsixmXAsBrtT4g4O37TeU23NODzyymUJqNlMmWZf/N+H2r2OeIMja4befu
+         5Zp5BN1yC6enQeT7imeTJRm668y14X7pXQt7PPfPYhMuhFGCoclz9vA57IA6ouj0Mqz8
+         oflRraWNFgld4oakKYSzTzWkyc5g00RvVqLk6Lzu+8ZMaEQ0rVdVA54xyFAW7Xi3ZX8V
+         ZLhw==
+X-Gm-Message-State: AOJu0YxNhG+ceX7RvrTGvTmb25U3q54zOuGPelOVjpzbxekXNASHT0pK
+	sKLsaCb6Rv/UWMLUFUIuTLAf7Xbtceordy2igVkNCA100dJZafDnv2O9PWxz34k=
+X-Google-Smtp-Source: AGHT+IHU4KsrD3c0EP9g7y8hIFpyaAa4okXRRNN8qBm5KuQa3mySXXt7+dYoSw0Wr4a8G0dHjecPyQ==
+X-Received: by 2002:a05:622a:60c:b0:42a:9cd0:10d6 with SMTP id z12-20020a05622a060c00b0042a9cd010d6mr76578qta.34.1707154959703;
+        Mon, 05 Feb 2024 09:42:39 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUJEoYPtNarb3IKpx+TlDaQWnlGCPYYwqRse61FZumUi17YhNjF1PV/xF22JLrvNXqFbkebE3MWbOPPsd6X9lkUYDUu8OcgOJYYw525y7FBiRK5b6k1ygrBSUjRHKinQ83+/bgI+lNtpfQIgMjD96anUt1JUN/A07pGruYvZXzU+IkWkDlqulHlYWtlENVhDo7EDFB9txF76qn+sovVDt+EhL7ut1S/hZswfg+VWs1j/g37rEX6ap6/4HYUNOLco77wrroLxU0HPFDsjm75+gckY78bO+VGj8ZjeEVOo3As9m48+X0kxJ0Q+DCxEkK31OMS3+rk9JgZYfc/rvBZ4DfknXCKEFbNUSYiTsiRn8LuNk6aoyUi8Yt0fkyR8E0kWWgCK3tQyQl37yuAXLLWMzwjLPdLL+LetoDhwayckEgT6hVcQTSAdr/64XA4acyBFh/KrJTmXe27EODPpZ7XhFeqlSK9tOkNG5gDuy05MIpWcUZfCBG5xHxACRXuyekJg91XbC9JxH2AkXUiOdSYdpHdIXrVkRrLeiPD0hPJPc/vsi8qojAJdzmxkzyfLzLhg19sg4M2WCCcphSLrPd+8rW3G5XCnkab07S61wEP7FLkMnOakYoKQoDGJkTOFQdDEWmESvGbq6OoQFA0uUJj+KlWqrYt9e4aDsPJbchaYnyqj5Tje8QC1runF4T0tAZjue/v+GvEzghpVJQWjy+T/0qjRPKiwuFVw3YGWf5PAbhZzViL
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id z5-20020ac86b85000000b0042c04cef1d6sm137895qts.66.2024.02.05.09.42.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 09:42:39 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rX2zO-000fQ2-NV;
+	Mon, 05 Feb 2024 13:42:38 -0400
+Date: Mon, 5 Feb 2024 13:42:38 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: James Gowans <jgowans@amazon.com>
+Cc: linux-kernel@vger.kernel.org, Eric Biederman <ebiederm@xmission.com>,
+	kexec@lists.infradead.org, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, iommu@lists.linux.dev,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	linux-fsdevel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+	Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+	Alexander Graf <graf@amazon.com>,
+	David Woodhouse <dwmw@amazon.co.uk>,
+	"Jan H . Schoenherr" <jschoenh@amazon.de>,
+	Usama Arif <usama.arif@bytedance.com>,
+	Anthony Yznaga <anthony.yznaga@oracle.com>,
+	Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>,
+	madvenka@linux.microsoft.com, steven.sistare@oracle.com,
+	yuleixzhang@tencent.com
+Subject: Re: [RFC 00/18] Pkernfs: Support persistence for live update
+Message-ID: <20240205174238.GC31743@ziepe.ca>
+References: <20240205120203.60312-1-jgowans@amazon.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="yAjH7uxAxmBLvyQW"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZcEW3y0IlEctOYBA@e133380.arm.com>
-X-Cookie: You might have mail.
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240205120203.60312-1-jgowans@amazon.com>
 
+On Mon, Feb 05, 2024 at 12:01:45PM +0000, James Gowans wrote:
 
---yAjH7uxAxmBLvyQW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> The main aspect we’re looking for feedback/opinions on here is the concept of
+> putting all persistent state in a single filesystem: combining guest RAM and
+> IOMMU pgtables in one store. Also, the question of a hard separation between
+> persistent memory and ephemeral memory, compared to allowing arbitrary pages to
+> be persisted. Pkernfs does it via a hard separation defined at boot time, other
+> approaches could make the carving out of persistent pages dynamic.
 
-On Mon, Feb 05, 2024 at 05:11:59PM +0000, Dave Martin wrote:
-> On Sat, Feb 03, 2024 at 12:16:49PM +0000, Mark Brown wrote:
+I think if you are going to attempt something like this then the end
+result must bring things back to having the same data structures fully
+restored.
 
-> > We could also teach the ptrace core about runtime discoverable regset s=
-izes
-> > but that would be a more invasive change and this is being observed in
-> > practical systems.
+It is fine that the pkernfs holds some persistant memory that
+guarentees the IOMMU can remain programmed and the VM pages can become
+fixed across the kexec
 
-> This is not hard at all: see
-> 27e64b4be4b8 ("regset: Add support for dynamically sized regsets")=20
+But once the VMM starts to restore it self we need to get back to the
+original configuration:
+ - A mmap that points to the VM's physical pages
+ - An iommufd IOAS that points to the above mmap
+ - An iommufd HWPT that represents that same mapping
+ - An iommu_domain programmed into HW that the HWPT
 
-> But since this is precisely what was ripped out, I guess adding it back
-> may be controversial (?)
+Ie you can't just reboot and leave the IOMMU hanging out in some
+undefined land - especially in latest kernels!
 
-Also just that people might want to backport and while it's not super
-*hard* I tend to prefer to do something as minimal as possible as a fix,
-the less we do the less the chances that we mess up.
+For vt-d you need to retain the entire root table and all the required
+context entries too, The restarting iommu needs to understand that it
+has to "restore" a temporary iommu_domain from the pkernfs.
 
-> > We should probably also use the actual architectural limit for the
-> > bitmasks we use in the VL enumeration code, though that's both a little
-> > bit more involved and less immediately a problem.
+You can later reconstitute a proper iommu_domain from the VMM and
+atomic switch.
 
-> Since these masks are 64 bytes each and rarely accessed, it seemed
-> pointless complexity to make them resizeable...
+So, I'm surprised to see this approach where things just live forever
+in the kernfs, I don't see how "restore" is going to work very well
+like this.
 
-I was suggesting making them use the architectural maximum rather than
-making them dynamic.
+I would think that a save/restore mentalitity would make more
+sense. For instance you could make a special iommu_domain that is fixed
+and lives in the pkernfs. The operation would be to copy from the live
+iommu_domain to the fixed one and then replace the iommu HW to the
+fixed one.
 
-> > +#define ARCH_SVE_VQ_MAX 16
-> >  #define SME_VQ_MAX	16
+In the post-kexec world the iommu would recreate that special domain
+and point the iommu at it. (copying the root and context descriptions
+out of the pkernfs). Then somehow that would get into iommufd and VFIO
+so that it could take over that special mapping during its startup.
 
-> Ack, though part of the reason for not doing this was to discourage
-> people from allocating statically sized buffers in general.
+Then you'd build the normal operating ioas and hwpt (with all the
+right page refcounts/etc) then switch to it and free the pkernfs
+memory.
 
-I was going to do a patch adding a comment to the header noting that
-this is not actually the architectural maximum since at present it's
-a bit of a landmine, people who have some idea of the architecture
-likely have a rough idea what sort of allocation size is needed for the
-maximum SVE state and are likely to not double check the value provided
-(I think that's what happened with the refactoring to remove the dynamic
-sizing).  A comment in the header is still very missable but it'd be
-something.
+It seems alot less invasive to me. The special case is clearly a
+special case and doesn't mess up the normal operation of the drivers.
 
-> If the kernel is now juggling two #defines for the maximum vector size,
-> this feels like it may seed bitrot...
+It becomes more like kdump where the iommu driver is running in a
+fairly normal mode, just with some stuff copied from the prior kernel.
 
-Ideally we'd just not have the existing define externally but it's there
-and it's been used.
+Your text spent alot of time talking about the design of how the pages
+persist, which is interesting, but it seems like only a small part of
+the problem. Actually using that mechanism in a sane way and cover all
+the functional issues in the HW drivers is going to be really
+challenging.
 
---yAjH7uxAxmBLvyQW
-Content-Type: application/pgp-signature; name="signature.asc"
+> * Needing to drive and re-hydrate the IOMMU page tables by defining an IOMMU file.
+> Really we should move the abstraction one level up and make the whole VFIO
+> container persistent via a pkernfs file. That way you’d "just" re-open the VFIO
+> container file and all of the DMA mappings inside VFIO would already be set up.
 
------BEGIN PGP SIGNATURE-----
+I doubt this.. It probably needs to be much finer grained actually,
+otherwise you are going to be serializing everything. Somehow I think
+you are better to serialize a minimum and try to reconstruct
+everything else in userspace. Like conserving iommufd IDs would be a
+huge PITA.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXBHdoACgkQJNaLcl1U
-h9BE2Qf/S7RezjxPYcWKj6gx3SobiowUdZgpA/cBYjCbutcf3sOYR6Bx6JKXsCK3
-OOmL2N8GdxIUtay3VgDpxhvxxeW9yPGuUa5Uqji6/txY9utyBOUB4LIXw4/FCPHc
-3hGc1pncwGgM4mKkNQEL/XVxPiiEfRo5WwlNB537Izk1p5+HoOvmX7r07421QKqG
-oiFPoQXCPCux0hYG4o7wWoWIoXoppg2EZj1+Y7lWJo7xT7OpVwh/Eic2qCtZzdxC
-O+qb4UzgJFSPzXbfCaHzRdabhnHtxxUO/TIOL/LMDpT8M1wvjDry357u0aDRF92Y
-mM3RhJrBZ9BffUkjABtEBryY6w7Ltw==
-=Y4Cv
------END PGP SIGNATURE-----
+There are also going to be lots of security questions here, like we
+can't just let userspace feed in any garbage and violate vfio and
+iommu invariants.
 
---yAjH7uxAxmBLvyQW--
+Jason
 
