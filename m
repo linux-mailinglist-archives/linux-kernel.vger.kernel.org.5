@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-52176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FBB88494FB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:03:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 238438494FF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:03:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 626CD1C22C25
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:03:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84A021F21A75
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:03:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BEBD11184;
-	Mon,  5 Feb 2024 08:03:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7291411193;
+	Mon,  5 Feb 2024 08:03:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="m18sBke1"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kLmhF6oI"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F18210A17
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 08:02:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B4EB11183
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 08:03:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707120180; cv=none; b=g3Q9yBh9upmQfDYL2vLCXSkS08fcWj1siAgkhw62fT13gqxKHPcer2tBd3WPudoOZRfEceAISy+91ySFlNJ9WIPlJQjjvJd/jtYjjQ7YkONe0Z/nXOctDSXjdHayjp2BqYu6JJoXKpcYs7/v1vVmhghvkP98uKpnnJ5ajV5cK2o=
+	t=1707120227; cv=none; b=BEWbqf/96mwlmE5PQHd7g+4opEBWaYBe87ZPjeyV8+3m7m0YFDtwv8i8H8GLaQuFvALQFBj3X57xmPnXTtnYqh6pwZ+26MunL0oIOQ3C9TS46NzqTiY+q5KeckCUde4qnwXRFgF4EkjLXQfISHS0ofZDEdjjFVvoXcqFs/UZ5zM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707120180; c=relaxed/simple;
-	bh=cbNFSMppZlR5QJyM9l0OCAXA/osEHdKoC9o90G7TMco=;
+	s=arc-20240116; t=1707120227; c=relaxed/simple;
+	bh=b8K6aZwwTViXH4+Xs+qOFZJ3yejMbmHqd5vc0BMHuOA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TXcZSgL2PoaNZ5E1BNVdNrcclpvV0I8FhCZZqfyyVAlcgiGzZXmvmBVwHzpiyL+LaOQi2QgcFPu5WgfGSDdE/J1Gylv9iCzGdnnCuV/25Zw33cVGp6m85FkmCcigw/4o4z+FHj8WZLyG1bLTjOaqCme4qt00T/hlE8YsIveK4UU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=m18sBke1; arc=none smtp.client-ip=209.85.218.53
+	 In-Reply-To:Content-Type; b=ONx9Xt07uME93wVBcIorrb4AytoxGWqnRD8Q10b7ATMKq/MpmP+9L9h2cOoEuftCy8br20DVg4Z4gYG9zY2RzxPAJFt/Z8+/GTdFMUcXgMUFPCa+EbWtq8yZgLZ9CR8R5dMj5sdfP250M4phAfpPlkF25Gtn7RAg8E4ppJzr0QY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kLmhF6oI; arc=none smtp.client-ip=209.85.218.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a358ec50b7cso488957266b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 00:02:58 -0800 (PST)
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a358ec50b7cso489091866b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 00:03:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707120177; x=1707724977; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1707120224; x=1707725024; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=bdtPrBSkrs43J0XyyrvbKbwymC3Nws07mpLX2Y1fpYo=;
-        b=m18sBke1oSP9Qzf7AkEzjnu5upqGj112JL9lufzDwa24o2wEpsvIIzxDi5V5veLKxL
-         842/Jk+VW4XQK1t8IYuqXIEsfeUN57PZ+45dzC7FWf+DhPbutJSTWqbNRYjpBSik7j5a
-         TDt8jZeliYT9QRnjOIwtdipTXV7BYvb1j4pR0laN3ClYZyLYUPPRk8CUGcKMQ0VWYHwV
-         R++WY/Hxdknj9c8UAwykbqMOV9SPZC/nqu34n4WcsE0wif0rspQ+M+KYcSFC+R1h4WTn
-         3RQVw2pzWtoFveQfexq/mqrACZMf61jb0QMCBEVySZpIoIMqodQcjcVfOQe7aZg890Kl
-         QNbg==
+        bh=JNCmjmWd/QBSy++Mmfzq3CC0HXdVl30hyS3O1givias=;
+        b=kLmhF6oI1zAjDIHbAsR2eNfQXgErHDDg/Mt3TRETNQxl55u0ireyMQuEkkFKy4kdmK
+         QSN8JwPyrOy25QydDqH7Lb0EFuT+eCXrZEi3KqNNsYQRCPqGG9a/TowsFQeBx4W7k51n
+         yDDMBpyi3sewDpp/wVFN33zFzsxkYSw5lNuIdTqRW5y/l/ZI78I1IvxsWcr0UHhMJ4eK
+         oLqQMLeg3AWw6EUDS2Zvf2KqgIB209FZvkLmn8kl/yvVmJl+Srfjbt3tepBAJSuPzV8T
+         4DQIAPidEKmocwT1FTWNgQT10Wl/0QZ+18ygHhviIJjM5qL5Ekk3TIn9Gr3sYiO3DyJK
+         sG7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707120177; x=1707724977;
+        d=1e100.net; s=20230601; t=1707120224; x=1707725024;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bdtPrBSkrs43J0XyyrvbKbwymC3Nws07mpLX2Y1fpYo=;
-        b=YylaPS0uheKUOHwfETSHzSBCZd0Agnk3ACJjcOia7A9KUbs9loDXaauFMACEChFqWO
-         doTwfDwWkr63yTyx1KM0MfzLq9kFSCBK0MY4xF7VUoudKNAyzCtpNjC4MkTZqVKDEocM
-         V+KhaXf+6xaWw1KBoPJDqGx6B/HzHCp527OJDTDnoSBEo8UFiPWfR7jswySLDwLtrmVs
-         Se80h+WmFBSiItF3GwwoUhkbDnOKzskzD7k3iV37uMbdOC+561ykZnhpK0Nsn8WziuNj
-         Vh7bKdWi/clqwRuE2MJsKP5HiOCfxguk5NbWwKEvzbbwaa4G5CZemaF98oSo5YmqQsu5
-         9fyg==
-X-Gm-Message-State: AOJu0YzWvq5I7Us4pp60lU8jLmC9I3U4PpOCaiNCrRGGWvlYxf6oxyKo
-	o8En1YodLDWUm+KlP8QOUUbfNwxjgjC0ysyq7feAGKvdHIbQLJReh4eyw4h3b4M=
-X-Google-Smtp-Source: AGHT+IEQJtZRcY55LAcYm8J5+HEupDsu2xOtRJH90nReDIT3kbNutDrn0EiD33YutzW0AYXvDCqHsw==
-X-Received: by 2002:a17:906:415a:b0:a37:aeab:76d0 with SMTP id l26-20020a170906415a00b00a37aeab76d0mr2060474ejk.3.1707120176718;
-        Mon, 05 Feb 2024 00:02:56 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVNvfnS50iL6qkO9emmKM70pOrVTDvWiyDtLMCtE0KsuS2ynCaqB0oXJMhNSbMbtePNY+LcqPifbJdRa0oj3fDpqCIpdWRmvEpDWUerE0jUA05dfNk1LElLxwN7LgqBWt5nMKK2EPtG3nKrX4zk9RtWAR90a+vQSPi2zFdJn5ZMNytGLcryvd3kSyUcEczgyHAqIjnR8SK4AKLh42X38m1sJGABW7bCKYjbWSAnp6xQWr2GCCkYy37166mO3XNQg7E+5aqmeCemZ4OlC3yleAYA89Rp5RYY4gi+N5qb7DkxY3Oa5KNLPhN3oMAnLkodhS3OxtQL4jyvOFhTHiNkzf2XGCEHzwIrwsN1HmwOzIxm65859f5FlZ4=
+        bh=JNCmjmWd/QBSy++Mmfzq3CC0HXdVl30hyS3O1givias=;
+        b=wn7CgOOagTpk44VyTCndsjKoVIn6ohIh+xcgXMhoqb7vs2BVVGaApwqhKmCRrXPjmE
+         im90LbhnWA6QQONE2k5hfqKMLNROjXuAZ3Nxq9vTMWgD4Z9kwZ7euHx0DHBF114KgiMR
+         pBpkmxHHkaRL+K5qTiLQz/b1HSHy3HfuUOqr9iRx0cXR7Nw2o1/gVwZZ27tLDgQz6MtY
+         D25Lqzqev8XiALf+C8ANpMXj6MPmrcPeQn0yeRoj/R0W0vAq8G8mcRRYiUb2//LEY3HD
+         srqhXm+K6thTCMGDxjJ2mjVeoBq7WaIfYB5tAhwHoshDcyvpNmJPZI4Eho7BwC9rct6d
+         pX8A==
+X-Gm-Message-State: AOJu0Yxa6slAO21F+Y5zMMBigZiwprEuNaVI0dnyZCsBsc4Ct7QwvYY6
+	RGm+dn43Jc0MkDwPcMX/gAj4aDDfiQZzfoWvV57TrulnFYk7+tVnAhkNeZjXf+k=
+X-Google-Smtp-Source: AGHT+IHNMheoXDkKxQv95TQNlwZBV9UTyR4rJu+QQzItOkcojMfV0ScRIbTv3wpg/uHINYAOFldhcg==
+X-Received: by 2002:a17:906:1b4f:b0:a37:7a6d:79c with SMTP id p15-20020a1709061b4f00b00a377a6d079cmr3601513ejg.34.1707120224434;
+        Mon, 05 Feb 2024 00:03:44 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUpWVrHYcynR29YxCxnD9KcFDRESCZWrUnEUjooQUrMwoNDwOIHMtWqzAeot2bsAj78Ss0q+GTzMZw5A6b1ZQao51XJwMa6UnvfWDkSAXlV9RTLWpLmBZGoS3tGDcBwAKMulmTCVMHfXOcZQUOrnbopg7wxHn7JvNrIChQhYajUikBiZkk57pOiwWkvAjdXwVvZrQhMWPNnvu2n1NEw80nih/XC0kMAedrzmnsQl92+tOblqXjK2hxZ72JTRn2wTqcwEIhgCUAeAukUF7AH1+XJS36UsM7LqactDwz251RY2IWmzoyr16C9Sz23AuFF4piMW+yv+ixdeAxyuWIJ0rbDuBS4H2caNzD4SBvjLRDwHwiuPgfs
 Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id kq8-20020a170906abc800b00a30cd599285sm4004822ejb.223.2024.02.05.00.02.55
+        by smtp.gmail.com with ESMTPSA id kq8-20020a170906abc800b00a30cd599285sm4004822ejb.223.2024.02.05.00.03.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Feb 2024 00:02:56 -0800 (PST)
-Message-ID: <802c392d-7c3a-4805-ae02-ad12d42fad2c@linaro.org>
-Date: Mon, 5 Feb 2024 09:02:54 +0100
+        Mon, 05 Feb 2024 00:03:43 -0800 (PST)
+Message-ID: <4179cecd-66dc-49c3-9564-0321bf614d99@linaro.org>
+Date: Mon, 5 Feb 2024 09:03:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,16 +78,14 @@ User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v4 1/6] dt-bindings: arm: qcom: Document QCM8550, QCS8550
  SoC and board
 Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org,
+To: Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org,
  konrad.dybcio@linaro.org, robh+dt@kernel.org,
  krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ dmitry.baryshkov@linaro.org
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, kernel@quicinc.com
 References: <20240119100621.11788-1-quic_tengfan@quicinc.com>
  <20240119100621.11788-2-quic_tengfan@quicinc.com>
- <7e7bc8ba-f349-47f5-b6ba-6594edccaaa8@linaro.org>
- <CAA8EJpq8vvAeHuQYe2cp395m2K7VL46rrhALPySoFpYL5CXLbA@mail.gmail.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -133,38 +131,28 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAA8EJpq8vvAeHuQYe2cp395m2K7VL46rrhALPySoFpYL5CXLbA@mail.gmail.com>
+In-Reply-To: <20240119100621.11788-2-quic_tengfan@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 04/02/2024 17:25, Dmitry Baryshkov wrote:
-> On Fri, 2 Feb 2024 at 15:34, Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
->>
->> On 19/01/2024 11:06, Tengfei Fan wrote:
->>> Document QCM8550, QCS8550 SoC and the AIM300 AIoT board bindings.
->>> QCS8550 and QCM8550 processor combines powerful computing, extreme edge
->>> AI processing, Wi-Fi 7, and robust video and graphics for a wide range
->>> of use cases for the Internet of Things (IoT). QCS8550 is a QCS version
->>> for QCM8550. Modem RF only in QCM8550 but not in QCS8550.
->>> AIM300 Series is a highly optimized family of modules designed to
->>> support AIoT applications. The module is mounted onto Qualcomm AIoT
->>> carrier board to support verification, evaluation and development. It
->>> integrates QCS8550 SoC, UFS and PMIC chip etc.
->>> AIM stands for Artificial Intelligence Module. AIoT stands for AI IoT.
->>>
->>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>
->> I want to unreview it.
+On 19/01/2024 11:06, Tengfei Fan wrote:
+> Document QCM8550, QCS8550 SoC and the AIM300 AIoT board bindings.
+> QCS8550 and QCM8550 processor combines powerful computing, extreme edge
+> AI processing, Wi-Fi 7, and robust video and graphics for a wide range
+> of use cases for the Internet of Things (IoT). QCS8550 is a QCS version
+> for QCM8550. Modem RF only in QCM8550 but not in QCS8550.
+> AIM300 Series is a highly optimized family of modules designed to
+> support AIoT applications. The module is mounted onto Qualcomm AIoT
+> carrier board to support verification, evaluation and development. It
+> integrates QCS8550 SoC, UFS and PMIC chip etc.
+> AIM stands for Artificial Intelligence Module. AIoT stands for AI IoT.
 > 
-> Well, you asked Tengei to drop this trailer in response to v3. But
-> surprisingly got ignored.
-> 
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
 
-Indeed.
-https://lore.kernel.org/all/30ecd718-4303-4380-8587-53c6f6b2a9bd@linaro.org/
+To be clear, because you keep ignoring my comments:
 
-This is just annoying.
+NAK
 
 Best regards,
 Krzysztof
