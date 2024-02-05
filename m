@@ -1,140 +1,124 @@
-Return-Path: <linux-kernel+bounces-53811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EC9084A6C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:15:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 572D684A6CC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:15:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7FD11F28ED2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:15:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89FF91C249E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:15:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E8CC56753;
-	Mon,  5 Feb 2024 19:19:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B71056B65;
+	Mon,  5 Feb 2024 19:19:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nd5zm0nc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qtKVLMrt"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C008D55E6E;
-	Mon,  5 Feb 2024 19:19:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 652BB5577F;
+	Mon,  5 Feb 2024 19:19:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707160744; cv=none; b=PUpboPS6PN8NzhqjO2ea3n36OHcGC2hkYO3/6gX7Uv8P/bvZ3+iZyB3Q+rP4ahiza76UqL34IkuV9fkPXrtRkcLV3cTQ+OvF/bsdErngQSAqo5h+t6q0A0DIJgSLUOgAgR42Bg/A3Kie5Z4XptMrFofte4Z/BSBGgOl1atRCz9A=
+	t=1707160759; cv=none; b=EUZlKqb3cMEre0JSsGWy0FQ6G6FbN0Z1kJh45Tej5f54yzziQ5CszOohAPDRTIXrU9WQSOaOAEFzTPrmO7UrceI+1y1/F3io/nBaagC2YhcSJjaoTsFPigPdOCprTh+dtWsLeJcGdeN3SKgMdjPeuZDFi/qJkNFCgoos513Ac9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707160744; c=relaxed/simple;
-	bh=rZHGOctIsEvjRWCOq7z4zGR9cZjW17vqL6xAeBZUzJU=;
-	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=Q3UyX6um92rmo8BfBFlQ4GH845BU/Jks/kPLydeL5twa1oUNF1kjCzCCDDm/tobpJ9A42d7T/gOAP2+AnLtko/99AypQs2ZPRHextpUQT8gIHY3bkfimHj7au7hHoIypVKnQ2f5tVSpXE6Y0+Q4VwM3DMc+bppl4ux6z96yx/Mc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nd5zm0nc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 142AAC43394;
-	Mon,  5 Feb 2024 19:19:04 +0000 (UTC)
+	s=arc-20240116; t=1707160759; c=relaxed/simple;
+	bh=IQgAhNiM9Q3k0p3uoVL7JBB79afL2zsOoVNpWvCcKl4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=It12AArVKiPGul/hgUEUFaesRwu1IyjhLuXNgE3UVV6Z5XXY6+rlsWO9LQpj/UcyGz6rghZnzAYWtkEn+USua0tFM+ml37lJRvq31i6mYiix0KijA25jMgaV/N7mEhNkDFu/VAvlbyp3bzIOlCZhdf82HNEyKKIap+Slc53irIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qtKVLMrt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68B54C433C7;
+	Mon,  5 Feb 2024 19:19:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707160744;
-	bh=rZHGOctIsEvjRWCOq7z4zGR9cZjW17vqL6xAeBZUzJU=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=nd5zm0ncAhhGDHhu3rHoIDRrAqaTNw8VDmNRyF7/k2rLZw9pL2g1qLgkpjzHrbpuQ
-	 4SUNIrj1K57a0eufKX4WDaOJYd2LqTN0drTYV7eX2+ZohOganiub6bAHoD/0Z/4rfO
-	 NSxCZWMAqL+Jy4Ex8mh3c61U/hO+jFPZ6OEYrFIeh23wOvqhU82B8FrJDdBpk8Olsx
-	 hujarPDCw/rDZp8FFWaHI222EDYGzFFC2kkFlyU9+awEUrMos5miE9hlMxBcZtlbBM
-	 0TyUyQ+2l4P7bNKwrQF3wHuWDlJrPGsZtY5cfSAZRd3+TID5mWIq+GvelggU4mXlPr
-	 nM9bn8GEhF6pw==
-Message-ID: <89892ecd6b1b043db58258705c32b02b.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1707160758;
+	bh=IQgAhNiM9Q3k0p3uoVL7JBB79afL2zsOoVNpWvCcKl4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qtKVLMrtkrK2hMUJn94uioxTjvRe0KKC3dIcgh4mWv/uMQK3iM7kyMimKmR0kBweM
+	 2VyhcNFlxjudSEn7ZKDga6Mtcj1PmYaCjnQFrlqWdldeavwXGpUYuoDcwR4yBaNjiy
+	 Vzadv3oNb0ObugFg5PT+JoDxRMND8EDRg7B5lwsMO46Hk6UHv2DjiL4MxyrpoRIn6q
+	 By68DuMz4rjTBxnWm8gPnpvcEAUo/aihoZ1X+SRyNWC2OPCZWE6k5XiZoULWw41D6Y
+	 ovLAm/Bievxa7cZT8ZStH2zGyjQkg3JLZMFlG62kCiyCS/cdypB2ZQ5vFFk3cqqcyR
+	 uze7Hi4MG6BQg==
+Date: Mon, 5 Feb 2024 19:19:15 +0000
+From: Rob Herring <robh@kernel.org>
+To: Adam Ford <aford173@gmail.com>
+Cc: Andrzej Hajda <andrzej.hajda@intel.com>,
+	David Airlie <airlied@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>, linux-kernel@vger.kernel.org,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	frieder.schrempf@kontron.de, alexander.stein@ew.tq-group.com,
+	Maxime Ripard <mripard@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, marex@denx.de,
+	Robert Foss <rfoss@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Liu Ying <victor.liu@nxp.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
+	Vinod Koul <vkoul@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
+	linux-phy@lists.infradead.org, dri-devel@lists.freedesktop.org,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Shawn Guo <shawnguo@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Will Deacon <will@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	linux-pm@vger.kernel.org
+Subject: Re: [PATCH V8 03/12] dt-bindings: soc: imx: add missing clock and
+ power-domains to imx8mp-hdmi-blk-ctrl
+Message-ID: <170716075503.138486.15196612878281167365.robh@kernel.org>
+References: <20240203165307.7806-1-aford173@gmail.com>
+ <20240203165307.7806-4-aford173@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CABVgOS=A8BQ6HHpBKFqg-N10ckk2XYavaS-MPXvZ0wenrVm=1g@mail.gmail.com>
-References: <20240202195909.3458162-1-sboyd@kernel.org> <20240202195909.3458162-8-sboyd@kernel.org> <CABVgOS=A8BQ6HHpBKFqg-N10ckk2XYavaS-MPXvZ0wenrVm=1g@mail.gmail.com>
-Subject: Re: [PATCH v3 7/7] of: Add KUnit test to confirm DTB is loaded
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, patches@lists.linux.dev, linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org, kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>, Brendan Higgins <brendan.higgins@linux.dev>
-To: David Gow <davidgow@google.com>
-Date: Mon, 05 Feb 2024 11:19:01 -0800
-User-Agent: alot/0.10
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240203165307.7806-4-aford173@gmail.com>
 
-Quoting David Gow (2024-02-02 20:10:17)
-> On Sat, 3 Feb 2024 at 03:59, Stephen Boyd <sboyd@kernel.org> wrote:
-> >
-> > Add a KUnit test that confirms a DTB has been loaded, i.e. there is a
-> > root node, and that the of_have_populated_dt() API works properly.
-> >
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: Frank Rowand <frowand.list@gmail.com>
-> > Cc: David Gow <davidgow@google.com>
-> > Cc: Brendan Higgins <brendan.higgins@linux.dev>
-> > Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-> > ---
->=20
-> This looks pretty good to me test-wise, though it still fails on m68k.
-> (Everything else I tried it on works, though I've definitely not tried
-> _every_ architecture.)
->=20
-> aarch64: PASSED
-> i386: PASSED
-> x86_64: PASSED
-> x86_64 KASAN: PASSED
-> powerpc64: PASSED
-> UML: PASSED
-> UML LLVM: PASSED
-> m68k: FAILED
-> > $ qemu-system-m68k -nodefaults -m 1024 -kernel .kunit-all-m68k/vmlinux =
--append 'kunit.enable=3D1 console=3Dhvc0 kunit_shutdown=3Dreboot' -no-reboo=
-t -nographic -serial stdio -machine virt
-> > [11:55:05] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D dtb (2 subtests) =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-> > [11:55:05] # dtb_root_node_found_by_path: EXPECTATION FAILED at drivers=
-/of/of_test.c:18
-> > [11:55:05] Expected np is not null, but is
-> > [11:55:05] [FAILED] dtb_root_node_found_by_path
-> > [11:55:05] # dtb_root_node_populates_of_root: EXPECTATION FAILED at dri=
-vers/of/of_test.c:28
-> > [11:55:05] Expected of_root is not null, but is
-> > [11:55:05] [FAILED] dtb_root_node_populates_of_root
-> > [11:55:05]     # module: of_test
-> > [11:55:05] # dtb: pass:0 fail:2 skip:0 total:2
-> > [11:55:05] # Totals: pass:0 fail:2 skip:0 total:2
-> > [11:55:05] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D [FAILED] dtb =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
 
-Ah yeah I forgot to mention that. m68k fails because it doesn't call the
-unflatten_(and_copy)?_device_tree() function, so we don't populate a
-root node on that architecture. One solution would be to make CONFIG_OF
-unavailable on m68k. Or we have to make sure DT works on any
-architecture. Rob, what do you prefer here?
+On Sat, 03 Feb 2024 10:52:43 -0600, Adam Ford wrote:
+> Per guidance from the NXP downstream kernel, if the clock is
+> disabled before HDMI/LCDIF probe, LCDIF will not get pixel
+> clock from HDMI PHY and throw an error:
+> 
+> [CRTC:39:crtc-2] vblank wait timed out
+>     WARNING: CPU: 2 PID: 9 at drivers/gpu/drm/drm_atomic_helper.c:
+>         1634 drm_atomic_helper_wait_for_vblanks.part.0+0x23c/0x260
+> 
+> Fix this by adding the fdcc clock to the hdmi_blk_ctrl.  This
+> should be safe, since neither this power domain nor the dependent
+> HDMI and LCDIF drivers been enabled or added to the SoC device
+> tree yet.
+> 
+> According to Sandor Yu from NXP, "the FDCC clock is not for HDMITX
+> in desgin, but it is part of HDMI domain that needed by HDMITX.
+> So I think it is reasonable added it to the power domain driver."
+> 
+> The driver also supports two power domains which are missing from the binding
+> that also fix an issue with resuming from suspend.
+> 
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> ---
+> V2:  Update commit message to both show error and give a bit more
+>      background.
+>      Add missing power domains hdcp and hdrv as pointed out by Marek Vasut
+> ---
+>  .../soc/imx/fsl,imx8mp-hdmi-blk-ctrl.yaml     | 22 ++++++++++++-------
+>  1 file changed, 14 insertions(+), 8 deletions(-)
+> 
 
->=20
->=20
-> My only other question is about the test names: the mix of 'of' and
-> 'dtb' can be a bit confusing. As is, we have:
-> kconfig name: OF_KUNIT_TEST
-> module name: of_test
-> suite name: dtb
-> test names: all start with dtb_
->=20
-> Given KUnit only really deals with the suite/test names directly, it's
-> not trivial to see that 'dtb.dtb_*' is controlled by OF_KUNIT_TEST and
-> in of_test if built as a module. (This is getting a bit easier now
-> that we have the 'module' attribute in the output, but still.)
->=20
-> Would 'of_dtb' work as a suite name if it's important to keep both
-> 'of' and 'dtb'?
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-Sure, I can add of_ prefix to the tests.
-
->=20
-> In general, though, this test looks good to me. Particularly if m68k
-> can be fixed.
->=20
-> Reviewed-by: David Gow <davidgow@google.com>
->=20
-
-Thanks!
 
