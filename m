@@ -1,166 +1,122 @@
-Return-Path: <linux-kernel+bounces-52697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29AC9849B8E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:15:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CEB7849B8F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:15:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7E39283EA5
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:15:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59E23283FC9
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:15:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9324D1CA9B;
-	Mon,  5 Feb 2024 13:15:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01EAA210E0;
+	Mon,  5 Feb 2024 13:15:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PhFy3H6U"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jEeuHPmW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 747031CA9E;
-	Mon,  5 Feb 2024 13:15:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B7021EB56;
+	Mon,  5 Feb 2024 13:15:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707138937; cv=none; b=tAK5EiGt1B6AbagL83AM+9iThbbeiwB0EkU6wEGaK77f00XoQ0SUNI+Jc38wOHE5pVqFreuEtVkZyqJjSkYW9XURtW0ZjoiS9EPBc5wk6eBo3h3coNP2Tv1/6rvmXjV3JNNsMHOnjScJhfLhR7+c/R3QaPgaCqP6NgXfnHwF95o=
+	t=1707138940; cv=none; b=RvdbZbyoHH5o4rjEZlmX8QK9qbNBs2wylqXfTWvumGO3cBxsWm2OKX33BNm2K2Il3iaAKxutKMSs+GFkZW1NTFrD5M41marDca/LFZUuaePP0wfXTY2Roye0p/57K9Sz4n6iRAOfqlVGjD3GxopqwI5MrLxP61HLGiVsviKGt2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707138937; c=relaxed/simple;
-	bh=jxi9hBIW/u/xN1/3l39jSDwYER6jWurCP3CAR9bpTUM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W0lyUoboDdHgnmN7zQuQGGsk/Qf3bZWL5aqSlCshFvS4vP2QPehL/olO1TKlgrLnLph6M/BLKgPr8rBZNOfoMeQJXBgJtyQzuPKLjVlh+gp8Z9cHUYy7mIsTBE2S9NUxVUAHn6DmfHVHCHSL1TJDtHBXTGghbP0tjd/wAoLy9aY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PhFy3H6U; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707138935; x=1738674935;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=jxi9hBIW/u/xN1/3l39jSDwYER6jWurCP3CAR9bpTUM=;
-  b=PhFy3H6U0Zt5UmfhWaAy21wVepJAJrAs0D/uK9pTvyz9cBW12VGn/hdL
-   L2Q6R7w3coxHPmrtxL+g3713OOMPFY+PR/IhAyQEnIW9Ozl1MZ5d4x0Q3
-   VOasJehQZOeLRArGn5L3XGyUGsADuEJSq1XxnKhC2YRYQRDuy874jHETv
-   0YEnl4KqBhhstN1ST4FqSlWrJWeqyIZGFjImvhpiSrcu9U5RjDBTRPlmD
-   /gAICEyIgsQ89cNc9vYZv81uwMJgrvJ5NCCJPk5BKJmBrN6mnQvri3VOY
-   3dSfn1i+KP8fjFLcSLZjgpZ7YYjtY5+VJGn3I0pGU34e5olF5DQfbvRG5
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="11105846"
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="11105846"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 05:15:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="1014816"
-Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
-  by orviesa006.jf.intel.com with ESMTP; 05 Feb 2024 05:15:29 -0800
-Received: from kbuild by 01f0647817ea with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rWyoo-0000Xk-32;
-	Mon, 05 Feb 2024 13:15:26 +0000
-Date: Mon, 5 Feb 2024 21:14:50 +0800
-From: kernel test robot <lkp@intel.com>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: oe-kbuild-all@lists.linux.dev, alexandre.belloni@bootlin.com,
-	conor.culhane@silvaco.com, devicetree@vger.kernel.org,
-	gregkh@linuxfoundation.org, ilpo.jarvinen@linux.intel.com,
-	imx@lists.linux.dev, jirislaby@kernel.org, joe@perches.com,
-	krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org,
-	linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org, miquel.raynal@bootlin.com,
-	robh@kernel.org, zbigniew.lukwinski@linux.intel.com
-Subject: Re: [PATCH v6 8/8] tty: i3c: add TTY over I3C master support
-Message-ID: <202402052026.UNrmrB2M-lkp@intel.com>
-References: <20240202230925.1000659-9-Frank.Li@nxp.com>
+	s=arc-20240116; t=1707138940; c=relaxed/simple;
+	bh=6JEN0DBAiHPFyGGPONH92+iR7vBOYSdVo4q0QeyWNw4=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=uWTGInSQ7HCJV+OMfl33Z0swEp6QVIq3xOCAg89DryJbgcohg/lDPEaj10p5D7EModSzvgUYjzfBi3mKkrgPkqpoIwOtZm/Pj4uc0ah4bJF/5nrKCMcMK77vjfocelOQYkAt+73k65TY+hGx1WxmrjBpfKrOzmg0HpUxB+XGUuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jEeuHPmW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6A56C43390;
+	Mon,  5 Feb 2024 13:15:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707138939;
+	bh=6JEN0DBAiHPFyGGPONH92+iR7vBOYSdVo4q0QeyWNw4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=jEeuHPmWknWSvna+7Tkazlgv5+2cap1HwWBU3db/vLXOWu5fTsL47AYuUR1PdXXC+
+	 rJMyAZ3b2LbVAbHAdVAoUNZRfpe09Jdon9H871vYPeQ0fQY9x0pS0V/yOlI9Ef85aX
+	 iBq+/oDFtAc6bYlLDHp3/5o9ioFollD/3p7B7NFZXTqwFB7LMKPwyzSJNb3RqtLePn
+	 VwLh+MiXFoMi5iSpKWcCUaXwJ8D6BBK0/s5aLRnva+OzHhL1ZYVT50m7TTlv8GpHqL
+	 af3/6Co5Umzh0CDlHePmM/csh2C0/Ctng3HE4yq3xB18uLtdRSjtc80nEvWFLzjM+K
+	 6av45lPley9iQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rWyoz-000QXp-A2;
+	Mon, 05 Feb 2024 13:15:37 +0000
+Date: Mon, 05 Feb 2024 13:15:36 +0000
+Message-ID: <867cjj6ohz.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Oliver Upton <oliver.upton@linux.dev>
+Cc: James Clark <james.clark@arm.com>,
+	coresight@lists.linaro.org,
+	linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev,
+	broonie@kernel.org,
+	suzuki.poulose@arm.com,
+	acme@kernel.org,
+	James Morse <james.morse@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Mike Leach <mike.leach@linaro.org>,
+	Leo Yan <leo.yan@linaro.org>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	Rob Herring <robh@kernel.org>,
+	Miguel Luis <miguel.luis@oracle.com>,
+	Jintack Lim <jintack.lim@linaro.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Vincent Donnefort <vdonnefort@google.com>,
+	Kristina Martsenko <kristina.martsenko@arm.com>,
+	Fuad Tabba <tabba@google.com>,
+	Joey Gouly <joey.gouly@arm.com>,
+	Akihiko Odaki <akihiko.odaki@daynix.com>,
+	Jing Zhang <jingzhangos@google.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/7] arm64: KVM: Use shared area to pass PMU event state to hypervisor
+In-Reply-To: <ZcDc8-FQo8wKavA4@linux.dev>
+References: <20240104162714.1062610-1-james.clark@arm.com>
+	<20240104162714.1062610-3-james.clark@arm.com>
+	<Zb1mCCi13AJ_YjFZ@linux.dev>
+	<8a908ee8-620a-d9c2-734b-5a6402950072@arm.com>
+	<ZcDc8-FQo8wKavA4@linux.dev>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240202230925.1000659-9-Frank.Li@nxp.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: oliver.upton@linux.dev, james.clark@arm.com, coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, broonie@kernel.org, suzuki.poulose@arm.com, acme@kernel.org, james.morse@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, mike.leach@linaro.org, leo.yan@linaro.org, alexander.shishkin@linux.intel.com, anshuman.khandual@arm.com, robh@kernel.org, miguel.luis@oracle.com, jintack.lim@linaro.org, ardb@kernel.org, mark.rutland@arm.com, arnd@arndb.de, vdonnefort@google.com, kristina.martsenko@arm.com, tabba@google.com, joey.gouly@arm.com, akihiko.odaki@daynix.com, jingzhangos@google.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-Hi Frank,
+On Mon, 05 Feb 2024 13:04:51 +0000,
+Oliver Upton <oliver.upton@linux.dev> wrote:
+> 
+> Unless someone has strong opinions about making this work in protected
+> mode, I am happy to see tracing support limited to the 'normal' nVHE
+> configuration. The protected feature as a whole is just baggage until
+> upstream support is completed.
 
-kernel test robot noticed the following build warnings:
+Limiting tracing to non-protected mode is a must IMO. Allowing tracing
+when pKVM is enabled is a sure way to expose secrets that should
+stay... secret. The only exception I can think of is when
+CONFIG_NVHE_EL2_DEBUG is enabled, at which point all bets are off.
 
-[auto build test WARNING on tty/tty-testing]
-[also build test WARNING on tty/tty-next tty/tty-linus robh/for-next linus/master v6.8-rc3 next-20240205]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Thanks,
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Frank-Li/i3c-add-target-mode-support/20240203-071519
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tty-testing
-patch link:    https://lore.kernel.org/r/20240202230925.1000659-9-Frank.Li%40nxp.com
-patch subject: [PATCH v6 8/8] tty: i3c: add TTY over I3C master support
-config: powerpc-randconfig-r071-20240205 (https://download.01.org/0day-ci/archive/20240205/202402052026.UNrmrB2M-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 13.2.0
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402052026.UNrmrB2M-lkp@intel.com/
-
-smatch warnings:
-drivers/tty/i3c_tty.c:237 tty_i3c_rxwork() error: uninitialized symbol 'status'.
-
-vim +/status +237 drivers/tty/i3c_tty.c
-
-   191	
-   192	static void tty_i3c_rxwork(struct work_struct *work)
-   193	{
-   194		struct ttyi3c_port *sport = container_of(work, struct ttyi3c_port, rxwork);
-   195		struct i3c_priv_xfer xfers;
-   196		u32 retry = I3C_TTY_RETRY;
-   197		u16 status;
-   198		int ret;
-   199	
-   200		memset(&xfers, 0, sizeof(xfers));
-   201		xfers.data.in = sport->rx_buff;
-   202		xfers.len = I3C_TTY_TRANS_SIZE;
-   203		xfers.rnw = 1;
-   204	
-   205		do {
-   206			if (test_bit(I3C_TTY_RX_STOP, &sport->status))
-   207				break;
-   208	
-   209			i3c_device_do_priv_xfers(sport->i3cdev, &xfers, 1);
-   210	
-   211			if (xfers.actual_len) {
-   212				ret = tty_insert_flip_string(&sport->port, sport->rx_buff,
-   213							     xfers.actual_len);
-   214				if (ret < xfers.actual_len)
-   215					sport->buf_overrun++;
-   216	
-   217				retry = I3C_TTY_RETRY;
-   218				continue;
-   219			}
-   220	
-   221			status = I3C_TTY_TARGET_RX_READY;
-   222			i3c_device_getstatus_format1(sport->i3cdev, &status);
-   223			/*
-   224			 * Target side needs some time to fill data into fifo. Target side may not
-   225			 * have hardware update status in real time. Software update status always
-   226			 * needs some delays.
-   227			 *
-   228			 * Generally, target side have circular buffer in memory, it will be moved
-   229			 * into FIFO by CPU or DMA. 'status' just show if circular buffer empty. But
-   230			 * there are gap, especially CPU have not response irq to fill FIFO in time.
-   231			 * So xfers.actual will be zero, wait for little time to avoid flood
-   232			 * transfer in i3c bus.
-   233			 */
-   234			usleep_range(I3C_TTY_YIELD_US, 10 * I3C_TTY_YIELD_US);
-   235			retry--;
-   236	
- > 237		} while (retry && (status & I3C_TTY_TARGET_RX_READY));
-   238	
-   239		tty_flip_buffer_push(&sport->port);
-   240	}
-   241	
+	M.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Without deviation from the norm, progress is not possible.
 
