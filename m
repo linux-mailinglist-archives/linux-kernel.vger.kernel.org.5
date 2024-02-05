@@ -1,77 +1,105 @@
-Return-Path: <linux-kernel+bounces-52544-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7CEF849982
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:04:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C926F849998
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:07:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 578E91F21FC0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:04:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81A682812E0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:07:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DD331AAD3;
-	Mon,  5 Feb 2024 12:02:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A12F91AAD2;
+	Mon,  5 Feb 2024 12:04:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="jusFcVTp"
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BYgnRr5H"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DE211BC22
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 12:02:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 800A91CAB3
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 12:04:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707134569; cv=none; b=Jb4a6hyBWoT97njDMmcRlG28/3imUXbvIHwmirAemT6O6PAzIE6FKVL3EqtDnEO383HIpKBl/JiSeU5dGo0ecEntnIDh4DuWjpPGOkQHIqEdJz7h0vZsxF6RHpwAZAD+iyNpkX9PdLtN1lT0d+wtat82wU1FjjjoDKa65pXQ9Z0=
+	t=1707134673; cv=none; b=dJUvMVHagl37xoiky8vuiz/aSNf1uQ7bYUdhpCewxjCiJTWKK8qqY1TxDUFuTaPfu4BNrcMXLGAeDPgJTWbHUgkqNlWsk1Kh6VOlkvezs/jDUjo3kLtFfcXMJ6GH+jXODCE5udaMVNfGrLGqgwsz9dGhaXVhLNp/5ognROnSZzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707134569; c=relaxed/simple;
-	bh=IHuWzzoQnQ1LIc9paceiQ4UQUnyVWgqSLS2YPlzPrrg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R0OgyMVTOvHX7JdjREjYm6MDUenl8xcql7s6skV9zq1PlaWJxX8aTTjJfn3Q2pe6XkUYEHG9HozQHsB9JIVvW9s+GExvQitcUcExBvUwrq0XNL67oS2m5VxypOr/3JbGQX2t0bzG45aZbXf35gr1I0hIKeWflga87q63MihpPYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=jusFcVTp; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1707134562;
-	bh=IHuWzzoQnQ1LIc9paceiQ4UQUnyVWgqSLS2YPlzPrrg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jusFcVTpIpmVN7hePpiuXMCeXDry8AlRozcH8NTI8wHExMhWdHnc1zzC8DL2q4oxi
-	 b6NpidCNbgwJG1vNpUXDDHNa+mZlDf3sRuEf1RnCHPVyia/W2FmZTRYocSI95CIr8k
-	 W1EGHiOUBJf0Wujm+cmAt7kKpx38cGNFc2YDA3I8=
-Date: Mon, 5 Feb 2024 13:02:40 +0100
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>, 
-	Dwaipayan Ray <dwaipayanray1@gmail.com>, Lukas Bulwahn <lukas.bulwahn@gmail.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] const_structs.checkpatch: add bus_type
-Message-ID: <bbe7fc00-53ad-4a4e-8335-514280104863@t-8ch.de>
-References: <20240204-bus_cleanup-checkpatch-v1-1-8d51dcecda20@marliere.net>
+	s=arc-20240116; t=1707134673; c=relaxed/simple;
+	bh=LUanOL5KSU2Dum5VwLSUoi/RhpDIavAUwlID44IYy7g=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=ib5rPQXAWuvyOqZ/0+2oishJqA0CTT0J0ZsbpaZlUuvPzZX+/ICc2Pzt5+zUfBwtvAi7oJIuj92Ntaj/yYpxO5GKkbQWfHhx2XI/ITpzcmIiqvd+NAiruL8V58xASyyHsiXoi7jP7+0D4MSmc1sIEnggLMFBFL4CNxIHfRsznMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BYgnRr5H; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707134671;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ULa61A+OHUmLxIbxKjifqPcDz0usstWa8Wnc31QTDuE=;
+	b=BYgnRr5HX2sE/EMcxSEMgQ6LRqBDZo/gjMV45Qyer68RslIu4UKvlSIJE5iNlcmgqANQn3
+	FKIhON69AaWwCIRsUQ6RYfQf/QUeyVQWoV9T25WmNeF8+NUld64/EOcQn6/jp9HpM63ZuK
+	g1furHI/8KvpsqqdGfcItyeeNSedb8w=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-461-kOJ9asw_OHGeD9M_kyA16w-1; Mon, 05 Feb 2024 07:04:26 -0500
+X-MC-Unique: kOJ9asw_OHGeD9M_kyA16w-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CB1C084AE41;
+	Mon,  5 Feb 2024 12:04:25 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.245])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 173A8492BF0;
+	Mon,  5 Feb 2024 12:04:24 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <20240130101344.28936-1-lhenriques@suse.de>
+References: <20240130101344.28936-1-lhenriques@suse.de>
+To: Luis Henriques <lhenriques@suse.de>
+Cc: dhowells@redhat.com, Jarkko Sakkinen <jarkko@kernel.org>,
+    Eric Biggers <ebiggers@kernel.org>, keyrings@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] keys: update key quotas in key_put()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240204-bus_cleanup-checkpatch-v1-1-8d51dcecda20@marliere.net>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3007645.1707134664.1@warthog.procyon.org.uk>
+Date: Mon, 05 Feb 2024 12:04:24 +0000
+Message-ID: <3007646.1707134664@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-On 2024-02-04 19:39:57-0300, Ricardo B. Marliere wrote:
-> Since commit d492cc2573a0 ("driver core: device.h: make struct bus_type
-> a const *"), the driver core can properly handle constant struct
-> bus_type. Make sure that new usages of the struct already enter the tree
-> as const.
-> 
-> Suggested-by: Thomas Weißschuh <linux@weissschuh.net>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+Luis Henriques <lhenriques@suse.de> wrote:
 
-Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
+> Delaying key quotas update when key's refcount reaches 0 in key_put() has
+> been causing some issues in fscrypt testing, specifically in fstest
+> generic/581.  This commit fixes this test flakiness by dealing with the
+> quotas immediately, and leaving all the other clean-ups to the key garbage
+> collector.
 
-> ---
->  scripts/const_structs.checkpatch | 1 +
->  1 file changed, 1 insertion(+)
-> 
+Okay, I'll accept this.
 
-Thanks!
+> This is done by moving the updates to the qnkeys and qnbytes fields in
+> struct key_user from key_gc_unused_keys() into key_put().  Unfortunately,
+> this also means that we need to switch to the irq-version of the spinlock
+> that protects these fields and use spin_lock_{irqsave,irqrestore} in all the
+> code that touches these fields.
+
+.. Which shouldn't be that often.  It only happens when a key is created or
+finally let go of.
+
+> Signed-off-by: Luis Henriques <lhenriques@suse.de>
+
+Acked-by: David Howells <dhowells@redhat.com>
+
+Jarkko - could you pick this up?
+
 
