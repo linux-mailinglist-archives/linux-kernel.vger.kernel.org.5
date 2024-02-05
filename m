@@ -1,155 +1,140 @@
-Return-Path: <linux-kernel+bounces-52382-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52383-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C870584975C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:08:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8061A849788
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:15:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 675561F21B48
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:08:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68CA7B2BB90
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:09:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E21E14000;
-	Mon,  5 Feb 2024 10:08:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 363D01642A;
+	Mon,  5 Feb 2024 10:09:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="lpP8kp3I"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ASKQUGmp"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFD2113FF0
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 10:08:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD31C13AED;
+	Mon,  5 Feb 2024 10:09:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707127698; cv=none; b=RKzuoi/B50H9syqsdzMCt3SlKC8TQHSkbz8IEx+cl0XTlMVPATgEtIObXwtTGsXasW/UvBlabKfNXX0LPK4JYIsz3N5TqzmqXDbVURhYt3NXUeHL0v+lIfP24nNIx4nSbnAqO3DFWPjgACQqKPt9hlUIKfTe28on1f2L2J2AFsA=
+	t=1707127752; cv=none; b=QIFtT+BZz+d5Q6hQr4X+r7HjXR4mwSsyFX7nifkTCBlzToDKfzYKUwy4WE/nkxP5xHy6pWFJKRL74SA7GcVkQWhGx2uKnnz9pwzkK5aiLeUR12+52XtYs1vgv/N1XbNF3J9r6n8VncP6GWbzstIeZAs8Ogt8VRVWKp89diS4n5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707127698; c=relaxed/simple;
-	bh=0z04N92JTbhCAT8TybwVJZOggK4E3i1iymyAeKj0gio=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=E4QCrXTtHGsOnLOXi0BDb6PjP3+PsS4zDenU6I6hTGCxT1OQVExzw54+/LjMWoTkwaREbMOinq5/g4Ko72jhdYJVO+M9zpNYW57E8wSRt4J5B5DDFiVRHU6NHmb9oESCARmin86eflWJvTVCk/5a4O1tDx+F/bg+JV8Mfgxb73I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=lpP8kp3I; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40fc6578423so25216455e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 02:08:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1707127695; x=1707732495; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bz6rJ7dESCISpbZrnxE3XoKAl8aY4yf2DGxOhoFvQU4=;
-        b=lpP8kp3IHHdVXingprrzGFCAovM/dWFNF+OibzejuVdRt/q+NqFZ8RI66L2yJwveDh
-         BhIFeikqGIMTW5B1bciXadC4o3qa2Q6MnMxu/UJ/dHUo94H0gjGLM+yRhYS8YfuLgqUX
-         YbcHtyEQpF+dURdDsZtLJFJw01VVTzJ8SpQMMtOxs4SDD7MlsHjkJ4nbWziP5VNhqNy6
-         AiNT60p3N2uNnQFA+oZwij4276esviYigr60j+uvcV2GU02ngMK5Sx2+WvdC8zaq80DK
-         Uhnd3QTRkyBFCwvZClBK13rIAjHR/GRwOYgBu/KKgn2q7aGEXQl84jpLNm/Orj6yTyZK
-         35Dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707127695; x=1707732495;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Bz6rJ7dESCISpbZrnxE3XoKAl8aY4yf2DGxOhoFvQU4=;
-        b=S/eoDehYVbIaae+ohxBwBEavF2JXWmKDQDkixCBNLnJRfalUFsD6u3o2m0hWgEaTtb
-         jfkQZt6d3j6z119rmeOT7ZZlD29rvhrRUULJ+z9Wo2WEYTJozkva2aRQYG/jRecWY+eD
-         VacRNwrwmzk5m4NZv38n/6Sqv3SiBipoDbSUFtA897WThH5/WNubTeNWHvZspUmQlLb2
-         iJBNSOMPa3IKr1NN0sE0P9F4mmRqzsbuqudr1fK85JXqaCD1RdcrtRkiJzbHlBWgL0Bv
-         mVveHvIUKufM7TOwpT4ewhvhDiFqenKT+evACAal4AvkDnxbuKKUP3VyDnNXXT5lvyZj
-         aDFw==
-X-Gm-Message-State: AOJu0YxlMuaRNE6taV1qiDzlZMIUu3C+uthnj9nrCueiLijAqhliYUHT
-	wF2tcTpY92D5bUVRTgyIvCv0FgCm4HZ2DujacbTgMVYCZg9yf29CHbKpXyDb1ps=
-X-Google-Smtp-Source: AGHT+IEuZryyRoYPtYSM3bmwThxgDpx+5aPtb6v/9reV37Ahag/GK5mGv86OJHOYzjFTfiHlxuMjlQ==
-X-Received: by 2002:adf:fa0b:0:b0:33b:1823:284a with SMTP id m11-20020adffa0b000000b0033b1823284amr6764142wrr.14.1707127695058;
-        Mon, 05 Feb 2024 02:08:15 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVLVNXZfhlwl8CwCpO6CxjlAu5kWuWPsW8ZHZOfWZ5EO/nGeWi/cj2ryDCLLNvdYH4pdSVjDTJTO9Lu7yfYGjyLWGNm8vYhTcS1GTZQoXkQ8nnKWv6m3sgqZYNnRbEIaDQFVTqfiZ6HPJrAsJsxNxAtfQx+vK+DRuTOZATmuWdA4ha3
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:d929:10db:5b5c:b49d])
-        by smtp.gmail.com with ESMTPSA id d15-20020adfe88f000000b0033ae50e2c6asm7729830wrm.83.2024.02.05.02.08.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 02:08:14 -0800 (PST)
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-To: Linus Walleij <linus.walleij@linaro.org>,
-	"Ricardo B . Marliere" <ricardo@marliere.net>
-Cc: linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v2] gpio: set device type for GPIO chips
-Date: Mon,  5 Feb 2024 11:08:11 +0100
-Message-Id: <20240205100811.41534-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1707127752; c=relaxed/simple;
+	bh=Zq7miwxbrFgr1QcCYOSeeksVLGohHwTXhO8tvxX9HyU=;
+	h=Date:From:To:Cc:Subject:Message-ID:Content-Type:
+	 Content-Disposition:MIME-Version; b=HB3yvm9zUTNNK5R3vV+vxMcG5EINFAFX4FW08RBaCjl5lJBJ4GUwv2MnQbLFsPdcoE/K2cMozJbAGQYLqeak2o5VRcompAJYSg2cQzy/+L2AIxYYoXnfqN3q0dYwsGme54PVBm36k/O4OXfP79YEh10/o5fIw/w7bH6ynOabKZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ASKQUGmp; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4159RNK6008177;
+	Mon, 5 Feb 2024 10:09:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : content-type : mime-version; s=pp1;
+ bh=JcsoH4hXZcWxZ1RfuRdTg/y9BbNd2oLKGK/54T9lzzQ=;
+ b=ASKQUGmpsPufyS1CSEksrmLgjgm8TIlT8FaDb9/cSiFRahkaXzFtnndy7ekQQ8Y+6KYO
+ 1IIWj23gQCdpBvtPgj6L8LiZhfJEOK6oVqicL+CadBz4HnL3u1z73zX53S1PnVuNVaBE
+ JzgTW2O+pFmpBdn0kU9LFX79BVMs2+yGoCBFoc7yYN9i62owz97gN5QD4vTPT9VQDUiZ
+ NoqL+BDFp3IEEu/T7s91d8dS1+QKJ9Tk5PY2Tnmp080MGbsIfuIp38PEeTvbOzBJ/3iB
+ gIeWIVsl19ftE5M2KDSuqmyJt4vJ7AvxmFnT9u8y4RveCkzIrNal2IIyhm6tP4kvyz16 fA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w2w240xyv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 05 Feb 2024 10:09:02 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4159ksgG007148;
+	Mon, 5 Feb 2024 10:09:02 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w2w240xy7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 05 Feb 2024 10:09:01 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4159Yqf2016148;
+	Mon, 5 Feb 2024 10:09:00 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w22h1q808-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 05 Feb 2024 10:09:00 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 415A8wKE15205002
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 5 Feb 2024 10:08:58 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A5EF620067;
+	Mon,  5 Feb 2024 10:08:58 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1C7222004F;
+	Mon,  5 Feb 2024 10:08:57 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.109.253.82])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Mon,  5 Feb 2024 10:08:56 +0000 (GMT)
+Date: Mon, 5 Feb 2024 15:38:54 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: tytso@mit.edu
+Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, jack@suse.cz,
+        ritesh.list@gmail.com, john.g.garry@oracle.com, djwong@kernel.org
+Subject: Running out of inode flags in ext4
+Message-ID: <ZcCztkt8KtMrsvPp@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: LRKy6uw2ycFonp9HiHTMQga5tMeeKhDh
+X-Proofpoint-GUID: 5vIVyb_WSIEbxEQn8QTo4T5SRouBM8zk
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-05_05,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1031
+ priorityscore=1501 malwarescore=0 mlxlogscore=581 spamscore=0
+ impostorscore=0 mlxscore=0 suspectscore=0 adultscore=0 bulkscore=0
+ phishscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311290000 definitions=main-2402050076
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Hi folks,
 
-It's useful to have the device type information for those sub-devices
-that are actually GPIO chips registered with GPIOLIB. While at it: use
-the device type struct to setup the release callback which is the
-preferred way to use the device API.
+I'm trying to rework the ext4 atomic write patchset so we have similar
+semantics as discussed here [1], which would look something like:
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
----
-v1-> v2:
-- make struct device_type constant
+1. we call FS_IOC_FSSETXATTR to enable atomic write on inode
 
- drivers/gpio/gpiolib.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+2. In the setxattr path, we need to mark the inode with
+atomic_write_enabled. XFS does it via an on disk inode flag which is
+straightforward enough 
 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index d52b340562ce..caec861cfa5d 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -663,6 +663,11 @@ static void gpiodev_release(struct device *dev)
- 	kfree(gdev);
- }
- 
-+static const struct device_type gpio_dev_type = {
-+	.name = "gpio_chip",
-+	.release = gpiodev_release,
-+};
-+
- #ifdef CONFIG_GPIO_CDEV
- #define gcdev_register(gdev, devt)	gpiolib_cdev_register((gdev), (devt))
- #define gcdev_unregister(gdev)		gpiolib_cdev_unregister((gdev))
-@@ -680,6 +685,8 @@ static int gpiochip_setup_dev(struct gpio_device *gdev)
- 	struct fwnode_handle *fwnode = dev_fwnode(&gdev->dev);
- 	int ret;
- 
-+	device_initialize(&gdev->dev);
-+
- 	/*
- 	 * If fwnode doesn't belong to another device, it's safe to clear its
- 	 * initialized flag.
-@@ -691,9 +698,6 @@ static int gpiochip_setup_dev(struct gpio_device *gdev)
- 	if (ret)
- 		return ret;
- 
--	/* From this point, the .release() function cleans up gpio_device */
--	gdev->dev.release = gpiodev_release;
--
- 	ret = gpiochip_sysfs_register(gdev);
- 	if (ret)
- 		goto err_remove_device;
-@@ -825,6 +829,8 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
- 	gdev = kzalloc(sizeof(*gdev), GFP_KERNEL);
- 	if (!gdev)
- 		return -ENOMEM;
-+
-+	gdev->dev.type = &gpio_dev_type;
- 	gdev->dev.bus = &gpio_bus_type;
- 	gdev->dev.parent = gc->parent;
- 	gdev->chip = gc;
-@@ -851,7 +857,6 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
- 	if (ret)
- 		goto err_free_ida;
- 
--	device_initialize(&gdev->dev);
- 	if (gc->parent && gc->parent->driver)
- 		gdev->owner = gc->parent->driver->owner;
- 	else if (gc->owner)
--- 
-2.40.1
+However, on ext4 we are almost out of 32 bits of inode flags and I don't
+think it's possible to add any flags2 field or something (iiuc, ondisk
+indoe doesn't have scope for expansion).
 
+Some ideas that I have:
+
+- I see that 0x00400000 (formerly EXT4_EOFBLOCKS_FL) is free to use but
+	as per my understanding, this is interpreted in some way by older fsck
+	versions. However, marking atomic writes as RO_COMPAT might help aavoid
+	confusion in fsck.
+
+- If we can't use inode flags, should we maybe use xattr to store
+	atomic_write details?
+	
+Should I go with either of above or is there a better way to mark
+ext4 inodes which I might be missing. Also, now that we are out of inode
+flags, what's the recommended way to handle such use cases in the
+future?
+
+Would appreciate some suggestions on this.
+
+Thanks,
+ojaswin
+
+[1]
+https://lore.kernel.org/all/20240124142645.9334-4-john.g.garry@oracle.com/
 
