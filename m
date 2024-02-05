@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-52840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13C90849D4D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:45:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFD35849D50
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:45:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 018201C2325A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:45:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73E451F23A91
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:45:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9580C2D048;
-	Mon,  5 Feb 2024 14:44:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A59732D634;
+	Mon,  5 Feb 2024 14:44:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IWfsv7Bg"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XH4F4/rI"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8DFD2C1A4;
-	Mon,  5 Feb 2024 14:44:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30D0F2C85C;
+	Mon,  5 Feb 2024 14:44:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707144284; cv=none; b=nGvhDcyVkXXtrTkWRTXQyDNKmdov9NtxMUzSGGKh1x/Q0PtxI+hEdpQtANr0B92S+McRS/l3gUAdjRQVzbDySRAega373PgFdrI6sh8CegDRsf7T3Bqdof2bFEVZfptOu/zix23ZUdCCYvtucqmkvpf6PiLJLv6EZm2LPlJ/WPk=
+	t=1707144285; cv=none; b=pNUlM4rOz+P5729iNVRpYrvUeS7dRPuY/f8ANQkKyl2QG7QFt/2JjPzU0Tyi40tW60hntqoBWjQsBZbw60FCJmLjcW4he81MpxNbxitmXsug42QrjB64PcPCssQJL1cPRa0rUGfxhIiMkSidmEZvWaClQL09J4XQ2HwgNgfy5Dk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707144284; c=relaxed/simple;
-	bh=TeHBKvrOL97DsIkR78em+m1YctHPFczJy8uNVVS0UQM=;
+	s=arc-20240116; t=1707144285; c=relaxed/simple;
+	bh=HVNxTNXFH81elhnlHFFoiXRlJRy+wLKmBxr2sIFd+iQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TUld8RMRVn3YQvglHAsWMVoshFFUQjond/jySp+fZyhPId7a2axhHPGuhEVH7f3y0QCHM6UfNhMXmPPMOvr6x4/Z0BVoIutOUfQn0wacf2rpkD1yVOsu0DMLmsqhXXA++vYRpF5LU67PvPrlHOLHCZWf92RGQn47Q8j1rWkxwog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IWfsv7Bg; arc=none smtp.client-ip=209.85.128.44
+	 MIME-Version; b=C/wdeLWBsc5q80oXDeiDML+9oS6fkXG9RUn0WAxCgZ1RDYbic7nUREpenIVBBczdENSbiNLvOJvwZmuAPfZdb1hLmATsOvOQln2WlmygS6IfV7cW5dPXAWKYLNJ+iYMsZ9BPKSSr/lxxvkJs2FaCifGxcSywovtXxD5mSCAxEPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XH4F4/rI; arc=none smtp.client-ip=209.85.128.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40ef64d8955so41138585e9.3;
-        Mon, 05 Feb 2024 06:44:42 -0800 (PST)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40fdc63f4feso6914545e9.3;
+        Mon, 05 Feb 2024 06:44:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707144281; x=1707749081; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707144282; x=1707749082; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=v7fBQGIt+/unvEwTJnibDluFSJZOyorUxBAWdUVB2dk=;
-        b=IWfsv7BgdrQz7b24N+1j9h4WmOEoARTlUic1XfEmFpnT9jusJPOdz77A5y5EPa7Ivq
-         yhGQKQ86jHoYq/6yWeJMNbS1DBchrHYNvx22+4U7if98CWLpdfAzWKEIhCe/xZ9erQnH
-         D5xajuJyNoQv/m2rePZhN4S++h489nLoSnPBOdoKZDYwCZhaWlUyMByaXk+UwO0qRhL2
-         7X+lt1scS9qqLdCgOlgh/nWAyJPhk5bcyUUaW0aPKfyqQkEGjkWrg2WdXRyuK8teMh+T
-         4vnyruNHDs1+dvB8FVM/GSMjr5LSIwTq5pjIjZ8a6nbscjLsJzuVmtvf6XquC+DKK8I9
-         OwqQ==
+        bh=YOISnKqQCDRm9DMf4rv94ANqERw2XArPKxXWyi/bpyk=;
+        b=XH4F4/rIrSTqTHhJoJgnZjQnrlErKfgFLE4FC9HZK4YDx1MwmP4ETgallHewG0aLxS
+         oTXQlar8T1b5LKPiMeVdUChaGIywW5rYFsU+1E+Scx3k0NBF3QIAQxQ0zxygb6Lz5b8M
+         v4E1MPVCzYvtQ0auLR3QNJY/d7rbPAqdUDvLDiX4Dg8h9IrLkuMnYBRu24WYbrC2aUbH
+         7cIgBygyA+jkGCQZCiVSpIvaUx7bu/lqs0rytzNCt67arzmqut3s242um8w/upKWYMfr
+         /a2iT+A5vZ/uz3ifFKan+nEijylhGcHTzS2W06eLoq/xuXW6KPwMoXa+PpNh/mE/wXRR
+         7iQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707144281; x=1707749081;
+        d=1e100.net; s=20230601; t=1707144282; x=1707749082;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=v7fBQGIt+/unvEwTJnibDluFSJZOyorUxBAWdUVB2dk=;
-        b=MrecCK/hs3vk4HgEot3NAycPOGd8ulg/rlSRggsQbWscvigxSJs51pPoLF1ARcYIgo
-         G/xiff935RxNql5cRnvuA3ZY3tvTAeSrYqbtmilDtMqdBRHiNwUsQMr+0Q1mbs3ZUqfd
-         WiUa3s7ZYHdxDkbBAEMfmS29FkIzSPYujIHotmcYH6/gpKSSfAk4OOuWl1LRXR/Dv7ts
-         yLnUS3TIICH0V2jBMPreZAcOv43J6X6f4/aAGnT4j1ztyrr81yvzkTZUA/mM3ssokFGx
-         iAyDp7X8AnwOswqtfgtpq/oiucE/BdqJDRzgqB71eY4qbiP7wMV6CRGy6lRhMaTutYMF
-         7PyA==
-X-Gm-Message-State: AOJu0YyTPZF5zQP962d2Zag8UKF4Pkf39/yPbFksN3kn9IKPoctW9eAE
-	gvlS6RCgeSTepGhsMT679aHRtlHHBZgA3DyIASHw6K9WCUP+yWhq
-X-Google-Smtp-Source: AGHT+IFOjqFuBGisPvWGeOQCrN+gq/WTQNLJg5YXYd1jVbMSF+SLYYmidODwxp5cOT928fGfCT2AzA==
-X-Received: by 2002:a05:600c:3594:b0:40e:a569:3555 with SMTP id p20-20020a05600c359400b0040ea5693555mr5023367wmq.35.1707144281088;
-        Mon, 05 Feb 2024 06:44:41 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVhf0PQ529CC9EyIRAGqYlHQYP19Rmsobr0Gy7p23cYllMhaQb9HT3BVMmFANwdDs8aEQKIU68WRhjtAk2wGsIAjDx2s3WF9b0PTIUfbT7nLTtV5Pzt4YhXNcRxu0lRRhkm5V0iy26wqavjRv7xnCZiVMqRuIvHcyjsKzgswhxfvbGBbYNeFdM67DSmv9/VXUHCNEbt8Y5g0hY2NHwGKop7jscPlEse9kmqfb7OOucThN9ygQSXPWKlQNbUEY2ale7F8Vdhb5+/ECLlSYX6Z8oLiG7RRKsMMqAEQm1BDQidsGj9fRdx/zG+ykJcoHfMdmevJspYPK80FykLF/xptNHA1X7o4naS4pIJnAGE5zdfU9SIohbqgn+I4AnTJkelr1GFYQte47iXb25T0P4Dmz+VkfLRajyKO4aAI9/waqoZXEFqJa7VtSDe4G0iWDwHcbvHJuXrQKAj9AnrBOpgGjoalGmbut8Bekj4hf1UYFM=
+        bh=YOISnKqQCDRm9DMf4rv94ANqERw2XArPKxXWyi/bpyk=;
+        b=vqcvbXqsxI6CrdBi929/mONdSA0IGHc2hZ354g79VpomGDHj1CMQyF/xqh/biYm968
+         4c1YqLlii3UKL+09aDxeQYDp+uwVCOohFO858xeiiDwy8qMSQhz7CTQMdYSB0t2GSql0
+         RZ++HH7CfMDw5VTkMb0llU207862JIovdEUP8nKPWfKh0Phf3SXTDBrZGUyRx2f12b/8
+         fmjxiH3UnpJ0OAyzffcyrWJPAo1xIPfyHnASANBmX56uFPwxtcs3EhOJLG0Z2kDZUZOy
+         jCGeLiljCEs6hiRtBY+Ymreu2jouS0qKd4DoXtyz/j0bV7NE/C716Fptiqlerm5VYgpo
+         t+Bw==
+X-Gm-Message-State: AOJu0YwUpfClpwaA/35uGj3TkOfAOF/v0NME7S/ULfmwya3iY9KfNK7U
+	a5g65YwTLJWc3W/Up/FXplczkVLF+Kb5iFWeerucUIB7Im2L5umM
+X-Google-Smtp-Source: AGHT+IFvIy1DmNfZB7kj7EoqbMZqegF/H2rFPRzaGgfh4bfuRnhQ2hiY6Qi+H9I5iuI76TTV44t/Zw==
+X-Received: by 2002:a5d:64e6:0:b0:33b:3ced:a5e1 with SMTP id g6-20020a5d64e6000000b0033b3ceda5e1mr2977647wri.20.1707144282065;
+        Mon, 05 Feb 2024 06:44:42 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWb8pba3ZsebPa0k+WYTEdWwu4cItrvFY42MeLwJYoWaa30UnHSKzeUsqmOXGP5WnLa89NqvkEg6wBM53fhS7zAVWCTHBBWJGwtrpjbj9cTGZesf7JkcYkOoBfQWH+hJGLZU/7cNKFwUt38IpkDKagGc7Wx2TO6PA1LAK6UEpW81vV/9iYqKzT1HYgZGyVl0jl4Rd+TCXYwEXF7i7hdtwt7wg5qxNKss3ZOdoFWrmBihZyOx0uyoRl+Bw0+G4p3nucCUt9S4J8clG8jCudPLYpucdEACsnlRMduSo3nxFeXZ3qrdMig+lXbi0BhNErySFtoqOTtdwulHd0fksVoXaQ947vORglCrCcB1RDu0vU5ldwRVyK9L1mjTon26HWmjaRlBuNlYhZ5Fa/SOhcF3dkV9vaxZN3Bd5Uh9OMvlJPzkzyx3gTNuxWnt9tjoeb2lNpVGxAjhUqo0nJ5BAps3IURcnFQxhBs2juiYmXuMS8=
 Received: from prasmi.home ([2a00:23c8:2500:a01:8f3c:6ff8:96c9:c9f0])
-        by smtp.gmail.com with ESMTPSA id u7-20020a05600c19c700b0040fdf2832desm70272wmq.12.2024.02.05.06.44.39
+        by smtp.gmail.com with ESMTPSA id u7-20020a05600c19c700b0040fdf2832desm70272wmq.12.2024.02.05.06.44.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 06:44:39 -0800 (PST)
+        Mon, 05 Feb 2024 06:44:41 -0800 (PST)
 From: Prabhakar <prabhakar.csengg@gmail.com>
 X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 To: Thomas Gleixner <tglx@linutronix.de>,
@@ -81,9 +81,9 @@ Cc: devicetree@vger.kernel.org,
 	Biju Das <biju.das.jz@bp.renesas.com>,
 	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
 	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v2 2/3] arm64: dts: renesas: rz-g2l-family: Add missing interrupts from IRQC IP block
-Date: Mon,  5 Feb 2024 14:44:20 +0000
-Message-Id: <20240205144421.51195-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v2 3/3] arm64: dts: renesas: r9a08g045: Add missing interrupts of IRQC node
+Date: Mon,  5 Feb 2024 14:44:21 +0000
+Message-Id: <20240205144421.51195-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240205144421.51195-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 References: <20240205144421.51195-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
@@ -97,120 +97,40 @@ Content-Transfer-Encoding: 8bit
 
 From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-The IRQC IP block supports Bus error and ECCRAM interrupts for RZ/G2L and
-alike SoC's (listed below). Update the IRQC node with the missing
-interrupts, and additionally, include the 'interrupt-names' property in
-the IRQC node so that driver can parse the interrupts based on the name.
+The IRQC block on RZ/G3S ("R9A08G045") SoC supports ECCRAM error
+interrupts too, add those missing interrupts in the IRQC node.
 
-- R9A07G043U              - RZ/G2UL
-- R9A07G044L/R9A07G044LC  - RZ/{G2L,G2LC}
-- R9A07G054               - RZ/V2L
-
-Fixes: 5edc51af5b30 ("arm64: dts: renesas: r9a07g044: Add IRQC node")
-Fixes: 48ab6eddd8bb ("arm64: dts: renesas: r9a07g043u: Add IRQC node")
-Fixes: 379478ab09e0 ("arm64: dts: renesas: r9a07g054: Add IRQC node")
+Fixes: 837918aa3fdd ("arm64: dts: renesas: r9a08g045: Add IA55 interrupt controller node")
 Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 ---
- arch/arm64/boot/dts/renesas/r9a07g043u.dtsi | 12 +++++++++--
- arch/arm64/boot/dts/renesas/r9a07g044.dtsi  | 22 ++++++++++++++++++++-
- arch/arm64/boot/dts/renesas/r9a07g054.dtsi  | 22 ++++++++++++++++++++-
- 3 files changed, 52 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/renesas/r9a08g045.dtsi | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/renesas/r9a07g043u.dtsi b/arch/arm64/boot/dts/renesas/r9a07g043u.dtsi
-index 01d08ebb4a78..964b0a475eee 100644
---- a/arch/arm64/boot/dts/renesas/r9a07g043u.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r9a07g043u.dtsi
-@@ -178,7 +178,13 @@ irqc: interrupt-controller@110a0000 {
- 			     <SOC_PERIPHERAL_IRQ(473) IRQ_TYPE_LEVEL_HIGH>,
- 			     <SOC_PERIPHERAL_IRQ(474) IRQ_TYPE_LEVEL_HIGH>,
- 			     <SOC_PERIPHERAL_IRQ(475) IRQ_TYPE_LEVEL_HIGH>,
--			     <SOC_PERIPHERAL_IRQ(25) IRQ_TYPE_EDGE_RISING>;
-+			     <SOC_PERIPHERAL_IRQ(25) IRQ_TYPE_EDGE_RISING>,
-+			     <SOC_PERIPHERAL_IRQ(34) IRQ_TYPE_EDGE_RISING>,
-+			     <SOC_PERIPHERAL_IRQ(35) IRQ_TYPE_EDGE_RISING>,
-+			     <SOC_PERIPHERAL_IRQ(36) IRQ_TYPE_EDGE_RISING>,
-+			     <SOC_PERIPHERAL_IRQ(37) IRQ_TYPE_EDGE_RISING>,
-+			     <SOC_PERIPHERAL_IRQ(38) IRQ_TYPE_EDGE_RISING>,
-+			     <SOC_PERIPHERAL_IRQ(39) IRQ_TYPE_EDGE_RISING>;
- 		interrupt-names = "nmi",
- 				  "irq0", "irq1", "irq2", "irq3",
- 				  "irq4", "irq5", "irq6", "irq7",
-@@ -190,7 +196,9 @@ irqc: interrupt-controller@110a0000 {
- 				  "tint20", "tint21", "tint22", "tint23",
- 				  "tint24", "tint25", "tint26", "tint27",
- 				  "tint28", "tint29", "tint30", "tint31",
--				  "bus-err";
-+				  "bus-err", "ec7tie1-0", "ec7tie2-0",
-+				  "ec7tiovf-0", "ec7tie1-1", "ec7tie2-1",
-+				  "ec7tiovf-1";
- 		clocks = <&cpg CPG_MOD R9A07G043_IA55_CLK>,
- 			<&cpg CPG_MOD R9A07G043_IA55_PCLK>;
- 		clock-names = "clk", "pclk";
-diff --git a/arch/arm64/boot/dts/renesas/r9a07g044.dtsi b/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
-index 66f68fc2b241..081d8f49db87 100644
---- a/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
-@@ -905,7 +905,27 @@ irqc: interrupt-controller@110a0000 {
- 				     <GIC_SPI 472 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 473 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 474 IRQ_TYPE_LEVEL_HIGH>,
--				     <GIC_SPI 475 IRQ_TYPE_LEVEL_HIGH>;
-+				     <GIC_SPI 475 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 25 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 35 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 36 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 37 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 38 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 39 IRQ_TYPE_EDGE_RISING>;
-+			interrupt-names = "nmi", "irq0", "irq1", "irq2", "irq3",
-+					  "irq4", "irq5", "irq6", "irq7",
-+					  "tint0", "tint1", "tint2", "tint3",
-+					  "tint4", "tint5", "tint6", "tint7",
-+					  "tint8", "tint9", "tint10", "tint11",
-+					  "tint12", "tint13", "tint14", "tint15",
-+					  "tint16", "tint17", "tint18", "tint19",
-+					  "tint20", "tint21", "tint22", "tint23",
-+					  "tint24", "tint25", "tint26", "tint27",
-+					  "tint28", "tint29", "tint30", "tint31",
+diff --git a/arch/arm64/boot/dts/renesas/r9a08g045.dtsi b/arch/arm64/boot/dts/renesas/r9a08g045.dtsi
+index dfee878c0f49..4aaffd1753c8 100644
+--- a/arch/arm64/boot/dts/renesas/r9a08g045.dtsi
++++ b/arch/arm64/boot/dts/renesas/r9a08g045.dtsi
+@@ -152,7 +152,10 @@ irqc: interrupt-controller@11050000 {
+ 				     <GIC_SPI 458 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 459 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 460 IRQ_TYPE_LEVEL_HIGH>,
+-				     <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
++				     <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
+ 			interrupt-names = "nmi",
+ 					  "irq0", "irq1", "irq2", "irq3",
+ 					  "irq4", "irq5", "irq6", "irq7",
+@@ -164,7 +167,8 @@ irqc: interrupt-controller@11050000 {
+ 					  "tint20", "tint21", "tint22", "tint23",
+ 					  "tint24", "tint25", "tint26", "tint27",
+ 					  "tint28", "tint29", "tint30", "tint31",
+-					  "bus-err";
 +					  "bus-err", "ec7tie1-0", "ec7tie2-0",
-+					  "ec7tiovf-0", "ec7tie1-1", "ec7tie2-1",
-+					  "ec7tiovf-1";
- 			clocks = <&cpg CPG_MOD R9A07G044_IA55_CLK>,
- 				 <&cpg CPG_MOD R9A07G044_IA55_PCLK>;
- 			clock-names = "clk", "pclk";
-diff --git a/arch/arm64/boot/dts/renesas/r9a07g054.dtsi b/arch/arm64/boot/dts/renesas/r9a07g054.dtsi
-index 1f1d481dc783..0d327464d2ba 100644
---- a/arch/arm64/boot/dts/renesas/r9a07g054.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r9a07g054.dtsi
-@@ -912,7 +912,27 @@ irqc: interrupt-controller@110a0000 {
- 				     <GIC_SPI 472 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 473 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 474 IRQ_TYPE_LEVEL_HIGH>,
--				     <GIC_SPI 475 IRQ_TYPE_LEVEL_HIGH>;
-+				     <GIC_SPI 475 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 25 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 35 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 36 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 37 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 38 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 39 IRQ_TYPE_EDGE_RISING>;
-+			interrupt-names = "nmi", "irq0", "irq1", "irq2", "irq3",
-+					  "irq4", "irq5", "irq6", "irq7",
-+					  "tint0", "tint1", "tint2", "tint3",
-+					  "tint4", "tint5", "tint6", "tint7",
-+					  "tint8", "tint9", "tint10", "tint11",
-+					  "tint12", "tint13", "tint14", "tint15",
-+					  "tint16", "tint17", "tint18", "tint19",
-+					  "tint20", "tint21", "tint22", "tint23",
-+					  "tint24", "tint25", "tint26", "tint27",
-+					  "tint28", "tint29", "tint30", "tint31",
-+					  "bus-err", "ec7tie1-0", "ec7tie2-0",
-+					  "ec7tiovf-0", "ec7tie1-1", "ec7tie2-1",
-+					  "ec7tiovf-1";
- 			clocks = <&cpg CPG_MOD R9A07G054_IA55_CLK>,
- 				 <&cpg CPG_MOD R9A07G054_IA55_PCLK>;
++					  "ec7tiovf-0";
+ 			clocks = <&cpg CPG_MOD R9A08G045_IA55_CLK>,
+ 				 <&cpg CPG_MOD R9A08G045_IA55_PCLK>;
  			clock-names = "clk", "pclk";
 -- 
 2.34.1
