@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-52963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD7A2849EE6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:56:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10E56849EED
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:57:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7387928B8A2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:56:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35F971C22275
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:57:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CB473D392;
-	Mon,  5 Feb 2024 15:55:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27B52446D7;
+	Mon,  5 Feb 2024 15:55:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="XfjB6+wj"
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="iMr0ZO9r"
 Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21EEE40BE3;
-	Mon,  5 Feb 2024 15:55:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39C1C40BEF;
+	Mon,  5 Feb 2024 15:55:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707148550; cv=none; b=b1p01ngtC45lCC04roGQ8VFB0WT2lD8eLv1A5TySpPjE3ERwlre7lQSWgrcRjiX3W+b03hlwr/yQLO1PBU9bISpqrl/IqP90dB6YI8jMbIuSH6AUw6to851ryPYE6+FG1DE4b3UHnKwkk5lnWVKKXmAFE93N6pdz8nFBLHicxrM=
+	t=1707148552; cv=none; b=GT0SX2W0kssEQgZ6U+s/eBPFFnb+ggKkzjrzd/tjxck0SKlZuDeqZ7x8WgREMcwWjDpSXTGLep4IcGEI2QvwUSrjgpFKbaXCaZ9woeyH0VZtaZbs7znZM3aavLcSmWS7ws8dKh5wSIOpvJXnzz2xLvbZadGoBpUY4EAWS64mvE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707148550; c=relaxed/simple;
-	bh=msktiAcUNOI1Ofbu2VIxLIX3KXD7NKWavA/GIn4YGpI=;
+	s=arc-20240116; t=1707148552; c=relaxed/simple;
+	bh=5zI8UN7fhVfdhAEgudSO3uFgTiJ7UGsZc/1lO+6mb3k=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IHSPBTlp7FayzcbfITQczNEUYjPJybOW1GvdzbCadgdK1FIe6mj7sCzSjNnVqUGVaIaCkLwN9EqI4ubJMgV/nieJH8205bfjLdog0c+Rsuw7WPZdoyYRtYyOaqWO6IkhkCsh+HztWnYKDGQM5XucT0QtO2g7s+h6PSYjz+xtL6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=XfjB6+wj; arc=none smtp.client-ip=45.89.224.132
+	 MIME-Version:Content-Type; b=qk/73lGji/G56mVCvCUCgIcjHmWPjWFr7B44Fc5kA8niIXTyeZe6U1P3wN/k9KC/HaTV3wbFfUW3fGwhaGKu8hWaL/n3pG/TudCgGK13GavieHDe3upGyj8qMD+rU+l8nMrPzYmwqSlzTL+sySJvIc6RmzIq/wb3igcDXcH93nM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=iMr0ZO9r; arc=none smtp.client-ip=45.89.224.132
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
 Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id B524612000B;
-	Mon,  5 Feb 2024 18:55:40 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru B524612000B
+	by mx1.sberdevices.ru (Postfix) with ESMTP id C766212000F;
+	Mon,  5 Feb 2024 18:55:41 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru C766212000F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1707148540;
-	bh=JRDgg7o64zkG8+972kncfw3X0h+nBkIPPG5PA2GVm7g=;
+	s=mail; t=1707148541;
+	bh=HZKXOUHwXi/WEeBn0gsslzGQgCLVYv/KpYJnzTxg//0=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=XfjB6+wjAmD/BhJWzU4WgwyT53xfE4YgeZa50j0fRqvfkzR+bQRsrbdq3DDSCoFYT
-	 y3k3Gli4+7dFqvvBGWv31yDKk9pQgsi37J/nRm/kJYHLsnSF6H4QHkWyUNmJE8YRDK
-	 1swMLt8WIKZa2gQEPNmu6TYlKHfO6O7Xg9DLHrDIBNBqM+dQxSyxdc0ZZeuqh5oyqe
-	 fAD2lg8vy4a5WkO2Oms+5QYWyi0kwo7HmV4GHgOKfc9QRRMZvG+DRv1uuD5C0yLA2i
-	 cxiUK9dEgeR4hhSnzPLapBcRtpXHeDEc6yWNC4MaY4kIC77b62hMDKsu71HWbGlKNN
-	 OZwzuL41TSf9g==
+	b=iMr0ZO9rhT2b4obEf3MVLVv9dOT2RYWgMe0yKDhPSEbz8x40NoQJWdbll5R603BmI
+	 K4KUJ7hmtC7UVyie+A/CqU1LytjGVnlSGox8+K5RPBm36WzAe2DRKW0X8O5LnN5BCg
+	 sXZqygqb5gWacrWGlTjfUvs5VYnPVTRMksfV4Tj/AGi2Vg68y0Jx83Aq+9xjq5SRqh
+	 +2wpcyYqc65Grq2J1Lhnl6oqNpLbVk3/fbiPTbmXbuJYpXSRA9yn0XAYwK3bpFwFx6
+	 pNVmZnYhtT/9TnT3cli3RUSnzwVB6vRZ/O57qYeYbdPJs17sdCVk/rsJBjLmU1jdO3
+	 kpJo8qRxcW/0A==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Mon,  5 Feb 2024 18:55:40 +0300 (MSK)
+	Mon,  5 Feb 2024 18:55:41 +0300 (MSK)
 Received: from user-A520M-DS3H.sberdevices.ru (100.64.160.123) by
  p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 5 Feb 2024 18:55:39 +0300
+ 15.2.1118.40; Mon, 5 Feb 2024 18:55:41 +0300
 From: Alexey Romanov <avromanov@salutedevices.com>
 To: <neil.armstrong@linaro.org>, <clabbe@baylibre.com>,
 	<herbert@gondor.apana.org.au>, <davem@davemloft.net>, <robh+dt@kernel.org>,
@@ -63,9 +63,9 @@ CC: <linux-crypto@vger.kernel.org>, <linux-amlogic@lists.infradead.org>,
 	<linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
 	<linux-arm-kernel@lists.infradead.org>, <kernel@salutedevices.com>, Alexey
  Romanov <avromanov@salutedevices.com>
-Subject: [PATCH v3 03/20] drivers: crypto: meson: make CLK controller optional
-Date: Mon, 5 Feb 2024 18:55:04 +0300
-Message-ID: <20240205155521.1795552-4-avromanov@salutedevices.com>
+Subject: [PATCH v3 04/20] drivers: crypto: meson: add MMIO helpers
+Date: Mon, 5 Feb 2024 18:55:05 +0300
+Message-ID: <20240205155521.1795552-5-avromanov@salutedevices.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240205155521.1795552-1-avromanov@salutedevices.com>
 References: <20240205155521.1795552-1-avromanov@salutedevices.com>
@@ -96,86 +96,83 @@ X-KSMG-LinksScanning: Clean
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/02/05 10:19:00 #23362212
 X-KSMG-AntiVirus-Status: Clean, skipped
 
-Amlogic crypto IP doesn't take a clock input on some
-SoCs: AXG / A1 / S4 / G12. So make it optional.
+Add MMIO access helpers: meson_dma_start() and meson_dma_ready().
 
 Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
 ---
- drivers/crypto/amlogic/amlogic-gxl-core.c | 21 ++++++++-------------
- drivers/crypto/amlogic/amlogic-gxl.h      |  2 ++
- 2 files changed, 10 insertions(+), 13 deletions(-)
+ drivers/crypto/amlogic/amlogic-gxl-cipher.c |  2 +-
+ drivers/crypto/amlogic/amlogic-gxl-core.c   | 24 ++++++++++++++++-----
+ drivers/crypto/amlogic/amlogic-gxl.h        |  2 ++
+ 3 files changed, 22 insertions(+), 6 deletions(-)
 
+diff --git a/drivers/crypto/amlogic/amlogic-gxl-cipher.c b/drivers/crypto/amlogic/amlogic-gxl-cipher.c
+index 7eff3ae7356f..1fe916b0a138 100644
+--- a/drivers/crypto/amlogic/amlogic-gxl-cipher.c
++++ b/drivers/crypto/amlogic/amlogic-gxl-cipher.c
+@@ -225,7 +225,7 @@ static int meson_cipher(struct skcipher_request *areq)
+ 
+ 	reinit_completion(&mc->chanlist[flow].complete);
+ 	mc->chanlist[flow].status = 0;
+-	writel(mc->chanlist[flow].t_phy | 2, mc->base + ((mc->pdata->descs_reg + flow) << 2));
++	meson_dma_start(mc, flow);
+ 	wait_for_completion_interruptible_timeout(&mc->chanlist[flow].complete,
+ 						  msecs_to_jiffies(500));
+ 	if (mc->chanlist[flow].status == 0) {
 diff --git a/drivers/crypto/amlogic/amlogic-gxl-core.c b/drivers/crypto/amlogic/amlogic-gxl-core.c
-index 4d1b1d5b7a54..54113c524ec5 100644
+index 54113c524ec5..372c30f72072 100644
 --- a/drivers/crypto/amlogic/amlogic-gxl-core.c
 +++ b/drivers/crypto/amlogic/amlogic-gxl-core.c
-@@ -250,6 +250,7 @@ static void meson_unregister_algs(struct meson_dev *mc)
- static const struct meson_pdata meson_gxl_pdata = {
- 	.descs_reg = 0x0,
- 	.status_reg = 0x4,
-+	.need_clk = true,
- };
+@@ -23,18 +23,32 @@
  
- static const struct of_device_id meson_crypto_of_match_table[] = {
-@@ -285,17 +286,14 @@ static int meson_crypto_probe(struct platform_device *pdev)
- 		dev_err(&pdev->dev, "Cannot request MMIO err=%d\n", err);
- 		return err;
- 	}
--	mc->busclk = devm_clk_get(&pdev->dev, "blkmv");
--	if (IS_ERR(mc->busclk)) {
--		err = PTR_ERR(mc->busclk);
--		dev_err(&pdev->dev, "Cannot get core clock err=%d\n", err);
--		return err;
--	}
+ #include "amlogic-gxl.h"
  
--	err = clk_prepare_enable(mc->busclk);
--	if (err != 0) {
--		dev_err(&pdev->dev, "Cannot prepare_enable busclk\n");
--		return err;
-+	if (mc->pdata->need_clk) {
-+		mc->busclk = devm_clk_get_enabled(&pdev->dev, "blkmv");
-+		if (IS_ERR(mc->busclk)) {
-+			err = PTR_ERR(mc->busclk);
-+			dev_err(&pdev->dev, "Cannot get and enable core clock err=%d\n", err);
-+			return err;
-+		}
- 	}
++void meson_dma_start(struct meson_dev *mc, int flow)
++{
++	u32 offset = (mc->pdata->descs_reg + flow) << 2;
++
++	writel(mc->chanlist[flow].t_phy | 2, mc->base + offset);
++}
++
++static bool meson_dma_ready(struct meson_dev *mc, int flow)
++{
++	u32 offset = (mc->pdata->status_reg + flow) << 2;
++	u32 data = readl(mc->base + offset);
++
++	if (data)
++		writel_relaxed(0xF, mc->base + offset);
++
++	return data;
++}
++
+ static irqreturn_t meson_irq_handler(int irq, void *data)
+ {
+ 	struct meson_dev *mc = (struct meson_dev *)data;
+ 	int flow;
+-	u32 p;
  
- 	err = meson_allocate_chanlist(mc);
-@@ -322,7 +320,6 @@ static int meson_crypto_probe(struct platform_device *pdev)
- 	meson_unregister_algs(mc);
- error_flow:
- 	meson_free_chanlist(mc, mc->flow_cnt - 1);
--	clk_disable_unprepare(mc->busclk);
- 	return err;
- }
- 
-@@ -337,8 +334,6 @@ static void meson_crypto_remove(struct platform_device *pdev)
- 	meson_unregister_algs(mc);
- 
- 	meson_free_chanlist(mc, mc->flow_cnt - 1);
--
--	clk_disable_unprepare(mc->busclk);
- }
- 
- static struct platform_driver meson_crypto_driver = {
+ 	for (flow = 0; flow < mc->flow_cnt; flow++) {
+ 		if (mc->chanlist[flow].irq == irq) {
+-			p = readl(mc->base + ((mc->pdata->status_reg + flow) << 2));
+-			if (p) {
+-				writel_relaxed(0xF, mc->base +
+-					      ((mc->pdata->status_reg + flow) << 2));
++			if (meson_dma_ready(mc, flow)) {
+ 				mc->chanlist[flow].status = 1;
+ 				complete(&mc->chanlist[flow].complete);
+ 				return IRQ_HANDLED;
 diff --git a/drivers/crypto/amlogic/amlogic-gxl.h b/drivers/crypto/amlogic/amlogic-gxl.h
-index 9ad75da214ff..a36b9bac63a0 100644
+index a36b9bac63a0..59fc6a67e0a9 100644
 --- a/drivers/crypto/amlogic/amlogic-gxl.h
 +++ b/drivers/crypto/amlogic/amlogic-gxl.h
-@@ -82,10 +82,12 @@ struct meson_flow {
-  * struct meson_pdata - SoC series dependent data.
-  * @reg_descs:	offset to descriptors register
-  * @reg_status:	offset to status register
-+ * @need_clk:	clock input is needed
-  */
- struct meson_pdata {
- 	u32 descs_reg;
- 	u32 status_reg;
-+	bool need_clk;
+@@ -163,6 +163,8 @@ struct meson_alg_template {
+ #endif
  };
  
- /*
++void meson_dma_start(struct meson_dev *mc, int flow);
++
+ int meson_enqueue(struct crypto_async_request *areq, u32 type);
+ 
+ int meson_aes_setkey(struct crypto_skcipher *tfm, const u8 *key,
 -- 
 2.34.1
 
