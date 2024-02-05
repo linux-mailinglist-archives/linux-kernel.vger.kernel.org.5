@@ -1,105 +1,138 @@
-Return-Path: <linux-kernel+bounces-52551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C926F849998
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:07:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 832188499AC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:10:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81A682812E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:07:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 367B91F2718E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:10:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A12F91AAD2;
-	Mon,  5 Feb 2024 12:04:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A1A61C298;
+	Mon,  5 Feb 2024 12:05:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BYgnRr5H"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="k2aoDXdR"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 800A91CAB3
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 12:04:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5816200BA
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 12:05:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707134673; cv=none; b=dJUvMVHagl37xoiky8vuiz/aSNf1uQ7bYUdhpCewxjCiJTWKK8qqY1TxDUFuTaPfu4BNrcMXLGAeDPgJTWbHUgkqNlWsk1Kh6VOlkvezs/jDUjo3kLtFfcXMJ6GH+jXODCE5udaMVNfGrLGqgwsz9dGhaXVhLNp/5ognROnSZzY=
+	t=1707134733; cv=none; b=oAW1Rzuj6e/u0Hm1ELJjaRU/5pBZ9NBTmY9T5Ux+w4liQmGL3AB+w0AysZZNPAnZQsLa0cjvtD8e4b8jrPFvzacz9dUjoEnQmD+w/aFv2lKU7HW6VBuN2wwctjw6hcURoseI9BWCWdj7fMpsPe/UOq9MvTZ7Snn29ufIildDa0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707134673; c=relaxed/simple;
-	bh=LUanOL5KSU2Dum5VwLSUoi/RhpDIavAUwlID44IYy7g=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=ib5rPQXAWuvyOqZ/0+2oishJqA0CTT0J0ZsbpaZlUuvPzZX+/ICc2Pzt5+zUfBwtvAi7oJIuj92Ntaj/yYpxO5GKkbQWfHhx2XI/ITpzcmIiqvd+NAiruL8V58xASyyHsiXoi7jP7+0D4MSmc1sIEnggLMFBFL4CNxIHfRsznMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BYgnRr5H; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707134671;
+	s=arc-20240116; t=1707134733; c=relaxed/simple;
+	bh=X1duw1mS6JjQGddQSOLFB42PLLgbnopdVgbbue+brlk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=A3MOYsATrrs3ksg0/wwsZvburhXLP2q7Uw7dgyAOgcKBesVktlp853tVhjSuKI817ZgwfLuSQPSHmlecfoTncDM7694LApdxG4Efxgzq+VFtnTU/reWGe0MIwPXhROA9yvasJ+DHVYz/uf+iv3Lk9g/3f7EqKP2xDQ3y6tpIZZg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=fail (0-bit key) header.d=marliere.net header.i=@marliere.net header.b=k2aoDXdR reason="key not found in DNS"; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d7858a469aso30881805ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 04:05:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707134731; x=1707739531;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from
+         :dkim-signature:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A3KIw4nh0ZlsNY+qMf2ryaKB83r+kLjyKzsK4TQemXc=;
+        b=UOY/WH01M843O5dDU76c9ooLOngThZSEZjF9LWv0cfbEfYirkmhtfe0veF+VfmCQik
+         8le/Hhc2ti7sScReQLYLMvk278pzyr3zQjkA4pZ2BLyA1vST2C2qy/85PIiphCY+kwhI
+         b62KX6j4W5MeyNVGAgWmyKr3mOARdrawWlpnhGdqbNwoXG5HiKLTRuLalfHeDsbbxwCu
+         hL1j/2V/nsv3gAhmCgcgo/rKP/2vdSD9+YFuiHIfoQcfXBXy7h/BENWFuNNCtLtBfoT+
+         xnQiLvMJU3yQW/cmhlinOC5N6+qAsmUaeZb67ykWusEHDYYQEoRE83yQ3V5H4Jgb8eSI
+         zdjA==
+X-Gm-Message-State: AOJu0YwFCHunGj73+StnX4h/mffKU9OoQB9hMyJUxm1kry0wLmwdQnrt
+	8vdDcHanU7Db5/SAdWTosK1ZzXR4okeeiJe1loag1cvwYUM2lg+C
+X-Google-Smtp-Source: AGHT+IH/MR+Xb+PE+qG3lboszaOkHFGeODIFJyO2o1NobN/54wtfQ4lB7cgA6WQ7uxWEu+uehR5OHQ==
+X-Received: by 2002:a17:902:ce8c:b0:1d9:ad4e:55fb with SMTP id f12-20020a170902ce8c00b001d9ad4e55fbmr3836834plg.13.1707134730899;
+        Mon, 05 Feb 2024 04:05:30 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXf8XAuLXTZ/JoFsR7pcdtFH9TpFX+eiJfo7200KDoHTASzOWzG3Y9AxYQxAzjrgXyAz7KTKkQtisNSQP+s4eGw2UCq51TxOfdmBWAMR1U5a06iqNaHyOm+F0zlXF5tZ8iL/70BQzDV1Qrifw1fgB6pjdJ1YVbXZ5QQJKCkcIg1
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id lh4-20020a170903290400b001d8ecf5ff6csm6206117plb.147.2024.02.05.04.05.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 04:05:30 -0800 (PST)
+Date: Mon, 5 Feb 2024 09:05:57 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2023; t=1707134728;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ULa61A+OHUmLxIbxKjifqPcDz0usstWa8Wnc31QTDuE=;
-	b=BYgnRr5HX2sE/EMcxSEMgQ6LRqBDZo/gjMV45Qyer68RslIu4UKvlSIJE5iNlcmgqANQn3
-	FKIhON69AaWwCIRsUQ6RYfQf/QUeyVQWoV9T25WmNeF8+NUld64/EOcQn6/jp9HpM63ZuK
-	g1furHI/8KvpsqqdGfcItyeeNSedb8w=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-461-kOJ9asw_OHGeD9M_kyA16w-1; Mon, 05 Feb 2024 07:04:26 -0500
-X-MC-Unique: kOJ9asw_OHGeD9M_kyA16w-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CB1C084AE41;
-	Mon,  5 Feb 2024 12:04:25 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.245])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 173A8492BF0;
-	Mon,  5 Feb 2024 12:04:24 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <20240130101344.28936-1-lhenriques@suse.de>
-References: <20240130101344.28936-1-lhenriques@suse.de>
-To: Luis Henriques <lhenriques@suse.de>
-Cc: dhowells@redhat.com, Jarkko Sakkinen <jarkko@kernel.org>,
-    Eric Biggers <ebiggers@kernel.org>, keyrings@vger.kernel.org,
-    linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] keys: update key quotas in key_put()
+	bh=A3KIw4nh0ZlsNY+qMf2ryaKB83r+kLjyKzsK4TQemXc=;
+	b=k2aoDXdRd6xbec9NNJoScy9F6yMhw1iKs+Ab8pnYQJ99SrNax9mSGhtWAE0UKkXHHHWt+w
+	7HHvjfDKNXMzbV+Qu3Vh0SJJdaSUTo2682HlQDziAr7xbtoIDPGk6zOHAOkatqsZrPsQNY
+	ydydnNXfOi1zDjf3VuGxCMB7AQHpC6BUZ1xqzQVKtngf+CZl6BHGVi1vDORP+6UmHKyWTd
+	x3SFpap9FlM2VBjmrZojBcsgvupCAKu86mTTVq3b74UmnWpo+xbv0D63xxwmWRP6c65E5F
+	1zSCnfhIIsbKgU8sJYtgXosD3/b+jE0aMucQYzeDQJx40J/QBAMZCdbf983Mvg==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Thorsten Scherer <t.scherer@eckelmann.de>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] siox: make siox_bus_type const
+Message-ID: <ysesefska42ctpibulegsfpuaxfr5innla35yrvi7de2llkcwl@dq5hppwwpsxl>
+References: <20240204-bus_cleanup-siox-v2-1-3813a6a55dcc@marliere.net>
+ <5zjixnsaylidn7t65thchwg5aa2igpwr34bmlfdtevvn4bgx2e@txzz36fi7rqz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3007645.1707134664.1@warthog.procyon.org.uk>
-Date: Mon, 05 Feb 2024 12:04:24 +0000
-Message-ID: <3007646.1707134664@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5zjixnsaylidn7t65thchwg5aa2igpwr34bmlfdtevvn4bgx2e@txzz36fi7rqz>
 
-Luis Henriques <lhenriques@suse.de> wrote:
+On  5 Feb 10:03, Uwe Kleine-König wrote:
+> Hello Ricardo,
+> 
+> On Sun, Feb 04, 2024 at 07:26:42PM -0300, Ricardo B. Marliere wrote:
+> > Since commit d492cc2573a0 ("driver core: device.h: make struct bus_type
+> > a const *"), the driver core can properly handle constant struct
+> > bus_type. Move the siox_bus_type variable to be a constant structure as
+> > well, placing it into read-only memory which can not be modified at
+> > runtime.
+> > 
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> 
+> I currently have no setup to test this, but compilation is fine, and I
+> don't expect any surprises.
+> 
+> Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> 
+> Thanks for your patch,
+> Uwe
+> 
+> PS: b4 gave me:
+> 
+>   ✗ [PATCH v2] siox: make siox_bus_type const
+>   ✗ No key: openpgp/ricardo@marliere.net
+>   ✗ BADSIG: DKIM/marliere.net
+> 
+> when applying your patch. I didn't check the details of the DKIM issue. I
+> quickly tried to find your pgp key, but failed (wks, kernel-pgpkeys
+> repo, keyserver).
 
-> Delaying key quotas update when key's refcount reaches 0 in key_put() has
-> been causing some issues in fscrypt testing, specifically in fstest
-> generic/581.  This commit fixes this test flakiness by dealing with the
-> quotas immediately, and leaving all the other clean-ups to the key garbage
-> collector.
+Thanks for the heads up, I'll go check what's wrong. I think I only
+published the @gmail.com one.!
 
-Okay, I'll accept this.
+Best regards,
+-	Ricardo.
 
-> This is done by moving the updates to the qnkeys and qnbytes fields in
-> struct key_user from key_gc_unused_keys() into key_put().  Unfortunately,
-> this also means that we need to switch to the irq-version of the spinlock
-> that protects these fields and use spin_lock_{irqsave,irqrestore} in all the
-> code that touches these fields.
 
-.. Which shouldn't be that often.  It only happens when a key is created or
-finally let go of.
+> 
+> -- 
+> Pengutronix e.K.                           | Uwe Kleine-König            |
+> Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-> Signed-off-by: Luis Henriques <lhenriques@suse.de>
-
-Acked-by: David Howells <dhowells@redhat.com>
-
-Jarkko - could you pick this up?
 
 
