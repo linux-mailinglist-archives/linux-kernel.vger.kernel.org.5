@@ -1,709 +1,211 @@
-Return-Path: <linux-kernel+bounces-53262-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53260-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65C2684A2D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:56:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7220484A2CF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:54:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A9A21C235A6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:56:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6338287AB3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:54:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D52F848785;
-	Mon,  5 Feb 2024 18:56:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 347964879E;
+	Mon,  5 Feb 2024 18:53:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b="D/2uKzWc"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Q5xIU91y"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78256482DB
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 18:55:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A658E482DB;
+	Mon,  5 Feb 2024 18:53:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707159360; cv=none; b=Mqc4dT1OvpNY2Euk4e3CxeHBt2iJVZ5H9dd4Lfvj5ODtOgj+ygaoVGDiuohUiDFHkB9yqBeq2wEZjO+aXOCr79g+wv/V5y+CpeScGLWu6F5wKa1eHGchGVWdJKTQPoO+KUfNt0DIjBZgt07ZTyRWaxzkmfTdsQ9grJCRvURX9fE=
+	t=1707159234; cv=none; b=IyMsMzEatD4pLEqXMimC6TzRKwXVUGvL8lv0BZFO0W9VA8zKI1sd21m6UwN65Nv3oy6MSVDaN+X8xlb1IGvhxSB+P4EoubyWTNAoQGVILRC+waOV8joPtDgNXpx6PMwl5nczH0/jupgjFYjmv2QxX0mXVARCnfK+uA/fhBTrtVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707159360; c=relaxed/simple;
-	bh=5B0FB3Yqe3JCOmDsTK5ikQ+ZtqetaPyUN+UgBS/jCnA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tyxqlThdbD895a+UAQJRldKR769Z2lo8xy1ATXt/NvMyLzrKEO0NwHh8s6qt68nSpvfqKNi3y/Erc9Az9DrX5iCbfJfxn4FLUn1jltiv0F2fdOy9sCzN1x4gBPTgvu84yxlvOopXkcmPdT8ufFU6XX6cyImGbW3IIaClM/nskm0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org; spf=pass smtp.mailfrom=networkplumber.org; dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b=D/2uKzWc; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=networkplumber.org
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d71cb97937so42152325ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 10:55:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1707159357; x=1707764157; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=om2XWt3OTF4SoofjWJh3uzvdBwIQW++XooH1Pcka56M=;
-        b=D/2uKzWc/EVDamP9Rr4O+2JwxpSEt5VQ8MEswb2W/lItMmsBHkCSF3VBfu0T7eAgMw
-         GvxEswv62KNNwyMP/gdsgb/pv/7NbvIHibMm0pbO0NskedCVsXfrx8Zb3qEeU1C6vGK6
-         eqyB99yW6tktHIT5uuz7bV8lVgtCQ8LOy3XgO1hKCX4H3Pis+2TcYJeXwVcCHNs5oLLj
-         nqKqTiS4UCQThNnXZhWltnHzpPkgc/pYg1F8H/hKZNknbTbADPWpF/oePJbNNpTQEpqr
-         JT1uM9FJlQq9VDeSgq1cOTUJy7xD+OEbdkaBbCVV8Dp2Qo8howsBezEZtXfABAh96RB1
-         Gfew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707159357; x=1707764157;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=om2XWt3OTF4SoofjWJh3uzvdBwIQW++XooH1Pcka56M=;
-        b=FOOS1VsQFm5oskrVAbhT+6uCVEgeBjXCOXatgpmeBD/TZ2biAmb7LDIowvKbqZFysZ
-         7sjngN6xm11ILmXGy8IOQvE8liT46DU0WopQcqsuTUwrR7Lz1zlXjGZhGUUk5lptIxvg
-         LvxxJlSSVONo4kTnFoV53zMAV4W89NxlZTo8RFEposfislowqr2mKAFIt+5kv5yeY/7O
-         jKSDtkyLwWlVRULcKhKN7PhOPSApsLCD+4cYm0GCudhw401TXWir63sIpp6yvRBRFVJR
-         LTGp1zCFBajHF3zqdptb4HR8TCAxRt6gWA8Z6BIC5pfNqiVJ06jx0SWIy+elht5QfvCm
-         ujvg==
-X-Gm-Message-State: AOJu0YydNPU5L/7RrzvRXsexSePuUvJsRln7D0UpqH5fAcErh4HWL0Dt
-	BAXrkaMbRzXdQaevAuUlItWncE9jNyDF/kyXU9wNLtQegCrbXovaHeoS/mji7a8=
-X-Google-Smtp-Source: AGHT+IF6FG32nghyrf67pHBQssF2m6uj0Jw1CXEGysLpajV+urcs26RLf1HZWOcBYxT9YgVbl9Ks0Q==
-X-Received: by 2002:a17:902:7802:b0:1d9:98fc:a950 with SMTP id p2-20020a170902780200b001d998fca950mr416450pll.6.1707159356630;
-        Mon, 05 Feb 2024 10:55:56 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXonApRMJ0WsZUL2H5ErEG6Y9EYBiIaK9L3RqxlM02JbEaZPFCcPC1SsX9MzMgfo8B6YPMrVN9ztgF9Jduz4wW0ced2hPuJQRzn/z+fqu71NFInMLUPwfntxodbPK6be3Cszv7svEDAH7jKf886MR+/mb6MkBS0x40BEdvOFQMJ7sRpGYhqq+HkiROIkbJptnDkt5YBPHVBBHyBS2NDQ4eMquXu9yTeszqbJxAV1+M5oIqb+XxZLWUi+ue+r40csgRyLBvdwul+10qswJwy19BUDqI70QPTdUeJ3i1TpQDxxupTG8G6gMpbjVO1UE4AP5Z4xhy2k3hRNE7k9EtLaiaBRGaKL7t6BItekHx65MSGNmIojA1YmnVTg8y58FLaDR3b1yB58R/CdnR8gY4pJ2v7FH5ix4gXd0vqqV12f0i5F5GSgW9/J+R0zi65j8RXBBKnRmksvcN/DKK4p+SwlbTUd7dtkU7UrmWRdliKAZ6K5AO42VKDeyvqMX3/Mx1GzEIun2PLTFxO/gn89QUKgGm95PzMUmmRLagHjI906RlGRge/pJ1/D/r8570peFTPVwVNqSX2SgUvj06JsmuyJ5BI8YiQsY+xbwdNc4obicTWS/Li+0PLamOAvRbheA==
-Received: from hermes.local (204-195-123-141.wavecable.com. [204.195.123.141])
-        by smtp.gmail.com with ESMTPSA id km4-20020a17090327c400b001d94a245f3fsm206075plb.16.2024.02.05.10.55.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 10:55:56 -0800 (PST)
-From: Stephen Hemminger <stephen@networkplumber.org>
-To: netdev@vger.kernel.org
-Cc: Stephen Hemminger <stephen@networkplumber.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Jamal Hadi Salim <jhs@mojatatu.com>,
-	Cong Wang <xiyou.wangcong@gmail.com>,
-	Jiri Pirko <jiri@resnulli.us>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next v2] net/sched: actions report errors with extack
-Date: Mon,  5 Feb 2024 10:52:40 -0800
-Message-ID: <20240205185537.216873-1-stephen@networkplumber.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1707159234; c=relaxed/simple;
+	bh=Wna80yOYPd87z65obyfALV1zKK1OJzoI0xbvAgUfVx0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=BxZ91DFE9Otc5LcPGslhpJmNaR+gERN1SSxsB5+B+97Jj5/9REdUFtQVyf5UdP88OUO1DC/6T8DnWdjYwz4PINoGgyD7KtwXfuPhZZ8c2xTplKBnd/eulInhN7zwhclqkfxYZYfQnIe9TzekYxO7HpCT9Vv0TeaLvObBnKLYKi4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Q5xIU91y; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 415HqH90008543;
+	Mon, 5 Feb 2024 18:53:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=vhrQ17zeR7q43lj2zjLK1Vr1g0vgVi9UIt6bEjY/f1A=; b=Q5
+	xIU91yYGqOESiJGuThpIiLyBwuHlmFR4xK6VkdrYWuY+7XynAF19gUbHHn8D2ZQa
+	snZcmNdwV3kf9Fqd4ezILpCvgsqJjL2pdCajyEPy6w1eGqkqhAFBLTcCbLoHw1cC
+	hPacNEPrUH1AbS2ycOqckt9MM/stN34A8fdoVOhjI/w4IAKib1KsEMjvThwFHP67
+	USgas9wI5rwZPUnRMJWElZ09Ywqohmo/56DzHgVgpwQYlErLimnihjGpAvaWbOnt
+	Z+q7TEyTZKC61wPWfogNnkt56ayftpGQwcEJ9I1kxW8IP1Z5noN9lR4tfTbxBsWR
+	IIJP+eKpv3LPJeVH/ALg==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w2s07sq2f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 05 Feb 2024 18:53:39 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 415Irckl017425
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 5 Feb 2024 18:53:38 GMT
+Received: from [10.216.24.76] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 5 Feb
+ 2024 10:53:28 -0800
+Message-ID: <284883c5-a471-483b-acea-92ab26c0088a@quicinc.com>
+Date: Tue, 6 Feb 2024 00:23:27 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 09/15] ufs: core: add support for generate, import and
+ prepare keys
+Content-Language: en-US
+To: Gaurav Kashyap <quic_gaurkash@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <andersson@kernel.org>, <ebiggers@google.com>,
+        <neil.armstrong@linaro.org>, <srinivas.kandagatla@linaro.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <robh+dt@kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+        <kernel@quicinc.com>, <linux-crypto@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <quic_nguyenb@quicinc.com>,
+        <bartosz.golaszewski@linaro.org>, <konrad.dybcio@linaro.org>,
+        <ulf.hansson@linaro.org>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <mani@kernel.org>, <davem@davemloft.net>,
+        <herbert@gondor.apana.org.au>
+References: <20240127232436.2632187-1-quic_gaurkash@quicinc.com>
+ <20240127232436.2632187-10-quic_gaurkash@quicinc.com>
+From: Om Prakash Singh <quic_omprsing@quicinc.com>
+In-Reply-To: <20240127232436.2632187-10-quic_gaurkash@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: CyUokBCyreO6dBqwiGbcomvHnqzOwkEK
+X-Proofpoint-GUID: CyUokBCyreO6dBqwiGbcomvHnqzOwkEK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-05_13,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ priorityscore=1501 lowpriorityscore=0 impostorscore=0 clxscore=1015
+ phishscore=0 spamscore=0 mlxscore=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402050141
 
-When an action detects invalid parameters, it should
-be adding an external ack to netlink so that the user is
-able to diagnose the issue.
 
-Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
----
-v2 - use NL_REQ_ATTR_CHECK()
 
- net/sched/act_bpf.c      | 32 +++++++++++++++++++++++---------
- net/sched/act_connmark.c |  8 ++++++--
- net/sched/act_csum.c     |  9 +++++++--
- net/sched/act_ct.c       |  5 +++--
- net/sched/act_ctinfo.c   |  6 +++---
- net/sched/act_gact.c     | 14 +++++++++++---
- net/sched/act_gate.c     | 15 +++++++++++----
- net/sched/act_ife.c      |  8 ++++++--
- net/sched/act_mirred.c   |  6 ++++--
- net/sched/act_nat.c      |  9 +++++++--
- net/sched/act_police.c   | 13 ++++++++++---
- net/sched/act_sample.c   |  8 ++++++--
- net/sched/act_simple.c   | 11 ++++++++---
- net/sched/act_skbedit.c  | 17 ++++++++++++-----
- net/sched/act_skbmod.c   |  9 +++++++--
- net/sched/act_vlan.c     |  8 ++++++--
- 16 files changed, 130 insertions(+), 48 deletions(-)
+On 1/28/2024 4:44 AM, Gaurav Kashyap wrote:
+> Block crypto allows storage controllers like UFS to
+> register ops to generate, prepare and import wrapped
+> keys in the kernel.
+> 
+> Wrapped keys in most cases will have vendor specific
+> implementations, which means these ops would need to have
+> corresponding UFS variant ops.
+> This change adds hooks in UFS core to support these variant
+> ops and tie them to the blk crypto ops.
+> 
+> Signed-off-by: Gaurav Kashyap <quic_gaurkash@quicinc.com>
+> Tested-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
+Reviewed-by: Om Prakash Singh <quic_omprsing@quicinc.com>
 
-diff --git a/net/sched/act_bpf.c b/net/sched/act_bpf.c
-index 0e3cf11ae5fc..4dc6f27a4809 100644
---- a/net/sched/act_bpf.c
-+++ b/net/sched/act_bpf.c
-@@ -184,7 +184,8 @@ static const struct nla_policy act_bpf_policy[TCA_ACT_BPF_MAX + 1] = {
- 				    .len = sizeof(struct sock_filter) * BPF_MAXINSNS },
- };
- 
--static int tcf_bpf_init_from_ops(struct nlattr **tb, struct tcf_bpf_cfg *cfg)
-+static int tcf_bpf_init_from_ops(struct nlattr **tb, struct tcf_bpf_cfg *cfg,
-+				 struct netlink_ext_ack *extack)
- {
- 	struct sock_filter *bpf_ops;
- 	struct sock_fprog_kern fprog_tmp;
-@@ -193,12 +194,17 @@ static int tcf_bpf_init_from_ops(struct nlattr **tb, struct tcf_bpf_cfg *cfg)
- 	int ret;
- 
- 	bpf_num_ops = nla_get_u16(tb[TCA_ACT_BPF_OPS_LEN]);
--	if (bpf_num_ops	> BPF_MAXINSNS || bpf_num_ops == 0)
-+	if (bpf_num_ops	> BPF_MAXINSNS || bpf_num_ops == 0) {
-+		NL_SET_ERR_MSG_FMT_MOD(extack,
-+				       "Invalid number of BPF instructions %u", bpf_num_ops);
- 		return -EINVAL;
-+	}
- 
- 	bpf_size = bpf_num_ops * sizeof(*bpf_ops);
--	if (bpf_size != nla_len(tb[TCA_ACT_BPF_OPS]))
-+	if (bpf_size != nla_len(tb[TCA_ACT_BPF_OPS])) {
-+		NL_SET_ERR_MSG_FMT_MOD(extack, "BPF instruction size %u", bpf_size);
- 		return -EINVAL;
-+	}
- 
- 	bpf_ops = kmemdup(nla_data(tb[TCA_ACT_BPF_OPS]), bpf_size, GFP_KERNEL);
- 	if (bpf_ops == NULL)
-@@ -221,7 +227,8 @@ static int tcf_bpf_init_from_ops(struct nlattr **tb, struct tcf_bpf_cfg *cfg)
- 	return 0;
- }
- 
--static int tcf_bpf_init_from_efd(struct nlattr **tb, struct tcf_bpf_cfg *cfg)
-+static int tcf_bpf_init_from_efd(struct nlattr **tb, struct tcf_bpf_cfg *cfg,
-+				 struct netlink_ext_ack *extack)
- {
- 	struct bpf_prog *fp;
- 	char *name = NULL;
-@@ -230,8 +237,10 @@ static int tcf_bpf_init_from_efd(struct nlattr **tb, struct tcf_bpf_cfg *cfg)
- 	bpf_fd = nla_get_u32(tb[TCA_ACT_BPF_FD]);
- 
- 	fp = bpf_prog_get_type(bpf_fd, BPF_PROG_TYPE_SCHED_ACT);
--	if (IS_ERR(fp))
-+	if (IS_ERR(fp)) {
-+		NL_SET_ERR_MSG_MOD(extack, "BPF program type mismatch");
- 		return PTR_ERR(fp);
-+	}
- 
- 	if (tb[TCA_ACT_BPF_NAME]) {
- 		name = nla_memdup(tb[TCA_ACT_BPF_NAME], GFP_KERNEL);
-@@ -292,16 +301,20 @@ static int tcf_bpf_init(struct net *net, struct nlattr *nla,
- 	int ret, res = 0;
- 	u32 index;
- 
--	if (!nla)
-+	if (!nla) {
-+		NL_SET_ERR_MSG_MOD(extack, "Bpf requires attributes to be passed");
- 		return -EINVAL;
-+	}
- 
- 	ret = nla_parse_nested_deprecated(tb, TCA_ACT_BPF_MAX, nla,
- 					  act_bpf_policy, NULL);
- 	if (ret < 0)
- 		return ret;
- 
--	if (!tb[TCA_ACT_BPF_PARMS])
-+	if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_ACT_BPF_PARMS)) {
-+		NL_SET_ERR_MSG(extack, "Missing required attribute");
- 		return -EINVAL;
-+	}
- 
- 	parm = nla_data(tb[TCA_ACT_BPF_PARMS]);
- 	index = parm->index;
-@@ -336,14 +349,15 @@ static int tcf_bpf_init(struct net *net, struct nlattr *nla,
- 	is_ebpf = tb[TCA_ACT_BPF_FD];
- 
- 	if (is_bpf == is_ebpf) {
-+		NL_SET_ERR_MSG_MOD(extack, "Can not specify both BPF fd and ops");
- 		ret = -EINVAL;
- 		goto put_chain;
- 	}
- 
- 	memset(&cfg, 0, sizeof(cfg));
- 
--	ret = is_bpf ? tcf_bpf_init_from_ops(tb, &cfg) :
--		       tcf_bpf_init_from_efd(tb, &cfg);
-+	ret = is_bpf ? tcf_bpf_init_from_ops(tb, &cfg, extack) :
-+		       tcf_bpf_init_from_efd(tb, &cfg, extack);
- 	if (ret < 0)
- 		goto put_chain;
- 
-diff --git a/net/sched/act_connmark.c b/net/sched/act_connmark.c
-index 0fce631e7c91..00c7e52d91ca 100644
---- a/net/sched/act_connmark.c
-+++ b/net/sched/act_connmark.c
-@@ -110,16 +110,20 @@ static int tcf_connmark_init(struct net *net, struct nlattr *nla,
- 	int ret = 0, err;
- 	u32 index;
- 
--	if (!nla)
-+	if (!nla) {
-+		NL_SET_ERR_MSG_MOD(extack, "Connmark requires attributes to be passed");
- 		return -EINVAL;
-+	}
- 
- 	ret = nla_parse_nested_deprecated(tb, TCA_CONNMARK_MAX, nla,
- 					  connmark_policy, NULL);
- 	if (ret < 0)
- 		return ret;
- 
--	if (!tb[TCA_CONNMARK_PARMS])
-+	if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_CONNMARK_PARMS)) {
-+		NL_SET_ERR_MSG(extack, "Missing required attribute");
- 		return -EINVAL;
-+	}
- 
- 	nparms = kzalloc(sizeof(*nparms), GFP_KERNEL);
- 	if (!nparms)
-diff --git a/net/sched/act_csum.c b/net/sched/act_csum.c
-index 5cc8e407e791..b83e6d5f10ee 100644
---- a/net/sched/act_csum.c
-+++ b/net/sched/act_csum.c
-@@ -55,16 +55,21 @@ static int tcf_csum_init(struct net *net, struct nlattr *nla,
- 	int ret = 0, err;
- 	u32 index;
- 
--	if (nla == NULL)
-+	if (!nla) {
-+		NL_SET_ERR_MSG_MOD(extack, "Checksum requires attributes to be passed");
- 		return -EINVAL;
-+	}
- 
- 	err = nla_parse_nested_deprecated(tb, TCA_CSUM_MAX, nla, csum_policy,
- 					  NULL);
- 	if (err < 0)
- 		return err;
- 
--	if (tb[TCA_CSUM_PARMS] == NULL)
-+	if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_CSUM_PARMS)) {
-+		NL_SET_ERR_MSG(extack, "Missing required attribute");
- 		return -EINVAL;
-+	}
-+
- 	parm = nla_data(tb[TCA_CSUM_PARMS]);
- 	index = parm->index;
- 	err = tcf_idr_check_alloc(tn, &index, a, bind);
-diff --git a/net/sched/act_ct.c b/net/sched/act_ct.c
-index baac083fd8f1..7984f9f6ea2c 100644
---- a/net/sched/act_ct.c
-+++ b/net/sched/act_ct.c
-@@ -1329,10 +1329,11 @@ static int tcf_ct_init(struct net *net, struct nlattr *nla,
- 	if (err < 0)
- 		return err;
- 
--	if (!tb[TCA_CT_PARMS]) {
--		NL_SET_ERR_MSG_MOD(extack, "Missing required ct parameters");
-+	if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_CT_PARMS)) {
-+		NL_SET_ERR_MSG(extack, "Missing required attribute");
- 		return -EINVAL;
- 	}
-+
- 	parm = nla_data(tb[TCA_CT_PARMS]);
- 	index = parm->index;
- 	err = tcf_idr_check_alloc(tn, &index, a, bind);
-diff --git a/net/sched/act_ctinfo.c b/net/sched/act_ctinfo.c
-index 5dd41a012110..dde047b6b839 100644
---- a/net/sched/act_ctinfo.c
-+++ b/net/sched/act_ctinfo.c
-@@ -178,11 +178,11 @@ static int tcf_ctinfo_init(struct net *net, struct nlattr *nla,
- 	if (err < 0)
- 		return err;
- 
--	if (!tb[TCA_CTINFO_ACT]) {
--		NL_SET_ERR_MSG_MOD(extack,
--				   "Missing required TCA_CTINFO_ACT attribute");
-+	if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_CTINFO_ACT)) {
-+		NL_SET_ERR_MSG(extack, "Missing required attribute");
- 		return -EINVAL;
- 	}
-+
- 	actparm = nla_data(tb[TCA_CTINFO_ACT]);
- 
- 	/* do some basic validation here before dynamically allocating things */
-diff --git a/net/sched/act_gact.c b/net/sched/act_gact.c
-index e949280eb800..42c6b8d9002d 100644
---- a/net/sched/act_gact.c
-+++ b/net/sched/act_gact.c
-@@ -68,16 +68,21 @@ static int tcf_gact_init(struct net *net, struct nlattr *nla,
- 	struct tc_gact_p *p_parm = NULL;
- #endif
- 
--	if (nla == NULL)
-+	if (!nla) {
-+		NL_SET_ERR_MSG(extack, "Gact requires attributes to be passed");
- 		return -EINVAL;
-+	}
- 
- 	err = nla_parse_nested_deprecated(tb, TCA_GACT_MAX, nla, gact_policy,
- 					  NULL);
- 	if (err < 0)
- 		return err;
- 
--	if (tb[TCA_GACT_PARMS] == NULL)
-+	if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_GACT_PARMS)) {
-+		NL_SET_ERR_MSG(extack, "Missing required attribute");
- 		return -EINVAL;
-+	}
-+
- 	parm = nla_data(tb[TCA_GACT_PARMS]);
- 	index = parm->index;
- 
-@@ -87,8 +92,11 @@ static int tcf_gact_init(struct net *net, struct nlattr *nla,
- #else
- 	if (tb[TCA_GACT_PROB]) {
- 		p_parm = nla_data(tb[TCA_GACT_PROB]);
--		if (p_parm->ptype >= MAX_RAND)
-+		if (p_parm->ptype >= MAX_RAND) {
-+			NL_SET_ERR_MSG(extack, "Invalid ptype in gact prob");
- 			return -EINVAL;
-+		}
-+
- 		if (TC_ACT_EXT_CMP(p_parm->paction, TC_ACT_GOTO_CHAIN)) {
- 			NL_SET_ERR_MSG(extack,
- 				       "goto chain not allowed on fallback");
-diff --git a/net/sched/act_gate.c b/net/sched/act_gate.c
-index 1dd74125398a..3e8056a2c304 100644
---- a/net/sched/act_gate.c
-+++ b/net/sched/act_gate.c
-@@ -239,8 +239,10 @@ static int parse_gate_list(struct nlattr *list_attr,
- 	int err, rem;
- 	int i = 0;
- 
--	if (!list_attr)
-+	if (!list_attr) {
-+		NL_SET_ERR_MSG(extack, "Gate missing attributes");
- 		return -EINVAL;
-+	}
- 
- 	nla_for_each_nested(n, list_attr, rem) {
- 		if (nla_type(n) != TCA_GATE_ONE_ENTRY) {
-@@ -317,15 +319,19 @@ static int tcf_gate_init(struct net *net, struct nlattr *nla,
- 	ktime_t start;
- 	u32 index;
- 
--	if (!nla)
-+	if (!nla) {
-+		NL_SET_ERR_MSG_MOD(extack, "Gate requires attributes to be passed");
- 		return -EINVAL;
-+	}
- 
- 	err = nla_parse_nested(tb, TCA_GATE_MAX, nla, gate_policy, extack);
- 	if (err < 0)
- 		return err;
- 
--	if (!tb[TCA_GATE_PARMS])
-+	if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_GATE_PARMS)) {
-+		NL_SET_ERR_MSG(extack, "Missing required attribute");
- 		return -EINVAL;
-+	}
- 
- 	if (tb[TCA_GATE_CLOCKID]) {
- 		clockid = nla_get_s32(tb[TCA_GATE_CLOCKID]);
-@@ -343,7 +349,7 @@ static int tcf_gate_init(struct net *net, struct nlattr *nla,
- 			tk_offset = TK_OFFS_TAI;
- 			break;
- 		default:
--			NL_SET_ERR_MSG(extack, "Invalid 'clockid'");
-+			NL_SET_ERR_MSG_MOD(extack, "Invalid 'clockid'");
- 			return -EINVAL;
- 		}
- 	}
-@@ -409,6 +415,7 @@ static int tcf_gate_init(struct net *net, struct nlattr *nla,
- 			cycle = ktime_add_ns(cycle, entry->interval);
- 		cycletime = cycle;
- 		if (!cycletime) {
-+			NL_SET_ERR_MSG_MOD(extack, "cycle time is zero");
- 			err = -EINVAL;
- 			goto chain_put;
- 		}
-diff --git a/net/sched/act_ife.c b/net/sched/act_ife.c
-index 107c6d83dc5c..b22881363029 100644
---- a/net/sched/act_ife.c
-+++ b/net/sched/act_ife.c
-@@ -508,8 +508,10 @@ static int tcf_ife_init(struct net *net, struct nlattr *nla,
- 	if (err < 0)
- 		return err;
- 
--	if (!tb[TCA_IFE_PARMS])
-+	if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_IFE_PARMS)) {
-+		NL_SET_ERR_MSG(extack, "Missing required attribute");
- 		return -EINVAL;
-+	}
- 
- 	parm = nla_data(tb[TCA_IFE_PARMS]);
- 
-@@ -517,8 +519,10 @@ static int tcf_ife_init(struct net *net, struct nlattr *nla,
- 	 * they cannot run as the same time. Check on all other values which
- 	 * are not supported right now.
- 	 */
--	if (parm->flags & ~IFE_ENCODE)
-+	if (parm->flags & ~IFE_ENCODE) {
-+		NL_SET_ERR_MSG_MOD(extack, "Invalid ife flag parameter");
- 		return -EINVAL;
-+	}
- 
- 	p = kzalloc(sizeof(*p), GFP_KERNEL);
- 	if (!p)
-diff --git a/net/sched/act_mirred.c b/net/sched/act_mirred.c
-index 93a96e9d8d90..f1bdd19e0bbb 100644
---- a/net/sched/act_mirred.c
-+++ b/net/sched/act_mirred.c
-@@ -124,10 +124,12 @@ static int tcf_mirred_init(struct net *net, struct nlattr *nla,
- 					  mirred_policy, extack);
- 	if (ret < 0)
- 		return ret;
--	if (!tb[TCA_MIRRED_PARMS]) {
--		NL_SET_ERR_MSG_MOD(extack, "Missing required mirred parameters");
-+
-+	if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_MIRRED_PARMS)) {
-+		NL_SET_ERR_MSG(extack, "Missing required attribute");
- 		return -EINVAL;
- 	}
-+
- 	parm = nla_data(tb[TCA_MIRRED_PARMS]);
- 	index = parm->index;
- 	err = tcf_idr_check_alloc(tn, &index, a, bind);
-diff --git a/net/sched/act_nat.c b/net/sched/act_nat.c
-index d541f553805f..42019977514e 100644
---- a/net/sched/act_nat.c
-+++ b/net/sched/act_nat.c
-@@ -46,16 +46,21 @@ static int tcf_nat_init(struct net *net, struct nlattr *nla, struct nlattr *est,
- 	struct tcf_nat *p;
- 	u32 index;
- 
--	if (nla == NULL)
-+	if (!nla) {
-+		NL_SET_ERR_MSG_MOD(extack, "Nat action requires attributes");
- 		return -EINVAL;
-+	}
- 
- 	err = nla_parse_nested_deprecated(tb, TCA_NAT_MAX, nla, nat_policy,
- 					  NULL);
- 	if (err < 0)
- 		return err;
- 
--	if (tb[TCA_NAT_PARMS] == NULL)
-+	if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_NAT_PARMS)) {
-+		NL_SET_ERR_MSG_MOD(extack, "Missing required NAT parameters");
- 		return -EINVAL;
-+	}
-+
- 	parm = nla_data(tb[TCA_NAT_PARMS]);
- 	index = parm->index;
- 	err = tcf_idr_check_alloc(tn, &index, a, bind);
-diff --git a/net/sched/act_police.c b/net/sched/act_police.c
-index 8555125ed34d..17708fe32ad1 100644
---- a/net/sched/act_police.c
-+++ b/net/sched/act_police.c
-@@ -56,19 +56,26 @@ static int tcf_police_init(struct net *net, struct nlattr *nla,
- 	u64 rate64, prate64;
- 	u64 pps, ppsburst;
- 
--	if (nla == NULL)
-+	if (!nla) {
-+		NL_SET_ERR_MSG_MOD(extack, "Police requires attributes");
- 		return -EINVAL;
-+	}
- 
- 	err = nla_parse_nested_deprecated(tb, TCA_POLICE_MAX, nla,
- 					  police_policy, NULL);
- 	if (err < 0)
- 		return err;
- 
--	if (tb[TCA_POLICE_TBF] == NULL)
-+	if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_POLICE_TBF)) {
-+		NL_SET_ERR_MSG_MOD(extack, "Missing required police action parameters");
- 		return -EINVAL;
-+	}
-+
- 	size = nla_len(tb[TCA_POLICE_TBF]);
--	if (size != sizeof(*parm) && size != sizeof(struct tc_police_compat))
-+	if (size != sizeof(*parm) && size != sizeof(struct tc_police_compat)) {
-+		NL_SET_ERR_MSG_MOD(extack, "Invalid size for police action parameters");
- 		return -EINVAL;
-+	}
- 
- 	parm = nla_data(tb[TCA_POLICE_TBF]);
- 	index = parm->index;
-diff --git a/net/sched/act_sample.c b/net/sched/act_sample.c
-index a69b53d54039..0492df144b39 100644
---- a/net/sched/act_sample.c
-+++ b/net/sched/act_sample.c
-@@ -49,15 +49,19 @@ static int tcf_sample_init(struct net *net, struct nlattr *nla,
- 	bool exists = false;
- 	int ret, err;
- 
--	if (!nla)
-+	if (!nla) {
-+		NL_SET_ERR_MSG_MOD(extack, "Sample requires attributes to be passed");
- 		return -EINVAL;
-+	}
- 	ret = nla_parse_nested_deprecated(tb, TCA_SAMPLE_MAX, nla,
- 					  sample_policy, NULL);
- 	if (ret < 0)
- 		return ret;
- 
--	if (!tb[TCA_SAMPLE_PARMS])
-+	if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_SAMPLE_PARMS)) {
-+		NL_SET_ERR_MSG_MOD(extack, "Missing required sample action parameters");
- 		return -EINVAL;
-+	}
- 
- 	parm = nla_data(tb[TCA_SAMPLE_PARMS]);
- 	index = parm->index;
-diff --git a/net/sched/act_simple.c b/net/sched/act_simple.c
-index f3abe0545989..0c56c8c9ef44 100644
---- a/net/sched/act_simple.c
-+++ b/net/sched/act_simple.c
-@@ -100,16 +100,20 @@ static int tcf_simp_init(struct net *net, struct nlattr *nla,
- 	int ret = 0, err;
- 	u32 index;
- 
--	if (nla == NULL)
-+	if (!nla) {
-+		NL_SET_ERR_MSG_MOD(extack, "Sample requires attributes to be passed");
- 		return -EINVAL;
-+	}
- 
- 	err = nla_parse_nested_deprecated(tb, TCA_DEF_MAX, nla, simple_policy,
- 					  NULL);
- 	if (err < 0)
- 		return err;
- 
--	if (tb[TCA_DEF_PARMS] == NULL)
-+	if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_DEF_PARMS)) {
-+		NL_SET_ERR_MSG_MOD(extack, "Missing required sample action parameters");
- 		return -EINVAL;
-+	}
- 
- 	parm = nla_data(tb[TCA_DEF_PARMS]);
- 	index = parm->index;
-@@ -120,7 +124,8 @@ static int tcf_simp_init(struct net *net, struct nlattr *nla,
- 	if (exists && bind)
- 		return ACT_P_BOUND;
- 
--	if (tb[TCA_DEF_DATA] == NULL) {
-+	if (NL_REQ_ATTR_CHECK(extack, NULL, tb, TCA_DEF_DATA)) {
-+		NL_SET_ERR_MSG_MOD(extack, "Missing simple action default data");
- 		if (exists)
- 			tcf_idr_release(*a, bind);
- 		else
-diff --git a/net/sched/act_skbedit.c b/net/sched/act_skbedit.c
-index 1f1d9ce3e968..e9c4f2befb8b 100644
---- a/net/sched/act_skbedit.c
-+++ b/net/sched/act_skbedit.c
-@@ -133,16 +133,20 @@ static int tcf_skbedit_init(struct net *net, struct nlattr *nla,
- 	int ret = 0, err;
- 	u32 index;
- 
--	if (nla == NULL)
-+	if (!nla) {
-+		NL_SET_ERR_MSG_MOD(extack, "Skbedit requires attributes to be passed");
- 		return -EINVAL;
-+	}
- 
- 	err = nla_parse_nested_deprecated(tb, TCA_SKBEDIT_MAX, nla,
- 					  skbedit_policy, NULL);
- 	if (err < 0)
- 		return err;
- 
--	if (tb[TCA_SKBEDIT_PARMS] == NULL)
-+	if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_SKBEDIT_PARMS)) {
-+		NL_SET_ERR_MSG_MOD(extack, "Missing required skbedit parameters");
- 		return -EINVAL;
-+	}
- 
- 	if (tb[TCA_SKBEDIT_PRIORITY] != NULL) {
- 		flags |= SKBEDIT_F_PRIORITY;
-@@ -161,8 +165,10 @@ static int tcf_skbedit_init(struct net *net, struct nlattr *nla,
- 
- 	if (tb[TCA_SKBEDIT_PTYPE] != NULL) {
- 		ptype = nla_data(tb[TCA_SKBEDIT_PTYPE]);
--		if (!skb_pkt_type_ok(*ptype))
-+		if (!skb_pkt_type_ok(*ptype)) {
-+			NL_SET_ERR_MSG_MOD(extack, "ptype is not a valid");
- 			return -EINVAL;
-+		}
- 		flags |= SKBEDIT_F_PTYPE;
- 	}
- 
-@@ -182,8 +188,8 @@ static int tcf_skbedit_init(struct net *net, struct nlattr *nla,
- 		if (*pure_flags & SKBEDIT_F_TXQ_SKBHASH) {
- 			u16 *queue_mapping_max;
- 
--			if (!tb[TCA_SKBEDIT_QUEUE_MAPPING] ||
--			    !tb[TCA_SKBEDIT_QUEUE_MAPPING_MAX]) {
-+			if (NL_REQ_ATTR_CHECK(extack, NULL, tb, TCA_SKBEDIT_QUEUE_MAPPING) ||
-+			    NL_REQ_ATTR_CHECK(extack, NULL, tb, TCA_SKBEDIT_QUEUE_MAPPING_MAX)) {
- 				NL_SET_ERR_MSG_MOD(extack, "Missing required range of queue_mapping.");
- 				return -EINVAL;
- 			}
-@@ -212,6 +218,7 @@ static int tcf_skbedit_init(struct net *net, struct nlattr *nla,
- 		return ACT_P_BOUND;
- 
- 	if (!flags) {
-+		NL_SET_ERR_MSG_MOD(extack, "No skbedit action flag");
- 		if (exists)
- 			tcf_idr_release(*a, bind);
- 		else
-diff --git a/net/sched/act_skbmod.c b/net/sched/act_skbmod.c
-index 39945b139c48..19b35666f357 100644
---- a/net/sched/act_skbmod.c
-+++ b/net/sched/act_skbmod.c
-@@ -119,16 +119,20 @@ static int tcf_skbmod_init(struct net *net, struct nlattr *nla,
- 	u16 eth_type = 0;
- 	int ret = 0, err;
- 
--	if (!nla)
-+	if (!nla) {
-+		NL_SET_ERR_MSG_MOD(extack, "Skbmod requires attributes to be passed");
- 		return -EINVAL;
-+	}
- 
- 	err = nla_parse_nested_deprecated(tb, TCA_SKBMOD_MAX, nla,
- 					  skbmod_policy, NULL);
- 	if (err < 0)
- 		return err;
- 
--	if (!tb[TCA_SKBMOD_PARMS])
-+	if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_SKBMOD_PARMS)) {
-+		NL_SET_ERR_MSG_MOD(extack, "Missing required skbmod parameters");
- 		return -EINVAL;
-+	}
- 
- 	if (tb[TCA_SKBMOD_DMAC]) {
- 		daddr = nla_data(tb[TCA_SKBMOD_DMAC]);
-@@ -160,6 +164,7 @@ static int tcf_skbmod_init(struct net *net, struct nlattr *nla,
- 		return ACT_P_BOUND;
- 
- 	if (!lflags) {
-+		NL_SET_ERR_MSG_MOD(extack, "No skbmod action flag");
- 		if (exists)
- 			tcf_idr_release(*a, bind);
- 		else
-diff --git a/net/sched/act_vlan.c b/net/sched/act_vlan.c
-index 22f4b1e8ade9..414129539c4a 100644
---- a/net/sched/act_vlan.c
-+++ b/net/sched/act_vlan.c
-@@ -134,16 +134,20 @@ static int tcf_vlan_init(struct net *net, struct nlattr *nla,
- 	int ret = 0, err;
- 	u32 index;
- 
--	if (!nla)
-+	if (!nla) {
-+		NL_SET_ERR_MSG_MOD(extack, "Vlan requires attributes to be passed");
- 		return -EINVAL;
-+	}
- 
- 	err = nla_parse_nested_deprecated(tb, TCA_VLAN_MAX, nla, vlan_policy,
- 					  NULL);
- 	if (err < 0)
- 		return err;
- 
--	if (!tb[TCA_VLAN_PARMS])
-+	if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_VLAN_PARMS)) {
-+		NL_SET_ERR_MSG_MOD(extack, "Missing required vlan action parameters");
- 		return -EINVAL;
-+	}
- 	parm = nla_data(tb[TCA_VLAN_PARMS]);
- 	index = parm->index;
- 	err = tcf_idr_check_alloc(tn, &index, a, bind);
--- 
-2.43.0
-
+>   drivers/ufs/core/ufshcd-crypto.c | 41 ++++++++++++++++++++++++++++++++
+>   include/ufs/ufshcd.h             | 11 +++++++++
+>   2 files changed, 52 insertions(+)
+> 
+> diff --git a/drivers/ufs/core/ufshcd-crypto.c b/drivers/ufs/core/ufshcd-crypto.c
+> index c14800eac1ff..fb935a54acfa 100644
+> --- a/drivers/ufs/core/ufshcd-crypto.c
+> +++ b/drivers/ufs/core/ufshcd-crypto.c
+> @@ -143,10 +143,51 @@ bool ufshcd_crypto_enable(struct ufs_hba *hba)
+>   	return true;
+>   }
+>   
+> +static int ufshcd_crypto_generate_key(struct blk_crypto_profile *profile,
+> +				      u8 lt_key[BLK_CRYPTO_MAX_HW_WRAPPED_KEY_SIZE])
+> +{
+> +	struct ufs_hba *hba =
+> +		container_of(profile, struct ufs_hba, crypto_profile);
+> +
+> +	if (hba->vops && hba->vops->generate_key)
+> +		return  hba->vops->generate_key(hba, lt_key);
+> +
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static int ufshcd_crypto_prepare_key(struct blk_crypto_profile *profile,
+> +				     const u8 *lt_key, size_t lt_key_size,
+> +				     u8 eph_key[BLK_CRYPTO_MAX_HW_WRAPPED_KEY_SIZE])
+> +{
+> +	struct ufs_hba *hba =
+> +		container_of(profile, struct ufs_hba, crypto_profile);
+> +
+> +	if (hba->vops && hba->vops->prepare_key)
+> +		return  hba->vops->prepare_key(hba, lt_key, lt_key_size, eph_key);
+> +
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static int ufshcd_crypto_import_key(struct blk_crypto_profile *profile,
+> +				    const u8 *imp_key, size_t imp_key_size,
+> +				    u8 lt_key[BLK_CRYPTO_MAX_HW_WRAPPED_KEY_SIZE])
+> +{
+> +	struct ufs_hba *hba =
+> +		container_of(profile, struct ufs_hba, crypto_profile);
+> +
+> +	if (hba->vops && hba->vops->import_key)
+> +		return  hba->vops->import_key(hba, imp_key, imp_key_size, lt_key);
+> +
+> +	return -EOPNOTSUPP;
+> +}
+> +
+>   static const struct blk_crypto_ll_ops ufshcd_crypto_ops = {
+>   	.keyslot_program	= ufshcd_crypto_keyslot_program,
+>   	.keyslot_evict		= ufshcd_crypto_keyslot_evict,
+>   	.derive_sw_secret	= ufshcd_crypto_derive_sw_secret,
+> +	.generate_key		= ufshcd_crypto_generate_key,
+> +	.prepare_key		= ufshcd_crypto_prepare_key,
+> +	.import_key		= ufshcd_crypto_import_key,
+>   };
+>   
+>   static enum blk_crypto_mode_num
+> diff --git a/include/ufs/ufshcd.h b/include/ufs/ufshcd.h
+> index 8a773434a329..fe66ba37e2ee 100644
+> --- a/include/ufs/ufshcd.h
+> +++ b/include/ufs/ufshcd.h
+> @@ -322,6 +322,9 @@ struct ufs_pwr_mode_info {
+>    * @config_scaling_param: called to configure clock scaling parameters
+>    * @program_key: program or evict an inline encryption key
+>    * @derive_sw_secret: derive sw secret from a wrapped key
+> + * @generate_key: generate a storage key and return longterm wrapped key
+> + * @prepare_key: unwrap longterm key and return ephemeral wrapped key
+> + * @import_key: import sw storage key and return longterm wrapped key
+>    * @event_notify: called to notify important events
+>    * @reinit_notify: called to notify reinit of UFSHCD during max gear switch
+>    * @mcq_config_resource: called to configure MCQ platform resources
+> @@ -369,6 +372,14 @@ struct ufs_hba_variant_ops {
+>   	int	(*derive_sw_secret)(struct ufs_hba *hba, const u8 wkey[],
+>   				    unsigned int wkey_size,
+>   				    u8 sw_secret[BLK_CRYPTO_SW_SECRET_SIZE]);
+> +	int	(*generate_key)(struct ufs_hba *hba,
+> +				u8 lt_key[BLK_CRYPTO_MAX_HW_WRAPPED_KEY_SIZE]);
+> +	int	(*prepare_key)(struct ufs_hba *hba,
+> +			       const u8 *lt_key, size_t lt_key_size,
+> +			       u8 eph_key[BLK_CRYPTO_MAX_HW_WRAPPED_KEY_SIZE]);
+> +	int	(*import_key)(struct ufs_hba *hba,
+> +			      const u8 *imp_key, size_t imp_key_size,
+> +			      u8 lt_key[BLK_CRYPTO_MAX_HW_WRAPPED_KEY_SIZE]);
+>   	void	(*event_notify)(struct ufs_hba *hba,
+>   				enum ufs_event_type evt, void *data);
+>   	void	(*reinit_notify)(struct ufs_hba *);
 
