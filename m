@@ -1,104 +1,133 @@
-Return-Path: <linux-kernel+bounces-52563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52566-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F43B8499BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:12:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BDBBE8499C2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:13:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1DE01C22866
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:12:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEDD51C2287B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:13:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E86CC1C6AF;
-	Mon,  5 Feb 2024 12:06:29 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EA961C6A0
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 12:06:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 568501AADD;
+	Mon,  5 Feb 2024 12:07:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MJ2WLv+O"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CADD31AAD8;
+	Mon,  5 Feb 2024 12:07:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707134789; cv=none; b=ZIaQtcCeWzxI7CkZjsMBKrNq4V3+MEIU0bD1h2qnQYNBG1LQ6DTq01BZM6YxSGojDcHMrsct5tGIvc7iRCtr68v2uNwZ0g3uCv5ypxU/262kYs0rv/AuFXBeraiHiKRvnj1olYTkS7uDF0uip2eAFuIeUGmg7By5eddY6CZIVqU=
+	t=1707134871; cv=none; b=MkHOetKErh8eceXlJwZF5Ryp12PtoNCHYHJb2EAhlJAdTnxw3xoTKCDD9XPoAzluJDWq7h/1NASZk1qQReYZmG/xPFbMLGZ2pzHGnUE7R7KC7M+hq4jeH2plswuOSMBmfQf3R5k5XdBLSR2dAr80QtIjgnU43U/7xGyGDnb1gVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707134789; c=relaxed/simple;
-	bh=y72GAcg/Dxp4x6KLTNOLWNBnkWRVrYb4UCaUIsTqLog=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bLv2QSyZENVDNTtxmsuV9UZOKhh2NQyi9OaZe1rgWsQsHA0KCclmOLeJDgP+eIMQw5uNobF/04M9ctuO3hDZ4QfSHjVY3izQiOcza5cFCyKqv7o9L6883D5v/f+EuAOrvc6t/69R1RQeD+4pw0bsXkkq4r+/aBR6azo8YOvkhJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BACC71FB;
-	Mon,  5 Feb 2024 04:07:07 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.66.84])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6DD343F762;
-	Mon,  5 Feb 2024 04:06:23 -0800 (PST)
-Date: Mon, 5 Feb 2024 12:06:18 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Dawei Li <dawei.li@shingroup.cn>
-Cc: catalin.marinas@arm.com, will@kernel.org, mcgrof@kernel.org,
-	jpoimboe@kernel.org, j.granados@samsung.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	set_pte_at@outlook.com
-Subject: Re: [PATCH] arm64: remove unneeded BUILD_BUG_ON assertion
-Message-ID: <ZcDPOgoQE8IncTHY@FVFF77S0Q05N>
-References: <20240202040211.3118918-1-dawei.li@shingroup.cn>
+	s=arc-20240116; t=1707134871; c=relaxed/simple;
+	bh=8TcYVXgJSergAPvQdFpI+iJxhTSkJUg1QeMWHvPrR+I=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=a8uiIfKMTS52RKDUjRTQYgTNRZWPr/ryK0YtKsM0BjAAh97ePWOVZdapYqbcTegpVvBwZaOqUvJ2GL9GtQvRwRnLLO6Fyqm/vUQl6WBAKsOIsKprUGx+Z9Bqg/dTskZZ3/POKDWsqwNzznrccM+jEMno3Yw22micHuCCZT1L+fQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MJ2WLv+O; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707134869; x=1738670869;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=8TcYVXgJSergAPvQdFpI+iJxhTSkJUg1QeMWHvPrR+I=;
+  b=MJ2WLv+OTdyiKOxFAMJYstiCXRmPZkUCqPV/Ire4VBfAvNlvB/WXKCDw
+   AnX3dCzPoNKm2xieeaedvDAAzwwhwK+Mva2rF4pG21JPd1dks8mXZoT3f
+   rVK4gZ5JOwDqkVKDOYgTKaML9nKahX0sLM+dAEWLcWVAbrkHLFP0Gys4t
+   oupd27EGMs635ELKn0q8mqgb2iFEsJ1NrwXP3qHkE0xMTNgvA3k77mwU1
+   cS1eqXkd798q27jCRRr/z8umHZ9/uk94WDVdWs4NMFLTeDuR+fUZAr9jl
+   NcNsjlyTjCUbtW0+gucrHIsp/6ZSIAfUo8KH7V1/KtahJ5pQDRgh1SmyW
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="25954393"
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="25954393"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 04:07:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="908403"
+Received: from snestero-mobl.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.21.196])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 04:07:46 -0800
+From: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+To: fenghua.yu@intel.com,
+	reinette.chatre@intel.com,
+	shuah@kernel.org
+Cc: linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	ilpo.jarvinen@linux.intel.com
+Subject: [PATCH v4 0/5] selftests/resctrl: Add non-contiguous CBMs in Intel CAT selftest
+Date: Mon,  5 Feb 2024 13:07:32 +0100
+Message-ID: <cover.1707130307.git.maciej.wieczor-retman@intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240202040211.3118918-1-dawei.li@shingroup.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 02, 2024 at 12:02:11PM +0800, Dawei Li wrote:
-> Since commit c02433dd6de3 ("arm64: split thread_info from task stack"),
-> CONFIG_THREAD_INFO_IN_TASK is enabled unconditionally for arm64. So
-> remove this always-true assertion from arch_dup_task_struct.
-> 
-> Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
-> ---
->  arch/arm64/kernel/process.c | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-> index 7387b68c745b..4ae31b7af6c3 100644
-> --- a/arch/arm64/kernel/process.c
-> +++ b/arch/arm64/kernel/process.c
-> @@ -290,9 +290,6 @@ int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src)
->  		fpsimd_preserve_current_state();
->  	*dst = *src;
->  
-> -	/* We rely on the above assignment to initialize dst's thread_flags: */
-> -	BUILD_BUG_ON(!IS_ENABLED(CONFIG_THREAD_INFO_IN_TASK));
-> -
+Non-contiguous CBM support for Intel CAT has been merged into the kernel
+with Commit 0e3cd31f6e90 ("x86/resctrl: Enable non-contiguous CBMs in
+Intel CAT") but there is no selftest that would validate if this feature
+works correctly.
+The selftest needs to verify if writing non-contiguous CBMs to the
+schemata file behaves as expected in comparison to the information about
+non-contiguous CBMs support.
 
-Does the above cause any problem today, or is this patch just a cleanup?
+The patch series is based on a rework of resctrl selftests that's
+currently in review [1]. The patch also implements a similar
+functionality presented in the bash script included in the cover letter
+of the original non-contiguous CBMs in Intel CAT series [3].
 
-For the benefit of other reviewers, the assertion and comment were added in
-commit:
+Changelog v4:
+- Changes to error failure return values in non-contiguous test.
+- Some minor text refactoring without functional changes.
 
-  4585fc59c0e8 ("arm64/sve: Fix wrong free for task->thread.sve_state")
+Changelog v3:
+- Rebase onto v4 of Ilpo's series [1].
+- Split old patch 3/4 into two parts. One doing refactoring and one
+  adding a new function.
+- Some changes to all the patches after Reinette's review.
 
-.. back in 2019, 3 years after commit:
+Changelog v2:
+- Rebase onto v4 of Ilpo's series [2].
+- Add two patches that prepare helpers for the new test.
+- Move Ilpo's patch that adds test grouping to this series.
+- Apply Ilpo's suggestion to the patch that adds a new test.
 
-  c02433dd6de3 ("arm64: split thread_info from task stack")
+[1] https://lore.kernel.org/all/20231215150515.36983-1-ilpo.jarvinen@linux.intel.com/
+[2] https://lore.kernel.org/all/20231211121826.14392-1-ilpo.jarvinen@linux.intel.com/
+[3] https://lore.kernel.org/all/cover.1696934091.git.maciej.wieczor-retman@intel.com/
 
-The comment and assertion were a safety-net for backports, since commit
-4585fc59c0e8 was a fix which dependend upon the thread_info being contained
-within task_struct, and couldn't be backported to kernels without
-CONFIG_THREAD_INFO_IN_TASK.
+Older versions of this series:
+[v1] https://lore.kernel.org/all/20231109112847.432687-1-maciej.wieczor-retman@intel.com/
+[v2] https://lore.kernel.org/all/cover.1702392177.git.maciej.wieczor-retman@intel.com/
 
-I'm sure that we currently have plenty of other code with a similar (but
-undocumented) dependency. Given we've unconditionally selected
-CONFIG_THREAD_INFO_IN_TASK since v4.10, and the oldest longterm stable kernel
-is v4.19 (with v4.14 having EOL'd last month), I think it makes sense to delete
-the assertion and comment.
+Ilpo Järvinen (1):
+  selftests/resctrl: Add test groups and name L3 CAT test L3_CAT
 
-So FWIW:
+Maciej Wieczor-Retman (4):
+  selftests/resctrl: Add helpers for the non-contiguous test
+  selftests/resctrl: Split validate_resctrl_feature_request()
+  selftests/resctrl: Add resource_info_file_exists()
+  selftests/resctrl: Add non-contiguous CBMs CAT test
 
-Acked-by: Mark Rutland <mark.rutland@arm.com>
+ tools/testing/selftests/resctrl/cat_test.c    | 84 ++++++++++++++++-
+ tools/testing/selftests/resctrl/cmt_test.c    |  2 +-
+ tools/testing/selftests/resctrl/mba_test.c    |  2 +-
+ tools/testing/selftests/resctrl/mbm_test.c    |  6 +-
+ tools/testing/selftests/resctrl/resctrl.h     | 10 +-
+ .../testing/selftests/resctrl/resctrl_tests.c | 18 +++-
+ tools/testing/selftests/resctrl/resctrlfs.c   | 94 ++++++++++++++++---
+ 7 files changed, 192 insertions(+), 24 deletions(-)
 
-Mark.
+-- 
+2.43.0
+
 
