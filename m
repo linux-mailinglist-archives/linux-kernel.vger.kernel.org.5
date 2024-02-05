@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-54052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37E9184A9CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:00:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDD7984AA12
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:00:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54D831C27198
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:00:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4CAC1B24707
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:00:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 172044F612;
-	Mon,  5 Feb 2024 22:57:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85820524CB;
+	Mon,  5 Feb 2024 22:58:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gwYKQlg8"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DNt9MYjW"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 281E94F896
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 22:57:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77BD251C3D
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 22:58:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707173878; cv=none; b=oRR4f04TgyyipgItuHUS7GF9TmHmOVfG2tEF7OMi3kR3p9e7Zgyc5k4KbkfaJKbFP/lhq1mHA5s9HSJJKpIkVd5BogYUvX3B1lN47Qx9TQ3PoLsYrly6HLquf4KRt+2vlJNCQehiPWQ0a7xvqM1uKa8f1YyAM6GpaONvsR8gK2M=
+	t=1707173883; cv=none; b=YBUnuIAU39cLK38LLf61K+UKXCnll5BMuPXTvbqIuy/aJknOt8FVqWqwtzIVfGrAFgXw3ucwA/cIu6Loqk73WiqIbTaFgdjEuMiLlxx/pMkK5se15QU8QDqddh5gNraRydHT/TiyKsy60Mr4NEsUHIXmx3HeIDIytVmIu9DZ0k8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707173878; c=relaxed/simple;
-	bh=dLHPCDdqZyYqcKsH5vxgCp7lOfDq1Dp1o0GtCoHXsMo=;
+	s=arc-20240116; t=1707173883; c=relaxed/simple;
+	bh=SKb3E7W4WhaRGmBfAfKjvqEtOqpcRYCQ8Ot/YOETWzg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Rt3KuHv+93mIUxTrH2wILMi4QeBbiBRpfRHUlod4VUmUDZdd7GU0pDD2pO7rE3TODPKkmNumkVwHW98pTavQSlC+q8iwKqNafF2KSTdiugLDiu7qmaQR090EiSzXm4cxzLSEsZjV7ZvzUIJniUCICsHBJirq74Ph6upOXVNTe8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gwYKQlg8; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=B8OPpmxCxhPLyvS/7slVdEo5gunuf/m9Rld1v3ukU2KVdD6csutLSVhLF9m1wztyAR7CnCT+weBKoe7Mw+A9LceKFN7V5i5Y7a5SIx0M3NC5NKPdSNy/OX2bxv8Bd7EwVxpRJBD5klPVz7ON77g+WGocczOyF4giqncJRTn9+0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DNt9MYjW; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707173875;
+	s=mimecast20190719; t=1707173880;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3wa+MhW5WY7m0Mgt6HSqvOGHHNP0rK9YvsBe6EDxi5k=;
-	b=gwYKQlg8DkYaAZ20giJiCfU0RIVCPMKEHXlYhlo5MCZZclKaKj0n77KkFXY0yeSLEWhFzt
-	tcpLUNM6auhSmqQrqo+WQDyhuGjkndQUWP0eSrqmiQfa54f32mbH2mHVfMeiix29ygcQ2m
-	zaZVqsj0GCq1t4Pb+lORhKluOnn/z7w=
+	bh=gEDfM0YmOVVjZkqrLm5MW20CtKMi1zvofDx7AFNwinE=;
+	b=DNt9MYjW+LT1/XrwrE9TOB+Z1ODZmhhUwaDPP+L5OHCPt1kSx+R/WG2yuhLN0Kfsi6FE88
+	C5DIdqTUS9NfU86j3xNjiP8VK96e/YsTmods84SkJla1tycgXqw6NA9Hg4/3xZrBohey78
+	koqrigNbcEA2r8hI7S7Ac5oaeIph+dk=
 Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
  by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-588-QlhvDllSPfKdJhAef6Pv0g-1; Mon,
- 05 Feb 2024 17:57:51 -0500
-X-MC-Unique: QlhvDllSPfKdJhAef6Pv0g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-45-jLdc7QWiO9W-lp1ehv9R1A-1; Mon,
+ 05 Feb 2024 17:57:54 -0500
+X-MC-Unique: jLdc7QWiO9W-lp1ehv9R1A-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1131F3CBD509;
-	Mon,  5 Feb 2024 22:57:50 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B0A521C05EC0;
+	Mon,  5 Feb 2024 22:57:52 +0000 (UTC)
 Received: from warthog.procyon.org.com (unknown [10.42.28.245])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 1EAB02166B31;
-	Mon,  5 Feb 2024 22:57:48 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id BE9961C060AF;
+	Mon,  5 Feb 2024 22:57:50 +0000 (UTC)
 From: David Howells <dhowells@redhat.com>
 To: Steve French <smfrench@gmail.com>
 Cc: David Howells <dhowells@redhat.com>,
@@ -72,9 +72,9 @@ Cc: David Howells <dhowells@redhat.com>,
 	Steve French <sfrench@samba.org>,
 	Shyam Prasad N <nspmangalore@gmail.com>,
 	Rohith Surabattula <rohiths.msft@gmail.com>
-Subject: [PATCH v5 07/12] cifs: Replace the writedata replay bool with a netfs sreq flag
-Date: Mon,  5 Feb 2024 22:57:19 +0000
-Message-ID: <20240205225726.3104808-8-dhowells@redhat.com>
+Subject: [PATCH v5 08/12] cifs: Move cifs_loose_read_iter() and cifs_file_write_iter() to file.c
+Date: Mon,  5 Feb 2024 22:57:20 +0000
+Message-ID: <20240205225726.3104808-9-dhowells@redhat.com>
 In-Reply-To: <20240205225726.3104808-1-dhowells@redhat.com>
 References: <20240205225726.3104808-1-dhowells@redhat.com>
 Precedence: bulk
@@ -84,10 +84,11 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-Replace the 'replay' bool in cifs_writedata (now cifs_io_subrequest) with a
-flag in the netfs_io_subrequest flags.
+Move cifs_loose_read_iter() and cifs_file_write_iter() to file.c so that
+they are colocated with similar functions rather than being split with
+cifsfs.c.
 
 Signed-off-by: David Howells <dhowells@redhat.com>
 cc: Steve French <sfrench@samba.org>
@@ -99,70 +100,153 @@ cc: netfs@lists.linux.dev
 cc: linux-fsdevel@vger.kernel.org
 cc: linux-mm@kvack.org
 ---
- fs/smb/client/cifsglob.h | 1 -
- fs/smb/client/file.c     | 2 +-
- fs/smb/client/smb2pdu.c  | 4 ++--
- include/linux/netfs.h    | 1 +
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ fs/smb/client/cifsfs.c | 55 ------------------------------------------
+ fs/smb/client/cifsfs.h |  2 ++
+ fs/smb/client/file.c   | 53 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 55 insertions(+), 55 deletions(-)
 
-diff --git a/fs/smb/client/cifsglob.h b/fs/smb/client/cifsglob.h
-index dd0cef742a64..1dfed3eddaa2 100644
---- a/fs/smb/client/cifsglob.h
-+++ b/fs/smb/client/cifsglob.h
-@@ -1479,7 +1479,6 @@ struct cifs_io_subrequest {
- 	unsigned int			xid;
- 	int				result;
- 	bool				have_credits;
--	bool				replay;
- 	struct kvec			iov[2];
- 	struct TCP_Server_Info		*server;
- #ifdef CONFIG_CIFS_SMB_DIRECT
+diff --git a/fs/smb/client/cifsfs.c b/fs/smb/client/cifsfs.c
+index 41617541d175..4b6d1a5e4741 100644
+--- a/fs/smb/client/cifsfs.c
++++ b/fs/smb/client/cifsfs.c
+@@ -984,61 +984,6 @@ cifs_smb3_do_mount(struct file_system_type *fs_type,
+ 	return root;
+ }
+ 
+-
+-static ssize_t
+-cifs_loose_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+-{
+-	ssize_t rc;
+-	struct inode *inode = file_inode(iocb->ki_filp);
+-
+-	if (iocb->ki_flags & IOCB_DIRECT)
+-		return cifs_user_readv(iocb, iter);
+-
+-	rc = cifs_revalidate_mapping(inode);
+-	if (rc)
+-		return rc;
+-
+-	return generic_file_read_iter(iocb, iter);
+-}
+-
+-static ssize_t cifs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
+-{
+-	struct inode *inode = file_inode(iocb->ki_filp);
+-	struct cifsInodeInfo *cinode = CIFS_I(inode);
+-	ssize_t written;
+-	int rc;
+-
+-	if (iocb->ki_filp->f_flags & O_DIRECT) {
+-		written = cifs_user_writev(iocb, from);
+-		if (written > 0 && CIFS_CACHE_READ(cinode)) {
+-			cifs_zap_mapping(inode);
+-			cifs_dbg(FYI,
+-				 "Set no oplock for inode=%p after a write operation\n",
+-				 inode);
+-			cinode->oplock = 0;
+-		}
+-		return written;
+-	}
+-
+-	written = cifs_get_writer(cinode);
+-	if (written)
+-		return written;
+-
+-	written = generic_file_write_iter(iocb, from);
+-
+-	if (CIFS_CACHE_WRITE(CIFS_I(inode)))
+-		goto out;
+-
+-	rc = filemap_fdatawrite(inode->i_mapping);
+-	if (rc)
+-		cifs_dbg(FYI, "cifs_file_write_iter: %d rc on %p inode\n",
+-			 rc, inode);
+-
+-out:
+-	cifs_put_writer(cinode);
+-	return written;
+-}
+-
+ static loff_t cifs_llseek(struct file *file, loff_t offset, int whence)
+ {
+ 	struct cifsFileInfo *cfile = file->private_data;
+diff --git a/fs/smb/client/cifsfs.h b/fs/smb/client/cifsfs.h
+index 685f7d1139c6..e8e0f863e935 100644
+--- a/fs/smb/client/cifsfs.h
++++ b/fs/smb/client/cifsfs.h
+@@ -100,6 +100,8 @@ extern ssize_t cifs_strict_readv(struct kiocb *iocb, struct iov_iter *to);
+ extern ssize_t cifs_user_writev(struct kiocb *iocb, struct iov_iter *from);
+ extern ssize_t cifs_direct_writev(struct kiocb *iocb, struct iov_iter *from);
+ extern ssize_t cifs_strict_writev(struct kiocb *iocb, struct iov_iter *from);
++ssize_t cifs_file_write_iter(struct kiocb *iocb, struct iov_iter *from);
++ssize_t cifs_loose_read_iter(struct kiocb *iocb, struct iov_iter *iter);
+ extern int cifs_flock(struct file *pfile, int cmd, struct file_lock *plock);
+ extern int cifs_lock(struct file *, int, struct file_lock *);
+ extern int cifs_fsync(struct file *, loff_t, loff_t, int);
 diff --git a/fs/smb/client/file.c b/fs/smb/client/file.c
-index ce5f24206be0..14602ed6bc39 100644
+index 14602ed6bc39..a1e6a4c83dc6 100644
 --- a/fs/smb/client/file.c
 +++ b/fs/smb/client/file.c
-@@ -3645,7 +3645,7 @@ cifs_resend_wdata(struct cifs_io_subrequest *wdata, struct list_head *wdata_list
- 			if (wdata->cfile->invalidHandle)
- 				rc = -EAGAIN;
- 			else {
--				wdata->replay = true;
-+				set_bit(NETFS_SREQ_RETRYING, &wdata->subreq.flags);
- #ifdef CONFIG_CIFS_SMB_DIRECT
- 				if (wdata->mr) {
- 					wdata->mr->need_invalidate = true;
-diff --git a/fs/smb/client/smb2pdu.c b/fs/smb/client/smb2pdu.c
-index 2ecc5f210329..84e3675eb41e 100644
---- a/fs/smb/client/smb2pdu.c
-+++ b/fs/smb/client/smb2pdu.c
-@@ -4797,7 +4797,7 @@ smb2_async_writev(struct cifs_io_subrequest *wdata)
- 	struct cifs_io_parms *io_parms = NULL;
- 	int credit_request;
+@@ -4570,6 +4570,59 @@ ssize_t cifs_user_readv(struct kiocb *iocb, struct iov_iter *to)
+ 	return __cifs_readv(iocb, to, false);
+ }
  
--	if (!wdata->server || wdata->replay)
-+	if (!wdata->server || test_bit(NETFS_SREQ_RETRYING, &wdata->subreq.flags))
- 		server = wdata->server = cifs_pick_channel(tcon->ses);
- 
- 	/*
-@@ -4882,7 +4882,7 @@ smb2_async_writev(struct cifs_io_subrequest *wdata)
- 	rqst.rq_nvec = 1;
- 	rqst.rq_iter = wdata->subreq.io_iter;
- 	rqst.rq_iter_size = iov_iter_count(&rqst.rq_iter);
--	if (wdata->replay)
-+	if (test_bit(NETFS_SREQ_RETRYING, &wdata->subreq.flags))
- 		smb2_set_replay(server, &rqst);
- #ifdef CONFIG_CIFS_SMB_DIRECT
- 	if (wdata->mr)
-diff --git a/include/linux/netfs.h b/include/linux/netfs.h
-index 61195cf16d6e..455ccfe8bffa 100644
---- a/include/linux/netfs.h
-+++ b/include/linux/netfs.h
-@@ -224,6 +224,7 @@ struct netfs_io_subrequest {
- #define NETFS_SREQ_SEEK_DATA_READ	3	/* Set if ->read() should SEEK_DATA first */
- #define NETFS_SREQ_NO_PROGRESS		4	/* Set if we didn't manage to read any data */
- #define NETFS_SREQ_ONDEMAND		5	/* Set if it's from on-demand read mode */
-+#define NETFS_SREQ_RETRYING		6	/* Set if we're retrying the op */
- };
- 
- enum netfs_io_origin {
++ssize_t cifs_loose_read_iter(struct kiocb *iocb, struct iov_iter *iter)
++{
++	ssize_t rc;
++	struct inode *inode = file_inode(iocb->ki_filp);
++
++	if (iocb->ki_flags & IOCB_DIRECT)
++		return cifs_user_readv(iocb, iter);
++
++	rc = cifs_revalidate_mapping(inode);
++	if (rc)
++		return rc;
++
++	return generic_file_read_iter(iocb, iter);
++}
++
++ssize_t cifs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
++{
++	struct inode *inode = file_inode(iocb->ki_filp);
++	struct cifsInodeInfo *cinode = CIFS_I(inode);
++	ssize_t written;
++	int rc;
++
++	if (iocb->ki_filp->f_flags & O_DIRECT) {
++		written = cifs_user_writev(iocb, from);
++		if (written > 0 && CIFS_CACHE_READ(cinode)) {
++			cifs_zap_mapping(inode);
++			cifs_dbg(FYI,
++				 "Set no oplock for inode=%p after a write operation\n",
++				 inode);
++			cinode->oplock = 0;
++		}
++		return written;
++	}
++
++	written = cifs_get_writer(cinode);
++	if (written)
++		return written;
++
++	written = generic_file_write_iter(iocb, from);
++
++	if (CIFS_CACHE_WRITE(CIFS_I(inode)))
++		goto out;
++
++	rc = filemap_fdatawrite(inode->i_mapping);
++	if (rc)
++		cifs_dbg(FYI, "cifs_file_write_iter: %d rc on %p inode\n",
++			 rc, inode);
++
++out:
++	cifs_put_writer(cinode);
++	return written;
++}
++
+ ssize_t
+ cifs_strict_readv(struct kiocb *iocb, struct iov_iter *to)
+ {
 
 
