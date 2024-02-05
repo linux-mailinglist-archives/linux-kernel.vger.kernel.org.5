@@ -1,189 +1,114 @@
-Return-Path: <linux-kernel+bounces-53154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53155-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1C4584A154
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:50:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F16D84A166
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:52:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0038B1C2245F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:50:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C5102848FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:52:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE1802AF18;
-	Mon,  5 Feb 2024 17:50:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B11AE45961;
+	Mon,  5 Feb 2024 17:52:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oltmanns.dev header.i=@oltmanns.dev header.b="z8OZncQm"
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CETpZFhN"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CDB844C9C;
-	Mon,  5 Feb 2024 17:50:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7834A45946;
+	Mon,  5 Feb 2024 17:52:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707155441; cv=none; b=uzmAQBgJNpwSDluhTYMc+RSOffIB+qplIcZcWPnpQaZ9ASqbttfnx1SkVdWJWNPGB47z+BUK5joVved8YeLOovAiY5joWXn0QYtGsELb1oRZFPZ/hjEcVKAqTdbUSAU+3bkxRL2iWX2/oH9rkTXaeje9jH/6sMjGZcmi2uu+dNI=
+	t=1707155536; cv=none; b=HhCOKzt14sk8Na5Yz0WeEpxAorYabeb49g4dR8DrSSjUjeqWS6B0qD6d76rQmo4rUuhsM1U4iPpkdSHDPDEbZmo8XCr7BzSnsNYcioKNOggrb+DS/KOyVZ3KQPJWflFpkFcxuFd/eu+eiaQ4PV9FZrCMglnj6mWT1Jum++Uc9TI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707155441; c=relaxed/simple;
-	bh=3bp8mP5LU2HDSVtF79gXm0Qv9vYGRpul41cBty4cm1c=;
-	h=References:From:To:Cc:Subject:In-reply-to:Date:Message-ID:
-	 MIME-Version:Content-Type; b=HyI+wgknH3ximWV8akSIkIwwwLMOTN7DnZPqQwoRSdPsc6EpNCw1kUtBRgS+NepyRquwhkGj/AKl/sOm72o+lDVs5EeDOFYCVixUcDQTuHazI1TJwsto3I/OCJJY7XE5s0CDiKYr1xAuKczFvdavVU+vRGJ7qUEiD/dCqVrtPGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oltmanns.dev; spf=pass smtp.mailfrom=oltmanns.dev; dkim=pass (2048-bit key) header.d=oltmanns.dev header.i=@oltmanns.dev header.b=z8OZncQm; arc=none smtp.client-ip=80.241.56.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oltmanns.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oltmanns.dev
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4TTDSB2BbZz9t3K;
-	Mon,  5 Feb 2024 18:50:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oltmanns.dev;
-	s=MBO0001; t=1707155434;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=43fZUpSLN34Hcqn5D5P20QB99YjMTO5/RY6QxJlWZcc=;
-	b=z8OZncQmPoCuukgcv9bayNYF6H1VQwFrd6unqx8VhMMFMtIrMhf/fNo+5AotMY6TuM81bg
-	7Fkt5eZ9m3iSJOyUxq5WZvUhDgu+YdZbuB9ewPgKwL4VTpT5d9rTXZEfja5Y5+EJDjiZ6j
-	UVuPVWVlS0295kPAw5dvwfBywpJ7yGTuQ4z3phV0l5youxBWccl8Zp3UubAGZjpZXnqQGN
-	CG6h/RwBYk4/+hZb0mtOqEyQCzG9QtQ6W6B1PUBtzL/KTEya0zUcicy9Qr52W2hHtAx6jj
-	57HMGESf+WBq5jGEoYg55vPBZjcvjVIULphNXzZMIzgXfv2YOC3IZ522yOYEiA==
-References: <20240205-pinephone-pll-fixes-v2-0-96a46a2d8c9b@oltmanns.dev>
- <20240205-pinephone-pll-fixes-v2-1-96a46a2d8c9b@oltmanns.dev>
- <2717565.mvXUDI8C0e@jernej-laptop>
-From: Frank Oltmanns <frank@oltmanns.dev>
-To: Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>
-Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Samuel Holland
- <samuel@sholland.org>, Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>,
- Purism Kernel Team
- <kernel@puri.sm>, Ondrej Jirman <megi@xff.cz>, Neil Armstrong
- <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>,
- Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, linux-clk@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 1/6] clk: sunxi-ng: nkm: Support constraints on m/n
- ratio and parent rate
-In-reply-to: <2717565.mvXUDI8C0e@jernej-laptop>
-Date: Mon, 05 Feb 2024 18:50:27 +0100
-Message-ID: <87il32ztp8.fsf@oltmanns.dev>
+	s=arc-20240116; t=1707155536; c=relaxed/simple;
+	bh=kxfhbtqhJ3yntShLMRf4OOUu8N3qaq/tFvyQQvEDDyA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=jPOoFtvhOkUiGaOgtEQA+Ar7TSD934ts6wNOt0r436t9m+QokG0+eTRcTgGMN+UQJoPficnQfA+ZCWyva33PArSqh6wY0s8fXNtCTXw3IXD9r4IT/rz6HDUFKX5zSl0gQ14Y1zaE7R5scy/MznjEHLL9OygFfRp1XUC3QeObVOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CETpZFhN; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40fd2f7ef55so10586205e9.0;
+        Mon, 05 Feb 2024 09:52:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707155532; x=1707760332; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WX0ERGmtVkwESE6iHlas7SOT5xD03uKdoOZi6U2MWfA=;
+        b=CETpZFhND80FoJyXGo8iqPpvlJ05neK0I/GpUrPuDfH/NIXan41a6tBqm0FajhT54f
+         5KMRKMWLOMpgioqyhWo/pWL4B/cPBF68JsYnYew9CMnqU+2d7hb6UdWVLsT4gBR7Ju9Q
+         9pTwVkkkrLNdRVFaL0GeZTrzdmazsEt5/LczoH06oNpsd0csKRS6Do5o7aVsZU4luaXO
+         genhsxw5PNbY00jYSGx4jLXfrAfbplLHsnmeOyeSOaEc+wjkhwA+sk9F0NFACQ0LRx1G
+         8pbJEwGIY4iuzaKF/r0+tK08eMW2whkjgy0wYIJc0AYZJxvhWhCwubQsINJKuMMt09Bv
+         8VDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707155533; x=1707760333;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WX0ERGmtVkwESE6iHlas7SOT5xD03uKdoOZi6U2MWfA=;
+        b=W3ypPfLy9gD1rVW6Lkw2BzaiAf73fXSw17Apu30boGfrHf6/shBIquiwHXukS8i1G4
+         s3VneZjGWkppd8qOBLPTOeO11uBQ6vXWajm+uuv8N0lqr40iWfg7ZAyfJIIs437kf5hX
+         D6jndNk3sWkko3ObM5+GZOc3UQuDqOpZuS/jByGtoDgIfp5P47uARNQ3gbJOzq/7pysk
+         fauIe3r3KHFS22b2UpGXbwJIJG5TaAmUKRqFk83Uw/IIsA8T9ftoYhaVAogwsh+y7nBO
+         8LEhbXGS7d/jS5ayXyzYEcvXAFX6n7wKbF/Nsoqkn1TnjybqpfLd0IyszMxDDSpBW9FI
+         7SRw==
+X-Gm-Message-State: AOJu0Yxnv63MPVny06wsxEY4fW5SzOgt3j8hZ7mjhMVpEZkL+S5/B5GL
+	hYacOyefbS/fReNbi8Tfz1Xn+r2xySqwVsTFs26qVkbbEmTkA2d4kHQMssQd
+X-Google-Smtp-Source: AGHT+IFpITN6/P6MXhEYrL+fds4E1ZovRKyHWNa++diJ+Ns6XkBzhUhDTE0OI2/vJbnR6aX8te/QqQ==
+X-Received: by 2002:a05:600c:1c08:b0:40f:ba0c:4e83 with SMTP id j8-20020a05600c1c0800b0040fba0c4e83mr289998wms.19.1707155532448;
+        Mon, 05 Feb 2024 09:52:12 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXu3l6olBNVCqIoGdn1w+mVwtWq24kT1ZNTF8ZR0PzaOLAL3T6uSxsZZJERaHEmmI3iGiyhAvHxwYcmIm9vM4MGs3m2QmrzOm4wtzdFEHkesnrOfLjY3+HcnvXWVbchXrKD4PQy
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id v14-20020a5d4b0e000000b0033b3c2e73e2sm116904wrq.113.2024.02.05.09.52.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 09:52:11 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] intel_th: Remove redundant initialization of pointer outp
+Date: Mon,  5 Feb 2024 17:52:11 +0000
+Message-Id: <20240205175211.1840927-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-Hi Jernej,
+The pointer outp is being initialized with a value that is never
+read. All the reads of outp occur after outp has neen set to an
+appropriate value rather than using the first value is initialized
+with. The assignment is redundant and can be removed.
 
-On 2024-02-05 at 18:45:27 +0100, Jernej =C5=A0krabec <jernej.skrabec@gmail.=
-com> wrote:
-> Dne ponedeljek, 05. februar 2024 ob 16:22:24 CET je Frank Oltmanns napisa=
-l(a):
->> The Allwinner A64 manual lists the following constraints for the
->> PLL-MIPI clock:
->>  - M/N <=3D 3
->>  - (PLL_VIDEO0)/M >=3D 24MHz
->>
->> The PLL-MIPI clock is implemented as ccu_nkm. Therefore, add support for
->> these constraints.
->>
->> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
->
-> Haven't we discussed that this patch is unnecessary because same effect c=
-an
-> be reached by limiting minimum frequency?
+Cleans up clang scan warning:
+drivers/hwtracing/intel_th/sth.c:73:15: warning: Value stored to
+'outp' during its initialization is never read [deadcode.DeadStores]
 
-The patch for ccu_nm was unnecessary:
-https://lore.kernel.org/all/87jzoug2jz.fsf@oltmanns.dev/
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/hwtracing/intel_th/sth.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Unfortunately, we still need this one.
+diff --git a/drivers/hwtracing/intel_th/sth.c b/drivers/hwtracing/intel_th/sth.c
+index 9ca8c4e045f8..87c1c751d183 100644
+--- a/drivers/hwtracing/intel_th/sth.c
++++ b/drivers/hwtracing/intel_th/sth.c
+@@ -70,7 +70,7 @@ static ssize_t notrace sth_stm_packet(struct stm_data *stm_data,
+ 	struct sth_device *sth = container_of(stm_data, struct sth_device, stm);
+ 	struct intel_th_channel __iomem *out =
+ 		sth_channel(sth, master, channel);
+-	u64 __iomem *outp = &out->Dn;
++	u64 __iomem *outp;
+ 	unsigned long reg = REG_STH_TRIG;
+ 
+ #ifndef CONFIG_64BIT
+-- 
+2.39.2
 
-Best regards,
-  Frank
-
->
-> Best regards,
-> Jernej
->
->> ---
->>  drivers/clk/sunxi-ng/ccu_nkm.c | 21 +++++++++++++++++++++
->>  drivers/clk/sunxi-ng/ccu_nkm.h |  2 ++
->>  2 files changed, 23 insertions(+)
->>
->> diff --git a/drivers/clk/sunxi-ng/ccu_nkm.c b/drivers/clk/sunxi-ng/ccu_n=
-km.c
->> index 853f84398e2b..1168d894d636 100644
->> --- a/drivers/clk/sunxi-ng/ccu_nkm.c
->> +++ b/drivers/clk/sunxi-ng/ccu_nkm.c
->> @@ -16,6 +16,20 @@ struct _ccu_nkm {
->>  	unsigned long	m, min_m, max_m;
->>  };
->>
->> +static bool ccu_nkm_is_valid_rate(struct ccu_common *common, unsigned l=
-ong parent,
->> +				  unsigned long n, unsigned long m)
->> +{
->> +	struct ccu_nkm *nkm =3D container_of(common, struct ccu_nkm, common);
->> +
->> +	if (nkm->max_m_n_ratio && (m > nkm->max_m_n_ratio * n))
->> +		return false;
->> +
->> +	if (nkm->min_parent_m_ratio && (parent < nkm->min_parent_m_ratio * m))
->> +		return false;
->> +
->> +	return true;
->> +}
->> +
->>  static unsigned long ccu_nkm_find_best_with_parent_adj(struct ccu_commo=
-n *common,
->>  						       struct clk_hw *parent_hw,
->>  						       unsigned long *parent, unsigned long rate,
->> @@ -31,6 +45,10 @@ static unsigned long ccu_nkm_find_best_with_parent_ad=
-j(struct ccu_common *common
->>  				unsigned long tmp_rate, tmp_parent;
->>
->>  				tmp_parent =3D clk_hw_round_rate(parent_hw, rate * _m / (_n * _k));
->> +
->> +				if (!ccu_nkm_is_valid_rate(common, tmp_parent, _n, _m))
->> +					continue;
->> +
->>  				tmp_rate =3D tmp_parent * _n * _k / _m;
->>
->>  				if (ccu_is_better_rate(common, rate, tmp_rate, best_rate) ||
->> @@ -64,6 +82,9 @@ static unsigned long ccu_nkm_find_best(unsigned long p=
-arent, unsigned long rate,
->>  	for (_k =3D nkm->min_k; _k <=3D nkm->max_k; _k++) {
->>  		for (_n =3D nkm->min_n; _n <=3D nkm->max_n; _n++) {
->>  			for (_m =3D nkm->min_m; _m <=3D nkm->max_m; _m++) {
->> +				if (!ccu_nkm_is_valid_rate(common, parent, _n, _m))
->> +					continue;
->> +
->>  				unsigned long tmp_rate;
->>
->>  				tmp_rate =3D parent * _n * _k / _m;
->> diff --git a/drivers/clk/sunxi-ng/ccu_nkm.h b/drivers/clk/sunxi-ng/ccu_n=
-km.h
->> index 6601defb3f38..c409212ee40e 100644
->> --- a/drivers/clk/sunxi-ng/ccu_nkm.h
->> +++ b/drivers/clk/sunxi-ng/ccu_nkm.h
->> @@ -27,6 +27,8 @@ struct ccu_nkm {
->>  	struct ccu_mux_internal	mux;
->>
->>  	unsigned int		fixed_post_div;
->> +	unsigned long		max_m_n_ratio;
->> +	unsigned long		min_parent_m_ratio;
->>
->>  	struct ccu_common	common;
->>  };
->>
->>
 
