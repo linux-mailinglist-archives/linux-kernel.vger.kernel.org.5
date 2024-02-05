@@ -1,147 +1,162 @@
-Return-Path: <linux-kernel+bounces-52848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52850-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97E35849D66
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:52:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF409849D6A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:53:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 792271C21B24
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:52:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 941651F24396
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:53:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D691B2C688;
-	Mon,  5 Feb 2024 14:52:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E04CB2C684;
+	Mon,  5 Feb 2024 14:53:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d+vxXMg3"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a9M/b/YL"
+Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B5892C19D;
-	Mon,  5 Feb 2024 14:52:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF4BF2C1A7;
+	Mon,  5 Feb 2024 14:53:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707144754; cv=none; b=T/TftYFhEQFhBX1QNQa16TqSYB0mV275JxksXoa5p5hRIBuBJXhFXVpBKLnCeFe5whoaXK2bsI69+Dx/J1TWOPxD2j8J1H0Ps7kwe3ecZaUn9h8bY6p7fy0E3Kcq7x3ExefWG9lGQK32cuPL6WNOVNAlQlPi/kDPw18/98IO2NQ=
+	t=1707144789; cv=none; b=piGaQUWa7DbhG1W1cP0rNKutNbU9GZimpwDsdKsILawOR75glrnM8Uybb+6EoxZPi3CbPpTfM9tIfCNZ9iG9E0LLWPyej0YR4fTXxS3aP3fdZjUIGgDY7K9uyOwWwerQKy5x1QS/h69mZ9cM35MGwEHXhIcKf2PAr5v92Btd9mQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707144754; c=relaxed/simple;
-	bh=fjMQKYSrzUd6ahmVPMrjRavcut9sSWmunk404/C9SHI=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rX6z85dfNOS7QiEJKPUxSiuU59LAV5I7YG7osqqLO36dBsNFObHdNNoWcEsUcYVsU1fcVbwUrFuOu4nCs0n/useFkxUT2l+haDhN4PVZ1gOxhjDUUlvX9V3ZL04vciYNWnYsWGErzVgNiAjZ7Y8eCkTMTqhCOckNRQ98g63L1a4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d+vxXMg3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FB0BC433C7;
-	Mon,  5 Feb 2024 14:52:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707144753;
-	bh=fjMQKYSrzUd6ahmVPMrjRavcut9sSWmunk404/C9SHI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=d+vxXMg3O535t4GiNIaxACgO2E14a3T8adkMrgdyRWzz/KKlYEAeQuiVJqYKPIrse
-	 lci5KB9s948+wRFQSjHQ362v/2nm78HQEMIOD083k+4ETVSUfw1j99rB7DbjC/UrIr
-	 hguiNIeqRgfbUIU+mRJ1T6yCr8el+2eEyMy5VIWDSLPisTLlvngX5bJxlxn1MdLsah
-	 ugYDzwndbh6b24yN2y4oOVua88cGMclRmEMmho1hKHZ8uP3dbvG47wMklhXe+L8XMR
-	 C8ftLKSDavq1QFlyjBzgpTXCfGnOnnxlW7MKJq6PPGV2KPYcwZTrzk4EChO4SLV1bY
-	 vsuOGKILww4Qg==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rX0Kk-000SGO-Lx;
-	Mon, 05 Feb 2024 14:52:30 +0000
-Date: Mon, 05 Feb 2024 14:52:29 +0000
-Message-ID: <864jen6k0i.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: James Clark <james.clark@arm.com>
-Cc: Oliver Upton <oliver.upton@linux.dev>,
-	coresight@lists.linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	kvmarm@lists.linux.dev,
-	broonie@kernel.org,
-	suzuki.poulose@arm.com,
-	acme@kernel.org,
-	James Morse <james.morse@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas
- <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mike Leach <mike.leach@linaro.org>,
-	Leo Yan <leo.yan@linaro.org>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Rob Herring
- <robh@kernel.org>,
-	Miguel Luis <miguel.luis@oracle.com>,
-	Jintack Lim <jintack.lim@linaro.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Vincent Donnefort <vdonnefort@google.com>,
-	Kristina Martsenko <kristina.martsenko@arm.com>,
-	Fuad Tabba <tabba@google.com>,
-	Joey Gouly <joey.gouly@arm.com>,
-	Akihiko Odaki <akihiko.odaki@daynix.com>,
-	Jing Zhang
- <jingzhangos@google.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/7] arm64: KVM: Use shared area to pass PMU event state to hypervisor
-In-Reply-To: <a7cc7791-c476-fd81-b79d-a151293b8302@arm.com>
-References: <20240104162714.1062610-1-james.clark@arm.com>
-	<20240104162714.1062610-3-james.clark@arm.com>
-	<Zb1mCCi13AJ_YjFZ@linux.dev>
-	<8a908ee8-620a-d9c2-734b-5a6402950072@arm.com>
-	<ZcDc8-FQo8wKavA4@linux.dev>
-	<867cjj6ohz.wl-maz@kernel.org>
-	<ZcDg1sP3EYZG-i_3@linux.dev>
-	<a7cc7791-c476-fd81-b79d-a151293b8302@arm.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1707144789; c=relaxed/simple;
+	bh=B32fFpSglPmh6EsegcSjTE9A2vs7Th/PastyE8w3mTc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZrOzo5aeZa+KVSJdVsScn0L6y7t627LKuWhlkFHzNwm6q0DFVk03C+0Flc+JRqw1rTxLa1+IFMTw1ZRB4+OAPIHbY7kv+eHG8EfobPp2TYXWRgjrmxAwEdRz5Ztd3KLFDBc+VZa2Zat6QqgsEMVDDXgNfnPquwFVBPzC68pwmYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a9M/b/YL; arc=none smtp.client-ip=209.85.160.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-2191dc7079aso1636462fac.0;
+        Mon, 05 Feb 2024 06:53:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707144787; x=1707749587; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qLHPk+aymp1ecm0O7KZKJBd8OHOUWRsl0TLFYxwyOGQ=;
+        b=a9M/b/YLL0syzhXyP7cN36F7bxaZZhtYOZZx+lB7fEzMhD0OUUlO3T7uR/lJaU5aWM
+         eFNVbwTqlNRIAr/shtjCLGVD4Tpp6unijlLRJrpWhduDqV38HhDjBKWJ+2nvCq1jorRC
+         XfSIJDE80Mahj8HTZU7mDqRg4PMHCfXSvUMTFIoTF9i7J0ulExiWamdjnsKfssemhHfk
+         6cObD6pTWZvdricJGWBOEoT0rOoLyTHEDYXuaGiJiBMX3+e2AUijcSQEs73TWnuVajn0
+         VjAi2vUMm8s1qAaHIqV7h+cpD9a3ktUWUiwe/voW75Z1lftBJYU48Xbi/ydTxFf91SsA
+         c4ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707144787; x=1707749587;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qLHPk+aymp1ecm0O7KZKJBd8OHOUWRsl0TLFYxwyOGQ=;
+        b=LuEtqXQQ1klASyJeNGlh087JMnpZgBx+RqLJhWPg5rq0ykNJrigPzA1y7kdxjY2aEs
+         NCMifbd2FPDjMjrbdPcvVOcJXS7cGpbXvWIDrUn06ii9qM1G2CIOslkSoV+2C/TvpP05
+         8+PwmRO9rmaz/18no0MSOMfz8fnBAWwXCtJ9jIHE0uxNfIku1KD2+DAooW2aYi9UPqvU
+         8FgYMOWs4pfh2kutUWyWNq20vvsKYPBQyzXn9w5n8y/mt2D+kHuINxZgi9SMn54PT7wF
+         GT3ZmSoDWiKsY53+KZJePCAVgOJzHFCeimdZiYoSDEUhp0zllhwt3wUIe7Om36KmDm2F
+         cy0g==
+X-Gm-Message-State: AOJu0Yw2+WVA70UBej0++ueuxI+4VKLTAeAlcqwmwYSfw/i+QHMso4Cv
+	4gCjiTYWQNFJ54O24eCOU1uo2fFDT+u/m5Mkk66IKtxnWCmvK4B2kkQ21tk16A2ZRa72OOIFZkW
+	rvQFY76i2jj0qJXRe+lCR/b6xA40=
+X-Google-Smtp-Source: AGHT+IFwuMmjulFcBFt/EQ5igsfyYhU2jRYXgkdSsjAuGeGkusyGrlUrW1JsuUSmLN+2s4EbaOWjBZ7aP9bKqbiME1Y=
+X-Received: by 2002:a05:6870:1cd:b0:219:97e7:a99a with SMTP id
+ n13-20020a05687001cd00b0021997e7a99amr1501792oad.12.1707144786728; Mon, 05
+ Feb 2024 06:53:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: james.clark@arm.com, oliver.upton@linux.dev, coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, broonie@kernel.org, suzuki.poulose@arm.com, acme@kernel.org, james.morse@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, mike.leach@linaro.org, leo.yan@linaro.org, alexander.shishkin@linux.intel.com, anshuman.khandual@arm.com, robh@kernel.org, miguel.luis@oracle.com, jintack.lim@linaro.org, ardb@kernel.org, mark.rutland@arm.com, arnd@arndb.de, vdonnefort@google.com, kristina.martsenko@arm.com, tabba@google.com, joey.gouly@arm.com, akihiko.odaki@daynix.com, jingzhangos@google.com, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+References: <20240205133450.5222-1-ilpo.jarvinen@linux.intel.com> <20240205133450.5222-4-ilpo.jarvinen@linux.intel.com>
+In-Reply-To: <20240205133450.5222-4-ilpo.jarvinen@linux.intel.com>
+From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date: Mon, 5 Feb 2024 15:52:55 +0100
+Message-ID: <CAMhs-H9QaQCz70dmBfMWJ4xoSagrYCJLqejA72fqb50uDwZY9A@mail.gmail.com>
+Subject: Re: [PATCH 3/4] MIPS: PCI: Return PCIBIOS_* from tx4927_pci_config_read/write()
+To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-mips@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 05 Feb 2024 14:17:10 +0000,
-James Clark <james.clark@arm.com> wrote:
+Hi,
+
+On Mon, Feb 5, 2024 at 3:35=E2=80=AFPM Ilpo J=C3=A4rvinen
+<ilpo.jarvinen@linux.intel.com> wrote:
 >
-> On 05/02/2024 13:21, Oliver Upton wrote:
-> > On Mon, Feb 05, 2024 at 01:15:36PM +0000, Marc Zyngier wrote:
-> >> On Mon, 05 Feb 2024 13:04:51 +0000,
-> >> Oliver Upton <oliver.upton@linux.dev> wrote:
-> >>>
-> >>> Unless someone has strong opinions about making this work in protected
-> >>> mode, I am happy to see tracing support limited to the 'normal' nVHE
-> >>> configuration. The protected feature as a whole is just baggage until
-> >>> upstream support is completed.
-> >>
-> >> Limiting tracing to non-protected mode is a must IMO. Allowing tracing
-> >> when pKVM is enabled is a sure way to expose secrets that should
-> >> stay... secret. The only exception I can think of is when
-> >> CONFIG_NVHE_EL2_DEBUG is enabled, at which point all bets are off.
-> > 
-> > Zero argument there :) I left off the "and PMU" part of what I was
-> > saying, because that was a feature that semi-worked in protected mode
-> > before VM/VCPU shadowing support landed.
-> > 
-> 
-> In that case I can hide all this behind CONFIG_NVHE_EL2_DEBUG for pKVM.
-> This will also have the effect of disabling PMU again for pKVM because I
-> moved that into this new shared area.
+> pci_ops .read/.write must return PCIBIOS_* codes but
+> tx4927_pci_config_read/write() return -1 when mkaddr() cannot find
+> devfn from the root bus. Return PCIBIOS_DEVICE_NOT_FOUND instead and
+> pass that onward in the call chain instead of overwriting the return
+> value.
+>
+> Signed-off-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+> ---
+>  arch/mips/pci/ops-tx4927.c | 14 +++++++++-----
+>  1 file changed, 9 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/mips/pci/ops-tx4927.c b/arch/mips/pci/ops-tx4927.c
+> index f7802f100401..4dd8b93985fb 100644
+> --- a/arch/mips/pci/ops-tx4927.c
+> +++ b/arch/mips/pci/ops-tx4927.c
+> @@ -60,7 +60,7 @@ static int mkaddr(struct pci_bus *bus, unsigned int dev=
+fn, int where,
+>  {
+>         if (bus->parent =3D=3D NULL &&
+>             devfn >=3D PCI_DEVFN(TX4927_PCIC_MAX_DEVNU, 0))
+> -               return -1;
+> +               return PCIBIOS_DEVICE_NOT_FOUND;
+>         __raw_writel(((bus->number & 0xff) << 0x10)
+>                      | ((devfn & 0xff) << 0x08) | (where & 0xfc)
+>                      | (bus->parent ? 1 : 0),
 
-I'm not sure what you have in mind, but dropping PMU support for
-non-protected guests when protected-mode is enabled is not an
-acceptable outcome.
+Should we also return PCIBIOS_SUCCESSFUL instead of 'return 0' in
+'mkaddr' for coherency?
 
-Hiding the trace behind a debug option is fine as this is a global
-setting that has no userspace impact, but impacting guests isn't.
+Other than that, changes look good to me.
 
-	M.
+Reviewed-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 
--- 
-Without deviation from the norm, progress is not possible.
+Thanks,
+    Sergio Paracuellos
+
+> @@ -140,10 +140,12 @@ static int tx4927_pci_config_read(struct pci_bus *b=
+us, unsigned int devfn,
+>                                   int where, int size, u32 *val)
+>  {
+>         struct tx4927_pcic_reg __iomem *pcicptr =3D pci_bus_to_pcicptr(bu=
+s);
+> +       int ret;
+>
+> -       if (mkaddr(bus, devfn, where, pcicptr)) {
+> +       ret =3D mkaddr(bus, devfn, where, pcicptr);
+> +       if (ret !=3D PCIBIOS_SUCCESSFUL) {
+>                 *val =3D 0xffffffff;
+> -               return -1;
+> +               return ret;
+>         }
+>         switch (size) {
+>         case 1:
+> @@ -162,9 +164,11 @@ static int tx4927_pci_config_write(struct pci_bus *b=
+us, unsigned int devfn,
+>                                    int where, int size, u32 val)
+>  {
+>         struct tx4927_pcic_reg __iomem *pcicptr =3D pci_bus_to_pcicptr(bu=
+s);
+> +       int ret;
+>
+> -       if (mkaddr(bus, devfn, where, pcicptr))
+> -               return -1;
+> +       ret =3D mkaddr(bus, devfn, where, pcicptr);
+> +       if (ret !=3D PCIBIOS_SUCCESSFUL)
+> +               return ret;
+>         switch (size) {
+>         case 1:
+>                 icd_writeb(val, where & 3, pcicptr);
+> --
+> 2.39.2
+>
+>
 
