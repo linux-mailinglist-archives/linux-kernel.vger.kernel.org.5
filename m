@@ -1,69 +1,86 @@
-Return-Path: <linux-kernel+bounces-52675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EFFA849B4A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:02:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 67313849B4C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:02:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 434A41F27E15
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:02:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E23041F280A0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B34A2C1A8;
-	Mon,  5 Feb 2024 12:59:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F23B724A0A;
+	Mon,  5 Feb 2024 12:59:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PccInDGZ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="J6e69CJj"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5CC524A19
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 12:59:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2D212C6B4
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 12:59:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707137967; cv=none; b=VwxAso7C1kVF8U1udyXV+DfCrHcX1hM+kNYxgZyBttUOSs8GTlcAUrWkVpwCNXamNsZieHRDzNCU1XCGDwdZ5jSLspVCdPexyzhN4RxsUQ7jNXaK8xqGLaevRkrYs6HDD9GbLOJLUzilK4W5Dt6TPxXfEj3ofK9g6gKmWjStbZI=
+	t=1707137975; cv=none; b=E2E1ptE9272p/vfcOO7oXUtWJ+vYf1ig4JzA8a3aE8mRBfYaklzao/uwBUo6+ZbjkEUE0VVRNXAsT/JB7juFRVoyh69fy4iJrkzTIllYjO1x+kuPoebIb4UNU5/6RAsYxHoS99xRvN0qVHfAG85VvIultQkZG1Hlcr7ACC7pFwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707137967; c=relaxed/simple;
-	bh=T+MbceGRGsG5aivVnHbY4LaFkjfgsT6pW0lCS8qAO04=;
+	s=arc-20240116; t=1707137975; c=relaxed/simple;
+	bh=uhFIx9AVIok+41rhp4wPBkQrIYsfWY6OWQrAj4yf+r0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KiEoD2IEOO1QyHWcOK7k2prqcoRRk35kvNjH1aJb3/NEgt+glBIw4aGSSy2LPV1KBYKtFuVQXu0CritAMXkmJbFk751FT640kKUYl8+5FMLhhnA3e5EswLljVsWekaKBqrT6DKo0PJtIyxQJ8/5/zw/pRf5INS9TjnYezm3QRU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PccInDGZ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707137964;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FpGOJ29CMHAA5hRGumj5ser9f9DDAnohQf19mV7TPfc=;
-	b=PccInDGZmY3dp4rEjan5lhVDkwtEFZpf1OxCSMIvMwMpOVBRZwPDQ0HG4t+Uzftt00gANi
-	7Ft0VjzXUHoi/Lzcq3e94JjqMjSOYUpcmYQOu/x6fykty7a9MeTF2jKUVoIZbzujb700O1
-	N3atj2KNI6OY604codTVYo9/tBy43Eo=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-510-Jgo5-skiN2yhuAa53_qihQ-1; Mon, 05 Feb 2024 07:59:21 -0500
-X-MC-Unique: Jgo5-skiN2yhuAa53_qihQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 06554862DC0;
-	Mon,  5 Feb 2024 12:59:21 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.13])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 1F4342166B31;
-	Mon,  5 Feb 2024 12:59:19 +0000 (UTC)
-Date: Mon, 5 Feb 2024 20:59:16 +0800
-From: Baoquan He <bhe@redhat.com>
-To: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: "yang.zhang" <gaoshanliukou@163.com>, kexec@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	"yang.zhang" <yang.zhang@hexintek.com>
-Subject: Re: [PATCH] kexec: should use uchunk for user buffer increasing
-Message-ID: <ZcDbpMByJ4VNwMZY@MiWiFi-R3L-srv>
-References: <20240130101802.23850-1-gaoshanliukou@163.com>
- <Zb8+8qmn5SV4LKFd@MiWiFi-R3L-srv>
- <871q9r3xl6.fsf@email.froward.int.ebiederm.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=TUSw5S3mfmqvP4n4u2yTK0/zjXf9SyHEiArUBgXhNC0hUHDwtWg4nKu+HJ6WvRkNEt+xDxPBM4OFvdI4h1aTwVAHmGI+IbecGdB5lrIbcxzo61hstLlxOhrIQZRh+sIOoz+6Nv6Bv1shWUQqxK8aZP84sVKEpmUzS8fLRqr3ydY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=J6e69CJj; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e04ea51984so184224b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 04:59:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707137973; x=1707742773; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pEQX5AABggM2ljP9SXv5rHakiVcpbdiil+FOouwBr5w=;
+        b=J6e69CJjS/IUfmK9Oos4c6q1j7o03TWlBBJwzf/LHjjuQhLb5o9D6eEyT8wEhtJN64
+         gyRmfyoe2grlpKhdFkwBPIU3slCeu96hMQGmD1N3ChTAarm203FkVAhCfhoika5pVWg+
+         akw88kNy6RuorwuFx6D9MXp7mEMSt0BExUE8U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707137973; x=1707742773;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pEQX5AABggM2ljP9SXv5rHakiVcpbdiil+FOouwBr5w=;
+        b=HqvN0QYPfeWCYKalQGkpq+HuRskfw2X8yA2xIec2DcU7hp5j5UpBDS2QU7fAAfaE7H
+         v/HA+P0RTu6C2E2KENhr3MC8+hwIA7ucFtddOlAqmcvRbl/U5qYPOeuZ9NHTp7WiWlhw
+         fQkUhEWKocsyDdfDkytJDqNUNYPiRMx9LO6fX/4EEnfse40rpikstDpNzXC3yoLn41sx
+         Ga1j2D+AHMMCiHUriwBLr8yapfdMebEJsgKFSKhqBb9YxmWrHcsypbQdNUZgKUumbFY3
+         H/KXG05dzScakbPURnhsmoMnS3ZrJcEWeEEDOTAOg1W0eEfTnoGjjRHD66vA0eLJ76Kd
+         MGuA==
+X-Gm-Message-State: AOJu0YxpAkKxURjrE1qIqtXTSdK//ZJg9mLp/OOMmFe5TDa9RAdm9g9R
+	l0POUZhGxcmVe/kaMhpiFI4Y8a87frYhOIUFQDuRlc4IwFwfOoVMqQ9ngmTEeg==
+X-Google-Smtp-Source: AGHT+IH7TRDxNi2WEgGcB1i3d2oWtRwWhybfRytEZQiNCdgIzjYBMwnWPSCbkQGdExjKAlGZJbGBWw==
+X-Received: by 2002:a05:6a00:1d82:b0:6e0:4be0:ab8b with SMTP id z2-20020a056a001d8200b006e04be0ab8bmr1564859pfw.20.1707137973105;
+        Mon, 05 Feb 2024 04:59:33 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWdoon760LIuY5iUr9Hi1uwh8Klg/rh5yNXbpvuhjU1iSvDcI3jtn6GKu0BG9nDz2maou2kIO6N2SUXiKFH60gqsiXSMqdrzhd/XB75C3TRmGl1FTT3s9cQl/oSFe+anrJcpQZJevxFFZZfCQGVcOQ3bPlOJZ8o8QEa0A+EdQ8NwvOhefWaUcn4Hrzg4Dy2RXK0JuqOGz3Ubl+yVGc2a8kwz5g1KryQMA/W9cZOaCmo5bBL3JZSyTR6H8RFu1toDUEKycxhoKWLn8r1oxbqM1h11dkMpheSTbqHKQWT+DsCyhiE6wTcCFWBWDjK+TvNajeRGVFA7XKltL0UAHkKcDzp/iEWn5z5Gbn1qgSA8mqCU2R9YROzvb0n0Ny/xazTsKF/pyYWt8epGa5maZYF+tGbqJ6xVgZvn5J+omKKi8/nnmpIq3c8u5LZycH2FfSC0oyewbiOEZmP/QXB8eqs4FMa0V9P+KJ31ARWiXbHqMRd5Nuwj8jsBp741fDJ3iLMjONrghnCqcBB8zboGm/1jAQLbFMvRjYkpIE=
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id it16-20020a056a00459000b006e0416c42c3sm188892pfb.198.2024.02.05.04.59.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 04:59:32 -0800 (PST)
+Date: Mon, 5 Feb 2024 04:59:32 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Justin Stitt <justinstitt@google.com>, Marco Elver <elver@google.com>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>, Hao Luo <haoluo@google.com>,
+	Andrey Konovalov <andreyknvl@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+	linux-hardening@vger.kernel.org, linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH v3] ubsan: Reintroduce signed overflow sanitizer
+Message-ID: <202402050457.0B4D90B1A@keescook>
+References: <20240205093725.make.582-kees@kernel.org>
+ <67a842ad-b900-4c63-afcb-63455934f727@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,91 +89,65 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <871q9r3xl6.fsf@email.froward.int.ebiederm.org>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+In-Reply-To: <67a842ad-b900-4c63-afcb-63455934f727@gmail.com>
 
-On 02/05/24 at 06:27am, Eric W. Biederman wrote:
-> Baoquan He <bhe@redhat.com> writes:
+On Mon, Feb 05, 2024 at 01:54:24PM +0100, Andrey Ryabinin wrote:
 > 
-> > On 01/30/24 at 06:18pm, yang.zhang wrote:
-> >> From: "yang.zhang" <yang.zhang@hexintek.com>
-> >> 
-> >> Because of alignment requirement in kexec-tools, there is
-> >> no problem for user buffer increasing when loading segments.
-> >> But when coping, the step is uchunk, so we should use uchunk
-> >> not mchunk.
-> >
-> > In theory, ubytes is <= mbytes. So uchunk is always <= mchunk. If ubytes
-> > is exhausted, while there's still remaining mbytes, then uchunk is 0,
-> > there's still mchunk stepping forward. If I understand it correctly,
-> > this is a good catch. Not sure if Eric has comment on this to confirm.
 > 
-> As far as I can read the code the proposed change is a noop.
+> On 2/5/24 10:37, Kees Cook wrote:
 > 
-> I agree it is more correct to not advance the pointers we read from,
-> but since we never read from them after that point it does not
-> matter.
+> > ---
+> >  include/linux/compiler_types.h |  9 ++++-
+> >  lib/Kconfig.ubsan              | 14 +++++++
+> >  lib/test_ubsan.c               | 37 ++++++++++++++++++
+> >  lib/ubsan.c                    | 68 ++++++++++++++++++++++++++++++++++
+> >  lib/ubsan.h                    |  4 ++
+> >  scripts/Makefile.lib           |  3 ++
+> >  scripts/Makefile.ubsan         |  3 ++
+> >  7 files changed, 137 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+> > index 6f1ca49306d2..ee9d272008a5 100644
+> > --- a/include/linux/compiler_types.h
+> > +++ b/include/linux/compiler_types.h
+> > @@ -282,11 +282,18 @@ struct ftrace_likely_data {
+> >  #define __no_sanitize_or_inline __always_inline
+> >  #endif
+> >  
+> > +/* Do not trap wrapping arithmetic within an annotated function. */
+> > +#ifdef CONFIG_UBSAN_SIGNED_WRAP
+> > +# define __signed_wrap __attribute__((no_sanitize("signed-integer-overflow")))
+> > +#else
+> > +# define __signed_wrap
+> > +#endif
+> > +
+> >  /* Section for code which can't be instrumented at all */
+> >  #define __noinstr_section(section)					\
+> >  	noinline notrace __attribute((__section__(section)))		\
+> >  	__no_kcsan __no_sanitize_address __no_profile __no_sanitize_coverage \
+> > -	__no_sanitize_memory
+> > +	__no_sanitize_memory __signed_wrap
+> >  
 > 
-> >
-> > static int kimage_load_normal_segment(struct kimage *image,
-> >                                          struct kexec_segment *segment)
-> > {
-> > ......
-> >
-> >                 ptr += maddr & ~PAGE_MASK;
-> >                 mchunk = min_t(size_t, mbytes,
-> >                                 PAGE_SIZE - (maddr & ~PAGE_MASK));
-> >                 uchunk = min(ubytes, mchunk);
-> > ......}
-> 
-> If we are going to improve the code for clarity.  We probably
-> want to do something like:
-> 
-> diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
-> index d08fc7b5db97..1a8b8ce6bf15 100644
-> --- a/kernel/kexec_core.c
-> +++ b/kernel/kexec_core.c
-> @@ -800,22 +800,24 @@ static int kimage_load_normal_segment(struct kimage *image,
->                                 PAGE_SIZE - (maddr & ~PAGE_MASK));
->                 uchunk = min(ubytes, mchunk);
->  
-> -               /* For file based kexec, source pages are in kernel memory */
-> -               if (image->file_mode)
-> -                       memcpy(ptr, kbuf, uchunk);
-> -               else
-> -                       result = copy_from_user(ptr, buf, uchunk);
-> +               if (uchunk) {
-> +                       /* For file based kexec, source pages are in kernel memory */
-> +                       if (image->file_mode)
-> +                               memcpy(ptr, kbuf, uchunk);
-> +                       else
-> +                               result = copy_from_user(ptr, buf, uchunk);
-> +                       ubytes -= uchunk;
-> +                       if (image->file_mode)
-> +                               kbuf += uchunk;
-> +                       else
-> +                               buf += uchunk;
-> +               }
->                 kunmap_local(ptr);
->                 if (result) {
->                         result = -EFAULT;
->                         goto out;
->                 }
-> -               ubytes -= uchunk;
->                 maddr  += mchunk;
-> -               if (image->file_mode)
-> -                       kbuf += mchunk;
-> -               else
-> -                       buf += mchunk;
->                 mbytes -= mchunk;
->  
->                 cond_resched();
-> 
-> And make it exceedingly clear that all of the copying and the rest
-> only happens before uchunk goes to zero.  Otherwise we are relying
-> on a lot of operations becoming noops when uchunk goes to zero.
+> Given this disables all kinds of code instrumentations,
+> shouldn't we just add __no_sanitize_undefined here?
 
-ACK.
-This makes the code logic much clearer, thanks.
+Yeah, that's a very good point.
 
+> I suspect that ubsan's instrumentation usually doesn't cause problems
+> because it calls __ubsan_* functions with all heavy stuff (printk, locks etc)
+> only if code has an UB. So the answer to the question above depends on
+> whether we want to ignore UBs in "noinstr" code or to get some weird side effect,
+> possibly without proper UBSAN report in dmesg.
+
+I think my preference would be to fail safe (i.e. leave in the
+instrumentation), but the intent of noinstr is pretty clear. :P I wonder
+if, instead, we could adjust objtool to yell about cases where calls are
+made in noinstr functions (like it does for UACCESS)... maybe it already
+does?
+
+-Kees
+
+-- 
+Kees Cook
 
