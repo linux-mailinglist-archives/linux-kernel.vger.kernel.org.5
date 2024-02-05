@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-52895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD1A1849DF6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:24:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E5EB849DFA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:24:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 235E61F25907
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:24:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8BC6287C53
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:24:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B28B3A8F4;
-	Mon,  5 Feb 2024 15:23:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05CE93FE5B;
+	Mon,  5 Feb 2024 15:23:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oltmanns.dev header.i=@oltmanns.dev header.b="w6kjYLuC"
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
+	dkim=pass (2048-bit key) header.d=oltmanns.dev header.i=@oltmanns.dev header.b="p5BOTlx7"
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA5473F8CA;
-	Mon,  5 Feb 2024 15:23:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A18463FE5D;
+	Mon,  5 Feb 2024 15:23:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707146600; cv=none; b=ZBbRTEJ5O2etY6O+Vb/DKzmUYDd5SawtPCgizUQsuLEd0TTwFbPZh0AMgCIfoKfswhLsDjLcEaAK6Mmg/uKsFJr+Ad1QCDbpls8HgbEFG4AevgysFihI+rIPhPZmV7orWTT+ibIln6NTgM286dj53yw10SVJ2W7UW1CczSemFpY=
+	t=1707146607; cv=none; b=D1YACqvJzQuFMRcMxk+20iM2G68oiOQx9inGUK+L1fWORg4pSAjwjmWageyI++LVjrKenRWZCMUqt8TIb6KZ4DaLbL6sLoYuAm8T4e3VxTLPCzASVqMILf6MEG/2oXRZZOgBoa2NNuNiYQS1I7nJqym3npusjnndNvIhTZLMfO4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707146600; c=relaxed/simple;
-	bh=LSFmengqkqFNIcTkqiKdRYtwv5rLf2wHfu4gB3QVAfo=;
+	s=arc-20240116; t=1707146607; c=relaxed/simple;
+	bh=zwBfjIxPZERVFfsaNgpqFLdeiKWw7hboXJ6uRiKwYxM=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=lAwEviHVlc9FxtP83SZ9lbx+diYIrulYjoKp+zBxYxh92WfpE8dcU+LxxNwzuBKxvQj6Er8KhDE4polMZg5bstrmxMJG6En+3HHyjgtp3kcUfxPpBcqi9t5R+F/6SGy+rEXgz9INeupMv06duVzDwQFf5fHvScuxrzS+GCOz41Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oltmanns.dev; spf=pass smtp.mailfrom=oltmanns.dev; dkim=pass (2048-bit key) header.d=oltmanns.dev header.i=@oltmanns.dev header.b=w6kjYLuC; arc=none smtp.client-ip=80.241.56.172
+	 In-Reply-To:To:Cc; b=pVemkB+gQPWRl6IC/Qo4ZRfcIKk4uEO1H9dE99Peoee6umr0sqhLSxLnmJYBnefvzMRJ7E1ZLONdyA7ga4+zEZ0LPwFSbXovKf0nPQTUURa5fzJvD8RO3CfXjDJf4+wzw7OHlURYy1Kb3S1zHiTQkJIwjzoPvZ03y/pK6cY/qnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oltmanns.dev; spf=pass smtp.mailfrom=oltmanns.dev; dkim=pass (2048-bit key) header.d=oltmanns.dev header.i=@oltmanns.dev header.b=p5BOTlx7; arc=none smtp.client-ip=80.241.56.151
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oltmanns.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oltmanns.dev
 Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4TT9BB6x4Vz9sSw;
-	Mon,  5 Feb 2024 16:23:14 +0100 (CET)
+	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4TT9BJ5DfPz9swV;
+	Mon,  5 Feb 2024 16:23:20 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oltmanns.dev;
-	s=MBO0001; t=1707146595;
+	s=MBO0001; t=1707146600;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=HMiu8mBySgExM6KnP08YCgNs308ubxzfSD1bMdoSvkY=;
-	b=w6kjYLuCRS3PYRkS6IqG9bJQWNXSkIeBNUQ0a/K9Q3EmD2SqZ9dyoKN1X+kvFkc+kcq0fE
-	3ZGSTlVdQ/emHV4ZSXkzYMw2jzA5Iw2bYOgs4f37ss5kISEkby6ruKD05m3dWKM9djXBFp
-	KDVFgvoHsC+IjL7XKQ0qmMQSAh2B15bNpriFEe/YhwrORFqQBr1f73CSwMCWkAE7lao7Ke
-	mOt0Wmkqh+lKRt8KZ+uKLgFRaLYnA+s4L9VoFjydLO3dj1SznAntvNjJ9+ERCruWlLlZW5
-	xqFmQEqzkRe5F1W4sTAdkVKOCN62t1issOg6UbWjwLLrqnD9jz8CGWJMyUhByQ==
+	bh=qC4mq/tsfLRuzLmRs5JjHQXl/DynYoHApRzxf1WL2uM=;
+	b=p5BOTlx7BFzH5jfkDYpQViWSxKs5abIL8hm2KzHBy21+XzrQNcnG7drDYZmaNPxgoq6svd
+	VOSQLdXUhkmNUjvvyni3MqpxfHJ9FfT9ALjLCZUljFNWk19ObC6iFsezdkutZunV5B8fHZ
+	jB+XIXs90OYNf3K9Mt+jErTvhXbdBH2ROAKG4uAEMbwpQOo1819ukPoEBy4tBSRQqt/JOf
+	8anff4Wsl++LcK4cx5OCjA5bJWAMRppsY9M4jJCNb+xzJPwHfl2rW/S52m2QxEs4zPnOTp
+	iljLh3JK+krTqxPfsWyMMUrjP6VeycUjCDdi+Autvy4D6dY/G0E7QW2NosNGUQ==
 From: Frank Oltmanns <frank@oltmanns.dev>
-Date: Mon, 05 Feb 2024 16:22:28 +0100
-Subject: [PATCH v2 5/6] drm/panel: st7703: Drive XBD599 panel at higher
- clock rate
+Date: Mon, 05 Feb 2024 16:22:29 +0100
+Subject: [PATCH v2 6/6] arm64: dts: allwinner: a64: Fix minimum GPU OPP
+ rate
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,7 +60,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240205-pinephone-pll-fixes-v2-5-96a46a2d8c9b@oltmanns.dev>
+Message-Id: <20240205-pinephone-pll-fixes-v2-6-96a46a2d8c9b@oltmanns.dev>
 References: <20240205-pinephone-pll-fixes-v2-0-96a46a2d8c9b@oltmanns.dev>
 In-Reply-To: <20240205-pinephone-pll-fixes-v2-0-96a46a2d8c9b@oltmanns.dev>
 To: Michael Turquette <mturquette@baylibre.com>, 
@@ -81,77 +81,60 @@ Cc: linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org, 
  dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
  Frank Oltmanns <frank@oltmanns.dev>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2123; i=frank@oltmanns.dev;
- h=from:subject:message-id; bh=LSFmengqkqFNIcTkqiKdRYtwv5rLf2wHfu4gB3QVAfo=;
- b=owEB7QES/pANAwAIAZppogiUStPHAcsmYgBlwP0/wUrDb0L4eaQ3AOCfpz1m+nA/BCEEvgN2u
- 7U9SQoHUPmJAbMEAAEIAB0WIQQC/SV7f5DmuaVET5aaaaIIlErTxwUCZcD9PwAKCRCaaaIIlErT
- x4kRC/4rCGnrv1sdHdQhxuE+E7Qs/Ixz80c+RlRevhWxSLuchp7r/ZRPGL8HBukk/gTMbsbHW9m
- B+eVzGS02ZXLAmI1dwPxqdojPbw7i1L2aBa9yfm0MGh1YBRlHA4PXiFJ51RT3Vbb3GZG4OMp528
- o/z5QdRbg+0ArhHok8ahCtbtArSEkBIk3NmOmd+u7m2Ei21wXiN5/fPLILnLLutplZfYd3BqE59
- 4QkwFX7Iq2mjK/2rpnLEilhv76Bh5hwBrL46RchB/NgflkWArkO1TImCQWM+c8lOOhND1ws6wCH
- J5kgYo7XlEtqxOL18kcu7AkIbr1lg3etPq5xoSrefTZlJcmRK4jm7BKVJ6E5yIZUYJwOSl6dyra
- Zt+Cs/Ciow0CWZxUZmwdYgTYhO96y9Nf30Xu3ffDTS305T6Kf1PooAdFnOyLwDArpj3XtfM6cdZ
- ukgrNAsTLOicxp0C6hGAxj+yWW+ISTaRwNyREGjCvAAbafE/Dy+25QHlzPnSM++ROsQ7c=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1574; i=frank@oltmanns.dev;
+ h=from:subject:message-id; bh=zwBfjIxPZERVFfsaNgpqFLdeiKWw7hboXJ6uRiKwYxM=;
+ b=owEB7QES/pANAwAIAZppogiUStPHAcsmYgBlwP0/YywsMvB2h9f3zxar+UUpwxyriOAGKTLGS
+ ZdrqQvmPRqJAbMEAAEIAB0WIQQC/SV7f5DmuaVET5aaaaIIlErTxwUCZcD9PwAKCRCaaaIIlErT
+ x3RxDACBLK+cLnbt4nqBmvnVYYuwNDvDRxFAxO4EA3xfHnuyUi9obGXAhbHRwu5r0O73xHPRVNr
+ 4Wom+6tBs3/fQuItFP79IP5TmiAFQrzSkoGLQ92bS5iXGhBEcIYFwlpkUXgOrCTqtXWypBAdp29
+ RAQI6ih2i6NilPU/cyy0Y+cdmz/NlslvlnloC2NIgNtCgna8EqxXVuznxxOIsfw70TXsMZa7FEL
+ nG4hYb1xsmY98DZy2qeZA3OJNg+sXOyxL+J3Vey8KfaAx3NJdZ5eQo0RiwX/Lrvc/bOweP6oovx
+ Bs8nYRM/GJ5zndYzn49FwuuIIzmtWco7Era813fL1BsSdT0EdMFQSE4b/7TqbKkE3zj9Xnq+9BD
+ /P0du+E3yb6d8fHwBbUqfBL6QtBVwrxvsC68I5utxurpsD07McLUo54uaOBRrufJoJHceUfjGRV
+ vGonUD0GohydlHH8bkAhELUd6IZTEOOawyGWyIOycvEhaBrM5Rmbdj1jFE/oBIptqjiM0=
 X-Developer-Key: i=frank@oltmanns.dev; a=openpgp;
  fpr=02FD257B7F90E6B9A5444F969A69A208944AD3C7
-X-Rspamd-Queue-Id: 4TT9BB6x4Vz9sSw
+X-Rspamd-Queue-Id: 4TT9BJ5DfPz9swV
 
-This panel is used in the pinephone that runs on a Allwinner A64 SOC.
-The SOC requires pll-mipi to run at more than 500 MHz.
+The PLL-GPU has a minimum rate of 192 MHz according to the A64 manual.
 
-This is the relevant clock tree:
- pll-mipi
-    tcon0
-       tcon-data-clock
+If run at less than 192 MHz the pinephone (based on the A64) sometimes
+replays the last few frames that were displayed over and over (see first
+link below).
 
-tcon-data-clock has to run at 1/4 the DSI per-lane bit rate. The XBD599
-has 24 bpp and 4 lanes. Therefore, the resulting requested
-tcon-data-clock rate is:
-    crtc_clock * 1000 * (24 / 4) / 4
+Note, that running PLL-GPU at 240 MHz and using a divisor of 2 *should*
+circumvent this problem as well. But unfortunately, the GPU shows the
+erratic behaviour even more often, even though its parent is driven at a
+supported range. This might be due to a similar issue to the one
+observed on the Allwinner H6 (see second link).
 
-tcon-data-clock runs at tcon0 / 4 (fixed divisor), so it requests a
-parent rate of
-    4 * (crtc_clock * 1000 * (24 / 4) / 4)
+Running both the GPU and PLL-GPU at more then 192 MHz reduces the
+occurrenc of the issue.
 
-Since tcon0 is a ccu_mux, the rate of tcon0 equals the rate of pll-mipi.
+Therefore, increase the minimum rate in the GPU OPP table to 192 MHz.
 
-pll-mipi's constraint to run at 500MHz or higher forces us to have a
-crtc_clock >= 83333 kHz if we want a 60 Hz vertical refresh rate.
-
-Change [hv]sync_(start|end) so that we reach a clock rate of 83502 kHz
-so that it is high enough to align with pll-pipi limits.
-
+Link: https://gitlab.com/postmarketOS/pmaports/-/issues/805
+Link: https://lore.kernel.org/linux-arm-kernel/2562485.k3LOHGUjKi@kista/T/
 Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
 ---
- drivers/gpu/drm/panel/panel-sitronix-st7703.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7703.c b/drivers/gpu/drm/panel/panel-sitronix-st7703.c
-index b55bafd1a8be..6886fd7f765e 100644
---- a/drivers/gpu/drm/panel/panel-sitronix-st7703.c
-+++ b/drivers/gpu/drm/panel/panel-sitronix-st7703.c
-@@ -320,14 +320,14 @@ static int xbd599_init_sequence(struct st7703 *ctx)
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+index 57ac18738c99..448d7fbdd1a9 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+@@ -107,8 +107,8 @@ de: display-engine {
+ 	gpu_opp_table: opp-table-gpu {
+ 		compatible = "operating-points-v2";
  
- static const struct drm_display_mode xbd599_mode = {
- 	.hdisplay    = 720,
--	.hsync_start = 720 + 40,
--	.hsync_end   = 720 + 40 + 40,
--	.htotal	     = 720 + 40 + 40 + 40,
-+	.hsync_start = 720 + 65,
-+	.hsync_end   = 720 + 65 + 65,
-+	.htotal      = 720 + 65 + 65 + 65,
- 	.vdisplay    = 1440,
--	.vsync_start = 1440 + 18,
--	.vsync_end   = 1440 + 18 + 10,
--	.vtotal	     = 1440 + 18 + 10 + 17,
--	.clock	     = 69000,
-+	.vsync_start = 1440 + 30,
-+	.vsync_end   = 1440 + 30 + 22,
-+	.vtotal	     = 1440 + 30 + 22 + 29,
-+	.clock	     = (720 + 65 + 65 + 65) * (1440 + 30 + 22 + 29) * 60 / 1000,
- 	.flags	     = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
- 	.width_mm    = 68,
- 	.height_mm   = 136,
+-		opp-120000000 {
+-			opp-hz = /bits/ 64 <120000000>;
++		opp-192000000 {
++			opp-hz = /bits/ 64 <192000000>;
+ 		};
+ 
+ 		opp-312000000 {
 
 -- 
 2.43.0
