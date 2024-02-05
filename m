@@ -1,143 +1,208 @@
-Return-Path: <linux-kernel+bounces-51996-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51998-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DF32849285
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 03:50:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A34DD84928B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 03:55:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42C551F21602
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 02:50:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C1741F215EC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 02:55:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 433D29468;
-	Mon,  5 Feb 2024 02:50:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FEFDB670;
+	Mon,  5 Feb 2024 02:55:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="jt+T+wjw"
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g0vWJC2Z"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAE978F47
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 02:50:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F08438F40;
+	Mon,  5 Feb 2024 02:55:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707101423; cv=none; b=fyor/RTM/5HHJ/cUVkIin1Uap6qfEeWCNqZO4b3LB+WPQLFnsFu1PNiclh/temf2VxZBkA4A8lt/MwS3bTpTcLsxshLQjURuqR5xqaU75YUBj+XTUlJQFz/IT05eXvuDx/h0xfyiUmgcX5WIB+hPosKG1yjyGQsTlxDz4g2iv8Q=
+	t=1707101735; cv=none; b=nFPV4VcF2oIs/wt/VW7QAUG2Il8HCUZvDjqY+/ru2IQdjcKxtNIvRxlW2KdXjJn7AaenFIz5gyejtymrxf/lXaObufkkdqizBwZJr14mQsynTY8C79hxDmas7W+wccgdIAXk6odLEk22CiJ/Hov7YYdbHgs5Ni++ysMymJoEa5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707101423; c=relaxed/simple;
-	bh=/+eNhUX5Da15gfgQrb2hDNqaoiKofc+mK/1pSJDmibc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gPZSKj5+8PHEy3cuSCCcVXuaWEQiHmmxpNUXN2XwiN08iS2GXLXYxq1HASxxy9HYV1n/YSBc9XiXuLPazVABUJu1uJRZER7f86Yeaf5vF2QQQcI/SQjRN/GRFcSBOx7d+TxRa2ZH5PyioVc3u9GiJ1W8IqMQE6i2pI5bLFdDPiI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=jt+T+wjw; arc=none smtp.client-ip=115.124.30.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1707101418; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=t0gk3xBIxgK8STj8RToaRUAGDh+0bUS8n9Avz3FOyak=;
-	b=jt+T+wjwnAsHod4w78hjPtemo/SM4xuCyDPPxKW0FM0iamlRTHeAb0EwfLgLSKU9dQWeWv/IMg4JNvDg7VkQCWXCtNGyNhST8qQL7gL3Zt1gEhORwdkOaE02hkfsRl6c1ltMSG78ZvMJFH0YGrU1Ww0c7ikMIep8esoTALdRzrc=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W02DprY_1707101415;
-Received: from 30.97.56.40(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W02DprY_1707101415)
-          by smtp.aliyun-inc.com;
-          Mon, 05 Feb 2024 10:50:16 +0800
-Message-ID: <909cee7d-0201-4429-b85d-7d2662516e45@linux.alibaba.com>
-Date: Mon, 5 Feb 2024 10:50:32 +0800
+	s=arc-20240116; t=1707101735; c=relaxed/simple;
+	bh=4AEV8Os8oxrL8TTjB0jQgYbL/z8pFobotn5bWihXYBM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B6L68c1i1oclAsK1SQTt2VAaxjG0iI0M65qoeIbnnbLxVl6DMBmTpVWlReg+1ts5Fap3gl3Dq2o6tS0RfYn72NBJtPYhlDPpCaBKOK6/YoRVjkRSAtv+5D3gomLjKfCgL1aDMcvWvjkBmCMn/w43Ez9D1sRDa45P2EiBxF893FM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g0vWJC2Z; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707101734; x=1738637734;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=4AEV8Os8oxrL8TTjB0jQgYbL/z8pFobotn5bWihXYBM=;
+  b=g0vWJC2Z9hRPJzUXtC/ILMudRyGdSWsDMjjK+rkazxqBhHHvqZi4qdoj
+   A8vxlDF53oGwFLaGaVp9hfk7l5LWxsjR88SyHKkwOm8KUO7MmIcrucugn
+   gQHo7yyW8kG6u/TF4QOa1Mtte0f/ME+5yxda1uBjSEO5xhlk3R8ysp32z
+   czIKodm9oyM/aJvKBIrbOUh0O2LYGPSHoRdmDNQQWA0oPAsM9dtjCDSdK
+   eweYXsuR1bpatF3ZprBLlY5s0nQKPjHYPgJ34pTmONgMRqR/zaO+gmIcp
+   KCClILwU1+4VhIkmDab8JwaUQtHdG41Lu21Panxc+jdDn3Daiejv5VEt9
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="336185"
+X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
+   d="scan'208";a="336185"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 18:55:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
+   d="scan'208";a="892042"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by orviesa006.jf.intel.com with ESMTP; 04 Feb 2024 18:55:31 -0800
+Date: Mon, 5 Feb 2024 10:51:57 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: matthew.gerlach@linux.intel.com
+Cc: hao.wu@intel.com, trix@redhat.com, mdf@kernel.org, yilun.xu@intel.com,
+	linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fpga: dfl: afu: update initialization of port_hdr driver
+Message-ID: <ZcBNTdOulDvlIxmY@yilunxu-OptiPlex-7050>
+References: <20240122172433.537525-1-matthew.gerlach@linux.intel.com>
+ <Za8ibeJc82Xkbpct@yilunxu-OptiPlex-7050>
+ <alpine.DEB.2.22.394.2401241106550.77559@sj-4150-psse-sw-opae-dev2>
+ <ZbjC501oRClByual@yilunxu-OptiPlex-7050>
+ <alpine.DEB.2.22.394.2401300825020.112016@sj-4150-psse-sw-opae-dev2>
+ <ZbnTwcomGXOGs9SG@yilunxu-OptiPlex-7050>
+ <alpine.DEB.2.22.394.2401311433120.112016@sj-4150-psse-sw-opae-dev2>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH] mm: hugetlb: remove __GFP_THISNODE flag when
- dissolving the old hugetlb
-To: Michal Hocko <mhocko@suse.com>
-Cc: akpm@linux-foundation.org, muchun.song@linux.dev, osalvador@suse.de,
- david@redhat.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <6f26ce22d2fcd523418a085f2c588fe0776d46e7.1706794035.git.baolin.wang@linux.alibaba.com>
- <Zbu4cD1XLFLfKan8@tiehlicka>
- <3f31cd89-f349-4f9e-bc29-35f29f489633@linux.alibaba.com>
- <ZbylJr_bbWCUMjMl@tiehlicka>
- <f1606912-5bcc-46be-b4f4-666149eab7bd@linux.alibaba.com>
- <Zby7-dTtPIy2k5pj@tiehlicka>
-From: Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <Zby7-dTtPIy2k5pj@tiehlicka>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2401311433120.112016@sj-4150-psse-sw-opae-dev2>
 
-
-
-On 2/2/2024 5:55 PM, Michal Hocko wrote:
-> On Fri 02-02-24 17:29:02, Baolin Wang wrote:
->> On 2/2/2024 4:17 PM, Michal Hocko wrote:
-> [...]
->>>> Agree. So how about below changing?
->>>> (1) disallow fallbacking to other nodes when handing in-use hugetlb, which
->>>> can ensure consistent behavior in handling hugetlb.
->>>
->>> I can see two cases here. alloc_contig_range which is an internal kernel
->>> user and then we have memory offlining. The former shouldn't break the
->>> per-node hugetlb pool reservations, the latter might not have any other
->>> choice (the whole node could get offline and that resembles breaking cpu
->>> affininty if the cpu is gone).
->>
->> IMO, not always true for memory offlining, when handling a free hugetlb, it
->> disallows fallbacking, which is inconsistent.
+On Wed, Jan 31, 2024 at 03:53:23PM -0800, matthew.gerlach@linux.intel.com wrote:
 > 
-> It's been some time I've looked into that code so I am not 100% sure how
-> the free pool is currently handled. The above is the way I _think_ it
-> should work from the usability POV.
-
-Please see alloc_and_dissolve_hugetlb_folio().
-
->> Not only memory offlining, but also the longterm pinning (in
->> migrate_longterm_unpinnable_pages()) and memory failure (in
->> soft_offline_in_use_page()) can also break the per-node hugetlb pool
->> reservations.
 > 
-> Bad
+> On Wed, 31 Jan 2024, Xu Yilun wrote:
 > 
->>> Now I can see how a hugetlb page sitting inside a CMA region breaks CMA
->>> users expectations but hugetlb migration already tries hard to allocate
->>> a replacement hugetlb so the system must be under a heavy memory
->>> pressure if that fails, right? Is it possible that the hugetlb
->>> reservation is just overshooted here? Maybe the memory is just terribly
->>> fragmented though?
->>>
->>> Could you be more specific about numbers in your failure case?
->>
->> Sure. Our customer's machine contains serveral numa nodes, and the system
->> reserves a large number of CMA memory occupied 50% of the total memory which
->> is used for the virtual machine, meanwhile it also reserves lots of hugetlb
->> which can occupy 50% of the CMA. So before starting the virtual machine, the
->> hugetlb can use 50% of the CMA, but when starting the virtual machine, the
->> CMA will be used by the virtual machine and the hugetlb should be migrated
->> from CMA.
+> > On Tue, Jan 30, 2024 at 09:13:56AM -0800, matthew.gerlach@linux.intel.com wrote:
+> > > 
+> > > 
+> > > On Tue, 30 Jan 2024, Xu Yilun wrote:
+> > > 
+> > > > On Wed, Jan 24, 2024 at 11:40:05AM -0800, matthew.gerlach@linux.intel.com wrote:
+> > > > > 
+> > > > > 
+> > > > > On Tue, 23 Jan 2024, Xu Yilun wrote:
+> > > > > 
+> > > > > > On Mon, Jan 22, 2024 at 09:24:33AM -0800, Matthew Gerlach wrote:
+> > > > > > > Revision 2 of the Device Feature List (DFL) Port feature has
+> > > > > > > slightly different requirements than revision 1. Revision 2
+> > > > > > > does not need the port to reset at driver startup. In fact,
+> > > > > > 
+> > > > > > Please help illustrate what's the difference between Revision 1 & 2, and
+> > > > > > why revision 2 needs not.
+> > > > > 
+> > > > > I will update the commit message to clarify the differences between revision
+> > > > > 1 and 2.
+> > > > > 
+> > > > > > 
+> > > > > > > performing a port reset during driver initialization can cause
+> > > > > > > driver race conditions when the port is connected to a different
+> > > > > > 
+> > > > > > Please reorganize this part, in this description there seems be a
+> > > > > > software racing bug and the patch is a workaround. But the fact is port
+> > > > > > reset shouldn't been done for a new HW.
+> > > > > 
+> > > > > Reorganizing the commit message a bit will help to clarify why port reset
+> > > > > should not be performed during driver initialization with revision 2 of the
+> > > > > hardware.
+> > > > > 
+> > > > > > 
+> > > > > > BTW: Is there a way to tell whether the port is connected to a different
+> > > > > > PF? Any guarantee that revision 3, 4 ... would need a port reset or not?
+> > > > > 
+> > > > > The use of revision 2 of the port_hdr IP block indicates that the port can
+> > > > > be connected multiple PFs, but there is nothing explicitly stating which PFs
+> > > > 
+> > > > Sorry, I mean any specific indicator other than enumerate the revision
+> > > > number? As you said below, checking revision number may not make further
+> > > > things right, then you need to amend code each time.
+> > > 
+> > > Using a revision number to indicate the level of functionality for a
+> > > particular IP block seems to be a widely used approach. What other indicator
+> > 
+> > If you still want to make the existing driver work, some capability indication
+> > would have more compatibility. That's more reasonable approach. Or you
+> > need to change existing behavior for each new revision, that's not
+> > actually widely used.
 > 
-> Would it make more sense for hugetlb pages to _not_ use CMA in this
-> case? I mean would be better off overall if the hugetlb pool was
-> preallocated before the CMA is reserved? I do realize this is just
-> working around the current limitations but it could be better than
-> nothing.
-
-In this case, the CMA area is large and occupies 50% of the total 
-memory. The purpose is that, if no virtual machines are launched, then 
-CMA memory can be used by hugetlb as much as possible. Once the virtual 
-machines need to be launched, it is necessary to allocate CMA memory as 
-much as possible, such as migrating hugetlb from CMA memory.
-
-After more thinking, I think we should still drop the __GFP_THISNODE 
-flag in alloc_and_dissolve_hugetlb_folio(). Firstly, not only it 
-potentially cause CMA allocation to fail, but it might also cause memory 
-offline to fail like I said in the commit message. Secondly, there have 
-been no user reports complaining about breaking the per-node hugetlb 
-pool, although longterm pinning, memory failure, and memory offline can 
-potentially break the per-node hugetlb pool.
-
->> Due to several nodes in the system, one node's memory can be exhausted,
->> which will fail the hugetlb migration with __GFP_THISNODE flag.
+> I understand some capability indication would be better for compatibility
+> implementation. A revision number change is not as explicit or precise as
+> capability lists.
 > 
-> Is the workload NUMA aware? I.e. do you bind virtual machines to
-> specific nodes?
+> > 
+> > > of functionality level did you have in mind?
+> > 
+> > I'm not trying to make the design. You tell me.
+> 
+> One could use parameter blocks introduced in version 1 of the Device Feature
+> Header (DFH), or capability registers could be added the IP block.
+> In this particular case it seems the least impact to upstreamed software is
+> to keep the DFH and the register map unchanged, except for an incremented
+> revision number field.
+> 
+> > 
+> > If finally no indicator could be used, we have to use revision number. That's
+> > OK but make SW work harder, so I'm asking if anything could be done to
+> > avoid that.
+> 
+> In this case, I don't think anything else can be done without bigger impacts
+> to the SW.
 
-Yes, the VM can bind nodes.
+Changing the existing SW is not a problem, repeat the same change every time
+is a problem. So if we make sure port reset is no longer needed after
+version 1, then this patch is OK. Otherwise, please re-evaluate.
+
+Thanks,
+Yilun
+
+> 
+> > 
+> > > 
+> > > The revision number of an IP block would change when new functionality is
+> > > added to an IP block or the behavior of the IP block changes. It would be
+> > > expected that SW might need to change in order to use the new functionality
+> > > or to handle the change in behavior of the IP block. Ideally the new
+> > > revision of an IP block would be compatible with existing SW, but that
+> > > cannot be guaranteed.
+> > 
+> > People make the IP block, and be compatible should be the concern if it
+> > want upstream support.
+> 
+> Agreed, and making sure some capability mechanism exists when an IP is
+> created would be a great start.
+> 
+> Thanks,
+> Matthew
+> 
+> > 
+> > Thanks,
+> > Yilun
+> > 
+> > > 
+> > > Thanks,
+> > > Matthew
+> > > 
+> > > > 
+> > > > Thanks,
+> > > > Yilun
+> > > > 
+> > > > > the port is connected to.
+> > > > > 
+> > > > > It is hard to predict the requirements and implementation of a future
+> > > > > revision of an IP block. If a requirement of a future revision is to work
+> > > > > with existing software, then the future revision would not require a port
+> > > > > reset at driver initialization.
+> > > > > 
+> > > > 
+> > 
+> > 
 
