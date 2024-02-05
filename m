@@ -1,144 +1,117 @@
-Return-Path: <linux-kernel+bounces-52526-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B374B849945
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:55:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AC6684994F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:57:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FB8628638D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:55:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D9C61C228DE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:57:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D12EB19474;
-	Mon,  5 Feb 2024 11:55:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE910199A2;
+	Mon,  5 Feb 2024 11:57:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VcuUk5o5"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qSfpQl+V"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D268199BC;
-	Mon,  5 Feb 2024 11:55:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E35B18EB9;
+	Mon,  5 Feb 2024 11:57:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707134133; cv=none; b=H9b2sOTa4WfVjJeLETC4aa2bLZQgg1inoWqeQNFWTYbVmBimEsOfwn+RUYcNJU77ohgqJed3gxYvP48KC9sFPM9DbLFE2opeEV/ts5B0pbzjAJxLxJoZqFn+6ZQB0qLzv4Uuj4/cnCBHqbqBjKvVKvomA8jwJOUVW5xcxc9fPqk=
+	t=1707134266; cv=none; b=XmoiF/B7phj5A6M6NM0U0v/2Sbf8NKkz6wSxbGI2JtF8hjKDHs/fqX1t0VEmF+GZr8ruUJgb0kdiYN7Hyj/lRl94ydlMD8xkioOPIsoA+0C/mwvpFpFyai3B4Q8pAJP6qrYB9k+nukOmzkXpGqrbB/SCEGP2fyHp+MUB1Wlm3wg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707134133; c=relaxed/simple;
-	bh=0OuYU2PvqAucFifuB0MnY2hFRDJRhjMbT+oPpt/BoeA=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=oLsYshdHD8PuLKxjQ9DtLY+/Hm/B/WL8dBaB8SZs4/4NuMdmvpPKnNh9AkycyAiO0OKMrqrUo1mL/Yig+cyDPVzPK8CeKyWy0Y5Ehb+VJBfwjcUunhz3QgtPHycF1nvhteAEPDKcSmgQXy8n820S2fLomJHdrriL0QoZmFin4PM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VcuUk5o5; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707134131; x=1738670131;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=0OuYU2PvqAucFifuB0MnY2hFRDJRhjMbT+oPpt/BoeA=;
-  b=VcuUk5o5LUI0apkMLQklZ3v6IIvYWzIIGW7OEOd6ZRSkirTS2qEZlcDP
-   YxWJDYb2vE+/bLKM2r5ygVDWkMYApkcGQPTFdN1b3TrcRVHya9xhNK2Zq
-   AEtz9aNafM8b96hlDNklfsWSlib7cTpoOMz1LeCCd/S5t0woZqNDxgB5l
-   Bf7LxS4msleTwJWmpeyaCyZ9mCtuW2E5BmY2ljdRu7PZ264jtZBOzie4F
-   00P61cyTSiGTKacag6TOzsSO6FNxwjoFFlrx1qv0svQAkgsdRP6S4/viC
-   fECtpsgFkiOXQBne1eyvkJbm6IDSfruxHpVpGvpQKK/KhK/pvVscpnYBB
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="413513"
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="413513"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 03:55:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="706125"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.215.64]) ([10.254.215.64])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 03:55:27 -0800
-Message-ID: <416b19fa-bc7a-4ffd-a4c4-9440483fc039@linux.intel.com>
-Date: Mon, 5 Feb 2024 19:55:23 +0800
+	s=arc-20240116; t=1707134266; c=relaxed/simple;
+	bh=GVqGwsZ3oAzNGM6DmqmUlOaiQdppIpSmPlxDVDHqgzY=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 MIME-Version:Content-Type; b=dmA3juokE2H4NXgaMdosk241TtcDPZZNpsQ6uotZeYFzspXOnzfvWqiGOgBs1SCKXo3uoEopF3M1FPGayZPXsgG9MvQtaN1ebyuqNevYfV7FNSN891QOOPneBp0SSCqUIDqRZoMkVVjCGk5BY41+4AyLnlDUdJOaAgiFJ+btYyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qSfpQl+V; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0669CC433C7;
+	Mon,  5 Feb 2024 11:57:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707134265;
+	bh=GVqGwsZ3oAzNGM6DmqmUlOaiQdppIpSmPlxDVDHqgzY=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:From;
+	b=qSfpQl+VMN9Sym0+Rh/3jeZVEaw7L1pOoKN5Deqz6QmNqS0tdC8OeFEu8f+EQpUpB
+	 lL/5KZSiyL8qZkLaQqWLYs6WSosqRS894q2NXDXit7zPo9VK5DorSXDFJ12rSTD1Nc
+	 hm7lio8CA9KZPNWgJYDSWY/jHmNGQHL+XvkLNuhQ6aBk1eVitcR59NTplECGqn0Nma
+	 WlJ7wQcUt76nNKRLY8RMzCEVQOKG9olavtCaGIBcCP8fpM05nQQt/U2r4rX/kIJqHb
+	 3UsgLpr9xnTDplkyigfQ8kPz6Sti78R9Hdt7QozPbypHNLDW8bVdhi0DuE8bJeH2dz
+	 XDey3pWDv0dmQ==
+References: <87o7cxeehy.fsf@debian-BULLSEYE-live-builder-AMD64>
+ <Zb_-LQLY7eRuakfe@slm.duckdns.org>
+User-agent: mu4e 1.10.8; emacs 27.1
+From: Chandan Babu R <chandanbabu@kernel.org>
+To: Tejun Heo <tj@kernel.org>
+Cc: jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
+ linux-xfs@vger.kernel.org
+Subject: Re: [PATCH wq/for-6.9] workqueue: Fix pwq->nr_in_flight corruption
+ in try_to_grab_pending()
+Date: Mon, 05 Feb 2024 17:25:38 +0530
+In-reply-to: <Zb_-LQLY7eRuakfe@slm.duckdns.org>
+Message-ID: <877cjji0ne.fsf@debian-BULLSEYE-live-builder-AMD64>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, "Liu, Yi L" <yi.l.liu@intel.com>,
- Jacob Pan <jacob.jun.pan@linux.intel.com>,
- Longfang Liu <liulongfang@huawei.com>, "Zhao, Yan Y" <yan.y.zhao@intel.com>,
- Joel Granados <j.granados@samsung.com>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH v11 13/16] iommu: Improve iopf_queue_remove_device()
-Content-Language: en-US
-To: "Tian, Kevin" <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Jason Gunthorpe <jgg@ziepe.ca>,
- Jean-Philippe Brucker <jean-philippe@linaro.org>,
- Nicolin Chen <nicolinc@nvidia.com>
-References: <20240130080835.58921-1-baolu.lu@linux.intel.com>
- <20240130080835.58921-14-baolu.lu@linux.intel.com>
- <BN9PR11MB5276E70CAB272B212977F0C98C472@BN9PR11MB5276.namprd11.prod.outlook.com>
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB5276E70CAB272B212977F0C98C472@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 2024/2/5 17:00, Tian, Kevin wrote:
->> From: Lu Baolu <baolu.lu@linux.intel.com>
->> Sent: Tuesday, January 30, 2024 4:09 PM
->>    *
->> - * Caller makes sure that no more faults are reported for this device.
->> + * Removing a device from an iopf_queue. It's recommended to follow
->> these
->> + * steps when removing a device:
->>    *
->> - * Return: 0 on success and <0 on error.
->> + * - Disable new PRI reception: Turn off PRI generation in the IOMMU
->> hardware
->> + *   and flush any hardware page request queues. This should be done
->> before
->> + *   calling into this helper.
-> 
-> this 1st step is already not followed by intel-iommu driver. The Page
-> Request Enable (PRE) bit is set in the context entry when a device
-> is attached to the default domain and cleared only in
-> intel_iommu_release_device().
-> 
-> but iopf_queue_remove_device() is called when IOMMU_DEV_FEAT_IOPF
-> is disabled e.g. when idxd driver is unbound from the device.
-> 
-> so the order is already violated.
-> 
->> + * - Acknowledge all outstanding PRQs to the device: Respond to all
->> outstanding
->> + *   page requests with IOMMU_PAGE_RESP_INVALID, indicating the device
->> should
->> + *   not retry. This helper function handles this.
->> + * - Disable PRI on the device: After calling this helper, the caller could
->> + *   then disable PRI on the device.
-> 
-> intel_iommu_disable_iopf() disables PRI cap before calling this helper.
+On Sun, Feb 04, 2024 at 11:14:21 AM -1000, Tejun Heo wrote:
+> dd6c3c544126 ("workqueue: Move pwq_dec_nr_in_flight() to the end of work
+> item handling") relocated pwq_dec_nr_in_flight() after
+> set_work_pool_and_keep_pending(). However, the latter destroys information
+> contained in work->data that's needed by pwq_dec_nr_in_flight() including
+> the flush color. With flush color destroyed, flush_workqueue() can stall
+> easily when mixed with cancel_work*() usages.
+>
+> This is easily triggered by running xfstests generic/001 test on xfs:
+>
+>      INFO: task umount:6305 blocked for more than 122 seconds.
+>      ...
+>      task:umount          state:D stack:13008 pid:6305  tgid:6305  ppid:6301   flags:0x00004000
+>      Call Trace:
+>       <TASK>
+>       __schedule+0x2f6/0xa20
+>       schedule+0x36/0xb0
+>       schedule_timeout+0x20b/0x280
+>       wait_for_completion+0x8a/0x140
+>       __flush_workqueue+0x11a/0x3b0
+>       xfs_inodegc_flush+0x24/0xf0
+>       xfs_unmountfs+0x14/0x180
+>       xfs_fs_put_super+0x3d/0x90
+>       generic_shutdown_super+0x7c/0x160
+>       kill_block_super+0x1b/0x40
+>       xfs_kill_sb+0x12/0x30
+>       deactivate_locked_super+0x35/0x90
+>       deactivate_super+0x42/0x50
+>       cleanup_mnt+0x109/0x170
+>       __cleanup_mnt+0x12/0x20
+>       task_work_run+0x60/0x90
+>       syscall_exit_to_user_mode+0x146/0x150
+>       do_syscall_64+0x5d/0x110
+>       entry_SYSCALL_64_after_hwframe+0x6c/0x74
+>
+> Fix it by stashing work_data before calling set_work_pool_and_keep_pending()
+> and using the stashed value for pwq_dec_nr_in_flight().
+>
+> Signed-off-by: Tejun Heo <tj@kernel.org>
+> Reported-by: Chandan Babu R <chandanbabu@kernel.org>
+> Link: http://lkml.kernel.org/r/87o7cxeehy.fsf@debian-BULLSEYE-live-builder-AMD64
+> Fixes: dd6c3c544126 ("workqueue: Move pwq_dec_nr_in_flight() to the end of work item handling")
+> ---
+> Hello, Chandan.
+>
+> Thanks a lot for the report. I could reproduce the problem and verified that
+> this patch fixes the issue. I'm applying this to wq/for-6.9 but would really
+> appreciate if you could confirm the fix.
 
-You are right. The individual drivers should be adjusted accordingly in
-separated patches. Here we just define the expected behaviors of the
-individual iommu driver from the core's perspective.
+fstests executed without any regressions on a next-20240202 kernel with this
+patch applied.
 
-> 
->> + * - Tear down the iopf infrastructure: Calling iopf_queue_remove_device()
->> + *   essentially disassociates the device. The fault_param might still exist,
->> + *   but iommu_page_response() will do nothing. The device fault parameter
->> + *   reference count has been properly passed from
->> iommu_report_device_fault()
->> + *   to the fault handling work, and will eventually be released after
->> + *   iommu_page_response().
-> 
-> it's unclear what 'tear down' means here.
-
-It's the same as calling iopf_queue_remove_device(). Perhaps I could
-remove the confusing "tear down the iopf infrastructure"?
-
-Best regards,
-baolu
+-- 
+Chandan
 
