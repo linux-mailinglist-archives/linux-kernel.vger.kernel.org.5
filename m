@@ -1,110 +1,170 @@
-Return-Path: <linux-kernel+bounces-52068-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B8EF8493B5
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:09:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4698C8493BE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:13:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 346851F22743
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 06:09:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 775C51C20DBA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 06:13:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81DDA107B6;
-	Mon,  5 Feb 2024 06:09:33 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFCB8BE4A;
-	Mon,  5 Feb 2024 06:09:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50422BE5D;
+	Mon,  5 Feb 2024 06:12:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="fRaIQl0I"
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C503FBE4B
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 06:12:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707113373; cv=none; b=GlvYEW8nFuNEWiZfur33jpeSqtglll3k7hNtTvePNFNWgfFyB71ddBiGxjNX++QAOoz/Sw2F9DXocNhYYkn9veiBR4KquDa+8dKFhXCtpvlfFoose1/WvNA5lRyfxxNSzzyuRBxcVsS0RmMuril89bFs03f67mL6xMvNNxn11HQ=
+	t=1707113571; cv=none; b=LBQ7VUOk3TwMfuZZ0phvRvgPQH/UFE9aNoGKZhsyL7sQFHCsnmxsiYb99ueQjRjDsdJ9UaigxjAJOhgGDGVn7Z9o8IarwEKTOvZ+/uBX0sF40KBKXNDAhlmsPHuKU3Xk6hJwMMmphRzxs/E83lRSMUHb9inDLlUilP+p0w1UVLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707113373; c=relaxed/simple;
-	bh=ubohSoxy0nNlpG/cl6FoJaVJyCyPjAubm2llac2X1YQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OS/XBayf+FtH7kE/Q+TfdDeJm5l2maBBB0EHkT2GwOR3AA/yKG8LLZvt30BDoI1PvK2ONWUt6zqQb3YzZzuLZ8BYocSeQru3DB8SYE6Bdis+GFgQghK1A2o4EclBSIPy8Ws+S4aTQdS31vwPv8u6YrGabkRUhsRRLBS4WMjuKls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [113.200.148.30])
-	by gateway (Coremail) with SMTP id _____8Ax++iYe8Bl8skKAA--.10827S3;
-	Mon, 05 Feb 2024 14:09:28 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8AxHs+Ve8BluusvAA--.49177S4;
-	Mon, 05 Feb 2024 14:09:27 +0800 (CST)
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Marco Elver <elver@google.com>
-Cc: kasan-dev@googlegroups.com,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] kasan: Rename test_kasan_module_init to kasan_test_module_init
-Date: Mon,  5 Feb 2024 14:09:22 +0800
-Message-ID: <20240205060925.15594-3-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240205060925.15594-1-yangtiezhu@loongson.cn>
-References: <20240205060925.15594-1-yangtiezhu@loongson.cn>
+	s=arc-20240116; t=1707113571; c=relaxed/simple;
+	bh=AWjSQ6dM2gKtx0a1QmVBUdvVFBwjjsRw26vaIXY9PEs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ekH8Pv0g149BHxM7KYZtSDO5DIHkAYgYPzP4uUwrFsbXPTv9w8HEF2+62McsdEBuWkxiC+M7NcvlncHTvu1he1qgLtKB10UHE2JQehwZ1MVlD8b/j3dvg/s0I9IgCABo2punqDfaW71U47IoV+6VROr3AYXVJOe5ljkWpHQqvgI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=fRaIQl0I; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40fccd090c2so17463105e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 22:12:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1707113567; x=1707718367; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jdBwXVM+SOAESELO/ytwkxUYV96TJJe0V6iZHZRVYmM=;
+        b=fRaIQl0InGiN8ZcqVcWINoHkUFNZdXo8aS4BA4Xe0/lZ/oE02B9wEXaSQoKD8ltyc2
+         F/rWomMuGqZ9owzHmjnpbLSzBfO/fVFA/O1IdhxwHu1KHW6rjHzET1Q0I8HbhQ2c+1sn
+         exdGq2TpS9CFUvxElnv8sxQkwO5rIkwvpGez4lbk6S4tLsrF1IPC1EpeW5aAVdgrM2Pf
+         HN6l3hQjHbYdhJ093EDqiw3092DIREQGvWedIcJEDrHKzM2KjzLdroTZ5G3QZFQWzeXx
+         zmFP9s1oVuuPYRurqyqle6iWvq6h3+ySI2DZqqWd/CZCxxzU7AXcIURc5mAMcLibQh7A
+         r5Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707113567; x=1707718367;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jdBwXVM+SOAESELO/ytwkxUYV96TJJe0V6iZHZRVYmM=;
+        b=Y/JBndW/D49pXPag01GeF6Zod7uUfWBKBmetXemfqGFdJvRlJFMWvWsUsY6DK9B+OC
+         E9tnRuY5Fj7C6L+WTvfiaiSLV4KpZMgM+JzEAqdSCzP7PdgW3z9kblej09P0DjHpVAZ+
+         HUKTaMwjucSViq/Q27aeqaH2Cgf80ByLLA7TcixbDFnxQS0tLgh/vGty55XFqrxBnbxT
+         Lxr8Q22aob6WlhV6ULuQNhtYUzS8IMpt5KomY+k69jUJ8ceGiCTb25miqqJXg5rxHUSJ
+         UvtChZZFuGjyvp3nkwMp+vU8u1gpxbtmAPjZsleNkcao/+de8cZWGBTPJYOKSGIvyjCH
+         DUXQ==
+X-Gm-Message-State: AOJu0Yztf9u/EMqPJh07EUJRAIIN8buaCc9wiX0JMcQ7LYUcVeT3SQ5X
+	xCpquzwzRKJonmMuKgO1+ObV6llX2k2MSfKDYbQ2hY1RWBHxLYQNaPvbQ49tc38=
+X-Google-Smtp-Source: AGHT+IHBl+UkMri4ML2Fx6tsedZ/8KR1gRyMF6CY+XVovF5fGEV95OwcwH6JYbJ9dCgk06wPP8xsSA==
+X-Received: by 2002:a5d:47a2:0:b0:33b:4197:75dc with SMTP id 2-20020a5d47a2000000b0033b419775dcmr234935wrb.14.1707113566851;
+        Sun, 04 Feb 2024 22:12:46 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWPhXf6VHwYhyci11Q+EWL+w6Br2kQpm3ghemyLnvqzSMQH9s0mDxe08St6xFvT3e5p7hJp4nrH/Z58MHLYA026fsUopecCJf3T8Zif/I0Dr0d26m/aJg+PdrSFH4Vz25cuWO6H2uhCrx2nOQ5ReLKsw/EtRbXwGHtS0h8S56ZxLDuKhlUVgQipc4utfxR2DwWX5Wmql6BRRBdW863eySR/zUSWc94RDP0pOTNMEz8Ho7mljzgqOssvW05c/cY7THxDxwrJy6JckAMdiYC0eiqAVJeJuw9rFEl+6V7xKvKJT43OWGY/KeBH8v8So/J7hN71BOHMfpsVuFhoOD5ChWAXeBCQGq7zV9JRInsDMTcN8cq9H7rxvf44CvMEvKrW7q0KH2E0B1652qtK6XYkqy460hKYVbd4woDjhw/Uno82ggNEJCUDtDZXLANTVaaRKOp2Zrf69K+t8KRSdqZRocpACTEGMPmRlbTEG62OImeVJInGz6V3Yf44wGugY6x+cx88eydj
+Received: from [192.168.50.4] ([82.78.167.154])
+        by smtp.gmail.com with ESMTPSA id v23-20020adfa1d7000000b0033b37fe0577sm2604930wrv.54.2024.02.04.22.12.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Feb 2024 22:12:46 -0800 (PST)
+Message-ID: <54cd6cdb-0dc5-497b-aada-23f53aff402d@tuxon.dev>
+Date: Mon, 5 Feb 2024 08:12:44 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8AxHs+Ve8BluusvAA--.49177S4
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj9xXoWrZF45Cry3Jr18uw1DJryxWFX_yoWkGFXEqw
-	4UXrZ5G34aqanYkr47uw1fXrs7ua1xCrs8ArWxGFy5Zwn3KwsxZr40qr9rJw4rCr43ArWf
-	trWDZr1Yqr12kosvyTuYvTs0mTUanT9S1TB71UUUUjUqnTZGkaVYY2UrUUUUj1kv1TuYvT
-	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-	cSsGvfJTRUUUb3kYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-	vaj40_Wr0E3s1l1IIY67AEw4v_JF0_JFyl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	Gr1j6F4UJwAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
-	Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_
-	WrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-	xGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWU
-	XVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67
-	kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY
-	6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0x
-	vEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVj
-	vjDU0xZFpf9x07jrPEfUUUUU=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/8] watchdog: rzg2l_wdt: Select PM
+To: Biju Das <biju.das.jz@bp.renesas.com>,
+ "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
+ "linux@roeck-us.net" <linux@roeck-us.net>, "robh@kernel.org"
+ <robh@kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>,
+ "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+ "geert+renesas@glider.be" <geert+renesas@glider.be>,
+ "magnus.damm@gmail.com" <magnus.damm@gmail.com>
+Cc: "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240202075849.3422380-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240202075849.3422380-2-claudiu.beznea.uj@bp.renesas.com>
+ <TYCPR01MB112694BA3A47579AE8BC1752B86422@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+ <TYCPR01MB11269B343C70AA99CBDB3BD8586422@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+ <TYCPR01MB11269FECF0067E0DC7D7CA0C986422@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+Content-Language: en-US
+In-Reply-To: <TYCPR01MB11269FECF0067E0DC7D7CA0C986422@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-After commit f7e01ab828fd ("kasan: move tests to mm/kasan/"),
-the test module file is renamed from lib/test_kasan_module.c
-to mm/kasan/kasan_test_module.c, in order to keep consistent,
-rename test_kasan_module_init to kasan_test_module_init.
+Hi, Biju,
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- mm/kasan/kasan_test_module.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 02.02.2024 10:29, Biju Das wrote:
+>>> -----Original Message-----
+>>> From: Biju Das
+>>> Sent: Friday, February 2, 2024 8:03 AM
+>>> Subject: RE: [PATCH v3 1/8] watchdog: rzg2l_wdt: Select PM
+>>>
+>>> Hi Claudiu Beznea,
+>>>
+>>>> -----Original Message-----
+>>>> From: Claudiu <claudiu.beznea@tuxon.dev>
+>>>> Sent: Friday, February 2, 2024 7:59 AM
+>>>> Subject: [PATCH v3 1/8] watchdog: rzg2l_wdt: Select PM
+>>>>
+>>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>>
+>>>> The rzg2l_wdt watchdog driver cannot work w/o CONFIG_PM=y (e.g. the
+>>>> clocks are enabled though pm_runtime_* specific APIs). To avoid
+>>>> building a driver that doesn't work make it depend on CONFIG_PM.
+>>>>
+>>>> Suggested-by: Guenter Roeck <linux@roeck-us.net>
+>>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>> ---
+>>>>
+>>>> Changes in v3:
+>>>> - make driver depend on PM; with that the "unmet direct dependency"
+>>>>   Reported-by: kernel test robot <lkp@intel.com>
+>>>>   was also fixed
+>>>> - adapt commit message
+>>>>
+>>>> Changes in v2:
+>>>> - this patch is new
+>>>>
+>>>>  drivers/watchdog/Kconfig | 2 +-
+>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+>>>> index 7d22051b15a2..c9abe8f307bb 100644
+>>>> --- a/drivers/watchdog/Kconfig
+>>>> +++ b/drivers/watchdog/Kconfig
+>>>> @@ -910,7 +910,7 @@ config RENESAS_RZN1WDT
+>>>>
+>>>>  config RENESAS_RZG2LWDT
+>>>>  	tristate "Renesas RZ/G2L WDT Watchdog"
+>>>> -	depends on ARCH_RENESAS || COMPILE_TEST
+>>>> +	depends on (ARCH_RENESAS && PM) || COMPILE_TEST
+>>>
+>>> Since you are touching here, maybe ARCH_RZG2L?? like other RZ/G2L
+>> drivers.
+>>
+>> Also RZ/V2M "ARCH_R9A09G011" as both these families using same driver.
 
-diff --git a/mm/kasan/kasan_test_module.c b/mm/kasan/kasan_test_module.c
-index 8b7b3ea2c74e..27ec22767e42 100644
---- a/mm/kasan/kasan_test_module.c
-+++ b/mm/kasan/kasan_test_module.c
-@@ -62,7 +62,7 @@ static noinline void __init copy_user_test(void)
- 	kfree(kmem);
- }
- 
--static int __init test_kasan_module_init(void)
-+static int __init kasan_test_module_init(void)
- {
- 	/*
- 	 * Temporarily enable multi-shot mode. Otherwise, KASAN would only
-@@ -77,5 +77,5 @@ static int __init test_kasan_module_init(void)
- 	return -EAGAIN;
- }
- 
--module_init(test_kasan_module_init);
-+module_init(kasan_test_module_init);
- MODULE_LICENSE("GPL");
--- 
-2.42.0
+Ok, I'll have another patch for that.
 
+> 
+> Also commit header it is "Depend on" not "Select"?
+
+Ok!
+
+Thank you,
+Claudiu Beznea
+
+> 
+> Cheers,
+> Biju
 
