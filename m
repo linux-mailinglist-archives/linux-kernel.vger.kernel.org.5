@@ -1,49 +1,51 @@
-Return-Path: <linux-kernel+bounces-53414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5061D84A3ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 20:38:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C99FD84A410
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 20:42:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E19581F23D31
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:38:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E0F51F261EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:42:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 022E2131E30;
-	Mon,  5 Feb 2024 19:03:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC112134CFA;
+	Mon,  5 Feb 2024 19:03:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="S79mUNth"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="BhYStbx0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9079712DD8D
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 19:03:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAC77131E22;
+	Mon,  5 Feb 2024 19:03:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707159813; cv=none; b=Oy77J72fqpNJATV1Ttkslpl5r7e8TtmojDJoXIadDVw0TjfZdtK6rTQeocWC9USlrJXJ4sfERI+FAwlOqoL1MCxz6LCEA+QsFKo8DaZVXuGndrIvCOuecVhAf6VaHRKfKyGfbAE8qPIez/9xiEmSNZxdXjxIrF58px/vbC+aQgE=
+	t=1707159817; cv=none; b=cgknk8+cQoIbDJ+T1vAJ0hFH4qH5aw6A2wG1wPFyDhT0JwHuFVD94vQsnz1Qv/t/+yHPPMfjgN1IaG2MQHObawZhPTGKjNj5g8jZ/QUlPMyjyubhzhGJ2nmxR8fIzZkiwTvuDGzmIpOif61UONB0SI4cPntJG6fjaXy3hN0plP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707159813; c=relaxed/simple;
-	bh=y7w8Nhpz0xbXO20mK1nlsBvyVlLtjn1RFbbLTjOYJ3I=;
+	s=arc-20240116; t=1707159817; c=relaxed/simple;
+	bh=Ic8u8OdBrlVsb2wxHY3E0FseBeWYtpT+d7HwrfY/A10=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IZZxsLb2NXLoQMW40X8c9Hwgtd1qSnUPaNJ+xHlrNHWm5KLLFHw2xLuEfo79Ch2RaGAcFEtMfOaoumJv1PJDWOei+HXdr3+lUyBbla01vfmVeztm/s2HkAIAo1Oq7SNvTsUk8bxwxXxX/mXJ2Y/cKzNiir0TIZibsxt5qHwxk10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=S79mUNth; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16F61C433A6;
-	Mon,  5 Feb 2024 19:03:32 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=T8uiYUn2yLGrVPd5kHEAWCW4xOIqVbzNZWMbiVeaeZpRSAlP/xleJruD8csxDHs4jKiiLqYUlk1dpuvz1NNsIsavXa3UAYh3qL61ukJW7IUb998hUTQ2WTnP9OFleYahvhpI6rVxK4i9SOaofqlLLF+Rfwxo7kcTtSlXETDQ/zo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=BhYStbx0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F95FC43601;
+	Mon,  5 Feb 2024 19:03:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1707159813;
-	bh=y7w8Nhpz0xbXO20mK1nlsBvyVlLtjn1RFbbLTjOYJ3I=;
+	s=korg; t=1707159816;
+	bh=Ic8u8OdBrlVsb2wxHY3E0FseBeWYtpT+d7HwrfY/A10=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=S79mUNthBbhmytZaAFchVpCkLsHzCfwqUFoXrLy1PXztqFB2pqm7FNsmcPrQX7gai
-	 xY0sY/l9F2oWb5qGMSVL2N3AEmjJk4SWwNqPJjSBEoEqk0M6WuBIEt+zhzH179gWfH
-	 +IiFMsWWApqlu1oLg5wXwlPRANtucMEwF+csu4Eg=
-Date: Mon, 5 Feb 2024 04:48:36 -0800
+	b=BhYStbx0yV9w/EWSF3cYdw47hFV+Xiq0rIV/A5Mb/8QwFnZHpMqEtv7Y8W2HzHETE
+	 c3OX7GXSuW5dHIMMqAB9hiEKyTH/5nsULyLaFty5LF3tqvo1rDDczDWefNdyQRmcUp
+	 QxLM5u2C8odgcbc/gEI6VWNWjgl4mgYGgp3W43ls=
+Date: Mon, 5 Feb 2024 04:48:44 -0800
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mfd: mcp-core: make mcp_bus_type const
-Message-ID: <2024020531-hatchery-scalding-f83c@gregkh>
-References: <20240204-bus_cleanup-mfd-v1-1-07335ebc034f@marliere.net>
+Cc: Maxim Levitsky <maximlevitsky@gmail.com>, Alex Dubov <oakad@yahoo.com>,
+	Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] memstick: core: make memstick_bus_type const
+Message-ID: <2024020538-crunchy-jumbo-29cc@gregkh>
+References: <20240204-bus_cleanup-memstick-v1-1-14809d4405d8@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -52,11 +54,11 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240204-bus_cleanup-mfd-v1-1-07335ebc034f@marliere.net>
+In-Reply-To: <20240204-bus_cleanup-memstick-v1-1-14809d4405d8@marliere.net>
 
-On Sun, Feb 04, 2024 at 05:10:32PM -0300, Ricardo B. Marliere wrote:
+On Sun, Feb 04, 2024 at 05:05:58PM -0300, Ricardo B. Marliere wrote:
 > Now that the driver core can properly handle constant struct bus_type,
-> move the mcp_bus_type variable to be a constant structure as well,
+> move the memstick_bus_type variable to be a constant structure as well,
 > placing it into read-only memory which can not be modified at runtime.
 > 
 > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
