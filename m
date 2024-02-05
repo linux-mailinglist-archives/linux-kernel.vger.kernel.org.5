@@ -1,107 +1,109 @@
-Return-Path: <linux-kernel+bounces-54034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC05384A97E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:42:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2077984A985
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:44:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F2111F2A5F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:42:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 341D4B24130
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:44:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 752581EB46;
-	Mon,  5 Feb 2024 22:42:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C381748CC6;
+	Mon,  5 Feb 2024 22:43:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VVcIZSkd"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DKz4TB+z"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B873417552;
-	Mon,  5 Feb 2024 22:42:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75FBC481BF;
+	Mon,  5 Feb 2024 22:43:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707172937; cv=none; b=koY7mRwndvkBMRHWjNocLwVI/3vETXK7h7crGM2aLFyp8qqxVKeaRq0YsJVVqI3sQLirf2GCrwTHdu2yvpG/3D0zqKg/6Q0vJI/szYawUWpXw72ptk5eKK76haKLJWBhK+wCMAGvt7eQ7K5gDG9O+p4r4NpljVkFq/bwOSofCoI=
+	t=1707173029; cv=none; b=CbADypHTfz56XoMyNCCaXq/TF2QOnaAa0RtHdajwjwamGK1Zyv2zwsZiug3IlfQL3+G5mWGYMsIev4nfskuGBPYPKlaaEojwIk84Cn4s2vsLpn0oi11A7tiorCBs/m26aRXpGs5B/0w5NCEazQx6F55DH3lFm0n0Vz7cNoMetPg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707172937; c=relaxed/simple;
-	bh=DnCjxT2XshchSsawOjYIcnaeIH3yQaFkalYSYgYAmes=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=Af9uxMZpJdrsjWAgudRoc37MTj0VSmooYTdx/AFlEMCu9Y/cawevXh6TiLR5GY4SY0L2FAsVBRvddAwoDLzyr2KawDO4fnB2WuNqJupvnOxp1HjwDOygaA34QQ9+81WTBSPOZ2MEktxhYkMMBIMXWZHXUJdZ7A+uGCLM2MLosXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VVcIZSkd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCDB8C433F1;
-	Mon,  5 Feb 2024 22:42:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707172937;
-	bh=DnCjxT2XshchSsawOjYIcnaeIH3yQaFkalYSYgYAmes=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=VVcIZSkd8xtGNl1+FJ92wYTnpAio29YDwI59SJYxL7bRu9pcL6LPTjUw76mrAa2Eo
-	 7x2EbVGQlBse07cO8bGoA6X0lxu00+Q52xkwMLkvkrO5a4FB2BbLGbRwni5nzTCAwb
-	 WvvfU7QwuFhLFfrqp+1dUIXfK25a44llpnMSDRa9R9tLfGykWUk9mwes9oEgoDkeTo
-	 X5IwfEuAMIM7KdFSxN2WItQrhQms1NduZPtOWGz+i90Q/sBmm85whqy3AZoEManTGe
-	 OQed1GhDhtAuqAe8jRZVzdfheSm1KWx3ileB4DdyS+x5jT7G4s7YdILNqCxil8vEXf
-	 bHUgMkjF+SSzw==
-Date: Mon, 5 Feb 2024 16:42:15 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: "David E. Box" <david.e.box@linux.intel.com>
-Cc: Jian-Hong Pan <jhp@endlessos.org>, Johan Hovold <johan@kernel.org>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Niklas Cassel <cassel@kernel.org>,
-	Nirmal Patel <nirmal.patel@linux.intel.com>,
-	Jonathan Derrick <jonathan.derrick@linux.dev>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux@endlessos.org
-Subject: Re: [PATCH v2] PCI: vmd: Enable PCI PM's L1 substates of remapped
- PCIe Root Port and NVMe
-Message-ID: <20240205224215.GA829734@bhelgaas>
+	s=arc-20240116; t=1707173029; c=relaxed/simple;
+	bh=B5LFCChfXOV41x2TfdwcmAIvY8W+Ckng0SDd0NGO450=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VEywcb9NxQzEcda/EqJbemm7cXAIEiP7Vy7nlbUEIBzMaEgCrdUmUy91SdeO9RyZnZBvWBTCp6n9BOhd7THYWv17AXR3XZWpDX4euy9PqegswlA0H4ByER+ULUechKscBrxFZNlF4NLsIV3cAiLyrPX0mFt+GuVlq9GFrUurziA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DKz4TB+z; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-511344235c6so6032321e87.0;
+        Mon, 05 Feb 2024 14:43:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707173025; x=1707777825; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=B5LFCChfXOV41x2TfdwcmAIvY8W+Ckng0SDd0NGO450=;
+        b=DKz4TB+z2Mzh81+kvdBIeXxgKHtE1bm/zcwRcG1GDYmBf+ieJjZV18zlujqeCyEVFi
+         0nVbTDBPzfizjaY7Cg+9aGCTy78WfDY+qeJCrsfE6hAe/wPIw+9iRxhWvvCA8qoKbz/U
+         OsXmVI23HvG2EnuBsVCrED9biPXD79nCUZBL4l00K2dWfDekUhitpUPr6TaYjo+K3a4O
+         jgTXnUxq0b05+ycLyleb+kevfkYWyZpSISnnBEn1x8rKIl1zbmxPr6K0qBOu7+Hge2q4
+         wpszepnx05dpRzuqa+Yg0xj86us35/7y2z+obFtpOcaTPQvRG1ghXVNPRRuay4tb3aRX
+         jGmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707173025; x=1707777825;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=B5LFCChfXOV41x2TfdwcmAIvY8W+Ckng0SDd0NGO450=;
+        b=RMeqib7COP5TA4VBGf9k2UIu0HaFtu+QkFKOrYkx0r83RNqK0whLvgwfTMehvDJpCg
+         TY5m+BY0LtfzESDF6m7LxOrXfWJtTVW6YpdPnYkobNF0oTdJLLS/ckDY6ItnqfcH+iqf
+         y10q15rgsVS7oo7tvGrzd6szIuz71vioHhYUhf1PPgwSpm8/YXk0f7ZWQkm7syDMHCju
+         pfHAIXvEXJHT9F332dFL8bVnM2o06Np0/CaUGjTO1vdGeBcGFv5utnXLx/rPvkkQ1n6J
+         z8sSAKgPFBYURPsEQcd8lDKgNAUnE4RAyXszERGgrOsfHniMacowwKO9RNaANCfl77vu
+         h0Bw==
+X-Gm-Message-State: AOJu0YzgqiGFz4vIqH6gobWYkFvPAXdfKZ49M/bnNwM1qTzxDlYw1bsy
+	DRuyexlJsGgefl36z8bGIP/lVc8cPAicq8OwQQUPa3RusQD91pe7JxMpamMNq3G2mSgoXvimDcB
+	nFqDgyZde8Q28e4Wf8dE3/2TCieU=
+X-Google-Smtp-Source: AGHT+IHseQXpYVdIoy5VWPKXjRpQk8S1Nl2OlAONy8uH9N2+8szilnpvFR6yjoGW8Wd1pLrXFfIn1CjMigxOSU9ivWc=
+X-Received: by 2002:ac2:4aca:0:b0:511:3ef8:5 with SMTP id m10-20020ac24aca000000b005113ef80005mr572988lfp.34.1707173025259;
+ Mon, 05 Feb 2024 14:43:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dc3fce1400541a269ecee2b2ee33d8f1ec8e52e7.camel@linux.intel.com>
+References: <20240130-realtek_reverse-v5-0-ecafd9283a07@gmail.com>
+ <20240130-realtek_reverse-v5-9-ecafd9283a07@gmail.com> <20240201224516.pujapjenqtyejihg@skbuf>
+In-Reply-To: <20240201224516.pujapjenqtyejihg@skbuf>
+From: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Date: Mon, 5 Feb 2024 19:43:34 -0300
+Message-ID: <CAJq09z4ForDXY322xceFJCaH5tiXKQKS=EgFMKbdiSNf8O1Lbg@mail.gmail.com>
+Subject: Re: [PATCH net-next v5 09/11] net: dsa: realtek: migrate user_mii_bus
+ setup to realtek-dsa
+To: Vladimir Oltean <olteanv@gmail.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>, 
+	Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Feb 05, 2024 at 11:37:16AM -0800, David E. Box wrote:
-> On Fri, 2024-02-02 at 18:05 -0600, Bjorn Helgaas wrote:
-> > On Fri, Feb 02, 2024 at 03:11:12PM +0800, Jian-Hong Pan wrote:
-> ...
+> > +/**
+> > + * rtl83xx_setup_user_mdio() - register the user mii bus driver
+> > + * @ds: DSA switch associated with this user_mii_bus
+> > + *
+> > + * This function first gets and mdio node under the dev OF node, aborting
+> > + * if missing. That mdio node describing an mdio bus is used to register a
+> > + * new mdio bus.
+>
+> The description has the overall feel of "Family Guy - Peter narrates his life"
+> (https://www.youtube.com/watch?v=zw8zUMjEW0I).
 
-> > > @@ -775,6 +773,14 @@ static int vmd_pm_enable_quirk(struct pci_dev *pdev,
-> > > void *userdata)
-> > >  	pci_write_config_dword(pdev, pos + PCI_LTR_MAX_SNOOP_LAT, ltr_reg);
-> > >  	pci_info(pdev, "VMD: Default LTR value set by driver\n");
-> > 
-> > You're not changing this part, and I don't understand exactly how LTR
-> > works, but it makes me a little bit queasy to read "set the LTR value
-> > to the maximum required to allow the deepest power management
-> > savings" and then we set the max snoop values to a fixed constant.
-> > 
-> > I don't think the goal is to "allow the deepest power savings"; I
-> > think it's to enable L1.2 *when the device has enough buffering to
-> > absorb L1.2 entry/exit latencies*.
-> > 
-> > The spec (PCIe r6.0, sec 7.8.2.2) says "Software should set this to
-> > the platform's maximum supported latency or less," so it seems like
-> > that value must be platform-dependent, not fixed.
-> > 
-> > And I assume the "_DSM for Latency Tolerance Reporting" is part of the
-> > way to get those platform-dependent values, but Linux doesn't actually
-> > use that yet.
-> 
-> This may indeed be the best way but we need to double check with our
-> BIOS folks.  AFAIK BIOS writes the LTR values directly so there
-> hasn't been a need to use this _DSM. But under VMD the ports are
-> hidden from BIOS which is why we added it here. I've brought up the
-> question internally to find out how Windows handles the DSM and to
-> get a recommendation from our firmware leads.
+Hahaha. Yes it does.
 
-We want Linux to be able to program LTR itself, don't we?  We
-shouldn't have to rely on firmware to do it.  If Linux can't do
-it, hot-added devices aren't going to be able to use L1.2, right?
+> You could be a bit more succinct and say something like "Registers the
+> MDIO bus for built-in Ethernet PHYs, and associates it with the
+> mandatory 'mdio' child OF node of the switch".
 
-Bjorn
+Done. Thanks.
+
+Regards,
+
+Luiz
 
