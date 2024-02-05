@@ -1,108 +1,178 @@
-Return-Path: <linux-kernel+bounces-52367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 916A0849732
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:01:00 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D8C728A5DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:00:59 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EF8E13FF2;
-	Mon,  5 Feb 2024 10:00:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="lNdwvt5O"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2423134AF;
-	Mon,  5 Feb 2024 10:00:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707127230; cv=none; b=OjeHRQWzrLl4MvCiZlrKz04ZUxBfLuJ0xXw9OflwdZSzRQVZzt3ZId0or1Q1ECavkP+mLmxFFfJdPaBHw3YqgcbBUsz/9f9UAqFpVRmYfw4ir9vC5prlttLVieKt1z/x6cZmsFcFENyDGuzh40bOc6eybjqWKBSr8ciBui5q6hY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707127230; c=relaxed/simple;
-	bh=Cr/yrTL+3LqkmxZ8T5EnNgADnSMoayQdEMynTCrmG7k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dIr39YDiM3wvtF8CBjTddD372FMez42k8SDl2Rpx+uqi9qNB0r1LQgtj0KmyqxshNbrRrhbfIbWRsEO90tN4ORsC0qf7D2mJtoulWC//qrvrun9Uh91lyOHjVTHoYwu55HodyQyqA9J3xls2fKz8a4ujiHl0HNAHG3ourpW/UFU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=lNdwvt5O; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=s0hoRfGIvTGHgneayWfi5kk6Ut6Vdy9Hd25mPOPqEXY=; b=lNdwvt5ORnapXlLrXwXC0cEbRx
-	CuQXfZ+LW7Wq3MUBwK/NIWomquSJLeE1DWdh2k3dmdzcSXLJO3lRSTnmqxv9BPu/gvEPOrO7Fh9Es
-	cPrVBA5Di2KOsNdls+mVh/hY+2AkiEhgwWGPJMvhdG2TPEwNv/vLAaFvxIVwYT3mHfSNOW7uHY2Yh
-	gW0uq2TH/pub2i9bkSAz/3343ee7xbT7JwTsjcxipTNrEfEG49w7NDd+243vavX0Zr3K7Ec8BqKMO
-	CFldWJYDOu8Ter0RTZDU9bEgKvjktPFWZ5nHX5xLp7QldaudUoGGNNr3uShcwFupLagZ+a7iKVtj2
-	7TMF6z4Q==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54440)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rWvlh-0000LB-0T;
-	Mon, 05 Feb 2024 10:00:01 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rWvlZ-0002bl-QE; Mon, 05 Feb 2024 09:59:53 +0000
-Date: Mon, 5 Feb 2024 09:59:53 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: arinc.unal@arinc9.com
-Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
-	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
-	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next v4 2/7] net: dsa: mt7530: move XTAL check to
- mt7530_setup()
-Message-ID: <ZcCxmUwxfmKIXh/U@shell.armlinux.org.uk>
-References: <20240204-for-netnext-mt7530-improvements-2-v4-0-02bf0abaadb8@arinc9.com>
- <20240204-for-netnext-mt7530-improvements-2-v4-2-02bf0abaadb8@arinc9.com>
-Precedence: bulk
-X-Mailing-List: linux-kernel@vger.kernel.org
-List-Id: <linux-kernel.vger.kernel.org>
-List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id 39BD5849729
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:00:25 +0100 (CET)
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+        id S229456AbkBEKAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Feb 2024 05:00:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229449AbkBEKAH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Feb 2024 05:00:07 -0500
+Received: from mail22.mail.schwarz (mail22.mail.schwarz [185.124.192.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B1497;
+        Mon,  5 Feb 2024 02:00:08 -0800 (PST)
+X-SCHWARZ-TO: coreteam@netfilter.org, linux-kernel@vger.kernel.org, pabeni@redhat.com,
+ davem@davemloft.net, kadlec@netfilter.org, i.maximets@ovn.org,
+ netfilter-devel@vger.kernel.org, fw@strlen.de, netdev@vger.kernel.org,
+ edumazet@google.com, pablo@netfilter.org, linux-kselftest@vger.kernel.org,
+ horms@ovn.org, shuah@kernel.org
+X-SCHWARZ-ENVELOPEFROM: felix.huettner@mail.schwarz
+Received: from felix.runs.onstackit.cloud ([45.129.43.133])
+  by mail22.mail.schwarz with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 10:00:00 +0000
+Date:   Mon, 5 Feb 2024 09:59:59 +0000
+From:   Felix Huettner <felix.huettner@mail.schwarz>
+To:     pablo@netfilter.org, i.maximets@ovn.org
+Cc:     coreteam@netfilter.org, davem@davemloft.net, edumazet@google.com,
+        fw@strlen.de, horms@ovn.org, kadlec@netfilter.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        luca.czesla@mail.schwarz, max.lamprecht@mail.schwarz,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pabeni@redhat.com, shuah@kernel.org
+Subject: [PATCH net] net: ctnetlink: fix filtering for zone 0
+Message-ID: <ZcCxn9HDsB8DUPrI@felix.runs.onstackit.cloud>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240204-for-netnext-mt7530-improvements-2-v4-2-02bf0abaadb8@arinc9.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
+Precedence: bulk
+List-ID: <linux-kernel.vger.kernel.org>
+X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 04, 2024 at 07:34:20PM +0300, Arınç ÜNAL via B4 Relay wrote:
-> From: Arınç ÜNAL <arinc.unal@arinc9.com>
-> 
-> The crystal frequency concerns the switch core. The frequency should be
-> checked when the switch is being set up so the driver can reject the
-> unsupported hardware earlier and without requiring port 6 to be used.
-> 
-> Move it to mt7530_setup(). Drop the unnecessary function printing.
-> 
-> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+previously filtering for the default zone would actually skip the zone
+filter and flush all zones.
 
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Fixes: eff3c558bb7e ("netfilter: ctnetlink: support filtering by zone")
+Reported-by: Ilya Maximets <i.maximets@ovn.org>
+Closes: https://lore.kernel.org/netdev/2032238f-31ac-4106-8f22-522e76df5a12@ovn.org/
+Signed-off-by: Felix Huettner <felix.huettner@mail.schwarz>
+---
+ net/netfilter/nf_conntrack_netlink.c          | 12 ++++--
+ .../netfilter/conntrack_dump_flush.c          | 43 ++++++++++++++++++-
+ 2 files changed, 50 insertions(+), 5 deletions(-)
 
-Thanks!
+diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
+index 0c22a02c2035..3b846cbdc050 100644
+--- a/net/netfilter/nf_conntrack_netlink.c
++++ b/net/netfilter/nf_conntrack_netlink.c
+@@ -876,6 +876,7 @@ struct ctnetlink_filter_u32 {
+ 
+ struct ctnetlink_filter {
+ 	u8 family;
++	bool zone_filter;
+ 
+ 	u_int32_t orig_flags;
+ 	u_int32_t reply_flags;
+@@ -992,9 +993,12 @@ ctnetlink_alloc_filter(const struct nlattr * const cda[], u8 family)
+ 	if (err)
+ 		goto err_filter;
+ 
+-	err = ctnetlink_parse_zone(cda[CTA_ZONE], &filter->zone);
+-	if (err < 0)
+-		goto err_filter;
++	if (cda[CTA_ZONE]) {
++		err = ctnetlink_parse_zone(cda[CTA_ZONE], &filter->zone);
++		if (err < 0)
++			goto err_filter;
++		filter->zone_filter = true;
++	}
+ 
+ 	if (!cda[CTA_FILTER])
+ 		return filter;
+@@ -1148,7 +1152,7 @@ static int ctnetlink_filter_match(struct nf_conn *ct, void *data)
+ 	if (filter->family && nf_ct_l3num(ct) != filter->family)
+ 		goto ignore_entry;
+ 
+-	if (filter->zone.id != NF_CT_DEFAULT_ZONE_ID &&
++	if (filter->zone_filter &&
+ 	    !nf_ct_zone_equal_any(ct, &filter->zone))
+ 		goto ignore_entry;
+ 
+diff --git a/tools/testing/selftests/netfilter/conntrack_dump_flush.c b/tools/testing/selftests/netfilter/conntrack_dump_flush.c
+index f18c6db13bbf..b11ea8ee6719 100644
+--- a/tools/testing/selftests/netfilter/conntrack_dump_flush.c
++++ b/tools/testing/selftests/netfilter/conntrack_dump_flush.c
+@@ -13,7 +13,7 @@
+ #include "../kselftest_harness.h"
+ 
+ #define TEST_ZONE_ID 123
+-#define CTA_FILTER_F_CTA_TUPLE_ZONE (1 << 2)
++#define NF_CT_DEFAULT_ZONE_ID 0
+ 
+ static int reply_counter;
+ 
+@@ -336,6 +336,9 @@ FIXTURE_SETUP(conntrack_dump_flush)
+ 	ret = conntrack_data_generate_v4(self->sock, 0xf4f4f4f4, 0xf5f5f5f5,
+ 					 TEST_ZONE_ID + 2);
+ 	EXPECT_EQ(ret, 0);
++	ret = conntrack_data_generate_v4(self->sock, 0xf6f6f6f6, 0xf7f7f7f7,
++					 NF_CT_DEFAULT_ZONE_ID);
++	EXPECT_EQ(ret, 0);
+ 
+ 	src = (struct in6_addr) {{
+ 		.__u6_addr32 = {
+@@ -395,6 +398,26 @@ FIXTURE_SETUP(conntrack_dump_flush)
+ 					 TEST_ZONE_ID + 2);
+ 	EXPECT_EQ(ret, 0);
+ 
++	src = (struct in6_addr) {{
++		.__u6_addr32 = {
++			0xb80d0120,
++			0x00000000,
++			0x00000000,
++			0x07000000
++		}
++	}};
++	dst = (struct in6_addr) {{
++		.__u6_addr32 = {
++			0xb80d0120,
++			0x00000000,
++			0x00000000,
++			0x08000000
++		}
++	}};
++	ret = conntrack_data_generate_v6(self->sock, src, dst,
++					 NF_CT_DEFAULT_ZONE_ID);
++	EXPECT_EQ(ret, 0);
++
+ 	ret = conntracK_count_zone(self->sock, TEST_ZONE_ID);
+ 	EXPECT_GE(ret, 2);
+ 	if (ret > 2)
+@@ -425,6 +448,24 @@ TEST_F(conntrack_dump_flush, test_flush_by_zone)
+ 	EXPECT_EQ(ret, 2);
+ 	ret = conntracK_count_zone(self->sock, TEST_ZONE_ID + 2);
+ 	EXPECT_EQ(ret, 2);
++	ret = conntracK_count_zone(self->sock, NF_CT_DEFAULT_ZONE_ID);
++	EXPECT_EQ(ret, 2);
++}
++
++TEST_F(conntrack_dump_flush, test_flush_by_zone_default)
++{
++	int ret;
++
++	ret = conntrack_flush_zone(self->sock, NF_CT_DEFAULT_ZONE_ID);
++	EXPECT_EQ(ret, 0);
++	ret = conntracK_count_zone(self->sock, TEST_ZONE_ID);
++	EXPECT_EQ(ret, 2);
++	ret = conntracK_count_zone(self->sock, TEST_ZONE_ID + 1);
++	EXPECT_EQ(ret, 2);
++	ret = conntracK_count_zone(self->sock, TEST_ZONE_ID + 2);
++	EXPECT_EQ(ret, 2);
++	ret = conntracK_count_zone(self->sock, NF_CT_DEFAULT_ZONE_ID);
++	EXPECT_EQ(ret, 0);
+ }
+ 
+ TEST_HARNESS_MAIN
 
+base-commit: eef00a82c568944f113f2de738156ac591bbd5cd
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.43.0
 
