@@ -1,148 +1,211 @@
-Return-Path: <linux-kernel+bounces-52148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52149-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2567A84949A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:35:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F6CD84949C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:36:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3279287395
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:35:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 743D51C21296
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:36:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95E3710A01;
-	Mon,  5 Feb 2024 07:35:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VgWWP39s"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 877EE10A2A;
+	Mon,  5 Feb 2024 07:36:11 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13465125C2
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 07:35:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFFBF10A13
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 07:36:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707118527; cv=none; b=fpVPBYz/1QhBrjeAm4mfOaCQENtGF4x9DVPaAvolnTjAMZ3pmI8nfZi4iDOB6OCB1r+rPq3HMeRkQiZ0hviLW6T3fInj6EgbD+qddy2sMs459q94mhJBQ+RURkZwrUYMP6jQXP0ii7G5MfX82Vt8AbVvZE+x23reUXGc8gn+T3o=
+	t=1707118571; cv=none; b=Ply5OlZOnrgIia8AdjVTVGqxWVSoU/NFv+D7/89VJhPQivYnuuOlTOyoZ7wz4A9OJiNrfg4W/YY4bSQZWbjXKon3wAxB4Kl3T1nq/fdCd7bAT/KE4Dqu0nokeRFb+yUzoXCpoPDLwRN9BS1VS+0IayjUCqW+DHqxPyt+/tnjIB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707118527; c=relaxed/simple;
-	bh=6S7y18vY8Iy8eXyY8FFgMpmPsFmV4cNKMjjL9B/PAoE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oZWiLaVF4yYXNlUjMcTRGaaKWuM0YRQnFJXwJVpemdw8xyPOePGlx7SlxgCCmgtsyjVaceH0J137+LRXuNNvcmEuxczecFd1/i/v3jx8VQs4cSRMGeSGimEyT1GQir7vPakb8rRE9WD4pCA52EVGWYn+P2OEivB5QufwesQ36OA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VgWWP39s; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a354fc17f24so472216766b.0
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 23:35:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707118524; x=1707723324; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=a9+PxViUSEbLXsStOZXQtUAqR68q0lKskK6ai3PMNzw=;
-        b=VgWWP39sQXHsyx2dhjfCeD7zes0lk8NmT9niPsDLwSTK/qUmSe+wYLmCpxwnvmF6rT
-         BSlUJ27I9CRcr7W8tL9ELwZW/Tc9DmFe7/HxwKU5b2uHxP6a0Sf3egWH5a2kZKHP77E5
-         BPH0RwEGbTEHLzSEFWzr1Ec/bqTZTay0Knhn2qQiZqNDvr6AEpG5SNcyqq4GPr8pF+Ic
-         OT6Ak/IYZbBr+YYWIMcTtCQaN3+fIE2wGKwggPWzRtv0R2cdx87vhxXd73CPTdVzoZft
-         zZthjz/xxsdni/0MaDLmEqjv91d40HeTFSA+OWYaP1thsVPkCC7ONsAAyFRXMvNCX7PU
-         y3ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707118524; x=1707723324;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a9+PxViUSEbLXsStOZXQtUAqR68q0lKskK6ai3PMNzw=;
-        b=bd4ehk1x4lJdODr45WUhAr6jIrJeOmRIMtoIbC0IT+6au5y0PLJg89fPl/L+FvK2hP
-         pV07wKwFLEmKyHgSuAT8IVLdg+rttVViXJI7zoMWoGyUxDIl8/WEhjuGZhk3sPyY1p/y
-         w4n/2+FOioSmC2ICDJKM8NWVmKBnN0Wr/beGYh9i8Vfh/fsgZArsI7pe4R9eTuFT1Vke
-         LvWO/bkQBkj6N20F3OsdJ5mrUJz1SRogZp6LZO1zKfp8dvr77z7mELT+IDflBLBuXnJ9
-         6Dx+S6fJBgJRpwggwvde/4DXnUmsPQ94it8XpGEfi8ggT8a2A+0LtDotCjUrATIIr3L8
-         rlWg==
-X-Gm-Message-State: AOJu0Yx4hVWFv1n1fTxS6UAqvqZgnEo6LYcv+b0a0VSp8l1d5hgKB0Yy
-	fumJ9GW+vVM6ELyJOEvHvJO4ep9criVhchyyw0mak40PIkOHxZj1fgxJG9A814eig1KQQ91WxZZ
-	YFoo=
-X-Google-Smtp-Source: AGHT+IG/StZbel1XNo7TbbrHmi2SzMUuWcmAKJzOFuSRjRD760yPN5VdX20Iku4LxofgcK656hPxSQ==
-X-Received: by 2002:a17:906:ff53:b0:a30:f4a2:5688 with SMTP id zo19-20020a170906ff5300b00a30f4a25688mr9402604ejb.1.1707118524344;
-        Sun, 04 Feb 2024 23:35:24 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVwiP8+DCyD3PxjgRywI3kiQGWWPy5TvE7QFh0s2cdWnZUisWsBtQ1yuivlYoFKSjqzlUilmV0vxoB1AzHqxk50Vp13q/ji9L86BdEnkN1s2+Mdct046m+RCOyOE0pk6TPgYqonwRIU/Kjf+DIWo522O15bLWnNW7ScPUuJeDxRwdRscWDtUed4mMkDUThcg9LqEQnJKXWfFblkq0FMGo9d5w/rMMyR/m7V6mwNciBtL57AFT43ekNrnoL/
-Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id hz18-20020a1709072cf200b00a37c745e385sm623575ejc.44.2024.02.04.23.35.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Feb 2024 23:35:23 -0800 (PST)
-Message-ID: <792c737f-cefb-4d1b-93f8-c1d2dd2573f6@linaro.org>
-Date: Mon, 5 Feb 2024 08:35:22 +0100
+	s=arc-20240116; t=1707118571; c=relaxed/simple;
+	bh=i24okl9lM0YxnXO1UvcNBqaTIYKqkzXLd/fUwko9lRY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=i+/YAdJB8fsiNnqoqSdCBA3PfqOOyzx57kL1vxMHve0N/N7mBGsBfsUn7OSeqgB9LtjqVhWuxnUXYmJ1gCobRuwlar+F6QiNWRaK0zkou2F07rcwdpS97WymDezQRPaXdkE2K1RLaEviXS7/MD0j9QmfXyFzqqT2l4xpAEK9suU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TSypc1Vggz1vt7C;
+	Mon,  5 Feb 2024 15:35:36 +0800 (CST)
+Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6481A18002F;
+	Mon,  5 Feb 2024 15:36:03 +0800 (CST)
+Received: from [10.174.179.160] (10.174.179.160) by
+ kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 5 Feb 2024 15:36:02 +0800
+Message-ID: <e6eaac81-f957-0f03-0907-4448c7065b5a@huawei.com>
+Date: Mon, 5 Feb 2024 15:36:01 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm: s3c64xx: make s3c64xx_subsys const
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH] filemap: avoid unnecessary major faults in
+ filemap_fault()
 Content-Language: en-US
-To: "Ricardo B. Marliere" <ricardo@marliere.net>,
- Russell King <linux@armlinux.org.uk>, Alim Akhtar <alim.akhtar@samsung.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20240204-bus_cleanup-arm-v1-1-41d651dd8411@marliere.net>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240204-bus_cleanup-arm-v1-1-41d651dd8411@marliere.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To: David Hildenbrand <david@redhat.com>, "Huang, Ying" <ying.huang@intel.com>
+CC: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+	<akpm@linux-foundation.org>, <willy@infradead.org>, <fengwei.yin@intel.com>,
+	<aneesh.kumar@linux.ibm.com>, <shy828301@gmail.com>, <hughd@google.com>,
+	<wangkefeng.wang@huawei.com>
+References: <20240204093526.212636-1-zhangpeng362@huawei.com>
+ <87zfwf39ha.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <85e03dd9-8bd7-d516-ebe4-84dd449a9fb2@huawei.com>
+ <87mssf2yiv.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <25de8872-ad79-e5e6-054c-9ac5e7191416@huawei.com>
+ <1a967b8d-7218-4d3f-9dd2-ae1c66f626c7@redhat.com>
+From: "zhangpeng (AS)" <zhangpeng362@huawei.com>
+In-Reply-To: <1a967b8d-7218-4d3f-9dd2-ae1c66f626c7@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600020.china.huawei.com (7.193.23.147)
 
-On 04/02/2024 15:46, Ricardo B. Marliere wrote:
-> Now that the driver core can properly handle constant struct bus_type,
+On 2024/2/5 15:31, David Hildenbrand wrote:
 
-Is there any dependency?
+> On 05.02.24 08:24, zhangpeng (AS) wrote:
+>> On 2024/2/5 14:52, Huang, Ying wrote:
+>>
+>>> "zhangpeng (AS)" <zhangpeng362@huawei.com> writes:
+>>>> On 2024/2/5 10:56, Huang, Ying wrote:
+>>>>> Peng Zhang <zhangpeng362@huawei.com> writes:
+>>>>>> From: ZhangPeng <zhangpeng362@huawei.com>
+>>>>>>
+>>>>>> The major fault occurred when using mlockall(MCL_CURRENT | 
+>>>>>> MCL_FUTURE)
+>>>>>> in application, which leading to an unexpected performance issue[1].
+>>>>>>
+>>>>>> This caused by temporarily cleared PTE during a read/modify/write 
+>>>>>> update
+>>>>>> of the PTE, eg, do_numa_page()/change_pte_range().
+>>>>>>
+>>>>>> For the data segment of the user-mode program, the global 
+>>>>>> variable area
+>>>>>> is a private mapping. After the pagecache is loaded, the private 
+>>>>>> anonymous
+>>>>>> page is generated after the COW is triggered. Mlockall can lock 
+>>>>>> COW pages
+>>>>>> (anonymous pages), but the original file pages cannot be locked 
+>>>>>> and may
+>>>>>> be reclaimed. If the global variable (private anon page) is 
+>>>>>> accessed when
+>>>>>> vmf->pte is zeroed in numa fault, a file page fault will be 
+>>>>>> triggered.
+>>>>>>
+>>>>>> At this time, the original private file page may have been 
+>>>>>> reclaimed.
+>>>>>> If the page cache is not available at this time, a major fault 
+>>>>>> will be
+>>>>>> triggered and the file will be read, causing additional overhead.
+>>>>>>
+>>>>>> Fix this by rechecking the PTE without acquiring PTL in 
+>>>>>> filemap_fault()
+>>>>>> before triggering a major fault.
+>>>>>>
+>>>>>> Testing file anonymous page read and write page fault performance 
+>>>>>> in ext4
+>>>>>> and ramdisk using will-it-scale[2] on a x86 physical machine. The 
+>>>>>> data
+>>>>>> is the average change compared with the mainline after the patch is
+>>>>>> applied. The test results are within the range of fluctuation, 
+>>>>>> and there
+>>>>>> is no obvious difference. The test results are as follows:
+>>>>>>             processes processes_idle threads threads_idle
+>>>>>> ext4 file write:    -1.14%    -0.08%         -1.87% 0.13%
+>>>>>> ext4 file read:         0.03%      -0.65% -0.51%    -0.08%
+>>>>>> ramdisk file write:    -1.21%    -0.21%         -1.12% 0.11%
+>>>>>> ramdisk file read:     0.00%    -0.68%         -0.33% -0.02%
+>>>>>>
+>>>>>> [1] 
+>>>>>> https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
+>>>>>> [2] https://github.com/antonblanchard/will-it-scale/
+>>>>>>
+>>>>>> Suggested-by: "Huang, Ying" <ying.huang@intel.com>
+>>>>>> Suggested-by: Yin Fengwei <fengwei.yin@intel.com>
+>>>>>> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
+>>>>>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>>>>>> ---
+>>>>>> RFC->v1:
+>>>>>> - Add error handling when ptep == NULL per Huang, Ying and 
+>>>>>> Matthew Wilcox
+>>>>>> - Check the PTE without acquiring PTL in filemap_fault(), 
+>>>>>> suggested by
+>>>>>>      Huang, Ying and Yin Fengwei
+>>>>>> - Add pmd_none() check before PTE map
+>>>>>> - Update commit message and add performance test information
+>>>>>>
+>>>>>>     mm/filemap.c | 18 ++++++++++++++++++
+>>>>>>     1 file changed, 18 insertions(+)
+>>>>>>
+>>>>>> diff --git a/mm/filemap.c b/mm/filemap.c
+>>>>>> index 142864338ca4..b29cdeb6a03b 100644
+>>>>>> --- a/mm/filemap.c
+>>>>>> +++ b/mm/filemap.c
+>>>>>> @@ -3238,6 +3238,24 @@ vm_fault_t filemap_fault(struct vm_fault 
+>>>>>> *vmf)
+>>>>>>                 mapping_locked = true;
+>>>>>>             }
+>>>>>>         } else {
+>>>>>> +        if (!pmd_none(*vmf->pmd)) {
+>>>>>> +            pte_t *ptep;
+>>>>>> +
+>>>>>> +            ptep = pte_offset_map_nolock(vmf->vma->vm_mm, vmf->pmd,
+>>>>>> +                             vmf->address, &vmf->ptl);
+>>>>>> +            if (unlikely(!ptep))
+>>>>>> +                return VM_FAULT_NOPAGE;
+>>>>>> +            /*
+>>>>>> +             * Recheck pte as the pte can be cleared temporarily
+>>>>>> +             * during a read/modify/write update.
+>>>>>> +             */
+>>>>> I think that we should add some comments here about the racy 
+>>>>> checking.
+>>>> I'll add comments in a v2 as follows:
+>>>> /*
+>>>>    * Recheck PTE as the PTE can be cleared temporarily
+>>>>    * during a read/modify/write update of the PTE, eg,
+>>>>    * do_numa_page()/change_pte_range(). This will trigger
+>>>>    * a major fault, even if we use mlockall, which may
+>>>>    * affect performance.
+>>>>    */
+>>> Sorry, my previous words aren't clear enough.  I mean some comments as
+>>> follows,
+>>>
+>>> We don't hold PTL here, so the check is still racy.  But acquiring PTL
+>>> hurts performance and the race window seems small enough.
+>>
+>> Got it. I'll add comments in a v2 as follows:
+>> /*
+>>    * Recheck PTE as the PTE can be cleared temporarily
+>>    * during a read/modify/write update of the PTE.
+>>    * We don't hold PTL here as acquiring PTL hurts
+>>    * performance. So the check is still racy, but
+>>    * the race window seems small enough.
+>>    */
+>
+> It'd be worth spelling out what happens when we lose the race.
+>
+I'll add what happens when we lose the race as follows:
+/*
+  * Recheck PTE as the PTE can be cleared temporarily
+  * during a read/modify/write update of the PTE, eg,
+  * do_numa_page()/change_pte_range(). This will trigger
+  * a major fault, even if we use mlockall, which may
+  * affect performance.
+  * We don't hold PTL here as acquiring PTL hurts
+  * performance. So the check is still racy, but
+  * the race window seems small enough.
+  */
 
-> move the s3c64xx_subsys variable to be a constant structure as well,
-> placing it into read-only memory which can not be modified at runtime.
-> 
-
-
-Best regards,
-Krzysztof
+-- 
+Best Regards,
+Peng
 
 
