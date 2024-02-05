@@ -1,132 +1,182 @@
-Return-Path: <linux-kernel+bounces-54000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D256584A903
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:18:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56E3A84A90A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:18:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 102CF1C25905
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:18:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4E7B295692
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:18:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 812324D9E4;
-	Mon,  5 Feb 2024 22:07:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BB6A50240;
+	Mon,  5 Feb 2024 22:08:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="O8391Xi7"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J3O0rxD2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34CA44D5A7;
-	Mon,  5 Feb 2024 22:07:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C2B44F60F;
+	Mon,  5 Feb 2024 22:08:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707170853; cv=none; b=T4VZStqjjS57Vb/zy/zQ5knoUZ+p+fHBZmmM6tj709JNVOb7kMYdcP0qaJMyxKA6ltn4FmZEjsBT1qow1X/gV12D/0nLZk7r3wcQpIZ8cVcq4CregOzJmaNrII+mI+qwlFXHBLu2myGrAHePrtwU9x0kNjpsOylGuwXJx4oA2zQ=
+	t=1707170894; cv=none; b=bseYsIE/9xy33ABwd9J71eDXsjYb8ssUj6fNDp7f82oEQTX5kyWhO2tJN7JsIanll3or7iE2jGdRBiB/EvzW4OPEUP3WrBAJ1BrV851Uiadz8Vxn37cSJf5rTr8GKx0qMnLFKgON1KUa3eNEcGGHyls0EtAuBliJ+kRICS99dBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707170853; c=relaxed/simple;
-	bh=K8Wi9nbWh4scyBXEx/WRPqEifNVn6pTOX+L2VOPol0U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NbJMGt7JIbxfT9U0uLOIOQFGJyzFaAx9AMEc7dAZ69HKkJPSaE3FRlALOSkou9/+Nuif/4r4cNNq/68165oOgxXH48oAs1LZwyHAXYN6w97nYt/NFzK1bx+80G2R7OFnXMVgtUub5LlTEdmZPDL40GBzDZgsf0rA2oj9rjwr1Aw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=O8391Xi7; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707170852; x=1738706852;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=K8Wi9nbWh4scyBXEx/WRPqEifNVn6pTOX+L2VOPol0U=;
-  b=O8391Xi7/SuRXbNwW2kggbghhBYcal0z6u90QnLTYBLgcH/Fw5i3hUW0
-   7+8tdpHS4uVI/qNKoYCN0zGdGA285fKqawFoi+ItFctaS5dlrMpHtB7rY
-   7zYUandL6odAxvzZUTIec0JzIu73ZHqYPvflLHMEYUUn/2Psy9FFRH9nB
-   HtfxYAZGyRCKWTCOcHu+sofQ6697hKAybiGlVIRoxkBpfDl73Xn3uCCAJ
-   81D7DTpJKMM1KdP8MIAnpDMahh7+sVMc4WNOVDESN6MPZdfyel1r64RHB
-   o1WgDE0eaBqjDVThaUnoHKe7E4ynJRUwnBINIo+FO2/ORUHGRWcpSkc2K
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="4410175"
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="4410175"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 14:07:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="933269717"
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="933269717"
-Received: from djiang5-mobl3.amr.corp.intel.com (HELO [10.246.112.181]) ([10.246.112.181])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 14:07:30 -0800
-Message-ID: <33d241bf-e360-44c5-b63d-550da3cc66d9@intel.com>
-Date: Mon, 5 Feb 2024 15:07:29 -0700
+	s=arc-20240116; t=1707170894; c=relaxed/simple;
+	bh=A+6R9ZDS9UjRyWJgxuvz/fapj4AM3nXOKkH2EGth9G0=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=bVamV60vHlEQ1w7b76MYk7x+WaCtz8kdfhsKZDAkzPhHDjf4JQCwkyKaU4rHmxwEfFC1LqYkZ1eBHrTCq2XrKC/8iGoeM5POJpOEJCdTdj6cGMqsPCByZbV6TqCWAh9K9L12O3dlAYluVWrIjIn8Yr1VhQV/6iVh1XhgwI+n8JU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J3O0rxD2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2EC62C433F1;
+	Mon,  5 Feb 2024 22:08:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707170894;
+	bh=A+6R9ZDS9UjRyWJgxuvz/fapj4AM3nXOKkH2EGth9G0=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=J3O0rxD2Ygjsj700Pm6yV4AiE6xvD57357ifkYU+ieTDB8hkV461XMsO00tlHXqYi
+	 obOsJc42LU53liXxQ7P53JrKIu5XcpbuINvFG0y1aDmPYSqnXnUoJV+dMfzf0meUB7
+	 1qcjsz1xtsOtAYAbUyty5DepmOcAFOir/Voxp7sK7lM0bHVYTubjrRGVZEkxHO1YeM
+	 7LXLtLVc2HGPodplgcDHw/4lYtgesIoT2Yn2ncE9MW9fo+wo8TTjzZzOcqOYAa0Wiv
+	 hUSyMCfaIOrnZHfSrQvJ6qhySEe32iJJVx3YJwRQIqO+uehz3Flog1nybiejhBUxvl
+	 DmBmCLZYFBxsQ==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 124B0C48298;
+	Mon,  5 Feb 2024 22:08:14 +0000 (UTC)
+From: =?utf-8?b?QXLEsW7DpyDDnE5BTA==?= via B4 Relay
+ <devnull+arinc.unal.arinc9.com@kernel.org>
+Subject: [PATCH net-next v5 0/7] MT7530 DSA Subdriver Improvements Act II
+Date: Tue, 06 Feb 2024 01:08:01 +0300
+Message-Id:
+ <20240206-for-netnext-mt7530-improvements-2-v5-0-d7d92a185cb1@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] cxl: remove CONFIG_CXL_PMU entry in drivers/cxl/Kconfig
-Content-Language: en-US
-To: Masahiro Yamada <masahiroy@kernel.org>,
- Davidlohr Bueso <dave@stgolabs.net>,
- Jonathan Cameron <jonathan.cameron@huawei.com>,
- Alison Schofield <alison.schofield@intel.com>,
- Vishal Verma <vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>,
- Dan Williams <dan.j.williams@intel.com>, linux-cxl@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-References: <20240204094613.40687-1-masahiroy@kernel.org>
-From: Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20240204094613.40687-1-masahiroy@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAEFcwWUC/43OTW7DIBAF4KtErDsWv46dVe8RZQFmaJBqiICiV
+ JHvXkoXTZVFs0GMRu97cyMZk8dMDrsbSVh99jG0Qb3syHLW4Q3B2zYTTrmkjDNwMUHAEvBaYC1
+ 7JSj49ZJixRVDycDBSCfFODIjJ0Wac0no/LV3HEmLwneWnNrm7HOJ6bOXV9b3Pz1MMMoVn4eJi
+ j0DBjr5sAwfQb+/9u88LHHtRuV3uXbM//dVDhSMpqNT1s5o6AMpfsn2PEOKRo7CKm01zvOiH0h
+ 5T8pnSNlIyo2j2mhtzfSH3LbtC79DbtO7AQAA
+To: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>, 
+ Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>, 
+ Florian Fainelli <f.fainelli@gmail.com>, 
+ Vladimir Oltean <olteanv@gmail.com>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Matthias Brugger <matthias.bgg@gmail.com>, 
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+ Russell King <linux@armlinux.org.uk>
+Cc: mithat.guner@xeront.com, erkin.bozoglu@xeront.com, 
+ Bartel Eerdekens <bartel.eerdekens@constell8.be>, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-mediatek@lists.infradead.org, 
+ =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>, 
+ "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1707170890; l=3529;
+ i=arinc.unal@arinc9.com; s=arinc9-patatt; h=from:subject:message-id;
+ bh=A+6R9ZDS9UjRyWJgxuvz/fapj4AM3nXOKkH2EGth9G0=;
+ b=lMad3J70PLiCdiP2RqMA7W8I4o6zA0ejht2u6w5ckUlGJy2YN1gQn4f5EwDCdQphg/ouy3+dp
+ BWUoF08vFkSBD7U/W9T3fZ5Zd+bPGbdXnK/FCfXthlaTVPPhRXSkQzm
+X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
+ pk=VmvgMWwm73yVIrlyJYvGtnXkQJy9CvbaeEqPQO9Z4kA=
+X-Endpoint-Received:
+ by B4 Relay for arinc.unal@arinc9.com/arinc9-patatt with auth_id=115
+X-Original-From: =?utf-8?b?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Reply-To: <arinc.unal@arinc9.com>
 
+Hello!
 
+This is the second patch series with the goal of simplifying the MT7530 DSA
+subdriver and improving support for MT7530, MT7531, and the switch on the
+MT7988 SoC.
 
-On 2/4/24 2:46 AM, Masahiro Yamada wrote:
-> Commit 5d7107c72796 ("perf: CXL Performance Monitoring Unit driver")
-> added the config entries for CXL_PMU in drivers/cxl/Kconfig and
-> drivers/perf/Kconfig, so it can be toggled from multiple locations:
-> 
-> [1] Device Drivers
->      -> PCI support
->        -> CXL (Compute Expres Link) Devices
->          -> CXL Performance Monitoring Unit
-> 
-> [2] Device Drivers
->      -> Performance monitor support
->        -> CXL Performance Monitoring Unit
-> 
-> This complicates things, and nobody else does this.
-> 
-> I kept the one in drivers/perf/Kconfig because CONFIG_CXL_PMU controls
-> the compilation of drivers/perf/cxl_pmu.c.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+I have done a simple ping test to confirm basic communication on all switch
+ports on MCM and standalone MT7530, and MT7531 switch with this patch
+series applied.
 
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-> ---
-> 
->  drivers/cxl/Kconfig | 13 -------------
->  1 file changed, 13 deletions(-)
-> 
-> diff --git a/drivers/cxl/Kconfig b/drivers/cxl/Kconfig
-> index 67998dbd1d46..5f3c9c5529b9 100644
-> --- a/drivers/cxl/Kconfig
-> +++ b/drivers/cxl/Kconfig
-> @@ -144,17 +144,4 @@ config CXL_REGION_INVALIDATION_TEST
->  	  If unsure, or if this kernel is meant for production environments,
->  	  say N.
->  
-> -config CXL_PMU
-> -	tristate "CXL Performance Monitoring Unit"
-> -	default CXL_BUS
-> -	depends on PERF_EVENTS
-> -	help
-> -	  Support performance monitoring as defined in CXL rev 3.0
-> -	  section 13.2: Performance Monitoring. CXL components may have
-> -	  one or more CXL Performance Monitoring Units (CPMUs).
-> -
-> -	  Say 'y/m' to enable a driver that will attach to performance
-> -	  monitoring units and provide standard perf based interfaces.
-> -
-> -	  If unsure say 'm'.
->  endif
+MT7621 Unielec, MCM MT7530:
+
+rgmii-only-gmac0-mt7621-unielec-u7621-06-16m.dtb
+gmac0-and-gmac1-mt7621-unielec-u7621-06-16m.dtb
+
+tftpboot 0x80008000 mips-uzImage.bin; tftpboot 0x83000000 mips-rootfs.cpio.uboot; tftpboot 0x83f00000 $dtb; bootm 0x80008000 0x83000000 0x83f00000
+
+MT7622 Bananapi, MT7531:
+
+gmac0-and-gmac1-mt7622-bananapi-bpi-r64.dtb
+
+tftpboot 0x40000000 arm64-Image; tftpboot 0x45000000 arm64-rootfs.cpio.uboot; tftpboot 0x4a000000 $dtb; booti 0x40000000 0x45000000 0x4a000000
+
+MT7623 Bananapi, standalone MT7530:
+
+rgmii-only-gmac0-mt7623n-bananapi-bpi-r2.dtb
+gmac0-and-gmac1-mt7623n-bananapi-bpi-r2.dtb
+
+tftpboot 0x80008000 arm-zImage; tftpboot 0x83000000 arm-rootfs.cpio.uboot; tftpboot 0x83f00000 $dtb; bootz 0x80008000 0x83000000 0x83f00000
+
+This patch series is the continuation of the patch series linked below.
+
+https://lore.kernel.org/r/20230522121532.86610-1-arinc.unal@arinc9.com
+
+Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+---
+Changes in v5:
+- Update the patches with the latest received trailers.
+- Patch 3
+  - Replace "return;" with "return 0;".
+- Patch 4
+  - Remove the stray brace.
+- Link to v4: https://lore.kernel.org/r/20240204-for-netnext-mt7530-improvements-2-v4-0-02bf0abaadb8@arinc9.com
+
+Changes in v4:
+- Update the patches with the latest received trailers.
+- Leave no error returns on mt7530_pad_clk_setup() before renaming it to
+  mt7530_setup_port6() and moving it to under mt7530_mac_config().
+- Link to v3: https://lore.kernel.org/r/20240202-for-netnext-mt7530-improvements-2-v3-0-63d5adae99ca@arinc9.com
+
+Changes in v3:
+- Update the patches with the latest received trailers.
+- Patch 5
+  - Disable TRGMII clocks for all cases.
+- Link to v2: https://lore.kernel.org/r/20240130-for-netnext-mt7530-improvements-2-v2-0-ba06f5dd9eb0@arinc9.com
+
+Changes in v2:
+- Update the patches with the latest received trailers.
+- Remove 'net: dsa: mt7530: move enabling port 6 to mt7530_setup_port6()'
+  which was patch 5. I will bring a more appropriate change with a later
+  patch series.
+- Patch 5
+  - Set P6_INTF_MODE(0) and explain why on the patch log.
+- Patch 6
+  - Mention the MT7988 document and explain more on the patch log.
+- Patch 7
+  - Explain more on the patch log.
+- Link to v1: https://lore.kernel.org/r/20240113102529.80371-1-arinc.unal@arinc9.com
+
+---
+Arınç ÜNAL (7):
+      net: dsa: mt7530: empty default case on mt7530_setup_port5()
+      net: dsa: mt7530: move XTAL check to mt7530_setup()
+      net: dsa: mt7530: simplify mt7530_pad_clk_setup()
+      net: dsa: mt7530: call port 6 setup from mt7530_mac_config()
+      net: dsa: mt7530: remove pad_setup function pointer
+      net: dsa: mt7530: correct port capabilities of MT7988
+      net: dsa: mt7530: do not clear config->supported_interfaces
+
+ drivers/net/dsa/mt7530.c | 152 +++++++++++++++++------------------------------
+ drivers/net/dsa/mt7530.h |   3 -
+ 2 files changed, 53 insertions(+), 102 deletions(-)
+---
+base-commit: 4acf4e62cd572b0c806035046b3698f5585ab821
+change-id: 20240121-for-netnext-mt7530-improvements-2-b4f43661b485
+
+Best regards,
+-- 
+Arınç ÜNAL <arinc.unal@arinc9.com>
+
 
