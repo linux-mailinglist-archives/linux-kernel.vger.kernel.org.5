@@ -1,118 +1,167 @@
-Return-Path: <linux-kernel+bounces-52621-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52586-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 022CD849A8C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:39:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43C338499F0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:20:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B18A2282074
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:39:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C9146B23306
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:20:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C6B22CCB4;
-	Mon,  5 Feb 2024 12:36:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GemHoD06"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EB821B949;
+	Mon,  5 Feb 2024 12:20:05 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83B5A1CABD;
-	Mon,  5 Feb 2024 12:36:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A5391B958;
+	Mon,  5 Feb 2024 12:20:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707136606; cv=none; b=C9dU/pUeAobrZmJackk1T21vGlMIbJMqwrvrU7w4y8152so/ogaYlbjEngEsp5bG4DcnFPH2hZrxredDe5HS7XWc7U18i+/gDkrPGaFqjeMofuSwAOa+r4w9ANgXCVxCy/a9A5/jIh8HoOwzkMkevziUk8KQ5WiSr015wGRLPUA=
+	t=1707135604; cv=none; b=D780yT6ZdGrbP7YHXxkHToJG2dtcmceh3DGWEJtmbf4PS2RMTUGJOc2nMM2oh9ik/NfoTxmifmvhhgSa9eurpzuQ0i9XwSMUZ6qMmOCK0r1Dw4jYDNjs3QQ+QALuMxgV+RcU56yM99bGzLUF0Cw7/nQ2ljIUl7ZabY8RE3R789w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707136606; c=relaxed/simple;
-	bh=ENgpbAtrqID8ovJNk+F/h+zg1txNrGQPaTzLXnkwiLQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g6UKTF3AOLbwgWRjmXGsnYD07ylDk2TOOYfkFW+iUj2WmEccdcwMRPmQMo355U7+rhwd8b6ymjELQ/bUsj/6scJKkx07Be/yx7BQjLKnZjF8qgrqJaWJlKUk4QaynjsqudICNBxR8BbDOgoOU/piTTyupXKvFkxQy0PSJeUwMEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GemHoD06; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707136604; x=1738672604;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ENgpbAtrqID8ovJNk+F/h+zg1txNrGQPaTzLXnkwiLQ=;
-  b=GemHoD06K1eA1j4Adi7cIcvvVcGEej9YgMBrxZVsMLyxepWqHfKocaTC
-   Xe7y465ZRskszFjS1eqxU2ki9M6KFK2W1wN5x/dxYSn67hbQEqPrIAtGx
-   DPDAqHxdwvNHyVpDGCsowz2L2RUwRD8F8Amv/dOJ0Mm4gVGmiAuusOmLU
-   yousYO8P+2Ux6mt+C/sBbO+YwWWmGiX8eokuebN4JEcBs3LFkJ6clOyAM
-   vGtvqRdm5tgtEWbROaeNkxAroTt+bf6SL5GB0wydyQvvF5YilSMiDrT+s
-   T4DCopdGwNlyIRugPPsOJHO1AUN3V9sH2g+vQYACPXca/2OKPyUMHgWtW
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="11883224"
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="11883224"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 04:36:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="909285677"
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="909285677"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 04:36:40 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rWxw1-000000023v6-3Rmk;
-	Mon, 05 Feb 2024 14:18:49 +0200
-Date: Mon, 5 Feb 2024 14:18:49 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Wolfram Sang <wsa@the-dreams.de>, linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v2 08/23] gpio: sysfs: use gpio_device_find() to iterate
- over existing devices
-Message-ID: <ZcDSKYqFHSUZb2Qx@smile.fi.intel.com>
-References: <20240205093418.39755-1-brgl@bgdev.pl>
- <20240205093418.39755-9-brgl@bgdev.pl>
+	s=arc-20240116; t=1707135604; c=relaxed/simple;
+	bh=tCcEzN8s4Of1VeFJJOvmebTZuB7VD7O5dHPWzESDRoM=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Vf3CSxNAb99CMP5lqoiCNDpGrbKaJ7BL1ClUtWCm+W5PsxJwLK2XeBS8H0uzhfrSKOIrqNmMHfvVJ8bZVAEHk02fgkVMaiHKmuYcrCsAOAkqscweoqE9uOwvdhqcydmVdJJq071w+BytQH3vl5bqlP1YyX5GJgfzJch655RX/K4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TT51Q3YcNz1FKFk;
+	Mon,  5 Feb 2024 20:15:22 +0800 (CST)
+Received: from kwepemd100002.china.huawei.com (unknown [7.221.188.184])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0B004140429;
+	Mon,  5 Feb 2024 20:19:57 +0800 (CST)
+Received: from M910t (10.110.54.157) by kwepemd100002.china.huawei.com
+ (7.221.188.184) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Mon, 5 Feb
+ 2024 20:19:55 +0800
+Date: Mon, 5 Feb 2024 20:19:38 +0800
+From: Changbin Du <changbin.du@huawei.com>
+To: Adrian Hunter <adrian.hunter@intel.com>
+CC: Changbin Du <changbin.du@huawei.com>, Peter Zijlstra
+	<peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de
+ Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander
+ Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
+	<linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>, Andi
+ Kleen <ak@linux.intel.com>, Thomas Richter <tmricht@linux.ibm.com>,
+	<changbin.du@gmail.com>
+Subject: Re: [PATCH v5 3/5] perf: script: add field 'disasm' to display
+ mnemonic instructions
+Message-ID: <20240205121938.sl4ykpk25lgxhgfj@M910t>
+References: <20240122112054.1576835-1-changbin.du@huawei.com>
+ <20240122112054.1576835-4-changbin.du@huawei.com>
+ <f8c1b042-2b65-4dd7-a692-79fead351e5a@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20240205093418.39755-9-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <f8c1b042-2b65-4dd7-a692-79fead351e5a@intel.com>
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemd100002.china.huawei.com (7.221.188.184)
 
-On Mon, Feb 05, 2024 at 10:34:03AM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Mon, Feb 05, 2024 at 11:23:21AM +0200, Adrian Hunter wrote:
+> On 22/01/24 13:20, Changbin Du wrote:
+> > In addition to the 'insn' field, this adds a new field 'disasm' to
+> > display mnemonic instructions instead of the raw code.
+> > 
+> > $ sudo perf script -F +disasm
+> >        perf-exec 1443864 [006] 2275506.209848:          psb:  psb offs: 0                                      0 [unknown] ([unknown])
+> >        perf-exec 1443864 [006] 2275506.209848:          cbr:  cbr: 41 freq: 4100 MHz (114%)                    0 [unknown] ([unknown])
+> >               ls 1443864 [006] 2275506.209905:          1  branches:uH:      7f216b426100 _start+0x0 (/usr/lib/x86_64-linux-gnu/ld-2.31.so)	movq %rsp, %rdi
+> >               ls 1443864 [006] 2275506.209908:          1  branches:uH:      7f216b426103 _start+0x3 (/usr/lib/x86_64-linux-gnu/ld-2.31.so)	callq _dl_start+0x0
+> > 
+> > Signed-off-by: Changbin Du <changbin.du@huawei.com>
+> > 
+> > ---
+> > v2:
+> >   - update Documentation.
+> > ---
+> >  tools/perf/Documentation/perf-script.txt | 13 +++++++------
+> >  tools/perf/builtin-script.c              |  8 +++++++-
+> >  2 files changed, 14 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/tools/perf/Documentation/perf-script.txt b/tools/perf/Documentation/perf-script.txt
+> > index ff9a52e44688..578fa59f51a5 100644
+> > --- a/tools/perf/Documentation/perf-script.txt
+> > +++ b/tools/perf/Documentation/perf-script.txt
+> > @@ -132,9 +132,10 @@ OPTIONS
+> >          Comma separated list of fields to print. Options are:
+> >          comm, tid, pid, time, cpu, event, trace, ip, sym, dso, dsoff, addr, symoff,
+> >          srcline, period, iregs, uregs, brstack, brstacksym, flags, bpf-output,
+> > -        brstackinsn, brstackinsnlen, brstackoff, callindent, insn, insnlen, synth,
+> > -        phys_addr, metric, misc, srccode, ipc, data_page_size, code_page_size, ins_lat,
+> > -        machine_pid, vcpu, cgroup, retire_lat.
+> > +        brstackinsn, brstackinsnlen, brstackoff, callindent, insn, disasm,
+> > +        insnlen, synth, phys_addr, metric, misc, srccode, ipc, data_page_size,
+> > +        code_page_size, ins_lat, machine_pid, vcpu, cgroup, retire_lat.
+> > +
+> >          Field list can be prepended with the type, trace, sw or hw,
+> >          to indicate to which event type the field list applies.
+> >          e.g., -F sw:comm,tid,time,ip,sym  and -F trace:time,cpu,trace
+> > @@ -217,9 +218,9 @@ OPTIONS
+> >  	Instruction Trace decoding. For calls and returns, it will display the
+> >  	name of the symbol indented with spaces to reflect the stack depth.
+> >  
+> > -	When doing instruction trace decoding insn and insnlen give the
+> > -	instruction bytes and the instruction length of the current
+> > -	instruction.
+> > +	When doing instruction trace decoding, insn, disasm and insnlen give the
+> > +	instruction bytes, disassembled instructions (requires libcapstone support)
+> > +	and the instruction length of the current instruction respectively.
+> >  
+> >  	The synth field is used by synthesized events which may be created when
+> >  	Instruction Trace decoding.
+> > diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+> > index 4817a37f16e2..4ac9670704ff 100644
+> > --- a/tools/perf/builtin-script.c
+> > +++ b/tools/perf/builtin-script.c
+> > @@ -135,6 +135,7 @@ enum perf_output_field {
+> >  	PERF_OUTPUT_CGROUP          = 1ULL << 39,
+> >  	PERF_OUTPUT_RETIRE_LAT      = 1ULL << 40,
+> >  	PERF_OUTPUT_DSOFF           = 1ULL << 41,
+> > +	PERF_OUTPUT_DISASM          = 1ULL << 42,
+> >  };
+> >  
+> >  struct perf_script {
+> > @@ -190,6 +191,7 @@ struct output_option {
+> >  	{.str = "bpf-output",   .field = PERF_OUTPUT_BPF_OUTPUT},
+> >  	{.str = "callindent", .field = PERF_OUTPUT_CALLINDENT},
+> >  	{.str = "insn", .field = PERF_OUTPUT_INSN},
+> > +	{.str = "disasm", .field = PERF_OUTPUT_DISASM},
+> >  	{.str = "insnlen", .field = PERF_OUTPUT_INSNLEN},
+> >  	{.str = "brstackinsn", .field = PERF_OUTPUT_BRSTACKINSN},
+> >  	{.str = "brstackoff", .field = PERF_OUTPUT_BRSTACKOFF},
+> > @@ -1515,6 +1517,10 @@ static int perf_sample__fprintf_insn(struct perf_sample *sample,
+> >  		printed += fprintf(fp, " insn: ");
+> >  		printed += sample__fprintf_insn_raw(sample, fp);
+> >  	}
+> > +	if (PRINT_FIELD(DISASM) && sample->insn_len) {
+> > +		printed += fprintf(fp, "\t\t");
 > 
-> With the list of GPIO devices now protected with SRCU we can use
-> gpio_device_find() to traverse it from sysfs.
+> This is good, except if both 'insn' and 'disasm' are used together.
+> It either:
+>  a) without libcapstone, prints insn bytes twice
+> 
+> 	Probably simpler to make 'disasm' without libcapstone
+> 	a fatal error explaining that perf needs to be built
+> 	with libcapstone support for 'disasm' to work.
+>
+Instead of fatal error, I print a warning message for this. Because
+perf_sample__fprintf_insn() cannot return negtive error number.
 
-..
-
-> +static int gpiofind_sysfs_register(struct gpio_chip *gc, void *data)
-> +{
-> +	struct gpio_device *gdev = gc->gpiodev;
-> +	int ret;
-> +
-> +	if (gdev->mockdev)
-> +		return 0;
-> +
-> +	ret = gpiochip_sysfs_register(gdev);
-> +	if (ret)
-> +		chip_err(gc, "failed to register the sysfs entry: %d\n", ret);
-
-> +	return 0;
-
-???
-
-> +}
+>  b) with libcapstone, disassembly does not line up nicely
+> 
+ 
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Cheers,
+Changbin Du
 
