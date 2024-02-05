@@ -1,123 +1,126 @@
-Return-Path: <linux-kernel+bounces-52757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52758-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1068849C58
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:56:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99E2E849C5C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:56:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 965631F257CB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:56:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05985B2656D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:56:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 045E122EFD;
-	Mon,  5 Feb 2024 13:55:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 961FD24A19;
+	Mon,  5 Feb 2024 13:55:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SRo/3YVC"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="HjTm0cjI"
+Received: from mout.web.de (mout.web.de [212.227.15.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC1DF2D042;
-	Mon,  5 Feb 2024 13:55:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67DA42C18E;
+	Mon,  5 Feb 2024 13:55:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707141331; cv=none; b=g1YIZPAG8V8WcFbkFzMlpbbNNc5FbKXVWgwJMskx4H1Ltkedb9Hp2qnodO9nsW66rTul/TPJKxgJxM1BySVasuya36gDjbRwBShC7lChA2mAtf8sdZogpxaJuSc/LVEpjysaWQk9UjfcE7OMn4GEJ5TkdUEXslWEH6KEP/K4Zjk=
+	t=1707141354; cv=none; b=hY6Cn5MgMU88MJ0xr5NUOB0LjtIIqVDlLqyu/LLJKX9albzKJoTkmH3kIOybUcJXIyn9T/VQhQxsdJ+DlY/GMDfk+pRVwRcmqUbVqJHQj7WTW3ARkKGgui1CjaPZkqZKAhZ9Rl8qUT/AYU8CH3wNBrGXKXrM+KkyYuycccO2s1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707141331; c=relaxed/simple;
-	bh=lcZLONYVrndWga+bH1977BM0C3a0z6Uk4Z/ZxsrYK+Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=t9UAsvkAcw3v7UVTbHfZREt4pE4jHP+oW50v3VFHo0BqrtbgykDyz/Ro02Bvs5I7C7SrNkUFNiAqwOPU5iOlEEZvW5Gwk1TrqYJDI/3T9yNX9ZFrBN+PKGnHZ9DIR8A8qAGErUJhk+D1CVcQFojvprxGJyZqNF0+Kfap27MtoiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SRo/3YVC; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707141330; x=1738677330;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=lcZLONYVrndWga+bH1977BM0C3a0z6Uk4Z/ZxsrYK+Y=;
-  b=SRo/3YVCx4yl2dFo8nq/NRAZOJK/7AR+uFX8HpEfIobOvLDtfwWBlS+K
-   x1ynTj7RyFKEfgmfz4K7nMqNITH1Wg2sedFtU49NXLrfmTMqTEiglehNL
-   mrjIUnRaewiLxXEF/ZgBuOYTAdz2O6Un9qcwWtfLQG/9b0m8ilzuOg6JX
-   pM68Mult5nB2Px/doeTYfK+swxHzaw6vq2Ffn5dZoszkvvy7PL+3v8uia
-   7sVMv5uvDZAbBsXLOcs/tAIG16TgCT7eQrTBjtjbbyc3woqNLPOXoxgL9
-   NHTohV/CxOD6nipD1By8+7hNEfzEqvdnkImAUWt6LDE/NflIxnLuBsArx
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="431916"
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="431916"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 05:55:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="909301134"
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="909301134"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 05:55:25 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rWzRT-000000025wU-02ax;
-	Mon, 05 Feb 2024 15:55:23 +0200
-Date: Mon, 5 Feb 2024 15:55:22 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: nuno.sa@analog.com
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Daniel Scally <djrscally@gmail.com>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] driver: core: add dedicated workqueue for devlink
- removal
-Message-ID: <ZcDoyvAEGr6jsCdj@smile.fi.intel.com>
+	s=arc-20240116; t=1707141354; c=relaxed/simple;
+	bh=OCQlC6fsw7RMniTUmuvaoqgcVSnBwtdH0tkNLVCdCq8=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=omj06vOZfhsorxkbTyx6LDacbwX80QISf04KGaSh7peY9gT7M22a2Tce5HoXhqV6ooWJQHWajEqnm6v5IhRwUseIAq+e4//UqQXQKmFQmZa4/qr3dTArLAmXGqvLFhWXn3E7g9XuW84nt1GSd5dq4GcumgSfCiFDTqvOJGthlzg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=HjTm0cjI; arc=none smtp.client-ip=212.227.15.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1707141327; x=1707746127; i=markus.elfring@web.de;
+	bh=OCQlC6fsw7RMniTUmuvaoqgcVSnBwtdH0tkNLVCdCq8=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=HjTm0cjIhCbiMgsdEel77y7fv7NC6Nxsj7jv8GhO97SXEgb80r7lEmSsnvClOo2k
+	 VRo9narPy0zxhHgqewR5nWaWe1/RFPO8uhNXot/GYfNXg4/mfx9qGOE7ipoctl/QT
+	 7ouWHRyhDooc+FoR8S4frgEy+udQ/exFyhlmIvp4OhY7oI+cjSyUBEFxCxYvaQieB
+	 LhkMTbxEPKAPTQTLXlPgAUB5eulc/PTD6LCMHpE5o70wlqNsuYvazVxq+KOFlXygY
+	 cfCED3D1wd7mfkxSWusHEb0HtYz+uWXaizN6O6dBrhoL4x85vo3Y+nEkCkawfPi9J
+	 0yKqqnj6ySiWnpd2fg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MBS71-1rjsY53cFD-00CvRd; Mon, 05
+ Feb 2024 14:55:26 +0100
+Message-ID: <f87065d0-e398-4ffa-bfa4-9ff99d73f206@web.de>
+Date: Mon, 5 Feb 2024 14:55:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+To: netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Michal Simek <michal.simek@amd.com>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
+ Rob Herring <robh@kernel.org>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Wei Fang <wei.fang@nxp.com>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] net: emaclite: Use devm_platform_get_and_ioremap_resource()
+ in xemaclite_of_probe()
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:HpdtEuakUvahbDKCQGbUBcJH36NhioRvkShEPpZoWqMQzGg2Udd
+ /66drifHYG+/g/EHez/UbXsmBO6j0hVXMihQB7PpnVN3Kse2RaGRq1n1IJLo83c6UWHPt5s
+ qikcEeE6Nn8vGJ6t1+LCL6V9QE0S+Zo0yGsJ8wCOWwtjU5U5+7xpxcjAUs2W2cQ7M0/MfYj
+ x/Ow/w0rihGGsmWWtwGjA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:DX5qSgtT2yY=;FgO4dz25//lf7S/k9N4m/F1fSkO
+ +78p+4kNPIMGJRtNflgVgoo8qWGIRjTl7v4YzqPB0omKxGZYcRQHS4noibbgO910/zBmyQ6gc
+ 2mRH8lIwjH5IniM5IZf3sV2O/z4nGGmc0GoJyZlXe/gCjTs+9+aA/f1RhSlXkcobxzD5HWRyQ
+ pJbNLEYl8APxI7gnybKG85B7hepN1/dXB4enZK9uRd0DpJaY4qLZeR7Ob2MLGv4qwBR4zotGK
+ aDtz5wbpYvPWsmgfDoKcP4og+HBncBXPmw+zbsyWTIp2uWUZwUhJcetr6I18EfgT0pHscP9+I
+ MYgXJ/RFbIVd5PUtzwEAHQ4W9hyCH6BUHC3lQjhwI6mFwpSNldW4PEZTCyDQySY+WYIJhmTsE
+ 74KAAOXWXE+pW3aIy+TCbj9yiazBfFnxMf0hGhoxhpOzQXRx/RMD38+YMgKpdJRHMWcvWv2nT
+ e7hjhAqw+QFlZgKLBpMl4PSddZcJdh+MQXTDuRt+Aqde2pMDtv84pJjDUH9n6bkJ8YMsQBS0S
+ 7LJa0LXIPbVChJ1NiaWXZGHw+YjaT08Ok840dYMU0oKOhcKud4fes9nw8OeF/4ypEYQDFYIaF
+ v/nSLHcxZ4G9Xi86aUJJKztZ0KdsmRmkkww+4C5Ii0yn6PLacy5Hlfz9jB7knZN0GnjZSYhS9
+ wf1sAJc1rlqg74WElTVpPg0hj6l9HfZblAFKXiDPYmemE7EG1oNTq+LI8JVeuutSZGCKkZSvm
+ KV/+6fWej+r7PuND9xJSZZBJx2rHyaL+wgT+zGftwKBCACI0cSx74W8ryUsdwGrfUdibxRzlR
+ ZbImIoeCr/Io+lMei6EJiEb/cjz8qOscxadJIpCqJ3DiA=
 
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Mon, 5 Feb 2024 14:44:20 +0100
 
-On Fri, Feb 02, 2024 at 01:18:16PM +0100, Nuno Sa via B4 Relay wrote:
-> From: Nuno Sa <nuno.sa@analog.com>
-> 
-> Let's use a dedicated queue for devlinks since releasing a link happens
-> asynchronously but some code paths, like DT overlays, have some
-> expectations regarding the of_node when being removed (the refcount must
-> be 1). Given how devlinks are released that cannot be assured. Hence, add a
-> dedicated queue so that it's easy to sync against devlinks removal.
-> 
-> While at it, make sure to explicitly include <linux/workqueue.h>.
+A wrapper function is available since the commit 890cc39a879906b63912482df=
+c41944579df2dc6
+("drivers: provide devm_platform_get_and_ioremap_resource()").
+Thus reuse existing functionality instead of keeping duplicate source code=
+.
 
-..
+This issue was detected by using the Coccinelle software.
 
-> --- a/include/linux/fwnode.h
-> +++ b/include/linux/fwnode.h
-> @@ -213,5 +213,6 @@ extern bool fw_devlink_is_strict(void);
->  int fwnode_link_add(struct fwnode_handle *con, struct fwnode_handle *sup);
->  void fwnode_links_purge(struct fwnode_handle *fwnode);
->  void fw_devlink_purge_absent_suppliers(struct fwnode_handle *fwnode);
-> +void fwnode_links_flush_queue(void);
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ drivers/net/ethernet/xilinx/xilinx_emaclite.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Can it be grouped like
+diff --git a/drivers/net/ethernet/xilinx/xilinx_emaclite.c b/drivers/net/e=
+thernet/xilinx/xilinx_emaclite.c
+index 765aa516aada..940452d0a4d2 100644
+=2D-- a/drivers/net/ethernet/xilinx/xilinx_emaclite.c
++++ b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
+@@ -1114,8 +1114,7 @@ static int xemaclite_of_probe(struct platform_device=
+ *ofdev)
 
-  void fwnode_links_flush_queue(void);
-  void fwnode_links_purge(struct fwnode_handle *fwnode);
-  void fw_devlink_purge_absent_suppliers(struct fwnode_handle *fwnode);
+ 	ndev->irq =3D rc;
 
-?
-
-(devlinks namespaces seems a bit messy to me, but I'm not familiar with that
- code at all)
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+-	res =3D platform_get_resource(ofdev, IORESOURCE_MEM, 0);
+-	lp->base_addr =3D devm_ioremap_resource(&ofdev->dev, res);
++	lp->base_addr =3D devm_platform_get_and_ioremap_resource(ofdev, 0, &res)=
+;
+ 	if (IS_ERR(lp->base_addr)) {
+ 		rc =3D PTR_ERR(lp->base_addr);
+ 		goto error;
+=2D-
+2.43.0
 
 
