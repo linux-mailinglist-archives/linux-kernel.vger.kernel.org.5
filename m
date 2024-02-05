@@ -1,120 +1,116 @@
-Return-Path: <linux-kernel+bounces-53807-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53808-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98AA984A6C3
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:14:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A637784A6CA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:15:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE2B81C26718
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:14:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2597B29FA7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:14:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E93053E2C;
-	Mon,  5 Feb 2024 19:18:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZdYVf65x"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEB9F55C06;
+	Mon,  5 Feb 2024 19:19:00 +0000 (UTC)
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCE6B53E0E;
-	Mon,  5 Feb 2024 19:18:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4799754BCA
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 19:18:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707160725; cv=none; b=Aod1rkJ42yqxYKVrd0V/XxcmAO1tEJh9O+enQwpGUSWHgrmiaoTVTwfcezcffhhgh9LchHo0ilK2jmdV+zOBObzOjIsrdi7gGA2grUmhVIaH79c3/Bzq3HIFeKeUZCL2ngJkVH7zcreAU45Ynnmi2hz3d/QzDAyXPoRZ781+mpk=
+	t=1707160740; cv=none; b=US4kHOK3UPTW91Fz1UtHEh2MVCJqzEGytuHg146/beN4p838fNNSzXPJmkWVRvbdXPnmUsXEbrvpfD65bdOmAAy2j49cLaYZ3ud+2ssXC+rYcBBts8S9ZEGzIskzsVQQQstlMrtR6gtuTo5OB2k1bcqrcEnDoRp3J8w4adGdb7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707160725; c=relaxed/simple;
-	bh=wSWjtqqjivUoa0CG3qdFK79yHE097JXhev5z205E/nc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QYEy8x182B4aS34aRzWAkwgd6WfKjnx3TFfl2afUyHNJeK3jqEYNowN8RgV/NF12Nc4sqE4f/HI1DgJs8WhQhJDhE4igoNpJNcFECNoKMhoKw0z0AV0MD3Y+nP9p5wl+2kEnJn6mKZxLzPY62N6+RfuTtjzJ3jtBs0v4jed8VBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZdYVf65x; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1707160740; c=relaxed/simple;
+	bh=L6H/Zl7UOveGSW+zhT0TTKjxWKJLOO7cOjOFFqFmsoY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pA5+RITxDhssENKesrt4AWrBR3Eew3iErFZylFrxWMnjSpQl9AX4bFc3a9SMHGmt882vwSenkHCN84sk+LEH6Jekqw0cnMocqvplwgDeYfA6BxzpXAIWBXu3h7TSrZ7W/ze17kK1fMdifbw8dEOoCsjNOtrTMlYwJsWDw/bcAtI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so641352966b.0;
-        Mon, 05 Feb 2024 11:18:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707160722; x=1707765522; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xt2AM3jB+7aIDuoutfkr3xbhDhpMe4Sp5icdbuMaEx0=;
-        b=ZdYVf65xNyEsfG38OMGHlTYNeXWCyKuVvC7S3r3PLKnry6QA8Ui/qCJwscEko2X1Ug
-         ogAxn8mRcCTgk2alC6OT6PbbZBvNLCx0txbJCgEg8OXG+cFWeRvETB/50cxDan0SLwGq
-         YMZPYPWIcU9tjq18pGtABnRMbIQF8JeTCBb7N9e8wTsdbWHqWwWK8v8PciA7BFh7N6b/
-         OFc+KC3/F0SljTz8XYeyvdBLfFmVq/n0rE+NNEQm3I7vyWZ8CGE3H/8Ej6B04cFOzwCf
-         1qZLde7qZ4ictDcf2dW5iQmuSKlU6PCO2f+SvEl/7N4p25eokBJLmmWE1ObWoDFUgyu9
-         NZmQ==
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a37ce4b2b23so124953366b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 11:18:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707160722; x=1707765522;
+        d=1e100.net; s=20230601; t=1707160736; x=1707765536;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=xt2AM3jB+7aIDuoutfkr3xbhDhpMe4Sp5icdbuMaEx0=;
-        b=nNOe3CO51LBCnsvBnmuKVCbFmHV92cgLjS6YVWU5TBD1dgcfZGvY7Wj7Jfx+WmA8OL
-         1r+8Y4bFswwdpOjhnfRcTkrpK7jnXv+FisilwFu7bG0eR9kvL4MDhJQb9lkqCtYRtiZM
-         UScyp8+Kfn84lTJz0nL5iDMOeYX2HnaTT0S0I84g/+WgwGFj/ubiYDQkxXSpPbktgnRk
-         /qj8giS6q8w906SOpbuiUUxIQr3Y1JPBHxWGoPLANc1LlzAz4hG3ui2bpiFQFJxvUOOj
-         JFgiWTwTtZfv0a5VOXS08rhrQTEaXACIu9babh3CxN5v/lCM9HSPtaokE7ZQwCNkJwtU
-         DswQ==
-X-Gm-Message-State: AOJu0YwWILUBwcqOlKGkeievA96gLbsCHsMTZNCTdajB+4hkJ2Pnxedt
-	jqpOnlDEwqGFk+3umHJjgI24/a4ieiE0s7t1boId2yZkXZO/azU=
-X-Google-Smtp-Source: AGHT+IG4wF8iaEnBHgtHjpUifdLRNA1cVilx4dlEMFlUS0xgA9xF8vq3w8GfGaDNY5tECLSmiWgXEQ==
-X-Received: by 2002:a17:906:a450:b0:a37:2cc5:eb5 with SMTP id cb16-20020a170906a45000b00a372cc50eb5mr275749ejb.37.1707160721668;
-        Mon, 05 Feb 2024 11:18:41 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCX+srCUJepnmGBfhQh3VwmvC4c3f+qcHLeahjCT5GqVb5uFPtVfcY3FU3IRTBCSrUf6AuiGjLjg9qG4Z0FolYncj8zbA5gevI4qNo6ESjgTM3CnIlMwzzkzHvkO2Z/gNE7+ig43kUh9OEakDIy4vFa4Rc7/qai0twLVGRZwN+2dG6Vk3wlnDxUxGMjj79iQmupjMrCIA8zmL/YUdax4eCg3rFENqZc0AxnR/6128who6sMYpc0dvitVvI+P4Io3ZuGZmQKdhXXVlewGSJq4Gj0/PZmhXintnfsuasqSpk7c876OD573L1nMHemMqKF8BlkGYG8F4URIXKSIcTh7QnvqJruUfVLIGJWSTxJ2XTRN0o0IGKpiMxtJvCTAkvuzEEDNS56+j9FZES3tiakcImRJRl56UWc/3g9QbYNX+9KlQGpvudMH3jYmoIywzHFStsG5TH2klszsi+njBgtHrcS3YcY3g6f9qNEbvgIoYyafN9YMEW2EzsVi8hZ57IERtWHryIAhRz2MkAHsNeJeXVQlwQ==
-Received: from frutis-latitude7490.lan (public-gprs393011.centertel.pl. [37.47.166.116])
-        by smtp.googlemail.com with ESMTPSA id cw9-20020a170907160900b00a36f9941d6dsm157049ejd.112.2024.02.05.11.18.39
+        bh=dWo//23UNgHLh4YlpYiYx7hMvmjaebYbXFXXNlcC930=;
+        b=kBoLwMhZnU4t4TjoEikWn4Wo6K++EN2noYiyc1agaHvR4unyUzb6om+JAfnaSwk2YY
+         ry9e/ie3PySUs5bn1SLWve3V07d5L0YfSzAW7d4x0iCZclAb4zBz/sm04f9T4/0f+BbJ
+         6Dqr/q6X8Pg1ZTvwFxUYy+vCzAAPXsEwIVtkhBO0PhHof2i8YVQ3ez70P7TK8TdobBs5
+         BGP4+j/K7lTMK9gvoCuBNGMl35VR7PGxgO+Sk1KoifuS3/5m5bAB2t3/XzBOSz4laNTn
+         0nFcsq6FGJ365dCTg2nNzeyENtNZyGwdpPsm8SWq25Kw1Ycc0QLZ30thzNAHvfJ/K9fI
+         J7fg==
+X-Gm-Message-State: AOJu0Yx0vZ3h8UuahoaprlI+q+ovPesmPzc7nApOJa3yda3ol9984Imq
+	agXnnUv14dB+N48Zkrz4kcSJUIp3AkP0a8BJ952saJ0hNwUlyo7W
+X-Google-Smtp-Source: AGHT+IFJVJGFgzRP+JaCEmQBc6TWhCiJzh1skkZ70pPkTz2uMwB7wUZVtWtShQrHjEG7KDUUk9q3Dg==
+X-Received: by 2002:a17:907:2cd8:b0:a37:2c8f:f605 with SMTP id hg24-20020a1709072cd800b00a372c8ff605mr226983ejc.75.1707160736219;
+        Mon, 05 Feb 2024 11:18:56 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVZvlIdAv+MhPs4qzcEzvnoVUzK7+u6M9FOC1fvWg/yZXEkctPC5uNwEIjIvbUvI/Hi7sDpAqGoU9cdH3EKVPoNRrSiqW5qINM/IFETVsbD+uEJRV7E59I45wG40opcJiWt1JtNkea+Hh5e/VjLrAGGQsyFDCttvU/Q60KcVmm/zdQgiZfH9EvXSOHTkq+0wgUI6dzJz+QkVn/EhHRJ+sWwmYBIRd3+mgyjWn7umFJ0C5MouDVD9eTfcWEKZEREaRaAR+NmCO47rcSy0/3xgr3JLEcs39ayGC/AKq1qzU/QzQo20IvtG5Ij
+Received: from localhost (fwdproxy-cln-119.fbsv.net. [2a03:2880:31ff:77::face:b00c])
+        by smtp.gmail.com with ESMTPSA id c1-20020a170906d18100b00a367cf97b40sm156860ejz.131.2024.02.05.11.18.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 11:18:41 -0800 (PST)
-From: =?UTF-8?q?Pawe=C5=82=20Owoc?= <frut3k7@gmail.com>
-To: Rob Herring <robh+dt@kernel.org>
-Cc: =?UTF-8?q?Pawe=C5=82=20Owoc?= <frut3k7@gmail.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Naresh Solanki <Naresh.Solanki@9elements.com>,
-	Patrick Rudolph <patrick.rudolph@9elements.com>,
-	Peter Yin <peteryin.openbmc@gmail.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Michal Simek <michal.simek@amd.com>,
-	Lakshmi Yadlapati <lakshmiy@us.ibm.com>,
-	Lukas Wunner <lukas@wunner.de>,
-	Alexander Stein <alexander.stein@ew.tq-group.com>,
-	Fabio Estevam <festevam@denx.de>,
-	devicetree@vger.kernel.org,
+        Mon, 05 Feb 2024 11:18:55 -0800 (PST)
+From: Breno Leitao <leitao@debian.org>
+To: mike.kravetz@oracle.com,
+	linux-mm@kvack.org,
+	akpm@linux-foundation.org,
+	muchun.song@linux.dev
+Cc: lstoakes@gmail.com,
+	willy@infradead.org,
+	hannes@cmpxchg.org,
+	mhocko@kernel.org,
+	roman.gushchin@linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] dt-bindings: trivial-devices: Add qca,spidev
-Date: Mon,  5 Feb 2024 20:18:24 +0100
-Message-ID: <20240205191828.998783-1-frut3k7@gmail.com>
-X-Mailer: git-send-email 2.43.0
+Subject: [PATCH v2 0/2] mm/hugetlb: Restore the reservation
+Date: Mon,  5 Feb 2024 11:18:40 -0800
+Message-Id: <20240205191843.4009640-1-leitao@debian.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Add Qualcomm QCA4024 to trivial devices.
+This is a fix for a case where a backing huge page could stolen after
+madvise(MADV_DONTNEED).
 
-Signed-off-by: Paweł Owoc <frut3k7@gmail.com>
----
- Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+A full reproducer is in selftest. See
+https://lore.kernel.org/all/20240105155419.1939484-1-leitao@debian.org/
 
-diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
-index 79dcd92c4a43..50efbdf2a735 100644
---- a/Documentation/devicetree/bindings/trivial-devices.yaml
-+++ b/Documentation/devicetree/bindings/trivial-devices.yaml
-@@ -309,6 +309,8 @@ properties:
-           - plx,pex8648
-             # Pulsedlight LIDAR range-finding sensor
-           - pulsedlight,lidar-lite-v2
-+            # Qualcomm QCA4024 Multi-mode Bluetooth and 802.15.4 SoC
-+          - qca,spidev
-             # Renesas HS3001 Temperature and Relative Humidity Sensors
-           - renesas,hs3001
-             # Renesas ISL29501 time-of-flight sensor
+v1:
+  * https://lore.kernel.org/all/20240117171058.2192286-1-leitao@debian.org/
+v2:
+  * In version 1, there was a lockdep dependency detected by syzbot.
+	* https://lore.kernel.org/all/00000000000050a2fb060fdc478c@google.com/
+	* The lockdep dependency was caused because `vma_add_reservation()` was
+	  called with the pte lock. This is fixed now by deferring the
+	  vma_add_reservation() to after the spinlock.
+  * Version 2 fixes the problem above by setting the restore_reserve bit
+    inside the ptl, but, calling vma_add_reservation() later, after the
+    lock is released.
+	* Reported by a test done by Ryan Roberts.
+
+In order to test this patch, I instrumented the kernel with LOCKDEP and
+KASAN, and run the following tests, without any regression:
+  * The self test that reproduces the problem
+  * All mm hugetlb selftests
+	SUMMARY: PASS=9 SKIP=0 FAIL=0
+  * All libhugetlbfs tests
+	PASS:     0     86
+	FAIL:     0      0
+
+Breno Leitao (2):
+  mm/hugetlb: Restore the reservation if needed
+  selftests/mm: run_vmtests.sh: add hugetlb_madv_vs_map
+
+ mm/hugetlb.c                              | 25 +++++++++++++++++++++++
+ tools/testing/selftests/mm/run_vmtests.sh |  1 +
+ 2 files changed, 26 insertions(+)
+
 -- 
-2.43.0
+2.34.1
 
 
