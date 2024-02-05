@@ -1,115 +1,91 @@
-Return-Path: <linux-kernel+bounces-52762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7955B849C69
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:58:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44B92849C6C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:58:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA4391C2323D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:58:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6D341F20F57
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:58:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A24BA22EE0;
-	Mon,  5 Feb 2024 13:57:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E0D02374E;
+	Mon,  5 Feb 2024 13:58:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Nlky1Mnz"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KfrJ7eII"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68FCB22EED;
-	Mon,  5 Feb 2024 13:57:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48D6522EF9;
+	Mon,  5 Feb 2024 13:58:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707141475; cv=none; b=H033hRgWIZvQbagPULw0kf4eOGzTYB8hkjgB6ro5x3sj7KNJ7+Ak5GK0XkRQ2bQBGBZMv/ZTvQpf+VDanxLit7gdrjo5JG6lW+NYOG6zkj6TMZR+XLX81i2QSEmgGGl6t/oPcluyONRoYqPo4Nffw0lS5/Wa0hIf7Ud5MNzvoxg=
+	t=1707141523; cv=none; b=TxVbKUaEFFGuEuoII+kYqmMoPHcEocotBQWRPq5A3lssy7DmSdnBZhOJhhfBjmlB+W2JNMyUQunaEeMqyxgTRu2WP0N2W7lAmOWB08glpeM3+PfkLymvR2QDdz9BeITveo5heYdpETheJFzGk7LbICbf5pISFJGDjIoMYI8lxy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707141475; c=relaxed/simple;
-	bh=ZM3+zW05SrsrlyVmd5gMKWjkps4zlzbvlNsuTpZ3HaA=;
+	s=arc-20240116; t=1707141523; c=relaxed/simple;
+	bh=Ewb/CNOvhV+n1Q9YjZwKRUlgQ0b1oSXCOkWG3nOyU1U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cM2H/TYP+m7TAIyGVCT7+xFLqgTfrb6gDlIzPwoFZlXRgjB7WUNy8x7EF/X/vhuIiTd4tBkVaWbuBB9zJPJsplHTYVSk5JVqhGYhTmmj4A5JcHybIAH/KLErM0n6XiWeObQe3pLRdf0tkxpWwcj8IYtQsipjX0Efryxy3ljNkZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Nlky1Mnz; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707141473; x=1738677473;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=ZM3+zW05SrsrlyVmd5gMKWjkps4zlzbvlNsuTpZ3HaA=;
-  b=Nlky1Mnz2i2qpyZNYri3V8r8tmmE11ux5QSnTWfAJFTWxr7AtPYVJSu/
-   dFCgcwej7QFLBEYJt8XR5xVXtxQfA+cLojB6qscnnqrDvwjzoXpFHOkB3
-   qDqb8h8FYYDFN7/qZ6yhE9QfTIBAhr1bxwE3o9KgSy1LFHa/f3AkZU8KL
-   xWahGQQCMFXjVb5Zb6svaBo/tFDqJNh1QDymiHRpn1rOmGKMwoBrxLIoM
-   UVq4qbW1R7+xzQ+cTpOiWODc99QbRPUk/S5ky+Ox0jmWMsxNRlcC00d1+
-   GNanDjXl+69ucVAw7lZ8zW2bng8xmZxojRJkivRSzSasUdLKjy9DiDFZV
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="432250"
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="432250"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 05:57:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="909301405"
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="909301405"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 05:57:49 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rWzTm-000000025yW-19ng;
-	Mon, 05 Feb 2024 15:57:46 +0200
-Date: Mon, 5 Feb 2024 15:57:45 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Wolfram Sang <wsa@the-dreams.de>, linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v2 06/23] gpio: add SRCU infrastructure to struct
- gpio_desc
-Message-ID: <ZcDpWf7u3bW34Y8s@smile.fi.intel.com>
-References: <20240205093418.39755-1-brgl@bgdev.pl>
- <20240205093418.39755-7-brgl@bgdev.pl>
- <ZcDRuRCT9xE48cYi@smile.fi.intel.com>
- <CAMRc=Mc5=p7tp0r8-MYiHRJ1yXDJLW2Uvm5C1CyoGBAcesdZug@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=NbgD2Ati6Prg6hSGL39NTcXSsGc4O//KcSac0z8EaAIyxB9fHFFL3an954saCdLN4S4Q2DWTNAWgkVUhziqD6sxtp5rhelu3cF9yaQiff+CdyEuDI6Bct54AxZmnqi089lpq0Eu6hZMVe9ccBD3eCF2oUan+Z+M/GaCUPJ3Ky4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KfrJ7eII; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E970C433C7;
+	Mon,  5 Feb 2024 13:58:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707141522;
+	bh=Ewb/CNOvhV+n1Q9YjZwKRUlgQ0b1oSXCOkWG3nOyU1U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KfrJ7eIIIx/PnseSPnumHzQzAVUYc58ZqgJsvoS475OxAxw+Hdbo676AtILvuVFmb
+	 RP+HkBnQv5SV917ESgmVdU6CbF1cwFMuTDirhK603MzCBgtq185tdZbe+/xnE9v061
+	 ORb/mSMRJSiADP6UzBmXYM6J3spOxvj17qTzP+201tVURMuouzNEPtRWAdOJ90OPHA
+	 YfQ0qTDcvZy5J7BJ/+G9ASZ52GnpuYNwf7dfo7Sk3oTxWtGRdsuMig9eaLCl+oKJF/
+	 0elz1lxD7jGDYu79+7qq+OEdkUQHEXp8qbST+654jxWyNt+sXla76DbHEubCFsvQiP
+	 JphKbifwN+8XQ==
+Date: Mon, 5 Feb 2024 13:58:39 +0000
+From: Rob Herring <robh@kernel.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Rob Clark <robdclark@gmail.com>,
+	Abhinav Kumar <quic_abhinavk@quicinc.com>,
+	Sean Paul <sean@poorly.run>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: display: msm: sm8650-mdss: Add missing
+ explicit "additionalProperties"
+Message-ID: <20240205135839.GA3267346-robh@kernel.org>
+References: <20240202222338.1652333-1-robh@kernel.org>
+ <CAA8EJpooe=RsZSD_mRKH2S8NUxAEqVw_AcMyn68_AWwhovPFsg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=Mc5=p7tp0r8-MYiHRJ1yXDJLW2Uvm5C1CyoGBAcesdZug@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CAA8EJpooe=RsZSD_mRKH2S8NUxAEqVw_AcMyn68_AWwhovPFsg@mail.gmail.com>
 
-On Mon, Feb 05, 2024 at 02:54:08PM +0100, Bartosz Golaszewski wrote:
-> On Mon, Feb 5, 2024 at 2:48 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Mon, Feb 05, 2024 at 10:34:01AM +0100, Bartosz Golaszewski wrote:
-
-..
-
-> > > +                     for (j = 0; j < i; j++)
-> > > +                             cleanup_srcu_struct(&desc->srcu);
+On Sat, Feb 03, 2024 at 03:55:54AM +0100, Dmitry Baryshkov wrote:
+> On Fri, 2 Feb 2024 at 23:23, Rob Herring <robh@kernel.org> wrote:
 > >
-> > What does this loop mean?
+> > In order to check schemas for missing additionalProperties or
+> > unevaluatedProperties, cases allowing extra properties must be explicit.
+> >
+> > Signed-off-by: Rob Herring <robh@kernel.org>
 > 
-> I open-coded it because I want to store the value of i to go back and
-> destroy the SRCU structs on failure.
+> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> 
+> Rob, if you need it for some rework, please feel free to pick it into
+> your tree, otherwise I'll pick it for msm-next in the next few days.
 
-Where/how is j being used?
+msm-next is fine.
 
-> > > +                     goto err_remove_of_chip;
-> > > +             }
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Rob
 
