@@ -1,144 +1,92 @@
-Return-Path: <linux-kernel+bounces-52198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFC83849541
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:20:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB0D3849546
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:22:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 978B21F244B0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:20:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2C35B2396B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:22:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 528DE11CBD;
-	Mon,  5 Feb 2024 08:20:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AC8911709;
+	Mon,  5 Feb 2024 08:21:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="JO8W1Dpu";
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="JO8W1Dpu"
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Owi8gK9h";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="d6vYOyw/"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C06FD1118A;
-	Mon,  5 Feb 2024 08:20:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 108FF11197;
+	Mon,  5 Feb 2024 08:21:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707121234; cv=none; b=CtKSHLDYdaUdU0+ZWuHsLeixyBpLekIfZmvX16z/f8HxlMVu/tdN2HuljUyh+mKZmoY3eBZKFf8E61mavvPd3mKu3orJhSml0s3YVcm52D68umsubUJmrZGZ1X69j1uMp1ii6PcTRvBrRpchXbJHLRWRFeWOJ1yqwcOP+5G5OEk=
+	t=1707121309; cv=none; b=hPcKK8P351DrowPOEghh+gt8dKaB2EJPCVlm+GB+xTGIeApWnAuyMCz9+IlIyA6WxO/id3w5G/1tOnI7Pm0FkMKPn7xE7Pl8oWITn5qX+g/AO/C1Z0zXLRoodGzTsm+RsYznXmu+dpW0t+LXM+hkrUn322zPLSEt9Ir4JwRHMXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707121234; c=relaxed/simple;
-	bh=eu/BwH8FT7BImKJToQrnKLcDXyUO2zgZpz9MD25cU7c=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=fKXY3ftXWrYoRyjKqqrV4nIlmOawikbUgK+jWxNzmqnSnyRDIKs5liVFHxjz4f/YDLYJAhmQOC1455J2WemRpxJX/8Gp/LiCSBwEyycHnY7pDXUVvxC/BRJlEEBnG0rmhaeXyYWaQgG9RtAteFaQ+BbnKHj/epARxX9er8mSdKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=JO8W1Dpu; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=JO8W1Dpu; arc=none smtp.client-ip=96.44.175.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1707121231;
-	bh=eu/BwH8FT7BImKJToQrnKLcDXyUO2zgZpz9MD25cU7c=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=JO8W1DpurgTMXtNTCNU8J4q0FM0xnYE3RKeCmnYYjfmQctLVTu2DwSjh7fUrjZlF4
-	 SNdHlHvxdgviuQHj9v1NAIsErUxsmDK4pLIK9aziX8UXYD7k2oD0zwmJqkFuBgq6yq
-	 6k+3M22sZN3Dz+0UIn+qBvSSHc7tQQxUvrojYU9w=
-Received: from localhost (localhost [127.0.0.1])
-	by bedivere.hansenpartnership.com (Postfix) with ESMTP id A05DD12868CE;
-	Mon,  5 Feb 2024 03:20:31 -0500 (EST)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id UQll_wppCcMJ; Mon,  5 Feb 2024 03:20:31 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1707121231;
-	bh=eu/BwH8FT7BImKJToQrnKLcDXyUO2zgZpz9MD25cU7c=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=JO8W1DpurgTMXtNTCNU8J4q0FM0xnYE3RKeCmnYYjfmQctLVTu2DwSjh7fUrjZlF4
-	 SNdHlHvxdgviuQHj9v1NAIsErUxsmDK4pLIK9aziX8UXYD7k2oD0zwmJqkFuBgq6yq
-	 6k+3M22sZN3Dz+0UIn+qBvSSHc7tQQxUvrojYU9w=
-Received: from [172.20.9.170] (62-244-190-9.cust.exponential-e.net [62.244.190.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 04A2C1286899;
-	Mon,  5 Feb 2024 03:20:29 -0500 (EST)
-Message-ID: <7357618f02b87786f06f3e10b50f1247f328f07a.camel@HansenPartnership.com>
-Subject: Re: [PATCH v1] efi/libstub: Add Confidential Computing (CC)
- measurement support
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-  Ard Biesheuvel <ardb@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org, "Yao, Jiewen"
-	 <jiewen.yao@intel.com>, "Lu, Ken" <ken.lu@intel.com>
-Date: Mon, 05 Feb 2024 08:20:27 +0000
-In-Reply-To: <6a696340-b57c-4fa5-bb2e-b3a0257453bc@linux.intel.com>
-References: 
-	<20240203075736.3982371-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-	 <82a84e769875c70279348179c1b2b63a16770c8e.camel@HansenPartnership.com>
-	 <6a696340-b57c-4fa5-bb2e-b3a0257453bc@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+	s=arc-20240116; t=1707121309; c=relaxed/simple;
+	bh=jWoYKNOaJZkQXUjbgKMKgXdgzbUGl0YlxWmC3h9cIEo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DKAnrkucGOKG2nwwlHfwMEEZE+PjXcB58kebtWg06524gtpHgQ823CGX6LUcSNs00UiAGUsTmt+dcLu+sBtRT+4BnNbn/AZaACfmiaI09jG1kjfqnUOCUgaS3bZDYUqzuKXF7eF1nTxE5ctH0Z4y2hFHNPpFdVAfjntusFLIvGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Owi8gK9h; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=d6vYOyw/; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Mon, 5 Feb 2024 09:21:38 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1707121299;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jWoYKNOaJZkQXUjbgKMKgXdgzbUGl0YlxWmC3h9cIEo=;
+	b=Owi8gK9hxlNii8V3eWJUhqWBOTxiRLx5KBn2BL8bjZ5ScFJVAxkHWu+OX5Or1ZdkXvPcJc
+	geBiq9G0LGSB2B7a9txtW05+SXTff8YLVoQ4MPdAA9S1kjFsHjOf7bA5+Jbj3eDjr2g5Ws
+	y31sbMg4E2rB82cilHwUGc8vRTMSOxFRmIVHVftc5rxent4mxcD46jSccAzhvRj6SbBJ5E
+	5qyMgHAXVS2Rh+v/ywP3lXJVj5hzNM+zjl5dKFo/ckn3vxNuEGP0HIl1U5H9b0Md1fwwUq
+	Mw80JHszWuB5f3ss6x1SGDnfPRc7hyBcrlW4tvoiN1pfqwN7Kd9txBrPbl7Ktg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1707121299;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jWoYKNOaJZkQXUjbgKMKgXdgzbUGl0YlxWmC3h9cIEo=;
+	b=d6vYOyw/DvOqugkKocJ/FqMnMxxg6NMhwO2gFQGyWcnWYDDhrU5pRQQOeBMiM0oP5MKPjE
+	9AE/vIE6psVmudDw==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Daniel Wagner <wagi@monom.org>
+Cc: linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
+	stable-rt@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Tom Zanussi <tom.zanussi@linux.intel.com>,
+	Clark Williams <williams@redhat.com>
+Subject: Re: [PATCH RT 0/1] Linux v4.19.306-rt132-rc1
+Message-ID: <20240205082138.HtHvUfp9@linutronix.de>
+References: <20240202170457.29516-1-wagi@monom.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240202170457.29516-1-wagi@monom.org>
 
-On Sun, 2024-02-04 at 12:27 -0800, Kuppuswamy Sathyanarayanan wrote:
-> +Jiewen & Ken (RTMR firmware owner)
-> 
-> On 2/3/24 10:46 PM, James Bottomley wrote:
-> > On Sat, 2024-02-03 at 07:57 +0000, Kuppuswamy Sathyanarayanan
-> > wrote:
-> > > If the virtual firmware implements TPM support, TCG2 protocol
-> > > will be used for kernel measurements and event logging support.
-> > > But in CC environment, not all platforms support or enable the
-> > > TPM feature. UEFI specification [1] exposes protocol and
-> > > interfaces used for kernel measurements in CC platforms without
-> > > TPM support.
-> > > 
-> > > Currently, the efi-stub only supports the kernel related
-> > > measurements for the platform that supports TCG2 protocol. So,
-> > > extend it add CC measurement protocol
-> > > (EFI_CC_MEASUREMENT_PROTOCOL) and event logging support. Event
-> > > logging format in the CC environment is the same as TCG2.
-> >  
-> > Why do we have to do this anymore?  Given that you're already
-> > pushing patches that map RTMRs to TPM PCRs:
-> > 
-> > https://lore.kernel.org/lkml/20240128212532.2754325-4-sameo@rivosinc.com/
-> 
-> IMHO, I am not sure whether we need this mapping support . I have
-> already mentioned the same comment in [1]. If we support extension
-> and logging via configFS ABI, why again support PCR mapping?
-> 
-> https://lore.kernel.org/lkml/2bd7c80b-9cd8-4450-a410-c3739d224167@linux.intel.com/
+On 2024-02-02 18:04:56 [+0100], Daniel Wagner wrote:
+> Dear RT Folks,
+Hi,
 
-Well, the point is if it can be done, you can push the measurement and
-logging all the way down into the TCG driver and not have to modify any
-upper layer code at all (so less chance of introducing bugs).  It would
-be a single change instead of patching everywhere there's a
-measurement.
+> This is the RT stable review cycle of patch 4.19.306-rt132-rc1.
+=E2=80=A6
+> Please scream at me if I messed something up. Please test the patches
+> too.
 
-> > Can't you just add a stub TCG2 driver to EFI that exposes only the
-> > ability to log and measure using this mapping?  That way all our
-> > existing code will "just work" without the need to understand
-> > anything about confidential computing or add new code to do the
-> > measurement?
-> 
-> I am not familiar with the EFI implementation, but I think a new
-> protocol is added to handle future CC extensions (which could deviate
-> from TCG2)
+Good.
 
-OK, but you could add a new driver for just that functionality only
-when you actually deviate and handle all of the current functionality
-in the non-deviating TCG driver.  Nothing forbids a feature from having
-multiple driver attachments.
+> Enjoy!
+> Daniel
 
-James
-
->  and to support platforms that does not support or enable TPM
-> feature. So modifying the TCG2 driver in EFI may not work for the
-> above-mentioned cases. I think the EFI driver part of this support
-> is already merged.
-> 
-> Jiewen/Ken may have more comments about this proposal.
-
+Sebastian
 
