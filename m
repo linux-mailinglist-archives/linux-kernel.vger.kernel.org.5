@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-52930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52931-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9735849E7E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:36:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44C24849E7F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:37:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75F9C28CEF7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:36:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0E0B1F22934
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:37:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C98945947;
-	Mon,  5 Feb 2024 15:35:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 416D046452;
+	Mon,  5 Feb 2024 15:35:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Je6psvHr"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Ggj/MG1L"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127903A1CF;
-	Mon,  5 Feb 2024 15:35:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C67D140BEF;
+	Mon,  5 Feb 2024 15:35:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707147318; cv=none; b=Nf8NrMvWFQuvBYdc1/is6pUVd0NGwMeVENdpwXrsM5gJWMA36MG8xtwcY4gUZ8cPV9SbBDnApXwTq584+7SvE2Ha6A5ZxMlixx2Ignpc8jwv/bNmZFZMxkLIVWaK28/cGdJ4LYk6MnXefBFtHbK0sHfLgDHC6BruhmiBapqLbus=
+	t=1707147319; cv=none; b=UIItbAIh7lhnoxedZyfQUdAoERDnmj/e6WvTCNbeIT+GHLCDw8gBMB3Uih+FGUxhAojlC8SuPrU7sTlSAmApOK1Ws8X5VFOGxO+2W/qcQXUpYIX7Zq0gGrWLYSwvyrg1YyJevuaR8GQuvCgDCxPQELiK4uDu5LYMWl9K0azgohQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707147318; c=relaxed/simple;
-	bh=F69lXcW+BMK3xWuWKAunG1z8qeZUfL/FLTg148TbGsU=;
+	s=arc-20240116; t=1707147319; c=relaxed/simple;
+	bh=10ZEAJurS12z5xoBCG/ln6uoclFy6kBUieMg+mevi/M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=peSqYQvHzGCjNJrtdL+TIOvA0KxRVmCWGQd8PbfRLn5IOX6PCD3aNnLDSuBPMZXF1+jbqfdHw2mjTjXlrtiuRjv7uKJmO1O0JIB70g83vqvjYMNtrySOEds+aANQ9yszwm1adLjgpMMk9a6/rt6E0igrNs7YJItXLXX3QFAJMtA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Je6psvHr; arc=none smtp.client-ip=217.70.183.200
+	 MIME-Version:Content-Type; b=F/H+oGeIbmOUSCeMHS90MD2TRQTBjiex3jvbkLJcTLish0UXva6juSZZfRyVYsUqCKvhciwY0yO9iUOSygOkmO7nG3H3MoMlN+9meD8hbxq7MOjb83j325A7PsxoG2NuaZP8Ld3YVMEteWr/BJlg/PufS+QQxYqoxl0jZ8rqL0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Ggj/MG1L; arc=none smtp.client-ip=217.70.183.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 6C32F20010;
-	Mon,  5 Feb 2024 15:35:13 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 7F2261BF209;
+	Mon,  5 Feb 2024 15:35:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
 	t=1707147314;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GbsWh/XsZeOFv6yit27z5l5/TqUISO3EzDeBeQy/R68=;
-	b=Je6psvHrJ9MCiX4Z7guNm8f0H31MFCdLInAkLRPKVMic9pynQmaM8hj8U3uXOeU9MENs0p
-	FQu5p9GT5Oct0bQUGtqSVn9aYOlhDqFgSeBBtgC7SJf5EOd2Yd4GlwzfnDa+GiiH0/4Wly
-	cvjmoU9Znm/PfnLKMircaVMj3sFoJRh45OWUvv5jWqy1X4p2HHml7I5USL2LtrBiGkMnHS
-	wvG/Fnea6cfgWD5Ukkw26fPHvO6sRI7rYdZ56y8Xg/ro8GaDV8CUqBvb5Vvu1cvyQTM2FZ
-	7LF3CXw//gJDydBkHqV/vfx/Xk5q161zwdRSBTBpm3sfO/2sN4VarCk4XZikqA==
+	bh=KtLJx1LoT2GXTWyVjN+1FeAU3avbgKgLJY8tRT/zqqY=;
+	b=Ggj/MG1L4AiIqFnKacF4lEKNHf7S1H6oCHk/lbNODpIr6ScKIWf3iVHipxxFWxJaH7N3ln
+	UNoMKMB+3IIuBqQi+3grby2QYXc4J6iZCuEF4xRiemUUn4MtToHUgzPjfpc0gOZdJJeIvP
+	ZsFUcLCk/q6qJFuR46XQ2Kma/EDteSlqsaQ43lJgPA/KRLfWTTqwz4ELPQblnMy3c9W+cL
+	7FRuL8cyE0BJII1Qi3QExApTqF35zqTFgnSWSIyf9HQkSDS2fqBJXDfDOuJz7IWwUcCEUp
+	l0/ISolBIR1Yo1CEYDAFYgHigKZZ6jp53xigxGJ6tfs8gu/Gmr2/AJQXUBdMOQ==
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
 To: Paul Burton <paulburton@kernel.org>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -59,13 +59,10 @@ Cc: Vladimir  Kondratiev <vladimir.kondratiev@mobileye.com>,
 	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Gregory CLEMENT <gregory.clement@bootlin.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	=?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
-	Serge Semin <fancer.lancer@gmail.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v7 08/14] dt-bindings: mips: cpu: Add I-Class I6500 Multiprocessor Core
-Date: Mon,  5 Feb 2024 16:34:54 +0100
-Message-ID: <20240205153503.574468-9-gregory.clement@bootlin.com>
+	Rob Herring <robh@kernel.org>
+Subject: [PATCH v7 09/14] dt-bindings: mips: Add bindings for Mobileye SoCs
+Date: Mon,  5 Feb 2024 16:34:55 +0100
+Message-ID: <20240205153503.574468-10-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240205153503.574468-1-gregory.clement@bootlin.com>
 References: <20240205153503.574468-1-gregory.clement@bootlin.com>
@@ -79,30 +76,54 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: gregory.clement@bootlin.com
 
-The MIPS Warrior I-class I6500 was announced by Imagination
-Technologies in 2016 and is used in the Mobileye SoC EyeQ5.
+Add the yaml bindings for Mobileye SoCs. Currently only EyeQ5 is
+supported
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- Documentation/devicetree/bindings/mips/cpus.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ .../devicetree/bindings/mips/mobileye.yaml    | 32 +++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mips/mobileye.yaml
 
-diff --git a/Documentation/devicetree/bindings/mips/cpus.yaml b/Documentation/devicetree/bindings/mips/cpus.yaml
-index 9bc47868d28b6..a85137add6689 100644
---- a/Documentation/devicetree/bindings/mips/cpus.yaml
-+++ b/Documentation/devicetree/bindings/mips/cpus.yaml
-@@ -23,6 +23,7 @@ properties:
-       - brcm,bmips4380
-       - brcm,bmips5000
-       - brcm,bmips5200
-+      - img,i6500
-       - ingenic,xburst-fpu1.0-mxu1.1
-       - ingenic,xburst-fpu2.0-mxu2.0
-       - ingenic,xburst-mxu1.0
+diff --git a/Documentation/devicetree/bindings/mips/mobileye.yaml b/Documentation/devicetree/bindings/mips/mobileye.yaml
+new file mode 100644
+index 0000000000000..831975f6b479f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mips/mobileye.yaml
+@@ -0,0 +1,32 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++# Copyright 2023 Mobileye Vision Technologies Ltd.
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mips/mobileye.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Mobileye SoC series
++
++maintainers:
++  - Vladimir Kondratiev <vladimir.kondratiev@intel.com>
++  - Gregory CLEMENT <gregory.clement@bootlin.com>
++  - Théo Lebrun <theo.lebrun@bootlin.com>
++
++description:
++  Boards with a Mobileye SoC shall have the following properties.
++
++properties:
++  $nodename:
++    const: '/'
++
++  compatible:
++    oneOf:
++      - description: Boards with Mobileye EyeQ5 SoC
++        items:
++          - enum:
++              - mobileye,eyeq5-epm5
++          - const: mobileye,eyeq5
++
++additionalProperties: true
++
++...
 -- 
 2.43.0
 
