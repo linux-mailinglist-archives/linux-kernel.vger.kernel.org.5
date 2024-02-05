@@ -1,147 +1,181 @@
-Return-Path: <linux-kernel+bounces-52499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52502-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C497849908
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:41:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A653F84990F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:42:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF612B224B5
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:41:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1884E1F20F15
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:42:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 604FB18EB0;
-	Mon,  5 Feb 2024 11:41:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XFB4YWft"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AADC31B7F2;
+	Mon,  5 Feb 2024 11:42:17 +0000 (UTC)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C7E18C3B
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 11:41:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD7F61B5B2;
+	Mon,  5 Feb 2024 11:42:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707133299; cv=none; b=IsZB4SeFrSqR/VevXRurhdjm0ZJqYXKDTFkvk8wZU/UiyEuk03N2k4e/ZSAV/z4uEK5QqxkaHXkNEiB1fz2RqNCYn1j7Qr3Y4WdCs6qFTM8oZqSI93jDCyl6na7k62Z2J/O2DZS+YCMiCvwoMpAzGq0kGGqsUW9MV3BxYxIxol4=
+	t=1707133337; cv=none; b=MHkarTeu4GSvER9W15nIRVsskgN6gmcp0kq9s5W3kChSTEP7VgeCAdTecBUun+JkmAuZdK+NRqMl2g066I3qVoVSumIKLbxxAm2lwLVpdWYP9ll/qw/5g7aBvfEwTq8qmWa1CzBE+bJjDKCsNonMjDTy6ZNxTtSeERNYAI2iFS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707133299; c=relaxed/simple;
-	bh=cawbObaeTNPoPHLs3wzViPvaUp+m9ZRIyvZEw1PShiY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jld2uosSr7sZE+tR1T+b6f5Dnhw7POann5+3JEdnohLGtf7NF9AACP7hjKJO/UWAVuQoH48GQIbKfHeeLaUS+TTnVGN8Wee61hziBD60YTlqkiDdlYHUpekPWoLpRxTt3vHIdr4urcP+kap263NRLUvJryvqxih3IhxLKyNbRaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XFB4YWft; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a37878ac4f4so138498366b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 03:41:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707133296; x=1707738096; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JdDNzXnnmgs4CmoJ3xT93XgtQHbqN413J4+6ID4w1fc=;
-        b=XFB4YWftQbbWpmT0ZWLYHPzSR17tOnNmzPWok3Z/prJVg7btxo8lznFgUgPk21i/l4
-         tdSXyKc/k3dvL9/YHzzkkNSxW38lqZFGyM8tDsWRvfXA/P8WoMMUIzmR2DAuAV+Sizb3
-         6mr5PtusOJ6xH//Na+UmGKHtK6WGH5zkj8hwYJIjluZuzeMkYbmKcu2CWHzJS+QjeoAi
-         HYSjG/BH6ybb9ada13cjnluW3J+zhlEbekvcBsZh4CpYLqFWKa7683/Yy7Q15KmOB4L+
-         /0nIRxgSVSrLvmKb642NSQuX4+bdGa3xHdIe/Rsls+JqAgpnPNH4wNdNrnZ+CsWJ3koS
-         JUbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707133296; x=1707738096;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JdDNzXnnmgs4CmoJ3xT93XgtQHbqN413J4+6ID4w1fc=;
-        b=MC/hV1XlsNa9RodIgsMlagXlbTbg7OiVs55YF3EpkuxTYa6Vjglh1NuP1E1ODz526m
-         Wch4YHPf4pN2QXL3FWTiXLRzU/Q8mfaAHIf+nseCpQha0KLmciWLZIZylhUL6+w7fodB
-         XmXruoUPHFPXhwIQF7IzlQZf6/VrfdkAPQyr9Eb23sTozZgu8/yEIEOsak0HyPLWrT3K
-         cxCLUqq3mTzU9akSwV2eWAvtk62ZuP1jlogYl24ZavLVIxMWVgorqD7y7DNvHYu1l2YT
-         gTtxg/6JEvK1C8ka5ABtgL+nrYVenPssEptXtd1ENdzGGfcP6NpplWLfvHG/dNZchusA
-         be1w==
-X-Gm-Message-State: AOJu0YxHA4C1lnQXU95yEiKdmB0QG5NSCmHjhB+xx0wRR9QV3Cflo9ek
-	kFHOc2WJi5xwEmn2e2J0dYwHAru0qFcNrcW6MP9mYxydiz29/PDuGD0X+ZcdZsg=
-X-Google-Smtp-Source: AGHT+IEyGaT1GowqBYI/yEWBSuyvilmzJZdwtRyvCm3j7vrIGTt/Z5+W8p0t37oecuPRpTp1jJPcOg==
-X-Received: by 2002:a17:906:4:b0:a37:2e82:3c4a with SMTP id 4-20020a170906000400b00a372e823c4amr5262475eja.52.1707133295889;
-        Mon, 05 Feb 2024 03:41:35 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWk2Tsa9AcqE288WYA7nQCODiqIwyfsENZYHM6ugZTYVKR73yYLsjo1KuQvNKEYli/z4wkh7/hPu+bM/QnQ9Z8ZX2QTlAe8Dpq5DiOA2MBHxtbtO8oeYe1yX/K5ktIBGYgKO9cQ5HiHa0mO2YYMZlGd/FSbyl4+APaQRjrFcgPTa1X+0IPEMqbsI8lmihDhvfem+APbn6leQUS9xOzpAkwNXMai8ps/oRQHJw==
-Received: from [192.168.159.104] (037008245233.garwolin.vectranet.pl. [37.8.245.233])
-        by smtp.gmail.com with ESMTPSA id a20-20020a170906671400b00a34d0a865ecsm4177184ejp.163.2024.02.05.03.41.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Feb 2024 03:41:34 -0800 (PST)
-Message-ID: <4cdf9c9c-c4fb-48a2-be17-8191aaecb2fe@linaro.org>
-Date: Mon, 5 Feb 2024 12:41:32 +0100
+	s=arc-20240116; t=1707133337; c=relaxed/simple;
+	bh=EshFlkhiftLg/bHBAsbRfzDaghSEmFcjRUNQjPQ4a7Q=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=L9rPlq15d4Sk3giu1e9YzLm9uqF6426rdAjtOCjQ1O2APXvBV4fbIutbPu1/XZXuhcD22jpVGD2sFHIh9Y6qwjCEMvRdgK6qkqQaE5MALCr5lT01xpfVyTx9aWvI4NnDfUHbEBqApajA6AwFCi8t+/7XjGktjB63TnTINkzqdfI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TT4Dw6Lv5z1Q8Mm;
+	Mon,  5 Feb 2024 19:40:16 +0800 (CST)
+Received: from kwepemd100002.china.huawei.com (unknown [7.221.188.184])
+	by mail.maildlp.com (Postfix) with ESMTPS id 189471402E0;
+	Mon,  5 Feb 2024 19:42:12 +0800 (CST)
+Received: from M910t (10.110.54.157) by kwepemd100002.china.huawei.com
+ (7.221.188.184) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Mon, 5 Feb
+ 2024 19:42:10 +0800
+Date: Mon, 5 Feb 2024 19:41:53 +0800
+From: Changbin Du <changbin.du@huawei.com>
+To: Adrian Hunter <adrian.hunter@intel.com>
+CC: Changbin Du <changbin.du@huawei.com>, Peter Zijlstra
+	<peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de
+ Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander
+ Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
+	<linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>, Andi
+ Kleen <ak@linux.intel.com>, Thomas Richter <tmricht@linux.ibm.com>,
+	<changbin.du@gmail.com>
+Subject: Re: [PATCH v5 3/5] perf: script: add field 'disasm' to display
+ mnemonic instructions
+Message-ID: <20240205114153.7y4hwxaiewql4gk5@M910t>
+References: <20240122112054.1576835-1-changbin.du@huawei.com>
+ <20240122112054.1576835-4-changbin.du@huawei.com>
+ <f8c1b042-2b65-4dd7-a692-79fead351e5a@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4] power: supply: mm8013: implement
- POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR_AVAILABLE
-Content-Language: en-US
-To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
- Sebastian Reichel <sre@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
- Konrad Dybcio <konradybcio@kernel.org>
-Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
- Sebastian Reichel <sebastian.reichel@collabora.com>
-References: <20240204-power_supply-charge_behaviour_prop-v1-0-06a20c958f96@weissschuh.net>
- <20240204-power_supply-charge_behaviour_prop-v1-3-06a20c958f96@weissschuh.net>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240204-power_supply-charge_behaviour_prop-v1-3-06a20c958f96@weissschuh.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <f8c1b042-2b65-4dd7-a692-79fead351e5a@intel.com>
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemd100002.china.huawei.com (7.221.188.184)
 
-On 4.02.2024 18:26, Thomas Weißschuh wrote:
-> The sysfs is documented to report both the current and all available
-> behaviours. For this POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR_AVAILABLE needs
-> to be implemented.
+On Mon, Feb 05, 2024 at 11:23:21AM +0200, Adrian Hunter wrote:
+> On 22/01/24 13:20, Changbin Du wrote:
+> > In addition to the 'insn' field, this adds a new field 'disasm' to
+> > display mnemonic instructions instead of the raw code.
+> > 
+> > $ sudo perf script -F +disasm
+> >        perf-exec 1443864 [006] 2275506.209848:          psb:  psb offs: 0                                      0 [unknown] ([unknown])
+> >        perf-exec 1443864 [006] 2275506.209848:          cbr:  cbr: 41 freq: 4100 MHz (114%)                    0 [unknown] ([unknown])
+> >               ls 1443864 [006] 2275506.209905:          1  branches:uH:      7f216b426100 _start+0x0 (/usr/lib/x86_64-linux-gnu/ld-2.31.so)	movq %rsp, %rdi
+> >               ls 1443864 [006] 2275506.209908:          1  branches:uH:      7f216b426103 _start+0x3 (/usr/lib/x86_64-linux-gnu/ld-2.31.so)	callq _dl_start+0x0
+> > 
+> > Signed-off-by: Changbin Du <changbin.du@huawei.com>
+> > 
+> > ---
+> > v2:
+> >   - update Documentation.
+> > ---
+> >  tools/perf/Documentation/perf-script.txt | 13 +++++++------
+> >  tools/perf/builtin-script.c              |  8 +++++++-
+> >  2 files changed, 14 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/tools/perf/Documentation/perf-script.txt b/tools/perf/Documentation/perf-script.txt
+> > index ff9a52e44688..578fa59f51a5 100644
+> > --- a/tools/perf/Documentation/perf-script.txt
+> > +++ b/tools/perf/Documentation/perf-script.txt
+> > @@ -132,9 +132,10 @@ OPTIONS
+> >          Comma separated list of fields to print. Options are:
+> >          comm, tid, pid, time, cpu, event, trace, ip, sym, dso, dsoff, addr, symoff,
+> >          srcline, period, iregs, uregs, brstack, brstacksym, flags, bpf-output,
+> > -        brstackinsn, brstackinsnlen, brstackoff, callindent, insn, insnlen, synth,
+> > -        phys_addr, metric, misc, srccode, ipc, data_page_size, code_page_size, ins_lat,
+> > -        machine_pid, vcpu, cgroup, retire_lat.
+> > +        brstackinsn, brstackinsnlen, brstackoff, callindent, insn, disasm,
+> > +        insnlen, synth, phys_addr, metric, misc, srccode, ipc, data_page_size,
+> > +        code_page_size, ins_lat, machine_pid, vcpu, cgroup, retire_lat.
+> > +
+> >          Field list can be prepended with the type, trace, sw or hw,
+> >          to indicate to which event type the field list applies.
+> >          e.g., -F sw:comm,tid,time,ip,sym  and -F trace:time,cpu,trace
+> > @@ -217,9 +218,9 @@ OPTIONS
+> >  	Instruction Trace decoding. For calls and returns, it will display the
+> >  	name of the symbol indented with spaces to reflect the stack depth.
+> >  
+> > -	When doing instruction trace decoding insn and insnlen give the
+> > -	instruction bytes and the instruction length of the current
+> > -	instruction.
+> > +	When doing instruction trace decoding, insn, disasm and insnlen give the
+> > +	instruction bytes, disassembled instructions (requires libcapstone support)
+> > +	and the instruction length of the current instruction respectively.
+> >  
+> >  	The synth field is used by synthesized events which may be created when
+> >  	Instruction Trace decoding.
+> > diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+> > index 4817a37f16e2..4ac9670704ff 100644
+> > --- a/tools/perf/builtin-script.c
+> > +++ b/tools/perf/builtin-script.c
+> > @@ -135,6 +135,7 @@ enum perf_output_field {
+> >  	PERF_OUTPUT_CGROUP          = 1ULL << 39,
+> >  	PERF_OUTPUT_RETIRE_LAT      = 1ULL << 40,
+> >  	PERF_OUTPUT_DSOFF           = 1ULL << 41,
+> > +	PERF_OUTPUT_DISASM          = 1ULL << 42,
+> >  };
+> >  
+> >  struct perf_script {
+> > @@ -190,6 +191,7 @@ struct output_option {
+> >  	{.str = "bpf-output",   .field = PERF_OUTPUT_BPF_OUTPUT},
+> >  	{.str = "callindent", .field = PERF_OUTPUT_CALLINDENT},
+> >  	{.str = "insn", .field = PERF_OUTPUT_INSN},
+> > +	{.str = "disasm", .field = PERF_OUTPUT_DISASM},
+> >  	{.str = "insnlen", .field = PERF_OUTPUT_INSNLEN},
+> >  	{.str = "brstackinsn", .field = PERF_OUTPUT_BRSTACKINSN},
+> >  	{.str = "brstackoff", .field = PERF_OUTPUT_BRSTACKOFF},
+> > @@ -1515,6 +1517,10 @@ static int perf_sample__fprintf_insn(struct perf_sample *sample,
+> >  		printed += fprintf(fp, " insn: ");
+> >  		printed += sample__fprintf_insn_raw(sample, fp);
+> >  	}
+> > +	if (PRINT_FIELD(DISASM) && sample->insn_len) {
+> > +		printed += fprintf(fp, "\t\t");
 > 
-> Note that this changes the format of the sysfs file
-> (to the documented format):
+> This is good, except if both 'insn' and 'disasm' are used together.
+> It either:
+>  a) without libcapstone, prints insn bytes twice
+>
+> 	Probably simpler to make 'disasm' without libcapstone
+> 	a fatal error explaining that perf needs to be built
+> 	with libcapstone support for 'disasm' to work.
 > 
-> Before: "auto"
-> After:  "[auto] inhibit-charge"
+>  b) with libcapstone, disassembly does not line up nicely
+>
+I prefer to #a which is simpler. I'll rename sample__fprintf_insn() to
+sample__fprintf_insn_asm() wihtout fallback to raw version.
+
+> > +		printed += sample__fprintf_insn(sample, thread, machine, fp);
+> > +	}
+> >  	if (PRINT_FIELD(BRSTACKINSN) || PRINT_FIELD(BRSTACKINSNLEN))
+> >  		printed += perf_sample__fprintf_brstackinsn(sample, thread, attr, machine, fp);
+> >  
+> > @@ -3900,7 +3906,7 @@ int cmd_script(int argc, const char **argv)
+> >  		     "Fields: comm,tid,pid,time,cpu,event,trace,ip,sym,dso,dsoff,"
+> >  		     "addr,symoff,srcline,period,iregs,uregs,brstack,"
+> >  		     "brstacksym,flags,data_src,weight,bpf-output,brstackinsn,"
+> > -		     "brstackinsnlen,brstackoff,callindent,insn,insnlen,synth,"
+> > +		     "brstackinsnlen,brstackoff,callindent,insn,disasm,insnlen,synth,"
+> >  		     "phys_addr,metric,misc,srccode,ipc,tod,data_page_size,"
+> >  		     "code_page_size,ins_lat,machine_pid,vcpu,cgroup,retire_lat",
+> >  		     parse_output_fields),
 > 
-> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
-> ---
 
-LGTM, thanks
-
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-
-Konrad
+-- 
+Cheers,
+Changbin Du
 
