@@ -1,107 +1,118 @@
-Return-Path: <linux-kernel+bounces-52585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52621-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D65978499EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:19:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 022CD849A8C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:39:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DAC78B28049
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:19:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B18A2282074
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:39:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CACD1B95C;
-	Mon,  5 Feb 2024 12:18:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C6B22CCB4;
+	Mon,  5 Feb 2024 12:36:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="YlIgIGRf"
-Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GemHoD06"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD75C1B948
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 12:18:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83B5A1CABD;
+	Mon,  5 Feb 2024 12:36:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707135520; cv=none; b=GBKOkJBuTZciFaBkuvuWLkVf4IoWA5IYNwVcCuLm73tRPPoXlIK42zcupw+ZnMR6FGfE5F3z2WjaiI+Z+W6fXTQUJh1kI/4Nw76VM9hckg5G/qzzCSUdkSuNqn2zvQDBKrevn3MxugVa+yBE7zmU5JmAcWcTH4G1W9uZWyWYELk=
+	t=1707136606; cv=none; b=C9dU/pUeAobrZmJackk1T21vGlMIbJMqwrvrU7w4y8152so/ogaYlbjEngEsp5bG4DcnFPH2hZrxredDe5HS7XWc7U18i+/gDkrPGaFqjeMofuSwAOa+r4w9ANgXCVxCy/a9A5/jIh8HoOwzkMkevziUk8KQ5WiSr015wGRLPUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707135520; c=relaxed/simple;
-	bh=Ysr9xtLV4DrX5hUg539QdBNlVtKZkT6XZzfhMfs+j3I=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=t1oxBpmqd0QNndbeDMXf9zXUOT0yQXgDy2TqvpJLw02q/fd6jZZh1SV8C+xvdryJGO67+J8zY89KLWXxtp8t+z5QsAAXsU1Epx/W/74z05A/XOLAgxYMwgomLeZ3UMobw65WOk9KGRftHQQIsFiYw3TNOEY7DSbnn+TYBxVz560=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=YlIgIGRf; arc=none smtp.client-ip=185.70.40.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1707135510; x=1707394710;
-	bh=Weor1BS+GjUl++QK7p/VyHltAw7gfa56ze5aB5NLLeI=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=YlIgIGRfvEO3k9det+3i+l6muBxeH6zeZ/tcO+ysqcA7PsuK0N3Qv/Ha33jOIcnmj
-	 yK+bdDBG4loaRK9Spqh03gqrcUt9vT/ZQEIumTpvGX7/xC+wQc9/1lxMO2xG0rUtDT
-	 N6SdpKi4xoBELSy+CXmjyz00NbUDH/B00083CyDe7nkIF6PqgYnC9i3CWptWgfmKaQ
-	 GigpldkEtp5j40t8B9TqaFt5iQM/xCo+bErSmFKel6X6LFjIndoGuIQdZcURJLimAD
-	 /pEZz4Ej8IxpAB1LiDW5SoR6Knx06fY4TXLHVcIPU2NISxsrI9kkmTtx70JuV6B82Y
-	 4uUlOxpKq5tVw==
-Date: Mon, 05 Feb 2024 12:18:19 +0000
-To: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Peter Zijlstra <peterz@infradead.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>, Dan Williams <dan.j.williams@intel.com>, Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, Thomas Gleixner <tglx@linutronix.de>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v4 8/9] rust: file: add `DeferredFdCloser`
-Message-ID: <d35d9e56-02b1-45a5-aa72-2e82bde371ee@proton.me>
-In-Reply-To: <20240202-alice-file-v4-8-fc9c2080663b@google.com>
-References: <20240202-alice-file-v4-0-fc9c2080663b@google.com> <20240202-alice-file-v4-8-fc9c2080663b@google.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1707136606; c=relaxed/simple;
+	bh=ENgpbAtrqID8ovJNk+F/h+zg1txNrGQPaTzLXnkwiLQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=g6UKTF3AOLbwgWRjmXGsnYD07ylDk2TOOYfkFW+iUj2WmEccdcwMRPmQMo355U7+rhwd8b6ymjELQ/bUsj/6scJKkx07Be/yx7BQjLKnZjF8qgrqJaWJlKUk4QaynjsqudICNBxR8BbDOgoOU/piTTyupXKvFkxQy0PSJeUwMEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GemHoD06; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707136604; x=1738672604;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ENgpbAtrqID8ovJNk+F/h+zg1txNrGQPaTzLXnkwiLQ=;
+  b=GemHoD06K1eA1j4Adi7cIcvvVcGEej9YgMBrxZVsMLyxepWqHfKocaTC
+   Xe7y465ZRskszFjS1eqxU2ki9M6KFK2W1wN5x/dxYSn67hbQEqPrIAtGx
+   DPDAqHxdwvNHyVpDGCsowz2L2RUwRD8F8Amv/dOJ0Mm4gVGmiAuusOmLU
+   yousYO8P+2Ux6mt+C/sBbO+YwWWmGiX8eokuebN4JEcBs3LFkJ6clOyAM
+   vGtvqRdm5tgtEWbROaeNkxAroTt+bf6SL5GB0wydyQvvF5YilSMiDrT+s
+   T4DCopdGwNlyIRugPPsOJHO1AUN3V9sH2g+vQYACPXca/2OKPyUMHgWtW
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="11883224"
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="11883224"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 04:36:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="909285677"
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="909285677"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 04:36:40 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rWxw1-000000023v6-3Rmk;
+	Mon, 05 Feb 2024 14:18:49 +0200
+Date: Mon, 5 Feb 2024 14:18:49 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Wolfram Sang <wsa@the-dreams.de>, linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v2 08/23] gpio: sysfs: use gpio_device_find() to iterate
+ over existing devices
+Message-ID: <ZcDSKYqFHSUZb2Qx@smile.fi.intel.com>
+References: <20240205093418.39755-1-brgl@bgdev.pl>
+ <20240205093418.39755-9-brgl@bgdev.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240205093418.39755-9-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On 2/2/24 11:55, Alice Ryhl wrote:
-> To close an fd from kernel space, we could call `ksys_close`. However,
-> if we do this to an fd that is held using `fdget`, then we may trigger a
-> use-after-free. Introduce a helper that can be used to close an fd even
-> if the fd is currently held with `fdget`. This is done by grabbing an
-> extra refcount to the file and dropping it in a task work once we return
-> to userspace.
->=20
-> This is necessary for Rust Binder because otherwise the user might try
-> to have Binder close its fd for /dev/binder, which would cause problems
-> as this happens inside an ioctl on /dev/binder, and ioctls hold the fd
-> using `fdget`.
->=20
-> Additional motivation can be found in commit 80cd795630d6 ("binder: fix
-> use-after-free due to ksys_close() during fdget()") and in the comments
-> on `binder_do_fd_close`.
->=20
-> If there is some way to detect whether an fd is currently held with
-> `fdget`, then this could be optimized to skip the allocation and task
-> work when this is not the case. Another possible optimization would be
-> to combine several fds into a single task work, since this is used with
-> fd arrays that might hold several fds.
->=20
-> That said, it might not be necessary to optimize it, because Rust Binder
-> has two ways to send fds: BINDER_TYPE_FD and BINDER_TYPE_FDA. With
-> BINDER_TYPE_FD, it is userspace's responsibility to close the fd, so
-> this mechanism is used only by BINDER_TYPE_FDA, but fd arrays are used
-> rarely these days.
->=20
-> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
-> ---
->  rust/bindings/bindings_helper.h |   2 +
->  rust/helpers.c                  |   8 ++
->  rust/kernel/file.rs             | 184 +++++++++++++++++++++++++++++++-
->  rust/kernel/task.rs             |  14 +++
->  4 files changed, 207 insertions(+), 1 deletion(-)
->=20
+On Mon, Feb 05, 2024 at 10:34:03AM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> With the list of GPIO devices now protected with SRCU we can use
+> gpio_device_find() to traverse it from sysfs.
 
-Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+..
 
---
-Cheers,
-Benno
+> +static int gpiofind_sysfs_register(struct gpio_chip *gc, void *data)
+> +{
+> +	struct gpio_device *gdev = gc->gpiodev;
+> +	int ret;
+> +
+> +	if (gdev->mockdev)
+> +		return 0;
+> +
+> +	ret = gpiochip_sysfs_register(gdev);
+> +	if (ret)
+> +		chip_err(gc, "failed to register the sysfs entry: %d\n", ret);
+
+> +	return 0;
+
+???
+
+> +}
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
 
