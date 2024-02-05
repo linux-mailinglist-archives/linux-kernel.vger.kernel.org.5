@@ -1,267 +1,137 @@
-Return-Path: <linux-kernel+bounces-53073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7F9784A05C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:13:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B021A84A05D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:13:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC21F1C214F5
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:13:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 623EF1F23638
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:13:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E45BB4120F;
-	Mon,  5 Feb 2024 17:13:13 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B41B340BEF;
+	Mon,  5 Feb 2024 17:13:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lhzRt8cu"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8188B38F9C
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 17:13:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F383544C64;
+	Mon,  5 Feb 2024 17:13:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707153193; cv=none; b=Xh4YCYYdxca9EWWpLEgIM7cCMEC3kYzuYAmDgqAITA2R8ijvQO7TVy1eXQAe6a1WQEloAvyhK9F8HTEC4ByL/v0T7B9ToKJF1V/y39ZmuVzGQjJtHuHEBObExngCWQnurSNwgM4zmE9aH4f1i03qx4/3EGUUZvf3NenXrFpCc+4=
+	t=1707153229; cv=none; b=sAsyZ6dPE5m128x16WZnEGzO+Elk60+mMs5/+7DopBMr1rCX1WbJGci3qfG+y7ff/nzynGlncniO5eMDhGBk6D3ZMxSDdOMiU+qVOMq5aV2qSq0U6aiO1pIqUEoISW8afI6l3RWI93zCVbuNcg79i019G0k1Or8kwLAUYDkNAG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707153193; c=relaxed/simple;
-	bh=ugsDgIcUCN7RPWklCUAkE7F5/9C0LWY8puF0bhL/KPU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o6r969YZZUBTkivLJpopdrOM10/vcK4B6eITYY4p0CPBdwb5udRpbAFNcpiankVN+afQi7+3YFNPevH9OHcfEtE8wz7WucTOty5D5xWZUJs6MqPEzWeI8AuaCOa5NUZmo4ucg01insXN2bVXI38OqIrf6HzggyyJOC8SlMaUkRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rX2Wj-00075w-38; Mon, 05 Feb 2024 18:13:01 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rX2Wi-004fmO-Ak; Mon, 05 Feb 2024 18:13:00 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rX2Wi-00Fix4-0l;
-	Mon, 05 Feb 2024 18:13:00 +0100
-Date: Mon, 5 Feb 2024 18:12:59 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Thierry Reding <thierry.reding@gmail.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Kevin Hilman <khilman@baylibre.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-amlogic@lists.infradead.org, linux-pwm@vger.kernel.org, JunYi Zhao <junyi.zhao@amlogic.com>
-Subject: Re: [PATCH v4 4/6] pwm: meson: use device data to carry information
- around
-Message-ID: <pqnl66xnct5lqua36iasqws4kowhqtn6vkq7fml76pomcnatj4@q66n3siflgoc>
-References: <20231222111658.832167-1-jbrunet@baylibre.com>
- <20231222111658.832167-5-jbrunet@baylibre.com>
+	s=arc-20240116; t=1707153229; c=relaxed/simple;
+	bh=GUIw1Clt8W7XheqxN9DyFdV0X+bok90f0WYN3AWZKu8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PDdR5AEKyRHRiEc1wz2FLkmU8Q9JniCJPGgtAcAyzLeh3yD+C9aKT5hySraitLHAIAfQ4K8ZQ0gpb13YlmKzACrQNyzhEOrF+H4RkKEm6GohpRE9LD+qWfWJoX0ZIRS/k5eruav2pSOj6cg4CkspGKcTKK8PsiW4s7OLiYp7Dek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lhzRt8cu; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707153227; x=1738689227;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=GUIw1Clt8W7XheqxN9DyFdV0X+bok90f0WYN3AWZKu8=;
+  b=lhzRt8cuNDsKSapgNoglOuRKCfmubB5v6CA7SCvTfVjwWYyTO5msEJfO
+   lgqnVuccbaFsLNKaEFLTR4jBUOjwUM/J3FuC23vgvZKG/58d3bRNwZjPg
+   JKhtrNT8gxnzQLIZZE/Ff2vtudoINn7rAgWX250oDbgxHwu6BEDBJrUrC
+   OINJ6xJSwL88p8sqJritH/iSHpcncjHN1ibSCTdk+6tutRwXtAGvBwjkr
+   r3bwd9s72ib1aPkrPRQOKnW4dqdJnfN8Pbv2+YSUqjINBNxWxCJ0Xd1Ci
+   3IjepLwRRdV1ltX6QK5LTZ4CD2KAfs197PoIoWsjxrn0hRmRGG6w826jS
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="11210870"
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="11210870"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 09:13:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="909345630"
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="909345630"
+Received: from djiang5-mobl3.amr.corp.intel.com (HELO [10.246.112.181]) ([10.246.112.181])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 09:13:45 -0800
+Message-ID: <14b212a4-e7b5-494a-8665-06842b2c7cbf@intel.com>
+Date: Mon, 5 Feb 2024 10:13:31 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="voyfq7wqr4wfqjna"
-Content-Disposition: inline
-In-Reply-To: <20231222111658.832167-5-jbrunet@baylibre.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2 v2] cxl/region: Use cond_guard() in show_targetN()
+Content-Language: en-US
+To: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Dan Williams <dan.j.williams@intel.com>, linux-kernel@vger.kernel.org
+Cc: linux-cxl@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Ira Weiny <ira.weiny@intel.com>
+References: <20240205142613.23914-1-fabio.maria.de.francesco@linux.intel.com>
+ <20240205142613.23914-3-fabio.maria.de.francesco@linux.intel.com>
+From: Dave Jiang <dave.jiang@intel.com>
+In-Reply-To: <20240205142613.23914-3-fabio.maria.de.francesco@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
---voyfq7wqr4wfqjna
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 22, 2023 at 12:16:52PM +0100, Jerome Brunet wrote:
-> Use struct device data to carry the information data around, instead
-> of embedded the pwm structure in it and using container_of()
->=20
-> Doing so works just as well and makes it a little easier to add setup
-> callback depending on the DT compatible.
->=20
-> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+On 2/5/24 7:26 AM, Fabio M. De Francesco wrote:
+> Use cond_guard() in show_target() to not open code an up_read() in an 'out'
+> block. If the down_read_interruptible() fails, the statement passed to the
+> second argument of cond_guard() returns -EINTR.
+> 
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Suggested-by: Dan Williams <dan.j.williams@intel.com>
+> Suggested-by: Ira Weiny <ira.weiny@intel.com>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Signed-off-by: Fabio M. De Francesco <fabio.maria.de.francesco@linux.intel.com>
 > ---
->  drivers/pwm/pwm-meson.c | 39 +++++++++++++++++++++++----------------
->  1 file changed, 23 insertions(+), 16 deletions(-)
->=20
-> diff --git a/drivers/pwm/pwm-meson.c b/drivers/pwm/pwm-meson.c
-> index ef50c337f444..15c44185d784 100644
-> --- a/drivers/pwm/pwm-meson.c
-> +++ b/drivers/pwm/pwm-meson.c
-> @@ -101,7 +101,6 @@ struct meson_pwm_data {
->  };
-> =20
->  struct meson_pwm {
-> -	struct pwm_chip chip;
->  	const struct meson_pwm_data *data;
->  	struct meson_pwm_channel channels[MESON_NUM_PWMS];
->  	void __iomem *base;
-> @@ -114,7 +113,7 @@ struct meson_pwm {
-> =20
->  static inline struct meson_pwm *to_meson_pwm(struct pwm_chip *chip)
+>  drivers/cxl/core/region.c | 16 ++++------------
+>  1 file changed, 4 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
+> index 0f05692bfec3..bd3236786a25 100644
+> --- a/drivers/cxl/core/region.c
+> +++ b/drivers/cxl/core/region.c
+> @@ -666,28 +666,20 @@ static size_t show_targetN(struct cxl_region *cxlr, char *buf, int pos)
 >  {
-> -	return container_of(chip, struct meson_pwm, chip);
-> +	return dev_get_drvdata(chip->dev);
+>  	struct cxl_region_params *p = &cxlr->params;
+>  	struct cxl_endpoint_decoder *cxled;
+> -	int rc;
+>  
+> -	rc = down_read_interruptible(&cxl_region_rwsem);
+> -	if (rc)
+> -		return rc;
+> +	cond_guard(rwsem_read_intr, return -EINTR, &cxl_region_rwsem);
+>  
+>  	if (pos >= p->interleave_ways) {
+>  		dev_dbg(&cxlr->dev, "position %d out of range %d\n", pos,
+>  			p->interleave_ways);
+> -		rc = -ENXIO;
+> -		goto out;
+> +		return -ENXIO;
+>  	}
+>  
+>  	cxled = p->targets[pos];
+>  	if (!cxled)
+> -		rc = sysfs_emit(buf, "\n");
+> +		return sysfs_emit(buf, "\n");
+>  	else
+
+This else isn't needed because your if statement above returns. I think if you run checkpatch it should've flagged this.
+
+> -		rc = sysfs_emit(buf, "%s\n", dev_name(&cxled->cxld.dev));
+> -out:
+> -	up_read(&cxl_region_rwsem);
+> -
+> -	return rc;
+> +		return sysfs_emit(buf, "%s\n", dev_name(&cxled->cxld.dev));
 >  }
-> =20
->  static int meson_pwm_request(struct pwm_chip *chip, struct pwm_device *p=
-wm)
-> @@ -146,6 +145,7 @@ static int meson_pwm_calc(struct meson_pwm *meson, st=
-ruct pwm_device *pwm,
->  			  const struct pwm_state *state)
->  {
->  	struct meson_pwm_channel *channel =3D &meson->channels[pwm->hwpwm];
-> +	struct device *dev =3D pwm->chip->dev;
->  	unsigned int cnt, duty_cnt;
->  	unsigned long fin_freq;
->  	u64 duty, period, freq;
-> @@ -168,19 +168,19 @@ static int meson_pwm_calc(struct meson_pwm *meson, =
-struct pwm_device *pwm,
-> =20
->  	fin_freq =3D clk_round_rate(channel->clk, freq);
->  	if (fin_freq =3D=3D 0) {
-> -		dev_err(meson->chip.dev, "invalid source clock frequency\n");
-> +		dev_err(dev, "invalid source clock frequency\n");
->  		return -EINVAL;
->  	}
-> =20
-> -	dev_dbg(meson->chip.dev, "fin_freq: %lu Hz\n", fin_freq);
-> +	dev_dbg(dev, "fin_freq: %lu Hz\n", fin_freq);
-> =20
->  	cnt =3D div_u64(fin_freq * period, NSEC_PER_SEC);
->  	if (cnt > 0xffff) {
-> -		dev_err(meson->chip.dev, "unable to get period cnt\n");
-> +		dev_err(dev, "unable to get period cnt\n");
->  		return -EINVAL;
->  	}
-> =20
-> -	dev_dbg(meson->chip.dev, "period=3D%llu cnt=3D%u\n", period, cnt);
-> +	dev_dbg(dev, "period=3D%llu cnt=3D%u\n", period, cnt);
-> =20
->  	if (duty =3D=3D period) {
->  		channel->hi =3D cnt;
-> @@ -191,7 +191,7 @@ static int meson_pwm_calc(struct meson_pwm *meson, st=
-ruct pwm_device *pwm,
->  	} else {
->  		duty_cnt =3D div_u64(fin_freq * duty, NSEC_PER_SEC);
-> =20
-> -		dev_dbg(meson->chip.dev, "duty=3D%llu duty_cnt=3D%u\n", duty, duty_cnt=
-);
-> +		dev_dbg(dev, "duty=3D%llu duty_cnt=3D%u\n", duty, duty_cnt);
-> =20
->  		channel->hi =3D duty_cnt;
->  		channel->lo =3D cnt - duty_cnt;
-> @@ -214,7 +214,7 @@ static void meson_pwm_enable(struct meson_pwm *meson,=
- struct pwm_device *pwm)
-> =20
->  	err =3D clk_set_rate(channel->clk, channel->rate);
->  	if (err)
-> -		dev_err(meson->chip.dev, "setting clock rate failed\n");
-> +		dev_err(pwm->chip->dev, "setting clock rate failed\n");
-> =20
->  	spin_lock_irqsave(&meson->lock, flags);
-> =20
-> @@ -425,10 +425,10 @@ static const struct of_device_id meson_pwm_matches[=
-] =3D {
->  };
->  MODULE_DEVICE_TABLE(of, meson_pwm_matches);
-> =20
-> -static int meson_pwm_init_channels(struct meson_pwm *meson)
-> +static int meson_pwm_init_channels(struct device *dev)
->  {
->  	struct clk_parent_data mux_parent_data[MESON_NUM_MUX_PARENTS] =3D {};
-> -	struct device *dev =3D meson->chip.dev;
-> +	struct meson_pwm *meson =3D dev_get_drvdata(dev);
->  	unsigned int i;
->  	char name[255];
->  	int err;
-> @@ -438,7 +438,7 @@ static int meson_pwm_init_channels(struct meson_pwm *=
-meson)
->  		mux_parent_data[i].name =3D meson->data->parent_names[i];
->  	}
-> =20
-> -	for (i =3D 0; i < meson->chip.npwm; i++) {
-> +	for (i =3D 0; i < MESON_NUM_PWMS; i++) {
->  		struct meson_pwm_channel *channel =3D &meson->channels[i];
->  		struct clk_parent_data div_parent =3D {}, gate_parent =3D {};
->  		struct clk_init_data init =3D {};
-> @@ -519,28 +519,35 @@ static int meson_pwm_init_channels(struct meson_pwm=
- *meson)
->  static int meson_pwm_probe(struct platform_device *pdev)
->  {
->  	struct meson_pwm *meson;
-> +	struct pwm_chip *chip;
->  	int err;
-> =20
-> +	chip =3D devm_kzalloc(&pdev->dev, sizeof(*chip), GFP_KERNEL);
-> +	if (!chip)
-> +		return -ENOMEM;
-> +
->  	meson =3D devm_kzalloc(&pdev->dev, sizeof(*meson), GFP_KERNEL);
->  	if (!meson)
->  		return -ENOMEM;
-> =20
-> +	platform_set_drvdata(pdev, meson);
-> +
->  	meson->base =3D devm_platform_ioremap_resource(pdev, 0);
->  	if (IS_ERR(meson->base))
->  		return PTR_ERR(meson->base);
-> =20
->  	spin_lock_init(&meson->lock);
-> -	meson->chip.dev =3D &pdev->dev;
-> -	meson->chip.ops =3D &meson_pwm_ops;
-> -	meson->chip.npwm =3D MESON_NUM_PWMS;
-> +	chip->dev =3D &pdev->dev;
-> +	chip->ops =3D &meson_pwm_ops;
-> +	chip->npwm =3D MESON_NUM_PWMS;
-> =20
->  	meson->data =3D of_device_get_match_data(&pdev->dev);
-> =20
-> -	err =3D meson_pwm_init_channels(meson);
-> +	err =3D meson_pwm_init_channels(&pdev->dev);
->  	if (err < 0)
->  		return err;
-> =20
-> -	err =3D devm_pwmchip_add(&pdev->dev, &meson->chip);
-> +	err =3D devm_pwmchip_add(&pdev->dev, chip);
->  	if (err < 0)
->  		return dev_err_probe(&pdev->dev, err,
->  				     "failed to register PWM chip\n");
-
-Parts of this change overlap with plans I have for this driver. I
-reworked the series a bit now, also affecting the meson driver, the
-previous submission is available at https://lore.kernel.org/linux-pwm/bf6f7=
-c6253041f60ee8f35b5c9c9e8d595332fb0.1706182805.git.u.kleine-koenig@pengutro=
-nix.de
-
-I don't see the nice benefit of this patch yet, but I assume this will
-become clearer when I check the next patch.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---voyfq7wqr4wfqjna
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXBFxoACgkQj4D7WH0S
-/k72nQf+IGMFjJhnAxpe5W/SenQ9OKMDvDdK3NQZJzAbpesp+8IZOGQZRm2A+Sfi
-Gc6jnojrIEatsUjka7OYSAEeROGlXSGAyr8MPQrJ/I0F8S/vTVitzuEjWE3NfF0+
-964qrl7BXu3pZGuDbYp8/9TtW4jAzwM7xvbEpXiNvQACJwuup1L2oFtUEywgi1Fp
-bGcfi7aj8Uwwnyfn71liHDz4mAvBJU/Qeigy0V9tERQATdWeGfyq9Vy6NH9k82e8
-ARl2sPj/XSAhN7pF8uVmGUPNfsSmsedgtFwQjGlRBE9aEn4skUO15n28/8upecgT
-NMrB9pZckysIa5kQ5qMJxQXePtayJQ==
-=2Fbw
------END PGP SIGNATURE-----
-
---voyfq7wqr4wfqjna--
+>  
+>  static int match_free_decoder(struct device *dev, void *data)
 
