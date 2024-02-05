@@ -1,167 +1,219 @@
-Return-Path: <linux-kernel+bounces-52280-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C931849639
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:18:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C881C84963F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:19:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9605C1F21843
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:18:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E91A1F21F3D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:19:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CA91125B7;
-	Mon,  5 Feb 2024 09:18:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 821D412B68;
+	Mon,  5 Feb 2024 09:19:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ok6j71GH"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="hSH8rq0v"
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B84E7125A1
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 09:18:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DFBF125BB
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 09:19:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707124729; cv=none; b=C6fWd2U2zodQVdvRB8+DzA0/F/OmXd9UGXaITgVMf/4J9yqfXGcdUcOXhg5O38SM/5ZWbdZmbIcPFIqXs3xlQNU7p8hgSCQ0bYMiSeb8qWLXSOih0fDbEU6+fI2p23X4LwxGGD4e7H12iNwVSMONkZFVr3SvicqOsMhLrmsy12U=
+	t=1707124764; cv=none; b=jVjF8yvN4k82PV3wDerDkOI9lYDldHNBF4xNOvFINEXNXbyLUCUMOLk/ryfVoJYZ+okBqtniqiczQVK+7RuMg8ZlxQVARh/84dCJGO1v1Y5vaboA97YTWByAP/s/u7mbdwsHd3dXhdilLiN6TJHrgMOhXzESvk4Oi50qu/8PWEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707124729; c=relaxed/simple;
-	bh=8XZJ/IgL1JMzY5lgcFPKVTKdQYsXG/HJaPx+Ik6gB94=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=eK68i/+i49J9VmBCTIrLGpirusln4R1ff0VfJPSZUKKIgj8iJ6cLFIP0GxD1t1GWCQD3vJbuHi+oBSIVXAUQCG0AuviR3SKdSqfhMRk1Pk/Yq+33/gtpa7mmcl1UQ/6qIH8cNcimoTRjoiWJF1SI7zg8Yv6rWWlS7wOwtoe7YCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ok6j71GH; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc7165d7ca3so612634276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 01:18:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707124726; x=1707729526; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=7Gxk2ajCeRlR024TKzSLzvly8WJN2T7k2cWPUi6bXG0=;
-        b=ok6j71GHOBJYAAjH1mmtEmSRXRP5Eqdbvk1SDKKjq+5+TDCHhCoVLfUqAe0+pvH/+3
-         MKOqQwJHgqrjM4ZW+gLKhlczv/Oa5LieCkBIraAPtLkn122YzL7p97Fh0jCjoLNeYlZB
-         rpMyt7wDiHYiBPaZhZ08F4YUoB0K+MuBRRdlQjD2xUckwCI1V2uoBPrcwsxhr5EDQkT5
-         AgBfzc6k8PVVij1fkWbIJVk6eaESAEwapZT77fwIwDDaxeBjZOzhn+6qZq4j6/SPqTBM
-         hjuWaFdMpAor0egUgqrkdzJFQ9LM9myHuUzXGm/fxC4scmUhpBCv4bI5dFXt3W8KasLV
-         XFFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707124726; x=1707729526;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7Gxk2ajCeRlR024TKzSLzvly8WJN2T7k2cWPUi6bXG0=;
-        b=LMDS+dslb8LauyC8tz8xSwHvMu9oXJWTk/uhozyPbK3jqabzQqwVD1KFLHneXDuQ63
-         j62dhb7g5CTeeAQqGwckwKg7Rn2XJtfPsyQqEgVpFnfS99kuQQSYARSAbf/Ic8fxYUrT
-         YpK6POr7Hu8ZXexGw8gtYY7wt9cSw4iwXyonv1P5c1gga92d3zdA/0ttAUHsEA9t0aqe
-         QTeZsYex9VgU6BaauScOU1D+EDj+VxGoFrcLQ6wjcK7OCGuA4wkG8hTsKoXYs3dpuMBP
-         NZwdmut9yeQY6040/5O6DdmVZWtIYVzRgm0GYKlmhRVq4MUA2S3Ibo3WWJLcrZarvB74
-         1tyQ==
-X-Gm-Message-State: AOJu0Ywa7SwNCS/cdXGH94Etjl9yfhlBjs1g6eunFf5716bro3BjPPtz
-	CsNzQje/OsFUH6Rn/IIlFYG0t7GZqhdQ3TzO6rg/PY+2aIfX4d0WtpEYWBfTVOa8T4/RXiG0CNU
-	2ZtGaRH/4Ht46rQ==
-X-Google-Smtp-Source: AGHT+IG3BuUoJv4bjoNYEp0iMOpsszjB7c7QBaEDVUYixjVCksy3fmJ26gQCHRyt80iLODTHu7dmgWlIlut3BGQ=
-X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a05:6902:cc9:b0:dc2:57c9:b44d with SMTP
- id cq9-20020a0569020cc900b00dc257c9b44dmr534896ybb.8.1707124726693; Mon, 05
- Feb 2024 01:18:46 -0800 (PST)
-Date: Mon,  5 Feb 2024 09:18:42 +0000
+	s=arc-20240116; t=1707124764; c=relaxed/simple;
+	bh=JOZyY44o3VjmqxPeYm2CxNUhG2xfl45AjDv+Izabiy0=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:In-Reply-To:
+	 Content-Type:References; b=Cub83/Bw662fEFcJ7nPAeL7jvSjXf/IeTxEXLSoCbmrCdTk6PZdHdmnCd7TUvZ3cSjxAMjqKs9mxGvnn9fuqkVVcasi1Sdcfctbyyf9Xx2hQSo6G/Gka3vQ4/oaui6Pat4RhbdaoRjFXDnElogV5OuP82lF6HyjhLqMyWunk0IM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=hSH8rq0v; arc=none smtp.client-ip=210.118.77.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240205091919euoutp01776bfbcd9593c8103f0d28ac03635cb3~w7Ox1GfsZ2161921619euoutp01L
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 09:19:19 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240205091919euoutp01776bfbcd9593c8103f0d28ac03635cb3~w7Ox1GfsZ2161921619euoutp01L
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1707124759;
+	bh=x11oEt2Z68lZhuN1htWEnhx4xVZleMPJJZ1X62idi6Y=;
+	h=Date:From:Subject:To:Cc:In-Reply-To:References:From;
+	b=hSH8rq0vRLoaSosTYdcEhyDnQ7Szp4iBHuaR11zkwvwT53s+0Lmd8kbnx4lNHlHrw
+	 t8Y6bmp2a4cHRG2gEWYju/1i+znVWhRYYg6Qa+nkWeWABV5voRklxJC2c8pPVNmqXA
+	 RGZXi/+XWGSWk82PER54NGfkydVJG7mE/bvqv5uk=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+	20240205091918eucas1p23872d9f15a22c9e23103857a5ae2b9c6~w7OxUt-NP1676616766eucas1p2I;
+	Mon,  5 Feb 2024 09:19:18 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+	eusmges1new.samsung.com (EUCPMTA) with SMTP id 43.EC.09539.618A0C56; Mon,  5
+	Feb 2024 09:19:18 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+	20240205091917eucas1p2cde1af2ad3532e2e44664132af9ee9ff~w7OwxvkO-1177511775eucas1p2c;
+	Mon,  5 Feb 2024 09:19:17 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240205091917eusmtrp10525cabc0eb7cc0ab1e77b90141b186c~w7Oww9zHD0227302273eusmtrp1M;
+	Mon,  5 Feb 2024 09:19:17 +0000 (GMT)
+X-AuditID: cbfec7f2-515ff70000002543-f6-65c0a8160d53
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+	eusmgms1.samsung.com (EUCPMTA) with SMTP id 87.70.09146.518A0C56; Mon,  5
+	Feb 2024 09:19:17 +0000 (GMT)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20240205091916eusmtip2cadae4e7a9f14d4a43acec119e6d566e~w7OvyCn8w2786927869eusmtip2S;
+	Mon,  5 Feb 2024 09:19:16 +0000 (GMT)
+Message-ID: <8e336720-ce08-4391-ad36-b83fea246cab@samsung.com>
+Date: Mon, 5 Feb 2024 10:19:16 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Developer-Key: i=aliceryhl@google.com; a=openpgp; fpr=49F6C1FAA74960F43A5B86A1EE7A392FDE96209F
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2746; i=aliceryhl@google.com;
- h=from:subject; bh=8XZJ/IgL1JMzY5lgcFPKVTKdQYsXG/HJaPx+Ik6gB94=;
- b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBlwKei/WJXwNa1kGveDERZkE/7Gq9ywL3f6UUFi
- yDyixhV/tCJAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZcCnogAKCRAEWL7uWMY5
- RqTMD/9zwprbrEKhYMbbQgpYaTRFzdeJBBljXrR0q+elDRZhdzFV1kRDfRBS+VMz5Bu7DYAaPUi
- xn3o7LZMOwbzRwsbBCjZLYwcAIXQIFe/HDaioHdWcqeLgDPIYws1cpxydVGHh7bxU0tpSePWvwC
- QXYEQtvH2jI4Qc2CRa1RnspuEAF+YJIMbJobmiKv7XzE2gWu2RAOFvmeu5aIlF3fvZE8M8t/GhM
- 4yHziaSlbBLNVRIR51Cv04j32kOKtJcDYeiZ3eRTEY7NiSm6Edj4BPDUqMOBVMlomcFMM1+E8uQ
- cLsQghCvtFkcf8nkENTifcr9jLP/X5dt5FlsuYA61LElfJGJ9pXWm9ARSgb1+0YMxggz9wlsCbH
- JWCs3tr8P6fepJZ891HfxlYQDYtRcqV2EH5G4jY0qY+95Zgpk4bvHbnM0IMPHcjF+bm/5vj2RRQ
- 78ZzUZaXUi9XHqXyOTznrmjCItWCIabNbUHItLYW194R/Gog4gwwuRVii+YUXdSnAkZskS0tG33
- nK+1fwSqy2DvSGfFS/cel4+NZsBsLvLCw/X5I56FrPeC8+X+/TQWBUf9naMXzQYz+9OGSQmC4CN
- gCP+FGu7KKvoZusZZA06xwn2V0K/xX97XT3Gdc9xyg6YaXxWR9TimpHhi4SgoPxkyFSRgN8I11B jPnV3IRbPAUNi6w==
-X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-Message-ID: <20240205091842.2858516-1-aliceryhl@google.com>
-Subject: [PATCH] rust: stop using ptr_metadata feature
-From: Alice Ryhl <aliceryhl@google.com>
-To: Miguel Ojeda <ojeda@kernel.org>
-Cc: Wedson Almeida Filho <wedsonaf@gmail.com>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	"=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?=" <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, 
-	Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v4 1/2] clk: Provide managed helper to get and enable
+ bulk clocks
+To: Shradha Todi <shradha.t@samsung.com>, 'Manivannan Sadhasivam'
+	<manivannan.sadhasivam@linaro.org>, sboyd@kernel.org,
+	mturquette@baylibre.com
+Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org, jingoohan1@gmail.com,
+	lpieralisi@kernel.org, kw@linux.com, robh@kernel.org, bhelgaas@google.com,
+	krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
+	linux@armlinux.org.uk, pankaj.dubey@samsung.com
+Content-Language: en-US
+In-Reply-To: <08a901da55cf$4ee48000$ecad8000$@samsung.com>
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrFKsWRmVeSWpSXmKPExsWy7djP87piKw6kGpy8LG3xYN42NoslTRkW
+	K77MZLfY+3oru0VDz29Wi02Pr7FafOy5x2pxedccNouz846zWcw4v4/J4tDUvYwWLX9aWCzu
+	tnSyWlw85WqxaOsXdov/e3awW/y7tpHFovdwrYOQx+VrF5k93t9oZffYOesuu8eCTaUem1Z1
+	snncubaHzePJlelMHpuX1Hv0bVnF6PF5k1wAVxSXTUpqTmZZapG+XQJXRuOMJSwFu8Qqvs38
+	wN7AuEqoi5GTQ0LAROLwkl1sXYxcHEICKxglTm+5C+V8YZR48GciM4TzmVHi6ZItTDAtWy4t
+	YQexhQSWM0os/JMPUfSRUaKrcSYrSIJXwE7i2tYOFhCbRUBF4vS8FWwQcUGJkzOfgMVFBeQl
+	7t+aATaITcBQouttF1iNsEC4xJeuSWBniAhMZpSY3PYN7AxmgS9MEvufLgDrZhYQl7j1ZD7Y
+	SZwCVhKf3/SxQsTlJba/nQPWICFwjlOipasf6m4XiUefFrJB2MISr45vYYewZSROT+5hgWho
+	Z5RY8Ps+E4QzgVGi4fktRogqa4k7534BdXMArdCUWL9LH8SUEHCUuPmjDMLkk7jxVhDiBj6J
+	SdumM0OEeSU62qCBrSYx6/g6uK0HL1xinsCoNAspXGYh+WwWkm9mIaxdwMiyilE8tbQ4Nz21
+	2DAvtVyvODG3uDQvXS85P3cTIzA5nv53/NMOxrmvPuodYmTiYDzEKMHBrCTCO0F4b6oQb0pi
+	ZVVqUX58UWlOavEhRmkOFiVxXtUU+VQhgfTEktTs1NSC1CKYLBMHp1QDU0nUqpa9DfIrrHdU
+	mVzunrft4vp/IW7fJU3+rL4fKP5ZdYedvt73Y7tckrtaJe4ozDzOG3d/ZenC7Kbv57XEOnTn
+	7nV9w/wv96z/n/eP+r20POuk9Z9vP9/0NSrH6khsqOsstmJO1Qe3uq6l8N/kN1ssxGCsf8i3
+	5dQiy0SHpGL+9MciXtUtIg+fB3ee6Km9WMrm+vW8z63dr/xUtrxeVbKwUGTdlWnrDv88/mxd
+	X4j+V47CfTyXWcpq5lrv7N/ad/rSsxDugoNFAu1Ndru6jR3k+RgbtR9eblf1n7ZKaqZRvft1
+	hVzV1m59zaCYIv6PUxu9VuV2O7r/evPbPHuacc6fCKt3nl1dx7c3HctQYinOSDTUYi4qTgQA
+	42seRf0DAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrLIsWRmVeSWpSXmKPExsVy+t/xe7qiKw6kGuz5ZGjxYN42NoslTRkW
+	K77MZLfY+3oru0VDz29Wi02Pr7FafOy5x2pxedccNouz846zWcw4v4/J4tDUvYwWLX9aWCzu
+	tnSyWlw85WqxaOsXdov/e3awW/y7tpHFovdwrYOQx+VrF5k93t9oZffYOesuu8eCTaUem1Z1
+	snncubaHzePJlelMHpuX1Hv0bVnF6PF5k1wAV5SeTVF+aUmqQkZ+cYmtUrShhZGeoaWFnpGJ
+	pZ6hsXmslZGpkr6dTUpqTmZZapG+XYJeRuOMJSwFu8Qqvs38wN7AuEqoi5GTQ0LARGLLpSXs
+	XYxcHEICSxkl1v99ygyRkJE4Oa2BFcIWlvhzrYsNoug9o8T79n5GkASvgJ3Eta0dLCA2i4CK
+	xOl5K9gg4oISJ2c+AYuLCshL3L81gx3EZhMwlOh62wVWIywQLvFx5UlGkKEiApMZJU7N6wfb
+	xizwhUni+IkCiG2TmCT6Hk9hh0iIS9x6Mp8JxOYUsJL4/KYPqsFMomtrFyOELS+x/e0c5gmM
+	QrOQHDILSfssJC2zkLQsYGRZxSiSWlqcm55bbKhXnJhbXJqXrpecn7uJEZgOth37uXkH47xX
+	H/UOMTJxMB5ilOBgVhLhnSC8N1WINyWxsiq1KD++qDQntfgQoykwNCYyS4km5wMTUl5JvKGZ
+	gamhiZmlgamlmbGSOK9nQUeikEB6YklqdmpqQWoRTB8TB6dUA5PkjjWT9A/FOopumCVUfuNx
+	mVt6krs0/7wst4c5Yn6m8bmBgrPuzPi86PTtTp0Le3d9POozKcAy3js/4uDsedr79llJZ979
+	uTR533vbfVfcJyrMCps749bDT/e7vz6erb/oU+zmfJ4dVa/L2wXzFuzbNXPiyijWanXVM2uC
+	H3Zqn0wqCetZcy75PV+m9c/CWQK/8na5qYTczk7ReqqtnxezXbNHd/kNA6mvGyTObwrvKX9d
+	dO99beuUoMQel9kF7U/ymJyP9cxxiepy+V7Vpt5z4JvsBF8bS9v/hm/SZ8Uy/lGxZYjsuBon
+	4vTmk9ixtYvfp1y463qVhY3RZudl69Ys037b+bJPdix22Z5+REmJpTgj0VCLuag4EQBf5msC
+	kAMAAA==
+X-CMS-MailID: 20240205091917eucas1p2cde1af2ad3532e2e44664132af9ee9ff
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20240124103855epcas5p27400bd95df42f36b9547a4e28aa26f5d
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240124103855epcas5p27400bd95df42f36b9547a4e28aa26f5d
+References: <20240124103838.32478-1-shradha.t@samsung.com>
+	<CGME20240124103855epcas5p27400bd95df42f36b9547a4e28aa26f5d@epcas5p2.samsung.com>
+	<20240124103838.32478-2-shradha.t@samsung.com>
+	<20240129065448.GC2971@thinkpad>
+	<08a901da55cf$4ee48000$ecad8000$@samsung.com>
 
-The `byte_sub` method was stabilized in Rust 1.75.0. By using that
-method, we no longer need the unstable `ptr_metadata` feature for
-implementing `Arc::from_raw`.
+On 02.02.2024 12:59, Shradha Todi wrote:
+>> -----Original Message-----
+>> From: Manivannan Sadhasivam<manivannan.sadhasivam@linaro.org>
+>> Sent: 29 January 2024 12:25
+>> To: Shradha Todi<shradha.t@samsung.com>
+>> Subject: Re: [PATCH v4 1/2] clk: Provide managed helper to get and enable bulk
+>> clocks
+>>
+>> On Wed, Jan 24, 2024 at 04:08:37PM +0530, Shradha Todi wrote:
+>>> Provide a managed devm_clk_bulk* wrapper to get and enable all bulk
+>>> clocks in order to simplify drivers that keeps all clocks enabled for
+>>> the time of driver operation.
+>>>
+>>> Suggested-by: Marek Szyprowski<m.szyprowski@samsung.com>
+>>> Signed-off-by: Shradha Todi<shradha.t@samsung.com>
+>>> ---
+>>>   drivers/clk/clk-devres.c | 40
+>> ++++++++++++++++++++++++++++++++++++++++
+>>>   include/linux/clk.h      | 24 ++++++++++++++++++++++++
+>>>   2 files changed, 64 insertions(+)
+>>>
+>>> diff --git a/drivers/clk/clk-devres.c b/drivers/clk/clk-devres.c index
+>>> 4fb4fd4b06bd..cbbd2cc339c3 100644
+>>> --- a/drivers/clk/clk-devres.c
+>>> +++ b/drivers/clk/clk-devres.c
+>>> @@ -182,6 +182,46 @@ int __must_check devm_clk_bulk_get_all(struct
+>>> device *dev,  }  EXPORT_SYMBOL_GPL(devm_clk_bulk_get_all);
+>>>
+>>> +static void devm_clk_bulk_release_all_enable(struct device *dev, void
+>>> +*res) {
+>>> +	struct clk_bulk_devres *devres = res;
+>>> +
+>>> +	clk_bulk_disable_unprepare(devres->num_clks, devres->clks);
+>>> +	clk_bulk_put_all(devres->num_clks, devres->clks); }
+>>> +
+>>> +int __must_check devm_clk_bulk_get_all_enable(struct device *dev,
+>>> +					      struct clk_bulk_data **clks) {
+>>> +	struct clk_bulk_devres *devres;
+>>> +	int ret;
+>>> +
+>>> +	devres = devres_alloc(devm_clk_bulk_release_all_enable,
+>>> +			      sizeof(*devres), GFP_KERNEL);
+>>> +	if (!devres)
+>>> +		return -ENOMEM;
+>>> +
+>>> +	ret = clk_bulk_get_all(dev, &devres->clks);
+>>> +	if (ret > 0) {
+>>> +		*clks = devres->clks;
+>>> +		devres->num_clks = ret;
+>>> +	} else {
+>>> +		devres_free(devres);
+>>> +		return ret;
+>>> +	}
+>> How about:
+>>
+>> 	ret = clk_bulk_get_all(dev, &devres->clks);
+>> 	if (ret <= 0) {
+>> 		devres_free(devres);
+>> 		return ret;
+>> 	}
+>>
+>> 	*clks = devres->clks;
+>> 	devres->num_clks = ret;
+>>
+>> Even though this patch follows the pattern used by the rest of the APIs in the
+>> driver, IMO above makes it more readable.
+>>
+> Since I have usually seen that maintainers suggest to maintain the coding style of the file, I followed the same.
+> If you have a stronger reason to change this, please let me know
+> Marek, Michael, Stephen please let us know what do you think about this?
 
-This brings us one step closer towards not using unstable compiler
-features.
+I suggest to keep the same style as is used in the modified file (if it 
+doesn't conflict with the rules enforced by checkpatch and kernel's 
+coding style).
 
-Signed-off-by: Alice Ryhl <aliceryhl@google.com>
----
-This patch is based on rust-next because it depends on the patch [1]
-that upgrades to Rust 1.75.0.
-
-[1]: https://lore.kernel.org/all/20231224172128.271447-1-ojeda@kernel.org/
-
- rust/kernel/lib.rs      |  1 -
- rust/kernel/sync/arc.rs | 10 ++++------
- 2 files changed, 4 insertions(+), 7 deletions(-)
-
-diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
-index b89ecf4e97a0..b8d4c8167a29 100644
---- a/rust/kernel/lib.rs
-+++ b/rust/kernel/lib.rs
-@@ -17,7 +17,6 @@
- #![feature(dispatch_from_dyn)]
- #![feature(new_uninit)]
- #![feature(offset_of)]
--#![feature(ptr_metadata)]
- #![feature(receiver_trait)]
- #![feature(unsize)]
- 
-diff --git a/rust/kernel/sync/arc.rs b/rust/kernel/sync/arc.rs
-index 77cdbcf7bd2e..16309c3a9a01 100644
---- a/rust/kernel/sync/arc.rs
-+++ b/rust/kernel/sync/arc.rs
-@@ -30,7 +30,7 @@
-     mem::{ManuallyDrop, MaybeUninit},
-     ops::{Deref, DerefMut},
-     pin::Pin,
--    ptr::{NonNull, Pointee},
-+    ptr::NonNull,
- };
- use macros::pin_data;
- 
-@@ -239,18 +239,16 @@ pub unsafe fn from_raw(ptr: *const T) -> Self {
-         // binary, so its layout is not so large that it can trigger arithmetic overflow.
-         let val_offset = unsafe { refcount_layout.extend(val_layout).unwrap_unchecked().1 };
- 
--        let metadata: <T as Pointee>::Metadata = core::ptr::metadata(ptr);
-         // SAFETY: The metadata of `T` and `ArcInner<T>` is the same because `ArcInner` is a struct
-         // with `T` as its last field.
-         //
-         // This is documented at:
-         // <https://doc.rust-lang.org/std/ptr/trait.Pointee.html>.
--        let metadata: <ArcInner<T> as Pointee>::Metadata =
--            unsafe { core::mem::transmute_copy(&metadata) };
-+        let ptr = ptr as *mut ArcInner<T>;
-+
-         // SAFETY: The pointer is in-bounds of an allocation both before and after offsetting the
-         // pointer, since it originates from a previous call to `Arc::into_raw` and is still valid.
--        let ptr = unsafe { (ptr as *mut u8).sub(val_offset) as *mut () };
--        let ptr = core::ptr::from_raw_parts_mut(ptr, metadata);
-+        let ptr = unsafe { ptr.byte_sub(val_offset) };
- 
-         // SAFETY: By the safety requirements we know that `ptr` came from `Arc::into_raw`, so the
-         // reference count held then will be owned by the new `Arc` object.
-
-base-commit: f090f0d0eea9666a96702b29bc9a64cbabee85c5
+Best regards
 -- 
-2.43.0.594.gd9cf4e227d-goog
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
 
