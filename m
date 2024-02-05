@@ -1,165 +1,239 @@
-Return-Path: <linux-kernel+bounces-53078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53110-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BDCF84A069
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:18:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61FF784A0CD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:33:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F222DB2240D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:18:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FCE21C217E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:33:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ECDB41218;
-	Mon,  5 Feb 2024 17:18:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aHWMNv80"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F5C844C88;
+	Mon,  5 Feb 2024 17:33:05 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 231C5405FF
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 17:18:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF22744C80
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 17:33:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707153494; cv=none; b=ek9w9Y3xg9iJWoUQHnvDaa3EQTxS2EMKbJpX8j8+Y4w7SdcV8sFc8Qh+tXkSd36d4oGXfhB2GyE/IW/9d9UMePpdIVMLhl2q779UvKtuo2zJYigw8nDtk5qyqadb47ELHwPuPBMpdyGsQX32OFx+JMTb/zeuOLMYPTEFYB7FhUw=
+	t=1707154385; cv=none; b=Cj38ky/HfjZJZLJwRrBW3uT8bLiFCy+yX0vlJOUmHSJXdX/VUrVJLrGH7JlVcVOJUrTWUHUn2B4L7b5pJ1LFTBwXZXCxz+e52SDcT0R4ljhcLi1BwCtGwo0U5jCN93hhS0sZiJOpbJZxH15JDQLmLz4GXsRaBP/v2IHPlhxzbHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707153494; c=relaxed/simple;
-	bh=CyumhhrHla5qlVLb8PYoku4ZnpdwiWELhWWIcVR2E3M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=vABEFvfgQ3XndVSjvC2HHMd4MulULs/gOFx60NDoPAja4Uf39ZL39ZBs4ClfQfKaFlQ6asH09DIUhko8hbKsovIExJgRCktrSy+Eb9mZ8vqbz6iQSWnDWIMIp1ZvEbQn4jKqg6lF1OtUxGn3ulAnKGegJajvMsBKYWmC7CLdhKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aHWMNv80; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a358ec50b7cso600530866b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 09:18:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707153491; x=1707758291; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RaYPHvXkobnpa/6f4ulwQBNQwVfT6AO5Tj9arok4IUM=;
-        b=aHWMNv80t8YUsma+2ZoiLz05ZZvT66ZBN9WfYg6adgpGZGshJgiHdvFElEgWjhwSQ1
-         QS2Vdfodn/h7CTru7o6Q7e8G1/cdct8kSGootFRYHsh5ijVIo5qjTxs9KuxmeKrUiNfg
-         l0wqs3l1PQq2CCxynPEWRIZO/N1wKJFwSQJy2Z50C48nOZfT8nZDasKbsnHL2TnAhRI6
-         xBBnTHL2yAOzU9VP/0KJU7Yz5o9vk7e1tRxdNydEQUaNyd7U3aunNRUPtbEFX589K/3s
-         eJ2hArMyw6TjCWg03KVn0RsZMVbsPinsCLX4pxt7gj1CiDewanvpW9AaXamFES56GccU
-         ErkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707153491; x=1707758291;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RaYPHvXkobnpa/6f4ulwQBNQwVfT6AO5Tj9arok4IUM=;
-        b=FH8KbAF35/OU635iC8yYLxY1dD3qPt8Yngiop9m4TLy1MSn7lcUq7zWzRSSXl1/mao
-         LulI7XBsO+dPC5b3biQ5EVwWA+/wL/KOwzzCv2vyXpZ/KuNpLwP6nurArStBi4eCRIO6
-         4oTg9sgvolf1Ob+2o9TTlKNuPzVV8mAE3R0zjfDQmSYxYJqG7ufcJOxqm25S26+2yNmJ
-         b8OE1VFNJ33su7YMlAHk58gx4Jvm2SC8zWEBAS3YZmU22ZmXgoB6SSGCTGrz+Bej2FeP
-         kY16ps1uarJPTOlOZ7qpz2HgMa1BIUEhG8kgqMOflSX0H+NkQfomgJjGgLbrjVZB8Epz
-         PNWA==
-X-Gm-Message-State: AOJu0YzRHRAn4OhHQNlzCQJ2GkmC3LiHftCTYMRh2uoVjIPy0Cew+71T
-	TVMMItwfnO15VhEZZ4tLCexOKwo/hTG7Lvc4pF56Ib6jVppfy/q4idqpZo9dfTFzW1s2FPvNJzh
-	CQlDkH6laI6jvfmYLJg8GSHnwou2qUIDb5EE=
-X-Google-Smtp-Source: AGHT+IGCf/2T7fbv87BeYDVWJz+788X4MMPPJTKOuEBPh303EM14LzP1OLVvWQHHhfOdyOAo67Lkh2EVaqioVNq0Kms=
-X-Received: by 2002:a17:906:378f:b0:a35:3eb8:2f6e with SMTP id
- n15-20020a170906378f00b00a353eb82f6emr251706ejc.33.1707153490633; Mon, 05 Feb
- 2024 09:18:10 -0800 (PST)
+	s=arc-20240116; t=1707154385; c=relaxed/simple;
+	bh=5pjg0q1iZZDUw5lhiZeqbKPckptqUaLfzjykcGLxmBY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oC+pfn2i3N0B3Z63vt8nTCy4VL8CAD2gUBgFgHtqbRfE61RaHI7zXn3A13z/lFZV+71Va73mV4fj6OULj3m3adqKtyZw3mW6Y/4/+G7BJwM0tOEojqPEfu0FgkMi+RMLkLHVCIWPhUhbWaRn64eA4+/l9FqFiLlYreF0WS92YaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rX2pn-0008FJ-Sy; Mon, 05 Feb 2024 18:32:43 +0100
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rX2pm-004foU-LU; Mon, 05 Feb 2024 18:32:42 +0100
+Received: from mfe by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rX2pm-00CpRf-1r;
+	Mon, 05 Feb 2024 18:32:42 +0100
+Date: Mon, 5 Feb 2024 18:32:42 +0100
+From: Marco Felsch <m.felsch@pengutronix.de>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: "Dr. David Alan Gilbert" <linux@treblig.org>,
+	gregkh@linuxfoundation.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de
+Subject: Re: [PATCH 4/4] usb: typec: tcpci: add support to set connector
+ orientation
+Message-ID: <20240205173242.z56gbx2agwef3ufu@pengutronix.de>
+References: <20240205164316.805408-1-m.felsch@pengutronix.de>
+ <20240205164316.805408-5-m.felsch@pengutronix.de>
+ <ZcESKqRTsGNZMMX1@gallifrey>
+ <20240205165420.kyujim2takwswzmw@pengutronix.de>
+ <8cffdf64-d0ee-4e20-8c43-d3010ddf9839@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAF8BazD5JxGOxPU7bOQED4nn_ZbBqWLtYnPQSqQHKFn81Xj=0Q@mail.gmail.com>
- <CAF8BazBk9xZAZ8SV2jkM6D-ZaYLTSx0xHb7H=+KbzfJZyZpToQ@mail.gmail.com>
-In-Reply-To: <CAF8BazBk9xZAZ8SV2jkM6D-ZaYLTSx0xHb7H=+KbzfJZyZpToQ@mail.gmail.com>
-From: Aleksey Midenkov <midenok@gmail.com>
-Date: Mon, 5 Feb 2024 20:32:32 +0300
-Message-ID: <CAF8BazAQNnpaF0k9=iOd6NidAsDGVNqouoHXtc9pYXVRbKoQBA@mail.gmail.com>
-Subject: IMSM (Intel Matrix Storage Manager) device is not detected by
- 6.6.x/6.7.x but works in 5.19.17
-To: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8cffdf64-d0ee-4e20-8c43-d3010ddf9839@roeck-us.net>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-In 6.x.x /dev/md/imsm0 does not appear at boot.
-The only difference I see in dmesg which seems to be relevant:
+On 24-02-05, Guenter Roeck wrote:
+> On 2/5/24 08:54, Marco Felsch wrote:
+> > Hi David,
+> > 
+> > On 24-02-05, Dr. David Alan Gilbert wrote:
+> > > * Marco Felsch (m.felsch@pengutronix.de) wrote:
+> > > > This add the support to set the optional connector orientation bit which
+> > > > is part of the optional CONFIG_STANDARD_OUTPUT register 0x18 [1]. This
+> > > > allows system designers to connect the tcpc orientation pin directly to
+> > > > the 2:1 ss-mux.
+> > > > 
+> > > > [1] https://www.usb.org/sites/default/files/documents/usb-port_controller_specification_rev2.0_v1.0_0.pdf
+> > > > 
+> > > > Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+> > > > ---
+> > > >   drivers/usb/typec/tcpm/tcpci.c | 43 ++++++++++++++++++++++++++++++++++
+> > > >   include/linux/usb/tcpci.h      |  8 +++++++
+> > > >   2 files changed, 51 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
+> > > > index 7118551827f6..7ce9d4923bc7 100644
+> > > > --- a/drivers/usb/typec/tcpm/tcpci.c
+> > > > +++ b/drivers/usb/typec/tcpm/tcpci.c
+> > > > @@ -67,6 +67,18 @@ static int tcpci_write16(struct tcpci *tcpci, unsigned int reg, u16 val)
+> > > >   	return regmap_raw_write(tcpci->regmap, reg, &val, sizeof(u16));
+> > > >   }
+> > > > +static bool tcpci_check_std_output_cap(struct regmap *regmap, u8 mask)
+> > > > +{
+> > > > +	unsigned int reg;
+> > > > +	int ret;
+> > > > +
+> > > > +	ret = regmap_read(regmap, TCPC_STD_OUTPUT_CAP, &reg);
+> > > > +	if (ret < 0)
+> > > > +		return ret;
+> > > > +
+> > > > +	return (reg & mask) == mask;
+> > > > +}
+> > > > +
+> > > >   static int tcpci_set_cc(struct tcpc_dev *tcpc, enum typec_cc_status cc)
+> > > >   {
+> > > >   	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
+> > > > @@ -301,6 +313,27 @@ static int tcpci_set_polarity(struct tcpc_dev *tcpc,
+> > > >   			   TCPC_TCPC_CTRL_ORIENTATION : 0);
+> > > >   }
+> > > > +static int tcpci_set_orientation(struct tcpc_dev *tcpc,
+> > > > +				 enum typec_orientation orientation)
+> > > > +{
+> > > > +	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
+> > > > +	unsigned int reg;
+> > > > +
+> > > > +	switch (orientation) {
+> > > > +	case TYPEC_ORIENTATION_NONE:
+> > > > +		/* We can't put a single output into high impedance */
+> > > 
+> > > Is that intended to be a fallthrough? If so I guess it needs
+> > > marking as such with a
+> > >                  fallthrough;
+> > 
+> > You need to add it if there is code in between. Since there is no code,
+> > just this comment, it shouldn't be necessary.
+> > 
+> 
+> Still, I think it would be desirable here to clarify that this
+> is not a lost return but intentionally sets
+> TCPC_CONFIG_STD_OUTPUT_ORIENTATION_NORMAL.
 
-  block device autoloading is deprecated and will be removed.
+Sure, I will adapt it once the complete patchset is reviewed.
 
-Printed in 5.x.x, but not in 6.x.x.
+Regards,
+  Marco
 
-/proc/mdstat in 5.x.x:
-
-Personalities : [raid0] [linear] [multipath] [raid1] [raid6] [raid5]
-[raid4] [raid10]
-md126 : active raid0 sdb[1] sda[0]
-     937698304 blocks super external:/md127/0 128k chunks
-
-md127 : inactive sdb[1](S) sda[0](S)
-     4784 blocks super external:imsm
-
-/proc/mdstat in 6.x.x:
-
-Personalities : [linear] [multipath] [raid0] [raid1] [raid6] [raid5]
-[raid4] [raid10]
-unused devices: <none>
-
-Kernel config is the same regarding MD and RAID. Trying to manually
-assemble RAID in 6.x.x leads to:
-
-mdadm: looking for devices for /dev/md0
-mdadm: No OROM/EFI properties for /dev/sda
-mdadm: no RAID superblock on /dev/sda
-mdadm: /dev/sda has no superblock - assembly aborted
-
-While superblock is correctly displayed by 6.x.x as well:
-
-/dev/sda:
-         Magic : Intel Raid ISM Cfg Sig.
-       Version : 1.0.00
-   Orig Family : 38d93728
-        Family : 38d93728
-    Generation : 0000018b
- Creation Time : Unknown
-    Attributes : All supported
-          UUID : b762ef98:7900e4ea:f6395076:47a40d15
-      Checksum : 4c2193cc correct
-   MPB Sectors : 1
-         Disks : 2
-  RAID Devices : 1
-
- Disk01 Serial : YG952401WA480BGN
-         State : active
-            Id : 00000000
-   Usable Size : 937698304 (447.13 GiB 480.10 GB)
-
-[Vortex]:
-      Subarray : 0
-          UUID : b41d5d94:b2438127:629eca5c:4a65945a
-    RAID Level : 0
-       Members : 2
-         Slots : [UU]
-   Failed disk : none
-     This Slot : 1
-   Sector Size : 512
-    Array Size : 1875396608 (894.26 GiB 960.20 GB)
-  Per Dev Size : 937698568 (447.13 GiB 480.10 GB)
- Sector Offset : 0
-   Num Stripes : 3662884
-    Chunk Size : 128 KiB
-      Reserved : 0
- Migrate State : idle
-     Map State : normal
-   Dirty State : clean
-    RWH Policy : off
-     Volume ID : 1
-
- Disk00 Serial : YG952300KC480BGN
-         State : active
-            Id : 00000001
-   Usable Size : 937698304 (447.13 GiB 480.10 GB)
-
-Any info on what happened with IMSM driver in 6.x.x?
-
-I guess CONFIG_MD_AUTODETECT is responsible for that, which is Y in
-both kernels (as well as CONFIG_BLOCK_LEGACY_AUTOLOAD).
---
-@midenok
+> Guenter
+> 
+> > Regards,
+> >    Marco
+> > 
+> > > 
+> > > Dave
+> > > 
+> > > > +	case TYPEC_ORIENTATION_NORMAL:
+> > > > +		reg = TCPC_CONFIG_STD_OUTPUT_ORIENTATION_NORMAL;
+> > > > +		break;
+> > > > +	case TYPEC_ORIENTATION_REVERSE:
+> > > > +		reg = TCPC_CONFIG_STD_OUTPUT_ORIENTATION_FLIPPED;
+> > > > +		break;
+> > > > +	}
+> > > > +
+> > > > +	return regmap_update_bits(tcpci->regmap, TCPC_CONFIG_STD_OUTPUT,
+> > > > +				  TCPC_CONFIG_STD_OUTPUT_ORIENTATION_MASK, reg);
+> > > > +}
+> > > > +
+> > > >   static void tcpci_set_partner_usb_comm_capable(struct tcpc_dev *tcpc, bool capable)
+> > > >   {
+> > > >   	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
+> > > > @@ -808,6 +841,9 @@ struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data)
+> > > >   	if (tcpci->data->vbus_vsafe0v)
+> > > >   		tcpci->tcpc.is_vbus_vsafe0v = tcpci_is_vbus_vsafe0v;
+> > > > +	if (tcpci->data->set_orientation)
+> > > > +		tcpci->tcpc.set_orientation = tcpci_set_orientation;
+> > > > +
+> > > >   	err = tcpci_parse_config(tcpci);
+> > > >   	if (err < 0)
+> > > >   		return ERR_PTR(err);
+> > > > @@ -851,6 +887,13 @@ static int tcpci_probe(struct i2c_client *client)
+> > > >   	if (err < 0)
+> > > >   		return err;
+> > > > +	err = tcpci_check_std_output_cap(chip->data.regmap,
+> > > > +					 TCPC_STD_OUTPUT_CAP_ORIENTATION);
+> > > > +	if (err < 0)
+> > > > +		return err;
+> > > > +
+> > > > +	chip->data.set_orientation = err;
+> > > > +
+> > > >   	chip->tcpci = tcpci_register_port(&client->dev, &chip->data);
+> > > >   	if (IS_ERR(chip->tcpci))
+> > > >   		return PTR_ERR(chip->tcpci);
+> > > > diff --git a/include/linux/usb/tcpci.h b/include/linux/usb/tcpci.h
+> > > > index 467e8045e9f8..f2bfb4250366 100644
+> > > > --- a/include/linux/usb/tcpci.h
+> > > > +++ b/include/linux/usb/tcpci.h
+> > > > @@ -47,6 +47,9 @@
+> > > >   #define TCPC_SINK_FAST_ROLE_SWAP	BIT(0)
+> > > >   #define TCPC_CONFIG_STD_OUTPUT		0x18
+> > > > +#define TCPC_CONFIG_STD_OUTPUT_ORIENTATION_MASK		BIT(0)
+> > > > +#define TCPC_CONFIG_STD_OUTPUT_ORIENTATION_NORMAL	0
+> > > > +#define TCPC_CONFIG_STD_OUTPUT_ORIENTATION_FLIPPED	1
+> > > >   #define TCPC_TCPC_CTRL			0x19
+> > > >   #define TCPC_TCPC_CTRL_ORIENTATION	BIT(0)
+> > > > @@ -127,6 +130,7 @@
+> > > >   #define TCPC_DEV_CAP_2			0x26
+> > > >   #define TCPC_STD_INPUT_CAP		0x28
+> > > >   #define TCPC_STD_OUTPUT_CAP		0x29
+> > > > +#define TCPC_STD_OUTPUT_CAP_ORIENTATION	BIT(0)
+> > > >   #define TCPC_MSG_HDR_INFO		0x2e
+> > > >   #define TCPC_MSG_HDR_INFO_DATA_ROLE	BIT(3)
+> > > > @@ -198,12 +202,16 @@ struct tcpci;
+> > > >    *		Chip level drivers are expected to check for contaminant and call
+> > > >    *		tcpm_clean_port when the port is clean to put the port back into
+> > > >    *		toggling state.
+> > > > + * @set_orientation:
+> > > > + *		Optional; Enable setting the connector orientation
+> > > > + *		CONFIG_STANDARD_OUTPUT (0x18) bit0.
+> > > >    */
+> > > >   struct tcpci_data {
+> > > >   	struct regmap *regmap;
+> > > >   	unsigned char TX_BUF_BYTE_x_hidden:1;
+> > > >   	unsigned char auto_discharge_disconnect:1;
+> > > >   	unsigned char vbus_vsafe0v:1;
+> > > > +	unsigned char set_orientation:1;
+> > > >   	int (*init)(struct tcpci *tcpci, struct tcpci_data *data);
+> > > >   	int (*set_vconn)(struct tcpci *tcpci, struct tcpci_data *data,
+> > > > -- 
+> > > > 2.39.2
+> > > > 
+> > > > 
+> > > -- 
+> > >   -----Open up your eyes, open up your mind, open up your code -------
+> > > / Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \
+> > > \        dave @ treblig.org |                               | In Hex /
+> > >   \ _________________________|_____ http://www.treblig.org   |_______/
+> > > 
+> 
+> 
 
