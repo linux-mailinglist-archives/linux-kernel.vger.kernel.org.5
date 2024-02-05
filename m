@@ -1,143 +1,93 @@
-Return-Path: <linux-kernel+bounces-52774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52776-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9419849C86
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:02:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 449EA849C8D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:04:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B73EDB28428
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:01:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1E68B28AB3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:04:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CCF82374E;
-	Mon,  5 Feb 2024 14:01:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 633C024B26;
+	Mon,  5 Feb 2024 14:03:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qUGTWMmG"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="Xc02vhhA"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DE9C28DD5
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 14:01:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9118D23753;
+	Mon,  5 Feb 2024 14:03:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707141702; cv=none; b=C/H9W1zUxDYDn+0ut0CpREUEwiS1fZ5uf3nwa5o44BedBIUo26qGTh6YzJDrhrf8YZyzPlQVGGBXm1kIFNJRSro8rfs3rPdiKDPLSx2l/7UnKAqz0E7e2y5gGQfP+nAnfzG3694Pnirfbfo+8+BCkgYs9815WCZ125WNjpgDGTk=
+	t=1707141838; cv=none; b=TOwLcgwLWB36JwLhOjPWa5dlRF4pa/CSn0tf9JW5MPgSJT+Pvl23HXaNF2l5FOx8crM6MvENTO8qtejTHa+cRjE13nshv398Wxayv0Mfy5lbWuP+HNVsbzRJzkYNguRZAX9QVkJLIGtyOWT92VDzNNMPvkie7/NVW1FzgBMCk88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707141702; c=relaxed/simple;
-	bh=MyTVmMBQT9yymCwADUCyBGvNYezZ+M55ItXy/0ugLZ8=;
+	s=arc-20240116; t=1707141838; c=relaxed/simple;
+	bh=R9m0seibPqVjuMRXRCtFH8OBXcYn9UV3bCtWarP4u4U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=szXG50qo1So7Ic5LZIH7GGkL/LnRNG63Ete/tuWwFgBAYqCr2b7oh3xctc+WG/N94m1yqS7ZyQBCY5abrdj+FmZppyHn2qT5oI4INuNQyEuxTCGXfSmUHCfvjmcGRI8wpraQCo0AMD2PSQjjFkQ6u5Q8ObNlccZLWP6A5kiSEkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qUGTWMmG; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d74045c463so34245125ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 06:01:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707141700; x=1707746500; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=i3rlc43mBAmmIKSu5xBLrJwDwD6hK6gTpzaGPsgcsxg=;
-        b=qUGTWMmGNBPoB8i9rTw31wfFMWYrAeq02bK68paGUH/CVdiha3qvKTcz/mByhsAm5S
-         7lOVKQhVi7frm1OEW+0AcUClFhAKBVkE+E/wYNXQn+9hmCPL+j9oLSkGG6c6pnzURkfp
-         PdZFBueXfXeWRi/8QgHVwBV/qPtqHcfl9uBrh6NxE63kIQmLK0gQRHTvh8R8Uwdaiul9
-         TShHfY5S3ZBV+IBM74jhn2E+mTJNi0fdz3aZeqyXN7hcZ8r9Q4kYUOkTOUG3uRnb9WK5
-         9IcsDR1wsZqKo0Yl/bpuXdG8EkT6sUcXovAG2u/c2nvjBYUvhuTxhdgmsgKlg+pkioyG
-         34QA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707141700; x=1707746500;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i3rlc43mBAmmIKSu5xBLrJwDwD6hK6gTpzaGPsgcsxg=;
-        b=X/Sie5sJNLJf3UKiX7nEfeEsmJTJszL4xfHTllRV5WGLFQIlAt64GfvoCCjdmj8eLl
-         AuUSmYe5KhDurpwJmypw9aVbcMBmibEflWTJAnGx8yTx4bTIB3xFXZX2KQ7Aunk+BCEJ
-         k9CKAQb94kg2VVJAFqmpwukDbU8qY5oXEzxDSB6QZas/EtQzRLMMxBATScwjkoNLqUcN
-         awf/R6HSu2AYGM8PU4IS1lY+F0mDNu4XPjfvmJGkhQVBb2/3Zpu+xPBuq4pZCLyjrySY
-         a1xIbna7qyeQUGRW2d0p5XP8X19y/mho8U6fciwgTZKCCbMNm7CCANKD10KOjxh7zS85
-         LYgg==
-X-Gm-Message-State: AOJu0YxiCfTFmVYSz9e5FpyyRyCHvrv5UAtAvq/V0jxTkUXHOE2vvgaS
-	JUKUrovhTi7fd0zsCU5MYZthbzcaMGkEpB8cy0A8KnLQYrqm1khw4Yg/zuatjw==
-X-Google-Smtp-Source: AGHT+IGkD3eNo22b10rbAKAEVpZrr9NRYYGZtbsfRgoJbeWb7EKAAMIWc9ujJ7xFK40zBZ7wNKqtrA==
-X-Received: by 2002:a17:902:e981:b0:1d7:244e:531e with SMTP id f1-20020a170902e98100b001d7244e531emr8689792plb.25.1707141700327;
-        Mon, 05 Feb 2024 06:01:40 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUfHNwuYa8MJRPrOHempccXKIzbSidWB3DSkhZaf9iZkwjtK1uCNRodO6SV8a/drGuCro1p6/P1EW33Nl1ufCyCGuFJJuCvil5GGiLzRdydeqxf9kq/byI6Z4OJWbGLuSBMPkX17pPmQ6qUu/LslFIFx4KXxmTe08C2aar9LIyFELU1/64zfkBZi0KEKM5viadAvAMxtl6hw5ovumdtzmUju6BZn19LfxqMu7X3I1AXHdvDCUuskjWjRg==
-Received: from thinkpad ([120.138.12.228])
-        by smtp.gmail.com with ESMTPSA id ju15-20020a170903428f00b001d75c26e857sm6349179plb.288.2024.02.05.06.01.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 06:01:39 -0800 (PST)
-Date: Mon, 5 Feb 2024 19:31:35 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] pci: endpoint: make pci_epf_bus_type const
-Message-ID: <20240205140135.GA9617@thinkpad>
-References: <20240204-bus_cleanup-pci-v1-1-300267a1e99e@marliere.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=cmfNUKpIO3eTy0zCFqO1bFzrkoHGgA8loee0jROtI11SSfDbapNoBkMJbanGyL0GhdGtIaA3B4cOnfttQ0zBto3vuGXSrxsrfLeOTAYv48z/Xe9GviIMOm1SxpH2DR1khP9he4LFZsbW9IUL82KNdbpLAaT68fLszTw9cxMa/ac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=Xc02vhhA; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=T9hBFBJxGOqEN46Rzq3IDVzYp56XQV1MU7sVARX8R3k=; b=Xc02vhhAaIX2iWZ94yDZOmR6CY
+	Uu5VlriWFu85b//G2mCV1xXSsllr8YEVdKyh5S+ym+eBG3c4j4u9aiSo4zuiRYjQ6zLxHBOt3d+U3
+	0HS69k/gU8sE5I5u9Xa5kCKG/xxCMy8KsqP9ZEkB4O2esPT5lFonAnzdKTMmAfA98U6g=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rWzZZ-0072Jq-Ms; Mon, 05 Feb 2024 15:03:45 +0100
+Date: Mon, 5 Feb 2024 15:03:45 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Christian Hewitt <christianshewitt@gmail.com>
+Cc: "David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Grant Grundler <grundler@chromium.org>, linux-usb@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] net: asix: add 0b95:1790 to AX88179A device list
+Message-ID: <ea413b7f-2086-482c-b2e6-77817acf4168@lunn.ch>
+References: <20240205104049.48900-1-christianshewitt@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240204-bus_cleanup-pci-v1-1-300267a1e99e@marliere.net>
+In-Reply-To: <20240205104049.48900-1-christianshewitt@gmail.com>
 
-On Sun, Feb 04, 2024 at 05:28:58PM -0300, Ricardo B. Marliere wrote:
-> Now that the driver core can properly handle constant struct bus_type,
-> move the pci_epf_bus_type variable to be a constant structure as well,
-> placing it into read-only memory which can not be modified at runtime.
+On Mon, Feb 05, 2024 at 10:40:48AM +0000, Christian Hewitt wrote:
+> Add a generic AX88179A entry for the 0b95:1790 device id:
 > 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-- Mani
-
+> kernel: usb 2-1: New USB device found, idVendor=0b95, idProduct=1790, bcdDevice= 2.00
+> kernel: usb 2-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+> kernel: usb 2-1: Product: AX88179A
+> kernel: usb 2-1: Manufacturer: ASIX
+> kernel: usb 2-1: SerialNumber: 00D24DC0
+> kernel: asix 2-1:1.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -32
+> kernel: asix: probe of 2-1:1.0 failed with error -32
+> kernel: ax88179_178a 2-1:1.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0040: -32
+> kernel: ax88179_178a 2-1:1.0 eth1: register 'ax88179_178a' at usb-0000:01:00.0-1, ASIX AX88179 USB 3.0 Gigabit Ethernet, 20:7b:d2:d2:4d:c0
+> 
+> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
 > ---
->  drivers/pci/endpoint/pci-epf-core.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pci/endpoint/pci-epf-core.c b/drivers/pci/endpoint/pci-epf-core.c
-> index 2c32de667937..bf655383e5ed 100644
-> --- a/drivers/pci/endpoint/pci-epf-core.c
-> +++ b/drivers/pci/endpoint/pci-epf-core.c
-> @@ -17,7 +17,7 @@
->  
->  static DEFINE_MUTEX(pci_epf_mutex);
->  
-> -static struct bus_type pci_epf_bus_type;
-> +static const struct bus_type pci_epf_bus_type;
->  static const struct device_type pci_epf_type;
->  
->  /**
-> @@ -507,7 +507,7 @@ static void pci_epf_device_remove(struct device *dev)
->  	epf->driver = NULL;
->  }
->  
-> -static struct bus_type pci_epf_bus_type = {
-> +static const struct bus_type pci_epf_bus_type = {
->  	.name		= "pci-epf",
->  	.match		= pci_epf_device_match,
->  	.probe		= pci_epf_device_probe,
-> 
-> ---
-> base-commit: 1281aa073d3701b03cc6e716dc128df5ba47509d
-> change-id: 20240204-bus_cleanup-pci-f70b6d5a5bcf
-> 
-> Best regards,
-> -- 
-> Ricardo B. Marliere <ricardo@marliere.net>
-> 
+> The change is tested by a LibreELEC (distro) user who reports the NIC to be working
+> fine (and logs support this) but the "Failed to read reg index 0x0000: -32" errors
+> suggest ax88178_info might not be the correct choice. I'm not a serious coder so I
+> need to "ask the audience" for suggestions on what more might be needed?
 
--- 
-மணிவண்ணன் சதாசிவம்
+I would probably start by determining what ax88179_read_cmd() is
+causing that print. Maybe print in addition cmd, and value. Or add a
+WARN() so you get a stack trace.
+
+It might be possible to figure it out by just looking at the code. How
+many places actually pass index=0?
+
+       Andrew
 
