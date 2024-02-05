@@ -1,152 +1,103 @@
-Return-Path: <linux-kernel+bounces-52214-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52215-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13F1184957C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:38:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8644584957F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:38:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB5151F246D4
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:38:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43DA9286E33
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:38:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D2D31173A;
-	Mon,  5 Feb 2024 08:38:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="hDOMFOJP"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA200125C0;
+	Mon,  5 Feb 2024 08:38:13 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD883125A5;
-	Mon,  5 Feb 2024 08:38:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE454125A1;
+	Mon,  5 Feb 2024 08:38:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707122288; cv=none; b=t4MTqcOpA3QN0S/VRevgIDx9p2srIFJtKGuWdld6ib8/uwNfYS7/QRSIwwtOYwEppZ3PVoEZA0v1M4H57IcxXgEUkg+FZ0Jj1L9wi+uw87yaBSD41koe+xSpuYR7c+GJSZWqVFYGkUMb2gnz7f38+Ztu2gGdvTsYy33euCXDO1w=
+	t=1707122293; cv=none; b=d5CRgiq5MR/nSH5Z19eYiDrTpgAfPOsKowtd6jgwTnljF7M5TcHWSQAA2GxtE2Ba5xN3TJRsbyiFrNwGlZN9Hi27itXZhzpoZZe0sVZNaztaeEdJE6qxC214W0LmUnJBYyDVmrcjNWR7yIVMxYSh/Af+Wu12tcBNdoT6MXta2+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707122288; c=relaxed/simple;
-	bh=fypnbFmw93LuJzWosCZ5x03J+bJIeVaGp/VErY4fC3I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=CwlohxQP+2QheZeehIKrLBHHPHKoZLFA7o/6ck20oAkVlAhNE2cQ9GZMRva8wuOCXPhri76Q5KtrBfVdDATGKoTyJlk5f+kOKdwLx+8jGywRCEcmtVia3tKty/8YXxOqW8FAJ0A/y9KbdY0vDC2022qEZW0MmgKLiBIwY+2W9hE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=hDOMFOJP; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4157AOdl010626;
-	Mon, 5 Feb 2024 08:37:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=b16WAGnJxZxdnv2GKc/YTa+d97I0ElUqgHMCcWXI61o=; b=hD
-	OMFOJPxZX4kislMp9uw+wEycPMoxrFGTkptbMIePf4T672fpX0Twuxz+pTLFUt44
-	EYVfxShgL0/14czOgs9yu4Ry+NLKQb9OrIgeEyfntu1JlcEF6XtP0EZ2Tn45ks+o
-	/izb24Bwwt/tY+6rnEBff3312wFLD3CfmLO2c0yfjZOIXa4wcLfm4myGuY9/F4HQ
-	2Bx8CvPfS6fU7l7XVXwGWC2bjAlflkcy9zQfPyQ0gdSe8qB6yEa8MTOC62hcw1iO
-	XMitQhuQJhXAAxvz3iggnqBMMtFUawhlj+Z58SnE0jSpIzfCwg/u5gvN8lBpeKD5
-	YPEKhtZdXcF/v009pLzQ==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w2t9wr7hu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 05 Feb 2024 08:37:56 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4158btC3019565
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 5 Feb 2024 08:37:55 GMT
-Received: from [10.218.19.46] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 5 Feb
- 2024 00:37:50 -0800
-Message-ID: <04788b2c-a212-b8a2-1124-d904f2f61f5d@quicinc.com>
-Date: Mon, 5 Feb 2024 14:07:48 +0530
+	s=arc-20240116; t=1707122293; c=relaxed/simple;
+	bh=lLc5BygeeOtVoQdbWSjoD3/s/gfWDJX3EsYjAce9Y1s=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=p4gcjVCSZfDJ5ahGPKnzIcC37JJVFH/Ap+MbQD7/RhaEKr4dBcEjAAFwoVblYCRCQrmnsKr9Kh3SIuCUpvb7y6AltNefBXUkO3XUnJK8iVPA7aJ6vRBt3SaqevZHiMhR/w87U756SUNYVd8YbUJ8RpwLLkMSFfTmDlmYkrsDSao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 3e0ccbd5b21146ff8736a8c4be8befcf-20240205
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:7721643d-4003-4aa5-8b0e-03e804c7a185,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:-5
+X-CID-INFO: VERSION:1.1.35,REQID:7721643d-4003-4aa5-8b0e-03e804c7a185,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:5d391d7,CLOUDID:77cc2180-4f93-4875-95e7-8c66ea833d57,B
+	ulkID:2402051638047OS757SN,BulkQuantity:0,Recheck:0,SF:44|66|38|24|17|19|1
+	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
+	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 3e0ccbd5b21146ff8736a8c4be8befcf-20240205
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 964794710; Mon, 05 Feb 2024 16:38:03 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id 97F32E000EBC;
+	Mon,  5 Feb 2024 16:38:03 +0800 (CST)
+X-ns-mid: postfix-65C09E6B-427681358
+Received: from kernel.. (unknown [172.20.15.254])
+	by mail.kylinos.cn (NSMail) with ESMTPA id 2BFEAE000EBC;
+	Mon,  5 Feb 2024 16:38:02 +0800 (CST)
+From: Kunwu Chan <chentao@kylinos.cn>
+To: trond.myklebust@hammerspace.com,
+	anna@kernel.org
+Cc: linux-nfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH] NFS: Simplify the allocation of slab caches in nfs_init_nfspagecache
+Date: Mon,  5 Feb 2024 16:38:01 +0800
+Message-Id: <20240205083801.437099-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH 2/3] clk: qcom: gcc-sm8150: Add gcc_parents_0_ao support
-Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        "Stephen
- Boyd" <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Taniya Das <quic_tdas@quicinc.com>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Ajit Pandey
-	<quic_ajipan@quicinc.com>,
-        Imran Shaik <quic_imrashai@quicinc.com>,
-        "Jagadeesh Kona" <quic_jkona@quicinc.com>
-References: <20240123-gcc-ao-support-v1-0-6c18d5310874@quicinc.com>
- <20240123-gcc-ao-support-v1-2-6c18d5310874@quicinc.com>
- <d31a52fc-9073-483d-b84b-1f02a5698a89@linaro.org>
- <77903574-696b-90f9-f136-be5c5d219ba1@quicinc.com>
- <5ae84692-b05d-4a43-aabb-4d2e7d9926d5@linaro.org>
-From: "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>
-In-Reply-To: <5ae84692-b05d-4a43-aabb-4d2e7d9926d5@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: NHlNLkE6ya0dZpA2MSe2gcTJ_o-KsjGc
-X-Proofpoint-ORIG-GUID: NHlNLkE6ya0dZpA2MSe2gcTJ_o-KsjGc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-05_04,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 spamscore=0 mlxscore=0 clxscore=1011 lowpriorityscore=0
- malwarescore=0 suspectscore=0 phishscore=0 impostorscore=0 mlxlogscore=881
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402050065
+Content-Transfer-Encoding: quoted-printable
 
+Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+to simplify the creation of SLAB caches.
 
-On 1/25/2024 3:25 PM, Konrad Dybcio wrote:
->
->
-> On 1/25/24 06:49, Satya Priya Kakitapalli (Temp) wrote:
->>
->> On 1/23/2024 11:17 PM, Konrad Dybcio wrote:
->>>
->>>
->>> On 1/23/24 17:34, Satya Priya Kakitapalli wrote:
->>>> Add active_only support for gcc_parents_0, this is needed because
->>>> some of the clocks under it are critical which would vote on xo
->>>> blocking the suspend.
->>>>
->>>> Signed-off-by: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
->>>> ---
->>>
->>> Is there a need to keep gcc_cpuss_ahb_clk_src around? Do we do any
->>> ratesetting on it? Should we ever turn it off?
->>>
->>
->> The branch clocks under gcc_cpuss_ahb_clk_src are critical clocks, 
->> which are running at 19.2Mhz causing vote on XO during suspend. As of 
->> now no rate setting is happening but this rcg is useful to get the 
->> exact rates from debugfs. Hence this change is needed to avoid XO 
->> shutdown issues.
->
-> So, if I underderstood you correctly, this clock serves no purpose other
-> than getting rate?
->
-> In this case, I'd say we should de-register it from the clock driver and
-> use debugcc [1] (contributions welcome!) for precise measurements.
->
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+ fs/nfs/pagelist.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-Although currently there is no rate-setting happening now, its better to 
-keep the rcg modelling as is, considering that it might be needed if 
-some use case arises in future.
-
-
-
+diff --git a/fs/nfs/pagelist.c b/fs/nfs/pagelist.c
+index 6efb5068c116..f04cc3274fda 100644
+--- a/fs/nfs/pagelist.c
++++ b/fs/nfs/pagelist.c
+@@ -1561,10 +1561,7 @@ void nfs_pageio_stop_mirroring(struct nfs_pageio_d=
+escriptor *pgio)
+=20
+ int __init nfs_init_nfspagecache(void)
+ {
+-	nfs_page_cachep =3D kmem_cache_create("nfs_page",
+-					    sizeof(struct nfs_page),
+-					    0, SLAB_HWCACHE_ALIGN,
+-					    NULL);
++	nfs_page_cachep =3D KMEM_CACHE(nfs_page, SLAB_HWCACHE_ALIGN);
+ 	if (nfs_page_cachep =3D=3D NULL)
+ 		return -ENOMEM;
+=20
+--=20
+2.39.2
 
 
