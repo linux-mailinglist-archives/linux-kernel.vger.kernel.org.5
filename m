@@ -1,224 +1,179 @@
-Return-Path: <linux-kernel+bounces-53212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 765F384A239
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:29:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F3F084A26F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:35:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A9511C232A7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:29:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E68C81F25C8E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:35:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 274E3481DB;
-	Mon,  5 Feb 2024 18:26:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF1E048CFD;
+	Mon,  5 Feb 2024 18:33:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="ZEYJAhpS"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WK8+KSXi"
+Received: from mail-oi1-f202.google.com (mail-oi1-f202.google.com [209.85.167.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4852481AC
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 18:25:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60B714878B
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 18:33:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707157561; cv=none; b=IuGdvnk+pwCyjD2QzmwksJbTKRUYPi82Od45UMUT+GKJ9KS2UGGlAd6bOZ7tyPcau43XvBTVHxjdzrb3mSG9bUaAS/wo9AqrzI2hfVwvXMmswCeM6zswkn3V2e+2KmodlBW6ZTeBY+aM2yPfHzPLAxrT/R7wU1SMlmEA1Xcaly0=
+	t=1707157997; cv=none; b=G7sgLZtJMhSSE5WsNlBJfwWtjzXuo7Vy/sbYyhTI1hoEgFPVo7/YXOlvM6PS73bCtZk9UhbaGPZekT6+6lSEZ7cD2w94PoTFT9LH9BcGnTdm/2wkJop8ygTXC5QL3z7lVdOTrOB+sFqfIBR2Fw1jRjserXQnHEdPI/MX01+V7uE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707157561; c=relaxed/simple;
-	bh=OhVjfgQ6ypsXAl4aTp6y2RSd+qg4DOU5DAB4K9X8HUE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K2FFzBQsIsbiUw2H+KysS0pPTQFhg+ciTG/ummuI9M9lzatm1lViFmoL2AbxZlDuxsnU7OYgtxDdlk+6QXwajEKh7pXvMeH3O1NYoDHLC6k/qgD0L2e57Sxjyc4T//IuTxUGAaFj8xcF/JA18SR58bZjk9k7KvUia8NmTKrJuRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=ZEYJAhpS; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d780a392fdso40313925ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 10:25:59 -0800 (PST)
+	s=arc-20240116; t=1707157997; c=relaxed/simple;
+	bh=hTxsNRIaGRjBwJpqKwaNDMab2a4fYA69wIIdAR8tCCI=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=F67zPkS7qYLZj3Y7c2OY+qek4NpcBpODIUx38XYrmQTJ7M8rNr4BZYTJqOpGEzVTL8qmUw0V+ntbS1SUgiynzeLZDkpU9DNPxTZBVUIGzylOLQavsXJj64e6uL7tn1am/8Wcjp/cg8AbgydGnzE5Oxo+OpgeG296su+ilupgEkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WK8+KSXi; arc=none smtp.client-ip=209.85.167.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-oi1-f202.google.com with SMTP id 5614622812f47-3bfb92805fbso2893032b6e.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 10:33:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1707157559; x=1707762359; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8YYhJmNwACs7xWzxaru2OLoYfAu9N74lwcPjzUDB+xg=;
-        b=ZEYJAhpSf25DJNLMudbcAfzw1CZQMJLzK/SqywQ5irB9Sq2jplxCSBCbNAxBwS+Txn
-         0L7nwuaesxFlBH0w6dg1Sgv904eVAU3pbZtPqeAE1fuHmxWkP4x3w9iC7mI7SgKqiL0P
-         N1c+a55ibd5Orfi5+g50OkgB/c/mIxdCx5Ftg=
+        d=google.com; s=20230601; t=1707157994; x=1707762794; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=y6ZPCrlgHUcHY17Dx/9azP9InbsH3BOK0AE11r+Q4/4=;
+        b=WK8+KSXimL1AuvCVX0nYehCiSbDp7qRXxCdHBKJtUNXe/hhTR/03gTnuZK/qyqp9vl
+         VrB8Edx2Z5fGkxo7zMSeX4bzCNKGdrJkyOcesMRi1dIsZpZwpTEjmu/ly3NOZV6cLfuw
+         KTeUGPQU6rME9WeVswHF5ib8jMjZODu5HkC5pLpDdygmFt592+GKkGldCWZhprB4f946
+         3oCt/ec7yuzK3NQ0QPsGIymXMMgn7X6bZ8q4YdWoDTtpjuSCMMZP6j4L6A1HC5sCjh3r
+         f/YSymFJWnga8UMUnGn/LJeDUdT3HFDflHRyc7O8P6wncxYaPAlymvS3fW4nI/lwAQAA
+         HHbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707157559; x=1707762359;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8YYhJmNwACs7xWzxaru2OLoYfAu9N74lwcPjzUDB+xg=;
-        b=vg/tbT5aXT9OL+wj7zKhiAXgkKeeeRTepyGQ/hkjkm2/TDu1tsJ9jqcaC9h5SaHlDH
-         RmZf4g38ja6ryB7gbaEOuAfFlghHzHQhqUh41OVNBMAU0GPX2TdfOBXMoyR3NeX9Nfi6
-         QJAy9MWRVg/SF+TM4fYs3WElKRFSw7Z0NWAZXmfdpoCK7KIS8lq73rLuhJUMx6/n3jHk
-         amPmj1QCSYGO2X/9YazMNV0/FsUa59l4yG5OdUgtHcu0TjeGMszRYRUmgRQ3UazIm92p
-         4IgwN94N/v7vQuH39j28VwiC5Zdso8AiLrfTM3yLXIC3qIu3R2zeyB7nA80qmAza2zZi
-         +LqQ==
-X-Gm-Message-State: AOJu0YzqrhnoUMflFp4cpIsT9xwvARoQHsCqw6kfxrhLYdvHVEFVcnNC
-	JdhGwHwpZrsYyJ5dhV6eq5tD/+CvZ/Z6euLWMksN5qqCxZ3fankPGov22O/1X9/jkR2pi7Rss/C
-	0ZfvAC60IKe9b/iqLOIcqy3frAsIwWbB1Y0z53ghIak+bHc25Z8scKT74tc8G1zCxrniEzGhAdn
-	swqN005pEqjLTvZGGJvbgFKQhiK1rwUAcA6ml1obVXwDU=
-X-Google-Smtp-Source: AGHT+IGZSu01SCfpuVAoKxEEGhseye5jcYZ2OTQbBwLSosCOhrRB2L0bvS8C7HVgC2MzoPFWHatu+Q==
-X-Received: by 2002:a17:902:6f16:b0:1d9:742b:fedd with SMTP id w22-20020a1709026f1600b001d9742bfeddmr388747plk.34.1707157558764;
-        Mon, 05 Feb 2024 10:25:58 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUbE7iGxVCPUBH4KvD0r1Rt49gMPSuQYHBQM6KluyR+1rAgHNElceTU1aObRosTlZRh1FwTv1OVSOIf5VGTjAwMhd8Xt2ohpeA+TlBhB25QhdhzTGBdE3ky5Ly2mQFPUURjnLLXpkP7V0yvChDB3MHjgqdb95/LIxNcHrt3OPWTXCSy1W8i1mP2JAETIcueqC1VCOhWPZUjKJlAfeYpMcsRgwqmeW/AIqBe2Ll/QP8ytuhKCvwSk8zJVNm2rMXjBS7v4r2WCPZw9dPf4XXIwg1wQHfPe1mozEAE1ZyTliyzm4tbIDfCZbZQZTYE/sDVy8ZcfcMOe5hCYpNtqjaK70F6w16d3Y1cQsjnGz7pwSTQS97sPVP9HJW5NbUIyIed5uExBAzifS8OSNOShYXISKThexfg5lqTXlALwMxkIgeZdFlfrI+YbM7GE3tE/EfeEvGkoKk4MIrk0dy+qxGTkwcIgG+b4mk0Qvjmwk1Ic/Ij1hLRr1BHlAs9hb4mBBJ3Gvd70gcpQehyK2WeY6yr/Veo52kvsaNLIvPGn2vG5EI=
-Received: from fastly.com (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
-        by smtp.gmail.com with ESMTPSA id iy15-20020a170903130f00b001d8f3c7fb96sm170642plb.166.2024.02.05.10.25.57
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 05 Feb 2024 10:25:58 -0800 (PST)
-Date: Mon, 5 Feb 2024 10:25:55 -0800
-From: Joe Damato <jdamato@fastly.com>
-To: linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc: chuck.lever@oracle.com, jlayton@kernel.org, linux-api@vger.kernel.org,
-	brauner@kernel.org, edumazet@google.com, davem@davemloft.net,
-	alexander.duyck@gmail.com, sridhar.samudrala@intel.com,
-	kuba@kernel.org, willemdebruijn.kernel@gmail.com, weiwan@google.com,
-	David.Laight@ACULAB.COM, arnd@arndb.de,
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-	"open list:FILESYSTEMS (VFS and infrastructure)" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH net-next v5 1/3] eventpoll: support busy poll per epoll
- instance
-Message-ID: <20240205182555.GA10463@fastly.com>
-References: <20240131180811.23566-1-jdamato@fastly.com>
- <20240131180811.23566-2-jdamato@fastly.com>
+        d=1e100.net; s=20230601; t=1707157994; x=1707762794;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=y6ZPCrlgHUcHY17Dx/9azP9InbsH3BOK0AE11r+Q4/4=;
+        b=hstTyZFtulUpFkUC2o1NYJylgMUKYz+km6lUQgEBhyJ5S6HVejvKkl43x4a+pmAcwR
+         2U52rC7Z1lzpY9Po8Y9bhmTYKgyxBiL1GDn5a0HghFfpvapQS8CBlqysqMBT9VfTBWR9
+         eYFrkaMKDwUi/kBEX/Hw+XGgUGkBJPGSJsSuWIXU+L4vNI1rrPoE0kqqCNqp3l45wUnW
+         YKbTtgY0lPykaF/YehpiWvRQM8/gUbjVbuLarfx+8Soaq5D3HL8abNtIta4+8u73DLku
+         uxvJF19VxvV3RHklXDI/TT3jtHq5J6rnb3Rd2OzAvGoHG+gOqs2tbSl6plZtYopl1+xt
+         4Dpg==
+X-Gm-Message-State: AOJu0YzZ91O3Dk8rE3s16cMVRqSTBogIaOIXucsKKQyXWntVp4ZWCczY
+	OG4l+ZaHxAUCaPLebkuJz9Nzk0TPA0v2Z8aHNqxLDyBiv7rwaPArIZpgMNwXY3F3kqE5VjO9Dyb
+	lWA==
+X-Google-Smtp-Source: AGHT+IFtnmfBtSmrd4IucuU5NkyRfvur5Auy6ZOBw6FDjoMVMNgtnq9HbpzBqE1HYDOpuwt7aoDovxA7+hk=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1081:b0:dc6:b7c2:176e with SMTP id
+ v1-20020a056902108100b00dc6b7c2176emr1704153ybu.4.1707157653888; Mon, 05 Feb
+ 2024 10:27:33 -0800 (PST)
+Date: Mon, 5 Feb 2024 10:27:32 -0800
+In-Reply-To: <ZcAoZ/uZqJHFNfLC@yzhao56-desk.sh.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240131180811.23566-2-jdamato@fastly.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Mime-Version: 1.0
+References: <20240203003518.387220-1-seanjc@google.com> <ZcAoZ/uZqJHFNfLC@yzhao56-desk.sh.intel.com>
+Message-ID: <ZcEolLQYSlLEVslN@google.com>
+Subject: Re: [PATCH v3] KVM: x86/mmu: Retry fault before acquiring mmu_lock if
+ mapping is changing
+From: Sean Christopherson <seanjc@google.com>
+To: Yan Zhao <yan.y.zhao@intel.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Kai Huang <kai.huang@intel.com>, Yuan Yao <yuan.yao@linux.intel.com>, 
+	Xu Yilun <yilun.xu@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
 
-On Wed, Jan 31, 2024 at 06:08:03PM +0000, Joe Damato wrote:
-> Allow busy polling on a per-epoll context basis. The per-epoll context
-> usec timeout value is preferred, but the pre-existing system wide sysctl
-> value is still supported if it specified.
+On Mon, Feb 05, 2024, Yan Zhao wrote:
+> On Fri, Feb 02, 2024 at 04:35:18PM -0800, Sean Christopherson wrote:
+> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > index 3c193b096b45..8ce9898914f1 100644
+> > --- a/arch/x86/kvm/mmu/mmu.c
+> > +++ b/arch/x86/kvm/mmu/mmu.c
+> > @@ -4415,6 +4415,25 @@ static int kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
+> >  	if (unlikely(!fault->slot))
+> >  		return kvm_handle_noslot_fault(vcpu, fault, access);
+> >  
+> > +	/*
+> > +	 * Pre-check for a relevant mmu_notifier invalidation event prior to
+> > +	 * acquiring mmu_lock.  If there is an in-progress invalidation and the
+> > +	 * kernel allows preemption, the invalidation task may drop mmu_lock
+> > +	 * and yield in response to mmu_lock being contended, which is *very*
+> > +	 * counter-productive as this vCPU can't actually make forward progress
+> > +	 * until the invalidation completes.  This "unsafe" check can get false
+> > +	 * negatives, i.e. KVM needs to re-check after acquiring mmu_lock.
+> > +	 *
+> > +	 * Do the pre-check even for non-preemtible kernels, i.e. even if KVM
+> > +	 * will never yield mmu_lock in response to contention, as this vCPU is
+> > +	 * *guaranteed* to need to retry, i.e. waiting until mmu_lock is held
+> > +	 * to detect retry guarantees the worst case latency for the vCPU.
+> > +	 */
+> > +	if (mmu_invalidate_retry_gfn_unsafe(vcpu->kvm, fault->mmu_seq, fault->gfn)) {
+> > +		kvm_release_pfn_clean(fault->pfn);
+> > +		return RET_PF_RETRY;
+> > +	}
+> > +
+> Could we also add this pre-check before fault in the pfn? like
+> @@ -4404,6 +4404,8 @@ static int kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
 > 
-> Note that this change uses an xor: either per epoll instance busy polling
-> is enabled on the epoll instance or system wide epoll is enabled. Enabling
-> both is disallowed.
+>         fault->mmu_seq = vcpu->kvm->mmu_invalidate_seq;
+>         smp_rmb();
+> +       if (mmu_invalidate_retry_gfn_unsafe(vcpu->kvm, fault->mmu_seq, fault->gfn))
+> +               return RET_PF_CONTINUE;
+> 
+>         ret = __kvm_faultin_pfn(vcpu, fault);
+>         if (ret != RET_PF_CONTINUE)
+> 
+> Though the mmu_seq would be always equal in the check, it can avoid repeated faulting
+> and release pfn for vain during a long zap cycle.
 
-I just realized that I updated the code below to use a an or (||) instead
-of xor (^), but forgot to update the commit message.
+Just to be super claer, by "repeated faulting", you mean repeated faulting in the
+primary MMU, correct?
 
-I can fix this and send a v6.
+Yeah, I agree, that makes sense.  The only question is whether to check before
+and after, or only before.  When abusing KSM, I see ~99.5% of all invalidations
+being detected before (21.5M out of just over 21.6M).
 
-> 
-> Signed-off-by: Joe Damato <jdamato@fastly.com>
-> ---
->  fs/eventpoll.c | 49 +++++++++++++++++++++++++++++++++++++++++++++----
->  1 file changed, 45 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/eventpoll.c b/fs/eventpoll.c
-> index 3534d36a1474..ce75189d46df 100644
-> --- a/fs/eventpoll.c
-> +++ b/fs/eventpoll.c
-> @@ -227,6 +227,8 @@ struct eventpoll {
->  #ifdef CONFIG_NET_RX_BUSY_POLL
->  	/* used to track busy poll napi_id */
->  	unsigned int napi_id;
-> +	/* busy poll timeout */
-> +	u64 busy_poll_usecs;
->  #endif
->  
->  #ifdef CONFIG_DEBUG_LOCK_ALLOC
-> @@ -386,12 +388,44 @@ static inline int ep_events_available(struct eventpoll *ep)
->  		READ_ONCE(ep->ovflist) != EP_UNACTIVE_PTR;
->  }
->  
-> +/**
-> + * busy_loop_ep_timeout - check if busy poll has timed out. The timeout value
-> + * from the epoll instance ep is preferred, but if it is not set fallback to
-> + * the system-wide global via busy_loop_timeout.
-> + *
-> + * @start_time: The start time used to compute the remaining time until timeout.
-> + * @ep: Pointer to the eventpoll context.
-> + *
-> + * Return: true if the timeout has expired, false otherwise.
-> + */
-> +static inline bool busy_loop_ep_timeout(unsigned long start_time, struct eventpoll *ep)
-> +{
-> +#ifdef CONFIG_NET_RX_BUSY_POLL
-> +	unsigned long bp_usec = READ_ONCE(ep->busy_poll_usecs);
-> +
-> +	if (bp_usec) {
-> +		unsigned long end_time = start_time + bp_usec;
-> +		unsigned long now = busy_loop_current_time();
-> +
-> +		return time_after(now, end_time);
-> +	} else {
-> +		return busy_loop_timeout(start_time);
-> +	}
-> +#endif
-> +	return true;
-> +}
-> +
->  #ifdef CONFIG_NET_RX_BUSY_POLL
-> +static bool ep_busy_loop_on(struct eventpoll *ep)
-> +{
-> +	return !!ep->busy_poll_usecs || net_busy_loop_on();
-> +}
-> +
->  static bool ep_busy_loop_end(void *p, unsigned long start_time)
->  {
->  	struct eventpoll *ep = p;
->  
-> -	return ep_events_available(ep) || busy_loop_timeout(start_time);
-> +	return ep_events_available(ep) || busy_loop_ep_timeout(start_time, ep);
->  }
->  
->  /*
-> @@ -404,7 +438,7 @@ static bool ep_busy_loop(struct eventpoll *ep, int nonblock)
->  {
->  	unsigned int napi_id = READ_ONCE(ep->napi_id);
->  
-> -	if ((napi_id >= MIN_NAPI_ID) && net_busy_loop_on()) {
-> +	if ((napi_id >= MIN_NAPI_ID) && ep_busy_loop_on(ep)) {
->  		napi_busy_loop(napi_id, nonblock ? NULL : ep_busy_loop_end, ep, false,
->  			       BUSY_POLL_BUDGET);
->  		if (ep_events_available(ep))
-> @@ -430,7 +464,8 @@ static inline void ep_set_busy_poll_napi_id(struct epitem *epi)
->  	struct socket *sock;
->  	struct sock *sk;
->  
-> -	if (!net_busy_loop_on())
-> +	ep = epi->ep;
-> +	if (!ep_busy_loop_on(ep))
->  		return;
->  
->  	sock = sock_from_file(epi->ffd.file);
-> @@ -442,7 +477,6 @@ static inline void ep_set_busy_poll_napi_id(struct epitem *epi)
->  		return;
->  
->  	napi_id = READ_ONCE(sk->sk_napi_id);
-> -	ep = epi->ep;
->  
->  	/* Non-NAPI IDs can be rejected
->  	 *	or
-> @@ -466,6 +500,10 @@ static inline void ep_set_busy_poll_napi_id(struct epitem *epi)
->  {
->  }
->  
-> +static inline bool ep_busy_loop_on(struct eventpoll *ep)
-> +{
-> +	return false;
-> +}
->  #endif /* CONFIG_NET_RX_BUSY_POLL */
->  
->  /*
-> @@ -2058,6 +2096,9 @@ static int do_epoll_create(int flags)
->  		error = PTR_ERR(file);
->  		goto out_free_fd;
->  	}
-> +#ifdef CONFIG_NET_RX_BUSY_POLL
-> +	ep->busy_poll_usecs = 0;
-> +#endif
->  	ep->file = file;
->  	fd_install(fd, file);
->  	return fd;
-> -- 
-> 2.25.1
-> 
+I think it makes sense to also check after getting the pfn?  The check is super
+cheap, especially when there isn't an invalidation event as the checks should all
+be quite predictable and cache hot.
+
+> > +/*
+> > + * This lockless version of the range-based retry check *must* be paired with a
+> > + * call to the locked version after acquiring mmu_lock, i.e. this is safe to
+> > + * use only as a pre-check to avoid contending mmu_lock.  This version *will*
+> > + * get false negatives and false positives.
+> > + */
+> > +static inline bool mmu_invalidate_retry_gfn_unsafe(struct kvm *kvm,
+> > +						   unsigned long mmu_seq,
+> > +						   gfn_t gfn)
+> > +{
+> > +	/*
+> > +	 * Use READ_ONCE() to ensure the in-progress flag and sequence counter
+> > +	 * are always read from memory, e.g. so that checking for retry in a
+> > +	 * loop won't result in an infinite retry loop.  Don't force loads for
+> > +	 * start+end, as the key to avoiding infinite retry loops is observing
+> > +	 * the 1=>0 transition of in-progress, i.e. getting false negatives
+> > +	 * due to stale start+end values is acceptable.
+> > +	 */
+> > +	if (unlikely(READ_ONCE(kvm->mmu_invalidate_in_progress)) &&
+> > +	    gfn >= kvm->mmu_invalidate_range_start &&
+> > +	    gfn < kvm->mmu_invalidate_range_end)
+> > +		return true;
+> > +
+> Is a smp_rmb() before below check better, given this retry is defined in a header
+> for all platforms?
+
+No, because the unsafe check very deliberately doesn't provide any ordering
+guarantees.  The READ_ONCE() is purely to ensure forward progress.  And trying to
+provide ordering for mmu_invalidate_in_progress is rather nonsensical.  The smp_rmb()
+in mmu_invalidate_retry() ensures the caller will see a different mmu_invalidate_seq
+or an elevated mmu_invalidate_in_progress.
+
+For this code, the order in which mmu_invalidate_seq and mmu_invalidate_in_progress
+are checked truly doesn't matter as the range-based checks are will get false
+negatives when performed outside of mmu_lock.   And from a correctness perspective,
+there are zero constraints on when the checks are performed (beyond the existing
+constraints from the earlier smp_rmb() and acquiring mmu_lock).
+
+If an arch wants ordering guarantees, it can simply use mmu_invalidate_retry()
+without a gfn, which has the advantage of being safe outside of mmu_lock (the
+obvious disadvantage is that it's very imprecise).
 
