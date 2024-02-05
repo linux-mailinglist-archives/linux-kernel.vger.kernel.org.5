@@ -1,171 +1,119 @@
-Return-Path: <linux-kernel+bounces-52042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96A3284933E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 06:15:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60201849342
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 06:17:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C8221F22890
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 05:15:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8513E1C214B1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 05:17:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4273B641;
-	Mon,  5 Feb 2024 05:15:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Vlu0xU7T"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 103F7B66C;
+	Mon,  5 Feb 2024 05:17:50 +0000 (UTC)
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF6B5B653;
-	Mon,  5 Feb 2024 05:15:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35A4EB653;
+	Mon,  5 Feb 2024 05:17:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707110120; cv=none; b=TtM+GnQ+GZY2KWRQRhFOCd8yH3Bno1e1nETYz41N27KTTWkylpiELT72NOCNFKlNzxbLAcdgZjn3X7jnCTHvt97MYfygMwx4//GO9HryG3G016wsnSPOadtHZNcc5Z9+kL6B6Azm8fUwbrbotsXXUqeIu28ko51inbB2keHuJ7U=
+	t=1707110269; cv=none; b=YYx7okbzjPx0vBLYwJ34xr9XA/1sEIS/BY9r4xVG5n6s5LeyLjXalvJDuEoTMc0JYNsrhBElmuB/YE0cykWithoN1lnUHUjos6Dkj2jGqMTxeik0mE/ovO2ZfcgQt/ffzq0t30KXZ8r05OhgD2KpV38lEbj7Ia/VFeSv4cHuLL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707110120; c=relaxed/simple;
-	bh=4cshe81c+c4KPXrh4GlD0OY8vPrb9Ydb6nlH4wB5nG0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=KbJZbgOwehEsz2WJBqkEiX1jU9t8YCSJxJcdk+UDyguJ0OIID7bqEjzUExW/C6q9ew/ghVwZXG0YAKK3H+2lEGRBoXKhKcpqV3nfHui81CHpRmNpTFFj0RUky8zI9jlUcOOdM66rSdozYW8IFxNWnU2YQvZpootA63xWlgPOZ8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=Vlu0xU7T; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1707110116;
-	bh=SE6rKr345tSTzjzjAAbedmFAtcE9ciFufYS0S09BJ+w=;
-	h=Date:From:To:Cc:Subject:From;
-	b=Vlu0xU7TE6V7Mfd4qBJY0r0BFAHfl4mUg2qtT9dKp/BxUCmP8+/GiDCnU/mBATkRM
-	 /FGrkZtaevMi65o0dTF6QjIFVWayxLlJZXrrSdTpM+LQGLTaVYU9wtbzkfxUJm2Y4/
-	 51gl3SCJ8Kx5OFaGyBFsSVJSWRPreR7zxq+rFVGHA+oDxSrHDxR4UNPBj7YLHwq+wV
-	 rqNs2DAlR8YDSPRFEt1rmpM5FW+WBnMaWZ/JMB1z8nuMWzorusWGPdUveKT/AhnGD8
-	 IFbpqvFGjKkUZXDd7Cpfsps7VErWe1wLdb3r7QtcJdVbsqxldZGCOFPAldRhHVg6Ie
-	 XpgwxthKSCwNw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TSvhh0Vljz4wd0;
-	Mon,  5 Feb 2024 16:15:16 +1100 (AEDT)
-Date: Mon, 5 Feb 2024 16:15:15 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: boot failure after merge of the vfs-brauner tree
-Message-ID: <20240205161515.598ae7f6@canb.auug.org.au>
+	s=arc-20240116; t=1707110269; c=relaxed/simple;
+	bh=qubpR7LPB+b8wshYzjTWwzDjmjSjePFbHbSFE8IbVEw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=J0e3caUZ5nJuQADERRTe7Lf2Q9U6ilTM95St/z+m2/Pn4wh652ecdjsd1zd1lacR5y2+oxuGTx7DeK/FfZQfzsQnOl3+EVWiKIHuJl3EUVrJpcJDHWELw1NAIpm5yrNgtoA1pxnkoIMuJCPUm+2wHjXOZBfDmyfWdfqEuT0bo3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; arc=none smtp.client-ip=130.133.4.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=physik.fu-berlin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.97)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1rWrMU-00000002fYm-4409; Mon, 05 Feb 2024 06:17:42 +0100
+Received: from port-92-192-74-82.dynamic.as20676.net ([92.192.74.82] helo=suse-laptop.fritz.box)
+          by inpost2.zedat.fu-berlin.de (Exim 4.97)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1rWrMU-00000001Wva-2nrX; Mon, 05 Feb 2024 06:17:42 +0100
+Message-ID: <26d729c173a2ba0b536de4b41dacd403793d94c7.camel@physik.fu-berlin.de>
+Subject: Re: [PATCH] dma: dma-sysfs: make dma_subsys const
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: "Ricardo B. Marliere" <ricardo@marliere.net>, Yoshinori Sato
+	 <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>
+Cc: linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>
+Date: Mon, 05 Feb 2024 06:17:41 +0100
+In-Reply-To: <20240204-bus_cleanup-sh-v1-1-44ced951bb16@marliere.net>
+References: <20240204-bus_cleanup-sh-v1-1-44ced951bb16@marliere.net>
+Autocrypt: addr=glaubitz@physik.fu-berlin.de; prefer-encrypt=mutual;
+ keydata=mQINBE3JE9wBEADMrYGNfz3oz6XLw9XcWvuIxIlPWoTyw9BxTicfGAv0d87wngs9U+d52t/REggPePf34gb7/k8FBY1IgyxnZEB5NxUb1WtW0M3GUxpPx6gBZqOm7SK1ZW3oSORw+T7Aezl3Zq4Nr4Nptqx7fnLpXfRDs5iYO/GX8WuL8fkGS/gIXtxKewd0LkTlb6jq9KKq8qn8/BN5YEKqJlM7jsENyA5PIe2npN3MjEg6p+qFrmrzJRuFjjdf5vvGfzskrXCAKGlNjMMA4TgZvugOFmBI/iSyV0IOaj0uKhes0ZNX+lQFrOB4j6I5fTBy7L/T3W/pCWo3wVkknNYa8TDYT73oIZ7Aimv+k7OzRfnxsSOAZT8Re1Yt8mvzr6FHVFjr/VdyTtO5JgQZ6LEmvo4Ro+2ByBmCHORCQ0NJhD1U3avjGfvfslG999W0WEZLTeaGkBAN1yG/1bgGAytQQkD9NsVXqBy7S3LVv9bB844ysW5Aj1nvtgIz14E2WL8rbpfjJMXi7B5ha6Lxf3rFOgxpr6ZoEn+bGG4hmrO+/ReA4SerfMqwSTnjZsZvxMJsx2B9c8DaZE8GsA4I6lsihbJmXhw8i7Cta8Dx418wtEbXhL6m/UEk60O7QD1VBgGqDMnJDFSlvKa9D+tZde/kHSNmQmLLzxtDbNgBgmR0jUlmxirijnm8bwARAQABtEBKb2huIFBhdWwgQWRyaWFuIEdsYXViaXR6IChEZWJpYW4gUHJvamVjdCkgPGdsYXViaXR6QGRlYmlhbi5vcmc+iQI3BBMBCAAhBQJRnmPwAhsDBQsJCAcDBRUKCQgLBRYCAwEAAh4BAheAAAoJEHQmOzf1tfkTF0gQAJgvGiKf5YW6+Qyss1qGwf+KHXb/6gIThY6GpSIro9vL/UxaakRCOloaXXAs3KpgBULOO8+prqU8GIqcd8tE3YvQFvvO3rN+8bhOiiD0lFmQSEHcpCW5ZRpdh
+	J5wy1t9Ddb1K/7XGzen3Uzx9bjKgDyikM3js1VtJHaFr8FGt5gtZIBDgp8QM9IRCv/32mPQxqmsaTczEzSNxTBM6Tc2NwNLus3Yh5OnFdxk1jzk+Ajpnqd/E/M7/CU5QznDgIJyopcMtOArv9Er+xe3gAXHkFvnPqcP+9UpzHB5N0HPYn4k4hsOTiJ41FHUapq8d1AuzrWyqzF9aMUi2kbHJdUmt9V39BbJIgjCysZPyGtFhR42fXHDnPARjxtRRPesEhjOeHei9ioAsZfT6bX+l6kSf/9gaxEKQe3UCXd3wbw68sXcvhzBVBxhXM91+Y7deHhNihMtqPyEmSyGXTHOMODysRU453E+XXTr2HkZPx4NV1dA8Vlid2NcMQ0iItD+85xeVznc8xquY/c1vPBeqneBWaE530Eo5e3YA7OGrxHwHbet3E210ng+xU8zUjQrFXMJm3xNpOe45RwmhCAt5z1gDTk5qNgjNgnU3mDp9DX6IffS3g2UJ02JeTrBY4hMpdVlmGCVOm9xipcPHreVGEBbM4eQnYnwbaqjVBBvy2DyfyN/tFRKb2huIFBhdWwgQWRyaWFuIEdsYXViaXR6IChGcmVpZSBVbml2ZXJzaXRhZXQgQmVybGluKSA8Z2xhdWJpdHpAcGh5c2lrLmZ1LWJlcmxpbi5kZT6JAlEEEwEIADsCGwMFCwkIBwMFFQoJCAsFFgIDAQACHgECF4AWIQRi/4p1hOApVpVGAAZ0Jjs39bX5EwUCWhQoUgIZAQAKCRB0Jjs39bX5Ez/ID/98r9c4WUSgOHVPSMVcOVziMOi+zPWfF1OhOXW+atpTM4LSSp66196xOlDFHOdNNmO6kxckXAX9ptvpBc0mRxa7OrC168fKzqR7P75eTsJnVaOu+uI/vvgsbUIosYdkkekCxDAbYCUwmzNotIspnFbxiSPMNrpw7Ud/yQkS9TDYeXnrZDhBp7p5+naWCD/yMvh7yVCA4Ea8+xDVoX
+	+kjv6EHJrwVupOpMa39cGs2rKYZbWTazcflKH+bXG3FHBrwh9XRjA6A1CTeC/zTVNgGF6wvw/qT2x9tS7WeeZ1jvBCJub2cb07qIfuvxXiGcYGr+W4z9GuLCiWsMmoff/Gmo1aeMZDRYKLAZLGlEr6zkYh1Abtiz0YLqIYVbZAnf8dCjmYhuwPq77IeqSjqUqI2Cb0oOOlwRKVWDlqAeo0Bh8DrvZvBAojJf4HnQZ/pSz0yaRed/0FAmkVfV+1yR6BtRXhkRF6NCmguSITC96IzE26C6n5DBb43MR7Ga/mof4MUufnKADNG4qz57CBwENHyx6ftWJeWZNdRZq10o0NXuCJZf/iulHCWS/hFOM5ygfONq1Vsj2ZDSWvVpSLj+Ufd2QnmsnrCr1ZGcl72OC24AmqFWJY+IyReHWpuABEVZVeVDQooJ0K4yqucmrFR7HyH7oZGgR0CgYHCI+9yhrXHrQpyLQ/Sm9obiBQYXVsIEFkcmlhbiBHbGF1Yml0eiAoU1VTRSBMSU5VWCBHbWJIKSA8Z2xhdWJpdHpAc3VzZS5jb20+iQJOBBMBCAA4FiEEYv+KdYTgKVaVRgAGdCY7N/W1+RMFAloSyhICGwMFCwkIBwMFFQoJCAsFFgIDAQACHgECF4AACgkQdCY7N/W1+ROnkQ//X6LVYXPi1D8/XFsoi0HDCvZhbWSzcGw6MQZKmTk42mNFKm/OrYBJ9d1St4Q3nRwH/ELzGb8liA02d4Ul+DV1Sv3P540LzZ4mmCi9wV+4Ohn6cXfaJNaTmHy1dFvg1NrVjMqGAFZkhTXRAvjRIQItyRvL//gKaciyKB/T0C3CIzbuTLBqtZMIIuP5nIgkwBvdw6H7EQ7kqOAO85S4FDSum/cLwLzdKygyvmPNOOtxvxa9QIryLf6h7HfWg68DvGDqIV9ZBoi8JjYZrZzaBmlPV8Iwm52uYnzsKM/LoyZ0G4v2u/WEtQEl7deLJjKby3kKmZGh9hQ
+	YImvOkrd9z8LQSvu0e8Qm8+JbRCCqUGkAPrRDFIzH8nFCFGCU/V+4LT2j68KMbApLkDQAFEDBcQVJYGnOZf7eU/EtYQIqVmGEjdOP7Qf/yMFzhc9GBXeE5mbe0LwA5LOO74FDH5qjwB5KI6VkTWPoXJoZA5waVC2sUSYOnmwFINkCLyyDoWaL9ubSbU9KTouuNm4F6XIssMHuX4OIKA7b2Kn5qfUFbd0ls8d5mY2gKcXBfEY+eKkhmuwZhd/7kP10awC3DF3QGhgqpaS100JW8z78el7moijZONwqXCS3epUol6q1pJ+zcapcFzO3KqcHTdVOKh6CXQci3Yv5NXuWDs/l2dMH4t2NvZC5Ag0ETckULgEQAKwmloVWzF8PYh5jB9ATf07kpnirVYf/kDk+QuVMPlydwPjh6/awfkqZ3SRHAyIb+9IC66RLpaF4WSPVWGs307+pa5AmTm16vzYA0DJ7vvRPxPzxPYq6p2WTjFqbq0EYeNTIm0YotIkq/gB9iIUS+gjdnoGSA+n/dwnbu1Eud2aiMW16ILqhgdgitdeW3J7LMDFvWIlXoBQOSfXQDLAiPf+jPJYvgkmCAovYKtC3aTg3bFX2sZqOPsWBXV6Azd92/GMs4W4fyOYLVSEaXy/mI35PMQLH8+/MM4n0g3JEgdzRjwF77Oh8SnOdG73/j+rdrS6Zgfyq6aM5WWs6teopLWPe0LpchGPSVgohIA7OhCm+ME8fpVHuMkvXqPeXAVfmJS/gV5CUgDMsYEjst+QXgWnlEiK2Knx6WzZ+v54ncA4YP58cibPJj5Qbx4gi8KLY3tgIbWJ3QxIRkChLRGjEBIQ4vTLAhh3vtNEHoAr9xUb3h8MxqYWNWJUSLS4xeE3Bc9UrB599Hu7i0w3v6VDGVCndcVO91lq9DZVhtYOPSE8mgacHb/3LP0UOZWmGHor52oPNU3Dwg205u814sKOd2i0DmY+Lt4EkLwFIYGE0FLLTHZDjDp9D
+	0iKclQKt86xBRGH+2zUk3HRq4MArggXuA4CN1buCzqAHiONvLdnY9StRABEBAAGJAh8EGAEIAAkFAk3JFC4CGwwACgkQdCY7N/W1+ROvNxAAtYbssC+AZcU4+xU5uxYinefyhB+f6GsS0Ddupp/MkZD/y98cIql8XXdIZ6z8lHvJlDq0oOyizLpfqUkcT4GhwMbdSNYUGd9HCdY/0pAyFdiJkn++WM8+b+9nz4mC6vfh96imcK4KH/cjP7NG37El/xlshWrb6CqKPk4KxNK5rUMPNr7+/3GwwGHHkJtW0QfDa/GoD8hl2HI6IQI+zSXK2uIZ7tcFMN8g9OafwUZ7b+zbz1ldzqOwygliEuEaRHeiOhPrTdxgnj6kTnitZw7/hSVi5Mr8C4oHzWgi66Ov9vdmClTHQSEjWDeLOiBj61xhr6A8KPUVaOpAYZWBH4OvtnmjwsKuNCFXym2DcCywdjEdrLC+Ms5g6Dkd60BQz4/kHA7x+P9IAkPqkaWAEyHoEvM1OcUPJzy/JW2vWDXo2jjM8PEQfNIPtqDzid1s8aDLJsPLWlJnfUyMP2ydlTtR54oiVBlFwqqHoPIaJrwTkND5lgFiMIwup3+giLiDOBILtiOSpYxBfSJkz3GGacOb4Xcj8AXV1tpUo1dxAKpJ1ro0YHLJvOJ8nLiZyJsCabUePNRFprbh+srI+WIUVRm0D33bI1VEH2XUXZBL+AmfdKXbHAYtZ0anKgDbcwvlkBcHpA85NpRqjUQ4OerPqtCrWLHDpEwGUBlaQ//AGix+L9c=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/LQu3HP_jhzfTo8giHeSP_CJ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-ZEDAT-Hint: PO
 
---Sig_/LQu3HP_jhzfTo8giHeSP_CJ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Ricardo,
 
-Hi all,
+On Sun, 2024-02-04 at 12:15 -0300, Ricardo B. Marliere wrote:
+> Now that the driver core can properly handle constant struct bus_type,
+> move the dma_subsys variable to be a constant structure as well,
+> placing it into read-only memory which can not be modified at runtime.
+>=20
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> ---
+>  arch/sh/drivers/dma/dma-sysfs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/arch/sh/drivers/dma/dma-sysfs.c b/arch/sh/drivers/dma/dma-sy=
+sfs.c
+> index 431bc18f0a41..9f666280d80c 100644
+> --- a/arch/sh/drivers/dma/dma-sysfs.c
+> +++ b/arch/sh/drivers/dma/dma-sysfs.c
+> @@ -15,7 +15,7 @@
+>  #include <linux/string.h>
+>  #include <asm/dma.h>
+> =20
+> -static struct bus_type dma_subsys =3D {
+> +static const struct bus_type dma_subsys =3D {
+>  	.name =3D "dma",
+>  	.dev_name =3D "dma",
+>  };
+>=20
+> ---
+> base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+> change-id: 20240204-bus_cleanup-sh-6d3c136da6bb
+>=20
+> Best regards,
 
-After merging the vfs-brauner tree, today's linux-next build (powerpc
-pseries_le_defconfig) failed like this:
+Reviewed-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 
-[    2.498347][    T1] Loading compiled-in X.509 certificates
-[    2.514931][   T53] BUG: Kernel NULL pointer dereference at 0x00000038
-[    2.515067][   T53] Faulting instruction address: 0xc0000000011c9e14
-[    2.515629][   T53] Oops: Kernel access of bad area, sig: 11 [#1]
-[    2.515749][   T53] LE PAGE_SIZE=3D64K MMU=3DHash SMP NR_CPUS=3D2048 NUM=
-A pSeries
-[    2.516160][   T53] Modules linked in:
-[    2.516586][   T53] CPU: 0 PID: 53 Comm: cryptomgr_probe Not tainted 6.8=
-0-rc3-04019-g26b3eeef9e0f #1
-[    2.516849][   T53] Hardware name: IBM pSeries (emulated by qemu) POWER8=
- (raw) 0x4d0200 0xf000004 of:SLOF,HEAD pSeries
-[    2.517084][   T53] NIP:  c0000000011c9e14 LR: c0000000001dd7b4 CTR: c00=
-000000029c820
-[    2.517163][   T53] REGS: c00000000786fa00 TRAP: 0380   Not tainted  (6.=
-8.0-rc3-04019-g26b3eeef9e0f)
-[    2.517288][   T53] MSR:  8000000002009033 <SF,VEC,EE,ME,IR,DR,RI,LE>  C=
-R: 28004208  XER: 20000000
-[    2.517612][   T53] CFAR: c0000000001dd7b0 IRQMASK: 1=20
-[    2.517612][   T53] GPR00: c0000000001dd7b4 c00000000786fca0 c0000000015=
-c9900 0000000000000038=20
-[    2.517612][   T53] GPR04: 0000000000000003 0000000000000001 00000000000=
-00051 fffffffffffe0000=20
-[    2.517612][   T53] GPR08: 0000000000000000 0000000000000001 c0000000079=
-554c8 0000000000002000=20
-[    2.517612][   T53] GPR12: c00000000029c820 c000000002b60000 c0000000001=
-8fa0c c00000000404cec0=20
-[    2.517612][   T53] GPR16: 0000000000000000 0000000000000000 00000000000=
-00000 0000000000000000=20
-[    2.517612][   T53] GPR20: 0000000000000000 0000000000000000 c000000006e=
-0e580 0000000000000000=20
-[    2.517612][   T53] GPR24: c000000002951080 c000000002a0e848 00000000000=
-00000 0000000000000051=20
-[    2.517612][   T53] GPR28: c0000000048cc100 0000000000000038 00000000000=
-00001 0000000000000001=20
-[    2.518535][   T53] NIP [c0000000011c9e14] _raw_spin_lock_irqsave+0x34/0=
-xc0
-[    2.519499][   T53] LR [c0000000001dd7b4] __wake_up+0x44/0xa4
-[    2.519797][   T53] Call Trace:
-[    2.519944][   T53] [c00000000786fca0] [0000000000002000] 0x2000 (unreli=
-able)
-[    2.520411][   T53] [c00000000786fcd0] [c00000000786fd10] 0xc00000000786=
-fd10
-[    2.520523][   T53] [c00000000786fd20] [c00000000016d240] pidfd_wake_up_=
-poll+0x50/0x64
-[    2.520597][   T53] [c00000000786fd40] [c000000000189460] __change_pid+0=
-x84/0x16c
-[    2.520669][   T53] [c00000000786fd70] [c000000000158dec] release_task+0=
-x338/0x788
-[    2.520740][   T53] [c00000000786fe10] [c00000000015aa9c] do_exit+0x6d8/=
-0xd38
-[    2.520812][   T53] [c00000000786fef0] [c00000000018f9c4] kthread_exit+0=
-x3c/0x40
-[    2.521033][   T53] [c00000000786ff20] [c00000000023f2bc] __module_put_a=
-nd_kthread_exit+0x38/0x3c
-[    2.521120][   T53] [c00000000786ff50] [c00000000095cdc4] cryptomgr_prob=
-e+0xc8/0xcc
-[    2.521204][   T53] [c00000000786ff90] [c00000000018fb3c] kthread+0x138/=
-0x140
-[    2.521283][   T53] [c00000000786ffe0] [c00000000000ded8] start_kernel_t=
-hread+0x14/0x18
-[    2.521512][   T53] Code: 3842fb20 7c0802a6 60000000 fbe1fff8 f821ffd1 8=
-bed0932 63e90001 992d0932 a12d0008 3ce0fffe 5529083c 61290001 <7d001829> 7d=
-063879 40c20018 7d063838=20
-[    2.522412][   T53] ---[ end trace 0000000000000000 ]---
-[    2.545459][   T53] pstore: backend (nvram) writing error (-1)
-[    2.545630][   T53]=20
-[    2.545995][   T53] note: cryptomgr_probe[53] exited with irqs disabled
-[    2.546329][   T53] Fixing recursive fault but reboot is needed!
-[    2.560506][    T1] Loaded X.509 cert 'Build time autogenerated kernel k=
-ey: fcc64ee53479274966d371cbdc225bca2574aaaf'
+Thanks for your patch. I will merge it into my linux-sh this weekend
+after returning from FOSDEM, either this evening or tomorrow.
 
-Bisected to commit
-
-  7a1cac7d58e3 ("pidfd: convert to wake_up_poll()")
-
-I have reverted that commit for today.
+Thanks,
+Adrian
 
 --=20
-Cheers,
-Stephen Rothwell
-
---Sig_/LQu3HP_jhzfTo8giHeSP_CJ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXAbuMACgkQAVBC80lX
-0GztiQf+Kj17VvxUzJ8GtyZD9faCQFC/3aZL2aiyZEIy+i/yKSjhnex4BTUrWh1q
-SINgRh/CKn5N53NL5ppGzRugu/Q8qpnv930DwjGRtHBMLfp69cdkck6UZOMffplP
-vFnUe1k2vXJm00EKtUS+sdhecXYi3vpBXwcEqz3lvKaQzDWEn1iA92GT2Qhmr12Z
-Yw7NWY9OBW73obRK/ASz8u2yZ2KR9cDhsj52LnZ/E+giGT8FPNDBFRihFdTqg7TN
-GGSVPQeaHA/By1fqLiPd23WtMSp4M9wlZuRBbWtXF12AGatkW3UKAOY6eaVVyh9M
-PzrKYMosCsthpYfU/j4Rm2/UPPiZJQ==
-=FBUu
------END PGP SIGNATURE-----
-
---Sig_/LQu3HP_jhzfTo8giHeSP_CJ--
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
