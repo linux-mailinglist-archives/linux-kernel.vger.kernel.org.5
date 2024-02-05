@@ -1,186 +1,244 @@
-Return-Path: <linux-kernel+bounces-52237-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52239-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10E928495CA
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:02:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AA79F8495CE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:03:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 737C71F2317B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:02:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 202A91F2118C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:03:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1D1F125AF;
-	Mon,  5 Feb 2024 09:01:46 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54F9311CBB;
+	Mon,  5 Feb 2024 09:03:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="h4TRQWss"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A07512E4E
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 09:01:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B92F611CB3;
+	Mon,  5 Feb 2024 09:03:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707123706; cv=none; b=d5VgQCehIdrdHMl/UD5jCiAzseC7azoVXGG02UKkVnYBKAJUdwfdrmB9cQSCsN+jv7/XrPUL/lca4iFVUhROmeD+l8cpe+00VDBeICp3OV80mWZPVo1/8SZ7VPiF0K8z+4k0BJlekYVo/7uoZUOS7Ah1OlVeP1sfcC0a2i80Q5Q=
+	t=1707123799; cv=none; b=RdErUDsJwnd8ZAegwiI1RkGqvsTEORVrzUrhrIQ1xV18AXR5tnSIy7FpR6uGTdfSNMlSb1ZP/ZLmsKEmRy4HAr+Snw4WH+j7YNiUtifWG6wKemlAgqF7Z/WkPzperCMxja09c2iKRPdxthJXpo7FyYileUgbtPrImLg8xj2VuB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707123706; c=relaxed/simple;
-	bh=Y1tvMdcD1KcRa8ihdcMDLe2VTaYbBW2VHfg53zzTNxA=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=qKidPs9heHWuItRHwuqyJnFFAXC+SmAjONymWxQzFK2kHlfHplAl+ZQ7MagtqspS4DXwFAC0n01z3JIacerLdBXTUGH73e/dpZbO6DkJjc23+Rg8bg0oDP2c6bhl0n8lTbF7pS6Z72l/qDFrFBn87rSVc52vuv2Bg/rhp4iLmoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-363abe44869so29793035ab.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 01:01:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707123703; x=1707728503;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DL7sT0R0lCMePu4/4pnetWzg+tj7VTTtQXhE0cYtBTE=;
-        b=tmZo1llNF1YBSlkzC905wDRLKpFHcBHdcZwK2bEr/ox1N3c8hf/PXG1chsTwvTMvZc
-         KqqcJ3cbn8ZNgDpkKH6aUrGzT4CMBhFVcy/U0H1uYaoSR4Tits5v4jN9gBM/toXDkWXR
-         7vFdUyB0LmAFF5YgNft5u2BkbV9tXnKHXXv6ytu7KEmMZ++xLGVPTTgwkHfuumX/lYpS
-         JWcksLTZuVgaD2GR4K55TLIi1C5ZVVbhqS26vYI09VGe0qZjqKMne9LaiQxn5nLQ0Jqr
-         r6vrZg1Pnb9Nij6qWpaQcI9NZEOt1ZlOtpwRuXcpyTJ1shXGmZ8rmLMwD5HWW4ZrOlRD
-         aYsA==
-X-Gm-Message-State: AOJu0YxouJyYsRpjGREsE/wpOCMb6VWlbkv8EY5sbR2iIiRT56bIP8gi
-	/7Z0MVayUyNH4wTyhIQQeg2kkGxUgEksP1d3uGe2n2Ggjgt5gJmQWPUHJECeWuMz7efsNLf1tbW
-	b20qiATx9BZlaqNoWOS5P0YKyLfOKr5DMx7R75XxNh9ZmVQiFKx2AhqA=
-X-Google-Smtp-Source: AGHT+IGtQjw4M7O1hHR4+f3rLVTV1yft0FTQPoMe0O5W1v3q58JneTGq6ZgeJuRNi5dOMcqrrcyOhHSsvN+fyCo/ZlmlbC7Vcj83
+	s=arc-20240116; t=1707123799; c=relaxed/simple;
+	bh=+dVAFSo1Qwd00JuYtBndAtSDhiWuCEE1aohq8mVegFw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cltK7l0rCW1qub/PffHDvIp/Xi7dwUDJo/md6vC/O8b8zX8HJPKGuJ1SJx9XsyatCtPVW2N34rYW7/AERwjeLW31WKNvplME3dNt6laDisfjLaXJp54GFXRJjd+PnIJl7OUwGx6SccWeZaZP3vdNsIhnoVrn9tdfSxu8pWWQ9+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=h4TRQWss; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1D638240007;
+	Mon,  5 Feb 2024 09:03:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1707123793;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=P4QnAz1Ub0OzlKrX+2TuKmtJuKQ0/OKXBIXCgAWhnC0=;
+	b=h4TRQWssno9JX2w4x30PbwB6W41A3haV/grdV/6Crtux/sekIsSO26KKoIPEhCtgZoVkIh
+	mWAi3nAzC5CJSGft0ZhnmEbmP6DIgYM8KZ6cOs14tisIU9cHekJP1Fc3kmihOJKQRVWdkL
+	71IaQ6KTmX+cKs7V+qB9VfQbjxhDNEL7WtLrQrhaabqCUSUfGeqL2zOj5jn59GZCZqVUcU
+	SbTjX/s/+xxMHPmkUvOLqre3Bgmh0nWBcD3xR5e7WMdHD1IylDUcZC/wLlxexnD7SLJvFN
+	woPxue5hWQp+h3C3uXrAgB254YcExNeBgzO5n5Fl/6gJth447UIk8qLEvgjJmQ==
+Date: Mon, 5 Feb 2024 10:03:12 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: =?UTF-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>
+Cc: Mark Brown <broonie@kernel.org>, Apurva Nandan <a-nandan@ti.com>, Dhruva
+ Gole <d-gole@ti.com>, linux-spi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Gregory CLEMENT
+ <gregory.clement@bootlin.com>, Vladimir Kondratiev
+ <vladimir.kondratiev@mobileye.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Subject: Re: [PATCH] spi: cadence-qspi: stop calling system-wide PM helpers
+ for runtime PM
+Message-ID: <20240205100312.6f0f40db@xps-13>
+In-Reply-To: <20240202-cdns-qspi-pm-fix-v1-1-3c8feb2bfdd8@bootlin.com>
+References: <20240202-cdns-qspi-pm-fix-v1-1-3c8feb2bfdd8@bootlin.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:216a:b0:35f:eb20:3599 with SMTP id
- s10-20020a056e02216a00b0035feb203599mr553015ilv.2.1707123703648; Mon, 05 Feb
- 2024 01:01:43 -0800 (PST)
-Date: Mon, 05 Feb 2024 01:01:43 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f19a1406109eb5c5@google.com>
-Subject: [syzbot] [ext4?] general protection fault in __block_commit_write
-From: syzbot <syzbot+18df508cf00a0598d9a6@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-Hello,
+Hello Th=C3=A9o,
 
-syzbot found the following issue on:
+theo.lebrun@bootlin.com wrote on Fri, 02 Feb 2024 18:29:40 +0100:
 
-HEAD commit:    56897d51886f Merge tag 'trace-v6.8-rc2' of git://git.kerne..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1550b18fe80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b60b985eda147877
-dashboard link: https://syzkaller.appspot.com/bug?extid=18df508cf00a0598d9a6
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=166f7aa8180000
+> The ->runtime_suspend() and ->runtime_resume() callbacks are not
+> expected to call spi_controller_suspend() and spi_controller_resume().
+> Remove calls to those in the cadence-qspi driver.
+>=20
+> Those helpers have two roles currently:
+>  - They stop/start the queue, including dealing with the kworker.
+>  - They toggle the SPI controller SPI_CONTROLLER_SUSPENDED flag. It
+>    requires acquiring ctlr->bus_lock_mutex.
+>=20
+> The cadence-qspi ->exec_op() implementation bumps the usage counter at
+> its start. It might therefore run our ->runtime_resume()
+> implementation. However, ctlr->bus_lock_mutex is acquired by
+> spi_mem_exec_op() while ->exec_op() is being called.
+>=20
+> Here is a brief call tree highlighting the issue:
+>=20
+> spi_mem_exec_op()
+>         ...
+>         spi_mem_access_start()
+>                 mutex_lock(&ctlr->bus_lock_mutex)
+>=20
+>         cqspi_exec_mem_op()
+>                 pm_runtime_resume_and_get()
+>                         cqspi_resume()
+>                                 spi_controller_resume()
+>                                         mutex_lock(&ctlr->bus_lock_mutex)
+>                 ...
+>=20
+>         spi_mem_access_end()
+>                 mutex_unlock(&ctlr->bus_lock_mutex)
+>         ...
+>=20
+> The fatal conclusion of this is a deadlock: we acquire a lock on each
+> operation but while running the operation, we might want to runtime
+> resume and acquire the same lock.
+>=20
+> Anyway, those helpers (spi_controller_{suspend,resume}) are aimed at
+> system-wide suspend and resume and should NOT be called at runtime
+> suspend & resume.
+>=20
+> Side note: the previous implementation had a second issue. It acquired a
+> pointer to both `struct cqspi_st` and `struct spi_controller` using
+> dev_get_drvdata(). Neither embed the other. This lead to memory
+> corruption that was being hidden inside the big cqspi->f_pdata array on
+> my setup. It was working until I tried changing the array side to its
+> theorical max of 4, which lead to the discovery of this gnarly bug.
+>=20
+> Fixes: 0578a6dbfe75 ("spi: spi-cadence-quadspi: add runtime pm support")
+> Fixes: 2087e85bb66e ("spi: cadence-quadspi: fix suspend-resume implementa=
+tions")
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/1c0cc47da79d/disk-56897d51.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/ef9122f0ce05/vmlinux-56897d51.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/8e2856cfcf95/bzImage-56897d51.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/5175bbf40ca7/mount_0.gz
+Your commit log makes total sense but I believe the diff is gonna break
+again the suspend to RAM operation. This is only my understanding
+right after quickly going through the whole story, so maybe I'm
+totally off topic.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+18df508cf00a0598d9a6@syzkaller.appspotmail.com
+What happened if I understand the two commits blamed above:
 
-loop0: detected capacity change from 0 to 2048
-general protection fault, probably for non-canonical address 0xdffffc0000000004: 0000 [#1] PREEMPT SMP KASAN NOPTI
-KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
-CPU: 0 PID: 6860 Comm: syz-executor.0 Not tainted 6.8.0-rc2-syzkaller-00397-g56897d51886f #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-RIP: 0010:__block_commit_write+0x61/0x270 fs/buffer.c:2165
-Code: ea 03 80 3c 02 00 0f 85 16 02 00 00 48 8b 44 24 18 4c 8b 78 28 48 b8 00 00 00 00 00 fc ff df 49 8d 7f 20 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 e4 01 00 00 41 8b 47 20 4c 89 fb 45 31 f6 31 ed
-RSP: 0018:ffffc90008947918 EFLAGS: 00010212
-RAX: dffffc0000000000 RBX: ffffea00019b1180 RCX: ffffffff82086d31
-RDX: 0000000000000004 RSI: ffffffff820823e4 RDI: 0000000000000020
-RBP: 0000000000000040 R08: 0000000000000004 R09: 0000000000000040
-R10: 0000000000000040 R11: 0000000000000003 R12: 0000000000000000
-R13: 0000000000000040 R14: 0000000000000040 R15: 0000000000000000
-FS:  00007f6f6a4016c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020007640 CR3: 0000000015340000 CR4: 0000000000350ef0
-Call Trace:
- <TASK>
- block_write_end+0xc8/0x250 fs/buffer.c:2251
- ext4_write_end+0x277/0xed0 fs/ext4/inode.c:1287
- ext4_da_write_end+0xa64/0xce0 fs/ext4/inode.c:3020
- generic_perform_write+0x33b/0x620 mm/filemap.c:3941
- ext4_buffered_write_iter+0x11f/0x3d0 fs/ext4/file.c:299
- ext4_file_write_iter+0x819/0x1960 fs/ext4/file.c:698
- call_write_iter include/linux/fs.h:2085 [inline]
- new_sync_write fs/read_write.c:497 [inline]
- vfs_write+0x6e1/0x1110 fs/read_write.c:590
- ksys_write+0x12f/0x260 fs/read_write.c:643
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd8/0x270 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x6f/0x77
-RIP: 0033:0x7f6f6967dda9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f6f6a4010c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007f6f697abf80 RCX: 00007f6f6967dda9
-RDX: 0000000000000040 RSI: 0000000020002ac0 RDI: 0000000000000005
-RBP: 00007f6f696ca47a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f6f697abf80 R15: 00007ffc14067c28
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:__block_commit_write+0x61/0x270 fs/buffer.c:2165
-Code: ea 03 80 3c 02 00 0f 85 16 02 00 00 48 8b 44 24 18 4c 8b 78 28 48 b8 00 00 00 00 00 fc ff df 49 8d 7f 20 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 e4 01 00 00 41 8b 47 20 4c 89 fb 45 31 f6 31 ed
-RSP: 0018:ffffc90008947918 EFLAGS: 00010212
-RAX: dffffc0000000000 RBX: ffffea00019b1180 RCX: ffffffff82086d31
-RDX: 0000000000000004 RSI: ffffffff820823e4 RDI: 0000000000000020
-RBP: 0000000000000040 R08: 0000000000000004 R09: 0000000000000040
-R10: 0000000000000040 R11: 0000000000000003 R12: 0000000000000000
-R13: 0000000000000040 R14: 0000000000000040 R15: 0000000000000000
-FS:  00007f6f6a4016c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f9a064f7000 CR3: 0000000015340000 CR4: 0000000000350ef0
-----------------
-Code disassembly (best guess), 1 bytes skipped:
-   0:	03 80 3c 02 00 0f    	add    0xf00023c(%rax),%eax
-   6:	85 16                	test   %edx,(%rsi)
-   8:	02 00                	add    (%rax),%al
-   a:	00 48 8b             	add    %cl,-0x75(%rax)
-   d:	44 24 18             	rex.R and $0x18,%al
-  10:	4c 8b 78 28          	mov    0x28(%rax),%r15
-  14:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  1b:	fc ff df
-  1e:	49 8d 7f 20          	lea    0x20(%r15),%rdi
-  22:	48 89 fa             	mov    %rdi,%rdx
-  25:	48 c1 ea 03          	shr    $0x3,%rdx
-* 29:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
-  2d:	0f 85 e4 01 00 00    	jne    0x217
-  33:	41 8b 47 20          	mov    0x20(%r15),%eax
-  37:	4c 89 fb             	mov    %r15,%rbx
-  3a:	45 31 f6             	xor    %r14d,%r14d
-  3d:	31 ed                	xor    %ebp,%ebp
+- There were PM hooks.
+- Someone turned them into runtime PM hooks (breaking regular
+  suspend/resume).
+- Someone else added the "missing" suspend/resume logic inside the
+  runtime PM hooks to fix suspend and resume.
+- You are removing this logic because it leads to deadlocks.
 
+There was likely a misconception of what is expected in both cases
+(quick and small power savings vs. full power cycle/loosing the whole
+configuration).
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+I would propose instead to create two distinct set of functions:
+- One for runtime PM
+- One for suspend/resume
+This way the runtime PM no longer deadlocks and people using
+suspend/resume won't get affected? I don't know if your runtime hooks
+*will* always be called during a suspend/resume. I hope so, which would
+make the split quite easy and without any code duplication.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Thanks,
+Miqu=C3=A8l
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> ---
+> Hi,
+>=20
+> This is a draft patch highlighting a serious bug in the
+> ->runtime_suspend() and ->runtime_resume() implementations of
+> cadence-qspi. Seeing how runtime PM and autosuspend are enabled by
+> default, I believe this affects all users of the driver.
+>=20
+> I've tried my best to be exhaustive in the commit message. Have I missed
+> something that could explain how the current implementations could have
+> been functional in the last few revisions of the kernel?
+>=20
+> The MIPS platform at hand, used for debugging and testing, is currently
+> not supported by the driver. It is the Mobileye EyeQ5 [0]. No code
+> changes are required for support, only a new compatible and appropriate
+> match data + flags. That will come later, with some performance-related
+> patches.
+>=20
+> Conclusion being: feedback from maintainers & others that know the
+> driver and subsystem would be useful to bring this forward.
+>=20
+> Thanks all,
+> Th=C3=A9o
+>=20
+> [0]: https://lore.kernel.org/lkml/20240118155252.397947-1-gregory.clement=
+@bootlin.com/
+> ---
+>  drivers/spi/spi-cadence-quadspi.c | 18 ++++++------------
+>  1 file changed, 6 insertions(+), 12 deletions(-)
+>=20
+> diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-=
+quadspi.c
+> index 74647dfcb86c..72f80c77ee35 100644
+> --- a/drivers/spi/spi-cadence-quadspi.c
+> +++ b/drivers/spi/spi-cadence-quadspi.c
+> @@ -1927,24 +1927,18 @@ static void cqspi_remove(struct platform_device *=
+pdev)
+>  	pm_runtime_disable(&pdev->dev);
+>  }
+> =20
+> -static int cqspi_suspend(struct device *dev)
+> +static int cqspi_runtime_suspend(struct device *dev)
+>  {
+>  	struct cqspi_st *cqspi =3D dev_get_drvdata(dev);
+> -	struct spi_controller *host =3D dev_get_drvdata(dev);
+> -	int ret;
+> =20
+> -	ret =3D spi_controller_suspend(host);
+>  	cqspi_controller_enable(cqspi, 0);
+> -
+>  	clk_disable_unprepare(cqspi->clk);
+> -
+> -	return ret;
+> +	return 0;
+>  }
+> =20
+> -static int cqspi_resume(struct device *dev)
+> +static int cqspi_runtime_resume(struct device *dev)
+>  {
+>  	struct cqspi_st *cqspi =3D dev_get_drvdata(dev);
+> -	struct spi_controller *host =3D dev_get_drvdata(dev);
+> =20
+>  	clk_prepare_enable(cqspi->clk);
+>  	cqspi_wait_idle(cqspi);
+> @@ -1953,11 +1947,11 @@ static int cqspi_resume(struct device *dev)
+>  	cqspi->current_cs =3D -1;
+>  	cqspi->sclk =3D 0;
+> =20
+> -	return spi_controller_resume(host);
+> +	return 0;
+>  }
+> =20
+> -static DEFINE_RUNTIME_DEV_PM_OPS(cqspi_dev_pm_ops, cqspi_suspend,
+> -				 cqspi_resume, NULL);
+> +static DEFINE_RUNTIME_DEV_PM_OPS(cqspi_dev_pm_ops, cqspi_runtime_suspend,
+> +				 cqspi_runtime_resume, NULL);
+> =20
+>  static const struct cqspi_driver_platdata cdns_qspi =3D {
+>  	.quirks =3D CQSPI_DISABLE_DAC_MODE,
+>=20
+> ---
+> base-commit: 27470aa9b51a348f7edfb99641b5a9004f81e3e6
+> change-id: 20240202-cdns-qspi-pm-fix-29600cc6d7bf
+>=20
+> Best regards,
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
