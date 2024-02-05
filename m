@@ -1,315 +1,200 @@
-Return-Path: <linux-kernel+bounces-54023-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54024-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D0BD84A95F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:34:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5893D84A961
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:36:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1471E1F29ECF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:34:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F43928AD86
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:36:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A28D48CF2;
-	Mon,  5 Feb 2024 22:33:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD6C241218;
+	Mon,  5 Feb 2024 22:36:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="o2Cg/K9S"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WBzFp770"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27B571EB49
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 22:33:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2EEF1EB3E
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 22:36:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707172438; cv=none; b=ThLv4olUbR0eM+H8u5gQBP55wR9bcA3pC8Hj4X+Ed8Vau9I7kQkSRfOzp+Bw7wzjqgP/2o6/YJMlA0IIeOuWLIShLgfYGcz9jCiZ7PYTAOixCmzeyzcrLWfaRcFdzaGQSO0+9FQ1zf+PVUTc9Qw3wMm5vacuehw40ezVPsqLVDs=
+	t=1707172578; cv=none; b=QW6IYF9U9S1ycXBuxqhgIZOr20iV8dlB0Ac0/grCifsiNyBfrN0jdlME/qhx5EMd8dcY8c24F3Hnitk5LM6M58AgoFHQr8I37Ee/aR9dSWQwBsItIM4XzsnOZW4G+rBOCzxtnrBjxzRShLduTeen83UtxhYjjsnNZ8QxB2ilImQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707172438; c=relaxed/simple;
-	bh=ju8fO7bRaWm0bjcYGpe5g5YgdTVD76spIOWUxaGYDKE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pCKXXEhrCBaHgkdh5IQ2LwhQtnZHUyHWQt9ZAuuEZP473EDc7hQKvxLBWtpzsopAN8YNZPPoKOWO0M1a10koMpu3+ohjGZp9dcBmrPqJym4DYEI+yxVwgvh6l3FFi0Z4dcvrnZa0Up5bwcBs8lkZOugkACIz5Ybqjj0WKqwUmyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=o2Cg/K9S; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-511538be947so1350220e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 14:33:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1707172434; x=1707777234; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZsogSjsdXjaHsLgoxoa0By5YJEKAV8QszBW6RcRGT10=;
-        b=o2Cg/K9ST3eWfLspmvgWv0fHXXbDwx7gSSqnJu/sRB2R0CqEYNjzORz0uwDwrYrj5o
-         ZduVUMvrdhwB4wIcbB5DGhCzPn5TaBiHZBr+UQlcuGW12JQpXv0cbe0FrftB5H1FkxBh
-         K5Li5MzZqjTQ4TWVnQ3FqsFT7qLrmh/t0fLF53XwrgE2W40yKYr6MWay7MB177CPlbof
-         Hk9z5QNYGlHn8sqLfh29Sy8418Dez97fkfecu2wQj9di2WuzqUIlwM96Go/OzFbYklCS
-         UaoTw2qNot81Lq5XkGTQePKx3WHUvcMAPfzbS9x98jkb1QmQdM7lsHmdq8pfL3ZMa79P
-         T2cg==
+	s=arc-20240116; t=1707172578; c=relaxed/simple;
+	bh=YfcVwTdvsAFjLJ7bKvK6o7HK5jBfK7DuYGaXvtDcedI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ufcREou4SXfpox2LYT1klACb0CYRGP/QQoH/exr3CAJs9tcMqu88ebBbgyvYWy2byvS4UpawvfonP67fvsQuI0i6+5Dgt40AqB8Nx/NRjy9+Ivf+kOg0XkHWVpB0IQkvnjiJqyigFHjI9gxYisZiQBK3JF9wUfwq6aZZGp4ZWg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WBzFp770; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707172574;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=b/wNE6tBX1rJP2YgS+TTAYHWSHylnSq7QWSxIGxGiQU=;
+	b=WBzFp770OM+Vi3Fl+dvdDJbH5q3V1vk9t20460q51cY2Dx3NCpPemsxaVE1Zaqf40dlCuS
+	Kxyn5r+bsVtKt1zZQll2eW3AM08BwqqR69F5BEzyEyju58viTQUWLCmBjpg2CuH5y1key8
+	M6/OzV+ZD9ENfHkHVVIeeRvDywc9iqA=
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
+ [209.85.166.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-380-RCkf8caxMjm3hM4pP2msrw-1; Mon, 05 Feb 2024 17:36:13 -0500
+X-MC-Unique: RCkf8caxMjm3hM4pP2msrw-1
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7bfffd9b47fso16098139f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 14:36:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707172434; x=1707777234;
+        d=1e100.net; s=20230601; t=1707172572; x=1707777372;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZsogSjsdXjaHsLgoxoa0By5YJEKAV8QszBW6RcRGT10=;
-        b=AzH87hjazzRpM4zVwlo44XSKnnZkn8no9isTXdVEh75mhQtiEgsdhLtcVJ20ePCvVl
-         dflpMA3hCgvAbUeAF6+impE9QslC5oJfVwlYuf5/GGWgbO4rnRB8CEaBLTJf6I+bkQFz
-         q6gqwyh9Sk2YW/O4TdnuIGSSsTbMGZToTuVfQlky6hgUBZt1mqxpFQKhMtPVyaIzKIqf
-         LYvrMAqNs+1iFxY79iJU93Gakq3coUVLbgjOUVFwP9Gox0Fs5/vz5L4llAqbUVsOQBO/
-         mKVL8kI0ECOBoygJe01hvwkSCJ4QyuHUqbSy9DcZnjeSK0+w27oBsLkjRrqyx+hXYiyJ
-         Xjbw==
-X-Gm-Message-State: AOJu0Yz7i+VLnz3Nem8oeQNlrAJ2f62XmfpIzUYxG3FR1SmQ1dAWBkGG
-	+MIzHKqbwQt0y37dthjpyQoEnut69/BxdiNSuDtj5tA/4oYPMr0r8eC0x0Y4K9g=
-X-Google-Smtp-Source: AGHT+IFg+zOTzzn6r47C/RVRyVOvGJjoHtQL+b/Xl20Qdm/seBACwfEBRFYJpSUcz09n38MwmQHf8A==
-X-Received: by 2002:a05:6512:466:b0:511:56ef:93eb with SMTP id x6-20020a056512046600b0051156ef93ebmr513893lfd.30.1707172434182;
-        Mon, 05 Feb 2024 14:33:54 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXRiTBvmmsc4xVVrprACB8/xbJXi4TkJ7DuhkCVnY1R9PzBaaOSKkLFYr+zWhloZjkdDBNq5fs9ha/LDQviqBuEleB8wNDZKpwjM/XCCfwSyNF0YKPCm86oN/PbZWnJshw5tMkbGdSiA/2Rpf8vWYoWGCPNCEoQ95+uEmnp0BNY7fkmEINCfSSGvXuW+tHSu0ZNTBCoJOhbavYH6elyXxP92QJcFX9BwK6AStevmUxnTJVvCdMc1FTHtJX9gJoFSDeFI/rZPZBsNkeFiiQCuUqeQrb8lTtrP7fS2Nt+4g==
-Received: from airbuntu.. (host109-154-238-234.range109-154.btcentralplus.com. [109.154.238.234])
-        by smtp.gmail.com with ESMTPSA id hi2-20020a05600c534200b0040ef702a338sm9683135wmb.25.2024.02.05.14.33.53
+        bh=b/wNE6tBX1rJP2YgS+TTAYHWSHylnSq7QWSxIGxGiQU=;
+        b=HAmq+jFzeXNC0F6eVkOnJxOUyWdIFcUZjnKzcp4fmeKcsqGdZGP0O5F7YJByv8HgCU
+         qDfziMB9ovxuxWwFLBY1KCA6owOoBQA2Tw9W9IcpFJNIe5ZTp/W30a8faAGeQi03v8wj
+         Dg9npUIO33VHVMMQMJ7nR7iQNNoXvUve/9cjNeHjFTCYa70ObUX1lyrSMQejUH/R/wx5
+         e/YxSZEN4YvTaJGzXYRZEASrzGHnZSIep/DqaPXIA+LljxkSvam7vRM64ENpa2lYJxlN
+         KleYyB1Q1FA5UmdtVQZugjpXdciSj8lbqVhcGiNdkPw6V8cqsjUlZMnoWmss1BHkQiRT
+         1Czw==
+X-Gm-Message-State: AOJu0Yyxz0EhO9VtfOHDhUDwMPcWbPqOeRM8VpZpaZhjB3J9ITWp4wIH
+	id25Lrm+9j3m4huCVXsWHC58ePU7TQm1E4u4MTz3RyNIyma4rrWF2Hm7/Iwq+8KtIPmsgarwuMn
+	b9gohsbgemvRrW63oQnjA7jxSZ+WbQc5OLhE+pc9vv3rY9UnVUWLlQhb09K0Mhg==
+X-Received: by 2002:a6b:7319:0:b0:7bc:3ceb:6552 with SMTP id e25-20020a6b7319000000b007bc3ceb6552mr1154908ioh.5.1707172572386;
+        Mon, 05 Feb 2024 14:36:12 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGtVaTOnvJXbtI7Z0LmCNhuS4b4H75P6HvsKq3NUMpcOrnRrwioOYZJ9zRQS2wuftp2ln8C+g==
+X-Received: by 2002:a6b:7319:0:b0:7bc:3ceb:6552 with SMTP id e25-20020a6b7319000000b007bc3ceb6552mr1154887ioh.5.1707172572139;
+        Mon, 05 Feb 2024 14:36:12 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUxCfQVCbR6pJ43tYfgys9BBxKwFqEwjwo0/e6nDvW1ISVo8+mYOlffXtXJFJ14F5XcWgVsTOM0/lWGsGjCeeNchPDFH6U3hjMlvIG1E/RpYzwQGn0Vv4F4oxP1aj4rqM92Q0HFDG4zjxmMcBz1AO3qedBjQNf04lKdRX9wtMIZvpMUjWdZ93DF52L0/dCbRRKYFW+JiFR04cUr4o+fnRJuTIfaB+MMf/ib0D8Ss4mZDeEpB642IQV1ncmLOznxeLucxdn4e4erxQ0Evji5NNA7dQciS5FDGurXe85llqZsv85H1mngThVSQ08NPoGTn9iVie8QFA==
+Received: from redhat.com ([38.15.36.11])
+        by smtp.gmail.com with ESMTPSA id 25-20020a0566380a5900b00471374f17a3sm190892jap.136.2024.02.05.14.36.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 14:33:53 -0800 (PST)
-From: Qais Yousef <qyousef@layalina.io>
-To: Ingo Molnar <mingo@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: linux-kernel@vger.kernel.org,
-	Lukasz Luba <lukasz.luba@arm.com>,
-	Wei Wang <wvw@google.com>,
-	Rick Yiu <rickyiu@google.com>,
-	Chung-Kai Mei <chungkai@google.com>,
-	Qais Yousef <qyousef@layalina.io>
-Subject: [PATCH 3/3] sched/fair: Remove magic hardcoded margin in fits_capacity()
-Date: Mon,  5 Feb 2024 22:33:44 +0000
-Message-Id: <20240205223344.2280519-4-qyousef@layalina.io>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240205223344.2280519-1-qyousef@layalina.io>
-References: <20240205223344.2280519-1-qyousef@layalina.io>
+        Mon, 05 Feb 2024 14:36:11 -0800 (PST)
+Date: Mon, 5 Feb 2024 15:34:52 -0700
+From: Alex Williamson <alex.williamson@redhat.com>
+To: Reinette Chatre <reinette.chatre@intel.com>
+Cc: jgg@nvidia.com, yishaih@nvidia.com,
+ shameerali.kolothum.thodi@huawei.com, kevin.tian@intel.com,
+ kvm@vger.kernel.org, dave.jiang@intel.com, ashok.raj@intel.com,
+ linux-kernel@vger.kernel.org, patches@lists.linux.dev
+Subject: Re: [PATCH 03/17] vfio/pci: Consistently acquire mutex for
+ interrupt management
+Message-ID: <20240205153452.4a9bddfd.alex.williamson@redhat.com>
+In-Reply-To: <e7d35d7730f3f83417e757bc264a470f8c2671ed.1706849424.git.reinette.chatre@intel.com>
+References: <cover.1706849424.git.reinette.chatre@intel.com>
+ <e7d35d7730f3f83417e757bc264a470f8c2671ed.1706849424.git.reinette.chatre@intel.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Replace hardcoded margin value in fits_capacity() with better dynamic
-logic.
+On Thu,  1 Feb 2024 20:56:57 -0800
+Reinette Chatre <reinette.chatre@intel.com> wrote:
 
-80% margin is a magic value that has served its purpose for now, but it
-no longer fits the variety of systems that exist today. If a system is
-over powered specifically, this 80% will mean we leave a lot of capacity
-unused before we decide to upmigrate on HMP system.
+> vfio_pci_set_irqs_ioctl() is the entrypoint for interrupt management
+> via the VFIO_DEVICE_SET_IRQS ioctl(). The igate mutex is obtained
+> before calling vfio_pci_set_irqs_ioctl() for management of all interrupt
+> types to protect against concurrent changes to the eventfds associated
+> with device request notification and error interrupts.
+> 
+> The igate mutex is not acquired consistently. The mutex is always
+> (for all interrupt types) acquired from within vfio_pci_ioctl_set_irqs()
+> before calling vfio_pci_set_irqs_ioctl(), but vfio_pci_set_irqs_ioctl() is
+> called via vfio_pci_core_disable() without the mutex held. The latter
+> is expected to be correct if the code flow can be guaranteed that
+> the provided interrupt type is not a device request notification or error
+> interrupt.
 
-On many systems the little cores are under powered and ability to
-migrate faster away from them is desired.
+The latter is correct because it's always a physical interrupt type
+(INTx/MSI/MSIX), vdev->irq_type dictates this, and the interrupt code
+prevents the handler from being called after the interrupt is disabled.
+It's intentional that we don't acquire igate here since we only need to
+prevent a race with concurrent user access, which cannot occur in the
+fd release path.  The igate mutex is acquired consistently, where it's
+required. 
 
-There are two factors that must define when a task is misfit:
+It would be more forthcoming to describe that potential future emulated
+device interrupts don't make the same guarantees, but if that's true,
+why can't they?
 
-1. Due to invariance, time stretches and the ability of a task to reach
-   certain util value requires longer runtime on smaller CPUs.
+> Move igate mutex acquire and release into vfio_pci_set_irqs_ioctl()
+> to make the locking consistent irrespective of interrupt type.
+> This is one step closer to contain the interrupt management locking
+> internals within the interrupt management code so that the VFIO PCI
+> core can trigger management of the eventfds associated with device
+> request notification and error interrupts without needing to access
+> and manipulate VFIO interrupt management locks and data.
 
-   This means tasks running on biggest core will require shorter amount
-   of time to reach max performance point compared to the smaller cores.
-   To counter the impact of this invariance, we must ensure that the
-   task migrate faster so that they can reach the max performance point
-   at a constant rate regardless where they're running on.
+If all we want to do is move the mutex into vfio_pci_intr.c then we
+could rename to __vfio_pci_set_irqs_ioctl() and create a wrapper around
+it that grabs the mutex.  The disable path could use the lockless
+version and we wouldn't need to clutter the exit path unlocking the
+mutex as done below.  Thanks,
 
-2. Misfit migration relies on TICK to help it to migrate. But as a worst
-   case scenario this TICK can happen after we cross the fits_capacity
-   threshold. So we must cater for this worst case scenario when
-   calculating the threshold so tasks don't end up stuck on the wrong
-   CPU which can cause performance and latency problems.
+Alex
 
-Below table shows the mapping for the misfit threshold without and with
-taking the tick (4ms) into account. Note how the margin needs to be very
-large at the bottom end, but very small at the higher end.
-
-It is still large in the 600-750 range where many mid cores lie. So
-there are contradiction requirements of enabling tasks to experience
-coherent ramp-up time across all CPUs and reduce the latency to achieve
-max performance point vs slowing down to allow mid clusters to be more
-utilized in 'not so busy' situations.
-
-Not sure if the answer lies in misfit definition. But most likely in
-better task placement and load balancing strategies that considers other
-factors beside misfit.
-
-cap		threshold	%		threshold-tick	%
-0		0		0		0		0
-16		0		0		0		0
-32		1		3.12		0		0
-48		3		6.25		2		4.16
-64		4		6.25		2		3.12
-80		6		7.5		5		6.25
-96		10		10.41		8		8.33
-112		14		12.5		11		9.82
-128		18		14.06		16		12.5
-144		21		14.58		18		12.5
-160		26		16.25		23		14.37
-176		33		18.75		29		16.47
-192		39		20.31		35		18.22
-208		47		22.59		43		20.67
-224		55		24.55		50		22.32
-240		63		26.25		59		24.58
-256		73		28.51		68		26.56
-272		82		30.14		77		28.30
-288		93		32.29		87		30.20
-304		103		33.88		97		31.90
-320		114		35.62		108		33.75
-336		126		37.5		120		35.71
-352		138		39.20		132		37.5
-368		151		41.03		144		39.13
-384		163		42.44		157		40.88
-400		177		44.25		170		42.5
-416		197		47.35		190		45.67
-432		212		49.07		204		47.22
-448		226		50.44		218		48.66
-464		241		51.93		233		50.21
-480		263		54.79		255		53.12
-496		278		56.04		271		54.63
-512		294		57.42		286		55.85
-528		317		60.03		309		58.52
-544		333		61.21		325		59.74
-560		356		63.57		348		62.14
-576		380		65.97		372		64.58
-592		396		66.89		388		65.54
-608		419		68.91		412		67.76
-624		443		70.99		435		69.71
-640		466		72.81		459		71.71
-656		489		74.54		482		73.47
-672		512		76.19		505		75.14
-688		534		77.61		528		76.74
-704		557		79.11		550		78.12
-720		578		80.27		572		79.44
-736		606		82.33		600		81.52
-752		633		84.17		627		83.37
-768		653		85.02		647		84.24
-784		678		86.47		672		85.71
-800		707		88.37		701		87.62
-816		729		89.33		724		88.72
-832		756		90.86		751		90.26
-848		780		91.98		776		91.50
-864		803		92.93		799		92.47
-880		828		94.09		824		93.63
-896		850		94.86		847		94.53
-912		874		95.83		871		95.50
-928		897		96.65		894		96.33
-944		921		97.56		919		97.35
-960		943		98.22		941		98.02
-976		964		98.77		963		98.66
-992		984		99.19		983		99.09
-1008		1004		99.60		1004		99.60
-1024		1022		99.80		1022		99.80
-
-Signed-off-by: Qais Yousef <qyousef@layalina.io>
----
- kernel/sched/core.c  |  1 +
- kernel/sched/fair.c  | 42 +++++++++++++++++++++++++++++++++++-------
- kernel/sched/sched.h |  1 +
- 3 files changed, 37 insertions(+), 7 deletions(-)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index db4be4921e7f..def7af257270 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -10004,6 +10004,7 @@ void __init sched_init(void)
- 		rq->sd = NULL;
- 		rq->rd = NULL;
- 		rq->cpu_capacity = SCHED_CAPACITY_SCALE;
-+		rq->fits_capacity_threshold = SCHED_CAPACITY_SCALE;
- 		rq->balance_callback = &balance_push_callback;
- 		rq->active_balance = 0;
- 		rq->next_balance = jiffies;
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index b803030c3a03..630eae0470ca 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -101,11 +101,22 @@ int __weak arch_asym_cpu_priority(int cpu)
- }
- 
- /*
-- * The margin used when comparing utilization with CPU capacity.
-+ * fits_capacity() must ensure that a task will not be 'stuck' on a CPU with
-+ * lower capacity for too long. This can happen because of two reasons:
-  *
-- * (default: ~20%)
-+ * 1. Capacity and frequency invariance means the runtime on each CPU is not
-+ *    the same. We want the task to experience the same ramp-up time to reach
-+ *    max performance point of the system as if they were running on the
-+ *    biggest CPU.
-+ *
-+ * 2. A misfit migration will require a tick as a worst case scenario to
-+ *    migrate it to a bigger CPU. So we must cater for this time and make sure
-+ *    it migrates before it becomes a true misfit.
-  */
--#define fits_capacity(cap, max)	((cap) * 1280 < (max) * 1024)
-+static inline bool fits_capacity(unsigned long util, int cpu)
-+{
-+	return util < cpu_rq(cpu)->fits_capacity_threshold;
-+}
- 
- /*
-  * The margin used when comparing CPU capacities.
-@@ -4965,13 +4976,12 @@ static inline int util_fits_cpu(unsigned long util,
- 				int cpu)
- {
- 	unsigned long capacity_orig, capacity_orig_thermal;
--	unsigned long capacity = capacity_of(cpu);
- 	bool fits, uclamp_max_fits;
- 
- 	/*
- 	 * Check if the real util fits without any uclamp boost/cap applied.
- 	 */
--	fits = fits_capacity(util, capacity);
-+	fits = fits_capacity(util, cpu);
- 
- 	if (!uclamp_is_used())
- 		return fits;
-@@ -9522,12 +9532,30 @@ static void update_cpu_capacity(struct sched_domain *sd, int cpu)
- {
- 	unsigned long capacity = scale_rt_capacity(cpu);
- 	struct sched_group *sdg = sd->groups;
-+	struct rq *rq = cpu_rq(cpu);
-+	u64 limit;
- 
- 	if (!capacity)
- 		capacity = 1;
- 
--	cpu_rq(cpu)->cpu_capacity = capacity;
--	trace_sched_cpu_capacity_tp(cpu_rq(cpu));
-+	rq->cpu_capacity = capacity;
-+	trace_sched_cpu_capacity_tp(rq);
-+
-+	/*
-+	 * Calculate the util at which the task must be considered a misfit.
-+	 *
-+	 * We must ensure that a task experiences the same ramp-up time to
-+	 * reach max performance point of the system regardless of the CPU it
-+	 * is running on (due to invariance, time will stretch and task will
-+	 * take longer to achieve the same util value compared to a task
-+	 * running on a big CPU) and a delay in misfit migration which depends
-+	 * on TICK doesn't end up hurting it as it can happen after we would
-+	 * have crossed this threshold.
-+	 */
-+	limit = approximate_runtime(arch_scale_cpu_capacity(cpu)) * USEC_PER_MSEC;
-+	limit -= TICK_USEC; /* sd->balance_interval is more accurate */
-+	limit = cap_scale(limit, arch_scale_cpu_capacity(cpu));
-+	rq->fits_capacity_threshold = approximate_util_avg(0, limit);
- 
- 	sdg->sgc->capacity = capacity;
- 	sdg->sgc->min_capacity = capacity;
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index d078e6481bd0..92c29b6d3cc5 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1054,6 +1054,7 @@ struct rq {
- 	struct sched_domain __rcu	*sd;
- 
- 	unsigned long		cpu_capacity;
-+	unsigned long		fits_capacity_threshold;
- 
- 	struct balance_callback *balance_callback;
- 
--- 
-2.34.1
+> Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
+> ---
+> Note to maintainers:
+> Originally formed part of the IMS submission below, but is not
+> specific to IMS.
+> https://lore.kernel.org/lkml/cover.1696609476.git.reinette.chatre@intel.com
+> 
+>  drivers/vfio/pci/vfio_pci_core.c  |  3 ---
+>  drivers/vfio/pci/vfio_pci_intrs.c | 10 ++++++++--
+>  2 files changed, 8 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
+> index 1cbc990d42e0..d2847ca2f0cb 100644
+> --- a/drivers/vfio/pci/vfio_pci_core.c
+> +++ b/drivers/vfio/pci/vfio_pci_core.c
+> @@ -1214,12 +1214,9 @@ static int vfio_pci_ioctl_set_irqs(struct vfio_pci_core_device *vdev,
+>  			return PTR_ERR(data);
+>  	}
+>  
+> -	mutex_lock(&vdev->igate);
+> -
+>  	ret = vfio_pci_set_irqs_ioctl(vdev, hdr.flags, hdr.index, hdr.start,
+>  				      hdr.count, data);
+>  
+> -	mutex_unlock(&vdev->igate);
+>  	kfree(data);
+>  
+>  	return ret;
+> diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_pci_intrs.c
+> index 69ab11863282..97a3bb22b186 100644
+> --- a/drivers/vfio/pci/vfio_pci_intrs.c
+> +++ b/drivers/vfio/pci/vfio_pci_intrs.c
+> @@ -793,7 +793,9 @@ int vfio_pci_set_irqs_ioctl(struct vfio_pci_core_device *vdev, uint32_t flags,
+>  	int (*func)(struct vfio_pci_core_device *vdev, unsigned int index,
+>  		    unsigned int start, unsigned int count, uint32_t flags,
+>  		    void *data) = NULL;
+> +	int ret = -ENOTTY;
+>  
+> +	mutex_lock(&vdev->igate);
+>  	switch (index) {
+>  	case VFIO_PCI_INTX_IRQ_INDEX:
+>  		switch (flags & VFIO_IRQ_SET_ACTION_TYPE_MASK) {
+> @@ -838,7 +840,11 @@ int vfio_pci_set_irqs_ioctl(struct vfio_pci_core_device *vdev, uint32_t flags,
+>  	}
+>  
+>  	if (!func)
+> -		return -ENOTTY;
+> +		goto out_unlock;
+> +
+> +	ret = func(vdev, index, start, count, flags, data);
+> +out_unlock:
+> +	mutex_unlock(&vdev->igate);
+> +	return ret;
+>  
+> -	return func(vdev, index, start, count, flags, data);
+>  }
 
 
