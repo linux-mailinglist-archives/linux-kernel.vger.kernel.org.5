@@ -1,132 +1,142 @@
-Return-Path: <linux-kernel+bounces-52835-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52836-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FBFA849D3E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:42:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49F5A849D42
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:44:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A5691F2349E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:42:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 841DA2822BE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:44:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA9722C1A9;
-	Mon,  5 Feb 2024 14:41:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43E642C1BA;
+	Mon,  5 Feb 2024 14:44:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LrpKqihx"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TZnA9K7q"
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 683322C19C
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 14:41:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E242C19E;
+	Mon,  5 Feb 2024 14:44:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707144118; cv=none; b=Lpf/2w2nKqBzEtMIZDxu4PdCSao4CLNoCSchTMPMdQvFXwGCQv4WhnaiKOIM8tm6PCHQFutc75OqoZg3Boc0H0+wJnL0ZTAXzQFPb4H2aeiNpdUePaXDdMeMpURoztTtuzM6NFtfqcf0DUbtSdqqmI3vkhw2bUGNJt/ds9hVZ3w=
+	t=1707144248; cv=none; b=lVYf/mqOX1vDa8Ac6vnu/j/gl+XoWBCwfLDJFIhqZ98cQmXn6jRalRH/tfw23iXleCazJ6ha9hShUgAN72fFHPlnj242WEinZnM1V++ra2zoYh9zk/rCIvZpOD972LyLX3RhulzMLunqoqU8jyw5g8A3z7iDZe8/TiaevAjVxpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707144118; c=relaxed/simple;
-	bh=KQhMNIwFvZsF0OT2RO5FnPqalWb/YnWmBS845Z+2/X8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SGHwc8929woiuBG3YqXqTH+k12kc/gGeqvSP8zIY/R02Ke9Ftpbyts27m2o3V20I9J92HF4ByT5QhyhHEOlDmN/g8/kW+Zgcgc6KQkm94MExjaPpCr2z8OnS7ifC5Cx3HeQi2Xq4GLn5EoJx+duBPrUKPLpYgGKY9p9eIo+G98M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LrpKqihx; arc=none smtp.client-ip=209.85.167.50
+	s=arc-20240116; t=1707144248; c=relaxed/simple;
+	bh=cQnh+MeiQmdzvtMCYAa40uDRrJY4G2mp+bIqGXf8FJY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XRwcWn7vs41GeEGXWYc0PxIrobm+Ux0Qlqa/NaaA4AW0TqsM3uYEzGacbVDWjhg9wjfBniWFwrA/sVjzrzHKmSCoJDEG47t48iHrUBax1HiN3Y5kxvwcFlCYsQMjLIYdwaPIUFJJsGDP27SPXHkr3jjkWOJJR7WxdWrQUsDxZwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TZnA9K7q; arc=none smtp.client-ip=209.85.208.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-51121637524so6731527e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 06:41:56 -0800 (PST)
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d0a4e8444dso15089611fa.2;
+        Mon, 05 Feb 2024 06:44:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707144114; x=1707748914; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fKULY3uf5fnHzulcbB3qwz6JapwOEnl8pUfTbYYscHU=;
-        b=LrpKqihxJnR4haw1flXHENkJ0rk331V/cMTUIDai6tZmaTRzg5K4O4i0WUHLfu+Ymv
-         MlJr9uAfe0JlxelSRFkJBMGe+o+A3LTUt2MmJFf366dX/qPzZMZmHgYhkrH3HD7L/w/H
-         Nw55enMb9WmzkWVPCc5X+c1Zt8NbLpYoR34OnKl/c0UVYLtxbXFWE4bpyVIv0FIQUreC
-         m1YHxvur+ZGd99x1vlwVgOU165S0bwn4h4OGbuc/fkzv+1ROBOQ7mpDdmSA7A7sxTWVn
-         KUHehxT9eEsnwc8lMri4KAw+i8a0YL2OTvTt8g9ZXAedb+zUts+5vUzANHrFL8iQHiH4
-         b/Gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707144114; x=1707748914;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1707144245; x=1707749045; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fKULY3uf5fnHzulcbB3qwz6JapwOEnl8pUfTbYYscHU=;
-        b=EUXgzmVmUmGijxEjqq2fK2fCO8AyEC7xKkbZd6L2qGxEYSluR0YHX9yDy/f2tQ71WC
-         Mm+pRgn9/oo0lJndei1wjCTX1lcUTKmJgebxs30EtkIpYCAXzrlqkOibj/I7pIyOBtgd
-         0a/LpDXi69IbeyrsPPsgUuBcghVq3G6QffEjM9uXvtyB0XGZR12zAa7Idx3eWvWHByja
-         CSTZjvE+Y2pxWbd2mnbJG2y15nC1BIG1pua7iRYrc0lMlOCXKEwsGE2JeFN43ihE/8+R
-         J/ONB/oqSEwu1LMzU2mSSyA1KyOV24G/D3VNhli33Cttuv58XfThbAt+E7eFZuKB+p/Z
-         YZmg==
-X-Gm-Message-State: AOJu0YzGiU4ikHg9y0ZCtrph0l9MO0mcAOfj8c+IFd5pbiYbm2m48ujZ
-	wyH8+zLmAarch8I8NMzHuhNl/QL/SzDRh961YWoruvhjQCQ3UrLL
-X-Google-Smtp-Source: AGHT+IFVaO6UfEGZZs7onSCc6yna2Eo5pz7ReZec3ds7nPmJRI5cGABtimENzRY2tqxJnmvmTbBFow==
-X-Received: by 2002:a05:6512:e9c:b0:511:4307:f6a4 with SMTP id bi28-20020a0565120e9c00b005114307f6a4mr5923350lfb.60.1707144114191;
-        Mon, 05 Feb 2024 06:41:54 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCX88uqq94ctAtYY5c7sacDO/mc/xq1yTBt7MutneLk1fxbDFxFnrUqfkfrX+/2NysP2iQsjW4xonxT3KE1kF5MpjwTILsBzMOdea7ne+ly7oBGKjsfe0xlEya8irgAVwN+dF19f/0q3TnHmtjG5DuSnRZ6TCFYYkFc8T3MpwW16VBoiPxpcbW8k0ztIXJnlxvF9FvLhDr6pXjrhJOpKcqqOJmsUlbOfzfqADyFN
-Received: from gmail.com ([2001:1458:204:1::101:b2a1])
-        by smtp.gmail.com with ESMTPSA id d13-20020a170906640d00b00a35d7b6cb63sm4377770ejm.28.2024.02.05.06.41.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 06:41:53 -0800 (PST)
-Date: Mon, 5 Feb 2024 15:41:52 +0100
-From: Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: Jens Taprogge <jens.taprogge@taprogge.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	industrypack-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ipack: make ipack_bus_type const
-Message-ID: <ZcDzsP8mRl3Rp9bx@gmail.com>
-References: <20240204-bus_cleanup-ipack-v1-1-aef5e8f84d01@marliere.net>
+        bh=bF+ioF4rU6hYdKskdmBXlkag6Ll/8Irxamnq5jEhMXI=;
+        b=TZnA9K7qWi59dzk0FLjuvn+ZlhQ+qkaaMkYFx2/3h9QIuzzFQ6V+9LtwWCOPh7auiN
+         Uj1afEy7jDdZIGSashEyig6wbq0pq7jdqrrpCIPkt29W7jUTpAaUVOqN86X9223U4FRD
+         sKW9WEg09xkfUUXA7aGRH1SPUiajZLL1Ss/JA7ctbFGe/0cGNZVRXDFrGrU9YyHO/Fts
+         1p5OOtMvvlXuyu/Lq+2cnxb2aDYb6Ee5m/Xd/Xw0NY3en05OI8EN2+TbAqs7PzPPRMfQ
+         bwd/9sE7zsjlDr3yqXpmVMVjzTMXT1521Ur6OjAdVA0yRp7kDCudzxPo6ZjoZxzrXU16
+         m54g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707144245; x=1707749045;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bF+ioF4rU6hYdKskdmBXlkag6Ll/8Irxamnq5jEhMXI=;
+        b=MGdJfSKCDzbGHl7lV9qTmV4AZEsVIpO5WTiZ3gz4W8IADrVWYj1T4/Mpcl3c3krB2E
+         ztE62jqnNlxp7sJ+KfkME6W7/mkd4hfDf36vBwR9xSYtBaloMfhmQG3QTngXhOv++5OB
+         bRKEgQF8yb9QtIN5fX9tsfUMX8oA0f+0StJd2xlY8DaU8v+15/Wy5MZq+5RugUTK7Xil
+         TBAf3AirruGUnxF/u1icYzcvkhDWToFpx52vqLaq4RS6lYvuubIZCH/nVMXpAS8Q4aiT
+         Wnk93yUfvmeaG2I26Yj1Sy4B9GfT1O64rUsRC5O1nP/wlzfptcDteLJShRHa7w/n3frO
+         0j1A==
+X-Gm-Message-State: AOJu0Yw4WbeTpOJUqWl0ChjsaFxBM1//Nq5BCXn5HViJDFDeoFk6FknL
+	YJbJd973LpWH6FIVaWSZAqsQVjjyNt4osGpmLK5r4QHcquvbUUkaGzJQvqopKpIjvk2T7cxuOio
+	DbJPKzBW3pm1uR3NhxUNr570/qQ==
+X-Google-Smtp-Source: AGHT+IGmWKx8ItqhTYnDkpaf28i4Fx1v2apIgAI/fIL955Sgbj0u6jNf4TZdLG7QNW8CbT27NNtf1zL8vJxNXjynXgY=
+X-Received: by 2002:a05:651c:214:b0:2d0:aae6:bf2e with SMTP id
+ y20-20020a05651c021400b002d0aae6bf2emr2255789ljn.34.1707144244549; Mon, 05
+ Feb 2024 06:44:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240204-bus_cleanup-ipack-v1-1-aef5e8f84d01@marliere.net>
+References: <20240205104905.24929-1-alice.chao@mediatek.com>
+In-Reply-To: <20240205104905.24929-1-alice.chao@mediatek.com>
+From: Stanley Jhu <chu.stanley@gmail.com>
+Date: Mon, 5 Feb 2024 22:43:53 +0800
+Message-ID: <CAGaU9a8EQDdrrgzuaqBYk6h-r4u6spozH3cHeHO-98dNjEv-AA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] ufs: core: fix shift issue in ufshcd_clear_cmd
+To: alice.chao@mediatek.com
+Cc: Alim Akhtar <alim.akhtar@samsung.com>, Avri Altman <avri.altman@wdc.com>, 
+	Bart Van Assche <bvanassche@acm.org>, "James E.J. Bottomley" <jejb@linux.ibm.com>, 
+	"Martin K. Petersen" <martin.petersen@oracle.com>, Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, wsd_upstream@mediatek.com, 
+	stanley.chu@mediatek.com, peter.wang@mediatek.com, powen.kao@mediatek.com, 
+	naomi.chu@mediatek.com, cc.chou@mediatek.com, tun-yu.yu@mediatek.com, 
+	chun-hung.wu@mediatek.com, casper.li@mediatek.com, linux-scsi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Feb 04, 2024 at 05:00:13PM -0300, Ricardo B. Marliere wrote:
-> Now that the driver core can properly handle constant struct bus_type,
-> move the ipack_bus_type variable to be a constant structure as well,
-> placing it into read-only memory which can not be modified at runtime.
-> 
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-> ---
->  drivers/ipack/ipack.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/ipack/ipack.c b/drivers/ipack/ipack.c
-> index b1471ba016a5..866bf48d803b 100644
-> --- a/drivers/ipack/ipack.c
-> +++ b/drivers/ipack/ipack.c
-> @@ -187,7 +187,7 @@ static struct attribute *ipack_attrs[] = {
->  };
->  ATTRIBUTE_GROUPS(ipack);
->  
-> -static struct bus_type ipack_bus_type = {
-> +static const struct bus_type ipack_bus_type = {
->  	.name      = "ipack",
->  	.probe     = ipack_bus_probe,
->  	.match     = ipack_bus_match,
-> 
-> ---
-> base-commit: 41b9fb381a486360b2daaec0c7480f8e3ff72bc7
-> change-id: 20240204-bus_cleanup-ipack-7e502021db1f
-> 
-> Best regards,
-> -- 
-> Ricardo B. Marliere <ricardo@marliere.net>
-> 
+On Mon, Feb 5, 2024 at 7:27=E2=80=AFPM <alice.chao@mediatek.com> wrote:
+>
+> From: Alice Chao <alice.chao@mediatek.com>
+>
+> When task_tag > 32 (in mcq mode), 1U << task_tag will out of bound
+> for u32 mask. Fix this bug to prevent SHIFT_ISSUE (Bitwise shifts
+> that are out of bounds for their data type).
+>
+> [name:debug_monitors&]Unexpected kernel BRK exception at EL1
+> [name:traps&]Internal error: BRK handler: 00000000f2005514 [#1] PREEMPT S=
+MP
+> [name:mediatek_cpufreq_hw&]cpufreq stop DVFS log done
+> [name:mrdump&]Kernel Offset: 0x1ba5800000 from 0xffffffc008000000
+> [name:mrdump&]PHYS_OFFSET: 0x80000000
+> [name:mrdump&]pstate: 22400005 (nzCv daif +PAN -UAO)
+> [name:mrdump&]pc : [0xffffffdbaf52bb2c] ufshcd_clear_cmd+0x280/0x288
+> [name:mrdump&]lr : [0xffffffdbaf52a774] ufshcd_wait_for_dev_cmd+0x3e4/0x8=
+2c
+> [name:mrdump&]sp : ffffffc0081471b0
+> <snip>
+> Workqueue: ufs_eh_wq_0 ufshcd_err_handler
+> Call trace:
+>  dump_backtrace+0xf8/0x144
+>  show_stack+0x18/0x24
+>  dump_stack_lvl+0x78/0x9c
+>  dump_stack+0x18/0x44
+>  mrdump_common_die+0x254/0x480 [mrdump]
+>  ipanic_die+0x20/0x30 [mrdump]
+>  notify_die+0x15c/0x204
+>  die+0x10c/0x5f8
+>  arm64_notify_die+0x74/0x13c
+>  do_debug_exception+0x164/0x26c
+>  el1_dbg+0x64/0x80
+>  el1h_64_sync_handler+0x3c/0x90
+>  el1h_64_sync+0x68/0x6c
+>  ufshcd_clear_cmd+0x280/0x288
+>  ufshcd_wait_for_dev_cmd+0x3e4/0x82c
+>  ufshcd_exec_dev_cmd+0x5bc/0x9ac
+>  ufshcd_verify_dev_init+0x84/0x1c8
+>  ufshcd_probe_hba+0x724/0x1ce0
+>  ufshcd_host_reset_and_restore+0x260/0x574
+>  ufshcd_reset_and_restore+0x138/0xbd0
+>  ufshcd_err_handler+0x1218/0x2f28
+>  process_one_work+0x5fc/0x1140
+>  worker_thread+0x7d8/0xe20
+>  kthread+0x25c/0x468
+>  ret_from_fork+0x10/0x20
+>
+> Signed-off-by: Alice Chao <alice.chao@mediatek.com>
 
-Hello Ricardo,
-
-Thank you for your patch.
-
-Acked-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
-
-Greg, would you please add it to your misc tree.
-
-Thanks and regards,
-Vaibhav Gupta
+Reviewed-by: Stanley Jhu <chu.stanley@gmail.com>
 
