@@ -1,81 +1,89 @@
-Return-Path: <linux-kernel+bounces-52739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4C85849C19
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:41:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23AD6849C1D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:42:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C41071C23BE9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:41:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C989C1F24429
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:42:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14A762260A;
-	Mon,  5 Feb 2024 13:41:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78DEA20DF6;
+	Mon,  5 Feb 2024 13:42:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="Z9XEH17V"
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="gquqHcC/"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE8D4210E0
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 13:41:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 457E2249F7;
+	Mon,  5 Feb 2024 13:42:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707140504; cv=none; b=JgQ2HnIaSww+osSgZZlHZlz/3ygjKN3JuUCiXeVsJS/rTX25Da0JKHCEu9Ii6X45cPT3PlgMAFbar0Fk90igVeh9gL18xCXEr7/VeMHX2u39EYWfFXEkcZtNYLig5Yyn0nTquxvR4qVm6wGkKOR2eNkchoHDjeJRGu2T+XKleTI=
+	t=1707140526; cv=none; b=t+Jp5EC6zGi0c3b4x47sCAFTkCkQhLzzmZr+QDHs6+z0p+cvFEZvKgwjxGfq+bDY3SOistTDtF5H4qYn5YRh/baqEMHM5Gs1fE5YKORhgt4cTpLHQjfPPGl+zTKpcRZgd47An6pr42wP5RYjlNgLShoZCHRb+H61bneYoY0u0yM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707140504; c=relaxed/simple;
-	bh=YDCpBdBH44n875Uo+Dp3bavm/xtQGfLpbCMNSBVJmnM=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=Gfl5JWF4J+EvnidaXetnVcNUXiQpMKRq00GjRWrzuw1hy3MI57/0UYOiXwoHrtIMIvIYpJog0VeexJi7trCG8yJdrvlyvSXwnFGg0qFmxXKlC5V+q3jhkRaB3N+pdQpy4ikuT/guaDa12sfLw5/TVAhizXqtrg2vopXT4NPaCqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=Z9XEH17V; arc=none smtp.client-ip=83.149.199.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
-Received: from [10.10.2.52] (unknown [10.10.2.52])
-	by mail.ispras.ru (Postfix) with ESMTPSA id 69A4B40F1DC3;
-	Mon,  5 Feb 2024 13:41:37 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 69A4B40F1DC3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1707140497;
-	bh=YDCpBdBH44n875Uo+Dp3bavm/xtQGfLpbCMNSBVJmnM=;
-	h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-	b=Z9XEH17V488MN4orxS8XupWyLBttTuNEfX6vlHM0qtvrEDQcHVfOz/eF5MUDbxdfe
-	 rP3kfIIx/oU8hqAS5AiAaVdjGCKkQWinaQz69DXbGJYLves2mq7ysAmS/ulwIjEvDT
-	 pnE+hOQf2UjxwuFxnMnN+SF3n8DK4wPQlMN9OlLM=
-Subject: Re: [lvc-project] [PATCH] drm/amd/pm: check return value of
- amdgpu_irq_add_id()
-To: Igor Artemiev <Igor.A.Artemiev@mcst.ru>,
- Alex Deucher <alexander.deucher@amd.com>
-Cc: lvc-project@linuxtesting.org, "Pan, Xinhui" <Xinhui.Pan@amd.com>,
- linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
- Evan Quan <evan.quan@amd.com>, David Airlie <airlied@gmail.com>,
- =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-References: <20240205122522.81627-1-Igor.A.Artemiev@mcst.ru>
-From: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Message-ID: <ac1c1709-8bb0-6713-132e-d9b149063169@ispras.ru>
-Date: Mon, 5 Feb 2024 16:41:37 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+	s=arc-20240116; t=1707140526; c=relaxed/simple;
+	bh=/wQMrpuzD8DLeB+dyVSLRlSrwYiBDeLVdQ7mpA9FdPE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o40TH1XR2i3YgZgBhKFJ7OweUjxTPXM7kYg9dtD4eCfGKyQLu8zhkbSNrQZtiQqi/qfo+92Nr7X8izmQwGWQe9MoNUfYBhO7ShKBzxC3xOdjplSrOZZ0KONnnW7Ypkw0ZHSDcjHLZ5HX7QFiHmT05mOPCxITnTESYYuva5w+0PM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=gquqHcC/; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=uH4U9fvNVZDiK+h5rTo4LU81eBV5vhHy4QRdufhEcjc=; b=gquqHcC/HDgYFuP6KhxFqHtsw4
+	1doib5d7IYx7x3a3eXDwCoVrcwLy5kSDWZicdKg7rF6T/Drml9ZaYCRet/ZXyaVQyOsqsdmZ/7knA
+	f55+lhKm9BYgn/cngcIyEkol0wQ8agPYaioG11gwVxCEs0ku2/aVpnxYtvRkuoYJjsU8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rWzEI-0072Ct-4p; Mon, 05 Feb 2024 14:41:46 +0100
+Date: Mon, 5 Feb 2024 14:41:46 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Lee Jones <lee@kernel.org>
+Cc: Christian Marangi <ansuelsmth@gmail.com>, Pavel Machek <pavel@ucw.cz>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Daniel Golle <daniel@makrotopia.org>,
+	Li Zetao <lizetao1@huawei.com>, linux-leds@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] leds: trigger: netdev: Fix kernel panic on interface
+ rename trig notify
+Message-ID: <2cf84815-f9b6-4a0a-a3b4-d23628a89aa4@lunn.ch>
+References: <20240203235413.1146-1-ansuelsmth@gmail.com>
+ <8d51f09b-e6d2-4ee1-9e7d-b545d561798a@lunn.ch>
+ <20240205085007.GA19855@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240205122522.81627-1-Igor.A.Artemiev@mcst.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240205085007.GA19855@google.com>
 
-On 05.02.2024 15:25, Igor Artemiev wrote:
-> amdgpu_irq_ad_id() may fail and the irq handlers will not be registered.
-> This patch adds error code check.
+> > This should have 'net' in the subject line, to indicate which tree its
+> > for.
+> 
+> No, it shouldn't.
+> 
+> Contributors aren't obliged to know anything about merging strategies.
 
-But what is about deallocation of already allocated memory?
+With netdev, we tend to assume they do, or at least can contribute to
+the discussion. They often know about any dependencies etc which could
+influence the decision. When there are multiple subsystem maintainers
+involved, i tend to use To: to indicate the maintainer i think should
+merge the patch, and Cc: for the rest.
 
---
-Alexey
+> Why does this need to go in via net?
 
+It does not, as far as i'm aware. Christian, do you know of any
+reason?
 
-
+	Andrew
 
