@@ -1,164 +1,325 @@
-Return-Path: <linux-kernel+bounces-52494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1C238498FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:36:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93080849900
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:37:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C882281493
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:36:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6FB31C208DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:37:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3981199A2;
-	Mon,  5 Feb 2024 11:36:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ea5No9/B"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19D1F18E1A;
+	Mon,  5 Feb 2024 11:37:22 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D10DE18E00;
-	Mon,  5 Feb 2024 11:36:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FA1E171BC;
+	Mon,  5 Feb 2024 11:37:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707132980; cv=none; b=cMOup714zGX1IJaloq3IfS/vL3L6351XKFKbbtz9J9QfqGjbzQq0fukJEvS5E8s4+sdhUs2Gq8xj9/CHerdVe28QM408QvWpaaAi7ojaxbOzW1Z2bbZ4Yb9Jn8xXqRoPYBtuoK8pKeXy3eGE/Nd3ZGrcXofgNI3MeHAxI1y9nHg=
+	t=1707133041; cv=none; b=g8b76t/7oNu2O53TsKoMbLGyZ5lqJCpbs+d8xFr766CiTvxepbrSa//rQaG4OgOC3GvLe47B1oAIMmLDfpdHeeaoR72z6DwmopGNF3kCuRHDrSZk6T8Vbz3NqQsMUogThLuVuddpPQTsDfJeaYLflChjap9229Q0XL8EH2r1Mzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707132980; c=relaxed/simple;
-	bh=XXMTy7omW95QL4wYydLM30UA75bH/787fQ5A85xLdT4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OhrKDpFUkiXYAYVsE4XM5HIxXDxBNFSu1EaOjLZVcdNnpVvDGSuW3956uJkyLndAW91OEzRG3QpLElJVd1tqglrJ8pn2nhPG9BlnE9PMC7dTN/zTAM5CBLcbssyTBIRRgzZS1elTUVKsSaggeYA0IN2k+FVNMKBPyp540haKkBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ea5No9/B; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF8BEC433C7;
-	Mon,  5 Feb 2024 11:36:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707132979;
-	bh=XXMTy7omW95QL4wYydLM30UA75bH/787fQ5A85xLdT4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ea5No9/B9/3ZwCOcBfLkGLDE/MvFK7jfTUn58PgVM0YUBlaEetZHBUxE4H4EzZn42
-	 VWdhM23gfRNhm+XkbKtNEj3C0OmneHbqvfBlFcfZLvnjj3kZ4di005cvbN+JyjMJdQ
-	 BruEA7v+rRVY+KS6rCy/IwVi0gCGBix8KOWYvJHTF29ICn+h5BgF4YiPjGhV27Ivp0
-	 jO6Cl/P5PsiUPrSoyHjFnTn7f3CBaebYqvaP/rB+cBxBXBaKeixBPxLeuM1DmUhs89
-	 fZgMOGkmBEvIyeouCRrK7VIoPHz5+OYJ84CAAZZqjo1XPLWVZIGfTK1XnMbrLvuspx
-	 LDK7mVCz6FqrA==
-Date: Mon, 5 Feb 2024 12:36:07 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Chuck Lever <chuck.lever@oracle.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Jan Kara <jack@suse.cz>, Eric Van Hensbergen <ericvh@kernel.org>, 
-	Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, 
-	Christian Schoenebeck <linux_oss@crudebyte.com>, David Howells <dhowells@redhat.com>, 
-	Marc Dionne <marc.dionne@auristor.com>, Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, 
-	Alexander Aring <aahringo@redhat.com>, David Teigland <teigland@redhat.com>, 
-	Andreas Gruenbacher <agruenba@redhat.com>, Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, 
-	Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
-	Trond Myklebust <trond.myklebust@hammerspace.com>, Anna Schumaker <anna@kernel.org>, Mark Fasheh <mark@fasheh.com>, 
-	Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, 
-	Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>, 
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, 
-	Namjae Jeon <linkinjeon@kernel.org>, Sergey Senozhatsky <senozhatsky@chromium.org>, 
-	Miklos Szeredi <miklos@szeredi.hu>, linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, v9fs@lists.linux.dev, linux-afs@lists.infradead.org, 
-	ceph-devel@vger.kernel.org, gfs2@lists.linux.dev, linux-nfs@vger.kernel.org, 
-	ocfs2-devel@lists.linux.dev, linux-cifs@vger.kernel.org
-Subject: Re: [PATCH v3 04/47] filelock: add some new helper functions
-Message-ID: <20240205-wegschauen-unappetitlich-2b0926023605@brauner>
-References: <20240131-flsplit-v3-0-c6129007ee8d@kernel.org>
- <20240131-flsplit-v3-4-c6129007ee8d@kernel.org>
+	s=arc-20240116; t=1707133041; c=relaxed/simple;
+	bh=ifeorQftRJzgzunliqbdI9aCD0Ma2Rh9E3S8+gyHG10=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mJnvm2GKbfqojM4f2zv35PayC8bchc6zq2hN/OsBiAceQOFzau78olPR9rdxNd4cxo7RWLNBlZDE1etHm+Du+L/lP553D6QjVLwXmXoTBacSpmbMUvsnq1iNSw5v79WjzD6I4J6RosE/ZV6/VbxATBwnv5IFWS/8NFSExqjAij0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TT48t6zgbz1vpHf;
+	Mon,  5 Feb 2024 19:36:46 +0800 (CST)
+Received: from kwepemd100002.china.huawei.com (unknown [7.221.188.184])
+	by mail.maildlp.com (Postfix) with ESMTPS id 3D7B71404D8;
+	Mon,  5 Feb 2024 19:37:14 +0800 (CST)
+Received: from M910t (10.110.54.157) by kwepemd100002.china.huawei.com
+ (7.221.188.184) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Mon, 5 Feb
+ 2024 19:37:12 +0800
+Date: Mon, 5 Feb 2024 19:36:55 +0800
+From: Changbin Du <changbin.du@huawei.com>
+To: Adrian Hunter <adrian.hunter@intel.com>
+CC: Changbin Du <changbin.du@huawei.com>, Peter Zijlstra
+	<peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de
+ Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander
+ Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
+	<linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>, Andi
+ Kleen <ak@linux.intel.com>, Thomas Richter <tmricht@linux.ibm.com>,
+	<changbin.du@gmail.com>
+Subject: Re: [PATCH v5 2/5] perf: util: use capstone disasm engine to show
+ assembly instructions
+Message-ID: <20240205113655.qlhwowlnnrv7e3qe@M910t>
+References: <20240122112054.1576835-1-changbin.du@huawei.com>
+ <20240122112054.1576835-3-changbin.du@huawei.com>
+ <82baac58-6d9e-45da-81ff-4a27a0d1d776@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20240131-flsplit-v3-4-c6129007ee8d@kernel.org>
+In-Reply-To: <82baac58-6d9e-45da-81ff-4a27a0d1d776@intel.com>
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemd100002.china.huawei.com (7.221.188.184)
 
-> diff --git a/include/linux/filelock.h b/include/linux/filelock.h
-> index 085ff6ba0653..a814664b1053 100644
-> --- a/include/linux/filelock.h
-> +++ b/include/linux/filelock.h
-> @@ -147,6 +147,29 @@ int fcntl_setlk64(unsigned int, struct file *, unsigned int,
->  int fcntl_setlease(unsigned int fd, struct file *filp, int arg);
->  int fcntl_getlease(struct file *filp);
->  
-> +static inline bool lock_is_unlock(struct file_lock *fl)
-> +{
-> +	return fl->fl_type == F_UNLCK;
-> +}
-> +
-> +static inline bool lock_is_read(struct file_lock *fl)
-> +{
-> +	return fl->fl_type == F_RDLCK;
-> +}
-> +
-> +static inline bool lock_is_write(struct file_lock *fl)
-> +{
-> +	return fl->fl_type == F_WRLCK;
-> +}
-> +
-> +static inline void locks_wake_up(struct file_lock *fl)
-> +{
-> +	wake_up(&fl->fl_wait);
-> +}
-> +
-> +/* for walking lists of file_locks linked by fl_list */
-> +#define for_each_file_lock(_fl, _head)	list_for_each_entry(_fl, _head, fl_list)
-> +
+On Mon, Feb 05, 2024 at 11:22:51AM +0200, Adrian Hunter wrote:
+> On 22/01/24 13:20, Changbin Du wrote:
+> > Currently, the instructions of samples are shown as raw hex strings
+> > which are hard to read. x86 has a special option '--xed' to disassemble
+> > the hex string via intel XED tool.
+> > 
+> > Here we use capstone as our disassembler engine to give more friendly
+> > instructions. We select libcapstone because capstone can provide more
+> > insn details. Perf will fallback to raw instructions if libcapstone is
+> > not available.
+> > 
+> > The advantages compared to XED tool:
+> >  * Support arm, arm64, x86-32, x86_64 (more could be supported),
+> >    xed only for x86_64.
+> >  * Immediate address operands are shown as symbol+offs.
+> > 
+> > Signed-off-by: Changbin Du <changbin.du@huawei.com>
+> > 
+> > ---
+> > v2:
+> >   - line up the output by preceding two tabs. (Adrian Hunter)
+> >   - removed the tailing space. (Adrian Hunter)
+> >   - forward declaration for perf_sample, thread, machine. (Adrian Hunter)
+> >   - other trivial fixes (Adrian Hunter)
+> > ---
+> >  tools/perf/builtin-script.c  |   8 +--
+> >  tools/perf/util/Build        |   1 +
+> >  tools/perf/util/print_insn.c | 133 +++++++++++++++++++++++++++++++++++
+> >  tools/perf/util/print_insn.h |  16 +++++
+> >  4 files changed, 153 insertions(+), 5 deletions(-)
+> >  create mode 100644 tools/perf/util/print_insn.c
+> >  create mode 100644 tools/perf/util/print_insn.h
+> > 
+> > diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+> > index b1f57401ff23..4817a37f16e2 100644
+> > --- a/tools/perf/builtin-script.c
+> > +++ b/tools/perf/builtin-script.c
+> > @@ -34,6 +34,7 @@
+> >  #include "util/event.h"
+> >  #include "ui/ui.h"
+> >  #include "print_binary.h"
+> > +#include "print_insn.h"
+> >  #include "archinsn.h"
+> >  #include <linux/bitmap.h>
+> >  #include <linux/kernel.h>
+> > @@ -1511,11 +1512,8 @@ static int perf_sample__fprintf_insn(struct perf_sample *sample,
+> >  	if (PRINT_FIELD(INSNLEN))
+> >  		printed += fprintf(fp, " ilen: %d", sample->insn_len);
+> >  	if (PRINT_FIELD(INSN) && sample->insn_len) {
+> > -		int i;
+> > -
+> > -		printed += fprintf(fp, " insn:");
+> > -		for (i = 0; i < sample->insn_len; i++)
+> > -			printed += fprintf(fp, " %02x", (unsigned char)sample->insn[i]);
+> > +		printed += fprintf(fp, " insn: ");
+> 
+> Better without the space after 'insn:', then
+> sample__fprintf_insn_raw() can add 1 space before each
+> byte.
+> 		printed += fprintf(fp, " insn:");
+>
+This is designed to. Because I want sample__fprintf_insn_raw() to be independent
+from the callsite.
 
-This causes a build warning for fs/ceph/ and fs/afs when
-!CONFIG_FILE_LOCKING. I'm about to fold the following diff into this
-patch. The diff looks a bit wonky but essentially I've moved
-lock_is_unlock(), lock_is_{read,write}(), locks_wake_up() and
-for_each_file_lock() out of the ifdef CONFIG_FILE_LOCKING:
+> See also further below.
+> 
+> > +		printed += sample__fprintf_insn_raw(sample, fp);
+> >  	}
+> >  	if (PRINT_FIELD(BRSTACKINSN) || PRINT_FIELD(BRSTACKINSNLEN))
+> >  		printed += perf_sample__fprintf_brstackinsn(sample, thread, attr, machine, fp);
+> > diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+> > index 8027f450fa3e..2cbeeb79b6ef 100644
+> > --- a/tools/perf/util/Build
+> > +++ b/tools/perf/util/Build
+> > @@ -32,6 +32,7 @@ perf-y += perf_regs.o
+> >  perf-y += perf-regs-arch/
+> >  perf-y += path.o
+> >  perf-y += print_binary.o
+> > +perf-y += print_insn.o
+> >  perf-y += rlimit.o
+> >  perf-y += argv_split.o
+> >  perf-y += rbtree.o
+> > diff --git a/tools/perf/util/print_insn.c b/tools/perf/util/print_insn.c
+> > new file mode 100644
+> > index 000000000000..36b403d4a4df
+> > --- /dev/null
+> > +++ b/tools/perf/util/print_insn.c
+> > @@ -0,0 +1,133 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Instruction binary disassembler based on capstone.
+> > + *
+> > + * Author(s): Changbin Du <changbin.du@huawei.com>
+> > + */
+> > +#include <string.h>
+> > +#include <stdbool.h>
+> > +#include "debug.h"
+> > +#include "event.h"
+> > +#include "symbol.h"
+> > +#include "machine.h"
+> > +#include "thread.h"
+> > +#include "print_insn.h"
+> > +
+> > +size_t sample__fprintf_insn_raw(struct perf_sample *sample, FILE *fp)
+> > +{
+> > +	int printed = 0;
+> > +
+> > +	for (int i = 0; i < sample->insn_len; i++) {
+> > +		printed += fprintf(fp, "%02x ", (unsigned char)sample->insn[i]);
+> > +		if (sample->insn_len - i > 1)
+> > +			printed += fprintf(fp, " ");
+> 
+> Now there are 2 spaces between.  Better like this:
+> 
+> 	for (int i = 0; i < sample->insn_len; i++)
+> 		printed += fprintf(fp, " %02x", (unsigned char)sample->insn[i]);
+> 
+> 
+> > +	}
+> > +	return printed;
+> > +}
+> > +
+> > +#ifdef HAVE_LIBCAPSTONE_SUPPORT
+> > +#include <capstone/capstone.h>
+> > +
+> > +static int capstone_init(struct machine *machine, csh *cs_handle)
+> > +{
+> > +	cs_arch arch;
+> > +	cs_mode mode;
+> > +
+> > +	if (machine__is(machine, "x86_64")) {
+> > +		arch = CS_ARCH_X86;
+> > +		mode = CS_MODE_64;
+> > +	} else if (machine__normalized_is(machine, "x86")) {
+> > +		arch = CS_ARCH_X86;
+> > +		mode = CS_MODE_32;
+> > +	} else if (machine__normalized_is(machine, "arm64")) {
+> > +		arch = CS_ARCH_ARM64;
+> > +		mode = CS_MODE_ARM;
+> > +	} else if (machine__normalized_is(machine, "arm")) {
+> > +		arch = CS_ARCH_ARM;
+> > +		mode = CS_MODE_ARM + CS_MODE_V8;
+> > +	} else if (machine__normalized_is(machine, "s390")) {
+> > +		arch = CS_ARCH_SYSZ;
+> > +		mode = CS_MODE_BIG_ENDIAN;
+> > +	} else {
+> > +		return -1;
+> > +	}
+> > +
+> > +	if (cs_open(arch, mode, cs_handle) != CS_ERR_OK) {
+> > +		pr_warning_once("cs_open failed\n");
+> > +		return -1;
+> > +	}
+> > +
+> > +	if (machine__normalized_is(machine, "x86")) {
+> > +		cs_option(*cs_handle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
+> > +		/*
+> > +		 * Resolving address operands to symbols is implemented
+> > +		 * on x86 by investigating instruction details.
+> > +		 */
+> > +		cs_option(*cs_handle, CS_OPT_DETAIL, CS_OPT_ON);
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static size_t print_insn_x86(struct perf_sample *sample, struct thread *thread,
+> > +			     cs_insn *insn, FILE *fp)
+> > +{
+> > +	struct addr_location al;
+> > +	size_t printed = 0;
+> > +
+> > +	if (insn->detail && insn->detail->x86.op_count == 1) {
+> > +		cs_x86_op *op = &insn->detail->x86.operands[0];
+> > +
+> > +		addr_location__init(&al);
+> > +		if (op->type == X86_OP_IMM &&
+> > +		    thread__find_symbol(thread, sample->cpumode, op->imm, &al)) {
+> > +			printed += fprintf(fp, "%s ", insn[0].mnemonic);
+> > +			printed += symbol__fprintf_symname_offs(al.sym, &al, fp);
+> > +			addr_location__exit(&al);
+> > +			return printed;
+> > +		}
+> > +		addr_location__exit(&al);
+> > +	}
+> > +
+> > +	printed += fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
+> > +	return printed;
+> > +}
+> > +
+> > +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread,
+> > +			    struct machine *machine, FILE *fp)
+> > +{
+> > +	csh cs_handle;
+> > +	cs_insn *insn;
+> > +	size_t count;
+> > +	size_t printed = 0;
+> > +	int ret;
+> > +
+> > +	/* TODO: Try to initiate capstone only once but need a proper place. */
+> > +	ret = capstone_init(machine, &cs_handle);
+> > +	if (ret < 0) {
+> > +		/* fallback */
+> > +		return sample__fprintf_insn_raw(sample, fp);
+> > +	}
+> > +
+> > +	count = cs_disasm(cs_handle, (uint8_t *)sample->insn, sample->insn_len,
+> > +			  sample->ip, 1, &insn);
+> > +	if (count > 0) {
+> > +		if (machine__normalized_is(machine, "x86"))
+> > +			printed += print_insn_x86(sample, thread, &insn[0], fp);
+> > +		else
+> > +			printed += fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
+> > +		cs_free(insn, count);
+> > +	} else {
+> > +		printed += fprintf(fp, "illegal instruction");
+> > +	}
+> > +
+> > +	cs_close(&cs_handle);
+> > +	return printed;
+> > +}
+> > +#else
+> > +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread __maybe_unused,
+> > +			    struct machine *machine __maybe_unused, FILE *fp)
+> > +{
+> > +	return sample__fprintf_insn_raw(sample, fp);
+> > +}
+> > +#endif
+> > diff --git a/tools/perf/util/print_insn.h b/tools/perf/util/print_insn.h
+> > new file mode 100644
+> > index 000000000000..80dda6da7c60
+> > --- /dev/null
+> > +++ b/tools/perf/util/print_insn.h
+> > @@ -0,0 +1,16 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +#ifndef PERF_PRINT_INSN_H
+> > +#define PERF_PRINT_INSN_H
+> > +
+> > +#include <stddef.h>
+> > +#include <stdio.h>
+> > +
+> > +struct perf_sample;
+> > +struct thread;
+> > +struct machine;
+> > +
+> > +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread,
+> > +			    struct machine *machine, FILE *fp);
+> > +size_t sample__fprintf_insn_raw(struct perf_sample *sample, FILE *fp);
+> > +
+> > +#endif /* PERF_PRINT_INSN_H */
+> 
 
-diff --git a/include/linux/filelock.h b/include/linux/filelock.h
-index a814664b1053..62be9c6b1e59 100644
---- a/include/linux/filelock.h
-+++ b/include/linux/filelock.h
-@@ -133,20 +133,6 @@ struct file_lock_context {
-        struct list_head        flc_lease;
- };
-
--#ifdef CONFIG_FILE_LOCKING
--int fcntl_getlk(struct file *, unsigned int, struct flock *);
--int fcntl_setlk(unsigned int, struct file *, unsigned int,
--                       struct flock *);
--
--#if BITS_PER_LONG == 32
--int fcntl_getlk64(struct file *, unsigned int, struct flock64 *);
--int fcntl_setlk64(unsigned int, struct file *, unsigned int,
--                       struct flock64 *);
--#endif
--
--int fcntl_setlease(unsigned int fd, struct file *filp, int arg);
--int fcntl_getlease(struct file *filp);
--
- static inline bool lock_is_unlock(struct file_lock *fl)
- {
-        return fl->fl_type == F_UNLCK;
-@@ -170,6 +156,20 @@ static inline void locks_wake_up(struct file_lock *fl)
- /* for walking lists of file_locks linked by fl_list */
- #define for_each_file_lock(_fl, _head) list_for_each_entry(_fl, _head, fl_list)
-
-+#ifdef CONFIG_FILE_LOCKING
-+int fcntl_getlk(struct file *, unsigned int, struct flock *);
-+int fcntl_setlk(unsigned int, struct file *, unsigned int,
-+                       struct flock *);
-+
-+#if BITS_PER_LONG == 32
-+int fcntl_getlk64(struct file *, unsigned int, struct flock64 *);
-+int fcntl_setlk64(unsigned int, struct file *, unsigned int,
-+                       struct flock64 *);
-+#endif
-+
-+int fcntl_setlease(unsigned int fd, struct file *filp, int arg);
-+int fcntl_getlease(struct file *filp);
-+
- /* fs/locks.c */
- void locks_free_lock_context(struct inode *inode);
- void locks_free_lock(struct file_lock *fl);
-
+-- 
+Cheers,
+Changbin Du
 
