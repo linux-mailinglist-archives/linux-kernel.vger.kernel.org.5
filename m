@@ -1,453 +1,552 @@
-Return-Path: <linux-kernel+bounces-54032-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54033-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E85084A973
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:38:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 255F384A97A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:39:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAA7A289328
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:38:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A44D1C27B6D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:39:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95DE6482FC;
-	Mon,  5 Feb 2024 22:38:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85BAE1EF1E;
+	Mon,  5 Feb 2024 22:39:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="L4Mnijv0"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 325F747F71;
-	Mon,  5 Feb 2024 22:38:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.11
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707172723; cv=fail; b=dFep4TsAFatnHj+2MejydHt5sdCdO6d3wDUJR1PGi9yNazarHX9xV6ScDpmi1GmVcVgYUv436pASCZGrdS5XaaeyArkSW6gkVW8PA7M1tpYDc29eGBg89rug5xizC7R5JgLpJGsq6VbeTLHYC3vh5AN+WfkFsbY2fEUjVba1LfY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707172723; c=relaxed/simple;
-	bh=Du/yP74SaSMGXlAHUjRx1MeBGBMFku52L4NHcCeF2/s=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=aArfuCuqStC6somYm2CRnHHlHfQ1RrOVVrdIHEATe/thPePSRsi7X9g4owEq7T0QBEkdeAERyFncVtCA37HWyJsvpTLHK9OIIK6HVycMCT6OqtkcG1joLDHznBYrjmDlXNyAVm65mNnBTttiCtHsBx3P0b5CsJCiNJx1whHoep4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=L4Mnijv0; arc=fail smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707172721; x=1738708721;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Du/yP74SaSMGXlAHUjRx1MeBGBMFku52L4NHcCeF2/s=;
-  b=L4Mnijv0jtdwODWVD5kUek3lmdLUmHNPM8Y4r73lUblu6DNR2f8k6PwE
-   9geuCOtsDjl0cYLLlbwfRNQQunZ3w4T36b/HDxnQn0htF5D0okU9aqHH/
-   1bPFpjnGU4AedjSE3YOl9uLV7twv5anNMkAjy++Su/jigetYcIk4/Y6d4
-   sSwjV3w4oIXoAX63jVsJx3Ee1O3jhGqhq0H+WYWxGnSPdj9xsySk1GIef
-   XypNAlZpjXpfdUJ7r6JjgrcaLGq3VSmRzpkt402XClqN53eLP3d64L3ry
-   COzVesLEmsmT/MyXXtqM+hPXKDJewNtVHLIjj75ydkWCg7OIPqjw6PhKQ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="11267375"
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="11267375"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 14:38:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="835403"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orviesa009.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Feb 2024 14:38:38 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 5 Feb 2024 14:38:37 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 5 Feb 2024 14:38:37 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 5 Feb 2024 14:38:37 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 5 Feb 2024 14:38:37 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aAKlX71WYuaxNLJ/731y0Lb4oYq8laqhSHXlk6D/S+txxD+182YYozAgINRqpOz4+YeMB+yWWVdge2etHON/TRrJ/5zPdFSsbAMc0yJ3YQzRkoTZHADYwdvrbDi8Ejoq0FdhUg4htu+GYFZkNweVgEFmCYDNuN/Nbsffp09h7LdaadNvojfUQ8gqYEduoyc6LKBRzXKq00ZUP4zgpqJJRAbo6zRVQAqzI6GRyloP2acgNfmq6PnEu3eDCnaO3Cio3J2DdThKKQZkjn/g3gulNCfRpgZn+60EoC6Ny4TYgNJfrnfVB38L2t2pkD2RR9L4MlZWzqR/lG0xMijzTYgx8g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jNWDzS2Qm0xmhR6wuEjzjvV/SZUQPlSuf8iZlgJ9uks=;
- b=AMxoaI3f0lavh6y8vdiOLM9yRudIZ3NTs7CvSIBYrkhmJ5YfyvIlu8OFW8MCGA8zBZBRfaeX3nGquMC5ceQsbY0md9EDj65CrRk+GBlS0JZf5TPn8BgN3c6NS5QZPhgARjdT9InKifZ1NPSjdvS1vIuCOUx6FegvMvC/bp1aNvWlhWnp8O/m+JRsA0ZEl7G+SmceSbiWyy0UlpoE227iFaH+iiQImk1KuvILH4t1+MqWxFn9I1cfiQGvOsDRirXuakuhFIeAIomAuFMtIoKhPlJy3oVdWknmHBVlRuaF2h2uGVYLW3nbXxbf+K7WupldcrBCNePBrk2PLsgDy/nwhw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by CH0PR11MB8189.namprd11.prod.outlook.com (2603:10b6:610:18d::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36; Mon, 5 Feb
- 2024 22:38:34 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::c903:6ee5:ed69:f4fa]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::c903:6ee5:ed69:f4fa%7]) with mapi id 15.20.7249.032; Mon, 5 Feb 2024
- 22:38:34 +0000
-Message-ID: <4bb63a78-0d0d-47bc-ad65-558af8bc5519@intel.com>
-Date: Mon, 5 Feb 2024 14:38:31 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 00/17] x86/resctrl : Support AMD Assignable Bandwidth
- Monitoring Counters (ABMC)
-Content-Language: en-US
-To: <babu.moger@amd.com>, <corbet@lwn.net>, <fenghua.yu@intel.com>,
-	<tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-	<dave.hansen@linux.intel.com>
-CC: <x86@kernel.org>, <hpa@zytor.com>, <paulmck@kernel.org>,
-	<rdunlap@infradead.org>, <tj@kernel.org>, <peterz@infradead.org>,
-	<yanjiewtw@gmail.com>, <kim.phillips@amd.com>, <lukas.bulwahn@gmail.com>,
-	<seanjc@google.com>, <jmattson@google.com>, <leitao@debian.org>,
-	<jpoimboe@kernel.org>, <rick.p.edgecombe@intel.com>,
-	<kirill.shutemov@linux.intel.com>, <jithu.joseph@intel.com>,
-	<kai.huang@intel.com>, <kan.liang@linux.intel.com>,
-	<daniel.sneddon@linux.intel.com>, <pbonzini@redhat.com>,
-	<sandipan.das@amd.com>, <ilpo.jarvinen@linux.intel.com>,
-	<peternewman@google.com>, <maciej.wieczor-retman@intel.com>,
-	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<eranian@google.com>, "james.morse@arm.com" <james.morse@arm.com>
-References: <20231201005720.235639-1-babu.moger@amd.com>
- <cover.1705688538.git.babu.moger@amd.com>
- <7c26af23-fa1e-4e01-8088-8fbd9be3d6f3@intel.com>
- <431d6ac4-53cb-2f73-3cda-22616df2f96a@amd.com>
-From: Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <431d6ac4-53cb-2f73-3cda-22616df2f96a@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MW4PR04CA0352.namprd04.prod.outlook.com
- (2603:10b6:303:8a::27) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="C7ef3UGQ"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D84E47F71;
+	Mon,  5 Feb 2024 22:39:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707172782; cv=none; b=M9CRl65vZpcuyd/9RT+wTWH89eRTzDKrRZgmKe8UH9Kgl4NlaRW4qvq39z6kP2700JBi1eRcfKuuvL2zL4mcqDdmtSHxAROjsEwVaK9qXu0drClXMucFFj0PmNNtR49jHxakJ5UmcFrkL16lSMhey6hXGR++0RYObmybdnR3Ok4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707172782; c=relaxed/simple;
+	bh=hP+yzkBxi3sOoGVDdOKJ5kjOEX1adF0kq3Jc6ylFrSU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TPOszoC+B/PtRpFE3V3PEBKfmo9N8L76yz/DDcbs3Z/7YY7XxXF7SKHbYYeLQWj9jrkYT2b31+ESbIuYQduYoSdTd+CNGn7Xg55eu/n+qp3IUbBm/HYytumAPrMz1Ouqu5el5h8dtnQxkbzM97OAX39iANkNd1glBbCAm+LqbmI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=C7ef3UGQ; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [10.137.106.151] (unknown [131.107.8.87])
+	by linux.microsoft.com (Postfix) with ESMTPSA id AE15720B2000;
+	Mon,  5 Feb 2024 14:39:39 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AE15720B2000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1707172779;
+	bh=djCck/8A25jTEbEWdRDJ+XxkWfraIATr25pNc8U3t8U=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=C7ef3UGQbzauMwb3GlvayBahFMZmjWY9wQxFW6YqsCCl/WVIy1PBy2y8zg1t9GU6y
+	 5LkeJtFJhoH22qq6d2Kn3PqMvjMdL/NXR+yUOi/uljl7ebiK/XK8Hv/eOgtoG0b3UQ
+	 o6ivksTiSRd9uqdv3F3IGM3WiU+P0gOCcf06s8Cw=
+Message-ID: <ef167e7a-9943-4879-beb6-5e473f9f0f78@linux.microsoft.com>
+Date: Mon, 5 Feb 2024 14:39:39 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|CH0PR11MB8189:EE_
-X-MS-Office365-Filtering-Correlation-Id: 41611d90-0d05-4000-9235-08dc269b2fb4
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mp7Hxk2VaVcdUYUELjhH0jLm8IKz3bm7z2+wSawCMnx/2IC+GUpzZfGxjtt+Ogt3OCrnRE/RqEv+fHEhrxSMsFaaGbBPKAXgJzJWoReZKc3enScu1vVS3QJoUVLdZ067qDnSU+lB338E0245Xj+39MNbTNGZexvdsQUPlZ4UEtIsDF9Xg687hKx4KkSCt48rXaqF3f3nAQmkRx6KWGqjyiYZBoWF9VYI6xJu0lYMFVmsAHeEyV0O3FiXrco/fvb9cqrJiodFKFwdzdkwlxgp5ZkAfuh8PPolVaI01N9BFqEZ0inxcv/nuIXxruMg86DBvrM87TQNe3nhIrXBD9q1blj5H6kbesY8x1Kwegj9uTPKJCGPJyLAAe/uYFmc16aRcdagbcK/TpdtJTY25KhHOLoIToQrrlkkWP8zobSm0dH+MEnmKf8FUN8n0R8JxcFTQWAKn1O/sp3my2sM+dVRisVFQxD6xVZ8lvbakpagchNOXusFFSKGSOZ6RjCVc+QuOuk45owFbVeUmkooufe3Mpm/EYQEB1Jicc/JeDIQoeKqO5zvaVwDZbOsgnTF/NeCn0YYuWK3xcDPSiOKkPqqAKXOF8oUcjG+fpEc1T2ZNF5O9wb/XTdnmVdqskN2XFkckbOp5Sq+L4yHdpaH0ACPdA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(346002)(366004)(376002)(39860400002)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(41300700001)(2616005)(26005)(86362001)(31696002)(7416002)(7406005)(966005)(6486002)(30864003)(5660300002)(2906002)(478600001)(66476007)(66556008)(66946007)(44832011)(4326008)(8676002)(6512007)(8936002)(36756003)(6506007)(6666004)(53546011)(82960400001)(38100700002)(31686004)(316002)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?alU3UFVMbi9lMnc2b050L3daK2ZEZzd6anVackg0dFFwYXNRY0NwTUQ2L2ZN?=
- =?utf-8?B?T3ZKL2FvUmZUb29OOUtVcTZmcVVLaFBzcFZqTFR4b2VEUHMvcVNGdXlScUV2?=
- =?utf-8?B?K0JkYlF3QkpCZm92bjdvSW5LTkEyVXhYTWZFMy9EQmJ1R0FJdHY1R3RGQTAw?=
- =?utf-8?B?bXp2OTBmS3RmQXJJZEtOdkpmelB2RHdvdzZoRVMxOWM3ZEtESnROMmVQckxN?=
- =?utf-8?B?VTJwWC9JQm9oSU80MTdZdU1kcC82ZHFiTDQwYlI3a1ZZdHdrSnN4WVB4R3Rz?=
- =?utf-8?B?MTA4ZzRoMFB3NVJlaE8zcVo0LzM2VWNNVnp1czYzRENWSWpuRnErYWFpODBw?=
- =?utf-8?B?TTZqZVcyL3JndkMvYzJreG0xdTk5WU8zOE41bSs1Si9xcHhJU3B0T3N0aHlW?=
- =?utf-8?B?QUdvMnRaVHByWU5kOFlYYm9qTkxuWnhBTzVxWDBOVHU1REVPWmlQTW1xaVN2?=
- =?utf-8?B?Mm1rcWJZU0duYzlCTnNTZk1WOERrbU5leUd6QWVrNWRNdy9pTVpMdmpVYWhz?=
- =?utf-8?B?S3FhMnQxcmVGSlFGTWlQblp1OE5NL0tzZGppSUZEYTh3VmxwbWdpT1ZPY0Fi?=
- =?utf-8?B?V2x3Q3U4cnZSSkNzR3ZQL256OEExL3U2V2dhWDBxeW44RUdOMjRwcEVPeUhl?=
- =?utf-8?B?RkdFRGlDeGd2ZmdxaHdNbXBaalFGTGZvUUFnbkNHR1ZpK0JjVGhhTmcyemlo?=
- =?utf-8?B?N1VJaTZNSWtzK3RMZk5RU3RCR1phVnlqYm4vc1EweVV3OC9UM0xmRURESzRL?=
- =?utf-8?B?THZYNlR1bDNwNXRaWU9ZZXd0TjJsMGVJcit6L3hqMFJEZXpGUEM3TDF2Ri9n?=
- =?utf-8?B?YlQva1cya0pmNFo5UlhDM256ZjlmT09LWFZpSjdsbnZsUFdxMFZKaTllb25G?=
- =?utf-8?B?ZHBhZkRILzI3V0ZGdzN6c0pWTFhaaWtBczhORDA2V2loSjliR2FSSFNoaXNh?=
- =?utf-8?B?V1ZscC9OOElmRHkwM3ZQMjg0dmdTVUxSRncrWXlLUjlRc2w5VmoyNlAvTjBH?=
- =?utf-8?B?ZnBhNHZ4SW5PdTE2WXZWaitmeWZGL2ZGLzg3SWZlWUx3cmdkNE1VU2IyMDl5?=
- =?utf-8?B?TWZhWEo0ZlEzTDVJQXBPSXZLTEFRQXRNcFE3a1Q2ck5jMTY0Z2ZuQU9saTU4?=
- =?utf-8?B?M244bWhSUzUvV01oQy83dVprL3FSQTFMU05ycWtxMkFieklHQ3RaUHFRVDRm?=
- =?utf-8?B?NXFreDFkbXFTWUZBVFJ6WCt0b3FpNGlmT0ZlZUFMRzJxeThJN2JNam9yU0Fv?=
- =?utf-8?B?SkkrZ3pkaldDMklwWVIrbSs0VEFzSitmR3NRaXFMNXZ6RW1tbXcwZ2xjOFFz?=
- =?utf-8?B?TnJPUWR2YTRYa3NIN0lKRFVRL09LbkZ5RGp4a0MvcEtVTTdxcnR0UjUzRlZq?=
- =?utf-8?B?emdHcDR1SzJRWnRlMVlMVU12QTJqWjAxQXVKTngxaFdMWnQya1NpYlYxQjQx?=
- =?utf-8?B?bGY5MEovdEd1V0p4eVFUMzhsSDBXVkRBeWx5eU43VVAxV3dwbUFwWnRkWEMv?=
- =?utf-8?B?ekQ4ODREcUd1Y09VT05UbVpSK0M2ZHZRaitYMXdlRG4zemFhM0dnSWZnSndL?=
- =?utf-8?B?UU5oVU5kbTRQcjFwa2JYRW9GVjBiNDlqMUpxMTRHUEUxL2VYVEsvbjAzNnJz?=
- =?utf-8?B?WU96YjNZaDd1RGRWekIwM0lEbHgxL1Z6MU43QWtDZWVQMjVUdnI5cE5uZW1h?=
- =?utf-8?B?KzJTLzJFTm9uU3pGUWdaZFJCL3FUOVdVN2JOQmdUNVg5Wnd5Q0s1WGlod1Zp?=
- =?utf-8?B?TTBWZ0ZWS2xoYzBJaTdyb1ZVL01zT0ZVemxkaVlIRUpBcmtzTitSd2RLZUd6?=
- =?utf-8?B?ZENNQmhNUThYOHJhNS9YdVFHTlBBUlFIbktBOEx1MXYxUjBhdnUxUEo4UnRu?=
- =?utf-8?B?MGVVMXM4a1lqb3lwN2Z4dlRJalNQRFpMQS9zdklQdzdhUHNOUTAwbWdiL2JN?=
- =?utf-8?B?Y0gzc2d6TFJGbHQ3OCswMkl3K3JOdnJRNTZNQ0NMU002N2piUHI2SlMvdkVO?=
- =?utf-8?B?cG9tSjRlb3BZSEJ5Wk1OR0I5clhja0RXR25xR1QvYzBWUXozMkcyN2ZZZWZB?=
- =?utf-8?B?MEQ5T2JTR1JTNFlWRElJK3g2cXcrc2lQRTJId25Rd0FTRnF2dXI0OEhaNFRB?=
- =?utf-8?B?TXYwWjJjam1TR0ZyT1lmTDFWUTFIdytUZ0g2ZmxQS0tnMjNkNDdGcFZkNlBY?=
- =?utf-8?B?MlE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 41611d90-0d05-4000-9235-08dc269b2fb4
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2024 22:38:34.3196
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SlrLybRkMyzpUUTX7UCVLoWwZAKtBFTvNKc5ZxGNsVYwoTblZOcpZOeFqBdLQA7ucJeXPCa3Yf8IJ9QrNN+Kt+JKtfHmMtSOfZlJMyAAc28=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB8189
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v12 6/20] ipe: introduce 'boot_verified' as a trust
+ provider
+Content-Language: en-US
+To: Paul Moore <paul@paul-moore.com>, corbet@lwn.net, zohar@linux.ibm.com,
+ jmorris@namei.org, serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
+ axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org, eparis@redhat.com
+Cc: linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
+ linux-security-module@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+ linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
+ audit@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Deven Bowers <deven.desai@linux.microsoft.com>
+References: <1706654228-17180-7-git-send-email-wufan@linux.microsoft.com>
+ <44f88fef412127a795f4219ad9f9c6b8@paul-moore.com>
+From: Fan Wu <wufan@linux.microsoft.com>
+In-Reply-To: <44f88fef412127a795f4219ad9f9c6b8@paul-moore.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Babu,
 
-On 2/2/2024 1:57 PM, Moger, Babu wrote:
-> On 2/1/2024 10:09 PM, Reinette Chatre wrote:
->> On 1/19/2024 10:22 AM, Babu Moger wrote:
->>> These series adds the support for Assignable Bandwidth Monitoring Counters
->> Not a good start ([1]).
-> 
-> Yea. My bad.
-> 
+
+On 2/3/2024 2:25 PM, Paul Moore wrote:
+> On Jan 30, 2024 Fan Wu <wufan@linux.microsoft.com> wrote:
 >>
->>> (ABMC). It is also called QoS RMID Pinning feature
->>>
->>> The feature details are documented in the  APM listed below [1].
->>> [1] AMD64 Architecture Programmer's Manual Volume 2: System Programming
->>> Publication # 24593 Revision 3.41 section 19.3.3.3 Assignable Bandwidth
->>> Monitoring (ABMC). The documentation is available at
->>> Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
->>>
->>> The patches are based on top of commit
->>> 1ac6b49423e83af2abed9be7fbdf2e491686c66b (tip/master)
->>>
->>> # Introduction
->>>
->>> AMD hardware can support 256 or more RMIDs. However, bandwidth monitoring
->>> feature only guarantees that RMIDs currently assigned to a processor will
->>> be tracked by hardware. The counters of any other RMIDs which are no longer
->>> being tracked will be reset to zero. The MBM event counters return
->>> "Unavailable" for the RMIDs that are not active.
->>>      Users can create 256 or more monitor groups. But there can be only limited
->>> number of groups that can be give guaranteed monitoring numbers.  With ever
->> "can be given"?
-> 
-> "can give guaranteed monitoring numbers."
-> 
-> I feel this looks better.
-
-Sounds good. Thank you.
-
-> 
+>> IPE is designed to provide system level trust guarantees, this usually
+>> implies that trust starts from bootup with a hardware root of trust,
+>> which validates the bootloader. After this, the bootloader verifies
+>> the kernel and the initramfs.
 >>
->>> changing configurations there is no way to definitely know which of these
->>> groups will be active for certain point of time. Users do not have the
->>> option to monitor a group or set of groups for certain period of time
->>> without worrying about RMID being reset in between.
->>>      The ABMC feature provides an option to the user to assign an RMID to the
->>> hardware counter and monitor the bandwidth for a longer duration.
->>> The assigned RMID will be active until the user unassigns it manually.
->>> There is no need to worry about counters being reset during this period.
->>> Additionally, the user can specify a bitmask identifying the specific
->>> bandwidth types from the given source to track with the counter.
->>>
->>> Without ABMC enabled, monitoring will work in current mode without
->>> assignment option.
->>>
->>> # Linux Implementation
->>>
->>> Linux resctrl subsystem provides the interface to count maximum of two
->>> memory bandwidth events per group, from a combination of available total
->>> and local events. Keeping the current interface, users can assign a maximum
->>> of 2 ABMC counters per group. User will also have the option to assign only
->>> one counter to the group. If the system runs out of assignable ABMC
->>> counters, kernel will display an error. Users need to unassign an already
->>> assigned counter to make space for new assignments.
->>>
->>>
->>> # Examples
->>>
->>> a. Check if ABMC support is available
->>>     #mount -t resctrl resctrl /sys/fs/resctrl/
->>>
->>>     #cat /sys/fs/resctrl/info/L3_MON/mon_features
->>>     llc_occupancy
->>>     mbm_total_bytes
->>>     mbm_total_bytes_config
->>>     mbm_local_bytes
->>>     mbm_local_bytes_config
->>>     mbm_assign_capable ←  Linux kernel detected ABMC feature
->>>
->>> b. Check if ABMC is enabled. By default, ABMC feature is disabled.
->>>     Monitoring works in legacy monitor mode when ABMC is not enabled.
->>>
->>>     #cat /sys/fs/resctrl/info/L3_MON/mbm_assign_enable
->>>     0
->>>
->> With the introduction of "mbm_assign_enable" the entry in mon_features seems
->> to provide duplicate information.
-> 
-> ok. We can remove the text in mon_features and keep mbm_assign_enable. We need this to enable and disable the feature.
-
-This could be improved beyond a binary "enable"/"disable" interface to user space.
-For example, the hardware can discover which "mbm counter assign" related feature
-(I'm counting the "soft RMID" here as one of the "mbm counter assign" related
-features) is supported on the platform and it can be presented to the user like:
-
-# cat /sys/fs/resctrl/info/L3_MON/mbm_assign
-[feature_1] feature_2 feature_3
-
-The output indicates which features are supported by the platform and the brackets indicate
-which feature is enabled. 
-
-
->>> c. There will be new file "monitor_state" for each monitor group when ABMC
->>>     feature is supported. However, monitor_state is not available if ABMC is
->>>     disabled.
->>>     
->>>     #cat /sys/fs/resctrl/monitor_state
->>>     Unsupported
->> This sounds potentially confusing since users will still be able to monitor
->> the groups ...
-> How about "Assignment-Unsupported"?
-
-(please see later)
-
+>> As there's no currently supported integrity method for initramfs, and
+>> it's typically already verified by the bootloader. This patch introduces
+>> a new IPE property `boot_verified` which allows author of IPE policy to
+>> indicate trust for files from initramfs.
 >>
->>>     
->>> d. Read the event mbm_total_bytes and mbm_local_bytes. Without ABMC
->>>     enabled, monitoring will work in current mode without assignment option.
->>>     
->>>     # cat /sys/fs/resctrl/mon_data/mon_L3_00/mbm_total_bytes
->>>     779247936
->>>     # cat /sys/fs/resctrl/mon_data/mon_L3_00/mbm_local_bytes
->>>     765207488
->>>     
->>> e. Enable ABMC mode.
->>>
->>>     #echo 1 > /sys/fs/resctrl/info/L3_MON/mbm_assign_enable
->>>          #cat /sys/fs/resctrl/info/L3_MON/mbm_assign_enable
->>>          1
->>>
->>> f. Read the monitor states. By default, both total and local MBM
->>>     events are in "unassign" state.
->>>     
->>>     #cat /sys/fs/resctrl/monitor_state
->>>     total=unassign;local=unassign
->> This interface does not seem to take into account that hardware
->> can support assignment per domain. I understand that this is
->> not something you want to implement at this time but the user interface
->> has to accommodate such an enhancement. This was already mentioned, and
->> you did acknowledge the point [3] to this new version that does not
->> reflect this is unexpected.
-> 
-> Yea. Domain level assignment is not supported at this point. Do you want me to explicitly mention here?
-> 
-> Please elaborate what you meant here.
-
-You have made it clear on several occasions that you do not intend to support
-domain level assignment. That may be ok but the interface you create should
-not prevent future support of domain level assignment.
-
-If my point is not clear, could you please share how this interface is able to
-support domain level assignment in the future?
-
-I am starting to think that we need a file similar to the schemata file
-for group and domain level monitor configurations. 
-
->> My previous suggestions do seem to still stand and and I also am not able to
->> see how Peter's requests [2] were considered. This same interface needs to
->> accommodate usages apart from ABMC. For example, how to use this interface
->> to address the same counter issue on AMD hardware without ABMC, and MPAM
->> (pending James's feedback).
-> 
-> Yea. Agree. Peter's comments are not addressed. I am not all clear
-> about details of Peters and James requirement.
-
-Peter listed his requirements in [1]. That email thread is a worthwhile read
-for the use cases.
-
-I believe that James is aware of this work and do hope to hear from him. 
-
-> 
-> With respect to ABMC here are my requirements.
-> 
-> a.  Assignment needs to be done at group level.
-> 
-> b. User should be able to assign each event individually. Multiple events assignment(in one command) should be supported.
-> 
-> c. I have no plans to implement domain level assignment. It is done at system level.
-> 
-> d. We need only couple of states.  Assigned and unassigned.
-> 
-> e. monitor_state is name of file for user interface. We can change that based on comments.
-> 
-> Peter, James,
-> 
-> Please comment on what you want achieve in "assignment" based on the features you are working on.
-> 
-> Do you want to add new states?
-> 
+>> The implementation of this feature utilizes the newly added
+>> `unpack_initramfs` hook. This hook marks the superblock of the rootfs
+>> after the initramfs has been unpacked into it.
 >>
->> I understand that until we hear from Arm we do not know all the requirements
->> that this interface needs to support, but I do expect this interface to
->> at least consider requirements and usage scenarios that are already known.
+>> Since the rootfs is never unmounted during system operation, it is
+>> advised to switch to a different policy that doesn't rely on the
+>> `boot_verified` property after the real rootfs is in charge.
+>> This ensures that the trust policies remain relevant and effective
+>> throughout the system's operation.
 > 
-> Sure. Will try that in the next version. Lets continue the discussion.
+> To be clear, most (all?) init systems cleanup the initial rootfs and
+> mount another filesystem on top of it during the boot process, correct?
+> That should probably be mentioned in the commit description, perhaps
+> with references to the pivot_root(2) and switch_root(8) docs.
 > 
+> While I don't disagree with your recommendation above, I do believe
+> it is unnecessarily scary sounding.
 > 
->>> g. Read the event mbm_total_bytes and mbm_local_bytes. In ABMC mode,
->>>     the MBA events are not available until the user assigns the events
->>>     explicitly.
->>>     
->>>     #cat /sys/fs/resctrl/mon_data/mon_L3_00/mbm_total_bytes
->>>     Unsupported
->>>     
->>>     #cat /sys/fs/resctrl/mon_data/mon_L3_00/mbm_local_bytes
->>>     Unsupported
->>>
->> This needs some more thought to accommodate Peter's scenario where the counter
->> can be expected to return the final count after the counter is disabled.
+I agree more details/references will be helpful. I will rewrite the 
+commit message.
+
+>> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
+>> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
+>> ---
+>> v2:
+>>    +No Changes
+>>
+>> v3:
+>>    + Remove useless caching system
+>>    + Move ipe_load_properties to this match
+>>    + Minor changes from checkpatch --strict warnings
+>>
+>> v4:
+>>    + Remove comments from headers that was missed previously.
+>>    + Grammatical corrections.
+>>
+>> v5:
+>>    + No significant changes
+>>
+>> v6:
+>>    + No changes
+>>
+>> v7:
+>>    + Reword and refactor patch 04/12 to [09/16], based on changes in
+>> the underlying system.
+>>    + Add common audit function for boolean values
+>>    + Use common audit function as implementation.
+>>
+>> v8:
+>>    + No changes
+>>
+>> v9:
+>>    + No changes
+>>
+>> v10:
+>>    + Replace struct file with struct super_block
+>>
+>> v11:
+>>    + Fix code style issues
+>>
+>> v12:
+>>    + Switch to use unpack_initramfs hook and security blob
+>> ---
+>>   security/ipe/eval.c          | 68 +++++++++++++++++++++++++++++++++++-
+>>   security/ipe/eval.h          |  9 +++++
+>>   security/ipe/hooks.c         |  8 +++++
+>>   security/ipe/hooks.h         |  4 +++
+>>   security/ipe/ipe.c           | 14 ++++++++
+>>   security/ipe/ipe.h           |  3 ++
+>>   security/ipe/policy.h        |  2 ++
+>>   security/ipe/policy_parser.c | 37 +++++++++++++++++++-
+>>   8 files changed, 143 insertions(+), 2 deletions(-)
 > 
-> I am not sure how to achieve this with ABMC. This may be applicable
-> to soft rmid only. In case of "soft rmid", previous readings are
-> saved in the soft rmid state.
-
-Right. Please consider this work in two parts, first, there is a generic
-interface that aims to support ABMC, "soft RMID", and MPAM. Second, there
-is using this interface to support ABMC.
-
->>> h. The event llc_occupancy is not affected by ABMC mode. Users can still
->>>     read the llc_occupancy.
->>>
->>>     #cat /sys/fs/resctrl/mon_data/mon_L3_00/llc_occupancy
->>>     557056
->>>
->>> i. Now assign the total event and read the monitor_state.
->>>     
->>>     #echo total=assign > /sys/fs/resctrl/monitor_state
->>>     #cat /sys/fs/resctrl/monitor_state
->>>     total=assign;local=unassign
->>>     
->> I do not see the "global assign/unassign" scenario addressed.
+> More comments below, but one thing I wanted to mention at the top is
+> that I believe there is too much conditional compilation depending on
+> the state of CONFIG_BLK_DEV_INITRD.  While there is noting wrong about
+> this from a correctness perspective, I believe the reality is that
+> the vast majority of systems these days are built with this enabled,
+> and having all these pre-processor checks adds to the complexity of
+> the code.  Additional comments about this below ...
 > 
-> I am not all clear on meaning of "global assign/unassign".  Does it
-> mean looping thru all the groups and assign the RMIDs?
+Yes, removing the dependency on the switch can significantly simplify 
+the code. I will refactor the code accordingly.
 
-Please see [1].
-
- 
-> It may not work in many cases. In case of ABMC, we have only limited
-> number of hw counters. It will fail after hardware runs out of
-> counters. It is better done selectively based on which group user is
-> interested in.
-
-Right. This is one more item where the generic interface needs to
-accommodate different hardware implementations. Perhaps this could
-be one of the "features" exposed by (global) mbm_assign that the
-user can "enable"/"disable" on demand?
-
-> But it can be done later if we find a use case for that.
-
-There already exists a use case as presented by Peter in support
-of AMD hardware without ABMC, no? 
-
->> This version seems to ignore (without discussion) a lot of earlier
->> feedback.
+>> diff --git a/security/ipe/eval.c b/security/ipe/eval.c
+>> index 4f425afffcad..546bbc52a071 100644
+>> --- a/security/ipe/eval.c
+>> +++ b/security/ipe/eval.c
+>> @@ -16,6 +16,24 @@
+>>   
+>>   struct ipe_policy __rcu *ipe_active_policy;
+>>   
+>> +#define FILE_SUPERBLOCK(f) ((f)->f_path.mnt->mnt_sb)
+>> +
+>> +#ifdef CONFIG_BLK_DEV_INITRD
+>> +/**
+>> + * build_ipe_sb_ctx - Build from_initramfs field of an evaluation context.
+>> + * @ctx: Supplies a pointer to the context to be populated.
+>> + * @file: Supplies the file struct of the file triggered IPE event.
+>> + */
+>> +static void build_ipe_sb_ctx(struct ipe_eval_ctx *ctx, const struct file *const file)
+>> +{
+>> +	ctx->from_initramfs = ipe_sb(FILE_SUPERBLOCK(file))->is_initramfs;
+>> +}
+>> +#else
+>> +static void build_ipe_sb_ctx(struct ipe_eval_ctx *ctx, const struct file *const file)
+>> +{
+>> +}
+>> +#endif /* CONFIG_BLK_DEV_INITRD */
 > 
-> Please feel free comment. There are various threads of discussion. I may have missed.
+> If you move the @file NULL check into build_ipe_sb_ctx() you can save
+> a comparison in the !CONFIG_BLK_DEV_INITRD case:
+> 
+> #ifdef CONFIG_BLK_DEV_INITRD
+> void build(...)
+> {
+>    if (file)
+>      ctx->initramfs = ipe_sb(file);
+>    else
+>      ctx->initramfs = false;
+> }
+> #else
+> void build(...)
+> {
+>    ctx->initramfs = false;
+> }
+> #endif
+> 
+I agree this can save a comparision if we only have sb_ctx. But there 
+are bdev_ctx(for dm-verity) and inode_ctx(for fsverity) will be 
+introduced later. So I still think the NULL check should be done at the 
+current place. (also the save won't exist if we are always enabling the 
+initramfs boolean)
+
+> NOTE: see my comment below about always enabling the initramfs boolean
+> in @ipe_eval_ctx and other structs.
+> 
+>>   /**
+>>    * build_eval_ctx - Build an evaluation context.
+>>    * @ctx: Supplies a pointer to the context to be populated.
+>> @@ -28,8 +46,49 @@ void build_eval_ctx(struct ipe_eval_ctx *ctx,
+>>   {
+>>   	ctx->file = file;
+>>   	ctx->op = op;
+>> +
+>> +	if (file)
+>> +		build_ipe_sb_ctx(ctx, file);
+>> +}
+> 
+> See my comment above regarding the @file NULL check.
+> 
+>> +#ifdef CONFIG_BLK_DEV_INITRD
+>> +/**
+>> + * evaluate_boot_verified_true - Evaluate @ctx for the boot verified property.
+>> + * @ctx: Supplies a pointer to the context being evaluated.
+>> + *
+>> + * Return:
+>> + * * true	- The current @ctx match the @p
+>> + * * false	- The current @ctx doesn't match the @p
+>> + */
+>> +static bool evaluate_boot_verified_true(const struct ipe_eval_ctx *const ctx)
+>> +{
+>> +	return ctx->from_initramfs;
+>>   }
+>>   
+>> +/**
+>> + * evaluate_boot_verified_false - Evaluate @ctx for the boot verified property.
+>> + * @ctx: Supplies a pointer to the context being evaluated.
+>> + *
+>> + * Return:
+>> + * * true	- The current @ctx match the @p
+>> + * * false	- The current @ctx doesn't match the @p
+>> + */
+>> +static bool evaluate_boot_verified_false(const struct ipe_eval_ctx *const ctx)
+>> +{
+>> +	return !evaluate_boot_verified_true(ctx);
+>> +}
+>> +#else
+>> +static bool evaluate_boot_verified_true(const struct ipe_eval_ctx *const ctx)
+>> +{
+>> +	return false;
+>> +}
+>> +
+>> +static bool evaluate_boot_verified_false(const struct ipe_eval_ctx *const ctx)
+>> +{
+>> +	return false;
+>> +}
+>> +#endif /* CONFIG_BLK_DEV_INITRD */
+> 
+> That is a lot of lines of code just to check a single boolean value.
+> I understand the layers of abstraction, but this looks a bit excessive
+> to me.  Assuming you agree with the other comments in this email
+> regarding always including an initramfs flag in @ipe_eval_ctx, I think
+> you could reduce all of the above into one single line function as shown
+> below, and just negate it as needed in evaluate_property().
+> 
+> static bool evaluate_boot_verified(ctx)
+> {
+>    return ctx->initramfs;
+> }
+> 
+>>   /**
+>>    * evaluate_property - Analyze @ctx against a property.
+>>    * @ctx: Supplies a pointer to the context to be evaluated.
+>> @@ -42,7 +101,14 @@ void build_eval_ctx(struct ipe_eval_ctx *ctx,
+>>   static bool evaluate_property(const struct ipe_eval_ctx *const ctx,
+>>   			      struct ipe_prop *p)
+>>   {
+>> -	return false;
+>> +	switch (p->type) {
+>> +	case IPE_PROP_BOOT_VERIFIED_FALSE:
+>> +		return evaluate_boot_verified_false(ctx);
+>> +	case IPE_PROP_BOOT_VERIFIED_TRUE:
+>> +		return evaluate_boot_verified_true(ctx);
+> 
+> According to my comment above:
+> 
+>    case IPE_PROP_BOOT_VERIFIED_FALSE:
+>      return !evaludate_boot_verified(ctx);
+>    case IPE_PROP_BOOT_VERIFIED_TRUE:
+>      return evaludate_boot_verified(ctx);
+> 
+This looks better, I will update this part accordingly.
+
+>> +	default:
+>> +		return false;
+>> +	}
+>>   }
+>>   
+>>   /**
+>> diff --git a/security/ipe/eval.h b/security/ipe/eval.h
+>> index cfdf3c8dfe8a..7d79fdb63bbf 100644
+>> --- a/security/ipe/eval.h
+>> +++ b/security/ipe/eval.h
+>> @@ -15,10 +15,19 @@
+>>   
+>>   extern struct ipe_policy __rcu *ipe_active_policy;
+>>   
+>> +#ifdef CONFIG_BLK_DEV_INITRD
+>> +struct ipe_sb {
+>> +	bool is_initramfs;
+>> +}
+> 
+> You've already got a function named "ipe_sb()", I would suggest saving
+> us all some headaches by renaming the above to "ipe_superblock" or
+> something similar.  The point is to not have a struct and a function
+> with the same name.
+> 
+> I also think you can shorten the field name to "initramfs", it's
+> defined as a boolean flag so I'm not sure the "is_" prefix lends any
+> useful hints but does make for longer lines, more typing, etc.
+>
+>> +#endif /* CONFIG_BLK_DEV_INITRD */
+>> +
+>>   struct ipe_eval_ctx {
+>>   	enum ipe_op_type op;
+>>   
+>>   	const struct file *file;
+>> +#ifdef CONFIG_BLK_DEV_INITRD
+>> +	bool from_initramfs;
+>> +#endif /* CONFIG_BLK_DEV_INITRD */
+>>   };
+> 
+> I suppose I understand the desire to make the @from_initramfs
+> conditional to potentially reduce the size of @ipe_eval_ctx when it is
+> not needed, however, I believe in the vast majority of systems we are
+> going to see CONFIG_BLK_DEV_INITRD enabled so I believe this adds a lot
+> extra code noise for little practical benefit.
+> 
+> Similarly to ipe_sb::is_initramfs, I think you can rename this field to
+> "initramfs" and we would all be better for the change.
 > 
 
+Sure, I can change the name and remove the KCONFIG dependency.
+>>   void build_eval_ctx(struct ipe_eval_ctx *ctx, const struct file *file, enum ipe_op_type op);
+>> diff --git a/security/ipe/hooks.c b/security/ipe/hooks.c
+>> index 3aec88c074e1..8ee105bf7bad 100644
+>> --- a/security/ipe/hooks.c
+>> +++ b/security/ipe/hooks.c
+>> @@ -4,6 +4,7 @@
+>>    */
+>>   
+>>   #include <linux/fs.h>
+>> +#include <linux/fs_struct.h>
+>>   #include <linux/types.h>
+>>   #include <linux/binfmts.h>
+>>   #include <linux/mman.h>
+>> @@ -181,3 +182,10 @@ int ipe_kernel_load_data(enum kernel_load_data_id id, bool contents)
+>>   	build_eval_ctx(&ctx, NULL, op);
+>>   	return ipe_evaluate_event(&ctx);
+>>   }
+>> +
+>> +#ifdef CONFIG_BLK_DEV_INITRD
+>> +void ipe_unpack_initramfs(void)
+>> +{
+>> +	ipe_sb(current->fs->root.mnt->mnt_sb)->is_initramfs = true;
+>> +}
+>> +#endif /* CONFIG_BLK_DEV_INITRD */
+>> diff --git a/security/ipe/hooks.h b/security/ipe/hooks.h
+>> index 23205452f758..3b1bb0a6e89c 100644
+>> --- a/security/ipe/hooks.h
+>> +++ b/security/ipe/hooks.h
+>> @@ -22,4 +22,8 @@ int ipe_kernel_read_file(struct file *file, enum kernel_read_file_id id,
+>>   
+>>   int ipe_kernel_load_data(enum kernel_load_data_id id, bool contents);
+>>   
+>> +#ifdef CONFIG_BLK_DEV_INITRD
+>> +void ipe_unpack_initramfs(void);
+>> +#endif /* CONFIG_BLK_DEV_INITRD */
+>> +
+>>   #endif /* _IPE_HOOKS_H */
+>> diff --git a/security/ipe/ipe.c b/security/ipe/ipe.c
+>> index 22bd95116087..ed3acf6174d8 100644
+>> --- a/security/ipe/ipe.c
+>> +++ b/security/ipe/ipe.c
+>> @@ -5,9 +5,13 @@
+>>   #include <uapi/linux/lsm.h>
+>>   
+>>   #include "ipe.h"
+>> +#include "eval.h"
+>>   #include "hooks.h"
+>>   
+>>   static struct lsm_blob_sizes ipe_blobs __ro_after_init = {
+>> +#ifdef CONFIG_BLK_DEV_INITRD
+>> +	.lbs_superblock = sizeof(struct ipe_sb),
+>> +#endif /* CONFIG_BLK_DEV_INITRD */
+>>   };
+> 
+> I would drop the CONFIG_BLK_DEV_INITRD conditional above for reasons
+> already mentioned, it's also not like a running system has that many
+> superblocks allocated.  The increase in memory usage should be
+> trivial.
+> 
+>>   static const struct lsm_id ipe_lsmid = {
+>> @@ -15,12 +19,22 @@ static const struct lsm_id ipe_lsmid = {
+>>   	.id = LSM_ID_IPE,
+>>   };
+>>   
+>> +#ifdef CONFIG_BLK_DEV_INITRD
+>> +struct ipe_sb *ipe_sb(const struct super_block *sb)
+>> +{
+>> +	return sb->s_security + ipe_blobs.lbs_superblock;
+>> +}
+>> +#endif /* CONFIG_BLK_DEV_INITRD */
+> 
+> If we always have an IPE slot in the superblock's security blob, there
+> is not need to make the above conditional.
+> 
+>>   static struct security_hook_list ipe_hooks[] __ro_after_init = {
+>>   	LSM_HOOK_INIT(bprm_check_security, ipe_bprm_check_security),
+>>   	LSM_HOOK_INIT(mmap_file, ipe_mmap_file),
+>>   	LSM_HOOK_INIT(file_mprotect, ipe_file_mprotect),
+>>   	LSM_HOOK_INIT(kernel_read_file, ipe_kernel_read_file),
+>>   	LSM_HOOK_INIT(kernel_load_data, ipe_kernel_load_data),
+>> +#ifdef CONFIG_BLK_DEV_INITRD
+>> +	LSM_HOOK_INIT(unpack_initramfs_security, ipe_unpack_initramfs),
+>> +#endif /* CONFIG_BLK_DEV_INITRD */
+>>   };
+>>   
+>>   /**
+>> diff --git a/security/ipe/ipe.h b/security/ipe/ipe.h
+>> index a1c68d0fc2e0..f1e7c3222b6d 100644
+>> --- a/security/ipe/ipe.h
+>> +++ b/security/ipe/ipe.h
+>> @@ -12,5 +12,8 @@
+>>   #define pr_fmt(fmt) "IPE: " fmt
+>>   
+>>   #include <linux/lsm_hooks.h>
+>> +#ifdef CONFIG_BLK_DEV_INITRD
+>> +struct ipe_sb *ipe_sb(const struct super_block *sb);
+>> +#endif /* CONFIG_BLK_DEV_INITRD */
+>>   
+>>   #endif /* _IPE_H */
+>> diff --git a/security/ipe/policy.h b/security/ipe/policy.h
+>> index fb906f41522b..fb48024bb63e 100644
+>> --- a/security/ipe/policy.h
+>> +++ b/security/ipe/policy.h
+>> @@ -30,6 +30,8 @@ enum ipe_action_type {
+>>   #define IPE_ACTION_INVALID __IPE_ACTION_MAX
+>>   
+>>   enum ipe_prop_type {
+>> +	IPE_PROP_BOOT_VERIFIED_FALSE,
+>> +	IPE_PROP_BOOT_VERIFIED_TRUE,
+>>   	__IPE_PROP_MAX
+>>   };
+>>   
+>> diff --git a/security/ipe/policy_parser.c b/security/ipe/policy_parser.c
+>> index 612839b405f4..cce15f0eb645 100644
+>> --- a/security/ipe/policy_parser.c
+>> +++ b/security/ipe/policy_parser.c
+>> @@ -265,6 +265,14 @@ static enum ipe_action_type parse_action(char *t)
+>>   	return match_token(t, action_tokens, args);
+>>   }
+>>   
+>> +static const match_table_t property_tokens = {
+>> +#ifdef CONFIG_BLK_DEV_INITRD
+>> +	{IPE_PROP_BOOT_VERIFIED_FALSE,	"boot_verified=FALSE"},
+>> +	{IPE_PROP_BOOT_VERIFIED_TRUE,	"boot_verified=TRUE"},
+>> +#endif /* CONFIG_BLK_DEV_INITRD */
+> 
+> You want the "boot_verified" field to be part of the IPE policy
+> regardless of the state of CONFIG_BLK_DEV_INITRD, yes?  On a system
+> without _INITRD the TRUE case would never trigger, only the FALSE
+> case, which seems like the Right Thing.
+> 
+> It just seems wrong to me to have the policy grammar change depending
+> on what the kernel supports, it seems like IPE should parse and enforce
+> the policy regardless of the kernel's config, with the understanding
+> that some rules might never be satisfied as it would be impossible
+> for a given kernel config, e.g. "boot_verified=TRUE" on a non-initramfs
+> system.
+> 
+> I probably should have thought of this sooner, but I believe the same
+> applies to the dm-verity and fs-verity policy tokens.
+> 
+This sounds reasonable to me. I will change the parser to make the 
+policy grammar not depending on any kernel config.
 
-Reinette
+Thanks,
+Fan
 
-[1] https://lore.kernel.org/lkml/CALPaoCiRD6j_Rp7ffew+PtGTF4rWDORwbuRQqH2i-cY5SvWQBg@mail.gmail.com/
+>> +	{IPE_PROP_INVALID,		NULL}
+>> +};
+>> +
+>>   /**
+>>    * parse_property - Parse the property type given a token string.
+>>    * @t: Supplies the token string to be parsed.
+>> @@ -277,7 +285,34 @@ static enum ipe_action_type parse_action(char *t)
+>>    */
+>>   static int parse_property(char *t, struct ipe_rule *r)
+>>   {
+>> -	return -EBADMSG;
+>> +	substring_t args[MAX_OPT_ARGS];
+>> +	struct ipe_prop *p = NULL;
+>> +	int rc = 0;
+>> +	int token;
+>> +
+>> +	p = kzalloc(sizeof(*p), GFP_KERNEL);
+>> +	if (!p)
+>> +		return -ENOMEM;
+>> +
+>> +	token = match_token(t, property_tokens, args);
+>> +
+>> +	switch (token) {
+>> +	case IPE_PROP_BOOT_VERIFIED_FALSE:
+>> +	case IPE_PROP_BOOT_VERIFIED_TRUE:
+>> +		p->type = token;
+>> +		break;
+>> +	default:
+>> +		rc = -EBADMSG;
+>> +		break;
+>> +	}
+>> +	if (rc)
+>> +		goto err;
+>> +	list_add_tail(&p->next, &r->props);
+>> +
+>> +	return rc;
+>> +err:
+>> +	kfree(p);
+>> +	return rc;
+>>   }
+>>   
+>>   /**
+>> -- 
+>> 2.43.0
+> 
+> --
+> paul-moore.com
 
