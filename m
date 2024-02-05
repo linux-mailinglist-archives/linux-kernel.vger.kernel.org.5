@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-54002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 610A484A909
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:18:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA7E884A90B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:18:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93AFD1C27858
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:18:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E9B82898FC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:18:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D0984F8B5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AC5850247;
 	Mon,  5 Feb 2024 22:08:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QZET9z3z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z3PzmIad"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C28B4F60C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEAAD4F612;
 	Mon,  5 Feb 2024 22:08:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707170894; cv=none; b=DX0aIAwvWt4QUrxG1miGz/hYdNZw8gNA5rhy/a8ZhcItePnHReSpqeUPA5PvL0n5xZvYixNKbVoMDxFk0yAZxTidxKmUFwYgbXKtmc3lqpAPYkW/jWUlOX0TL0ZgdQeo8257YRAL3n4DG6WoZz+hdo59SQFDqk0+Fpj9umRkJ88=
+	t=1707170894; cv=none; b=UYAio93/oBBJjbVqfdUtuVovKtanyPT+ht2x2ZauKMo8TvP4+CkNvorjHvpA+RCLjz0+6Vkv9bXKLWiGglQNc9xAzA3xbzBYrseANn+c08n/4OhVjvMmj2xSNPuBC/uRX8Zaxbegl/cUENyZiKH2uBHk+QaBcNrWg6Mpd81QpLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707170894; c=relaxed/simple;
-	bh=8EgBgwLLDbF/8jK7XPHzV7GGgAjVhqj4SpRaslo5nG4=;
+	bh=jfOJQuDR5OnZ7kHdXBRWttLFE7HrqwrcF+PXQeKVXXc=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ax5/o5Ex1FkdwmibV2Y2oFeQKU5k4kzeHbtEbC/ohLrzaq6tzmX0nVnCYCVwzhtk3f4dwlKRPz+y0KtJMMMQyVed1xiAddum705ar5e6iGf0zIHOuntrBUSB9VJ5nIihPq3faKLBUnvRmV40U4VqQCKMDdCt0ONG7+w8RirpMzc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QZET9z3z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 449A8C433C7;
+	 In-Reply-To:To:Cc; b=IcNhzdt4/wb0O+BPRos1q19PnsmeuSypCSQa9aQHrwvUCgUMgir0TKSOXwfc5xJxexH4vR6r31ljxnDqJ6CJOBfES2jqGvaFrlFTAKQGYnYRLSykKJX4CFtddgGCw4ejEp661b3BxEr0rZTt9/9V4JEuIxRPUepDwMo+MesjUIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z3PzmIad; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 599A8C43390;
 	Mon,  5 Feb 2024 22:08:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1707170894;
-	bh=8EgBgwLLDbF/8jK7XPHzV7GGgAjVhqj4SpRaslo5nG4=;
+	bh=jfOJQuDR5OnZ7kHdXBRWttLFE7HrqwrcF+PXQeKVXXc=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=QZET9z3zeedOcUFANG1j5xtmknEO9qufzKyFJM3PWulLWLocFZjKndR/AOWoQoCa5
-	 3V/MsB7BrI7qusCBlXECDyfv5ljB7aB7fakS9PqZne1P/DkaOsbin8jN1CnwYTR1NZ
-	 vvG4guoHprTITFmhSe1vZBpMiw1ccTeVkSuRF9NGGAanx5+Hzz8D7h+skZYG3FNq6V
-	 gGqMQs+0SA5mMTM/qU0RpjS/ASQhNSXY+/Bdqy49J3b+Lvb74vYTdBwKaIglnclKMQ
-	 ghykALF2m5LRIm5y1Le3b0CHNGCSBMhG1l4XQVOzZ5CUCN/sN9olX4umSM867eTDH6
-	 6Nu9jxit9sSaw==
+	b=Z3PzmIadOWga4CWm2g1HhmtZTRLsTHjvyhKbz+F6f4wOF60Kp/tqVe5HiKigpnBjX
+	 eGeZiA15hcBdZ+HZ/UlJL8gANtdsglI58I3L4AnP4P6XpqOMD75VENlVGF/JodU53T
+	 7sO34Kfw1cPjhj0vk3sD5k6usr922S1cG/PyldGykk9jS/5UjU3mQ2CIL81kEjeG5C
+	 M3E+sjcWHUNFC659+q3GlsWY+etJnotAmxftLvERSKmGq63jeDCcoGTyBP0K3eCZHw
+	 SYHJovUxIzDB8t2e83n7qW7sVEORIC2mFRKwoyhyELfDo7WV1Cbgrq1qvWYnLAjA9H
+	 AFdu68nLDcejA==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26F6EC4828D;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AFA3C4829A;
 	Mon,  5 Feb 2024 22:08:14 +0000 (UTC)
 From: =?utf-8?b?QXLEsW7DpyDDnE5BTA==?= via B4 Relay
  <devnull+arinc.unal.arinc9.com@kernel.org>
-Date: Tue, 06 Feb 2024 01:08:02 +0300
-Subject: [PATCH net-next v5 1/7] net: dsa: mt7530: empty default case on
- mt7530_setup_port5()
+Date: Tue, 06 Feb 2024 01:08:03 +0300
+Subject: [PATCH net-next v5 2/7] net: dsa: mt7530: move XTAL check to
+ mt7530_setup()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,7 +57,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Message-Id:
- <20240206-for-netnext-mt7530-improvements-2-v5-1-d7d92a185cb1@arinc9.com>
+ <20240206-for-netnext-mt7530-improvements-2-v5-2-d7d92a185cb1@arinc9.com>
 References:
  <20240206-for-netnext-mt7530-improvements-2-v5-0-d7d92a185cb1@arinc9.com>
 In-Reply-To:
@@ -78,11 +78,11 @@ Cc: mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
  =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>, 
  "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1707170890; l=1626;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1707170890; l=1567;
  i=arinc.unal@arinc9.com; s=arinc9-patatt; h=from:subject:message-id;
- bh=w0AE+3vdRdnNAeZ4Rw1iuOmXQ/hQFv6Ji5v3rRgN9bg=;
- b=gDGcthfD6OjI984VKp0zlbDTxdggWBt3tmhCllIbyTIAMYWMBBgmWODnybQRLAOeQoF87Tjov
- 8H7Qck/hmaYC/HRYET2p2f2Ns05cxQoJMPLHHQdK/glbZ1j2xpm45Qs
+ bh=Li/zn0Sv6n/UTyGYqwZm1/fdMf5SJvivtXipqKuvmqw=;
+ b=PqQAUUtRHGCt/lV01+GVWwSekPOmfNry2XRRS4QiXDOoR2bAruYfgFqkkJp3ICJiFkBv56kMf
+ VSM+341MMybDSzYWTU3CPks4jN1c/RnnTYxIrOPTHSiJvFz4WCe56n4
 X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
  pk=VmvgMWwm73yVIrlyJYvGtnXkQJy9CvbaeEqPQO9Z4kA=
 X-Endpoint-Received:
@@ -92,55 +92,51 @@ Reply-To: <arinc.unal@arinc9.com>
 
 From: Arınç ÜNAL <arinc.unal@arinc9.com>
 
-There're two code paths for setting up port 5:
+The crystal frequency concerns the switch core. The frequency should be
+checked when the switch is being set up so the driver can reject the
+unsupported hardware earlier and without requiring port 6 to be used.
 
-mt7530_setup()
--> mt7530_setup_port5()
+Move it to mt7530_setup(). Drop the unnecessary function printing.
 
-mt753x_phylink_mac_config()
--> mt753x_mac_config()
-   -> mt7530_mac_config()
-      -> mt7530_setup_port5()
-
-On the first code path, priv->p5_intf_sel is either set to
-P5_INTF_SEL_PHY_P0 or P5_INTF_SEL_PHY_P4 when mt7530_setup_port5() is run.
-
-On the second code path, priv->p5_intf_sel is set to P5_INTF_SEL_GMAC5 when
-mt7530_setup_port5() is run.
-
-Empty the default case which will never run but is needed nonetheless to
-handle all the remaining enumeration values.
-
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
 ---
- drivers/net/dsa/mt7530.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/net/dsa/mt7530.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index 68be38ae66e0..330e22abc076 100644
+index 330e22abc076..8b8469eba863 100644
 --- a/drivers/net/dsa/mt7530.c
 +++ b/drivers/net/dsa/mt7530.c
-@@ -943,9 +943,7 @@ static void mt7530_setup_port5(struct dsa_switch *ds, phy_interface_t interface)
- 		val &= ~MHWTRAP_P5_DIS;
- 		break;
- 	default:
--		dev_err(ds->dev, "Unsupported p5_intf_sel %d\n",
--			priv->p5_intf_sel);
--		goto unlock_exit;
-+		break;
+@@ -422,13 +422,6 @@ mt7530_pad_clk_setup(struct dsa_switch *ds, phy_interface_t interface)
+ 
+ 	xtal = mt7530_read(priv, MT7530_MHWTRAP) & HWTRAP_XTAL_MASK;
+ 
+-	if (xtal == HWTRAP_XTAL_20MHZ) {
+-		dev_err(priv->dev,
+-			"%s: MT7530 with a 20MHz XTAL is not supported!\n",
+-			__func__);
+-		return -EINVAL;
+-	}
+-
+ 	switch (interface) {
+ 	case PHY_INTERFACE_MODE_RGMII:
+ 		trgint = 0;
+@@ -2259,6 +2252,12 @@ mt7530_setup(struct dsa_switch *ds)
+ 		return -ENODEV;
  	}
  
- 	/* Setup RGMII settings */
-@@ -975,7 +973,6 @@ static void mt7530_setup_port5(struct dsa_switch *ds, phy_interface_t interface)
- 	dev_dbg(ds->dev, "Setup P5, HWTRAP=0x%x, intf_sel=%s, phy-mode=%s\n",
- 		val, p5_intf_modes(priv->p5_intf_sel), phy_modes(interface));
- 
--unlock_exit:
- 	mutex_unlock(&priv->reg_mutex);
- }
- 
++	if ((val & HWTRAP_XTAL_MASK) == HWTRAP_XTAL_20MHZ) {
++		dev_err(priv->dev,
++			"MT7530 with a 20MHz XTAL is not supported!\n");
++		return -EINVAL;
++	}
++
+ 	/* Reset the switch through internal reset */
+ 	mt7530_write(priv, MT7530_SYS_CTRL,
+ 		     SYS_CTRL_PHY_RST | SYS_CTRL_SW_RST |
 
 -- 
 2.40.1
