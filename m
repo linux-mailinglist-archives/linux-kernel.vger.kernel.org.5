@@ -1,272 +1,154 @@
-Return-Path: <linux-kernel+bounces-53277-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53278-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDFC084A301
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 20:03:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A93E84A303
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 20:03:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DDAE1C24870
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:03:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FB501C247F7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:03:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 766E64EB55;
-	Mon,  5 Feb 2024 19:01:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B990F482FC;
+	Mon,  5 Feb 2024 19:02:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JXteL2r3"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xpqYQV7/"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CD484E1D1;
-	Mon,  5 Feb 2024 19:01:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AF21482DC
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 19:02:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707159705; cv=none; b=Brjkxio5ZmJph/EIRAy+q91LD7obe6EVYWKFSMZkhSmK8Wt+1oOwtURoI4m17kVcpWkYp0/B49z/D2zHrjQAtLbmfyGhmLsk4B0hzcfgrItfSU8GHcYsshTHPtUeHoW1DZV0PLD6huJX8XbXszsvWeLW788OSbvirFygbHqcxqI=
+	t=1707159726; cv=none; b=fUx0QdckoYVxiCDcJCEvbA8CatIH0FRQvX+8KWUdNUNXzTK0sGFcgn+Lw9vnEuCrcpdaW5/0Cdh20H9p7ItK6vo0v/CGJoEPEl9K2tjMAlzvYbWChdFFZmjw8lZkKh/sFaH2h5ZkAUYPloGPPevvMjDwMYd50yquxMcX2ehiYOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707159705; c=relaxed/simple;
-	bh=qD9zp37TlJaB9gD6Uqgvcewd1tv1LpYiBSx2wrUucoQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gyopDdJMkn2x15LQNnXk23huYSqVbgGX/ABYwuRyHxspUIHaPiVoK8KD9nJ0VcH4AL6d4ysP/JZg5yFC1sh/o+rGTbyYXm+yWDOh1jwzNr/RXLY2aYvnYFV/4DI2603cXL+sY129xiLWSHjv3D6SPFhWilG8K2aS5fmbmnYgAAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JXteL2r3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73F26C43601;
-	Mon,  5 Feb 2024 19:01:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707159705;
-	bh=qD9zp37TlJaB9gD6Uqgvcewd1tv1LpYiBSx2wrUucoQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JXteL2r3dcthFeAGBE999GG/d4Bf7wjliuH2UGu3tEjax6Xih3i9oDe9b8J6e0Ub9
-	 5haFVQ2XEprqX6F8Ugh19+iV3RZTFIwZgRQ6hnZ/cXBgAx5V0eK64XSoFoOMZ0TqmC
-	 2QpUwunSYhYURaEx4j8eCXrNswE6KmO0gS4CxhIt8IDbdl3RVYv1Jja0/CNMiu7DKS
-	 j5uiDYoUUZH6QoNUGy5+z7Hu3WP/rb0RpXkicaq3dzyK3Lg+6wTzEFRgrAr4f4zY+K
-	 T7+jrU7silz10yg1HCBI8BQZ75ixj6jovuWF6VE+DlWol69Z0+/VpLjWGCbaz9CzM+
-	 GFlKivzoRSL5g==
-Date: Mon, 5 Feb 2024 16:01:41 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Yang Jihong <yangjihong1@huawei.com>
-Cc: peterz@infradead.org, mingo@redhat.com, namhyung@kernel.org,
-	mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] perf sched: Move curr_pid and cpu_last_switched
- initialization to perf_sched__{lat|map|replay}()
-Message-ID: <ZcEwlR9itdN6tIL1@x1>
-References: <20240205104616.132417-1-yangjihong1@huawei.com>
- <20240205104616.132417-5-yangjihong1@huawei.com>
+	s=arc-20240116; t=1707159726; c=relaxed/simple;
+	bh=5lYJPNH7ZdwNpNFjeIRTTlECYjlLU6dsHmfIjFZlzoY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mf/31JicD36ZK3QiEKV2+QQewXgEVB9Uap6Him909bJrB3CrzMhbZFUlvOzMubmr72USD2SWanJ3E3b/nB3tWPIkdfeYou5ecDVfjDrN9vUUyQH7cB9uuC2IDU39aRG5q3Kp1nYMGwAB7SBzW//Mzrpycx+hL/qbCz86B+QdXkg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xpqYQV7/; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-51137c8088dso4860899e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 11:02:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707159722; x=1707764522; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QemNO+c45J3TSx6FcSHQfwkZOTsDS0K4Gg9M0rrbiy8=;
+        b=xpqYQV7/Fx5ZDSrBNWO1xZ6JZTOtXuLnksLGI3pwhaFzKaRUsJnINArnPQfb02weyx
+         OMGBpiJ2sgCSnWFW0nluDFKGgIUR5MGgdV3p/taV94iAcPaNiAByrr9OllbviI10WqAT
+         mRyI3wY6RkEQQbzsOuM+sZSfv+tWyrnUdjJJcHjmf9d/FM0GQyD/0SqwIdFjs/e3MT6Q
+         nNgKyEI4yygCg6vEeydlohasLgtV6jtiJlB2cSZ1aWXI4fRg+w4Sdg2v12CP3KlRQpvY
+         S8fh/3QuuqDcVLjFQUQmVgOI+NqnuP2rJ0Icwxwbts0oN+u0pjNlDBOSUKquzr+qJUr1
+         JsFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707159722; x=1707764522;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QemNO+c45J3TSx6FcSHQfwkZOTsDS0K4Gg9M0rrbiy8=;
+        b=Wq/N1rFwDAAhciaOdjNhpM5IBafSqJJaKIiQppx82OhdkhmJpfd2fqOEmsl4LlbWJb
+         qu/rCnon07dJYSgceB3UmltOasvTqYZQNOmvDpxi9cCzzuU1jxJxQvoBSq01adHXsdzj
+         Ts6hst2gJJeagCtSOZ8l/kD/COH2IOY4BpV4fObGvSh2PfkEMow/wMFddiNAFTWRYnqx
+         zxxAp+RgXsh1U3bKW1RoMLXgPu902Ovd0Oz0e4fG48BhTHMJgdN5E+AEzcAqYF04SYCu
+         Dfir0uYso0icc1bzJG0hYmTqsY1Vxe5mIR9NZZyS7P0osd4pAsDBHRLHjTLE0+Sh8USo
+         0WKg==
+X-Gm-Message-State: AOJu0YyEDhihwzURmekW3gZOiYcmMK5cIaOOSLdJ/XGtLDKlnE4Zx19y
+	YR0mU9MMbGe/ThhvEXmSA85QsO1aWlqXRVk40wpeMW9jEdiYO6LoMDMZQKX9J+c=
+X-Google-Smtp-Source: AGHT+IHerr2CNFXSws+9oBTQ1tIV+44SZX35ntb27kGhJN1L9duM9t4b3FiH8V5NKy3Yk6hWqepjXw==
+X-Received: by 2002:a2e:7c07:0:b0:2cf:425b:59ee with SMTP id x7-20020a2e7c07000000b002cf425b59eemr389756ljc.24.1707159722038;
+        Mon, 05 Feb 2024 11:02:02 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVcIYZUzWXNPe+XZYc2Z0KZG6GhW1LuluhaOzBv2XMMn4xg8oWZ1HePY85qWcd1aAl+zZh9qdSkVkVwP7RCtaMHfxRi++WK+plrBLPs1BtwxF6gt3B5rFlhCqxzOunA4M2I+DIgzbzTvms8wsz26wWuXiA4eT/ghls8DibnNiboj2WgZbICOR8G
+Received: from loic-ThinkPad-T470p.. (74.212-33-141.static.xfiber.net. [212.33.141.74])
+        by smtp.gmail.com with ESMTPSA id y11-20020a2e320b000000b002d085fdb893sm41293ljy.31.2024.02.05.11.02.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 11:02:01 -0800 (PST)
+From: Loic Poulain <loic.poulain@linaro.org>
+To: rafael@kernel.org,
+	len.brown@intel.com,
+	pavel@ucw.cz
+Cc: linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Loic Poulain <loic.poulain@linaro.org>
+Subject: [RESEND PATCH] PM: hibernate: Request 0 CPU latency during image decompression
+Date: Mon,  5 Feb 2024 20:01:57 +0100
+Message-Id: <20240205190157.50278-1-loic.poulain@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240205104616.132417-5-yangjihong1@huawei.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Feb 05, 2024 at 10:46:15AM +0000, Yang Jihong wrote:
-> +static int setup_cpus_switch_event(struct perf_sched *sched)
-> +{
-> +	unsigned int i;
-> +
-> +	sched->cpu_last_switched = calloc(MAX_CPUS, sizeof(*(sched->cpu_last_switched)));
-> +	if (!sched->cpu_last_switched)
-> +		return -1;
-> +
-> +	sched->curr_pid = malloc(MAX_CPUS * sizeof(*(sched->curr_pid)));
-> +	if (!sched->curr_pid) {
-> +		free(sched->cpu_last_switched);
+The (SMP) load_image_lzo procedure relies on multiple threads and
+their synchronization for decompressing the hibernate image. for
+performance reasons, it is important to keep the CPUs responsive
+so that the synchronization overhead stays minimal. This overhead
+roughly corresponds to thread wakeup latency, which is linked to
+the CPU idle exit time.
 
-		zfree(&sched->cpu_last_switched);
+By requesting 0 CPU latency, we prevent CPUs to enter their deepest
+idle states, ensuring that they will be as responsive as possible
+during the whole decompression procedure, and by extension improve
+the hibernate resume time (CPU dependent).
 
-> +		return -1;
-> +	}
-> +
-> +	for (i = 0; i < MAX_CPUS; i++)
-> +		sched->curr_pid[i] = -1;
-> +
-> +	return 0;
-> +}
-> +
-> +static void free_cpus_switch_event(struct perf_sched *sched)
-> +{
-> +	free(sched->curr_pid);
-> +	free(sched->cpu_last_switched);
+On iMX8M mini SoC, that gives a ~40% boost for the decompression time:
+PM: hibernation: Read 365640 kbytes in 1.88 seconds (194.48 MB/s)
+vs
+PM: hibernation: Read 363476 kbytes in 1.26 seconds (288.47 MB/s)
 
-	zfree(&sched->curr_pid);
-	zfree(&sched->cpu_last_switched);
+Note: 40% diff sounds huge, and may point to iMX specific cpuidle
+issue. Anyhow, we know that during this bottleneck procedure, the CPUs
+will be fully dedicated to the decompress task, and must be kept ready
+for it.
 
-> +}
-> +
->  static int perf_sched__lat(struct perf_sched *sched)
->  {
-> +	int rc = -1;
->  	struct rb_node *next;
->  
->  	setup_pager();
->  
-> +	if (setup_cpus_switch_event(sched))
-> +		return rc;
-> +
->  	if (perf_sched__read_events(sched))
-> -		return -1;
-> +		goto out_free_cpus_switch_event;
->  
->  	perf_sched__merge_lat(sched);
->  	perf_sched__sort_lat(sched);
-> @@ -3203,7 +3233,11 @@ static int perf_sched__lat(struct perf_sched *sched)
->  	print_bad_events(sched);
->  	printf("\n");
->  
-> -	return 0;
-> +	rc = 0;
-> +
-> +out_free_cpus_switch_event:
-> +	free_cpus_switch_event(sched);
-> +	return rc;
->  }
->  
->  static int setup_map_cpus(struct perf_sched *sched)
-> @@ -3270,9 +3304,12 @@ static int perf_sched__map(struct perf_sched *sched)
->  	if (!sched->curr_thread)
->  		return rc;
->  
-> -	if (setup_map_cpus(sched))
-> +	if (setup_cpus_switch_event(sched))
->  		goto out_free_curr_thread;
->  
-> +	if (setup_map_cpus(sched))
-> +		goto out_free_cpus_switch_event;
-> +
->  	if (setup_color_pids(sched))
->  		goto out_free_map_cpus;
->  
-> @@ -3296,6 +3333,9 @@ static int perf_sched__map(struct perf_sched *sched)
->  	free(sched->map.comp_cpus);
->  	perf_cpu_map__put(sched->map.cpus);
->  
-> +out_free_cpus_switch_event:
-> +	free_cpus_switch_event(sched);
-> +
->  out_free_curr_thread:
->  	free(sched->curr_thread);
->  	return rc;
-> @@ -3309,6 +3349,10 @@ static int perf_sched__replay(struct perf_sched *sched)
->  	mutex_init(&sched->start_work_mutex);
->  	mutex_init(&sched->work_done_wait_mutex);
->  
-> +	ret = setup_cpus_switch_event(sched);
-> +	if (ret)
-> +		goto out_mutex_destroy;
-> +
->  	calibrate_run_measurement_overhead(sched);
->  	calibrate_sleep_measurement_overhead(sched);
->  
-> @@ -3316,7 +3360,7 @@ static int perf_sched__replay(struct perf_sched *sched)
->  
->  	ret = perf_sched__read_events(sched);
->  	if (ret)
-> -		goto out_mutex_destroy;
-> +		goto out_free_cpus_switch_event;
->  
->  	printf("nr_run_events:        %ld\n", sched->nr_run_events);
->  	printf("nr_sleep_events:      %ld\n", sched->nr_sleep_events);
-> @@ -3342,6 +3386,9 @@ static int perf_sched__replay(struct perf_sched *sched)
->  	sched->thread_funcs_exit = true;
->  	destroy_tasks(sched);
->  
-> +out_free_cpus_switch_event:
-> +	free_cpus_switch_event(sched);
-> +
->  out_mutex_destroy:
->  	mutex_destroy(&sched->start_work_mutex);
->  	mutex_destroy(&sched->work_done_wait_mutex);
-> @@ -3580,21 +3627,7 @@ int cmd_sched(int argc, const char **argv)
->  		.switch_event	    = replay_switch_event,
->  		.fork_event	    = replay_fork_event,
->  	};
-> -	unsigned int i;
-> -	int ret = 0;
-> -
-> -	sched.cpu_last_switched = calloc(MAX_CPUS, sizeof(*sched.cpu_last_switched));
-> -	if (!sched.cpu_last_switched) {
-> -		ret = -ENOMEM;
-> -		goto out;
-> -	}
-> -	sched.curr_pid = malloc(MAX_CPUS * sizeof(*sched.curr_pid));
-> -	if (!sched.curr_pid) {
-> -		ret = -ENOMEM;
-> -		goto out;
-> -	}
-> -	for (i = 0; i < MAX_CPUS; i++)
-> -		sched.curr_pid[i] = -1;
-> +	int ret;
->  
->  	argc = parse_options_subcommand(argc, argv, sched_options, sched_subcommands,
->  					sched_usage, PARSE_OPT_STOP_AT_NON_OPTION);
-> @@ -3605,9 +3638,9 @@ int cmd_sched(int argc, const char **argv)
->  	 * Aliased to 'perf script' for now:
->  	 */
->  	if (!strcmp(argv[0], "script")) {
-> -		ret = cmd_script(argc, argv);
-> +		return cmd_script(argc, argv);
->  	} else if (strlen(argv[0]) > 2 && strstarts("record", argv[0])) {
-> -		ret = __cmd_record(argc, argv);
-> +		return __cmd_record(argc, argv);
->  	} else if (strlen(argv[0]) > 2 && strstarts("latency", argv[0])) {
->  		sched.tp_handler = &lat_ops;
->  		if (argc > 1) {
-> @@ -3616,7 +3649,7 @@ int cmd_sched(int argc, const char **argv)
->  				usage_with_options(latency_usage, latency_options);
->  		}
->  		setup_sorting(&sched, latency_options, latency_usage);
-> -		ret = perf_sched__lat(&sched);
-> +		return perf_sched__lat(&sched);
->  	} else if (!strcmp(argv[0], "map")) {
->  		if (argc) {
->  			argc = parse_options(argc, argv, map_options, map_usage, 0);
-> @@ -3625,7 +3658,7 @@ int cmd_sched(int argc, const char **argv)
->  		}
->  		sched.tp_handler = &map_ops;
->  		setup_sorting(&sched, latency_options, latency_usage);
-> -		ret = perf_sched__map(&sched);
-> +		return perf_sched__map(&sched);
->  	} else if (strlen(argv[0]) > 2 && strstarts("replay", argv[0])) {
->  		sched.tp_handler = &replay_ops;
->  		if (argc) {
-> @@ -3633,7 +3666,7 @@ int cmd_sched(int argc, const char **argv)
->  			if (argc)
->  				usage_with_options(replay_usage, replay_options);
->  		}
-> -		ret = perf_sched__replay(&sched);
-> +		return perf_sched__replay(&sched);
->  	} else if (!strcmp(argv[0], "timehist")) {
->  		if (argc) {
->  			argc = parse_options(argc, argv, timehist_options,
-> @@ -3649,21 +3682,16 @@ int cmd_sched(int argc, const char **argv)
->  				parse_options_usage(NULL, timehist_options, "w", true);
->  			if (sched.show_next)
->  				parse_options_usage(NULL, timehist_options, "n", true);
-> -			ret = -EINVAL;
-> -			goto out;
-> +			return -EINVAL;
->  		}
->  		ret = symbol__validate_sym_arguments();
->  		if (ret)
-> -			goto out;
-> +			return ret;
->  
-> -		ret = perf_sched__timehist(&sched);
-> +		return perf_sched__timehist(&sched);
->  	} else {
->  		usage_with_options(sched_usage, sched_options);
->  	}
->  
-> -out:
-> -	free(sched.curr_pid);
-> -	free(sched.cpu_last_switched);
-> -
-> -	return ret;
-> +	return 0;
->  }
-> -- 
-> 2.34.1
+Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
+---
+ kernel/power/swap.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/kernel/power/swap.c b/kernel/power/swap.c
+index f6ebcd00c410..d2cd53497c4e 100644
+--- a/kernel/power/swap.c
++++ b/kernel/power/swap.c
+@@ -22,6 +22,7 @@
+ #include <linux/swap.h>
+ #include <linux/swapops.h>
+ #include <linux/pm.h>
++#include <linux/pm_qos.h>
+ #include <linux/slab.h>
+ #include <linux/lzo.h>
+ #include <linux/vmalloc.h>
+@@ -1180,6 +1181,7 @@ static int load_image_lzo(struct swap_map_handle *handle,
+ 	unsigned char **page = NULL;
+ 	struct dec_data *data = NULL;
+ 	struct crc_data *crc = NULL;
++	struct pm_qos_request qos;
+ 
+ 	hib_init_batch(&hb);
+ 
+@@ -1190,6 +1192,8 @@ static int load_image_lzo(struct swap_map_handle *handle,
+ 	nr_threads = num_online_cpus() - 1;
+ 	nr_threads = clamp_val(nr_threads, 1, LZO_THREADS);
+ 
++	cpu_latency_qos_add_request(&qos, 0);
++
+ 	page = vmalloc(array_size(LZO_MAX_RD_PAGES, sizeof(*page)));
+ 	if (!page) {
+ 		pr_err("Failed to allocate LZO page\n");
+@@ -1470,6 +1474,8 @@ static int load_image_lzo(struct swap_map_handle *handle,
+ 	}
+ 	vfree(page);
+ 
++	cpu_latency_qos_remove_request(&qos);
++
+ 	return ret;
+ }
+ 
+-- 
+2.34.1
+
 
