@@ -1,153 +1,111 @@
-Return-Path: <linux-kernel+bounces-52389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B3F4849770
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:13:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08DC8849774
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:13:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D7431C221CB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:13:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B930128B9C7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:13:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7399B14F8C;
-	Mon,  5 Feb 2024 10:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EE7014AB8;
+	Mon,  5 Feb 2024 10:13:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="QTOyK7O3"
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m1sWI1W2"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 322D41429E;
-	Mon,  5 Feb 2024 10:12:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DE8812E71
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 10:13:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707127980; cv=none; b=RaDae7gWpXrmMTil6Hg4RWm5Ogx+c3sVBbE6Ee7g94NgtJIKb95vWgQ9akXPhoeNUTbz925thi50fT+6K3fdcVQmDGf0QwRRiYMAEBpHBGdT5/81wuDhv9Yu9qx/ZCtNgDpqUA4m33sDUSXNMExx3kZpdgh6hfrE3Xejwkn0wBM=
+	t=1707128024; cv=none; b=UoHTeY6d+ivysQzVjtFk4IJxqBQ4Zis6VD5bFzaC7SX0Thlc6LwGKqRrXbH9D3hen/kyR6TlqmzZ0mvVCFrNhPMclY7kOie8rdY+QKok4vHbg2vUQJ4HM/jYKqYwP4P8ejHm0rNjoMM0aG5ateS2YSJz1EFvXRS0pAeTWP3zRCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707127980; c=relaxed/simple;
-	bh=be3PLO9EEtxTk2mBxGbAuohRAidYpG92a8SE+NHaNQ4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Ue9brxg3hLIbeu30IjCS4exLaheC2YXBWZQZz6d2I3AqGZnb5+OAyh+NtV1CH0ydDhP9s2YUgUyTRy9jLTsV9xjG1RPMXPKD2Ks0m4d9N6N4or3dPJyna+4v+RaV70t7TSmY11DRxK09KYsPUAOuAKqMcCn81MtT1kuCa35JaH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=QTOyK7O3; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 97CD8240010;
-	Mon,  5 Feb 2024 10:12:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707127976;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TO9AxnAfMwHgy584+e+oUs6n3DHyOXHxrMCG1WsFgk8=;
-	b=QTOyK7O3m01jilCaE0K3SVIBTgaK8GMyfbCigXNYgd7Ul6O0EIECza6OAwBGxcFe3IpAVo
-	MJFTJtzmzSeiMGmnspNSXYqjCq5OVht+Ad3Blp0dMrglKZycVFnOIK4o4ixKQoNHhn6w5A
-	coYin1XS64K+wu2d5tzSk77fCnQ9MiW2WL7JAKZ0SI+J1jsOgZsq82dVLTKVpyc6UvlaGu
-	BBe4QH9vLmx42XQo/SlHgRMjE+yF705b9Aui4iKT6s7eyZAARscy8mF89raVPWudsKtD90
-	8XqxNBCS0C/Hsaq232IlMJrhgj1jmR2dYC5v++t6es8t70Zvehcj/JsLXllckQ==
-Date: Mon, 5 Feb 2024 11:12:54 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: =?UTF-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>
-Cc: "Mark Brown" <broonie@kernel.org>, "Apurva Nandan" <a-nandan@ti.com>,
- "Dhruva Gole" <d-gole@ti.com>, <linux-spi@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, "Gregory CLEMENT"
- <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
- <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>
-Subject: Re: [PATCH] spi: cadence-qspi: stop calling system-wide PM helpers
- for runtime PM
-Message-ID: <20240205111254.70d5a5c1@xps-13>
-In-Reply-To: <CYX260CKXOUN.2H1DC1TG1Q6TY@bootlin.com>
-References: <20240202-cdns-qspi-pm-fix-v1-1-3c8feb2bfdd8@bootlin.com>
-	<20240205100312.6f0f40db@xps-13>
-	<CYX260CKXOUN.2H1DC1TG1Q6TY@bootlin.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707128024; c=relaxed/simple;
+	bh=OecLVGD5ja8HicFcQxVrUqmNQBtW+hO67C8FQtCGoZw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=kk6i9I/LdTS2Ken8Z1axsxaalL2NrnR4JU/Ec9c/I9K5RHTsUoR2oA20DmS0GQhlefJRujMHuJU6aTES+0b9bXWn/Of+xmcRbE3J8koZyMmPcT0Y24tzwpflK3OeE3iuCXTH/sMdACJDbzx5Le76fhFSMCSVN3NTW5NxYRIoQyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m1sWI1W2; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a349ed467d9so493593266b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 02:13:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707128021; x=1707732821; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=OecLVGD5ja8HicFcQxVrUqmNQBtW+hO67C8FQtCGoZw=;
+        b=m1sWI1W2MlhVpUjA1jFDqFeVDHA+xXRdCL23wWE+47KxC8/9ejsevax6WUr3qA0sPH
+         J85GGuyYHnoBinldPUdGch2i5QUz7ur2UMRE2cm1aeBvQecoTIflIVSJUMawncgo8zUZ
+         /flpjGJadLPGNsqBN07JV39sZF5n7WjIoaatvxNyxPHbMYaR7H91MM0PfNSJC6n25irA
+         x7UJsoMYrTcK+lM22vgPg2QFAiPeDrLS1FtuNGhQHX65FctdyDGWf/24gsYuqRuzPLMh
+         BuqFa2zvtCECuomUe74jGKxU9Cxs8LnpYIT3fohGCO0xYk1pkXmV7a41MM8B6H7uHlVI
+         oPig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707128021; x=1707732821;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OecLVGD5ja8HicFcQxVrUqmNQBtW+hO67C8FQtCGoZw=;
+        b=pEStwJMClOTmydUlv18f9+G39CGkRRA/sXT27U8VJBy5SyAkVbKk6MXwxWzfaVoH+W
+         KJr3xrN+SGo7ZT7DfDW7Lb7jYYaISXH55q0uVEPPhKrJ37U4askivvgSAQOgJ8oAm7BS
+         Zipxb52Rmh7bkwpbSMRqWUKosPP5/xW9ae8CgC0Yk7yif4OGb/z82O5Hm8cqTTPd/Mp9
+         ox52WgZ5ELvBZMxqlnOV++yiXoyoVs2K/2ucjPnBlr8SwtjPckcuecTgkdDV56m+2rxt
+         /J+YRkStCLnctt+9s8gr3ie1ndU0wBcenX+v3VjqgiXldaHjbSR0kEgtuvLZVboS4y90
+         LxSQ==
+X-Gm-Message-State: AOJu0YyvETFPCCJeP1hEqjTNhVkMnQywkDs3blRqIfSIrEvrPNkHzv3t
+	aCRDLhtAJCXvxcywvzkFkqpAilobvGpUQW3qInuoP21jYZnmNCve
+X-Google-Smtp-Source: AGHT+IEiyyR2IkRTjDjPZI9O1feqj32tWK+GltO3ktk6Nsi3uyRen8G/TvxDHVZLNzubWVFcK1sAXg==
+X-Received: by 2002:a17:906:3ecc:b0:a36:c466:52ea with SMTP id d12-20020a1709063ecc00b00a36c46652eamr6548445ejj.75.1707128021008;
+        Mon, 05 Feb 2024 02:13:41 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUJchxeK2wNpDLIfLzOraX+X0zJCPooESwfS1tf5mb83px7N5S5oPW/ydJpl7Y3JD2T7qMLDWVLtgFmQQ5kX072cO5Ibd7eOfbKmWy4Ox919GsKLMhP33tDHrETL/Oa21mWYX8omG2A0JPSem3//70WUm+6mwCwlWAjC3/GUN4MDesaZKEimy1dAdhf3srQ2nsSbogt4K4IfuVaojfyOG693gXvaWp3YXtiSfHJdKX89X9yl+CNTiXLQwkYCMb5WVhvZ2Kq4HuXzu7SR6/QrlIVrJDvOSNLjC7HNblJSbVqPaqUGzWQIPNc5EiA+5qi3XqctKnYw6hhJZAgjmHXr0qryJW1+/xIiIkJWFrK9J6NCST2N8iiKK0OK0S18jdLXs/OIDaSZg==
+Received: from giga-mm-1.home ([2a02:1210:8690:9300:82ee:73ff:feb8:99e3])
+        by smtp.gmail.com with ESMTPSA id fj10-20020a1709069c8a00b00a36a94ecf9dsm4214482ejc.175.2024.02.05.02.13.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 02:13:40 -0800 (PST)
+Message-ID: <c93bf062dca07191bd76330eac6580355ab65a57.camel@gmail.com>
+Subject: Re: [PATCH v7 01/39] ARM: ep93xx: Add terminator to
+ gpiod_lookup_table
+From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+To: Arnd Bergmann <arnd@arndb.de>, Linus Walleij <linus.walleij@linaro.org>,
+  Nikita Shubin <nikita.shubin@maquefel.me>
+Cc: Hartley Sweeten <hsweeten@visionengravers.com>, Russell King
+ <linux@armlinux.org.uk>, "Wu, Aaron" <Aaron.Wu@analog.com>, Olof Johansson
+ <olof@lixom.net>, Lee Jones <lee@kernel.org>, Ralf Baechle
+ <ralf@linux-mips.org>,  linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Andy Shevchenko <andriy.shevchenko@intel.com>
+Date: Mon, 05 Feb 2024 11:13:40 +0100
+In-Reply-To: <86ae775b-b3ab-45db-9541-95fcc0e17b5e@app.fastmail.com>
+References: <20240118-ep93xx-v7-0-d953846ae771@maquefel.me>
+	 <20240118-ep93xx-v7-1-d953846ae771@maquefel.me>
+	 <CACRpkdYDmx9qrkCo5mad_w1e0MKNYrVirg=qi+R4Q907SLdRwg@mail.gmail.com>
+	 <f00582bf4d19b539cc1427706ee9a07fd3992bc3.camel@gmail.com>
+	 <86ae775b-b3ab-45db-9541-95fcc0e17b5e@app.fastmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
 
-Hi Th=C3=A9o,
+Thanks Arnd,
 
-> > > The fatal conclusion of this is a deadlock: we acquire a lock on each
-> > > operation but while running the operation, we might want to runtime
-> > > resume and acquire the same lock.
-> > >=20
-> > > Anyway, those helpers (spi_controller_{suspend,resume}) are aimed at
-> > > system-wide suspend and resume and should NOT be called at runtime
-> > > suspend & resume.
-> > >=20
-> > > Side note: the previous implementation had a second issue. It acquire=
-d a
-> > > pointer to both `struct cqspi_st` and `struct spi_controller` using
-> > > dev_get_drvdata(). Neither embed the other. This lead to memory
-> > > corruption that was being hidden inside the big cqspi->f_pdata array =
-on
-> > > my setup. It was working until I tried changing the array side to its
-> > > theorical max of 4, which lead to the discovery of this gnarly bug.
-> > >=20
-> > > Fixes: 0578a6dbfe75 ("spi: spi-cadence-quadspi: add runtime pm suppor=
-t")
-> > > Fixes: 2087e85bb66e ("spi: cadence-quadspi: fix suspend-resume implem=
-entations") =20
-> >
-> > Your commit log makes total sense but I believe the diff is gonna break
-> > again the suspend to RAM operation. This is only my understanding
-> > right after quickly going through the whole story, so maybe I'm
-> > totally off topic. =20
+On Mon, 2024-02-05 at 10:02 +0000, Arnd Bergmann wrote:
+> I'm travelling at the moment, but can take it when I get back.
 >=20
-> The current ->runtime_suspend() implementation would indeed (probably)
-> work for suspend-to-RAM if it wasn't for the wrong pointers to cqspi
-> and spi_controller (see side note from commit message).
+> If you want to be sure it doesn't get lost, please send the
+> patch (with the Acks) to soc@kernel.org=C2=A0and it will end up
+> in patchwork.
 
-Yeah, this probably needs to be fixed aside.
+I'll do it!
 
-> I've not found a moment where `struct cqspi_st` embed `struct
-> spi_controller` at its start, so I do not believe this has ever worked.
-> It might be the result of a mistake while porting a patch from a branch
-> that included other changes.
->=20
-> > What happened if I understand the two commits blamed above:
-> >
-> > - There were PM hooks.
-> > - Someone turned them into runtime PM hooks (breaking regular
-> >   suspend/resume).
-> > - Someone else added the "missing" suspend/resume logic inside the
-> >   runtime PM hooks to fix suspend and resume.
-> > - You are removing this logic because it leads to deadlocks.
-> >
-> > There was likely a misconception of what is expected in both cases
-> > (quick and small power savings vs. full power cycle/loosing the whole
-> > configuration).
-> >
-> > I would propose instead to create two distinct set of functions:
-> > - One for runtime PM
-> > - One for suspend/resume
-> > This way the runtime PM no longer deadlocks and people using
-> > suspend/resume won't get affected? I don't know if your runtime hooks
-> > *will* always be called during a suspend/resume. I hope so, which would
-> > make the split quite easy and without any code duplication. =20
->=20
-> That does indeed sound like the right approach. Runtime hooks can be
-> called from suspend/resume if needs be. Runtime PM then gets disabled
-> at the late stage.
+--=20
+Alexander Sverdlin.
 
-Would make sense indeed.
-
-> I do not believe currently system-wide suspend can be working.
-> spi_controller_{suspend,resume} are being called with a bogus pointer.
-> This makes me ask: should the system-wide suspend/resume part be
-> addressed with this patch or a follow-up? It feels like a separate
-> concern to me.
-
-Probably two patches, yes.
-
-Thanks,
-Miqu=C3=A8l
 
