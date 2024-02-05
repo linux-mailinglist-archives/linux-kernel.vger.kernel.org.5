@@ -1,125 +1,131 @@
-Return-Path: <linux-kernel+bounces-54103-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54104-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D44A084AACA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:45:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C49F284AAD7
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:50:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 132001C24562
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:45:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F41EF1C23464
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:50:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3D134BAA4;
-	Mon,  5 Feb 2024 23:44:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AD0E4F5FA;
+	Mon,  5 Feb 2024 23:50:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j5CaDjy/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xfo7zHy4"
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 004FF1EB49;
-	Mon,  5 Feb 2024 23:44:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA8B64F5E4;
+	Mon,  5 Feb 2024 23:50:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707176691; cv=none; b=l8yXM1Oxbn3uiu89cQ/b3f2AYmtc4nUH659sCCXT5JXyy6wZZIU6jlkrH0Yaro7KyvPUVMs4wKSd64znZOZ6b4eQ0HV53cv++osy6/rClfWDFDoYlt9XHxCvSmBD15YWSHaWwId8Pi9uhDMQ1htQDLkpPiDz7b/5BfibLkRVpYE=
+	t=1707177008; cv=none; b=ZBRkmciJWHbHUTSxnZ4HvqYUsc73B2zQh1idDjyTN8fgHk8FNlXFd63vnoHHi2bIKwey4cUKEFDLgVUo2c4S4RKe26J1ZElgvIzGB0UWRLMCIT/oNUCWbRpRkyfzjWOWK5TLV2++h6621v2TxGgpQw5aXGa2IleXsGlKMSxuQYY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707176691; c=relaxed/simple;
-	bh=SxLaOpN/aBErJ9kXh6d9dU6KlKpKu99pWHS/STEMU8M=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IbDxozMIvorEf5/rKabDZZeP72C8ZhJacJ1qCs+3o0sLSEUqAAF9L/2KJo5ByZ6LmzIkZ8qblmggt63xAWvDh0W+OKfXzRc9EC3VElWGQCkA9Lth4FeJP6TVXTFHN9HFtaGhmDCXSclPHH9U177vqmT6UdhdS4BJ3s27MJGnvOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j5CaDjy/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1413C433F1;
-	Mon,  5 Feb 2024 23:44:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707176690;
-	bh=SxLaOpN/aBErJ9kXh6d9dU6KlKpKu99pWHS/STEMU8M=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=j5CaDjy/VjxbeQbdgNT8rBul3sjRJv85BNfhU7NBA3ouFRrZ9V9uxMt7N8/1Fxd18
-	 meUCBNTQblbFgDEQJe+UT9h1L8dqhim7LslBtyeknQzuzRhdhMQ9JaFjmoAO8zepYs
-	 nJZb2IxMHfZXpZ579O++i4hrpSVSRqECbx0e1IRiCKjkWv3IsDOgkgWkp5HhFoPZYl
-	 DiZjuRNBA2X/EI09LTQgegSqHCwSWb4bY2xNNdpL9KG/A8CefmjnXwYw7TCbixR+8j
-	 OdXgjcfz6VUfd6A0VCwlCLIJpAct5EjHtn0jkuf8N6d1XaR2rdhtcy7fbsEEsuLRkt
-	 M0tiRWjOa/Yqg==
-Date: Mon, 5 Feb 2024 15:44:48 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Shinas Rasheed <srasheed@marvell.com>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Haseeb Gani
- <hgani@marvell.com>, Vimlesh Kumar <vimleshk@marvell.com>, Sathesh B Edara
- <sedara@marvell.com>, "egallen@redhat.com" <egallen@redhat.com>,
- "mschmidt@redhat.com" <mschmidt@redhat.com>, "pabeni@redhat.com"
- <pabeni@redhat.com>, "horms@kernel.org" <horms@kernel.org>,
- "wizhao@redhat.com" <wizhao@redhat.com>, "kheib@redhat.com"
- <kheib@redhat.com>, "konguyen@redhat.com" <konguyen@redhat.com>, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jonathan
- Corbet <corbet@lwn.net>, Veerasenareddy Burru <vburru@marvell.com>,
- Satananda Burla <sburla@marvell.com>, Shannon Nelson
- <shannon.nelson@amd.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, Joshua
- Hay <joshua.a.hay@intel.com>, Rahul Rameshbabu <rrameshbabu@nvidia.com>,
- Brett Creeley <brett.creeley@amd.com>, Andrew Lunn <andrew@lunn.ch>, Jacob
- Keller <jacob.e.keller@intel.com>
-Subject: Re: [EXT] Re: [PATCH net-next v5 1/8] octeon_ep_vf: Add driver
- framework and device initialization
-Message-ID: <20240205154448.1c5a5ad8@kernel.org>
-In-Reply-To: <PH0PR18MB47345E3ADCC35D0ECA763DBBC7412@PH0PR18MB4734.namprd18.prod.outlook.com>
-References: <20240129050254.3047778-1-srasheed@marvell.com>
-	<20240129050254.3047778-2-srasheed@marvell.com>
-	<20240131161406.22a9e330@kernel.org>
-	<PH0PR18MB47345E3ADCC35D0ECA763DBBC7412@PH0PR18MB4734.namprd18.prod.outlook.com>
+	s=arc-20240116; t=1707177008; c=relaxed/simple;
+	bh=eMP+pBzXjOisnrJFlhbgFG68K3/hBnqXW+IrLBhZ78k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uaBc8YDj5+F45jb9I9xKF56UoPKKQSYTNEuFmr0l8xMNCUWNDrniWRR2WPQYOaGqFy3CCU33wZaLHeDezTW8cikkHQFJF9NOZJxvx56CMdLVphBz/AVHRqaaFovjkoAdodgNi/x8BQeDdSPcu7y7expJoh7uQsSrtSodFFXKwJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xfo7zHy4; arc=none smtp.client-ip=209.85.208.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d09faadba5so27570711fa.1;
+        Mon, 05 Feb 2024 15:50:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707177005; x=1707781805; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CLaCt86KE4z7cIgRB82YaYKlIDPGoF1DhNw2e1I2B8M=;
+        b=Xfo7zHy4QNPRqvIQPzIzSZW7Vlr/zp2/WqQibZpgYzXebE5wMsF2OIyrKirBsyLk3+
+         yv4VI4V0GgRevNlv1xNiLHkNqkjkIdz4iLotXPu2INRUy/l1nKV6y3s7tsDLpSIiDu3I
+         hrNq5il9AFQwRXw0P4iJYIDeAPQruKtpP3GDSequBpaRn5LmmpMfcj2eDMmR/dnNCmWT
+         f6mfnF8WgACGCBdZB53Hb2esBkBBpfMPNh7Xxoa86tnDZhL1NVJqs7+cc6fiifoVyJjZ
+         pNFM3ZKrK3Ejig4P2c3ZvLvNABJ49VYjW4De4cX7ygmqfdrrZYfws2rmLLqlDJsR77fA
+         ygmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707177005; x=1707781805;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CLaCt86KE4z7cIgRB82YaYKlIDPGoF1DhNw2e1I2B8M=;
+        b=JdI0YlnlScyAxNsfxgkkrJl4duYfQ+vxgA1UYFCKqV/KTOlm9NJvYO1ZQRJIyeDTwT
+         A9PjWYOZn1nIAy25/p8lUjJNqHVv17LgJbYyRwYn0wfj5UzeHHgJx50zi5ih0u3lH6bB
+         LCZ6YvLqC7JdLPG2nb4DPBEQ/6YUtEvD4Pq1f5Bu80kzFUXd80Nb3RtsCF0YNDj59cAN
+         Z7V5ymIHDtJk1FL2H3c1+sggAwDCfX4B5o2gBpl0mvANFx6EAkbz/bBRZ+RnzUjV9Ew4
+         r0gEM2yQzHJ3tdzX0qAGEnybUoJUmUyYdsscL8IHK2WO6cP8jugr+6RXIv9+BZRGkjhh
+         W8ag==
+X-Gm-Message-State: AOJu0Yxfx/7LSb1G0civGrg5vxltlPZlllNdS7Bt56El75kx+9X7fMaS
+	h1pM8lJegjYp6eexIq5xbuADtZfKfSPgIG6815xrGY3ZCfswXCTs2fItg+1Uj/4QT9ZcE+Kzdjg
+	3L3PBXOXrZ/nQtewu3aGsMt8sHVlvWXftwhU=
+X-Google-Smtp-Source: AGHT+IFYE1LZhi/E5sYl/Oz0mrw3UbzWRJkr47ZufZVv/ndYuIglX10ppT+lRtcfqSkpvWzpqKfM3tFQsAq3pkgWi4Q=
+X-Received: by 2002:a2e:7d0d:0:b0:2d0:b291:d017 with SMTP id
+ y13-20020a2e7d0d000000b002d0b291d017mr699202ljc.15.1707177004526; Mon, 05 Feb
+ 2024 15:50:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240205173124.366901-1-avagin@google.com> <ZcErs9rPqT09nNge@google.com>
+In-Reply-To: <ZcErs9rPqT09nNge@google.com>
+From: Andrei Vagin <avagin@gmail.com>
+Date: Mon, 5 Feb 2024 15:49:53 -0800
+Message-ID: <CANaxB-yAJf4wFyRgkc+XzAdkC9JUKtx-BoZ=eCV7jRSagjsv0g@mail.gmail.com>
+Subject: Re: [PATCH] kvm/x86: add capability to disable the write-track mechanism
+To: Sean Christopherson <seanjc@google.com>
+Cc: Andrei Vagin <avagin@google.com>, Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org, 
+	x86@kernel.org, kvm@vger.kernel.org, Zhenyu Wang <zhenyuw@linux.intel.com>, 
+	Zhi Wang <zhi.a.wang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 3 Feb 2024 05:35:21 +0000 Shinas Rasheed wrote:
-> > You haven't masked any IRQ or disabled NAPI. What prevents the queues
-> > from getting restarted right after this call?  
-> 
-> The napi functionality (along with disabling it when stopping), is introduced (and used) in the patch after this one [2/8]. Also we disable interrupts in the 
-> disable_interrupt hook which is also called in the next patch [2/8]. 
+On Mon, Feb 5, 2024 at 10:41=E2=80=AFAM Sean Christopherson <seanjc@google.=
+com> wrote:
+>
+> On Mon, Feb 05, 2024, Andrei Vagin wrote:
+> > The write-track is used externally only by the gpu/drm/i915 driver.
+> > Currently, it is always enabled, if a kernel has been compiled with thi=
+s
+> > driver.
+> >
+> > Enabling the write-track mechanism adds a two-byte overhead per page ac=
+ross
+> > all memory slots. It isn't significant for regular VMs. However in gVis=
+or,
+> > where the entire process virtual address space is mapped into the VM, e=
+ven
+> > with a 39-bit address space, the overhead amounts to 256MB.
+> >
+> > This change introduces the new KVM_CAP_PAGE_WRITE_TRACKING capability,
+> > allowing users to enable/disable the write-track mechanism. It is enabl=
+ed
+> > by default for backward compatibility.
+>
+> I would much prefer to allocate the write-tracking metadata on-demand in
+> kvm_page_track_register_notifier(), i.e. do the same as mmu_first_shadow_=
+root_alloc(),
+> except for just gfn_write_track.
+>
+> The only potential hiccup would be if taking slots_arch_lock would deadlo=
+ck, but
+> it should be impossible for slots_arch_lock to be taken in any other path=
+ that
+> involves VFIO and/or KVMGT *and* can be coincident.  Except for kvm_arch_=
+destroy_vm()
+> (which deletes KVM's internal memslots), slots_arch_lock is taken only th=
+rough
+> KVM ioctls(), and the caller of kvm_page_track_register_notifier() *must*=
+ hold
+> a reference to the VM.
+>
+> That way there's no need for new uAPI and no need for userspace changes.
 
-You gotta make the patches reviewable :(
+I think it is a good idea, I don't know why I didn't consider it.
+Thanks. I will prepare a new patch.
 
-> > > +static void octep_vf_tx_timeout(struct net_device *netdev, unsigned int  
-> > txqueue)  
-> > > +{
-> > > +	struct octep_vf_device *oct = netdev_priv(netdev);
-> > > +
-> > > +	queue_work(octep_vf_wq, &oct->tx_timeout_task);
-> > > +}  
-> > 
-> > I don't see you canceling this work. What if someone unregistered
-> > the device before it runs? You gotta netdev_hold() a reference.  
-> 
-> We do cancel_work_sync in octep_vf_remove function.
-
-But the device is still registered, so the timeout can happen after you
-cancel but before you unregister.
-
-> > > +static int __init octep_vf_init_module(void)
-> > > +{
-> > > +	int ret;
-> > > +
-> > > +	pr_info("%s: Loading %s ...\n", OCTEP_VF_DRV_NAME OCTEP_VF_DRV_STRING);  
-> > > +
-> > > +	/* work queue for all deferred tasks */
-> > > +	octep_vf_wq =  
-> > create_singlethread_workqueue(OCTEP_VF_DRV_NAME);
-> > 
-> > Is there a reason this wq has to be single threaded and different than
-> > system queue? All you schedule on it in this series is the reset task.  
-> 
-> We also schedule the control mailbox task on this workqueue. The
-> workqueue was created with the intention that there could be other
-> driver specific tasks to add in the future. It has been single
-> threaded for now, but we might optimize implementation in the future,
-> although for now as far as to service our control plane this has been
-> enough.
-
-I haven't spotted the mailbox task in this series, if it's not here,
-let's switch to system wq, and only add your own when needed.
+Thanks,
+Andrei
 
