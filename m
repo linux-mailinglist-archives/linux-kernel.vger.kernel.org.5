@@ -1,103 +1,151 @@
-Return-Path: <linux-kernel+bounces-52957-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3FEA849ECD
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:53:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE636849ED0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:53:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6AAF1C22233
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:53:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AF2728B342
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:53:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98B122E63B;
-	Mon,  5 Feb 2024 15:53:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFF572E629;
+	Mon,  5 Feb 2024 15:53:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="P6+K8S8M"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iP4sVD7h"
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91D4C3A1C3
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 15:53:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A936E39856
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 15:53:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707148394; cv=none; b=PBmbn9VHr/tg5vuMKa4IFf1FJrUyYlT6UgZ1XgNxw1KEgokYm5o/ZoDLrSGm8UhjECcnWr4xyhIuq1ksEKNQo339OGfb3Mx1Cc8XqSzstx7zfyXBCtYa9WVc8sN5egNwK+yoKpoiBQ8sLw/Ugdt4nf2D6kwf/Ps7F4mHkLqece8=
+	t=1707148405; cv=none; b=hz8HecHt4cHjdAu4FN0fGoQipsnqjNwS7M08WstRW/IAF7SZfezi3vOpTzzPmB6f6vRN/gfKZ5frEwZiRhm6wNUYCevI9YNi2KBYaJo2N1s2NIvIOX2o+Q2jVwfpBUM8etCx8FDbTGsHdtUkg/P6pPzxPGiJkYNX5E16Pizl2Ho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707148394; c=relaxed/simple;
-	bh=J8roI+XJDSVMI0a0Dhawqwac0Zkmnw0WWNfCfpE3idI=;
+	s=arc-20240116; t=1707148405; c=relaxed/simple;
+	bh=Tj/tSyznD6niSn67AzAu0cOFqdiubGqC2gQgO7+0PPg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cJkaasuKaEDNIz3zXknmVmb90VIlcqLTxTJyaO6WQOmJy8xdQeNvIxITgSGrETcDwsux3Q5izpHbrr1rViu69Q7akG0hslpd0a7bgRSihuL21m2u7qEI3MOpsBYHi1PQKX52r56nff3Cl6KjUXs+mNdcYs3nKTpoeeYd+y6hdnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=P6+K8S8M; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707148391;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J8roI+XJDSVMI0a0Dhawqwac0Zkmnw0WWNfCfpE3idI=;
-	b=P6+K8S8MCSBfOBiY+90WZP/UxX017LukqqYtPXPcLrhjxlqFPETwhxMsn3fXPZUgEu9y+l
-	ND/cnXcdz+kJPbNJBrsDmIT5zMsKprBDJMnH67fNwCDExHgv9/1QiOy3d0guUlX8p5XEpt
-	d9eNBXTiDrVs7KwkSTFRuOJZjlN48KM=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-360-fiFtJEsLObmQkatB51vtFg-1; Mon, 05 Feb 2024 10:53:10 -0500
-X-MC-Unique: fiFtJEsLObmQkatB51vtFg-1
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-5606d5d14edso705316a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 07:53:09 -0800 (PST)
+	 To:Cc:Content-Type; b=cAxFe/hUanMzaY8tGL85EituX3McQ/9DZIZgcepxAa4uB6eb4wDqy/d1+6yOZXlWE7byeevQ0NyyjPJXsDg2DdIn+xmbqZvgwnoDPcAaKKkzoxtLOJrhwOQQHENWSLIlqHiYSc78n3crDL/Y+VdegYg5IUo/D9phUdNqco3Oh9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iP4sVD7h; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5c66b093b86so4082848a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 07:53:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707148403; x=1707753203; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yKMXANMb2L0d4cSkguf2jw1WiTCcS41jyvz5JuSTL3Q=;
+        b=iP4sVD7h7Lpr2wvcPYz6y0GbWFJelJ3+aAe3FeRtzyWsY0/c0j2zUtFOEKclalXZ09
+         q282t57sGhCT52qVfKCNm4cl61+tdCGlDuVQytigyLcgoaIb5oxqZi005reA1RJfFcma
+         dd3ginGfpxwH0can8qIXe0CgRifQrPZ5+bDxXRS2KikU5AXlfgKy/mQNjx5TLiDPmCfH
+         hfCKG8nfmoCf3MlL4k0OjheUoLR3mPV8NDnuvRrr3wU6o4LhUkWmN+0iFQvpP+5aGr6J
+         a+zjndPPIhWWzBhOf5H0gwBxrpQ9GaQodusiyFpYy8I5ImPvfzN+mZJIuYw65zus5c98
+         nQCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707148389; x=1707753189;
+        d=1e100.net; s=20230601; t=1707148403; x=1707753203;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=J8roI+XJDSVMI0a0Dhawqwac0Zkmnw0WWNfCfpE3idI=;
-        b=K5gy9JIrZ53sfkXJEA1u8TI/NREFHh8uzLR7jvzIMT4xmJjT0aCMBGgWea7FBS+hT/
-         Ye/x+cU9tsxPMlY0/93W4ZmmjUx9bavPl/gBXvjI2xe8F704Ys+++/PUV2ghV+Z40fGn
-         smc7WyHZDDfg/QS1ZG0t2md/vL7MDm0lA+JYObRzVlhvh0Jbb3RQyGLa5t0GgzvRPtLV
-         KRxG2/jZune5c+Akj4gBFj0gVP6MgnGfq8dboh9YYOKwrpIkO1pF7sKmHsNLjGRfYvn5
-         LXvCUny2mF8vmv9Oyp3Fv+YifDj21uLbfbdBNhMca47tx+XrGKvgBiUt0lqK2ojPPoPr
-         sIiQ==
-X-Gm-Message-State: AOJu0YwhuwnOwtENG9U6F6vlYH8epHeK2VXl9oX/P51F2/0Ew+rLwJ+w
-	1arDItL+JaExzS3BUBe8zOYyP04czPdEIWnMXfKCqGMe/ALcOIXdrWSgK+wFtHl+n88yZ31uXyp
-	k2wx6dfEWdpB7bonZgIFJctfM6X7moMkTycs/YtdxQEBUjo3oELOT2dmOi0ZlmV9oQzF5AN6fV/
-	5ueP5HD5HjT4XuFYnf+dtpsCpdlQkiGgvZFklYiFUz+LzMvYA=
-X-Received: by 2002:aa7:c89a:0:b0:55f:fad9:a91c with SMTP id p26-20020aa7c89a000000b0055ffad9a91cmr4963743eds.6.1707148388964;
-        Mon, 05 Feb 2024 07:53:08 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF6NX6qqHmiFdtuSKtOZNZLcM6JUDXJlz0lA4ylVz4SdTvG0QkbsGX8bI+10/SGJEYXt3Fexd6AN+vUoubJvhA=
-X-Received: by 2002:aa7:c89a:0:b0:55f:fad9:a91c with SMTP id
- p26-20020aa7c89a000000b0055ffad9a91cmr4963735eds.6.1707148388821; Mon, 05 Feb
- 2024 07:53:08 -0800 (PST)
+        bh=yKMXANMb2L0d4cSkguf2jw1WiTCcS41jyvz5JuSTL3Q=;
+        b=vOhF2hdvZ/pvgGVjwxMPb+AkQvvKIuTR3Hy1y8xXuKoQiOvyxJruKr+PCxYM/Ds7G+
+         OP0WB1+2WxvLbNOzHqJxqyaeqwcblTflE92drrX/771ynfw46EsqMQ+AzU35/0ayTiP+
+         kz4dHCPQYSvsdy5xKvl+R8uhHC91SE39ZQAeG9ura5qsVJ+sc79V/UgrwCPVlUc/rt0p
+         sEE75IzPCD4ay8oCfy6KXcMnspB8tvXxFKHXgLsWrKOAuwBC1cxy0zcdUw656LtVBc25
+         K3amNBXs0gdIKI/Yvypsa4womAwLbzWk75nawL6ln3C4GzpbaIMIQCxb+UiTQQYCL61f
+         hIfg==
+X-Gm-Message-State: AOJu0YyRpaWWORGoPpbQSs7ifAPjFgM6whO7NMnvkVrpcEcZeUDVByqt
+	9M7xlYwyEwgLmafqmeV9ekq+ZsWSoAfQUvnviIyHJerBED5+kBGL3dUwwyKxh4ioo8ejSfh91xV
+	7KJoh6vWKBU/bx8Mm85LxaYZGn3CaS9+sZdc1+w==
+X-Google-Smtp-Source: AGHT+IGiQ8mgXBzzUxrLOOHInjCHEUGgvmdllRmofPYa6NtB9hGeupI8S22TOVaYwtQCQLIyLsSLsY86I4vrGeoUsvs=
+X-Received: by 2002:a05:6a20:c891:b0:19e:4ae5:730f with SMTP id
+ hb17-20020a056a20c89100b0019e4ae5730fmr57615pzb.30.1707148402893; Mon, 05 Feb
+ 2024 07:53:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117094912.155729-1-chentao@kylinos.cn>
-In-Reply-To: <20240117094912.155729-1-chentao@kylinos.cn>
-From: Alexander Aring <aahringo@redhat.com>
-Date: Mon, 5 Feb 2024 10:52:58 -0500
-Message-ID: <CAK-6q+gjtDZOb-JFFPCt9oR1jPZ=NsLeph3H4npF8rrb0ifm5A@mail.gmail.com>
-Subject: Re: [PATCH] fs: dlm: Simplify the allocation of slab caches in dlm_lowcomms_msg_cache_create
-To: Kunwu Chan <chentao@kylinos.cn>
-Cc: teigland@redhat.com, gfs2@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240205124513.447875-1-tudor.ambarus@linaro.org> <20240205124513.447875-7-tudor.ambarus@linaro.org>
+In-Reply-To: <20240205124513.447875-7-tudor.ambarus@linaro.org>
+From: Sam Protsenko <semen.protsenko@linaro.org>
+Date: Mon, 5 Feb 2024 09:53:11 -0600
+Message-ID: <CAPLW+4=S7+ur0Csd-qQcEBo2_Z3Dy9ZtarYY0=jYhY33kc4WDA@mail.gmail.com>
+Subject: Re: [PATCH v4 06/16] spi: s3c64xx: remove unneeded (void *) casts in of_match_table
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: broonie@kernel.org, andi.shyti@kernel.org, krzysztof.kozlowski@linaro.org, 
+	alim.akhtar@samsung.com, linux-spi@vger.kernel.org, 
+	linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, andre.draszik@linaro.org, 
+	peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-On Wed, Jan 17, 2024 at 4:54=E2=80=AFAM Kunwu Chan <chentao@kylinos.cn> wro=
-te:
+On Mon, Feb 5, 2024 at 6:45=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro.=
+org> wrote:
 >
-> Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-> to simplify the creation of SLAB caches.
+> of_device_id::data is an opaque pointer. No explicit cast is needed.
+> Remove unneeded (void *) casts in of_match_table.
 >
-> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> ---
 
-Acked-by: Alexander Aring <aahringo@redhat.com>
+Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
 
-- Alex
-
+>  drivers/spi/spi-s3c64xx.c | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
+> index ccb700312d64..807270ec3c8a 100644
+> --- a/drivers/spi/spi-s3c64xx.c
+> +++ b/drivers/spi/spi-s3c64xx.c
+> @@ -1512,31 +1512,31 @@ static const struct platform_device_id s3c64xx_sp=
+i_driver_ids[] =3D {
+>
+>  static const struct of_device_id s3c64xx_spi_dt_match[] =3D {
+>         { .compatible =3D "samsung,s3c2443-spi",
+> -                       .data =3D (void *)&s3c2443_spi_port_config,
+> +                       .data =3D &s3c2443_spi_port_config,
+>         },
+>         { .compatible =3D "samsung,s3c6410-spi",
+> -                       .data =3D (void *)&s3c6410_spi_port_config,
+> +                       .data =3D &s3c6410_spi_port_config,
+>         },
+>         { .compatible =3D "samsung,s5pv210-spi",
+> -                       .data =3D (void *)&s5pv210_spi_port_config,
+> +                       .data =3D &s5pv210_spi_port_config,
+>         },
+>         { .compatible =3D "samsung,exynos4210-spi",
+> -                       .data =3D (void *)&exynos4_spi_port_config,
+> +                       .data =3D &exynos4_spi_port_config,
+>         },
+>         { .compatible =3D "samsung,exynos7-spi",
+> -                       .data =3D (void *)&exynos7_spi_port_config,
+> +                       .data =3D &exynos7_spi_port_config,
+>         },
+>         { .compatible =3D "samsung,exynos5433-spi",
+> -                       .data =3D (void *)&exynos5433_spi_port_config,
+> +                       .data =3D &exynos5433_spi_port_config,
+>         },
+>         { .compatible =3D "samsung,exynos850-spi",
+> -                       .data =3D (void *)&exynos850_spi_port_config,
+> +                       .data =3D &exynos850_spi_port_config,
+>         },
+>         { .compatible =3D "samsung,exynosautov9-spi",
+> -                       .data =3D (void *)&exynosautov9_spi_port_config,
+> +                       .data =3D &exynosautov9_spi_port_config,
+>         },
+>         { .compatible =3D "tesla,fsd-spi",
+> -                       .data =3D (void *)&fsd_spi_port_config,
+> +                       .data =3D &fsd_spi_port_config,
+>         },
+>         { },
+>  };
+> --
+> 2.43.0.594.gd9cf4e227d-goog
+>
 
