@@ -1,263 +1,167 @@
-Return-Path: <linux-kernel+bounces-52357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37F36849717
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:56:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 601EB849719
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:56:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F4D61F225B0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:56:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C44A61F2388A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:56:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96D9B12E6D;
-	Mon,  5 Feb 2024 09:56:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="TKmSnozs"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68B63134AE;
+	Mon,  5 Feb 2024 09:56:17 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D099812E4E
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 09:56:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E24DD12E75;
+	Mon,  5 Feb 2024 09:56:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707126975; cv=none; b=WZ6KlGvNNYnrsbYeZMYKyfEdupjCwBGlp4346Rs2FAKNg5q03083XxrXGF6hHnRoy90JVzMupKawuzeP+clAjVOZW926yVfStUYdFBIr0lB4lfIFQZ/NpaCh0MZQLdoEOiMquuFjDaiyO1SEIGE/5BwYowrPMP4BSUHydjRnyu4=
+	t=1707126976; cv=none; b=c0/3whFlzsQzqix64aGkIrp9HLp32k2LYyU/NrPmDuk5eu8aVLsve8E1mp5smb0puBgpHpQX9157hiOLNLxgXCT2bGlfEytT3EaajIAikxEbdKf8yMbkk3cgKJl6Vtdx8LSSt7AZhOCKvBj3CkPwy5AzyhTt7W4m+09jXS1BWrQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707126975; c=relaxed/simple;
-	bh=beA5jKCFvMxf03a7msTgO2rm/6nQdr1GBNzkVRMzdTQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=A+SHVxbY2nX4sCDPKqJ0CVcRfcPZc9V8TKeOrV9Fx2Nb15pPH+m3esdu2A3i8u57WDLyStbK1rV1DP/qC1maWldw4Rv+21mEsfKKf0M1U8Lfi0lTH4ecsE9cmkRmOGZFBxDnDKA6EMwzm7utl8nJEAl44xe+ZInjWnhPiZsZO7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=TKmSnozs; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d090c83d45so26020141fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 01:56:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1707126972; x=1707731772; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U9BPe2mmfdZET5BWvxtuooX2YZGr+tHIeZQXWHS+HOE=;
-        b=TKmSnozsD4pnKcYBHCXd9KjcBTnCVuxQKbtzlkKrmQPpa4SbRy+aML0tIN8Y+i9zrL
-         9/bWtLLOgFGK8XtBByVsSNyXjrL0Aef6L6xI6ejD3sqeQlQ8sTq9Zhzovt2BYybxM0W4
-         Fqis5rpM3Y1P67bcyHFqW5VW6ndbFrpvy8BYPYwZJYta8IWoqlnVxagsHQ9Q+hVqYh6b
-         GrtYro0vYO+LbDeRtrCHoAm8fA9Dhy3qyfJGfiO0jj5x9GyuJW4fArLET0nxwfTEX1ue
-         4HcLsXvYbajMWSqrnlgFIUp38Acwb0QMpNgsQ+1nPomgKkyxvbWNMRkSo27xmrWvUGmL
-         zTEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707126972; x=1707731772;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=U9BPe2mmfdZET5BWvxtuooX2YZGr+tHIeZQXWHS+HOE=;
-        b=QMMFR161FuurSU/spY3vh0KrFZwr6nACW5m1032o4KucU3uVo/6gV1o9dagGZh+VXa
-         ldk9XW0F63koqAXlYOnEMTGy1wGpnY+5T37r5qOTVqAMfZW3XJQwF+/+Z8K1IszHxQ5X
-         Ocp6WxeSAd2MK8D13vm/uD2EXgZTVGgWgKehPNeWbToLir2VaaVoriIIdg8i0k513Vx/
-         JGvyuM4QJLu3LUku3LxYlV15hnZ9HNptnN7uUPDJCd9Zl0BZ0/q9ERGyyhnNIMhmWRcp
-         afklxCQBg54zPuoGT9mdV1MXW2dZwM7ZOTNhY7P8L2sdr0Zfw3lAAiDX2JpMU2YVuUfi
-         tg8A==
-X-Gm-Message-State: AOJu0YzMrqoxnntri9PUOvjLTDuzgBEm77eq+WTwgNVq3/5EUj/lSlJK
-	oh140A0o5VwZNGOjZslSetxVvjuEbu7Cm55NPK6beH8/lbEbOhpXJO/bWR3vyLL2KTGIihjbMAe
-	24Kf7t/I2MLsgKtcdexPAQfsM88NVWfH609OXgA==
-X-Google-Smtp-Source: AGHT+IH3P5s7Frwj0p+8I7LR12TkIrs63+BQ1M+xJBNP1K9TLpzBZz8WvmvE8AYrszJxa8mic1nfZKmP3/V0QwqFSs0=
-X-Received: by 2002:a05:651c:1a11:b0:2d0:abec:25b9 with SMTP id
- by17-20020a05651c1a1100b002d0abec25b9mr1411667ljb.50.1707126971479; Mon, 05
- Feb 2024 01:56:11 -0800 (PST)
+	s=arc-20240116; t=1707126976; c=relaxed/simple;
+	bh=u3UHw68fN7+IkE23kchq6FnkTdKNYPKXZ66IvYNi2es=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gn9s3D+XX4Z4yygFl0ETI/q66K9kFin7E/HpjwM8jJnH1WiXfjZvoZGWgYX75VIYzY3lc2RPaRXoPWKH9Wo0+nDvdF7eXlA5oudVK2lJzjSXRaqZi5xvKkVdmCgzlrlsRZI9Xf9nq9JCJO5vwnBgKdnYFF78bxWvlpR1wcI2zAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33B14C433F1;
+	Mon,  5 Feb 2024 09:56:15 +0000 (UTC)
+Message-ID: <cffd5052-9314-424d-872c-07796feb7ce9@xs4all.nl>
+Date: Mon, 5 Feb 2024 10:56:13 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205042955.833752-1-apatel@ventanamicro.com> <d5e21238-89f4-444e-9c35-f4a28e01052e@ghiti.fr>
-In-Reply-To: <d5e21238-89f4-444e-9c35-f4a28e01052e@ghiti.fr>
-From: Anup Patel <apatel@ventanamicro.com>
-Date: Mon, 5 Feb 2024 15:25:59 +0530
-Message-ID: <CAK9=C2XEmFBDB6R5f+L9++7ojhWb8rJK-e-vgFrDmsi2=DMOBw@mail.gmail.com>
-Subject: Re: [PATCH] RISC-V: Don't use IPIs in flush_icache_all() when
- patching text
-To: Alexandre Ghiti <alex@ghiti.fr>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Anup Patel <anup@brainfault.org>, linux-kernel@vger.kernel.org, 
-	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Atish Patra <atishp@atishpatra.org>, linux-riscv@lists.infradead.org, 
-	Andrew Jones <ajones@ventanamicro.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] media: usb: hackrf: add null ptr check in hackrf_ctrl_msg
+Content-Language: en-US, nl
+To: Mingxuan Xiang <mx_xiang@hust.edu.cn>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Dongliang Mu <dzm91@hust.edu.cn>, linux-media@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240122112210.424698-1-mx_xiang@hust.edu.cn>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <20240122112210.424698-1-mx_xiang@hust.edu.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 5, 2024 at 11:52=E2=80=AFAM Alexandre Ghiti <alex@ghiti.fr> wro=
-te:
->
-> Hi Anup,
->
-> On 05/02/2024 05:29, Anup Patel wrote:
-> > If some of the HARTs are parked by stop machine then IPI-based
-> > flushing in flush_icache_all() will hang. This hang is observed
-> > when text patching is invoked by various debug and BPF features.
-> >
-> > To avoid this hang, we force use of SBI-based icache flushing
-> > when patching text.
-> >
-> > Fixes: 627922843235 ("RISC-V: Use IPIs for remote icache flush when pos=
-sible")
-> > Reported-by: Bjorn Topel <bjorn@kernel.org>
-> > Closes: https://gist.github.com/bjoto/04a580568378f3b5483af07cd9d22501
-> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> > ---
-> >   arch/riscv/include/asm/cacheflush.h | 7 ++++---
-> >   arch/riscv/kernel/hibernate.c       | 2 +-
-> >   arch/riscv/kernel/patch.c           | 4 ++--
-> >   arch/riscv/mm/cacheflush.c          | 7 ++++---
-> >   4 files changed, 11 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/arch/riscv/include/asm/cacheflush.h b/arch/riscv/include/a=
-sm/cacheflush.h
-> > index a129dac4521d..561e079f34af 100644
-> > --- a/arch/riscv/include/asm/cacheflush.h
-> > +++ b/arch/riscv/include/asm/cacheflush.h
-> > @@ -32,7 +32,8 @@ static inline void flush_dcache_page(struct page *pag=
-e)
-> >    * RISC-V doesn't have an instruction to flush parts of the instructi=
-on cache,
-> >    * so instead we just flush the whole thing.
-> >    */
-> > -#define flush_icache_range(start, end) flush_icache_all()
-> > +#define flush_icache_range(start, end) flush_icache_all(true)
-> > +#define flush_icache_patch_range(start, end) flush_icache_all(false)
-> >   #define flush_icache_user_page(vma, pg, addr, len) \
-> >       flush_icache_mm(vma->vm_mm, 0)
-> >
-> > @@ -43,12 +44,12 @@ static inline void flush_dcache_page(struct page *p=
-age)
-> >
-> >   #ifndef CONFIG_SMP
-> >
-> > -#define flush_icache_all() local_flush_icache_all()
-> > +#define flush_icache_all(want_ipi) local_flush_icache_all()
-> >   #define flush_icache_mm(mm, local) flush_icache_all()
-> >
-> >   #else /* CONFIG_SMP */
-> >
-> > -void flush_icache_all(void);
-> > +void flush_icache_all(bool want_ipi);
-> >   void flush_icache_mm(struct mm_struct *mm, bool local);
-> >
-> >   #endif /* CONFIG_SMP */
-> > diff --git a/arch/riscv/kernel/hibernate.c b/arch/riscv/kernel/hibernat=
-e.c
-> > index 671b686c0158..388f10e187ba 100644
-> > --- a/arch/riscv/kernel/hibernate.c
-> > +++ b/arch/riscv/kernel/hibernate.c
-> > @@ -153,7 +153,7 @@ int swsusp_arch_suspend(void)
-> >       } else {
-> >               suspend_restore_csrs(hibernate_cpu_context);
-> >               flush_tlb_all();
-> > -             flush_icache_all();
-> > +             flush_icache_all(true);
-> >
-> >               /*
-> >                * Tell the hibernation core that we've just restored the=
- memory.
-> > diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
-> > index 37e87fdcf6a0..721e144a7847 100644
-> > --- a/arch/riscv/kernel/patch.c
-> > +++ b/arch/riscv/kernel/patch.c
-> > @@ -182,7 +182,7 @@ int patch_text_set_nosync(void *addr, u8 c, size_t =
-len)
-> >       ret =3D patch_insn_set(tp, c, len);
-> >
-> >       if (!ret)
-> > -             flush_icache_range((uintptr_t)tp, (uintptr_t)tp + len);
-> > +             flush_icache_patch_range((uintptr_t)tp, (uintptr_t)tp + l=
-en);
-> >
-> >       return ret;
-> >   }
-> > @@ -217,7 +217,7 @@ int patch_text_nosync(void *addr, const void *insns=
-, size_t len)
-> >       ret =3D patch_insn_write(tp, insns, len);
-> >
-> >       if (!ret)
-> > -             flush_icache_range((uintptr_t) tp, (uintptr_t) tp + len);
-> > +             flush_icache_patch_range((uintptr_t) tp, (uintptr_t) tp +=
- len);
-> >
-> >       return ret;
-> >   }
-> > diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
-> > index 55a34f2020a8..03cd3d4831ef 100644
-> > --- a/arch/riscv/mm/cacheflush.c
-> > +++ b/arch/riscv/mm/cacheflush.c
-> > @@ -17,11 +17,12 @@ static void ipi_remote_fence_i(void *info)
-> >       return local_flush_icache_all();
-> >   }
-> >
-> > -void flush_icache_all(void)
-> > +void flush_icache_all(bool want_ipi)
-> >   {
-> >       local_flush_icache_all();
-> >
-> > -     if (IS_ENABLED(CONFIG_RISCV_SBI) && !riscv_use_ipi_for_rfence())
-> > +     if (IS_ENABLED(CONFIG_RISCV_SBI) &&
-> > +         (!want_ipi || !riscv_use_ipi_for_rfence()))
-> >               sbi_remote_fence_i(NULL);
-> >       else
-> >               on_each_cpu(ipi_remote_fence_i, NULL, 1);
-> > @@ -87,7 +88,7 @@ void flush_icache_pte(pte_t pte)
-> >       struct folio *folio =3D page_folio(pte_page(pte));
-> >
-> >       if (!test_bit(PG_dcache_clean, &folio->flags)) {
-> > -             flush_icache_all();
-> > +             flush_icache_all(true);
-> >               set_bit(PG_dcache_clean, &folio->flags);
-> >       }
-> >   }
->
->
-> Since patch_text_cb() is run on all cpus, couldn't we completely avoid
-> any remote icache flush by slightly changing patch_text_cb() instead as
-> follows?
+On 22/01/2024 12:22, Mingxuan Xiang wrote:
+> If the user yanks out the cable before closing the file,
+> dev->udev would be set to NULL therefore causing a null-ptr-deref
+> in hackrf_ctrl_msg issued by hackrf_stop_streaming.
+> 
+> This patch adds a check in hackrf_ctrl_msg before using
+> dev->udev.
+> 
+> Found by modified syzkaller.
+> 
+> BUG: KASAN: null-ptr-deref in hackrf_ctrl_msg+0x6d/0x180 drivers/media/usb/hackrf/hackrf.c:195
+> Read of size 4 at addr 0000000000000000 by task syz-executor/579
+> Call Trace:
+>  <TASK>
+>  __dump_stack lib/dump_stack.c:88 [inline]
+>  dump_stack_lvl+0x5e/0x7c lib/dump_stack.c:106
+>  print_report.cold+0x49a/0x6bb mm/kasan/report.c:436
+>  kasan_report+0xa8/0x130 mm/kasan/report.c:495
+>  hackrf_ctrl_msg+0x6d/0x180 drivers/media/usb/hackrf/hackrf.c:195
+>  hackrf_stop_streaming+0x45/0x140 drivers/media/usb/hackrf/hackrf.c:869
+>  __vb2_queue_cancel+0x5c/0x550 drivers/media/common/videobuf2/videobuf2-core.c:1992
+>  vb2_core_streamoff+0x2f/0xb0 drivers/media/common/videobuf2/videobuf2-core.c:2149
+>  __vb2_cleanup_fileio+0x3e/0xa0 drivers/media/common/videobuf2/videobuf2-core.c:2710
+>  vb2_core_queue_release+0x1a/0x50 drivers/media/common/videobuf2/videobuf2-core.c:2430
+>  vb2_queue_release drivers/media/common/videobuf2/videobuf2-v4l2.c:947 [inline]
+>  _vb2_fop_release+0x110/0x140 drivers/media/common/videobuf2/videobuf2-v4l2.c:1132
+>  v4l2_release+0x1b9/0x1e0 drivers/media/v4l2-core/v4l2-dev.c:459
+>  __fput+0x12d/0x4b0 fs/file_table.c:320
+>  task_work_run+0xa8/0xf0 kernel/task_work.c:177
+>  resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:169 [inline]
+>  exit_to_user_mode_prepare+0x123/0x130 kernel/entry/common.c:201
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:283 [inline]
+>  syscall_exit_to_user_mode+0x22/0x50 kernel/entry/common.c:294
+>  do_syscall_64+0x48/0x90 arch/x86/entry/common.c:86
+>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+> Signed-off-by: Mingxuan Xiang <mx_xiang@hust.edu.cn>
+> ---
+>  drivers/media/usb/hackrf/hackrf.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/media/usb/hackrf/hackrf.c b/drivers/media/usb/hackrf/hackrf.c
+> index 9c0ecd5f056c..9588b8aa6e98 100644
+> --- a/drivers/media/usb/hackrf/hackrf.c
+> +++ b/drivers/media/usb/hackrf/hackrf.c
+> @@ -186,6 +186,11 @@ static int hackrf_ctrl_msg(struct hackrf_dev *dev, u8 request, u16 value,
+>  	unsigned int pipe;
+>  	u8 requesttype;
+>  
+> +	if (!dev->udev) {
+> +		pr_err("udev is null in %s\n", __func__);
+> +		ret = -EINVAL;
+> +		goto err;
+> +	}
 
-Unfortunately patch_text_cb() is not the only user of patch_text_nosync
-since patch_text_nosync() and patch_text_set_nosync() are called directly
-from other places as well.
+Just replace this with:
 
-We have to update all users of patch_text_nosync() and
-patch_text_set_nosync() to move to local icache flushes which
-is a much bigger change.
+	if (!dev->udev)
+		return -ENODEV;
+
+-ENODEV is the correct error code for this situation, and the error
+message is overkill here, I think.
 
 Regards,
-Anup
 
->
-> diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
-> index 37e87fdcf6a0..075c376ed528 100644
-> --- a/arch/riscv/kernel/patch.c
-> +++ b/arch/riscv/kernel/patch.c
-> @@ -232,8 +232,8 @@ static int patch_text_cb(void *data)
->          if (atomic_inc_return(&patch->cpu_count) =3D=3D num_online_cpus(=
-)) {
->                  for (i =3D 0; ret =3D=3D 0 && i < patch->ninsns; i++) {
->                          len =3D GET_INSN_LENGTH(patch->insns[i]);
-> -                       ret =3D patch_text_nosync(patch->addr + i * len,
-> - &patch->insns[i], len);
-> +                       ret =3D patch_insn_write((u32 *)(patch->addr + i =
-*
-> len),
-> + &patch->insns[i], len);
->                  }
->                  atomic_inc(&patch->cpu_count);
->          } else {
-> @@ -242,6 +242,8 @@ static int patch_text_cb(void *data)
->                  smp_mb();
->          }
->
-> +       local_flush_icache_all();
-> +
->          return ret;
->   }
->   NOKPROBE_SYMBOL(patch_text_cb);
->
->
->
+	Hans
+
+>  	switch (request) {
+>  	case CMD_SET_TRANSCEIVER_MODE:
+>  	case CMD_SET_FREQ:
+
 
