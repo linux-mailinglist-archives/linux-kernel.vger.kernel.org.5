@@ -1,147 +1,129 @@
-Return-Path: <linux-kernel+bounces-53057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B823A84A028
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2678784A02A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:03:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BA8D1F228CF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:02:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B92FE1F229CA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:03:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60D243FE5B;
-	Mon,  5 Feb 2024 17:02:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 405F63FB14;
+	Mon,  5 Feb 2024 17:02:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="U1n8Sn5W"
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="RP60L+uD"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A4E93FB34
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 17:02:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B98344C65;
+	Mon,  5 Feb 2024 17:02:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707152547; cv=none; b=BdaPeh7Vy5ZO77sX1CAomp+Lt08z6/TfIFG3/PPUYAP9hcPgOFy4/4dDTIcwaY4r5TydReDQ8IFwjlW2WdcfCPNbQMt26XJiduOsS+7NfpRQma5Cc78RAtpVsCrxNjBpGcwCWSmBlCbGtZ87FT2oLxMlDeFiPuxwFx5XTSKhDzw=
+	t=1707152576; cv=none; b=F0nhvLDjZAdALJCnJ2z5TxA832EuFWTLv+63Yyxw/JmZ/SQ0d4jCxUjyEloBs1UD4rmE1y+haV7nOlT+PE53U2p38OsZKQZ/G9jd0GccIpuIi+cCxJ1vPbSpIfIfle1pTXaW1D04nayn6myRIPfJGwBlxJjaXFeOjKJwWjHn63Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707152547; c=relaxed/simple;
-	bh=f0zMY5eWde1DrhOGVKSV6wLNgNyHnBPeDoFVdLhpxxs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HF8F6KNjWG3Ua70mCFOKBipF4dLHs+MgLAuMSFwCqAnAY+jePQD2Jypdf67Wy6X9fnxQfUMULMGZ9f6rxpxFAQXrWSyqox6RFwWqsfIlflRKe8az10oBonaG0lAP1d3R0sQjZs383+9/vIx8WqiOFWXFED9HZoS8RTLeJyRjNQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=U1n8Sn5W; arc=none smtp.client-ip=209.85.160.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-42a9f4935a6so43693191cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 09:02:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707152544; x=1707757344; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nZ5yVc2GM1gajAlCrM1xr5CA/oF06LanPERbQMooNvo=;
-        b=U1n8Sn5WOBMuiDn/IRypCgHEaoFUaJLjdJsfKPUmikfqlHEerEv4yaDvyyAkNAeU4Q
-         tWWaxFmKoRsoykgs11B2QNptc/+acoaHXUiE9y9APokx9H6l9GOsS5y6RKFX7yzMyST/
-         QqvVml/suWTuMWucWtEEvzh+9Zj4fd8SjfiTc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707152544; x=1707757344;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nZ5yVc2GM1gajAlCrM1xr5CA/oF06LanPERbQMooNvo=;
-        b=T8XXUIRkT1q9nRgsIKroMXSG0hbdMrYwVkFWRVJ6rAkN/tIPBn47cczbRmkbP5fCYt
-         3YfHHTnB+KYKGlu2ANvM0W3OI8Ic1NyCDO+APAVr2cppLa3hEzwshvcgq7IaDPFdDEsu
-         +RyXBreR767e1E5Ghgq++jSFSKl0Q95D27cX93QX5a6eP3TkF76OlHctg1HzJMcf61kh
-         8mCjS/NZPzKImy2oH2dUKWs9dkjwMBxvmnfTdpolxfrNhrZJqS622VGhFz8rOISWRTAG
-         0S1Q5dnsM5Vyenb3jMj43RHEq2DpwCriiuMV9O8mIiZ2Z+e/YhZNS1lkeqwMSq0rnI/C
-         SR1A==
-X-Gm-Message-State: AOJu0YwKGvE9ZTyPwLqirYtQZDW+ox8v/LgyM0kFcgqCCOrmi3D5WAjW
-	IBeaYol60UlJ6/Meqs5dPjr/B8NEDG8ehphOVyP6hUJtf9dwA4DcGZVg0WoC1zvEPswom+EgYTz
-	sFw==
-X-Google-Smtp-Source: AGHT+IFekeqshuWNPS80Dgf4YgmoVRUzDAZz46iQW9FfvvmfdLRJGJdPqg5O8T056pgpwyP+7EZmBQ==
-X-Received: by 2002:ac8:4587:0:b0:42c:c80:1576 with SMTP id l7-20020ac84587000000b0042c0c801576mr438452qtn.20.1707152544570;
-        Mon, 05 Feb 2024 09:02:24 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWEgxaUZ5znw+gPVgI8Md86dexI0uhuPBbfOPQax75nsy6hpWpwtO2nluHye9z/cO/8jrOfNCwO5YVq4T1Ow0okfT1u8DTwptCcaPjP
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com. [209.85.160.170])
-        by smtp.gmail.com with ESMTPSA id ka23-20020a05622a441700b0042c21d31b86sm109120qtb.87.2024.02.05.09.02.23
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Feb 2024 09:02:23 -0800 (PST)
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-42a99dc9085so6001cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 09:02:23 -0800 (PST)
-X-Received: by 2002:ac8:42cf:0:b0:42b:f0eb:b3c with SMTP id
- g15-20020ac842cf000000b0042bf0eb0b3cmr2344qtm.28.1707152543367; Mon, 05 Feb
- 2024 09:02:23 -0800 (PST)
+	s=arc-20240116; t=1707152576; c=relaxed/simple;
+	bh=FEtoZVTwX+PACWbp6Frj5Ro7fkXR231I/T5/PExLQM4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Tv0l0Ee6jqku52sQoaTP5QN3EAFIpgUrDfqHOEflkBbnCiy0RbtkbcoSrMmJNwobeJeRiZWDt2rUkKxgj+GdJGxKBqn6Ex/Hyn5SIdRlK5x8vH3hy0iYTOCb9GB5mZDr/kuqquXjqccsEjOmY5xm7aey78IOmkt2MQIlbW9R+oM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=RP60L+uD; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1707152552; x=1707757352; i=w_armin@gmx.de;
+	bh=FEtoZVTwX+PACWbp6Frj5Ro7fkXR231I/T5/PExLQM4=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=RP60L+uDb/uLFnb+Y5loiofiyIVl4L9DX2f59HvRPMR/IBFHo+0ESMvwsLEUr0yn
+	 +FP9WHF2m2f/gKW7DHI5T2okY8Grv/ti2BGu+aVlJ6bWkSZU63S9NmDHGcS2ZG0ze
+	 hdsmtdXm79jyhdjebbwddNIdH070nCdgvwNElMHDk6cnfv/ejvPkF/qo1ypD5tXwD
+	 ffkvTDigutlP44lhUnwp8inXky8Nzx1MPBVKz7wgmPZJhbr5IgFWwlwwTRVUnf9ng
+	 zDV11q46UXPmXyYlk0NyK00za0pKzRb/raQK4ehimJEssKZ1GhY8v6/hSoTPqovUG
+	 c/usbIX5woNgnLW02w==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.0.14] ([141.30.226.119]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MOA3F-1rLpAn1jdx-00OXUk; Mon, 05
+ Feb 2024 18:02:32 +0100
+Message-ID: <93e93056-d75c-4b12-a161-1e410f3ac354@gmx.de>
+Date: Mon, 5 Feb 2024 18:02:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240203-arm64-sve-ptrace-regset-size-v1-1-2c3ba1386b9e@kernel.org>
-In-Reply-To: <20240203-arm64-sve-ptrace-regset-size-v1-1-2c3ba1386b9e@kernel.org>
-From: Doug Anderson <dianders@chromium.org>
-Date: Mon, 5 Feb 2024 09:02:08 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=XupbtO3_+P9=XO26vH_5nALSSLZZHZywPSR_hQsWxM0Q@mail.gmail.com>
-Message-ID: <CAD=FV=XupbtO3_+P9=XO26vH_5nALSSLZZHZywPSR_hQsWxM0Q@mail.gmail.com>
-Subject: Re: [PATCH] arm64/sve: Lower the maximum allocation for the SVE
- ptrace regset
-To: Mark Brown <broonie@kernel.org>
-Cc: Will Deacon <will@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Dave Martin <Dave.Martin@arm.com>, Oleg Nesterov <oleg@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] platform: x86: wmi: make wmi_bus_type const
+To: "Ricardo B. Marliere" <ricardo@marliere.net>,
+ Hans de Goede <hdegoede@redhat.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20240204-bus_cleanup-platform-drivers-x86-v1-0-1f0839b385c6@marliere.net>
+ <20240204-bus_cleanup-platform-drivers-x86-v1-1-1f0839b385c6@marliere.net>
+Content-Language: en-US
+From: Armin Wolf <W_Armin@gmx.de>
+In-Reply-To: <20240204-bus_cleanup-platform-drivers-x86-v1-1-1f0839b385c6@marliere.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:+cVT64lPoE6dBRMF4R5MerrSeiV7gtTVXbm09zwG/JeVBwFSFsy
+ mvq8CEHN1GKP5ce3Ye5cjU3pLwtgqHPTJ4rsEe3O5Z4wxP6RJxq+Xj3Edi6evo8ggThkNQ9
+ 4G3Srd67mIsIEO93HhLkwRF5r7+kAojEfyzcW7GMhO05mS//1Wp0LesWoR4/Btd3kM4T6dW
+ Wr2J2cf4xA2/X2mmKhPRA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:MHFPugB5Jnk=;4B6ZCoPeD6lAfMKPv8cmx6wcsjC
+ DwisChEkJqRmA+9kKH5GgptfOFNnSrFgl0Y9t6rMpr9YM9ezS3lKg81y43FrKYEEnWZDTuL2w
+ H5G7jvsqQ/zvh2t/17dJsQPKGG8FYL4B7NUVNvuJBHQ1XadtcnueCKdmcTsLzQOTUrJSg55FV
+ Lu6ou38z99i4uRfqOcQQZpD4i/DKLsgAeU6PVB5gwqiPh6D+PlUDZxJOzxKljT2tl7tiBYDPx
+ SREM/+Luv+JIFZ7cdxnFyCMSDUUwcLdIaHtd4eXFCtJ6oiD6rQ3iBKuIxaKEMGHaP7htr09NI
+ 4mHLK5DheCGBw+t+8j/dAAC29jYfjkaBe4VN2xljFItadYM3YjeCfboYR43rdmf3fez0uYkSO
+ 7RIQNfX37eBcdzCYOYC9wkqrlMXssqimbO4HNucxHfKw3ICjkK/XLHxiKkVlJXmi+8cR0ehep
+ i29ph+0nXYPmNEdw5QcE5GG/KHYDzQ8wlWp6pYMn+b48lrkPtGy852L6gNbSbA09G8sJUddXs
+ iLaXBJgcjNnKhEgCyaTNstLQGIdl6Psc/LsSaKXPKWDTyyQBYxvaBLxeQX5FeGa6fO/dHQuaB
+ Kik8RnRDUN/VFHd77YT5W08N7n9LASbry3A3mPZep1MVK4eWmdB8ApnztKqhPSyEpxJV/MYpV
+ mXAfjWKrz60eUoh0608dTbZQa0HLW9xqZ2RxluQlrWf+UGTxN8h32RiQJPC5IOn4HLxF0QcEA
+ dEOcWE64+iXo10fmB+Vi1L5TtuPl4rgvCp4viPedrBxmsaqr95eilGFRjNSPAIiuDlTfsiX2r
+ Io8t//ao1SzV5JO/d5j4gRgF+JEGUGOd1xVYWJAGecMyI=
 
-Hi,
+Am 04.02.24 um 15:40 schrieb Ricardo B. Marliere:
 
-On Sat, Feb 3, 2024 at 4:18=E2=80=AFAM Mark Brown <broonie@kernel.org> wrot=
-e:
+> Now that the driver core can properly handle constant struct bus_type,
+> move the wmi_bus_type variable to be a constant structure as well,
+> placing it into read-only memory which can not be modified at runtime.
 >
-> Doug Anderson observed that ChromeOS crashes are being reported which
-> include failing allocations of order 7 during core dumps due to ptrace
-> allocating storage for regsets:
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> ---
+>   drivers/platform/x86/wmi.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 >
->   chrome: page allocation failure: order:7,
->           mode:0x40dc0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO),
->           nodemask=3D(null),cpuset=3Durgent,mems_allowed=3D0
->    ...
->   regset_get_alloc+0x1c/0x28
->   elf_core_dump+0x3d8/0xd8c
->   do_coredump+0xeb8/0x1378
+> diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
+> index 7ef1e82dc61c..859dfff515d0 100644
+> --- a/drivers/platform/x86/wmi.c
+> +++ b/drivers/platform/x86/wmi.c
+> @@ -219,7 +219,7 @@ static int wmidev_match_guid(struct device *dev, con=
+st void *data)
+>   	return 0;
+>   }
 >
-> with further investigation showing that this is:
+> -static struct bus_type wmi_bus_type;
+> +static const struct bus_type wmi_bus_type;
 >
->    [   66.957385] DOUG: Allocating 279584 bytes
+>   static struct wmi_device *wmi_find_device_by_guid(const char *guid_str=
+ing)
+>   {
+> @@ -899,7 +899,7 @@ static struct class wmi_bus_class =3D {
+>   	.name =3D "wmi_bus",
+>   };
 >
-> which is the maximum size of the SVE regset. As Doug observes it is not
-> entirely surprising that such a large allocation of contiguous memory mig=
-ht
-> fail on a long running system.
+> -static struct bus_type wmi_bus_type =3D {
+> +static const struct bus_type wmi_bus_type =3D {
+>   	.name =3D "wmi",
+>   	.dev_groups =3D wmi_groups,
+>   	.match =3D wmi_dev_match,
 >
-> The SVE regset is currently sized to hold SVE registers with a VQ of
-> SVE_VQ_MAX which is 512, substantially more than the architectural maximu=
-m
-> of 16 which we might see even in a system emulating the limits of the
-> architecture. Since we don't expose the size we tell the regset core
-> externally let's define ARCH_SVE_VQ_MAX with the actual architectural
-> maximum and use that for the regset, we'll still overallocate most of the
-> time but much less so which will be helpful even if the core is fixed to
-> not require contiguous allocations.
->
-> We could also teach the ptrace core about runtime discoverable regset siz=
-es
-> but that would be a more invasive change and this is being observed in
-> practical systems.
->
-> Reported-by: Doug Anderson <dianders@chromium.org>
-> Signed-off-by: Mark Brown <broonie@kernel.org>
+Reviewed-by: Armin Wolf <W_Armin@gmx.de>
 
-Confirmed that when I send a "quit" signal to Chrome now that the
-allocation I see for "core_note_type" NT_ARM_SVE goes down from
-279,584 bytes (n=3D17474) to just 8,768 bytes (n=3D548). I'm not
-intimately familiar with this code so I'll skip the Reviewed-by unless
-someone thinks it would be valuable for me to analyze more. I think
-there are already plenty of people who know this well, so for now,
-just:
-
-Tested-by: Douglas Anderson <dianders@chromium.org>
 
