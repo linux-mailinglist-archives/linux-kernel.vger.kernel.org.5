@@ -1,105 +1,85 @@
-Return-Path: <linux-kernel+bounces-52053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29350849379
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 06:41:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3603E84937D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 06:43:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD0BC1F21146
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 05:41:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4851D1C22684
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 05:43:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D3E2BE47;
-	Mon,  5 Feb 2024 05:41:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="saBm3e9u"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E76B5BE6D;
+	Mon,  5 Feb 2024 05:43:08 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FE04BA28
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 05:41:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21A06BE48
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 05:43:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707111666; cv=none; b=BOPd4m/dCp97F8n2zyo2NBNVUzOh2MLGh3szWg6kbDFBLs8U3kJGPPlZEdOybgEPdduFaQoPEh6bEZvEozNyUhrfatryXTCnonUeAgZooz3cl/X5zeVOnjtAZXDVvEJhr/PidtrbgJjMxjUFmr65vNbR+dBD6r1gVRZOkcIfS9Y=
+	t=1707111788; cv=none; b=IvlOYQr226R6zcZ1XFeSSIAPYCkRwul607It7iGrm0kyiMIyUK8ONl/tf/E/NdX1/24u3QrGQ4WWrtPSzz81uWoFnj3UbjQvj5oZBBZeYZ1rw5zZE2SXOTm7nVqR+ZMg9TPB6+vohAQSCGwGdfvwuOy0NHp2sYqoVWJrZru7yAw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707111666; c=relaxed/simple;
-	bh=GtIQt3HoLx2kqnhCVHhJstG+Wvwf1XNCGTYHKYPnQO0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QXa+uAjj1y3NPdluYRnCnVFZDQ9ul904Ehpm7QJruzOkimBTSPSswVG4HiMOqW4nBy6ekUbvUSE30pFQnPt19hO9RdiB6ahnm3LLI6/pjYa406Nu3hQFUMfzsyoJ5CLRzTGLxK9lfNYq2mLP45vqzOyTzBXgbnm0BexlDYA36Ws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=saBm3e9u; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=rtk1/1Oqfan3c3AyvrsnNRZo+2UCl3bzkD+9KBjYrMc=; b=saBm3e9u4HqxkJQ7SSjNaKcPn1
-	bqQmT3CM2JwC7i/jn13A2Vn3tp+e42Em/Q2Q3k3idLpMXDyliuBPDg7sXHrChu7vtJgORRuWAN5jC
-	RgiTy5WNjA62ZRCx4qyLTLCCZuSaCqfN015r5wMxnDbDBqgyIPxUWy0E3HWW5ADv2kyOpGxtJMphD
-	GceDoNbACxn11c8W1CUH2rMhTbGl3/W958nLQdcElp8INVfTY1dGYSjWxy9qUKSwHEikRGdEd3yId
-	tpP0YfuIU3vnCxvve24e5j3wL6EjM36c3G3tc2MOjtL9MG3ujNLV8zdNUUx4I4tFtVnzSqAu7ZqCV
-	Nm8L0TQw==;
-Received: from [50.53.50.0] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rWrj3-000000025xu-2ggJ;
-	Mon, 05 Feb 2024 05:41:01 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	dri-devel@lists.freedesktop.org,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Simon Ser <contact@emersion.fr>
-Subject: [PATCH v2] drm/rect: fix kernel-doc typos
-Date: Sun,  4 Feb 2024 21:41:01 -0800
-Message-ID: <20240205054101.27929-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1707111788; c=relaxed/simple;
+	bh=TnyLyi4pbcqB159OUCIuZkkSeOzEbp2i9ZTbIItGexE=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=pHICMP0PQ6+Ch5XHkOfvSEa/KyJTQ3IJHReBxqKSKzudjV5WE6I6CKhP+Vf2Wk6dkZuFCNYM5pN0KfBywHmiNXPXIqEiKYoaoZDDveXCean4nOzuxM3LtGMeDzCKlrsyehOeuYPFTezuerQDUGro/DOCw/LiNOhXgNuRnv1b4jA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7bef5e512b6so453648039f.2
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 21:43:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707111786; x=1707716586;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XMJipuFtPGBp3RtGk+kS7GLbd5R6tnIoeFJwWcU4ALI=;
+        b=kdLAd7qRWH3zmR+cBWRbNWtRDjMrmXUvDn28UMSDmnC3F+islKpECy4nU05i9u2LeQ
+         wwb863L9cTFYggY7XdqHJxPH9kd6iL4V0CpKlO7JUJjrIS6ATu4dO5vrYCVab1tHmSEz
+         cz+zcEkgedKNbVi0HVd0LHLFdzZ6e+soaKrFvr0GfWyIxUiTAU9BySPAtK8mTg24FGif
+         FrYbk84QoozD1rlwtrRvlIG895W+Vo1TIKFf3chzxVK7AoF+WqxUehvAIwNxhH/JmVHY
+         fUERZsHtNBV/irqA+Tc6p2p91KCWvB6bSuU/zUwDNggZ7l+fts3+LTt+qLWrg5YJcwjw
+         cwqA==
+X-Gm-Message-State: AOJu0YyUW6IKTAhqTZBLPsmZdfxw1FKBQOcPjmrc14Zmxym/DaseJy45
+	MdlJ9B0dK1Cpsql6u8KwuY+nYdrY2x5gpGYNr1MyZRrxtVIA7dkVDtT3X8CPJC277znKat5TE+c
+	pJ5CSsTdvwXYwLz2GCAsq/qAEDk+23kXTbVkBnzDmZXo2AP9vS3E8clg=
+X-Google-Smtp-Source: AGHT+IEp72kAU94xWECWZ/YwiCu07/K9IYp2W5bcr9jghe/WTDNEYnXhrI9FV+HH++lSa8G9IlUeKwW/an0fl+RgchF+rYV6DsCh
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:4a42:b0:471:266c:6960 with SMTP id
+ da2-20020a0566384a4200b00471266c6960mr62202jab.2.1707111786300; Sun, 04 Feb
+ 2024 21:43:06 -0800 (PST)
+Date: Sun, 04 Feb 2024 21:43:06 -0800
+In-Reply-To: <20240205050144.652-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009d4ac806109bef95@google.com>
+Subject: Re: [syzbot] [afs?] [net?] INFO: task hung in rxrpc_release (3)
+From: syzbot <syzbot+6b1634ec78e55df41793@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Correct typos of "translated".
+Hello,
 
-Cc: David Airlie <airlied@gmail.com>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: dri-devel@lists.freedesktop.org
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
-Reviewed-by: Simon Ser <contact@emersion.fr>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
----
-v2: add Reviewed-by, rebase
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
- include/drm/drm_rect.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Reported-and-tested-by: syzbot+6b1634ec78e55df41793@syzkaller.appspotmail.com
 
-diff -- a/include/drm/drm_rect.h b/include/drm/drm_rect.h
---- a/include/drm/drm_rect.h
-+++ b/include/drm/drm_rect.h
-@@ -129,7 +129,7 @@ static inline void drm_rect_adjust_size(
- 
- /**
-  * drm_rect_translate - translate the rectangle
-- * @r: rectangle to be tranlated
-+ * @r: rectangle to be translated
-  * @dx: horizontal translation
-  * @dy: vertical translation
-  *
-@@ -146,7 +146,7 @@ static inline void drm_rect_translate(st
- 
- /**
-  * drm_rect_translate_to - translate the rectangle to an absolute position
-- * @r: rectangle to be tranlated
-+ * @r: rectangle to be translated
-  * @x: horizontal position
-  * @y: vertical position
-  *
+Tested on:
+
+commit:         076d56d7 Add linux-next specific files for 20240202
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=10e49540180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=428086ff1c010d9f
+dashboard link: https://syzkaller.appspot.com/bug?extid=6b1634ec78e55df41793
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=15c2f9b7e80000
+
+Note: testing is done by a robot and is best-effort only.
 
