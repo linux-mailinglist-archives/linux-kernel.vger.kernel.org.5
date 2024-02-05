@@ -1,161 +1,211 @@
-Return-Path: <linux-kernel+bounces-54010-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54012-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8037D84A919
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:21:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D251D84A922
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:22:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04BC81F2BF9D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:21:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 031AC1C27CAF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:22:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DD371AB80D;
-	Mon,  5 Feb 2024 22:13:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C5E31AB808;
+	Mon,  5 Feb 2024 22:18:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="HGdW1sy9"
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="V8iRoTdT"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE2DD1DA37
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 22:13:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A90454BAA4
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 22:18:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707171202; cv=none; b=sPZ3rnkcK0AbJfUP9jGKszfPu3wXRB8tpETac6j8nUv1vCmsE/hS07tpjrHUcuTDDOwRmn2Q/YyjEV//kkHJLnQIJLIZXsup+yKFBzkb2TRJbRrTEdkYGo8D287AhzTXFkxnMavOwCkaiYRmJ9t45LFsCSrGPLQy2rcPlLcwRf4=
+	t=1707171484; cv=none; b=iAdfzkVNPwdqualPm+H6kBZe6bGoIpvQxdjBdaCNC+zqoDL8ugqHHn4jbi0u6JLIh/KZn/CR52jw83PwEmQ1Q762gkvy2qnMyA5/ncUjUd1vEVGnJT7XTdOiAL2kt4CAgOVsdidWtUqAQi+quMvAWidZdewCIEZN2NeahGOvxWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707171202; c=relaxed/simple;
-	bh=jdd1RTnsCbK9CBh+Tor3vhucPu9sttBLgqAG8qJCD9Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=AoJbpjDuZCZyQgV7YHEUdDvlGGj+oMKdDhX8e/LUt1wxBCoc6/1yX65ZbZvRAFZZdMY9LeaLxzx1ZSp9GNzb0U44/Fob6+m1wzOO7LbrRJ/6Gg3s9LbH4sV3QfkN0kyGnioaon65mXRwzBIPU4qXRY9OFvDQ3rN7vGfvexU/K3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HGdW1sy9; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-60406f4e1d0so42996117b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 14:13:20 -0800 (PST)
+	s=arc-20240116; t=1707171484; c=relaxed/simple;
+	bh=WFirQiv/bif0ORcBDskVBLI31abXA7X4de7fsW5AqyE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jnZu14kVQH/eBKd4AIgN5kCk87ti+0ZoDxoatY4aoqolpPWi0a1MAWy2IYTjyj/HHt/8RKOermrvoj85o9Glbf/2UdaACNEdKOyIqrFI4H16G0HHWNWkeEJBKt3ykJUr2SCkLut9lTgRE02+s4qtMs7LiBe+ApFiwJuL9QBc0xw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=V8iRoTdT; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d7881b1843so43923505ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 14:18:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707171200; x=1707776000; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l+wc7Sgfr0FX1NUK9lSF8NbngE4sfyd8aYAoXi3MmuY=;
-        b=HGdW1sy94car4fYnXdy3DYt9kTJQqZkFGoDoomMrHTRezfSkMgDOHSIdZZ8+swYV/X
-         uIKTZbzQ9fmiIZykn1fqK2RG5RSRizuNd+vtq5UHWE9GPo7WtWERAWu9qMHputgvVvaF
-         5Ea3pUJYbH0/QrQ8CUF9eB/CWfihWBEsfeQsMomvPrExQ3XqKAqqdauEjmzA3b9HsBFa
-         WerCYgEMTK6smljgIS4dZ4racsB2Past1PVXeWunWwIpyAxdqPxD83A06MXGkH3HHb47
-         CinGTW4xKU93oOkmRUM+R0uX0WYeYW2PbYE86ILcP9IITl3DwH/BuAANWbhjccSF4spN
-         InBA==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1707171482; x=1707776282; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RQ2KX6PtmVgxF5myahHQmzeyx34uFsn54JKIPJOPSpQ=;
+        b=V8iRoTdTMUO1v76w5YIHp3hWgXPOLsK29pk1c4BMkXiQN2bAdsfgsmtkbQR+mZokXx
+         9dcy48l0wmpecdAfa1JPnGt2sdOdbXDnTK/GLxyxor/G3HYrVcbPJF2L43Yn5Cbqw6sq
+         FC6VEqFOvOdkZmaZksrEUlNrnULcqL/lBxRSmqKD9nqc1+xcDyeaAJ0OKV3qvC+Y/kyb
+         O208mg75XQFaQMJd4QzqSSHptgcy6O0CmZo1zHo1OErnm667MCTzHno2yUcGHxNF3Owi
+         MNsOySirEtorWUMCv3ccYgKy9IUfHuZqJdJCuPCBFy45jeFL2OiE8D1Lfcf84t7eDrnq
+         CgqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707171200; x=1707776000;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l+wc7Sgfr0FX1NUK9lSF8NbngE4sfyd8aYAoXi3MmuY=;
-        b=BbvnPNy6SoJRcql5OjFcF/0r6mF/TJibIF0dgi5+A0a+crRWqBc62iTD66lHfreSyt
-         su6qKcavz1X5CT8X36syGsyasKPQQptsdRla3MUAgOu2qfVybn81y+trcKVXRYrCe8Gp
-         ymGNdbjVO7z09m9t2smFYgc27xk8GRYNtqTmkTBSesowmiikZT6guhSKM/xVWZ40BWXM
-         Sv3NDAdsVsXIDHzag1F1WrlYsGR6oYs74dse4ntdsD2HpgWLpGaEaNEYxrKxdoT1KiXH
-         +eCSP/p8s16uUX3NnFGD16hia035if0t240UVnJHb4a4BgCw3x+iKHgTz2Z68yDJt24S
-         UsUw==
-X-Gm-Message-State: AOJu0YyUjghIJDQwqWPbQfoT3WyqXnKcJ3hAZ1o0Q1vfLw3zK+pyPGWn
-	Q2XuipXg1wLeJ6SvRYf1CIN0f8X8IPq/l+QQ8C2TTSOulhnTo06ls8nOH/5/+KxK4EYuqI4aY2h
-	dUeSmvZI4flT8WQQWNwZObH3DUv3E4KSGUV/o
-X-Google-Smtp-Source: AGHT+IE3Q8rQ7p44qPRhpPecrcgKN57uf9gFqW1Q2sgeAXqYfYu/n/QNxOLHPNun1c2+nnvHUGp3OOQurFj1SVrbBZ0=
-X-Received: by 2002:a81:b715:0:b0:604:ea3:6525 with SMTP id
- v21-20020a81b715000000b006040ea36525mr1064920ywh.0.1707171199364; Mon, 05 Feb
- 2024 14:13:19 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707171482; x=1707776282;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RQ2KX6PtmVgxF5myahHQmzeyx34uFsn54JKIPJOPSpQ=;
+        b=guIybanCJIlNjk06QZXCe+n4h6uwsmhygXsgSNAdwJSsTDXRXVN0p4zLAUxfYjKwcK
+         W0CZJvH2eQeVNzN8/9CfJgulzYADeWxhS9tWtlbxflJxEc5Oaf59ivEIA59pRFaDMoSk
+         eocUODzPTFJrknROkGY7spGmHYK5KDem3SlAxOOHXcIZnV4k1AWxrVuWVHMVdUOoJKU9
+         o4VXX6815NA8pTPQHnGFr+p2YjaFKc9+CZ4/s0ppR3u6oSkCDhuJjrAcCPuPT7c8QK1b
+         8L3acOwwQ+jec+X5712C7yxxsSz+lhiHTqgg9GnGzmDMufa70coUlknvZnXfJHkA0kUD
+         GiCQ==
+X-Gm-Message-State: AOJu0YzapJ1P2DMHV9KNFYerlU/C/r3Za2eFRUXuuKPP8YaAmmr05Usa
+	W2iioiHgmLyoP6w62MNL675rWapMP1iWrNELM8/m8LY0+Ubl+FxQaDCy7UhKWI0=
+X-Google-Smtp-Source: AGHT+IGukEyR/oTSk6uDnfCM3DsGByrIPzirka2urPJDZhACgRtMbr5HUrwSDj+XoBjd9qAvrwVMBA==
+X-Received: by 2002:a17:902:ac88:b0:1d7:428f:50fd with SMTP id h8-20020a170902ac8800b001d7428f50fdmr906434plr.31.1707171482093;
+        Mon, 05 Feb 2024 14:18:02 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCU821uwUmfcCx4HStlzYkKkb4zVsnGy/9OCw3fqzMV3pdkmOcH6fejWbcoRuKEJA9x6kHl3OVFRo10vz1oQ8DrabMiV/k2fsF6ZrY3ertY6MX0BBQmKfYZJY1XVKj1F06TdPsTKwO16gabTa8v6wD9gV1799mlzzg0pEGyAltTMq3TX3ohmHxgHVwsTNBSO05Wq5T9BN/+cIjJi4XBn5lOcVfcxrafPv1hl4w9DaMRmdAnuSH7sL8Du1Sq4Nf5aq+I7fABRffRs+Bsj/LLKtv6YnTvg0hqMfeV8565M+4VOdEsP4fY3e97vf2QFc6FNoigP94GZrQs3hjEKCLWIodngZwfwUbcTL9zyaOcZ/dDkWLPn126gMdV+
+Received: from dread.disaster.area (pa49-181-38-249.pa.nsw.optusnet.com.au. [49.181.38.249])
+        by smtp.gmail.com with ESMTPSA id r17-20020a170903015100b001d92f2129dasm369262plc.233.2024.02.05.14.18.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 14:18:01 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rX7Hq-002Z3q-0O;
+	Tue, 06 Feb 2024 09:17:58 +1100
+Date: Tue, 6 Feb 2024 09:17:58 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, Christian Brauner <brauner@kernel.org>,
+	Jan Kara <jack@suse.cz>, Dave Chinner <dchinner@redhat.com>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Theodore Ts'o <tytso@mit.edu>, linux-fsdevel@vger.kernel.or
+Subject: Re: [PATCH 2/6] fs: FS_IOC_GETUUID
+Message-ID: <ZcFelmKPb374aebH@dread.disaster.area>
+References: <20240205200529.546646-1-kent.overstreet@linux.dev>
+ <20240205200529.546646-3-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CABi2SkXOX4SRMs0y8FYccoj+XrEiPCJk2seqT+sgO7Na7NWwLg@mail.gmail.com>
- <20240201204512.ht3e33yj77kkxi4q@revolver> <CALmYWFupdK_wc6jaamjbrZf-PzHwJ_4=b69yCtAik_7uu3hZug@mail.gmail.com>
- <20240202151345.kj4nhb5uog4aknsp@revolver> <CABi2SkUSWLHM5KD=eK9bJrt3bBsEaB3gEpvJgr0LSTAE2G00Tg@mail.gmail.com>
- <20240202192137.6lupguvhtdt72rbr@revolver> <85714.1706902336@cvs.openbsd.org>
- <CAHk-=wjNXcqDVxDBJW8hEVpHHAE0odJEf63+oigabtpU6GoCBg@mail.gmail.com>
- <20240202211807.6sca4ppezma7cyev@revolver> <CAHk-=whhmasHcmaS0MZkBe2NohjF7Wb3F3pdW4vqyaSbSzQ75g@mail.gmail.com>
- <20240203044534.wkyfkxdlnskxctsq@revolver>
-In-Reply-To: <20240203044534.wkyfkxdlnskxctsq@revolver>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Mon, 5 Feb 2024 14:13:08 -0800
-Message-ID: <CAJuCfpHPk282ttjwEn0A39cHuUgsVTCDsSGzvG3hnFVV+G7edg@mail.gmail.com>
-Subject: Re: [PATCH v8 0/4] Introduce mseal
-To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
-	Jeff Xu <jeffxu@chromium.org>, Jeff Xu <jeffxu@google.com>, 
-	Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org, keescook@chromium.org, 
-	jannh@google.com, sroettger@google.com, willy@infradead.org, 
-	gregkh@linuxfoundation.org, usama.anjum@collabora.com, rdunlap@infradead.org, 
-	jorgelo@chromium.org, groeck@chromium.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, pedro.falcato@gmail.com, 
-	dave.hansen@intel.com, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240205200529.546646-3-kent.overstreet@linux.dev>
 
-On Fri, Feb 2, 2024 at 8:46=E2=80=AFPM Liam R. Howlett <Liam.Howlett@oracle=
-com> wrote:
->
-> * Linus Torvalds <torvalds@linux-foundation.org> [240202 18:36]:
-> > On Fri, 2 Feb 2024 at 13:18, Liam R. Howlett <Liam.Howlett@oracle.com> =
-wrote:
-> > >
-> > > There will be a larger performance cost to checking up front without
-> > > allowing the partial completion.
-> >
-> > I suspect that for mseal(), the only half-way common case will be
-> > sealing an area that is entirely contained within one vma.
->
-> Agreed.
->
-> >
-> > So the cost will be the vma splitting (if it's not the whole vma), and
-> > very unlikely to be any kind of "walk the vma's to check that they can
-> > all be sealed" loop up-front.
->
-> That's the cost of calling mseal(), and I think that will be totally
-> reasonable.
->
-> I'm more concerned with the other calls that do affect more than one vma
-> that will now have to ensure there is not an mseal'ed vma among the
-> affected area.
->
-> As you pointed out, we don't do atomic updates and so we have to add a
-> loop at the beginning to check this new special case, which is what this
-> patch set does today.  That means we're going to be looping through
-> twice for any call that could fail if one is mseal'ed. This includes
-> munmap() and mprotect().
->
-> The impact will vary based on how many vma's are handled. I'd like some
-> numbers on this so we can see if it is a concern, which Jeff has agreed
-> to provide in the future - Thank you, Jeff.
+On Mon, Feb 05, 2024 at 03:05:13PM -0500, Kent Overstreet wrote:
+> Add a new generic ioctls for querying the filesystem UUID.
+> 
+> These are lifted versions of the ext4 ioctls, with one change: we're not
+> using a flexible array member, because UUIDs will never be more than 16
+> bytes.
+> 
+> This patch adds a generic implementation of FS_IOC_GETFSUUID, which
+> reads from super_block->s_uuid; FS_IOC_SETFSUUID is left for individual
+> filesystems to implement.
+> 
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Cc: Christian Brauner <brauner@kernel.org>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Dave Chinner <dchinner@redhat.com>
+> Cc: "Darrick J. Wong" <djwong@kernel.org>
+> Cc: Theodore Ts'o <tytso@mit.edu>
+> Cc: linux-fsdevel@vger.kernel.or
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> ---
+>  fs/ioctl.c              | 16 ++++++++++++++++
+>  include/uapi/linux/fs.h | 16 ++++++++++++++++
+>  2 files changed, 32 insertions(+)
+> 
+> diff --git a/fs/ioctl.c b/fs/ioctl.c
+> index 76cf22ac97d7..858801060408 100644
+> --- a/fs/ioctl.c
+> +++ b/fs/ioctl.c
+> @@ -763,6 +763,19 @@ static int ioctl_fssetxattr(struct file *file, void __user *argp)
+>  	return err;
+>  }
+>  
+> +static int ioctl_getfsuuid(struct file *file, void __user *argp)
+> +{
+> +	struct super_block *sb = file_inode(file)->i_sb;
+> +
+> +	if (WARN_ON(sb->s_uuid_len > sizeof(sb->s_uuid)))
+> +		sb->s_uuid_len = sizeof(sb->s_uuid);
 
-Yes please. The additional walk Liam points to seems to be happening
-even if we don't use mseal at all. Android apps often create thousands
-of VMAs, so a small regression to a syscall like mprotect might cause
-a very visible regression to app launch times (one of the key metrics
-for Android). Having performance impact numbers here would be very
-helpful.
+A "get"/read only ioctl should not be change superblock fields -
+this is not the place for enforcing superblock filed constraints.
+Make a helper function super_set_uuid(sb, uuid, uuid_len) for the
+filesystems to call that does all the validity checking and then
+sets the superblock fields appropriately.
 
->
-> It also means we're modifying the behaviour of those calls so they could
-> fail before anything changes (regardless of where the failure would
-> occur), and we could still fail later when another aspect of a vma would
-> cause a failure as we do today.  We are paying the price for a more
-> atomic update, but we aren't trying very hard to be atomic with our
-> updates - we don't have many (virtually no) vma checks before
-> modifications start.
->
-> For instance, we could move the mprotect check for map_deny_write_exec()
-> to the pre-update loop to make it more atomic in nature.  This one seems
-> somewhat related to mseal, so it would be better if they were both
-> checked atomic(ish) together.  Although, I wonder if the user visible
-> changes would be acceptable and worth the risk.
->
-> We will have two classes of updates to vma's: the more atomic view and
-> the legacy view.  The question of what happens when the two mix, or
-> where a specific check should go will get (more) confusing.
->
-> Thanks,
-> Liam
->
+> +
+> +	struct fsuuid2 u = { .fsu_len = sb->s_uuid_len, };
+> +	memcpy(&u.fsu_uuid[0], &sb->s_uuid, sb->s_uuid_len);
+
+	if (!u.fsu_len)
+		return -ENOENT;
+	memcpy(&u.fsu_uuid[0], &sb->s_uuid, u.fsu_len);
+
+> +
+> +	return copy_to_user(argp, &u, sizeof(u)) ? -EFAULT : 0;
+> +}
+> +
+>  /*
+>   * do_vfs_ioctl() is not for drivers and not intended to be EXPORT_SYMBOL()'d.
+>   * It's just a simple helper for sys_ioctl and compat_sys_ioctl.
+> @@ -845,6 +858,9 @@ static int do_vfs_ioctl(struct file *filp, unsigned int fd,
+>  	case FS_IOC_FSSETXATTR:
+>  		return ioctl_fssetxattr(filp, argp);
+>  
+> +	case FS_IOC_GETFSUUID:
+> +		return ioctl_getfsuuid(filp, argp);
+> +
+>  	default:
+>  		if (S_ISREG(inode->i_mode))
+>  			return file_ioctl(filp, cmd, argp);
+> diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
+> index 48ad69f7722e..0389fea87db5 100644
+> --- a/include/uapi/linux/fs.h
+> +++ b/include/uapi/linux/fs.h
+> @@ -64,6 +64,20 @@ struct fstrim_range {
+>  	__u64 minlen;
+>  };
+>  
+> +/*
+> + * We include a length field because some filesystems (vfat) have an identifier
+> + * that we do want to expose as a UUID, but doesn't have the standard length.
+> + *
+> + * We use a fixed size buffer beacuse this interface will, by fiat, never
+> + * support "UUIDs" longer than 16 bytes; we don't want to force all downstream
+> + * users to have to deal with that.
+> + */
+> +struct fsuuid2 {
+> +	__u32       fsu_len;
+> +	__u32       fsu_flags;
+> +	__u8        fsu_uuid[16];
+> +};
+
+Nobody in userspace will care that this is "version 2" of the ext4
+ioctl. I'd just name it "fs_uuid" as though the ext4 version didn't
+ever exist.
+
+> +
+>  /* extent-same (dedupe) ioctls; these MUST match the btrfs ioctl definitions */
+>  #define FILE_DEDUPE_RANGE_SAME		0
+>  #define FILE_DEDUPE_RANGE_DIFFERS	1
+> @@ -215,6 +229,8 @@ struct fsxattr {
+>  #define FS_IOC_FSSETXATTR		_IOW('X', 32, struct fsxattr)
+>  #define FS_IOC_GETFSLABEL		_IOR(0x94, 49, char[FSLABEL_MAX])
+>  #define FS_IOC_SETFSLABEL		_IOW(0x94, 50, char[FSLABEL_MAX])
+> +#define FS_IOC_GETFSUUID		_IOR(0x94, 51, struct fsuuid2)
+> +#define FS_IOC_SETFSUUID		_IOW(0x94, 52, struct fsuuid2)
+
+0x94 is the btrfs ioctl space, not the VFS space - why did you
+choose that? That said, what is the VFS ioctl space identifier? 'v',
+perhaps?
+
+-Dave.
+
+-- 
+Dave Chinner
+david@fromorbit.com
 
