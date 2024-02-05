@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-53704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53729-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAA5F84A644
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:49:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CF31E84A65F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:54:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9638428A807
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 20:49:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8740028A4E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 20:54:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 795D6198033;
-	Mon,  5 Feb 2024 19:04:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 532CC19C9D0;
+	Mon,  5 Feb 2024 19:04:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="KKiJoKcN"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="e7OeJ7SJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B1F4174EBD;
-	Mon,  5 Feb 2024 19:04:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4891F178245;
+	Mon,  5 Feb 2024 19:04:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707159850; cv=none; b=FPwJg9F2CTJwECFY/fW/zANm6Wib3mhYAzUGbTdKrlkxRbseY9+krnykfvNnSvH3jUU1TMgdIIugyvCguIt+ACrCg+Ulm656ohXTmgucbecM85hu30v04pSZU5V5NYvj01DZX24gatRRvWq7gq4YSJPCmZhFGnBy0Bbop5ou2Cc=
+	t=1707159853; cv=none; b=CWTVi7Io7JHGrmbDPEaw3grPqrFYHj5ecRutWQHifDOI64NeyBGLMxzBHew0j0DkxKfLtuPrM6bI7Dl9t6LUesg0XuBE81Sp6tPEu+PzpxOK6E23vSRfhriGQ8SPwnur8wHz3iz1AIGSEzHmXVvRTkF1QKg9znQqLRef83baspQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707159850; c=relaxed/simple;
-	bh=2X0beJ3dmfA+cwC1iXbunu8iUPuukUKOrL3cq5ZA8ZU=;
+	s=arc-20240116; t=1707159853; c=relaxed/simple;
+	bh=nIlg0Ojr7ROSJ4zCSJfQ+EY2JGPU+IPkd+GLvdpsS1Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LmZJVbu2MCL0+qbIFsWlAPnL+5ovmKKBKUMcBBVMN2mA69hJ3rt8ZGSZ70syH22cJ8AIYEEDW7TgYQu9X0PZP3KJBxkrEegvt2RCbmNeJo2iJ/+EVvQGc6MKZPBzUsaP0Zkw9VBAJOfccpJtCG0Z2vLSYfnqNewoMn1Dk6SlXAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=fail (0-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=KKiJoKcN reason="key not found in DNS"; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19F3BC4936D;
-	Mon,  5 Feb 2024 19:04:09 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=CD1i2Hdtn2geg6rt6f6wpcqGniQlaXUgjEPtIsq/HwtIop9yBCNERsVJ8Q1reMeWFKQGk142Qut5bGm4Rqo9Nwa2BrDsya3Lb3u0AuNCaxeJt64OqQNpRkunLbqQlsO+emAi2CffTEtCn4FZKscHjTUjWudSgmsKMJJJR/pPupY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=e7OeJ7SJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF19AC4166B;
+	Mon,  5 Feb 2024 19:04:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1707159850;
-	bh=2X0beJ3dmfA+cwC1iXbunu8iUPuukUKOrL3cq5ZA8ZU=;
+	s=korg; t=1707159853;
+	bh=nIlg0Ojr7ROSJ4zCSJfQ+EY2JGPU+IPkd+GLvdpsS1Q=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KKiJoKcNSZNzeFU8frS2NzdZ6dX9p2Jr1fVNFKDL0ClEXMa2Da3IMQgGFdChq8Dcq
-	 rvvufbbCNYDt+EMGO3X6QHqXsL1eXQ2dAcNiB46GSqXrCEw1aLoRlgcXYupPVgSATl
-	 o9DN1RUgsP5fFhaqOo/Gbx5S5oQ7Fos+tZO5O2YE=
-Date: Mon, 5 Feb 2024 04:51:19 -0800
+	b=e7OeJ7SJapvGVvMsDEF4oRzGXUs3Fbuf2JDioOytEkzTfDjjxv5yIbwfQCwtT+bip
+	 R/suqKZDT+5qCsXR7EvYFLOG8lPvCsqOWP3W1o1syN8Zu14PyZExN5GjHnTSMKKj50
+	 Pzm5vfWXXaUG/u/NAKYP/ASvHvJwAVeJJMtOAMYk=
+Date: Mon, 5 Feb 2024 04:51:34 -0800
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>,
-	linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ata: pata_parport: make pata_parport_bus_type const
-Message-ID: <2024020516-decipher-unvaried-202a@gregkh>
-References: <20240204-bus_cleanup-ata-v1-1-2bdc1fadf356@marliere.net>
+Cc: "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sparc: vio: make vio_bus_type const
+Message-ID: <2024020530-arrange-hertz-9e41@gregkh>
+References: <20240204-bus_cleanup-sparc-v1-1-4ca7fe8de5f7@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,11 +53,11 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240204-bus_cleanup-ata-v1-1-2bdc1fadf356@marliere.net>
+In-Reply-To: <20240204-bus_cleanup-sparc-v1-1-4ca7fe8de5f7@marliere.net>
 
-On Sun, Feb 04, 2024 at 12:23:29PM -0300, Ricardo B. Marliere wrote:
+On Sun, Feb 04, 2024 at 12:19:50PM -0300, Ricardo B. Marliere wrote:
 > Now that the driver core can properly handle constant struct bus_type,
-> move the pata_parport_bus_type variable to be a constant structure as well,
+> move the vio_bus_type variable to be a constant structure as well,
 > placing it into read-only memory which can not be modified at runtime.
 > 
 > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
