@@ -1,109 +1,196 @@
-Return-Path: <linux-kernel+bounces-54036-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2077984A985
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:44:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD2C184A981
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:44:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 341D4B24130
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:44:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D1C7B1C26FDD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:43:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C381748CC6;
-	Mon,  5 Feb 2024 22:43:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDD232C1B9;
+	Mon,  5 Feb 2024 22:43:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DKz4TB+z"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JiIfOCLI"
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75FBC481BF;
-	Mon,  5 Feb 2024 22:43:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36170482D1
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 22:43:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707173029; cv=none; b=CbADypHTfz56XoMyNCCaXq/TF2QOnaAa0RtHdajwjwamGK1Zyv2zwsZiug3IlfQL3+G5mWGYMsIev4nfskuGBPYPKlaaEojwIk84Cn4s2vsLpn0oi11A7tiorCBs/m26aRXpGs5B/0w5NCEazQx6F55DH3lFm0n0Vz7cNoMetPg=
+	t=1707173026; cv=none; b=gMlyxTEY6UU8Pz2k6oeChUjYbm6M774/RZJYt3JXlGFY+AEOhknoIJIGzGNeCvWTLip8o5YPAjmjpgKoDv/9Az7GwGmnCaVX9HOmxpfxymbjFu2FfGOF6JPa96HIPOktc6RrhM5qRJDv1jx3ZjGmK94w4WFjv1n6tSotJfUJfjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707173029; c=relaxed/simple;
-	bh=B5LFCChfXOV41x2TfdwcmAIvY8W+Ckng0SDd0NGO450=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VEywcb9NxQzEcda/EqJbemm7cXAIEiP7Vy7nlbUEIBzMaEgCrdUmUy91SdeO9RyZnZBvWBTCp6n9BOhd7THYWv17AXR3XZWpDX4euy9PqegswlA0H4ByER+ULUechKscBrxFZNlF4NLsIV3cAiLyrPX0mFt+GuVlq9GFrUurziA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DKz4TB+z; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-511344235c6so6032321e87.0;
-        Mon, 05 Feb 2024 14:43:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707173025; x=1707777825; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=B5LFCChfXOV41x2TfdwcmAIvY8W+Ckng0SDd0NGO450=;
-        b=DKz4TB+z2Mzh81+kvdBIeXxgKHtE1bm/zcwRcG1GDYmBf+ieJjZV18zlujqeCyEVFi
-         0nVbTDBPzfizjaY7Cg+9aGCTy78WfDY+qeJCrsfE6hAe/wPIw+9iRxhWvvCA8qoKbz/U
-         OsXmVI23HvG2EnuBsVCrED9biPXD79nCUZBL4l00K2dWfDekUhitpUPr6TaYjo+K3a4O
-         jgTXnUxq0b05+ycLyleb+kevfkYWyZpSISnnBEn1x8rKIl1zbmxPr6K0qBOu7+Hge2q4
-         wpszepnx05dpRzuqa+Yg0xj86us35/7y2z+obFtpOcaTPQvRG1ghXVNPRRuay4tb3aRX
-         jGmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707173025; x=1707777825;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=B5LFCChfXOV41x2TfdwcmAIvY8W+Ckng0SDd0NGO450=;
-        b=RMeqib7COP5TA4VBGf9k2UIu0HaFtu+QkFKOrYkx0r83RNqK0whLvgwfTMehvDJpCg
-         TY5m+BY0LtfzESDF6m7LxOrXfWJtTVW6YpdPnYkobNF0oTdJLLS/ckDY6ItnqfcH+iqf
-         y10q15rgsVS7oo7tvGrzd6szIuz71vioHhYUhf1PPgwSpm8/YXk0f7ZWQkm7syDMHCju
-         pfHAIXvEXJHT9F332dFL8bVnM2o06Np0/CaUGjTO1vdGeBcGFv5utnXLx/rPvkkQ1n6J
-         z8sSAKgPFBYURPsEQcd8lDKgNAUnE4RAyXszERGgrOsfHniMacowwKO9RNaANCfl77vu
-         h0Bw==
-X-Gm-Message-State: AOJu0YzgqiGFz4vIqH6gobWYkFvPAXdfKZ49M/bnNwM1qTzxDlYw1bsy
-	DRuyexlJsGgefl36z8bGIP/lVc8cPAicq8OwQQUPa3RusQD91pe7JxMpamMNq3G2mSgoXvimDcB
-	nFqDgyZde8Q28e4Wf8dE3/2TCieU=
-X-Google-Smtp-Source: AGHT+IHseQXpYVdIoy5VWPKXjRpQk8S1Nl2OlAONy8uH9N2+8szilnpvFR6yjoGW8Wd1pLrXFfIn1CjMigxOSU9ivWc=
-X-Received: by 2002:ac2:4aca:0:b0:511:3ef8:5 with SMTP id m10-20020ac24aca000000b005113ef80005mr572988lfp.34.1707173025259;
- Mon, 05 Feb 2024 14:43:45 -0800 (PST)
+	s=arc-20240116; t=1707173026; c=relaxed/simple;
+	bh=P6jsH88dVQl2k3TFc9d+OcA130i51RnnnqPRV/d93e4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OAw869NJ0TwpWlBE8C10ugXt0UPyPtD2uyHF4wyswSfVkl9v+6qrRnHHkd2PJzISuUIL0gDszR699/bUAgC7sTHSEb+iomQLZRTL9e2qVON7hOz5BWa/TriU6KlamTm/LrFahYQqy9KpKzCU+Smqvk5LTRWagzCAvwokjShJaNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JiIfOCLI; arc=none smtp.client-ip=95.215.58.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 5 Feb 2024 17:43:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707173021;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V535WHzbvh6MboWD4TxDTfLy8x7b35oNP0njlbHg1zk=;
+	b=JiIfOCLIjmghQB2/CUlA7W2pLqdUiodJw3BZU+55tegre6WClntaDJCqreOVaTg3RZfiiS
+	BAefit8hMaAo0SDdyTkpFdUU/f21bePCfTWhVTRwTuYSKNH+IGHA0XgOrJTXcJFiGYqFII
+	R9U8+Irfl61FbMKOxlZJAbLu6/8mwug=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Dave Chinner <dchinner@redhat.com>, 
+	Theodore Ts'o <tytso@mit.edu>, Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH 4/6] fs: FS_IOC_GETSYSFSNAME
+Message-ID: <7si54ajkdqbauf2w64xnzfdglkokifgsjptmkxwdhgymxpk353@zf6nfn53manb>
+References: <20240205200529.546646-1-kent.overstreet@linux.dev>
+ <20240205200529.546646-5-kent.overstreet@linux.dev>
+ <20240205222732.GO616564@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130-realtek_reverse-v5-0-ecafd9283a07@gmail.com>
- <20240130-realtek_reverse-v5-9-ecafd9283a07@gmail.com> <20240201224516.pujapjenqtyejihg@skbuf>
-In-Reply-To: <20240201224516.pujapjenqtyejihg@skbuf>
-From: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Date: Mon, 5 Feb 2024 19:43:34 -0300
-Message-ID: <CAJq09z4ForDXY322xceFJCaH5tiXKQKS=EgFMKbdiSNf8O1Lbg@mail.gmail.com>
-Subject: Re: [PATCH net-next v5 09/11] net: dsa: realtek: migrate user_mii_bus
- setup to realtek-dsa
-To: Vladimir Oltean <olteanv@gmail.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>, 
-	Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240205222732.GO616564@frogsfrogsfrogs>
+X-Migadu-Flow: FLOW_OUT
 
-> > +/**
-> > + * rtl83xx_setup_user_mdio() - register the user mii bus driver
-> > + * @ds: DSA switch associated with this user_mii_bus
-> > + *
-> > + * This function first gets and mdio node under the dev OF node, aborting
-> > + * if missing. That mdio node describing an mdio bus is used to register a
-> > + * new mdio bus.
->
-> The description has the overall feel of "Family Guy - Peter narrates his life"
-> (https://www.youtube.com/watch?v=zw8zUMjEW0I).
+On Mon, Feb 05, 2024 at 02:27:32PM -0800, Darrick J. Wong wrote:
+> On Mon, Feb 05, 2024 at 03:05:15PM -0500, Kent Overstreet wrote:
+> > Add a new ioctl for getting the sysfs name of a filesystem - the path
+> > under /sys/fs.
+> > 
+> > This is going to let us standardize exporting data from sysfs across
+> > filesystems, e.g. time stats.
+> > 
+> > The returned path will always be of the form "$FSTYP/$SYSFS_IDENTIFIER",
+> > where the sysfs identifier may be a UUID (for bcachefs) or a device name
+> > (xfs).
+> > 
+> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > Cc: Christian Brauner <brauner@kernel.org>
+> > Cc: Jan Kara <jack@suse.cz>
+> > Cc: Dave Chinner <dchinner@redhat.com>
+> > Cc: "Darrick J. Wong" <djwong@kernel.org>
+> > Cc: Theodore Ts'o <tytso@mit.edu>
+> > Cc: Josef Bacik <josef@toxicpanda.com>
+> > ---
+> >  fs/ioctl.c              | 17 +++++++++++++++++
+> >  include/linux/fs.h      |  1 +
+> >  include/uapi/linux/fs.h |  5 +++++
+> >  3 files changed, 23 insertions(+)
+> > 
+> > diff --git a/fs/ioctl.c b/fs/ioctl.c
+> > index 858801060408..cb3690811d3d 100644
+> > --- a/fs/ioctl.c
+> > +++ b/fs/ioctl.c
+> > @@ -776,6 +776,20 @@ static int ioctl_getfsuuid(struct file *file, void __user *argp)
+> >  	return copy_to_user(argp, &u, sizeof(u)) ? -EFAULT : 0;
+> >  }
+> >  
+> > +static int ioctl_getfssysfsname(struct file *file, void __user *argp)
+> 
+> ackpthspacesplease.
+> 
+> "ioctl_get_fs_sysfs_name"?
 
-Hahaha. Yes it does.
+It did feel a bit trolling writing that :)
 
-> You could be a bit more succinct and say something like "Registers the
-> MDIO bus for built-in Ethernet PHYs, and associates it with the
-> mandatory 'mdio' child OF node of the switch".
+> 
+> > +{
+> > +	struct super_block *sb = file_inode(file)->i_sb;
+> > +
+> > +	if (!strlen(sb->s_sysfs_name))
+> > +		return -ENOIOCTLCMD;
+> > +
+> > +	struct fssysfsname u = {};
+> > +
+> > +	snprintf(u.name, sizeof(u.name), "%s/%s", sb->s_type->name, sb->s_sysfs_name);
+> 
+> Does this actually guarantee that there will be a trailing null in the
+> output?  It's really stupid that GETFSLABEL can return an unterminated
+> string if the label is exactly the size of the char array.
 
-Done. Thanks.
+It's snprintf, so yes.
 
-Regards,
+(queue another "why are we using raw char arrays everywhere in 2024"
+rant, I have to double check this stuff too).
 
-Luiz
+> 
+> > +
+> > +	return copy_to_user(argp, &u, sizeof(u)) ? -EFAULT : 0;
+> > +}
+> > +
+> >  /*
+> >   * do_vfs_ioctl() is not for drivers and not intended to be EXPORT_SYMBOL()'d.
+> >   * It's just a simple helper for sys_ioctl and compat_sys_ioctl.
+> > @@ -861,6 +875,9 @@ static int do_vfs_ioctl(struct file *filp, unsigned int fd,
+> >  	case FS_IOC_GETFSUUID:
+> >  		return ioctl_getfsuuid(filp, argp);
+> >  
+> > +	case FS_IOC_GETFSSYSFSNAME:
+> 
+> File System Ioctl Get File System System File System Name.
+> 
+> Yuck.
+> 
+> FS_IOC_GETSYSFSPATH?
+> 
+> Also, do we want to establish that this works for /sys/fs and
+> /sys/kernel/debug at the same time?
+
+Yeah, I'll add a comment to that effect.
+
+> 
+> > +		return ioctl_getfssysfsname(filp, argp);
+> > +
+> >  	default:
+> >  		if (S_ISREG(inode->i_mode))
+> >  			return file_ioctl(filp, cmd, argp);
+> > diff --git a/include/linux/fs.h b/include/linux/fs.h
+> > index ff41ea6c3a9c..7f23f593f17c 100644
+> > --- a/include/linux/fs.h
+> > +++ b/include/linux/fs.h
+> > @@ -1258,6 +1258,7 @@ struct super_block {
+> >  	char			s_id[32];	/* Informational name */
+> >  	uuid_t			s_uuid;		/* UUID */
+> >  	u8			s_uuid_len;	/* Default 16, possibly smaller for weird filesystems */
+> > +	char			s_sysfs_name[UUID_STRING_LEN + 1];
+> >  
+> >  	unsigned int		s_max_links;
+> >  
+> > diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
+> > index 0389fea87db5..6dd14a453277 100644
+> > --- a/include/uapi/linux/fs.h
+> > +++ b/include/uapi/linux/fs.h
+> > @@ -78,6 +78,10 @@ struct fsuuid2 {
+> >  	__u8        fsu_uuid[16];
+> >  };
+> >  
+> > +struct fssysfsname {
+> > +	__u8			name[64];
+> > +};
+> > +
+> >  /* extent-same (dedupe) ioctls; these MUST match the btrfs ioctl definitions */
+> >  #define FILE_DEDUPE_RANGE_SAME		0
+> >  #define FILE_DEDUPE_RANGE_DIFFERS	1
+> > @@ -231,6 +235,7 @@ struct fsxattr {
+> >  #define FS_IOC_SETFSLABEL		_IOW(0x94, 50, char[FSLABEL_MAX])
+> >  #define FS_IOC_GETFSUUID		_IOR(0x94, 51, struct fsuuid2)
+> >  #define FS_IOC_SETFSUUID		_IOW(0x94, 52, struct fsuuid2)
+> > +#define FS_IOC_GETFSSYSFSNAME		_IOR(0x94, 53, struct fssysfsname)
+> 
+> 0x94 is btrfs, don't add things to their "name" space.
+
+Can we please document this somewhere!?
+
+What, dare I ask, is the "namespace" I should be using?
 
