@@ -1,146 +1,126 @@
-Return-Path: <linux-kernel+bounces-52071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52072-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 582778493BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:13:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A05238493C3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:14:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6FD8B21CCF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 06:13:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C1DA282FF9
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 06:14:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C570010A1E;
-	Mon,  5 Feb 2024 06:13:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE7C5BE65;
+	Mon,  5 Feb 2024 06:14:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="GMS03Sv5";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="XJ5PHC0J"
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="DDn5VN55"
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC62610A11
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 06:13:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.26
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F32281118F
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 06:14:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707113625; cv=none; b=RbXEdg209CDXT2pFG9aV7TaoUQCRkwph/iEIcE8NLlsws7uTdSMHpGAUd2Vr8hWXYYgU26JtAY/OyaEMsOtQmo0JJTLhdG51JpXjsHSTt6/lSaYMPuwsvzjfJo4bV+pxNUjLSqeHb9tpWy6TEs7NDUZ74uQaOmHtn1XeuH37EzE=
+	t=1707113667; cv=none; b=kgjXYIJZFmlcJNEkcwNkF1Z7QxVcDZwFrNc7V3HSNWmhfcWLZx8mDJ4DQ9IW66cCDUIcnd9jBlWNFY3amXUkajYnR55Z5hIGlkWoGei2g5MQItiX+PCA0CNP8g6E654byVR/Zn4+qWD4JsiWBETlow/b3+W2+X9ANaoU2olaTFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707113625; c=relaxed/simple;
-	bh=mat6tvfN2VYWHCTyPzL00RUBKgF4GODp9nO622GkJwQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gzBLO0ptndrYbFGVZ5iE/XbojE2D61obbNOHsqqy8rhqFO628fg2b+6ySsQBny3SzLoE1zuo6d9k3iLFHhZABXebrz4FntqYMJAgdOiXFtdsW8GTeReMmVV6dDkmtrQPUBGbPl//SvIcUadGi+na02loDckT6Pehlyqt6asmniM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=GMS03Sv5; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=XJ5PHC0J; arc=none smtp.client-ip=66.111.4.26
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.nyi.internal (Postfix) with ESMTP id B13435C0111;
-	Mon,  5 Feb 2024 01:13:42 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Mon, 05 Feb 2024 01:13:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm3; t=1707113622; x=
-	1707200022; bh=l0YLavRaGfdAe61ZNAx9jIh3U3DFqLWnxZLRX5o/LIY=; b=G
-	MS03Sv5fcgCGQVMaiYQbEOy7CQQOdbpyc1XHJ41PCoxIEmfOFRoU730TrC7kFvs3
-	vB2m/0XC2Tih8HbNqwuYOix9I4Z+mO/tIvPl+PawKaT8GX46drin+JCmv8bUJYAl
-	aFj8/e66beEAhX9clhpdzjo6UqXbkcN1HiK5jGJXgjjXK1YP0LmnaWZGNI7SroXp
-	niNuNPXB14DGLhdXfh3LqEfbp2GF/+W3n0BBUkHaQYXTWu75G7S/cn5laoneFA1K
-	Nqa/sVF9WC+IsAVfYRmwystU5RVpBgBOtNfZkNYFX2wptaRAGTbnOvlvQmaEN69H
-	25EII46XFQ7RJqQNsXJZA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1707113622; x=1707200022; bh=l0YLavRaGfdAe61ZNAx9jIh3U3DF
-	qLWnxZLRX5o/LIY=; b=XJ5PHC0JpC+agL2FqdJMdA42FDAakwTZ3+iKA3OeZvpo
-	nxl7gPggKICywLwmlBdwlAk4QWQTEJ5C4luaJ6lJVuKnV64mGPJCiVrYeamTMdDE
-	E0fVSZEYsfj4y6ayaHlyVki/lh4dJ+PIiP3w8Gy65Zf0K7ep+6pgOBuq78cxP92u
-	ErKH1g5qQw+VxKW7KEMut497pdObulp4jvmx3Ix9L7A2s5UdlRqooRnzBVFw18fZ
-	+tXuLwjSQfnn6Ed4czrfNklSpIeBSg6lZpZzd9FT76xGrj7qHPTVK8SMfIi9JI5y
-	CiHybxORnnYsf41+CoLHIL3qJPBO1NaWjwLlbLwnqA==
-X-ME-Sender: <xms:lnzAZXcgn4fnb0oc2mYVRF5-R-Hos04D_ldb9u5F9ZX7TZPR6C51Zw>
-    <xme:lnzAZdPYlR3D23jmAU28M8Sa90JxdeSYBS272TctLZ2IY34JkymGCRVVoN-GpDVKM
-    XJoIjblzGEi97Wl3Wk>
-X-ME-Received: <xmr:lnzAZQg8fw0NS04dvwJdZvRwg6j5vvhhwZatCSgcOusGD4OUgkZYyjcgcfup5rWlp59FmCkWbxns8SafsV8wNTrXNt81BvkdyOI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeduledgleefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtuggjsehttd
-    ertddttddvnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghk
-    rghshhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeevieelhf
-    dukeffheekffduudevvdefudelleefgeeileejheejuedvgefhteevvdenucffohhmrghi
-    nhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:lnzAZY8rX5v0QegujmCh9IV1Ie7fgHvxipUkOCnh-_uYhVO48Lmz8g>
-    <xmx:lnzAZTvKvw5wgaG_gDC5YIbQOL9q3yeUKmk6aQNBAsh-Naa3NPDHGA>
-    <xmx:lnzAZXG5pLBWGV-7bP2yoIBUSd3-Q0ZngrmgEzgh-2xO28HGmP1X8A>
-    <xmx:lnzAZc7DpaGJxwr10LGg6sKpme2ywk2ajV1Z_7ZjKUJ---CfWkW1Jg>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 5 Feb 2024 01:13:40 -0500 (EST)
-Date: Mon, 5 Feb 2024 15:13:38 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
-	kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] firewire: core: fix build failure due to the caller of
- fw_csr_string()
-Message-ID: <20240205061338.GA14407@workstation.local>
-Mail-Followup-To: linux1394-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	kernel test robot <lkp@intel.com>
-References: <20240205060448.13881-1-o-takashi@sakamocchi.jp>
+	s=arc-20240116; t=1707113667; c=relaxed/simple;
+	bh=+p/STyxDPjJDvaoBmR5G/pcONapAVcCcjPa053nv36Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HA9FYGdkDtazO4i8EDPl0qD+kUJVYxUth+UUolHY19tVUGvhmSmoQILsU74wceguuDG8JuBHSa3cCOMIsg0En2P19aDeXy+x7gbdw10R9ZzeCWSwwc7/dd2gwcL4FewupzVfOu+CIB8qAzsLiYZf7OMUQwe72hYlKUbFiOCHnX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=DDn5VN55; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33b29b5ea86so1222161f8f.1
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 22:14:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1707113663; x=1707718463; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TXNjA0jCo0RhVXWoi0/uFUF+3PzRgw5jaCUFs8H5gr8=;
+        b=DDn5VN55ShrDpiNtD9Tm68ZzBvA6AQZdXA+05GvLFOdKudEhRlNllDcqOaW8uC0Vqo
+         RrkfiyDX+jlHQdqqHJRuos9WLnYMzDCcarcp9C/eFDt1xQEEjw4P2pYe2fME8dBodKSV
+         rw0Xdry66fMLXP193HmcRshzTaI5U9rYdCeu7XYPXoBli8eB0KNNX4zmJiPnP++h1DuD
+         46qbrOWOPtWzHXFTeeJHD9rluPjzS2qsconDMR4LGMgH6CjF7RtG2QFJL8UKHYC9H5gd
+         7oEM2yGo7dk5oo6kQcM8dv2000mAqa8U00O0V1KD12GGN6PpGCfLu4jh0kl38qWr5kek
+         1vHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707113663; x=1707718463;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TXNjA0jCo0RhVXWoi0/uFUF+3PzRgw5jaCUFs8H5gr8=;
+        b=sUL+BOInnMgKPOnO9tYeotex2mTW8JrKfa74FnLRsF0VmuZmwouE5F3pcU0RLkCAfA
+         O87leeb7qPIRkHBT980jgfp4A4x8IgXuVt81xqw0H+R3DJH6kAXj9GUIFD+ttNiu0mHq
+         mrAihLcDbt0WZeztYqQ+MYLvByl3UPIQlEA3kUWfgvhGUAeLXJsUxMA1flfP651uZ7jj
+         HacheBtrs43cmqxQqj9s6qFi7HSmoaYE+0GlZY3+VwcC0QPMWyBklO75LK9Vs3dsEQa4
+         dF0v+Kr07kSjZrJijmvVJV6xvDVrorShvnqXmWVjaZome9H7shfYMCkjdmrtsALh4JiZ
+         1Wtw==
+X-Gm-Message-State: AOJu0Yx7G/Tz/lNjZE+UaZHIWB9tJlEepGE9JvXo4dmVMEh7HaiXmbOB
+	puFjwAusCz6EvpwY0Oimo8B44fKXpbJJE73+rSxy65oBwQj1ff+YmMF2hLwwVb8=
+X-Google-Smtp-Source: AGHT+IEFbZDLfPGLIhwSaOx/UzHmnYO1cy2CXFd42reBwvJ866yaQVjO9qSFVFBHWoo/MB3tJCHTLw==
+X-Received: by 2002:a5d:6948:0:b0:33b:228c:da8d with SMTP id r8-20020a5d6948000000b0033b228cda8dmr4970493wrw.24.1707113663123;
+        Sun, 04 Feb 2024 22:14:23 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWiu4eKPlxVKS0UsM8dt9UJOJZPEXF+zuP0SOqaJDbxYyWtN+Vs5u6B6kJY4dVYe4byEmNPa0ttUWFrK9Yzii9cdLclbeuCbKFD019QSBfsaQmmMlCZ1TgUuzaRBU/SOFJiGKjBKsPIeYDWYJoa7gXXVVRYTkdcn7jK34uPt+GIuMyBXvp70eRTh0zpvwFsCxgQg19QCsGuAJuRrSwBWs2mFWMm/em71WbdjXgwMMlGJYSFtS+wZAwxwMztEM3k+eR7IC212wSXDezwv1OJDG4s7nKCcIqne0vgT4/KSte2VoYqxdWcde5MmwMFnVzhf5LdOC9fCz3QP05kiXd58EmfrYLEKO//gMiU/OdHfnC8KhmIrjm944Nsx8KQTIl5Xa0PfPaFp0SzdfYqBPgQDY0xFPwDYILZVQ3651u4ptOtVYG7tyA6s/emASZlZth9x1Is7tbJhUPOkCYTkETcDWtqHwKJI620BKD9ryRpykTe/h+FHrgtFOauTMs0+3LOSUOhJwT+8aJpIc8YXAKeojQtVIxjYFIGCDn+rAlP/jwKRz8cQPh0FhXwPSGlbzkyKg==
+Received: from [192.168.50.4] ([82.78.167.154])
+        by smtp.gmail.com with ESMTPSA id v23-20020adfa1d7000000b0033b37fe0577sm2604930wrv.54.2024.02.04.22.14.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Feb 2024 22:14:22 -0800 (PST)
+Message-ID: <d37b87c6-b4d7-43e8-994a-d7bbddbec319@tuxon.dev>
+Date: Mon, 5 Feb 2024 08:14:20 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240205060448.13881-1-o-takashi@sakamocchi.jp>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 8/8] dt-bindings: watchdog: renesas,wdt: Document
+ RZ/G3S support
+Content-Language: en-US
+To: Conor Dooley <conor@kernel.org>
+Cc: wim@linux-watchdog.org, linux@roeck-us.net, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ p.zabel@pengutronix.de, geert+renesas@glider.be, magnus.damm@gmail.com,
+ biju.das.jz@bp.renesas.com, linux-watchdog@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+ Conor Dooley <conor.dooley@microchip.com>
+References: <20240202075849.3422380-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240202075849.3422380-9-claudiu.beznea.uj@bp.renesas.com>
+ <20240202-bacteria-genre-aeb373023f4b@spud>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <20240202-bacteria-genre-aeb373023f4b@spud>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi,
 
-On Mon, Feb 05, 2024 at 03:04:48PM +0900, Takashi Sakamoto wrote:
-> A commit 47dc55181dcb ("firewire: core: search descriptor leaf just after
-> vendor directory entry in root directory") for v6.8-rc3 and a commit
-> 67a5a58c0443 ("firewire: Kill unnecessary buf check in
-> device_attribute.show") for v6.9 bring build failure in for-next tree due
-> to the change of the name of local variable.
+
+On 02.02.2024 18:40, Conor Dooley wrote:
+> On Fri, Feb 02, 2024 at 09:58:49AM +0200, Claudiu wrote:
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> Document the support for the watchdog IP available on RZ/G3S SoC. The
+>> watchdog IP available on RZ/G3S SoC is identical to the one found on
+>> RZ/G2L SoC.
+>>
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+>> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>> ---
+>>
+>> Changes in v3:
+>> - re-arranged the tags as my b4 am/shazam placed previously the
+>>   Ab, Rb tags before the author's Sob
 > 
-> This commit fixes it.
+> What's wrong with that?
+
+Nothing, I was just used to do it this way.
+
+> You resent the patch, so I don't think there's any chain of custody
+> issues there.
 > 
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Closes: https://lore.kernel.org/lkml/20240202111602.6f6e2c1a@canb.auug.org.au/
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202402022343.NkgsMITA-lkp@intel.com/
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> ---
->  drivers/firewire/core-device.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/firewire/core-device.c b/drivers/firewire/core-device.c
-> index a802c6d4f4fd..c0976f6268d3 100644
-> --- a/drivers/firewire/core-device.c
-> +++ b/drivers/firewire/core-device.c
-> @@ -366,7 +366,7 @@ static ssize_t show_text_leaf(struct device *dev,
->  			// in the root directory follows to the directory entry for vendor ID
->  			// instead of the immediate value for vendor ID.
->  			result = fw_csr_string(directories[i], CSR_DIRECTORY | attr->key, buf,
-> -					       bufsize);
-> +					       PAGE_SIZE - 1);
->  			if (result >= 0)
->  				ret = result;
->  		}
-> -- 
-> 2.40.1
-
-I applied this immediately to fix linux-next integration.
-
-
-Regards
-
-Takashi Sakamoto
+> Cheers,
+> Conor.
 
