@@ -1,296 +1,293 @@
-Return-Path: <linux-kernel+bounces-53127-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53115-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E3ED84A103
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:38:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3687984A0DB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:35:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32ABF1C219EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:38:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC4E62822D1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:35:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B6D24F5EC;
-	Mon,  5 Feb 2024 17:35:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBBC6481AA;
+	Mon,  5 Feb 2024 17:34:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="KdC8zZts"
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2043.outbound.protection.outlook.com [40.107.20.43])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="TsjV7eZ/"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7C294F88F;
-	Mon,  5 Feb 2024 17:35:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.43
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707154510; cv=fail; b=hwlDYf6cSxpbxf6zFqNd4tj6EnaFzfwNGGy3XVrzBjkmWgaBeMb/xLIX1Fh2lbulpf1DbOlekmnvoUyCI+mLzu7lGS71289YyImsNszDb7zSy8FLxrZTg9Jh32TbJsTzoUJbEQvg8l+A/1NUeeSbEirM8Z8NMpJPjWcYTg0/9GY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707154510; c=relaxed/simple;
-	bh=txoUgltVuwyUlxb1zpN33wKzXZqRhrUJNo4h1FVYB4c=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=avTw4ss3v6fR3kyVg+gyZ2JwHrBq9nSOtz/SiqfVIDTqLvK4lv+joD7N/yh5/IsrA3BWCFaBgBEGJAhqJ1HbxSdJ2JO8U7t8AcCkoXUyN72PfiO2f1njerVGNPnPfSOPrJH9xkdhtxNMmnA9PWKVHyDtDGGHW3ddFYKOEXNVqjw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=KdC8zZts; arc=fail smtp.client-ip=40.107.20.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JUwS10QPLJmol6YOEytv9IJjgHGyAzB48sUkfz2R1JGBo1ICVMvAgDkR9zVnOzdoPhb4eGxwbcqXAFvV3qmNaYB0h0uDYvMPkmKgcyAye9JsG1WvrRXDnsdZv2JbB1usSPqhtDxIxvAD0mBuxeJpyHRoXqc5pzppt6dNssJmU25AH2tTGt/EUI0Gra5KCMmdB4gubGsFROI39aJLrvResZ9FbDyLn2JUfsqSm2S3sYwZdrP4GknwqOfvbu75j6jDTMGRsdjDd+bLIiyxBvG8A3/04jWN2oS+Gn2mvnCwRpMnHH6cKWWbKKhx6jynusxPmpEZWTnl+CpYb5dLZS1g9w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iAG34oN6A027qb51av/W2AfXMhXjk2rwEFsF0FWAX4g=;
- b=akrXOWxRUKfuEeOwPcv9UHpO/OsFbIHedhKYC/daNkVePB0zVtDRETIcBHAfysr1R1xKzq0cxvEVtUeJVIZpxbqo6PF0OSF4XmaNnySZYcxYNSgpp/qnBrQUi8nLtndDfljNIHsfkdKIqJfiLcjMHPRWmJKeY7WugIZ9scZZJJUmWq/F4uutVO4A/Vu5BWmYnib4cB9kgDk2upLBx+xuGokSfevDHlTzC6dxxYj5MUr9svB6eTCDB11muDOPw4R1vhrKFGHxUNZgG6WhISdyvIPwnXXwuumane+aohxTA+hSwv6v+2Co1wjGFou2Lyzm7z9BrVeUtmN01YsYsjy7yg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iAG34oN6A027qb51av/W2AfXMhXjk2rwEFsF0FWAX4g=;
- b=KdC8zZtsC5i8ywIaQ6RycAwY47ILB7fCCLTCjWZ9tj0BTAVIgtqUoyUR/hwDBF8hbiORqBvWLC3YY1Jkyz8/ocLnVb4r1lP4PXwLQZGLcoJcRpDMA7WmcDSNLtq47345RMf1nKkC9op6XnaiJ3flLH5tfL9/9MDxrOmtmpqG7fs=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by AM7PR04MB7080.eurprd04.prod.outlook.com (2603:10a6:20b:11b::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.34; Mon, 5 Feb
- 2024 17:35:04 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c%3]) with mapi id 15.20.7249.032; Mon, 5 Feb 2024
- 17:35:04 +0000
-From: Frank Li <Frank.Li@nxp.com>
-To: lpieralisi@kernel.org
-Cc: Frank.li@nxp.com,
-	bhelgaas@google.com,
-	conor+dt@kernel.org,
-	devicetree@vger.kernel.org,
-	festevam@gmail.com,
-	helgaas@kernel.org,
-	hongxing.zhu@nxp.com,
-	imx@lists.linux.dev,
-	kernel@pengutronix.de,
-	krzysztof.kozlowski+dt@linaro.org,
-	krzysztof.kozlowski@linaro.org,
-	kw@linux.com,
-	l.stach@pengutronix.de,
-	linux-arm-kernel@lists.infradead.org,
-	linux-imx@nxp.com,
-	linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	manivannan.sadhasivam@linaro.org,
-	robh@kernel.org,
-	s.hauer@pengutronix.de,
-	shawnguo@kernel.org
-Subject: [PATCH v10 14/14] PCI: imx6: Add iMX95 Endpoint (EP) support
-Date: Mon,  5 Feb 2024 12:33:35 -0500
-Message-Id: <20240205173335.1120469-15-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240205173335.1120469-1-Frank.Li@nxp.com>
-References: <20240205173335.1120469-1-Frank.Li@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR07CA0041.namprd07.prod.outlook.com
- (2603:10b6:a03:60::18) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E92FE44C8C;
+	Mon,  5 Feb 2024 17:34:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707154453; cv=none; b=dAT07Yrw/VrW9W1b4zxrPEPVrsdl1Fdf3dMmnzSgV2yLgpjdY3QRiGwGFEg4cWC/QmBfBP0JpU/oVLWbGfRN+2i2okK39X7IuTG5Kjcy37TgsO0PjPo32ITa5+1fTjEOPxEw+c1qYXHjm5yWboU4/rga/wpMN87HsKz0L9P7fDk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707154453; c=relaxed/simple;
+	bh=/jqtcPhqWUeQEj8DqWkxkYkh/jaLAKrAvduwRgOG6No=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=NvcCpFryg2lFcSYhq4JbWVOqcKsDcw4wljKt2Ig1+B9DLIwS/uoPfhF4CswNikMBuNmti1U/z7Tj2zqePLq5q7VCiXzhmN/NMSCpPaaFuWK855PIRg46Nri/xssOPgAnKeE/okAmH+hss6NTN+LtcDlv/XZ0yl+ll8npcsOUnD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=TsjV7eZ/; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 415HY3lU098555;
+	Mon, 5 Feb 2024 11:34:03 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707154443;
+	bh=UrprV1G0cKfS8FbRkXrcvpyNcNC/ZRPQkv4yrO7fSz4=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=TsjV7eZ/Dw9zQRpLbqOk/AEF3ZBMEHDCZOQtGezLmJVVtT4HhoRUzE/raSz/K1W+L
+	 cbWUemi01Ht/Jr3vn/UHfbbYPPUGSouo4IPT5a7M7Z2R/C7wbz+8PfK2O+dPeMnXHE
+	 uJZ1dbSomIT39l0GuLP3q8bys3dPjJ4Or5EV1wFQ=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 415HY2Jg078472
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 5 Feb 2024 11:34:03 -0600
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 5
+ Feb 2024 11:34:02 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 5 Feb 2024 11:34:02 -0600
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 415HY1wk111997;
+	Mon, 5 Feb 2024 11:34:02 -0600
+Message-ID: <45a0ed98-8dd2-4c5b-8e89-40c70e3fe831@ti.com>
+Date: Mon, 5 Feb 2024 11:34:01 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AM7PR04MB7080:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0c7c54d9-07bf-4524-3a32-08dc2670c98d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	o7jQx+nkRLvAhfpVhG+REojufx3a3XbJ/kwgD2h4lXdhjmm/5ygU/XfiAUmGE5w3nwkk/Hoam56uMz02jaGgVJxM2/x6fm0cBCz6joDng1hrILtrhOJNi9H2wH/0G5P/wJwLGWP3WkW0P22dcfWu6wRdBoXZ8BUmLTW7v8jWakbw/M6I7OPAU7n0Kr16fkJmEH4RxJjU6+1uSKYhBY0hy/h1XYp1LHAMyxn/JT3J0kWT6SbWeXsp0pKMPjrA524E1iF9nCvjCkeBKJSSCZ+OT0Vh+shxRu8sLYItd7KyrfnyxHzvtlLfR9WKKu7WqBDFldiftXUWewRY61zpDiovzkycCFJQkgE3aRxlCuWWFui+NuZIKt99As7WywdTuREEL2ugVWWHeQcvH74we3gqwW7O61XuFk+J9oWN5MTWR7MT0Bt1ozbGVuWcrs9O4V1FiHNojT4TmVAInpzBegmsXIIUWKaW/gu1Y4Un2Jq+U+TYgCPJyooxlh18276w7+6vI6ZbqbTHo+pexEXUzH6bA0/ymru60qBhfCNgJ+1QhorGnd0wN5vA5w4+BJD9K807mvMGKnbc3reVFQfkt5GAophrsz4n8xrEieoc1qHpJzX7b6NnCIIIa4hKS+/3QZir
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(376002)(366004)(396003)(39860400002)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(8676002)(38100700002)(41300700001)(66899024)(1076003)(2616005)(66946007)(478600001)(6666004)(6512007)(52116002)(6506007)(66476007)(2906002)(6486002)(4326008)(8936002)(6916009)(316002)(26005)(66556008)(7416002)(86362001)(5660300002)(83380400001)(38350700005)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?ykQ/v4WvwNN2yWtMb4W6On1GI+wtqJ7KoRs+pSojf4tO7UUMtjTMvyT5yBAi?=
- =?us-ascii?Q?fRZKnIXoKvtjtHTvaZArpO797QHDRLhGZyz+a9DJ5/I9GxLFLHMDclz9QHSf?=
- =?us-ascii?Q?CCCMQ+/lUKHqM9+dVvhM5NHFrRsPf1l4Os2a6149H0797Poy4ujY4iontVBY?=
- =?us-ascii?Q?ah7/DDGMnOGAwyF5dvbySEsFmNLA9x+ESftmh0g60j8ZwBiP9c6kGBgwflaf?=
- =?us-ascii?Q?yMEAZBKL0hQrGaAWmCQs+1R029MonYXDpmgpKJuuoV2i15i/pSe/572VuiEv?=
- =?us-ascii?Q?nlqPJKhHAuj0nXNzo2f164yFqvNWg7Av6CNbL+5ffiqoPaTibZg1ZKay0Iay?=
- =?us-ascii?Q?ALa0svrepNNXQXU+8qN13fke6oaW/Xjd450bFj+U1v2LqfnAqsDQTRPsr5TT?=
- =?us-ascii?Q?GxxRf7Ecjwd6CDWSFpZ0Ea7HPH1wFbn0Rp9qlUgE6Xi9TQbDbWcPTK1sVWUH?=
- =?us-ascii?Q?M1T4CkIEY1z9fdPU/YyUeyE0wUJ2x7Gz6dyF/oC/TR0eX14lTdtpm9vb7HJE?=
- =?us-ascii?Q?/fVqjHTICl28en+8CrY3S9HPSOfejY+GiGPQ1FLoqU099IN81Sz90c0RwWbB?=
- =?us-ascii?Q?3MvX0oSNZxac5esbBIHrkIK4hzKMPzQ5v+OBa4yUzQ1iQSIxg9gtq72kap69?=
- =?us-ascii?Q?hTvaqhgwQESfEj8ZYWNW+qdpUqr4moG2IwGy/Mb+ZCOQQ5fQB6rV8mXb5WSB?=
- =?us-ascii?Q?rYNUKia+6sgwp01UIN1nEDY7MG+0i4E8LkzEdbEzuIcRNwm/Vr6k8MYDjkWK?=
- =?us-ascii?Q?pAequUnA3PygugO5WCL3kTHv1IJ22w/fAmqlZ09kLQXN6f4mhi+atSHTHY2k?=
- =?us-ascii?Q?jwAm0LgIBwzyBdUdz3icWF5nJezSzYKhT/4QUt6SuYFV74d0ZymoxTEFcd4U?=
- =?us-ascii?Q?2VSw//XdjKkV2+cyX6ind4GYdDqzbYiH647nZ7c17STuFb7Ohx0eQwKnRi9u?=
- =?us-ascii?Q?NGTYzUWShmWl33w1akuXYb3EcrF6yIKPiETLAEV1WAMEgGlmg39meNe6WSU6?=
- =?us-ascii?Q?t2Nmnc1WBedpc9WIbr5Z+Rt+V0hkAATYSL+ubCPD/ZaC3f9DeWn/ls61IyVO?=
- =?us-ascii?Q?4wq4VVmiyvmrhI3ws0y/zV/kZnu4sG6SpXTTloLGYuJtIB5+OewJPCFKeYS3?=
- =?us-ascii?Q?ZLGMl2vgZJJ/rrxTsVd7UA2KRX2QNntxE3AydhiNl/kI8Ueg/ZqX25WT+sDD?=
- =?us-ascii?Q?MCDBXJGn/EC+8TmfXzQ8cvx30m6cc9j0cHhewciRff+POj2OQhOn0fQhhRaI?=
- =?us-ascii?Q?9qah0JU9RlUp7XDOPWz2Zhl1lm2ybaPsVJBddGx2Wgw9zPgeI1ozbGchFw8x?=
- =?us-ascii?Q?Zqp6vRCYid9XCUMF/IKDSlIo3ygE0VyJD3E8YIUaan6Rw9BylwqOXme5QTf0?=
- =?us-ascii?Q?fAOW0+LryMXSNAK2Va1mqffay/fodLPDdMwDkPyk7v6xN9lLfjEcWNHmWD6W?=
- =?us-ascii?Q?HvDJEoOsCILx7i5FhA6op9d22IhOxw1uD2rMKK0MouJZo9i15dyMtLqqI34d?=
- =?us-ascii?Q?MskRvaQE5C1uwZnP+01/hi7/GIYPy+bJBohCIDo9MOADuGLzv72CyIlBooKC?=
- =?us-ascii?Q?IQlO8wurZXvQz7TY6RF83Gr/y+ComIbs4lbq6Rk3?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0c7c54d9-07bf-4524-3a32-08dc2670c98d
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2024 17:35:04.1237
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8rwC4rkRTUqkyTYgWTOyVQpVSyq8P9X3KwwvGJjTLeKRHSCSAYU1ZDfM8SON25NALPbaneUtvoMKHfODQ63rJw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB7080
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 3/3] arm64: dts: ti: k3-am62p: add the USB sub-system
+Content-Language: en-US
+To: Roger Quadros <rogerq@kernel.org>, <nm@ti.com>, <vigneshr@ti.com>
+CC: <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <srk@ti.com>, <r-gunasekaran@ti.com>, <b-liu@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20240205135908.54656-1-rogerq@kernel.org>
+ <20240205135908.54656-4-rogerq@kernel.org>
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <20240205135908.54656-4-rogerq@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Add iMX95 EP support and add 64bit address support. Internal bus bridge for
-PCI support 64bit dma address in iMX95. Hence, call
-dma_set_mask_and_coherent() to set 64 bit DMA mask.
+On 2/5/24 7:59 AM, Roger Quadros wrote:
+> There are two USB instances available on the am62p5 starter kit. Include
+> and enable them for use on the board.
+> 
+> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> ---
+> 
+> Notes:
+>      Changelog:
+>      
+>      v4 - no change
+>      
+>      v3 - no change
+>      https://lore.kernel.org/all/20240201120332.4811-4-rogerq@kernel.org/
+>      
+>      v2:
+>      - added USB PHY CTRL node changes here
+>      - changed USB wrapper node names to usb@
+>      - changed Type-C chip node name to usb-power-control@
+> 
+>   arch/arm64/boot/dts/ti/k3-am62p-main.dtsi   | 46 ++++++++++++++
+>   arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi | 10 +++
+>   arch/arm64/boot/dts/ti/k3-am62p5-sk.dts     | 67 +++++++++++++++++++++
+>   3 files changed, 123 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
+> index 4c51bae06b57..17d28390d587 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
+> @@ -560,6 +560,52 @@ sdhci2: mmc@fa20000 {
+>   		status = "disabled";
+>   	};
+>   
+> +	usbss0: usb@f900000 {
+> +		compatible = "ti,am62-usb";
+> +		reg = <0x00 0x0f900000 0x00 0x800>;
+> +		clocks = <&k3_clks 161 3>;
+> +		clock-names = "ref";
+> +		ti,syscon-phy-pll-refclk = <&usb0_phy_ctrl 0x0>;
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		power-domains = <&k3_pds 178 TI_SCI_PD_EXCLUSIVE>;
+> +		ranges;
+> +		status = "disabled";
+> +
+> +		usb0: usb@31000000 {
+> +			compatible = "snps,dwc3";
+> +			reg = <0x00 0x31000000 0x00 0x50000>;
+> +			interrupts = <GIC_SPI 188 IRQ_TYPE_LEVEL_HIGH>, /* irq.0 */
+> +			<GIC_SPI 188 IRQ_TYPE_LEVEL_HIGH>; /* irq.0 */
+> +			interrupt-names = "host", "peripheral";
+> +			maximum-speed = "high-speed";
+> +			dr_mode = "otg";
+> +		};
+> +	};
+> +
+> +	usbss1: usb@f910000 {
+> +		compatible = "ti,am62-usb";
+> +		reg = <0x00 0x0f910000 0x00 0x800>;
+> +		clocks = <&k3_clks 162 3>;
+> +		clock-names = "ref";
+> +		ti,syscon-phy-pll-refclk = <&usb1_phy_ctrl 0x0>;
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		power-domains = <&k3_pds 179 TI_SCI_PD_EXCLUSIVE>;
+> +		ranges;
+> +		status = "disabled";
+> +
+> +		usb1: usb@31100000 {
+> +			compatible = "snps,dwc3";
+> +			reg = <0x00 0x31100000 0x00 0x50000>;
+> +			interrupts = <GIC_SPI 226 IRQ_TYPE_LEVEL_HIGH>, /* irq.0 */
+> +			<GIC_SPI 226 IRQ_TYPE_LEVEL_HIGH>; /* irq.0 */
+> +			interrupt-names = "host", "peripheral";
+> +			maximum-speed = "high-speed";
+> +			dr_mode = "otg";
+> +		};
+> +	};
+> +
+>   	fss: bus@fc00000 {
+>   		compatible = "simple-bus";
+>   		reg = <0x00 0x0fc00000 0x00 0x70000>;
+> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
+> index 19f42b39394e..00dd38b02a52 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
+> @@ -18,6 +18,16 @@ chipid: chipid@14 {
+>   			reg = <0x14 0x4>;
+>   			bootph-all;
+>   		};
+> +
+> +		usb0_phy_ctrl: syscon@4008 {
+> +			compatible = "ti,am62-usb-phy-ctrl", "syscon";
+> +			reg = <0x4008 0x4>;
+> +		};
+> +
+> +		usb1_phy_ctrl: syscon@4018 {
+> +			compatible = "ti,am62-usb-phy-ctrl", "syscon";
+> +			reg = <0x4018 0x4>;
+> +		};
+>   	};
+>   
+>   	wkup_uart0: serial@2b300000 {
+> diff --git a/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts b/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
+> index 1773c05f752c..80be56c0a4e0 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
+> @@ -27,6 +27,8 @@ aliases {
+>   		spi0 = &ospi0;
+>   		ethernet0 = &cpsw_port1;
+>   		ethernet1 = &cpsw_port2;
+> +		usb0 = &usb0;
+> +		usb1 = &usb1;
+>   	};
+>   
+>   	chosen {
+> @@ -297,6 +299,12 @@ AM62PX_IOPAD(0x01b0, PIN_OUTPUT, 2) /* (G20) MCASP0_ACLKR.UART1_TXD */
+>   		bootph-all;
+>   	};
+>   
+> +	main_usb1_pins_default: main-usb1-default-pins {
+> +		pinctrl-single,pins = <
+> +			AM62PX_IOPAD(0x0258, PIN_INPUT, 0) /* (G21) USB1_DRVVBUS */
+> +		>;
+> +	};
+> +
+>   	main_wlirq_pins_default: main-wlirq-default-pins {
+>   		pinctrl-single,pins = <
+>   			AM62PX_IOPAD(0x0128, PIN_INPUT, 7) /* (K25) MMC2_SDWP.GPIO0_72 */
+> @@ -340,6 +348,36 @@ AM62PX_IOPAD(0x0124, PIN_INPUT, 7) /* (J25) MMC2_SDCD.GPIO0_71 */
+>   	};
+>   };
+>   
+> +&main_i2c0 {
+> +	status = "okay";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&main_i2c0_pins_default>;
+> +	clock-frequency = <400000>;
+> +
+> +	typec_pd0: usb-power-controller@3f {
+> +		compatible = "ti,tps6598x";
+> +		reg = <0x3f>;
+> +
+> +		connector {
+> +			compatible = "usb-c-connector";
+> +			label = "USB-C";
+> +			self-powered;
+> +			data-role = "dual";
+> +			power-role = "sink";
+> +			ports {
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +				port@0 {
+> +					reg = <0>;
+> +					usb_con_hs: endpoint {
+> +						remote-endpoint = <&usb0_hs_ep>;
+> +					};
+> +				};
+> +			};
+> +		};
+> +	};
+> +};
+> +
+>   &main_i2c1 {
+>   	status = "okay";
+>   	pinctrl-names = "default";
+> @@ -460,6 +498,35 @@ cpsw3g_phy1: ethernet-phy@1 {
+>   	};
+>   };
+>   
+> +&usbss0 {
+> +	status = "okay";
+> +	ti,vbus-divider;
+> +};
+> +
+> +&usbss1 {
+> +	status = "okay";
+> +	ti,vbus-divider;
+> +};
+> +
+> +&usb0 {
+> +	usb-role-switch;
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +
+> +	port@0 {
+> +		reg = <0>;
+> +		usb0_hs_ep: endpoint {
+> +			remote-endpoint = <&usb_con_hs>;
+> +		};
+> +	};
+> +};
+> +
+> +&usb1 {
+> +	dr_mode = "host";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&main_usb1_pins_default>;
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
----
+I'm not super familiar with USB, but I see this pinmux for the
+"DRVVBUS" pin is usually added the the parent USB subsystem node (usbss).
+Does this pin belong to the subsystem or the specific USB instance?
 
-Notes:
-    Change from v9 to v10
-    - using if (device_property_match_string(dev, "reg-names", "dbi2")) instead of
-    	if (imx6_pcie->drvdata->variant == IMX95_EP)
-    - so other platform can stat use "dbi2" in dts.
-    
-    @Mani: I change to check device_property_match_string(), so I can update
-    other platform dts file, It should be better than
-    	imx6_pcie->drvdata->variant == IMX95_EP
-    
-    Change from v8 to v9
-    - update fixme comments
-    - update BAR1 comments
-    - Add mani's review tag
-    Change from v7 to v8
-    - Update commit message
-    - Using Fixme
-    - Update clks_cnts by ARRAY_SIZE
-    
-    Change from v4 to v7
-    - none
-    Change from v3 to v4
-    - change align to 4k for imx95
-    Change from v1 to v3
-    - new patches at v3
+Andrew
 
- drivers/pci/controller/dwc/pci-imx6.c | 47 +++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
-
-diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-index c2098e59fde1e..472ff1cc17d2f 100644
---- a/drivers/pci/controller/dwc/pci-imx6.c
-+++ b/drivers/pci/controller/dwc/pci-imx6.c
-@@ -75,6 +75,7 @@ enum imx6_pcie_variants {
- 	IMX8MQ_EP,
- 	IMX8MM_EP,
- 	IMX8MP_EP,
-+	IMX95_EP,
- };
- 
- #define IMX6_PCIE_FLAG_IMX6_PHY			BIT(0)
-@@ -84,6 +85,7 @@ enum imx6_pcie_variants {
- #define IMX6_PCIE_FLAG_HAS_APP_RESET		BIT(4)
- #define IMX6_PCIE_FLAG_HAS_PHY_RESET		BIT(5)
- #define IMX6_PCIE_FLAG_HAS_SERDES		BIT(6)
-+#define IMX6_PCIE_FLAG_SUPPORT_64BIT		BIT(7)
- 
- #define imx6_check_flag(pci, val)     (pci->drvdata->flags & val)
- 
-@@ -616,6 +618,7 @@ static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
- 		break;
- 	case IMX7D:
- 	case IMX95:
-+	case IMX95_EP:
- 		break;
- 	case IMX8MM:
- 	case IMX8MM_EP:
-@@ -1050,6 +1053,23 @@ static const struct pci_epc_features imx8m_pcie_epc_features = {
- 	.align = SZ_64K,
- };
- 
-+/*
-+ * BAR#	| Default BAR enable	| Default BAR Type	| Default BAR Size	| BAR Sizing Scheme
-+ * ================================================================================================
-+ * BAR0	| Enable		| 64-bit		| 1 MB			| Programmable Size
-+ * BAR1	| Disable		| 32-bit		| 64 KB			| Fixed Size
-+ *        BAR1 should be disabled if BAR0 is 64bit.
-+ * BAR2	| Enable		| 32-bit		| 1 MB			| Programmable Size
-+ * BAR3	| Enable		| 32-bit		| 64 KB			| Programmable Size
-+ * BAR4	| Enable		| 32-bit		| 1M			| Programmable Size
-+ * BAR5	| Enable		| 32-bit		| 64 KB			| Programmable Size
-+ */
-+static const struct pci_epc_features imx95_pcie_epc_features = {
-+	.msi_capable = true,
-+	.bar_fixed_size[1] = SZ_64K,
-+	.align = SZ_4K,
-+};
-+
- static const struct pci_epc_features*
- imx6_pcie_ep_get_features(struct dw_pcie_ep *ep)
- {
-@@ -1092,6 +1112,15 @@ static int imx6_add_pcie_ep(struct imx6_pcie *imx6_pcie,
- 
- 	pci->dbi_base2 = pci->dbi_base + pcie_dbi2_offset;
- 
-+	/*
-+	 * FIXME: Ideally, dbi2 base address should come from DT. But since only IMX95 is defining
-+	 * "dbi2" in DT, "dbi_base2" is set to NULL here for that platform alone so that the DWC
-+	 * core code can fetch that from DT. But once all platform DTs were fixed, this and the
-+	 * above "dbi_base2" setting should be removed.
-+	 */
-+	if (device_property_match_string(dev, "reg-names", "dbi2") >= 0)
-+		pci->dbi_base2 = NULL;
-+
- 	ret = dw_pcie_ep_init(ep);
- 	if (ret) {
- 		dev_err(dev, "failed to initialize endpoint\n");
-@@ -1343,6 +1372,9 @@ static int imx6_pcie_probe(struct platform_device *pdev)
- 					     "unable to find iomuxc registers\n");
- 	}
- 
-+	if (imx6_check_flag(imx6_pcie, IMX6_PCIE_FLAG_SUPPORT_64BIT))
-+		dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
-+
- 	/* Grab PCIe PHY Tx Settings */
- 	if (of_property_read_u32(node, "fsl,tx-deemph-gen1",
- 				 &imx6_pcie->tx_deemph_gen1))
-@@ -1561,6 +1593,20 @@ static const struct imx6_pcie_drvdata drvdata[] = {
- 		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
- 		.epc_features = &imx8m_pcie_epc_features,
- 	},
-+	[IMX95_EP] = {
-+		.variant = IMX95_EP,
-+		.flags = IMX6_PCIE_FLAG_HAS_SERDES |
-+			 IMX6_PCIE_FLAG_SUPPORT_64BIT,
-+		.clk_names = imx8mq_clks,
-+		.clks_cnt = ARRAY_SIZE(imx8mq_clks),
-+		.ltssm_off = IMX95_PE0_GEN_CTRL_3,
-+		.ltssm_mask = IMX95_PCIE_LTSSM_EN,
-+		.mode_off[0]  = IMX95_PE0_GEN_CTRL_1,
-+		.mode_mask[0] = IMX95_PCIE_DEVICE_TYPE,
-+		.init_phy = imx95_pcie_init_phy,
-+		.epc_features = &imx95_pcie_epc_features,
-+		.mode = DW_PCIE_EP_TYPE,
-+	},
- };
- 
- static const struct of_device_id imx6_pcie_of_match[] = {
-@@ -1575,6 +1621,7 @@ static const struct of_device_id imx6_pcie_of_match[] = {
- 	{ .compatible = "fsl,imx8mq-pcie-ep", .data = &drvdata[IMX8MQ_EP], },
- 	{ .compatible = "fsl,imx8mm-pcie-ep", .data = &drvdata[IMX8MM_EP], },
- 	{ .compatible = "fsl,imx8mp-pcie-ep", .data = &drvdata[IMX8MP_EP], },
-+	{ .compatible = "fsl,imx95-pcie-ep", .data = &drvdata[IMX95_EP], },
- 	{},
- };
- 
--- 
-2.34.1
-
+> +};
+> +
+>   &mcasp1 {
+>   	status = "okay";
+>   	#sound-dai-cells = <0>;
 
