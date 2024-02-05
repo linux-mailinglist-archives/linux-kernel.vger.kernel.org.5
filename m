@@ -1,488 +1,119 @@
-Return-Path: <linux-kernel+bounces-52228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52230-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42EE58495B0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:52:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A162F8495B3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:54:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF6ED281803
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:52:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 117391F24D2C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:54:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A761E11CBF;
-	Mon,  5 Feb 2024 08:52:19 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17EBF1173E;
+	Mon,  5 Feb 2024 08:54:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cC6I0Vj1"
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E6211706;
-	Mon,  5 Feb 2024 08:52:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06722125A1
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 08:54:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707123138; cv=none; b=JY8yPmwoae5bl+ijOIodDUI96Aw/V9W9cmp+ywW55WbVLJBSAfgDmeg/giH7JzdxQppSTT7xTImEohPxWoxxu6Ogqo030Oje68oHiP/OtecJz2y8GnM3MeYRDBIx68fA2RaVaeWc9BdMWBz/sIxc7eDefCdCP3aCyI5TAuijxdo=
+	t=1707123288; cv=none; b=pzfNVWMjlZ1KqPPGzokg+ZWr/DXdQQFmxPWLDTeqImf2lfGrkcRRt0RYfgvNeV3s1AuqeMsrdRDf/JjfXfG3i2a2vysC/ZL/OpGyyE5uCV5udlE3XuTu/Gqmlz5j7JdjwD1Ctd7Ynu7ol8YR3/klkuYqNQisvV8KKTuhIBp6FAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707123138; c=relaxed/simple;
-	bh=dFCb3IEvT5eKHDAlCGgb4jVCqCUkw4KSxuQSZGxpkCY=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=EWicylinzbwjB0QgUZntYSZPpUg8w1RQcHfqsfWjY4DjZhDR/E1lWtF+Hwf0wNOIHimL6c0X59GSghaaLIOho+Yb7kDVwNHZ/9EkvI9ZxgNCRs1grfZbebQJZ8XoU6xKJjS0WlBtv3Gqbby/LQF4qbruO1d6ChL7shUFApS/s7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TT0RC1dKNz6G80H;
-	Mon,  5 Feb 2024 16:48:55 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id BA564141CC7;
-	Mon,  5 Feb 2024 16:52:06 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (7.191.163.240) by
- lhrpeml500005.china.huawei.com (7.191.163.240) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 5 Feb 2024 08:52:06 +0000
-Received: from lhrpeml500005.china.huawei.com ([7.191.163.240]) by
- lhrpeml500005.china.huawei.com ([7.191.163.240]) with mapi id 15.01.2507.035;
- Mon, 5 Feb 2024 08:52:06 +0000
-From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To: liulongfang <liulongfang@huawei.com>, "alex.williamson@redhat.com"
-	<alex.williamson@redhat.com>, "jgg@nvidia.com" <jgg@nvidia.com>, "Jonathan
- Cameron" <jonathan.cameron@huawei.com>
-CC: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: RE: [PATCH v2 2/3] hisi_acc_vfio_pci: register debugfs for hisilicon
- migration driver
-Thread-Topic: [PATCH v2 2/3] hisi_acc_vfio_pci: register debugfs for hisilicon
- migration driver
-Thread-Index: AQHaV0i5tkBUAixO9Ua7YSFPSmzxI7D7aQpQ
-Date: Mon, 5 Feb 2024 08:52:06 +0000
-Message-ID: <0337a36286244e28b26895b24a7b36d3@huawei.com>
-References: <20240204085610.17720-1-liulongfang@huawei.com>
- <20240204085610.17720-3-liulongfang@huawei.com>
-In-Reply-To: <20240204085610.17720-3-liulongfang@huawei.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1707123288; c=relaxed/simple;
+	bh=HGW0tJgQKNoHi75+5RzIYowavHplCDKrjC1m5Pju03g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YEHOPPq3FTNDuH5qp2Lie3+wa/PtNcBpRR5k2eLexdArv/RqoWb6n1q6L/Pj65ODSYVYYa+Uy/dLxjg9S6T+kUWvpBYDhqVXoDGz9JCwf9Eo2bqojGYoh9eM9PPBmkzYk9AR+wVCkFZtRIU+VUSRaYTbOkirn9khv788DVQD8ZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cC6I0Vj1; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5bdbe2de25fso3982416a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 00:54:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707123286; x=1707728086; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=KxN/alX9xe1YAli4rdXZnSsmzCtviymWvvocf9KgwhY=;
+        b=cC6I0Vj1h8oKkPc9CoYNNYAuvT8iFnpkYFDToI4KEo5h1wyty8gPLb9Y4Me7VzIqAe
+         fR+j58tMikYC6c1I667ZNGeJQ97Ah9Fh7XKNc+oUDETgykEnClsWvE/ZffsMZxB5BpvF
+         F0bZanjwC7/emenQssO0oYtpmG86n8RC0pRCr5uz7UxgFuvnUgxO+/5wMzL9oKQfqkoG
+         VX6sMeuErF0i2EGqxtMjL1ZnE7aO95pm+hI2dJ7hmCeZxKTVq90Bw2nb60TLOAv7uLDE
+         BlVXvRiUMaIfk8tUP3gjw6D5TOa0Vb0Fv/4XFWOBnv2hAArancmBbDyGkXUOz+4g/Pnt
+         Gkkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707123286; x=1707728086;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KxN/alX9xe1YAli4rdXZnSsmzCtviymWvvocf9KgwhY=;
+        b=ahMRIHuu1rCyDK+fe220iwrYxTlyJ70hsNt0QUfZ6XunLScIae/MSAujFKbubSuKb7
+         /vFJgMoiImBaVtFsKQdtczQJoUXKwSk0iq1uDn+Gp6egSs3G8983CgKWDtGGd4hxKB1E
+         +Tm3BKREJojffyuaoOw0e4rxvyrmyaxhEdvudKbA5X5YeqcgXCIdKOz+m2GbRgoSqd6y
+         WQ1WUu4WDpSDmfuJzPnL7yTcdXkcv6EX5d6nedwpj2lupCPoTiU2+ARNiZX/LeOKLbRS
+         wTWdVlI4gYZzLhBnI0W6/vBu1qw10lLv8ql4Udx58VVwSVqaH+4fHNb2igDDj+A2aAe9
+         +Llw==
+X-Gm-Message-State: AOJu0YxxosPSX/6r58AHmIGncy/nLf6xQRjM/aeaMfrhmdDlkxXK/tRv
+	yCVbUdjIvPa4BK1zIKpD2rN09COkrdKPip1IuZrvhHizVIbl6pv44SHG0UhD1OQ=
+X-Google-Smtp-Source: AGHT+IFqxnLb3cAETmo8qVvHcXijUch3hmAzRC93QrlDymd165i3Fdhstj5Swn6AIlNvua9NDfmRIQ==
+X-Received: by 2002:a05:6a20:9c8d:b0:19e:4a68:46d0 with SMTP id mj13-20020a056a209c8d00b0019e4a6846d0mr11275810pzb.60.1707123286356;
+        Mon, 05 Feb 2024 00:54:46 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXZZUYF3cKHywyNWGvGX7SyQIdnMNdOQ4vsk42dPgyyLDeJ1kVEpVFHul7N2QV0kaCgljRgXgwp5o3TIk/EaX4lI500LpPS/uaZAzO93YTmfneFWGrogzsHZjzfcZc9S7cjwQh4Cc/KXJ77IYdo4TLju8dHRP07SJfLYB43Xkzq+Xee0uQe6dJoDfoj9yxsilOVlpo4FgKfjcKz3VzHdX6oWwJblUnKHzH/8ogOaAZkNv4=
+Received: from localhost ([122.172.83.95])
+        by smtp.gmail.com with ESMTPSA id p8-20020a056a0026c800b006e04553a4c5sm1313493pfw.52.2024.02.05.00.54.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 00:54:45 -0800 (PST)
+Date: Mon, 5 Feb 2024 14:24:44 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: lizhe <sensor1010@163.com>
+Cc: vincent.guittot@linaro.org, ilpo.jarvinen@linux.intel.com,
+	rafael@kernel.org, linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cpufreq/schedutil: When updating limitations, frequency
+ modulation interval not become invalid.
+Message-ID: <20240205085444.2owfuruucm26txt3@vireshk-i7>
+References: <20240204140928.2865-1-sensor1010@163.com>
+ <20240205073814.s656yzrv56tecji3@vireshk-i7>
+ <7654198e.15f6.18d78668d9b.Coremail.sensor1010@163.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7654198e.15f6.18d78668d9b.Coremail.sensor1010@163.com>
 
+On 05-02-24, 16:33, lizhe wrote:
+> HI： 
+>     I think not.
+>     It will cause the following changes:
+>     limits_changed in sugov_limit() is set to true.
+>     This will cause the modulation interval to be invalid.
+>     The system modulation will ignore the modulation interval.
+>     A modulation request will be initiated immediately.
+> 
+> 
+>    As shown below : 
+>    sugov_should_update_freq(...)
+>   {
+>      if (unlikely(sg_policy->limits_changed)) {
+>           ....
+>           return true;
+>      }
+>   }
+>   
+>   Repeatedly setting the schedutil modulation policy causes the modulation interval to be invalid. 
+>   Why is this necessary ? 
 
+This is the penalty being paid to keep the interface simple and consistent.
+Playing with sysfs can do such minor things.
 
-> -----Original Message-----
-> From: liulongfang <liulongfang@huawei.com>
-> Sent: Sunday, February 4, 2024 8:56 AM
-> To: alex.williamson@redhat.com; jgg@nvidia.com; Shameerali Kolothum
-> Thodi <shameerali.kolothum.thodi@huawei.com>; Jonathan Cameron
-> <jonathan.cameron@huawei.com>
-> Cc: kvm@vger.kernel.org; linux-kernel@vger.kernel.org;
-> linuxarm@openeuler.org; liulongfang <liulongfang@huawei.com>
-> Subject: [PATCH v2 2/3] hisi_acc_vfio_pci: register debugfs for hisilicon
-> migration driver
->=20
-> On the debugfs framework of VFIO, if the CONFIG_VFIO_DEBUGFS macro is
-> enabled, the debug function is registered for the live migration driver
-> of the HiSilicon accelerator device.
->=20
-> After registering the HiSilicon accelerator device on the debugfs
-> framework of live migration of vfio, a directory file "hisi_acc"
-> of debugfs is created, and then three debug function files are
-> created in this directory:
->=20
->    vfio
->     |
->     +---<dev_name1>
->     |    +---migration
->     |        +--state
->     |        +--hisi_acc
->     |            +--attr
->     |            +--data
->     |            +--save
->     |            +--cmd_state
->     |
->     +---<dev_name2>
->          +---migration
->              +--state
->              +--hisi_acc
->                  +--attr
->                  +--data
->                  +--save
->                  +--cmd_state
->=20
-> data file: used to get the migration data from the driver
-> attr file: used to get device attributes parameters from the driver
-> save file: used to read the data of the live migration device and save
-> it to the driver.
-> cmd_state: used to get the cmd channel state for the device.
->=20
-> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
-> ---
->  .../vfio/pci/hisilicon/hisi_acc_vfio_pci.c    | 197 ++++++++++++++++++
->  .../vfio/pci/hisilicon/hisi_acc_vfio_pci.h    |  11 +
->  2 files changed, 208 insertions(+)
->=20
-> diff --git a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
-> b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
-> index 00a22a990eb8..e51bbb41c2b3 100644
-> --- a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
-> +++ b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
-> @@ -15,6 +15,7 @@
->  #include <linux/anon_inodes.h>
->=20
->  #include "hisi_acc_vfio_pci.h"
-> +#include "../../vfio.h"
->=20
->  /* Return 0 on VM acc device ready, -ETIMEDOUT hardware timeout */
->  static int qm_wait_dev_not_ready(struct hisi_qm *qm)
-> @@ -606,6 +607,18 @@ hisi_acc_check_int_state(struct
-> hisi_acc_vf_core_device *hisi_acc_vdev)
->  	}
->  }
->=20
-> +static void hisi_acc_vf_migf_save(struct hisi_acc_vf_migration_file
-> *dst_migf,
-
-Can we please rename this to indicate the debug, similar to other debugfs s=
-upport
-functions here, something like hisi_acc_vf_debug_migf_save()?
-
-> +	struct hisi_acc_vf_migration_file *src_migf)
-> +{
-> +	if (!dst_migf)
-> +		return;
-> +
-> +	dst_migf->disabled =3D false;
-
-Is this set to true anywhere for debugfs migf ?
-
-> +	dst_migf->total_length =3D src_migf->total_length;
-> +	memcpy(&dst_migf->vf_data, &src_migf->vf_data,
-> +		    sizeof(struct acc_vf_data));
-> +}
-> +
->  static void hisi_acc_vf_disable_fd(struct hisi_acc_vf_migration_file *mi=
-gf)
->  {
->  	mutex_lock(&migf->lock);
-> @@ -618,12 +631,16 @@ static void hisi_acc_vf_disable_fd(struct
-> hisi_acc_vf_migration_file *migf)
->  static void hisi_acc_vf_disable_fds(struct hisi_acc_vf_core_device
-> *hisi_acc_vdev)
->  {
->  	if (hisi_acc_vdev->resuming_migf) {
-> +		hisi_acc_vf_migf_save(hisi_acc_vdev->debug_migf,
-> +						hisi_acc_vdev-
-> >resuming_migf);
->  		hisi_acc_vf_disable_fd(hisi_acc_vdev->resuming_migf);
->  		fput(hisi_acc_vdev->resuming_migf->filp);
->  		hisi_acc_vdev->resuming_migf =3D NULL;
->  	}
->=20
->  	if (hisi_acc_vdev->saving_migf) {
-> +		hisi_acc_vf_migf_save(hisi_acc_vdev->debug_migf,
-> +						hisi_acc_vdev->saving_migf);
->  		hisi_acc_vf_disable_fd(hisi_acc_vdev->saving_migf);
->  		fput(hisi_acc_vdev->saving_migf->filp);
->  		hisi_acc_vdev->saving_migf =3D NULL;
-> @@ -1156,6 +1173,7 @@ static int hisi_acc_vf_qm_init(struct
-> hisi_acc_vf_core_device *hisi_acc_vdev)
->  	if (!vf_qm->io_base)
->  		return -EIO;
->=20
-> +	mutex_init(&hisi_acc_vdev->enable_mutex);
->  	vf_qm->fun_type =3D QM_HW_VF;
->  	vf_qm->pdev =3D vf_dev;
->  	mutex_init(&vf_qm->mailbox_lock);
-> @@ -1306,6 +1324,176 @@ static long hisi_acc_vfio_pci_ioctl(struct
-> vfio_device *core_vdev, unsigned int
->  	return vfio_pci_core_ioctl(core_vdev, cmd, arg);
->  }
->=20
-> +static int hisi_acc_vf_debug_check(struct seq_file *seq, struct vfio_dev=
-ice
-> *vdev)
-> +{
-> +	struct hisi_acc_vf_core_device *hisi_acc_vdev =3D
-> hisi_acc_get_vf_dev(vdev);
-> +	struct hisi_acc_vf_migration_file *migf =3D hisi_acc_vdev->debug_migf;
-> +
-> +	if (!vdev->mig_ops || !migf) {
-> +		seq_printf(seq, "%s\n", "device does not support live
-> migration!");
-> +		return -EINVAL;
-> +	}
-> +
-> +	/**
-> +	 * When the device is not opened, the io_base is not mapped.
-> +	 * The driver cannot perform device read and write operations.
-> +	 */
-> +	if (atomic_read(&hisi_acc_vdev->dev_opened) !=3D DEV_OPEN) {
-> +		seq_printf(seq, "%s\n", "device not opened!");
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int hisi_acc_vf_debug_cmd(struct seq_file *seq, void *data)
-> +{
-> +	struct device *vf_dev =3D seq->private;
-> +	struct vfio_pci_core_device *core_device =3D dev_get_drvdata(vf_dev);
-> +	struct vfio_device *vdev =3D &core_device->vdev;
-> +	struct hisi_acc_vf_core_device *hisi_acc_vdev =3D
-> hisi_acc_get_vf_dev(vdev);
-> +	struct hisi_qm *vf_qm =3D &hisi_acc_vdev->vf_qm;
-> +	u64 value;
-> +	int ret;
-> +
-> +	mutex_lock(&hisi_acc_vdev->enable_mutex);
-> +	ret =3D hisi_acc_vf_debug_check(seq, vdev);
-> +	if (ret) {
-> +		mutex_unlock(&hisi_acc_vdev->enable_mutex);
-> +		return 0;
-> +	}
-> +
-> +	ret =3D qm_wait_dev_not_ready(vf_qm);
-> +	if (ret) {
-> +		mutex_unlock(&hisi_acc_vdev->enable_mutex);
-> +		seq_printf(seq, "%s\n", "VF device not ready!");
-> +		return 0;
-> +	}
-> +
-> +	value =3D readl(vf_qm->io_base + QM_MB_CMD_SEND_BASE);
-> +	mutex_unlock(&hisi_acc_vdev->enable_mutex);
-> +	seq_printf(seq, "%s:0x%llx\n", "mailbox cmd channel state is OK",
-> value);
-> +
-> +	return 0;
-> +}
-> +
-> +static int hisi_acc_vf_debug_save(struct seq_file *seq, void *data)
-> +{
-> +	struct device *vf_dev =3D seq->private;
-> +	struct vfio_pci_core_device *core_device =3D dev_get_drvdata(vf_dev);
-> +	struct vfio_device *vdev =3D &core_device->vdev;
-> +	struct hisi_acc_vf_core_device *hisi_acc_vdev =3D
-> hisi_acc_get_vf_dev(vdev);
-> +	struct hisi_acc_vf_migration_file *migf =3D hisi_acc_vdev->debug_migf;
-> +	int ret;
-> +
-> +	mutex_lock(&hisi_acc_vdev->enable_mutex);
-> +	ret =3D hisi_acc_vf_debug_check(seq, vdev);
-> +	if (ret) {
-> +		mutex_unlock(&hisi_acc_vdev->enable_mutex);
-> +		return 0;
-> +	}
-> +
-> +	ret =3D vf_qm_state_save(hisi_acc_vdev, migf);
-
-Are you sure this will not interfere with the core migration APIs as we are=
- not
-holding the state_mutex?. I think Alex also raised a similar concern previo=
-usly.=20
-Applies to other debugfs interfaces here as well. Please check.
-
-
-> +	if (ret) {
-> +		mutex_unlock(&hisi_acc_vdev->enable_mutex);
-> +		seq_printf(seq, "%s\n", "failed to save device data!");
-> +		return 0;
-> +	}
-> +	mutex_unlock(&hisi_acc_vdev->enable_mutex);
-> +	seq_printf(seq, "%s\n", "successful to save device data!");
-> +
-> +	return 0;
-> +}
-> +
-> +static int hisi_acc_vf_data_read(struct seq_file *seq, void *data)
-> +{
-> +	struct device *vf_dev =3D seq->private;
-> +	struct vfio_pci_core_device *core_device =3D dev_get_drvdata(vf_dev);
-> +	struct vfio_device *vdev =3D &core_device->vdev;
-> +	struct hisi_acc_vf_core_device *hisi_acc_vdev =3D
-> hisi_acc_get_vf_dev(vdev);
-> +	struct hisi_acc_vf_migration_file *debug_migf =3D hisi_acc_vdev-
-> >debug_migf;
-> +	size_t vf_data_sz =3D offsetofend(struct acc_vf_data, padding);
-> +
-> +	if (debug_migf && debug_migf->total_length)
-> +		seq_hex_dump(seq, "Mig Data:", DUMP_PREFIX_OFFSET, 16,
-> 1,
-> +				(unsigned char *)&debug_migf->vf_data,
-> +				vf_data_sz, false);
-> +	else
-> +		seq_printf(seq, "%s\n", "device not migrated!");
-> +
-> +	return 0;
-> +}
-> +
-> +static int hisi_acc_vf_attr_read(struct seq_file *seq, void *data)
-> +{
-> +	struct device *vf_dev =3D seq->private;
-> +	struct vfio_pci_core_device *core_device =3D dev_get_drvdata(vf_dev);
-> +	struct vfio_device *vdev =3D &core_device->vdev;
-> +	struct hisi_acc_vf_core_device *hisi_acc_vdev =3D
-> hisi_acc_get_vf_dev(vdev);
-> +	struct hisi_acc_vf_migration_file *debug_migf =3D hisi_acc_vdev-
-> >debug_migf;
-> +
-> +	if (debug_migf && debug_migf->total_length) {
-> +		seq_printf(seq,
-> +			 "acc device:\n"
-> +			 "device  state: %d\n"
-> +			 "device  ready: %u\n"
-> +			 "data    valid: %d\n"
-> +			 "data     size: %lu\n",
-> +			 hisi_acc_vdev->mig_state,
-> +			 hisi_acc_vdev->vf_qm_state,
-> +			 debug_migf->disabled,
-> +			 debug_migf->total_length);
-> +	} else {
-> +		seq_printf(seq, "%s\n", "device not migrated!");
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int hisi_acc_vfio_debug_init(struct hisi_acc_vf_core_device
-> *hisi_acc_vdev)
-> +{
-> +	struct vfio_device *vdev =3D &hisi_acc_vdev->core_device.vdev;
-> +	struct dentry *vfio_dev_migration =3D NULL;
-> +	struct dentry *vfio_hisi_acc =3D NULL;
-> +	struct device *dev =3D vdev->dev;
-> +	void *migf =3D NULL;
-> +
-> +	if (!debugfs_initialized())
-> +		return 0;
-> +
-> +	migf =3D kzalloc(sizeof(struct hisi_acc_vf_migration_file), GFP_KERNEL)=
-;
-> +	if (!migf)
-> +		return -ENOMEM;
-> +	hisi_acc_vdev->debug_migf =3D migf;
-> +
-> +	vfio_dev_migration =3D debugfs_lookup("migration", vdev-
-> >debug_root);
-> +	if (!vfio_dev_migration) {
-> +		kfree(migf);
-> +		dev_err(dev, "failed to lookup migration debugfs file!\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	vfio_hisi_acc =3D debugfs_create_dir("hisi_acc", vfio_dev_migration);
-> +	debugfs_create_devm_seqfile(dev, "data", vfio_hisi_acc,
-> +				  hisi_acc_vf_data_read);
-> +	debugfs_create_devm_seqfile(dev, "attr", vfio_hisi_acc,
-> +				  hisi_acc_vf_attr_read);
-> +	debugfs_create_devm_seqfile(dev, "cmd_state", vfio_hisi_acc,
-> +				  hisi_acc_vf_debug_cmd);
-> +	debugfs_create_devm_seqfile(dev, "save", vfio_hisi_acc,
-> +				  hisi_acc_vf_debug_save);
-> +
-> +	return 0;
-> +}
-> +
-> +static void hisi_acc_vf_debugfs_exit(struct hisi_acc_vf_core_device
-> *hisi_acc_vdev)
-> +{
-> +	if (!debugfs_initialized())
-> +		return;
-> +
-> +	kfree(hisi_acc_vdev->debug_migf);
-> +}
-> +
->  static int hisi_acc_vfio_pci_open_device(struct vfio_device *core_vdev)
->  {
->  	struct hisi_acc_vf_core_device *hisi_acc_vdev =3D
-> hisi_acc_get_vf_dev(core_vdev);
-> @@ -1323,9 +1511,11 @@ static int hisi_acc_vfio_pci_open_device(struct
-> vfio_device *core_vdev)
->  			return ret;
->  		}
->  		hisi_acc_vdev->mig_state =3D VFIO_DEVICE_STATE_RUNNING;
-> +		atomic_set(&hisi_acc_vdev->dev_opened, DEV_OPEN);
->  	}
->=20
->  	vfio_pci_core_finish_enable(vdev);
-> +
->  	return 0;
->  }
->=20
-> @@ -1334,7 +1524,10 @@ static void hisi_acc_vfio_pci_close_device(struct
-> vfio_device *core_vdev)
->  	struct hisi_acc_vf_core_device *hisi_acc_vdev =3D
-> hisi_acc_get_vf_dev(core_vdev);
->  	struct hisi_qm *vf_qm =3D &hisi_acc_vdev->vf_qm;
->=20
-> +	atomic_set(&hisi_acc_vdev->dev_opened, DEV_CLOSE);
-> +	mutex_lock(&hisi_acc_vdev->enable_mutex);
->  	iounmap(vf_qm->io_base);
-> +	mutex_unlock(&hisi_acc_vdev->enable_mutex);
->  	vfio_pci_core_close_device(core_vdev);
->  }
->=20
-> @@ -1425,6 +1618,9 @@ static int hisi_acc_vfio_pci_probe(struct pci_dev
-> *pdev, const struct pci_device
->  	ret =3D vfio_pci_core_register_device(&hisi_acc_vdev->core_device);
->  	if (ret)
->  		goto out_put_vdev;
-> +
-> +	if (ops =3D=3D &hisi_acc_vfio_pci_migrn_ops)
-> +		hisi_acc_vfio_debug_init(hisi_acc_vdev);
->  	return 0;
->=20
->  out_put_vdev:
-> @@ -1437,6 +1633,7 @@ static void hisi_acc_vfio_pci_remove(struct pci_dev
-> *pdev)
->  	struct hisi_acc_vf_core_device *hisi_acc_vdev =3D
-> hisi_acc_drvdata(pdev);
->=20
->  	vfio_pci_core_unregister_device(&hisi_acc_vdev->core_device);
-> +	hisi_acc_vf_debugfs_exit(hisi_acc_vdev);
->  	vfio_put_device(&hisi_acc_vdev->core_device.vdev);
->  }
->=20
-> diff --git a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
-> b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
-> index dcabfeec6ca1..283bd8acdc42 100644
-> --- a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
-> +++ b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
-> @@ -49,6 +49,11 @@
->  #define QM_EQC_DW0		0X8000
->  #define QM_AEQC_DW0		0X8020
->=20
-> +enum acc_dev_state {
-> +	DEV_CLOSE =3D 0x0,
-> +	DEV_OPEN,
-> +};
-
-Do we really need this enum as you can directly use 0 or 1?
-
-Thanks,
-Shameer
-
-> +
->  struct acc_vf_data {
->  #define QM_MATCH_SIZE offsetofend(struct acc_vf_data, qm_rsv_state)
->  	/* QM match information */
-> @@ -113,5 +118,11 @@ struct hisi_acc_vf_core_device {
->  	spinlock_t reset_lock;
->  	struct hisi_acc_vf_migration_file *resuming_migf;
->  	struct hisi_acc_vf_migration_file *saving_migf;
-> +
-> +	/* To make sure the device is enabled */
-> +	struct mutex enable_mutex;
-> +	atomic_t dev_opened;
-> +	/* For debugfs */
-> +	struct hisi_acc_vf_migration_file *debug_migf;
->  };
->  #endif /* HISI_ACC_VFIO_PCI_H */
-> --
-> 2.24.0
-
+-- 
+viresh
 
