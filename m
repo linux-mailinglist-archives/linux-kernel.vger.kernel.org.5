@@ -1,74 +1,259 @@
-Return-Path: <linux-kernel+bounces-52578-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB1E08499DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:17:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F276F8499E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:17:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F8B21F25D7A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:17:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2399D1C22B4E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:17:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D36891C288;
-	Mon,  5 Feb 2024 12:10:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T7Yej6P7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16B591BF34;
-	Mon,  5 Feb 2024 12:10:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 110151B944;
+	Mon,  5 Feb 2024 12:14:38 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1ABF19BBA
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 12:14:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707135034; cv=none; b=LA8Z9SBN5i64arE/jdv9A15emmTuhAnLx2oWRoM/KbVKvT+dyRByEcpxdAwOKNWOl/w+RMIUObYIxo2wDtLHGEDVqyGZZYcGuqAfq2ABS94HWMD5JIBK5dH0DUmZtRgcwYrrZQiGVCnaDWE4KTbsRkSkOXDhRcgzvcnRsJh0ivo=
+	t=1707135277; cv=none; b=QvnEKHEWJ3JLikxMy0S3xyrP7sEMspuZdefAT6+ZjhzQrv0rgGu4QaSo7lOhZ0l3ryjTGbkbgsPXJCVbOy+G/NXiF1+AbCsggC1jFqyegjwGabeeEEDNCRRTG54Hbxpj/Og3M/mg0v0mbSxBGwfUu5UizKiqOrxeNgtWyOBSJGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707135034; c=relaxed/simple;
-	bh=FwnbpE9yWQQbfuStfMSdAVpms2unyg3Uv1emhgdfEDg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g3U49jfyoxisGrImEZMMCFs36TvnUlB6zWXPRxdlwSpyI9xa/6X9xidV6a2i7uGKPp4J32gVtNXQFAr6pu5Ke7FWSU11sP/QoG4voCwZdeDJnhxUaJBvBZ0VPnucSMbXho1vYzOb3EeQznhhyhudjUqTSSZ0Z7tiPTmYJjpRXOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T7Yej6P7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F5DBC433C7;
-	Mon,  5 Feb 2024 12:10:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707135033;
-	bh=FwnbpE9yWQQbfuStfMSdAVpms2unyg3Uv1emhgdfEDg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=T7Yej6P7z9Hsdya9am6dwVYvGXbWfkQywJJQHhgTZa6OuT8kifDflYil4X0kUJhEH
-	 BcuIvFa4B/UFqjChzf9lyzsECV03t2Z31ORZV1BkgofZkogppoChCFEpzdVdR85PsC
-	 sTMb/JM/GWvqvPTS16h9qOZpQ6Z8dJRcb4zY+uILLgVMjRWv4Cy08qM5zaFcQ1wM7e
-	 +5SY1EDzzwhRS8fKEQyproWj0uY0iWbr7HjhwS2j9vXYtLa9+E3bSM9U6EhqaMhAPs
-	 KLgGLlXNjEkOTBWgWgTUcpIIiAOTX6cll8wAAuw22//Rw+Qcvz7gXmHVaZM9yy43VE
-	 OhAHfxwcI42OQ==
-Date: Mon, 5 Feb 2024 13:10:28 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, 
-	Chuck Lever <chuck.lever@oracle.com>, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] filelock: add stubs for new functions when
- CONFIG_FILE_LOCKING=n
-Message-ID: <20240205-prall-herde-c413a323b54c@brauner>
-References: <20240204-flsplit3-v1-1-9820c7d9ce16@kernel.org>
+	s=arc-20240116; t=1707135277; c=relaxed/simple;
+	bh=HiZhPu5P1nh67cu5QUjJXKuYfIzcokeEWmoVwBDImqk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QY6b17j+ez94npnFdVyTB0h5CWYoXV7IfvDmq49U3jJ+i8O5CNy5f6HUgSvIIJy1799HH4EHvErITylAaGGEOqwDImUqkJwirlhXWE9PzdQmc6kiVYfPDaU47XhzwVrrmmHXSvF3YHsFd5EQXYF6hmupG95oqLO6ZkHTT/8HugI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AABD21FB;
+	Mon,  5 Feb 2024 04:15:14 -0800 (PST)
+Received: from [10.57.79.41] (unknown [10.57.79.41])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1339A3F762;
+	Mon,  5 Feb 2024 04:14:27 -0800 (PST)
+Message-ID: <d4f602db-403b-4b1f-a3de-affeb40bc499@arm.com>
+Date: Mon, 5 Feb 2024 12:14:25 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240204-flsplit3-v1-1-9820c7d9ce16@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 4/4] mm: swap: Swap-out small-sized THP without
+ splitting
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>
+Cc: akpm@linux-foundation.org, david@redhat.com,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com,
+ shy828301@gmail.com, wangkefeng.wang@huawei.com, willy@infradead.org,
+ xiang@kernel.org, ying.huang@intel.com, yuzhao@google.com,
+ chrisl@kernel.org, surenb@google.com, hanchuanhua@oppo.com
+References: <20231025144546.577640-5-ryan.roberts@arm.com>
+ <20240205095155.7151-1-v-songbaohua@oppo.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240205095155.7151-1-v-songbaohua@oppo.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-> Another thought too: "locks_" as a prefix is awfully generic. Might it be
-> better to rename these new functions with a "filelock_" prefix instead?
-> That would better distinguish to the casual reader that this is dealing
-> with a file_lock object. I'm happy to respin the set if that's the
-> consensus.
+On 05/02/2024 09:51, Barry Song wrote:
+> +Chris, Suren and Chuanhua
+> 
+> Hi Ryan,
+> 
+>> +	/*
+>> +	 * __scan_swap_map_try_ssd_cluster() may drop si->lock during discard,
+>> +	 * so indicate that we are scanning to synchronise with swapoff.
+>> +	 */
+>> +	si->flags += SWP_SCANNING;
+>> +	ret = __scan_swap_map_try_ssd_cluster(si, &offset, &scan_base, order);
+>> +	si->flags -= SWP_SCANNING;
+> 
+> nobody is using this scan_base afterwards. it seems a bit weird to
+> pass a pointer.
+> 
+>> --- a/mm/vmscan.c
+>> +++ b/mm/vmscan.c
+>> @@ -1212,11 +1212,13 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
+>>  					if (!can_split_folio(folio, NULL))
+>>  						goto activate_locked;
+>>  					/*
+>> -					 * Split folios without a PMD map right
+>> -					 * away. Chances are some or all of the
+>> -					 * tail pages can be freed without IO.
+>> +					 * Split PMD-mappable folios without a
+>> +					 * PMD map right away. Chances are some
+>> +					 * or all of the tail pages can be freed
+>> +					 * without IO.
+>>  					 */
+>> -					if (!folio_entire_mapcount(folio) &&
+>> +					if (folio_test_pmd_mappable(folio) &&
+>> +					    !folio_entire_mapcount(folio) &&
+>>  					    split_folio_to_list(folio,
+>>  								folio_list))
+>>  						goto activate_locked;
+>> --
+> 
+> Chuanhua and I ran this patchset for a couple of days and found a race
+> between reclamation and split_folio. this might cause applications get
+> wrong data 0 while swapping-in.
+> 
+> in case one thread(T1) is reclaiming a large folio by some means, still
+> another thread is calling madvise MADV_PGOUT(T2). and at the same time,
+> we have two threads T3 and T4 to swap-in in parallel. T1 doesn't split
+> and T2 does split as below,
+> 
+> static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+>                                 unsigned long addr, unsigned long end, 
+>                                 struct mm_walk *walk)
+> {
+> 
+>                 /*   
+>                  * Creating a THP page is expensive so split it only if we
+>                  * are sure it's worth. Split it if we are only owner.
+>                  */
+>                 if (folio_test_large(folio)) {
+>                         int err; 
+> 
+>                         if (folio_estimated_sharers(folio) != 1)
+>                                 break;
+>                         if (pageout_anon_only_filter && !folio_test_anon(folio))
+>                                 break;
+>                         if (!folio_trylock(folio))
+>                                 break;
+>                         folio_get(folio);
+>                         arch_leave_lazy_mmu_mode();
+>                         pte_unmap_unlock(start_pte, ptl);
+>                         start_pte = NULL;
+>                         err = split_folio(folio);
+>                         folio_unlock(folio);
+>                         folio_put(folio);
+>                         if (err)
+>                                 break;
+>                         start_pte = pte =
+>                                 pte_offset_map_lock(mm, pmd, addr, &ptl);
+>                         if (!start_pte)
+>                                 break;
+>                         arch_enter_lazy_mmu_mode();
+>                         pte--;
+>                         addr -= PAGE_SIZE;
+>                         continue;
+>                 }    
+> 
+>         return 0;
+> }
+> 
+> 
+> 
+> if T3 and T4 swap-in same page, and they both do swap_read_folio(). the
+> first one of T3 and T4 who gets PTL will set pte, and the 2nd one will
+> check pte_same() and find pte has been changed by another thread, thus
+> goto out_nomap in do_swap_page.
+> vm_fault_t do_swap_page(struct vm_fault *vmf)
+> {
+>         if (!folio) {
+>                 if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
+>                     __swap_count(entry) == 1) {
+>                         /* skip swapcache */
+>                         folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0,
+>                                                 vma, vmf->address, false);
+>                         page = &folio->page;
+>                         if (folio) {
+>                                 __folio_set_locked(folio);
+>                                 __folio_set_swapbacked(folio);
+>                          
+>                                 /* To provide entry to swap_read_folio() */
+>                                 folio->swap = entry;
+>                                 swap_read_folio(folio, true, NULL);
+>                                 folio->private = NULL;
+>                         }
+>                 } else {
+>                 }
+>         
+>         
+>         /*
+>          * Back out if somebody else already faulted in this pte.
+>          */
+>         vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf->address,
+>                         &vmf->ptl);
+>         if (unlikely(!vmf->pte || !pte_same(ptep_get(vmf->pte), vmf->orig_pte)))
+>                 goto out_nomap;
+> 
+>         swap_free(entry);
+>         pte = mk_pte(page, vma->vm_page_prot);
+> 
+>         set_pte_at(vma->vm_mm, vmf->address, vmf->pte, pte);
+>         return ret;
+> }
+> 
+> 
+> while T1 and T2 is working in parallel, T2 will split folio. this can
+> run into race with T1's reclamation without splitting. T2 will split
+> a large folio into a couple of normal pages and reclaim them.
+> 
+> If T3 finishes swap_read_folio and gets PTL earlier than T4, it calls
+> set_pte and swap_free. this will cause zRAM to free the slot. then
+> t4 will get zero data in swap_read_folio() as the below zRAM code
+> will fill zero for freed slots, 
+> 
+> static int zram_read_from_zspool(struct zram *zram, struct page *page,
+>                                  u32 index)
+> {
+>         ...
+> 
+>         handle = zram_get_handle(zram, index);
+>         if (!handle || zram_test_flag(zram, index, ZRAM_SAME)) {
+>                 unsigned long value;
+>                 void *mem;
+> 
+>                 value = handle ? zram_get_element(zram, index) : 0; 
+>                 mem = kmap_local_page(page);
+>                 zram_fill_page(mem, PAGE_SIZE, value);
+>                 kunmap_local(mem);
+>                 return 0;
+>         }
+> }
+> 
+> usually, after t3 frees swap and does set_pte, t4's pte_same becomes
+> false, it won't set pte again. So filling zero data into freed slot
+> by zRAM driver is not a problem at all. but the race is that T1 and
+> T2 might do set swap to ptes twice as t1 doesn't split but t2 splits
+> (splitted normal folios are also added into reclaim_list), thus, the
+> corrupted zero data will get a chance to be set into PTE by t4 as t4
+> reads the new PTE which is set secondly and has the same swap entry
+> as its orig_pte after T3 has swapped-in and free the swap entry.
+> 
+> we have worked around this problem by preventing T4 from splitting
+> large folios and letting it goto skip the large folios entirely in
+> MADV PAGEOUT once we detect a concurrent reclamation for this large
+> folio.
+> 
+> so my understanding is changing vmscan isn't sufficient to support
+> large folio swap-out without splitting. we have to adjust madvise
+> as well. we will have a fix for this problem in
+> [PATCH RFC 6/6] mm: madvise: don't split mTHP for MADV_PAGEOUT
+> https://lore.kernel.org/linux-mm/20240118111036.72641-7-21cnbao@gmail.com/
+> 
+> But i feel this patch should be a part of your swap-out patchset rather
+> than the swap-in series of Chuanhua and me :-)
 
-If it's just a rename then just point me to a branch I can pull. I don't
-think it's worth resending just because you effectively did some variant
-of s/lock_*/filelock_*/g
+Hi Barry, Chuanhua,
 
-In any case, folded this one.
+Thanks for the very detailed bug report! I'm going to have to take some time to
+get my head around the details. But yes, I agree the fix needs to be part of the
+swap-out series.
+
+Sorry I haven't progressed this series as I had hoped. I've been concentrating
+on getting the contpte series upstream. I'm hoping I will find some time to move
+this series along by the tail end of Feb (hoping to get it in shape for v6.10).
+Hopefully that doesn't cause you any big problems?
+
+Thanks,
+Ryan
+
+> 
+> Thanks
+> Barry
+
 
