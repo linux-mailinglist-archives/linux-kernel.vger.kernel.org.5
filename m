@@ -1,155 +1,195 @@
-Return-Path: <linux-kernel+bounces-52748-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB2C0849C37
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:50:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 525F9849C3F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:52:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D0D61F24D0E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:50:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F07D128505B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:52:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 881BB21103;
-	Mon,  5 Feb 2024 13:50:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="vPeRUGtK"
-Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EABB24A09
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 13:50:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 573632260A;
+	Mon,  5 Feb 2024 13:52:40 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A257922EF0;
+	Mon,  5 Feb 2024 13:52:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707141031; cv=none; b=AaaHgsFHJeAuO82YPyhCTXTBXFql4ocOfVChEgEJtZkPMkDOAGxc3Nsh0AvtDQg3Nxgs93A34opH4I0Qt0gElPXj3lYoXPzkDBwikhWWFf1dbY2Rxj/vr18wESLUmUE0Tvap7AjuLV3MuCcDaeIJImaYo2XZ7LRy+v7JZ4lSD0M=
+	t=1707141159; cv=none; b=hcQKAHiXRCQaCca56wMT382rCKd3dk7HOZsJah0QfqmnkKuUebLj4PFUnf64hNw5hUO08MdnXCcSJrwxxhCVYsHgLme3dx7efh7RKqVLgaObbKx3Ugi2c0/LeAgX82HpT5ztFVGxLeVQ5IjuvkwbmS1Tzm7TnKcutwtpW1BdCjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707141031; c=relaxed/simple;
-	bh=uQHSh01R3r1EPWAZ6JISTuOzTtdMjS2Jd4bfXMKyfmQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aFF6ixDm5psR9Z2ajzcBKXx58brkn/gVWJ7sNGMzCGvzBhT9B7nYn2k3o/H7QEikwsX+b80oopJFxR8SGTBZZU+i297iLiAhp/tICusaBsX0IuSRz0sbb9je6Ki5FXV6ea/Ecn6fVDCb3d9y2M5GXDQWKe4EzOecoSWemaiFkIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=vPeRUGtK; arc=none smtp.client-ip=209.85.222.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-7d130979108so1692389241.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 05:50:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1707141029; x=1707745829; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WLjPCWazCIOmtsuGf0hWeVlU2NTtNWdlcmPU/F3SHiI=;
-        b=vPeRUGtK6PYYt8ukVwni+RgP/TCBEUOeYiPeK4rx6Yt3ArczFx69BEZFFV8jLWIcDi
-         //cmsBxW+3EqhTwjpvj6qahR2utfanxcZTYDDoElgVHKIimgI1yTkPX5JkNI3OZUp9yt
-         YnH44Jh4G30WSqgGq/+IIThLEAcAgHnzEHC3RotCmBkNfsaKex4fqFbUc+9Wet8ZuejP
-         RLHTXppxLHp7KeqCgWf7uIJXxLWBdH/aTkI+GSq47DZbGi1VZFcQCjamz1RgELj/3eO7
-         3cvr00W3PcufoKuG5S4T7j2Zj8RWxZkIHaAlH15HtohI1YO7zXUIDFqCK0X1RNVZgSsy
-         m1gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707141029; x=1707745829;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WLjPCWazCIOmtsuGf0hWeVlU2NTtNWdlcmPU/F3SHiI=;
-        b=RmY3J46zg/5g7rNGKewvMFTF+5kZKij1UvtpX8spQMGk6IqwoYjv6IVLJ1eJTAmwWX
-         dqMznpz2zsUmo1Pm2xMEWAK69llzoKG0JVk2a/bCedd2iBu3VkYHJ9aBi6fL5Pn/E7Ux
-         mfSsSRTOk8QuGPl+T/F1kZ5iDgloilCwx/T51c+mt+T7iCS70Xj3fc7nXuCrKMULC/3C
-         zeAHfkwYCymlKbUb02dsQBl2VmVA4T45Ma0uYpPwE5NnmhGQUIf829xeqTSYiosykRPk
-         0aCNfc46s3L1qdHyFpqzY1RyXyanarwHGDgwxGDzvfaf2UW3JorcNZJ9+/RqJr1/zm+O
-         pC1A==
-X-Gm-Message-State: AOJu0YxLlqYRNsiHQ8om8w1TbGdHU2uYEWLnbSZGRa9+uZhfjqWYjyvZ
-	9FOiga7CihcfoF4V31S1E759c0yhx+22BthKGYstsrql7lS5YGS8weVZENVoHf9FQCrEu6Gq1j8
-	nDjC09+qPTR+8U4roK9Px6pMZ3/2BVlrvC4u/JQ==
-X-Google-Smtp-Source: AGHT+IFbbX1Pw+Ix7UggXSBkycALG+MWTAAHXhpFy3y5b1VyVxnQ7NYW2sal3BSdUhxznfA/b119ar92D5JE460dGyw=
-X-Received: by 2002:a05:6102:9b8:b0:46d:2e77:c58b with SMTP id
- f24-20020a05610209b800b0046d2e77c58bmr2034158vsb.22.1707141029194; Mon, 05
- Feb 2024 05:50:29 -0800 (PST)
+	s=arc-20240116; t=1707141159; c=relaxed/simple;
+	bh=RIlH3Kpx0z44ko9l4/g3YofT/tlmNnchxQwVaNfQBxQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rC9nqdxk66qfISpOOGkOHWT8yrzxyVKeHFala4fmTO9Kiil9sa2ynbMcIcYdR038SY3NVDTBVtCo9csPAraL03rnYDcsXOf2XKiX04P9dgo+6YBQScZ2fFsk7Xkk9zx5OmtczM6Vtpu+BpHtdFzM4XCubLbVUTbmBt5j6+7p8gM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 724901FB;
+	Mon,  5 Feb 2024 05:53:18 -0800 (PST)
+Received: from pluto (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 75A3F3F5A1;
+	Mon,  5 Feb 2024 05:52:31 -0800 (PST)
+Date: Mon, 5 Feb 2024 13:52:27 +0000
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: Peng Fan <peng.fan@nxp.com>
+Cc: Sudeep Holla <sudeep.holla@arm.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	"Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+	"souvik.chakravarty@arm.com" <Souvik.Chakravarty@arm.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Oleksii Moisieiev <oleksii_moisieiev@epam.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	dl-linux-imx <linux-imx@nxp.com>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+	AKASHI Takahiro <takahiro.akashi@linaro.org>,
+	Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v3 0/6] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+ protocol basic support
+Message-ID: <ZcDoG6FTiNgChQJF@pluto>
+References: <20240121-pinctrl-scmi-v3-0-8d94ba79dca8@nxp.com>
+ <f88d07ef-83b2-4d14-976a-6dbbd71e036f@oss.nxp.com>
+ <CACRpkdYV=qYQ9qDUWYTLDAV1niay30gYH5S=zjfi31GpeY5o-A@mail.gmail.com>
+ <DU0PR04MB9417A9074C5DC49AE689E65288432@DU0PR04MB9417.eurprd04.prod.outlook.com>
+ <Zbt-QkWhz5d9P-v6@pluto>
+ <DU0PR04MB9417CA6CF089B264112C32A088402@DU0PR04MB9417.eurprd04.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205093418.39755-1-brgl@bgdev.pl> <20240205093418.39755-9-brgl@bgdev.pl>
- <ZcDSKYqFHSUZb2Qx@smile.fi.intel.com> <CAMRc=Mfh5CcftXUStGOXvUF-s3aNxnaNM0sDt72LKrBfttqitQ@mail.gmail.com>
- <ZcDkvOrlSRkmYIk_@smile.fi.intel.com> <CAMRc=MeiXLZ4q8MH5h_wX1rBz9-YVK6UKUdCu2nTb6+uNHGXPQ@mail.gmail.com>
- <ZcDm3ZrW1dQQAroY@smile.fi.intel.com>
-In-Reply-To: <ZcDm3ZrW1dQQAroY@smile.fi.intel.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Mon, 5 Feb 2024 14:50:18 +0100
-Message-ID: <CAMRc=Me+ETGfgjgQV+SSZenLW5MeNLVSrFKBhs707FDEqEHFJw@mail.gmail.com>
-Subject: Re: [PATCH v2 08/23] gpio: sysfs: use gpio_device_find() to iterate
- over existing devices
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Kent Gibson <warthog618@gmail.com>, 
-	Alex Elder <elder@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	"Paul E . McKenney" <paulmck@kernel.org>, Wolfram Sang <wsa@the-dreams.de>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <DU0PR04MB9417CA6CF089B264112C32A088402@DU0PR04MB9417.eurprd04.prod.outlook.com>
 
-On Mon, Feb 5, 2024 at 2:47=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Mon, Feb 05, 2024 at 02:39:40PM +0100, Bartosz Golaszewski wrote:
-> > On Mon, Feb 5, 2024 at 2:38=E2=80=AFPM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Mon, Feb 05, 2024 at 02:19:10PM +0100, Bartosz Golaszewski wrote:
-> > > > On Mon, Feb 5, 2024 at 1:36=E2=80=AFPM Andy Shevchenko
-> > > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > > On Mon, Feb 05, 2024 at 10:34:03AM +0100, Bartosz Golaszewski wro=
-te:
->
-> ...
->
-> > > > > > +static int gpiofind_sysfs_register(struct gpio_chip *gc, void =
-*data)
-> > > > > > +{
-> > > > > > +     struct gpio_device *gdev =3D gc->gpiodev;
-> > > > > > +     int ret;
-> > > > > > +
-> > > > > > +     if (gdev->mockdev)
-> > > > > > +             return 0;
-> > > > > > +
-> > > > > > +     ret =3D gpiochip_sysfs_register(gdev);
-> > > > > > +     if (ret)
-> > > > > > +             chip_err(gc, "failed to register the sysfs entry:=
- %d\n", ret);
+On Sun, Feb 04, 2024 at 09:29:25AM +0000, Peng Fan wrote:
+> > Subject: Re: [PATCH v3 0/6] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+> > protocol basic support
+> > 
+> > On Thu, Feb 01, 2024 at 07:14:17AM +0000, Peng Fan wrote:
+> > > > Subject: Re: [PATCH v3 0/6] firmware: arm_scmi: Add SCMI v3.2
+> > > > pincontrol protocol basic support
+> > > >
+> > 
+> > Hi Peng,
+> > 
+> > > > On Mon, Jan 29, 2024 at 1:37 PM Peng Fan <peng.fan@oss.nxp.com>
+> > wrote:
+> > > >
+> > > > > And for i.MX95 OEM extenstion, do you have any suggestions?
+> > > > > I have two points:
+> > > > > 1. use vendor compatible. This would also benefit when supporting
+> > > > > vendor protocol.
+> > > > > 2. Introduce a property saying supporting-generic-pinconf
 > > > > >
-> > > > > > +     return 0;
-> > > > >
-> > > > > ???
+> > > > > How do you think?
+> > > >
+> > > > While I don't know how OEM extensions to SCMI were designed, the pin
+> > > > control subsystem has the philosophy that extensions are for minor
+> > > > fringe stuff, such as a pin config option that no other silicon is
+> > > > using and thus have no use for anyone else. Well that is actually
+> > > > all the custom extensions we have.
+> > > > (This notion is even carried over to SCMI pinctrl.)
+> > > >
+> > > > The i.MX95 OEM extension is really odd to me, it looks like a
+> > > > reimplementation of the core aspects of SCMI pin control, and looks
+> > > > much more like the old i.MX drivers than like the SCMI driver.
 > > >
-> > > What the point of function to be int if you effectively ignore this b=
-y always
-> > > returning 0?
+> > > i.MX SCMI pin protocol conf settings follows non-SCMI pin conf settings.
 > > >
-> >
-> > Because the signature of the callback expects an int to be returned?
->
-> But why do you return 0 instead of ret?
+> > 
+> > It is not just a matter of using custom SCMI OEM types, it is the whole
+> > layout/definitions of the i.MX pin/groups/funcs DT bindings that deviates
+> > from the generic DT bindings layout as handled and expected by the Linux
+> > Pinctrl subsystem (AFAIU), while the SCMI Pinctrl driver as it stands in this
+> > series, was conceived, designed and implemented originally by Oleksii to just
+> > use the generic existing Pinctrl DT bindings; as a consequence, in your i.MX
+> > extensions, you had to add a dedicated i.MX DT parser to interpret the
+> > protocol@19 DT snippet in a completely different way, to try to stick your
+> > custom solution on top of the generic one.
+> 
+> The two links shows the drop of i.MX generic pinconf
+> https://patchwork.ozlabs.org/project/linux-gpio/patch/1541149669-10857-7-git-send-email-aisheng.dong@nxp.com/
+> https://lore.kernel.org/all/20230302072132.1051590-1-linux@rasmusvillemoes.dk/
+> 
+> For non-scmi platforms, the generic pinconf was supported
+> for i.MX7ULP for a while, and then dropped in the end per i.MX maintainers
+> and agreed by Linus.
+> 
+> For i.MX95 SCMI platforms, the firmware design is simple and use similar
+> programming model to simplify firmware design.
+> 
+> Using generic pinconf means the firmware needs exporting groups/functions/pins
+> and etc, the firmware design will be complicated and code size enlarged.
+> 
+
+Understood.
+
+> I have no better ideas without introducing a compatible for dt map hook.
+> 
+> Build exclusive is not acceptable for distro support.
+> 
+
+Indeed, and I understand that, but in any case it wont be required for
+both the generic pinconf and the IMX way to coexist and live together on
+the same system/platform at runtime, right ?
+
+So, I was thinking as an alternative, while still building all
+(generic+IMX) in defconfig, wouldn't be possible to detect at runtime in the
+pinctrl-scmi probe() which is the type of binding used in the DT (i.e.
+generic VS imx), before registering with the core Pinctrl subsystem, and so
+act accordingly parsing and providing different callbacks based on that ?
+
+I mean, without any compatible addition, just looking up the protocol@19
+node content @probe and switch to iMX callbacks if the fsl,pins binding
+is found ?
+
+Not sure is this is totally viable, nor clean or that it is not less horrific
+from the Pinctrl_subsystem/DT point of view for Linus ... just an idea to think
+about or discard.
+
+> So the last options is i.MX95 switch back to VENDOR protocol ID saying
+> 0x82. But this means to exports functions of pinctrl-scmi.c and reused
+> by pinctrl-scmi-imx.c.  If you agree, I will ask firmware developer
+> switch back to a new SCMI ID, and I will use new ID for i.mx pinctrl
+> driver.
+> 
+
+I dont think there is really any chance to upstream a vendor protocol that
+is a bare copy of a standard protocol just to workaround this...and if
+this is going to be the end-result you can just keep your current 2
+small 'IMX custom-compatible' patches downstream.
+
+> But in the end I would think when more SCMI vendor protocols
+> comes in, saying vendor A and vendor B both use ID 0x81,
+> both use 0x81 as RTC functions, same issue will come back.
 >
 
-Because we don't want to *find* a device really. We just want to
-iterate over all of them and call a callback. Any value other than 0
-will be interpreted as a match. Besides: failure to register one GPIO
-sysfs entry shouldn't maybe cause a failure for all subsequent
-devices?
+This wont be a problem once the RFC[1] I posted last week is in...unless
+someone objects, you will have to identify your vendor protocol module
+at build time ALSO with the vendor/sub_vendor ID string exposed by your fw...
+..so each vendor will effectively have the full vendor protocol space
+number at their disposal.
 
-Bart
+Indeed this week, I hope to review your series about custom protocols
+and the qualcomm ones and ask both for feedback on [1] and then to
+rework those series on some non-RFC similar to 1 that I will post
+afterwards.
 
-> > > > Not sure what the ... and ??? mean? The commit message should have
-> > > > read "... traverse it from gpiofind_sysfs_register()" I agree but t=
-he
-> > > > latter?
-> > >
-> > > I didn't realize this may not be obvious :-(.
-> > >
-> > > > > > +}
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+Thanks,
+Cristian
+
+[1]: https://lore.kernel.org/linux-arm-kernel/20240122122437.546621-1-cristian.marussi@arm.com/
 
