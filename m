@@ -1,153 +1,109 @@
-Return-Path: <linux-kernel+bounces-52676-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52678-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67313849B4C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:02:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF93D849B55
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:03:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E23041F280A0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:02:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E6C51C2082F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:03:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F23B724A0A;
-	Mon,  5 Feb 2024 12:59:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 512A8210FF;
+	Mon,  5 Feb 2024 13:02:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="J6e69CJj"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="gInmokFX"
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2D212C6B4
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 12:59:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47C9F2375D;
+	Mon,  5 Feb 2024 13:02:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707137975; cv=none; b=E2E1ptE9272p/vfcOO7oXUtWJ+vYf1ig4JzA8a3aE8mRBfYaklzao/uwBUo6+ZbjkEUE0VVRNXAsT/JB7juFRVoyh69fy4iJrkzTIllYjO1x+kuPoebIb4UNU5/6RAsYxHoS99xRvN0qVHfAG85VvIultQkZG1Hlcr7ACC7pFwE=
+	t=1707138167; cv=none; b=SieThCByQLu3KxzqkMg7bV1XJt4UGV0lW7kkwcYrp0EOlpafTr2fmwbkBWSzTJF38+8uJnC8/S5tL9JOVZ1BMykfXvQCVQD0LdQ8GeYmmivAAYG9chpz5+kqgsynVKRNLYPF+5LfwgXZS0HOf7I/60JJd3um+1Z4vSFJNXvGrok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707137975; c=relaxed/simple;
-	bh=uhFIx9AVIok+41rhp4wPBkQrIYsfWY6OWQrAj4yf+r0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TUSw5S3mfmqvP4n4u2yTK0/zjXf9SyHEiArUBgXhNC0hUHDwtWg4nKu+HJ6WvRkNEt+xDxPBM4OFvdI4h1aTwVAHmGI+IbecGdB5lrIbcxzo61hstLlxOhrIQZRh+sIOoz+6Nv6Bv1shWUQqxK8aZP84sVKEpmUzS8fLRqr3ydY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=J6e69CJj; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e04ea51984so184224b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 04:59:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707137973; x=1707742773; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pEQX5AABggM2ljP9SXv5rHakiVcpbdiil+FOouwBr5w=;
-        b=J6e69CJjS/IUfmK9Oos4c6q1j7o03TWlBBJwzf/LHjjuQhLb5o9D6eEyT8wEhtJN64
-         gyRmfyoe2grlpKhdFkwBPIU3slCeu96hMQGmD1N3ChTAarm203FkVAhCfhoika5pVWg+
-         akw88kNy6RuorwuFx6D9MXp7mEMSt0BExUE8U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707137973; x=1707742773;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pEQX5AABggM2ljP9SXv5rHakiVcpbdiil+FOouwBr5w=;
-        b=HqvN0QYPfeWCYKalQGkpq+HuRskfw2X8yA2xIec2DcU7hp5j5UpBDS2QU7fAAfaE7H
-         v/HA+P0RTu6C2E2KENhr3MC8+hwIA7ucFtddOlAqmcvRbl/U5qYPOeuZ9NHTp7WiWlhw
-         fQkUhEWKocsyDdfDkytJDqNUNYPiRMx9LO6fX/4EEnfse40rpikstDpNzXC3yoLn41sx
-         Ga1j2D+AHMMCiHUriwBLr8yapfdMebEJsgKFSKhqBb9YxmWrHcsypbQdNUZgKUumbFY3
-         H/KXG05dzScakbPURnhsmoMnS3ZrJcEWeEEDOTAOg1W0eEfTnoGjjRHD66vA0eLJ76Kd
-         MGuA==
-X-Gm-Message-State: AOJu0YxpAkKxURjrE1qIqtXTSdK//ZJg9mLp/OOMmFe5TDa9RAdm9g9R
-	l0POUZhGxcmVe/kaMhpiFI4Y8a87frYhOIUFQDuRlc4IwFwfOoVMqQ9ngmTEeg==
-X-Google-Smtp-Source: AGHT+IH7TRDxNi2WEgGcB1i3d2oWtRwWhybfRytEZQiNCdgIzjYBMwnWPSCbkQGdExjKAlGZJbGBWw==
-X-Received: by 2002:a05:6a00:1d82:b0:6e0:4be0:ab8b with SMTP id z2-20020a056a001d8200b006e04be0ab8bmr1564859pfw.20.1707137973105;
-        Mon, 05 Feb 2024 04:59:33 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWdoon760LIuY5iUr9Hi1uwh8Klg/rh5yNXbpvuhjU1iSvDcI3jtn6GKu0BG9nDz2maou2kIO6N2SUXiKFH60gqsiXSMqdrzhd/XB75C3TRmGl1FTT3s9cQl/oSFe+anrJcpQZJevxFFZZfCQGVcOQ3bPlOJZ8o8QEa0A+EdQ8NwvOhefWaUcn4Hrzg4Dy2RXK0JuqOGz3Ubl+yVGc2a8kwz5g1KryQMA/W9cZOaCmo5bBL3JZSyTR6H8RFu1toDUEKycxhoKWLn8r1oxbqM1h11dkMpheSTbqHKQWT+DsCyhiE6wTcCFWBWDjK+TvNajeRGVFA7XKltL0UAHkKcDzp/iEWn5z5Gbn1qgSA8mqCU2R9YROzvb0n0Ny/xazTsKF/pyYWt8epGa5maZYF+tGbqJ6xVgZvn5J+omKKi8/nnmpIq3c8u5LZycH2FfSC0oyewbiOEZmP/QXB8eqs4FMa0V9P+KJ31ARWiXbHqMRd5Nuwj8jsBp741fDJ3iLMjONrghnCqcBB8zboGm/1jAQLbFMvRjYkpIE=
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id it16-20020a056a00459000b006e0416c42c3sm188892pfb.198.2024.02.05.04.59.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 04:59:32 -0800 (PST)
-Date: Mon, 5 Feb 2024 04:59:32 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Cc: Justin Stitt <justinstitt@google.com>, Marco Elver <elver@google.com>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>, Hao Luo <haoluo@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-	linux-hardening@vger.kernel.org, linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH v3] ubsan: Reintroduce signed overflow sanitizer
-Message-ID: <202402050457.0B4D90B1A@keescook>
-References: <20240205093725.make.582-kees@kernel.org>
- <67a842ad-b900-4c63-afcb-63455934f727@gmail.com>
+	s=arc-20240116; t=1707138167; c=relaxed/simple;
+	bh=M7kC1Gk7zW5Rzv1t84FKmyEQZQWveaLF7BWFYaTRwo8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=V7SfLJ3M6+t0EAXpCKofnNetnfC+lXW0Flq3B73tPUUvht1BzU9KFY4oc5jzEUndI/qMDszxNu0bUPlzhpsenrMSqmEIAtSxtK/j2qsClYc5Pt9mxPiD8jop8zY4i+7tjjpqUaqY6V7PuikPpQRLFDlx2txZqzyqh/XDi4GfKrI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=gInmokFX; arc=none smtp.client-ip=212.227.15.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1707138155; x=1707742955; i=markus.elfring@web.de;
+	bh=M7kC1Gk7zW5Rzv1t84FKmyEQZQWveaLF7BWFYaTRwo8=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=gInmokFXD88OG+TQVq9DRGXn7Uytl5F1dxzbh7DYKEfCVm6ufvmFd9MObR349q2E
+	 W7wPDJoPaokW6lwnmQUfgRecr59+ioYqi7QJq+m4DaWUQ9iBQiV+kL02lQOJQh0fI
+	 3JNPJPhHaGNt/n4c9DtcvkU3jMnpesA2LCD1genyOpk8gYV4gp2l4MOEXgY4siNB4
+	 3PSpYYdGsHJ8UpjnNsI8kpSo1hmo7Ntq10OmBx7d1VK7JxiOLS4Wnnp3fi/H/NNm1
+	 yqU/HBYuhWpRJPHjpxx9VxPi6347eyPFtOEo8wnK03WtYon8WkzTdCX7LiF5Ga5Ym
+	 OxTXH5+UbagcjQSO2g==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MCGSU-1rgMXJ2Y6s-009fM2; Mon, 05
+ Feb 2024 14:02:35 +0100
+Message-ID: <0c757d69-ec60-477c-a978-a94118a571a2@web.de>
+Date: Mon, 5 Feb 2024 14:02:34 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <67a842ad-b900-4c63-afcb-63455934f727@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: iommu/ipmmu-vmsa: Use devm_platform_get_and_ioremap_resource() in
+ ipmmu_probe()
+Content-Language: en-GB
+To: Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
+ kernel-janitors@vger.kernel.org, =?UTF-8?B?SsO2cmcgUsO2ZGVs?=
+ <joro@8bytes.org>, Will Deacon <will@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <e01cdb99-8497-4fec-b423-a0bfb483ac75@web.de>
+ <324d4e02-6a5a-4112-a3a7-d7aeb5876acc@arm.com>
+ <49fc6a59-2c07-4366-b32f-0599c2418916@web.de>
+ <51315925-21ac-427c-abea-4d652ed5280f@arm.com>
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <51315925-21ac-427c-abea-4d652ed5280f@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:q0Qe30SNi/9mqfN3u/mG03dVuA8Cg6vcFggSYnH0fpTJrb5x0RK
+ uN+E+ui+VphNCypZhvXPO8v0SZCqSi7nqW48GoU0giwxlyrdihct5RxLgjCHVWanuJCV9hr
+ /pwdaUAS3Cd8wn5Ozt5KAqTChfDDEy+054BcGJlC2Guboml9nd9TemoEXYPxzXNX3hrD6yZ
+ cLvDd5bbTQ1SzSEjmYn8w==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:G9WiypKrGiA=;uV7MKkwX+3MbtwDIw4sYVlU1Zwl
+ b+/PB1TmIceiC2kiIRRY4NJgkuV+/t0iqNqZoAVcAZe7ReuXQVC60YuPjDD0gQU3KyBqK3hOW
+ ZAD1GzFNOI9JSSFQ4BAhgvZ12N3zXijCJh6UyPvvQyCHUM5BXDRzRr79lrrCxDiLhH393QXUW
+ /QPbjcWKo1sCh8cUoIWjlFz3pFOTg21VCMIDgP/7fhfb0+h0FTjriIMq2IKS3rKEGvtu/kF83
+ bqm4jmuXoHCR+PCtGxW+HW4hg4iePM7mH+deDznnXIcbY/OYjfoX1D0myXDN6plJvl/kp0dVC
+ 7jqyGmP8EbvgSe0a6Eq4q3DWd5Fyske9Cm8BvVhLt4HulQupB9z7r07CDntS7zDtyQ840D9NI
+ VsKOV5Dy9G+ATbv9K7mudMmbNv3qJFMtVChl2a6Uu9l4gbmJQD45M022N5Me6FNyNdI5iAyxX
+ zBda4TLAxQAeGTUeRSMWwsBNZYS4D92azj+ERSkpNFeEz0Nd+etkl1druyeLDsJioESmnuweO
+ 5Svv2AgnloFfa4TUeW1sIk/ayMVldb079xnPIZAz02qm4dn/Oy5Jsqd8bWP6N/nfXZAZoPiRR
+ CAv/eQAHdqna+BItLaLEDQm7aAcG/AF96diMzh2yZMGq2b/G/nBvNSTlV6vn0sMo0Uiu5UzNR
+ JLe8zwZeQRkyFejwQe6avLfy49AQa3sCTdLm27qdeeZo2OcuLVTmQrxuf667kqW/NCJgetFeZ
+ 5DB67PJoCcnIzgjERoryxA7E3SY353d637QLYfacCCarbqItV96a70ikX7LhGtgvZbGWLB8Zd
+ VK5lG6OqzIyCL83/HTdrWbo7UMevQoQx2TCips5aG23kc=
 
-On Mon, Feb 05, 2024 at 01:54:24PM +0100, Andrey Ryabinin wrote:
-> 
-> 
-> On 2/5/24 10:37, Kees Cook wrote:
-> 
-> > ---
-> >  include/linux/compiler_types.h |  9 ++++-
-> >  lib/Kconfig.ubsan              | 14 +++++++
-> >  lib/test_ubsan.c               | 37 ++++++++++++++++++
-> >  lib/ubsan.c                    | 68 ++++++++++++++++++++++++++++++++++
-> >  lib/ubsan.h                    |  4 ++
-> >  scripts/Makefile.lib           |  3 ++
-> >  scripts/Makefile.ubsan         |  3 ++
-> >  7 files changed, 137 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> > index 6f1ca49306d2..ee9d272008a5 100644
-> > --- a/include/linux/compiler_types.h
-> > +++ b/include/linux/compiler_types.h
-> > @@ -282,11 +282,18 @@ struct ftrace_likely_data {
-> >  #define __no_sanitize_or_inline __always_inline
-> >  #endif
-> >  
-> > +/* Do not trap wrapping arithmetic within an annotated function. */
-> > +#ifdef CONFIG_UBSAN_SIGNED_WRAP
-> > +# define __signed_wrap __attribute__((no_sanitize("signed-integer-overflow")))
-> > +#else
-> > +# define __signed_wrap
-> > +#endif
-> > +
-> >  /* Section for code which can't be instrumented at all */
-> >  #define __noinstr_section(section)					\
-> >  	noinline notrace __attribute((__section__(section)))		\
-> >  	__no_kcsan __no_sanitize_address __no_profile __no_sanitize_coverage \
-> > -	__no_sanitize_memory
-> > +	__no_sanitize_memory __signed_wrap
-> >  
-> 
-> Given this disables all kinds of code instrumentations,
-> shouldn't we just add __no_sanitize_undefined here?
+>>>> Thus reuse existing functionality instead of keeping duplicate source=
+ code.
+>>>
+>>> Much as I detest the get_and_ioremap_resource obfuscator, it's not eve=
+n appropriate here since nothing else is using "res".
+>>
+>> I got the impression that this local variable is needed to perform
+>> a desired function call.
+>
+> Yes, the call to devm_ioremap_resource(). Which you're proposing to remo=
+ve...
 
-Yeah, that's a very good point.
+I propose to replace a specific function call combination
+by an other single call for a known wrapper function.
+The mentioned variable is preserved for this purpose.
 
-> I suspect that ubsan's instrumentation usually doesn't cause problems
-> because it calls __ubsan_* functions with all heavy stuff (printk, locks etc)
-> only if code has an UB. So the answer to the question above depends on
-> whether we want to ignore UBs in "noinstr" code or to get some weird side effect,
-> possibly without proper UBSAN report in dmesg.
-
-I think my preference would be to fail safe (i.e. leave in the
-instrumentation), but the intent of noinstr is pretty clear. :P I wonder
-if, instead, we could adjust objtool to yell about cases where calls are
-made in noinstr functions (like it does for UACCESS)... maybe it already
-does?
-
--Kees
-
--- 
-Kees Cook
+Regards,
+Markus
 
