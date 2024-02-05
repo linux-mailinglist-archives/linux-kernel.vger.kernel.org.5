@@ -1,124 +1,121 @@
-Return-Path: <linux-kernel+bounces-52385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E4E5849761
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:10:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38854849764
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:10:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7B8C1F23C6D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:10:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E82CD288C96
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:10:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BE1414AB4;
-	Mon,  5 Feb 2024 10:10:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C2971643E;
+	Mon,  5 Feb 2024 10:10:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="o7pQV5zs"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KOIP+6Se"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9148E13FE4
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 10:10:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6B3313FE4;
+	Mon,  5 Feb 2024 10:10:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707127806; cv=none; b=fYoBXNHHBKFIGxW8wwR/PVDMaZTte0lMCHRvbwIFuStrqplLWh7cOL6X5LFUVe+3bi8ojA5MFXfw0UAJvla2x2CNfYiMJnmFxkoO5DbAOQukRTUNZsdRQrIkPiX+Y8r0868uBQW7frQJDB40eBViYWs8R+BwaJK8pZe0bcGVCmE=
+	t=1707127824; cv=none; b=uwOiVk60/LV40RRGTHdH0fOhFQyKGLBVXrch+ZbrrNTHOl7F5r1X4bBw0p9eDBT0hxT8gP1aXN1YE5cXVpaMYTedqJI80A/YaZgGqvlqRlHr5+oRs9/OhOo2vLQwmm+s8yaH1lSRSwVUMT9bJ4AL2igFjggKnhSOqXHF1ocj9oI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707127806; c=relaxed/simple;
-	bh=e3w9hSsDT3FO8WPZhRfhMoOpgMXCC+pRKpqGj74t4+0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=gk39ny7R2//fC8k6dwUo5v0TRzuUCw05JUK1ZYQHzcWNwJ2lCfL+ZQLcxltBb6pNs9t/J4w604Bm0Yz3bmO+flJ3xD5gShDn0ZGI3UNvRfL8EU5E5lZiQq3x68+DPWfwSCF5DAUPGNDIX3CgoFobH9FlkuKJaZQAgjtPCPx3cqo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=o7pQV5zs; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40fd6c24812so9061385e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 02:10:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707127803; x=1707732603; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PM79ddFlM7URHKM92cg1UrBcIO6D7fI7h+zZ2IlfnwQ=;
-        b=o7pQV5zsdYEfj3pmDtH5O/rrxDyg+XOxHg2F2XJk7vijxhGcR+q9122V8auWigEAza
-         uq9uszadoZcjDgWQ0IYOJce2la+TTGdeJ+n3qD0CA3ducmgPeag//pxSfwTX3SrWCaSR
-         3I97ETiMu1Dj6dJvoFeYpDrkoj5jlL+tCJrBsPHNa3IPI5q/LuK8VSIqKtg2Uz4Ktlzx
-         tntbm+cz2GSodxjmAMOtjbKeOnG5Y5x8yylqqxY6c1fmNq0h4oKbPrYrT0ia14gtwHYQ
-         bfMtWw6pjPKcJYdD2VxlFpUFeZuevk56VQb64Y4XwF+rMx1sauRmyA6jF4AM8cBGyee8
-         EXDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707127803; x=1707732603;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PM79ddFlM7URHKM92cg1UrBcIO6D7fI7h+zZ2IlfnwQ=;
-        b=mJ/jBT5qoqqOEVU8kNFzeGDdJj8wVSZ2/Ld7tNlxgBZ9y74DcVtLtG5Ov3Or3lxGKb
-         BVKRK09bN6t/3B7gK2BxUABNRWeAh+OP7g2BQYtR7TXtE5SvtLySzK8mllWovnEQkplP
-         p+BMnjqK8HSwRBlN33Li4DKehrxS1rjZuYyQekEumDylmJLn4EOMIf6U3hmK9moYbQFg
-         tr03mwdTOTAlPDaLE78JTHZLvdAYskE6Q3krbU0h11FxMEid72+jpnIz1wdKWu/xcTbB
-         HVbZOErgbLqgFtnzNSvI7nyAelV+j1AbsH9Cjq1hQdovcLV6/eN5f8aDzgqOU+4LGPzg
-         lxlQ==
-X-Gm-Message-State: AOJu0Yxr/61OSaGu8/LRcFVbGFffR7I5VMuP0mQtSfYJMviGnyChr1Xr
-	ToyWjnJej19Roh76qBGNF5V1pC822JMF+trLnsJoUTZQcZ5BZBp0TCtEHHRoGh4=
-X-Google-Smtp-Source: AGHT+IGgdKcnU5KmXqzxTG6IPmbKMzlO9O60tha1XABc6ryVGbd/dNZgL8d5b6WVkrriIAy7dazcuQ==
-X-Received: by 2002:a05:6000:dd0:b0:33a:e6dc:2e98 with SMTP id dw16-20020a0560000dd000b0033ae6dc2e98mr8856744wrb.5.1707127802716;
-        Mon, 05 Feb 2024 02:10:02 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU6yDO2FBqezZlPU2JPGqbY4RTsKYQbF3YB8DM9gGdCdKm2bSUeD/4maLEXs2UxamIL7xdOQcolQWZ4yCw1xtCY4EdiNU7QeVQ5P7xya7yp5EEK6xZGwxdf7wru5wiNqd8IawTtUGfgbMH0+DV1JhVc3dY2gUCa0YQM+cadEOZGhG+p+vbID0Jpr3hzyGth9GkU5Qpk
-Received: from 1.. ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id l10-20020a5d410a000000b0033af5716a7fsm7694395wrp.61.2024.02.05.02.10.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 02:10:02 -0800 (PST)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Takahiro.Kuwano@infineon.com,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH] mtd: flashchip: explicitly include <linux/wait.h>
-Date: Mon,  5 Feb 2024 12:09:55 +0200
-Message-Id: <20240205100955.149755-1-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1707127824; c=relaxed/simple;
+	bh=5RSD9ihk588Ph/D1+uaXhR/80luu6z5MzJa3QKltexQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=H9Wlqpwn+yzI4dXMXPKgWd3JmCwiTEnaQ7X6bl7nCrTZC3XYKZQM1DNJhljvvflxRgJP95Vrn6xS2zNfCF1olSd540pBmv6gaou0bTGVd/ucRd9q/6n6lJ9SCALF1Ex45jI6hjr2wNPpspnrBhh9ys4xET3vyPKZhUczbjqxB/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=KOIP+6Se; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4158U4l7012947;
+	Mon, 5 Feb 2024 10:10:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Hgz3t7yBwgrnAiXaxk4/deI134kNYfYdBcxbAKmwBEk=; b=KO
+	IP+6SeXAjTf1Y685vyx9GrIV0y3FShJNCv7X7keMv3H2azOjJyVw7CJ5Wa8/ALan
+	I9MGDW7ya410J8U6mowmC47xm6Qe4iiWfWezizgJEEkUu3Uz/2sF/pkbOv1sdaik
+	yz49e+an8EeR4dyV3v9jHaHpVAHDFH9Vk9nDOpD4zUfz2WdMBxtz99B7z57QwgPu
+	XfNq5RAobSVhLjd6S3F2a1ZbnBJmRA9h2TzHv4wZeiboupFTMqp7XXE9BYulhhJT
+	f980Qne2oS8d2OgdHKqhloQNaaGkBXWIUXPSABIHcLkLR4QYhJ+QLxqfeIr22xDH
+	fN0rVpOypXcfz+NRm5Mg==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w2v7286em-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 05 Feb 2024 10:10:18 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 415AAHNG008640
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 5 Feb 2024 10:10:17 GMT
+Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 5 Feb
+ 2024 02:10:12 -0800
+Message-ID: <f5ab4243-dd74-4b34-87c4-0073f5585151@quicinc.com>
+Date: Mon, 5 Feb 2024 18:10:10 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1152; i=tudor.ambarus@linaro.org; h=from:subject; bh=e3w9hSsDT3FO8WPZhRfhMoOpgMXCC+pRKpqGj74t4+0=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBlwLPz5xUk93u1ufsUid6bQ6qowIDwkHv5Mnolp 8Eknq+ko1CJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZcCz8wAKCRBLVU9HpY0U 6fxXB/95862mGGMlEovpodPY5k8h7gH4fQQXhXtYxFEQ/axPd02kxgryzHrF7JJ/KTk8NpJHTqJ XK3E2cgoMxNkdTuLd6tsvl5m3hiQY4jqZyJhrM2ia1PFnlDr9SBC/U8FSVDAz4dJDBtJb3FXc/V CVkxRyDtYkMU/iYuuZ/B9V3/uG2gIoW8qk94wKBSScf1GVmOHT/rzlnzLcOzUAyYXB/l6mKv71U oYxGNDy0YYXcJ1MYrYtBgaVC4ZrKrdWPydsDmBgz6T04RzS1i0GPN1REJqYrzI83GVT7Exb5nxm ku3qO4W4xukOHrbTc8Bk2bhhCnOShdRBpctIrhejwSw/fOo2
-X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 3/6] soc: qcom: socinfo: add SoC Info support for
+ QCM8550 and QCS8550 platform
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <dmitry.baryshkov@linaro.org>
+CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>
+References: <20240119100621.11788-1-quic_tengfan@quicinc.com>
+ <20240119100621.11788-4-quic_tengfan@quicinc.com>
+ <04fa81b1-e47e-4cf9-8e59-3a1777a13879@linaro.org>
+From: Tengfei Fan <quic_tengfan@quicinc.com>
+In-Reply-To: <04fa81b1-e47e-4cf9-8e59-3a1777a13879@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: ZW6phdW6nUAmtJ5LGeXvCd8a1BDjgt_x
+X-Proofpoint-ORIG-GUID: ZW6phdW6nUAmtJ5LGeXvCd8a1BDjgt_x
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-05_05,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 impostorscore=0 phishscore=0 clxscore=1015 spamscore=0
+ mlxscore=0 priorityscore=1501 bulkscore=0 suspectscore=0 mlxlogscore=480
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402050077
 
-While reviewing the hyperbus sfdp proposal the following problem was
-noticed:
 
-In file included from ./include/linux/mtd/gen_probe.h:10,
-                 from drivers/mtd/hyperbus/hyperbus-sfdp.c:6:
-/include/linux/mtd/flashchip.h:77:9: error: unknown type name ‘wait_queue_head_t’
-   77 |         wait_queue_head_t wq; /* Wait on here when we're waiting for the chip
-      |         ^~~~~~~~~~~~~~~~~
 
-It is good practice to directly include all headers used, it avoids
-implicit dependencies and spurious breakage if someone rearranges
-headers and causes the implicit include to vanish.
+On 2/5/2024 4:04 PM, Krzysztof Kozlowski wrote:
+> On 19/01/2024 11:06, Tengfei Fan wrote:
+>> Add SoC Info support for QCM8550 and QCS8550 platform.
+>>
+>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+> 
+> NAK.
+> 
+> Drop my tag.
+> 
+> Best regards,
+> Krzysztof
+> 
 
-Explicitly include <linux/wait.h> in include/linux/mtd/flashchip.
+This patch has been applied by Bjorn.
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
- include/linux/mtd/flashchip.h | 1 +
- 1 file changed, 1 insertion(+)
+Should I remove your tag only, or do I need to do other processing?
 
-diff --git a/include/linux/mtd/flashchip.h b/include/linux/mtd/flashchip.h
-index c04f690871ca..9798c1a1d3b6 100644
---- a/include/linux/mtd/flashchip.h
-+++ b/include/linux/mtd/flashchip.h
-@@ -13,6 +13,7 @@
-  */
- #include <linux/sched.h>
- #include <linux/mutex.h>
-+#include <linux/wait.h>
- 
- typedef enum {
- 	FL_READY,
 -- 
-2.34.1
-
+Thx and BRs,
+Tengfei Fan
 
