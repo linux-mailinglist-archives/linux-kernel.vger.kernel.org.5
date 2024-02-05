@@ -1,151 +1,190 @@
-Return-Path: <linux-kernel+bounces-52958-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52959-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE636849ED0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:53:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1028B849ED7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:54:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AF2728B342
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:53:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48333B210AD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:54:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFF572E629;
-	Mon,  5 Feb 2024 15:53:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A4C032C90;
+	Mon,  5 Feb 2024 15:54:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iP4sVD7h"
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="FobrK0UM"
+Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A936E39856
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 15:53:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CAC032C93;
+	Mon,  5 Feb 2024 15:54:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707148405; cv=none; b=hz8HecHt4cHjdAu4FN0fGoQipsnqjNwS7M08WstRW/IAF7SZfezi3vOpTzzPmB6f6vRN/gfKZ5frEwZiRhm6wNUYCevI9YNi2KBYaJo2N1s2NIvIOX2o+Q2jVwfpBUM8etCx8FDbTGsHdtUkg/P6pPzxPGiJkYNX5E16Pizl2Ho=
+	t=1707148460; cv=none; b=jJTwhFX0XUqZBrTGFrHPYxDKkoKAeTxuZnUq8MTi8XzN5JR3PolYLnWAQG4cKDZVLKUTA2TJqwoP7BqvxEMXGr86rpcipHZnUxuXVsssOz40rtqzgWq5uZtxkvzgkifXcm1nzY4F3Pa/Tc0SPL5ZQIAjjtU1m+R8cbPI8YnGFL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707148405; c=relaxed/simple;
-	bh=Tj/tSyznD6niSn67AzAu0cOFqdiubGqC2gQgO7+0PPg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cAxFe/hUanMzaY8tGL85EituX3McQ/9DZIZgcepxAa4uB6eb4wDqy/d1+6yOZXlWE7byeevQ0NyyjPJXsDg2DdIn+xmbqZvgwnoDPcAaKKkzoxtLOJrhwOQQHENWSLIlqHiYSc78n3crDL/Y+VdegYg5IUo/D9phUdNqco3Oh9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iP4sVD7h; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5c66b093b86so4082848a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 07:53:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707148403; x=1707753203; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yKMXANMb2L0d4cSkguf2jw1WiTCcS41jyvz5JuSTL3Q=;
-        b=iP4sVD7h7Lpr2wvcPYz6y0GbWFJelJ3+aAe3FeRtzyWsY0/c0j2zUtFOEKclalXZ09
-         q282t57sGhCT52qVfKCNm4cl61+tdCGlDuVQytigyLcgoaIb5oxqZi005reA1RJfFcma
-         dd3ginGfpxwH0can8qIXe0CgRifQrPZ5+bDxXRS2KikU5AXlfgKy/mQNjx5TLiDPmCfH
-         hfCKG8nfmoCf3MlL4k0OjheUoLR3mPV8NDnuvRrr3wU6o4LhUkWmN+0iFQvpP+5aGr6J
-         a+zjndPPIhWWzBhOf5H0gwBxrpQ9GaQodusiyFpYy8I5ImPvfzN+mZJIuYw65zus5c98
-         nQCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707148403; x=1707753203;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yKMXANMb2L0d4cSkguf2jw1WiTCcS41jyvz5JuSTL3Q=;
-        b=vOhF2hdvZ/pvgGVjwxMPb+AkQvvKIuTR3Hy1y8xXuKoQiOvyxJruKr+PCxYM/Ds7G+
-         OP0WB1+2WxvLbNOzHqJxqyaeqwcblTflE92drrX/771ynfw46EsqMQ+AzU35/0ayTiP+
-         kz4dHCPQYSvsdy5xKvl+R8uhHC91SE39ZQAeG9ura5qsVJ+sc79V/UgrwCPVlUc/rt0p
-         sEE75IzPCD4ay8oCfy6KXcMnspB8tvXxFKHXgLsWrKOAuwBC1cxy0zcdUw656LtVBc25
-         K3amNBXs0gdIKI/Yvypsa4womAwLbzWk75nawL6ln3C4GzpbaIMIQCxb+UiTQQYCL61f
-         hIfg==
-X-Gm-Message-State: AOJu0YyRpaWWORGoPpbQSs7ifAPjFgM6whO7NMnvkVrpcEcZeUDVByqt
-	9M7xlYwyEwgLmafqmeV9ekq+ZsWSoAfQUvnviIyHJerBED5+kBGL3dUwwyKxh4ioo8ejSfh91xV
-	7KJoh6vWKBU/bx8Mm85LxaYZGn3CaS9+sZdc1+w==
-X-Google-Smtp-Source: AGHT+IGiQ8mgXBzzUxrLOOHInjCHEUGgvmdllRmofPYa6NtB9hGeupI8S22TOVaYwtQCQLIyLsSLsY86I4vrGeoUsvs=
-X-Received: by 2002:a05:6a20:c891:b0:19e:4ae5:730f with SMTP id
- hb17-20020a056a20c89100b0019e4ae5730fmr57615pzb.30.1707148402893; Mon, 05 Feb
- 2024 07:53:22 -0800 (PST)
+	s=arc-20240116; t=1707148460; c=relaxed/simple;
+	bh=b/Dem0ECsfMrCXdGfQp14Mkyx8f0VspGV1icFGlRQeA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VKtvsVJse4xwigLZifVlKgh92N4G40V4tIHhC0Gu99AT+nuKPKQn4XUs2giH/eliOnof5QETQMTITR6shU1a4QlnyfzMcWpDDJhEAiq5GpTPR0xzbVR/SRT7qk5Z5zky7b575Ho+JHtFR/f2YebNTbbdR28Ttd6Al7q6sAWo5L8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=FobrK0UM; arc=none smtp.client-ip=195.181.215.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
+	t=1707148447; bh=b/Dem0ECsfMrCXdGfQp14Mkyx8f0VspGV1icFGlRQeA=;
+	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
+	b=FobrK0UMQyhHSrlREwoLvPtAVptvi2xFUmDJg36QNbRUJrs/xpegkCawOJQT74A6E
+	 9oPkfNja6Z7Ij2bGtj+KsGR/kId4f8a376BX1e2miJcsdLuRJoT9Bhmj6k3eO6exlc
+	 ct90WiwR4YUPjLuWr5oX1IOv4M4X5tjcaxHchuzE=
+Date: Mon, 5 Feb 2024 16:54:07 +0100
+From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
+To: Frank Oltmanns <frank@oltmanns.dev>
+Cc: Michael Turquette <mturquette@baylibre.com>, 
+	Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
+	Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>, Purism Kernel Team <kernel@puri.sm>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] Pinephone video out fixes (flipping between two
+ frames)
+Message-ID: <jzl3mlzk4j7qvgcedvipgale5nhinznefodrnaehwsqfnseiwc@7zzlxd4dpueh>
+Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
+	Frank Oltmanns <frank@oltmanns.dev>, Michael Turquette <mturquette@baylibre.com>, 
+	Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
+	Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>, Purism Kernel Team <kernel@puri.sm>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	devicetree@vger.kernel.org
+X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
+ <https://xff.cz/key.txt>
+References: <20240205-pinephone-pll-fixes-v2-0-96a46a2d8c9b@oltmanns.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205124513.447875-1-tudor.ambarus@linaro.org> <20240205124513.447875-7-tudor.ambarus@linaro.org>
-In-Reply-To: <20240205124513.447875-7-tudor.ambarus@linaro.org>
-From: Sam Protsenko <semen.protsenko@linaro.org>
-Date: Mon, 5 Feb 2024 09:53:11 -0600
-Message-ID: <CAPLW+4=S7+ur0Csd-qQcEBo2_Z3Dy9ZtarYY0=jYhY33kc4WDA@mail.gmail.com>
-Subject: Re: [PATCH v4 06/16] spi: s3c64xx: remove unneeded (void *) casts in of_match_table
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: broonie@kernel.org, andi.shyti@kernel.org, krzysztof.kozlowski@linaro.org, 
-	alim.akhtar@samsung.com, linux-spi@vger.kernel.org, 
-	linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, andre.draszik@linaro.org, 
-	peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240205-pinephone-pll-fixes-v2-0-96a46a2d8c9b@oltmanns.dev>
 
-On Mon, Feb 5, 2024 at 6:45=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro.=
-org> wrote:
->
-> of_device_id::data is an opaque pointer. No explicit cast is needed.
-> Remove unneeded (void *) casts in of_match_table.
->
-> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+On Mon, Feb 05, 2024 at 04:22:23PM +0100, Frank Oltmanns wrote:
+> On some pinephones the video output sometimes freezes (flips between two
+> frames) [1]. It seems to be that the reason for this behaviour is that
+> PLL-MIPI, PLL-GPU and GPU are operating outside their limits.
+> 
+> In this patch series I propose the followin changes:
+>   1. sunxi-ng: Adhere to the following constraints given in the
+>      Allwinner A64 Manual regarding PLL-MIPI:
+>       * M/N <= 3
+>       * (PLL_VIDEO0)/M >= 24MHz
+>       * 500MHz <= clockrate <= 1400MHz
+> 
+>   2. Choose a higher clock rate for the ST7703 based XDB599 panel, so
+>      that the panel function well with the Allwinner A64 SOC. PLL-MIPI
+>      must run between 500 MHz and 1.4 GHz. As PLL-MIPI runs at 6 times
+>      the panel's clock rate, we need the panel's clock to be at least
+>      83.333 MHz.
+> 
+>   3. Increase the minimum frequency in the A64 DTS OPPs from 120 MHz to
+>      192 MHz. This further reduces the issue.
+> 
+> Unfortunately, with these patches the issue [1] is not completely gone,
+> but becomes less likely.
+> 
+> Note, that when pinning the GPU to 432 MHz the issue completely
+> disappears for me. I've searched the BSP and could not find any
+> indication that supports the idea of having the three OPPs. The only
+> frequency I found in the BPSs for A64 is 432 MHz, that has also proven
+> stable for me. So, while increasing the minimum frequency to 192 MHz
+> reduces the issue, should we maybe instead set the GPU to a fixed 432
+> MHz instead?
+
+Per A64 User Manual 1.1 page 81:
+
+(9). Clock output of PLL_GPU can be used for GPU;and dynamic frequency scaling is not supported;
+
+Also sunxi-ng clk driver does apply NM factors at once to PLL_GPU clock,
+which can cause sudden frequency increase beyond intended output frequency,
+because division is applied immediately while multiplication is reflected
+slowly.
+
+Eg. if you're changing divider from 7 to 1, you can get a sudden 7x output
+frequency spike, before PLL VCO manages to lower the frequency through N clk
+divider feedback loop and lock on again. This can mess up whatever's connected
+to the output quite badly.
+
+You'd have to put logging on kernel writes to PLL_GPU register to see what
+is written in there and if divider is lowered significantly on some GPU
+devfreq frequency transitions.
+
+It's also unclear what happens when FRAC_CLK_OUT or PLL_MODE_SEL changes.
+Maybe not much because M is supposed to be set to 1, but you still need to
+care when enabling fractional mode, and setting M to 1 because that's exactly
+the bad scenario if M was previously higher than 1.
+
+It's tricky.
+
+Having GPU module clock gated during PLL config changes may help! You can
+do that without locking yourself out, unlike with the CPU PLL.
+
+There's a gate enable bit for it at GPU_CLK_REG.SCLK_GATING. (page 122)
+
+Kind regards,
+	o.
+
+> I very much appreciate your feedback!
+> 
+> [1] https://gitlab.com/postmarketOS/pmaports/-/issues/805
+> 
+> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
 > ---
-
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
-
->  drivers/spi/spi-s3c64xx.c | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-> index ccb700312d64..807270ec3c8a 100644
-> --- a/drivers/spi/spi-s3c64xx.c
-> +++ b/drivers/spi/spi-s3c64xx.c
-> @@ -1512,31 +1512,31 @@ static const struct platform_device_id s3c64xx_sp=
-i_driver_ids[] =3D {
->
->  static const struct of_device_id s3c64xx_spi_dt_match[] =3D {
->         { .compatible =3D "samsung,s3c2443-spi",
-> -                       .data =3D (void *)&s3c2443_spi_port_config,
-> +                       .data =3D &s3c2443_spi_port_config,
->         },
->         { .compatible =3D "samsung,s3c6410-spi",
-> -                       .data =3D (void *)&s3c6410_spi_port_config,
-> +                       .data =3D &s3c6410_spi_port_config,
->         },
->         { .compatible =3D "samsung,s5pv210-spi",
-> -                       .data =3D (void *)&s5pv210_spi_port_config,
-> +                       .data =3D &s5pv210_spi_port_config,
->         },
->         { .compatible =3D "samsung,exynos4210-spi",
-> -                       .data =3D (void *)&exynos4_spi_port_config,
-> +                       .data =3D &exynos4_spi_port_config,
->         },
->         { .compatible =3D "samsung,exynos7-spi",
-> -                       .data =3D (void *)&exynos7_spi_port_config,
-> +                       .data =3D &exynos7_spi_port_config,
->         },
->         { .compatible =3D "samsung,exynos5433-spi",
-> -                       .data =3D (void *)&exynos5433_spi_port_config,
-> +                       .data =3D &exynos5433_spi_port_config,
->         },
->         { .compatible =3D "samsung,exynos850-spi",
-> -                       .data =3D (void *)&exynos850_spi_port_config,
-> +                       .data =3D &exynos850_spi_port_config,
->         },
->         { .compatible =3D "samsung,exynosautov9-spi",
-> -                       .data =3D (void *)&exynosautov9_spi_port_config,
-> +                       .data =3D &exynosautov9_spi_port_config,
->         },
->         { .compatible =3D "tesla,fsd-spi",
-> -                       .data =3D (void *)&fsd_spi_port_config,
-> +                       .data =3D &fsd_spi_port_config,
->         },
->         { },
->  };
-> --
-> 2.43.0.594.gd9cf4e227d-goog
->
+> Changes in v2:
+> - dts: Increase minimum GPU frequency to 192 MHz.
+> - nkm and a64: Add minimum and maximum rate for PLL-MIPI.
+> - nkm: Use the same approach for skipping invalid rates in
+>   ccu_nkm_find_best() as in ccu_nkm_find_best_with_parent_adj().
+> - nkm: Improve names for ratio struct members and hence get rid of
+>   describing comments.
+> - nkm and a64: Correct description in the commit messages: M/N <= 3
+> - Remove patches for nm as they were not needed.
+> - st7703: Rework the commit message to cover more background for the
+>   change.
+> - Link to v1: https://lore.kernel.org/r/20231218-pinephone-pll-fixes-v1-0-e238b6ed6dc1@oltmanns.dev
+> 
+> ---
+> Frank Oltmanns (6):
+>       clk: sunxi-ng: nkm: Support constraints on m/n ratio and parent rate
+>       clk: sunxi-ng: a64: Add constraints on PLL-MIPI's n/m ratio and parent rate
+>       clk: sunxi-ng: nkm: Support minimum and maximum rate
+>       clk: sunxi-ng: a64: Set minimum and maximum rate for PLL-MIPI
+>       drm/panel: st7703: Drive XBD599 panel at higher clock rate
+>       arm64: dts: allwinner: a64: Fix minimum GPU OPP rate
+> 
+>  arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi |  4 ++--
+>  drivers/clk/sunxi-ng/ccu-sun50i-a64.c         | 14 +++++++----
+>  drivers/clk/sunxi-ng/ccu_nkm.c                | 34 +++++++++++++++++++++++++++
+>  drivers/clk/sunxi-ng/ccu_nkm.h                |  4 ++++
+>  drivers/gpu/drm/panel/panel-sitronix-st7703.c | 14 +++++------
+>  5 files changed, 56 insertions(+), 14 deletions(-)
+> ---
+> base-commit: 059c53e877ca6e723e10490c27c1487a63e66efe
+> change-id: 20231218-pinephone-pll-fixes-0ccdfde273e4
+> 
+> Best regards,
+> -- 
+> Frank Oltmanns <frank@oltmanns.dev>
+> 
 
