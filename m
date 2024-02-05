@@ -1,190 +1,301 @@
-Return-Path: <linux-kernel+bounces-52491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F08438498EB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:34:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52C758498EF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:34:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50471B243C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:34:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06A5228652C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:34:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA0AD199A7;
-	Mon,  5 Feb 2024 11:33:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C715A18EB3;
+	Mon,  5 Feb 2024 11:34:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TpXloMUH"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="nWlGlpjg";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="rDIaZo/o";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZYJ3k7Ln";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4hfbs10r"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C8C118E28;
-	Mon,  5 Feb 2024 11:33:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6CE718E00;
+	Mon,  5 Feb 2024 11:34:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707132822; cv=none; b=BhrwbQC3lUudXvs4vTaM4xtRlhe+rCNsiDpAV7khM0opgW696bZYKk9muhFniihI+DxIwj5tLUHRCG8Rl1iDtJZKoXiEyjzXzbYdiY81qSIJK7JEQi+zYYrdMN1crK2s+x4YxqelLPkWcI4ELjY7zWKuhFTW8MqNcCVl494W5vg=
+	t=1707132856; cv=none; b=sBcxdwYNZL3ARQptZALSMuRA6G8bwBgFeo2BJobyAz7fJYHzrE7PbWUyelS6KuF1C+2rPEgEvq6+uFkF2ahbXWw3vlxQ8AuZhwCR5Pu5FqWRVPb8JWJiUE502uO1GlYPI3vzuTmdhO/7pHPDVL/55KvscQLVeUvPrO8AxbyXITY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707132822; c=relaxed/simple;
-	bh=1MwSAUc78W5tJXQDmXiVVWL6LW0tWArwoySoZ/FGdlY=;
+	s=arc-20240116; t=1707132856; c=relaxed/simple;
+	bh=gf0D6upjqXr6wfjvr+pd9lvlUyDKq+kblrTY2ZtM6vE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mah912x7cgX6ozTZ+cpAyiPJixHVA/0LjUhfxVTo5rCpNnQpTtWkjrxCmfbI8QMMZtVXqOhDybNfpoFW235/V71c/fwHMdnx814Zu0d8JF4IA2gwVYQDjlY+VGfqHIwjEgnaA8OGXZBGSpFevPG3TCWDbkJB5SfuScPJUHa5Juk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TpXloMUH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36F10C433C7;
-	Mon,  5 Feb 2024 11:33:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707132821;
-	bh=1MwSAUc78W5tJXQDmXiVVWL6LW0tWArwoySoZ/FGdlY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TpXloMUHVvgOT++sJP7NBERncauAvbB6ry4KrcJTiSaciNWRV+DSyRYS+aG8Sioma
-	 t6iLwz1RM85qLT6G9Ca/U6FC+XoRgFdiD4kLjovPNM+SVaRqBiJH5791i6WyWYiQos
-	 FmttZ3GJk4+4F6djl9PeTMvUq0PonAfvWXtfDYi5SZQba0/Zg+PlqptTC/pfIMtZGL
-	 bjEboxt4JN/Q/9y6zfZ4fkdwI3X1oDizR4dA1v8QcPZ6tQnKT0rHmkt4yTc1baR/fj
-	 g2SBCEbI/D+HFbVapiKdMQE0fstZtVWBdvgD/IqHZNQ3hz1K3AL0tkeSdbg4VKKgW0
-	 6j1xiFneU7IEw==
-Date: Mon, 5 Feb 2024 12:33:34 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Jian-Hong Pan <jhp@endlessos.org>
-Cc: Daniel Drake <drake@endlessos.org>,
-	Vitalii Solomonov <solomonov.v@gmail.com>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	David Box <david.e.box@linux.intel.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Nirmal Patel <nirmal.patel@linux.intel.com>,
-	Jonathan Derrick <jonathan.derrick@linux.dev>,
-	linux-ide@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux@endlessos.org
-Subject: Re: [PATCH 1/2] ata: ahci: Add force LPM policy quirk for ASUS
- B1400CEAE
-Message-ID: <ZcDHjsYJNlJ/9nNT@x1-carbon>
-References: <20240130095933.14158-1-jhp@endlessos.org>
- <20240130101335.GU2543524@black.fi.intel.com>
- <CAPpJ_ef4KuZzBaMupH-iW0ricyY_9toa7A4rB2vyeaFu7ROiDA@mail.gmail.com>
- <Zbonprq/1SircQon@x1-carbon>
- <CAD8Lp47SH+xcCbZ9qdRwrk2KOHNoHUE5AMieVHoSMbVsMrdiNg@mail.gmail.com>
- <ZbrNLxHL03R66PxQ@x1-carbon>
- <ZbuyVbMEBWKi729y@x1-carbon>
- <CAPpJ_efmzy_FU0urdHDmO5htOBCPaX-T5W+Er7AmWYhqUTwnyA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=CDr9ME9v7mX56ADrrhmgjQLutCdV33RFj5T/+cJ2CDxbPHFgUWNGrFfSZD2RPO1scy7lkg11iX0vMCGQPNQ5dXODAgxsmxydH4GuPx2Ja9aLoHNtkZ5/RFKlzvr6A0Jn566JqHvQDb5zEY+dr9M3TlQMmHIMJqBy4JLQ1XbWxGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=nWlGlpjg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=rDIaZo/o; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZYJ3k7Ln; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4hfbs10r; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D2A731F8BD;
+	Mon,  5 Feb 2024 11:34:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707132853; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m/SxzjtBf487sMzoXkTo79HeTFHw6kYb0uZ9SjI1QhA=;
+	b=nWlGlpjgTnSsdsU/4IcQAUBsJUNt8O2LS7OBMRW/5yB+zMgVMogO2G+6I+vWntP+poRgnm
+	rJEEvOz0fexQj7YIOTCnK1gEBres+5IfiNKztez0kJBxSCZubRQY7oqWlUHl9OyDx08GxV
+	Nz03ign2qpbSzbzEwnVZ2F11yM2fnds=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707132853;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m/SxzjtBf487sMzoXkTo79HeTFHw6kYb0uZ9SjI1QhA=;
+	b=rDIaZo/oPFtJBnyilzrNT6NyPncrgL7uudHAAz46rJPOfXzKlJfWp0h67EmRzw9xkWlVmC
+	HVxRsmi3P39nLwBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707132852; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m/SxzjtBf487sMzoXkTo79HeTFHw6kYb0uZ9SjI1QhA=;
+	b=ZYJ3k7LnR8sbw5nxKHiqRmRqE91mDOoDVovLO4nQPFElWqeuESWMWhrS0AtUOcZADAOk5p
+	WhqBGGaMCP30TWpTUlaQDHggmWK25bcY7BmIUu+lbMnxnOvo6MaFQs+bv1zSmYhChgz/f3
+	8eXa9KFGPXdAs/s2cJDz6xXwRqfBf5E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707132852;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m/SxzjtBf487sMzoXkTo79HeTFHw6kYb0uZ9SjI1QhA=;
+	b=4hfbs10r0RNUuNudNYnaEV4nGp5Cc7TlxBs/M1B2a7tinE1tu2CGehJdf1sMy0vBpiYjnY
+	z5Wxwt1PVqxCDIAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C68F8136F5;
+	Mon,  5 Feb 2024 11:34:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 6ZR0MLTHwGVeQgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 05 Feb 2024 11:34:12 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 7903EA0809; Mon,  5 Feb 2024 12:34:12 +0100 (CET)
+Date: Mon, 5 Feb 2024 12:34:12 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@lst.de>
+Cc: linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>,
+	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>,
+	Brian Foster <bfoster@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	"Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 05/13] writeback: rework the loop termination condition
+ in write_cache_pages
+Message-ID: <20240205113412.ceemxahic7bpodip@quack3>
+References: <20240203071147.862076-1-hch@lst.de>
+ <20240203071147.862076-6-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPpJ_efmzy_FU0urdHDmO5htOBCPaX-T5W+Er7AmWYhqUTwnyA@mail.gmail.com>
+In-Reply-To: <20240203071147.862076-6-hch@lst.de>
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ZYJ3k7Ln;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=4hfbs10r
+X-Spamd-Result: default: False [-2.81 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: D2A731F8BD
+X-Spam-Level: 
+X-Spam-Score: -2.81
+X-Spam-Flag: NO
 
-On Fri, Feb 02, 2024 at 04:49:00PM +0800, Jian-Hong Pan wrote:
-> Niklas Cassel <cassel@kernel.org> 於 2024年2月1日 週四 下午11:01寫道：
-> >
-> > On Wed, Jan 31, 2024 at 11:43:59PM +0100, Niklas Cassel wrote:
-> > > On Wed, Jan 31, 2024 at 07:08:12AM -0400, Daniel Drake wrote:
-> >
-> > (snip)
-> >
-> > > In libata we perform a reset of the port at boot, see:
-> > > libata-sata.c:sata_link_hardreset()
-> > > after writing to SControl, we call
-> > > libata-core.c:ata_wait_ready() that will poll for the port being ready
-> > > by calling the check_ready callback.
-> > > For AHCI, this callback funcion is set to:
-> > > libahci.c:ahci_check_ready().
-> > >
-> > > A reset should take the device out of deep power state and should be
-> > > sufficient to establish a connection (and that also seems to be the
-> > > case when not using Intel VMD).
-> > >
-> > > However, if you want to debug, I would start by adding prints to
-> > > libata-sata.c:sata_link_hardreset()
-> > > libata-core.c:ata_wait_ready()
-> > > libahci.c:ahci_check_ready().
-> >
-> > FWIW, this will dump SStatus.DET every time the check_ready callback function
-> > (ahci_check_ready()) is called:
-> >
-> >
-> > diff --git a/drivers/ata/libahci.c b/drivers/ata/libahci.c
-> > index 1a63200ea437..0467e150601e 100644
-> > --- a/drivers/ata/libahci.c
-> > +++ b/drivers/ata/libahci.c
-> > @@ -1533,6 +1533,12 @@ int ahci_check_ready(struct ata_link *link)
-> >  {
-> >         void __iomem *port_mmio = ahci_port_base(link->ap);
-> >         u8 status = readl(port_mmio + PORT_TFDATA) & 0xFF;
-> > +       u32 cur = 0;
-> > +
-> > +       sata_scr_read(link, SCR_STATUS, &cur);
-> > +
-> > +       ata_link_info(link, "BUSY ? %d (status: %#x) SStatus.DET: %#x\n",
-> > +                     status & ATA_BUSY, status, cur & 0xf);
-> >
-> >         return ata_check_ready(status);
-> >  }
+On Sat 03-02-24 08:11:39, Christoph Hellwig wrote:
+> Rework the way we deal with the cleanup after the writepage call.
 > 
-> I think I can join the test based on kernel v6.8-rc2, too.
+> First handle the magic AOP_WRITEPAGE_ACTIVATE separately from real error
+> returns to get it out of the way of the actual error handling path.
 > 
-> The original ASUS B1400CEAE has only one NVMe SSD.  I prepare the
-> patch ("ata: ahci: Add force LPM policy quirk for ASUS B1400CEAE") to
-> fix the power consumption issue for s2idle with enabled VMD.
+> The split the handling on intgrity vs non-integrity branches first,
+> and return early using a goto for the non-ingegrity early loop condition
+> to remove the need for the done and done_index local variables, and for
+> assigning the error to ret when we can just return error directly.
 > 
-> The patch is a quirk limiting ASUS B1400CEAE only, not generic for the
-> SATA controller [8086:a0d3].  Then, I install another SATA HDD into
-> ASUS B1400CEAE for test.  The SATA HDD shows up and works.
-> 
-> $ dmesg | grep SATA
-> [    0.785120] ahci 10000:e0:17.0: AHCI 0001.0301 32 slots 1 ports 6
-> Gbps 0x1 impl SATA mode
-> [    0.785269] ata1: SATA max UDMA/133 abar m2048@0x76102000 port
-> 0x76102100 irq 144 lpm-pol 3
-> [    1.096684] ata1: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
-> 
-> However, if I simply revert the commit 6210038aeaf4 ("ata: ahci:
-> Revert "ata: ahci: Add Tiger Lake UP{3,4} AHCI controller"") (fix the
-> conflict, of course), then the SATA HDD disappears!!?  Both
-> CONFIG_SATA_MOBILE_LPM_POLICY=3 and 0 can reproduce the issue.
-> 
-> $ dmesg | grep SATA
-> [    0.783211] ahci 10000:e0:17.0: AHCI 0001.0301 32 slots 1 ports 6
-> Gbps 0x1 impl SATA mode
-> [    0.783399] ata1: SATA max UDMA/133 abar m2048@0x76102000 port
-> 0x76102100 irq 144 lpm-pol 3
-> [    1.096685] ata1: SATA link down (SStatus 4 SControl 300)
-> 
-> Here is the dmesg of reverting ("ata: ahci: Revert "ata: ahci: Add
-> Tiger Lake UP{3,4} AHCI controller"")
-> https://bugzilla.kernel.org/show_bug.cgi?id=217114#c27
-> The code already includes the debug message in ahci_check_ready() from
-> Niklas.  However, the dmesg does not show the "BUSY ? ..." from
-> ahci_check_ready().
-> 
-> From these scenarios mentioned above, they all apply LPM policy to the
-> SATA controller [8086:a0d3].  But, they apply LPM policy at different
-> time:
-> * The patch ("ata: ahci: Add force LPM policy quirk for ASUS
-> B1400CEAE") applies LPM policy in early ahci_init_one(), which is the
-> probe callback.
-> * Reverting 6210038aeaf4 ("ata: ahci: Revert "ata: ahci: Add Tiger
-> Lake UP{3,4} AHCI controller"") applies LPM policy via "ahci_pci_tbl"
-> table.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-I don't see why it should matter if we set the AHCI_HFLAG_USE_LPM_POLICY
-flag using ahci_pci_tbl, or by your suggested quirk in ahci_init_one(),
-as in both cases the flag will be set before ahci_init_one() calls
-ahci_update_initial_lpm_policy().
+Looks good. Feel free to add:
 
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Could it perhaps be that in order for libata to be able to detect your
-drive, when VMD is enabled, we also need your patch
-"PCI: vmd: enable PCI PM's L1 substates of remapped PCIe port and NVMe" ?
+								Honza
 
-
-If that is not the case, and there actually is a difference between using
-ahci_pci_tbl and your suggested quirk, then my next suggestion would be to
-add prints to libata-sata.c:sata_link_scr_lpm(). That way you can dump the
-exact SCR writes that are being done for the working case vs. the
-non-working case. (Since I assume that there must be some difference.)
-
-
-Kind regards,
-Niklas
+> ---
+>  mm/page-writeback.c | 84 ++++++++++++++++++---------------------------
+>  1 file changed, 33 insertions(+), 51 deletions(-)
+> 
+> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+> index c7c494526bc650..88b2c4c111c01b 100644
+> --- a/mm/page-writeback.c
+> +++ b/mm/page-writeback.c
+> @@ -2396,13 +2396,12 @@ int write_cache_pages(struct address_space *mapping,
+>  		      void *data)
+>  {
+>  	int ret = 0;
+> -	int done = 0;
+>  	int error;
+>  	struct folio_batch fbatch;
+> +	struct folio *folio;
+>  	int nr_folios;
+>  	pgoff_t index;
+>  	pgoff_t end;		/* Inclusive */
+> -	pgoff_t done_index;
+>  	xa_mark_t tag;
+>  
+>  	folio_batch_init(&fbatch);
+> @@ -2419,8 +2418,7 @@ int write_cache_pages(struct address_space *mapping,
+>  	} else {
+>  		tag = PAGECACHE_TAG_DIRTY;
+>  	}
+> -	done_index = index;
+> -	while (!done && (index <= end)) {
+> +	while (index <= end) {
+>  		int i;
+>  
+>  		nr_folios = filemap_get_folios_tag(mapping, &index, end,
+> @@ -2430,11 +2428,7 @@ int write_cache_pages(struct address_space *mapping,
+>  			break;
+>  
+>  		for (i = 0; i < nr_folios; i++) {
+> -			struct folio *folio = fbatch.folios[i];
+> -			unsigned long nr;
+> -
+> -			done_index = folio->index;
+> -
+> +			folio = fbatch.folios[i];
+>  			folio_lock(folio);
+>  
+>  			/*
+> @@ -2469,45 +2463,32 @@ int write_cache_pages(struct address_space *mapping,
+>  
+>  			trace_wbc_writepage(wbc, inode_to_bdi(mapping->host));
+>  			error = writepage(folio, wbc, data);
+> -			nr = folio_nr_pages(folio);
+> -			wbc->nr_to_write -= nr;
+> -			if (unlikely(error)) {
+> -				/*
+> -				 * Handle errors according to the type of
+> -				 * writeback. There's no need to continue for
+> -				 * background writeback. Just push done_index
+> -				 * past this page so media errors won't choke
+> -				 * writeout for the entire file. For integrity
+> -				 * writeback, we must process the entire dirty
+> -				 * set regardless of errors because the fs may
+> -				 * still have state to clear for each page. In
+> -				 * that case we continue processing and return
+> -				 * the first error.
+> -				 */
+> -				if (error == AOP_WRITEPAGE_ACTIVATE) {
+> -					folio_unlock(folio);
+> -					error = 0;
+> -				} else if (wbc->sync_mode != WB_SYNC_ALL) {
+> -					ret = error;
+> -					done_index = folio->index + nr;
+> -					done = 1;
+> -					break;
+> -				}
+> -				if (!ret)
+> -					ret = error;
+> +			wbc->nr_to_write -= folio_nr_pages(folio);
+> +
+> +			if (error == AOP_WRITEPAGE_ACTIVATE) {
+> +				folio_unlock(folio);
+> +				error = 0;
+>  			}
+>  
+>  			/*
+> -			 * We stop writing back only if we are not doing
+> -			 * integrity sync. In case of integrity sync we have to
+> -			 * keep going until we have written all the pages
+> -			 * we tagged for writeback prior to entering this loop.
+> +			 * For integrity writeback we have to keep going until
+> +			 * we have written all the folios we tagged for
+> +			 * writeback above, even if we run past wbc->nr_to_write
+> +			 * or encounter errors.
+> +			 * We stash away the first error we encounter in
+> +			 * wbc->saved_err so that it can be retrieved when we're
+> +			 * done.  This is because the file system may still have
+> +			 * state to clear for each folio.
+> +			 *
+> +			 * For background writeback we exit as soon as we run
+> +			 * past wbc->nr_to_write or encounter the first error.
+>  			 */
+> -			done_index = folio->index + nr;
+> -			if (wbc->nr_to_write <= 0 &&
+> -			    wbc->sync_mode == WB_SYNC_NONE) {
+> -				done = 1;
+> -				break;
+> +			if (wbc->sync_mode == WB_SYNC_ALL) {
+> +				if (error && !ret)
+> +					ret = error;
+> +			} else {
+> +				if (error || wbc->nr_to_write <= 0)
+> +					goto done;
+>  			}
+>  		}
+>  		folio_batch_release(&fbatch);
+> @@ -2524,14 +2505,15 @@ int write_cache_pages(struct address_space *mapping,
+>  	 * of the file if we are called again, which can only happen due to
+>  	 * -ENOMEM from the file system.
+>  	 */
+> -	if (wbc->range_cyclic) {
+> -		if (done)
+> -			mapping->writeback_index = done_index;
+> -		else
+> -			mapping->writeback_index = 0;
+> -	}
+> -
+> +	if (wbc->range_cyclic)
+> +		mapping->writeback_index = 0;
+>  	return ret;
+> +
+> +done:
+> +	folio_batch_release(&fbatch);
+> +	if (wbc->range_cyclic)
+> +		mapping->writeback_index = folio->index + folio_nr_pages(folio);
+> +	return error;
+>  }
+>  EXPORT_SYMBOL(write_cache_pages);
+>  
+> -- 
+> 2.39.2
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
