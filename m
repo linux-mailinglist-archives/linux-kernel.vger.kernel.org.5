@@ -1,361 +1,201 @@
-Return-Path: <linux-kernel+bounces-52403-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92F998497A4
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:20:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 820EF8497A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:21:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7FB9B2628E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:19:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3724F2853FB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:21:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A41091757A;
-	Mon,  5 Feb 2024 10:19:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 327C8171A6;
+	Mon,  5 Feb 2024 10:21:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=haloniitty.fi header.i=@haloniitty.fi header.b="CpPAITZ3"
-Received: from whm50.louhi.net (whm50.louhi.net [77.240.19.51])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="CVaoUzLs"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E25C17559
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 10:19:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.240.19.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95123168CD;
+	Mon,  5 Feb 2024 10:21:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707128358; cv=none; b=L8Y5BwM1oYpuWtq39FygYMI+iX0W9BQLbblXmW3M3qFeDV7kw/y2+ZY1W4MgNKlBw3hkUpPGwoO00ilHiibEIO/E72tZ1iQ/ktus0qnFuLLMKB2pCIwib/t8PhEUJc8pWoUhm748WW3KPPT2YOz9GFFY6y4dplkAqbKCo7Oluu4=
+	t=1707128465; cv=none; b=Yn99nWtnwaJQ4VHWpOJFKBJQD/ctkNcJ8aJww2Bc/xklVs8WoauL6xcmL5X6pyMpv/GsMWO3C4G7Ms6TQoITPSCem90qpfHG12t2EV9YUDw60mRr2hgHpwrrLFotRMvzwKLcEjusXA1iFo5I/59qvYBHjtmcSSr+/qFSEAK60OI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707128358; c=relaxed/simple;
-	bh=K8k0j3qApBwkpeEBBwOdSpyfEmFaLVl15XTXfaU0XVE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hMmfSFgMS1MOaPFLlvDTNzKsbPW1FtzUyepgxPQRj/q/C+Crb36y75s8zBDv7mnALL0ySQGaY5M56farqog4TsMprfsqgqOoRQmF8dcvJsqQQmxO70z4pfJ15AZhp8DLILQE4y8i1BxjuHh8WQFjIpzcM+viWM8EFvb2jLTcbzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=haloniitty.fi; spf=pass smtp.mailfrom=haloniitty.fi; dkim=pass (2048-bit key) header.d=haloniitty.fi header.i=@haloniitty.fi header.b=CpPAITZ3; arc=none smtp.client-ip=77.240.19.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=haloniitty.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=haloniitty.fi
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=haloniitty.fi; s=default; h=Content-Type:MIME-Version:References:
-	In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=mUMx2QmRTIHu4aOmh/flsY/ds1E4BxAFIwTFhX3M6Jc=; b=CpPAITZ3mq0icrByMtn82QaV3R
-	i+oVum1xUUq6NtE9pZl5yav7i3E7MhuD7VP8wFOhcmUwO5alFiETB5XUbtCmOKIWBcc8rxzqq/GRp
-	Z7BfmjLFBtDm/FGV6CyuqU1pyXSuOczyNEm5LpFrCsGE1oMjJi5eQxsv/gd/DZ5mnDBFcrZELGIls
-	o82QQg4i0tY0t4tBKD7hD41Egw6FOjarN02EmZBaePp9WrrvmH3ahOuU9kc2g29FJNvJ4N4Jkd2E2
-	pNzi0RWuiGR5ZX14hdFLcqM8wDFIUCOZ1UoSlI/kiAB82KwlzJd+BHv/s8Lm8KK/9+7Ul6bMaw3Jx
-	ptqVKTmA==;
-Received: from [194.136.85.206] (port=54302 helo=eldfell)
-	by whm50.louhi.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <pekka.paalanen@haloniitty.fi>)
-	id 1rWw4I-0002rD-0y;
-	Mon, 05 Feb 2024 12:19:14 +0200
-Date: Mon, 5 Feb 2024 12:19:13 +0200
-From: Pekka Paalanen <pekka.paalanen@haloniitty.fi>
-To: Arthur Grillo <arthurgrillo@riseup.net>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Maxime Ripard
- <mripard@kernel.org>, Louis Chauvet <louis.chauvet@bootlin.com>, Rodrigo
- Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
- <melissa.srw@gmail.com>, =?UTF-8?B?TWHDrXJh?= Canal
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel
- Vetter <daniel@ffwll.ch>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann
- <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- marcheu@google.com, seanpaul@google.com, nicolejadeyee@google.com,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- thomas.petazzoni@bootlin.com
-Subject: Re: [PATCH 2/2] drm/vkms: Use a simpler composition function
-Message-ID: <20240205121913.379e28a4@eldfell>
-In-Reply-To: <20240205121204.20878e28@eldfell>
-References: <20240201-yuv-v1-0-3ca376f27632@bootlin.com>
-	<20240201-yuv-v1-2-3ca376f27632@bootlin.com>
-	<20240202105522.43128e19@eldfell>
-	<20240202102601.70b6d49c@xps-13>
-	<3nofkwzgnf4yva2wfogdbii47ohpi2wm5vp6aijtg3emxyoowt@twyreqz7ai3g>
-	<20240202131322.5471e184@xps-13>
-	<20240202174913.789a9db9@eldfell>
-	<14ac793c-6660-434f-998d-af1f51b3b1d2@riseup.net>
-	<20240205121204.20878e28@eldfell>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707128465; c=relaxed/simple;
+	bh=VLGzVaM3Mj7P+IEAuP2IoiJSDH9MT9MjxjQrm4VijZQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=P5Lt17XssUxVasIAFF8U5+AgNV6FcE9lDrPMX0Ggqu4GsKauLX6kbXd8hq5Q4woVvfpcY935unFpXso6EU4nsit90WtF29xTpzUb+n3XK9SqOpRtxiEkH5lv/JlTB73F8ztmvnBpayPr4mvwTnrGNZys5l0VXekng4Fg+L+8tAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=CVaoUzLs; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4158THM4011213;
+	Mon, 5 Feb 2024 10:20:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=HZNc3roTrbVrajfUeI29OzYVEwJSo8Id9bwqToV0jrI=; b=CV
+	aoUzLsAMCBuf6gOiwNWjSpu+nj851vdPSp5fKdLleRIwv4brqG0BMxN/GPoeOOOc
+	7T2/pD56sjm/DVsmGN89ipPrlv83EtIvHefOi/g5ibUvcUqIH2wUyBRRPCmY8Sy1
+	wnnjxrAnVHwbxAcd3TH43M5uFRxzmIf/8ZWMvxDUo0R10N5eJ+xLSn0fgXvXDk1P
+	+wdMnfq2JVsv34ArEKPfsnlAsXDAfyTWJy73XdiMqo10akBhKAFCIw6r5i2x+l4J
+	DD81dx8bp6Ryg+HOiT/LgSEum8DBnOOODlRpExoY80qAN4yDcF0DRFe9Rbkwf9mf
+	kbeSYcITzsHjQpDglsfA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w2v728708-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 05 Feb 2024 10:20:15 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 415AKEUr002384
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 5 Feb 2024 10:20:14 GMT
+Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 5 Feb
+ 2024 02:20:08 -0800
+Message-ID: <86672501-206a-49ed-8af7-2b6c332c1697@quicinc.com>
+Date: Mon, 5 Feb 2024 18:20:05 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/8IcscBG0fq/gsotGh1Gqxsm";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - whm50.louhi.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - haloniitty.fi
-X-Get-Message-Sender-Via: whm50.louhi.net: authenticated_id: pekka.paalanen@haloniitty.fi
-X-Authenticated-Sender: whm50.louhi.net: pekka.paalanen@haloniitty.fi
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-
---Sig_/8IcscBG0fq/gsotGh1Gqxsm
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, 5 Feb 2024 12:12:04 +0200
-Pekka Paalanen <pekka.paalanen@haloniitty.fi> wrote:
-
-> On Fri, 2 Feb 2024 17:02:20 -0300
-> Arthur Grillo <arthurgrillo@riseup.net> wrote:
->=20
-> > On 02/02/24 12:49, Pekka Paalanen wrote: =20
-> > > On Fri, 2 Feb 2024 13:13:22 +0100
-> > > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > >    =20
-> > >> Hello Maxime,
-> > >>
-> > >> + Arthur
-> > >>
-> > >> mripard@kernel.org wrote on Fri, 2 Feb 2024 10:53:37 +0100:
-> > >>   =20
-> > >>> Hi Miquel,
-> > >>>
-> > >>> On Fri, Feb 02, 2024 at 10:26:01AM +0100, Miquel Raynal wrote:     =
-=20
-> > >>>> pekka.paalanen@haloniitty.fi wrote on Fri, 2 Feb 2024 10:55:22 +02=
-00:
-> > >>>>        =20
-> > >>>>> On Thu, 01 Feb 2024 18:31:32 +0100
-> > >>>>> Louis Chauvet <louis.chauvet@bootlin.com> wrote:
-> > >>>>>        =20
-> > >>>>>> Change the composition algorithm to iterate over pixels instead =
-of lines.
-> > >>>>>> It allows a simpler management of rotation and pixel access for =
-complex formats.
-> > >>>>>>
-> > >>>>>> This new algorithm allows read_pixel function to have access to =
-x/y
-> > >>>>>> coordinates and make it possible to read the correct thing in a =
-block
-> > >>>>>> when block_w and block_h are not 1.
-> > >>>>>> The iteration pixel-by-pixel in the same method also allows a si=
-mpler
-> > >>>>>> management of rotation with drm_rect_* helpers. This way it's no=
-t needed
-> > >>>>>> anymore to have misterious switch-case distributed in multiple p=
-laces.         =20
-> > >>>>>
-> > >>>>> Hi,
-> > >>>>>
-> > >>>>> there was a very good reason to write this code using lines:
-> > >>>>> performance. Before lines, it was indeed operating on individual =
-pixels.
-> > >>>>>
-> > >>>>> Please, include performance measurements before and after this se=
-ries
-> > >>>>> to quantify the impact on the previously already supported pixel
-> > >>>>> formats, particularly the 32-bit-per-pixel RGB variants.
-> > >>>>>
-> > >>>>> VKMS will be used more and more in CI for userspace projects, and
-> > >>>>> performance actually matters there.
-> > >>>>>
-> > >>>>> I'm worrying that this performance degradation here is significan=
-t. I
-> > >>>>> believe it is possible to keep blending with lines, if you add ne=
-w line
-> > >>>>> getters for reading from rotated, sub-sampled etc. images. That w=
-ay you
-> > >>>>> don't have to regress the most common formats' performance.      =
- =20
-> > >>>>
-> > >>>> While I understand performance is important and should be taken in=
-to
-> > >>>> account seriously, I cannot understand how broken testing could be
-> > >>>> considered better. Fast but inaccurate will always be significantly
-> > >>>> less attractive to my eyes.       =20
-> > >>>
-> > >>> AFAIK, neither the cover letter nor the commit log claimed it was f=
-ixing
-> > >>> something broken, just that it was "better" (according to what
-> > >>> criteria?).     =20
-> > >>
-> > >> Better is probably too vague and I agree the "fixing" part is not
-> > >> clearly explained in the commit log. The cover-letter however states:
-> > >>   =20
-> > >>> Patch 2/2: This patch is more complex. My main target was to solve =
-issues
-> > >>> I found in [1], but as it was very complex to do it "in place", I c=
-hoose
-> > >>> to rework the composition function.     =20
-> > >> ...   =20
-> > >>> [1]: https://lore.kernel.org/dri-devel/20240110-vkms-yuv-v2-0-952fc=
-aa5a193@riseup.net/     =20
-> > >>
-> > >> If you follow this link you will find all the feedback and especially
-> > >> the "broken" parts. Just to be clear, writing bugs is totally expect=
-ed
-> > >> and review/testing is supposed to help on this regard. I am not blam=
-ing
-> > >> the author in any way, just focusing on getting this code in a more
-> > >> readable shape and hopefully reinforce the testing procedure.
-> > >>   =20
-> > >>> If something is truly broken, it must be stated what exactly is so =
-we
-> > >>> can all come up with a solution that will satisfy everyone.     =20
-> > >>
-> > >> Maybe going through the series pointed above will give more context
-> > >> but AFAIU: the YUV composition is not totally right (and the tests u=
-sed
-> > >> to validate it need to be more complex as well in order to fail).
-> > >>
-> > >> Here is a proposal.
-> > >>
-> > >> Today's RGB implementation is only optimized in the line-by-line case
-> > >> when there is no rotation. The logic is bit convoluted and may possi=
-bly
-> > >> be slightly clarified with a per-format read_line() implementation,
-> > >> at a very light performance cost. Such an improvement would definite=
-ly
-> > >> benefit to the clarity of the code, especially when transformations
-> > >> (especially the rotations) come into play because they would be clea=
-rly
-> > >> handled differently instead of being "hidden" in the optimized logic.
-> > >> Performances would not change much as this path is not optimized tod=
-ay
-> > >> anyway (the pixel-oriented logic is already used in the rotation cas=
-e).
-> > >>
-> > >> Arthur's YUV implementation is indeed well optimized but the added
-> > >> complexity probably lead to small mistakes in the logic. The
-> > >> per-format read_line() implementation mentioned above could be
-> > >> extended to the YUV format as well, which would leverage Arthur's
-> > >> proposal by re-using his optimized version. Louis will help on this
-> > >> regard. However, for more complex cases such as when there is a
-> > >> rotation, it will be easier (and not sub-optimized compared to the R=
-GB
-> > >> case) to also fallback to a pixel-oriented processing.
-> > >>
-> > >> Would this approach make sense?   =20
-> > >=20
-> > > Hi,
-> > >=20
-> > > I think it would, if I understand what you mean. Ever since I proposed
-> > > a line-by-line algorithm to improve the performance, I was thinking of
-> > > per-format read_line() functions that would be selected outside of any
-> > > loops. Extending that to support YUV is only natural. I can imagine
-> > > rotation complicates things, and I won't oppose that resulting in a
-> > > much heavier read_line() implementation used in those cases. They mig=
-ht
-> > > perhaps call the original read_line() implementations pixel-by-pixel =
-or
-> > > plane-by-plane (i.e. YUV planes) per pixel. Chroma-siting complicates
-> > > things even further. That way one could compose any
-> > > rotation-format-siting combination by chaining function pointers.
-> > >=20
-> > > I haven't looked at VKMS in a long time, and I am disappointed to find
-> > > that vkms_compose_row() is calling plane->pixel_read() pixel-by-pixel.
-> > > The reading vfunc should be called with many pixels at a time when the
-> > > source FB layout allows it. The whole point of the line-based functio=
-ns
-> > > was that they repeat the innermost loop in every function body to make
-> > > the per-pixel overhead as small as possible. The VKMS implementations
-> > > benchmarked before and after the original line-based algorithm showed
-> > > that calling a function pointer per-pixel is relatively very expensiv=
-e.
-> > > Or maybe it was a switch-case.   =20
-> >=20
-> > Hi,
-> >=20
-> > I think I'm the culprit for that, as stated on [1]. My intention with
-> > the suggestion was to remove some code repetition and too facilitate the
-> > rotation support implementation. Going back, I think I was to high on
-> > DRY at the time and didn't worry about optimization, which was a
-> > mistake. =20
->=20
-> Hi Arthur,
->=20
-> no worries. We can also blame reviewers for not minding benchmarks. ;-)
->=20
-> > But, I agree with Miquel that the rotation logic is easier to implement
-> > in a pixel-based way. So going pixel-by-pixel only when rotation occurs
-> > would be great. =20
->=20
-> Yes, and I think that can very well be done in the line-based framework
-> still that existed in the old days before any rotation support was
-> added. Essentially a plug-in line-getter function that then calls a
-> format-specific line-getter pixel-by-pixel while applying the rotation.
-> It would be simple, it would leave unrotated performance unharmed (use
-> format-specific line-getter directly with lines), but it might be
-> somewhat less performant for rotated KMS planes. I suspect that might
-> be a good compromise.
->=20
-> Format-specific line-getters could also be parameterized by
-> pixel-to-pixel offset in bytes. Then they could directly traverse FB
-> rows forward and backward, and even FB columns. It may or may not have
-> a penalty compared to the original line-getters, so it would have to
-> be benchmarked.
-
-Oh, actually, since the byte offset depends on format, it might be
-better to parametrize by direction and compute the offset in the
-format-specific line-getter before the loop.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/6] dt-bindings: arm: qcom: Document QCM8550, QCS8550
+ SoC and board
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>
+References: <20240119100621.11788-1-quic_tengfan@quicinc.com>
+ <20240119100621.11788-2-quic_tengfan@quicinc.com>
+ <CAA8EJprpMjK03rKPK6wgfVuDvBikYsKZjMc0Wusa1BxFOBnXhQ@mail.gmail.com>
+From: Tengfei Fan <quic_tengfan@quicinc.com>
+In-Reply-To: <CAA8EJprpMjK03rKPK6wgfVuDvBikYsKZjMc0Wusa1BxFOBnXhQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: yXgrD-41-EqAXm8DnK2zplpNBsoLxeTm
+X-Proofpoint-ORIG-GUID: yXgrD-41-EqAXm8DnK2zplpNBsoLxeTm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-05_05,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 impostorscore=0 phishscore=0 clxscore=1015 spamscore=0
+ mlxscore=0 priorityscore=1501 bulkscore=0 suspectscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402050078
 
 
-Thanks,
-pq
 
-> Line-getters working on planar YUV FBs might delegate Y, U, V, or UV/VU
-> reading to R8 and/or RG88 line or pixel reader functions. They might
-> also return block-height lines instead of one line at a time. However,
-> I wouldn't commit to any approach without benchmarking alternatives.
-> The performance comparison must justify the code complexity, like it
-> was seen with the initial line-based implementation.
->=20
-> A good benchmark is key, IMO.
->=20
->=20
-> Thanks,
-> pq
->=20
-> >=20
-> > Best Regards,
-> > ~Arthur Grillo
-> >=20
-> > [1]: https://lore.kernel.org/dri-devel/20230418130525.128733-2-mcanal@i=
-galia.com/
-> >  =20
-> > >=20
-> > > Sorry, I didn't realize the optimization had already been lost.
-> > >=20
-> > > Btw. I'd suggest renaming vkms_compose_row() to vkms_fetch_row() since
-> > > it's not composing anything and the name mislead me.
-> > >=20
-> > > I think if you inspect the compositing code as of revision
-> > > 8356b97906503a02125c8d03c9b88a61ea46a05a you'll get a better feeling =
-of
-> > > what it was supposed to be.
-> > >=20
-> > >=20
-> > > Thanks,
-> > > pq   =20
->=20
+On 2/5/2024 12:29 AM, Dmitry Baryshkov wrote:
+> On Fri, 19 Jan 2024 at 11:07, Tengfei Fan <quic_tengfan@quicinc.com> wrote:
+>>
+>> Document QCM8550, QCS8550 SoC and the AIM300 AIoT board bindings.
+>> QCS8550 and QCM8550 processor combines powerful computing, extreme edge
+>> AI processing, Wi-Fi 7, and robust video and graphics for a wide range
+>> of use cases for the Internet of Things (IoT). QCS8550 is a QCS version
+>> for QCM8550. Modem RF only in QCM8550 but not in QCS8550.
+>> AIM300 Series is a highly optimized family of modules designed to
+>> support AIoT applications. The module is mounted onto Qualcomm AIoT
+>> carrier board to support verification, evaluation and development. It
+>> integrates QCS8550 SoC, UFS and PMIC chip etc.
+>> AIM stands for Artificial Intelligence Module. AIoT stands for AI IoT.
+>>
+>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+>> ---
+>>   Documentation/devicetree/bindings/arm/qcom.yaml | 11 +++++++++++
+>>   1 file changed, 11 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+>> index 1a5fb889a444..9cee874a8eae 100644
+>> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
+>> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+>> @@ -49,8 +49,10 @@ description: |
+>>           msm8996
+>>           msm8998
+>>           qcs404
+>> +        qcs8550
+>>           qcm2290
+>>           qcm6490
+>> +        qcm8550
+> 
+> Drop
 
+we want to introduce qcm8550 here.
 
---Sig_/8IcscBG0fq/gsotGh1Gqxsm
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+qcm8550.dtsi has been introduced and qcs8550-aim300.dtsi include 
+qcm8550.dtsi directly.
 
------BEGIN PGP SIGNATURE-----
+qcs8550 is a QCS version for qcm8550. qcs8550 is a sub-series of 
+qcm8550. qcm8550 will be a firmware release series from qualcomm.
 
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmXAtiEACgkQI1/ltBGq
-qqd8Kw//eXa4+XlybQgWOrlbTxEQegpsbuIG3raHxo7YxGa3nstZKb5gHs327NvM
-pDdISXkdoHkDV6ZrzpjNL3lXBkFUtkh6rnV4wEXL9BinXKf3O+mkKEcHF3giR7af
-N3Ux47Z0QgREMkuaa2YAcYZA6DpBpOc3bSODxoipblfWK0kl6LvRPIn6puXsQJJh
-1Btijmw3htrZvPBtJ4ckzoJbk0oKdUVHadWyG3py5ddZnjzkZlBeCpvHTF5aUy7L
-XBpDCoBluSHemduTgmqT86pok7futEhr+sxbS5pEYi+91NrJTyAvwjHGh57W1XiJ
-GeJabJUYxc5eLwWgv398CUmi0BYxodviu75u/mUCUB2H7TMyxPQKVAjXtWsG8NVF
-n0dwWKmHXSFU5GyiPdwendxvtpbm6GDnf1l5hOumAsKsQQvH1oeYCPs/oAxanC79
-RHx4SGIuru2uOHRQZyVnb1UTngOqyl/bd1CmCOuVXqXYIu/DO2xzOMyUuM80fxVy
-o9BFRII3F6I5mF3okHzrZPCpf1xH3O5Vpp4+xPd0tObsisMYN94YS++8gl4BrSOW
-EKm9HlLhJlwCH2zGU5QSKkzQwJ/+hYIVZDRohZ1bpqQ7QM/Sk9EAtb0PEUfOjBj6
-udTya+URVcC+ggol3CxTpBW15y5L7wqghWs2cxQvFBMXi7Kh15o=
-=MWpr
------END PGP SIGNATURE-----
+here is the qcm8550/qcs8550 detailed spec: 
+https://docs.qualcomm.com/bundle/publicresource/87-61717-1_REV_A_Qualcomm_QCS8550_QCM8550_Processors_Product_Brief.pdf
 
---Sig_/8IcscBG0fq/gsotGh1Gqxsm--
+here is the sm8550 detailed spec: 
+https://docs.qualcomm.com/bundle/publicresource/87-71408-1_REV_C_Snapdragon_8_gen_3_Mobile_Platform_Product_Brief.pdf
+
+> 
+>>           qdu1000
+>>           qrb2210
+>>           qrb4210
+>> @@ -93,6 +95,7 @@ description: |
+>>     The 'board' element must be one of the following strings:
+>>
+>>           adp
+>> +        aim300-aiot
+> 
+> We probably need to drop this list, it doesn't surve its purposes.
+
+I am a little confused, do you expect to just remove this "aim300-aiot" 
+or do you want to introduce a new patch and remove the whole list?
+
+> 
+>>           cdp
+>>           dragonboard
+>>           idp
+>> @@ -904,6 +907,14 @@ properties:
+>>             - const: qcom,qcs404-evb
+>>             - const: qcom,qcs404
+>>
+>> +      - items:
+>> +          - enum:
+>> +              - qcom,qcs8550-aim300-aiot
+>> +          - const: qcom,qcs8550-aim300
+>> +          - const: qcom,qcs8550
+>> +          - const: qcom,qcm8550
+> 
+> In the review comments for v3 you have been asked to add qcom,sm8550.
+> But not the qcom,qcm8550. I don't think that there is any need to
+> mention qcm8550 here.
+
+qcm8550 and sm8550 are different, they have different firmware release.
+
+AIM300 AIoT board depend on qcs8550, qcs8550 is a QCS version for 
+qcm8550. Modem RF only in qcm8550 but not in qcs8550.
+
+> 
+>> +          - const: qcom,sm8550
+>> +
+>>         - items:
+>>             - enum:
+>>                 - qcom,sa8155p-adp
+>> --
+>> 2.17.1
+>>
+> 
+> 
+
+-- 
+Thx and BRs,
+Tengfei Fan
 
