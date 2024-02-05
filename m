@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-52084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52085-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DE978493F2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:43:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 475F38493F4
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:43:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C9E21F23BC6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 06:43:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A999F2843A2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 06:43:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58FD9C148;
-	Mon,  5 Feb 2024 06:42:54 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C940CC126;
+	Mon,  5 Feb 2024 06:43:20 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC183C133
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 06:42:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FD5AC139
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 06:43:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707115373; cv=none; b=Ki6wG75DgHAGyOB4zFK6An77s1mdrH+jjOuQIfAYWtuQjI/zlBu+ckyjQlntZ+0gSl0R+oIcDcei4C52iJCC7z2v58O8QOv6Gzgxi1U4ISVIFNz8WToqkWPI1rsyiKJ4mEqVoWarwJAVtKLgA7nVizLzR5Cp5zPWVkNhmIROXBQ=
+	t=1707115400; cv=none; b=MwHztqE19vt8q6bM9ifVENBMseSVrvc2Zw3YgIv5jy9pQTQYi6MQCJM9/lv2F20ed8/G4iMKmtDx3mlTeroBc7cW95AMXC13nhItfMG48nSXO5w9IEMCsS6eXmhbuN4+6jy3uXV1LqiMpW2jqCH/iKFOB3ueemLWBsddY9xRLhY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707115373; c=relaxed/simple;
-	bh=vVbYFKs7xr/97yha00AgdT8ts2PFCsPCaRDpUCaeTY8=;
+	s=arc-20240116; t=1707115400; c=relaxed/simple;
+	bh=AvIIyeuFdcuuXPnFqFVBH/XEhzC4YEyV3Dzxm4PN5O8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Xwxs9myreEqbSV7lsLyWZP4lx2oLxyImUijw3aNQPLskGBQFfxYqnNI4ArWc2fx3ny/kKZp3+xOlAQU6Sg2lE89SWSLCnbpEyy4vDcbSYfynHZohp0jt30PTCK/eCZKH1a8rzbB/ioULgrFUQEeUPp/HTi1EG+oxfGV75AY3f6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+	 In-Reply-To:Content-Type; b=etGQotSAric7Pjm2PUXf1sZYhoxFz2RR/geRux4QygqZZ9FvD2GKGVgyWa7M+z0L0TjCYErn/1+xXeBOtZyk3uHEKMIKy8hX7rwneeI25an9b1jDTBAfxUQSIswSzN/S/mCoA5VYOX6vnmpxdGWjwLWMELAuoYBTdnywQuLnSgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TSxc316R8zsSh3;
-	Mon,  5 Feb 2024 14:41:23 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TSxbt4CvLz29lJn;
+	Mon,  5 Feb 2024 14:41:14 +0800 (CST)
 Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
-	by mail.maildlp.com (Postfix) with ESMTPS id 82FC7140153;
-	Mon,  5 Feb 2024 14:42:41 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 46FC31404F1;
+	Mon,  5 Feb 2024 14:43:09 +0800 (CST)
 Received: from [10.174.179.160] (10.174.179.160) by
  kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 5 Feb 2024 14:42:40 +0800
-Message-ID: <6683b9ea-469d-8c8f-abf6-eb21a6cae8b9@huawei.com>
-Date: Mon, 5 Feb 2024 14:42:39 +0800
+ 15.1.2507.35; Mon, 5 Feb 2024 14:43:08 +0800
+Message-ID: <85e03dd9-8bd7-d516-ebe4-84dd449a9fb2@huawei.com>
+Date: Mon, 5 Feb 2024 14:43:07 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,15 +57,15 @@ CC: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
 	<aneesh.kumar@linux.ibm.com>, <shy828301@gmail.com>, <hughd@google.com>,
 	<david@redhat.com>, <wangkefeng.wang@huawei.com>
 References: <20240204093526.212636-1-zhangpeng362@huawei.com>
- <874jen4o43.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <87zfwf39ha.fsf@yhuang6-desk2.ccr.corp.intel.com>
 From: "zhangpeng (AS)" <zhangpeng362@huawei.com>
-In-Reply-To: <874jen4o43.fsf@yhuang6-desk2.ccr.corp.intel.com>
+In-Reply-To: <87zfwf39ha.fsf@yhuang6-desk2.ccr.corp.intel.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm600020.china.huawei.com (7.193.23.147)
 
-On 2024/2/5 10:54, Huang, Ying wrote:
+On 2024/2/5 10:56, Huang, Ying wrote:
 
 > Peng Zhang <zhangpeng362@huawei.com> writes:
 >> From: ZhangPeng <zhangpeng362@huawei.com>
@@ -100,24 +100,7 @@ On 2024/2/5 10:54, Huang, Ying wrote:
 >> ext4 file read:		 0.03%	  -0.65%         -0.51%	-0.08%
 >> ramdisk file write:	-1.21%    -0.21%         -1.12%  0.11%
 >> ramdisk file read:	 0.00%    -0.68%         -0.33% -0.02%
-> IIUC, this is the regression test results.  Right?  Can you also show
-> improvement test results to justify the change?
-
-Sure, I'll add the improvement test results as follows:
-			  processes processes_idle threads threads_idle
-ext4    private file write: -1.14%  -0.08%         -1.87%   0.13%
-ext4    shared  file write:  0.14%  -0.53%          2.88%  -0.77%
-ext4    private file  read:  0.03%  -0.65%         -0.51%  -0.08%
-tmpfs   private file write: -0.34%  -0.11%          0.20%   0.15%
-tmpfs   shared  file write:  0.96%   0.10%          2.78%  -0.34%
-ramdisk private file write: -1.21%  -0.21%         -1.12%   0.11%
-ramdisk private file  read:  0.00%  -0.68%         -0.33%  -0.02%
-
->
-> --
-> Best Regards,
-> Huang, Ying
->
+>>
 >> [1] https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
 >> [2] https://github.com/antonblanchard/will-it-scale/
 >>
@@ -155,6 +138,22 @@ ramdisk private file  read:  0.00%  -0.68%         -0.33%  -0.02%
 >> +			 * Recheck pte as the pte can be cleared temporarily
 >> +			 * during a read/modify/write update.
 >> +			 */
+> I think that we should add some comments here about the racy checking.
+
+I'll add comments in a v2 as follows:
+/*
+  * Recheck PTE as the PTE can be cleared temporarily
+  * during a read/modify/write update of the PTE, eg,
+  * do_numa_page()/change_pte_range(). This will trigger
+  * a major fault, even if we use mlockall, which may
+  * affect performance.
+  */
+
+>
+> --
+> Best Regards,
+> Huang, Ying
+>
 >> +			if (unlikely(!pte_none(ptep_get_lockless(ptep))))
 >> +				ret = VM_FAULT_NOPAGE;
 >> +			pte_unmap(ptep);
