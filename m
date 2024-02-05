@@ -1,170 +1,99 @@
-Return-Path: <linux-kernel+bounces-53966-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53969-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5CB584A88C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:05:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2421484A895
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:06:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DCEE1C2A4C5
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:05:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D537D297F43
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:06:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93B294E1CB;
-	Mon,  5 Feb 2024 21:18:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="W8TAC/No"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EDC01AB807;
-	Mon,  5 Feb 2024 21:18:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7C835026B;
+	Mon,  5 Feb 2024 21:21:18 +0000 (UTC)
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D69645953;
+	Mon,  5 Feb 2024 21:21:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707167885; cv=none; b=NXr3hwdCHpzIW+fj6a1pQ1myxallHAiuK7AYuVvi0Gk2kXxaQPCdC7QzLCTDiFKhMDHUn91kctFgJCpTL2BH4Hi3U6yOz7uU/EFk7976CtlYEol28YuNCmHiGbjdTDXquPCVS/uUIN7qwaxmM++GMl3PIy/+eym2oj0x1P+Dzu8=
+	t=1707168078; cv=none; b=PA81vih3oonVIEzzrjorR4npD+utpYG3IP+ufCGbz3a3EbxcNFJxdDZGqF+ZRhExqu3wTHujELES3fvyMGEgTecUXY5h2eH90SUNy3Erzr16sH5q2RNn/KAUA3EMZSnYAj/EiYLZJ2UMyuXZPNCE4p8R3JqY26bCOtY8rAiuwu0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707167885; c=relaxed/simple;
-	bh=/Enu6bwQmdx49axHA/1lmJJgKYU6G8zyTZPbq9OH+ck=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CH7Uxpf3Cez8k7ZdIDuPUiiMg1kLZg5cecEHRLfRZ7OEIDG4p/8d5BYOvoOxnO9ebiuiBCez4yzN0H7+C9rP2x9koyqw/0Iz5sRxCbwgnXPwMryetGmJ1XlScJNKjJx/WDTPlDZTPff+sbwZ7Xn7w5VdP6NWOFKbwJOqid+IFX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=W8TAC/No; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [10.137.106.151] (unknown [131.107.8.87])
-	by linux.microsoft.com (Postfix) with ESMTPSA id B65FB20B2000;
-	Mon,  5 Feb 2024 13:18:03 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B65FB20B2000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1707167883;
-	bh=H595nLqKN1iU7O92UiJT9PEuwtk7Rd1yCbWBC1ZA8Dk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=W8TAC/No1VdGRZqMNpbRyarbJ0N1ksbo6q9VDwms6JAikfNWLiPh8pBpJItN4CS23
-	 IfusA0S7VmJXlzwz6fInL7nOKKj4xPLnLwKrHbC0DxeKFY9uDlKLJYrmJTNL3IsRxQ
-	 NhwWoikC1Q5N62rvYtOFqHGPmfxebEyKNmpVRN1s=
-Message-ID: <13daca32-ee3f-46f5-a6ca-66bb02726e5c@linux.microsoft.com>
-Date: Mon, 5 Feb 2024 13:18:03 -0800
+	s=arc-20240116; t=1707168078; c=relaxed/simple;
+	bh=uXW4hfcLlYSYBRzaasWV9Z+OWE7NVuFqC2y1YHfVNro=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=GP+GEA0l0NEjzVg+9IfM2Uv25sMNNagVBfYbmvW5aaXcbtJMVXZgOnR8WocipyTSsLZGw7YH+Ury3luesosXu4ct+zk6m6fOeZrS/h4fVkRPZ1RBrhL49hwvYYudeKJXhEldDK7bIpXjfWGhWWIKvZLa8Tl8SgOlCFcKNaH+w4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id 15d0f90479fa4dac; Mon, 5 Feb 2024 22:21:06 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 4FFE2669A1B;
+	Mon,  5 Feb 2024 22:21:06 +0100 (CET)
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PM <linux-pm@vger.kernel.org>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>,
+ LKML <linux-kernel@vger.kernel.org>, Linux ACPI <linux-acpi@vger.kernel.org>,
+ Lukasz Luba <lukasz.luba@arm.com>, Zhang Rui <rui.zhang@intel.com>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v1 5/6] thermal: ACPI: Constify acpi_thermal_zone_ops
+Date: Mon, 05 Feb 2024 22:18:50 +0100
+Message-ID: <13456661.uLZWGnKmhe@kreacher>
+In-Reply-To: <2728491.mvXUDI8C0e@kreacher>
+References: <2728491.mvXUDI8C0e@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v12 5/20] initramfs|security: Add security hook to
- initramfs unpack
-To: Paul Moore <paul@paul-moore.com>, corbet@lwn.net, zohar@linux.ibm.com,
- jmorris@namei.org, serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
- axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org, eparis@redhat.com
-Cc: linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
- linux-security-module@vger.kernel.org, linux-fscrypt@vger.kernel.org,
- linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
- audit@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1706654228-17180-6-git-send-email-wufan@linux.microsoft.com>
- <b9ca171301d5abeb78922dd79d65136a@paul-moore.com>
-Content-Language: en-US
-From: Fan Wu <wufan@linux.microsoft.com>
-In-Reply-To: <b9ca171301d5abeb78922dd79d65136a@paul-moore.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrfedvuddgheehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepledprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
+ thhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=9 Fuz1=9 Fuz2=9
+
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+Because thermal zone operations are now stored directly in struct
+thermal_zone_device, acpi_thermal_zone_ops need not be modified by
+the thermal core and so it can be const.
+
+Adjust the code accordingly.
+
+No functional impact.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/thermal.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: linux-pm/drivers/acpi/thermal.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/thermal.c
++++ linux-pm/drivers/acpi/thermal.c
+@@ -620,7 +620,7 @@ acpi_thermal_unbind_cooling_device(struc
+ 	return acpi_thermal_bind_unbind_cdev(thermal, cdev, false);
+ }
+ 
+-static struct thermal_zone_device_ops acpi_thermal_zone_ops = {
++static const struct thermal_zone_device_ops acpi_thermal_zone_ops = {
+ 	.bind = acpi_thermal_bind_cooling_device,
+ 	.unbind	= acpi_thermal_unbind_cooling_device,
+ 	.get_temp = thermal_get_temp,
 
 
 
-On 2/3/2024 2:25 PM, Paul Moore wrote:
-> On Jan 30, 2024 Fan Wu <wufan@linux.microsoft.com> wrote:
->>
->> This patch introduces a new hook to notify security system that the
->> content of initramfs has been unpacked into the rootfs.
->>
->> Upon receiving this notification, the security system can activate
->> a policy to allow only files that originated from the initramfs to
->> execute or load into kernel during the early stages of booting.
->>
->> This approach is crucial for minimizing the attack surface by
->> ensuring that only trusted files from the initramfs are operational
->> in the critical boot phase.
->>
->> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
->> ---
->> v1-v11:
->>    + Not present
->>
->> v12:
->>    + Introduced
->> ---
->>   include/linux/lsm_hook_defs.h |  4 ++++
->>   include/linux/security.h      | 10 ++++++++++
->>   init/initramfs.c              |  3 +++
->>   security/security.c           | 12 ++++++++++++
->>   4 files changed, 29 insertions(+)
->>
->> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
->> index 185924c56378..b247388786a9 100644
->> --- a/include/linux/lsm_hook_defs.h
->> +++ b/include/linux/lsm_hook_defs.h
->> @@ -425,3 +425,7 @@ LSM_HOOK(int, 0, uring_override_creds, const struct cred *new)
->>   LSM_HOOK(int, 0, uring_sqpoll, void)
->>   LSM_HOOK(int, 0, uring_cmd, struct io_uring_cmd *ioucmd)
->>   #endif /* CONFIG_IO_URING */
->> +
->> +#ifdef CONFIG_BLK_DEV_INITRD
->> +LSM_HOOK(void, LSM_RET_VOID, unpack_initramfs_security, void)
->> +#endif /* CONFIG_BLK_DEV_INITRD */
-> 
-> Let's just call it "unpack_initramfs", the "_security" part is somewhat
-> implied since we are talking about a LSM hook ;)
-> 
->> diff --git a/init/initramfs.c b/init/initramfs.c
->> index 76deb48c38cb..075a5794cde5 100644
->> --- a/init/initramfs.c
->> +++ b/init/initramfs.c
->> @@ -18,6 +18,7 @@
->>   #include <linux/init_syscalls.h>
->>   #include <linux/task_work.h>
->>   #include <linux/umh.h>
->> +#include <linux/security.h>
->>   
->>   static __initdata bool csum_present;
->>   static __initdata u32 io_csum;
->> @@ -720,6 +721,8 @@ static void __init do_populate_rootfs(void *unused, async_cookie_t cookie)
->>   #endif
->>   	}
->>   
->> +	security_unpack_initramfs();
-> 
-> Given the caller, what do you think of changing the hook name to
-> "security_initramfs_populated()"?  I think this not only matches up
-> better with the caller, "do_populate_rootfs()", but since in using the
-> past tense we help indicate that this hook happens *after* the rootfs
-> is populated with the initramfs data.
-> 
-
-Yeah, I agree this sounds better. I will update this part.
-
--Fan
->>   done:
->>   	/*
->>   	 * If the initrd region is overlapped with crashkernel reserved region,
->> diff --git a/security/security.c b/security/security.c
->> index ddf2e69cf8f2..2a527d4c69bc 100644
->> --- a/security/security.c
->> +++ b/security/security.c
->> @@ -5581,3 +5581,15 @@ int security_uring_cmd(struct io_uring_cmd *ioucmd)
->>   	return call_int_hook(uring_cmd, 0, ioucmd);
->>   }
->>   #endif /* CONFIG_IO_URING */
->> +
->> +#ifdef CONFIG_BLK_DEV_INITRD
->> +/**
->> + * security_unpack_initramfs() - Notify LSM that initramfs has been loaded
->> + *
->> + * Tells the LSM the initramfs has been unpacked into the rootfs.
->> + */
->> +void security_unpack_initramfs(void)
->> +{
->> +	call_void_hook(unpack_initramfs_security);
->> +}
->> +#endif /* CONFIG_BLK_DEV_INITRD */
->> -- 
->> 2.43.0
-> 
-> --
-> paul-moore.com
 
