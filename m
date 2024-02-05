@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-53896-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4EFC84A7CA
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:42:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0253A84A80D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:51:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D60BD1C27A74
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:42:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81C631F2BC60
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:51:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89FD712EBE5;
-	Mon,  5 Feb 2024 20:08:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 109701353E9;
+	Mon,  5 Feb 2024 20:34:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mistralsolutions.com header.i=@mistralsolutions.com header.b="DRjiCzpX"
-Received: from egress-ip12b.ess.de.barracuda.com (egress-ip12b.ess.de.barracuda.com [18.185.115.216])
+	dkim=pass (1024-bit key) header.d=mistralsolutions.com header.i=@mistralsolutions.com header.b="NosmGqAf"
+Received: from egress-ip43b.ess.de.barracuda.com (egress-ip43b.ess.de.barracuda.com [18.185.115.247])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92E0C12EBC2
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 20:08:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.185.115.216
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04DAD1350DD
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 20:34:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.185.115.247
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707163701; cv=none; b=tqnhEWLBKJKitS4ZSxqv8nYEXcgQ4tNt+UkPtdF1HwIXF5F19AaLVYyYZsKTy3feebya8g58mqXWbXoGdxFbsUamyXiUm7DvNPQK4W3u89IBIxjY39rxMpEC4oMia/tOnY3VvfwwRT8DuAEj521hdTJHOsEAgIKlSPcTUPfZm1o=
+	t=1707165277; cv=none; b=h6yjrhf9QmZy4v8fuTjzaUuEAqL70Mp4I7W2b15A5hZO+yB5V473BdmJCIImC9cBzzkMWrcg08JUznZMqPXna1xasBSEfecpvtOvTfZrNsO/IJgS9g/rCzNFiGPFaI/f1oEKSDfSutL+USRN0BEwfCbt1DLteKdWijMhmWhBk9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707163701; c=relaxed/simple;
-	bh=v5QWEXnfFbNjZVL+Z6j+gkDsA0PJUzacT9xN72IKzMI=;
+	s=arc-20240116; t=1707165277; c=relaxed/simple;
+	bh=1jqizwfQ+c6Q0OkvZZEEQNJguvmRguC+Fg/Y3Oaxf64=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=c7dRp91giywhKYNZQl/85E+/GOglAOeKMcduUi1IpBV0qcP1sV+ZyTlKBRgWYLDinQShkVwMPRXQclpyLksN978b/g3dN4R6tDHtTdnchEyerrQzq7NZpIbM/hqxr1Vm1IvYRNsAqRuRFriEAOFArXGYIoClF8WOLXgJcl2Gqdk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mistralsolutions.com; spf=pass smtp.mailfrom=mistralsolutions.com; dkim=pass (1024-bit key) header.d=mistralsolutions.com header.i=@mistralsolutions.com header.b=DRjiCzpX; arc=none smtp.client-ip=18.185.115.216
+	 MIME-Version; b=dnBy9CsUt+zcEKQem9XzXjrSgjtHFw6W7pk6XgbJ/lV8F7QyoFjmwVX2c+jMNL50ZNhTDZSx0BtEwiX69S+EzXuvtrJWWk3oQdcZCc/gMd7g0y/6rMnPWEDNm3XuI6Nt/XCxzjBoGGPz8kTn395GwkO6RPn4sOo7C+tX/gk4DxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mistralsolutions.com; spf=pass smtp.mailfrom=mistralsolutions.com; dkim=pass (1024-bit key) header.d=mistralsolutions.com header.i=@mistralsolutions.com header.b=NosmGqAf; arc=none smtp.client-ip=18.185.115.247
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mistralsolutions.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mistralsolutions.com
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197]) by mx-outbound16-171.eu-central-1b.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Mon, 05 Feb 2024 20:08:17 +0000
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1d9ce440846so5699915ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 12:08:17 -0800 (PST)
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71]) by mx-outbound16-171.eu-central-1b.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Mon, 05 Feb 2024 20:34:32 +0000
+Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-295b119823aso3761663a91.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 12:34:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mistralsolutions.com; s=google; t=1707163696; x=1707768496; darn=vger.kernel.org;
+        d=mistralsolutions.com; s=google; t=1707165271; x=1707770071; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xbMYquCJ21TuxOyccTY96oPdcw1GObLB4bxG4242sRo=;
-        b=DRjiCzpXl/MaqgNQgyWcvfb/GYU4pWnWSiGDVTM6Ob84/HeFVxGiSM1ff/JDAaRxpP
-         8M1IhNSX6RSKLOhmet2wKz2Mbtfl/Gm0OnN6uEMpcRpK1dyuuL9sQCzEvaZN9jMP/GQU
-         8+VeJoxoJ74raLqLo6vXZEi7PAcP9eFPHkZ+E=
+        bh=vs9QQhw4M4FWqaWliwpzwmw2s69GQGFmwNivTz/YgYc=;
+        b=NosmGqAfKhoRMUVBKXP87h8R9ps9cPmuB/ZBWa+1S2WgFaCuKJ5bPvMlE2OnbkeJMw
+         U2usQmpqCvVKO4i6joDlqjx5FKHQmWvMTuuYebvWzewWSMzDfN+8GPNeNQXjbh7Ne3r3
+         G4KpPrdWG6B9C2LZZ9lnHGKtviBxWD6VCsWqs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707163696; x=1707768496;
+        d=1e100.net; s=20230601; t=1707165271; x=1707770071;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xbMYquCJ21TuxOyccTY96oPdcw1GObLB4bxG4242sRo=;
-        b=qQEc7mFcrLjJM1VFHKvFkSTIvcy3FoqGIsWEH5CcgUJZGvCq1aYJci4DNJfjQ9hlx2
-         JE7B3NaT3X4yz6v0679HW0f7kbJUWT3BDVKWq1o54LqPKrYkMcxCiBMUI83kiuERUFet
-         NhRiLhwnY6h33wqLM4Ewp82jrDJSdDVWnh3L/IFGG6NiYryHvEsmK8+r0IdBTKai2oAU
-         Q+P/tuBKA/yZ0Wo3K7J+EHP7OmkeoEG7Vub2BBEqEdw+34kbqAinwXmbsgm4x5SdAP69
-         LeZp4o4etw2pn5y2hYh+4S6QLotlWTSH/ceCsmn9wPew+YAqziGgInD5mnU5Ucuas62g
-         vang==
-X-Gm-Message-State: AOJu0YzsOvevjNOJ+eaS+pq96BHWaAaX7EKwL1xPs9KVBgHwO4eKg9Cx
-	FGhzh4OVPkrk/aQuiD2kUQ/0X5CdgRh7BZWwG/PsJW/OvsHbSSkvUA71p1a+RR5jDqQr72Ctodf
-	qA0FQCMcN0OaKR9UKOcuO38FXNvX157fAseeJ5oZdX9P0GdBT8iP6YcRui/k10sulGnbDwzk8zE
-	apo//x7J1GzyiOODTc58e+
-X-Received: by 2002:a17:902:e74e:b0:1d9:5cfd:2bd7 with SMTP id p14-20020a170902e74e00b001d95cfd2bd7mr633248plf.5.1707163695982;
-        Mon, 05 Feb 2024 12:08:15 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGjxY2AiCSar2ap9svejpZO+j5cARILTz/QbBetpsHPWX8pey7CnWMsb82XeYhEvO/5TVXG6w==
-X-Received: by 2002:a17:902:e74e:b0:1d9:5cfd:2bd7 with SMTP id p14-20020a170902e74e00b001d95cfd2bd7mr633225plf.5.1707163695670;
-        Mon, 05 Feb 2024 12:08:15 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU2hdDQGIjxqVEu0RCu+wPxiHOkdFG7hNo5mimjUljY1E9P1wF/PVcoK5VWmgICVD4too4MvohmPqFOQ2GePThJ+/vt1dEwJyPD4s+g2nGfN+rnqkCt9K397plMLNMSo4J7mEiha33DnahqlaqC5LSwgMETpSluizqF6WaOASyReKj4UEYp15KozZP6kqCUbdoHes5FXiyxMKSVdO/1i1mtFXLH5QYtLfSjzPScVTgiiPTX28zDmzPKFIWRlH3S2A36I+7kGg7vWo43Y8UK5dDeNRrAPpAifOZqXU4A/WS7ZqCvGI3tTa9hsuw8Uz3sh31aH+P7B+o7cwha0ALX6YwSVu4=
+        bh=vs9QQhw4M4FWqaWliwpzwmw2s69GQGFmwNivTz/YgYc=;
+        b=UHFnHFL106Om1d/aY+F2JGYs3VgCxeufJ6rk5MEx3XW5UlgV5SZtcEPTkIxVS8mnKl
+         uiWaQRjX9Wt+yFfNMlvHIlPpFUrVl38yOPWoyYXEbIg/eMWptfpwfimyBd8ThTqZyf2U
+         VrNXyaWSssU2xxmktslfDBqYkyaHwlKwR1N6FM/Yv/jXMHTJTCr8Z31bIC5NVyrWsEk7
+         sLVMY3xehGNmbiEFbd81K8jxW2ybYR8fVzTzU6j5npkRQXPmhvGOd4M+xZko26Lxp1Ou
+         BABLoIFlaVyufizFSbd+Emyy7EbKPW32cuiMkd8WU7HhBdarF2xpsRqNZUmv/KRoU5Vd
+         U7Pw==
+X-Gm-Message-State: AOJu0YwrpCjwrfHKhXJFrAl7bmttGEPF6ZhFkYhxB8So0duE8fic9OKf
+	vyxBWVuhyV3tJyXahm6iO34VDdKSAaC+i/cYz3s11cybSWMUuEGk0He8ApSWI+UVfUeDMWnT5bU
+	GMEQF9LVxDZtiFEd0GGEaKUoLWObRctANDDFjPnBjqtoq2vZu5bG28hLweYbR9gFUrPitletpy6
+	em/ArRcZn9HzxUGeSMmGPk
+X-Received: by 2002:a17:902:e5d0:b0:1d7:15ea:4249 with SMTP id u16-20020a170902e5d000b001d715ea4249mr596359plf.7.1707163699301;
+        Mon, 05 Feb 2024 12:08:19 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG+TbU6NmX6W2bzIYIQRyWAElFQs/FQQEtJfQK8Kn6rtpLl8gL33k0Yu+6JqwoRfB3jaJcd9A==
+X-Received: by 2002:a17:902:e5d0:b0:1d7:15ea:4249 with SMTP id u16-20020a170902e5d000b001d715ea4249mr596335plf.7.1707163699019;
+        Mon, 05 Feb 2024 12:08:19 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUVNmuGupMxQg5vulrHPonr+3p+V+sHMd6H4tUdzU62/we5NXpd84XL+ZNIUsQ9+augtOsbYIikx6K2KEpkCGhWLGhrvcYvGFeJf4Ef3TIIhfL6AT9dp18G7T7m4qkx4MdFQnCgg7etS3T2Wy8IZsd5y8Zm/R2BxU997Zg+B5d/zvPUsf0+WDx2/8dcgmGTNDKhlOXuOoeB9WP4I7NY1H0nFwMBTuTPH6TdPhUAybGejRFJdR8OiaEcA/GU1gP3i0Zymq7CsaVb8Q7h72Id5g9gi0+me7XXI+eAwdShqTGrVZ5vzs+SwmRfALWINy/Y7nUGek9dBfBysA+A4aQGEmoKyZM=
 Received: from LAP559U.mistral.in ([106.51.69.35])
-        by smtp.gmail.com with ESMTPSA id t21-20020a170902dcd500b001d739667fc3sm263900pll.207.2024.02.05.12.08.12
+        by smtp.gmail.com with ESMTPSA id t21-20020a170902dcd500b001d739667fc3sm263900pll.207.2024.02.05.12.08.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 12:08:15 -0800 (PST)
+        Mon, 05 Feb 2024 12:08:18 -0800 (PST)
 From: sabiya.d@mistralsolutions.com
 X-Google-Original-From: sabiya.d@ti.com
 To: nm@ti.com,
@@ -81,9 +81,9 @@ Cc: devicetree@vger.kernel.org,
 	u-kumar1@ti.com,
 	sabiya.d@mistralsolutions.com,
 	Dasnavis Sabiya <sabiya.d@ti.com>
-Subject: [PATCH V2 1/2] arm64: dts: ti: k3-am69-sk: Enable CAN interfaces for AM69 SK board
-Date: Tue,  6 Feb 2024 01:37:42 +0530
-Message-Id: <20240205200744.216572-2-sabiya.d@ti.com>
+Subject: [PATCH V2 2/2] arm64: dts: ti: k3-am69-sk: Add support for OSPI flash
+Date: Tue,  6 Feb 2024 01:37:43 +0530
+Message-Id: <20240205200744.216572-3-sabiya.d@ti.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240205200744.216572-1-sabiya.d@ti.com>
 References: <20240205200744.216572-1-sabiya.d@ti.com>
@@ -94,27 +94,29 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-BESS-ID: 1707163696-304267-12419-35371-1
+X-BESS-ID: 1707165271-304267-12419-36669-1
 X-BESS-VER: 2019.1_20240201.2150
-X-BESS-Apparent-Source-IP: 209.85.214.197
-X-BESS-Parts: H4sIAAAAAAACA4uuVkqtKFGyUirNy1bSUcovVrIysjSxALIygIJJycaJBslmFm
-	ZJyabmBqlGiSnGaUbGqQYpxommRgYWpkq1sQAPbUbmQQAAAA==
-X-BESS-Outbound-Spam-Score: 0.00
+X-BESS-Apparent-Source-IP: 209.85.216.71
+X-BESS-Parts: H4sIAAAAAAACA4uuVkqtKFGyUirNy1bSUcovVrIysjQxBLIygIKWBkmJKWaJqU
+	lGRknJ5hZJlsapZmnJZkkGFmZm5onJZkq1sQC4+3ihQQAAAA==
+X-BESS-Outbound-Spam-Score: 0.50
 X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.254009 [from 
-	cloudscan20-102.eu-central-1b.ess.aws.cudaops.com]
+	cloudscan14-232.eu-central-1a.ess.aws.cudaops.com]
 	Rule breakdown below
 	 pts rule name              description
 	---- ---------------------- --------------------------------
-	0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
 	0.00 BSF_SC0_MISMATCH_TO    META: Envelope rcpt doesn't match header 
+	0.50 BSF_RULE7568M          META: Custom Rule 7568M 
+	0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
 	0.00 NO_REAL_NAME           HEADER: From: does not include a real name 
-X-BESS-Outbound-Spam-Status: SCORE=0.00 using account:ESS91090 scores of KILL_LEVEL=7.0 tests=BSF_BESS_OUTBOUND, BSF_SC0_MISMATCH_TO, NO_REAL_NAME
+X-BESS-Outbound-Spam-Status: SCORE=0.50 using account:ESS91090 scores of KILL_LEVEL=7.0 tests=BSF_SC0_MISMATCH_TO, BSF_RULE7568M, BSF_BESS_OUTBOUND, NO_REAL_NAME
 X-BESS-BRTS-Status:1
 
 From: Dasnavis Sabiya <sabiya.d@ti.com>
 
-AM69 SK board has several CAN bus interfaces on both MCU and MAIN domains.
-This enables the CAN interfaces on MCU and MAIN domain.
+AM69 SK has S28HS512T OSPI flash connected to MCU OSPI0.
+Enable support for the same. Also describe the partition
+information according to the offsets in the bootloader.
 
 Signed-off-by: Dasnavis Sabiya <sabiya.d@ti.com>
 ---
@@ -122,114 +124,100 @@ Signed-off-by: Dasnavis Sabiya <sabiya.d@ti.com>
  1 file changed, 81 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/ti/k3-am69-sk.dts b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
-index 8da591579868..64c737cc3d49 100644
+index 64c737cc3d49..9ef9aec0b5bd 100644
 --- a/arch/arm64/boot/dts/ti/k3-am69-sk.dts
 +++ b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
-@@ -321,6 +321,31 @@ tfp410_out: endpoint {
- 			};
- 		};
+@@ -470,6 +470,25 @@ J784S4_IOPAD(0x09C, PIN_OUTPUT, 0) /* (AF35) MCAN7_TX */
  	};
-+
-+	transceiver1: can-phy0 {
-+		compatible = "ti,tcan1042";
-+		#phy-cells = <0>;
-+		max-bitrate = <5000000>;
-+	};
-+
-+	transceiver2: can-phy1 {
-+		compatible = "ti,tcan1042";
-+		#phy-cells = <0>;
-+		max-bitrate = <5000000>;
-+	};
-+
-+	transceiver3: can-phy2 {
-+		compatible = "ti,tcan1042";
-+		#phy-cells = <0>;
-+		max-bitrate = <5000000>;
-+	};
-+
-+	transceiver4: can-phy3 {
-+		compatible = "ti,tcan1042";
-+		#phy-cells = <0>;
-+		max-bitrate = <5000000>;
-+	};
-+
  };
  
- &main_pmx0 {
-@@ -429,6 +454,20 @@ hdmi_hpd_pins_default: hdmi-hpd-default-pins {
- 			J784S4_IOPAD(0x000, PIN_INPUT, 7) /* (AN35) EXTINTN.GPIO0_0 */
- 		>;
- 	};
-+
-+	main_mcan6_pins_default: main-mcan6-default-pins {
++&wkup_pmx0 {
++	bootph-all;
++	mcu_fss0_ospi0_pins_default: mcu-fss0-ospi0-default-pins {
 +		pinctrl-single,pins = <
-+			J784S4_IOPAD(0x098, PIN_INPUT, 0) /* (AH36) MCAN6_RX */
-+			J784S4_IOPAD(0x094, PIN_OUTPUT, 0) /* (AG35) MCAN6_TX */
++			J784S4_WKUP_IOPAD(0x000, PIN_OUTPUT, 0) /* (E32) MCU_OSPI0_CLK */
++			J784S4_WKUP_IOPAD(0x02c, PIN_OUTPUT, 0) /* (A32) MCU_OSPI0_CSn0 */
++			J784S4_WKUP_IOPAD(0x00c, PIN_INPUT, 0) /* (B33) MCU_OSPI0_D0 */
++			J784S4_WKUP_IOPAD(0x010, PIN_INPUT, 0) /* (B32) MCU_OSPI0_D1 */
++			J784S4_WKUP_IOPAD(0x014, PIN_INPUT, 0) /* (C33) MCU_OSPI0_D2 */
++			J784S4_WKUP_IOPAD(0x018, PIN_INPUT, 0) /* (C35) MCU_OSPI0_D3 */
++			J784S4_WKUP_IOPAD(0x01c, PIN_INPUT, 0) /* (D33) MCU_OSPI0_D4 */
++			J784S4_WKUP_IOPAD(0x020, PIN_INPUT, 0) /* (D34) MCU_OSPI0_D5 */
++			J784S4_WKUP_IOPAD(0x024, PIN_INPUT, 0) /* (E34) MCU_OSPI0_D6 */
++			J784S4_WKUP_IOPAD(0x028, PIN_INPUT, 0) /* (E33) MCU_OSPI0_D7 */
++			J784S4_WKUP_IOPAD(0x008, PIN_INPUT, 0) /* (C34) MCU_OSPI0_DQS */
 +		>;
 +	};
++};
 +
-+	main_mcan7_pins_default: main-mcan7-default-pins {
-+		pinctrl-single,pins = <
-+			J784S4_IOPAD(0x0A0, PIN_INPUT, 0) /* (AD34) MCAN7_RX */
-+			J784S4_IOPAD(0x09C, PIN_OUTPUT, 0) /* (AF35) MCAN7_TX */
-+		>;
-+	};
- };
- 
  &wkup_pmx2 {
-@@ -525,6 +564,20 @@ hdmi_pdn_pins_default: hdmi-pdn-default-pins {
- 			J784S4_WKUP_IOPAD(0x090, PIN_INPUT, 7) /* (H37) WKUP_GPIO0_14 */
- 		>;
- 	};
-+
-+	mcu_mcan0_pins_default: mcu-mcan0-default-pins {
-+		pinctrl-single,pins = <
-+			J784S4_WKUP_IOPAD(0x054, PIN_INPUT, 0) /* (F38) MCU_MCAN0_RX */
-+			J784S4_WKUP_IOPAD(0x050, PIN_OUTPUT, 0) /* (K33) MCU_MCAN0_TX */
-+		>;
-+	};
-+
-+	mcu_mcan1_pins_default: mcu-mcan1-default-pins {
-+		pinctrl-single,pins = <
-+			J784S4_WKUP_IOPAD(0x06c, PIN_INPUT, 0) /* (K36) WKUP_GPIO0_5.MCU_MCAN1_RX */
-+			J784S4_WKUP_IOPAD(0x068, PIN_OUTPUT, 0)/* (H35) WKUP_GPIO0_4.MCU_MCAN1_TX */
-+		>;
-+	};
- };
- 
- &wkup_pmx3 {
-@@ -992,3 +1045,31 @@ dp0_out: endpoint {
- 		};
- 	};
+ 	bootph-all;
+ 	pmic_irq_pins_default: pmic-irq-default-pins {
+@@ -1073,3 +1092,65 @@ &main_mcan7 {
+ 	pinctrl-0 = <&main_mcan7_pins_default>;
+ 	phys = <&transceiver4>;
  };
 +
-+&mcu_mcan0 {
++&ospi0 {
 +	status = "okay";
 +	pinctrl-names = "default";
-+	pinctrl-0 = <&mcu_mcan0_pins_default>;
-+	phys = <&transceiver1>;
-+};
++	pinctrl-0 = <&mcu_fss0_ospi0_pins_default>;
 +
-+&mcu_mcan1 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mcu_mcan1_pins_default>;
-+	phys = <&transceiver2>;
-+};
++	flash@0 {
++		compatible = "jedec,spi-nor";
++		reg = <0x0>;
++		spi-tx-bus-width = <8>;
++		spi-rx-bus-width = <8>;
++		spi-max-frequency = <25000000>;
++		cdns,tshsl-ns = <60>;
++		cdns,tsd2d-ns = <60>;
++		cdns,tchsh-ns = <60>;
++		cdns,tslch-ns = <60>;
++		cdns,read-delay = <4>;
 +
-+&main_mcan6 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&main_mcan6_pins_default>;
-+	phys = <&transceiver3>;
-+};
++		partitions {
++			bootph-all;
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
 +
-+&main_mcan7 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&main_mcan7_pins_default>;
-+	phys = <&transceiver4>;
++			partition@0 {
++				label = "ospi.tiboot3";
++				reg = <0x0 0x80000>;
++			};
++
++			partition@80000 {
++				label = "ospi.tispl";
++				reg = <0x80000 0x200000>;
++			};
++
++			partition@280000 {
++				label = "ospi.u-boot";
++				reg = <0x280000 0x400000>;
++			};
++
++			partition@680000 {
++				label = "ospi.env";
++				reg = <0x680000 0x40000>;
++			};
++
++			partition@6c0000 {
++				label = "ospi.env.backup";
++				reg = <0x6c0000 0x40000>;
++			};
++
++			partition@800000 {
++				label = "ospi.rootfs";
++				reg = <0x800000 0x37c0000>;
++			};
++
++			partition@3fc0000 {
++				bootph-pre-ram;
++				label = "ospi.phypattern";
++				reg = <0x3fc0000 0x40000>;
++			};
++		};
++	};
 +};
 -- 
 2.34.1
