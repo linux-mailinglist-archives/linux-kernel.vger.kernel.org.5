@@ -1,170 +1,123 @@
-Return-Path: <linux-kernel+bounces-52744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDBCB849C2B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:47:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EF0F849C2F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:48:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B25031C23E4D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:47:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 924911C2374F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:48:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F3882110E;
-	Mon,  5 Feb 2024 13:47:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33C6D2260A;
+	Mon,  5 Feb 2024 13:48:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="i1IUhQE1"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="JJ+YYIpG"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70B7A20DF6
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 13:47:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6761E210E1
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 13:48:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707140869; cv=none; b=G9CQxgwi32bfGUmhqSF9GWrNFWRKpPVcBE5vtri8SzWYZBAsWqHAEnxdIr7a75/bk4uXcV7cAlOdAvLjJLWpYYQ6FrO5s444IgUlTSRFPqTZdv0yOyWdeDqtXILvre2odSJFpOjMNHIEwqkXQhGl2lSUpsPQn3wgcYsFd47SE94=
+	t=1707140899; cv=none; b=XSmtrI+MXygJXfJq3WlseytpKVuXQbBwwW+YZgKy1TcWWfqG4fZrcIoWNS5+mb+yr5BbY+yOSpVH84v9ZlmoNU0OihIQGeTTMuPK+Pu1VNfRGGr1v6aX6jRchOqkImVmCQQ1pU4q6KU/8QQ2qHL6Nd4XJ7H/SFZzTKKPj2/+bNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707140869; c=relaxed/simple;
-	bh=wAGEOr0Mgn087CWWTknJfcnHdO3bj7kGa/hpbNTQVx0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=c/b0Uuk03FvdqC1deayI4I7DGwCvIjc20z+gaCj54YrHVDYl7YyY8ouWRZ9vOIFJlnNqTmbrvDyJfa0YeXep7FY2CVhMc/F6KdzdrYOMz2RMiVq/3hRnM9eeZuRvyhG3+cf6HubxTOAcFMowNIDvyaj2a2AszOi4YtonLeotZpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=i1IUhQE1; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40fc6343bd2so27300215e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 05:47:47 -0800 (PST)
+	s=arc-20240116; t=1707140899; c=relaxed/simple;
+	bh=3NuNMJq9/U+OvHQ7oCbIc0HQwEjcijjQLPqIhCaiKXQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s33ClPDAPgOewfQ5kMzHESlFGZH1BeUMBaznnULZzYwUe7JNRiZadFl/rCmz0hz3pjbReAISCERlvAU1ViLxAoyy/6jzKWUoWXQ6LS7AUdJELajQPyneB+zWWFxmuJvEWU4I2tPnnm9QZY2SD5xXSvA1GXLoziukFRDSPm2PC0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=JJ+YYIpG; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a28a6cef709so609546866b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 05:48:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1707140865; x=1707745665; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ck/8F3HKoSyZuhnppSqI+RZPs/hn8y64a8KNHoXfCTc=;
-        b=i1IUhQE10qXnSXabNIZdADCa4g4G+ds7iM64qSNbg0apcbqvQGBKO9x5JQRnQc1rQx
-         WZDiyL/+zdMmyZ54tHYjpHDsGIt+453neGsas+bN4FPXd6pGAmGSmIykJLx9HoY9kPB1
-         fuawgXIcw7SKe0qVaheBALwxYX1rhmnsTZQjZAtZRGz3Zsvfb7f4o+dXHogE46FAIa8K
-         nXysDjZxpGDxhpm/Np65CSjr0b/EEcFHCUXXkmQee4agkIn2EwwpJcmCZOFV8eqk1sp1
-         7KZdPETJAefuSpwlDtPV4frE+A8+KHU2fICZoWYGvo+weyXoW7hcUhsRBgkDKi9Q9XgW
-         yhsw==
+        d=suse.com; s=google; t=1707140895; x=1707745695; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BnLD/npCdr1tyW2eRfEXfxLqJrin7ZxFfEREBoHz6j0=;
+        b=JJ+YYIpGzpFMv0Eo5pqmHMJdR2gp5BtvjLY002tC2FoJRL3cQd8iuHxc/+0Mv3Y6F5
+         1+N5gK2OI77eWcLoSwlD6DoyEbi8pprnD23r9uFjDkG8KiYWxnABWG2yOAwfn9xMrp71
+         z1orEVt+j7Olbe+DuVs9n9ztdZFzPU9XC8iUOlKnv9IcasU3mRPQ4pApJ3lP+fia2s1J
+         eOT7g1MotLyaO1urdwm6CI8biuObOO1/zrRgljvtx9Q07YvEgEcNn3MlRLY2Lgrae4a2
+         59BcY0XRlX+86KmrgQGVcFbpiyRlmKS19xiGNPm8AKobPasiiqdgjkJX6LtQSqAxgftH
+         nW0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707140865; x=1707745665;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ck/8F3HKoSyZuhnppSqI+RZPs/hn8y64a8KNHoXfCTc=;
-        b=i+zPKlF+K7I80RzE2q6E5qQ9YtxVzllsTDSX5q37ZwX21QoVSou0D93PZ1gsFN+vvQ
-         +2SjSABYlZWgigYoUhwPSSGiOAvQPNbBnAfqOsLoqA7+CsmnAZZPiIhDQ4vuleXLlwe6
-         qYH6pTqHIdzmUVDl2aukL01CxYGFWTOJnQrF9Afp0Ew+4djX5xeFHRTfkFpaMIaUvcLM
-         qD0nLGh4YEU41rlDWgPcCA115PFziK2tHKl80wDrwX0CZrB0Rr4TzZSuJ3I8giEmPyfe
-         SioyQF5Ifef3CPW43zT6TIZHz5l9uLTk3LTNC1XWrD3+En7fqavLQPVPn0KPKRnQqpqH
-         GQTA==
-X-Gm-Message-State: AOJu0YxO7n24JcYwbD1j75J+SKxpHzQ7P6Z1NV1yHIGSND4QHjezifbK
-	hJ2xYPOZua1PKcqGaS2Z25SmLBYVYUN5D0pN3VTrqJYhv/5HfmsIIcRh34aps0U=
-X-Google-Smtp-Source: AGHT+IF6/KewvaAkJ1Q8SfAC8adm8Mx0ayCEucOwh3EBJrclsw6tXwWO29eUTSHSDBLgVjbcE88VKA==
-X-Received: by 2002:a05:600c:1c19:b0:40f:d3e4:8f85 with SMTP id j25-20020a05600c1c1900b0040fd3e48f85mr4138702wms.30.1707140865429;
-        Mon, 05 Feb 2024 05:47:45 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXXJpGJ3MgADo1Aa30ZfzwcGKeWnLLpFgq6o7a7E/Fmflk3MISyH7x5S9dhYyu9XPAgFVF+A6QW44UVNUpdJ3Z2hgM7MMnkobzq/3+3BhVBAAIv9AIslBuMGFDgIyliboDZBM8kDbLoxw8WHWt4lZvB1JEMAqKKJkGHgNO593rCZx01wm0SOmOKW+K3c00Ovbzh3dQZ/n3jrd6BII+1EQjS/oN7Az9z3MHZ2QWJPbfSV6BpK2rVUoVOVkAWSU6Myzj9mKSiQRPuUuWo1LUcaAiFB9i7x69h5ZqKkjQFdDrQWyUaVwSnQpRDtRhCdZb63k1MjvN1YX7xBokY/pjfC+aZLIUCtKDu/1b77igqVgU5lPe4e1LIJFDMGKZ7EVpTH8CL6GacQ5vgYOhSDT6XokuDGhsemRDdkE4xGwOahFQQSQ==
-Received: from [192.168.50.4] ([82.78.167.154])
-        by smtp.gmail.com with ESMTPSA id bd27-20020a05600c1f1b00b0040fd0f7d267sm7368807wmb.44.2024.02.05.05.47.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Feb 2024 05:47:45 -0800 (PST)
-Message-ID: <237bd5c8-184d-4e46-ba66-253e3ef0c895@tuxon.dev>
-Date: Mon, 5 Feb 2024 15:47:43 +0200
+        d=1e100.net; s=20230601; t=1707140895; x=1707745695;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BnLD/npCdr1tyW2eRfEXfxLqJrin7ZxFfEREBoHz6j0=;
+        b=BufLxnryebVzXYM3NIKiWOmUkyiMTfTdNSr0KD0P9Epl9ghBE7LFHX9jsk16HgGc+q
+         2yBJrRPEmLMgrRJ64q7zipwYB28dlGFongPCBEkeB95ft+7y3S4qw7pDo39tXbOHIE1l
+         86v+tMYCKR283I/r6ZsAvu8RlnIgc60KqWNIsEwNTgEouvf/pv1MQjiWlkw3yYV3mu3X
+         5B7cpZYoYoPNgCe0nphc/l5NSuExTZDeuTOrYUMn+clajjYOTgzpHUcgd2Nu60S588bP
+         AlksgrcklrSS24GfLVnqVNBw8rUL2iUEtPlxjD/VoTVUBFxjCJRzB+ofPo63tqhsJzBU
+         aLjg==
+X-Gm-Message-State: AOJu0YwDcsBC7iC+S1DpCQxmy3PjGKfIfr8/8Y3oFnD5txppntt43qPf
+	YvjJyj3a4aeDLYIZ73IxwZnUBiHGvqQN4Pnhvqe1OtxVacBuXXR3jLXOGoKZjj4=
+X-Google-Smtp-Source: AGHT+IFWABZ0qeyCjyQoWq6QAO5OSdVAT3GW2jIOB2V+qxSo9kQyktadwG+z6OKvTR78VHoGHV4oXw==
+X-Received: by 2002:a17:907:762d:b0:a36:c478:32c9 with SMTP id jy13-20020a170907762d00b00a36c47832c9mr7518684ejc.1.1707140895540;
+        Mon, 05 Feb 2024 05:48:15 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXsy4v1BD7fDRmPpnzHDIgnYgYLdFmJBM1XZW7ctqzqxH+21gTjTmePHQ08oJFMkcqSGld1EEGpcVxwpepj79S4qRFPmte4PEDpyADVRD9+DtETXZAcFjX7wJEoHwiwaUwaf29NZpFRkGVdqAAuoJX7qAKgfhOqvnsS9lkbFvgF5MKqBd0u4V+8Ai/9nKTVRQR1hqEbxL5ztg+BuiGIAeqXQLdAJlOgOSsy+cMmPv3S5RLi0aISBDP47u9DV+wA3WxZ8uHYMNlwCwebHcX5/TRfbFtwGmW+wuYDVizVcO1elXCdvkdmEoexBVejXniW06qHH6TrKWZSzbu/C6rnzaJExRpFcWv0uDm5ROcEG94SQ3nKpbwh8KNDD/KlJT4fYOzdRllhqqfCrbOWYi/qhEMcsNSaR+6wCY23p893EIf0KjqbxoB6U6MEGgqR5gCRRZSmWPvo14o7nTXK7g857KKwcQKA+zc+cm7IBZf7mwbHEMS4wENLmvwAe3/RBX9owySiaZpqNwUL0fr3vYYGl27tsNHmhaOMPaLGxMoYMWR1u49R56FtxrSjJqQjD2Q/6MUA6FaajkIYRloUdsAizORTbsFNFjkinNoAZjX8eVMBVQ6Zxxzw9oCpe1dpL1SY5T9x/nHWwNzpQLioMcqP84V5vmRwrYQXUc7YeLVefIqmY7bugrm9tnoGJefVT1D+xXegjEgL0xZv0GkGR1Ahjvo5gEjknNBs91YZ0UGczR7XEzIx1gUhpl8Y40hANCXzWudTdUZj
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id f1-20020a170906560100b00a37b795348fsm1253036ejq.127.2024.02.05.05.48.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 05:48:15 -0800 (PST)
+Date: Mon, 5 Feb 2024 14:48:13 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: Yoann Congal <yoann.congal@smile.fr>
+Cc: linux-fsdevel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+	x86@kernel.org,
+	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
+	Borislav Petkov <bp@alien8.de>, Darren Hart <dvhart@infradead.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Subject: Re: [PATCH v3 0/2] printk: CONFIG_BASE_SMALL fix for
+ LOG_CPU_MAX_BUF_SHIFT and removal
+Message-ID: <ZcDnHfrgq9I4iKLk@alley>
+References: <20240204232945.1576403-1-yoann.congal@smile.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] mmc: renesas_sdhi: Fix change point of data handling
-Content-Language: en-US
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, ulf.hansson@linaro.org,
- yoshihiro.shimoda.uh@renesas.com, masaharu.hayakawa.ry@renesas.com,
- takeshi.saito.xv@renesas.com, linux-mmc@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
- Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20240205112702.213050-1-claudiu.beznea.uj@bp.renesas.com>
- <ZcDdn2AVz8FIXzak@shikoro>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <ZcDdn2AVz8FIXzak@shikoro>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240204232945.1576403-1-yoann.congal@smile.fr>
 
-Hi, Wolfram,
+On Mon 2024-02-05 00:29:43, Yoann Congal wrote:
+> This series focuses on CONFIG_BASE_SMALL.
+> The first patch fixes LOG_CPU_MAX_BUF_SHIFT when CONFIG_BASE_SMALL is
+> used.
+> The second patch globally replace CONFIG_BASE_SMALL usages by the
+> equivalent !CONFIG_BASE_FULL.
 
-On 05.02.2024 15:07, Wolfram Sang wrote:
-> Hi Claudiu,
-> 
-> thanks for the updated version!
-> 
->> To comply with this, the patch checks if this mismatch is present and
->> updates the priv->smpcmp mask only if it is not. Previous code checked if
->> the value of SMPCMP register was zero. However, on RZ/G3S, this leads to
->> failues as it may happen, e.g., the following:
->> CMPNGU=0x0e, CMPNGD=0x0e, SMPCMP=0x000e000e.
-> 
-> Can you add the current TAP number (variable 'i') to this printout?
+Nit: I would personally do it the other way around and get rid of
+     CONFIG_BASE_SMALL.
 
-This is a snapshot I have saved from my previous debugging session (but I
-tried here to check the values of cmpngd, cmpngu):
+     CONFIG_BASE_FULL is the default and is used by most users. It is
+     the CONFIG_BASE_SMALL which needs special treating.
 
-i=0, cmpngu=00000000, cmpngd=00000000, smpcmp=00000000
-i=1, cmpngu=00000000, cmpngd=00000000, smpcmp=00000000
-i=2, cmpngu=0000000e, cmpngd=0000000e, smpcmp=000e000e
-i=3, cmpngu=00000000, cmpngd=00000000, smpcmp=00000000
-i=4, cmpngu=00000000, cmpngd=00000002, smpcmp=00000002
-i=5, cmpngu=00000000, cmpngd=000000ff, smpcmp=000001ff
-i=6, cmpngu=000000ff, cmpngd=00000000, smpcmp=01ff0000
-i=7, cmpngu=00000000, cmpngd=00000000, smpcmp=00000000
-i=8, cmpngu=00000000, cmpngd=00000000, smpcmp=00000000
-i=9, cmpngu=00000000, cmpngd=00000000, smpcmp=00000000
-i=10, cmpngu=00000000, cmpngd=00000000, smpcmp=00000000
-i=11, cmpngu=00000000, cmpngd=00000000, smpcmp=00000000
-i=12, cmpngu=00000000, cmpngd=00000002, smpcmp=00000002
-i=13, cmpngu=00000000, cmpngd=000000ff, smpcmp=000001ff
-i=14, cmpngu=000000ff, cmpngd=00000000, smpcmp=01ff0000
-i=15, cmpngu=00000000, cmpngd=00000000, smpcmp=00000000
+     That said, I do not want to block this patchset because
+     of my preferences.
 
-This is printed in this for loop:
-https://elixir.bootlin.com/linux/latest/source/drivers/mmc/host/renesas_sdhi_core.c#L700
-
-> According to my understanding, we should only mark this TAP good if it
-> is in the range 5-7. I need to double check with Renesas, though.
-
-OK, my understanding is that it should be in the middle (beginning being
-the tap that triggered change point of the input data, end being the next
-tap with the same ID). This is what I understand from this: "As the width
-of the input data is 1 (UI), select TAP6 or TAP7 which is
-
-*the median* of next TAP3 from TAP3."
-
-> 
->> Along with it, as mmc_send_tuning() may return with error even before the
->> MMC command reach the controller (and because at that point cmd_error = 0),
->> the update of priv->smpcmp mask has been done only if the return value of
->> mmc_send_tuning(mmc, opcode, &cmd_error) is 0 (success).
-> 
-> This is a needed change, for sure.
-> 
->> This change has been checked on the devices with the following DTSes by
->> doing 100 consecutive boots and checking for the tuning failure message:
-> 
-> Boot failure is one test. Read/write tests should be another, I think.
-
-OK, I'll try also read/write. Do you have in mind something particular?
-
-> Because if we select a bad TAP, bad things might happen later. To reduce
-> the amount of testing, read/write testing could only be triggered if the
-> new code path was excecuted?
-
-I'm not sure how to trigger that (or maybe I haven't understood your
-statement...)
-
-Thank you,
-Claudiu Beznea
-
-> 
-> Happy hacking,
-> 
->    Wolfram
-> 
+Best Regards,
+Petr
 
