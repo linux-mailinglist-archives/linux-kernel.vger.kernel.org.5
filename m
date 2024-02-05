@@ -1,241 +1,113 @@
-Return-Path: <linux-kernel+bounces-52570-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52567-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE2F38499C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:14:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A5378499C3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:13:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8940A281149
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:14:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C4931C220B5
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:13:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 140F01BDCF;
-	Mon,  5 Feb 2024 12:08:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE94F1B944;
+	Mon,  5 Feb 2024 12:07:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Bn1jQfNm"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="D75Ygvr6"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 911DC1CD1E;
-	Mon,  5 Feb 2024 12:08:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A6541AADB
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 12:07:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707134913; cv=none; b=LZ2JfIPeedFPgkpr6zs0bS8HTMWBAJr4JVMclKEhjneWihOSfQjwTSp4A+Zw91zCkF3o3qundR3GEha6qcwR7dYHxIhmXYnv0XIWkW30v7Mb4dJY5CBU5mzz1xakenj4P2cOL2tfaPV0FUJaCqi40PJ86nCodIhssoxJoE7o2pQ=
+	t=1707134873; cv=none; b=VOeB2kBPSohzoXTatREuILbtvzmmvTulYXjwp7n7XR6tyWaUBNdPtiCJEkyt69LSaW/ibU4RNltqjUxu1dR+qXzc+CWvb1IgetQ+oCDVLBhp7D0N3beLO+v4eyMHm7s/FtblyA//wg7fiquP1KUdw4bMUcX0QFO4KB8yFtL3Toc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707134913; c=relaxed/simple;
-	bh=YqIV/ZImnLY1o5nzB1hJEgYg0Be/kL6uZTzDdS8ujVs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=byufbbj2RSc8YddopHQU5eFK1xBJJ46qkDhsHuCvbwYzX04lttgaly8z+Mjzkf0AThYG8Mwr8GgO0nVmWWy8UpfruplQHZwm7lEAzs6rQchKluLDb/I0+H4v/9s3fVsgZBGrkJut8qL4yDYVd1ZIaGRScCapePUIabfYsPAaNfs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Bn1jQfNm; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707134911; x=1738670911;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=YqIV/ZImnLY1o5nzB1hJEgYg0Be/kL6uZTzDdS8ujVs=;
-  b=Bn1jQfNmGjBEVTS1geqXL/DVzGozKcmwh8F2F1FTF8glljsOBvdq/nBU
-   O7e4+FktlYQEON6Bn435IsaN4Vo/SfnBNgFHINAJM38aZLTQ7qus73+bG
-   dNwKHmI9vTOwREAb35h9sTEBBfk7JDrvgm3BTb4DB/HPFHe7VtWWp60hl
-   DyW4I6jrbJfhaxQIYMLUicyoAVDpcMerFWKYV7WIxvdfInmdnba40vJp8
-   me83heqB7wF02Wzy7NUPlIJhZaVoT65oZiXuXw2Ur0F9E5/uzAxiUykhJ
-   zeVbxWEfgR4wqmCdPfpIRW7xBS+wTwQdseWNKn3C3TGYioVNSoLxgdou3
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="398500"
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="398500"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 04:08:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="678238"
-Received: from snestero-mobl.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.21.196])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 04:08:28 -0800
-From: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-To: fenghua.yu@intel.com,
-	reinette.chatre@intel.com,
-	shuah@kernel.org
-Cc: linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	ilpo.jarvinen@linux.intel.com
-Subject: [PATCH v4 3/5] selftests/resctrl: Split validate_resctrl_feature_request()
-Date: Mon,  5 Feb 2024 13:08:17 +0100
-Message-ID: <e4b1887682e8262a3416dbd7bc63695af0d63ee0.1707130307.git.maciej.wieczor-retman@intel.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1707130307.git.maciej.wieczor-retman@intel.com>
-References: <cover.1707130307.git.maciej.wieczor-retman@intel.com>
+	s=arc-20240116; t=1707134873; c=relaxed/simple;
+	bh=nYYHVcoHYUdNn+h1ISBs7vmeauh5+//ep94UgTFIkZo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AGZUriSFbMFXredJ2Ii4pEEQ+/YhSsw86WQpYoy8fI6+B457xZ0TKjQnzYrsaQXJkJF5zDRHW6vUY7f7zSODLksG4fjgHWhxOnWexmB81mhDGC4WPjlh7yH63Cx5u4uQUAkZPce1XIP9xm4p17ydA9Wpt23GIAs2KLEG1Xs2UUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=fail (0-bit key) header.d=marliere.net header.i=@marliere.net header.b=D75Ygvr6 reason="key not found in DNS"; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d73066880eso37348885ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 04:07:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707134871; x=1707739671;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=okcATfsqmM9HdbdR1ZaKAA33LmgfKaKFBGgMV86AS0c=;
+        b=jBJHTm8r566ZTGUlCukIcZpSZZKp39+9rjsXQLVN1LrYuIQiaqyLkyPXrkJxq9za43
+         rLN4dELl6HxGM+1O+fOIZEbcaMxdI2GK3JxzyoZmYEJ8Nv1xL/QpXMuvIyNF1W0Z8usO
+         rFqjas6nnlHhBZuOhmLvT+MMNwhBTqil2MgxoL2qcdzSre3QwBCGcnehOUSlc3+SgZis
+         Npnt5aP9uLXYMUZaKPpuAvHA1jHqwQ8vlC91tRQHdzJB146Q1gukQJ2TK0j/Te98A+yL
+         YHNhnpXN9oDY72Mh1mL0zX0adKuiOsQ+LkE/d1KMECd1bYGwXaN7cRvStvB3huyfaHCL
+         /+OA==
+X-Gm-Message-State: AOJu0YwScw50+GV/bypqRhc5Ro0VKNhkjqbyYaMHx89ZPVrdQ/KwLdXR
+	Kg1CC9EToaMmBm+jQzr8SkcrTolXfMYgcnGIGghuMvz8iT9CUOeQl9xghIcTcEGiEw==
+X-Google-Smtp-Source: AGHT+IFxWHHdGbNMjLSmN4GD9YfAWIeS+hPxkVLgb8d9M27wPDCqlExpu8DXpE2CWyigM2ykSRp0zw==
+X-Received: by 2002:a17:902:f68a:b0:1d9:a2d5:a113 with SMTP id l10-20020a170902f68a00b001d9a2d5a113mr6824734plg.67.1707134870767;
+        Mon, 05 Feb 2024 04:07:50 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUB1kbsydGTq8nzYJchFqkir7awN4E1JkeFqPE4cun8d2klYa1/KnJnwWkmkV1oVjR9ewIu00A4oUItHn2wMcxECKmnkZ72YXHXgw==
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id b17-20020a170902ed1100b001d752c4f36asm6128400pld.78.2024.02.05.04.07.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 04:07:50 -0800 (PST)
+Date: Mon, 5 Feb 2024 09:08:20 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2023; t=1707134868;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=okcATfsqmM9HdbdR1ZaKAA33LmgfKaKFBGgMV86AS0c=;
+	b=D75Ygvr6jm39ZXZEeINvuygQHHZJyH2e9QeIB91q1FsMOQfWsB0TcXk8k6DdpeAUOpCyav
+	NYEtLUzqZpuEYUvvkunAcYzefuduqpuOT99H8P5ddzqCkBtGhvxoqA15WlrDJtBIwOb918
+	50T/TZhtJThF0toWQAhjLM3Tc2taIPPJKUhvxwk7UujZG1TYSECJHHNZpZgs38vljh91zH
+	gQ+5VrYollTb7/24ujRtzLKhwMnIGASIEiRlHzuU6euAVfbyRfYfEajVTW59HHyBfM0wj/
+	rJNsMw+1xPPjnapl8FyzXEjrVDsR7NycIwtulThU+Pk2qZAR03O6oMfHfY4ZyQ==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: linux-kernel@vger.kernel.org, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] w1: make w1_bus_type const
+Message-ID: <hk2w5pow3kqhw3vk5hlgeoy3dntbujb2s2xup2vkivtabwwb2k@do5ud3tj33jj>
+References: <20240204-bus_cleanup-w1-v1-1-a0f4c84d7db3@marliere.net>
+ <80d80422-139a-4bfe-9d8b-4ef193e72d8b@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <80d80422-139a-4bfe-9d8b-4ef193e72d8b@linaro.org>
 
-validate_resctrl_feature_request() is used to test both if a resource is
-present in the info directory, and if a passed monitoring feature is
-present in the mon_features file.
+On  5 Feb 08:34, Krzysztof Kozlowski wrote:
+> On 04/02/2024 21:55, Ricardo B. Marliere wrote:
+> > Now that the driver core can properly handle constant struct bus_type,
+> 
+> Does "Now" means some dependency on other patches?
 
-Refactor validate_resctrl_feature_request() into two smaller functions
-that each accomplish one check to give feature checking more
-granularity:
-- Resource directory presence in the /sys/fs/resctrl/info directory.
-- Feature name presence in the /sys/fs/resctrl/info/L3_MON/mon_features
-  file.
+Hi Krzysztof!
 
-Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
----
-Changelog v4:
-- Roll back to using test_resource_feature_check() for CMT and MBA.
-  (Ilpo).
+Please check:
+https://lore.kernel.org/all/1305850262-9575-5-git-send-email-gregkh@suse.de/
 
-Changelog v3:
-- Move new function to a separate patch. (Reinette)
-- Rewrite resctrl_mon_feature_exists() only for L3_MON.
+You can apply as is.
 
-Changelog v2:
-- Add this patch.
+Thanks for reviewing,
+-	Ricardo
 
- tools/testing/selftests/resctrl/cmt_test.c  |  2 +-
- tools/testing/selftests/resctrl/mba_test.c  |  2 +-
- tools/testing/selftests/resctrl/mbm_test.c  |  6 ++--
- tools/testing/selftests/resctrl/resctrl.h   |  3 +-
- tools/testing/selftests/resctrl/resctrlfs.c | 33 +++++++++++++--------
- 5 files changed, 28 insertions(+), 18 deletions(-)
 
-diff --git a/tools/testing/selftests/resctrl/cmt_test.c b/tools/testing/selftests/resctrl/cmt_test.c
-index dd5ca343c469..c1157917a814 100644
---- a/tools/testing/selftests/resctrl/cmt_test.c
-+++ b/tools/testing/selftests/resctrl/cmt_test.c
-@@ -170,7 +170,7 @@ static int cmt_run_test(const struct resctrl_test *test, const struct user_param
- static bool cmt_feature_check(const struct resctrl_test *test)
- {
- 	return test_resource_feature_check(test) &&
--	       validate_resctrl_feature_request("L3_MON", "llc_occupancy");
-+	       resctrl_resource_exists("L3");
- }
- 
- struct resctrl_test cmt_test = {
-diff --git a/tools/testing/selftests/resctrl/mba_test.c b/tools/testing/selftests/resctrl/mba_test.c
-index da256d2dbe5c..fa99a91c8ab7 100644
---- a/tools/testing/selftests/resctrl/mba_test.c
-+++ b/tools/testing/selftests/resctrl/mba_test.c
-@@ -171,7 +171,7 @@ static int mba_run_test(const struct resctrl_test *test, const struct user_param
- static bool mba_feature_check(const struct resctrl_test *test)
- {
- 	return test_resource_feature_check(test) &&
--	       validate_resctrl_feature_request("L3_MON", "mbm_local_bytes");
-+	       resctrl_mon_feature_exists("mbm_local_bytes");
- }
- 
- struct resctrl_test mba_test = {
-diff --git a/tools/testing/selftests/resctrl/mbm_test.c b/tools/testing/selftests/resctrl/mbm_test.c
-index 34879e7b71a0..9c885bc427ca 100644
---- a/tools/testing/selftests/resctrl/mbm_test.c
-+++ b/tools/testing/selftests/resctrl/mbm_test.c
-@@ -97,7 +97,7 @@ static int mbm_setup(const struct resctrl_test *test,
- 		return END_OF_TESTS;
- 
- 	/* Set up shemata with 100% allocation on the first run. */
--	if (p->num_of_runs == 0 && validate_resctrl_feature_request("MB", NULL))
-+	if (p->num_of_runs == 0 && resctrl_resource_exists("MB"))
- 		ret = write_schemata(p->ctrlgrp, "100", uparams->cpu, test->resource);
- 
- 	p->num_of_runs++;
-@@ -140,8 +140,8 @@ static int mbm_run_test(const struct resctrl_test *test, const struct user_param
- 
- static bool mbm_feature_check(const struct resctrl_test *test)
- {
--	return validate_resctrl_feature_request("L3_MON", "mbm_total_bytes") &&
--	       validate_resctrl_feature_request("L3_MON", "mbm_local_bytes");
-+	return resctrl_mon_feature_exists("mbm_total_bytes") &&
-+	       resctrl_mon_feature_exists("mbm_local_bytes");
- }
- 
- struct resctrl_test mbm_test = {
-diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
-index 5116ea082d03..4603b215b97e 100644
---- a/tools/testing/selftests/resctrl/resctrl.h
-+++ b/tools/testing/selftests/resctrl/resctrl.h
-@@ -136,7 +136,8 @@ int get_domain_id(const char *resource, int cpu_no, int *domain_id);
- int mount_resctrlfs(void);
- int umount_resctrlfs(void);
- int validate_bw_report_request(char *bw_report);
--bool validate_resctrl_feature_request(const char *resource, const char *feature);
-+bool resctrl_resource_exists(const char *resource);
-+bool resctrl_mon_feature_exists(const char *feature);
- bool test_resource_feature_check(const struct resctrl_test *test);
- char *fgrep(FILE *inf, const char *str);
- int taskset_benchmark(pid_t bm_pid, int cpu_no, cpu_set_t *old_affinity);
-diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
-index e0fbc46a917a..0cfec8bb23fd 100644
---- a/tools/testing/selftests/resctrl/resctrlfs.c
-+++ b/tools/testing/selftests/resctrl/resctrlfs.c
-@@ -708,20 +708,16 @@ char *fgrep(FILE *inf, const char *str)
- }
- 
- /*
-- * validate_resctrl_feature_request - Check if requested feature is valid.
-- * @resource:	Required resource (e.g., MB, L3, L2, L3_MON, etc.)
-- * @feature:	Required monitor feature (in mon_features file). Can only be
-- *		set for L3_MON. Must be NULL for all other resources.
-+ * resctrl_resource_exists - Check if a resource is supported.
-+ * @resource:	Resctrl resource (e.g., MB, L3, L2, L3_MON, etc.)
-  *
-- * Return: True if the resource/feature is supported, else false. False is
-+ * Return: True if the resource is supported, else false. False is
-  *         also returned if resctrl FS is not mounted.
-  */
--bool validate_resctrl_feature_request(const char *resource, const char *feature)
-+bool resctrl_resource_exists(const char *resource)
- {
- 	char res_path[PATH_MAX];
- 	struct stat statbuf;
--	char *res;
--	FILE *inf;
- 	int ret;
- 
- 	if (!resource)
-@@ -736,11 +732,24 @@ bool validate_resctrl_feature_request(const char *resource, const char *feature)
- 	if (stat(res_path, &statbuf))
- 		return false;
- 
-+	return true;
-+}
-+
-+/*
-+ * resctrl_mon_feature_exists - Check if requested monitoring L3_MON feature is valid.
-+ * @feature:	Required monitor feature (in mon_features file).
-+ *
-+ * Return: True if the feature is supported, else false.
-+ */
-+bool resctrl_mon_feature_exists(const char *feature)
-+{
-+	char *res;
-+	FILE *inf;
-+
- 	if (!feature)
--		return true;
-+		return false;
- 
--	snprintf(res_path, sizeof(res_path), "%s/%s/mon_features", INFO_PATH, resource);
--	inf = fopen(res_path, "r");
-+	inf = fopen("/sys/fs/resctrl/info/L3_MON/mon_features", "r");
- 	if (!inf)
- 		return false;
- 
-@@ -753,7 +762,7 @@ bool validate_resctrl_feature_request(const char *resource, const char *feature)
- 
- bool test_resource_feature_check(const struct resctrl_test *test)
- {
--	return validate_resctrl_feature_request(test->resource, NULL);
-+	return resctrl_resource_exists(test->resource);
- }
- 
- int filter_dmesg(void)
--- 
-2.43.0
-
+> 
+> > move the w1_bus_type variable to be a constant structure as well,
+> > placing it into read-only memory which can not be modified at runtime.
+> 
+> Best regards,
+> Krzysztof
+> 
 
