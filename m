@@ -1,151 +1,114 @@
-Return-Path: <linux-kernel+bounces-53177-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8807D84A1BC
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:04:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B33A84A1BE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:04:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB3841C22435
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:04:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3EC9BB227B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:04:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9707F47A76;
-	Mon,  5 Feb 2024 18:04:00 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05CAB44C66;
-	Mon,  5 Feb 2024 18:03:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F278047A7B;
+	Mon,  5 Feb 2024 18:04:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GYOlBbpI"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9A0E47F59;
+	Mon,  5 Feb 2024 18:04:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707156240; cv=none; b=HpXDpaOdxUl2mFDeVzKKGninC0v64FRZU9dCNveFEvj7MSYo1pVmazHsb/AnF9aD55vIoRdETF4O7UYMzWDYAFPZn420Wh3b46oXuDJWREZTkesFyOLo3aixPDfsbDhr0IQIJJDPfEwlMq6sjDudl7bdmcTpg1CS1mzRod6LGYw=
+	t=1707156281; cv=none; b=C9jLrfbNh9F1ePIfHAAavCPSz62TDvl0R6df4bvRnudJ26OGlUVbGl3e18RbHN8FK6h0H80rtnGrT8+KN9cXwGRNgNwyUV8kp3SZ0PMm2w6A9rkqtgTVInenWs37RAcpQnEbfi08etWGSjZdoHBIMBR3DVwU8stLS/2EhKoODnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707156240; c=relaxed/simple;
-	bh=acHH8lLMt/+fXy9cDtqL91wGghvqnB/fGWuddTkpbls=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Os0AYlcbGpQOajvi6FoCkJsMSl71ZLlon7WDJquF/37rXpdpgqLzY+y2BSh8K5sFl6K9kjyHU5AiyedGPvNc85kV+Ho5zlyMMkW1czVjDNvT1e26XXRb6B9n8RtqnKgRp7H/u7ZFQlbtsw0llbcjgp29eR4hAswpN9J+UO9QPYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D0E212FC;
-	Mon,  5 Feb 2024 10:04:39 -0800 (PST)
-Received: from [10.57.48.140] (unknown [10.57.48.140])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 651753F5A1;
-	Mon,  5 Feb 2024 10:03:54 -0800 (PST)
-Message-ID: <ee19a95d-fe1e-4f3f-bc81-bdef38475469@arm.com>
-Date: Mon, 5 Feb 2024 18:03:53 +0000
+	s=arc-20240116; t=1707156281; c=relaxed/simple;
+	bh=TMmz9ofcV3Qg3qVRtpdLWdMNQPaRCIuMqEqskELJsXM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=si7N0OdLF38cGoucKGXLamit8FrkoiCevTKNImNWDsgR1ZdxJPwA8DBnXToRk16DvPkBv8s9ma4Pi+OJmwi2Msyf++xJK8sryFUtdPKZwf4NXsopFrUYoNMceqaismsrSCTWMx6FVMSt3v93nLA4jPXB+qqyn/cLx25GHf25Jrs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GYOlBbpI; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40fb3b5893eso38703345e9.0;
+        Mon, 05 Feb 2024 10:04:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707156278; x=1707761078; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HQK/98G9XoX645/LAft2pPXCTjN+BMBYrQ0Nd3/J0IA=;
+        b=GYOlBbpIKWSHCKPmAWC0T5QQI7v9ypjxDwjwBXXo3LtkEJKda6vIjva3QRHloDImhe
+         suGtwligIbp71TNZUgj36jVOddSTtFTZcPLgO6NnKZm8uDOnWYfRmxTv75vwQEUaSwE7
+         PADrZ8SLsJ5ym5uxFl1tUFm2OA99zmEcNFl/jIfkvz1irzQuv4y36zp1Vae5Pa7kEZ03
+         HSAR9m6/RyYrm1TqdbX5F4en3fAsnD/xIKIi7vW9nF16Ahog47liJyuUGZhNCIN/THJJ
+         VA23R/uK2lSTZPMcMLZllbTeENrPONVTMHL8gVAl33LNPWpbtrWqHrV63FvbpMVK1EmE
+         s87g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707156278; x=1707761078;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HQK/98G9XoX645/LAft2pPXCTjN+BMBYrQ0Nd3/J0IA=;
+        b=NIh9J9J0rUgS8XT/gqpQgS+c+HwVXT59guIltTKOgZoZwzp2fQp1zBqAhqZNTPysIW
+         cqGEAsdp3jaL7l60S4OF6DDwz4M6Ui/UH1htrwpRNHwzYmqn+0uiDS5Qs/lzINKkobl+
+         sXkA6bh0gfy3fMUxC17B+N9W3gU37C7agS2J11d3zlUChrh2Ss/pDjacvwMezjr42WXq
+         lghbLkFxdXt9dFROOtATWsZq6fbMc/QZyKZ2q/TzcGsr6hnaZfIDWngYNUnIfoA5DwgQ
+         oF02TO3sv5GEADW6XN6MsdDdXdQH6uuI9mDfdNEHtspwnAwfhFcSIQD55aEcBu+5LVLR
+         wpig==
+X-Gm-Message-State: AOJu0YyPIevo3m01jFvezX5dfk2NXARlfSxcHHP5UVkpeyaOBnx5NxY4
+	jO+DvkiphEwCalP0S9Q8IHpwjJGddkyLEVCSQrotvG82qo03XyoTOIn8jAt3
+X-Google-Smtp-Source: AGHT+IHUkqH15zC1Bm+thOKzFjaRy3hygMQRxs9HCocH2B2FpfgDEcW4liXDB57ayEwFyUWNqF56Ug==
+X-Received: by 2002:a05:600c:3d08:b0:40f:e067:d67e with SMTP id bh8-20020a05600c3d0800b0040fe067d67emr133989wmb.3.1707156277764;
+        Mon, 05 Feb 2024 10:04:37 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXO8zB4b/6jxR/B/RwwFZajC38o+8DiwDup2yUu/xCwFlxEsbK3IR8rE7DQYzHB2htR3WpfkEICsjdb2SKdPe/P0EwpFDGngsZr/qzGcmwnTHiE76fKuHfdcP4kPIV6zke88mlmMoKNDes5HkW06CqkFrGcfT3g+FR0X0ZQbX3mvnENBF8mpBA0+ePKArrETHfbpYegGmCu9GPJ9Y6Ucg==
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id l18-20020a05600c1d1200b0040e541ddcb1sm549411wms.33.2024.02.05.10.04.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 10:04:37 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Ian Abbott <abbotti@mev.co.uk>,
+	H Hartley Sweeten <hsweeten@visionengravers.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] comedi: remove redundant assignment to variable range
+Date: Mon,  5 Feb 2024 18:04:36 +0000
+Message-Id: <20240205180436.1841706-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 05/12] bcm2835-dma: Derive slave DMA addresses correctly
-Content-Language: en-GB
-To: Andrea della Porta <andrea.porta@suse.com>, Vinod Koul
- <vkoul@kernel.org>, Florian Fainelli <florian.fainelli@broadcom.com>,
- Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
- Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>, dmaengine@vger.kernel.org,
- linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, "iommu@lists.linux.dev" <iommu@lists.linux.dev>
-Cc: Maxime Ripard <maxime@cerno.tech>, Dom Cobley <popcornmix@gmail.com>,
- Phil Elwell <phil@raspberrypi.com>
-References: <cover.1706948717.git.andrea.porta@suse.com>
- <30da53ebdf43b712da790fd2ae0f0040f71762b8.1706948717.git.andrea.porta@suse.com>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <30da53ebdf43b712da790fd2ae0f0040f71762b8.1706948717.git.andrea.porta@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On 2024-02-04 6:59 am, Andrea della Porta wrote:
-> From: Phil Elwell <phil@raspberrypi.com>
-> 
-> Slave addresses for DMA are meant to be supplied as physical addresses
-> (contrary to what struct snd_dmaengine_dai_dma_data does). It is up to
-> the DMA controller driver to perform the translation based on its own
-> view of the world, as described in Device Tree.
-> 
-> Now that the Pi Device Trees have the correct peripheral mappings,
-> replace the hacky address munging with phys_to_dma().
-> 
-> Signed-off-by: Phil Elwell <phil@raspberrypi.com>
-> ---
->   drivers/dma/bcm2835-dma.c | 23 +++++------------------
->   1 file changed, 5 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/dma/bcm2835-dma.c b/drivers/dma/bcm2835-dma.c
-> index 237dcdb8d726..077812eda609 100644
-> --- a/drivers/dma/bcm2835-dma.c
-> +++ b/drivers/dma/bcm2835-dma.c
-> @@ -18,6 +18,7 @@
->    *	Copyright 2012 Marvell International Ltd.
->    */
->   #include <linux/dmaengine.h>
-> +#include <linux/dma-direct.h>
+The variable range is being initialized with a value that is never
+read, it is being re-assigned later on. The initialization is
+redundant and can be removed.
 
-Please read the comment at the top of that file; this driver is 
-definitely not a DMA API implementation, and should not be including it.
+Cleans up clang scan build warning:
+drivers/comedi/drivers/das08.c:180:2: warning: Value stored
+to 'range' is never read [deadcode.DeadStores]
 
->   #include <linux/dma-mapping.h>
->   #include <linux/dmapool.h>
->   #include <linux/err.h>
-> @@ -980,22 +981,12 @@ static struct dma_async_tx_descriptor *bcm2835_dma_prep_slave_sg(
->   	if (direction == DMA_DEV_TO_MEM) {
->   		if (c->cfg.src_addr_width != DMA_SLAVE_BUSWIDTH_4_BYTES)
->   			return NULL;
-> -		src = c->cfg.src_addr;
-> -		/*
-> -		 * One would think it ought to be possible to get the physical
-> -		 * to dma address mapping information from the dma-ranges DT
-> -		 * property, but I've not found a way yet that doesn't involve
-> -		 * open-coding the whole thing.
-> -		 */
-> -		if (c->is_40bit_channel)
-> -			src |= 0x400000000ull;
-> +		src = phys_to_dma(chan->device->dev, c->cfg.src_addr);
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/comedi/drivers/das08.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-FWIW I'd argue that abusing DMA API internals like this is even more 
-hacky than bypassing it entirely. The appropriate public API for setting 
-up the device end of a transfer is dma_map_resource(). Now, it *is* the 
-case currently that the dma-direct implementation of that does not take 
-dma_range_map into account, but that's already an open question:
+diff --git a/drivers/comedi/drivers/das08.c b/drivers/comedi/drivers/das08.c
+index 5d5b9174f88a..49944ce1f813 100644
+--- a/drivers/comedi/drivers/das08.c
++++ b/drivers/comedi/drivers/das08.c
+@@ -177,7 +177,6 @@ static int das08_ai_insn_read(struct comedi_device *dev,
+ 	int ret;
+ 
+ 	chan = CR_CHAN(insn->chanspec);
+-	range = CR_RANGE(insn->chanspec);
+ 
+ 	/* clear crap */
+ 	inb(dev->iobase + DAS08_AI_LSB_REG);
+-- 
+2.39.2
 
-https://lore.kernel.org/linux-iommu/20220610080802.11147-1-Sergey.Semin@baikalelectronics.ru/
-
-Thanks,
-Robin.
-
->   		info |= BCM2835_DMA_S_DREQ | BCM2835_DMA_D_INC;
->   	} else {
->   		if (c->cfg.dst_addr_width != DMA_SLAVE_BUSWIDTH_4_BYTES)
->   			return NULL;
-> -		dst = c->cfg.dst_addr;
-> -		if (c->is_40bit_channel)
-> -			dst |= 0x400000000ull;
-> +		dst = phys_to_dma(chan->device->dev, c->cfg.dst_addr);
->   		info |= BCM2835_DMA_D_DREQ | BCM2835_DMA_S_INC;
->   	}
->   
-> @@ -1064,17 +1055,13 @@ static struct dma_async_tx_descriptor *bcm2835_dma_prep_dma_cyclic(
->   	if (direction == DMA_DEV_TO_MEM) {
->   		if (c->cfg.src_addr_width != DMA_SLAVE_BUSWIDTH_4_BYTES)
->   			return NULL;
-> -		src = c->cfg.src_addr;
-> -		if (c->is_40bit_channel)
-> -			src |= 0x400000000ull;
-> +		src = phys_to_dma(chan->device->dev, c->cfg.src_addr);
->   		dst = buf_addr;
->   		info |= BCM2835_DMA_S_DREQ | BCM2835_DMA_D_INC;
->   	} else {
->   		if (c->cfg.dst_addr_width != DMA_SLAVE_BUSWIDTH_4_BYTES)
->   			return NULL;
-> -		dst = c->cfg.dst_addr;
-> -		if (c->is_40bit_channel)
-> -			dst |= 0x400000000ull;
-> +		dst = phys_to_dma(chan->device->dev, c->cfg.dst_addr);
->   		src = buf_addr;
->   		info |= BCM2835_DMA_D_DREQ | BCM2835_DMA_S_INC;
->   
 
