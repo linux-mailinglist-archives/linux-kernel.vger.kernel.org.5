@@ -1,127 +1,104 @@
-Return-Path: <linux-kernel+bounces-52210-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52211-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20A1B84956B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:30:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A641584956D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:32:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9ADDF1F23818
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:30:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59F50287E02
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:32:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 632C111CB6;
-	Mon,  5 Feb 2024 08:30:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="f6j+pZbl"
-Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com [209.85.217.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E81711170E;
+	Mon,  5 Feb 2024 08:32:45 +0000 (UTC)
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 872CE11709
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 08:30:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79F60111A0;
+	Mon,  5 Feb 2024 08:32:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707121821; cv=none; b=kDE/MrPq/ejR0rWOAnrn4LH39nqIzdbu2ETefw2bCBdQk4s8niAYN7os+3KKzxnV09GUqTIg48EfRN8PR31Iw6FrgOfwii9dRCpT4G2ZPeKrQPKb8ZaUohvCAvX63wN3P6EoWMYt8xPQ2xtjy9lEvUOF48SN1FMaQtc+6YxX0Uk=
+	t=1707121965; cv=none; b=F/JmmkbEnT0LU9rvlIYZAbrKY+AwU8IzZgnwcjT0IFBVF8ZUsOileq8X5RsuMhfvgbA9vBxdkPekq4bQyY16leLqXJP3dCBJKhzNJor9Tq/uGkQ2lYKldiAEwZZpypJsx1N8KRf5i5mgq4ZS0vvkcsX7zdf/Q/PDrxRVKRbv7Y4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707121821; c=relaxed/simple;
-	bh=nlIMxqjJPSzuxtueVeijM4g7c6JXyj/R/N8/LJ/xQio=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UCtiZzjEGGmNcg/X+AbtnwpYbcnPnjWBGEaxnMAZOtp2ymjLlkw+GwJQtLnlCuGzJ04tcG8/GEq18I9ySINzRz8LLx6OuSLwVLYVye5KDVptRE1G+j2QYJ6dMFPZ7qTK5pkGRZ1T+FhK+paKhonx8VLDB16nPB6q1bMcBtIpGzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=f6j+pZbl; arc=none smtp.client-ip=209.85.217.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-vs1-f53.google.com with SMTP id ada2fe7eead31-46d27358039so45670137.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 00:30:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1707121818; x=1707726618; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wNCUJBIaTHFkHjFjWMjXIHtC7NKJHWwr9gHKOI9UqWA=;
-        b=f6j+pZblpL57ylpLIYExLLWQq0HBBrWQxXMkceR2/Mvuh3nns7bX/gTevUPg+MQ2uN
-         xcusP9D5fZtZ6saZc3cWmVKc/R5m8L01lYH4V/1XZVhkyRWJrMQE4URkD7ux+ZAPwFqh
-         xKncEB5v2mEEdiNME1tZUVaZMberVmWnt/7lsVZS14mTgv4BFZcdwo/wELQ8/1cqj6I3
-         vYfxYPRQBCGBjSGln+pbmBRvwEgPdMNisD7CfXYpOfdLb69Unq5vh+IBeMOHEHGMEYYR
-         LE3svIGTvz2TJjQkJLh0YHOOVIF2bqOVqGpOYULUDbomJBB8G2omWIkdRRo8yD6Xko2p
-         J4qA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707121818; x=1707726618;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wNCUJBIaTHFkHjFjWMjXIHtC7NKJHWwr9gHKOI9UqWA=;
-        b=PxLWejfEfPM7nXG63ArVJminLDCvrr2nEMCWoO6nF2ENUc6uzwKLZ8+GOGwbsAFZ5Z
-         AwLkZMG24LlnMIahRklZPyRc0JVtxEu7pbbN/ZS4oemHnw1anMDThL+jYyAvZispH+2t
-         ZZWCMDZUT2bVD0RlbTkzEV4ImibZ2svZSh8InSwHga7bdhWdZHqbBuDkKl9XpS2Qaxkn
-         FJqnX6l9moiEL10z0c87s3f9KICXFHxHOBh+ksxNBRlPEvheI9iHWC9wwgX6xiGFyNym
-         f8rEFxQz3Lfjx/TlOzzc1JCvAIzIIOlLjRbhMBHzbnf9gk64y67he40qvWZmeFrRPKcU
-         0Gow==
-X-Gm-Message-State: AOJu0YyfWcui6IIc7XPdaF3tZWClNwOXJfSL7GTJfTWogI7gVdTzSJz3
-	dy+swQtz4cwcjUFEaVmR3Xgj/dR3UXGbUET5V2+tvdlQ+D9dy+eqB4c1C+gZsALDkfsgQ+S9uU/
-	aLkxwWQkEac4SzQM8EheWigvbhGZYlBjKkMs82w==
-X-Google-Smtp-Source: AGHT+IGHJM13AnHqcxTdJ7seBTXZ1xKUz8/lRLWAbrplrgbQQv3QnDgC2qllQbRvzT9A/qvGNwDI4f6ANUPuAbNLE7A=
-X-Received: by 2002:a05:6102:21c1:b0:46d:237c:4d6c with SMTP id
- r1-20020a05610221c100b0046d237c4d6cmr2355500vsg.1.1707121818496; Mon, 05 Feb
- 2024 00:30:18 -0800 (PST)
+	s=arc-20240116; t=1707121965; c=relaxed/simple;
+	bh=cGi0edXAms+gLfEuC09SdCR3GDmLrpY/mp4Jfcdl4RY=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=duGW6yix4LPP9Ea3DR07IivCEp24AxyFwlZyZT/4EidXRV1vcCWTg/dwASG4rl8BzUu1w9QubK/6R4uAtJrpPr/2NfPPfiQUO6HcYMagReh8WIEUMOIqb017mmXLz7hgZ59YUp0gaO5sOSIkPn1/FO3gAccBrXlNqi55dvdZxD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rWuP5-0000WV-IQ; Mon, 05 Feb 2024 09:32:35 +0100
+Message-ID: <680ab492-8ffb-46a6-ab76-06605954308d@leemhuis.info>
+Date: Mon, 5 Feb 2024 09:32:34 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <a8396308c995959349fd40e61199853a9b711ece.1706783050.git.michal.simek@amd.com>
-In-Reply-To: <a8396308c995959349fd40e61199853a9b711ece.1706783050.git.michal.simek@amd.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Mon, 5 Feb 2024 09:30:07 +0100
-Message-ID: <CAMRc=MdkFpvkpsrc6k5GgH4kk3V+bNX3_G4z+pRdPWSm9QH-Ew@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: gpio: gpio-pca9570: Add label property
-To: Michal Simek <michal.simek@amd.com>
-Cc: linux-kernel@vger.kernel.org, monstr@monstr.eu, michal.simek@xilinx.com, 
-	git@xilinx.com, Conor Dooley <conor+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh@kernel.org>, 
-	Sungbo Eo <mans0n@gorani.run>, 
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, 
-	"open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: More detailed text about bisecting Linux kernel regression --
+ request for comments and help
+Content-Language: en-US, de-DE
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+To: Linux kernel regressions list <regressions@lists.linux.dev>,
+ Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Bagas Sanjaya <bagasdotme@gmail.com>, Greg KH <gregkh@linuxfoundation.org>,
+ Jani Nikula <jani.nikula@linux.intel.com>
+References: <c763e15e-e82e-49f8-a540-d211d18768a3@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <c763e15e-e82e-49f8-a540-d211d18768a3@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1707121963;a9f84ed4;
+X-HE-SMSGID: 1rWuP5-0000WV-IQ
 
-On Thu, Feb 1, 2024 at 11:24=E2=80=AFAM Michal Simek <michal.simek@amd.com>=
- wrote:
->
-> Add a label property to allow a custom name to be used for identifying
-> a device on the board. This is useful when multiple devices are present o=
-n
-> the same board. Similar change was done by commit ffae65fb1ae4
-> ("dt-bindings: spi: spi-cadence: Add label property") or by commit
-> a53faa6bfa3b ("dt-bindings: hwmon: ina2xx: Add label property").
->
-> Signed-off-by: Michal Simek <michal.simek@amd.com>
-> ---
->
->  Documentation/devicetree/bindings/gpio/gpio-pca9570.yaml | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/gpio/gpio-pca9570.yaml b/D=
-ocumentation/devicetree/bindings/gpio/gpio-pca9570.yaml
-> index 452f8972a965..6f73961001b7 100644
-> --- a/Documentation/devicetree/bindings/gpio/gpio-pca9570.yaml
-> +++ b/Documentation/devicetree/bindings/gpio/gpio-pca9570.yaml
-> @@ -28,6 +28,9 @@ properties:
->      minItems: 4
->      maxItems: 8
->
-> +  label:
-> +    description: A descriptive name for this device.
-> +
->  required:
->    - compatible
->    - reg
-> --
-> 2.36.1
->
+On 24.01.24 13:19, Thorsten Leemhuis wrote:
+> Hi! Find below a WIP text on bisecting Linux kernel regressions I plan
+> to submit for inclusion in the Linux kernel documentation in a month or
+> two. I could do so now, but chose to write this mail instead, as the
+> text would really benefit from a few people actually testing the given
+> instructions. Hence if you notice somebody that faces a regression that
+> needs bisecting, consider poiting them them to this text, asking them to
+> play through this and provide feedback to me.
+> 
+> Ideally point users to the following rendered version:
+> https://www.leemhuis.info/files/misc/How%20to%20bisect%20a%20Linux%20kernel%20regression%20%e2%80%94%20The%20Linux%20Kernel%20documentation.html
+> 
+> It is (a) a lot easier to read (b) has no odd or broken line breaks,
+> like the text below has a few (sorry!) (c) is updated when I improve
+> something.
+> 
+> Anyone who might be willing to provide feedback can do so in a reply
+> here or by modifying the following document (which for copyright reasons
+> is just a copy of the document I use to prepared the text for the actual
+> submission):
+> https://docs.google.com/document/d/1Im7SPK0j6PUGQTSGZyCTSQv8h3S51EYsZuRRdyhfzto/edit?usp=sharing
 
-Applied, thanks!
+TWIMC, I changed a few important things since I wrote above mail. The
+most important parts:
 
-Bart
+* I switched the default flow from "use a shallow clone of linux-stable"
+ to "use a full clone of linux-mainline with stable added as remote";
+the instructions for shallow clones are now in the reference section, as
+it seems that was was some people prefer. Not really happy with that, as
+I think the shallow clone stuff was worth it and not that much more
+complicated. But whatever, not really unhappy either (maybe I like it a
+bit better myself that way, not sure yet). :-D
+
+* I changed a few aspects to make the text properly cover the "verify a
+bug is present in mainline" aspect as well, as that's basically the
+preparation and segment 1 of the whole process anyway. Not totally sure
+if that was a good idea. Maybe having that in a separate copy might have
+been better (basically a copy with the segment 2 and 3 removed and a few
+small changes), not sure. But that should be easy to realize later.
+
+See above links for details.
+
+Ciao, Thorsten
 
