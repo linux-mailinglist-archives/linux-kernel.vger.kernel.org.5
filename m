@@ -1,86 +1,136 @@
-Return-Path: <linux-kernel+bounces-52511-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7C4F849927
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:45:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BC2E84992A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:47:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF2891C2088A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:45:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF04FB2380A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:47:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B12618EB3;
-	Mon,  5 Feb 2024 11:45:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E1501947D;
+	Mon,  5 Feb 2024 11:46:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S0SfTXx8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="P8kq9JFG"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A776118E29;
-	Mon,  5 Feb 2024 11:45:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6709118EAF;
+	Mon,  5 Feb 2024 11:46:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707133527; cv=none; b=hpP1Fwq0rMvxj7U9LXMTBRnpe3e/3PrWWL/p2WpAU06plIwab6vszB7Jn/uM1fNViUrLX9FKz0N+iIObZXmeGvxEhZsHTAhUdbzBDEpO97WSqOSGKah/YI42rn+rId73oszhpYSEf3dfzbwR4jirAwRLBPZl89fvQL1AtNqgCao=
+	t=1707133614; cv=none; b=E8lWAkkibUmIx6oCxJ4gSYgdiMbOk1+8oU++hVizYs4GvGGdi+/M+4bTm1Z81CrxapzNOMVvJNL4sIiSU2jXSNTOv4kLBeanD062+vcvnO/d2xMrSYD+EUMtEMcJeFyF04AdFSsD+FVkmnNQxTWGv6aljrsIr6JyLIvStn/vQ/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707133527; c=relaxed/simple;
-	bh=BYs4rQ5/k64xGn6SgCJXpRb/M2MgU+YyuM9pGGjE//A=;
-	h=MIME-Version:In-Reply-To:References:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bKiTyql6li8pP12HY8cjk2/vQCwpjlRnfqbZpLjOhNDhHCRZB0TRF78P9PSBlZpR4+/T+O9fwDYgjL9tQtqgsHFij2ybd17i3CqyuLVMQI+MAccFKm6jf7uFybh+mWCLlX0KludQ8775GpzraIqdOj2fOEGQnKpO6zjIv+6vzLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S0SfTXx8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C396C43390;
-	Mon,  5 Feb 2024 11:45:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707133527;
-	bh=BYs4rQ5/k64xGn6SgCJXpRb/M2MgU+YyuM9pGGjE//A=;
-	h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
-	b=S0SfTXx8sAXPGWHPW5VvRr1z+i13fTvnBD3aKcRF9YWbPdt6+xWiOHp4J4sglj/Kc
-	 Eqbx+DkKxXtmtSCMTgApk06HNiqPUFkdqNSabgr/yHD7XhW6DWYBf9zB91Dd+mhvgl
-	 zrNhUVHpin/TssQbqpOTWgD4RLJXTIUGegXQCJ0wktuqhYl1sFIcsYL8wUkmV+BvtM
-	 s+EYbkeogcz1Ke+nixtIW4C+JfQnct5cKdirN3qXtIv3hrT57hk+6POf1IQiN2A31u
-	 1kXRcZIMsqT3l5NHpdRJoEJpsHukCSoIKxYyLpIr7TvEaWHl/jmo9E8Tapw0n2Wagl
-	 HiQewaybecxIw==
-Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-216f774c827so2168726fac.2;
-        Mon, 05 Feb 2024 03:45:27 -0800 (PST)
-X-Gm-Message-State: AOJu0Yw/d9GN+IQulgrN9f264SCUN9ZOIyDxlvdPkd7b1ghzt0dhfI6j
-	qYg+OIp0q/q3v+WLPFVDidmG5tGerUDVBZ0ldeOlnYnMAWq5g6gb2epnkb9SWfyuReuVunvc5Th
-	cEUFU7S0pL8XjFO2F3jQ2H9vj6BQ=
-X-Google-Smtp-Source: AGHT+IHu/+HFGmE2r7T4qO2GHHTOgOupQdOpPq3Oc1albNYbexHWY+wrxHuQsxQlyPKaYaaEnje8UB0J1O68leH5rmQ=
-X-Received: by 2002:a05:6870:4c0d:b0:219:9c12:ba14 with SMTP id
- pk13-20020a0568704c0d00b002199c12ba14mr645100oab.47.1707133526341; Mon, 05
- Feb 2024 03:45:26 -0800 (PST)
+	s=arc-20240116; t=1707133614; c=relaxed/simple;
+	bh=HFCq9wu6W08QNaLCx54DPS2en/X1Oy8pyJpYJABA99U=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=iTI6rKHWdwP7g1qFLyLfIkW3Hgvg62QMYi4wS8wjabEET1RHMqnyXpLSbdFMsRW1CnvhGc0ug9JDE7TUEa3PfPGx1D+uk4IyxpkLOKDYg8EZYObCwH62VtstkAbh6EktXzQWogM6oUo1pKD7j2udATsr1HPnkwI2e/hjVf454m8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=P8kq9JFG; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707133613; x=1738669613;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=HFCq9wu6W08QNaLCx54DPS2en/X1Oy8pyJpYJABA99U=;
+  b=P8kq9JFG1NV2tkTWFZAScWzZmLigJbHRoZ7WUiS+Jprdv0lip5b4reJh
+   d3Gb3c/9fgft+DodLnBGLe5CPkMUAW1isxg78cI3q9ycFQK6Aqnd5fzBz
+   hvgfBeyTAUORAzUiPW3uqMvbXZwwPK1fJmDLDMvrtzKSmHCwMnb8asnJn
+   58HTmL2WVHA8NDHjsYNO7HiDTdsZ22YcltSxdyootacyHbQstQAARNa3G
+   lYfne//bEl1NyD2NMY3lp8PyP3eijT2/PZ6ETHQzvM+n+JACddbylKpGD
+   Wv1TcOmx5kPlBJZx5P+sErnj+IPODnxlPcNCoQ5w37mnOXG1uuqUQNWxo
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="18030066"
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="18030066"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 03:46:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="706293"
+Received: from bixichen-mobl.ccr.corp.intel.com (HELO [10.254.215.64]) ([10.254.215.64])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 03:46:49 -0800
+Message-ID: <e41bbed5-fb22-43c3-9354-d797a2c7aaaa@linux.intel.com>
+Date: Mon, 5 Feb 2024 19:46:46 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Received: by 2002:a8a:d11:0:b0:514:c0b3:431 with HTTP; Mon, 5 Feb 2024
- 03:45:25 -0800 (PST)
-In-Reply-To: <20240205111917.181490-1-pchelkin@ispras.ru>
-References: <20240205111917.181490-1-pchelkin@ispras.ru>
-From: Namjae Jeon <linkinjeon@kernel.org>
-Date: Mon, 5 Feb 2024 20:45:25 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd-dMgmGUEow6B4pJRCUtmmgE0Qy+5CVEOTuMZA+O3gpQQ@mail.gmail.com>
-Message-ID: <CAKYAXd-dMgmGUEow6B4pJRCUtmmgE0Qy+5CVEOTuMZA+O3gpQQ@mail.gmail.com>
-Subject: Re: [PATCH] ksmbd: free aux buffer if ksmbd_iov_pin_rsp_read fails
-To: Fedor Pchelkin <pchelkin@ispras.ru>
-Cc: Steve French <sfrench@samba.org>, Sergey Senozhatsky <senozhatsky@chromium.org>, 
-	Tom Talpey <tom@talpey.com>, linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Alexey Khoroshilov <khoroshilov@ispras.ru>, lvc-project@linuxtesting.org, 
-	stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, "Liu, Yi L" <yi.l.liu@intel.com>,
+ Jacob Pan <jacob.jun.pan@linux.intel.com>,
+ Longfang Liu <liulongfang@huawei.com>, "Zhao, Yan Y" <yan.y.zhao@intel.com>,
+ Joel Granados <j.granados@samsung.com>,
+ "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+ "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Jason Gunthorpe <jgg@nvidia.com>
+Subject: Re: [PATCH v11 12/16] iommu: Use refcount for fault data access
+To: "Tian, Kevin" <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Nicolin Chen <nicolinc@nvidia.com>
+References: <20240130080835.58921-1-baolu.lu@linux.intel.com>
+ <20240130080835.58921-13-baolu.lu@linux.intel.com>
+ <BN9PR11MB52764927C3C56127F4B9B9DE8C472@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Language: en-US
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <BN9PR11MB52764927C3C56127F4B9B9DE8C472@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-2024-02-05 20:19 GMT+09:00, Fedor Pchelkin <pchelkin@ispras.ru>:
-> ksmbd_iov_pin_rsp_read() doesn't free the provided aux buffer if it
-> fails. Seems to be the caller's responsibility to clear the buffer in
-> error case.
->
-> Found by Linux Verification Center (linuxtesting.org).
->
-> Fixes: e2b76ab8b5c9 ("ksmbd: add support for read compound")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
-Applied it to #ksmbd-for-next-next.
-Thanks for your patch!
+On 2024/2/5 16:37, Tian, Kevin wrote:
+>> From: Lu Baolu <baolu.lu@linux.intel.com>
+>> Sent: Tuesday, January 30, 2024 4:09 PM
+>>
+>> The per-device fault data structure stores information about faults
+>> occurring on a device. Its lifetime spans from IOPF enablement to
+>> disablement. Multiple paths, including IOPF reporting, handling, and
+>> responding, may access it concurrently.
+>>
+>> Previously, a mutex protected the fault data from use after free. But
+>> this is not performance friendly due to the critical nature of IOPF
+>> handling paths.
+>>
+>> Refine this with a refcount-based approach. The fault data pointer is
+>> obtained within an RCU read region with a refcount. The fault data
+>> pointer is returned for usage only when the pointer is valid and a
+>> refcount is successfully obtained. The fault data is freed with
+>> kfree_rcu(), ensuring data is only freed after all RCU critical regions
+>> complete.
+>>
+>> An iopf handling work starts once an iopf group is created. The handling
+>> work continues until iommu_page_response() is called to respond to the
+>> iopf and the iopf group is freed. During this time, the device fault
+>> parameter should always be available. Add a pointer to the device fault
+>> parameter in the iopf_group structure and hold the reference until the
+>> iopf_group is freed.
+>>
+>> Make iommu_page_response() static as it is only used in io-pgfault.c.
+>>
+>> Co-developed-by: Jason Gunthorpe <jgg@nvidia.com>
+>> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+>> Tested-by: Yan Zhao <yan.y.zhao@intel.com>
+> 
+> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+> 
+>>    * struct iommu_fault_param - per-device IOMMU fault data
+>>    * @lock: protect pending faults list
+>> + * @users: user counter to manage the lifetime of the data
+>> + * @ruc: rcu head for kfree_rcu()
+> 
+> s/ruc/rcu
+
+Fixed. Thank you!
+
+Best regards,
+baolu
 
