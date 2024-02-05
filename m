@@ -1,259 +1,243 @@
-Return-Path: <linux-kernel+bounces-52580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F276F8499E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:17:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8036F8499E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:18:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2399D1C22B4E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:17:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A50AF1C22BB0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:18:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 110151B944;
-	Mon,  5 Feb 2024 12:14:38 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1ABF19BBA
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 12:14:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F5361BC35;
+	Mon,  5 Feb 2024 12:15:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qokjBZp3";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lvPWTfyH";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qokjBZp3";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lvPWTfyH"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6381F1B969;
+	Mon,  5 Feb 2024 12:15:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707135277; cv=none; b=QvnEKHEWJ3JLikxMy0S3xyrP7sEMspuZdefAT6+ZjhzQrv0rgGu4QaSo7lOhZ0l3ryjTGbkbgsPXJCVbOy+G/NXiF1+AbCsggC1jFqyegjwGabeeEEDNCRRTG54Hbxpj/Og3M/mg0v0mbSxBGwfUu5UizKiqOrxeNgtWyOBSJGE=
+	t=1707135337; cv=none; b=TjenV/qD3+9L0aMRZLBYUGJIy97Fq/jnFJNJWOv7LHp1GLAQK0iCcbgK9ge85fq551JM4HgSbynXfR3jZZw2sCchdOSLwwgZfLpHfmaUH2wM2ZPnI1wqW0vJjMfk2cwTJqkG/ng1vAxLySgbVSNsZoiUmsFtGvae4XWSBs1jeyU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707135277; c=relaxed/simple;
-	bh=HiZhPu5P1nh67cu5QUjJXKuYfIzcokeEWmoVwBDImqk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QY6b17j+ez94npnFdVyTB0h5CWYoXV7IfvDmq49U3jJ+i8O5CNy5f6HUgSvIIJy1799HH4EHvErITylAaGGEOqwDImUqkJwirlhXWE9PzdQmc6kiVYfPDaU47XhzwVrrmmHXSvF3YHsFd5EQXYF6hmupG95oqLO6ZkHTT/8HugI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AABD21FB;
-	Mon,  5 Feb 2024 04:15:14 -0800 (PST)
-Received: from [10.57.79.41] (unknown [10.57.79.41])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1339A3F762;
-	Mon,  5 Feb 2024 04:14:27 -0800 (PST)
-Message-ID: <d4f602db-403b-4b1f-a3de-affeb40bc499@arm.com>
-Date: Mon, 5 Feb 2024 12:14:25 +0000
+	s=arc-20240116; t=1707135337; c=relaxed/simple;
+	bh=zc0pRgZYZxJALjoYpqFAdp7FMSnYX9ikWZHhYJIwhpw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WZmuvEW4oTYwsggEUK43fGwNIrIX+AVIWXYWwtOhINgEOskYZypaWJjEmaOCS4g6TSAM834uUK6alyQDuiwuRIyWiCRaByZGNI8oo7EUfoutBmrbrA+UHsIM8PV5PqRRSqr3s+npzDskcZxphmegoH8Crdz/DfUmZ5FSTx3vxeo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qokjBZp3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lvPWTfyH; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qokjBZp3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lvPWTfyH; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 63F201F8C0;
+	Mon,  5 Feb 2024 12:15:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707135333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kEO4eHB2RkgWgrfIv+zq/AuT//7QQAheycepXP2TWTg=;
+	b=qokjBZp37IYl0KRBl9puo4nI/vE9Bx9agFbx9Ch6mY/6iIASNHe5Kp81k76O9chLJOXoVE
+	g5DoAoKHzOTlYeOEyfcjjg406NOf9xAS7xdSvGrhFHAn6gGY3uPAOMX2ha2LO5R9pL9r8b
+	hTPkow8Gu51rKxZF/SGDYhA8QiZpQ10=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707135333;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kEO4eHB2RkgWgrfIv+zq/AuT//7QQAheycepXP2TWTg=;
+	b=lvPWTfyHZmxYa51B4jbheuYBJ/dnTR5Gen2RwGvrBVLkHE15+ZNXeZHQAEGqS04A2yy9p/
+	FNxzhQKszocSwmAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707135333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kEO4eHB2RkgWgrfIv+zq/AuT//7QQAheycepXP2TWTg=;
+	b=qokjBZp37IYl0KRBl9puo4nI/vE9Bx9agFbx9Ch6mY/6iIASNHe5Kp81k76O9chLJOXoVE
+	g5DoAoKHzOTlYeOEyfcjjg406NOf9xAS7xdSvGrhFHAn6gGY3uPAOMX2ha2LO5R9pL9r8b
+	hTPkow8Gu51rKxZF/SGDYhA8QiZpQ10=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707135333;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kEO4eHB2RkgWgrfIv+zq/AuT//7QQAheycepXP2TWTg=;
+	b=lvPWTfyHZmxYa51B4jbheuYBJ/dnTR5Gen2RwGvrBVLkHE15+ZNXeZHQAEGqS04A2yy9p/
+	FNxzhQKszocSwmAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 41CB3136F5;
+	Mon,  5 Feb 2024 12:15:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id +FTGD2XRwGWKTAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 05 Feb 2024 12:15:33 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id D1C32A0809; Mon,  5 Feb 2024 13:15:32 +0100 (CET)
+Date: Mon, 5 Feb 2024 13:15:32 +0100
+From: Jan Kara <jack@suse.cz>
+To: syzbot <syzbot+3ce5dea5b1539ff36769@syzkaller.appspotmail.com>
+Cc: amir73il@gmail.com, clm@fb.com, dsterba@suse.com, jack@suse.cz,
+	josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	repnop@google.com, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [btrfs?] KMSAN: uninit-value in bcmp (2)
+Message-ID: <20240205121532.nj7yfb56jjgglkgu@quack3>
+References: <000000000000b6ffa9060ee52c74@google.com>
+ <0000000000003e469906108cde8d@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/4] mm: swap: Swap-out small-sized THP without
- splitting
-Content-Language: en-GB
-To: Barry Song <21cnbao@gmail.com>
-Cc: akpm@linux-foundation.org, david@redhat.com,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com,
- shy828301@gmail.com, wangkefeng.wang@huawei.com, willy@infradead.org,
- xiang@kernel.org, ying.huang@intel.com, yuzhao@google.com,
- chrisl@kernel.org, surenb@google.com, hanchuanhua@oppo.com
-References: <20231025144546.577640-5-ryan.roberts@arm.com>
- <20240205095155.7151-1-v-songbaohua@oppo.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240205095155.7151-1-v-songbaohua@oppo.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0000000000003e469906108cde8d@google.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -1.30
+X-Spamd-Result: default: False [-1.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=656820e61b758b15];
+	 TAGGED_RCPT(0.00)[3ce5dea5b1539ff36769];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,storage.googleapis.com:url];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[gmail.com,fb.com,suse.com,suse.cz,toxicpanda.com,vger.kernel.org,google.com,googlegroups.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 SUBJECT_HAS_QUESTION(0.00)[]
+X-Spam-Flag: NO
 
-On 05/02/2024 09:51, Barry Song wrote:
-> +Chris, Suren and Chuanhua
+On Sun 04-02-24 03:44:30, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
 > 
-> Hi Ryan,
+> HEAD commit:    9f8413c4a66f Merge tag 'cgroup-for-6.8' of git://git.kerne..
+> git tree:       upstream
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=10fcfdc0180000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=656820e61b758b15
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3ce5dea5b1539ff36769
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=139dd53fe80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12685aa8180000
 > 
->> +	/*
->> +	 * __scan_swap_map_try_ssd_cluster() may drop si->lock during discard,
->> +	 * so indicate that we are scanning to synchronise with swapoff.
->> +	 */
->> +	si->flags += SWP_SCANNING;
->> +	ret = __scan_swap_map_try_ssd_cluster(si, &offset, &scan_base, order);
->> +	si->flags -= SWP_SCANNING;
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/79d9f2f4b065/disk-9f8413c4.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/cbc68430d9c6/vmlinux-9f8413c4.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/9740ad9fc172/bzImage-9f8413c4.xz
+> mounted in repro: https://storage.googleapis.com/syzbot-assets/25f4008bd752/mount_0.gz
 > 
-> nobody is using this scan_base afterwards. it seems a bit weird to
-> pass a pointer.
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+3ce5dea5b1539ff36769@syzkaller.appspotmail.com
 > 
->> --- a/mm/vmscan.c
->> +++ b/mm/vmscan.c
->> @@ -1212,11 +1212,13 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
->>  					if (!can_split_folio(folio, NULL))
->>  						goto activate_locked;
->>  					/*
->> -					 * Split folios without a PMD map right
->> -					 * away. Chances are some or all of the
->> -					 * tail pages can be freed without IO.
->> +					 * Split PMD-mappable folios without a
->> +					 * PMD map right away. Chances are some
->> +					 * or all of the tail pages can be freed
->> +					 * without IO.
->>  					 */
->> -					if (!folio_entire_mapcount(folio) &&
->> +					if (folio_test_pmd_mappable(folio) &&
->> +					    !folio_entire_mapcount(folio) &&
->>  					    split_folio_to_list(folio,
->>  								folio_list))
->>  						goto activate_locked;
->> --
-> 
-> Chuanhua and I ran this patchset for a couple of days and found a race
-> between reclamation and split_folio. this might cause applications get
-> wrong data 0 while swapping-in.
-> 
-> in case one thread(T1) is reclaiming a large folio by some means, still
-> another thread is calling madvise MADV_PGOUT(T2). and at the same time,
-> we have two threads T3 and T4 to swap-in in parallel. T1 doesn't split
-> and T2 does split as below,
-> 
-> static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->                                 unsigned long addr, unsigned long end, 
->                                 struct mm_walk *walk)
-> {
-> 
->                 /*   
->                  * Creating a THP page is expensive so split it only if we
->                  * are sure it's worth. Split it if we are only owner.
->                  */
->                 if (folio_test_large(folio)) {
->                         int err; 
-> 
->                         if (folio_estimated_sharers(folio) != 1)
->                                 break;
->                         if (pageout_anon_only_filter && !folio_test_anon(folio))
->                                 break;
->                         if (!folio_trylock(folio))
->                                 break;
->                         folio_get(folio);
->                         arch_leave_lazy_mmu_mode();
->                         pte_unmap_unlock(start_pte, ptl);
->                         start_pte = NULL;
->                         err = split_folio(folio);
->                         folio_unlock(folio);
->                         folio_put(folio);
->                         if (err)
->                                 break;
->                         start_pte = pte =
->                                 pte_offset_map_lock(mm, pmd, addr, &ptl);
->                         if (!start_pte)
->                                 break;
->                         arch_enter_lazy_mmu_mode();
->                         pte--;
->                         addr -= PAGE_SIZE;
->                         continue;
->                 }    
-> 
->         return 0;
-> }
-> 
-> 
-> 
-> if T3 and T4 swap-in same page, and they both do swap_read_folio(). the
-> first one of T3 and T4 who gets PTL will set pte, and the 2nd one will
-> check pte_same() and find pte has been changed by another thread, thus
-> goto out_nomap in do_swap_page.
-> vm_fault_t do_swap_page(struct vm_fault *vmf)
-> {
->         if (!folio) {
->                 if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
->                     __swap_count(entry) == 1) {
->                         /* skip swapcache */
->                         folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0,
->                                                 vma, vmf->address, false);
->                         page = &folio->page;
->                         if (folio) {
->                                 __folio_set_locked(folio);
->                                 __folio_set_swapbacked(folio);
->                          
->                                 /* To provide entry to swap_read_folio() */
->                                 folio->swap = entry;
->                                 swap_read_folio(folio, true, NULL);
->                                 folio->private = NULL;
->                         }
->                 } else {
->                 }
->         
->         
->         /*
->          * Back out if somebody else already faulted in this pte.
->          */
->         vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf->address,
->                         &vmf->ptl);
->         if (unlikely(!vmf->pte || !pte_same(ptep_get(vmf->pte), vmf->orig_pte)))
->                 goto out_nomap;
-> 
->         swap_free(entry);
->         pte = mk_pte(page, vma->vm_page_prot);
-> 
->         set_pte_at(vma->vm_mm, vmf->address, vmf->pte, pte);
->         return ret;
-> }
-> 
-> 
-> while T1 and T2 is working in parallel, T2 will split folio. this can
-> run into race with T1's reclamation without splitting. T2 will split
-> a large folio into a couple of normal pages and reclaim them.
-> 
-> If T3 finishes swap_read_folio and gets PTL earlier than T4, it calls
-> set_pte and swap_free. this will cause zRAM to free the slot. then
-> t4 will get zero data in swap_read_folio() as the below zRAM code
-> will fill zero for freed slots, 
-> 
-> static int zram_read_from_zspool(struct zram *zram, struct page *page,
->                                  u32 index)
-> {
->         ...
-> 
->         handle = zram_get_handle(zram, index);
->         if (!handle || zram_test_flag(zram, index, ZRAM_SAME)) {
->                 unsigned long value;
->                 void *mem;
-> 
->                 value = handle ? zram_get_element(zram, index) : 0; 
->                 mem = kmap_local_page(page);
->                 zram_fill_page(mem, PAGE_SIZE, value);
->                 kunmap_local(mem);
->                 return 0;
->         }
-> }
-> 
-> usually, after t3 frees swap and does set_pte, t4's pte_same becomes
-> false, it won't set pte again. So filling zero data into freed slot
-> by zRAM driver is not a problem at all. but the race is that T1 and
-> T2 might do set swap to ptes twice as t1 doesn't split but t2 splits
-> (splitted normal folios are also added into reclaim_list), thus, the
-> corrupted zero data will get a chance to be set into PTE by t4 as t4
-> reads the new PTE which is set secondly and has the same swap entry
-> as its orig_pte after T3 has swapped-in and free the swap entry.
-> 
-> we have worked around this problem by preventing T4 from splitting
-> large folios and letting it goto skip the large folios entirely in
-> MADV PAGEOUT once we detect a concurrent reclamation for this large
-> folio.
-> 
-> so my understanding is changing vmscan isn't sufficient to support
-> large folio swap-out without splitting. we have to adjust madvise
-> as well. we will have a fix for this problem in
-> [PATCH RFC 6/6] mm: madvise: don't split mTHP for MADV_PAGEOUT
-> https://lore.kernel.org/linux-mm/20240118111036.72641-7-21cnbao@gmail.com/
-> 
-> But i feel this patch should be a part of your swap-out patchset rather
-> than the swap-in series of Chuanhua and me :-)
+> =====================================================
+> BUG: KMSAN: uninit-value in memcmp lib/string.c:692 [inline]
+> BUG: KMSAN: uninit-value in bcmp+0x186/0x1c0 lib/string.c:713
+>  memcmp lib/string.c:692 [inline]
+>  bcmp+0x186/0x1c0 lib/string.c:713
+>  fanotify_fh_equal fs/notify/fanotify/fanotify.c:51 [inline]
 
-Hi Barry, Chuanhua,
+So I'm not sure how this is possible. In fanotify_encode_fh() we have:
 
-Thanks for the very detailed bug report! I'm going to have to take some time to
-get my head around the details. But yes, I agree the fix needs to be part of the
-swap-out series.
+        dwords = fh_len >> 2;
+        type = exportfs_encode_fid(inode, buf, &dwords);
+        err = -EINVAL;
+        if (type <= 0 || type == FILEID_INVALID || fh_len != dwords << 2)
+                goto out_err;
 
-Sorry I haven't progressed this series as I had hoped. I've been concentrating
-on getting the contpte series upstream. I'm hoping I will find some time to move
-this series along by the tail end of Feb (hoping to get it in shape for v6.10).
-Hopefully that doesn't cause you any big problems?
+        fh->type = type;
+        fh->len = fh_len;
 
-Thanks,
-Ryan
+So if the encoded file handle was different length than what we expected we
+will fail the creation of the event...
 
+Aha, the FAT filesystem is mounted in nfs=nostale_ro which means that we're
+using fat_export_ops_nostale and thus fat_encode_fh_nostale for encoding
+fh. And FAT_FID_SIZE_WITHOUT_PARENT is 3 (i.e. 12 bytes) but the function
+initializes just the first 10 bytes of struct fat_fid. I'll send a fix for
+FAT.
+
+								Honza
+
+
+>  fanotify_fid_event_equal fs/notify/fanotify/fanotify.c:72 [inline]
+>  fanotify_should_merge fs/notify/fanotify/fanotify.c:168 [inline]
+>  fanotify_merge+0x15f5/0x27e0 fs/notify/fanotify/fanotify.c:209
+>  fsnotify_insert_event+0x1d0/0x600 fs/notify/notification.c:113
+>  fanotify_handle_event+0x47f7/0x6140 fs/notify/fanotify/fanotify.c:966
+>  send_to_group fs/notify/fsnotify.c:360 [inline]
+>  fsnotify+0x2510/0x3530 fs/notify/fsnotify.c:570
+>  fsnotify_parent include/linux/fsnotify.h:80 [inline]
+>  fsnotify_file include/linux/fsnotify.h:100 [inline]
+>  fsnotify_close include/linux/fsnotify.h:362 [inline]
+>  __fput+0x578/0x10c0 fs/file_table.c:368
+>  __fput_sync+0x74/0x90 fs/file_table.c:467
+>  __do_sys_close fs/open.c:1554 [inline]
+>  __se_sys_close+0x28a/0x4c0 fs/open.c:1539
+>  __x64_sys_close+0x48/0x60 fs/open.c:1539
+>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>  do_syscall_64+0x6d/0x140 arch/x86/entry/common.c:83
+>  entry_SYSCALL_64_after_hwframe+0x63/0x6b
 > 
-> Thanks
-> Barry
-
+> Uninit was created at:
+>  slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
+>  slab_alloc_node mm/slub.c:3478 [inline]
+>  slab_alloc mm/slub.c:3486 [inline]
+>  __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+>  kmem_cache_alloc+0x579/0xa90 mm/slub.c:3502
+>  fanotify_alloc_fid_event fs/notify/fanotify/fanotify.c:584 [inline]
+>  fanotify_alloc_event fs/notify/fanotify/fanotify.c:817 [inline]
+>  fanotify_handle_event+0x2ff6/0x6140 fs/notify/fanotify/fanotify.c:952
+>  send_to_group fs/notify/fsnotify.c:360 [inline]
+>  fsnotify+0x2510/0x3530 fs/notify/fsnotify.c:570
+>  fsnotify_parent include/linux/fsnotify.h:80 [inline]
+>  fsnotify_file include/linux/fsnotify.h:100 [inline]
+>  fsnotify_close include/linux/fsnotify.h:362 [inline]
+>  __fput+0x578/0x10c0 fs/file_table.c:368
+>  __fput_sync+0x74/0x90 fs/file_table.c:467
+>  __do_sys_close fs/open.c:1554 [inline]
+>  __se_sys_close+0x28a/0x4c0 fs/open.c:1539
+>  __x64_sys_close+0x48/0x60 fs/open.c:1539
+>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>  do_syscall_64+0x6d/0x140 arch/x86/entry/common.c:83
+>  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> 
+> CPU: 0 PID: 5010 Comm: syz-executor120 Not tainted 6.7.0-syzkaller-00562-g9f8413c4a66f #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+> =====================================================
+> 
+> 
+> ---
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
