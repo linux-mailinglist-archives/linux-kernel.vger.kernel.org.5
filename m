@@ -1,168 +1,103 @@
-Return-Path: <linux-kernel+bounces-52843-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52844-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76B3C849D58
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:47:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19278849D5B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:50:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8F2D1C21C32
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:47:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C72C0287E88
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:50:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BF2A2C69B;
-	Mon,  5 Feb 2024 14:47:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D2C12C688;
+	Mon,  5 Feb 2024 14:50:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="oFciRSqf";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="oFciRSqf"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="bFFWQzef"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BBB32C688
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 14:47:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F39252C1A3;
+	Mon,  5 Feb 2024 14:50:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707144457; cv=none; b=OdPS+WlpoCiXt++6q67kTP6ZAoyVvZbhcDePEqzehxuMioZwBgHR+OVLdO11wMBMYlawdFkUpck1bx99ASnweol9bSjuQ5KPZLMynoFDXhtuv0iDs5O6Hb7zmlnurNupoHUjpMpAd9S2WcBk/5NqcXS91wmkBYC+NqGqsKIDITQ=
+	t=1707144616; cv=none; b=kTJPJNSJCzItAS5VkxxPAMJGRsuNKfukWr4L4UX+3RHLrYpcbG2PJBVuZ2Kvm4rn31IIQqdqefzm2l5giv+IcPWCpR/7Z2kiblAj89fosk4ed8SeGdi8aqoYAJYIhK01/+QY18MYMnxsrmGwmny9NCth9KVeQlDJRRSSCl7jWxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707144457; c=relaxed/simple;
-	bh=y60qSvhHxwQC3IMhanA0g45FqmAYU8c1yQmtInFHF2c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jTBacVQauuv4dvtXXnvbF0BeThA9pfXl4eotFq3Fd9cUw74IvcgN2ND6qLzGVgsTli84p+/xHozDyig+83tZkz1QGxmrcOOwThdnOHZOO03vQZj99t5vmLnMi6vxTVY1ZORSBLsW4R1j8SDexw53iBAeNqLITZ/wrQQLVf0P+vI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=oFciRSqf; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=oFciRSqf; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4DBC2222BC;
-	Mon,  5 Feb 2024 14:47:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707144452; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yYUoybHLUqZci7jTkA5AStGSRfMnYOuNTneWtGHo/yU=;
-	b=oFciRSqfH+243AnA0GHa7gBzsKGpQHVouFXoNeyaCJrdf++ciV2GKWVGuP+H4BT9Ykk+qT
-	UXza7O3LHjkQi9Mwy1a7/ZFGSuhuSsXQhHOCM6PyEhSYWGKqHvlgSu33PKxorW3Y+mgRcv
-	4lUcVxv/f6jeVtdgvrYTToHK1MesMCo=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707144452; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yYUoybHLUqZci7jTkA5AStGSRfMnYOuNTneWtGHo/yU=;
-	b=oFciRSqfH+243AnA0GHa7gBzsKGpQHVouFXoNeyaCJrdf++ciV2GKWVGuP+H4BT9Ykk+qT
-	UXza7O3LHjkQi9Mwy1a7/ZFGSuhuSsXQhHOCM6PyEhSYWGKqHvlgSu33PKxorW3Y+mgRcv
-	4lUcVxv/f6jeVtdgvrYTToHK1MesMCo=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1E11313A2E;
-	Mon,  5 Feb 2024 14:47:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id LEY9BQT1wGUQdAAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Mon, 05 Feb 2024 14:47:32 +0000
-Date: Mon, 5 Feb 2024 15:47:31 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc: akpm@linux-foundation.org, muchun.song@linux.dev, osalvador@suse.de,
-	david@redhat.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm: hugetlb: improve the handling of hugetlb
- allocation failure for freed or in-use hugetlb
-Message-ID: <ZcD1A3gj-Net_I9b@tiehlicka>
-References: <23814ccce5dd3cd30fd67aa692fd0bf3514b0166.1707137359.git.baolin.wang@linux.alibaba.com>
+	s=arc-20240116; t=1707144616; c=relaxed/simple;
+	bh=5WTRDT0iWZcYT9Equ2fzP9IJqfiG/l7YotgxFwbMsy0=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sgQ+RsRA2qLsi7kuX7nvmfHdQOqNNqVRfxHbQXfQ8EmwJSObHgDsFj87rMjWsLqRpekzaDS0v/fatmbxHOoCkx0HXWT2RD98Z/1ZTGFFA+pFOzHc/Pz+Sa1W9r41++CVN6cGzCSUKRZKZYsktwm1xFiJAsNZTwe6VQMWV80aDvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=bFFWQzef; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 415Eo5IN038916;
+	Mon, 5 Feb 2024 08:50:05 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707144605;
+	bh=rFao23tD1GaHNE3daEZ6EYR019Z9WK7PSs9NxgAa+J0=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=bFFWQzefS4IqvBNZBS5G8GazN4qn2Ep54v7g+LW5wwEI4TuAhVtI1Y5TzEqGUAKrj
+	 hbyAPAu99ALU4lkOPM9D6WPWM/8gr3feFLT24jrc4FKQSsghSJKytB7zG+NLmzR5aQ
+	 pRMz1fjc8n/63twaLIlBc3fJ0sQJ2cSIUtWoz738=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 415Eo5p9027004
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 5 Feb 2024 08:50:05 -0600
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 5
+ Feb 2024 08:50:05 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 5 Feb 2024 08:50:05 -0600
+Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 415Eo5u2117959;
+	Mon, 5 Feb 2024 08:50:05 -0600
+Date: Mon, 5 Feb 2024 08:50:05 -0600
+From: Nishanth Menon <nm@ti.com>
+To: Randy Dunlap <rdunlap@infradead.org>
+CC: <linux-kernel@vger.kernel.org>, Tero Kristo <kristo@kernel.org>,
+        Santosh
+ Shilimkar <ssantosh@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, <linux-clk@vger.kernel.org>
+Subject: Re: [PATCH] clk: keystone: sci-clk: match func name comment to actual
+Message-ID: <20240205145005.6yauznc7qbfbrs4l@banana>
+References: <20240115001255.4124-1-rdunlap@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <23814ccce5dd3cd30fd67aa692fd0bf3514b0166.1707137359.git.baolin.wang@linux.alibaba.com>
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=oFciRSqf
-X-Spamd-Result: default: False [-2.81 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 4DBC2222BC
-X-Spam-Level: 
-X-Spam-Score: -2.81
-X-Spam-Flag: NO
+In-Reply-To: <20240115001255.4124-1-rdunlap@infradead.org>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Mon 05-02-24 20:50:51, Baolin Wang wrote:
-> When handling the freed hugetlb or in-use hugetlb, we should ignore the
-> failure of alloc_buddy_hugetlb_folio() to dissolve the old hugetlb successfully,
-> since we did not use the new allocated hugetlb in this 2 cases. Moreover,
-> moving the allocation into the free hugetlb handling branch.
+On 16:12-20240114, Randy Dunlap wrote:
+> Correct the function name in the kernel-doc comment to match the
+> actual function name to avoid a kernel-doc warning:
+> 
+> drivers/clk/keystone/sci-clk.c:287: warning: expecting prototype for _sci_clk_get(). Prototype was for _sci_clk_build() instead
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Nishanth Menon <nm@ti.com>
+> Cc: Tero Kristo <kristo@kernel.org>
+> Cc: Santosh Shilimkar <ssantosh@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: Michael Turquette <mturquette@baylibre.com>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: linux-clk@vger.kernel.org
+> ---
 
-The changelog is a bit hard for me to understand. What about the
-following instead?
-alloc_and_dissolve_hugetlb_folio preallocates a new huge page before it
-takes hugetlb_lock. In 3 out of 4 cases the page is not really used and
-therefore the newly allocated page is just freed right away. This is
-wasteful and it might cause pre-mature failures in those cases.
-
-Address that by moving the allocation down to the only case (hugetlb
-page is really in the free pages pool). We need to drop hugetlb_lock
-to do so and therefore need to recheck the page state after regaining
-it.
-
-The patch is more of a cleanup than an actual fix to an existing
-problem. There are no known reports about pre-mature failures.
-
-[...]
-
-> @@ -3075,6 +3063,24 @@ static int alloc_and_dissolve_hugetlb_folio(struct hstate *h,
->  		cond_resched();
->  		goto retry;
->  	} else {
-> +		if (!new_folio) {
-> +			spin_unlock_irq(&hugetlb_lock);
-> +			/*
-> +			 * Before dissolving the free hugetlb, we need to allocate
-> +			 * a new one for the pool to remain stable.  Here, we
-> +			 * allocate the folio and 'prep' it by doing everything
-> +			 * but actually updating counters and adding to the pool.
-> +			 * This simplifies and let us do most of the processing
-> +			 * under the lock.
-> +			 */
-
-This comment is not really needed anymore IMHO.
-
-> +			new_folio = alloc_buddy_hugetlb_folio(h, gfp_mask, nid,
-> +							      NULL, NULL);
-> +			if (!new_folio)
-> +				return -ENOMEM;
-> +			__prep_new_hugetlb_folio(h, new_folio);
-> +			goto retry;
-> +		}
-> +
->  		/*
->  		 * Ok, old_folio is still a genuine free hugepage. Remove it from
->  		 * the freelist and decrease the counters. These will be
+Reviewed-by: Nishanth Menon <nm@ti.com>
 
 -- 
-Michal Hocko
-SUSE Labs
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
