@@ -1,175 +1,186 @@
-Return-Path: <linux-kernel+bounces-53183-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53184-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C3E784A1CC
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:07:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3512584A1CE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:08:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E227C1F23FDE
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:07:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 581FE1C22FA1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:08:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C12F0481DB;
-	Mon,  5 Feb 2024 18:07:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE2D047F59;
+	Mon,  5 Feb 2024 18:07:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="RD8igKf+"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QHKhYNMD"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CFF447A7B;
-	Mon,  5 Feb 2024 18:07:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD4DF482DC;
+	Mon,  5 Feb 2024 18:07:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707156445; cv=none; b=bT5EPinkKfhg9VauZBea2goyPG0MRdk7+53PYoGvdnTbPPVGotcpeOBAZdBFQhMTXIANuzUjjRTNAQD7Xt+N9f3mZLnXwYzHYlTl6LapMEe9NxbMOZ+gQU9MlfhdKUoIH7SI8bgjSLqMeRazBs2IcyFFecwRiSm5/JTRcyA9m7I=
+	t=1707156456; cv=none; b=TyhpSqgzOpvbCGsn4eCqPurpc+lV4DSaZF+zIqrJDeq5pvmNMaKvzptW6Kef3wDUMzcPzSTr9WbzTvpd9kjabQd3w5wmAH9/pIsQNpuWYXw9gISTF+XIcSuAvHtIveofm/2J2mNsAdxOxBFMKnRkyRchVibHVVxZuQA187cHPik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707156445; c=relaxed/simple;
-	bh=hqNhtWU6J0M723BwhAlES+EYWTmXacOatKP1VRJfnX0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=mEZAAiZAa60kGZe07maPcaHjpLTn+GOccPzkRIv2Dm6Pg/jCP1oUmnDotVVpXDw+xZw+esT0VJwB3JBbAguQeuAYzjwhNFwYOHVr019+3xGSkbsjOUo09WcXsGLoktG/7qtNX9CSRhZ338Z7ZbDfJaMlBO+K/UjEm+IP2mxUrUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=RD8igKf+; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 415I7GvO110148;
-	Mon, 5 Feb 2024 12:07:16 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707156436;
-	bh=Mkg0f6aV+i9MDUfqdgvJrhV3U9CqmwBoA9JGegFS9Aw=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=RD8igKf+D5Y6DGFMJZutz+TZmViETY9tMmI0loln3Gb48GkLQyYoItSB4aIOQkTuo
-	 fWOGITH67fnKtHtHku5J46uW49oye0iuPXRsvCtxI2XXRiV0SUVBnc2BHT6LPWA/Li
-	 IWt8O/9CoCjhPgXCwIw8jeRa0vigk+PkYN2HXX20=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 415I7GOw099114
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 5 Feb 2024 12:07:16 -0600
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 5
- Feb 2024 12:07:15 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 5 Feb 2024 12:07:15 -0600
-Received: from [10.249.42.149] ([10.249.42.149])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 415I7FEa026693;
-	Mon, 5 Feb 2024 12:07:15 -0600
-Message-ID: <05a3ef7e-b4d6-4f87-b34d-cec5f4ecfb9f@ti.com>
-Date: Mon, 5 Feb 2024 12:07:15 -0600
+	s=arc-20240116; t=1707156456; c=relaxed/simple;
+	bh=k1qcLeijxsr0TUzQiCRFv8GVbl55Crn0tIFB32o1jw0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Bh5DwVz3QQekMLChGM37md0HWNxJW33sJWEtcPtrTv/whhTPyp/JmKWxM+9ChWHwsa6OLK2MAzxd3NA4oL13uRdHm1fUnMo74uI8PeWowltGp68TW8qkAsGYYpQSQC4PbmDaEOQDasJuJvGADcex1UffnncGS/49zZ9Tv3vM5L0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QHKhYNMD; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707156454; x=1738692454;
+  h=from:date:subject:mime-version:content-transfer-encoding:
+   message-id:to:cc;
+  bh=k1qcLeijxsr0TUzQiCRFv8GVbl55Crn0tIFB32o1jw0=;
+  b=QHKhYNMDoBdm2rWg0DmcjbvMXdtR7h1IOjHmKNYFvT7TZGcQdbsWgb9K
+   4yIXSIWO+j46U6ppGjWS3R/GsoOo+P7zX4l0Q/C8Oy9p7kMVkOlklj5qu
+   e+5DLBr+yQJ9UlT6FRWOwNDTNhDn+kn/rbKMnorUB/UJRXJIRJ9Coq6/Q
+   q9H8AdrskM8KLn8AhsNY1aZKX8j37hsKODD+ZrBVJM26AkBLvskQ0xrla
+   wUes/KKJGymllmBm/BOfvkIONFx8x3eRrhGuri4nl9Nmd5dvxdioPvo/R
+   YEJ1NHbOfo4GaXn2ycp16xWqaqbPuNm4dzOowSt4yVcO675IWlijDd/5w
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="11162297"
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="11162297"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 10:07:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="787460"
+Received: from iweiny-desk3.amr.corp.intel.com (HELO localhost) ([10.213.184.201])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 10:07:32 -0800
+From: Ira Weiny <ira.weiny@intel.com>
+Date: Mon, 05 Feb 2024 10:07:23 -0800
+Subject: [PATCH RFC] cleanup/scoped_cond_guard: Fix multiple statements in
+ fail
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/5] usb: dwc3-am62: add workaround for Errata i2409
-Content-Language: en-US
-To: Roger Quadros <rogerq@kernel.org>, <Thinh.Nguyen@synopsys.com>
-CC: <gregkh@linuxfoundation.org>, <r-gunasekaran@ti.com>, <b-liu@ti.com>,
-        <nm@ti.com>, <srk@ti.com>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>
-References: <20240205141221.56076-1-rogerq@kernel.org>
- <20240205141221.56076-6-rogerq@kernel.org>
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <20240205141221.56076-6-rogerq@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240205-cond_guard-v1-1-b8d597a30cdd@intel.com>
+X-B4-Tracking: v=1; b=H4sIANojwWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDIwND3eT8vJT49NLEohTdxLREA1Mzs+TU5JQ0JaCGgqLUtMwKsGHRSkF
+ uzkqxtbUAnA6L72EAAAA=
+To: Peter Zijlstra <peterz@infradead.org>, 
+ Dan Williams <dan.j.williams@intel.com>, 
+ "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>, 
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Ingo Molnar <mingo@kernel.org>, Oleg Nesterov <oleg@redhat.com>, 
+ linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org, 
+ Ira Weiny <ira.weiny@intel.com>
+X-Mailer: b4 0.13-dev-2d940
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1707156451; l=3867;
+ i=ira.weiny@intel.com; s=20221222; h=from:subject:message-id;
+ bh=k1qcLeijxsr0TUzQiCRFv8GVbl55Crn0tIFB32o1jw0=;
+ b=jnu1mYq6JJk9Q/ignm8LTz9Kjse6U3lYHMBThLkw+KHN2wwANlH53taZLLlIVOybHKefFSKTR
+ HQXvaARuZGHAsjL1pwIx+kM50RY8OctjrpuAl3QL47HP3Wy6EJvFwY9
+X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
+ pk=brwqReAJklzu/xZ9FpSsMPSQ/qkSalbg6scP3w809Ec=
 
-On 2/5/24 8:12 AM, Roger Quadros wrote:
-> All AM62 devices have Errata i2409 [1] due to which
-> USB2 PHY may lock up due to short suspend.
-> 
-> Workaround involves setting bit 5 and 4 PLL_REG12
-> in PHY2 register space after USB controller is brought
-> out of LPSC reset but before controller initialization.
-> 
-> Handle this workaround.
-> 
-> [1] - https://www.ti.com/lit/er/sprz487d/sprz487d.pdf
-> 
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-> Cc: Conor Dooley <conor+dt@kernel.org>
-> Signed-off-by: Roger Quadros <rogerq@kernel.org>
-> ---
-> 
-> Notes:
->      Changelog:
->      
->      v2:
->      - don't add phy read/write helpers or add phy to private data
->      
->      v1: https://lore.kernel.org/all/20240201121220.5523-5-rogerq@kernel.org/
-> 
->   drivers/usb/dwc3/dwc3-am62.c | 21 ++++++++++++++++++++-
->   1 file changed, 20 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/dwc3/dwc3-am62.c b/drivers/usb/dwc3/dwc3-am62.c
-> index af1ce934e7fb..5ae5c3087b0f 100644
-> --- a/drivers/usb/dwc3/dwc3-am62.c
-> +++ b/drivers/usb/dwc3/dwc3-am62.c
-> @@ -101,6 +101,11 @@
->   #define PHY_CORE_VOLTAGE_MASK	BIT(31)
->   #define PHY_PLL_REFCLK_MASK	GENMASK(3, 0)
->   
-> +/* USB PHY2 register offsets */
-> +#define	USB_PHY_PLL_REG12		0x130
-> +#define	USB_PHY_PLL_LDO_REF_EN		BIT(5)
-> +#define	USB_PHY_PLL_LDO_REF_EN_EN	BIT(4)
-> +
->   #define DWC3_AM62_AUTOSUSPEND_DELAY	100
->   
->   struct dwc3_am62 {
-> @@ -184,8 +189,9 @@ static int dwc3_ti_probe(struct platform_device *pdev)
->   	struct device *dev = &pdev->dev;
->   	struct device_node *node = pdev->dev.of_node;
->   	struct dwc3_am62 *am62;
-> -	int i, ret;
->   	unsigned long rate;
-> +	void __iomem *phy;
-> +	int i, ret;
->   	u32 reg;
->   
->   	am62 = devm_kzalloc(dev, sizeof(*am62), GFP_KERNEL);
-> @@ -201,6 +207,12 @@ static int dwc3_ti_probe(struct platform_device *pdev)
->   		return PTR_ERR(am62->usbss);
->   	}
->   
-> +	phy = devm_platform_ioremap_resource(pdev, 1);
-> +	if (IS_ERR(phy)) {
-> +		dev_err(dev, "can't map PHY IOMEM resource. Won't apply i2409 fix.\n");
-> +		phy = NULL;
-> +	}
+In attempting to create a cond_guard() macro[1] Fabio asked me to do
+some testing of the macros he was creating.  The model for this macro
+was scoped_cond_guard() and the ability to declare a block for the error
+path.
 
-Why not move this down to where you use it below, then just have
-it be an if/else with the work around in the if (!IS_ERR(phy))
-and the warning in the else.
+A simple test for scoped_cond_guard() was created to learn how it
+worked and to model cond_guard() after it.  Specifically compound
+statements were tested as suggested to be used in cond_guard().[2]
 
-Andrew
+static int test_scoped_cond_guard(void)
+{
+        scoped_cond_guard(rwsem_write_try,
+                        { printk(KERN_DEBUG "Failed\n"); return -EINVAL; },
+                        &my_sem) {
+                printk(KERN_DEBUG "Protected\n");
+        }
+        return 0;
+}
 
-> +
->   	am62->usb2_refclk = devm_clk_get(dev, "ref");
->   	if (IS_ERR(am62->usb2_refclk)) {
->   		dev_err(dev, "can't get usb2_refclk\n");
-> @@ -227,6 +239,13 @@ static int dwc3_ti_probe(struct platform_device *pdev)
->   	if (ret)
->   		return ret;
->   
-> +	/* Workaround Errata i2409 */
-> +	if (phy) {
-> +		reg = readl(phy + USB_PHY_PLL_REG12);
-> +		reg |= USB_PHY_PLL_LDO_REF_EN | USB_PHY_PLL_LDO_REF_EN_EN;
-> +		writel(reg, phy + USB_PHY_PLL_REG12);
-> +	}
-> +
->   	/* VBUS divider select */
->   	am62->vbus_divider = device_property_read_bool(dev, "ti,vbus-divider");
->   	reg = dwc3_ti_readl(am62, USBSS_PHY_CONFIG);
+This test fails with the current code:
+
+lib/test-cleanup.c: In function ‘test_scoped_cond_guard’:
+/include/linux/cleanup.h:190:17: error: ‘else’ without a previous ‘if’
+  190 |                 else
+      |                 ^~~~
+lib/test-cleanup.c:79:9: note: in expansion of macro ‘scoped_cond_guard’
+   79 |         scoped_cond_guard(rwsem_write_try,
+      |         ^~~~~~~~~~~~~~~~~
+
+This is due to an extra statement between the if and else blocks created
+by the ';' in the macro.
+
+Ensure the if block is delineated properly for the use of compound
+statements within the macro.
+
+[1] https://lore.kernel.org/all/20240204173105.935612-1-fabio.maria.de.francesco@linux.intel.com/
+[2] https://lore.kernel.org/all/65b938c1ad435_5cc6f294eb@dwillia2-mobl3.amr.corp.intel.com.notmuch/
+
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+---
+NOTE: There is no user of this syntax yet but this is the way that Dan
+and I thought the macro worked.  An alternate syntax would be to require
+termination of the statement (ie use ';') in the use of the macro; see
+below.  But this change seemed better as the compiler should drop the
+extra statements created and allows for a bit more flexibility in the
+use of the macro.
+
+diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
+index 88af56600325..6cc4bfe61bc7 100644
+--- a/include/linux/cleanup.h
++++ b/include/linux/cleanup.h
+@@ -186,7 +186,7 @@ static inline class_##_name##_t class_##_name##ext##_constructor(_init_args) \
+ #define scoped_cond_guard(_name, _fail, args...) \
+        for (CLASS(_name, scope)(args), \
+             *done = NULL; !done; done = (void *)1) \
+-               if (!__guard_ptr(_name)(&scope)) _fail; \
++               if (!__guard_ptr(_name)(&scope)) _fail \
+                else
+
+ /*
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index 2fabd497d659..fae110e8b89f 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -441,7 +441,7 @@ static int ptrace_attach(struct task_struct *task, long request,
+         * SUID, SGID and LSM creds get determined differently
+         * under ptrace.
+         */
+-       scoped_cond_guard (mutex_intr, return -ERESTARTNOINTR,
++       scoped_cond_guard (mutex_intr, return -ERESTARTNOINTR;,
+                           &task->signal->cred_guard_mutex) {
+
+                scoped_guard (task_lock, task) {
+---
+ include/linux/cleanup.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
+index 88af56600325..d45452ce6222 100644
+--- a/include/linux/cleanup.h
++++ b/include/linux/cleanup.h
+@@ -186,7 +186,7 @@ static inline class_##_name##_t class_##_name##ext##_constructor(_init_args) \
+ #define scoped_cond_guard(_name, _fail, args...) \
+ 	for (CLASS(_name, scope)(args), \
+ 	     *done = NULL; !done; done = (void *)1) \
+-		if (!__guard_ptr(_name)(&scope)) _fail; \
++		if (!__guard_ptr(_name)(&scope)) { _fail; } \
+ 		else
+ 
+ /*
+
+---
+base-commit: 03c972291873663f15c78ff4ca07cbf5025735f8
+change-id: 20240201-cond_guard-afa0566cecdf
+
+Best regards,
+-- 
+Ira Weiny <ira.weiny@intel.com>
+
 
