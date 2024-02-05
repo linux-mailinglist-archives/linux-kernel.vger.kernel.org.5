@@ -1,52 +1,59 @@
-Return-Path: <linux-kernel+bounces-53065-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F99284A03B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:09:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0D4484A03D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:09:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80ED01C220D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:09:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C56CB2206E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:09:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59E2541770;
-	Mon,  5 Feb 2024 17:08:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="d6jz3Gdl"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBBFF45974;
+	Mon,  5 Feb 2024 17:09:02 +0000 (UTC)
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5315444C7F;
-	Mon,  5 Feb 2024 17:08:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28DA34594E;
+	Mon,  5 Feb 2024 17:09:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707152928; cv=none; b=Td4XR2gS/CkWzJFEDF8dXEMGXEM834fFY8YDSt4RWGxNs4eWi1k4AT67gC6/8nO6MJBZW+zITtKpIo+cVWuB4hnuZGp2OlM78XzfVl38fhi8cbF2oHiNbWsmwMcbYwCmnXSplSqwJnhzqjbe6brQTE809+ANj/unlk5CDdfnEDw=
+	t=1707152942; cv=none; b=IQnm0CjKBojePwQf72Mzf6ligvOLfikDxgVC5zhydApb13cBbKed7lqvyehqrTEvX2UEL87AYFxqHHRlE+SbBNJiOVrlZJQkk944e+vSxl65Bvkje2jUXUPT7XqUfu7/i857IuQomTmv4v8OvZTKnK5ISpEwKVm/1JVeJ6bWaGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707152928; c=relaxed/simple;
-	bh=6hNaaG/8oJZcN6VD13NiOeX06CYfaL53eZydv1sk94A=;
+	s=arc-20240116; t=1707152942; c=relaxed/simple;
+	bh=oAYNX3KP98Y/jeec7UIwq34nPFyWbvV+ib/tzgMvbDo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EO1cSKGPIBTonDepboTM8jYG6uh4+EXGi7N9cl8OXJMRWn9II65y+AWsrumYDHp/XRw4585hxvvqswOX6VdOCy5UTxNX460IjXlmRdl0QRERZyies1O/oFO+Sgbxdzb8Wzf84z6yMkjvB5E2oHV23hNGgEfnL8/itpilS8OgCfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=d6jz3Gdl; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1707152869; x=1707757669; i=w_armin@gmx.de;
-	bh=6hNaaG/8oJZcN6VD13NiOeX06CYfaL53eZydv1sk94A=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=d6jz3Gdls9Dh8s8BdM9Gg6wc27fk4qvfSQLJSkDF1qKFmo57q94SShyXOm1a3vtH
-	 G2gHIlx75kFXnaSMvaNAL4i0KpMVNWd77kycf6qYM4Lmlyc9xu+5UwjxJpUGg+ijf
-	 CJVjlCN0zZfLUUC+4la45HD85M4QiH10EtkzmfrS1PfQ/iX5uhpvIXEFwuWKS0IFM
-	 vfL20QLY6QJdGMtrNSadUx4ggcpvNuUFxaAmoDP5sDWjckQskmCf+tv6DknGZOJXB
-	 TRVZuo7ZUWxsO83SQnBPsqzXBME6cu7UftbhB1X6EgmzeUTXshghaJPnIugHN8eQq
-	 8XTKV9Tmtnj8yMsmmQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.0.14] ([141.30.226.119]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M5fIQ-1reBKB048Q-007Gm6; Mon, 05
- Feb 2024 18:07:49 +0100
-Message-ID: <df011292-48cd-4fbb-856c-20a3db9f99e8@gmx.de>
-Date: Mon, 5 Feb 2024 18:07:46 +0100
+	 In-Reply-To:Content-Type; b=XEHlGQwIaNlMCefDhN+q9kBNag63xEK7MLob38jWEPva3jiSugQW+lKGLr2evWvGhnmciQH6zTDVpdQ5bX73+4b0FRIzie87rLFDRypW2Lwku8nOmbSXo1BpXlezFHUmaZndkTGdFW62U8cO+hmOEQzYj2tiF+wTEZrM/sjkv7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e0507eb60cso346294b3a.3;
+        Mon, 05 Feb 2024 09:09:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707152940; x=1707757740;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1kuiOuDoqUN+LX9cDleVQRc2hrmBbqV3FFSoOhvfn0k=;
+        b=F09Z4gOo0OTaKBwY3Z0rPwROUtgbJAqrUCS4ela1Qz7wxLlQNbOYpI3jnjg90vbcWQ
+         ZIWagDyFLqlHSKNhWZa1ceLLMDjnyVAmD5QrjiccPM+uloF26iJ486oUiq0o/y3/nOWI
+         yUfG0j3L3JrwEIphxsVFs//i7Jd7mwRyGPoenaaAAem8BVU6eV3KB3ODQkJYI3vv7d+a
+         mdh9FBjCoVw2s6U/2OdGjnsXEjnMY2SL9vp8qf2yleXNMeeit1ene2j9ElpW/I9JBn86
+         84cbMLrkAze9bw3wj1DVYL59ZIjx5u5ThqqLVLCPYKYpm1UJH+SXutvGcgHXmQ3ksUYx
+         OyFw==
+X-Gm-Message-State: AOJu0YzPRd+hA7T4YKum4+tMhJr28D/Fohwd3UL3+4j0wT1gSOfo25cp
+	RvTds0AryxeFa+rtWSXulUiWd0RjUfxRo+ULlrYd6FFAxjse6KTr
+X-Google-Smtp-Source: AGHT+IGo8WjL/bdJNre0s9vbNXMioQJbq7p0P7eat1QWk+GpzjwXOG+PVh0O+BBrUAB/OnFm8hgfVg==
+X-Received: by 2002:a05:6a00:17a6:b0:6e0:3c66:cb7d with SMTP id s38-20020a056a0017a600b006e03c66cb7dmr237031pfg.3.1707152940419;
+        Mon, 05 Feb 2024 09:09:00 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWu8XlNN/hkZ/9Zm2dU5w8AJcapRa4uNKA/c1kpyak8eUdL+cXsVcyJxRMGpC5CM71G75GPwFeDLeQ441Gw+UK5qkD00mvVvuRZ6KXXdfjQJQgg1VFURjpS3OQ9hRZTqTz2Z6n0bmgQac14QbCtItb5OPDToRBa0oSicntyXHe96ubYsyjFKaGauSqIF5zd8V/lFFi/5Yu8AvTXEMhfZgzisbMc8892fgG0BHO86Zk3lvkT35ACj0XCVRoThEYFSkEUOc01lMK0caNg1IEj5L3jtbIz4Exm+qoXYt4l7Z+V1je1qWGC77lp7d2Oqa7XSZf4wpqvj7hOKe4w2fd5E17VVsFXVgivQjIjXPyfaOXAbhs71NhY1UvbqeqHyWke52eT14ZfpDoUsHWk7pYMc4lWnZJhZ8KcJ9cAOut62wB2xDL8O4wFTNzLBBK538wgs5nSCetKQu4yzw3YZqjvDCZJc7K+XjsCEBoGUOMO0BSN024Dm2sUrCFjyvF15tyKW1PgyYeeaauFXdjsNBgajZVVMI/SqPX/WZrXE2tMh6L4yI7AySbghqGBNgFq81fnI0MslK2VvIMJmbr9QzN32Lz3BwP/YP9wXQ/vNlBPWqXD3Z6nkBvam9PcXYG17ibBWgV/3KjnuKRTsow+dctcDzNafxz79afwfzzd59FeB4QsbQhNc0qaQusNviw25q0dnh/nwS0wow==
+Received: from ?IPV6:2620:0:1000:8411:be2a:6ac0:4203:7316? ([2620:0:1000:8411:be2a:6ac0:4203:7316])
+        by smtp.gmail.com with ESMTPSA id x16-20020aa79a50000000b006e03be933cesm67976pfj.96.2024.02.05.09.08.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Feb 2024 09:08:27 -0800 (PST)
+Message-ID: <55fa1c14-87ef-46ef-8871-f7139f86e8b7@acm.org>
+Date: Mon, 5 Feb 2024 09:08:08 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,101 +61,34 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2] platform/x86/fujitsu-laptop: Add battery charge
- control support
+Subject: Re: [PATCH v1 1/1] ufs: core: fix shift issue in ufshcd_clear_cmd
 Content-Language: en-US
-To: Szilard Fabian <szfabian@bluemarch.art>
-Cc: hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com, jwoithe@just42.net,
- linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-References: <20240129163502.161409-2-szfabian@bluemarch.art>
- <20240129175714.164326-2-szfabian@bluemarch.art>
- <fabf391c-933c-4a7b-a23c-d361ad3d7cc0@gmx.de> <Zb2GMCSIz1MuWpQZ@N>
-From: Armin Wolf <W_Armin@gmx.de>
-In-Reply-To: <Zb2GMCSIz1MuWpQZ@N>
+To: alice.chao@mediatek.com, Alim Akhtar <alim.akhtar@samsung.com>,
+ Avri Altman <avri.altman@wdc.com>, "James E.J. Bottomley"
+ <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: wsd_upstream@mediatek.com, stanley.chu@mediatek.com,
+ peter.wang@mediatek.com, powen.kao@mediatek.com, naomi.chu@mediatek.com,
+ cc.chou@mediatek.com, tun-yu.yu@mediatek.com, chun-hung.wu@mediatek.com,
+ casper.li@mediatek.com, linux-scsi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20240205104905.24929-1-alice.chao@mediatek.com>
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20240205104905.24929-1-alice.chao@mediatek.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:9jOyCVzgEG/WOK2QiLHZdi4aqCWEUsTJ1xjpyhB/b35LltZX1zS
- 09Kk5oWyw3XuPROLRKaHwak37v0XjG+kbrb3GbpLRiialtw49hJ/e5eMP91qbAVXgRHcyQa
- ZhcxqG7V0/t4QgMg716VKKW550HLFiO5nLCHErZxdlaZEO6hoOKmN46n7tET0rYgXsUJYET
- o/6l4WjtV3Lg1YnF1Axtg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:FywLzaAvvJs=;vhBNhZOl0/1zIX+ZbwQKLzw2SwO
- l6nqcTQInmbCUF3ba1JWmvRYn+j7n4xYLwZg1JR/w94Uu6Xit+vJ+SylGrdrIcpv2tJXQZcGf
- ug4FYg03KWiwuepndu8PjqcG6AQ+UQZx5e7yaEmcVuDceGCAAZzTScWA532LAYAAnTEHZVvzC
- cRqZ7Vsm+INQowLQKjWqsVd8/XBveWMzIg76IWt2U60iW3QW9hCtdFOVO146TdHbGbBXoy/gn
- xVeqNVQcHAtcbmPaPByyEouHL6LuTEcNZgdqVvtJRT5fXvUx3hL/mf+E2lqbJ1PPQE5u15xZo
- qS8Ijuhc0lM6YNaNU0SCIGLLflb7FgVs//Q1BXIf9VC626dECJD1eTxhv64uQYUsybZJ2TnSu
- 3QOTNMD5iv7a8DH/YfUcOgvnKor/+iT5iuHwS0oe+pnMAAPFF9JX+fH+YPoh9zdWINcHDYzva
- ejGnSYToJPERYm6SM1b10hroPuI2m+v+yGGOFXCPqaOL8xBiusoD1vvFAxwe/cJJGw16Y5z/1
- auI7nNCxx+vGY9NUrA3h+z3vtG4cFxOwTgEfLHEuiSsVQhVTA5HCvnoJ0MR9NCG5DwAfzMp4Z
- /fF4Ur+42ep6gGPmqi7UabPjEt5euiNP9W+mHe/hOjOeLNZpi210KSSsrhdqhA8IO8dFtW5Z+
- UnCrfUY5A7BD3D+sON0d1LzBLBuiCDCo9/nvO5HcWvPSI5EjdBpg+ebqoB/Ym5CFljtooxHkm
- ch4X6pLq7qw/7dsZwReVF2XNWBLjG2/ATzt0uD9QdOGHDWvhTFxgJFAx0NENfPWuz432k7as+
- FW1XNMUndEGeNP90l/4LYum+Bi84tFyQhSQH/QOIyCGqg=
 
-Am 03.02.24 um 01:17 schrieb Szilard Fabian:
+On 2/5/24 02:49, alice.chao@mediatek.com wrote:
+> When task_tag > 32 (in mcq mode), 1U << task_tag will out of bound
+        ^^^^^^^^^^^^^
+        task_tag >= 32 and sizeof(unsigned int) == 4
 
-> Hello,
->
-> On Tue, Jan 30, 2024 at 03:02:09AM +0100, Armin Wolf wrote:
->> Am 29.01.24 um 19:00 schrieb Szilard Fabian:
->>> +
->>> +	return sprintf(buf, "%d\n", status);
->>> +}
->>> +
->>> +static DEVICE_ATTR_RW(charge_control_end_threshold);
->>> +
->>> +/* ACPI battery hook */
->>> +
->>> +static int fujitsu_battery_add(struct power_supply *battery,
->>> +			       struct acpi_battery_hook *hook)
->>> +{
->>> +	/* Check if there is an existing FUJ02E3 ACPI device. */
->>> +	if (fext == NULL)
->>> +		return -ENODEV;
->> Can you put the struct acpi_battery_hook into the struct fujitsu_laptop
->> and then use container_of() to retrieve the ACPI device from there?
->> The dell-wmi-ddv driver does something similar.
->>
->> This would guarantee that the battery hook always accesses the correct ACPI device
->> and you could drop this check.
->>
->>> +
->>> +	/*
->>> +	 * Check if the S006 0x21 method exists by trying to get the current
->>> +	 * battery charge limit.
->>> +	 */
->>> +	int s006_cc_return;
->>> +	s006_cc_return = call_fext_func(fext, FUNC_S006_METHOD,
->>> +					CHARGE_CONTROL_RW, 0x21, 0x0);
->>> +	if (s006_cc_return == UNSUPPORTED_CMD)
->>> +		return -ENODEV;
->> Maybe this check should be done once during probe?
-> What about the following scenario?
-> - Put a bool into the struct fujitsu_laptop to store information about the
->    machine's charge control ability.
-> - The S006 0x21 method check with `battery_hook_register` gets moved into
->    an 'init function'. In that 'init function' the bool gets set accordingly.
-> - `battery_hook_unregister` gets moved into an 'exit function', where the
->    bool gets read and when it's false nothing happens.
-> - `fext` check gets removed from `fujitsu_battery_add` because it's
->    redundant (more about that later).
-> - The 'init function' gets called in `acpi_fujitsu_laptop_add` and the 'exit
->    function' gets called in `acpi_fujitsu_laptop_remove`.
->
-> With that scenario the code could be a little bit clearer in my opinion.
-> And it is possible to drop the `fext` check because if the FUJ02E3 ACPI
-> device exists `fext` gets set in the `acpi_fujitsu_laptop_add` function with
-> an error check.
-> (And the `fujitsu_battery_add` `fext` check was already redundant because
-> `battery_hook_register` got called in `acpi_fujitsu_laptop_add`. `fext`
-> gets set in the same function, and there is an error check already.)
->
-> Thanks,
-> Szilard
->
-This would work too.
+> for u32 mask. Fix this bug to prevent SHIFT_ISSUE (Bitwise shifts
+> that are out of bounds for their data type).
 
-Armin Wolf
+Anyway:
 
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 
