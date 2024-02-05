@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-53227-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D67284A25F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:33:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D10B284A260
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:33:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD9131F254DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:33:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A3471C23B73
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:33:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F5D155C1D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D380455E47;
 	Mon,  5 Feb 2024 18:28:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="gBscFNh0"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="wKuXjanq"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94EB652F8D
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 18:28:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC35953816
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 18:28:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707157714; cv=none; b=VeRxL6SvTgdaB8+XKFaNp/L+IuX6dJ6kH9eyllmC40xcj0TCz4ssGrQjQsVCgCBWIicJifUdgFknn587mlAJGdKWDPYFFTOI732+yOBrZOU/G11WCMfb7K48jNP/GOULb6cJYPelCXqoAPLQDZcqnvIT0+FHLuVbMC4s7zWjug0=
+	t=1707157714; cv=none; b=ukhPIDGb+2lpuMZ21z1XPXxl/rd3txkUzUCz/SjGxKYhjtUMVUIURfU7WDW4iX8LLSY33TzTgABOvInruZ6Vi2kVdPzXLUyhAF7bOap5jDpS9B6jlPZCwEJx1OmYPA1afNrLB2aCyjNJKXXo0nTtdZrYOGTjCgM3Rm+JjxwhdtA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707157714; c=relaxed/simple;
-	bh=U+4HezcWsbb7llafjQRKtk8zIHDgxKZxXttkNtDpa9M=;
+	bh=TY7UcEwIecUdAt11hpKY+H0IC9vqMq5Ef0ifk+Z9jBg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FfT0irICHYwMWW2t+vR93i7ctJ0C6RY9z8FFhg/61I+uaZh0z/XUtJCuRAmdyzEQC4pgrMR5siRwbLC3Bzfrwp80+akk8nKj02vBoNB4iqzLaiv0b88AZLNm2tGcSFKl9hmwoPgCOQiIJcQXU68sugvQEjyro9HfOYMjfiOViiw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=gBscFNh0; arc=none smtp.client-ip=209.85.128.53
+	 MIME-Version; b=fuxbqLiUO0i0PK5kCFg3cqr8RbuLM8YIx7wAiacooZYH1olOC0ZSYamWpFjhARv0Py5JLsIdUVDd26dC9YhZNK6nifQo4dUSKkFGpznDFTk6XLGMsuVl4bOp0hh8vNIS7DjjLc/38/Sqlb853Ae9cbU+1UCdqeWIEn5Gd1+r9rA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=wKuXjanq; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40fd55c7f93so16194495e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 10:28:31 -0800 (PST)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40f033c2e30so42878155e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 10:28:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1707157710; x=1707762510; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1707157711; x=1707762511; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2ES7ecXlXJM4Un4rzG7GFObnKvctiGb4CfffnKCJdG4=;
-        b=gBscFNh0pNmUz5jIJci6F7x9pigepi6taqLWIh4I2U9dWrloPgUMuhqbkFC6P6EIyL
-         Mp82OIXncnIbZx9x5pyTqnSg77P7YpL6aA2zH8AmuC7vkhS4CUKmOqPq8T0dJnPSM0N6
-         kAQdFWVJw4ehLjy4eHsARGPgA5mT/fBYKYMnt+VN9ghIKh7u7fwUE9rZ2XbfoxB4qJ3w
-         5SVFotoR9pDnb1cQuhXCM3PSYNG85olLyvi9OXsAJqKKf+pTtmvsFpvjv29owqdzmS6I
-         dm3tBW+2ytMmcohLg8givG/1tuz0BMaHy6tYxlpcwAbO0l8Zyew71YnRZ9TD6L0ul10i
-         CJeA==
+        bh=un7cEtb3KJw1A3qP7llM4B4OwSm9CqRxp4DvgeD9Ir4=;
+        b=wKuXjanqOvZBHdvwr25IbqHDfOHT51KvH8hl9IL2t3qIMQCNDQGZlrp5P7mIMTA7kb
+         9Ft2fRwbcUfoRCWqYBL3Kyk0df/Ra0JoLH5USpiydpwrKAwSYNSmlubi7HQaSN6h0Tn9
+         QIRZkMfPicSyi7WJXinhtrBSVeoQlUwjRgxbdN3LV3oThkTcWAE0iWfOFnt5DHCsSHHG
+         66kiEKJGQf3M6HLUEdV8z8+hKb9Zn1LPQ1q+awaPforHuWZ62lXnoLo4BQ/w+4ZtMQgv
+         SsGR8UqEcCCKhMA0ZlqgF6ZmKoUKfC5XlMzJO73KS7pYMnw+YV2Z3LSrEUpyH5I1nSvY
+         gG1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707157710; x=1707762510;
+        d=1e100.net; s=20230601; t=1707157711; x=1707762511;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2ES7ecXlXJM4Un4rzG7GFObnKvctiGb4CfffnKCJdG4=;
-        b=a0sqLHI4rUSkvDBrNcRWQZ3q4k6fxgq40KKAELUGAtRSCFNA2tCBhXGXStPMhUnqEa
-         B6imnXbgYgyhFUrZrGLUUkjHKWx4WAb8wRh88kE+Rwp6ArI4x1TRYMHUht2n2437fywr
-         bpaYsGqCEh7sDZHGjbR8FOcinUz9AMNeUCUMN09jVOXtvGhHRKbtqIq599f7Mbj1kVEN
-         lTS3aD4nNZIsdTv5FY686OhiNeKQMK66Zoye0iiAj7FELBGYJZx7zgneGfJgFDud/Cik
-         7jpd5kyultYJwKg42uKMOzj1v3XMhLX+vR2/jNjnyl3OlAzMxWX2czN3yF99rg8fAmHQ
-         jN/g==
-X-Gm-Message-State: AOJu0YyH+NICGL64nqKLs3YmC/656hBoEHL9ShmnZPlcbBYQl7x61AH9
-	bXaNPzjOl3bVYhzyT3wUOj4GsFi+UhA2rsBk0pGbBbNdVKyQ//CJT8oWEFhfrUA=
-X-Google-Smtp-Source: AGHT+IHRaxer47lLsNPzE1lYerxnHDOmXIYeuKvwusAuZfA0G+ZPa72Q9c/tVaihsJD/QECD4k3d6w==
-X-Received: by 2002:a05:600c:4ed4:b0:40f:cd96:31b7 with SMTP id g20-20020a05600c4ed400b0040fcd9631b7mr397542wmq.30.1707157709934;
-        Mon, 05 Feb 2024 10:28:29 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXG4NRUGyz5H1DuEu3Wfk/Kz0AdLGb+zwwdX27Og5B0V7rIfarK16JLITSBQM/V9KeyyGchkFjLnJq7U9cX0GxpZtXosrAMPWWfYMFs2+/fLe50BF/hxsFGhKKOp5F8+jYV4rKyLp0BybdCDhPtJKBwg1kDXd5I7XZn7Ko+ZaZCmi+v09BUiOiXYpBYizzi8cxavpe2SlviXaovcaQ0daNEOl8C2LrqSGm8VmzkN7W6y0LBquZ4jJSFwbd1rJmxp36ubDgFfauUaTaDSLzg7bAd6aIYf/6ntYPSPjJavzU+u5k+8+nbEF4XDQNXTxMHlMT54VwjsqfzelEQ6Q2W8ONCV6f9xuhtNWVCflicS/5XDLAaSa0vZrqlkWncoMrtQIm4jF4DVfq/rRvHGqhOGTI/rrOV6v0IFM3Nhb1jCljYOT9hOBDfaQf43NaWgg4wIAFYdivbD449bwQme8kwM7SK9u5nvaGTmxR9G0oWfTqBt2JmMV5+EyPJZ2snVWBc7BW/BRXExustKITp2ztgqUsNnw5stbn8kNEPc/RBuaCEXpbWIIDpet1nkCZWLxDkMus=
+        bh=un7cEtb3KJw1A3qP7llM4B4OwSm9CqRxp4DvgeD9Ir4=;
+        b=jrUU3Nbpl5J1xfveRwGiAoFaWGQvLln4erdxFBUEdUSJWOc3o5KFmq7NCAe20HA5MJ
+         lXB7ECE14b2CwcQwKn2NE/iFVgyCdh7B3yJFisAgIlRKd2Zzm+Mhjrba6MbyBrlP7eov
+         pEQf7drtXcUwaiaYVCqBnosOpeaA8DJLfj/r/V5eAddWrZBXffUpWm8VzEcwqQDTxvXY
+         U/i83ZLuXm1rKlBtjrYOyIeV2XAjwlpJDjA031sZP4G14nPn2yM3BMsGa0NvHKQSKtql
+         3HyZ11JKPBlJZiHv34M6pSH0HZgsD8hqfWrTPBsNdWxX0yV4p+Wkx43LI1rS7lI1Onx+
+         t3QA==
+X-Gm-Message-State: AOJu0YyecAsRkcVRGhS/r4YHDacmxjHhuC/DZEg1h3JWW6mjGrhEF1C2
+	x0z4tpdwtvcGNWEdYzxGbeefrF4cR65OSGEOrpZapx77HVa5Lc+t/W7cNexkhzE=
+X-Google-Smtp-Source: AGHT+IH+YlBI22schHQmMqidb7q3KHo+sRIdEP+Vmn6IUjpvEfBRLsCLSdwDp6ZXMGp2snNBJadkvQ==
+X-Received: by 2002:a5d:6d0c:0:b0:33b:1390:d952 with SMTP id e12-20020a5d6d0c000000b0033b1390d952mr317743wrq.19.1707157711039;
+        Mon, 05 Feb 2024 10:28:31 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCW3Htlt/5bJrrn9O1UdvEw6ixuei44u/CC58MhspOd6vqORlCnuOqqkZRF/NxTIONM6zbOXlvoYSv8sRFYaRSmgezLya4CjuF8V4Fwi2n0I/uwG94mUnku1SWSzhUHZ9noFevkniE46GT4gPJcHOukfnAxIfA9YToOrnaj7oSfmpueTu7Y4nkoLj0y+8rhzpOrKZ3EQkCj7kxdyaNNcwzrZDWd4J4TVv4sfQE6J85/AyBa/SnUjrcZ8nSHzN6sp8fY67PvOMFb4wsCx9g5OlB6yrRLetTGOlLgPTFrXQIAc78SPR+36t00yAIRlHspeFwprkDwhNdDHoAVxFr2EidtezBV1sA8YWz6P1TBm0LJ3MLnQGFOyfWL115nhVpXnjSGQUvcvRK5r4MZAVAuNY9GtHZcLWvqk05Aozm+sgzAf+v5360wJEQJPu/doQA5zik1GDidf32ZJEbBohor3t4B/xo99XPqdH1IxVA3B7iXr/1VCN6He3r3prGNJWmXVLzqyAprt/jeMy3CkHhIeAZp/m6/jTDCkr7iN6EILhf5J9wm8Qen9Q01uMcCbxp/exNs=
 Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:d929:10db:5b5c:b49d])
-        by smtp.gmail.com with ESMTPSA id v15-20020a5d678f000000b0033b17e18df8sm203229wru.12.2024.02.05.10.28.29
+        by smtp.gmail.com with ESMTPSA id v15-20020a5d678f000000b0033b17e18df8sm203229wru.12.2024.02.05.10.28.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 10:28:29 -0800 (PST)
+        Mon, 05 Feb 2024 10:28:30 -0800 (PST)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Andy Gross <agross@kernel.org>,
 	Bjorn Andersson <andersson@kernel.org>,
@@ -84,9 +84,9 @@ Cc: linux-arm-msm@vger.kernel.org,
 	kernel@quicinc.com,
 	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
 	Deepti Jaggi <quic_djaggi@quicinc.com>
-Subject: [PATCH v7 09/12] firmware: qcom: scm: add support for SHM bridge operations
-Date: Mon,  5 Feb 2024 19:28:07 +0100
-Message-Id: <20240205182810.58382-10-brgl@bgdev.pl>
+Subject: [PATCH v7 10/12] firmware: qcom: tzmem: enable SHM Bridge support
+Date: Mon,  5 Feb 2024 19:28:08 +0100
+Message-Id: <20240205182810.58382-11-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240205182810.58382-1-brgl@bgdev.pl>
 References: <20240205182810.58382-1-brgl@bgdev.pl>
@@ -100,122 +100,119 @@ Content-Transfer-Encoding: 8bit
 
 From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Add low-level primitives for enabling SHM bridge support as well as
-creating and destroying SHM bridge pools to qcom-scm.
+Add a new Kconfig option for selecting the SHM Bridge mode of operation
+for the TrustZone memory allocator.
+
+If enabled at build-time, it will still be checked for availability at
+run-time. If the architecture doesn't support SHM Bridge, the allocator
+will work just like in the default mode.
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Acked-by: Andrew Halaney <ahalaney@redhat.com>
 Tested-by: Andrew Halaney <ahalaney@redhat.com> # sc8280xp-lenovo-thinkpad-x13s
 Tested-by: Deepti Jaggi <quic_djaggi@quicinc.com> #sa8775p-ride
 Reviewed-by: Elliot Berman <quic_eberman@quicinc.com>
 ---
- drivers/firmware/qcom/qcom_scm.c       | 60 ++++++++++++++++++++++++++
- drivers/firmware/qcom/qcom_scm.h       |  3 ++
- include/linux/firmware/qcom/qcom_scm.h |  6 +++
- 3 files changed, 69 insertions(+)
+ drivers/firmware/qcom/Kconfig      | 10 +++++
+ drivers/firmware/qcom/qcom_tzmem.c | 65 +++++++++++++++++++++++++++++-
+ 2 files changed, 74 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-index 318d7d398e5f..839773270a21 100644
---- a/drivers/firmware/qcom/qcom_scm.c
-+++ b/drivers/firmware/qcom/qcom_scm.c
-@@ -1323,6 +1323,66 @@ bool qcom_scm_lmh_dcvsh_available(void)
- }
- EXPORT_SYMBOL_GPL(qcom_scm_lmh_dcvsh_available);
+diff --git a/drivers/firmware/qcom/Kconfig b/drivers/firmware/qcom/Kconfig
+index d24d83223867..af6f895c5adf 100644
+--- a/drivers/firmware/qcom/Kconfig
++++ b/drivers/firmware/qcom/Kconfig
+@@ -28,6 +28,16 @@ config QCOM_TZMEM_MODE_DEFAULT
+ 	  Use the default allocator mode. The memory is page-aligned, non-cachable
+ 	  and contiguous.
  
-+int qcom_scm_shm_bridge_enable(void)
++config QCOM_TZMEM_MODE_SHMBRIDGE
++	bool "SHM Bridge"
++	help
++	  Use Qualcomm Shared Memory Bridge. The memory has the same alignment as
++	  in the 'Default' allocator but is also explicitly marked as an SHM Bridge
++	  buffer.
++
++	  With this selected, all buffers passed to the TrustZone must be allocated
++	  using the TZMem allocator or else the TrustZone will refuse to use them.
++
+ endchoice
+ 
+ config QCOM_SCM_DOWNLOAD_MODE_DEFAULT
+diff --git a/drivers/firmware/qcom/qcom_tzmem.c b/drivers/firmware/qcom/qcom_tzmem.c
+index 44a062f2abd4..1ca3773263e5 100644
+--- a/drivers/firmware/qcom/qcom_tzmem.c
++++ b/drivers/firmware/qcom/qcom_tzmem.c
+@@ -55,7 +55,70 @@ static void qcom_tzmem_cleanup_pool(struct qcom_tzmem_pool *pool)
+ 
+ }
+ 
+-#endif /* CONFIG_QCOM_TZMEM_MODE_DEFAULT */
++#elif IS_ENABLED(CONFIG_QCOM_TZMEM_MODE_SHMBRIDGE)
++
++#include <linux/firmware/qcom/qcom_scm.h>
++
++#define QCOM_SHM_BRIDGE_NUM_VM_SHIFT 9
++
++static bool qcom_tzmem_using_shm_bridge;
++
++static int qcom_tzmem_init(void)
 +{
-+	struct qcom_scm_desc desc = {
-+		.svc = QCOM_SCM_SVC_MP,
-+		.cmd = QCOM_SCM_MP_SHM_BRIDGE_ENABLE,
-+		.owner = ARM_SMCCC_OWNER_SIP
-+	};
-+
-+	struct qcom_scm_res res;
-+
-+	if (!__qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_MP,
-+					  QCOM_SCM_MP_SHM_BRIDGE_ENABLE))
-+		return -EOPNOTSUPP;
-+
-+	return qcom_scm_call(__scm->dev, &desc, &res) ?: res.result[0];
-+}
-+EXPORT_SYMBOL_GPL(qcom_scm_shm_bridge_enable);
-+
-+int qcom_scm_shm_bridge_create(struct device *dev, u64 pfn_and_ns_perm_flags,
-+			       u64 ipfn_and_s_perm_flags, u64 size_and_flags,
-+			       u64 ns_vmids, u64 *handle)
-+{
-+	struct qcom_scm_desc desc = {
-+		.svc = QCOM_SCM_SVC_MP,
-+		.cmd = QCOM_SCM_MP_SHM_BRIDGE_CREATE,
-+		.owner = ARM_SMCCC_OWNER_SIP,
-+		.args[0] = pfn_and_ns_perm_flags,
-+		.args[1] = ipfn_and_s_perm_flags,
-+		.args[2] = size_and_flags,
-+		.args[3] = ns_vmids,
-+		.arginfo = QCOM_SCM_ARGS(4, QCOM_SCM_VAL, QCOM_SCM_VAL,
-+					 QCOM_SCM_VAL, QCOM_SCM_VAL),
-+	};
-+
-+	struct qcom_scm_res res;
 +	int ret;
 +
-+	ret = qcom_scm_call(__scm->dev, &desc, &res);
++	ret = qcom_scm_shm_bridge_enable();
++	if (ret == -EOPNOTSUPP) {
++		dev_info(qcom_tzmem_dev, "SHM Bridge not supported\n");
++		return 0;
++	}
 +
-+	if (handle && !ret)
-+		*handle = res.result[1];
++	if (!ret)
++		qcom_tzmem_using_shm_bridge = true;
 +
-+	return ret ?: res.result[0];
++	return ret;
 +}
-+EXPORT_SYMBOL_GPL(qcom_scm_shm_bridge_create);
 +
-+int qcom_scm_shm_bridge_delete(struct device *dev, u64 handle)
++static int qcom_tzmem_init_pool(struct qcom_tzmem_pool *pool)
 +{
-+	struct qcom_scm_desc desc = {
-+		.svc = QCOM_SCM_SVC_MP,
-+		.cmd = QCOM_SCM_MP_SHM_BRIDGE_DELETE,
-+		.owner = ARM_SMCCC_OWNER_SIP,
-+		.args[0] = handle,
-+		.arginfo = QCOM_SCM_ARGS(1, QCOM_SCM_VAL),
-+	};
++	u64 pfn_and_ns_perm, ipfn_and_s_perm, size_and_flags, ns_perms;
++	int ret;
 +
-+	return qcom_scm_call(__scm->dev, &desc, NULL);
++	if (!qcom_tzmem_using_shm_bridge)
++		return 0;
++
++	ns_perms = (QCOM_SCM_PERM_WRITE | QCOM_SCM_PERM_READ);
++	pfn_and_ns_perm = (u64)pool->pbase | ns_perms;
++	ipfn_and_s_perm = (u64)pool->pbase | ns_perms;
++	size_and_flags = pool->size | (1 << QCOM_SHM_BRIDGE_NUM_VM_SHIFT);
++
++	u64 *handle __free(kfree) = kzalloc(sizeof(*handle), GFP_KERNEL);
++	if (!handle)
++		return -ENOMEM;
++
++	ret = qcom_scm_shm_bridge_create(qcom_tzmem_dev, pfn_and_ns_perm,
++					 ipfn_and_s_perm, size_and_flags,
++					 QCOM_SCM_VMID_HLOS, handle);
++	if (ret)
++		return ret;
++
++	pool->priv = no_free_ptr(handle);
++
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(qcom_scm_shm_bridge_delete);
 +
- int qcom_scm_lmh_profile_change(u32 profile_id)
- {
- 	struct qcom_scm_desc desc = {
-diff --git a/drivers/firmware/qcom/qcom_scm.h b/drivers/firmware/qcom/qcom_scm.h
-index aa7d06939f8e..cb7273aa0a5e 100644
---- a/drivers/firmware/qcom/qcom_scm.h
-+++ b/drivers/firmware/qcom/qcom_scm.h
-@@ -116,6 +116,9 @@ struct qcom_tzmem_pool *qcom_scm_get_tzmem_pool(void);
- #define QCOM_SCM_MP_IOMMU_SET_CP_POOL_SIZE	0x05
- #define QCOM_SCM_MP_VIDEO_VAR			0x08
- #define QCOM_SCM_MP_ASSIGN			0x16
-+#define QCOM_SCM_MP_SHM_BRIDGE_ENABLE		0x1c
-+#define QCOM_SCM_MP_SHM_BRIDGE_DELETE		0x1d
-+#define QCOM_SCM_MP_SHM_BRIDGE_CREATE		0x1e
- 
- #define QCOM_SCM_SVC_OCMEM		0x0f
- #define QCOM_SCM_OCMEM_LOCK_CMD		0x01
-diff --git a/include/linux/firmware/qcom/qcom_scm.h b/include/linux/firmware/qcom/qcom_scm.h
-index ccaf28846054..9b6054813f59 100644
---- a/include/linux/firmware/qcom/qcom_scm.h
-+++ b/include/linux/firmware/qcom/qcom_scm.h
-@@ -115,6 +115,12 @@ int qcom_scm_lmh_dcvsh(u32 payload_fn, u32 payload_reg, u32 payload_val,
- int qcom_scm_lmh_profile_change(u32 profile_id);
- bool qcom_scm_lmh_dcvsh_available(void);
- 
-+int qcom_scm_shm_bridge_enable(void);
-+int qcom_scm_shm_bridge_create(struct device *dev, u64 pfn_and_ns_perm_flags,
-+			       u64 ipfn_and_s_perm_flags, u64 size_and_flags,
-+			       u64 ns_vmids, u64 *handle);
-+int qcom_scm_shm_bridge_delete(struct device *dev, u64 handle);
++static void qcom_tzmem_cleanup_pool(struct qcom_tzmem_pool *pool)
++{
++	u64 *handle = pool->priv;
 +
- #ifdef CONFIG_QCOM_QSEECOM
++	if (!qcom_tzmem_using_shm_bridge)
++		return;
++
++	qcom_scm_shm_bridge_delete(qcom_tzmem_dev, *handle);
++	kfree(handle);
++}
++
++#endif /* CONFIG_QCOM_TZMEM_MODE_SHMBRIDGE */
  
- int qcom_scm_qseecom_app_get_id(const char *app_name, u32 *app_id);
+ /**
+  * qcom_tzmem_pool_new() - Create a new TZ memory pool.
 -- 
 2.40.1
 
