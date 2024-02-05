@@ -1,109 +1,124 @@
-Return-Path: <linux-kernel+bounces-52678-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF93D849B55
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:03:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C06D849C32
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:49:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E6C51C2082F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:03:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BBCD2850A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:49:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 512A8210FF;
-	Mon,  5 Feb 2024 13:02:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E84921103;
+	Mon,  5 Feb 2024 13:49:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="gInmokFX"
-Received: from mout.web.de (mout.web.de [212.227.15.3])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R4xqhGSZ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47C9F2375D;
-	Mon,  5 Feb 2024 13:02:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7427520DCB
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 13:49:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707138167; cv=none; b=SieThCByQLu3KxzqkMg7bV1XJt4UGV0lW7kkwcYrp0EOlpafTr2fmwbkBWSzTJF38+8uJnC8/S5tL9JOVZ1BMykfXvQCVQD0LdQ8GeYmmivAAYG9chpz5+kqgsynVKRNLYPF+5LfwgXZS0HOf7I/60JJd3um+1Z4vSFJNXvGrok=
+	t=1707140962; cv=none; b=txskNzH4P92iXwruTni3upRAIg2J6Ml4MYCtdDOVSV6XP3Jw9ckeqwfb9BkCM9+JRgMpQ+/BktFZgZTw4n66lggbsbagnJbYcfMsAyMJcJoE7Qtwy1D5ASr9BzFxtP0MRirTxLvy1GHJcDeHzY56cdMzxPS12FRpZrHqVFPkHYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707138167; c=relaxed/simple;
-	bh=M7kC1Gk7zW5Rzv1t84FKmyEQZQWveaLF7BWFYaTRwo8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=V7SfLJ3M6+t0EAXpCKofnNetnfC+lXW0Flq3B73tPUUvht1BzU9KFY4oc5jzEUndI/qMDszxNu0bUPlzhpsenrMSqmEIAtSxtK/j2qsClYc5Pt9mxPiD8jop8zY4i+7tjjpqUaqY6V7PuikPpQRLFDlx2txZqzyqh/XDi4GfKrI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=gInmokFX; arc=none smtp.client-ip=212.227.15.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1707138155; x=1707742955; i=markus.elfring@web.de;
-	bh=M7kC1Gk7zW5Rzv1t84FKmyEQZQWveaLF7BWFYaTRwo8=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=gInmokFXD88OG+TQVq9DRGXn7Uytl5F1dxzbh7DYKEfCVm6ufvmFd9MObR349q2E
-	 W7wPDJoPaokW6lwnmQUfgRecr59+ioYqi7QJq+m4DaWUQ9iBQiV+kL02lQOJQh0fI
-	 3JNPJPhHaGNt/n4c9DtcvkU3jMnpesA2LCD1genyOpk8gYV4gp2l4MOEXgY4siNB4
-	 3PSpYYdGsHJ8UpjnNsI8kpSo1hmo7Ntq10OmBx7d1VK7JxiOLS4Wnnp3fi/H/NNm1
-	 yqU/HBYuhWpRJPHjpxx9VxPi6347eyPFtOEo8wnK03WtYon8WkzTdCX7LiF5Ga5Ym
-	 OxTXH5+UbagcjQSO2g==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MCGSU-1rgMXJ2Y6s-009fM2; Mon, 05
- Feb 2024 14:02:35 +0100
-Message-ID: <0c757d69-ec60-477c-a978-a94118a571a2@web.de>
-Date: Mon, 5 Feb 2024 14:02:34 +0100
+	s=arc-20240116; t=1707140962; c=relaxed/simple;
+	bh=uXJZxp5n5dwGpzBxC8nui0Wglon/mdw6pK6qMj//NbE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Lhj7jGykGsYmhaeAPXOLSbgt+MEn9UiP8qXJXhWB3x67ZVUTDoVBIdXlegGDJl7uSXrpaXEGlV1qB4gll8z5RmetEMpe9YEw02LZ4B9n6OIQJsTmTOHo3llRZ7mthKwlXfEYgygTrYJk6OKKhJKtEeCZCBY9nv9kCRcyMh+H1I4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=R4xqhGSZ; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707140960; x=1738676960;
+  h=resent-from:resent-date:resent-message-id:resent-to:date:
+   from:to:cc:subject:message-id:references:mime-version:
+   in-reply-to;
+  bh=uXJZxp5n5dwGpzBxC8nui0Wglon/mdw6pK6qMj//NbE=;
+  b=R4xqhGSZhyDiDZCrF8t0Ei6oDXV/UvYznJ/JAghZL7EltmXNgIig/NL2
+   YmrnmuHqsinh0udxu7pcgEyRouRWcjB1NJkcpr93NxFxk+qeaictn5XmF
+   NCCVrHOa3XUiRjnP3H5sbjyKr8wucbTSvkt/ApFvkHlief/Gptd6B1lTf
+   v1t1dzK2mGKhs/BsImuhkMtahjhrP4+Z1eCtYp/MDuS17BYaSICFlFqlx
+   S6VbbhOFdduVwgwml9cvOm44gEkxyUcVsmmN/IerML+kPJ3MTW1m8M9wq
+   Q96fsMbuUSxGicCQwkfYgkKLBvBBcisN7/a91C8B3KnhMjOTuM27XUqh4
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="431016"
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="431016"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 05:49:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="909300506"
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="909300506"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 05:49:18 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@intel.com>)
+	id 1rWzLY-000000025q1-0lnP;
+	Mon, 05 Feb 2024 15:49:16 +0200
+Resent-From: Andy Shevchenko <andriy.shevchenko@intel.com>
+Resent-Date: Mon, 5 Feb 2024 15:49:15 +0200
+Resent-Message-ID: <ZcDnWztXAl4OljXP@smile.fi.intel.com>
+Resent-To: nuno.sa@analog.com, linux-kernel@vger.kernel.org
+Date: Mon, 5 Feb 2024 14:35:02 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: nuno.sa@analog.com
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Daniel Scally <djrscally@gmail.com>,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] driver: core: add dedicated workqueue for devlink
+ removal
+Message-ID: <ZcDV9epWJf_oTCMK@smile.fi.intel.com>
+References: <20240205-fix-device-links-overlays-v2-0-5344f8c79d57@analog.com>
+ <20240205-fix-device-links-overlays-v2-1-5344f8c79d57@analog.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: iommu/ipmmu-vmsa: Use devm_platform_get_and_ioremap_resource() in
- ipmmu_probe()
-Content-Language: en-GB
-To: Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
- kernel-janitors@vger.kernel.org, =?UTF-8?B?SsO2cmcgUsO2ZGVs?=
- <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <e01cdb99-8497-4fec-b423-a0bfb483ac75@web.de>
- <324d4e02-6a5a-4112-a3a7-d7aeb5876acc@arm.com>
- <49fc6a59-2c07-4366-b32f-0599c2418916@web.de>
- <51315925-21ac-427c-abea-4d652ed5280f@arm.com>
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <51315925-21ac-427c-abea-4d652ed5280f@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:q0Qe30SNi/9mqfN3u/mG03dVuA8Cg6vcFggSYnH0fpTJrb5x0RK
- uN+E+ui+VphNCypZhvXPO8v0SZCqSi7nqW48GoU0giwxlyrdihct5RxLgjCHVWanuJCV9hr
- /pwdaUAS3Cd8wn5Ozt5KAqTChfDDEy+054BcGJlC2Guboml9nd9TemoEXYPxzXNX3hrD6yZ
- cLvDd5bbTQ1SzSEjmYn8w==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:G9WiypKrGiA=;uV7MKkwX+3MbtwDIw4sYVlU1Zwl
- b+/PB1TmIceiC2kiIRRY4NJgkuV+/t0iqNqZoAVcAZe7ReuXQVC60YuPjDD0gQU3KyBqK3hOW
- ZAD1GzFNOI9JSSFQ4BAhgvZ12N3zXijCJh6UyPvvQyCHUM5BXDRzRr79lrrCxDiLhH393QXUW
- /QPbjcWKo1sCh8cUoIWjlFz3pFOTg21VCMIDgP/7fhfb0+h0FTjriIMq2IKS3rKEGvtu/kF83
- bqm4jmuXoHCR+PCtGxW+HW4hg4iePM7mH+deDznnXIcbY/OYjfoX1D0myXDN6plJvl/kp0dVC
- 7jqyGmP8EbvgSe0a6Eq4q3DWd5Fyske9Cm8BvVhLt4HulQupB9z7r07CDntS7zDtyQ840D9NI
- VsKOV5Dy9G+ATbv9K7mudMmbNv3qJFMtVChl2a6Uu9l4gbmJQD45M022N5Me6FNyNdI5iAyxX
- zBda4TLAxQAeGTUeRSMWwsBNZYS4D92azj+ERSkpNFeEz0Nd+etkl1druyeLDsJioESmnuweO
- 5Svv2AgnloFfa4TUeW1sIk/ayMVldb079xnPIZAz02qm4dn/Oy5Jsqd8bWP6N/nfXZAZoPiRR
- CAv/eQAHdqna+BItLaLEDQm7aAcG/AF96diMzh2yZMGq2b/G/nBvNSTlV6vn0sMo0Uiu5UzNR
- JLe8zwZeQRkyFejwQe6avLfy49AQa3sCTdLm27qdeeZo2OcuLVTmQrxuf667kqW/NCJgetFeZ
- 5DB67PJoCcnIzgjERoryxA7E3SY353d637QLYfacCCarbqItV96a70ikX7LhGtgvZbGWLB8Zd
- VK5lG6OqzIyCL83/HTdrWbo7UMevQoQx2TCips5aG23kc=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240205-fix-device-links-overlays-v2-1-5344f8c79d57@analog.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
->>>> Thus reuse existing functionality instead of keeping duplicate source=
- code.
->>>
->>> Much as I detest the get_and_ioremap_resource obfuscator, it's not eve=
-n appropriate here since nothing else is using "res".
->>
->> I got the impression that this local variable is needed to perform
->> a desired function call.
->
-> Yes, the call to devm_ioremap_resource(). Which you're proposing to remo=
-ve...
+On Mon, Feb 05, 2024 at 01:09:32PM +0100, Nuno Sa via B4 Relay wrote:
+> From: Nuno Sa <nuno.sa@analog.com>
+> 
+> Let's use a dedicated queue for devlinks since releasing a link happens
+> asynchronously but some code paths, like DT overlays, have some
+> expectations regarding the of_node when being removed (the refcount must
+> be 1). Given how devlinks are released that cannot be assured. Hence, add a
+> dedicated queue so that it's easy to sync against devlinks removal.
+> 
+> While at it, make sure to explicitly include <linux/workqueue.h>.
 
-I propose to replace a specific function call combination
-by an other single call for a known wrapper function.
-The mentioned variable is preserved for this purpose.
+..
 
-Regards,
-Markus
+> +++ b/include/linux/fwnode.h
+> @@ -213,5 +213,6 @@ extern bool fw_devlink_is_strict(void);
+>  int fwnode_link_add(struct fwnode_handle *con, struct fwnode_handle *sup);
+>  void fwnode_links_purge(struct fwnode_handle *fwnode);
+>  void fw_devlink_purge_absent_suppliers(struct fwnode_handle *fwnode);
+> +void fwnode_links_flush_queue(void);
+
+I am not sure if you have seen my comment against v1.
+
+I find the namespace a bit messy for devlinks. And to me seems the best place
+for this line is to be before fwnode_links_purge().
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
