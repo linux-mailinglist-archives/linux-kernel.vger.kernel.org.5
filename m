@@ -1,322 +1,198 @@
-Return-Path: <linux-kernel+bounces-52295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD243849670
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:27:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E5FA849677
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:29:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48BBDB22C24
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:27:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24404282993
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:29:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E201112B88;
-	Mon,  5 Feb 2024 09:27:33 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9A3212B8C;
+	Mon,  5 Feb 2024 09:28:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="L/NzhZ1y"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FA2E125C0;
-	Mon,  5 Feb 2024 09:27:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D9BD12B71;
+	Mon,  5 Feb 2024 09:28:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707125253; cv=none; b=a35xqss8OIkpE2GpmztzfNdpvS81c7gJxVU3/WJLrS+U97JpET203SSr4XbJEr+Gk+nTz7XUNhVEq9HHWd8OKBTN1wf2a1Fl4Si7MplFwGajfy/KIvfsU71kzBcd8YnHyuVZBGYs0hPdoB02MLa31OFEVhcwFkJp2CkcPTfvwJQ=
+	t=1707125336; cv=none; b=X/xTfD57Mxy3Ov04ttxE53/s4b8rjoFAJNfRh2rkJjQK1z197m2LLnXwzvrrcvJ08KOGyVid+gUXWthq1VBNAvWrXhRk73WwHMvFqvBGolSivkq2yJxau83+NbcbbkiqokhUrAVx/5+fTFHvR8ADrQQTcf8t0AxOSKeD/Nl7l1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707125253; c=relaxed/simple;
-	bh=2nBbOXY86fuqehjGOV18bjyj+i/6FqOKkuzJddpv0JU=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=u1AQ+biC1+OPtfScrDOr2oYNOAOlVNp+FzgRtnogc34WsVN7yWGqF31RVkCn4OaRU/g+byYY5e/DDasRdpCutMpUPDGuUzl7rCJrC13nQsXbBrlGI/lH00sjAeT7ubSnbVc9ja5uzfdfQqjaLGuQQn++j5EMNqxIT2z8r2qa7eI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TT1Cz5cGjz6GBQk;
-	Mon,  5 Feb 2024 17:24:15 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6229F140A36;
-	Mon,  5 Feb 2024 17:27:27 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 5 Feb
- 2024 09:27:26 +0000
-Date: Mon, 5 Feb 2024 09:27:26 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Julia Lawall <julia.lawall@inria.fr>, "Rafael J . Wysocki"
-	<rafael@kernel.org>
-CC: Jonathan Cameron <jic23@kernel.org>, <linux-iio@vger.kernel.org>, "Rob
- Herring" <robh@kernel.org>, Frank Rowand <frowand.list@gmail.com>,
-	<linux-kernel@vger.kernel.org>, Nicolas Palix <nicolas.palix@imag.fr>,
-	"Sumera Priyadarsini" <sylphrenadin@gmail.com>, Len Brown <lenb@kernel.org>,
-	<linux-acpi@vger.kernel.org>, Andy Shevchenko
-	<andriy.shevchenko@linux.intel.com>, Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>, Nuno =?ISO-8859-1?Q?S=E1?= <nuno.sa@analog.com>
-Subject: Re: [RFC PATCH 0/5] of: automate of_node_put() - new approach to
- loops.
-Message-ID: <20240205092726.00002eb0@Huawei.com>
-In-Reply-To: <alpine.DEB.2.22.394.2402042224280.3137@hadrien>
-References: <20240128160542.178315-1-jic23@kernel.org>
-	<alpine.DEB.2.22.394.2401281903550.3119@hadrien>
-	<20240129114218.00003c34@Huawei.com>
-	<alpine.DEB.2.22.394.2401291455430.8649@hadrien>
-	<20240129195227.3c3adae1@jic23-huawei>
-	<alpine.DEB.2.22.394.2401292120260.32795@hadrien>
-	<20240130093854.00000acc@Huawei.com>
-	<alpine.DEB.2.22.394.2401312234250.3245@hadrien>
-	<20240204210804.0febf2fc@jic23-huawei>
-	<alpine.DEB.2.22.394.2402042224280.3137@hadrien>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1707125336; c=relaxed/simple;
+	bh=g9H0mf+7TI03/TpL+Efn6cRRTCfqLHMm2aPY9t9yYj0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uf2GbgbNQn7FV06m7YcVkHFzxCXpOmGj6whxpquBhcAkRY42WTPk24y70OWbyWiOx4Y7aplZxPUNRDkMDLe0PWC1Wm+ndmHpdKCW63OkYNzab/Z/Fjix7hJ8T10Z5gj4C4bD1p87OvpCtRGsZzCY68kM0QAGOWc4rihgUS5LfyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=L/NzhZ1y; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1707125309; x=1707730109; i=deller@gmx.de;
+	bh=g9H0mf+7TI03/TpL+Efn6cRRTCfqLHMm2aPY9t9yYj0=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=L/NzhZ1yJY2gCugREzTjdYqWW2YHSKra6gwIj/qEfmkx9KnGG42L6SMBinBH5y4y
+	 2glUiMwJgTuzS8tAeyvWrDXuET3CT/Rb5Tiokm+uoR4f7UbYxe7fQJLdb16PqMLnX
+	 bv71YZ+sL1MgYKAWutWXMXAUNGIxIEkpA0/ZRR9Wa7e8IWr4FPnkJGdNs1F9Z51Kk
+	 Uil0w9BTKF3HyEQHb3LJoHK9n23r6qluduOItDkil3w+SYUIaWTCzAsHGta8GR4zD
+	 cJwny177Qtg/Q4z+m8LpbE0diz1sMzH/hbMvqyadNRBJoQvyYwnVvO3BIhij2lcFH
+	 J4z9g7JCwaczPzCEjw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.55] ([94.134.145.139]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MN5if-1rGm081kN3-00J0kv; Mon, 05
+ Feb 2024 10:28:29 +0100
+Message-ID: <929506cf-a1a7-436e-938d-4e5eff0181e4@gmx.de>
+Date: Mon, 5 Feb 2024 10:28:27 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+User-Agent: Mozilla Thunderbird
+Subject: Re: Kunit test failures with cpumask tests on parisc
+Content-Language: en-US
+To: Guenter Roeck <linux@roeck-us.net>, Yury Norov <yury.norov@gmail.com>
+Cc: James.Bottomley@hansenpartnership.com, linux-parisc@vger.kernel.org,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>, linux-kernel@vger.kernel.org
+References: <e6f0ab85-5bbe-41c1-8976-5ba00044998c@roeck-us.net>
+From: Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ xsFNBF3Ia3MBEAD3nmWzMgQByYAWnb9cNqspnkb2GLVKzhoH2QD4eRpyDLA/3smlClbeKkWT
+ HLnjgkbPFDmcmCz5V0Wv1mKYRClAHPCIBIJgyICqqUZo2qGmKstUx3pFAiztlXBANpRECgwJ
+ r+8w6mkccOM9GhoPU0vMaD/UVJcJQzvrxVHO8EHS36aUkjKd6cOpdVbCt3qx8cEhCmaFEO6u
+ CL+k5AZQoABbFQEBocZE1/lSYzaHkcHrjn4cQjc3CffXnUVYwlo8EYOtAHgMDC39s9a7S90L
+ 69l6G73lYBD/Br5lnDPlG6dKfGFZZpQ1h8/x+Qz366Ojfq9MuuRJg7ZQpe6foiOtqwKym/zV
+ dVvSdOOc5sHSpfwu5+BVAAyBd6hw4NddlAQUjHSRs3zJ9OfrEx2d3mIfXZ7+pMhZ7qX0Axlq
+ Lq+B5cfLpzkPAgKn11tfXFxP+hcPHIts0bnDz4EEp+HraW+oRCH2m57Y9zhcJTOJaLw4YpTY
+ GRUlF076vZ2Hz/xMEvIJddRGId7UXZgH9a32NDf+BUjWEZvFt1wFSW1r7zb7oGCwZMy2LI/G
+ aHQv/N0NeFMd28z+deyxd0k1CGefHJuJcOJDVtcE1rGQ43aDhWSpXvXKDj42vFD2We6uIo9D
+ 1VNre2+uAxFzqqf026H6cH8hin9Vnx7p3uq3Dka/Y/qmRFnKVQARAQABzRxIZWxnZSBEZWxs
+ ZXIgPGRlbGxlckBnbXguZGU+wsGRBBMBCAA7AhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheA
+ FiEERUSCKCzZENvvPSX4Pl89BKeiRgMFAl3J1zsCGQEACgkQPl89BKeiRgNK7xAAg6kJTPje
+ uBm9PJTUxXaoaLJFXbYdSPfXhqX/BI9Xi2VzhwC2nSmizdFbeobQBTtRIz5LPhjk95t11q0s
+ uP5htzNISPpwxiYZGKrNnXfcPlziI2bUtlz4ke34cLK6MIl1kbS0/kJBxhiXyvyTWk2JmkMi
+ REjR84lCMAoJd1OM9XGFOg94BT5aLlEKFcld9qj7B4UFpma8RbRUpUWdo0omAEgrnhaKJwV8
+ qt0ULaF/kyP5qbI8iA2PAvIjq73dA4LNKdMFPG7Rw8yITQ1Vi0DlDgDT2RLvKxEQC0o3C6O4
+ iQq7qamsThLK0JSDRdLDnq6Phv+Yahd7sDMYuk3gIdoyczRkXzncWAYq7XTWl7nZYBVXG1D8
+ gkdclsnHzEKpTQIzn/rGyZshsjL4pxVUIpw/vdfx8oNRLKj7iduf11g2kFP71e9v2PP94ik3
+ Xi9oszP+fP770J0B8QM8w745BrcQm41SsILjArK+5mMHrYhM4ZFN7aipK3UXDNs3vjN+t0zi
+ qErzlrxXtsX4J6nqjs/mF9frVkpv7OTAzj7pjFHv0Bu8pRm4AyW6Y5/H6jOup6nkJdP/AFDu
+ 5ImdlA0jhr3iLk9s9WnjBUHyMYu+HD7qR3yhX6uWxg2oB2FWVMRLXbPEt2hRGq09rVQS7DBy
+ dbZgPwou7pD8MTfQhGmDJFKm2jvOwU0EXchrcwEQAOsDQjdtPeaRt8EP2pc8tG+g9eiiX9Sh
+ rX87SLSeKF6uHpEJ3VbhafIU6A7hy7RcIJnQz0hEUdXjH774B8YD3JKnAtfAyuIU2/rOGa/v
+ UN4BY6U6TVIOv9piVQByBthGQh4YHhePSKtPzK9Pv/6rd8H3IWnJK/dXiUDQllkedrENXrZp
+ eLUjhyp94ooo9XqRl44YqlsrSUh+BzW7wqwfmu26UjmAzIZYVCPCq5IjD96QrhLf6naY6En3
+ ++tqCAWPkqKvWfRdXPOz4GK08uhcBp3jZHTVkcbo5qahVpv8Y8mzOvSIAxnIjb+cklVxjyY9
+ dVlrhfKiK5L+zA2fWUreVBqLs1SjfHm5OGuQ2qqzVcMYJGH/uisJn22VXB1c48yYyGv2HUN5
+ lC1JHQUV9734I5cczA2Gfo27nTHy3zANj4hy+s/q1adzvn7hMokU7OehwKrNXafFfwWVK3OG
+ 1dSjWtgIv5KJi1XZk5TV6JlPZSqj4D8pUwIx3KSp0cD7xTEZATRfc47Yc+cyKcXG034tNEAc
+ xZNTR1kMi9njdxc1wzM9T6pspTtA0vuD3ee94Dg+nDrH1As24uwfFLguiILPzpl0kLaPYYgB
+ wumlL2nGcB6RVRRFMiAS5uOTEk+sJ/tRiQwO3K8vmaECaNJRfJC7weH+jww1Dzo0f1TP6rUa
+ fTBRABEBAAHCwXYEGAEIACAWIQRFRIIoLNkQ2+89Jfg+Xz0Ep6JGAwUCXchrcwIbDAAKCRA+
+ Xz0Ep6JGAxtdEAC54NQMBwjUNqBNCMsh6WrwQwbg9tkJw718QHPw43gKFSxFIYzdBzD/YMPH
+ l+2fFiefvmI4uNDjlyCITGSM+T6b8cA7YAKvZhzJyJSS7pRzsIKGjhk7zADL1+PJei9p9idy
+ RbmFKo0dAL+ac0t/EZULHGPuIiavWLgwYLVoUEBwz86ZtEtVmDmEsj8ryWw75ZIarNDhV74s
+ BdM2ffUJk3+vWe25BPcJiaZkTuFt+xt2CdbvpZv3IPrEkp9GAKof2hHdFCRKMtgxBo8Kao6p
+ Ws/Vv68FusAi94ySuZT3fp1xGWWf5+1jX4ylC//w0Rj85QihTpA2MylORUNFvH0MRJx4mlFk
+ XN6G+5jIIJhG46LUucQ28+VyEDNcGL3tarnkw8ngEhAbnvMJ2RTx8vGh7PssKaGzAUmNNZiG
+ MB4mPKqvDZ02j1wp7vthQcOEg08z1+XHXb8ZZKST7yTVa5P89JymGE8CBGdQaAXnqYK3/yWf
+ FwRDcGV6nxanxZGKEkSHHOm8jHwvQWvPP73pvuPBEPtKGLzbgd7OOcGZWtq2hNC6cRtsRdDx
+ 4TAGMCz4j238m+2mdbdhRh3iBnWT5yPFfnv/2IjFAk+sdix1Mrr+LIDF++kiekeq0yUpDdc4
+ ExBy2xf6dd+tuFFBp3/VDN4U0UfG4QJ2fg19zE5Z8dS4jGIbLg==
+In-Reply-To: <e6f0ab85-5bbe-41c1-8976-5ba00044998c@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:JymWDCErreo80xVCyd8jlE2xAcHkgqBcL5N5nOlm5og7wHnxL7i
+ 4hcGdOB3iYQdSh4NF3Aa1OiMb6paswhX7vxPswVABh6ynP9LrqGiq4rNgJHGGa5I+Wac4hm
+ QWInyf+RCKiIbrrn4rZEdq8sROeXLxS7PKz5BSn1X1svL2xVDoL/wpZlS4wFgA+7TltytSW
+ fayf+Y8QlC7dINRfbVSYg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:jSmwCNqrguw=;n4OxuDS09MLbyxqOiWCyy+nDdGK
+ aPUU43ZXyjOgLHJUIzfAPgpOZusXNYEcos836sd/UNOwFrfFnvdjiNsiRULxXfKE0CsOxio+s
+ EHzgZ0mN2dLYdZ9uJXY2pxgaXUypG3WqlGT7Umuu3ioe1iEbPInABUjiEq4lBB9Rj3Ro8kWlB
+ 8tavS7RhMulOQoHOBJiFlM8X4+Vyw4lJUjSpgK2fRTdp9UeaxcPymfUxwfDfZjeXaTDYQKT/M
+ axAi0gI66v9hT5j2v9lfrR8OWU+Pxy6XaRG1H0gLDDF9YFOtHFk+h1pgnUogsymhPAwoiBPkl
+ deRrogeQziDarIdO++LNAw2feWx6hE8AnGeEhV7ryV2Ut/v+tiSI4355NjViLBwoiUVW8XDkt
+ tPkqdFMHyrZ0MmjO3DVUiWfjm/bF/onhhb8lypLcFsDkZpAQQCUk91DNE+g7m7KfIZ8IqWMeq
+ ULNMIg0gJJVAE8UqEMZUk/ck3U07SKehiyFMYgI05mjINLjqOyUUwgRdthJ5kxZJL8EHTowBS
+ 6IOl9bQww4QULUoskvbngtFQNfbwRU3GBmbwOEBKNoSqnqkvtR+fACUneMG9D5ug05CtYUh8T
+ ggUIIm+eMc65ybYkP4OXc/yshO5Wx+ovu2oMO5NzG4lXE4TxuQ2o6U1wnWrd2JGQUSTtOwDtV
+ aarsbhPyA9UPYgxeSCSznkRyztOipak8FTxZGb7ZzXegbsLIy7e4JeGJQC80Gn+CUkH+5L1Wq
+ krpK3YVa2jkc6nbJbdZV5TPfn0GC7hbWchKE1IUTvmpVr2Dr67MZoIEEWz5oNfWV3SXcjLzsM
+ GtGZAO3CACowN1uwQyVmHxiugdko9Cp8dGRwBohCWXumbP2/++O5cfF1TKRALkDAcI/XsYbL4
+ CCZfvSR8ltSuFbg==
 
-On Sun, 4 Feb 2024 22:34:25 +0100 (CET)
-Julia Lawall <julia.lawall@inria.fr> wrote:
+On 2/5/24 07:53, Guenter Roeck wrote:
+> when running cpumask Kunit tests on parisc/parisc64 in qemu,
+> I get the following errors.
+>
+>        KTAP version 1
+>        # Subtest: cpumask
+>        # module: cpumask_kunit
+>        1..6
+>        # test_cpumask_weight: EXPECTATION FAILED at lib/cpumask_kunit.c:=
+68
+>        Expected nr_cpu_ids =3D=3D cpumask_weight(((const struct cpumask =
+*)&__cpu_possible_mask)), but
+>            nr_cpu_ids =3D=3D 16 (0x10)
+>            cpumask_weight(((const struct cpumask *)&__cpu_possible_mask)=
+) =3D=3D 1 (0x1)
+>    cpu_possible_mask contains CPUs 0
+>        not ok 1 test_cpumask_weight
+>        # test_cpumask_first: EXPECTATION FAILED at lib/cpumask_kunit.c:7=
+9
+>        Expected nr_cpu_ids <=3D cpumask_first_zero(((const struct cpumas=
+k *)&__cpu_possible_mask)), but
+>            nr_cpu_ids =3D=3D 16 (0x10)
+>            cpumask_first_zero(((const struct cpumask *)&__cpu_possible_m=
+ask)) =3D=3D 1 (0x1)
+>    cpu_possible_mask contains CPUs 0
+>        not ok 2 test_cpumask_first
+>        # test_cpumask_last: EXPECTATION FAILED at lib/cpumask_kunit.c:87
+>        Expected nr_cpu_ids - 1 =3D=3D cpumask_last(((const struct cpumas=
+k *)&__cpu_possible_mask)), but
+>            nr_cpu_ids - 1 =3D=3D 15 (0xf)
+>            cpumask_last(((const struct cpumask *)&__cpu_possible_mask)) =
+=3D=3D 0 (0x0)
+>    cpu_possible_mask contains CPUs 0
+>        not ok 3 test_cpumask_last
+>        # test_cpumask_next: EXPECTATION FAILED at lib/cpumask_kunit.c:94
+>        Expected nr_cpu_ids <=3D cpumask_next_zero(-1, ((const struct cpu=
+mask *)&__cpu_possible_mask)), but
+>            nr_cpu_ids =3D=3D 16 (0x10)
+>            cpumask_next_zero(-1, ((const struct cpumask *)&__cpu_possibl=
+e_mask)) =3D=3D 1 (0x1)
+>    cpu_possible_mask contains CPUs 0
+>        not ok 4 test_cpumask_next
+>        ok 5 test_cpumask_iterators
+>        ok 6 test_cpumask_iterators_builtin
+>    # cpumask: pass:2 fail:4 skip:0 total:6
+>    # Totals: pass:2 fail:4 skip:0 total:6
+>    not ok 5 cpumask
+>
+> It appears that parisc sets __cpu_possible_mask to the number of online =
+CPUs,
+> which is limited in qemu and doesn't match CONFIG_NR_CPUS. Is this a pro=
+blem
+> with the unit test or with the parisc architecture, or does the unit tes=
+t
+> simply not apply for parisc ?
 
-> On Sun, 4 Feb 2024, Jonathan Cameron wrote:
-> 
-> > On Wed, 31 Jan 2024 22:38:21 +0100 (CET)
-> > Julia Lawall <julia.lawall@inria.fr> wrote:
-> >  
-> > > Here are some loop cases.  The semantic patch is as follows:
-> > >
-> > > #spatch --allow-inconsistent-paths
-> > >
-> > > @@
-> > > expression node;
-> > > identifier child;
-> > > symbol drop_me;
-> > > iterator name for_each_child_of_node;
-> > > @@
-> > >
-> > > for_each_child_of_node(node,child) {
-> > >   ...
-> > > + of_node_put(drop_me, child);
-> > > }
-> > >
-> > > @@
-> > > expression node;
-> > > identifier child;
-> > > symbol drop_me;
-> > > iterator name for_each_child_of_node, for_each_child_of_node_scoped;
-> > > identifier L;
-> > > @@
-> > >
-> > > - struct device_node *child;
-> > >  ... when != child
-> > > -for_each_child_of_node
-> > > +for_each_child_of_node_scoped
-> > >   (node,child) {
-> > >    ... when strict
-> > > (
-> > > -   {
-> > > -   of_node_put(child);
-> > >     return ...;
-> > > -   }
-> > > |
-> > > -   {
-> > > -   of_node_put(child);
-> > >     goto L;
-> > > -   }
-> > > |
-> > > -   {
-> > > -   of_node_put(child);
-> > >     break;
-> > > -   }
-> > > |
-> > >     continue;
-> > > |
-> > > -   of_node_put(child);
-> > >     return ...;
-> > > |
-> > > -   of_node_put(child);
-> > >     break;
-> > > |
-> > > -  of_node_put(drop_me, child);
-> > > )
-> > > }
-> > >  ... when != child
-> > >
-> > > @@
-> > > expression child;
-> > > @@
-> > >
-> > > - of_node_put(drop_me, child);
-> > >
-> > > -------------------------------
-> > >
-> > > This is quite conservative, in that it requires the only use of the child
-> > > variable to be in a single for_each_child_of_node loop at top level.
-> > >
-> > > The drop_me thing is a hack to be able to refer to the bottom of the loop
-> > > in the same way as of_node_puts in front of returns etc are referenced.
-> > >
-> > > This works fine when multiple device_node variables are declared at once.
-> > >
-> > > The result is below.
-> > >  
-> > Very nice!
-> >
-> > One issue is that Rob is keen that we also take this opportunity to
-> > evaluate if the _available_ form is the more appropriate one.
-> >
-> > Given that access either no defined "status" in the child node or
-> > it being set to "okay" it is what should be used in the vast majority of
-> > cases.
-> >
-> > For reference, the property.h version only uses the available form.
-> >
-> > So I think we'll need some hand checking of each case but for vast majority
-> > it will be very straight forward.  
-> 
-> I'm not sure to follow this.  If the check is straightforward, perhaps it
-> can be integrated into the rule?  But I'm not sure what to check for.
+Thank you for finding and reporting this!
+It's a bug (or a misunderstanding) in the parisc kernel.
+Reverting commit 0921244f6f4f ("parisc: Only list existing CPUs in cpu_pos=
+sible_mask")
+fixes the KUnit test.
 
-I don't think it will be easy.  Perhaps Rob can help on when the
-_available_ case is the wrong one?  Is this ever a characteristic of
-the binding. I guess in some cases it might be a characteristic of
-the binding?
+Furthermore the revert fixes the issue that CPU hot-unplugging doesn't
+work and which I just was starting to debug:
+https://lore.kernel.org/lkml/Zb0mbHlIud_bqftx@slm.duckdns.org/t/
 
-> 
-> > One question is whether it is worth the scoped loops in cases
-> > where there isn't a patch where we break out of or return from the loop
-> > before it finishes.  Do we put them in as a defensive measure?  
-> 
-> I wondered about this also.  My thought was that it is better to be
-> uniform.  And maybe a break would be added later.
-
-Rob and other DT folk, what do you think on this?
-Shall we convert cases where there isn't currently a path in which the
-autocleanup receives anything other than a NULL.
-
-i.e.
-
-for_each_available_of_child_node_scoped(x, y) {
-	no breaks or returns form in here.
-}
-
-on basis it's not 'wrong' and is defensive against future changes that
-would require manual cleanup or the scoped for loop.
-
-> 
-> > Sometimes we are going to want to combine this refactor with
-> > some of the ones your previous script caught in a single patch given
-> > it's roughly the same sort of change.  
-> 
-> Agreed.  Some blocks of code should indeed become much simpler.
-> 
-> >
-> >  
-> > > julia
-> > >
-> > > diff -u -p a/drivers/of/unittest.c b/drivers/of/unittest.c
-> > > --- a/drivers/of/unittest.c
-> > > +++ b/drivers/of/unittest.c
-> > > @@ -2789,7 +2789,7 @@ static int unittest_i2c_mux_probe(struct
-> > >  	int i, nchans;
-> > >  	struct device *dev = &client->dev;
-> > >  	struct i2c_adapter *adap = client->adapter;
-> > > -	struct device_node *np = client->dev.of_node, *child;
-> > > +	struct device_node *np = client->dev.of_node;
-> > >  	struct i2c_mux_core *muxc;
-> > >  	u32 reg, max_reg;
-> > >
-> > > @@ -2801,7 +2801,7 @@ static int unittest_i2c_mux_probe(struct
-> > >  	}
-> > >
-> > >  	max_reg = (u32)-1;
-> > > -	for_each_child_of_node(np, child) {
-> > > +	for_each_child_of_node_scoped(np, child) {  
-> >
-> > This was a case I left alone in the original series because the auto
-> > cleanup doesn't end up doing anything in any paths.
-> >  
-> > >  		if (of_property_read_u32(child, "reg", &reg))
-> > >  			continue;
-> > >  		if (max_reg == (u32)-1 || reg > max_reg)
-> > >  
-> >
-> >
-> >  
-> > > diff -u -p a/drivers/regulator/scmi-regulator.c b/drivers/regulator/scmi-regulator.c
-> > > --- a/drivers/regulator/scmi-regulator.c
-> > > +++ b/drivers/regulator/scmi-regulator.c
-> > > @@ -297,7 +297,7 @@ static int process_scmi_regulator_of_nod
-> > >  static int scmi_regulator_probe(struct scmi_device *sdev)
-> > >  {
-> > >  	int d, ret, num_doms;
-> > > -	struct device_node *np, *child;
-> > > +	struct device_node *np;
-> > >  	const struct scmi_handle *handle = sdev->handle;
-> > >  	struct scmi_regulator_info *rinfo;
-> > >  	struct scmi_protocol_handle *ph;
-> > > @@ -341,13 +341,11 @@ static int scmi_regulator_probe(struct s
-> > >  	 */
-> > >  	of_node_get(handle->dev->of_node);
-> > >  	np = of_find_node_by_name(handle->dev->of_node, "regulators");
-> > > -	for_each_child_of_node(np, child) {
-> > > +	for_each_child_of_node_scoped(np, child) {
-> > >  		ret = process_scmi_regulator_of_node(sdev, ph, child, rinfo);
-> > >  		/* abort on any mem issue */
-> > > -		if (ret == -ENOMEM) {
-> > > -			of_node_put(child);
-> > > +		if (ret == -ENOMEM)
-> > >  			return ret;
-> > > -		}  
-> > Current code leaks np in this path :(
-> >  
-> > >  	}
-> > >  	of_node_put(np);
-> > >  	/*  
-> >
-> >  
-> > > diff -u -p a/drivers/crypto/nx/nx-common-powernv.c b/drivers/crypto/nx/nx-common-powernv.c
-> > > --- a/drivers/crypto/nx/nx-common-powernv.c
-> > > +++ b/drivers/crypto/nx/nx-common-powernv.c
-> > > @@ -907,7 +907,6 @@ static int __init nx_powernv_probe_vas(s
-> > >  {
-> > >  	int chip_id, vasid, ret = 0;
-> > >  	int ct_842 = 0, ct_gzip = 0;
-> > > -	struct device_node *dn;
-> > >
-> > >  	chip_id = of_get_ibm_chip_id(pn);
-> > >  	if (chip_id < 0) {
-> > > @@ -921,7 +920,7 @@ static int __init nx_powernv_probe_vas(s
-> > >  		return -EINVAL;
-> > >  	}
-> > >
-> > > -	for_each_child_of_node(pn, dn) {
-> > > +	for_each_child_of_node_scoped(pn, dn) {
-> > >  		ret = find_nx_device_tree(dn, chip_id, vasid, NX_CT_842,
-> > >  					"ibm,p9-nx-842", &ct_842);
-> > >
-> > > @@ -929,10 +928,8 @@ static int __init nx_powernv_probe_vas(s
-> > >  			ret = find_nx_device_tree(dn, chip_id, vasid,
-> > >  				NX_CT_GZIP, "ibm,p9-nx-gzip", &ct_gzip);  
-> > The handling in here is odd (buggy?). There is an of_node_put()
-> > in the failure path inside find_nx_device_tree() as well as out here.  
-> > >
-> > > -		if (ret) {
-> > > -			of_node_put(dn);
-> > > +		if (ret)
-> > >  			return ret;
-> > > -		}
-> > >  	}
-> > >
-> > >  	if (!ct_842 || !ct_gzip) {  
-> >
-> > I've glanced at a few of the others and some of them are hard.
-> > This refactor is fine, but the other device_node handling often
-> > is complex and I think fragile.  So definitely room for improvement!  
-> 
-> I agree with all the above comments.
-> 
-> julia
-
+Helge
 
