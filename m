@@ -1,106 +1,226 @@
-Return-Path: <linux-kernel+bounces-52602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD56C849A46
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:32:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A8D8849A51
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:32:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B38F11C22C83
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:32:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9B3AB268AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:32:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22A811CA96;
-	Mon,  5 Feb 2024 12:30:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE9241C290;
+	Mon,  5 Feb 2024 12:32:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="A2ZRvuIa"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CqT8Xep8"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B31541CA89
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 12:30:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35FF31C286;
+	Mon,  5 Feb 2024 12:31:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707136258; cv=none; b=M/HoyL7/Z5dbFZHHjvlv4p3HOnRG9KVFYG9PnEN8kKl6TLWSWI72Q1DxfarbLh3M9wHWbC8YOScvQ7H2LHUCd3aRyZUq80DRWjSCnwR0F9Q1q6+JNHfaMglg0Y7yu+MhrnoqEJs2mPyILIXBCaJvbc0gW8M4qPc+LcGXYvgZ9oM=
+	t=1707136320; cv=none; b=g1Ymuv4GxzwmojoNsYMX8GxuwRge3MBBeqvYsTSqS4Slke6LvJJxLtDVpWWTxcKJoBZSzhc9JxvUXXGU3Mw4HJhPN7+xlsPS3BciQh6lUBtdzUZHHML72uF7ZyMUuiFzC6ZTzdLiy/AMBEsucOEpZQwqObuB4G1hXYQ8r00mVag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707136258; c=relaxed/simple;
-	bh=wBZ1r/EP4RsD3QE48qCeadh8TeRK1wREWtvuArXwM+M=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=X0+M8DwUcNz9A2DqYvegrmnO41bUaD7fl6NfnfuKVfcG5pmTaUa+NYnhTBaDN6W/213lJWM4lgqEBnAAwZMRlBBybzYZ/TC0xkfZcbmEKxcnk+Dfn5esPybW2G1hnJMmJ4SSCGgm++qBculfYtwuujjISs3XENx0veXBYKC+SVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=A2ZRvuIa; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40fdd65a9bdso4157845e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 04:30:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707136254; x=1707741054; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MHcyA/WQ3BJ94WzdMaFW3smTjrOpiVzn+0jSFSepZRI=;
-        b=A2ZRvuIarFyrr8/JQESFBwejWaj2p0ZEiV9uAu3yJbACuQU9D5T/QJtd+AvxgSgCyi
-         JqpMPCspuOuSTl567+9fNJfNhBEYznG65ZXMf6uBJG7XauPHVjGuhv726I0Y8HRBLckT
-         xnzqydR7zk7R7WBDJZIQp6kultzocGjkU9XS6goBkwEdd2l9OLvGgletKUwK747gY8mq
-         I93iQWFeyoUWPH51QLilLGi3xoTw1fJkmbCzHHOUMxLp/UyS0772vF1JFgsM3ybPLnjS
-         0cJ6QYT1FdcViDrxTwYB+xPq07M1MtMSXPF09Cs+I418vvN7uuFZoDJ/OO6tS/Lv1FMR
-         Mtlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707136254; x=1707741054;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MHcyA/WQ3BJ94WzdMaFW3smTjrOpiVzn+0jSFSepZRI=;
-        b=FgkYaOhu4LSNDpuHpPVWvtMb5VVQBARdlT5Irxy+FaYwK5XsuxDnN9UvzIXVSXhUDd
-         jpIek8uWSQrAjH11BsqepTVoUynD+FR3kIYkuPOk7nSVK58B1YlCOE9hl8WIKcjacl+P
-         R7otcqd/CzWGJa2hNZI5QujFKpM7lEXHemYVDEasW05Y9BbsB5ZtLcWBAAKpBxEnBuVV
-         ZLeo1pdl1aXnzcRaQE4+zBqw5+nj4LK5fqV1g3rV/iMs5pXf33ul4SaKWY8MXbjudjsC
-         BgLhSdoFF4IVsdaXgHG0SHPR/6jQTDqJA96/mlrcNf2uwAU1fpHXJFZP7HO/9DGmkhDf
-         tGxA==
-X-Gm-Message-State: AOJu0YxhDo7qz1TTx3BA3hq+kVuuRhoZ7Q+/5KkeqjI7HjzpJdXaFCd4
-	42Pkbv650wO/t+Fw7WeZxiH48Fdti/zDNqB+fFIlApEGDSCmK23jvVFeS4S5mdJDo3nSNVZKNnA
-	kFtw=
-X-Google-Smtp-Source: AGHT+IHzKST7xLRho9rmBY5eNj+sfYwwKlr96YfPNF+fgGZSlWaYJj4E02KzDIVEi+8tEfIeYvujmQ==
-X-Received: by 2002:a05:600c:3541:b0:40f:dd09:2854 with SMTP id i1-20020a05600c354100b0040fdd092854mr853942wmq.23.1707136254613;
-        Mon, 05 Feb 2024 04:30:54 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVXzZ0V5GMGeIbrcOOhkn6yRU2NEDVKVWOxclyZeafrcO8XQ8Bs26MhDy+cbdtBjvbb/FJ6zAfvG1Cz1YtihdSppTxcKaH5OZElAQ==
-Received: from [127.0.1.1] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id l30-20020a05600c1d1e00b0040eee852a3dsm8471905wms.10.2024.02.05.04.30.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 04:30:54 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-In-Reply-To: <20240204-bus_cleanup-w1-v1-1-a0f4c84d7db3@marliere.net>
-References: <20240204-bus_cleanup-w1-v1-1-a0f4c84d7db3@marliere.net>
-Subject: Re: [PATCH] w1: make w1_bus_type const
-Message-Id: <170713625314.36753.2151896155454565907.b4-ty@linaro.org>
-Date: Mon, 05 Feb 2024 13:30:53 +0100
+	s=arc-20240116; t=1707136320; c=relaxed/simple;
+	bh=2crsEkek5NKe6zZQsqKsTQtcHeyKPBSX29yxcRRHVMw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GPwNX30FauM8wSClRsRhwSkXV+dhK/dNx0I5gJS/sD83306nIU7Xko3GdnO73Dw8osObA0dDA519CmMQpSZLciQ16GUbd8yQHU9CyiEIh+Xx3zYIly1ElYaIADSmt93urjoXfIH+uSnak6D3Jmk7ZiDErfObNxp/49kQYkgM1A0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CqT8Xep8; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707136318; x=1738672318;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2crsEkek5NKe6zZQsqKsTQtcHeyKPBSX29yxcRRHVMw=;
+  b=CqT8Xep89N15anMZJDRkRK07Up8zn7UfHb3pbkwic7RyJOcuW4lCm11a
+   zrhtg90FAIcB4DW07b3wa6/zZpcaVeb7pD8UV1s5STtJo9n3zQXZQflLY
+   4ObOXVIVUNQAHo2d4IrJYXRhlHzsPCffw9I9Y4Ev5v4MlK7yd1djNPCpJ
+   zr+7EEvqU6+l2KGe4/VXNMJooHdK5vDB/Kn7Es5Ujjh6hfSBl24RCpchJ
+   VIQxTgplPhGswW//8hsh4PQ63aOWCJ6QdjcpGpbN8LLCbKWcULOBc9Yjy
+   Bbcj3OLZSk4xZ1+Kmzu+30hYWbI1GuhYIJeHA41OvOtVI8H9Go3O1/IC1
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="11882533"
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="11882533"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 04:31:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="823851387"
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="823851387"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 04:31:53 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rWy8b-0000000244m-0Apm;
+	Mon, 05 Feb 2024 14:31:49 +0200
+Date: Mon, 5 Feb 2024 14:31:48 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Wolfram Sang <wsa@the-dreams.de>, linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v2 21/23] gpio: protect the pointer to gpio_chip in
+ gpio_device with SRCU
+Message-ID: <ZcDVNA6Id7Bmckt0@smile.fi.intel.com>
+References: <20240205093418.39755-1-brgl@bgdev.pl>
+ <20240205093418.39755-22-brgl@bgdev.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240205093418.39755-22-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-
-On Sun, 04 Feb 2024 17:55:22 -0300, Ricardo B. Marliere wrote:
-> Now that the driver core can properly handle constant struct bus_type,
-> move the w1_bus_type variable to be a constant structure as well,
-> placing it into read-only memory which can not be modified at runtime.
+On Mon, Feb 05, 2024 at 10:34:16AM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
+> Ensure we cannot crash if the GPIO device gets unregistered (and the
+> chip pointer set to NULL) during any of the API calls.
 > 
+> To that end: wait for all users of gdev->chip to exit their read-only
+> SRCU critical sections in gpiochip_remove().
 
-Applied, thanks!
+> For brevity: add a guard class which can be instantiated at the top of
+> every function requiring read-only access to the chip pointer and use it
+> in all API calls taking a GPIO descriptor as argument. In places where
+> we only deal with the GPIO device - use regular guard() helpers and
+> rcu_dereference() for chip access. Do the same in API calls taking a
+> const pointer to gpio_desc.
 
-[1/1] w1: make w1_bus_type const
-      https://git.kernel.org/krzk/linux-w1/c/8650843ca42a7fd8255f4dcddbaa20393e01fe11
+..
 
-Best regards,
+>  static ssize_t base_show(struct device *dev,
+>  			       struct device_attribute *attr, char *buf)
+>  {
+> -	const struct gpio_device *gdev = dev_get_drvdata(dev);
+> +	struct gpio_device *gdev = dev_get_drvdata(dev);
+> +	struct gpio_chip *gc;
+>  
+> -	return sysfs_emit(buf, "%d\n", gdev->chip->base);
+> +	guard(srcu)(&gdev->srcu);
+> +
+> +	gc = rcu_dereference(gdev->chip);
+> +	if (!gc)
+> +		return -ENODEV;
+> +
+> +	return sysfs_emit(buf, "%d\n", gc->base);
+
+Similar Q as below.
+
+>  }
+
+..
+
+>  static ssize_t label_show(struct device *dev,
+>  			       struct device_attribute *attr, char *buf)
+>  {
+> -	const struct gpio_device *gdev = dev_get_drvdata(dev);
+> +	struct gpio_device *gdev = dev_get_drvdata(dev);
+> +	struct gpio_chip *gc;
+>  
+> -	return sysfs_emit(buf, "%s\n", gdev->chip->label ?: "");
+> +	guard(srcu)(&gdev->srcu);
+> +
+> +	gc = rcu_dereference(gdev->chip);
+> +	if (!gc)
+> +		return -ENODEV;
+> +
+> +	return sysfs_emit(buf, "%s\n", gc->label ?: "");
+
+Why do you need gc label here and not gdev? In other code you switched over (in
+a patch before this in the series).
+
+>  }
+
+>  static ssize_t ngpio_show(struct device *dev,
+>  			       struct device_attribute *attr, char *buf)
+>  {
+> -	const struct gpio_device *gdev = dev_get_drvdata(dev);
+> +	struct gpio_device *gdev = dev_get_drvdata(dev);
+> +	struct gpio_chip *gc;
+>  
+> -	return sysfs_emit(buf, "%u\n", gdev->chip->ngpio);
+> +	guard(srcu)(&gdev->srcu);
+> +
+> +	gc = rcu_dereference(gdev->chip);
+> +	if (!gc)
+> +		return -ENODEV;
+> +
+> +	return sysfs_emit(buf, "%u\n", gc->ngpio);
+
+Ditto.
+
+>  }
+
+..
+
+>  int gpiod_get_direction(struct gpio_desc *desc)
+>  {
+> -	struct gpio_chip *gc;
+>  	unsigned long flags;
+>  	unsigned int offset;
+>  	int ret;
+>  
+> -	gc = gpiod_to_chip(desc);
+> +	if (!desc)
+> +		/* Sane default is INPUT. */
+> +		return 1;
+
+Hmm... I can't imagine how this value may anyhow be used / useful.
+
+> +	if (IS_ERR(desc))
+> +		return -EINVAL;
+
+With above said, can't we use one of VALIDATE_DESC*() macro here?
+
+..
+
+>  	list_for_each_entry_srcu(gdev, &gpio_devices, list,
+>  				 srcu_read_lock_held(&gpio_devices_srcu)) {
+
+> +	list_for_each_entry_srcu(gdev, &gpio_devices, list,
+> +				 srcu_read_lock_held(&gpio_devices_srcu)) {
+
+Seems like a candidate for
+
+#define gpio_for_each_device(...) ...
+
+..
+
+>  	VALIDATE_DESC(desc);
+>  
+> -	gc = desc->gdev->chip;
+> -	if (!gc->en_hw_timestamp) {
+> +	CLASS(gpio_chip_guard, guard)(desc);
+> +	if (!guard.gc)
+> +		return -ENODEV;
+
+
+Not sure if it would be good to have a respective VALIDATE_DESC_GUARDED()
+or so. At least it may deduplicate a few cases.
+
+..
+
+> +	/* FIXME Cannot use gpio_chip_guard due to const desc. */
+
+gpio_chip_guard()
+
 -- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+With Best Regards,
+Andy Shevchenko
+
 
 
