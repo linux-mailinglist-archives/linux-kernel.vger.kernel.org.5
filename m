@@ -1,84 +1,73 @@
-Return-Path: <linux-kernel+bounces-53873-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53874-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43D0984A77F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:34:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAE2684A781
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:35:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 477C81C27264
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:34:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69ADD28D548
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:35:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7096683CBB;
-	Mon,  5 Feb 2024 19:53:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF1B484A23;
+	Mon,  5 Feb 2024 19:53:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L1iHn8oU"
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EyOISEu9"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57A5A82D7A
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 19:53:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 929AB82D7A
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 19:53:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707162792; cv=none; b=efj6GTjconMqA42bzSDIWiLCXmemCQ+4ureOdhPNZSuAj6u3Anzwq/E/OmA5dKlg74XF743VjOYlCvbCxH276/SNJV1993TVPKJlaFUEYGgGTKD8oDWbrQ65rjbo/iPFP/0/LeU6inxvHS75HVKt6p7bAWBgVFGhJQgJVoNq1bE=
+	t=1707162801; cv=none; b=IZ2WEWcE+sEDKFIQZoL+cN3I4uTFSrSHVt87tlAEp2C3twSRmBuN0JLfc0cAoc9F0fCMdhyZxsYYYv8uAVIcNrhSOQ8IJUKCErF+qbtb3N9V+W6NaQvsKVLY3X4A53slDrt23PQcXS2s2ih4/gmL2pKTwcW5YMR2dZwQZe1i/w4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707162792; c=relaxed/simple;
-	bh=kBnNpTKxNHNuN0M481E2J87UdjW7sMvfzwiCfFIQn0U=;
+	s=arc-20240116; t=1707162801; c=relaxed/simple;
+	bh=u/VKs/3EPpWVrRldc29EujFjC9yGn/bWji2MkiRM3Sw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aMuwML48A7Zh1a3ueiTqBFopGHGDZXiRzkjF1MoAJpAXG2VFo+m/NTaIW5rG//Zu6k0jvVc0V774B/aUN9PQS1BJe0Yp5x33x8XkFSbnBtXRd2/mXD8ScgHncmGnnD/KmNubo0IHEPyFa/ecjLriKo/TFLbuedJfIEwiD+y60sw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L1iHn8oU; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2906773c7e9so50138a91.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 11:53:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707162790; x=1707767590; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pWe/67exXwPWxPIWuf0Zi0TJlQ/QoxoIB5w3IbpqLws=;
-        b=L1iHn8oUAn9Qwe6OTRl551+2tR43jfXgNQcZTgGFN+TUVDCap6Ni0mUw0T43b8thLJ
-         LLx4iKVUEQzvZDIlYo54JxWNNi6DB55/4kIcAZMlkldmbWq7BmGaqo+c1YyuYHQkiaIM
-         3iBEGQ3ukDGmHXLPFwbcE7sU4TC8ywbeEkyFI0/WB9hJ0eqDrk5muwRnDLggmUrOjNbo
-         TZXSm2CYbKnQPQ14hdhs7WtgcFvMk9axvWQ5lav9izno78KnSt4dGXQi2MoNuoD/QHgG
-         DsNaOwJgu1Jh4wW7SnLMhu5Ve6gI7Vv1Jyx9xTVSIaScj8AZBnhTKQdJ6PcaxHsixHZ2
-         QtHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707162790; x=1707767590;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pWe/67exXwPWxPIWuf0Zi0TJlQ/QoxoIB5w3IbpqLws=;
-        b=U4dWC8soh9JixC8bILqpSqaSQJUb6t2xTKPPCIWIx48TtUmXSALT9vz51ubzPujHWm
-         dDm+fpXt4GvDAEUyGdElJ98OAa6XBM+UvwYyXz4uV3VtfvTsebdTkFH+Jkbocxk1Tunj
-         52zM7Z6qPdJiMvvGcCgrPpRjoxiPAsDX4ZvQ93atVFkgem674ES3yyEcHS6BgrXcuB7u
-         QfhPvGc6+uoTK1ZA/Lj+WG8V92rlbfTSGEkahGvy6YEe/u6WvU/6ie/m6dKBuYD3d7SV
-         xdx4S1Mi0YqVc6+iWsplVrDFAMSMTPWG5sfjI7Pk87trv2l22FX7l5JkdKAh8nEp9MLz
-         cgQg==
-X-Gm-Message-State: AOJu0YxoCVtWRYiCj3zMsTl4KqtCJaa8Vlw/nvm4TygPNtvxcpZc7Ixd
-	hVOUHfcFCenVofbIX50BACFl5Vs+dY4wMHIpl0VpOafGHYFh5RaiyCaQOTO+U80=
-X-Google-Smtp-Source: AGHT+IHcKNX+LcLBHOdSfsD/FTF0HVs6KxeDK3GCkTogMd2yNrj08DBi3ElIzqohJY284fiyjanzwA==
-X-Received: by 2002:a17:90a:ad07:b0:295:d223:ad11 with SMTP id r7-20020a17090aad0700b00295d223ad11mr451991pjq.36.1707162790487;
-        Mon, 05 Feb 2024 11:53:10 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVXAoYYmVGC+BXJc/MzRGCRgs+sjoMxxHPuFEfPe5TOULOkfm/8lwk65sXsHruIIFlkzEHfFiFMdloZpqAvfRLcSy6KK68KSLyTydJP80sJfesvQ7RQx+WZmsCmB4tBuPGLwAa07BSQg1UsNyk7+76anXgTqk99XwtB+ZEDrtMOl8yqWgctpJmZFPFOnVBhQKuqb9E6sQ0jo5EZCmK5WQkIw8uKJGABRSqaQRsKvUIB6giT+aaDCVWB0tfVC5R1ZKfGRGDJdA==
-Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
-        by smtp.gmail.com with ESMTPSA id ju16-20020a170903429000b001d96a0cddccsm243128plb.296.2024.02.05.11.53.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 11:53:10 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Mon, 5 Feb 2024 09:53:09 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Waiman Long <longman@redhat.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Cestmir Kalina <ckalina@redhat.com>,
-	Alex Gladkov <agladkov@redhat.com>, Phil Auld <pauld@redhat.com>,
-	Costa Shulyupin <cshulyup@redhat.com>
-Subject: Re: [PATCH-wq v3 0/4] workqueue: Enable unbound cpumask update on
- ordered workqueues
-Message-ID: <ZcE8pUuHfa7gVZs6@slm.duckdns.org>
-References: <20240205194602.871505-1-longman@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=iZn7q9vmHkMY0QWWE9n5OI8fYi5L9SFOT/+E4WgTu0jDLZiTRK/9jS2Bb5ZFMgN0KvvZVr56QAIYNRTCUCr+4PH71MdNL4h1DNN5I7K4w9HU6EnSGAEZND2Mo2FGvmTgvwyA97eLmsudcrngthlP2tpuhDrXb06yRQWMUzJfCCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EyOISEu9; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707162798;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VNtm/2qBOdXruRpXqj+cGjGSujDgnFJiILWoI+l5br8=;
+	b=EyOISEu9NR4+o5RyddqvwE99BvCJlXLks5sZ6u9Yof7tQGjt3pSrhxNDqmiSb848ilPc4t
+	bhnnoIS202hQrjGzmWDDiD7Y3OFsHUeQdoZVsf+nLIQVhaMJqSW7z/xyRQMk9uuYC+t+Lt
+	gqD7i+2QtzNuaORaqeFTpySGSN1CXoA=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-508-CxRN5HyxPny_tbrKO0hGEg-1; Mon,
+ 05 Feb 2024 14:53:14 -0500
+X-MC-Unique: CxRN5HyxPny_tbrKO0hGEg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 940E21C04338;
+	Mon,  5 Feb 2024 19:53:13 +0000 (UTC)
+Received: from rhel-developer-toolbox-latest (unknown [10.2.16.180])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 639DA1C060AF;
+	Mon,  5 Feb 2024 19:53:12 +0000 (UTC)
+Date: Mon, 5 Feb 2024 11:53:10 -0800
+From: Chris Leech <cleech@redhat.com>
+To: Simon Horman <horms@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Nilesh Javali <njavali@marvell.com>, Christoph Hellwig <hch@lst.de>,
+	John Meneghini <jmeneghi@redhat.com>, Lee Duncan <lduncan@suse.com>,
+	Mike Christie <michael.christie@oracle.com>,
+	Hannes Reinecke <hare@kernel.org>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+	GR-QLogic-Storage-Upstream@marvell.com
+Subject: Re: [PATCH v5 4/4] uio_dmem_genirq: UIO_MEM_DMA_COHERENT conversion
+Message-ID: <ZcE8phru3Nkp2J0s@rhel-developer-toolbox-latest>
+References: <20240201233400.3394996-1-cleech@redhat.com>
+ <20240201233400.3394996-5-cleech@redhat.com>
+ <20240204101903.GA916983@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,20 +76,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240205194602.871505-1-longman@redhat.com>
+In-Reply-To: <20240204101903.GA916983@kernel.org>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-On Mon, Feb 05, 2024 at 02:45:58PM -0500, Waiman Long wrote:
->  v3:
->   - [v2] https://lore.kernel.org/lkml/20240203154334.791910-1-longman@redhat.com/
->   - Drop patch 1 as it has been merged into the for-6.9 branch.
->   - Use rcu_access_pointer() to access wq->dfl_pwq.
->   - Use RCU protection instead of acquiring wq->mutex in
->     apply_wqattrs_cleanup().
+On Sun, Feb 04, 2024 at 10:19:03AM +0000, Simon Horman wrote:
+> On Thu, Feb 01, 2024 at 03:34:00PM -0800, Chris Leech wrote:
+..
+> > @@ -264,7 +257,8 @@ static int uio_dmem_genirq_probe(struct platform_device *pdev)
+> >  					" dynamic and fixed memory regions.\n");
+> >  			break;
+> >  		}
+> > -		uiomem->memtype = UIO_MEM_PHYS;
+> > +		uiomem->memtype = UIO_MEM_DMA_COHERENT;
+> > +		uiomem->dma_device = &pdev->dev,
+> 
+> Hi Chris,
+> 
+> a nit from my side.
+> 
+> Probably the ',' would be better written as a ';' here.
+> I don't think this is a bug, but using comma like this is
+> somewhat unexpected and confusing.
+> 
+> Flagged by clang-17 with -Wcomma
 
-Looks like we raced each other. I'll wait for v4.
+That's an embarrassing typo to slip through.
+I'll fix this,and add the kdoc comments for the API additions.
 
-Thanks.
+Thanks,
+- Chris
 
--- 
-tejun
 
