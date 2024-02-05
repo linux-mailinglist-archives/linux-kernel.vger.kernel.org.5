@@ -1,158 +1,425 @@
-Return-Path: <linux-kernel+bounces-52540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4E2B849977
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:02:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 620E3849981
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:03:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34A991F21741
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:02:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC1D81F219DB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:03:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AF171A27E;
-	Mon,  5 Feb 2024 12:01:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EF1D1B962;
+	Mon,  5 Feb 2024 12:02:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="ENQ3x8O/"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="TA0K/s1I"
+Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1742168B9
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 12:01:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB5331B7FC;
+	Mon,  5 Feb 2024 12:02:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707134513; cv=none; b=CMULrrKa/5mzypBwtoKeW1qDheJADEV6UOHF4opnOdRY19EfTFFoy0057vx0T2nP5LnzKOdHFP1s1KgxvH6l+iPAUxx9jLXGdedB2k6VEAgg6NzSeCeiSNBBZtpGVv0mQQj2Zo6lX9Odc2FQFz9R1lkjtoAYJslffTV0k/DfttA=
+	t=1707134551; cv=none; b=YtqlS9XWObXzGjvXO4VGj97Cfts5pzf17z4It4SHLmTQhFhcpb6E05grmxwGbtJq41X5gF6mOpr4918jN9QwGm++H1n/pKUvw2sxkrXf3Z+B2yjB9XsFta703QnLpq15zizBMqzsyYdowRFVYwDNSGe3oDB6Purbes2H2WnTld4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707134513; c=relaxed/simple;
-	bh=wy0r1UGOlI8VWUg4o5WQ5eNOjowjM5g7AjUKiiYZx5k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Cu7QHOyDQzo7SJz0zx520M/2y/QOGVHamlLGIslU/YwUQkgIvolW1p8R0hSooUbYZGrXVF1D31B4RmbWdKAmq+CsZAiTZrFFdybotkng+wIpNQWrkm6B7Mz7lCaoBcjyzLihUzmDMxo7Bt4MoW6ssMCBZwS8UrywKcHAXXwscYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=ENQ3x8O/; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40fc654a718so25425545e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 04:01:51 -0800 (PST)
+	s=arc-20240116; t=1707134551; c=relaxed/simple;
+	bh=SnpnjsIe5mX0+E5JVEhCwr63Ah3ckizateAvEwVUJoo=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=QH326F/wTJacONs6mn3+FHQ4TbeWa+g3aaQRHrQMyg3MfpiMp6ryYETf/oQJ9ZZVO7HOJYnevAsYPOACpqpsB77wTWSFOnc0N0nnqGLIcaDU+gzNwvUSyNSoTLt+XjDAc5wo9La1rWKBu2ddDv3DZYjAoh7uIBE0KVdowWGQIpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=TA0K/s1I; arc=none smtp.client-ip=99.78.197.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1707134510; x=1707739310; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tNUTLRh0uORxgdvQZdWeV7OWpCRm6fjT9p0GI9ATEAA=;
-        b=ENQ3x8O/fiJMJymc7LxtJbwj6H2YWeJcVdeqE44iu1CcFRielLkqV+391oEqW638z+
-         fUa4wgm5UzTtIbd5UzWMWwTRcfjs5eaDVrUSFurjGfULmPrUxpvaty+mgwATNA0kS3Wa
-         Wej6g3i1rHcVtkYNl8igq0GoOzz54iJ9hVRrPbpore4/Hg1LR7I3+UIfl8h9XcQPTVDH
-         PNjtqbx51WZs9sRKdSO6rIk5k4YLF6GxXsFquBCzPV7dtwTMdrSTaZTISonp1xTRthL/
-         p8CpFLvGtnUBeIDZVLeBB0pSlluelcv48HJYlrfWYgQCve8bUFacNrKg3CvJ9sOv6Hvf
-         q6nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707134510; x=1707739310;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tNUTLRh0uORxgdvQZdWeV7OWpCRm6fjT9p0GI9ATEAA=;
-        b=wYrpZyDZfd2FDV/qYqce+64JsX6l52vPX6M6nFt4l9NgUWtKYEfxKdjY1W+84Z7/9S
-         fPV4f4tHD6xohGUQI00c/RMtAwewimMEFJj2acN0SyyAHxOfFUFr70f6t1ZbcVCdnEqz
-         ogc0vcRlrgDoSShiGg7sFH+Ig8WZbNNoYQv31BA3rB0gEiGwz5nmk+JMxLUXjlR46KGV
-         z29rH1uKAbnuf6MwwWtxqH8XLAb5rssU/mxwWs3uwVMDB/hMSwzJqHl25urVE0jq7LKF
-         3xVGbIiBSELXqi+rNRm6eeygWerxReBuXEsvH36WlD/x46wJmk3XCpwjbOIk4MDPaGqb
-         8nmA==
-X-Gm-Message-State: AOJu0YxKUqKw43WN56q9yUd+fLNgoTLMbGrJDnOtnbPYLi5XYWwImFlo
-	ahRlTLhFlaxATNFmopJQ+tVsuq87mLIuQvkgHUglgfnItkuFn37OBathhjdFMOs=
-X-Google-Smtp-Source: AGHT+IHWqNiVcAQK8HVihsJjFtCl6C0gSNKBH/FtbKc34ErpwQ7Bj+kbyDVaKXxEc4JE0pjClnzq6A==
-X-Received: by 2002:a05:600c:468d:b0:40f:dc51:1882 with SMTP id p13-20020a05600c468d00b0040fdc511882mr1359629wmo.8.1707134509374;
-        Mon, 05 Feb 2024 04:01:49 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCW/WeIZaLbIJdUoV2uOi8CtBU7/5uQmbaWjHK4eakyFqOpEUCrvdBLgh2S2jHCdZy4hHmXTSyLfDp3sPFiKh0OdaarA0eYJCMhAlhqZu4IQfYCllpkzEk5vYraCS8T22HotTdcAof9isywvzsSdX9zQZloV3Yfh0+nDo8/T1braAwGHp3UZTuqLGBpaR6dCfAmehzNbHMk3QO7jmUYOrnffOibWHzlCR5Cz0u2WgOij4byGlTla5J3h/I2N/DxDqzXsEh+P2aKYvSWTJY9yXKqSkucoXGVkMorC+q3i9Q==
-Received: from airbuntu (host109-154-238-234.range109-154.btcentralplus.com. [109.154.238.234])
-        by smtp.gmail.com with ESMTPSA id u20-20020a05600c139400b0040ee0abd8f1sm8382027wmf.21.2024.02.05.04.01.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 04:01:48 -0800 (PST)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1707134550; x=1738670550;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=DNmTqGFg0B4wwqijKuh2wndJnn1CFCRShUGGQJLOmFw=;
+  b=TA0K/s1IJHf/prFJ+13DsO3hRi6rIgNVOyxZkj9Mc4tZPsOBC4X0GPps
+   4beNfJUsnGEfWYwxzHtz+IGhFINgJh5da5qq9tB4yyUzCYKcIS3rOnkyO
+   FTdoHF0fuS35Wad33aVxPAF3orkzA+n9bitGEca8aj8giW0lsHjNSMJSJ
+   o=;
+X-IronPort-AV: E=Sophos;i="6.05,245,1701129600"; 
+   d="scan'208";a="271936637"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.210])
+  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 12:02:28 +0000
+Received: from EX19MTAEUC001.ant.amazon.com [10.0.43.254:3818]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.33.186:2525] with esmtp (Farcaster)
+ id e767a7b8-4373-41b8-af32-a81e33b618aa; Mon, 5 Feb 2024 12:02:27 +0000 (UTC)
+X-Farcaster-Flow-ID: e767a7b8-4373-41b8-af32-a81e33b618aa
+Received: from EX19D014EUC004.ant.amazon.com (10.252.51.182) by
+ EX19MTAEUC001.ant.amazon.com (10.252.51.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 5 Feb 2024 12:02:26 +0000
+Received: from dev-dsk-jgowans-1a-a3faec1f.eu-west-1.amazon.com
+ (172.19.112.191) by EX19D014EUC004.ant.amazon.com (10.252.51.182) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 5 Feb
+ 2024 12:02:20 +0000
+From: James Gowans <jgowans@amazon.com>
+To: <linux-kernel@vger.kernel.org>
+CC: Eric Biederman <ebiederm@xmission.com>, <kexec@lists.infradead.org>,
+	"Joerg Roedel" <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	<iommu@lists.linux.dev>, Alexander Viro <viro@zeniv.linux.org.uk>, "Christian
+ Brauner" <brauner@kernel.org>, <linux-fsdevel@vger.kernel.org>, Paolo Bonzini
+	<pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>,
+	<kvm@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+	<linux-mm@kvack.org>, Alexander Graf <graf@amazon.com>, David Woodhouse
+	<dwmw@amazon.co.uk>, "Jan H . Schoenherr" <jschoenh@amazon.de>, Usama Arif
+	<usama.arif@bytedance.com>, Anthony Yznaga <anthony.yznaga@oracle.com>,
+	Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>,
+	<madvenka@linux.microsoft.com>, <steven.sistare@oracle.com>,
+	<yuleixzhang@tencent.com>
+Subject: [RFC 02/18] pkernfs: Add persistent inodes hooked into directies
 Date: Mon, 5 Feb 2024 12:01:47 +0000
-From: Qais Yousef <qyousef@layalina.io>
-To: Christian Loehle <christian.loehle@arm.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Viresh Kumar <viresh.kumar@linaro.org>,
-	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-	Ingo Molnar <mingo@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>
-Subject: Re: [PATCH] cpufreq: Change default transition delay to 2ms
-Message-ID: <20240205120147.ui5zab2b2j4looex@airbuntu>
-References: <20240205022500.2232124-1-qyousef@layalina.io>
- <326b568d-d460-4a69-9336-28da328ffdcf@arm.com>
+Message-ID: <20240205120203.60312-3-jgowans@amazon.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240205120203.60312-1-jgowans@amazon.com>
+References: <20240205120203.60312-1-jgowans@amazon.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <326b568d-d460-4a69-9336-28da328ffdcf@arm.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D045UWA002.ant.amazon.com (10.13.139.12) To
+ EX19D014EUC004.ant.amazon.com (10.252.51.182)
 
-Hi Christian
+Add the ability to create inodes for files and directories inside
+directories. Inodes are persistent in the in-memory filesystem; the
+second 2 MiB is used as an "inode store." The inode store is one big array
+of struct pkernfs_inodes and they use a linked list to point to the next
+sibling inode or in the case of a directory the child inode which is the
+first inode in that directory.
 
-On 02/05/24 09:17, Christian Loehle wrote:
-> On 05/02/2024 02:25, Qais Yousef wrote:
-> > 10ms is too high for today's hardware, even low end ones. This default
-> > end up being used a lot on Arm machines at least. Pine64, mac mini and
-> > pixel 6 all end up with 10ms rate_limit_us when using schedutil, and
-> > it's too high for all of them.
-> > 
-> > Change the default to 2ms which should be 'pessimistic' enough for worst
-> > case scenario, but not too high for platforms with fast DVFS hardware.
-> > 
-> > Signed-off-by: Qais Yousef <qyousef@layalina.io>
-> > ---
-> >  drivers/cpufreq/cpufreq.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> > index 44db4f59c4cc..8207f7294cb6 100644
-> > --- a/drivers/cpufreq/cpufreq.c
-> > +++ b/drivers/cpufreq/cpufreq.c
-> > @@ -582,11 +582,11 @@ unsigned int cpufreq_policy_transition_delay_us(struct cpufreq_policy *policy)
-> >  		 * for platforms where transition_latency is in milliseconds, it
-> >  		 * ends up giving unrealistic values.
-> >  		 *
-> > -		 * Cap the default transition delay to 10 ms, which seems to be
-> > +		 * Cap the default transition delay to 2 ms, which seems to be
-> >  		 * a reasonable amount of time after which we should reevaluate
-> >  		 * the frequency.
-> >  		 */
-> > -		return min(latency * LATENCY_MULTIPLIER, (unsigned int)10000);
-> > +		return min(latency * LATENCY_MULTIPLIER, (unsigned int)(2*MSEC_PER_SEC));
-> >  	}
-> >  
-> >  	return LATENCY_MULTIPLIER;
-> 
-> Hi Qais,
-> as previously mentioned I'm working on improving iowait boost and while I'm not against
-> this patch per se it does make iowait boosting more aggressive. ((Doubling limited by rate_limit_us)
-> Since the boost is often applied when not useful (for Android e.g. periodic f2fs writebacks),
-> this might have some side effects. Please give me a couple of days for verifying any impact,
-> or did you do that already?
+Free inodese are similarly maintained in a linked list with the first
+free inode being pointed to by the super block.
 
-I don't understand the concern, could you elaborate more please?
+Directory file_operations are added to support iterating through the
+content of a directory.
 
-Products already ship with 500us and 1ms which is lower than this 2ms.
+Simiarly inode operations are added to support creating a file inside a
+directory. This allocate the next free inode and makes it the head of
+tthe "child inode" linked list for the directory. Unlink is implemented
+to remove an inode from the linked list. This is a bit finicky as it is
+done differently depending on whether the inode is the first child of a
+directory or somewhere later in the linked list.
+---
+ fs/pkernfs/Makefile  |   2 +-
+ fs/pkernfs/dir.c     |  43 +++++++++++++
+ fs/pkernfs/inode.c   | 148 +++++++++++++++++++++++++++++++++++++++++++
+ fs/pkernfs/pkernfs.c |  13 ++--
+ fs/pkernfs/pkernfs.h |  34 ++++++++++
+ 5 files changed, 234 insertions(+), 6 deletions(-)
+ create mode 100644 fs/pkernfs/dir.c
+ create mode 100644 fs/pkernfs/inode.c
 
-On my AMD desktop it is already 1ms. And I think I've seen Intel systems
-defaulting to 500us or something low too. Ideally cpufreq drivers should set
-policy->transition_delay_us; so this path is taken if the driver didn't
-populate that. Which seems to be more common than I'd like tbh.
+diff --git a/fs/pkernfs/Makefile b/fs/pkernfs/Makefile
+index 17258cb77f58..0a66e98bda07 100644
+--- a/fs/pkernfs/Makefile
++++ b/fs/pkernfs/Makefile
+@@ -3,4 +3,4 @@
+ # Makefile for persistent kernel filesystem
+ #
+ 
+-obj-$(CONFIG_PKERNFS_FS) += pkernfs.o
++obj-$(CONFIG_PKERNFS_FS) += pkernfs.o inode.o dir.o
+diff --git a/fs/pkernfs/dir.c b/fs/pkernfs/dir.c
+new file mode 100644
+index 000000000000..b10ce745f19d
+--- /dev/null
++++ b/fs/pkernfs/dir.c
+@@ -0,0 +1,43 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++#include "pkernfs.h"
++
++static int pkernfs_dir_iterate(struct file *dir, struct dir_context *ctx)
++{
++	struct pkernfs_inode *pkernfs_inode;
++	struct super_block *sb = dir->f_inode->i_sb;
++
++	/* Indication from previous invoke that there's no more to iterate. */
++	if (ctx->pos == -1)
++		return 0;
++
++	if (!dir_emit_dots(dir, ctx))
++		return 0;
++
++	/*
++	 * Just emitted this dir; go to dir contents. Use pos to smuggle
++	 * the next inode number to emit across iterations.
++	 * -1 indicates no valid inode. Can't use 0 because first loop has pos=0
++	 */
++	if (ctx->pos == 2) {
++		ctx->pos = pkernfs_get_persisted_inode(sb, dir->f_inode->i_ino)->child_ino;
++		/* Empty dir case. */
++		if (ctx->pos == 0)
++			ctx->pos = -1;
++	}
++
++	while (ctx->pos > 1) {
++		pkernfs_inode = pkernfs_get_persisted_inode(sb, ctx->pos);
++		dir_emit(ctx, pkernfs_inode->filename, PKERNFS_FILENAME_LEN,
++				ctx->pos, DT_UNKNOWN);
++		ctx->pos = pkernfs_inode->sibling_ino;
++		if (!ctx->pos)
++			ctx->pos = -1;
++	}
++	return 0;
++}
++
++const struct file_operations pkernfs_dir_fops = {
++	.owner = THIS_MODULE,
++	.iterate_shared = pkernfs_dir_iterate,
++};
+diff --git a/fs/pkernfs/inode.c b/fs/pkernfs/inode.c
+new file mode 100644
+index 000000000000..f6584c8b8804
+--- /dev/null
++++ b/fs/pkernfs/inode.c
+@@ -0,0 +1,148 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++#include "pkernfs.h"
++#include <linux/fs.h>
++
++const struct inode_operations pkernfs_dir_inode_operations;
++
++struct pkernfs_inode *pkernfs_get_persisted_inode(struct super_block *sb, int ino)
++{
++	/*
++	 * Inode index starts at 1, so -1 to get memory index.
++	 */
++	return ((struct pkernfs_inode *) (pkernfs_mem + PMD_SIZE)) + ino - 1;
++}
++
++struct inode *pkernfs_inode_get(struct super_block *sb, unsigned long ino)
++{
++	struct inode *inode = iget_locked(sb, ino);
++
++	/* If this inode is cached it is already populated; just return */
++	if (!(inode->i_state & I_NEW))
++		return inode;
++	inode->i_op = &pkernfs_dir_inode_operations;
++	inode->i_sb = sb;
++	inode->i_mode = S_IFREG;
++	unlock_new_inode(inode);
++	return inode;
++}
++
++static unsigned long pkernfs_allocate_inode(struct super_block *sb)
++{
++
++	unsigned long next_free_ino;
++	struct pkernfs_sb *psb = (struct pkernfs_sb *) pkernfs_mem;
++
++	next_free_ino = psb->next_free_ino;
++	if (!next_free_ino)
++		return -ENOMEM;
++	psb->next_free_ino =
++		pkernfs_get_persisted_inode(sb, next_free_ino)->sibling_ino;
++	return next_free_ino;
++}
++
++/*
++ * Zeroes the inode and makes it the head of the free list.
++ */
++static void pkernfs_free_inode(struct super_block *sb, unsigned long ino)
++{
++	struct pkernfs_sb *psb = (struct pkernfs_sb *) pkernfs_mem;
++	struct pkernfs_inode *inode = pkernfs_get_persisted_inode(sb, ino);
++
++	memset(inode, 0, sizeof(struct pkernfs_inode));
++	inode->sibling_ino = psb->next_free_ino;
++	psb->next_free_ino = ino;
++}
++
++void pkernfs_initialise_inode_store(struct super_block *sb)
++{
++	/* Inode store is a PMD sized (ie: 2 MiB) page */
++	memset(pkernfs_get_persisted_inode(sb, 1), 0, PMD_SIZE);
++	/* Point each inode for the next one; linked-list initialisation. */
++	for (unsigned long ino = 2; ino * sizeof(struct pkernfs_inode) < PMD_SIZE; ino++)
++		pkernfs_get_persisted_inode(sb, ino - 1)->sibling_ino = ino;
++}
++
++static int pkernfs_create(struct mnt_idmap *id, struct inode *dir,
++			  struct dentry *dentry, umode_t mode, bool excl)
++{
++	unsigned long free_inode;
++	struct pkernfs_inode *pkernfs_inode;
++	struct inode *vfs_inode;
++
++	free_inode = pkernfs_allocate_inode(dir->i_sb);
++	if (free_inode <= 0)
++		return -ENOMEM;
++
++	pkernfs_inode = pkernfs_get_persisted_inode(dir->i_sb, free_inode);
++	pkernfs_inode->sibling_ino = pkernfs_get_persisted_inode(dir->i_sb, dir->i_ino)->child_ino;
++	pkernfs_get_persisted_inode(dir->i_sb, dir->i_ino)->child_ino = free_inode;
++	strscpy(pkernfs_inode->filename, dentry->d_name.name, PKERNFS_FILENAME_LEN);
++	pkernfs_inode->flags = PKERNFS_INODE_FLAG_FILE;
++
++	vfs_inode = pkernfs_inode_get(dir->i_sb, free_inode);
++	d_instantiate(dentry, vfs_inode);
++	return 0;
++}
++
++static struct dentry *pkernfs_lookup(struct inode *dir,
++		struct dentry *dentry,
++		unsigned int flags)
++{
++	struct pkernfs_inode *pkernfs_inode;
++	unsigned long ino;
++
++	pkernfs_inode = pkernfs_get_persisted_inode(dir->i_sb, dir->i_ino);
++	ino = pkernfs_inode->child_ino;
++	while (ino) {
++		pkernfs_inode = pkernfs_get_persisted_inode(dir->i_sb, ino);
++		if (!strncmp(pkernfs_inode->filename, dentry->d_name.name, PKERNFS_FILENAME_LEN)) {
++			d_add(dentry, pkernfs_inode_get(dir->i_sb, ino));
++			break;
++		}
++		ino = pkernfs_inode->sibling_ino;
++	}
++	return NULL;
++}
++
++static int pkernfs_unlink(struct inode *dir, struct dentry *dentry)
++{
++	unsigned long ino;
++	struct pkernfs_inode *inode;
++
++	ino = pkernfs_get_persisted_inode(dir->i_sb, dir->i_ino)->child_ino;
++
++	/* Special case for first file in dir */
++	if (ino == dentry->d_inode->i_ino) {
++		pkernfs_get_persisted_inode(dir->i_sb, dir->i_ino)->child_ino =
++			pkernfs_get_persisted_inode(dir->i_sb, dentry->d_inode->i_ino)->sibling_ino;
++		pkernfs_free_inode(dir->i_sb, ino);
++		return 0;
++	}
++
++	/*
++	 * Although we know exactly the inode to free, because we maintain only
++	 * a singly linked list we need to scan for it to find the previous
++	 * element so it's "next" pointer can be updated.
++	 */
++	while (ino) {
++		inode = pkernfs_get_persisted_inode(dir->i_sb, ino);
++		/* We've found the one pointing to the one we want to delete */
++		if (inode->sibling_ino == dentry->d_inode->i_ino) {
++			inode->sibling_ino =
++				pkernfs_get_persisted_inode(dir->i_sb,
++						dentry->d_inode->i_ino)->sibling_ino;
++			pkernfs_free_inode(dir->i_sb, dentry->d_inode->i_ino);
++			break;
++		}
++		ino = pkernfs_get_persisted_inode(dir->i_sb, ino)->sibling_ino;
++	}
++
++	return 0;
++}
++
++const struct inode_operations pkernfs_dir_inode_operations = {
++	.create		= pkernfs_create,
++	.lookup		= pkernfs_lookup,
++	.unlink		= pkernfs_unlink,
++};
+diff --git a/fs/pkernfs/pkernfs.c b/fs/pkernfs/pkernfs.c
+index 4c476ddc35b6..518c610e3877 100644
+--- a/fs/pkernfs/pkernfs.c
++++ b/fs/pkernfs/pkernfs.c
+@@ -8,7 +8,7 @@
+ #include <linux/io.h>
+ 
+ static phys_addr_t pkernfs_base, pkernfs_size;
+-static void *pkernfs_mem;
++void *pkernfs_mem;
+ static const struct super_operations pkernfs_super_ops = { };
+ 
+ static int pkernfs_fill_super(struct super_block *sb, struct fs_context *fc)
+@@ -24,23 +24,26 @@ static int pkernfs_fill_super(struct super_block *sb, struct fs_context *fc)
+ 		pr_info("pkernfs: Restoring from super block\n");
+ 	} else {
+ 		pr_info("pkernfs: Clean super block; initialising\n");
++		pkernfs_initialise_inode_store(sb);
+ 		psb->magic_number = PKERNFS_MAGIC_NUMBER;
++		pkernfs_get_persisted_inode(sb, 1)->flags = PKERNFS_INODE_FLAG_DIR;
++		strscpy(pkernfs_get_persisted_inode(sb, 1)->filename, ".", PKERNFS_FILENAME_LEN);
++		psb->next_free_ino = 2;
+ 	}
+ 
+ 	sb->s_op = &pkernfs_super_ops;
+ 
+-	inode = new_inode(sb);
++	inode = pkernfs_inode_get(sb, 1);
+ 	if (!inode)
+ 		return -ENOMEM;
+ 
+-	inode->i_ino = 1;
+ 	inode->i_mode = S_IFDIR;
+-	inode->i_op = &simple_dir_inode_operations;
+-	inode->i_fop = &simple_dir_operations;
++	inode->i_fop = &pkernfs_dir_fops;
+ 	inode->i_atime = inode->i_mtime = current_time(inode);
+ 	inode_set_ctime_current(inode);
+ 	/* directory inodes start off with i_nlink == 2 (for "." entry) */
+ 	inc_nlink(inode);
++	inode_init_owner(&nop_mnt_idmap, inode, NULL, inode->i_mode);
+ 
+ 	dentry = d_make_root(inode);
+ 	if (!dentry)
+diff --git a/fs/pkernfs/pkernfs.h b/fs/pkernfs/pkernfs.h
+index bd1e2a6fd336..192e089b3151 100644
+--- a/fs/pkernfs/pkernfs.h
++++ b/fs/pkernfs/pkernfs.h
+@@ -1,6 +1,40 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+ 
++#include <linux/fs.h>
++
+ #define PKERNFS_MAGIC_NUMBER 0x706b65726e6673
++#define PKERNFS_FILENAME_LEN 255
++
++extern void *pkernfs_mem;
++
+ struct pkernfs_sb {
+ 	unsigned long magic_number;
++	/* Inode number */
++	unsigned long next_free_ino;
+ };
++
++// If neither of these are set the inode is not in use.
++#define PKERNFS_INODE_FLAG_FILE (1 << 0)
++#define PKERNFS_INODE_FLAG_DIR (1 << 1)
++struct pkernfs_inode {
++	int flags;
++	/*
++	 * Points to next inode in the same directory, or
++	 * 0 if last file in directory.
++	 */
++	unsigned long sibling_ino;
++	/*
++	 * If this inode is a directory, this points to the
++	 * first inode *in* that directory.
++	 */
++	unsigned long child_ino;
++	char filename[PKERNFS_FILENAME_LEN];
++	int mappings_block;
++	int num_mappings;
++};
++
++void pkernfs_initialise_inode_store(struct super_block *sb);
++struct inode *pkernfs_inode_get(struct super_block *sb, unsigned long ino);
++struct pkernfs_inode *pkernfs_get_persisted_inode(struct super_block *sb, int ino);
++
++extern const struct file_operations pkernfs_dir_fops;
+-- 
+2.40.1
 
-I never run with 10ms. It's too slow. But I had several tests in the past
-against 2ms posted for those margin and removal of uclamp-max aggregation
-series. Anyway. I ran PCMark storage on Pixel 6 (running mainlinish kernel) and
-I see
-
-10ms: 27600
-2ms: 29750
-
-HTH
-
-Cheers
-
---
-Qais Yousef
 
