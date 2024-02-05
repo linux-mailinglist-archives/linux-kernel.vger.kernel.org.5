@@ -1,102 +1,106 @@
-Return-Path: <linux-kernel+bounces-52475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F096D8498AE
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B9AA08498B4
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:22:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F41E1C22571
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:20:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED1F71C224F2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:22:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83F8F18E27;
-	Mon,  5 Feb 2024 11:20:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D852618B04;
+	Mon,  5 Feb 2024 11:21:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R8WLBJe4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="MAgVFpPc"
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C45AC18AF6;
-	Mon,  5 Feb 2024 11:20:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9711518641;
+	Mon,  5 Feb 2024 11:21:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707132029; cv=none; b=VmeEVMDwGw7MgVHBi55Lq0Tshq6zkzfVsVNkE44UnSKyUG/5/mOV97luuwTC7LOlvnlbi7WQd1ka6O9lY5OBdkFegdFklY/TMqik7gdYr9utp2GpdqpoukPifguWuQZKW54UX/cPDAW+35fJpRh2//9DkXzE70i62dxfHRQ08M4=
+	t=1707132118; cv=none; b=QJAbxdpJaKXl2eBFDig14G2Hps8MRPXsiu/g3NYvDVZPqd7DwgwbdY+OEIJfVJYH/RKHhBvesArhuMvvz3CuiKhCrpW/wSoSZUDJ8Updxn2qv6uqV65EhrRmyEy14WYm5S/IzaoFBEeEDGSvWEBvbyRloadeRv97u3WZqwepOik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707132029; c=relaxed/simple;
-	bh=c7Fj/wPtiOUubtTF3wjdUAiVTE4AOhMVnaoeCU913dE=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=DSqOSzs0ySPR0p8FLaG1cyiHzKERZEY4Ic65fDa7937KuK9RRoCMsLsS46RcT1ZHXHPjOAwSc27JemCnmcPE9owtcAiBznSBNHGnRBM5ukxCxw80wqAvPpviXYuZCvKiwmT7XSTOdw5+e5OB1zWqy00b++DdQexkF6VHWl5k/TA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R8WLBJe4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 454D5C43399;
-	Mon,  5 Feb 2024 11:20:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707132029;
-	bh=c7Fj/wPtiOUubtTF3wjdUAiVTE4AOhMVnaoeCU913dE=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=R8WLBJe4UHRafytugFoYiqA/o3spzg9R4i70/j3gU36jMNwkjQSdPfERjiX3Wwmqy
-	 FYnAW6KZ6zVckqPA/1+LNlq7+yaV0ouaBj8UE0DX5+HLSS6gk8kTzN9e9xDA/XFeXP
-	 ZB2uYZs2ERuQ/xPmV9xRD2bk1MjUl+A8AFU0XNdrOhxDIz5+JxzL8wdd3uIe+0phGc
-	 8mosYsB+BpLBqt8RNrUNy86VosEna++048gEqH2BRg966S33RwzQ+cYK916pkKa65s
-	 EbbmoDSBfHbGZYMoNac6iN2M3ss4GgV6sGo6zsEwzEB6eQEtltyV2nuAc1W0nqO6wf
-	 5ETH66XFaliqg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 32448E2F2F2;
-	Mon,  5 Feb 2024 11:20:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1707132118; c=relaxed/simple;
+	bh=6vdRADLmto/3CuW0UJ6BuYaz7DLwN+tvUOa2KNkTtd0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Rdk5c5Cp8k/vN6+sK2M63nMvie0uecJgAZjz4Kbw2tx6iziGWbdhlY20RhCZs/l+ZiENK1stQXtp7+QHCwgkceGj5LuyRgLHitnXB/D+lG917+8AzIzEH2c6bFITYDyhFREsYMNKWw+A73M+mVKia+w47MrOWR5EPJ+fMR1S1Mo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=MAgVFpPc; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1707132110;
+	bh=6vdRADLmto/3CuW0UJ6BuYaz7DLwN+tvUOa2KNkTtd0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MAgVFpPcDvjdp/mDzcBcyI5VATplfjxVibtuzVMZtFNGs8ZQiUV1G4BibKmWbDuUL
+	 hLlgNIrAPVF1aC/bbBR7WzzpXhSzYYb0qaNK3fRGUXUYwouhGGd+dK16QyE3SAAhuf
+	 yEgXJCfGsQCpJa4XF1w/nC/+ITDrqjZs2Z7hKST4=
+Date: Mon, 5 Feb 2024 12:21:45 +0100
+From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Sebastian Reichel <sre@kernel.org>, 
+	Konrad Dybcio <konradybcio@kernel.org>, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: Re: [PATCH 3/4] power: supply: mm8013: implement
+ POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR_AVAILABLE
+Message-ID: <569bbc9f-1c34-40c1-a563-e7f6aecf63d5@t-8ch.de>
+References: <20240204-power_supply-charge_behaviour_prop-v1-0-06a20c958f96@weissschuh.net>
+ <20240204-power_supply-charge_behaviour_prop-v1-3-06a20c958f96@weissschuh.net>
+ <2f244f9f-8796-4cad-8bf8-d0c3411588c1@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/5] mptcp: annotate lockless access
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170713202920.23951.439284843602275473.git-patchwork-notify@kernel.org>
-Date: Mon, 05 Feb 2024 11:20:29 +0000
-References: <20240202-upstream-net-next-20240202-mptcp-annotate-lockless-access-v1-0-031d6680afdc@kernel.org>
-In-Reply-To: <20240202-upstream-net-next-20240202-mptcp-annotate-lockless-access-v1-0-031d6680afdc@kernel.org>
-To: Matthieu Baerts <matttbe@kernel.org>
-Cc: mptcp@lists.linux.dev, martineau@kernel.org, geliang.tang@linux.dev,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <2f244f9f-8796-4cad-8bf8-d0c3411588c1@redhat.com>
 
-Hello:
-
-This series was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Fri, 02 Feb 2024 12:40:06 +0100 you wrote:
-> This is a series of 5 patches from Paolo to annotate lockless access.
+On 2024-02-05 11:00:01+0100, Hans de Goede wrote:
+> Hi,
 > 
-> The MPTCP locking schema is already quite complex. We need to clarify it
-> and make the lockless access already there consistent, or later changes
-> will be even harder to follow and understand.
+> On 2/4/24 18:26, Thomas Weißschuh wrote:
+> > The sysfs is documented to report both the current and all available
+> > behaviours. For this POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR_AVAILABLE needs
+> > to be implemented.
+> > 
+> > Note that this changes the format of the sysfs file
+> > (to the documented format):
+> > 
+> > Before: "auto"
+> > After:  "[auto] inhibit-charge"
+> > 
+> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 > 
-> This series goes through all the msk fields accessed in the RX and TX
-> path and makes the lockless annotation consistent with the in-use
-> locking schema.
-> 
-> [...]
+> Changing userspace API like this is never ideal, but given how
+> new the mm8013 driver is and that this brings things inline
+> with the docs I think that this should be fine:
 
-Here is the summary with links:
-  - [net-next,1/5] mptcp: annotate access for msk keys
-    https://git.kernel.org/netdev/net-next/c/1c09d7cbb57a
-  - [net-next,2/5] mptcp: annotate lockless access for the tx path
-    https://git.kernel.org/netdev/net-next/c/d440a4e27acd
-  - [net-next,3/5] mptcp: annotate lockless access for RX path fields
-    https://git.kernel.org/netdev/net-next/c/9426ce476a70
-  - [net-next,4/5] mptcp: annotate lockless access for token
-    https://git.kernel.org/netdev/net-next/c/b9f4554356f6
-  - [net-next,5/5] mptcp: annotate lockless accesses around read-mostly fields
-    https://git.kernel.org/netdev/net-next/c/28e5c1380506
+I agree that it's unfortunate.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+However looking at the datasheet [0] it seems to me the driver is
+not correctly using the API.
+
+Page 23 documents the flag CHG_INH as follows:
+
+  CHG_INH : Charge Inhibit      When the current is more than or equal to charge
+                                threshold current,
+                                charge inhibit temperature (upper/lower limit) ：1
+                                charge permission temperature or the current is
+                                less than charge threshold current ：0
+
+This is only diagnostic information and not a control-knob, which the API
+was meant for.
+So POWER_SUPPLY_STATUS_NOT_CHARGING seems like the better match.
+
+> [..]
+
+Thomas
 
 
+[0] https://product.minebeamitsumi.com/en/product/category/ics/battery/fuel_gauge/parts/download/__icsFiles/afieldfile/2023/07/12/1_download_01_12.pdf
 
