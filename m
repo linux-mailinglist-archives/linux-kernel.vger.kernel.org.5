@@ -1,155 +1,164 @@
-Return-Path: <linux-kernel+bounces-52700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 872E9849B92
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:17:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FC71849B98
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:18:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAA131C22337
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:16:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9FD21F2350F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:18:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE2420DF7;
-	Mon,  5 Feb 2024 13:16:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D09E1C695;
+	Mon,  5 Feb 2024 13:18:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="SOeVKHx2"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="BVm3ujhY"
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2040.outbound.protection.outlook.com [40.107.95.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0929E1CD1C;
-	Mon,  5 Feb 2024 13:16:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707139001; cv=none; b=doHVOObdKxCDteMgOIlilzRJkzvJ50Dqdg59eFDh42Tnlp2Yht1olzhYsJNowXjmBhoupaSBjYj3iQsdkF99dFyExg1mNUTF6KaGb4iho8D/mNcsU+o9W66a/tMM057+K/aalr7X/85n1LUV8RVl8iwfIeqYzOYcqizMNBv3vQg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707139001; c=relaxed/simple;
-	bh=phFE0J5htpNCpRR8HNzbHVFzQ7uv/MuQlbk2fQvCWH8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=OgwCYto237oA7d4i2/Z4UqCjiD8lCcGnH8St0d0pDAWZN5LsHqb+WTK9lIScYzc8vTVXm5xgO14TVCYt/79IQMR+njcm3ypfYE/M+hlJN62IdJ+14kUZvLTq9JEL+gKNOMg9e3ZNQJaKISo6UXtGdpQ/oge4aqg7FEqjFGmr/a0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=SOeVKHx2; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 415D807c022337;
-	Mon, 5 Feb 2024 13:16:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=ky2sP7LC9ehECK2EtOMlyelCxIov3dSWzHcvB/YNGhs=;
- b=SOeVKHx2rsVkW2qPu9iDzKJBTWysxuv64PilpuOkIT57Omgdki2uIVVyQggcKjJ0oZuH
- u3pgWJUVNolekILVwWAwfaD6ywi/vJPXOgvy68bGc+EiqswF7ydBepJjYDIJM0Jcxajl
- Rlc7ES7JPFJ1JvVYHkWCfIkS9RAhDOTUSaYnX2cw7fzbOzwDIcXi9AMPZhemhPcoBsT5
- OzwWn1B1Bv3o57618QmDWXk5vNpJjzPoSg0bfiIhJGvQpJ+C0Z1owHzAhFz6C549/Sk6
- 2ccXEvtQdtm4qdpEKU10ah8oVtuIbbdr+vGCY84uRtVsIay0/RBpCNTR3PP/FlbdbpVJ Ww== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w309q88nv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 05 Feb 2024 13:16:33 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 415CmN57020469;
-	Mon, 5 Feb 2024 13:16:33 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w1ytsrvab-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 05 Feb 2024 13:16:32 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 415DGVHn40567042
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 5 Feb 2024 13:16:31 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 411A52004B;
-	Mon,  5 Feb 2024 13:16:31 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 08C7920040;
-	Mon,  5 Feb 2024 13:16:31 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon,  5 Feb 2024 13:16:30 +0000 (GMT)
-From: Sven Schnelle <svens@linux.ibm.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
-        Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        Mete Durlu <meted@linux.ibm.com>
-Subject: Re: [PATCH] tracing: use ring_buffer_record_is_set_on() in
- tracer_tracing_is_on()
-In-Reply-To: <20240205075504.1b55f29c@rorschach.local.home> (Steven Rostedt's
-	message of "Mon, 5 Feb 2024 07:55:04 -0500")
-References: <20240205065340.2848065-1-svens@linux.ibm.com>
-	<20240205075504.1b55f29c@rorschach.local.home>
-Date: Mon, 05 Feb 2024 14:16:30 +0100
-Message-ID: <yt9djznj3vbl.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8E3A1401D;
+	Mon,  5 Feb 2024 13:18:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.40
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707139108; cv=fail; b=ZyGszrEGg1ThE14FKehXBc+cOjGJTlFwrhi+JE+F0Ox9I2nzkfKO+ZGP2FXU/ZN7Vzczqb5mj/Ni7TNOjluWjF+4aBiYW2T0cIY7gx8oYN7xGvnkJ4RkyHdAA4iZnJZIgQ8ZdB5nxtrOkAHWF5rA2tqcqcYw1RE6IsH2suSjaCc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707139108; c=relaxed/simple;
+	bh=PUviv0c27oa7u0UqGoXhgKi4nR5e8bYV5JuGLaOMujU=;
+	h=From:To:CC:Subject:In-Reply-To:References:Content-Type:
+	 MIME-Version:Message-ID:Date; b=rlqeL2X9GZB9azdATXnYBHtfQwCtoi/M041L9srQgbNnOgWBFujpG29GiZhe1ZB2Z4luAJU3pg6VNHGDqwonLyOC1rQ97H7pI5YdzAhLC/KFkfTUXn8fIoUXJlWMKOP/v0K6VoPSkZoQlfeiExdFCRviQ55j2DgRLjic8N8yu8Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=BVm3ujhY; arc=fail smtp.client-ip=40.107.95.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SY+2RBauFBKbowcDFZqufSJhLnk0LVGazeP6bZjC1V94VnDs0MW3UuEg9fCbkHxeVRzpyXRuh7veh6xQxptjqu9kRYA02qIv5NKjBd/UAqWJQTCehMxkEXolL3rUG9ZXyJyXh1f1C/Z3rITP7KsjiL28TJbMgwgCh0G7X90pnPekIf9RtnkzM9/R1txR8YGAqhlGq9nKNsAJmxNKnAikHjmNuUcdjJd8CN3ht6rwjAvwQ04BJw8JsuLDtAxGSUxo8NS7IOPL6yh9R59i3wuKVrc+G9Mn9KP6xnCeAFGdf+BCXrdkLeSMb6EsArvxybdmnZGsofc9odUg6NG5HFvxBA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IDoMMH11T/oxP3xf8mWdbHcDUff/A5FJFecVHIQwVOE=;
+ b=RViSENtj8U8K9XhL1kZPIiqQVkI/oC33lx2jYdzxBEaXQaWz3TqRQwMlrKLRUYnNGx74O5iOU1pztbcd5Ds9mmTIpfLwBmSyujurvJOIzFusoQA41ZJGyZnajsFNVOU2dOVRF415xkxnG3x4FiZ/nyycSgGWiocbmYxJBfd/gW/Z1Sx8kDLZ3xoW+T70RjYupPvwq2ePK1EW2TMBBnbUQTyRUgcJazKm5dVaLIKnPyvOPBnc7p+94r9FU0FFpkHFH3xgCbSRhOxwRMAfxsjcdDJ6MA5LE0/AywUuF/5mwk9FSnHfC6kwLUS0Aw9CaBDHofZISVTwA7s1IO2/kuD2MQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=linuxfoundation.org
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IDoMMH11T/oxP3xf8mWdbHcDUff/A5FJFecVHIQwVOE=;
+ b=BVm3ujhYn3dItTJ/7LjacyI1ZE2wJ+/L5D+Yn3+Jcb5PTIvqXpvyanw9IdrYwsWI8/+WKIYTc/ZbRsKS3TSFv8vNjAjVW2n+cYnrwV3fkXwf4V3IaDf/SQAF1j8GFM8e0Nmy2qXdAaRIGaupQF01yW5J39RENhS+YcjigaFGs8RCwcbCV8osZgWeCs/yTxFNxtBnnoZjVr0h/J3Zplk0p8UNCqcDhhNt8iXcIIE3w5rEBcQXePIkPw3RpKtN7zdl5gZBxitz5zzucpPSmqZQTu+x5B1hH8pdZwRURliYppztxo7Ab6X+6cGStXXQ2THpEgAHTfc72yH0ZdajF23Rcg==
+Received: from CH0PR03CA0089.namprd03.prod.outlook.com (2603:10b6:610:cc::34)
+ by CH3PR12MB8457.namprd12.prod.outlook.com (2603:10b6:610:154::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.16; Mon, 5 Feb
+ 2024 13:18:24 +0000
+Received: from CH3PEPF0000000A.namprd04.prod.outlook.com
+ (2603:10b6:610:cc:cafe::b5) by CH0PR03CA0089.outlook.office365.com
+ (2603:10b6:610:cc::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.29 via Frontend
+ Transport; Mon, 5 Feb 2024 13:18:24 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CH3PEPF0000000A.mail.protection.outlook.com (10.167.244.37) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7249.19 via Frontend Transport; Mon, 5 Feb 2024 13:18:24 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 5 Feb 2024
+ 05:18:10 -0800
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail203.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 5 Feb 2024
+ 05:18:10 -0800
+Received: from jonathanh-vm-01.nvidia.com (10.127.8.9) by mail.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12 via Frontend
+ Transport; Mon, 5 Feb 2024 05:18:09 -0800
+From: Jon Hunter <jonathanh@nvidia.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	<patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+	<torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+	<linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+	<lkft-triage@lists.linaro.org>, <pavel@denx.de>, <jonathanh@nvidia.com>,
+	<f.fainelli@gmail.com>, <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
+	<rwarsow@gmx.de>, <conor@kernel.org>, <allen.lkml@gmail.com>,
+	<linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>
+Subject: Re: [PATCH 6.1 000/221] 6.1.77-rc2 review
+In-Reply-To: <20240203174756.358721205@linuxfoundation.org>
+References: <20240203174756.358721205@linuxfoundation.org>
+X-NVConfidentiality: public
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 0EOqI_za7h_Y6-9CYERr7KRQCuGyNNCr
-X-Proofpoint-GUID: 0EOqI_za7h_Y6-9CYERr7KRQCuGyNNCr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-05_08,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- lowpriorityscore=0 suspectscore=0 adultscore=0 mlxlogscore=999
- malwarescore=0 priorityscore=1501 spamscore=0 phishscore=0 clxscore=1015
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402050101
+Message-ID: <4d9f902a-fdf0-4700-bebe-9e831defc91d@rnnvmail202.nvidia.com>
+Date: Mon, 5 Feb 2024 05:18:09 -0800
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PEPF0000000A:EE_|CH3PR12MB8457:EE_
+X-MS-Office365-Filtering-Correlation-Id: 164b2f0c-b21c-4fa2-6705-08dc264cee90
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	TXItUWrn5IeqD/+q/+r7kd8k6gJvv/JUDduJNe9Taw2TmfRdPwy+fCINAPDc6C5DeXaFdmOZmk55tyW+fUR8m5akWf2A9OAMJPGDH4v1xrjoiV99j5fwMx0ZIoBbe67DiZ1g0gvUVO/J7DLdN6feR1/024LUCe54wuraimJwvKz5fXfna56QE/R48K3qma3xXp7ecLFkd/vZbkjdaeqtgqxZq0+UQyVSHW/D1NK3yTg7PgcJ59GNUuFR0G/EBw1iOtKcbSnaQ6+Qc5Cx+LYPg9WTLKXKEJeJyWfbA+Hhy8UqkH9u+dd6oWDVRrsqq0IRw91lbDk3hlSRMlQQoYBqulHzTYxVai7V8yLHonWbJFH2jOfwqnvUWxCqfjiJ4UB7TlZgfCkTyzXOCj71LjH2ejfgH9rsSNf5dFWxHciIVVZyUKNJEAOLC+o/9puu0CimcUCVj8R1UHzVHGJHv8NY3QRedbv3AbIh+kiZHpYVQmunmZWYGkA+fCgcOtLvsxPozLnGifQkgxH3RMfnDmlsiDlY733Eq5bkZnaom7Dlhxrk96DJP/0QIcnijDmPVvTDw/PzyJcqxLsdptsQhMXVui9rEukEWD1GS3t3uSqjTHsg0wHSr4NT0ynCOPW0oq0Ar6W0huvdm8oYNwRK3mtoYtDFvfphAucOA1MjsPp63mUK4RTxRVJQCkB0fn50hXkgCrF2vUvHFelsLvqQU8B1GUlEviCQLfFsAxPIL3eyn7CSfXVrxib3xsasMTzvJmvT/rLQci6hGesVcYd09Ep2o91Rouq51yAz5pByhHtvwUI=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(136003)(346002)(396003)(376002)(230922051799003)(82310400011)(64100799003)(186009)(1800799012)(451199024)(40470700004)(36840700001)(46966006)(40480700001)(40460700003)(41300700001)(31686004)(478600001)(86362001)(31696002)(966005)(356005)(426003)(7636003)(82740400003)(26005)(47076005)(2906002)(316002)(5660300002)(70206006)(336012)(54906003)(7416002)(36860700001)(8676002)(6916009)(8936002)(70586007)(4326008);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2024 13:18:24.0016
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 164b2f0c-b21c-4fa2-6705-08dc264cee90
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CH3PEPF0000000A.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8457
 
-Hi Steven,
+On Sat, 03 Feb 2024 09:52:43 -0800, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.77 release.
+> There are 221 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Mon, 05 Feb 2024 17:47:20 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.77-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Steven Rostedt <rostedt@goodmis.org> writes:
+All tests passing for Tegra ...
 
-> On Mon,  5 Feb 2024 07:53:40 +0100
-> Sven Schnelle <svens@linux.ibm.com> wrote:
->
->> tracer_tracing_is_on() checks whether record_disabled is not zero. This
->> checks both the record_disabled counter and the RB_BUFFER_OFF flag.
->> Reading the source it looks like this function should only check for
->> the RB_BUFFER_OFF flag. Therefore use ring_buffer_record_is_set_on().
->> This fixes spurious fails in the 'test for function traceon/off triggers'
->> test from the ftrace testsuite when the system is under load.
->> 
->
-> I've seen these spurious failures too, but haven't looked deeper into
-> it. Thanks,
+Test results for stable-v6.1:
+    10 builds:	10 pass, 0 fail
+    26 boots:	26 pass, 0 fail
+    116 tests:	116 pass, 0 fail
 
-Another issue i'm hitting sometimes is this part:
+Linux version:	6.1.77-rc2-geccceff25f82
+Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
+                tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
+                tegra20-ventana, tegra210-p2371-2180,
+                tegra210-p3450-0000, tegra30-cardhu-a04
 
-csum1=`md5sum trace`
-sleep $SLEEP_TIME
-csum2=`md5sum trace`
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
 
-if [ "$csum1" != "$csum2" ]; then
-    fail "Tracing file is still changing"
-fi
-
-This is because the command line was replaced in the
-saved_cmdlines_buffer, an example diff between both files
-is:
-
-       ftracetest-17950   [005] ..... 344507.002490: sched_process_wait: comm=ftracetest pid=0 prio=120
-       ftracetest-17950   [005] ..... 344507.002492: sched_process_wait: comm=ftracetest pid=0 prio=120
-- stress-ng-fanot-17820   [006] d.h.. 344507.009901: sched_stat_runtime: comm=stress-ng-fanot pid=17820 runtime=10000054 [ns]
-+           <...>-17820   [006] d.h.. 344507.009901: sched_stat_runtime: comm=stress-ng-fanot pid=17820 runtime=10000054 [ns]
-       ftracetest-17950   [005] d.h.. 344507.009901: sched_stat_runtime: comm=ftracetest pid=17950 runtime=7417915 [ns]
-  stress-ng-fanot-17819   [003] d.h.. 344507.009901: sched_stat_runtime: comm=stress-ng-fanot pid=17819 runtime=9983473 [ns]
-- stress-ng-fanot-17820   [007] d.h.. 344507.079900: sched_stat_runtime: comm=stress-ng-fanot pid=17820 runtime=9999865 [ns]
-+           <...>-17820   [007] d.h.. 344507.079900: sched_stat_runtime: comm=stress-ng-fanot pid=17820 runtime=9999865 [ns]
-  stress-ng-fanot-17819   [004] d.h.. 344507.079900: sched_stat_runtime: comm=stress-ng-fanot pid=17819 runtime=8388039 [ns]
-
-This can be improved by:
-
-echo 32768 > /sys/kernel/tracing/saved_cmdlines_size
-
-But this is of course not a fix - should we maybe replace the program
-name with <...> before comparing, remove the check completely, or do
-anything else? What do you think?
-
-Thanks,
-Sven
+Jon
 
