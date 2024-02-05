@@ -1,91 +1,206 @@
-Return-Path: <linux-kernel+bounces-53963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16C9F84A880
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:05:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEB1784A89F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:07:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 499981C2A135
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:05:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F0CE1F29152
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:07:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CECC14F202;
-	Mon,  5 Feb 2024 21:13:06 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B9EE524DD;
+	Mon,  5 Feb 2024 21:21:21 +0000 (UTC)
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F52E4CDFD
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 21:13:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E66BB50246;
+	Mon,  5 Feb 2024 21:21:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707167586; cv=none; b=rSWvOhgzj8jRcxNXjOJJNpXeUam7OmdxAeBaKn28GHalVNH6NRTxYFkJEYfrKV454XsZfycXg/3bZpI3TVTQj0ick1/VJMUi6OjN/EkF3Nc3Qq4x69q91Lt17E2EQR3GIYep/J/4RcG/TKOhDioGqzW/VjctgIJ0DP6CEET/kQY=
+	t=1707168080; cv=none; b=U5hGBVAG6qeqoNHzUziILs7JKd4REm79Z4h3b5D0D5bQabbQhf4oKncOIdBs4+PkmRwzip8MgZz0bM5J0EUFu2wz82SPbvHJFTR6n3NJwD9FMJKXQ6Cd0ai7BOwCS0bLYD5/Rb82VmdEMnxkW5LLNs2PsCBKAWkbJUwLd7J/UX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707167586; c=relaxed/simple;
-	bh=RERVg0NCmBPsnzb6n/jjfpC8aRmrtHhD3ZlQlxIVfBs=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=swonWZ/K+B7c0snD43NuwWzkgt2DGI5DLH0ww57FzfYctZoG/4HyXr+W6gIrITdA8p8C8iyDyBYO5dbaqzK0e65nvIN7MeB6FKIeANj4588CYz5zT9H57oO2ujBUYo0+HC1+riMf6mPyruLrLMLPMcoSxgCOHztM/b0SX2gt/aA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-363c3862a93so16777965ab.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 13:13:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707167584; x=1707772384;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1Z0ihoDKUQq9Uqt/80kKGIwkNWhhfnyox0+aJomGQ+c=;
-        b=WEi/gdu/zCFPEdszz3zNFtv56yP/Zro84ahw2594oYB8VU5/+asrZ0i2qw0WdMNHWw
-         PbtMGWPy4zzAjQbnpihTqpojaXQMojtxlbitnV2R1EUFPoa2MmAekvnG+pNC5rr71Jl9
-         omDKzZfl8W5LiGAvXH653B7BfDu31qBDYY/qY4U7jMqpp4/NQ5XnlPtnssV7NvXNmBJL
-         OTgMKY83F30cC8LMqRYokrNnPV8NMWwg6irhJxTPB3y5Ieyai4W3YdbvzfDZponv4jWE
-         5hzHUgDyoQ7YvdAvji5IoGBlWG3aymXVmeEEb+6Wf/xzGKGpOGLdFPhRmHoLYUpybG1k
-         yjFg==
-X-Gm-Message-State: AOJu0YxOrTFTLydQiulv5lRD1tvmf74Ac3zC18Lei2E87zycZAZ5b//P
-	u0WnHJ2Tf2U49FgZI8dXvVW6L69+K1AxyFh05B0k/b3EMlHnixrgG/yMnDIXvODS0TUMg7bPnyT
-	ekeBIYLsLC9fjTABqw/No7wVwIlps6pPbb8Ao0OSZSKKfIe8pc2SGvIE=
-X-Google-Smtp-Source: AGHT+IEUIJq4+NI9WY9amk5S6XGpR/DU60PskU08/wZ5acN0mwT02+7/lbDHKIoPrXocNN1g8Li8iF6NRBWd9DCQRYIGP5il6yiN
+	s=arc-20240116; t=1707168080; c=relaxed/simple;
+	bh=av3tnbxbDoQCPJZmNhCPyBdCwso6X1qrV0D//DxT7HQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=kKrkRN/2GS29ozipooyeS53MeBpFPiV0kY6DooUh9ciKwaoXf8yafCsu5Rt5a7htlUxq5LWCnKpEvZrTeBOtDCpy3MIK+l2ZPcrSax5+Z9gHT/cCMiEzqYK7ChIJXnXezTbHyiFkbPcko8fOba0v2HMOVNeQ2wWrtoby76NU0eU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id e244b6757259a813; Mon, 5 Feb 2024 22:21:10 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id A7E0E669A1B;
+	Mon,  5 Feb 2024 22:21:09 +0100 (CET)
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PM <linux-pm@vger.kernel.org>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>,
+ LKML <linux-kernel@vger.kernel.org>, Linux ACPI <linux-acpi@vger.kernel.org>,
+ Lukasz Luba <lukasz.luba@arm.com>, Zhang Rui <rui.zhang@intel.com>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Subject:
+ [PATCH v1 1/6] thermal: core: Store zone trips table in struct
+ thermal_zone_device
+Date: Mon, 05 Feb 2024 22:14:31 +0100
+Message-ID: <5762433.DvuYhMxLoT@kreacher>
+In-Reply-To: <2728491.mvXUDI8C0e@kreacher>
+References: <2728491.mvXUDI8C0e@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d9e:b0:363:ca05:c856 with SMTP id
- h30-20020a056e021d9e00b00363ca05c856mr55769ila.6.1707167584313; Mon, 05 Feb
- 2024 13:13:04 -0800 (PST)
-Date: Mon, 05 Feb 2024 13:13:04 -0800
-In-Reply-To: <0000000000009c7eb105f5b88b70@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006f69c90610a8edb3@google.com>
-Subject: Re: [syzbot] [xfs?] INFO: task hung in xfs_buf_item_unpin
-From: syzbot <syzbot+3f083e9e08b726fcfba2@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, brauner@kernel.org, chandan.babu@oracle.com, 
-	djwong@kernel.org, jack@suse.cz, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrfedvuddgheehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepledprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
+ thhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=9 Fuz1=9 Fuz2=9
 
-syzbot suspects this issue was fixed by commit:
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+The current code requires thermal zone creators to pass a pointer to a
+writable trips table to thermal_zone_device_register_with_trips() and
+that trips table is then used by the thermal core going forward.
 
-    fs: Block writes to mounted block devices
+Consequently, the callers of thermal_zone_device_register_with_trips()
+are required to hold on to the trips table passed to it until the given
+thermal zone is unregistered, at which point the trips table can be
+freed, but at the same time they are not allowed to access the cells in
+that table directly.  This is both error prone and confusing.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=176f2d7be80000
-start commit:   d2980d8d8265 Merge tag 'mm-nonmm-stable-2023-02-20-15-29' ..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=471a946f0dd5764c
-dashboard link: https://syzkaller.appspot.com/bug?extid=3f083e9e08b726fcfba2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17a077d8c80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14d91c74c80000
+To address it, turn the trips table pointer in struct thermal_zone_device
+into a flex array (counted by its num_trips field), allocate it during
+thermal zone device allocation and copy the contents of the trips table
+supplied by the zone creator (which can be const now) into it.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+This allows the callers of thermal_zone_device_register_with_trips() to
+drop their trip tables right after the zone registration.
 
-#syz fix: fs: Block writes to mounted block devices
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/thermal/thermal_core.c |   16 +++++++++-------
+ include/linux/thermal.h        |   10 +++++-----
+ 2 files changed, 14 insertions(+), 12 deletions(-)
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Index: linux-pm/include/linux/thermal.h
+===================================================================
+--- linux-pm.orig/include/linux/thermal.h
++++ linux-pm/include/linux/thermal.h
+@@ -130,7 +130,6 @@ struct thermal_cooling_device {
+  * @trip_hyst_attrs:	attributes for trip points for sysfs: trip hysteresis
+  * @mode:		current mode of this thermal zone
+  * @devdata:	private pointer for device private data
+- * @trips:	an array of struct thermal_trip
+  * @num_trips:	number of trip points the thermal zone supports
+  * @passive_delay_jiffies: number of jiffies to wait between polls when
+  *			performing passive cooling.
+@@ -160,6 +159,7 @@ struct thermal_cooling_device {
+  * @poll_queue:	delayed work for polling
+  * @notify_event: Last notification event
+  * @suspended: thermal zone suspend indicator
++ * @trips:	array of struct thermal_trip objects
+  */
+ struct thermal_zone_device {
+ 	int id;
+@@ -172,7 +172,6 @@ struct thermal_zone_device {
+ 	struct thermal_attr *trip_hyst_attrs;
+ 	enum thermal_device_mode mode;
+ 	void *devdata;
+-	struct thermal_trip *trips;
+ 	int num_trips;
+ 	unsigned long passive_delay_jiffies;
+ 	unsigned long polling_delay_jiffies;
+@@ -193,10 +192,11 @@ struct thermal_zone_device {
+ 	struct list_head node;
+ 	struct delayed_work poll_queue;
+ 	enum thermal_notify_event notify_event;
++	bool suspended;
+ #ifdef CONFIG_THERMAL_DEBUGFS
+ 	struct thermal_debugfs *debugfs;
+ #endif
+-	bool suspended;
++	struct thermal_trip trips[] __counted_by(num_trips);
+ };
+ 
+ /**
+@@ -315,7 +315,7 @@ int thermal_zone_get_crit_temp(struct th
+ #ifdef CONFIG_THERMAL
+ struct thermal_zone_device *thermal_zone_device_register_with_trips(
+ 					const char *type,
+-					struct thermal_trip *trips,
++					const struct thermal_trip *trips,
+ 					int num_trips, int mask,
+ 					void *devdata,
+ 					struct thermal_zone_device_ops *ops,
+@@ -375,7 +375,7 @@ void thermal_zone_device_critical(struct
+ #else
+ static inline struct thermal_zone_device *thermal_zone_device_register_with_trips(
+ 					const char *type,
+-					struct thermal_trip *trips,
++					const struct thermal_trip *trips,
+ 					int num_trips, int mask,
+ 					void *devdata,
+ 					struct thermal_zone_device_ops *ops,
+Index: linux-pm/drivers/thermal/thermal_core.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_core.c
++++ linux-pm/drivers/thermal/thermal_core.c
+@@ -1272,10 +1272,13 @@ EXPORT_SYMBOL_GPL(thermal_zone_get_crit_
+  * IS_ERR*() helpers.
+  */
+ struct thermal_zone_device *
+-thermal_zone_device_register_with_trips(const char *type, struct thermal_trip *trips, int num_trips, int mask,
+-					void *devdata, struct thermal_zone_device_ops *ops,
+-					const struct thermal_zone_params *tzp, int passive_delay,
+-					int polling_delay)
++thermal_zone_device_register_with_trips(const char *type,
++					const struct thermal_trip *trips,
++					int num_trips, int mask,
++					void *devdata,
++					struct thermal_zone_device_ops *ops,
++					const struct thermal_zone_params *tzp,
++					int passive_delay, int polling_delay)
+ {
+ 	struct thermal_zone_device *tz;
+ 	int id;
+@@ -1322,7 +1325,7 @@ thermal_zone_device_register_with_trips(
+ 	if (!thermal_class)
+ 		return ERR_PTR(-ENODEV);
+ 
+-	tz = kzalloc(sizeof(*tz), GFP_KERNEL);
++	tz = kzalloc(struct_size(tz, trips, num_trips), GFP_KERNEL);
+ 	if (!tz)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -1344,7 +1347,6 @@ thermal_zone_device_register_with_trips(
+ 		result = id;
+ 		goto free_tzp;
+ 	}
+-
+ 	tz->id = id;
+ 	strscpy(tz->type, type, sizeof(tz->type));
+ 
+@@ -1354,7 +1356,7 @@ thermal_zone_device_register_with_trips(
+ 	tz->ops = ops;
+ 	tz->device.class = thermal_class;
+ 	tz->devdata = devdata;
+-	tz->trips = trips;
++	memcpy(tz->trips, trips, num_trips * sizeof(trips[0]));
+ 	tz->num_trips = num_trips;
+ 
+ 	thermal_set_delay_jiffies(&tz->passive_delay_jiffies, passive_delay);
+
+
+
 
