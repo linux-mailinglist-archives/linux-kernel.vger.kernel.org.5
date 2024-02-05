@@ -1,149 +1,132 @@
-Return-Path: <linux-kernel+bounces-52875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52876-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F2E5849DB2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:09:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 013E0849DB3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:10:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0B60B242BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:09:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53558B257EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:10:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB5A22C6AD;
-	Mon,  5 Feb 2024 15:09:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="dLxFnIad"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 617DF2C6AC;
+	Mon,  5 Feb 2024 15:10:49 +0000 (UTC)
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A78F22C68C;
-	Mon,  5 Feb 2024 15:09:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EC682C69F
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 15:10:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707145765; cv=none; b=KMTh6xz3YclrAHXtpdDXevs2J9PiY1V6eAgQcDA8nEH25DXS8NUAtxYZYuM3k4zikMCX/qVNsQJ3if2vwpapY6EMr6IknNckktWhbCLf9t5O0iMISA1j3sZoyTX9n698YofiUQ8loNQjwticE/uJ33iIq8QlY3gbaCA73sqJAj4=
+	t=1707145849; cv=none; b=qXE+yQ4V58MKjfZcjLpHGjX3gvL8JD9QBfBpJozarsh1LmUqCbpColn3n/cOq/tQWZ82XY2c/VP1PI6IGu57DK4hTcVF+kKdRWvQClhBRM1/8FpnDuRBIHfyWz/b3/KNvlXfcNAQe+CfjIoDw7sXitRNLv0K7KKPGw26Afyt4AY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707145765; c=relaxed/simple;
-	bh=BXmgXKi0qbrpohDlq4XoeGpuhOvymtq43DR2m2gEr+I=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=QP4ovmIT/ANUZr43KY6//M4C4AbcoIAsHC2N+gS+kGxrg+jzXYYIoYto7RJI2nlsxvH0sCSUbfzpA6LVTeUC4APvCH59IJch/lcOUvUxG2dBaMxv/q6jUFtHSQEQfh/hNMmdoCt1K6tGpTgp2XZNUbze7f5zumfip8mtEowBlvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=dLxFnIad; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 415Ed371020278;
-	Mon, 5 Feb 2024 15:09:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=xE5r1BIcNWE0jTeVUWkbGBO/+PUZmQcefY7pgVxH2pk=;
- b=dLxFnIadrlBFlwf8AyzhdIOOnDoSbk+NbDxP1s3EaiD6Pa/Ip9qL6ubSzhJZXCGFjJhd
- D2NubcMnHZ7UNVr2C9teQEEwpfVccGe6yNnEZyI8brKVv9tEd7xGYLRlESZ7RNZ/ssmT
- V+x4pxX7Y9Y8yvOUjdyd+R58q53AZhFWxu8wOlqPnoRoiu6Bkva4BzGyX+Qlwal6+WMH
- V8DSTO3X4dGoMqYb9wwU0nArkopd907IB+GXwsCJINTO85c6LnFXoxjVpEHlQf27sfTo
- 9jNR3NZmIctva+ww2atpLmmBPmvD3RkHlsZ3n2UmQYngdsvVcnACCoNz0cBN80ac5c9I /w== 
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w31m8s1be-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 05 Feb 2024 15:09:17 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 415CGYUP008494;
-	Mon, 5 Feb 2024 15:09:17 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w221jrswx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 05 Feb 2024 15:09:17 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 415F9FPI16843514
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 5 Feb 2024 15:09:15 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4A37B20043;
-	Mon,  5 Feb 2024 15:09:15 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1E84320040;
-	Mon,  5 Feb 2024 15:09:15 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon,  5 Feb 2024 15:09:15 +0000 (GMT)
-From: Sven Schnelle <svens@linux.ibm.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
-        Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        Mete Durlu <meted@linux.ibm.com>
-Subject: Re: [PATCH] tracing: use ring_buffer_record_is_set_on() in
- tracer_tracing_is_on()
-In-Reply-To: <20240205092353.523cc1ef@rorschach.local.home> (Steven Rostedt's
-	message of "Mon, 5 Feb 2024 09:23:53 -0500")
-References: <20240205065340.2848065-1-svens@linux.ibm.com>
-	<20240205075504.1b55f29c@rorschach.local.home>
-	<yt9djznj3vbl.fsf@linux.ibm.com>
-	<20240205092353.523cc1ef@rorschach.local.home>
-Date: Mon, 05 Feb 2024 16:09:14 +0100
-Message-ID: <yt9dfry73q3p.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1707145849; c=relaxed/simple;
+	bh=fpyKWVvtKNgZoyG8a4zS1CHYGjQnu2fxk6TPe0Uc5d8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eZpCX4uN4Ir3m4KhRHfZ743PUmwXLg/PPGWeGggJzqXMvZeR4HohgDcVe6yxPgbSOYgnQyXIQmBi762MdD1UJzQJ9IoOz2tIjt3JYwY5TLF4gIaSGvV7uZIA+GGNc5dKbMXPeGUTU4BMRdPcb2JowVnbAxIM3zP4V4Oap4X/I5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-6818f3cf00aso25423836d6.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 07:10:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707145845; x=1707750645;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fpyKWVvtKNgZoyG8a4zS1CHYGjQnu2fxk6TPe0Uc5d8=;
+        b=CjVyfNrJm9acdBSu6d6mj94AmSCAGqP8n8S9PRG+/WxKEvz7HKr/DYhgZmRima1z1U
+         lliVT8HkpfrG0GjogfSnLA3BT166WCKsuAt0NUxy7oV9xt9mCDOdq0RyKG82vZxB049u
+         arhR+dQ+xbYAEkqO2Ox0LJXOdnbJba/X1UIsG6T0LFP4JJ1vxa33Ht8dpwsZhWzkgGpR
+         bf8o3znntIn8UYVxPf1jSuhp/VQ1s+WR7ciAFw3EP9Es1gTy0HqpbHrDd7+ikCqsQWod
+         XT535JMhIwm2TrDXcCe/M0s6jp3CzzQleiM1HjCgKswCUfkoctd9Jxi5K5Q9TWGwauhV
+         aplw==
+X-Gm-Message-State: AOJu0YzOvn+x0AGTbXKloaYlOvaQsr880XJdaaeuijkZvfyDNuttzqtY
+	u0ILVMIWsDi1b1kYaFLC6MZX/hs3rf4PsIFE4gGxesoF2ouaI3x6
+X-Google-Smtp-Source: AGHT+IHEUnttdNw8gm6+5Fxxg+hSsfAiYrZDL+QZ1tV92GXUhpat5XPLDhpF91+EJCVlQ4olqMvksw==
+X-Received: by 2002:a05:6214:ca9:b0:68c:9cb7:b190 with SMTP id s9-20020a0562140ca900b0068c9cb7b190mr5680557qvs.54.1707145845081;
+        Mon, 05 Feb 2024 07:10:45 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWY0ZAENfsIiaV7CYl3KiRJVon+YfZVwBUdYGwP6HhlZLAtQo5j64T1GWnhIxVgWoZLwznki3vEjEw+r4ytMY0DWS4zrQ2jsJWGAd6KJfC4HyHo1iLZ4eUW8aVPLXD4FBk/YnVqzFa67xkRzwtsMTK08nAb3y6PzviUeZO9ecGjozR2jllR1s4m8YqbJGPa0egRhKMin/xtNT2vmJqdfzdYeY13gg0JSbC39KaGN/k17/6q6QIJ2R1eSo/biGxMpKDQj9KIf6Oi5qtP5wCtkLJiUS5ioO09MuD3NGOHgIq5YmKPerWBXwUDQoVtHGgL6uE0bEbil13PsAMDOvItkN1v
+Received: from maniforge (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
+        by smtp.gmail.com with ESMTPSA id bp14-20020a05621407ee00b0068cabe94ea2sm47937qvb.69.2024.02.05.07.10.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 07:10:44 -0800 (PST)
+Date: Mon, 5 Feb 2024 09:10:41 -0600
+From: David Vernet <void@manifault.com>
+To: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
+	juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	bristot@redhat.com, vschneid@redhat.com, kernel-team@meta.com
+Subject: Re: [PATCH v2 3/3] sched/fair: Simplify some logic in
+ update_sd_pick_busiest()
+Message-ID: <20240205151041.GD120243@maniforge>
+References: <20240204044618.46100-1-void@manifault.com>
+ <20240204044618.46100-4-void@manifault.com>
+ <CAKfTPtB5NbvJt58zpi9aM-8kOxchgzYccY03wUEQLypaWjUXew@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Ukcjfl03xv7jf_bN_jT48tN__rIv8Kjy
-X-Proofpoint-GUID: Ukcjfl03xv7jf_bN_jT48tN__rIv8Kjy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-05_09,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- phishscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 bulkscore=0
- priorityscore=1501 spamscore=0 lowpriorityscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402050114
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="UEH2QWNLig8kLnOw"
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtB5NbvJt58zpi9aM-8kOxchgzYccY03wUEQLypaWjUXew@mail.gmail.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
-Hi Steven,
 
-Steven Rostedt <rostedt@goodmis.org> writes:
+--UEH2QWNLig8kLnOw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> On Mon, 05 Feb 2024 14:16:30 +0100
-> Sven Schnelle <svens@linux.ibm.com> wrote:
->> 
->> Another issue i'm hitting sometimes is this part:
->> 
->> csum1=`md5sum trace`
->> sleep $SLEEP_TIME
->> csum2=`md5sum trace`
->> 
->> if [ "$csum1" != "$csum2" ]; then
->>     fail "Tracing file is still changing"
->> fi
->> 
->> This is because the command line was replaced in the
->> saved_cmdlines_buffer, an example diff between both files
->> is:
->
-> [..]
->
->> 
->> This can be improved by:
->> 
->> echo 32768 > /sys/kernel/tracing/saved_cmdlines_size
->> 
->> But this is of course not a fix - should we maybe replace the program
->> name with <...> before comparing, remove the check completely, or do
->> anything else? What do you think?
->
-> Hmm, actually I would say that this exposes a real bug. Not a major
-> one, but one that I find annoying. The saved commandlines should only
-> be updated when a trace event occurs. But really, it should only be
-> updated if one is added to the ring buffer. If the ring buffer isn't
-> being updated, we shouldn't be adding new command lines.
->
-> There may be a location that has tracing off but still updating the
-> cmdlines which will break the saved cache.
+On Sun, Feb 04, 2024 at 12:48:11PM +0100, Vincent Guittot wrote:
+> On Sun, 4 Feb 2024 at 05:46, David Vernet <void@manifault.com> wrote:
+> >
+> > When comparing the current struct sched_group with the yet-busiest
+> > domain in update_sd_pick_busiest(), if the two groups have the same
+> > group type, we're currently doing a bit of unnecessary work for any
+> > group >=3D group_misfit_task. We're comparing the two groups, and then
+> > returning only if false (the group in question is not the busiest).
+> > Othewise, we break, do an extra unnecessary conditional check that's
+> > vacuously false for any group type > group_fully_busy, and then always
+> > return true.
+> >
+> > Let's just return directly in the switch statement instead. This doesn't
+> > change the size of vmlinux with llvm 17 (not surprising given that all
+> > of this is inlined in load_balance()), but it does shrink load_balance()
+> > by 88 bytes on x86. Given that it also improves readability, this seems
+> > worth doing.
+> >
+> > As a bonus, remove an unnecessary goto in update_sd_lb_stats().
+>=20
+> The line above is not relevant to the content of the patch.
 
-Ok, my understanding is that it will override the entry in the list if
-another process comes up with the same PID. But i haven't read the code
-carefully - let me do that now.
+Ah, thanks for catching that.
+
+Should I send a v3 of the patch set? Or should I just let whomever
+applies remove that line?
+
+> Other than that
+>=20
+> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+
+Thanks,
+David
+
+--UEH2QWNLig8kLnOw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZcD6cQAKCRBZ5LhpZcTz
+ZPMwAP0SnSO7/DMjdqfi6y8VLiWP7NqgRp5M8t7ljMgXl2Dz6wD/fIq8Rk7xK/2f
+A/4uSvbmiWD+YTbJSjC2O6ry/+8csw4=
+=alps
+-----END PGP SIGNATURE-----
+
+--UEH2QWNLig8kLnOw--
 
