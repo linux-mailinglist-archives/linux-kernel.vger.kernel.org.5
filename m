@@ -1,194 +1,203 @@
-Return-Path: <linux-kernel+bounces-52988-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCAFC849F32
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:03:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B2E9849F35
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:03:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93DD6289C31
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:03:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C59711F2381B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:03:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3EC532C8E;
-	Mon,  5 Feb 2024 16:01:41 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD446481AA
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 16:01:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 761153A1DE;
+	Mon,  5 Feb 2024 16:02:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="NpsUEChh"
+Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B57A32C9C;
+	Mon,  5 Feb 2024 16:02:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707148901; cv=none; b=mLBCjGUEEFCQ0mcdQDIKOt3hcJAhPtgzd7LfBq6t31430yaLFtZsd/L6b9dWD9CtwJJ6fDsWWMq4BmfxhKXCDaP1zhSA+CyDeFFUo+yai7sN6yUQsgOK0mpTX/Vw+fnBPsmo70cJeF0swNgWIoBEKHpzqCv1ZkBXPFncF5N+0/s=
+	t=1707148925; cv=none; b=mlyInoWtauKi0MJlvVgAgPbzDqpGnkNqvqMQqa0KH4NCw0DG29uCK0F5HC4cj10d44eXKDiIAB46qTsGlItjW2u74oDuAvf9cJAp+pn7fECKvSArFrco/PsbS0Y9t1aCgNCTUibsm1RQ7OEINVIqVwX26pssWlhPJ+i929tH2fg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707148901; c=relaxed/simple;
-	bh=w39i9b5zeD4hlOJX+0l1a7jxiYP+46vPnTC8na2NbVM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c0g6cBq6+ZR21B0LIjYeGlxINL22os0cdQZW17tH8E1rrmlIkGNJIxIOz2Nn0xfx0xPvgxsW/vyIVbiMFbhF//k3/DoGkfflLttubn4xYQLie47awe1KEL5U1x50q13Sb2tPk2RrJ/dWPixdrc+EqmQ2xUlvx7AHG0v7YEHJfNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CFE801FB;
-	Mon,  5 Feb 2024 08:02:20 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.66.84])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 777FE3F5A1;
-	Mon,  5 Feb 2024 08:01:36 -0800 (PST)
-Date: Mon, 5 Feb 2024 16:01:30 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: "Paul Heidekr\"uger" <paul.heidekrueger@tum.de>
-Cc: elver@google.com, akpm@linux-foundation.org, andreyknvl@gmail.com,
-	dvyukov@google.com, glider@google.com, kasan-dev@googlegroups.com,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	ryabinin.a.a@gmail.com, vincenzo.frascino@arm.com
-Subject: Re: [PATCH] kasan: add atomic tests
-Message-ID: <ZcEGWm30LsslEpMH@FVFF77S0Q05N>
-References: <CANpmjNP033FCJUb_nzTMJZnvXQj8esFBv_tg5-rtNtVUsGLB_A@mail.gmail.com>
- <20240202113259.3045705-1-paul.heidekrueger@tum.de>
+	s=arc-20240116; t=1707148925; c=relaxed/simple;
+	bh=GZ/QrUYoWHJZzCpyI+a8pGcqG7MuwYWLC0kpCm+GmS8=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZvAOSc98qqiREGc7DWiIHbT4GwzZE7k2vJRFNWt5ano0c30csu16v4Nr2ErpnU5X+RLfQJW5vKmEm65Qmo5UXCqO/NBZNrT/444YGtDtLTPR3gGiHwJFXcdyKKG+uAqYXVXy2HsJTCCColScrRPBTFPgUvTRc64v/3QkrgF0wys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=NpsUEChh; arc=none smtp.client-ip=195.181.215.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
+	t=1707148921; bh=GZ/QrUYoWHJZzCpyI+a8pGcqG7MuwYWLC0kpCm+GmS8=;
+	h=Date:From:To:Subject:X-My-GPG-KeyId:References:From;
+	b=NpsUEChhU9gd0quVquwhz9BL0um6DVapV5Mpz54Q+Os7uRpbtYhVgr75LFVW2Bjyb
+	 ije6tg/et7yVyZFkIjdB8luezZ7HJjEFWin1TfEiHXvuoYIvbxuAwxvrUcajFG3REK
+	 oUWXa9jHrNJByezx0xWEofG1Q7rMawy675GqnhhA=
+Date: Mon, 5 Feb 2024 17:02:00 +0100
+From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
+To: Frank Oltmanns <frank@oltmanns.dev>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
+	Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>, Purism Kernel Team <kernel@puri.sm>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] Pinephone video out fixes (flipping between two
+ frames)
+Message-ID: <bgyyemyi4shj3spo6qy4icvk56nrp5sihnzqurnozqdyktwugc@ikurx4ojoxpi>
+Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
+	Frank Oltmanns <frank@oltmanns.dev>, Michael Turquette <mturquette@baylibre.com>, 
+	Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
+	Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>, Purism Kernel Team <kernel@puri.sm>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	devicetree@vger.kernel.org
+X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
+ <https://xff.cz/key.txt>
+References: <20240205-pinephone-pll-fixes-v2-0-96a46a2d8c9b@oltmanns.dev>
+ <jzl3mlzk4j7qvgcedvipgale5nhinznefodrnaehwsqfnseiwc@7zzlxd4dpueh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240202113259.3045705-1-paul.heidekrueger@tum.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <jzl3mlzk4j7qvgcedvipgale5nhinznefodrnaehwsqfnseiwc@7zzlxd4dpueh>
 
-On Fri, Feb 02, 2024 at 11:32:59AM +0000, Paul Heidekr"uger wrote:
-> Test that KASan can detect some unsafe atomic accesses.
+On Mon, Feb 05, 2024 at 04:54:07PM +0100, Ondřej Jirman wrote:
+> On Mon, Feb 05, 2024 at 04:22:23PM +0100, Frank Oltmanns wrote:
+> > On some pinephones the video output sometimes freezes (flips between two
+> > frames) [1]. It seems to be that the reason for this behaviour is that
+> > PLL-MIPI, PLL-GPU and GPU are operating outside their limits.
+> > 
+> > In this patch series I propose the followin changes:
+> >   1. sunxi-ng: Adhere to the following constraints given in the
+> >      Allwinner A64 Manual regarding PLL-MIPI:
+> >       * M/N <= 3
+> >       * (PLL_VIDEO0)/M >= 24MHz
+> >       * 500MHz <= clockrate <= 1400MHz
+> > 
+> >   2. Choose a higher clock rate for the ST7703 based XDB599 panel, so
+> >      that the panel function well with the Allwinner A64 SOC. PLL-MIPI
+> >      must run between 500 MHz and 1.4 GHz. As PLL-MIPI runs at 6 times
+> >      the panel's clock rate, we need the panel's clock to be at least
+> >      83.333 MHz.
+> > 
+> >   3. Increase the minimum frequency in the A64 DTS OPPs from 120 MHz to
+> >      192 MHz. This further reduces the issue.
+> > 
+> > Unfortunately, with these patches the issue [1] is not completely gone,
+> > but becomes less likely.
+> > 
+> > Note, that when pinning the GPU to 432 MHz the issue completely
+> > disappears for me. I've searched the BSP and could not find any
+> > indication that supports the idea of having the three OPPs. The only
+> > frequency I found in the BPSs for A64 is 432 MHz, that has also proven
+> > stable for me. So, while increasing the minimum frequency to 192 MHz
+> > reduces the issue, should we maybe instead set the GPU to a fixed 432
+> > MHz instead?
 > 
-> As discussed in the linked thread below, these tests attempt to cover
-> the most common uses of atomics and, therefore, aren't exhaustive.
+> Per A64 User Manual 1.1 page 81:
 > 
-> CC: Marco Elver <elver@google.com>
-> CC: Andrey Konovalov <andreyknvl@gmail.com>
-> Link: https://lore.kernel.org/all/20240131210041.686657-1-paul.heidekrueger@tum.de/T/#u
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=214055
-> Signed-off-by: Paul Heidekr"uger <paul.heidekrueger@tum.de>
-> ---
-> Changes PATCH RFC v2 -> PATCH v1:
-> * Remove casts to void*
-> * Remove i_safe variable
-> * Add atomic_long_* test cases
-> * Carry over comment from kasan_bitops_tags()
-> 
-> Changes PATCH RFC v1 -> PATCH RFC v2:
-> * Adjust size of allocations to make kasan_atomics() work with all KASan modes
-> * Remove comments and move tests closer to the bitops tests
-> * For functions taking two addresses as an input, test each address in a separate function call.
-> * Rename variables for clarity
-> * Add tests for READ_ONCE(), WRITE_ONCE(), smp_load_acquire() and smp_store_release()
-> 
->  mm/kasan/kasan_test.c | 79 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 79 insertions(+)
-> 
-> diff --git a/mm/kasan/kasan_test.c b/mm/kasan/kasan_test.c
-> index 8281eb42464b..4ef2280c322c 100644
-> --- a/mm/kasan/kasan_test.c
-> +++ b/mm/kasan/kasan_test.c
-> @@ -1150,6 +1150,84 @@ static void kasan_bitops_tags(struct kunit *test)
->  	kfree(bits);
->  }
->  
-> +static void kasan_atomics_helper(struct kunit *test, void *unsafe, void *safe)
-> +{
-> +	int *i_unsafe = (int *)unsafe;
+> (9). Clock output of PLL_GPU can be used for GPU;and dynamic frequency scaling is not supported;
 
-Minor nit: you don't need the cast here either.
+You may be able to elegantly work around this by pinning PLL_GPU to a certain
+frequency (assing it in DT and then don't decalre gpu clock as
+CLK_SET_RATE_PARENT). Say 432 MHz for PLL and then do the scaling via GPU_CLK_REG
+N divider between 432MHz and 216MHz and maybe 108MHz if that brings any gains.
 
-Regardless:
+Then you can perhaps sidestep all these potential issues with PLL_GPU and
+lack of DVFS support decalred in the manual.
 
-Acked-by: Mark Rutland <mark.rutland@arm.com>
+regards,
+	o.
 
-Mark.
-
-> +
-> +	KUNIT_EXPECT_KASAN_FAIL(test, READ_ONCE(*i_unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, WRITE_ONCE(*i_unsafe, 42));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, smp_load_acquire(i_unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, smp_store_release(i_unsafe, 42));
-> +
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_read(unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_set(unsafe, 42));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_add(42, unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_sub(42, unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_inc(unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_dec(unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_and(42, unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_andnot(42, unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_or(42, unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_xor(42, unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_xchg(unsafe, 42));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_cmpxchg(unsafe, 21, 42));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_try_cmpxchg(unsafe, safe, 42));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_try_cmpxchg(safe, unsafe, 42));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_sub_and_test(42, unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_dec_and_test(unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_inc_and_test(unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_add_negative(42, unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_add_unless(unsafe, 21, 42));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_inc_not_zero(unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_inc_unless_negative(unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_dec_unless_positive(unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_dec_if_positive(unsafe));
-> +
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_read(unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_set(unsafe, 42));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_add(42, unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_sub(42, unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_inc(unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_dec(unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_and(42, unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_andnot(42, unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_or(42, unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_xor(42, unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_xchg(unsafe, 42));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_cmpxchg(unsafe, 21, 42));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_try_cmpxchg(unsafe, safe, 42));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_try_cmpxchg(safe, unsafe, 42));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_sub_and_test(42, unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_dec_and_test(unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_inc_and_test(unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_add_negative(42, unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_add_unless(unsafe, 21, 42));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_inc_not_zero(unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_inc_unless_negative(unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_dec_unless_positive(unsafe));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_dec_if_positive(unsafe));
-> +}
-> +
-> +static void kasan_atomics(struct kunit *test)
-> +{
-> +	void *a1, *a2;
-> +
-> +	/*
-> +	 * Just as with kasan_bitops_tags(), we allocate 48 bytes of memory such
-> +	 * that the following 16 bytes will make up the redzone.
-> +	 */
-> +	a1 = kzalloc(48, GFP_KERNEL);
-> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, a1);
-> +	a2 = kzalloc(sizeof(int), GFP_KERNEL);
-> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, a1);
-> +
-> +	/* Use atomics to access the redzone. */
-> +	kasan_atomics_helper(test, a1 + 48, a2);
-> +
-> +	kfree(a1);
-> +	kfree(a2);
-> +}
-> +
->  static void kmalloc_double_kzfree(struct kunit *test)
->  {
->  	char *ptr;
-> @@ -1553,6 +1631,7 @@ static struct kunit_case kasan_kunit_test_cases[] = {
->  	KUNIT_CASE(kasan_strings),
->  	KUNIT_CASE(kasan_bitops_generic),
->  	KUNIT_CASE(kasan_bitops_tags),
-> +	KUNIT_CASE(kasan_atomics),
->  	KUNIT_CASE(kmalloc_double_kzfree),
->  	KUNIT_CASE(rcu_uaf),
->  	KUNIT_CASE(workqueue_uaf),
-> -- 
-> 2.40.1
+> Also sunxi-ng clk driver does apply NM factors at once to PLL_GPU clock,
+> which can cause sudden frequency increase beyond intended output frequency,
+> because division is applied immediately while multiplication is reflected
+> slowly.
 > 
+> Eg. if you're changing divider from 7 to 1, you can get a sudden 7x output
+> frequency spike, before PLL VCO manages to lower the frequency through N clk
+> divider feedback loop and lock on again. This can mess up whatever's connected
+> to the output quite badly.
 > 
+> You'd have to put logging on kernel writes to PLL_GPU register to see what
+> is written in there and if divider is lowered significantly on some GPU
+> devfreq frequency transitions.
+> 
+> It's also unclear what happens when FRAC_CLK_OUT or PLL_MODE_SEL changes.
+> Maybe not much because M is supposed to be set to 1, but you still need to
+> care when enabling fractional mode, and setting M to 1 because that's exactly
+> the bad scenario if M was previously higher than 1.
+> 
+> It's tricky.
+> 
+> Having GPU module clock gated during PLL config changes may help! You can
+> do that without locking yourself out, unlike with the CPU PLL.
+> 
+> There's a gate enable bit for it at GPU_CLK_REG.SCLK_GATING. (page 122)
+> 
+> Kind regards,
+> 	o.
+> 
+> > I very much appreciate your feedback!
+> > 
+> > [1] https://gitlab.com/postmarketOS/pmaports/-/issues/805
+> > 
+> > Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
+> > ---
+> > Changes in v2:
+> > - dts: Increase minimum GPU frequency to 192 MHz.
+> > - nkm and a64: Add minimum and maximum rate for PLL-MIPI.
+> > - nkm: Use the same approach for skipping invalid rates in
+> >   ccu_nkm_find_best() as in ccu_nkm_find_best_with_parent_adj().
+> > - nkm: Improve names for ratio struct members and hence get rid of
+> >   describing comments.
+> > - nkm and a64: Correct description in the commit messages: M/N <= 3
+> > - Remove patches for nm as they were not needed.
+> > - st7703: Rework the commit message to cover more background for the
+> >   change.
+> > - Link to v1: https://lore.kernel.org/r/20231218-pinephone-pll-fixes-v1-0-e238b6ed6dc1@oltmanns.dev
+> > 
+> > ---
+> > Frank Oltmanns (6):
+> >       clk: sunxi-ng: nkm: Support constraints on m/n ratio and parent rate
+> >       clk: sunxi-ng: a64: Add constraints on PLL-MIPI's n/m ratio and parent rate
+> >       clk: sunxi-ng: nkm: Support minimum and maximum rate
+> >       clk: sunxi-ng: a64: Set minimum and maximum rate for PLL-MIPI
+> >       drm/panel: st7703: Drive XBD599 panel at higher clock rate
+> >       arm64: dts: allwinner: a64: Fix minimum GPU OPP rate
+> > 
+> >  arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi |  4 ++--
+> >  drivers/clk/sunxi-ng/ccu-sun50i-a64.c         | 14 +++++++----
+> >  drivers/clk/sunxi-ng/ccu_nkm.c                | 34 +++++++++++++++++++++++++++
+> >  drivers/clk/sunxi-ng/ccu_nkm.h                |  4 ++++
+> >  drivers/gpu/drm/panel/panel-sitronix-st7703.c | 14 +++++------
+> >  5 files changed, 56 insertions(+), 14 deletions(-)
+> > ---
+> > base-commit: 059c53e877ca6e723e10490c27c1487a63e66efe
+> > change-id: 20231218-pinephone-pll-fixes-0ccdfde273e4
+> > 
+> > Best regards,
+> > -- 
+> > Frank Oltmanns <frank@oltmanns.dev>
+> > 
 
