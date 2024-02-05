@@ -1,172 +1,144 @@
-Return-Path: <linux-kernel+bounces-53185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC13084A1D1
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:09:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D401E84A1D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:11:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF08F1C22F1C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:09:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 900CE285736
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:11:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFEA547F67;
-	Mon,  5 Feb 2024 18:09:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF4EA47F52;
+	Mon,  5 Feb 2024 18:11:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="f4OPkUSb"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="a/kYseUs"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64AD847F47;
-	Mon,  5 Feb 2024 18:09:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42A6045978
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 18:11:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707156570; cv=none; b=DcwPyNhnw8vESiOy509sd09obtDnvEvl+fZLh/MNnc4Ei5fXFoKvi5pq3gNZChgXdjwRDSPz5O+XEwnhwgoQq4RDRM1eJPiycvvSCjtIMQJdx85iZZ/aZBtVMQAfzOoJm3Xopo3xR1g08JQY3/HR26tmIE1oDRRpQevOjPzyzLs=
+	t=1707156691; cv=none; b=HYl15XZO/YrkHx9skU1Ey+B0bgsSS2gtV5BX9pARDFRbOOVTZnA43hAFNxMv1o8HQhQbygR7DlLQUHWxpYAOHs17wvChaeoww7kQDME2BCOzE2MP58t/gUJ8FEzepveI0WOgOTy5DIkS8IzwfJKV6nrgc97KexuT26auus4hzYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707156570; c=relaxed/simple;
-	bh=War4Ygw73Zkn9dPQAXSGKAIcWAUoaEPf0WyGsPEMqvE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hlihHx79hpsi1F3T1jiDjrAkHNMaj2KAPRJ81cfconcpPYhujPjN4ZGlO/di+cvaPC7hJ+cqY5VwV+H2qfrC3LtKxtJLZ0oyPcmfVId5xyITOmuzFvHZb28CHAMO305Z18QQniR27jBqQkJW+CT1dkFA8BS+bpLLKIJ2i2AfP7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=f4OPkUSb; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 415I29Io001118;
-	Mon, 5 Feb 2024 18:09:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=H4aL8bR7hMDj/h6uHjjh77Iz3T+5OxbzDFyXjwQXs6Q=;
- b=f4OPkUSbkkt2A1Umox0P3qnBuoFdRKf2KXSmvQnRDx27BXxTSSK5+8n5ONqk35E8aHer
- GODIFs7ls1sdXgQUly3L7bGQl6uZhPf2XGla55ClvfTmVmcku2LNRho4HbrTwJDB4Wqc
- Wbuy5dNsihgvDD3uggL/89cSvDs1xyr50v92ZHiigu/XyZJ1fvoSGt9t04rcJ1ofkvF2
- VejiqwYl0OJlFr2r84S8Q5ZFfWHHNpbe4kbZsFjyaQh0js7U9LZ5vjqcgmQsAlIGTPVI
- ZWl9LBsBgSQCYwvfbNHQRxBA2TBJEGLgHvAAihNXrS1+dkL3OpxciT0ypAcDKVZqYqRZ BQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w34kk067u-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 05 Feb 2024 18:09:22 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 415I3FBR005114;
-	Mon, 5 Feb 2024 18:09:22 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w34kk067j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 05 Feb 2024 18:09:22 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 415I7bdV008539;
-	Mon, 5 Feb 2024 18:09:21 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w221jsrbf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 05 Feb 2024 18:09:21 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 415I9Ib420841006
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 5 Feb 2024 18:09:18 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 36BE52004B;
-	Mon,  5 Feb 2024 18:09:18 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A118B20040;
-	Mon,  5 Feb 2024 18:09:15 +0000 (GMT)
-Received: from li-a83676cc-350e-11b2-a85c-e11f86bb8d73.ibm.com (unknown [9.43.55.162])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon,  5 Feb 2024 18:09:15 +0000 (GMT)
-Date: Mon, 5 Feb 2024 23:39:12 +0530
-From: Amit Machhiwal <amachhiw@linux.ibm.com>
-To: Vaibhav Jain <vaibhav@linux.ibm.com>
-Cc: linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>
-Subject: Re: Re: [PATCH v2] KVM: PPC: Book3S HV: Fix L2 guest reboot failure
- due to empty 'arch_compat'
-Message-ID: <z47adbiweldcumlq4uejggkfcvfaw5nrd7v3tbh2e3pcvzjot2@gourfue5ytbl>
-Mail-Followup-To: Vaibhav Jain <vaibhav@linux.ibm.com>, 
-	linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org, kvm-ppc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>, 
-	Vaidyanathan Srinivasan <svaidy@linux.ibm.com>, "Aneesh Kumar K . V" <aneesh.kumar@kernel.org>, 
-	Jordan Niethe <jniethe5@gmail.com>, "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>
-References: <20240205132607.2776637-1-amachhiw@linux.ibm.com>
- <87h6img6g4.fsf@vajain21.in.ibm.com>
+	s=arc-20240116; t=1707156691; c=relaxed/simple;
+	bh=VwcaSmtvjRjxf/Iv6lMWF4GZNaFQ25DKb9caAPo+0mw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=J9ZaFeb/aIFG+il01JN9hMMVtQQNfplgpp25Gdad02np9FhI54uKsr7bkv7cHLUoGqHlDw0BeTdvwJNNJtxBQUC1Geg32nAuBkMjyGqdaUqiCnPBscCVK9IgPCID/h5RtyyNYiIDNMMRDMpK5Qp6IfmuaP8q94g3YrDXJVhmdFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=a/kYseUs; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5114cd44fdbso2704780e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 10:11:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707156685; x=1707761485; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ood9JeXOKG87bTqfPH5vVrFrWxV318p/Ke+LplXjoho=;
+        b=a/kYseUsVOApbcDqo7nlBcgdbsjxfi7dLKawib4sxJ18gY80U+pKm1I67fruEGvlDc
+         32cJbkxAl9Pbslrn/tAKYAt99shzTJFycFBy6Ez6Dw2tavi3jY6SGTMIJ1r/nYnVYrDs
+         +WWNxAeO1IrVBjJbXMw3FxjWnLsKPAMSB70Jc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707156685; x=1707761485;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ood9JeXOKG87bTqfPH5vVrFrWxV318p/Ke+LplXjoho=;
+        b=Tc7QSwmNN6oOBWZHN5AlfsJs9GRfYB0XvMHMHmafLP/3g6EkJnVP7EnQ7s1CVM2Z33
+         /epP3Gl3p10Rw7hMS481LfzZQxUxqYwCiifnQlL237I/bpc68xJujA5bguRxCxL75EKt
+         l9GUI/Ii5NkuxSS3jBJV/K9+wpe2gaSwkaMCXqV5vjT1Yg40R1Of58sl9bAAERlrQqv7
+         wQQ/BMtaHGvDJG31TuT2jiG0GI1fh4r93+8lyL/9wkxSWrHaQKdZRgVDnRgNqY/TNPGU
+         nly7DvVbOV4C9k9FwbSrQxexBeVJgwT/8VnqbRUNwwaR9loUP3L1EVrGOy74cAME69E8
+         rTRw==
+X-Gm-Message-State: AOJu0YzVlQPzTLCJcr/Cj/wsOWkW8s5bglZObDWgm+/NewDI75MhcRMD
+	s3w7JmwsqSIMwAHcKpqH8hTYf0QB2d1J3CIcY9Y5/Kc6JeME2mToPP37jeWLJ6OsZY/lDt2VuWP
+	IvUZd
+X-Google-Smtp-Source: AGHT+IHPeCEiNn9O5l+AgaXum4wDbYvGo+R4ygSsq/lD+wnNxDLwGsgEKz2amAF8TPSbbZ/rJWwuiA==
+X-Received: by 2002:a05:6512:2028:b0:511:4967:9f0a with SMTP id s8-20020a056512202800b0051149679f0amr213881lfs.57.1707156684799;
+        Mon, 05 Feb 2024 10:11:24 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVZQ3Bz/5J695l1G/jrVKKdPjXNMBJojzXKpqdzeLMoNiya9WEJcy02L1lqG85vm4M5KpYiD0gTtb7VYH1H/FJvD4XS9MXY11GkEHLo
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id b5-20020a196705000000b005114a9c483csm24181lfc.100.2024.02.05.10.11.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Feb 2024 10:11:24 -0800 (PST)
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-5114a797f17so523e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 10:11:24 -0800 (PST)
+X-Received: by 2002:a19:5f50:0:b0:511:4a7c:51aa with SMTP id
+ a16-20020a195f50000000b005114a7c51aamr19188lfj.6.1707156683549; Mon, 05 Feb
+ 2024 10:11:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87h6img6g4.fsf@vajain21.in.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 8E9EiS8ihTxe6mGulR4STRg4YndCvuK-
-X-Proofpoint-GUID: T-e15VsqzERE4oLBM_2e0CIBfPF2YuaK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-05_12,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
- mlxscore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=799 impostorscore=0
- bulkscore=0 clxscore=1015 phishscore=0 priorityscore=1501 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402050136
+References: <b236236a-9953-4246-a697-19ed1b22d86a@web.de>
+In-Reply-To: <b236236a-9953-4246-a697-19ed1b22d86a@web.de>
+From: Doug Anderson <dianders@chromium.org>
+Date: Mon, 5 Feb 2024 10:11:06 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=Xsg3Fs8XQ0piBYKGSYOhuGXyKpoJ5dbtGPdP5HU+2RyQ@mail.gmail.com>
+Message-ID: <CAD=FV=Xsg3Fs8XQ0piBYKGSYOhuGXyKpoJ5dbtGPdP5HU+2RyQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/hisilicon: Use devm_platform_get_and_ioremap_resource()
+ in dsi_parse_dt()
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: dri-devel@lists.freedesktop.org, kernel-janitors@vger.kernel.org, 
+	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, John Stultz <jstultz@google.com>, 
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	Tian Tao <tiantao6@hisilicon.com>, 
+	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+	Xinliang Liu <xinliang.liu@linaro.org>, Xinwei Kong <kong.kongxinwei@hisilicon.com>, 
+	Yongqin Liu <yongqin.liu@linaro.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Vaibhav,
+Hi,
 
-Thanks for looking into the patch.
+On Mon, Feb 5, 2024 at 12:13=E2=80=AFAM Markus Elfring <Markus.Elfring@web.=
+de> wrote:
+>
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Mon, 5 Feb 2024 08:58:21 +0100
+>
+> A wrapper function is available since the commit 890cc39a879906b63912482d=
+fc41944579df2dc6
+> ("drivers: provide devm_platform_get_and_ioremap_resource()").
+> Thus reuse existing functionality instead of keeping duplicate source cod=
+e.
+>
+> This issue was detected by using the Coccinelle software.
+>
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> ---
+>  drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c b/drivers/gpu/d=
+rm/hisilicon/kirin/dw_drm_dsi.c
+> index 566de4658719..1edf429c49d7 100644
+> --- a/drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c
+> +++ b/drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c
+> @@ -834,8 +834,7 @@ static int dsi_parse_dt(struct platform_device *pdev,=
+ struct dw_dsi *dsi)
+>                 return PTR_ERR(ctx->pclk);
+>         }
+>
+> -       res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -       ctx->base =3D devm_ioremap_resource(&pdev->dev, res);
+> +       ctx->base =3D devm_platform_get_and_ioremap_resource(pdev, 0, &re=
+s);
+>         if (IS_ERR(ctx->base)) {
+>                 DRM_ERROR("failed to remap dsi io region\n");
+>                 return PTR_ERR(ctx->base);
 
-On 2024/02/05 11:05 PM, Vaibhav Jain wrote:
-> Hi Amit,
-> 
-> Thanks for the patch. Minor comment on the patch below:
-> 
-> Amit Machhiwal <amachhiw@linux.ibm.com> writes:
-> 
-> <snip>
-> 
-> >  
-> > +static inline unsigned long map_pcr_to_cap(unsigned long pcr)
-> > +{
-> > +	unsigned long cap = 0;
-> > +
-> > +	switch (pcr) {
-> > +	case PCR_ARCH_300:
-> > +		cap = H_GUEST_CAP_POWER9;
-> > +		break;
-> > +	case PCR_ARCH_31:
-> > +		cap = H_GUEST_CAP_POWER10;
-> Though CONFIG_CC_IMPLICIT_FALLTHROUGH and '-Wimplicit-fallthrough'
-> doesnt explicitly flag this usage, please consider using the
-> 'fallthrough;' keyword here.
-> 
-> However you probably dont want this switch-case to fallthrough so please
-> use a 'break' instead.
+This function no longer needs the local variable "res". Remove it and
+then change the function call to devm_platform_ioremap_resource().
+With that:
 
-Sure, v3 on the way.
-
-> 
-> > +	default:
-> > +		break;
-> > +	}
-> > +
-> > +	return cap;
-> > +}
-> > +
-> >
-> <snip>
-> 
-> With the suggested change above
-> 
-> Reviewed-by: Vaibhav Jain <vaibhav@linux.ibm.com>
-
-Thanks!
-
-> 
-> -- 
-> Cheers
-> ~ Vaibhav
-
-~Amit
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
