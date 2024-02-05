@@ -1,143 +1,136 @@
-Return-Path: <linux-kernel+bounces-53246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53247-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBD1A84A2A3
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:43:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2637084A2A4
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:44:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE6D01C20F22
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:43:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 538211C20A14
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:44:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C19F481CD;
-	Mon,  5 Feb 2024 18:43:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB35E487A9;
+	Mon,  5 Feb 2024 18:43:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="gBgAJ3IY"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="t7vvPXVD"
+Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3830E48796;
-	Mon,  5 Feb 2024 18:43:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93C5B48799
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 18:43:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707158612; cv=none; b=S+irNdiXj3NckLfZzjeoIek+j/GEBWp6iwzK+RA9sc12MtJ6jtiltEE5BS+PvnmPvJXSDL6R9fd2lqDl0s9fhL8tfJLTo9maY++z6eiEzoy5s/WmHFxOjQAFU1EFo2AU0KMw9smNpEuiAO72+VnUkSoA1G+RA8dZKkehwsHAb/U=
+	t=1707158623; cv=none; b=jFNUw5iPTgiSTUK3+iGwOtjkPYUGSOK0zfSmqx+S1fhEDw0/W9hRjxUsCt3ZzvLQZqGYBBCui0XdM73EQbyurtQSc0nClXHU6vLhPViWWaiRML8igByeVubDBv8IVs8vSJJCCuQhYKPFv7dD50EIkt+wNIbDKDzQSQ7S63FLhY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707158612; c=relaxed/simple;
-	bh=QlgzPgs6KCB4COcwRVJDbUMBhSrCoN/54lajE9rvpI0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=NZ2bZDa7d/PVfoq22TJ0STbh94zPw+0CdneDicnGteiE4Z7LQlIQYiTCjc5uu2uCOrrtOfgY1eduwEKRarezsFzFTxVJZxcBPO5s2544kP/eTMpgSfo1MCnnGsZlHxJxCT1NzDf0NbmLakNktqmOV8GN0kxkyXPJE/PyroVLAp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=gBgAJ3IY; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 415Ado7U025429;
-	Mon, 5 Feb 2024 18:43:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=4ZWfCHX4P4mlG3MlnCZlj7DBCqdL6mjOYU2eJew/9K0=; b=gB
-	gAJ3IYsf82/V/OXH5V6LKEf7Zn8fNNE9NGQS038fIidvS7L5Zlj6Hthpgr73DhJv
-	7mzfePExJdKlnxTyNm5zENNC3xWyrjKmft6VFaTrdGMAIIMdihrZVKw6VPX/CCnE
-	/8Gwv7GLiCEoHM0IP0z3n0T0QIZL2Im2CU+6U8nXXwlB5qHupHpie4GkJDWOyEgI
-	1hXqZeBx0miKTWn4AkXe/Vjr1nHroD2nDNqfWoAQrj8aR9ZTNEJCGN1uOANgyuLc
-	XkV1EEK2Q16HaWgEdqDzhr0HQfzI2qNU1vZ710/e+EpVk0ztKQ2UTjpxoDK0kfSK
-	mnJgiTRv+txSxL7X4pzQ==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w2v729e3p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 05 Feb 2024 18:43:26 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 415IhPSf026192
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 5 Feb 2024 18:43:25 GMT
-Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 5 Feb
- 2024 10:43:24 -0800
-Message-ID: <1d1db241-c4e3-75f8-5dc3-69598bf4ec76@quicinc.com>
-Date: Mon, 5 Feb 2024 11:43:23 -0700
+	s=arc-20240116; t=1707158623; c=relaxed/simple;
+	bh=nmTgukHgTcZ/pZA80eYQ+M9fO2HDt9ms9ZXkd1+gOI8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=nXoXyjGj+QG86iv4kBXv5P79lfkX7iAGRv9A0/NNbsS3HrTUGRfVAfJJRIpDUiSnsrdyTEn2B1ENjz1IZV21jkSBTOOu07FpLc4P7Jhmkv0VrDTKbyAdA+m0RJW3s7KraUQckgoskZqYifUdasrDzmVRcmw+6YRVot8tQZumpOs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.de; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=t7vvPXVD; arc=none smtp.client-ip=99.78.197.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1707158621; x=1738694621;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=n0UiRQIDwXPhO89gFc7hLFAJlLuRhv/umCxdj84c8o0=;
+  b=t7vvPXVD0XXwX6DX6nZjuNeze+0e1hVjieo69BH8ohs7td2PnFE9dhWv
+   zMfvVi0dKltnxX5tMJagvKd8z6/QhEYPqCVpHW61ZLftc4bCxpDiiYXM2
+   12HtgDyNubWWonL48stICQX4cIyDf/UHRBILWJx6zSpbjedNcwewi33FP
+   o=;
+X-IronPort-AV: E=Sophos;i="6.05,245,1701129600"; 
+   d="scan'208";a="63862469"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.214])
+  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 18:43:39 +0000
+Received: from EX19MTAEUB001.ant.amazon.com [10.0.43.254:27241]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.8.155:2525] with esmtp (Farcaster)
+ id f9ee6ae2-72b7-46e1-a0c5-bc63b12df20d; Mon, 5 Feb 2024 18:43:38 +0000 (UTC)
+X-Farcaster-Flow-ID: f9ee6ae2-72b7-46e1-a0c5-bc63b12df20d
+Received: from EX19D031EUB002.ant.amazon.com (10.252.61.105) by
+ EX19MTAEUB001.ant.amazon.com (10.252.51.28) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 5 Feb 2024 18:43:38 +0000
+Received: from EX19MTAUWA001.ant.amazon.com (10.250.64.204) by
+ EX19D031EUB002.ant.amazon.com (10.252.61.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 5 Feb 2024 18:43:37 +0000
+Received: from dev-dsk-sauravsc-1a-8777b848.eu-west-1.amazon.com
+ (172.19.118.34) by mail-relay.amazon.com (10.250.64.204) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40 via Frontend Transport; Mon, 5 Feb 2024 18:43:35 +0000
+From: Saurav Sachidanand <sauravsc@amazon.com>
+To: Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>, Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>
+CC: Saurav Sachidanand <sauravsc@amazon.com>,
+	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH] [RFC] KVM: arm64/vgic: Populate GICR_TYPER with Aff3
+Date: Mon, 5 Feb 2024 18:43:26 +0000
+Message-ID: <20240205184326.78814-1-sauravsc@amazon.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH] dt-bindings: clock: qcom: Fix @codeaurora email in
- Q6SSTOP
-Content-Language: en-US
-To: Rob Herring <robh@kernel.org>
-CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240202171915.4101842-1-quic_jhugo@quicinc.com>
- <20240205183338.GA3905881-robh@kernel.org>
-From: Jeffrey Hugo <quic_jhugo@quicinc.com>
-In-Reply-To: <20240205183338.GA3905881-robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: XMKFtqzjRdtXP_s1gu_eudgW1S5OnsA-
-X-Proofpoint-ORIG-GUID: XMKFtqzjRdtXP_s1gu_eudgW1S5OnsA-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-05_12,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 impostorscore=0 phishscore=0 clxscore=1015 spamscore=0
- mlxscore=0 priorityscore=1501 bulkscore=0 suspectscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402050141
 
-On 2/5/2024 11:33 AM, Rob Herring wrote:
-> On Fri, Feb 02, 2024 at 10:19:15AM -0700, Jeffrey Hugo wrote:
->> The servers for the @codeaurora domain are long retired and any messages
->> addressed there will bounce.  Govind Singh has left the company which
->> appears to leave the Q6SSTOP clock controller binding unmaintained.
->>
->> Move maintenance of the binding to the Qualcomm Clock Drivers maintainer
->> as suggested by Bjorn Andersson.
->>
->> Signed-off-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
->> ---
->>   Documentation/devicetree/bindings/clock/qcom,q6sstopcc.yaml | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> How about the rest of the tree?:
-> 
-> Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml:  - Sandeep Panda <spanda@codeaurora.org
->>
-> Documentation/devicetree/bindings/display/panel/visionox,rm69299.yaml:  - Harigovindan P <harigovi@codeauro
-> ra.org>
-> Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml:  - Odelu Kukatla <okukatla@codeaurora.org>
-> Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml:  - Kiran Gunda <kgunda@codeaurora.org>
-> Documentation/devicetree/bindings/net/bluetooth/qualcomm-bluetooth.yaml:  - Balakrishna Godavarthi <bgodava
-> r@codeaurora.org>
-> Documentation/devicetree/bindings/net/bluetooth/qualcomm-bluetooth.yaml:  - Rocky Liao <rjliao@codeaurora.o
-> rg>
-> Documentation/devicetree/bindings/nvmem/qcom,spmi-sdam.yaml:  - Shyam Kumar Thella <sthella@codeaurora.org>
-> Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml:  - Srinivasa Rao Mandadapu <srivasam@
-> codeaurora.org>
-> Documentation/devicetree/bindings/watchdog/qcom-wdt.yaml:  - Sai Prakash Ranjan <saiprakash.ranjan@codeauro
-> ra.org>
+According to spec, bits [63:56] of the GICR_TYPER register are supposed
+to contain Affinity level 3 (Aff3) bits of the Processing Element (PE)
+associated with its GIC redistributor. Linux guests on boot match PEs
+with their redistributor using all four Affinity level bits from this
+register.
 
-Most of these already have patches posted with updates.
+Currently, vGIC populates GICR_TYPER with just the first three Affinity
+levels of a vCPU's MPIDR. This works fine for a Linux guest that boots
+with KVM's default vCPU MPIDR assignment, which also only populates till
+the first three Affinity levels.
 
-The following have not yet been updated as we are looking for a new 
-owner.  Hoping to have someone identified this week so we can post updates.
+However, a hypervisor can override KVM's default MPIDR assignment by
+writing directly to a vCPU's MPIDR_EL1 register. If such a hypervisor
+were to populate Aff3 bits for a VM, a Linux guest booting there would
+fail to match vCPUs with their vGIC redistributors, since their virtual
+GICR_TYPER registers would be missing the respective Aff3 bits.
 
-Documentation/devicetree/bindings/nvmem/qcom,spmi-sdam.yaml:  - Shyam 
-Kumar Thella <sthella@codeaurora.org>
-Documentation/devicetree/bindings/watchdog/qcom-wdt.yaml:  - Sai Prakash 
-Ranjan <saiprakash.ranjan@codeaurora.org>
-Documentation/devicetree/bindings/display/panel/visionox,rm69299.yaml: 
-- Harigovindan P <harigovi@codeaurora.org>
+To change that, let's populate GICR_TYPER using Aff3 bits [39:32] from
+the vCPU's MPIDR.
 
--Jeff
+Signed-off-by: Saurav Sachidanand <sauravsc@amazon.com>
+---
+ arch/arm64/kvm/vgic/vgic-mmio-v3.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+index c15ee1df036a..26bc838ce14c 100644
+--- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
++++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+@@ -324,6 +324,7 @@ static unsigned long vgic_mmio_read_v3r_typer(struct kvm_vcpu *vcpu,
+ 	u64 value;
+ 
+ 	value = (u64)(mpidr & GENMASK(23, 0)) << 32;
++	value |= (u64)((mpidr >> 32) & GENMASK(7, 0)) << 56;
+ 	value |= ((target_vcpu_id & 0xffff) << 8);
+ 
+ 	if (vgic_has_its(vcpu->kvm))
+-- 
+2.40.1
+
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
+
 
