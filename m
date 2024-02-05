@@ -1,128 +1,177 @@
-Return-Path: <linux-kernel+bounces-52646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52653-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56491849ADB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:49:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A66B4849AFA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:53:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87CCC1C214C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:49:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C8DE1F255BB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:53:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B369C3FE42;
-	Mon,  5 Feb 2024 12:45:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FVBxkbVf"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C79CE24B4A;
+	Mon,  5 Feb 2024 12:47:25 +0000 (UTC)
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DE9B2E626
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 12:45:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBB5B48787;
+	Mon,  5 Feb 2024 12:47:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707137136; cv=none; b=RQv4/ZM34ujU+y8H9SvfgvAxBgH5A3BL7RacmZufHriQdtJATdcHd3MwxeNmUt0aalMbLXNdS9JyhD8Z727w5+4PdiXEhtXMvSJSymPiOTav4KwICJQpkIolBHXgVK1YrGKbVT0RorjR/RyfSxWhF6RXREBIqD8gIQmmhyr7KcA=
+	t=1707137245; cv=none; b=CmvW7c+Wx0z1KcAw96A8CnpMAwSEfwzOiZ5PKguaP4zDm1NqWbcj0Ibd7BAu2rtShVFaJZf6zVe5YgsiQLR5PVkdezFkDsjSExluIiFAnpyhyE3HXdw+CdvdnxznqTDiV60TmHbYmForQ7fR06BIGBcoChrAGYUEruYR9YRLZJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707137136; c=relaxed/simple;
-	bh=pcCRvLVnc0tf2pnRSFEh9MBfccVf+WuKitDBj59DJ6E=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bkn9mCvplqZyXyMQo6p+Vg47OnZvthV6YLH4yB5PvK1pGhxgF5sXWP2OwGoTwBliLvaSxEoR/Bs62Io8bWMJobcN0aI3biXdzWMh1+2zqHu7GbChRXvgagR32NrfdpM/BFU1D6Df/kF7OVwpiobYrYAZx3ZvNYreR4asc1MH1FM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FVBxkbVf; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40fccd09082so19986195e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 04:45:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707137132; x=1707741932; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bTE/0vC7WxQ0ABd9oJxLbbsyqbh1xb/MkKSY0UL7qyA=;
-        b=FVBxkbVfzVMLv85O573n67blq7BXn81h9AvQqXIwy+pfbB73S9l8Ila5cm4GUTrpBx
-         CkBzyvMYWb0fetwC23knjzNPMRB5G1rKf+QdmPfKfocZPVM+yJHK+zdsXhpNHIZbaH9G
-         yCXar5CVmBA8d9xKdy3ve0XrZaq6YcMe50l4Ss45BI3WJqWen/xO4oJVZuDe16CEmqNw
-         MPHyDqJCPbAW05iGRxdqm8bp5UdKHzCyp1ssEik20nw9L9FVf9c3Nfw3ZIGPoAwypUAR
-         18juVE91uodiPgrzWYI3yC3kORSU7iRBLd8F3nprolKy57wBykA6bQhVv8CPcae1bDua
-         ifqA==
+	s=arc-20240116; t=1707137245; c=relaxed/simple;
+	bh=v1KF4ZicArZ15k+k1CVSoy4y3ifGY0KbGb6jOYXQVMw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=o3/6t0RCki1hjV0H2Bek4NRM3mmvo9NQesmuBbLh+iUdFMyDEWvy0kd1XKaZ9/AoISZsdf4xXIjvxKPZiYy3G3r2os0hGWlMKTKAdYjQEHdCee4vey+L9Cm7xAb4UqK/W/06WNTaBfjjk0gb4WMqPFFbBuw/l6eitKwZvpjH0oY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-604123a7499so42705017b3.3;
+        Mon, 05 Feb 2024 04:47:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707137132; x=1707741932;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1707137241; x=1707742041;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bTE/0vC7WxQ0ABd9oJxLbbsyqbh1xb/MkKSY0UL7qyA=;
-        b=egSXxadkqiBVY89e0cHTOagAR6R8RPijoIaVCf6MHHjGLwue1nC1S+ZoR+SnJlUrBG
-         zn5AS4zuDCUnrQG5ypZ18Mw7Vh9trR2gDBvHNxxIkqgx8D+TG9mmRlIdSjfonhIXQKz4
-         XP7NIZGKXEGJPKtXoHmOz4k+bplZDOqXHkwuu9/iueoBPKq1sPTPnfRmzGzJTtRt0wHE
-         IJANVwtbt4tkh4Zfqni3zt+vyKKI7kjSKpTeVgVgtvY3HyAut2HzTt2ZQ1rN0CDFOW8t
-         OrAJ5YiS1XMW6WgFOyiox+TFFUqGBIN4kerDIiZ+QxBGMRXW4iB6k5qgZBPhEN1XO729
-         19Iw==
-X-Gm-Message-State: AOJu0Yx26Ct9mUO6H8y3VMEqzCsibnZ3S9VP6mIARpciQmUfgsw55YQB
-	PRYfwWe2f5DamaWGikWimStBFHiuIw+BaGFyg1Oa6qHgDt9UoEe4tJkNGQW2NSD0QjlXiPJwMX7
-	tWvCqMQ==
-X-Google-Smtp-Source: AGHT+IHtAALc9fR7T8Hi/V4r24s8Ve4SlEF7nzbMB27mSpni9V8hYXrKvi9LtEVW3ATD0zbAXNwfUw==
-X-Received: by 2002:adf:f7d0:0:b0:33b:2200:a076 with SMTP id a16-20020adff7d0000000b0033b2200a076mr5180536wrq.8.1707137132629;
-        Mon, 05 Feb 2024 04:45:32 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXhQbKNIMYyPNUUsGm6OpaKLjLncRljyTEjlpzOjoSmQIPeuwg/T4NPRLuMf6tpq1JIJbVpYxGfT1Q6bpi3ACI5BaL3xKWtECi+tnoRq9br8cJyaWXuFeha4+PIcXC7UqZGMM4j973PqaRzOVSfcW80PE0B+cg8VyBqLyvNcf38VkSZP40ORSRftYfyKPX+zOYiSjctdWrghn92yPmJBgdUcP7YIORCQs36bn0arczXNkLUMI8vtfp87jRkjjOVUDa9yNCU/BAV1p9om6oPPFrTJ1qmX/NDnf/1QTV01BP3vPaV0IqzUnJUs41U0VUWM5hzhkNflSAGocusT1q11OktudMn1GxYToMhFxIO7ZmKTOPvpbn+nFndcFhKUYJ4ecRRvTHdRZzOGjO8Ae3dEjFCJajPhsCJNY4g3muPmaTA54+OEZ8xLEbKN1xqlCG5ZmCm1RKQZ+cTeBewO6tff9YuYGQPhThYaNcfS2g6rbEUhK6TJog2V0Awhqdrag==
-Received: from ta2.c.googlers.com.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id n9-20020adff089000000b0033b35da384fsm3650812wro.33.2024.02.05.04.45.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 04:45:32 -0800 (PST)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: broonie@kernel.org,
-	andi.shyti@kernel.org,
-	semen.protsenko@linaro.org
-Cc: krzysztof.kozlowski@linaro.org,
-	alim.akhtar@samsung.com,
-	linux-spi@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	andre.draszik@linaro.org,
-	peter.griffin@linaro.org,
-	kernel-team@android.com,
-	willmcvicker@google.com,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v4 16/16] spi: s3c64xx: drop a superfluous bitwise NOT operation
-Date: Mon,  5 Feb 2024 12:45:13 +0000
-Message-ID: <20240205124513.447875-17-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-In-Reply-To: <20240205124513.447875-1-tudor.ambarus@linaro.org>
-References: <20240205124513.447875-1-tudor.ambarus@linaro.org>
+        bh=mJ4uShXGXfh9Kf8BCJj+oy4yCIeGo5AwZyFiWoh8Epg=;
+        b=ZCqxohf1ZbVe6vGmQFtm7XzA+4BYC5cbggFw8u0cKO0h0f+FvjLsYhG6VsFGO13ifS
+         ddOzHyhtQ+1Clv8ocKHy0I/lWowG0SyRn6tavR0AXmQXCymXmw5hUgDLDXoyfsKvyekL
+         yPR/NktKw64qJa7iOC7jOEuhmddbbpGX2j0e5UK52kvTU7GPlSw7jXTyenk6qdRBukfz
+         i5CvlH1t7I5sA7aS9bW73hLciemtfH9RPN7a7RSD+Jld5Bi+93npK0uPL5TNHW57Z8FG
+         Ol5P4Am68MFiKHsGNvx2VfDCBccDMIF0yh23JFHhOxOSyduZENnV3aspNJMcvmxOP0M2
+         +rHA==
+X-Gm-Message-State: AOJu0YxgzN1NyqW0jPcK8WP1InJKBqc4uxK75LjMiT281gpsoi2Hnriw
+	qZzf0iWkuyzgfW1C2DciZp5LIJoS/Z7aNqMiSeAh2R9SSZI9f9Xoe/JG4PrFEDA=
+X-Google-Smtp-Source: AGHT+IG7bcqBvnRBRUNTQqbZOEcfJkjmkgAdym9e35FAxr0U0k1uXFLrf69JceNY7bn5P+n9V89qHA==
+X-Received: by 2002:a81:8341:0:b0:604:4f5:f258 with SMTP id t62-20020a818341000000b0060404f5f258mr10286700ywf.25.1707137241009;
+        Mon, 05 Feb 2024 04:47:21 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCW0wQk/gcGGsuafSRLCI9YatI3qSmcR+WtgMF9dp2KUs3Hq7rruuXd8NFRiX+LjHisPJnPqeHBjeZyAxd3f7AvIC/JsgERpHU9B9aWR2KBeiQwqtHkW92H4G4mJzX9qVsb529ZTOucMJofkukM9
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
+        by smtp.gmail.com with ESMTPSA id fu10-20020a05690c368a00b005ffa141d9f4sm1907577ywb.18.2024.02.05.04.47.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Feb 2024 04:47:20 -0800 (PST)
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dc6f6d10ea9so2415822276.2;
+        Mon, 05 Feb 2024 04:47:20 -0800 (PST)
+X-Received: by 2002:a05:6902:547:b0:dc6:c6b1:b10c with SMTP id
+ z7-20020a056902054700b00dc6c6b1b10cmr8530106ybs.45.1707137240297; Mon, 05 Feb
+ 2024 04:47:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240205122916.it.909-kees@kernel.org> <20240205123525.1379299-2-keescook@chromium.org>
+In-Reply-To: <20240205123525.1379299-2-keescook@chromium.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 5 Feb 2024 13:47:08 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdU2c75WDCX+ptQgB7h0taHjG2pwL9db6gE3LKxv5Vz04Q@mail.gmail.com>
+Message-ID: <CAMuHMdU2c75WDCX+ptQgB7h0taHjG2pwL9db6gE3LKxv5Vz04Q@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] string: Allow 2-argument strscpy()
+To: Kees Cook <keescook@chromium.org>
+Cc: Andy Shevchenko <andy@kernel.org>, Justin Stitt <justinstitt@google.com>, 
+	linux-hardening@vger.kernel.org, Richard Weinberger <richard@nod.at>, 
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Jason Wang <jasowang@redhat.com>, 
+	kernel test robot <lkp@intel.com>, Nathan Chancellor <nathan@kernel.org>, 
+	Azeem Shaikh <azeemshaikh38@gmail.com>, linux-kernel@vger.kernel.org, 
+	linux-um@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-val &= ~mask;
-val |= mask;
+Hi Kees,
 
-is equivalent to:
-val |= mask;
+On Mon, Feb 5, 2024 at 1:37=E2=80=AFPM Kees Cook <keescook@chromium.org> wr=
+ote:
+> Using sizeof(dst) for the "size" argument in strscpy() is the
+> overwhelmingly common case. Instead of requiring this everywhere, allow a
+> 2-argument version to be used that will use the sizeof() internally. Ther=
+e
+> are other functions in the kernel with optional arguments[1], so this
+> isn't unprecedented, and improves readability. Update and relocate the
+> kern-doc for strscpy() too.
+>
+> Adjust ARCH=3Dum build to notice the changed export name, as it doesn't
+> do full header includes for the string helpers.
+>
+> This could additionally let us save a few hundred lines of code:
+>  1177 files changed, 2455 insertions(+), 3026 deletions(-)
+> with a treewide cleanup using Coccinelle:
+>
+> @needless_arg@
+> expression DST, SRC;
+> @@
+>
+>         strscpy(DST, SRC
+> -, sizeof(DST)
+>         )
+>
+> Link: https://elixir.bootlin.com/linux/v6.7/source/include/linux/pci.h#L1=
+517 [1]
+> Reviewed-by: Justin Stitt <justinstitt@google.com>
+> Cc: Andy Shevchenko <andy@kernel.org>
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-Drop the superfluous bitwise NOT operation.
+Thanks for your patch!
 
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
- drivers/spi/spi-s3c64xx.c | 1 -
- 1 file changed, 1 deletion(-)
+> --- a/include/linux/string.h
+> +++ b/include/linux/string.h
 
-diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-index ed0b5cf8fb4d..72c35dbe53b2 100644
---- a/drivers/spi/spi-s3c64xx.c
-+++ b/drivers/spi/spi-s3c64xx.c
-@@ -1089,7 +1089,6 @@ static void s3c64xx_spi_hwinit(struct s3c64xx_spi_driver_data *sdd)
- 
- 	val = readl(regs + S3C64XX_SPI_MODE_CFG);
- 	val &= ~S3C64XX_SPI_MODE_4BURST;
--	val &= ~(S3C64XX_SPI_MAX_TRAILCNT << S3C64XX_SPI_TRAILCNT_OFF);
- 	val |= (S3C64XX_SPI_MAX_TRAILCNT << S3C64XX_SPI_TRAILCNT_OFF);
- 	writel(val, regs + S3C64XX_SPI_MODE_CFG);
- 
--- 
-2.43.0.594.gd9cf4e227d-goog
+> +/*
+> + * The 2 argument style can only be used when dst is an array with a
+> + * known size.
+> + */
+> +#define __strscpy0(dst, src, ...)      \
+> +       sized_strscpy(dst, src, sizeof(dst) + __must_be_array(dst))
+> +#define __strscpy1(dst, src, size)     sized_strscpy(dst, src, size)
 
+(dst), (src), (size) etc.
+
+
+> +
+> +/**
+> + * strscpy - Copy a C-string into a sized buffer
+> + * @dst: Where to copy the string to
+> + * @src: Where to copy the string from
+> + * @...: Size of destination buffer (optional)
+> + *
+> + * Copy the source string @src, or as much of it as fits, into the
+> + * destination @dst buffer. The behavior is undefined if the string
+> + * buffers overlap. The destination @dst buffer is always NUL terminated=
+,
+> + * unless it's zero-sized.
+> + *
+> + * The size argument @... is only required when @dst is not an array, or
+> + * when the copy needs to be smaller than sizeof(@dst).
+> + *
+> + * Preferred to strncpy() since it always returns a valid string, and
+> + * doesn't unnecessarily force the tail of the destination buffer to be
+> + * zero padded. If padding is desired please use strscpy_pad().
+> + *
+> + * Returns the number of characters copied in @dst (not including the
+> + * trailing %NUL) or -E2BIG if @size is 0 or the copy from @src was
+> + * truncated.
+> + */
+> +#define strscpy(dst, src, ...) \
+> +       CONCATENATE(__strscpy, COUNT_ARGS(__VA_ARGS__))(dst, src, __VA_AR=
+GS__)
+
+Likewise
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
