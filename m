@@ -1,135 +1,152 @@
-Return-Path: <linux-kernel+bounces-52882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46B63849DCC
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:15:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC469849DC8
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:14:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CACA9B21A10
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:15:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A3721F24F31
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:14:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B93ED2C6B9;
-	Mon,  5 Feb 2024 15:15:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46E972C861;
+	Mon,  5 Feb 2024 15:14:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cTcEakOv"
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hf6JWvy7"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 842702D60B
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 15:15:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9EE52C6AD;
+	Mon,  5 Feb 2024 15:14:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707146110; cv=none; b=slvScSfvlNcuPHfCPZe9FUhmN0vaRttfgd/lC7oMUbVq53XIl95DQpVVG8+I4sE3buSATvmdxdLcfPIY/Nt/44hbCitoU8FMkyrlm2G7wO6rHsSp/VThvL4z/iqIYXN9i4Q610kY74W/FU0yUTCjPKJ+YmOn2zgYjYfTzzB9DFA=
+	t=1707146074; cv=none; b=TrGmV+4X9TDpZ+ZjVHjSOfJ8pADc4f0Dt5zJRVRzsOdbLh62DC+fo4djWDECA74aIbxRnE8S5gwZaHU97/t3DtSWlGAC9Tiltl+lrfbv5/DVWfIFbRV8AwtJiARyJ4T+uvLbHu/88AqGPVN85dqFoVO/xLC8VhkipIzijBrBVtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707146110; c=relaxed/simple;
-	bh=Au4LVORN6H/onQsw+fO8tyJyMuEiQJy3CYj6SC/W5Y0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FS5w4ji2h0bE0HeKB7BDqbI/ctm6eNeVjSTxEllVrAgmapoFjLIojAO7MHiF38/5m/5URc0djkqx7iLyv8X6QW2RfBBUMdyxr8tFOafqeBi9MEQ5Iz4W0KHNSWhb94csa0lTCzhKzmmAVwRPy36W/BHLTV0PCIAKDNBjAFCnrCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cTcEakOv; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-783f3d27bfbso252037585a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 07:15:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707146107; x=1707750907; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=SagLyPv+tU2JHwW9rPzTIveX03STHYINvfEVvGHvYDk=;
-        b=cTcEakOvQDZ7Mb5rKzpRotRkW6lTnJPLC/HW10XK9Nmy6AFWqh1Fb0JdgZEy2Of1g4
-         7ZUdgCd5Rmth3kJKy7On97jxTISm0N97fqiXWXr7jLd7UoL3JOmXJB/3a5HXM54TK/BY
-         jyuUjYmpC3HjNHnmzzIT6fDqD/NXICO+amY8kk4rSyF87+nP+e69eVqPyu4wa3rW/9v5
-         cKLSptdaZmUkSM9ygOZjqu0zvAO0h9t+x8D184iOSVRO9OJ2QGirK1OgXW1OPB8XNi8A
-         x2X23FXQAHRSfMUIrHmDbpyye9F/AEAQ9neAYswZA7E1Ws7OwL/R4pDz21aVt7Cube3P
-         osCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707146107; x=1707750907;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SagLyPv+tU2JHwW9rPzTIveX03STHYINvfEVvGHvYDk=;
-        b=IddWthezqkPsbdApfmFdpSaDiwAvU6dLdpJY30J5i5lOjtFJUnWge4TYLXa7BSRcq/
-         qB566oUBeCLXXirElUo2ZjxRKGdMs/TKn6kup03GsYjk5qsGVEt+RATfOPNDd8wcx3+T
-         syhl2Sg1heFHsFZOeMYpwg4RtYavqrpaWjh8lH1+WXbeZaUXvHEELGkJcj3fe3Fvvsnt
-         OCnzahF8wbfLKvARMLrNF9ZWbu4AVrgf1V/2fEOBv4Ro3u1Dt14rQHYKCRs9aItj72w5
-         ckbBTuJQW/eWxu+JdqA5OGuqLe80IvB1cezIpAsqswwmGkg4D8wTjWxEwOd99rMVGWAF
-         /lEw==
-X-Gm-Message-State: AOJu0YyNLCStLNAZkJU+zgglgAYW/wN2pfX/Nj+IOIbpBPRyBN15FZ4L
-	i2wvxuvjcQyrrzXgbsPQs9S86ZqJ+dMONV/Utl3WWhh39pqMDxNdqyRvHEXgVaoOfJV4p3pR7sB
-	mHlGD5paSuP988szu4xV1UltBskPG62Qv7EnAGA==
-X-Google-Smtp-Source: AGHT+IEJiCZJgCddiVpWsHVt/Z+aTDGcg5cltCSOe6qZPrQ2iyQVush+5469m4nHWe2ATfO1pbwocsEiLH2smm+MZUI=
-X-Received: by 2002:a0c:dd04:0:b0:68c:67ad:93cb with SMTP id
- u4-20020a0cdd04000000b0068c67ad93cbmr6650169qvk.37.1707146107317; Mon, 05 Feb
- 2024 07:15:07 -0800 (PST)
+	s=arc-20240116; t=1707146074; c=relaxed/simple;
+	bh=q8z3CzrTGrksXvC58CXDpb8372Ql+5oenU5FI2xdeiQ=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:From:Subject:
+	 In-Reply-To:Content-Type; b=rVTBX+PwBTSbi2FBzdo1BiD5MElKDWpR7KgySm/CcdMq0v3gB7gd8dkGpPO0Pca/9megSuR6y4XbB4KMPBJZhKdaW1thFQeQmiomBd1JP1+y0N0evVKasEvbBwvHz+VBrn4c7mzWRK6Zg3UQdLVNiupdT8n/6J2SGROcXgo6dG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hf6JWvy7; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707146073; x=1738682073;
+  h=message-id:date:mime-version:to:cc:references:from:
+   subject:in-reply-to:content-transfer-encoding;
+  bh=q8z3CzrTGrksXvC58CXDpb8372Ql+5oenU5FI2xdeiQ=;
+  b=hf6JWvy774JDny9i8xrUj1cIpY78533+1KUOCfUGLFRFWlqZl1B2HEro
+   Q5mE95YGn0PvOTUt++ooMpzuYU6E0AonNdTTHj3uX5jWlSL/LeS/+LyI/
+   rRuHOrKHS7qlxC0fwJtcXasv2gdUlDCYhCv4o8kNxnuw5utZgpNEqj5nJ
+   GsjLwHg1Sd1sRrtzqTUBLe4kGGPSe0yLR3LETTSCpgdSfn4Q6gp0hzcrO
+   rHKbSadUEiyD6WkregQKw3aK/YfeznvPa4TIv8e1JbuqkndE9E/0azKve
+   iu95xoJ/MXpFVdqxCeI3T2iI3K4ccaycRwMx1CHyE/fPdr8/DDo8ljci8
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="11276716"
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="11276716"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 07:14:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="823881963"
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="823881963"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
+  by orsmga001.jf.intel.com with ESMTP; 05 Feb 2024 07:14:21 -0800
+Message-ID: <e595bcb8-bfc0-aa12-a5c1-a62c5fe9e950@linux.intel.com>
+Date: Mon, 5 Feb 2024 17:15:56 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201172224.574238-1-alexey.klimov@linaro.org> <20240201172224.574238-4-alexey.klimov@linaro.org>
-In-Reply-To: <20240201172224.574238-4-alexey.klimov@linaro.org>
-From: Peter Griffin <peter.griffin@linaro.org>
-Date: Mon, 5 Feb 2024 15:14:55 +0000
-Message-ID: <CADrjBPpWXHhRhid77=utZuaQVzw8aaXUV_EKwwn0=rp7-Jt+NQ@mail.gmail.com>
-Subject: Re: [PATCH 4/4] soc: samsung: exynos-chipid: fix revision calculation
- for gs101
-To: Alexey Klimov <alexey.klimov@linaro.org>
-Cc: krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com, 
-	linux-samsung-soc@vger.kernel.org, semen.protsenko@linaro.org, 
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, klimov.linux@gmail.com, kernel-team@android.com, 
-	tudor.ambarus@linaro.org, andre.draszik@linaro.org, saravanak@google.com, 
-	willmcvicker@google.com, arnd@arndb.de
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Content-Language: en-US
+To: Paul Menzel <pmenzel@molgen.mpg.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Hans de Goede <hdegoede@redhat.com>
+References: <b97d07bf-da27-4576-bed6-fd63e3e0b569@molgen.mpg.de>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: Linux warning `usb: port power management may be unreliable` on
+ Dell XPS 13 9360
+In-Reply-To: <b97d07bf-da27-4576-bed6-fd63e3e0b569@molgen.mpg.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi Alexey,
+On 4.2.2024 10.45, Paul Menzel wrote:
+> Dear Linux folks,
+> 
+> 
+> On the Dell XPS 13 9360, Linux warns:
+> 
+>      usb: port power management may be unreliable
 
-On Thu, 1 Feb 2024 at 17:22, Alexey Klimov <alexey.klimov@linaro.org> wrote:
->
-> The main revision for gs101 SoC is not reported in the CHIPID_REV
-> register. The gs101 Product ID and revisions registers have a behaviour
-> split between old Exynos SoCs and new SoCs. The sub-revision is
-> reported in CHIPID_REV register in [19:16] bits but main revision
-> is still present in Product ID [7:0].
->
-> To construct soc_info->revision correctly for gs101 the main_rev
-> should not be reset from a value read from CHIPID_REV.
->
+Is this a new issue, regression?
+Was the firmware recently updated?
 
-I think it would also be worth adding in the commit message how the
-main_rev and sub_rev relate to the a0, b0, b1 reported by the
-bootloader.
+> 
+>      $ lsusb -t
+>      /:  Bus 001.Port 001: Dev 001, Class=root_hub, Driver=xhci_hcd/12p, 480M
+>          |__ Port 003: Dev 002, If 0, Class=Wireless, Driver=[none], 12M
+>          |__ Port 003: Dev 002, If 1, Class=Wireless, Driver=[none], 12M
+>          |__ Port 004: Dev 003, If 0, Class=Human Interface Device, Driver=usbhid, 12M
+>          |__ Port 005: Dev 004, If 0, Class=Video, Driver=uvcvideo, 480M
+>          |__ Port 005: Dev 004, If 1, Class=Video, Driver=uvcvideo, 480M
+>      /:  Bus 002.Port 001: Dev 001, Class=root_hub, Driver=xhci_hcd/6p, 5000M
+> 
+> Enabling dynamic debug with `usbcore.dyndbg=+p` – `dyndbg="file port.c +p"` did not work¹ – the additional messages are:
+> 
+>      [    1.149417] usb usb2-port1: peered to usb1-port1
+>      [    1.150123] usb usb2-port2: peered to usb1-port2
+>      [    1.150916] usb usb2-port3: peered to usb1-port6
+>      [    1.151621] usb: failed to peer usb2-port4 and usb1-port6 by location (usb2-port4:none) (usb1-port6:usb2-port3)
+>      [    1.151634] usb usb2-port4: failed to peer to usb1-port6 (-16)
+>      [    1.151642] usb: port power management may be unreliable
+>      [    1.152314] usb: failed to peer usb2-port5 and usb1-port6 by location (usb2-port5:none) (usb1-port6:usb2-port3)
+>      [    1.152325] usb usb2-port5: failed to peer to usb1-port6 (-16)
+>      [    1.153020] usb: failed to peer usb2-port6 and usb1-port6 by location (usb2-port6:none) (usb1-port6:usb2-port3)
+>      [    1.153031] usb usb2-port6: failed to peer to usb1-port6 (-16)
+>      [    1.153079] usb usb2: port-1 no _DSM function 5
+>      [    1.153096] usb usb2: port-2 no _DSM function 5
+>      [    1.153111] usb usb2: port-3 no _DSM function 5
+>      [    1.153124] usb usb2: port-4 no _DSM function 5
+>      [    1.153137] usb usb2: port-5 no _DSM function 5
+>      [    1.153151] usb usb2: port-6 no _DSM function 5
+>      [    1.166521] usb usb1-port3: status 0101 change 0001
+>      [    1.166555] usb usb1-port4: status 0101 change 0001
+>      [    1.166584] usb usb1-port5: status 0101 change 0001
+>      [    1.270442] usb usb1-port3: status 0101, change 0000, 12 Mb/s
+>      [    1.362751] usb usb2: bus auto-suspend, wakeup 1
 
-> Signed-off-by: Alexey Klimov <alexey.klimov@linaro.org>
-> ---
->  drivers/soc/samsung/exynos-chipid.c       | 20 ++++++++++++++++----
->  include/linux/soc/samsung/exynos-chipid.h |  1 +
->  2 files changed, 17 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/soc/samsung/exynos-chipid.c b/drivers/soc/samsung/exynos-chipid.c
-> index 7fee6094db12..3b952ffd8cf7 100644
-> --- a/drivers/soc/samsung/exynos-chipid.c
-> +++ b/drivers/soc/samsung/exynos-chipid.c
-> @@ -87,14 +87,26 @@ static int exynos_chipid_get_chipid_info(struct regmap *regmap,
->         soc_info->product_id = val & EXYNOS_MASK;
->
->         if (data->rev_reg != EXYNOS_CHIPID_REG_PRO_ID) {
-> -               ret = regmap_read(regmap, data->rev_reg, &val);
-> +               unsigned int val2;
-> +
-> +               ret = regmap_read(regmap, data->rev_reg, &val2);
->                 if (ret < 0)
->                         return ret;
-> +
-> +               if (data->main_rev_shift == 0)
-> +                       main_rev = (val >> data->main_rev_shift)
-> +                                  & EXYNOS_REV_PART_MASK_GS101;
+These are all related to reading values from firmware ACPI tables.
 
-Looks like it can be simplified to
-main_rev = val & EXYNOS_REV_PART_MASK_GS101;
+The "failed to peer portx-porty.." messages are because driver can't match which
+HS USB 2 and SS USB3 ports are in the same physical connector based on info
+read from firmware ACPI _PLD entries
 
-Peter
+_DSM function 5 is related to port link power management.
+
+Both cases mostly impact power management, but might affects something
+else. Haven't looked at it in detail.
+
+ACPI table dump could show more info, especially the DSDT table
+
+
+> 
+> So the problematic ports do not show up in `lsusb`, do they?
+> 
+> Please find the output of `dmesg` attached.
+
+dmesg shows that "usb2" is the SuperSpeed USB 3 roothub.
+It's suspended as no SuperSpeed devices are connected to it.
+
+Do USB 3 devices work normally on this machine?
+
+Thanks
+Mathias
+
 
