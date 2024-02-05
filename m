@@ -1,253 +1,124 @@
-Return-Path: <linux-kernel+bounces-52009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 161148492B9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 04:15:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA2078492BC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 04:17:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F37481C20B99
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 03:15:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44996B211FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 03:17:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B931B64A;
-	Mon,  5 Feb 2024 03:14:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KCrNTATx"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D031947F;
-	Mon,  5 Feb 2024 03:14:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 552F99455;
+	Mon,  5 Feb 2024 03:17:00 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 233EA8F56
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 03:16:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707102851; cv=none; b=NRszLPHvPaSUtHBiPUlgIZFLoUYHhj/x3iwFePbH8sMMRGm1fX1/jycG9Qv2JmDS9OhbKlBaAFmeYqk1G/QHe86kVqP0JAyt+zgTI1O8oCRkyUbdYfue9eCgrdvRq1oRFiJvxSSL06SlkB1Dbv2UeoEW0DY/e879UN0GUnEQJiU=
+	t=1707103019; cv=none; b=rAkTIbBaKJkWW9s8ngW6ExuQWmihX507fGwfa2DLqKm0y6dUhBawEHuoyRllzZG/yj4lKs4B2V5OafEnBsrzGltlshCMndDXlXKzrx8+tkPTJEondbNs022iQZQLbFZ5qBNdWyAfgQ0kulrlgpZF7rnzRA8V8do5ct8c+mEqXAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707102851; c=relaxed/simple;
-	bh=MWsnU2xeLcim5q2Ctdfdd7941DBKVOOsy4cTw5k6d8w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Eon3qev6Mm6vs4k3GISCXOjVh4Lavt6KJ4LwnsDpFWUUppLkSwDph60ZSZ+R4WeuTfv4EWS5aXvHqEGglE9eM9O57PSwHprbWm0eQCDYbP65y2OLGgbSY7YCRq/XAK+sQ/s6oV7uvp26He5zGXzTwELvyRX5iTTVHWW6rvK9apg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KCrNTATx; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707102850; x=1738638850;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=MWsnU2xeLcim5q2Ctdfdd7941DBKVOOsy4cTw5k6d8w=;
-  b=KCrNTATxtDopM2s3MCR1mxSGDYvFgcj7ehy5S7VTaKfcjwek8Rp+oqLK
-   n7fzd4uyYCXpMG06tp9gJh16kXvBSyXS4iKhZGd4KngVCZqZ2w2mbZAwH
-   m+3z9FV79FVtqdWePIlEy2Yy99L0xTdYDJE4SqUjmwAEm7xAPgYmoQZYh
-   xQojHi0EGDCgO7WEGTm5UjGnvKuCTkbGHbsi/NkRVotHN3qClkeckREOO
-   P8UzWzOhQnSpCIdeWqWoM5N51UBq+Ni32wBeYFhl80VcQDDewhiT5EF6f
-   I0ZXnEnaDecXU8u6KDu81Z5KdLoYGo2Riwfxl8gUdK9FvjZ7S5HFTgU9d
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="17857324"
-X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
-   d="scan'208";a="17857324"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 19:14:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
-   d="scan'208";a="5210744"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.49]) ([10.238.10.49])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 19:14:05 -0800
-Message-ID: <de174460-018c-4402-8fca-8555be669aa2@linux.intel.com>
-Date: Mon, 5 Feb 2024 11:14:03 +0800
+	s=arc-20240116; t=1707103019; c=relaxed/simple;
+	bh=kUGQIlKf+E+jZpQtg6FfXU6fycbgpqbfjW3cKjCIpA0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NdqNsKsW0xtYJJ9zvIcaE0CqJplVkNwgvATwyJ8xL/rVd9ih3SiXzLmeZ6Ojpop9mvZOcUXF0GSUTmSNFixXyQOO44mrgStj6Cq8bZdfN6v9cZaSLPne7XgnpKwbfuXcYS6gh/DYrs4oAQnukkWX3+vI8V7mzfmWj6R06mzhWDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 619521FB;
+	Sun,  4 Feb 2024 19:17:37 -0800 (PST)
+Received: from a077893.blr.arm.com (a077893.blr.arm.com [10.162.40.23])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 54B783F762;
+	Sun,  4 Feb 2024 19:16:53 -0800 (PST)
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+To: linux-mm@kvack.org
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/cma: Drop CONFIG_CMA_DEBUG
+Date: Mon,  5 Feb 2024 08:46:47 +0530
+Message-Id: <20240205031647.283510-1-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v18 058/121] KVM: TDX: Retry seamcall when
- TDX_OPERAND_BUSY with operand SEPT
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
- Yuan Yao <yuan.yao@intel.com>
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <d854fa4415ca6d2b5d055d0b29b147a5cdf232f7.1705965635.git.isaku.yamahata@intel.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <d854fa4415ca6d2b5d055d0b29b147a5cdf232f7.1705965635.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+All pr_debug() prints in (mm/cma.c) could be enabled via standard Makefile
+based method. Besides cma_debug_show_areas() should always be called during
+cma_alloc() failure path. This seemingly redundant config, CONFIG_CMA_DEBUG
+can be dropped without any problem.
 
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+This applies on v6.8-rc3.
 
-On 1/23/2024 7:53 AM, isaku.yamahata@intel.com wrote:
-> From: Yuan Yao <yuan.yao@intel.com>
->
-> TDX module internally uses locks to protect internal resources.  It tries
-> to acquire the locks.  If it fails to obtain the lock, it returns
-> TDX_OPERAND_BUSY error without spin because its execution time limitation.
->
-> TDX SEAMCALL API reference describes what resources are used.  It's known
-> which TDX SEAMCALL can cause contention with which resources.  VMM can
-> avoid contention inside the TDX module by avoiding contentious TDX SEAMCALL
-> with, for example, spinlock.  Because OS knows better its process
-> scheduling and its scalability, a lock at OS/VMM layer would work better
-> than simply retrying TDX SEAMCALLs.
->
-> TDH.MEM.* API except for TDH.MEM.TRACK operates on a secure EPT tree and
-> the TDX module internally tries to acquire the lock of the secure EPT tree.
-> They return TDX_OPERAND_BUSY | TDX_OPERAND_ID_SEPT in case of failure to
-> get the lock.  TDX KVM allows sept callbacks to return error so that TDP
-> MMU layer can retry.
->
-> TDH.VP.ENTER is an exception with zero-step attack mitigation.  Normally
-> TDH.VP.ENTER uses only TD vcpu resources and it doesn't cause contention.
-> When a zero-step attack is suspected, it obtains a secure EPT tree lock and
-> tracks the GPAs causing a secure EPT fault.  Thus TDG.VP.ENTER may result
+ mm/Kconfig | 9 ---------
+ mm/cma.c   | 9 ---------
+ 2 files changed, 18 deletions(-)
 
-Should be TDH.VP.ENTER.
-
-> in TDX_OPERAND_BUSY | TDX_OPERAND_ID_SEPT.  Also TDH.MEM.* SEAMCALLs may
-> result in TDX_OPERAN_BUSY | TDX_OPERAND_ID_SEPT.
-s/TDX_OPERAN_BUSY/TDX_OPERAND_BUSY
-
->
-> Retry TDX TDH.MEM.* API and TDH.VP.ENTER on the error because the error is
-> a rare event caused by zero-step attack mitigation and spinlock can not be
-> used for TDH.VP.ENTER due to indefinite time execution.
-
-Does it retry TDH.VP.ENTER on SEPT busy?
-I didn't see the related code in this patch.
-
-
->
-> Signed-off-by: Yuan Yao <yuan.yao@intel.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->   arch/x86/kvm/vmx/tdx_ops.h | 48 +++++++++++++++++++++++++++++++-------
->   1 file changed, 39 insertions(+), 9 deletions(-)
->
-> diff --git a/arch/x86/kvm/vmx/tdx_ops.h b/arch/x86/kvm/vmx/tdx_ops.h
-> index cd12e9c2a421..53a6c3f692b0 100644
-> --- a/arch/x86/kvm/vmx/tdx_ops.h
-> +++ b/arch/x86/kvm/vmx/tdx_ops.h
-> @@ -52,6 +52,36 @@ static inline u64 tdx_seamcall(u64 op, struct tdx_module_args *in,
->   void pr_tdx_error(u64 op, u64 error_code, const struct tdx_module_args *out);
->   #endif
->   
-> +/*
-> + * TDX module acquires its internal lock for resources.  It doesn't spin to get
-> + * locks because of its restrictions of allowed execution time.  Instead, it
-> + * returns TDX_OPERAND_BUSY with an operand id.
-> + *
-> + * Multiple VCPUs can operate on SEPT.  Also with zero-step attack mitigation,
-> + * TDH.VP.ENTER may rarely acquire SEPT lock and release it when zero-step
-> + * attack is suspected.  It results in TDX_OPERAND_BUSY | TDX_OPERAND_ID_SEPT
-> + * with TDH.MEM.* operation.  Note: TDH.MEM.TRACK is an exception.
-> + *
-> + * Because TDP MMU uses read lock for scalability, spin lock around SEAMCALL
-> + * spoils TDP MMU effort.  Retry several times with the assumption that SEPT
-> + * lock contention is rare.  But don't loop forever to avoid lockup.  Let TDP
-> + * MMU retry.
-> + */
-> +#define TDX_ERROR_SEPT_BUSY    (TDX_OPERAND_BUSY | TDX_OPERAND_ID_SEPT)
-> +
-> +static inline u64 tdx_seamcall_sept(u64 op, struct tdx_module_args *in,
-> +				    struct tdx_module_args *out)
-> +{
-> +#define SEAMCALL_RETRY_MAX     16
-> +	int retry = SEAMCALL_RETRY_MAX;
-> +	u64 ret;
-> +
-> +	do {
-> +		ret = tdx_seamcall(op, in, out);
-> +	} while (ret == TDX_ERROR_SEPT_BUSY && retry-- > 0);
-> +	return ret;
-> +}
-> +
->   static inline u64 tdh_mng_addcx(hpa_t tdr, hpa_t addr)
->   {
->   	struct tdx_module_args in = {
-> @@ -74,7 +104,7 @@ static inline u64 tdh_mem_page_add(hpa_t tdr, gpa_t gpa, hpa_t hpa, hpa_t source
->   	};
->   
->   	clflush_cache_range(__va(hpa), PAGE_SIZE);
-> -	return tdx_seamcall(TDH_MEM_PAGE_ADD, &in, out);
-> +	return tdx_seamcall_sept(TDH_MEM_PAGE_ADD, &in, out);
->   }
->   
->   static inline u64 tdh_mem_sept_add(hpa_t tdr, gpa_t gpa, int level, hpa_t page,
-> @@ -87,7 +117,7 @@ static inline u64 tdh_mem_sept_add(hpa_t tdr, gpa_t gpa, int level, hpa_t page,
->   	};
->   
->   	clflush_cache_range(__va(page), PAGE_SIZE);
-> -	return tdx_seamcall(TDH_MEM_SEPT_ADD, &in, out);
-> +	return tdx_seamcall_sept(TDH_MEM_SEPT_ADD, &in, out);
->   }
->   
->   static inline u64 tdh_mem_sept_rd(hpa_t tdr, gpa_t gpa, int level,
-> @@ -98,7 +128,7 @@ static inline u64 tdh_mem_sept_rd(hpa_t tdr, gpa_t gpa, int level,
->   		.rdx = tdr,
->   	};
->   
-> -	return tdx_seamcall(TDH_MEM_SEPT_RD, &in, out);
-> +	return tdx_seamcall_sept(TDH_MEM_SEPT_RD, &in, out);
->   }
->   
->   static inline u64 tdh_mem_sept_remove(hpa_t tdr, gpa_t gpa, int level,
-> @@ -109,7 +139,7 @@ static inline u64 tdh_mem_sept_remove(hpa_t tdr, gpa_t gpa, int level,
->   		.rdx = tdr,
->   	};
->   
-> -	return tdx_seamcall(TDH_MEM_SEPT_REMOVE, &in, out);
-> +	return tdx_seamcall_sept(TDH_MEM_SEPT_REMOVE, &in, out);
->   }
->   
->   static inline u64 tdh_vp_addcx(hpa_t tdvpr, hpa_t addr)
-> @@ -133,7 +163,7 @@ static inline u64 tdh_mem_page_relocate(hpa_t tdr, gpa_t gpa, hpa_t hpa,
->   	};
->   
->   	clflush_cache_range(__va(hpa), PAGE_SIZE);
-> -	return tdx_seamcall(TDH_MEM_PAGE_RELOCATE, &in, out);
-> +	return tdx_seamcall_sept(TDH_MEM_PAGE_RELOCATE, &in, out);
->   }
->   
->   static inline u64 tdh_mem_page_aug(hpa_t tdr, gpa_t gpa, hpa_t hpa,
-> @@ -146,7 +176,7 @@ static inline u64 tdh_mem_page_aug(hpa_t tdr, gpa_t gpa, hpa_t hpa,
->   	};
->   
->   	clflush_cache_range(__va(hpa), PAGE_SIZE);
-> -	return tdx_seamcall(TDH_MEM_PAGE_AUG, &in, out);
-> +	return tdx_seamcall_sept(TDH_MEM_PAGE_AUG, &in, out);
->   }
->   
->   static inline u64 tdh_mem_range_block(hpa_t tdr, gpa_t gpa, int level,
-> @@ -157,7 +187,7 @@ static inline u64 tdh_mem_range_block(hpa_t tdr, gpa_t gpa, int level,
->   		.rdx = tdr,
->   	};
->   
-> -	return tdx_seamcall(TDH_MEM_RANGE_BLOCK, &in, out);
-> +	return tdx_seamcall_sept(TDH_MEM_RANGE_BLOCK, &in, out);
->   }
->   
->   static inline u64 tdh_mng_key_config(hpa_t tdr)
-> @@ -307,7 +337,7 @@ static inline u64 tdh_mem_page_remove(hpa_t tdr, gpa_t gpa, int level,
->   		.rdx = tdr,
->   	};
->   
-> -	return tdx_seamcall(TDH_MEM_PAGE_REMOVE, &in, out);
-> +	return tdx_seamcall_sept(TDH_MEM_PAGE_REMOVE, &in, out);
->   }
->   
->   static inline u64 tdh_sys_lp_shutdown(void)
-> @@ -335,7 +365,7 @@ static inline u64 tdh_mem_range_unblock(hpa_t tdr, gpa_t gpa, int level,
->   		.rdx = tdr,
->   	};
->   
-> -	return tdx_seamcall(TDH_MEM_RANGE_UNBLOCK, &in, out);
-> +	return tdx_seamcall_sept(TDH_MEM_RANGE_UNBLOCK, &in, out);
->   }
->   
->   static inline u64 tdh_phymem_cache_wb(bool resume)
+diff --git a/mm/Kconfig b/mm/Kconfig
+index ffc3a2ba3a8c..35fa9940e61f 100644
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -901,15 +901,6 @@ config CMA
+ 
+ 	  If unsure, say "n".
+ 
+-config CMA_DEBUG
+-	bool "CMA debug messages (DEVELOPMENT)"
+-	depends on DEBUG_KERNEL && CMA
+-	help
+-	  Turns on debug messages in CMA.  This produces KERN_DEBUG
+-	  messages for every CMA call as well as various messages while
+-	  processing calls such as dma_alloc_from_contiguous().
+-	  This option does not affect warning and error messages.
+-
+ config CMA_DEBUGFS
+ 	bool "CMA debugfs interface"
+ 	depends on CMA && DEBUG_FS
+diff --git a/mm/cma.c b/mm/cma.c
+index 7c09c47e530b..ed6581ef50c1 100644
+--- a/mm/cma.c
++++ b/mm/cma.c
+@@ -14,11 +14,6 @@
+ 
+ #define pr_fmt(fmt) "cma: " fmt
+ 
+-#ifdef CONFIG_CMA_DEBUG
+-#ifndef DEBUG
+-#  define DEBUG
+-#endif
+-#endif
+ #define CREATE_TRACE_POINTS
+ 
+ #include <linux/memblock.h>
+@@ -387,7 +382,6 @@ int __init cma_declare_contiguous_nid(phys_addr_t base,
+ 	return ret;
+ }
+ 
+-#ifdef CONFIG_CMA_DEBUG
+ static void cma_debug_show_areas(struct cma *cma)
+ {
+ 	unsigned long next_zero_bit, next_set_bit, nr_zero;
+@@ -412,9 +406,6 @@ static void cma_debug_show_areas(struct cma *cma)
+ 	pr_cont("=> %lu free of %lu total pages\n", nr_total, cma->count);
+ 	spin_unlock_irq(&cma->lock);
+ }
+-#else
+-static inline void cma_debug_show_areas(struct cma *cma) { }
+-#endif
+ 
+ /**
+  * cma_alloc() - allocate pages from contiguous area
+-- 
+2.25.1
 
 
