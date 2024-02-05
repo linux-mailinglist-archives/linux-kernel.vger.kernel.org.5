@@ -1,140 +1,108 @@
-Return-Path: <linux-kernel+bounces-52021-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52024-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEE148492E7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 05:14:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA13C8492F7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 05:39:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F1FCB21594
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 04:14:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2547B1C211B9
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 04:39:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1669944D;
-	Mon,  5 Feb 2024 04:14:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD430B642;
+	Mon,  5 Feb 2024 04:39:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="k/eAVmjP"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0751F9455
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 04:14:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="B6huAXMf"
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A534DAD22
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 04:39:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707106454; cv=none; b=EpK9LCHY7g4WYgRehiexZXs8G3LGR+j2gYz9kce/ekNSGzyJPBmHgfud6hx1MW4K3acI3zxb4CpBM2sRvxXHB7zkVWki0z40w3UfqQIQI0IWiHakhGPyG1qwv9SK+sORhCd9CVXAR8VqRGtADvL74Sy2J2IEBxL3IFB91TtQNJA=
+	t=1707107977; cv=none; b=CsF2JIgdE5/gZg+H3yH1zFSQe1fyF5qImnnW6boDwdUTZXgK8ijusK3aAMKFIOpcUoVPh9NylyRgJZhb9EXkLRbeT6tu3+JMeTBbCCJBjVO2RBSklMnZYfq92AZasMzMzbf6tL7QAK5r9E/O/226vK1YuLwCGU6SoubDuVn6hm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707106454; c=relaxed/simple;
-	bh=Ab/yahujIPlo0ZSnxbwuNiJ88afNhH3/rOXNFkhdz/A=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=aRMG6uUmdJcRn0ChKmpUDGeSFlHvIHQOfxl0dbefobbrEd6JOzDXN7ewrZE45GvZKSSWHFMeTZPR7VdHz/yBh25d//mW4XhQEkebxnFQkm0EY9GjgOP/1Ky1q6lVfTmwXhoZ1DoOrFdCVGkDOX5m9XTcvkv9FCMS2oW0U0W3Xa0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=k/eAVmjP; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707106453; x=1738642453;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Ab/yahujIPlo0ZSnxbwuNiJ88afNhH3/rOXNFkhdz/A=;
-  b=k/eAVmjPTWBx6BoAynEivO3x2eb5yaEX9XSo1vJXPee0e2u9ovD+nmOg
-   Z23kjaSxCi90nrfduKWmZMQW8Xy162ArCstlE4DNYEW7FApzCrAqeOzb5
-   RdNWkUs9roNORrxukS/2ansflJaNlvgeCPCwJnv8vcXsFRWjH05j4VwxO
-   yug+foCI1X2XaknD0CekRHluFKIA3NVQ0OESwozJwC+nhHuCeUFcbFcJR
-   iP87JzWY089sDqJ9WQIC7MV89aq17Tf3zCpIpFJBFIOKB1JgylsFqdv1l
-   F/CFJfKhlW0CD7Cp/HaZACeFU4vFDY9QSyDGmhO82dCLMmjaTxOcgdpAb
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="25892744"
-X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
-   d="scan'208";a="25892744"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 20:14:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
-   d="scan'208";a="31711602"
-Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 04 Feb 2024 20:14:11 -0800
-Received: from kbuild by 01f0647817ea with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rWqMy-00008C-2x;
-	Mon, 05 Feb 2024 04:14:08 +0000
-Date: Mon, 5 Feb 2024 12:13:20 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: sparc-linux-ld: arch/sparc/include/asm/parport.h:91:undefined
- reference to `ebus_dma_prepare'
-Message-ID: <202402051222.ciCAY8Tj-lkp@intel.com>
+	s=arc-20240116; t=1707107977; c=relaxed/simple;
+	bh=EzIN7nse2+iXsoiqY4oUsxNHg0EhknccQ9F6GIrDsv0=;
+	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
+	 Cc:In-Reply-To:To; b=eh9E9pE6WKa5H5xqarW79rUU0ziDqIJYkWyHWyxSuzmb5k3ZyO5dLUB9rYoVIMtHpNqJhrKQHTsKXr6FtfYRwa60qvlMAa2fzS4UD2WDf9///zHE5NJgGC2qSL8GMS43se6E6RHmGxnYVjssvG5SkDfTgm/v+4vfJpgCD7DMN2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=B6huAXMf; arc=none smtp.client-ip=117.135.210.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Content-Type:From:Mime-Version:Subject:Date:
+	Message-Id; bh=2LFTVn7WS/MIzy0KcPbm4wL9w8tNkmOOp85qZt/+6+Y=; b=B
+	6huAXMfAUSL0i8SUCNvsiF55dWx/TGNSCcOgnfYlUGVMImVeSO8eeamlXU2aatbv
+	Hotas5yzDXrGWQK4I9NYaX3cxlfr+qKdIFQ4Fui1h3ihMzX+8uUDwDfWei56fBGc
+	8RMHZtJOqAKLQwj5F3I5steBj8Qfk3hcIsnLDF79uA=
+Received: from smtpclient.apple (unknown [175.2.42.150])
+	by gzga-smtp-mta-g1-0 (Coremail) with SMTP id _____wD3X8bOYsBlQ2pUAw--.1130S2;
+	Mon, 05 Feb 2024 12:23:43 +0800 (CST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From: Hao Ge <gehao618@163.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH] fs/inode: Make too_many_isolated return bool
+Date: Mon, 5 Feb 2024 12:23:32 +0800
+Message-Id: <02CFAD55-0733-4765-9160-153409AE050F@163.com>
+References: <20240205022825.99061-1-gehao@kylinos.cn>
+Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240205022825.99061-1-gehao@kylinos.cn>
+To: Hao Ge <gehao@kylinos.cn>
+X-Mailer: iPhone Mail (21D50)
+X-CM-TRANSID:_____wD3X8bOYsBlQ2pUAw--.1130S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZFWruw1kWw48WFWDCF17ZFb_yoWktFXEvF
+	W0kFsa9r98GF92kFn8Cw1UXF4rWF4q9r17Xr9YqFWaya4rC34ktrykKr9rCrWUXa15Gay3
+	C3ZxuryFkr1IvjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xR_eHq3UUUUU==
+X-CM-SenderInfo: 5jhkt0qwryqiywtou0bp/xtbBdRB7FmVOAkGY8QABsI
 
-Hi Maciej,
+Sorry, please ignore this patch due to an incorrect title. I will resend the=
+ correct one
 
-FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
+> On Feb 5, 2024, at 10:28, Hao Ge <gehao@kylinos.cn> wrote:
+>=20
+> =EF=BB=BFtoo_many_isolated should return bool which with the same name and=
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478
-commit: f01dda1cb85e14a1d51c3cedad0feaaf71a93b4b parport_pc: Let chipset drivers mask unsupported modes
-date:   1 year, 1 month ago
-config: sparc-randconfig-r034-20230704 (https://download.01.org/0day-ci/archive/20240205/202402051222.ciCAY8Tj-lkp@intel.com/config)
-compiler: sparc-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240205/202402051222.ciCAY8Tj-lkp@intel.com/reproduce)
+> similar functions in mm/compaction.c already returned bool
+>=20
+> Signed-off-by: Hao Ge <gehao@kylinos.cn>
+> ---
+> mm/vmscan.c | 6 +++---
+> 1 file changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 4f9c854ce6cc..143e4b8e8821 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -1744,17 +1744,17 @@ bool folio_isolate_lru(struct folio *folio)
+>  * the LRU list will go small and be scanned faster than necessary, leadin=
+g to
+>  * unnecessary swapping, thrashing and OOM.
+>  */
+> -static int too_many_isolated(struct pglist_data *pgdat, int file,
+> +static bool too_many_isolated(struct pglist_data *pgdat, int file,
+>        struct scan_control *sc)
+> {
+>    unsigned long inactive, isolated;
+>    bool too_many;
+>=20
+>    if (current_is_kswapd())
+> -        return 0;
+> +        return false;
+>=20
+>    if (!writeback_throttling_sane(sc))
+> -        return 0;
+> +        return false;
+>=20
+>    if (file) {
+>        inactive =3D node_page_state(pgdat, NR_INACTIVE_FILE);
+> --
+> 2.25.1
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402051222.ciCAY8Tj-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   arch/sparc/kernel/head_32.o: in function `current_pc':
-   arch/sparc/kernel/head_32.S:121:(.head.text+0x5040): relocation truncated to fit: R_SPARC_WDISP22 against `.init.text'
-   arch/sparc/kernel/head_32.o: in function `halt_notsup':
-   arch/sparc/kernel/head_32.S:198:(.head.text+0x5100): relocation truncated to fit: R_SPARC_WDISP22 against `.init.text'
-   arch/sparc/kernel/head_32.o: in function `leon_init':
-   arch/sparc/kernel/head_32.S:434:(.init.text+0xa4): relocation truncated to fit: R_SPARC_WDISP22 against symbol `leon_smp_cpu_startup' defined in .text section in arch/sparc/kernel/trampoline_32.o
-   arch/sparc/kernel/process_32.o:(.fixup+0x4): relocation truncated to fit: R_SPARC_WDISP22 against `.text'
-   arch/sparc/kernel/process_32.o:(.fixup+0xc): relocation truncated to fit: R_SPARC_WDISP22 against `.text'
-   arch/sparc/kernel/signal_32.o:(.fixup+0x0): relocation truncated to fit: R_SPARC_WDISP22 against `.text'
-   arch/sparc/kernel/signal_32.o:(.fixup+0x8): relocation truncated to fit: R_SPARC_WDISP22 against `.text'
-   arch/sparc/kernel/signal_32.o:(.fixup+0x10): relocation truncated to fit: R_SPARC_WDISP22 against `.text'
-   arch/sparc/kernel/signal_32.o:(.fixup+0x18): relocation truncated to fit: R_SPARC_WDISP22 against `.text'
-   arch/sparc/kernel/signal_32.o:(.fixup+0x20): relocation truncated to fit: R_SPARC_WDISP22 against `.text'
-   arch/sparc/kernel/signal_32.o:(.fixup+0x28): additional relocation overflows omitted from the output
-   sparc-linux-ld: drivers/parport/parport_pc.o: in function `ecpp_probe':
-   arch/sparc/include/asm/parport.h:152:(.text+0x14b4): undefined reference to `ebus_dma_register'
-   sparc-linux-ld: arch/sparc/include/asm/parport.h:155:(.text+0x14cc): undefined reference to `ebus_dma_irq_enable'
-   sparc-linux-ld: drivers/parport/parport_pc.o: in function `ecpp_probe':
-   arch/sparc/include/asm/ns87303.h:102:(.text+0x14d8): undefined reference to `ns87303_lock'
-   sparc-linux-ld: arch/sparc/include/asm/ns87303.h:102:(.text+0x14e4): undefined reference to `ns87303_lock'
-   sparc-linux-ld: drivers/parport/parport_pc.o: in function `ecpp_probe':
-   include/linux/spinlock.h:405:(.text+0x1508): undefined reference to `ns87303_lock'
-   sparc-linux-ld: drivers/parport/parport_pc.o: in function `ecpp_probe':
-   arch/sparc/include/asm/ns87303.h:102:(.text+0x1510): undefined reference to `ns87303_lock'
-   sparc-linux-ld: drivers/parport/parport_pc.o: in function `ecpp_probe':
-   include/linux/spinlock.h:405:(.text+0x1538): undefined reference to `ns87303_lock'
-   sparc-linux-ld: drivers/parport/parport_pc.o: in function `ecpp_probe':
-   arch/sparc/include/asm/parport.h:185:(.text+0x1568): undefined reference to `ebus_dma_irq_enable'
-   sparc-linux-ld: arch/sparc/include/asm/parport.h:186:(.text+0x1574): undefined reference to `ebus_dma_unregister'
-   sparc-linux-ld: drivers/parport/parport_pc.o: in function `parport_pc_fifo_write_block_dma':
-   arch/sparc/include/asm/parport.h:81:(.text+0x2074): undefined reference to `ebus_dma_enable'
->> sparc-linux-ld: arch/sparc/include/asm/parport.h:91:(.text+0x2088): undefined reference to `ebus_dma_prepare'
-   sparc-linux-ld: arch/sparc/include/asm/parport.h:71:(.text+0x20e0): undefined reference to `ebus_dma_enable'
-   sparc-linux-ld: arch/sparc/include/asm/parport.h:73:(.text+0x20f0): undefined reference to `ebus_dma_request'
-   sparc-linux-ld: arch/sparc/include/asm/parport.h:81:(.text+0x2194): undefined reference to `ebus_dma_enable'
-   sparc-linux-ld: arch/sparc/include/asm/parport.h:106:(.text+0x21a4): undefined reference to `ebus_dma_residue'
-   sparc-linux-ld: arch/sparc/include/asm/parport.h:81:(.text+0x2218): undefined reference to `ebus_dma_enable'
-   sparc-linux-ld: arch/sparc/include/asm/parport.h:106:(.text+0x2228): undefined reference to `ebus_dma_residue'
-   sparc-linux-ld: drivers/parport/parport_pc.o: in function `ecpp_remove':
-   arch/sparc/include/asm/parport.h:211:(.text+0x2684): undefined reference to `ebus_dma_irq_enable'
-   sparc-linux-ld: arch/sparc/include/asm/parport.h:212:(.text+0x268c): undefined reference to `ebus_dma_unregister'
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
