@@ -1,71 +1,73 @@
-Return-Path: <linux-kernel+bounces-52281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52284-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C881C84963F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:19:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DBE5849644
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:20:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E91A1F21F3D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:19:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CFFC287DC7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:20:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 821D412B68;
-	Mon,  5 Feb 2024 09:19:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35593125C3;
+	Mon,  5 Feb 2024 09:20:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="hSH8rq0v"
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UrI1El+p"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DFBF125BB
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 09:19:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B03A912B6C;
+	Mon,  5 Feb 2024 09:20:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707124764; cv=none; b=jVjF8yvN4k82PV3wDerDkOI9lYDldHNBF4xNOvFINEXNXbyLUCUMOLk/ryfVoJYZ+okBqtniqiczQVK+7RuMg8ZlxQVARh/84dCJGO1v1Y5vaboA97YTWByAP/s/u7mbdwsHd3dXhdilLiN6TJHrgMOhXzESvk4Oi50qu/8PWEk=
+	t=1707124805; cv=none; b=FXMu7LsTEG5xkhwhUBPA4T9OuIeD829k3HF8uQ5HDFkt6u48U90QMuisJTljUpREwTwF+aTdb3y/6aMkEfQ2WyGen3ERkDlDGYeOd3a0RFlHJIIs8c7IjVzcUCeSLob7Nwhm0vaDZb4mqdkvnrPAzrjTsc4IvQRDZ+PDDuCFafI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707124764; c=relaxed/simple;
-	bh=JOZyY44o3VjmqxPeYm2CxNUhG2xfl45AjDv+Izabiy0=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:In-Reply-To:
-	 Content-Type:References; b=Cub83/Bw662fEFcJ7nPAeL7jvSjXf/IeTxEXLSoCbmrCdTk6PZdHdmnCd7TUvZ3cSjxAMjqKs9mxGvnn9fuqkVVcasi1Sdcfctbyyf9Xx2hQSo6G/Gka3vQ4/oaui6Pat4RhbdaoRjFXDnElogV5OuP82lF6HyjhLqMyWunk0IM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=hSH8rq0v; arc=none smtp.client-ip=210.118.77.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240205091919euoutp01776bfbcd9593c8103f0d28ac03635cb3~w7Ox1GfsZ2161921619euoutp01L
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 09:19:19 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240205091919euoutp01776bfbcd9593c8103f0d28ac03635cb3~w7Ox1GfsZ2161921619euoutp01L
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1707124759;
-	bh=x11oEt2Z68lZhuN1htWEnhx4xVZleMPJJZ1X62idi6Y=;
-	h=Date:From:Subject:To:Cc:In-Reply-To:References:From;
-	b=hSH8rq0vRLoaSosTYdcEhyDnQ7Szp4iBHuaR11zkwvwT53s+0Lmd8kbnx4lNHlHrw
-	 t8Y6bmp2a4cHRG2gEWYju/1i+znVWhRYYg6Qa+nkWeWABV5voRklxJC2c8pPVNmqXA
-	 RGZXi/+XWGSWk82PER54NGfkydVJG7mE/bvqv5uk=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-	20240205091918eucas1p23872d9f15a22c9e23103857a5ae2b9c6~w7OxUt-NP1676616766eucas1p2I;
-	Mon,  5 Feb 2024 09:19:18 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-	eusmges1new.samsung.com (EUCPMTA) with SMTP id 43.EC.09539.618A0C56; Mon,  5
-	Feb 2024 09:19:18 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240205091917eucas1p2cde1af2ad3532e2e44664132af9ee9ff~w7OwxvkO-1177511775eucas1p2c;
-	Mon,  5 Feb 2024 09:19:17 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240205091917eusmtrp10525cabc0eb7cc0ab1e77b90141b186c~w7Oww9zHD0227302273eusmtrp1M;
-	Mon,  5 Feb 2024 09:19:17 +0000 (GMT)
-X-AuditID: cbfec7f2-515ff70000002543-f6-65c0a8160d53
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-	eusmgms1.samsung.com (EUCPMTA) with SMTP id 87.70.09146.518A0C56; Mon,  5
-	Feb 2024 09:19:17 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240205091916eusmtip2cadae4e7a9f14d4a43acec119e6d566e~w7OvyCn8w2786927869eusmtip2S;
-	Mon,  5 Feb 2024 09:19:16 +0000 (GMT)
-Message-ID: <8e336720-ce08-4391-ad36-b83fea246cab@samsung.com>
-Date: Mon, 5 Feb 2024 10:19:16 +0100
+	s=arc-20240116; t=1707124805; c=relaxed/simple;
+	bh=7G/LwQHB+H/dtDcXo5J1dNkKRi1QoZ4/FA+8K+lRS1U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fYAGrZTCtp2hBu1/iHm973Q8ef+gvSYSzG6df6rDtGiHdpGbzmvPjxKSCxc3lxq+kHEf9tDGse3FonNv2SaWi4H43HM+mp4KI18lki+x9kp5nqpuTCyPXkNLEe4QlIBjQMEpAL5j+ednz4CeRIZVmCxXjRtrX7fio6GR9rEjbsg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UrI1El+p; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-51124d86022so6472000e87.0;
+        Mon, 05 Feb 2024 01:20:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707124801; x=1707729601; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ovCKa14mXXnXBptabaXZWHdPntUw31KtAWi3cyavIqs=;
+        b=UrI1El+pg9AlMs2XVBrVnvZ2iZO8r+llGHU061+goJL4KOxaaD5itvLK+kpDHzc0Na
+         5CcY7zKEsLRz/M1lGXn5utbV6PgmmyQTEzxq6arXN2k5NnGk24mx7DtZoNzOMYB9kEwT
+         GgrpjY1HPaW0s5EMG9eGViN/7pw8jsZvJ/qMVlKf0cjlCsW3dy/6/ykdso5nHd/xM3fQ
+         /Tw4jnJlQ6fHR1oWoD49fsCaqcTYrP6RAl3jQdDoxa9xwsoKIu3p/TzLvhQPSmVeczmS
+         H5Do3KGFfE8SM2lX6LjPybsNJ/pJYABWERHrUGWVCv48bq43MBcsR2wjEpctYVh9IrCh
+         IFIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707124801; x=1707729601;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ovCKa14mXXnXBptabaXZWHdPntUw31KtAWi3cyavIqs=;
+        b=XyEn5xuBx9lcOvu6hr/kBwQjdQHKlboyWTD5pJ+X2PpKkyRV8VF9abzMv8p3x3h+vy
+         6lE1nHU6lbrlEWx0F4duucKXZ0UDr2/+WpVQZkzVR4HMAKdaH3wIEIZxymBohxX+1Ms0
+         MPu7/GNrekKRRvZNbQTIYnOx7tLL+x4uGD6S22Qshf9SLKIfhJOsSF495KS0SX46gfoW
+         BlWOTAsqvJbUCpE7TgAEyiR86TPoY879tLTfAFBrKloSulePI21b53Sps+LX6u9Y6X7f
+         w4ySjheHU/mUp29cMy19XzrxIgD6VUnNYCmHfSE+1IqkqOXiLYGT3ARE8ow23l5c6lHm
+         ++7A==
+X-Gm-Message-State: AOJu0Yz/Ob4iEb4rX6xax4leWgOb4wQTOprksMJzVsrX+Kl8G5cZDKhZ
+	9rik64WJMulurwBnnNhoWZU9J75twgLh9Gu7VVMs/RUhQA/MPx+J
+X-Google-Smtp-Source: AGHT+IH7AnZ0prCJ4Wc4GdFScYM97POT/NCpkJ+WL/GDdXDMcUwsMHIeOk9Pt+FJgiQWEd4ZFJuy3A==
+X-Received: by 2002:a05:6512:ad3:b0:511:4e29:f807 with SMTP id n19-20020a0565120ad300b005114e29f807mr2187231lfu.1.1707124801295;
+        Mon, 05 Feb 2024 01:20:01 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVfViq9Z9CMEsy7ICNMO2FNDsBScPdRsOVp7+HMxwyAnd/1dorwrJiG/59vA3ECEzFTfOp61GkDRhOwAapjJSyL7wrgGxBMeCZpCOqAnt5clTE28MSv67gqfQ3uj8FfvYy6opmguG0KUHwkKWrzElI6O6s2f19RXTltC6EFL7W/o9VTsiPoZsgpXMM=
+Received: from ?IPV6:2001:14ba:7426:df00::1? (drtxq0yyyyyyyyyyyyyyt-3.rev.dnainternet.fi. [2001:14ba:7426:df00::1])
+        by smtp.gmail.com with ESMTPSA id n9-20020a05651203e900b005113c74fff9sm880547lfq.62.2024.02.05.01.20.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Feb 2024 01:20:00 -0800 (PST)
+Message-ID: <ec54fd85-f326-4162-aa28-1dcf54be0e4f@gmail.com>
+Date: Mon, 5 Feb 2024 11:19:59 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,147 +75,87 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH v4 1/2] clk: Provide managed helper to get and enable
- bulk clocks
-To: Shradha Todi <shradha.t@samsung.com>, 'Manivannan Sadhasivam'
-	<manivannan.sadhasivam@linaro.org>, sboyd@kernel.org,
-	mturquette@baylibre.com
-Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org, jingoohan1@gmail.com,
-	lpieralisi@kernel.org, kw@linux.com, robh@kernel.org, bhelgaas@google.com,
-	krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
-	linux@armlinux.org.uk, pankaj.dubey@samsung.com
-Content-Language: en-US
-In-Reply-To: <08a901da55cf$4ee48000$ecad8000$@samsung.com>
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrFKsWRmVeSWpSXmKPExsWy7djP87piKw6kGpy8LG3xYN42NoslTRkW
-	K77MZLfY+3oru0VDz29Wi02Pr7FafOy5x2pxedccNouz846zWcw4v4/J4tDUvYwWLX9aWCzu
-	tnSyWlw85WqxaOsXdov/e3awW/y7tpHFovdwrYOQx+VrF5k93t9oZffYOesuu8eCTaUem1Z1
-	snncubaHzePJlelMHpuX1Hv0bVnF6PF5k1wAVxSXTUpqTmZZapG+XQJXRuOMJSwFu8Qqvs38
-	wN7AuEqoi5GTQ0LAROLwkl1sXYxcHEICKxglTm+5C+V8YZR48GciM4TzmVHi6ZItTDAtWy4t
-	YQexhQSWM0os/JMPUfSRUaKrcSYrSIJXwE7i2tYOFhCbRUBF4vS8FWwQcUGJkzOfgMVFBeQl
-	7t+aATaITcBQouttF1iNsEC4xJeuSWBniAhMZpSY3PYN7AxmgS9MEvufLgDrZhYQl7j1ZD7Y
-	SZwCVhKf3/SxQsTlJba/nQPWICFwjlOipasf6m4XiUefFrJB2MISr45vYYewZSROT+5hgWho
-	Z5RY8Ps+E4QzgVGi4fktRogqa4k7534BdXMArdCUWL9LH8SUEHCUuPmjDMLkk7jxVhDiBj6J
-	SdumM0OEeSU62qCBrSYx6/g6uK0HL1xinsCoNAspXGYh+WwWkm9mIaxdwMiyilE8tbQ4Nz21
-	2DAvtVyvODG3uDQvXS85P3cTIzA5nv53/NMOxrmvPuodYmTiYDzEKMHBrCTCO0F4b6oQb0pi
-	ZVVqUX58UWlOavEhRmkOFiVxXtUU+VQhgfTEktTs1NSC1CKYLBMHp1QDU0nUqpa9DfIrrHdU
-	mVzunrft4vp/IW7fJU3+rL4fKP5ZdYedvt73Y7tckrtaJe4ozDzOG3d/ZenC7Kbv57XEOnTn
-	7nV9w/wv96z/n/eP+r20POuk9Z9vP9/0NSrH6khsqOsstmJO1Qe3uq6l8N/kN1ssxGCsf8i3
-	5dQiy0SHpGL+9MciXtUtIg+fB3ee6Km9WMrm+vW8z63dr/xUtrxeVbKwUGTdlWnrDv88/mxd
-	X4j+V47CfTyXWcpq5lrv7N/ad/rSsxDugoNFAu1Ndru6jR3k+RgbtR9eblf1n7ZKaqZRvft1
-	hVzV1m59zaCYIv6PUxu9VuV2O7r/evPbPHuacc6fCKt3nl1dx7c3HctQYinOSDTUYi4qTgQA
-	42seRf0DAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrLIsWRmVeSWpSXmKPExsVy+t/xe7qiKw6kGuz5ZGjxYN42NoslTRkW
-	K77MZLfY+3oru0VDz29Wi02Pr7FafOy5x2pxedccNouz846zWcw4v4/J4tDUvYwWLX9aWCzu
-	tnSyWlw85WqxaOsXdov/e3awW/y7tpHFovdwrYOQx+VrF5k93t9oZffYOesuu8eCTaUem1Z1
-	snncubaHzePJlelMHpuX1Hv0bVnF6PF5k1wAV5SeTVF+aUmqQkZ+cYmtUrShhZGeoaWFnpGJ
-	pZ6hsXmslZGpkr6dTUpqTmZZapG+XYJeRuOMJSwFu8Qqvs38wN7AuEqoi5GTQ0LARGLLpSXs
-	XYxcHEICSxkl1v99ygyRkJE4Oa2BFcIWlvhzrYsNoug9o8T79n5GkASvgJ3Eta0dLCA2i4CK
-	xOl5K9gg4oISJ2c+AYuLCshL3L81gx3EZhMwlOh62wVWIywQLvFx5UlGkKEiApMZJU7N6wfb
-	xizwhUni+IkCiG2TmCT6Hk9hh0iIS9x6Mp8JxOYUsJL4/KYPqsFMomtrFyOELS+x/e0c5gmM
-	QrOQHDILSfssJC2zkLQsYGRZxSiSWlqcm55bbKhXnJhbXJqXrpecn7uJEZgOth37uXkH47xX
-	H/UOMTJxMB5ilOBgVhLhnSC8N1WINyWxsiq1KD++qDQntfgQoykwNCYyS4km5wMTUl5JvKGZ
-	gamhiZmlgamlmbGSOK9nQUeikEB6YklqdmpqQWoRTB8TB6dUA5PkjjWT9A/FOopumCVUfuNx
-	mVt6krs0/7wst4c5Yn6m8bmBgrPuzPi86PTtTp0Le3d9POozKcAy3js/4uDsedr79llJZ979
-	uTR533vbfVfcJyrMCps749bDT/e7vz6erb/oU+zmfJ4dVa/L2wXzFuzbNXPiyijWanXVM2uC
-	H3Zqn0wqCetZcy75PV+m9c/CWQK/8na5qYTczk7ReqqtnxezXbNHd/kNA6mvGyTObwrvKX9d
-	dO99beuUoMQel9kF7U/ymJyP9cxxiepy+V7Vpt5z4JvsBF8bS9v/hm/SZ8Uy/lGxZYjsuBon
-	4vTmk9ixtYvfp1y463qVhY3RZudl69Ys037b+bJPdix22Z5+REmJpTgj0VCLuag4EQBf5msC
-	kAMAAA==
-X-CMS-MailID: 20240205091917eucas1p2cde1af2ad3532e2e44664132af9ee9ff
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20240124103855epcas5p27400bd95df42f36b9547a4e28aa26f5d
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240124103855epcas5p27400bd95df42f36b9547a4e28aa26f5d
-References: <20240124103838.32478-1-shradha.t@samsung.com>
-	<CGME20240124103855epcas5p27400bd95df42f36b9547a4e28aa26f5d@epcas5p2.samsung.com>
-	<20240124103838.32478-2-shradha.t@samsung.com>
-	<20240129065448.GC2971@thinkpad>
-	<08a901da55cf$4ee48000$ecad8000$@samsung.com>
+Subject: Re: [PATCH] iio: gts-helper: Fix division loop
+To: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
+ Jonathan Cameron <jic23@kernel.org>
+Cc: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+ Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <ZZZ7pJBGkTdFFqiY@dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi>
+ <20240107162253.66c1f0f1@jic23-huawei>
+ <a41ef2c9-bd74-4b0e-afb7-12e198847609@tweaklogic.com>
+ <717b7e70-5cf8-4671-8a6b-005eefd0535e@gmail.com>
+ <3742308c-d063-4179-a4cb-80db021ede46@tweaklogic.com>
+ <9f94a3de-7f04-4ad8-9b98-9e6312cce589@tweaklogic.com>
+Content-Language: en-US, en-GB
+From: Matti Vaittinen <mazziesaccount@gmail.com>
+In-Reply-To: <9f94a3de-7f04-4ad8-9b98-9e6312cce589@tweaklogic.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 02.02.2024 12:59, Shradha Todi wrote:
->> -----Original Message-----
->> From: Manivannan Sadhasivam<manivannan.sadhasivam@linaro.org>
->> Sent: 29 January 2024 12:25
->> To: Shradha Todi<shradha.t@samsung.com>
->> Subject: Re: [PATCH v4 1/2] clk: Provide managed helper to get and enable bulk
->> clocks
->>
->> On Wed, Jan 24, 2024 at 04:08:37PM +0530, Shradha Todi wrote:
->>> Provide a managed devm_clk_bulk* wrapper to get and enable all bulk
->>> clocks in order to simplify drivers that keeps all clocks enabled for
->>> the time of driver operation.
+On 2/4/24 15:49, Subhajit Ghosh wrote:
+> Hi Matti,
+>>>>>>   drivers/iio/industrialio-gts-helper.c | 5 ++---
+>>>>>>   1 file changed, 2 insertions(+), 3 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/iio/industrialio-gts-helper.c 
+>>>>>> b/drivers/iio/industrialio-gts-helper.c
+>>>>>> index 7653261d2dc2..abcab2d38589 100644
+>>>>>> --- a/drivers/iio/industrialio-gts-helper.c
+>>>>>> +++ b/drivers/iio/industrialio-gts-helper.c
+>>>>>> @@ -34,7 +34,7 @@
+>>>>>>   static int iio_gts_get_gain(const u64 max, const u64 scale)
+>>>>>>   {
+>>>>>>       u64 full = max;
+>>>>>> -    int tmp = 1;
+>>>>>> +    int tmp = 0;
+>>>>>>       if (scale > full || !scale)
+>>>>>>           return -EINVAL;
+>>>>>> @@ -48,8 +48,7 @@ static int iio_gts_get_gain(const u64 max, const 
+>>>>>> u64 scale)
+>>>>>>           tmp++;
+>>>>>>       }
+>>>>>> -    while (full > scale * (u64)tmp)
+>>>>>> -        tmp++;
+>>>>>> +    tmp += div64_u64(full, scale);
+>>>>>>       return tmp;
+>>>>>>   }
+>>>>>>
+>>>>>> base-commit: 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab
+>>>>>
+>>>>>
+>>>> Hi Matti,
+>>>>
+>>>> Your fix works beautifully with the latest version of apds9306 
+>>>> driver which I am working on.
+>>>> All available scale values can be set without any errors. Thank you.
 >>>
->>> Suggested-by: Marek Szyprowski<m.szyprowski@samsung.com>
->>> Signed-off-by: Shradha Todi<shradha.t@samsung.com>
->>> ---
->>>   drivers/clk/clk-devres.c | 40
->> ++++++++++++++++++++++++++++++++++++++++
->>>   include/linux/clk.h      | 24 ++++++++++++++++++++++++
->>>   2 files changed, 64 insertions(+)
->>>
->>> diff --git a/drivers/clk/clk-devres.c b/drivers/clk/clk-devres.c index
->>> 4fb4fd4b06bd..cbbd2cc339c3 100644
->>> --- a/drivers/clk/clk-devres.c
->>> +++ b/drivers/clk/clk-devres.c
->>> @@ -182,6 +182,46 @@ int __must_check devm_clk_bulk_get_all(struct
->>> device *dev,  }  EXPORT_SYMBOL_GPL(devm_clk_bulk_get_all);
->>>
->>> +static void devm_clk_bulk_release_all_enable(struct device *dev, void
->>> +*res) {
->>> +	struct clk_bulk_devres *devres = res;
->>> +
->>> +	clk_bulk_disable_unprepare(devres->num_clks, devres->clks);
->>> +	clk_bulk_put_all(devres->num_clks, devres->clks); }
->>> +
->>> +int __must_check devm_clk_bulk_get_all_enable(struct device *dev,
->>> +					      struct clk_bulk_data **clks) {
->>> +	struct clk_bulk_devres *devres;
->>> +	int ret;
->>> +
->>> +	devres = devres_alloc(devm_clk_bulk_release_all_enable,
->>> +			      sizeof(*devres), GFP_KERNEL);
->>> +	if (!devres)
->>> +		return -ENOMEM;
->>> +
->>> +	ret = clk_bulk_get_all(dev, &devres->clks);
->>> +	if (ret > 0) {
->>> +		*clks = devres->clks;
->>> +		devres->num_clks = ret;
->>> +	} else {
->>> +		devres_free(devres);
->>> +		return ret;
->>> +	}
->> How about:
->>
->> 	ret = clk_bulk_get_all(dev, &devres->clks);
->> 	if (ret <= 0) {
->> 		devres_free(devres);
->> 		return ret;
->> 	}
->>
->> 	*clks = devres->clks;
->> 	devres->num_clks = ret;
->>
->> Even though this patch follows the pattern used by the rest of the APIs in the
->> driver, IMO above makes it more readable.
->>
-> Since I have usually seen that maintainers suggest to maintain the coding style of the file, I followed the same.
-> If you have a stronger reason to change this, please let me know
-> Marek, Michael, Stephen please let us know what do you think about this?
+>>> Thanks for testing Subhajit! Just to ensure we have no 
+>>> miscommunication - did you test just this division fix, or the 
+>>> rounding fix here:
+>>> https://lore.kernel.org/lkml/37d3aa193e69577353d314e94463a08d488ddd8d.1701780964.git.mazziesaccount@gmail.com/
+>> You are most welcome. I did not check the above rounding fix pointed 
+>> out by the link. I will be happy to check it and let you know by the 
+>> end of this month.
+>> I checked this division fix.
+> I tested the patch in the above link with adps9306 driver which I am 
+> working on and it seems to work well without any issues.
 
-I suggest to keep the same style as is used in the modified file (if it 
-doesn't conflict with the rules enforced by checkpatch and kernel's 
-coding style).
+Great! Thanks a lot Subhajit! Your testing is very much appreciated :)
 
-Best regards
+I think you sent another version of your APDS9306 driver. AFAIR, this 
+driver could have benefited from the above rounding fix. I will see if I 
+find the time and energy to see if I can dive into this again and 
+re-spin this rounding fix. No promises but I'll try :)
+
+Yours,
+	-- Matti
+
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+Matti Vaittinen
+Linux kernel developer at ROHM Semiconductors
+Oulu Finland
+
+~~ When things go utterly wrong vim users can always type :help! ~~
 
 
