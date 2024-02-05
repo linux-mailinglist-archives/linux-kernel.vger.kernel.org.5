@@ -1,110 +1,103 @@
-Return-Path: <linux-kernel+bounces-52878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D07D2849DBA
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:11:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DADA849DBF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:12:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5ADFA1F22E79
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:11:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E511286069
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:12:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 724252C691;
-	Mon,  5 Feb 2024 15:11:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7A612C859;
+	Mon,  5 Feb 2024 15:12:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="LRqzQoMw"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UJu5utXo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 775772C6B7;
-	Mon,  5 Feb 2024 15:11:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14CCA2C6B2;
+	Mon,  5 Feb 2024 15:12:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707145898; cv=none; b=Rik3nXkPaYh1U5PfVqiKw0Tj/nqDOKMGV00TOdAb2UepGwk1yMQvEpvm+CqHz2jMwXapB4kHK2y7IbUZrLI8kbwV7Gvw7ZhIMgLwP5fNKcQVprsRG3UTWl/6l0ZyHtf1poimMLcIOT5zSybo/wsenc3qQRh4vUmtFTM5aY+BfEc=
+	t=1707145935; cv=none; b=GF8n/iqAqtDq5nHpng92QVa1OxyTsw+y3OER3Mlty60NeQyleaYIxkBBa01QtRGm/T7DL/0toT9KrYQn9vlljnmgHdTWHqR/GQ00eDizWAmgPWfce4sS5Ji8yo/DMqkKpSBv/wYhWf26GCaFTNGLdV210Dz5t2Tjw3R66/VtyTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707145898; c=relaxed/simple;
-	bh=or1mC3Cf+BGWdRGGha8GQZG8rLMB4ONTBBAhWbyuCyU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=K358rN8E1d2cn0DuINjIvhJj9L2bMnh34Uj7i5RdGyE+sabc2f4yQ193fHbVmLAJLk8ZpV+FO1RF35iuQNeB9dJId9q6oFohF7qy7fVUT3xPf8u35b7vXkJ3UwnyciaOHxRIH5Ec6ZPDU2weRFKPnAcvEMr56shWz7LxlTmq9Q8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=LRqzQoMw; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0264C60004;
-	Mon,  5 Feb 2024 15:11:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707145892;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=or1mC3Cf+BGWdRGGha8GQZG8rLMB4ONTBBAhWbyuCyU=;
-	b=LRqzQoMwi0LqJMn0BW7k9Q1PJnJOdm0smu8g8xANoGjCCjB4wSIO9lrD0rzsjkaW0mL4he
-	Rrh0x+s78SdEpCrUOfDzXTvS1f6SvnfCoKy6cpXrqkgORMC60KGC8oQ1K76cy0nv1FDwcp
-	nJx3hC9Du2oCn4qyDqL9IOYfRslZRh38kJ0tNH1hC+EQYpRSvOKhAk4FO7CF+hpyQrYvEb
-	YbCVk0glppCgwpO3sEVsbCh8IjonYY2p4WiLvOZ88SQJT9z8waw/Yl/Z8eelCF+F1Wl6Eu
-	i1X+9h5/XoETw2OMXInCqaxmaw2GU59MhKQcwdPb2dzKyldyOCRgcInWBTRmwQ==
-Date: Mon, 5 Feb 2024 16:11:29 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Michael Pratt <mcpratt@pm.me>
-Cc: devicetree@vger.kernel.org, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- saravanak@google.com, abel.vesa@linaro.org,
- alexander.stein@ew.tq-group.com, andriy.shevchenko@linux.intel.com,
- bigunclemax@gmail.com, brgl@bgdev.pl, colin.foster@in-advantage.com,
- djrscally@gmail.com, dmitry.baryshkov@linaro.org, festevam@gmail.com,
- fido_max@inbox.ru, frowand.list@gmail.com, geert@linux-m68k.org,
- heikki.krogerus@linux.intel.com, kernel@pengutronix.de,
- linus.walleij@linaro.org, linux@roeck-us.net, luca.weiss@fairphone.com,
- magnus.damm@gmail.com, martin.kepplinger@puri.sm, rafal@milecki.pl,
- ansuelsmth@gmail.com, richard@nod.at, sakari.ailus@linux.intel.com,
- sudeep.holla@arm.com, tglx@linutronix.de, tony@atomide.com,
- vigneshr@ti.com, dianders@chromium.org, jpb@kernel.org, rafael@kernel.org
-Subject: Re: [PATCH v1 4/4] mtd: mtdpart: Allow fwnode links to NVMEM
- compatible fwnodes
-Message-ID: <20240205161129.1889a943@xps-13>
-In-Reply-To: <20240123014517.5787-5-mcpratt@pm.me>
-References: <20240123014517.5787-1-mcpratt@pm.me>
-	<20240123014517.5787-5-mcpratt@pm.me>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707145935; c=relaxed/simple;
+	bh=5H8U2s8sxkPgAP0CEtiqkR+kDtyMBSLYUju/2rUteGc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FnZq4D14+UMXsIqghmy+AGaoKpwbLUrb5Eo8qiKrqCGGgkJpHLIXmPzE0aVYaLIHvF7Hq6weZ/+6SkFkJzPJ7kE2lBRbd6o8HHsyKpq9d/LMdCp8r4mw2QMv0iq8QEdxCMX4Z2Yx1PFr4hWxOpBe/HA6NYa3SnsRhNl3oaleyUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UJu5utXo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04E15C43390;
+	Mon,  5 Feb 2024 15:12:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707145934;
+	bh=5H8U2s8sxkPgAP0CEtiqkR+kDtyMBSLYUju/2rUteGc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UJu5utXosnVRMOlcxFwUY7MZwzXvK31M33fxvYsmMhR7V9H5Pk7VuW2TpohuaVDNo
+	 8XTwfhmnH6CSgzJFzlY6xgNTiGrV9ytpdlR3KhyVBikmjB8HDVGEPC8BCg5X8sbZ6i
+	 Js42Zcv+aWIfhIj/7sh5Y3CUtR4xYVQV3o+rQX93atZD+aWXbOhzJVyyG81cvtj2Yq
+	 ANG3QWgUit5pSuYDR5REHLChCAMQbc6AGdwLyCP+YhpUvbBlHzZ+OxNZRXkhofAGCk
+	 CelhVzehpbFp+qy1nzpwzMi3gFAWlGorDq7YdGxwALxOrbkMWQS5Jr1VAc8c4pJoet
+	 BP3dyGzq0ufeg==
+Date: Mon, 5 Feb 2024 15:12:10 +0000
+From: Mark Brown <broonie@kernel.org>
+To: =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
+Cc: Apurva Nandan <a-nandan@ti.com>, Dhruva Gole <d-gole@ti.com>,
+	linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Gregory CLEMENT <gregory.clement@bootlin.com>,
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Subject: Re: [PATCH v2 2/4] spi: cadence-qspi: fix pointer reference in
+ runtime PM hooks
+Message-ID: <ZcD6yqc+o62x2AjA@finisterre.sirena.org.uk>
+References: <20240205-cdns-qspi-pm-fix-v2-0-2e7bbad49a46@bootlin.com>
+ <20240205-cdns-qspi-pm-fix-v2-2-2e7bbad49a46@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="+uhCJxiPCY2G8BG8"
+Content-Disposition: inline
+In-Reply-To: <20240205-cdns-qspi-pm-fix-v2-2-2e7bbad49a46@bootlin.com>
+X-Cookie: You might have mail.
+
+
+--+uhCJxiPCY2G8BG8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
 
-Hi Michael,
-
-mcpratt@pm.me wrote on Tue, 23 Jan 2024 01:47:21 +0000:
-
-> This reverts commit fb42378dcc7f247df56f0ecddfdae85487495fbc
-> ("mtd: mtdpart: Don't create platform device that'll never probe").
+On Mon, Feb 05, 2024 at 03:57:30PM +0100, Th=E9o Lebrun wrote:
+> dev_get_drvdata() gets used to acquire the pointer to cqspi and the SPI
+> controller. Neither embed the other; this lead to memory corruption.
 >=20
-> That commit is a manual named exception in order to avoid fw_devlink links
-> to an "nvmem-cells" compatible node which is a descendant of the fwnode
-> that represents the real supplier device that probes.
->=20
-> The commit does not work for newer cases, like the "fixed-layout"
+> On a given platform (Mobileye EyeQ5) the memory corruption is hidden
+> inside cqspi->f_pdata. Also, this uninitialised memory is used as a
+> mutex (ctlr->bus_lock_mutex) by spi_controller_suspend().
 
-Do you have plans for it? Because it is the modern description that is
-now expected, so I don't feel convinced by all this work (which is
-nevertheless considerable) if fixed-layouts are still broken?
+Please place fixes at the start of serieses so that they don't end up
+with spurious dependencies on other changes and can more easily be
+applied as fixes.
 
-> compatible nodes, but instead of adding another compatible string,
-> remove this workaround as it is no longer needed after
-> the previous few commits which handle the situation in a generic way
-> for all supplier nodes that are a child or further descendant fwnode
-> of a parent device that can probe, including when the consumer device
-> has a probe attempt before the supplier device, by using an existing
-> incorrect fwnode or device link to recreate the correct one.
->=20
-> Signed-off-by: Michael Pratt <mcpratt@pm.me>
+--+uhCJxiPCY2G8BG8
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Miqu=C3=A8l
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXA+skACgkQJNaLcl1U
+h9Br2Af+IML/4cSLO5Z+eiyFrEeWD5eTxDuA+9NYjzuwi7DYscVI3Rb0kbq+LwYE
+0aSMKVOV66iXYqmEZ0+hWfonkZnD3WD7CqRJQ3Tp6yJKMc/GseDor4mqc5qv8mQG
+dlEws4QRZJL8608KYcFHtw3lsJIYXLNt/bDBEbDJQX3adxRz8SV+jjRqihXDO8A6
+nxPDAKbDYbHhGu6Celc9dOxwFAa9g+86/pk7ARZNCPXleKnwDpQaF3gd3T5DSuge
+7oUz3xQSiVBXkafd8uWmjbfYyckF5xEwWD09ckuQQ8K2ZrDYXn1lnYUlBQerc+Dv
+OZR70PQxyvWSso2Z2EH89yx+SbB1mg==
+=wk0H
+-----END PGP SIGNATURE-----
+
+--+uhCJxiPCY2G8BG8--
 
