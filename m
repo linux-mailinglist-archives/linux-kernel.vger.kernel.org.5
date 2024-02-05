@@ -1,266 +1,154 @@
-Return-Path: <linux-kernel+bounces-53063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53065-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C983984A035
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:08:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F99284A03B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:09:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDDDC1C21A55
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:08:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80ED01C220D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:09:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DBB43FE54;
-	Mon,  5 Feb 2024 17:08:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59E2541770;
+	Mon,  5 Feb 2024 17:08:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XV11RjE3"
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="d6jz3Gdl"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C89F03FB37;
-	Mon,  5 Feb 2024 17:08:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5315444C7F;
+	Mon,  5 Feb 2024 17:08:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707152901; cv=none; b=hYX+aeqonosNQV9MzVpVdY/rBNXfiDtrhXuq4TJCN7PQKIx1jVtNtD4aaRGSPYaC3GUrI886wsOZjLEX1PM8xcrX63OHDRdGZEpU4aFl9cgdjm+fCEyPro9oVE/PYy8UxX5h8Yt2pJIbUI3iXCEoQwItaHWjLxT24qyN3d823o0=
+	t=1707152928; cv=none; b=Td4XR2gS/CkWzJFEDF8dXEMGXEM834fFY8YDSt4RWGxNs4eWi1k4AT67gC6/8nO6MJBZW+zITtKpIo+cVWuB4hnuZGp2OlM78XzfVl38fhi8cbF2oHiNbWsmwMcbYwCmnXSplSqwJnhzqjbe6brQTE809+ANj/unlk5CDdfnEDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707152901; c=relaxed/simple;
-	bh=reCj+r4VxIU6Y+cGYb9l8G/P6+gruLC060SkULyMf0E=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=p610WiOStJG/BQPRCRqildPngpxkL2oU+zI8y95J7dRsVoD4/dhjlkJTpR3oUHU0S1KmvXHLrkIi9irgHbDyAuiSNUdPvBwQ0TG/L2sgVje9cBe+5dBoeX/akAIilPPYWSoYxHVwmOzp+45aWWXOYzIC+RVAKRraIwTj9zgU0hc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XV11RjE3; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2906773c7e9so3133236a91.1;
-        Mon, 05 Feb 2024 09:08:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707152899; x=1707757699; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=dgMORd5WuhV/bci5sht7N7PthwPEl3wM3uOQ63QyyAM=;
-        b=XV11RjE3y4eJMooxHHZZKpo/ftPLKk21EMTwu7Y+ohPi9nEt2U4SjM6U8HWvpP8JaI
-         6FyQegfgkIH53zYAMK1fB/u+Q4vM9pqItbVHM9me/RHWR45EaUeiLoaT9tTKEM/R9FYQ
-         rFUCWrN9ExZGYvY3vCAPkw4vmQtOMCDtCNWIrFhRDpqT8SAFq/L4xjbq7JIrctEvqBI/
-         xqZ85ZK5MJrd9JbsO1AQajbix3rtHK6/YSECa7agaodM09sTM81zY3MjBF3SWMSkrRX8
-         SBz80RPIryCHL/okwxYz8mvi3isIUV73UhWqg8A9ZDYp52ZADE1pu3oa9Ct4hmy1hF6m
-         x7Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707152899; x=1707757699;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dgMORd5WuhV/bci5sht7N7PthwPEl3wM3uOQ63QyyAM=;
-        b=xHvo/7V5sgimMFJaAtcIDV4HQ7pYcM+/dYtIIljDsTMqePm8dfKfChb4QtpSdBACYY
-         rcoRjb8r/ILozix/t68VvhzSG0mBhz8K5sicPPZu3w4Iz5oaRBw/gaTXRo0554/DneoL
-         8nLXvw0EeF9phZvqft0cJ+aPbivslY2rlMkbGJwQfF269Il+HiPYkIO735YeDoSPUHqj
-         cyU0kv8MgV33IY5Hjm7k3hNa7fgCs19Li8qLGC9qQl1/yKO0jRR2ALmEtxzd5qS7rUEf
-         7fZb97nTJCTgchkHSQBocRFHlSUwRF6JwN/RtxuGk76YEKjV8n2PT+5ALPidZ385kGJf
-         up9w==
-X-Gm-Message-State: AOJu0YxVMMhITdTaWyrXzsw7to4Y1CKnzSzTxeNviAeAT9D7d08mpF2l
-	ppeLCXTUXZ7DcVi+gpRsPkpV3T4Dm4AWIFvNpQaFagQBqBjsmv/x
-X-Google-Smtp-Source: AGHT+IEN8VwL5mUjtDptE3O+Q/E3w/eaXXOjhoayZExDIwTCa+t1EV/XRm5igfn3dGmCszytvJ8NiA==
-X-Received: by 2002:a17:90a:d484:b0:296:1ddc:d46a with SMTP id s4-20020a17090ad48400b002961ddcd46amr7862pju.39.1707152898830;
-        Mon, 05 Feb 2024 09:08:18 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUuPIQXEj6bW9heF/JBeXugHU6pLE90dQ73ui0SQmNvk0hrfegwKN57evn5rmEP/FiWO6SI2lfM14uaV9Vwz8M/+hLdc2ZKzam6rzBN/D/Eala2DW2U3vwdUMcUBwPOqRkX5vBPZ8JCGWW1LxlV8TbGL9oeKB399WKF6EeXE+08PGU2c2SQq9s3aw/GroA1Jhrs30z/dT+stcsV01qQ/xpAEE66ar+EPxiiQSTvtpTLe5C0y10yd6+F145uFq/8Tklfz0Kssmd9m+skOUVw03GU4Cyr8ROf1eUhv/W4oCu8Tc27GywMxpHemckP6+JsPmC3AQ==
-Received: from DESKTOP-KA7F9LU.localdomain ([2406:7400:63:bcee:c97d:bee2:a20a:e6d3])
-        by smtp.googlemail.com with ESMTPSA id nr3-20020a17090b240300b002927a36b7a0sm222882pjb.23.2024.02.05.09.08.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 09:08:18 -0800 (PST)
-From: Vimal Kumar <vimal.kumar32@gmail.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Pavel Machek <pavel@ucw.cz>,
-	Len Brown <len.brown@intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: chinmoyghosh2001@gmail.com,
-	badolevishal1116@gmail.com,
-	mintupatel89@gmail.com,
-	Vimal Kumar <vimal.kumar32@gmail.com>
-Subject: [PATCH v4] PM / sleep: Mechanism to find source aborting kernel suspend transition
-Date: Mon,  5 Feb 2024 22:37:45 +0530
-Message-Id: <20240205170747.19748-1-vimal.kumar32@gmail.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1707152928; c=relaxed/simple;
+	bh=6hNaaG/8oJZcN6VD13NiOeX06CYfaL53eZydv1sk94A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EO1cSKGPIBTonDepboTM8jYG6uh4+EXGi7N9cl8OXJMRWn9II65y+AWsrumYDHp/XRw4585hxvvqswOX6VdOCy5UTxNX460IjXlmRdl0QRERZyies1O/oFO+Sgbxdzb8Wzf84z6yMkjvB5E2oHV23hNGgEfnL8/itpilS8OgCfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=d6jz3Gdl; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1707152869; x=1707757669; i=w_armin@gmx.de;
+	bh=6hNaaG/8oJZcN6VD13NiOeX06CYfaL53eZydv1sk94A=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=d6jz3Gdls9Dh8s8BdM9Gg6wc27fk4qvfSQLJSkDF1qKFmo57q94SShyXOm1a3vtH
+	 G2gHIlx75kFXnaSMvaNAL4i0KpMVNWd77kycf6qYM4Lmlyc9xu+5UwjxJpUGg+ijf
+	 CJVjlCN0zZfLUUC+4la45HD85M4QiH10EtkzmfrS1PfQ/iX5uhpvIXEFwuWKS0IFM
+	 vfL20QLY6QJdGMtrNSadUx4ggcpvNuUFxaAmoDP5sDWjckQskmCf+tv6DknGZOJXB
+	 TRVZuo7ZUWxsO83SQnBPsqzXBME6cu7UftbhB1X6EgmzeUTXshghaJPnIugHN8eQq
+	 8XTKV9Tmtnj8yMsmmQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.0.14] ([141.30.226.119]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1M5fIQ-1reBKB048Q-007Gm6; Mon, 05
+ Feb 2024 18:07:49 +0100
+Message-ID: <df011292-48cd-4fbb-856c-20a3db9f99e8@gmx.de>
+Date: Mon, 5 Feb 2024 18:07:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2] platform/x86/fujitsu-laptop: Add battery charge
+ control support
+Content-Language: en-US
+To: Szilard Fabian <szfabian@bluemarch.art>
+Cc: hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com, jwoithe@just42.net,
+ linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+References: <20240129163502.161409-2-szfabian@bluemarch.art>
+ <20240129175714.164326-2-szfabian@bluemarch.art>
+ <fabf391c-933c-4a7b-a23c-d361ad3d7cc0@gmx.de> <Zb2GMCSIz1MuWpQZ@N>
+From: Armin Wolf <W_Armin@gmx.de>
+In-Reply-To: <Zb2GMCSIz1MuWpQZ@N>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:9jOyCVzgEG/WOK2QiLHZdi4aqCWEUsTJ1xjpyhB/b35LltZX1zS
+ 09Kk5oWyw3XuPROLRKaHwak37v0XjG+kbrb3GbpLRiialtw49hJ/e5eMP91qbAVXgRHcyQa
+ ZhcxqG7V0/t4QgMg716VKKW550HLFiO5nLCHErZxdlaZEO6hoOKmN46n7tET0rYgXsUJYET
+ o/6l4WjtV3Lg1YnF1Axtg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:FywLzaAvvJs=;vhBNhZOl0/1zIX+ZbwQKLzw2SwO
+ l6nqcTQInmbCUF3ba1JWmvRYn+j7n4xYLwZg1JR/w94Uu6Xit+vJ+SylGrdrIcpv2tJXQZcGf
+ ug4FYg03KWiwuepndu8PjqcG6AQ+UQZx5e7yaEmcVuDceGCAAZzTScWA532LAYAAnTEHZVvzC
+ cRqZ7Vsm+INQowLQKjWqsVd8/XBveWMzIg76IWt2U60iW3QW9hCtdFOVO146TdHbGbBXoy/gn
+ xVeqNVQcHAtcbmPaPByyEouHL6LuTEcNZgdqVvtJRT5fXvUx3hL/mf+E2lqbJ1PPQE5u15xZo
+ qS8Ijuhc0lM6YNaNU0SCIGLLflb7FgVs//Q1BXIf9VC626dECJD1eTxhv64uQYUsybZJ2TnSu
+ 3QOTNMD5iv7a8DH/YfUcOgvnKor/+iT5iuHwS0oe+pnMAAPFF9JX+fH+YPoh9zdWINcHDYzva
+ ejGnSYToJPERYm6SM1b10hroPuI2m+v+yGGOFXCPqaOL8xBiusoD1vvFAxwe/cJJGw16Y5z/1
+ auI7nNCxx+vGY9NUrA3h+z3vtG4cFxOwTgEfLHEuiSsVQhVTA5HCvnoJ0MR9NCG5DwAfzMp4Z
+ /fF4Ur+42ep6gGPmqi7UabPjEt5euiNP9W+mHe/hOjOeLNZpi210KSSsrhdqhA8IO8dFtW5Z+
+ UnCrfUY5A7BD3D+sON0d1LzBLBuiCDCo9/nvO5HcWvPSI5EjdBpg+ebqoB/Ym5CFljtooxHkm
+ ch4X6pLq7qw/7dsZwReVF2XNWBLjG2/ATzt0uD9QdOGHDWvhTFxgJFAx0NENfPWuz432k7as+
+ FW1XNMUndEGeNP90l/4LYum+Bi84tFyQhSQH/QOIyCGqg=
 
-Sometimes kernel suspend transitions can be aborted unconditionally by
-manipulating pm_abort_suspend value using "hard" wakeup triggers or
-through "pm_system_wakeup()".
+Am 03.02.24 um 01:17 schrieb Szilard Fabian:
 
-There is no way to trace the source path of module or subsystem which
-aborted the suspend transitions. This change will create a list of
-wakeup sources aborting suspend in progress through "hard" events as
-well as subsytems aborting suspend using "pm_system_wakeup()".
+> Hello,
+>
+> On Tue, Jan 30, 2024 at 03:02:09AM +0100, Armin Wolf wrote:
+>> Am 29.01.24 um 19:00 schrieb Szilard Fabian:
+>>> +
+>>> +	return sprintf(buf, "%d\n", status);
+>>> +}
+>>> +
+>>> +static DEVICE_ATTR_RW(charge_control_end_threshold);
+>>> +
+>>> +/* ACPI battery hook */
+>>> +
+>>> +static int fujitsu_battery_add(struct power_supply *battery,
+>>> +			       struct acpi_battery_hook *hook)
+>>> +{
+>>> +	/* Check if there is an existing FUJ02E3 ACPI device. */
+>>> +	if (fext == NULL)
+>>> +		return -ENODEV;
+>> Can you put the struct acpi_battery_hook into the struct fujitsu_laptop
+>> and then use container_of() to retrieve the ACPI device from there?
+>> The dell-wmi-ddv driver does something similar.
+>>
+>> This would guarantee that the battery hook always accesses the correct ACPI device
+>> and you could drop this check.
+>>
+>>> +
+>>> +	/*
+>>> +	 * Check if the S006 0x21 method exists by trying to get the current
+>>> +	 * battery charge limit.
+>>> +	 */
+>>> +	int s006_cc_return;
+>>> +	s006_cc_return = call_fext_func(fext, FUNC_S006_METHOD,
+>>> +					CHARGE_CONTROL_RW, 0x21, 0x0);
+>>> +	if (s006_cc_return == UNSUPPORTED_CMD)
+>>> +		return -ENODEV;
+>> Maybe this check should be done once during probe?
+> What about the following scenario?
+> - Put a bool into the struct fujitsu_laptop to store information about the
+>    machine's charge control ability.
+> - The S006 0x21 method check with `battery_hook_register` gets moved into
+>    an 'init function'. In that 'init function' the bool gets set accordingly.
+> - `battery_hook_unregister` gets moved into an 'exit function', where the
+>    bool gets read and when it's false nothing happens.
+> - `fext` check gets removed from `fujitsu_battery_add` because it's
+>    redundant (more about that later).
+> - The 'init function' gets called in `acpi_fujitsu_laptop_add` and the 'exit
+>    function' gets called in `acpi_fujitsu_laptop_remove`.
+>
+> With that scenario the code could be a little bit clearer in my opinion.
+> And it is possible to drop the `fext` check because if the FUJ02E3 ACPI
+> device exists `fext` gets set in the `acpi_fujitsu_laptop_add` function with
+> an error check.
+> (And the `fujitsu_battery_add` `fext` check was already redundant because
+> `battery_hook_register` got called in `acpi_fujitsu_laptop_add`. `fext`
+> gets set in the same function, and there is an error check already.)
+>
+> Thanks,
+> Szilard
+>
+This would work too.
 
-Example: Existing suspend failure logs:
-[  349.708359] PM: Some devices failed to suspend, or early wake event detected
-[  350.327842] PM: suspend exit
+Armin Wolf
 
-Suspend failure logs with this change:
-[  518.761835] PM: Some devices failed to suspend, or early wake event detected
-[  519.486939] PM: wakeup source or subsystem uart_suspend_port aborted suspend
-[  519.500594] PM: suspend exit
-
-Here we can clearly identify the module triggerring abort suspend.
-
-Co-developed-by: Chinmoy Ghosh <chinmoyghosh2001@gmail.com>
-Signed-off-by: Chinmoy Ghosh <chinmoyghosh2001@gmail.com>
-Co-developed-by: Mintu Patel <mintupatel89@gmail.com>
-Signed-off-by: Mintu Patel <mintupatel89@gmail.com>
-Co-developed-by: Vishal Badole <badolevishal1116@gmail.com>
-Signed-off-by: Vishal Badole <badolevishal1116@gmail.com>
-Signed-off-by: Vimal Kumar <vimal.kumar32@gmail.com>
----
-Changes in v4:
-- Changed GFP_KERNEL flag to GFP_ATOMIC
-- Changed mutex_lock to raw_spin_lock
----
- drivers/base/power/wakeup.c | 100 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 99 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/base/power/wakeup.c b/drivers/base/power/wakeup.c
-index a917219feea6..b04794557eef 100644
---- a/drivers/base/power/wakeup.c
-+++ b/drivers/base/power/wakeup.c
-@@ -73,6 +73,16 @@ static struct wakeup_source deleted_ws = {
-
- static DEFINE_IDA(wakeup_ida);
-
-+#ifdef CONFIG_PM_DEBUG
-+static DEFINE_RAW_SPINLOCK(pm_abort_suspend_list_lock);
-+
-+struct pm_abort_suspend_source {
-+	struct list_head list;
-+	char *source_triggering_abort_suspend;
-+};
-+static LIST_HEAD(pm_abort_suspend_list);
-+#endif
-+
- /**
-  * wakeup_source_create - Create a struct wakeup_source object.
-  * @name: Name of the new wakeup source.
-@@ -575,6 +585,54 @@ static void wakeup_source_activate(struct wakeup_source *ws)
-	trace_wakeup_source_activate(ws->name, cec);
- }
-
-+#ifdef CONFIG_PM_DEBUG
-+/**
-+ * pm_abort_suspend_list_clear - Clear pm_abort_suspend_list.
-+ *
-+ * The pm_abort_suspend_list will be cleared when system PM exits.
-+ */
-+static void pm_abort_suspend_list_clear(void)
-+{
-+	unsigned long flags;
-+	struct pm_abort_suspend_source *info, *tmp;
-+
-+	raw_spin_lock_irqsave(&pm_abort_suspend_list_lock, flags);
-+	list_for_each_entry_safe(info, tmp, &pm_abort_suspend_list, list) {
-+		list_del(&info->list);
-+		kfree(info);
-+	}
-+	raw_spin_unlock_irqrestore(&pm_abort_suspend_list_lock, flags);
-+}
-+
-+/**
-+ * pm_abort_suspend_source_add - Update pm_abort_suspend_list
-+ * @source_name: Wakeup_source or function aborting suspend transitions.
-+ *
-+ * Add the source name responsible for updating the abort_suspend flag in the
-+ * pm_abort_suspend_list.
-+ */
-+static void pm_abort_suspend_source_add(const char *source_name)
-+{
-+	unsigned long flags;
-+	struct pm_abort_suspend_source *info;
-+
-+	info = kmalloc(sizeof(*info), GFP_ATOMIC);
-+	if (!info)
-+		return;
-+
-+	INIT_LIST_HEAD(&info->list);
-+	info->source_triggering_abort_suspend = kstrdup(source_name, GFP_ATOMIC);
-+	if (!info->source_triggering_abort_suspend) {
-+		kfree(info);
-+		return;
-+	}
-+
-+	raw_spin_lock_irqsave(&pm_abort_suspend_list_lock, flags);
-+	list_add_tail(&info->list, &pm_abort_suspend_list);
-+	raw_spin_unlock_irqrestore(&pm_abort_suspend_list_lock, flags);
-+}
-+#endif
-+
- /**
-  * wakeup_source_report_event - Report wakeup event using the given source.
-  * @ws: Wakeup source to report the event for.
-@@ -590,8 +648,13 @@ static void wakeup_source_report_event(struct wakeup_source *ws, bool hard)
-	if (!ws->active)
-		wakeup_source_activate(ws);
-
--	if (hard)
-+	if (hard) {
-+#ifdef CONFIG_PM_DEBUG
-+		if (pm_suspend_target_state != PM_SUSPEND_ON)
-+			pm_abort_suspend_source_add(ws->name);
-+#endif
-		pm_system_wakeup();
-+	}
- }
-
- /**
-@@ -893,12 +956,47 @@ bool pm_wakeup_pending(void)
-		pm_print_active_wakeup_sources();
-	}
-
-+#ifdef CONFIG_PM_DEBUG
-+	if (atomic_read(&pm_abort_suspend) > 0) {
-+		struct pm_abort_suspend_source *info;
-+
-+		raw_spin_lock_irqsave(&pm_abort_suspend_list_lock, flags);
-+		list_for_each_entry(info, &pm_abort_suspend_list, list) {
-+			pm_pr_dbg("wakeup source or subsystem %s aborted suspend\n",
-+					info->source_triggering_abort_suspend);
-+		}
-+		raw_spin_unlock_irqrestore(&pm_abort_suspend_list_lock, flags);
-+		pm_abort_suspend_list_clear();
-+	}
-+#endif
-+
-	return ret || atomic_read(&pm_abort_suspend) > 0;
- }
- EXPORT_SYMBOL_GPL(pm_wakeup_pending);
-
- void pm_system_wakeup(void)
- {
-+
-+#ifdef CONFIG_PM_DEBUG
-+#ifdef CONFIG_DEBUG_INFO
-+	if (pm_suspend_target_state != PM_SUSPEND_ON) {
-+		char *source_name = kasprintf(GFP_ATOMIC,
-+					"%ps",
-+					__builtin_return_address(0));
-+		if (!source_name)
-+			goto exit;
-+
-+		if (strcmp(source_name, "pm_wakeup_ws_event"))
-+			pm_abort_suspend_source_add(source_name);
-+
-+		kfree(source_name);
-+	}
-+exit:
-+#else
-+	if (pm_suspend_target_state != PM_SUSPEND_ON)
-+		pm_pr_dbg("Some wakeup source or subsystem aborted suspend\n");
-+#endif
-+#endif
-	atomic_inc(&pm_abort_suspend);
-	s2idle_wake();
- }
---
-2.25.1
 
