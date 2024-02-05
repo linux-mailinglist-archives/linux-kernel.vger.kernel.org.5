@@ -1,92 +1,56 @@
-Return-Path: <linux-kernel+bounces-52634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84C41849AB6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:46:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28159849AE5
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:51:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40079283EA8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:46:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DCBA3B22E00
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:50:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03956210F4;
-	Mon,  5 Feb 2024 12:45:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ytmQxFes"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0276A44C8C;
+	Mon,  5 Feb 2024 12:46:05 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D12A1CA88
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 12:45:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1488F1CAA2;
+	Mon,  5 Feb 2024 12:46:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707137124; cv=none; b=D6hWrSoshId2LWVjc8brvdwIIDHQfFOnUPXknOHAl2SRJIpMsbr4j8godotFBOxCef5/N7CVDL3F+osXEZj//0huwfKLvVcGkyr/m4WPfpaCEiiOb26ui/S1qscqbZi7ByLnhly83lLDAYAulP22YW+7ekKZ+qxeLdIPeCqdMV8=
+	t=1707137164; cv=none; b=g1qwUCh8OnuU8E1fmT8hKWwUyLgn8OqXVmjrYlBs2Uu26yXSQQeI5HrI8jGdq3PwAgukH7GKU6XnZX8XxbYrLyvvOhimqjkLSSwwqA9IXGyhoC70TIkQc7QE05YQCyuMxwgagVJnW81hwhLWwiQvHyDcEj8NU6rjiMtIuW3/SCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707137124; c=relaxed/simple;
-	bh=F124QJAevKWdFhGb5sj8HrO8muyAjVQUMric9Xoo0PQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TpsO5JUk1GGwE34UBymt86e1kAyjkV/Hs3+ChQ+I9sLBN2N1jO+446PuIu5Lvyv3it/NbwZFyCE64ptn395yHu76wjTuuCv91Ylb7DmY7RJKuIMWqn+qsc+IFWS9MHF+TCmvMAqO41CnNd0Je9hKU6TJGPiI95WozdY479noHu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ytmQxFes; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33934567777so2926348f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 04:45:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707137120; x=1707741920; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eOBjoaorUabw6V0kVhecCBVM+DqJR5V0WfMbUMGzKiM=;
-        b=ytmQxFes1ArYQxU0/WAEZsWB7bHZI+JEABZFpFeehELiXjFZ7O+380widLKzXGvCN1
-         wETkdeQnP++UbhJHoVYpz1ukzxR5f0BLpdGQZ1OaYolbrirexBCGp50q5up+HjOCLljT
-         jLITSDjcWHXAa6SwKz6zeB23p8Io24BbY+69aDdJVW09pp2f360Kl9RwMANXd8wVVg0J
-         O0SMmvvrAsNRZlR5bIWmYZRM1U3sKnyfqyMGGKnUI1vMHy+T++CBuLfSdL4O4u6mFSo/
-         Pd0XGxJ9B3BQ7SWi7Grw5LRKJYUD5JDIBHh+j4MQRN3kaCbWqDIxCooaM3EgL0hkriqB
-         8DQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707137120; x=1707741920;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eOBjoaorUabw6V0kVhecCBVM+DqJR5V0WfMbUMGzKiM=;
-        b=Qxf3m7bHoQQ39PIWsS3ba/oGVxNCncn5SRtl5B4zDjnvRHbtlBRsiQKJJG12d4OtPU
-         vqrS4Kt1sgSMH/T1yCN4oSueM/9At8XhWsIOJtBT8EfZeyheqUCrrNLgSO+4Er6wCB9A
-         rKURfaSeE/ZrNUxqyQYxua2CMprv6yGIrkRx+PCGWrHzEUFX73v4SJt+9rbLEMoY5Vq1
-         TlkaTUn00boskesZu8ZwDS9fXfHUNdgD5ZHiSWpTDBOzFXOLVL9/9yRC1lZ1VOMUma+0
-         OYzFMmcgTVpGUx12dVwWAG4Yymt5DBPuBcdmrQwg8BZI53EeDCsCrOw8UV4KSI//+AJG
-         FcRw==
-X-Gm-Message-State: AOJu0Yy2vRs27aD+Z0uLX58ymwtM7y1LkOCXXNGkS1zZ9y9emKYqxh4f
-	YC3BCHpexcAV4keS2BL81Uc15CU2dxAi2kKNjtQ40qtSr4VuI2Uj5i3uKBrYFPM=
-X-Google-Smtp-Source: AGHT+IE/R//MpNPylh0UwnhF9YKZR3KGGY4fGA5i2/YHcwiL3Cuz8pM968aVwJ0sUeRb5fLUjg+zTw==
-X-Received: by 2002:a5d:64c8:0:b0:33b:3b96:87b4 with SMTP id f8-20020a5d64c8000000b0033b3b9687b4mr2800257wri.14.1707137120374;
-        Mon, 05 Feb 2024 04:45:20 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVMfIKOUFnj98diFmwBJtthJx6XEcrlECRzI+G2PUYmp9a0qQk6FHpzoZ9Ia24ALKuUN657wE98H7tOGJZHXUA8msOETP4O6LwvEYPkhKFL0nxyBUrL5e2O8PpjE8+a4M9P11ukmFcNBgXZEa5aWKSANDzieilHAieWiKlkvLrl13nCFPWQDtoDpKen60XHXzT8GvyRKD0vD//k+Qg1LxdRN+OAWLXIj1JfNpuN7SLfryV6uFyeKnFgV3lAGAtE909omOuHJ5ZKKnCxJ33RwVeCOHVP1+ZoaQqjUzQ/CMVw80T4NvSdqgiC2OQow6M6qnGiei69Mp7y7alVSVZkJ1ldjTF35HcXRcoCWooaacUQTyzUzMuFslAV2REvXdO+IicsZi5ls10DblwKzyoM1PGP0iWzrmPzgE0Bol6vhVkkb80eWfLhYsJwxLAt+xlvddzVmWCt7BqPk4BIU9IpSbhTdg1EU/O/4BVSuH2MpZeYc7sOZdT093oW1fodyg==
-Received: from ta2.c.googlers.com.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id n9-20020adff089000000b0033b35da384fsm3650812wro.33.2024.02.05.04.45.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 04:45:19 -0800 (PST)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: broonie@kernel.org,
-	andi.shyti@kernel.org,
-	semen.protsenko@linaro.org
-Cc: krzysztof.kozlowski@linaro.org,
-	alim.akhtar@samsung.com,
-	linux-spi@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	andre.draszik@linaro.org,
-	peter.griffin@linaro.org,
-	kernel-team@android.com,
-	willmcvicker@google.com,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v4 04/16] spi: s3c64xx: fix typo, s/configuartion/configuration
-Date: Mon,  5 Feb 2024 12:45:01 +0000
-Message-ID: <20240205124513.447875-5-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-In-Reply-To: <20240205124513.447875-1-tudor.ambarus@linaro.org>
-References: <20240205124513.447875-1-tudor.ambarus@linaro.org>
+	s=arc-20240116; t=1707137164; c=relaxed/simple;
+	bh=nN0hXC2rCPqcNLu07ELbr6FXn/yhkJ6KwF/VMli0qYo=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=FpavDykORWJ+MNkUX4pHluBi8CcKJ4mqOPxtZBzVudhb8aXIf1X8UhYIEkHMzmBDsv/mgYxuA7n1e8vbMDvTrO6FAqiLEzS1LKJTg+lLIqIuTs7u0ZL/kG33ByFfEd3EJX+QicPkQy8NZ98208WS/QEdp1A8DyPRWHZ0wZkxmHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TT5hD3kdwz1vtDM;
+	Mon,  5 Feb 2024 20:45:32 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id CB9001A0172;
+	Mon,  5 Feb 2024 20:45:59 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 5 Feb 2024 20:45:59 +0800
+From: Yunsheng Lin <linyunsheng@huawei.com>
+To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
+CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yunsheng Lin
+	<linyunsheng@huawei.com>, Alexander Duyck <alexanderduyck@fb.com>, Alexander
+ Duyck <alexander.duyck@gmail.com>, "Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>, Andrew Morton <akpm@linux-foundation.org>,
+	<kvm@vger.kernel.org>, <virtualization@lists.linux.dev>, <linux-mm@kvack.org>
+Subject: [PATCH net-next v5 2/5] page_frag: unify gfp bits for order 3 page allocation
+Date: Mon, 5 Feb 2024 20:45:02 +0800
+Message-ID: <20240205124506.57670-3-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20240205124506.57670-1-linyunsheng@huawei.com>
+References: <20240205124506.57670-1-linyunsheng@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,30 +58,69 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 
-Fix typo, s/configuartion/configuration.
+Currently there seems to be three page frag implementations
+which all try to allocate order 3 page, if that fails, it
+then fail back to allocate order 0 page, and each of them
+all allow order 3 page allocation to fail under certain
+condition by using specific gfp bits.
 
-Fixes: 6b8d1e4739f4 ("spi: spi-s3c64xx: Add missing entries for structs 's3c64xx_spi_dma_data' and 's3c64xx_spi_dma_data'")
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+The gfp bits for order 3 page allocation are different
+between different implementation, __GFP_NOMEMALLOC is
+or'd to forbid access to emergency reserves memory for
+__page_frag_cache_refill(), but it is not or'd in other
+implementions, __GFP_DIRECT_RECLAIM is masked off to avoid
+direct reclaim in vhost_net_page_frag_refill(), but it is
+not masked off in __page_frag_cache_refill().
+
+This patch unifies the gfp bits used between different
+implementions by or'ing __GFP_NOMEMALLOC and masking off
+__GFP_DIRECT_RECLAIM for order 3 page allocation to avoid
+possible pressure for mm.
+
+Leave the gfp unifying for page frag implementation in sock.c
+for now as suggested by Paolo Abeni.
+
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
+CC: Alexander Duyck <alexander.duyck@gmail.com>
 ---
- drivers/spi/spi-s3c64xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/vhost/net.c | 2 +-
+ mm/page_alloc.c     | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-index c3176a510643..3df4906bba34 100644
---- a/drivers/spi/spi-s3c64xx.c
-+++ b/drivers/spi/spi-s3c64xx.c
-@@ -180,7 +180,7 @@ struct s3c64xx_spi_port_config {
-  * @cur_speed: Current clock speed
-  * @rx_dma: Local receive DMA data (e.g. chan and direction)
-  * @tx_dma: Local transmit DMA data (e.g. chan and direction)
-- * @port_conf: Local SPI port configuartion data
-+ * @port_conf: Local SPI port configuration data
-  * @port_id: Port identification number
-  */
- struct s3c64xx_spi_driver_data {
+diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
+index f2ed7167c848..e574e21cc0ca 100644
+--- a/drivers/vhost/net.c
++++ b/drivers/vhost/net.c
+@@ -670,7 +670,7 @@ static bool vhost_net_page_frag_refill(struct vhost_net *net, unsigned int sz,
+ 		/* Avoid direct reclaim but allow kswapd to wake */
+ 		pfrag->page = alloc_pages((gfp & ~__GFP_DIRECT_RECLAIM) |
+ 					  __GFP_COMP | __GFP_NOWARN |
+-					  __GFP_NORETRY,
++					  __GFP_NORETRY | __GFP_NOMEMALLOC,
+ 					  SKB_FRAG_PAGE_ORDER);
+ 		if (likely(pfrag->page)) {
+ 			pfrag->size = PAGE_SIZE << SKB_FRAG_PAGE_ORDER;
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index c0f7e67c4250..636145c29f70 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -4685,8 +4685,8 @@ static struct page *__page_frag_cache_refill(struct page_frag_cache *nc,
+ 	gfp_t gfp = gfp_mask;
+ 
+ #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
+-	gfp_mask |= __GFP_COMP | __GFP_NOWARN | __GFP_NORETRY |
+-		    __GFP_NOMEMALLOC;
++	gfp_mask = (gfp_mask & ~__GFP_DIRECT_RECLAIM) |  __GFP_COMP |
++		   __GFP_NOWARN | __GFP_NORETRY | __GFP_NOMEMALLOC;
+ 	page = alloc_pages_node(NUMA_NO_NODE, gfp_mask,
+ 				PAGE_FRAG_CACHE_MAX_ORDER);
+ 	nc->size = page ? PAGE_FRAG_CACHE_MAX_SIZE : PAGE_SIZE;
 -- 
-2.43.0.594.gd9cf4e227d-goog
+2.33.0
 
 
