@@ -1,140 +1,131 @@
-Return-Path: <linux-kernel+bounces-52460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52462-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3904A84987C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:09:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2F5D84987F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:10:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69F411C20CCE
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:09:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83848B29221
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:09:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5BE01B295;
-	Mon,  5 Feb 2024 11:07:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zPN75X/J"
-Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0082182DB;
+	Mon,  5 Feb 2024 11:09:43 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A24661B59B
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 11:07:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C0B118622;
+	Mon,  5 Feb 2024 11:09:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707131279; cv=none; b=TtMxGUjlf+DKpX3NZQXMn+ItZYR9+jQq8W5VP2cMG7j1jbLEMgR1XCRUvqETxFGNrEbVE8oHTcYr80lJXTLnEUwEzgqFKkXNz0CEhTjNyKHnKRcdOoIBb1PNK00hcvgT72Lig7j0AYG89zt2cBVTc7p55drkfFOsub/6jO1X2WE=
+	t=1707131383; cv=none; b=sUyr8kCs2gY1Owj9zkc9VZ46PAQkfIdBBUUg7rH4dla7I3BHnV2zWx0/Vp6rlra35u2FT+jWFEDQ8QloeAaarJLSNzhBLEu8wpNgNw6dryN+yZFrxZbYacGygwBAd1f3BQQXZHPvCzpm0yp7dKBkqBj1W9hWol8lyw0QOEVHxUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707131279; c=relaxed/simple;
-	bh=LSXUDuZ3hWNAcz8vkmNgC731XOYklVfnxXuzJDSI/9U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=km4DETVUSfyNYQHMYDPSJLoMaLN6gbhPDXlF/XCe+zEg+EDSxrYfq7w6z7z58MdZndLgy/HzaPyihk8RIt728EUn8CYc3VyJ6Hqvq9ggy04nDuaKzbfSoIj64YYxJCXvggyN/M0psRCZRN4bTj0wEccoXYw5LnmYwDlPGUxRTBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zPN75X/J; arc=none smtp.client-ip=209.85.217.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-467ed334c40so1352434137.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 03:07:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707131276; x=1707736076; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=b2S4QWg5rbsM0zVoer/U9D2xYC6cQRyp0XiaCDO+VCA=;
-        b=zPN75X/JrioyDUMUPP12+FLv0N1fvLfINcgU7LjNOoPJeAssIuDUFF+Dlfbi+M7rzc
-         gAQunAJh1gEvPGqk1htNnXlsijsbAEioIU0ZyX+sftljTjO2unTT13FQWr+aTDCSYX42
-         /VFuB0k2PUVxMrhw5oRT2M0r3CIYxHNLjPm1vq0YtfEOBJ2t3vJ7nN2aKMtD+TedPvOy
-         2s3JOpSQszFKCXG5L/3tSSUhe9C3dCGS+ychrjj52breGZxVLoha0iPksJ1hZet/XfXT
-         HP84MVe+0YIL5jNcLt6507dzlmWRrE/FOxJ0+C4kEgTiInUKwX56YX1Vq85D/UAmLxHs
-         5hxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707131276; x=1707736076;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=b2S4QWg5rbsM0zVoer/U9D2xYC6cQRyp0XiaCDO+VCA=;
-        b=CnEL9xEurqvkZ6NtiqnVYXnk6RGFFpY1VEUQM3pBlc069o0KnXqFmdAx4+dVW2DhQR
-         Rt0Z5NpdGi6LDsjh2jaIzt7vkJYnXhPhfbO70sjG+DKrhd+xFdETInsmzYapX6wJBVuU
-         rjXB0iOKHJQlyIuKW21Rdi3yCqQkL4MBHODwf/2/bnBIXx0PuiHJCTxPp6dJFWoWn5Dl
-         jIGiZTo7tQgruab1t5WKv2wFfnfPYnGdr5Erbm6o/Wu55cfDYgn5sOBz3TfNH+zRjWOh
-         8a39cwCqUWNK3zy9cogNRegcveT5HxTub8gkNdvqW6V0mXaAAbbhsfmwOCavVs0cTAlp
-         5bXQ==
-X-Gm-Message-State: AOJu0YyNPxX+OIrUkw7GGDXC7PQnrvrXI6icRoC6271JczquELTYvRKE
-	AnffYZTEGKUcehpXmfkwWpcIeK/Zm/n0DaVnIt906W7XfPzDKRnR6OMNYlsgeMIj7ytjFsV8of9
-	AD977M9TOpZ/Oa2jVx4qbzfgSyWYGWCmYKX5Z
-X-Google-Smtp-Source: AGHT+IHRhimf5DlF5es9JL+ew8WM2cfwIdaMJg21KojI1oyI4onRpBN+2Gc5nqIg0PfsDGvIN3lXdt5v1nJMH2MUxQE=
-X-Received: by 2002:a05:6102:2fa:b0:46c:fd6d:7233 with SMTP id
- j26-20020a05610202fa00b0046cfd6d7233mr7818207vsj.9.1707131276246; Mon, 05 Feb
- 2024 03:07:56 -0800 (PST)
+	s=arc-20240116; t=1707131383; c=relaxed/simple;
+	bh=6fDq7Awy6E71ynDuxpB8rBXU5HkmEDHMF/KRwCpZ5XU=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BrO2amYz7ADwbTPKonlNFoQ2UpvviDmXtlNy2f3VmRfNhSLSWxaj03rzCBhuYLjHgNTdveQRgAfBaJFigsHAiHzASq4W1//e3cZLx+WkeVDfkr7eqsJYkRJQEeyrEZy0faUrhkmV11FnEOyh+GCn408De+h4S6zRLCZ++eyqI18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TT3Tt6vmFz6K5ks;
+	Mon,  5 Feb 2024 19:06:26 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id CEEF6141DB5;
+	Mon,  5 Feb 2024 19:09:38 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 5 Feb
+ 2024 11:09:38 +0000
+Date: Mon, 5 Feb 2024 11:09:37 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
+CC: Peter Zijlstra <peterz@infradead.org>, Dan Williams
+	<dan.j.williams@intel.com>, <linux-kernel@vger.kernel.org>, Ingo Molnar
+	<mingo@kernel.org>, <linux-cxl@vger.kernel.org>, Ira Weiny
+	<ira.weiny@intel.com>
+Subject: Re: [PATCH 1/2] cleanup: Add cond_guard() to conditional guards
+Message-ID: <20240205110937.000036cc@Huawei.com>
+In-Reply-To: <20240204173105.935612-2-fabio.maria.de.francesco@linux.intel.com>
+References: <20240204173105.935612-1-fabio.maria.de.francesco@linux.intel.com>
+	<20240204173105.935612-2-fabio.maria.de.francesco@linux.intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205090323.it.453-kees@kernel.org>
-In-Reply-To: <20240205090323.it.453-kees@kernel.org>
-From: Marco Elver <elver@google.com>
-Date: Mon, 5 Feb 2024 12:07:20 +0100
-Message-ID: <CANpmjNNMJn7xtpUxwxiUV1KXgMsDmyvGAq+4etFy5aiESdcDxg@mail.gmail.com>
-Subject: Re: [PATCH v2] ubsan: Silence W=1 warnings in self-test
-To: Kees Cook <keescook@chromium.org>
-Cc: kernel test robot <lkp@intel.com>, Andrey Konovalov <andreyknvl@gmail.com>, linux-kernel@vger.kernel.org, 
-	kasan-dev@googlegroups.com, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Mon, 5 Feb 2024 at 10:03, Kees Cook <keescook@chromium.org> wrote:
->
-> Silence a handful of W=1 warnings in the UBSan selftest, which set
-> variables without using them. For example:
->
->    lib/test_ubsan.c:101:6: warning: variable 'val1' set but not used [-Wunused-but-set-variable]
->      101 |         int val1 = 10;
->          |             ^
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202401310423.XpCIk6KO-lkp@intel.com/
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+On Sun,  4 Feb 2024 18:31:04 +0100
+"Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com> wrote:
 
-Reviewed-by: Marco Elver <elver@google.com>
+> Add cond_guard() macro to conditional guards.
+> 
+> cond_guard() is a guard to be used with the conditional variants of locks,
+> like down_read_trylock() or mutex_lock_interruptible().
+> 
+> It takes a statement (or more statements in a block) that is passed to its
+> second argument. That statement (or block) is executed if waiting for a
+> lock is interrupted or if a _trylock() fails in case of contention.
+> 
+> Usage example:
+> 
+> 	cond_guard(rwsem_read_try, { printk(...); return 0; }, &semaphore);
+> 
+> Consistenly with the other guards, locks are unlocked at the exit of the
+Spell check.
 
+> scope where cond_guard() is called.
+> 
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Suggested-by: Dan Williams <dan.j.williams@intel.com>
+> Suggested-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Fabio M. De Francesco <fabio.maria.de.francesco@linux.intel.com>
 > ---
-> v2:
->  - add additional "volatile" annotations for potential future proofing (marco)
-> v1: https://lore.kernel.org/all/20240202094550.work.205-kees@kernel.org/
-> ---
->  lib/Makefile     | 1 +
->  lib/test_ubsan.c | 4 ++--
->  2 files changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/lib/Makefile b/lib/Makefile
-> index 6b09731d8e61..bc36a5c167db 100644
-> --- a/lib/Makefile
-> +++ b/lib/Makefile
-> @@ -69,6 +69,7 @@ obj-$(CONFIG_HASH_KUNIT_TEST) += test_hash.o
->  obj-$(CONFIG_TEST_IDA) += test_ida.o
->  obj-$(CONFIG_TEST_UBSAN) += test_ubsan.o
->  CFLAGS_test_ubsan.o += $(call cc-disable-warning, vla)
-> +CFLAGS_test_ubsan.o += $(call cc-disable-warning, unused-but-set-variable)
->  UBSAN_SANITIZE_test_ubsan.o := y
->  obj-$(CONFIG_TEST_KSTRTOX) += test-kstrtox.o
->  obj-$(CONFIG_TEST_LIST_SORT) += test_list_sort.o
-> diff --git a/lib/test_ubsan.c b/lib/test_ubsan.c
-> index 2062be1f2e80..f4ee2484d4b5 100644
-> --- a/lib/test_ubsan.c
-> +++ b/lib/test_ubsan.c
-> @@ -23,8 +23,8 @@ static void test_ubsan_divrem_overflow(void)
->  static void test_ubsan_shift_out_of_bounds(void)
->  {
->         volatile int neg = -1, wrap = 4;
-> -       int val1 = 10;
-> -       int val2 = INT_MAX;
-> +       volatile int val1 = 10;
-> +       volatile int val2 = INT_MAX;
->
->         UBSAN_TEST(CONFIG_UBSAN_SHIFT, "negative exponent");
->         val1 <<= neg;
-> --
-> 2.34.1
->
-> --
-> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20240205090323.it.453-kees%40kernel.org.
+>  include/linux/cleanup.h | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+> diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
+> index c2d09bc4f976..3826e8ed4e09 100644
+> --- a/include/linux/cleanup.h
+> +++ b/include/linux/cleanup.h
+> @@ -134,6 +134,16 @@ static inline class_##_name##_t class_##_name##ext##_constructor(_init_args) \
+>   *	an anonymous instance of the (guard) class, not recommended for
+>   *	conditional locks.
+>   *
+> + * cond_guard(name, fail, args...):
+> + *	a guard to be used with the conditional variants of locks, like
+> + *	down_read_trylock() or mutex_lock_interruptible. 'fail' are one or more
+> + *	statements that are executed if waiting for a lock is interrupted or
+> + *	if a _trylock() fails in case of contention.
+> + *
+> + *	Example:
+> + *
+> + *		cond_guard(rwsem_read_try, { printk(...); return 0; }, &semaphore);
+> + *
+>   * scoped_guard (name, args...) { }:
+>   *	similar to CLASS(name, scope)(args), except the variable (with the
+>   *	explicit name 'scope') is declard in a for-loop such that its scope is
+> @@ -165,6 +175,10 @@ static inline class_##_name##_t class_##_name##ext##_constructor(_init_args) \
+>  
+>  #define __guard_ptr(_name) class_##_name##_lock_ptr
+>  
+> +#define cond_guard(_name, _ret, args...) \
+> +	CLASS(_name, scope)(args); \
+> +	if (!__guard_ptr(_name)(&scope)) _ret
+
+Use the naming that scoped_cond_guard() uses: _fail rather than _ret
+
+> +
+>  #define scoped_guard(_name, args...)					\
+>  	for (CLASS(_name, scope)(args),					\
+>  	     *done = NULL; __guard_ptr(_name)(&scope) && !done; done = (void *)1)
+
 
