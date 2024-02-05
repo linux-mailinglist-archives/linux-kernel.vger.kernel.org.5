@@ -1,225 +1,120 @@
-Return-Path: <linux-kernel+bounces-52217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3E52849589
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:39:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43BC684958D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:40:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14CCC1C21FED
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:39:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE1761F248CB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:40:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C971125A7;
-	Mon,  5 Feb 2024 08:39:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3346811CB9;
+	Mon,  5 Feb 2024 08:39:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sigma-star.at header.i=@sigma-star.at header.b="USQm8JgA"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gFzYo+ms";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="1W5AvZd6"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1141411CAD
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 08:39:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CAB8111A0;
+	Mon,  5 Feb 2024 08:39:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707122365; cv=none; b=pcDD9ssDQpc/Z+XnBtywA7kT7VPoHZEsJk8Uy+6ZMELRWN7TW70iPet1Iv7wxrzygLM1EkrHmoSs4/oPVYzxG4CtTsgb7GVg7yz+CfgbBA00JU5PUOi+hFkHPCwong3aXdioyWGRo87Yu2+FH8E6P/Kx/s3zf9UzGm6x6dBlHh0=
+	t=1707122380; cv=none; b=gzeZWGnz3xnA1DTuNEKRh+e6o9XV3shrsvgwgLyKfBZzw+UaCo1VP0FJgovqwoz7K0z0EST2yAPcV0lKpqVFoYmoKZbPWJt2IYDJCG4RTQysivoayyvmVARi0dZNV3HIhJNjzw5UzUeVgDffYaFAQtKfVQLWRlYFpWT3vzb8dG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707122365; c=relaxed/simple;
-	bh=vWCUg5e3ZEMZK/WPs6t0bqEagLm8F2BxIwdVLhxnKZU=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=kIRE1Fl9pjHtgm8gvWBLvN7pmr43fYoASLgLNy4+L6oe6YDZTRenXqA5BI7SkxMeHrfB7GJ4ODr6YzkbK68+ASnUyiGdSU/vYz/Zpy+Ndbq4h98Y7TmkNKlWWgz+uYh4XtT/oWkEQWmUzojuYQYYoLLtKo5D4UaS4eCBoHE3+5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sigma-star.at; spf=pass smtp.mailfrom=sigma-star.at; dkim=pass (2048-bit key) header.d=sigma-star.at header.i=@sigma-star.at header.b=USQm8JgA; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sigma-star.at
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sigma-star.at
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a363961b96aso518611866b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 00:39:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sigma-star.at; s=google; t=1707122360; x=1707727160; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9fYC3H+9fhYO7ZOc/qX6rq1afQIQ11uUH5tLK3IWpXc=;
-        b=USQm8JgAsU+bvggwhfSL5ljcQ5Z14tU+aidl4amOwC7ZtSddvc9cEIU5FQDAtpdiZt
-         00xL062bRmN7OPRxqr9e3hhhQP2KxWABZr8Ma9bEsukUP/+XfBdKrxS8u8xvWWr8r2VP
-         UxZhDLZ4BtL4L3Hy+SGvRO9Zo7LX77N1QosSuLMUgDOa7fp2NEBZlRX8TlRHzfj2xsHg
-         ruw24jXiiwcaiq+nC/CJZi0HDUybbK0aKr+39odEyNF9Ke1tux69a9NVWHrTn2sGHRUW
-         SZ6dIdM1EKfOG0F+J9NXyLx/pz+JwMNCxlMay3J1rr9zgJTm+WrXQnjvV4L2LLRkUFpB
-         W1XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707122360; x=1707727160;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9fYC3H+9fhYO7ZOc/qX6rq1afQIQ11uUH5tLK3IWpXc=;
-        b=OO7CppcFDfloYlBdXcCrrflgu2aJBi//WaDg5MGeNO0S/M8zMQ7vPHF2Qa7XhQpwlk
-         ny3QiGsFvIsamlTWHcyq4O6wmV9PwNQb0e+xUKzxhiulxe5OawVvTzFC5FFI88M8VMS5
-         8fiaqu5eyLb4ezYQztB3pdg1wj4nT41GGEZ8jrq5oo6qgekgYRnhZcMZCX767raSMxmG
-         MaE8X8slhrm5wNsRfSM+k4Ed6Dh8kzPn37ezBU1HQFN86TbVVXNhi0RKmf4/Fo7LvAyg
-         iPQrzXhs6Fu0h/VD0I8QG7kLZPx3W3uHZrodhtrXnUv/ajx2I4mDTD1U+oNGrvh51B4e
-         qyMQ==
-X-Gm-Message-State: AOJu0YxoJXzMxMnLzMySF7KVYybM/5kPlpQmpgXVR1B/qYFW76HcWWy5
-	0CBLL3b3LfBqkCAzVE20E254LHB0XN1zzzjFuDz/c37mIGTjuG0/HjotZkxZrsc=
-X-Google-Smtp-Source: AGHT+IHLVlIqTHZQT4uS2cWMqHQ2/IKc/41epP/Cs1vBSz9FD6909OEjZv22ODsI8EUgs+fyzA4YHw==
-X-Received: by 2002:a17:906:16c8:b0:a37:bdc2:e4e6 with SMTP id t8-20020a17090616c800b00a37bdc2e4e6mr1530645ejd.10.1707122360096;
-        Mon, 05 Feb 2024 00:39:20 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUTINvkr7TdZxNV3zYWkm9NGPQZ3GBX+JIgmxygvgv41SJzvPqoxxCTp3Tc5PUMHqQw6PbrIpUJx88b3E4cjK5SpUhXe9GIOdkr+YAeq65K7GeGBl1IcKBE3vDLsUsnuV2IbaG0QNY2n7bIZmG6EvZe1SBcWh+cXAGLPTi+gsHzLIB4Ek4PUYTx4gU+ytkjrCv9icm50Zeb3mURGFiiEDIG7cEFIv8APYkltJkm2gyR7ujeOD214DLsYXioA4GA+mfSAn1zE6cUXN3gEY+rLpkmUpLjD2iJPbzDVzGNISNprHIg7SmguU4h2FdVVnwSTySpbdJdWbY3O73k0isTb+fW+2BhqgbYzLQP4Th8toVBowOkBsWLuiIMTWzYAOhJmk6ekd906b1/N5qCiiP0jMcDqGHNHD66is0Ey/uYHly9YuPt9eh1AjwKjjwF5b/qpsQ704D/FfKIJGUGgJ1LvvVEDZ4wkLobm4MWzCyKR42KQu0JY9qwDmsVCk+CmP2XiCJQ8kF2e1uHxU2m6jE1Jk/PCyOQgU3eOv7zuzVmmRlrTGC97+WwZ9lMD8jIvBNhTVIoLbb6F+28AgmyFJsGRwnuvmQaQIBSDluu/HVeamiL/BJF4j44dxmUseTJh1DPAFnwb8JEHWSiMWx8TUueFEYA879cQmBtXxDqUYJWkmFVkkCePJ36slN9TE80+JJXJ1Z0bJJAZkbT5axJshtLmW1nYM/cCaLufm5IJ62p4nLFPkfgMBdpMO6VDWIOUm45cYxAY+QEZfwBlvJpE8Lld5T1ciB/mRzSVLQhcT3wgMswJ4SIQG0CdlYdDMod8umwfxAvQ5eVNuJZUIxogGlCwuZkzTMDTNJW11/MvqvmrxyUY2liKdTG8Q37KBJklaQPX7hBwW80miWJmXOgOFH/ZR0c8gSG0jlvmwQvhcM3zN3VOh/65AVlQsT6eAoJaDQm1u4hW4
- /DnIJlK+OUtw19HfTP17A+oLh+MUcCC6cXuft5pI0Syr4CJfj5Mt2O/zB3IJax/LQQuYmm
-Received: from smtpclient.apple ([82.150.214.1])
-        by smtp.gmail.com with ESMTPSA id vu11-20020a170907a64b00b00a37a38737d5sm1316761ejc.89.2024.02.05.00.39.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 05 Feb 2024 00:39:19 -0800 (PST)
-Content-Type: text/plain;
-	charset=us-ascii
+	s=arc-20240116; t=1707122380; c=relaxed/simple;
+	bh=glbysHXbTHeXgr5vqZPyAXI1kRCcReCyMqy5wLvmetQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=sK6oFExT6Bd/j62uTCQkmIQ4wgHGwSOyE1Up7zjD1hNgYKRcbyIUaiJzNMfjXoPXgAdGe40KXicvY+RHdrsZpkItgEzcqvIC8xGSS1ZuYeoMUGh2Dmsh1eNUjKrOTarGmLgDeOEMEBgQKXXeQxG53W5IXuPnMKYGSxYw17g3mGY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gFzYo+ms; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=1W5AvZd6; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1707122375;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=410oVLaTDeyabSNXtoLd0DEYuxw6VZoAesHkjytsmkA=;
+	b=gFzYo+msOvMEqmQChOwt9aQES7HiYfENSE4iVu2jY2ht0dYMaOgcJlESbXeHr8TFE/rSPI
+	kdChic2EqUi6SYMJMLOpiHNIuBy0mR747eBjdTi1P8gkVP0Hvmxqho3Sxauacs0efjCirX
+	EBTErOi618UP4pZJ93kHE7JBatfkH6QBSbiiZuLMLTVkgUUJ3Up0+MZeeBR9T0hwZo2RW3
+	T1ILu/liVJtWjx0ZBeTRwH5ytiL70VbZQ5C7uzB7farneeZsWFuaezpGrGL0mu40MnfP6H
+	2Q715CyvsbPMi7cpEV3K2lPvJT4R3iJ7ELBmYlwJmwm7Q5tb/IMRLJL4sgWegA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1707122375;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=410oVLaTDeyabSNXtoLd0DEYuxw6VZoAesHkjytsmkA=;
+	b=1W5AvZd6AD73J8/TVCafIxEOeHTeYFntbFzFdcKPaAtejg3RNTMWK1wKMmOZD2ZSBxdbnW
+	Et6AH5rJwsuRCpCA==
+To: Yoann Congal <yoann.congal@smile.fr>, linux-fsdevel@vger.kernel.org,
+ linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-serial@vger.kernel.org, x86@kernel.org
+Cc: =?utf-8?Q?Andr=C3=A9?= Almeida <andrealmeid@igalia.com>, Borislav Petkov
+ <bp@alien8.de>,
+ Darren Hart <dvhart@infradead.org>, Dave Hansen
+ <dave.hansen@linux.intel.com>, Davidlohr Bueso <dave@stgolabs.net>, Geert
+ Uytterhoeven <geert@linux-m68k.org>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, "H . Peter Anvin" <hpa@zytor.com>, Ingo
+ Molnar <mingo@redhat.com>, Jiri Slaby <jirislaby@kernel.org>, Josh
+ Triplett <josh@joshtriplett.org>, Masahiro Yamada <masahiroy@kernel.org>,
+ Matthew Wilcox <willy@infradead.org>, Peter Zijlstra
+ <peterz@infradead.org>, Petr Mladek <pmladek@suse.com>, Sergey Senozhatsky
+ <senozhatsky@chromium.org>, Steven Rostedt <rostedt@goodmis.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Willem de Bruijn
+ <willemdebruijn.kernel@gmail.com>, Yoann Congal <yoann.congal@smile.fr>,
+ Vegard Nossum <vegard.nossum@oracle.com>
+Subject: Re: [PATCH v3 1/2] printk: Fix LOG_CPU_MAX_BUF_SHIFT when
+ BASE_SMALL is enabled
+In-Reply-To: <20240204232945.1576403-2-yoann.congal@smile.fr>
+References: <20240204232945.1576403-1-yoann.congal@smile.fr>
+ <20240204232945.1576403-2-yoann.congal@smile.fr>
+Date: Mon, 05 Feb 2024 09:45:27 +0106
+Message-ID: <87bk8vpao0.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
-Subject: Re: [PATCH v5 0/6] DCP as trusted keys backend
-From: David Gstir <david@sigma-star.at>
-In-Reply-To: <20231215110639.45522-1-david@sigma-star.at>
-Date: Mon, 5 Feb 2024 09:39:07 +0100
-Cc: Shawn Guo <shawnguo@kernel.org>,
- Jonathan Corbet <corbet@lwn.net>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- "kernel@pengutronix.de" <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>,
- NXP Linux Team <linux-imx@nxp.com>,
- Ahmad Fatoum <a.fatoum@pengutronix.de>,
- sigma star Kernel Team <upstream+dcp@sigma-star.at>,
- David Howells <dhowells@redhat.com>,
- Li Yang <leoyang.li@nxp.com>,
- Paul Moore <paul@paul-moore.com>,
- James Morris <jmorris@namei.org>,
- "Serge E. Hallyn" <serge@hallyn.com>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Randy Dunlap <rdunlap@infradead.org>,
- Catalin Marinas <catalin.marinas@arm.com>,
- "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
- Tejun Heo <tj@kernel.org>,
- "Steven Rostedt (Google)" <rostedt@goodmis.org>,
- linux-doc@vger.kernel.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
- "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
- "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
- linux-arm-kernel@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org,
- "linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <7AED262F-9387-446D-B11A-C549C02542F9@sigma-star.at>
-References: <20231215110639.45522-1-david@sigma-star.at>
-To: Mimi Zohar <zohar@linux.ibm.com>,
- James Bottomley <jejb@linux.ibm.com>,
- Jarkko Sakkinen <jarkko@kernel.org>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- "David S. Miller" <davem@davemloft.net>
-X-Mailer: Apple Mail (2.3774.400.31)
+MIME-Version: 1.0
+Content-Type: text/plain
 
-Hi,
+On 2024-02-05, Yoann Congal <yoann.congal@smile.fr> wrote:
+> LOG_CPU_MAX_BUF_SHIFT default value depends on BASE_SMALL:
+>   config LOG_CPU_MAX_BUF_SHIFT
+>   	default 12 if !BASE_SMALL
+>   	default 0 if BASE_SMALL
+> But, BASE_SMALL is a config of type int and "!BASE_SMALL" is always
+> evaluated to true whatever is the value of BASE_SMALL.
+>
+> This patch fixes this by using BASE_FULL (type bool) which is equivalent
+> to BASE_SMALL==0.
+>
+> Note: This changes CONFIG_LOG_CPU_MAX_BUF_SHIFT=12 to
+> CONFIG_LOG_CPU_MAX_BUF_SHIFT=0 for BASE_SMALL defconfigs, but that will
+> not be a big impact due to this code in kernel/printk/printk.c:
+>   /* by default this will only continue through for large > 64 CPUs */
+>   if (cpu_extra <= __LOG_BUF_LEN / 2)
+>           return;
+> Systems using CONFIG_BASE_SMALL and having 64+ CPUs should be quite
+> rare.
+>
+> John Ogness <john.ogness@linutronix.de> (printk reviewer) wrote:
+>> For printk this will mean that BASE_SMALL systems were probably
+>> previously allocating/using the dynamic ringbuffer and now they will
+>> just continue to use the static ringbuffer. Which is fine and saves
+>> memory (as it should).
+>
+> Signed-off-by: Yoann Congal <yoann.congal@smile.fr>
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Closes: https://lore.kernel.org/all/CAMuHMdWm6u1wX7efZQf=2XUAHascps76YQac6rdnQGhc8nop_Q@mail.gmail.com/
+> Reported-by: Vegard Nossum <vegard.nossum@oracle.com>
+> Closes: https://lore.kernel.org/all/f6856be8-54b7-0fa0-1d17-39632bf29ada@oracle.com/
+> Fixes: 4e244c10eab3 ("kconfig: remove unneeded symbol_empty variable")
 
-> On 15.12.2023, at 12:06, David Gstir <david@sigma-star.at> wrote:
->=20
-> This is a revival of the previous patch set submitted by Richard =
-Weinberger:
-> =
-https://lore.kernel.org/linux-integrity/20210614201620.30451-1-richard@nod=
-at/
->=20
-> v4 is here:
-> =
-https://lore.kernel.org/keyrings/20231024162024.51260-1-david@sigma-star.a=
-t/
->=20
-> v4 -> v5:
-> - Make Kconfig for trust source check scalable as suggested by Jarkko =
-Sakkinen
-> - Add Acked-By from Herbert Xu to patch #1 - thanks!
-> v3 -> v4:
-> - Split changes on MAINTAINERS and documentation into dedicated =
-patches
-> - Use more concise wording in commit messages as suggested by Jarkko =
-Sakkinen
-> v2 -> v3:
-> - Addressed review comments from Jarkko Sakkinen
-> v1 -> v2:
-> - Revive and rebase to latest version
-> - Include review comments from Ahmad Fatoum
->=20
-> The Data CoProcessor (DCP) is an IP core built into many NXP SoCs such
-> as i.mx6ull.
->=20
-> Similar to the CAAM engine used in more powerful SoCs, DCP can AES-
-> encrypt/decrypt user data using a unique, never-disclosed,
-> device-specific key. Unlike CAAM though, it cannot directly wrap and
-> unwrap blobs in hardware. As DCP offers only the bare minimum feature
-> set and a blob mechanism needs aid from software. A blob in this case
-> is a piece of sensitive data (e.g. a key) that is encrypted and
-> authenticated using the device-specific key so that unwrapping can =
-only
-> be done on the hardware where the blob was wrapped.
->=20
-> This patch series adds a DCP based, trusted-key backend and is similar
-> in spirit to the one by Ahmad Fatoum [0] that does the same for CAAM.
-> It is of interest for similar use cases as the CAAM patch set, but for
-> lower end devices, where CAAM is not available.
->=20
-> Because constructing and parsing the blob has to happen in software,
-> we needed to decide on a blob format and chose the following:
->=20
-> struct dcp_blob_fmt {
-> __u8 fmt_version;
-> __u8 blob_key[AES_KEYSIZE_128];
-> __u8 nonce[AES_KEYSIZE_128];
-> __le32 payload_len;
-> __u8 payload[];
-> } __packed;
->=20
-> The `fmt_version` is currently 1.
->=20
-> The encrypted key is stored in the payload area. It is AES-128-GCM
-> encrypted using `blob_key` and `nonce`, GCM auth tag is attached at
-> the end of the payload (`payload_len` does not include the size of
-> the auth tag).
->=20
-> The `blob_key` itself is encrypted in AES-128-ECB mode by DCP using
-> the OTP or UNIQUE device key. A new `blob_key` and `nonce` are =
-generated
-> randomly, when sealing/exporting the DCP blob.
->=20
-> This patchset was tested with dm-crypt on an i.MX6ULL board.
->=20
-> [0] =
-https://lore.kernel.org/keyrings/20220513145705.2080323-1-a.fatoum@pengutr=
-onix.de/
->=20
-> David Gstir (6):
->  crypto: mxs-dcp: Add support for hardware-bound keys
->  KEYS: trusted: improve scalability of trust source config
->  KEYS: trusted: Introduce NXP DCP-backed trusted keys
->  MAINTAINERS: add entry for DCP-based trusted keys
->  docs: document DCP-backed trusted keys kernel params
->  docs: trusted-encrypted: add DCP as new trust source
->=20
-> .../admin-guide/kernel-parameters.txt         |  13 +
-> .../security/keys/trusted-encrypted.rst       |  85 +++++
-> MAINTAINERS                                   |   9 +
-> drivers/crypto/mxs-dcp.c                      | 104 +++++-
-> include/keys/trusted_dcp.h                    |  11 +
-> include/soc/fsl/dcp.h                         |  17 +
-> security/keys/trusted-keys/Kconfig            |  18 +-
-> security/keys/trusted-keys/Makefile           |   2 +
-> security/keys/trusted-keys/trusted_core.c     |   6 +-
-> security/keys/trusted-keys/trusted_dcp.c      | 311 ++++++++++++++++++
-> 10 files changed, 562 insertions(+), 14 deletions(-)
-> create mode 100644 include/keys/trusted_dcp.h
-> create mode 100644 include/soc/fsl/dcp.h
-> create mode 100644 security/keys/trusted-keys/trusted_dcp.c
-
-Jarkko, Mimi, David do you need anything from my side for these patches =
-to get them merged?
-
-Thanks,
-- David
-
+Reviewed-by: John Ogness <john.ogness@linutronix.de>
 
