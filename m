@@ -1,190 +1,123 @@
-Return-Path: <linux-kernel+bounces-51989-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51990-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B538A84925C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 03:23:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC881849260
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 03:25:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1457028200F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 02:23:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A7FB1F22767
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 02:25:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7F5E9470;
-	Mon,  5 Feb 2024 02:23:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECD6479CF;
+	Mon,  5 Feb 2024 02:25:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J1bgsNOE"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="fRTUbibM"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D3FD8F40;
-	Mon,  5 Feb 2024 02:23:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A454CAD27
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 02:25:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707099823; cv=none; b=YFKyNUae8Nw0a6Vs+7Y7Xad4otfe1VlCY3DkfTJVkIs6rjHiVjmK4dkgo4mnJcmpHJf/AjMQt+U7IbOO96LX82cU/SBjysbxb2vMuFPqpQe8DRmAXnXx1NCO4Grqr8SMNIZ7q9IYi9HdxVsukcDnNTvEftSvEMzS16m7lNeIDGs=
+	t=1707099922; cv=none; b=Us4KoFtMffYBLG+5pJuocb1GqkNbHw2rUyf8kfitTkCp8CNnp2EXKrerCad94jObUw7EpSakTba2SIr6lSoB+XEHsp63y1mhfGCxcI8JzKtKla4r67XKkUDbR460OfymMbvFv8+yZK212dQa1SqK+azTDp4GL4ZvLXJuCnyzF9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707099823; c=relaxed/simple;
-	bh=eDvLloA0UC+So4VeM9r+vgAoeJio7JKaXwdr8C6kQrc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aPGROojLX+fzO2jYs1pQkxRyzWYa4W968swqUQOq5THn+DamIM0LbDyYXJQldPQDVmL58R+9MNevG5ef+J6CN5XzuFNMfa6y99H4ssN6nxke7t+PaGLg+1MxfDkBoB5hXtg+8Hl19yk5sGiucHzGlP1bsoU26GhmbC2/+XSxlBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=J1bgsNOE; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707099822; x=1738635822;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=eDvLloA0UC+So4VeM9r+vgAoeJio7JKaXwdr8C6kQrc=;
-  b=J1bgsNOEg2UCzVuXUKr4dB3peUv7e0nWtyQuSoZe7vd9hg4/xQUO9Hg6
-   tpMLqvQ9LiCB5PLmZ/sY5Q4LGUXRM538jmiluWteFvHaQcONGWVW8jxRv
-   OVsLU/zS2Ugxmps1qyyD+3CBs3uQJ+HJEJZ6qfPBnGqCzbRLZEwF304ht
-   +jVHQkGAJtDDEIIssxgytjWEi1b3+ob5Qjui04wlIz/OsWtOj9KRNNPhG
-   Qd2W7UIj5fajeT1VSzhVTWMZXGh8ahcGSK81riI3QyFPpWZo1sF9GO0mW
-   ZGUUW5OaHa5L1GFHGZNTRKFAgfQjDVtIGlSlgMdOmwNQvj0/QLVOiSdPC
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="11174543"
-X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
-   d="scan'208";a="11174543"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 18:23:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
-   d="scan'208";a="38013264"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.49]) ([10.238.10.49])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 18:23:37 -0800
-Message-ID: <9d024bfc-4b1d-4da5-81ba-36e60cf5e284@linux.intel.com>
-Date: Mon, 5 Feb 2024 10:23:34 +0800
+	s=arc-20240116; t=1707099922; c=relaxed/simple;
+	bh=8e2ZtlAdrtsfponDxeWJ9SpUMacZnh0zw7mhcfhkb88=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PPY+s3Zm5L9OCFGti9WRkyId54RRmvJdFRs+Vn0gevPuiR5srCFhOSy4getK115ORTqvmUQ9w9OfBAWEzrbJlY7eVfOux3oo1WJsEMY9tB02WnyiEW+V8mkkXTfttvSPdiAUTvUija/NCMvWqbh3XyfYlVr313duZiXRz6t1mVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=fRTUbibM; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33b0e5d1e89so3095561f8f.0
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 18:25:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1707099919; x=1707704719; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=w8scmLEsyzGxoS8Gc0uCCvoQDZ8pPxzLZfnYWsrBWUA=;
+        b=fRTUbibMeu8IOUrMBRykoIhEFldewn+85ilF1zECtXHml7+qXISZo251hJoH8xfNzh
+         TXPKKb5S2pxLL3Ma3IBsTqJHpy/kgET4W5W+K6gbYTf27SRwiKdlO2i8G446yHLsypNw
+         gUX0v4qtRp9l9cszG/4Q7R9CgoJpk9mXDQXTAHTYmeXDXCEtSFptgVaDyfpUtpnODQnE
+         DESTYHGgD9lyuR9o5vDzdvS6NdqknKc72fi/6a36cpv95O9iovv3FFV39Y4nB7wRAQ7v
+         N8MUw3FupsX1UgEr+advRah+Equ0o7ElFuRocQ20dwKp27of+ooqpjNbtJdfcm6DQK06
+         uPXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707099919; x=1707704719;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=w8scmLEsyzGxoS8Gc0uCCvoQDZ8pPxzLZfnYWsrBWUA=;
+        b=UQHiFT609jlkpHW61N7CN8bXq45Fl4sdUjw2FdAkgNMxUwZCdlZp6+Lq8Wg8af/HOK
+         NjbfA79GwxNakl9dyK+mlkmwyFma0KRl7+uhepw1erLcwHqVf1FCflbmGapO7CTvX1xC
+         oMixB+/i7gzzYwwTt8sMZuVILPWXsqYVas5t215Lrnf0wbkPBccjXF1wERemWHnEL7SV
+         ThQ7piT7K2I7JDy2bePuTJ31ie0vq0m2ihbJRYrdsM9h7rL0JMsuSwEZ8zV3hEP2JLky
+         +YKKyT/6zdBjrHybK/ir9WLCJ+etouVpHnUH1Ib/Yo/JygjPvLsk/Du6fxoMjuSbCLzy
+         iwyg==
+X-Gm-Message-State: AOJu0Yz/IQrvaSughwZQonUqAUZ4WiCWo3AEMlJm4ONrAG+u4ogP50rp
+	fwP3XhPtAdB1mj/65fKgd14FQ2T1K4mbKSyGmELSAagVwJRc+fayoXDY9vsxQrY=
+X-Google-Smtp-Source: AGHT+IGFgnJsXnfu8s6Z2SS2anOiJGG6PLT0W7S2m34AkU5x9hit1oXft5S64KpZWwFPrOfrnr/llQ==
+X-Received: by 2002:adf:fcc5:0:b0:33a:e2d3:c3ec with SMTP id f5-20020adffcc5000000b0033ae2d3c3ecmr8699060wrs.60.1707099918847;
+        Sun, 04 Feb 2024 18:25:18 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWXl4Ig7R7yZxUjzj3JEz1+xOHBtc/N6U2uE07YtlDNBfjKKklvgEV4vxbQ56jwyhh77pLVToizjHEmHEO5GhPaz5CcJRivwVUN0f6eS4cHKc26l6Voe21ivkxAD5I42aqMvXKfI7Vo0eAnm7XsW/B4iMjC1eH4Kxz4vXHNo6sfujNOmBYRdyQnLfV0NgYNBCxFA5K/XlfwqyBL91pNrp+GJfNcBjud0Utide8L5Nfsbkl37jQK7n8z1CLggN+HoAI+9rc2oP+tLFOMeP67lwhnevmZHw==
+Received: from airbuntu.. (host109-154-238-234.range109-154.btcentralplus.com. [109.154.238.234])
+        by smtp.gmail.com with ESMTPSA id x9-20020adff649000000b0033947d7651asm7032099wrp.5.2024.02.04.18.25.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Feb 2024 18:25:18 -0800 (PST)
+From: Qais Yousef <qyousef@layalina.io>
+To: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Viresh Kumar <viresh.kumar@linaro.org>
+Cc: linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	Ingo Molnar <mingo@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Qais Yousef <qyousef@layalina.io>
+Subject: [PATCH] cpufreq: Change default transition delay to 2ms
+Date: Mon,  5 Feb 2024 02:25:00 +0000
+Message-Id: <20240205022500.2232124-1-qyousef@layalina.io>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v18 057/121] KVM: TDX: Add load_mmu_pgd method for TDX
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
- Sean Christopherson <sean.j.christopherson@intel.com>
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <bd5256f2f58c36c6e8712e8137525815eede3bc8.1705965635.git.isaku.yamahata@intel.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <bd5256f2f58c36c6e8712e8137525815eede3bc8.1705965635.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+10ms is too high for today's hardware, even low end ones. This default
+end up being used a lot on Arm machines at least. Pine64, mac mini and
+pixel 6 all end up with 10ms rate_limit_us when using schedutil, and
+it's too high for all of them.
 
+Change the default to 2ms which should be 'pessimistic' enough for worst
+case scenario, but not too high for platforms with fast DVFS hardware.
 
-On 1/23/2024 7:53 AM, isaku.yamahata@intel.com wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
->
-> For virtual IO, the guest TD shares guest pages with VMM without
-> encryption.  Shared EPT is used to map guest pages in unprotected way.
->
-> Add the VMCS field encoding for the shared EPTP, which will be used by
-> TDX to have separate EPT walks for private GPAs (existing EPTP) versus
-> shared GPAs (new shared EPTP).
->
-> Set shared EPT pointer value for the TDX guest to initialize TDX MMU.
->
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->   arch/x86/include/asm/vmx.h |  1 +
->   arch/x86/kvm/vmx/main.c    | 13 ++++++++++++-
->   arch/x86/kvm/vmx/tdx.c     |  5 +++++
->   arch/x86/kvm/vmx/x86_ops.h |  4 ++++
->   4 files changed, 22 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
-> index f703bae0c4ac..9deb663a42e3 100644
-> --- a/arch/x86/include/asm/vmx.h
-> +++ b/arch/x86/include/asm/vmx.h
-> @@ -236,6 +236,7 @@ enum vmcs_field {
->   	TSC_MULTIPLIER_HIGH             = 0x00002033,
->   	TERTIARY_VM_EXEC_CONTROL	= 0x00002034,
->   	TERTIARY_VM_EXEC_CONTROL_HIGH	= 0x00002035,
-> +	SHARED_EPT_POINTER		= 0x0000203C,
->   	PID_POINTER_TABLE		= 0x00002042,
->   	PID_POINTER_TABLE_HIGH		= 0x00002043,
->   	GUEST_PHYSICAL_ADDRESS          = 0x00002400,
-> diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
-> index 8059b44ed159..f55ac09edc60 100644
-> --- a/arch/x86/kvm/vmx/main.c
-> +++ b/arch/x86/kvm/vmx/main.c
-> @@ -147,6 +147,17 @@ static void vt_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
->   	vmx_vcpu_reset(vcpu, init_event);
->   }
->   
-> +static void vt_load_mmu_pgd(struct kvm_vcpu *vcpu, hpa_t root_hpa,
-> +			int pgd_level)
-> +{
-> +	if (is_td_vcpu(vcpu)) {
-> +		tdx_load_mmu_pgd(vcpu, root_hpa, pgd_level);
-> +		return;
-> +	}
-> +
-> +	vmx_load_mmu_pgd(vcpu, root_hpa, pgd_level);
-> +}
-> +
->   static int vt_mem_enc_ioctl(struct kvm *kvm, void __user *argp)
->   {
->   	if (!is_td(kvm))
-> @@ -279,7 +290,7 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
->   	.write_tsc_offset = vmx_write_tsc_offset,
->   	.write_tsc_multiplier = vmx_write_tsc_multiplier,
->   
-> -	.load_mmu_pgd = vmx_load_mmu_pgd,
-> +	.load_mmu_pgd = vt_load_mmu_pgd,
->   
->   	.check_intercept = vmx_check_intercept,
->   	.handle_exit_irqoff = vmx_handle_exit_irqoff,
-> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> index 59d170709f82..25510b6740a3 100644
-> --- a/arch/x86/kvm/vmx/tdx.c
-> +++ b/arch/x86/kvm/vmx/tdx.c
-> @@ -501,6 +501,11 @@ void tdx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
->   	 */
->   }
->   
-> +void tdx_load_mmu_pgd(struct kvm_vcpu *vcpu, hpa_t root_hpa, int pgd_level)
-> +{
-> +	td_vmcs_write64(to_tdx(vcpu), SHARED_EPT_POINTER, root_hpa & PAGE_MASK);
+Signed-off-by: Qais Yousef <qyousef@layalina.io>
+---
+ drivers/cpufreq/cpufreq.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-If we have concern about the alignment of root_hpa, shouldn't we do some
-check instead of masking the address quietly?
-
-> +}
-> +
->   static int tdx_get_capabilities(struct kvm_tdx_cmd *cmd)
->   {
->   	struct kvm_tdx_capabilities __user *user_caps;
-> diff --git a/arch/x86/kvm/vmx/x86_ops.h b/arch/x86/kvm/vmx/x86_ops.h
-> index 5f8ee1c93cd1..a9e5caf880dd 100644
-> --- a/arch/x86/kvm/vmx/x86_ops.h
-> +++ b/arch/x86/kvm/vmx/x86_ops.h
-> @@ -152,6 +152,8 @@ void tdx_vcpu_free(struct kvm_vcpu *vcpu);
->   void tdx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event);
->   
->   int tdx_vcpu_ioctl(struct kvm_vcpu *vcpu, void __user *argp);
-> +
-> +void tdx_load_mmu_pgd(struct kvm_vcpu *vcpu, hpa_t root_hpa, int root_level);
->   #else
->   static inline int tdx_hardware_setup(struct kvm_x86_ops *x86_ops) { return -EOPNOTSUPP; }
->   static inline void tdx_hardware_unsetup(void) {}
-> @@ -173,6 +175,8 @@ static inline void tdx_vcpu_free(struct kvm_vcpu *vcpu) {}
->   static inline void tdx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event) {}
->   
->   static inline int tdx_vcpu_ioctl(struct kvm_vcpu *vcpu, void __user *argp) { return -EOPNOTSUPP; }
-> +
-> +static inline void tdx_load_mmu_pgd(struct kvm_vcpu *vcpu, hpa_t root_hpa, int root_level) {}
->   #endif
->   
->   #endif /* __KVM_X86_VMX_X86_OPS_H */
+diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+index 44db4f59c4cc..8207f7294cb6 100644
+--- a/drivers/cpufreq/cpufreq.c
++++ b/drivers/cpufreq/cpufreq.c
+@@ -582,11 +582,11 @@ unsigned int cpufreq_policy_transition_delay_us(struct cpufreq_policy *policy)
+ 		 * for platforms where transition_latency is in milliseconds, it
+ 		 * ends up giving unrealistic values.
+ 		 *
+-		 * Cap the default transition delay to 10 ms, which seems to be
++		 * Cap the default transition delay to 2 ms, which seems to be
+ 		 * a reasonable amount of time after which we should reevaluate
+ 		 * the frequency.
+ 		 */
+-		return min(latency * LATENCY_MULTIPLIER, (unsigned int)10000);
++		return min(latency * LATENCY_MULTIPLIER, (unsigned int)(2*MSEC_PER_SEC));
+ 	}
+ 
+ 	return LATENCY_MULTIPLIER;
+-- 
+2.34.1
 
 
