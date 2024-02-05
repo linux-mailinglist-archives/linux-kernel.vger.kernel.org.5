@@ -1,187 +1,170 @@
-Return-Path: <linux-kernel+bounces-53135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8814884A11E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:43:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CC9884A120
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:43:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C443EB2554B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:42:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FC7C1F239CB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:43:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8675E45956;
-	Mon,  5 Feb 2024 17:42:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85C8E45035;
+	Mon,  5 Feb 2024 17:43:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="YSDkBdlq"
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="WjTA6q73"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA8944594B
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 17:42:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE18744C6E;
+	Mon,  5 Feb 2024 17:43:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707154962; cv=none; b=c4dPrJVKqQ9lxJ25lapB2OcOASKpiz86yB3ek5Ii7/6cMeJVCfA+HO9MsC6utYHh7xlIYn9yAdOBtiEPpuH/FGFxQE+zEsppUV8hTJOrdRI3Tjf38wfKqGNC3B9aLbylRhndaydQsOwphmzPudGfmlxW+ijrPotx6STDNlyGVxw=
+	t=1707155022; cv=none; b=XHOkrS9HkOt4XzfUx2PN7//7SJ06q3paWaEWEpjMBMNX2c09YiWbMcusE9Uw93KF1SxlCobAG3YE+Vb23P+JNTHcDWL+kdlcQZMtAFPkecUFkaRtUlIlURbD6kvyi1I+fjRLX/fNh6067bKk6OvCCKQaLZ9nEgoFKAz+pSbHvMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707154962; c=relaxed/simple;
-	bh=8HE4Ga8BSdBO6M6GmqVFa+HwwrrcZFVY3gTfyQML7uA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tMbA2gd5M8elwy8xSDnl0c0e6YfLR3yMG3fP52xNL/Rj4Eq0uqUNRSMLO4JNy+TTUX2uWpFZq26MvlMOtpUXQH/GzsVTLkXyeRiIo+7DfyuV+706xCPRC23st2++fC6Z5GX+/mr9K+b66Wmf03Qu6uGV8pL0DtXqLw1mz5h042c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=YSDkBdlq; arc=none smtp.client-ip=209.85.160.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-42c2998d3a3so5468271cf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 09:42:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1707154960; x=1707759760; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=8HE4Ga8BSdBO6M6GmqVFa+HwwrrcZFVY3gTfyQML7uA=;
-        b=YSDkBdlqh+RdEfZVeIPD5O0bw8zJoptlcqlngUBEXj/6l+uwzv4Ibe/PZhDGET0cHt
-         LWMIfk/s0RAOGiReC1q969qyY6NlkJQhSCGSPJOne9c0gwLDQoWHyxkOMROmG3FWNo8C
-         tW2stCvOx90JO3GQcLvJ3ZC1ywR8VX5Jy5zAzNuM5wxLd2D/xqhzkWdfPAGmgBPdzXQP
-         KYJ5pEqbX1WA2CqLMwEi4l2c8LaYxkhHA+QoGfCV0S/p1aoSdK055MnmMu4lXMTNGtPL
-         zlh6XgbqwbZZGaCE4WygoV2RfqWwiKIRgBwqzYF3GEySL0Bz6I3TrFDEL50qKYg/tQO6
-         5rjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707154960; x=1707759760;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8HE4Ga8BSdBO6M6GmqVFa+HwwrrcZFVY3gTfyQML7uA=;
-        b=idEacOPXbocmr0DSoPKXGzkD2WOeA7G3NZ5ouia9/cPaTs5ADrBPRVq8e3TspDc5UG
-         4XeUwrPaGx5X2Qr36gxaCJnfXFWsO8qTwnOIv6usVhEVKtakRPju9o8dkJf7RcCk8MBA
-         QTkczCJvElBsixmXAsBrtT4g4O37TeU23NODzyymUJqNlMmWZf/N+H2r2OeIMja4befu
-         5Zp5BN1yC6enQeT7imeTJRm668y14X7pXQt7PPfPYhMuhFGCoclz9vA57IA6ouj0Mqz8
-         oflRraWNFgld4oakKYSzTzWkyc5g00RvVqLk6Lzu+8ZMaEQ0rVdVA54xyFAW7Xi3ZX8V
-         ZLhw==
-X-Gm-Message-State: AOJu0YxNhG+ceX7RvrTGvTmb25U3q54zOuGPelOVjpzbxekXNASHT0pK
-	sKLsaCb6Rv/UWMLUFUIuTLAf7Xbtceordy2igVkNCA100dJZafDnv2O9PWxz34k=
-X-Google-Smtp-Source: AGHT+IHU4KsrD3c0EP9g7y8hIFpyaAa4okXRRNN8qBm5KuQa3mySXXt7+dYoSw0Wr4a8G0dHjecPyQ==
-X-Received: by 2002:a05:622a:60c:b0:42a:9cd0:10d6 with SMTP id z12-20020a05622a060c00b0042a9cd010d6mr76578qta.34.1707154959703;
-        Mon, 05 Feb 2024 09:42:39 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUJEoYPtNarb3IKpx+TlDaQWnlGCPYYwqRse61FZumUi17YhNjF1PV/xF22JLrvNXqFbkebE3MWbOPPsd6X9lkUYDUu8OcgOJYYw525y7FBiRK5b6k1ygrBSUjRHKinQ83+/bgI+lNtpfQIgMjD96anUt1JUN/A07pGruYvZXzU+IkWkDlqulHlYWtlENVhDo7EDFB9txF76qn+sovVDt+EhL7ut1S/hZswfg+VWs1j/g37rEX6ap6/4HYUNOLco77wrroLxU0HPFDsjm75+gckY78bO+VGj8ZjeEVOo3As9m48+X0kxJ0Q+DCxEkK31OMS3+rk9JgZYfc/rvBZ4DfknXCKEFbNUSYiTsiRn8LuNk6aoyUi8Yt0fkyR8E0kWWgCK3tQyQl37yuAXLLWMzwjLPdLL+LetoDhwayckEgT6hVcQTSAdr/64XA4acyBFh/KrJTmXe27EODPpZ7XhFeqlSK9tOkNG5gDuy05MIpWcUZfCBG5xHxACRXuyekJg91XbC9JxH2AkXUiOdSYdpHdIXrVkRrLeiPD0hPJPc/vsi8qojAJdzmxkzyfLzLhg19sg4M2WCCcphSLrPd+8rW3G5XCnkab07S61wEP7FLkMnOakYoKQoDGJkTOFQdDEWmESvGbq6OoQFA0uUJj+KlWqrYt9e4aDsPJbchaYnyqj5Tje8QC1runF4T0tAZjue/v+GvEzghpVJQWjy+T/0qjRPKiwuFVw3YGWf5PAbhZzViL
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id z5-20020ac86b85000000b0042c04cef1d6sm137895qts.66.2024.02.05.09.42.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 09:42:39 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rX2zO-000fQ2-NV;
-	Mon, 05 Feb 2024 13:42:38 -0400
-Date: Mon, 5 Feb 2024 13:42:38 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: James Gowans <jgowans@amazon.com>
-Cc: linux-kernel@vger.kernel.org, Eric Biederman <ebiederm@xmission.com>,
-	kexec@lists.infradead.org, Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>, iommu@lists.linux.dev,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	linux-fsdevel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-	Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-	Alexander Graf <graf@amazon.com>,
-	David Woodhouse <dwmw@amazon.co.uk>,
-	"Jan H . Schoenherr" <jschoenh@amazon.de>,
-	Usama Arif <usama.arif@bytedance.com>,
-	Anthony Yznaga <anthony.yznaga@oracle.com>,
-	Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>,
-	madvenka@linux.microsoft.com, steven.sistare@oracle.com,
-	yuleixzhang@tencent.com
-Subject: Re: [RFC 00/18] Pkernfs: Support persistence for live update
-Message-ID: <20240205174238.GC31743@ziepe.ca>
-References: <20240205120203.60312-1-jgowans@amazon.com>
+	s=arc-20240116; t=1707155022; c=relaxed/simple;
+	bh=g5tFIE4bbZl6hqHj/2jztyCexUFqHcKzJjBktvcR3W4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=FO6emSc7ddE0qy1ouVGpdHbt8QH7NnUDPoy4AlwztrscSaZR3T3MzO02Cy8qiW93p5h71GN0mrDCsFJUREJMafOxW+jVNmI9yfdwO1VyrM+sSLhQbEIdyIvX6f7W5j38nGTTBDerErA2upA4WkOQnScmu+phspEe9ek2QZDIMQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=WjTA6q73; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 415HhVYI104548;
+	Mon, 5 Feb 2024 11:43:31 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707155011;
+	bh=Bk8CRp6djVeLbT1NZuaOgiiL8lttc8Bxb3XPkXb//WA=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=WjTA6q73OabpiujxgpW1+J7fSxN0nsyBe8VpFUFNAdqK3MYT/YOb3OBDsomNqVHvS
+	 XxPKuPj5+PBjzJ44U+unilUWd87BSDDIxyxBI0jzhcyhFXGPRUQwF1fOBSVKzCoJMb
+	 toblwYchyAF124QobSFJn6o9fB+rvZlTEHyM0GeI=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 415HhVa4066771
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 5 Feb 2024 11:43:31 -0600
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 5
+ Feb 2024 11:43:31 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 5 Feb 2024 11:43:31 -0600
+Received: from [10.249.141.75] ([10.249.141.75])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 415HhR62124607;
+	Mon, 5 Feb 2024 11:43:28 -0600
+Message-ID: <5a17f3dd-a27a-49d3-9e54-a0022333abe2@ti.com>
+Date: Mon, 5 Feb 2024 23:13:27 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240205120203.60312-1-jgowans@amazon.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] clk: keystone: sci-clk: Adding support for non
+ contiguous clocks
+To: Nishanth Menon <nm@ti.com>
+CC: <kristo@kernel.org>, <ssantosh@kernel.org>, <vigneshr@ti.com>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <u-kumar1@ti.com>
+References: <20240205044557.3340848-1-u-kumar1@ti.com>
+ <20240205140459.orjvjqqtiugmyosc@obscurity>
+Content-Language: en-US
+From: "Kumar, Udit" <u-kumar1@ti.com>
+In-Reply-To: <20240205140459.orjvjqqtiugmyosc@obscurity>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Mon, Feb 05, 2024 at 12:01:45PM +0000, James Gowans wrote:
 
-> The main aspect we’re looking for feedback/opinions on here is the concept of
-> putting all persistent state in a single filesystem: combining guest RAM and
-> IOMMU pgtables in one store. Also, the question of a hard separation between
-> persistent memory and ephemeral memory, compared to allowing arbitrary pages to
-> be persisted. Pkernfs does it via a hard separation defined at boot time, other
-> approaches could make the carving out of persistent pages dynamic.
+On 2/5/2024 7:34 PM, Nishanth Menon wrote:
+> On 10:15-20240205, Udit Kumar wrote:
+>> Most of clocks and their parents are defined in contiguous range,
+>> But in few cases, there is gap in clock numbers[0].
+>>
+>> Driver assumes clocks to be in contiguous range, and assigns
+>> accordingly.
+>>
+>> New firmware started returning error in case of
+>> non-available clock id.  Therefore drivers throws error while
+>> re-calculate and other functions.
+> What changed here? started returning error for what API? also please fix
+> up 70 char alignment -> there extra spaces in your commit message.
 
-I think if you are going to attempt something like this then the end
-result must bring things back to having the same data structures fully
-restored.
 
-It is fine that the pkernfs holds some persistant memory that
-guarentees the IOMMU can remain programmed and the VM pages can become
-fixed across the kexec
+will address in v2
 
-But once the VMM starts to restore it self we need to get back to the
-original configuration:
- - A mmap that points to the VM's physical pages
- - An iommufd IOAS that points to the above mmap
- - An iommufd HWPT that represents that same mapping
- - An iommu_domain programmed into HW that the HWPT
+>> In this fix, before assigning and adding clock in list,
+>> driver checks if given clock is valid or not.
+>>
+>> Fixes: 3c13933c6033 ("clk: keystone: sci-clk: add support for dynamically probing clocks")
+>>
+>> [0] https://software-dl.ti.com/tisci/esd/latest/5_soc_doc/j7200/clocks.html
+>> Section Clocks for NAVSS0_CPTS_0 Device,
+>> clock id 12-15 and 18-19 not present
+>>
+>> Signed-off-by: Udit Kumar <u-kumar1@ti.com>
+>> ---
+>> Original logs
+>> https://gist.github.com/uditkumarti/de4b36b21247fb36725ad909ce4812f6#file-original-logs
+>> Line 2630 for error
+>>
+>> Logs with fix
+>> https://gist.github.com/uditkumarti/de4b36b21247fb36725ad909ce4812f6#file-with-fix
+>> Line 2594
+>>
+>>   drivers/clk/keystone/sci-clk.c | 20 ++++++++++++++++----
+>>   1 file changed, 16 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/clk/keystone/sci-clk.c b/drivers/clk/keystone/sci-clk.c
+>> index 35fe197dd303..d417ec018d82 100644
+>> --- a/drivers/clk/keystone/sci-clk.c
+>> +++ b/drivers/clk/keystone/sci-clk.c
+>> @@ -517,6 +517,8 @@ static int ti_sci_scan_clocks_from_dt(struct sci_clk_provider *provider)
+>>   	int num_clks = 0;
+>>   	int num_parents;
+>> [..]
+>> -					num_clks++;
+>> +						ret = provider->ops->get_freq(provider->sci,
+>> +							   sci_clk->dev_id, sci_clk->clk_id, &freq);
+>> +					} while (ret != 0 && clk_id < max_clk_id);
+> take clock ids 0 1 2 3 -> Say 2 is reserved.
+> num_parents = 4
+> while(num_parents) Loop 1 ->  clk ID 0 is valid, list_add_tail
+> while(num_parents) Loop 2 ->  clk ID 1 is valid, list_add_tail
+> while(num_parents) Loop 3 ->  clk ID 2 is invalid.. so we scan forward
+> 	to clk ID 3 -> list_add_tail
+> while(num_parents) Loop 4 ->  clk ID 4 is invalid.. but 5 is out of
+> 	range, so we break off loop. sci_clk is still devm_kzalloced ->
+> 	but since clk_id > max_clk_id, we jump off loop, and we dont add
+> 	it to tail. so one extra allocation?
 
-Ie you can't just reboot and leave the IOMMU hanging out in some
-undefined land - especially in latest kernels!
+Thanks for catching this.
 
-For vt-d you need to retain the entire root table and all the required
-context entries too, The restarting iommu needs to understand that it
-has to "restore" a temporary iommu_domain from the pkernfs.
 
-You can later reconstitute a proper iommu_domain from the VMM and
-atomic switch.
+> If we have multiple reserved intermediate ones, then we'd have as many
+> allocations that aren't linked? Could we not improve the logic a bit to
+> allocate just what is necessary?
 
-So, I'm surprised to see this approach where things just live forever
-in the kernfs, I don't see how "restore" is going to work very well
-like this.
+Sure, will change in v2.
 
-I would think that a save/restore mentalitity would make more
-sense. For instance you could make a special iommu_domain that is fixed
-and lives in the pkernfs. The operation would be to copy from the live
-iommu_domain to the fixed one and then replace the iommu HW to the
-fixed one.
+to check clock validity first and then allocate, add
 
-In the post-kexec world the iommu would recreate that special domain
-and point the iommu at it. (copying the root and context descriptions
-out of the pkernfs). Then somehow that would get into iommufd and VFIO
-so that it could take over that special mapping during its startup.
 
-Then you'd build the normal operating ioas and hwpt (with all the
-right page refcounts/etc) then switch to it and free the pkernfs
-memory.
-
-It seems alot less invasive to me. The special case is clearly a
-special case and doesn't mess up the normal operation of the drivers.
-
-It becomes more like kdump where the iommu driver is running in a
-fairly normal mode, just with some stuff copied from the prior kernel.
-
-Your text spent alot of time talking about the design of how the pages
-persist, which is interesting, but it seems like only a small part of
-the problem. Actually using that mechanism in a sane way and cover all
-the functional issues in the HW drivers is going to be really
-challenging.
-
-> * Needing to drive and re-hydrate the IOMMU page tables by defining an IOMMU file.
-> Really we should move the abstraction one level up and make the whole VFIO
-> container persistent via a pkernfs file. That way you’d "just" re-open the VFIO
-> container file and all of the DMA mappings inside VFIO would already be set up.
-
-I doubt this.. It probably needs to be much finer grained actually,
-otherwise you are going to be serializing everything. Somehow I think
-you are better to serialize a minimum and try to reconstruct
-everything else in userspace. Like conserving iommufd IDs would be a
-huge PITA.
-
-There are also going to be lots of security questions here, like we
-can't just let userspace feed in any garbage and violate vfio and
-iommu invariants.
-
-Jason
+>> +
+>> +					sci_clk->provider = provider;
+>> +					if (ret == 0) {
+>> +						list_add_tail(&sci_clk->node, &clks);
+>> +						num_clks++;
+>> +					}
+>>   				}
+>>   			}
+>>   
+>> -- 
+>> 2.34.1
+>>
 
