@@ -1,167 +1,201 @@
-Return-Path: <linux-kernel+bounces-52430-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B883C849800
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:46:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 731EA84981A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:52:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 345C8B220F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:46:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03EFB283D2A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:51:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED9917591;
-	Mon,  5 Feb 2024 10:46:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PPJmMYYp"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36C2717C96;
+	Mon,  5 Feb 2024 10:51:20 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E3391758C
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 10:46:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 632DC17582;
+	Mon,  5 Feb 2024 10:51:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707129965; cv=none; b=ealTVz1mpnw+9dkkLoCMzXNzr2zslqh7BHfVMTwOpd2Gr9Ow7wzs5bI+QJKKXLK41c2OI2X6LqrdkPz2zj7jl08qGAUqBPe5aBe6ilvRb43cTBBUtIQmT/oFhCqcDvvC0i12nKDOj/Jria8qLWJTgJf8spFseBJ5DjsNsFjUnQA=
+	t=1707130279; cv=none; b=Bzn37d7lkVog2T59am/Sml+M+fyLee5aBqIaJvzNouj7NI2SpWXBXS/DKeeBoHVlEZSF1083+uInD0DIuoE2o7R0RKFw9k+BfiMKugNTf7MVmgZz21yUoTVouyzmNcMvWhGKMTLa2IX/I1SCl0eWiQ8O9Fj7HmYYpz4f2SxPmfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707129965; c=relaxed/simple;
-	bh=77iFNEHKVIXpZJ3WQ9OokaIFb6o7PkbNxntdJkJq64A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=N6XokxTUSutevMGSNUquXlyS2fYyJuSPx4UdVOw5pesgu5EnABNxAOa09foPRwEWT0mvGR3TLmo3tjQuENyi/2CJCQS2X2w82AdtPedadLZysMvCpJtVOkVmhXL9kKzRfJh3ChphADgyKXre6fsuDg3TRMM1FswY7RE/OmdV5jA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PPJmMYYp; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a293f2280c7so557081266b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 02:46:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707129961; x=1707734761; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ntf6XiJg+uquHuohSeB8m4nTdK6afPOnXLG0uSUyh8M=;
-        b=PPJmMYYpLnHpIaVmoWQmUy7GD4YL6lvxU1HYofCO8CyS7Megkeu7KxXTUoj70lmJYw
-         z+48IFqd+GiGkJU3JQpZsdg8S8VW/5MmSLPV/r6R/RR8c5CeVk7KxSztGu2DtWz7KxGZ
-         n5Mg4PjbWPDCqtFckODaoImiticIcxf+Ry1BYhveZHabQBh+m6eAIgVvC4372oNFMy1n
-         K31GUrxlvx6c9EXzw14kOmWtFMAFaGQh4hJMRzn88o0OnBfbatQG8+iz5Y/bms1s8ciH
-         HqqxwokRGuJTqg3oRcu7eTN5X/nzrn2fiB3YR+EtpmN6DSbHNudGCD0rhhJaBhe3aUDc
-         Kbew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707129961; x=1707734761;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ntf6XiJg+uquHuohSeB8m4nTdK6afPOnXLG0uSUyh8M=;
-        b=vmHPkdMkAIWHV0kgrp4LN9egDeHHULpJIIZqiITX/Vpe9i/stsuV/JEoRXwFZ7YUwx
-         bCgW/38A05QFnh+woqZDOpfE2oXPIJW8S7cXhXMsoWaCQh0lmNpiV8X1XPZwCiYjuTsM
-         SpHzFH4lK4kr/uyWiqtxeW0zID4Q3bZS8OPbyBV2mURRNJU3n8dE+RbBn8aJlb19HDYO
-         cPrLqTrgecNuKZK88J3ZjOm3PqoQn3zYO4IwpxRjHkagQiek/suYK/X3RQBRDMhYcbUI
-         Bt4Ln3Iuv2gH0ARvTiX2xIAXQEGGPW3sptyl33mdPm965hS3tauX1/v080x6MJGbKhMB
-         gfMA==
-X-Gm-Message-State: AOJu0YxxPpitNHq14RUE/8YmLXdjRtMQdjI15uLco+sSX2FjryjYvS1N
-	0a4UBMySlVucpSXEypAD32NaEN4++9AOr5sl3rb1vbDlFTqIAVokmm1Zdwvjr8E=
-X-Google-Smtp-Source: AGHT+IGS2fF+m31bmpTIjSMkYsRkKhrz1pjJz0TSTSvOWj1cBF4mzEkr7PP+m8+N9Ld9ZJPvnjs5qQ==
-X-Received: by 2002:a17:906:6850:b0:a36:436:b188 with SMTP id a16-20020a170906685000b00a360436b188mr12175527ejs.48.1707129961516;
-        Mon, 05 Feb 2024 02:46:01 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUniav8AWoeB0zev9toafaqagXtXc9wwX3Y2pWknITSeHLciNAK6VTsdZ0SUqVfqxVqzj1Fij/JVfZBzQkQE14MLotOEvAczVjwE/EHtxudW/WuwU9QW1tdHXEiZRwuSLsZdoOdFwwDIt6PatL7zN4WwPmH9qoJNzfdUCognN7GhTmwu8nY0KNlQCCZhtxrbo07GC8iOfgyZkVpNBKrwvTYySTrGpx2qP+/CUzM7yR47yrjearqan30U6n3E94tqySBbReMyV4TtKZ+ST4ZdbZ5B/k95FLiln1kPvQ+Cd/IIelf5/tpslerMkjYjZSFLPe67UBPSOUf95QWonaMmphXV7WeW0VxyACr2WhiN8aYXyOmQJYT
-Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id cu9-20020a170906ba8900b00a37116e2885sm3819603ejd.84.2024.02.05.02.45.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Feb 2024 02:46:00 -0800 (PST)
-Message-ID: <d2313be8-9e89-4ecf-975c-66920168ae89@linaro.org>
-Date: Mon, 5 Feb 2024 11:45:59 +0100
+	s=arc-20240116; t=1707130279; c=relaxed/simple;
+	bh=x20H/xqFye1CUB/tnJpjcfP8jCPUoLwmX5KDeuLTrdI=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZrJcHylQkDdT0oPQRR8uKDcKm7CgPkVL/ehAA/ojbRb5VWaBaijxA+eKBki5E5x63WlBVEtPg6csvgiCyW3JgB9Lf2dZXsRPoOc+3gtED/l1fA+cIXcMyuT71d2i9EIyjpMLTE9C2CMfKWC8Qm5+wSSHkvTLhJ2UNYEEiD8TtQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TT373275Yz1xnFK;
+	Mon,  5 Feb 2024 18:50:07 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (unknown [7.193.23.202])
+	by mail.maildlp.com (Postfix) with ESMTPS id A299C1A016B;
+	Mon,  5 Feb 2024 18:51:12 +0800 (CST)
+Received: from ubuntu2204.huawei.com (10.67.174.22) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 5 Feb 2024 18:51:11 +0800
+From: Yang Jihong <yangjihong1@huawei.com>
+To: <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+	<namhyung@kernel.org>, <mark.rutland@arm.com>,
+	<alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
+	<irogers@google.com>, <adrian.hunter@intel.com>,
+	<linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: <yangjihong1@huawei.com>
+Subject: [PATCH 0/5] perf sched: Minor optimizations for resource initialization
+Date: Mon, 5 Feb 2024 10:46:11 +0000
+Message-ID: <20240205104616.132417-1-yangjihong1@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/6] soc: qcom: socinfo: add SoC Info support for
- QCM8550 and QCS8550 platform
-Content-Language: en-US
-To: Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org,
- konrad.dybcio@linaro.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- dmitry.baryshkov@linaro.org
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, kernel@quicinc.com
-References: <20240119100621.11788-1-quic_tengfan@quicinc.com>
- <20240119100621.11788-4-quic_tengfan@quicinc.com>
- <04fa81b1-e47e-4cf9-8e59-3a1777a13879@linaro.org>
- <f5ab4243-dd74-4b34-87c4-0073f5585151@quicinc.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <f5ab4243-dd74-4b34-87c4-0073f5585151@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
 
-On 05/02/2024 11:10, Tengfei Fan wrote:
-> 
-> 
-> On 2/5/2024 4:04 PM, Krzysztof Kozlowski wrote:
->> On 19/01/2024 11:06, Tengfei Fan wrote:
->>> Add SoC Info support for QCM8550 and QCS8550 platform.
->>>
->>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
->>
->> NAK.
->>
->> Drop my tag.
->>
->> Best regards,
->> Krzysztof
->>
-> 
-> This patch has been applied by Bjorn.
-> 
-> Should I remove your tag only, or do I need to do other processing?
+start_work_mutex, work_done_wait_mutex, curr_thread, curr_pid, and
+cpu_last_switched are initialized together in cmd_sched(),
+but for different perf sched subcommands, some actions are unnecessary,
+especially perf sched record. 
+This series of patches initialize only required resources for different
+subcommands.
 
-Nothing to do in such case.
+Simple functional testing:
 
-Best regards,
-Krzysztof
+  # perf sched record perf bench sched messaging
+  # Running 'sched/messaging' benchmark:
+  # 20 sender and receiver processes per group
+  # 10 groups == 400 processes run
+  
+       Total time: 0.204 [sec]
+  [ perf record: Woken up 1 times to write data ]
+  [ perf record: Captured and wrote 14.868 MB perf.data (133947 samples) ]
+  
+  # perf sched latency
+  
+   -------------------------------------------------------------------------------------------------------------------------------------------
+    Task                  |   Runtime ms  | Switches | Avg delay ms    | Max delay ms    | Max delay start           | Max delay end          |
+   -------------------------------------------------------------------------------------------------------------------------------------------
+    qemu-system-x86:(3)   |      2.753 ms |       10 | avg:   0.963 ms | max:   8.526 ms | max start: 457541.695704 s | max end: 457541.704230 s
+    sched-messaging:(401) |   2995.481 ms |    36312 | avg:   0.944 ms | max: 111.551 ms | max start: 457541.645349 s | max end: 457541.756900 s
+    rcu_sched:14          |      0.402 ms |       32 | avg:   0.266 ms | max:   7.996 ms | max start: 457541.581363 s | max end: 457541.589359 s
+    sshd:48125            |      0.461 ms |        2 | avg:   0.033 ms | max:   0.036 ms | max start: 457541.584374 s | max end: 457541.584410 s
+    perf:112408           |      2.321 ms |        2 | avg:   0.031 ms | max:   0.032 ms | max start: 457541.846874 s | max end: 457541.846906 s
+  <SNIP>
+    ksoftirqd/1:22        |      0.704 ms |        3 | avg:   0.005 ms | max:   0.005 ms | max start: 457541.845388 s | max end: 457541.845393 s
+    kworker/15:0-mm:61886 |      0.227 ms |       21 | avg:   0.005 ms | max:   0.006 ms | max start: 457541.739187 s | max end: 457541.739193 s
+    kworker/13:1-ev:92643 |      0.249 ms |       22 | avg:   0.005 ms | max:   0.006 ms | max start: 457541.768695 s | max end: 457541.768701 s
+    kworker/12:1-ev:61202 |      0.418 ms |       40 | avg:   0.005 ms | max:   0.007 ms | max start: 457541.739679 s | max end: 457541.739687 s
+   -----------------------------------------------------------------------------------------------------------------
+    TOTAL:                |   3007.424 ms |    36776 |
+   ---------------------------------------------------
+  
+  # echo $?
+  0
+  
+  # perf sched map
+    *A0                                                               457541.580856 secs A0 => migration/0:15
+    *.                                                                457541.580886 secs .  => swapper:0
+     .  *B0                                                           457541.581018 secs B0 => migration/1:21
+     .  *.                                                            457541.581050 secs
+     .   .  *C0                                                       457541.581147 secs C0 => migration/2:27
+     .   .  *.                                                        457541.581174 secs
+     .   .   .  *D0                                                   457541.581259 secs D0 => migration/3:33
+  <SNIP>
+     E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7 *E7  .   .   .   .    457541.847783 secs
+     E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7 *E7  .   .   .    457541.847873 secs
+     E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7 *E7  .   .    457541.847954 secs
+     E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7 *E7  .    457541.848034 secs
+     E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7 *E7   457541.848108 secs
+  # echo $?
+  0
+  
+  # perf sched replay
+  run measurement overhead: 108 nsecs
+  sleep measurement overhead: 65244 nsecs
+  the run test took 1000002 nsecs
+  the sleep test took 1079677 nsecs
+  nr_run_events:        40700
+  nr_sleep_events:      41415
+  nr_wakeup_events:     31601
+  target-less wakeups:  15
+  multi-target wakeups: 805
+  task      0 (             swapper:         0), nr_events: 7307
+  task      1 (             swapper:         1), nr_events: 1
+  task      2 (             swapper:         2), nr_events: 1
+  <SNIP>
+  task    713 (     sched-messaging:    112809), nr_events: 987
+  task    714 (     sched-messaging:    112810), nr_events: 2706
+  ------------------------------------------------------------
+  #1  : 1298.443, ravg: 1298.44, cpu: 8281.74 / 8281.74
+  #2  : 1316.426, ravg: 1300.24, cpu: 7577.61 / 8211.32
+  #3  : 1323.864, ravg: 1302.60, cpu: 7932.48 / 8183.44
+  #4  : 1329.423, ravg: 1305.29, cpu: 7646.17 / 8129.71
+  #5  : 1321.419, ravg: 1306.90, cpu: 7669.90 / 8083.73
+  #6  : 1322.082, ravg: 1308.42, cpu: 7755.66 / 8050.92
+  #7  : 1324.330, ravg: 1310.01, cpu: 7361.51 / 7981.98
+  #8  : 1312.489, ravg: 1310.26, cpu: 7170.11 / 7900.80
+  #9  : 1312.002, ravg: 1310.43, cpu: 7176.40 / 7828.36
+  #10 : 1311.737, ravg: 1310.56, cpu: 7121.14 / 7757.63
+  # echo $?
+  0
+  
+  # perf sched script
+              perf  112408 [000] 457541.580826: sched:sched_stat_runtime: comm=perf pid=112408 runtime=53050 [ns] vruntime=621244222333 [ns]
+              perf  112408 [000] 457541.580831:       sched:sched_waking: comm=migration/0 pid=15 prio=0 target_cpu=000
+              perf  112408 [000] 457541.580853: sched:sched_stat_runtime: comm=perf pid=112408 runtime=24379 [ns] vruntime=621244246712 [ns]
+              perf  112408 [000] 457541.580856:       sched:sched_switch: prev_comm=perf prev_pid=112408 prev_prio=120 prev_state=R+ ==> next_comm=migration/0 next_pid=15 next_prio=0
+  <SNIP>
+           swapper       0 [012] 457541.847873:       sched:sched_switch: prev_comm=swapper/12 prev_pid=0 prev_prio=120 prev_state=R ==> next_comm=perf next_pid=112408 next_prio=120
+           swapper       0 [013] 457541.847954:       sched:sched_switch: prev_comm=swapper/13 prev_pid=0 prev_prio=120 prev_state=R ==> next_comm=perf next_pid=112408 next_prio=120
+           swapper       0 [014] 457541.848034:       sched:sched_switch: prev_comm=swapper/14 prev_pid=0 prev_prio=120 prev_state=R ==> next_comm=perf next_pid=112408 next_prio=120
+           swapper       0 [015] 457541.848108:       sched:sched_switch: prev_comm=swapper/15 prev_pid=0 prev_prio=120 prev_state=R ==> next_comm=perf next_pid=112408 next_prio=120
+  # echo $?
+  0
+  
+  # perf sched timehist
+  Samples do not have callchains.
+             time    cpu  task name                       wait time  sch delay   run time
+                          [tid/pid]                          (msec)     (msec)     (msec)
+  --------------- ------  ------------------------------  ---------  ---------  ---------
+    457541.580856 [0000]  perf[112408]                        0.000      0.000      0.000
+    457541.580886 [0000]  migration/0[15]                     0.000      0.024      0.029
+    457541.581018 [0001]  perf[112408]                        0.000      0.000      0.000
+    457541.581050 [0001]  migration/1[21]                     0.000      0.006      0.032
+    457541.581147 [0002]  perf[112408]                        0.000      0.000      0.000
+    457541.581174 [0002]  migration/2[27]                     0.000      0.005      0.026
+  <SNIP>
+    457541.847623 [0009]  <idle>                              0.010      0.000      1.489
+    457541.847704 [0010]  <idle>                              0.012      0.000      1.777
+    457541.847783 [0011]  <idle>                              0.233      0.000      1.213
+    457541.847873 [0012]  <idle>                              0.008      0.000     24.188
+    457541.847954 [0013]  <idle>                              0.009      0.000      1.734
+    457541.848034 [0014]  <idle>                              0.009      0.000      2.969
+    457541.848108 [0015]  <idle>                              0.220      0.000      1.205
+  # echo $?
+  0
+
+Yang Jihong (5):
+  perf sched: Move start_work_mutex and work_done_wait_mutex
+    initialization to perf_sched__replay()
+  perf sched: Fix memory leak in perf_sched__map()
+  perf sched: Move curr_thread initialization to perf_sched__map()
+  perf sched: Move curr_pid and cpu_last_switched initialization to
+    perf_sched__{lat|map|replay}()
+  perf thread_map: Free strlist on normal path in
+    thread_map__new_by_tid_str()
+
+ tools/perf/builtin-sched.c   | 163 ++++++++++++++++++++++-------------
+ tools/perf/util/thread_map.c |   2 +-
+ 2 files changed, 105 insertions(+), 60 deletions(-)
+
+-- 
+2.34.1
 
 
