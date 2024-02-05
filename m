@@ -1,138 +1,201 @@
-Return-Path: <linux-kernel+bounces-53870-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EC1384A773
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:33:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14A9584A776
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:34:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B14421C270A0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:33:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 752BA1F2A81A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:34:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AADF7823C4;
-	Mon,  5 Feb 2024 19:49:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JafixgZw"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDF2F4D5A2
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 19:49:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC2368289D;
+	Mon,  5 Feb 2024 19:50:06 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D81484D5A2
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 19:50:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707162584; cv=none; b=f75nRyguK2roOzRYPB3TrbQn98tphOQgVWsNcH3z76qboMYGunC+Kb0OsSiJPcpXaOXg86a51LGcqAp9NCQeE+KEcjemfrwAE5oGg9Z9XDMMKgjIWWt8crp1/PAp25bS7ZcXgDgVQjQ6UCledt2V4GSdyzOj5LcPbLCD5rwCRfs=
+	t=1707162606; cv=none; b=ufK7dBO/86WrjvEPrRh6rVV6NuOT579ZOrak8A0BCY8qjh/dKFdmMs6/zyKKDajfg78W2py2NJCENrR4DbX2gVN90+1jEZXbdSPeZJ0vqSEQhiEF6wNOc2i3QxC4ERYw8o/frrh3VM7jNkgkaWDT/tqP5NIypABaobbKz9zVzQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707162584; c=relaxed/simple;
-	bh=XtlAVK6YDcvQ+pR0/3RJq86cSBgtfjV822+OPR5KgHk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=X9ceP9/fN52VsrPlPISP9YmUnKB6EoqDiTxMlZfTTTPfPXSM/uypQvgQT1d6M0g/mAk0M9pjrOnQLwIUJKdqYsYp4aZiAhec/O0HBtsEl32ID6IEMBLcnPE+lv5Kb8hY5i4D6dGhFVNgTa6CMvAHWZKNp4s3eTxyV6UvohqTJOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JafixgZw; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707162579;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xnjll7ttqP5qOfWrHmrZxBvwGo00AeSiiRX6JPIK/sM=;
-	b=JafixgZw0qxczemwQgpapEYs6Vl6XneM1pD/+RU384TdrD5Wu8BkgE6J2q2+mZ7cnMPqHS
-	faixfNlqofxWPU3W9Zh01RdKgaBP+jCORpOgl2ipA1srAX/5yxdm9cZx08isqQHGEvpSOR
-	DKAtOD5wNtfpZNvkow3HZIHLJGj8RlQ=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-175-g-EDNanKPNSYyvdlA3O-Mg-1; Mon, 05 Feb 2024 14:49:38 -0500
-X-MC-Unique: g-EDNanKPNSYyvdlA3O-Mg-1
-Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-56001b47349so1820718a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 11:49:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707162577; x=1707767377;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xnjll7ttqP5qOfWrHmrZxBvwGo00AeSiiRX6JPIK/sM=;
-        b=a6MJVWtVGIWcRII6NaWraQDSQ5sm5M6nMt/cNSHLetboMOjhZKKy9B+9h/9653tRi4
-         nnc0NOk5IO/JN5/O4iO6/hCl6A6RMWYfy/AFnAnPAV0ZW3WbNKYjj6oj0BApy6s30yqW
-         H/GgABV2r5cTuvwaEuXCfbVy/82qW4TnKJpgdqw0R2kQ8pbZTYc0GFN6SJvo3t8uEXta
-         dWt4OKRvMYGcJNBSmeI32Qnt1QSbRPBGLgX6d518eS4HldVEEWzdSkVKnkm7AT+eq3Hh
-         vr4P/EO7V/X1NaOwW7sIb1TwiG71cpYdfjCVX6LVu4Sy7lLoEdzC8TDo+IL3Ma4057yJ
-         KS3A==
-X-Forwarded-Encrypted: i=1; AJvYcCUC8YsK0tDeEOPTKlJwPe7ITLC4KDvFWBrxHQCi7csfbO6iDmqijOM7NCpIODjmB+YZntBmhBJXbkyzD5z/9zm4rSyjU1Oui+OpT+Vh
-X-Gm-Message-State: AOJu0YyjskOJiLDy4P8OFcfcwf39UzAProiMYI1EixS8nWA/SnSUdery
-	AfEC/jBiLgHNNuRoF4sh+g89LpGx4nRYCIzQKCrBQmL6BFf71XXv5eLASsksNxBiIb/l2jj58XL
-	OAdeauPQrvMukjH36NTwojeCuMML6hiMq4QaIoZGDy9STh2ZuW7OAVh8ltgjfzVzNol76Zlu2aP
-	9WYFRfP5FKYtpTcJcM1HhQYdzG+xEkBOxfAYwz
-X-Received: by 2002:a05:6402:70c:b0:55f:f5d2:ef27 with SMTP id w12-20020a056402070c00b0055ff5d2ef27mr26670edx.41.1707162577421;
-        Mon, 05 Feb 2024 11:49:37 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHBlSYwIisgeeQLdSLhQ5yBMT9FQ2Ei+kgu73drD6ctuVLS3E+BlVQEjgFpzoHQ+6IW9efo8m2HvcdOR1MzrqA=
-X-Received: by 2002:a05:6402:70c:b0:55f:f5d2:ef27 with SMTP id
- w12-20020a056402070c00b0055ff5d2ef27mr26660edx.41.1707162577159; Mon, 05 Feb
- 2024 11:49:37 -0800 (PST)
+	s=arc-20240116; t=1707162606; c=relaxed/simple;
+	bh=DZhDeBDCMf8yO5J3qJ1WtFftyp3OTevkIY224ie+zuM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UrW3Kb+tYsZbKXl/e0ytjzaWr4xDiCLi2pPkrbnPleoPbN/E0EXor1VHVZ+S0ACK2kQOYr6HlSxWfAU1IxMpf5rLVcoDlSmt0witvsENmbDvuZaAEIjMpM5Ap6zEY/5AtBlLA6AmnjKvmxcghYREAIC9RzdRM3fPRWU4XSZv9ng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7D91C12FC;
+	Mon,  5 Feb 2024 11:50:45 -0800 (PST)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9C45D3F641;
+	Mon,  5 Feb 2024 11:50:01 -0800 (PST)
+Message-ID: <5249d534-d7ac-4cbc-a696-f269cb61c7d1@arm.com>
+Date: Mon, 5 Feb 2024 20:49:52 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAK-6q+jsZ13Cs9iuk_WjFeYFCEnnj-dJ9QYkWaw4fh6Gi=JtHA@mail.gmail.com>
- <20240112131554.10352-1-n.zhandarovich@fintech.ru> <CAK-6q+gcs2djQfKRsuGpD7WERmbLhzjkHEm80MRe+2UE3bteKw@mail.gmail.com>
- <CAK-6q+hRbsFkQec3O8FnT-G9Mx07rdhEMfmTE2Q0SDN0kKN-8g@mail.gmail.com> <64dbd05c-4939-49ba-a8d5-807fe3ff2987@fintech.ru>
-In-Reply-To: <64dbd05c-4939-49ba-a8d5-807fe3ff2987@fintech.ru>
-From: Alexander Aring <aahringo@redhat.com>
-Date: Mon, 5 Feb 2024 14:49:26 -0500
-Message-ID: <CAK-6q+gEjqCrnFkpKSuQiuhpx9zyuWr6y0tQpJOLquoz2pnmzw@mail.gmail.com>
-Subject: Re: [PATCH RESEND] mac802154: Fix uninit-value access in ieee802154_hdr_push_sechdr
-To: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-Cc: Zhang Shurong <zhang_shurong@foxmail.com>, alex.aring@gmail.com, 
-	stefan@datenfreihafen.org, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com, linux-wpan@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	harperchen1110@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/2] sched/fair: Check a task has a fitting cpu when
+ updating misfit
+Content-Language: en-US
+To: Qais Yousef <qyousef@layalina.io>,
+ Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ linux-kernel@vger.kernel.org, Pierre Gondois <Pierre.Gondois@arm.com>
+References: <20240105222014.1025040-1-qyousef@layalina.io>
+ <20240105222014.1025040-2-qyousef@layalina.io>
+ <CAKfTPtBYcVWxYOhWZjzcQUB1ebUBA-B30hvToqGBq6JnfRUZNg@mail.gmail.com>
+ <20240124222959.ikwnbxkcjaxuiqp2@airbuntu>
+ <CAKfTPtDxqcrf0kaBQG_zpFx-DEZTMKfyxBu_bzCuZ_UZhJwOnA@mail.gmail.com>
+ <20240126014602.wdcro3ajffpna4fp@airbuntu>
+From: Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <20240126014602.wdcro3ajffpna4fp@airbuntu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi,
+On 26/01/2024 02:46, Qais Yousef wrote:
+> On 01/25/24 18:40, Vincent Guittot wrote:
+>> On Wed, 24 Jan 2024 at 23:30, Qais Yousef <qyousef@layalina.io> wrote:
+>>>
+>>> On 01/23/24 09:26, Vincent Guittot wrote:
+>>>> On Fri, 5 Jan 2024 at 23:20, Qais Yousef <qyousef@layalina.io> wrote:
+>>>>>
+>>>>> From: Qais Yousef <qais.yousef@arm.com>
 
-On Thu, Jan 18, 2024 at 8:00=E2=80=AFAM Nikita Zhandarovich
-<n.zhandarovich@fintech.ru> wrote:
-..
->
-> I was curious whether a smaller change would suffice since I might be
-> too green to see the full picture here.
->
-> In all honesty I am failing to see how exactly it happens that cb->secen
-> =3D=3D 1 and cb->secen_override =3D=3D 0 (which is exactly what occurs du=
-ring
-> this error repro) at the start of mac802154_set_header_security().
-> Since there is a check in mac802154_set_header_security()
->
->         if (!params.enabled && cb->secen_override && cb->secen)
->
-> maybe we take off 'cb->secen_override' part of the condition? That way
-> we catch the case when security is supposedly enabled without parameters
-> being available (not enabled) and return with error. Or is this approach
-> too lazy?
+[...]
 
-I need to see the full patch for this. In my opinion there are two patches =
-here:
+>>> And to be honest I am not sure if flattening of topology matters too since
+>>> I first noticed this, which was on Juno which doesn't have flat topology.
+>>>
+>>> FWIW I can still reproduce this, but I have a different setup now. On M1 mac
+>>> mini if I spawn a busy task affined to littles then expand the mask for
+>>> a single big core; I see big delays (>500ms) without the patch. But with the
+>>> patch it moves in few ms. The delay without the patch is too large and I can't
+>>> explain it. So the worry here is that generally misfit migration not happening
+>>> fast enough due to this fake misfit cases.
+>>
+>> I tried a similar scenario on RB5 but I don't see any difference with
+>> your patch. And that could be me not testing it correctly...
+>>
+>> I set the affinity of always running task to cpu[0-3] for a few
+>> seconds then extend it to [0-3,7] and the time to migrate is almost
+>> the same.
+> 
+> That matches what I do.
+> 
+> I write a trace_marker when I change affinity to help see when it should move.
+> 
+>>
+>> I'm using tip/sched/core + [0]
+>>
+>> [0] https://lore.kernel.org/all/20240108134843.429769-1-vincent.guittot@linaro.org/
+> 
+> I tried on pinebook pro which has a rk3399 and I can't reproduce there too.
+> 
+> On the M1 I get two sched domains, MC and DIE. But on the pine64 it has only
+> MC. Could this be the difference as lb has sched domains dependencies?
+> 
+> It seems we flatten topologies but not sched domains. I see all cpus shown as
+> core_siblings. The DT for apple silicon sets clusters in the cpu-map - which
+> seems the flatten topology stuff detect LLC correctly but still keeps the
+> sched-domains not flattened. Is this a bug? I thought we will end up with one
+> sched domain still.
 
-1. fix uninit values
-2. return an error with some mismatched security parameters. (I think
-this is where your approach comes in place)
+IMHO, if you have a cpu_map entry with > 1 cluster in your dtb, you end
+up with MC and PKG (former DIE) Sched Domain (SD) level. And misfit load
+balance takes potentially longer on PKG than to MC.
 
-The 1. case is what syzbot is complaining about and in my opinion easy
-to fix at [0] to init some more default values of "struct dgram_sock"
-[1].
+(1) Vanilla Juno-r0 [L b b L L L)
 
-Then 2. can be fixed afterwards.
+root@juno:~# echo 1 > /sys/kernel/debug/sched/verbose
+root@juno:~# cat /sys/kernel/debug/sched/domains/cpu0/domain*/name
+MC
+PKG
 
-- Alex
+root@juno:~# cat /proc/schedstat | head -5 | grep ^[cd]
+cpu0 0 0 0 0 0 0 2441100800 251426780 6694
+domain0 39 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+domain1 3f 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 
-[0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/net/ieee802154/socket.c#n474
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/net/ieee802154/socket.c#n435
+(2) flattened topology (including SDs):
+
+Remove cluster1 from cpu_map and A57_L2 $ entry.
+
+--- a/arch/arm64/boot/dts/arm/juno.dts
++++ b/arch/arm64/boot/dts/arm/juno.dts
+@@ -44,19 +44,16 @@ core0 {
+                                core1 {
+                                        cpu = <&A57_1>;
+                                };
+-                       };
+-
+-                       cluster1 {
+-                               core0 {
++                               core2 {
+                                        cpu = <&A53_0>;
+                                };
+-                               core1 {
++                               core3 {
+                                        cpu = <&A53_1>;
+                                };
+-                               core2 {
++                               core4 {
+                                        cpu = <&A53_2>;
+                                };
+-                               core3 {
++                               core5 {
+                                        cpu = <&A53_3>;
+                                };
+                        };
+@@ -95,7 +92,7 @@ A57_0: cpu@0 {
+                        d-cache-size = <0x8000>;
+                        d-cache-line-size = <64>;
+                        d-cache-sets = <256>;
+-                       next-level-cache = <&A57_L2>;
++                       next-level-cache = <&A53_L2>;
+                        clocks = <&scpi_dvfs 0>;
+                        cpu-idle-states = <&CPU_SLEEP_0 &CLUSTER_SLEEP_0>;
+                        capacity-dmips-mhz = <1024>;
+@@ -113,7 +110,7 @@ A57_1: cpu@1 {
+                        d-cache-size = <0x8000>;
+                        d-cache-line-size = <64>;
+                        d-cache-sets = <256>;
+-                       next-level-cache = <&A57_L2>;
++                       next-level-cache = <&A53_L2>;
+                        clocks = <&scpi_dvfs 0>;
+                        cpu-idle-states = <&CPU_SLEEP_0 &CLUSTER_SLEEP_0>;
+                        capacity-dmips-mhz = <1024>;
+@@ -192,15 +189,6 @@ A53_3: cpu@103 {
+                        dynamic-power-coefficient = <140>;
+                };
+ 
+-               A57_L2: l2-cache0 {
+-                       compatible = "cache";
+-                       cache-unified;
+-                       cache-size = <0x200000>;
+-                       cache-line-size = <64>;
+-                       cache-sets = <2048>;
+-                       cache-level = <2>;
+-               };
+-
+                A53_L2: l2-cache1 {
+                        compatible = "cache";
+                        cache-unified;
+
+root@juno:~#  echo 1 > /sys/kernel/debug/sched/verbose
+root@juno:~# cat /sys/kernel/debug/sched/domains/cpu0/domain*/name
+MC
+
+root@juno:~# cat /proc/schedstat | head -4 | grep ^[cd]
+cpu0 0 0 0 0 0 0 2378087600 310618500 8152
+domain0 3f 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+
+[...]
 
 
