@@ -1,87 +1,70 @@
-Return-Path: <linux-kernel+bounces-53854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBC5184A756
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:28:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0047684A75F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:29:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A5E41F28382
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:28:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23F6B1C26F1E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:29:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AA8B7A70E;
-	Mon,  5 Feb 2024 19:45:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 125107E79C;
+	Mon,  5 Feb 2024 19:46:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="U/TDTDZe"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RjhfQK0N"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99437745E0;
-	Mon,  5 Feb 2024 19:45:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D825E7E585
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 19:46:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707162310; cv=none; b=pDM5swpaM6/p/8n5jV7MUyI5tmkxYXEjPYgGIywYzq4vyOvsdbe5Ab8iB8raS+4EaOKMswiNiH+AXtaqhOUsyhITvLRByH8jHlSaaPOVBut+jp8jTC6nZLTvE+h6qOth0o3IvoZebCBRLG3IVnbu+k8KWR9O23ZGYKjaP/AjkY8=
+	t=1707162402; cv=none; b=KnHPXdsHxwQOVzUqo4DRC8zsGDEv45utvV10ePP5LEQ1sBswFKEfO2Bo1Xq4BupfhieZOMTq/GPKgbKlg8Z95+Kpu7mIyQf7ub8YaWpJ0TAa+sguVk7wjvspk0tZIYmt7xedsWdeBZj4yr+HXiKsjOcHNP3CON1p7udl8tF15l4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707162310; c=relaxed/simple;
-	bh=XmOFZVJS2nbpGNUIJRoCh2m3rWFsAgRF8B1pZ3UaoOo=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=sy2QDPcpE4SHAKty750eEafSStxSqA1Qt63dTXFeXV1SfrQ/c3Ams4ZfsmU6hL3TTcPPtzbR/4+rp98eV3t31/XX34EXckcLITYRAcreh0PJP6t9FiR0M88P7sPHcQFvVuSQ7KlS+EIsmV1LVBLWHHCUu6Ozp4expNNpGoHSQaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=U/TDTDZe; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 415JipUM101215;
-	Mon, 5 Feb 2024 13:44:51 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707162291;
-	bh=NIThW8dvWRvWMprZfYkUcAv9QvAIjazC0Wh9+WTdW/k=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=U/TDTDZe48TOZlXKa2/P5bsRemvEkpBf2zyycXeCvsfYIdO+o9EUhYrflRA9TzKi7
-	 ojOnTHFu3wGQ41vLoQCyPhBK4d1tw0pk93aOPmp5SttYKOV3URTAH2ZrJBH0Y0K7SC
-	 gSqacdWWQu2J0Q+d1zPa59WE9cTXWcxMLozZqblg=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 415JipKS071105
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 5 Feb 2024 13:44:51 -0600
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 5
- Feb 2024 13:44:51 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 5 Feb 2024 13:44:51 -0600
-Received: from lelvsmtp5.itg.ti.com ([10.249.42.149])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 415JicQg028467;
-	Mon, 5 Feb 2024 13:44:50 -0600
-From: Andrew Davis <afd@ti.com>
-To: Sebastian Reichel <sre@kernel.org>,
-        Manivannan Sadhasivam
-	<manivannan.sadhasivam@linaro.org>,
-        Cristian Ciocaltea
-	<cristian.ciocaltea@gmail.com>,
-        Florian Fainelli
-	<florian.fainelli@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>, Scott Branden
-	<sbranden@broadcom.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad
- Dybcio <konrad.dybcio@linaro.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>
-CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-actions@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, Andrew Davis <afd@ti.com>
-Subject: [PATCH v2 19/19] power: reset: syscon-poweroff: Use devm_register_sys_off_handler(POWER_OFF)
-Date: Mon, 5 Feb 2024 13:44:37 -0600
-Message-ID: <20240205194437.180802-20-afd@ti.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240205194437.180802-1-afd@ti.com>
-References: <20240205194437.180802-1-afd@ti.com>
+	s=arc-20240116; t=1707162402; c=relaxed/simple;
+	bh=a/l7dIHL4lD27xI3QHJBmm7xg9IPaYq194T/QUkU0vk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RsDyGTd2wjOOcGKki5YZAT+fpAuo+fXXb10G6+B/zEAb1lUM1AKCnzfuv1IJKbAVrZCJa7DNKUUdyU+JTQok6SupiGwPvSK98NYkOwCZIJ/Q+GW/KkRz96kWRR+DyAoIr9Fgc66hBgo9D4AmSiCrKw0KVfIlwflgEAiz0YcJuuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RjhfQK0N; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707162399;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=2wAq9zuBQRCHAAv9+2rXsge637bX5qI7IyvgEpLY8sU=;
+	b=RjhfQK0NrmjjFaeBH1FqtiqoDqW4LUi0IlUeFBvMcIi34fR7KV8d9FVpZN7UafR2zmj1tH
+	QyQGxbjPNG+izPzoT0l2pVgsRAnODK2HUBhUbxDP8InrSgwD44pD2ZoN6RX0l7i0tIKCgV
+	cHL6laUhlE4TisGNqjL2x7BjgXH4rAc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-621-iAC3FgjmOWyn7ePocsI6QA-1; Mon, 05 Feb 2024 14:46:35 -0500
+X-MC-Unique: iAC3FgjmOWyn7ePocsI6QA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 61863800074;
+	Mon,  5 Feb 2024 19:46:35 +0000 (UTC)
+Received: from llong.com (unknown [10.22.17.212])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id D0DA11C060AF;
+	Mon,  5 Feb 2024 19:46:34 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Tejun Heo <tj@kernel.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Cestmir Kalina <ckalina@redhat.com>,
+	Alex Gladkov <agladkov@redhat.com>,
+	Phil Auld <pauld@redhat.com>,
+	Costa Shulyupin <cshulyup@redhat.com>,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH-wq v3 0/4] workqueue: Enable unbound cpumask update on ordered workqueues
+Date: Mon,  5 Feb 2024 14:45:58 -0500
+Message-Id: <20240205194602.871505-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,98 +72,50 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-Use device life-cycle managed register function to simplify probe and
-exit paths.
+ v3:
+  - [v2] https://lore.kernel.org/lkml/20240203154334.791910-1-longman@redhat.com/
+  - Drop patch 1 as it has been merged into the for-6.9 branch.
+  - Use rcu_access_pointer() to access wq->dfl_pwq.
+  - Use RCU protection instead of acquiring wq->mutex in
+    apply_wqattrs_cleanup().
 
-Signed-off-by: Andrew Davis <afd@ti.com>
----
- drivers/power/reset/syscon-poweroff.c | 34 ++++++++++++---------------
- 1 file changed, 15 insertions(+), 19 deletions(-)
+ v2:
+  - [v1] https://lore.kernel.org/all/20240130183336.511948-1-longman@redhat.com/
+  - Rebased on top of wq's for-v6.9 branch.
+  - Use the new pwq_tryinc_nr_active() mechanism to freeze the new
+    pwq of an ordered workqueue until the old pwq has been properly
+    drained to maintain ordering.
+  - Make rescuer follow changes in workqueue unbound cpumask as well
+    as its sysfs cpumask, if available.
 
-diff --git a/drivers/power/reset/syscon-poweroff.c b/drivers/power/reset/syscon-poweroff.c
-index 4899a019256e8..203936f4c544f 100644
---- a/drivers/power/reset/syscon-poweroff.c
-+++ b/drivers/power/reset/syscon-poweroff.c
-@@ -13,6 +13,7 @@
- #include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm.h>
-+#include <linux/reboot.h>
- #include <linux/regmap.h>
- 
- struct syscon_poweroff_data {
-@@ -22,23 +23,30 @@ struct syscon_poweroff_data {
- 	u32 mask;
- };
- 
--static struct syscon_poweroff_data *data;
--
--static void syscon_poweroff(void)
-+static int syscon_poweroff(struct sys_off_data *off_data)
- {
-+	struct syscon_poweroff_data *data = off_data->cb_data;
-+
- 	/* Issue the poweroff */
- 	regmap_update_bits(data->map, data->offset, data->mask, data->value);
- 
- 	mdelay(1000);
- 
- 	pr_emerg("Unable to poweroff system\n");
-+
-+	return NOTIFY_DONE;
- }
- 
- static int syscon_poweroff_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-+	struct syscon_poweroff_data *data;
- 	int mask_err, value_err;
- 
-+	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
- 	data->map = syscon_regmap_lookup_by_phandle(dev->of_node, "regmap");
- 	if (IS_ERR(data->map)) {
- 		data->map = syscon_node_to_regmap(dev->parent->of_node);
-@@ -69,21 +77,10 @@ static int syscon_poweroff_probe(struct platform_device *pdev)
- 		data->mask = 0xFFFFFFFF;
- 	}
- 
--	if (pm_power_off) {
--		dev_err(dev, "pm_power_off already claimed for %ps",
--			pm_power_off);
--		return -EBUSY;
--	}
--
--	pm_power_off = syscon_poweroff;
--
--	return 0;
--}
--
--static void syscon_poweroff_remove(struct platform_device *pdev)
--{
--	if (pm_power_off == syscon_poweroff)
--		pm_power_off = NULL;
-+	return devm_register_sys_off_handler(&pdev->dev,
-+					     SYS_OFF_MODE_POWER_OFF,
-+					     SYS_OFF_PRIO_DEFAULT,
-+					     syscon_poweroff, data);
- }
- 
- static const struct of_device_id syscon_poweroff_of_match[] = {
-@@ -93,7 +90,6 @@ static const struct of_device_id syscon_poweroff_of_match[] = {
- 
- static struct platform_driver syscon_poweroff_driver = {
- 	.probe = syscon_poweroff_probe,
--	.remove_new = syscon_poweroff_remove,
- 	.driver = {
- 		.name = "syscon-poweroff",
- 		.of_match_table = syscon_poweroff_of_match,
+Ordered workqueues does not currently follow changes made to the
+global unbound cpumask because per-pool workqueue changes may break
+the ordering guarantee. IOW, a work function in an ordered workqueue
+may run on a cpuset isolated CPU.
+
+This series enables ordered workqueues to follow changes made to
+the global unbound cpumask by temporaily freeze the newly allocated
+pool_workqueue by using the new frozen flag to freeze execution of
+newly queued work items until the old pwq has been properly flushed.
+
+The cpumask of the rescuer task of each workqueue is also made to follow
+changes in workqueue unbound cpumask as well as its sysfs cpumask,
+if available.
+
+Juri Lelli (1):
+  kernel/workqueue: Let rescuers follow unbound wq cpumask changes
+
+Waiman Long (3):
+  workqueue: Enable unbound cpumask update on ordered workqueues
+  workqueue: Thaw frozen pwq in workqueue_apply_unbound_cpumask()
+  workqueue: Bind unbound workqueue rescuer to wq_unbound_cpumask
+
+ kernel/workqueue.c | 127 ++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 113 insertions(+), 14 deletions(-)
+
 -- 
-2.39.2
+2.39.3
 
 
