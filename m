@@ -1,112 +1,96 @@
-Return-Path: <linux-kernel+bounces-52185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEFEB849515
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:08:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDD4D849516
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:09:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48837B209B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:08:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F00A21C233FF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:08:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3755C11199;
-	Mon,  5 Feb 2024 08:08:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DBAB11714;
+	Mon,  5 Feb 2024 08:08:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="RifFOAdx"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cEccBrd9"
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DB9F11193
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 08:08:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9870B11702
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 08:08:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707120507; cv=none; b=etjHacerxAL9csD1dbxmar+k5SwQFdTMXC1CiiTbiQmv1Wa7noCKoOb2A83Z8HyH2U0G5xKmkMuy5SFvfiw7ebGZB3EEurp20e3fEdTTXzQPQpwVtalh+jM1fLxAfwa9RXSwig9v3Ah2bD6R1gA0MjV5zTqrV5cJU+60njmB9P8=
+	t=1707120533; cv=none; b=uVNSWP3L+pWtBJd0FlekQ75EU9yNf482mEysQNUorPMxwlc54zFPimFcm5cesbioujSjH+dN5iruGZ0WGJV6HqS6xdTizn7MdH3vXVz/hqzgWBV5rOemr+3hYUv7Yjrw/CHrfOtP2gNyO1Z/cRAWqY/Gd3EMOM13XjIhrAILBsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707120507; c=relaxed/simple;
-	bh=RJo0jMGfwLG8I+tsPvz5m11NBRG+h8zzgj5Z6Oy0ums=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mme5Gpodnhe1spYSC2KkxPirn77KTTul8Holo4OO6wu1bgUO0xLHa0maJ1kL44H5QE3hGEb30bGN2tSe5Z1wXPuoJZ3QJt9s3Ft8buBMpzC0eRdH0zFZjAPZPuPjhcat2LzboV4ZJaZj+KmO1/Na00Sqf6VATiK0ah2WSPKU5B0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=RifFOAdx; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (99.141-128-109.adsl-dyn.isp.belgacom.be [109.128.141.99])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2835A667;
-	Mon,  5 Feb 2024 09:07:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1707120421;
-	bh=RJo0jMGfwLG8I+tsPvz5m11NBRG+h8zzgj5Z6Oy0ums=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RifFOAdxtCkdaa1VnsMD2TKrpOXLsevtEoZrISrDE8BOLghB4ZQw67j6xdSDDR8tl
-	 e2v2utQyFZh5cuAnWxOg8A2OW9Z/OAkyPy87HEEsEnVDSjvM8cTqpm9cv6d2PjUJGW
-	 msEUCKaAZQdVYF4vKyhVXTNMlaM/GD7HLK+drWvg=
-Date: Mon, 5 Feb 2024 10:08:24 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-Cc: maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-	tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-	michal.simek@amd.com, dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/5] drm: xlnx: zynqmp_dpsub: Fix timing for live mode
-Message-ID: <20240205080824.GH6804@pendragon.ideasonboard.com>
-References: <20240124025402.373620-1-anatoliy.klymenko@amd.com>
- <20240124025402.373620-3-anatoliy.klymenko@amd.com>
+	s=arc-20240116; t=1707120533; c=relaxed/simple;
+	bh=EC44DeqNr8LAwIvt5e63AJ5hgZz9O3zu7ss0PAinqmA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TxqGwcVyPiVL6PiQArSB2+kVHm/bBxmwsMVdMBR3WGNuV7rc9dg6m12GrDq8PqdCHt1+l6bDLdi5v2Uv+uNfaLJF1qqx9AQ66G/5kYo5QCzst+i3eTStJtWpaNwc0tsTcwmMNC9+GNA44sWrnOQFi5xNo8sxI/CADEi/9u0EDW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cEccBrd9; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <3ab3961d-04e5-484d-bc71-2f33ebbefc67@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707120528;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qDHjczhceVjO1MtODZfTIEYCTueKSLyt0SDAh9/KabE=;
+	b=cEccBrd9TGxJ7J54r5l06zjN1IQaCqrAVOQt0NsGOyJDsqA1JEWqA7g3oEbeErkWFy7av7
+	SykP+U5ITW1n4nnnLZVTx2bkpcBMTWzq2BRF34eVDHQtgpJOt4VqsCO5UIOsXli1CaslTN
+	DMgRdV6jaBRoVGJHbut7rvylwlw9eBM=
+Date: Mon, 5 Feb 2024 16:08:37 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240124025402.373620-3-anatoliy.klymenko@amd.com>
+Subject: Re: [PATCH 1/1] hugetlb: fix CONFIG_PADATA dependency for non-SMP
+ system
+Content-Language: en-US
+To: Muchun Song <muchun.song@linux.dev>
+Cc: Gang Li <ligang.bdlg@bytedance.com>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, Randy Dunlap <rdunlap@infradead.org>,
+ kernel test robot <lkp@intel.com>
+References: <20240204072525.1986626-1-gang.li@linux.dev>
+ <f05f658a-78fa-45cd-ad07-11d87b824702@linux.dev>
+ <a749cb06-9495-40fc-9192-b019b48eca92@linux.dev>
+ <828f990c-11af-42ad-a030-a66dde97a7f2@linux.dev>
+ <7472563F-5C2D-4DCB-ACD6-F86D7A18BDF2@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Gang Li <gang.li@linux.dev>
+In-Reply-To: <7472563F-5C2D-4DCB-ACD6-F86D7A18BDF2@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi Anatoliy,
-
-Thank you for the patch.
-
-On Tue, Jan 23, 2024 at 06:53:59PM -0800, Anatoliy Klymenko wrote:
-> Expect external video timing in live video input mode, program
-> DPSUB acordingly.
-
-Are there no designs where the DPSUB operates in non-live mode, but uses
-a video clock from the PL, for instance to use a different clock
-frequency ?
-
-I don't think that use case is very common, so I'm fine with this patch
-in order to properly support the more common use case of live input, and
-leave the PL clock without live input use case for later.
-
+On 2024/2/5 15:37, Muchun Song wrote:
+> Actually, I did not get it. Why the above code cannot work? The above
+> code already make it serialized in one call, right? What do I miss here?
 > 
-> Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> Thanks.
 > 
 
-No need for a blank line here.
+PADATA consists of two distinct functionality:
 
-> Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+One part is `padata_do_multithreaded`, which disregards
+order and simply divides tasks into several groups for parallel
+execution. My patch use `padata_do_multithreaded`.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> ---
->  drivers/gpu/drm/xlnx/zynqmp_disp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> index 407bc07cec69..8a39b3accce5 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> @@ -1166,7 +1166,7 @@ void zynqmp_disp_enable(struct zynqmp_disp *disp)
->  	/* Choose clock source based on the DT clock handle. */
->  	zynqmp_disp_avbuf_set_clocks_sources(disp, disp->dpsub->vid_clk_from_ps,
->  					     disp->dpsub->aud_clk_from_ps,
-> -					     true);
-> +					     disp->dpsub->vid_clk_from_ps);
->  	zynqmp_disp_avbuf_enable_channels(disp);
->  	zynqmp_disp_avbuf_enable_audio(disp);
->  
-
--- 
-Regards,
-
-Laurent Pinchart
+The other part is composed of a set of APIs that, while handling data in
+an out-of-order parallel manner, can eventually return the data with
+ordered sequence. Only `crypto/pcrypt.c` use them. I guess these APIs
+are designed specifically for `crypto/pcrypt.c`.
+```
+padata_alloc
+padata_alloc_shell
+padata_do_parallel
+padata_do_serial
+padata_free_shell
+padata_free
+```
 
