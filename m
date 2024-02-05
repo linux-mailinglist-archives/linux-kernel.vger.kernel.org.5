@@ -1,300 +1,263 @@
-Return-Path: <linux-kernel+bounces-53822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B62D784A6FD
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:19:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAA4D84A6FF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:20:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAD021C269AE
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:19:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 397141F29BE1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:20:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6E415D905;
-	Mon,  5 Feb 2024 19:34:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7B795EE8C;
+	Mon,  5 Feb 2024 19:36:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="UEXeiM8v";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="UdPnZyLt"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MPTqsTqF"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6009E5D75A;
-	Mon,  5 Feb 2024 19:34:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707161646; cv=fail; b=cUWht9K2W0LVLSVw4oDpORfuMBj/Soh0BDL4L2RIoxvIpJpr2SN1qjhUmBt5QD1wX907I46ONOZgfIYlNGrPYlcQO37NL841exwWJrX/X4fRTczametr2LZHIuYgHs1zJe8issd1XyE/cSfYhtDJe/Zw9ZmigaBWRglZt90DfN8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707161646; c=relaxed/simple;
-	bh=+S6MY1j3WdTBTyHJ7I3fxBeDoT2oqL3LDd6ZIAnDjCw=;
-	h=References:From:To:Cc:Subject:In-reply-to:Date:Message-ID:
-	 Content-Type:MIME-Version; b=bIAliXqDeh6tIty6HY8EhsiVdDIJDoXp/o1ZaQ104WkstGfmu7CamebHbDOdXSSxDUanNR0tXhWbBpqeF9UR/VwhAPxA90MqTTOYqChR+UHB1/il0wzDZtjnwZdsDlh426BGQyG+AtruZblrHHgDEcFOPRxrDiYZDT6czsvrvzA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=UEXeiM8v; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=UdPnZyLt; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 415J41xj019251;
-	Mon, 5 Feb 2024 19:33:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=references : from :
- to : cc : subject : in-reply-to : date : message-id : content-type :
- mime-version; s=corp-2023-11-20;
- bh=U5aqUBUpelIeMjha9AyN6uIel7EPdOhfDHReH6xNHkY=;
- b=UEXeiM8va0XC2zIjl5JppJk4x2/e8ABOLgpD46ei2ZYzuObY0QmOW9R8Zcu10q7Nms5X
- 2vLWBAJvfj1lJ8nkroght8fGdRxYLxoxoudeMiJpoUzk39HmJJ/1WUqfU4y5dq5vQGyT
- 70vWK3ZNwPPEGh2dJ4CMH49HBddXP6bREK6XktQW24aVgyBFmcSuDBT44u29p5MWHo8i
- aDoZTgFg9371zdn1zZHEbktvxgGA7GQj05l2tb5NoHxD2yZ5+KQ+r4PiZBnQy7f2Tp9u
- oBVqMs/h9S1tu3RzpPrzqpLtYY2RLo/WrFjUi9UkN3tJ1iMZfo1DvPptxnXhZPjPpi0K hA== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w1bwemv68-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 05 Feb 2024 19:33:16 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 415JQJhL007040;
-	Mon, 5 Feb 2024 19:33:15 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3w1bx6cjs3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 05 Feb 2024 19:33:15 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bl2uasSH3UtEFMo21TVVLkU8RleewhbScxkIafselUGeUNJCO7qkuJziR0E9T8DMPvta7rRlWBnKKees5+nmjlslLYy4Rdx9qmwCUYNpo3jrdMLxFg9evZmuKOUg1ej8cBhNNxn/IFE5Y61w/m9kH0rU4oVwrXqzqV+8YWo86XCWLgPK+sxTtwGpQI92y0FqdRTNuP6PDslzOhgLw3PBZrZ10alwdS0im/WChh+aWyPOyuftMEY63gDuNwm39bW8Nr6BkTwfHejOl6LW1fMAXxsaTivzRcpXxDgJkBZg4KkJLNkCBGjVOJWyajMEAkhTniNLgzY+iFrQzRoqZeBAPQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=U5aqUBUpelIeMjha9AyN6uIel7EPdOhfDHReH6xNHkY=;
- b=Mh+V+EomOvtE0LPaLjtk5DEWwhEBM3bEmNUJKIAcgnGzdKoCHT0HZi8nKvpeOWpe7LwLcZxYAXtoHLcln7aNBz3xAB4fn3oRKB+BppGIVjLgUgWtboaqVyYOfY5GKi42Oiu6SaMttuymulZdd835hpwbORLr2wTATCPTPf5PJ56RyN0x0UNHxYG3FMILKd7GQ9QgktvrwdUoGrV6OtLXn3b61f99kOEvtULAtb6IjMcwZSeTTTbgJsbjUybnZCuvLX0ANTnignnWUXTCSuiRAtYQuvqWWbjF6tQK68LmMC4XFVQXgabsPA9q9SgL+GBbJKqB5OLM8YrRW20/GSeuoQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U5aqUBUpelIeMjha9AyN6uIel7EPdOhfDHReH6xNHkY=;
- b=UdPnZyLtnE/evIdau59sBSzHmDkbR9WxwW+0XTCY/+OoqJwQ35QMyBsyfM2QnxCyjP4zB8IlreA1cdrkHYGGUpPHc49Gcv9pP0B2HegzEZ9qRR7a2wepINNHwTMBwJxP99MJ0/iDsgjIlwgloaM8lRTgQmX1kHTzQnBam/H0iD8=
-Received: from CO6PR10MB5409.namprd10.prod.outlook.com (2603:10b6:5:357::14)
- by CY8PR10MB6852.namprd10.prod.outlook.com (2603:10b6:930:84::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36; Mon, 5 Feb
- 2024 19:33:12 +0000
-Received: from CO6PR10MB5409.namprd10.prod.outlook.com
- ([fe80::91b3:fd53:a6ee:8685]) by CO6PR10MB5409.namprd10.prod.outlook.com
- ([fe80::91b3:fd53:a6ee:8685%4]) with mapi id 15.20.7249.035; Mon, 5 Feb 2024
- 19:33:12 +0000
-References: <1700488898-12431-1-git-send-email-mihai.carabas@oracle.com>
- <1700488898-12431-8-git-send-email-mihai.carabas@oracle.com>
- <20231211114642.GB24899@willie-the-truck>
- <1b3650c5-822e-4789-81d2-0304573cabd9@oracle.com>
- <20240129181547.GA12305@willie-the-truck>
- <1b25b492-b9e7-4411-90d1-463d44084043@oracle.com>
-User-agent: mu4e 1.4.10; emacs 27.2
-From: Ankur Arora <ankur.a.arora@oracle.com>
-To: Mihai Carabas <mihai.carabas@oracle.com>
-Cc: Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org,
-        kvm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, pbonzini@redhat.com, wanpengli@tencent.com,
-        vkuznets@redhat.com, rafael@kernel.org, daniel.lezcano@linaro.org,
-        akpm@linux-foundation.org, pmladek@suse.com, peterz@infradead.org,
-        dianders@chromium.org, npiggin@gmail.com, rick.p.edgecombe@intel.com,
-        joao.m.martins@oracle.com, juerg.haefliger@canonical.com,
-        mic@digikod.net, arnd@arndb.de, ankur.a.arora@oracle.com
-Subject: Re: [PATCH 7/7] cpuidle/poll_state: replace cpu_relax with
- smp_cond_load_relaxed
-In-reply-to: <1b25b492-b9e7-4411-90d1-463d44084043@oracle.com>
-Date: Mon, 05 Feb 2024 11:33:23 -0800
-Message-ID: <87ttmmu2nw.fsf@oracle.com>
-Content-Type: text/plain
-X-ClientProxiedBy: LO4P123CA0096.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:191::11) To CO6PR10MB5409.namprd10.prod.outlook.com
- (2603:10b6:5:357::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB25C5EE74
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 19:36:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707161762; cv=none; b=V5bNC9vwzDeY33q5eYZKwAlhCoOOzbIDhxkqPBmS8OhrwvVErJiATnBdTh3uigXl0+sMnYTAYkRame9EpTKy+0FW6ln4E/rvgLxzxkgfvlDzPtKPzVWEolNvwJnS8wnTrfQgF3KVkBFLsuHT2mZt8018n7aTJ6dP+9e/+mwzj7w=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707161762; c=relaxed/simple;
+	bh=I60Kbiz2eYDbo0Z4mIWuC/t1tOECDbiVgpLgXb4sXX4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NgzcOwXVyqdxG9ft4xKSi1y0IjRyCeOVasYh+OmoNkBroDz8G5wT8coz5xSQdw+pEmfUE+6C8ghPcYkdfoL7jWilhLCTIl0zpibhz9gmp3cT0ZMWbNIBx36iAwWh4Q/z9ZaDOvCWDywcr4RJ75/SYEIO+CSeM5f1k7yP9haH0qQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MPTqsTqF; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707161759;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ilTY1dmg8mtueiwClLm1IE9zrHDO0gkI6KigsdPN0Fw=;
+	b=MPTqsTqFtal7+T5NZ8eTT0IklNe/P2XiMj7ngEf+bO61YKngJC6JXgti10ecO+JgPzIpsm
+	pdMxyG9Pq0GOXExQSkEXEmsmoWf243fhPjzHLPxpFLgQtpTekWeaWyUXXx/2zZ3vhh+yMk
+	snAQXc9BO1Whw7BMiDlxZdoXPkrIdFA=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-355-ejG2862xMZylSOTuv236Hg-1; Mon, 05 Feb 2024 14:35:56 -0500
+X-MC-Unique: ejG2862xMZylSOTuv236Hg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B0CB2185A784;
+	Mon,  5 Feb 2024 19:35:54 +0000 (UTC)
+Received: from bmarzins-01.fast.eng.rdu2.dc.redhat.com (bmarzins-01.fast.eng.rdu2.dc.redhat.com [10.6.23.12])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 6D1C451D5;
+	Mon,  5 Feb 2024 19:35:54 +0000 (UTC)
+Received: from bmarzins-01.fast.eng.rdu2.dc.redhat.com (localhost [127.0.0.1])
+	by bmarzins-01.fast.eng.rdu2.dc.redhat.com (8.17.1/8.17.1) with ESMTPS id 415JZrts137788
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Mon, 5 Feb 2024 14:35:54 -0500
+Received: (from bmarzins@localhost)
+	by bmarzins-01.fast.eng.rdu2.dc.redhat.com (8.17.1/8.17.1/Submit) id 415JZqkG137787;
+	Mon, 5 Feb 2024 14:35:52 -0500
+Date: Mon, 5 Feb 2024 14:35:52 -0500
+From: Benjamin Marzinski <bmarzins@redhat.com>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: mpatocka@redhat.com, heinzm@redhat.com, xni@redhat.com,
+        blazej.kucman@linux.intel.com, agk@redhat.com, snitzer@kernel.org,
+        dm-devel@lists.linux.dev, song@kernel.org, jbrassow@f14.redhat.com,
+        neilb@suse.de, shli@fb.com, akpm@osdl.org,
+        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+Subject: Re: [PATCH v5 00/14] dm-raid/md/raid: fix v6.7 regressions
+Message-ID: <ZcE4mGXCDwjqBXgf@bmarzins-01.fast.eng.rdu2.dc.redhat.com>
+References: <20240201092559.910982-1-yukuai1@huaweicloud.com>
+ <Zb2wxIpf7uYV6Vya@bmarzins-01.fast.eng.rdu2.dc.redhat.com>
+ <528ce926-6f17-c1ea-8e77-c7d5d7f56022@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR10MB5409:EE_|CY8PR10MB6852:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0251e63c-771d-4854-bf50-08dc26814a5c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	4aHx+RVdaYqEdyqAQV9tnT/j52KbmhSxjG9qGAWfjd36Kwon5EAIigLiEC1fzgwH8eoxsZZdGh4Cfc/HI/z7ihMIWeDCxVth2aYMWqNlaCKDsOibeKq4tvPNcVOIHMghYp/Lw5wAThLOkyQV2Ke2otfCYABmhfyzUOeLaXnruTwU4DPVVDXIQa9MBuSAj22+qpd20iqK+UJhek52JNQPJvgjEZQ19uY859E2JuUcGO9CUApDH9mQNTdDMK2C/8qYdTU2R4o7S31u9ugPpIPgHgDfWBIxkJ+vddgn0i8/FBB35qKjuPbQBG8BuCEumTRrYaBwXR/OJ6koNLsK6o5CYLS9EsECt1BM1W1zvO2M55/YQEZiI0IOUUp3RAv4SOkJNCacrMmpkWb/6sRb/3kfKW37IcIx/epQrK2OOD+nk2dCkzN7Pl+mMhsTsvOziHCd48Hsy5BmC4BoZj+u/norOzRsrlg9cACfQIctkHvjM5CqQXiFM/03l7hATaUczWZ3s8kbOkZnCAIoycsQ2NdSLVe8iZdq3cKz1D7LuT98bBUphxBcohLqa5P+xjEajEf4
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR10MB5409.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(346002)(136003)(366004)(39860400002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(41300700001)(66556008)(66476007)(66946007)(36756003)(37006003)(6636002)(316002)(7416002)(5660300002)(2906002)(6862004)(4326008)(8676002)(8936002)(83380400001)(38100700002)(6666004)(6506007)(6512007)(478600001)(6486002)(26005)(2616005)(107886003)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?h82tS+rvyE5MwJ0SVKoUuuRIgtpLVCGVVoPTfrfFvpjyWdmNdstoosYloYH7?=
- =?us-ascii?Q?4G4Ps28c5aoCIYsfQYBTKvi6fk4V1QhOYT8EzuErdPlulkcLeGMChRFyRyX+?=
- =?us-ascii?Q?mzGl+TXiSS+ZNoXR4D/wJ5pICGVH12duNf+7o3U5jJ5GOUQmjGFqoFhu7vlY?=
- =?us-ascii?Q?/6YobxRO4oCfq1NHvF+EabsQNj6GIgzGFkYR0LSxzRppO5JdOnA7fUwsBAe9?=
- =?us-ascii?Q?91phnn2cJ4oyY+iC5pKGYKWviyxv27+ehYbXig/WU8lxjJZQq1Kl/hMMz1Ch?=
- =?us-ascii?Q?vmdAkzo4u9RdXycAh0ZtDx5oylefF1fOpiRoH/sNbF1NtqaVmohrut0hbxG7?=
- =?us-ascii?Q?53enZXytiz9+otZ8cOd6yt9mEPqakral9r2JtS9ZfFiS/I2B7hDz1bzOY0eu?=
- =?us-ascii?Q?LOyWVB58wJyseuqu2lTJhExRGbSJiPVvf9bsVC+CML3tIS4yG/6GbboLblP9?=
- =?us-ascii?Q?itHd6iC+pe+me+DiEJlMv86PvHpYi0bMroRhdVAQKLA4kjEI2FY7/VH5kTNP?=
- =?us-ascii?Q?o2jao+LxRMcevoJfI8DlB4j5/1ifxhAoQ8jGae3j8l8fmd+W8xHV/U/px8PR?=
- =?us-ascii?Q?rk4R+p09aDJsMV6A6z17yasv3ljVqKxSbfD/kR+oS0I4sLw+LOgVS7WH2jHd?=
- =?us-ascii?Q?iZ+tFYW/pm430z+X9D2xAP+VUYNxkkGBAyb4oY3tsIvRswhSiAQZz6Htp7W4?=
- =?us-ascii?Q?DcFyCMTQDlYN9dLwPAxzJw69mZV+BWVwZ5DH0MfVK1bMiXoA/WcIrlPLdz1D?=
- =?us-ascii?Q?wTCP1uHx+OjQx8/k8gIOa8NsoNqJgOEb4S2zLASl59RR5DM2tlM4E2MBWAHV?=
- =?us-ascii?Q?yna6sxHXtqPlXdkqe00urHJieMxV+5YhGQQQg592VL3FMetfqMTlg1hh/MdI?=
- =?us-ascii?Q?m3FLMk9XBLkYWEaYZdG4nXf9bIy49J6/0XArumUkModdxIXSDVufJQnVNhkZ?=
- =?us-ascii?Q?PJKf8NeMAeUytjJ1rsrdAvN+J4t/aLDmgm4M4NfHEn1opV+Y8fNYBZtqzp/5?=
- =?us-ascii?Q?yUOoNUEFJuopHaxPFf2aibap96IECqXr4Lk3uIoi9r8wH3QYKBIfy+7ACMFH?=
- =?us-ascii?Q?8jeCKvrhkUcn0jJnSlShNf9ZXjb4K+G0Fxr3R7K5WN6dfslBJiSiy2ObqWhJ?=
- =?us-ascii?Q?0GRByQGGBvgcKb1y4PDgHcLSUk4hkEOyv0VzspIa3ZvelTy3/pJuYyWCf+IA?=
- =?us-ascii?Q?vmJJDedhdjKI41At0lFN4NNpikDqgoHX4Wq+r5stIat+Stz308BjopXR41yl?=
- =?us-ascii?Q?bO0qn+KQ2+Sz+N4LK7MMbTTORTnLjDTRfoN6QA5XPQIrZBOoCWOpmiBEU4cV?=
- =?us-ascii?Q?706cFZjyM0mRgpQAPvhU0DeYb1fjs4NtFXl2/8LRPgAclfy4VOrAf5wUsFh6?=
- =?us-ascii?Q?dXikXGcsdbvdiaMBaRGxgjDsiswHirT61vhVIoRNYYoqDpY24JQ0rTsVcyhy?=
- =?us-ascii?Q?LCqH482IPA85BHes+nA4sJpA25cqoJeC4csrMcSgWJiInZbMITkh3qQR4ppp?=
- =?us-ascii?Q?+moL9+KXqpBXDfcZCrzNG7vk5obnzyAr460uIuEYSI1ScjRy0CMgi2CcuEYR?=
- =?us-ascii?Q?cV3ayC/OmzEplf+8RvGMoUl25L7r9b0gPM9jDTVg?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	ZjYhGo1LBqYeQhbbkwIfTpu3Kot298LdXS0YCN96JBzElh6Fj9GohYF/q+jTqr+PMjODnqZfD1NEvhdBbijxPAMUXVWp4NG5bdKwds7CLGf5BzHvu/uBBBGuNsNkocZbfOh/pWvebPn5DgloHAULmsLD+FKA+6KlaKY1QeVCu5ZUswD/Cyb8KMuz5JvNngDUnKPocj1o1ghyJuIRDn9LrrKUQ1iLBBjmlyBqDLeoXDVeU5CUvWN7aJPKbpFh9HVduUKyPiUvjOc2+pnF6Byctxk4M3qeUObYVpKPtnn9ewHI7SXOv1ixnqyyzWN2gqJwvc4HkB++DrjyBk1dxJESaZWlRqOU4sNZPl/2YSNHKG142RweCioC87XwK+WXqzikhDrU8D/MiditkfzOi0Za6RZcwH21rCraP/mM/Wy189utWCn82QHtkCv7hav3ionG4FWbT6F4+YOiL4OLpZtRK4eVKATA9F/OOAxIdR5aCjUYqLN+Kb7yZTaGJcLmn2kwRvBPCNKfPoxGljA6fOQwkwvGjZyIHCPpTPfMbNMKjzFneSKtH21dMKOMTE9IJn3kUQXfqtZsm4TfX9c45KuBIQwtrEwKQ0QmYMJGGseCvuE=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0251e63c-771d-4854-bf50-08dc26814a5c
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR10MB5409.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2024 19:33:12.2581
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BJlDIXnGa/dwZJGF8tR24Rv867GcYvLEcBuv05T/1/op0TieuOfc726EIn6F+vwJHMyjuOF9hQEYDZNzeYD94jI3E5ID/YrH/SW2ecEk87g=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR10MB6852
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-05_13,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
- mlxlogscore=999 bulkscore=0 mlxscore=0 adultscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402050145
-X-Proofpoint-ORIG-GUID: aH0LwGCI1vwOTtGkBwAT7rwWBpk_wEtO
-X-Proofpoint-GUID: aH0LwGCI1vwOTtGkBwAT7rwWBpk_wEtO
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <528ce926-6f17-c1ea-8e77-c7d5d7f56022@huaweicloud.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
+On Sun, Feb 04, 2024 at 09:35:09AM +0800, Yu Kuai wrote:
+> Hi,
+> 
+> 在 2024/02/03 11:19, Benjamin Marzinski 写道:
+> > On Thu, Feb 01, 2024 at 05:25:45PM +0800, Yu Kuai wrote:
+> > > From: Yu Kuai <yukuai3@huawei.com>
+> > > I apply this patchset on top of v6.8-rc1, and run lvm2 tests suite with
+> > > folling cmd for 24 round(for about 2 days):
+> > > 
+> > > for t in `ls test/shell`; do
+> > >          if cat test/shell/$t | grep raid &> /dev/null; then
+> > >                  make check T=shell/$t
+> > >          fi
+> > > done
+> > > 
+> > > failed count                             failed test
+> > >        1 ###       failed: [ndev-vanilla] shell/dmsecuretest.sh
+> > >        1 ###       failed: [ndev-vanilla] shell/dmsetup-integrity-keys.sh
+> > >        1 ###       failed: [ndev-vanilla] shell/dmsetup-keyring.sh
+> > >        5 ###       failed: [ndev-vanilla] shell/duplicate-pvs-md0.sh
+> > >        1 ###       failed: [ndev-vanilla] shell/duplicate-vgid.sh
+> > >        2 ###       failed: [ndev-vanilla] shell/duplicate-vgnames.sh
+> > >        1 ###       failed: [ndev-vanilla] shell/fsadm-crypt.sh
+> > >        1 ###       failed: [ndev-vanilla] shell/integrity.sh
+> > >        6 ###       failed: [ndev-vanilla] shell/lvchange-raid1-writemostly.sh
+> > >        2 ###       failed: [ndev-vanilla] shell/lvchange-rebuild-raid.sh
+> > >        5 ###       failed: [ndev-vanilla] shell/lvconvert-raid-reshape-stripes-load-reload.sh
+> > >        4 ###       failed: [ndev-vanilla] shell/lvconvert-raid-restripe-linear.sh
+> > >        1 ###       failed: [ndev-vanilla] shell/lvconvert-raid1-split-trackchanges.sh
+> > >       20 ###       failed: [ndev-vanilla] shell/lvconvert-repair-raid.sh
+> > >       20 ###       failed: [ndev-vanilla] shell/lvcreate-large-raid.sh
+> > >       24 ###       failed: [ndev-vanilla] shell/lvextend-raid.sh
+> > > 
+> > > And I ramdomly pick some tests verified by hand that these test will
+> > > fail in v6.6 as well(not all tests):
+> > > 
+> > > shell/lvextend-raid.sh
+> > > shell/lvcreate-large-raid.sh
+> > > shell/lvconvert-repair-raid.sh
+> > > shell/lvchange-rebuild-raid.sh
+> > > shell/lvchange-raid1-writemostly.sh
+> > 
+> > In my testing with this patchset on top of the head of linus's tree
+> > (5c24e4e9e708) I am seeing failures in
+> > shell/lvconvert-raid-reshape-stripes-load-reload.sh and
+> > shell/lvconvert-repair-raid.sh in about 20% of my runs. I have never
+> > seen either of these these fail running on the 6.6 kernel (ffc253263a13).
+> 
+> This sounds quite different in my testing, as I said, the test
+> 
+> shell/lvconvert-repair-raid.sh is very likely to fail in v6.6 already,
+> I don't know why it never fail in your testing, test log in v6.6:
+> 
+> | [ 1:38.162] #lvconvert-repair-raid.sh:1+ aux teardown
+> | [ 1:38.162] ## teardown.......## removing stray mapped devices with names
+> beginning with LVMTEST3474:
+> | [ 1:39.207] .set +vx; STACKTRACE; set -vx
+> | [ 1:41.448] ##lvconvert-repair-raid.sh:1+ set +vx
+> | [ 1:41.448] ## - /mnt/test/lvm2/test/shell/lvconvert-repair-raid.sh:1
+> | [ 1:41.449] ## 1 STACKTRACE() called from
+> /mnt/test/lvm2/test/shell/lvconvert-repair-raid.sh:1
+> | [ 1:41.449] ## ERROR: The test started dmeventd (3718) unexpectedly.
+> 
+> And the same in v6.8-rc1. Perhaps do you know how to fix this error?
 
-Mihai Carabas <mihai.carabas@oracle.com> writes:
+Could you run the test with something like
 
->>>>> cpu_relax on ARM64 does a simple "yield". Thus we replace it with
->>>>> smp_cond_load_relaxed which basically does a "wfe".
->>>>>
->>>>> Suggested-by: Peter Zijlstra <peterz@infradead.org>
->>>>> Signed-off-by: Mihai Carabas <mihai.carabas@oracle.com>
->>>>> ---
->>>>>    drivers/cpuidle/poll_state.c | 14 +++++++++-----
->>>>>    1 file changed, 9 insertions(+), 5 deletions(-)
->>>>>
->>>>> diff --git a/drivers/cpuidle/poll_state.c b/drivers/cpuidle/poll_state.c
->>>>> index 9b6d90a72601..440cd713e39a 100644
->>>>> --- a/drivers/cpuidle/poll_state.c
->>>>> +++ b/drivers/cpuidle/poll_state.c
->>>>> @@ -26,12 +26,16 @@ static int __cpuidle poll_idle(struct cpuidle_device *dev,
->>>>>    		limit = cpuidle_poll_time(drv, dev);
->>>>> -		while (!need_resched()) {
->>>>> -			cpu_relax();
->>>>> -			if (loop_count++ < POLL_IDLE_RELAX_COUNT)
->>>>> -				continue;
->>>>> -
->>>>> +		for (;;) {
->>>>>    			loop_count = 0;
->>>>> +
->>>>> +			smp_cond_load_relaxed(&current_thread_info()->flags,
->>>>> +					      (VAL & _TIF_NEED_RESCHED) ||
->>>>> +					      (loop_count++ >= POLL_IDLE_RELAX_COUNT));
->>>>> +
->>>>> +			if (loop_count < POLL_IDLE_RELAX_COUNT)
->>>>> +				break;
->>>>> +
->>>>>    			if (local_clock_noinstr() - time_start > limit) {
->>>>>    				dev->poll_time_limit = true;
->>>>>    				break;
->>>> Doesn't this make ARCH_HAS_CPU_RELAX a complete misnomer?
->>> This controls the build of poll_state.c and the generic definition of
->>> smp_cond_load_relaxed (used by x86) is using cpu_relax(). Do you propose
->>> other approach here?
->> Give it a better name? Having ARCH_HAS_CPU_RELAX control a piece of code
->> that doesn't use cpu_relax() doesn't make sense to me.
->
-> The generic code for smp_cond_load_relaxed is using cpu_relax and this one is
-> used on x86 - so ARCH_HAS_CPU_RELAX is a prerequisite on x86 when using
-> haltpoll. Only on ARM64 this is overwritten. Moreover ARCH_HAS_CPU_RELAX is
-> controlling the function definition for cpuidle_poll_state_init (this is how it
-> was originally designed).
+# make check_local T=lvconvert-repair-raid.sh VERBOSE=1 > out 2>&1
 
-I suspect Will's point is that the term ARCH_HAS_CPU_RELAX doesn't make
-a whole lot of sense when we are only indirectly using cpu_relax() in
-the series.
+and post the output.
 
-Also, all archs define cpu_relax() (though some as just a barrier()) so
-ARCH_HAS_CPU_RELAX .
+-Ben
+ 
+> Thanks,
+> Kuai
+> 
+> > 
+> > lvconvert-repair-raid.sh creates a raid array and then disables one if
+> > its drives before there's enough time to finish the initial sync and
+> > tries to repair it. This is supposed to fail (it uses dm-delay devices
+> > to slow down the sync). When the test succeeds, I see things like this:
+> > 
+> > [ 0:13.469] #lvconvert-repair-raid.sh:161+ lvcreate --type raid10 -m 1 -i 2 -L 64 -n LV1 LVMTEST191946vg /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv1 /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv2 /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv3 /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv4
+> > [ 0:13.469]   Using default stripesize 64.00 KiB.
+> > [ 0:13.483]   Logical volume "LV1" created.
+> > [ 0:14.042] 6,8908,1194343108,-;device-mapper: raid: Superblocks created for new raid set
+> > [ 0:14.042] 5,8909,1194348704,-;md/raid10:mdX: not clean -- starting background reconstruction
+> > [ 0:14.042] 6,8910,1194349443,-;md/raid10:mdX: active with 4 out of 4 devices
+> > [ 0:14.042] 4,8911,1194459161,-;mdX: bitmap file is out of date, doing full recovery
+> > [ 0:14.042] 6,8912,1194563810,-;md: resync of RAID array mdX
+> > [ 0:14.042]   WARNING: This metadata update is NOT backed up.
+> > [ 0:14.042] aux disable_dev "$dev4"
+> > [ 0:14.058] #lvconvert-repair-raid.sh:163+ aux disable_dev /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv4
+> > [ 0:14.058] Disabling device /tmp/LVMTEST191946.ImUMG6dyqB/dev/mapper/LVMTEST191946pv4 (253:5)
+> > [ 0:14.101] not lvconvert -y --repair $vg/$lv1
+> > 
+> > When it fails, I see:
+> > 
+> > [ 0:13.831] #lvconvert-repair-raid.sh:161+ lvcreate --type raid10 -m 1 -i 2 -L 64 -n LV1 LVMTEST192248vg /tmp/LVMTEST192248.ATcecgSGfE/dev/mapper/LVMTEST192248pv1 /tmp/LVMTEST192248.ATcecgSGfE/dev/mapper/LVMTEST192248pv2 /tmp/LVMTEST192248.ATcecgSGfE/dev/mapper/LVMTEST192248pv3 /tmp/LVMTEST192248.ATcecgSGfE/dev/mapper/LVMTEST192248pv4
+> > [ 0:13.831]   Using default stripesize 64.00 KiB.
+> > [ 0:13.847]   Logical volume "LV1" created.
+> > [ 0:14.499]   WARNING: This metadata update is NOT backed up.
+> > [ 0:14.499] 6,8925,1187444256,-;device-mapper: raid: Superblocks created for new raid set
+> > [ 0:14.499] 5,8926,1187449525,-;md/raid10:mdX: not clean -- starting background reconstruction
+> > [ 0:14.499] 6,8927,1187450148,-;md/raid10:mdX: active with 4 out of 4 devices
+> > [ 0:14.499] 6,8928,1187452472,-;md: resync of RAID array mdX
+> > [ 0:14.499] 6,8929,1187453016,-;md: mdX: resync done.
+> > [ 0:14.499] 4,8930,1187555486,-;mdX: bitmap file is out of date, doing full recovery
+> > [ 0:14.499] aux disable_dev "$dev4"
+> > [ 0:14.515] #lvconvert-repair-raid.sh:163+ aux disable_dev /tmp/LVMTEST192248.AT
+> > cecgSGfE/dev/mapper/LVMTEST192248pv4
+> > [ 0:14.515] Disabling device /tmp/LVMTEST192248.ATcecgSGfE/dev/mapper/LVMTEST192
+> > 248pv4 (253:5)
+> > [ 0:14.554] not lvconvert -y --repair $vg/$lv1
+> > 
+> > To me the important looking difference (and I admit, I'm no RAID expert), is that in the
+> > case where the test passes (where lvconvert fails as expected), I see
+> > 
+> > [ 0:14.042] 4,8911,1194459161,-;mdX: bitmap file is out of date, doing full recovery
+> > [ 0:14.042] 6,8912,1194563810,-;md: resync of RAID array mdX
+> > 
+> > When it fails I see:
+> > 
+> > [ 0:14.499] 6,8928,1187452472,-;md: resync of RAID array mdX
+> > [ 0:14.499] 6,8929,1187453016,-;md: mdX: resync done.
+> > [ 0:14.499] 4,8930,1187555486,-;mdX: bitmap file is out of date, doing full recovery
+> > 
+> > Which appears to show a resync that takes no time, presumable because it happens before
+> > the device notices that the bitmaps are wrong and schedules a full recovery.
+> > 
+> > 
+> > lvconvert-raid-reshape-stripes-load-reload.sh repeatedly reloads the
+> > device table during a raid reshape, and then tests the filesystem for
+> > corruption afterwards. With this patchset, the filesystem is
+> > occasionally corrupted.  I do not see this with the 6.6 kernel.
+> > 
+> > -Ben
+> > > Xiao Ni also test the last version on a real machine, see [1].
+> > > 
+> > > [1] https://lore.kernel.org/all/CALTww29QO5kzmN6Vd+jT=-8W5F52tJjHKSgrfUc1Z1ZAeRKHHA@mail.gmail.com/
+> > > 
+> > > Yu Kuai (14):
+> > >    md: don't ignore suspended array in md_check_recovery()
+> > >    md: don't ignore read-only array in md_check_recovery()
+> > >    md: make sure md_do_sync() will set MD_RECOVERY_DONE
+> > >    md: don't register sync_thread for reshape directly
+> > >    md: don't suspend the array for interrupted reshape
+> > >    md: fix missing release of 'active_io' for flush
+> > >    md: export helpers to stop sync_thread
+> > >    md: export helper md_is_rdwr()
+> > >    dm-raid: really frozen sync_thread during suspend
+> > >    md/dm-raid: don't call md_reap_sync_thread() directly
+> > >    dm-raid: add a new helper prepare_suspend() in md_personality
+> > >    md/raid456: fix a deadlock for dm-raid456 while io concurrent with
+> > >      reshape
+> > >    dm-raid: fix lockdep waring in "pers->hot_add_disk"
+> > >    dm-raid: remove mddev_suspend/resume()
+> > > 
+> > >   drivers/md/dm-raid.c |  78 +++++++++++++++++++--------
+> > >   drivers/md/md.c      | 126 +++++++++++++++++++++++++++++--------------
+> > >   drivers/md/md.h      |  16 ++++++
+> > >   drivers/md/raid10.c  |  16 +-----
+> > >   drivers/md/raid5.c   |  61 +++++++++++----------
+> > >   5 files changed, 192 insertions(+), 105 deletions(-)
+> > > 
+> > > -- 
+> > > 2.39.2
+> > > 
+> > 
+> > .
+> > 
 
-Maybe an arch can instead just opt into polling in idle?
-
-Perhaps something like this trivial patch:
-
---
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 5edec175b9bf..d80c98c64fd4 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -367,7 +367,7 @@ config ARCH_MAY_HAVE_PC_FDC
- config GENERIC_CALIBRATE_DELAY
- 	def_bool y
-
--config ARCH_HAS_CPU_RELAX
-+config ARCH_WANTS_IDLE_POLL
- 	def_bool y
-
- config ARCH_HIBERNATION_POSSIBLE
-diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
-index 55437f5e0c3a..6a0a1f16a5c3 100644
---- a/drivers/acpi/processor_idle.c
-+++ b/drivers/acpi/processor_idle.c
-@@ -36,7 +36,7 @@
- #include <asm/cpu.h>
- #endif
-
--#define ACPI_IDLE_STATE_START	(IS_ENABLED(CONFIG_ARCH_HAS_CPU_RELAX) ? 1 : 0)
-+#define ACPI_IDLE_STATE_START	(IS_ENABLED(CONFIG_ARCH_WANTS_IDLE_POLL) ? 1 : 0)
-
- static unsigned int max_cstate __read_mostly = ACPI_PROCESSOR_MAX_POWER;
- module_param(max_cstate, uint, 0400);
-@@ -787,7 +787,7 @@ static int acpi_processor_setup_cstates(struct acpi_processor *pr)
- 	if (max_cstate == 0)
- 		max_cstate = 1;
-
--	if (IS_ENABLED(CONFIG_ARCH_HAS_CPU_RELAX)) {
-+	if (IS_ENABLED(CONFIG_ARCH_WANTS_IDLE_POLL)) {
- 		cpuidle_poll_state_init(drv);
- 		count = 1;
- 	} else {
-diff --git a/drivers/cpuidle/Makefile b/drivers/cpuidle/Makefile
-index d103342b7cfc..23f48d99f0f2 100644
---- a/drivers/cpuidle/Makefile
-+++ b/drivers/cpuidle/Makefile
-@@ -7,7 +7,7 @@ obj-y += cpuidle.o driver.o governor.o sysfs.o governors/
- obj-$(CONFIG_ARCH_NEEDS_CPU_IDLE_COUPLED) += coupled.o
- obj-$(CONFIG_DT_IDLE_STATES)		  += dt_idle_states.o
- obj-$(CONFIG_DT_IDLE_GENPD)		  += dt_idle_genpd.o
--obj-$(CONFIG_ARCH_HAS_CPU_RELAX)	  += poll_state.o
-+obj-$(CONFIG_ARCH_WANTS_IDLE_POLL)	  += poll_state.o
- obj-$(CONFIG_HALTPOLL_CPUIDLE)		  += cpuidle-haltpoll.o
-
- ##################################################################################
-diff --git a/include/linux/cpuidle.h b/include/linux/cpuidle.h
-index 3183aeb7f5b4..53e55a91d55d 100644
---- a/include/linux/cpuidle.h
-+++ b/include/linux/cpuidle.h
-@@ -275,7 +275,7 @@ static inline void cpuidle_coupled_parallel_barrier(struct cpuidle_device *dev,
- }
- #endif
-
--#if defined(CONFIG_CPU_IDLE) && defined(CONFIG_ARCH_HAS_CPU_RELAX)
-+#if defined(CONFIG_CPU_IDLE) && defined(CONFIG_ARCH_WANTS_IDLE_POLL)
- void cpuidle_poll_state_init(struct cpuidle_driver *drv);
- #else
- static inline void cpuidle_poll_state_init(struct cpuidle_driver *drv) {}
 
