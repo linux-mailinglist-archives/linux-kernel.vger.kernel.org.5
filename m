@@ -1,158 +1,86 @@
-Return-Path: <linux-kernel+bounces-52518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61DE6849933
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:49:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7C4F849927
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:45:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 016591F23AA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:49:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF2891C2088A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:45:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBF6519475;
-	Mon,  5 Feb 2024 11:48:51 +0000 (UTC)
-Received: from davidv.dev (mail.davidv.dev [78.46.233.60])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B12618EB3;
+	Mon,  5 Feb 2024 11:45:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S0SfTXx8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD0E619474
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 11:48:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.46.233.60
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A776118E29;
+	Mon,  5 Feb 2024 11:45:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707133731; cv=none; b=hO7SlYSsNOzenfUZIBWUejQn3rzLXFLQ6g+NXJfkbfY8YL/KZchRKqkP0V93e5INH8Amq8D7bzZ5fMAApGpLBcZjOGXKujaEz6Mjf8xj1LOR+h6U114TVcFecYBg9Se21KTtvycjFwY3yRRZQYw8UuwSGzFa11f9Bic0FFf47H4=
+	t=1707133527; cv=none; b=hpP1Fwq0rMvxj7U9LXMTBRnpe3e/3PrWWL/p2WpAU06plIwab6vszB7Jn/uM1fNViUrLX9FKz0N+iIObZXmeGvxEhZsHTAhUdbzBDEpO97WSqOSGKah/YI42rn+rId73oszhpYSEf3dfzbwR4jirAwRLBPZl89fvQL1AtNqgCao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707133731; c=relaxed/simple;
-	bh=zquoTPDiDMopq79YAJN8pFBJInmPfdGsBn+pPQU1BdE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=sBl+go7O2vYG1cqiptEEmJPq0DjElHKEkl+R3sGsVUUroVW+wZDtfCG3IR27WLcjYWCUaCqrgoU99+4acqvi+yxdH22dk+jyu9qUuxJhIfX2OUG6pn/aXtEhEHvo+mLXD2pVXatJguNuqpX08L+iMiAsMdb8IAt2CgBjjTCkXnE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidv.dev; spf=pass smtp.mailfrom=davidv.dev; arc=none smtp.client-ip=78.46.233.60
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidv.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=davidv.dev
-Received: from framework.labs
-	by mail.davidv.dev (chasquid) with ESMTPSA
-	tls TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
-	(over submission+TLS, TLS-1.2, envelope from "david@davidv.dev")
-	; Mon, 05 Feb 2024 12:46:51 +0100
-From: David Ventura <david@davidv.dev>
-To: 
-Cc: David Ventura <david@davidv.dev>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Xiongwei Song <xiongwei.song@windriver.com>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH] net: make driver settling time configurable
-Date: Mon,  5 Feb 2024 12:44:40 +0100
-Message-Id: <20240205114609.440597-1-david@davidv.dev>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1707133527; c=relaxed/simple;
+	bh=BYs4rQ5/k64xGn6SgCJXpRb/M2MgU+YyuM9pGGjE//A=;
+	h=MIME-Version:In-Reply-To:References:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bKiTyql6li8pP12HY8cjk2/vQCwpjlRnfqbZpLjOhNDhHCRZB0TRF78P9PSBlZpR4+/T+O9fwDYgjL9tQtqgsHFij2ybd17i3CqyuLVMQI+MAccFKm6jf7uFybh+mWCLlX0KludQ8775GpzraIqdOj2fOEGQnKpO6zjIv+6vzLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S0SfTXx8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C396C43390;
+	Mon,  5 Feb 2024 11:45:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707133527;
+	bh=BYs4rQ5/k64xGn6SgCJXpRb/M2MgU+YyuM9pGGjE//A=;
+	h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+	b=S0SfTXx8sAXPGWHPW5VvRr1z+i13fTvnBD3aKcRF9YWbPdt6+xWiOHp4J4sglj/Kc
+	 Eqbx+DkKxXtmtSCMTgApk06HNiqPUFkdqNSabgr/yHD7XhW6DWYBf9zB91Dd+mhvgl
+	 zrNhUVHpin/TssQbqpOTWgD4RLJXTIUGegXQCJ0wktuqhYl1sFIcsYL8wUkmV+BvtM
+	 s+EYbkeogcz1Ke+nixtIW4C+JfQnct5cKdirN3qXtIv3hrT57hk+6POf1IQiN2A31u
+	 1kXRcZIMsqT3l5NHpdRJoEJpsHukCSoIKxYyLpIr7TvEaWHl/jmo9E8Tapw0n2Wagl
+	 HiQewaybecxIw==
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-216f774c827so2168726fac.2;
+        Mon, 05 Feb 2024 03:45:27 -0800 (PST)
+X-Gm-Message-State: AOJu0Yw/d9GN+IQulgrN9f264SCUN9ZOIyDxlvdPkd7b1ghzt0dhfI6j
+	qYg+OIp0q/q3v+WLPFVDidmG5tGerUDVBZ0ldeOlnYnMAWq5g6gb2epnkb9SWfyuReuVunvc5Th
+	cEUFU7S0pL8XjFO2F3jQ2H9vj6BQ=
+X-Google-Smtp-Source: AGHT+IHu/+HFGmE2r7T4qO2GHHTOgOupQdOpPq3Oc1albNYbexHWY+wrxHuQsxQlyPKaYaaEnje8UB0J1O68leH5rmQ=
+X-Received: by 2002:a05:6870:4c0d:b0:219:9c12:ba14 with SMTP id
+ pk13-20020a0568704c0d00b002199c12ba14mr645100oab.47.1707133526341; Mon, 05
+ Feb 2024 03:45:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a8a:d11:0:b0:514:c0b3:431 with HTTP; Mon, 5 Feb 2024
+ 03:45:25 -0800 (PST)
+In-Reply-To: <20240205111917.181490-1-pchelkin@ispras.ru>
+References: <20240205111917.181490-1-pchelkin@ispras.ru>
+From: Namjae Jeon <linkinjeon@kernel.org>
+Date: Mon, 5 Feb 2024 20:45:25 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd-dMgmGUEow6B4pJRCUtmmgE0Qy+5CVEOTuMZA+O3gpQQ@mail.gmail.com>
+Message-ID: <CAKYAXd-dMgmGUEow6B4pJRCUtmmgE0Qy+5CVEOTuMZA+O3gpQQ@mail.gmail.com>
+Subject: Re: [PATCH] ksmbd: free aux buffer if ksmbd_iov_pin_rsp_read fails
+To: Fedor Pchelkin <pchelkin@ispras.ru>
+Cc: Steve French <sfrench@samba.org>, Sergey Senozhatsky <senozhatsky@chromium.org>, 
+	Tom Talpey <tom@talpey.com>, linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Alexey Khoroshilov <khoroshilov@ispras.ru>, lvc-project@linuxtesting.org, 
+	stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-During IP auto configuration, some drivers apparently need to wait a
-certain length of time to settle; as this is not true for all drivers,
-make this length of time configurable.
-
-Signed-off-by: David Ventura <david@davidv.dev>
----
- .../admin-guide/kernel-parameters.txt         |  4 ++++
- Documentation/admin-guide/nfs/nfsroot.rst     |  3 +++
- net/ipv4/ipconfig.c                           | 23 ++++++++++++++++---
- 3 files changed, 27 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index b47940577c10..b07a035642fa 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -2291,6 +2291,10 @@
- 
- 	ip=		[IP_PNP]
- 			See Documentation/admin-guide/nfs/nfsroot.rst.
-+	ip.dev_wait_ms=
-+			[IP_PNP]
-+			See Documentation/admin-guide/nfs/nfsroot.rst.
-+
- 
- 	ipcmni_extend	[KNL,EARLY] Extend the maximum number of unique System V
- 			IPC identifiers from 32,768 to 16,777,216.
-diff --git a/Documentation/admin-guide/nfs/nfsroot.rst b/Documentation/admin-guide/nfs/nfsroot.rst
-index 135218f33394..f26f7a342af6 100644
---- a/Documentation/admin-guide/nfs/nfsroot.rst
-+++ b/Documentation/admin-guide/nfs/nfsroot.rst
-@@ -223,6 +223,9 @@ ip=<client-ip>:<server-ip>:<gw-ip>:<netmask>:<hostname>:<device>:<autoconf>:<dns
-   /proc/net/ipconfig/ntp_servers to an NTP client before mounting the real
-   root filesystem if it is on NFS).
- 
-+ip.dev_wait_ms=<value>
-+  Set the number of milliseconds to delay after opening the network device
-+  which will be autoconfigured. Defaults to 10 milliseconds.
- 
- nfsrootdebug
-   This parameter enables debugging messages to appear in the kernel
-diff --git a/net/ipv4/ipconfig.c b/net/ipv4/ipconfig.c
-index c56b6fe6f0d7..cbf35163b973 100644
---- a/net/ipv4/ipconfig.c
-+++ b/net/ipv4/ipconfig.c
-@@ -82,8 +82,6 @@
- #define IPCONFIG_DYNAMIC
- #endif
- 
--/* Define the friendly delay before and after opening net devices */
--#define CONF_POST_OPEN		10	/* After opening: 10 msecs */
- 
- /* Define the timeout for waiting for a DHCP/BOOTP/RARP reply */
- #define CONF_OPEN_RETRIES 	2	/* (Re)open devices twice */
-@@ -101,6 +99,7 @@
- 
- /* Wait for carrier timeout default in seconds */
- static unsigned int carrier_timeout = 120;
-+static unsigned int dev_wait_ms = 10;
- 
- /*
-  * Public IP configuration
-@@ -1516,7 +1515,8 @@ static int __init ip_auto_config(void)
- 		return err;
- 
- 	/* Give drivers a chance to settle */
--	msleep(CONF_POST_OPEN);
-+	if(dev_wait_ms > 0)
-+		msleep(dev_wait_ms);
- 
- 	/*
- 	 * If the config information is insufficient (e.g., our IP address or
-@@ -1849,3 +1849,20 @@ static int __init set_carrier_timeout(char *str)
- 	return 1;
- }
- __setup("carrier_timeout=", set_carrier_timeout);
-+
-+
-+static int __init set_dev_wait_ms(char *str)
-+{
-+	ssize_t ret;
-+
-+	if (!str)
-+		return 0;
-+
-+	ret = kstrtouint(str, 0, &dev_wait_ms);
-+	if (ret)
-+		return 0;
-+
-+	return 1;
-+}
-+
-+__setup("ip.dev_wait_ms=", set_dev_wait_ms);
--- 
-2.39.2
-
+2024-02-05 20:19 GMT+09:00, Fedor Pchelkin <pchelkin@ispras.ru>:
+> ksmbd_iov_pin_rsp_read() doesn't free the provided aux buffer if it
+> fails. Seems to be the caller's responsibility to clear the buffer in
+> error case.
+>
+> Found by Linux Verification Center (linuxtesting.org).
+>
+> Fixes: e2b76ab8b5c9 ("ksmbd: add support for read compound")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+Applied it to #ksmbd-for-next-next.
+Thanks for your patch!
 
