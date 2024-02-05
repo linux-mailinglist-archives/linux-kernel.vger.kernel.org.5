@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-51972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DE32849226
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 02:24:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D22A7849228
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 02:25:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 469D11C2153A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 01:24:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6566A1F21744
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 01:25:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D4D4B665;
-	Mon,  5 Feb 2024 01:23:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C70723BF;
+	Mon,  5 Feb 2024 01:25:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="pGKKnJ4X"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="YJga7/Il"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8488AB64A;
-	Mon,  5 Feb 2024 01:23:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5426479CD;
+	Mon,  5 Feb 2024 01:25:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707096235; cv=none; b=BRjJvvAF8//bK9FIR6OuJSmZHwe1WpJ4A6ybMihE40pNsdx7MnwV4tjNg4lwEZr7dhFScuYmBx3C+nrzbKXsO0LxLZhM+zpXwJWLOd+CTGYvw3M4HI9WO6Amiw1yjCmmygkqDLqFH5bWGrtXGy87Wt2kW6iY7Nxd3eWMXA4AlME=
+	t=1707096307; cv=none; b=mLsiV7letd9EZimp9iaHuQ0Dez7LZ9mXNHkLxz4NM801FX7QCvagtF3XPb/Z47duYcoDXgvm+KsSoC3QaBVINZ8k/yrUOgJKCt2EylnSey6HMFcKTf8Pv90Dh06RAlZZ2UL7RjWcMlD7pcLS65RhlZMGHGREO550WnFxdTFZTSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707096235; c=relaxed/simple;
-	bh=RZ4VyLmCUapNcpo9a9foJKfmkQOXsPppx0XZzWWJ/Z4=;
+	s=arc-20240116; t=1707096307; c=relaxed/simple;
+	bh=jaTlQMSoBvPMfz8lhtZM+afyt7Xg3Mcrl0PWle3uKAY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ag/e3TD4otwqrSS6TMWN6fD0NInKc9FpyGRgqE169fkIoSej3cpTqvyZY4rhwUL8/HX5jj32gwMTmGSLArfr1COK/Eilh4IQTTtBswSb/z53oJabiV6h77fzksdLmYtRZd28o60mMODnBnqgImvAlSL6lo9xeG43X0vAPaihcu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=pGKKnJ4X; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4A7BC433C7;
-	Mon,  5 Feb 2024 01:23:54 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=OXGjdddW+kp0JDcQ7tasQQVt4XaZAtLDRQ6aZjJevzX3W5UzWack7bjoTulne7znsDb/rqHeX6WtpcJ+FXbatylh/2cqLCK3vZmGYsqfHuyLAzfD37tvcqWeY5BsrY/ZMcqnUZWi4Q1azmXvRIP0S9pvNE81Q+cVhwHmWHmPJ+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=YJga7/Il; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B786FC433F1;
+	Mon,  5 Feb 2024 01:25:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1707096235;
-	bh=RZ4VyLmCUapNcpo9a9foJKfmkQOXsPppx0XZzWWJ/Z4=;
+	s=korg; t=1707096306;
+	bh=jaTlQMSoBvPMfz8lhtZM+afyt7Xg3Mcrl0PWle3uKAY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pGKKnJ4XG1VQYrLVIdYbyW8n9+ypLK20BJTjGV+uZi8HrH92vpSaruPkF+AP96PUa
-	 wq5y1JLbyP6smfNm0N/RzYZWe3wdW06f9GUa2b3E0YZREVeujxu5Q9HKPMe5k3wD08
-	 DcQtNj2hAbmkHnWUAuoPLIfLDedhdmrqIWJIxXDg=
-Date: Sun, 4 Feb 2024 17:23:54 -0800
+	b=YJga7/Ilx5B5Twoz8i7yvieMirwqpPJuNW0A9fkxIw/QQNoT5h2A6+uddWSf5M08+
+	 V22qolCkThsqOizpQVKfWC7EYYuhgsPa4h6AKl4n0uKFKnTMTLLX85c3hbeGnDoM5k
+	 /xtBNIgrp9TX75Y9HC1Uja/zcDE9+4EfSSxlqFKI=
+Date: Sun, 4 Feb 2024 17:25:06 -0800
 From: Greg KH <gregkh@linuxfoundation.org>
-To: Ettore Forgiarini <ettorenigma@gmail.com>
-Cc: richardcochran@gmail.com, ozlinux@hotmail.com,
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] Staging: octeon: octeon-stubs: remove all typedef
-Message-ID: <2024020433-flyover-humorless-5a3c@gregkh>
-References: <20240204153603.1373700-1-ettorenigma@gmail.com>
+To: =?utf-8?B?0KHRgtCw0YEg0J3QuNGH0LjQv9C+0YDQvtCy0LjRhw==?= <stasn77@gmail.com>
+Cc: stable@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6.6 000/326] 6.6.16-rc2 review
+Message-ID: <2024020433-universal-resolute-024d@gregkh>
+References: <CAH37n11s_8qjBaDrao3PKct4FriCWNXHWBBHe-ddMYHSw4wK0Q@mail.gmail.com>
+ <2024020410-bungee-number-f643@gregkh>
+ <CAH37n11rbpaxzmt03FXQpC0Ue=_J4W4eG12PxvF3ung+uLv8Qg@mail.gmail.com>
+ <2024020427-trio-clubbed-37b2@gregkh>
+ <CAH37n11Tr9_2A=nFG7N8gi9DoC0ZdEQBGH3herTuP+C-s+3isg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240204153603.1373700-1-ettorenigma@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAH37n11Tr9_2A=nFG7N8gi9DoC0ZdEQBGH3herTuP+C-s+3isg@mail.gmail.com>
 
-On Sun, Feb 04, 2024 at 04:36:03PM +0100, Ettore Forgiarini wrote:
-> Removed all typedef so the code conform with code style
-> 
-> Signed-off-by: Ettore Forgiarini <ettorenigma@gmail.com>
-> ---
->  drivers/staging/octeon/octeon-stubs.h | 48 +++++++++++++--------------
->  1 file changed, 24 insertions(+), 24 deletions(-)
+On Mon, Feb 05, 2024 at 01:08:47AM +0300, Стас Ничипорович wrote:
+> I meant that there is no place for the patch in the stable branch
+> until fix. In 6.6.15 there is no issue.
 
-Also, most importantly, this breaks the build, ALWAYS test build your
-patches at the very least.
+I understand, but again, please work with the networking developers to
+get this fixed otherwise this will happen soon for newer kernels.
 
 thanks,
 
