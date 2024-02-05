@@ -1,101 +1,154 @@
-Return-Path: <linux-kernel+bounces-52885-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23A7F849DD3
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:20:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 516D7849DDA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:21:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA2DC1F23DE8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:20:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B159EB22440
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:21:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A1353A8F9;
-	Mon,  5 Feb 2024 15:19:59 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D07313A1A6
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 15:19:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 468272E40B;
+	Mon,  5 Feb 2024 15:20:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W2VWjqL0"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26E282D043;
+	Mon,  5 Feb 2024 15:20:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707146398; cv=none; b=tVCooiJdUYk6VFTf42xY5i9StF2xEkpxg9vKNVQzU91g52QxO/6jdfymbJWNYXszMdxb6O82z5XGHZUtDKfq/vYrnAlxwyi/cyhoNpjfeW7jppC8UmH3DV3Tv0kQyFG4J8ynaWvxGMEOjR0vz2U+vK7Smo1VpNs3Imp198oBfUs=
+	t=1707146439; cv=none; b=oAkKpDVMNjvPNtNxcw1vtH5sSoyeSfZ9VO3jad8PBL6MAnts8XDu/ARLkSngP503eGImsGOOpPKu2kKseZx4LcN8QMyQmFGckv9B34Oa8uYhz9WPcgFDaRXEjir+7iuQ4aNhygrJTb5gKiLhGOxq9bv2nn+sRyF4iUT4KD1c1VE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707146398; c=relaxed/simple;
-	bh=Tp9mtZuUMtWUy7r01PjjTtYAHa5CzgjrkHr/jKLUm0o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rUpq3IjI6i1pSHYYRIwVRQ7QkSxitbxwOf/hlPVaqhUQif+GoFxSsiMXtYv07FlYKOTyms9YG//ZYNNUvVajJuWwa6zwe+qsDCemfZRFJjGrieq6DoXSasMF5/oRlLRRKGhrd1JRR+s98sQn+jVyLHANEIpJStU/ZpJSAs+pAHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C9E541FB;
-	Mon,  5 Feb 2024 07:20:38 -0800 (PST)
-Received: from e133380.arm.com (e133380.arm.com [10.1.197.58])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 065833F5A1;
-	Mon,  5 Feb 2024 07:19:54 -0800 (PST)
-Date: Mon, 5 Feb 2024 15:19:47 +0000
-From: Dave Martin <Dave.Martin@arm.com>
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: Fangrui Song <maskray@google.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org,
-	Jisheng Zhang <jszhang@kernel.org>,
-	Peter Smith <peter.smith@arm.com>, llvm@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: jump_label: use constraints "Si" instead of "i"
-Message-ID: <ZcD8k2UTs3wyk9Dx@e133380.arm.com>
-References: <20240201223545.728028-1-maskray@google.com>
- <Zb0Qu5lR0iZUqImb@e133380.arm.com>
- <CAMj1kXGSQ4Xq68Cmq6BH37FPJ+R+N5cOfrdC+aVML4sGaNDopg@mail.gmail.com>
- <Zb0eRogn3rjkeDAs@e133380.arm.com>
- <20240202225104.f4dsagfwf6gcnddy@google.com>
- <CAMj1kXGN-nKSzxJoyM9peBTDevuPkH-+P2UzH746P-F913Dg-g@mail.gmail.com>
+	s=arc-20240116; t=1707146439; c=relaxed/simple;
+	bh=GGePl5eiEEdPNRh0+sAveAROhsr1GXVAVnMj8eHt2vg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PpEgxheu7iEryG4U2sgAy1nEPYzlBIjgv9psKREYHfSOWwHBVakfVvEkHcVfbGNo+PR9Jbind61vNLlG8A7IWlymLfNMqi3kjg2eXVg4vo3IBRRj+5gJPqV0uzz2TsFjMWzrFdiJtjC3o6VrIJ571U0y8OJ3Bt6Mp2lZi+RK61U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W2VWjqL0; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d953fa3286so31654045ad.2;
+        Mon, 05 Feb 2024 07:20:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707146437; x=1707751237; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=giwgZ4wcf6FmR6qMTFI58iXdRxoX8Uci/OXHw4NZoHQ=;
+        b=W2VWjqL0JIzc04Fr41o0uVYOEoN8cWBFr5PGCo78LTJVRKoO2/TgBSu634jgbhU3BN
+         w8sk3mFJJY7P4gdD9LWSMn0EopZDmqmNf0avb/4R9wHKGT6IR1eWJ4bvNvKgpdjXMohQ
+         vLzH8v921YlQZx1pwIcIQy2VPGNZlPckvq2jnXSnSgn/nKrA3LNSbHp2dF5tZvUjbmcz
+         nN9E5N29mUOAQyJJc8lnMMwr0rkOs4om1CkoWTUeb9TZc8ffP9GS94/LaKs1LyLM3d/l
+         ckD/pi5czQ8BiKbaGsxksIqAcI7e9/czqDQr2ey2nuLkl4WDkshrt1uenRcUGXis10J7
+         yw0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707146437; x=1707751237;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=giwgZ4wcf6FmR6qMTFI58iXdRxoX8Uci/OXHw4NZoHQ=;
+        b=KUtWnzucjYbBx9aOxr81n3Gjn1tFUYOyr61JscUl/eYgbtrZ0U0aihwAnc6VbtmwdU
+         2VLNLZRCVoqEUIn60IAg7N91soc1EFCpZXJHPY5sSGEhoihGC0MKt8E2Lb7oSDgFuLgT
+         igBwjc6Eot0CbI+9ECbuSLRggmtvodvSuTVAb61Pu64R9omzQ9Wv4oXtrWZgKB2BvSQQ
+         wcO3IAH2x+kXvA07sxzxJXt1PDPLytud5E9sFlGIxtfFD4colHas/7E8C8wBhF6/fk3M
+         M860ndbfzqbA5ndaCz4VBj4GrPycRA/vvzYJa41EBLPR+udV46xY+9IqRKDuT0bm85/k
+         r3BQ==
+X-Gm-Message-State: AOJu0YwbwUWUXdzLd5xdFJkmj11hc+pmj6dyg1ljj8ZKOeZl6Ol5NtUo
+	fYnCnaVFzR/YHZM0LFoL0E74NKbpczuksGj6qE4mkOVc/FfTVcbE
+X-Google-Smtp-Source: AGHT+IEGDYq4EfYGE4WQ4F8P9Y0pgjjFCa9OC7ZnaM6cBq6r0ynZIrWRaWacoH1ZFzR7YC4l0OPhEg==
+X-Received: by 2002:a17:903:2452:b0:1d9:af94:9f3d with SMTP id l18-20020a170903245200b001d9af949f3dmr4584960pls.28.1707146437351;
+        Mon, 05 Feb 2024 07:20:37 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVVS1ti89jiT+X2JZbru4oYtoPXaIhsjbjD6tD25wyERqoX7j2hmQYsr9b7lRt4x7Z1wmVaSCiLCgfjHZxgzdVOjH1/JLISqxgz3VjBzg1mpsFQkLy1m/njZTEN7YkP+QFH+vt37Us0awOIhEtXXEgJtWZmYxrlAEMJrew2LHFdTd7VN0tNpi6XtPM5gdDgIjcLtOmtQojCdjCgKnxRQqQDYTBBF2NQeJ1QC+EKbaDudVtlGm96Ah7sOfzPveX46nyNzu2mz5Jpz8oTFGTi+4aTqdDdQi/1HASqctE1bV29qLl7OzxP5vmog1BlBRwy+tqQ+c9iNpvcFH38Cp1YUKxkLG+noQW1Gerg4es/i1RcyZGZuc7x8WVsiDrL4cMWcMri+1znqJ3tpag7K/RxbmIwAKAvfATwwfP0hHjCNoRAHxtESSZ49XEdpNXhgUmOpJrZFC+OiUS/jukXlOr+J2DiOnvtKCnSxLWfV56g2FBx8AOewnM9MDVuwWlPbxOGnXTM+e9I5jlUg0d7stWUFU+j6dZ7dVsmsl0+w9iCy1DvS2y5WTfGU7Tmt4annA7LtWpenBWggENppwj/vn+qJrz3wJWMvrP6r6rJngKtJTglgOub9zRyFcfu4JzkJ+f4k2P6CgnrvzWYesEv6MjMjYnfICpzZsYKRRWpi14hzWjcpfIWL9EOYPo0+r6GwhhJh2PAI4RxebuUmnPWnTD5UrTdgutacjZefthZ9JPRhzTjJcQx4xWtRaZSJmVXDhsDwF/J+EXETnROz/siE1Fq3Wh4PcGbiMag8sdt38vi5TuBoaS3cNTDNWtsubiOq8V3m091LbJcvw==
+Received: from cosmo-ubuntu-2204.dhcpserver.bu9bmc.local (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
+        by smtp.gmail.com with ESMTPSA id k21-20020a170902f29500b001d94a3f3987sm6444393plc.184.2024.02.05.07.20.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 07:20:36 -0800 (PST)
+From: Cosmo Chou <chou.cosmo@gmail.com>
+To: linux@roeck-us.net,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	jdelvare@suse.com,
+	corbet@lwn.net,
+	broonie@kernel.org,
+	naresh.solanki@9elements.com,
+	vincent@vtremblay.dev,
+	patrick.rudolph@9elements.com,
+	luca.ceresoli@bootlin.com,
+	bhelgaas@google.com,
+	festevam@denx.de,
+	alexander.stein@ew.tq-group.com,
+	heiko@sntech.de,
+	jernej.skrabec@gmail.com,
+	macromorgan@hotmail.com,
+	forbidden405@foxmail.com,
+	sre@kernel.org,
+	linus.walleij@linaro.org
+Cc: devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hwmon@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	chou.cosmo@gmail.com,
+	cosmo.chou@quantatw.com
+Subject: [PATCH v5 0/1] hwmon: Add driver for Astera Labs PT5161L retimer
+Date: Mon,  5 Feb 2024 23:20:12 +0800
+Message-Id: <20240205152013.3833940-1-chou.cosmo@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXGN-nKSzxJoyM9peBTDevuPkH-+P2UzH746P-F913Dg-g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Sat, Feb 03, 2024 at 10:50:44AM +0100, Ard Biesheuvel wrote:
-> On Fri, 2 Feb 2024 at 23:51, Fangrui Song <maskray@google.com> wrote:
+This driver implements support for temperature monitoring of Astera Labs
+PT5161L series PCIe retimer chips.
 
-[...]
+LINK: [v1] https://lore.kernel.org/all/20231205074723.3546295-1-chou.cosmo@gmail.com/
 
-> > "Si" is fine for GCC and Clang.
-> > "i" is fine for Clang but not for GCC PIC.
-> >
-> >      https://maskray.me/blog/2024-01-30-raw-symbol-names-in-inline-assembly#aarch64
-> >
-> >      In gcc/config/aarch64, LEGITIMATE_PIC_OPERAND_P(X) disallows any symbol
-> >      reference, which means that "i" and "s" cannot be used for PIC. Instead,
-> >      the constraint "S" has been supported since the initial port (2012) to
-> >      reference a symbol or label.
-> >
-> > I am also not familiar with
-> > https://gcc.gnu.org/onlinedocs/gcc/Multi-Alternative.html (comma in a
-> > constraint string). Thankfully we don't need this powerful construct:)
+v5:
+  - Fix warning and check messages of 'checkpatch --strict'
+  - Without resubmitting the applied patches
 
-Ack, I had thought that this was relevant, but it is not,
-and "Si" seems right.
+v4:
+  - Rebased
 
-[...]
+v3:
+  - Revise pt5161l.rst
+  - Revise the style of comments
+  - Remove unused pec_enable
+  - Add back safe access wide registers
+  - fix build warning
 
-> > I am convinced by Ard' argument that two inputs (key, branch) deserve
-> > two operands.
-> > The existing "i"(&((char *)key)[branch]) is kinda ugly and also longer:)
-> 
-> If it helps clarify things, we might do something like
-> 
-> ".quad  (%[key]  - .) + %[bit0]"
-> 
-> : : [key]"Si"(key), [bit0]"i"(branch) :  : l_yes);
+v2:
+  - Add "asteralabs,pt5161l" to trivial-devices.yaml
+  - Change naming PT516XX/pt516xx to PT5161L/pt5161l
+  - Separated debugfs files for health status
+  - Revise the style of comments
+  - Remove unused defines
+  - Remove including unused header files
+  - Remove unnecessary debugging messages
+  - Revise the data parsing for a big-endian system
+  - Use read_block_data instead of accessing wide registers
+  - Remove the debugfs files when the device is unloaded
+  - Add acpi_match_table
 
-I don't have a strong opinion on the naming, but something like this
-seems fine.
+Cosmo Chou (1):
+  hwmon: Add driver for Astera Labs PT5161L retimer
 
-Cheers
----Dave
+ Documentation/hwmon/index.rst   |   1 +
+ Documentation/hwmon/pt5161l.rst |  42 ++
+ MAINTAINERS                     |   7 +
+ drivers/hwmon/Kconfig           |  10 +
+ drivers/hwmon/Makefile          |   1 +
+ drivers/hwmon/pt5161l.c         | 673 ++++++++++++++++++++++++++++++++
+ 6 files changed, 734 insertions(+)
+ create mode 100644 Documentation/hwmon/pt5161l.rst
+ create mode 100644 drivers/hwmon/pt5161l.c
+
+-- 
+2.34.1
+
 
