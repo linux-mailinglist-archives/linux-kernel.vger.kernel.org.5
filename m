@@ -1,70 +1,71 @@
-Return-Path: <linux-kernel+bounces-52400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B34B4849792
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:16:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A5DB3849795
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:17:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAC9E1C235BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:16:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D867A1C221FC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:17:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DA4D1B7EA;
-	Mon,  5 Feb 2024 10:14:35 +0000 (UTC)
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E2C317541;
+	Mon,  5 Feb 2024 10:14:42 +0000 (UTC)
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 155A41B7F2;
-	Mon,  5 Feb 2024 10:14:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0C7B1A28C;
+	Mon,  5 Feb 2024 10:14:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707128074; cv=none; b=D7rul9N8eSosafRKIGbE5/R33INkYoQkI2G8Zlf6Un4GB0Z+cTqHkT4a3RsQ6n+WY7pwkfRW4b3k8SD728Z7EZ0PUTCjZk884WTWlrDYx1qfZUDchpzzfWBoQnSPlpKTsu6f+hLTJTmHYn364MfXFEs+1LeNszig98mO+ul+xXc=
+	t=1707128076; cv=none; b=k0XO7fu7MhoQOJRSVaCtP4mYUbRj4am82sz+5+wH0rpBqwMoPCMDyTNm5rHqpsWUV8DkIkK2T4ChXN5WrsTmmnQAjqyxg+eujIBJpqDa8Bg+PvmLO0IRvrG2QH0QZfXGj0POepC36m8CWWSyk/OOXo47D0JYztaHc1MRXU4pRbg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707128074; c=relaxed/simple;
-	bh=T66TSvjfPaGyd+ykHdJe5K3cX0P9xPAS2OeJTOq0uLo=;
+	s=arc-20240116; t=1707128076; c=relaxed/simple;
+	bh=ZIYJJskWurszPGjPRZpJUtbt1AXZlUpfp0K0t1yduDU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=srrZpAeSgytPGXEAkjkMgFncEmerBTarlmNevLSqRahqkm0RJOhjNbbB9gR9lXmMINMeWLIl+nN469aK63V8NT1OTKwE5hdE35SbwuAXhCX0wTWB88XxRm9lvGq4QpSsvkLorRX8wkSfXUzjoC/uggTyV97Z0+ej0WawG9dTIzc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.41
+	 MIME-Version; b=adCxvRevfQcIs3mKhAutpD4yjudAVta9F4SjJOrNF/MMcLPHqScBWpgPz9SYXOoAQ+duB2s5QR0SVYVvDZmCsHbIbN6RxmDPW+DyWkjAjCTxyfBHpthNkBoGbDD471snIyFSYfotyMz3WQAF6t7vdhEh6HbpSQfZTe2FWEa/HCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-558f523c072so6015559a12.2;
-        Mon, 05 Feb 2024 02:14:33 -0800 (PST)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a30e445602cso1087303466b.0;
+        Mon, 05 Feb 2024 02:14:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707128071; x=1707732871;
+        d=1e100.net; s=20230601; t=1707128073; x=1707732873;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Dgcbcy70G2wxvarVa/puvAxGY53YxWzlweb2szxRXUY=;
-        b=w4/6bXYNOAzE9+Kz22o5yO6Djn5iuw0EBRw2YjSbCKBXCmugrZ0oCb6f7o57V+varg
-         sO1P9TYInVfWM2XFaH64/KDtmPmO/Crl9AXWYhPzMzCQc7pd4OQBb6aRweyCjJcgfIpy
-         D6AMBvmMmqA86/aSoKXn4ZqI9w1OT95ch4w3QG5Ix65fM3HjvEm+s4WyKgrGubwrrkKs
-         ZTDqoS5DiVKh9xmPJue/mH0EqcTpJ5FPEA87h0nxzYdUkuDiFILwjLQA0KSa1xV3Jn53
-         kv7Azfg8aTygPcyLBDO3T7yLU4rHhjT1T+k45OuWDmKAqgmuZUvhcTWeKxb4Kb2kBO5p
-         3W8Q==
-X-Gm-Message-State: AOJu0Yw3HIcryhAzzt9u9d/oARfQYL1HIH74C0x54o64Y9Csn9L5DXMC
-	opwlZxdzHd4gRxMTvj33UOTndfFQ7HG3dPOFYDjSb0zSMHXqnU14
-X-Google-Smtp-Source: AGHT+IFOa97uizXKK6sNB1czANrc2SsOw0t6YIxHI/qjaVEKIyc6qlbT9caTE/fGEiYqleGSfLiJog==
-X-Received: by 2002:a17:906:f6c6:b0:a37:b79e:ae2c with SMTP id jo6-20020a170906f6c600b00a37b79eae2cmr1979307ejb.27.1707128071265;
-        Mon, 05 Feb 2024 02:14:31 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVyVqE48HJaMe1Mej5p9EsucHS68n6RWsw+0i9EuB41GlGzb1ThCtwRzPPTCOI4JD98gBFrVM+CgNrpGm7FlOkGF7aXNbfyRj8td+EwFcZmJfIyaJDf8rxyUkXWEoHeCqiBJhwSYM/aJMbNiXk/4S4zdEpH9llyYGI+an/I9TIMDgwSpgwK5RRBtH3xvNXIPWcNMxq2JhYR7xUzjqUA9txIootGxDakNBHflRfWhpsSNxzd9uUdY+P9PFq2bwdAMH74+VU+k4eC
-Received: from localhost (fwdproxy-lla-119.fbsv.net. [2a03:2880:30ff:77::face:b00c])
-        by smtp.gmail.com with ESMTPSA id z22-20020a170906241600b00a31805b4165sm4191604eja.11.2024.02.05.02.14.30
+        bh=4PeYGuM2VzWmaP8pGOHtb0MhEd16/0MAF4k7QK8QyX8=;
+        b=wr/DUL+gM7VPlDpXzFIqwyqpk8yj1m0OuAtKboE/cTIv7RstrIJIyNXtydsxVbCcsI
+         ymPN6MbPFbqNJBB1Un0diUNf8oBYeByKQf7be1mRLWOYH8Vz3Q0XSBsDc7X6cZFwJSen
+         a17rpgkFunhDF6RGGu3jqaJ2EORyFUZzk27TbGTB1zFxtqjYNT5SM2i4MTDS6XM56bi5
+         LLaiKvjPR9i1iy5VkA7VyWCvoAUiwXC/gVJGdla6wSGyUKIe9CyUm3k+F4c4nqWG0hY7
+         3sw5qpBdZGv3+/Zy9ykaMOrtCGnC/qGSEpcZdCY3Wth6Pclz+DNJzzfxJJlsWXUlhR5g
+         wJzQ==
+X-Gm-Message-State: AOJu0YwcRTkNGB87kIBQZw49bss2OzfAGKBKTcWnu1UbPlDBTfHopt2o
+	POL2CYEpURQAwP2xE0r4ksLprXSqyUmLmT5oxgOCEYF4qoP2ZRrm
+X-Google-Smtp-Source: AGHT+IGp/q6ODH5E6Ch/Wlt0NoRVdlvJcqDIrBmgOnVUMB/s6PiYNmqy8b2AdrdyMvD4Zh6jqcMzpA==
+X-Received: by 2002:a17:906:d294:b0:a31:818c:ffe0 with SMTP id ay20-20020a170906d29400b00a31818cffe0mr5367795ejb.19.1707128072891;
+        Mon, 05 Feb 2024 02:14:32 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCW1/Hf9JcK7520ELfEV8WEoNlXaxktXn81qmsp9wHZXj+RW9fZxcLg5rBwEUcK6ULP4bohHlkeWjYAkDFs5cj+9X1hH0mqYhdM1T06vXNRtjk8MPo/7MOaNq6WyCAdk52vm+KVWW5WVtrdhaGR3SDORRNfTt/DN2UzGncM3VlQZA0mSXtaQCicxdIMyFW6zIDHNyaN3dUNqZhzZkMyfe3Mu2jK77VXAuAZfxPJe1T4EPAERSOHGaaaTHuSEKCUSBkLfIbrOifjkNkKRfaRwzzw1+rGapQ==
+Received: from localhost (fwdproxy-lla-112.fbsv.net. [2a03:2880:30ff:70::face:b00c])
+        by smtp.gmail.com with ESMTPSA id cu4-20020a170906ba8400b00a3550c56127sm4166553ejd.9.2024.02.05.02.14.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 02:14:31 -0800 (PST)
+        Mon, 05 Feb 2024 02:14:32 -0800 (PST)
 From: Breno Leitao <leitao@debian.org>
 To: kuba@kernel.org,
 	davem@davemloft.net,
 	pabeni@redhat.com,
-	edumazet@google.com
+	edumazet@google.com,
+	Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>
 Cc: netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	horms@kernel.org,
-	andrew@lunn.ch,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH net 09/10] net: fill in MODULE_DESCRIPTION()s for ipvtap
-Date: Mon,  5 Feb 2024 02:13:58 -0800
-Message-Id: <20240205101400.1480521-10-leitao@debian.org>
+	horms@kernel.org
+Subject: [PATCH net 10/10] net: fill in MODULE_DESCRIPTION()s for dsa_loop_bdinfo
+Date: Mon,  5 Feb 2024 02:13:59 -0800
+Message-Id: <20240205101400.1480521-11-leitao@debian.org>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20240205101400.1480521-1-leitao@debian.org>
 References: <20240205101400.1480521-1-leitao@debian.org>
@@ -77,22 +78,22 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
-Add descriptions to the IP-VLAN based tap driver.
+Add descriptions to the DSA loopback fixed PHY module.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- drivers/net/ipvlan/ipvtap.c | 1 +
+ drivers/net/dsa/dsa_loop_bdinfo.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ipvlan/ipvtap.c b/drivers/net/ipvlan/ipvtap.c
-index 60944a4beada..1afc4c47be73 100644
---- a/drivers/net/ipvlan/ipvtap.c
-+++ b/drivers/net/ipvlan/ipvtap.c
-@@ -237,4 +237,5 @@ static void __exit ipvtap_exit(void)
- module_exit(ipvtap_exit);
- MODULE_ALIAS_RTNL_LINK("ipvtap");
- MODULE_AUTHOR("Sainath Grandhi <sainath.grandhi@intel.com>");
-+MODULE_DESCRIPTION("IP-VLAN based tap driver");
+diff --git a/drivers/net/dsa/dsa_loop_bdinfo.c b/drivers/net/dsa/dsa_loop_bdinfo.c
+index 237066d30704..fd412ae4e84b 100644
+--- a/drivers/net/dsa/dsa_loop_bdinfo.c
++++ b/drivers/net/dsa/dsa_loop_bdinfo.c
+@@ -32,4 +32,5 @@ static int __init dsa_loop_bdinfo_init(void)
+ }
+ arch_initcall(dsa_loop_bdinfo_init)
+ 
++MODULE_DESCRIPTION("DSA loopback fixed PHY library");
  MODULE_LICENSE("GPL");
 -- 
 2.39.3
