@@ -1,206 +1,274 @@
-Return-Path: <linux-kernel+bounces-54070-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58CE484AA4E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:11:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB56084AA4A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:11:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1B2C28CA0D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:11:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFD431C2730C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:11:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E8EB4A9B0;
-	Mon,  5 Feb 2024 23:11:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A57E44121B;
+	Mon,  5 Feb 2024 23:11:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HB187Jmc"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="WRiaGYpr"
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C00D4A99C;
-	Mon,  5 Feb 2024 23:11:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7F6E481AA
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 23:10:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707174671; cv=none; b=Vxog5655FjKEqJP6+rFkD85Jk0mo8ygCWjfo861Q7lTR0QU4/bHA/4Os8siilGCjkk6DWAihqEbwW4xJbX2HmAWIdaL3lyKtzYc6El1rZURsdiu9wSNGC1Da3a2sUjhBeL75RkwBLQTeyjjiO5rMU0cKuv+PKBNNnacECPWToAI=
+	t=1707174661; cv=none; b=C/aEX/Cm2J7BROfHCFmdrSEEyE38mJ+hQLrXGmSx15cVdFMnddaRcJE0yH2R+uAXcU2sX95g1LATb9sZJYHyVq4KIZXgCOof8uSBDxww0Figiby621oLlf274r4tHLdSLmF2oK/S3LOwfmaor2B4kMfWS43hzj0H0RUXwSoYRxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707174671; c=relaxed/simple;
-	bh=kKKhcMaqwLfUrQpjENPUNxtz3qXKdR24f6zeijBX9CE=;
+	s=arc-20240116; t=1707174661; c=relaxed/simple;
+	bh=98ETdYEYjeLAfEolbR/C15K5yV0mp9d6RDnidWccDTY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hfX4qUK1cvmFMe7F7H/ACuRkEo0AfAuOxHOUcE9ankoIM7aQIuYd+xV7vF62C6c7bOg1lpDbHcdzSFkzS2Cmf/OLEifQp+o5CwpOF+SKZ6gcbIcr45AMEb8yeda9PnWm0fHv2WkoeLs8kFZBTYEEQ4L6qSDZlbN3dkl7yuMMVDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HB187Jmc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4E64C43609;
-	Mon,  5 Feb 2024 23:11:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707174670;
-	bh=kKKhcMaqwLfUrQpjENPUNxtz3qXKdR24f6zeijBX9CE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=HB187Jmc7N7uKVocaYk9dPVnB0bc0p+8iqaeqwMCeBQC0ZqhLdrW5YjLlU9tsfcx4
-	 pgwHPeYFLw0+aHppjkw35gZgsTrwzZEum4uVFCDDyjS6KpxNO0pjSNezg5C0DYSwB9
-	 9on4UE/EAlIFzTxnR1Z1Qd6PE6NFULCjGkN0uV93j0OpObNr3VLvi33C0ossP0j3ke
-	 /CTmygQGpqJmghvmv0/gBordhtTRSZiiRiECkmV8ubfpRSB9Hi+q7sVj7ZthVVjv1b
-	 yAonpdQ6wKRdWVgcXMuCK2PPO2vOr3+7Rg3QWuzSpCK/HHcEKU8/yU4kuS7wKlTIrK
-	 OyfXsaEhsR2sg==
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2cf4fafa386so63531461fa.1;
-        Mon, 05 Feb 2024 15:11:10 -0800 (PST)
-X-Gm-Message-State: AOJu0YziolENu1FszCFANQIQq4YZ6GRgAeGFAdzha71Q+QJxNm3JdB8k
-	ip14I5hhqIo4E7CZFVj42r16AKpZCr4ak2IrBHdN/+hHJIjogtqBXv4aKzNgURL4nd2XUdXZ4ZO
-	0vgccMY/f010pA23QMpz5NpKCr7s=
-X-Google-Smtp-Source: AGHT+IH/zQJiT8/Oo7PpxCUmoye89gZAefcTyo51dU8Du8JULRbKsx7NuW1HiTmxHkDZc8e1guuf9kncHcYJ5t3C078=
-X-Received: by 2002:a2e:9098:0:b0:2d0:996e:b014 with SMTP id
- l24-20020a2e9098000000b002d0996eb014mr347168ljg.32.1707174669110; Mon, 05 Feb
- 2024 15:11:09 -0800 (PST)
+	 To:Cc:Content-Type; b=SSoIhEdgk4JVvxUlwXkdpsA2h2ytl/1ymyuGoehdWLajcHkIiic8N2rKNaMPf8y/hCAJcPvAnXpHFcAv8Zjwp8gLqU92H6KS1LibkEHsi+aMskENrtwBriWURYNs9oxHLX4+KkU5tZ/fSSNtsENDXm5CFRP3If9x9BIdbBF5CUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=WRiaGYpr; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-6047bb0d20fso312097b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 15:10:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1707174658; x=1707779458; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qukmwsoJr7mQjUV1Px87duNcYP7pZmjoAINvmrLBQgA=;
+        b=WRiaGYprqsiqKvdw3zMea/UgTgbfZVAtjOWqrNSG7hs4AeGn1FGpik2WTomgsFjqAx
+         hCOFEE25vq0NYUIIx5paFvdF2jMVYV4gME8NCfjU8KlkEU0Conp4qNCeVuOMK6MS7rNW
+         NLmLY4ZwacEGNHCUgeV/yDouJeMP7CBh/NTeIuLEE9Ax7NoGa3Ut2FRC8dtchzUiqCT2
+         KtIgCkSDOIGfDVNl1a4ecDqfUIZlyWDqmQGcOE5Cb8bb60DiqjOieNV/LqTjl65T1O2n
+         CdxKGxUik+1c1Dv9SzAWKcnmLy0Oyt76JorED1EpT7NyhyQujaETMyy4gJ8txYhAA1X1
+         PoTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707174658; x=1707779458;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qukmwsoJr7mQjUV1Px87duNcYP7pZmjoAINvmrLBQgA=;
+        b=wEoeyemjJbTcDWfgvivYTEpd/TgTAlN8aapkMtOLCeH2OkCxzmwPkKIS7Ptsj43A1b
+         +vguPr+IOz6V6hG4twYUhUjzzSs+hxgg9m7CA56J+etwogqRSxYkIAd6QLD88nuVKZ/z
+         uTe4enW/MjwJ527IVr7b+XJBgGSmj1mEm7YPwv4HafwfInFEfIziLgzFxFp7MpCu7RjO
+         Vv53VBnOPRL1EUKOy6UPcXaT5RME/zBwgJeDaMY9xzn30V3bMI1PSuAgfDLXXP0u2sqv
+         a9dQNPAd5L1MCD2JnVhO6feiyPTHx3q5+WpirR4dq56kuhpIOewkIoYkIyqDa59TrQOH
+         OsxA==
+X-Gm-Message-State: AOJu0YygLk8OS7B4hlO/uXbcSb44pHwcf/lC72o83DNEHqemrCIoq7Hq
+	DB+WBqllb7Ha61+elR8g62TdruTZousKiLhpYsXKYvOEUngFCR83MDLP1f50XeOBIvW/NfP1lAg
+	STdghdyE7S3DbP2FwlEwtnodeyClQXIQorIFV
+X-Google-Smtp-Source: AGHT+IFeMStOFrv0XIgr14+fDBGkClnixJ9TyyYhiV9/R7V1nPl7eILrH74xPNpD1d/PL5zMi5bYdlmCJwc/AqNEKig=
+X-Received: by 2002:a05:6902:18c7:b0:dc6:a5e1:3a05 with SMTP id
+ ck7-20020a05690218c700b00dc6a5e13a05mr1060705ybb.14.1707174658515; Mon, 05
+ Feb 2024 15:10:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131104851.2311358-1-john.g.garry@oracle.com>
- <CAK7LNATDMjzmgpBHZFTOJCkTCqpLPq8jEjdrwzEZ3uu7WMG7jg@mail.gmail.com> <23c67ffc-64a5-4e19-8fbd-ecb9bfe9d3ff@oracle.com>
-In-Reply-To: <23c67ffc-64a5-4e19-8fbd-ecb9bfe9d3ff@oracle.com>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Tue, 6 Feb 2024 08:10:32 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASfTW+OMk1cJJWb4E6P+=k0FEsm_=6FDfDF_mTrxJCSMQ@mail.gmail.com>
-Message-ID: <CAK7LNASfTW+OMk1cJJWb4E6P+=k0FEsm_=6FDfDF_mTrxJCSMQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/4] Introduce uts_release
-To: John Garry <john.g.garry@oracle.com>
-Cc: mcgrof@kernel.org, russ.weight@linux.dev, gregkh@linuxfoundation.org, 
-	rafael@kernel.org, rostedt@goodmis.org, mhiramat@kernel.org, 
-	mathieu.desnoyers@efficios.com, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com, keescook@chromium.org, nathan@kernel.org, 
-	nicolas@fjasle.eu, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-kbuild@vger.kernel.org
+References: <1706654228-17180-9-git-send-email-wufan@linux.microsoft.com>
+ <737a8ea0323b3db38044813041215bac@paul-moore.com> <6e7c707c-28cd-42ec-a617-6f8d2ce9da4f@linux.microsoft.com>
+In-Reply-To: <6e7c707c-28cd-42ec-a617-6f8d2ce9da4f@linux.microsoft.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Mon, 5 Feb 2024 18:10:47 -0500
+Message-ID: <CAHC9VhSX4iNHEw89-mpF07cSqgGd1myQ6CUfiQnA9pgg3QS7Tw@mail.gmail.com>
+Subject: Re: [PATCH RFC v12 8/20] ipe: add userspace interface
+To: Fan Wu <wufan@linux.microsoft.com>
+Cc: corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com, 
+	tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk, agk@redhat.com, 
+	snitzer@kernel.org, eparis@redhat.com, linux-doc@vger.kernel.org, 
+	linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org, 
+	dm-devel@lists.linux.dev, audit@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Deven Bowers <deven.desai@linux.microsoft.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 5, 2024 at 5:25=E2=80=AFPM John Garry <john.g.garry@oracle.com>=
- wrote:
->
-> On 02/02/2024 15:01, Masahiro Yamada wrote:
-> >> --
-> >> 2.35.3
+On Mon, Feb 5, 2024 at 6:01=E2=80=AFPM Fan Wu <wufan@linux.microsoft.com> w=
+rote:
+> On 2/3/2024 2:25 PM, Paul Moore wrote:
+> > On Jan 30, 2024 Fan Wu <wufan@linux.microsoft.com> wrote:
+> >>
+> >> As is typical with LSMs, IPE uses securityfs as its interface with
+> >> userspace. for a complete list of the interfaces and the respective
+> >> inputs/outputs, please see the documentation under
+> >> admin-guide/LSM/ipe.rst
+> >>
+> >> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
+> >> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
+> >> ---
+> >> v2:
+> >>    + Split evaluation loop, access control hooks,
+> >>      and evaluation loop from policy parser and userspace
+> >>      interface to pass mailing list character limit
+> >>
+> >> v3:
+> >>    + Move policy load and activation audit event to 03/12
+> >>    + Fix a potential panic when a policy failed to load.
+> >>    + use pr_warn for a failure to parse instead of an
+> >>      audit record
+> >>    + Remove comments from headers
+> >>    + Add lockdep assertions to ipe_update_active_policy and
+> >>      ipe_activate_policy
+> >>    + Fix up warnings with checkpatch --strict
+> >>    + Use file_ns_capable for CAP_MAC_ADMIN for securityfs
+> >>      nodes.
+> >>    + Use memdup_user instead of kzalloc+simple_write_to_buffer.
+> >>    + Remove strict_parse command line parameter, as it is added
+> >>      by the sysctl command line.
+> >>    + Prefix extern variables with ipe_
+> >>
+> >> v4:
+> >>    + Remove securityfs to reverse-dependency
+> >>    + Add SHA1 reverse dependency.
+> >>    + Add versioning scheme for IPE properties, and associated
+> >>      interface to query the versioning scheme.
+> >>    + Cause a parser to always return an error on unknown syntax.
+> >>    + Remove strict_parse option
+> >>    + Change active_policy interface from sysctl, to securityfs,
+> >>      and change scheme.
+> >>
+> >> v5:
+> >>    + Cause an error if a default action is not defined for each
+> >>      operation.
+> >>    + Minor function renames
+> >>
+> >> v6:
+> >>    + No changes
+> >>
+> >> v7:
+> >>    + Propagating changes to support the new ipe_context structure in t=
+he
+> >>      evaluation loop.
+> >>
+> >>    + Further split the parser and userspace interface changes into
+> >>      separate commits.
+> >>
+> >>    + "raw" was renamed to "pkcs7" and made read only
+> >>    + "raw"'s write functionality (update a policy) moved to "update"
+> >>    + introduced "version", "policy_name" nodes.
+> >>    + "content" renamed to "policy"
+> >>    + changes to allow the compiled-in policy to be treated
+> >>      identical to deployed-after-the-fact policies.
+> >>
+> >> v8:
+> >>    + Prevent securityfs initialization if the LSM is disabled
+> >>
+> >> v9:
+> >>    + Switch to securityfs_recursive_remove for policy folder deletion
+> >>
+> >> v10:
+> >>    + Simplify and correct concurrency
+> >>    + Fix typos
+> >>
+> >> v11:
+> >>    + Correct code comments
+> >>
+> >> v12:
+> >>    + Correct locking and remove redundant code
+> >> ---
+> >>   security/ipe/Makefile    |   2 +
+> >>   security/ipe/fs.c        | 101 +++++++++
+> >>   security/ipe/fs.h        |  16 ++
+> >>   security/ipe/ipe.c       |   3 +
+> >>   security/ipe/ipe.h       |   2 +
+> >>   security/ipe/policy.c    | 123 ++++++++++
+> >>   security/ipe/policy.h    |   9 +
+> >>   security/ipe/policy_fs.c | 469 +++++++++++++++++++++++++++++++++++++=
+++
+> >>   8 files changed, 725 insertions(+)
+> >>   create mode 100644 security/ipe/fs.c
+> >>   create mode 100644 security/ipe/fs.h
+> >>   create mode 100644 security/ipe/policy_fs.c
 > >
-> > As you see, several drivers store UTS_RELEASE in their driver data,
-> > and even print it in debug print.
+> > ...
 > >
+> >> diff --git a/security/ipe/policy.c b/security/ipe/policy.c
+> >> index f22a576a6d68..61fea3e38e11 100644
+> >> --- a/security/ipe/policy.c
+> >> +++ b/security/ipe/policy.c
+> >> @@ -43,6 +71,68 @@ static int set_pkcs7_data(void *ctx, const void *da=
+ta, size_t len,
+> >>      return 0;
+> >>   }
+> >>
+> >> +/**
+> >> + * ipe_update_policy - parse a new policy and replace old with it.
+> >> + * @root: Supplies a pointer to the securityfs inode saved the policy=
+.
+> >> + * @text: Supplies a pointer to the plain text policy.
+> >> + * @textlen: Supplies the length of @text.
+> >> + * @pkcs7: Supplies a pointer to a buffer containing a pkcs7 message.
+> >> + * @pkcs7len: Supplies the length of @pkcs7len.
+> >> + *
+> >> + * @text/@textlen is mutually exclusive with @pkcs7/@pkcs7len - see
+> >> + * ipe_new_policy.
+> >> + *
+> >> + * Context: Requires root->i_rwsem to be held.
+> >> + * Return:
+> >> + * * !IS_ERR        - The existing policy saved in the inode before u=
+pdate
+> >> + * * -ENOENT        - Policy doesn't exist
+> >> + * * -EINVAL        - New policy is invalid
+> >> + */
+> >> +struct ipe_policy *ipe_update_policy(struct inode *root,
+> >> +                                 const char *text, size_t textlen,
+> >> +                                 const char *pkcs7, size_t pkcs7len)
+> >> +{
+> >> +    int rc =3D 0;
+> >> +    struct ipe_policy *old, *ap, *new =3D NULL;
+> >> +
+> >> +    old =3D (struct ipe_policy *)root->i_private;
+> >> +    if (!old)
+> >> +            return ERR_PTR(-ENOENT);
+> >> +
+> >> +    new =3D ipe_new_policy(text, textlen, pkcs7, pkcs7len);
+> >> +    if (IS_ERR(new))
+> >> +            return new;
+> >> +
+> >> +    if (strcmp(new->parsed->name, old->parsed->name)) {
+> >> +            rc =3D -EINVAL;
+> >> +            goto err;
+> >> +    }
+> >> +
+> >> +    if (ver_to_u64(old) > ver_to_u64(new)) {
+> >> +            rc =3D -EINVAL;
+> >> +            goto err;
+> >> +    }
+> >> +
+> >> +    root->i_private =3D new;
+> >> +    swap(new->policyfs, old->policyfs);
 > >
-> > I do not see why it is useful.
->
-> I would tend to agree, and mentioned that earlier.
->
-> > As you discussed in 3/4, if UTS_RELEASE is unneeded,
-> > it is better to get rid of it.
->
-> Jakub replied about this.
->
+> > Should the swap() take place with @ipe_policy_lock held?
 > >
+> I think we are safe here because root->i_rwsem is held. Other two
+> operations set_active and delete are also depending on the inode lock.
+> >> +    mutex_lock(&ipe_policy_lock);
+> >> +    ap =3D rcu_dereference_protected(ipe_active_policy,
+> >> +                                   lockdep_is_held(&ipe_policy_lock))=
+;
+> >> +    if (old =3D=3D ap) {
+> >> +            rcu_assign_pointer(ipe_active_policy, new);
+> >> +            mutex_unlock(&ipe_policy_lock);
+> >> +            synchronize_rcu();
 > >
-> > If such version information is useful for drivers, the intention is
-> > whether the version of the module, or the version of vmlinux.
-> > That is a question.
-> > They differ when CONFIG_MODVERSION.
+> > I'm guessing you are forcing a synchronize_rcu() here because you are
+> > free()'ing @old in the caller, yes?  Looking at the code, I only see
+> > one caller, update_policy().  With only one caller, why not free @old
+> > directly in ipe_update_policy()?  Do you see others callers that would
+> > do something different?
 > >
->
-> I think often this information in UTS_RELEASE is shared as informative
-> only, so the user can conveniently know the specific kernel git version.
->
-> >
-> > When module developers intend to printk the git version
-> > from which the module was compiled from,
-> > presumably they want to use UTS_RELEASE, which
-> > was expanded at the compile time of the module.
-> >
-> > If you replace it with uts_release, it is the git version
-> > of vmlinux.
-> >
-> >
-> > Of course, the replacement is safe for always-builtin code.
-> >
-> >
-> >
-> > Lastly, we can avoid using UTS_RELEASE without relying
-> > on your patch.
-> >
-> >
-> >
-> > For example, commit 3a3a11e6e5a2bc0595c7e36ae33c861c9e8c75b1
-> > replaced  UTS_RELEASE with init_uts_ns.name.release
-> >
-> >
-> > So, is your uts_release a shorthand of init_uts_ns.name.release?
->
-> Yes - well that both are strings containing UTS_RELEASE. Using a struct
-> sub-member is bit ungainly, but I suppose that we should not be making
-> life easy for people using this.
->
-> However we already have init_utsname in:
->
-> static inline struct new_utsname *init_utsname(void)
-> {
->         return &init_uts_ns.name;
-> }
->
-> So could use init_utsname()->release, which is a bit nicer.
->
-> >
-> >
-> >
-> > I think what you can contribute are:
-> >
-> >   - Explore the UTS_RELEASE users, and check if you can get rid of it.
->
-> Unfortunately I expect resistance for this. I also expect places like FW
-> loader it is necessary. And when this is used in sysfs, people will say
-> that it is part of the ABI now.
->
-> How about I send the patch to update to use init_uts_ns and mention also
-> that it would be better to not use at all, if possible? I can cc you.
+> The call of synchronize_rcu() is because we are updating the current
+> active policy so we need to set the new policy as active.
 
-
-OK.
-
-
-As I mentioned in the previous reply, the replacement is safe
-for builtin code.
-
-When you touch modular code, please pay a little more care,
-because UTS_RELEASE and init_utsname()->release
-may differ when CONFIG_MODVERSIONS=3Dy.
-
-
-
-
-
-
-
->
-> >
-> >   - Where UTS_RELEASE is useful, consider if it is possible
-> >     to replace it with init_uts_ns.name.release
->
-> ok, but, as above, could use init_utsname()->release also
-
-
-I am fine with it.
-
-
-init_utsname()->release is more commonly used
-(but less common than UTS_RELEASE)
-
-
-
-$ git grep   'init_utsname()->release' | wc
-     28      92    2065
-$ git grep   'init_uts_ns.name.release' | wc
-      7      34     587
-$ git grep   'UTS_RELEASE' | wc
-     57     304    4741
-
-
-
+Unless I'm mistaken, a syncronize_rcu() call only ensures that the
+current task will see the updated value by waiting until all current
+RCU critical sections have finished.  Given the mutex involved here I
+don't believe this is necessary, but please correct me if I'm wrong.
 
 --=20
-Best Regards
-Masahiro Yamada
+paul-moore.com
 
