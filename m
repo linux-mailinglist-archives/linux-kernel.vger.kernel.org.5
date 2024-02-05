@@ -1,110 +1,173 @@
-Return-Path: <linux-kernel+bounces-52869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEE2A849DA0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:01:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9D7E849E95
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:40:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D62081C24C72
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:01:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87306288489
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:40:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D39052C684;
-	Mon,  5 Feb 2024 15:00:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E584A32C89;
+	Mon,  5 Feb 2024 15:39:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="oX3xciPi"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XSKqBAGJ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A9B42C19C;
-	Mon,  5 Feb 2024 15:00:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC0192E635;
+	Mon,  5 Feb 2024 15:39:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707145245; cv=none; b=aO3jz/nIX08tZo97WzCTLDougVfmPTE2CPVpLbxHRTVg9t2noH2qYHOxBKdsFQHLzpKrTo4ep5WQAQm9hJoccih+oV59DK7D1s0iTX5widpMIQ1+4LF/g7o+Nm+aH6YKJHa72Ua7wp+aeeoD0N6tNzEfEmbvbYB6cFHvJx+N0mA=
+	t=1707147577; cv=none; b=GlsZ3RzGHimavFg5EzmyFpA+XoZc/c29Vu8P+ZeHj3cTN6AcPOEpNEBwvVnFJXDvWQxZoGrG3O8v0NpczRgCJAZcs5m2IVW1bppjacMXPqoJHnPIb19v0xY7xdZmjP1iR0BDMA4lA34lB3+hbszKQAV69TE1PRnaAH/GZdhP20I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707145245; c=relaxed/simple;
-	bh=G/upHH50MlPuOxBBaB3xXpKK9F7lVAXSgZQ2cx/UUr0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZecgAJOh80lKflqo46M2Ul0twSxUjatNMRtea2dI1fPvceb0ciq2ldfvqzG5xuvreq4PVVpGG7CkymSTTfzcb6dnwx2mKc0skZ23/uDjJZ2qiwU+C/cHdwdlnlmXxob5YDPjk94lcf5alN3/whewdQ5BvYaQyj0TlMFhUqb+Fhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=oX3xciPi; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8545EFF814;
-	Mon,  5 Feb 2024 15:00:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707145241;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PEE4+JdfTjyn6YerADKkv+gio5Qai05SHvunF75uvZU=;
-	b=oX3xciPiOpgsx1o4tDNRxIBoA7dmBw3a39tOa1P386RMNRDh0M00hwbtZuiQQg6pZ/wtHS
-	HSgTnpDkxu/BejnrNyEVqNww/V2jr2k0ZJ1+hx3SYYdgB73/NdEeZBcHt3bjBPzZ6FlYMY
-	IjC2YdExejSDAcHawCwPefQ9a1DbrsbPuIAmum/7i00XyTJZWQZRw3hJ3Ly44jsone5EDw
-	QxORhCF4x1c0u6roUFaB8F4RX6oGu+FWBJmuS82JVdOIntjx8Phy7oZ70xXKLJnwd+vbY7
-	HHum87IPtjxZ9/EtxpZCe5nlAi0ygarL1gEABTngUxDw4/mTwf42W5KxSHnH1Q==
-Date: Mon, 5 Feb 2024 16:00:33 +0100
-From: Herve Codina <herve.codina@bootlin.com>
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: Vadim Fedorenko  <vadim.fedorenko@linux.dev>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
- <kuba@kernel.org>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, Andrew Lunn <andrew@lunn.ch>, Mark Brown
- <broonie@kernel.org>, Christophe Leroy <christophe.leroy@csgroup.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 5/6] net: wan: fsl_qmc_hdlc: Add runtime timeslots
- changes support
-Message-ID: <20240205160033.2c017f46@bootlin.com>
-In-Reply-To: <a8845eca2d9bab5d7805c19a16811820671c41f2.camel@redhat.com>
-References: <20240130084035.115086-1-herve.codina@bootlin.com>
-	<20240130084035.115086-6-herve.codina@bootlin.com>
-	<a8845eca2d9bab5d7805c19a16811820671c41f2.camel@redhat.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1707147577; c=relaxed/simple;
+	bh=Rv8CV7EZj9twbDgExrfO0rqgaNqI6EazAjEyAvqafJ0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Xh4EnYX4vxwkOzHcOCSa/3NPxB52LR2vDjF4Wl5GmTKP1mscvN1OPvJYzWqnoMhfYpmMj37ldO31sXnI5JBKSQfgshLw0+QgWcu0vYeTeFTyXrZwfqzhPI0MdZdrYdmc6sEFQohLEVoeQfrcNitw7E3oxoz5/9ad9wgfGwiSvVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XSKqBAGJ; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707147576; x=1738683576;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Rv8CV7EZj9twbDgExrfO0rqgaNqI6EazAjEyAvqafJ0=;
+  b=XSKqBAGJZV6zCROXf4SDEQcqsTtwpA4TTPxY7wz0KD+8uzebasq4Aj4o
+   oXxj2RXl/09ECfITYIvn9S3ONr6ilAHGzo2DgZoiK5ITnR77fkI69oqH/
+   zMor1LsRfhMykBfZLosG0M9Che+6asbvLInZEIj/T85hhnNwCjMbnuBDR
+   EHNrNQBUAwQsk330orzkM3I6iE93gR/+bFrv6BGc0v7oRILYrENq7KVLz
+   ne2tr3sTbapsBQkpgFZNTkh87yKnoGb37Llp/lWVFGVyFAuupXg5dOQIe
+   9Nz0whGdTbGjAoeo4BCIk5ayPm/RWk8rLjR8GOMPEkMRNDwnK6bphM1m2
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="17966630"
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="17966630"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 07:39:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="31830670"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 07:39:25 -0800
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+	by kekkonen.fi.intel.com (Postfix) with SMTP id B935D11FADC;
+	Mon,  5 Feb 2024 12:53:10 +0200 (EET)
+Date: Mon, 5 Feb 2024 10:53:10 +0000
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+To: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Ricardo Ribalda <ribalda@chromium.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Tiffany Lin <tiffany.lin@mediatek.com>,
+	Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+	Yunfei Dong <yunfei.dong@mediatek.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Kieran Bingham <kieran.bingham@ideasonboard.com>,
+	Bin Liu <bin.liu@mediatek.com>,
+	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+	Vikash Garodia <quic_vgarodia@quicinc.com>,
+	Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Andrzej Hajda <andrzej.hajda@intel.com>,
+	Bingbu Cao <bingbu.cao@intel.com>,
+	Tianshu Qiu <tian.shu.qiu@intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Kevin Hilman <khilman@baylibre.com>,
+	Jerome Brunet <jbrunet@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	linux-rockchip@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-samsung-soc@vger.kernel.org, linux-staging@lists.linux.dev,
+	linux-amlogic@lists.infradead.org,
+	Sakari Ailus <sakari.ailus@iki.fi>
+Subject: Re: [PATCH 17/17] linux: v4l2-vp9.h: Fix kerneldoc
+Message-ID: <ZcC-FjF5pJUKz9Ir@kekkonen.localdomain>
+References: <20240126-gix-mtk-warnings-v1-0-eed7865fce18@chromium.org>
+ <20240126-gix-mtk-warnings-v1-17-eed7865fce18@chromium.org>
+ <ZbTTb-SdK-EubGdc@valkosipuli.retiisi.eu>
+ <201ae1d1-1e03-40e2-9cc4-49df70abb8da@xs4all.nl>
+ <8f3bab1f-8697-40c0-91f2-de934b4b9ddb@infradead.org>
+ <e565f8bd-19d2-4574-8c6d-5573733a8185@xs4all.nl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e565f8bd-19d2-4574-8c6d-5573733a8185@xs4all.nl>
 
-Hi Paolo,
+Hi Hans,
 
-On Thu, 01 Feb 2024 13:01:51 +0100
-Paolo Abeni <pabeni@redhat.com> wrote:
-
-[...]
-> >  
-> > +static int qmc_hdlc_xlate_slot_map(struct qmc_hdlc *qmc_hdlc,
-> > +				   u32 slot_map, struct qmc_chan_ts_info *ts_info)
-> > +{
-> > +	DECLARE_BITMAP(ts_mask_avail, 64);
-> > +	DECLARE_BITMAP(ts_mask, 64);
-> > +	DECLARE_BITMAP(map, 64);
-> > +	u32 array32[2];
-> > +
-> > +	/* Tx and Rx available masks must be identical */
-> > +	if (ts_info->rx_ts_mask_avail != ts_info->tx_ts_mask_avail) {
-> > +		dev_err(qmc_hdlc->dev, "tx and rx available timeslots mismatch (0x%llx, 0x%llx)\n",
-> > +			ts_info->rx_ts_mask_avail, ts_info->tx_ts_mask_avail);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	bitmap_from_arr64(ts_mask_avail, &ts_info->rx_ts_mask_avail, 64);
-> > +	array32[0] = slot_map;
-> > +	array32[1] = 0;
-> > +	bitmap_from_arr32(map, array32, 64);  
+On Mon, Feb 05, 2024 at 11:44:13AM +0100, Hans Verkuil wrote:
+> On 05/02/2024 11:39, Randy Dunlap wrote:
+> > 
+> > 
+> > On 2/5/24 02:29, Hans Verkuil wrote:
+> >> On 27/01/2024 10:57, Sakari Ailus wrote:
+> >>> Hi Ricardo,
+> >>>
+> >>> On Fri, Jan 26, 2024 at 11:16:16PM +0000, Ricardo Ribalda wrote:
+> >>>> Kerneldoc cannot understand arrays defined like
+> >>>> v4l2_frame_symbol_counts.
+> >>>>
+> >>>> Adding an asterisk to the name does do the trick.
+> >>>>
+> >>>> Disable the kerneldoc notation for now, it is already ignored:
+> >>>> https://docs.kernel.org/search.html?q=v4l2_vp9_frame_symbol_counts
+> >>>
+> >>> Wouldn't it be nicer to fix kerneldoc instead? It might not be difficult at
+> >>> all.
+> >>>
+> >>> Feel free to, but I can also give it a try.
+> >>>
+> >>
+> >> It would be nice to have this fixed in kerneldoc itself. I'm holding this
+> >> patch back for two weeks to see if someone wants to work on kerneldoc.
+> >>
+> >> If not, then I'll take this anyway to fix the noise in our build.
+> >>
+> >> Note that while this header is indeed ignored in the documentation, that
+> >> is really more a bug and it would be nice to actually include this header
+> >> somewhere in our documentation. So fixing these kerneldoc warnings one way
+> >> or another is something that we should do.
+> >>
+> > 
+> > It's just waiting for Jon to apply it: (from Sakari)
+> > 
+> > https://lore.kernel.org/all/20240131084934.191226-1-sakari.ailus@linux.intel.com/
 > 
-> What about using bitmap_from_u64 everywhere ?
+> Ah, that patch was CCed to me but not to linux-media, and I only searched linux-media
+> for it so I missed it. Good news that this is fixed in the right place.
 
-Yes indeed.
-Will be updated in the next series iteration.
+My bad, somehow I missed linux-media from the distribution. :-(
 
-Thanks for this review.
-Best regards,
-Hervé
+> 
+> I marked this 17/17 patch as Obsoleted in patchwork.
+
+Thank you!
+
+-- 
+Regards,
+
+Sakari Ailus
 
