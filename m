@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-53852-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53855-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA30F84A74E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:27:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F99B84A759
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:28:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 666271F27757
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:27:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 199BD28F288
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:28:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42BD277657;
-	Mon,  5 Feb 2024 19:45:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 734167C081;
+	Mon,  5 Feb 2024 19:45:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="GdF5tHW4"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="IvTDUc1A"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA31174299;
-	Mon,  5 Feb 2024 19:45:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2A89745FA;
+	Mon,  5 Feb 2024 19:45:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707162309; cv=none; b=ZuxNgiVD9JBOkyXSm8C6PwTvyg+v90j5XywkjjpHlZNJpiP5RuM4H/u0Q3jnSxUL4S8T01oWoMGf0g+ZqO8ZJmhs8S3CjoNbeB0KbD27rSry5TcaQoe4qV+5Ski/1HsuxGrTAm/3H/7OOnu7pa8ESEWtkgJFpzWy/aQ/rqKe+3M=
+	t=1707162310; cv=none; b=D41G+XhDuawZSDVOHWQ03OOKaiA/oVnUMVYkMcqqAOCkRUTcBYeEVYJQQYmoLqlW9XwrfuUh/QhCgj/TzCNecotpdntTp0Of4TMrElNHUJZtRvxxz9Lfz7oE5mbv04nIchtXePqVpcV7gfGt5sqZtQg0lfQp5x5KfWbTy5FHQ2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707162309; c=relaxed/simple;
-	bh=uYeg52mDdc1d+Ytv8BgQ3wN198N/i0H+W5WTdHa6VeA=;
+	s=arc-20240116; t=1707162310; c=relaxed/simple;
+	bh=4I1vc+9qiFHbkF+qYQtdPfpYZxXqQl61oW4rBcSj/cM=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KgC5D1AX9+H/B9p4PaidGb3+vrzQ1yDjX3yfBrGPK9Lm61eFokS8n/AQVppkRHkLeI/AAcG+CezswVFznoygVG4PZJFDzvCvnR0EL40b1cZuXe7ot5WP9ndSEPGSNDDY6SMpYcva0A4F3M0hpszj7OEXTXexe+r9if3Sdz/e3m8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=GdF5tHW4; arc=none smtp.client-ip=198.47.23.249
+	 MIME-Version:Content-Type; b=bCCoKgp5oLYx2+c2UNZWkxLlO7hFHRoFF+P9CUGdC9oWGLHoQIah+MNc6dZcMNY2v1Sq7B9soyBl9l87Cla0FWRiNguothoWpZVE+/5pEZwD/gCePC18lBWcXhngT3j3O0OnNZpb4gcuywjwLBPDLElWW4AHf5CzY+rZGFOUHDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=IvTDUc1A; arc=none smtp.client-ip=198.47.23.248
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 415Jio4c101210;
-	Mon, 5 Feb 2024 13:44:50 -0600
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 415Jip8j016374;
+	Mon, 5 Feb 2024 13:44:51 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707162290;
-	bh=2C083AYY3Dbpmc6BgF2r63gVH+xSPvAPWXFMl2z3vuQ=;
+	s=ti-com-17Q1; t=1707162291;
+	bh=rjOs3HQelK8dD7ON+CKELNocYhGYtTpRb3RjtcpZp+M=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=GdF5tHW4vzndgKxEyXIeI8eLEW54cQWpCTP52/uyE3c97R3xx9IYCNHWFvivSJ+N0
-	 MH37hDvqVgS7bwgbvdOrxoNtlus6KLo4v76Fy1eIO2HeCoQ1YOh6L7oLcxAA449kl4
-	 0td0wfa8r3oakbSl9C1XYXrpobQbKABB21LhqjR0=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 415Jioca003534
+	b=IvTDUc1AcaZKT3LzhAh3725W3cPc+vgKIt6Ifl23KPLJZBfkVCuePHss9pFGG2aEP
+	 Mel/MjKplcGrtmDsN+u+TjEMF4dXq5OsRWYTqUOsvfT3ejwSx/k6izAxxfmZrr52cG
+	 08uO0v4issu64ydcSdipSD5o/DKjtN5rwZULp6FA=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 415JipiG090728
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 5 Feb 2024 13:44:50 -0600
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+	Mon, 5 Feb 2024 13:44:51 -0600
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 5
  Feb 2024 13:44:50 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
  Frontend Transport; Mon, 5 Feb 2024 13:44:50 -0600
 Received: from lelvsmtp5.itg.ti.com ([10.249.42.149])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 415JicQe028467;
-	Mon, 5 Feb 2024 13:44:49 -0600
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 415JicQf028467;
+	Mon, 5 Feb 2024 13:44:50 -0600
 From: Andrew Davis <afd@ti.com>
 To: Sebastian Reichel <sre@kernel.org>,
         Manivannan Sadhasivam
@@ -76,9 +76,9 @@ CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-actions@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>, Andrew Davis <afd@ti.com>
-Subject: [PATCH v2 17/19] power: reset: restart-poweroff: Use devm_register_sys_off_handler(POWER_OFF)
-Date: Mon, 5 Feb 2024 13:44:35 -0600
-Message-ID: <20240205194437.180802-18-afd@ti.com>
+Subject: [PATCH v2 18/19] power: reset: syscon-poweroff: Move device data into a struct
+Date: Mon, 5 Feb 2024 13:44:36 -0600
+Message-ID: <20240205194437.180802-19-afd@ti.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240205194437.180802-1-afd@ti.com>
 References: <20240205194437.180802-1-afd@ti.com>
@@ -92,64 +92,91 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Use device life-cycle managed register function to simplify probe and
-exit paths.
+Currently all these device data elements are top level global variables.
+Move these into a struct. This will be used in the next patch when
+the global variable usage is removed. Doing this in two steps makes
+the patches easier to read.
 
 Signed-off-by: Andrew Davis <afd@ti.com>
 ---
- drivers/power/reset/restart-poweroff.c | 25 ++++++++-----------------
- 1 file changed, 8 insertions(+), 17 deletions(-)
+ drivers/power/reset/syscon-poweroff.c | 36 +++++++++++++++------------
+ 1 file changed, 20 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/power/reset/restart-poweroff.c b/drivers/power/reset/restart-poweroff.c
-index f4d6004793d3a..fcd588f9ae9d3 100644
---- a/drivers/power/reset/restart-poweroff.c
-+++ b/drivers/power/reset/restart-poweroff.c
-@@ -14,29 +14,21 @@
- #include <linux/module.h>
- #include <linux/reboot.h>
+diff --git a/drivers/power/reset/syscon-poweroff.c b/drivers/power/reset/syscon-poweroff.c
+index 1b2ce7734260c..4899a019256e8 100644
+--- a/drivers/power/reset/syscon-poweroff.c
++++ b/drivers/power/reset/syscon-poweroff.c
+@@ -15,15 +15,19 @@
+ #include <linux/pm.h>
+ #include <linux/regmap.h>
  
--static void restart_poweroff_do_poweroff(void)
-+static int restart_poweroff_do_poweroff(struct sys_off_data *data)
+-static struct regmap *map;
+-static u32 offset;
+-static u32 value;
+-static u32 mask;
++struct syscon_poweroff_data {
++	struct regmap *map;
++	u32 offset;
++	u32 value;
++	u32 mask;
++};
++
++static struct syscon_poweroff_data *data;
+ 
+ static void syscon_poweroff(void)
  {
- 	reboot_mode = REBOOT_HARD;
- 	machine_restart(NULL);
-+	return NOTIFY_DONE;
- }
+ 	/* Issue the poweroff */
+-	regmap_update_bits(map, offset, mask, value);
++	regmap_update_bits(data->map, data->offset, data->mask, data->value);
  
- static int restart_poweroff_probe(struct platform_device *pdev)
- {
--	/* If a pm_power_off function has already been added, leave it alone */
--	if (pm_power_off != NULL) {
--		dev_err(&pdev->dev,
--			"pm_power_off function already registered");
--		return -EBUSY;
--	}
--
--	pm_power_off = &restart_poweroff_do_poweroff;
--	return 0;
--}
--
--static void restart_poweroff_remove(struct platform_device *pdev)
--{
--	if (pm_power_off == &restart_poweroff_do_poweroff)
--		pm_power_off = NULL;
-+	/* Set this handler to low priority to not override an existing handler */
-+	return devm_register_sys_off_handler(&pdev->dev,
-+					     SYS_OFF_MODE_POWER_OFF,
-+					     SYS_OFF_PRIO_LOW,
-+					     restart_poweroff_do_poweroff,
-+					     NULL);
- }
+ 	mdelay(1000);
  
- static const struct of_device_id of_restart_poweroff_match[] = {
-@@ -47,7 +39,6 @@ MODULE_DEVICE_TABLE(of, of_restart_poweroff_match);
+@@ -35,22 +39,22 @@ static int syscon_poweroff_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	int mask_err, value_err;
  
- static struct platform_driver restart_poweroff_driver = {
- 	.probe = restart_poweroff_probe,
--	.remove_new = restart_poweroff_remove,
- 	.driver = {
- 		.name = "poweroff-restart",
- 		.of_match_table = of_restart_poweroff_match,
+-	map = syscon_regmap_lookup_by_phandle(dev->of_node, "regmap");
+-	if (IS_ERR(map)) {
+-		map = syscon_node_to_regmap(dev->parent->of_node);
+-		if (IS_ERR(map)) {
++	data->map = syscon_regmap_lookup_by_phandle(dev->of_node, "regmap");
++	if (IS_ERR(data->map)) {
++		data->map = syscon_node_to_regmap(dev->parent->of_node);
++		if (IS_ERR(data->map)) {
+ 			dev_err(dev, "unable to get syscon");
+-			return PTR_ERR(map);
++			return PTR_ERR(data->map);
+ 		}
+ 	}
+ 
+-	if (of_property_read_u32(dev->of_node, "offset", &offset)) {
++	if (of_property_read_u32(dev->of_node, "offset", &data->offset)) {
+ 		dev_err(dev, "unable to read 'offset'");
+ 		return -EINVAL;
+ 	}
+ 
+-	value_err = of_property_read_u32(dev->of_node, "value", &value);
+-	mask_err = of_property_read_u32(dev->of_node, "mask", &mask);
++	value_err = of_property_read_u32(dev->of_node, "value", &data->value);
++	mask_err = of_property_read_u32(dev->of_node, "mask", &data->mask);
+ 	if (value_err && mask_err) {
+ 		dev_err(dev, "unable to read 'value' and 'mask'");
+ 		return -EINVAL;
+@@ -58,11 +62,11 @@ static int syscon_poweroff_probe(struct platform_device *pdev)
+ 
+ 	if (value_err) {
+ 		/* support old binding */
+-		value = mask;
+-		mask = 0xFFFFFFFF;
++		data->value = data->mask;
++		data->mask = 0xFFFFFFFF;
+ 	} else if (mask_err) {
+ 		/* support value without mask*/
+-		mask = 0xFFFFFFFF;
++		data->mask = 0xFFFFFFFF;
+ 	}
+ 
+ 	if (pm_power_off) {
 -- 
 2.39.2
 
