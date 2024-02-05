@@ -1,315 +1,190 @@
-Return-Path: <linux-kernel+bounces-53050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C897849FFE
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:55:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9103684A011
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:58:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FE4EB24E42
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:55:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6294A1C21BC5
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:58:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B72B03D392;
-	Mon,  5 Feb 2024 16:55:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33A453FE48;
+	Mon,  5 Feb 2024 16:58:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="bX03+r4Y"
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OqWKNt/P"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7D323FE3F;
-	Mon,  5 Feb 2024 16:55:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707152117; cv=none; b=sNStvrxGBBjM1aLMxG90OxOUDMZA+D8Vm7/Z5oIaOg7/GooISpmyCwUpHqjHnw5TMcoX9EFPOFQTnuV5+NlqiuXHNhH/fKTxfEgPwTG0Zj77hrFoc3FZpJW3JZ3cVTCyOPSbABmJ/UgchW0Vba9jkdViYcmbHmwR8O5+I84hI98=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707152117; c=relaxed/simple;
-	bh=5qZXuupoFKUYVo8agP1h9S4qQ94D3Y2AcpLKcOkyjgo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Xmi2ofeC1tARMyDT3lUP5x7zrmgW8+FouReqcy6OE4alZi1adAOy+KaxruGQ0L8QPHPyr1vhzbnyyCaa+gD6BiFLpcdr47nclafNxTvSzpLepcO1c0GtNK/lT60imUgpIE8e9DtoEdbuMn14HsN4F9RI3ip03D+nMQQYPJfpvxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=bX03+r4Y; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1707152104;
-	bh=5qZXuupoFKUYVo8agP1h9S4qQ94D3Y2AcpLKcOkyjgo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=bX03+r4YYyhXn3EBekXNvG+e/IwreI0XjxsB2c/D3YHNexWE1rXBW/9rxe04wNE8r
-	 RyvJi2VXchG1cMYwHilqXwJQvbdckvbJJiFPwM/BM95DGMJSsZ7W6G0FXJtfSNycKF
-	 EF+7B1egyIUaDdxEkvAeH1lpoQqBWy3Ftcy8fsEvwhM4jUdygd63nzJaPtFbzAoE2M
-	 hvMV66eyd5B5Tw99rlld5QpCciCGMbQQLR5XoZc3JFdU9QoVWmxIgpAVT8GJVZKt6E
-	 NSb4CHhTDQLi3XTNFe/AubThDwo/7zWWQ0NK1rd2G7lNU+6w070XBR2MuWvtaXvlq1
-	 tVOnLzTR1036g==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TTCD82rwmzXck;
-	Mon,  5 Feb 2024 11:55:04 -0500 (EST)
-Message-ID: <3c16bee0-70b7-420f-a085-c9e09e293fe2@efficios.com>
-Date: Mon, 5 Feb 2024 11:55:08 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B82573FE44;
+	Mon,  5 Feb 2024 16:58:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.14
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707152294; cv=fail; b=Cj/q/0vGmEGO52Ake9RULOnogNYV1+9GVt2hEdZ9bu7IMPLn0gNHLr5FpTq5ekX6PR28rsr703gWkC5Gtl1VROu8g1YDe6cGtzjWL14Hz77+4DFhi70vOEFCQJXxhQzOn5LjLLoSiR6XI3POnOL2+LGx3DkAp7s0K9SnAzUrtsA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707152294; c=relaxed/simple;
+	bh=gMUmXKhdgRMe4Ty9H6k7kBM3LeDWyMNFUPPWsGy5yjY=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=SP9hMb7Ds6ByxTeVjon5/jiP40aAmOQLT2vvmdNOVnu5tYMre2AzVCvNlHZppUxhC3bn4+sQ61C1ZcOFG2LxTg/3vUYMXc4RQV9iVXeviHyBXOI/zy79pIfUXuu/ZWdGdXH+Iev2R+CYGzcWAqKzDTmNMEslC+p/oY2Q5t6Rbd0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OqWKNt/P; arc=fail smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707152292; x=1738688292;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=gMUmXKhdgRMe4Ty9H6k7kBM3LeDWyMNFUPPWsGy5yjY=;
+  b=OqWKNt/PYF1+u4OLOfpeMVp76xDuCK8Mp/BkUD/7qho7y+ySAMvMhYxJ
+   yW5ktcf+wchZCPLAld2L6eqo/vjiBk09TPOuiFDiDojlElPOjSwZ1BOGz
+   uEGKsP3V3wnMMCLsGfUekcp1HRlPzCfS6oFUR6SCV7Cf2DCPaYoZ8DwgQ
+   izDmESa5lNRZcxVHavN5OwMf0AnT6GiYRohmMLG5KL3+ZcjxD7/lXA6QC
+   /sXtTI2M8ud0UAPODcYF034k7xkRv8v6z6n/tGI148wkelljFoLJidNoi
+   C0imOHQOxyGga1XGKlfLtz7fDZjQ21MHvC/T8wDPGVm3fapqREoRjS5lC
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="4377474"
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="4377474"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 08:58:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="24008763"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Feb 2024 08:58:09 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 5 Feb 2024 08:58:08 -0800
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 5 Feb 2024 08:58:08 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 5 Feb 2024 08:58:08 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 5 Feb 2024 08:58:08 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=E8TQwEtiFkEpl9lbSnE8EdcUUMpwCmARbKtXKd2dWnB7lB+iwlIYobLdtlaRUbgUSVu9LAG9+v/eiFzRbJbzTHuVhvKII0g4Lwhu8LEe+EoH5xs5oB0wDFauK5tHf6bhfW0009p6KlNctpNXpU6f69yn6ECe0E9gCZuOGbt1jtJgEphNgIc337h7WSYXlarHStVolr5Ug7Q7Mtby05vOHjo/yJMVVh9czMNK2/puUVjtF4Bux3HnrCAA44tKbDj5V6qSRqnH9puCdimjXts+MiSVN/EBWMeEgTZdDK9inwA+j6C8lBgXlEylWSMyQ2vinVMkj+HvJcl06HHEz+Miwg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gU8e2uU+3m6old9RqvfIAJMHjSXBHun24GFtvJwKkpw=;
+ b=UejXiUMMtYWznAzLtqLGvUnDvJX4sYp3o2ieOnwID7evJUyXklxquoM3oQKou1Y7OfMKKnW0+T4n0h3r2OeyT3vkrWCNqZMNdSUVAeQGsKfe2vBdV5SxNtK1SBIVm8b/qV7JF8yiVr0/QGZmehCUN1XZPRN7IolLUV02L8fUqMTmCEnQU/6kHDZDHCAj97kICDTWdMrkFoLvRQCSZJeUxBE6Y+jTUnXSyxxgYLe7pOJtWzQMQeWUZrBk7jlIOidLBCAsRXSwQbiW5Hv+20dAXELE2T0zOC2l2U7Xcbuh7gC6yresv84gmIPuuOwmphrzENrUmG+/dK6JoZD/jkw18w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com (2603:10b6:8:1b9::20)
+ by CY8PR11MB7747.namprd11.prod.outlook.com (2603:10b6:930:91::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36; Mon, 5 Feb
+ 2024 16:58:05 +0000
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::8760:b5ec:92af:7769]) by DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::8760:b5ec:92af:7769%6]) with mapi id 15.20.7249.032; Mon, 5 Feb 2024
+ 16:58:05 +0000
+Message-ID: <5228a235-69f4-4a9b-8142-96d9b4a5a1c8@intel.com>
+Date: Mon, 5 Feb 2024 17:57:58 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 0/4] UIO_MEM_DMA_COHERENT for cnic/bnx2/bnx2x
+To: Chris Leech <cleech@redhat.com>
+CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Nilesh Javali
+	<njavali@marvell.com>, Christoph Hellwig <hch@lst.de>, John Meneghini
+	<jmeneghi@redhat.com>, Lee Duncan <lduncan@suse.com>, Mike Christie
+	<michael.christie@oracle.com>, Hannes Reinecke <hare@kernel.org>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-scsi@vger.kernel.org>, <GR-QLogic-Storage-Upstream@marvell.com>
+References: <20240201233400.3394996-1-cleech@redhat.com>
+Content-Language: en-US
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+In-Reply-To: <20240201233400.3394996-1-cleech@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: VI1PR07CA0235.eurprd07.prod.outlook.com
+ (2603:10a6:802:58::38) To DS0PR11MB8718.namprd11.prod.outlook.com
+ (2603:10b6:8:1b9::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v14 4/6] tracing: Allow user-space mapping of the
- ring-buffer
-To: Vincent Donnefort <vdonnefort@google.com>, rostedt@goodmis.org,
- mhiramat@kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Cc: kernel-team@android.com
-References: <20240205163410.2296552-1-vdonnefort@google.com>
- <20240205163410.2296552-5-vdonnefort@google.com>
-Content-Language: en-US
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20240205163410.2296552-5-vdonnefort@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR11MB8718:EE_|CY8PR11MB7747:EE_
+X-MS-Office365-Filtering-Correlation-Id: 078163d4-399f-4508-0dd0-08dc266b9f43
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CZgjcaHUeSz6oYP9mI9txAPkG9ss8QIIj6cXG2s/QjbnTEHn1FqNqB6o2cNpKio4aYdXssC6RAAOlt4fULj5cvGgR1MXffoxIcoB9ghcWG4YlXOrxvGNO/tDDLdqqzT6CeAr2HT0fa9JDMrk5V2TuGHWJXXaTLk5ij41h2LBO0Y/EsVs+hKSSEz+3H6XyqTTRGv0pMISdRPb22LznmK0iY6N6JU1DmWMx9yaDLvW5WFOw9Qi47lDebzXNRrMCiLqzzXguTxnF3NulkeJj7gEfg1pTrD6foUmIrH+6VKxiRb1b9zx0QSAoLEleYghlJrFItXWqSWCpCgwglQZbOpEsKIs+cItS+hPV+NsPlyUn3SPEnJ/JyLTW4tQEhdrdO6YGBnw1iv3SSoHiX6fi3fjrivF3jac3siH5FJS6ZE56pvMb0mNmpp709GXoEVKr+UN/z+wLeUl4kSOFpPHQiouRHQMZkeIEGaZ2wB2W4NEsCYt+5l9BRzJsoxEuo42JsfbymdgMTz/2IKZvzjR37yzMy+LU9ecWpeZzVSD+lYn5MWO2LIsow+JNOhUXBXM78tvENZH12UTrMypDqfYU3oe7WW0rrp/k/1nuJIyFV4n1ZZzX4lFOEcttGhG3wxW1U0KsnVeTlJ2CvuiP/Y0GwsK9Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB8718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(376002)(396003)(366004)(136003)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(41300700001)(7416002)(54906003)(66556008)(6916009)(66476007)(66946007)(36756003)(316002)(2906002)(5660300002)(4744005)(4326008)(8676002)(8936002)(82960400001)(31686004)(38100700002)(6506007)(6666004)(6512007)(478600001)(6486002)(2616005)(26005)(86362001)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aVF1RGxXYnBFY0dySTlRMVcyWnp4Y1p4VG1qdFY2UUlvbFBjV0FtNTMzNWE4?=
+ =?utf-8?B?Sk1qN0xnN2YrR2E5dStQVlF2N0Q5bDF6Tk5yNVBQMVNZMlhkMnRHNTlFaFJo?=
+ =?utf-8?B?dVpjZGIwRVRwZXFVTkduZHRIVDNjdVNlSDdaWitlaGszRzQ1SkJCRVBkT3hJ?=
+ =?utf-8?B?L3FmWnpLbkIrTHA1NGh1czRQU2VoN0VRc2pJODZtY2pYSzAzVkloWkJPOXE4?=
+ =?utf-8?B?NWk4ZlFFaEpOdThtR3ptRitHL3N0blh5WU9QYzlMVEFqL0tvVEZCR2ZKeHpV?=
+ =?utf-8?B?TEJmYkZMeFNrK0NBS3JSemI2cUhJck04QWhOSkZHYzFmZnpYVlpWc0dkOEg4?=
+ =?utf-8?B?U25jeGRHMmY0VGsvTW1qUGZtV2RLMGdEY1JGT1Z3SVZJOElBVXlFLzRtWTdY?=
+ =?utf-8?B?R3lRKzFqQktYUWxveGk2bWFEUE1yVnh1YWpMeWpyRURFNU0rZHlSMnp0cjFa?=
+ =?utf-8?B?NFdOcUh6MU1LTUZKcVpxV1dWRCtUd3RJd0k1d21qZFVwakwxNW82Q2VVNmE2?=
+ =?utf-8?B?MTRuaE84VWJwbG9OK0hWVU14Y2pYbitTQmp1dHVWVzV2bjJDVFlOU2hrWk5l?=
+ =?utf-8?B?ME5yVnRoZk4yRHZYeDB2MzdBUENRMGtlOXFEZFRka2N3QW1CK0Q3M0FHaDUw?=
+ =?utf-8?B?dDlnSVhzYkVBZmsxaUN1ZHlDZUlZTHBMcVdackwvTlZLYWg3Z1JUbG1CYmE2?=
+ =?utf-8?B?NThLWHZpQWM4S1JSM0RwRmlKZ2FidXJHS0VtcEpFNkt6QURNSS9KdzY1M1Vp?=
+ =?utf-8?B?VlkyUlZuS01sTFpHa1ZKVldBcVNBcmJkZktXbmxkY1BuQ3V6eXhpUmszZ05C?=
+ =?utf-8?B?M21PRHBKTC9BanpoUmNoOGkxNTJUMWhPQ01lcHZRTDRJWUhBZjVFdGQzUGxs?=
+ =?utf-8?B?aENVaU9DbFdxT2ZJdTJ2Z2poUDliVUlnTFpOdE10TzFqcnAxTGpjb1lNNVlG?=
+ =?utf-8?B?SW05d1BmY0tvWG5iMFE2WDJkdnRWNWhDRVp6OE9RREpiaUZ4WGNGYks4Z3F6?=
+ =?utf-8?B?QTNCOVczNkNyMGlqaTVCMm1vUytUQjVSRHMxRHB5ZGZmbUdUTDIyRmNMOVU4?=
+ =?utf-8?B?T1RHc1lCZ2dsV0dYRCt5aGczRzIwQm81RFNnU1BneThwZFp5dm40TndsTTJx?=
+ =?utf-8?B?d3g2dXgxVmJWaWpia1hwV1ZwdGxSbDR2MTFKTUZsUStIZTFKTGtIZjJkYVFn?=
+ =?utf-8?B?bUVFV2EyMTNNbkJWK3B3OVlkd08xWEp6TkkrZk1majYrRkNBWFJQbloxcEpH?=
+ =?utf-8?B?MFBWazk5VytPZ1JRY2hMS0RTeGcwUkVOUnNtdHR2MktoUVNubGkzRFN2Wnp1?=
+ =?utf-8?B?LzdyUGNTTU5SL1d0YlVuam0rUEFtRWRHc3dqVGRFampBMnQxNG1CMHFtNkE5?=
+ =?utf-8?B?aG5tWkVyTXg5ZXdUNUxBbDRTdGtFZTU1dlc2VW1yOU4rOEJsWnRHNElKYk40?=
+ =?utf-8?B?YkE3TkFvR05FeTVWUEZ3eGtZQVhIVVNyTFRJaCtFanp6endtNW5wbUVRR04y?=
+ =?utf-8?B?SEpmVzFQcC8vMjU1UWxhSGFESldCcFRSc01QaE9rbm5IS21KMyt5YzYyb0Zs?=
+ =?utf-8?B?bVJ0MVZvSU1UUlp0ZnVUZWFaK3U0RVdxSE11amEyaHdkN3J0WWIzVlhZTFhE?=
+ =?utf-8?B?VENEeXA3N1d6S2NKNk5NOVo3Tk9NQ3lLZkxKQXdLNmFWRlhORkJLalFkVHly?=
+ =?utf-8?B?akY1Vk5USDY4QWI4K0RwZEQ5WFlpVXg4eldKc2ZSYnJMSG9Oc21BUnY1ekdR?=
+ =?utf-8?B?cXBUQnFjd2drcUd3RlgydGkxYkdWbGZDdTRxWUdNV1R5NzRWT2dpVFVDNEl1?=
+ =?utf-8?B?RHNSaTlBWG4xZzFacDBGYUN2OHFWT0J3YmtqSU1oQ2lQVUZnMklsUzJibFEy?=
+ =?utf-8?B?WU9FazlMSFAzOGtGT0MrMVB5UzdkUGtFcnlHbU50MmhQNXVKT3RHMmlyZ3FN?=
+ =?utf-8?B?QndTWWg1ZGl2M3NhVW1CQmdoUVZaMzd1dGJ0R2dRY2krdzVUU1c4TlBiTXNG?=
+ =?utf-8?B?QTQyNEszK2hxcnpIRWxKUlpIVWhrTnpkMXI0cW1QN1pidXNlcGltU3p0OHha?=
+ =?utf-8?B?QmRvbGVTY2hsTUwyVUMxLy92Tm5VNThONzdhRGZOa1p4WUVrcFlpZzNXVHpG?=
+ =?utf-8?B?ZHd4Vlc0clg1TXNQZGtDY2F4QjBtUk1UR0VJVHZGRGdYR3RMSzFnTFlFUDBa?=
+ =?utf-8?B?R1E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 078163d4-399f-4508-0dd0-08dc266b9f43
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB8718.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2024 16:58:05.7402
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4YXZxksQjlMAZikh5Inbw8CrG1L0y04fwVq+Tc956cNaFEo8IwU38RIfEZw4fr0oiLmZanynLCenhYvH1NgYzhE8GpBeZfK7dYvaD4tcTiQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7747
+X-OriginatorOrg: intel.com
 
-On 2024-02-05 11:34, Vincent Donnefort wrote:
-> Currently, user-space extracts data from the ring-buffer via splice,
-> which is handy for storage or network sharing. However, due to splice
-> limitations, it is imposible to do real-time analysis without a copy.
-> 
-> A solution for that problem is to let the user-space map the ring-buffer
-> directly.
-> 
-> The mapping is exposed via the per-CPU file trace_pipe_raw. The first
-> element of the mapping is the meta-page. It is followed by each
-> subbuffer constituting the ring-buffer, ordered by their unique page ID:
-> 
->    * Meta-page -- include/uapi/linux/trace_mmap.h for a description
->    * Subbuf ID 0
->    * Subbuf ID 1
->       ...
-> 
-> It is therefore easy to translate a subbuf ID into an offset in the
-> mapping:
-> 
->    reader_id = meta->reader->id;
->    reader_offset = meta->meta_page_size + reader_id * meta->subbuf_size;
-> 
-> When new data is available, the mapper must call a newly introduced ioctl:
-> TRACE_MMAP_IOCTL_GET_READER. This will update the Meta-page reader ID to
-> point to the next reader containing unread data.
-> 
-> Mapping will prevent snapshot and buffer size modifications.
+From: Chris Leech <cleech@redhat.com>
+Date: Thu,  1 Feb 2024 15:33:56 -0800
 
-How are the kernel linear mapping and the userspace mapping made coherent
-on architectures with virtually aliasing data caches ?
+> During bnx2i iSCSI testing we ran into page refcounting issues in the
+> uio mmaps exported from cnic to the iscsiuio process, and bisected back
+> to the removal of the __GFP_COMP flag from dma_alloc_coherent calls.
 
-Ref. https://lore.kernel.org/lkml/20240202210019.88022-1-mathieu.desnoyers@efficios.com/T/#t
+IIRC Jakub mentioned some time ago that he doesn't want to see
+third-party userspace <-> kernel space communication in the networking
+drivers, to me this looks exactly like that :z
 
 Thanks,
-
-Mathieu
-
-> 
-> Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
-> 
-> diff --git a/include/uapi/linux/trace_mmap.h b/include/uapi/linux/trace_mmap.h
-> index 182e05a3004a..7330249257e7 100644
-> --- a/include/uapi/linux/trace_mmap.h
-> +++ b/include/uapi/linux/trace_mmap.h
-> @@ -43,4 +43,6 @@ struct trace_buffer_meta {
->   	__u64	Reserved2;
->   };
->   
-> +#define TRACE_MMAP_IOCTL_GET_READER		_IO('T', 0x1)
-> +
->   #endif /* _TRACE_MMAP_H_ */
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 4ebf4d0bd14c..36b62cf2fb3f 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -1175,6 +1175,12 @@ static void tracing_snapshot_instance_cond(struct trace_array *tr,
->   		return;
->   	}
->   
-> +	if (tr->mapped) {
-> +		trace_array_puts(tr, "*** BUFFER MEMORY MAPPED ***\n");
-> +		trace_array_puts(tr, "*** Can not use snapshot (sorry) ***\n");
-> +		return;
-> +	}
-> +
->   	local_irq_save(flags);
->   	update_max_tr(tr, current, smp_processor_id(), cond_data);
->   	local_irq_restore(flags);
-> @@ -1307,7 +1313,7 @@ static int tracing_arm_snapshot_locked(struct trace_array *tr)
->   	lockdep_assert_held(&trace_types_lock);
->   
->   	spin_lock(&tr->snapshot_trigger_lock);
-> -	if (tr->snapshot == UINT_MAX) {
-> +	if (tr->snapshot == UINT_MAX || tr->mapped) {
->   		spin_unlock(&tr->snapshot_trigger_lock);
->   		return -EBUSY;
->   	}
-> @@ -6533,7 +6539,7 @@ static void tracing_set_nop(struct trace_array *tr)
->   {
->   	if (tr->current_trace == &nop_trace)
->   		return;
-> -	
-> +
->   	tr->current_trace->enabled--;
->   
->   	if (tr->current_trace->reset)
-> @@ -8652,15 +8658,31 @@ tracing_buffers_splice_read(struct file *file, loff_t *ppos,
->   	return ret;
->   }
->   
-> -/* An ioctl call with cmd 0 to the ring buffer file will wake up all waiters */
->   static long tracing_buffers_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
->   {
->   	struct ftrace_buffer_info *info = file->private_data;
->   	struct trace_iterator *iter = &info->iter;
-> +	int err;
-> +
-> +	if (cmd == TRACE_MMAP_IOCTL_GET_READER) {
-> +		if (!(file->f_flags & O_NONBLOCK)) {
-> +			err = ring_buffer_wait(iter->array_buffer->buffer,
-> +					       iter->cpu_file,
-> +					       iter->tr->buffer_percent);
-> +			if (err)
-> +				return err;
-> +		}
->   
-> -	if (cmd)
-> -		return -ENOIOCTLCMD;
-> +		return ring_buffer_map_get_reader(iter->array_buffer->buffer,
-> +						  iter->cpu_file);
-> +	} else if (cmd) {
-> +		return -ENOTTY;
-> +	}
->   
-> +	/*
-> +	 * An ioctl call with cmd 0 to the ring buffer file will wake up all
-> +	 * waiters
-> +	 */
->   	mutex_lock(&trace_types_lock);
->   
->   	iter->wait_index++;
-> @@ -8673,6 +8695,97 @@ static long tracing_buffers_ioctl(struct file *file, unsigned int cmd, unsigned
->   	return 0;
->   }
->   
-> +static vm_fault_t tracing_buffers_mmap_fault(struct vm_fault *vmf)
-> +{
-> +	struct ftrace_buffer_info *info = vmf->vma->vm_file->private_data;
-> +	struct trace_iterator *iter = &info->iter;
-> +	vm_fault_t ret = VM_FAULT_SIGBUS;
-> +	struct page *page;
-> +
-> +	page = ring_buffer_map_fault(iter->array_buffer->buffer, iter->cpu_file,
-> +				     vmf->pgoff);
-> +	if (!page)
-> +		return ret;
-> +
-> +	get_page(page);
-> +	vmf->page = page;
-> +	vmf->page->mapping = vmf->vma->vm_file->f_mapping;
-> +	vmf->page->index = vmf->pgoff;
-> +
-> +	return 0;
-> +}
-> +
-> +static void tracing_buffers_mmap_close(struct vm_area_struct *vma)
-> +{
-> +	struct ftrace_buffer_info *info = vma->vm_file->private_data;
-> +	struct trace_iterator *iter = &info->iter;
-> +	struct trace_array *tr = iter->tr;
-> +
-> +	ring_buffer_unmap(iter->array_buffer->buffer, iter->cpu_file);
-> +
-> +#ifdef CONFIG_TRACER_MAX_TRACE
-> +	spin_lock(&tr->snapshot_trigger_lock);
-> +	if (!WARN_ON(!tr->mapped))
-> +		tr->mapped--;
-> +	spin_unlock(&tr->snapshot_trigger_lock);
-> +#endif
-> +}
-> +
-> +static void tracing_buffers_mmap_open(struct vm_area_struct *vma)
-> +{
-> +	struct ftrace_buffer_info *info = vma->vm_file->private_data;
-> +	struct trace_iterator *iter = &info->iter;
-> +
-> +	WARN_ON(ring_buffer_map(iter->array_buffer->buffer, iter->cpu_file));
-> +}
-> +
-> +static const struct vm_operations_struct tracing_buffers_vmops = {
-> +	.open		= tracing_buffers_mmap_open,
-> +	.close		= tracing_buffers_mmap_close,
-> +	.fault		= tracing_buffers_mmap_fault,
-> +};
-> +
-> +static int tracing_buffers_mmap(struct file *filp, struct vm_area_struct *vma)
-> +{
-> +	struct ftrace_buffer_info *info = filp->private_data;
-> +	struct trace_iterator *iter = &info->iter;
-> +	struct trace_array *tr = iter->tr;
-> +	int ret = 0;
-> +
-> +	if (vma->vm_flags & VM_WRITE)
-> +		return -EPERM;
-> +
-> +	vm_flags_mod(vma, VM_DONTCOPY | VM_DONTDUMP, VM_MAYWRITE);
-> +	vma->vm_ops = &tracing_buffers_vmops;
-> +
-> +#ifdef CONFIG_TRACER_MAX_TRACE
-> +	/*
-> +	 * We hold mmap_lock here. lockdep would be unhappy if we would now take
-> +	 * trace_types_lock. Instead use the specific snapshot_trigger_lock.
-> +	 */
-> +	spin_lock(&tr->snapshot_trigger_lock);
-> +	if (tr->snapshot || tr->mapped == UINT_MAX) {
-> +		spin_unlock(&tr->snapshot_trigger_lock);
-> +		return -EBUSY;
-> +	}
-> +	tr->mapped++;
-> +	spin_unlock(&tr->snapshot_trigger_lock);
-> +
-> +	/* Wait for update_max_tr() to observe iter->tr->mapped */
-> +	if (tr->mapped == 1)
-> +		synchronize_rcu();
-> +#endif
-> +	ret = ring_buffer_map(iter->array_buffer->buffer, iter->cpu_file);
-> +#ifdef CONFIG_TRACER_MAX_TRACE
-> +	if (ret) {
-> +		spin_lock(&tr->snapshot_trigger_lock);
-> +		iter->tr->mapped--;
-> +		spin_unlock(&tr->snapshot_trigger_lock);
-> +	}
-> +#endif
-> +	return ret;
-> +}
-> +
->   static const struct file_operations tracing_buffers_fops = {
->   	.open		= tracing_buffers_open,
->   	.read		= tracing_buffers_read,
-> @@ -8681,6 +8794,7 @@ static const struct file_operations tracing_buffers_fops = {
->   	.splice_read	= tracing_buffers_splice_read,
->   	.unlocked_ioctl = tracing_buffers_ioctl,
->   	.llseek		= no_llseek,
-> +	.mmap		= tracing_buffers_mmap,
->   };
->   
->   static ssize_t
-> diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-> index bd312e9afe25..8a96e7a89e6b 100644
-> --- a/kernel/trace/trace.h
-> +++ b/kernel/trace/trace.h
-> @@ -336,6 +336,7 @@ struct trace_array {
->   	bool			allocated_snapshot;
->   	spinlock_t		snapshot_trigger_lock;
->   	unsigned int		snapshot;
-> +	unsigned int		mapped;
->   	unsigned long		max_latency;
->   #ifdef CONFIG_FSNOTIFY
->   	struct dentry		*d_max_latency;
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+Olek
 
