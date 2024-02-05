@@ -1,50 +1,51 @@
-Return-Path: <linux-kernel+bounces-53287-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53293-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D971584A311
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 20:07:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B8B984A31B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 20:08:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64641B28516
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:07:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CFC91C24858
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:08:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 316FE51C3E;
-	Mon,  5 Feb 2024 19:02:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E16D55775;
+	Mon,  5 Feb 2024 19:03:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Eq7diD2X"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="0b0OeZuj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 703D550A7E
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 19:02:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C42D53E11;
+	Mon,  5 Feb 2024 19:03:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707159777; cv=none; b=n+hVtPbhhej0E4rlCFFffwECkxRH3Tl8awo1vAibWkS7wfQJEJGI+R3ZXev+TlYC7YY4lCHllFs55uTCs9WyK0M4f2WALGqxhb4yhoN7g6Ynhj0ULfAApCP1vKZljr1Nz8IXM7sLjR5jH2gD2KzPaT6S/q9TUnJKb+qHpYjvj8k=
+	t=1707159780; cv=none; b=RE+cf66iv6ypki5ryUIcXn8rJC3nAG5BDCrtTaE7ZXs6O+Kaht9WGnIgsedD0G613Sc6pZFcLjJPbifFC+mIOrt71aB71dC46MKM+M72sRVMlxN9Ido4GuL/EBqJ6uqRKSKMjiFjOXfv4zujxHuD+o06dNaJ3CoAeQ5BLFPdjN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707159777; c=relaxed/simple;
-	bh=GVKi1NLjhuwl9NmLvmjqEi6i5Z0SknV8fkWJ8W0RoMg=;
+	s=arc-20240116; t=1707159780; c=relaxed/simple;
+	bh=G6nL+TpgdXW2ESXHKmN0991j/T+6gE1AmmqfjsDN1V4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZLsQsbNAhmUKb51+ELcer62aUEJXk+1e0/W9YXfiOti/WB6X+l5qA1s/8LorYcyHjyqClZh66yZ8QwnJnp7iC915UlTFGiJS7bjzIlkXmZ+LiUDY6Z6/nHKjNsYCQhRIi7p57yyir9UEvTBnSLAUlfDl5aXfUlPfFcwEaxCw0MI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Eq7diD2X; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94C9CC433F1;
-	Mon,  5 Feb 2024 19:02:56 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=i4g2jWYU6+W3AEE/ojW7wPE2tjXjUvQ937YAAFVLrHm2IclOqg0F41M23BHUZ2sWEiQTJ6bncitv7n/QicOOR+LRWbEdyIN8QN3xjqbrQkesNGgSEGnDjY5wbSBJRO7YpMLGBO6FfM1VO/R4938Xx0STPe24IyOWGxwTyp7pIFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=0b0OeZuj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C32C9C433C7;
+	Mon,  5 Feb 2024 19:02:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1707159776;
-	bh=GVKi1NLjhuwl9NmLvmjqEi6i5Z0SknV8fkWJ8W0RoMg=;
+	s=korg; t=1707159780;
+	bh=G6nL+TpgdXW2ESXHKmN0991j/T+6gE1AmmqfjsDN1V4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Eq7diD2XdWPelGn/ThmC18KYxjJh6g+gQDTsX7WsF0N7Ctq7Dk7mLe4K3sXVzwiVr
-	 oxEtxuRVjiqoqh+KpdSGulPZfdfqQF+zztZpRyLv74FjKR8XY14yxNIswdEEDyFdcY
-	 N1hRj1YNbZlgt3nvQBOeGmeYExJLmtpO3vtGpElc=
-Date: Mon, 5 Feb 2024 04:46:08 -0800
+	b=0b0OeZujimCh+VIY8aISeUjxx9m8S+pyGSKH3wkqWHfh/DKO7xqyVk/aEApg1OdkV
+	 3FGzZjrV5vVkxxZQSaMYbIJlyYIjZmSRFAjIj8kC1bDe7hDRHVKQ1lCK2e6NDG6jhJ
+	 KfDuQjV7LQcPQRy8i9f9H8kffVi8co4Srja9YZkk=
+Date: Mon, 5 Feb 2024 04:46:21 -0800
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] w1: make w1_bus_type const
-Message-ID: <2024020502-liver-wrench-2e45@gregkh>
-References: <20240204-bus_cleanup-w1-v1-1-a0f4c84d7db3@marliere.net>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] virtio: make virtio_bus const
+Message-ID: <2024020512-landlord-manhunt-25b2@gregkh>
+References: <20240204-bus_cleanup-virtio-v1-1-3bcb2212aaa0@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,19 +54,16 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240204-bus_cleanup-w1-v1-1-a0f4c84d7db3@marliere.net>
+In-Reply-To: <20240204-bus_cleanup-virtio-v1-1-3bcb2212aaa0@marliere.net>
 
-On Sun, Feb 04, 2024 at 05:55:22PM -0300, Ricardo B. Marliere wrote:
+On Sun, Feb 04, 2024 at 05:52:51PM -0300, Ricardo B. Marliere wrote:
 > Now that the driver core can properly handle constant struct bus_type,
-> move the w1_bus_type variable to be a constant structure as well,
+> move the virtio_bus variable to be a constant structure as well,
 > placing it into read-only memory which can not be modified at runtime.
 > 
 > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-> ---
->  drivers/w1/w1.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
