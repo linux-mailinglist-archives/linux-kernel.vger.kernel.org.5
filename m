@@ -1,168 +1,147 @@
-Return-Path: <linux-kernel+bounces-52688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52690-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 616E9849B6E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:10:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAB89849B74
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:11:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85F231C21A18
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:10:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 726061F23C70
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:11:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C6CF1CAA4;
-	Mon,  5 Feb 2024 13:10:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A1F61CD0B;
+	Mon,  5 Feb 2024 13:11:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U59F6zh9"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bBdQmjDS"
+Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E26981C6B2;
-	Mon,  5 Feb 2024 13:10:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00AD422EF0
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 13:11:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707138642; cv=none; b=U5/aXwo5s3piWu8lG3SGCooFtPnrPTsIC0nZRVd1TD1eCGTH8z9wrMefothAikxsvJ1h5hNVPp2E3OPncczc/XarKA99HNiUs2pQVRjJwmT/QIHry5DNFxASixJDzgr1bcYWxLoRdSK3RaDAKi46FUjPP0eMeac2Z4UijLf685g=
+	t=1707138665; cv=none; b=ujPniwZX++1EeYFYEkOrY3aUJEfRY5Ct8e2A+4mh/sDh9l7AuaDIwQaXYUfDC0Gr7KQpoNe1NyWmyEwcLLUuny47y8A9GcCF4nxtp0/veqWtbd8oMGdzKQptVuVNXNFipdA5Zj7li1/6b0LJ486BhzHBUsteNM8pCBHa7wLfybw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707138642; c=relaxed/simple;
-	bh=a7C8ciPQZp5QzEHWJtui24Jra/hcnLQehMJdzgp1ngY=;
+	s=arc-20240116; t=1707138665; c=relaxed/simple;
+	bh=8xEKAj/aIXoAnef6WCYeb1etalNTieAd05i+DkQi20o=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CnD4stc16BkjPA4uHMcbN3RZAh7UYBtlvP0J5c6RXGlOzK0aXE5zdW5PKtO7Bx6CByNg+gDb0VshwTNRfb8wxWW581ZIESRJDzTtwo9djiD0tF/hHT9qU1FdeaUVeOVwt0yVJBj0IpZzlBXsIqujekPs0IYKTIC1Hh6w0JrYgxk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U59F6zh9; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-5101cd91017so5691637e87.2;
-        Mon, 05 Feb 2024 05:10:40 -0800 (PST)
+	 To:Cc:Content-Type; b=UINsD6bdmsLTejNWZLNMyDcQhzezemkGcqaF9SDZZGEODEur0CZ0piJ1eZkj9j7KeiRN8fX0NHjILrogpxWT6QSWiGZ5KIGa+1lbQiHAto0VyIRUWe2klNfULn4i3zxT9Wx3E2VCAwCzkf7LvE+R9Id4/RuWcoPjPy/WGZB1rSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bBdQmjDS; arc=none smtp.client-ip=209.85.222.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f54.google.com with SMTP id a1e0cc1a2514c-7d5bbbe5844so1902476241.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 05:11:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707138639; x=1707743439; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l52wGRJpdNZd5ZMPG8emXQNk5j5Wmg7cRfJ4UIcR334=;
-        b=U59F6zh9rnAbKqQGinonryffgcH0D29aP4lQ23KcUDCHqGbiAQxyn6xRTOQPz1TRAh
-         cDVidr9ZW1rc9H4ap/Mjbgx+H/69m5FnJltz1N72RU+Ismac1rX1OoSzNoR5iKpOnj02
-         DD36XjwUHWpNGgepizcIv21l/HlC6qDm6+xCY3glE2m5yBKmtzybUP+JoGAJPlgMG6zC
-         EO4dpSQryCfJ9gc/3hBjI2V4T6LVXqo7DOla9gnag0IjehII0SGqdvpp3qxWPX7uqrDj
-         C3mdLKFjTsIr1EhB+MVBxGAbRdRVHC7DrsTZhHJqse9ii+dKerKcuCyrIz7hT5W29f4s
-         BpNw==
+        d=google.com; s=20230601; t=1707138663; x=1707743463; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kgO66v67ga2hZ/fa1VFxPxUYTn/f70qrUJZfQyHF9yA=;
+        b=bBdQmjDSnnkWD5f1QtQfnNPLrvNXSidpvjrE8+RIApgvH2HKizXXrMUh00mjc8DvCt
+         0uWD3IiASEdE+OaouQPasLRBYGy7GPQS4VFIulh9aa7qBIGAlYT0lhbkaztXGVQmoi95
+         nH3VQDKDQ45KtC9Q0GoNsinbGjpAIOT5KLcUVQTUSynRcODRAvBReUkh5EfK0isEGbC0
+         ss1WFU3SRdB3YxF2LjxnnAbHp9a9cThGow+xNeDPZHBohqIHlQq8Ix0wlQdzjhzGOzsW
+         dUSMCivz48FGXUHIAKWnF87ayITJSgWEyzxtoJwacYBDZZhKUvjPFWVpWfewdGzsh6qt
+         BZIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707138639; x=1707743439;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l52wGRJpdNZd5ZMPG8emXQNk5j5Wmg7cRfJ4UIcR334=;
-        b=H74/gGycFwyHiKEb6T5myk55ZyMAWxSdUAQo/W5hzcHFXf6cXX/NheQeF2yxZIvj3o
-         dxSTyccCzsovZk8FjxQU2AYZqco5mqqHhPeccBUlWLfjFEoNzgJ9+CA+hNmjTZPNbSu8
-         mUh0AhFr+XjAMom6HlAWfvRklRwUj/Nr+sVkykAiGG5wbkz9j5iDTLBVZ/cNO/DH3iNX
-         2pJMWQ4iB3laC1uRZFC64QGZMZk7KoOZrwh16dZYyyTBO7uHMda+yHBc1pGJa6SQqk99
-         +p9LfW5TLUzE4BAcVbK7r7AkxKBaCn/Bp00J+bpI6Gf+qqyv8m4fHYPriwZ1hi7YU4yy
-         B9lw==
-X-Gm-Message-State: AOJu0Yyv5cRWzdz3E8lOvouNgZ8hl9IOdXK3oCaStzpJR9dT0WxbRJ2g
-	2tX/JDOSbwlHfljpn7VqVPVx2+7SPUteEvqZKj7nPGQvEdFB7EHP+07ZuxThZCOeglLDG+2p1PE
-	tTbdsc7hAwL3HShK1hHYDqNVoP4k=
-X-Google-Smtp-Source: AGHT+IHcjgafryspZvflYvXmNwPr/1ZTRC4o5v0aRZqmLV0WFqjr47M7EyynLPGoweDD8l30req/4VrqIPpQvTK6l0U=
-X-Received: by 2002:a05:6512:1150:b0:511:4e0c:bc3f with SMTP id
- m16-20020a056512115000b005114e0cbc3fmr2466365lfg.51.1707138638651; Mon, 05
- Feb 2024 05:10:38 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707138663; x=1707743463;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kgO66v67ga2hZ/fa1VFxPxUYTn/f70qrUJZfQyHF9yA=;
+        b=X02qpOSr9+/qBChlfcn1SI09pfnWEt9Gz2HVvwMZ2gtZwdE7nfy/Q7jxmDwyf/LSGk
+         I9Thl/+CMks/Js1Rf09g0f7ayEonoMHzHhJIVKkz1R+AmrWF5/X3o6swXBGQ6CWgqGH7
+         bC5MESa4ZozpHIvACV6WV3aPlnjV0n7FQB5rpaUMyF4ByuOp/sR1GbaEjd1pFqUjLYLa
+         DzVqaNeSxvXIr/PeydaQQ6cvacEQvPg8tR1WVmOWWwJpdBdsYFJLHmb6vsjjL2/5psT7
+         IAII6+k+U55fhYJRMZerExU6KrhuFoErSX1WPOkwXRXAuFzK7Inom0HUIY6Wqc4ZZtKE
+         nsag==
+X-Gm-Message-State: AOJu0YxedK65AoONSqrJRRdHEL2t/6TG+kkWZDq7xV12DEBmkK7dONTN
+	fiNzJcKPho7EvcpylAKVIhW9Y+u0rpDYjust67DBgGUL08yG7iwlqlW7jI0NLsn9+7s01ORf/lW
+	y63BTRJD3cOUvYUN95ctKLC2JkzcSCUAqj7c4
+X-Google-Smtp-Source: AGHT+IGvWhOgVq5Sybn9CKaxdFweO8fp2yqczsb5Bclf6Z7TT13n+R/qBMPNOqS9yiUPSbnFy6IPYHjqSKy05FWL5Oc=
+X-Received: by 2002:a05:6122:4d14:b0:4c0:1cc8:8819 with SMTP id
+ fi20-20020a0561224d1400b004c01cc88819mr2759261vkb.5.1707138662522; Mon, 05
+ Feb 2024 05:11:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1705916069.git.haibo1.xu@intel.com>
-In-Reply-To: <cover.1705916069.git.haibo1.xu@intel.com>
-From: Haibo Xu <xiaobo55x@gmail.com>
-Date: Mon, 5 Feb 2024 21:10:26 +0800
-Message-ID: <CAJve8onDbX44Ph6a-FdO2+p7QOQLah-7OyF+yUc06wud+SvmQQ@mail.gmail.com>
-Subject: Re: [PATCH v5 00/12] RISCV: Add kvm Sstc timer selftests
-To: Haibo Xu <haibo1.xu@intel.com>
-Cc: ajones@ventanamicro.com, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>, 
-	Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>, 
-	Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>, 
-	Anup Patel <anup@brainfault.org>, Atish Patra <atishp@atishpatra.org>, Guo Ren <guoren@kernel.org>, 
-	Conor Dooley <conor.dooley@microchip.com>, Mayuresh Chitale <mchitale@ventanamicro.com>, 
-	wchen <waylingii@gmail.com>, Greentime Hu <greentime.hu@sifive.com>, 
-	Jisheng Zhang <jszhang@kernel.org>, Samuel Holland <samuel@sholland.org>, 
-	Minda Chen <minda.chen@starfivetech.com>, Sean Christopherson <seanjc@google.com>, 
-	Peter Xu <peterx@redhat.com>, Like Xu <likexu@tencent.com>, 
-	Vipin Sharma <vipinsh@google.com>, Thomas Huth <thuth@redhat.com>, 
-	Aaron Lewis <aaronlewis@google.com>, 
-	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>, linux-kernel@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, kvm@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	kvmarm@lists.linux.dev, kvm-riscv@lists.infradead.org
+References: <20240205093725.make.582-kees@kernel.org> <67a842ad-b900-4c63-afcb-63455934f727@gmail.com>
+ <202402050457.0B4D90B1A@keescook>
+In-Reply-To: <202402050457.0B4D90B1A@keescook>
+From: Marco Elver <elver@google.com>
+Date: Mon, 5 Feb 2024 14:10:26 +0100
+Message-ID: <CANpmjNMiMuUPPPeOvL76V9O-amx9uyKZYtOf5Q2b73v8O_xHWw@mail.gmail.com>
+Subject: Re: [PATCH v3] ubsan: Reintroduce signed overflow sanitizer
+To: Kees Cook <keescook@chromium.org>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>, Justin Stitt <justinstitt@google.com>, 
+	Miguel Ojeda <ojeda@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Hao Luo <haoluo@google.com>, 
+	Andrey Konovalov <andreyknvl@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Masahiro Yamada <masahiroy@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
+	linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com, 
+	linux-hardening@vger.kernel.org, linux-kbuild@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Marc,
+On Mon, 5 Feb 2024 at 13:59, Kees Cook <keescook@chromium.org> wrote:
+>
+> On Mon, Feb 05, 2024 at 01:54:24PM +0100, Andrey Ryabinin wrote:
+> >
+> >
+> > On 2/5/24 10:37, Kees Cook wrote:
+> >
+> > > ---
+> > >  include/linux/compiler_types.h |  9 ++++-
+> > >  lib/Kconfig.ubsan              | 14 +++++++
+> > >  lib/test_ubsan.c               | 37 ++++++++++++++++++
+> > >  lib/ubsan.c                    | 68 ++++++++++++++++++++++++++++++++++
+> > >  lib/ubsan.h                    |  4 ++
+> > >  scripts/Makefile.lib           |  3 ++
+> > >  scripts/Makefile.ubsan         |  3 ++
+> > >  7 files changed, 137 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+> > > index 6f1ca49306d2..ee9d272008a5 100644
+> > > --- a/include/linux/compiler_types.h
+> > > +++ b/include/linux/compiler_types.h
+> > > @@ -282,11 +282,18 @@ struct ftrace_likely_data {
+> > >  #define __no_sanitize_or_inline __always_inline
+> > >  #endif
+> > >
+> > > +/* Do not trap wrapping arithmetic within an annotated function. */
+> > > +#ifdef CONFIG_UBSAN_SIGNED_WRAP
+> > > +# define __signed_wrap __attribute__((no_sanitize("signed-integer-overflow")))
+> > > +#else
+> > > +# define __signed_wrap
+> > > +#endif
+> > > +
+> > >  /* Section for code which can't be instrumented at all */
+> > >  #define __noinstr_section(section)                                 \
+> > >     noinline notrace __attribute((__section__(section)))            \
+> > >     __no_kcsan __no_sanitize_address __no_profile __no_sanitize_coverage \
+> > > -   __no_sanitize_memory
+> > > +   __no_sanitize_memory __signed_wrap
+> > >
+> >
+> > Given this disables all kinds of code instrumentations,
+> > shouldn't we just add __no_sanitize_undefined here?
+>
+> Yeah, that's a very good point.
+>
+> > I suspect that ubsan's instrumentation usually doesn't cause problems
+> > because it calls __ubsan_* functions with all heavy stuff (printk, locks etc)
+> > only if code has an UB. So the answer to the question above depends on
+> > whether we want to ignore UBs in "noinstr" code or to get some weird side effect,
+> > possibly without proper UBSAN report in dmesg.
+>
+> I think my preference would be to fail safe (i.e. leave in the
+> instrumentation), but the intent of noinstr is pretty clear. :P I wonder
+> if, instead, we could adjust objtool to yell about cases where calls are
+> made in noinstr functions (like it does for UACCESS)... maybe it already
+> does?
 
-Could you help review the first 3 patches in this series?
-
-Thanks,
-Haibo
-
-On Mon, Jan 22, 2024 at 5:45=E2=80=AFPM Haibo Xu <haibo1.xu@intel.com> wrot=
-e:
->
-> The RISC-V arch_timer selftests is used to validate Sstc timer
-> functionality in a guest, which sets up periodic timer interrupts
-> and check the basic interrupt status upon its receipt.
->
-> This KVM selftests was ported from aarch64 arch_timer and tested
-> with Linux v6.7-rc8 on a Qemu riscv64 virt machine.
->
-> ---
-> Changed since v4:
->   * Rebased to Linux 6.7-rc8
->   * Added new patch(2/12) to clean up the data type in struct test_args
->   * Re-ordered patch(11/11) in v4 to patch(3/12)
->   * Changed the timer_err_margin_us type from int to uint32_t
->
-> Haibo Xu (11):
->   KVM: arm64: selftests: Data type cleanup for arch_timer test
->   KVM: arm64: selftests: Enable tuning of error margin in arch_timer
->     test
->   KVM: arm64: selftests: Split arch_timer test code
->   KVM: selftests: Add CONFIG_64BIT definition for the build
->   tools: riscv: Add header file csr.h
->   tools: riscv: Add header file vdso/processor.h
->   KVM: riscv: selftests: Switch to use macro from csr.h
->   KVM: riscv: selftests: Add exception handling support
->   KVM: riscv: selftests: Add guest helper to get vcpu id
->   KVM: riscv: selftests: Change vcpu_has_ext to a common function
->   KVM: riscv: selftests: Add sstc timer test
->
-> Paolo Bonzini (1):
->   selftests/kvm: Fix issues with $(SPLIT_TESTS)
->
->  tools/arch/riscv/include/asm/csr.h            | 541 ++++++++++++++++++
->  tools/arch/riscv/include/asm/vdso/processor.h |  32 ++
->  tools/testing/selftests/kvm/Makefile          |  27 +-
->  .../selftests/kvm/aarch64/arch_timer.c        | 295 +---------
->  tools/testing/selftests/kvm/arch_timer.c      | 259 +++++++++
->  .../selftests/kvm/include/aarch64/processor.h |   4 -
->  .../selftests/kvm/include/kvm_util_base.h     |   9 +
->  .../selftests/kvm/include/riscv/arch_timer.h  |  71 +++
->  .../selftests/kvm/include/riscv/processor.h   |  65 ++-
->  .../testing/selftests/kvm/include/test_util.h |   2 +
->  .../selftests/kvm/include/timer_test.h        |  45 ++
->  .../selftests/kvm/lib/riscv/handlers.S        | 101 ++++
->  .../selftests/kvm/lib/riscv/processor.c       |  87 +++
->  .../testing/selftests/kvm/riscv/arch_timer.c  | 111 ++++
->  .../selftests/kvm/riscv/get-reg-list.c        |  11 +-
->  15 files changed, 1353 insertions(+), 307 deletions(-)
->  create mode 100644 tools/arch/riscv/include/asm/csr.h
->  create mode 100644 tools/arch/riscv/include/asm/vdso/processor.h
->  create mode 100644 tools/testing/selftests/kvm/arch_timer.c
->  create mode 100644 tools/testing/selftests/kvm/include/riscv/arch_timer.=
-h
->  create mode 100644 tools/testing/selftests/kvm/include/timer_test.h
->  create mode 100644 tools/testing/selftests/kvm/lib/riscv/handlers.S
->  create mode 100644 tools/testing/selftests/kvm/riscv/arch_timer.c
->
-> --
-> 2.34.1
->
+It already does, see CONFIG_NOINSTR_VALIDATION (yes by default on x86).
 
