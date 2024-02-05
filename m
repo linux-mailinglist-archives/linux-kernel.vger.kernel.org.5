@@ -1,65 +1,64 @@
-Return-Path: <linux-kernel+bounces-52886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 145D2849DD6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:20:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EA98849DDD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:21:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5A8F285117
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:20:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23FC51F221AB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:21:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6A4D2CCB4;
-	Mon,  5 Feb 2024 15:20:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 348F535F0C;
+	Mon,  5 Feb 2024 15:20:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="TnzMcBJ1"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="cXOX1Ha2"
+Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [80.241.56.161])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E4032C84C;
-	Mon,  5 Feb 2024 15:20:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FD082E63B;
+	Mon,  5 Feb 2024 15:20:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.161
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707146437; cv=none; b=BH5aPoY/cpDReaF6NaokJ8PqLMUPBPlPNR53VDhucFHo2XIIL2BpmQkkT/JT4CPNkObJ/iTJKzt4hkEnktOUEu1E4DMB+baH0X5/xCc5lNJ8Bwhzgc79uPfIUzp/d+uZ2fwlkTpqaAVGIbtikTKoWUQxTWmDDbawWDU8MM7vXcI=
+	t=1707146443; cv=none; b=cOlmXKceEivJtYnUDzmlRLT3rad4nTpKVry/cCPZS4cwJifCsWFGQZIHZbTY6jlt2GD92UROnqYAGKZ5qJBjE2DlL/MomPyO8G0r7XY7KALNqpMJBDlQ0tXKsytzS4U3kjZaYm9AW/XM3Hh7B4EITeoTKaVkQxrRX4Ll6EXeyrk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707146437; c=relaxed/simple;
-	bh=hpLodnPFTzGDmybN3BEWyUWqwYKKEqaVJLjW6ZG61sY=;
+	s=arc-20240116; t=1707146443; c=relaxed/simple;
+	bh=RcWOjD26WJ8My7Q+eCiNGU84jj3EPhEAksItK/992bw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oRUuobislM3FIyyDhaPy7IkF4L5SscKaHz86uide0zABHMc6Z3SlFqY2G52gZAkWNAq5IXmTzXUqzAph58rCCUloczPou6x57HfrY5ceJrCA5ZiC05Hoh+oiKkLo2BNqSAKEUoPLvADcOeVT8P0CE32MYpfNDvmfm1P72m6uhvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=TnzMcBJ1; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=ybapUfqzuvYYWTklz2FUq3Tu24rh2dOO9XsrfWbS7YY=; b=TnzMcBJ1FcNgRR3WOsGVIUTGQu
-	wsTRA8QaiF3Yhfo9HyugD5whR5g6esiNWH5+KDEozZKCZ7J1/JsCrMUsapyy1dEIyOdmSavTUyahV
-	V2MhL+OCk+UUdgoMUmyOu+aY0nwZczlEyP2G8VylzZjzxrVxzqZDKgwr8/gZXQ3+5jcc=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rX0lg-0072dB-IZ; Mon, 05 Feb 2024 16:20:20 +0100
-Date: Mon, 5 Feb 2024 16:20:20 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: David <david@davidv.dev>
-Cc: Jonathan Corbet <corbet@lwn.net>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Xiongwei Song <xiongwei.song@windriver.com>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH] net: make driver settling time configurable
-Message-ID: <580001e3-17ef-4f24-8fd8-bc14110e874e@lunn.ch>
-References: <20240205114609.440597-1-david@davidv.dev>
- <1e08910b-8ae2-4985-8423-45a1a823cefc@lunn.ch>
- <bfbad418-f8c6-4cdf-97b5-5c13044539e8@davidv.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=PtZ1x+nZzQaSnv9w1ntR5GzP86CWn+PsrytinqF/LogzIvNIsQ3H6NIkFDFNG0O9kH02kFZ9CWC39cGcqz57pR1BkmykHjEdkphPAPBjRgy3qVI2HavAfh1vmjqvVa7O6ObtyrvIBGqbNN+z9cMGueDwLfdcHk4TSTL4IqL6/sY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=cXOX1Ha2; arc=none smtp.client-ip=80.241.56.161
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [10.196.197.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4TT9793Lcrz9snM;
+	Mon,  5 Feb 2024 16:20:37 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
+	s=MBO0001; t=1707146437;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=O5QpBm9OVYV8g3cMHMrIijGXJuiMqqynbOTCB/oJ0aY=;
+	b=cXOX1Ha29Ld4nfj9cuuSNhqtFhZEWJsriIMfUx2094ad47RC6zJWZZmfA/Kc27sAgINjfq
+	DgHIsV7uu0KxFEgQgh5sr31Oe3RiP+vETLygLg4mQGjgMkfuIoZdmwkbtfVOq9inRz0hIh
+	ZwNYYwE/ai4QYoI8bWSK8PTMfh2W24kBuBkl7U5w6bSMR9LhpivpBaTm+EEpb+hEn/qpSg
+	L4H5+kodVLRutrE19pLE+Qx0Srp6to2AlnphJtg/Kq4dhY2CXQU82mYnv5eCt8HndzHMRM
+	oWZCtVhtiyi+EohyJmzR66CAemW9Bab6rxKh2WWxi3Xan0v+2IOoE7UcakfiOA==
+Date: Mon, 5 Feb 2024 16:20:32 +0100
+From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+To: John Garry <john.g.garry@oracle.com>
+Cc: hch@lst.de, djwong@kernel.org, viro@zeniv.linux.org.uk, 
+	brauner@kernel.org, dchinner@redhat.com, jack@suse.cz, chandan.babu@oracle.com, 
+	martin.petersen@oracle.com, linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com, ojaswin@linux.ibm.com, 
+	p.raghav@samsung.com
+Subject: Re: [PATCH 1/6] fs: iomap: Atomic write support
+Message-ID: <7ttdwk46hkj6ohdyq3ruwb2zkskzrpicz7dpf4g53v32nh7mgy@5g63yuoyotyi>
+References: <20240124142645.9334-1-john.g.garry@oracle.com>
+ <20240124142645.9334-2-john.g.garry@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,37 +67,53 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bfbad418-f8c6-4cdf-97b5-5c13044539e8@davidv.dev>
+In-Reply-To: <20240124142645.9334-2-john.g.garry@oracle.com>
 
-On Mon, Feb 05, 2024 at 03:31:38PM +0100, David wrote:
-> On 2/5/24 15:06, Andrew Lunn wrote:
-> > On Mon, Feb 05, 2024 at 12:44:40PM +0100, David Ventura wrote:
-> > > During IP auto configuration, some drivers apparently need to wait a
-> > > certain length of time to settle; as this is not true for all drivers,
-> > > make this length of time configurable.
-> > Do you see this problem with multiple drivers, or just one in
-> > particular. To me this seems like a driver bug, and you are just
-> > papering over the cracks.
-> > 
-> > 	Andrew
-> I don't know of any drivers that may need to wait -- I noticed
-> this code path being hit when building a minimal kernel that only
-> had a virtio network device.
-> At least for the virtio device, the wait is unnecessary and bloats
-> the time to boot a minimal kernel from 15ms to 33ms.
+On Wed, Jan 24, 2024 at 02:26:40PM +0000, John Garry wrote:
+> Add flag IOMAP_ATOMIC_WRITE to indicate to the FS that an atomic write
+> bio is being created and all the rules there need to be followed.
+> 
+> It is the task of the FS iomap iter callbacks to ensure that the mapping
+> created adheres to those rules, like size is power-of-2, is at a
+> naturally-aligned offset, etc. However, checking for a single iovec, i.e.
+> iter type is ubuf, is done in __iomap_dio_rw().
+> 
+> A write should only produce a single bio, so error when it doesn't.
+> 
+> Signed-off-by: John Garry <john.g.garry@oracle.com>
+> ---
+>  fs/iomap/direct-io.c  | 21 ++++++++++++++++++++-
+>  fs/iomap/trace.h      |  3 ++-
+>  include/linux/iomap.h |  1 +
+>  3 files changed, 23 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> index bcd3f8cf5ea4..25736d01b857 100644
+> --- a/fs/iomap/direct-io.c
+> +++ b/fs/iomap/direct-io.c
+> @@ -275,10 +275,12 @@ static inline blk_opf_t iomap_dio_bio_opflags(struct iomap_dio *dio,
+>  static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
+>  		struct iomap_dio *dio)
+>  {
+> +	bool atomic_write = iter->flags & IOMAP_ATOMIC;
 
-Looking at the code, a delay has been here a long time, since before
-git. However, 2011 the delay was changes from 1 second to 10ms. There
-was a discussion about this at the time:
+Minor nit: the commit says IOMAP_ATOMIC_WRITE and you set the enum as
+IOMAP_ATOMIC in the code.
 
-https://lore.kernel.org/netdev/1305696161-18277-1-git-send-email-micha@neli.hopto.org/t/
+As the atomic semantics only apply to write, the commit could be just
+reworded to reflect the code?
 
-It was said that ARP and DHCP retries should recover any system where
-the first transmit/receive gets lost with the change from 1s to 10ms.
-
-Maybe after 12 years, its time to try a default of 0ms? I would
-suggest that is a second patch, which is easy to revert if it all goes
-horribly wrong.
-
-	 Andrew
+<snip>
+> diff --git a/fs/iomap/trace.h b/fs/iomap/trace.h
+> index c16fd55f5595..c95576420bca 100644
+> --- a/fs/iomap/trace.h
+> +++ b/fs/iomap/trace.h
+> @@ -98,7 +98,8 @@ DEFINE_RANGE_EVENT(iomap_dio_rw_queued);
+>  	{ IOMAP_REPORT,		"REPORT" }, \
+>  	{ IOMAP_FAULT,		"FAULT" }, \
+>  	{ IOMAP_DIRECT,		"DIRECT" }, \
+> -	{ IOMAP_NOWAIT,		"NOWAIT" }
+> +	{ IOMAP_NOWAIT,		"NOWAIT" }, \
+> +	{ IOMAP_ATOMIC,		"ATOMIC" }
+>  
 
