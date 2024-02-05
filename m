@@ -1,118 +1,143 @@
-Return-Path: <linux-kernel+bounces-52775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 031D0849C89
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:02:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9419849C86
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:02:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 340BC1C2532A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:02:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B73EDB28428
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:01:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 084922C1AD;
-	Mon,  5 Feb 2024 14:01:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="nhvuxBxD"
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A39B028DD1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CCF82374E;
 	Mon,  5 Feb 2024 14:01:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qUGTWMmG"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DE9C28DD5
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 14:01:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707141705; cv=none; b=bqguUDMIsMhnAcCn04wG7RA4p3ulTrMwu1XuTW5/0e/PxOBjJ1XxCkqSQkOcR0QDSqane1B7TPPA9sWKXBsTuWaGIZHQoSjrhRQqzBFPYWZFcRawErb7FYQsdraSO4K2mMBbTbrc+bc+Tm/Oal7dY2iWVLWgX3lyWj+zyE+SiAM=
+	t=1707141702; cv=none; b=C/H9W1zUxDYDn+0ut0CpREUEwiS1fZ5uf3nwa5o44BedBIUo26qGTh6YzJDrhrf8YZyzPlQVGGBXm1kIFNJRSro8rfs3rPdiKDPLSx2l/7UnKAqz0E7e2y5gGQfP+nAnfzG3694Pnirfbfo+8+BCkgYs9815WCZ125WNjpgDGTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707141705; c=relaxed/simple;
-	bh=AQ9rJJsSMiX+vo7iSm3VkhpLNuASv5tw8v6zztJtpa8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=TjYTv2H38q8ZD/p7fr8O9uJyLFM9Gn53trc0Ebi8jaLeohknm6XfspzxBtp3u2WfxEI+PxmbtvAHLQelNj3WEdpwFzGKOEZUbBnxr9MfnL1dihlAP6uvTnZ6DXjTf56H452nLdostGkL1o5/G4U4oZPVCb3xWMVu4p+DuxPIJ/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=nhvuxBxD; arc=none smtp.client-ip=67.231.149.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4155VpcZ002122;
-	Mon, 5 Feb 2024 08:01:08 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	PODMain02222019; bh=KkdSVvZBpNy6UICQTjzXbhDmnHH8Se+KrDnsL2G3J/E=; b=
-	nhvuxBxD495qcJk3Dwfn+Er1TmmkZ7aJl4efkUIbbRZgzbGmi15fN6u6L0pQsS8m
-	oizA2n3YqQi918+XB4wYEvGZbCAZERLf6z7PoPWBL6CgeUn6VnT6NmDupNW9GTvT
-	1OutoakT1s0SKSbllebVm5FLZy+RPSpylL3B8goAarXiDQeLi9Yu5opBm006u0vh
-	Rin8D06cqaadWvMwBHLeKHYsAlC1Ai1/JzEvNBGygzmXFKBcMTCXDg34tPFL74JS
-	da4YSkg3HXId+hWhheJZBLCFkmgPuukxddu7ePknDbuGLoiTJSsKW9cZyuuPBjEM
-	GZ4YM+x5ksEclSEt6EyFIg==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3w1ks29ybc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 05 Feb 2024 08:01:05 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 5 Feb
- 2024 14:01:03 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40 via Frontend Transport; Mon, 5 Feb 2024 14:01:03 +0000
-Received: from [198.90.208.18] (ediswws06.ad.cirrus.com [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 8A88B820241;
-	Mon,  5 Feb 2024 14:01:03 +0000 (UTC)
-Message-ID: <5a2872d4-7eb3-465a-aace-c848919b1f2a@opensource.cirrus.com>
-Date: Mon, 5 Feb 2024 14:01:03 +0000
+	s=arc-20240116; t=1707141702; c=relaxed/simple;
+	bh=MyTVmMBQT9yymCwADUCyBGvNYezZ+M55ItXy/0ugLZ8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=szXG50qo1So7Ic5LZIH7GGkL/LnRNG63Ete/tuWwFgBAYqCr2b7oh3xctc+WG/N94m1yqS7ZyQBCY5abrdj+FmZppyHn2qT5oI4INuNQyEuxTCGXfSmUHCfvjmcGRI8wpraQCo0AMD2PSQjjFkQ6u5Q8ObNlccZLWP6A5kiSEkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qUGTWMmG; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d74045c463so34245125ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 06:01:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707141700; x=1707746500; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=i3rlc43mBAmmIKSu5xBLrJwDwD6hK6gTpzaGPsgcsxg=;
+        b=qUGTWMmGNBPoB8i9rTw31wfFMWYrAeq02bK68paGUH/CVdiha3qvKTcz/mByhsAm5S
+         7lOVKQhVi7frm1OEW+0AcUClFhAKBVkE+E/wYNXQn+9hmCPL+j9oLSkGG6c6pnzURkfp
+         PdZFBueXfXeWRi/8QgHVwBV/qPtqHcfl9uBrh6NxE63kIQmLK0gQRHTvh8R8Uwdaiul9
+         TShHfY5S3ZBV+IBM74jhn2E+mTJNi0fdz3aZeqyXN7hcZ8r9Q4kYUOkTOUG3uRnb9WK5
+         9IcsDR1wsZqKo0Yl/bpuXdG8EkT6sUcXovAG2u/c2nvjBYUvhuTxhdgmsgKlg+pkioyG
+         34QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707141700; x=1707746500;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=i3rlc43mBAmmIKSu5xBLrJwDwD6hK6gTpzaGPsgcsxg=;
+        b=X/Sie5sJNLJf3UKiX7nEfeEsmJTJszL4xfHTllRV5WGLFQIlAt64GfvoCCjdmj8eLl
+         AuUSmYe5KhDurpwJmypw9aVbcMBmibEflWTJAnGx8yTx4bTIB3xFXZX2KQ7Aunk+BCEJ
+         k9CKAQb94kg2VVJAFqmpwukDbU8qY5oXEzxDSB6QZas/EtQzRLMMxBATScwjkoNLqUcN
+         awf/R6HSu2AYGM8PU4IS1lY+F0mDNu4XPjfvmJGkhQVBb2/3Zpu+xPBuq4pZCLyjrySY
+         a1xIbna7qyeQUGRW2d0p5XP8X19y/mho8U6fciwgTZKCCbMNm7CCANKD10KOjxh7zS85
+         LYgg==
+X-Gm-Message-State: AOJu0YxiCfTFmVYSz9e5FpyyRyCHvrv5UAtAvq/V0jxTkUXHOE2vvgaS
+	JUKUrovhTi7fd0zsCU5MYZthbzcaMGkEpB8cy0A8KnLQYrqm1khw4Yg/zuatjw==
+X-Google-Smtp-Source: AGHT+IGkD3eNo22b10rbAKAEVpZrr9NRYYGZtbsfRgoJbeWb7EKAAMIWc9ujJ7xFK40zBZ7wNKqtrA==
+X-Received: by 2002:a17:902:e981:b0:1d7:244e:531e with SMTP id f1-20020a170902e98100b001d7244e531emr8689792plb.25.1707141700327;
+        Mon, 05 Feb 2024 06:01:40 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUfHNwuYa8MJRPrOHempccXKIzbSidWB3DSkhZaf9iZkwjtK1uCNRodO6SV8a/drGuCro1p6/P1EW33Nl1ufCyCGuFJJuCvil5GGiLzRdydeqxf9kq/byI6Z4OJWbGLuSBMPkX17pPmQ6qUu/LslFIFx4KXxmTe08C2aar9LIyFELU1/64zfkBZi0KEKM5viadAvAMxtl6hw5ovumdtzmUju6BZn19LfxqMu7X3I1AXHdvDCUuskjWjRg==
+Received: from thinkpad ([120.138.12.228])
+        by smtp.gmail.com with ESMTPSA id ju15-20020a170903428f00b001d75c26e857sm6349179plb.288.2024.02.05.06.01.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 06:01:39 -0800 (PST)
+Date: Mon, 5 Feb 2024 19:31:35 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] pci: endpoint: make pci_epf_bus_type const
+Message-ID: <20240205140135.GA9617@thinkpad>
+References: <20240204-bus_cleanup-pci-v1-1-300267a1e99e@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: cs35l56: fix reversed if statement in
- cs35l56_dspwait_asp1tx_put()
-To: Dan Carpenter <dan.carpenter@linaro.org>
-CC: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>
-References: <0c254c07-d1c0-4a5c-a22b-7e135cab032c@moroto.mountain>
-Content-Language: en-GB
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <0c254c07-d1c0-4a5c-a22b-7e135cab032c@moroto.mountain>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: 5xdR__uDpewbfPRVIWR6S2KgtvLy6a5n
-X-Proofpoint-ORIG-GUID: 5xdR__uDpewbfPRVIWR6S2KgtvLy6a5n
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240204-bus_cleanup-pci-v1-1-300267a1e99e@marliere.net>
 
-On 05/02/2024 12:44, Dan Carpenter wrote:
-> It looks like the "!" character was added accidentally.  The
-> regmap_update_bits_check() function is normally going to succeed.  This
-> means the rest of the function is unreachable and we don't handle the
-> situation where "changed" is true correctly.
+On Sun, Feb 04, 2024 at 05:28:58PM -0300, Ricardo B. Marliere wrote:
+> Now that the driver core can properly handle constant struct bus_type,
+> move the pci_epf_bus_type variable to be a constant structure as well,
+> placing it into read-only memory which can not be modified at runtime.
 > 
-> Fixes: 07f7d6e7a124 ("ASoC: cs35l56: Fix for initializing ASP1 mixer registers")
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+- Mani
+
 > ---
->>From static analysis and review, not tested.
-> ---
->   sound/soc/codecs/cs35l56.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/pci/endpoint/pci-epf-core.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
-> index c23e29da4cfb..ebed5ab1245b 100644
-> --- a/sound/soc/codecs/cs35l56.c
-> +++ b/sound/soc/codecs/cs35l56.c
-> @@ -115,7 +115,7 @@ static int cs35l56_dspwait_asp1tx_put(struct snd_kcontrol *kcontrol,
->   
->   	ret = regmap_update_bits_check(cs35l56->base.regmap, addr,
->   				       CS35L56_ASP_TXn_SRC_MASK, val, &changed);
-> -	if (!ret)
-> +	if (ret)
->   		return ret;
->   
->   	if (changed)
+> diff --git a/drivers/pci/endpoint/pci-epf-core.c b/drivers/pci/endpoint/pci-epf-core.c
+> index 2c32de667937..bf655383e5ed 100644
+> --- a/drivers/pci/endpoint/pci-epf-core.c
+> +++ b/drivers/pci/endpoint/pci-epf-core.c
+> @@ -17,7 +17,7 @@
+>  
+>  static DEFINE_MUTEX(pci_epf_mutex);
+>  
+> -static struct bus_type pci_epf_bus_type;
+> +static const struct bus_type pci_epf_bus_type;
+>  static const struct device_type pci_epf_type;
+>  
+>  /**
+> @@ -507,7 +507,7 @@ static void pci_epf_device_remove(struct device *dev)
+>  	epf->driver = NULL;
+>  }
+>  
+> -static struct bus_type pci_epf_bus_type = {
+> +static const struct bus_type pci_epf_bus_type = {
+>  	.name		= "pci-epf",
+>  	.match		= pci_epf_device_match,
+>  	.probe		= pci_epf_device_probe,
+> 
+> ---
+> base-commit: 1281aa073d3701b03cc6e716dc128df5ba47509d
+> change-id: 20240204-bus_cleanup-pci-f70b6d5a5bcf
+> 
+> Best regards,
+> -- 
+> Ricardo B. Marliere <ricardo@marliere.net>
+> 
 
-Reviewed-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-
+-- 
+மணிவண்ணன் சதாசிவம்
 
