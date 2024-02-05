@@ -1,176 +1,175 @@
-Return-Path: <linux-kernel+bounces-53182-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53183-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0122084A1CA
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:07:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C3E784A1CC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:07:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E9C11C22F96
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:07:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E227C1F23FDE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:07:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A21047F52;
-	Mon,  5 Feb 2024 18:07:23 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C12F0481DB;
+	Mon,  5 Feb 2024 18:07:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="RD8igKf+"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CA92481AA
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 18:07:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CFF447A7B;
+	Mon,  5 Feb 2024 18:07:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707156442; cv=none; b=k5GR8k9Z4aASMLXdNDgaWU3J1ZoDZAHultAa5qZ03mik7CR1GpqqS++lLuQ14Nx8GpS4r8TDTKv2WoM+WHzm5Ggu17uzNUcEyIBT00zJACZK91hLDdkYRIjG/6IVqQXvb2FoCWBz9mFUKCLFXMaiY2GFvGz2gJuI7B785rzvrdo=
+	t=1707156445; cv=none; b=bT5EPinkKfhg9VauZBea2goyPG0MRdk7+53PYoGvdnTbPPVGotcpeOBAZdBFQhMTXIANuzUjjRTNAQD7Xt+N9f3mZLnXwYzHYlTl6LapMEe9NxbMOZ+gQU9MlfhdKUoIH7SI8bgjSLqMeRazBs2IcyFFecwRiSm5/JTRcyA9m7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707156442; c=relaxed/simple;
-	bh=WekkH0x+wQr8GCr9nI/D/6WcaPx85LhuLjShRfa0J68=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C5r7+hL29+W/VhF4XIf5kfHKJSVHOONtkbMVE50Z2Lza6sIISV45forYjzd6QRi628h3jemOA3Eps4LCYcti/JSO82sYc8rb+fRUG46+bx4ECt218n9uUe7uzIntg2gtzl5gicfs5M6Plu50rUyB6Cg/QDXX6T3Jt+l8FwQN5nA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rX3ND-0002rX-MG; Mon, 05 Feb 2024 19:07:15 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rX3NC-004fwa-68; Mon, 05 Feb 2024 19:07:14 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rX3NC-00Fkrt-0H;
-	Mon, 05 Feb 2024 19:07:14 +0100
-Date: Mon, 5 Feb 2024 19:07:13 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Nylon Chen <nylon.chen@sifive.com>
-Cc: linux-riscv@lists.infradead.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org, conor@kernel.org, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, palmer@dabbelt.com, paul.walmsley@sifive.com, 
-	aou@eecs.berkeley.edu, thierry.reding@gmail.com, vincent.chen@sifive.com, 
-	zong.li@sifive.com, nylon7717@gmail.com
-Subject: Re: [PATCH v8 2/3] pwm: sifive: change the PWM controlled LED
- algorithm
-Message-ID: <4kqkazromkzyhic2mgyyjrh4jlnp6djfuotu37btdfolqp5e2o@6jkbjnahvrbo>
-References: <20240126074045.20159-1-nylon.chen@sifive.com>
- <20240126074045.20159-3-nylon.chen@sifive.com>
+	s=arc-20240116; t=1707156445; c=relaxed/simple;
+	bh=hqNhtWU6J0M723BwhAlES+EYWTmXacOatKP1VRJfnX0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=mEZAAiZAa60kGZe07maPcaHjpLTn+GOccPzkRIv2Dm6Pg/jCP1oUmnDotVVpXDw+xZw+esT0VJwB3JBbAguQeuAYzjwhNFwYOHVr019+3xGSkbsjOUo09WcXsGLoktG/7qtNX9CSRhZ338Z7ZbDfJaMlBO+K/UjEm+IP2mxUrUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=RD8igKf+; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 415I7GvO110148;
+	Mon, 5 Feb 2024 12:07:16 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707156436;
+	bh=Mkg0f6aV+i9MDUfqdgvJrhV3U9CqmwBoA9JGegFS9Aw=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=RD8igKf+D5Y6DGFMJZutz+TZmViETY9tMmI0loln3Gb48GkLQyYoItSB4aIOQkTuo
+	 fWOGITH67fnKtHtHku5J46uW49oye0iuPXRsvCtxI2XXRiV0SUVBnc2BHT6LPWA/Li
+	 IWt8O/9CoCjhPgXCwIw8jeRa0vigk+PkYN2HXX20=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 415I7GOw099114
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 5 Feb 2024 12:07:16 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 5
+ Feb 2024 12:07:15 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 5 Feb 2024 12:07:15 -0600
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 415I7FEa026693;
+	Mon, 5 Feb 2024 12:07:15 -0600
+Message-ID: <05a3ef7e-b4d6-4f87-b34d-cec5f4ecfb9f@ti.com>
+Date: Mon, 5 Feb 2024 12:07:15 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ngq5sitimfjzgek5"
-Content-Disposition: inline
-In-Reply-To: <20240126074045.20159-3-nylon.chen@sifive.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 5/5] usb: dwc3-am62: add workaround for Errata i2409
+Content-Language: en-US
+To: Roger Quadros <rogerq@kernel.org>, <Thinh.Nguyen@synopsys.com>
+CC: <gregkh@linuxfoundation.org>, <r-gunasekaran@ti.com>, <b-liu@ti.com>,
+        <nm@ti.com>, <srk@ti.com>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>
+References: <20240205141221.56076-1-rogerq@kernel.org>
+ <20240205141221.56076-6-rogerq@kernel.org>
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <20240205141221.56076-6-rogerq@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-
---ngq5sitimfjzgek5
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello,
-
-Regarding the Subject: The patch has nothing to do with an LED, has it?
-
-On Fri, Jan 26, 2024 at 03:40:44PM +0800, Nylon Chen wrote:
-> The `frac` variable represents the pulse inactive time, and the result
-> of this algorithm is the pulse active time. Therefore, we must reverse th=
-e result.
-
-Please break lines at 75 columns in the commit log.
-
-> The reference is SiFive FU740-C000 Manual[0]
->=20
-> Link: https://sifive.cdn.prismic.io/sifive/1a82e600-1f93-4f41-b2d8-86ed8b=
-16acba_fu740-c000-manual-v1p6.pdf [0]
-
-I looked at Figure 29 in this document (version v1p6, pdf page 148). Not
-sure I understand that correctly, but I expect that the output of the
-">=3D?" node below pwmcmp0 to become 1 if pwms has reached pwmcmp0, is
-that right? In that case this output is zero when pwmcount is zero and
-then pwmcmp0ip is zero, too. So a period starts with the inactive part
-and so it's inversed polarity.
-
-What made you think that the current driver implementation is wrong?
-
-> Co-developed-by: Zong Li <zong.li@sifive.com>
-> Signed-off-by: Zong Li <zong.li@sifive.com>
-> Co-developed-by: Vincent Chen <vincent.chen@sifive.com>
-> Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
-> Signed-off-by: Nylon Chen <nylon.chen@sifive.com>
+On 2/5/24 8:12 AM, Roger Quadros wrote:
+> All AM62 devices have Errata i2409 [1] due to which
+> USB2 PHY may lock up due to short suspend.
+> 
+> Workaround involves setting bit 5 and 4 PLL_REG12
+> in PHY2 register space after USB controller is brought
+> out of LPSC reset but before controller initialization.
+> 
+> Handle this workaround.
+> 
+> [1] - https://www.ti.com/lit/er/sprz487d/sprz487d.pdf
+> 
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+> Cc: Conor Dooley <conor+dt@kernel.org>
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
 > ---
->  drivers/pwm/pwm-sifive.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/pwm/pwm-sifive.c b/drivers/pwm/pwm-sifive.c
-> index eabddb7c7820..b07c8598bb21 100644
-> --- a/drivers/pwm/pwm-sifive.c
-> +++ b/drivers/pwm/pwm-sifive.c
-> @@ -113,6 +113,7 @@ static int pwm_sifive_get_state(struct pwm_chip *chip=
-, struct pwm_device *pwm,
->  	u32 duty, val;
-> =20
->  	duty =3D readl(ddata->regs + PWM_SIFIVE_PWMCMP(pwm->hwpwm));
-> +	duty =3D (1U << PWM_SIFIVE_CMPWIDTH) - 1 - duty;
+> 
+> Notes:
+>      Changelog:
+>      
+>      v2:
+>      - don't add phy read/write helpers or add phy to private data
+>      
+>      v1: https://lore.kernel.org/all/20240201121220.5523-5-rogerq@kernel.org/
+> 
+>   drivers/usb/dwc3/dwc3-am62.c | 21 ++++++++++++++++++++-
+>   1 file changed, 20 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/dwc3/dwc3-am62.c b/drivers/usb/dwc3/dwc3-am62.c
+> index af1ce934e7fb..5ae5c3087b0f 100644
+> --- a/drivers/usb/dwc3/dwc3-am62.c
+> +++ b/drivers/usb/dwc3/dwc3-am62.c
+> @@ -101,6 +101,11 @@
+>   #define PHY_CORE_VOLTAGE_MASK	BIT(31)
+>   #define PHY_PLL_REFCLK_MASK	GENMASK(3, 0)
+>   
+> +/* USB PHY2 register offsets */
+> +#define	USB_PHY_PLL_REG12		0x130
+> +#define	USB_PHY_PLL_LDO_REF_EN		BIT(5)
+> +#define	USB_PHY_PLL_LDO_REF_EN_EN	BIT(4)
+> +
+>   #define DWC3_AM62_AUTOSUSPEND_DELAY	100
+>   
+>   struct dwc3_am62 {
+> @@ -184,8 +189,9 @@ static int dwc3_ti_probe(struct platform_device *pdev)
+>   	struct device *dev = &pdev->dev;
+>   	struct device_node *node = pdev->dev.of_node;
+>   	struct dwc3_am62 *am62;
+> -	int i, ret;
+>   	unsigned long rate;
+> +	void __iomem *phy;
+> +	int i, ret;
+>   	u32 reg;
+>   
+>   	am62 = devm_kzalloc(dev, sizeof(*am62), GFP_KERNEL);
+> @@ -201,6 +207,12 @@ static int dwc3_ti_probe(struct platform_device *pdev)
+>   		return PTR_ERR(am62->usbss);
+>   	}
+>   
+> +	phy = devm_platform_ioremap_resource(pdev, 1);
+> +	if (IS_ERR(phy)) {
+> +		dev_err(dev, "can't map PHY IOMEM resource. Won't apply i2409 fix.\n");
+> +		phy = NULL;
+> +	}
 
-I find it irritating that both values are assigned to duty. I'd spend
-another variable and make this:
+Why not move this down to where you use it below, then just have
+it be an if/else with the work around in the if (!IS_ERR(phy))
+and the warning in the else.
 
-	inactive =3D readl(ddata->regs + PWM_SIFIVE_PWMCMP(pwm->hwpwm));
-	duty =3D (1U << PWM_SIFIVE_CMPWIDTH) - 1 - inactive;
+Andrew
 
-
-> =20
->  	state->enabled =3D duty > 0;
-> =20
-> @@ -123,11 +124,10 @@ static int pwm_sifive_get_state(struct pwm_chip *ch=
-ip, struct pwm_device *pwm,
->  	state->period =3D ddata->real_period;
->  	state->duty_cycle =3D
->  		(u64)duty * ddata->real_period >> PWM_SIFIVE_CMPWIDTH;
-> -	state->polarity =3D PWM_POLARITY_INVERSED;
-> +	state->polarity =3D PWM_POLARITY_NORMAL;
-> =20
->  	return 0;
->  }
-> -
-
-Please keep this empty line between functions.
-
->  static int pwm_sifive_apply(struct pwm_chip *chip, struct pwm_device *pw=
-m,
->  			    const struct pwm_state *state)
->  {
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---ngq5sitimfjzgek5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXBI9AACgkQj4D7WH0S
-/k5uxQgAnQ/SvX4+QQISrWgnYygCgVlr4ryD5EN3wAHNeDGn3EvG8hNVvZTlQtZV
-CA5wYClIyGjAq6Qeg/tlfwjhthtMinqwQZpZ0K67c/Fr51cp0ic7PNKWkQF3UMWf
-EaShSF6NIyFsCX25OZNa9lUpMgp9hx+klZ0gFSL5aZ9n/MGmgM4In68YfKEQsS01
-X/LgQj0AwDo5utQmLL+zp8sKneEs5WM7/Wcs7910eC/+bpo4fBBs5D1R7ap8LHts
-J6qse4XMtdHJyHQxXuDq2/tH4+ttAz7lodvJuYSjGoU/OAhCOUNx0rF+TgUFs5zj
-FqHeGOJyQ2QKYeqv3kqqjdd3VpHLjw==
-=4mPe
------END PGP SIGNATURE-----
-
---ngq5sitimfjzgek5--
+> +
+>   	am62->usb2_refclk = devm_clk_get(dev, "ref");
+>   	if (IS_ERR(am62->usb2_refclk)) {
+>   		dev_err(dev, "can't get usb2_refclk\n");
+> @@ -227,6 +239,13 @@ static int dwc3_ti_probe(struct platform_device *pdev)
+>   	if (ret)
+>   		return ret;
+>   
+> +	/* Workaround Errata i2409 */
+> +	if (phy) {
+> +		reg = readl(phy + USB_PHY_PLL_REG12);
+> +		reg |= USB_PHY_PLL_LDO_REF_EN | USB_PHY_PLL_LDO_REF_EN_EN;
+> +		writel(reg, phy + USB_PHY_PLL_REG12);
+> +	}
+> +
+>   	/* VBUS divider select */
+>   	am62->vbus_divider = device_property_read_bool(dev, "ti,vbus-divider");
+>   	reg = dwc3_ti_readl(am62, USBSS_PHY_CONFIG);
 
