@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-52932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52934-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 242F0849E86
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:38:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BE0F849E8C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:38:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D369B28CF8E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:38:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5992A28CD4D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:38:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AB0E481AF;
-	Mon,  5 Feb 2024 15:35:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2D96482D7;
+	Mon,  5 Feb 2024 15:35:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="fQsDjQt5"
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="jyaDsTDt"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4144E44C6C;
-	Mon,  5 Feb 2024 15:35:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 339B140BEB;
+	Mon,  5 Feb 2024 15:35:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707147320; cv=none; b=ftFCLXQGN5yTVddGjtwYU1TsYeDkn/31n1w812+OeTAhP5PLDTBYTiUN16fUrypyBHwWeAZBdkhMiH85GOaD28rZ2vpERnjLVkjO3pzximG3etIaxAOrTpzUTMDZjhBIzlfsaCyb5ZFwJHk0ypUwUH43d8LTRopg/FFwKw0PPO4=
+	t=1707147321; cv=none; b=QzmbKYA9Urz9tC4zIoOmW3YUI5eAunojmHeyRz0scNt6z4gtHOYsG9qMwh/KJutzocoBAt/Cn+V+O2vQMrKg4IXYTkTM5EGmyd5q3/s3IZ2FrQ9EtzsZNNSJEvemvWmclKSowTwjAFlNhKY6JctbYqBAiZ6pzq4hDPDtBndUzVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707147320; c=relaxed/simple;
-	bh=OJMjQNuB0qxgKO2LYN0rXZkkE3imz1k4MttK5ciBgZQ=;
+	s=arc-20240116; t=1707147321; c=relaxed/simple;
+	bh=9HL/x4Nj/uz8p4t8CXOhsS0Z/OjK0DF1R3RA4ctG+tM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=q0eRpwYahYeCeVAOgzYU4IY8twPW29D6CYjTrzPWXRmaLTkx417hdKYQrSCFbJg0m9t7skl+e2ysXrCpwNt2M0sYQ+cbw4hux5mlzMnYzuNDQcORr45oJrKlTcWf/AhPICDgm3Zomtt4jMJUx2xnXoYvPYJmMfzNSnb2XWDxv44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=fQsDjQt5; arc=none smtp.client-ip=217.70.183.193
+	 MIME-Version; b=UQido/O6T9i7j9mMnqjiFR+1n4slz6QwvEUoC4oIAnpaantDKsKCOg9CnvRik/3v5IeARbqcv9JpIUXKrxSh6f5vXalDRYeWZkWq4at28oEmvSGukcEyYbQYEo8ZvN5s7dUY2U3cC5P2ukMwN5zuqM+nEl3pjr180hPUqw19QiY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=jyaDsTDt; arc=none smtp.client-ip=217.70.183.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id CDB3E240006;
-	Mon,  5 Feb 2024 15:35:15 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 9C9E8FF805;
+	Mon,  5 Feb 2024 15:35:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707147316;
+	t=1707147317;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KDGmhKsrXnlDJMy644fDIA2mW0aZ/el8TnwmSRWTTPU=;
-	b=fQsDjQt5kfBRVdMLEgG+6GBxH3N0LCBXcX31QFWPxqXoMDUcGlP/Hxl3DNVSJ5F7qpGUxB
-	6DmFi6EJ9FurB7L9IF9MfFpMKMyhUm1iRqHfnEoqRxD7a44u/l75ifp7fBOPb3R4OIeejP
-	C8RTULuzFhNFPyDvmT0Nbux/AdlHOo5fY025AYa/gMVyiq3ZRbspAMiU5LJy/ACv1xinHy
-	8XLs0bFh+9cwiNigKGl8ho62kzWbZeqU6xev+W/1QKIjA5PwkhYSH0jhYxzCra8lwjHfqI
-	SiWx0lA6NcbfOceluqJNfo5yit09ktA1XYP+UfIjU41RxUNheGymnhfHPdMZ0Q==
+	bh=2Wk0pf2LEOjDnkraDRWIDqQ91OCoFBDydZfp83yb0pk=;
+	b=jyaDsTDtaEcCfxi8hPZQTaUQj22/lvuqXaHaORad3+otn6iFysGdjUN3h+2TXaM3CzKtNs
+	o3VIoFe5rEow+xgo5hvVBfyBpuz8zg1VjGp43FCFNSh+f8xB0E90PzNA8+YOH5A+24WsDN
+	Dbuz5BptEGagbm10fvmNt46qEqtPiiqX1uYwY1fnvLk2Fm5S36jxqg4AFRGN6K6CR9uRMV
+	Ju1+lYFkDZub/DFKDyCxw12j8BW16y8/lVztTBgNNsWGp60/a2TjzjVALY/2FWycyF9tLc
+	DphsiySOxPYQ2Rv6eqqdxYaSsA22yA9rdOgW5Pk/lA9+N9kmpiHwAfcWxyDQ0A==
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
 To: Paul Burton <paulburton@kernel.org>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -59,9 +59,9 @@ Cc: Vladimir  Kondratiev <vladimir.kondratiev@mobileye.com>,
 	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH v7 11/14] MIPS: mobileye: Add EPM5 device tree
-Date: Mon,  5 Feb 2024 16:34:57 +0100
-Message-ID: <20240205153503.574468-12-gregory.clement@bootlin.com>
+Subject: [PATCH v7 12/14] MIPS: Share generic kernel code with other architecture
+Date: Mon,  5 Feb 2024 16:34:58 +0100
+Message-ID: <20240205153503.574468-13-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240205153503.574468-1-gregory.clement@bootlin.com>
 References: <20240205153503.574468-1-gregory.clement@bootlin.com>
@@ -74,56 +74,64 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: gregory.clement@bootlin.com
 
-Add a device tree for the Mobileye EPM5 evaluation board.
+Some architectures might seek to utilize a significant portion of the
+generic kernel code while maintaining independence from the generic
+kernel due to specific peculiarities.
 
-Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+This patch allows for the reuse of core code, preventing unnecessary
+duplication.
+
+Suggested-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- arch/mips/boot/dts/mobileye/Makefile       |  4 ++++
- arch/mips/boot/dts/mobileye/eyeq5-epm5.dts | 23 ++++++++++++++++++++++
- 2 files changed, 27 insertions(+)
- create mode 100644 arch/mips/boot/dts/mobileye/Makefile
- create mode 100644 arch/mips/boot/dts/mobileye/eyeq5-epm5.dts
+ arch/mips/Kbuild           | 1 +
+ arch/mips/Kconfig          | 3 +++
+ arch/mips/generic/Makefile | 6 +++---
+ 3 files changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/boot/dts/mobileye/Makefile b/arch/mips/boot/dts/mobileye/Makefile
-new file mode 100644
-index 0000000000000..01c01c3aad81d
---- /dev/null
-+++ b/arch/mips/boot/dts/mobileye/Makefile
-@@ -0,0 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+# Copyright 2023 Mobileye Vision Technologies Ltd.
+diff --git a/arch/mips/Kbuild b/arch/mips/Kbuild
+index af2967bffb73d..d683993ed331c 100644
+--- a/arch/mips/Kbuild
++++ b/arch/mips/Kbuild
+@@ -17,6 +17,7 @@ obj- := $(platform-y)
+ # mips object files
+ # The object files are linked as core-y files would be linked
+ 
++obj-y += generic/
+ obj-y += kernel/
+ obj-y += mm/
+ obj-y += net/
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 797ae590ebdba..5549d26448941 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -109,6 +109,9 @@ config MIPS_FIXUP_BIGPHYS_ADDR
+ config MIPS_GENERIC
+ 	bool
+ 
++config MACH_GENERIC_CORE
++	bool
 +
-+dtb-$(CONFIG_MACH_EYEQ5)		+= eyeq5-epm5.dtb
-diff --git a/arch/mips/boot/dts/mobileye/eyeq5-epm5.dts b/arch/mips/boot/dts/mobileye/eyeq5-epm5.dts
-new file mode 100644
-index 0000000000000..6898b2d8267df
---- /dev/null
-+++ b/arch/mips/boot/dts/mobileye/eyeq5-epm5.dts
-@@ -0,0 +1,23 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+/*
-+ * Copyright 2023 Mobileye Vision Technologies Ltd.
-+ */
-+
-+/dts-v1/;
-+
-+#include "eyeq5.dtsi"
-+
-+/ {
-+	compatible = "mobileye,eyeq5-epm5", "mobileye,eyeq5";
-+	model = "Mobile EyeQ5 MP5 Evaluation board";
-+
-+	chosen {
-+		stdout-path = "serial2:115200n8";
-+	};
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x40000000 0x0 0x02000000>,
-+		      <0x8 0x02000000 0x0 0x7E000000>;
-+	};
-+};
+ config MACH_INGENIC
+ 	bool
+ 	select SYS_SUPPORTS_32BIT_KERNEL
+diff --git a/arch/mips/generic/Makefile b/arch/mips/generic/Makefile
+index e37a59bae0a62..56011d738441f 100644
+--- a/arch/mips/generic/Makefile
++++ b/arch/mips/generic/Makefile
+@@ -4,9 +4,9 @@
+ # Author: Paul Burton <paul.burton@mips.com>
+ #
+ 
+-obj-y += init.o
+-obj-y += irq.o
+-obj-y += proc.o
++obj-$(CONFIG_MACH_GENERIC_CORE) += init.o
++obj-$(CONFIG_MACH_GENERIC_CORE) += irq.o
++obj-$(CONFIG_MACH_GENERIC_CORE) += proc.o
+ 
+ obj-$(CONFIG_YAMON_DT_SHIM)		+= yamon-dt.o
+ obj-$(CONFIG_LEGACY_BOARD_SEAD3)	+= board-sead3.o
 -- 
 2.43.0
 
