@@ -1,131 +1,131 @@
-Return-Path: <linux-kernel+bounces-54104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54106-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C49F284AAD7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:50:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 508F984AADD
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:54:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F41EF1C23464
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:50:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 810B71C23F1C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:54:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AD0E4F5FA;
-	Mon,  5 Feb 2024 23:50:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4C074D5A7;
+	Mon,  5 Feb 2024 23:54:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xfo7zHy4"
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="Ril7amsS"
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA8B64F5E4;
-	Mon,  5 Feb 2024 23:50:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF814495F0
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 23:53:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707177008; cv=none; b=ZBRkmciJWHbHUTSxnZ4HvqYUsc73B2zQh1idDjyTN8fgHk8FNlXFd63vnoHHi2bIKwey4cUKEFDLgVUo2c4S4RKe26J1ZElgvIzGB0UWRLMCIT/oNUCWbRpRkyfzjWOWK5TLV2++h6621v2TxGgpQw5aXGa2IleXsGlKMSxuQYY=
+	t=1707177239; cv=none; b=uxOIiKjgNLRCyY+0Lpu9I1OQgUqra8A05dHaSxHcNAqf44IWZcOjWbDjsxi3eVpTp9T72d1BUgcVqS0g0okyAdoW/I4famxYNxsKJwhBLKu3WozncdqiaZ5HP16J1NGtINbmrsdu5vgzACLeys7MYtQL2kj78SblkaZbkTAD5nM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707177008; c=relaxed/simple;
-	bh=eMP+pBzXjOisnrJFlhbgFG68K3/hBnqXW+IrLBhZ78k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uaBc8YDj5+F45jb9I9xKF56UoPKKQSYTNEuFmr0l8xMNCUWNDrniWRR2WPQYOaGqFy3CCU33wZaLHeDezTW8cikkHQFJF9NOZJxvx56CMdLVphBz/AVHRqaaFovjkoAdodgNi/x8BQeDdSPcu7y7expJoh7uQsSrtSodFFXKwJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xfo7zHy4; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d09faadba5so27570711fa.1;
-        Mon, 05 Feb 2024 15:50:06 -0800 (PST)
+	s=arc-20240116; t=1707177239; c=relaxed/simple;
+	bh=OGoNuHCzozgkC3QL/rGwBky0y/XUcHin0BTqRYK7EaM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KZig4OUR118L+wfJ5bWlCCgnEtay9v/+Ri47hJGdF34OWoofUeutmlyqQduPpSdEAyR6aPea9QzFn2xF3uqXVVN7LAx+/jVTIoq+2x/e+gae21NfF+xowWNi/kOKJCsWATdQFYHKBCs99R21gZg0p3xjccDToRzUZWm+4UpN5dE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=Ril7amsS; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5d8b519e438so4835089a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 15:53:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707177005; x=1707781805; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CLaCt86KE4z7cIgRB82YaYKlIDPGoF1DhNw2e1I2B8M=;
-        b=Xfo7zHy4QNPRqvIQPzIzSZW7Vlr/zp2/WqQibZpgYzXebE5wMsF2OIyrKirBsyLk3+
-         yv4VI4V0GgRevNlv1xNiLHkNqkjkIdz4iLotXPu2INRUy/l1nKV6y3s7tsDLpSIiDu3I
-         hrNq5il9AFQwRXw0P4iJYIDeAPQruKtpP3GDSequBpaRn5LmmpMfcj2eDMmR/dnNCmWT
-         f6mfnF8WgACGCBdZB53Hb2esBkBBpfMPNh7Xxoa86tnDZhL1NVJqs7+cc6fiifoVyJjZ
-         pNFM3ZKrK3Ejig4P2c3ZvLvNABJ49VYjW4De4cX7ygmqfdrrZYfws2rmLLqlDJsR77fA
-         ygmw==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1707177237; x=1707782037; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hmrdDifKn+uVsNlfDzCvuZfjS7ayNWNTt2suseO1un4=;
+        b=Ril7amsSFVpyGMslrLzeOzNZVZ551pvW6l4nQD84218B4EyWOJ9nN9Fkag1q9SpWS+
+         nx9W0zmLxISZp9OXNIH+zNGR9NBdEnYo7aRG7iB1qZwEUjAur4mcfqmEF7y20LWSW0lD
+         wi09+5QfPH+g+HsCXnrFaA/9MV7WCTAcLIvlc2/VycQ1II0FLQUsYPUTB3QcboSqXxAR
+         oVDXoz4+poyf9H5o2PImQ8LcijXjjC52MpemYYyU4Cz7tA68CiMp/6trNpRcqCpNtNN1
+         5iGgSe8vgUT8HXihuXODzsyPR/h4/FOWFidA5FOq9c5HQ6MxycRv3mYXbcEK4qmNU6ug
+         wvkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707177005; x=1707781805;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CLaCt86KE4z7cIgRB82YaYKlIDPGoF1DhNw2e1I2B8M=;
-        b=JdI0YlnlScyAxNsfxgkkrJl4duYfQ+vxgA1UYFCKqV/KTOlm9NJvYO1ZQRJIyeDTwT
-         A9PjWYOZn1nIAy25/p8lUjJNqHVv17LgJbYyRwYn0wfj5UzeHHgJx50zi5ih0u3lH6bB
-         LCZ6YvLqC7JdLPG2nb4DPBEQ/6YUtEvD4Pq1f5Bu80kzFUXd80Nb3RtsCF0YNDj59cAN
-         Z7V5ymIHDtJk1FL2H3c1+sggAwDCfX4B5o2gBpl0mvANFx6EAkbz/bBRZ+RnzUjV9Ew4
-         r0gEM2yQzHJ3tdzX0qAGEnybUoJUmUyYdsscL8IHK2WO6cP8jugr+6RXIv9+BZRGkjhh
-         W8ag==
-X-Gm-Message-State: AOJu0Yxfx/7LSb1G0civGrg5vxltlPZlllNdS7Bt56El75kx+9X7fMaS
-	h1pM8lJegjYp6eexIq5xbuADtZfKfSPgIG6815xrGY3ZCfswXCTs2fItg+1Uj/4QT9ZcE+Kzdjg
-	3L3PBXOXrZ/nQtewu3aGsMt8sHVlvWXftwhU=
-X-Google-Smtp-Source: AGHT+IFYE1LZhi/E5sYl/Oz0mrw3UbzWRJkr47ZufZVv/ndYuIglX10ppT+lRtcfqSkpvWzpqKfM3tFQsAq3pkgWi4Q=
-X-Received: by 2002:a2e:7d0d:0:b0:2d0:b291:d017 with SMTP id
- y13-20020a2e7d0d000000b002d0b291d017mr699202ljc.15.1707177004526; Mon, 05 Feb
- 2024 15:50:04 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707177237; x=1707782037;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hmrdDifKn+uVsNlfDzCvuZfjS7ayNWNTt2suseO1un4=;
+        b=GkYRW1VN44o28L8qBAmVveexS5wB1U6UWwA384jE5ukBzuJ0RQgxxuVO8w5Moscw7n
+         oQ/riVylNYh0eGJPf048tvY+KKvvI5zFx9PheizB95FHAo4mbXuHMZlWnItFm52tJbDu
+         6ptknEhOKqz816KflShaYLnQQb3n0Tkg7sxJPdY7F0i57GFr5wohVFlSY96q97fWE9gQ
+         1vdZBG6vg6fezee7E0pzvTHTWTl7Lr/3shpyjdugIdTw0q/4fqGMwzR9ae90H9aVarQX
+         +RZ+arl7DWVrGW6Fwjt6W+OCjtlrFzeUwIgZYkkQK0+XR72pcPl8FuudlkPusW0NGQxH
+         l/2w==
+X-Gm-Message-State: AOJu0YzcdtVLNddlXLllkQYYrnfBc4emg3qkVK0etNWLMtIp4RO8Vj4y
+	LhNW34YFbR57Vau8q1HoGwwfw7xB4I36zSWgcmiPvnKH3vNAoGyashzVwsFJyfE=
+X-Google-Smtp-Source: AGHT+IHeI/+Sp824UroO/mDYidk3cFb94YOApkQqYdkLtM9PHmtd5rblgX/GhroclrmfDZVRJjAJvQ==
+X-Received: by 2002:a05:6a21:2785:b0:19e:89ae:9b52 with SMTP id rn5-20020a056a21278500b0019e89ae9b52mr51387pzb.7.1707177237249;
+        Mon, 05 Feb 2024 15:53:57 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVwcZhTk4c0u0np/uhoHXLwPQ/Wcj2MaeQOM9FqkgxTj2vuWoI/YVq71BO5+lhQYk5e3bISfbaGFDwsMYle96R7byvptgPpHlcZishruHbiB2ER4cRLKUlSlSasxMzD1Asz14TVXCdqBFQGhWo0gN5hQcCmHn1noPYecH0xtKK6GttXmIn4v/8Z3JF41HtMi0WjDjq5Gj2Nv/KL4aEAO6D3s3OGA7wAtbIdL04MZdkkF2CmOjQQvL8jlAJQUqHONWA/1DPJdI0imC15vjTHcmrkvgr7TEDqVli0Mlg9oQnxUwoZXAO1VedoHrNEPmI64j11xtnv2+MgUEhwUUjFpcaFUjralvHAUvXcA5fPQc2628t1uCSBbOcw3jy7ESMZhGUDpplvpP7R7VHdhx+GVMTxtl7eE5RKZQfmkoU4KkGTOYG2+pYJWJumzly5fwvjX22/7ZOWnO5JAcWy1+RlzpyruTNclkK+EwLEI6X/GyAOPAFqnt7d5A==
+Received: from ghost ([12.44.203.122])
+        by smtp.gmail.com with ESMTPSA id e12-20020a62aa0c000000b006ddc7de91e9sm444758pff.197.2024.02.05.15.53.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 15:53:57 -0800 (PST)
+Date: Mon, 5 Feb 2024 15:53:54 -0800
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc: Will Deacon <will@kernel.org>,
+	"Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Nick Piggin <npiggin@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Andrew Jones <ajones@ventanamicro.com>, linux-arch@vger.kernel.org,
+	linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -fixes] riscv: Flush the tlb when a page directory is
+ freed
+Message-ID: <ZcF1Er55ClKgJtHJ@ghost>
+References: <20240128120405.25876-1-alexghiti@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205173124.366901-1-avagin@google.com> <ZcErs9rPqT09nNge@google.com>
-In-Reply-To: <ZcErs9rPqT09nNge@google.com>
-From: Andrei Vagin <avagin@gmail.com>
-Date: Mon, 5 Feb 2024 15:49:53 -0800
-Message-ID: <CANaxB-yAJf4wFyRgkc+XzAdkC9JUKtx-BoZ=eCV7jRSagjsv0g@mail.gmail.com>
-Subject: Re: [PATCH] kvm/x86: add capability to disable the write-track mechanism
-To: Sean Christopherson <seanjc@google.com>
-Cc: Andrei Vagin <avagin@google.com>, Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org, 
-	x86@kernel.org, kvm@vger.kernel.org, Zhenyu Wang <zhenyuw@linux.intel.com>, 
-	Zhi Wang <zhi.a.wang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240128120405.25876-1-alexghiti@rivosinc.com>
 
-On Mon, Feb 5, 2024 at 10:41=E2=80=AFAM Sean Christopherson <seanjc@google.=
-com> wrote:
->
-> On Mon, Feb 05, 2024, Andrei Vagin wrote:
-> > The write-track is used externally only by the gpu/drm/i915 driver.
-> > Currently, it is always enabled, if a kernel has been compiled with thi=
-s
-> > driver.
-> >
-> > Enabling the write-track mechanism adds a two-byte overhead per page ac=
-ross
-> > all memory slots. It isn't significant for regular VMs. However in gVis=
-or,
-> > where the entire process virtual address space is mapped into the VM, e=
-ven
-> > with a 39-bit address space, the overhead amounts to 256MB.
-> >
-> > This change introduces the new KVM_CAP_PAGE_WRITE_TRACKING capability,
-> > allowing users to enable/disable the write-track mechanism. It is enabl=
-ed
-> > by default for backward compatibility.
->
-> I would much prefer to allocate the write-tracking metadata on-demand in
-> kvm_page_track_register_notifier(), i.e. do the same as mmu_first_shadow_=
-root_alloc(),
-> except for just gfn_write_track.
->
-> The only potential hiccup would be if taking slots_arch_lock would deadlo=
-ck, but
-> it should be impossible for slots_arch_lock to be taken in any other path=
- that
-> involves VFIO and/or KVMGT *and* can be coincident.  Except for kvm_arch_=
-destroy_vm()
-> (which deletes KVM's internal memslots), slots_arch_lock is taken only th=
-rough
-> KVM ioctls(), and the caller of kvm_page_track_register_notifier() *must*=
- hold
-> a reference to the VM.
->
-> That way there's no need for new uAPI and no need for userspace changes.
+On Sun, Jan 28, 2024 at 01:04:05PM +0100, Alexandre Ghiti wrote:
+> The riscv privileged specification mandates to flush the TLB whenever a
+> page directory is modified, so add that to tlb_flush().
+> 
+> Fixes: c5e9b2c2ae82 ("riscv: Improve tlb_flush()")
+> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> ---
+>  arch/riscv/include/asm/tlb.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/riscv/include/asm/tlb.h b/arch/riscv/include/asm/tlb.h
+> index 1eb5682b2af6..50b63b5c15bd 100644
+> --- a/arch/riscv/include/asm/tlb.h
+> +++ b/arch/riscv/include/asm/tlb.h
+> @@ -16,7 +16,7 @@ static void tlb_flush(struct mmu_gather *tlb);
+>  static inline void tlb_flush(struct mmu_gather *tlb)
+>  {
+>  #ifdef CONFIG_MMU
+> -	if (tlb->fullmm || tlb->need_flush_all)
+> +	if (tlb->fullmm || tlb->need_flush_all || tlb->freed_tables)
+>  		flush_tlb_mm(tlb->mm);
+>  	else
+>  		flush_tlb_mm_range(tlb->mm, tlb->start, tlb->end,
+> -- 
+> 2.39.2
+> 
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-I think it is a good idea, I don't know why I didn't consider it.
-Thanks. I will prepare a new patch.
+Reviewed-by: Charlie Jenkins <charlie@rivosinc.com>
 
-Thanks,
-Andrei
 
