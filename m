@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-52927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6425849E77
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:36:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEF70849E74
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:36:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D918B1C21801
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:36:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 717631F24D0E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:36:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCD5C446C0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0540446B5;
 	Mon,  5 Feb 2024 15:35:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="lNWXhzeV"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="mayL4sYR"
 Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 506F832C6C;
-	Mon,  5 Feb 2024 15:35:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1B1E33CDB;
+	Mon,  5 Feb 2024 15:35:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707147315; cv=none; b=GT3pOWovNqfM9rOg5SEGXv3JVVLtvLkuommwI325LEYYvfqcFwYJw+t2FbqXLKg8aktGqynJIfq95ojstbJk/zd7BNrjqV6fMLuBd1IkqhZLjxcqaKwWXnDRdbo1RuqH0Th8yW0FjT5kkuLeW5JilN95JFOR8aeGvB5i4ZAveGk=
+	t=1707147316; cv=none; b=tlluQz6IjyitErJeeE6qQtP1USxj/cAmOL8MPXXaEJVLeRLn9CN/h5RmULXPYa3wLmYqVWtDdLym8KvADERsBQtvM+zevFAHP61lMzzmk+Wn4NzFQtkLJulMH3mlzPzAyEMa4x6e3lEI5PXVifFNwN37r+N6/SBTxuKL8pkTwd8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707147315; c=relaxed/simple;
-	bh=91KuGhdZRQ3yX+KBd4TI2ZS1Tfz4GmFXyhttE3bzAFM=;
+	s=arc-20240116; t=1707147316; c=relaxed/simple;
+	bh=8uJJXiVgZKon5ZDQpy7w3MGWCOiaYVBI12Ap9295/ZE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sxpFLqrk73iMQP0brSBrEpB7YclhabKoM3Wmkr5CUnNSAL0DTfDyxs/8i8MiGQptOiDzhp8N74Sy2ef0e3zHyKPvSrfdbr9hkMAzcKTISGCV8qocLNvS5lniMGWD0iSzWEgnlV5XwHJs9sQ3jwheduklZEvgQkoElb5cZhXeF4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=lNWXhzeV; arc=none smtp.client-ip=217.70.183.193
+	 MIME-Version:Content-Type; b=O94Zkgwz+gsIjzhoLFRbtZxcP4nkwIYF4+htp3TCNfutDcvYbLFevNDIdTLoR1Z7Hg6+2pTCGi501rk7m1Dbik+j2ShrbPgPh4eOHuqM6c9KduSBTiNTOYNaGzGvRuBlZOm8tHVNoNV1nC3o5EN6Daq+WSBAPLBKkvV1WFiQ2ig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=mayL4sYR; arc=none smtp.client-ip=217.70.183.193
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A0091240008;
-	Mon,  5 Feb 2024 15:35:10 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8114A240002;
+	Mon,  5 Feb 2024 15:35:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707147311;
+	t=1707147312;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=6uEXIbyuTE8+uGbb2wp9Vlt8m5ypasCyIw0FxaqtHUs=;
-	b=lNWXhzeVilhHUemhu/aQCWI9OQQ0UOQDm8RMJpykgIr9nsFBc/wKLRQ/wqOsw2uuZyUFIs
-	kekESBVrvaQ5P6U5EdIFzXyXaMAR4Ppy0tLNzGX2XZIRnU/93W0zuwPF7Dl+xWh2ln4Ay+
-	LuCVMYqBteVD3PsEboaHQ1raW8N5VN4rzrnkjZK0QzTWquYw87v9oN0n0lYUYXWVLmvAxh
-	EbZQ4YOuHn8xSydcdW/PoAD/N4arRwGjZ5NGk4Ml1JSNl+uOKzn5xNrdGGicakxIT/5XUs
-	a1rJx2tTntwnhRobxK3bFS0sAZJuCZsGzYWER+DC3qjiwpITqwSLO1vOhbd5RA==
+	bh=R/UuJlLlj7UNzM37CJzBwzJx6aNeNRPUwdDv7PdUBac=;
+	b=mayL4sYRn/lsT3npNK0d98ZV1VbTxvKd9dWhO4Mwi0WXdhV+g+f7xsRUiVKDqdbJOybKcz
+	npq6usvwRxYLVzTu0hexmVYbDgImPD2v4TrRSliaAUMLT5/p38Wb1k2s3pUAngN1T5nGUT
+	vqTWwBn8T2qx4GG4CixJ5gkh0dHHD1KvrQcYiKnBVSMD39DDaoD0D2hxziBaEAiAlaoOx+
+	qH8/lwiFS6mkdB6KS6MAqrpzaA0br98l2kEJiF+MedPJNMTfqtaDNaXoaMqWrsbJEsjjny
+	FzRUNvNIvaQWkRxXtlHVUoXiw7vmQT99nDVqRBjRv0zRyEygUr6j/4EAn/iDog==
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
 To: Paul Burton <paulburton@kernel.org>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -58,10 +58,12 @@ Cc: Vladimir  Kondratiev <vladimir.kondratiev@mobileye.com>,
 	Alexandre Belloni <alexandre.belloni@bootlin.com>,
 	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH v7 05/14] MIPS: cps-vec: Use macros for 64bits access
-Date: Mon,  5 Feb 2024 16:34:51 +0100
-Message-ID: <20240205153503.574468-6-gregory.clement@bootlin.com>
+	Gregory CLEMENT <gregory.clement@bootlin.com>,
+	=?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+	Rob Herring <robh@kernel.org>
+Subject: [PATCH v7 06/14] dt-bindings: Add vendor prefix for Mobileye Vision Technologies Ltd.
+Date: Mon,  5 Feb 2024 16:34:52 +0100
+Message-ID: <20240205153503.574468-7-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240205153503.574468-1-gregory.clement@bootlin.com>
 References: <20240205153503.574468-1-gregory.clement@bootlin.com>
@@ -71,45 +73,34 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: gregory.clement@bootlin.com
 
-Some access are 32 bits only while they seems better to be done in
-64bis for 64 bit kernel.
+Mobileye Vision Technologies Ltd. is a company developing autonomous
+driving technologies and advanced driver-assistance systems (ADAS)
+including cameras, computer chips and software.
 
-This was extract from an initial patch from Jiaxun
-Co-developed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- arch/mips/kernel/cps-vec.S | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/mips/kernel/cps-vec.S b/arch/mips/kernel/cps-vec.S
-index df610c006b443..f876309130ad1 100644
---- a/arch/mips/kernel/cps-vec.S
-+++ b/arch/mips/kernel/cps-vec.S
-@@ -396,7 +396,7 @@ LEAF(mips_cps_boot_vpes)
- 	/* Calculate a pointer to the VPEs struct vpe_boot_config */
- 	li	t0, VPEBOOTCFG_SIZE
- 	mul	t0, t0, ta1
--	addu	t0, t0, ta3
-+	PTR_ADDU t0, t0, ta3
- 
- 	/* Set the TC restart PC */
- 	lw	t1, VPEBOOTCFG_PC(t0)
-@@ -571,10 +571,10 @@ dcache_done:
- 	lw	$1, TI_CPU(gp)
- 	sll	$1, $1, LONGLOG
- 	PTR_LA	\dest, __per_cpu_offset
--	addu	$1, $1, \dest
-+	PTR_ADDU $1, $1, \dest
- 	lw	$1, 0($1)
- 	PTR_LA	\dest, cps_cpu_state
--	addu	\dest, \dest, $1
-+	PTR_ADDU \dest, \dest, $1
- 	.set	pop
- 	.endm
- 
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 309b94c328c84..b45279bc97c14 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -897,6 +897,8 @@ patternProperties:
+     description: Miyoo
+   "^mntre,.*":
+     description: MNT Research GmbH
++  "^mobileye,.*":
++    description: Mobileye Vision Technologies Ltd.
+   "^modtronix,.*":
+     description: Modtronix Engineering
+   "^moortec,.*":
 -- 
 2.43.0
 
