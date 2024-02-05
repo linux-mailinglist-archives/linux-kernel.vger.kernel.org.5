@@ -1,116 +1,112 @@
-Return-Path: <linux-kernel+bounces-52343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDD468496F0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:49:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D9B58496F4
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:50:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68F8DB2728D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:48:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C66121F2302A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:50:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBD77134B2;
-	Mon,  5 Feb 2024 09:48:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF9A512E46;
+	Mon,  5 Feb 2024 09:50:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="JVQQRWEe"
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HsWmSEk+"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6E11134AD
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 09:48:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.29
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5FE312B8A;
+	Mon,  5 Feb 2024 09:50:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707126524; cv=none; b=NmucKSP/0LrXgnYExuVPnOOUseUQrCKqQfTP4XRx6onK6H/nuXqYjxwW8FqWBXb4uUpRWmdlHlyWZ6Vmr5evtzLOYzad4GO+9vazsZrumE8tzIHmeeusSgtOtpboSahqnR1hANZqcgLAv72CjqYtsGnQpZIh/+BgnENmd1StGrE=
+	t=1707126620; cv=none; b=FXa+spMUColWXPM1WCCOecsTKbwyQdJVU40LeX9CK3JncIowEobXIM9wQVknNPpsdHiIgHuN2tq9nCOsaBlQDJUAn/fU4+PTbLWzj0SoST2IAlKqaISY5yP2kfxtYKzuwisPRfGrQBBS6MKc9mEo69JBQ5y5DUUG1XfV081dkWQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707126524; c=relaxed/simple;
-	bh=Hf4odG5wn7R54sc/WswXFwxztiof6WIDGhFtOxaGJzc=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=i132xNf1F5XrQ4Rg35aQTQbZPJuLSpxwMeV+RI4FyNIxSBIue32hIlMQPofgEkSvDowS0hLdR4rduGfe/70dNiC3R5QT0jQ511Hdknpq0wPliTQJitvhQHErk2REiPMC5unNhum1sII0kI8NPYoMXY40lk8MGa5o1b1vCtUcm2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=JVQQRWEe; arc=none smtp.client-ip=66.111.4.29
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.nyi.internal (Postfix) with ESMTP id 95CBB5C0112;
-	Mon,  5 Feb 2024 04:48:40 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Mon, 05 Feb 2024 04:48:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1707126520; x=1707212920; bh=4HXHrHNRaH/IGLDh84/hJNfQKsbt
-	Ooowjsd4egH2tFE=; b=JVQQRWEeOYnEhibTNuIBXSMWoBRVPo9jQIn5cPeafI9B
-	t2aqtg/oyijjW33uoMbiCMaiPTVr0nx07m5RPDE1WnkpYpFDga8RilOqjh0S6zU6
-	TxjgKabtOx+vNkMTnA0czdlykdQKLIkNFpT1b0sp5TE6YbWDyElhf3LiNP0ls9KE
-	IcdzWpSeGKC9fztMKc9lNF9i8d9pdZWqYXN1tKLYtSSPecCdeIrjy99+9n9s5/Kp
-	HUfYyx0L4nq3KGkIqVamdn0aD/TSauVorrkyLz65RhSlKnOGgOcEU27Jc/J7+WKD
-	ckAR2DuhVzxooOymrNpUI1twU74iaJa9jg4q1Ips7w==
-X-ME-Sender: <xms:967AZRIUg7WFtLxi5TS-MvjElePolX1QJzDGFXN5axAWvkPR9OCT2Q>
-    <xme:967AZdLTZXHJ3SbZcYmqfj2E4fRigq6SbKcb_hA6PZpUn0HpyyqGX4JROsSxgi2Vx
-    b7sZXYrQ9Md1TevomE>
-X-ME-Received: <xmr:967AZZs0oh07aXjL-pfl4gZoWbG7Hn7oNFQhSfMDDxqAt3xuAjN2zYxbwcpWIZFD9uiRsKDU0fW-GjcEfNRIsY-AvwfOJJl4VSI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedvtddgtdekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
-    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
-    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:967AZSYUG4cMTnsSNelO9mbuPgrtrV6GemDreiAoalUGxJu00gKjCw>
-    <xmx:967AZYZ87Z3Ytff1-xBzqLFWMC5by-if_CHhN824ahT-hDSR0PyNHg>
-    <xmx:967AZWAFbRw-Q53LURCgAix7aAd3w9ZM6_PRh9HkR3BAlA8wITB2EQ>
-    <xmx:-K7AZVIGGQkwvzSxWmKB3L5DnOspGn7cwf2jAqPpMOuYz7ODSMWcFw>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 5 Feb 2024 04:48:37 -0500 (EST)
-Date: Mon, 5 Feb 2024 20:48:52 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-cc: David Laight <David.Laight@aculab.com>, 
-    Andrew Morton <akpm@linux-foundation.org>, 
-    "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-    Yury Norov <yury.norov@gmail.com>, 
-    Nick Desaulniers <ndesaulniers@google.com>, 
-    Douglas Anderson <dianders@chromium.org>, 
-    Kees Cook <keescook@chromium.org>, Petr Mladek <pmladek@suse.com>, 
-    Randy Dunlap <rdunlap@infradead.org>, 
-    Zhaoyang Huang <zhaoyang.huang@unisoc.com>, 
-    Geert Uytterhoeven <geert+renesas@glider.be>, 
-    Marco Elver <elver@google.com>, Brian Cain <bcain@quicinc.com>, 
-    Geert Uytterhoeven <geert@linux-m68k.org>, 
-    Matthew Wilcox <willy@infradead.org>, 
-    "Paul E . McKenney" <paulmck@kernel.org>, 
-    "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>
-Subject: Re: [PATCH v4 2/5] m68k/bitops: use __builtin_{clz,ctzl,ffs} to
- evaluate constant expressions
-In-Reply-To: <CAMZ6RqKx=EO9kcOmxRyBuhULdDyTCeAXz25j_uF7TSy72Jahpw@mail.gmail.com>
-Message-ID: <00a7e866-23ff-fc63-b6df-364580f69c78@linux-m68k.org>
-References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr> <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr> <20240128050449.1332798-3-mailhol.vincent@wanadoo.fr> <c47fedaf-cdc9-f970-460f-d2ee7e806da4@linux-m68k.org>
- <CAMZ6RqKj207uv5AF_fvb65nhCM32V=VAQXsUGLNmbeXYKPvZJg@mail.gmail.com> <9d9be9dbe92f43d2a95d11d6b2f434c1@AcuMS.aculab.com> <CAMZ6Rq+RnY16sREhAZ6AFn3sz1SuPsKqhW-m0TrrDz1hd=vNOA@mail.gmail.com> <77831c6f-7fc9-c42d-b29b-c3b2f3f5e687@linux-m68k.org>
- <CAMZ6RqLyRxvUiLKZLkQF1cYFkdOqX73V2K=dGbNROMDj61OKLw@mail.gmail.com> <002675b0-6976-9efa-6bc5-b8bad287a1d2@linux-m68k.org> <CAMZ6RqKx=EO9kcOmxRyBuhULdDyTCeAXz25j_uF7TSy72Jahpw@mail.gmail.com>
+	s=arc-20240116; t=1707126620; c=relaxed/simple;
+	bh=Jz/vUc3v//mCg11zZ/bCZ7VE1697NMltVJazebEOons=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kejodS0EYGxkietLQtE3FdOsfxgxYEQK8qg/CErNCjOqjHs+U/WUusc1sJ4D0qGUHeDZt0afeByzMNH2CixIztHnBIQ+UFovCluqm0kZwK+PKEEf3smmhFGQGy2/TzcBfEFdCNGYmOCqyJbxjf4W6czFPZralhLnreVCIo+A4PY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HsWmSEk+; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e02597a0afso1365051b3a.1;
+        Mon, 05 Feb 2024 01:50:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707126618; x=1707731418; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZyxLyOfbVqgM9WmxXwGUihLV7GhZ9dmSNbUWWpB1kbo=;
+        b=HsWmSEk+qVA9BVzmkVec6Ta9vecrCkgGcNrmdQRTl52hTZNi52K5uvOgIu63WgnCps
+         e+2swAY+PPxf3lGwzYPiAK/OzpjJ6VFA2wGFqd7nTUwpsuCvj+pXBP3a2M9fz4EoKERg
+         uQRwAa0SGHygNQxgn/OanTQAJ4OwbSQUMSaYvun5Um4U/VbI/j7HNBBJmx3692N33WHW
+         ypWwAwtnn5PYmHpIFmxkLbi0Niz0vE4ckaOcSi526fvwsjyqdGqNeQ9UFfRqPd4HgqO3
+         dynHXd+jn7PGPBsY6P9npYvqWq/rBavirGlvZFbRcgk25U1VXdmDoptyIWJHdwukJtjA
+         kMvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707126618; x=1707731418;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZyxLyOfbVqgM9WmxXwGUihLV7GhZ9dmSNbUWWpB1kbo=;
+        b=a2dYwEpcUJfzoL2FQCLZUL4Ou7QJLOKUjTm15byLJ0FHUed73+RUOprkt6KNTGq64V
+         yZa7yVNyIojNhoizVz4/XeeDBb6Xz9IHrr9ROLIbfCFWaQvZIJYehWXAfliMkf48xUN5
+         7nDvno24/SXiftbhxkEkEsCFOve5ppKfsPwO48EPuIJUSD6M1RicCcKVZQSMg2vQItFn
+         lXFvll5304QKrnTz1odd+J//ainyBfGdCo72vafiQfkwsRQP+WAGg0xD6D1ph1BLq2es
+         RTt4eTQuA/q72G3t3esxAQmnVR4tRu3l20POA5xDuxzJDl2v7J9UN0cMpXe8+q0HxtXb
+         avlQ==
+X-Gm-Message-State: AOJu0Yw9qrfnzrNXgzeL9CT67fN5/eg1sO5OFeskbtg6/3nDtARJtEye
+	6mqHtYXtDEQQM9eTuI5Iy82bZQ9gk0wija1uRpYH7vJrA0ogFwk4
+X-Google-Smtp-Source: AGHT+IEaQlbMDkqls+1z356bkMGfAyosJJfP6FT4PccIh0PILxVE9gnQR6IFhec+C5UYqdVXv36p6g==
+X-Received: by 2002:a62:e712:0:b0:6e0:3ef3:db3c with SMTP id s18-20020a62e712000000b006e03ef3db3cmr2696758pfh.29.1707126618105;
+        Mon, 05 Feb 2024 01:50:18 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXCwihz3NvpgC9gV7esiVF9I1di4G/tdzvEwGpDMug8aT8iuL1ZcyvFDxwioqQhicoFmS2+U0/SqaLJvUhb0WiRP/bp6CchoslH868BFpy4DgpDEbfnNZLpiE5GCqJ+c8wTTBbDHlcY5wEwtkZnmPudtAlPzQEPDvgDkvn4kejFrfvfYlrO6yEWalSJrDPGghQZbrrH0el23aBwW5Wl78DdevWRIGBetaDQ8Rl3kQWa9JDGzODztNOiRDPez+sZIeQHmRmpIvoSOSVU2NI+HMeXC9/A1rFLBPdeYvK6B91Vco25iEcf6BnqN4tsKu0ComBO/ThR23H+VgSBa/k2k42DyegcBFWE1Eczddqq8Ruey9cieXVxSLK3CVQptyqKr7V5wPOgg3cEDVT55WKsQs6+udWIHwgkGZeh2Tqo/yl0X/YwcEGrPdZnMDZXPGTXBwlDUtL1ehef3feEWXhmDptdnLGD9inMm+PMK1TyGeiLz+TPZQiU7cG2dVgpG0b27vvDA1BHzEn2ldWq37dPacfq9OJvVeS9yptfyzqtX9xmdpc8VSuUH7oimfLzyaKxqxXKjaHRGu5Oh+xqI3zblgj3Ml/aOKAXPngklDkuckbssdBUk87cqHvlBDgY9KGYXcojZ7jg8QoeTITkHmz3oJw8uOtWpv1lRdass5luG3OxqWWy04qcrf9QqaZ0TCxlI/TnKPsvL3agms3YrpDgtA7gxuQ6I3bWgvBqg7Z+5TLPgumjGqUu
+Received: from t480 (89.208.247.201.16clouds.com. [89.208.247.201])
+        by smtp.gmail.com with ESMTPSA id i21-20020aa787d5000000b006e038327bbesm2757236pfo.79.2024.02.05.01.50.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 01:50:17 -0800 (PST)
+Date: Mon, 5 Feb 2024 17:50:08 +0800
+From: Shawn Guo <shawn.gsc@gmail.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Jeremy Kerr <jk@codeconstruct.com.au>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	=?utf-8?Q?Przemys=C5=82aw?= Gaj <pgaj@cadence.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Conor Culhane <conor.culhane@silvaco.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Boris Brezillon <bbrezillon@kernel.org>,
+	Nicolas Pitre <npitre@baylibre.com>, linux-i3c@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] arm64: dts: imx93: drop "master" I3C node name suffix
+Message-ID: <ZcCvUJNslxafvCab@t480>
+References: <20240117075618.81932-1-krzysztof.kozlowski@linaro.org>
+ <20240117075618.81932-2-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240117075618.81932-2-krzysztof.kozlowski@linaro.org>
 
-
-On Mon, 5 Feb 2024, Vincent MAILHOL wrote:
-
+On Wed, Jan 17, 2024 at 08:56:17AM +0100, Krzysztof Kozlowski wrote:
+> Following change in the I3C bindings, the "master" suffix in I3C
+> controller node name is discouraged (it is "controller" now) and not
+> accurate (if device supports also target mode).
 > 
-> This is why I am asking whether or not clang support is important or not 
-> for m68k. If you tell me it is not, then fine, I will remove all the asm 
-> (by the way, the patch is already ready). But if there are even a few 
-> users who care about clang for m68k, then I do not think we should 
-> penalize them and I would not sign-off a change which negatively impacts 
-> some users.
-> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-If clang support is important then clang's builtins are important. So why 
-not improve those instead? That would resolve the issue in a win-win.
+Applied, thanks!
 
