@@ -1,97 +1,168 @@
-Return-Path: <linux-kernel+bounces-52687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 585CB849B69
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:09:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 616E9849B6E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:10:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1234A283454
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:09:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85F231C21A18
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:10:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C5731CA9B;
-	Mon,  5 Feb 2024 13:09:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C6CF1CAA4;
+	Mon,  5 Feb 2024 13:10:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="IaQsS8wn"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U59F6zh9"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43E7A1CA85
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 13:09:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E26981C6B2;
+	Mon,  5 Feb 2024 13:10:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707138556; cv=none; b=i1rNtfA8Yf2jqEXM9f0fJNxuoi4iasNnUfdxd6NiLkFx02F4m+JxfDcUm3WL1rwXW4XWhRced6oSykmw5n619BsEv8c3PO9JjbQfHRieMCvzwnMELHvi6wfNZxHmQ3L5qvRnxJpGavuyVAFM4OuyQSGlMgdOVn4dxTRBn3M2duo=
+	t=1707138642; cv=none; b=U5/aXwo5s3piWu8lG3SGCooFtPnrPTsIC0nZRVd1TD1eCGTH8z9wrMefothAikxsvJ1h5hNVPp2E3OPncczc/XarKA99HNiUs2pQVRjJwmT/QIHry5DNFxASixJDzgr1bcYWxLoRdSK3RaDAKi46FUjPP0eMeac2Z4UijLf685g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707138556; c=relaxed/simple;
-	bh=cwiMHH/Uxus1b/Lb+fqTiij0yN3Gf84ALCpr8Ufl/HY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JiZcAgFWh/+ggZo4cI2z6r5/ueUCBP3f4C6k38EJPAuP/kZgd31G+WdVo40w1NFNyg2KRDPAG5HAWTEXCrAPf1iCN8kfKwIjIGzTLz+1zSADXcrNicJ5dNYk8SJPolFS/JsUdktQL+LCb2PfHjM4oQQe+CFkGjCvVDKOqfzGEnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=IaQsS8wn; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 269B340E016D;
-	Mon,  5 Feb 2024 13:09:12 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id eBfDbeBbddLz; Mon,  5 Feb 2024 13:09:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707138550; bh=/6+iWnw0WyzCRyhPWeQ9RCXHp/IIDveLJqKA7zSqZdA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IaQsS8wnxiT594fXP7DGGqPKnQPRoswfj+vmXfoIqEzFoTLD0a15RHqZMH6ctlClt
-	 Iqi/BJgGL9w7ysV/968TsezxCaZwUYnc19uBC37VR4yxgFiUkk7aBaaCjGvmbL9Wrc
-	 mnroGC7LI5V9onyggCIU+/tJh5EW0NNzWrEIp2B0eFunaOyayv7pgAS1X4LGCCp9Uo
-	 xEB25PYLzbvhL7UFrqhpLpb7M7wXeiH8SKYhHjPvY6j/ld85NCbqlYqo/P/DzSa/B8
-	 gS+rtKokXXOBUbUCruohJYP7SXgGSeKcU6L9vrB/lij8Q84V0PAq03TIiiBnMWyJ6w
-	 Kc+bZoO1lgthVpb3pY6qpABjYdTzBxcCPyhZcXiehUBwhjqW1VgvzvUZXrPMoqWjt0
-	 lbsEW7nqgV4xUbOyBA2tCmAVZaLvX+4ZbZ8ba8+l6IySzW02jzRpg82BwmiRhDN1v4
-	 +W3P4v2x4ycgBlvOC4ZvNC6Wraz1S1j8v8vOfb8JMj/QXYL/VuAt0oSQSKI5Cn/TWi
-	 mePddY719DklT3Y4u8kIm6f6VzGPlzKRE4TK42GTVXXZ3hMVlia+HEXWhFpnVA9J+T
-	 TQeSWYof63BJCRGrVs8hF6/QvRm0GhLVBUdpz4c/vIYYwDMpWR7gLFk9amxFRqIfOa
-	 Lyub2uk1TnmyzCzka4e1iNDo=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 142A340E023B;
-	Mon,  5 Feb 2024 13:09:02 +0000 (UTC)
-Date: Mon, 5 Feb 2024 14:09:01 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Isaku Yamahata <isaku.yamahata@intel.com>, x86@kernel.org,
-	linux-kernel@vger.kernel.org, Juergen Gross <jgross@suse.com>
-Subject: Re: [PATCH, RESEND] x86/pat: Simplifying the PAT programming protocol
-Message-ID: <20240205130901.GEZcDd7YsmIpBPuXaj@fat_crate.local>
-References: <20240124130650.496056-1-kirill.shutemov@linux.intel.com>
- <20240131175738.GIZbqKEhlDKhaKfh_w@fat_crate.local>
- <67hqgqargmt6nln5mds672g263lka7glyzbvcdgt4owdg7xc2e@v6wvuizw5ond>
- <20240131202340.GLZbqsTJkeFQycXT0B@fat_crate.local>
- <fvzki5mtpbsoyljy354qnva5rllgukba7iuxufxjttceio5osd@tdvgddwttfqo>
+	s=arc-20240116; t=1707138642; c=relaxed/simple;
+	bh=a7C8ciPQZp5QzEHWJtui24Jra/hcnLQehMJdzgp1ngY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CnD4stc16BkjPA4uHMcbN3RZAh7UYBtlvP0J5c6RXGlOzK0aXE5zdW5PKtO7Bx6CByNg+gDb0VshwTNRfb8wxWW581ZIESRJDzTtwo9djiD0tF/hHT9qU1FdeaUVeOVwt0yVJBj0IpZzlBXsIqujekPs0IYKTIC1Hh6w0JrYgxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U59F6zh9; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-5101cd91017so5691637e87.2;
+        Mon, 05 Feb 2024 05:10:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707138639; x=1707743439; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l52wGRJpdNZd5ZMPG8emXQNk5j5Wmg7cRfJ4UIcR334=;
+        b=U59F6zh9rnAbKqQGinonryffgcH0D29aP4lQ23KcUDCHqGbiAQxyn6xRTOQPz1TRAh
+         cDVidr9ZW1rc9H4ap/Mjbgx+H/69m5FnJltz1N72RU+Ismac1rX1OoSzNoR5iKpOnj02
+         DD36XjwUHWpNGgepizcIv21l/HlC6qDm6+xCY3glE2m5yBKmtzybUP+JoGAJPlgMG6zC
+         EO4dpSQryCfJ9gc/3hBjI2V4T6LVXqo7DOla9gnag0IjehII0SGqdvpp3qxWPX7uqrDj
+         C3mdLKFjTsIr1EhB+MVBxGAbRdRVHC7DrsTZhHJqse9ii+dKerKcuCyrIz7hT5W29f4s
+         BpNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707138639; x=1707743439;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l52wGRJpdNZd5ZMPG8emXQNk5j5Wmg7cRfJ4UIcR334=;
+        b=H74/gGycFwyHiKEb6T5myk55ZyMAWxSdUAQo/W5hzcHFXf6cXX/NheQeF2yxZIvj3o
+         dxSTyccCzsovZk8FjxQU2AYZqco5mqqHhPeccBUlWLfjFEoNzgJ9+CA+hNmjTZPNbSu8
+         mUh0AhFr+XjAMom6HlAWfvRklRwUj/Nr+sVkykAiGG5wbkz9j5iDTLBVZ/cNO/DH3iNX
+         2pJMWQ4iB3laC1uRZFC64QGZMZk7KoOZrwh16dZYyyTBO7uHMda+yHBc1pGJa6SQqk99
+         +p9LfW5TLUzE4BAcVbK7r7AkxKBaCn/Bp00J+bpI6Gf+qqyv8m4fHYPriwZ1hi7YU4yy
+         B9lw==
+X-Gm-Message-State: AOJu0Yyv5cRWzdz3E8lOvouNgZ8hl9IOdXK3oCaStzpJR9dT0WxbRJ2g
+	2tX/JDOSbwlHfljpn7VqVPVx2+7SPUteEvqZKj7nPGQvEdFB7EHP+07ZuxThZCOeglLDG+2p1PE
+	tTbdsc7hAwL3HShK1hHYDqNVoP4k=
+X-Google-Smtp-Source: AGHT+IHcjgafryspZvflYvXmNwPr/1ZTRC4o5v0aRZqmLV0WFqjr47M7EyynLPGoweDD8l30req/4VrqIPpQvTK6l0U=
+X-Received: by 2002:a05:6512:1150:b0:511:4e0c:bc3f with SMTP id
+ m16-20020a056512115000b005114e0cbc3fmr2466365lfg.51.1707138638651; Mon, 05
+ Feb 2024 05:10:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <fvzki5mtpbsoyljy354qnva5rllgukba7iuxufxjttceio5osd@tdvgddwttfqo>
+References: <cover.1705916069.git.haibo1.xu@intel.com>
+In-Reply-To: <cover.1705916069.git.haibo1.xu@intel.com>
+From: Haibo Xu <xiaobo55x@gmail.com>
+Date: Mon, 5 Feb 2024 21:10:26 +0800
+Message-ID: <CAJve8onDbX44Ph6a-FdO2+p7QOQLah-7OyF+yUc06wud+SvmQQ@mail.gmail.com>
+Subject: Re: [PATCH v5 00/12] RISCV: Add kvm Sstc timer selftests
+To: Haibo Xu <haibo1.xu@intel.com>
+Cc: ajones@ventanamicro.com, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>, 
+	Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>, 
+	Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>, 
+	Anup Patel <anup@brainfault.org>, Atish Patra <atishp@atishpatra.org>, Guo Ren <guoren@kernel.org>, 
+	Conor Dooley <conor.dooley@microchip.com>, Mayuresh Chitale <mchitale@ventanamicro.com>, 
+	wchen <waylingii@gmail.com>, Greentime Hu <greentime.hu@sifive.com>, 
+	Jisheng Zhang <jszhang@kernel.org>, Samuel Holland <samuel@sholland.org>, 
+	Minda Chen <minda.chen@starfivetech.com>, Sean Christopherson <seanjc@google.com>, 
+	Peter Xu <peterx@redhat.com>, Like Xu <likexu@tencent.com>, 
+	Vipin Sharma <vipinsh@google.com>, Thomas Huth <thuth@redhat.com>, 
+	Aaron Lewis <aaronlewis@google.com>, 
+	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>, linux-kernel@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, kvm@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	kvmarm@lists.linux.dev, kvm-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 01, 2024 at 12:17:32AM +0200, Kirill A. Shutemov wrote:
-> It is better to get confirmation from HW folks.
+Hi Marc,
 
-Yah, lemme see what I can do.
+Could you help review the first 3 patches in this series?
 
--- 
-Regards/Gruss,
-    Boris.
+Thanks,
+Haibo
 
-https://people.kernel.org/tglx/notes-about-netiquette
+On Mon, Jan 22, 2024 at 5:45=E2=80=AFPM Haibo Xu <haibo1.xu@intel.com> wrot=
+e:
+>
+> The RISC-V arch_timer selftests is used to validate Sstc timer
+> functionality in a guest, which sets up periodic timer interrupts
+> and check the basic interrupt status upon its receipt.
+>
+> This KVM selftests was ported from aarch64 arch_timer and tested
+> with Linux v6.7-rc8 on a Qemu riscv64 virt machine.
+>
+> ---
+> Changed since v4:
+>   * Rebased to Linux 6.7-rc8
+>   * Added new patch(2/12) to clean up the data type in struct test_args
+>   * Re-ordered patch(11/11) in v4 to patch(3/12)
+>   * Changed the timer_err_margin_us type from int to uint32_t
+>
+> Haibo Xu (11):
+>   KVM: arm64: selftests: Data type cleanup for arch_timer test
+>   KVM: arm64: selftests: Enable tuning of error margin in arch_timer
+>     test
+>   KVM: arm64: selftests: Split arch_timer test code
+>   KVM: selftests: Add CONFIG_64BIT definition for the build
+>   tools: riscv: Add header file csr.h
+>   tools: riscv: Add header file vdso/processor.h
+>   KVM: riscv: selftests: Switch to use macro from csr.h
+>   KVM: riscv: selftests: Add exception handling support
+>   KVM: riscv: selftests: Add guest helper to get vcpu id
+>   KVM: riscv: selftests: Change vcpu_has_ext to a common function
+>   KVM: riscv: selftests: Add sstc timer test
+>
+> Paolo Bonzini (1):
+>   selftests/kvm: Fix issues with $(SPLIT_TESTS)
+>
+>  tools/arch/riscv/include/asm/csr.h            | 541 ++++++++++++++++++
+>  tools/arch/riscv/include/asm/vdso/processor.h |  32 ++
+>  tools/testing/selftests/kvm/Makefile          |  27 +-
+>  .../selftests/kvm/aarch64/arch_timer.c        | 295 +---------
+>  tools/testing/selftests/kvm/arch_timer.c      | 259 +++++++++
+>  .../selftests/kvm/include/aarch64/processor.h |   4 -
+>  .../selftests/kvm/include/kvm_util_base.h     |   9 +
+>  .../selftests/kvm/include/riscv/arch_timer.h  |  71 +++
+>  .../selftests/kvm/include/riscv/processor.h   |  65 ++-
+>  .../testing/selftests/kvm/include/test_util.h |   2 +
+>  .../selftests/kvm/include/timer_test.h        |  45 ++
+>  .../selftests/kvm/lib/riscv/handlers.S        | 101 ++++
+>  .../selftests/kvm/lib/riscv/processor.c       |  87 +++
+>  .../testing/selftests/kvm/riscv/arch_timer.c  | 111 ++++
+>  .../selftests/kvm/riscv/get-reg-list.c        |  11 +-
+>  15 files changed, 1353 insertions(+), 307 deletions(-)
+>  create mode 100644 tools/arch/riscv/include/asm/csr.h
+>  create mode 100644 tools/arch/riscv/include/asm/vdso/processor.h
+>  create mode 100644 tools/testing/selftests/kvm/arch_timer.c
+>  create mode 100644 tools/testing/selftests/kvm/include/riscv/arch_timer.=
+h
+>  create mode 100644 tools/testing/selftests/kvm/include/timer_test.h
+>  create mode 100644 tools/testing/selftests/kvm/lib/riscv/handlers.S
+>  create mode 100644 tools/testing/selftests/kvm/riscv/arch_timer.c
+>
+> --
+> 2.34.1
+>
 
