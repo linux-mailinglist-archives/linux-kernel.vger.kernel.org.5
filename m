@@ -1,129 +1,98 @@
-Return-Path: <linux-kernel+bounces-52679-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A2BD849B6D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:10:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CEF9849B5A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:06:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03AECB23B4D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:05:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 096E52817DC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:06:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91E881BDD0;
-	Mon,  5 Feb 2024 13:05:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F21F91C6A3;
+	Mon,  5 Feb 2024 13:05:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="d5OTMkxI"
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="VwXgkThs"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 540B21CA9F
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 13:04:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59C941B962;
+	Mon,  5 Feb 2024 13:05:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707138299; cv=none; b=Dbt6zapHSW5QgRCcjMVaWwX7HdglR41S/qS8F3W3oFUUkiS1ILLTrCxw6LMk/H8HOq4DkkRuDnIrklMrS/qnptwmunSPPmcsxkGGE5xSBhaxXVX7r1wL2DZK9N4vOiSxTyw2IwZez3vPLSN+Urzc6qhLZ7daGj937sAvkY7zuVI=
+	t=1707138351; cv=none; b=qB7o6xbG5aGoh1u3fmOzgnEDDF5SqwmglPlTiME+7ihbKNYeIspzktKdSEToxAuFqs7iO7QEIwVI4Zh3wj8Th5xPmRDj/tGba33MMJ4CV5o9arpWL52K9rMNkEQkMNmYOtqkMbk6j6A+MlhAeKPbVQODCG+R6i7JjzoZm5XxQKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707138299; c=relaxed/simple;
-	bh=6R73Y1eL+XW9/5GN5zqnbfIAD02pmTNPIsXX1PzbkQc=;
+	s=arc-20240116; t=1707138351; c=relaxed/simple;
+	bh=6V8uf0N3Xm/UvMoZwTYB06Qu615ajXrJkVS3vh+jkDE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LZBGfVnoj4z5KDdh8wNTnCNLuIy6b33w6POyc0Ql5pGVpK2hdacNo4pDOl9/y9TAiWU4lo6x23feyGJsghBEU2IoR2GoEZp/C+QXd9rkPAqbKjmo6agxfvBxn8p4L5peBt5PAeWvjyYs4L9yyUJj2XY33A+7VJx+Nc5wW8I0LTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=d5OTMkxI; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 5 Feb 2024 13:04:51 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707138294;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kjDbYJsA64v+kSKvUvgWTs/MwMgC5uCGKzp4l4kiFPQ=;
-	b=d5OTMkxIJ0g6UM3z7bHVp+C0KObAXlBjbpjAGtUI0R/TQZptwEcQ3TPCtL7tWTrDSzMYAy
-	OEIqo5T0Z0ZpuQ3X9or70pTazC4A7W2D8fH7WO3AfkMisgfErJgHNcefcgqSjmBGDZqsr1
-	QsiPxQfd2K9662ohcknZ8OQ8jJl523k=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Oliver Upton <oliver.upton@linux.dev>
-To: James Clark <james.clark@arm.com>
-Cc: coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-	kvmarm@lists.linux.dev, broonie@kernel.org, maz@kernel.org,
-	suzuki.poulose@arm.com, acme@kernel.org,
-	James Morse <james.morse@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Mike Leach <mike.leach@linaro.org>,
-	Leo Yan <leo.yan@linaro.org>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Rob Herring <robh@kernel.org>, Miguel Luis <miguel.luis@oracle.com>,
-	Jintack Lim <jintack.lim@linaro.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>, Arnd Bergmann <arnd@arndb.de>,
-	Vincent Donnefort <vdonnefort@google.com>,
-	Kristina Martsenko <kristina.martsenko@arm.com>,
-	Fuad Tabba <tabba@google.com>, Joey Gouly <joey.gouly@arm.com>,
-	Akihiko Odaki <akihiko.odaki@daynix.com>,
-	Jing Zhang <jingzhangos@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/7] arm64: KVM: Use shared area to pass PMU event
- state to hypervisor
-Message-ID: <ZcDc8-FQo8wKavA4@linux.dev>
-References: <20240104162714.1062610-1-james.clark@arm.com>
- <20240104162714.1062610-3-james.clark@arm.com>
- <Zb1mCCi13AJ_YjFZ@linux.dev>
- <8a908ee8-620a-d9c2-734b-5a6402950072@arm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=e2fzTeaII6f2s1r/U2gxkkYRouyj3R65HeOd0fHZfGbHT7t38C2kPoQsSkNxJXK1sFEUfmTvp1/t061Q2pVxuk8cjNEfTLI0UqD1lbxu2WGqnyFhfZdIo+oBQHqp9FIppqpTMfuYUhcFM8rc//zeWZw5B9ita9Sjydx6RjcblQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=VwXgkThs; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 059A840E00B2;
+	Mon,  5 Feb 2024 13:05:46 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id Z0d7F3KIc62J; Mon,  5 Feb 2024 13:05:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1707138343; bh=enA/cpWfJIAhcvZX1vqODbUKVwndaQoP+ixMrDmiOqs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VwXgkThss17myyQa6Obw2oLVAhNHyeox+iAnF3X3Meg8uGX58pRTZtEyWkx51MVYA
+	 6dqSLW02h8ecfIdxO1jpmDHAVi72c2xyEY4i4oGscZDiPcfz1JfKiCXxJhHMvK57/9
+	 62t58SzRoCvCTbnFHUrl2O7yVYNDXGuUm7DEgzJHDbMcvMtevp3D/aUEuxOK/xdoRm
+	 psDYLpjzY6m3cDJxQoXJEfosaQacatIzjF7o1gDS74ZbH1vPlnRBwsTtsfU/UbMfZD
+	 aCpSiAtA2sW3/oTAuYvJS5ot/GX+GAjoEu6oQRjaTMs2vySJLYsOqyehrhJ9r+aa9I
+	 osXT1kCFzc7eWWrnl0ET/qgITp68c4KHxCAG7D37sk9RX9+84iFVpPXq12JjSdDEjt
+	 /I9lWeOfIV+a6gYi6bT2GVyLbt/HAAJi1znbndBbP6SbNE/eheg3BY6rN9/pQCkL++
+	 T9UMtO8/6jzk1Sp+UR7/CQvm1nugLKbg0+kvfDg3gClSLerZ98mVV5mB7GjYXIi1Up
+	 3Mw8bBOaEhSbKPWA58czok00L/H+AYvVQnon5UuHza56sra+VmvvVqC3mVsdmZ4O/R
+	 EZCzzmFmf073IPBcT9SKLcjGew7T6CsLE0DXrz70RuMIWsVWGqphzKKqtotZKwq2Zp
+	 9vQifc8wXDKOQOM9g2jonLv8=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BFE1940E016D;
+	Mon,  5 Feb 2024 13:05:37 +0000 (UTC)
+Date: Mon, 5 Feb 2024 14:05:32 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Yazen Ghannam <yazen.ghannam@amd.com>
+Cc: linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+	avadhut.naik@amd.com, john.allen@amd.com, muralidhara.mk@amd.com
+Subject: Re: [PATCH] EDAC/amd64: Add MI300 row retirement support
+Message-ID: <20240205130532.GDZcDdHLp6GVaNER10@fat_crate.local>
+References: <20240204155106.3110934-1-yazen.ghannam@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <8a908ee8-620a-d9c2-734b-5a6402950072@arm.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20240204155106.3110934-1-yazen.ghannam@amd.com>
 
-On Mon, Feb 05, 2024 at 12:16:53PM +0000, James Clark wrote:
-> > This now allows the host to program event counters for a protected
-> > guest. That _might_ be a useful feature behind some debug option, but is
-> > most definitely *not* something we want to do for pVMs generally.
-> 
-> Unless I'm missing something, using PMUs on protected guests was added
-> by 722625c6f4c5b ("KVM: arm64: Reenable pmu in Protected Mode"). This
-> change is just a refactor that will allow us to add the same behavior
-> for a similar feature (tracing) without adding yet another copy of some
-> state before the guest switch.
+On Sun, Feb 04, 2024 at 09:51:06AM -0600, Yazen Ghannam wrote:
+> AMD MI300 systems have on-die High Bandwidth Memory. This memory has a
+> relatively higher error rate, and it is not individually replaceable
+> like DIMMs.
 
-Ha, I had forgotten about that patch (and I had reviewed it!)
+..
 
-My interpretation of the intent for that change was to enable the usage
-of vPMU for non-protected VMs. The situation has changed since then, as
-we use the shadow state for vCPUs unconditionally in protected mode as
-of commit  be66e67f1750 ("KVM: arm64: Use the pKVM hyp vCPU structure
-in handle___kvm_vcpu_run()")
+>  drivers/edac/Kconfig      |  1 +
+>  drivers/edac/amd64_edac.c | 48 +++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 49 insertions(+)
 
-Protected mode is well understood at this point to be a WIP feature, and
-that not all things are expected to work with it. Eventually we will
-need a way to distinguish between 'normal' VMs and true pVMs (i.e. the
-VMM selected full isolation) in nVHE, but right now what we have enables
-testing of some isolation features.
-
-> > I'm perfectly happy leaving these sorts of features broken for pKVM and
-> > using the 'normal' way of getting percpu data to the nVHE hypervisor
-> > otherwise.
-> > 
-> 
-> I can do that. But do I also disable PMU at the same time in a new
-> commit? Now that both PMU and tracing is working maybe it would be a
-> waste to throw that away and hiding it behind an option is better. Or I
-> can leave the PMU as it is and just keep tracing disabled in pKVM.
-> 
-> I don't mind either way, my main goal was to get exclude/include guest
-> tracing working for normal VMs. For pKVM I don't have a strong opinion.
-
-Unless someone has strong opinions about making this work in protected
-mode, I am happy to see tracing support limited to the 'normal' nVHE
-configuration. The protected feature as a whole is just baggage until
-upstream support is completed.
+Applied, thanks.
 
 -- 
-Thanks,
-Oliver
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
