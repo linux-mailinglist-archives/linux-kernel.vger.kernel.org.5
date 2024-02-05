@@ -1,108 +1,121 @@
-Return-Path: <linux-kernel+bounces-52604-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64A09849A57
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:33:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EEBC849A59
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:34:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0666BB265B0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:32:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 232151F21350
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:34:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54F361CAA0;
-	Mon,  5 Feb 2024 12:32:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFB291BDCB;
+	Mon,  5 Feb 2024 12:33:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sWcAb1um"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="iBUOeyK3"
+Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFD6D1CA88
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 12:32:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A31861BC3D;
+	Mon,  5 Feb 2024 12:33:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707136331; cv=none; b=J2TrYyHzsD1awyI5b740QZRxlImhqXrk3orwDt5780MeVbqGwsH4p3cDlXObkwKHoVAwWGnkmiF8cm/7bVT41JxeBoPlrI8PzbNEUtS1MwxQmhkWDKyTJgC531ngIxUxbBY9u7CTKU42BaORBvjs6bTlFjTwsSjr83s5cwVOe80=
+	t=1707136430; cv=none; b=VnktjnX13JwxB98ZS73hZwhAEo4QfPrZ02pXjEyq1iZL5lTXwDvXM1WTC+Z4eubYvvD1BXkpBM1fHshSxs88pgKmf+9N4W2rP6cfENuQbKPBz1wfFLBB3bfs4U36IXGjn6RQPCQkzQcG0viHlA4mhd4fZWlSiCwpMJfohPYILWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707136331; c=relaxed/simple;
-	bh=F1z41l7Z7e/jSHjrr+FGrKBFyuoXBDs1ejoNPFBfZwE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=h0sL+1pUhhhP02UODqP8hB4fybm1mZ6VaOX8WYR1vTEvMKmWTOUCZsp77+9Fsd/6pLoH5PHXvq3x2O7IIiEX9omaHIxoAo9IEntKRluOA7kRIrqGlv5kgQDKaYiUGtIyKeN29PaT2BO+w1F7y2JbqGXua+H2yg10DGu4LgfFc+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sWcAb1um; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51124e08565so6606129e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 04:32:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707136328; x=1707741128; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EQSlfcZABw5oM4k117qg/VOCg+HuBjTCp9wS3cnGuAo=;
-        b=sWcAb1umaH3dQPXU2QSiiHfeuoY2aVHc9vBGCYsQLzZ8VKXzI6i+YzJLKQxfeB1MUz
-         otohY8/tm1zi5d1fC/3SVvREcOb73r/ZKrQi7yaFVvuW5Pt7HY7Enz3PWT9ieA8azFdl
-         Yycs1d2ClXUSC+YV1ZunyXBrUqupl7OoaND9CvYonSw8NZ1CnSULhU8GkISb7Est94Tm
-         y+3Bzsu6SMv37ktHs7oPJ4Z1lB4J9O+y+QA34lpn7ppt8v5KLlgTLNuONaDwFWicAgtX
-         S8vP5YARILhQek0hoF4ffdp892M1xojCIb9eLUvj8Cgd2Lvsugj2nQcqpZ9z8x3yJ5dy
-         0YIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707136328; x=1707741128;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EQSlfcZABw5oM4k117qg/VOCg+HuBjTCp9wS3cnGuAo=;
-        b=fDncadgBNIcdHnXEfrHsTCd1J2PDFuJtcq50GWhkCy4GXCH3wYrT1M7bv9TM4rvlCV
-         1LEGhattduNssVgMt7/GirHahQ/j+egzXyqT+FcHsWkUWLuCzYyiDwXNdMBUjd8RWEkM
-         GGgBr75k5GO7L6Sd01m83FhTFSiLiq8kYbELKooPm4EsSGa7S0R574r7qXWPBF1Ps8TP
-         Z6m5xbQwx5PY1eSIxp58XDX2UiNsN8RE+h/fYE271Gz+JIzUMAMAkqMw2/RjX+t3CHRu
-         jlHMxzsQTrfazLYq1f7DuT8J3B4OUt7wXb/9WC/8e63UXisQ2v8D0wD0IBuPkpv19fMd
-         8kKg==
-X-Gm-Message-State: AOJu0YwbSV8YHD7xFK01/qLGIKe0/Y6f9EPo/bANrxq8Oxq7jaEAbriX
-	9bh15Oy80Slolpc+Oa1FjEHlwWyuZC/9/6nuI8sILQt1dl+w1JEAxJtckyRiVPk=
-X-Google-Smtp-Source: AGHT+IG/+JCnrxBmmQ8061gKTQNA6x8e9cIaS4nSAzGosJjaQCSUaJmB2tguPKfjQAehoKWfIrgGJw==
-X-Received: by 2002:ac2:52b2:0:b0:511:48aa:d621 with SMTP id r18-20020ac252b2000000b0051148aad621mr3504930lfm.66.1707136327768;
-        Mon, 05 Feb 2024 04:32:07 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU5/jVhMWAbyCiDwSAFnqAUMJx5v3i95llgo9laFwrB5lTV6L8wHevdjtC4K58jGyE3vBHPB2jtlQsD2Fa0IFZ7QRWEb8M+Cn2tBXeudrCUviCDjd38D8wkoy0368Rs35822YFFlTpKFukpk+DxXYKY69nKJ/LTN3l7cwbR55qNSOP63dEw3HhdW2BV6tSLyyK+Ikg5xpLZhUI8j/LkP5TDbwN+ZwLujP9ST3Fn0RRuGX2aHxIZFMBqUXU=
-Received: from [127.0.1.1] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id v11-20020a05600c470b00b0040fdd7cbc8dsm1414453wmo.47.2024.02.05.04.32.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 04:32:06 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Russell King <linux@armlinux.org.uk>, 
- Alim Akhtar <alim.akhtar@samsung.com>, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-In-Reply-To: <20240204-bus_cleanup-arm-v1-1-41d651dd8411@marliere.net>
-References: <20240204-bus_cleanup-arm-v1-1-41d651dd8411@marliere.net>
-Subject: Re: [PATCH] arm: s3c64xx: make s3c64xx_subsys const
-Message-Id: <170713632561.37217.11792751448407951770.b4-ty@linaro.org>
-Date: Mon, 05 Feb 2024 13:32:05 +0100
+	s=arc-20240116; t=1707136430; c=relaxed/simple;
+	bh=ZCWpwwDP32QW23OHxqcS6dyIhG+EZnGUM+vdeUCbChQ=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=V7SmIVp0gP4d+fbwFrY+mJJD1d/QwBXH8/IRc+9re6gOfTEB4KkAAcNJ82qysgJNpHwNP6Cj+WTpKRNXH2LPRihIjPzq6JYoCMZvX0NbAj6rA4MByQOzOvKhNOUVqDzC/EnXv79oUE6LikYkraWuE0GvIeTuzEvWFf9FUKOgWNo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=iBUOeyK3; arc=none smtp.client-ip=185.70.40.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1707136426; x=1707395626;
+	bh=Koptk02WV6BeYNID6QKo1BWynpaJzVcgM9vAm9rLNbY=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=iBUOeyK3HhTdc8lgsE31Vu767CZcsaMMDP2tX5btt8UO6ecAU3r5SIFXNFT8CxKmW
+	 UDvqP7UFoBd5+PLkiet7e8Srvgz9iCnpUha32FSvKqm6wqIpetUlXLeHnVOK0cVti3
+	 Z8Kp9lbiwZ3rD/YKzyroZkhAgyclBEOIrzk7SmLjN/Q+B7GwocbhuiOR7ZgIQGViu6
+	 2vcp2bI1QtvMuR5R5O8Pp/9ZvyL2OiA18NuOn/739FzH8ZLBpdiQTCEIc67EBprkI9
+	 pFP8AsdiGUxdpNRtsxxBUP3m5aAAjYur3XL0aAcuukoNAN1PULQUfNwsOoUxxu2Xwp
+	 YLTQ3nFKlq+ng==
+Date: Mon, 05 Feb 2024 12:33:27 +0000
+To: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Peter Zijlstra <peterz@infradead.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>, Dan Williams <dan.j.williams@intel.com>, Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, Thomas Gleixner <tglx@linutronix.de>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v4 3/9] rust: file: add Rust abstraction for `struct file`
+Message-ID: <5f261c6a-785b-4bc5-974f-ad43c3a312b9@proton.me>
+In-Reply-To: <20240202-alice-file-v4-3-fc9c2080663b@google.com>
+References: <20240202-alice-file-v4-0-fc9c2080663b@google.com> <20240202-alice-file-v4-3-fc9c2080663b@google.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+On 2/2/24 11:55, Alice Ryhl wrote:
+> From: Wedson Almeida Filho <wedsonaf@gmail.com>
+>=20
+> This abstraction makes it possible to manipulate the open files for a
+> process. The new `File` struct wraps the C `struct file`. When accessing
+> it using the smart pointer `ARef<File>`, the pointer will own a
+> reference count to the file. When accessing it as `&File`, then the
+> reference does not own a refcount, but the borrow checker will ensure
+> that the reference count does not hit zero while the `&File` is live.
+>=20
+> Since this is intended to manipulate the open files of a process, we
+> introduce an `fget` constructor that corresponds to the C `fget`
+> method. In future patches, it will become possible to create a new fd in
+> a process and bind it to a `File`. Rust Binder will use these to send
+> fds from one process to another.
+>=20
+> We also provide a method for accessing the file's flags. Rust Binder
+> will use this to access the flags of the Binder fd to check whether the
+> non-blocking flag is set, which affects what the Binder ioctl does.
+>=20
+> This introduces a struct for the EBADF error type, rather than just
+> using the Error type directly. This has two advantages:
+> * `File::from_fd` returns a `Result<ARef<File>, BadFdError>`, which the
+>   compiler will represent as a single pointer, with null being an error.
+>   This is possible because the compiler understands that `BadFdError`
+>   has only one possible value, and it also understands that the
+>   `ARef<File>` smart pointer is guaranteed non-null.
+> * Additionally, we promise to users of the method that the method can
+>   only fail with EBADF, which means that they can rely on this promise
+>   without having to inspect its implementation.
+> That said, there are also two disadvantages:
+> * Defining additional error types involves boilerplate.
+> * The question mark operator will only utilize the `From` trait once,
+>   which prevents you from using the question mark operator on
+>   `BadFdError` in methods that return some third error type that the
+>   kernel `Error` is convertible into. (However, it works fine in methods
+>   that return `Error`.)
+>=20
+> Signed-off-by: Wedson Almeida Filho <wedsonaf@gmail.com>
+> Co-developed-by: Daniel Xu <dxu@dxuuu.xyz>
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> Co-developed-by: Alice Ryhl <aliceryhl@google.com>
+> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+> ---
+>  fs/file.c                       |   7 +
+>  rust/bindings/bindings_helper.h |   2 +
+>  rust/helpers.c                  |   7 +
+>  rust/kernel/file.rs             | 249 ++++++++++++++++++++++++++++++++
+>  rust/kernel/lib.rs              |   1 +
+>  5 files changed, 266 insertions(+)
+>  create mode 100644 rust/kernel/file.rs
 
-On Sun, 04 Feb 2024 11:46:21 -0300, Ricardo B. Marliere wrote:
-> Now that the driver core can properly handle constant struct bus_type,
-> move the s3c64xx_subsys variable to be a constant structure as well,
-> placing it into read-only memory which can not be modified at runtime.
-> 
-> 
+Reviewed-by: Benno Lossin <benno.lossin@proton.me>
 
-Applied, thanks!
-
-[1/1] arm: s3c64xx: make s3c64xx_subsys const
-      https://git.kernel.org/krzk/linux/c/db085a6c66337799ad5983c5c6d4b1d8386f4256
-
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+--=20
+Cheers,
+Benno
 
 
