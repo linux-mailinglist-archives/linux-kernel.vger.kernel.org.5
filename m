@@ -1,142 +1,108 @@
-Return-Path: <linux-kernel+bounces-52421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52425-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F2A28497E4
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:40:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 371FD8497F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:42:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D585282941
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:40:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CEFD1B28190
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:41:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A5CE1759E;
-	Mon,  5 Feb 2024 10:40:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E7661862B;
+	Mon,  5 Feb 2024 10:41:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="pOXBKu2U"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="hen6ilYr"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8E311755E;
-	Mon,  5 Feb 2024 10:40:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E778E182D8;
+	Mon,  5 Feb 2024 10:41:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707129613; cv=none; b=gTQqE+a3ZqgEGB2YkhJQMOY3hk6mlHBBc5W7Q9TFqkYdM7k4SSaBO0Oq3so0UieIH/bua87FxeNqTSYz6FoH5rdxilLsj0gR7f+saTErDrFyHqYduAP9fElUagKUezkkwjx1dYEuUjWuWMEFG6w0s+rYoqHToFEjQtazivuWYw8=
+	t=1707129679; cv=none; b=RLfaEviG9WXhj5XloNPT4jWkFbNvpoFh1J6lZRNWYQcGMZ8jBPxKN5wHnKj1lUo+uh1ckGRqM8HPRQD26oFs7irfyd0qaAf7WxI+c2NDkUaxd2VktO4rNHEcR8/NLEJ+apHre8/1bA4NrZNzZpzm8bOcD0wTJ2kNRfqx5iBYjPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707129613; c=relaxed/simple;
-	bh=Pi6euJLSnj2co6H/IooWtWX35oWGVFQDRFlDcv+0sck=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=E0WHV88G4rwESDwxbuFdZ9HdNb5SwlpRJoV4LTnIywWUssbQByHbR6Ath3cHw7T9kgh0RUJJrsrppyjcR7rsKrnGDKrdiFpu7l7ZL8lPULFiHrvK6E53ad9DAf2LPxd+gFHDo8nVtuqwhZiXhQ3xmLEoDlrbgjfMY55ElqiqMcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=pOXBKu2U; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=/XPiUugopTvJyLAW30gfJ0WGytmJrayjsJOj85rr9tA=; b=pOXBKu2U2s9ahudf5rB1rX1L9T
-	nCn5+N8MrXtz+PeaZKjGCZ4EJUpy6oQZKCXwx4AqGkqmEDpNN381D05iUCB2y98Ec2or/6s8vz5YN
-	nIIEvx9xSdl7F/zlMQnA5orfDEtXrAwmOCs+jjhU/Nhgmd8gV3ASuOGqX/YGpVTSB7jkUmSanOUVp
-	hpLhLoNp8xCeqNs9lANdusVHZs0I7Dm1/px7bnjQnHJddXouvQpSqAOg/HHw28yZKeUlkKAAIqNbo
-	Myh4c8TE3eYlndJLUJogiJMUiXBgwLxDaxMXevigd1m1K+eMySJ3khsrqapGoNzNF/9v5vPAZnxRd
-	9aOKIeaw==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rWwOJ-00000002rJF-3GlM;
-	Mon, 05 Feb 2024 10:39:55 +0000
-Message-ID: <8f3bab1f-8697-40c0-91f2-de934b4b9ddb@infradead.org>
-Date: Mon, 5 Feb 2024 02:39:53 -0800
+	s=arc-20240116; t=1707129679; c=relaxed/simple;
+	bh=wssURT5v7um6YcanCz/wfG32MiB35I/5gzvQQspAiwQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jxndj2iSc/8LUcedVkGmD8G28xt7hHdOusilj4Wja+wUyKJULPwbbX4zhPqgw93aMZRmo1/2i2G09S6+q732Kp4926oFAgu2sZrvyEDexshvqoQa1ybSofISM8IeK4HVK1jxngOY5l8nDNyeA6HYj4WYppEkzYNIIDpM106tPFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=hen6ilYr; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 03FCF40E023B;
+	Mon,  5 Feb 2024 10:41:08 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id Vy97vtsPc2wl; Mon,  5 Feb 2024 10:41:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1707129666; bh=OmsWebiGN1qyvPWoDA+cPPiX53nBdnIUWelFJrj95ow=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hen6ilYr/nMmO0Op77bBmLHDxGwIGP5TzW3PENBHg8qXtm7vv4s8QQwIMjbE68Rri
+	 hdGxQa5sv6ikRzOjZb4XFfY1G2Xi2WwhJcTHZwBm+uDvxqgsCowHPu5mzn6BGP8mEU
+	 G5l2B+yOZ6pjxWbKLfznwOxY/AlfPfYsY1sBYcKj5ziczH1Cbn4aEuZQeoy+XbsuDj
+	 78PXe5+OFPJRU8cZrzzKSrEHzV2eBrH03ULU9JOqPJR4o0ISwivZteEcznkvUN+n5U
+	 DtWhv1UMeSEFOCDu6aSHfvsYuFkng1Hmhpx3+sThg7cPFLbsIb9jUZf2Cr2bKjUlTg
+	 W3yk2kakDCCVuFi0G9fDkqEq6Oe+xmnQS9VNchkpbx1UxYsD6cuHDYlVp5OX8+imOw
+	 5aYTzhQ4uI+XOhtREqCqjG5Cd5tmp1CJJ/YRkuz/WAe2nnV+PsnT/jjRW8yzQQihQy
+	 zZRI4A/NR2Y4PTjTPQ5FI7tuHcCj3PnUEchCmjbxw99iNAWYZvPJOPcrHAHzqDF+xT
+	 e1kqH+q6slm7Rc3J4zQwLBXGbgwuJ14Ke+MSWMHP+qkm/2Dts03BN2jKxBqrBtUy6k
+	 bbWNkrSvCLedHDYsa5mN72aXbq0gvM15szPcN1s+XZJUQn6j4G4fZ/uDxsNZvMcYsb
+	 akKY3eE3Ush9ae87yS1mXAh0=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B16B940E00B2;
+	Mon,  5 Feb 2024 10:40:47 +0000 (UTC)
+Date: Mon, 5 Feb 2024 11:40:41 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Ard Biesheuvel <ardb+git@google.com>
+Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+	Kevin Loughlin <kevinloughlin@google.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>,
+	linux-arch@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH v3 04/19] x86/startup_64: Simplify calculation of initial
+ page table address
+Message-ID: <20240205104041.GNZcC7KctURKeu_3wf@fat_crate.local>
+References: <20240129180502.4069817-21-ardb+git@google.com>
+ <20240129180502.4069817-25-ardb+git@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 17/17] linux: v4l2-vp9.h: Fix kerneldoc
-Content-Language: en-US
-To: Hans Verkuil <hverkuil-cisco@xs4all.nl>,
- Ricardo Ribalda <ribalda@chromium.org>, Jonathan Corbet <corbet@lwn.net>
-Cc: Tiffany Lin <tiffany.lin@mediatek.com>,
- Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
- Yunfei Dong <yunfei.dong@mediatek.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Sakari Ailus <sakari.ailus@linux.intel.com>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Hans Verkuil <hverkuil@xs4all.nl>,
- Kieran Bingham <kieran.bingham@ideasonboard.com>,
- Bin Liu <bin.liu@mediatek.com>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
- Vikash Garodia <quic_vgarodia@quicinc.com>,
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Alim Akhtar <alim.akhtar@samsung.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- Andrzej Hajda <andrzej.hajda@intel.com>, Bingbu Cao <bingbu.cao@intel.com>,
- Tianshu Qiu <tian.shu.qiu@intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-arm-msm@vger.kernel.org,
- linux-samsung-soc@vger.kernel.org, linux-staging@lists.linux.dev,
- linux-amlogic@lists.infradead.org, Sakari Ailus <sakari.ailus@iki.fi>
-References: <20240126-gix-mtk-warnings-v1-0-eed7865fce18@chromium.org>
- <20240126-gix-mtk-warnings-v1-17-eed7865fce18@chromium.org>
- <ZbTTb-SdK-EubGdc@valkosipuli.retiisi.eu>
- <201ae1d1-1e03-40e2-9cc4-49df70abb8da@xs4all.nl>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <201ae1d1-1e03-40e2-9cc4-49df70abb8da@xs4all.nl>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240129180502.4069817-25-ardb+git@google.com>
 
+On Mon, Jan 29, 2024 at 07:05:07PM +0100, Ard Biesheuvel wrote:
+> This is all very straight-forward, but the current code makes a mess of
+> this.
 
+That's because of a lot of histerical raisins and us not wanting to
+break this. I'm single-stepping through all these changes very carefully
+to make sure nothing breaks.
 
-On 2/5/24 02:29, Hans Verkuil wrote:
-> On 27/01/2024 10:57, Sakari Ailus wrote:
->> Hi Ricardo,
->>
->> On Fri, Jan 26, 2024 at 11:16:16PM +0000, Ricardo Ribalda wrote:
->>> Kerneldoc cannot understand arrays defined like
->>> v4l2_frame_symbol_counts.
->>>
->>> Adding an asterisk to the name does do the trick.
->>>
->>> Disable the kerneldoc notation for now, it is already ignored:
->>> https://docs.kernel.org/search.html?q=v4l2_vp9_frame_symbol_counts
->>
->> Wouldn't it be nicer to fix kerneldoc instead? It might not be difficult at
->> all.
->>
->> Feel free to, but I can also give it a try.
->>
-> 
-> It would be nice to have this fixed in kerneldoc itself. I'm holding this
-> patch back for two weeks to see if someone wants to work on kerneldoc.
-> 
-> If not, then I'll take this anyway to fix the noise in our build.
-> 
-> Note that while this header is indeed ignored in the documentation, that
-> is really more a bug and it would be nice to actually include this header
-> somewhere in our documentation. So fixing these kerneldoc warnings one way
-> or another is something that we should do.
-> 
-
-It's just waiting for Jon to apply it: (from Sakari)
-
-https://lore.kernel.org/all/20240131084934.191226-1-sakari.ailus@linux.intel.com/
-
-Thanks.
+Thx.
 
 -- 
-#Randy
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
