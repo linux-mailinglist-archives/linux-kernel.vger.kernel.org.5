@@ -1,113 +1,98 @@
-Return-Path: <linux-kernel+bounces-53967-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53975-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DCED84A88D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:06:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D733D84A8A3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:08:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB3191F2CC97
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:06:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82DB21F2AE30
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:08:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A974F1E5;
-	Mon,  5 Feb 2024 21:20:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 960844F211;
+	Mon,  5 Feb 2024 21:25:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KsDHlM0s"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CTnWI9hQ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF3E945953
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 21:20:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59D651AB81F
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 21:25:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707168051; cv=none; b=H0wuiMQ1ZG9089ikgcPYWdz7esdC9Qi9yoWhbgoYvrPvLWC7EyYA0fUraVkO1A5e7buzQedWiPYK2/CGMTbWGiaa0UOJdjO4WwapIHXHLbAUVwOSVNQXRo1hb6njO9ZInZMky2/OLTVW0gfjE2y5qvvQOEWfwvQSWc9zvHnAQcw=
+	t=1707168303; cv=none; b=VdnU/OGyKJpmUbbMysSM615NAn7jZqSI95awixrp8sPBok0aJO70giVM9ejUpIx20bOqQQ36Z2cdKBE03PxFLvlDX3QhcLq0oKc43kPq90er0Wa8DhwkP3QlQnLIPOTHClM0IdLYnpIYH1q2618ockH6Q1UcnvzIP9a8JfDHn3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707168051; c=relaxed/simple;
-	bh=M9O3+Ozab6saJ9Z898RaMAf45Ltfzqt72TIxEA7NSds=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=E1ncCwmDct8FKbwmSo9hSdNs4J6J3XXpvTf1VKJcOYk29ObKNwp3+6Gi9Ds/KkwKgvJ30s4yTeL9VU/nPuE0d9FkxTQ9Gxfo9riSmiKWNjKU4XnJyPkuwwBiIvfTjEsdNMgjj3bHkhNuo7d3Tm+LE4/KygqsgfW86V1fbNgyHp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KsDHlM0s; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6040a34c24bso3478547b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 13:20:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707168049; x=1707772849; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jNIvfpTU2Fpa4ge5KnuIotPD5KC6q3mmjxvezR8AkOo=;
-        b=KsDHlM0soT9qHy72nMp+pmFlQfvY+J2Vy6/RKbSpR0G6RLHY0KWQz/MptMS5UNUdqT
-         eeghsPO7jhE/hNOLf4SLxxfd079JsXVufE5g6B+2GopueuqLnwh2PdF2SUxiAKVw2IuN
-         1DqgUgR1tnOOWsPvqGLdj9yqwGG4xNqThJvH1gac2lln71XFqFYoBz7KVgL8qzyLORyC
-         NflTDKiKwRzUFkFKZIWIYOSPzMwbsyWUfY+jnIYQo2qroOGgK/CBY1uOUml4Qoag3DTU
-         KMZqTdQQayw84vfKhpNNpodPlICJfhcqdb+OeeiJ6U159hZnV4yEdioIS18bsd01GCZ/
-         9iPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707168049; x=1707772849;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jNIvfpTU2Fpa4ge5KnuIotPD5KC6q3mmjxvezR8AkOo=;
-        b=wYN8X/PZIgC+NkPuVL+uD6F2FIspipO2G7HBIJdhpYoGdXTGRNXuCtbRMvABE1u71g
-         afLzfl0o81VFFfu64QR4QzVlYntkfQpxSV68+FKGfS+73RBXrJZsKp0DV0ajKjs2zgOK
-         Shfva4U24T1XAIdQPWMO5nWlFNbmYjfo3bew4eygrMN7BnuWcMUb3Zr35w6IxX5kRsRn
-         7Y9hYupsXAymN94SHwXhGC73XsX9z15MeWOoZHB5ebPo+yLbCnLpQdshpuD+Cqh9kUMt
-         m8EXF/A6hYczWSlpi+Te/+66Jl+hB5nM6cXJmdOHXytS3PSlE13uviMOHZUh/N3cxyim
-         AO/w==
-X-Gm-Message-State: AOJu0Yx4xajkefyjHJhfhdny0qh0xRVTi9jDoyYGKeLbNguM1UeFYpgT
-	IDT7tenETcKDBaWBMHmz1YGoRah9KNsjMmj/GEVtmEM2mYdsetv/WEYZtwieom+B5OcqbDhDp0Z
-	8ewBPlNk5NadsnrW/jg==
-X-Google-Smtp-Source: AGHT+IG3rtxQ30HFoMYrB9CwJEYIFwygob6z+BpBr6JkE2L81EEy5Naj69geg9TJ7LPf+Bv75g4pLQO69lQDNu4M
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a81:4cc7:0:b0:602:d83f:bf36 with SMTP
- id z190-20020a814cc7000000b00602d83fbf36mr150466ywa.0.1707168048867; Mon, 05
- Feb 2024 13:20:48 -0800 (PST)
-Date: Mon, 5 Feb 2024 21:20:46 +0000
-In-Reply-To: <20240201-b4-zswap-invalidate-entry-v2-2-99d4084260a0@bytedance.com>
+	s=arc-20240116; t=1707168303; c=relaxed/simple;
+	bh=cLLUzHtVNa9Ni8zK+vujHDtOv0dDf+RtNRn2qD7fUzM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EGuY+/wnZVRjOH8seloXAu1YK65RBRmC905qqMwxrIhLjtI58AEaLKkzi5+g7GJzJSlOleoHHKaOr6cOFzAZbN9fNSIXTV27cwhCOL8x2wCz6NSOVqrbwbn2Fmd9Wc97vvC43iC/orKPIpvdf/G1IVL9gatpvKTbcWrlQT9xDE0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CTnWI9hQ; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707168302; x=1738704302;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=cLLUzHtVNa9Ni8zK+vujHDtOv0dDf+RtNRn2qD7fUzM=;
+  b=CTnWI9hQUNTVt7DIE3n5TMOzOJkgPg+62knyrS61NZWyL65oY0MsGO+z
+   eI8thS02icpgMimlmNQ03tj40ivbGmPpNr3ySEbWwHDK0n/lLV04t+vMK
+   ZE5++PGtFRGkNGMWKmQXZzbllI0NauQmfsJZehmjGjJKHvgiJBRicpYo8
+   YNTIxR3YsKyJcZXwW34UETekJqw3XXGVEsZiu4FdNEsgsoZZCHMPEuOPY
+   EoVtK3zHcJ1caJsH8bHwJj5YjPRkBIOp1pW2XkjMPzWxa0D1lTfgncjWo
+   aCM5fBAwwdVv/3BH2FU850+hRuPfa1oL0W/Qo8QHlzxRflPEMoOonuGCL
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="11347103"
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="11347103"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 13:25:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="1100845"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by fmviesa006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 13:25:01 -0800
+Date: Mon, 5 Feb 2024 13:26:20 -0800
+From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: alexs@kernel.org, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	linux-kernel@vger.kernel.org, sshegde@linux.ibm.com
+Subject: Re: [PATCH v3 2/4] sched/fair: remove unused parameters
+Message-ID: <20240205212620.GA17461@ranerica-svr.sc.intel.com>
+References: <20240201115447.522627-1-alexs@kernel.org>
+ <20240201115447.522627-2-alexs@kernel.org>
+ <xhsmh1q9vhrg3.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240201-b4-zswap-invalidate-entry-v2-0-99d4084260a0@bytedance.com>
- <20240201-b4-zswap-invalidate-entry-v2-2-99d4084260a0@bytedance.com>
-Message-ID: <ZcFRLiazBrbhm4Gf@google.com>
-Subject: Re: [PATCH v2 2/6] mm/zswap: invalidate zswap entry when swap entry free
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Nhat Pham <nphamcs@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <xhsmh1q9vhrg3.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 
-On Sun, Feb 04, 2024 at 03:06:00AM +0000, Chengming Zhou wrote:
-> During testing I found there are some times the zswap_writeback_entry()
-> return -ENOMEM, which is not we expected:
+On Fri, Feb 02, 2024 at 03:27:24PM +0100, Valentin Schneider wrote:
+> On 01/02/24 19:54, alexs@kernel.org wrote:
+> > From: Alex Shi <alexs@kernel.org>
+> >
+> > sds isn't used in function sched_asym(), so remove it to cleanup code.
+> >
+> > Signed-off-by: Alex Shi <alexs@kernel.org>
+> > Reviewed-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
 > 
-> bpftrace -e 'kr:zswap_writeback_entry {@[(int32)retval]=count()}'
-> @[-12]: 1563
-> @[0]: 277221
-> 
-> The reason is that __read_swap_cache_async() return NULL because
-> swapcache_prepare() failed. The reason is that we won't invalidate
-> zswap entry when swap entry freed to the per-cpu pool, these zswap
-> entries are still on the zswap tree and lru list.
-> 
-> This patch moves the invalidation ahead to when swap entry freed
-> to the per-cpu pool, since there is no any benefit to leave trashy
-> zswap entry on the tree and lru list.
-> 
-> With this patch:
-> bpftrace -e 'kr:zswap_writeback_entry {@[(int32)retval]=count()}'
-> @[0]: 259744
-> 
-> Note: large folio can't have zswap entry for now, so don't bother
-> to add zswap entry invalidation in the large folio swap free path.
-> 
-> Reviewed-by: Nhat Pham <nphamcs@gmail.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> AFAICT this is unsused as of:
+>   c9ca07886aaa ("sched/fair: Do not even the number of busy CPUs via asym_packing")
 
-Acked-by: Yosry Ahmed <yosryahmed@google.com>
-
+Maybe a Fixes: c9ca07886aaa ("sched/fair: Do not even the number of busy CPUs via asym_packing")
+is in order?
 
