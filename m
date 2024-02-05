@@ -1,178 +1,155 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52365-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39BD5849729
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:00:25 +0100 (CET)
-Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229456AbkBEKAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Feb 2024 05:00:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbkBEKAH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Feb 2024 05:00:07 -0500
-Received: from mail22.mail.schwarz (mail22.mail.schwarz [185.124.192.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B1497;
-        Mon,  5 Feb 2024 02:00:08 -0800 (PST)
-X-SCHWARZ-TO: coreteam@netfilter.org, linux-kernel@vger.kernel.org, pabeni@redhat.com,
- davem@davemloft.net, kadlec@netfilter.org, i.maximets@ovn.org,
- netfilter-devel@vger.kernel.org, fw@strlen.de, netdev@vger.kernel.org,
- edumazet@google.com, pablo@netfilter.org, linux-kselftest@vger.kernel.org,
- horms@ovn.org, shuah@kernel.org
-X-SCHWARZ-ENVELOPEFROM: felix.huettner@mail.schwarz
-Received: from felix.runs.onstackit.cloud ([45.129.43.133])
-  by mail22.mail.schwarz with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 10:00:00 +0000
-Date:   Mon, 5 Feb 2024 09:59:59 +0000
-From:   Felix Huettner <felix.huettner@mail.schwarz>
-To:     pablo@netfilter.org, i.maximets@ovn.org
-Cc:     coreteam@netfilter.org, davem@davemloft.net, edumazet@google.com,
-        fw@strlen.de, horms@ovn.org, kadlec@netfilter.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        luca.czesla@mail.schwarz, max.lamprecht@mail.schwarz,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pabeni@redhat.com, shuah@kernel.org
-Subject: [PATCH net] net: ctnetlink: fix filtering for zone 0
-Message-ID: <ZcCxn9HDsB8DUPrI@felix.runs.onstackit.cloud>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DCCD849727
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:00:15 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E70491F2221D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:00:14 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DE6F134A0;
+	Mon,  5 Feb 2024 10:00:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Rc/JlJEj"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 424CE12E45
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 10:00:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707127207; cv=none; b=UFscxg7mUgteAlMadExj5rdV6ziQdKSacHg7SfwbbSwGsDmqfTgZ6Ev34aFbNz2v0J17cbxwZqFmcq8rPvkbIfxhOrfz4AmVYGW83vQQ7q273/7xkr91wbIUlFnAyZ3JX1byyXihAuiPUxqIdwR2Btlyx1Su+Ih3/2aODsib4qE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707127207; c=relaxed/simple;
+	bh=0zwGLQozIm1xLIUb+JT1QR0nH+Sj7un9j5w6FlqwRqA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=g+VP8wOZk0xyqCOG+ERex6RjwlK9qNkq/lLTrRu9rY1DRbb83kMxiy+7rlgjfqAudocdN+OW7/kNLVIyOMlMenKbpS+eUKeWT28FTYyXIvylvlpDyMMelz701pcBt7msC2NsFRD0YNCZyuuFVF4sH2aQKhk6oLVaOARmW6nYVfY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Rc/JlJEj; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707127205;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y1Gn5QY0RzFz/c12Z/qyBnZZspPbZJTFIJYfZUyz5g0=;
+	b=Rc/JlJEjFs+lQ/VsqDODI7PqwNqGtTZ+XMuTuOdOYew0oQg6BH0+QL282adZukX+o/yhPQ
+	Jyv8PZXkRmLzPMHjaZdqnxuxQXDwGtC068pSpIAfw4tc8sqIvgy3LFxLtnTtl6CLhDWUVc
+	zq9T3Rs+kLCzMkWeGBYJ5q6Xr87PgMM=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-527-1WmNpTp7OcqK7EMeteud7A-1; Mon, 05 Feb 2024 05:00:03 -0500
+X-MC-Unique: 1WmNpTp7OcqK7EMeteud7A-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a35118e98caso252618166b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 02:00:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707127202; x=1707732002;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y1Gn5QY0RzFz/c12Z/qyBnZZspPbZJTFIJYfZUyz5g0=;
+        b=VnJAAFbq0vn7fjhK6sCvDMHbZrpHb8JNEOiEUtwvPWfGAaha9dgsvbtFwvij4j6vN7
+         E308ptzTlAxNlohmTHhureCwzTEpgEuMKYQQ+vU6h+HXxakWSeP6YzQpaAEDzoclNvEb
+         OKEL08zHBiP/qvQULzNxdH0//cxU+T5T4KtinFqfSV+ClNiCCSsZoAKc2ZAsSfyYOwRX
+         LnDyl0wdyxshAY34RMWr+2bpJW9uTo1fvLEvQ2JrYia2+CeW6eSs0WDkjp6u3BGfYfg7
+         bY1XvVpkv6v8zoKF8Lg82vzSFqEl0qOMgKsN5JQpszlzfDfMQwYcFlfY0SdM3ZxV1lNg
+         92zw==
+X-Gm-Message-State: AOJu0YzkJ7la58fQZ1N+ZFmcgFBJbO1D/vYACPBPvnFKF29teC58tliE
+	r+YprQvxyzXC7Y7y2jLgD5AATQzuoCcndM+VqKwreB5Z75GwNJkgKHNv3CYXIycSHk/h/qNwx1R
+	fEvnKgoinjdvdi7fYzB8H6jkVyCgaBcfbCuqlVejUG14hi6F8jYn44E0ltlHnzQ==
+X-Received: by 2002:a17:906:6c9a:b0:a37:7e9c:17ea with SMTP id s26-20020a1709066c9a00b00a377e9c17eamr2558741ejr.12.1707127202756;
+        Mon, 05 Feb 2024 02:00:02 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFDasoEfxSl3kUGHu4aAoww/p36CcrrtEFIiFCNTq9O7sX/0D5DLggoumkHWtoeIrvXiXZpyQ==
+X-Received: by 2002:a17:906:6c9a:b0:a37:7e9c:17ea with SMTP id s26-20020a1709066c9a00b00a377e9c17eamr2558726ejr.12.1707127202454;
+        Mon, 05 Feb 2024 02:00:02 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXHkc55LLSsMQmfs5K3PghfD0W5Y6o+ipTZQwDlhI1YPtrAzL/9GF/wwI4wDRsnZ7N0EybIZobE6yyZV2QDLJ7xLHaFKjf1bXNJ5zfk50Yqh6Sh36nzquGVd62Tf95f1E3nFAD4YsvTwAisbkSx6SDQzabBCkMYuSM+ml756DyN1OdwNqPTmYBifwido3Ab2PdlMlD4Nw==
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id a20-20020a170906671400b00a34d0a865ecsm4078151ejp.163.2024.02.05.02.00.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Feb 2024 02:00:01 -0800 (PST)
+Message-ID: <2f244f9f-8796-4cad-8bf8-d0c3411588c1@redhat.com>
+Date: Mon, 5 Feb 2024 11:00:01 +0100
 Precedence: bulk
-List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
+List-Id: <linux-kernel.vger.kernel.org>
+List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/4] power: supply: mm8013: implement
+ POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR_AVAILABLE
+Content-Language: en-US, nl
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+ Sebastian Reichel <sre@kernel.org>, Konrad Dybcio <konradybcio@kernel.org>
+Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Sebastian Reichel <sebastian.reichel@collabora.com>
+References: <20240204-power_supply-charge_behaviour_prop-v1-0-06a20c958f96@weissschuh.net>
+ <20240204-power_supply-charge_behaviour_prop-v1-3-06a20c958f96@weissschuh.net>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20240204-power_supply-charge_behaviour_prop-v1-3-06a20c958f96@weissschuh.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-previously filtering for the default zone would actually skip the zone
-filter and flush all zones.
+Hi,
 
-Fixes: eff3c558bb7e ("netfilter: ctnetlink: support filtering by zone")
-Reported-by: Ilya Maximets <i.maximets@ovn.org>
-Closes: https://lore.kernel.org/netdev/2032238f-31ac-4106-8f22-522e76df5a12@ovn.org/
-Signed-off-by: Felix Huettner <felix.huettner@mail.schwarz>
----
- net/netfilter/nf_conntrack_netlink.c          | 12 ++++--
- .../netfilter/conntrack_dump_flush.c          | 43 ++++++++++++++++++-
- 2 files changed, 50 insertions(+), 5 deletions(-)
+On 2/4/24 18:26, Thomas Weißschuh wrote:
+> The sysfs is documented to report both the current and all available
+> behaviours. For this POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR_AVAILABLE needs
+> to be implemented.
+> 
+> Note that this changes the format of the sysfs file
+> (to the documented format):
+> 
+> Before: "auto"
+> After:  "[auto] inhibit-charge"
+> 
+> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 
-diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index 0c22a02c2035..3b846cbdc050 100644
---- a/net/netfilter/nf_conntrack_netlink.c
-+++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -876,6 +876,7 @@ struct ctnetlink_filter_u32 {
- 
- struct ctnetlink_filter {
- 	u8 family;
-+	bool zone_filter;
- 
- 	u_int32_t orig_flags;
- 	u_int32_t reply_flags;
-@@ -992,9 +993,12 @@ ctnetlink_alloc_filter(const struct nlattr * const cda[], u8 family)
- 	if (err)
- 		goto err_filter;
- 
--	err = ctnetlink_parse_zone(cda[CTA_ZONE], &filter->zone);
--	if (err < 0)
--		goto err_filter;
-+	if (cda[CTA_ZONE]) {
-+		err = ctnetlink_parse_zone(cda[CTA_ZONE], &filter->zone);
-+		if (err < 0)
-+			goto err_filter;
-+		filter->zone_filter = true;
-+	}
- 
- 	if (!cda[CTA_FILTER])
- 		return filter;
-@@ -1148,7 +1152,7 @@ static int ctnetlink_filter_match(struct nf_conn *ct, void *data)
- 	if (filter->family && nf_ct_l3num(ct) != filter->family)
- 		goto ignore_entry;
- 
--	if (filter->zone.id != NF_CT_DEFAULT_ZONE_ID &&
-+	if (filter->zone_filter &&
- 	    !nf_ct_zone_equal_any(ct, &filter->zone))
- 		goto ignore_entry;
- 
-diff --git a/tools/testing/selftests/netfilter/conntrack_dump_flush.c b/tools/testing/selftests/netfilter/conntrack_dump_flush.c
-index f18c6db13bbf..b11ea8ee6719 100644
---- a/tools/testing/selftests/netfilter/conntrack_dump_flush.c
-+++ b/tools/testing/selftests/netfilter/conntrack_dump_flush.c
-@@ -13,7 +13,7 @@
- #include "../kselftest_harness.h"
- 
- #define TEST_ZONE_ID 123
--#define CTA_FILTER_F_CTA_TUPLE_ZONE (1 << 2)
-+#define NF_CT_DEFAULT_ZONE_ID 0
- 
- static int reply_counter;
- 
-@@ -336,6 +336,9 @@ FIXTURE_SETUP(conntrack_dump_flush)
- 	ret = conntrack_data_generate_v4(self->sock, 0xf4f4f4f4, 0xf5f5f5f5,
- 					 TEST_ZONE_ID + 2);
- 	EXPECT_EQ(ret, 0);
-+	ret = conntrack_data_generate_v4(self->sock, 0xf6f6f6f6, 0xf7f7f7f7,
-+					 NF_CT_DEFAULT_ZONE_ID);
-+	EXPECT_EQ(ret, 0);
- 
- 	src = (struct in6_addr) {{
- 		.__u6_addr32 = {
-@@ -395,6 +398,26 @@ FIXTURE_SETUP(conntrack_dump_flush)
- 					 TEST_ZONE_ID + 2);
- 	EXPECT_EQ(ret, 0);
- 
-+	src = (struct in6_addr) {{
-+		.__u6_addr32 = {
-+			0xb80d0120,
-+			0x00000000,
-+			0x00000000,
-+			0x07000000
-+		}
-+	}};
-+	dst = (struct in6_addr) {{
-+		.__u6_addr32 = {
-+			0xb80d0120,
-+			0x00000000,
-+			0x00000000,
-+			0x08000000
-+		}
-+	}};
-+	ret = conntrack_data_generate_v6(self->sock, src, dst,
-+					 NF_CT_DEFAULT_ZONE_ID);
-+	EXPECT_EQ(ret, 0);
-+
- 	ret = conntracK_count_zone(self->sock, TEST_ZONE_ID);
- 	EXPECT_GE(ret, 2);
- 	if (ret > 2)
-@@ -425,6 +448,24 @@ TEST_F(conntrack_dump_flush, test_flush_by_zone)
- 	EXPECT_EQ(ret, 2);
- 	ret = conntracK_count_zone(self->sock, TEST_ZONE_ID + 2);
- 	EXPECT_EQ(ret, 2);
-+	ret = conntracK_count_zone(self->sock, NF_CT_DEFAULT_ZONE_ID);
-+	EXPECT_EQ(ret, 2);
-+}
-+
-+TEST_F(conntrack_dump_flush, test_flush_by_zone_default)
-+{
-+	int ret;
-+
-+	ret = conntrack_flush_zone(self->sock, NF_CT_DEFAULT_ZONE_ID);
-+	EXPECT_EQ(ret, 0);
-+	ret = conntracK_count_zone(self->sock, TEST_ZONE_ID);
-+	EXPECT_EQ(ret, 2);
-+	ret = conntracK_count_zone(self->sock, TEST_ZONE_ID + 1);
-+	EXPECT_EQ(ret, 2);
-+	ret = conntracK_count_zone(self->sock, TEST_ZONE_ID + 2);
-+	EXPECT_EQ(ret, 2);
-+	ret = conntracK_count_zone(self->sock, NF_CT_DEFAULT_ZONE_ID);
-+	EXPECT_EQ(ret, 0);
- }
- 
- TEST_HARNESS_MAIN
+Changing userspace API like this is never ideal, but given how
+new the mm8013 driver is and that this brings things inline
+with the docs I think that this should be fine:
 
-base-commit: eef00a82c568944f113f2de738156ac591bbd5cd
--- 
-2.43.0
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
+
+
+
+
+> ---
+>  drivers/power/supply/mm8013.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/power/supply/mm8013.c b/drivers/power/supply/mm8013.c
+> index caa272b03564..695df8bd6cb0 100644
+> --- a/drivers/power/supply/mm8013.c
+> +++ b/drivers/power/supply/mm8013.c
+> @@ -72,6 +72,7 @@ static int mm8013_checkdevice(struct mm8013_chip *chip)
+>  static enum power_supply_property mm8013_battery_props[] = {
+>  	POWER_SUPPLY_PROP_CAPACITY,
+>  	POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR,
+> +	POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR_AVAILABLE,
+>  	POWER_SUPPLY_PROP_CHARGE_FULL,
+>  	POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN,
+>  	POWER_SUPPLY_PROP_CHARGE_NOW,
+> @@ -113,6 +114,10 @@ static int mm8013_get_property(struct power_supply *psy,
+>  		else
+>  			val->intval = POWER_SUPPLY_CHARGE_BEHAVIOUR_AUTO;
+>  		break;
+> +	case POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR_AVAILABLE:
+> +		val->intval = BIT(POWER_SUPPLY_CHARGE_BEHAVIOUR_AUTO)
+> +			    | BIT(POWER_SUPPLY_CHARGE_BEHAVIOUR_INHIBIT_CHARGE);
+> +		break;
+>  	case POWER_SUPPLY_PROP_CHARGE_FULL:
+>  		ret = regmap_read(chip->regmap, REG_FULL_CHARGE_CAPACITY, &regval);
+>  		if (ret < 0)
+> 
+
 
