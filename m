@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-53848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 766AE84A743
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:27:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4BA284A730
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:24:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8F4D1C2695B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:27:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06FEFB276DE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:24:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04CF97318E;
-	Mon,  5 Feb 2024 19:45:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD7A267C45;
+	Mon,  5 Feb 2024 19:45:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="KGtXTaIK"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="VkWHnhCm"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FC3173188;
-	Mon,  5 Feb 2024 19:45:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 586D6634F2;
+	Mon,  5 Feb 2024 19:44:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707162308; cv=none; b=pBQYZuThpTlTpSk3zc18gu6gRFYSq/eZ2bAuPtYLiJMCY3hvjxMDQ53YX74IlELDp7Br+LZ7RDpl2RH2vEph6O7D6k0m3NWwpKADinFBrlc4mg83khxapR6WyWH6Mrtene4hqgos2ko6EP0LXtwCYjyPS8jzYFDuZL/xYosGFtM=
+	t=1707162300; cv=none; b=Gxj46l5nEY1RDkekJbOZjUjucjToaxUS9Jj108294Hq/bGtYa6jFnpX/Ak3GbKBwfIqyNTKOZp/xnDwjogyYPpMS7sE0bRZfju0c8eIAEM1XJq7kquj8N6PBNDDnh/MCxJqpL4SyzZfkPLJc8aJuXpUC3wcvHNNeQgH/ABT75bk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707162308; c=relaxed/simple;
-	bh=hjODPAvfHHQsYQrgcPIWkoWLz7Tm/5vLqy/n+aT9TWU=;
+	s=arc-20240116; t=1707162300; c=relaxed/simple;
+	bh=piwvd9XDrLI4E6nIns4idZqQIBccnh+XSsbLYNv6vd0=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nT+57Zg8sOPYocbka7FeU81/OUBvUihepKBOZ1Uxuw3EJz5m6S+M3Vnhxwm8DbLtaUI4tXePTeOSf+TJGnD9wG1hjis6Ze3nqj8LXRMmcu6AjLPsBR9hWxhaoo/4/nH9Hezu3KmrKpvPCA6T5UuFHSVIrr4IGlOAYpU/a24nyus=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=KGtXTaIK; arc=none smtp.client-ip=198.47.23.249
+	 MIME-Version:Content-Type; b=anhj2Y7URGEjlvNQPUQPPFSFlTsoGiE5g3D0h070pzke3BTQRzLuKP4BwryRw1ddgmeoGkUMIn+MZzsy9WRUfM//rOnYmDrFec/7v79m3AaGJVm9FwjV6yuQfM2kEhUFYW/TEp9CYJ7C8VEk0J2KiBoMWsdWyF+DG8XlONlCJfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=VkWHnhCm; arc=none smtp.client-ip=198.47.19.142
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 415Jie0V101173;
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 415JieFL019183;
 	Mon, 5 Feb 2024 13:44:40 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
 	s=ti-com-17Q1; t=1707162280;
-	bh=eDTJGp1LNK+YD1bJfvgjkV/rIr2yWhv+8KTb7j41Dpg=;
+	bh=2cm9ruqVmpJKRpRfi1ywbymPKB5JK0jfSdZffEo1IXY=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=KGtXTaIKNpTRCgWBMxGewdtW9tr/I49a7Z6K481Uik1P0I1jmVPDkLL4LC4RmiwSL
-	 kbqjMOuV6A/o7E1vPAxfCQOecHNyXihZEC/UzRmE2nGNU1EY8C2LP6+VjYVJsqcqJZ
-	 2Z5+sJAJ00dSOv36Teztbx8N5m0qnvRUl1yyo76E=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 415JielY090555
+	b=VkWHnhCmALjsai9OTAcgxL9qPQyY4V0U43LmfGnbK8vjDQmvxYgecOqENSfajorvl
+	 5e2t2t1wFsl+y5nH6pEvyotGqfSTDVMt1axqkvSFJM9FIP90EQBfce9KwT0Za49tfD
+	 Hc6YhmOLoixTlBFlmm+jqoUal46sEELyyzJH44wo=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 415Jiej3073113
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
 	Mon, 5 Feb 2024 13:44:40 -0600
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 5
- Feb 2024 13:44:39 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ Feb 2024 13:44:40 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 5 Feb 2024 13:44:39 -0600
+ Frontend Transport; Mon, 5 Feb 2024 13:44:40 -0600
 Received: from lelvsmtp5.itg.ti.com ([10.249.42.149])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 415JicQO028467;
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 415JicQP028467;
 	Mon, 5 Feb 2024 13:44:39 -0600
 From: Andrew Davis <afd@ti.com>
 To: Sebastian Reichel <sre@kernel.org>,
@@ -76,9 +76,9 @@ CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-actions@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>, Andrew Davis <afd@ti.com>
-Subject: [PATCH v2 01/19] power: reset: atc260x-poweroff: Use devm_register_sys_off_handler(RESTART)
-Date: Mon, 5 Feb 2024 13:44:19 -0600
-Message-ID: <20240205194437.180802-2-afd@ti.com>
+Subject: [PATCH v2 02/19] power: reset: atc260x-poweroff: Use devm_register_sys_off_handler(POWER_OFF)
+Date: Mon, 5 Feb 2024 13:44:20 -0600
+Message-ID: <20240205194437.180802-3-afd@ti.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240205194437.180802-1-afd@ti.com>
 References: <20240205194437.180802-1-afd@ti.com>
@@ -97,66 +97,84 @@ exit paths.
 
 Signed-off-by: Andrew Davis <afd@ti.com>
 ---
- drivers/power/reset/atc260x-poweroff.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
+ drivers/power/reset/atc260x-poweroff.c | 38 ++++++++++----------------
+ 1 file changed, 14 insertions(+), 24 deletions(-)
 
 diff --git a/drivers/power/reset/atc260x-poweroff.c b/drivers/power/reset/atc260x-poweroff.c
-index b4aa50e9685e1..ce2748d3282c3 100644
+index ce2748d3282c3..e3e4621ccb1dd 100644
 --- a/drivers/power/reset/atc260x-poweroff.c
 +++ b/drivers/power/reset/atc260x-poweroff.c
-@@ -16,7 +16,6 @@
- struct atc260x_pwrc {
- 	struct device *dev;
- 	struct regmap *regmap;
--	struct notifier_block restart_nb;
+@@ -19,9 +19,6 @@ struct atc260x_pwrc {
  	int (*do_poweroff)(const struct atc260x_pwrc *pwrc, bool restart);
  };
  
-@@ -172,11 +171,9 @@ static void atc260x_pwrc_pm_handler(void)
- 	WARN_ONCE(1, "Unable to power off system\n");
- }
- 
--static int atc260x_pwrc_restart_handler(struct notifier_block *nb,
--					unsigned long mode, void *cmd)
-+static int atc260x_pwrc_restart_handler(struct sys_off_data *data)
- {
--	struct atc260x_pwrc *pwrc = container_of(nb, struct atc260x_pwrc,
--						 restart_nb);
-+	struct atc260x_pwrc *pwrc = data->cb_data;
- 	pwrc->do_poweroff(pwrc, true);
- 
- 	return NOTIFY_DONE;
-@@ -194,8 +191,6 @@ static int atc260x_pwrc_probe(struct platform_device *pdev)
- 
- 	priv->dev = &pdev->dev;
- 	priv->regmap = atc260x->regmap;
--	priv->restart_nb.notifier_call = atc260x_pwrc_restart_handler;
--	priv->restart_nb.priority = 192;
- 
- 	switch (atc260x->ic_type) {
- 	case ATC2603C:
-@@ -225,7 +220,11 @@ static int atc260x_pwrc_probe(struct platform_device *pdev)
- 		dev_warn(priv->dev, "Poweroff callback already assigned\n");
- 	}
- 
--	ret = register_restart_handler(&priv->restart_nb);
-+	ret = devm_register_sys_off_handler(priv->dev,
-+					    SYS_OFF_MODE_RESTART,
-+					    SYS_OFF_PRIO_HIGH,
-+					    atc260x_pwrc_restart_handler,
-+					    priv);
- 	if (ret)
- 		dev_err(priv->dev, "failed to register restart handler: %d\n",
- 			ret);
-@@ -241,8 +240,6 @@ static void atc260x_pwrc_remove(struct platform_device *pdev)
- 		pm_power_off = NULL;
- 		atc260x_pwrc_data = NULL;
- 	}
+-/* Global variable needed only for pm_power_off */
+-static struct atc260x_pwrc *atc260x_pwrc_data;
 -
--	unregister_restart_handler(&priv->restart_nb);
+ static int atc2603c_do_poweroff(const struct atc260x_pwrc *pwrc, bool restart)
+ {
+ 	int ret, deep_sleep = 0;
+@@ -164,11 +161,15 @@ static int atc2609a_init(const struct atc260x_pwrc *pwrc)
+ 	return ret;
  }
  
+-static void atc260x_pwrc_pm_handler(void)
++static int atc260x_pwrc_pm_handler(struct sys_off_data *data)
+ {
+-	atc260x_pwrc_data->do_poweroff(atc260x_pwrc_data, false);
++	struct atc260x_pwrc *pwrc = data->cb_data;
++
++	pwrc->do_poweroff(pwrc, false);
+ 
+ 	WARN_ONCE(1, "Unable to power off system\n");
++
++	return NOTIFY_DONE;
+ }
+ 
+ static int atc260x_pwrc_restart_handler(struct sys_off_data *data)
+@@ -211,14 +212,14 @@ static int atc260x_pwrc_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	platform_set_drvdata(pdev, priv);
+-
+-	if (!pm_power_off) {
+-		atc260x_pwrc_data = priv;
+-		pm_power_off = atc260x_pwrc_pm_handler;
+-	} else {
+-		dev_warn(priv->dev, "Poweroff callback already assigned\n");
+-	}
++	ret = devm_register_sys_off_handler(priv->dev,
++					    SYS_OFF_MODE_POWER_OFF,
++					    SYS_OFF_PRIO_DEFAULT,
++					    atc260x_pwrc_pm_handler,
++					    priv);
++	if (ret)
++		dev_err(priv->dev, "failed to register power-off handler: %d\n",
++			ret);
+ 
+ 	ret = devm_register_sys_off_handler(priv->dev,
+ 					    SYS_OFF_MODE_RESTART,
+@@ -232,19 +233,8 @@ static int atc260x_pwrc_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static void atc260x_pwrc_remove(struct platform_device *pdev)
+-{
+-	struct atc260x_pwrc *priv = platform_get_drvdata(pdev);
+-
+-	if (atc260x_pwrc_data == priv) {
+-		pm_power_off = NULL;
+-		atc260x_pwrc_data = NULL;
+-	}
+-}
+-
  static struct platform_driver atc260x_pwrc_driver = {
+ 	.probe = atc260x_pwrc_probe,
+-	.remove_new = atc260x_pwrc_remove,
+ 	.driver = {
+ 		.name = "atc260x-pwrc",
+ 	},
 -- 
 2.39.2
 
