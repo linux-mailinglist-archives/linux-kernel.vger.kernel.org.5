@@ -1,207 +1,122 @@
-Return-Path: <linux-kernel+bounces-52299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2495E84967C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:31:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FF84849680
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:32:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49C4B1C22132
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:31:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91EA21C224AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:32:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7680212B87;
-	Mon,  5 Feb 2024 09:31:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B118812B98;
+	Mon,  5 Feb 2024 09:32:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="A+FdiCLx";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="A+FdiCLx"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="ovux59WT"
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFA7B12B7A
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 09:31:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75C4A12B71;
+	Mon,  5 Feb 2024 09:32:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707125493; cv=none; b=lA+ASeY6f+Qd8CdHDmuOXYDQUp6rLdQmjpUD7sQn3fERPLmtEBtTjQsY1SzE3Dgn5hVohucppf59uFga7wdXlqgsTzhzL9RCe8hpoQnzMjjjR/XLMHD3DlJ7VuSOzfgJS1e1lMkMhy31lT4NVtCH6ZBwTwDj5PaEgyXv8CUpshM=
+	t=1707125556; cv=none; b=mqvNERv5ELyNx9NdQfFAIMWRVRjU2l1keR9vdfAf8CdfJH9WvlPboYCdNFtbojFyAFQt0pR9M9Ft6f54yy8gXHKVOiKnBnobXz3l+0RBP19dOWh0pKAhOrtKDSMsiaH+dU5belGpwauEHeSgGEUxhH5JzXPJC6UFg0a0R/PfOq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707125493; c=relaxed/simple;
-	bh=UL684BaIf4kAVL5h6wHa3zxyK/nhEa4FuC7tBtpI68I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s+nWTrvINfItdTE3sbT/+QQwxVBqH9W4pdmsJ97Yt15L2CFGNJaBGDxPggieKdSv1phaHkbbci7KkvYaXvNNC+9f0WDFatWyJk2RIpwgV9UiE6xgdFmqnLUUCQHsTNsRx6fvnBVLPlQdrAAohmdzUR3Sd3Crw5VLjl1GG5wbZ8M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=A+FdiCLx; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=A+FdiCLx; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 8DCAE22105;
-	Mon,  5 Feb 2024 09:31:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707125489; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VHKojVI/8ySxfySQRj9+91SsbIPCFSWZG8hNQz2bKC0=;
-	b=A+FdiCLxQ2gODITcsJtDVVKXcIr3wUKZ04FqK+ifSv1l7tHErcPUwO34233AP4xq58mKRw
-	3GbgrTC4uxYzFDoTnI0vYfdDuwPjhbOUbMKgxIYJ5xOEfm4Aij8+sbkfG471b7N1zExYC6
-	Q7UtS8ZFnOYQZLYzExEQ8sS7ysUCNQg=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707125489; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VHKojVI/8ySxfySQRj9+91SsbIPCFSWZG8hNQz2bKC0=;
-	b=A+FdiCLxQ2gODITcsJtDVVKXcIr3wUKZ04FqK+ifSv1l7tHErcPUwO34233AP4xq58mKRw
-	3GbgrTC4uxYzFDoTnI0vYfdDuwPjhbOUbMKgxIYJ5xOEfm4Aij8+sbkfG471b7N1zExYC6
-	Q7UtS8ZFnOYQZLYzExEQ8sS7ysUCNQg=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 60C98136F5;
-	Mon,  5 Feb 2024 09:31:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Ky2fFPGqwGWiHwAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Mon, 05 Feb 2024 09:31:29 +0000
-Date: Mon, 5 Feb 2024 10:31:28 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc: akpm@linux-foundation.org, muchun.song@linux.dev, osalvador@suse.de,
-	david@redhat.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: hugetlb: fix hugetlb allocation failure when
- handling freed or in-use hugetlb
-Message-ID: <ZcCq8L6KpmAs11py@tiehlicka>
-References: <b2e6ce111400670d8021baf4d7ac524ae78a40d5.1707105047.git.baolin.wang@linux.alibaba.com>
+	s=arc-20240116; t=1707125556; c=relaxed/simple;
+	bh=GEntBRcn/VvV5CPwy8i6X54F9AV/5jvw0rbYXd4l4oQ=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=M2r0rrlZn0vrh1dtKxUfuiQaW2of8iCzehxomaEj/zE4lDwi1ORrW0UxQyV4M6e/cC5aN9EUNRf5fo8fsBoudokgTsBsRdKgUJD3sMIDqfmuau/gJ9E6FcfpX4QtNmhS0/rrnWLNn084nv+z57ZPceVFYvKxf7N7K1tecw1r4Pk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=ovux59WT; arc=none smtp.client-ip=212.227.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1707125533; x=1707730333; i=markus.elfring@web.de;
+	bh=GEntBRcn/VvV5CPwy8i6X54F9AV/5jvw0rbYXd4l4oQ=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=ovux59WTPEtWvqN8rRPh8tPJL/y2zUri9qeSupWxr7mTWII6DPCIXoTEnUM69zib
+	 gI7LPQUVxjvCIuXqiIsbOIy0AXB0J68XnavX67heKWA7I6Cp7BPEShIPb9rfGl279
+	 7bREACCY4YqZ99V84eGeX7J4QBZAqj0zdOHEUShVERwV8/qbQkMYYyT7zY/jdV2w8
+	 qUFu5DNT8qs1WvRLlq6XTnxN2TGAthDBdnemf5aX3BWdq4ktsu/FnlZ0YGLcr5Nzo
+	 6TjEtQQzu19Q3t8LJwBRIqV6xnsgDFpJVac8wpEuxi9xKWTtyYO5Ce1KthvfSUMyn
+	 tPTdXnXAQk0B2bbbrw==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MRW2R-1rLBlo1cqj-00NcQg; Mon, 05
+ Feb 2024 10:32:13 +0100
+Message-ID: <2a4ecf78-20e7-4678-a67d-0d66956b07cc@web.de>
+Date: Mon, 5 Feb 2024 10:32:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b2e6ce111400670d8021baf4d7ac524ae78a40d5.1707105047.git.baolin.wang@linux.alibaba.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=A+FdiCLx
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: -4.01
-X-Rspamd-Queue-Id: 8DCAE22105
+User-Agent: Mozilla Thunderbird
+To: linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ dri-devel@lists.freedesktop.org, kernel-janitors@vger.kernel.org,
+ Angelo Gioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Chun-Kuang Hu <chunkuang.hu@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
+ Daniel Vetter <daniel@ffwll.ch>, Matthias Brugger <matthias.bgg@gmail.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] drm/mediatek: Use devm_platform_get_and_ioremap_resource() in
+ mtk_hdmi_ddc_probe()
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:WNiOKf02rYQX2wRHyD+44vgsxq4gvfzYMMnvPUEMljK8TxTVSZE
+ crq19rcOVrfbBjGR4a2tr2LgwUdDKYHxZnfmOLYAwN7Q/U+6PCuurLhtYANurbla/ARGuuO
+ EJRLtucvVTbdVD2WNcaEYmUGQzl8VgZJMsJ57eCz2srWUjfkWUv1JTFX6zkmehC+72rjhJc
+ 1KLOLVClOJ33TGxdHXMcQ==
 X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:WOh8rUEyD44=;2uUXQdcmdakS8l1q5N6ORN+MzQd
+ PTEI2vpWHlHk1lzz5qPwlhQR30W8ymGIbUmylBV2BFLL0S9+0rcNjv7ZCziWx9bcp7FttBn9F
+ 8ZqjRa3EvtkSzT8JIVQjRcg7HIXr82VbWOYyqLbzgh3xCYNYnoEqD0S//M75LE0DGP6rMvTDS
+ 5efmaFuiDm4WUY5MQ7zpG2ro0E45Z5Svh5Z3OIiTH7VTrfhhKd00a2OsO5GRk84wppABZqMlX
+ c6AcmKZV1qPTW/IT736+BpZRSo/yWfv3YVvKfyqDszssPNBQV9+l11Qr228pF5W8B2YC3bck3
+ RscinEKcvO91A2MRNCzSNmYOkbQMkwlfepYHAZ1bNjPLepwrFcX2aqPw/HXxNwYmSyIxd8U/a
+ X3y1VaXg1z/qsw1KFry5vJeplw3izdgHnQG4h4Vs0ta5bnzITl+3JspE82oNSY4mdbfiJLiFo
+ haUnWxAJcXmm3nlpBKNkK0Q/9FnJK64GbT+HHTwGC33RSxmdI5nP0qjoyuFF+0c9z6mCudfDQ
+ vwxYXuFXqix6/VlVKuANKkNPdN6MRhQqltrGht+T2IxqfPYoECFQNotY5xEH5s3xlwX5UI9qG
+ xXiFRGtaBQXbx7XhOqd/B3Q5elC+G+8NSu0tlWVgiPmoHoDgHZUPaFkaO3SufpXUrH1x8WNy4
+ qzkOnMypTqSAz/jlt9YYBLgyqh9H6E/U5ZxOALCXYNxafNxJQxA1gJ8ShrMvNh8aVBLecyTPR
+ ITVGwM3ZqbrVSepwy105IemQUkZKzlcXlH4q8Iw0Za1lEAzp6rD881qoBssa6z8vJTifmgtAI
+ UE0lmtKqNNkpFxPzRSxAbUSEJWT5fgCDKH+H4LCarI6fU=
 
-On Mon 05-02-24 11:54:17, Baolin Wang wrote:
-> When handling the freed hugetlb or in-use hugetlb, we should ignore the
-> failure of alloc_buddy_hugetlb_folio() to dissolve the old hugetlb successfully,
-> since we did not use the new allocated hugetlb in this 2 cases.
-> 
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> ---
->  mm/hugetlb.c | 18 ++++++++++++------
->  1 file changed, 12 insertions(+), 6 deletions(-)
-> 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 9d996fe4ecd9..212ab331d355 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -3042,9 +3042,8 @@ static int alloc_and_dissolve_hugetlb_folio(struct hstate *h,
->  	 * under the lock.
->  	 */
->  	new_folio = alloc_buddy_hugetlb_folio(h, gfp_mask, nid, NULL, NULL);
-> -	if (!new_folio)
-> -		return -ENOMEM;
-> -	__prep_new_hugetlb_folio(h, new_folio);
-> +	if (new_folio)
-> +		__prep_new_hugetlb_folio(h, new_folio);
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Mon, 5 Feb 2024 10:18:47 +0100
 
-Is there any reason why you haven't moved the allocation to the only
-branch that actually needs it? I know that we hold hugetlb lock but you
-could have easily dropped the lock, allocate a page and then goto retry.
-This would actually save an allocation.
+A wrapper function is available since the commit 890cc39a879906b63912482df=
+c41944579df2dc6
+("drivers: provide devm_platform_get_and_ioremap_resource()").
+Thus reuse existing functionality instead of keeping duplicate source code=
+.
 
-Something like this:
+This issue was detected by using the Coccinelle software.
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index ed1581b670d4..db5f72b94422 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -3029,21 +3029,9 @@ static int alloc_and_dissolve_hugetlb_folio(struct hstate *h,
- {
- 	gfp_t gfp_mask = htlb_alloc_mask(h) | __GFP_THISNODE;
- 	int nid = folio_nid(old_folio);
--	struct folio *new_folio;
-+	struct folio *new_folio = NULL;
- 	int ret = 0;
- 
--	/*
--	 * Before dissolving the folio, we need to allocate a new one for the
--	 * pool to remain stable.  Here, we allocate the folio and 'prep' it
--	 * by doing everything but actually updating counters and adding to
--	 * the pool.  This simplifies and let us do most of the processing
--	 * under the lock.
--	 */
--	new_folio = alloc_buddy_hugetlb_folio(h, gfp_mask, nid, NULL, NULL);
--	if (!new_folio)
--		return -ENOMEM;
--	__prep_new_hugetlb_folio(h, new_folio);
--
- retry:
- 	spin_lock_irq(&hugetlb_lock);
- 	if (!folio_test_hugetlb(old_folio)) {
-@@ -3073,6 +3061,15 @@ static int alloc_and_dissolve_hugetlb_folio(struct hstate *h,
- 		cond_resched();
- 		goto retry;
- 	} else {
-+
-+		if (!new_folio) {
-+			spin_unlock_irq(&hugetlb_lock);
-+			new_folio = alloc_buddy_hugetlb_folio(h, gfp_mask, nid, NULL, NULL);
-+			if (!new_folio)
-+				return -ENOMEM;
-+			__prep_new_hugetlb_folio(h, new_folio);
-+			goto retry;
-+		}
- 		/*
- 		 * Ok, old_folio is still a genuine free hugepage. Remove it from
- 		 * the freelist and decrease the counters. These will be
-@@ -3100,9 +3097,11 @@ static int alloc_and_dissolve_hugetlb_folio(struct hstate *h,
- 
- free_new:
- 	spin_unlock_irq(&hugetlb_lock);
--	/* Folio has a zero ref count, but needs a ref to be freed */
--	folio_ref_unfreeze(new_folio, 1);
--	update_and_free_hugetlb_folio(h, new_folio, false);
-+	if (new_folio) {
-+		/* Folio has a zero ref count, but needs a ref to be freed */
-+		folio_ref_unfreeze(new_folio, 1);
-+		update_and_free_hugetlb_folio(h, new_folio, false);
-+	}
- 
- 	return ret;
- }
--- 
-Michal Hocko
-SUSE Labs
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ drivers/gpu/drm/mediatek/mtk_hdmi_ddc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi_ddc.c b/drivers/gpu/drm/med=
+iatek/mtk_hdmi_ddc.c
+index 54e46e440e0f..52d55861f954 100644
+=2D-- a/drivers/gpu/drm/mediatek/mtk_hdmi_ddc.c
++++ b/drivers/gpu/drm/mediatek/mtk_hdmi_ddc.c
+@@ -284,8 +284,7 @@ static int mtk_hdmi_ddc_probe(struct platform_device *=
+pdev)
+ 		return PTR_ERR(ddc->clk);
+ 	}
+
+-	mem =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	ddc->regs =3D devm_ioremap_resource(&pdev->dev, mem);
++	ddc->regs =3D devm_platform_get_and_ioremap_resource(pdev, 0, &mem);
+ 	if (IS_ERR(ddc->regs))
+ 		return PTR_ERR(ddc->regs);
+
+=2D-
+2.43.0
+
 
