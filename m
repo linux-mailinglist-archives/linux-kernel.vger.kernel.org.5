@@ -1,71 +1,68 @@
-Return-Path: <linux-kernel+bounces-52796-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52798-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 704B0849CBD
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:15:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 39B8F849CC0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:15:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF0A3286D81
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:15:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6B7828748D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:15:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C4FC2C6AD;
-	Mon,  5 Feb 2024 14:13:52 +0000 (UTC)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCFCD24B50;
+	Mon,  5 Feb 2024 14:15:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="a/gSCdSr"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF73A2C69E;
-	Mon,  5 Feb 2024 14:13:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8241A2374E
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 14:15:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707142431; cv=none; b=R+9o4KYxjgTJvWvDahkX6JZ9TMaJ3bN/lsfhy2XwGEYALz1qAE93bSx5zrAHYaM/Ju9VDJf2MV0iUpiFs1Rwq9JRNchsiCh1lu5wVaUB6vE657S518wxbCy5VmC8knZLjV0ux+k6s6yUO1h/rEnMd3HwNTsh8gqlz+zQp6Wqd58=
+	t=1707142513; cv=none; b=L/jhz5xJIpfnWayL5BZpw878M1H4eDTi/W2yqIwlnto5Pd1hIaM4laW5cHRgI67fnOi+71y0Gp9dufWCp36aEt+9GPXfUrMZJAIIcAR4euMl3hw7cjWAzdx1CM2gfoBv10q6WJ83oG7mfyoFXE9/bXptaW6LgBo4DG+XUS45fzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707142431; c=relaxed/simple;
-	bh=KUfFaTnVcuPK7F5qH9QCHcEyVuC0AaGY+Jw1pHyJEqg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BG1AULtwwzvF/13OxX7BgDjRRpk1mQLR+K5lGXnYQ7chjisqNQ4W1laFDKXUCCGFw3D3g+kbkg+BoiyTX/inre45zyLAVJDx8Ouj0iPn7OKkR4eclfsfnsZdX78OxoFX6kDEd+4BNIqNG/ikNXNyp3+km2E/HRlxBb+EwnmbwmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-51124e08565so6809017e87.3;
-        Mon, 05 Feb 2024 06:13:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707142428; x=1707747228;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QjZklipkmdXJhUNXYZTkvKzntyfYj7woEZ5k2D/zz2g=;
-        b=r/vv+GzicXZVhCNYgJS3EQ1FZV0P5e1Y3R28Fw3HyvSRxNtljmLZkEzoj9d3zytc+9
-         d6iKJmV6YCnP8t8fPvVx5HyekdpfUgYB90mYBISK3dPF9HTqMErM3q1rUGPfCPFdBDoJ
-         jOwct5lXOWV15qPGRtW8y2jIAt9AMIxrfRrssro4MNC1iLayGP4dinJbceve+fH3QW1p
-         AGm0jgylmKq2ICSa+N1TVQHZxLn5W8jvkMnjSkpF2g2IJy1gDGMKDRJ5dzaS2cl2vpuW
-         TgdG9kPJERGM2vMOydvbSvv14GX1cHus7ICMcYKmKilslarMkV77Xu9debfJzRx5VHSA
-         scAA==
-X-Gm-Message-State: AOJu0Yx5FZO56mqqzHXYF75j04ePimHCe+L+IuwWGsr9GH1vIOkaDNtU
-	DAEZMVwc7mDKP+xh0Dj3jc9O7ThBuGKRaEpWetjUGJXUn/y+AY2U
-X-Google-Smtp-Source: AGHT+IFfz7N06CRxAkudHv29g5IbD95knXgAY5otzcmaknrMnsvP1nrc4pifk7LvLhw/WJSBXE9ugQ==
-X-Received: by 2002:ac2:4eca:0:b0:511:5353:2ace with SMTP id p10-20020ac24eca000000b0051153532acemr1285652lfr.22.1707142427564;
-        Mon, 05 Feb 2024 06:13:47 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVZPSlNuCnBtq9VsUUsxRgdYjVaIR64sZyNdi1stJYMIeFlt+p0BgNm4uLZgJ+iSP3IbF+Y8fmyjmPWMJ2LCtGs6lWYsuagUDrP+z6A1boNXhHIWEaVoxcYoUxBdXigwGynxUP8cBdbl3sli6KzXoU/eMaLhuVn4mkmRAECl7ip3PRq0Fy4+3xrk1khwVJDOpJwZxcv0te6a7uFDsUDpnQoO56g8fB6mz4vknBv8z3UABNIHf8AxK+PhzFb5vjsvVuVW9DKK4ssXBw12QeuqJF3OQkird8UX2zgUSvOJqoNW9T1iHoTw6YKD9wYI3kEgxbwk9q8WIguBaCDwbqn5HWuvAFAuJPq88M99Cl+KWaUZw==
-Received: from gmail.com (fwdproxy-cln-017.fbsv.net. [2a03:2880:31ff:11::face:b00c])
-        by smtp.gmail.com with ESMTPSA id j20-20020a170906475400b00a353ca3d907sm4361222ejs.217.2024.02.05.06.13.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 06:13:47 -0800 (PST)
-Date: Mon, 5 Feb 2024 06:13:40 -0800
-From: Breno Leitao <leitao@debian.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
-	edumazet@google.com, Alexander Aring <alex.aring@gmail.com>,
-	Stefan Schmidt <stefan@datenfreihafen.org>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, horms@kernel.org, andrew@lunn.ch,
-	"open list:IEEE 802.15.4 SUBSYSTEM" <linux-wpan@vger.kernel.org>
-Subject: Re: [PATCH net 08/10] net: fill in MODULE_DESCRIPTION()s for
- ieee802154
-Message-ID: <ZcDs/GFkZ881bJR7@gmail.com>
-References: <20240205101400.1480521-1-leitao@debian.org>
- <20240205101400.1480521-9-leitao@debian.org>
- <20240205144118.12cdc824@xps-13>
+	s=arc-20240116; t=1707142513; c=relaxed/simple;
+	bh=iqDeabfWw4JAl1GsXp6xX7i80knJmS9R0n4Vk6rDw10=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=FVnFVL/WGooTJUWq/Qt8uKuNKESHajtxCM8fLj9MUsymVEUrJXiQmrl28Ra05Z3VRQUPk4O5QLIlZPQWhNLr7gfm5iT5Wy8I6al6dRemRJ5yZMJJgk1Ki9qcg9vbSQACIfypIoqEZd5Tyb+LhlQGdwnwvYqj4mRIZy6r+w18Wy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=a/gSCdSr; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707142510;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=11pxIPHjBBl92wQMC3DFzCqQJYEHlgWDIYJq9X2o8Gc=;
+	b=a/gSCdSruePTTeg4NkAWMk0n2XnKuYdqvmFKp4jGl5bXCxvLWduVwxRDKeWpcYIcY3Mnm0
+	as1A3/b6lXooSn04G9Il14HOgaNfEBQtuQ53RHKrcb+Jv4e1VodogscGfmIJ1/C/dGxHE/
+	dciO8LWdptfKlt/Ui5qu5p6eCbnrzu0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-640-WEhRXOPpNoGlqpJ5BlKlMw-1; Mon, 05 Feb 2024 09:15:06 -0500
+X-MC-Unique: WEhRXOPpNoGlqpJ5BlKlMw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 50C2EB42B26;
+	Mon,  5 Feb 2024 14:15:06 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.165])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 1979C2166B31;
+	Mon,  5 Feb 2024 14:15:04 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Mon,  5 Feb 2024 15:13:50 +0100 (CET)
+Date: Mon, 5 Feb 2024 15:13:48 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Andy Lutomirski <luto@amacapital.net>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	Tycho Andersen <tycho@tycho.pizza>, linux-kernel@vger.kernel.org
+Subject: [PATCH] pidfd: change do_notify_pidfd() to use
+ __wake_up(poll_to_key(EPOLLIN))
+Message-ID: <20240205141348.GA16539@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,29 +71,47 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240205144118.12cdc824@xps-13>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-Hello Miquel,
+rather than wake_up_all(). This way do_notify_pidfd() won't wakeup the
+POLLHUP-only waiters which wait for pid_task() == NULL.
 
-On Mon, Feb 05, 2024 at 02:41:18PM +0100, Miquel Raynal wrote:
-> Hi Breno,
-> 
-> Please be more cautious with your titles. It's your second or third
-> e-mail with this content without version number. And you also forgot to
-> collect Stefan Ack.
+TODO:
+    - as Christian pointed out, this asks for the new wake_up_all_poll()
+      helper, it can already have other users.
 
-Sorry, in fact, the commit you are referring to is already in landed
-net-next:
+    - we can probably discriminate the PIDFD_THREAD and non-PIDFD_THREAD
+      waiters, but this needs more work. See
+      https://lore.kernel.org/all/20240205140848.GA15853@redhat.com/
 
-https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=6aa89bf8ac9a
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+---
+ kernel/signal.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-The problem here is that this commit shouldn't be against net, since it
-is already net-next.
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 9b40109f0c56..c3fac06937e2 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -2021,11 +2021,12 @@ int send_sigqueue(struct sigqueue *q, struct pid *pid, enum pid_type type)
+ 
+ void do_notify_pidfd(struct task_struct *task)
+ {
+-	struct pid *pid;
++	struct pid *pid = task_pid(task);
+ 
+ 	WARN_ON(task->exit_state == 0);
+-	pid = task_pid(task);
+-	wake_up_all(&pid->wait_pidfd);
++
++	__wake_up(&pid->wait_pidfd, TASK_NORMAL, 0,
++			poll_to_key(EPOLLIN | EPOLLRDNORM));
+ }
+ 
+ /*
+-- 
+2.25.1.362.g51ebf55
 
-This workstream was applied part in net, and part in net-next. I am
-trying to focus in fixing all the warning in "net" and not touch those in
-net-next. This commit is already in net-next, but, and shouldn't be in
-`net`. I will resend the patch without it.
 
-Sorry if this caused any confusion.
 
