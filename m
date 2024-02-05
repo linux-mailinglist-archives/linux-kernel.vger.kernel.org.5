@@ -1,203 +1,140 @@
-Return-Path: <linux-kernel+bounces-51979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52000-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E769E849240
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 02:53:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C65BB84928E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 03:57:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7810B21BA8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 01:53:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AC76283437
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 02:57:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92B7B947B;
-	Mon,  5 Feb 2024 01:53:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VNhvjSIr"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74CA6111A0;
+	Mon,  5 Feb 2024 02:57:02 +0000 (UTC)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6EB18F44;
-	Mon,  5 Feb 2024 01:53:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DF661118A;
+	Mon,  5 Feb 2024 02:57:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=92.121.34.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707098024; cv=none; b=rY9oOMJbh1BrrnAWDA7K9nRNnlgzBwIn6qxVGvzzX6DgZ72oB2p43tPFJHru/W6/7G3yjR3KPw79OwqhP838iyLRJx3sFlZq6trWnXhiixTL1HyVqKzFZy7y/m3Xx7gTDRCfR0tPsqO73n7WOpP36Tz753BX3LkNdLIhgV9bbsI=
+	t=1707101822; cv=none; b=XUZgrEdB/iCNvfYI1n7PcgTxytDbITci+oHUhitj8+wjClhNUbGjf/zf8IZZRGhnUy7ZO84d2vjONq+FAscj3GCz9R3QhcUDSscNRRYbZ1VU6hRDtkdNs6Qzfj9dGxqkrJlJbgDCtLMEZJuOBNB3k5G72ZADahpCjbBT2NzMKkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707098024; c=relaxed/simple;
-	bh=fKVOlqy8mzfSHeW8wmy1p4vp5f1UVDHY7UGrIq/S7x0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=F+rkzv5cn5Z6kQDF2nimn0k2uepLw9FbrgG3S5itDRYJ91sM0/NpEs7jHkGXJPEHK8166h5ZCcog7LZ0TcxIErsDA5XcCtNyQIUhxyVqo9y85SJ6MUtp9nyrxycTkpTlN4emxny4ehGMDN9oGmAG9g49NSmsUCXzgdtAvgx3q4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VNhvjSIr; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707098022; x=1738634022;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=fKVOlqy8mzfSHeW8wmy1p4vp5f1UVDHY7UGrIq/S7x0=;
-  b=VNhvjSIrWzGO+kLezGMeEQxAA7NiXnJML0Xdshb30PBAubDxMvumCoaX
-   7XABKtwn3S2Z0s7Y+xp+zzpIMEPjH8M5OHSMV4pwMb+Q0N1NTIFSHfdPk
-   aUTrChBoH61zZcAcyj3N7QJ4zxHjcX7VPfZ1CUVRTBoZob6yKJAD3gD3h
-   BQ40rqfWQ3LFaxmh8nLMl1x95AtCz4wNrRpLlutB60XUOJs2PmkbkKKwh
-   nrhxSUtYoR0ggJffJ8EYzEEqK65deHqBwG2LbE9E2cSpGgDm4cbmxRvRF
-   JaIbRnW+5VTVAJObR9Q7jjGsr7Nkm0ygGULa12J4RsDmxBftkqs0Mb2Yq
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="326752"
-X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
-   d="scan'208";a="326752"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 17:53:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
-   d="scan'208";a="877649"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.49]) ([10.238.10.49])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 17:53:14 -0800
-Message-ID: <e4d19c5c-9733-4859-8e04-91c86400e904@linux.intel.com>
-Date: Mon, 5 Feb 2024 09:53:11 +0800
+	s=arc-20240116; t=1707101822; c=relaxed/simple;
+	bh=homk0SBMfTseGCJzG7S17xRuUCucS/WJwV7nHlibeD8=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=MrM3M0azwzmjUUtBaPjFlmPjW0+63xms+MXc7BGj8DX6jy3ddoLWrAyho121tY/0jZ9PgO2mdeavw7c3WdVct1bJ+N81muE5b3Qeg3GdK2Mz7Kb2qmWoRDapvJBGqehEt56KecQx+cH1P0gTb1HQmwPebkm6/27KdrxJsLUeJEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; arc=none smtp.client-ip=92.121.34.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 04D81201B3A;
+	Mon,  5 Feb 2024 03:48:07 +0100 (CET)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C24F4201E33;
+	Mon,  5 Feb 2024 03:48:06 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 1908E18002A2;
+	Mon,  5 Feb 2024 10:48:05 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	shawnguo@kernel.org,
+	s.hauer@pengutronix.de,
+	kernel@pengutronix.de,
+	festevam@gmail.com,
+	linux-imx@nxp.com,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: shengjiu.wang@gmail.com
+Subject: [PATCH v2 1/2] arm64: dts: imx8mm-evk: Add PDM micphone sound card support
+Date: Mon,  5 Feb 2024 10:04:23 +0800
+Message-Id: <1707098664-23265-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v18 056/121] KVM: TDX: Add accessors VMX VMCS helpers
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <3a5694739b2d081198f84aaf08d81a746ae46285.1705965635.git.isaku.yamahata@intel.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <3a5694739b2d081198f84aaf08d81a746ae46285.1705965635.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
+Add PDM micphone sound card support, configure the pinmux.
 
+This sound card supports recording sound from PDM micphone
+and convert the PDM format data to PCM data.
 
-On 1/23/2024 7:53 AM, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
->
-> TDX defines SEAMCALL APIs to access TDX control structures corresponding to
-> the VMX VMCS.  Introduce helper accessors to hide its SEAMCALL ABI details.
->
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->   arch/x86/kvm/vmx/tdx.h | 95 ++++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 95 insertions(+)
->
-> diff --git a/arch/x86/kvm/vmx/tdx.h b/arch/x86/kvm/vmx/tdx.h
-> index d3077151252c..c8a52eedde02 100644
-> --- a/arch/x86/kvm/vmx/tdx.h
-> +++ b/arch/x86/kvm/vmx/tdx.h
-> @@ -58,6 +58,101 @@ static inline struct vcpu_tdx *to_tdx(struct kvm_vcpu *vcpu)
->   	return container_of(vcpu, struct vcpu_tdx, vcpu);
->   }
->   
-> +static __always_inline void tdvps_vmcs_check(u32 field, u8 bits)
-> +{
-> +#define VMCS_ENC_ACCESS_TYPE_MASK	0x1UL
-> +#define VMCS_ENC_ACCESS_TYPE_FULL	0x0UL
-> +#define VMCS_ENC_ACCESS_TYPE_HIGH	0x1UL
-> +#define VMCS_ENC_ACCESS_TYPE(field)	((field) & VMCS_ENC_ACCESS_TYPE_MASK)
-> +
-> +	/* TDX is 64bit only.  HIGH field isn't supported. */
-> +	BUILD_BUG_ON_MSG(__builtin_constant_p(field) &&
-> +			 VMCS_ENC_ACCESS_TYPE(field) == VMCS_ENC_ACCESS_TYPE_HIGH,
-> +			 "Read/Write to TD VMCS *_HIGH fields not supported");
-> +
-> +	BUILD_BUG_ON(bits != 16 && bits != 32 && bits != 64);
-> +
-> +#define VMCS_ENC_WIDTH_MASK	GENMASK(14, 13)
-> +#define VMCS_ENC_WIDTH_16BIT	(0UL << 13)
-> +#define VMCS_ENC_WIDTH_64BIT	(1UL << 13)
-> +#define VMCS_ENC_WIDTH_32BIT	(2UL << 13)
-> +#define VMCS_ENC_WIDTH_NATURAL	(3UL << 13)
-> +#define VMCS_ENC_WIDTH(field)	((field) & VMCS_ENC_WIDTH_MASK)
-> +
-> +	/* TDX is 64bit only.  i.e. natural width = 64bit. */
-> +	BUILD_BUG_ON_MSG(bits != 64 && __builtin_constant_p(field) &&
-> +			 (VMCS_ENC_WIDTH(field) == VMCS_ENC_WIDTH_64BIT ||
-> +			  VMCS_ENC_WIDTH(field) == VMCS_ENC_WIDTH_NATURAL),
-> +			 "Invalid TD VMCS access for 64-bit field");
-> +	BUILD_BUG_ON_MSG(bits != 32 && __builtin_constant_p(field) &&
-> +			 VMCS_ENC_WIDTH(field) == VMCS_ENC_WIDTH_32BIT,
-> +			 "Invalid TD VMCS access for 32-bit field");
-> +	BUILD_BUG_ON_MSG(bits != 16 && __builtin_constant_p(field) &&
-> +			 VMCS_ENC_WIDTH(field) == VMCS_ENC_WIDTH_16BIT,
-> +			 "Invalid TD VMCS access for 16-bit field");
-> +}
-> +
-> +static __always_inline void tdvps_state_non_arch_check(u64 field, u8 bits) {}
-> +static __always_inline void tdvps_management_check(u64 field, u8 bits) {}
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+changes in v2:
+- add newline between properties and child node
 
-Should this two APIs be added along with for he accessors for MANAGEMENT /
-STATE_NON_ARCH?
+ arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi | 36 +++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
-> +
-> +#define TDX_BUILD_TDVPS_ACCESSORS(bits, uclass, lclass)				\
-> +static __always_inline u##bits td_##lclass##_read##bits(struct vcpu_tdx *tdx,	\
-> +							u32 field)		\
-> +{										\
-> +	struct tdx_module_args out;						\
-> +	u64 err;								\
-> +										\
-> +	tdvps_##lclass##_check(field, bits);					\
-> +	err = tdh_vp_rd(tdx->tdvpr_pa, TDVPS_##uclass(field), &out);		\
-> +	if (KVM_BUG_ON(err, tdx->vcpu.kvm)) {					\
-> +		pr_err("TDH_VP_RD["#uclass".0x%x] failed: 0x%llx\n",		\
-> +		       field, err);						\
-> +		return 0;							\
-> +	}									\
-> +	return (u##bits)out.r8;							\
-> +}										\
-> +static __always_inline void td_##lclass##_write##bits(struct vcpu_tdx *tdx,	\
-> +						      u32 field, u##bits val)	\
-> +{										\
-> +	struct tdx_module_args out;						\
-> +	u64 err;								\
-> +										\
-> +	tdvps_##lclass##_check(field, bits);					\
-> +	err = tdh_vp_wr(tdx->tdvpr_pa, TDVPS_##uclass(field), val,		\
-> +		      GENMASK_ULL(bits - 1, 0), &out);				\
-> +	if (KVM_BUG_ON(err, tdx->vcpu.kvm))					\
-> +		pr_err("TDH_VP_WR["#uclass".0x%x] = 0x%llx failed: 0x%llx\n",	\
-> +		       field, (u64)val, err);					\
-> +}										\
-> +static __always_inline void td_##lclass##_setbit##bits(struct vcpu_tdx *tdx,	\
-> +						       u32 field, u64 bit)	\
-> +{										\
-> +	struct tdx_module_args out;						\
-> +	u64 err;								\
-> +										\
-> +	tdvps_##lclass##_check(field, bits);					\
-> +	err = tdh_vp_wr(tdx->tdvpr_pa, TDVPS_##uclass(field), bit, bit, &out);	\
-> +	if (KVM_BUG_ON(err, tdx->vcpu.kvm))					\
-> +		pr_err("TDH_VP_WR["#uclass".0x%x] |= 0x%llx failed: 0x%llx\n",	\
-> +		       field, bit, err);					\
-> +}										\
-> +static __always_inline void td_##lclass##_clearbit##bits(struct vcpu_tdx *tdx,	\
-> +							 u32 field, u64 bit)	\
-> +{										\
-> +	struct tdx_module_args out;						\
-> +	u64 err;								\
-> +										\
-> +	tdvps_##lclass##_check(field, bits);					\
-> +	err = tdh_vp_wr(tdx->tdvpr_pa, TDVPS_##uclass(field), 0, bit, &out);	\
-> +	if (KVM_BUG_ON(err, tdx->vcpu.kvm))					\
-> +		pr_err("TDH_VP_WR["#uclass".0x%x] &= ~0x%llx failed: 0x%llx\n",	\
-> +		       field, bit,  err);					\
-> +}
-> +
-> +TDX_BUILD_TDVPS_ACCESSORS(16, VMCS, vmcs);
-> +TDX_BUILD_TDVPS_ACCESSORS(32, VMCS, vmcs);
-> +TDX_BUILD_TDVPS_ACCESSORS(64, VMCS, vmcs);
-> +
->   static __always_inline u64 td_tdcs_exec_read64(struct kvm_tdx *kvm_tdx, u32 field)
->   {
->   	struct tdx_module_args out;
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
+index b53104ed8919..9b39458f3fa5 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
+@@ -151,6 +151,20 @@ simple-audio-card,codec {
+ 			clocks = <&clk IMX8MM_CLK_SAI3_ROOT>;
+ 		};
+ 	};
++
++	sound-micfil {
++		compatible = "fsl,imx-audio-card";
++		model = "micfil-audio";
++
++		pri-dai-link {
++			link-name = "micfil hifi";
++			format = "i2s";
++
++			cpu {
++				sound-dai = <&micfil>;
++			};
++		};
++	};
+ };
+ 
+ &A53_0 {
+@@ -434,6 +448,16 @@ &lcdif {
+ 	status = "okay";
+ };
+ 
++&micfil {
++	#sound-dai-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_pdm>;
++	assigned-clocks = <&clk IMX8MM_CLK_PDM>;
++	assigned-clock-parents = <&clk IMX8MM_AUDIO_PLL1_OUT>;
++	assigned-clock-rates = <196608000>;
++	status = "okay";
++};
++
+ &mipi_csi {
+ 	status = "okay";
+ 
+@@ -636,6 +660,18 @@ MX8MM_IOMUXC_GPIO1_IO05_GPIO1_IO5       0x41
+ 		>;
+ 	};
+ 
++	pinctrl_pdm: pdmgrp {
++		fsl,pins = <
++			MX8MM_IOMUXC_SAI5_MCLK_SAI5_MCLK        0xd6
++			MX8MM_IOMUXC_SAI5_RXC_PDM_CLK           0xd6
++			MX8MM_IOMUXC_SAI5_RXFS_SAI5_RX_SYNC     0xd6
++			MX8MM_IOMUXC_SAI5_RXD0_PDM_DATA0        0xd6
++			MX8MM_IOMUXC_SAI5_RXD1_PDM_DATA1        0xd6
++			MX8MM_IOMUXC_SAI5_RXD2_PDM_DATA2        0xd6
++			MX8MM_IOMUXC_SAI5_RXD3_PDM_DATA3        0xd6
++		>;
++	};
++
+ 	pinctrl_pmic: pmicirqgrp {
+ 		fsl,pins = <
+ 			MX8MM_IOMUXC_GPIO1_IO03_GPIO1_IO3		0x141
+-- 
+2.34.1
 
 
