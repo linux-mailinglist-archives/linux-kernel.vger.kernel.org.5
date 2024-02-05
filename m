@@ -1,101 +1,216 @@
-Return-Path: <linux-kernel+bounces-52078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BEBB8493E6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:36:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B1FD8493EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:36:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0876D2842B8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 06:36:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5374B28435E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 06:36:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FAFABE7D;
-	Mon,  5 Feb 2024 06:35:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7C2410A0F;
+	Mon,  5 Feb 2024 06:36:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HULXs9zO"
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O0vAdcnZ"
+Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D6C9C122;
-	Mon,  5 Feb 2024 06:35:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6109710A01
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 06:36:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707114957; cv=none; b=QaHLITdHy6RPLc/IRk+DVH/8Y4hQca8aHOKp+75e9DT26eqliDtwME2lKxwW/15jRS0ZPyrZXd/3O+WBPrKM0PJMzsYqX/shPeZ6k+ajRH3PEfbwgtKgJhvoubn8Kamg4GPk8D7zsQzKEzs7OdDCijwqoKtR4C8uzZltwoMcpvE=
+	t=1707115008; cv=none; b=qGwdj3yJ3ZvNqToOPrwbQZKyCDBMjmOBKZ62K0nWiDktyDFKmpRiOCdHS2h8f2tzgoPdvycxwe9KwALUuf1UQV+of4txE8YjDloOHDBjtOn/VcGxxL8+5R/ZxrtlWGlJW1e2PHsgrfg/rjXj/dwZpWRLRCx16JocsWb6PKG0I/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707114957; c=relaxed/simple;
-	bh=37xwSkZGBn6kRog2s5/ht+B3QyJp9HGt4vOhAhCRMVg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bOZEZ3cV5DDV3cbKQNely2lNgnx7Gh8B5H7T/6HfMjClGKV7e4ezSqWnlmhYkuV1azM85z07OVIhNpFiFuv2sAC94gNvbsLd70fAX+EPaIK1/nO8w7zNVWdnnI2OrjsuUDf050SybFfmgOb5RerlY63utJILhkRN/At74WCOi3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HULXs9zO; arc=none smtp.client-ip=209.85.216.54
+	s=arc-20240116; t=1707115008; c=relaxed/simple;
+	bh=/W+krNww/HnVLpqcomfJAfbmor0kQhACM5ZnnExA0/o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MVDnsaAP7dxAy9uIQArLR1pMZ1MmBbCQs1EjEwDe/pXKGsSfI/zGD0Jz/nAoHFo/QSFlsXkuo2viy9uBbCOwMFQKOyqi8qEYyM1spmJkzqoLNhHyfPXTEw5EHb0l/Zw1z9MUzGsXQt0or/7riAVvcdmEN1JIhuWN+5reTKMQSno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O0vAdcnZ; arc=none smtp.client-ip=209.85.160.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-29041136f73so2705868a91.0;
-        Sun, 04 Feb 2024 22:35:56 -0800 (PST)
+Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-20536d5c5c7so3163731fac.2
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 22:36:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707114955; x=1707719755; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NN8HajuBsqniYL9tZVxAH9azcAWk91xgvO1JKAu/Q8A=;
-        b=HULXs9zOafGVbi2Gi3rdvyVcqUyAIZc/ahLHVWnCn5VnxMDvYGHnv1lrrm56j1FI6m
-         vdVN8vvrcmBcYyA31J88/xYCSX+ij7nFWczuevgBDXPxI58rSIh9HtozHkH2vcgHPgay
-         oxmC9jTfOrw8M+NnRbW8rRuMUGeAN2JEV5em2vl7JvjJU5Sz5+rfBRMB2afIE5icnWQi
-         EcoH0feI2fKIWUzzhbZ6gnMb4HB/wZn2gN7beflcBUM4NDUgHhdCHxXu2Exston32vP1
-         h5AMNOyfOq06/dilrJrg0lJ6VyHU430EOK8UqAwW46b/poXmrWPrs1UVNkBFWgXmSRYJ
-         s+og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707114955; x=1707719755;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1707115006; x=1707719806; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NN8HajuBsqniYL9tZVxAH9azcAWk91xgvO1JKAu/Q8A=;
-        b=dXClFUNmHLBM5zpFLI8cJJgcmqH5BFuNcUoauFm/DNsRspMr9C8KMq2KvnGgc0vZI1
-         ycB0Z7xt75f95l+CdqI8OqTuyxc+7+NiDIw1NOSOMhlmts2xnFsEe1fdutqls4hTY7WY
-         xvPFZe6s7Bj8uoqHkGm9Ia2ghlUBEH/ECjMVmUim+8ooKft3VT2SS10qmc2asBLsiA/3
-         ACd5vimXIWvs75v1/0IVz5v8HC4iVjfhkrfhu11ynHCvMuX3pKMbZRY7m9Gmy/LBJ0+x
-         YKdNOo41D4fuy8ZzuBWCKcXHkD5LG7pCS7z34a7kO3s/HaApVPi1zKlAMPVcmWGJkHP1
-         /ysA==
-X-Gm-Message-State: AOJu0YxkgTrWOusH52dk2SKgiNDsiL05b9ZmyOfa+NJME++5hPWxcFLd
-	8g3bM1i/VNu8soz9mE1WyAMKBmloVBkzA6HnJzZMGov0cE/h80mi
-X-Google-Smtp-Source: AGHT+IH3ifitTi233cP57EIXH903l0rFxGNIdwnk38cjcyDT/TxIqYvZ5Ab7dPU1MUBsldOKsXPUaQ==
-X-Received: by 2002:a17:90b:1197:b0:296:416f:8341 with SMTP id gk23-20020a17090b119700b00296416f8341mr6668194pjb.38.1707114955454;
-        Sun, 04 Feb 2024 22:35:55 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWdhBJdGNJodYPRJSiXeQN3cHmq5p0yJMtgtQSI6y+Xdq4O3tteapuaemDXUcH7Zn6SdIRcubl7g25xJDMGy7cm5kb9Nd2D09O5dhgtlxkgkjR850ph1jkMkXRgQYXxwErp21wXLuyjnbrS77X1BOtX5+ivONGU22ompT3Tk6noIRLXgJWvhDRpIK5Tt7gmPIK45m/OlcT4rUm3OWx2043/luHsG1XaYZE3cT/IdEIo1yFKtQIMgFN0dIC40YRdRhL6WGEdwGSnOEFbSLqUanpDEiA9nm6kREPUxCno3ynlZHPVgcIZ2vSrtXhZ1Z8YWuBXfl8/cJz58uFKhhPVxl5PIf/0huN1NfGEdXpe/3zLPf3FmR9edZFDBw5UASLKJrfxApkAl7a3lbimKtLkTV5w3Ct16xp5F+fsNmdIc/31hsiCDR+n+bPFJ3LZKNQupSO5A+eWRMiqcasu3RkdWs2AloNyUVV5krsQimdcxsgwc5ACNR7fs9Fv/IfuQE3fY2hMqOpMBXiNv2JMp9eWxore69dWU64ETkU0Xd9vzLCsYJ9fZmsBtf9cFCmc8qt/WP2qYWdDY1OkW2asOzz984jKBC4qusmWj9zb0ye6qAEKGTG79spa/R6wKaVWsxvs8Q==
-Received: from dragon (144.34.186.27.16clouds.com. [144.34.186.27])
-        by smtp.gmail.com with ESMTPSA id eu11-20020a17090af94b00b00296521d8ce9sm2525643pjb.0.2024.02.04.22.35.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Feb 2024 22:35:54 -0800 (PST)
-Date: Mon, 5 Feb 2024 14:35:33 +0800
-From: Shawn Guo <shawn.gsc@gmail.com>
-To: Andreas Kemnade <andreas@kemnade.info>
-Cc: dmitry.torokhov@gmail.com, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-	festevam@gmail.com, linux-imx@nxp.com, rydberg@bitmath.org,
-	linus.walleij@linaro.org, Jonathan.Cameron@huawei.com,
-	u.kleine-koenig@pengutronix.de, heiko@sntech.de,
-	linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 4/4] ARM: dts: imx6sl-tolino-shine2hd: fix touchscreen
- rotation
-Message-ID: <20240205063031.GC804317@dragon>
-References: <20231223221213.774868-1-andreas@kemnade.info>
- <20231223221213.774868-5-andreas@kemnade.info>
+        bh=16pnWgAL8zWtC/Tt+AS2AkFO9F9ksyPsxw/1mwJCpRg=;
+        b=O0vAdcnZauInpmo5E0ort1J746hXKcTaa9qFkNNSvCL8JimTAlg8gKd42YYy8DcGW5
+         lTZgoAi/LsnuphsR+Algqnx3HrnfkeSwqgCLfIh+1n4D7qo8My1NWB+qq2xM//3YxGml
+         xZ72HNONnkmk8l3+iFMsnOP9qtPcmgyX/xaMNaTgNbdW11Oq9Q2yW/8a2mKl2Tpc+C2G
+         oCrixciWtsmRoKPeGLYYoXBhuFzfraddTK89+CSHHQkf/TvwGJ2HKQM+6zZzL5UmGhDv
+         EbE+3d58dVfMwhl1MIkguoVzZdxNk7+GVSnShCUOjfLAhDViozrrTgn6Bl8RkoBUJGKv
+         h73g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707115006; x=1707719806;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=16pnWgAL8zWtC/Tt+AS2AkFO9F9ksyPsxw/1mwJCpRg=;
+        b=Q8If/UWH7jGzp1c0njQvLok3GQgsTGMcoKa4sER9ZaHxX8DZq1XuwzIU6S4SpSQqpG
+         apn8Un2k5gt3Nv2Zg20yx/4VaMmh7gyv0nCwFO6eF/Ok8Wo6Oxfo1KTVVqq54qFvfqsX
+         jt1FBch0Btvk+jTyXarnoSvpwky2lu9FeBI2MjxhE5sNKCzA7amBbellw7ui6Q379ylr
+         XQaTv2b9sZHvLcXs8e9HU9d0szE8wyLAi0hzR9df1Ff1LCxWA/uBn+b1p89lpUuEYkAu
+         7wgMHvKZH5v9h2H4dogUVrFB4uEvoOcWD+zaYwWw0OhLL1Q6KQ1HyYN5shtNfU/Pr7Y+
+         dHOw==
+X-Gm-Message-State: AOJu0YyMVtgdl/3Ba9SDzSHmlrI/jg1Dp+35/wByvJkzZpsY28qMyAkL
+	+cvs8LZcR55cHKLXQAAF+urLuAVaaw/Msj8Y4tyFAniJffZKUeDKsvk+jGY8Co8JRqopUt+VfJz
+	e6c2aibdjRcKz8A3VRtc0QNsSXV0=
+X-Google-Smtp-Source: AGHT+IG7zZk43iAh6rGlyL5LSNKf7pIl2C/JE8q8fdtwPDxoyPVYk4u39kujILeiP+BCRVTSHGmpeQq5gN1039MPup0=
+X-Received: by 2002:a05:6870:808d:b0:219:671d:74da with SMTP id
+ q13-20020a056870808d00b00219671d74damr4268049oab.29.1707115006216; Sun, 04
+ Feb 2024 22:36:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231223221213.774868-5-andreas@kemnade.info>
+References: <20240130080643.1828-1-xuewen.yan@unisoc.com>
+In-Reply-To: <20240130080643.1828-1-xuewen.yan@unisoc.com>
+From: Xuewen Yan <xuewen.yan94@gmail.com>
+Date: Mon, 5 Feb 2024 14:36:35 +0800
+Message-ID: <CAB8ipk-Z=CkvbVczCpmCgmymKqWQfuKNF7xm51s_03obAen_Ew@mail.gmail.com>
+Subject: Re: [PATCH] sched/eevdf: Prevent vlag from exceeding the limit value
+To: Xuewen Yan <xuewen.yan@unisoc.com>
+Cc: peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
+	wuyun.abel@bytedance.com, ke.wang@unisoc.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Dec 23, 2023 at 11:12:13PM +0100, Andreas Kemnade wrote:
-> The display is in landscape orientation, but the touchscreen is in portrait
-> orientation. Specify that properly in the devicetree.
-> 
-> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+Hi all,
 
-Applied, thanks!
+On Tue, Jan 30, 2024 at 4:07=E2=80=AFPM Xuewen Yan <xuewen.yan@unisoc.com> =
+wrote:
+>
+> There are some scenarios here that will cause vlag to
+> exceed eevdf's limit.
+>
+> 1. In set_next_entity, it will stash a copy of deadline
+> at the point of pick in vlag, and if the task fork child,
+> the child's vlag would inherit parent's vlag, as a result,
+> the child's vlag is equal to the deadline. And then,
+> when place_entity, because the se's vlag is wrong, it would
+> cause vruntime and deadline update error.
+
+Could anyone make some comments?
+
+In my opinion, even if it may be ignored when reweighting, it is
+better to solve the problem when forking.
+Maybe we could change some settings in set_next_entity() where vlag is
+equal to deadline?
+
+
+Thanks!
+--
+BR
+xuewen
+
+>
+> 2. When reweight_entity, the vlag would be recalculated,
+> because the new weights are uncertain, and it may cause
+> the vlag to exceed eevdf's limit.
+>
+> In order to ensure that vlag does not exceed the limit,
+> separate the calculation of limit from the update_entity_lag
+> and create a new func limit_entity_lag. When the vlag is
+> updated, use this func to prevent vlag from exceeding the limit.
+>
+> And add check whether the se is forked in place_entity, and calc
+> the curr's vlag to update the se's vlag.
+>
+> Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+> ---
+>  kernel/sched/fair.c | 28 +++++++++++++++++++++++++---
+>  1 file changed, 25 insertions(+), 3 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 533547e3c90a..3fc99b4b8b41 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -696,15 +696,22 @@ u64 avg_vruntime(struct cfs_rq *cfs_rq)
+>   *
+>   * XXX could add max_slice to the augmented data to track this.
+>   */
+> +static s64 limit_entity_lag(struct sched_entity *se, s64 lag)
+> +{
+> +       s64 limit;
+> +
+> +       limit =3D calc_delta_fair(max_t(u64, 2*se->slice, TICK_NSEC), se)=
+;
+> +       return clamp(lag, -limit, limit);
+> +}
+> +
+>  static void update_entity_lag(struct cfs_rq *cfs_rq, struct sched_entity=
+ *se)
+>  {
+> -       s64 lag, limit;
+> +       s64 lag;
+>
+>         SCHED_WARN_ON(!se->on_rq);
+>         lag =3D avg_vruntime(cfs_rq) - se->vruntime;
+>
+> -       limit =3D calc_delta_fair(max_t(u64, 2*se->slice, TICK_NSEC), se)=
+;
+> -       se->vlag =3D clamp(lag, -limit, limit);
+> +       se->vlag =3D limit_entity_lag(se, lag);
+>  }
+>
+>  /*
+> @@ -3757,6 +3764,7 @@ static void reweight_eevdf(struct cfs_rq *cfs_rq, s=
+truct sched_entity *se,
+>         if (avruntime !=3D se->vruntime) {
+>                 vlag =3D (s64)(avruntime - se->vruntime);
+>                 vlag =3D div_s64(vlag * old_weight, weight);
+> +               vlag =3D limit_entity_lag(se, vlag);
+>                 se->vruntime =3D avruntime - vlag;
+>         }
+>
+> @@ -3804,6 +3812,9 @@ static void reweight_entity(struct cfs_rq *cfs_rq, =
+struct sched_entity *se,
+>
+>         update_load_set(&se->load, weight);
+>
+> +       if (!se->on_rq)
+> +               se-vlag =3D limit_entity_lag(se, se->vlag);
+> +
+>  #ifdef CONFIG_SMP
+>         do {
+>                 u32 divider =3D get_pelt_divider(&se->avg);
+> @@ -5177,6 +5188,16 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_e=
+ntity *se, int flags)
+>
+>                 lag =3D se->vlag;
+>
+> +               /* When fork, the child would inherit parent's vlag,
+> +                * but parent's vlag may be euqual to it's deadline.
+> +                */
+> +               if (flag & ENQUEUE_INITIAL) {
+> +                       if (curr)
+> +                               lag =3D vruntime - curr->vruntime;
+> +
+> +                       lag =3D limit_entity_lag(se, lag);
+> +                       se->vlag =3D lag;
+> +               }
+>                 /*
+>                  * If we want to place a task and preserve lag, we have t=
+o
+>                  * consider the effect of the new entity on the weighted
+> @@ -5237,6 +5258,7 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_en=
+tity *se, int flags)
+>                 if (WARN_ON_ONCE(!load))
+>                         load =3D 1;
+>                 lag =3D div_s64(lag, load);
+> +               lag =3D limit_entity_lag(se, lag);
+>         }
+>
+>         se->vruntime =3D vruntime - lag;
+> --
+> 2.25.1
+>
 
