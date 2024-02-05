@@ -1,324 +1,198 @@
-Return-Path: <linux-kernel+bounces-52169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FF0A8494E8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E3C808494EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:58:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7B031F230E4
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:56:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 565B21F20FC0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:58:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C466710A34;
-	Mon,  5 Feb 2024 07:56:51 +0000 (UTC)
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5971011184;
+	Mon,  5 Feb 2024 07:57:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="CGNtXa/E"
+Received: from IND01-BMX-obe.outbound.protection.outlook.com (mail-bmxind01olkn2094.outbound.protection.outlook.com [40.92.103.94])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A44111190;
-	Mon,  5 Feb 2024 07:56:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707119811; cv=none; b=TpOSvVOCeaLPTpGSJ8sdnZikbXK35WP/GOSeJykokZ+U0O2J6KaMHYLP1YPzY9Gkf/+ZJWEaMfI6HuIzmsdk9v53qlgxtIywpG4oFjhDENTnZ4W0sYsSDVlp4kryYMmosraNTjJIKitVscioBsrF8kigDr673b9MHDb3pKacj7I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707119811; c=relaxed/simple;
-	bh=bPBYHKOWAsw++0GbpcEfc945iVVSf64BuOwoMrpaGWk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=c2tkXAD3LuIGztUeu2d6fFwVP5h3HZ7lQIL6FURgcuqveIweT1IJ0QuDx1lVSoAlHvOCw/vk/RycFc/Vw0xs7eCU5FBLPft7t6gKeVAo9gwGWbAJHcqkyJWwzf+/3ZBi3MRga8+ViSpiG4wFtqOJsGqYDSyFE5Nh8hrahbAcP5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5600c43caddso1948288a12.2;
-        Sun, 04 Feb 2024 23:56:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707119807; x=1707724607;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fVcEqSZHQEPAF31Myvz/o3YQCpmBhb8/EGABHphGLK4=;
-        b=TLDL7kvBh9ePkqKW0NHPOmwkRuVp2oNnrQ9geUnLpECUwESyLi/I4mGSM/3OXd4qSF
-         j9jUrdr1cRAYH0mDuFke9pt8dTAu+u9fmiZWBoqDWT2O5T+reyIWfGPw9xdr7LUZSBdz
-         hZECBG8ktO89OUrA8qTVS6JtTmXV9y4nVB1Wo5C0DieNlIQCJh47bxWDn0UHbIhR3QUb
-         XKdJiM7m2vA3deog5IT4X0SStbIVMIVUA6DtOZFjqIKeLobD6oytXu11H/BHs5ANHGFK
-         4ZxZmZRyN5W0U5MvY4sRs0HuxCxz6E1Bzs3NERujLNSBJvfk9ThLjyLVUT3b/Fezrbpk
-         aAjw==
-X-Gm-Message-State: AOJu0Yz+gmU5pKvYmM/sDB7GJnPjcwyy/6ExCTjyocqoRpli2Y1vHcli
-	Ras0ocIJ7V4L9597uZGVlIymMqrCZWPdIaFAjkoT5cbk3qEcjx7rgbtB/pKndlc=
-X-Google-Smtp-Source: AGHT+IHgx4a0xU/ZJI1tnxm70XzfGnbd44dk0xPkLOAYvihUUHsDslqceMnZqJ9Q0ExdsptqusWGTw==
-X-Received: by 2002:a05:6402:12ca:b0:55e:b943:6277 with SMTP id k10-20020a05640212ca00b0055eb9436277mr4259119edx.22.1707119807042;
-        Sun, 04 Feb 2024 23:56:47 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWPAohRc6POrdHQc/hxOL9s8G0pPpSW/ZVv2js1BnhaK7iOQmTDXN2C3i9Exufs13XeMEL72ER1oOmu+EZ3ZVd8lOjKVVaLw4RO+wE0w1wt3u3OdGGAYm/Y1OqXiVaL0vK9ilLRdd04Rk+ZwjHo1UlU6J96yHpRdXKR8gYhrlaJ5765n5TJFrcu8cYNz3NgkNEzgG0PoHImCaSWzTfKvwcudw+MtDKnuoHLKw2iOFNqDQ4JS49rFlolVTqFrxDXevUREEGlwBfVtKtDeSaDn4spEg==
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id d17-20020aa7d5d1000000b0055eed463c4fsm3515104eds.84.2024.02.04.23.56.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Feb 2024 23:56:46 -0800 (PST)
-Message-ID: <b8325c3f-bf5b-4c55-8dce-ef395edce251@kernel.org>
-Date: Mon, 5 Feb 2024 08:56:45 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 513B810A2B;
+	Mon,  5 Feb 2024 07:57:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.103.94
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707119876; cv=fail; b=BsYDsNYoZ4cU9DzFjm+NssRtf5VTMioYkp2uRn3cwT+XRFErcn85kWl4p7R49C9+akyFoCD5hqXsC+N5K+pu0auXc0VK1t84+QwDrpMHNuN2I5rl2xGL2vXfQgMtaB7sq4tajNCYXsYiOtnKTvcqZr2zBmvH2sVVq6DdnFGHrJY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707119876; c=relaxed/simple;
+	bh=xQ1ywWSWuWO4MHydMmPTJL4CEE9WVirYSHEgOwHtNxI=;
+	h=Message-ID:Date:Subject:To:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=tmgsH3NBjdvSulcjzFeXu2VR6o4doQZfKfzcndQGuoZThl8q8i2Cibj5CH4F81hPr8v74GbK6ZCfUAiRLkxQaBo17Au9l4+hlGAR3mELcvbpMw7lI1MFvGWlvRDa693tTbjBUkkRlBfZnr8LNH5S6FhIf+Gopp2JVUDmh1op5Xg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=CGNtXa/E; arc=fail smtp.client-ip=40.92.103.94
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NuIDwXyhhGVcmRY79CW8kisHkQwkFsO2hBz6fKmouL7Q1/HWCy9NHQ9StITwskZnownmzT4h0b0oqDFpyAOezaDn8LXV7nZYOYw+U8jxuS5obiotEyo0jKSJt4D75eOR0jgsbaNj3hBScgBpyNcMacMu+Ho2eYNzM08Skvg2kRJjOB9CDPpByZYrD7GOTneCEjXatyUHDvgDdCdIuOaDXjXyVgP+V/EjShwKzxgRvrmKsJ0ojO94eV+3F9ZfIvGGmI1b0KAd73GGlpDDUcSRgMKhAs2qq7m2Cm6AWHG6jYAuQA9qbLAmWKfGip0XHse3QEvFmfdf84pfCwXLnRW2kw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=C35Hy0xxuq0bWwI2Xy5ezxGeiUOKfMfjJ/K9TTdm+kI=;
+ b=JRZys9aUYRi/TDRio0+fxcKU/Xl8vJf4ctMbqS/LzoMoMl+9N726WhdMt3hjzh3OSQIP92zuVAExXIqXACT9fcZ/byIv2Fp1SSp3H2C5ZmTnQhDNQ+IfN8S0wqXkKyZdTTnUpH0w1m405IT5oS7QEcv5wJxVh7q0dALxwOzsHbCnzOIk7egTkIU32yhUQLg526rT2Weehu5BjBn/nLa87PLdu8bzhS2Vdzp2P/aAOFy8r10sqJDieNTXVRljWQK6IlAHFh1yTrHcm53xr/IL27GcaGStFaU3ZwrXxt1vGd1E4AEuWL1F8oswhvKZCBBDOH5xd+qyHVk/9AB8cHdlAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=C35Hy0xxuq0bWwI2Xy5ezxGeiUOKfMfjJ/K9TTdm+kI=;
+ b=CGNtXa/EDtx1Ut4Eib+VVpPS8GR514RqXRpIGn0B0tsUpbiHL658iIMkp/v0ULs823oNFHsxWx3bXpbvY1ew+hnzaHpulnCNeDEgupOpPWfJQcOXwdlwBaZ9v0tFMKMS6BK6sBFRmdQHGKFmzsa8XqZWyQbXWFs4TAaekL03FBJSCtJWP+LzNjXURwnbAP7kDnUoIqOI1uxWA4K6wDGGTZ/kOgvwG+sLD8XXnFvp8yjmHo52R7JEKyGga/H0IQ8WS4sXGUfSvtgvYVdnUNoRd4v4SeeiN2g3FQtVRmwbeq0+Cfnjn7HqV19T1wVgk4KRW4E4Wdh5O/+N2g+ZHES/qg==
+Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:138::5)
+ by PN3P287MB1210.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:197::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.17; Mon, 5 Feb
+ 2024 07:57:46 +0000
+Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
+ ([fe80::a2d5:82f2:b6d4:f2cd]) by MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
+ ([fe80::a2d5:82f2:b6d4:f2cd%2]) with mapi id 15.20.7270.016; Mon, 5 Feb 2024
+ 07:57:46 +0000
+Message-ID:
+ <MA0P287MB282211AD3154AD3831F734BBFE472@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
+Date: Mon, 5 Feb 2024 15:57:42 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/4] riscv: sophgo: add reset support for SG2042
+To: Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
+ chao.wei@sophgo.com, conor@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ palmer@dabbelt.com, paul.walmsley@sifive.com, p.zabel@pengutronix.de,
+ robh+dt@kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+ haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com, guoren@kernel.org,
+ jszhang@kernel.org, inochiama@outlook.com
+References: <cover.1706577450.git.unicorn_wang@outlook.com>
+From: Chen Wang <unicorn_wang@outlook.com>
+In-Reply-To: <cover.1706577450.git.unicorn_wang@outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TMN: [e40KqZqvKLXw9A0bUsaDuiy/YxquFo+4]
+X-ClientProxiedBy: SG2PR02CA0122.apcprd02.prod.outlook.com
+ (2603:1096:4:188::10) To MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:a01:138::5)
+X-Microsoft-Original-Message-ID:
+ <eb3fa681-cf38-44b2-a65b-8be0c2691fb1@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 tty] 8250: microchip: pci1xxxx: Add Burst mode
- transmission support in uart driver for reading from FIFO
-Content-Language: en-US
-To: Rengarajan S <rengarajan.s@microchip.com>,
- kumaravel.thiagarajan@microchip.com, tharunkumar.pasumarthi@microchip.com,
- gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: UNGLinuxDriver@microchip.com
-References: <20240125100006.153342-1-rengarajan.s@microchip.com>
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <20240125100006.153342-1-rengarajan.s@microchip.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MA0P287MB2822:EE_|PN3P287MB1210:EE_
+X-MS-Office365-Filtering-Correlation-Id: cd8de638-61fb-4dfd-0fd9-08dc262022bb
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	0/NnordNoQ5+Pb9Gq/vxj0Onbe9v/U/eEq7P+aQfdQw05ZYF7aKiOEGDlSBfQrTE7O5hNYIFf700aHg0CQeZucMhXjuBZJSpNGZN0eU4QAeU5bgZ6dl9fgsT/8NflAhDXMtcdF8TsCyr+hc5uxF2d4r7EH3Askw8yoQMVQ/qMBXXWY36YY6W7cQAtLouhkrfYtfJGmLIMdi7O2zx//8MJxbBTeK+PBtd2mM1Dd2wqEs9W6TmYaTNPU2/HhBM6MzMr7F0Qs8IH4DNH3iMGrCq6lRD2uoLfdmWi+B6LgXdjZfekZabjNCHHngzVxMSgj2tEvI6ZFU/wXZiBPHbMdo26dnH/oeebgePAESur5MReP7FdLsvXosW2Q/ub46CYcAkOfFIEfW+M8yBH1XcOX8TCnPjgxDpj+kEUGja4gZBqEltCPjTJpXgl0Knh6ak5ybzml3gCfvBLpZJPxDXVl6sbeLZbjy2VfJ45QhqLDTKuvUewqHhxOmYzsra5Rgu3pJuHX+C31hL026kZGKgdZ9hGZRUc+R0NwA6n+HlKcFavV9K8NV2/JGVZOqpMAwEncw5HLSoo2WUFRV+YzidlUW2yezojY/sStW8hutbxRmcC04=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?cm1IWDFMbWxQVS9JZ0tzdmJURytxV3FkVFYwL0EyS1JNRWlRK3dzYXg1dUVN?=
+ =?utf-8?B?M3NicktrS2JIM0dEb21WQXVHZVB4bTNjR1dveVIxNVVVVWVicDlzaTZjU1li?=
+ =?utf-8?B?cmtNZXJhVk9KZm5MU2R4a1JBdVExdXlnNk85YnY1eUxaclVFd1B0TVZFSFVI?=
+ =?utf-8?B?dE5NYTd3ZDVIalM4WFZXb0d5UVl1N1EreW5CbGdjTnVQU0RGZU1WQ05SRC84?=
+ =?utf-8?B?OWt3c3pjTW00amRmc3R3ZFNXZXJWOFpSWHk3MmpsWEc5UG54V1o0ZEZhanJh?=
+ =?utf-8?B?eFJzaCt6dmdpYnAyaXYzOERNeGk4OVFvYk02TVlXc0NPdFN4ZVFCR1VNZlVP?=
+ =?utf-8?B?MjlWWmtMdlBxR1NGLzgvcEUwenZ2anN4aDl0RER0MEVtaGViNnBOYldOMDUw?=
+ =?utf-8?B?T1phTlFhUjNHV1RKUEFRODVUTUVkTWFGOUZ4eHZxUlhvRG5oVEZWS2NBaFFo?=
+ =?utf-8?B?NnZXZUNlRnlZMzhaTFZvVDJlelhxaWJ6bytGb2h5Q0pVU1N2K2x0K1V1VHJl?=
+ =?utf-8?B?c1MzTk83NnJ6U3ZtUUsyNlo0bUU0a1dUd0xUL1lpTlphYXdEb2hvWlllUmZm?=
+ =?utf-8?B?c1pLcE5CRkE0M1NxdWtCclgyTnV6ZVY4b2NWdmlyd0dheVBnWWtHak5MQ1Vn?=
+ =?utf-8?B?VEV1LzJzRExLcGtlaWxvZzZJOUtGby8vb3AyYVJoWHdyUDZQc1ZzTTF0NktD?=
+ =?utf-8?B?TjJ3cG4zcXpVQStwSHlDeWxtRWNnZTlpRzBYK29JbmZzQ1FWRnpTVnRqRnVi?=
+ =?utf-8?B?NXR0S0JsdDYyYlBrM2hEcE14N2EyZW1qK2FWV2ZqVGRxcDU0T1FiM2dDZURJ?=
+ =?utf-8?B?dlpQbFc4aU5nRWl4MnVDNFhjZ2JjK3lTMHkxcGlydW5tc0lRUWxLVG4rUVZK?=
+ =?utf-8?B?RHN2cXBhQ1drTFhhVkZLSzA1Q1FCZWtjWitvVHBodTdjVWkxdGpJSkowZ2pp?=
+ =?utf-8?B?U21NVnVvMVNMaVZ1V2Z2Z0NsYTFtWnZScWdpS3dJbi94ejFkREd2L3ZmUlpw?=
+ =?utf-8?B?cnlGRmRXMXJTT2NnUTVOQ0pQdDNQbk5vNnc2UVZpU0ZRRGszbW5Ya21NaUlU?=
+ =?utf-8?B?aFMzeml6OVBpcHlrWVZZTlBFOUw4QllaK3VIRHkwRGNGaEFtVW8zNUlnQUhq?=
+ =?utf-8?B?WFU5N05GaXorckdqdUNHRHJUSTlGRFRqQW5oN0FkQ0t6NjZJL3ZWcndkL2JI?=
+ =?utf-8?B?UHpSNXZscUV3THZhOFJleTAvNzNJOWp0OU9GVlpYUE1xT25GV2tjQy9kUjcy?=
+ =?utf-8?B?SW5VQ3BKSlVaM0NpTFBRWHlTNWx2KzYwMnRTUzROR3daS0FmV2J5bG9jZmJB?=
+ =?utf-8?B?dEZpWmt2bkJXOG1ZYXBTQVhXd1VSdDJyYm9SWDRCdzRqZk5WT3BNUG5HSzB2?=
+ =?utf-8?B?U3YvbWQvVnhXZCs2UFN0S2lRMlZVMCtDYStsV01Sa0hhOU1aSUlXR083R0Ew?=
+ =?utf-8?B?WU9XR3E1azZuYTdHU00vdzBwSU11SHV2SlU2dlp5Rm9teDhHWXl1Zm5mOHBp?=
+ =?utf-8?B?Nm90aGdxSXg0NWNZYkV6dGx2V0M4WUNRRS9sVmNOb2xvS3dvK3gzTWJBR2o4?=
+ =?utf-8?B?bXJJZXVJeXY2SGtld09RaWpYYUxERG9NZHZRR0U5b2Z3L1BDMGRzb2ZHTEMr?=
+ =?utf-8?Q?Qi3PlsVmNGIJxQDdn94VIpMldaQ8eSib+TCRMEa4I4o0=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd8de638-61fb-4dfd-0fd9-08dc262022bb
+X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2024 07:57:46.2720
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN3P287MB1210
 
-On 25. 01. 24, 11:00, Rengarajan S wrote:
-> pci1xxxx_handle_irq reads the burst status and checks if the FIFO
-> is empty and is ready to accept the incoming data. The handling is
-> done in pci1xxxx_tx_burst where each transaction processes data in
-> block of DWORDs, while any remaining bytes are processed individually,
-> one byte at a time.
-> 
-> Signed-off-by: Rengarajan S <rengarajan.s@microchip.com>
+ping ~~~
+
+On 2024/1/30 9:49, Chen Wang wrote:
+> From: Chen Wang <unicorn_wang@outlook.com>
+>
+> This series adds reset controller support for Sophgo SG2042 using
+> reset-simple driver.
+>
+> Thanks,
+> Chen
+>
 > ---
->   drivers/tty/serial/8250/8250_pci1xxxx.c | 106 ++++++++++++++++++++++++
->   1 file changed, 106 insertions(+)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_pci1xxxx.c b/drivers/tty/serial/8250/8250_pci1xxxx.c
-> index 558c4c7f3104..d53605bf908d 100644
-> --- a/drivers/tty/serial/8250/8250_pci1xxxx.c
-> +++ b/drivers/tty/serial/8250/8250_pci1xxxx.c
-..
-> @@ -344,6 +348,105 @@ static void pci1xxxx_rx_burst(struct uart_port *port, u32 uart_status)
->   	}
->   }
->   
-> +static void pci1xxxx_process_write_data(struct uart_port *port,
-> +					struct circ_buf *xmit,
-> +					int *data_empty_count,
+>
+> Changes in v3:
+>    This patch series is based on v6.8-rc2, which has included the missed patch I
+>    mentioned in v2.
+>    - As suggested by Philipp, drop the Kconfig for SG2042, just add a default
+>      y if ARCH_SOPHGO to RESET_SIMPLE.
 
-count is unsigned, right?
+hello,  Philipp,
 
-> +					u32 *valid_byte_count)
-> +{
-> +	u32 valid_burst_count = *valid_byte_count / UART_BURST_SIZE;
-> +
-> +	/*
-> +	 * Each transaction transfers data in DWORDs. If there are less than
-> +	 * four remaining valid_byte_count to transfer or if the circular
-> +	 * buffer has insufficient space for a DWORD, the data is transferred
-> +	 * one byte at a time.
-> +	 */
-> +	while (valid_burst_count) {
-> +		if (*data_empty_count - UART_BURST_SIZE < 0)
+Can you please have a look of this, I have fixed the issue you raised in 
+last version, any question please feel free let me know.
 
-Huh?
+Thanks,
 
-*data_empty_count < UART_BURST_SIZE
-
-instead?
-
-> +			break;
-> +		if (xmit->tail > (UART_XMIT_SIZE - UART_BURST_SIZE))
-
-Is this the same as easy to understand:
-
-CIRC_CNT_TO_END(xmit->head, xmit->tail, UART_XMIT_SIZE) < UART_BURST_SIZE
-
-?
-
-> +			break;
-> +		writel(*(unsigned int *)&xmit->buf[xmit->tail],
-> +		       port->membase + UART_TX_BURST_FIFO);
-
-What about unaligned accesses?
-
-And you really wanted to spell u32 explicitly, not uint.
-
-> +		*valid_byte_count -= UART_BURST_SIZE;
-> +		*data_empty_count -= UART_BURST_SIZE;
-> +		valid_burst_count -= UART_BYTE_SIZE;
-> +
-> +		xmit->tail = (xmit->tail + UART_BURST_SIZE) &
-> +			     (UART_XMIT_SIZE - 1);
-
-uart_xmit_advance()
-
-> +	}
-> +
-> +	while (*valid_byte_count) {
-> +		if (*data_empty_count - UART_BYTE_SIZE < 0)
-> +			break;
-> +		writeb(xmit->buf[xmit->tail], port->membase +
-> +		       UART_TX_BYTE_FIFO);
-> +		*data_empty_count -= UART_BYTE_SIZE;
-> +		*valid_byte_count -= UART_BYTE_SIZE;
-> +
-> +		/*
-> +		 * When the tail of the circular buffer is reached, the next
-> +		 * byte is transferred to the beginning of the buffer.
-> +		 */
-> +		xmit->tail = (xmit->tail + UART_BYTE_SIZE) &
-> +			     (UART_XMIT_SIZE - 1);
-
-uart_xmit_advance()
-
-> +
-> +		/*
-> +		 * If there are any pending burst count, data is handled by
-> +		 * transmitting DWORDs at a time.
-> +		 */
-> +		if (valid_burst_count && (xmit->tail <
-> +		   (UART_XMIT_SIZE - UART_BURST_SIZE)))
-> +			break;
-> +	}
-> +}
-
-This nested double loop is _really_ hard to follow. It's actually 
-terrible with cut & paste mistakes.
-
-Could these all loops be simply replaced by something like this pseudo 
-code (a single loop):
-
-while (data_empty_count) {
-   cnt = CIRC_CNT_TO_END();
-   if (!cnt)
-     break;
-   if (cnt < UART_BURST_SIZE || (tail & 3)) { // is_unaligned()
-     writeb();
-     cnt = 1;
-   } else {
-     writel()
-     cnt = UART_BURST_SIZE;
-   }
-   uart_xmit_advance(cnt);
-   data_empty_count -= cnt;
-}
-
-?
+Chen
 
 
-> +static void pci1xxxx_tx_burst(struct uart_port *port, u32 uart_status)
-> +{
-> +	struct uart_8250_port *up = up_to_u8250p(port);
-> +	u32 valid_byte_count;
-> +	int data_empty_count;
-> +	struct circ_buf *xmit;
-> +
-> +	xmit = &port->state->xmit;
-> +
-> +	if (port->x_char) {
-> +		writeb(port->x_char, port->membase + UART_TX);
-> +		port->icount.tx++;
-> +		port->x_char = 0;
-> +		return;
-> +	}
-> +
-> +	if ((uart_tx_stopped(port)) || (uart_circ_empty(xmit))) {
-> +		port->ops->stop_tx(port);
-
-This looks weird standing here. You should handle this below along with RPM.
-
-> +	} else {
-
-The condition should be IMO inverted with this block in its body:
-
-> +		data_empty_count = (pci1xxxx_read_burst_status(port) &
-> +				    UART_BST_STAT_TX_COUNT_MASK) >> 8;
-> +		do {
-> +			valid_byte_count = uart_circ_chars_pending(xmit);
-> +
-> +			pci1xxxx_process_write_data(port, xmit,
-> +						    &data_empty_count,
-> +						    &valid_byte_count);
-> +
-> +			port->icount.tx++;
-
-Why do you increase the stats only once per burst? (Solved by 
-uart_xmit_advance() above.)
-
-> +			if (uart_circ_empty(xmit))
-> +				break;
-> +		} while (data_empty_count && valid_byte_count);
-> +	}
-> +
-> +	if (uart_circ_chars_pending(xmit) < WAKEUP_CHARS)
-> +		uart_write_wakeup(port);
-> +
-> +	 /*
-> +	  * With RPM enabled, we have to wait until the FIFO is empty before
-> +	  * the HW can go idle. So we get here once again with empty FIFO and
-> +	  * disable the interrupt and RPM in __stop_tx()
-> +	  */
-> +	if (uart_circ_empty(xmit) && !(up->capabilities & UART_CAP_RPM))
-> +		port->ops->stop_tx(port);
-
-I wonder why this driver needs this and others don't? Should they be 
-fixed too?
-
-> +}
-> +
->   static int pci1xxxx_handle_irq(struct uart_port *port)
->   {
->   	unsigned long flags;
-> @@ -359,6 +462,9 @@ static int pci1xxxx_handle_irq(struct uart_port *port)
->   	if (status & UART_BST_STAT_LSR_RX_MASK)
->   		pci1xxxx_rx_burst(port, status);
->   
-> +	if (status & UART_BST_STAT_LSR_THRE)
-> +		pci1xxxx_tx_burst(port, status);
-> +
->   	spin_unlock_irqrestore(&port->lock, flags);
->   
->   	return 1;
-
--- 
-js
-suse labs
-
+>
+> Changes in v2:
+>    This patch series is based on v6.8-rc1. You can simply review or test the
+>    patches at the link [3].
+>    - fixed some minor formatting issues.
+>    Note that if you need to pass dtb check, you need to apply a patch. This
+>    patch is missing in v6.8-rc1. For details, please see [2].
+>
+> Changes in v1:
+>    The patch series is based on v6.7. You can simply review or test the
+>    patches at the link [1].
+>
+> Link: https://lore.kernel.org/linux-riscv/cover.1704790558.git.unicorn_wang@outlook.com/ [1]
+> Link: https://lore.kernel.org/linux-riscv/MA0P287MB28228572C526C5099A8BDA2DFE7B2@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM/T/#u [2]
+> Link: https://lore.kernel.org/linux-riscv/cover.1706161530.git.unicorn_wang@outlook.com/ [3]
+>
+> ---
+>
+> Chen Wang (4):
+>    dt-bindings: reset: sophgo: support SG2042
+>    reset: simple: add support for Sophgo SG2042
+>    riscv: dts: add reset generator for Sophgo SG2042 SoC
+>    riscv: dts: add resets property for uart node
+>
+>   .../bindings/reset/sophgo,sg2042-reset.yaml   | 35 ++++++++
+>   arch/riscv/boot/dts/sophgo/sg2042.dtsi        |  9 ++
+>   drivers/reset/Kconfig                         |  3 +-
+>   drivers/reset/reset-simple.c                  |  2 +
+>   .../dt-bindings/reset/sophgo,sg2042-reset.h   | 87 +++++++++++++++++++
+>   5 files changed, 135 insertions(+), 1 deletion(-)
+>   create mode 100644 Documentation/devicetree/bindings/reset/sophgo,sg2042-reset.yaml
+>   create mode 100644 include/dt-bindings/reset/sophgo,sg2042-reset.h
+>
+>
+> base-commit: 41bccc98fb7931d63d03f326a746ac4d429c1dd3
 
