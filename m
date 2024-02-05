@@ -1,155 +1,100 @@
-Return-Path: <linux-kernel+bounces-53929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D40D384A826
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:54:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E4BFD84A828
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:54:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1397A1C28092
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:54:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FE191C280C4
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:54:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18FFF1386DD;
-	Mon,  5 Feb 2024 20:51:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98D1513A25D;
+	Mon,  5 Feb 2024 20:53:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gQSKBB1a"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XULFzQq1"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DAF71EB46
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 20:51:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0541D482F6
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 20:53:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707166297; cv=none; b=jR6YFCByJckvVn3gp4X+hLOY3y9/9g5DMiP8GH3oGoMwSRyIOy/esUh3DK5/zigFrLBM8PDynnxLGxgAU1Asefu1POYtnL1pEHr+tXxpNayO5AVBXi8f81mzGQNIxBaT6IO93vC21E9RAwcAPsywvGJ6qvGK09fBAgINlxtl0OE=
+	t=1707166403; cv=none; b=sG98MY1zKImRmwWvXA0SdggmvSfyIQ19iTIAUOk24HK5dLvgO/l1M8vyHmfa/fqjbyfdCq6tuZEwnwVk6EaejD8gBwy9dkB7lqca0dmc/TRrkxN1272aIFQuvYVN0o62ZW4/PCxalHBPYpmhtbbeWJbNf00lE5zcPwJ68xPceD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707166297; c=relaxed/simple;
-	bh=rbxfWPsAtsZkwAub+b6KRhh6zPgaO8+Nsj7bKR2m5RM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mxzNJDrAh4lQLjpAo1iiwunv1mXjcyLOwcPuRTCNTntjy5N0tgjP0kAIMQRfE+h5wjzcWv70KPBUgk6dGLfN+lX519LobdnhSrEHvegVwVPwvUtFIHN7mNVdEVxSUyZ/HZAPrdcV2Bk7qjoh06/1QsaqOkAnfw3/P4A1YSdf6w4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gQSKBB1a; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE405C43394
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 20:51:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707166296;
-	bh=rbxfWPsAtsZkwAub+b6KRhh6zPgaO8+Nsj7bKR2m5RM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=gQSKBB1auVt0+2i1wF9el62IAUkh4PeL0/sd2OjWkiV52ekTZFcXWz9X1ePXPXA3R
-	 3xiLneomSrhi0rvZm7fvIS94AFFbrPjE9vfY3vqBlTbo6U202xyk8qz5fabVfyZFFc
-	 +LEZTedFJ/GMXteRffOyJpwkNmrt5lhm1ExY81vW5OTDtyVlJ/B8PUThs0l1AnChu9
-	 kVIfSrZ8jyH8sLN+/uaOqGAwhKcUcPaUcmpRwR5EPpIijVKGEmtugZmDDFiitJllYI
-	 ClMllxJdWTGCL3M7Uac7F/Ei2FAGASPRVok1n1kDHZNiLOMzsxKX/S7tv4PG+NQhcJ
-	 5oYI/r14MPTOA==
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d09fefabc1so24038661fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 12:51:36 -0800 (PST)
-X-Gm-Message-State: AOJu0Yw2BowN3IgCOhkrT6ilqvyTXmJtTHedYxVFqjp/SOq3GsRIHGie
-	hF1CuPQUSg2ciqXVlIVisgDRuXQPm27l4SaKUj32buYVUJmjKIGso2eOsBHZVeSm5YV0NRN8dc5
-	5iB+6NjlEGLWCAbxhdysojqHxsd8=
-X-Google-Smtp-Source: AGHT+IH48mHUOfbKPsHz4ex522m4Efo9yfxYkbY+WPFm87RC+2HZW07sdB9JpcI7VvmtbRlov+g35Jw+FX0st/t6jd4=
-X-Received: by 2002:a2e:920d:0:b0:2d0:af09:e3d7 with SMTP id
- k13-20020a2e920d000000b002d0af09e3d7mr580084ljg.41.1707166295433; Mon, 05 Feb
- 2024 12:51:35 -0800 (PST)
+	s=arc-20240116; t=1707166403; c=relaxed/simple;
+	bh=qjYwOVL5n8E64xaUh8WKZwxYcEFG67CWrLt9pfQixAE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=iIUD/QsrVIJWniU7zOXcoHfn38DleOgD6Rkn5aGpqP0q+9eVx27fMxapOClLHOQWpFmfsKl27OB39PLI3Db6RZgD4sIjcbdotUJ5CpBK0QQSCEDItKaB28QtrZchXSUK9F6CDkXtxSNqqqHBM+mDqSPC/Xn/hXO7mxYyB6BGIqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=XULFzQq1; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Cc:Content-ID:Content-Description;
+	bh=UJm8rJ1kinAzDIjchPSEgbk/4aRLfbzaK3NU14FLAVs=; b=XULFzQq1dcTouy1K/K2W7HSHeG
+	oBT40+u0le//7L668rhFwSlvtgOvJRNZxdyHnNiaLrdtJzLSLW04hg4pPk8D/YzMZADpbCGy7MOvM
+	wEzNERT01234uRK4kKjtbvAhp1oh4YYJcNminzSHvN+yNK7PnD2FQ5amkI9t5PKpIPxSWycmSyP0i
+	+azdLr+5oDOwEja4nBpDYZwMsJIVntDf+BMeDRZUJu92luhdKIU8vbFfdq2x4TchkAHw5drftdG+d
+	8VuIfKEScEuUdUiYw3k+gXfym2L43MrEJjrkNLh92NeuyCT8/uMAFtIvpnuYPEWaC5Jeu2CWdipNh
+	5cjImA9g==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rX5xx-000000057XX-1YEB;
+	Mon, 05 Feb 2024 20:53:21 +0000
+Message-ID: <da0da5de-09e1-4e79-98ab-cb4c503fd368@infradead.org>
+Date: Mon, 5 Feb 2024 12:53:18 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231120232332.4100288-1-masahiroy@kernel.org>
- <CX42TU4QHS1Z.A0UUHMDAMZOL@wheely> <ZbjHTMhQ4Z9lRR6L@t14s>
- <87v873870m.fsf@mail.lhotse> <CAASaF6w9SRoj+Kn6=UaReBNNfL_rrKo-4rvtCj=iF4Nd3Zpw-g@mail.gmail.com>
-In-Reply-To: <CAASaF6w9SRoj+Kn6=UaReBNNfL_rrKo-4rvtCj=iF4Nd3Zpw-g@mail.gmail.com>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Tue, 6 Feb 2024 05:50:58 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQe5SounO60gyYE_3e-M0cAAgT=9jac_SLcR0i9BeEgDQ@mail.gmail.com>
-Message-ID: <CAK7LNAQe5SounO60gyYE_3e-M0cAAgT=9jac_SLcR0i9BeEgDQ@mail.gmail.com>
-Subject: Re: [PATCH] powerpc: add crtsavres.o to always-y instead of extra-y
-To: Jan Stancek <jstancek@redhat.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
-	Christophe Leroy <christophe.leroy@csgroup.eu>, linuxppc-dev@lists.ozlabs.org, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>, 
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] README: Fix spelling/capitalization
+Content-Language: en-US
+To: Thorsten Blum <thorsten.blum@toblux.com>, linux-kernel@vger.kernel.org,
+ trivial@kernel.org
+References: <20240205120904.1711-1-thorsten.blum@toblux.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240205120904.1711-1-thorsten.blum@toblux.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 5, 2024 at 10:22=E2=80=AFPM Jan Stancek <jstancek@redhat.com> w=
-rote:
->
-> On Mon, Feb 5, 2024 at 12:50=E2=80=AFPM Michael Ellerman <mpe@ellerman.id=
-au> wrote:
-> >
-> > Jan Stancek <jstancek@redhat.com> writes:
-> > > On Tue, Nov 21, 2023 at 10:51:34AM +1000, Nicholas Piggin wrote:
-> > >>On Tue Nov 21, 2023 at 9:23 AM AEST, Masahiro Yamada wrote:
-> > >>> crtsavres.o is linked to modules. However, as explained in commit
-> > >>> d0e628cd817f ("kbuild: doc: clarify the difference between extra-y
-> > >>> and always-y"), 'make modules' does not build extra-y.
-> > >>>
-> > >>> For example, the following command fails:
-> > >>>
-> > >>>   $ make ARCH=3Dpowerpc LLVM=3D1 KBUILD_MODPOST_WARN=3D1 mrproper p=
-s3_defconfig modules
-> > >>>     [snip]
-> > >>>     LD [M]  arch/powerpc/platforms/cell/spufs/spufs.ko
-> > >>>   ld.lld: error: cannot open arch/powerpc/lib/crtsavres.o: No such =
-file or directory
-> > >>>   make[3]: *** [scripts/Makefile.modfinal:56: arch/powerpc/platform=
-s/cell/spufs/spufs.ko] Error 1
-> > >>>   make[2]: *** [Makefile:1844: modules] Error 2
-> > >>>   make[1]: *** [/home/masahiro/workspace/linux-kbuild/Makefile:350:=
- __build_one_by_one] Error 2
-> > >>>   make: *** [Makefile:234: __sub-make] Error 2
-> > >>>
-> > >>
-> > >>Thanks. Is this the correct Fixes tag?
-> > >>
-> > >>Fixes: d0e628cd817f ("powerpc/64: Do not link crtsavres.o in vmlinux"=
-)
-> > >>
-> > >>Hmm, looks like LLD might just do this now automatically for us
-> > >>too without --save-restore-funcs (https://reviews.llvm.org/D79977).
-> > >>But we probably still need it for older versions, so we still need
-> > >>your patch.
-> > >
-> > > Hi,
-> > >
-> > > I'm still seeing the error of crtsavres.o missing when building exter=
-nal modules
-> > > after "make LLVM=3D1 modules_prepare". Should it be built also in arc=
-hprepare?
-> >
-> > Or modules_prepare?
-> >
-> > Example patch below.
->
-> I tested your patch with my setup and that works for me as well.
->
+Hi Thorsten,
 
+On 2/5/24 04:09, Thorsten Blum wrote:
+> - Fix spelling/capitalization s/Restructured/ReStructured/
+> 
+> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
 
+We no longer use trivial@kernel.org for patches.
+You will need to send this to a maintainer who will/can merge it.
 
+Jonathan Corbet seems to have merged most of the README patches  lately.
 
-Please note 'make ARCH=3Dpowerpc clean' will remove  '*.o'
-files globally.
+Thanks.
 
+> ---
+>  README | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/README b/README
+> index 669ac7c32292..026eff0b8e06 100644
+> --- a/README
+> +++ b/README
+> @@ -11,7 +11,7 @@ In order to build the documentation, use ``make htmldocs`` or
+>      https://www.kernel.org/doc/html/latest/
+>  
+>  There are various text files in the Documentation/ subdirectory,
+> -several of them using the Restructured Text markup notation.
+> +several of them using the ReStructured Text markup notation.
+>  
+>  Please read the Documentation/process/changes.rst file, as it contains the
+>  requirements for building and running the kernel, and information about
 
-Kbuild promised you would still be able to compile external modules
-after 'make clean' (until you run 'make mrproper'), but
-that would not work in this case.
-
-So, the external module support for powerpc
-is broken in another way, already.
-
-
-Perhaps, an easy workaround might be to change
-the suffix, but I did not test it at all.
-
-mv arch/powerpc/lib/crtsavres.o arch/powerpc/lib/crtsavres.o.do_not_remove_=
-me
-
-
-
-
---=20
-Best Regards
-Masahiro Yamada
+-- 
+#Randy
 
