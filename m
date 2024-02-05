@@ -1,134 +1,107 @@
-Return-Path: <linux-kernel+bounces-53272-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53273-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66FF084A2FA
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 20:02:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EA22C84A2FB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 20:02:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C803EB26635
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:02:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57F16B268CC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:02:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 279B848782;
-	Mon,  5 Feb 2024 19:01:34 +0000 (UTC)
-Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA7624878F;
+	Mon,  5 Feb 2024 19:01:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AEtdUvhm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95CDA482D1;
-	Mon,  5 Feb 2024 19:01:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1548A48CC1;
+	Mon,  5 Feb 2024 19:01:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707159693; cv=none; b=mI0fv6mqv5dMK3WauNYev72mUBqgRUOJBh3JFT/TN6dZxS7m9sESL16OjY6DgKw5uGhrepVH+4NYH/yOcT6ZkxnLYx+7CIma5ud05HsSURxk6Kui1pwdRoQjOoxxLBOMeI6Rp20iS2mI76ti2GYr8o6XVJHAIYLUyHqHF3TjGEM=
+	t=1707159697; cv=none; b=V5ygstYHT5PElL75cOVOoNEvuebOX6VqLCQhLiIVn79FnCRD09QHwtnsIsiaG/jY+aXHADOjSdcZV4MK3vq+sERVSiaLcYFzVbDftxyjuXbtXr+ibm5o10jsDDG3O+ly0AAarWfKTmYpTqogz8J+7N3c3izDDxJd6b1S/awEjeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707159693; c=relaxed/simple;
-	bh=JEt6XbTrmvG2A0mB2qlMp8TsvpF1cCNngcSPF10KDRU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MFg7rfFZr862OeTALtV53fiTQHGKSWrRXTOgVqlmmiI0cbzQwweq4HMFTYXlsT2T1LTWhMPqjhswyS6Pn9//bglnTeBT+Fd6Av07sGgmB5Wds+fvyqK8y3GcFkEFifi5OTAwVRygN/6EKYzeCq4ToYsg5A0iNA3NzDG98/RDX70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.166.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-363c503de95so5916155ab.2;
-        Mon, 05 Feb 2024 11:01:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707159688; x=1707764488;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SeMl68ENlhZta5JKP4MegR68EKrrxCv2fGrCfnFczms=;
-        b=TkGXElW02g1jThTfrV2OKJ1Onpk8lVHstxAYX5yPCP+YyrYxI0Vj8gbQPWEdPZ4KTJ
-         Mm6H6oq/0CW4k6SXRMxVPr42ZN4IipxdJG8PHf/pPqAi1adMlt2Vu6zlFh+Nw2lHLw4l
-         wMeVQoZsMFvomk2VrtMLzA4KRrVUKlHiL1EHaZ4IMUqxqc/fo2N1IrsI+tYjKVMPe0rc
-         1yNgS8Q3Ef1LssBhStbQsMrd7K11FFaNg/f1nCfs1t6ZeH0I3lr+kwgQQvHjxsihTI9K
-         3Il7fxhzmQjLJrVJgBSW+hY/RSQO65E+O9AXP447IlyNf2Y/tUCQfN8cUNgzoeXNI5uY
-         1GJg==
-X-Gm-Message-State: AOJu0YzHg4e/I+fN9F4R3cNhaYSxXO7osXbdHViSJubhlE9KoNdtM2QM
-	1hN5SGqdOg1RLz9bD18YitntpTcwEY6nD3GnsjiIX59YmMT0bQXFiDNetQJ6B0A=
-X-Google-Smtp-Source: AGHT+IGCSsROlSPtHzOpI86hYanv64KOK2bo5Q5Dm3PpFBE7zh7fPUM8mo3lT1twvESxHjj0Ri0I+w==
-X-Received: by 2002:a05:6e02:5b0:b0:363:74dc:8f5e with SMTP id k16-20020a056e0205b000b0036374dc8f5emr733688ils.0.1707159688577;
-        Mon, 05 Feb 2024 11:01:28 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXzucqZW6b+sCROzIo++3iRO6pl84UBCvPfJsEO4mxxgeZM88CxLvgOZUheCUJI9tiaRyePyDQ/1Hmy5BAVo2gR/qxqR9fjtHcVekPAJMDLT4PxYQMS7Swp37zkIfWR0S9uD7mY/aAHwBQbxuuedy/fkaDW61tKSxnm/XvVS/zZv8Yn/YLzgwo=
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
-        by smtp.gmail.com with ESMTPSA id p193-20020a2574ca000000b00dc701e0bdbcsm95980ybc.44.2024.02.05.11.01.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Feb 2024 11:01:28 -0800 (PST)
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-6040d33380cso49188897b3.1;
-        Mon, 05 Feb 2024 11:01:27 -0800 (PST)
-X-Received: by 2002:a0d:e289:0:b0:604:66f1:35d2 with SMTP id
- l131-20020a0de289000000b0060466f135d2mr475419ywe.49.1707159687571; Mon, 05
- Feb 2024 11:01:27 -0800 (PST)
+	s=arc-20240116; t=1707159697; c=relaxed/simple;
+	bh=qXT6n/Xz8TGqf2KpHYW4visUF18bBDgbINzKQ8xLz0s=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=teUpLMaG8odHKBDXA8rfRhIhnXo8/2kYNTC8Zrog6Ys6MsEPEliD2gzwqVABAR5laelnu+qC6mXs0Rd7HbDRXq39QdhM+fcAJFQ0q5U7oPTatSHcNnOA+Lt9qqiWySWjRL34raQI66EITgxueo+beLEkD+2WwSeVeSIP7Jts28k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AEtdUvhm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA939C4166B;
+	Mon,  5 Feb 2024 19:01:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707159696;
+	bh=qXT6n/Xz8TGqf2KpHYW4visUF18bBDgbINzKQ8xLz0s=;
+	h=From:To:Cc:Subject:Date:From;
+	b=AEtdUvhmlT6Q4z2ceE1S+VpZHbA1rQEw8LO+Bf9ETCZgbd5ufIs6vM741g/Q1erY3
+	 iMGw6ItvBEer3EgK3/IjPwBqeUyC0wFxJKJi0BEDpfeCs7dT2SMFjBkmzKcYwnUthQ
+	 WhFfz5iTvetNX+ZxtVlfj7t4egZ8PyHbQmkHyLVeII7nobppWisVcBQOZMDByw/Jkb
+	 qPLCTlbjBlSBSTy4ss5xYgKC3b5E0kaXBuKNu5cwCBpZKrs4crm/8AR/BZQl4XTORR
+	 p7Sxw9/iybUH35eJgPdaYL+6/igMauYf/6XDG8mUy/tmLL8nCpYXoYbE3WM8+Id2o6
+	 MaepARhHxl+og==
+From: Will Deacon <will@kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: kernel-team@android.com,
+	Will Deacon <will@kernel.org>,
+	iommu@lists.linux.dev,
+	Christoph Hellwig <hch@lst.de>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Petr Tesarik <petr.tesarik1@huawei-partners.com>,
+	Dexuan Cui <decui@microsoft.com>
+Subject: [PATCH v3 0/3] Fix double allocation in swiotlb_alloc()
+Date: Mon,  5 Feb 2024 19:01:24 +0000
+Message-Id: <20240205190127.20685-1-will@kernel.org>
+X-Mailer: git-send-email 2.20.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <da6af483-5ee9-45cd-922e-d9d5364674dc@web.de> <CAMuHMdUxn4Ne7kmEfONz8Uk3Why3m9r83GdM5RzTxm_4Gj_a6g@mail.gmail.com>
- <8f011126-c95a-4c71-8bc9-a6b0a5823c96@web.de>
-In-Reply-To: <8f011126-c95a-4c71-8bc9-a6b0a5823c96@web.de>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 5 Feb 2024 20:01:17 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUQLWBQemtgnCHj64wCYAET8J2-MgbisyMChSbh0k0L7w@mail.gmail.com>
-Message-ID: <CAMuHMdUQLWBQemtgnCHj64wCYAET8J2-MgbisyMChSbh0k0L7w@mail.gmail.com>
-Subject: Re: [PATCH] pmdomain: mediatek: Use devm_platform_get_and_ioremap_resource()
- in init_scp()
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-pm@vger.kernel.org, kernel-janitors@vger.kernel.org, 
-	Angelo Gioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	=?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	Rob Herring <robh@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, 
-	LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Markus,
+Hi all,
 
-On Mon, Feb 5, 2024 at 6:28=E2=80=AFPM Markus Elfring <Markus.Elfring@web.d=
-e> wrote:
-> >> +++ b/drivers/pmdomain/mediatek/mtk-scpsys.c
-> >> @@ -441,8 +441,7 @@ static struct scp *init_scp(struct platform_device=
- *pdev,
-> >>
-> >>         scp->dev =3D &pdev->dev;
-> >>
-> >> -       res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> >> -       scp->base =3D devm_ioremap_resource(&pdev->dev, res);
-> >> +       scp->base =3D devm_platform_get_and_ioremap_resource(pdev, 0, =
-&res);
-> >
-> > Given res is further unused, please use devm_platform_ioremap_resource(=
-)
-> > instead, and remove the local variable res.
->
-> I got another idea after looking at the implementation of the function
-> =E2=80=9Cdevm_platform_get_and_ioremap_resource=E2=80=9D once more.
-> https://elixir.bootlin.com/linux/v6.8-rc3/source/drivers/base/platform.c#=
-L87
->
-> It seems that it is supported to pass a null pointer for the last paramet=
-er
-> (while this possibility is not mentioned in the interface description so =
-far).
-> How do you think about to benefit from such a design option any more
-> (instead of the determination of a corresponding platform device)?
+This is version three of the patches I posted recently:
 
-Yes, you can pass a NULL pointer as the last parameter.
-And as this is very common, the wrapper devm_platform_ioremap_resource()
-exists.
+v1: https://lore.kernel.org/r/20240126151956.10014-1-will@kernel.org
+v2: https://lore.kernel.org/r/20240131122543.14791-1-will@kernel.org
 
-Gr{oetje,eeting}s,
+Thanks to Robin for the comments on the most recent version.
 
-                        Geert
+Changes since v2 include:
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+  - Restore missing 'continue' statement that got accidentally dropped
+    while addressing the initial round of review feedback.
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+  - Reword the commit message in patch #1
+
+  - Add a Fixes: tag to the last patch
+
+Cheers,
+
+Will
+
+Cc: iommu@lists.linux.dev
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+Cc: Dexuan Cui <decui@microsoft.com>
+
+--->8
+
+Will Deacon (3):
+  swiotlb: Fix double-allocation of slots due to broken alignment
+    handling
+  swiotlb: Enforce page alignment in swiotlb_alloc()
+  swiotlb: Honour dma_alloc_coherent() alignment in swiotlb_alloc()
+
+ kernel/dma/swiotlb.c | 38 ++++++++++++++++++++++++--------------
+ 1 file changed, 24 insertions(+), 14 deletions(-)
+
+-- 
+2.43.0.594.gd9cf4e227d-goog
+
 
