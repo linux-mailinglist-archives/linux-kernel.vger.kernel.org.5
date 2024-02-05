@@ -1,167 +1,138 @@
-Return-Path: <linux-kernel+bounces-53884-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53885-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A6AD84A79F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:38:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BAC2984A7A0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:38:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC9071F2AF2E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:38:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 660AC1F2AF8B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:38:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB9231292F1;
-	Mon,  5 Feb 2024 20:03:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDD77129A82;
+	Mon,  5 Feb 2024 20:03:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CIQPBF1D"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NkkDVeH/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 717701292E3
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 20:03:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21D441292E3;
+	Mon,  5 Feb 2024 20:03:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707163390; cv=none; b=nbu8KGjlltMaxvAwuPb4ws7+HTpov1sMjwcolfIy8JlNImzVjKaJqRFiEaWc73Btnqm8z1GtNg1IRCinx/yGgCIlNBBTGs3L2l7iZuAcfWBI4V9TBJ/6MHLHVIzo7m0n8SlsgJ/jICZe6mBx5WvId1ta6a9ovxbfvnxvWHAlOu8=
+	t=1707163416; cv=none; b=jZdHohbj4ysbUxFVCDGpbrqDDgRVS9F4ToBaIsRTcSxpvGB6WnXySSkunPqeTmuHqOEhESVVt0hawq1Ra58zX0lykB1wY+iwPtdlMLkt4v4HfOA/fzUOCm20QezKWWUmiucqnBQmAoAsUVZOhw2+ZgpzfGqpNETH9W7vdkpXKY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707163390; c=relaxed/simple;
-	bh=/V90lZZSRGXXf05+8SHxHi+6QRtY/DfvuW/SQHQYyIY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZP0T75tXUj1FfpspTAditNkWXX5xqfYOhO4NGnt5YfMkXcfQhgteixUFWpQ1OV4YkmAnJpfR2jDEw6qUXOM7GiZcmaM/9fEOGC4VT8hAL2ZgET3uUQpSWGpBlR0vgaUi+Uli3tlNGMh+GLnRc2vdSbYOsYhhZ0J39OMiVYhOrm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CIQPBF1D; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707163387;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dJpKJpfoOFFg221gkKrq7FzbeWyIhT5uB2Ecy/dVoZU=;
-	b=CIQPBF1DtkXpWY5I6D/I+NrizGwxwWcfhCDG+WM+viLDT6VO/102ww/DNPmtX70TtUUsyN
-	hlaCqe89r2SXDKaVQhshP0I9Gszcd2gAogDe7c3zeGXxV9u+2xbpkfc4SQdJXJqpuXLOTO
-	wdC9lGQrWnqVPGd44hyAKuVsP1glzxg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-187-nVCxjYcQNTC-R1a0ywzJvg-1; Mon, 05 Feb 2024 15:03:02 -0500
-X-MC-Unique: nVCxjYcQNTC-R1a0ywzJvg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 38C93846D6F;
-	Mon,  5 Feb 2024 20:03:01 +0000 (UTC)
-Received: from rhel-developer-toolbox-latest.redhat.com (unknown [10.2.16.180])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id E67F55012;
-	Mon,  5 Feb 2024 20:02:59 +0000 (UTC)
-From: Chris Leech <cleech@redhat.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Nilesh Javali <njavali@marvell.com>
-Cc: Christoph Hellwig <hch@lst.de>,
-	John Meneghini <jmeneghi@redhat.com>,
-	Lee Duncan <lduncan@suse.com>,
-	Mike Christie <michael.christie@oracle.com>,
-	Hannes Reinecke <hare@kernel.org>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-scsi@vger.kernel.org,
-	GR-QLogic-Storage-Upstream@marvell.com,
-	Simon Horman <horms@kernel.org>
-Subject: [PATCH v6 4/4] uio_dmem_genirq: UIO_MEM_DMA_COHERENT conversion
-Date: Mon,  5 Feb 2024 12:02:57 -0800
-Message-ID: <20240205200257.138376-1-cleech@redhat.com>
-In-Reply-To: <20240201233400.3394996-5-cleech@redhat.com>
-References: <20240201233400.3394996-5-cleech@redhat.com>
+	s=arc-20240116; t=1707163416; c=relaxed/simple;
+	bh=4eZQWX6W/aYg6ERcF31vLpr9leduea34fMM6jYOWiz0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VV1TbiRRHAoJWm/2K3WWR+CNkOCnmcbZVQJYprvaBZftPM3CP8qd0Gge5ciWZJODMBHZUEk7bPg2/Gtbnhde6stGg1pS2Ti8Iukt2woDoOwjcLSRJxkdoSLWbwNCa365dOEROXb1yY9lCWHbVW/uH4cahPEkDm7WG/jlaC739cs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NkkDVeH/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76E30C433C7;
+	Mon,  5 Feb 2024 20:03:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707163415;
+	bh=4eZQWX6W/aYg6ERcF31vLpr9leduea34fMM6jYOWiz0=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=NkkDVeH/dIz2ktshCpJBJNpZa2Zmcy8Ftdfmtxu/qnvvsw2YtCwimeSk7gGMT5XlV
+	 ASLc8mT1/uYmlIG053uc8ekPQXOOyQajn6sADUbL/3H/xcKhklAhf/8boApDBu2NuI
+	 awlbhSPajP05uUVHAWf3lOvcEIL7CQpHBIf56qA+o+fxueW6Uo6bhbKpsbNVvSInKI
+	 36bQvBz6pdrr60lBHP78+/X6kmjJbOIBYRrTfTxr6AFwEJY37NZPKmD33I/uCLHGKq
+	 6ishGzLNJQUQb1FoL4UNvsU6/zNgOZvxSCwyJvx11WKAhUJgJBJ+1hc5Xjj4OKEtBE
+	 GvdLi3pydaXMg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 69A21CE1C10; Mon,  5 Feb 2024 12:03:33 -0800 (PST)
+Date: Mon, 5 Feb 2024 12:03:33 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	Zhengxu Chen <zhxchen17@meta.com>,
+	Danielle Costantino <dcostantino@meta.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Feng Tang <feng.tang@intel.com>, Waiman Long <longman@redhat.com>,
+	John Stultz <jstultz@google.com>, x86@kernel.org
+Subject: Re: [PATCH 5/8] tsc: Check for sockets instead of CPUs to make code
+ match comment
+Message-ID: <1781cc76-aeee-427b-bc9e-b3d2b8f184f3@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240129235646.3171983-1-boqun.feng@gmail.com>
+ <20240129235646.3171983-6-boqun.feng@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240129235646.3171983-6-boqun.feng@gmail.com>
 
-Conversion of this driver to use UIO_MEM_DMA_COHERENT for
-dma_alloc_coherent memory instead of UIO_MEM_PHYS.
+On Mon, Jan 29, 2024 at 03:56:38PM -0800, Boqun Feng wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
+> 
+> The unsynchronized_tsc() eventually checks num_possible_cpus(), and
+> if the system is non-Intel and the number of possible CPUs is greater
+> than one, assumes that TSCs are unsynchronized.  This despite the
+> comment saying "assume multi socket systems are not synchronized",
+> that is, socket rather than CPU.  This behavior was preserved by
+> commit 8fbbc4b45ce3 ("x86: merge tsc_init and clocksource code") and
+> by the previous relevant commit 7e69f2b1ead2 ("clocksource: Remove the
+> update callback").
+> 
+> The clocksource drivers were added by commit 5d0cf410e94b ("Time: i386
+> Clocksource Drivers") back in 2006, and the comment still said "socket"
+> rather than "CPU".
+> 
+> Therefore, bravely (and perhaps foolishly) make the code match the
+> comment.
+> 
+> Note that it is possible to bypass both code and comment by booting
+> with tsc=reliable, but this also disables the clocksource watchdog,
+> which is undesirable when trust in the TSC is strictly limited.
+> 
+> Reported-by: Zhengxu Chen <zhxchen17@meta.com>
+> Reported-by: Danielle Costantino <dcostantino@meta.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Feng Tang <feng.tang@intel.com>
+> Cc: Waiman Long <longman@redhat.com>
+> Cc: John Stultz <jstultz@google.com>
+> Cc: <x86@kernel.org>
 
-Signed-off-by: Chris Leech <cleech@redhat.com>
----
-v6: fixed single char ',' -> ';' typo
+Hello, Boqun,
 
- drivers/uio/uio_dmem_genirq.c | 22 ++++++++--------------
- 1 file changed, 8 insertions(+), 14 deletions(-)
+Please drop this one, as I never got an ack from the maintainers, and
+quite possibly for good reason.  ;-)
 
-diff --git a/drivers/uio/uio_dmem_genirq.c b/drivers/uio/uio_dmem_genirq.c
-index 5313307c2754a..d5f9384df1255 100644
---- a/drivers/uio/uio_dmem_genirq.c
-+++ b/drivers/uio/uio_dmem_genirq.c
-@@ -36,7 +36,6 @@ struct uio_dmem_genirq_platdata {
- 	struct platform_device *pdev;
- 	unsigned int dmem_region_start;
- 	unsigned int num_dmem_regions;
--	void *dmem_region_vaddr[MAX_UIO_MAPS];
- 	struct mutex alloc_lock;
- 	unsigned int refcnt;
- };
-@@ -50,7 +49,6 @@ static int uio_dmem_genirq_open(struct uio_info *info, struct inode *inode)
- {
- 	struct uio_dmem_genirq_platdata *priv = info->priv;
- 	struct uio_mem *uiomem;
--	int dmem_region = priv->dmem_region_start;
- 
- 	uiomem = &priv->uioinfo->mem[priv->dmem_region_start];
- 
-@@ -61,11 +59,8 @@ static int uio_dmem_genirq_open(struct uio_info *info, struct inode *inode)
- 			break;
- 
- 		addr = dma_alloc_coherent(&priv->pdev->dev, uiomem->size,
--				(dma_addr_t *)&uiomem->addr, GFP_KERNEL);
--		if (!addr) {
--			uiomem->addr = DMEM_MAP_ERROR;
--		}
--		priv->dmem_region_vaddr[dmem_region++] = addr;
-+					  &uiomem->dma_addr, GFP_KERNEL);
-+		uiomem->addr = addr ? (phys_addr_t) addr : DMEM_MAP_ERROR;
- 		++uiomem;
- 	}
- 	priv->refcnt++;
-@@ -80,7 +75,6 @@ static int uio_dmem_genirq_release(struct uio_info *info, struct inode *inode)
- {
- 	struct uio_dmem_genirq_platdata *priv = info->priv;
- 	struct uio_mem *uiomem;
--	int dmem_region = priv->dmem_region_start;
- 
- 	/* Tell the Runtime PM code that the device has become idle */
- 	pm_runtime_put_sync(&priv->pdev->dev);
-@@ -93,13 +87,12 @@ static int uio_dmem_genirq_release(struct uio_info *info, struct inode *inode)
- 	while (!priv->refcnt && uiomem < &priv->uioinfo->mem[MAX_UIO_MAPS]) {
- 		if (!uiomem->size)
- 			break;
--		if (priv->dmem_region_vaddr[dmem_region]) {
--			dma_free_coherent(&priv->pdev->dev, uiomem->size,
--					priv->dmem_region_vaddr[dmem_region],
--					uiomem->addr);
-+		if (uiomem->addr) {
-+			dma_free_coherent(uiomem->dma_device, uiomem->size,
-+					  (void *) uiomem->addr,
-+					  uiomem->dma_addr);
- 		}
- 		uiomem->addr = DMEM_MAP_ERROR;
--		++dmem_region;
- 		++uiomem;
- 	}
- 
-@@ -264,7 +257,8 @@ static int uio_dmem_genirq_probe(struct platform_device *pdev)
- 					" dynamic and fixed memory regions.\n");
- 			break;
- 		}
--		uiomem->memtype = UIO_MEM_PHYS;
-+		uiomem->memtype = UIO_MEM_DMA_COHERENT;
-+		uiomem->dma_device = &pdev->dev;
- 		uiomem->addr = DMEM_MAP_ERROR;
- 		uiomem->size = pdata->dynamic_region_sizes[i];
- 		++uiomem;
--- 
-2.43.0
+							Thanx, Paul
 
+> ---
+>  arch/x86/kernel/tsc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+> index 15f97c0abc9d..d45084c6a15e 100644
+> --- a/arch/x86/kernel/tsc.c
+> +++ b/arch/x86/kernel/tsc.c
+> @@ -1287,7 +1287,7 @@ int unsynchronized_tsc(void)
+>  	 */
+>  	if (boot_cpu_data.x86_vendor != X86_VENDOR_INTEL) {
+>  		/* assume multi socket systems are not synchronized: */
+> -		if (num_possible_cpus() > 1)
+> +		if (nr_online_nodes > 1)
+>  			return 1;
+>  	}
+>  
+> -- 
+> 2.43.0
+> 
 
