@@ -1,156 +1,174 @@
-Return-Path: <linux-kernel+bounces-52418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2573F8497DB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:32:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D71118495F7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:08:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49A5B1C229AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:32:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62643280EB1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:08:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB4C91759D;
-	Mon,  5 Feb 2024 10:32:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C41F012B71;
+	Mon,  5 Feb 2024 09:05:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="HMRYX5pd"
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="lO/DlnOT"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B0481798E
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 10:32:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A59D1773D
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 09:05:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707129140; cv=none; b=kOpSG+eidnRyQPvA1fFy33A6a9j0LoEZuSsPpQmsiXkM5sObgTxZc1UiDxuA7TCyk1vsvFN/AFsy+q2kqdIgMbXZrlZy+f7gSaBsOPrvhfJrRy60PfXTzHIYTNXLJVqBYqIE7l4ZZ9Cbghtb5PkOF17QHuR6+FyBEtX4pzgQDfc=
+	t=1707123920; cv=none; b=pppeQW/8kAJGnVYPfAt2KTbca6gM/DXZlwBzaGS2MUFwo6VJiAUQPzp2P4AB/5HcVMY3L2pS4wItQy2WK61LSaXolarAIDcJPOiFBPG14EVnqmLoX0nmZNGPfZDvoZgdAkypQIJn6noEwAfs7F+j0pDPL+BOwr2cpcJObFKdWaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707129140; c=relaxed/simple;
-	bh=MFOE+nUaSwDTYdIw9JQlFvPuda2tfFqnXYWlhZRBQXc=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:References; b=N9mPevaxKDIlPT0Q2q/6Hc3z+w/V+/Gldp41JPvMvb04GUxyeiZi725P3/YDwD1ML2GPfRHjnQYJuCHrWZiexqoAkj3ZUFXd7UOnE0vhpZIMK1nsInE7G13xr1pfZUhIZ210dfb8RyaW/3kRuWJoJ/ralFcCk2yWSTZl/pQXOCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=HMRYX5pd; arc=none smtp.client-ip=203.254.224.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-	by mailout2.samsung.com (KnoxPortal) with ESMTP id 20240205103216epoutp023e3677d54ca02dfb53c80f95e117e0fc~w8Oebxzfb1458614586epoutp02K
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 10:32:16 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20240205103216epoutp023e3677d54ca02dfb53c80f95e117e0fc~w8Oebxzfb1458614586epoutp02K
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1707129136;
-	bh=rTfeTZ1ggn+RSJzom8PUIzN6CDAju1vOdXUC/7MJkyo=;
-	h=From:To:Cc:Subject:Date:References:From;
-	b=HMRYX5pdwH8IpHuy9SxI15wo75ZVsGXkYXTDa+vUksylHbMYGooYViChaxBmyvhZP
-	 UMttth/AzIGoj9cUyrUN4ynrLbbmA864r6LHlY9v4gd8kxGdIWbBeXr6dFFEyxpyfk
-	 eX5B3SAYN7ZO9UztYfBNeHRuqXkcDtHNLqdegtqw=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-	epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-	20240205103215epcas5p25b3cebc15ff98c8ef461994fdb5193aa~w8OeEttbK0949909499epcas5p25;
-	Mon,  5 Feb 2024 10:32:15 +0000 (GMT)
-Received: from epsmges5p1new.samsung.com (unknown [182.195.38.182]) by
-	epsnrtp3.localdomain (Postfix) with ESMTP id 4TT2kQ1cvxz4x9Px; Mon,  5 Feb
-	2024 10:32:14 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-	epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	2B.25.09634.E29B0C56; Mon,  5 Feb 2024 19:32:14 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-	epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-	20240205082631epcas5p170b45d20431bfe0b9410caf470216e92~w6groBMcR1289912899epcas5p1X;
-	Mon,  5 Feb 2024 08:26:31 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240205082631epsmtrp19edb53b67162d04dbd76a9e66613707b~w6grm3anV2306123061epsmtrp1U;
-	Mon,  5 Feb 2024 08:26:31 +0000 (GMT)
-X-AuditID: b6c32a49-eebff700000025a2-b6-65c0b92e133c
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	95.79.07368.7BB90C56; Mon,  5 Feb 2024 17:26:31 +0900 (KST)
-Received: from cheetah.sa.corp.samsungelectronics.net (unknown
-	[107.109.115.53]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240205082629epsmtip160ca2a4b599a9d600f44baffbcea11da~w6gqK6xcr2432124321epsmtip1S;
-	Mon,  5 Feb 2024 08:26:29 +0000 (GMT)
-From: Tamseel Shams <m.shams@samsung.com>
-To: alim.akhtar@samsung.com, linux-fsd@tesla.com, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Tamseel Shams
-	<m.shams@samsung.com>
-Subject: [PATCH v2] arm64: dts: fsd: Add fifosize for UART in Device Tree
-Date: Mon,  5 Feb 2024 13:56:25 +0530
-Message-Id: <20240205082625.39259-1-m.shams@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrCKsWRmVeSWpSXmKPExsWy7bCmlq7ezgOpBk+2sFo8mLeNzWLN3nNM
-	FvOPnGO16HvxkNli0+NrrBYPX4VbXN41h81ixvl9TBZ3WxezW7TuPcLuwOWxaVUnm8eda3vY
-	PDYvqffo27KK0eNf01x2j8+b5ALYorJtMlITU1KLFFLzkvNTMvPSbZW8g+Od403NDAx1DS0t
-	zJUU8hJzU22VXHwCdN0yc4AOU1IoS8wpBQoFJBYXK+nb2RTll5akKmTkF5fYKqUWpOQUmBTo
-	FSfmFpfmpevlpZZYGRoYGJkCFSZkZ5xfdpCtoJe9omnzLZYGxjusXYycHBICJhL7d+xg7mLk
-	4hAS2M0o0XDsBRuE84lR4tqrlVCZb4wS577dZoRpOX+5gxUisZdR4tW/2ewgCSGBViaJBdOD
-	uhg5ONgENCWOn+cGCYsI1En0bjkBNpVZYB2jxN+1C1hAEsICnhI/D30Bs1kEVCV29ixmB+nl
-	FbCQmPlbBGKXvMTqDQfAjpAQOMUucWPaT6i7XSRWfFrJDmELS7w6vgXKlpJ42d8GZadLzH3Y
-	ywRhF0gs2/UdKm4vceDKHBaQXcxAd67fpQ8RlpWYemodWDmzAJ9E7+8nUK28EjvmwdiKEv93
-	90ONEZd4t2IK1DkeEtf/vmODBEOsxMIb21kmMMrOQtiwgJFxFaNkakFxbnpqsWmBYV5qOTye
-	kvNzNzGCk5uW5w7Guw8+6B1iZOJgPMQowcGsJMJrtuNAqhBvSmJlVWpRfnxRaU5q8SFGU2CQ
-	TWSWEk3OB6bXvJJ4QxNLAxMzMzMTS2MzQyVx3tetc1OEBNITS1KzU1MLUotg+pg4OKUamPI2
-	rFF0P+sfl7xBf5Kd1e99s+efy1HhO3U+VpM/SOrCxKuVqUd7HMut/JmXXtm6quj820Pp7z9+
-	VBNcn9LJyn7TLI7nT57kUo3nwW53L58zv9ndJ/3jc9DTrm+tMbXhd8yer+Qo6jgoEPntQpFc
-	f3b9q6VuPHvm5s/+eblifWRv38KJs9dN27Zl7XHVIPV27/L4km92kxtN303fPXfvoSzxhsv6
-	OuHWX5aUdtUlFvxe1n7Y41pGi43CDre+G/F+67VzZl5Yaxjo0RtlIaUnIXpSeukF283dRtlC
-	3gUv1EUeyllf38e5IvPoBYUwqQUdDvP/vlj75sffRezSlzdfdz22++BLx1cLDex1ir8/llFi
-	Kc5INNRiLipOBADV1hCF9wMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprALMWRmVeSWpSXmKPExsWy7bCSnO722QdSDVq/8Vs8mLeNzWLN3nNM
-	FvOPnGO16HvxkNli0+NrrBYPX4VbXN41h81ixvl9TBZ3WxezW7TuPcLuwOWxaVUnm8eda3vY
-	PDYvqffo27KK0eNf01x2j8+b5ALYorhsUlJzMstSi/TtErgyzi87yFbQy17RtPkWSwPjHdYu
-	Rk4OCQETifOXO4BsLg4hgd2MEqeOzWeCSIhLTPu1nxHCFpZY+e85O0RRM5PEvxWPmLsYOTjY
-	BDQljp/nBomLCLQwSqy+fgKsmVlgE6PEg/1cILawgKfEz0NfWEBsFgFViZ09i9lBenkFLCRm
-	/haBmC8vsXrDAeYJjDwLGBlWMUqmFhTnpucmGxYY5qWW6xUn5haX5qXrJefnbmIEB5qWxg7G
-	e/P/6R1iZOJgPMQowcGsJMI7QXhvqhBvSmJlVWpRfnxRaU5q8SFGaQ4WJXFewxmzU4QE0hNL
-	UrNTUwtSi2CyTBycUg1M4ozBsy9tNVx2esrm/qQ44VQl38122Y0+vcaPfZunTerz9QtzUxRQ
-	/KasnhKYKR491elo2qVb9YuDlHk+pPSXTP3M73vrrNL0Q1anG83cp6xPyGeyzjl6zGPXoo0K
-	kj/bJ1n7nKg1szc9zGn3viG634uhMXp50UyDM8WzfpVkv/66qvfMj9QQW+MwrosXP3kq/f6t
-	tnD+yYSp7OeNVuguYvrD9CXy6IyNLlp25/8fk99YdzK8P2dv/J0JGY8+r+Pf1b+E5e6vx4KH
-	BfOcevq6Oqv4c3e8ag81XLloEW+bsfPJM0sO33QI2SARVS52kfXj54y6ogmb/FSdlDI4t+ey
-	1my/fG3b47zWM/s+y7EqsRRnJBpqMRcVJwIA8yP2u6MCAAA=
-X-CMS-MailID: 20240205082631epcas5p170b45d20431bfe0b9410caf470216e92
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240205082631epcas5p170b45d20431bfe0b9410caf470216e92
-References: <CGME20240205082631epcas5p170b45d20431bfe0b9410caf470216e92@epcas5p1.samsung.com>
+	s=arc-20240116; t=1707123920; c=relaxed/simple;
+	bh=5uslP+6MiU5p4xB80AbckdzpFTK8AZLC0FSdU6yovsc=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 MIME-Version:Content-Type; b=saC9x47dyGlCoWLBpocqy0J7QJald1HlOLp/L2K/bCeGtTC5KevbLuogzshYVIRKiYtoQFvrskaEB3LAwCgthp1bXsVDRO2t8c9uy1JSW9rV8tYC6UWgTiQjhVaVx380d/E6QuxUy2Zl4T7q3Vp/4d9QcTpeo6xYWPgLcXJncsc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=lO/DlnOT; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40fccd09082so18143175e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 01:05:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707123915; x=1707728715; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=FrzyemCCCe25zosXOoDYB16obaNMd4rjugvPsL9t2Tc=;
+        b=lO/DlnOTsaXup4aulR7ByDaFa5LT985S2rvMV1Hx7xUnl0oI9WNNsdQSfeP10vkJ7P
+         BtCHPjqc41MMGhBxXifdUN1MeKZxTH0Mn4VsJR0dYOgdzlMsfoekMgmGLFnHd47SGiyZ
+         dw8VLOl7b5WW3NvNAmn9581hxcM7zMMV26IhD3ZBdVq57stN7A04DHcSMqTteh9p67ND
+         Mdn/NAZ1YE8QnhbO5C8fY4JtanRm76WmS13xxe751bsIivr8Rjygly8lP4eE9JY0NrqX
+         ZDftsEbRC+6BtlHwHLPc642iM+LSxB/fXBkR/JGy1YWeVlLZdujpASm3NvJkvZwuuY2J
+         uC/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707123915; x=1707728715;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FrzyemCCCe25zosXOoDYB16obaNMd4rjugvPsL9t2Tc=;
+        b=YR7AHtjF8GO4B4EV1wYJPNWYYlm9UQYai6Z3DOiTnGf8cu7e9gBFUFbrHH2oSilhKb
+         8wyP+IdEA+jfD4cwjDT3iCpOfHtWC2J+SiixUzCYl8xndhnmSauDX7HNsLLnGF96fDSD
+         xTR0Yw23/gvIxEu8GS5JybG7QMxXtjDu0JnHsNHljumMGmWlOh+ZwexlMiY2VCMDpQM5
+         1CT/fjdsK/dnmD7mHBbmi5hWMV9hcxKpujjMUHtJotg4LKOmtdUsVQIiuVJDgTCJZu3x
+         t5XyK712foUwgRkhZAkoQ411s0KJJv3UM3d0KRfZiv5pYv8RM4+aIyG0gvJlCeZv1O0O
+         yA8A==
+X-Gm-Message-State: AOJu0Yzs7ohqZnde3mcreR/0zjFma/l3wWwITSsae6fshoa7VUt74/Ly
+	7vT4PlwlCCbEgLBnzekP/8v/TBWP11scJQjXwE4Ccgjuynz+W7GTG5gQopV6mRY=
+X-Google-Smtp-Source: AGHT+IG52hmC5Eu0sn2V0dkLHe/o74ig7s+Lp2f9Gnes0yU8mdwBjfMoRc4d5bnf/qpdhfHC23lgYg==
+X-Received: by 2002:a7b:cd85:0:b0:40e:fa6b:f355 with SMTP id y5-20020a7bcd85000000b0040efa6bf355mr4202944wmj.41.1707123915229;
+        Mon, 05 Feb 2024 01:05:15 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCX7Wqy/vaUuoF/84sU2+37uNkcfW0D2VCaoFNsTSZi4e3JJEHKNwI+us6HkHjkYhwNaV5JILIKpnQrvUoG+vj+nBRSXfWhLuT1oQDOMLlTKIt77g2J8TfZ0WjBKxk9MEFPAIq4YAUGWuTJwJClAwRQTEOqLyJTmj4CZQ16p2SaLVx+ooRoppxNZO7MW9ue09hSQzl5Y1rdyaabmK0aMd5l4DdacudoB1InieW+d1kF0KxKdE5m13iR9mHcTD9SMvgpNYidAHQoxxndHA0idnQffXO8gKa/GQS5JytIIb20FZb3IK7HwewdhN2Wh/N4RexHqx0hPg6sb9fsKGZAx9/9h9SDwUvmBrMhhWmT9sY6JqVxfrJm8y7qQuN4IyAZzccwvRgL8CII3j804eaqFlCcv1HkXcmHaD0gvaGXtZt4LMt+sBzA6Bm7rAaYzeABxbhF0ZKcCaYm/iHBoKq7m3BuG
+Received: from localhost ([2a01:e0a:3c5:5fb1:455:1a2b:40a2:1766])
+        by smtp.gmail.com with ESMTPSA id fm24-20020a05600c0c1800b0040ee8765901sm8029761wmb.43.2024.02.05.01.05.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 01:05:14 -0800 (PST)
+References: <20240202172537.1.I64656c75d84284bc91e6126b50b33c502be7c42a@changeid>
+User-agent: mu4e 1.10.8; emacs 29.1
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: Igor Prusov <ivprusov@salutedevices.com>
+Cc: jbrunet@baylibre.com, neil.armstrong@linaro.org,
+ kernel@salutedevices.com, prusovigor@gmail.com, Kevin Hilman
+ <khilman@baylibre.com>, Martin  Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Michael Turquette
+ <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>,
+ linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: meson: Add missing clocks to axg_clk_regmaps
+Date: Mon, 05 Feb 2024 10:02:01 +0100
+In-reply-to: <20240202172537.1.I64656c75d84284bc91e6126b50b33c502be7c42a@changeid>
+Message-ID: <1j7cjji8mu.fsf@starbuckisacylon.baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain
 
-UART in FSD SoC has fifosize of 64 bytes.
-Set fifosize as 64 bytes for UART from Device Tree.
 
-Signed-off-by: Tamseel Shams <m.shams@samsung.com>
----
- arch/arm64/boot/dts/tesla/fsd.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+On Fri 02 Feb 2024 at 17:25, Igor Prusov <ivprusov@salutedevices.com> wrote:
 
-diff --git a/arch/arm64/boot/dts/tesla/fsd.dtsi b/arch/arm64/boot/dts/tesla/fsd.dtsi
-index aaffb50b8b60..047a83cee603 100644
---- a/arch/arm64/boot/dts/tesla/fsd.dtsi
-+++ b/arch/arm64/boot/dts/tesla/fsd.dtsi
-@@ -601,6 +601,7 @@
- 			clocks = <&clock_peric PERIC_PCLK_UART0>,
- 				 <&clock_peric PERIC_SCLK_UART0>;
- 			clock-names = "uart", "clk_uart_baud0";
-+			samsung,uart-fifosize = <64>;
- 			status = "disabled";
- 		};
- 
-@@ -613,6 +614,7 @@
- 			clocks = <&clock_peric PERIC_PCLK_UART1>,
- 				 <&clock_peric PERIC_SCLK_UART1>;
- 			clock-names = "uart", "clk_uart_baud0";
-+			samsung,uart-fifosize = <64>;
- 			status = "disabled";
- 		};
- 
+> Some clocks were missing from axg_clk_regmaps, which caused kernel panic
+> during cat /sys/kernel/debug/clk/clk_summary
+>
+> [   57.349402] Unable to handle kernel NULL pointer dereference at virtual address 00000000000001fc
+> ...
+> [   57.430002] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> [   57.436900] pc : regmap_read+0x1c/0x88
+> [   57.440608] lr : clk_regmap_gate_is_enabled+0x3c/0xb0
+> [   57.445611] sp : ffff800082f1b690
+> [   57.448888] x29: ffff800082f1b690 x28: 0000000000000000 x27: ffff800080eb9a70
+> [   57.455961] x26: 0000000000000007 x25: 0000000000000016 x24: 0000000000000000
+> [   57.463033] x23: ffff800080e8b488 x22: 0000000000000015 x21: ffff00000e7e7000
+> [   57.470106] x20: ffff00000400ec00 x19: 0000000000000000 x18: ffffffffffffffff
+> [   57.477178] x17: 0000000000000000 x16: 0000000000000000 x15: ffff0000042a3000
+> [   57.484251] x14: 0000000000000000 x13: ffff0000042a2fec x12: 0000000005f5e100
+> [   57.491323] x11: abcc77118461cefd x10: 0000000000000020 x9 : ffff8000805e4b24
+> [   57.498396] x8 : ffff0000028063c0 x7 : ffff800082f1b710 x6 : ffff800082f1b710
+> [   57.505468] x5 : 00000000ffffffd0 x4 : ffff800082f1b6e0 x3 : 0000000000001000
+> [   57.512541] x2 : ffff800082f1b6e4 x1 : 000000000000012c x0 : 0000000000000000
+> [   57.519615] Call trace:
+> [   57.522030]  regmap_read+0x1c/0x88
+> [   57.525393]  clk_regmap_gate_is_enabled+0x3c/0xb0
+> [   57.530050]  clk_core_is_enabled+0x44/0x120
+> [   57.534190]  clk_summary_show_subtree+0x154/0x2f0
+> [   57.538847]  clk_summary_show_subtree+0x220/0x2f0
+> [   57.543505]  clk_summary_show_subtree+0x220/0x2f0
+> [   57.548162]  clk_summary_show_subtree+0x220/0x2f0
+> [   57.552820]  clk_summary_show_subtree+0x220/0x2f0
+> [   57.557477]  clk_summary_show_subtree+0x220/0x2f0
+> [   57.562135]  clk_summary_show_subtree+0x220/0x2f0
+> [   57.566792]  clk_summary_show_subtree+0x220/0x2f0
+> [   57.571450]  clk_summary_show+0x84/0xb8
+> [   57.575245]  seq_read_iter+0x1bc/0x4b8
+> [   57.578954]  seq_read+0x8c/0xd0
+> [   57.582059]  full_proxy_read+0x68/0xc8
+> [   57.585767]  vfs_read+0xb0/0x268
+> [   57.588959]  ksys_read+0x70/0x108
+> [   57.592236]  __arm64_sys_read+0x24/0x38
+> [   57.596031]  invoke_syscall+0x50/0x128
+> [   57.599740]  el0_svc_common.constprop.0+0x48/0xf8
+> [   57.604397]  do_el0_svc+0x28/0x40
+> [   57.607675]  el0_svc+0x34/0xb8
+> [   57.610694]  el0t_64_sync_handler+0x13c/0x158
+> [   57.615006]  el0t_64_sync+0x190/0x198
+> [   57.618635] Code: a9bd7bfd 910003fd a90153f3 aa0003f3 (b941fc00)
+> [   57.624668] ---[ end trace 0000000000000000 ]---
+>
+> Signed-off-by: Igor Prusov <ivprusov@salutedevices.com>
+
+This has gone un-noticed for a while :/
+Thanks Igor.
+
+Please remember to add an appropriate Fixes tag for patches like this.
+It is important to help stable releases.
+
+Fixes: 14ebb3154b8f ("clk: meson: axg: add Video Clocks")
+
+> ---
+>
+>  drivers/clk/meson/axg.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/clk/meson/axg.c b/drivers/clk/meson/axg.c
+> index c12f81dfa674..5f60f2bcca59 100644
+> --- a/drivers/clk/meson/axg.c
+> +++ b/drivers/clk/meson/axg.c
+> @@ -2142,7 +2142,9 @@ static struct clk_regmap *const axg_clk_regmaps[] = {
+>  	&axg_vclk_input,
+>  	&axg_vclk2_input,
+>  	&axg_vclk_div,
+> +	&axg_vclk_div1,
+>  	&axg_vclk2_div,
+> +	&axg_vclk2_div1,
+>  	&axg_vclk_div2_en,
+>  	&axg_vclk_div4_en,
+>  	&axg_vclk_div6_en,
+
+
 -- 
-2.17.1
-
+Jerome
 
