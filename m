@@ -1,89 +1,84 @@
-Return-Path: <linux-kernel+bounces-54106-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54105-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 508F984AADD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:54:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA57084AADB
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:54:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 810B71C23F1C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:54:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 248951F2582D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:54:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4C074D5A7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F61F4D12D;
 	Mon,  5 Feb 2024 23:54:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="Ril7amsS"
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ew4DZpcN"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF814495F0
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 23:53:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2A1148CC6;
+	Mon,  5 Feb 2024 23:53:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707177239; cv=none; b=uxOIiKjgNLRCyY+0Lpu9I1OQgUqra8A05dHaSxHcNAqf44IWZcOjWbDjsxi3eVpTp9T72d1BUgcVqS0g0okyAdoW/I4famxYNxsKJwhBLKu3WozncdqiaZ5HP16J1NGtINbmrsdu5vgzACLeys7MYtQL2kj78SblkaZbkTAD5nM=
+	t=1707177239; cv=none; b=NwsQbbII/iHvjVRKdtwHBzSFNSsBRKg2QfLzYH4Pci0sSzjR4RQ7Z43lGLa5dvWRjtiiI8a62ZnKbYOt7heD3T/L0rAtaeUMkr4bMvcB6ZJZVqNpCFq3ltk8QdJ5Bf/WHnqU/1ronE+9R/l2uw/JaHHW1SeE+5k+coooeXlkHqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707177239; c=relaxed/simple;
-	bh=OGoNuHCzozgkC3QL/rGwBky0y/XUcHin0BTqRYK7EaM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KZig4OUR118L+wfJ5bWlCCgnEtay9v/+Ri47hJGdF34OWoofUeutmlyqQduPpSdEAyR6aPea9QzFn2xF3uqXVVN7LAx+/jVTIoq+2x/e+gae21NfF+xowWNi/kOKJCsWATdQFYHKBCs99R21gZg0p3xjccDToRzUZWm+4UpN5dE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=Ril7amsS; arc=none smtp.client-ip=209.85.215.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5d8b519e438so4835089a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 15:53:57 -0800 (PST)
+	bh=nJanOS1hCRyVe/2LbmWg0rG9mmxI9LHxBGl/E28BohE=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Zdvon3xx/iibGtfuTojm0s41o32h0AHFZ8mjoGQf/ClgUa514pDiw7OgGN3JCAgUg42RTRybnFl3oJxgU4J4sxRKU0VMcQIRQFmQ3j+4BeeyU3zAXmNr+PPhilmj/wb6hgjqYe1blo0+hSDFzhEljGXC1ehZJCqZCrBI1DenheA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ew4DZpcN; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d93edfa76dso42811695ad.1;
+        Mon, 05 Feb 2024 15:53:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1707177237; x=1707782037; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hmrdDifKn+uVsNlfDzCvuZfjS7ayNWNTt2suseO1un4=;
-        b=Ril7amsSFVpyGMslrLzeOzNZVZ551pvW6l4nQD84218B4EyWOJ9nN9Fkag1q9SpWS+
-         nx9W0zmLxISZp9OXNIH+zNGR9NBdEnYo7aRG7iB1qZwEUjAur4mcfqmEF7y20LWSW0lD
-         wi09+5QfPH+g+HsCXnrFaA/9MV7WCTAcLIvlc2/VycQ1II0FLQUsYPUTB3QcboSqXxAR
-         oVDXoz4+poyf9H5o2PImQ8LcijXjjC52MpemYYyU4Cz7tA68CiMp/6trNpRcqCpNtNN1
-         5iGgSe8vgUT8HXihuXODzsyPR/h4/FOWFidA5FOq9c5HQ6MxycRv3mYXbcEK4qmNU6ug
-         wvkQ==
+        d=gmail.com; s=20230601; t=1707177236; x=1707782036; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=kiLTCJmbmh0u3rY3NuQEZxUH1Em6FbOtZB1pzeq5xJ0=;
+        b=Ew4DZpcNH6lFv7FnI2iVxfXeULUuVbpzAngP2eJYvGQcL2cC4wbg2kX9qke1z03V9U
+         pkEzvuNN+F+itRciCJ0AsvWH9bK9Jf2hnVxa6A0XH7az3wglo+CTg1wTfXw3WjT+hjPN
+         gkzYJNZ+hYxKiF9w0BdQ5SMImdSo6FIoYumaZ6Nvw1pqnZcyzM9Hc5z9Mj3qSodO4KCM
+         DVoBjekELePbS8GA0p01UW7Q0L7wZ9xq+r7uoZyc7ApadENjCXtsNao/6NtkwVts8AED
+         HniJ4KcodiVtMj1fCF9ipV6b13yuy/hyXl4OxvRbaMqhNAuMtf5wUy0AqMFDhuhCsvCG
+         HS3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707177237; x=1707782037;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hmrdDifKn+uVsNlfDzCvuZfjS7ayNWNTt2suseO1un4=;
-        b=GkYRW1VN44o28L8qBAmVveexS5wB1U6UWwA384jE5ukBzuJ0RQgxxuVO8w5Moscw7n
-         oQ/riVylNYh0eGJPf048tvY+KKvvI5zFx9PheizB95FHAo4mbXuHMZlWnItFm52tJbDu
-         6ptknEhOKqz816KflShaYLnQQb3n0Tkg7sxJPdY7F0i57GFr5wohVFlSY96q97fWE9gQ
-         1vdZBG6vg6fezee7E0pzvTHTWTl7Lr/3shpyjdugIdTw0q/4fqGMwzR9ae90H9aVarQX
-         +RZ+arl7DWVrGW6Fwjt6W+OCjtlrFzeUwIgZYkkQK0+XR72pcPl8FuudlkPusW0NGQxH
-         l/2w==
-X-Gm-Message-State: AOJu0YzcdtVLNddlXLllkQYYrnfBc4emg3qkVK0etNWLMtIp4RO8Vj4y
-	LhNW34YFbR57Vau8q1HoGwwfw7xB4I36zSWgcmiPvnKH3vNAoGyashzVwsFJyfE=
-X-Google-Smtp-Source: AGHT+IHeI/+Sp824UroO/mDYidk3cFb94YOApkQqYdkLtM9PHmtd5rblgX/GhroclrmfDZVRJjAJvQ==
-X-Received: by 2002:a05:6a21:2785:b0:19e:89ae:9b52 with SMTP id rn5-20020a056a21278500b0019e89ae9b52mr51387pzb.7.1707177237249;
-        Mon, 05 Feb 2024 15:53:57 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVwcZhTk4c0u0np/uhoHXLwPQ/Wcj2MaeQOM9FqkgxTj2vuWoI/YVq71BO5+lhQYk5e3bISfbaGFDwsMYle96R7byvptgPpHlcZishruHbiB2ER4cRLKUlSlSasxMzD1Asz14TVXCdqBFQGhWo0gN5hQcCmHn1noPYecH0xtKK6GttXmIn4v/8Z3JF41HtMi0WjDjq5Gj2Nv/KL4aEAO6D3s3OGA7wAtbIdL04MZdkkF2CmOjQQvL8jlAJQUqHONWA/1DPJdI0imC15vjTHcmrkvgr7TEDqVli0Mlg9oQnxUwoZXAO1VedoHrNEPmI64j11xtnv2+MgUEhwUUjFpcaFUjralvHAUvXcA5fPQc2628t1uCSBbOcw3jy7ESMZhGUDpplvpP7R7VHdhx+GVMTxtl7eE5RKZQfmkoU4KkGTOYG2+pYJWJumzly5fwvjX22/7ZOWnO5JAcWy1+RlzpyruTNclkK+EwLEI6X/GyAOPAFqnt7d5A==
-Received: from ghost ([12.44.203.122])
-        by smtp.gmail.com with ESMTPSA id e12-20020a62aa0c000000b006ddc7de91e9sm444758pff.197.2024.02.05.15.53.56
+        d=1e100.net; s=20230601; t=1707177236; x=1707782036;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kiLTCJmbmh0u3rY3NuQEZxUH1Em6FbOtZB1pzeq5xJ0=;
+        b=IaU425ZBw28zMGfBmLy8606jbBKodFe0LqbKO/Gy2QhC8RqqErCW1mi0ANy938V4d/
+         1qLcNiBoPWuufAARQMl8lZeteMGj7bhcVtHwLil193yI2+xbMD804dvPutmMUI3oKgOV
+         qvJBp/YgXzI8lwzO4u4BGhYfEsOMoM9TXMTUxpbRaavMsyTTRjhSEGHTidM9n/AouZmg
+         ffdFmCYV8ZWJGTLhHMNzhVDiCougr40pVNhQWU8EsfDYnk24jAJy/K0eok9cWJdEGULe
+         rIW+TBf/RXGuaacMSWAroCC3U+CZoPH4zX//rLCREgr1PQ1sQ8U3sgR0avDRBrDQmbVq
+         N+8Q==
+X-Gm-Message-State: AOJu0YypoRvPxaKm7a26esebjIzqPoanH+s3uTNBTY4c4QA6YphAcMOG
+	nh0Beb7jntti/RAzOCFqjw5M/hF2uyLWDmbMG2Vo1MhvcGKJT3gIC0iL3WY/oSw=
+X-Google-Smtp-Source: AGHT+IE0vpxwKhomBNhEmOVxBT9nKNhVmPDW9X2er55br7FsuGimIBDbtKLh28J/Mvu+QY7Qs3DZUg==
+X-Received: by 2002:a17:903:2452:b0:1d9:aa2d:db6e with SMTP id l18-20020a170903245200b001d9aa2ddb6emr28683pls.26.1707177236032;
+        Mon, 05 Feb 2024 15:53:56 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXEFoYMWX7FInwKTYhYD9FhL8+7D+jmaf8Of0hOOrY49OXMv5Y0tXifadC7tIpRJoemnDnaXo0ovfoXA2cYz1ZIEz/yunhCyncd4WT1aDRs9h5I2qhkUmT3uiAdt/3QPufNXisAF36UoX0mNo3+g5zrlVeHCoDpS89hgr7V9+R7IBpWe2SHm5atoV8SDcJNihROod9UyD/NpVonaX9EsN1T5UU7TsjFzEO8t9NkqWNb2YxcUMnO/JWqGczTHT8LUjCzDpofg/EiKLPYM6YFnZuMQFfeaRr2MChxaC+SaISYGxc4uX3e1mdk5Mjn8vr59eE1fBMpAR7sdgKh
+Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
+        by smtp.gmail.com with ESMTPSA id mm14-20020a1709030a0e00b001d9630e3396sm453561plb.193.2024.02.05.15.53.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 15:53:57 -0800 (PST)
-Date: Mon, 5 Feb 2024 15:53:54 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc: Will Deacon <will@kernel.org>,
-	"Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Nick Piggin <npiggin@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Andrew Jones <ajones@ventanamicro.com>, linux-arch@vger.kernel.org,
-	linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        Mon, 05 Feb 2024 15:53:55 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Mon, 5 Feb 2024 13:53:54 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Alexander Aring <alex.aring@gmail.com>,
+	Stefan Schmidt <stefan@datenfreihafen.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -fixes] riscv: Flush the tlb when a page directory is
- freed
-Message-ID: <ZcF1Er55ClKgJtHJ@ghost>
-References: <20240128120405.25876-1-alexghiti@rivosinc.com>
+Subject: [PATCH] ieee802154: ca8210: Drop spurious WQ_UNBOUND from
+ alloc_ordered_workqueue() call
+Message-ID: <ZcF1El7fn5xkeoB1@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,40 +87,39 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240128120405.25876-1-alexghiti@rivosinc.com>
 
-On Sun, Jan 28, 2024 at 01:04:05PM +0100, Alexandre Ghiti wrote:
-> The riscv privileged specification mandates to flush the TLB whenever a
-> page directory is modified, so add that to tlb_flush().
-> 
-> Fixes: c5e9b2c2ae82 ("riscv: Improve tlb_flush()")
-> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> ---
->  arch/riscv/include/asm/tlb.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/riscv/include/asm/tlb.h b/arch/riscv/include/asm/tlb.h
-> index 1eb5682b2af6..50b63b5c15bd 100644
-> --- a/arch/riscv/include/asm/tlb.h
-> +++ b/arch/riscv/include/asm/tlb.h
-> @@ -16,7 +16,7 @@ static void tlb_flush(struct mmu_gather *tlb);
->  static inline void tlb_flush(struct mmu_gather *tlb)
->  {
->  #ifdef CONFIG_MMU
-> -	if (tlb->fullmm || tlb->need_flush_all)
-> +	if (tlb->fullmm || tlb->need_flush_all || tlb->freed_tables)
->  		flush_tlb_mm(tlb->mm);
->  	else
->  		flush_tlb_mm_range(tlb->mm, tlb->start, tlb->end,
-> -- 
-> 2.39.2
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+Workqueue is in the process of cleaning up the distinction between unbound
+workqueues w/ @nr_active==1 and ordered workqueues. Explicit WQ_UNBOUND
+isn't needed for alloc_ordered_workqueue() and will trigger a warning in the
+future. Let's remove it. This doesn't cause any functional changes.
 
-Reviewed-by: Charlie Jenkins <charlie@rivosinc.com>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+---
+ drivers/net/ieee802154/ca8210.c |   10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
+--- a/drivers/net/ieee802154/ca8210.c
++++ b/drivers/net/ieee802154/ca8210.c
+@@ -2857,19 +2857,13 @@ static int ca8210_interrupt_init(struct
+  */
+ static int ca8210_dev_com_init(struct ca8210_priv *priv)
+ {
+-	priv->mlme_workqueue = alloc_ordered_workqueue(
+-		"MLME work queue",
+-		WQ_UNBOUND
+-	);
++	priv->mlme_workqueue = alloc_ordered_workqueue("MLME work queue", 0);
+ 	if (!priv->mlme_workqueue) {
+ 		dev_crit(&priv->spi->dev, "alloc of mlme_workqueue failed!\n");
+ 		return -ENOMEM;
+ 	}
+ 
+-	priv->irq_workqueue = alloc_ordered_workqueue(
+-		"ca8210 irq worker",
+-		WQ_UNBOUND
+-	);
++	priv->irq_workqueue = alloc_ordered_workqueue("ca8210 irq worker", 0);
+ 	if (!priv->irq_workqueue) {
+ 		dev_crit(&priv->spi->dev, "alloc of irq_workqueue failed!\n");
+ 		destroy_workqueue(priv->mlme_workqueue);
 
