@@ -1,137 +1,98 @@
-Return-Path: <linux-kernel+bounces-52903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52898-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 574ED849E10
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:27:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7303E849DFD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:25:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 043D01F243A1
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:27:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3065C28824E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:25:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6729A2E412;
-	Mon,  5 Feb 2024 15:26:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="T2tYEun/"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 351642D604;
+	Mon,  5 Feb 2024 15:24:45 +0000 (UTC)
+Received: from mail.astralinux.ru (mail.astralinux.ru [217.74.38.119])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAFCE32C93;
-	Mon,  5 Feb 2024 15:26:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 872022C85C;
+	Mon,  5 Feb 2024 15:24:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.74.38.119
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707146792; cv=none; b=KlgYdwV91soptMMjcKk1EPoGUJN53zjAv1vZAiwy2W6JPBN3EGvsShMY//LumpMG4GjGqq3Ur7qTI3+G2NF/V5KK+b+BE/J2uEVqdvs1jHZ4biWvmKtfHEptdc9WUiNSlTblKN+Ph6Z0Bj36BThITQ3D5zy+++ljO2CaqA2kcn8=
+	t=1707146684; cv=none; b=pB1/9jwwVUJSQOVdP/a1k3KaBKRCWgn9xY4AEPwb2/+tGPBjMGXUyzuxOmc83KiQVtwjyOFa03lH0fbyxM8rEKf0xhBMR8L889cyKY3HgCOdrnNNdqTrtEC/dC5QQ2CiKzZ3p8FonCq3IiuH0OEPGwyPh3KnFC3plPd/TpKOpys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707146792; c=relaxed/simple;
-	bh=JTF1omHdVzlrSpJbM8cF1ZTLKPhF3C31MBXg1kBP7zQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KrLTLTS0a2eKXCrbMUXdZ2ELBHeGBfbIn+2P5+LXgSdpMShsKp6da25QRGYKxfh6vF+6Q5ijW2QJEJp5F0y3GB7Iw9CGLo2tGdC1M7/SvySmACxHmNSru6O1eyCJOjbbUsocS+LMRKbsieLp5EpST6P8LSmYcLC/BifsFcW1aB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=T2tYEun/; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 415E3BgT013710;
-	Mon, 5 Feb 2024 15:26:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=hddv5MfQH4jC8cEuMLV7AaQ1Jb3YJMSMkCMdyXjqXRs=;
- b=T2tYEun/9A2vnvKWdPgfdNdHy8Fa7QHj0L7Mg8j4QmZIoqA+nUu2+a34aS2vL0vRoKxq
- lvrJDtu/h2aLMPjh53XPOHEP32qsYJj2dhfX83hmIxRIoatrmsiaLJby+5mI4oZUhGUA
- K/tMGoS526hPc/+4XswRIrlcrWfw79eTY8pvVMFnOv1kdtfwkPhMESgNVdI0Tdjq8UFo
- Vw/XbRsF82rmU3oVl0JB6a4Mv27I6DPzc1KAq7h9gyJ4wQ5YUYoyddSZutSXi/n3fDsm
- rXw/Nrv/czDUdKWLzldE4SpszdwIUTm666R+ufxRj+GbPnukA+rslgczwuztEnyctA9K nw== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w313mtnm6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 05 Feb 2024 15:26:20 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 415DlVni014778;
-	Mon, 5 Feb 2024 15:23:09 GMT
-Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w20tnh79t-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 05 Feb 2024 15:23:09 +0000
-Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
-	by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 415FN7VO62652802
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 5 Feb 2024 15:23:08 GMT
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D22AF58054;
-	Mon,  5 Feb 2024 15:23:07 +0000 (GMT)
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6B07C5805C;
-	Mon,  5 Feb 2024 15:23:06 +0000 (GMT)
-Received: from [9.61.84.204] (unknown [9.61.84.204])
-	by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Mon,  5 Feb 2024 15:23:06 +0000 (GMT)
-Message-ID: <40a56c8d-d519-47a8-b7b6-29339fad1cb4@linux.ibm.com>
-Date: Mon, 5 Feb 2024 10:23:00 -0500
+	s=arc-20240116; t=1707146684; c=relaxed/simple;
+	bh=fEE6msD4XdTRoTXofN5+urjqqiYv6m5CX0D62N32MYg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FJ5uaGIeU2pE3AzMKIaFv+wOO2xo6PWun6BRqq6/rPhmvgdT5Mb38yZAzEwwX9d/EmeYQWJ05rSe9f/8q+Mvf2j+G3onwultatKSfsDR7+/vnbq6aiTEABRDaUiIzPvK15LDJeNBzQgGPtGz1PjSxNl7DdGQDEFjMQhL/6IJkJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=astralinux.ru; spf=pass smtp.mailfrom=astralinux.ru; arc=none smtp.client-ip=217.74.38.119
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=astralinux.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=astralinux.ru
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.astralinux.ru (Postfix) with ESMTP id 2E9C31865695;
+	Mon,  5 Feb 2024 18:24:31 +0300 (MSK)
+Received: from mail.astralinux.ru ([127.0.0.1])
+	by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id VQTBXYzT9CdU; Mon,  5 Feb 2024 18:24:30 +0300 (MSK)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.astralinux.ru (Postfix) with ESMTP id CC8F1186563B;
+	Mon,  5 Feb 2024 18:24:30 +0300 (MSK)
+X-Virus-Scanned: amavisd-new at astralinux.ru
+Received: from mail.astralinux.ru ([127.0.0.1])
+	by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id kfOHWGwef5L5; Mon,  5 Feb 2024 18:24:30 +0300 (MSK)
+Received: from rbta-msk-lt-106062.astralinux.ru (unknown [10.177.20.58])
+	by mail.astralinux.ru (Postfix) with ESMTPSA id 1C40A18639A5;
+	Mon,  5 Feb 2024 18:24:30 +0300 (MSK)
+From: Anastasia Belova <abelova@astralinux.ru>
+To: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Anastasia Belova <abelova@astralinux.ru>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Kamil Debski <k.debski@samsung.com>,
+	linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org
+Subject: [PATCH] media: coda: cast an operand of multiplication to a larger type
+Date: Mon,  5 Feb 2024 18:23:50 +0300
+Message-Id: <20240205152350.22547-1-abelova@astralinux.ru>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6/6] s390: vfio-ap: make matrix_bus const
-To: "Ricardo B. Marliere" <ricardo@marliere.net>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>, Jason Herne <jjherne@linux.ibm.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240203-bus_cleanup-s390-v1-0-ac891afc7282@marliere.net>
- <20240203-bus_cleanup-s390-v1-6-ac891afc7282@marliere.net>
-Content-Language: en-US
-From: Anthony Krowiak <akrowiak@linux.ibm.com>
-In-Reply-To: <20240203-bus_cleanup-s390-v1-6-ac891afc7282@marliere.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: eIFZQ42wOlOn41CU1060WfzhQOCdfSLK
-X-Proofpoint-ORIG-GUID: eIFZQ42wOlOn41CU1060WfzhQOCdfSLK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-05_09,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1011
- priorityscore=1501 spamscore=0 mlxlogscore=999 bulkscore=0 phishscore=0
- mlxscore=0 suspectscore=0 lowpriorityscore=0 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402050116
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Anthony Krowiak <akrowiak@linux.ibm.com>
+If width and height are 0xffff (or close), the result of
+multiplication overflow. Add casting to a larger type
+to avoid undefined behavior.
 
-On 2/3/24 9:58 AM, Ricardo B. Marliere wrote:
-> Now that the driver core can properly handle constant struct bus_type,
-> move the matrix_bus variable to be a constant structure as well,
-> placing it into read-only memory which can not be modified at runtime.
->
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-> ---
->   drivers/s390/crypto/vfio_ap_drv.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/s390/crypto/vfio_ap_drv.c b/drivers/s390/crypto/vfio_ap_drv.c
-> index a5ab03e42ff1..4aeb3e1213c7 100644
-> --- a/drivers/s390/crypto/vfio_ap_drv.c
-> +++ b/drivers/s390/crypto/vfio_ap_drv.c
-> @@ -60,7 +60,7 @@ static void vfio_ap_matrix_dev_release(struct device *dev)
->   	kfree(matrix_dev);
->   }
->   
-> -static struct bus_type matrix_bus = {
-> +static const struct bus_type matrix_bus = {
->   	.name = "matrix",
->   };
->   
->
+Such values are possible in CODA7, but unlikely.
+
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
+
+Fixes: 918c66fd4126 ("[media] coda: add CODA7541 decoding support")
+Signed-off-by: Anastasia Belova <abelova@astralinux.ru>
+---
+ drivers/media/platform/chips-media/coda/coda-bit.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/chips-media/coda/coda-bit.c b/drivers=
+/media/platform/chips-media/coda/coda-bit.c
+index ed47d5bd8d61..84ded154adfe 100644
+--- a/drivers/media/platform/chips-media/coda/coda-bit.c
++++ b/drivers/media/platform/chips-media/coda/coda-bit.c
+@@ -585,7 +585,7 @@ static int coda_alloc_context_buffers(struct coda_ctx=
+ *ctx,
+=20
+ 	if (!ctx->slicebuf.vaddr && q_data->fourcc =3D=3D V4L2_PIX_FMT_H264) {
+ 		/* worst case slice size */
+-		size =3D (DIV_ROUND_UP(q_data->rect.width, 16) *
++		size =3D (unsigned long)(DIV_ROUND_UP(q_data->rect.width, 16) *
+ 			DIV_ROUND_UP(q_data->rect.height, 16)) * 3200 / 8 + 512;
+ 		ret =3D coda_alloc_context_buf(ctx, &ctx->slicebuf, size,
+ 					     "slicebuf");
+--=20
+2.30.2
+
 
