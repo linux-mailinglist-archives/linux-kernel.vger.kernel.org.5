@@ -1,165 +1,234 @@
-Return-Path: <linux-kernel+bounces-51987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-51988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDDC6849257
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 03:20:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BBAA849259
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 03:21:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E0E4282AEC
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 02:20:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F93E282B13
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 02:21:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99AF8A93A;
-	Mon,  5 Feb 2024 02:20:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4EAE8F40;
+	Mon,  5 Feb 2024 02:21:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="0ljlF0hX"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="Ji+MTM5W"
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2041.outbound.protection.outlook.com [40.107.6.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EAA49449
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 02:20:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707099616; cv=none; b=PODZGTQc5FmT34IzfRREQLzqFbf+sFrBDRwv738YkfOx113A95m+hycQHBTwYKWwOI0iC/+w3L8mIgqlW6BcvHXluBfxpfGxOcTjlCDMPdeZgHssjXKximPEf9T2ELEK56IdH59VFMQ9b+OBS2uFfLhA3oEFhH2NRTOZ287q8Oo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707099616; c=relaxed/simple;
-	bh=+Gm5/FRVNIqSgfwLG6CPyYSiHApJbtMFJNODMFhgmEY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fwMR2nU9PAIytnH2y/9oJgPZzXZ0xN1pZEXbxyepzOmO6awUAR/RC8Gq4FzCki93I8as6breSBwIJsVfInWesN8HldvC6zVmPi79B01/sQo6x5P2A3sSQbsLOxEgYeLFb1fx5yGt6eTOVoZRQcvtN6PABBqUElhPJ4NFgKTVGKc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=0ljlF0hX; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40fcb4ef7bcso19735055e9.0
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 18:20:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1707099613; x=1707704413; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vI17x8NVIjMeQipAli/VEaOzE57qtHLbYyH8WdOAchg=;
-        b=0ljlF0hXt6pnnUB8M/zichPZTgjgVjKobFLF7cxY1kcpxLKsec+XObdZeur07jlGQw
-         Ml0nNJcS3yIHRLmhvgWLJ7/0jPOIyikvcFoM4a6YxuhfzA4yKnaX9t/5PKs5CInMY+20
-         /sH9MsvbogBhqyCOs/dUvNFOKOt2jaMxVcUA8z3ggWCQ6h4UNCjdodaT9SqY+mQZpf7n
-         8c58LguB+57grXaSZCR00WV7KUs8g6UeRbZyCOQwTRSz/vTrcSK317OY1ee/QYJ8vfs5
-         h+9mN1BBndY7H+nDpeG/mcTaHIKOJQbXrZr0lgnSfalJZyHZYshXv9Vb4sxpmbJ+3WiM
-         edcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707099613; x=1707704413;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vI17x8NVIjMeQipAli/VEaOzE57qtHLbYyH8WdOAchg=;
-        b=GeZmJvtQ3WVrFuZETJBNkiJHVy4/CKP+oNLmFyL0GXT+wQP63LQkkjBpXqLqyzAAZh
-         vFxzTvqMjm5nzFu/dSi9A44XZRt+cR6YsAf6P8Htef2uiylihRrz84+X1tgR/k8uan/K
-         b3hzq9R4O5ffWUHLbNJ8klRS1Di43buzKjLPsi2aIckfZNoNEOqG0di72C1HlmL46FbS
-         35EdGSB1y/B7K0M03kx20xJMqUJJ+mfPdU8JzW10aHb1uAOh0mFDtjbx1CdO7I4xAWuV
-         XuBdWF6+iOb1XyU3e53Ya5CE+p8gx59oGt+YYUbq5+sFxp9Qy83jeQrhom7pyzJ2FLir
-         LV4g==
-X-Gm-Message-State: AOJu0YzaPEWGeFugorWP6HYjPjEVloozqGSsdB682AkvDbr+BMpUvqLr
-	xSgRTtIE/+62tb+QiLyvglmFnA8Z6trAgZecBFyzSzfrh0bUdsSWk274fuvxLwk=
-X-Google-Smtp-Source: AGHT+IGCqtYb4qgZN1VkNtpPuU07LJ45oZV3LYEY28TcsQMJbW71zwTdd8rKaOpj9b4J6zfyHQdEOA==
-X-Received: by 2002:a05:600c:511b:b0:40f:b5d2:1b16 with SMTP id o27-20020a05600c511b00b0040fb5d21b16mr3131031wms.25.1707099613407;
-        Sun, 04 Feb 2024 18:20:13 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXsEiiGcu+HK5q33+UleB6113bUi1O0AeNouFF7kLCEmVI9poP+qcVQ4nLPu7j7SXaXMEth6FFhIDzKayNF3HeslyXQtRVYmkGkJt1/Kvlw5xyEj6e14/q0ZGDNid5PjdxkvlYHdgRdpoHPa0ms79YyOUR8TT89N1FftNGTmvATaiU+cdRhavvb4f5GoBOAHATEmP8faf4YEvhR+WIM2KLoJdAzPjapFLG14+mmY923vWYA+0cONcW/uSgeDVL5QLRxsjpBSNeNHN4wUb4Cs7shQIYsKc0=
-Received: from airbuntu.. (host109-154-238-234.range109-154.btcentralplus.com. [109.154.238.234])
-        by smtp.gmail.com with ESMTPSA id d10-20020a05600c4c0a00b0040efa7e0ef6sm3156075wmp.1.2024.02.04.18.20.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Feb 2024 18:20:13 -0800 (PST)
-From: Qais Yousef <qyousef@layalina.io>
-To: Ingo Molnar <mingo@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Viresh Kumar <viresh.kumar@linaro.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: linux-kernel@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	Qais Yousef <qyousef@layalina.io>
-Subject: [PATCH] sched: cpufreq: Rename map_util_perf to apply_dvfs_headroom
-Date: Mon,  5 Feb 2024 02:20:06 +0000
-Message-Id: <20240205022006.2229877-1-qyousef@layalina.io>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8604679CD;
+	Mon,  5 Feb 2024 02:21:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707099694; cv=fail; b=Fzctq3lS5Qn68Gs8QUJgBKAX1M+egRq84Q3VHHL15/jBaevMO2zaH1qrs+5+XJ+nmr+IfKFXTBGoRP+blRQ0QXatYIK0izi9YQF4bHilvy1vUoSczzubqdLqRHmeIZYD3PEzc4RiONvKxWYc6a8ibnqbWJnLw8XcBvy/gCjIkq8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707099694; c=relaxed/simple;
+	bh=hPNi9K0ttRv3ryuvHtUmkLjoUzaB5dBZSMuGH6/iazs=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=VNnVobfNgmyt3uCcACvqgY0+8Z9c+2erlhbpgYj8ZevhdGZIvMkrlVhmkETAchnnNa2NP+j8XiQMJIyi+n8mT4Hgb6TvbCwupikFClRY0oDhoEPjgYCkkecCe7byIdOAVXmA/+aPT34xFc9gFeDpypjXo2iPZhtQDLtmI9IztHA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=Ji+MTM5W; arc=fail smtp.client-ip=40.107.6.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ur2urN3LgEgXMM16/oclUoLkJ05lD5pWvaeK/u96Hs0821F3zbGUqjw3E1nfJlyIZHU3ECoizHoqz0z2Vl4Ubp1Bn7xq7O65SBoZhxO7niIDwJMnbDapmVBr31Mnb8HP5qa9ZI+HjyOiI0XGx7PLisfY/9+WzCrueWGry5b6Y7362eWbKXlg9WGEejwiXBPI90VbkorFPC/uk+U82q+hPRDYYU+e3FZZHUtAbL8bSfYCdOn7AXOqStLzmK7jVLr467Nfh3oq0qFsknV+IuTA1z7O4Rl6oyYZIxYlV9c/oPt/26Kw2SCC/tLXMKnlHrjnJsCE5kXQeTJ6HibgwVjvUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+amDo9t4k719UxxVr0PBPXNflrhAeTwOk3wgpBrO8bs=;
+ b=eE8SI6tJeN+9TQCw8KEwyVYX/X+1WhybY9MTgeSb4hZV2z6KVlaOBACKInnZoc68cCUmeOoNt9T126JgbwdNXBhddJ7NB9DjuxF2ea/92zwZuYDRK2ZyL5pxBN4D891bxuHsquFrUguGhKGUtelAM602dbOpS8YKrLWrG/PTVFWNVR8DStxdlWH+E5/Ev5LXCMmDp6xR+u8xecthPu8zzGNSCSQvdrXDWTfoWCwzxUdFIj91NLt3Q8pnNJZhE1+BQwhFoa9OeODTsAkfAS28WNoih34bIoOQFE4DB0ULgFdYV+OpKjvxGtPADdf5RdKxcI2XpIdvvqKHgvbzBMiGMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+amDo9t4k719UxxVr0PBPXNflrhAeTwOk3wgpBrO8bs=;
+ b=Ji+MTM5WaiBa70c4dH6R+qwjDpuZeXBvdMmZv3DV86O0gvp8pRE3HrSeBf0sLQrbbUkrhpxnvDog5YeX/+Xmdvf6x2wxXxkvXhf3+MYyGsVhBD7GB+3glWblkx5KFneP19aaty3tD3yfRJ+vBsTDhziIwhmwE6ujz7Po37t3wrI=
+Received: from PA4PR04MB9248.eurprd04.prod.outlook.com (2603:10a6:102:2a3::14)
+ by DUZPR04MB9947.eurprd04.prod.outlook.com (2603:10a6:10:4d9::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.34; Mon, 5 Feb
+ 2024 02:21:27 +0000
+Received: from PA4PR04MB9248.eurprd04.prod.outlook.com
+ ([fe80::4ae2:3101:1c1f:6911]) by PA4PR04MB9248.eurprd04.prod.outlook.com
+ ([fe80::4ae2:3101:1c1f:6911%3]) with mapi id 15.20.7249.032; Mon, 5 Feb 2024
+ 02:21:26 +0000
+From: "S.J. Wang" <shengjiu.wang@nxp.com>
+To: Shawn Guo <shawn.gsc@gmail.com>
+CC: "robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>, "shawnguo@kernel.org"
+	<shawnguo@kernel.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+	"kernel@pengutronix.de" <kernel@pengutronix.de>, "festevam@gmail.com"
+	<festevam@gmail.com>, dl-linux-imx <linux-imx@nxp.com>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] arm64: dts: imx8mm-evk: Add PDM micphone sound card
+ support
+Thread-Topic: [PATCH 1/2] arm64: dts: imx8mm-evk: Add PDM micphone sound card
+ support
+Thread-Index: AQHaV9oF61EbjuvISEaxhtAF2fceUw==
+Date: Mon, 5 Feb 2024 02:21:26 +0000
+Message-ID:
+ <PA4PR04MB9248F03E085EDB1B1A5F414EE3472@PA4PR04MB9248.eurprd04.prod.outlook.com>
+References: <1703136188-7222-1-git-send-email-shengjiu.wang@nxp.com>
+ <20240204235134.GA804317@dragon>
+In-Reply-To: <20240204235134.GA804317@dragon>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PA4PR04MB9248:EE_|DUZPR04MB9947:EE_
+x-ms-office365-filtering-correlation-id: 6080f1db-6b88-4f8a-6b96-08dc25f1280b
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ Jk1GmNHxp7E+ZLr4+9yqMh0foVIGD1AWDV4qsv7J/aHtEtpMv/6uWHyAFRdj2Vf5wOSGJZp/NhYOEZTCCWcBzEXTjsBwsssBerhaFX7Mhh1QHTF6g32CrixvoH3MspCG4EqUury0NR7bGMCoF9YE6zntj8Zhg9iRbVtsDiDgAl1YVJoyuC5xDak28B/N2X+jzqJ2mmbPGzgNedES/XBRDmpvSzcYJq3BNfzVg0h+kGPTSIo9Qn9jsesy3F/cW6CLIFk6AbJF6l07YRMFQbbT0EEYjotwa/j+CKxqfVwRA9lrsEbNRGfE7IIRF64Vssix18DBSNQTz/X755xZxaiAPyqt3fXWxkcnShOvEJp4Y8JZz1wUn1oAaptNWFLMoNPCoV3Uz0dMmrCErhRptVKeYRFyUS97mXMngggdeuFV7SDft2y8Dv84xSWp7uAI1LzaYNt4qz/r9aXuwu40od6aXVSow5lGZHRLYbpw2+DV0kuM43QIP1AeH4SNBECvG9RQAJOUUtUeZX0DlWJ+QHJIE2Q6V27w8mXvimYTnKr/XEmO9LbkYnFQAfebMbTB87q55BzvEPhI/pma4yA8yPKW+h2zNbS5bTa+O+6NeOp175Acyww49FPbXvP8EyGj6HtS
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB9248.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39860400002)(376002)(136003)(346002)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(41300700001)(8676002)(8936002)(52536014)(4326008)(54906003)(66556008)(66946007)(76116006)(86362001)(2906002)(7416002)(64756008)(316002)(66476007)(122000001)(38070700009)(66446008)(6916009)(5660300002)(9686003)(478600001)(38100700002)(7696005)(6506007)(71200400001)(83380400001)(33656002)(26005)(55016003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?YRWc9W7v3vjrGnWTLvbvFaMfJbDyIo9Sr5El6341kVdZFWPa7lqlx1/kveZI?=
+ =?us-ascii?Q?4B8p69Pm+So2RHQScNZuDZ8gFRlglPg2iosJfscsshyixTce8DMkqQmA6+QC?=
+ =?us-ascii?Q?0FkXb/HTlkoJnasDnD71YW7VBsf6NYJtEN2aP9AhAsidLOevhV25l6xCKI8q?=
+ =?us-ascii?Q?c+cXqRvm7Ea0piFK9RZtPfYTuXnWMaNesVvFfUbxT+qsJJhrdmR23JzDcttY?=
+ =?us-ascii?Q?uvOLQbMwBsQsiMCbvGHow+py9dG5GeHjVpRrKpma+UtgasUujDmsLZ/7iNtW?=
+ =?us-ascii?Q?5Jba8bxUIPK/7Al4lnocanfUo49rNzDBMOQ8Pu75QBqVMdZyn0yz2dgZ3eqD?=
+ =?us-ascii?Q?VEjEh5l6VuLobCn+FPXYHaRi2nDhoHZdpKeMrpjSzdYxDKzvV3pAYDKgdW0N?=
+ =?us-ascii?Q?9Yiu6naMyxuVxCGQ29ePc4JYt6FLEzaOcptbGUpTpouYUUiBk8wx+IEtfo0o?=
+ =?us-ascii?Q?xwk+JIZLmBvObuiSfdy/6x6OGk0hL8PMT67wyTeGejrLW6u6yjyskr8X4tcj?=
+ =?us-ascii?Q?L1RDyydxHNSIhlDRky8tPRmLkYKCItrmbcHDfv2v3c2Aq2z3z1IVluKqHaa0?=
+ =?us-ascii?Q?NethrayriDD7z7+Rb2TCwM6hA1ec1bbEQVzXdZSZM9ur7pEz7ZLmGo3YdcdQ?=
+ =?us-ascii?Q?vVcHYeaEDUOeS48YCrbetYApRoLoR7Y32zujgTItpD5xVCEB2KF53SV6jiRg?=
+ =?us-ascii?Q?hK+YMsXRagWN2BYhp9iVXJ9xVv7nMSfIQdgbltwPDyDxDTl9CGQlLw2ESnYy?=
+ =?us-ascii?Q?9YaRu1zGF9CRubIv+lbpYmMxPDt8ek5AhDPBZ3uzqaVN8caMHrY96/O6iSRU?=
+ =?us-ascii?Q?YyewuRVAFv4KazZJQSEIEZt74MxsbedLp/8LLlT5K8Skp9OAuuCKLBoqpcp4?=
+ =?us-ascii?Q?Bx5Cv5gnsuKxTCUDpmalu7HDmWEqtiLrD++vfhLrmkBhNVoeoAqgO9LInMKK?=
+ =?us-ascii?Q?4AxQHMSQzMQCvn6qweKWLslaZsXtIJUYX+5iMB5z5HK1jaDe0DX1Wvj0/LpH?=
+ =?us-ascii?Q?W0Fkl9L1pp53UhO8k+hijbi3JJKoechcwWelOK/uXhpaKOe+2wgpqJz3PsGU?=
+ =?us-ascii?Q?tqfSynmndmpuSJPMIS1zPX/7rOGKaXP20FP230wmO0SM9p2eOCtuT3koaoOg?=
+ =?us-ascii?Q?vt66i4iJzW6oDJxPL973ep/Ne4Xyurqhaxtgqxcm13h7tt39n84RuGDgYriu?=
+ =?us-ascii?Q?n7q7sH4mISpapOxakvVG8M8HCYNFKj2JVUiJ+3EGpPIQtUqt3yXtSHMY5V3i?=
+ =?us-ascii?Q?bfK4b47XHrKJ0tXvQbnPI9fC/yM6A2DQvsBdpobXHc7KMe9+Hnashiz/jTee?=
+ =?us-ascii?Q?KBMGMzn/kpsSrs30LjLQ0DjgUXLhmdNvFtSmliFhh8wZNntMxDGcqDwTTfD2?=
+ =?us-ascii?Q?lE+I+wSwccHTQu0Sj7mwNOV4k+wEWQgqaI7V/xsMgg3y7vOJGhRZ5tAM268g?=
+ =?us-ascii?Q?tkM291FOJQ3trGubRdfILSOQbceolawArU/Ogmy02/IMFi8y3QmfUDiVqdKv?=
+ =?us-ascii?Q?/pnnTCFEPtQNjR9z7CPndUlsnCsVmu3IclZI6V3UgVpBtLFkRlCcOz87Mejx?=
+ =?us-ascii?Q?OIF1OqN4uaFcNPt6fLd6g4lWrMyPQvFdHpAs3TxE?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB9248.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6080f1db-6b88-4f8a-6b96-08dc25f1280b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Feb 2024 02:21:26.8618
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: tirmy0/5iIBR9cke+aOVPr04U9cqetwYmLBqpK3ykZ6b3irQ3ZAHmTmjitOFMeQYSSlb3bA6crF6rv9Qrw0GRA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DUZPR04MB9947
 
-We are providing headroom for the utilization to grow until the next
-decision point to pick the next frequency. Give the function a better
-name and give it some documentation. It is not really mapping anything.
+> > Add PDM micphone sound card support, configure the pinmux.
+> >
+> > This sound card supports recording sound from PDM micphone and
+> convert
+> > the PDM format data to PCM data.
+> >
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > ---
+> >  arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi | 34
+> > +++++++++++++++++++
+> >  1 file changed, 34 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
+> > b/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
+> > index b53104ed8919..9679786dac51 100644
+> > --- a/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
+> > @@ -151,6 +151,18 @@ simple-audio-card,codec {
+> >                       clocks =3D <&clk IMX8MM_CLK_SAI3_ROOT>;
+> >               };
+> >       };
+> > +
+> > +     sound-micfil {
+> > +             compatible =3D "fsl,imx-audio-card";
+> > +             model =3D "micfil-audio";
+>=20
+> Have a newline between properties and child node.
+>=20
+> > +             pri-dai-link {
+> > +                     link-name =3D "micfil hifi";
+> > +                     format =3D "i2s";
+>=20
+> Ditto
+>=20
+Ok,  will update in v2.
 
-Also move it to sched.h. This function relies on updating util signal
-appropriately to give a headroom to grow. This is more of a scheduler
-functionality than cpufreq. Move it to sched.h where all the other util
-handling code belongs.
+Best regards
+Wang shengjiu
 
-Signed-off-by: Qais Yousef <qyousef@layalina.io>
----
- include/linux/sched/cpufreq.h    |  5 -----
- kernel/sched/cpufreq_schedutil.c |  2 +-
- kernel/sched/sched.h             | 17 +++++++++++++++++
- 3 files changed, 18 insertions(+), 6 deletions(-)
-
-diff --git a/include/linux/sched/cpufreq.h b/include/linux/sched/cpufreq.h
-index bdd31ab93bc5..d01755d3142f 100644
---- a/include/linux/sched/cpufreq.h
-+++ b/include/linux/sched/cpufreq.h
-@@ -28,11 +28,6 @@ static inline unsigned long map_util_freq(unsigned long util,
- {
- 	return freq * util / cap;
- }
--
--static inline unsigned long map_util_perf(unsigned long util)
--{
--	return util + (util >> 2);
--}
- #endif /* CONFIG_CPU_FREQ */
- 
- #endif /* _LINUX_SCHED_CPUFREQ_H */
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index 95c3c097083e..abbd1ddb0359 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -179,7 +179,7 @@ unsigned long sugov_effective_cpu_perf(int cpu, unsigned long actual,
- 				 unsigned long max)
- {
- 	/* Add dvfs headroom to actual utilization */
--	actual = map_util_perf(actual);
-+	actual = apply_dvfs_headroom(actual);
- 	/* Actually we don't need to target the max performance */
- 	if (actual < max)
- 		max = actual;
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index e58a54bda77d..0da3425200b1 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -3002,6 +3002,23 @@ unsigned long sugov_effective_cpu_perf(int cpu, unsigned long actual,
- 				 unsigned long min,
- 				 unsigned long max);
- 
-+/*
-+ * DVFS decision are made at discrete points. If CPU stays busy, the util will
-+ * continue to grow, which means it could need to run at a higher frequency
-+ * before the next decision point was reached. IOW, we can't follow the util as
-+ * it grows immediately, but there's a delay before we issue a request to go to
-+ * higher frequency. The headroom caters for this delay so the system continues
-+ * to run at adequate performance point.
-+ *
-+ * This function provides enough headroom to provide adequate performance
-+ * assuming the CPU continues to be busy.
-+ *
-+ * At the moment it is a constant multiplication with 1.25.
-+ */
-+static inline unsigned long apply_dvfs_headroom(unsigned long util)
-+{
-+	return util + (util >> 2);
-+}
- 
- /*
-  * Verify the fitness of task @p to run on @cpu taking into account the
--- 
-2.34.1
-
+> Shawn
+>=20
+> > +                     cpu {
+> > +                             sound-dai =3D <&micfil>;
+> > +                     };
+> > +             };
+> > +     };
+> >  };
+> >
+> >  &A53_0 {
+> > @@ -434,6 +446,16 @@ &lcdif {
+> >       status =3D "okay";
+> >  };
+> >
+> > +&micfil {
+> > +     #sound-dai-cells =3D <0>;
+> > +     pinctrl-names =3D "default";
+> > +     pinctrl-0 =3D <&pinctrl_pdm>;
+> > +     assigned-clocks =3D <&clk IMX8MM_CLK_PDM>;
+> > +     assigned-clock-parents =3D <&clk IMX8MM_AUDIO_PLL1_OUT>;
+> > +     assigned-clock-rates =3D <196608000>;
+> > +     status =3D "okay";
+> > +};
+> > +
+> >  &mipi_csi {
+> >       status =3D "okay";
+> >
+> > @@ -636,6 +658,18 @@ MX8MM_IOMUXC_GPIO1_IO05_GPIO1_IO5
+> 0x41
+> >               >;
+> >       };
+> >
+> > +     pinctrl_pdm: pdmgrp {
+> > +             fsl,pins =3D <
+> > +                     MX8MM_IOMUXC_SAI5_MCLK_SAI5_MCLK        0xd6
+> > +                     MX8MM_IOMUXC_SAI5_RXC_PDM_CLK           0xd6
+> > +                     MX8MM_IOMUXC_SAI5_RXFS_SAI5_RX_SYNC     0xd6
+> > +                     MX8MM_IOMUXC_SAI5_RXD0_PDM_DATA0        0xd6
+> > +                     MX8MM_IOMUXC_SAI5_RXD1_PDM_DATA1        0xd6
+> > +                     MX8MM_IOMUXC_SAI5_RXD2_PDM_DATA2        0xd6
+> > +                     MX8MM_IOMUXC_SAI5_RXD3_PDM_DATA3        0xd6
+> > +             >;
+> > +     };
+> > +
+> >       pinctrl_pmic: pmicirqgrp {
+> >               fsl,pins =3D <
+> >                       MX8MM_IOMUXC_GPIO1_IO03_GPIO1_IO3               0=
+x141
+> > --
+> > 2.34.1
+> >
 
