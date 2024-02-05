@@ -1,101 +1,128 @@
-Return-Path: <linux-kernel+bounces-52029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52031-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9782684930A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 05:49:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E338A849314
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 05:52:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52991282CEB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 04:49:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99E86283ACC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 04:52:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB9A3B654;
-	Mon,  5 Feb 2024 04:49:12 +0000 (UTC)
-Received: from mail115-100.sinamail.sina.com.cn (mail115-100.sinamail.sina.com.cn [218.30.115.100])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBCE8B65D;
+	Mon,  5 Feb 2024 04:52:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CnhPjGgF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C720AD32
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 04:49:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3720AB64A;
+	Mon,  5 Feb 2024 04:52:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707108552; cv=none; b=ffY162xhF945pycH3ALcoOP2Xx2tDnuOhAlRtnvtTunldSzQxI3vfYFHXsZhMs6mTcIs9BS3c/idzngteccB2b2U8iwWA3JvZXwnOZkfhCkrtTVnCX9NC7jRx0TpUneP7QWcpVdjUkUsp4XnLRzEFgdsvAda7KglSCOgPpaV0gY=
+	t=1707108759; cv=none; b=h2n4xQXHCg82eQZ3Ot3SAXTBxUFyKQElMAoZk07LcnzXJR1DldXFNsRColoyOeGiQ4oWT8N7XGUYnfrOoFKti/kKczHVEJan+QaR+hLmIREFuF71KAhs+Y7Yhy1MeEfz+4Pujnt6lp43cU9fOtmA+x8p7KrTenaBD9V3WHtEq3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707108552; c=relaxed/simple;
-	bh=cdJQFz6hZUzWJNGzDH63QwKkJo4AU14dQ2yGTGVLD10=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Va2mNJSCPyajXiyrHx8QQvT4cM9ITbnKTvL4kYCJq+FfzBldPiqMTbYTXMu9zlecqap7WxQp57X0HBcQNxr0b/OaXxM5C+pGCnVpmqNRdP2OBshOHbxQFvXEfB/1iORYnjtUVr8yGce1emvdvyd1kEWjPi8/4+4WBOFDKriUDdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([113.118.66.117])
-	by sina.com (172.16.235.24) with ESMTP
-	id 65C0689A000008B5; Mon, 5 Feb 2024 12:48:29 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 60248245089159
-X-SMAIL-UIID: 810C1F7E0DE348C6A2CB06103849C575-20240205-124829-1
-From: Hillf Danton <hdanton@sina.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: torvalds@linux-foundation.org,
-	mpatocka@redhat.com,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	allen.lkml@gmail.com
-Subject: Re: [PATCH v3 3/8] workqueue: Implement BH workqueues to eventually replace tasklets
-Date: Mon,  5 Feb 2024 12:48:17 +0800
-Message-Id: <20240205044817.593-1-hdanton@sina.com>
-In-Reply-To: <ZcABypwUML6Osiec@slm.duckdns.org>
-References: <20240130091300.2968534-1-tj@kernel.org> <20240130091300.2968534-4-tj@kernel.org>
+	s=arc-20240116; t=1707108759; c=relaxed/simple;
+	bh=HhfVX9BYq7tXbakLwJPIqNA5VK+k8QfcCLl9is71Btw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UTXclpzwzN8aypA+rSqSDtGZtvg8lE6qrTcPA0yCbKQ8xtnfgXD3C0Fe6c7pGgYtAeQ9WrswO2hriGxeEJ/KCHMpC2OdrMAX5icltoyKvB+SWkJadiCnD/DZ00VRyx4DKJRBdtIIZhXIX5OMmz4ApbjkIoMa5VatWoylEjbt/MY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CnhPjGgF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DB08C433F1;
+	Mon,  5 Feb 2024 04:52:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707108758;
+	bh=HhfVX9BYq7tXbakLwJPIqNA5VK+k8QfcCLl9is71Btw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CnhPjGgFyQhyuQROGwOdLLBeT4oA12tLKttw3ALePE6WEt5r6N1S/oT5DqWI2UJmr
+	 cDha40mGE4hpMAWU7OU2F5aEVU1DwbqE4JPMUwNIFsUogmCfILErgFHmonh6JAJlPw
+	 SU+rAT2zvHYtebukTj9XiNuBXw+S4N0LgtZT3feln2JSB1gOg09qDW0P6sMYubT6cv
+	 BQjcCnzMDOVJ987LoSFX2Xh/UX8uuC5qOH4loInt5EjdGQRkDgWWoZvBmaD1ujQVKR
+	 BXeGb/ZW2RngcjwIFPpe2NsfPJbccSK1ci6x48yD59ajzVAK4RZ+57mocJoyOk0zp+
+	 WaXH4op24+DrQ==
+Date: Mon, 5 Feb 2024 12:52:27 +0800
+From: Peter Chen <peter.chen@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: rogerq@kernel.org, felipe.balbi@linux.intel.com,
+	gregkh@linuxfoundation.org, imx@lists.linux.dev,
+	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+	pawell@cadence.com
+Subject: Re: [PATCH v2 2/2] usb: cdns3: fix memory double free when handle
+ zero packet
+Message-ID: <20240205045227.GD1200221@nchen-desktop>
+References: <20240202154217.661867-1-Frank.Li@nxp.com>
+ <20240202154217.661867-2-Frank.Li@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240202154217.661867-2-Frank.Li@nxp.com>
 
-On Sun, 4 Feb 2024 11:28:06 -1000 Tejun Heo <tj@kernel.org>
-> +static void bh_worker(struct worker *worker)
-> +{
-> +	struct worker_pool *pool = worker->pool;
-> +	int nr_restarts = BH_WORKER_RESTARTS;
-> +	unsigned long end = jiffies + BH_WORKER_JIFFIES;
-> +
-> +	raw_spin_lock_irq(&pool->lock);
-> +	worker_leave_idle(worker);
-> +
+On 24-02-02 10:42:17, Frank Li wrote:
+> 829  if (request->complete) {
+> 830          spin_unlock(&priv_dev->lock);
+> 831          usb_gadget_giveback_request(&priv_ep->endpoint,
+> 832                                    request);
+> 833          spin_lock(&priv_dev->lock);
+> 834  }
+> 835
+> 836  if (request->buf == priv_dev->zlp_buf)
+> 837      cdns3_gadget_ep_free_request(&priv_ep->endpoint, request);
+> 
+> Driver append an additional zero packet request when queue a packet, which
+> length mod max packet size is 0. When transfer complete, run to line 831,
+> usb_gadget_giveback_request() will free this requestion. 836 condition is
+> true, so cdns3_gadget_ep_free_request() free this request again.
+> 
+> Log:
+> 
+> [ 1920.140696][  T150] BUG: KFENCE: use-after-free read in cdns3_gadget_giveback+0x134/0x2c0 [cdns3]
+> [ 1920.140696][  T150]
+> [ 1920.151837][  T150] Use-after-free read at 0x000000003d1cd10b (in kfence-#36):
+> [ 1920.159082][  T150]  cdns3_gadget_giveback+0x134/0x2c0 [cdns3]
+> [ 1920.164988][  T150]  cdns3_transfer_completed+0x438/0x5f8 [cdns3]
+> 
+> Add check at line 829, skip call usb_gadget_giveback_request() if it is
+> additional zero length packet request. Needn't call
+> usb_gadget_giveback_request() because it is allocated in this driver.
+> 
+> Cc: <stable@vger.kernel.org>
+> Fixes: 7733f6c32e36 ("usb: cdns3: Add Cadence USB3 DRD Driver")
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+
+Acked-by: Peter Chen <peter.chen@kernel.org>
+
+> ---
+>  drivers/usb/cdns3/cdns3-gadget.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/cdns3/cdns3-gadget.c b/drivers/usb/cdns3/cdns3-gadget.c
+> index d6723d31fc6e2..fd1beb10bba72 100644
+> --- a/drivers/usb/cdns3/cdns3-gadget.c
+> +++ b/drivers/usb/cdns3/cdns3-gadget.c
+> @@ -828,7 +828,11 @@ void cdns3_gadget_giveback(struct cdns3_endpoint *priv_ep,
+>  			return;
+>  	}
+>  
+> -	if (request->complete) {
 > +	/*
-> +	 * This function follows the structure of worker_thread(). See there for
-> +	 * explanations on each step.
+> +	 * zlp request is appended by driver, needn't call usb_gadget_giveback_request() to notify
+> +	 * gadget composite driver.
 > +	 */
-> +	if (!need_more_worker(pool))
-> +		goto done;
-> +
-> +	WARN_ON_ONCE(!list_empty(&worker->scheduled));
-> +	worker_clr_flags(worker, WORKER_PREP | WORKER_REBOUND);
-> +
-> +	do {
-> +		struct work_struct *work =
-> +			list_first_entry(&pool->worklist,
-> +					 struct work_struct, entry);
-> +
-> +		if (assign_work(work, worker, NULL))
-> +			process_scheduled_works(worker);
-> +	} while (keep_working(pool) &&
-> +		 --nr_restarts && time_before(jiffies, end));
-> +
-> +	worker_set_flags(worker, WORKER_PREP);
-> +done:
-> +	worker_enter_idle(worker);
-> +	kick_pool(pool);
-> +	raw_spin_unlock_irq(&pool->lock);
-> +}
+> +	if (request->complete && request->buf != priv_dev->zlp_buf) {
+>  		spin_unlock(&priv_dev->lock);
+>  		usb_gadget_giveback_request(&priv_ep->endpoint,
+>  					    request);
+> -- 
+> 2.34.1
+> 
 
-I see no need to exec bh works for 2ms with irq disabled.
+-- 
+
+Thanks,
+Peter Chen
 
