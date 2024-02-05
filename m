@@ -1,162 +1,218 @@
-Return-Path: <linux-kernel+bounces-53031-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6B0A849FAF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:44:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D43DA849FC8
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:49:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CD782850D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:44:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EF841F21A65
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:49:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F69644C6F;
-	Mon,  5 Feb 2024 16:43:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E5993D99A;
+	Mon,  5 Feb 2024 16:49:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QfcYOYvS"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cPg74+eQ"
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 482F340BF2
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 16:43:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFB223FE3F;
+	Mon,  5 Feb 2024 16:49:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707151418; cv=none; b=C+CLNZIUA3hMc6Dt5kWaZ3tsINORKC0ZGZOF9aF3b3PiBNBsSj+ZlmMTnDoZKyW8GKRhIf2h2sUU02SOkewyOJuo03bqkZ6V5qhi8j0hYEMaMlwlMt+T7ihGlT6czPElPraqzuJtJiryger7L88Glrkeg/r8eWyTYhAsLKdnOGY=
+	t=1707151746; cv=none; b=U9WSuWDbAKYbs/4Zx3xJ1g73Tdqnpy/u4ZrVeMFelW4pLneWLdrg8QKw/+Kmva98gahL2n4zUtYo51JiQAte2aTA2bYgB4nBJLw6NdFCYZvUK/7mTEnTT9TDNw3i31gBNhKop6LkA4MxNcZDCtK0CprufX05qO/qdi1nPjPQ0gY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707151418; c=relaxed/simple;
-	bh=U/7TW3OSEZ6qhrwVPvN+Z5zX92htnPgIigRf5YEJMiQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pDGSb2DfI8M8iCHUbf335oxzPu/n/5R89jKHYHYQhOgLb07W0v/KaF1CSNBdQc257NLkEymJuFJIND8A6i4nGwwaFFOYRbFJymewwgqhhEAzYaitJTV0nzSy/Ev0Xi+FXuK7WRv56PUV9ULTVYTg4wFs7KigM0LJS1aH45sok5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QfcYOYvS; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707151415;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/eXP+XOU0IwSKfk9/shij3ieifTghjGjp9NYVzTL26w=;
-	b=QfcYOYvSjRYLsLz/s87UjQoVBW+KqeiZ6IhJXhX5WIQVjxhKsS3IHI/lZCBuCgmOD2xFU3
-	V1V8DNjbDB5xE9YGLe+hM1oolNiSRNsHF5DsPPIueHmkzxdfN7CzWUq1qPe0aiNFQAV6TM
-	VXAarZnZZPUEiEsj0uBKdEzVVHxbVDo=
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
- [209.85.166.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-656-7EUMOe_ANmeO79CSj6r2Sw-1; Mon, 05 Feb 2024 11:43:33 -0500
-X-MC-Unique: 7EUMOe_ANmeO79CSj6r2Sw-1
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7bf863c324dso309965039f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 08:43:33 -0800 (PST)
+	s=arc-20240116; t=1707151746; c=relaxed/simple;
+	bh=GcGSsubY4dcKkjecU9LmqR3P0fzbFrmAaN9LWIN7gCc=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=qBafUDFbj92gRk52+VdXr2eYbEHJgSRK0CRI5PvKjcdX90seQ+sAKrLWHwCeVq+qpWBvft7CQ5M5OXfyocbrOu1bQfhkmyqT0uBkX/AK+CAY0X7RgAUXUJbgrzoXEvaHRjH+Zdp7uU4ugPToxANqYUqv/mmqMMkCk0zP9A+r4kA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cPg74+eQ; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40fdd65a9bdso6819795e9.2;
+        Mon, 05 Feb 2024 08:49:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707151743; x=1707756543; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=v2dGla21HbnOwMEyomZ214LPRA+72clAPATlIVdVHlg=;
+        b=cPg74+eQBe/uQzei4brtF0fTuUhyW/WIIISAxELChkrlSeYwbPfjOGavVo9QkXt9oD
+         z+nNVRj/dHqAUoitMJwqvGUxN7iMDE85FAXkv0vW1RN6Yo5gf99HqM4SKYbnmVtjVmuy
+         2ILVMi5Cx95yVTk/nWKdyeucGy5Z2HUqVXmh95Yz3MUWLh6fEaj4HxB21oVTuM/Sv1TW
+         ou+/DEkK7LUThsENEcRnybDPLR+TOBlSbPFD1qyYjGWrGHh+yXyOTwRpsReVCQSAMmP2
+         G7n1V96Q53+CcCsVm69vxrsgpfmEXJWzDW4oZ+tWs3AK03m0d+DRsRGgdyjwrZnVJsRY
+         IpfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707151413; x=1707756213;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/eXP+XOU0IwSKfk9/shij3ieifTghjGjp9NYVzTL26w=;
-        b=s0em/8Fw2jfLxTQWJQ6sfpHq34npQatermZrvl6B1KYvbx46rKKJVbxnOFKTW88zlg
-         dyhKKECxe2TrvG77DMPWxag2UaSNNka5PvSEIiy1oMcsUfBm/GoccxHC0hy6xEdetS+M
-         iQwr70D2Gx+2eQ9lSZr1V/17TvKkddNfbuqBKLd7o9NMgJKlGcDQb62XP3Yk7UtbF5D2
-         Bkfb9yLRw/rvoPtAUThb+Kqy8vyPH9JHM1f8AQo9gaLPv2oFtZwv4PdozdEi6ZIudwdP
-         OjXi6MoFlgsSEGU/wexW46iVR/eklrBr2wp4S4vX0BBPlQB+hwYTbtPyxNnIAOh7IYfL
-         T/Pg==
-X-Gm-Message-State: AOJu0YzxU/PdZ6cXFJsRH16QplOlet999Gm5U6QKZrl1ZDba3uBpSYgr
-	xF37abFy8PptPVa4LkyPfuY4L7O67108P+t1+Y5AfwaDU+WrX/bxrDaKwrb9mMz/NaA8OfytyXW
-	CR1/u/udN4HemR4+OSUaOF3iLzSEWNblCT7NiZWBpFJ73cMBPLHNlS8uJGujc9A==
-X-Received: by 2002:a05:6e02:164e:b0:360:628e:659f with SMTP id v14-20020a056e02164e00b00360628e659fmr200862ilu.5.1707151413050;
-        Mon, 05 Feb 2024 08:43:33 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGtaN4sEtvX2yaCb3cjEWCzbhiFSIYee5cINdZg+zrkrji5H3Ahcz7txIlReM70s7z7FBdE2g==
-X-Received: by 2002:a05:6e02:164e:b0:360:628e:659f with SMTP id v14-20020a056e02164e00b00360628e659fmr200841ilu.5.1707151412753;
-        Mon, 05 Feb 2024 08:43:32 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU9nO84Ymt1SJKhzCuTL1objeZ5SSsE27RlJtvPYNi8r42f5mWWmIrH7Zn1RORfSf3iRjRG0nVdtbSdQV2aZkDLX91MB+PO7viz93UWxdXlN+MR6yyWU2BfxH1kyh3r1CppHdrXdbMzwqmnUYwyZe2ePeQBEw3iTWZNHIWSt/CCCId4cmjIcUAhyLhd74ujVHh1MNm84xYNdlCIP5okWpTEtJ5suECt02cKBKxITe8sQ26Snldjn31xRJVWYssCIewwB6l23QD5m4cFoyDJHIBLkBvw23emfyWQRjL2dz8J77lcbt0pE8A9QDgMfzTfNQk+IZh/FHYS
-Received: from redhat.com ([38.15.36.11])
-        by smtp.gmail.com with ESMTPSA id g19-20020a056638061300b004713ae4c62asm34884jar.46.2024.02.05.08.43.31
+        d=1e100.net; s=20230601; t=1707151743; x=1707756543;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=v2dGla21HbnOwMEyomZ214LPRA+72clAPATlIVdVHlg=;
+        b=vYiLJLIxdjgFZmwW1UDKBtse6YdLMLIO+2Fld4CvVu5jroJ0dpm5fcQL2aCoX5F6AP
+         BRzrZr3PFJcuhLFtudIxxj/KqY40aaTTp2GajUnCPMNOKdiRdSO2a7yN2MWim0A3+i8L
+         LnnYhRNe53Ry0WiStITR/eNWcss+NLpNUk4dKy4ux4gUNfj1VGW4ZlBdkrQ4KZZ1yfB+
+         UlJUeJRv2x+Ua5WIbit+R8QIoJaHn8GmG1LaBx/ve5xrB8DdT0mA784kgSPCLMmulfSv
+         0a48fhDrjlNm8IIp0XF0dSqFJAe9Evc552zHtsPWs+b7eWOERGgXfw/b3jROuwR+m1vk
+         5d7w==
+X-Gm-Message-State: AOJu0Ywye3v/6OUR4nD/iXe0eotsvy/Hp15OfCoA9D6Rwvg63skkXise
+	ZK6ZliM/8muzm8AfTO2+xYThIO4ju4GsPEq1PE4HgLZKoO9qpPd4
+X-Google-Smtp-Source: AGHT+IF825TrmkBo9cBGnBXKNUh54zxVp/NY8JWiCdUK5ktPt/ppFXd6vluy/uXt03iHa+YibzLgXA==
+X-Received: by 2002:a05:600c:1e0f:b0:40f:d908:a4dd with SMTP id ay15-20020a05600c1e0f00b0040fd908a4ddmr263827wmb.21.1707151742746;
+        Mon, 05 Feb 2024 08:49:02 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUNy2US1B/HiGwZVwESeCU+H3OIZKuiXpU7QN0rKuufL67b8d3J3UieV/kWS1mFI2BEwsvEHvgRunXFpcxUHj/uQtDx7L6RCsapAsk4gRM0ypM/r4NSWaYhuV1lUGeSNQxrGtp9CmVr6MxdXU1VduUwbc8ANQZkefIRpmBwzVRuhl81+7FqyuVslY3oXEm7BVY0XCk2wwIiANLuobmOz4A+8usr21n9zvJDiyuI27xEFysNRGeeli1dJJcPMats+CiEixz0CeNedTIE6kX1f9wpSS1lFbMJxCnd/vMaSPJrcmtOjZd1NshC1ku6f19aIY2w8qsAHpwdtYuZwLVH127Y1phNEiBq5tmf0RKvanNOGYgNYC1WoG/iWowJ3bUWa9FTCpDs9V20xRxHeKFGdnXPcxzng72YhyOv57VZRVMcW1g2WuS3uHh0Ej89kLnSGfagNE+I2ZvATwIo684qRUvGs8xjYo8/xq7uTrTPGV4NWlBIu6oWDEP0MthVKuM4Qdej8k+Ihc7VFpxzFCibkTehZMZgZriTZjSogWw7UQHF3HOgOuH8rrUE9NkEuk5+ZVtuuioHjvm+anHt2k7tFSCtT0AIj6RrAYFtfxv9+AWffKE0IQNYFW+Mc3hHKMnhdzSpe2TqydymAEkbczcrMdEEKm/053D4HJ6Qvt36Fav5eHXVsQYVHg==
+Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.googlemail.com with ESMTPSA id k2-20020a05600c1c8200b0040fafd84095sm9140567wms.41.2024.02.05.08.49.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 08:43:32 -0800 (PST)
-Date: Mon, 5 Feb 2024 09:43:30 -0700
-From: Alex Williamson <alex.williamson@redhat.com>
-To: Emily Deng <Emily.Deng@amd.com>
-Cc: <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
- <Jerry.Jiang@amd.com>, <Andy.Zhang@amd.com>, <HaiJun.Chang@amd.com>,
- <Monk.Liu@amd.com>, <Horace.Chen@amd.com>, <ZhenGuo.Yin@amd.com>
-Subject: Re: [PATCH 1/2] PCI: Add VF reset notification to PF's VFIO user
- mode driver
-Message-ID: <20240205094330.59ca4c0a.alex.williamson@redhat.com>
-In-Reply-To: <20240205071538.2665628-1-Emily.Deng@amd.com>
-References: <20240205071538.2665628-1-Emily.Deng@amd.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Mon, 05 Feb 2024 08:49:02 -0800 (PST)
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Christian Marangi <ansuelsmth@gmail.com>,
+	Robert Marko <robert.marko@sartura.hr>,
+	netdev@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org
+Subject: [net-next PATCH v6 00/10] net: phy: Introduce PHY Package concept
+Date: Mon,  5 Feb 2024 17:48:32 +0100
+Message-ID: <20240205164851.1351-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Mon, 5 Feb 2024 15:15:37 +0800
-Emily Deng <Emily.Deng@amd.com> wrote:
+Idea of this big series is to introduce the concept of PHY package in DT
+and give PHY drivers a way to derive the base address from DT.
 
-> VF doesn't have the ability to reset itself completely which will cause the
-> hardware in unstable state. So notify PF driver when the VF has been reset
-> to let the PF resets the VF completely, and remove the VF out of schedule.
-> 
-> How to implement this?
-> Add the reset callback function in pci_driver
-> 
-> Implement the callback functin in VFIO_PCI driver.
-> 
-> Add the VF RESET IRQ for user mode driver to let the user mode driver
-> know the VF has been reset.
+The concept of PHY package is nothing new and is already a thing in the
+kernel with the API phy_package_join/leave/read/write.
 
-The solution that already exists for this sort of issue is a vfio-pci
-variant driver for the VF which communicates with an in-kernel PF
-driver to coordinate the VF FLR with the PF driver.  This can be done
-by intercepting the userspace access to the VF FLR config space region.
+What is currently lacking is describing this in DT and better reference
+a base address to calculate offset from.
 
-This solution of involving PCI-core and extending the vfio-pci interface
-only exists for userspace PF drivers.  I don't see that facilitating
-vendors to implement their PF drivers in userspace to avoid upstreaming
-is a compelling reason to extend the vfio-pci interface.  Thanks,
+In the scenario of a PHY package where multiple address are used and
+there isn't a way to get the base address of the PHY package from some
+regs, getting the information from DT is the only way.
 
-Alex
- 
-> Signed-off-by: Emily Deng <Emily.Deng@amd.com>
-> ---
->  drivers/pci/pci.c   | 8 ++++++++
->  include/linux/pci.h | 1 +
->  2 files changed, 9 insertions(+)
-> 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index 60230da957e0..aca937b05531 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -4780,6 +4780,14 @@ EXPORT_SYMBOL_GPL(pcie_flr);
->   */
->  int pcie_reset_flr(struct pci_dev *dev, bool probe)
->  {
-> +	struct pci_dev *pf_dev;
-> +
-> +	if (dev->is_virtfn) {
-> +		pf_dev = dev->physfn;
-> +		if (pf_dev->driver->sriov_vf_reset_notification)
-> +			pf_dev->driver->sriov_vf_reset_notification(pf_dev, dev);
-> +	}
-> +
->  	if (dev->dev_flags & PCI_DEV_FLAGS_NO_FLR_RESET)
->  		return -ENOTTY;
->  
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index c69a2cc1f412..4fa31d9b0aa7 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -926,6 +926,7 @@ struct pci_driver {
->  	int  (*sriov_configure)(struct pci_dev *dev, int num_vfs); /* On PF */
->  	int  (*sriov_set_msix_vec_count)(struct pci_dev *vf, int msix_vec_count); /* On PF */
->  	u32  (*sriov_get_vf_total_msix)(struct pci_dev *pf);
-> +	void  (*sriov_vf_reset_notification)(struct pci_dev *pf, struct pci_dev *vf);
->  	const struct pci_error_handlers *err_handler;
->  	const struct attribute_group **groups;
->  	const struct attribute_group **dev_groups;
+A possible example to this problem is this:
+
+        ethernet-phy-package@0 {
+            compatible = "qcom,qca8075-package";
+            #address-cells = <1>;
+            #size-cells = <0>;
+
+            reg = <0>;
+            qcom,package-mode = "qsgmii";
+
+            ethernet-phy@1 {
+              reg = <1>;
+            };
+
+            phy4: ethernet-phy@4 {
+              reg = <4>;
+            };
+        };
+
+The mdio parse functions are changed to address for this additional
+special node, the function is changed to simply detect this node and
+search also in this. (we match the node name to be "ethernet-phy-package")
+
+PHY driver can then use introduced helper of_phy_package_join to join the
+PHY to the PHY package and derive the base address from DT.
+
+Changes v6:
+- Back to absolute PHY implementation
+- Correctly drop refcount for node on error condition and on PHY leave
+- Drop DT include patch in favor for 3 boolean vendor property
+- Fix Documentation problem for compatible and missing type and
+  description
+- Drop redundand gpio-controller dependency and description
+- Skip scanphy with invalid PHY Package node and make reg mandatory
+- Rework fiber read status to use more generic function
+- Split qca808x LED generalization patch to permit easier review
+- Correctly return -EINVAL with wrong data passed to vendor property
+- Drop removing LED ops for qca807x PHY driver with gpio-controller
+Changes v5:
+- Rebase on top of net-next
+- Change implementation to base addr + offset in subnode
+- Adapt to all the changes and cleanup done to at803x
+Changes v4:
+- Rework DT implementation
+- Drop of autojoin support and rework to simple helper
+- Rework PHY driver to the new implementation
+- Add compatible for qca807x package
+- Further cleanup patches
+Changes v3:
+- Add back compatible implementation
+- Detach patch that can be handled separately (phy_package_mmd, 
+  phy_package extended)
+- Rework code to new simplified implementation with base addr + offset
+- Improve documentation with additional info and description
+Changes v2:
+- Drop compatible "ethernet-phy-package", use node name prefix matching
+  instead
+- Improve DT example
+- Add reg for ethernet-phy-package
+- Drop phy-mode for ethernet-phy-package
+- Drop patch for generalization of phy-mode
+- Drop global-phy property (handle internally to the PHY driver)
+- Rework OF phy package code and PHY driver to handle base address
+- Fix missing of_node_put
+- Add some missing docs for added variables in struct
+- Move some define from dt-bindings include to PHY driver
+- Handle qsgmii validation in PHY driver
+- Fix wrong include for gpiolib
+- Drop reduntant version.h include
+
+Christian Marangi (9):
+  dt-bindings: net: document ethernet PHY package nodes
+  net: phy: add support for scanning PHY in PHY packages nodes
+  net: phy: add devm/of_phy_package_join helper
+  net: phy: qcom: move more function to shared library
+  dt-bindings: net: Document Qcom QCA807x PHY package
+  net: phy: provide whether link has changed in c37_read_status
+  net: phy: qcom: move common qca808x LED define to shared header
+  net: phy: qcom: generalize some qca808x LED functions
+  net: phy: qca807x: add support for configurable LED
+
+Robert Marko (1):
+  net: phy: qcom: add support for QCA807x PHY Family
+
+ .../bindings/net/ethernet-phy-package.yaml    |  52 ++
+ .../devicetree/bindings/net/qcom,qca807x.yaml | 184 ++++
+ drivers/net/mdio/of_mdio.c                    |  79 +-
+ drivers/net/phy/broadcom.c                    |   3 +-
+ drivers/net/phy/mdio_bus.c                    |  44 +-
+ drivers/net/phy/phy_device.c                  | 107 ++-
+ drivers/net/phy/qcom/Kconfig                  |   8 +
+ drivers/net/phy/qcom/Makefile                 |   1 +
+ drivers/net/phy/qcom/at803x.c                 |  38 +-
+ drivers/net/phy/qcom/qca807x.c                | 849 ++++++++++++++++++
+ drivers/net/phy/qcom/qca808x.c                | 308 +------
+ drivers/net/phy/qcom/qcom-phy-lib.c           | 247 +++++
+ drivers/net/phy/qcom/qcom.h                   | 123 +++
+ include/linux/phy.h                           |   8 +-
+ 14 files changed, 1676 insertions(+), 375 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/ethernet-phy-package.yaml
+ create mode 100644 Documentation/devicetree/bindings/net/qcom,qca807x.yaml
+ create mode 100644 drivers/net/phy/qcom/qca807x.c
+
+-- 
+2.43.0
 
 
