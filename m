@@ -1,307 +1,226 @@
-Return-Path: <linux-kernel+bounces-53817-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A40E84A6EC
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:18:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7A4484A6F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:18:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 151E71F297F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:18:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1919E1C26A1C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:18:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09B965B5BF;
-	Mon,  5 Feb 2024 19:26:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ED875B67C;
+	Mon,  5 Feb 2024 19:30:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tandGiOX"
-Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ai9Jc+KH"
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAEC15B5AA
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 19:26:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 783275B686
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 19:30:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707161163; cv=none; b=Sd9cUYEdmhV0eU8xATJL8MnXMKo4KcKcx4VMctPEkb4ImJqEO0x0MGHEcCBffy0Hqf933L2z75Zx/G5MbofPxCuoAZyRTJBj1WVgZZSvRHw+3RpzYJJknIC1PH6uZCRJb47bYJe3+S4YifSz/P+xz8hP02H8XJ8Y76gi0jb/wyg=
+	t=1707161406; cv=none; b=VMQY3oikH3TbJVoyQQiQLPgBliYenWsvtJHRxQexsg4gSFrC2RxZFPaoJ7ymH4imtmc5VP2v7ZmnSxQuj3pGUXKDjiTRRdHSnBld5VImCEodj8vQZckebXjsQpDFMtH3trwD6zCkEhWvH5mHVUUZnyKkqKgkgywtVfUtjP5sPL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707161163; c=relaxed/simple;
-	bh=v26TJIeofXWL3lICUs41/lphOWSbyFMFuW6E5FR1cKA=;
+	s=arc-20240116; t=1707161406; c=relaxed/simple;
+	bh=hv/515ixhg1b1irAW/kbpYEWdizYkHO4avvo3y8I560=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XrzzGAbslYb/wIebqF3SZSinCYo9zvzoboH6+/WauJNL37imeklSgB3/vf7sq8zAApRhpIt0eXdfIC+BQcUsBYpslkQC/3zGanpzs/CuYg+5ZhCjZoUKzLYtkpPoC4KjvrKnEu+8bI5aA9KB2XKkWdzmkU1Zmqv+gS0AZev1MGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tandGiOX; arc=none smtp.client-ip=209.85.160.176
+	 To:Cc:Content-Type; b=BPypDNYaDUh1XgZ2scTlUhsrRTWcJuDKVDK6agNuTsJMwhLbhQkBigENCRkgP920cBPnfgy8FggFZaiULv6bnbD2MfGATSAGjHmQ7rLiF75L1FH0U65uuD8kArSLeRzFqmifVzwZIIRMdMZMLkNw3oXfekngvq2KH2ArNraeBvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ai9Jc+KH; arc=none smtp.client-ip=209.85.128.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-42a7765511bso67811cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 11:26:00 -0800 (PST)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5ffdf06e009so41861817b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 11:30:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707161159; x=1707765959; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1707161402; x=1707766202; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5ppprwmXY+lQkPET/t8skne59PoMO37SNUfd0LceXQU=;
-        b=tandGiOXpWFyLngMesciQqBYLPpmYR3isuroSfeLKhxdQcb8tHq+2MTmmo1gqrufjA
-         eG3Mms9HjevTITf4RajTLEPaBHYHEy6hIfc2Gu33l7AylHDgPtw0TcfQoxjyowjHBEtw
-         okcQM7iJnlSF4wj+qhfrIIcAKdVuxMpWfBnhY7nrJ7VlAGNdSU5GQOQCz1UOKLRcZaWY
-         +H1vXcYqMV1uFwmVmB5ymP/9TWF9QYxluzqD1Qb2oY2WKPkHjd+e1xyZ5fPuXmsusIA1
-         ghrabl2l6Xz2bKv0q9CL5d7Vphfs4nVyjhi1s7MoEdbB5JL4viay0xF84JguMbNodrHk
-         JHrQ==
+        bh=D4WN4Xb7dp47SMoVjUS6Uu6ut1YvXAAoP/+0s4mxi3o=;
+        b=ai9Jc+KH8ES/2P+WdWvS5qgc35Crjl1jmXKq046xRWEROJyFtSCRPpl5dywPhgV51z
+         GUCdSZrEX6T+hP0zwFB9oQd3UrAe2WRm3TIPnnleWcBgoGTYngPLiG6w5xCynHrPd7fK
+         CTbwp14ko+CtwRYgfoUA8EVotokixe2j90EBgjuW/YMUY9eXZmCRW7J4nwAnRya+TcZW
+         9OtkjPYAYFJsuE35Z9UlUhBjRzuzFdLdjvmyTkKQePU+HfZZ43/Q3W6DnAIQZXAep27s
+         Nn6ZntMuntXzFU7tg5NaJF8nd3yOuW4OsdzvC2TEH3eDdAPryTzisexhIPx4+Rv3mES2
+         KrzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707161159; x=1707765959;
+        d=1e100.net; s=20230601; t=1707161402; x=1707766202;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5ppprwmXY+lQkPET/t8skne59PoMO37SNUfd0LceXQU=;
-        b=RGTP7DFuyshfsUKohNL6wbgYy3zzLvec7B8VIg+VnX3CAWeatewbYRrb5p4/XNEW6T
-         BtW7WN6+KF+aL7gLlfueVeaKJUWugEt6uIE6UbOnceuuFt2VZLd2WM5uc7GqXeOpemoj
-         WPdQ0vmW4iNKCw56j1H+NaMohsW/XiO/oI6X7HA4/iwk+O7l3L+YdD9LDseF7Ajr0Etj
-         H00M0bx5RyXguoqNmAUt98gJ4hcJZy+YHD9T4A6Jrue/UG8rdQQnwQuGCukB21Jw7g1D
-         QXxuZheLyp2FKqvS1mxNy91ZSSkao3LAjK9loczlWsOL/G7muTo9LaZIohS14jDDK7p6
-         QcRw==
-X-Gm-Message-State: AOJu0Yy1UNxjn5v3DCKBkBePLDHK/2VdIu6uam1hiedPAow1uA5C2gcd
-	Pd+k3hFgVZqs0QSqeqXabqQFnY3/4kiyf4s+/ejNT6Kw3qkDaJu4Woruu/YINZ5rcCZpzOUQopG
-	zY8+vLEKEjI9NBC6kiLSzsM+d3mXd9BEnddqI
-X-Google-Smtp-Source: AGHT+IEl0lq8aKcbsnaIqDKoAMlgwVA7mdT76W+6lk9KKfi6qJdNLQaFhdMt2D7OuL+7bWfKEmfh8elDb5IO6Eg2zeA=
-X-Received: by 2002:ac8:678a:0:b0:42a:5890:b258 with SMTP id
- b10-20020ac8678a000000b0042a5890b258mr45446qtp.16.1707161159238; Mon, 05 Feb
- 2024 11:25:59 -0800 (PST)
+        bh=D4WN4Xb7dp47SMoVjUS6Uu6ut1YvXAAoP/+0s4mxi3o=;
+        b=iv6wz6SzLe/2f+DtEUwD6DQP9ee6AQwxgAIY7Y0T0DxclsZX2zov8j685f1PkYHSC/
+         sEtlHzKu7nxdv8MwyUTFbhmVCeWiCTff/jXtohxBdtclkcsp+ifjwfxJPPcpmAsSRyR4
+         KXVl52IQ6RYpjCtHtdDoOxHs7fqIuLnuPVFUK4ATSnmFe+f7GVtIC2yde3127GUy7ljJ
+         ufH6SNOK8V8RhcIEssMO/5B/zW6xj25tY2bvdJhDdwhGw9PoVVrFmfQDx3LRshzoFzlh
+         dJSvIVIquaI6J47zL8saDqfGJDKoRVh9Av4HOcRwIIcHZA/Zjm8eVFvvdkzmrBpp878L
+         85kw==
+X-Gm-Message-State: AOJu0YxpKpMH190t21f+yyBDNB+irQuOKQ0P+jY9BTyKQQ48beT/vVgI
+	hKs7RHUeYEA+rGfI5MVKegdAAZjojPTiDxvOgeyOiRnAw75awAh2ew1r1COuXAhMQzFy7QC8yvC
+	jYR47BPRzSd5BNZ2qLQRRbieX+vKCQ/UJVkh8
+X-Google-Smtp-Source: AGHT+IFdX8B1HIDI6xRkkY0IE+V+KdYvFauYmlhUmVafK81CJG44zOMPQ20ffZHQKgCeaNCwkpO4MJXz/ig0GgDIZTU=
+X-Received: by 2002:a81:6d16:0:b0:604:3a16:8aee with SMTP id
+ i22-20020a816d16000000b006043a168aeemr533115ywc.33.1707161402144; Mon, 05 Feb
+ 2024 11:30:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123014517.5787-1-mcpratt@pm.me> <20240123014517.5787-3-mcpratt@pm.me>
-In-Reply-To: <20240123014517.5787-3-mcpratt@pm.me>
-From: Saravana Kannan <saravanak@google.com>
-Date: Mon, 5 Feb 2024 11:25:20 -0800
-Message-ID: <CAGETcx8S6B09T==dSp38-vX+rYjRyTaRwVqF0c2Nh-KxwDFAtw@mail.gmail.com>
-Subject: Re: [PATCH v1 2/4] driver core: fw_devlink: Link to supplier ancestor
- if no device
-To: Michael Pratt <mcpratt@pm.me>
-Cc: devicetree@vger.kernel.org, gregkh@linuxfoundation.org, 
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	abel.vesa@linaro.org, alexander.stein@ew.tq-group.com, 
-	andriy.shevchenko@linux.intel.com, bigunclemax@gmail.com, brgl@bgdev.pl, 
-	colin.foster@in-advantage.com, djrscally@gmail.com, 
-	dmitry.baryshkov@linaro.org, festevam@gmail.com, fido_max@inbox.ru, 
-	frowand.list@gmail.com, geert@linux-m68k.org, heikki.krogerus@linux.intel.com, 
-	kernel@pengutronix.de, linus.walleij@linaro.org, linux@roeck-us.net, 
-	luca.weiss@fairphone.com, magnus.damm@gmail.com, martin.kepplinger@puri.sm, 
-	miquel.raynal@bootlin.com, rafal@milecki.pl, ansuelsmth@gmail.com, 
-	richard@nod.at, sakari.ailus@linux.intel.com, sudeep.holla@arm.com, 
-	tglx@linutronix.de, tony@atomide.com, vigneshr@ti.com, dianders@chromium.org, 
-	jpb@kernel.org, rafael@kernel.org, 
-	Android Kernel Team <kernel-team@android.com>
+References: <20240202233855.1236422-1-tjmercier@google.com> <ZcC7Kgew3GDFNIux@tiehlicka>
+In-Reply-To: <ZcC7Kgew3GDFNIux@tiehlicka>
+From: "T.J. Mercier" <tjmercier@google.com>
+Date: Mon, 5 Feb 2024 11:29:49 -0800
+Message-ID: <CABdmKX3HbSxX6zLF4z3f+=Ybiq1bA71jckkeHv5QJxAjSexgaA@mail.gmail.com>
+Subject: Re: [PATCH v3] mm: memcg: Use larger batches for proactive reclaim
+To: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, Efly Young <yangyifei03@kuaishou.com>, 
+	android-mm@google.com, yuzhao@google.com, mkoutny@suse.com, 
+	Yosry Ahmed <yosryahmed@google.com>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 22, 2024 at 5:46=E2=80=AFPM Michael Pratt <mcpratt@pm.me> wrote=
+On Mon, Feb 5, 2024 at 2:40=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrote=
 :
 >
-> Driver core currently supports linking to the next parent fwnode,
-> but is not yet handling cases where that parent
-> is also a firmware child node not representing a real device,
-> which can lead to an indefinite deferred probe in some cases.
-> In this case, the fwnode that should actually be linked to
-> is multiple ancestors up which presents a challenge where
-> it is unknown how many ancestors up the node that
-> represents the real probing device is. This makes the usage of
-> fwnode_get_next_parent_dev() insufficient because the real device's
-> fwnode may or may not be an ancestor of the next parent fwnode as well.
+> On Fri 02-02-24 23:38:54, T.J. Mercier wrote:
+> > Before 388536ac291 ("mm:vmscan: fix inaccurate reclaim during proactive
+> > reclaim") we passed the number of pages for the reclaim request directl=
+y
+> > to try_to_free_mem_cgroup_pages, which could lead to significant
+> > overreclaim. After 0388536ac291 the number of pages was limited to a
+> > maximum 32 (SWAP_CLUSTER_MAX) to reduce the amount of overreclaim.
+> > However such a small batch size caused a regression in reclaim
+> > performance due to many more reclaim start/stop cycles inside
+> > memory_reclaim.
 >
-> Introduce flag FWNODE_FLAG_PARENT_IS_DEV
-> in order to mark child firmware nodes of a device
-> as having a parent device that can probe.
->
-> Allow fwnode link creation to the original supplier fwnode's ancestors
-> when the original supplier fwnode and any fwnodes in between are flagged
-> as FWNODE_FLAG_NOT_DEVICE and/or FWNODE_FLAG_PARENT_IS_DEV
-> with a new function __fwnode_link_add_parents() which then creates
-> the fwnode link to a real device that provides the supplier's function.
->
-> This depends on other functions to label a supplier fwnode
-> as not a real device, which must be done before the fwnode links
-> are created, and if after that, relevant links to the supplier
-> would have to be deleted and have links recreated, otherwise,
-> the fwnode link would be dropped before the device link is attempted
-> or a fwnode link would not be able to become a device link at all,
-> because they were created before these fwnode flags can have any effect.
->
-> It also depends on the supplier device to actually probe first
-> in order to have the fwnode flags in place to know for certain
-> which fwnodes are non-probing child nodes
-> of the fwnode for the supplier device.
->
-> The use case of function __fw_devlink_pickup_dangling_consumers()
-> is designed so that the parameters are always a supplier fwnode
-> and one of it's parent fwnodes, so it is safer to assume and more specifi=
-c
-> that the flag PARENT_IS_DEV should be added there, rather than
-> declaring the original supplier fwnode as NOT_DEVICE at that point.
-> Because this function is called when the real supplier device probes
-> and recursively calls itself for all child nodes of the device's fwnode,
-> set the new flag here in order to let it propagate down
-> to all descendant nodes, thereby providing the info needed later
-> in order to link to the proper fwnode representing the supplier device.
->
-> If a fwnode is flagged as FWNODE_FLAG_NOT_DEVICE
-> by the time a device link is to be made with it,
-> but not flagged as FWNODE_FLAG_PARENT_IS_DEV,
-> the link is dropped, otherwise the device link
-> is still made with the original supplier fwnode.
-> Theoretically, we can also handle linking to an ancestor
-> of the supplier fwnode when forming device links, but there
-> are still cases where the necessary fwnode flags are still missing
-> because the real supplier device did not probe yet.
->
-> Signed-off-by: Michael Pratt <mcpratt@pm.me>
+> You have mentioned that in one of the previous emails but it is good to
+> mention what is the source of that overhead for the future reference.
 
-NACK for a bunch of reasons.
+I can add a sentence about the restart cost being amortized over more
+pages with a large batch size. It covers things like repeatedly
+flushing stats, walking the tree, evaluating protection limits, etc.
 
-1. This logic should not be in fwnode_link_add(). That's supposed to
-do the exact linking that the firmware meant. This logic should be
-where the fwnode links are converted to device links or deferred
-probing decision is done.
+> > Reclaim tries to balance nr_to_reclaim fidelity with fairness across
+> > nodes and cgroups over which the pages are spread. As such, the bigger
+> > the request, the bigger the absolute overreclaim error. Historic
+> > in-kernel users of reclaim have used fixed, small sized requests to
+> > approach an appropriate reclaim rate over time. When we reclaim a user
+> > request of arbitrary size, use decaying batch sizes to manage error whi=
+le
+> > maintaining reasonable throughput.
+>
+> These numbers are with MGLRU or the default reclaim implementation?
 
-2. If we handle one parent above correctly, it should be easy to
-handle multiple parents above too. So why not fix it where we handle
-multiple parents above?
+These numbers are for both. root uses the memcg LRU (MGLRU was
+enabled), and /uid_0 does not.
 
-Btw, I'm happy to fix this or help you fix this once I understand the
-issue. Just wanted to give a quick NACK to avoid people spending
-cycles on this patch in its current state.
+> > root - full reclaim       pages/sec   time (sec)
+> > pre-0388536ac291      :    68047        10.46
+> > post-0388536ac291     :    13742        inf
+> > (reclaim-reclaimed)/4 :    67352        10.51
+> >
+> > /uid_0 - 1G reclaim       pages/sec   time (sec)  overreclaim (MiB)
+> > pre-0388536ac291      :    258822       1.12            107.8
+> > post-0388536ac291     :    105174       2.49            3.5
+> > (reclaim-reclaimed)/4 :    233396       1.12            -7.4
+> >
+> > /uid_0 - full reclaim     pages/sec   time (sec)
+> > pre-0388536ac291      :    72334        7.09
+> > post-0388536ac291     :    38105        14.45
+> > (reclaim-reclaimed)/4 :    72914        6.96
+> >
+> > Fixes: 0388536ac291 ("mm:vmscan: fix inaccurate reclaim during proactiv=
+e reclaim")
+> > Signed-off-by: T.J. Mercier <tjmercier@google.com>
+> > Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
+> > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> >
+> > ---
+> > v3: Formatting fixes per Yosry Ahmed and Johannes Weiner. No functional
+> > changes.
+> > v2: Simplify the request size calculation per Johannes Weiner and Micha=
+l Koutn=C3=BD
+> >
+> >  mm/memcontrol.c | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index 46d8d02114cf..f6ab61128869 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -6976,9 +6976,11 @@ static ssize_t memory_reclaim(struct kernfs_open=
+_file *of, char *buf,
+> >               if (!nr_retries)
+> >                       lru_add_drain_all();
+> >
+> > +             /* Will converge on zero, but reclaim enforces a minimum =
+*/
+> > +             unsigned long batch_size =3D (nr_to_reclaim - nr_reclaime=
+d) / 4;
+>
+> This doesn't fit into the existing coding style. I do not think there is
+> a strong reason to go against it here.
 
--Saravana
+There's been some back and forth here. You'd prefer to move this to
+the top of the while loop, under the declaration of reclaimed? It's
+farther from its use there, but it does match the existing style in
+the file better.
 
-
-> ---
->  drivers/base/core.c    | 49 ++++++++++++++++++++++++++++++++++++------
->  include/linux/fwnode.h |  4 ++++
->  2 files changed, 47 insertions(+), 6 deletions(-)
+> > +
+> >               reclaimed =3D try_to_free_mem_cgroup_pages(memcg,
+> > -                                     min(nr_to_reclaim - nr_reclaimed,=
+ SWAP_CLUSTER_MAX),
+> > -                                     GFP_KERNEL, reclaim_options);
+> > +                                     batch_size, GFP_KERNEL, reclaim_o=
+ptions);
 >
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index c05a5f6b0641..7f2652cf5edc 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -92,13 +92,45 @@ static int __fwnode_link_add(struct fwnode_handle *co=
-n,
->         return 0;
->  }
+> Also with the increased reclaim target do we need something like this?
 >
-> +static int __fwnode_link_add_parents(struct fwnode_handle *con,
-> +                                    struct fwnode_handle *sup,
-> +                                    u8 flags, bool loop)
-> +{
-> +       int ret =3D -EINVAL;
-> +       struct fwnode_handle *parent;
-> +
-> +       fwnode_for_each_parent_node(sup, parent) {
-> +               /* Ignore the root node */
-> +               if (fwnode_count_parents(parent) &&
-> +                   fwnode_device_is_available(parent) &&
-> +                 !(parent->flags & FWNODE_FLAG_NOT_DEVICE) &&
-> +                 !(parent->flags & FWNODE_FLAG_PARENT_IS_DEV)) {
-> +                       ret =3D __fwnode_link_add(con, parent, flags);
-> +               }
-> +
-> +               if (!loop && !ret) {
-> +                       fwnode_handle_put(parent);
-> +                       return 0;
-> +               }
-> +       }
-> +
-> +       return ret;
-> +}
-> +
->  int fwnode_link_add(struct fwnode_handle *con, struct fwnode_handle *sup=
-)
->  {
->         int ret;
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 4f9c854ce6cc..94794cf5ee9f 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -1889,7 +1889,7 @@ static unsigned long shrink_inactive_list(unsigned =
+long nr_to_scan,
 >
->         mutex_lock(&fwnode_link_lock);
-> -       ret =3D __fwnode_link_add(con, sup, 0);
-> +
-> +       if ((sup->flags & FWNODE_FLAG_NOT_DEVICE) &&
-> +           (sup->flags & FWNODE_FLAG_PARENT_IS_DEV))
-> +               ret =3D __fwnode_link_add_parents(con, sup, 0, false);
-> +       else
-> +               ret =3D __fwnode_link_add(con, sup, 0);
-> +
->         mutex_unlock(&fwnode_link_lock);
-> +
->         return ret;
->  }
->
-> @@ -218,7 +250,8 @@ static void __fwnode_links_move_consumers(struct fwno=
-de_handle *from,
->   * MANAGED device links to this device, so leave @fwnode and its descend=
-ant's
->   * fwnode links alone.
->   *
-> - * Otherwise, move its consumers to the new supplier @new_sup.
-> + * Otherwise, flag descendants of @fwnode as having a parent fwnode for =
-a device
-> + * that has probed and move bad fwnode consumer links from @fwnode to @n=
-ew_sup.
->   */
->  static void __fw_devlink_pickup_dangling_consumers(struct fwnode_handle =
-*fwnode,
->                                                    struct fwnode_handle *=
-new_sup)
-> @@ -228,8 +261,11 @@ static void __fw_devlink_pickup_dangling_consumers(s=
-truct fwnode_handle *fwnode,
->         if (fwnode->dev && fwnode->dev->driver)
->                 return;
->
-> -       fwnode->flags |=3D FWNODE_FLAG_NOT_DEVICE;
-> -       __fwnode_links_move_consumers(fwnode, new_sup);
-> +       if (fwnode->flags & FWNODE_FLAG_NOT_DEVICE)
-> +               __fwnode_links_move_consumers(fwnode, new_sup);
-> +
-> +       fwnode->flags |=3D FWNODE_FLAG_PARENT_IS_DEV;
-> +       new_sup->flags &=3D ~(FWNODE_FLAG_PARENT_IS_DEV);
->
->         fwnode_for_each_available_child_node(fwnode, child)
->                 __fw_devlink_pickup_dangling_consumers(child, new_sup);
-> @@ -2071,8 +2107,9 @@ static int fw_devlink_create_devlink(struct device =
-*con,
->                 device_links_write_unlock();
+>                 /* We are about to die and free our memory. Return now. *=
+/
+>                 if (fatal_signal_pending(current))
+> -                       return SWAP_CLUSTER_MAX;
+> +                       return sc->nr_to_reclaim;
 >         }
 >
-> -       if (sup_handle->flags & FWNODE_FLAG_NOT_DEVICE)
-> -               sup_dev =3D fwnode_get_next_parent_dev(sup_handle);
-> +       if ((sup_handle->flags & FWNODE_FLAG_NOT_DEVICE) &&
-> +          !(sup_handle->flags & FWNODE_FLAG_PARENT_IS_DEV))
-> +               return -EINVAL;
->         else
->                 sup_dev =3D get_dev_from_fwnode(sup_handle);
->
-> diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
-> index 2a72f55d26eb..3ed8ba503062 100644
-> --- a/include/linux/fwnode.h
-> +++ b/include/linux/fwnode.h
-> @@ -30,6 +30,9 @@ struct device;
->   * BEST_EFFORT: The fwnode/device needs to probe early and might be miss=
-ing some
->   *             suppliers. Only enforce ordering with suppliers that have
->   *             drivers.
-> + * PARENT_IS_DEV: The fwnode is a child of a fwnode that is or will be p=
-opulated as a
-> + *               struct device, which is more suitable for device links
-> + *               than the fwnode child which may never have a struct dev=
-ice.
->   */
->  #define FWNODE_FLAG_LINKS_ADDED                        BIT(0)
->  #define FWNODE_FLAG_NOT_DEVICE                 BIT(1)
-> @@ -37,6 +40,7 @@ struct device;
->  #define FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD   BIT(3)
->  #define FWNODE_FLAG_BEST_EFFORT                        BIT(4)
->  #define FWNODE_FLAG_VISITED                    BIT(5)
-> +#define FWNODE_FLAG_PARENT_IS_DEV              BIT(6)
->
->  struct fwnode_handle {
->         struct fwnode_handle *secondary;
-> --
-> 2.30.2
->
->
+>         lru_add_drain();
+> >
+> >               if (!reclaimed && !nr_retries--)
+> >                       return -EAGAIN;
+> > --
+
+This is interesting, but I don't think it's closely related to this
+change. This section looks like it was added to delay OOM kills due to
+apparent lack of reclaim progress when pages are isolated and the
+direct reclaimer is scheduled out. A couple things:
+
+In the context of proactive reclaim, current is not really undergoing
+reclaim due to memory pressure. It's initiated from userspace. So
+whether it has a fatal signal pending or not doesn't seem like it
+should influence the return value of shrink_inactive_list for some
+probably unrelated process. It seems more straightforward to me to
+return 0, and add another fatal signal pending check to the caller
+(shrink_lruvec) to bail out early (dealing with OOM kill avoidance
+there if necessary) instead of waiting to accumulate fake
+SWAP_CLUSTER_MAX values from shrink_inactive_list.
+
+As far as changing the value, SWAP_CLUSTER_MAX puts the final value of
+sc->nr_reclaimed pretty close to sc->nr_to_reclaim. Since there's a
+loop for each evictable lru in shrink_lruvec, we could end up with 4 *
+sc->nr_to_reclaim in sc->nr_reclaimed if we switched to
+sc->nr_to_reclaim from SWAP_CLUSTER_MAX... an even bigger lie. So I
+don't think we'd want to do that.
 
