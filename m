@@ -1,136 +1,116 @@
-Return-Path: <linux-kernel+bounces-54065-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DC6684AA3E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:05:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 83F1F84AA42
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:08:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9148F1F2BE2F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:05:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27A451F28442
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:08:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2EE54121B;
-	Mon,  5 Feb 2024 23:05:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9596C481BF;
+	Mon,  5 Feb 2024 23:08:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="a+4vsT+d"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gjvN0RdJ"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED8ED482F6;
-	Mon,  5 Feb 2024 23:05:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BCE7482F0;
+	Mon,  5 Feb 2024 23:08:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707174307; cv=none; b=AnhouwySRQCFpDxp171ksAQkMZ+h/dRVBZbQUCb3BNvHwAAdUYxM/4kABhLAWdr2tvzr4hkx9wdwe4rdx+W+OH8X1WcWdfDyajszeYPeeBCZLhvb/zaeQ1O0V0irjfg2kK0clEiHQyAgg4Xj3GP+QHYYfeLABtoc8Ir/F96SlSQ=
+	t=1707174497; cv=none; b=AiaK3jHuRaoBVySqXVRwH25/rsoBquzhE1vzuQbrxcrmbb2nkbTRXRcQiJqKbtUCX58CSdlB5Po2vfbtFx/YBtSy8PNLAt+DWlz1Gg1tRvd8cv0+o8+hwjUIr11j4N38UWRSvNA1+4QziSD7ZIRQDZ5z/ns6RysC+vb0nBAy/Cg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707174307; c=relaxed/simple;
-	bh=s83lCuKokWH11mDshMciFhjc8wYrwZThNCAv4SF+2fU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=L5FXLcTDOj4twY2Xd0n9LboLk+zawbx7ITHF2qUUk88KXO83u6WPHxYi0yqSq83Fy3J+qtNEvThzYOBSaFqyaArh+2CSNl3iA+45PZRbm3zAek8XsnaR6UwzkYhNkHhMrKz84yEVA4cBiHWrwP/uJkJIodezXmqDgC+OC9QO/IQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=a+4vsT+d; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707174305; x=1738710305;
-  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=s83lCuKokWH11mDshMciFhjc8wYrwZThNCAv4SF+2fU=;
-  b=a+4vsT+dvsrZDWFiskd5ErjDt+UPtKmgubUtNENZKVmEjAhZbLBHYeoc
-   v8q1hCc1y8sTQx5bHS9lF0f0k+150BJ8EbwAcPj5hG4WAYdDEcqf8xVx8
-   grOdP++o+/XAyr2RMy07vABPDwaWVsrjKGzbscTjpOjblhH0v4maOinbX
-   phSsI1BsTHFAgxLaEVGv58dSNUin5UzrQu3wvDfne1ZL0eAlvPBtzEy+Y
-   eJV3YVTxAE3jn02u6T9N1o63m8IeuZXDXxHcWJY8qrSW4+ObJX08CR1N+
-   0VeqyiUsNRPVObD+Gbsnin7PcgwumWm6vlSvDYQO10fKsweeCZmGv05S0
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="11707866"
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="11707866"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 15:05:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="31924907"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmviesa001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 15:05:03 -0800
-Received: from [10.54.75.156] (debox1-desk1.jf.intel.com [10.54.75.156])
-	by linux.intel.com (Postfix) with ESMTP id EA048580D9C;
-	Mon,  5 Feb 2024 15:05:02 -0800 (PST)
-Message-ID: <02938148545933dc9865ddbc5551e3e8a579d57e.camel@linux.intel.com>
-Subject: Re: [PATCH v2] PCI: vmd: Enable PCI PM's L1 substates of remapped
- PCIe Root Port and NVMe
-From: "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Jian-Hong Pan <jhp@endlessos.org>, Johan Hovold <johan@kernel.org>, Mika
- Westerberg <mika.westerberg@linux.intel.com>, Damien Le Moal
- <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>, Nirmal Patel
- <nirmal.patel@linux.intel.com>, Jonathan Derrick
- <jonathan.derrick@linux.dev>, linux-pci@vger.kernel.org,
- linux-kernel@vger.kernel.org,  linux@endlessos.org
-Date: Mon, 05 Feb 2024 15:05:02 -0800
-In-Reply-To: <20240205224215.GA829734@bhelgaas>
-References: <20240205224215.GA829734@bhelgaas>
-Autocrypt: addr=david.e.box@linux.intel.com; prefer-encrypt=mutual;
- keydata=mQENBF2w2YABCACw5TpqmFTR6SgsrNqZE8ro1q2lUgVZda26qIi8GeHmVBmu572RfPydisEpCK246rYM5YY9XAps810ZxgFlLyBqpE/rxB4Dqvh04QePD6fQNui/QCSpyZ6j9F8zl0zutOjfNTIQBkcar28hazL9I8CGnnMko21QDl4pkrq1dgLSgl2r2N1a6LJ2l8lLnQ1NJgPAev4BWo4WAwH2rZ94aukzAlkFizjZXmB/6em+lhinTR9hUeXpTwcaAvmCHmrUMxeOyhx+csO1uAPUjxL7olj2J83dv297RrpjMkDyuUOv8EJlPjvVogJF1QOd5MlkWdj+6vnVDRfO8zUwm2pqg25DABEBAAG0KkRhdmlkIEUuIEJveCA8ZGF2aWQuZS5ib3hAbGludXguaW50ZWwuY29tPokBTgQTAQgAOBYhBBFoZ8DYRC+DyeuV6X7Mry1gl3p/BQJdsNmAAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEH7Mry1gl3p/NusIAK9z1xnXphedgZMGNzifGUs2UUw/xNl91Q9qRaYGyNYATI6E7zBYmynsUL/4yNFnXK8P/I7WMffiLoMqmUvNp9pG6oYYj8ouvbCexS21jgw54I3m61M+wTokieRIO/GettVlCGhz7YHlHtGGqhzzWB3CGPSJMwsouDPvyFFE+28p5d2v9l6rXSb7T297Kh50VX9Ele8QEKngrG+Z/u2lr/bHEhvx24vI8ka22cuTaZvThYMwLTSC4kq9L9WgRv31JBSa1pcbcHLOCoUl0RaQwe6J8w9hN2uxCssHrrfhSA4YjxKNIIp3YH4IpvzuDR3AadYz1klFTnEOxIM7fvQ2iGu5AQ0EXbDZgAEIAPGbL3wvbYUDGMoBSN89GtiC6ybWo28JSiYIN5N9LhDTwfWROenkRvmTESaE5fAM24sh8S0h+F+eQ7j/E/RF3pM31gSovTKw0Pxk7GorK
-	FSa25CWemxSV97zV8fVegGkgfZkBMLUId+AYCD1d2R+tndtgjrHtVq/AeN0N09xv/d3a+Xzc4ib/SQh9mM50ksqiDY70EDe8hgPddYH80jHJtXFVA7Ar1ew24TIBF2rxYZQJGLe+Mt2zAzxOYeQTCW7WumD/ZoyMm7bg46/2rtricKnpaACM7M0r7g+1gUBowFjF4gFqY0tbLVQEB/H5e9We/C2zLG9r5/Lt22dj7I8A6kAEQEAAYkBNgQYAQgAIBYhBBFoZ8DYRC+DyeuV6X7Mry1gl3p/BQJdsNmAAhsMAAoJEH7Mry1gl3p/Z/AH/Re8YwzY5I9ByPM56B3Vkrh8qihZjsF7/WB14Ygl0HFzKSkSMTJ+fvZv19bk3lPIQi5lUBuU5rNruDNowCsnvXr+sFxFyTbXw0AQXIsnX+EkMg/JO+/V/UszZiqZPkvHsQipCFVLod/3G/yig9RUO7A/1efRi0E1iJAa6qHrPqE/kJANbz/x+9wcx1VfFwraFXbdT/P2JeOcW/USW89wzMRmOo+AiBSnTI4xvb1s/TxSfoLZvtoj2MR+2PW1zBALWYUKHOzhfFKs3cMufwIIoQUPVqGVeH+u6Asun6ZpNRxdDONop+uEXHe6q6LzI/NnczqoZQLhM8d1XqokYax/IZ4=
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.2 (3.50.2-1.fc39) 
+	s=arc-20240116; t=1707174497; c=relaxed/simple;
+	bh=xuDmFQSWGlQWb6duBmXc34XJaq9eqcK4l/dLZuW5nP4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EYbxYzmRucS2+cquo8ZNFNsH82eO5bKGUdcwnIv7sjSMfyWJVOfTjTm8TYwIFoU2GaK0MU9JNpYPrHtZ6+Xrj1TCtF5Hqsv0oQ8teR2uY4ofkUyQFm/w7kDlgpP1B646Aqsh+P3IeRlmXVT8Et5GPwZGcuIDsKqyheAUuTMUO9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=gjvN0RdJ; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=+Nztq3kAKxiN7XZ+pUFMrtGoSQCmAM3BMqRaoiMZEu0=; b=gjvN0RdJ5BQAJPPtsuIJEMkWIm
+	UH7igtwCP8GH/tjcpDdA4n8J63nSPTOfOAczSD9S6tlSSKQPATjpOXpj6KXwliUguwyXRTYtF0C4d
+	8uwfKmw3nZRI1HI+7j0Aia7GDNPxZlo3I+TL1scE5mk4WSgivL5KZK77V8xmspJYAXzGQ1/a1imLk
+	+6pJl7uee9flJs8Fj/CXwp36v2GS6F5g9NNYXyXl8M5mS2xQR0CAR9yqZQQJYELQAMKgRH2aST+52
+	7nxk0KqviKqcghKQkZwvOJ4byVSUDpmCdSokZeWJQd6Hiudlx1PgGSSL/tXiusEWmNG3Q8pen44H1
+	bDBmqYNg==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rX84Q-0000000Afhw-1S2j;
+	Mon, 05 Feb 2024 23:08:10 +0000
+Date: Mon, 5 Feb 2024 23:08:10 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: JonasZhou <jonaszhou-oc@zhaoxin.com>
+Cc: CobeChen@zhaoxin.com, JonasZhou@zhaoxin.com, LouisQi@zhaoxin.com,
+	brauner@kernel.org, jack@suse.cz, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk
+Subject: Re: [PATCH] fs/address_space: move i_mmap_rwsem to mitigate a false
+ sharing with i_mmap.
+Message-ID: <ZcFqWifk2cBExIvG@casper.infradead.org>
+References: <Zb1DVNGaorZCDS7R@casper.infradead.org>
+ <20240205062229.5283-1-jonaszhou-oc@zhaoxin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240205062229.5283-1-jonaszhou-oc@zhaoxin.com>
 
-On Mon, 2024-02-05 at 16:42 -0600, Bjorn Helgaas wrote:
-> On Mon, Feb 05, 2024 at 11:37:16AM -0800, David E. Box wrote:
-> > On Fri, 2024-02-02 at 18:05 -0600, Bjorn Helgaas wrote:
-> > > On Fri, Feb 02, 2024 at 03:11:12PM +0800, Jian-Hong Pan wrote:
-> > ...
->=20
-> > > > @@ -775,6 +773,14 @@ static int vmd_pm_enable_quirk(struct pci_dev
-> > > > *pdev,
-> > > > void *userdata)
-> > > > =C2=A0	pci_write_config_dword(pdev, pos + PCI_LTR_MAX_SNOOP_LAT,
-> > > > ltr_reg);
-> > > > =C2=A0	pci_info(pdev, "VMD: Default LTR value set by driver\n");
-> > >=20
-> > > You're not changing this part, and I don't understand exactly how LTR
-> > > works, but it makes me a little bit queasy to read "set the LTR value
-> > > to the maximum required to allow the deepest power management
-> > > savings" and then we set the max snoop values to a fixed constant.
-> > >=20
-> > > I don't think the goal is to "allow the deepest power savings"; I
-> > > think it's to enable L1.2 *when the device has enough buffering to
-> > > absorb L1.2 entry/exit latencies*.
-> > >=20
-> > > The spec (PCIe r6.0, sec 7.8.2.2) says "Software should set this to
-> > > the platform's maximum supported latency or less," so it seems like
-> > > that value must be platform-dependent, not fixed.
-> > >=20
-> > > And I assume the "_DSM for Latency Tolerance Reporting" is part of th=
-e
-> > > way to get those platform-dependent values, but Linux doesn't actuall=
-y
-> > > use that yet.
-> >=20
-> > This may indeed be the best way but we need to double check with our
-> > BIOS folks.=C2=A0 AFAIK BIOS writes the LTR values directly so there
-> > hasn't been a need to use this _DSM. But under VMD the ports are
-> > hidden from BIOS which is why we added it here. I've brought up the
-> > question internally to find out how Windows handles the DSM and to
-> > get a recommendation from our firmware leads.
->=20
-> We want Linux to be able to program LTR itself, don't we?=C2=A0 We
-> shouldn't have to rely on firmware to do it.=C2=A0 If Linux can't do
-> it, hot-added devices aren't going to be able to use L1.2, right?
+On Mon, Feb 05, 2024 at 02:22:29PM +0800, JonasZhou wrote:
+> When running UnixBench/execl, each execl process repeatedly performs 
+> i_mmap_lock_write -> vma_interval_tree_remove/insert -> 
+> i_mmap_unlock_write. As indicated below, when i_mmap and i_mmap_rwsem 
+> are in the same CACHE Line, there will be more HITM.
 
-Agreed. We just want to make sure we are not conflicting with what BIOS may=
- be
-doing.
+(I wasn't familiar with the term HITM.  For anyone else who's
+unfamiliar, this appears to mean a HIT in another core's cache, which
+has the cachline in the Modified state)
 
-David
+> Func0: i_mmap_lock_write
+> Func1: vma_interval_tree_remove/insert
+> Func2: i_mmap_unlock_write
+> In the same CACHE Line
+> Process A | Process B | Process C | Process D | CACHE Line state 
+> ----------+-----------+-----------+-----------+-----------------
+> Func0     |           |           |           | I->M
+>           | Func0     |           |           | HITM M->S
+> Func1     |           |           |           | may change to M
+>           |           | Func0     |           | HITM M->S
+> Func2     |           |           |           | S->M
+>           |           |           | Func0     | HITM M->S
+> 
+> In different CACHE Lines
+> Process A | Process B | Process C | Process D | CACHE Line state 
+> ----------+-----------+-----------+-----------+-----------------
+> Func0     |           |           |           | I->M
+>           | Func0     |           |           | HITM M->S
+> Func1     |           |           |           | 
+>           |           | Func0     |           | S->S
+> Func2     |           |           |           | S->M
+>           |           |           | Func0     | HITM M->S
+> 
+> The same issue will occur in Unixbench/shell because the shell 
+> launches a lot of shell commands, loads executable files and dynamic 
+> libraries into memory, execute, and exit.
+
+OK, I see.
+
+> Yes, his commit has been merged into the Linux kernel, but there 
+> is an issue. After moving i_mmap_rwsem below flags, there is a 
+> 32-byte gap between i_mmap_rwsem and i_mmap. However, the struct 
+> address_space is aligned to sizeof(long), which is 8 on the x86-64 
+> architecture. As a result, i_mmap_rwsem and i_mmap may be placed on 
+> the same CACHE Line, causing a false sharing problem. This issue has 
+> been observed using the perf c2c tool.
+
+Got it.  OK, let's put this patch in.  It's a stopgap measure, clearly.
+I'll reply to Dave's email with a longer term solution.
 
