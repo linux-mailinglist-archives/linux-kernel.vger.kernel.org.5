@@ -1,117 +1,98 @@
-Return-Path: <linux-kernel+bounces-53997-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53998-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2EA284A8F8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:17:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3664684A8FC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:17:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C6AA29469D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:17:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7162A1C2512F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:17:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1D824CB41;
-	Mon,  5 Feb 2024 22:05:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9A294F5E3;
+	Mon,  5 Feb 2024 22:05:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KAGqpIne"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="I8KQ+NgT"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50AC01AB7F6;
-	Mon,  5 Feb 2024 22:05:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A6D81AB7F6;
+	Mon,  5 Feb 2024 22:05:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707170714; cv=none; b=istdGAmgzjRopPCt+y2Pzgllo/YqqNChpD++hXiHH38Eo694uoUES2BWZrm6nFjK42A+o7IAL527FLsO6sD8o1U7lyM7sBPTcN5OIrmdrFPDYlZLg7HzNStKC+B/8Od9HAIzqj3yyRxSigrUNuqzC3HdqIn+LBqyUjZFfGEJNuU=
+	t=1707170726; cv=none; b=m91uCsZCJR0n6/Sy8WN4oDdzccfFW8TTpb+66z0LjRd2DYtpOqt+/oI+eG+7weGc64szfB3daPZ9nP8aOTir0oSitE/ER+CVTUgK149zzFAfArZ1vZBzZ4AzscZp4uvkg0HV+jtMpNdm5e418ZiNMzaA0Hw+5OcEv7VZPhb2N1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707170714; c=relaxed/simple;
-	bh=FyL3xtkXQG82Kmq8Fv2Y9NKGybm2l+eMfpJXN6+S5z8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=LUO0R1tHr7kNrXSYW3/DEjpziMY88Z5UY8tShsVa0KQ8dVJD/9S4wVFpmSNDmD4lzCDjdXfC1S3Hd0dnIfo0F20aj4nS9llW7OqqBEbQPntK94pGmWqYZssi+OwlhhSvy/IAU9Ig3STsyN7RQWTN41iDDzUIzlaN/H2qgbaKsKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KAGqpIne; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40fd2f7ef55so11770415e9.0;
-        Mon, 05 Feb 2024 14:05:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707170710; x=1707775510; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=sTGI0UOvdQER0iXMpVjZqKLFkuJds7ABf556kHVbzGc=;
-        b=KAGqpIneRTwat++D7e4f3AAwPgoZI31jjzM/2BCBE+NLeB7t3e9h/EYXiH25mATlHO
-         modfAHm97WRxTF+SGGKuArQGRH+QEFtM7+radn8BBRhVEO5hQIpxeh8HgKNmRloKix/C
-         5MlAFa7cZudfjoUZ1Misj3Cvueffp8RNPzRkzrlIjaFSo8Gq9pcu9ibnZkU3s/yFbVsJ
-         mytw6ZgrcHsVQ8H928vMcmLtznrF1SRrfIfDHXcC6voFVSj+AvVea+Fc1r+YNuS4Oykk
-         prFV35BSAXEyLEUyVyj6X5XQnRkA6Nm5ak7MFLilp2Up4CARqDM0o8M2Du41kNRmf5zU
-         aaYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707170710; x=1707775510;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sTGI0UOvdQER0iXMpVjZqKLFkuJds7ABf556kHVbzGc=;
-        b=ellmQSZDrHFmaqhhpW1EUOTVdfq5xZeYoZMrXr0tP4SNV/9Js/zJJGAOonqZrqMLcs
-         ZSoIUozAfqdRgrSOyAWkvJ/J3TfrBpZt85aMXzUxL2uCFPxNJCSVzREgWVUTc1lJgBsm
-         ElgXnKjiHvBOrBLZv3y7mOtCRzFCvRkdsymfhFlObsgNcu3XaMt39xwzJfMOsAZI3bY/
-         cu+uNrJS/amiMHaywRMASvlUNj2oHxSq5TwZgTqr/Ga7BwD2PTZUolL6/ONm4w9hRH0f
-         wWdHaYimKYMpXlLNsuCYhFRaQaeTojUHGRaaLh7FpoEt60k64XWHUvXmWnJJYZ12XEZx
-         In7Q==
-X-Gm-Message-State: AOJu0Ywm2S4RhEvFs2wIHu9pUoRZoboxOGEyIbhwJMT7Czmi3jnRIWw5
-	UoXYMo18E0E4e2xgym5vEBiUSX9sn9Gnba2NBEz3RKdJFlVJF7aQKkI/YqUVsoM=
-X-Google-Smtp-Source: AGHT+IGbQR1rjjufS35x9olRWmtFr/4qd/TgbArZKtOYNkI3cVsnQOq3X55ZmsYk0RxjZNuBAn+L1w==
-X-Received: by 2002:a05:600c:3b19:b0:40e:45c0:ad64 with SMTP id m25-20020a05600c3b1900b0040e45c0ad64mr737050wms.14.1707170710256;
-        Mon, 05 Feb 2024 14:05:10 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXHI52K5kg1H/CHZ3CLOaAEclxvAPTRmdA3Dpx4xpLeFAaIDRKyIv4H4KhNdpxeOjsq6+GYlXZkm/rdBzwVa0mc/nKhvDCdR8AhXMKmN332iVIPRPqUxY18MGBsXk9YjDY8S7tD7JiE51zR1C90r8AyerM1Y8LcrxLump8+qNfP/AxUE7LD5vaISYVcNUlzO2ARpWe+G/XK1ftQ1NBTdXor0F+U+XbUY0T7GcY8W/CQJhQQTnvcif4MNLALTFiNj6P3alFPgrUiINTlAdmHzOA2
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id q12-20020adff78c000000b0033ae4df3cf4sm536712wrp.40.2024.02.05.14.05.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 14:05:09 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
-	Sylvain Petinot <sylvain.petinot@foss.st.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] media: i2c: st-vgxy61: remove redundant initialization of pointer mode
-Date: Mon,  5 Feb 2024 22:05:08 +0000
-Message-Id: <20240205220508.1851545-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1707170726; c=relaxed/simple;
+	bh=mBdzkE+dp33mTXyDUdaiNEDK3SSO1DVF+TPuTY5o3bc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CCxl+0udE0hF04EQsMAxve5i+gNobjlXy6bkc00KXukLyZOHjy1llDgs30fkEtSL7mjdxGFPZ5F4cas5HXQbzitjKW1kACYoAuQ6zPeSK4k1fe0XJvBAeO3YvIa+OVsVgAJWB7fxi7+zN1E537VNUB9xlX2hl0aKE6PyWaapEVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=I8KQ+NgT; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=WwVddD5SOQafzot7tI9REXdsEtho3qPgU310yej4F+4=; b=I8KQ+NgTK/KRyZh/oh61Htpb6h
+	j2FTtGQDXzqQ3SUSgEslu5u2GAeHi7efAyxkRPREs/xdYXxW2B9q+Zb1mXBwM9DCQkfRE8Hgv9Sxa
+	+sGgkYGZ1RCK6vr5IjXoE8djECJ9f9T3QTN7uOQVJQcqrvLTm311gDHBnLmqSrOIYnBfqu8CfzVsA
+	aOafL/rx1yGo3VVJbkdZBhTXbpSddd1t87jNZOmlIVAWZqM9TAPwJqDrabfOtE0fOTrAh+/bXG+fk
+	/H2vsxHhFI/Eyajk3p7/5XqMfFHNzFaaP5I0q9FdbAJVAa7H6KRDbsZnkWdZ8PGGxJoajPZFFwfQ4
+	kxI0r0kw==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rX75T-0000000AY5h-47CJ;
+	Mon, 05 Feb 2024 22:05:12 +0000
+Date: Mon, 5 Feb 2024 22:05:11 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
+Cc: Jens Axboe <axboe@kernel.dk>, Yu Zhao <yuzhao@google.com>,
+	linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Zhaoyang Huang <huangzhaoyang@gmail.com>, steve.kang@unisoc.com
+Subject: Re: [PATCHv8 1/1] block: introduce content activity based ioprio
+Message-ID: <ZcFbl0zP2pK6vEmh@casper.infradead.org>
+References: <20240205090552.40567-1-zhaoyang.huang@unisoc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240205090552.40567-1-zhaoyang.huang@unisoc.com>
 
-The pointer mode is being initialized with a value that is never
-read, it is being re-assigned later on. The initialization is
-redundant and can be removed.
+On Mon, Feb 05, 2024 at 05:05:52PM +0800, zhaoyang.huang wrote:
+> +void bio_set_active_ioprio(struct bio *bio)
 
-Cleans up clang scan build warning:
-drivers/media/i2c/st-vgxy61.c:632:33: warning: Value stored to 'mode'
-during its initialization is never read [deadcode.DeadStores]
+why does this still exist?  i said no.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/media/i2c/st-vgxy61.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> +void bio_set_active_ioprio_page(struct bio *bio, struct page *page)
 
-diff --git a/drivers/media/i2c/st-vgxy61.c b/drivers/media/i2c/st-vgxy61.c
-index 2d64466d7ecf..b9e7c57027b1 100644
---- a/drivers/media/i2c/st-vgxy61.c
-+++ b/drivers/media/i2c/st-vgxy61.c
-@@ -629,7 +629,7 @@ static int vgxy61_try_fmt_internal(struct v4l2_subdev *sd,
- 				   const struct vgxy61_mode_info **new_mode)
- {
- 	struct vgxy61_dev *sensor = to_vgxy61_dev(sd);
--	const struct vgxy61_mode_info *mode = sensor->sensor_modes;
-+	const struct vgxy61_mode_info *mode;
- 	unsigned int index;
- 
- 	for (index = 0; index < ARRAY_SIZE(vgxy61_supported_codes); index++) {
--- 
-2.39.2
+this function should not exist.
 
+> +void bio_set_active_ioprio_folio(struct bio *bio, struct folio *folio)
+
+this is the only one which should.  did you even look at the
+implementation of PageWorkingset?
+
+> +extern void bio_set_active_ioprio(struct bio *bio);
+> +extern void bio_set_active_ioprio_folio(struct bio *bio, struct folio *folio);
+> +extern void bio_set_active_ioprio_page(struct bio *bio, struct page *page);
+
+do not mark function prototypes with extern.
+
+> +#ifdef CONFIG_BLK_CONT_ACT_BASED_IOPRIO
+> +	/*
+> +	 * bi_cont_act record total activities of bi_io_vec->pages
+> +	 */
+> +	u64			bi_cont_act;
+> +#endif
+
+what?
+
+look, you just don't understand.  i've spent too much time replying to
+you trying to help you.  i give up.  everything to do with this idea is
+NAKed.  go away.
 
