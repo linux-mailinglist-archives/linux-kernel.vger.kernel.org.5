@@ -1,60 +1,49 @@
-Return-Path: <linux-kernel+bounces-52476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CB918498B1
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:21:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F096D8498AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:20:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF0FF1C2248A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:21:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F41E1C22571
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:20:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C10DC18B04;
-	Mon,  5 Feb 2024 11:21:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83F8F18E27;
+	Mon,  5 Feb 2024 11:20:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="oOH5Lrlj"
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R8WLBJe4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F174118638;
-	Mon,  5 Feb 2024 11:21:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C45AC18AF6;
+	Mon,  5 Feb 2024 11:20:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707132077; cv=none; b=smID9IFiEHRIvgKFhE60QCYgs2KuSr2I21FZytULPs0ALaz6nbJK4C2Hordeidfaly30Y6lA4iEg728iGfr2vQeXQ4BgGwaYzcBDl0owXxvpbyw7jVr1gdF/yHBWoJ4V+c9OZuy4L/8pshncQ3okCYVsgJc94Q0DgOzDY6HmQ4Y=
+	t=1707132029; cv=none; b=VmeEVMDwGw7MgVHBi55Lq0Tshq6zkzfVsVNkE44UnSKyUG/5/mOV97luuwTC7LOlvnlbi7WQd1ka6O9lY5OBdkFegdFklY/TMqik7gdYr9utp2GpdqpoukPifguWuQZKW54UX/cPDAW+35fJpRh2//9DkXzE70i62dxfHRQ08M4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707132077; c=relaxed/simple;
-	bh=Rz2/NQDtnx9QX45qClLg84vegkmZf2yJfQ2ueKkFnJ4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=H6A76IeshiBHBBnmFYls1TQeY+2SU9R5iPPTh4Bd0l1E832nbd56vqcTSNWJVhYwdsWnEDqg0q2g74fh7i831BMRZb1qz4M0SqyVIREo263iTzyLe9JWambzETj1s0VA681Xdp/SO5DWuBzMjN1fUmdGrduAjPR4i7bQZKZYS74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=oOH5Lrlj; arc=none smtp.client-ip=83.149.199.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
-Received: from fpc.intra.ispras.ru (unknown [10.10.165.10])
-	by mail.ispras.ru (Postfix) with ESMTPSA id A8EE940F1DFE;
-	Mon,  5 Feb 2024 11:21:04 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru A8EE940F1DFE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1707132064;
-	bh=8eo/Q0edrb5NcHDsJfOyyWcOMOAMiCdqztmPDVSV+jk=;
-	h=From:To:Cc:Subject:Date:From;
-	b=oOH5LrljU5KLyfEHokjGu71VmrskUfa4W4Mo8kK4PDSfP0DkgmVDEHSdksDwKTSOE
-	 b/wC9ajaHAoHZ0eCGdZgr759DnPsk6koUDbtK/KcQK7zKWchnlg6visFjuz+hHCKeq
-	 jjo1LnLOufWl+K5e0WVh/YgZ2Rub8LwDq2NVVYdo=
-From: Fedor Pchelkin <pchelkin@ispras.ru>
-To: Namjae Jeon <linkinjeon@kernel.org>
-Cc: Fedor Pchelkin <pchelkin@ispras.ru>,
-	Steve French <sfrench@samba.org>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Tom Talpey <tom@talpey.com>,
-	linux-cifs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Alexey Khoroshilov <khoroshilov@ispras.ru>,
-	lvc-project@linuxtesting.org,
-	stable@vger.kernel.org
-Subject: [PATCH] ksmbd: free aux buffer if ksmbd_iov_pin_rsp_read fails
-Date: Mon,  5 Feb 2024 14:19:16 +0300
-Message-Id: <20240205111917.181490-1-pchelkin@ispras.ru>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1707132029; c=relaxed/simple;
+	bh=c7Fj/wPtiOUubtTF3wjdUAiVTE4AOhMVnaoeCU913dE=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=DSqOSzs0ySPR0p8FLaG1cyiHzKERZEY4Ic65fDa7937KuK9RRoCMsLsS46RcT1ZHXHPjOAwSc27JemCnmcPE9owtcAiBznSBNHGnRBM5ukxCxw80wqAvPpviXYuZCvKiwmT7XSTOdw5+e5OB1zWqy00b++DdQexkF6VHWl5k/TA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R8WLBJe4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 454D5C43399;
+	Mon,  5 Feb 2024 11:20:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707132029;
+	bh=c7Fj/wPtiOUubtTF3wjdUAiVTE4AOhMVnaoeCU913dE=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=R8WLBJe4UHRafytugFoYiqA/o3spzg9R4i70/j3gU36jMNwkjQSdPfERjiX3Wwmqy
+	 FYnAW6KZ6zVckqPA/1+LNlq7+yaV0ouaBj8UE0DX5+HLSS6gk8kTzN9e9xDA/XFeXP
+	 ZB2uYZs2ERuQ/xPmV9xRD2bk1MjUl+A8AFU0XNdrOhxDIz5+JxzL8wdd3uIe+0phGc
+	 8mosYsB+BpLBqt8RNrUNy86VosEna++048gEqH2BRg966S33RwzQ+cYK916pkKa65s
+	 EbbmoDSBfHbGZYMoNac6iN2M3ss4GgV6sGo6zsEwzEB6eQEtltyV2nuAc1W0nqO6wf
+	 5ETH66XFaliqg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 32448E2F2F2;
+	Mon,  5 Feb 2024 11:20:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,49 +51,52 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 0/5] mptcp: annotate lockless access
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170713202920.23951.439284843602275473.git-patchwork-notify@kernel.org>
+Date: Mon, 05 Feb 2024 11:20:29 +0000
+References: <20240202-upstream-net-next-20240202-mptcp-annotate-lockless-access-v1-0-031d6680afdc@kernel.org>
+In-Reply-To: <20240202-upstream-net-next-20240202-mptcp-annotate-lockless-access-v1-0-031d6680afdc@kernel.org>
+To: Matthieu Baerts <matttbe@kernel.org>
+Cc: mptcp@lists.linux.dev, martineau@kernel.org, geliang.tang@linux.dev,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-ksmbd_iov_pin_rsp_read() doesn't free the provided aux buffer if it
-fails. Seems to be the caller's responsibility to clear the buffer in
-error case.
+Hello:
 
-Found by Linux Verification Center (linuxtesting.org).
+This series was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-Fixes: e2b76ab8b5c9 ("ksmbd: add support for read compound")
-Cc: stable@vger.kernel.org
-Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
----
- fs/smb/server/smb2pdu.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+On Fri, 02 Feb 2024 12:40:06 +0100 you wrote:
+> This is a series of 5 patches from Paolo to annotate lockless access.
+> 
+> The MPTCP locking schema is already quite complex. We need to clarify it
+> and make the lockless access already there consistent, or later changes
+> will be even harder to follow and understand.
+> 
+> This series goes through all the msk fields accessed in the RX and TX
+> path and makes the lockless annotation consistent with the in-use
+> locking schema.
+> 
+> [...]
 
-diff --git a/fs/smb/server/smb2pdu.c b/fs/smb/server/smb2pdu.c
-index ba7a72a6a4f4..0c97d3c86072 100644
---- a/fs/smb/server/smb2pdu.c
-+++ b/fs/smb/server/smb2pdu.c
-@@ -6173,8 +6173,10 @@ static noinline int smb2_read_pipe(struct ksmbd_work *work)
- 		err = ksmbd_iov_pin_rsp_read(work, (void *)rsp,
- 					     offsetof(struct smb2_read_rsp, Buffer),
- 					     aux_payload_buf, nbytes);
--		if (err)
-+		if (err) {
-+			kvfree(aux_payload_buf);
- 			goto out;
-+		}
- 		kvfree(rpc_resp);
- 	} else {
- 		err = ksmbd_iov_pin_rsp(work, (void *)rsp,
-@@ -6384,8 +6386,10 @@ int smb2_read(struct ksmbd_work *work)
- 	err = ksmbd_iov_pin_rsp_read(work, (void *)rsp,
- 				     offsetof(struct smb2_read_rsp, Buffer),
- 				     aux_payload_buf, nbytes);
--	if (err)
-+	if (err) {
-+		kvfree(aux_payload_buf);
- 		goto out;
-+	}
- 	ksmbd_fd_put(work, fp);
- 	return 0;
- 
+Here is the summary with links:
+  - [net-next,1/5] mptcp: annotate access for msk keys
+    https://git.kernel.org/netdev/net-next/c/1c09d7cbb57a
+  - [net-next,2/5] mptcp: annotate lockless access for the tx path
+    https://git.kernel.org/netdev/net-next/c/d440a4e27acd
+  - [net-next,3/5] mptcp: annotate lockless access for RX path fields
+    https://git.kernel.org/netdev/net-next/c/9426ce476a70
+  - [net-next,4/5] mptcp: annotate lockless access for token
+    https://git.kernel.org/netdev/net-next/c/b9f4554356f6
+  - [net-next,5/5] mptcp: annotate lockless accesses around read-mostly fields
+    https://git.kernel.org/netdev/net-next/c/28e5c1380506
+
+You are awesome, thank you!
 -- 
-2.39.2
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
