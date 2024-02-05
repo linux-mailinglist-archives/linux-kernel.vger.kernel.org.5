@@ -1,115 +1,163 @@
-Return-Path: <linux-kernel+bounces-52301-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A9DF849682
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:32:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 66BA0849689
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:34:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DADA1C22091
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:32:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99C2F1C220B3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:34:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66FEE12E63;
-	Mon,  5 Feb 2024 09:32:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xf1UoE8A"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 009E812B8A;
+	Mon,  5 Feb 2024 09:33:57 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2065C12B7A;
-	Mon,  5 Feb 2024 09:32:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B7ED12E54;
+	Mon,  5 Feb 2024 09:33:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707125556; cv=none; b=C894VAlQyPdJ6DEajbk88sewrz9PPT87kUGdOY45CYiZGTcKtRvFXURqgPx4PB/f/c/WtVj31XUJ67JhKylYmiQgbjMIdCxCA0iAYjEkYTyVien0kANG0pTmCFs1aUjCWgOrQ91XQy6zr6zR9xEjyNi3z/gZF5OmCFD3+ySFLHM=
+	t=1707125636; cv=none; b=NIr58bzAJiAdyFgViCLXCt69e580akKVDINwXC/Q9SCS4EUgDscbDIPO00oe9T11SPTcYlnhT1xZmTYlbKjx/Ckeu0YuRp7XPjNj/xNwzZ4ctHHonhAU+KE53w9QXm7yv92CVempP9LWKMzCOkwZCBM3rVkAnGZvRkn3yYHqlTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707125556; c=relaxed/simple;
-	bh=bpHmoC6/wZbkso58dTx+tA/PGOeOrS6uy27L+bFjjKM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NB6P7Anif1hb27GgIY3Xus5Kl5Ttd36T4Jedreff8T5ATuLhbbuZ9uF+nzhgll27COBa7s8R8RZwkfO8as2O1UXNB8zsKXIcVX+KurUR+gNcZxrhOWv51FKws77qfQJucD8Hq9aLzF4Fa4ju3cgOzNHzCRCib+MhYX6jK3KkjuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xf1UoE8A; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56025fcaebaso1691751a12.0;
-        Mon, 05 Feb 2024 01:32:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707125553; x=1707730353; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=58wtEwb1JK1lopYlq43aJseGRPGR+y1RXI+NVyLV/Bw=;
-        b=Xf1UoE8A+skqkaLXanA/XUw/yriyac5JLAGSL/Lc0il8Y1APeMkiVUs+3P9jPDeqrV
-         Rit5yUL4wSXIewJRCNVSI6byDJIc8d6rIIhSUTsD0LDqnkGPPKAYzp4QhS/P4k5vBUJK
-         jNT4xRzKR5biKQ8Tfp57HUSiGybbJME9kEwASfmCADUqnrqoBSu3AgysRljRqnGr8eyJ
-         qLySui1abvRCop6hkCMpc2s3Dyhr/ZU7DMPLKJjjSbvnd5bQKvTna1b5sJuzdf8tWtsA
-         TKHfPQG7pemhCGEcJ7HVyAlHKm4ybsIgkGZhW3grVb8FZjvgsJR6EQXbgdM7Z43tSGTp
-         OSLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707125553; x=1707730353;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=58wtEwb1JK1lopYlq43aJseGRPGR+y1RXI+NVyLV/Bw=;
-        b=nu1TP3Sir3YMxB8KoYlW+RJHmn3HwbWH7vjdA7DOanb8JhUiChxMFYfypGsvgqihWF
-         C8EptoUkp4KoG8SMzvWTevxGexSF4QVwndkaPc3Hm2A5SCIavyj4umgWrHjFNW32qGY+
-         6LpAAWF6FE8eqAN6kjwAW4N+lll6wDwQITw+cf4qfj7jh1qyiMOuTfHFzalTNW0+4EpX
-         tc2A7Hs3KdZ/mCcxjrWG1G0opHQou6ptFmt0NkSWe24KYWlggLbdo8aKF7krax5JJ3Q4
-         GxOeGzbBglZOJhR3IQTcaKRy0PruuRI/ife9RLgH/MAD0dkLDAcErV0OEN1THhV7C8eE
-         uG+w==
-X-Gm-Message-State: AOJu0YzV7sWmOUlq8ujp9K1QnyUkTlQ6skA4LN4Kp/TnG9bllQmjcBJn
-	lEKj/6IYY9ubZlRFLAi3YhmsvGTFBhJUibbAnO+ic/OHdZvT7xIY
-X-Google-Smtp-Source: AGHT+IFE9mxojvDd5IcKVFks55C46OgKWOQfgZGuWRJweh/BgPILptcwj4Xcvby/kKTntLwitJiwjg==
-X-Received: by 2002:a05:6402:1853:b0:55f:fb3a:f5b0 with SMTP id v19-20020a056402185300b0055ffb3af5b0mr4025335edy.18.1707125552972;
-        Mon, 05 Feb 2024 01:32:32 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVAGkHNKhGDvjuw0bIncrxoDltrhM1q6lZMhhbIXCxnle6lIKynHA0HhfXIxlxLCHS4/+FWj48/BbRh8XtFsND8V35osH9JSpOM1PipDUherk9CAw/7LdPg/KYu7gmOM3YMcUJFUD/dae6By8oLeLbt6MYF67e5pM/J2PJoLP/QrZaijXWBp24YRR8dfaP/gMeQgXS4dX54JHAafqZ26MQqnmxzKW7fo8vDoG/IpwH3gT2Rt4sFg0XZd8+gk/XvtXQq0SG5oTDHH9RG8dAO/3Y/8ytvmUv26Xl3qV9FuRQzQdk=
-Received: from debian ([93.184.186.109])
-        by smtp.gmail.com with ESMTPSA id p3-20020aa7c883000000b0056058f2603asm1234988eds.3.2024.02.05.01.32.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 01:32:32 -0800 (PST)
-Date: Mon, 5 Feb 2024 10:32:30 +0100
-From: Dimitri Fedrau <dima.fedrau@gmail.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Jakub Kicinski <kuba@kernel.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Stefan Eichenberger <eichest@gmail.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 net-next 00/13] net: phy: marvell-88q2xxx: add driver
- for the Marvell 88Q2220 PHY
-Message-ID: <20240205093230.GA2323158@debian>
-References: <20240122212848.3645785-1-dima.fedrau@gmail.com>
- <20240129180959.582dbc88@kernel.org>
- <20240202183029.GA16692@debian>
- <ff0a1ea7-fdc3-4653-a52e-52869abb7dc8@lunn.ch>
+	s=arc-20240116; t=1707125636; c=relaxed/simple;
+	bh=S65GSXVDFKVEny76ploiFHb93ODa1vq3YiADC4xUBPE=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rNva7kx19VYbG1ftSrvyokTQCDlu4fAwJ52STZ0qoOVYRWzJ3uEIZnoftp1McEeiZaHtCgXoUQg5n8AQofP1jQ0JU0rYXh2Eo9rznk85D/WOaV9olvEjt/2M7OI5aYJd2PhGZlnAPXS7GaIfmy9nQ3RVT41M7ji1PRbNlfVrzWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TT1ML014zz6K99W;
+	Mon,  5 Feb 2024 17:30:38 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 505AB140A87;
+	Mon,  5 Feb 2024 17:33:51 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 5 Feb
+ 2024 09:33:50 +0000
+Date: Mon, 5 Feb 2024 09:33:49 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Dimitri Fedrau <dima.fedrau@gmail.com>
+CC: Jonathan Cameron <jic23@kernel.org>, Javier Carrasco
+	<javier.carrasco.cruz@gmail.com>, Li peiyu <579lpy@gmail.com>, "Lars-Peter
+ Clausen" <lars@metafoo.de>, <linux-iio@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] iio: humidity: hdc3020: add threshold events support
+Message-ID: <20240205093349.00003e10@Huawei.com>
+In-Reply-To: <20240205070421.GA2264419@debian>
+References: <20240204103710.19212-1-dima.fedrau@gmail.com>
+	<20240204144347.7f0eb822@jic23-huawei>
+	<20240205070421.GA2264419@debian>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ff0a1ea7-fdc3-4653-a52e-52869abb7dc8@lunn.ch>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Am Sat, Feb 03, 2024 at 05:07:13PM +0100 schrieb Andrew Lunn:
-> On Fri, Feb 02, 2024 at 07:30:29PM +0100, Dimitri Fedrau wrote:
-> > [...]
+> > >  static const u8 HDC3020_S_AUTO_10HZ_MOD0[2] = { 0x27, 0x37 };
+> > >  
+> > > +static const u8 HDC3020_S_STATUS[2] = { 0x30, 0x41 };
+> > > +
+> > >  static const u8 HDC3020_EXIT_AUTO[2] = { 0x30, 0x93 };
+> > >  
+> > > +static const u8 HDC3020_S_T_RH_THRESH_LOW[2] = { 0x61, 0x00 };  
 > > 
-> > Probably late, but there are parts of the code which are based on the
-> > sample code provided by Marvell. The sample code is licensed under BSD
-> > 2 Clause. Should I change the license in the driver to dual license ?
-> 
-> IANAL
-> 
-> You can take BSD code and release it with a GPL license. But it would
-> be better to indicate it is derived from BSD code. Either make it dual
-> license, or add a comment about the origin of the code.
->
-Is there a reason why the "MODULE_AUTHOR" is not in the driver and it's
-also missing in marvell-88x2222.c. I also don't see any copyright
-information. I'm just curious, not seeking for any legal advice. :) I
-just have to get this figured out to stay out of trouble.
+> > Ah. missed this in original driver, but this use of capitals for
+> > non #defines is really confusing and we should aim to clean that
+> > up.
+> >  
+> Could use small letters instead.
 
-Dimitri
+That would avoid any confusion.
+
+> 
+> > As I mention below, I'm unconvinced that it makes sense to handle
+> > these as pairs.
+> >  
+> For the threshold I could convert it as it is for the heater registers:
+> 
+> #define HDC3020_S_T_RH_THRESH_MSB	0x61
+> #define HDC3020_S_T_RH_THRESH_LOW	0x00
+> #define HDC3020_S_T_RH_THRESH_LOW_CLR	0x0B
+> #define HDC3020_S_T_RH_THRESH_HIGH_CLR	0x16
+> #define HDC3020_S_T_RH_THRESH_HIGH	0x1D
+> 
+> #define HDC3020_R_T_RH_THRESH_MSB	0xE1
+> #define HDC3020_R_T_RH_THRESH_LOW	0x02
+> #define HDC3020_R_T_RH_THRESH_LOW_CLR	0x09
+> #define HDC3020_R_T_RH_THRESH_HIGH_CLR	0x14
+> #define HDC3020_R_T_RH_THRESH_HIGH	0x1F
+> 
+> or:
+> 
+> #define HDC3020_S_T_RH_THRESH_LOW       0x6100
+> #define HDC3020_S_T_RH_THRESH_LOW_CLR   0x610B
+> #define HDC3020_S_T_RH_THRESH_HIGH_CLR  0x6116
+> #define HDC3020_S_T_RH_THRESH_HIGH      0x611D
+> 
+> #define HDC3020_R_T_RH_THRESH_LOW       0x6102
+> #define HDC3020_R_T_RH_THRESH_LOW_CLR   0x6109
+> #define HDC3020_R_T_RH_THRESH_HIGH_CLR  0x6114
+> #define HDC3020_R_T_RH_THRESH_HIGH      0x611F
+> 
+> I don't know if it's a good idea, as we would need to make sure it is
+> big endian in the buffer. Probably with a function that handles this.
+I think this is the best plan with a
+put_unaligned_be16() to deal with the endianness.
+The compiler should be able to optimize that heavily.
+
+
+> > > +static int hdc3020_read_thresh(struct iio_dev *indio_dev,
+> > > +			       const struct iio_chan_spec *chan,
+> > > +			       enum iio_event_type type,
+> > > +			       enum iio_event_direction dir,
+> > > +			       enum iio_event_info info,
+> > > +			       int *val, int *val2)
+> > > +{
+> > > +	struct hdc3020_data *data = iio_priv(indio_dev);
+> > > +	u16 *thresh;
+> > > +
+> > > +	/* Select threshold */
+> > > +	if (info == IIO_EV_INFO_VALUE) {
+> > > +		if (dir == IIO_EV_DIR_RISING)
+> > > +			thresh = &data->t_rh_thresh_high;
+> > > +		else
+> > > +			thresh = &data->t_rh_thresh_low;
+> > > +	} else {
+> > > +		if (dir == IIO_EV_DIR_RISING)
+> > > +			thresh = &data->t_rh_thresh_high_clr;
+> > > +		else
+> > > +			thresh = &data->t_rh_thresh_low_clr;
+> > > +	}
+> > > +
+> > > +	guard(mutex)(&data->lock);  
+> > 
+> > Why take the lock here?
+> > 
+> > you are relying on a single value that is already cached.
+> >  
+> A single threshold value is used for humidity and temperature values. I
+> didn't see a lock in "iio_ev_value_show", so there might be some
+> concurrent access triggered by "in_temp_thresh_rising_value" and
+> "in_humidityrelative_thresh_rising_value" sysfs files which is not
+> secured by a mutex or similiar.
+
+Unless you going to get value tearing (very unlikely and lots of the
+kernel assumes that won't happen - more of a theoretical possibility
+that we don't want compilers to do!) this just protects against a race
+where you read one and write the other.  That doesn't really help us
+as it just moves the race to which one gets the lock first.
+
+Jonathan
+
 
