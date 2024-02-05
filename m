@@ -1,201 +1,101 @@
-Return-Path: <linux-kernel+bounces-53871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14A9584A776
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:34:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61DF984A77A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:34:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 752BA1F2A81A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:34:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94C3B1C27226
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:34:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC2368289D;
-	Mon,  5 Feb 2024 19:50:06 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D81484D5A2
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 19:50:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FB1582D9C;
+	Mon,  5 Feb 2024 19:51:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Qju3/fpV"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E823982D7A
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 19:51:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707162606; cv=none; b=ufK7dBO/86WrjvEPrRh6rVV6NuOT579ZOrak8A0BCY8qjh/dKFdmMs6/zyKKDajfg78W2py2NJCENrR4DbX2gVN90+1jEZXbdSPeZJ0vqSEQhiEF6wNOc2i3QxC4ERYw8o/frrh3VM7jNkgkaWDT/tqP5NIypABaobbKz9zVzQk=
+	t=1707162670; cv=none; b=OCatOnhpphimyczcEPg0xjEbz8JG5Qi9GVbU3RIMlfMbP/qlM73LYkT4itWGjFMKyHoUQjct8QDvv2WfoviqPLovqCOroxpIzzz6OZnY6jR0ItByo4TgmnrXfJMAM/26Hlwch4VhSPZYRqcCiTgxFgJJT3VhalC95N/ISX4nnv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707162606; c=relaxed/simple;
-	bh=DZhDeBDCMf8yO5J3qJ1WtFftyp3OTevkIY224ie+zuM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UrW3Kb+tYsZbKXl/e0ytjzaWr4xDiCLi2pPkrbnPleoPbN/E0EXor1VHVZ+S0ACK2kQOYr6HlSxWfAU1IxMpf5rLVcoDlSmt0witvsENmbDvuZaAEIjMpM5Ap6zEY/5AtBlLA6AmnjKvmxcghYREAIC9RzdRM3fPRWU4XSZv9ng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7D91C12FC;
-	Mon,  5 Feb 2024 11:50:45 -0800 (PST)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9C45D3F641;
-	Mon,  5 Feb 2024 11:50:01 -0800 (PST)
-Message-ID: <5249d534-d7ac-4cbc-a696-f269cb61c7d1@arm.com>
-Date: Mon, 5 Feb 2024 20:49:52 +0100
+	s=arc-20240116; t=1707162670; c=relaxed/simple;
+	bh=32IgZ6ko36r/TNs5ZFOUk3nuGoF25Qi3GhszNhaTrPw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YbzlURrvDzzCfO7iWgm2zfxI5cTJeNVbUHF50MRhwnu+PNt6IijoEzFGM2LeVN4CrWuj490KemQpSDB+KScNjs3aKQfgq8313bMIoEulkT5rycXn1SPoqn10YPJa4NpFgrzr66RzjbGJ5zbc65H6/WGdBad0PSzxsK3xt+Bs9CY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Qju3/fpV; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707162667;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+tpfnxQlLNRm4M5QzduLIpK2iI7KFV9K8AqzkgCNCjM=;
+	b=Qju3/fpVcH5+N06D0jH0rfrjx3r4FvhdfehMY+dbBGVZjdlseSHPwxLlsdx7bHgGrsKb1D
+	IJKpWpPo4oLL7BoX4FUcR4lKhNbY4WPvDtaeZpv/TSDQg6aizauDG2jDuerORDRikCZuk7
+	CXtbxiYEYfiU40QL5vizOxUa8kFGfi4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-125-kdFpPILVOoydeVUitL3Emw-1; Mon, 05 Feb 2024 14:51:04 -0500
+X-MC-Unique: kdFpPILVOoydeVUitL3Emw-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0863F868A00;
+	Mon,  5 Feb 2024 19:51:04 +0000 (UTC)
+Received: from rhel-developer-toolbox-latest (unknown [10.2.16.180])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id C30A1492BF0;
+	Mon,  5 Feb 2024 19:51:02 +0000 (UTC)
+Date: Mon, 5 Feb 2024 11:51:00 -0800
+From: Chris Leech <cleech@redhat.com>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Nilesh Javali <njavali@marvell.com>, Christoph Hellwig <hch@lst.de>,
+	John Meneghini <jmeneghi@redhat.com>, Lee Duncan <lduncan@suse.com>,
+	Mike Christie <michael.christie@oracle.com>,
+	Hannes Reinecke <hare@kernel.org>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+	GR-QLogic-Storage-Upstream@marvell.com
+Subject: Re: [PATCH v5 0/4] UIO_MEM_DMA_COHERENT for cnic/bnx2/bnx2x
+Message-ID: <ZcE8JC0o9swkNzmr@rhel-developer-toolbox-latest>
+References: <20240201233400.3394996-1-cleech@redhat.com>
+ <5228a235-69f4-4a9b-8142-96d9b4a5a1c8@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/2] sched/fair: Check a task has a fitting cpu when
- updating misfit
-Content-Language: en-US
-To: Qais Yousef <qyousef@layalina.io>,
- Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- linux-kernel@vger.kernel.org, Pierre Gondois <Pierre.Gondois@arm.com>
-References: <20240105222014.1025040-1-qyousef@layalina.io>
- <20240105222014.1025040-2-qyousef@layalina.io>
- <CAKfTPtBYcVWxYOhWZjzcQUB1ebUBA-B30hvToqGBq6JnfRUZNg@mail.gmail.com>
- <20240124222959.ikwnbxkcjaxuiqp2@airbuntu>
- <CAKfTPtDxqcrf0kaBQG_zpFx-DEZTMKfyxBu_bzCuZ_UZhJwOnA@mail.gmail.com>
- <20240126014602.wdcro3ajffpna4fp@airbuntu>
-From: Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <20240126014602.wdcro3ajffpna4fp@airbuntu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5228a235-69f4-4a9b-8142-96d9b4a5a1c8@intel.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-On 26/01/2024 02:46, Qais Yousef wrote:
-> On 01/25/24 18:40, Vincent Guittot wrote:
->> On Wed, 24 Jan 2024 at 23:30, Qais Yousef <qyousef@layalina.io> wrote:
->>>
->>> On 01/23/24 09:26, Vincent Guittot wrote:
->>>> On Fri, 5 Jan 2024 at 23:20, Qais Yousef <qyousef@layalina.io> wrote:
->>>>>
->>>>> From: Qais Yousef <qais.yousef@arm.com>
-
-[...]
-
->>> And to be honest I am not sure if flattening of topology matters too since
->>> I first noticed this, which was on Juno which doesn't have flat topology.
->>>
->>> FWIW I can still reproduce this, but I have a different setup now. On M1 mac
->>> mini if I spawn a busy task affined to littles then expand the mask for
->>> a single big core; I see big delays (>500ms) without the patch. But with the
->>> patch it moves in few ms. The delay without the patch is too large and I can't
->>> explain it. So the worry here is that generally misfit migration not happening
->>> fast enough due to this fake misfit cases.
->>
->> I tried a similar scenario on RB5 but I don't see any difference with
->> your patch. And that could be me not testing it correctly...
->>
->> I set the affinity of always running task to cpu[0-3] for a few
->> seconds then extend it to [0-3,7] and the time to migrate is almost
->> the same.
+On Mon, Feb 05, 2024 at 05:57:58PM +0100, Alexander Lobakin wrote:
+> From: Chris Leech <cleech@redhat.com>
+> Date: Thu,  1 Feb 2024 15:33:56 -0800
 > 
-> That matches what I do.
+> > During bnx2i iSCSI testing we ran into page refcounting issues in the
+> > uio mmaps exported from cnic to the iscsiuio process, and bisected back
+> > to the removal of the __GFP_COMP flag from dma_alloc_coherent calls.
 > 
-> I write a trace_marker when I change affinity to help see when it should move.
-> 
->>
->> I'm using tip/sched/core + [0]
->>
->> [0] https://lore.kernel.org/all/20240108134843.429769-1-vincent.guittot@linaro.org/
-> 
-> I tried on pinebook pro which has a rk3399 and I can't reproduce there too.
-> 
-> On the M1 I get two sched domains, MC and DIE. But on the pine64 it has only
-> MC. Could this be the difference as lb has sched domains dependencies?
-> 
-> It seems we flatten topologies but not sched domains. I see all cpus shown as
-> core_siblings. The DT for apple silicon sets clusters in the cpu-map - which
-> seems the flatten topology stuff detect LLC correctly but still keeps the
-> sched-domains not flattened. Is this a bug? I thought we will end up with one
-> sched domain still.
+> IIRC Jakub mentioned some time ago that he doesn't want to see
+> third-party userspace <-> kernel space communication in the networking
+> drivers, to me this looks exactly like that :z
 
-IMHO, if you have a cpu_map entry with > 1 cluster in your dtb, you end
-up with MC and PKG (former DIE) Sched Domain (SD) level. And misfit load
-balance takes potentially longer on PKG than to MC.
+This isn't something anyone likes, but it's an interface that's been in
+the kernel and in use since 2009.  I'm trying to see if it can be fixed
+"enough" to keep existing users functioning.  If not, maybe the cnic
+interface and the stacking protocol drivers (bnx2i/bnx2fc) should be
+marked as broken.
 
-(1) Vanilla Juno-r0 [L b b L L L)
-
-root@juno:~# echo 1 > /sys/kernel/debug/sched/verbose
-root@juno:~# cat /sys/kernel/debug/sched/domains/cpu0/domain*/name
-MC
-PKG
-
-root@juno:~# cat /proc/schedstat | head -5 | grep ^[cd]
-cpu0 0 0 0 0 0 0 2441100800 251426780 6694
-domain0 39 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-domain1 3f 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-
-(2) flattened topology (including SDs):
-
-Remove cluster1 from cpu_map and A57_L2 $ entry.
-
---- a/arch/arm64/boot/dts/arm/juno.dts
-+++ b/arch/arm64/boot/dts/arm/juno.dts
-@@ -44,19 +44,16 @@ core0 {
-                                core1 {
-                                        cpu = <&A57_1>;
-                                };
--                       };
--
--                       cluster1 {
--                               core0 {
-+                               core2 {
-                                        cpu = <&A53_0>;
-                                };
--                               core1 {
-+                               core3 {
-                                        cpu = <&A53_1>;
-                                };
--                               core2 {
-+                               core4 {
-                                        cpu = <&A53_2>;
-                                };
--                               core3 {
-+                               core5 {
-                                        cpu = <&A53_3>;
-                                };
-                        };
-@@ -95,7 +92,7 @@ A57_0: cpu@0 {
-                        d-cache-size = <0x8000>;
-                        d-cache-line-size = <64>;
-                        d-cache-sets = <256>;
--                       next-level-cache = <&A57_L2>;
-+                       next-level-cache = <&A53_L2>;
-                        clocks = <&scpi_dvfs 0>;
-                        cpu-idle-states = <&CPU_SLEEP_0 &CLUSTER_SLEEP_0>;
-                        capacity-dmips-mhz = <1024>;
-@@ -113,7 +110,7 @@ A57_1: cpu@1 {
-                        d-cache-size = <0x8000>;
-                        d-cache-line-size = <64>;
-                        d-cache-sets = <256>;
--                       next-level-cache = <&A57_L2>;
-+                       next-level-cache = <&A53_L2>;
-                        clocks = <&scpi_dvfs 0>;
-                        cpu-idle-states = <&CPU_SLEEP_0 &CLUSTER_SLEEP_0>;
-                        capacity-dmips-mhz = <1024>;
-@@ -192,15 +189,6 @@ A53_3: cpu@103 {
-                        dynamic-power-coefficient = <140>;
-                };
- 
--               A57_L2: l2-cache0 {
--                       compatible = "cache";
--                       cache-unified;
--                       cache-size = <0x200000>;
--                       cache-line-size = <64>;
--                       cache-sets = <2048>;
--                       cache-level = <2>;
--               };
--
-                A53_L2: l2-cache1 {
-                        compatible = "cache";
-                        cache-unified;
-
-root@juno:~#  echo 1 > /sys/kernel/debug/sched/verbose
-root@juno:~# cat /sys/kernel/debug/sched/domains/cpu0/domain*/name
-MC
-
-root@juno:~# cat /proc/schedstat | head -4 | grep ^[cd]
-cpu0 0 0 0 0 0 0 2378087600 310618500 8152
-domain0 3f 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-
-[...]
+- Chris
 
 
