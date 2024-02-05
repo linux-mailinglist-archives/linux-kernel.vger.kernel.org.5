@@ -1,120 +1,98 @@
-Return-Path: <linux-kernel+bounces-52746-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C06D849C32
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:49:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A864C849BFC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:37:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BBCD2850A6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:49:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D56F1F24C77
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:37:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E84921103;
-	Mon,  5 Feb 2024 13:49:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R4xqhGSZ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 197241CD07;
+	Mon,  5 Feb 2024 13:36:48 +0000 (UTC)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7427520DCB
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 13:49:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DE222C183;
+	Mon,  5 Feb 2024 13:36:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707140962; cv=none; b=txskNzH4P92iXwruTni3upRAIg2J6Ml4MYCtdDOVSV6XP3Jw9ckeqwfb9BkCM9+JRgMpQ+/BktFZgZTw4n66lggbsbagnJbYcfMsAyMJcJoE7Qtwy1D5ASr9BzFxtP0MRirTxLvy1GHJcDeHzY56cdMzxPS12FRpZrHqVFPkHYE=
+	t=1707140207; cv=none; b=eUZyUwgAt/tGi10Amz6al+khY0YeFwyYmQFkQAwp5O6I4ovuz7A/50KsD1XftpqD2xZRt5Tpt2FV1myf2wUHg5kxDZI7QIXO1Y7UZwMZ9Yxvp5endvSbTRMEDMPfl9mNRAePQqt4w3KgmR8znTP2tMXXw4bPPonbR+UC42UbP7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707140962; c=relaxed/simple;
-	bh=uXJZxp5n5dwGpzBxC8nui0Wglon/mdw6pK6qMj//NbE=;
+	s=arc-20240116; t=1707140207; c=relaxed/simple;
+	bh=PmAHzwqnL4Kx/N4PGMPc+L9Ultx6FammUGHWT9PCE7g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Lhj7jGykGsYmhaeAPXOLSbgt+MEn9UiP8qXJXhWB3x67ZVUTDoVBIdXlegGDJl7uSXrpaXEGlV1qB4gll8z5RmetEMpe9YEw02LZ4B9n6OIQJsTmTOHo3llRZ7mthKwlXfEYgygTrYJk6OKKhJKtEeCZCBY9nv9kCRcyMh+H1I4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=R4xqhGSZ; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707140960; x=1738676960;
-  h=resent-from:resent-date:resent-message-id:resent-to:date:
-   from:to:cc:subject:message-id:references:mime-version:
-   in-reply-to;
-  bh=uXJZxp5n5dwGpzBxC8nui0Wglon/mdw6pK6qMj//NbE=;
-  b=R4xqhGSZhyDiDZCrF8t0Ei6oDXV/UvYznJ/JAghZL7EltmXNgIig/NL2
-   YmrnmuHqsinh0udxu7pcgEyRouRWcjB1NJkcpr93NxFxk+qeaictn5XmF
-   NCCVrHOa3XUiRjnP3H5sbjyKr8wucbTSvkt/ApFvkHlief/Gptd6B1lTf
-   v1t1dzK2mGKhs/BsImuhkMtahjhrP4+Z1eCtYp/MDuS17BYaSICFlFqlx
-   S6VbbhOFdduVwgwml9cvOm44gEkxyUcVsmmN/IerML+kPJ3MTW1m8M9wq
-   Q96fsMbuUSxGicCQwkfYgkKLBvBBcisN7/a91C8B3KnhMjOTuM27XUqh4
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="431016"
+	 Content-Type:Content-Disposition:In-Reply-To; b=kvgKVeF6xYuvYVVsd6yBc2e4R8XlWZEuOGxbTxXkoYOcuxf8ptw/DvSs0NsHYH9KjUL6JBmAXNB3SVZdnU/VgKe2RE7/l9GkmOsfeBzNZzfVCOQRiBp3XKH4p/rYj6anlLSfy8mNfm2VIIXryCh2M+rXETZsLRUFXh6mxw3AeY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=fail smtp.mailfrom=kernel.org; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
+X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="429082"
 X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="431016"
+   d="scan'208";a="429082"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 05:49:19 -0800
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 05:36:46 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="909300506"
+X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="909299407"
 X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="909300506"
+   d="scan'208";a="909299407"
 Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 05:49:18 -0800
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 05:36:42 -0800
 Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1rWzLY-000000025q1-0lnP;
-	Mon, 05 Feb 2024 15:49:16 +0200
-Resent-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-Resent-Date: Mon, 5 Feb 2024 15:49:15 +0200
-Resent-Message-ID: <ZcDnWztXAl4OljXP@smile.fi.intel.com>
-Resent-To: nuno.sa@analog.com, linux-kernel@vger.kernel.org
-Date: Mon, 5 Feb 2024 14:35:02 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: nuno.sa@analog.com
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Daniel Scally <djrscally@gmail.com>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] driver: core: add dedicated workqueue for devlink
- removal
-Message-ID: <ZcDV9epWJf_oTCMK@smile.fi.intel.com>
-References: <20240205-fix-device-links-overlays-v2-0-5344f8c79d57@analog.com>
- <20240205-fix-device-links-overlays-v2-1-5344f8c79d57@analog.com>
+	(envelope-from <andy@kernel.org>)
+	id 1rWyX4-000000024e4-2Lle;
+	Mon, 05 Feb 2024 14:57:06 +0200
+Date: Mon, 5 Feb 2024 14:57:06 +0200
+From: Andy Shevchenko <andy@kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org,
+	Richard Weinberger <richard@nod.at>,
+	Justin Stitt <justinstitt@google.com>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Jason Wang <jasowang@redhat.com>, kernel test robot <lkp@intel.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Azeem Shaikh <azeemshaikh38@gmail.com>,
+	linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
+Subject: Re: [PATCH v2 3/4] string: Allow 2-argument strscpy_pad()
+Message-ID: <ZcDbIleAJcipUk5E@smile.fi.intel.com>
+References: <20240205122916.it.909-kees@kernel.org>
+ <20240205123525.1379299-3-keescook@chromium.org>
+ <CAMuHMdXnW0ycz4y0m6d2yb_cAB4pjLmpveVBnL4sLNATtm388A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240205-fix-device-links-overlays-v2-1-5344f8c79d57@analog.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdXnW0ycz4y0m6d2yb_cAB4pjLmpveVBnL4sLNATtm388A@mail.gmail.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Mon, Feb 05, 2024 at 01:09:32PM +0100, Nuno Sa via B4 Relay wrote:
-> From: Nuno Sa <nuno.sa@analog.com>
-> 
-> Let's use a dedicated queue for devlinks since releasing a link happens
-> asynchronously but some code paths, like DT overlays, have some
-> expectations regarding the of_node when being removed (the refcount must
-> be 1). Given how devlinks are released that cannot be assured. Hence, add a
-> dedicated queue so that it's easy to sync against devlinks removal.
-> 
-> While at it, make sure to explicitly include <linux/workqueue.h>.
+On Mon, Feb 05, 2024 at 01:48:51PM +0100, Geert Uytterhoeven wrote:
+> On Mon, Feb 5, 2024 at 1:36 PM Kees Cook <keescook@chromium.org> wrote:
 
 ..
 
-> +++ b/include/linux/fwnode.h
-> @@ -213,5 +213,6 @@ extern bool fw_devlink_is_strict(void);
->  int fwnode_link_add(struct fwnode_handle *con, struct fwnode_handle *sup);
->  void fwnode_links_purge(struct fwnode_handle *fwnode);
->  void fw_devlink_purge_absent_suppliers(struct fwnode_handle *fwnode);
-> +void fwnode_links_flush_queue(void);
+> > +#define __strscpy_pad1(dst, src, size) sized_strscpy_pad(dst, src, size)
+> 
+> (dst) etc.
 
-I am not sure if you have seen my comment against v1.
+Makes a little sense here. Are you expecting, e.g., dst to be 'a, b' (w/o
+quotes where a and b are expressions)?
 
-I find the namespace a bit messy for devlinks. And to me seems the best place
-for this line is to be before fwnode_links_purge().
+..
+
+> > +#define strscpy_pad(dst, src, ...)     \
+> > +       CONCATENATE(__strscpy_pad, COUNT_ARGS(__VA_ARGS__))(dst, src, __VA_ARGS__)
+> 
+> Likewise,
+
+Ditto.
 
 -- 
 With Best Regards,
