@@ -1,142 +1,147 @@
-Return-Path: <linux-kernel+bounces-52847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8339B849D65
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:51:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 97E35849D66
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:52:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A831F1C211B1
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:51:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 792271C21B24
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:52:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AF8F2C68D;
-	Mon,  5 Feb 2024 14:51:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D691B2C688;
+	Mon,  5 Feb 2024 14:52:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="ZItH0I+L"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d+vxXMg3"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4AC228DD5
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 14:51:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B5892C19D;
+	Mon,  5 Feb 2024 14:52:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707144694; cv=none; b=JKQjGMLulrDJOY0NUWad/JELG8JbfK9sTdC5y60ZN7EO7gptEgPt0T7NYMdXcxufzNJMSowEYFfz/7lrh9sj8nQHtQ9zQ0lWd+8bfTEd/dCSkeax9CuVnIH24httv2w6gRtMAsawLf1clPT2ZBZyn9q4MMHVV1tH2I6LwBZQRpM=
+	t=1707144754; cv=none; b=T/TftYFhEQFhBX1QNQa16TqSYB0mV275JxksXoa5p5hRIBuBJXhFXVpBKLnCeFe5whoaXK2bsI69+Dx/J1TWOPxD2j8J1H0Ps7kwe3ecZaUn9h8bY6p7fy0E3Kcq7x3ExefWG9lGQK32cuPL6WNOVNAlQlPi/kDPw18/98IO2NQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707144694; c=relaxed/simple;
-	bh=/evvuSLtY+5ZoydW8IlFA6frLXp7QJTRcPWzdwiRF8A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ltVUEiwtg3RJzUd1zmDwCcFPoaq813m72q6mF5ovGua6SBRfbr7zsZBvKxiVGPY62xbVneVhJcFRSFfmslGEnH0e1rsMlYe32/Mg5YSu0MlL49h7WTx95iXf5HGudkEG9mROcbMkuXil7FjKGK08ZO9TV+BuTd+sq/9YdGfr2pk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=ZItH0I+L; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=/evv
-	uSLtY+5ZoydW8IlFA6frLXp7QJTRcPWzdwiRF8A=; b=ZItH0I+LEt56ufdr80j4
-	by/IqZPXbenTlzRFQ8Iem04x/XIQnFibX/QdvokHp1MZngLjcgUOkrWAUsxlk9yK
-	eHfeInVf121342z10nRmwqZu1DsnaVqSLPH2LDklpJYCKAKuW/A1v56odz3chvdz
-	x90npaS6OMhVfDB45jr+I+VLnAsfuGfwIzWIeVJZsL671EVRKl/LSli4G5y9XYlb
-	GcPw9I/IJsBp3i8Og7DNGDMcMFPXASqnkZIl3nsBX+Ek6Og7Lup54uLx+aDfTq5i
-	78O4+r9sJaXjrxspv38RFEAQdkYTiVFnTTViAU9tA+e9ilGxKttmF/sXUgXJ2+gT
-	fw==
-Received: (qmail 855922 invoked from network); 5 Feb 2024 15:51:27 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 5 Feb 2024 15:51:27 +0100
-X-UD-Smtp-Session: l3s3148p1@81qjmKMQyrcujnsZ
-Date: Mon, 5 Feb 2024 15:51:26 +0100
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: claudiu beznea <claudiu.beznea@tuxon.dev>
-Cc: ulf.hansson@linaro.org, yoshihiro.shimoda.uh@renesas.com,
-	masaharu.hayakawa.ry@renesas.com, takeshi.saito.xv@renesas.com,
-	linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: Re: [PATCH v3] mmc: renesas_sdhi: Fix change point of data handling
-Message-ID: <ZcD17mTRnfIaueAW@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	claudiu beznea <claudiu.beznea@tuxon.dev>, ulf.hansson@linaro.org,
-	yoshihiro.shimoda.uh@renesas.com, masaharu.hayakawa.ry@renesas.com,
-	takeshi.saito.xv@renesas.com, linux-mmc@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20240205112702.213050-1-claudiu.beznea.uj@bp.renesas.com>
- <ZcDdn2AVz8FIXzak@shikoro>
- <237bd5c8-184d-4e46-ba66-253e3ef0c895@tuxon.dev>
+	s=arc-20240116; t=1707144754; c=relaxed/simple;
+	bh=fjMQKYSrzUd6ahmVPMrjRavcut9sSWmunk404/C9SHI=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rX6z85dfNOS7QiEJKPUxSiuU59LAV5I7YG7osqqLO36dBsNFObHdNNoWcEsUcYVsU1fcVbwUrFuOu4nCs0n/useFkxUT2l+haDhN4PVZ1gOxhjDUUlvX9V3ZL04vciYNWnYsWGErzVgNiAjZ7Y8eCkTMTqhCOckNRQ98g63L1a4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d+vxXMg3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FB0BC433C7;
+	Mon,  5 Feb 2024 14:52:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707144753;
+	bh=fjMQKYSrzUd6ahmVPMrjRavcut9sSWmunk404/C9SHI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=d+vxXMg3O535t4GiNIaxACgO2E14a3T8adkMrgdyRWzz/KKlYEAeQuiVJqYKPIrse
+	 lci5KB9s948+wRFQSjHQ362v/2nm78HQEMIOD083k+4ETVSUfw1j99rB7DbjC/UrIr
+	 hguiNIeqRgfbUIU+mRJ1T6yCr8el+2eEyMy5VIWDSLPisTLlvngX5bJxlxn1MdLsah
+	 ugYDzwndbh6b24yN2y4oOVua88cGMclRmEMmho1hKHZ8uP3dbvG47wMklhXe+L8XMR
+	 C8ftLKSDavq1QFlyjBzgpTXCfGnOnnxlW7MKJq6PPGV2KPYcwZTrzk4EChO4SLV1bY
+	 vsuOGKILww4Qg==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rX0Kk-000SGO-Lx;
+	Mon, 05 Feb 2024 14:52:30 +0000
+Date: Mon, 05 Feb 2024 14:52:29 +0000
+Message-ID: <864jen6k0i.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: James Clark <james.clark@arm.com>
+Cc: Oliver Upton <oliver.upton@linux.dev>,
+	coresight@lists.linaro.org,
+	linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev,
+	broonie@kernel.org,
+	suzuki.poulose@arm.com,
+	acme@kernel.org,
+	James Morse <james.morse@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Catalin Marinas
+ <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Mike Leach <mike.leach@linaro.org>,
+	Leo Yan <leo.yan@linaro.org>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	Rob Herring
+ <robh@kernel.org>,
+	Miguel Luis <miguel.luis@oracle.com>,
+	Jintack Lim <jintack.lim@linaro.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Vincent Donnefort <vdonnefort@google.com>,
+	Kristina Martsenko <kristina.martsenko@arm.com>,
+	Fuad Tabba <tabba@google.com>,
+	Joey Gouly <joey.gouly@arm.com>,
+	Akihiko Odaki <akihiko.odaki@daynix.com>,
+	Jing Zhang
+ <jingzhangos@google.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/7] arm64: KVM: Use shared area to pass PMU event state to hypervisor
+In-Reply-To: <a7cc7791-c476-fd81-b79d-a151293b8302@arm.com>
+References: <20240104162714.1062610-1-james.clark@arm.com>
+	<20240104162714.1062610-3-james.clark@arm.com>
+	<Zb1mCCi13AJ_YjFZ@linux.dev>
+	<8a908ee8-620a-d9c2-734b-5a6402950072@arm.com>
+	<ZcDc8-FQo8wKavA4@linux.dev>
+	<867cjj6ohz.wl-maz@kernel.org>
+	<ZcDg1sP3EYZG-i_3@linux.dev>
+	<a7cc7791-c476-fd81-b79d-a151293b8302@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="qEqW1x4AbDvxYxZ7"
-Content-Disposition: inline
-In-Reply-To: <237bd5c8-184d-4e46-ba66-253e3ef0c895@tuxon.dev>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: james.clark@arm.com, oliver.upton@linux.dev, coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, broonie@kernel.org, suzuki.poulose@arm.com, acme@kernel.org, james.morse@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, mike.leach@linaro.org, leo.yan@linaro.org, alexander.shishkin@linux.intel.com, anshuman.khandual@arm.com, robh@kernel.org, miguel.luis@oracle.com, jintack.lim@linaro.org, ardb@kernel.org, mark.rutland@arm.com, arnd@arndb.de, vdonnefort@google.com, kristina.martsenko@arm.com, tabba@google.com, joey.gouly@arm.com, akihiko.odaki@daynix.com, jingzhangos@google.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
+On Mon, 05 Feb 2024 14:17:10 +0000,
+James Clark <james.clark@arm.com> wrote:
+>
+> On 05/02/2024 13:21, Oliver Upton wrote:
+> > On Mon, Feb 05, 2024 at 01:15:36PM +0000, Marc Zyngier wrote:
+> >> On Mon, 05 Feb 2024 13:04:51 +0000,
+> >> Oliver Upton <oliver.upton@linux.dev> wrote:
+> >>>
+> >>> Unless someone has strong opinions about making this work in protected
+> >>> mode, I am happy to see tracing support limited to the 'normal' nVHE
+> >>> configuration. The protected feature as a whole is just baggage until
+> >>> upstream support is completed.
+> >>
+> >> Limiting tracing to non-protected mode is a must IMO. Allowing tracing
+> >> when pKVM is enabled is a sure way to expose secrets that should
+> >> stay... secret. The only exception I can think of is when
+> >> CONFIG_NVHE_EL2_DEBUG is enabled, at which point all bets are off.
+> > 
+> > Zero argument there :) I left off the "and PMU" part of what I was
+> > saying, because that was a feature that semi-worked in protected mode
+> > before VM/VCPU shadowing support landed.
+> > 
+> 
+> In that case I can hide all this behind CONFIG_NVHE_EL2_DEBUG for pKVM.
+> This will also have the effect of disabling PMU again for pKVM because I
+> moved that into this new shared area.
 
---qEqW1x4AbDvxYxZ7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'm not sure what you have in mind, but dropping PMU support for
+non-protected guests when protected-mode is enabled is not an
+acceptable outcome.
 
+Hiding the trace behind a debug option is fine as this is a global
+setting that has no userspace impact, but impacting guests isn't.
 
-> > According to my understanding, we should only mark this TAP good if it
-> > is in the range 5-7. I need to double check with Renesas, though.
->=20
-> OK, my understanding is that it should be in the middle (beginning being
-> the tap that triggered change point of the input data, end being the next
-> tap with the same ID). This is what I understand from this: "As the width
-> of the input data is 1 (UI), select TAP6 or TAP7 which is
->=20
-> *the median* of next TAP3 from TAP3."
+	M.
 
-Yes, I agree. With 0x0e, that means TAP1+2+3 are changing points and we
-should be far away from them, like 5-7.
-
-But: I am still waiting for Renesas to answer my questions regarding
-SMPCMP. I'd like to get that first, so we have clear facts then.
-
-> > Boot failure is one test. Read/write tests should be another, I think.
->=20
-> OK, I'll try also read/write. Do you have in mind something particular?
-
-Nope. Just consistency checks.
-
-> > Because if we select a bad TAP, bad things might happen later. To reduce
-> > the amount of testing, read/write testing could only be triggered if the
-> > new code path was excecuted?
->=20
-> I'm not sure how to trigger that (or maybe I haven't understood your
-> statement...)
-
-I thought something in the lines of:
-
-- print out when you needed SMPCMP to select a TAP
-- check the log for that printout
-- if (printout) do read_write_tests
-
-Dunno if that makes sense with your test setup.
-
-
---qEqW1x4AbDvxYxZ7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXA9eoACgkQFA3kzBSg
-KbZncQ//f/ax+lI9WQAUTFM3v2A9bA6nLjRcWJr9G/EpZeEtrNs4C0OakdRE8Gwi
-CLENdlS9pUSVUrHyfjv1LXo/SD+xcj3tHL42yDJ3m1zStuh2Vu3mvvvhcnFX+qcq
-5EUjvtHpGfSg5QokJ0AV0U22DXeJOHWOXJK/PS+OnR9He66Xm+PC9PxFea5rzVQw
-0xBqz/uUKC1jSqIWMHniAKsHh4sWMi+hgKdfdG9n1AbW89ofU8A3wN7PyggZIQz+
-vYJvQgVuhfcr7hgLVo3wrayWfZfPpolF2Sbe6ThIWTEm1ZmDUAmM8buJ6vWKZwbl
-e8k0JknLSRfrI+e09x57IbHDqx8O4e6kgIwQ5H/jlel3q236bWaLszRetw86IW+K
-t/2kiny7aPRM2msFGoaefXtwDNSTBzLS9HIjoWlZUAkEzNozv+PTsKAczXheI0bu
-ouZOPam/L9V49PaSrijs2d4+SKHiuRrP/QDA993SCIRmQ8eFTkGfpVpRnTyM6+Gd
-xqzBzWI/U89x5U0isr0lZDlfiFs3IyVIdnSa+thcdaaUzJOYnN6axGvR5vYhNujR
-zv7ptO3ZpetT7IodiYyIxXDo+zuesne9yj4X3HWnFiyuivBqauedUqtKHtgQeRqL
-kcav4NdwvzUdqRN/HxDgLu81KXlwibniQEK0edE/M26kCl4jMCs=
-=5JaQ
------END PGP SIGNATURE-----
-
---qEqW1x4AbDvxYxZ7--
+-- 
+Without deviation from the norm, progress is not possible.
 
