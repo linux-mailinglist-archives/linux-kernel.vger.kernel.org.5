@@ -1,127 +1,251 @@
-Return-Path: <linux-kernel+bounces-52520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58851849937
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:50:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D80B84993B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:51:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BBC05B21ABB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:50:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 394AA1C21950
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:51:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4FC41758C;
-	Mon,  5 Feb 2024 11:50:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="qFtnvIwy"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2E1A199AB;
+	Mon,  5 Feb 2024 11:51:38 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A53D18EAD
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 11:50:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 680A2199A2;
+	Mon,  5 Feb 2024 11:51:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707133825; cv=none; b=hCmb/ZWfNm5ioXc65J22NxssBeSKNdqJ6XopNyxkx6JVgC54BK3oZuRmctCuk/sCjXO4m+D4O8eHohxPr16GeMNZ7T/7aVN2BvgrLGzDhoEyUWY7Wp7zpI9xV3NqW8EkBXE7iGfVLINsc2POZAZe11yO1pEMryCaCqMNTmw9AOI=
+	t=1707133898; cv=none; b=HOdKcx6cKtVxBOm1g7nV1vmRU7evXSNG/ml3kf3fLticHWfXcBJZZw89q0tTPbelTq6kT+mq2HhqhSboqgSoTx/XgoGpgC82VEjSq4hFoWu4eDOpvNgxLiVaO5mZnhqpsSB4AcMPyHVsf3Il71Zl56wHZOKnj6OQX/dRKg4//AA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707133825; c=relaxed/simple;
-	bh=6XWtce4S7GRyjcwlA6+lanS5MbI/XWrjrzDEdYwxALM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=MT0pMQS5wywRiG3jHyHt8maWZKzCFNFDpBFpStYZhd7MCfd3/AEr5VQJdiAGeZKU640FxhTHQApZxRwbgYb6U+0bWmNhgFNGreOF2tFjCtrZkDnTHyeN/y+EZBZ3oRMIo4+gik4EgxCQm5yhHH55E8yrVaH/eRT7+vM3n7GLodE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=qFtnvIwy; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1707133820;
-	bh=bq4JnBKH4fcGIQnmBj9NFYLFAco5hbkJPdMheU+N2rg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=qFtnvIwyatxe9V0C/oa7VXw+9uKeDDekYVIcg/rKdZBKYY+sfNOvrYEXpL0khVtcw
-	 xJxX8RBOuz6kcSKoyDZV8Kwl67LBjdGP81LGqiyVTw7dSM4pqsVX8+hCxpgBpTDoey
-	 /IdMaHFHuNNzOQKzKQJLIhfeD45omAFespEwvYoeBs9lBNdd25uGXbqSYugZCD6k5l
-	 M6kBe7lHCNkHIyHpM3ryw3oaHEA9e/OqDEGDNDQJFDZlSqvO0Cejql5lelNbGxT+qs
-	 zDnzji32v67pY5StdX8BM6iyamOfnu160TUsEFx42ek6ozAvZ2qopEN2GwYdcVoVSY
-	 tM8FgIe/rKvsw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TT4SV4yXvz4wcF;
-	Mon,  5 Feb 2024 22:50:18 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Jan Stancek <jstancek@redhat.com>, Nicholas Piggin <npiggin@gmail.com>
-Cc: Masahiro Yamada <masahiroy@kernel.org>, Christophe Leroy
- <christophe.leroy@csgroup.eu>, linuxppc-dev@lists.ozlabs.org, Nathan
- Chancellor <nathan@kernel.org>, Nick Desaulniers
- <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>,
- linux-kernel@vger.kernel.org, llvm@lists.linux.dev, jstancek@redhat.com
-Subject: Re: [PATCH] powerpc: add crtsavres.o to always-y instead of extra-y
-In-Reply-To: <ZbjHTMhQ4Z9lRR6L@t14s>
-References: <20231120232332.4100288-1-masahiroy@kernel.org>
- <CX42TU4QHS1Z.A0UUHMDAMZOL@wheely> <ZbjHTMhQ4Z9lRR6L@t14s>
-Date: Mon, 05 Feb 2024 22:50:17 +1100
-Message-ID: <87v873870m.fsf@mail.lhotse>
+	s=arc-20240116; t=1707133898; c=relaxed/simple;
+	bh=ASfvrXH8e1G8RsxuNNs2S3dZf0mRTg3lWDzFAkWTOyQ=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=u5LqWKvj8EAAtTI+AvspRqvHbgmGNla51l1C379sSQWTB/OKipxx3WBnjjbocHIgX5IpQlCA4fMTrWK0pr19jkIQ5D59RSAz+Cd3XKJvAKA57eDXz7VVw5jvDZrLGO2+9/JB/xl2b9KIvZca8bJxVvWDbdPjr71HF/Zr9HHeZbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TT4TL2HX7z1vt2p;
+	Mon,  5 Feb 2024 19:51:02 +0800 (CST)
+Received: from kwepemd100002.china.huawei.com (unknown [7.221.188.184])
+	by mail.maildlp.com (Postfix) with ESMTPS id 92F551402E0;
+	Mon,  5 Feb 2024 19:51:29 +0800 (CST)
+Received: from M910t (10.110.54.157) by kwepemd100002.china.huawei.com
+ (7.221.188.184) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Mon, 5 Feb
+ 2024 19:51:28 +0800
+Date: Mon, 5 Feb 2024 19:51:11 +0800
+From: Changbin Du <changbin.du@huawei.com>
+To: Adrian Hunter <adrian.hunter@intel.com>
+CC: Changbin Du <changbin.du@huawei.com>, Peter Zijlstra
+	<peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de
+ Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander
+ Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
+	<linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>, Andi
+ Kleen <ak@linux.intel.com>, Thomas Richter <tmricht@linux.ibm.com>,
+	<changbin.du@gmail.com>
+Subject: Re: [PATCH v5 1/5] perf: build: introduce the libcapstone
+Message-ID: <20240205115111.n6vvi4wvu72e6r5c@M910t>
+References: <20240122112054.1576835-1-changbin.du@huawei.com>
+ <20240122112054.1576835-2-changbin.du@huawei.com>
+ <fbd131d2-a4c2-4b7a-95ae-6593b7a3a997@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <fbd131d2-a4c2-4b7a-95ae-6593b7a3a997@intel.com>
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemd100002.china.huawei.com (7.221.188.184)
 
-Jan Stancek <jstancek@redhat.com> writes:
-> On Tue, Nov 21, 2023 at 10:51:34AM +1000, Nicholas Piggin wrote:
->>On Tue Nov 21, 2023 at 9:23 AM AEST, Masahiro Yamada wrote:
->>> crtsavres.o is linked to modules. However, as explained in commit
->>> d0e628cd817f ("kbuild: doc: clarify the difference between extra-y
->>> and always-y"), 'make modules' does not build extra-y.
->>>
->>> For example, the following command fails:
->>>
->>>   $ make ARCH=powerpc LLVM=1 KBUILD_MODPOST_WARN=1 mrproper ps3_defconfig modules
->>>     [snip]
->>>     LD [M]  arch/powerpc/platforms/cell/spufs/spufs.ko
->>>   ld.lld: error: cannot open arch/powerpc/lib/crtsavres.o: No such file or directory
->>>   make[3]: *** [scripts/Makefile.modfinal:56: arch/powerpc/platforms/cell/spufs/spufs.ko] Error 1
->>>   make[2]: *** [Makefile:1844: modules] Error 2
->>>   make[1]: *** [/home/masahiro/workspace/linux-kbuild/Makefile:350: __build_one_by_one] Error 2
->>>   make: *** [Makefile:234: __sub-make] Error 2
->>>
->>
->>Thanks. Is this the correct Fixes tag?
->>
->>Fixes: d0e628cd817f ("powerpc/64: Do not link crtsavres.o in vmlinux")
->>
->>Hmm, looks like LLD might just do this now automatically for us
->>too without --save-restore-funcs (https://reviews.llvm.org/D79977).
->>But we probably still need it for older versions, so we still need
->>your patch.
+On Mon, Feb 05, 2024 at 11:21:23AM +0200, Adrian Hunter wrote:
+> On 22/01/24 13:20, Changbin Du wrote:
+> > Later we will use libcapstone to disassemble instructions of samples.
+> > 
+> > Signed-off-by: Changbin Du <changbin.du@huawei.com>
+> > 
+> > ---
+> > v2:
+> >   - change tools/perf/tests/make also.
+> > ---
+> >  tools/build/Makefile.feature           |  2 ++
+> >  tools/build/feature/Makefile           |  4 ++++
+> >  tools/build/feature/test-all.c         |  4 ++++
+> >  tools/build/feature/test-libcapstone.c | 11 +++++++++++
+> >  tools/perf/Makefile.config             | 21 +++++++++++++++++++++
+> >  tools/perf/Makefile.perf               |  3 +++
+> >  tools/perf/tests/make                  |  2 ++
+> >  7 files changed, 47 insertions(+)
+> >  create mode 100644 tools/build/feature/test-libcapstone.c
+> 
+> Perhaps add it also to display with perf version --build-options
 >
-> Hi,
->
-> I'm still seeing the error of crtsavres.o missing when building external modules
-> after "make LLVM=1 modules_prepare". Should it be built also in archprepare?
+no problem.
 
-Or modules_prepare?
+> > 
+> > diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
+> > index 64df118376df..1e2ab148d5db 100644
+> > --- a/tools/build/Makefile.feature
+> > +++ b/tools/build/Makefile.feature
+> > @@ -87,6 +87,7 @@ FEATURE_TESTS_EXTRA :=                  \
+> >           gtk2-infobar                   \
+> >           hello                          \
+> >           libbabeltrace                  \
+> > +         libcapstone                    \
+> >           libbfd-liberty                 \
+> >           libbfd-liberty-z               \
+> >           libopencsd                     \
+> > @@ -134,6 +135,7 @@ FEATURE_DISPLAY ?=              \
+> >           libcrypto              \
+> >           libunwind              \
+> >           libdw-dwarf-unwind     \
+> > +         libcapstone            \
+> >           zlib                   \
+> >           lzma                   \
+> >           get_cpuid              \
+> > diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+> > index 37722e509eb9..ed54cef450f5 100644
+> > --- a/tools/build/feature/Makefile
+> > +++ b/tools/build/feature/Makefile
+> > @@ -54,6 +54,7 @@ FILES=                                          \
+> >           test-timerfd.bin                       \
+> >           test-libdw-dwarf-unwind.bin            \
+> >           test-libbabeltrace.bin                 \
+> > +         test-libcapstone.bin			\
+> >           test-compile-32.bin                    \
+> >           test-compile-x32.bin                   \
+> >           test-zlib.bin                          \
+> > @@ -286,6 +287,9 @@ $(OUTPUT)test-libdw-dwarf-unwind.bin:
+> >  $(OUTPUT)test-libbabeltrace.bin:
+> >  	$(BUILD) # -lbabeltrace provided by $(FEATURE_CHECK_LDFLAGS-libbabeltrace)
+> >  
+> > +$(OUTPUT)test-libcapstone.bin:
+> > +	$(BUILD) # -lcapstone provided by $(FEATURE_CHECK_LDFLAGS-libcapstone)
+> > +
+> >  $(OUTPUT)test-compile-32.bin:
+> >  	$(CC) -m32 -o $@ test-compile.c
+> >  
+> > diff --git a/tools/build/feature/test-all.c b/tools/build/feature/test-all.c
+> > index 6f4bf386a3b5..dd0a18c2ef8f 100644
+> > --- a/tools/build/feature/test-all.c
+> > +++ b/tools/build/feature/test-all.c
+> > @@ -134,6 +134,10 @@
+> >  #undef main
+> >  #endif
+> >  
+> > +#define main main_test_libcapstone
+> > +# include "test-libcapstone.c"
+> > +#undef main
+> > +
+> >  #define main main_test_lzma
+> >  # include "test-lzma.c"
+> >  #undef main
+> > diff --git a/tools/build/feature/test-libcapstone.c b/tools/build/feature/test-libcapstone.c
+> > new file mode 100644
+> > index 000000000000..fbe8dba189e9
+> > --- /dev/null
+> > +++ b/tools/build/feature/test-libcapstone.c
+> > @@ -0,0 +1,11 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +#include <capstone/capstone.h>
+> > +
+> > +int main(void)
+> > +{
+> > +	csh handle;
+> > +
+> > +	cs_open(CS_ARCH_X86, CS_MODE_64, &handle);
+> > +	return 0;
+> > +}
+> > diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+> > index aa55850fbc21..3e1072c59757 100644
+> > --- a/tools/perf/Makefile.config
+> > +++ b/tools/perf/Makefile.config
+> > @@ -191,6 +191,15 @@ endif
+> >  FEATURE_CHECK_CFLAGS-libbabeltrace := $(LIBBABELTRACE_CFLAGS)
+> >  FEATURE_CHECK_LDFLAGS-libbabeltrace := $(LIBBABELTRACE_LDFLAGS) -lbabeltrace-ctf
+> >  
+> > +# for linking with debug library, run like:
+> > +# make DEBUG=1 LIBCAPSTONE_DIR=/opt/capstone/
+> > +ifdef LIBCAPSTONE_DIR
+> > +  LIBCAPSTONE_CFLAGS  := -I$(LIBCAPSTONE_DIR)/include
+> > +  LIBCAPSTONE_LDFLAGS := -L$(LIBCAPSTONE_DIR)/
+> > +endif
+> > +FEATURE_CHECK_CFLAGS-libcapstone := $(LIBCAPSTONE_CFLAGS)
+> > +FEATURE_CHECK_LDFLAGS-libcapstone := $(LIBCAPSTONE_LDFLAGS) -lcapstone
+> > +
+> >  ifdef LIBZSTD_DIR
+> >    LIBZSTD_CFLAGS  := -I$(LIBZSTD_DIR)/lib
+> >    LIBZSTD_LDFLAGS := -L$(LIBZSTD_DIR)/lib
+> > @@ -1094,6 +1103,18 @@ ifndef NO_LIBBABELTRACE
+> >    endif
+> >  endif
+> >  
+> > +ifndef NO_CAPSTONE
+> > +  $(call feature_check,libcapstone)
+> > +  ifeq ($(feature-libcapstone), 1)
+> > +    CFLAGS += -DHAVE_LIBCAPSTONE_SUPPORT $(LIBCAPSTONE_CFLAGS)
+> > +    LDFLAGS += $(LICAPSTONE_LDFLAGS)
+> > +    EXTLIBS += -lcapstone
+> > +    $(call detected,CONFIG_LIBCAPSTONE)
+> > +  else
+> > +    msg := $(warning No libcapstone found, disables disasm engine support for 'perf script', please install libcapstone-dev/capstone-devel);
+> > +  endif
+> > +endif
+> > +
+> >  ifndef NO_AUXTRACE
+> >    ifeq ($(SRCARCH),x86)
+> >      ifeq ($(feature-get_cpuid), 0)
+> > diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> > index 27e7c478880f..56c2720c1d0f 100644
+> > --- a/tools/perf/Makefile.perf
+> > +++ b/tools/perf/Makefile.perf
+> > @@ -84,6 +84,9 @@ include ../scripts/utilities.mak
+> >  # Define NO_LIBBABELTRACE if you do not want libbabeltrace support
+> >  # for CTF data format.
+> >  #
+> > +# Define NO_CAPSTONE if you do not want libcapstone support
+> > +# for disasm engine.
+> > +#
+> >  # Define NO_LZMA if you do not want to support compressed (xz) kernel modules
+> >  #
+> >  # Define NO_AUXTRACE if you do not want AUX area tracing support
+> > diff --git a/tools/perf/tests/make b/tools/perf/tests/make
+> > index 8a4da7eb637a..b08026f5d4e7 100644
+> > --- a/tools/perf/tests/make
+> > +++ b/tools/perf/tests/make
+> > @@ -83,6 +83,7 @@ make_no_libelf      := NO_LIBELF=1
+> >  make_no_libunwind   := NO_LIBUNWIND=1
+> >  make_no_libdw_dwarf_unwind := NO_LIBDW_DWARF_UNWIND=1
+> >  make_no_backtrace   := NO_BACKTRACE=1
+> > +make_no_libcapstone := NO_CAPSTONE=1
+> >  make_no_libnuma     := NO_LIBNUMA=1
+> >  make_no_libaudit    := NO_LIBAUDIT=1
+> >  make_no_libbionic   := NO_LIBBIONIC=1
+> 
+> Also needs to be added to make_minimal
+> 
+okay. thanks!
 
-Example patch below.
+> > @@ -152,6 +153,7 @@ run += make_no_libelf
+> >  run += make_no_libunwind
+> >  run += make_no_libdw_dwarf_unwind
+> >  run += make_no_backtrace
+> > +run += make_no_libcapstone
+> >  run += make_no_libnuma
+> >  run += make_no_libaudit
+> >  run += make_no_libbionic
+> 
 
-cheers
-
-
-diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
-index 051247027da0..82cdef40a9cd 100644
---- a/arch/powerpc/Makefile
-+++ b/arch/powerpc/Makefile
-@@ -59,6 +59,11 @@ ifeq ($(CONFIG_PPC64)$(CONFIG_LD_IS_BFD),yy)
- KBUILD_LDFLAGS_MODULE += --save-restore-funcs
- else
- KBUILD_LDFLAGS_MODULE += arch/powerpc/lib/crtsavres.o
-+
-+crtsavres_prepare: scripts
-+	$(MAKE) $(build)=arch/powerpc/lib arch/powerpc/lib/crtsavres.o
-+
-+modules_prepare: crtsavres_prepare
- endif
- 
- ifdef CONFIG_CPU_LITTLE_ENDIAN
-
+-- 
+Cheers,
+Changbin Du
 
