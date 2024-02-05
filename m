@@ -1,123 +1,257 @@
-Return-Path: <linux-kernel+bounces-52141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C199849489
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:29:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1E1084948D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:30:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D4C21C21F7E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:29:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7CAA1C20BC8
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:30:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CE6311184;
-	Mon,  5 Feb 2024 07:29:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7557510A13;
+	Mon,  5 Feb 2024 07:29:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="HMM8ttdW"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="ez0BbGCl"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58A0011185
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 07:29:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DD0411705;
+	Mon,  5 Feb 2024 07:29:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707118152; cv=none; b=idZS1cR533Rek0T09h3Uolsmi+eOo5/9WdREFAzSbtkGJQDRbeh58qxEQUYlEYYtCp/iXRt61ZdHAirpVoNF8h2K8ZzP+gC3JbeSrl1GmUZeQYF+VB4P+fEgGdWdkkKzoIgNteOVlrQk+t48lL+WKH19s1+e4Vt/goY6Y1xDhVM=
+	t=1707118196; cv=none; b=D1bnaN8dnXd2nabydae58+/rbZYgGzimPuzbZqQQAeS48e8vhLBMpVXG5ddEJqVfbhd8QqEMhfGd07WFqeO20D9PTYnzpFSyJ+pvCF0llioFYDdrGLIYDB23dnIFdW4B7Udc+8p8YjTa+/qBT3t5Ki/hNICKPrkCX+F7lbO1LfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707118152; c=relaxed/simple;
-	bh=LFfsqhF5yh5rxZ01HaZmxLQPdLG81PK0wpbUW6uXSfQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OC61lWOchZdloJ/x6TORnJDBwKgwO3bAH2usWLTtpg5stW0V9mtDQbU6NP4AvE9uTi8lNfaj0a0pTrPeeptow/JzpNlEC5vg4KuKdNNTN+1+u9BaPPDBSaI64bIQtXyvofoXhvk26MZ9wsiD6a0Tm+EDzcxWWJfv/7Qs8QzLzk0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=HMM8ttdW; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (99.141-128-109.adsl-dyn.isp.belgacom.be [109.128.141.99])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 758DA667;
-	Mon,  5 Feb 2024 08:27:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1707118064;
-	bh=LFfsqhF5yh5rxZ01HaZmxLQPdLG81PK0wpbUW6uXSfQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HMM8ttdWdXy26wgclMS+zPW1vmO0x+7NBIwVNpGyKJwLlY6m7a3qIcku6PP10nQmj
-	 PDSBTOkAWSzmdiEE1nZrvEnL1/PFm7tLsQYsCW+aE0s7kZEoQtniAIiUjkSEiY1wIh
-	 jT6lmIH5ANbCacLWGbk4reubOPKyO3M1HKGC8AJ8=
-Date: Mon, 5 Feb 2024 09:29:08 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: Anatoliy Klymenko <anatoliy.klymenko@amd.com>,
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-	tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-	michal.simek@amd.com, dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/5] Fixing live video input in ZynqMP DPSUB
-Message-ID: <20240205072908.GE6804@pendragon.ideasonboard.com>
-References: <20240124025402.373620-1-anatoliy.klymenko@amd.com>
+	s=arc-20240116; t=1707118196; c=relaxed/simple;
+	bh=IZhvgO+aMRZPJo3UKnzKhTXhsS/DTCtJV35t4nGc0Qs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pwkqkZ7nYuwfiqKNtGV3k1AJLt9I3Rmbi7CPE9lYhXV8p7yn5LRD/XPDjTEKA7/Hw6B9dykqbDE/Qi2XqFqarH8j+hgpoKUeEqTVY1Hbma1jwBePFZzB4tZebg58k3ocSOAHRXOC9hwyPbeR4rZKAEqUGyQKX+tt4FW/9D5F+iU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=ez0BbGCl; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1707118193; x=1738654193;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=qZcmn/OIlR5Udu+W3cVR16fsRHqzu2hvYW43r3YLp2A=;
+  b=ez0BbGCll9Pen/7SdqNedzo81X3zfnt1bSR84I9noy31uo+1nBBgZCn4
+   /mK0cd4alngDlhceZRSF4X1DFnHNVYomrVtn57EiJ4qYQmmoirx99d5ja
+   3Fhqc7d414JUqcdx9EMAhwe5kewkdQC8KCoUa53cLRBTW7G1YDy2TOgNU
+   nxGwOZur9u23XT0tAmgfZ2Yf/Gr/sYDYZ1CkV3d5/InPVaBNHx9y+UDoD
+   jMLJKFHb7w73RgjQQ1tBBKtCo320OFXG1sJV6uwInHPQdwDbkdzOWadql
+   vCVjImLGxy02yFRGxUqa2LwOYTr6DRRCVGNaw+NFVi7kiI8PmanejFpqa
+   A==;
+X-IronPort-AV: E=Sophos;i="6.05,242,1701126000"; 
+   d="scan'208";a="35238305"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 05 Feb 2024 08:29:50 +0100
+Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.25])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 013B7280075;
+	Mon,  5 Feb 2024 08:29:49 +0100 (CET)
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
+To: linux-arm-kernel@lists.infradead.org, Adam Ford <aford173@gmail.com>
+Cc: marex@denx.de, frieder.schrempf@kontron.de, Lucas Stach <l.stach@pengutronix.de>, Adam Ford <aford173@gmail.com>, Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, Philipp Zabel <p.zabel@pengutronix.de>, Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
+  Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Liu Ying <victor.liu@nxp.com>, Ulf Hansson <ulf.hansson@linaro.org>, dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH V8 11/12] arm64: dts: imx8mp: add HDMI display pipeline
+Date: Mon, 05 Feb 2024 08:29:50 +0100
+Message-ID: <2924284.e9J7NaK4W3@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <20240203165307.7806-12-aford173@gmail.com>
+References: <20240203165307.7806-1-aford173@gmail.com> <20240203165307.7806-12-aford173@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240124025402.373620-1-anatoliy.klymenko@amd.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 
-Hello,
+Hi Adam,
 
-This series looks good. Tomi, could you get it merged through drm-misc ?
+thanks for working on this.
 
-On Tue, Jan 23, 2024 at 06:53:57PM -0800, Anatoliy Klymenko wrote:
-> Add few missing pieces to support ZynqMP DPSUB live video in mode.
-> 
-> ZynqMP DPSUB supports 2 modes of operations in regard to video data
-> input.
->     
-> In the first mode, DPSUB uses DMA engine to pull video data from memory
-> buffers. To support this the driver implements CRTC and DRM bridge
-> representing DP encoder.
->     
-> In the second mode, DPSUB acquires video data pushed from FPGA and 
-> passes it downstream to DP output. This mode of operation is modeled in
-> the driver as a DRM bridge that should be attached to some external
-> CRTC.
-> 
-> Patches 1/5,2/5,3/5,4/5 are minor fixes.
-> 
-> DPSUB requires input live video format to be configured.
-> Patch 5/5: The DP Subsystem requires the input live video format to be
-> configured. In this patch, we are assuming that the CRTC's bus format is
-> fixed (typical for FPGA CRTC) and comes from the device tree. This is a
-> proposed solution, as there is no API to query CRTC output bus format
-> or negotiate it in any other way.
-> 
-> Changes in v2: 
-> - Address reviewers' comments:
->   - More elaborate and consistent comments / commit messages
->   - Fix includes' order
->   - Replace of_property_read_u32_index() with of_property_read_u32()
-> 
-> Changes in v3:
-> - Split patch #3 into 3) moving status register clear immediately after
->   read; 4) masking status against interrupts' mask
-> 
-> Link to v1: https://lore.kernel.org/all/20240112234222.913138-1-anatoliy.klymenko@amd.com/
-> Link to v2: https://lore.kernel.org/all/20240119055437.2549149-1-anatoliy.klymenko@amd.com/
-> 
-> Anatoliy Klymenko (5):
->   drm: xlnx: zynqmp_dpsub: Make drm bridge discoverable
->   drm: xlnx: zynqmp_dpsub: Fix timing for live mode
->   drm: xlnx: zynqmp_dpsub: Clear status register ASAP
->   drm: xlnx: zynqmp_dpsub: Filter interrupts against mask
->   drm: xlnx: zynqmp_dpsub: Set live video in format
-> 
->  drivers/gpu/drm/xlnx/zynqmp_disp.c      | 111 +++++++++++++++++++++---
->  drivers/gpu/drm/xlnx/zynqmp_disp.h      |   3 +-
->  drivers/gpu/drm/xlnx/zynqmp_disp_regs.h |   8 +-
->  drivers/gpu/drm/xlnx/zynqmp_dp.c        |  16 +++-
->  drivers/gpu/drm/xlnx/zynqmp_kms.c       |   2 +-
->  5 files changed, 119 insertions(+), 21 deletions(-)
+Am Samstag, 3. Februar 2024, 17:52:51 CET schrieb Adam Ford:
+> From: Lucas Stach <l.stach@pengutronix.de>
+>=20
+> This adds the DT nodes for all the peripherals that make up the
+> HDMI display pipeline.
+>=20
+> Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+>=20
+> ---
+> V2:  I took this from Lucas' original submission with the following:
+>      Removed extra clock from HDMI-TX since it is now part of the
+>      power domain
+>      Added interrupt-parent to PVI
+>      Changed the name of the HDMI tranmitter to fsl,imx8mp-hdmi-tx
+>      Added ports to HDMI-tx
+> ---
+>  arch/arm64/boot/dts/freescale/imx8mp.dtsi | 94 +++++++++++++++++++++++
+>  1 file changed, 94 insertions(+)
+>=20
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> b/arch/arm64/boot/dts/freescale/imx8mp.dtsi index
+> 5e51a766f3d9..e84b4f40e570 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> @@ -1412,6 +1412,100 @@ irqsteer_hdmi: interrupt-controller@32fc2000 {
+>  				clock-names =3D "ipg";
+>  				power-domains =3D <&hdmi_blk_ctrl=20
+IMX8MP_HDMIBLK_PD_IRQSTEER>;
+>  			};
+> +
+> +			hdmi_pvi: display-bridge@32fc4000 {
+> +				compatible =3D "fsl,imx8mp-hdmi-pvi";
+> +				reg =3D <0x32fc4000 0x40>;
+> +				interrupt-parent =3D <&irqsteer_hdmi>;
+> +				interrupts =3D <12 IRQ_TYPE_LEVEL_HIGH>;
 
--- 
-Regards,
+irqsteer_hdmi has #interrupt-cells =3D <1>, so IRQ flags should be removed.=
+=20
+dtbs_check also warns about this.
 
-Laurent Pinchart
+> +				power-domains =3D <&hdmi_blk_ctrl=20
+IMX8MP_HDMIBLK_PD_PVI>;
+> +
+> +				ports {
+> +					#address-cells =3D <1>;
+> +					#size-cells =3D <0>;
+> +
+> +					port@0 {
+> +						reg =3D <0>;
+> +						pvi_from_lcdif3:=20
+endpoint {
+> +							remote-
+endpoint =3D <&lcdif3_to_pvi>;
+> +						};
+> +					};
+> +
+> +					port@1 {
+> +						reg =3D <1>;
+> +						pvi_to_hdmi_tx:=20
+endpoint {
+> +							remote-
+endpoint =3D <&hdmi_tx_from_pvi>;
+> +						};
+> +					};
+> +				};
+> +			};
+> +
+> +			lcdif3: display-controller@32fc6000 {
+> +				compatible =3D "fsl,imx8mp-lcdif";
+> +				reg =3D <0x32fc6000 0x238>;
+> +				interrupts =3D <8 IRQ_TYPE_LEVEL_HIGH>;
+
+irqsteer_hdmi has #interrupt-cells =3D <1>, so IRQ flags should be removed.=
+=20
+dtbs_check also warns about this.
+
+> +				interrupt-parent =3D <&irqsteer_hdmi>;
+> +				clocks =3D <&hdmi_tx_phy>,
+> +					 <&clk IMX8MP_CLK_HDMI_APB>,
+> +					 <&clk=20
+IMX8MP_CLK_HDMI_ROOT>;
+> +				clock-names =3D "pix", "axi",=20
+"disp_axi";
+> +				power-domains =3D <&hdmi_blk_ctrl=20
+IMX8MP_HDMIBLK_PD_LCDIF>;
+> +
+> +				port {
+> +					lcdif3_to_pvi: endpoint {
+> +						remote-endpoint =3D=20
+<&pvi_from_lcdif3>;
+> +					};
+> +				};
+> +			};
+> +
+> +			hdmi_tx: hdmi@32fd8000 {
+> +				compatible =3D "fsl,imx8mp-hdmi-tx";
+> +				reg =3D <0x32fd8000 0x7eff>;
+> +				interrupts =3D <0 IRQ_TYPE_LEVEL_HIGH>;
+
+irqsteer_hdmi has #interrupt-cells =3D <1>, so IRQ flags should be removed.=
+=20
+dtbs_check also warns about this.
+
+> +				interrupt-parent =3D <&irqsteer_hdmi>;
+> +				clocks =3D <&clk IMX8MP_CLK_HDMI_APB>,
+> +					 <&clk=20
+IMX8MP_CLK_HDMI_REF_266M>,
+> +					 <&clk IMX8MP_CLK_32K>,
+> +					 <&hdmi_tx_phy>;
+> +				clock-names =3D "iahb", "isfr", "cec",=20
+"pix";
+> +				assigned-clocks =3D <&clk=20
+IMX8MP_CLK_HDMI_REF_266M>;
+> +				assigned-clock-parents =3D <&clk=20
+IMX8MP_SYS_PLL1_266M>;
+> +				power-domains =3D <&hdmi_blk_ctrl=20
+IMX8MP_HDMIBLK_PD_HDMI_TX>;
+> +				reg-io-width =3D <1>;
+> +				status =3D "disabled";
+> +
+> +				ports {
+> +					#address-cells =3D <1>;
+> +					#size-cells =3D <0>;
+> +
+> +					port@0 {
+> +						reg =3D <0>;
+> +
+> +						hdmi_tx_from_pvi:=20
+endpoint {
+> +							remote-
+endpoint =3D <&pvi_to_hdmi_tx>;
+> +						};
+> +					};
+> +
+> +					port@1 {
+> +						reg =3D <1>;
+> +						/* Point endpoint=20
+to the HDMI connector */
+> +					};
+> +				};
+> +			};
+> +
+> +			hdmi_tx_phy: phy@32fdff00 {
+> +				compatible =3D "fsl,imx8mp-hdmi-phy";
+> +				reg =3D <0x32fdff00 0x100>;
+> +				clocks =3D <&clk IMX8MP_CLK_HDMI_APB>,
+> +					 <&clk IMX8MP_CLK_HDMI_24M>;
+> +				clock-names =3D "apb", "ref";
+> +				assigned-clocks =3D <&clk=20
+IMX8MP_CLK_HDMI_24M>;
+> +				assigned-clock-parents =3D <&clk=20
+IMX8MP_CLK_24M>;
+> +				power-domains =3D <&hdmi_blk_ctrl=20
+IMX8MP_HDMIBLK_PD_HDMI_TX_PHY>;
+> +				#clock-cells =3D <0>;
+> +				#phy-cells =3D <0>;
+> +				status =3D "disabled";
+> +			};
+
+According to RM these blocks are part of AIPS4, so it should be below=20
+hsio_blk_ctrl.
+
+Best regards,
+Alexander
+
+>  		};
+>=20
+>  		aips5: bus@30c00000 {
+
+
+=2D-=20
+TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht M=FCnchen, HRB 105018
+Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+http://www.tq-group.com/
+
+
 
