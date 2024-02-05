@@ -1,293 +1,147 @@
-Return-Path: <linux-kernel+bounces-53115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3687984A0DB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:35:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8740D84A0CF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:33:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC4E62822D1
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:35:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9B2F1C21FD8
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:33:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBBC6481AA;
-	Mon,  5 Feb 2024 17:34:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0233344C7B;
+	Mon,  5 Feb 2024 17:33:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="TsjV7eZ/"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="O/hSThXo"
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E92FE44C8C;
-	Mon,  5 Feb 2024 17:34:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAEF744C67;
+	Mon,  5 Feb 2024 17:33:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707154453; cv=none; b=dAT07Yrw/VrW9W1b4zxrPEPVrsdl1Fdf3dMmnzSgV2yLgpjdY3QRiGwGFEg4cWC/QmBfBP0JpU/oVLWbGfRN+2i2okK39X7IuTG5Kjcy37TgsO0PjPo32ITa5+1fTjEOPxEw+c1qYXHjm5yWboU4/rga/wpMN87HsKz0L9P7fDk=
+	t=1707154425; cv=none; b=jt4Hwc+2k1+/HrNgpQ3//WYJQA3TVjBPYGEzQ0LUBVPg5KYFsGl1wICirKXoNtt18N5v+vM2OR8NigxbeEw67UHexski/JtLBxZbFO2JjbY/Te26H2V1E80ltijfsfOlERHojOQe8r3kvORSIvlAbjjIOtvPhABjz2FPBP+pOZg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707154453; c=relaxed/simple;
-	bh=/jqtcPhqWUeQEj8DqWkxkYkh/jaLAKrAvduwRgOG6No=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=NvcCpFryg2lFcSYhq4JbWVOqcKsDcw4wljKt2Ig1+B9DLIwS/uoPfhF4CswNikMBuNmti1U/z7Tj2zqePLq5q7VCiXzhmN/NMSCpPaaFuWK855PIRg46Nri/xssOPgAnKeE/okAmH+hss6NTN+LtcDlv/XZ0yl+ll8npcsOUnD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=TsjV7eZ/; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 415HY3lU098555;
-	Mon, 5 Feb 2024 11:34:03 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707154443;
-	bh=UrprV1G0cKfS8FbRkXrcvpyNcNC/ZRPQkv4yrO7fSz4=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=TsjV7eZ/Dw9zQRpLbqOk/AEF3ZBMEHDCZOQtGezLmJVVtT4HhoRUzE/raSz/K1W+L
-	 cbWUemi01Ht/Jr3vn/UHfbbYPPUGSouo4IPT5a7M7Z2R/C7wbz+8PfK2O+dPeMnXHE
-	 uJZ1dbSomIT39l0GuLP3q8bys3dPjJ4Or5EV1wFQ=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 415HY2Jg078472
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 5 Feb 2024 11:34:03 -0600
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 5
- Feb 2024 11:34:02 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 5 Feb 2024 11:34:02 -0600
-Received: from [10.249.42.149] ([10.249.42.149])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 415HY1wk111997;
-	Mon, 5 Feb 2024 11:34:02 -0600
-Message-ID: <45a0ed98-8dd2-4c5b-8e89-40c70e3fe831@ti.com>
-Date: Mon, 5 Feb 2024 11:34:01 -0600
+	s=arc-20240116; t=1707154425; c=relaxed/simple;
+	bh=6KbzWkkF1SDEdyAjsG6dXdz3BrQZmGWLPdcrJqk38Pg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FRFg3f3bC5GMRT+7R9eQgu4ksGidBd8O6QgKRF/tGo5OTM38xyGpJid8cQEDGPEoXHpdFmZkcx46vdYaqF/pPJP5Ufs76ToT5ictbMcYVUX0Nr0Cj42GHk5OPVdc9+sP0kWevEgTw0ugl6zI2H8JqJD+AilE3sl3UVECzpjwigI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=O/hSThXo; arc=none smtp.client-ip=209.85.215.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5cfd95130c6so3159163a12.1;
+        Mon, 05 Feb 2024 09:33:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707154423; x=1707759223;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ElUJ3bFANKcGSpc8Ks9F6N98y85nfwFifeRegxpzAFA=;
+        b=M74dp5yANnEGISbT0+pg8gYnp/Hv42SrPs4im0krsS+6s1DZuPbVB5q8zTPZ4RmTfz
+         mPSddhDx1AD48NFq0qwnMMvQdgSkqK7hpSLt7VTiTtws1Dwxm0NTtuJpbWDXgHZ3fTn9
+         qejwApA09PTdSQM7OO9Zek/WcMNY+tu/U/VB3CkGxRb23UWbMIVVfqQgp+hrKySHaf1i
+         ObdxBIsxyoXQwFMm3CTUas9DdvbpNnL4dYzISksKqk/4lkV1hOMa9kDb6btN904R0NKC
+         tdEJk4ANGIXHvLPIOZFvc7Q/wO0GJ/UF4z3CWz5PHfLd6GRoXgHCzca76IuuYu33dfrz
+         0cIA==
+X-Gm-Message-State: AOJu0Yzk/Y6SioF8H4CeGezRkJoId7oShwjrtHrUS4do4PxE+MRco1DM
+	Da5lyO67LGWNmvVgcwEGYSr+UaBfFN1cQzC/ogbDrbCFFOUr/4NU
+X-Google-Smtp-Source: AGHT+IFw0yFVouEJL7sPQVepmBZ8+P+u2K8PZ8+tyNjbhTF74yqxwdl05WX8PDFwXV5n20fHnPLOxg==
+X-Received: by 2002:a17:903:40c1:b0:1d9:3843:3f07 with SMTP id t1-20020a17090340c100b001d938433f07mr223495pld.61.1707154422854;
+        Mon, 05 Feb 2024 09:33:42 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWnNMQnvG5mDgs0H3SN6PW5gUa00uEW+JZOiih/iG7WgRLvJv6uEuVbdmRlQX7v0Yw+TxkzH4qUisncO9HWV8Jayxt9/eNEoAxHfA9M69EWcxqn5CTOZyJ0RXcgIAGApyVFyYd9MjlWq593++VjGEnkHxchzlyn5M0H9ypKVfscNRfYeNy3zFZPFNiQ1I01iBivsENHQMlaTvZhbf3smtEpM3RAH1K+rC7/tA0BIITd9Pe1gNyDiFLGHAtQz2lQcKbOo6pd24y0
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id e18-20020aa79812000000b006e046a325a4sm103109pfl.7.2024.02.05.09.33.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 09:33:42 -0800 (PST)
+Date: Mon, 5 Feb 2024 14:34:12 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1707154421;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ElUJ3bFANKcGSpc8Ks9F6N98y85nfwFifeRegxpzAFA=;
+	b=O/hSThXogFDYMXAusvstp+yAm5cg8I09Hef199UMvk9dxtn4ZnNOanop4H9lYaOuCEtjnO
+	fLgTpoFP+jrOyYYkPE+CrJyE7XevvpFh3IrG4O+26NXmNxj8Ccht1Y6NlfWK7YzyV7LAaZ
+	teIg4AOksSYLGrMvo3VbsGh1ZcCVvahS4FCm0nPk67h2S8+zFVPOGswHojHMWmhgyEFmy9
+	4uj+X0/DohbUW+7kH2EMZe/Vpy/SKXYUfIORkA6s+Ue/b6OpIyKyqbsRFDvYw2jw6U79HW
+	/khwGkZTOW1CDe1y7DLAJ8ZmHqAVebrGVxXpIRhS29gGjfM9W/6oVz0b5xe/1g==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+To: Michael Kelley <mhklinux@outlook.com>
+Cc: "K. Y. Srinivasan" <kys@microsoft.com>, 
+	Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, 
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] hv: vmbus: make hv_bus const
+Message-ID: <vjfokbfk23ck6ndcxyb6gnbqn7qtdg4ynenvnyhlgt7kwvlwvm@3gvq5sttegj7>
+References: <20240204-bus_cleanup-hv-v1-1-521bd4140673@marliere.net>
+ <SN6PR02MB4157130171E614FED60FDC1ED4472@SN6PR02MB4157.namprd02.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/3] arm64: dts: ti: k3-am62p: add the USB sub-system
-Content-Language: en-US
-To: Roger Quadros <rogerq@kernel.org>, <nm@ti.com>, <vigneshr@ti.com>
-CC: <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <srk@ti.com>, <r-gunasekaran@ti.com>, <b-liu@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20240205135908.54656-1-rogerq@kernel.org>
- <20240205135908.54656-4-rogerq@kernel.org>
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <20240205135908.54656-4-rogerq@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SN6PR02MB4157130171E614FED60FDC1ED4472@SN6PR02MB4157.namprd02.prod.outlook.com>
 
-On 2/5/24 7:59 AM, Roger Quadros wrote:
-> There are two USB instances available on the am62p5 starter kit. Include
-> and enable them for use on the board.
-> 
-> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-> Signed-off-by: Roger Quadros <rogerq@kernel.org>
-> ---
-> 
-> Notes:
->      Changelog:
->      
->      v4 - no change
->      
->      v3 - no change
->      https://lore.kernel.org/all/20240201120332.4811-4-rogerq@kernel.org/
->      
->      v2:
->      - added USB PHY CTRL node changes here
->      - changed USB wrapper node names to usb@
->      - changed Type-C chip node name to usb-power-control@
-> 
->   arch/arm64/boot/dts/ti/k3-am62p-main.dtsi   | 46 ++++++++++++++
->   arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi | 10 +++
->   arch/arm64/boot/dts/ti/k3-am62p5-sk.dts     | 67 +++++++++++++++++++++
->   3 files changed, 123 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
-> index 4c51bae06b57..17d28390d587 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
-> @@ -560,6 +560,52 @@ sdhci2: mmc@fa20000 {
->   		status = "disabled";
->   	};
->   
-> +	usbss0: usb@f900000 {
-> +		compatible = "ti,am62-usb";
-> +		reg = <0x00 0x0f900000 0x00 0x800>;
-> +		clocks = <&k3_clks 161 3>;
-> +		clock-names = "ref";
-> +		ti,syscon-phy-pll-refclk = <&usb0_phy_ctrl 0x0>;
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		power-domains = <&k3_pds 178 TI_SCI_PD_EXCLUSIVE>;
-> +		ranges;
-> +		status = "disabled";
-> +
-> +		usb0: usb@31000000 {
-> +			compatible = "snps,dwc3";
-> +			reg = <0x00 0x31000000 0x00 0x50000>;
-> +			interrupts = <GIC_SPI 188 IRQ_TYPE_LEVEL_HIGH>, /* irq.0 */
-> +			<GIC_SPI 188 IRQ_TYPE_LEVEL_HIGH>; /* irq.0 */
-> +			interrupt-names = "host", "peripheral";
-> +			maximum-speed = "high-speed";
-> +			dr_mode = "otg";
-> +		};
-> +	};
-> +
-> +	usbss1: usb@f910000 {
-> +		compatible = "ti,am62-usb";
-> +		reg = <0x00 0x0f910000 0x00 0x800>;
-> +		clocks = <&k3_clks 162 3>;
-> +		clock-names = "ref";
-> +		ti,syscon-phy-pll-refclk = <&usb1_phy_ctrl 0x0>;
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		power-domains = <&k3_pds 179 TI_SCI_PD_EXCLUSIVE>;
-> +		ranges;
-> +		status = "disabled";
-> +
-> +		usb1: usb@31100000 {
-> +			compatible = "snps,dwc3";
-> +			reg = <0x00 0x31100000 0x00 0x50000>;
-> +			interrupts = <GIC_SPI 226 IRQ_TYPE_LEVEL_HIGH>, /* irq.0 */
-> +			<GIC_SPI 226 IRQ_TYPE_LEVEL_HIGH>; /* irq.0 */
-> +			interrupt-names = "host", "peripheral";
-> +			maximum-speed = "high-speed";
-> +			dr_mode = "otg";
-> +		};
-> +	};
-> +
->   	fss: bus@fc00000 {
->   		compatible = "simple-bus";
->   		reg = <0x00 0x0fc00000 0x00 0x70000>;
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
-> index 19f42b39394e..00dd38b02a52 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
-> @@ -18,6 +18,16 @@ chipid: chipid@14 {
->   			reg = <0x14 0x4>;
->   			bootph-all;
->   		};
-> +
-> +		usb0_phy_ctrl: syscon@4008 {
-> +			compatible = "ti,am62-usb-phy-ctrl", "syscon";
-> +			reg = <0x4008 0x4>;
-> +		};
-> +
-> +		usb1_phy_ctrl: syscon@4018 {
-> +			compatible = "ti,am62-usb-phy-ctrl", "syscon";
-> +			reg = <0x4018 0x4>;
-> +		};
->   	};
->   
->   	wkup_uart0: serial@2b300000 {
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts b/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
-> index 1773c05f752c..80be56c0a4e0 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
-> @@ -27,6 +27,8 @@ aliases {
->   		spi0 = &ospi0;
->   		ethernet0 = &cpsw_port1;
->   		ethernet1 = &cpsw_port2;
-> +		usb0 = &usb0;
-> +		usb1 = &usb1;
->   	};
->   
->   	chosen {
-> @@ -297,6 +299,12 @@ AM62PX_IOPAD(0x01b0, PIN_OUTPUT, 2) /* (G20) MCASP0_ACLKR.UART1_TXD */
->   		bootph-all;
->   	};
->   
-> +	main_usb1_pins_default: main-usb1-default-pins {
-> +		pinctrl-single,pins = <
-> +			AM62PX_IOPAD(0x0258, PIN_INPUT, 0) /* (G21) USB1_DRVVBUS */
-> +		>;
-> +	};
-> +
->   	main_wlirq_pins_default: main-wlirq-default-pins {
->   		pinctrl-single,pins = <
->   			AM62PX_IOPAD(0x0128, PIN_INPUT, 7) /* (K25) MMC2_SDWP.GPIO0_72 */
-> @@ -340,6 +348,36 @@ AM62PX_IOPAD(0x0124, PIN_INPUT, 7) /* (J25) MMC2_SDCD.GPIO0_71 */
->   	};
->   };
->   
-> +&main_i2c0 {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&main_i2c0_pins_default>;
-> +	clock-frequency = <400000>;
-> +
-> +	typec_pd0: usb-power-controller@3f {
-> +		compatible = "ti,tps6598x";
-> +		reg = <0x3f>;
-> +
-> +		connector {
-> +			compatible = "usb-c-connector";
-> +			label = "USB-C";
-> +			self-powered;
-> +			data-role = "dual";
-> +			power-role = "sink";
-> +			ports {
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
-> +				port@0 {
-> +					reg = <0>;
-> +					usb_con_hs: endpoint {
-> +						remote-endpoint = <&usb0_hs_ep>;
-> +					};
-> +				};
-> +			};
-> +		};
-> +	};
-> +};
-> +
->   &main_i2c1 {
->   	status = "okay";
->   	pinctrl-names = "default";
-> @@ -460,6 +498,35 @@ cpsw3g_phy1: ethernet-phy@1 {
->   	};
->   };
->   
-> +&usbss0 {
-> +	status = "okay";
-> +	ti,vbus-divider;
-> +};
-> +
-> +&usbss1 {
-> +	status = "okay";
-> +	ti,vbus-divider;
-> +};
-> +
-> +&usb0 {
-> +	usb-role-switch;
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +
-> +	port@0 {
-> +		reg = <0>;
-> +		usb0_hs_ep: endpoint {
-> +			remote-endpoint = <&usb_con_hs>;
-> +		};
-> +	};
-> +};
-> +
-> +&usb1 {
-> +	dr_mode = "host";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&main_usb1_pins_default>;
+Hi Michael,
 
-I'm not super familiar with USB, but I see this pinmux for the
-"DRVVBUS" pin is usually added the the parent USB subsystem node (usbss).
-Does this pin belong to the subsystem or the specific USB instance?
+On  5 Feb 16:40, Michael Kelley wrote:
+> From: Ricardo B. Marliere <ricardo@marliere.net> Sent: Sunday, February 4, 2024 8:38 AM
+> > 
+> 
+> NIT:  For consistency, we try to use "Drivers: hv: vmbus:" as the prefix on the
+> Subject line for patches to vmbus_drv.c.
 
-Andrew
+Thanks for the feedback, I'll keep that in mind in the future. I looked
+into a few commits using `git blame` and 'hv: ' seemed to be sufficient.
 
-> +};
-> +
->   &mcasp1 {
->   	status = "okay";
->   	#sound-dai-cells = <0>;
+All the best,
+-	Ricardo.
+
+
+
+> 
+> Otherwise,
+> 
+> Reviewed-by: Michael Kelley <mhklinux@outlook.com>
+> 
+> > Now that the driver core can properly handle constant struct bus_type,
+> > move the hv_bus variable to be a constant structure as well,
+> > placing it into read-only memory which can not be modified at runtime.
+> > 
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> > ---
+> >  drivers/hv/vmbus_drv.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
+> > index edbb38f6956b..c4e6d9f1b510 100644
+> > --- a/drivers/hv/vmbus_drv.c
+> > +++ b/drivers/hv/vmbus_drv.c
+> > @@ -988,7 +988,7 @@ static const struct dev_pm_ops vmbus_pm = {
+> >  };
+> > 
+> >  /* The one and only one */
+> > -static struct bus_type  hv_bus = {
+> > +static const struct bus_type  hv_bus = {
+> >  	.name =		"vmbus",
+> >  	.match =		vmbus_match,
+> >  	.shutdown =		vmbus_shutdown,
+> > 
+> > ---
+> > base-commit: ce9ecca0238b140b88f43859b211c9fdfd8e5b70
+> > change-id: 20240204-bus_cleanup-hv-2ca8a4603ebc
+> > 
+> > Best regards,
+> > --
+> > Ricardo B. Marliere <ricardo@marliere.net>
+> > 
+> 
 
