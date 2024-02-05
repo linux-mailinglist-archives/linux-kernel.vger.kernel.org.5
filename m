@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-52925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A78B5849E6E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:35:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6425849E77
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:36:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D941C1C23D8B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:35:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D918B1C21801
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:36:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 872E832C91;
-	Mon,  5 Feb 2024 15:35:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCD5C446C0;
+	Mon,  5 Feb 2024 15:35:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="jaTCArOJ"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="lNWXhzeV"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D2EB2E62D;
-	Mon,  5 Feb 2024 15:35:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 506F832C6C;
+	Mon,  5 Feb 2024 15:35:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707147314; cv=none; b=jFpiuEArImuR/kIJJEIoFpwuWZK6tMpVWzDRxCYJ7nsyb9YPUHKfN1SeWbmh1jWDb72UL0keiZTdDtI/J/2wta/1AEKunhDOxFFBLsmtDmj07Kst966m0prqoTycxOXmJm6zrP/RjrLbmEngo75lOu8jqBcxqKHlXk7HnImaR00=
+	t=1707147315; cv=none; b=GT3pOWovNqfM9rOg5SEGXv3JVVLtvLkuommwI325LEYYvfqcFwYJw+t2FbqXLKg8aktGqynJIfq95ojstbJk/zd7BNrjqV6fMLuBd1IkqhZLjxcqaKwWXnDRdbo1RuqH0Th8yW0FjT5kkuLeW5JilN95JFOR8aeGvB5i4ZAveGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707147314; c=relaxed/simple;
-	bh=seWFh23w7ydoCuw+og2PCLynYdrB+dpA0lmRDxMvm3Y=;
+	s=arc-20240116; t=1707147315; c=relaxed/simple;
+	bh=91KuGhdZRQ3yX+KBd4TI2ZS1Tfz4GmFXyhttE3bzAFM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=C+ufpHMMxLfUXDMtjLHVMdnz+EIcVNhSonLxARZ6KcOsZJv/405zYkLRcCFIugSUNFktquUcKAD2L3PSA701jp9ayyZYdKkTTPdfhx34g7Qf6S6W8JnTAETV3lG1G7Rsj5IMIHd9w7QRv1TVpcNcsMPOuQGJHRXMMLzP+ja398Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=jaTCArOJ; arc=none smtp.client-ip=217.70.183.197
+	 MIME-Version; b=sxpFLqrk73iMQP0brSBrEpB7YclhabKoM3Wmkr5CUnNSAL0DTfDyxs/8i8MiGQptOiDzhp8N74Sy2ef0e3zHyKPvSrfdbr9hkMAzcKTISGCV8qocLNvS5lniMGWD0iSzWEgnlV5XwHJs9sQ3jwheduklZEvgQkoElb5cZhXeF4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=lNWXhzeV; arc=none smtp.client-ip=217.70.183.193
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BD7A01C0015;
-	Mon,  5 Feb 2024 15:35:09 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A0091240008;
+	Mon,  5 Feb 2024 15:35:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707147310;
+	t=1707147311;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=esfeCMI7Pwpjz+uzSpSUDXn4KCrjxw72sDAlH2LRRks=;
-	b=jaTCArOJUbwNw5HiAKOEX5uVtZ1sgVDqqQhs8RvBNz+tZCAClENSE1h3tjRDLbU56lHleX
-	yceVEgesS4BoNf7fPq7dx/2u/Y82/PjZ4IXxAptaKIWo9M50MdH13jjpgAN8mo7MD5JEkL
-	L+En+wNaMur8UHAihFC9x8H43d4rXNhM2yl+tZ3MfTngZDvr7M3XLfqY6NKjeQRjkwJzMG
-	pUDFAGIGjIiUgP4kqffMG29+BKhWahnt/dcE5twYsLDce7S+Dz7kJ8OeEHxHHAgLh8xPpH
-	EMXLdmr7DSFGTPq3KWZi6Y8c5u8jFjfscSuv9M0iY14hMAP5VJiKybGv353VGQ==
+	bh=6uEXIbyuTE8+uGbb2wp9Vlt8m5ypasCyIw0FxaqtHUs=;
+	b=lNWXhzeVilhHUemhu/aQCWI9OQQ0UOQDm8RMJpykgIr9nsFBc/wKLRQ/wqOsw2uuZyUFIs
+	kekESBVrvaQ5P6U5EdIFzXyXaMAR4Ppy0tLNzGX2XZIRnU/93W0zuwPF7Dl+xWh2ln4Ay+
+	LuCVMYqBteVD3PsEboaHQ1raW8N5VN4rzrnkjZK0QzTWquYw87v9oN0n0lYUYXWVLmvAxh
+	EbZQ4YOuHn8xSydcdW/PoAD/N4arRwGjZ5NGk4Ml1JSNl+uOKzn5xNrdGGicakxIT/5XUs
+	a1rJx2tTntwnhRobxK3bFS0sAZJuCZsGzYWER+DC3qjiwpITqwSLO1vOhbd5RA==
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
 To: Paul Burton <paulburton@kernel.org>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -59,9 +59,9 @@ Cc: Vladimir  Kondratiev <vladimir.kondratiev@mobileye.com>,
 	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH v7 04/14] MIPS: traps: Give more explanations if ebase doesn't belong to KSEG0
-Date: Mon,  5 Feb 2024 16:34:50 +0100
-Message-ID: <20240205153503.574468-5-gregory.clement@bootlin.com>
+Subject: [PATCH v7 05/14] MIPS: cps-vec: Use macros for 64bits access
+Date: Mon,  5 Feb 2024 16:34:51 +0100
+Message-ID: <20240205153503.574468-6-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240205153503.574468-1-gregory.clement@bootlin.com>
 References: <20240205153503.574468-1-gregory.clement@bootlin.com>
@@ -74,38 +74,42 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: gregory.clement@bootlin.com
 
-With the expanded support for placing the kernel in XPHYS rather than
-just KSEG0, scenarios where ebase doesn't belong to KSEG0 are more
-likely to occur. In such cases, we currently experience a substantial
-and perplexing stack dump without any accompanying explanation. To
-rectify this, we aim to replace the uninformative stack dump with a
-warning that offers a clear explanation of the issue.
+Some access are 32 bits only while they seems better to be done in
+64bis for 64 bit kernel.
 
-Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+This was extract from an initial patch from Jiaxun
+Co-developed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- arch/mips/kernel/traps.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/mips/kernel/cps-vec.S | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 355d0f0709de8..911d2233d6d0b 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -2347,10 +2347,13 @@ void __init trap_init(void)
- 		 * EVA is special though as it allows segments to be rearranged
- 		 * and to become uncached during cache error handling.
- 		 */
--		if (!IS_ENABLED(CONFIG_EVA) && !WARN_ON(ebase_pa >= 0x20000000))
-+		if (!IS_ENABLED(CONFIG_EVA) && ebase_pa < 0x20000000)
- 			ebase = CKSEG0ADDR(ebase_pa);
- 		else
- 			ebase = (unsigned long)phys_to_virt(ebase_pa);
-+		if (ebase_pa >= 0x20000000)
-+			pr_warn("ebase(%pa) should better be in KSeg0",
-+				&ebase_pa);
- 	}
+diff --git a/arch/mips/kernel/cps-vec.S b/arch/mips/kernel/cps-vec.S
+index df610c006b443..f876309130ad1 100644
+--- a/arch/mips/kernel/cps-vec.S
++++ b/arch/mips/kernel/cps-vec.S
+@@ -396,7 +396,7 @@ LEAF(mips_cps_boot_vpes)
+ 	/* Calculate a pointer to the VPEs struct vpe_boot_config */
+ 	li	t0, VPEBOOTCFG_SIZE
+ 	mul	t0, t0, ta1
+-	addu	t0, t0, ta3
++	PTR_ADDU t0, t0, ta3
  
- 	if (cpu_has_mmips) {
+ 	/* Set the TC restart PC */
+ 	lw	t1, VPEBOOTCFG_PC(t0)
+@@ -571,10 +571,10 @@ dcache_done:
+ 	lw	$1, TI_CPU(gp)
+ 	sll	$1, $1, LONGLOG
+ 	PTR_LA	\dest, __per_cpu_offset
+-	addu	$1, $1, \dest
++	PTR_ADDU $1, $1, \dest
+ 	lw	$1, 0($1)
+ 	PTR_LA	\dest, cps_cpu_state
+-	addu	\dest, \dest, $1
++	PTR_ADDU \dest, \dest, $1
+ 	.set	pop
+ 	.endm
+ 
 -- 
 2.43.0
 
