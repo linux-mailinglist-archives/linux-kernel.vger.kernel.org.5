@@ -1,96 +1,144 @@
-Return-Path: <linux-kernel+bounces-53795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53797-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAC3384A6AB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:10:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B82A184A6B1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:11:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 308BA2895E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:10:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAD711C26536
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:11:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A89E91AB027;
-	Mon,  5 Feb 2024 19:05:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BEAB4F5FA;
+	Mon,  5 Feb 2024 19:06:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="B44QJ8tC"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="CFGjo7pS"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23C711A6BB9
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 19:05:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CB804F5E9;
+	Mon,  5 Feb 2024 19:06:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707159904; cv=none; b=FQmDS+IY5drCA10mx5xvaPLEeHPGk/Z5i21slXzeFnKip3aHhYaVWes2N22FeQCep+4EQii8I5GDPDAR5BYWTZ0W6EaAzZJbjXwBwX3tHDlHnMvv06Ul9WCR1fnhhqoYpvQPCPrUVLs6NYYs0vBoQ5L+kXCEbQOs6NvKiCP6cyw=
+	t=1707160003; cv=none; b=Q7RtfQ3G5pIIOnNG9CA3JGIkH4r9pPkC8BSlAXtynOqakeWGYqmquGRJ+F2+Tj61+J1Fez4xFElDHIFqY1bfJwIbZeTxG+lEFSnuW6pVUR2ap0g7Yt2IEBBzKcEXD+4aToV6baUuOjbABeI6ncIkjX/6w7LcMOrV3HgFSYo+3RE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707159904; c=relaxed/simple;
-	bh=wMerWchyBglTjYaCZJW9+4cKaKj+xDW9hzP6obVdoog=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mzzQIWrLOGxN9SyMVmPd3ssxqTv83KYb7541cr7ar1rHbQxAZD/t0+ctmD/LBXmkDFD1OiPSHfV3UkbhsStNMfMfmImK4yDRAhimjUbsTOn1Y5CuW5taSwLYMbzcTlaodgq1Yxr3OyQ2Gz8/TlL0cFcz0p7u+X51RiWPDISe4W4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=B44QJ8tC; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5114b1e8819so2292762e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 11:05:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1707159900; x=1707764700; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wMerWchyBglTjYaCZJW9+4cKaKj+xDW9hzP6obVdoog=;
-        b=B44QJ8tC8Pq4VtK5t5HRqsqfAYaNo13DPAForyokAy5Te2Rjj+YS3zpYtyR10rwvht
-         zkYwa761ReeH/nuct+xo5KoH+4W91IH8BDAlZR1lonc+qHe8ib+pfO5QMlUb/O0Scf/+
-         WE4Ho4bn/SWHdPlsZScDcMknTu2DHoW8ToF+0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707159900; x=1707764700;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wMerWchyBglTjYaCZJW9+4cKaKj+xDW9hzP6obVdoog=;
-        b=oaNuz8yw1u+pTsEyUsnWvfRkm1LlDmy5c72ahOSpwDe0yhcbhkMEat2Zmqt4brNLqn
-         tAOT3jYljGzizYNF4OlLZQshnq+SOpgcFRSV3IYJmbtg0CeN5CBnxi24ufxtJvS5u7rm
-         /RjeSWYtwX1M454We1vbXGO+HwVBlzz4NcuCMFaMOu7d10A/yDVbhN8aVapb3lRDFGGO
-         A/r1/dBF1/pTkNQiglnHiT5zvaV72SnCAxR9J8FfnqTJaJgMWRLl9iAPUBj3IsDDHp9E
-         mg0DVk0szg4NfV+NNQZspjFM/bGHcyAQmgbCkRs21uiYqRGhL5J1nMfX1DC0QKZg4YOq
-         8PHA==
-X-Gm-Message-State: AOJu0YyaphYsZc3Bqd8HhGsWMGet4zBip9LMWUQDEJFi2vSZNs/JDUS9
-	d2Qbb26S9I/Q/+uHzbTfvI1x06sgrIaOqmrG9/+3P7/r/Qc9hdDFQvGSrw4qK1KUF7y0o5ECjVv
-	Qi0pT7iBbUm6UO63L3zgZeRNS2Bzsh4UOsFfS
-X-Google-Smtp-Source: AGHT+IEcHW/vOu1+KgLsWEuqn8Io9gHrYaSWNPFK5jkvm/DQsp3jCU/XfKZgWdu8K529ifOfonW3kj5xctfw62fdoaE=
-X-Received: by 2002:ac2:58f9:0:b0:511:2f76:e093 with SMTP id
- v25-20020ac258f9000000b005112f76e093mr69835lfo.58.1707159900103; Mon, 05 Feb
- 2024 11:05:00 -0800 (PST)
+	s=arc-20240116; t=1707160003; c=relaxed/simple;
+	bh=e2OL4EiWvWIn9xVFVK1QFdVDd5fgSWtFdp0kgfHTXGM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NevAqEeOzjGax+Ce16GvJ9PVH7Tn8SzUSGYPkOdXozpdiAEJMwFdw77Sp1zj73uGzfj5sdxTycQ/NOck161Zq9h4gN49YhB/u4ch66Z3Q6TMA3yRpl5EdgWGY8Ad7VNXkasSzI9EsM92QqllxQGUcjYbGOqbWE6T/l7dh+d83s0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=CFGjo7pS; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+	s=s31663417; t=1707159986; x=1707764786; i=wahrenst@gmx.net;
+	bh=e2OL4EiWvWIn9xVFVK1QFdVDd5fgSWtFdp0kgfHTXGM=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=CFGjo7pS2S2sF0CGwdUzGzoBAgKOXGcn82YLTASuQPe9G6Q83AqbLoZ/YEtPcNe4
+	 lfOqdi1GlbnHa4V6E10vBUqg2Ygkm1hhPSsAoDuxRM3piFFe+ehxUC61NvvNU8gaR
+	 vAX9vfUnjKGo/z4by0mTaUWu0Qqt4TzSFrZcrIEImTjhc8AmZron26KbFHczYE+FZ
+	 jO/zlGPHthvY12+T85z+iXCNK3r2ycNdzdQbo0Vq90Hd03J7wLfwSA5vvCVcsquos
+	 f5EHOXY2LFevX9RvPNc6MDb0LrwgVGICfxzUQ0id52+sDaW/YH+weiGBFWISaWUVt
+	 QffHEKoLjx2uqxN5Mg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.1.167] ([37.4.248.43]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MvbG2-1qi8N22ow2-00shgQ; Mon, 05
+ Feb 2024 20:06:26 +0100
+Message-ID: <a12a0bf1-c59d-4b87-87ac-546f0f5e8d72@gmx.net>
+Date: Mon, 5 Feb 2024 20:06:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202182339.1725466-1-nadav.amit@gmail.com>
-In-Reply-To: <20240202182339.1725466-1-nadav.amit@gmail.com>
-From: Jerrin Shaji George <jerrin.shaji-george@broadcom.com>
-Date: Mon, 5 Feb 2024 11:04:49 -0800
-Message-ID: <CACKNADUCcW-Mrkt14VeGHTKsZ9KHMt9h=hfcncmDGUCyVGZqaw@mail.gmail.com>
-Subject: Re: [PATCH] vmw_balloon: change maintainership
-To: Nadav Amit <nadav.amit@gmail.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/12] Add support for BCM2712 DMA engine
+Content-Language: en-US
+To: Andrea della Porta <andrea.porta@suse.com>, Vinod Koul
+ <vkoul@kernel.org>, Florian Fainelli <florian.fainelli@broadcom.com>,
+ Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, dmaengine@vger.kernel.org,
+ linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Cc: Maxime Ripard <maxime@cerno.tech>, Dom Cobley <popcornmix@gmail.com>,
+ Phil Elwell <phil@raspberrypi.com>
+References: <cover.1706948717.git.andrea.porta@suse.com>
+From: Stefan Wahren <wahrenst@gmx.net>
+In-Reply-To: <cover.1706948717.git.andrea.porta@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:nJiNqVk/3+nZThAYal+pN6vhJK0NctDKoVu/OKHGcg10XoKbpGu
+ cuY8O8OOO1QONMKNJZVAfo6x3fzZRJFIaUJj2nNiVl4mtHckd1HbZiV4l6W+PDnZ0H4qiUx
+ pcKh8tu/G2meJTF2khqF4Nw81J8L0Z5BZLTzlGnylb2xBOjPP1c5C9U74C2WLCJaSTbRMql
+ 3fh07nh6ZGRKXg+johyCg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:D0ByTQ4dxtk=;wVGIfcHu2aqaBPu4fkqTwf9T5Wz
+ sthJxR2uEffnPYrkNDt7HwyWrQuU8aOC/YFD3SQsSE8hLvz67vi7VM0cjLvXZ0CitMAZp8SGD
+ 17s2jUrjvNo1IWDtoA4AQi2Dr4MiaphAs89o3WBvv2BgRUZmlG5ub0Us5irBWEGAlONyRPAKU
+ Sj0ObMkaSAsEGYtnSq2KOLFGLsI8q26ec8GhaBZqjOephWoC1IqDkeDJkVb09X9KiErCmhTfO
+ B2zBfvF44ruSXlZI5GWqSsxjadCajaL2AyMfGSnXocfYMoRv8+ECMhoTuweZJAZ2JVbGXRAbi
+ nHQy8rkUd9r+2yRiayNrrcwg91gUvL7H+6mmvwodXCjUxJfydJyHEBSnKLquYVTyS9S29ZJLc
+ vomggZHaG6lHgaug6clsoRk5PFM7zR3d3KJ45X7oHkdt0p+UOu5QHaSlcca4Jh8eIfGiOj9uq
+ sPiuxJDyl9aT7C3bV7AJFRBNOOW3ehBVuFfd86t/mEQOloAKScTnVRozFb18coNui+TcE0Izi
+ leFf/NVBxuZlknRpygDQjz74Fk7ID7W3zYTPBrKGEH9vrtKeN1t8KtIfhOYl+P0kc7XnPaIyA
+ 46QxH5847H1XTP57224inOS65uUzIPcGVZpphwIMv6003dP/TnPbjEEp4T++/IlJYhtXWpQPy
+ b/cNvq506jtn6PdVARCbvxDKZLhWWqp1i6IbII7lpvRl6gD0dAf3azK2Gfn9dF4ZJ4Gy5OnMM
+ 72DrFB5oAlDmcQ864YogPaNglENiSk4L2fqVegyG9+HCt/BP7KRmZjplqrMoYC0WPn1o+/P4A
+ ZJ3hfRM8ZGYtvxGkipp6Dwtb40d0cOLYIb7cbPP9Pj6oI=
 
-On Fri, Feb 2, 2024 at 10:24=E2=80=AFAM Nadav Amit <nadav.amit@gmail.com> w=
-rote:
->
-> Jerrin will be the new maintainer of the VMware balloon driver following
-> Broadcom's acquisition and Nadav's departure.
->
-> Update accordingly:
-> 1. Update the maintainer name and email.
-> 2. Update the reviewer list to Broadcom's, which acquired VMware.
-> 3. Add .mailmap entries for Nadav.
->
-> Cc: Jerrin Shaji George <jerrin.shaji-george@broadcom.com>
-> Signed-off-by: Nadav Amit <nadav.amit@gmail.com>
+Hi Andrea,
 
-Acked-by: Jerrin Shaji George <jerrin.shaji-george@broadcom.com>
+Am 04.02.24 um 07:59 schrieb Andrea della Porta:
+> This patchset aims to update the dma engine for BCM* chipset with respec=
+t
+> to current advancements in downstream vendor tree. In particular:
+>
+> * Added support for BCM2712 DMA.
+> * Extended DMA addressing to 40 bit. Since BCM2711 also supports 40 bit =
+addressing,
+> it will also benefit from the update.
+> * Handled the devicetree node from vendor dts (e.g. "dma40").
+>
+> The only difference between the application of this patch and the relati=
+ve code
+> in vendor tree is the dropping of channel reservation for BCM2708 DMA le=
+gacy
+> driver, that seems to have not made its way to upstream anyway, and it's
+> probably used only from deprecated subsystems.
+>
+> Compile tested and runtime tested on RPi4B only.
+sorry but this is not sufficient. AFAIK only the Raspberry Pi 5 has a
+BCM2712. I suggest to start with BCM2711 40 bit support, which is enough
+work.
+
+This whole series does neither contain a change to the dt-bindings nor
+to the DTS files. This is not how it works.
+
+Best regards
+>
+> Dom Cobley (4):
+>    bcm2835-dma: Support dma flags for multi-beat burst
+>    bcm2835-dma: Need to keep PROT bits set in CS on 40bit controller
+>    dmaengine: bcm2835: Rename to_bcm2711_cbaddr to to_40bit_cbaddr
+>    bcm2835-dma: Fixes for dma_abort
+>
+> Maxime Ripard (2):
+>    dmaengine: bcm2835: Use to_bcm2711_cbaddr where relevant
+>    dmaengine: bcm2835: Support DMA-Lite channels
+>
+> Phil Elwell (6):
+>    bcm2835-dma: Add support for per-channel flags
+>    bcm2835-dma: Add proper 40-bit DMA support
+>    bcm2835-dma: Add NO_WAIT_RESP, DMA_WIDE_SOURCE and DMA_WIDE_DEST flag
+>    bcm2835-dma: Advertise the full DMA range
+>    bcm2835-dma: Derive slave DMA addresses correctly
+>    dmaengine: bcm2835: Add BCM2712 support
+>
+>   drivers/dma/bcm2835-dma.c | 701 ++++++++++++++++++++++++++++++++------
+>   1 file changed, 588 insertions(+), 113 deletions(-)
+>
+
 
