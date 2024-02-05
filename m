@@ -1,88 +1,114 @@
-Return-Path: <linux-kernel+bounces-53090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D0DF84A08E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:23:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62A7584A08F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:23:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FA351C2223B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:23:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EDEC28307C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:23:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB80047F52;
-	Mon,  5 Feb 2024 17:22:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 500C2481BD;
+	Mon,  5 Feb 2024 17:22:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rH5KnDyE"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZeHpWDOp"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5AA245953;
-	Mon,  5 Feb 2024 17:22:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE040481A2
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 17:22:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707153728; cv=none; b=nQ30j6LjxGLgtr0nvJgpYL3nB18bBL5WhjgO+di3uOX8zEAm0wz3rYSoycdXvryiK6L+qDct0Xx3CEjnOYSj1q8Y1FtgdiTyMQIb4Jj8lq4eshp+5mZVhsQjtN/xNVqPrLpWQe/t8Lt5rqTeBbrqQNPVE6LLWubCUvcltaJU7yM=
+	t=1707153751; cv=none; b=kvCSBCZeoY1JxG8CLnGKj3kYaDp4xEqjyNJJ/gpUdkkRcsw91MvHfrJmh8c2VAiUIeOUN4gns/h90TsRWbuZKwHari1D7AnQWJmlZ1XYeB0fQjMhZafbcckNIPIq/9F1oXbyyMWC1bLtJCXCp7n8CDKbHCKKOj25DognwxrZaHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707153728; c=relaxed/simple;
-	bh=Et6Ae8kKVfkwexIZgZibcIr2o12bANsTHAJ7mXeWTHY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a5c44ixBybzYX11ZsLWL0fYF2aChaHm1a3tV15kNN3XXymYFGkpFjNUhT8Cn495wecjyk06VbHwAZdDyit3kDTdOGDSiGpqUHsj+o+qoxl5jTe0u1+uydNX+ccTYSNRtsx9ZBXN76s00lAcZNlmuFcD7tj37RNgGWSsX262xtJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rH5KnDyE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2266C433C7;
-	Mon,  5 Feb 2024 17:22:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707153727;
-	bh=Et6Ae8kKVfkwexIZgZibcIr2o12bANsTHAJ7mXeWTHY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rH5KnDyEFEFfgQ0g9h6NChGENuZo0wYudf5fBhcNDE1xepWPY15eDz0bV1KrcszzW
-	 6Ea+R37M/gcLFJRLPtO4hZDqW3dWsI4MnFWOoLaAnJhOg0AHax3W7HUnJXEhtPnAMq
-	 GbrRhCOhxDVsxoUeUprR2R8sqDbQOwxdrCdsSqt6wMBspz8u4yy0znGMDTtN1cBf39
-	 TPoIBqVIAEdyPiinmu1cJir3ekzvG2WHlB/M6VUQZQgFdJqKaOGg73afv1jsbY7oAU
-	 caEKAseZ2VMAeWlqV3eEjgdQVngYjcIREVIpaEkMp31LOIKSpM3B061X+wD4lNy8gC
-	 u3ohm2+idj4+A==
-Date: Mon, 5 Feb 2024 17:22:03 +0000
-From: Rob Herring <robh@kernel.org>
-To: Chen Wang <unicornxw@gmail.com>
-Cc: guoren@kernel.org, Chen Wang <unicorn_wang@outlook.com>,
-	palmer@dabbelt.com, sboyd@kernel.org, haijiao.liu@sophgo.com,
-	paul.walmsley@sifive.com, xiaoguang.xing@sophgo.com,
-	devicetree@vger.kernel.org, aou@eecs.berkeley.edu,
-	jszhang@kernel.org, linux-kernel@vger.kernel.org,
-	robh+dt@kernel.org, samuel.holland@sifive.com,
-	inochiama@outlook.com, linux-clk@vger.kernel.org,
-	mturquette@baylibre.com, richardcochran@gmail.com,
-	linux-riscv@lists.infradead.org, chao.wei@sophgo.com,
-	krzysztof.kozlowski+dt@linaro.org, conor@kernel.org
-Subject: Re: [PATCH v9 1/5] dt-bindings: clock: sophgo: add pll clocks for
- SG2042
-Message-ID: <170715372308.3643466.1804804263763287247.robh@kernel.org>
-References: <cover.1706854074.git.unicorn_wang@outlook.com>
- <bf3b8178a013004f259cd9254b13279254505852.1706854074.git.unicorn_wang@outlook.com>
+	s=arc-20240116; t=1707153751; c=relaxed/simple;
+	bh=QYfTzVh1GhDcNX1AdSswl+d4aBc6MuUiVyM01wBfWK4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jT6q9mMrxHwhZOo2EzK3ZrxeKCN3gx0eMPWtRx+PMj3+m01c4TiQtrsmlMQxCoRjohIVBYitN/ywkWP77zFSa0+PkiAmzlxcKEm0Da8T9PhqWqtSWbsHRWqhRlLYBIRImIvhy5d+wN9ZWgi3x5kQRy/ZxmHg3oRowqB94W4ohek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZeHpWDOp; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707153750; x=1738689750;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=QYfTzVh1GhDcNX1AdSswl+d4aBc6MuUiVyM01wBfWK4=;
+  b=ZeHpWDOpfrYHmZVR887ZHdUeO1o3R9XFnAFBK7BIS3bNmuRcEIMYKC+l
+   LQkLZv/SwERYYkvj3FyFaDVVGVCsHfciyw8M+lgwMSoXmbIz4qOASevFN
+   k9UslG+TWIUKnIzSAv67ETjUxQK7GXrbJVC1gmHJFrYDFs1yzuRL9T75s
+   pUnBio028OM0WPs1edvdhC6bzVNEMgWPmXJedObMv6azojuAIz5Vp8hvA
+   nn7n9QZtXDLQT0pdNhdPKKRHjUiZaX847xQARetdq2G/vyIO2bmazvv+v
+   OohXaK5PPsQwS6/u7iXpOHuMQrt2XXaP7moWXBRdhXH1MY3T0AbWjO+MC
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="11303851"
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="11303851"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 09:22:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="5390550"
+Received: from djiang5-mobl3.amr.corp.intel.com (HELO [10.246.112.181]) ([10.246.112.181])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 09:22:28 -0800
+Message-ID: <6cfd8171-a8c6-4433-8f4e-30f2ed156b0e@intel.com>
+Date: Mon, 5 Feb 2024 10:22:27 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bf3b8178a013004f259cd9254b13279254505852.1706854074.git.unicorn_wang@outlook.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] nvdimm: make nvdimm_bus_type const
+Content-Language: en-US
+To: "Ricardo B. Marliere" <ricardo@marliere.net>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Vishal Verma <vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>
+Cc: nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20240204-bus_cleanup-nvdimm-v1-1-77ae19fa3e3b@marliere.net>
+From: Dave Jiang <dave.jiang@intel.com>
+In-Reply-To: <20240204-bus_cleanup-nvdimm-v1-1-77ae19fa3e3b@marliere.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
-On Fri, 02 Feb 2024 14:41:27 +0800, Chen Wang wrote:
-> From: Chen Wang <unicorn_wang@outlook.com>
+
+On 2/4/24 1:20 PM, Ricardo B. Marliere wrote:
+> Now that the driver core can properly handle constant struct bus_type,
+> move the nvdimm_bus_type variable to be a constant structure as well,
+> placing it into read-only memory which can not be modified at runtime.
 > 
-> Add bindings for the pll clocks for Sophgo SG2042.
-> 
-> Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+
+Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+
 > ---
->  .../bindings/clock/sophgo,sg2042-pll.yaml     | 45 +++++++++++++++++++
->  include/dt-bindings/clock/sophgo,sg2042-pll.h | 14 ++++++
->  2 files changed, 59 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/sophgo,sg2042-pll.yaml
->  create mode 100644 include/dt-bindings/clock/sophgo,sg2042-pll.h
+>  drivers/nvdimm/bus.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-
-Reviewed-by: Rob Herring <robh@kernel.org>
-
+> diff --git a/drivers/nvdimm/bus.c b/drivers/nvdimm/bus.c
+> index ef3d0f83318b..508aed017ddc 100644
+> --- a/drivers/nvdimm/bus.c
+> +++ b/drivers/nvdimm/bus.c
+> @@ -271,7 +271,7 @@ EXPORT_SYMBOL_GPL(nvdimm_clear_poison);
+>  
+>  static int nvdimm_bus_match(struct device *dev, struct device_driver *drv);
+>  
+> -static struct bus_type nvdimm_bus_type = {
+> +static const struct bus_type nvdimm_bus_type = {
+>  	.name = "nd",
+>  	.uevent = nvdimm_bus_uevent,
+>  	.match = nvdimm_bus_match,
+> 
+> ---
+> base-commit: a085a5eb6594a3ebe5c275e9c2c2d341f686c23c
+> change-id: 20240204-bus_cleanup-nvdimm-91771693bd4d
+> 
+> Best regards,
 
