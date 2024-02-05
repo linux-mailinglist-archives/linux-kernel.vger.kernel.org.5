@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-52819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0698849D07
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:28:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38E9F849D08
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:28:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DA121F28DF8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:28:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C18F1C24513
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:28:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C8CA2C197;
-	Mon,  5 Feb 2024 14:28:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 142EA2C6A9;
+	Mon,  5 Feb 2024 14:28:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="U5DBarV1"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="PKnL7nW+"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E6EF28E09
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 14:28:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9364D2C1A0
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 14:28:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707143286; cv=none; b=GLmyicr7Kf1ZJ6ld8QfWOkR5PDK6Sqt0EbywMCS5S3hUmT8ddvXktJzM9VvVFG2CBYblUEvjdzlzrVXTRzuuvOFDLHns++8ScsH4gmaVCJu874s0Q5cou+rExNjkmDckyJ4KqpOx7jZbcl2KlxCSh+3sV5qinW12mYhG3KLSj2g=
+	t=1707143289; cv=none; b=terh/4df2um/oLL3ZHzS5f/QbBO5BSfs0+AWBZBfB3WE7Tmsao8p5jaXaVb891h8GjAKmT1rgaghIclyrHfjYL16kTGQqmBGEUY2/I0Ze0QMKswUB5mHkg5+flv6jMNimCEPOpRvTRKqgGs12nsrQ74+cJm4gv24E72ZZw6c21g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707143286; c=relaxed/simple;
-	bh=c6woLy2+EgbXcJiwHU3W4/j7iI+sLz3RGz/O8g5vcec=;
+	s=arc-20240116; t=1707143289; c=relaxed/simple;
+	bh=Hq2NNMT6MBsKqcxed74d9JB2FYrJZym2KKmRCRMtPlE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ZRv5andhI6mUWoEeZ+ayEzc4OZ6anrF1EvTvSVUIBicGMYLuDJOD3/HSKjzPQqsaYHFpYwaX/z5XUnAMppODzgH16KoQZLv6fHkp1+qjkVIF5PLDNRnyLSbsSeEJSIOlWr659sxDNxTrRGWjM+WGHmbB84+JMv4jU5os8yvYUCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=U5DBarV1; arc=none smtp.client-ip=217.70.183.196
+	 MIME-Version; b=jWedfLZKJqk7huC0OE7Fv6R/5Mkoqp9XG3TOy0Y5P3vSLn+QN2MfiHBr4cFO08pGHPFzHEsIkduEdl6UQvh7xrhEDzqhSqfBCN6t2WKPhpKfAsg/oMRk9hu3eon2VdX4qEAPgaUt5forNgI6Xyu/PW7jGjbizG23sHxErsTrwQ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=PKnL7nW+; arc=none smtp.client-ip=217.70.183.197
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 32AFEE000E;
-	Mon,  5 Feb 2024 14:28:01 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D22BB1C0006;
+	Mon,  5 Feb 2024 14:28:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707143282;
+	t=1707143285;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Rr8qzPIYqM+HdXpoa3bzvlmyjnTmSf9J/CC9t8G0s0A=;
-	b=U5DBarV1kWvF6kp6bsYh7pMLbNmHG365DTQi/YCihxMfxi3a94oiNCX0QoZem3hi/YJM1P
-	Dgpo1S7r2d+8hybPIBGTKY4JK6pSTMP5lO+krI1U049Qt1oEsOgbSGzWeq3oMgjnbmcIAB
-	AkOU7a9qwJnFbvgBqNAzSlEDe6HpQ8aLDX77UecgqHEZ8JgLcsv+xW8RWy+TBh/vpbwnyd
-	L2OP+pTXjafmMZQWKYE33jVBYFKOQvjfNU1Z3fzPVHH83J6i6yxmEpIGmDzUWeeM5mSksI
-	BrYJ07GDTL+HBVIaitm7ekLHQzHWm/jII1GAmQP2sA5bPybyv43/6h2mWEEWLA==
+	bh=yJ0MjnPiyDEXmv9y3YHY1Sk0uYIphio8FRBQUUsA6T0=;
+	b=PKnL7nW+HFuuqYWfBpu+B2VJNgN8v65dQOqIs0KQWrPKjZ9F7aSeddtOAmXhX+3h5NlRnp
+	pOqYD3Eur8MNoPLn7l9Q8+MLr7oGFzQJAUbUg4HmguGJGxyv2Iro8HtrGJbVNgccq9rfeQ
+	IWpA6vlohjZAMS/1f4UTxJX9JMFBtyLXTu3wWlY9ElkcsV04fcuSmV0FBKmIQ8hdqlYVWA
+	Pc7CteutqwmDPIqFtDPUaX5y6rNXW8kYO+O4Wu1aedOlKcoMPOGi57nUtnzNirBvw0FRro
+	GHpctKCVLvLc0vIwgm93nMjdAKNZ34+nH7wYzxRIuxCeW8qaSr35QT2rJZEg/g==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Ezra Buehler <ezra@easyb.ch>,
 	linux-mtd@lists.infradead.org
@@ -56,11 +56,11 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Sridharan S N <quic_sridsn@quicinc.com>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] mtd: spinand: esmt: Extend IDs to 5 bytes
-Date: Mon,  5 Feb 2024 15:28:00 +0100
-Message-Id: <20240205142800.466649-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 1/2] mtd: spinand: Add support for 5-byte IDs
+Date: Mon,  5 Feb 2024 15:28:04 +0100
+Message-Id: <20240205142804.466682-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240125200108.24374-3-ezra@easyb.ch>
+In-Reply-To: <20240125200108.24374-2-ezra@easyb.ch>
 References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -69,25 +69,22 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'4bd14b2fd8a83a2f5220ba4ef323f741e11bfdfd'
+X-linux-mtd-patch-commit: b'34a956739d295de6010cdaafeed698ccbba87ea4'
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: miquel.raynal@bootlin.com
 
-On Thu, 2024-01-25 at 20:01:08 UTC, Ezra Buehler wrote:
+On Thu, 2024-01-25 at 20:01:07 UTC, Ezra Buehler wrote:
 > From: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
 > 
-> According to the datasheets, the ESMT chips in question will return a 5
-> byte long identification code where the last 3 bytes are the JEDEC
-> continuation codes (7Fh). Although, I would have expected 4 continuation
-> codes as Powerchip Semiconductor (C8h, corresponding to the parameter
-> page data) is located in bank 5 of the JEDEC database.
+> E.g. ESMT chips will return an identification code with a length of 5
+> bytes. In order to prevent ambiguity, flash chips would actually need to
+> return IDs that are up to 17 or more bytes long due to JEDEC's
+> continuation scheme. I understand that if a manufacturer ID is located
+> in bank N of JEDEC's database (there are currently 16 banks), N - 1
+> continuation codes (7Fh) need to be added to the identification code
+> (comprising of manufacturer ID and device ID). However, most flash chip
+> manufacturers don't seem to implement this (correctly).
 > 
-> By matching the full 5 bytes we can avoid clashes with GigaDevice NAND
-> flashes.
-> 
-> This fix allows the MT7688-based GARDENA smart Gateway to boot again.
-> 
-> Fixes: aa08bf187f32 ("mtd: spinand: esmt: add support for F50D2G41KA")
 > Signed-off-by: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
 > Reviewed-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
 > Tested-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
