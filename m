@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-52894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52893-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96CA3849DF3
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:24:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6E90849DF0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:24:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E8641F22CE0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:24:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BE771F212BC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:24:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13F863A1CC;
-	Mon,  5 Feb 2024 15:23:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 233752D05D;
+	Mon,  5 Feb 2024 15:23:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oltmanns.dev header.i=@oltmanns.dev header.b="IDaUUJ5P"
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
+	dkim=pass (2048-bit key) header.d=oltmanns.dev header.i=@oltmanns.dev header.b="K+kMj2W+"
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E0EF3A8F4;
-	Mon,  5 Feb 2024 15:23:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC7843A1B6;
+	Mon,  5 Feb 2024 15:23:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707146595; cv=none; b=H3LR4bAPhlxlMf27GSmmeVf8dmr67choPN1ptqP+Qvue2pzlPwurHtu7GaNwDcn33ZUD8Z3iclKiCNFTphSgdZ3XzqV1XbFetGo7OXZLVxSmpbHpLo8V34t7a1W3YJOVWNMLGYOmcwF2cCQnqVhfUBKnMvIQFY5gAposaJ8IwMU=
+	t=1707146594; cv=none; b=qOPzP2zZmn2rs4QmVqwNRmNjxeTcwolDCwRQRVeWyOaWjTrCU0nThVpjZLmkF22QdAHF1DcM0+GGff9btw3BYSR3VWnOOneMYElAN9hAZ8BLSeENda/31KmBBzcXBtV7N4vgorjvg8KgZB+DZMY37Y8YmfczchazLFDLnP80qto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707146595; c=relaxed/simple;
-	bh=/3dNKggDHZ8IDpHedZkuDBEbq+kfTgK2pJtlaJ3P5io=;
+	s=arc-20240116; t=1707146594; c=relaxed/simple;
+	bh=IJ2XTYWEqbQDEDOuM1uZXEh/F0ICX+aNVO21sCOdmPI=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=OE/SHb8v2XNolGpNVJYHxwHDcvxYt5jA0bzMh53ZJnPPhW87BEagE8o4Gl7wrGRcjAAlqBrcTYzuH9Y+qVvVoUqU0CEEdfTiip/ww41A5n8bp9ip0InBO3qUDrLI6FCQdPnMGtolGEt1pA6MIY1lv7iLc+v/ZHZrwrpTitqVYhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oltmanns.dev; spf=pass smtp.mailfrom=oltmanns.dev; dkim=pass (2048-bit key) header.d=oltmanns.dev header.i=@oltmanns.dev header.b=IDaUUJ5P; arc=none smtp.client-ip=80.241.56.151
+	 In-Reply-To:To:Cc; b=paCTGSplAvS73uvTqRJy9hzqNz35M5hU0D41gMZ80333iYlk6E9v0VijgEHhLg1X4/O8VbiMfNP4GG1X4Qy3OhkE9tL8KmnKI5kNehAXt24InvQQKEF77ZZjz1bMxklfPG/BYBGD76Lx7p4VHFKc48xqHFGycN8Gtom1Q1bdUJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oltmanns.dev; spf=pass smtp.mailfrom=oltmanns.dev; dkim=pass (2048-bit key) header.d=oltmanns.dev header.i=@oltmanns.dev header.b=K+kMj2W+; arc=none smtp.client-ip=80.241.56.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oltmanns.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oltmanns.dev
 Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4TT9B00qv3z9sqg;
-	Mon,  5 Feb 2024 16:23:04 +0100 (CET)
+	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4TT9B539gnz9t42;
+	Mon,  5 Feb 2024 16:23:09 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oltmanns.dev;
-	s=MBO0001; t=1707146584;
+	s=MBO0001; t=1707146589;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=jU9BjDKbdWvhuTRibGk4N23TVvjyO4DZIzgSg1oCo6o=;
-	b=IDaUUJ5PaOMkW+Dzmqmhvw1A2j2Lfq6AF6jkWqYyvuUV1mnPji1NK36FRhHisVpA1kq91J
-	N9nQAbdp5x1uKIQ2nJMSsJBfeEHeU3Lg9wlnrwSTrGCBbbi4aekUehgkYMOuMyjdmRX9Cm
-	/HR6dLUGcoGE9kf3JY6qhuiTgh3x5FGGw5WaK7OZ/NYc/XBo5xkaX5CJMwKyMDWdZBYdTc
-	OXJ2OcDHedVgWThIGV1viXPs+xhuOKsRMHQoSZ2rQEguyscQBTVXgunD07NfRF2RbDin8P
-	OhYcz/VzrOJo7cdUDvCVE+Y5ISgk6LdGAIg3AWTcgjra1KaYtxslApH5S7yN5g==
+	bh=LBDoGEw5H7zjvt4Tn4WN7vmGiia6CbPYmP+MFo66pMQ=;
+	b=K+kMj2W+vma/KQ9lAWxsYbj+TWWA3C2lkGsfIe6441w1ujtQ2uNtMn6ZUO7h5vb4SIHRBr
+	Jzmb5bqn+dwiDBPrnXeU5V6iOsR8gkYsw9lxyBowwqW31AbcbuSEyn/IGt9kRlM3eH5y56
+	4eqitwpRFKd3OKpGpg3za4bMpBgjeGhA+CczJZ3AGol9ULQUmB3sfV63QZr2Wt1XRsUfXp
+	4+FeUMH7ElT+IL0RtfEKiiFqjHYx2ilENgx+8F5Oj1b5VQkdXqni9KShvH9lK07JVJYD9D
+	DqnQk5K7D7expRK/BSqA9G74tW7ywW3qfBdg8pSAzrGrLTuLobnHCzuRwcweLw==
 From: Frank Oltmanns <frank@oltmanns.dev>
-Date: Mon, 05 Feb 2024 16:22:26 +0100
-Subject: [PATCH v2 3/6] clk: sunxi-ng: nkm: Support minimum and maximum
- rate
+Date: Mon, 05 Feb 2024 16:22:27 +0100
+Subject: [PATCH v2 4/6] clk: sunxi-ng: a64: Set minimum and maximum rate
+ for PLL-MIPI
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,7 +60,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240205-pinephone-pll-fixes-v2-3-96a46a2d8c9b@oltmanns.dev>
+Message-Id: <20240205-pinephone-pll-fixes-v2-4-96a46a2d8c9b@oltmanns.dev>
 References: <20240205-pinephone-pll-fixes-v2-0-96a46a2d8c9b@oltmanns.dev>
 In-Reply-To: <20240205-pinephone-pll-fixes-v2-0-96a46a2d8c9b@oltmanns.dev>
 To: Michael Turquette <mturquette@baylibre.com>, 
@@ -81,74 +81,42 @@ Cc: linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org, 
  dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
  Frank Oltmanns <frank@oltmanns.dev>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1857; i=frank@oltmanns.dev;
- h=from:subject:message-id; bh=/3dNKggDHZ8IDpHedZkuDBEbq+kfTgK2pJtlaJ3P5io=;
- b=owEB7QES/pANAwAIAZppogiUStPHAcsmYgBlwP0/R/bYRLSWDoR8LFJNAtlZjd3AuDTv0TkSy
- h6Q/t85+q+JAbMEAAEIAB0WIQQC/SV7f5DmuaVET5aaaaIIlErTxwUCZcD9PwAKCRCaaaIIlErT
- x7cUC/90hwXY99Ja4sPw6whiQKjE2ZtXg2fE1iRFw0+6vh1HBrZuuzBYjAond8O2cZhSszDwTV6
- fsKjWCndURyzjCM50NZOZidj8q2F2hNxNfwzYtd2DeYxhaT7IzHpzwWiS150YVdru/4YTgc+zmm
- 6fePa2l5nnrf+nr1LL2371HweSyQbxUHiAzrCR2iaZhkhDpkEmRQBmkzIQRIKlLHf6TkaG1j0IQ
- mzbCbsCDTfewQUPHe+sRDAndVbsxwi65ZoCI5BPtDlLoW9SgJLeawQ27nR22EsgA1VR1+FqSKgt
- JUka8btp+cH79A2OeLbeZoKapTa3T3BcU8gYviht8L24G99WcywrYzEOKfxJkZGwaXzfXJWTzjs
- NjaepFV6e+z/1Xy6E7oRgHP2Ns+4brhuPhnqfwBgjK9bmo7ogE0uC9OV4JtNygG/5CDGm8IIOaO
- UE5j/+5B8D47kn6fIaozCmuA1f3Ti/UgXv2t63jjvvM0LYNdWpiBJf8IZ/SmdsXkpFNNU=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=777; i=frank@oltmanns.dev;
+ h=from:subject:message-id; bh=IJ2XTYWEqbQDEDOuM1uZXEh/F0ICX+aNVO21sCOdmPI=;
+ b=owEB7QES/pANAwAIAZppogiUStPHAcsmYgBlwP0/l0UwLaujQoqVqlgAplWnj9SkVd43u27AR
+ hJ8ppQSdNeJAbMEAAEIAB0WIQQC/SV7f5DmuaVET5aaaaIIlErTxwUCZcD9PwAKCRCaaaIIlErT
+ x7FXC/90qKkh7DIYRrFjWYgNWY0/pU4JrxhWDBtAHt5wJpTbydki4DTNL+Q1Fn3RK90LKDg1II8
+ lByqgCm7+mE5XoGJaawBugzun8o0ScmhgkL08Jh+qfmb6nW/TKHXK7Fnt930z/k8dEbA229cxcE
+ ASuS6FKwzV5bMoLe9PLDgbCuN+qbLvaPFq0XI7CV3pbKlasuOZ7IeC31au5eqAyLFJLO3Z6N5yI
+ Ze35tLjN4dvaESV5GOJIBFsVxeai4Gl0gjkPLU+ls+W9BHJWVGtvuLiQLnF3xzvuJXZ26rOf3Xa
+ 4AXWLf6S6J49g1SIO58p7ZOEdMy8nrgMgNZJcLgFcJcihRtO+unPygRjBxaeGD4q8HL7KLr4fwS
+ TX4zIQFIbeDigF8Nuzgh/J54TwigFxXduAEif32q3xH1wLbMeioZ8SW/SUC60jQAvpXADOrf4YA
+ qg7rZVpM5e/yaZmTs9o85fHF8F/k2HyRF2Xe52/BI+Bl5TlplgEJ8G82yD4oMsFclQiW0=
 X-Developer-Key: i=frank@oltmanns.dev; a=openpgp;
  fpr=02FD257B7F90E6B9A5444F969A69A208944AD3C7
-X-Rspamd-Queue-Id: 4TT9B00qv3z9sqg
+X-Rspamd-Queue-Id: 4TT9B539gnz9t42
 
-According to the Allwinner User Manual, the Allwinner A64 requires
-PLL-MIPI to run at 500MHz-1.4GHz. Add support for that to ccu_nkm.
+Set the minimum and maximum rate of Allwinner A64's PLL-MIPI according
+to the Allwinner User Manual.
 
 Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
 ---
- drivers/clk/sunxi-ng/ccu_nkm.c | 13 +++++++++++++
- drivers/clk/sunxi-ng/ccu_nkm.h |  2 ++
- 2 files changed, 15 insertions(+)
+ drivers/clk/sunxi-ng/ccu-sun50i-a64.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/clk/sunxi-ng/ccu_nkm.c b/drivers/clk/sunxi-ng/ccu_nkm.c
-index 1168d894d636..7d135908d6e0 100644
---- a/drivers/clk/sunxi-ng/ccu_nkm.c
-+++ b/drivers/clk/sunxi-ng/ccu_nkm.c
-@@ -181,6 +181,12 @@ static unsigned long ccu_nkm_round_rate(struct ccu_mux_internal *mux,
- 	if (nkm->common.features & CCU_FEATURE_FIXED_POSTDIV)
- 		rate *= nkm->fixed_post_div;
- 
-+	if (nkm->min_rate && rate < nkm->min_rate)
-+		rate = nkm->min_rate;
-+
-+	if (nkm->max_rate && rate > nkm->max_rate)
-+		rate = nkm->max_rate;
-+
- 	if (!clk_hw_can_set_rate_parent(&nkm->common.hw))
- 		rate = ccu_nkm_find_best(*parent_rate, rate, &_nkm, &nkm->common);
- 	else
-@@ -220,6 +226,13 @@ static int ccu_nkm_set_rate(struct clk_hw *hw, unsigned long rate,
- 	_nkm.min_m = 1;
- 	_nkm.max_m = nkm->m.max ?: 1 << nkm->m.width;
- 
-+
-+	if (nkm->min_rate && rate < nkm->min_rate)
-+		rate = nkm->min_rate;
-+
-+	if (nkm->max_rate && rate > nkm->max_rate)
-+		rate = nkm->max_rate;
-+
- 	ccu_nkm_find_best(parent_rate, rate, &_nkm, &nkm->common);
- 
- 	spin_lock_irqsave(nkm->common.lock, flags);
-diff --git a/drivers/clk/sunxi-ng/ccu_nkm.h b/drivers/clk/sunxi-ng/ccu_nkm.h
-index c409212ee40e..358a9df6b6a0 100644
---- a/drivers/clk/sunxi-ng/ccu_nkm.h
-+++ b/drivers/clk/sunxi-ng/ccu_nkm.h
-@@ -27,6 +27,8 @@ struct ccu_nkm {
- 	struct ccu_mux_internal	mux;
- 
- 	unsigned int		fixed_post_div;
-+	unsigned long		min_rate;
-+	unsigned long		max_rate;
- 	unsigned long		max_m_n_ratio;
- 	unsigned long		min_parent_m_ratio;
- 
+diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
+index df679dada792..99c2ce11da74 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
++++ b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
+@@ -178,6 +178,8 @@ static struct ccu_nkm pll_mipi_clk = {
+ 	.m			= _SUNXI_CCU_DIV(0, 4),
+ 	.max_m_n_ratio		= 3,
+ 	.min_parent_m_ratio	= 24000000,
++	.min_rate		= 500000000,
++	.max_rate		= 1400000000,
+ 	.common		= {
+ 		.reg		= 0x040,
+ 		.hw.init	= CLK_HW_INIT("pll-mipi", "pll-video0",
 
 -- 
 2.43.0
