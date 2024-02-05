@@ -1,647 +1,305 @@
-Return-Path: <linux-kernel+bounces-52273-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A504C849620
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:14:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43BAC849622
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:15:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B1CE281CA3
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:14:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6930B1C21AF4
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:15:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1C2F125B8;
-	Mon,  5 Feb 2024 09:14:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85686125A4;
+	Mon,  5 Feb 2024 09:15:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="cE1LxpXk"
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="SYAlOLjD"
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2111.outbound.protection.outlook.com [40.107.8.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33463125A5;
-	Mon,  5 Feb 2024 09:14:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707124459; cv=none; b=uFDfox5+878L3iCt6E8VHJ81P7TFMtmZdGPP/mR+vobJ7+Dbh8E3xybKJkH1oDFit1RUWbWLUISqL56InYKNarcaTguwO3NXID+LXY9jzGAHKTt7b6NhtBXHRoRHCwPiPv1aIW7p9BkM4vJjfrh7LzQs4OlvLlVLLmkgI/pMGtY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707124459; c=relaxed/simple;
-	bh=S3j0g6Q8yq6CWK5WrKwmt7WJP9NwO+lgTgzeSE7ywBs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=RdMuQozogjA+ToYClqe0HCXWSo+a3qVzl21rpO96mafxn2FOxzDaRzXgNMb/up5vtxn0dhIRbpHUFVXWHaU+qFg1N87FYsoRYCaa8AUP1omx1YmZdhA/w/2xQAuCeGEc/QwZi3fz7wsA924+KwxmEdB1ATvHxVacnfUFEIwUZXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=cE1LxpXk; arc=none smtp.client-ip=91.207.212.93
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4158Mr6o002797;
-	Mon, 5 Feb 2024 10:13:45 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=VAh/uHcHwPdL2VygqCfob3rT3K0TxGoaYXGdBzqrQk0=; b=cE
-	1LxpXkd1OEZyGRDcnh9Zoj6ZGW6OQk6FHn3lNhgzpo4Omd0v2NxVJm/LCDvCViNr
-	u6FRq39LDWaFZjY2fmkVGnsM0YK9Gni6T16UBvIeVP2pj5JyBc3izQEnLLwjTGFU
-	Fq0idwwBy5Up9lvjJ+cv5rwp0DQYlVEj2ZekLs33jplPTHfTRNeU+1DOziPXHv3X
-	lVBB/FbVIvMj6lJHgnSP9prfum9RY5wP1kwpqEdNC/lcujD6lb1+j+e6piyNhW6i
-	u0xjvMoiWuSTEA9ehPAMFnPpX2c4e2ICUW3/hUg0hRcVpZEGDUfrx+qRUzT0h0oi
-	nOIk+EEHlkvC4uSb93Cg==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3w1f63dw2p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 05 Feb 2024 10:13:45 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id DC2BC100064;
-	Mon,  5 Feb 2024 10:13:44 +0100 (CET)
-Received: from Webmail-eu.st.com (eqndag1node4.st.com [10.75.129.133])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CF8112A06C4;
-	Mon,  5 Feb 2024 10:13:44 +0100 (CET)
-Received: from SAFDAG1NODE1.st.com (10.75.90.17) by EQNDAG1NODE4.st.com
- (10.75.129.133) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 5 Feb
- 2024 10:13:44 +0100
-Received: from [10.201.20.75] (10.201.20.75) by SAFDAG1NODE1.st.com
- (10.75.90.17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 5 Feb
- 2024 10:13:43 +0100
-Message-ID: <36c0368b-94f3-40bd-9273-33ab2c9bf913@foss.st.com>
-Date: Mon, 5 Feb 2024 10:13:43 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA23125A1;
+	Mon,  5 Feb 2024 09:15:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.111
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707124526; cv=fail; b=F4Yi1vEtRivgSuOaibQzFwvNXNEU6493p6PmVhopsKxbMJGbM1wX9gDWqv+jD6rXu9apB/sh6qW0cPElNCMdmwlJ+XY7sh2B6IOl53SKP7k40zhQaTEgRGuEb4vGuR/7juvkn9pFuYFegnxKKyBrAGlgL6al2NMlGQogVkPrRMU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707124526; c=relaxed/simple;
+	bh=nEXqz9rGmaOrAAD1jugn8lJwv3BqZQatV9J6WnAlCyo=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=OeqPHZHYkUZ9sm/8IDHgN0lZnv2BPt0ny+y+cVa5gfB2KesnBELIqBToM9H4rsWyn3glye5j2noq2OMERyDtJ9DTnwSPO/qq2iznvD+FE2/n9vgWcdrJCTvt1Ic+C5wapCTZVKKiZAZtYWP1Uw6wnQ+1J3UzYawG/U+KNiWaMpU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=SYAlOLjD; arc=fail smtp.client-ip=40.107.8.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c/CORF0ua4LQdKWCthF4bQjjR6b+ZestzEQuhyxy1xGpWrMOFKtAM3GmaG15i8ZAxouMr4w0oKjPoHXpLn5TyJTsoJC+dSel91d8xbLwcrM0y4jnw1bEGFpIDrB9NSMkj42RsTA5hS35M+pynozVl1VvHZ155Cl+hHiBLgU6rRDMop9Bs2rUZOvnuV92EXlGhogw9ppt8JtYc/RFg5+qzG+NPN7rDJ4XI2QXjIPKmK316N+wczA6x/Mg57AtRUYzldmRXqOtuaJinEk8xYSrgltNGxYx1ddjTGfJAd77BNxrfPUl8DNSpeCrBxkSyuU95lnOB8+7oqFcIBuveil/1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nEXqz9rGmaOrAAD1jugn8lJwv3BqZQatV9J6WnAlCyo=;
+ b=Vqir/5wosB6L7KGUSsNyIIUJQmgq9kQchwM9KZhmvLokLJcReDToWdKPzbimwLnUW0uA6bxllU0pQudjjUi7PKK3KlwQ0jv/1kB8bYtUXwoVHyR+fSC3RZXkqNnSHVVD6mw3OghxWoo068BfkvCzX4NFGMqfYZgh6dIPh6ZM6JXvM4k09q0SW/4fhuZe9vXbyLLxYHDCl9vHP4m+pnRkk4iFx9G8cnmCE/CATX/iNUfMh+K4ymP0xxuleTVpGWpqgQdIQYwxZL0fQIcEEvm7YLZLfUC65Z+sfg6Y4NmPVEqD0uLaW8nMv536LdIfHCV2XCnzQ5tF2OmP8voFNVmFcg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nEXqz9rGmaOrAAD1jugn8lJwv3BqZQatV9J6WnAlCyo=;
+ b=SYAlOLjDz9f+XID2usotSnKDNie6W9PDoJ9oMcCCMcKvp5JxxNvRSkggchJRNe5HfETgE6eUuzWo0yI0v+aDMUyfKYNEPi8StXzN38ExmEZG5uOkIKvINwgxM4ytcWD5zcAXjmfzxn2Bha8xcl3IopHvMRFJ+a4Ezkde1xRqc6Y=
+Received: from DU0PR83MB0553.EURPRD83.prod.outlook.com (2603:10a6:10:322::19)
+ by GVXPR83MB0583.EURPRD83.prod.outlook.com (2603:10a6:150:154::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.4; Mon, 5 Feb
+ 2024 09:15:19 +0000
+Received: from DU0PR83MB0553.EURPRD83.prod.outlook.com
+ ([fe80::a8db:9564:bfb1:181d]) by DU0PR83MB0553.EURPRD83.prod.outlook.com
+ ([fe80::a8db:9564:bfb1:181d%4]) with mapi id 15.20.7292.001; Mon, 5 Feb 2024
+ 09:15:19 +0000
+From: Konstantin Taranov <kotaranov@microsoft.com>
+To: Leon Romanovsky <leon@kernel.org>
+CC: Konstantin Taranov <kotaranov@linux.microsoft.com>,
+	"sharmaajay@microsoft.com" <sharmaajay@microsoft.com>, Long Li
+	<longli@microsoft.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [EXTERNAL] Re: [PATCH rdma-next v2 2/5] RDMA/mana_ib: Create and
+ destroy rnic adapter
+Thread-Topic: [EXTERNAL] Re: [PATCH rdma-next v2 2/5] RDMA/mana_ib: Create and
+ destroy rnic adapter
+Thread-Index:
+ AQHaVelzQoHpJTBxI0CA3jYtbVkPuLD6H/mAgAA1LyCAABPsAIAABMBwgAD3XACAABKq4A==
+Date: Mon, 5 Feb 2024 09:15:19 +0000
+Message-ID:
+ <DU0PR83MB05531986447918EBD42EE9A8B4472@DU0PR83MB0553.EURPRD83.prod.outlook.com>
+References: <1706886397-16600-1-git-send-email-kotaranov@linux.microsoft.com>
+ <1706886397-16600-3-git-send-email-kotaranov@linux.microsoft.com>
+ <20240204123013.GE5400@unreal>
+ <DU0PR83MB0553DF0BA184971EDD66DB0EB4402@DU0PR83MB0553.EURPRD83.prod.outlook.com>
+ <20240204165152.GH5400@unreal>
+ <DU0PR83MB05536AACA6D1E980AD91BD8DB4402@DU0PR83MB0553.EURPRD83.prod.outlook.com>
+ <20240205075412.GA6294@unreal>
+In-Reply-To: <20240205075412.GA6294@unreal>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=89f7dc95-6eba-492e-b445-3a941e35c3e0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-02-05T09:01:00Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU0PR83MB0553:EE_|GVXPR83MB0583:EE_
+x-ms-office365-filtering-correlation-id: 511bba24-7df7-4be1-12a8-08dc262af960
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ Z9nnvRy1INF6qrrwnDmeFTIxXbdEgMes6YtpCK26TfbQEsai9lzv9yvXEToyOgYipg/kfGsMWCHIQp/4+Ip/QcFWUhAenZA+NrtLVbqNdiToiUP5ryNObforqiD9zi+k/o8jNCbKCqnCm+xiJnvENUsNYLdjseP9qoLsenQNq2pj4G0HtS2arPB6+ezBgc+fbidzOsrzspdDkk2P9z7+hAjsX8TMEKcG9M/s2NQDscOBhnC6Giw/rzV0n563TTh1OR6IXM3T11dukAI6Raa53w14bIeK0gttoFJgBpm7imGnC/xfg4LieAqoiNwf8tlwp+jQ93ihV4FDdNzeAdJdo5A6n7kl2AbrR2kVdDPgBgiJBYJVMH/cuBTea5SjFIT4PdrPASOGSzBkYAXcDL7m+f3Zd3b5nsPbJMqv1DhBOGwQChhnGkHxYFmcJUW3hFFkklSrTL09EY7+25dba8Z72pe0GnQrnDIGk91t5elYbUpSOgNuWoj8u/e8YK8e/cVL2GJtuxKBjVSJAY1QZOykM1lFq+ywCNw1sIoJHRMHTRGy45IpoZDK8jqth4D9yJ0WRsoTScOLWZ8gG99tt9G9iE4UktDP1Hp6VTkN+jBntIocGOecEWZQ69RH3+xzEcvL
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR83MB0553.EURPRD83.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(136003)(396003)(39860400002)(366004)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(55016003)(2906002)(41300700001)(5660300002)(83380400001)(122000001)(26005)(86362001)(9686003)(8990500004)(7696005)(6506007)(54906003)(6916009)(478600001)(64756008)(66446008)(38070700009)(10290500003)(33656002)(71200400001)(316002)(82950400001)(82960400001)(38100700002)(66476007)(66556008)(52536014)(4326008)(8676002)(8936002)(66946007)(76116006);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?cjFwUEZYa0w0Yk5mQ1lyeTlhQWJqYnBhVHozMnVTY2Y3RmNZRVAxclJMb0hX?=
+ =?utf-8?B?am5NN1JSbzFQUVlTSk9XQldlSE1KSzZJbkM4eGZwbTR0NDZQZExrS1lXUUg1?=
+ =?utf-8?B?Nno3cjNiR2ZmR0ZwZkIrVStBUXZoWU9oY1dNNE1EcUs3cHlsQ0llaXU5c3RX?=
+ =?utf-8?B?dG15cC8zY0k4WjZac0RxV0lrUng0WmpUOTg1aW9vZUtIdVU2MGZjOUVkL0k0?=
+ =?utf-8?B?TzBQVEgwbStqL3U3UVBWem1xcmhvQitGbWFmdVIrTDNpSkQvTjZGN3EwdllM?=
+ =?utf-8?B?MWdPZTRsem1SUFJhT0VVZkN3TnFPM21zd2dLZzdPTUcwV0Ivd2xWd2pTdVJp?=
+ =?utf-8?B?b2JXWGtsVVQ2ZlB2M0s4bXNvYmx6MTlYK3RMbGpWcTNSZGE5UTd3OEFHMmsx?=
+ =?utf-8?B?akZTMGRNaVkrSUttZmMzSnRKeHlEdFNlUXZDNlVLZGxmV1Jtd3pXdTVhOHNT?=
+ =?utf-8?B?dnIyRmxpcjl2aVYwMjNjU3ZXM014Q1VYRmw1bERPMUNsZ1hwWm1hZkdDYm9U?=
+ =?utf-8?B?b0NhY1JiMUlDM29QazJ0T1BIMXpFRndjMFJFNEhlWCtMTXJ6Z2xxUmp4Vi9B?=
+ =?utf-8?B?K2JIdlBqVzlxaldoVUZlZmxkWTBRY3BMRzN0d3cySzA0OElwYVpvS0xteDJl?=
+ =?utf-8?B?cytNcm9qMFMyenk2NXhBQ0pVSVlIZVJiYkpQcmY2UkE0Zm9HRWNWeGxGdGhB?=
+ =?utf-8?B?WUgrUnVxSCswTzM0c1FtMmFYRVBjV0RCOWVIUzczRElFYjBKVm5ib1oyNHNQ?=
+ =?utf-8?B?VHFUdEVLUCtYcjM0cG5TUjRVU0tTbnJCQlZaekYwSUN3dkpPS0JFZHIwWDFF?=
+ =?utf-8?B?SVJsSGJCajd1RWF5c0VpN01oTW51V29yVjdJaDkrVG1SYVlqeWthSHdFODln?=
+ =?utf-8?B?Y2svVGt2RUVtV0g3NEdKUUV3MVIwT2JMUldNMHgxWmFvdHZFVzU4RE0wQ2Ux?=
+ =?utf-8?B?YW0rVWloYlZYUlljMERveDNWMXprYTN4SDNlTmdNSy9Pc3cyNXJ1Z21saUlN?=
+ =?utf-8?B?YUdsOUZ4UVVVQUxVZ3lza3NYazFTdXFoV0phaGFvUVdHV1B2QjZGMWVXN2ZT?=
+ =?utf-8?B?aTl6S0xZVE1UVndoRE1FakdtV1djOHB6bnBXa1M2MkU0QU5Yc1FxSmdQNkFI?=
+ =?utf-8?B?bmVnRkx1N0w1NXNzRU5RWk1YM2pTUU42R1lYS0xWaFdHZFFRRVBWRFNEbjIv?=
+ =?utf-8?B?OEdHd1F2b2pkOFJOS0FCd1hLOWlhMWpGQTRtMTdaSEV5SzhId0Z6MThvZE5y?=
+ =?utf-8?B?cndTUkdUQmYvVmlwYlQ3UnpaMUNtaGFKY1dMZW5jMXZTRE5LWGVibTRrQ2Q0?=
+ =?utf-8?B?S0Q2RXJiZUNFQ0IwVEt6THd1aXg5VTE1R01zU291T2FoeU5JYS96akZpcE1q?=
+ =?utf-8?B?bUlJV3hneVJzalI4TDQ2ajFaTFhHcVF6TWd3ZkVHaHdtdFJFazlGMXRIa2ti?=
+ =?utf-8?B?UmptamUvNHpjNkZkVTR0NzA2V0Z2bmx6dkZ2aU1YOEJpcmUwcG5wZ2srTkpY?=
+ =?utf-8?B?bzYxWkZKcVU4WkFjVWNJZEJOanZvam1ZSXZpQk9vdTNnb3h6eDI3TDZZY3Q1?=
+ =?utf-8?B?R3IvbWcrK0NWdkNySzRjbWFLVVpFVGpqWXVSdUQ4cXczYlBuNThqcURSWkUr?=
+ =?utf-8?B?bVM5NHNJVGRMWWY0alFoZjVNNktQUzJnTlZOYVQyYVBoQlNjQytZTnlDajI0?=
+ =?utf-8?B?Q0ppRmRmQm1MQnlhN0V2UFRsUHpsMXBNQzRNRHpXOHJ5aFBkLzFDRXMzYW81?=
+ =?utf-8?B?WUNLTnU3aWIvNUdXWVFpL2RQQUl3QVZyUk1sYUlwa3BYMXhWM1Fhd1Z3RmQv?=
+ =?utf-8?B?c3lVRkc2bXdBMGQzOVAwNmszekZCenhHeGFxNytyMlNlZlhFRlFKYy9DWVR5?=
+ =?utf-8?B?T2hZK1ViU3BCSy9IYkxueW5qcTVLcUE2NTZlellpTlhoUWk0NkJvdERxOUpF?=
+ =?utf-8?B?dkVDQzNDZDJ2UVV1R2s5WEhvL0U0NG81NXpVUEVvQmx4UVdlZTQ0ZndXNDBp?=
+ =?utf-8?B?NlBnNFpSd29VT2x1QWxwQWRta0ZjQ3hQVzduWGZneHFYbG9IL0UwQ0FobXgy?=
+ =?utf-8?Q?N7oom1?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/4] remoteproc: stm32: Add support of an OP-TEE TA to
- load the firmware
-Content-Language: en-US
-To: Mathieu Poirier <mathieu.poirier@linaro.org>
-CC: Bjorn Andersson <andersson@kernel.org>,
-        Jens Wiklander
-	<jens.wiklander@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <op-tee@lists.trustedfirmware.org>, <devicetree@vger.kernel.org>
-References: <20240118100433.3984196-1-arnaud.pouliquen@foss.st.com>
- <20240118100433.3984196-5-arnaud.pouliquen@foss.st.com>
- <ZbPnsJm67G10+HQ3@p14s> <7ec6c9e8-9267-4e7c-81a4-abcdb2ab4239@foss.st.com>
- <ZbqW5YfDmEWG4G1X@p14s> <8ede77bb-0fbc-4de2-b51b-67674744b551@foss.st.com>
- <ZbvAmxHscnbUQGOD@p14s> <a52e00c5-fb60-4a9e-85ff-0f9649850f48@foss.st.com>
- <Zb1IPlnbMp9Utu2y@p14s>
-From: Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Organization: STMicroelectronics
-In-Reply-To: <Zb1IPlnbMp9Utu2y@p14s>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SAFDAG1NODE1.st.com
- (10.75.90.17)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-05_04,2024-01-31_01,2023-05-22_02
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR83MB0553.EURPRD83.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 511bba24-7df7-4be1-12a8-08dc262af960
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Feb 2024 09:15:19.3725
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: stQb1St6SZciLAn8esv+hUtbIH3x0OPUcdhHmvS3cc/JbS8G3c1nASvDtv8bTjNqvcETpB1eB8XI2U1FK3ewMA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR83MB0583
 
-
-
-On 2/2/24 20:53, Mathieu Poirier wrote:
-> On Thu, Feb 01, 2024 at 07:33:35PM +0100, Arnaud POULIQUEN wrote:
->>
->>
->> On 2/1/24 17:02, Mathieu Poirier wrote:
->>> On Thu, Feb 01, 2024 at 04:06:37PM +0100, Arnaud POULIQUEN wrote:
->>>> hello Mathieu,
->>>>
->>>> On 1/31/24 19:52, Mathieu Poirier wrote:
->>>>> On Tue, Jan 30, 2024 at 10:13:48AM +0100, Arnaud POULIQUEN wrote:
->>>>>>
->>>>>>
->>>>>> On 1/26/24 18:11, Mathieu Poirier wrote:
->>>>>>> On Thu, Jan 18, 2024 at 11:04:33AM +0100, Arnaud Pouliquen wrote:
->>>>>>>> The new TEE remoteproc device is used to manage remote firmware in a
->>>>>>>> secure, trusted context. The 'st,stm32mp1-m4-tee' compatibility is
->>>>>>>> introduced to delegate the loading of the firmware to the trusted
->>>>>>>> execution context. In such cases, the firmware should be signed and
->>>>>>>> adhere to the image format defined by the TEE.
->>>>>>>>
->>>>>>>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->>>>>>>> ---
->>>>>>>> V1 to V2 update:
->>>>>>>> - remove the select "TEE_REMOTEPROC" in STM32_RPROC config as detected by
->>>>>>>>   the kernel test robot:
->>>>>>>>      WARNING: unmet direct dependencies detected for TEE_REMOTEPROC
->>>>>>>>      Depends on [n]: REMOTEPROC [=y] && OPTEE [=n]
->>>>>>>>      Selected by [y]:
->>>>>>>>      - STM32_RPROC [=y] && (ARCH_STM32 || COMPILE_TEST [=y]) && REMOTEPROC [=y]
->>>>>>>> - Fix initialized trproc variable in  stm32_rproc_probe
->>>>>>>> ---
->>>>>>>>  drivers/remoteproc/stm32_rproc.c | 149 +++++++++++++++++++++++++++++--
->>>>>>>>  1 file changed, 144 insertions(+), 5 deletions(-)
->>>>>>>>
->>>>>>>> diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
->>>>>>>> index fcc0001e2657..cf6a21bac945 100644
->>>>>>>> --- a/drivers/remoteproc/stm32_rproc.c
->>>>>>>> +++ b/drivers/remoteproc/stm32_rproc.c
->>>>>>>> @@ -20,6 +20,7 @@
->>>>>>>>  #include <linux/remoteproc.h>
->>>>>>>>  #include <linux/reset.h>
->>>>>>>>  #include <linux/slab.h>
->>>>>>>> +#include <linux/tee_remoteproc.h>
->>>>>>>>  #include <linux/workqueue.h>
->>>>>>>>  
->>>>>>>>  #include "remoteproc_internal.h"
->>>>>>>> @@ -49,6 +50,9 @@
->>>>>>>>  #define M4_STATE_STANDBY	4
->>>>>>>>  #define M4_STATE_CRASH		5
->>>>>>>>  
->>>>>>>> +/* Remote processor unique identifier aligned with the Trusted Execution Environment definitions */
->>>>>>>> +#define STM32_MP1_M4_PROC_ID    0
->>>>>>>> +
->>>>>>>>  struct stm32_syscon {
->>>>>>>>  	struct regmap *map;
->>>>>>>>  	u32 reg;
->>>>>>>> @@ -90,6 +94,8 @@ struct stm32_rproc {
->>>>>>>>  	struct stm32_mbox mb[MBOX_NB_MBX];
->>>>>>>>  	struct workqueue_struct *workqueue;
->>>>>>>>  	bool hold_boot_smc;
->>>>>>>> +	bool fw_loaded;
->>>>>>>> +	struct tee_rproc *trproc;
->>>>>>>>  	void __iomem *rsc_va;
->>>>>>>>  };
->>>>>>>>  
->>>>>>>> @@ -257,6 +263,91 @@ static int stm32_rproc_release(struct rproc *rproc)
->>>>>>>>  	return err;
->>>>>>>>  }
->>>>>>>>  
->>>>>>>> +static int stm32_rproc_tee_elf_sanity_check(struct rproc *rproc,
->>>>>>>> +					    const struct firmware *fw)
->>>>>>>> +{
->>>>>>>> +	struct stm32_rproc *ddata = rproc->priv;
->>>>>>>> +	unsigned int ret = 0;
->>>>>>>> +
->>>>>>>> +	if (rproc->state == RPROC_DETACHED)
->>>>>>>> +		return 0;
->>>>>>>> +
->>>>>>>> +	ret = tee_rproc_load_fw(ddata->trproc, fw);
->>>>>>>> +	if (!ret)
->>>>>>>> +		ddata->fw_loaded = true;
->>>>>>>> +
->>>>>>>> +	return ret;
->>>>>>>> +}
->>>>>>>> +
->>>>>>>> +static int stm32_rproc_tee_elf_load(struct rproc *rproc,
->>>>>>>> +				    const struct firmware *fw)
->>>>>>>> +{
->>>>>>>> +	struct stm32_rproc *ddata = rproc->priv;
->>>>>>>> +	unsigned int ret;
->>>>>>>> +
->>>>>>>> +	/*
->>>>>>>> +	 * This function can be called by remote proc for recovery
->>>>>>>> +	 * without the sanity check. In this case we need to load the firmware
->>>>>>>> +	 * else nothing done here as the firmware has been preloaded for the
->>>>>>>> +	 * sanity check to be able to parse it for the resource table.
->>>>>>>> +	 */
->>>>>>>
->>>>>>> This comment is very confusing - please consider refactoring.  
->>>>>>>
->>>>>>>> +	if (ddata->fw_loaded)
->>>>>>>> +		return 0;
->>>>>>>> +
->>>>>>>
->>>>>>> I'm not sure about keeping a flag to indicate the status of the loaded firmware.
->>>>>>> It is not done for the non-secure method, I don't see why it would be needed for
->>>>>>> the secure one.
->>>>>>>
->>>>>>
->>>>>> The difference is on the sanity check.
->>>>>> - in rproc_elf_sanity_check we  parse the elf file to verify that it is
->>>>>> valid.
->>>>>> - in stm32_rproc_tee_elf_sanity_check we have to do the same, that means to
->>>>>> authenticate it. the authentication is done during the load.
->>>>>>
->>>>>> So this flag is used to avoid to reload it twice time.
->>>>>> refactoring the comment should help to understand this flag
->>>>>>
->>>>>>
->>>>>> An alternative would be to bypass the sanity check. But this lead to same
->>>>>> limitation.
->>>>>> Before loading the firmware in remoteproc_core, we call rproc_parse_fw() that is
->>>>>> used to get the resource table address. To get it from tee we need to
->>>>>> authenticate the firmware so load it...
->>>>>>
->>>>>
->>>>> I spent a long time thinking about this patchset.  Looking at the code as it
->>>>> is now, request_firmware() in rproc_boot() is called even when the TEE is
->>>>> responsible for loading the firmware.  There should be some conditional code
->>>>> that calls either request_firmware() or tee_rproc_load_fw().  The latter should
->>>>> also be renamed to tee_rproc_request_firmware() to avoid confusion.
->>>>
->>>>
->>>> The request_firmware() call is needed in both cases to get the image from the
->>>> filesystem. The tee_rproc_load_fw() gets, as input, the struct firmware provided
->>>> by request_firmware().
->>>
->>> The cover letter clearly state the secure side is responsible for loading the
->>> firmware image but here you're telling me it has to be loaded twice.  This is
->>> very confusing.
->>
->> Concerning the call of request_firmware()
->>
->> By "both cases" I would say that the call of request_firmware() is needed in
->> both modes:
->> - the ELF firmware is parsed and loaded by linux (legacy)
->> - the binary firmware is parsed and loaded by OP-TEE.
->>
->> The Op-TEE is not able to get the firmware image from the file system.
->>
->>
->> Concerning the call of tee_rproc_load_fw twice time
->>
->> There are 2 use cases:
->>
->> - First boot of the remote processor:
->>
->>   1) The Linux rproc gets the binary firmware image from the file system by
->>      calling  request_firmware(). A copy is stored in memory.
-> 
-> Right.  And I think tee_rproc_load_fw() should be called right after
-> request_firmware() if rproc::tee_rproc_interface is valid.  At that point the TEE
-> app may or may not do the firmware authentication, that is application specific.
-> 
->>   2) the linux performs a sanity check on the firmware calling
->>      rproc_fw_sanity_check()
->> 	=> from OP-TEE point of view this means to autenticate the firmware
->> 	=> let consider in this exemple that we bypass this step
->>            (ops->sanity_check = NULL)
-> 
-> Ok
-> 
->> 		
->>   3) the linux rproc call rproc_parse_fw() to get the resource table
->> 	=> From OP-TEE point of view the resource table is available only when
->>            the firmware is loaded
-> 
-> Right, and it should have been loaded already.  If it is not then the TEE should
-> return an error.
-> 
->> 	=> We need to call tee_rproc_load_fw() to be able then to get the
->>            address of the resource table.
-> 
-> See my comment above - at this point the TEE should already have the firmware.
-> As such the only thing left is to get the address of the resource table, which
-> you already do in rproc_tee_get_rsc_table().  The upper part of that function
-> should be spun off in a new static function to deal with the TEE API, something
-> like _rproc_tee_get_rsc_table().  The new function should also be called in
-> tee_rproc_get_loaded_rsc_table() rather than keeping a cache value in
-> trproc->rsc_va.
-> 
->>   4) The Linux rproc calls rproc_handle_resources() to parse the resource table.
->>   5) The linux rproc calls rproc_start()
->> 	- load the firrmware calling rproc_load_segments()
->> 		=> we don't want to call tee_rproc_load_fw() it a second time
-> 
-> And that is fine if the TEE app has already placed the program segments in
-> memory.
-> 
->> 	- start the firmware calling ops->start()
->>
->> - Reboot on crash recovery using rproc_boot_recovery()
->>
->>   1)  The Linux rproc gets the binary firmware image from the file system by
->>      calling request_firmware(). A copy is stored in memory.
->>   5) The linux rproc calls rproc_start()
->> 	- load the firrmware calling rproc_load_segments()
->> 		=> we have to call tee_rproc_load_fw() to reload the firmware
-> 
-> Loading the firmware in the TEE should be done right after request_firmware()
-> has been called, the same way it is done in the boot path.  If there isn't a
-> need to reload the TEE firmware than the TEE application should ignore the
-> request.
-
-I need to prototype to verify this proposal.
-I will come back with a V3.
-
-Thank you for the advice and review!
-
-Regard,
-Arnaud
-
-> 
->> 	- start the firmware calling ops->start()
->>
->> In first use case we have to load the firmware on rproc_parse_fw(), in second
->> usecase on rproc_load_segments().
->>
->> This is the point I have tried to solve with the ddata->fw_loaded variable.
->>
->>>
->>> I'm also confused as to why stm32_rproc_tee_elf_sanity_check() is calling
->>> tee_rproc_load_fw().  There should be one call to load the firmware and another
->>> to perform a sanity check on it.  If the sanity check is done at load time by
->>> the secure world then ops::sanity_check() is NULL.
->>
->> Sure, make sense to remove the sanity_check ops
->>
->> Thanks,
->> Arnaud
->>
->>>
->>> Most of what this patchset does makes sense, but some of it needs to be moved
->>> around.  
->>>
->>> Thanks,
->>> Mathieu
->>>
->>>>
->>>> If we want to integrate in remoteproc_core the solution could probably have to
->>>> create the equivalent of the rproc_fw_boot() to load the firmware with an
->>>> external method. Here is an example based on a new rproc_ops ( not tested)
->>>>
->>>> + static int rproc_fw_ext_boot(struct rproc *rproc, const struct firmware *fw)
->>>> + {
->>>> + 	struct device *dev = &rproc->dev;
->>>> + 	const char *name = rproc->firmware;
->>>> + 	int ret;
->>>> +
->>>> +
->>>> + 	dev_info(dev, "Booting fw image %s, size %zd\n", name, fw->size);
->>>> + 	
->>>> + 	/* ops to load and start the remoteprocessor */
->>>> + 	ret = rproc->ops->boot(rproc, fw);
->>>> + 	if (ret)
->>>> + 		return ret;
->>>> +
->>>> + 	/*
->>>> + 	 * if enabling an IOMMU isn't relevant for this rproc, this is
->>>> + 	 * just a nop
->>>> + 	 */
->>>> + 	ret = rproc_enable_iommu(rproc);
->>>> + 	if (ret) {
->>>> + 		dev_err(dev, "can't enable iommu: %d\n", ret);
->>>> + 		return ret;
->>>> + 	}
->>>> +
->>>> + 	/* Prepare rproc for firmware loading if needed */
->>>> + 	ret = rproc_prepare_device(rproc);
->>>> + 	if (ret) {
->>>> + 		dev_err(dev, "can't prepare rproc %s: %d\n", rproc->name, ret);
->>>> + 		goto disable_iommu;
->>>> + 	}
->>>> +
->>>> + 	ret = rproc_set_rsc_table(rproc);
->>>> + 	if (ret) {
->>>> + 		dev_err(dev, "can't load resource table: %d\n", ret);
->>>> + 		goto unprepare_device;
->>>> + 	}
->>>> +
->>>> +
->>>> + 	/* reset max_notifyid */
->>>> + 	rproc->max_notifyid = -1;
->>>> +
->>>> + 	/* reset handled vdev */
->>>> + 	rproc->nb_vdev = 0;
->>>> +
->>>> + 	/* handle fw resources which are required to boot rproc */
->>>> + 	ret = rproc_handle_resources(rproc, rproc_loading_handlers);
->>>> + 	if (ret) {
->>>> + 		dev_err(dev, "Failed to process resources: %d\n", ret);
->>>> + 		goto clean_up_resources;
->>>> + 	}
->>>> +
->>>> + 	/* Allocate carveout resources associated to rproc */
->>>> + 	ret = rproc_alloc_registered_carveouts(rproc);
->>>> + 	if (ret) {
->>>> + 		dev_err(dev, "Failed to allocate associated carveouts: %d\n",
->>>> + 			ret);
->>>> + 		goto clean_up_resources;
->>>> + 	}
->>>> +
->>>> + 	return 0;
->>>> +
->>>> + clean_up_resources:
->>>> + 	rproc_resource_cleanup(rproc);
->>>> + unprepare_rproc:
->>>> + 	/* release HW resources if needed */
->>>> + 	rproc_unprepare_device(rproc);
->>>> + disable_iommu:
->>>> + 	rproc_disable_iommu(rproc);
->>>> + 	return ret;
->>>> + }
->>>>
->>>>
->>>> int rproc_boot(struct rproc *rproc)
->>>> {
->>>> [...]
->>>>
->>>> - 		ret = rproc_fw_boot(rproc, firmware_p);
->>>> + 		if(rproc->ops->boot)
->>>> + 			ret = rproc_fw_ext_boot(rproc, firmware_p);
->>>> + 		else
->>>> + 			ret = rproc_fw_boot(rproc, firmware_p);
->>>>
->>>> Another advantage of this solution is that it opens the framework to other
->>>> formats. For instance it could be a way to support dtb format requested in [RFC]
->>>> Passing device-tree to remoteproc [1].
->>>>
->>>> [1]
->>>> https://lore.kernel.org/linux-remoteproc/f67cd822-4e29-71f2-7c42-e11dbaa6cd8c@kalrayinc.com/T/#t
->>>>
->>>> Thanks,
->>>> Arnaud
->>>>
->>>>
->>>>
->>>>>
->>>>> I touched on that before but please rename rproc_tee_get_rsc_table() to
->>>>> rproc_tee_elf_load_rsc_table().  I also suggest to introduce a new function,
->>>>> rproc_tee_get_loaded_rsc_table() that would be called from
->>>>> rproc_tee_elf_load_rsc_table().  That way we don't need trproc->rsc_va.  
->>>>>
->>>>> I also think tee_rproc should be renamed to "rproc_tee_interface" and folded
->>>>> under struct rproc.  
->>>>>
->>>>> With the above most of the problems with the current implementation should
->>>>> naturally go away.
->>>>>
->>>>> Thanks,
->>>>> Mathieu
->>>>>
->>>>>>
->>>>>>>> +	ret = tee_rproc_load_fw(ddata->trproc, fw);
->>>>>>>> +	if (ret)
->>>>>>>> +		return ret;
->>>>>>>> +	ddata->fw_loaded = true;
->>>>>>>> +
->>>>>>>> +	/* Update the resource table parameters. */
->>>>>>>> +	if (rproc_tee_get_rsc_table(ddata->trproc)) {
->>>>>>>> +		/* No resource table: reset the related fields. */
->>>>>>>> +		rproc->cached_table = NULL;
->>>>>>>> +		rproc->table_ptr = NULL;
->>>>>>>> +		rproc->table_sz = 0;
->>>>>>>> +	}
->>>>>>>> +
->>>>>>>> +	return 0;
->>>>>>>> +}
->>>>>>>> +
->>>>>>>> +static struct resource_table *
->>>>>>>> +stm32_rproc_tee_elf_find_loaded_rsc_table(struct rproc *rproc,
->>>>>>>> +					  const struct firmware *fw)
->>>>>>>> +{
->>>>>>>> +	struct stm32_rproc *ddata = rproc->priv;
->>>>>>>> +
->>>>>>>> +	return tee_rproc_get_loaded_rsc_table(ddata->trproc);
->>>>>>>> +}
->>>>>>>> +
->>>>>>>> +static int stm32_rproc_tee_start(struct rproc *rproc)
->>>>>>>> +{
->>>>>>>> +	struct stm32_rproc *ddata = rproc->priv;
->>>>>>>> +
->>>>>>>> +	return tee_rproc_start(ddata->trproc);
->>>>>>>> +}
->>>>>>>> +
->>>>>>>> +static int stm32_rproc_tee_attach(struct rproc *rproc)
->>>>>>>> +{
->>>>>>>> +	/* Nothing to do, remote proc already started by the secured context. */
->>>>>>>> +	return 0;
->>>>>>>> +}
->>>>>>>> +
->>>>>>>> +static int stm32_rproc_tee_stop(struct rproc *rproc)
->>>>>>>> +{
->>>>>>>> +	struct stm32_rproc *ddata = rproc->priv;
->>>>>>>> +	int err;
->>>>>>>> +
->>>>>>>> +	stm32_rproc_request_shutdown(rproc);
->>>>>>>> +
->>>>>>>> +	err = tee_rproc_stop(ddata->trproc);
->>>>>>>> +	if (err)
->>>>>>>> +		return err;
->>>>>>>> +
->>>>>>>> +	ddata->fw_loaded = false;
->>>>>>>> +
->>>>>>>> +	return stm32_rproc_release(rproc);
->>>>>>>> +}
->>>>>>>> +
->>>>>>>>  static int stm32_rproc_prepare(struct rproc *rproc)
->>>>>>>>  {
->>>>>>>>  	struct device *dev = rproc->dev.parent;
->>>>>>>> @@ -319,7 +410,14 @@ static int stm32_rproc_prepare(struct rproc *rproc)
->>>>>>>>  
->>>>>>>>  static int stm32_rproc_parse_fw(struct rproc *rproc, const struct firmware *fw)
->>>>>>>>  {
->>>>>>>> -	if (rproc_elf_load_rsc_table(rproc, fw))
->>>>>>>> +	struct stm32_rproc *ddata = rproc->priv;
->>>>>>>> +	int ret;
->>>>>>>> +
->>>>>>>> +	if (ddata->trproc)
->>>>>>>> +		ret = rproc_tee_get_rsc_table(ddata->trproc);
->>>>>>>> +	else
->>>>>>>> +		ret = rproc_elf_load_rsc_table(rproc, fw);
->>>>>>>> +	if (ret)
->>>>>>>>  		dev_warn(&rproc->dev, "no resource table found for this firmware\n");
->>>>>>>>  
->>>>>>>>  	return 0;
->>>>>>>> @@ -693,8 +791,22 @@ static const struct rproc_ops st_rproc_ops = {
->>>>>>>>  	.get_boot_addr	= rproc_elf_get_boot_addr,
->>>>>>>>  };
->>>>>>>>  
->>>>>>>> +static const struct rproc_ops st_rproc_tee_ops = {
->>>>>>>> +	.prepare	= stm32_rproc_prepare,
->>>>>>>> +	.start		= stm32_rproc_tee_start,
->>>>>>>> +	.stop		= stm32_rproc_tee_stop,
->>>>>>>> +	.attach		= stm32_rproc_tee_attach,
->>>>>>>> +	.kick		= stm32_rproc_kick,
->>>>>>>> +	.parse_fw	= stm32_rproc_parse_fw,
->>>>>>>> +	.find_loaded_rsc_table = stm32_rproc_tee_elf_find_loaded_rsc_table,
->>>>>>>> +	.get_loaded_rsc_table = stm32_rproc_get_loaded_rsc_table,
->>>>>>>> +	.sanity_check	= stm32_rproc_tee_elf_sanity_check,
->>>>>>>> +	.load		= stm32_rproc_tee_elf_load,
->>>>>>>> +};
->>>>>>>> +
->>>>>>>>  static const struct of_device_id stm32_rproc_match[] = {
->>>>>>>> -	{ .compatible = "st,stm32mp1-m4" },
->>>>>>>> +	{.compatible = "st,stm32mp1-m4",},
->>>>>>>> +	{.compatible = "st,stm32mp1-m4-tee",},
->>>>>>>>  	{},
->>>>>>>>  };
->>>>>>>>  MODULE_DEVICE_TABLE(of, stm32_rproc_match);
->>>>>>>> @@ -853,6 +965,7 @@ static int stm32_rproc_probe(struct platform_device *pdev)
->>>>>>>>  	struct device *dev = &pdev->dev;
->>>>>>>>  	struct stm32_rproc *ddata;
->>>>>>>>  	struct device_node *np = dev->of_node;
->>>>>>>> +	struct tee_rproc *trproc = NULL;
->>>>>>>>  	struct rproc *rproc;
->>>>>>>>  	unsigned int state;
->>>>>>>>  	int ret;
->>>>>>>> @@ -861,11 +974,31 @@ static int stm32_rproc_probe(struct platform_device *pdev)
->>>>>>>>  	if (ret)
->>>>>>>>  		return ret;
->>>>>>>>  
->>>>>>>> -	rproc = rproc_alloc(dev, np->name, &st_rproc_ops, NULL, sizeof(*ddata));
->>>>>>>> -	if (!rproc)
->>>>>>>> -		return -ENOMEM;
->>>>>>>> +	if (of_device_is_compatible(np, "st,stm32mp1-m4-tee")) {
->>>>>>>> +		trproc = tee_rproc_register(dev, STM32_MP1_M4_PROC_ID);
->>>>>>>> +		if (IS_ERR(trproc)) {
->>>>>>>> +			dev_err_probe(dev, PTR_ERR(trproc),
->>>>>>>> +				      "signed firmware not supported by TEE\n");
->>>>>>>> +			return PTR_ERR(trproc);
->>>>>>>> +		}
->>>>>>>> +		/*
->>>>>>>> +		 * Delegate the firmware management to the secure context.
->>>>>>>> +		 * The firmware loaded has to be signed.
->>>>>>>> +		 */
->>>>>>>> +		dev_info(dev, "Support of signed firmware only\n");
->>>>>>>
->>>>>>> Not sure what this adds.  Please remove.
->>>>>>
->>>>>> This is used to inform the user that only a signed firmware can be loaded, not
->>>>>> an ELF file.
->>>>>> I have a patch in my pipe to provide the supported format in the debugfs. In a
->>>>>> first step, I can suppress this message and we can revisit the issue when I push
->>>>>> the debugfs proposal.
->>>>>>
->>>>>> Thanks,
->>>>>> Arnaud
->>>>>>
->>>>>>>
->>>>>>>> +	}
->>>>>>>> +	rproc = rproc_alloc(dev, np->name,
->>>>>>>> +			    trproc ? &st_rproc_tee_ops : &st_rproc_ops,
->>>>>>>> +			    NULL, sizeof(*ddata));
->>>>>>>> +	if (!rproc) {
->>>>>>>> +		ret = -ENOMEM;
->>>>>>>> +		goto free_tee;
->>>>>>>> +	}
->>>>>>>>  
->>>>>>>>  	ddata = rproc->priv;
->>>>>>>> +	ddata->trproc = trproc;
->>>>>>>> +	if (trproc)
->>>>>>>> +		trproc->rproc = rproc;
->>>>>>>>  
->>>>>>>>  	rproc_coredump_set_elf_info(rproc, ELFCLASS32, EM_NONE);
->>>>>>>>  
->>>>>>>> @@ -916,6 +1049,10 @@ static int stm32_rproc_probe(struct platform_device *pdev)
->>>>>>>>  		device_init_wakeup(dev, false);
->>>>>>>>  	}
->>>>>>>>  	rproc_free(rproc);
->>>>>>>> +free_tee:
->>>>>>>> +	if (trproc)
->>>>>>>> +		tee_rproc_unregister(trproc);
->>>>>>>> +
->>>>>>>>  	return ret;
->>>>>>>>  }
->>>>>>>>  
->>>>>>>> @@ -937,6 +1074,8 @@ static void stm32_rproc_remove(struct platform_device *pdev)
->>>>>>>>  		device_init_wakeup(dev, false);
->>>>>>>>  	}
->>>>>>>>  	rproc_free(rproc);
->>>>>>>> +	if (ddata->trproc)
->>>>>>>> +		tee_rproc_unregister(ddata->trproc);
->>>>>>>>  }
->>>>>>>>  
->>>>>>>>  static int stm32_rproc_suspend(struct device *dev)
->>>>>>>> -- 
->>>>>>>> 2.25.1
->>>>>>>>
+PiBGcm9tOiBMZW9uIFJvbWFub3Zza3kgPGxlb25Aa2VybmVsLm9yZz4NCj4gT24gU3VuLCBGZWIg
+MDQsIDIwMjQgYXQgMDU6MTc6NTlQTSArMDAwMCwgS29uc3RhbnRpbiBUYXJhbm92IHdyb3RlOg0K
+PiA+ID4gRnJvbTogTGVvbiBSb21hbm92c2t5IDxsZW9uQGtlcm5lbC5vcmc+IE9uIFN1biwgRmVi
+IDA0LCAyMDI0IGF0DQo+ID4gPiAwMzo1MDo0MFBNICswMDAwLCBLb25zdGFudGluIFRhcmFub3Yg
+d3JvdGU6DQo+ID4gPiA+ID4gRnJvbTogTGVvbiBSb21hbm92c2t5IDxsZW9uQGtlcm5lbC5vcmc+
+IE9uIEZyaSwgRmViIDAyLCAyMDI0IGF0DQo+ID4gPiA+ID4gMDc6MDY6MzRBTSAtMDgwMCwgS29u
+c3RhbnRpbiBUYXJhbm92IHdyb3RlOg0KPiA+ID4gPiA+ID4gVGhpcyBwYXRjaCBhZGRzIFJOSUMg
+Y3JlYXRpb24gYW5kIGRlc3RydWN0aW9uLg0KPiA+ID4gPiA+ID4gSWYgY3JlYXRpb24gb2YgUk5J
+QyBmYWlscywgd2Ugc3VwcG9ydCBvbmx5IFJBVyBRUHMgYXMgdGhleSBhcmUNCj4gPiA+ID4gPiA+
+IHNlcnZlZCBieSBldGhlcm5ldCBkcml2ZXIuDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBTbyBwbGVh
+c2UgbWFrZSBzdXJlIHRoYXQgeW91IGFyZSBjcmVhdGluZyBSTklDIG9ubHkgd2hlbiB5b3UgYXJl
+DQo+ID4gPiA+ID4gc3VwcG9ydGluZyBpdC4gVGhlIGlkZWEgdGhhdCBzb21lIGZ1bmN0aW9uIHRy
+aWVzLWFuZC1mYWlscyB3aXRoDQo+ID4gPiA+ID4gZG1lc2cgZXJyb3JzIGlzIG5vdCBnb29kIGlk
+ZWEuDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBUaGFua3MNCj4gPiA+ID4gPg0KPiA+ID4gPg0KPiA+
+ID4gPiBIaSBMZW9uLiBUaGFua3MgZm9yIHlvdXIgY29tbWVudHMgYW5kIHN1Z2dlc3Rpb24uIEkg
+d2lsbA0KPiA+ID4gPiBpbmNvcnBvcmF0ZSB0aGVtDQo+ID4gPiBpbiB0aGUgbmV4dCB2ZXJzaW9u
+Lg0KPiA+ID4gPiBSZWdhcmRpbmcgdGhpcyAidHJ5LWFuZC1mYWlsIiwgd2UgY2Fubm90IGd1YXJh
+bnRlZSBub3cgdGhhdCBSTklDDQo+ID4gPiA+IGlzIHN1cHBvcnRlZCwgYW5kIHRyeS1hbmQtZmFp
+bCBpcyB0aGUgb25seSB3YXkgdG8gc2tpcCBSTklDDQo+ID4gPiA+IGNyZWF0aW9uIHdpdGhvdXQg
+aW1wZWRpbmcgUkFXIFFQcy4gQ291bGQgeW91LCBwbGVhc2UsIHN1Z2dlc3QgaG93DQo+ID4gPiA+
+IHdlIGNvdWxkDQo+ID4gPiBjb3JyZWN0bHkgaW5jb3Jwb3JhdGUgdGhlICJ0cnktYW5kLWZhaWwi
+IHN0cmF0ZWd5IHRvIGdldCBpdCB1cHN0cmVhbWVkPw0KPiA+ID4NCj4gPiA+IFlvdSBhbHJlYWR5
+IHF1ZXJ5IE5JQyBmb3IgaXRzIGNhcGFiaWxpdGllcywgc28geW91IGNhbiBjaGVjayBpZiBpdCBz
+dXBwb3J0cw0KPiBSTklDLg0KPiA+DQo+ID4gQXQgdGhlIG1vbWVudCwgdGhlIGNhcGFiaWxpdGll
+cyBkbyBub3QgaW5kaWNhdGUgd2hldGhlciBSTklDIGNyZWF0aW9uIHdpbGwNCj4gYmUgc3VjY2Vz
+c2Z1bC4NCj4gPiBUaGUgcmVhc29uIGlzIGFkZGl0aW9uYWwgY2hlY2tzIGR1cmluZyBSTklDIGNy
+ZWF0aW9uIHRoYXQgYXJlIG5vdCByZWZsZWN0ZWQNCj4gaW4gY2FwYWJpbGl0aWVzLg0KPiA+IFRo
+ZSBxdWVzdGlvbiBpcyB3aGV0aGVyIHdlIGNhbiBoYXZlIHRoZSBwcm9wb3NlZCAidHJ5IGFuZCBk
+aXNhYmxlIiBvciB3ZQ0KPiBtdXN0IG9wdCBmb3IgZmFpbGluZyB0aGUgd2hvbGUgbWFuYV9pYi4N
+Cj4gDQo+IFJOSUMgY3JlYXRpb24gY2FuIGJlIHNlZW4gYXMgYW4gZXhhbXBsZSBvZiBhbnkgb3Ro
+ZXIgZmVhdHVyZSB3aGljaCB3aWxsIGJlDQo+IGFkZGVkIGxhdGVyLCB5b3Ugd2lsbCBuZXZlciBr
+bm93IGlmIGl0IHdpbGwgYmUgc3VjY2Vzc2Z1bCBvciBub3Qgd2l0aG91dA0KPiBjYXBhYmlsaXRp
+ZXMuDQo+IA0KPiBJZiB5b3UgY29udGludWUgd2l0aCB0aGlzIHRyeS1hbmQtZmFpbCBhcHByb2Fj
+aCwgSSBhZnJhaWQgdGhhdCB5b3Ugd2lsbCBlbmQgdXANCj4gd2l0aCB3aG9sZSBkcml2ZXIgd3Jp
+dHRlbiBpbiB0aGlzIHN0eWxlLiBTdHlsZSB3aGVyZSB5b3UgZG9uJ3Qgc2VwYXJhdGUNCj4gYmV0
+d2VlbiAicmVhbCIgZmFpbHVyZXMgKHdyb25nIGNvbmZpZ3VyYXRpb24sIE9PTSBlLnQuYykgYW5k
+ICJleHBlY3RlZCINCj4gZmFpbHVyZXMgKGZlYXR1cmUgaXMgbm90IHN1cHBvcnRlZCkuDQo+IA0K
+DQpIaSBMZW9uLiBJIHVuZGVyc3RhbmQgeW91ciBjb25jZXJucyBhbmQgSSBzZWUgaG93IHRyeS1h
+bmQtZmFpbCBhcHByb2FjaCBjYW4gZ28gd3JvbmcuDQpJIHRoaW5rIHlvdSBtaXN1bmRlcnN0b29k
+IHRoZSBjdXJyZW50IEhXIGxpbWl0YXRpb24gd2UgaGF2ZS4gV2UgKmRvKiBkaXN0aW5ndWlzaCBi
+ZXR3ZWVuIA0KZmFpbHVyZXMgYW5kIHRoaXMgIiB0cnktYW5kLWZhaWwgIiB3aWxsIGJlIHVzZWQg
+b25jZSBkdXJpbmcgaW5pdGlhbGl6YXRpb24uIEFzIEkgbWVudGlvbmVkIGFib3ZlLA0Kb3VyIGN1
+cnJlbnQgSFcgY2FwYWJpbGl0aWVzIGNhbm5vdCByZWZsZWN0IHdoZXRoZXIgUk5JQyBpcyBzdXBw
+b3J0ZWQuIFRoZXJlZm9yZSwgd2UgbXVzdCB0cnkNCnRvIGNyZWF0ZSBpdCB0byB1bmRlcnN0YW5k
+IHdoZXRoZXIgaXQgaXMgcmVhbGx5IHN1cHBvcnRlZC4gU28sIGlmIHdlIHN1Y2NlZWQgdGhlbiB0
+aGUgUk5JQyBmZWF0dXJlDQppcyBzdXBwb3J0ZWQgYW5kIGFsbCBSTklDLXJlbGF0ZWQgb3BlcmF0
+aW9ucyB3aWxsIHdvcmsuIE90aGVyd2lzZSwgUk5JQyBjYXBhYmlsaXR5IGlzIG5vdCBwcmVzZW50
+DQphbmQgaW4gdGhpcyBjYXNlLCB3ZSBqdXN0IHdhbnRlZCB0byB3YXJuIHRoZSB1c2VyIGFib3V0
+IGl0LiBJZiBpdCBjb25jZXJucyB5b3UsIEkgY2FuIHJlbW92ZSB0aGlzIHdhcm4gbWVzc2FnZS4g
+DQoNCkdpdmVuIHRoZSBwcm92aWRlZCBleHBsYW5hdGlvbiwgSSB3b3VsZCBhcHByZWNpYXRlIGlm
+IHlvdSB3cm90ZSB3aGV0aGVyIHRoaXMgYXBwcm9hY2ggb2YgcXVlcnlpbmcgUk5JQyBzdXBwb3J0
+DQpjb3VsZCBiZSBhY2NlcHRlZC4gDQoNClRoYW5rcyENCg0KPiBUaGFua3MNCj4gDQo+ID4NCj4g
+PiA+DQo+ID4gPiA+DQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gU2lnbmVkLW9mZi1ieTogS29u
+c3RhbnRpbiBUYXJhbm92DQo+ID4gPiA+ID4gPiA8a290YXJhbm92QGxpbnV4Lm1pY3Jvc29mdC5j
+b20+DQo+ID4gPiA+ID4gPiAtLS0NCj4gPiA+ID4gPiA+ICBkcml2ZXJzL2luZmluaWJhbmQvaHcv
+bWFuYS9tYWluLmMgICAgfCAzMQ0KPiA+ID4gPiA+ICsrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysNCj4gPiA+ID4gPiA+ICBkcml2ZXJzL2luZmluaWJhbmQvaHcvbWFuYS9tYW5hX2liLmgg
+fCAyOQ0KPiA+ID4gPiA+ID4gKysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCj4gPiA+ID4g
+PiA+ICAyIGZpbGVzIGNoYW5nZWQsIDYwIGluc2VydGlvbnMoKykNCj4gPiA+ID4gPiA+DQo+ID4g
+PiA+ID4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pbmZpbmliYW5kL2h3L21hbmEvbWFpbi5jDQo+
+ID4gPiA+ID4gPiBiL2RyaXZlcnMvaW5maW5pYmFuZC9ody9tYW5hL21haW4uYw0KPiA+ID4gPiA+
+ID4gaW5kZXggYzY0ZDU2OS4uMzNjZDY5ZSAxMDA2NDQNCj4gPiA+ID4gPiA+IC0tLSBhL2RyaXZl
+cnMvaW5maW5pYmFuZC9ody9tYW5hL21haW4uYw0KPiA+ID4gPiA+ID4gKysrIGIvZHJpdmVycy9p
+bmZpbmliYW5kL2h3L21hbmEvbWFpbi5jDQo+ID4gPiA+ID4gPiBAQCAtNTgxLDE0ICs1ODEsMzEg
+QEAgc3RhdGljIHZvaWQgbWFuYV9pYl9kZXN0cm95X2VxcyhzdHJ1Y3QNCj4gPiA+ID4gPiA+IG1h
+bmFfaWJfZGV2ICptZGV2KQ0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ICB2b2lkIG1hbmFfaWJf
+Z2RfY3JlYXRlX3JuaWNfYWRhcHRlcihzdHJ1Y3QgbWFuYV9pYl9kZXYgKm1kZXYpDQo+ID4gPiA+
+ID4gPiB7DQo+ID4gPiA+ID4gPiArICAgICBzdHJ1Y3QgbWFuYV9ybmljX2NyZWF0ZV9hZGFwdGVy
+X3Jlc3AgcmVzcCA9IHt9Ow0KPiA+ID4gPiA+ID4gKyAgICAgc3RydWN0IG1hbmFfcm5pY19jcmVh
+dGVfYWRhcHRlcl9yZXEgcmVxID0ge307DQo+ID4gPiA+ID4gPiArICAgICBzdHJ1Y3QgZ2RtYV9j
+b250ZXh0ICpnYyA9IG1kZXZfdG9fZ2MobWRldik7DQo+ID4gPiA+ID4gPiAgICAgICBpbnQgZXJy
+Ow0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ICsgICAgIG1kZXYtPmFkYXB0ZXJfaGFuZGxlID0g
+SU5WQUxJRF9NQU5BX0hBTkRMRTsNCj4gPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiA+ICAgICAgIGVy
+ciA9IG1hbmFfaWJfY3JlYXRlX2VxcyhtZGV2KTsNCj4gPiA+ID4gPiA+ICAgICAgIGlmIChlcnIp
+IHsNCj4gPiA+ID4gPiA+ICAgICAgICAgICAgICAgaWJkZXZfZXJyKCZtZGV2LT5pYl9kZXYsICJG
+YWlsZWQgdG8gY3JlYXRlIEVRcw0KPiA+ID4gPiA+ID4gZm9yIFJOSUMgZXJyICVkIiwNCj4gPiA+
+ID4gPiBlcnIpOw0KPiA+ID4gPiA+ID4gICAgICAgICAgICAgICBnb3RvIGNsZWFudXA7DQo+ID4g
+PiA+ID4gPiAgICAgICB9DQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gKyAgICAgbWFuYV9nZF9p
+bml0X3JlcV9oZHIoJnJlcS5oZHIsIE1BTkFfSUJfQ1JFQVRFX0FEQVBURVIsDQo+ID4gPiA+ID4g
+c2l6ZW9mKHJlcSksIHNpemVvZihyZXNwKSk7DQo+ID4gPiA+ID4gPiArICAgICByZXEuaGRyLnJl
+cS5tc2dfdmVyc2lvbiA9IEdETUFfTUVTU0FHRV9WMjsNCj4gPiA+ID4gPiA+ICsgICAgIHJlcS5o
+ZHIuZGV2X2lkID0gZ2MtPm1hbmFfaWIuZGV2X2lkOw0KPiA+ID4gPiA+ID4gKyAgICAgcmVxLm5v
+dGlmeV9lcV9pZCA9IG1kZXYtPmZhdGFsX2Vycl9lcS0+aWQ7DQo+ID4gPiA+ID4gPiArDQo+ID4g
+PiA+ID4gPiArICAgICBlcnIgPSBtYW5hX2dkX3NlbmRfcmVxdWVzdChnYywgc2l6ZW9mKHJlcSks
+ICZyZXEsDQo+ID4gPiA+ID4gPiArIHNpemVvZihyZXNwKSwNCj4gPiA+ICZyZXNwKTsNCj4gPiA+
+ID4gPiA+ICsgICAgIGlmIChlcnIpIHsNCj4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgaWJkZXZf
+ZXJyKCZtZGV2LT5pYl9kZXYsICJGYWlsZWQgdG8gY3JlYXRlIFJOSUMNCj4gPiA+ID4gPiA+ICsg
+YWRhcHRlciBlcnIgJWQiLA0KPiA+ID4gPiA+IGVycik7DQo+ID4gPiA+ID4gPiArICAgICAgICAg
+ICAgIGdvdG8gY2xlYW51cDsNCj4gPiA+ID4gPiA+ICsgICAgIH0NCj4gPiA+ID4gPiA+ICsgICAg
+IG1kZXYtPmFkYXB0ZXJfaGFuZGxlID0gcmVzcC5hZGFwdGVyOw0KPiA+ID4gPiA+ID4gKw0KPiA+
+ID4gPiA+ID4gICAgICAgcmV0dXJuOw0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ICBjbGVhbnVw
+Og0KPiA+ID4gPiA+ID4gQEAgLTU5OSw1ICs2MTYsMTkgQEAgdm9pZA0KPiA+ID4gPiA+ID4gbWFu
+YV9pYl9nZF9jcmVhdGVfcm5pY19hZGFwdGVyKHN0cnVjdA0KPiA+ID4gPiA+ID4gbWFuYV9pYl9k
+ZXYgKm1kZXYpDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gIHZvaWQgbWFuYV9pYl9nZF9kZXN0
+cm95X3JuaWNfYWRhcHRlcihzdHJ1Y3QgbWFuYV9pYl9kZXYNCj4gPiA+ID4gPiA+ICptZGV2KSAg
+ew0KPiA+ID4gPiA+ID4gKyAgICAgc3RydWN0IG1hbmFfcm5pY19kZXN0cm95X2FkYXB0ZXJfcmVz
+cCByZXNwID0ge307DQo+ID4gPiA+ID4gPiArICAgICBzdHJ1Y3QgbWFuYV9ybmljX2Rlc3Ryb3lf
+YWRhcHRlcl9yZXEgcmVxID0ge307DQo+ID4gPiA+ID4gPiArICAgICBzdHJ1Y3QgZ2RtYV9jb250
+ZXh0ICpnYzsNCj4gPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiA+ICsgICAgIGlmICghcm5pY19pc19l
+bmFibGVkKG1kZXYpKQ0KPiA+ID4gPiA+ID4gKyAgICAgICAgICAgICByZXR1cm47DQo+ID4gPiA+
+ID4gPiArDQo+ID4gPiA+ID4gPiArICAgICBnYyA9IG1kZXZfdG9fZ2MobWRldik7DQo+ID4gPiA+
+ID4gPiArICAgICBtYW5hX2dkX2luaXRfcmVxX2hkcigmcmVxLmhkciwNCj4gTUFOQV9JQl9ERVNU
+Uk9ZX0FEQVBURVIsDQo+ID4gPiA+ID4gc2l6ZW9mKHJlcSksIHNpemVvZihyZXNwKSk7DQo+ID4g
+PiA+ID4gPiArICAgICByZXEuaGRyLmRldl9pZCA9IGdjLT5tYW5hX2liLmRldl9pZDsNCj4gPiA+
+ID4gPiA+ICsgICAgIHJlcS5hZGFwdGVyID0gbWRldi0+YWRhcHRlcl9oYW5kbGU7DQo+ID4gPiA+
+ID4gPiArDQo+ID4gPiA+ID4gPiArICAgICBtYW5hX2dkX3NlbmRfcmVxdWVzdChnYywgc2l6ZW9m
+KHJlcSksICZyZXEsIHNpemVvZihyZXNwKSwNCj4gJnJlc3ApOw0KPiA+ID4gPiA+ID4gKyAgICAg
+bWRldi0+YWRhcHRlcl9oYW5kbGUgPSBJTlZBTElEX01BTkFfSEFORExFOw0KPiA+ID4gPiA+ID4g
+ICAgICAgbWFuYV9pYl9kZXN0cm95X2VxcyhtZGV2KTsgIH0gZGlmZiAtLWdpdA0KPiA+ID4gPiA+
+ID4gYS9kcml2ZXJzL2luZmluaWJhbmQvaHcvbWFuYS9tYW5hX2liLmgNCj4gPiA+ID4gPiA+IGIv
+ZHJpdmVycy9pbmZpbmliYW5kL2h3L21hbmEvbWFuYV9pYi5oDQo+ID4gPiA+ID4gPiBpbmRleCBh
+NGI5NGVlLi45NjQ1NGNmIDEwMDY0NA0KPiA+ID4gPiA+ID4gLS0tIGEvZHJpdmVycy9pbmZpbmli
+YW5kL2h3L21hbmEvbWFuYV9pYi5oDQo+ID4gPiA+ID4gPiArKysgYi9kcml2ZXJzL2luZmluaWJh
+bmQvaHcvbWFuYS9tYW5hX2liLmgNCj4gPiA+ID4gPiA+IEBAIC00OCw2ICs0OCw3IEBAIHN0cnVj
+dCBtYW5hX2liX2FkYXB0ZXJfY2FwcyB7ICBzdHJ1Y3QNCj4gPiA+IG1hbmFfaWJfZGV2IHsNCj4g
+PiA+ID4gPiA+ICAgICAgIHN0cnVjdCBpYl9kZXZpY2UgaWJfZGV2Ow0KPiA+ID4gPiA+ID4gICAg
+ICAgc3RydWN0IGdkbWFfZGV2ICpnZG1hX2RldjsNCj4gPiA+ID4gPiA+ICsgICAgIG1hbmFfaGFu
+ZGxlX3QgYWRhcHRlcl9oYW5kbGU7DQo+ID4gPiA+ID4gPiAgICAgICBzdHJ1Y3QgZ2RtYV9xdWV1
+ZSAqZmF0YWxfZXJyX2VxOw0KPiA+ID4gPiA+ID4gICAgICAgc3RydWN0IG1hbmFfaWJfYWRhcHRl
+cl9jYXBzIGFkYXB0ZXJfY2FwczsgIH07IEBAIC0xMTUsNg0KPiA+ID4gPiA+ID4gKzExNiw4IEBA
+IHN0cnVjdCBtYW5hX2liX3J3cV9pbmRfdGFibGUgew0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+
+ICBlbnVtIG1hbmFfaWJfY29tbWFuZF9jb2RlIHsNCj4gPiA+ID4gPiA+ICAgICAgIE1BTkFfSUJf
+R0VUX0FEQVBURVJfQ0FQID0gMHgzMDAwMSwNCj4gPiA+ID4gPiA+ICsgICAgIE1BTkFfSUJfQ1JF
+QVRFX0FEQVBURVIgID0gMHgzMDAwMiwNCj4gPiA+ID4gPiA+ICsgICAgIE1BTkFfSUJfREVTVFJP
+WV9BREFQVEVSID0gMHgzMDAwMywNCj4gPiA+ID4gPiA+ICB9Ow0KPiA+ID4gPiA+ID4NCj4gPiA+
+ID4gPiA+ICBzdHJ1Y3QgbWFuYV9pYl9xdWVyeV9hZGFwdGVyX2NhcHNfcmVxIHsgQEAgLTE0Myw2
+ICsxNDYsMzIgQEANCj4gPiA+ID4gPiA+IHN0cnVjdCBtYW5hX2liX3F1ZXJ5X2FkYXB0ZXJfY2Fw
+c19yZXNwIHsNCj4gPiA+ID4gPiA+ICAgICAgIHUzMiBtYXhfaW5saW5lX2RhdGFfc2l6ZTsgIH07
+IC8qIEhXIERhdGEgKi8NCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiArc3RydWN0IG1hbmFfcm5p
+Y19jcmVhdGVfYWRhcHRlcl9yZXEgew0KPiA+ID4gPiA+ID4gKyAgICAgc3RydWN0IGdkbWFfcmVx
+X2hkciBoZHI7DQo+ID4gPiA+ID4gPiArICAgICB1MzIgbm90aWZ5X2VxX2lkOw0KPiA+ID4gPiA+
+ID4gKyAgICAgdTMyIHJlc2VydmVkOw0KPiA+ID4gPiA+ID4gKyAgICAgdTY0IGZlYXR1cmVfZmxh
+Z3M7DQo+ID4gPiA+ID4gPiArfTsgLypIVyBEYXRhICovDQo+ID4gPiA+ID4gPiArDQo+ID4gPiA+
+ID4gPiArc3RydWN0IG1hbmFfcm5pY19jcmVhdGVfYWRhcHRlcl9yZXNwIHsNCj4gPiA+ID4gPiA+
+ICsgICAgIHN0cnVjdCBnZG1hX3Jlc3BfaGRyIGhkcjsNCj4gPiA+ID4gPiA+ICsgICAgIG1hbmFf
+aGFuZGxlX3QgYWRhcHRlcjsNCj4gPiA+ID4gPiA+ICt9OyAvKiBIVyBEYXRhICovDQo+ID4gPiA+
+ID4gPiArDQo+ID4gPiA+ID4gPiArc3RydWN0IG1hbmFfcm5pY19kZXN0cm95X2FkYXB0ZXJfcmVx
+IHsNCj4gPiA+ID4gPiA+ICsgICAgIHN0cnVjdCBnZG1hX3JlcV9oZHIgaGRyOw0KPiA+ID4gPiA+
+ID4gKyAgICAgbWFuYV9oYW5kbGVfdCBhZGFwdGVyOw0KPiA+ID4gPiA+ID4gK307IC8qSFcgRGF0
+YSAqLw0KPiA+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ID4gK3N0cnVjdCBtYW5hX3JuaWNfZGVzdHJv
+eV9hZGFwdGVyX3Jlc3Agew0KPiA+ID4gPiA+ID4gKyAgICAgc3RydWN0IGdkbWFfcmVzcF9oZHIg
+aGRyOyB9OyAvKiBIVyBEYXRhICovDQo+ID4gPiA+ID4gPiArDQo+ID4gPiA+ID4gPiArc3RhdGlj
+IGlubGluZSBib29sIHJuaWNfaXNfZW5hYmxlZChzdHJ1Y3QgbWFuYV9pYl9kZXYgKm1kZXYpIHsN
+Cj4gPiA+ID4gPiA+ICsgICAgIHJldHVybiBtZGV2LT5hZGFwdGVyX2hhbmRsZSAhPSBJTlZBTElE
+X01BTkFfSEFORExFOyB9DQo+ID4gPiA+ID4gPiArDQo+ID4gPiA+ID4gPiAgc3RhdGljIGlubGlu
+ZSBzdHJ1Y3QgZ2RtYV9jb250ZXh0ICptZGV2X3RvX2djKHN0cnVjdA0KPiA+ID4gPiA+ID4gbWFu
+YV9pYl9kZXYNCj4gPiA+ID4gPiA+ICptZGV2KSAgew0KPiA+ID4gPiA+ID4gICAgICAgcmV0dXJu
+IG1kZXYtPmdkbWFfZGV2LT5nZG1hX2NvbnRleHQ7DQo+ID4gPiA+ID4gPiAtLQ0KPiA+ID4gPiA+
+ID4gMS44LjMuMQ0KPiA+ID4gPiA+ID4NCg==
 
