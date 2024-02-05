@@ -1,73 +1,52 @@
-Return-Path: <linux-kernel+bounces-52854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D02D2849D74
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:56:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30107849D82
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:58:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33453B26605
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:56:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3DE41F24818
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:58:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA8642C68C;
-	Mon,  5 Feb 2024 14:56:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D79FE2E408;
+	Mon,  5 Feb 2024 14:57:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="NoptUjVs"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="dua5cP+K"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 749C52C1A9
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 14:56:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94FF32CCD6;
+	Mon,  5 Feb 2024 14:57:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707144998; cv=none; b=ai8ION+CdNos5WPUMpdVIKDA8RfXBPTCN/Zkc0XoDs3POtxfcpTYNjliGAd7o8aVatQw6SE9uHHv+kTB7+Kfg7La7D5ce7OP3v6c3XYKG+ERTc5ocozKiZm3jecNI5ItCVyWsYKNVDcurbp7AsUNScRFPCWTm7Hu8wGbJh64GlU=
+	t=1707145060; cv=none; b=c4UPOoSEH/8Z/7Aiw1Zt48w+EglZVOBHxP/Do4d5hcHP7YWUZchbvne1k86vhuvhnuJYJgiko0H/KX+0FK/cWcQo/Tw9XMcFgaQIt8qMu2thEvKiPa6jhjBSkgOilZihjAb56+TLP4rk52oL5lC+hJkoNMV0lJK5xD126XvpGyU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707144998; c=relaxed/simple;
-	bh=KZQAVKk17hNGCoiNed1olR8PLExPHWy3Xw9IMnmA5bY=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ELhKc6QiuLHhnEPJaAGLh5+SXncOBI2tk/1bZEtkJ1AvsWVsw9E+f6YzkYEICTlmLFtEvQfHodr92PHvKt1ghf4pbe8qMw4wNFMZEKH9WZqGs07I6J1m8SjMOFIyZx+LyzC/VZvvFp9wErAL+QAQ31u4MB/agYeuUQ4gCFFu4Qw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=NoptUjVs; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 415EuKM7066929;
-	Mon, 5 Feb 2024 08:56:20 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707144980;
-	bh=MHcT7cAFsxqyYHFScxuXokkyTjjYaCWV3c5QCurtdVA=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=NoptUjVsXsiLzDNz6exsYq71eHnqjGgY03nv0YqQj0AwiojLX87z/U67MyJhDnX2f
-	 Z5Y8uCdj7ODtwrfHJHG/0eg6eQKTIAleAmogxB345EnvRSya6sFmyQH3sdHTr7r4Wr
-	 ygK3G8GrlWkwTwwviw1Yzq1+DgWDHukllHiTKH7w=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 415EuKem015402
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 5 Feb 2024 08:56:20 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 5
- Feb 2024 08:56:20 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 5 Feb 2024 08:56:20 -0600
-Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 415EuK46000384;
-	Mon, 5 Feb 2024 08:56:20 -0600
-From: Nishanth Menon <nm@ti.com>
-To: Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Santosh Shilimkar
-	<ssantosh@kernel.org>, Andrew Davis <afd@ti.com>
-CC: Nishanth Menon <nm@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] ARM: multi_v7_defconfig: Add more TI Keystone support
-Date: Mon, 5 Feb 2024 08:56:18 -0600
-Message-ID: <170714487232.2498590.16765370636323778041.b4-ty@ti.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240125163145.87055-1-afd@ti.com>
-References: <20240125163145.87055-1-afd@ti.com>
+	s=arc-20240116; t=1707145060; c=relaxed/simple;
+	bh=bbnVRfSTTyUwEskkAt8A1NoibdYucpRDjbkx5OMqZAs=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=HxFSLtKmNOMvugeHKWWkKX5Vkqq/ifpqKDZBSe31frovcUq2cntDWQuN+qmq0Agt/BgveGgtl7j5AXxTSxMXAkPP8CqjXNsSPeMlY0Rq58SjKABKROk55685WJ2kFljLPqFtXmL+hsJm8Un0wNPOeps+2iPam1rgVCvi9YizuOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=dua5cP+K; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1C13620003;
+	Mon,  5 Feb 2024 14:57:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1707145050;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=h1sNYp+gc9a9VoUu+eh68EAIfTPEAijNDew8gQP2kNQ=;
+	b=dua5cP+KAskFu8T8l5ctgxrgM4HO/0/M+4V1fvsyzMxbMb3BANSOE5kdd9Ci6yC75JfG08
+	QZlDBgSmVP00Dt4GA6k8hbx8pSLJUkcYeQ1Z2zCrCxytgJZS2T3oAfOsWinNESegYZsvkp
+	0HUCjsmPkQP47Z3jLPUbuj8rlkyffWdQoLlrVuTMPkCObFa9wXwp3MJ2NKtV+U00Kne9jI
+	6H0k7Awn7wrAtWf0nAkVSoqpGlu20K1xilgN2bkIEBWxxPPeAnrBf4RIRK9E49Cy8WoSYz
+	fkmFD2aFCvqXACftsX7nI8xj/VuBxjBU1X8+vGflxZBeETjIJBlJoBwx3MuaZA==
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: [PATCH v2 0/4] spi: cadence-qspi: Fix runtime PM and system-wide
+ suspend
+Date: Mon, 05 Feb 2024 15:57:28 +0100
+Message-Id: <20240205-cdns-qspi-pm-fix-v2-0-2e7bbad49a46@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,52 +55,69 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-B4-Tracking: v=1; b=H4sIAFj3wGUC/32NTQrCMBCFr1Jm7UgSpVZX3kO6MH92wCYxKUEpu
+ btjD+DmwffgfW+F4jK5ApduhewqFYqBQe06MNM9PBySZQYl1FFwoLGh4KskwjSjpzeqcy+EMb0
+ 9aQ88S9lxvSlvI/NEZYn5sz1U+Wv/yKpEiQczeKeV9tYOVx3j8qSwN3GGsbX2Bb/JH1OyAAAA
+To: Mark Brown <broonie@kernel.org>, Apurva Nandan <a-nandan@ti.com>, 
+ Dhruva Gole <d-gole@ti.com>
+Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: b4 0.12.4
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-Hi Andrew Davis,
+Hi,
 
-On Thu, 25 Jan 2024 10:31:45 -0600, Andrew Davis wrote:
-> The Keystone platforms used their own keystone_defconfig mostly to
-> enable CONFIG_ARM_LPAE which could not be added to the multi_v7 config.
-> Now that we have multi_v7_lpae_defconfig/lpae.config target we can and
-> should use that defconfig for Keystone. Add the remaining must-have
-> options for Keystone support to multi_v7_defconfig.
-> 
-> TI_SCI_*:
-> TI_MESSAGE_MANAGER:
->  Allows TI-SCI communication with system control firmware (PMMC) on K2G.
-> 
-> [...]
+This V2 got a false start, hoping you got a good laugh out of it. :-)
+Sorry for the spam.
 
-I have applied the following to branch ti-k3-config-next (branch name
-is a bit confusing, but since changes are very infrequent, I didn't
-want to spin off another branch) on [1].
+This fixes runtime PM and system-wide suspend for the cadence-qspi
+driver. Seeing how runtime PM and autosuspend are enabled by default, I
+believe this affects all users of the driver.
 
-Thank you!
+The V1 has been split into three commits and a fourth commit is added to
+add system-wide suspend/resume callbacks as discussed under V1.
 
-[1/1] ARM: multi_v7_defconfig: Add more TI Keystone support
-      commit: 69cd52b92782a466b18ea66a1f8b5f9f956e1648
+The MIPS platform at hand, used for debugging and testing, is currently
+not supported by the driver. It is the Mobileye EyeQ5 [0]. No code
+changes are required for support, only a new compatible and appropriate
+match data + flags. That will come later, with some performance-related
+patches.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+This series has been tested on both Mobileye EyeQ5 hardware and the TI
+J7200 EVM board, under s2idle.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Thanks all,
+Théo
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+[0]: https://lore.kernel.org/lkml/20240118155252.397947-1-gregory.clement@bootlin.com/
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+---
+Changes in v2:
+- Split the initial change into three separate commits, to make intents
+  clearer.
+- Mark controller as suspended during the system-wide suspend.
+- Link to v1: https://lore.kernel.org/r/20240202-cdns-qspi-pm-fix-v1-1-3c8feb2bfdd8@bootlin.com
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
+---
+Théo Lebrun (4):
+      spi: cadence-qspi: put runtime in runtime PM hooks names
+      spi: cadence-qspi: fix pointer reference in runtime PM hooks
+      spi: cadence-qspi: remove system-wide suspend helper calls from runtime PM hooks
+      spi: cadence-qspi: add system-wide suspend and resume callbacks
+
+ drivers/spi/spi-cadence-quadspi.c | 33 +++++++++++++++++++++------------
+ 1 file changed, 21 insertions(+), 12 deletions(-)
+---
+base-commit: 13acce918af915278e49980a3038df31845dbf39
+change-id: 20240202-cdns-qspi-pm-fix-29600cc6d7bf
+
+Best regards,
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Théo Lebrun <theo.lebrun@bootlin.com>
 
 
