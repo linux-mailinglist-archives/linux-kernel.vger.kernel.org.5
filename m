@@ -1,162 +1,161 @@
-Return-Path: <linux-kernel+bounces-52850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF409849D6A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:53:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C8C8F849D6B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:53:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 941651F24396
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:53:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D5BD1F2444F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:53:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E04CB2C684;
-	Mon,  5 Feb 2024 14:53:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B83242C68C;
+	Mon,  5 Feb 2024 14:53:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a9M/b/YL"
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="v2iTjAGZ"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF4BF2C1A7;
-	Mon,  5 Feb 2024 14:53:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38CFC2C848;
+	Mon,  5 Feb 2024 14:53:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707144789; cv=none; b=piGaQUWa7DbhG1W1cP0rNKutNbU9GZimpwDsdKsILawOR75glrnM8Uybb+6EoxZPi3CbPpTfM9tIfCNZ9iG9E0LLWPyej0YR4fTXxS3aP3fdZjUIGgDY7K9uyOwWwerQKy5x1QS/h69mZ9cM35MGwEHXhIcKf2PAr5v92Btd9mQ=
+	t=1707144808; cv=none; b=dSYIuSOPgofA1q+uaX6sgABloiKeqSBtMBB4jj4DlVyFlmWz4431L2DKDs9zaVq9aKyRQNCcRnXoSrLiTagaxELw0W7zpFsdQBEjL8If2Q94JV9TISpLI+vJGEjKDuWZjeOj0/52TxOSr3AA4cJ7cSLoUeR4llzVTPiMBCDvAkk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707144789; c=relaxed/simple;
-	bh=B32fFpSglPmh6EsegcSjTE9A2vs7Th/PastyE8w3mTc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZrOzo5aeZa+KVSJdVsScn0L6y7t627LKuWhlkFHzNwm6q0DFVk03C+0Flc+JRqw1rTxLa1+IFMTw1ZRB4+OAPIHbY7kv+eHG8EfobPp2TYXWRgjrmxAwEdRz5Ztd3KLFDBc+VZa2Zat6QqgsEMVDDXgNfnPquwFVBPzC68pwmYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a9M/b/YL; arc=none smtp.client-ip=209.85.160.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-2191dc7079aso1636462fac.0;
-        Mon, 05 Feb 2024 06:53:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707144787; x=1707749587; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qLHPk+aymp1ecm0O7KZKJBd8OHOUWRsl0TLFYxwyOGQ=;
-        b=a9M/b/YLL0syzhXyP7cN36F7bxaZZhtYOZZx+lB7fEzMhD0OUUlO3T7uR/lJaU5aWM
-         eFNVbwTqlNRIAr/shtjCLGVD4Tpp6unijlLRJrpWhduDqV38HhDjBKWJ+2nvCq1jorRC
-         XfSIJDE80Mahj8HTZU7mDqRg4PMHCfXSvUMTFIoTF9i7J0ulExiWamdjnsKfssemhHfk
-         6cObD6pTWZvdricJGWBOEoT0rOoLyTHEDYXuaGiJiBMX3+e2AUijcSQEs73TWnuVajn0
-         VjAi2vUMm8s1qAaHIqV7h+cpD9a3ktUWUiwe/voW75Z1lftBJYU48Xbi/ydTxFf91SsA
-         c4ZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707144787; x=1707749587;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qLHPk+aymp1ecm0O7KZKJBd8OHOUWRsl0TLFYxwyOGQ=;
-        b=LuEtqXQQ1klASyJeNGlh087JMnpZgBx+RqLJhWPg5rq0ykNJrigPzA1y7kdxjY2aEs
-         NCMifbd2FPDjMjrbdPcvVOcJXS7cGpbXvWIDrUn06ii9qM1G2CIOslkSoV+2C/TvpP05
-         8+PwmRO9rmaz/18no0MSOMfz8fnBAWwXCtJ9jIHE0uxNfIku1KD2+DAooW2aYi9UPqvU
-         8FgYMOWs4pfh2kutUWyWNq20vvsKYPBQyzXn9w5n8y/mt2D+kHuINxZgi9SMn54PT7wF
-         GT3ZmSoDWiKsY53+KZJePCAVgOJzHFCeimdZiYoSDEUhp0zllhwt3wUIe7Om36KmDm2F
-         cy0g==
-X-Gm-Message-State: AOJu0Yw2+WVA70UBej0++ueuxI+4VKLTAeAlcqwmwYSfw/i+QHMso4Cv
-	4gCjiTYWQNFJ54O24eCOU1uo2fFDT+u/m5Mkk66IKtxnWCmvK4B2kkQ21tk16A2ZRa72OOIFZkW
-	rvQFY76i2jj0qJXRe+lCR/b6xA40=
-X-Google-Smtp-Source: AGHT+IFwuMmjulFcBFt/EQ5igsfyYhU2jRYXgkdSsjAuGeGkusyGrlUrW1JsuUSmLN+2s4EbaOWjBZ7aP9bKqbiME1Y=
-X-Received: by 2002:a05:6870:1cd:b0:219:97e7:a99a with SMTP id
- n13-20020a05687001cd00b0021997e7a99amr1501792oad.12.1707144786728; Mon, 05
- Feb 2024 06:53:06 -0800 (PST)
+	s=arc-20240116; t=1707144808; c=relaxed/simple;
+	bh=N5S3QB/YuiwuK74Hpcl5CcJl2TR2YgDRJk+uYMrvNzY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gdUrzG1PJ3hnWBkfpbbj2v+Vhb5FxfpuJ3du/pgpnO/gZw2kPqxNhO2wDvQhrom6wQwA/U1AXmoCyWr4hudCWC8ysl4ECBo+m2L4i2VwrSb9tWEJigbqgxMqNtow0+6Z4bv7alyMvETV84U98WjHVe7LsqGVR+tcMs1AfbDG468=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=v2iTjAGZ; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707144804;
+	bh=N5S3QB/YuiwuK74Hpcl5CcJl2TR2YgDRJk+uYMrvNzY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=v2iTjAGZGi/MpVLUpKPYp/8SRERGhHVyqe3ElC4kyxXzzrPfiPxjPRcAEpJL5vPHU
+	 PnjvCeAtUxwFEStbT4Hdgc7f0Jw/6C5XvNxK80Vjdgw49pvPMtpPnD2wPjEH64i6oo
+	 o4tGCMav+ms1zfmGy81weTr5FTcicH+nR5IbXOsrGuQAkLHCwoN6af4E9wlB1VfTAu
+	 pkSK5se92JKH66V7bMkmlwoUUBbLu/y5Eggh3sIseTlNEkfBuHLTnMXembqsnr5T1E
+	 HB4OWzJCN2JicnG2x1eIJgUJBPo2keCn9/nFd5fXRPV/G1ugUDLTy2fobGgmHmSsRt
+	 oF1tyzf0z2Bkg==
+Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: nfraprado)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 3C7B537811CD;
+	Mon,  5 Feb 2024 14:53:21 +0000 (UTC)
+Date: Mon, 5 Feb 2024 09:53:19 -0500
+From: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Ricardo Ribalda <ribalda@chromium.org>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>, Mike Isely <isely@pobox.com>,
+	Tiffany Lin <tiffany.lin@mediatek.com>,
+	Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+	Yunfei Dong <yunfei.dong@mediatek.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 3/3] media: mediatek: vcodedc: Fix
+ Wcast-function-type-strict warnings
+Message-ID: <e75a0207-1f95-427c-8d72-e6a86505522e@notapiano>
+References: <20240128-fix-clang-warnings-v1-0-1d946013a421@chromium.org>
+ <20240128-fix-clang-warnings-v1-3-1d946013a421@chromium.org>
+ <20240201221654.GC2240065@dev-arch.thelio-3990X>
+ <CABCJKudd3SUy3Qor7Tc0zyJsSAWy0PavbbBFALuWEpBa32pBCQ@mail.gmail.com>
+ <5658ec37-868f-454d-a149-467e6de139cd@collabora.com>
+ <12d0c580-788d-4466-af8a-feb5ab3c6677@notapiano>
+ <20240204205549.GA2892810@dev-fedora.aadp>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205133450.5222-1-ilpo.jarvinen@linux.intel.com> <20240205133450.5222-4-ilpo.jarvinen@linux.intel.com>
-In-Reply-To: <20240205133450.5222-4-ilpo.jarvinen@linux.intel.com>
-From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date: Mon, 5 Feb 2024 15:52:55 +0100
-Message-ID: <CAMhs-H9QaQCz70dmBfMWJ4xoSagrYCJLqejA72fqb50uDwZY9A@mail.gmail.com>
-Subject: Re: [PATCH 3/4] MIPS: PCI: Return PCIBIOS_* from tx4927_pci_config_read/write()
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-mips@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240204205549.GA2892810@dev-fedora.aadp>
 
-Hi,
+On Sun, Feb 04, 2024 at 01:55:49PM -0700, Nathan Chancellor wrote:
+> On Fri, Feb 02, 2024 at 03:15:46PM -0500, Nícolas F. R. A. Prado wrote:
+> > On Fri, Feb 02, 2024 at 01:58:05PM +0100, AngeloGioacchino Del Regno wrote:
+> > > Il 01/02/24 23:25, Sami Tolvanen ha scritto:
+> > > > On Thu, Feb 1, 2024 at 10:17 PM Nathan Chancellor <nathan@kernel.org> wrote:
+> > > > > 
+> > > > > On Sun, Jan 28, 2024 at 02:12:22AM +0000, Ricardo Ribalda wrote:
+> > > > > > Building with LLVM=1 throws the following warning:
+> > > > > > drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_fw_vpu.c:38:32: warning: cast from 'mtk_vcodec_ipi_handler' (aka 'void (*)(void *, unsigned int, void *)') to 'ipi_handler_t' (aka 'void (*)(const void *, unsigned int, void *)') converts to incompatible function type [-Wcast-function-type-strict]
+> > > > > > 
+> > > > > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > > > > 
+> > > > > I am not positive because I don't have any hardware to test this driver
+> > > > > but I suspect this patch is just hiding the warning without actually
+> > > > > addressing the issue that it is pointing out.
+> > > > 
+> > > > Agreed, this won't fix the issue. The correct solution is to drop the
+> > > > cast and change the handler type to match the pointer type (i.e. use
+> > > > const void* for the first argument).
+> > > > 
+> > > 
+> > > Even though I agree that the correct solution is to change the handler's type,
+> > > I think that having a test on the actual hardware done is still valuable.
+> > > 
+> > > We scheduled a job on KernelCI to test this commit on our integration kernel,
+> > > you'll get results for ChromeOS' tast decoders (MT8195 only) and Fluster tests
+> > > on MT8183/8186/8192/8195.
+> > > 
+> > > 
+> > > The results should be available in a couple of hours here, relative to
+> > > commit `49955a84129dbe1f94fedf729690efcf28513828` on our tree:
+> > > https://chromeos.kernelci.org/job/collabora-chromeos-kernel/branch/for-kernelci/
+> > > 
+> > > P.S.: If they don't, feel free to ping me or Nicolas (added to the loop) about it.
+> > 
+> > Hi,
+> > 
+> > the results are available at 
+> > 
+> > https://chromeos.kernelci.org/test/job/collabora-chromeos-kernel/branch/for-kernelci/kernel/v6.8-rc2-3109-g49955a84129d/
+> > 
+> > (You need to type "decoder" into the search bar to limit the results to only the
+> > decoder tests)
+> > 
+> > The only regressions I see are due to infrastructure error or broken test
+> > unrelated to this change (v4l2-decoder-conformance-h264-frext test on
+> > MT8195-Tomato, and cros-tast-decoder-v4l2-sl-h264 test on MT8183-Juniper)
+> > 
+> > Otherwise, all platforms (MT8183/8186/8192/8195) and video codecs
+> > (VP8/VP9/H264/H265/AV1) seem unaffected.
+> > 
+> > Note that these are GCC builds.
+> 
+> Thank you for running the tests to make sure this series does not
+> regress anything. If possible, it would be good to try and build with
+> LLVM and enable kernel Control Flow Integrity (kCFI, CONFIG_CFI_CLANG)
+> to see if my theory that this is currently broken is correct. I have
+> prebuilt LLVM toolchains on kernel.org but if it is too much of a
+> hassle, I would not worry about it.
 
-On Mon, Feb 5, 2024 at 3:35=E2=80=AFPM Ilpo J=C3=A4rvinen
-<ilpo.jarvinen@linux.intel.com> wrote:
->
-> pci_ops .read/.write must return PCIBIOS_* codes but
-> tx4927_pci_config_read/write() return -1 when mkaddr() cannot find
-> devfn from the root bus. Return PCIBIOS_DEVICE_NOT_FOUND instead and
-> pass that onward in the call chain instead of overwriting the return
-> value.
->
-> Signed-off-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
-> ---
->  arch/mips/pci/ops-tx4927.c | 14 +++++++++-----
->  1 file changed, 9 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/mips/pci/ops-tx4927.c b/arch/mips/pci/ops-tx4927.c
-> index f7802f100401..4dd8b93985fb 100644
-> --- a/arch/mips/pci/ops-tx4927.c
-> +++ b/arch/mips/pci/ops-tx4927.c
-> @@ -60,7 +60,7 @@ static int mkaddr(struct pci_bus *bus, unsigned int dev=
-fn, int where,
->  {
->         if (bus->parent =3D=3D NULL &&
->             devfn >=3D PCI_DEVFN(TX4927_PCIC_MAX_DEVNU, 0))
-> -               return -1;
-> +               return PCIBIOS_DEVICE_NOT_FOUND;
->         __raw_writel(((bus->number & 0xff) << 0x10)
->                      | ((devfn & 0xff) << 0x08) | (where & 0xfc)
->                      | (bus->parent ? 1 : 0),
+We don't have a way in KernelCI to run a one-off test, instead we need to make a
+PR adding a build definition that will be triggered for every update on a given
+tree. The results I reported above were for configurations that we already had
+in place.
 
-Should we also return PCIBIOS_SUCCESSFUL instead of 'return 0' in
-'mkaddr' for coherency?
-
-Other than that, changes look good to me.
-
-Reviewed-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+That said, maybe we should be running with LLVM and CONFIG_CFI_CLANG enabled on
+a regular basis, if you think it is useful as a general tool for identifying
+issues. I'd also be interested in hearing more from you on what other kind of
+clang configs you think might be good to enable in CI to provide value to the
+community.
 
 Thanks,
-    Sergio Paracuellos
-
-> @@ -140,10 +140,12 @@ static int tx4927_pci_config_read(struct pci_bus *b=
-us, unsigned int devfn,
->                                   int where, int size, u32 *val)
->  {
->         struct tx4927_pcic_reg __iomem *pcicptr =3D pci_bus_to_pcicptr(bu=
-s);
-> +       int ret;
->
-> -       if (mkaddr(bus, devfn, where, pcicptr)) {
-> +       ret =3D mkaddr(bus, devfn, where, pcicptr);
-> +       if (ret !=3D PCIBIOS_SUCCESSFUL) {
->                 *val =3D 0xffffffff;
-> -               return -1;
-> +               return ret;
->         }
->         switch (size) {
->         case 1:
-> @@ -162,9 +164,11 @@ static int tx4927_pci_config_write(struct pci_bus *b=
-us, unsigned int devfn,
->                                    int where, int size, u32 val)
->  {
->         struct tx4927_pcic_reg __iomem *pcicptr =3D pci_bus_to_pcicptr(bu=
-s);
-> +       int ret;
->
-> -       if (mkaddr(bus, devfn, where, pcicptr))
-> -               return -1;
-> +       ret =3D mkaddr(bus, devfn, where, pcicptr);
-> +       if (ret !=3D PCIBIOS_SUCCESSFUL)
-> +               return ret;
->         switch (size) {
->         case 1:
->                 icd_writeb(val, where & 3, pcicptr);
-> --
-> 2.39.2
->
->
+Nícolas
 
