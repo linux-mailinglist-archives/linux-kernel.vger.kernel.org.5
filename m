@@ -1,116 +1,101 @@
-Return-Path: <linux-kernel+bounces-52788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B817E849CAB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:12:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E2FD849CAD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:12:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B782EB21515
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:12:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 431351F25CB1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:12:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9226624A0F;
-	Mon,  5 Feb 2024 14:12:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0837B24B50;
+	Mon,  5 Feb 2024 14:12:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IxfE3DA8"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PYRzJgSV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FC512377D
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 14:12:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D8912C18E;
+	Mon,  5 Feb 2024 14:12:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707142336; cv=none; b=gR6GkKH1cM0PyTUwluhbnjZ4eEPUs9SVUcjZtCnHjjwoA9D9+AQBks3dGy5a5Sy6PlNfBa5Vrx04VDpv292z+R8wM71HFbUTZlGddsbFPjz+PYVrLebyqKKIIlfQVjdqQ8alsYjiN/S7UH9aIg2op9NZJJXMWPeBhkaEZ73LMY0=
+	t=1707142348; cv=none; b=pNX0vmJ/E5gtBt38qy0Z3ekip/MzqGXH+eBP5z73qnCTY7iYOhiy4dWCxadFof0h3Ie+iGW3BUzUKBgGDhfUBQYj8AWJg9ctRqiTTEgbONlDmpXAKKYACTrOJy2oSuIgWCTAAYosaW3CHCMUsh8KoQ69q7R9n8MGZfIgUkZM2qM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707142336; c=relaxed/simple;
-	bh=Gd3Qd4h4a246Azi/ANHT+FzV2dp0eLicHjFsnJCn974=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=YjnPRteoq03CsGvio/X8xJcUrZzNmKSkl8XYLMt+RfqPFg3U39S1zwatH+AM50x8OHplMXt+O2vgyS47kALSrbedlgtjAjLqkWnuNACnL2fpR/85WXmAHBnVhzV7vFdI0LDViVD0YiffLOg/LH5UfkQn89yjrcmIeF0BDV/LXEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IxfE3DA8; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707142334;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=gjFMaGeg0tSbAHrrpJqixRvm8sviT7v0IDbKr1o51po=;
-	b=IxfE3DA8ApvD4CLko1upMfUmYzodQHXCyJsh/ckzcYLdoleikoZP5gnAWrmqiVupCWiIer
-	SyW5yObSbOYCZ0ej9BRcfBA7dsRnPwBhVT11pWG+uNpWLmRROCo/CVeNmc1R651t9q7glv
-	xFKonp4f2WJ47kDJPOlj2dMQidcWhOI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-445-DJtLC7HiPYugwAdIqul-fg-1; Mon, 05 Feb 2024 09:12:08 -0500
-X-MC-Unique: DJtLC7HiPYugwAdIqul-fg-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 25427101366D;
-	Mon,  5 Feb 2024 14:12:08 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.165])
-	by smtp.corp.redhat.com (Postfix) with SMTP id AB29C492BC6;
-	Mon,  5 Feb 2024 14:12:06 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Mon,  5 Feb 2024 15:10:52 +0100 (CET)
-Date: Mon, 5 Feb 2024 15:10:50 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Andy Lutomirski <luto@amacapital.net>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	Tycho Andersen <tycho@tycho.pizza>, linux-kernel@vger.kernel.org
-Subject: [PATCH] pidfd: change do_notify_pidfd() to use
- __wake_up(poll_to_key(EPOLLIN))
-Message-ID: <20240205141050.GA16278@redhat.com>
+	s=arc-20240116; t=1707142348; c=relaxed/simple;
+	bh=Z7UE+UjmnElfbXTukoN7uu9PUfOC/LbXaWbsCBJt50Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JmmTf2OhYK2UxTE8UPMFIxpekyP/WIe5LMfkxtMBoSQGm2aKVIFFTu0TDJ0O8/Pe7UdwMxB5jFM7Xob1JlTcS8B5KgIdXYyK+3DK7uqJOdESn0355LSv7wQrqiis7czuMQiBVAft4GSUTJcsZ9JE0TT050TA9tk4b29gAddM0yY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PYRzJgSV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45B7FC433C7;
+	Mon,  5 Feb 2024 14:12:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707142347;
+	bh=Z7UE+UjmnElfbXTukoN7uu9PUfOC/LbXaWbsCBJt50Q=;
+	h=From:To:Cc:Subject:Date:From;
+	b=PYRzJgSVYyc3jDL7sDkRouoNvnBhd2I0OncuQSl4QJMsJ5oEADz016+edOqHCRaes
+	 YHwk/e7qTmMQKzuE0283U/gAPc0LBq6zW5hfSqm2YJoAap515AQdgE+hZaAnJZDLso
+	 7EzqRMXJqNW1R0h6P/aH4SahOt+Oq3b3p8ekPTPR1v0jCNy30UxXv2R4qBYkzkhnk/
+	 g9oQTqxjmX0/vLZvgYT6DBXmM7fYYbUQtPMwLqsUwK1++7bd5tX3UpWU6iMXG3WlX5
+	 NUewxboMPCNx+Iuxhl34PPIqeys404GVd/tsD2SQ0qzX2LssreRE2KxlkIJkYcEDWY
+	 GBMfAW1pYXy1g==
+From: Roger Quadros <rogerq@kernel.org>
+To: Thinh.Nguyen@synopsys.com
+Cc: gregkh@linuxfoundation.org,
+	r-gunasekaran@ti.com,
+	b-liu@ti.com,
+	afd@ti.com,
+	nm@ti.com,
+	srk@ti.com,
+	linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Roger Quadros <rogerq@kernel.org>
+Subject: [PATCH v2 0/5] usb: dwc3-am62: module removal and errata fixes
+Date: Mon,  5 Feb 2024 16:12:16 +0200
+Message-Id: <20240205141221.56076-1-rogerq@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+Content-Transfer-Encoding: 8bit
 
-rather than wake_up_all(). This way do_notify_pidfd() won't wakeup the
-POLLHUP-only waiters which wait for pid_task() == NULL.
+Hi,
 
-TODO:
-    - as Christian pointed out, this asks for the new wake_up_all_poll()
-      helper, it can already have other users.
+This series fixes errors during module removal. It also
+implements PHY core voltage selection as per TI recommendation
+and workaround for Errata i2409 [1].
 
-    - we can probably discriminate the PIDFD_THREAD and non-PIDFD_THREAD
-      waiters, but this needs more work.
+The workaround needs PHY2 region to be present in device node.
+The device tree patch will be sent later after the DT binding doc
+is merged.
 
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
----
- kernel/signal.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+[1] - https://www.ti.com/lit/er/sprz487d/sprz487d.pdf
 
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 9b40109f0c56..c3fac06937e2 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2021,11 +2021,12 @@ int send_sigqueue(struct sigqueue *q, struct pid *pid, enum pid_type type)
- 
- void do_notify_pidfd(struct task_struct *task)
- {
--	struct pid *pid;
-+	struct pid *pid = task_pid(task);
- 
- 	WARN_ON(task->exit_state == 0);
--	pid = task_pid(task);
--	wake_up_all(&pid->wait_pidfd);
-+
-+	__wake_up(&pid->wait_pidfd, TASK_NORMAL, 0,
-+			poll_to_key(EPOLLIN | EPOLLRDNORM));
- }
- 
- /*
+Changelog in each file
+
+v1: https://lore.kernel.org/all/20240201121220.5523-1-rogerq@kernel.org/
+
+cheers,
+-roger
+
+
+Roger Quadros (5):
+  usb: dwc3-am62: call of_platform_depopulate in .remove()
+  usb: dwc3-am62: fix error on module removal
+  usb: dwc3-am62: Fix PHY core voltage selection
+  dt-bindings: usb/ti,am62-usb.yaml: Add PHY2 register space
+  usb: dwc3-am62: add workaround for Errata i2409
+
+ .../devicetree/bindings/usb/ti,am62-usb.yaml  |  8 +++-
+ drivers/usb/dwc3/dwc3-am62.c                  | 47 ++++++++++++++-----
+ 2 files changed, 41 insertions(+), 14 deletions(-)
+
+
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
 -- 
-2.25.1.362.g51ebf55
-
+2.34.1
 
 
