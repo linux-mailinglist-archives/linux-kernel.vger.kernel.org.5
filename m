@@ -1,103 +1,140 @@
-Return-Path: <linux-kernel+bounces-52215-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8644584957F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:38:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C87E9849582
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:38:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43DA9286E33
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:38:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBB7E1C22F58
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 08:38:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA200125C0;
-	Mon,  5 Feb 2024 08:38:13 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1F2311CB3;
+	Mon,  5 Feb 2024 08:38:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="T+cXlPZd"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE454125A1;
-	Mon,  5 Feb 2024 08:38:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 963531171A
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 08:38:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707122293; cv=none; b=d5CRgiq5MR/nSH5Z19eYiDrTpgAfPOsKowtd6jgwTnljF7M5TcHWSQAA2GxtE2Ba5xN3TJRsbyiFrNwGlZN9Hi27itXZhzpoZZe0sVZNaztaeEdJE6qxC214W0LmUnJBYyDVmrcjNWR7yIVMxYSh/Af+Wu12tcBNdoT6MXta2+I=
+	t=1707122315; cv=none; b=aDkZp0krWljDIDYWfKKLIpfMLIq7+Qf7Io33ngywjqfa/ny8WlVEdf7zSuN1lA/+f9EtMSDbi69QfJm29Tl4oogGI3HMj5CDVBgyhMjrPbYSqJziqncOd+fousPsHpBsOByPcow/ARyLcXjdKy77FkMt2GvlDMd/IeUZIKG2jLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707122293; c=relaxed/simple;
-	bh=lLc5BygeeOtVoQdbWSjoD3/s/gfWDJX3EsYjAce9Y1s=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=p4gcjVCSZfDJ5ahGPKnzIcC37JJVFH/Ap+MbQD7/RhaEKr4dBcEjAAFwoVblYCRCQrmnsKr9Kh3SIuCUpvb7y6AltNefBXUkO3XUnJK8iVPA7aJ6vRBt3SaqevZHiMhR/w87U756SUNYVd8YbUJ8RpwLLkMSFfTmDlmYkrsDSao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 3e0ccbd5b21146ff8736a8c4be8befcf-20240205
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:7721643d-4003-4aa5-8b0e-03e804c7a185,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:-5
-X-CID-INFO: VERSION:1.1.35,REQID:7721643d-4003-4aa5-8b0e-03e804c7a185,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:5d391d7,CLOUDID:77cc2180-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:2402051638047OS757SN,BulkQuantity:0,Recheck:0,SF:44|66|38|24|17|19|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
-	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 3e0ccbd5b21146ff8736a8c4be8befcf-20240205
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 964794710; Mon, 05 Feb 2024 16:38:03 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 97F32E000EBC;
-	Mon,  5 Feb 2024 16:38:03 +0800 (CST)
-X-ns-mid: postfix-65C09E6B-427681358
-Received: from kernel.. (unknown [172.20.15.254])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 2BFEAE000EBC;
-	Mon,  5 Feb 2024 16:38:02 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: trond.myklebust@hammerspace.com,
-	anna@kernel.org
-Cc: linux-nfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH] NFS: Simplify the allocation of slab caches in nfs_init_nfspagecache
-Date: Mon,  5 Feb 2024 16:38:01 +0800
-Message-Id: <20240205083801.437099-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1707122315; c=relaxed/simple;
+	bh=3LmgSibEXomUKPO63HkaRhVDpYnceZtyNFTYsQfKJns=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CC+W9ZJOICwkxl8sbEwx4yQWBIDP4fkhv75XL18+lfKmK84DMHBDwbs7D0YP2qN/V8NlMIOHtCT/v6ZZQ1yCffwKGFNNKS4yBYd7XRif7uikPNAY/hiS9vTKCakPX9aHiindg01lqIA1BIK+njhsjJHL05YCkh4GYFnqSyB9T0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=T+cXlPZd; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d91397bd22so31174455ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 00:38:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707122313; x=1707727113; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TzUq0QU1iLhov+1WYKZ5iVgod62Dx1DjglJhN8m0PAE=;
+        b=T+cXlPZd367U7+rLzfZlkoCBnSkX3j5R/RrgiVeGJgG8C/w43zhoKETYv2aOSPbpUR
+         fuAkSK0nhpc/tSA92w9+qQGCuWmNY4xelwxxrIZl8Y1BJiv/FySG3xd+bC0MQTDlKPo5
+         4a3hUMeIwAbNOWggeBW3n58+kYi/xC/31yZPY1gfpomSKtYvg/sSFSIIkqgBw5OXlvqj
+         FKdl3UUJ0Qudk3KRplXnnUMvMziSrF9/NwWq6FmgyyY1f949Zt2VVRPrhCLit6N5ld1s
+         EWqigldIcCxBQ0r3vMFER8gnHFvQet6b0Zc4wLBT1izPvYis0jbJB5y/7snL7h+LjA8T
+         mS1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707122313; x=1707727113;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TzUq0QU1iLhov+1WYKZ5iVgod62Dx1DjglJhN8m0PAE=;
+        b=GBO570a5MO+aivk3p8MX9MoQpCx1OveNKQz0b19aRabThV7Rz6J0fqXfxUcvdKgtI6
+         Gmq6/UhHODeO01xDnMZBlT24vn7+Xrr/895fE0EunhEn1fBABcpzYO7I+3+F9xhHuj+G
+         v7i/FnyHAGkUEikqZZY145XUpckSpiC5w/ZtNx0YyPfUszW+VyhyOc7Q1hdg+Rya84i/
+         HPktIv/3b9C1zleq0c37eJLmdAVx2vZasKXZDvuBB/ex8hlZxcb1phe9lycH5I7c28An
+         qxAmUFo/F29pcsGMNfbzfto+0U+XSmbdwLimKaxdCOX0GoUGIKr+P1or4rxojuNrfX6K
+         jMQg==
+X-Gm-Message-State: AOJu0YzDnXCIn9Yh18r9ad01dumzToD4pt2S8jNwLoI0LmajXPT6LhUt
+	iRgLgKy+7qa/bE3YLelauA3EzngCRAVUzFjn+/1VDaGr1/+dh1wnIuZRpRLOXHE=
+X-Google-Smtp-Source: AGHT+IFlHMcwipPv/5fS9RA0N7CHAoHC9ENOUI7UQ64mLeAdNBX232vnbn/8H284Q02YLTeeS+jlhw==
+X-Received: by 2002:a17:902:e5c7:b0:1d9:7a7a:3d01 with SMTP id u7-20020a170902e5c700b001d97a7a3d01mr7580530plf.23.1707122312801;
+        Mon, 05 Feb 2024 00:38:32 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXfI2w+6dUAdaog5bJtoPlJM3p3ukBSikiWgzTm8BAqW0h7zGRqU7hx3UCGq7cTibBB8HARSP/XisA0uN+w9+FqdvqdeHJcVO0mfGc7ziQoQyXOZ7grsTx10xaypoxwpyExjkSzrysipLtwsKTy/DbFHWb/pjQ/VaDQNP54POfBXXfc50N8c0dSeCQnnZDV1rQl/GwCcqymS4cy0e+KMRoATbWVS7VNFUoxcTxHrbbl/iJAtaQsCjIaisPJnVzlyGemCHDWDX+U0bniwkNxCWC6gkHYWuSZyKtEMLtsXupZnvMhqwFiXpzivjLHsAd9eAj71NRm/mAc32aaParxZPwNgj6b36hqk6Rd+MaDSLQtzEAjoChdChpKMUkafF8b+2Kd6vQ85HUy8XN6hBQMWrEH9hLIUeY9osriah/T3E2rh5eyHYWHezWPu9gpgkmMdbR3ZteEpUbi3l3AIe4XCcCdNLQgS2msiz/gCyf1/ugvQQLXJHzcA9h/mlNPxgdIzNNUqfRPV1a1hQ46+WgKwIskB+QDnn047Ob6XWdb1Y7zgHlFQU7xr/ipwWjZzunXXHEX2S8lZFGOXlWpI1F/cWzUXZAnprTHQ5/nNf6MUd97ty8YnKrrEpD8adDaa0Z8eps8kNajrf8F46HOl2qu05YBjty2nRwOK4Pm5BIh/OQJAKYudC5xAor0TzHqgedJpd1c66sWfdshOdQ=
+Received: from localhost ([122.172.83.95])
+        by smtp.gmail.com with ESMTPSA id mm4-20020a1709030a0400b001d60a70809bsm5782825plb.168.2024.02.05.00.38.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 00:38:32 -0800 (PST)
+Date: Mon, 5 Feb 2024 14:08:30 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Rob Herring <robh@kernel.org>
+Cc: Saravana Kannan <saravanak@google.com>, David Dai <davidai@google.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Quentin Perret <qperret@google.com>,
+	Masami Hiramatsu <mhiramat@google.com>,
+	Will Deacon <will@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Marc Zyngier <maz@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Pavan Kondeti <quic_pkondeti@quicinc.com>,
+	Gupta Pankaj <pankaj.gupta@amd.com>, Mel Gorman <mgorman@suse.de>,
+	kernel-team@android.com, linux-pm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/2] dt-bindings: cpufreq: add virtual cpufreq device
+Message-ID: <20240205083830.4werub5e76kudjq4@vireshk-i7>
+References: <20240127004321.1902477-1-davidai@google.com>
+ <20240127004321.1902477-2-davidai@google.com>
+ <20240131170608.GA1441369-robh@kernel.org>
+ <CAGETcx8S0oS67oMZsPKk6_MGAtygoHEf_LN1gbcNDEBqRJ4PPg@mail.gmail.com>
+ <20240202155352.GA37864-robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240202155352.GA37864-robh@kernel.org>
 
-Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-to simplify the creation of SLAB caches.
+On 02-02-24, 09:53, Rob Herring wrote:
+> On Wed, Jan 31, 2024 at 10:23:03AM -0800, Saravana Kannan wrote:
+> > We also need the OPP tables to indicate which CPUs are part of the
+> > same cluster, etc. Don't want to invent a new "protocol" and just use
+> > existing DT bindings.
+> 
+> Topology binding is for that.
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- fs/nfs/pagelist.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+This one, right ?
 
-diff --git a/fs/nfs/pagelist.c b/fs/nfs/pagelist.c
-index 6efb5068c116..f04cc3274fda 100644
---- a/fs/nfs/pagelist.c
-+++ b/fs/nfs/pagelist.c
-@@ -1561,10 +1561,7 @@ void nfs_pageio_stop_mirroring(struct nfs_pageio_d=
-escriptor *pgio)
-=20
- int __init nfs_init_nfspagecache(void)
- {
--	nfs_page_cachep =3D kmem_cache_create("nfs_page",
--					    sizeof(struct nfs_page),
--					    0, SLAB_HWCACHE_ALIGN,
--					    NULL);
-+	nfs_page_cachep =3D KMEM_CACHE(nfs_page, SLAB_HWCACHE_ALIGN);
- 	if (nfs_page_cachep =3D=3D NULL)
- 		return -ENOMEM;
-=20
---=20
-2.39.2
+Documentation/devicetree/bindings/dvfs/performance-domain.yaml
 
+> You need per CPU Fmax, sure. But all the frequencies? I don't follow why 
+> you don't just have a max available capacity and then request the 
+> desired capacity. Then the host maps that to an underlying OPP. Why have 
+> an intermediate set of fake frequencies?
+
++1
+
+> As these are normalized, I guess you are normalizing for capacity as 
+> well? Or you are using "capacity-dmips-mhz"? 
+> 
+> I'm also lost how this would work when you migrate and the underlying 
+> CPU changes. The DT is fixed.
+> 
+> > > Also, we have "opp-level" for opaque values that aren't Hz.
+> > 
+> > Still want to keep it Hz to be compatible with arch_freq_scale and
+> > when virtualized CPU perf counters are available.
+
+These are all specific to a driver only, that can be handled easily I guess. I
+don't see a value to using Hz for this to be honest.
+
+-- 
+viresh
 
