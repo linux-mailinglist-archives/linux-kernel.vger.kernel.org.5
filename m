@@ -1,325 +1,439 @@
-Return-Path: <linux-kernel+bounces-52495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93080849900
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:37:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 39BE0849904
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:39:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6FB31C208DF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:37:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F8D41C21372
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:39:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19D1F18E1A;
-	Mon,  5 Feb 2024 11:37:22 +0000 (UTC)
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6264199BA;
+	Mon,  5 Feb 2024 11:39:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DiWSnUbU";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="6lQcoCAj";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DiWSnUbU";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="6lQcoCAj"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FA1E171BC;
-	Mon,  5 Feb 2024 11:37:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 660FF18EB8;
+	Mon,  5 Feb 2024 11:39:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707133041; cv=none; b=g8b76t/7oNu2O53TsKoMbLGyZ5lqJCpbs+d8xFr766CiTvxepbrSa//rQaG4OgOC3GvLe47B1oAIMmLDfpdHeeaoR72z6DwmopGNF3kCuRHDrSZk6T8Vbz3NqQsMUogThLuVuddpPQTsDfJeaYLflChjap9229Q0XL8EH2r1Mzs=
+	t=1707133183; cv=none; b=lM9KzuJz9HzZbQ7ZgyofgdT0c1zzg+wxhh6fJJSShzghBgwmIywnbbncWxWWwhRpGVvXN1xsFnTpNXDMZwdl1qZ1ktDaXMMzKIAWNXZemP1azPZVSXxhOs1GIFZituXLBA0GyTWUMeXBxr63jr6VLCvALzEXPCpjHJSFKprxeqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707133041; c=relaxed/simple;
-	bh=ifeorQftRJzgzunliqbdI9aCD0Ma2Rh9E3S8+gyHG10=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mJnvm2GKbfqojM4f2zv35PayC8bchc6zq2hN/OsBiAceQOFzau78olPR9rdxNd4cxo7RWLNBlZDE1etHm+Du+L/lP553D6QjVLwXmXoTBacSpmbMUvsnq1iNSw5v79WjzD6I4J6RosE/ZV6/VbxATBwnv5IFWS/8NFSExqjAij0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TT48t6zgbz1vpHf;
-	Mon,  5 Feb 2024 19:36:46 +0800 (CST)
-Received: from kwepemd100002.china.huawei.com (unknown [7.221.188.184])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3D7B71404D8;
-	Mon,  5 Feb 2024 19:37:14 +0800 (CST)
-Received: from M910t (10.110.54.157) by kwepemd100002.china.huawei.com
- (7.221.188.184) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Mon, 5 Feb
- 2024 19:37:12 +0800
-Date: Mon, 5 Feb 2024 19:36:55 +0800
-From: Changbin Du <changbin.du@huawei.com>
-To: Adrian Hunter <adrian.hunter@intel.com>
-CC: Changbin Du <changbin.du@huawei.com>, Peter Zijlstra
-	<peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de
- Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander
- Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
-	<linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>, Andi
- Kleen <ak@linux.intel.com>, Thomas Richter <tmricht@linux.ibm.com>,
-	<changbin.du@gmail.com>
-Subject: Re: [PATCH v5 2/5] perf: util: use capstone disasm engine to show
- assembly instructions
-Message-ID: <20240205113655.qlhwowlnnrv7e3qe@M910t>
-References: <20240122112054.1576835-1-changbin.du@huawei.com>
- <20240122112054.1576835-3-changbin.du@huawei.com>
- <82baac58-6d9e-45da-81ff-4a27a0d1d776@intel.com>
+	s=arc-20240116; t=1707133183; c=relaxed/simple;
+	bh=mRlwFY7kRp/G7DPQmASAu2DajK9cQJbqykE/u6l2bEk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TCZh2qxuJOtzrtocAuEYyMnrctA4PuMoXipxc8ZV/p9l9icj169FdkebGjF+x+EY+ad8kG+BdBF+MNCNeTn/FX6BJpMH0lgVV3q7C3tl4DNxXHV/3HrzofsGz8pgLER94Lfc1SCBKGy2ZBhNG1YhX1z/ad9tPJxXSKSjB6Hygyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DiWSnUbU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=6lQcoCAj; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DiWSnUbU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=6lQcoCAj; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 849FB1F8BB;
+	Mon,  5 Feb 2024 11:39:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707133179; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fIuM3Q6VzAnAPyVLX/OqZgZYlF68gRw2R0OsX5yqsfw=;
+	b=DiWSnUbU33o+QdXrbCoPoyiOxTxQAWeX++TkNFX3HMbVhYD83OnnGoLlh5ct2bR3i5ddgZ
+	FKSSe4x2K/snmwpt+IHnWYpr8Kqinebr0tCxEXPYDW9YrROGhTJD1hPr5rUXL0ZLq7DW8F
+	mo8dE4pdt/yq77JGMTvIUMl/83elFOQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707133179;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fIuM3Q6VzAnAPyVLX/OqZgZYlF68gRw2R0OsX5yqsfw=;
+	b=6lQcoCAj0LI1ZrFqiK+bB1kD5fg8wqKi1BpR0BSZUP2J7qTPXC+LnSZ9po6VTpx7PmGDXo
+	x6qBGb8z89cEZqDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707133179; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fIuM3Q6VzAnAPyVLX/OqZgZYlF68gRw2R0OsX5yqsfw=;
+	b=DiWSnUbU33o+QdXrbCoPoyiOxTxQAWeX++TkNFX3HMbVhYD83OnnGoLlh5ct2bR3i5ddgZ
+	FKSSe4x2K/snmwpt+IHnWYpr8Kqinebr0tCxEXPYDW9YrROGhTJD1hPr5rUXL0ZLq7DW8F
+	mo8dE4pdt/yq77JGMTvIUMl/83elFOQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707133179;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fIuM3Q6VzAnAPyVLX/OqZgZYlF68gRw2R0OsX5yqsfw=;
+	b=6lQcoCAj0LI1ZrFqiK+bB1kD5fg8wqKi1BpR0BSZUP2J7qTPXC+LnSZ9po6VTpx7PmGDXo
+	x6qBGb8z89cEZqDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 71D44136F5;
+	Mon,  5 Feb 2024 11:39:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id eziDG/vIwGWGQwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 05 Feb 2024 11:39:39 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 0EF07A0809; Mon,  5 Feb 2024 12:39:31 +0100 (CET)
+Date: Mon, 5 Feb 2024 12:39:31 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@lst.de>
+Cc: linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>,
+	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>,
+	Brian Foster <bfoster@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	"Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 12/13] writeback: add a writeback iterator
+Message-ID: <20240205113931.m4sictdqr3gd5rtl@quack3>
+References: <20240203071147.862076-1-hch@lst.de>
+ <20240203071147.862076-13-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <82baac58-6d9e-45da-81ff-4a27a0d1d776@intel.com>
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemd100002.china.huawei.com (7.221.188.184)
+In-Reply-To: <20240203071147.862076-13-hch@lst.de>
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=DiWSnUbU;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=6lQcoCAj
+X-Spamd-Result: default: False [-2.81 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 849FB1F8BB
+X-Spam-Level: 
+X-Spam-Score: -2.81
+X-Spam-Flag: NO
 
-On Mon, Feb 05, 2024 at 11:22:51AM +0200, Adrian Hunter wrote:
-> On 22/01/24 13:20, Changbin Du wrote:
-> > Currently, the instructions of samples are shown as raw hex strings
-> > which are hard to read. x86 has a special option '--xed' to disassemble
-> > the hex string via intel XED tool.
-> > 
-> > Here we use capstone as our disassembler engine to give more friendly
-> > instructions. We select libcapstone because capstone can provide more
-> > insn details. Perf will fallback to raw instructions if libcapstone is
-> > not available.
-> > 
-> > The advantages compared to XED tool:
-> >  * Support arm, arm64, x86-32, x86_64 (more could be supported),
-> >    xed only for x86_64.
-> >  * Immediate address operands are shown as symbol+offs.
-> > 
-> > Signed-off-by: Changbin Du <changbin.du@huawei.com>
-> > 
-> > ---
-> > v2:
-> >   - line up the output by preceding two tabs. (Adrian Hunter)
-> >   - removed the tailing space. (Adrian Hunter)
-> >   - forward declaration for perf_sample, thread, machine. (Adrian Hunter)
-> >   - other trivial fixes (Adrian Hunter)
-> > ---
-> >  tools/perf/builtin-script.c  |   8 +--
-> >  tools/perf/util/Build        |   1 +
-> >  tools/perf/util/print_insn.c | 133 +++++++++++++++++++++++++++++++++++
-> >  tools/perf/util/print_insn.h |  16 +++++
-> >  4 files changed, 153 insertions(+), 5 deletions(-)
-> >  create mode 100644 tools/perf/util/print_insn.c
-> >  create mode 100644 tools/perf/util/print_insn.h
-> > 
-> > diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-> > index b1f57401ff23..4817a37f16e2 100644
-> > --- a/tools/perf/builtin-script.c
-> > +++ b/tools/perf/builtin-script.c
-> > @@ -34,6 +34,7 @@
-> >  #include "util/event.h"
-> >  #include "ui/ui.h"
-> >  #include "print_binary.h"
-> > +#include "print_insn.h"
-> >  #include "archinsn.h"
-> >  #include <linux/bitmap.h>
-> >  #include <linux/kernel.h>
-> > @@ -1511,11 +1512,8 @@ static int perf_sample__fprintf_insn(struct perf_sample *sample,
-> >  	if (PRINT_FIELD(INSNLEN))
-> >  		printed += fprintf(fp, " ilen: %d", sample->insn_len);
-> >  	if (PRINT_FIELD(INSN) && sample->insn_len) {
-> > -		int i;
-> > -
-> > -		printed += fprintf(fp, " insn:");
-> > -		for (i = 0; i < sample->insn_len; i++)
-> > -			printed += fprintf(fp, " %02x", (unsigned char)sample->insn[i]);
-> > +		printed += fprintf(fp, " insn: ");
+On Sat 03-02-24 08:11:46, Christoph Hellwig wrote:
+> Refactor the code left in write_cache_pages into an iterator that the
+> file system can call to get the next folio for a writeback operation:
 > 
-> Better without the space after 'insn:', then
-> sample__fprintf_insn_raw() can add 1 space before each
-> byte.
-> 		printed += fprintf(fp, " insn:");
->
-This is designed to. Because I want sample__fprintf_insn_raw() to be independent
-from the callsite.
+> 	struct folio *folio = NULL;
+> 
+> 	while ((folio = writeback_iter(mapping, wbc, folio, &error))) {
+> 		error = <do per-foli writeback>;
+> 	}
+> 
+> The twist here is that the error value is passed by reference, so that
+> the iterator can restore it when breaking out of the loop.
+> 
+> Handling of the magic AOP_WRITEPAGE_ACTIVATE value stays outside the
+> iterator and needs is just kept in the write_cache_pages legacy wrapper.
+> in preparation for eventually killing it off.
+> 
+> Heavily based on a for_each* based iterator from Matthew Wilcox.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-> See also further below.
-> 
-> > +		printed += sample__fprintf_insn_raw(sample, fp);
-> >  	}
-> >  	if (PRINT_FIELD(BRSTACKINSN) || PRINT_FIELD(BRSTACKINSNLEN))
-> >  		printed += perf_sample__fprintf_brstackinsn(sample, thread, attr, machine, fp);
-> > diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-> > index 8027f450fa3e..2cbeeb79b6ef 100644
-> > --- a/tools/perf/util/Build
-> > +++ b/tools/perf/util/Build
-> > @@ -32,6 +32,7 @@ perf-y += perf_regs.o
-> >  perf-y += perf-regs-arch/
-> >  perf-y += path.o
-> >  perf-y += print_binary.o
-> > +perf-y += print_insn.o
-> >  perf-y += rlimit.o
-> >  perf-y += argv_split.o
-> >  perf-y += rbtree.o
-> > diff --git a/tools/perf/util/print_insn.c b/tools/perf/util/print_insn.c
-> > new file mode 100644
-> > index 000000000000..36b403d4a4df
-> > --- /dev/null
-> > +++ b/tools/perf/util/print_insn.c
-> > @@ -0,0 +1,133 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Instruction binary disassembler based on capstone.
-> > + *
-> > + * Author(s): Changbin Du <changbin.du@huawei.com>
-> > + */
-> > +#include <string.h>
-> > +#include <stdbool.h>
-> > +#include "debug.h"
-> > +#include "event.h"
-> > +#include "symbol.h"
-> > +#include "machine.h"
-> > +#include "thread.h"
-> > +#include "print_insn.h"
-> > +
-> > +size_t sample__fprintf_insn_raw(struct perf_sample *sample, FILE *fp)
-> > +{
-> > +	int printed = 0;
-> > +
-> > +	for (int i = 0; i < sample->insn_len; i++) {
-> > +		printed += fprintf(fp, "%02x ", (unsigned char)sample->insn[i]);
-> > +		if (sample->insn_len - i > 1)
-> > +			printed += fprintf(fp, " ");
-> 
-> Now there are 2 spaces between.  Better like this:
-> 
-> 	for (int i = 0; i < sample->insn_len; i++)
-> 		printed += fprintf(fp, " %02x", (unsigned char)sample->insn[i]);
-> 
-> 
-> > +	}
-> > +	return printed;
-> > +}
-> > +
-> > +#ifdef HAVE_LIBCAPSTONE_SUPPORT
-> > +#include <capstone/capstone.h>
-> > +
-> > +static int capstone_init(struct machine *machine, csh *cs_handle)
-> > +{
-> > +	cs_arch arch;
-> > +	cs_mode mode;
-> > +
-> > +	if (machine__is(machine, "x86_64")) {
-> > +		arch = CS_ARCH_X86;
-> > +		mode = CS_MODE_64;
-> > +	} else if (machine__normalized_is(machine, "x86")) {
-> > +		arch = CS_ARCH_X86;
-> > +		mode = CS_MODE_32;
-> > +	} else if (machine__normalized_is(machine, "arm64")) {
-> > +		arch = CS_ARCH_ARM64;
-> > +		mode = CS_MODE_ARM;
-> > +	} else if (machine__normalized_is(machine, "arm")) {
-> > +		arch = CS_ARCH_ARM;
-> > +		mode = CS_MODE_ARM + CS_MODE_V8;
-> > +	} else if (machine__normalized_is(machine, "s390")) {
-> > +		arch = CS_ARCH_SYSZ;
-> > +		mode = CS_MODE_BIG_ENDIAN;
-> > +	} else {
-> > +		return -1;
-> > +	}
-> > +
-> > +	if (cs_open(arch, mode, cs_handle) != CS_ERR_OK) {
-> > +		pr_warning_once("cs_open failed\n");
-> > +		return -1;
-> > +	}
-> > +
-> > +	if (machine__normalized_is(machine, "x86")) {
-> > +		cs_option(*cs_handle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
-> > +		/*
-> > +		 * Resolving address operands to symbols is implemented
-> > +		 * on x86 by investigating instruction details.
-> > +		 */
-> > +		cs_option(*cs_handle, CS_OPT_DETAIL, CS_OPT_ON);
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static size_t print_insn_x86(struct perf_sample *sample, struct thread *thread,
-> > +			     cs_insn *insn, FILE *fp)
-> > +{
-> > +	struct addr_location al;
-> > +	size_t printed = 0;
-> > +
-> > +	if (insn->detail && insn->detail->x86.op_count == 1) {
-> > +		cs_x86_op *op = &insn->detail->x86.operands[0];
-> > +
-> > +		addr_location__init(&al);
-> > +		if (op->type == X86_OP_IMM &&
-> > +		    thread__find_symbol(thread, sample->cpumode, op->imm, &al)) {
-> > +			printed += fprintf(fp, "%s ", insn[0].mnemonic);
-> > +			printed += symbol__fprintf_symname_offs(al.sym, &al, fp);
-> > +			addr_location__exit(&al);
-> > +			return printed;
-> > +		}
-> > +		addr_location__exit(&al);
-> > +	}
-> > +
-> > +	printed += fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
-> > +	return printed;
-> > +}
-> > +
-> > +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread,
-> > +			    struct machine *machine, FILE *fp)
-> > +{
-> > +	csh cs_handle;
-> > +	cs_insn *insn;
-> > +	size_t count;
-> > +	size_t printed = 0;
-> > +	int ret;
-> > +
-> > +	/* TODO: Try to initiate capstone only once but need a proper place. */
-> > +	ret = capstone_init(machine, &cs_handle);
-> > +	if (ret < 0) {
-> > +		/* fallback */
-> > +		return sample__fprintf_insn_raw(sample, fp);
-> > +	}
-> > +
-> > +	count = cs_disasm(cs_handle, (uint8_t *)sample->insn, sample->insn_len,
-> > +			  sample->ip, 1, &insn);
-> > +	if (count > 0) {
-> > +		if (machine__normalized_is(machine, "x86"))
-> > +			printed += print_insn_x86(sample, thread, &insn[0], fp);
-> > +		else
-> > +			printed += fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
-> > +		cs_free(insn, count);
-> > +	} else {
-> > +		printed += fprintf(fp, "illegal instruction");
-> > +	}
-> > +
-> > +	cs_close(&cs_handle);
-> > +	return printed;
-> > +}
-> > +#else
-> > +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread __maybe_unused,
-> > +			    struct machine *machine __maybe_unused, FILE *fp)
-> > +{
-> > +	return sample__fprintf_insn_raw(sample, fp);
-> > +}
-> > +#endif
-> > diff --git a/tools/perf/util/print_insn.h b/tools/perf/util/print_insn.h
-> > new file mode 100644
-> > index 000000000000..80dda6da7c60
-> > --- /dev/null
-> > +++ b/tools/perf/util/print_insn.h
-> > @@ -0,0 +1,16 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +#ifndef PERF_PRINT_INSN_H
-> > +#define PERF_PRINT_INSN_H
-> > +
-> > +#include <stddef.h>
-> > +#include <stdio.h>
-> > +
-> > +struct perf_sample;
-> > +struct thread;
-> > +struct machine;
-> > +
-> > +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread,
-> > +			    struct machine *machine, FILE *fp);
-> > +size_t sample__fprintf_insn_raw(struct perf_sample *sample, FILE *fp);
-> > +
-> > +#endif /* PERF_PRINT_INSN_H */
-> 
+Looks good. Feel free to add:
 
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  include/linux/writeback.h |   4 +
+>  mm/page-writeback.c       | 192 ++++++++++++++++++++++----------------
+>  2 files changed, 118 insertions(+), 78 deletions(-)
+> 
+> diff --git a/include/linux/writeback.h b/include/linux/writeback.h
+> index f67b3ea866a0fb..9845cb62e40b2d 100644
+> --- a/include/linux/writeback.h
+> +++ b/include/linux/writeback.h
+> @@ -82,6 +82,7 @@ struct writeback_control {
+>  	/* internal fields used by the ->writepages implementation: */
+>  	struct folio_batch fbatch;
+>  	pgoff_t index;
+> +	int saved_err;
+>  
+>  #ifdef CONFIG_CGROUP_WRITEBACK
+>  	struct bdi_writeback *wb;	/* wb this writeback is issued under */
+> @@ -366,6 +367,9 @@ int balance_dirty_pages_ratelimited_flags(struct address_space *mapping,
+>  
+>  bool wb_over_bg_thresh(struct bdi_writeback *wb);
+>  
+> +struct folio *writeback_iter(struct address_space *mapping,
+> +		struct writeback_control *wbc, struct folio *folio, int *error);
+> +
+>  typedef int (*writepage_t)(struct folio *folio, struct writeback_control *wbc,
+>  				void *data);
+>  
+> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+> index 3abb053e70580e..5fe4cdb7dbd61a 100644
+> --- a/mm/page-writeback.c
+> +++ b/mm/page-writeback.c
+> @@ -2325,18 +2325,18 @@ void __init page_writeback_init(void)
+>  }
+>  
+>  /**
+> - * tag_pages_for_writeback - tag pages to be written by write_cache_pages
+> + * tag_pages_for_writeback - tag pages to be written by writeback
+>   * @mapping: address space structure to write
+>   * @start: starting page index
+>   * @end: ending page index (inclusive)
+>   *
+>   * This function scans the page range from @start to @end (inclusive) and tags
+> - * all pages that have DIRTY tag set with a special TOWRITE tag. The idea is
+> - * that write_cache_pages (or whoever calls this function) will then use
+> - * TOWRITE tag to identify pages eligible for writeback.  This mechanism is
+> - * used to avoid livelocking of writeback by a process steadily creating new
+> - * dirty pages in the file (thus it is important for this function to be quick
+> - * so that it can tag pages faster than a dirtying process can create them).
+> + * all pages that have DIRTY tag set with a special TOWRITE tag.  The caller
+> + * can then use the TOWRITE tag to identify pages eligible for writeback.
+> + * This mechanism is used to avoid livelocking of writeback by a process
+> + * steadily creating new dirty pages in the file (thus it is important for this
+> + * function to be quick so that it can tag pages faster than a dirtying process
+> + * can create them).
+>   */
+>  void tag_pages_for_writeback(struct address_space *mapping,
+>  			     pgoff_t start, pgoff_t end)
+> @@ -2434,69 +2434,68 @@ static struct folio *writeback_get_folio(struct address_space *mapping,
+>  }
+>  
+>  /**
+> - * write_cache_pages - walk the list of dirty pages of the given address space and write all of them.
+> + * writeback_iter - iterate folio of a mapping for writeback
+>   * @mapping: address space structure to write
+> - * @wbc: subtract the number of written pages from *@wbc->nr_to_write
+> - * @writepage: function called for each page
+> - * @data: data passed to writepage function
+> + * @wbc: writeback context
+> + * @folio: previously iterated folio (%NULL to start)
+> + * @error: in-out pointer for writeback errors (see below)
+>   *
+> - * If a page is already under I/O, write_cache_pages() skips it, even
+> - * if it's dirty.  This is desirable behaviour for memory-cleaning writeback,
+> - * but it is INCORRECT for data-integrity system calls such as fsync().  fsync()
+> - * and msync() need to guarantee that all the data which was dirty at the time
+> - * the call was made get new I/O started against them.  If wbc->sync_mode is
+> - * WB_SYNC_ALL then we were called for data integrity and we must wait for
+> - * existing IO to complete.
+> - *
+> - * To avoid livelocks (when other process dirties new pages), we first tag
+> - * pages which should be written back with TOWRITE tag and only then start
+> - * writing them. For data-integrity sync we have to be careful so that we do
+> - * not miss some pages (e.g., because some other process has cleared TOWRITE
+> - * tag we set). The rule we follow is that TOWRITE tag can be cleared only
+> - * by the process clearing the DIRTY tag (and submitting the page for IO).
+> - *
+> - * To avoid deadlocks between range_cyclic writeback and callers that hold
+> - * pages in PageWriteback to aggregate IO until write_cache_pages() returns,
+> - * we do not loop back to the start of the file. Doing so causes a page
+> - * lock/page writeback access order inversion - we should only ever lock
+> - * multiple pages in ascending page->index order, and looping back to the start
+> - * of the file violates that rule and causes deadlocks.
+> + * This function returns the next folio for the writeback operation described by
+> + * @wbc on @mapping and  should be called in a while loop in the ->writepages
+> + * implementation.
+>   *
+> - * Return: %0 on success, negative error code otherwise
+> + * To start the writeback operation, %NULL is passed in the @folio argument, and
+> + * for every subsequent iteration the folio returned previously should be passed
+> + * back in.
+> + *
+> + * If there was an error in the per-folio writeback inside the writeback_iter()
+> + * loop, @error should be set to the error value.
+> + *
+> + * Once the writeback described in @wbc has finished, this function will return
+> + * %NULL and if there was an error in any iteration restore it to @error.
+> + *
+> + * Note: callers should not manually break out of the loop using break or goto
+> + * but must keep calling writeback_iter() until it returns %NULL.
+> + *
+> + * Return: the folio to write or %NULL if the loop is done.
+>   */
+> -int write_cache_pages(struct address_space *mapping,
+> -		      struct writeback_control *wbc, writepage_t writepage,
+> -		      void *data)
+> +struct folio *writeback_iter(struct address_space *mapping,
+> +		struct writeback_control *wbc, struct folio *folio, int *error)
+>  {
+> -	int ret = 0;
+> -	int error;
+> -	struct folio *folio;
+> -	pgoff_t end;		/* Inclusive */
+> -
+> -	if (wbc->range_cyclic) {
+> -		wbc->index = mapping->writeback_index; /* prev offset */
+> -		end = -1;
+> -	} else {
+> -		wbc->index = wbc->range_start >> PAGE_SHIFT;
+> -		end = wbc->range_end >> PAGE_SHIFT;
+> -	}
+> -	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
+> -		tag_pages_for_writeback(mapping, wbc->index, end);
+> -
+> -	folio_batch_init(&wbc->fbatch);
+> +	if (!folio) {
+> +		folio_batch_init(&wbc->fbatch);
+> +		wbc->saved_err = *error = 0;
+>  
+> -	for (;;) {
+> -		folio = writeback_get_folio(mapping, wbc);
+> -		if (!folio)
+> -			break;
+> +		/*
+> +		 * For range cyclic writeback we remember where we stopped so
+> +		 * that we can continue where we stopped.
+> +		 *
+> +		 * For non-cyclic writeback we always start at the beginning of
+> +		 * the passed in range.
+> +		 */
+> +		if (wbc->range_cyclic)
+> +			wbc->index = mapping->writeback_index;
+> +		else
+> +			wbc->index = wbc->range_start >> PAGE_SHIFT;
+>  
+> -		error = writepage(folio, wbc, data);
+> +		/*
+> +		 * To avoid livelocks when other processes dirty new pages, we
+> +		 * first tag pages which should be written back and only then
+> +		 * start writing them.
+> +		 *
+> +		 * For data-integrity writeback we have to be careful so that we
+> +		 * do not miss some pages (e.g., because some other process has
+> +		 * cleared the TOWRITE tag we set).  The rule we follow is that
+> +		 * TOWRITE tag can be cleared only by the process clearing the
+> +		 * DIRTY tag (and submitting the page for I/O).
+> +		 */
+> +		if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
+> +			tag_pages_for_writeback(mapping, wbc->index,
+> +					wbc_end(wbc));
+> +	} else {
+>  		wbc->nr_to_write -= folio_nr_pages(folio);
+>  
+> -		if (error == AOP_WRITEPAGE_ACTIVATE) {
+> -			folio_unlock(folio);
+> -			error = 0;
+> -		}
+> +		WARN_ON_ONCE(*error > 0);
+>  
+>  		/*
+>  		 * For integrity writeback we have to keep going until we have
+> @@ -2510,33 +2509,70 @@ int write_cache_pages(struct address_space *mapping,
+>  		 * wbc->nr_to_write or encounter the first error.
+>  		 */
+>  		if (wbc->sync_mode == WB_SYNC_ALL) {
+> -			if (error && !ret)
+> -				ret = error;
+> +			if (*error && !wbc->saved_err)
+> +				wbc->saved_err = *error;
+>  		} else {
+> -			if (error || wbc->nr_to_write <= 0)
+> +			if (*error || wbc->nr_to_write <= 0)
+>  				goto done;
+>  		}
+>  	}
+>  
+> -	/*
+> -	 * For range cyclic writeback we need to remember where we stopped so
+> -	 * that we can continue there next time we are called.  If  we hit the
+> -	 * last page and there is more work to be done, wrap back to the start
+> -	 * of the file.
+> -	 *
+> -	 * For non-cyclic writeback we always start looking up at the beginning
+> -	 * of the file if we are called again, which can only happen due to
+> -	 * -ENOMEM from the file system.
+> -	 */
+> -	folio_batch_release(&wbc->fbatch);
+> -	if (wbc->range_cyclic)
+> -		mapping->writeback_index = 0;
+> -	return ret;
+> +	folio = writeback_get_folio(mapping, wbc);
+> +	if (!folio) {
+> +		/*
+> +		 * To avoid deadlocks between range_cyclic writeback and callers
+> +		 * that hold pages in PageWriteback to aggregate I/O until
+> +		 * the writeback iteration finishes, we do not loop back to the
+> +		 * start of the file.  Doing so causes a page lock/page
+> +		 * writeback access order inversion - we should only ever lock
+> +		 * multiple pages in ascending page->index order, and looping
+> +		 * back to the start of the file violates that rule and causes
+> +		 * deadlocks.
+> +		 */
+> +		if (wbc->range_cyclic)
+> +			mapping->writeback_index = 0;
+> +
+> +		/*
+> +		 * Return the first error we encountered (if there was any) to
+> +		 * the caller.
+> +		 */
+> +		*error = wbc->saved_err;
+> +	}
+> +	return folio;
+>  
+>  done:
+>  	folio_batch_release(&wbc->fbatch);
+>  	if (wbc->range_cyclic)
+>  		mapping->writeback_index = folio->index + folio_nr_pages(folio);
+> +	return NULL;
+> +}
+> +
+> +/**
+> + * write_cache_pages - walk the list of dirty pages of the given address space and write all of them.
+> + * @mapping: address space structure to write
+> + * @wbc: subtract the number of written pages from *@wbc->nr_to_write
+> + * @writepage: function called for each page
+> + * @data: data passed to writepage function
+> + *
+> + * Return: %0 on success, negative error code otherwise
+> + *
+> + * Note: please use writeback_iter() instead.
+> + */
+> +int write_cache_pages(struct address_space *mapping,
+> +		      struct writeback_control *wbc, writepage_t writepage,
+> +		      void *data)
+> +{
+> +	struct folio *folio = NULL;
+> +	int error;
+> +
+> +	while ((folio = writeback_iter(mapping, wbc, folio, &error))) {
+> +		error = writepage(folio, wbc, data);
+> +		if (error == AOP_WRITEPAGE_ACTIVATE) {
+> +			folio_unlock(folio);
+> +			error = 0;
+> +		}
+> +	}
+> +
+>  	return error;
+>  }
+>  EXPORT_SYMBOL(write_cache_pages);
+> -- 
+> 2.39.2
+> 
 -- 
-Cheers,
-Changbin Du
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
