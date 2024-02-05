@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-52917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52918-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34FB8849E51
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:33:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51CED849E53
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:34:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 681A21C21E6E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:33:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EBFB28A265
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:34:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF37E3FB32;
-	Mon,  5 Feb 2024 15:32:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AE5F2DF9D;
+	Mon,  5 Feb 2024 15:32:56 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66F813B18D
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 15:32:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0AFF3FE51
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 15:32:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707147171; cv=none; b=TBSw+UYmpDo9qTAe3ZmoTSCA5ysPNNH5HtnUAVT8hALpj6P+WpydEQv/QCyCJdOklNk3gRnl2BPQPmZJTx4s/i0314B3B1q5vqOqMyrIZ2QcdEwc34Kl2kNnqK1rt8qZ+6br2V0E59EeAImM3Q+feVuSi8CkX1+BJHRrPN7EhoY=
+	t=1707147175; cv=none; b=SmMF5IxsbVLpd42P/1QCiuUVoTNZj9C8YdmftFsRxbdGgcwjf9BHs7OEByEnDjBRydhDBMfREApLDWZ8HezXfuL3yiiJ6reHId9gyJ020+D898nTvnHIW5l6RnoWjCRA6hppZaUYZkJYiS5dszLetFWtHuBs4N5MX+0H3u+T1ww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707147171; c=relaxed/simple;
-	bh=r1hkzYJmSuuIn0H8ddW+ei/JSVISOgRUUYc6h1WMsCA=;
+	s=arc-20240116; t=1707147175; c=relaxed/simple;
+	bh=gp8tv3IVxGAchewnqQ11OPRI0Ycp1XlYtKMxh98HcZ8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Iasucun0u9DQNhGSiSncUAe76rYj+gju9hNoezNLNcXmE5i69DqAavWTmMOePaI2azUH0mAeW/ysOqx6nogVsk+WW9/+hcyAZUT9Qn5+I5KFk0oAj4N/P35/1t7xq4nrLQmNF7x84pL+Pwrj9ydbG/jKKBf2tpZ5yTYMDLDLOGc=
+	 MIME-Version; b=XBgGj4ZxVrDwUVuC7cPkTqBsOTHRC+mNByKt8QenrA5OZFDkZd2E8qLD+Z93zR6qgzJcgNuIiG6Zc5mNaTO5QTXu3mHo7goeZSO77QYdO76ORi5hBs6AUov52Nxj+Zrk342gGOmcBOJUGIvcQf0O25qIMiWVJJXU4fHPT11QpSE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9287C12FC;
-	Mon,  5 Feb 2024 07:33:31 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 14C211FB;
+	Mon,  5 Feb 2024 07:33:36 -0800 (PST)
 Received: from e121345-lin.cambridge.arm.com (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C60753F5A1;
-	Mon,  5 Feb 2024 07:32:47 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 483403F5A1;
+	Mon,  5 Feb 2024 07:32:52 -0800 (PST)
 From: Robin Murphy <robin.murphy@arm.com>
 To: joro@8bytes.org
 Cc: will@kernel.org,
@@ -42,9 +42,9 @@ Cc: will@kernel.org,
 	rientjes@google.com,
 	yosryahmed@google.com,
 	john.g.garry@oracle.com
-Subject: [PATCH v3 2/3] iommu/iova: Reorganise some code
-Date: Mon,  5 Feb 2024 15:32:40 +0000
-Message-Id: <d4753562f4faa0e6b3aeebcbf88fdb60cc22d715.1707144953.git.robin.murphy@arm.com>
+Subject: [PATCH v3 3/3] iommu/iova: use named kmem_cache for iova magazines
+Date: Mon,  5 Feb 2024 15:32:41 +0000
+Message-Id: <dc5c51aaba50906a92b9ba1a5137ed462484a7be.1707144953.git.robin.murphy@arm.com>
 X-Mailer: git-send-email 2.39.2.101.g768bb238c484.dirty
 In-Reply-To: <cover.1707144953.git.robin.murphy@arm.com>
 References: <cover.1707144953.git.robin.murphy@arm.com>
@@ -56,179 +56,96 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The iova_cache_{get,put}() calls really represent top-level lifecycle
-management for the whole IOVA library, so it's long been rather
-confusing to have them buried right in the middle of the allocator
-implementation details. Move them to a more expected position at the end
-of the file, where it will then also be easier to expand them. With
-this, we can also move the rcache hotplug handler (plus another stray
-function) into the rcache portion of the file.
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
 
+The magazine buffers can take gigabytes of kmem memory, dominating all
+other allocations. For observability purpose create named slab cache so
+the iova magazine memory overhead can be clearly observed.
+
+With this change:
+
+> slabtop -o | head
+ Active / Total Objects (% used)    : 869731 / 952904 (91.3%)
+ Active / Total Slabs (% used)      : 103411 / 103974 (99.5%)
+ Active / Total Caches (% used)     : 135 / 211 (64.0%)
+ Active / Total Size (% used)       : 395389.68K / 411430.20K (96.1%)
+ Minimum / Average / Maximum Object : 0.02K / 0.43K / 8.00K
+
+OBJS ACTIVE  USE OBJ SIZE  SLABS OBJ/SLAB CACHE SIZE NAME
+244412 244239 99%    1.00K  61103       4    244412K iommu_iova_magazine
+ 91636  88343 96%    0.03K    739     124      2956K kmalloc-32
+ 75744  74844 98%    0.12K   2367      32      9468K kernfs_node_cache
+
+On this machine it is now clear that magazine use 242M of kmem memory.
+
+Acked-by: David Rientjes <rientjes@google.com>
+Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+[ rm: adjust to rework of iova_cache_{get,put} ]
 Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 ---
- drivers/iommu/iova.c | 128 +++++++++++++++++++++----------------------
- 1 file changed, 64 insertions(+), 64 deletions(-)
+ drivers/iommu/iova.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
-index cf95001d85c0..b5de865ee50b 100644
+index b5de865ee50b..d59d0ea2fd21 100644
 --- a/drivers/iommu/iova.c
 +++ b/drivers/iommu/iova.c
-@@ -24,24 +24,8 @@ static bool iova_rcache_insert(struct iova_domain *iovad,
- static unsigned long iova_rcache_get(struct iova_domain *iovad,
- 				     unsigned long size,
- 				     unsigned long limit_pfn);
--static void free_cpu_cached_iovas(unsigned int cpu, struct iova_domain *iovad);
- static void free_iova_rcaches(struct iova_domain *iovad);
--
--unsigned long iova_rcache_range(void)
--{
--	return PAGE_SIZE << (IOVA_RANGE_CACHE_MAX_SIZE - 1);
--}
--
--static int iova_cpuhp_dead(unsigned int cpu, struct hlist_node *node)
--{
--	struct iova_domain *iovad;
--
--	iovad = hlist_entry_safe(node, struct iova_domain, cpuhp_dead);
--
--	free_cpu_cached_iovas(cpu, iovad);
--	return 0;
--}
--
-+static void free_cpu_cached_iovas(unsigned int cpu, struct iova_domain *iovad);
- static void free_global_cached_iovas(struct iova_domain *iovad);
- 
- static struct iova *to_iova(struct rb_node *node)
-@@ -252,53 +236,6 @@ static void free_iova_mem(struct iova *iova)
- 		kmem_cache_free(iova_cache, iova);
- }
- 
--int iova_cache_get(void)
--{
--	int err = -ENOMEM;
--
--	mutex_lock(&iova_cache_mutex);
--	if (!iova_cache_users) {
--		iova_cache = kmem_cache_create("iommu_iova", sizeof(struct iova), 0,
--					       SLAB_HWCACHE_ALIGN, NULL);
--		if (!iova_cache)
--			goto out_err;
--
--		err = cpuhp_setup_state_multi(CPUHP_IOMMU_IOVA_DEAD, "iommu/iova:dead",
--					      NULL, iova_cpuhp_dead);
--		if (err) {
--			pr_err("IOVA: Couldn't register cpuhp handler: %pe\n", ERR_PTR(err));
--			goto out_err;
--		}
--	}
--
--	iova_cache_users++;
--	mutex_unlock(&iova_cache_mutex);
--
--	return 0;
--
--out_err:
--	kmem_cache_destroy(iova_cache);
--	mutex_unlock(&iova_cache_mutex);
--	return err;
--}
--EXPORT_SYMBOL_GPL(iova_cache_get);
--
--void iova_cache_put(void)
--{
--	mutex_lock(&iova_cache_mutex);
--	if (WARN_ON(!iova_cache_users)) {
--		mutex_unlock(&iova_cache_mutex);
--		return;
--	}
--	iova_cache_users--;
--	if (!iova_cache_users) {
--		cpuhp_remove_multi_state(CPUHP_IOMMU_IOVA_DEAD);
--		kmem_cache_destroy(iova_cache);
--	}
--	mutex_unlock(&iova_cache_mutex);
--}
--EXPORT_SYMBOL_GPL(iova_cache_put);
--
- /**
-  * alloc_iova - allocates an iova
-  * @iovad: - iova domain in question
-@@ -653,6 +590,11 @@ struct iova_rcache {
+@@ -590,6 +590,8 @@ struct iova_rcache {
  	struct delayed_work work;
  };
  
-+unsigned long iova_rcache_range(void)
-+{
-+	return PAGE_SIZE << (IOVA_RANGE_CACHE_MAX_SIZE - 1);
-+}
++static struct kmem_cache *iova_magazine_cache;
 +
- static struct iova_magazine *iova_magazine_alloc(gfp_t flags)
+ unsigned long iova_rcache_range(void)
+ {
+ 	return PAGE_SIZE << (IOVA_RANGE_CACHE_MAX_SIZE - 1);
+@@ -599,7 +601,7 @@ static struct iova_magazine *iova_magazine_alloc(gfp_t flags)
  {
  	struct iova_magazine *mag;
-@@ -989,5 +931,63 @@ static void free_global_cached_iovas(struct iova_domain *iovad)
- 		spin_unlock_irqrestore(&rcache->lock, flags);
- 	}
+ 
+-	mag = kmalloc(sizeof(*mag), flags);
++	mag = kmem_cache_alloc(iova_magazine_cache, flags);
+ 	if (mag)
+ 		mag->size = 0;
+ 
+@@ -608,7 +610,7 @@ static struct iova_magazine *iova_magazine_alloc(gfp_t flags)
+ 
+ static void iova_magazine_free(struct iova_magazine *mag)
+ {
+-	kfree(mag);
++	kmem_cache_free(iova_magazine_cache, mag);
  }
-+
-+static int iova_cpuhp_dead(unsigned int cpu, struct hlist_node *node)
-+{
-+	struct iova_domain *iovad;
-+
-+	iovad = hlist_entry_safe(node, struct iova_domain, cpuhp_dead);
-+
-+	free_cpu_cached_iovas(cpu, iovad);
-+	return 0;
-+}
-+
-+int iova_cache_get(void)
-+{
-+	int err = -ENOMEM;
-+
-+	mutex_lock(&iova_cache_mutex);
-+	if (!iova_cache_users) {
-+		iova_cache = kmem_cache_create("iommu_iova", sizeof(struct iova), 0,
-+					       SLAB_HWCACHE_ALIGN, NULL);
-+		if (!iova_cache)
+ 
+ static void
+@@ -953,6 +955,12 @@ int iova_cache_get(void)
+ 		if (!iova_cache)
+ 			goto out_err;
+ 
++		iova_magazine_cache = kmem_cache_create("iommu_iova_magazine",
++							sizeof(struct iova_magazine),
++							0, SLAB_HWCACHE_ALIGN, NULL);
++		if (!iova_magazine_cache)
 +			goto out_err;
 +
-+		err = cpuhp_setup_state_multi(CPUHP_IOMMU_IOVA_DEAD, "iommu/iova:dead",
-+					      NULL, iova_cpuhp_dead);
-+		if (err) {
-+			pr_err("IOVA: Couldn't register cpuhp handler: %pe\n", ERR_PTR(err));
-+			goto out_err;
-+		}
-+	}
-+
-+	iova_cache_users++;
-+	mutex_unlock(&iova_cache_mutex);
-+
-+	return 0;
-+
-+out_err:
-+	kmem_cache_destroy(iova_cache);
-+	mutex_unlock(&iova_cache_mutex);
-+	return err;
-+}
-+EXPORT_SYMBOL_GPL(iova_cache_get);
-+
-+void iova_cache_put(void)
-+{
-+	mutex_lock(&iova_cache_mutex);
-+	if (WARN_ON(!iova_cache_users)) {
-+		mutex_unlock(&iova_cache_mutex);
-+		return;
-+	}
-+	iova_cache_users--;
-+	if (!iova_cache_users) {
-+		cpuhp_remove_multi_state(CPUHP_IOMMU_IOVA_DEAD);
-+		kmem_cache_destroy(iova_cache);
-+	}
-+	mutex_unlock(&iova_cache_mutex);
-+}
-+EXPORT_SYMBOL_GPL(iova_cache_put);
-+
- MODULE_AUTHOR("Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>");
- MODULE_LICENSE("GPL");
+ 		err = cpuhp_setup_state_multi(CPUHP_IOMMU_IOVA_DEAD, "iommu/iova:dead",
+ 					      NULL, iova_cpuhp_dead);
+ 		if (err) {
+@@ -968,6 +976,7 @@ int iova_cache_get(void)
+ 
+ out_err:
+ 	kmem_cache_destroy(iova_cache);
++	kmem_cache_destroy(iova_magazine_cache);
+ 	mutex_unlock(&iova_cache_mutex);
+ 	return err;
+ }
+@@ -984,6 +993,7 @@ void iova_cache_put(void)
+ 	if (!iova_cache_users) {
+ 		cpuhp_remove_multi_state(CPUHP_IOMMU_IOVA_DEAD);
+ 		kmem_cache_destroy(iova_cache);
++		kmem_cache_destroy(iova_magazine_cache);
+ 	}
+ 	mutex_unlock(&iova_cache_mutex);
+ }
 -- 
 2.39.2.101.g768bb238c484.dirty
 
