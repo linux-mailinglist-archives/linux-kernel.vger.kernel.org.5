@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-54001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56E3A84A90A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:18:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 610A484A909
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:18:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4E7B295692
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:18:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93AFD1C27858
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:18:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BB6A50240;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D0984F8B5;
 	Mon,  5 Feb 2024 22:08:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J3O0rxD2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QZET9z3z"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C2B44F60F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C28B4F60C;
 	Mon,  5 Feb 2024 22:08:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707170894; cv=none; b=bseYsIE/9xy33ABwd9J71eDXsjYb8ssUj6fNDp7f82oEQTX5kyWhO2tJN7JsIanll3or7iE2jGdRBiB/EvzW4OPEUP3WrBAJ1BrV851Uiadz8Vxn37cSJf5rTr8GKx0qMnLFKgON1KUa3eNEcGGHyls0EtAuBliJ+kRICS99dBw=
+	t=1707170894; cv=none; b=DX0aIAwvWt4QUrxG1miGz/hYdNZw8gNA5rhy/a8ZhcItePnHReSpqeUPA5PvL0n5xZvYixNKbVoMDxFk0yAZxTidxKmUFwYgbXKtmc3lqpAPYkW/jWUlOX0TL0ZgdQeo8257YRAL3n4DG6WoZz+hdo59SQFDqk0+Fpj9umRkJ88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707170894; c=relaxed/simple;
-	bh=A+6R9ZDS9UjRyWJgxuvz/fapj4AM3nXOKkH2EGth9G0=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=bVamV60vHlEQ1w7b76MYk7x+WaCtz8kdfhsKZDAkzPhHDjf4JQCwkyKaU4rHmxwEfFC1LqYkZ1eBHrTCq2XrKC/8iGoeM5POJpOEJCdTdj6cGMqsPCByZbV6TqCWAh9K9L12O3dlAYluVWrIjIn8Yr1VhQV/6iVh1XhgwI+n8JU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J3O0rxD2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2EC62C433F1;
+	bh=8EgBgwLLDbF/8jK7XPHzV7GGgAjVhqj4SpRaslo5nG4=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=ax5/o5Ex1FkdwmibV2Y2oFeQKU5k4kzeHbtEbC/ohLrzaq6tzmX0nVnCYCVwzhtk3f4dwlKRPz+y0KtJMMMQyVed1xiAddum705ar5e6iGf0zIHOuntrBUSB9VJ5nIihPq3faKLBUnvRmV40U4VqQCKMDdCt0ONG7+w8RirpMzc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QZET9z3z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 449A8C433C7;
 	Mon,  5 Feb 2024 22:08:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1707170894;
-	bh=A+6R9ZDS9UjRyWJgxuvz/fapj4AM3nXOKkH2EGth9G0=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=J3O0rxD2Ygjsj700Pm6yV4AiE6xvD57357ifkYU+ieTDB8hkV461XMsO00tlHXqYi
-	 obOsJc42LU53liXxQ7P53JrKIu5XcpbuINvFG0y1aDmPYSqnXnUoJV+dMfzf0meUB7
-	 1qcjsz1xtsOtAYAbUyty5DepmOcAFOir/Voxp7sK7lM0bHVYTubjrRGVZEkxHO1YeM
-	 7LXLtLVc2HGPodplgcDHw/4lYtgesIoT2Yn2ncE9MW9fo+wo8TTjzZzOcqOYAa0Wiv
-	 hUSyMCfaIOrnZHfSrQvJ6qhySEe32iJJVx3YJwRQIqO+uehz3Flog1nybiejhBUxvl
-	 DmBmCLZYFBxsQ==
+	bh=8EgBgwLLDbF/8jK7XPHzV7GGgAjVhqj4SpRaslo5nG4=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=QZET9z3zeedOcUFANG1j5xtmknEO9qufzKyFJM3PWulLWLocFZjKndR/AOWoQoCa5
+	 3V/MsB7BrI7qusCBlXECDyfv5ljB7aB7fakS9PqZne1P/DkaOsbin8jN1CnwYTR1NZ
+	 vvG4guoHprTITFmhSe1vZBpMiw1ccTeVkSuRF9NGGAanx5+Hzz8D7h+skZYG3FNq6V
+	 gGqMQs+0SA5mMTM/qU0RpjS/ASQhNSXY+/Bdqy49J3b+Lvb74vYTdBwKaIglnclKMQ
+	 ghykALF2m5LRIm5y1Le3b0CHNGCSBMhG1l4XQVOzZ5CUCN/sN9olX4umSM867eTDH6
+	 6Nu9jxit9sSaw==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 124B0C48298;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26F6EC4828D;
 	Mon,  5 Feb 2024 22:08:14 +0000 (UTC)
 From: =?utf-8?b?QXLEsW7DpyDDnE5BTA==?= via B4 Relay
  <devnull+arinc.unal.arinc9.com@kernel.org>
-Subject: [PATCH net-next v5 0/7] MT7530 DSA Subdriver Improvements Act II
-Date: Tue, 06 Feb 2024 01:08:01 +0300
-Message-Id:
- <20240206-for-netnext-mt7530-improvements-2-v5-0-d7d92a185cb1@arinc9.com>
+Date: Tue, 06 Feb 2024 01:08:02 +0300
+Subject: [PATCH net-next v5 1/7] net: dsa: mt7530: empty default case on
+ mt7530_setup_port5()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,11 +56,12 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIAEFcwWUC/43OTW7DIBAF4KtErDsWv46dVe8RZQFmaJBqiICiV
- JHvXkoXTZVFs0GMRu97cyMZk8dMDrsbSVh99jG0Qb3syHLW4Q3B2zYTTrmkjDNwMUHAEvBaYC1
- 7JSj49ZJixRVDycDBSCfFODIjJ0Wac0no/LV3HEmLwneWnNrm7HOJ6bOXV9b3Pz1MMMoVn4eJi
- j0DBjr5sAwfQb+/9u88LHHtRuV3uXbM//dVDhSMpqNT1s5o6AMpfsn2PEOKRo7CKm01zvOiH0h
- 5T8pnSNlIyo2j2mhtzfSH3LbtC79DbtO7AQAA
+Message-Id:
+ <20240206-for-netnext-mt7530-improvements-2-v5-1-d7d92a185cb1@arinc9.com>
+References:
+ <20240206-for-netnext-mt7530-improvements-2-v5-0-d7d92a185cb1@arinc9.com>
+In-Reply-To:
+ <20240206-for-netnext-mt7530-improvements-2-v5-0-d7d92a185cb1@arinc9.com>
 To: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>, 
  Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>, 
  Florian Fainelli <f.fainelli@gmail.com>, 
@@ -77,11 +78,11 @@ Cc: mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
  =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>, 
  "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1707170890; l=3529;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1707170890; l=1626;
  i=arinc.unal@arinc9.com; s=arinc9-patatt; h=from:subject:message-id;
- bh=A+6R9ZDS9UjRyWJgxuvz/fapj4AM3nXOKkH2EGth9G0=;
- b=lMad3J70PLiCdiP2RqMA7W8I4o6zA0ejht2u6w5ckUlGJy2YN1gQn4f5EwDCdQphg/ouy3+dp
- BWUoF08vFkSBD7U/W9T3fZ5Zd+bPGbdXnK/FCfXthlaTVPPhRXSkQzm
+ bh=w0AE+3vdRdnNAeZ4Rw1iuOmXQ/hQFv6Ji5v3rRgN9bg=;
+ b=gDGcthfD6OjI984VKp0zlbDTxdggWBt3tmhCllIbyTIAMYWMBBgmWODnybQRLAOeQoF87Tjov
+ 8H7Qck/hmaYC/HRYET2p2f2Ns05cxQoJMPLHHQdK/glbZ1j2xpm45Qs
 X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
  pk=VmvgMWwm73yVIrlyJYvGtnXkQJy9CvbaeEqPQO9Z4kA=
 X-Endpoint-Received:
@@ -89,94 +90,59 @@ X-Endpoint-Received:
 X-Original-From: =?utf-8?b?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
 Reply-To: <arinc.unal@arinc9.com>
 
-Hello!
+From: Arınç ÜNAL <arinc.unal@arinc9.com>
 
-This is the second patch series with the goal of simplifying the MT7530 DSA
-subdriver and improving support for MT7530, MT7531, and the switch on the
-MT7988 SoC.
+There're two code paths for setting up port 5:
 
-I have done a simple ping test to confirm basic communication on all switch
-ports on MCM and standalone MT7530, and MT7531 switch with this patch
-series applied.
+mt7530_setup()
+-> mt7530_setup_port5()
 
-MT7621 Unielec, MCM MT7530:
+mt753x_phylink_mac_config()
+-> mt753x_mac_config()
+   -> mt7530_mac_config()
+      -> mt7530_setup_port5()
 
-rgmii-only-gmac0-mt7621-unielec-u7621-06-16m.dtb
-gmac0-and-gmac1-mt7621-unielec-u7621-06-16m.dtb
+On the first code path, priv->p5_intf_sel is either set to
+P5_INTF_SEL_PHY_P0 or P5_INTF_SEL_PHY_P4 when mt7530_setup_port5() is run.
 
-tftpboot 0x80008000 mips-uzImage.bin; tftpboot 0x83000000 mips-rootfs.cpio.uboot; tftpboot 0x83f00000 $dtb; bootm 0x80008000 0x83000000 0x83f00000
+On the second code path, priv->p5_intf_sel is set to P5_INTF_SEL_GMAC5 when
+mt7530_setup_port5() is run.
 
-MT7622 Bananapi, MT7531:
+Empty the default case which will never run but is needed nonetheless to
+handle all the remaining enumeration values.
 
-gmac0-and-gmac1-mt7622-bananapi-bpi-r64.dtb
-
-tftpboot 0x40000000 arm64-Image; tftpboot 0x45000000 arm64-rootfs.cpio.uboot; tftpboot 0x4a000000 $dtb; booti 0x40000000 0x45000000 0x4a000000
-
-MT7623 Bananapi, standalone MT7530:
-
-rgmii-only-gmac0-mt7623n-bananapi-bpi-r2.dtb
-gmac0-and-gmac1-mt7623n-bananapi-bpi-r2.dtb
-
-tftpboot 0x80008000 arm-zImage; tftpboot 0x83000000 arm-rootfs.cpio.uboot; tftpboot 0x83f00000 $dtb; bootz 0x80008000 0x83000000 0x83f00000
-
-This patch series is the continuation of the patch series linked below.
-
-https://lore.kernel.org/r/20230522121532.86610-1-arinc.unal@arinc9.com
-
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
 ---
-Changes in v5:
-- Update the patches with the latest received trailers.
-- Patch 3
-  - Replace "return;" with "return 0;".
-- Patch 4
-  - Remove the stray brace.
-- Link to v4: https://lore.kernel.org/r/20240204-for-netnext-mt7530-improvements-2-v4-0-02bf0abaadb8@arinc9.com
+ drivers/net/dsa/mt7530.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-Changes in v4:
-- Update the patches with the latest received trailers.
-- Leave no error returns on mt7530_pad_clk_setup() before renaming it to
-  mt7530_setup_port6() and moving it to under mt7530_mac_config().
-- Link to v3: https://lore.kernel.org/r/20240202-for-netnext-mt7530-improvements-2-v3-0-63d5adae99ca@arinc9.com
+diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+index 68be38ae66e0..330e22abc076 100644
+--- a/drivers/net/dsa/mt7530.c
++++ b/drivers/net/dsa/mt7530.c
+@@ -943,9 +943,7 @@ static void mt7530_setup_port5(struct dsa_switch *ds, phy_interface_t interface)
+ 		val &= ~MHWTRAP_P5_DIS;
+ 		break;
+ 	default:
+-		dev_err(ds->dev, "Unsupported p5_intf_sel %d\n",
+-			priv->p5_intf_sel);
+-		goto unlock_exit;
++		break;
+ 	}
+ 
+ 	/* Setup RGMII settings */
+@@ -975,7 +973,6 @@ static void mt7530_setup_port5(struct dsa_switch *ds, phy_interface_t interface)
+ 	dev_dbg(ds->dev, "Setup P5, HWTRAP=0x%x, intf_sel=%s, phy-mode=%s\n",
+ 		val, p5_intf_modes(priv->p5_intf_sel), phy_modes(interface));
+ 
+-unlock_exit:
+ 	mutex_unlock(&priv->reg_mutex);
+ }
+ 
 
-Changes in v3:
-- Update the patches with the latest received trailers.
-- Patch 5
-  - Disable TRGMII clocks for all cases.
-- Link to v2: https://lore.kernel.org/r/20240130-for-netnext-mt7530-improvements-2-v2-0-ba06f5dd9eb0@arinc9.com
-
-Changes in v2:
-- Update the patches with the latest received trailers.
-- Remove 'net: dsa: mt7530: move enabling port 6 to mt7530_setup_port6()'
-  which was patch 5. I will bring a more appropriate change with a later
-  patch series.
-- Patch 5
-  - Set P6_INTF_MODE(0) and explain why on the patch log.
-- Patch 6
-  - Mention the MT7988 document and explain more on the patch log.
-- Patch 7
-  - Explain more on the patch log.
-- Link to v1: https://lore.kernel.org/r/20240113102529.80371-1-arinc.unal@arinc9.com
-
----
-Arınç ÜNAL (7):
-      net: dsa: mt7530: empty default case on mt7530_setup_port5()
-      net: dsa: mt7530: move XTAL check to mt7530_setup()
-      net: dsa: mt7530: simplify mt7530_pad_clk_setup()
-      net: dsa: mt7530: call port 6 setup from mt7530_mac_config()
-      net: dsa: mt7530: remove pad_setup function pointer
-      net: dsa: mt7530: correct port capabilities of MT7988
-      net: dsa: mt7530: do not clear config->supported_interfaces
-
- drivers/net/dsa/mt7530.c | 152 +++++++++++++++++------------------------------
- drivers/net/dsa/mt7530.h |   3 -
- 2 files changed, 53 insertions(+), 102 deletions(-)
----
-base-commit: 4acf4e62cd572b0c806035046b3698f5585ab821
-change-id: 20240121-for-netnext-mt7530-improvements-2-b4f43661b485
-
-Best regards,
 -- 
-Arınç ÜNAL <arinc.unal@arinc9.com>
+2.40.1
 
 
