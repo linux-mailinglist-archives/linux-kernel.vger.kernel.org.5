@@ -1,117 +1,83 @@
-Return-Path: <linux-kernel+bounces-52407-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52408-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9593B8497B8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:25:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37DC48497B9
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:25:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32A681F228AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:25:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6AF02863BA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:25:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EEC5171A2;
-	Mon,  5 Feb 2024 10:25:11 +0000 (UTC)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15952171A9;
+	Mon,  5 Feb 2024 10:25:38 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 528BE16436;
-	Mon,  5 Feb 2024 10:25:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C19517541;
+	Mon,  5 Feb 2024 10:25:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707128711; cv=none; b=XkXgvVEw+ViGMEqF/w3bh4MUV/A/YlSMZYNKD+j+Rrq2dh5IYOp1YlzIrZfvviU/+GWQDgFWcPwZY38yMKAePrR5EsHZUWVkkSWSBk1sm5MNAztlSI7PIxXwfPuZL+KX7XcC8dE1WyMxOl55MJ2ZQ8xqFqAWQZ/PrkZscAhhsJU=
+	t=1707128737; cv=none; b=avfUQh/tCegEMwDGrDNXA3bxYPqB6occti/u5DxBCGGTvmQX2jXTDjzvdIMkMhaqXfNMNKSeJ7YrMtaEl016Ygd2Cf1trW46rXIFigO8ZDqjV3bJ3VgNdttARRTO5F6KD8mZlKEK4Bh6nhGbkTxgMRGBNao7RhoRTL3ZNvwGnLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707128711; c=relaxed/simple;
-	bh=ivo3TXLyfqZY03CFtOPd2ttNNvE/OP+/puwD5Z1Q6tA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=N/oEPCzFZuuj4pzou+Eys7LaEWdeDgIBJYLSYpMq9o2/sQxNhjwbqiE9PlS37CfqqJ1WxnLtJ0hk0fP3Q/IiUBpXxELzO04rdV4iD5B83zkKhZPMnRaRPucBnlSxEPJ5Anf7ElV9/W+UutvT/nX+lh8fwVnumwxkZyb48O8oc2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.de; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 698441F8BA;
-	Mon,  5 Feb 2024 10:25:07 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4A659132DD;
-	Mon,  5 Feb 2024 10:25:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id R0sLEIO3wGWMLQAAD6G6ig
-	(envelope-from <aporta@suse.de>); Mon, 05 Feb 2024 10:25:07 +0000
-From: Andrea della Porta <andrea.porta@suse.com>
-To: florian.fainelli@broadcom.com
-Cc: andrea.porta@suse.com,
-	bcm-kernel-feedback-list@broadcom.com,
-	dmaengine@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-rpi-kernel@lists.infradead.org,
-	maxime@cerno.tech,
-	phil@raspberrypi.com,
-	popcornmix@gmail.com,
-	rjui@broadcom.com,
-	sbranden@broadcom.com,
-	vkoul@kernel.org
-Subject: Re: [PATCH 06/12] dmaengine: bcm2835: Use to_bcm2711_cbaddr where relevant
-Date: Mon,  5 Feb 2024 11:25:06 +0100
-Message-ID: <20240205102506.30039-1-andrea.porta@suse.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <04fa6114-3394-4e1e-84b8-9552f3ec398d@broadcom.com>
-References: <04fa6114-3394-4e1e-84b8-9552f3ec398d@broadcom.com>
+	s=arc-20240116; t=1707128737; c=relaxed/simple;
+	bh=eRrFp2JexEbtNp6FWh3iMXTIaeLisx2WjsRpctM6ZEY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=UNjI5uJy0K45mAt5lhlXYYpLYkuRaL4AEnSPb0YF3I+caM8fGo21kmCovB/1gmWIN0rKsht1E1vl4NEWK9KLAhFSr/90kTl6tlek5FQgp2Nyulf5ZfgDd+2B2wYJqHfFaOnIdKxAtahgANX0pCYj6wnKUcyXwApBrd8yAFyNMZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B45CC433C7;
+	Mon,  5 Feb 2024 10:25:34 +0000 (UTC)
+Date: Mon, 5 Feb 2024 05:25:32 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Vincent Donnefort <vdonnefort@google.com>
+Cc: kernel test robot <lkp@intel.com>, mhiramat@kernel.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ oe-kbuild-all@lists.linux.dev, mathieu.desnoyers@efficios.com,
+ kernel-team@android.com
+Subject: Re: [PATCH v13 3/6] tracing: Add snapshot refcount
+Message-ID: <20240205052532.37c65148@rorschach.local.home>
+In-Reply-To: <ZbjQTZ4SIkG703QM@google.com>
+References: <20240129142802.2145305-4-vdonnefort@google.com>
+	<202401301740.qzZlpcYV-lkp@intel.com>
+	<ZbjQTZ4SIkG703QM@google.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-	dkim=none
-X-Spamd-Result: default: False [4.55 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 R_MISSING_CHARSET(2.50)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 TO_DN_NONE(0.00)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 MX_GOOD(-0.01)[];
-	 BAYES_HAM(-2.94)[99.75%];
-	 RCPT_COUNT_TWELVE(0.00)[13];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FORGED_SENDER(0.30)[andrea.porta@suse.com,aporta@suse.de];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 R_DKIM_NA(2.20)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[suse.com,broadcom.com,vger.kernel.org,lists.infradead.org,cerno.tech,raspberrypi.com,gmail.com,kernel.org];
-	 FROM_NEQ_ENVFROM(0.10)[andrea.porta@suse.com,aporta@suse.de];
-	 RCVD_TLS_ALL(0.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 4.55
-X-Rspamd-Queue-Id: 698441F8BA
-X-Spam-Level: ****
-X-Spam-Flag: NO
-X-Spamd-Bar: ++++
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
->> From: Maxime Ripard <maxime@cerno.tech>
->> 
->> bcm2711_dma40_memcpy has some code strictly equivalent to the
->> to_bcm2711_cbaddr() function. Let's use it instead.
->> 
->> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+On Tue, 30 Jan 2024 10:32:45 +0000
+Vincent Donnefort <vdonnefort@google.com> wrote:
 
->Where is the full patch series?
+> > All errors (new ones prefixed by >>):
+> > 
+> >    kernel/trace/trace.c: In function 'tracing_set_tracer':
+> >    kernel/trace/trace.c:6644:17: error: implicit declaration of function 'tracing_disarm_snapshot_locked'; did you mean 'tracing_disarm_snapshot'? [-Werror=implicit-function-declaration]
+> >     6644 |                 tracing_disarm_snapshot_locked(tr);
+> >          |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >          |                 tracing_disarm_snapshot  
+> > >> kernel/trace/trace.c:6648:23: error: implicit declaration of function 'tracing_arm_snapshot_locked'; did you mean 'tracing_arm_snapshot'? [-Werror=implicit-function-declaration]  
+> >     6648 |                 ret = tracing_arm_snapshot_locked(tr);
+> >          |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >          |                       tracing_arm_snapshot
+> >    cc1: some warnings being treated as errors  
+> 
+> Right, two tracers (hwlat and osnoise) select _only_ MAX_TRACE and not
+> TRACER_SNAPSHOT.
+> 
+> However, AFAICT, they will not call any of the swapping functions (they don't
+> set use_max_tr). So I suppose arm/disarm can be ommited in that case.
 
-Hi Florian,
-sorry, what do you mean with 'where is the full patch series', exactly?
+Yeah, if you can test with the various configs enabled and disabled to
+make sure that it still builds properly, then that should be good.
+
+I should make sure that my own ktest config that I use to run tests
+checks these variations too.
+
+-- Steve
 
