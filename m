@@ -1,335 +1,188 @@
-Return-Path: <linux-kernel+bounces-53132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D4A884A116
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:40:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF88F84A119
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:41:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A55B2B2134A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:40:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 673882826FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:41:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB94245035;
-	Mon,  5 Feb 2024 17:40:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38A5945035;
+	Mon,  5 Feb 2024 17:41:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aYjxjMwu"
-Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="ESDTy84m"
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2064.outbound.protection.outlook.com [40.107.104.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 267CD446BC;
-	Mon,  5 Feb 2024 17:40:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.176
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707154837; cv=none; b=COJlWafuqE1S6QQx9BYtBS39n9lpZ3FtRMcrd29o3Xct4O3e2IhOJ3xoRGv3+pROKzHy3gmt2bHydoBuoyZC3WlEuZ4b7z7x9FWciUtCNrlMQudvWLxRqKJAprSwuLDlEC6+7zguearUP5yxpA/GwpjEmfB8bWa0NwmY0ZBYmdA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707154837; c=relaxed/simple;
-	bh=M6pOvIo1Wd931byVMykKh7XsOivQ+mbW1mTLMmCGhME=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E31Wahs9ddaK5fapY/QVp2U8ImkGjecoMa/4XlJ727hpuKXqWUrDZp4tvc1rWdLjtz7PDjtaTgRXkVvaCXtZJKVviJB2a7KaU209zBowvJMyNXt//NgqlKh9eUCcd8WnCu0qT3Dj+m8vMMSK0M5u1vosVjR/bpvUOVuxrEqFUeQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aYjxjMwu; arc=none smtp.client-ip=209.85.221.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-4c021a73febso488142e0c.2;
-        Mon, 05 Feb 2024 09:40:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707154835; x=1707759635; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6sd3MqpkPfETb8+jxwao7rv6fptVZILhkVXNFoUWJdM=;
-        b=aYjxjMwuUtqrR9IgPK1Oh08Te42XOhywmqFRDt0vDpfsxaymqj+5fyyxPdCAtJc3yO
-         KaE4AW30N9QysSPPK4H0gec2aYM3Fm59lJRCAjPmXv9PGyWEnNCpYaxELDw2pK0Zjjif
-         A5w8Xg0XPFL2x5y1al+cFqm08ltiuuwTIcaYVpEK2T7J6rnUCJ/fpckdVIEJKdP8dDSJ
-         +XyMQ4+B/e6mROJz6UIOMsY9VwevyA/cyaZNrSWXVVkNe3Y26Koa8Kjas7iDuIlK738p
-         jmCtD7OuX4G+ltWVpOjK2yIRiLbzz+qvZ3eZ7IdUrb5SBBDut4h3E28Y8itHwTqAld3S
-         W67A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707154835; x=1707759635;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6sd3MqpkPfETb8+jxwao7rv6fptVZILhkVXNFoUWJdM=;
-        b=OKfN3Z0fJhXmD4nM/GShLqGZ+6BZnXW0wCrmYf5cNm8RZs8oa1+AlLd+rvBDlrq4YK
-         UrMvSnGYj7z93rocpfwpaBhYOEcZqT3wRlXADFW+/Ojj4U/znSXLu9++GA6LXtxDjF1Y
-         uZUi8f1WVQpHEix9WD+DBXUOEMcCl20PJ2SRsU+X8RD5bP3EC8gS3zmVWVmaMzYFdc3N
-         h+DOiECGID1XR183SFh39k+iTvn4WgfVFc7Ce+0ZkCNyXTlvMdASPRv67rQD+wVrqAC1
-         AsCSRvLV/XR/GJp4sIHt3aa3lGlhgqCtqAybX0tfuAYRooedy4zQtyxt/YP5a55ubV1Y
-         Hh+A==
-X-Gm-Message-State: AOJu0Yw7XezeKwC1UUpHSX39Kjzh89hrKip/XyknlDyYso8ktdSVgrfl
-	bIyJPBOZXAbuJOk5u5/kwDvwM8khi4p1HZzQEUwDmLpYmP2GC5xjECkDoYZ7
-X-Google-Smtp-Source: AGHT+IHL+6m1BR2MdkAfxDKMQdpABxHeCJXIS4poMvbR7s/FO3xbjTolgf7g7STS+94zPPdNilAufQ==
-X-Received: by 2002:a05:6122:169c:b0:4b6:d4c2:61d3 with SMTP id 28-20020a056122169c00b004b6d4c261d3mr287104vkl.0.1707154834711;
-        Mon, 05 Feb 2024 09:40:34 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCW8Vyg3JXRAAcT2/lJubpQ7KopWNlaRJc84HvMaUTAi3wz56qAGxbXnsGtJGgkZiu4hY+rCJbAgIO5MFIM5g2gwlf6XueVTgA8Sjh4xkigx92pSoSzB/TufD0NcMfsyD7Os1NZyl0lcv7cJrkOT6Kgz0gbXNUKniOqQvwZcKo9MDO2FsU176cfmwvCfSXZWW+dB4Mfjp55mvzcrtbQbCE2qntoNw1eKgK64UjS6w/rlnavxFfe8pMLpAxdTZ0tDWsuTtFu03C+Gr3Wh4Jw0PGh41+Q9OPEBtznLfPCBZjVehF1s5w875Msb2cz90oE=
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id c9-20020a05620a134900b007858ac144d7sm77652qkl.70.2024.02.05.09.40.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 09:40:34 -0800 (PST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailauth.nyi.internal (Postfix) with ESMTP id 93A1627C005B;
-	Mon,  5 Feb 2024 12:40:33 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Mon, 05 Feb 2024 12:40:33 -0500
-X-ME-Sender: <xms:kR3BZSvYZjKXpNFhEqzi6mcRXJ5yaifxRrpEAv0U8AN2dsVULkWd7Q>
-    <xme:kR3BZXfImrVyop3emBWXvHGAxo8_Vvoya9zY9Cj5ZaWHOewbs1S2nIRwLOUtHUUIO
-    CIcrtTE5-xkhWahig>
-X-ME-Received: <xmr:kR3BZdycFlpjG1T-piYGrzsxGYBWR9Dgt27AQt6cPgpuB22Cz3ZL_LI-PbPMTA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedvuddgudduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
-    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
-    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
-    igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:kR3BZdPdQVRAsz-D0xQfDGL5pUY5QWyt3YFE24QuK1p6l6ltd9adjQ>
-    <xmx:kR3BZS_JHsKgr0C1EjdYlzMLAr7r3tjb47dS6u0jLj1jy_i3aYEekA>
-    <xmx:kR3BZVV_Fgq3oDnBJ1iPGbj6DiTQG3GfvkpuTn1qUzeqhjdvStBOJQ>
-    <xmx:kR3BZVYZJqlRsrP4ZsjbZkhgicALpmHcPIOlEAa2uKeyL8VZ_8AcHQ>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 5 Feb 2024 12:40:33 -0500 (EST)
-Date: Mon, 5 Feb 2024 09:39:15 -0800
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Alex Gaynor <alex.gaynor@gmail.com>, Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] rust: add reexports for macros
-Message-ID: <ZcEdQyaz0uLDOhrk@boqun-archlinux>
-References: <20240129145837.1419880-1-aliceryhl@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 909DF47F55;
+	Mon,  5 Feb 2024 17:41:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.104.64
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707154889; cv=fail; b=JAVc9+SZqd9u5JzBqhFMof44Jvr0MsrdVG8A7VZSN7ZVSkyk8FlBKfr+g6TUfjwzWPt46Ha0k0Sspc/ab3pAyS1aeGlUdYJBvXBL/8OMOjNDsG+xM+9cKp84ak81k38xRVpA9KHss83+KCVYsx34ybZsUdREzhUMIDI9I3waUpU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707154889; c=relaxed/simple;
+	bh=e19/bwEU+A0pVA6HQnefuPKan8DKIo1roohKxF3Sjm8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Z7EwOIjhJPmz9h4N3+P+6OwUz5+DOI6p2Sq4opgQl51/TGfbm04lRh3Az2obUaA0nM4uXpZ9ATkEUNHG4Ff4FH1lU7h8Il2VMxPaQ6O/r8Uf4FM0OmVSGz3p70h/v1tNZiUcdRoMIrOcFnphOD1eGjy1QRudVzAYS73JVdI0sVc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=ESDTy84m; arc=fail smtp.client-ip=40.107.104.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hOGwCYjt8GHND7Pv3KrBC2gBkSXPz6Th4w61Zljc2G7zMzLnuvEdXPZw9stoGvShdFEus2KXhiQ1k6RHQJYpCfMQ7kPv2ekpyjMq0vVfqOWNO+Ltrdw4WNk217/DBCw2Le/t3QdXC29IGWLG1wvjNctG1fXQZaPuSVT4ocxIZBEO0rmVMUFodVmclbyimo6vr26+NF3k1GFeKKFWOBaOEIUcexOErXgyZlIDOL/mCNmj9YmEw93mNuQFsjGR5xb5z+zesdRZYBSWkN2RE7uWBg4+gvUncsP1Zr5xUgDwWgWDU/RA0zC2KQMdVWWu8DgHv6dTqPSmqbuI2ETyo3ZrLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hx3P+v2Ys/KXxiFtArDpBel0jQj9szRDOd+fDMgPmMQ=;
+ b=MrVd1LQXXIKDZ9AAnFpjnjgV7tXeqfIHa25vsTDfbQIpeaOAbmk3AgQgm9it158pCNhggcQsN8JoWsA5dM3GMu4WtU8i+BAIqNbWeyhFSJkVzXk+LWORuerMvP5rG5JSMwup4Jp1sHNfjFdNWXtAEubDCtiTAZuE7bhT81am7L7JYKJhq75jqLv/BDT07YQLk02wgEVk3Hx7jnthm1CGDuyuM4yAUz3RWu0zDiy2hQMdVV1fkVjXfVyVEl8c5aKDKjbeU3vY5VRWAZjieBiwFiM3oVNolGuK7++jITulUv+Zm89UunLes+omi53j2NvP2s40hZLQw56lGvKiNhA5UQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hx3P+v2Ys/KXxiFtArDpBel0jQj9szRDOd+fDMgPmMQ=;
+ b=ESDTy84m6VM/4f6LMqdOA1cL5M6+gP3YRFC6Vf6dCPlP6WuIZqLhwfv2Cr0tbES/FVC3zpTzvnSREc2PcWCYk/8YjD8oTduDDxDtaTBlkH6HiQMu9XGguSEeaBuPQTNnZLk5WcfA7YsmYzo0TV/fkibnvT+roxmL5VAHf0dMGxU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AS8PR04MB7733.eurprd04.prod.outlook.com (2603:10a6:20b:288::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.34; Mon, 5 Feb
+ 2024 17:41:25 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::c8b4:5648:8948:e85c]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::c8b4:5648:8948:e85c%3]) with mapi id 15.20.7249.032; Mon, 5 Feb 2024
+ 17:41:25 +0000
+Date: Mon, 5 Feb 2024 12:41:15 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc: manivannan.sadhasivam@linaro.org, bhelgaas@google.com,
+	conor+dt@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com,
+	helgaas@kernel.org, hongxing.zhu@nxp.com, imx@lists.linux.dev,
+	kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
+	krzysztof.kozlowski@linaro.org, kw@linux.com,
+	l.stach@pengutronix.de, linux-arm-kernel@lists.infradead.org,
+	linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org, robh@kernel.org, s.hauer@pengutronix.de,
+	shawnguo@kernel.org
+Subject: Re: [PATCH v9 05/16] PCI: imx6: Using "linux,pci-domain" as slot ID
+Message-ID: <ZcEdu9Jw1k6Kwuz4@lizhi-Precision-Tower-5810>
+References: <20240119171122.3057511-1-Frank.Li@nxp.com>
+ <20240119171122.3057511-6-Frank.Li@nxp.com>
+ <ZbzcOarorCS1MPRc@lpieralisi>
+ <ZbztZkNQ+wydticD@lizhi-Precision-Tower-5810>
+ <Zb06JL5X8EiHEyFD@lpieralisi>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zb06JL5X8EiHEyFD@lpieralisi>
+X-ClientProxiedBy: SJ0PR03CA0033.namprd03.prod.outlook.com
+ (2603:10b6:a03:33e::8) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240129145837.1419880-1-aliceryhl@google.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS8PR04MB7733:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0f5e9413-a3d7-46d1-c2c9-08dc2671ac91
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	e3VVFnKd36LuIY8J8bQceUWfIHWik4cGemaCxJQfs/1EQmot6iJijMHH1/zC9+EgWmIfuFAErxpZAuZ/u3XCy/+9ist0jCX6KjUl4yCHovvV0KBbRnLNyXngTOIzeztAAf1M65Q09ufIkSDVpLntY3EVXJtkk4jBfV7OvSSES7iyW01gSYmQbC1qqHdBWQ7+Jj7gnKzmuRljpr1ocB9gSdI2gN9s+JmtuQHZ60L5N3rPOhbthJO2kQYZRrhPaWnGR5ro7g+E9B+wn063PEZwDBwyBgYRBr09Ulu6nkbbOrKSHmI0rPEcCe+aZMcZr3rD2DhLFDYRm03LqICT4CIkly0LT30EOJT3ji5uPDcBe0KmKpY0Q56UgtgqbrZNqZOdAUZLov4e5/WxjOiHvMS5McYUH6gOw5wdJyfiKSxCAO3kc9J42LTFq+bQgFTZuGN8AX66+GvrwPUFg/lS/VDMfJuaEsRgseUZKeDgEHIdO0gRqhjEOKuoXahLKD5HmWVwLyl8rXGoxwRGz6EXTXbeGOepimKA9YZT9h8GsC0G8NkCvRSgMVD7jtuxPAROYTipdxoTdUJXCQbRAkmLMDYul64+R28YOWDbyMAw9rANVbg=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(136003)(396003)(39860400002)(346002)(366004)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(38100700002)(33716001)(41300700001)(66556008)(9686003)(66946007)(6666004)(478600001)(966005)(6486002)(6512007)(52116002)(6506007)(2906002)(26005)(4326008)(8676002)(6916009)(316002)(8936002)(86362001)(7416002)(66476007)(5660300002)(83380400001)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?3XUGtfnxay9DDCW85AUdL5RTKuZyVWyXw11gsweQ4jp4wm7nGKxIjdD8IplJ?=
+ =?us-ascii?Q?SZqItA+mUd3mMYUf4m1+uL0MqBy6KYzCjRJ6GHVJishb+Amx8ozft5dUCemc?=
+ =?us-ascii?Q?znOmr1K0TU2NidIjPCFJrSdf0mDbHHNhd45fr8jBI8mATZ6lZoqx0WvWUX6r?=
+ =?us-ascii?Q?GSpDcP1eodpsjPn1R3GE1Xpnb+znNTNwen6uGZTCxwsAl7Yjj9lhA2pthHNU?=
+ =?us-ascii?Q?dvJCAHL4vNCx0+v98zvvzSqbTdl1f38lKYAl4ZNSya+dqGq9MYllITfLdgYT?=
+ =?us-ascii?Q?nKBCAGOUGbpAO4oX+1eXFYBZLFMJjSa5zPU+89KjfSnOef/+W47dofY3WI9K?=
+ =?us-ascii?Q?poQTIYsogLdERCGkJhyhQcbdzaM3GatlAi/Zx6qesMx1V4PstDUj2uHhdSEn?=
+ =?us-ascii?Q?M/KqHJvkJHvpDcz8n86NTyhMZho9G/OIq8MtkSMT075uBFTHIvSRhU+a7sCT?=
+ =?us-ascii?Q?GndVIlRxVWhdYE1HUuZpZcgo1PY2L7ozLUOBbSeRXdImADxnx/a0tZEFBKdX?=
+ =?us-ascii?Q?hXlU90b37WcAoqNYp/JR28CKYUUjG9OEn7Bv5PVEkpyDwfNE2E3ffYOT+ZzT?=
+ =?us-ascii?Q?ekTki+hN38FOiEP5kx5lyh2FkDInCtJw5FYROS7Rxjee/OYBa/LbnHY/gPdV?=
+ =?us-ascii?Q?WlqaRbz8eUMOGFA2UQSXSx1QCaUVDSNpooFRlNzAKKRxmxgKayHCHRK8T76Q?=
+ =?us-ascii?Q?XkxFmiiREuwXYsbL1FQaOpqn5read+ZFiPlIE9BKar5JJRWbABXlyiHSTB66?=
+ =?us-ascii?Q?nWsHEkUlihtuqne/mB4cVwsQBkpig2ba4NKAVeKTmilXbnBSYJAfFVUMUKqG?=
+ =?us-ascii?Q?/y+bbjGzr30PgHiMa7MuQi/M1k6NpOrOE4x1oAnPjCbMOdZbysmQph3I6IMk?=
+ =?us-ascii?Q?0aef/bkyqyunX1Y1K1W2u8/crxxmb6O0dCelmgmdvZ024pGkdRZhrLUY9sdI?=
+ =?us-ascii?Q?P2X4nLgPScYX8WA0YGiQe7lnyg2VtmFEODNja3ZdDZkni2w+eAsX+mQ8LgCt?=
+ =?us-ascii?Q?LWDrrzF2NdcSE7NL+yAshngpQ5/SGAxrRdKD3ebn6yzL0mMS97xowcuJZNep?=
+ =?us-ascii?Q?bJQikO4ZvpXwJwG9cZhE1uc/pMbs8pBg3zerC0IoygmLKZYvXXhDYri9fYAd?=
+ =?us-ascii?Q?c/aRCzoZUqZ3lWDO9RqKc4fWzyU/jaZzqsHRtGIFRnjkApxVgyUO1rGeTPOw?=
+ =?us-ascii?Q?FvN3072xY3KXf8sS9qJbuQ/rx8ZNPrqJ8kADQrYqJm9AI4PHTBUkwt27O2Rf?=
+ =?us-ascii?Q?z4KCV4NkN2BE6nuL6GNf+zZA0MFaTL6SfXtDIHhEvMzN/dqPGP0PeqFQE27t?=
+ =?us-ascii?Q?qBei335CGryMlcOgwkV6rnXoA+RyAycMMae9iBefOJcb5VYhq0w9S/0lxdNr?=
+ =?us-ascii?Q?4s3JGjM0C7MFTPnUzOwWw5BEf5oR20IXgzBG1IgSFGkfTe/fO0upFJ3i2ajy?=
+ =?us-ascii?Q?Uv+3psFmfRyRTDpK+bBNYaJumya1S9HXJSWWRDXz90fe/17MmPiGCZnBejzS?=
+ =?us-ascii?Q?VDNspNAdmNA5QGUvbIwon4mMk8eQPHXjxH0Y6hzAN/sKjdIK5F3fdtWx1jtt?=
+ =?us-ascii?Q?pmFaxYLXwYCovn/4bxgzJlMQKsIuu+XARtihWjPO?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0f5e9413-a3d7-46d1-c2c9-08dc2671ac91
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2024 17:41:24.9498
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AXZDWo+JhIWHb/1FxB2Ix1vfu6we6pj0UEBoZq0ao4qI4tP9BD8RTMuSEHPG50yA8wru6BR8WXCZCZiOUxfoMw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7733
 
-On Mon, Jan 29, 2024 at 02:58:37PM +0000, Alice Ryhl wrote:
-> Currently, all macros are reexported with #[macro_export] only, which
-> means that to access `new_work!` from the workqueue, you need to import
-> it from the path `kernel::new_work` instead of importing it from the
-> workqueue module like all other items in the workqueue. By adding
-> reexports of the macros, it becomes possible to import the macros from
-> the correct modules.
+On Fri, Feb 02, 2024 at 07:53:24PM +0100, Lorenzo Pieralisi wrote:
+> On Fri, Feb 02, 2024 at 08:25:58AM -0500, Frank Li wrote:
+> > On Fri, Feb 02, 2024 at 01:12:41PM +0100, Lorenzo Pieralisi wrote:
+> > > "PCI: imx6: Use "linux,pci-domain" as slot ID"
+> > > 
+> > > On Fri, Jan 19, 2024 at 12:11:11PM -0500, Frank Li wrote:
+> > > > Avoid use get slot id by compared with register physical address. If there
+> > > > are more than 2 slots, compared logic will become complex.
+> > > > 
+> > > > "linux,pci-domain" already exist at dts since commit:
+> > > > 	commit (c0b70f05c87f3b arm64: dts: imx8mq: use_dt_domains for pci node).
+> > > > 
+> > > > So it is safe to remove compare basic address code:
+> > > > 	...
+> > > > 	if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
+> > > > 		imx6_pcie->controller_id = 1;
+> > > 
+> > > No it is not unless you magically update all firmware out
+> > > there in the field.
+> > 
+> > commit c0b70f05c87f3b09b391027c6f056d0facf331ef
+> > Author:     Peng Fan <peng.fan@nxp.com>
+> > AuthorDate: Fri Jan 15 11:26:57 2021 +0800
+> > Commit:     Shawn Guo <shawnguo@kernel.org>
+> > CommitDate: Fri Jan 29 14:46:28 2021 +0800
+> > 
+> > I am not sure if it is neccesary to compatible with 2 years ago's dts.
+> > I think it may not boot at all with using 2 year agao dtb file directly.
+> > 
+> > Do you have other comments? I can remove it from this big patch series,
 > 
-> It's still possible to import the macros from the root, but I don't
-> think we can do anything about that.
+> I will have a look at the full series first we can decide whether
+> to drop it later.
 > 
-> There is no functional change. This is merely a code cleanliness
-> improvement.
-> 
-> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
-> ---
-> I hope that the KUnit examples still compile. I tried checking myself
-> and it seemed to work, but I'm not completely sure whether I used the
-> tool correctly. I would appreciate if someone is able to double-check
-> and give a Tested-by for that.
+> I am travelling so I am not sure I can review it before February
+> 12th, FYI.
 
-Tested-by: Boqun Feng <boqun.feng@gmail.com>
+Okay, I send v10 at
+https://lore.kernel.org/imx/Zb06JL5X8EiHEyFD@lpieralisi/raw
+which removed "linux,pci-domain" patches.
 
-Regards,
-Boqun
+If you have more comments, please comment at v10 version.
+
+Frank
+
 
 > 
->  rust/kernel/init.rs               |  8 +++++---
->  rust/kernel/sync.rs               |  5 +++--
->  rust/kernel/sync/condvar.rs       |  4 ++--
->  rust/kernel/sync/lock/mutex.rs    |  4 +++-
->  rust/kernel/sync/lock/spinlock.rs |  4 +++-
->  rust/kernel/workqueue.rs          | 14 ++++++--------
->  6 files changed, 22 insertions(+), 17 deletions(-)
-> 
-> diff --git a/rust/kernel/init.rs b/rust/kernel/init.rs
-> index 65be9ae57b80..d7107db1d587 100644
-> --- a/rust/kernel/init.rs
-> +++ b/rust/kernel/init.rs
-> @@ -36,7 +36,8 @@
->  //!
->  //! ```rust
->  //! # #![allow(clippy::disallowed_names)]
-> -//! use kernel::{prelude::*, sync::Mutex, new_mutex};
-> +//! use kernel::prelude::*;
-> +//! use kernel::sync::{new_mutex, Mutex};
->  //! # use core::pin::Pin;
->  //! #[pin_data]
->  //! struct Foo {
-> @@ -56,7 +57,8 @@
->  //!
->  //! ```rust
->  //! # #![allow(clippy::disallowed_names)]
-> -//! # use kernel::{prelude::*, sync::Mutex, new_mutex};
-> +//! # use kernel::prelude::*;
-> +//! # use kernel::sync::{new_mutex, Mutex};
->  //! # use core::pin::Pin;
->  //! # #[pin_data]
->  //! # struct Foo {
-> @@ -79,7 +81,7 @@
->  //! above method only works for types where you can access the fields.
->  //!
->  //! ```rust
-> -//! # use kernel::{new_mutex, sync::{Arc, Mutex}};
-> +//! # use kernel::sync::{new_mutex, Arc, Mutex};
->  //! let mtx: Result<Arc<Mutex<usize>>> = Arc::pin_init(new_mutex!(42, "example::mtx"));
->  //! ```
->  //!
-> diff --git a/rust/kernel/sync.rs b/rust/kernel/sync.rs
-> index c1fb10fc64f4..c983f63fd56e 100644
-> --- a/rust/kernel/sync.rs
-> +++ b/rust/kernel/sync.rs
-> @@ -13,8 +13,9 @@
->  mod locked_by;
->  
->  pub use arc::{Arc, ArcBorrow, UniqueArc};
-> -pub use condvar::{CondVar, CondVarTimeoutResult};
-> -pub use lock::{mutex::Mutex, spinlock::SpinLock};
-> +pub use condvar::{new_condvar, CondVar, CondVarTimeoutResult};
-> +pub use lock::mutex::{new_mutex, Mutex};
-> +pub use lock::spinlock::{new_spinlock, SpinLock};
->  pub use locked_by::LockedBy;
->  
->  /// Represents a lockdep class. It's a wrapper around C's `lock_class_key`.
-> diff --git a/rust/kernel/sync/condvar.rs b/rust/kernel/sync/condvar.rs
-> index 9f1d83589beb..72680ff57e67 100644
-> --- a/rust/kernel/sync/condvar.rs
-> +++ b/rust/kernel/sync/condvar.rs
-> @@ -27,6 +27,7 @@ macro_rules! new_condvar {
->          $crate::sync::CondVar::new($crate::optional_name!($($name)?), $crate::static_lock_class!())
->      };
->  }
-> +pub use new_condvar;
->  
->  /// A conditional variable.
->  ///
-> @@ -44,8 +45,7 @@ macro_rules! new_condvar {
->  /// The following is an example of using a condvar with a mutex:
->  ///
->  /// ```
-> -/// use kernel::sync::{CondVar, Mutex};
-> -/// use kernel::{new_condvar, new_mutex};
-> +/// use kernel::sync::{new_condvar, new_mutex, CondVar, Mutex};
->  ///
->  /// #[pin_data]
->  /// pub struct Example {
-> diff --git a/rust/kernel/sync/lock/mutex.rs b/rust/kernel/sync/lock/mutex.rs
-> index 8c524a3ec45a..38207f9ce78a 100644
-> --- a/rust/kernel/sync/lock/mutex.rs
-> +++ b/rust/kernel/sync/lock/mutex.rs
-> @@ -17,6 +17,7 @@ macro_rules! new_mutex {
->              $inner, $crate::optional_name!($($name)?), $crate::static_lock_class!())
->      };
->  }
-> +pub use new_mutex;
->  
->  /// A mutual exclusion primitive.
->  ///
-> @@ -35,7 +36,8 @@ macro_rules! new_mutex {
->  /// contains an inner struct (`Inner`) that is protected by a mutex.
->  ///
->  /// ```
-> -/// use kernel::{init::InPlaceInit, init::PinInit, new_mutex, pin_init, sync::Mutex};
-> +/// use kernel::prelude::*;
-> +/// use kernel::sync::{new_mutex, Mutex};
->  ///
->  /// struct Inner {
->  ///     a: u32,
-> diff --git a/rust/kernel/sync/lock/spinlock.rs b/rust/kernel/sync/lock/spinlock.rs
-> index 068535ce1b29..cb2c6f71e80e 100644
-> --- a/rust/kernel/sync/lock/spinlock.rs
-> +++ b/rust/kernel/sync/lock/spinlock.rs
-> @@ -17,6 +17,7 @@ macro_rules! new_spinlock {
->              $inner, $crate::optional_name!($($name)?), $crate::static_lock_class!())
->      };
->  }
-> +pub use new_spinlock;
->  
->  /// A spinlock.
->  ///
-> @@ -33,7 +34,8 @@ macro_rules! new_spinlock {
->  /// contains an inner struct (`Inner`) that is protected by a spinlock.
->  ///
->  /// ```
-> -/// use kernel::{init::InPlaceInit, init::PinInit, new_spinlock, pin_init, sync::SpinLock};
-> +/// use kernel::prelude::*;
-> +/// use kernel::sync::{new_spinlock, SpinLock};
->  ///
->  /// struct Inner {
->  ///     a: u32,
-> diff --git a/rust/kernel/workqueue.rs b/rust/kernel/workqueue.rs
-> index 498397877376..0ed17451b06e 100644
-> --- a/rust/kernel/workqueue.rs
-> +++ b/rust/kernel/workqueue.rs
-> @@ -35,8 +35,7 @@
->  //! ```
->  //! use kernel::prelude::*;
->  //! use kernel::sync::Arc;
-> -//! use kernel::workqueue::{self, Work, WorkItem};
-> -//! use kernel::{impl_has_work, new_work};
-> +//! use kernel::workqueue::{self, impl_has_work, new_work, Work, WorkItem};
->  //!
->  //! #[pin_data]
->  //! struct MyStruct {
-> @@ -78,8 +77,7 @@
->  //! ```
->  //! use kernel::prelude::*;
->  //! use kernel::sync::Arc;
-> -//! use kernel::workqueue::{self, Work, WorkItem};
-> -//! use kernel::{impl_has_work, new_work};
-> +//! use kernel::workqueue::{self, impl_has_work, new_work, Work, WorkItem};
->  //!
->  //! #[pin_data]
->  //! struct MyStruct {
-> @@ -147,6 +145,7 @@ macro_rules! new_work {
->          $crate::workqueue::Work::new($crate::optional_name!($($name)?), $crate::static_lock_class!())
->      };
->  }
-> +pub use new_work;
->  
->  /// A kernel work queue.
->  ///
-> @@ -396,9 +395,8 @@ pub unsafe fn raw_get(ptr: *const Self) -> *mut bindings::work_struct {
->  /// like this:
->  ///
->  /// ```no_run
-> -/// use kernel::impl_has_work;
->  /// use kernel::prelude::*;
-> -/// use kernel::workqueue::Work;
-> +/// use kernel::workqueue::{impl_has_work, Work};
->  ///
->  /// struct MyWorkItem {
->  ///     work_field: Work<MyWorkItem, 1>,
-> @@ -473,9 +471,8 @@ unsafe fn work_container_of(ptr: *mut Work<T, ID>) -> *mut Self
->  /// # Examples
->  ///
->  /// ```
-> -/// use kernel::impl_has_work;
->  /// use kernel::sync::Arc;
-> -/// use kernel::workqueue::{self, Work};
-> +/// use kernel::workqueue::{self, impl_has_work, Work};
->  ///
->  /// struct MyStruct {
->  ///     work_field: Work<MyStruct, 17>,
-> @@ -509,6 +506,7 @@ unsafe fn raw_get_work(ptr: *mut Self) -> *mut $crate::workqueue::Work<$work_typ
->          }
->      )*};
->  }
-> +pub use impl_has_work;
->  
->  impl_has_work! {
->      impl<T> HasWork<Self> for ClosureWork<T> { self.work }
-> 
-> base-commit: f090f0d0eea9666a96702b29bc9a64cbabee85c5
-> -- 
-> 2.43.0.429.g432eaa2c6b-goog
-> 
-> 
+> Lorenzo
 
