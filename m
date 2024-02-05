@@ -1,198 +1,447 @@
-Return-Path: <linux-kernel+bounces-53102-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53100-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD33284A0AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:27:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E21984A0A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:27:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D3F01F23DAD
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:27:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13CE21C21A49
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:27:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E25C4595B;
-	Mon,  5 Feb 2024 17:27:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B52744C67;
+	Mon,  5 Feb 2024 17:27:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gLQb7Ryp"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FXW5J3TW"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EF1245941
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 17:27:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1D0347F55
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 17:27:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707154050; cv=none; b=It1XB8Udqoa8JjHXlSxA6NYygFkvNp6N4j2rR3TxuW24lYlewc+BJWibm9lLz4p4olwwCJuUpvZW6/ONoNp6z9bskpu+THf8rtOeWU+w8N5GORKLMNWJYteKK2xvZEJFQ7FmP/nirLSRuouxvz9fLA4tHEiv4kqEZvXGsuqR5jA=
+	t=1707154031; cv=none; b=KZkYw51iCZdGEGapZqh3QFfcKBTVe6b0KxeRMcV1Kc8yBuheRaRc4rdAnJMrMY8eSQH0eGuV+DqFPXKDAYvjr9NU0inedvKjnZdoDIhowFxBuJdchkPcxx9bSRn+ipx4ChFxcsWrhtIvn83bX0RZHX7w/KIJsK3FLLf9Jbxg6P0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707154050; c=relaxed/simple;
-	bh=HWhC3riTOwXg+yy/60MQ/z+HIxKpqDzEaAK6EfQRCzk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CKgBYlOjC3/j2Rv0Wy3Gx0A/DzV6q+StkTzxzV0APPzOp78zImVCJF2YWCxu3xnacYZhPZ35XHqG/sz7/8T0L3jxi4lIL4fgXUwASTiT56Y1rX3TiEVbfV/xmmuvqgiX1TzjgaYuX8+4T8acGQd4T7yI15SZnSLxMw4otv2DLiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=gLQb7Ryp; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d91397bd22so35670795ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 09:27:29 -0800 (PST)
+	s=arc-20240116; t=1707154031; c=relaxed/simple;
+	bh=VMTW2beRlBbZDRiezbv2nYqJih165oy4DIL7xlmJ6QA=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=k31QnwtbyEbmHJyt52I9X9lxEEK0BE4J9qjFMu5wDyQHE+AFeShlgExUdOjqTUJ+JIre7RcEiWJcx2o2UI4m/FxOoGzQUW6b9eR0Hpo2TtEGBX/x1Ivb95XZc/UgqUuJzGKUFVKNtYUWdG0rAuPpjYaqNMIfLu8Pxnhj5y5W64E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FXW5J3TW; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40fb63c40c0so41725065e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 09:27:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707154048; x=1707758848; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4U+N71xHm4gg+B0aHt1NbcRFqwuGDCVmnH0NzcNhfq4=;
-        b=gLQb7RypR0GkICA5Cqv4+GGOV+bHsY04D8TEzXeSD4I2BAJgEEoDWuwo70gn0AUQEt
-         AiO+/2OLIXKNAdZhejhk1AU8bMhmsKhfsIXBzOsOmNeC9HBcfQVwgVe/aZjzZvWmt4G/
-         vGDUL0SyItjm5xjSbHdTfnr6V3NLZ42YS/Kl4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707154048; x=1707758848;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1707154028; x=1707758828; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=4U+N71xHm4gg+B0aHt1NbcRFqwuGDCVmnH0NzcNhfq4=;
-        b=eIe3CLNs4M3DYOGH2o4N52ocZqHSPXOl/u1LTgZLXpnJ2ADgNaGlfkt8sBwSg++eBi
-         AkppXECAGugLfVWxeybegrwF46t1EAOC+aUesZuh2hykNxRcZ0Cjic4hSva0Hd/uhafR
-         7JEGemunA2TXj5FUOcO0x0UYiT8WP/rx8BCKiab+bdjK5UCSzn0csGGo80vRcAgVSYpK
-         dj7N39aNz4jzVLcOSx2cHD6IvwIPxIehiwfBmz+BI42t5mqesntvH1Q3eVZhxmB2Rcdb
-         8Zme2mpg+tzXmhtlnlMDLj4vFavz3mtsOzG0b6WDI9V0IhHefIx7YKts/olh2QBsGDqX
-         uv3w==
-X-Gm-Message-State: AOJu0YxHDKrS8ON+ixir+oAScPF3Jftq8Ui9ZLtbjGRUuEifw6ButlAE
-	NGg7tsmV4Mn8x4sRvSjfuNQ/CJ0MKfjpj0ej5K1NJoNUnK+pOKYMl27VUzaoHQ==
-X-Google-Smtp-Source: AGHT+IFUJYXHGIr2LCGI8FKWXE3xOLGI2mYhp7DYexE/TWjuF+OeqNnn4MkzN96+o/X73V7ZYaQWDA==
-X-Received: by 2002:a17:903:181:b0:1d9:3938:40bb with SMTP id z1-20020a170903018100b001d9393840bbmr164878plg.20.1707154048553;
-        Mon, 05 Feb 2024 09:27:28 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVkRLaBMi1cNLgwcJ4gr0SdqkEdQyijwctiuf5LdVVfpVmK0cY3vbrQqxELm4VsUf5Iviie567CjnCp6QpZv2cJZ9qTb8bfFOzwsPSAlJh48jISJ5aEd1JYomsvY9PR9cZx2/SH/22aLo2LrtRfXvQSb2Bh1iuSAKT6xYetCUbxpQ4DFFVfEk7UJMJ1DqEHXhF2UQ+ReydK0bsF1WRihOmbhvch2i16kfzSuBnbaT8FTOs/yaujTj8mQ7QfpkBkp6Pbv7f/gEovrwRk1fsN+HmauyY2TRN4DA0XDpWrv23N7KxjeaOVBouvbOiux/BPvBL/ENUNLXoA3iqUrfDtfX7ZH924Fou+JlW18gHs1XX4HkDX8Bw5WvPK3NZTGnMWnpblMUi56HW33N7QE5JjPqf30PAXfjhzwnnGvCPTjkg0V7+BrDv9nwbIgg0TgeH2EJZ6lj47Nwmd/T1HsnXwnzPsUI46BtJckryogPjZAVY9WQM=
-Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:95f9:acd:a17b:b759])
-        by smtp.gmail.com with ESMTPSA id v11-20020a170902d08b00b001d942f744f6sm115259plv.157.2024.02.05.09.27.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 09:27:28 -0800 (PST)
-From: Douglas Anderson <dianders@chromium.org>
-To: Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>
-Cc: Mark Brown <broonie@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Dave Martin <Dave.Martin@arm.com>,
-	Oleg Nesterov <oleg@redhat.com>,
-	linux-arm-kernel@lists.infradead.org,
-	Matthew Wilcox <willy@infradead.org>,
-	Douglas Anderson <dianders@chromium.org>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Jan Kara <jack@suse.cz>,
-	Kees Cook <keescook@chromium.org>,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: [PATCH v2] regset: use kvzalloc() for regset_get_alloc()
-Date: Mon,  5 Feb 2024 09:26:30 -0800
-Message-ID: <20240205092626.v2.1.Id9ad163b60d21c9e56c2d686b0cc9083a8ba7924@changeid>
-X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
+        bh=fMru6AidNjxHu9ibv3haOjJruYNOLtUg/L29w6bwKNE=;
+        b=FXW5J3TWICk8pvzPKyT6RPPprOmJF1afeMfvHfmKE6tCuZwCuQVPDzi2PwRpi/dJDl
+         TGwxfdnIxMVWyaxBiENoWAHCKKgmuZVmFjEjlJ85I3mHtHCkr2j8E1x1C+RqGTAWfZiz
+         eEmuzZAnxlsUVd9cn/MXD1MxuTPQyyQEmehMV+UD8CVxgTZCtE93ijTDTYk61q5GOlGK
+         jPsdPryf4c6ZeBaK+lwfBLTALTx8B/iveYgtlpPqkK8PY6Jt/KvkUbJLd4w5YVCg31xT
+         PHOqz/ZlC3uYQxAmduESybda4gUaP15KhyQ2PIAhdxh8THYm1CASS8n9kn4mVmP1NMvl
+         /Q6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707154028; x=1707758828;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=fMru6AidNjxHu9ibv3haOjJruYNOLtUg/L29w6bwKNE=;
+        b=K6yoE8Q6vNzCDuFHpQo/QTV4f0zmbbGVbxr/W0eaewZOsuiqawg9LIyTTfRnpEwdRS
+         gCenzqY8W5lL9BcEG7EGxGvW4rsZ74UKIRbzr1tw8I45KpQ4gRzxzxiq0LGKg6RvE6Cp
+         a07jE7HK2UoaO9OpdRSl8wPAsimhSTPvKGlbjDezLRG8AJyDOrZgzP5cMU2MjE04+349
+         v8KFguIgjRUW+Ugq7kiIMwcnK9jgV/fYpTvV2ZsdHNBD6ki9afkHKKcOQ13FejWJPuTQ
+         OAqxoi8gW9FOi/na37CM2d1kkuwpf33pymkP6dQkfxYygnswDFX5njUTHSPHtNCbhJEx
+         Q8YQ==
+X-Gm-Message-State: AOJu0Yy61foEDWo5dwQVC2eFoBe9pqk59AS4WsgReOqUv/QVoZE9DXQW
+	+09vNyOhhAz2gwFR9QWXmWWfFDngI/m4fPLRYrhPWkOTpg/cD3Yt55lvMRGTDOk=
+X-Google-Smtp-Source: AGHT+IGqsklbXdcarnxN/oePIcw2eHMQaP5PO315W+UnHaCzfnREsw03nS1Y5e21/Q6K0XmDyFQsww==
+X-Received: by 2002:a05:600c:43c9:b0:40f:de25:f9b4 with SMTP id f9-20020a05600c43c900b0040fde25f9b4mr334103wmn.26.1707154027677;
+        Mon, 05 Feb 2024 09:27:07 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXoBk7xaDOAj/sPyYLWj9t+ELr5A3fttpi5QII/7M/c70qSFluxBCnl41i/l9ANS9wjBXyuHhV32eaF2hWhKptfmf3E7+Jm+xybKwXaeDJFqgRcyk8wJriY/bhnlQ8l3zzEQtzRydK6yoVjxRfl2OeFywHwFfL7DraNJQCExU6HbUJeRuZJj4JuER1+IOAV1/XDAV159usi1ehzHCWTErAeLEFPiLVmyRR2mtIOM24SD4jP2uBWFFQ2dNmyWNIrfw9XbdhSM2cx17FzIiGWlDYbURdDOs4iz5y2OnhSTelu570uDKhrlHGV6u5dNXljurmfjWaIM2Ohp797TfbZnqk9RNIWOD84Oa0D84SqAhDMXCC5pFAE8qzQjnujteB4ft+y3C39IUedBX8MbgOTmHhVnVGl6r9k4YGaspN94Rz4unPBzeaEUpYwUNeQwIXyZ4jdUd4XXQii3EFwxX0GEqSaK0HvmsN4sImIMv3DT+vjGTYVugJ1Z3WN9Dt96twXPAmDULePAAWSgubqIQOlFf7ZBqLmMUZ6Zis1CxXhWXgHxtCxWfpUi4BCG8GlW49epyUshNxRL6sdhkhv10x4y34f+Xn+29aiVPK2bBIGm8gnaA5sjK5WeaMUsfvG7dW/ovBjHTEYNblXIQbW6d6GIpTHZKz3fEoQFqvvJiOFT2PPfS0rB34VhtvcLYykSo/su4pUzAteF11xYKwm4F64vIODrxNAKQnW8LW+57WFTGEHC6dBzD8mRDcvVdmive9m3PrCsRzSpeGXdEhE0BVA34B22cIgz2Re21TjfK97wfUPGloHw+6TUhyntYehWP4m/vejsoLUIYH4NLCbLoLCISNDLGACDb8hoS9ymwZY5WM=
+Received: from ?IPV6:2a01:e0a:982:cbb0:bbd9:ac3e:db1d:9662? ([2a01:e0a:982:cbb0:bbd9:ac3e:db1d:9662])
+        by smtp.gmail.com with ESMTPSA id m16-20020a05600c4f5000b0040e3635ca65sm9310508wmq.2.2024.02.05.09.27.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Feb 2024 09:27:06 -0800 (PST)
+Message-ID: <9d7b3a35-6d21-4b7a-8669-cf3610467cad@linaro.org>
+Date: Mon, 5 Feb 2024 18:27:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+From: neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v9 07/12] clk: meson: add vclk driver
+Content-Language: en-US, fr
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Kevin Hilman <khilman@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Jagan Teki <jagan@amarulasolutions.com>, Nicolas Belin
+ <nbelin@baylibre.com>, Vinod Koul <vkoul@kernel.org>,
+ Kishon Vijay Abraham I <kishon@kernel.org>, Remi Pommarel
+ <repk@triplefau.lt>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, dri-devel@lists.freedesktop.org,
+ linux-phy@lists.infradead.org, Rob Herring <robh@kernel.org>
+References: <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-0-95256ed139e6@linaro.org>
+ <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-7-95256ed139e6@linaro.org>
+ <1j7cm7dx1b.fsf@starbuckisacylon.baylibre.com>
+ <4e5e33c1-45d5-4c83-b647-bfb603347156@linaro.org>
+ <1jfs0rywqi.fsf@starbuckisacylon.baylibre.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <1jfs0rywqi.fsf@starbuckisacylon.baylibre.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-While browsing through ChromeOS crash reports, I found one with an
-allocation failure that looked like this:
+On 27/11/2023 17:24, Jerome Brunet wrote:
+> 
+> On Mon 27 Nov 2023 at 17:14, Neil Armstrong <neil.armstrong@linaro.org> wrote:
+> 
+>> On 24/11/2023 15:41, Jerome Brunet wrote:
+>>> On Fri 24 Nov 2023 at 09:41, Neil Armstrong <neil.armstrong@linaro.org>
+>>> wrote:
+>>>
+>>>> The VCLK and VCLK_DIV clocks have supplementary bits.
+>>>>
+>>>> The VCLK has a "SOFT RESET" bit to toggle after the whole
+>>>> VCLK sub-tree rate has been set, this is implemented in
+>>>> the gate enable callback.
+>>>>
+>>>> The VCLK_DIV clocks as enable and reset bits used to disable
+>>>> and reset the divider, associated with CLK_SET_RATE_GATE it ensures
+>>>> the rate is set while the divider is disabled and in reset mode.
+>>>>
+>>>> The VCLK_DIV enable bit isn't implemented as a gate since it's part
+>>>> of the divider logic and vendor does this exact sequence to ensure
+>>>> the divider is correctly set.
+>>>>
+>>>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+>>>> ---
+>>>>    drivers/clk/meson/Kconfig  |   5 ++
+>>>>    drivers/clk/meson/Makefile |   1 +
+>>>>    drivers/clk/meson/vclk.c   | 141 +++++++++++++++++++++++++++++++++++++++++++++
+>>>>    drivers/clk/meson/vclk.h   |  51 ++++++++++++++++
+>>>>    4 files changed, 198 insertions(+)
+>>>>
+>>>> diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
+>>>> index 29ffd14d267b..59a40a49f8e1 100644
+>>>> --- a/drivers/clk/meson/Kconfig
+>>>> +++ b/drivers/clk/meson/Kconfig
+>>>> @@ -30,6 +30,10 @@ config COMMON_CLK_MESON_VID_PLL_DIV
+>>>>    	tristate
+>>>>    	select COMMON_CLK_MESON_REGMAP
+>>>>    +config COMMON_CLK_MESON_VCLK
+>>>> +	tristate
+>>>> +	select COMMON_CLK_MESON_REGMAP
+>>>> +
+>>>>    config COMMON_CLK_MESON_CLKC_UTILS
+>>>>    	tristate
+>>>>    @@ -140,6 +144,7 @@ config COMMON_CLK_G12A
+>>>>    	select COMMON_CLK_MESON_EE_CLKC
+>>>>    	select COMMON_CLK_MESON_CPU_DYNDIV
+>>>>    	select COMMON_CLK_MESON_VID_PLL_DIV
+>>>> +	select COMMON_CLK_MESON_VCLK
+>>> This particular line belong in the next patch
+>>>
+>>>>    	select MFD_SYSCON
+>>>>    	help
+>>>>    	  Support for the clock controller on Amlogic S905D2, S905X2 and S905Y2
+>>>> diff --git a/drivers/clk/meson/Makefile b/drivers/clk/meson/Makefile
+>>>> index 9ee4b954c896..9ba43fe7a07a 100644
+>>>> --- a/drivers/clk/meson/Makefile
+>>>> +++ b/drivers/clk/meson/Makefile
+>>>> @@ -12,6 +12,7 @@ obj-$(CONFIG_COMMON_CLK_MESON_PLL) += clk-pll.o
+>>>>    obj-$(CONFIG_COMMON_CLK_MESON_REGMAP) += clk-regmap.o
+>>>>    obj-$(CONFIG_COMMON_CLK_MESON_SCLK_DIV) += sclk-div.o
+>>>>    obj-$(CONFIG_COMMON_CLK_MESON_VID_PLL_DIV) += vid-pll-div.o
+>>>> +obj-$(CONFIG_COMMON_CLK_MESON_VCLK) += vclk.o
+>>>>      # Amlogic Clock controllers
+>>>>    diff --git a/drivers/clk/meson/vclk.c b/drivers/clk/meson/vclk.c
+>>>> new file mode 100644
+>>>> index 000000000000..47f08a52b49f
+>>>> --- /dev/null
+>>>> +++ b/drivers/clk/meson/vclk.c
+>>>> @@ -0,0 +1,141 @@
+>>>> +// SPDX-License-Identifier: GPL-2.0
+>>>> +/*
+>>>> + * Copyright (c) 2023 Neil Armstrong <neil.armstrong@linaro.org>
+>>>> + */
+>>>> +
+>>>> +#include <linux/module.h>
+>>>> +#include "vclk.h"
+>>>> +
+>>>> +/* The VCLK gate has a supplementary reset bit to pulse after ungating */
+>>>> +
+>>>> +static inline struct clk_regmap_vclk_data *
+>>>> +clk_get_regmap_vclk_data(struct clk_regmap *clk)
+>>>> +{
+>>>> +	return (struct clk_regmap_vclk_data *)clk->data;
+>>>> +}
+>>>> +
+>>>> +static int clk_regmap_vclk_enable(struct clk_hw *hw)
+>>>> +{
+>>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>>> +	struct clk_regmap_vclk_data *vclk = clk_get_regmap_vclk_data(clk);
+>>>> +
+>>>> +	meson_parm_write(clk->map, &vclk->enable, 1);
+>>>> +
+>>>> +	/* Do a reset pulse */
+>>>> +	meson_parm_write(clk->map, &vclk->reset, 1);
+>>>> +	meson_parm_write(clk->map, &vclk->reset, 0);
+>>>> +
+>>>> +	return 0;
+>>>> +}
+>>>> +
+>>>> +static void clk_regmap_vclk_disable(struct clk_hw *hw)
+>>>> +{
+>>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>>> +	struct clk_regmap_vclk_data *vclk = clk_get_regmap_vclk_data(clk);
+>>>> +
+>>>> +	meson_parm_write(clk->map, &vclk->enable, 0);
+>>>> +}
+>>>> +
+>>>> +static int clk_regmap_vclk_is_enabled(struct clk_hw *hw)
+>>>> +{
+>>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>>> +	struct clk_regmap_vclk_data *vclk = clk_get_regmap_vclk_data(clk);
+>>>> +
+>>>> +	return meson_parm_read(clk->map, &vclk->enable);
+>>>> +}
+>>>> +
+>>>> +const struct clk_ops clk_regmap_vclk_ops = {
+>>>> +	.enable = clk_regmap_vclk_enable,
+>>>> +	.disable = clk_regmap_vclk_disable,
+>>>> +	.is_enabled = clk_regmap_vclk_is_enabled,
+>>>> +};
+>>>> +EXPORT_SYMBOL_GPL(clk_regmap_vclk_ops);
+>>> s/clk_regmap_vclk/meson_vclk at least for what is exported, ideally most
+>>> all the code.
+>>> I get clk_regmap_ comes from code copied from clk_regmap.c.
+>>> The reason the this part is different (and not using parm) if that when
+>>> I converted amlogic to regmap, I hope we could make this generic,
+>>> possibly converging between aml and qcom (which was the only other
+>>> platform using regmap for clock at the time). This is why clk_regmap.c
+>>> is a bit different from the other driver.
+>>> For the aml specific drivers, best to look at the mpll or cpu-dyndiv one.
+>>>
+>>>> +
+>>>> +/* The VCLK Divider has supplementary reset & enable bits */
+>>>> +
+>>>> +static inline struct clk_regmap_vclk_div_data *
+>>>> +clk_get_regmap_vclk_div_data(struct clk_regmap *clk)
+>>>> +{
+>>>> +	return (struct clk_regmap_vclk_div_data *)clk->data;
+>>>> +}
+>>>> +
+>>>> +static unsigned long clk_regmap_vclk_div_recalc_rate(struct clk_hw *hw,
+>>>> +						     unsigned long prate)
+>>>> +{
+>>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>>> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
+>>>> +
+>>>> +	return divider_recalc_rate(hw, prate, meson_parm_read(clk->map, &vclk->div),
+>>>> +				   vclk->table, vclk->flags, vclk->div.width);
+>>>> +}
+>>>> +
+>>>> +static int clk_regmap_vclk_div_determine_rate(struct clk_hw *hw,
+>>>> +					      struct clk_rate_request *req)
+>>>> +{
+>>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>>> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
+>>>> +
+>>>> +	return divider_determine_rate(hw, req, vclk->table, vclk->div.width,
+>>>> +				      vclk->flags);
+>>>> +}
+>>>> +
+>>>> +static int clk_regmap_vclk_div_set_rate(struct clk_hw *hw, unsigned long rate,
+>>>> +					unsigned long parent_rate)
+>>>> +{
+>>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>>> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
+>>>> +	int ret;
+>>>> +
+>>>> +	ret = divider_get_val(rate, parent_rate, vclk->table, vclk->div.width,
+>>>> +			      vclk->flags);
+>>>> +	if (ret < 0)
+>>>> +		return ret;
+>>>> +
+>>>> +	meson_parm_write(clk->map, &vclk->div, ret);
+>>>> +
+>>>> +	return 0;
+>>>> +};
+>>>> +
+>>>> +static int clk_regmap_vclk_div_enable(struct clk_hw *hw)
+>>>> +{
+>>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>>> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
+>>>> +
+>>>> +	/* Unreset the divider when ungating */
+>>>> +	meson_parm_write(clk->map, &vclk->reset, 0);
+>>>> +	meson_parm_write(clk->map, &vclk->enable, 1);
+>>>> +
+>>>> +	return 0;
+>>>> +}
+>>>> +
+>>>> +static void clk_regmap_vclk_div_disable(struct clk_hw *hw)
+>>>> +{
+>>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>>> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
+>>>> +
+>>>> +	/* Reset the divider when gating */
+>>>> +	meson_parm_write(clk->map, &vclk->enable, 0);
+>>>> +	meson_parm_write(clk->map, &vclk->reset, 1);
+>>>> +}
+>>>> +
+>>>> +static int clk_regmap_vclk_div_is_enabled(struct clk_hw *hw)
+>>>> +{
+>>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>>> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
+>>>> +
+>>>> +	return meson_parm_read(clk->map, &vclk->enable);
+>>>> +}
+>>>> +
+>>>> +const struct clk_ops clk_regmap_vclk_div_ops = {
+>>>> +	.recalc_rate = clk_regmap_vclk_div_recalc_rate,
+>>>> +	.determine_rate = clk_regmap_vclk_div_determine_rate,
+>>>> +	.set_rate = clk_regmap_vclk_div_set_rate,
+>>>> +	.enable = clk_regmap_vclk_div_enable,
+>>>> +	.disable = clk_regmap_vclk_div_disable,
+>>>> +	.is_enabled = clk_regmap_vclk_div_is_enabled,
+>>>> +};
+>>>> +EXPORT_SYMBOL_GPL(clk_regmap_vclk_div_ops);
+>>>> +
+>>>> +MODULE_DESCRIPTION("Amlogic vclk clock driver");
+>>>> +MODULE_AUTHOR("Neil Armstrong <neil.armstrong@linaro.org>");
+>>>> +MODULE_LICENSE("GPL v2");
+>>>> diff --git a/drivers/clk/meson/vclk.h b/drivers/clk/meson/vclk.h
+>>>> new file mode 100644
+>>>> index 000000000000..4f25d7ad2717
+>>>> --- /dev/null
+>>>> +++ b/drivers/clk/meson/vclk.h
+>>
+>> Is vclk.c/h ok ? clk-vclk doesn't look pretty, but I can switch to it to
+>> keep files organized.
+> 
+> I don't have a strong opinion about it.
+> I would have suggested vclk-div.c/h - like sclk ... but you do have gate
+> ops in there, so ... :/
+> 
+> This made me realize that one does not really go without the other.
+> It is more a coherent block, isn't it ?
+> Would it make more sense to have these 2 merged in a single clk_ops ?
 
-  chrome: page allocation failure: order:7,
-          mode:0x40dc0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO),
-	  nodemask=(null),cpuset=urgent,mems_allowed=0
-  CPU: 7 PID: 3295 Comm: chrome Not tainted
-          5.15.133-20574-g8044615ac35c #1 (HASH:1162 1)
-  Hardware name: Google Lazor (rev3 - 8) with KB Backlight (DT)
-  Call trace:
-  ...
-  warn_alloc+0x104/0x174
-  __alloc_pages+0x5f0/0x6e4
-  kmalloc_order+0x44/0x98
-  kmalloc_order_trace+0x34/0x124
-  __kmalloc+0x228/0x36c
-  __regset_get+0x68/0xcc
-  regset_get_alloc+0x1c/0x28
-  elf_core_dump+0x3d8/0xd8c
-  do_coredump+0xeb8/0x1378
-  get_signal+0x14c/0x804
-  ...
+No those a 2 separate blocks, one is for VCLK clock input and the other is for the DIV
+block, and the reset isn't used in the same way so I can't merge them.
 
-An order 7 allocation is (1 << 7) contiguous pages, or 512K. It's not
-a surprise that this allocation failed on a system that's been running
-for a while.
+> 
+> It's bit late to point this out, sorry about that.
+> 
+> I let you decide whether to merge the ops or not and which name to pick.
+> 
+> If you keep them separated, meson_vclk_gate_ops instead of just
+> meson_vclk_ops, to make things clear.
 
-More digging showed that it was fairly easy to see the order 7
-allocation by just sending a SIGQUIT to chrome (or other processes) to
-generate a core dump. The actual amount being allocated was 279,584
-bytes and it was for "core_note_type" NT_ARM_SVE.
+Ack
 
-There was quite a bit of discussion [1] on the mailing lists in
-response to my v1 patch attempting to switch to vmalloc. The overall
-conclusion was that we could likely reduce the 279,584 byte allocation
-by quite a bit and Mark Brown has sent a patch to that effect [2].
-However even with the 279,584 byte allocation gone there are still
-65,552 byte allocations. These are just barely more than the 65,536
-bytes and thus would require an order 5 allocation.
-
-An order 5 allocation is still something to avoid unless necessary and
-nothing needs the memory here to be contiguous. Change the allocation
-to kvzalloc() which should still be efficient for small allocations
-but doesn't force the memory subsystem to work hard (and maybe fail)
-at getting a large contiguous chunk.
-
-[1] https://lore.kernel.org/r/20240201171159.1.Id9ad163b60d21c9e56c2d686b0cc9083a8ba7924@changeid
-[2] https://lore.kernel.org/r/20240203-arm64-sve-ptrace-regset-size-v1-1-2c3ba1386b9e@kernel.org
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-
-Changes in v2:
-- Use kvzalloc() instead of vmalloc().
-- Update description based on v1 discussion.
-
- fs/binfmt_elf.c | 2 +-
- kernel/regset.c | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-index 5397b552fbeb..ac178ad38823 100644
---- a/fs/binfmt_elf.c
-+++ b/fs/binfmt_elf.c
-@@ -1928,7 +1928,7 @@ static void free_note_info(struct elf_note_info *info)
- 		threads = t->next;
- 		WARN_ON(t->notes[0].data && t->notes[0].data != &t->prstatus);
- 		for (i = 1; i < info->thread_notes; ++i)
--			kfree(t->notes[i].data);
-+			kvfree(t->notes[i].data);
- 		kfree(t);
- 	}
- 	kfree(info->psinfo.data);
-diff --git a/kernel/regset.c b/kernel/regset.c
-index 586823786f39..b2871fa68b2a 100644
---- a/kernel/regset.c
-+++ b/kernel/regset.c
-@@ -16,14 +16,14 @@ static int __regset_get(struct task_struct *target,
- 	if (size > regset->n * regset->size)
- 		size = regset->n * regset->size;
- 	if (!p) {
--		to_free = p = kzalloc(size, GFP_KERNEL);
-+		to_free = p = kvzalloc(size, GFP_KERNEL);
- 		if (!p)
- 			return -ENOMEM;
- 	}
- 	res = regset->regset_get(target, regset,
- 			   (struct membuf){.p = p, .left = size});
- 	if (res < 0) {
--		kfree(to_free);
-+		kvfree(to_free);
- 		return res;
- 	}
- 	*data = p;
-@@ -71,6 +71,6 @@ int copy_regset_to_user(struct task_struct *target,
- 	ret = regset_get_alloc(target, regset, size, &buf);
- 	if (ret > 0)
- 		ret = copy_to_user(data, buf, ret) ? -EFAULT : 0;
--	kfree(buf);
-+	kvfree(buf);
- 	return ret;
- }
--- 
-2.43.0.594.gd9cf4e227d-goog
+> 
+>>
+>> Neil
+>>
+>>>> @@ -0,0 +1,51 @@
+>>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>>> +/*
+>>>> + * Copyright (c) 2023 Neil Armstrong <neil.armstrong@linaro.org>
+>>>> + */
+>>>> +
+>>>> +#ifndef __VCLK_H
+>>>> +#define __VCLK_H
+>>> This is too generic.
+>>> Please add the MESON prefix like the other clock driver please.
+>>>
+>>>> +
+>>>> +#include "clk-regmap.h"
+>>>> +#include "parm.h"
+>>>> +
+>>>> +/**
+>>>> + * struct clk_regmap_vclk_data - vclk regmap backed specific data
+>>>> + *
+>>>> + * @enable:	vclk enable field
+>>>> + * @reset:	vclk reset field
+>>>> + * @flags:	hardware-specific flags
+>>>> + *
+>>>> + * Flags:
+>>>> + * Same as clk_gate except CLK_GATE_HIWORD_MASK which is ignored
+>>>> + */
+>>>> +struct clk_regmap_vclk_data {
+>>>> +	struct parm enable;
+>>>> +	struct parm reset;
+>>>> +	u8 flags;
+>>>> +};
+>>>> +
+>>>> +extern const struct clk_ops clk_regmap_vclk_ops;
+>>>> +
+>>>> +/**
+>>>> + * struct clk_regmap_vclk_div_data - vclk_div regmap back specific data
+>>>> + *
+>>>> + * @div:	divider field
+>>>> + * @enable:	vclk divider enable field
+>>>> + * @reset:	vclk divider reset field
+>>>> + * @table:	array of value/divider pairs, last entry should have div = 0
+>>>> + *
+>>>> + * Flags:
+>>>> + * Same as clk_divider except CLK_DIVIDER_HIWORD_MASK which is ignored
+>>>> + */
+>>>> +struct clk_regmap_vclk_div_data {
+>>>> +	struct parm div;
+>>>> +	struct parm enable;
+>>>> +	struct parm reset;
+>>>> +	const struct clk_div_table *table;
+>>>> +	u8 flags;
+>>>> +};
+>>>> +
+>>>> +extern const struct clk_ops clk_regmap_vclk_div_ops;
+>>>> +
+>>>> +#endif /* __VCLK_H */
+>>>
+> 
+> 
 
 
