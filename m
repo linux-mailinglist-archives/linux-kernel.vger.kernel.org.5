@@ -1,137 +1,160 @@
-Return-Path: <linux-kernel+bounces-52622-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0A13849A8E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:39:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 371DC849A90
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:39:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E8722828D2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:39:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0F6C1F22409
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:39:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 773101BDD0;
-	Mon,  5 Feb 2024 12:38:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F9201BC5C;
+	Mon,  5 Feb 2024 12:38:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J1I49Jex"
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="C/Mso+Ar"
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4346B1BC37;
-	Mon,  5 Feb 2024 12:38:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 248391CA88
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 12:38:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.110
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707136716; cv=none; b=MW1ANAL2ZZFgyddzcqlzhn8Z9Ty/BzNdNZ5R6+L4xQfMVOw4cJwNTaXHeR+WB4biuj0Mn9ajSGklddEOiSMINYcFxKiEBFjRtx3GwnPBCo2U9Tj0qQ3zfQgz3y4Cgm5BanqkW+/UTj3vxZBaikumTRflKlW2yNbXWG+mtwHFEGc=
+	t=1707136731; cv=none; b=p7r+f0LkPccDKq/NJvwc76R6T4nrOCjOjGSSGsperG1slO5URGCH+/qZZiPHwO6AijJdkw5oTElw/QRnKJ2nEMfNxD4uAbOfmnumvJCx/2x75zp/bFAkLiOxeuMqtvz2eA3znzuM1rUqB8dt0xmMtoRtGZaObrj5EV4Jr9C84oo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707136716; c=relaxed/simple;
-	bh=ZjyQvDoFp8Iz2SVNGI6LFFX46oN/i7mz7hhxREWzs8w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eGm/G/F1mtqfRVlebnhnqfNklA1XJ3hjyfnQ2zxAk3D6Zpps+LClvyDc4UpmL9JbEa0jrbH2q87410mmNMR+Zw2oV7xypnvFLTsCEyxqJHJxVkZO6Rdk+ecrDrzHsST4Q23nEhZ+E9MkcDxGDJwVtR9UwfJx8sbvT9dkKlAEm1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J1I49Jex; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5ffdf06e009so37169337b3.3;
-        Mon, 05 Feb 2024 04:38:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707136714; x=1707741514; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZjyQvDoFp8Iz2SVNGI6LFFX46oN/i7mz7hhxREWzs8w=;
-        b=J1I49JexAB6PE/BYae1TnNp3VhKNxI1Pu5dTWJW6J60XTVYxCrOMkNWA9lYM0zoPcC
-         65gu5KlxWA8aXTO1otMEW444GMLO9wKUZzj/jJdueW55y7D3e86cUaG+j6b4v9q1+xXA
-         XNUhZyCHMubFSmsDC1T8orqBUdh9XIgy3Mih2+O2zO8fF8pTVewe/fUVE0hL5fWS5pTN
-         84WqltCrcCp1jGd84lsGj/c5csv+WjfwJlnc+yyWD91Ana/clpy7Y92/H8NdNz+m8m3T
-         YWMlXJVisXJD1M8ub3n2ixoQ3dBEqpd09KAbVGsFgbgQa1ogTs17LUWWKxDCtj+fk7qO
-         Awdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707136714; x=1707741514;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZjyQvDoFp8Iz2SVNGI6LFFX46oN/i7mz7hhxREWzs8w=;
-        b=V8zihvmnmvsGIbkKr4qMHeT+sXdg+VCBVY040BTjLgSi6FUd2o/JKFpMFKdzMGzdDZ
-         FYiS32pxdXCIFKLe40ywOMqITpmXHjffBCgmYnPGm/X9dPUFIVV65Vl1E2GmuZiwDrr9
-         kNntQGx9NjPq9tgOYgmGfcpCMiy3btYnhjfsZ/YC2c09Q6ar3O5Wd/x9QOsmf86l7q2r
-         V3BV17+LZn8rEul5rpqRLT0TTvi1WzgzKzVyitM6tQKVkBr/r+pnWuNgCDStoSh9DcRi
-         u7RmtfG2V4T5K8zSNYOmn7yI4NaY7bEgqoL0jRzatWTEzyCKp6vIMiEu5xwmIHjsqvi1
-         BBKA==
-X-Gm-Message-State: AOJu0YySxFz9dQpQxdkx8LP0C2gS+rTTPWj0MI0WIHkMgCTApbPMB4Y6
-	VfF6uFrUr1fVNZX6f4dNsCUVRj2kLL3F9Kg3A1DL/Fx8h26P3bDIfsbCPpki94KL1yB6wTf7MPS
-	1+6BruWgw5445ZrSJJgAhYGeUoJI=
-X-Google-Smtp-Source: AGHT+IED7kOb/CTGUQsjCMQwiFvHcr73C4qzzSvs1YNrN19FZXiTn8fx9WHoc17GvdpKwLrWsPYV7AoAmypKzVM+8/Q=
-X-Received: by 2002:a25:145:0:b0:dc6:e75d:d828 with SMTP id
- 66-20020a250145000000b00dc6e75dd828mr7804555ybb.18.1707136714056; Mon, 05 Feb
- 2024 04:38:34 -0800 (PST)
+	s=arc-20240116; t=1707136731; c=relaxed/simple;
+	bh=WPGXq2rV+SqQbpUMqD9YNjZ2jjtUSAl3Nfvhhth2sE8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=F6nVUFA039ej6zDPTDkbwPFBOm/qKyxgkce1aY38X92g5258Nwt18faHFObIeUyLnchZd0+WfjAYeM1IOeuthKXwbn/YGAUZGjkdUsSPs9JBiGIdF8Yq9+0s1mBoipyhvOYC2q5302xfmEKqHcqSvR239ZMbmhon33iVnnYfLUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=C/Mso+Ar; arc=none smtp.client-ip=115.124.30.110
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1707136720; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=EPrTp2HaSci14lwoV1Q3t2am9bD2lGmQe7hOOG3fJgk=;
+	b=C/Mso+Ar5rA3ddRqyakX7X+iNkgtpf0PIjXj/NlCAqPc3bZwxFgA5dZFPjVPHNuqM2B23cL9mQud2XYkVzLE79uxUcnHEjLEHlw+Bq9pYbwbaYtSpjwpHf0oF5zne2Blcbv7Rrv1XneXeeou7o/gMtn6ozs09wuA5+J8LZIyw30=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R981e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W0AY-Un_1707136718;
+Received: from 192.168.0.105(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W0AY-Un_1707136718)
+          by smtp.aliyun-inc.com;
+          Mon, 05 Feb 2024 20:38:39 +0800
+Message-ID: <88ff7f59-654c-4313-b2db-a926b4ca86b9@linux.alibaba.com>
+Date: Mon, 5 Feb 2024 20:38:53 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAKLYgeJ1tUuqLcsquwuFqjDXPSJpEiokrWK2gisPKDZLs8Y2TQ@mail.gmail.com>
- <39e3a4fe-d456-4de4-b481-51aabfa02b8d@leemhuis.info> <20240111155056.GG31555@twin.jikos.cz>
- <20240111170644.GK31555@twin.jikos.cz> <f45e5b7c-4354-87d3-c7f1-d8dd5f4d2abd@oracle.com>
- <7d3cee75-ee74-4348-947a-7e4bce5484b2@leemhuis.info> <CAKLYgeLhcE5+Td9eGKAi0xeXSsom381RxuJgKiQ0+oHDNS_DJA@mail.gmail.com>
- <CAKLYgeKCuDmnuGHuQYPdZZA1_H3s9_9oh+vT_FMpFZqxKSvjzw@mail.gmail.com> <20240205112619.GC355@twin.jikos.cz>
-In-Reply-To: <20240205112619.GC355@twin.jikos.cz>
-From: Alex Romosan <aromosan@gmail.com>
-Date: Mon, 5 Feb 2024 13:38:23 +0100
-Message-ID: <CAKLYgeK835ESfJ-rNzRsLHKUMQ8rU6HzV3_x6XaUu=HX0sg1=A@mail.gmail.com>
-Subject: Re: [btrfs] commit bc27d6f0aa0e4de184b617aceeaf25818cc646de breaks update-grub
-To: dsterba@suse.cz
-Cc: Linux regressions mailing list <regressions@lists.linux.dev>, Anand Jain <anand.jain@oracle.com>, 
-	CHECK_1234543212345@protonmail.com, brauner@kernel.org, 
-	linux-btrfs <linux-btrfs@vger.kernel.org>, linux-kernel@vger.kernel.org, 
-	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm: hugetlb: fix hugetlb allocation failure when handling
+ freed or in-use hugetlb
+To: Michal Hocko <mhocko@suse.com>
+Cc: akpm@linux-foundation.org, muchun.song@linux.dev, osalvador@suse.de,
+ david@redhat.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <b2e6ce111400670d8021baf4d7ac524ae78a40d5.1707105047.git.baolin.wang@linux.alibaba.com>
+ <ZcCq8L6KpmAs11py@tiehlicka>
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <ZcCq8L6KpmAs11py@tiehlicka>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-i can confirm that with this patch applied on top of 6.8-rc3 i can now
-run update-grub. thank you. checked the kernel logs for btrfs related
-messages and everything seems fine:
 
-Btrfs loaded, zoned=3Dno, fsverity=3Dno
-BTRFS: device fsid 695aa7ac-862a-4de3-ae59-c96f784600a0 devid 1
-transid 1990924 /dev/root scanned by swapper/0 (1)
-BTRFS info (device nvme0n1p3): first mount of filesystem
-695aa7ac-862a-4de3-ae59-c96f784600a0
-BTRFS info (device nvme0n1p3): using crc32c (crc32c-generic) checksum algor=
-ithm
-BTRFS info (device nvme0n1p3): disk space caching is enabled
-VFS: Mounted root (btrfs filesystem) readonly on device 0:19.
-BTRFS info (device nvme0n1p3): the free space cache file
-(604538667008) is invalid, skip it
-BTRFS info: devid 1 device path /dev/root changed to /dev/nvme0n1p3
-scanned by (udev-worker) (277)
-BTRFS info (device nvme0n1p3): the free space cache file
-(675405627392) is invalid, skip it
-BTRFS info (device nvme0n1p3): the free space cache file
-(696880463872) is invalid, skip it
-BTRFS info (device nvme0n1p3): the free space cache file
-(725871493120) is invalid, skip it
-BTRFS info (device nvme0n1p3): the free space cache file
-(799959678976) is invalid, skip it
-BTRFS info (device nvme0n1p3): the free space cache file
-(1658160414720) is invalid, skip it
 
-not sure what's going on with the free space cache file, it wasn't
-that long ago i mounted the disk with the clear_cache option after
-which those messages disappeared but now it's back again...
+On 2/5/2024 5:31 PM, Michal Hocko wrote:
+> On Mon 05-02-24 11:54:17, Baolin Wang wrote:
+>> When handling the freed hugetlb or in-use hugetlb, we should ignore the
+>> failure of alloc_buddy_hugetlb_folio() to dissolve the old hugetlb successfully,
+>> since we did not use the new allocated hugetlb in this 2 cases.
+>>
+>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>> ---
+>>   mm/hugetlb.c | 18 ++++++++++++------
+>>   1 file changed, 12 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+>> index 9d996fe4ecd9..212ab331d355 100644
+>> --- a/mm/hugetlb.c
+>> +++ b/mm/hugetlb.c
+>> @@ -3042,9 +3042,8 @@ static int alloc_and_dissolve_hugetlb_folio(struct hstate *h,
+>>   	 * under the lock.
+>>   	 */
+>>   	new_folio = alloc_buddy_hugetlb_folio(h, gfp_mask, nid, NULL, NULL);
+>> -	if (!new_folio)
+>> -		return -ENOMEM;
+>> -	__prep_new_hugetlb_folio(h, new_folio);
+>> +	if (new_folio)
+>> +		__prep_new_hugetlb_folio(h, new_folio);
+> 
+> Is there any reason why you haven't moved the allocation to the only
+> branch that actually needs it? I know that we hold hugetlb lock but you
 
---alex--
+Nope, just did a simple patch to ignore the allocation failure.
 
-On Mon, Feb 5, 2024 at 12:26=E2=80=AFPM David Sterba <dsterba@suse.cz> wrot=
-e:
->
-> On Sun, Feb 04, 2024 at 07:29:29PM +0100, Alex Romosan wrote:
-> > sorry about the html post (in case somebody actually got it). as i was
-> > saying, just for the record it's still not fixed in 6.8-rc3. thanks.
->
-> I've updated the bug with link to fix
->
-> https://github.com/kdave/btrfs-devel/commit/b80f3ec6592c69f88ebc74a4e1667=
-6af161e2759
->
-> but would like to ask for testing.
+> could have easily dropped the lock, allocate a page and then goto retry.
+> This would actually save an allocation.
+
+Yes, will do. Thanks.
+
+> Something like this:
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index ed1581b670d4..db5f72b94422 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -3029,21 +3029,9 @@ static int alloc_and_dissolve_hugetlb_folio(struct hstate *h,
+>   {
+>   	gfp_t gfp_mask = htlb_alloc_mask(h) | __GFP_THISNODE;
+>   	int nid = folio_nid(old_folio);
+> -	struct folio *new_folio;
+> +	struct folio *new_folio = NULL;
+>   	int ret = 0;
+>   
+> -	/*
+> -	 * Before dissolving the folio, we need to allocate a new one for the
+> -	 * pool to remain stable.  Here, we allocate the folio and 'prep' it
+> -	 * by doing everything but actually updating counters and adding to
+> -	 * the pool.  This simplifies and let us do most of the processing
+> -	 * under the lock.
+> -	 */
+> -	new_folio = alloc_buddy_hugetlb_folio(h, gfp_mask, nid, NULL, NULL);
+> -	if (!new_folio)
+> -		return -ENOMEM;
+> -	__prep_new_hugetlb_folio(h, new_folio);
+> -
+>   retry:
+>   	spin_lock_irq(&hugetlb_lock);
+>   	if (!folio_test_hugetlb(old_folio)) {
+> @@ -3073,6 +3061,15 @@ static int alloc_and_dissolve_hugetlb_folio(struct hstate *h,
+>   		cond_resched();
+>   		goto retry;
+>   	} else {
+> +
+> +		if (!new_folio) {
+> +			spin_unlock_irq(&hugetlb_lock);
+> +			new_folio = alloc_buddy_hugetlb_folio(h, gfp_mask, nid, NULL, NULL);
+> +			if (!new_folio)
+> +				return -ENOMEM;
+> +			__prep_new_hugetlb_folio(h, new_folio);
+> +			goto retry;
+> +		}
+>   		/*
+>   		 * Ok, old_folio is still a genuine free hugepage. Remove it from
+>   		 * the freelist and decrease the counters. These will be
+> @@ -3100,9 +3097,11 @@ static int alloc_and_dissolve_hugetlb_folio(struct hstate *h,
+>   
+>   free_new:
+>   	spin_unlock_irq(&hugetlb_lock);
+> -	/* Folio has a zero ref count, but needs a ref to be freed */
+> -	folio_ref_unfreeze(new_folio, 1);
+> -	update_and_free_hugetlb_folio(h, new_folio, false);
+> +	if (new_folio) {
+> +		/* Folio has a zero ref count, but needs a ref to be freed */
+> +		folio_ref_unfreeze(new_folio, 1);
+> +		update_and_free_hugetlb_folio(h, new_folio, false);
+> +	}
+>   
+>   	return ret;
+>   }
 
