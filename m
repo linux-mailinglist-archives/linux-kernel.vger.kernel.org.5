@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-52790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3087849CAF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:13:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 33F09849CB0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:13:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F0271F25D30
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:13:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C43701F25CEB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:13:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68AA72C1AF;
-	Mon,  5 Feb 2024 14:12:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E388D2C6B7;
+	Mon,  5 Feb 2024 14:12:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uz8UiBt5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pwYqA+6Y"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A40EC2C18E;
-	Mon,  5 Feb 2024 14:12:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 324092C6A9;
+	Mon,  5 Feb 2024 14:12:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707142351; cv=none; b=YjSkxp7p/0O9fhI08kHSAzXRCJ/Z9dj7Qo76cg+FHjbgEUKhDjHxxaW/h6YAk5YO20G/d8dCifbnVrz90MEcgUe0/C6w7S+Ec5k8y8cQjwOE8G9GIV08vAiZexJyJv/FJ6YI8+hX1yRSPdC8XXVKS2hQnyQwpIgmWrr7sbBXXxg=
+	t=1707142354; cv=none; b=Jw8mftVnWtYmAxK3NUWB9XTTgPRle0dXUe4c47weEa2LDbdZ9cx4KEosPZcB5Ifc20PTL6ta3vtrfJClxyOLMAc7mefR1KVYkBzzLR0AxRMg0MDSBtyBL9+0vHUUgS2qlbgu9Bjdx+oJpIEBXTxow1haVNvy1MalY4WqT1ALubg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707142351; c=relaxed/simple;
-	bh=urtEjxHtQ0tLs7UZipwqHGtE50M7Twxd9Gk6q8wZNtM=;
+	s=arc-20240116; t=1707142354; c=relaxed/simple;
+	bh=/rPhwXHZ3xKXpN/7zhU9DA4Kcd5ElnQq+143lheukRc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=EZ0wWP59UQ7iSk0jJfrB7oh3lpIQDOEuXqhw57ETHUYIQnLMcd994svHVHLj2Qwnf24xNrH6wD9BWK6sBSuOhovUigRNI+d1wxiZCp56VKeA0yM3X20ZhENkmUqo7acIGNhxYVrJz0RtLQDFiIxsvGS9SwSXkiRrqR2GSpkzjYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uz8UiBt5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DEE2C43394;
-	Mon,  5 Feb 2024 14:12:28 +0000 (UTC)
+	 MIME-Version; b=eVAixK6YpGzKcJsoc3RxN487huaKhYTmcRbfHfo+bGkFA56ZXkdaDkPDeMfEamr/iwyw+zfqC/WZg5+4QZr0xIuLDTzxmW0FRIBD1UNQEZrYtCAUqQZOoJ5P5o+Bsz4O0HfdW29J9Nd5CLVAby+olPfkvO8w1Un91cLOjLk7WAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pwYqA+6Y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30098C43399;
+	Mon,  5 Feb 2024 14:12:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707142350;
-	bh=urtEjxHtQ0tLs7UZipwqHGtE50M7Twxd9Gk6q8wZNtM=;
+	s=k20201202; t=1707142353;
+	bh=/rPhwXHZ3xKXpN/7zhU9DA4Kcd5ElnQq+143lheukRc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uz8UiBt5bRPMD4HwD+/olBGwvQbDaf/0O0BIuMXK2lvtCZzRVcfKhBWO7GjvmHfGd
-	 1cTvJ1gBEB7iRlIinS68oLTnagFFXKL54o+vvQcWKKelUpALVxkD1VBLiuKwkwwhbc
-	 jzU2wUfGJ+hWjRJJH2EeHH57OuDjfDfLY42ZXQtVM1INpo4oEI4bMTxhm7Pulj1l0t
-	 rzXJzF2nDgV4c8CSXooChGuJshXlWAQnRNCuGSVPzwt2/gzDrR99YEqGlAqWrfx+6u
-	 wIZPEhAlFgYLStapgZkjWwVfyq20lXpBs0/oiBPKuvs1aIXHA1p5aoNErdtTvLeMoe
-	 K4CqkowwSzQzA==
+	b=pwYqA+6YbdtPGlEOzoSOtBbozjKAMKFVpTgUyq2t182CXX4m3L3ku1nwv8rM6f1EC
+	 cc2VP9Ba5yV6zBxUVaHDUIJhK1n2GvIkxPA3/xeOXQIt35Us/F5YrLZufzQBduQcGR
+	 3Jk0AXGTzC+uNqPDOiOIcLjgZfnkSQTDKqluuY+NqP11kIz5NpwqqsoQ1KPHnmmnsO
+	 +ROL2ckwH+vT1/GZFgNxLvn+4zpSU/bcsxySENz/mA9Dhgwe9TWp9SHPkCm3wb2lfj
+	 Z0qBxZTo3E1GXzgLBhOK2eoiFpgb2udzaMQBNNdh0ksEDGEXXpPAumvC2FZYBmUv73
+	 pjH/1msR7nsrw==
 From: Roger Quadros <rogerq@kernel.org>
 To: Thinh.Nguyen@synopsys.com
 Cc: gregkh@linuxfoundation.org,
@@ -51,9 +51,9 @@ Cc: gregkh@linuxfoundation.org,
 	linux-usb@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Roger Quadros <rogerq@kernel.org>
-Subject: [PATCH v2 1/5] usb: dwc3-am62: call of_platform_depopulate in .remove()
-Date: Mon,  5 Feb 2024 16:12:17 +0200
-Message-Id: <20240205141221.56076-2-rogerq@kernel.org>
+Subject: [PATCH v2 2/5] usb: dwc3-am62: fix error on module removal
+Date: Mon,  5 Feb 2024 16:12:18 +0200
+Message-Id: <20240205141221.56076-3-rogerq@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240205141221.56076-1-rogerq@kernel.org>
 References: <20240205141221.56076-1-rogerq@kernel.org>
@@ -65,10 +65,20 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We called of_platform_populate() in .probe() so call the
-cleanup function of_platform_depopulate() in .remove().
+As runtime PM is enabled, the module can be runtime
+suspended when .remove() is called.
 
-Get rid of the now unnnecessary dwc3_ti_remove_core().
+Do a pm_runtime_get_sync() to make sure module is active
+before doing any register operations.
+
+Doing a pm_runtime_put_sync() should disable the refclk
+so no need to disable it again.
+
+Fixes the below warning at module removel.
+
+[   39.705310] ------------[ cut here ]------------
+[   39.710004] clk:162:3 already disabled
+[   39.713941] WARNING: CPU: 0 PID: 921 at drivers/clk/clk.c:1090 clk_core_disable+0xb0/0xb8
 
 Signed-off-by: Roger Quadros <rogerq@kernel.org>
 ---
@@ -78,38 +88,35 @@ Notes:
     
     v2: no change
     
-    v1: https://lore.kernel.org/all/20240201121220.5523-2-rogerq@kernel.org/
+    v1: https://lore.kernel.org/all/20240201121220.5523-3-rogerq@kernel.org/
 
- drivers/usb/dwc3/dwc3-am62.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+ drivers/usb/dwc3/dwc3-am62.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/usb/dwc3/dwc3-am62.c b/drivers/usb/dwc3/dwc3-am62.c
-index 90a587bc29b7..1bfc9e67614f 100644
+index 1bfc9e67614f..600ba9cfefea 100644
 --- a/drivers/usb/dwc3/dwc3-am62.c
 +++ b/drivers/usb/dwc3/dwc3-am62.c
-@@ -267,21 +267,13 @@ static int dwc3_ti_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
--static int dwc3_ti_remove_core(struct device *dev, void *c)
--{
--	struct platform_device *pdev = to_platform_device(dev);
--
--	platform_device_unregister(pdev);
--	return 0;
--}
--
- static void dwc3_ti_remove(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
+@@ -273,6 +273,11 @@ static void dwc3_ti_remove(struct platform_device *pdev)
  	struct dwc3_am62 *am62 = platform_get_drvdata(pdev);
  	u32 reg;
  
--	device_for_each_child(dev, NULL, dwc3_ti_remove_core);
-+	of_platform_depopulate(dev);
++	pm_runtime_get_sync(dev);
++
++	device_wakeup_disable(dev);
++	device_set_wakeup_capable(dev, false);
++
+ 	of_platform_depopulate(dev);
  
  	/* Clear mode valid bit */
- 	reg = dwc3_ti_readl(am62, USBSS_MODE_CONTROL);
+@@ -281,7 +286,6 @@ static void dwc3_ti_remove(struct platform_device *pdev)
+ 	dwc3_ti_writel(am62, USBSS_MODE_CONTROL, reg);
+ 
+ 	pm_runtime_put_sync(dev);
+-	clk_disable_unprepare(am62->usb2_refclk);
+ 	pm_runtime_disable(dev);
+ 	pm_runtime_set_suspended(dev);
+ }
 -- 
 2.34.1
 
