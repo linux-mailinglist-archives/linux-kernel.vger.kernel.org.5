@@ -1,71 +1,78 @@
-Return-Path: <linux-kernel+bounces-52572-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD1B28499CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:15:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29C408499E1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:17:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74AFE2813FD
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:15:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB5CC2819AB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:17:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9DF11B809;
-	Mon,  5 Feb 2024 12:09:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19EE4199B8;
+	Mon,  5 Feb 2024 12:13:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FtwuUJzC"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="v5L+M9f6"
+Received: from mail-wm1-f68.google.com (mail-wm1-f68.google.com [209.85.128.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7115A1CF90;
-	Mon,  5 Feb 2024 12:09:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AFD2199B4
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 12:13:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707134945; cv=none; b=Rv5otLtk6mraBspSEOTgwMZf2OWRpMwMa5nPMD3Th3wrVQsKf0evfXt+h7FRZNBxiN4WUr4YXhYTEXDhcTr7GTwlIKJGva8PHufcT/Ml8CCr8wIoUnjuCHVmRwG5ONNEddevI4RwSt7PvVh+y6y5+HEOfqnrVkG3Xg//ikHlEdc=
+	t=1707135223; cv=none; b=HoJpcdbA4+LfmbeL4wkvZrp8SNlpKcSBFrLCkXPPBAI1iI5e1SUG1cbISBnpOPQMuDSQvrdrxWnFoccZHdBN86bmeChH2NHBWLwFF3q6qkfnIA/FPot2n14ak3t4Ujk6xTgHm5VhtDl1EWdC+3Xpbdcg3EfrayeiHtwXbTApXH0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707134945; c=relaxed/simple;
-	bh=5E7/z2Mru2OC7j/RzNtJjVcVj7QA3NKSvWiDl8UWntI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PJgrfPLLK97DbGJtVQYcFxcIMOzD5JZ7//Lppl76S+J7kAjz5Oqm7Lc84qV+azCGMRsHGQ12ln2Jm5MPxgxpBMWhiACyegJvIBG8wtQtz3ESGdlD7UwClegISU9q3Kg+0oxynshAEIKUekQZk/tq7LY8AU3boqhGnuN3ZK0znQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FtwuUJzC; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707134944; x=1738670944;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=5E7/z2Mru2OC7j/RzNtJjVcVj7QA3NKSvWiDl8UWntI=;
-  b=FtwuUJzCxKvod8sZHWSGYJ1K8kP3b9kR06wq0iWfd6Y65yDxGCmofHJR
-   kPRRllfS1/+fj7ug+XGvxc/ONro2H8zSBO96k+/WvISDBfABETWntTJdJ
-   /GZVBqTNJPU7utArdOJJ4iqI+yFTeYF6y4nY7KQGf2qMt0LVFQVZb4fc+
-   fLUAsRO6amumzC3QSejPgHpKx/RRfvlMmeicQHrv1w/Tg2+KQofXIcAX2
-   V7Y0WXqmZ1iQjzZFENersutFCt0gRDMc+6k/ROzimkIgkb4Nqi0wFr/B9
-   1Aw/KrmsRmcH1oYH/0D4dQnkrpVZHnpmR782hou20hnLm1iiUtNPifr2N
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="4303572"
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="4303572"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 04:09:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="5446025"
-Received: from snestero-mobl.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.21.196])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 04:09:00 -0800
-From: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-To: fenghua.yu@intel.com,
-	reinette.chatre@intel.com,
-	shuah@kernel.org
-Cc: linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	ilpo.jarvinen@linux.intel.com
-Subject: [PATCH v4 5/5] selftests/resctrl: Add non-contiguous CBMs CAT test
-Date: Mon,  5 Feb 2024 13:08:46 +0100
-Message-ID: <b341ecc8d1143932307708aff44ab90db3a91564.1707130307.git.maciej.wieczor-retman@intel.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1707130307.git.maciej.wieczor-retman@intel.com>
-References: <cover.1707130307.git.maciej.wieczor-retman@intel.com>
+	s=arc-20240116; t=1707135223; c=relaxed/simple;
+	bh=b3zEL90q15hC96NDr4vpP1wxQM33aWn3KdnLk0NMY7M=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HtAYfpG4147wiLQbMSO6rZocLfSzjCRYPNLrurvXvTEcXeV1mydF+WB7TlCvYvU05StOeCBv9uLYDPCWDJgY6HfY+DhrQJHjVUtD9ti1fRZK0sxIYGyvdUYEIR3NnSLAs2BWyjZNiSNIm0P8yY0+xQSJNCkSeXe7ONvDdcl4RdU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=v5L+M9f6; arc=none smtp.client-ip=209.85.128.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-wm1-f68.google.com with SMTP id 5b1f17b1804b1-40fd72f7125so10715635e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 04:13:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1707135219; x=1707740019; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RSQODvxw90qryNiwnQGt89Wiy04U5DyDbCfGw4ywivs=;
+        b=v5L+M9f6uLLzgJ/0MiLCSrmRPPCOoyQNbvXw3q2f9U+eY4dQNG5PmP2DzpY20wMDFf
+         G0GAz/ALacWujIOpvEy3bA4VcUG3UTZGbyAEDLzSEbXW0ZmQcg9wEBWwsNHfJGWhQLiG
+         caEBzg8jTAsh/1W4AtGXZHjEo8Zy3apsToHD4U+KdLAZZtRuW5thYAQGfWCR3PrqQSDB
+         E4mHJ1SA/qX5CTMmIfA/i3CCH5RxAlVimNOp0NHWc4xKmbL3fuBLPMVD1IrGLB8/uce7
+         eUCSQpz/xdB8yjnvxfwZOaf3rWdHP2vnBezAHSWAxU6/i9SzIQ9eTRkBXfKNdeKHXqPs
+         Vb1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707135219; x=1707740019;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RSQODvxw90qryNiwnQGt89Wiy04U5DyDbCfGw4ywivs=;
+        b=xFTr7hp5u8QP3Cx2UrnijI3qxjs2mW4Sy6hrkxcP6TX+TMwT64LcBFLuYQzVb1Zi69
+         Z85s1FH53xanwirjbxD5PRfzBizjBfvX0kXBvFZaHN4m20t3RQ11rSmbIQpfGmLCGOTT
+         Q99RqozzxPD16GYfnbwNo0EH5vidLFGWQD4ETHO549YyqFUVR7pRF2IRlln+i1y7Wb8t
+         Zx1nFASkqzoLz6joL5YIjOAxJHr4Oc+yVkpbL4ZCUetOu17rdQxDbm+WjM9VllpcICz7
+         LNOBqYHTMHcNY+z4krZEafEYZDjS6L3evzCLbYj+DR+hqoSsxl8Q/ABkCLGzF+YoJwAj
+         WGzA==
+X-Gm-Message-State: AOJu0YymxOkFJ97L1kRqNqE6xjk+rldnAy5URVo+duU2A49xN1M9az8/
+	PMidGiLIlyqRVX5AT74hB8gtCw4jXGKpqCiUo8zA21NSB8LP70eq7HVxhj7M3icYSj2iGnf6cBV
+	aKOUI0A==
+X-Google-Smtp-Source: AGHT+IF+6v1/nBFcRGVgzfNCpfbGsAJ1MwumTlPaJ83U33aOvlA6N+lfqbDkUmKrhOcSgb2VVPlznQ==
+X-Received: by 2002:a05:600c:3d87:b0:40f:dd18:a014 with SMTP id bi7-20020a05600c3d8700b0040fdd18a014mr1054623wmb.14.1707135219168;
+        Mon, 05 Feb 2024 04:13:39 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXJFM57T3TxSBmdhYoCX+h0h1AZUSSC4yX/pGaAigQXn2XOqHluxVRfQPlWk1WrLrest6ItIDUTOqlcpFTOz/DVPgw=
+Received: from debian.fritz.box (aftr-82-135-80-180.dynamic.mnet-online.de. [82.135.80.180])
+        by smtp.gmail.com with ESMTPSA id bg8-20020a05600c3c8800b0040fb03f803esm8459779wmb.24.2024.02.05.04.13.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 04:13:38 -0800 (PST)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: linux-kernel@vger.kernel.org,
+	trivial@kernel.org
+Cc: Thorsten Blum <thorsten.blum@toblux.com>
+Subject: [PATCH] README: Fix spelling/capitalization
+Date: Mon,  5 Feb 2024 13:09:06 +0100
+Message-Id: <20240205120904.1711-1-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,163 +81,27 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add tests for both L2 and L3 CAT to verify the return values
-generated by writing non-contiguous CBMs don't contradict the
-reported non-contiguous support information.
+- Fix spelling/capitalization s/Restructured/ReStructured/
 
-Use a logical XOR to confirm return value of write_schemata() and
-non-contiguous CBMs support information match.
-
-Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
 ---
-Changelog v4:
-- Return failure instead of error on check of cpuid against sparse_masks
-  and on contiguous write_schemata fail. (Reinette)
+ README | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Changelog v3:
-- Roll back __cpuid_count part. (Reinette)
-- Update function name to read sparse_masks file.
-- Roll back get_cache_level() changes.
-- Add ksft_print_msg() to contiguous schemata write error handling
-  (Reinette).
-
-Changelog v2:
-- Redo the patch message. (Ilpo)
-- Tidy up __cpuid_count calls. (Ilpo)
-- Remove redundant AND in noncont_mask calculations (Ilpo)
-- Fix bit_center offset.
-- Add newline before function return. (Ilpo)
-- Group non-contiguous tests with CAT tests. (Ilpo)
-- Use a helper for reading sparse_masks file. (Ilpo)
-- Make get_cache_level() available in other source files. (Ilpo)
-
- tools/testing/selftests/resctrl/cat_test.c    | 81 +++++++++++++++++++
- tools/testing/selftests/resctrl/resctrl.h     |  2 +
- .../testing/selftests/resctrl/resctrl_tests.c |  2 +
- 3 files changed, 85 insertions(+)
-
-diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
-index 39fc9303b8e8..20eb978e624b 100644
---- a/tools/testing/selftests/resctrl/cat_test.c
-+++ b/tools/testing/selftests/resctrl/cat_test.c
-@@ -294,6 +294,71 @@ static int cat_run_test(const struct resctrl_test *test, const struct user_param
- 	return ret;
- }
+diff --git a/README b/README
+index 669ac7c32292..026eff0b8e06 100644
+--- a/README
++++ b/README
+@@ -11,7 +11,7 @@ In order to build the documentation, use ``make htmldocs`` or
+     https://www.kernel.org/doc/html/latest/
  
-+static int noncont_cat_run_test(const struct resctrl_test *test,
-+				const struct user_params *uparams)
-+{
-+	unsigned long full_cache_mask, cont_mask, noncont_mask;
-+	unsigned int eax, ebx, ecx, edx, ret, sparse_masks;
-+	char schemata[64];
-+	int bit_center;
-+
-+	/* Check to compare sparse_masks content to CPUID output. */
-+	ret = resource_info_unsigned_get(test->resource, "sparse_masks", &sparse_masks);
-+	if (ret)
-+		return ret;
-+
-+	if (!strcmp(test->resource, "L3"))
-+		__cpuid_count(0x10, 1, eax, ebx, ecx, edx);
-+	else if (!strcmp(test->resource, "L2"))
-+		__cpuid_count(0x10, 2, eax, ebx, ecx, edx);
-+	else
-+		return -EINVAL;
-+
-+	if (sparse_masks != ((ecx >> 3) & 1)) {
-+		ksft_print_msg("CPUID output doesn't match 'sparse_masks' file content!\n");
-+		return 1;
-+	}
-+
-+	/* Write checks initialization. */
-+	ret = get_full_cbm(test->resource, &full_cache_mask);
-+	if (ret < 0)
-+		return ret;
-+	bit_center = count_bits(full_cache_mask) / 2;
-+	cont_mask = full_cache_mask >> bit_center;
-+
-+	/* Contiguous mask write check. */
-+	snprintf(schemata, sizeof(schemata), "%lx", cont_mask);
-+	ret = write_schemata("", schemata, uparams->cpu, test->resource);
-+	if (ret) {
-+		ksft_print_msg("Write of contiguous CBM failed\n");
-+		return 1;
-+	}
-+
-+	/*
-+	 * Non-contiguous mask write check. CBM has a 0xf hole approximately in the middle.
-+	 * Output is compared with support information to catch any edge case errors.
-+	 */
-+	noncont_mask = ~(0xf << (bit_center - 2)) & full_cache_mask;
-+	snprintf(schemata, sizeof(schemata), "%lx", noncont_mask);
-+	ret = write_schemata("", schemata, uparams->cpu, test->resource);
-+	if (ret && sparse_masks)
-+		ksft_print_msg("Non-contiguous CBMs supported but write of non-contiguous CBM failed\n");
-+	else if (ret && !sparse_masks)
-+		ksft_print_msg("Non-contiguous CBMs not supported and write of non-contiguous CBM failed as expected\n");
-+	else if (!ret && !sparse_masks)
-+		ksft_print_msg("Non-contiguous CBMs not supported but write of non-contiguous CBM succeeded\n");
-+
-+	return !ret == !sparse_masks;
-+}
-+
-+static bool noncont_cat_feature_check(const struct resctrl_test *test)
-+{
-+	if (!resctrl_resource_exists(test->resource))
-+		return false;
-+
-+	return resource_info_file_exists(test->resource, "sparse_masks");
-+}
-+
- struct resctrl_test l3_cat_test = {
- 	.name = "L3_CAT",
- 	.group = "CAT",
-@@ -301,3 +366,19 @@ struct resctrl_test l3_cat_test = {
- 	.feature_check = test_resource_feature_check,
- 	.run_test = cat_run_test,
- };
-+
-+struct resctrl_test l3_noncont_cat_test = {
-+	.name = "L3_NONCONT_CAT",
-+	.group = "CAT",
-+	.resource = "L3",
-+	.feature_check = noncont_cat_feature_check,
-+	.run_test = noncont_cat_run_test,
-+};
-+
-+struct resctrl_test l2_noncont_cat_test = {
-+	.name = "L2_NONCONT_CAT",
-+	.group = "CAT",
-+	.resource = "L2",
-+	.feature_check = noncont_cat_feature_check,
-+	.run_test = noncont_cat_run_test,
-+};
-diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
-index 2b9a3d0570c7..9e834496401c 100644
---- a/tools/testing/selftests/resctrl/resctrl.h
-+++ b/tools/testing/selftests/resctrl/resctrl.h
-@@ -209,5 +209,7 @@ extern struct resctrl_test mbm_test;
- extern struct resctrl_test mba_test;
- extern struct resctrl_test cmt_test;
- extern struct resctrl_test l3_cat_test;
-+extern struct resctrl_test l3_noncont_cat_test;
-+extern struct resctrl_test l2_noncont_cat_test;
+ There are various text files in the Documentation/ subdirectory,
+-several of them using the Restructured Text markup notation.
++several of them using the ReStructured Text markup notation.
  
- #endif /* RESCTRL_H */
-diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
-index 3044179ee6e9..f3dc1b9696e7 100644
---- a/tools/testing/selftests/resctrl/resctrl_tests.c
-+++ b/tools/testing/selftests/resctrl/resctrl_tests.c
-@@ -19,6 +19,8 @@ static struct resctrl_test *resctrl_tests[] = {
- 	&mba_test,
- 	&cmt_test,
- 	&l3_cat_test,
-+	&l3_noncont_cat_test,
-+	&l2_noncont_cat_test,
- };
- 
- static int detect_vendor(void)
+ Please read the Documentation/process/changes.rst file, as it contains the
+ requirements for building and running the kernel, and information about
 -- 
-2.43.0
+2.39.2
 
 
