@@ -1,179 +1,157 @@
-Return-Path: <linux-kernel+bounces-52028-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5E94849307
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 05:46:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93E2284930C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 05:50:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDB3A1C22085
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 04:46:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F4F7283AFF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 04:50:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53D82B674;
-	Mon,  5 Feb 2024 04:45:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96A70B64A;
+	Mon,  5 Feb 2024 04:50:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="CPbdZ1+p"
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="cOON0SHv"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4478AD48
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 04:45:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 154D0AD32;
+	Mon,  5 Feb 2024 04:49:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707108352; cv=none; b=nfuohJPp4/qzcAWiULn3PA13Ah6TrcLJukDDWOK73kYKr3Kh9duhNdL6r2y/xORYMaSTp0wsIMsdWIvZPk4RZohfBgTSX+Y6Iqa3/xkSw1an3CM1y5qY9XVAaqwLUBKbwFHPMLvbHzDBOxlNpVYRzg9MOiSSz27cWVqhNeP/nL8=
+	t=1707108600; cv=none; b=eITWtNZQGRipG0CHGtmCTyjhlTuU4Mmmk4LAoIo9Bsw5Ed86wJOVe1pBMEpvcPBIWeNkVG/hCsL2hggGW/OPyEhF1IEzmZfEfHPEeOyXDtDXXwTJ78GF1w9zglAebwEuefkSj2j/34VHNLh/5YTh8416YCd7UkbseVSyaHrK+gI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707108352; c=relaxed/simple;
-	bh=nnZDfL2lYVUfyeGMgfLB2kVMymyfHCXbZUS54zB1Tvo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=e2fhR4EFEs2PPjBMABIG3PUm48ifVaZhO/z7HKnI0cHE8KgjC8zNr4VpJI8kxX6orYrQ13XyMLtUSIqR/0S/3IyShznxQepCRwrpF2e8lW8PIeNBZ0mfqO4AYUsmYVxqI3fTs+fz87qvWy2bpAW2rQwGHRSubBivmYH+3o2iaLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=CPbdZ1+p; arc=none smtp.client-ip=209.85.161.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-59a9304aef0so2278430eaf.1
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Feb 2024 20:45:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1707108350; x=1707713150; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=+l8cKr2Ar+3gm80Z7qi74idXrPpugT+r6d47IRBYS9g=;
-        b=CPbdZ1+pUknOpXGs8c2aOTW5Z/0RnCricIOUqj9lIyuCZTDewS0tSvqPvJirN0Yexj
-         mV6+s8KfSJQcEW4eMdf1jZRPH2vH4zso1MqDFPEP2QSmf8zzfDHk+4CQ/N0mU9ZM52S8
-         i8EuPEVihCOs9gN968SbEka5bYUf1QlogvoZc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707108350; x=1707713150;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+l8cKr2Ar+3gm80Z7qi74idXrPpugT+r6d47IRBYS9g=;
-        b=k48a9X1Tg7x7faLWJO2/Fs3YsLII2bRaaGqLW/HTtJqcvSGg2yeW13ayzb68OfAcqg
-         y/VOPbKYWMPADfvknyG04S2GEn54UHK8UfTAkBBAvpUw3IO9y+mWpacUHKPhLGLiGtaL
-         NMxUrtqxkAaiguUOATI4K95h+zZUjl5xP0QCb6Wb7P6UFuH7FCXfFEZwPBkhC4dlA9NK
-         m9E8Y+D5SFQImJJxs345fO3dl7xg6i0YO1bNGtGgnNDFNZYZRlu5Kzmft865D5ofn+5o
-         +GExBQBXWyr6r18zaXk0ozWBSwDQldZf76Mm5A8EHBhlOUccmsDo9JRVvM7aGM631BvA
-         qBcQ==
-X-Gm-Message-State: AOJu0YzAcu2o6fluwFunpQ+i+zRlPxBNl+nIsRFaUAXYB3gwswMZdJoq
-	z0btkqYfF+M75zuSrkc424XR3GmKPm4Cz75wgstcYccit8T5FrH8XRAEKi8PMQ==
-X-Google-Smtp-Source: AGHT+IGLMowC6WyzR8w+BTpjGzc6iPM2N0JN8gb7a+0G98ERsVa31G2lPl8Fn3u/yexX5CCcsFV/3w==
-X-Received: by 2002:a05:6358:7e4c:b0:176:3457:c380 with SMTP id p12-20020a0563587e4c00b001763457c380mr16650091rwm.6.1707108349845;
-        Sun, 04 Feb 2024 20:45:49 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVjQV4S2ybY8pGan8KqUeVvYMJi6ijevtOYAi0NyG00pUt9STw260/xIUjHY7i2uw5xni2OohqS+qNGSbUbKsqZuDqV2Q//VCP9PIj/7DK0RDDOtyTww/A1cEFgL+2W1iETz2CrEzhIGoRJo3ocAYwZzPB3w+Iy2kqOUyZRO91u9tJU1Uz6MIXEdBS3RvE2/wBuzY4a9qzlUlXEDWbHFLH8Bq1cZioblAuauN69ktdN0zf1WKSiUoicD6c4IEGjIvFzTC4plu5SSoY/NHVVfo4pJG8P70dzemWzIMbWkSvieh5uAhddCkpI6oHq92o361e+MtbmX/fMnwbG7q+ZABmKaKH2qeB4MfPegltEx+SfOI1wtb0bSZB75b17qW1/ivM8i1qfKpDDJTBkJbh/gOF1gIDFjeAFq9PFaT5z6+Nb7RUj7pDUJHU55aY1njeP4CvpE2w/4CsWz26PaL2GeI6Ay0GuQTynkUQ68PlguRc//Of+p8hwhiDjYm0+d2JNsOIbl6moQvmu+wYo91LWwnzQyM6Ft/M=
-Received: from akaher-virtual-machine.eng.vmware.com ([66.170.99.2])
-        by smtp.gmail.com with ESMTPSA id bn23-20020a056a00325700b006dbda7bcf3csm5629859pfb.83.2024.02.04.20.45.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 04 Feb 2024 20:45:49 -0800 (PST)
-From: Ajay Kaher <ajay.kaher@broadcom.com>
-To: stable@vger.kernel.org,
-	gregkh@linuxfoundation.org
-Cc: pablo@netfilter.org,
-	kadlec@netfilter.org,
-	fw@strlen.de,
-	davem@davemloft.net,
-	netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	alexey.makhalov@broadcom.com,
-	florian.fainelli@broadcom.com,
-	vasavi.sirnapalli@broadcom.com,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Sasha Levin <sashal@kernel.org>,
-	Ajay Kaher <ajay.kaher@broadcom.com>
-Subject: [PATCH v5.4.y] netfilter: nf_tables: fix pointer math issue in  nft_byteorder_eval()
-Date: Mon,  5 Feb 2024 10:14:53 +0530
-Message-Id: <1707108293-1004-2-git-send-email-ajay.kaher@broadcom.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1707108293-1004-1-git-send-email-ajay.kaher@broadcom.com>
-References: <1707108293-1004-1-git-send-email-ajay.kaher@broadcom.com>
+	s=arc-20240116; t=1707108600; c=relaxed/simple;
+	bh=NduTLHFnZfhCN2CkJ9oqz73qOh10y1E+6FLyT0zEKO0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=EdqwiqhH40g+E1KDV4zvWh41ASQy+7XnpODDEJ0BhYLbxbaxC4AcovFFtxvEwM/y88Qea600VzZ4sMxY75gOeabL3YMEeRETn8Gxgdx4Z08LzIOLye9U/ZdoiRrtMRdKynymlMdiOb8dbmrxfJjrxB1yam+3sXBMsa+XZ+FOmb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=cOON0SHv; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4154nElG022636;
+	Sun, 4 Feb 2024 22:49:14 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707108554;
+	bh=Xtnfb8xnQNhu/YXCkFubO57gi1E2WQInflCGp92loXQ=;
+	h=From:To:CC:Subject:Date;
+	b=cOON0SHvZCUNGkGhchQdw7q+4bpaFV9mnhg0AQDO9GSCKkxzkOuEaWO4QqUa16+49
+	 8k2/LwQs8SjG+mM/LxQCT4P5MFcvljlwbtCJQur5gjTgjPJ/wlsLXMot1TxnIoq7XD
+	 VEOLYb5P1K82DJE/Hbm4pkl6bK9Gv1MupKij/z+Q=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4154nE5h031263
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Sun, 4 Feb 2024 22:49:14 -0600
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 4
+ Feb 2024 22:49:13 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Sun, 4 Feb 2024 22:49:13 -0600
+Received: from udit-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (udit-hp-z2-tower-g9-workstation-desktop-pc.dhcp.ti.com [172.24.227.18])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4154nA0K035269;
+	Sun, 4 Feb 2024 22:49:11 -0600
+From: Udit Kumar <u-kumar1@ti.com>
+To: <nm@ti.com>, <kristo@kernel.org>, <ssantosh@kernel.org>
+CC: <vigneshr@ti.com>, <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, Udit Kumar <u-kumar1@ti.com>
+Subject: [PATCH v1] clk: keystone: sci-clk: Adding support for non contiguous clocks
+Date: Mon, 5 Feb 2024 10:15:58 +0530
+Message-ID: <20240205044557.3340848-1-u-kumar1@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-From: Dan Carpenter <dan.carpenter@linaro.org>
+Most of clocks and their parents are defined in contiguous range,
+But in few cases, there is gap in clock numbers[0].
 
-commit c301f0981fdd3fd1ffac6836b423c4d7a8e0eb63 upstream.
+Driver assumes clocks to be in contiguous range, and assigns
+accordingly.
 
-The problem is in nft_byteorder_eval() where we are iterating through a
-loop and writing to dst[0], dst[1], dst[2] and so on...  On each
-iteration we are writing 8 bytes.  But dst[] is an array of u32 so each
-element only has space for 4 bytes.  That means that every iteration
-overwrites part of the previous element.
+New firmware started returning error in case of
+non-available clock id.  Therefore drivers throws error while
+re-calculate and other functions.
 
-I spotted this bug while reviewing commit caf3ef7468f7 ("netfilter:
-nf_tables: prevent OOB access in nft_byteorder_eval") which is a related
-issue.  I think that the reason we have not detected this bug in testing
-is that most of time we only write one element.
+In this fix, before assigning and adding clock in list,
+driver checks if given clock is valid or not.
 
-Fixes: ce1e7989d989 ("netfilter: nft_byteorder: provide 64bit le/be conversion")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
-[Ajay: Modified to apply on v5.4.y]
-Signed-off-by: Ajay Kaher <ajay.kaher@broadcom.com>
+Fixes: 3c13933c6033 ("clk: keystone: sci-clk: add support for dynamically probing clocks")
+
+[0] https://software-dl.ti.com/tisci/esd/latest/5_soc_doc/j7200/clocks.html
+Section Clocks for NAVSS0_CPTS_0 Device,
+clock id 12-15 and 18-19 not present
+
+Signed-off-by: Udit Kumar <u-kumar1@ti.com>
 ---
- include/net/netfilter/nf_tables.h | 4 ++--
- net/netfilter/nft_byteorder.c     | 5 +++--
- net/netfilter/nft_meta.c          | 2 +-
- 3 files changed, 6 insertions(+), 5 deletions(-)
+Original logs
+https://gist.github.com/uditkumarti/de4b36b21247fb36725ad909ce4812f6#file-original-logs
+Line 2630 for error
 
-diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-index 0a49d44..cf314ce 100644
---- a/include/net/netfilter/nf_tables.h
-+++ b/include/net/netfilter/nf_tables.h
-@@ -130,9 +130,9 @@ static inline u16 nft_reg_load16(u32 *sreg)
- 	return *(u16 *)sreg;
- }
+Logs with fix
+https://gist.github.com/uditkumarti/de4b36b21247fb36725ad909ce4812f6#file-with-fix
+Line 2594 
+
+ drivers/clk/keystone/sci-clk.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/clk/keystone/sci-clk.c b/drivers/clk/keystone/sci-clk.c
+index 35fe197dd303..d417ec018d82 100644
+--- a/drivers/clk/keystone/sci-clk.c
++++ b/drivers/clk/keystone/sci-clk.c
+@@ -517,6 +517,8 @@ static int ti_sci_scan_clocks_from_dt(struct sci_clk_provider *provider)
+ 	int num_clks = 0;
+ 	int num_parents;
+ 	int clk_id;
++	int max_clk_id;
++	u64 freq;
+ 	const char * const clk_names[] = {
+ 		"clocks", "assigned-clocks", "assigned-clock-parents", NULL
+ 	};
+@@ -584,6 +586,7 @@ static int ti_sci_scan_clocks_from_dt(struct sci_clk_provider *provider)
+ 				}
  
--static inline void nft_reg_store64(u32 *dreg, u64 val)
-+static inline void nft_reg_store64(u64 *dreg, u64 val)
- {
--	put_unaligned(val, (u64 *)dreg);
-+	put_unaligned(val, dreg);
- }
+ 				clk_id = args.args[1] + 1;
++				max_clk_id = clk_id + num_parents;
  
- static inline u64 nft_reg_load64(u32 *sreg)
-diff --git a/net/netfilter/nft_byteorder.c b/net/netfilter/nft_byteorder.c
-index 7b0b8fe..9d250bd 100644
---- a/net/netfilter/nft_byteorder.c
-+++ b/net/netfilter/nft_byteorder.c
-@@ -38,20 +38,21 @@ void nft_byteorder_eval(const struct nft_expr *expr,
+ 				while (num_parents--) {
+ 					sci_clk = devm_kzalloc(dev,
+@@ -592,11 +595,20 @@ static int ti_sci_scan_clocks_from_dt(struct sci_clk_provider *provider)
+ 					if (!sci_clk)
+ 						return -ENOMEM;
+ 					sci_clk->dev_id = args.args[0];
+-					sci_clk->clk_id = clk_id++;
+-					sci_clk->provider = provider;
+-					list_add_tail(&sci_clk->node, &clks);
++					/* check if given clock id is valid by calling get_freq */
++					/* loop over max possible ids */
++					do {
++						sci_clk->clk_id = clk_id++;
  
- 	switch (priv->size) {
- 	case 8: {
-+		u64 *dst64 = (void *)dst;
- 		u64 src64;
- 
- 		switch (priv->op) {
- 		case NFT_BYTEORDER_NTOH:
- 			for (i = 0; i < priv->len / 8; i++) {
- 				src64 = nft_reg_load64(&src[i]);
--				nft_reg_store64(&dst[i], be64_to_cpu(src64));
-+				nft_reg_store64(&dst64[i], be64_to_cpu(src64));
+-					num_clks++;
++						ret = provider->ops->get_freq(provider->sci,
++							   sci_clk->dev_id, sci_clk->clk_id, &freq);
++					} while (ret != 0 && clk_id < max_clk_id);
++
++					sci_clk->provider = provider;
++					if (ret == 0) {
++						list_add_tail(&sci_clk->node, &clks);
++						num_clks++;
++					}
+ 				}
  			}
- 			break;
- 		case NFT_BYTEORDER_HTON:
- 			for (i = 0; i < priv->len / 8; i++) {
- 				src64 = (__force __u64)
- 					cpu_to_be64(nft_reg_load64(&src[i]));
--				nft_reg_store64(&dst[i], src64);
-+				nft_reg_store64(&dst64[i], src64);
- 			}
- 			break;
- 		}
-diff --git a/net/netfilter/nft_meta.c b/net/netfilter/nft_meta.c
-index ec2798f..ac7d3c7 100644
---- a/net/netfilter/nft_meta.c
-+++ b/net/netfilter/nft_meta.c
-@@ -247,7 +247,7 @@ void nft_meta_get_eval(const struct nft_expr *expr,
- 		strncpy((char *)dest, out->rtnl_link_ops->kind, IFNAMSIZ);
- 		break;
- 	case NFT_META_TIME_NS:
--		nft_reg_store64(dest, ktime_get_real_ns());
-+		nft_reg_store64((u64 *)dest, ktime_get_real_ns());
- 		break;
- 	case NFT_META_TIME_DAY:
- 		nft_reg_store8(dest, nft_meta_weekday(ktime_get_real_seconds()));
+ 
 -- 
-2.7.4
+2.34.1
 
 
