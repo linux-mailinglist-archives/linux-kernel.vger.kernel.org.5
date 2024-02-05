@@ -1,147 +1,159 @@
-Return-Path: <linux-kernel+bounces-53111-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53128-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8740D84A0CF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:33:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6D0E84A107
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:38:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9B2F1C21FD8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:33:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78736B24F37
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:38:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0233344C7B;
-	Mon,  5 Feb 2024 17:33:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A406E482C2;
+	Mon,  5 Feb 2024 17:35:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="O/hSThXo"
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="VUYpnmZq"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAEF744C67;
-	Mon,  5 Feb 2024 17:33:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05EC8481D8;
+	Mon,  5 Feb 2024 17:35:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707154425; cv=none; b=jt4Hwc+2k1+/HrNgpQ3//WYJQA3TVjBPYGEzQ0LUBVPg5KYFsGl1wICirKXoNtt18N5v+vM2OR8NigxbeEw67UHexski/JtLBxZbFO2JjbY/Te26H2V1E80ltijfsfOlERHojOQe8r3kvORSIvlAbjjIOtvPhABjz2FPBP+pOZg=
+	t=1707154551; cv=none; b=aPvXc1Wta9oT9U+xJwAY9sOHD4hw1Yn0Ow0zYMGb0ufqwvVa9DCSdz1vV8bC5ogKwCzVBnDeYfnlb1yWD7e4sEA96Wy/Qbzvmcm6bZrgqii5qn1+7MT/7DdV83PLfZEhXorDdPIIiAcSxxCxIhrSV9d2hPHOnPNN8O4VrXv8An8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707154425; c=relaxed/simple;
-	bh=6KbzWkkF1SDEdyAjsG6dXdz3BrQZmGWLPdcrJqk38Pg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FRFg3f3bC5GMRT+7R9eQgu4ksGidBd8O6QgKRF/tGo5OTM38xyGpJid8cQEDGPEoXHpdFmZkcx46vdYaqF/pPJP5Ufs76ToT5ictbMcYVUX0Nr0Cj42GHk5OPVdc9+sP0kWevEgTw0ugl6zI2H8JqJD+AilE3sl3UVECzpjwigI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=O/hSThXo; arc=none smtp.client-ip=209.85.215.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5cfd95130c6so3159163a12.1;
-        Mon, 05 Feb 2024 09:33:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707154423; x=1707759223;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ElUJ3bFANKcGSpc8Ks9F6N98y85nfwFifeRegxpzAFA=;
-        b=M74dp5yANnEGISbT0+pg8gYnp/Hv42SrPs4im0krsS+6s1DZuPbVB5q8zTPZ4RmTfz
-         mPSddhDx1AD48NFq0qwnMMvQdgSkqK7hpSLt7VTiTtws1Dwxm0NTtuJpbWDXgHZ3fTn9
-         qejwApA09PTdSQM7OO9Zek/WcMNY+tu/U/VB3CkGxRb23UWbMIVVfqQgp+hrKySHaf1i
-         ObdxBIsxyoXQwFMm3CTUas9DdvbpNnL4dYzISksKqk/4lkV1hOMa9kDb6btN904R0NKC
-         tdEJk4ANGIXHvLPIOZFvc7Q/wO0GJ/UF4z3CWz5PHfLd6GRoXgHCzca76IuuYu33dfrz
-         0cIA==
-X-Gm-Message-State: AOJu0Yzk/Y6SioF8H4CeGezRkJoId7oShwjrtHrUS4do4PxE+MRco1DM
-	Da5lyO67LGWNmvVgcwEGYSr+UaBfFN1cQzC/ogbDrbCFFOUr/4NU
-X-Google-Smtp-Source: AGHT+IFw0yFVouEJL7sPQVepmBZ8+P+u2K8PZ8+tyNjbhTF74yqxwdl05WX8PDFwXV5n20fHnPLOxg==
-X-Received: by 2002:a17:903:40c1:b0:1d9:3843:3f07 with SMTP id t1-20020a17090340c100b001d938433f07mr223495pld.61.1707154422854;
-        Mon, 05 Feb 2024 09:33:42 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWnNMQnvG5mDgs0H3SN6PW5gUa00uEW+JZOiih/iG7WgRLvJv6uEuVbdmRlQX7v0Yw+TxkzH4qUisncO9HWV8Jayxt9/eNEoAxHfA9M69EWcxqn5CTOZyJ0RXcgIAGApyVFyYd9MjlWq593++VjGEnkHxchzlyn5M0H9ypKVfscNRfYeNy3zFZPFNiQ1I01iBivsENHQMlaTvZhbf3smtEpM3RAH1K+rC7/tA0BIITd9Pe1gNyDiFLGHAtQz2lQcKbOo6pd24y0
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id e18-20020aa79812000000b006e046a325a4sm103109pfl.7.2024.02.05.09.33.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 09:33:42 -0800 (PST)
-Date: Mon, 5 Feb 2024 14:34:12 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1707154421;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ElUJ3bFANKcGSpc8Ks9F6N98y85nfwFifeRegxpzAFA=;
-	b=O/hSThXogFDYMXAusvstp+yAm5cg8I09Hef199UMvk9dxtn4ZnNOanop4H9lYaOuCEtjnO
-	fLgTpoFP+jrOyYYkPE+CrJyE7XevvpFh3IrG4O+26NXmNxj8Ccht1Y6NlfWK7YzyV7LAaZ
-	teIg4AOksSYLGrMvo3VbsGh1ZcCVvahS4FCm0nPk67h2S8+zFVPOGswHojHMWmhgyEFmy9
-	4uj+X0/DohbUW+7kH2EMZe/Vpy/SKXYUfIORkA6s+Ue/b6OpIyKyqbsRFDvYw2jw6U79HW
-	/khwGkZTOW1CDe1y7DLAJ8ZmHqAVebrGVxXpIRhS29gGjfM9W/6oVz0b5xe/1g==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-To: Michael Kelley <mhklinux@outlook.com>
-Cc: "K. Y. Srinivasan" <kys@microsoft.com>, 
-	Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, 
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] hv: vmbus: make hv_bus const
-Message-ID: <vjfokbfk23ck6ndcxyb6gnbqn7qtdg4ynenvnyhlgt7kwvlwvm@3gvq5sttegj7>
-References: <20240204-bus_cleanup-hv-v1-1-521bd4140673@marliere.net>
- <SN6PR02MB4157130171E614FED60FDC1ED4472@SN6PR02MB4157.namprd02.prod.outlook.com>
+	s=arc-20240116; t=1707154551; c=relaxed/simple;
+	bh=5JFqEmkOGc/As5iC/2BClGHdvHxa1EQgvh2dI2uGnSo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=B+zPgQZrUudXwOdrfRWM3jDysTON9Nn1nAdydlvukIgjHUvDWmoSIwdFAfQ+4rS+tntldBKYvm2W7IkABZzk8uvapYCf2+pjFHnxJmOzxMlMq67mw+O2/5vScM0cOlbQ1QwOsPpnZ+PI6TUT/SAQKfdTfM9z4d8Tjwns0Rj6Z50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=VUYpnmZq; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 415H73uW022996;
+	Mon, 5 Feb 2024 17:35:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=/m7ENcWw8jBryuscCbgPp7hzCQ34mIrSeEoKDPRIxks=;
+ b=VUYpnmZq8uYLKWiMuY+HaiWasuEGFv+Q2STxO+vIgc42uKNqAIt5sagMNivWBCcH98jn
+ Ck1fQ/BFAo63duCwVrRn6I5Rz1fMwF2WBuWug0OH51SdwQnY1Y8fCb2DFa++QwxRijW1
+ nA/R+4CgAcWqjlLEvR5Acj6P7ohghZiHSzvnOiBlL+cbfnrjIVpsXePI34cKk5NzJd0p
+ 0MUxgekfiQ6jUvlT/r6rYGEBFg7HpZyQ8m4lo/iBmUMY1plCkfxfygLVIpz2LVSX7Acu
+ KUtDv4ElARcdH29vgLCiBJpv2SV4z34RVQe1hIjnSwYAHkQioBGX7cxyu2+Go039RMrt Kg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w337chrqx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 05 Feb 2024 17:35:36 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 415HQ8q3032430;
+	Mon, 5 Feb 2024 17:35:36 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w337chrqb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 05 Feb 2024 17:35:36 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 415H5Sov005455;
+	Mon, 5 Feb 2024 17:35:35 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w21ak9t5r-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 05 Feb 2024 17:35:35 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 415HZWqx20316814
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 5 Feb 2024 17:35:32 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2B08720043;
+	Mon,  5 Feb 2024 17:35:32 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3E72C2004E;
+	Mon,  5 Feb 2024 17:35:27 +0000 (GMT)
+Received: from vaibhav?linux.ibm.com (unknown [9.43.112.222])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with SMTP;
+	Mon,  5 Feb 2024 17:35:26 +0000 (GMT)
+Received: by vaibhav@linux.ibm.com (sSMTP sendmail emulation); Mon, 05 Feb 2024 23:05:23 +0530
+From: Vaibhav Jain <vaibhav@linux.ibm.com>
+To: Amit Machhiwal <amachhiw@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
+        kvm@vger.kernel.org, kvm-ppc@vger.kernel.org
+Cc: Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman
+ <mpe@ellerman.id.au>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Vaidyanathan
+ Srinivasan <svaidy@linux.ibm.com>,
+        "Aneesh Kumar K . V"
+ <aneesh.kumar@kernel.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Amit Machhiwal
+ <amachhiw@linux.ibm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] KVM: PPC: Book3S HV: Fix L2 guest reboot failure due
+ to empty 'arch_compat'
+In-Reply-To: <20240205132607.2776637-1-amachhiw@linux.ibm.com>
+References: <20240205132607.2776637-1-amachhiw@linux.ibm.com>
+Date: Mon, 05 Feb 2024 23:05:23 +0530
+Message-ID: <87h6img6g4.fsf@vajain21.in.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SN6PR02MB4157130171E614FED60FDC1ED4472@SN6PR02MB4157.namprd02.prod.outlook.com>
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 5TnpgDh3nHIvKvMD6hFMeSDCRi2B20hH
+X-Proofpoint-ORIG-GUID: uIRLN9AqnSJ7beZNDqSxnZYfllpJf0Ed
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-05_12,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ malwarescore=0 lowpriorityscore=0 mlxlogscore=798 priorityscore=1501
+ spamscore=0 phishscore=0 mlxscore=0 clxscore=1011 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402050134
 
-Hi Michael,
+Hi Amit,
 
-On  5 Feb 16:40, Michael Kelley wrote:
-> From: Ricardo B. Marliere <ricardo@marliere.net> Sent: Sunday, February 4, 2024 8:38 AM
-> > 
-> 
-> NIT:  For consistency, we try to use "Drivers: hv: vmbus:" as the prefix on the
-> Subject line for patches to vmbus_drv.c.
+Thanks for the patch. Minor comment on the patch below:
 
-Thanks for the feedback, I'll keep that in mind in the future. I looked
-into a few commits using `git blame` and 'hv: ' seemed to be sufficient.
+Amit Machhiwal <amachhiw@linux.ibm.com> writes:
 
-All the best,
--	Ricardo.
+<snip>
 
+>  
+> +static inline unsigned long map_pcr_to_cap(unsigned long pcr)
+> +{
+> +	unsigned long cap = 0;
+> +
+> +	switch (pcr) {
+> +	case PCR_ARCH_300:
+> +		cap = H_GUEST_CAP_POWER9;
+> +		break;
+> +	case PCR_ARCH_31:
+> +		cap = H_GUEST_CAP_POWER10;
+Though CONFIG_CC_IMPLICIT_FALLTHROUGH and '-Wimplicit-fallthrough'
+doesnt explicitly flag this usage, please consider using the
+'fallthrough;' keyword here.
 
+However you probably dont want this switch-case to fallthrough so please
+use a 'break' instead.
 
-> 
-> Otherwise,
-> 
-> Reviewed-by: Michael Kelley <mhklinux@outlook.com>
-> 
-> > Now that the driver core can properly handle constant struct bus_type,
-> > move the hv_bus variable to be a constant structure as well,
-> > placing it into read-only memory which can not be modified at runtime.
-> > 
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-> > ---
-> >  drivers/hv/vmbus_drv.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-> > index edbb38f6956b..c4e6d9f1b510 100644
-> > --- a/drivers/hv/vmbus_drv.c
-> > +++ b/drivers/hv/vmbus_drv.c
-> > @@ -988,7 +988,7 @@ static const struct dev_pm_ops vmbus_pm = {
-> >  };
-> > 
-> >  /* The one and only one */
-> > -static struct bus_type  hv_bus = {
-> > +static const struct bus_type  hv_bus = {
-> >  	.name =		"vmbus",
-> >  	.match =		vmbus_match,
-> >  	.shutdown =		vmbus_shutdown,
-> > 
-> > ---
-> > base-commit: ce9ecca0238b140b88f43859b211c9fdfd8e5b70
-> > change-id: 20240204-bus_cleanup-hv-2ca8a4603ebc
-> > 
-> > Best regards,
-> > --
-> > Ricardo B. Marliere <ricardo@marliere.net>
-> > 
-> 
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return cap;
+> +}
+> +
+>
+<snip>
+
+With the suggested change above
+
+Reviewed-by: Vaibhav Jain <vaibhav@linux.ibm.com>
+
+-- 
+Cheers
+~ Vaibhav
 
