@@ -1,365 +1,504 @@
-Return-Path: <linux-kernel+bounces-52907-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6104F849E22
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:29:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0FB9849E26
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:31:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D52711F230B0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:29:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C811284805
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:31:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 342872D610;
-	Mon,  5 Feb 2024 15:29:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABE6E2D638;
+	Mon,  5 Feb 2024 15:30:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="e2zE6H8z"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cD12wkue"
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B4CD2EAE6;
-	Mon,  5 Feb 2024 15:29:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8B3B2C6B6;
+	Mon,  5 Feb 2024 15:30:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707146949; cv=none; b=ejvXQOX7ZLpsuMuH39IoeH+EjfzrcC9C4M3fM8kU4pN9vdPorNIaAWI7RJJOtrgpIfPmLXBXVQmM86tYsTlU3FKNI7RLxUL7Cf8f7J31ODvH++lyfDI/Wg9iJH8aOWJ57INfzZpys6oWajjCdhSuT3cAtsC8pvJmBZlkE3AxfzQ=
+	t=1707147054; cv=none; b=XKwPRmOYADB4wrvT1iSXYb34KWG9eBzxv9n1Ze3ni11GVM9NiO5TGlTYJRuLmfhWesFvrFA9KTm3h1VmyNFesBFn2Z6sBxrb2zRWpsBSuYEoS3PFKFOoxbQ3j78/YDRrv687RY/STGBKOGJa/x5u4qI4NXdI3dtuDzrlrz+1qcI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707146949; c=relaxed/simple;
-	bh=zwMiEUy3DNM16U6Gg/D4CWCvZyrDQSqVGiYAzy6rIAo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=RSBJcTLAQe3kaKAS61oSD7iyj106REgJu6Psa2012hn2klEU8FKqWJUhxIpEJGseJyVIBpTQVXtW4g45Z8ui/dFbIlyvFL7MBh5KpPh8qM53o6QSTcvXPuaBe1uY9MRFwINhieTVafGJPtJM22RKQEHfttNus57SUanVkRC3IY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=e2zE6H8z; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707146945;
-	bh=zwMiEUy3DNM16U6Gg/D4CWCvZyrDQSqVGiYAzy6rIAo=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=e2zE6H8zQDqR2BslAuM5KgW3wOlp6GAHwypDWTARmsHMfZ+/oMDfMEddH6Ay3KDXv
-	 sr1J+qiu408YbVXiWEbr127YpHPbDOfDqHt8HO9ya1RloT1t/We23IddjUkJrZ/DBW
-	 MPzg5iSy42+vOQRteY+Bh/FDMu6Mg/qYBEbD1gFsOzbq0amT0bWBa+EkDCJnSXIZia
-	 oJteUYcjptHv9wkZYzmpMPIn1CXxmNe80V0QcIgLxVY77CvzYea9tKiGF/YLF4o+nt
-	 jLvxUsTo1GefQSCEwrL1s1Q5tv+QC1JIIQRv9gHLGPACZGYDHhfuky67IfaHzHJVJq
-	 WvyeCIjvDI7Qw==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 3606F37813E4;
-	Mon,  5 Feb 2024 15:29:04 +0000 (UTC)
-Message-ID: <f7b2475a-990e-4972-9c82-0989876fa116@collabora.com>
-Date: Mon, 5 Feb 2024 16:29:03 +0100
+	s=arc-20240116; t=1707147054; c=relaxed/simple;
+	bh=COtCgMJEEl6AiyTiI1HRpmzpK/Ws8F+wOJJua60FQBg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Y5Y23I9S1ZxjzdjwDcxnbMgYgNncLxic4w8G/haq2vnqlI7Utgh+I59T0Uner2vuxH3orOCZ/cKWzsbWolam+aTFsT/9KQPzmdxahlXeGOIipjROSRJIdZU1VhJSqGPHv2yeMpw8NfbWoxhb05LddRZBbpE6IhaZwHBs1UzGjQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cD12wkue; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40ef64d8955so41605175e9.3;
+        Mon, 05 Feb 2024 07:30:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707147051; x=1707751851; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZMOpOFN4+Mt35RaaklYtQdrfdXDhaK2aDTSXwocamhw=;
+        b=cD12wkueHTViQNu+Biqk96XMfuk8t+6wvZVfi6ISO/zEKQdkqyVdm46jR8WSWhOD1c
+         SI6kgfbUhd/v16b7zfSsMmv+7bH5yXZCBfUpt7iTohhndQsbvSbn0npsm+bLw/lZoaA8
+         5b15udp1Er9fR3Xc5XWBId/0/VYu+JEPM73iCCDm0HTBcSPM+q1T0gyIorHLGnDgI2k7
+         ybbxp+C7z5CSojBbFLX0O2tr0ZMM5Nrmgb6geEo8TY1SZivFUuam9hnlHTSmWpUrWWRD
+         4GvGRUcXOC41MDH9CljV+0qur5Sp5vTusWYINFXB+AGwKStvLPAmekPfp8d8VCzGv6EC
+         BgRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707147051; x=1707751851;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZMOpOFN4+Mt35RaaklYtQdrfdXDhaK2aDTSXwocamhw=;
+        b=o6FzlAMnpH9uUsPgJXBz8Tl+ETStnW+HiKr2KydPr5Bdnb4FPGy1K4ztkphitRmhKl
+         h/ZWgq1OcwDzF6w+LKEv8vIFtsd+U30xxCL78njAuf+IFzTpLPb9P+l/o6PGu/jABVEg
+         WTu9NK79Vn0PhhVIg4kyUIyBIQ3OQ3yNZeqXfKN5fHOBToCBkkmaWldSBLmBGkEcRLSP
+         qCZ5MNysByPcisNByPM/ogsmhJAAkVOu7z88+Dd5ukwVdtWprq0SaTz0QZoVrhrJgCvv
+         4tnUJHsJ+BS3irvu7aJR9/XGbBU0U/P+gc9y7gvUqxaKqlB2wUTGMferYbNi2korZjer
+         +bDg==
+X-Gm-Message-State: AOJu0YxptOQ6kmI38BqADgt2iVQ7Hh13awPDp9x11lF5FyDRp42wUFyo
+	yLZUSkpa8y9eBEWzMB5cUzGYAvbApbIcpwZjwmW33ALYSxVjADDu
+X-Google-Smtp-Source: AGHT+IFC+eSvbwvLZ002ngbOBji8GKUcJw5nH9j9wpY6Gedc+chnI76qLMCULegVWHZdTFs1ZzA9PQ==
+X-Received: by 2002:a05:600c:1990:b0:40e:f66f:1959 with SMTP id t16-20020a05600c199000b0040ef66f1959mr99040wmq.17.1707147050604;
+        Mon, 05 Feb 2024 07:30:50 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUwA7HMxEA4gThYRnXQYMyCL/TwpFT6sIB1nEU4rbKx1Rg8juOaN6Nh7GqoFjCAj/KdqitbJra7fLO6+PGtK7JKnmBx00jsKCE6bKubYqVrHGIWFeALdkjSMdVRZ/B67HUctsWa2wo/roOyCP0vJuqytLc3QOl8hptDCO7edfghrJQ2uHC3r6ACXDT740m9j4sMD14/Naf0
+Received: from ran.advaoptical.com ([82.166.23.19])
+        by smtp.gmail.com with ESMTPSA id t18-20020a05600c199200b0040ecdd672fasm171617wmq.13.2024.02.05.07.30.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 07:30:50 -0800 (PST)
+From: Sagi Maimon <maimon.sagi@gmail.com>
+To: richardcochran@gmail.com,
+	jonathan.lemon@gmail.com,
+	vadfed@fb.com
+Cc: linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	kuba@kernel.org,
+	Sagi Maimon <maimon.sagi@gmail.com>
+Subject: [PATCH net-next v6] ptp: ocp: add Adva timecard support
+Date: Mon,  5 Feb 2024 17:30:46 +0200
+Message-Id: <20240205153046.3642-1-maimon.sagi@gmail.com>
+X-Mailer: git-send-email 2.26.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] phy: add driver for MediaTek XFI T-PHY
-Content-Language: en-US
-To: =?UTF-8?B?Q2h1bmZlbmcgWXVuICjkupHmmKXls7Ap?= <Chunfeng.Yun@mediatek.com>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- =?UTF-8?B?U2t5TGFrZSBIdWFuZyAo6buD5ZWf5r6kKQ==?=
- <SkyLake.Huang@mediatek.com>, "kishon@kernel.org" <kishon@kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
- "conor+dt@kernel.org" <conor+dt@kernel.org>,
- "robh@kernel.org" <robh@kernel.org>,
- =?UTF-8?B?QmMtYm9jdW4gQ2hlbiAo6Zmz5p+P5p2RKQ==?=
- <bc-bocun.chen@mediatek.com>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
- "vkoul@kernel.org" <vkoul@kernel.org>,
- "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
- "dqfext@gmail.com" <dqfext@gmail.com>,
- "daniel@makrotopia.org" <daniel@makrotopia.org>,
- "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>
-References: <702afb0c1246d95c90b22e57105304028bdd3083.1706823233.git.daniel@makrotopia.org>
- <dd6b40ea1f7f8459a9a2cfe7fa60c1108332ade6.1706823233.git.daniel@makrotopia.org>
- <a2641a62703bcd33115689544001cdbd26e84bbb.camel@mediatek.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <a2641a62703bcd33115689544001cdbd26e84bbb.camel@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Il 04/02/24 07:29, Chunfeng Yun (云春峰) ha scritto:
-> On Thu, 2024-02-01 at 21:53 +0000, Daniel Golle wrote:
->>   	
->> External email : Please do not click links or open attachments until
->> you have verified the sender or the content.
->>   Add driver for MediaTek's XFI T-PHY, 10 Gigabit/s Ethernet SerDes
->> PHY
->> which can be found in the MT7988 SoC.
->>
->> The PHY can operates only in PHY_MODE_ETHERNET, the submode is one of
->> PHY_INTERFACE_MODE_* corresponding to the supported modes:
->>
->>   * USXGMII                 \
->>   * 10GBase-R                }- USXGMII PCS - XGDM  \
->>   * 5GBase-R                /                        \
->>                                                       }- Ethernet MAC
->>   * 2500Base-X              \                        /
->>   * 1000Base-X               }- LynxI PCS - GDM     /
->>   * Cisco SGMII (MAC side)  /
->>
->> In order to work-around a performance issue present on the first of
->> two XFI T-PHYs present in MT7988, special tuning is applied which can
->> be
->> selected by adding the 'mediatek,usxgmii-performance-errata' property
->> to
->> the device tree node.
->>
->> There is no documentation for most registers used for the
->> analog/tuning part, however, most of the registers have been
->> partially
->> reverse-engineered from MediaTek's SDK implementation (an opaque
->> sequence of 32-bit register writes) and descriptions for all relevant
->> digital registers and bits such as resets and muxes have been
->> supplied
->> by MediaTek.
->>
->> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
->> ---
->>   MAINTAINERS                             |   1 +
->>   drivers/phy/mediatek/Kconfig            |  12 +
->>   drivers/phy/mediatek/Makefile           |   1 +
->>   drivers/phy/mediatek/phy-mtk-xfi-tphy.c | 392
->> ++++++++++++++++++++++++
->>   4 files changed, 406 insertions(+)
->>   create mode 100644 drivers/phy/mediatek/phy-mtk-xfi-tphy.c
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 52769631bdb1a..52e4192470bd9 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -13715,6 +13715,7 @@ L:netdev@vger.kernel.org
->>   S:Maintained
->>   F:drivers/net/phy/mediatek-ge-soc.c
->>   F:drivers/net/phy/mediatek-ge.c
->> +F:drivers/phy/mediatek/phy-mtk-xfi-tphy.c
->>   
->>   MEDIATEK I2C CONTROLLER DRIVER
->>   M:Qii Wang <qii.wang@mediatek.com>
->> diff --git a/drivers/phy/mediatek/Kconfig
->> b/drivers/phy/mediatek/Kconfig
->> index 3125ecb5d119f..5161d130c7f8b 100644
->> --- a/drivers/phy/mediatek/Kconfig
->> +++ b/drivers/phy/mediatek/Kconfig
->> @@ -13,6 +13,18 @@ config PHY_MTK_PCIE
->>     callback for PCIe GEN3 port, it supports software efuse
->>     initialization.
->>   
->> +config PHY_MTK_XFI_TPHY
->> +tristate "MediaTek XFI T-PHY Driver"
->> +depends on ARCH_MEDIATEK || COMPILE_TEST
->> +depends on OF && OF_ADDRESS
->> +depends on HAS_IOMEM
->> +select GENERIC_PHY
->> +help
->> +  Say 'Y' here to add support for MediaTek XFI T-PHY driver.
->> +  The driver provides access to the Ethernet SerDes T-PHY supporting
->> +  1GE and 2.5GE modes via the LynxI PCS, and 5GE and 10GE modes
->> +  via the USXGMII PCS found in MediaTek SoCs with 10G Ethernet.
->> +
->>   config PHY_MTK_TPHY
->>   tristate "MediaTek T-PHY Driver"
->>   depends on ARCH_MEDIATEK || COMPILE_TEST
->> diff --git a/drivers/phy/mediatek/Makefile
->> b/drivers/phy/mediatek/Makefile
->> index c9a50395533eb..fa7217178e7f4 100644
->> --- a/drivers/phy/mediatek/Makefile
->> +++ b/drivers/phy/mediatek/Makefile
->> @@ -8,6 +8,7 @@ obj-$(CONFIG_PHY_MTK_PCIE)+= phy-mtk-pcie.o
->>   obj-$(CONFIG_PHY_MTK_TPHY)+= phy-mtk-tphy.o
->>   obj-$(CONFIG_PHY_MTK_UFS)+= phy-mtk-ufs.o
->>   obj-$(CONFIG_PHY_MTK_XSPHY)+= phy-mtk-xsphy.o
->> +obj-$(CONFIG_PHY_MTK_XFI_TPHY)+= phy-mtk-xfi-tphy.o
->>   
->>   phy-mtk-hdmi-drv-y:= phy-mtk-hdmi.o
->>   phy-mtk-hdmi-drv-y+= phy-mtk-hdmi-mt2701.o
->> diff --git a/drivers/phy/mediatek/phy-mtk-xfi-tphy.c
->> b/drivers/phy/mediatek/phy-mtk-xfi-tphy.c
->> new file mode 100644
->> index 0000000000000..d50e6320860e5
->> --- /dev/null
->> +++ b/drivers/phy/mediatek/phy-mtk-xfi-tphy.c
->> @@ -0,0 +1,392 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +/* MediaTek 10GE SerDes PHY driver
->> + *
->> + * Copyright (c) 2024 Daniel Golle <daniel@makrotopia.org>
->> + *                    Bc-bocun Chen <bc-bocun.chen@mediatek.com>
->> + * based on mtk_usxgmii.c found in MediaTek's SDK released under
->> GPL-2.0
->> + * Copyright (c) 2022 MediaTek Inc.
->> + * Author: Henry Yen <henry.yen@mediatek.com>
->> + */
->> +
->> +#include <linux/module.h>
->> +#include <linux/device.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/of.h>
->> +#include <linux/io.h>
->> +#include <linux/clk.h>
->> +#include <linux/reset.h>
->> +#include <linux/phy.h>
->> +#include <linux/phy/phy.h>
->> +
->> +#define MTK_XFI_TPHY_NUM_CLOCKS2
->> +
->> +#define REG_DIG_GLB_700x0070
->> +#define  XTP_PCS_RX_EQ_IN_PROGRESS(x)FIELD_PREP(GENMASK(25, 24),
->> (x))
->> +#define  XTP_PCS_MODE_MASKGENMASK(17, 16)
->> +#define  XTP_PCS_MODE(x)FIELD_PREP(GENMASK(17, 16), (x))
->> +#define  XTP_PCS_RST_BBIT(15)
->> +#define  XTP_FRC_PCS_RST_BBIT(14)
->> +#define  XTP_PCS_PWD_SYNC_MASKGENMASK(13, 12)
->> +#define  XTP_PCS_PWD_SYNC(x)FIELD_PREP(XTP_PCS_PWD_SYNC_MASK, (x))
->> +#define  XTP_PCS_PWD_ASYNC_MASKGENMASK(11, 10)
->> +#define  XTP_PCS_PWD_ASYNC(x)FIELD_PREP(XTP_PCS_PWD_ASYNC_MASK, (x))
->> +#define  XTP_FRC_PCS_PWD_ASYNCBIT(8)
->> +#define  XTP_PCS_UPDTBIT(4)
->> +#define  XTP_PCS_IN_FR_RGBIT(0)
->> +
->> +#define REG_DIG_GLB_F40x00f4
->> +#define  XFI_DPHY_PCS_SELBIT(0)
->> +#define   XFI_DPHY_PCS_SEL_SGMIIFIELD_PREP(XFI_DPHY_PCS_SEL, 1)
->> +#define   XFI_DPHY_PCS_SEL_USXGMIIFIELD_PREP(XFI_DPHY_PCS_SEL, 0)
->> +#define  XFI_DPHY_AD_SGDT_FRC_ENBIT(5)
->> +
->> +#define REG_DIG_LN_TRX_400x3040
->> +#define  XTP_LN_FRC_TX_DATA_ENBIT(29)
->> +#define  XTP_LN_TX_DATA_ENBIT(28)
->> +
->> +#define REG_DIG_LN_TRX_B00x30b0
->> +#define  XTP_LN_FRC_TX_MACCK_ENBIT(5)
->> +#define  XTP_LN_TX_MACCK_ENBIT(4)
->> +
->> +#define REG_ANA_GLB_D00x90d0
->> +#define  XTP_GLB_USXGMII_SEL_MASKGENMASK(3, 1)
->> +#define  XTP_GLB_USXGMII_SEL(x)FIELD_PREP(GENMASK(3, 1), (x))
->> +#define  XTP_GLB_USXGMII_ENBIT(0)
->> +
->> +struct mtk_xfi_tphy {
->> +void __iomem*base;
->> +struct device*dev;
->> +struct reset_control*reset;
->> +struct clk_bulk_dataclocks[MTK_XFI_TPHY_NUM_CLOCKS];
->> +boolda_war;
->> +};
->> +
->> +static void mtk_xfi_tphy_write(struct mtk_xfi_tphy *xfi_tphy, u16
->> reg,
->> +       u32 value)
->> +{
->> +iowrite32(value, xfi_tphy->base + reg);
->> +}
->> +
->> +static void mtk_xfi_tphy_rmw(struct mtk_xfi_tphy *xfi_tphy, u16 reg,
->> +     u32 clr, u32 set)
->> +{
->> +u32 val;
->> +
->> +val = ioread32(xfi_tphy->base + reg);
->> +val &= ~clr;
->> +val |= set;
->> +iowrite32(val, xfi_tphy->base + reg);
->> +}
->> +
->> +static void mtk_xfi_tphy_set(struct mtk_xfi_tphy *xfi_tphy, u16 reg,
->> +     u32 set)
->> +{
->> +mtk_xfi_tphy_rmw(xfi_tphy, reg, 0, set);
->> +}
->> +
->> +static void mtk_xfi_tphy_clear(struct mtk_xfi_tphy *xfi_tphy, u16
->> reg,
->> +       u32 clr)
->> +{
->> +mtk_xfi_tphy_rmw(xfi_tphy, reg, clr, 0);
->> +}
-> 
-> Helpers defined in phy-mtk-io.h can be used instead?
-> 
->> +
->> +static void mtk_xfi_tphy_setup(struct mtk_xfi_tphy *xfi_tphy,
->> +       phy_interface_t interface)
->> +{
->> +bool is_2p5g = (interface == PHY_INTERFACE_MODE_2500BASEX);
->> +bool is_1g = (interface == PHY_INTERFACE_MODE_1000BASEX ||
->> +      interface == PHY_INTERFACE_MODE_SGMII);
->> +bool is_10g = (interface == PHY_INTERFACE_MODE_10GBASER ||
->> +       interface == PHY_INTERFACE_MODE_USXGMII);
->> +bool is_5g = (interface == PHY_INTERFACE_MODE_5GBASER);
->> +bool is_xgmii = (is_10g || is_5g);
->> +
->> +dev_dbg(xfi_tphy->dev, "setting up for mode %s\n",
->> phy_modes(interface));
->> +
->> +/* Setup PLL setting */
->> +mtk_xfi_tphy_rmw(xfi_tphy, 0x9024, 0x100000, is_10g ? 0x0 :
->> 0x100000);
->> +mtk_xfi_tphy_rmw(xfi_tphy, 0x2020, 0x202000, is_5g ? 0x202000 :
->> 0x0);
->> +mtk_xfi_tphy_rmw(xfi_tphy, 0x2030, 0x500, is_1g ? 0x0 : 0x500);
->> +mtk_xfi_tphy_rmw(xfi_tphy, 0x2034, 0xa00, is_1g ? 0x0 : 0xa00);
->> +mtk_xfi_tphy_rmw(xfi_tphy, 0x2040, 0x340000, is_1g ? 0x200000 :
->> +     0x140000);
->> +
->> +/* Setup RXFE BW setting */
->> +mtk_xfi_tphy_rmw(xfi_tphy, 0x50f0, 0xc10, is_1g ? 0x410 :
->> +  is_5g ? 0x800 : 0x400);
->> +mtk_xfi_tphy_rmw(xfi_tphy, 0x50e0, 0x4000, is_5g ? 0x0 : 0x4000);
->> +
->> +/* Setup RX CDR setting */
->> +mtk_xfi_tphy_rmw(xfi_tphy, 0x506c, 0x30000, is_5g ? 0x0 : 0x30000);
->> +mtk_xfi_tphy_rmw(xfi_tphy, 0x5070, 0x670000, is_5g ? 0x620000 :
->> 0x50000);
->> +mtk_xfi_tphy_rmw(xfi_tphy, 0x5074, 0x180000, is_5g ? 0x180000 :
->> 0x0);
->> +mtk_xfi_tphy_rmw(xfi_tphy, 0x5078, 0xf000400, is_5g ? 0x8000000 :
->> +      0x7000400);
->> +mtk_xfi_tphy_rmw(xfi_tphy, 0x507c, 0x5000500, is_5g ? 0x4000400 :
->> +      0x1000100);
->> +mtk_xfi_tphy_rmw(xfi_tphy, 0x5080, 0x1410, is_1g ? 0x400 :
->> +   is_5g ? 0x1010 : 0x0);
->> +mtk_xfi_tphy_rmw(xfi_tphy, 0x5084, 0x30300, is_1g ? 0x30300 :
->> +    is_5g ? 0x30100 :
->> +    0x100);
->> +mtk_xfi_tphy_rmw(xfi_tphy, 0x5088, 0x60200, is_1g ? 0x20200 :
->> + is_5g ? 0x40000 :
->> + 0x20000);
->> +
->> +/* Setting RXFE adaptation range setting */
->> +mtk_xfi_tphy_rmw(xfi_tphy, 0x50e4, 0xc0000, is_5g ? 0x0 : 0xc0000);
->> +mtk_xfi_tphy_rmw(xfi_tphy, 0x50e8, 0x40000, is_5g ? 0x0 : 0x40000);
->> +mtk_xfi_tphy_rmw(xfi_tphy, 0x50ec, 0xa00, is_1g ? 0x200 : 0x800);
->> +mtk_xfi_tphy_rmw(xfi_tphy, 0x50a8, 0xee0000, is_5g ? 0x800000 :
->> +     0x6e0000);
->> +mtk_xfi_tphy_rmw(xfi_tphy, 0x6004, 0x190000, is_5g ? 0x0 :
->> 0x190000);
->> +if (is_10g)
->> +mtk_xfi_tphy_write(xfi_tphy, 0x00f8, 0x01423342);
->> +else if (is_5g)
->> +mtk_xfi_tphy_write(xfi_tphy, 0x00f8, 0x00a132a1);
->> +else if (is_2p5g)
->> +mtk_xfi_tphy_write(xfi_tphy, 0x00f8, 0x009c329c);
->> +else
->> +mtk_xfi_tphy_write(xfi_tphy, 0x00f8, 0x00fa32fa);
-> Still have many magic number.
-> 
+Adding support for the Adva timecard.
+The card uses different drivers to provide access to the
+firmware SPI flash (Altera based).
+Other parts of the code are the same and could be reused.
 
-There's lack of documentation, that's why Daniel has all those magic numbers there.
+Signed-off-by: Sagi Maimon <maimon.sagi@gmail.com>
+---
+ Changes since version 5:
+ - set Adva fw_tag = 3, since other tags are for other vendors.
+ 
+ drivers/ptp/ptp_ocp.c | 302 ++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 293 insertions(+), 9 deletions(-)
 
-If you can help unrolling some definitions that'd be really appreciated, as that
-would result in a cleaner driver.
-
-Cheers,
-Angelo
+diff --git a/drivers/ptp/ptp_ocp.c b/drivers/ptp/ptp_ocp.c
+index 9507681e0d12..6506cfb89aa9 100644
+--- a/drivers/ptp/ptp_ocp.c
++++ b/drivers/ptp/ptp_ocp.c
+@@ -34,6 +34,9 @@
+ #define PCI_VENDOR_ID_OROLIA			0x1ad7
+ #define PCI_DEVICE_ID_OROLIA_ARTCARD		0xa000
+ 
++#define PCI_VENDOR_ID_ADVA			0xad5a
++#define PCI_DEVICE_ID_ADVA_TIMECARD		0x0400
++
+ static struct class timecard_class = {
+ 	.name		= "timecard",
+ };
+@@ -63,6 +66,13 @@ struct ocp_reg {
+ 	u32	status_drift;
+ };
+ 
++struct ptp_ocp_servo_conf {
++	u32	servo_offset_p;
++	u32	servo_offset_i;
++	u32	servo_drift_p;
++	u32	servo_drift_i;
++};
++
+ #define OCP_CTRL_ENABLE		BIT(0)
+ #define OCP_CTRL_ADJUST_TIME	BIT(1)
+ #define OCP_CTRL_ADJUST_OFFSET	BIT(2)
+@@ -397,10 +407,14 @@ static int ptp_ocp_sma_store(struct ptp_ocp *bp, const char *buf, int sma_nr);
+ 
+ static int ptp_ocp_art_board_init(struct ptp_ocp *bp, struct ocp_resource *r);
+ 
++static int ptp_ocp_adva_board_init(struct ptp_ocp *bp, struct ocp_resource *r);
++
+ static const struct ocp_attr_group fb_timecard_groups[];
+ 
+ static const struct ocp_attr_group art_timecard_groups[];
+ 
++static const struct ocp_attr_group adva_timecard_groups[];
++
+ struct ptp_ocp_eeprom_map {
+ 	u16	off;
+ 	u16	len;
+@@ -700,6 +714,12 @@ static struct ocp_resource ocp_fb_resource[] = {
+ 	},
+ 	{
+ 		.setup = ptp_ocp_fb_board_init,
++		.extra = &(struct ptp_ocp_servo_conf) {
++			.servo_offset_p = 0x2000,
++			.servo_offset_i = 0x1000,
++			.servo_drift_p = 0,
++			.servo_drift_i = 0,
++		},
+ 	},
+ 	{ }
+ };
+@@ -831,6 +851,170 @@ static struct ocp_resource ocp_art_resource[] = {
+ 	},
+ 	{
+ 		.setup = ptp_ocp_art_board_init,
++		.extra = &(struct ptp_ocp_servo_conf) {
++			.servo_offset_p = 0x2000,
++			.servo_offset_i = 0x1000,
++			.servo_drift_p = 0,
++			.servo_drift_i = 0,
++		},
++	},
++	{ }
++};
++
++static struct ocp_resource ocp_adva_resource[] = {
++	{
++		OCP_MEM_RESOURCE(reg),
++		.offset = 0x01000000, .size = 0x10000,
++	},
++	{
++		OCP_EXT_RESOURCE(ts0),
++		.offset = 0x01010000, .size = 0x10000, .irq_vec = 1,
++		.extra = &(struct ptp_ocp_ext_info) {
++			.index = 0,
++			.irq_fcn = ptp_ocp_ts_irq,
++			.enable = ptp_ocp_ts_enable,
++		},
++	},
++	{
++		OCP_EXT_RESOURCE(ts1),
++		.offset = 0x01020000, .size = 0x10000, .irq_vec = 2,
++		.extra = &(struct ptp_ocp_ext_info) {
++			.index = 1,
++			.irq_fcn = ptp_ocp_ts_irq,
++			.enable = ptp_ocp_ts_enable,
++		},
++	},
++	{
++		OCP_EXT_RESOURCE(ts2),
++		.offset = 0x01060000, .size = 0x10000, .irq_vec = 6,
++		.extra = &(struct ptp_ocp_ext_info) {
++			.index = 2,
++			.irq_fcn = ptp_ocp_ts_irq,
++			.enable = ptp_ocp_ts_enable,
++		},
++	},
++	/* Timestamp for PHC and/or PPS generator */
++	{
++		OCP_EXT_RESOURCE(pps),
++		.offset = 0x010C0000, .size = 0x10000, .irq_vec = 0,
++		.extra = &(struct ptp_ocp_ext_info) {
++			.index = 5,
++			.irq_fcn = ptp_ocp_ts_irq,
++			.enable = ptp_ocp_ts_enable,
++		},
++	},
++	{
++		OCP_EXT_RESOURCE(signal_out[0]),
++		.offset = 0x010D0000, .size = 0x10000, .irq_vec = 11,
++		.extra = &(struct ptp_ocp_ext_info) {
++			.index = 1,
++			.irq_fcn = ptp_ocp_signal_irq,
++			.enable = ptp_ocp_signal_enable,
++		},
++	},
++	{
++		OCP_EXT_RESOURCE(signal_out[1]),
++		.offset = 0x010E0000, .size = 0x10000, .irq_vec = 12,
++		.extra = &(struct ptp_ocp_ext_info) {
++			.index = 2,
++			.irq_fcn = ptp_ocp_signal_irq,
++			.enable = ptp_ocp_signal_enable,
++		},
++	},
++	{
++		OCP_MEM_RESOURCE(pps_to_ext),
++		.offset = 0x01030000, .size = 0x10000,
++	},
++	{
++		OCP_MEM_RESOURCE(pps_to_clk),
++		.offset = 0x01040000, .size = 0x10000,
++	},
++	{
++		OCP_MEM_RESOURCE(tod),
++		.offset = 0x01050000, .size = 0x10000,
++	},
++	{
++		OCP_MEM_RESOURCE(image),
++		.offset = 0x00020000, .size = 0x1000,
++	},
++	{
++		OCP_MEM_RESOURCE(pps_select),
++		.offset = 0x00130000, .size = 0x1000,
++	},
++	{
++		OCP_MEM_RESOURCE(sma_map1),
++		.offset = 0x00140000, .size = 0x1000,
++	},
++	{
++		OCP_MEM_RESOURCE(sma_map2),
++		.offset = 0x00220000, .size = 0x1000,
++	},
++	{
++		OCP_SERIAL_RESOURCE(gnss_port),
++		.offset = 0x00160000 + 0x1000, .irq_vec = 3,
++		.extra = &(struct ptp_ocp_serial_port) {
++			.baud = 9600,
++		},
++	},
++	{
++		OCP_SERIAL_RESOURCE(mac_port),
++		.offset = 0x00180000 + 0x1000, .irq_vec = 5,
++		.extra = &(struct ptp_ocp_serial_port) {
++			.baud = 115200,
++		},
++	},
++	{
++		OCP_MEM_RESOURCE(freq_in[0]),
++		.offset = 0x01200000, .size = 0x10000,
++	},
++	{
++		OCP_MEM_RESOURCE(freq_in[1]),
++		.offset = 0x01210000, .size = 0x10000,
++	},
++	{
++		OCP_SPI_RESOURCE(spi_flash),
++		.offset = 0x00310400, .size = 0x10000, .irq_vec = 9,
++		.extra = &(struct ptp_ocp_flash_info) {
++			.name = "spi_altera", .pci_offset = 0,
++			.data_size = sizeof(struct altera_spi_platform_data),
++			.data = &(struct altera_spi_platform_data) {
++				.num_chipselect = 1,
++				.num_devices = 1,
++				.devices = &(struct spi_board_info) {
++					.modalias = "spi-nor",
++				},
++			},
++		},
++	},
++	{
++		OCP_I2C_RESOURCE(i2c_ctrl),
++		.offset = 0x150000, .size = 0x100, .irq_vec = 7,
++		.extra = &(struct ptp_ocp_i2c_info) {
++			.name = "ocores-i2c",
++			.fixed_rate = 50000000,
++			.data_size = sizeof(struct ocores_i2c_platform_data),
++			.data = &(struct ocores_i2c_platform_data) {
++				.clock_khz = 50000,
++				.bus_khz = 100,
++				.reg_io_width = 4, // 32-bit/4-byte
++				.reg_shift = 2, // 32-bit addressing
++				.num_devices = 2,
++				.devices = (struct i2c_board_info[]) {
++					{ I2C_BOARD_INFO("24c02", 0x50) },
++					{ I2C_BOARD_INFO("24mac402", 0x58),
++					 .platform_data = "mac" },
++				},
++			},
++		},
++	},
++	{
++		.setup = ptp_ocp_adva_board_init,
++		.extra = &(struct ptp_ocp_servo_conf) {
++			.servo_offset_p = 0xc000,
++			.servo_offset_i = 0x1000,
++			.servo_drift_p = 0,
++			.servo_drift_i = 0,
++		},
+ 	},
+ 	{ }
+ };
+@@ -839,6 +1023,7 @@ static const struct pci_device_id ptp_ocp_pcidev_id[] = {
+ 	{ PCI_DEVICE_DATA(FACEBOOK, TIMECARD, &ocp_fb_resource) },
+ 	{ PCI_DEVICE_DATA(CELESTICA, TIMECARD, &ocp_fb_resource) },
+ 	{ PCI_DEVICE_DATA(OROLIA, ARTCARD, &ocp_art_resource) },
++	{ PCI_DEVICE_DATA(ADVA, TIMECARD, &ocp_adva_resource) },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(pci, ptp_ocp_pcidev_id);
+@@ -917,6 +1102,30 @@ static const struct ocp_selector ptp_ocp_art_sma_out[] = {
+ 	{ }
+ };
+ 
++static const struct ocp_selector ptp_ocp_adva_sma_in[] = {
++	{ .name = "10Mhz",	.value = 0x0000,      .frequency = 10000000},
++	{ .name = "PPS1",	.value = 0x0001,      .frequency = 1 },
++	{ .name = "PPS2",	.value = 0x0002,      .frequency = 1 },
++	{ .name = "TS1",	.value = 0x0004,      .frequency = 0 },
++	{ .name = "TS2",	.value = 0x0008,      .frequency = 0 },
++	{ .name = "FREQ1",	.value = 0x0100,      .frequency = 0 },
++	{ .name = "FREQ2",	.value = 0x0200,      .frequency = 0 },
++	{ .name = "None",	.value = SMA_DISABLE, .frequency = 0 },
++	{ }
++};
++
++static const struct ocp_selector ptp_ocp_adva_sma_out[] = {
++	{ .name = "10Mhz",	.value = 0x0000,  .frequency = 10000000},
++	{ .name = "PHC",	.value = 0x0001,  .frequency = 1 },
++	{ .name = "MAC",	.value = 0x0002,  .frequency = 1 },
++	{ .name = "GNSS1",	.value = 0x0004,  .frequency = 1 },
++	{ .name = "GEN1",	.value = 0x0040 },
++	{ .name = "GEN2",	.value = 0x0080 },
++	{ .name = "GND",	.value = 0x2000 },
++	{ .name = "VCC",	.value = 0x4000 },
++	{ }
++};
++
+ struct ocp_sma_op {
+ 	const struct ocp_selector *tbl[2];
+ 	void (*init)(struct ptp_ocp *bp);
+@@ -1363,7 +1572,7 @@ ptp_ocp_estimate_pci_timing(struct ptp_ocp *bp)
+ }
+ 
+ static int
+-ptp_ocp_init_clock(struct ptp_ocp *bp)
++ptp_ocp_init_clock(struct ptp_ocp *bp, struct ptp_ocp_servo_conf *servo_conf)
+ {
+ 	struct timespec64 ts;
+ 	u32 ctrl;
+@@ -1371,12 +1580,11 @@ ptp_ocp_init_clock(struct ptp_ocp *bp)
+ 	ctrl = OCP_CTRL_ENABLE;
+ 	iowrite32(ctrl, &bp->reg->ctrl);
+ 
+-	/* NO DRIFT Correction */
+-	/* offset_p:i 1/8, offset_i: 1/16, drift_p: 0, drift_i: 0 */
+-	iowrite32(0x2000, &bp->reg->servo_offset_p);
+-	iowrite32(0x1000, &bp->reg->servo_offset_i);
+-	iowrite32(0,	  &bp->reg->servo_drift_p);
+-	iowrite32(0,	  &bp->reg->servo_drift_i);
++	/* servo configuration */
++	iowrite32(servo_conf->servo_offset_p, &bp->reg->servo_offset_p);
++	iowrite32(servo_conf->servo_offset_i, &bp->reg->servo_offset_i);
++	iowrite32(servo_conf->servo_drift_p, &bp->reg->servo_drift_p);
++	iowrite32(servo_conf->servo_drift_p, &bp->reg->servo_drift_i);
+ 
+ 	/* latch servo values */
+ 	ctrl |= OCP_CTRL_ADJUST_SERVO;
+@@ -2348,6 +2556,14 @@ static const struct ocp_sma_op ocp_fb_sma_op = {
+ 	.set_output	= ptp_ocp_sma_fb_set_output,
+ };
+ 
++static const struct ocp_sma_op ocp_adva_sma_op = {
++	.tbl		= { ptp_ocp_adva_sma_in, ptp_ocp_adva_sma_out },
++	.init		= ptp_ocp_sma_fb_init,
++	.get		= ptp_ocp_sma_fb_get,
++	.set_inputs	= ptp_ocp_sma_fb_set_inputs,
++	.set_output	= ptp_ocp_sma_fb_set_output,
++};
++
+ static int
+ ptp_ocp_set_pins(struct ptp_ocp *bp)
+ {
+@@ -2427,7 +2643,7 @@ ptp_ocp_fb_board_init(struct ptp_ocp *bp, struct ocp_resource *r)
+ 		return err;
+ 	ptp_ocp_sma_init(bp);
+ 
+-	return ptp_ocp_init_clock(bp);
++	return ptp_ocp_init_clock(bp, r->extra);
+ }
+ 
+ static bool
+@@ -2589,7 +2805,44 @@ ptp_ocp_art_board_init(struct ptp_ocp *bp, struct ocp_resource *r)
+ 	if (err)
+ 		return err;
+ 
+-	return ptp_ocp_init_clock(bp);
++	return ptp_ocp_init_clock(bp, r->extra);
++}
++
++/* ADVA specific board initializers; last "resource" registered. */
++static int
++ptp_ocp_adva_board_init(struct ptp_ocp *bp, struct ocp_resource *r)
++{
++	int err;
++	u32 version;
++
++	bp->flash_start = 0xA00000;
++	bp->eeprom_map = fb_eeprom_map;
++	bp->sma_op = &ocp_adva_sma_op;
++
++	version = ioread32(&bp->image->version);
++	/* if lower 16 bits are empty, this is the fw loader. */
++	if ((version & 0xffff) == 0) {
++		version = version >> 16;
++		bp->fw_loader = true;
++	}
++	bp->fw_tag = 3;
++	bp->fw_version = version & 0xffff;
++	bp->fw_cap = OCP_CAP_BASIC | OCP_CAP_SIGNAL | OCP_CAP_FREQ;
++
++	ptp_ocp_tod_init(bp);
++	ptp_ocp_nmea_out_init(bp);
++	ptp_ocp_signal_init(bp);
++
++	err = ptp_ocp_attr_group_add(bp, adva_timecard_groups);
++	if (err)
++		return err;
++
++	err = ptp_ocp_set_pins(bp);
++	if (err)
++		return err;
++	ptp_ocp_sma_init(bp);
++
++	return ptp_ocp_init_clock(bp, r->extra);
+ }
+ 
+ static ssize_t
+@@ -3564,6 +3817,37 @@ static const struct ocp_attr_group art_timecard_groups[] = {
+ 	{ },
+ };
+ 
++static struct attribute *adva_timecard_attrs[] = {
++	&dev_attr_serialnum.attr,
++	&dev_attr_gnss_sync.attr,
++	&dev_attr_clock_source.attr,
++	&dev_attr_available_clock_sources.attr,
++	&dev_attr_sma1.attr,
++	&dev_attr_sma2.attr,
++	&dev_attr_sma3.attr,
++	&dev_attr_sma4.attr,
++	&dev_attr_available_sma_inputs.attr,
++	&dev_attr_available_sma_outputs.attr,
++	&dev_attr_clock_status_drift.attr,
++	&dev_attr_clock_status_offset.attr,
++	&dev_attr_ts_window_adjust.attr,
++	&dev_attr_tod_correction.attr,
++	NULL,
++};
++
++static const struct attribute_group adva_timecard_group = {
++	.attrs = adva_timecard_attrs,
++};
++
++static const struct ocp_attr_group adva_timecard_groups[] = {
++	{ .cap = OCP_CAP_BASIC,	    .group = &adva_timecard_group },
++	{ .cap = OCP_CAP_SIGNAL,    .group = &fb_timecard_signal0_group },
++	{ .cap = OCP_CAP_SIGNAL,    .group = &fb_timecard_signal1_group },
++	{ .cap = OCP_CAP_FREQ,	    .group = &fb_timecard_freq0_group },
++	{ .cap = OCP_CAP_FREQ,	    .group = &fb_timecard_freq1_group },
++	{ },
++};
++
+ static void
+ gpio_input_map(char *buf, struct ptp_ocp *bp, u16 map[][2], u16 bit,
+ 	       const char *def)
+-- 
+2.26.3
 
 
