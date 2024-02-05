@@ -1,83 +1,74 @@
-Return-Path: <linux-kernel+bounces-52353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D92084970B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:53:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 985E984970D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:54:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9A5A1C22481
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:53:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53ED228D0E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:54:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E88A112E71;
-	Mon,  5 Feb 2024 09:53:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A3D0134B1;
+	Mon,  5 Feb 2024 09:54:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BbOG8hLt"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Zm/eVhkT"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73B44134C6;
-	Mon,  5 Feb 2024 09:53:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C785A134A8
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 09:53:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707126810; cv=none; b=TXDvvt0LOZz8bkprlZzmRCQjXDHT0/g37PpzTUqOA+T91SHnVuBptd1f0qVfYV1A6AZGRiH0SF8pI53/3h4lYcX/d9RbTogBJ7u9B3m21lpTxPedXUeKN9bK9FmUxv6ipNCivYP0HPBw6rPvbmJTFpnaOG5BDIfUC37OyFN0+yg=
+	t=1707126841; cv=none; b=LadCb3jN8zBEJ79Piijlc4L280eXWw6PBZ8zzEVaXsjHBcxW5ZmciI7JKSaRpUJDgjWZRFw22MChYd72Bd/cEfE80cmK1HHuXFu5o3LW5XlS+itYup1vSoSfjC/s26N9CGZdmERgp07iFblKEUUqa9PXSXJQ/FringoLJxxxEh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707126810; c=relaxed/simple;
-	bh=qzWq2fEmrI0y52InyhdcUfWfRevTQvm9xcPd55lTSPM=;
+	s=arc-20240116; t=1707126841; c=relaxed/simple;
+	bh=9BTY2mhrviUVL/AYXjnpvkCacHDAz83bGYR0WxWH1B0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b+scZrqTiHtCDt/yXYFyM3Yi6/QmGgY5Z9HBfdKmAMAttLUFJ8TcG40IPMp6A8kXsmUWbDmHCyf2orzPAiqD++Wdgt5TDDN+T7pEtcxZ2XcSberW8luRyhPPxMKhy+UwBe6/Dq8YCP0wA1XzlCx4yY+EqN9+0IouzPBnEDOct9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BbOG8hLt; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a2f79e79f0cso566687366b.2;
-        Mon, 05 Feb 2024 01:53:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707126806; x=1707731606; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KVR1d4N0MAmwAVoqQZoMPRejFBb2H9WAFtXUDQ1yD9E=;
-        b=BbOG8hLt5fPuxdhwdb3WBze8kgOV+ReUfM4JC4yFPvx7gIoXiLgVFIsEk7JgygPg/y
-         9gEZ2a+NxziUQhX8+uS0KI+WeBJszJcRSE2wyp6qSDtIhkVNCh94whW/TxmDmdXTwh5k
-         yFa7CZqr3eOnJ4JayuS5gbeiYf2S+egXpzr9GvyOKtendOhMmbnoi9BQKLjYNQeRag7u
-         N8bXWCvpcyp67QGLrDzzaMxGbZOa303oklfs3ZvAhrQdGS2jqYRu36GGSr+/4bw4B8Lg
-         WTMA1XiAsefCDYM9rvnTrAsJnPN37cApyI3Aqg6DAcgMN1HXWYsOr+j7ROTd0Cf84VDZ
-         ShNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707126806; x=1707731606;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KVR1d4N0MAmwAVoqQZoMPRejFBb2H9WAFtXUDQ1yD9E=;
-        b=RK985XY96Lg4kEiP/U+dQy9h/jehOY101BfwfEsq09cdQrS89Rt7qtFSEw31Yl2Uh0
-         Qfs7CbYOCsCcrnrfy3pvh5Xzbi+Fa47fFiGDtmg2IJ4nHzIvhzpksWiLnyYiDr0cgMFN
-         9K2di2L6KR3itZrpcyId8/0gz0Vz+ZDU4baXBOSMez8F00GFLAoGPzQFko4RcCw3VaUk
-         LrnaHMJmomjjr+DM+a8YGn/t9JYb5Dz/tR3jEcgaFdm1hFWMs2xwJ+PAr9ji6S63eNG7
-         d6L272ouowktrAaAUg4m55kBb1SeeN1I3houcYQ2DokCSWLtYA4mVG8nHeSKmpWA3m/6
-         1ZMA==
-X-Gm-Message-State: AOJu0Yz9Li2eYqo2IYaa8fy0sWggBk+yf7ZTxVjGEHhQKwoouwS+diCT
-	zvbeYApRtCcNFTzsNzlWKPnhRnHco/ePecTCfKk3Puz5IdcxszMq
-X-Google-Smtp-Source: AGHT+IHEJNj6ITyaNW2HKGk+p4SYNl7jGHN6VgcEs2G07eq6r+uN368VL70WRnSaA0uK7JJipeYiKg==
-X-Received: by 2002:a17:906:8309:b0:a37:b2e6:cf65 with SMTP id j9-20020a170906830900b00a37b2e6cf65mr1879217ejx.52.1707126806411;
-        Mon, 05 Feb 2024 01:53:26 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCX7k6NLnblNcyc7fQ9YFcgOWMe2KUTVWvxSmSfu0qdx4ejn58XMDppo3lUAVeZgFWmlSWsapTeOkg0EvaG6lYRULh3YKDnqLxaU2Kd6rcnZbQv0C6LlaTlbym9haj1BBKMh6Ngs0PqBUsT5y6IqAhxCW7cot5gRQaY0LVb7a0kzCH/9M2E2h3gLO4PKH+iBvunHwx0hHtjabkyRPVSM31N2dbg+cg5F5hUoHA==
-Received: from debian ([93.184.186.109])
-        by smtp.gmail.com with ESMTPSA id v8-20020a170906488800b00a37dcf17d3asm416088ejq.174.2024.02.05.01.53.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 01:53:25 -0800 (PST)
-Date: Mon, 5 Feb 2024 10:53:23 +0100
-From: Dimitri Fedrau <dima.fedrau@gmail.com>
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Jonathan Cameron <jic23@kernel.org>,
-	Javier Carrasco <javier.carrasco.cruz@gmail.com>,
-	Li peiyu <579lpy@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>,
-	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] iio: humidity: hdc3020: add threshold events support
-Message-ID: <20240205095323.GA2323766@debian>
-References: <20240204103710.19212-1-dima.fedrau@gmail.com>
- <20240204144347.7f0eb822@jic23-huawei>
- <20240205070421.GA2264419@debian>
- <20240205093349.00003e10@Huawei.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=S+4vzjvc1fkMKXn9NOdC9LX5RzuT7UpKLTVuF4e2YvsSdnb8YWanLCTGDbDCFZHRqQL3OjjRzMPnPZHIJRD66Qz72KzrhoB6V2Ul2b8zj2x6HibTOrgE3LlTaiE06N4Blh32IWygYGZJl6AYKNUHrwfSb0o4O1tRsYwVlisjS4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Zm/eVhkT; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707126838;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=L40x9EmC//Z/IURxbr1HiKYTbhCONWsaujp5SiZFte0=;
+	b=Zm/eVhkTHO7fU14/sXBupnmtIWr4h1RhaHPPtPUYjtAkRmecQAvoo59oGxoMh3bYarTuof
+	v8EI6/oKkpcq3eio84NEfTtyJuegNp1hFR34cvFHKyuDL4NHKqGSQCNmQkn5z7riqxF85P
+	IIFM4uJ74MBkXE1Ws5yTrr41b3lhSSw=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-49-JhF2NxylPlyvXTa0o4_Bkg-1; Mon, 05 Feb 2024 04:53:55 -0500
+X-MC-Unique: JhF2NxylPlyvXTa0o4_Bkg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0897A1065221;
+	Mon,  5 Feb 2024 09:53:55 +0000 (UTC)
+Received: from fedora (unknown [10.72.116.6])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 5CE813C2E;
+	Mon,  5 Feb 2024 09:53:49 +0000 (UTC)
+Date: Mon, 5 Feb 2024 17:53:45 +0800
+From: Ming Lei <ming.lei@redhat.com>
+To: Dave Chinner <david@fromorbit.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	David Hildenbrand <david@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Don Dutile <ddutile@redhat.com>, Rafael Aquini <raquini@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>
+Subject: Re: [PATCH] mm/madvise: set ra_pages as device max request size
+ during ADV_POPULATE_READ
+Message-ID: <ZcCwKc1k/W5xSsGK@fedora>
+References: <20240202022029.1903629-1-ming.lei@redhat.com>
+ <ZcAfF18OM2kqKsBe@dread.disaster.area>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,108 +77,109 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240205093349.00003e10@Huawei.com>
+In-Reply-To: <ZcAfF18OM2kqKsBe@dread.disaster.area>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-Am Mon, Feb 05, 2024 at 09:33:49AM +0000 schrieb Jonathan Cameron:
-> > > >  static const u8 HDC3020_S_AUTO_10HZ_MOD0[2] = { 0x27, 0x37 };
-> > > >  
-> > > > +static const u8 HDC3020_S_STATUS[2] = { 0x30, 0x41 };
-> > > > +
-> > > >  static const u8 HDC3020_EXIT_AUTO[2] = { 0x30, 0x93 };
-> > > >  
-> > > > +static const u8 HDC3020_S_T_RH_THRESH_LOW[2] = { 0x61, 0x00 };  
-> > > 
-> > > Ah. missed this in original driver, but this use of capitals for
-> > > non #defines is really confusing and we should aim to clean that
-> > > up.
-> > >  
-> > Could use small letters instead.
+On Mon, Feb 05, 2024 at 10:34:47AM +1100, Dave Chinner wrote:
+> On Fri, Feb 02, 2024 at 10:20:29AM +0800, Ming Lei wrote:
+> > madvise(MADV_POPULATE_READ) tries to populate all page tables in the
+> > specific range, so it is usually sequential IO if VMA is backed by
+> > file.
+> > 
+> > Set ra_pages as device max request size for the involved readahead in
+> > the ADV_POPULATE_READ, this way reduces latency of madvise(MADV_POPULATE_READ)
+> > to 1/10 when running madvise(MADV_POPULATE_READ) over one 1GB file with
+> > usual(default) 128KB of read_ahead_kb.
+> > 
+> > Cc: David Hildenbrand <david@redhat.com>
+> > Cc: Matthew Wilcox <willy@infradead.org>
+> > Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> > Cc: Christian Brauner <brauner@kernel.org>
+> > Cc: Don Dutile <ddutile@redhat.com>
+> > Cc: Rafael Aquini <raquini@redhat.com>
+> > Cc: Dave Chinner <david@fromorbit.com>
+> > Cc: Mike Snitzer <snitzer@kernel.org>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Signed-off-by: Ming Lei <ming.lei@redhat.com>
+> > ---
+> >  mm/madvise.c | 52 +++++++++++++++++++++++++++++++++++++++++++++++++++-
+> >  1 file changed, 51 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/mm/madvise.c b/mm/madvise.c
+> > index 912155a94ed5..db5452c8abdd 100644
+> > --- a/mm/madvise.c
+> > +++ b/mm/madvise.c
+> > @@ -900,6 +900,37 @@ static long madvise_dontneed_free(struct vm_area_struct *vma,
+> >  		return -EINVAL;
+> >  }
+> >  
+> > +static void madvise_restore_ra_win(struct file **file, unsigned int ra_pages)
+> > +{
+> > +	if (*file) {
+> > +		struct file *f = *file;
+> > +
+> > +		f->f_ra.ra_pages = ra_pages;
+> > +		fput(f);
+> > +		*file = NULL;
+> > +	}
+> > +}
+> > +
+> > +static struct file *madvise_override_ra_win(struct file *f,
+> > +		unsigned long start, unsigned long end,
+> > +		unsigned int *old_ra_pages)
+> > +{
+> > +	unsigned int io_pages;
+> > +
+> > +	if (!f || !f->f_mapping || !f->f_mapping->host)
+> > +		return NULL;
+> > +
+> > +	io_pages = inode_to_bdi(f->f_mapping->host)->io_pages;
+> > +	if (((end - start) >> PAGE_SHIFT) < io_pages)
+> > +		return NULL;
+> > +
+> > +	f = get_file(f);
+> > +	*old_ra_pages = f->f_ra.ra_pages;
+> > +	f->f_ra.ra_pages = io_pages;
+> > +
+> > +	return f;
+> > +}
 > 
-> That would avoid any confusion.
-> 
-> > 
-> > > As I mention below, I'm unconvinced that it makes sense to handle
-> > > these as pairs.
-> > >  
-> > For the threshold I could convert it as it is for the heater registers:
-> > 
-> > #define HDC3020_S_T_RH_THRESH_MSB	0x61
-> > #define HDC3020_S_T_RH_THRESH_LOW	0x00
-> > #define HDC3020_S_T_RH_THRESH_LOW_CLR	0x0B
-> > #define HDC3020_S_T_RH_THRESH_HIGH_CLR	0x16
-> > #define HDC3020_S_T_RH_THRESH_HIGH	0x1D
-> > 
-> > #define HDC3020_R_T_RH_THRESH_MSB	0xE1
-> > #define HDC3020_R_T_RH_THRESH_LOW	0x02
-> > #define HDC3020_R_T_RH_THRESH_LOW_CLR	0x09
-> > #define HDC3020_R_T_RH_THRESH_HIGH_CLR	0x14
-> > #define HDC3020_R_T_RH_THRESH_HIGH	0x1F
-> > 
-> > or:
-> > 
-> > #define HDC3020_S_T_RH_THRESH_LOW       0x6100
-> > #define HDC3020_S_T_RH_THRESH_LOW_CLR   0x610B
-> > #define HDC3020_S_T_RH_THRESH_HIGH_CLR  0x6116
-> > #define HDC3020_S_T_RH_THRESH_HIGH      0x611D
-> > 
-> > #define HDC3020_R_T_RH_THRESH_LOW       0x6102
-> > #define HDC3020_R_T_RH_THRESH_LOW_CLR   0x6109
-> > #define HDC3020_R_T_RH_THRESH_HIGH_CLR  0x6114
-> > #define HDC3020_R_T_RH_THRESH_HIGH      0x611F
-> > 
-> > I don't know if it's a good idea, as we would need to make sure it is
-> > big endian in the buffer. Probably with a function that handles this.
-> I think this is the best plan with a
-> put_unaligned_be16() to deal with the endianness.
-> The compiler should be able to optimize that heavily.
->
-I think that would require some refactoring. I would add patches that
-are fixing this. Have there been reasons for using the pairs ? I'm just
-curious.
-> 
-> > > > +static int hdc3020_read_thresh(struct iio_dev *indio_dev,
-> > > > +			       const struct iio_chan_spec *chan,
-> > > > +			       enum iio_event_type type,
-> > > > +			       enum iio_event_direction dir,
-> > > > +			       enum iio_event_info info,
-> > > > +			       int *val, int *val2)
-> > > > +{
-> > > > +	struct hdc3020_data *data = iio_priv(indio_dev);
-> > > > +	u16 *thresh;
-> > > > +
-> > > > +	/* Select threshold */
-> > > > +	if (info == IIO_EV_INFO_VALUE) {
-> > > > +		if (dir == IIO_EV_DIR_RISING)
-> > > > +			thresh = &data->t_rh_thresh_high;
-> > > > +		else
-> > > > +			thresh = &data->t_rh_thresh_low;
-> > > > +	} else {
-> > > > +		if (dir == IIO_EV_DIR_RISING)
-> > > > +			thresh = &data->t_rh_thresh_high_clr;
-> > > > +		else
-> > > > +			thresh = &data->t_rh_thresh_low_clr;
-> > > > +	}
-> > > > +
-> > > > +	guard(mutex)(&data->lock);  
-> > > 
-> > > Why take the lock here?
-> > > 
-> > > you are relying on a single value that is already cached.
-> > >  
-> > A single threshold value is used for humidity and temperature values. I
-> > didn't see a lock in "iio_ev_value_show", so there might be some
-> > concurrent access triggered by "in_temp_thresh_rising_value" and
-> > "in_humidityrelative_thresh_rising_value" sysfs files which is not
-> > secured by a mutex or similiar.
-> 
-> Unless you going to get value tearing (very unlikely and lots of the
-> kernel assumes that won't happen - more of a theoretical possibility
-> that we don't want compilers to do!) this just protects against a race
-> where you read one and write the other.  That doesn't really help us
-> as it just moves the race to which one gets the lock first.
-> 
-Yes, it's very unlikely to happen. Anyway, I'm dropping the support for
-the caching and with it this function.
+> This won't do what you think if the file has been marked
+> FMODE_RANDOM before this populate call.
 
-Dimitri
+Yeah.
+
+But madvise(POPULATE_READ) is actually one action,
+so userspace can call fadvise(POSIX_FADV_NORMAL) or fadvise(POSIX_FADV_SEQUENTIAL)
+before madvise(POPULATE_READ), and set RANDOM advise back after
+madvise(POPULATE_READ) returns, so looks not big issue in reality.
+
+> 
+> IOWs, I don't think madvise should be digging in the struct file
+> readahead stuff here. It should call vfs_fadvise(FADV_SEQUENTIAL) to
+> do the set the readahead mode, rather that try to duplicate
+> FADV_SEQUENTIAL (badly).  We already do this for WILLNEED to make it
+> do the right thing, we should be doing the same thing here.
+
+FADV_SEQUENTIAL doubles current readahead window, which is far from
+enough to get top performance, such as, latency of doubling (default) ra
+window is still 2X of setting ra windows as bdi->io_pages.
+
+If application sets small 'bdi/read_ahead_kb' just like this report, the
+gap can be very big.
+
+Or can we add one API/helper in fs code to set file readahead ra_pages for
+this use case?
+
+> 
+> Also, AFAICT, there is no need for get_file()/fput() here - the vma
+> already has a reference to the struct file, and the vma should not
+> be going away whilst the madvise() operation is in progress.
+
+You are right, get_file() is only needed in case of dropping mm lock.
+
+
+Thanks,
+Ming
+
 
