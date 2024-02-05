@@ -1,147 +1,121 @@
-Return-Path: <linux-kernel+bounces-54075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C211784AA61
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:16:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1060684AA62
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:16:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DBBD1F260D0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:16:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97AD7B24171
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:16:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3741B4B5A7;
-	Mon,  5 Feb 2024 23:15:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="tgmig1Xj"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D247C4F21E;
+	Mon,  5 Feb 2024 23:16:41 +0000 (UTC)
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E507048786
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 23:15:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E69BD4F218
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 23:16:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707174956; cv=none; b=jPWvWAdWL/WgOUZokCwgcbhaZUa2rLOFYLxT/a6xSmHn49PLeDUIJ+sq6jtAA6PSuKRP/6eHAhfGdjzUtL2KC0i2Ww72ds5fYr8MtKD4bthb3JJ8bS82DWXdV/ulGj9hG/Dif9poUA5KxZIErPhTgldUBW7l5y4prD2Uj0QQAxM=
+	t=1707175001; cv=none; b=hgLiRH2Lp/+LcKwfvMCXwiYohvPaX2l/cEMYtVX2W5sFD76xXM3eWx5MNOkzNht43tSJqxn/aFHoNueyebixhlrVS9wdr7g+f2o9v/8DK/2b/elx1o2rd33V2gtMPOL9ue9UDSgLrnoJt4gFyielGZvWIlrxrQp/9WFmyWsc7Z4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707174956; c=relaxed/simple;
-	bh=l+qBRd0uhtVCBi7FglZtnBJV6a/zqeKohi35eaar3og=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rNtEAj6HT2OO5CwhXefneJz90CRVnOobSEs5DymJiMea7ZKfeUwzPEcLKNNHyDVBgWk7QLboTnFWl5OtoNT1SO1UwhXFa2VnhQ47WSc458hxf1tMpmJ20bL4qf8gToyWpqLIbD0SfGhC2DG+VpyoL3+g9yfXzSgdlKcRpwHR2po=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=tgmig1Xj; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d7858a469aso36596385ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 15:15:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1707174954; x=1707779754; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HLDVauXDb3SkVjlIiWsDawP2Lrkb7uN8ijdb1ZnT3GM=;
-        b=tgmig1XjpNVt8fwZ0rBr+vT+Au5hruM0C3p7k7fB+5NqvqEAWaXANSbNvoqZnHqCHL
-         keZJLMuwTtrtOoUvsZRcWg72EfAwHhPn9tDtrv/cZ+Uav0u+NvU5B3GmDmGDpzeqSnhM
-         FzkUc0MQa35dtE+cRymfw0gT1sRIe731Os53KO+w6gyfxWtJQhWc9Kw7LyyngBGD5sop
-         yBboql/alkdugIkDIlnoWg2xpt2521sFCTyFyopiPnojFbN7pXvwAhjFUWoaUYJQ3WOn
-         bAnPYSURGzIs8G1+h4TYKUohYydq53deqF0GXZ+ooVBOabyrBg5lxxETbAfPsEFbymYE
-         mecg==
+	s=arc-20240116; t=1707175001; c=relaxed/simple;
+	bh=jP85jDq0cvSnI7nRh3hM2aCRJietCWqaBA3nArkBg9E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CEl3v5Un/NXdtW+o5Xs/wU4dEDtPWyoZjhzYOcdPLTv1ssaRefwbuZvwOYZHsPtwduJK+U4zHVfY2QT0FwtkJTU1PCyKUBv6KceVWFmp4SStxG/6Wp2cReHT+Nmxj0cWiL2JToZFdqa/itbGK2MGB+7BTYKrkk7La6nxNlnbOwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6de2f8d6fb9so3736840b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 15:16:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707174954; x=1707779754;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HLDVauXDb3SkVjlIiWsDawP2Lrkb7uN8ijdb1ZnT3GM=;
-        b=VPequQa8enq1V5WWGAKr2T8izf0VupdSKUf5YUBdousY0gEaS8xoRlHl1Rra+RO8vf
-         uvph3a6/dhGKIVBxbzDVtsCPk+IXEmQxMHBsIRVh+QwTJZcn71BRrlKK/0zRB5W8QTBs
-         1h311FU713Fo8M3t9FdJsAG66S49qLEBGQdB+SqDWbocRexDenQrvuQyWiJpfhVrXQat
-         Y6yvcu2E2jTpZul71K8n5yXaGuJQX9VQwnO8bZZ6x0NyqIPPcFT9d29fxS9hvW5+jJKO
-         uboGCHhIusErdIZNv5+x49ipStSE+g1qfgfAU9IcLWdm+fYyGrUh+PS1wQZB9mi50cqI
-         Byow==
-X-Gm-Message-State: AOJu0YwPE7zpU8cpN4gvQ+Cfa0cmH7I0Cte0UidCfMLYLXxrdG48a5c9
-	F/bTGE+sV/bpR5uEbmGy8/AsjTQz3nB+dTStgd4fLt5CPSqvnHKt5cw+7mSESq0=
-X-Google-Smtp-Source: AGHT+IE3RZklDuPK3RsSAT5nJ3BuQdhvpthhno9atwmUQdGKYtEs6vhTfLTEZnZ/CbvGV5USvqDzoA==
-X-Received: by 2002:a17:903:1cf:b0:1d9:a4bb:29f2 with SMTP id e15-20020a17090301cf00b001d9a4bb29f2mr720650plh.46.1707174954062;
-        Mon, 05 Feb 2024 15:15:54 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVg6EM1UWxQB4eSbUussRDKlEYCp9GsHdJ+mKzLNkffYzCq4qGIbm5Fa52ygPxyd12ROmIDr0EhKABFTm7jL0VxvipPjnimMW7859kFnuVmsGOH1hLbPjZQjmD4favBOWTRXCbwPbdTuHneqwjMlmz7qW5Xuseul9RRVQmJA+/UXci5wEhQo68jzK+qP2gUwQzkjB/BPgZng8GYtOhm8L8KdYuqbyW1WOC0qwew+olLEgsRbxzEtWnhVC6GsID24vXEwv50ASkcgyXy9OlkxOJb7nEsvNKjVfySPWR5jthwWt8j6Bm9ZFYf
-Received: from dread.disaster.area (pa49-181-38-249.pa.nsw.optusnet.com.au. [49.181.38.249])
-        by smtp.gmail.com with ESMTPSA id kb13-20020a170903338d00b001d9606aac46sm419329plb.212.2024.02.05.15.15.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 15:15:53 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rX8Bq-002aEM-3D;
-	Tue, 06 Feb 2024 10:15:51 +1100
-Date: Tue, 6 Feb 2024 10:15:50 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: JonasZhou <jonaszhou-oc@zhaoxin.com>
-Cc: willy@infradead.org, CobeChen@zhaoxin.com, JonasZhou@zhaoxin.com,
-	LouisQi@zhaoxin.com, brauner@kernel.org, jack@suse.cz,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	viro@zeniv.linux.org.uk
-Subject: Re: [PATCH] fs/address_space: move i_mmap_rwsem to mitigate a false
- sharing with i_mmap.
-Message-ID: <ZcFsJvUOVMc8e0yO@dread.disaster.area>
-References: <Zb1DVNGaorZCDS7R@casper.infradead.org>
- <20240205062229.5283-1-jonaszhou-oc@zhaoxin.com>
+        d=1e100.net; s=20230601; t=1707174999; x=1707779799;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tfrCIsKTIDPuf1kBbgefVyKBKKRwJ43oiLoQQpXfJFE=;
+        b=MHyC1J3MaYNxKVu1kET8bpdscJAb/UvwC8A/k/rOQLyZLF3fJoWKfcLgl79NVaSLC4
+         ak2F4T1JeS++K9dN/x/xkZhxySRbXHsU9LrNw/rAqOyUztMiw4WsFpcRcY3cbHKuEaZ5
+         zHbE2opzFAnGDC8IRn9kWvUUAoAuXz4nvqYFDiL6pXv8z07z+a+7Ts1Hpqh+Uj34L5BE
+         fjefLyGyxkrImfG/6/Ke5/VJAhRpoE8LzeA8SVaOPbLJQY0YIbhSt2FDQv2t3kYj8Zjh
+         BRaSZaIOw3vRURrb6yrGrr719joA+hUoXIigOH6LOavtbkfHWwJRVuQv8Ex8JlNX6JQI
+         9oVA==
+X-Gm-Message-State: AOJu0YxNg3mRDCZSZ4wsn8sizAInl8blLbsvLQFVBrRHEMTbirTC/S8j
+	aUoHaph1Y86UKQj7BS9KbBQ47ebEveJV6ds4yqn6SqM+eLmxPpBR4zl3DSch7Dch0jbnVKN3bq4
+	vlXlMWBICtAZRqtT8ee8mJTW/edQ=
+X-Google-Smtp-Source: AGHT+IFTgAk00CrpLtrYEJF0594xcxOZMd7AGVtdAb1xCLOhCxSN2bgglIdrGN+ZmIy793033sUWwnJYSfz49xseULs=
+X-Received: by 2002:a05:6a00:4595:b0:6df:eb95:2c78 with SMTP id
+ it21-20020a056a00459500b006dfeb952c78mr1032057pfb.10.1707174999043; Mon, 05
+ Feb 2024 15:16:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240205062229.5283-1-jonaszhou-oc@zhaoxin.com>
+References: <Zb1EBzpBn4s-mIa8@x1> <CAM9d7ch6tvwMgdOg=1hZqE23bQUKDtYOdyJ16kkyt+6uY4q7pw@mail.gmail.com>
+In-Reply-To: <CAM9d7ch6tvwMgdOg=1hZqE23bQUKDtYOdyJ16kkyt+6uY4q7pw@mail.gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Mon, 5 Feb 2024 15:16:25 -0800
+Message-ID: <CAM9d7cgPAuY=R2FTOc8ffZpe_O9iaosZ7FNHvpB-aCk9pj1N4A@mail.gmail.com>
+Subject: Re: [PATCH 1/1] perf augmented_raw_syscalls.bpf: Move 'struct
+ timespec64' to vmlinux.h
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Adrian Hunter <adrian.hunter@intel.com>, Ian Rogers <irogers@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 05, 2024 at 02:22:29PM +0800, JonasZhou wrote:
-> > On Fri, Feb 02, 2024 at 03:03:51PM +0000, Matthew Wilcox wrote:
-> > > On Fri, Feb 02, 2024 at 05:34:07PM +0800, JonasZhou-oc wrote:
-> > > > In the struct address_space, there is a 32-byte gap between i_mmap
-> > > > and i_mmap_rwsem. Due to the alignment of struct address_space
-> > > > variables to 8 bytes, in certain situations, i_mmap and
-> > > > i_mmap_rwsem may end up in the same CACHE line.
-> > > > 
-> > > > While running Unixbench/execl, we observe high false sharing issues
-> > > > when accessing i_mmap against i_mmap_rwsem. We move i_mmap_rwsem
-> > > > after i_private_list, ensuring a 64-byte gap between i_mmap and
-> > > > i_mmap_rwsem.
-> > > 
-> > > I'm confused.  i_mmap_rwsem protects i_mmap.  Usually you want the lock
-> > > and the thing it's protecting in the same cacheline.  Why is that not
-> > > the case here?
+On Fri, Feb 2, 2024 at 6:01=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
+rote:
+>
+> On Fri, Feb 2, 2024 at 11:35=E2=80=AFAM Arnaldo Carvalho de Melo
+> <acme@kernel.org> wrote:
 > >
-> > We actually had this seven months ago:
+> > If we instead decide to generate vmlinux.h from BTF info, it will be
+> > there:
 > >
-> > https://lore.kernel.org/all/20230628105624.150352-1-lipeng.zhu@intel.com/
+> >   $ pahole timespec64
+> >   struct timespec64 {
+> >         time64_t                   tv_sec;               /*     0     8=
+ */
+> >         long int                   tv_nsec;              /*     8     8=
+ */
 > >
-> > Unfortunately, no argumentation was forthcoming about *why* this was
-> > the right approach.  All we got was a different patch and an assertion
-> > that it still improved performance.
+> >         /* size: 16, cachelines: 1, members: 2 */
+> >         /* last cacheline: 16 bytes */
+> >   };
 > >
-> > We need to understand what's going on!  Please don't do the same thing
-> > as the other submitter and just assert that it does.
-> 
-> When running UnixBench/execl, each execl process repeatedly performs 
-> i_mmap_lock_write -> vma_interval_tree_remove/insert -> 
-> i_mmap_unlock_write. As indicated below, when i_mmap and i_mmap_rwsem 
-> are in the same CACHE Line, there will be more HITM.
+> >   $
+> >
+> > pahole manages to find it from /sys/kernel/btf/vmlinux, that is
+> > generated from the kernel types.
+> >
+> > Cc: Adrian Hunter <adrian.hunter@intel.com>
+> > Cc: Ian Rogers <irogers@google.com>
+> > Cc: Jiri Olsa <jolsa@kernel.org>
+> > Cc: Namhyung Kim <namhyung@kernel.org>
+> > Link: https://lore.kernel.org/lkml/
+> > Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+>
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-As I expected, your test is exercising the contention case rather
-than the single, uncontended case. As such, your patch is simply
-optimising the structure layout for the contended case at the
-expense of an extra cacheline miss in the uncontended case.
+Hmm.. but it makes it fail to build with GEN_VMLINUX_H=3D1.
 
-I'm not an mm expert, so I don't know which case we should optimise
-for.
+Thanks,
+Namhyung
 
-However, the existing code is not obviously wrong, it's just that
-your micro-benchmark exercises the pathological worst case for the
-optimisation choices made for this structure. Whether the contention
-case is worth optimising is the first decision that needs to be
-made, then people can decide if hacking minor optimisations into the
-code is better than reworking the locking and/or algorithm to avoid
-the contention altogether is a better direction...
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+  CLANG   linux/tools/perf/util/bpf_skel/.tmp/augmented_raw_syscalls.bpf.o
+In file included from util/bpf_skel/augmented_raw_syscalls.bpf.c:10:
+linux/tools/include/uapi/linux/bpf.h:55:2: error: redefinition of
+enumerator 'BPF_REG_0'
+        BPF_REG_0 =3D 0,
+        ^
+linux/tools/perf/util/bpf_skel/.tmp/../vmlinux.h:46833:2: note:
+previous definition is here
+        BPF_REG_0 =3D 0,
+        ^
 
