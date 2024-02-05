@@ -1,146 +1,134 @@
-Return-Path: <linux-kernel+bounces-52683-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52684-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98E16849B63
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:07:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62B37849B6B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:10:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A15F1F22A64
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:07:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64998B298EF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:08:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 596FC1CA85;
-	Mon,  5 Feb 2024 13:07:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D615B1CD03;
+	Mon,  5 Feb 2024 13:07:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="JICJc5iu"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="b1jfRybE"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A3A01BDD3
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 13:07:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 672B71CD04
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 13:07:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707138459; cv=none; b=jGR117lh1rLgPIF9aJeCc3kjJq1qvpSsjhzI2Z92t6eVjt3qdd6RIxUiOh/wRlNn8PF6+DXESfnceAadZT8hbWia5pp3vco8q3WIY4xWm58ocNx21Wfv75QUz2GgXi+6zaRLbQJk2i4isR4uyoyDZtxivjPSC0KE7RxJOwZPHrw=
+	t=1707138477; cv=none; b=XN9Aarsr/T8fjHE2Zv5jpr+yBJBi3yZ+e/qoNcxLmqnrSmo7kbQ5TnzR4bKVeL8W7jwsYCGsUi2j6xu6dPCCw16jiIsho9mjm0IAsCZ/H92v88m82YTB1EoYLhKEChtbo3rak1dS68nVd8xpE2h3LOUjbVwQCb4FJShYaAeMKOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707138459; c=relaxed/simple;
-	bh=8IPgAyBOVlUjnkv8wh+Tm4lw+PMeIONQj8dzU1ytE3A=;
+	s=arc-20240116; t=1707138477; c=relaxed/simple;
+	bh=mb3CBFodfFLRuWMzMcYxvL+Qq437VHJxoAvJtMqZNsI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k3ZCw3ABk3U9+4/1u9jCKJwVcnmR4Jq32tTTVYmf3DssuneMwQ2pwKjTwSEo20BvJdUEerNkS9BjKimljMVHsnrTCYbcsQO8qQl4qq377PFSN82T1QjvR+O2rcIOjrGokoMrrH6XSVFZwT9yH3i8ysIb2O0Qxq3D8Twh8p2FQ3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=JICJc5iu; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d09bdddfc9so20693531fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 05:07:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1707138455; x=1707743255; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2QXzXXwRZfKvmUtqjt4P+dHxSnzs9bcTO1bAgWVXXC0=;
-        b=JICJc5iux+vDhZDe+F5nTSWNnDwWBL4XfRySup2VdqXmQNnmfkaU4rlSYIcCELTUF/
-         lhbnCsqZPTZlh4TYCSg89YVDd+xVLwEeTsRikgQO5kE8/wRUtLVaPTa84ks4Rqa0uAX1
-         iJeIqSh/7Z/aOiIjaNqe21icfLyJdXQLK2ITQ3F+fjUbYg/KF266hhKLaDhm5lDblP3m
-         AlwzlIOKkNNaCC0v6Kob93OAh0/qSZ8NYhOH06KAChFJFAiTMlCJ+Dks7Wc32TVTOCIg
-         Yxlzmrq6mGSdkIB3WVjZTI4PB8pyMWPCnNauWTzvShhmSdDJDLsRVHMZlH59fDlztvCw
-         idgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707138455; x=1707743255;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2QXzXXwRZfKvmUtqjt4P+dHxSnzs9bcTO1bAgWVXXC0=;
-        b=OaRrgcETPoj8TJcVRmLFtlJ0Ta+oWvg5MKIirrJoYt4ZxbDnIS6QRc05+AtOwkoE/d
-         dzkFmMjedA5UhxQkZ95wP3koRU5SaFDNh+R6I0FpEEPWGKujRv5EnBqfczqYXdHJzERa
-         aDdKAFkMBiHbRavy/5bdfUS3/mJSOtvh8Bh9M2WMIADBnE+WRip5+7fgjwRubTh4FYtw
-         GOMA4FWi422jbffzAaaVYOc2dVZj7a95qgnI7pPkcRWRhKFm3/pFDSQMi1dy8az3FfP/
-         Sm0rfpEziQ1rkaQaPPIkDRcqnibiddoK66NpjxC7indRdSTw7KKT9oF4zP8Kckup7UUB
-         8BYQ==
-X-Gm-Message-State: AOJu0Yyg7CneO91VbpiCYoKxV8G3Hw0qOR3uMDvQcID9ZFTX/x5gUQsU
-	S0ky9AbhUIi878OyAO+IQGd8u4tN94hDedf+LDEJplMJyJyevrJ5Il/FwHhYkL0=
-X-Google-Smtp-Source: AGHT+IEcLotDGIjm/kaJeJMJ8VntOQLtpRdpfPe+Jsve8SNyEZkjXViB/veEPUmLh8Rh3z40K+VdBQ==
-X-Received: by 2002:a2e:9081:0:b0:2cd:1366:4aa9 with SMTP id l1-20020a2e9081000000b002cd13664aa9mr5752768ljg.25.1707138455398;
-        Mon, 05 Feb 2024 05:07:35 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUcbVCMXiuGEVBvNpiKwsOgnfIlxdtU0yH+3bKYd8NAqpexK7JwzXttmuGtRjsOSKMiYo1ZQmIU8WlRIZdEFwvTO4if4cclWvQrf0blwafgWvY0Ra8GQqTAETy0kJjOQJtlEIqc2OEecuBmQBxHplBaO+yyToyewE9PT6mBNnK/p83v2fKbPwvLNvkiOmvc/6U3MObMBOq1tlK4gdxLp329/6j2hKYY/TOapQ8WGezvUthkJaY4cS4NogPrQj5541J4HDTRrP6VNJ4QIlst3z0hf+wta7/kfyQDB/5FXVJoX9q210QyqGDoHD7PpI5zRp8ImT241AyCIMzqjw==
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id ch17-20020a0564021bd100b0055c8a30152bsm3729106edb.83.2024.02.05.05.07.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 05:07:35 -0800 (PST)
-Date: Mon, 5 Feb 2024 14:07:33 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Tejun Heo <tj@kernel.org>,
-	Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [BUG] workqueues and printk not playing nice since next-20240130
-Message-ID: <ZcDdlRzpofn2cAuO@alley>
-References: <410d6a87-bf34-457e-b714-1e6149d48532@paulmck-laptop>
- <c6ce8816-c4ff-4668-8cbb-88285330057d@huaweicloud.com>
- <25fd8537-5a27-4b62-9bf9-1ee7ca59b5b8@paulmck-laptop>
- <Zb0evDquygkDI_8P@slm.duckdns.org>
- <c5d5ad66-da86-447b-8014-820d2c67382d@paulmck-laptop>
+	 Content-Type:Content-Disposition:In-Reply-To; b=PCUcId2V0TLxtaRdohqgWJPIstgScvKt+UhNVHPXDdNP20eB8BYtsRWZY0mb12w6Tvcekej82kXEFIqE9t/fNJXd+b/uXbqukpFS+PWZtwFhhP1H06BHd8plmM2Jl4TGeRB6+kuMtQEYxCWYJV77bm5hKrTxGYUh9LGSEY2/DKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=b1jfRybE; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:cc:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=vP0L
+	TfSOvv04oCKDBTO5Ifc5yNAFcsSqOVecVHWl9Po=; b=b1jfRybE3ZdP5o5KTAhD
+	mTL6/bRE2xHwvlafF9Oz2WR615XcW/4vEjBVLiK/dsvqxLOm03fir0SiAMG4wTOC
+	5H03KG/oRXLZ+WSY8rfJN7alW1ItBqG2eCeKRQ0wUHptJOeBZc51EZQUWedVUb4D
+	osWrbhlpqY3f+0n3+gWyo1satRHo6MX/zFco3fj2xLXbEzSEzaWkQYAUMichUhPW
+	/0gLIVuOS9Chfw0jyIgSieVlZMN74HgZs4Q9/iNE0mKkgg7e3i87XtGKzB3GEI0T
+	FRENYpcjIhzq11JNyN/tlga/ilRSslKHvoyMiYd0tjAz9iancKhaHvVQ+uL43xFQ
+	ow==
+Received: (qmail 827434 invoked from network); 5 Feb 2024 14:07:44 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 5 Feb 2024 14:07:44 +0100
+X-UD-Smtp-Session: l3s3148p1@UhG5JaIQLK8ujnsZ
+Date: Mon, 5 Feb 2024 14:07:43 +0100
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: Claudiu <claudiu.beznea@tuxon.dev>
+Cc: ulf.hansson@linaro.org, yoshihiro.shimoda.uh@renesas.com,
+	masaharu.hayakawa.ry@renesas.com, takeshi.saito.xv@renesas.com,
+	linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Subject: Re: [PATCH v3] mmc: renesas_sdhi: Fix change point of data handling
+Message-ID: <ZcDdn2AVz8FIXzak@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Claudiu <claudiu.beznea@tuxon.dev>, ulf.hansson@linaro.org,
+	yoshihiro.shimoda.uh@renesas.com, masaharu.hayakawa.ry@renesas.com,
+	takeshi.saito.xv@renesas.com, linux-mmc@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240205112702.213050-1-claudiu.beznea.uj@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="OJl2Hke6wUYqvGo9"
+Content-Disposition: inline
+In-Reply-To: <20240205112702.213050-1-claudiu.beznea.uj@bp.renesas.com>
+
+
+--OJl2Hke6wUYqvGo9
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c5d5ad66-da86-447b-8014-820d2c67382d@paulmck-laptop>
 
-On Fri 2024-02-02 09:40:05, Paul E. McKenney wrote:
-> On Fri, Feb 02, 2024 at 06:56:28AM -1000, Tejun Heo wrote:
-> > Hello,
-> > 
-> > On Fri, Feb 02, 2024 at 08:35:51AM -0800, Paul E. McKenney wrote:
-> > > Good point, and if this sort of thing happens frequently, perhaps there
-> > > should be an easy way of doing this.  One crude hack that might come
-> > > pretty close would be to redefine the barrier() macro to be smp_mb().
-> > > 
-> > > But as noted earlier, -ENOREPRODUCE on today's -next.  I will try the
-> > > next several -next releases.  But if they all get -ENOREPRODUCE, I owe
-> > > everyone on CC an apology for having sent this report out before trying
-> > > next-20240202.  :-/
-> > 
-> > I think I saw that problem too but could reproduce it with or without the
-> > workqueue changes, so I did the lazy thing "oh well, somebody is gonna fix
-> > that" and just tested as-is. It's a bit worrying that ppl don't seem to
-> > already know what the culprit is. Hmm... I can't reproduce it anymore
-> > either.
-> 
-> Glad that it is not just me!  I think...  ;-)
-> 
-> > So, there is some chance that this may really be a subtle breakage. If you
-> > ever see it happening again, triggering sysrq-t and capturing the dmesg
-> > output (network should still work fine, so these shouldn't be too difficult)
-> > may help. sysrq-t has workqueue state dump at the end which should clearly
-> > indicate if anything is stalled in workqueue.
-> 
-> Good point, if it does recur, I could try it on bare metal.
+Hi Claudiu,
 
-Please, me, John, and Sergey know if anyone see this again. I do not
-feel comfortable when there is problem which might make consoles calm.
+thanks for the updated version!
 
-Well, there is no queued printk change. Also I do not see anything
-obvious in the changes added to 6.7 which might cause this behavior.
+> To comply with this, the patch checks if this mismatch is present and
+> updates the priv->smpcmp mask only if it is not. Previous code checked if
+> the value of SMPCMP register was zero. However, on RZ/G3S, this leads to
+> failues as it may happen, e.g., the following:
+> CMPNGU=0x0e, CMPNGD=0x0e, SMPCMP=0x000e000e.
 
-> > That said, another data point. In my test setup, I use the earlyprintk boot
-> > option which enables console output way before than workqueue becomes
-> > operational, so having on console output at all is highly unlikely to be
-> > indicative of workqueue problem. My memory is hazy but it seems like I can
-> > no longer reproduce the problem on the same git commit. Maybe it was a
-> > problem on the qemu side?
-> 
-> It might have been a qemu issue, but I am using the same qemu.
+Can you add the current TAP number (variable 'i') to this printout?
+According to my understanding, we should only mark this TAP good if it
+is in the range 5-7. I need to double check with Renesas, though.
 
-In theory, it might also be caused by a change in the serial console
-driver. But I do not see anything obvious there either.
+> Along with it, as mmc_send_tuning() may return with error even before the
+> MMC command reach the controller (and because at that point cmd_error = 0),
+> the update of priv->smpcmp mask has been done only if the return value of
+> mmc_send_tuning(mmc, opcode, &cmd_error) is 0 (success).
 
-Best Regards,
-Petr
+This is a needed change, for sure.
+
+> This change has been checked on the devices with the following DTSes by
+> doing 100 consecutive boots and checking for the tuning failure message:
+
+Boot failure is one test. Read/write tests should be another, I think.
+Because if we select a bad TAP, bad things might happen later. To reduce
+the amount of testing, read/write testing could only be triggered if the
+new code path was excecuted?
+
+Happy hacking,
+
+   Wolfram
+
+
+--OJl2Hke6wUYqvGo9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXA3ZsACgkQFA3kzBSg
+Kba1EQ//XACdt4i/fR0oXUL7zqQ/iNlftWWZFRf6sI4jYTfUTFcUM6Iy3b5qMnqa
+Jo2HLRrVc/80MUkGVYHSr6MN/JnwrBOYwrHMwhVwT2Y2uZrHJPLxGqm7PJ/pexxU
+h8+3uc5NL/xUoSETj6PFMlmB1H0Zx7rHO2vj1NLhnk4USThgZU0HBPAE1pw64UL9
+m0kRyTcY+KBaVE1DaA5RJriDlH0oVpP43L/Uw2y624IK29EzrsxLmY0NWWlZoKE3
+ncsqMWDyMrQnBzoM+wDyc8NsCS80WbTYZvqoh70Hv7z5K2yAmi7v5pUsbWYZC29E
+6PV1Tjdstn1+zxVt+gcqE/i2X12ltvzCm8XHMDJriqaMp7Gm1sT4ZVxJ8+dTj1x3
+Q21ojW9O1J6v3gf4pjqlcqUiJBvz+zq3oXRgBocKS3eP1bJDXkh25JocyB/a1LIY
+NXeg0ZkBKlA0ag7ke9LB5088remEfliVX9a8l7J6CoJ+ZRKMhmkcsmsWXSFmfkhx
++sDMAUgPL311MTKMGt/QqFrXA08mlMCVxuPvcIgrINkuzXNRZXpVr5dAkTuZEBSi
+1mZCtrmhOQF6f52hKqTkIYag3p61rDVc95OwdP5Xu7ftd+cILcmBBlZlwgVA17ER
+rWuRXOEjvXSdC1veNWw9loJhb73nz0lEb6vBaRWMmwq1ayhdC48=
+=fH1y
+-----END PGP SIGNATURE-----
+
+--OJl2Hke6wUYqvGo9--
 
