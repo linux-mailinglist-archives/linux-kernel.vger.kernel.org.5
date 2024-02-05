@@ -1,93 +1,120 @@
-Return-Path: <linux-kernel+bounces-52883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52884-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5430A849DD0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:17:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09B52849DD2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:19:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E605E1F21B72
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:17:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA20828393C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 15:19:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 266822C84F;
-	Mon,  5 Feb 2024 15:17:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA21A2D046;
+	Mon,  5 Feb 2024 15:19:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="OqKMP23s"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="eya33dR4"
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E8572C6A7;
-	Mon,  5 Feb 2024 15:17:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18AF52C861;
+	Mon,  5 Feb 2024 15:18:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707146269; cv=none; b=jzhyzH/PgHBCwqPNAo52flF7jpPg3t5lv3DyiHID2/VgC8/bTTQeJhWjCXAk3PdGk9/oC3X/AaaNMLLUNzxpzX8JgfJPKC0MtlpFjDvuJIZqSwWTMW3/7OTWkJJO8g1B52pqpeV5GoE1hqSZ3V5FvBzlvFBzfN8yBlGLPkkEW9I=
+	t=1707146341; cv=none; b=DEmEGDWgDaigcHoJW9B8iFUy3OZPThZfrsk4i9Zka5avzJQb9tLahyD/MKIHhPKRdMCXZzJa3iaKEoDkWeKVoIt3lLyCs/0c3OqTtjtUDxU0QHwmYV5XHdvcgd8PlpBnVNbZntGpA5mlOUsIW3p42rUs4bAsev/PbnypcjNDA6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707146269; c=relaxed/simple;
-	bh=J5h136Z6o5MpC5NtPS2K7viSPN8N5yI9efnCDUsJ24c=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TuFtUfL8GhP5GFkcBGHG8dzfVHKsiBSpraIDwUU9nZJlmN3chuqlyBmDwZsVB+K9lMmQn7yIU2bTJ1cwM22c55rtJbkJpAddf+A0TrKE7PCxO/x+0S23GctZHSvqH5JgNi33N3wEvCPm771C9CBGOeiWBB9UvtFfIg8NTHHqmcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=OqKMP23s; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E1425FF80A;
-	Mon,  5 Feb 2024 15:17:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707146265;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J5h136Z6o5MpC5NtPS2K7viSPN8N5yI9efnCDUsJ24c=;
-	b=OqKMP23sJ9USNkvLnB89vcAw/4g9Gdwip5r7ovmTsI5T+DtcK/6Y6dpojmZXiqQ+xgRgVR
-	xzRqfeqRW9Gtf28YycKhbuRFbApbvHgAHKNfprDL0Vte8aRZeodL5nLkuWz+d/NUFofC1h
-	ggbeIiWBk3WzyViPQhfQkoOh7/MIrpW26ISw9GYLLZGiHFYAmbrYH27H6gOj6E0XBJuql5
-	EgV7+HEoGQOCh0LBIGEZyN38huOE6C0PMqC5LhYk82Sz+Il8AFlZF1frq0bEJS5SNK/teq
-	4NroVxu2s/ixdVIpx3RoRLADUNBrZRs6dM4pCcdUIldHfSIuTfUnART0nLgUbg==
-Date: Mon, 5 Feb 2024 16:17:43 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Elad Nachman <enachman@marvell.com>
-Cc: <richard@nod.at>, <vigneshr@ti.com>, <vadym.kochan@plvision.eu>,
- <aviramd@marvell.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: Re: [PATCH v2] mtd: rawnand: marvell: fix layouts
-Message-ID: <20240205161743.6c13af7b@xps-13>
-In-Reply-To: <20240205134435.2769452-1-enachman@marvell.com>
-References: <20240205134435.2769452-1-enachman@marvell.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707146341; c=relaxed/simple;
+	bh=/oDW4VkCzBttrAvBPA7G49GfJJ6qlbRu0FSR1olVBxo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K98gRf9iVTACCxuOetiC8k/cP4obGjzCNOxoDi/swyjPybO+9nfigjSL84HtsCMndpBlPPghhOIEiBn+B1CeDtO8JiUrOgx28A5Tb0x6k2L/rxLqE5734tMYEbq+acsbmZTPFUF1bcJYgd2+1C2z39CcdIfsNfyrAqMZ5SBXFWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=eya33dR4; arc=none smtp.client-ip=83.149.199.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
+Received: from localhost (unknown [10.10.165.6])
+	by mail.ispras.ru (Postfix) with ESMTPSA id AA50C4017243;
+	Mon,  5 Feb 2024 15:18:56 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru AA50C4017243
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+	s=default; t=1707146336;
+	bh=zLU8L9M1HzCeEuXoR+1c7zl0qLtECLfP/n7spRh3ewM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=eya33dR4PSlpytfdtydfdJpDJY9s0lP7QUrwuZgSPvkZC5plV2BRqLrBUPvQdBgwK
+	 9fZBGYFeo3/Yn5jqt9C/YqB0mgo53ZAsKdRNSSaNlQJGeLstcIyrAB6e9rIVfOlrl+
+	 PHYlkCPz2RpWLsA5JTXu1a/eLWDMWvcsmSljEVic=
+Date: Mon, 5 Feb 2024 18:18:56 +0300
+From: Fedor Pchelkin <pchelkin@ispras.ru>
+To: "Liang, Kan" <kan.liang@linux.intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, x86@kernel.org, 
+	Alexander Antonov <alexander.antonov@linux.intel.com>, linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	lvc-project@linuxtesting.org
+Subject: Re: Re: [PATCH] perf/x86/uncore: avoid null-ptr-deref on error in
+ pmu_alloc_topology
+Message-ID: <2b5c4fbc-67c8-42f6-84a0-2adb4fbb0a2a-pchelkin@ispras.ru>
+References: <20240204134841.80003-1-pchelkin@ispras.ru>
+ <a5e8e3fe-a8c2-45e7-9139-84967cba06eb@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a5e8e3fe-a8c2-45e7-9139-84967cba06eb@linux.intel.com>
 
-Hi Elad,
+Hello,
 
-enachman@marvell.com wrote on Mon, 5 Feb 2024 15:44:35 +0200:
+On 24/02/05 10:08AM, Liang, Kan wrote:
+> 
+> 
+> On 2024-02-04 8:48 a.m., Fedor Pchelkin wrote:
+> > If topology[die] array allocation fails then topology[die][idx] elements
+> > can't be accessed on error path.
+> > 
+> > Checking this on the error path probably looks more readable than
+> > decrementing the counter in the allocation loop.
+> > 
+> > Found by Linux Verification Center (linuxtesting.org).
+> > 
+> > Fixes: 4d13be8ab5d4 ("perf/x86/intel/uncore: Generalize IIO topology support")
+> > Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+> > ---
+> 
+> It seems the code just jumps to the wrong kfree on the error path.
+> Does the below patch work?
+> 
+> diff --git a/arch/x86/events/intel/uncore_snbep.c
+> b/arch/x86/events/intel/uncore_snbep.c
+> index 8250f0f59c2b..5481fd00d861 100644
+> --- a/arch/x86/events/intel/uncore_snbep.c
+> +++ b/arch/x86/events/intel/uncore_snbep.c
+> @@ -3808,7 +3808,7 @@ static int pmu_alloc_topology(struct
+> intel_uncore_type *type, int topology_type)
+>  	for (die = 0; die < uncore_max_dies(); die++) {
+>  		topology[die] = kcalloc(type->num_boxes, sizeof(**topology), GFP_KERNEL);
+>  		if (!topology[die])
+> -			goto clear;
+> +			goto free_topology;
+>  		for (idx = 0; idx < type->num_boxes; idx++) {
+>  			topology[die][idx].untyped = kcalloc(type->num_boxes,
+>  							     topology_size[topology_type],
+> @@ -3827,6 +3827,7 @@ static int pmu_alloc_topology(struct
+> intel_uncore_type *type, int topology_type)
+>  			kfree(topology[die][idx].untyped);
+>  		kfree(topology[die]);
+>  	}
+> +free_topology:
+>  	kfree(topology);
+>  err:
+>  	return -ENOMEM;
+> 
+> Thanks,
+> Kan
+> 
 
-> From: Elad Nachman <enachman@marvell.com>
->=20
-> The check in nand_base.c, nand_scan_tail() : has the following code:
-> (ecc->steps * ecc->size !=3D mtd->writesize) which fails for some NAND ch=
-ips.
-> Remove ECC entries in this driver which are not integral multiplications,
-> and adjust the number of chunks for entries which fails the above
-> calculation so it will calculate correctly (this was previously done
-> automatically before the check and was removed in a later commit).
+In this way the already allocated topology[die] elements won't be freed.
 
-I don't know why linux-mtd does not collect your patches, for this time
-I applied it manually to mtd/fixes.
-
-See, linux-mtd lore link is broken, but linux-stable collected
-correctly:
-https://lore.kernel.org/linux-mtd/20240205134435.2769452-1-enachman@marvell=
-com/
-
-Thanks,
-Miqu=C3=A8l
+--
+Fedor
 
