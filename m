@@ -1,202 +1,121 @@
-Return-Path: <linux-kernel+bounces-53250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53239-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF95C84A2B0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:50:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC30784A27A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:37:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22A6EB21C42
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:50:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42E7B1F2300E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:37:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72C95481CB;
-	Mon,  5 Feb 2024 18:50:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A739747A76;
+	Mon,  5 Feb 2024 18:37:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fczhIVlu"
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mz2lAVhO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 324E6482C3;
-	Mon,  5 Feb 2024 18:50:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA503EA67;
+	Mon,  5 Feb 2024 18:37:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707159024; cv=none; b=FzK2/w9S8nLt1i7UXjRQitOd4O+aIs8KTyfwxXGH/HsneYm4xVwdQP4dcTh/Oebz4WuqvnSubx0BDSTUUC+BkOEDbmVmIDjYoQD8yH90DpVauhm4DsEjaXdGgKMBaQl/d8CIosPKqkaugriF4ww7cSNXTkJGV1hseyPheokehnA=
+	t=1707158227; cv=none; b=sZuhFTfvQkasA+mdI+4FPkKfltK5WqTgE2ybzbLcCXE0+Dn9s8W9e03batCJGueOEd6ouVHeZAduI4mSn+xbR6AuPJB0hdnEJxB6XY1njif4G9iAPPG+MuynAEOnsNXQLXNMz6AsLBd2Bfr7kei51KYG0VrdAtDxl7DFVS/aszc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707159024; c=relaxed/simple;
-	bh=Xhujo+wDiMZRhR3TwEcnhYIXAGX+tOaXYwuQFNEDweY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UA2lThwlvvSkO8CL7t22ixDlAINcP7t777OwkTCJ4UlLqXfg5KqwxMFDTmuGFMBYagXB9jWWg5IgDaSSlfmljpq0epDZaf3bROl9tYd3c1rLgNpTriQEwHvzyzl6nBdjYBu8BrEFT9qUKzUkfERSGsxHAG9rve4lcRpcHG4Q2lY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fczhIVlu; arc=none smtp.client-ip=209.85.161.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-599f5e71d85so22402eaf.3;
-        Mon, 05 Feb 2024 10:50:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707159022; x=1707763822; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a5/QetKatJetZu8QUL35h5FIsCUnt2b4O8Bogdh7dS4=;
-        b=fczhIVluWfK1xuswkTnwErAk+mc/BUBKeXF6FkefdyoXj6xrC/HmdWsR7itXA9xBP1
-         BQ707M4yOC1eGN/He5ThRm9/vRu552A+x1YTBmU8mtdkmVnhUgwW6VwuvV1f0Mf19NpQ
-         bOvp3ljJx3u15JWxs3NtWY5OzXXGdUQJtnBA6389H+2xCQrNv+D+Dqr95cVyr3BozGr6
-         mCyNeIbbirtC+wV3yDlcCpFTVY688ZRmgZ3peFxo6952U+fr7DItSp1WlscJ1eJbOuFl
-         fFnRq2dx+ksnU6eKzxBIJZKZaB8+s89pkTzPBZGIbUmnmzetZva3vnNoZLgWPOCWlhVB
-         aAxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707159022; x=1707763822;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a5/QetKatJetZu8QUL35h5FIsCUnt2b4O8Bogdh7dS4=;
-        b=hoWDB0CB4/iuCXefH/QZ7NWjueIqTShsBICM9P7/spq6vDW7YG8VwOVyE4wIv8tH3v
-         dR3edy07DxDtBol3459wLsd8YrQgHaL4U7NECf+XVvjJaD+QC0EVq23E/I3pCrohz6TL
-         jmOCD7ZjpNFmYiWU0XpHmjuUz22DqixQJPH6XUTmN3MCLX/dSDNdh42JYhjSS2lQbR0M
-         ojuSt7Hk35SS53Jt904gZezF/VfpgrBX70ljfsRV8uoe04e8hV4hU32VeCo5aybto9us
-         OnvqaVaXVSXniUoxv9CufdI3y/ULOLX0wrSvuNdBauAV8gt6RnHz4ReFMOMnnY+HT6M/
-         unuw==
-X-Gm-Message-State: AOJu0YyibJSTj7L+1vG7v8CHWqPV3yoPpaxAugkKTT+nXpjECPXV8Eol
-	TgCOaokFNcuxGBHUZb/vsv0TMCNBSA8ghfp/2ShGIRWfZJsy4yyF
-X-Google-Smtp-Source: AGHT+IGdMtsWr1OpAk73Qdb2h2Xh3VJkag4VDyc6etFQCzn0YJKsKWR1PimbbtLuYoStFbba0Frj2g==
-X-Received: by 2002:a4a:241d:0:b0:599:49ec:6d15 with SMTP id m29-20020a4a241d000000b0059949ec6d15mr542271oof.1.1707159022108;
-        Mon, 05 Feb 2024 10:50:22 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUhhGoU4pHLpckzL33j+8HDGr+TsjC1gXJaozqI+dj5ji++n55Rbv9euK17brsZ5XaENmpcVnPmXeQyKwE4k+xkTu7UVelm7TNQ8+QmNEdRKzc++XUCK0tbget5H5rQA0d2mCTit3gTYDJTXgCkWfozQZrcb4HL2A5rJEJ6lufiWTkMJw==
-Received: from localhost.localdomain (i577B6813.versanet.de. [87.123.104.19])
-        by smtp.gmail.com with ESMTPSA id x5-20020a4a8005000000b0059a096ee494sm59382oof.47.2024.02.05.10.50.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 10:50:21 -0800 (PST)
-From: Jesus Gonzalez <jesusmgh@gmail.com>
-To: andriy.shevchenko@linux.intel.com,
-	jic23@kernel.org,
-	lars@metafoo.de
-Cc: linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jesus Gonzalez <jesusmgh@gmail.com>
-Subject: [PATCH v2 1/1] Add 10EC5280 to bmi160_i2c ACPI IDs to allow binding on some devices
-Date: Mon,  5 Feb 2024 19:36:20 +0100
-Message-ID: <20240205183618.7761-3-jesusmgh@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <ZcDnikkiwSIDGzT0@smile.fi.intel.com>
-References: <ZcDnikkiwSIDGzT0@smile.fi.intel.com>
+	s=arc-20240116; t=1707158227; c=relaxed/simple;
+	bh=ril2mjZw5Tmfit3JBs/6rZtrfDzak390D6OdEMFzCTY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HmwuWvIkOCrUjeq7V7Abt8nzY/ugUYgmYnieB7tHbH6TRDwIJ0Q2bHMI/r0Ed2k2S5yVRlVwnouCuv3fCsCulr8c2oQzp2XXhhT9xDIr9kbtdTVcGaFR5L7gcpQ00aIOCxV1wWhz/KucVZoNZQLK8u3MChickLqfAH4dQKlT8NY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mz2lAVhO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69A48C43394;
+	Mon,  5 Feb 2024 18:37:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707158226;
+	bh=ril2mjZw5Tmfit3JBs/6rZtrfDzak390D6OdEMFzCTY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=mz2lAVhOIlwI+4wB/NVzBZtNzy3hVoLPol+OJX3UyjRvBwlwZL9MsvDrDBZ/41K+i
+	 hbsdSEryR640VyZfB3Ds02wPJsKxRQJzGfDa7mNHK1PG/MWUtYAREVpA30AOIwANf4
+	 5lXv2Q5mVpK4LIHT1WmwxuCa18r4bLxLSYRoTcQkpSrQx5lntSlMdE7b9WLbt1Icg6
+	 iaKT9VCFBBWAl20NYgzjtNCsenRrKTC4U9zZ9aZZbDgE+3bnyMR/9y/bzM/uFl+qaT
+	 5ZoO12U0bq5771cDCfV7HSn5BOmmKe9Kkd6E+n7FW59RfdvSqDotrM5rbqfLvw81GK
+	 ru+aPoxUvf6ug==
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5112a04c7acso7643543e87.3;
+        Mon, 05 Feb 2024 10:37:06 -0800 (PST)
+X-Gm-Message-State: AOJu0YyEJ87A7r3FWbUR036E8PGdQtYL22EibhW4f2dZ+seCCJ2Rbp0D
+	hUzuYeWwAY96/Ol+I32nWbFptqHZ5ncOngY9woyzAZW/24C7eGLZomKT06En9uIVNmalaDN81/1
+	3fC5gaWUBNOSRkZMGgp1z6OQlGQ==
+X-Google-Smtp-Source: AGHT+IFLhqaDldx2J/zwVTLy2bXBhYfBWSmTcNJzhsZJZXwWmsKPuubHGJZmQXSA9B4FmBD2VULodz3rrgOrIHfHrtI=
+X-Received: by 2002:ac2:4c93:0:b0:511:33d4:c99a with SMTP id
+ d19-20020ac24c93000000b0051133d4c99amr302024lfl.61.1707158224608; Mon, 05 Feb
+ 2024 10:37:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240202171915.4101842-1-quic_jhugo@quicinc.com> <20240205183338.GA3905881-robh@kernel.org>
+In-Reply-To: <20240205183338.GA3905881-robh@kernel.org>
+From: Rob Herring <robh@kernel.org>
+Date: Mon, 5 Feb 2024 18:36:51 +0000
+X-Gmail-Original-Message-ID: <CAL_JsqJvW7fWyCXt6UfNkJwezY27Ezkx4UWA=d5ecGrRS=8Q-w@mail.gmail.com>
+Message-ID: <CAL_JsqJvW7fWyCXt6UfNkJwezY27Ezkx4UWA=d5ecGrRS=8Q-w@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: clock: qcom: Fix @codeaurora email in Q6SSTOP
+To: Jeffrey Hugo <quic_jhugo@quicinc.com>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, mturquette@baylibre.com, 
+	sboyd@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-"10EC5280" is used by several manufacturers like Lenovo, GPD, or AYA (and 
-probably others) in their ACPI table as the ID for the bmi160 IMU. This 
-means the bmi160_i2c driver won't bind to it, and the IMU is unavailable 
-to the user. Manufacturers have been approached on several occasions to 
-try getting a BIOS with a fixed ID, mostly without actual positive 
-results, and since affected devices are already a few years old, this is 
-not expected to change. This patch enables using the bmi160_i2c driver for 
-the bmi160 IMU on these devices.
+On Mon, Feb 5, 2024 at 6:34=E2=80=AFPM Rob Herring <robh@kernel.org> wrote:
+>
+> On Fri, Feb 02, 2024 at 10:19:15AM -0700, Jeffrey Hugo wrote:
+> > The servers for the @codeaurora domain are long retired and any message=
+s
+> > addressed there will bounce.  Govind Singh has left the company which
+> > appears to leave the Q6SSTOP clock controller binding unmaintained.
+> >
+> > Move maintenance of the binding to the Qualcomm Clock Drivers maintaine=
+r
+> > as suggested by Bjorn Andersson.
+> >
+> > Signed-off-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+> > ---
+> >  Documentation/devicetree/bindings/clock/qcom,q6sstopcc.yaml | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> How about the rest of the tree?:
+>
+> Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml:  - Sa=
+ndeep Panda <spanda@codeaurora.org
+> >
+> Documentation/devicetree/bindings/display/panel/visionox,rm69299.yaml:  -=
+ Harigovindan P <harigovi@codeauro
+> ra.org>
+> Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml:  - Odelu K=
+ukatla <okukatla@codeaurora.org>
+> Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml:  - Kiran=
+ Gunda <kgunda@codeaurora.org>
+> Documentation/devicetree/bindings/net/bluetooth/qualcomm-bluetooth.yaml: =
+ - Balakrishna Godavarthi <bgodava
+> r@codeaurora.org>
+> Documentation/devicetree/bindings/net/bluetooth/qualcomm-bluetooth.yaml: =
+ - Rocky Liao <rjliao@codeaurora.o
+> rg>
+> Documentation/devicetree/bindings/nvmem/qcom,spmi-sdam.yaml:  - Shyam Kum=
+ar Thella <sthella@codeaurora.org>
+> Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml:  - =
+Srinivasa Rao Mandadapu <srivasam@
+> codeaurora.org>
+> Documentation/devicetree/bindings/watchdog/qcom-wdt.yaml:  - Sai Prakash =
+Ranjan <saiprakash.ranjan@codeauro
+> ra.org>
 
-Here is the relevant extract from the DSDT of a GPD Win Max 2 (AMD 6800U
-model) with the latest firmware 1.05 installed. GPD sees this as WONTFIX
-with the argument of the device working with the Windows drivers.
+Nevermind, I see the other patches now. BTW, this kind of thing you
+can just send me 1 patch fixing them all. Split is fine too.
 
-     Scope (_SB.I2CC)
-    {
-        Device (BMA2)
-        {
-            Name (_ADR, Zero)  // _ADR: Address
-            Name (_HID, "10EC5280")  // _HID: Hardware ID
-            Name (_CID, "10EC5280")  // _CID: Compatible ID
-            Name (_DDN, "Accelerometer")  // _DDN: DOS Device Name
-            Name (_UID, One)  // _UID: Unique ID
-            Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
-            {
-                Name (RBUF, ResourceTemplate ()
-                {
-                    I2cSerialBusV2 (0x0069, ControllerInitiated, 0x00061A80,
-                        AddressingMode7Bit, "\\_SB.I2CC",
-                        0x00, ResourceConsumer, , Exclusive,
-                        )
-                })
-                Return (RBUF) /* \_SB_.I2CC.BMA2._CRS.RBUF */
-            }
-
-            OperationRegion (CMS2, SystemIO, 0x72, 0x02)
-            Field (CMS2, ByteAcc, NoLock, Preserve)
-            {
-                IND2,   8, 
-                DAT2,   8
-            }
-
-            IndexField (IND2, DAT2, ByteAcc, NoLock, Preserve)
-            {
-                Offset (0x74), 
-                BACS,   32
-            }
-
-            Method (ROMS, 0, NotSerialized)
-            {
-                Name (RBUF, Package (0x03)
-                {
-                    "0 -1 0", 
-                    "-1 0 0", 
-                    "0 0 1"
-                })
-                Return (RBUF) /* \_SB_.I2CC.BMA2.ROMS.RBUF */
-            }
-
-            Method (CALS, 1, NotSerialized)
-            {
-                Local0 = Arg0
-                If (((Local0 == Zero) || (Local0 == Ones)))
-                {
-                    Return (Local0)
-                }
-                Else
-                {
-                    BACS = Local0
-                }
-            }
-
-            Method (_STA, 0, NotSerialized)  // _STA: Status
-            {
-                Return (0x0F)
-            }
-        }
-    }
-
-Signed-off-by: Jesus Gonzalez <jesusmgh@gmail.com>
----
-v2 patch implementing the improvements mentioned by Mr. Cameron and Mr.
-Shevchenko, if I understood them correctly. Please tell me if anything
-else should be changed, and I'll be happy to make a new revision.
-
-Thank you!
-
-
- drivers/iio/imu/bmi160/bmi160_spi.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/drivers/iio/imu/bmi160/bmi160_spi.c b/drivers/iio/imu/bmi160/bmi160_spi.c
-index 8b573ea99af2..f88d4b2ba79b 100644
---- a/drivers/iio/imu/bmi160/bmi160_spi.c
-+++ b/drivers/iio/imu/bmi160/bmi160_spi.c
-@@ -40,6 +40,14 @@ static const struct spi_device_id bmi160_spi_id[] = {
- MODULE_DEVICE_TABLE(spi, bmi160_spi_id);
- 
- static const struct acpi_device_id bmi160_acpi_match[] = {
-+	/* FIRMWARE BUG WORKAROUND
-+	 * Some manufacturers like GPD, Lenovo or Aya used the incorrect
-+	 * ID "10EC5280" for bmi160 in their DSDT. A fixed firmware is not
-+	 * available as of Feb 2024 after trying to work with OEMs, and
-+	 * this is not expected to change anymore since at least some of
-+	 * the affected devices are from 2021/2022.
-+	 */
-+	{"10EC5280", 0},
- 	{"BMI0160", 0},
- 	{ },
- };
--- 
-2.43.0
-
+Rob
 
