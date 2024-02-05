@@ -1,161 +1,170 @@
-Return-Path: <linux-kernel+bounces-52992-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52993-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4FB6849F3E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:05:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F197849F3F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:05:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CBA61F212F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:05:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A38E3282FA1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:05:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25CBC33CD9;
-	Mon,  5 Feb 2024 16:05:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C7713A27E;
+	Mon,  5 Feb 2024 16:05:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VB+lUYTy"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="S4r0uvxH"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD57B3CF58
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 16:05:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D505533CDB
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 16:05:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707149125; cv=none; b=RgLxqxX1s9E4eScEoVZEOo+dH5LPP7eP/ayxXIPgHWNXInMdWpGSeTWGxEnBTwG9IRqInfxeqUVP6NzlutP1QofuRywxs7WAf3CYrMVmtyDgnArgyaIVvFFqT0EZ8C/KHC4dOv0NPc8+Jmys5OT0WxpXTyaZJfC9lAThOtDuhOI=
+	t=1707149128; cv=none; b=l7KU+Hy/uceMgDJ4Mq78Va5fQFZpXpjVObT7qBqAITsiiH/ORqGtCBB6UsBRY09jYb+WiCRitFIL+3F98QjDYag3EEuWBjzIfwLnabh7l6cjSXVA8vfEKAv3O/5AdnC/7wfN7ijS39sdGbT4N5VmxDPeXq5rZVUfYEMdOmvDLY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707149125; c=relaxed/simple;
-	bh=nbsv/ESIHwJSh7QNZhf5AczCQ2fjogWmJ59hgx6/47g=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ayDD8b7NzSkCfgBvzE9Xf5Zn5BO9glyT1GyFAGVlgdczUlPjTtNt5787x+tJJGWtT788Oyq0yWTd0ZZ5B5GrUPs1Ag7Mra5g3bH36LuPgkCJh03hoBgLjgSxJ1jpFcXDpPaibHvWbj9aQNQr16pTjt3XisYCwos6hrDpfM1H/oA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VB+lUYTy; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707149122;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/YDhdLXQmNxdWoNzbOTZZc0FZCB0nekr5D8YLQhiDIs=;
-	b=VB+lUYTyjBdpryWeyBCMxhbmplJ1kvBY1QS/39pL6rcZZxNhQhKE1K4Ds4ZGp7B/YBVVWP
-	xTvpksnN2dO9TjIWaxHm1nvro+1XCI8XFzEFmh4lpgvrVi4n+TlIcvPfuB0J0+aeiRy28S
-	RFr4QhH49h7gFd8WDKg+Fn20UoNneUo=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-416-5g0mnRzcO9-9M5Y4xxofEw-1; Mon, 05 Feb 2024 11:05:20 -0500
-X-MC-Unique: 5g0mnRzcO9-9M5Y4xxofEw-1
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-68c8a5327a2so30639176d6.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 08:05:20 -0800 (PST)
+	s=arc-20240116; t=1707149128; c=relaxed/simple;
+	bh=NuQZpRiWrPYNbtok44uV0c5QL3pOiTiUKf8wXxbmRZg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=C6YfH/CqTIeQbyFtQK3LptcH6NobUlWnDp27xlc0Yf2Vx44YGVlWdgIUWKE8rCJJPGQxL/foqu3AJl3ZmSeZqfJZ/r/NPXYZ+Y+jBNpN0keq+od9losI+Sv1/e8VjHwDAEe0sCS+JHs5AvcvMgSq1nxiDme7gT7K/CHd0dcQZ6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=S4r0uvxH; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40fd15fe6a8so75045e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 08:05:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707149124; x=1707753924; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CYZyNjIxlDFPhWyjksZUxS6xmnfxwnVZbORSM0gvtHE=;
+        b=S4r0uvxH7N4CShH7d/GQ1sH8oVj1zNIqz3aALePMDH0LqIm1dvW5Uk1xaT0OkZGpk9
+         IIupQRkB9AgUQklijdC9h7aUToBm7DUgl5jmawQTLhXQY3yHtD8EWXRPA+bppIkQG9eS
+         TWrB27QjHHuDjAaRHtp4qK/DCajVPlvObsuNTycz9V83u4BI/TR10maSTdAaDFQzojE1
+         zXnaZ0FHwI+GpMZN0KRxS+D9WnRDnOFqwjNTav59xj4UoVf3ljMoL6/OW4BkIpl+YGnD
+         bMM+HWY9oX+umgmxIk+H6pu07gsgJPdtaDmzOYUMn1+7Clk7XZ7aS7vtPK7N1gMEJW+X
+         W6wA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707149118; x=1707753918;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/YDhdLXQmNxdWoNzbOTZZc0FZCB0nekr5D8YLQhiDIs=;
-        b=CckA3QBA7acfFD0BDQedrbpIEmuN4IJkGzgoNPkZtf1o3Z+vMD9226/uOU8ZtLuVnE
-         Yq/6uVhE/guIkrJ5Xrwg0AgK5Vj7+e24p8BySOggQkYjh9GQbMf7qkLeQW5Zwd2T9JsF
-         opjWyvFxw7K6oARUpqGDbTwyEc+1ribHOv11BXvX2H7+IbxTa9TSCPfr5nG7Sqn01zbJ
-         +t4uUFcnPeXzE40b+Y6ouPfPk9cNbUWP35U6S4RicWcNMt+iYDvSuFjqZJB7kiKrd34t
-         HS7cZao8p9cAvYHqjkV/MtXPhGoQh4fxZ3Yb28cLIDmx7YxeJYh6JSeiUvo5ZO+DNCh7
-         9riw==
-X-Gm-Message-State: AOJu0YwLVyygtZUrO4lRtDeudy+AqfQiGh9R2eDzvlKtvxfEQJ+MG/7i
-	AZ10Htk5yhg0/iM+halJ19CjqtltAOlGe31DUXy6FrQJOzZg5uOd5i+gye4M49TFrQGTQqrvmji
-	irIztP37x88K18g/hoF0atXwffO8xibIeYmxllgCNYkVXoS79jqId9GrBU5FTScgbzXShqKzltM
-	HJ0vmWC+OPP0C2Be8WSn3pcjn3nHfOGsBc7lhbPusL6CbPvg==
-X-Received: by 2002:a05:6214:234c:b0:68c:a48b:1837 with SMTP id hu12-20020a056214234c00b0068ca48b1837mr4341672qvb.56.1707149118729;
-        Mon, 05 Feb 2024 08:05:18 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFEK5wyGMRf7y6ljyaUktOKqjtoG7O1AlU4Dzog+BlM4E7VbbrOpKjXLqEv/DTIi2DjcIw0sw==
-X-Received: by 2002:a05:6214:234c:b0:68c:a48b:1837 with SMTP id hu12-20020a056214234c00b0068ca48b1837mr4341637qvb.56.1707149118410;
-        Mon, 05 Feb 2024 08:05:18 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXYwD3XfR1ZPE9TqWGg3RvY3sNwUSjHOdjGmXJ3/N5P5Ej0vSwBHvh2RUH0bVziZ5Y7T5cgd9ANVYBG5awCOONDk8xfJ1hlvOtHmS+ZlAwPeOYXDjLdeBPc8nv4Fauig/uy4GE5pQgn1ZuM44GvuDZHsHO++anq6ehVIYdL0BjYaZhc1nTgP4c3bXx3Yaq2DmFOBgSbsotNQtxU4+vBFgZfojkQLlZ9lqNyA82da4KSUp803akvbzP9zs495pgDe9743+yiXz7PKNs0T+iMQaNFdm0=
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id y14-20020a0ceace000000b0068c4aabcdb6sm103206qvp.29.2024.02.05.08.05.16
+        d=1e100.net; s=20230601; t=1707149124; x=1707753924;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CYZyNjIxlDFPhWyjksZUxS6xmnfxwnVZbORSM0gvtHE=;
+        b=pa6DDm8nOmTwpXrL3mNygMgI6qowc3ptA7ZOij+VzUvFfRHznzjrV8gPGvLzycaYQb
+         I8PFQSuLQQWgopiZiGTQ/ubBADCcwcNvAOuPboyrk5EJxIwKSFiuIIDSp/o0XjCb9IJZ
+         PmrQLjuWUz81eaBrk+6l5iIZ1BO1OP9+ADnsvTyy9JFgt9pInfJubx3UP3RAWawKX6T8
+         TNVqzs43N5POTtcwm+LYi/fbtPOF741ADYquMenHFa6yRwEyXdafmxo4mtivYyO2pmOq
+         hiEsUCssOfkrm1vQYmja0BbD77zw3M2qv3pzLgy0/9DSHKG84hc8G8P1dm1qkzhEXUA3
+         h6mA==
+X-Gm-Message-State: AOJu0YwI/BXhg1F+Va1sVZPpfaTCGooS0OxDgYgjbFEJeyOKwUdVFE0a
+	skZM573o/TCCUQjLngtp/NRegvxs7CzNjadwn34CqdGr0oVc5aLmtgwH3prbWQ==
+X-Google-Smtp-Source: AGHT+IFbUog5YW+R34dfZwqpeAWaXbXS7kqTE+M1tcTJHXAI7hpcjA6iAanTUc4hznRPTVUGW1SHQQ==
+X-Received: by 2002:a05:600c:5187:b0:40f:dd8f:152c with SMTP id fa7-20020a05600c518700b0040fdd8f152cmr113764wmb.4.1707149123951;
+        Mon, 05 Feb 2024 08:05:23 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXeaO7j728zekDuQdzDKwJj2UOXOnTcpuMyB6C4+Q/i3YYe48qy8m5wOt1VAn4vSM36Of0JOYedLRDhCezQCi9WSzqvziZN9Mcz+RWLUtL0W8QqzxtnX04pfT9/tnXCV5gCJ/M4fiV+bkF8tx6qEmYqYNNFRnYaJg0H/jhAb/3EHAidNkEd5nIvEaOQ7b1cGd+IoqPAyayKCaa5VABEicjCg3Asnx1c7M14Ut0q8OOJUaXZ/u06rAKoDL6pohqagXPpCy2OtI8wR4UbRVo08w7sWzp41yLno0GCkQvP3UtkEXhdMBixOShYUnV4lxo2iw53PjjnwyhKHlMW42EQOoDmLgXrDZc1w9M4ehA0O2RYTsLi+SBRkvuXnLbBPQrnIktEGrdaxCl7YDZUHlF3Ba5yuOqDtG1fGi0RruYyz1hh/DMCoXh1eOlrjOgq0cqoRZPLv5IJwUgjHnZaJM4G23i2rfovFO6ruRQNeXxm8m96KGETgu0gU89j23IBhUo801E=
+Received: from google.com (161.126.77.34.bc.googleusercontent.com. [34.77.126.161])
+        by smtp.gmail.com with ESMTPSA id w15-20020a05600c474f00b0040fc26183e8sm259274wmo.8.2024.02.05.08.05.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 08:05:17 -0800 (PST)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Mark Rutland <mark.rutland@arm.com>, Steven Rostedt <rostedt@goodmis.org>
-Cc: richard clark <richard.xnu.clark@gmail.com>, nico@fluxnic.net,
- mhiramat@kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Question about the ipi_raise filter usage and output
-In-Reply-To: <ZcDwoce6Ok25K6Dm@FVFF77S0Q05N>
-References: <ZcDwoce6Ok25K6Dm@FVFF77S0Q05N>
-Date: Mon, 05 Feb 2024 17:05:14 +0100
-Message-ID: <xhsmhmssehp6t.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+        Mon, 05 Feb 2024 08:05:23 -0800 (PST)
+Date: Mon, 5 Feb 2024 16:05:21 +0000
+From: Sebastian Ene <sebastianene@google.com>
+To: Oliver Upton <oliver.upton@linux.dev>
+Cc: will@kernel.org, James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>, catalin.marinas@arm.com,
+	mark.rutland@arm.com, akpm@linux-foundation.org, maz@kernel.org,
+	kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, kernel-team@android.com,
+	vdonnefort@google.com, qperret@google.com, smostafa@google.com
+Subject: Re: [PATCH v4 02/10] KVM: arm64: Add ptdump registration with
+ debugfs for the stage-2 pagetables
+Message-ID: <ZcEHQSFx4gNh4yMm@google.com>
+References: <20231218135859.2513568-2-sebastianene@google.com>
+ <20231218135859.2513568-4-sebastianene@google.com>
+ <ZYSAfORj2-cXo5t_@linux.dev>
+ <Zbt-leieTD64ZefR@google.com>
+ <ZcDfM2VRiTETM04I@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZcDfM2VRiTETM04I@linux.dev>
 
-On 05/02/24 14:39, Mark Rutland wrote:
-> [adding Valentin]
->
+On Mon, Feb 05, 2024 at 01:14:27PM +0000, Oliver Upton wrote:
+> On Thu, Feb 01, 2024 at 11:20:53AM +0000, Sebastian Ene wrote:
+> > On Thu, Dec 21, 2023 at 06:14:20PM +0000, Oliver Upton wrote:
+> > 
+> > Hi Oliver,
+> > 
+> > I am planning to split the series based on your suggestion and I
+> > wanted to make sure that I understand your feedback.
+> > 
+> > > On Mon, Dec 18, 2023 at 01:58:52PM +0000, Sebastian Ene wrote:
+> > > > +config PTDUMP_STAGE2_DEBUGFS
+> > > > +       bool "Present the stage-2 pagetables to debugfs"
+> > > > +       depends on PTDUMP_DEBUGFS && KVM
+> > > > +       default n
+> > > > +       help
+> > > > +         Say Y here if you want to show the stage-2 kernel pagetables
+> > > > +         layout in a debugfs file. This information is only useful for kernel developers
+> > > > +         who are working in architecture specific areas of the kernel.
+> > > > +         It is probably not a good idea to enable this feature in a production
+> > > > +         kernel.
+> > > 
+> > > It isn't really a good idea to mount debugfs at all in a production
+> > > system. There are already plenty worse interfaces lurking in that
+> > > filesystem. The pKVM portions already depend on CONFIG_NVHE_EL2_DEBUG,
+> > > so I don't see a need for this Kconfig option.
+> > > 
+> > 
+> > I created a separate option because I wanted to re-use the parsing
+> > functionality from the already existing ptdump code for EL1. This option
+> > is turned off in production and only enabled for debug.
+> > 
+> > I was thinking to make use of the `CONFIG_NVHE_EL2_DEBUG` but then I abandoned 
+> > this ideea as one can use ptdump for vHE as well.
+> 
+> Fair enough. I was going to say we could just have KVM follow
+> CONFIG_PTDUMP_DEBUGFS, but it doesn't matter either way.
+> 
+> > > > +void kvm_ptdump_register_host(void)
+> > > > +{
+> > > > +	if (!is_protected_kvm_enabled())
+> > > > +		return;
+> > > > +
+> > > > +	kvm_ptdump_debugfs_register(&host_reg, "host_page_tables",
+> > > > +				    kvm_debugfs_dir);
+> > > > +}
+> > > > +
+> > > > +static int __init kvm_host_ptdump_init(void)
+> > > > +{
+> > > > +	host_reg.priv = (void *)host_s2_pgtable_pages();
+> > > > +	return 0;
+> > > > +}
+> > > > +
+> > > > +device_initcall(kvm_host_ptdump_init);
+> > > 
+> > > Why can't all of this be called from finalize_pkvm()?
+> > > 
+> > 
+> > I guess it can be called from finalize_pkvm before the is_protected_kvm_enabled
+> > check. This should work for nvhe & vhe as well.
+> 
+> What does nvhe and vhe modes have to do with it? I thought this was for
+> hooking up the host's S2, which does not exist outside protected mode.
+> 
 
-Thanks!
+True I guess there is no other need for the initialization portion in
+this function. I will split the series to address the non-protected
+support first.
 
-> On Mon, Feb 05, 2024 at 08:06:09AM -0500, Steven Rostedt wrote:
->> On Mon, 5 Feb 2024 10:28:57 +0000
->> Mark Rutland <mark.rutland@arm.com> wrote:
->>
->> > > I try to write below:
->> > > echo 'target_cpus == 11 && reason == "Function call interrupts"' >
->> > > events/ipi/ipi_raise/filter
->> >
->> > The '=' checks if the target_cpus bitmap *only* contains CPU 11. If the cpumask
->> > contains other CPUs, the filter will skip the call.
->> >
->> > I believe you can use '&' to check whether a cpumask contains a CPU, e.g.
->> >
->> >    'target_cpus & 11'
->>
->> 11 == 0xb = b1011
->>
->> So the above would only be true for CPUs 0,1 and 3 ;-)
->
-> Sorry, I misunderstood the scalar logic and thought that we treated:
->
->       '$mask $OP $scalar', e.g. 'target_cpus & 11'
->
-> .. as a special case meaning a cpumask with that scalar bit set, i.e.
->
->       '$mask $OP CPUS{$scalar}', e.g. 'target_cpus & CPUS{11}'
->
-> .. but evidently I was wrong.
->
->> I think you meant: 'target_cpus & 0x800'
->>
->> I tried "1 << 11' but it appears to not allow shifts. I wonder if we should add that?
->
-> Hmm... shouldn't we make 'CPUS{11}' work for that?
->
+Thanks,
+Seb
 
-It /should/ already be the case, the user input with the curly braces is
-parsed as a cpulist. So CPUS{11} really does mean CPU11, not a hex value to
-be interpreted as a cpumask.
-
-However...
-
-> From a quick test (below), that doesn't seem to work, though I think it
-> probably should?
-> Have I completely misunderstood how this is supposed to work, or is that a bug?
->
-
-The CPUS{} thingie only works with an event field that is either declared as a
-cpumask (__cpumask) or a scalar. That's not the case for ipi_raise, the
-target_cpus event field is saved as a "raw" bitmask.
-
-There /should/ have been a warning about the event filter though, but I
-think it's not happening because I'm allowing more than just FILTER_CPUMASK
-in parse_pred() to make it work for scalars. I'll go poke around some more.
-
-Generally for this sort of IPI investigation I'd recommend using the newer
-trace_ipi_send_cpu() and trace_ipi_send_cpumask() (for which CPUS{}
-filtering works).
-If it's only the function call interrupts you're interesting in, have a
-look at trace_csd_queue_cpu().
-
-> Mark.
-
+> -- 
+> Thanks,
+> Oliver
 
