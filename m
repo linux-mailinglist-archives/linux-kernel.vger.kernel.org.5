@@ -1,228 +1,315 @@
-Return-Path: <linux-kernel+bounces-53049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17CD2849FFB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:54:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C897849FFE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:55:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B6691C223C8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:54:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FE4EB24E42
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:55:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A0313CF7B;
-	Mon,  5 Feb 2024 16:54:42 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B72B03D392;
+	Mon,  5 Feb 2024 16:55:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="bX03+r4Y"
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FA7F3E47F
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 16:54:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7D323FE3F;
+	Mon,  5 Feb 2024 16:55:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707152081; cv=none; b=lUQl0Zawc0+8pEWjT2u9DDGwowSVrEDk0N4OeUXGpu/lzQfeLrLHjuVHlb/Z/nA/MzuzoFeWRd8YIPSNsF4d1l6ecdM4QFwBIamZFSNByKz8mFrL1a7+vzP0nH1462iB8C+pSNZQaU03IQMYVeNg1I2BMNw3Twbon1zHngdvc+I=
+	t=1707152117; cv=none; b=sNStvrxGBBjM1aLMxG90OxOUDMZA+D8Vm7/Z5oIaOg7/GooISpmyCwUpHqjHnw5TMcoX9EFPOFQTnuV5+NlqiuXHNhH/fKTxfEgPwTG0Zj77hrFoc3FZpJW3JZ3cVTCyOPSbABmJ/UgchW0Vba9jkdViYcmbHmwR8O5+I84hI98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707152081; c=relaxed/simple;
-	bh=BWXxK3OVzSaVZgaONJgEu306zcgQvTxMmuYO+qcxMbs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LjRCJhL5l7mIs0bvekwfSAXBEbhRRdgypj/pf9J3+POwvLIAMgq1CYuD1lZKkv22ZPZ/NuyenurD8hU3pZ2beQrXGzdNvlIkM5B+W3xHOsN7+/o4ofOl+TLAXKcXtkHKegqpYZ9BsWwArMhj9MYfh+qHr3kXGFqgNc3Xxv0SMq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1rX2Ef-0005Ok-NW; Mon, 05 Feb 2024 17:54:21 +0100
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1rX2Ee-004fPC-QL; Mon, 05 Feb 2024 17:54:20 +0100
-Received: from mfe by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1rX2Ee-00Cp1S-2K;
-	Mon, 05 Feb 2024 17:54:20 +0100
-Date: Mon, 5 Feb 2024 17:54:20 +0100
-From: Marco Felsch <m.felsch@pengutronix.de>
-To: "Dr. David Alan Gilbert" <linux@treblig.org>
-Cc: gregkh@linuxfoundation.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	linux@roeck-us.net, heikki.krogerus@linux.intel.com,
-	linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH 4/4] usb: typec: tcpci: add support to set connector
- orientation
-Message-ID: <20240205165420.kyujim2takwswzmw@pengutronix.de>
-References: <20240205164316.805408-1-m.felsch@pengutronix.de>
- <20240205164316.805408-5-m.felsch@pengutronix.de>
- <ZcESKqRTsGNZMMX1@gallifrey>
+	s=arc-20240116; t=1707152117; c=relaxed/simple;
+	bh=5qZXuupoFKUYVo8agP1h9S4qQ94D3Y2AcpLKcOkyjgo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Xmi2ofeC1tARMyDT3lUP5x7zrmgW8+FouReqcy6OE4alZi1adAOy+KaxruGQ0L8QPHPyr1vhzbnyyCaa+gD6BiFLpcdr47nclafNxTvSzpLepcO1c0GtNK/lT60imUgpIE8e9DtoEdbuMn14HsN4F9RI3ip03D+nMQQYPJfpvxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=bX03+r4Y; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1707152104;
+	bh=5qZXuupoFKUYVo8agP1h9S4qQ94D3Y2AcpLKcOkyjgo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=bX03+r4YYyhXn3EBekXNvG+e/IwreI0XjxsB2c/D3YHNexWE1rXBW/9rxe04wNE8r
+	 RyvJi2VXchG1cMYwHilqXwJQvbdckvbJJiFPwM/BM95DGMJSsZ7W6G0FXJtfSNycKF
+	 EF+7B1egyIUaDdxEkvAeH1lpoQqBWy3Ftcy8fsEvwhM4jUdygd63nzJaPtFbzAoE2M
+	 hvMV66eyd5B5Tw99rlld5QpCciCGMbQQLR5XoZc3JFdU9QoVWmxIgpAVT8GJVZKt6E
+	 NSb4CHhTDQLi3XTNFe/AubThDwo/7zWWQ0NK1rd2G7lNU+6w070XBR2MuWvtaXvlq1
+	 tVOnLzTR1036g==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TTCD82rwmzXck;
+	Mon,  5 Feb 2024 11:55:04 -0500 (EST)
+Message-ID: <3c16bee0-70b7-420f-a085-c9e09e293fe2@efficios.com>
+Date: Mon, 5 Feb 2024 11:55:08 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZcESKqRTsGNZMMX1@gallifrey>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v14 4/6] tracing: Allow user-space mapping of the
+ ring-buffer
+To: Vincent Donnefort <vdonnefort@google.com>, rostedt@goodmis.org,
+ mhiramat@kernel.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
+Cc: kernel-team@android.com
+References: <20240205163410.2296552-1-vdonnefort@google.com>
+ <20240205163410.2296552-5-vdonnefort@google.com>
+Content-Language: en-US
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20240205163410.2296552-5-vdonnefort@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi David,
-
-On 24-02-05, Dr. David Alan Gilbert wrote:
-> * Marco Felsch (m.felsch@pengutronix.de) wrote:
-> > This add the support to set the optional connector orientation bit which
-> > is part of the optional CONFIG_STANDARD_OUTPUT register 0x18 [1]. This
-> > allows system designers to connect the tcpc orientation pin directly to
-> > the 2:1 ss-mux.
-> > 
-> > [1] https://www.usb.org/sites/default/files/documents/usb-port_controller_specification_rev2.0_v1.0_0.pdf
-> > 
-> > Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
-> > ---
-> >  drivers/usb/typec/tcpm/tcpci.c | 43 ++++++++++++++++++++++++++++++++++
-> >  include/linux/usb/tcpci.h      |  8 +++++++
-> >  2 files changed, 51 insertions(+)
-> > 
-> > diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
-> > index 7118551827f6..7ce9d4923bc7 100644
-> > --- a/drivers/usb/typec/tcpm/tcpci.c
-> > +++ b/drivers/usb/typec/tcpm/tcpci.c
-> > @@ -67,6 +67,18 @@ static int tcpci_write16(struct tcpci *tcpci, unsigned int reg, u16 val)
-> >  	return regmap_raw_write(tcpci->regmap, reg, &val, sizeof(u16));
-> >  }
-> >  
-> > +static bool tcpci_check_std_output_cap(struct regmap *regmap, u8 mask)
-> > +{
-> > +	unsigned int reg;
-> > +	int ret;
-> > +
-> > +	ret = regmap_read(regmap, TCPC_STD_OUTPUT_CAP, &reg);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	return (reg & mask) == mask;
-> > +}
-> > +
-> >  static int tcpci_set_cc(struct tcpc_dev *tcpc, enum typec_cc_status cc)
-> >  {
-> >  	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
-> > @@ -301,6 +313,27 @@ static int tcpci_set_polarity(struct tcpc_dev *tcpc,
-> >  			   TCPC_TCPC_CTRL_ORIENTATION : 0);
-> >  }
-> >  
-> > +static int tcpci_set_orientation(struct tcpc_dev *tcpc,
-> > +				 enum typec_orientation orientation)
-> > +{
-> > +	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
-> > +	unsigned int reg;
-> > +
-> > +	switch (orientation) {
-> > +	case TYPEC_ORIENTATION_NONE:
-> > +		/* We can't put a single output into high impedance */
+On 2024-02-05 11:34, Vincent Donnefort wrote:
+> Currently, user-space extracts data from the ring-buffer via splice,
+> which is handy for storage or network sharing. However, due to splice
+> limitations, it is imposible to do real-time analysis without a copy.
 > 
-> Is that intended to be a fallthrough? If so I guess it needs
-> marking as such with a
->                 fallthrough;
+> A solution for that problem is to let the user-space map the ring-buffer
+> directly.
+> 
+> The mapping is exposed via the per-CPU file trace_pipe_raw. The first
+> element of the mapping is the meta-page. It is followed by each
+> subbuffer constituting the ring-buffer, ordered by their unique page ID:
+> 
+>    * Meta-page -- include/uapi/linux/trace_mmap.h for a description
+>    * Subbuf ID 0
+>    * Subbuf ID 1
+>       ...
+> 
+> It is therefore easy to translate a subbuf ID into an offset in the
+> mapping:
+> 
+>    reader_id = meta->reader->id;
+>    reader_offset = meta->meta_page_size + reader_id * meta->subbuf_size;
+> 
+> When new data is available, the mapper must call a newly introduced ioctl:
+> TRACE_MMAP_IOCTL_GET_READER. This will update the Meta-page reader ID to
+> point to the next reader containing unread data.
+> 
+> Mapping will prevent snapshot and buffer size modifications.
 
-You need to add it if there is code in between. Since there is no code,
-just this comment, it shouldn't be necessary.
+How are the kernel linear mapping and the userspace mapping made coherent
+on architectures with virtually aliasing data caches ?
 
-Regards,
-  Marco
+Ref. https://lore.kernel.org/lkml/20240202210019.88022-1-mathieu.desnoyers@efficios.com/T/#t
+
+Thanks,
+
+Mathieu
 
 > 
-> Dave
+> Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
 > 
-> > +	case TYPEC_ORIENTATION_NORMAL:
-> > +		reg = TCPC_CONFIG_STD_OUTPUT_ORIENTATION_NORMAL;
-> > +		break;
-> > +	case TYPEC_ORIENTATION_REVERSE:
-> > +		reg = TCPC_CONFIG_STD_OUTPUT_ORIENTATION_FLIPPED;
-> > +		break;
-> > +	}
-> > +
-> > +	return regmap_update_bits(tcpci->regmap, TCPC_CONFIG_STD_OUTPUT,
-> > +				  TCPC_CONFIG_STD_OUTPUT_ORIENTATION_MASK, reg);
-> > +}
-> > +
-> >  static void tcpci_set_partner_usb_comm_capable(struct tcpc_dev *tcpc, bool capable)
-> >  {
-> >  	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
-> > @@ -808,6 +841,9 @@ struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data)
-> >  	if (tcpci->data->vbus_vsafe0v)
-> >  		tcpci->tcpc.is_vbus_vsafe0v = tcpci_is_vbus_vsafe0v;
-> >  
-> > +	if (tcpci->data->set_orientation)
-> > +		tcpci->tcpc.set_orientation = tcpci_set_orientation;
-> > +
-> >  	err = tcpci_parse_config(tcpci);
-> >  	if (err < 0)
-> >  		return ERR_PTR(err);
-> > @@ -851,6 +887,13 @@ static int tcpci_probe(struct i2c_client *client)
-> >  	if (err < 0)
-> >  		return err;
-> >  
-> > +	err = tcpci_check_std_output_cap(chip->data.regmap,
-> > +					 TCPC_STD_OUTPUT_CAP_ORIENTATION);
-> > +	if (err < 0)
-> > +		return err;
-> > +
-> > +	chip->data.set_orientation = err;
-> > +
-> >  	chip->tcpci = tcpci_register_port(&client->dev, &chip->data);
-> >  	if (IS_ERR(chip->tcpci))
-> >  		return PTR_ERR(chip->tcpci);
-> > diff --git a/include/linux/usb/tcpci.h b/include/linux/usb/tcpci.h
-> > index 467e8045e9f8..f2bfb4250366 100644
-> > --- a/include/linux/usb/tcpci.h
-> > +++ b/include/linux/usb/tcpci.h
-> > @@ -47,6 +47,9 @@
-> >  #define TCPC_SINK_FAST_ROLE_SWAP	BIT(0)
-> >  
-> >  #define TCPC_CONFIG_STD_OUTPUT		0x18
-> > +#define TCPC_CONFIG_STD_OUTPUT_ORIENTATION_MASK		BIT(0)
-> > +#define TCPC_CONFIG_STD_OUTPUT_ORIENTATION_NORMAL	0
-> > +#define TCPC_CONFIG_STD_OUTPUT_ORIENTATION_FLIPPED	1
-> >  
-> >  #define TCPC_TCPC_CTRL			0x19
-> >  #define TCPC_TCPC_CTRL_ORIENTATION	BIT(0)
-> > @@ -127,6 +130,7 @@
-> >  #define TCPC_DEV_CAP_2			0x26
-> >  #define TCPC_STD_INPUT_CAP		0x28
-> >  #define TCPC_STD_OUTPUT_CAP		0x29
-> > +#define TCPC_STD_OUTPUT_CAP_ORIENTATION	BIT(0)
-> >  
-> >  #define TCPC_MSG_HDR_INFO		0x2e
-> >  #define TCPC_MSG_HDR_INFO_DATA_ROLE	BIT(3)
-> > @@ -198,12 +202,16 @@ struct tcpci;
-> >   *		Chip level drivers are expected to check for contaminant and call
-> >   *		tcpm_clean_port when the port is clean to put the port back into
-> >   *		toggling state.
-> > + * @set_orientation:
-> > + *		Optional; Enable setting the connector orientation
-> > + *		CONFIG_STANDARD_OUTPUT (0x18) bit0.
-> >   */
-> >  struct tcpci_data {
-> >  	struct regmap *regmap;
-> >  	unsigned char TX_BUF_BYTE_x_hidden:1;
-> >  	unsigned char auto_discharge_disconnect:1;
-> >  	unsigned char vbus_vsafe0v:1;
-> > +	unsigned char set_orientation:1;
-> >  
-> >  	int (*init)(struct tcpci *tcpci, struct tcpci_data *data);
-> >  	int (*set_vconn)(struct tcpci *tcpci, struct tcpci_data *data,
-> > -- 
-> > 2.39.2
-> > 
-> > 
-> -- 
->  -----Open up your eyes, open up your mind, open up your code -------   
-> / Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
-> \        dave @ treblig.org |                               | In Hex /
->  \ _________________________|_____ http://www.treblig.org   |_______/
-> 
+> diff --git a/include/uapi/linux/trace_mmap.h b/include/uapi/linux/trace_mmap.h
+> index 182e05a3004a..7330249257e7 100644
+> --- a/include/uapi/linux/trace_mmap.h
+> +++ b/include/uapi/linux/trace_mmap.h
+> @@ -43,4 +43,6 @@ struct trace_buffer_meta {
+>   	__u64	Reserved2;
+>   };
+>   
+> +#define TRACE_MMAP_IOCTL_GET_READER		_IO('T', 0x1)
+> +
+>   #endif /* _TRACE_MMAP_H_ */
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index 4ebf4d0bd14c..36b62cf2fb3f 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -1175,6 +1175,12 @@ static void tracing_snapshot_instance_cond(struct trace_array *tr,
+>   		return;
+>   	}
+>   
+> +	if (tr->mapped) {
+> +		trace_array_puts(tr, "*** BUFFER MEMORY MAPPED ***\n");
+> +		trace_array_puts(tr, "*** Can not use snapshot (sorry) ***\n");
+> +		return;
+> +	}
+> +
+>   	local_irq_save(flags);
+>   	update_max_tr(tr, current, smp_processor_id(), cond_data);
+>   	local_irq_restore(flags);
+> @@ -1307,7 +1313,7 @@ static int tracing_arm_snapshot_locked(struct trace_array *tr)
+>   	lockdep_assert_held(&trace_types_lock);
+>   
+>   	spin_lock(&tr->snapshot_trigger_lock);
+> -	if (tr->snapshot == UINT_MAX) {
+> +	if (tr->snapshot == UINT_MAX || tr->mapped) {
+>   		spin_unlock(&tr->snapshot_trigger_lock);
+>   		return -EBUSY;
+>   	}
+> @@ -6533,7 +6539,7 @@ static void tracing_set_nop(struct trace_array *tr)
+>   {
+>   	if (tr->current_trace == &nop_trace)
+>   		return;
+> -	
+> +
+>   	tr->current_trace->enabled--;
+>   
+>   	if (tr->current_trace->reset)
+> @@ -8652,15 +8658,31 @@ tracing_buffers_splice_read(struct file *file, loff_t *ppos,
+>   	return ret;
+>   }
+>   
+> -/* An ioctl call with cmd 0 to the ring buffer file will wake up all waiters */
+>   static long tracing_buffers_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+>   {
+>   	struct ftrace_buffer_info *info = file->private_data;
+>   	struct trace_iterator *iter = &info->iter;
+> +	int err;
+> +
+> +	if (cmd == TRACE_MMAP_IOCTL_GET_READER) {
+> +		if (!(file->f_flags & O_NONBLOCK)) {
+> +			err = ring_buffer_wait(iter->array_buffer->buffer,
+> +					       iter->cpu_file,
+> +					       iter->tr->buffer_percent);
+> +			if (err)
+> +				return err;
+> +		}
+>   
+> -	if (cmd)
+> -		return -ENOIOCTLCMD;
+> +		return ring_buffer_map_get_reader(iter->array_buffer->buffer,
+> +						  iter->cpu_file);
+> +	} else if (cmd) {
+> +		return -ENOTTY;
+> +	}
+>   
+> +	/*
+> +	 * An ioctl call with cmd 0 to the ring buffer file will wake up all
+> +	 * waiters
+> +	 */
+>   	mutex_lock(&trace_types_lock);
+>   
+>   	iter->wait_index++;
+> @@ -8673,6 +8695,97 @@ static long tracing_buffers_ioctl(struct file *file, unsigned int cmd, unsigned
+>   	return 0;
+>   }
+>   
+> +static vm_fault_t tracing_buffers_mmap_fault(struct vm_fault *vmf)
+> +{
+> +	struct ftrace_buffer_info *info = vmf->vma->vm_file->private_data;
+> +	struct trace_iterator *iter = &info->iter;
+> +	vm_fault_t ret = VM_FAULT_SIGBUS;
+> +	struct page *page;
+> +
+> +	page = ring_buffer_map_fault(iter->array_buffer->buffer, iter->cpu_file,
+> +				     vmf->pgoff);
+> +	if (!page)
+> +		return ret;
+> +
+> +	get_page(page);
+> +	vmf->page = page;
+> +	vmf->page->mapping = vmf->vma->vm_file->f_mapping;
+> +	vmf->page->index = vmf->pgoff;
+> +
+> +	return 0;
+> +}
+> +
+> +static void tracing_buffers_mmap_close(struct vm_area_struct *vma)
+> +{
+> +	struct ftrace_buffer_info *info = vma->vm_file->private_data;
+> +	struct trace_iterator *iter = &info->iter;
+> +	struct trace_array *tr = iter->tr;
+> +
+> +	ring_buffer_unmap(iter->array_buffer->buffer, iter->cpu_file);
+> +
+> +#ifdef CONFIG_TRACER_MAX_TRACE
+> +	spin_lock(&tr->snapshot_trigger_lock);
+> +	if (!WARN_ON(!tr->mapped))
+> +		tr->mapped--;
+> +	spin_unlock(&tr->snapshot_trigger_lock);
+> +#endif
+> +}
+> +
+> +static void tracing_buffers_mmap_open(struct vm_area_struct *vma)
+> +{
+> +	struct ftrace_buffer_info *info = vma->vm_file->private_data;
+> +	struct trace_iterator *iter = &info->iter;
+> +
+> +	WARN_ON(ring_buffer_map(iter->array_buffer->buffer, iter->cpu_file));
+> +}
+> +
+> +static const struct vm_operations_struct tracing_buffers_vmops = {
+> +	.open		= tracing_buffers_mmap_open,
+> +	.close		= tracing_buffers_mmap_close,
+> +	.fault		= tracing_buffers_mmap_fault,
+> +};
+> +
+> +static int tracing_buffers_mmap(struct file *filp, struct vm_area_struct *vma)
+> +{
+> +	struct ftrace_buffer_info *info = filp->private_data;
+> +	struct trace_iterator *iter = &info->iter;
+> +	struct trace_array *tr = iter->tr;
+> +	int ret = 0;
+> +
+> +	if (vma->vm_flags & VM_WRITE)
+> +		return -EPERM;
+> +
+> +	vm_flags_mod(vma, VM_DONTCOPY | VM_DONTDUMP, VM_MAYWRITE);
+> +	vma->vm_ops = &tracing_buffers_vmops;
+> +
+> +#ifdef CONFIG_TRACER_MAX_TRACE
+> +	/*
+> +	 * We hold mmap_lock here. lockdep would be unhappy if we would now take
+> +	 * trace_types_lock. Instead use the specific snapshot_trigger_lock.
+> +	 */
+> +	spin_lock(&tr->snapshot_trigger_lock);
+> +	if (tr->snapshot || tr->mapped == UINT_MAX) {
+> +		spin_unlock(&tr->snapshot_trigger_lock);
+> +		return -EBUSY;
+> +	}
+> +	tr->mapped++;
+> +	spin_unlock(&tr->snapshot_trigger_lock);
+> +
+> +	/* Wait for update_max_tr() to observe iter->tr->mapped */
+> +	if (tr->mapped == 1)
+> +		synchronize_rcu();
+> +#endif
+> +	ret = ring_buffer_map(iter->array_buffer->buffer, iter->cpu_file);
+> +#ifdef CONFIG_TRACER_MAX_TRACE
+> +	if (ret) {
+> +		spin_lock(&tr->snapshot_trigger_lock);
+> +		iter->tr->mapped--;
+> +		spin_unlock(&tr->snapshot_trigger_lock);
+> +	}
+> +#endif
+> +	return ret;
+> +}
+> +
+>   static const struct file_operations tracing_buffers_fops = {
+>   	.open		= tracing_buffers_open,
+>   	.read		= tracing_buffers_read,
+> @@ -8681,6 +8794,7 @@ static const struct file_operations tracing_buffers_fops = {
+>   	.splice_read	= tracing_buffers_splice_read,
+>   	.unlocked_ioctl = tracing_buffers_ioctl,
+>   	.llseek		= no_llseek,
+> +	.mmap		= tracing_buffers_mmap,
+>   };
+>   
+>   static ssize_t
+> diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+> index bd312e9afe25..8a96e7a89e6b 100644
+> --- a/kernel/trace/trace.h
+> +++ b/kernel/trace/trace.h
+> @@ -336,6 +336,7 @@ struct trace_array {
+>   	bool			allocated_snapshot;
+>   	spinlock_t		snapshot_trigger_lock;
+>   	unsigned int		snapshot;
+> +	unsigned int		mapped;
+>   	unsigned long		max_latency;
+>   #ifdef CONFIG_FSNOTIFY
+>   	struct dentry		*d_max_latency;
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
 
