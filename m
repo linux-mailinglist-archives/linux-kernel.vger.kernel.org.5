@@ -1,127 +1,148 @@
-Return-Path: <linux-kernel+bounces-52240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9622B8495D1
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:03:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBB048495D2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:03:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32E081F21248
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:03:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FBEB1F215A4
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 09:03:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D437F11CBF;
-	Mon,  5 Feb 2024 09:03:37 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A7EE12B66;
+	Mon,  5 Feb 2024 09:03:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="LfMl7mV0"
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BAED1173A
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 09:03:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1236B125C3
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 09:03:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707123817; cv=none; b=LS5wzNFviCXkXA5s8oYe/6GOm3hBTEcOJ6ZUkQOqBPE7+MutZQ++5lG/bGrQj8UONcGov9Rlexm2WvE9byEltlLkZXiFMzA7iSNn37M73e5edP46WLu43UXL37x52wufoNPHSm9NBg3/+irfcbDb47w/yGsfeOzvkeJ2U0aNyB4=
+	t=1707123820; cv=none; b=Vosh7k6aMzdGAshufS9FZlyfW2StdhMTAXmKFDQfs9Yl1IK+J8anLyLMUgqJud7LgWm+dwGDUfYzR40dTL/yyUmuNU7qU4ZavgEkKuijmL2wABT3eWNxKvnTZnAi0J0ngCmTaeaqrd7zAJuvxrmM9ctkimcCFbGLW5zIJa1xn3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707123817; c=relaxed/simple;
-	bh=pGJESLMO1IwzNYCOL2xCBZdT6xXtl1ti30ZNlzDvHm0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tKaWd5tAYxXNMBO04OB9nsSVCDvuEQIM4n51rv/qTNiWvb9m/PLg8B1nMvdQd+mKyb36kBHUrS1Rs2KTLopBP85hS4XE4Lbpy737rmF31+yTg1p2M22/NshkDgKx+ff/m5/dorj07Q/XmJigaBTVnN4MuWnErg1XuDaKvsnwXKc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rWut1-0007pG-Bc; Mon, 05 Feb 2024 10:03:31 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rWut0-004b25-Dh; Mon, 05 Feb 2024 10:03:30 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rWut0-00FKAQ-16;
-	Mon, 05 Feb 2024 10:03:30 +0100
-Date: Mon, 5 Feb 2024 10:03:30 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: Thorsten Scherer <t.scherer@eckelmann.de>, 
-	Pengutronix Kernel Team <kernel@pengutronix.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] siox: make siox_bus_type const
-Message-ID: <5zjixnsaylidn7t65thchwg5aa2igpwr34bmlfdtevvn4bgx2e@txzz36fi7rqz>
-References: <20240204-bus_cleanup-siox-v2-1-3813a6a55dcc@marliere.net>
+	s=arc-20240116; t=1707123820; c=relaxed/simple;
+	bh=U0IaqYEgUxaoMI0fBY1yJtEGvGyAUmEfSrUJjZ33FhA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=G7a69PWtCKwISqGdfIEaU6r7CbQxVQSNyD/suGioCMIGnZlfq58IRHvhsppFTa3+6Eocl8QM4aTctQtmqgCeI3I61HhMLKL9y7Wc421KrTH+mOzqqshecRniXBprNQBmr8fFFqyxfC0ZytzE13lY0scXZa5h1pan3YV7Sx476tk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=LfMl7mV0; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2954b34ddd0so3523415a91.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 01:03:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707123818; x=1707728618; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mp3IqjV4mL2aPdf1tPNFMiYIaoCwoYk+bStjGqy3K98=;
+        b=LfMl7mV05OXLy6hdSSBGa9rHKUK/jsAX8o5IfHQCl1mdEtKDbm6Z5T3jVVJghz5dbJ
+         +CriSBVvWW32W3arj2BnUeMTs5jBSS45N9M5oad/bOrG3V3jMe2EGbbc/Sdhz5f+XrEG
+         ShelNW7TGkjJMhuhvHxsxLqWJViCklR00nN6g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707123818; x=1707728618;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mp3IqjV4mL2aPdf1tPNFMiYIaoCwoYk+bStjGqy3K98=;
+        b=SQH/VXJP/xyOjQuC1ybT44l+HzwMqfQ8j52udqg8xKgKBCoIknQIq8sQmnm565TJTj
+         wZ9onAOE87e+59RdQ17MhtUZRJqB7vS4FIEoPmeHO18J19QSh8f9yuWRfD6V6FX1NB7x
+         Ampmt/72uQzF492Qp/fkMolp7GonqmQic1Rxs7hGitgsmp/S0Uzr8YKGT/Xl+PaDkjie
+         BAUdQ3h24VHCru3g0AAI6FJpxpxN9SjnVdBZ4KSUev52Ng7tbprJ5tXmkab0bQcwKGuJ
+         AP8KoP6/MX2oV/R88zPMHHQb4dlKoLSCNOxPFVW12d29z9hR6fh1eahuGT2ooUXnSNfn
+         WpcA==
+X-Gm-Message-State: AOJu0YwQPayOZQ3YYCMpUj0I2XVSViRj5vAd9oZ9BlCBuoRrzflztrTP
+	v/YuaAjDPjQvmZRUkCxki1k9rY2bYAll/Jmrls8OO2W5gF3XMfGJjvaSKpKlMg==
+X-Google-Smtp-Source: AGHT+IFOv5sPhrdJJ3lg+vSR7bYP8rOWkFv6Ser6cZ9b6tmfqhaP5SyA0Q3Ijd/MMfpoJ5FObzPGTA==
+X-Received: by 2002:a17:90a:b396:b0:293:ed23:c2da with SMTP id e22-20020a17090ab39600b00293ed23c2damr11932866pjr.31.1707123818477;
+        Mon, 05 Feb 2024 01:03:38 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUq9BeWx1VsVS673oyYEwknMfep8C7cQ3JgH5JRfz2kue0NgAm6Ezy6xS+aPAzwHzBIfOvYupY+YZG4TU2fH6u0kOMtkwYhn9OUb6R2IcCXs1FgVW9F19ZiEZSpXoGqfFGjFt5Sja07XbhobA27GwasIa2kjhZhlHl2zDKLANllLbPrqbpQV5haY2lwjL0G2SksHjrUBDFrJRgj6l/2vDrVEHDXd0HN6G1rMiAbOQI=
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id c11-20020a17090a8d0b00b00296b50bb21asm145311pjo.27.2024.02.05.01.03.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 01:03:37 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: Marco Elver <elver@google.com>
+Cc: Kees Cook <keescook@chromium.org>,
+	kernel test robot <lkp@intel.com>,
+	Andrey Konovalov <andreyknvl@gmail.com>,
+	linux-kernel@vger.kernel.org,
+	kasan-dev@googlegroups.com,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH v2] ubsan: Silence W=1 warnings in self-test
+Date: Mon,  5 Feb 2024 01:03:33 -0800
+Message-Id: <20240205090323.it.453-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="e7n4nsuqdj5xioo3"
-Content-Disposition: inline
-In-Reply-To: <20240204-bus_cleanup-siox-v2-1-3813a6a55dcc@marliere.net>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1751; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=U0IaqYEgUxaoMI0fBY1yJtEGvGyAUmEfSrUJjZ33FhA=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlwKRliQJ3Zrj4Gq/zti8TCPet94FjB/Zy9OG7l
+ x66V+/rIbWJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZcCkZQAKCRCJcvTf3G3A
+ JjSgD/9lepgY25jHskT5SrVcPjJLGvkdPADYl6m4jH2xPgQDdn6CSFODj8EWE5GmvpcOVMJgwC6
+ 7jBV4u6voWcafB/4ANNf+bNgP+8EVId4RaGpxmP3NqGhVF4fstE6F2WdpdKdEfcVBoYKC4JrrxC
+ CyxsVPhvzOOxjiUVPi29gpOw+DJ8Lak4MTF4GGb6UO7RqcW7xvWY6nmekydhfZog2Gg52Orl65q
+ nrcUa0Gyn931e+soRLtInewzTR+nHwTrXHu6S/mQtqGh3+L5qxEPzjs/02+LBNSxH1Jm9cj2jWF
+ xElVm8Bg4JY4jmMqErpWNhde0lL2VnZmEEk5kUp3qhEoXknvT+j+36gihOlLS2kz6PAoFX9Ejoc
+ Ry1EFw5tQnArOVi+P4I2ykYbm6warowICK7N1POFwG0h4liJcjYdt/PuHZE6GRrqZlvabZIk3l5
+ XxcDJZ4vRdIMs4+HyrMI9ucsvgqER2zSpjFrrowoHX+Uum2zrlLTeKDNfs6b+5gyn2WFx4Rudt4
+ D9GvS1zUOt69boYoUR3nKDQBzlxFon520tI+qJgPQP13AYafZyVTAq4T6Cndf1lh/v79wZlG2NI
+ jqpW/1XbdMw2wxFLNI5N5E/ybq5bUy9LGjrXv+I9ov+KKidB5mAc8ee0ulimvA6qOIRYZ2ujySl
+ 4U4UVfi GEUKzg2A==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
+Silence a handful of W=1 warnings in the UBSan selftest, which set
+variables without using them. For example:
 
---e7n4nsuqdj5xioo3
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   lib/test_ubsan.c:101:6: warning: variable 'val1' set but not used [-Wunused-but-set-variable]
+     101 |         int val1 = 10;
+         |             ^
 
-Hello Ricardo,
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202401310423.XpCIk6KO-lkp@intel.com/
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+v2:
+ - add additional "volatile" annotations for potential future proofing (marco)
+v1: https://lore.kernel.org/all/20240202094550.work.205-kees@kernel.org/
+---
+ lib/Makefile     | 1 +
+ lib/test_ubsan.c | 4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-On Sun, Feb 04, 2024 at 07:26:42PM -0300, Ricardo B. Marliere wrote:
-> Since commit d492cc2573a0 ("driver core: device.h: make struct bus_type
-> a const *"), the driver core can properly handle constant struct
-> bus_type. Move the siox_bus_type variable to be a constant structure as
-> well, placing it into read-only memory which can not be modified at
-> runtime.
->=20
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+diff --git a/lib/Makefile b/lib/Makefile
+index 6b09731d8e61..bc36a5c167db 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -69,6 +69,7 @@ obj-$(CONFIG_HASH_KUNIT_TEST) += test_hash.o
+ obj-$(CONFIG_TEST_IDA) += test_ida.o
+ obj-$(CONFIG_TEST_UBSAN) += test_ubsan.o
+ CFLAGS_test_ubsan.o += $(call cc-disable-warning, vla)
++CFLAGS_test_ubsan.o += $(call cc-disable-warning, unused-but-set-variable)
+ UBSAN_SANITIZE_test_ubsan.o := y
+ obj-$(CONFIG_TEST_KSTRTOX) += test-kstrtox.o
+ obj-$(CONFIG_TEST_LIST_SORT) += test_list_sort.o
+diff --git a/lib/test_ubsan.c b/lib/test_ubsan.c
+index 2062be1f2e80..f4ee2484d4b5 100644
+--- a/lib/test_ubsan.c
++++ b/lib/test_ubsan.c
+@@ -23,8 +23,8 @@ static void test_ubsan_divrem_overflow(void)
+ static void test_ubsan_shift_out_of_bounds(void)
+ {
+ 	volatile int neg = -1, wrap = 4;
+-	int val1 = 10;
+-	int val2 = INT_MAX;
++	volatile int val1 = 10;
++	volatile int val2 = INT_MAX;
+ 
+ 	UBSAN_TEST(CONFIG_UBSAN_SHIFT, "negative exponent");
+ 	val1 <<= neg;
+-- 
+2.34.1
 
-I currently have no setup to test this, but compilation is fine, and I
-don't expect any surprises.
-
-Acked-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-
-Thanks for your patch,
-Uwe
-
-PS: b4 gave me:
-
-  =E2=9C=97 [PATCH v2] siox: make siox_bus_type const
-  =E2=9C=97 No key: openpgp/ricardo@marliere.net
-  =E2=9C=97 BADSIG: DKIM/marliere.net
-
-when applying your patch. I didn't check the details of the DKIM issue. I
-quickly tried to find your pgp key, but failed (wks, kernel-pgpkeys
-repo, keyserver).
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
-   |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---e7n4nsuqdj5xioo3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXApGEACgkQj4D7WH0S
-/k7xxgf+LLjmbj64GabWDq+XrD+9ERrhY2sJzbZ3gpmKZQ+6LvwG96ZIIfR/6MqM
-R7qv8VxSjK+IvBlBMU1OHM9bRVoB8ScL0RiI53cXiI2nN/dMx5/G2gz8AEXahTzI
-0sIz/rE/n6V4LX4fPpOwU/K55Pzq1S9ZH+OVcW0iHWqUifJ9ZjyTfMOMZdMYEgdW
-UJEYmDOQqmkWTd5p1u8tEx2U72GRVDBN0rdqrBhB2NWB0rK6J/d7nxLaKsOdXKqJ
-GRFdME4fmDx6hIj7xTiiq/VWDGMg+3a84/qe01P0LxHbmJ//0HA9dnPI+VslULM9
-DknbvdG5qbVdbvprlxj0QNYSHVKZwg==
-=Zc7w
------END PGP SIGNATURE-----
-
---e7n4nsuqdj5xioo3--
 
