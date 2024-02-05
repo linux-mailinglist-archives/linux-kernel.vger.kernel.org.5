@@ -1,255 +1,136 @@
-Return-Path: <linux-kernel+bounces-54066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54065-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4A6184AA40
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:05:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DC6684AA3E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:05:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CAAB29249A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:05:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9148F1F2BE2F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:05:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EA5A487A9;
-	Mon,  5 Feb 2024 23:05:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2EE54121B;
+	Mon,  5 Feb 2024 23:05:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TKzJc/BO"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="a+4vsT+d"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 458C6482F0
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 23:05:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED8ED482F6;
+	Mon,  5 Feb 2024 23:05:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707174308; cv=none; b=uKpv2To5urzci0PqHXcZ0XFW9yIOMFsJMEy6DsWusxtCHTgWSpMgqOWFHzLKTVibNIBfdZUsfwZmIKS1GjT8QddOwCYNyIT6GU/O1xFEgvqtYhl3NJSSe99FovBkWcu6LfndChzhVsXHEWVCFxfF4dzTjGTMm0sfcLerA9l9TEo=
+	t=1707174307; cv=none; b=AnhouwySRQCFpDxp171ksAQkMZ+h/dRVBZbQUCb3BNvHwAAdUYxM/4kABhLAWdr2tvzr4hkx9wdwe4rdx+W+OH8X1WcWdfDyajszeYPeeBCZLhvb/zaeQ1O0V0irjfg2kK0clEiHQyAgg4Xj3GP+QHYYfeLABtoc8Ir/F96SlSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707174308; c=relaxed/simple;
-	bh=r7hwl9FZPSbwtzf91HLG2uYS3wWs5xJYPgd288Oe7tU=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=WwtOgaS3v8qyKxeou6GOBps5BpdgOoA5dHuw/0YkeYjNaBdBtGvU3i/vQiwXlKi2lNwsXv1Yb/9FPxYVjWQJcVqg1n3FKvGNqFP4YlHcCo+B6GgpTTLXa4+FkwDZtPQ4oqA0o42XxYCnc7vck3t4pcrz7kdGUGu32+N99x5+5Q4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TKzJc/BO; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60416f4cba4so91547867b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 15:05:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707174304; x=1707779104; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BZxrWnq5zjsPkEKkrjYrS8M9CKMdrdKLinApXAx16Nw=;
-        b=TKzJc/BOKkbOwVMIjJZKR3Q42nBn6EtR2HouUMZRJtZRYg1hL3dyfIKLoB3+WLFf9m
-         TwFjk4kud47L02YJEss4rYDWIOB1nZ0mt2MyxaCKobGqRaucivPsKa3xpyGILWIGIkth
-         ANlZzzdkse0Tvz0ed6qMKEdb2TTeAQLPLUgRNlTzV7MuLxDN4Mh9DdCyohry80dAa2Y7
-         YLqtnMbNELFIlBqc/eeqYVCsLE11u8bXtPn58In7nIEtJdUzENUOMcKhinH8LOi2j7gv
-         z0kZbwkCfNUJQj5S8rWQAZwP/5qXOBClEo/eCMsVK37Ebg6VnSaN7BwI3SLwjGzIVtLt
-         zBFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707174304; x=1707779104;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BZxrWnq5zjsPkEKkrjYrS8M9CKMdrdKLinApXAx16Nw=;
-        b=OTLg5b76sJH4GM/osfm4b8F7/avX6HFjGuTzUtsL41zmcc6mE4/Ph6f32eaVBXIhqS
-         qtQds+pyxjvo3lJcWRgbApC7K4EEsQs+X161fNw+dob9PxEVIhUOXR+55KRG0/R2rO1M
-         wXBa+Ll2Za3LDgy8o2QvpQM8U264AiriKgK9WS/07uoudQmOsYleaW8bTUYTPbanrN/b
-         fFCcQ3XzSe4mON7v8clO2oWWat4hQMXv6LV71Igyp5YSG92dT8aZxbYphaUV7VV0PhXJ
-         WiZDC1p+tCR72B2MYMHXrxgGrekgpRqwx6TCGBxOudRcCmyNfgQlQGQ/LIdd3fyaVzPY
-         IFZg==
-X-Gm-Message-State: AOJu0YxrIOdFKh1qxtgncxJD7PW2z00vkajoiw7ArjVIuaT4z/PmpPgE
-	dwhvssFKlMbplVTVSZ0duQMfPymdeZ+Q9fiP5TPUrROTWlh6dF5xhA12MDtRyhL0AcAnaKTBT6m
-	DvoISqgUW1Vrcf8t6Xw==
-X-Google-Smtp-Source: AGHT+IEUIGBmonf8OUL3+nxDnw4mX6xBUsQEC+uMCjLlLfEloLx4Ka+Rv5WbqnXlV8aBShzzt7LSfSBY3cgF6gyX
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:e04:b0:dc6:af9a:8cfa with SMTP
- id df4-20020a0569020e0400b00dc6af9a8cfamr225097ybb.6.1707174304249; Mon, 05
- Feb 2024 15:05:04 -0800 (PST)
-Date: Mon, 5 Feb 2024 23:05:02 +0000
-In-Reply-To: <20240205225608.3083251-4-nphamcs@gmail.com>
+	s=arc-20240116; t=1707174307; c=relaxed/simple;
+	bh=s83lCuKokWH11mDshMciFhjc8wYrwZThNCAv4SF+2fU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=L5FXLcTDOj4twY2Xd0n9LboLk+zawbx7ITHF2qUUk88KXO83u6WPHxYi0yqSq83Fy3J+qtNEvThzYOBSaFqyaArh+2CSNl3iA+45PZRbm3zAek8XsnaR6UwzkYhNkHhMrKz84yEVA4cBiHWrwP/uJkJIodezXmqDgC+OC9QO/IQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=a+4vsT+d; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707174305; x=1738710305;
+  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=s83lCuKokWH11mDshMciFhjc8wYrwZThNCAv4SF+2fU=;
+  b=a+4vsT+dvsrZDWFiskd5ErjDt+UPtKmgubUtNENZKVmEjAhZbLBHYeoc
+   v8q1hCc1y8sTQx5bHS9lF0f0k+150BJ8EbwAcPj5hG4WAYdDEcqf8xVx8
+   grOdP++o+/XAyr2RMy07vABPDwaWVsrjKGzbscTjpOjblhH0v4maOinbX
+   phSsI1BsTHFAgxLaEVGv58dSNUin5UzrQu3wvDfne1ZL0eAlvPBtzEy+Y
+   eJV3YVTxAE3jn02u6T9N1o63m8IeuZXDXxHcWJY8qrSW4+ObJX08CR1N+
+   0VeqyiUsNRPVObD+Gbsnin7PcgwumWm6vlSvDYQO10fKsweeCZmGv05S0
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="11707866"
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="11707866"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 15:05:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="31924907"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmviesa001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 15:05:03 -0800
+Received: from [10.54.75.156] (debox1-desk1.jf.intel.com [10.54.75.156])
+	by linux.intel.com (Postfix) with ESMTP id EA048580D9C;
+	Mon,  5 Feb 2024 15:05:02 -0800 (PST)
+Message-ID: <02938148545933dc9865ddbc5551e3e8a579d57e.camel@linux.intel.com>
+Subject: Re: [PATCH v2] PCI: vmd: Enable PCI PM's L1 substates of remapped
+ PCIe Root Port and NVMe
+From: "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Jian-Hong Pan <jhp@endlessos.org>, Johan Hovold <johan@kernel.org>, Mika
+ Westerberg <mika.westerberg@linux.intel.com>, Damien Le Moal
+ <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>, Nirmal Patel
+ <nirmal.patel@linux.intel.com>, Jonathan Derrick
+ <jonathan.derrick@linux.dev>, linux-pci@vger.kernel.org,
+ linux-kernel@vger.kernel.org,  linux@endlessos.org
+Date: Mon, 05 Feb 2024 15:05:02 -0800
+In-Reply-To: <20240205224215.GA829734@bhelgaas>
+References: <20240205224215.GA829734@bhelgaas>
+Autocrypt: addr=david.e.box@linux.intel.com; prefer-encrypt=mutual;
+ keydata=mQENBF2w2YABCACw5TpqmFTR6SgsrNqZE8ro1q2lUgVZda26qIi8GeHmVBmu572RfPydisEpCK246rYM5YY9XAps810ZxgFlLyBqpE/rxB4Dqvh04QePD6fQNui/QCSpyZ6j9F8zl0zutOjfNTIQBkcar28hazL9I8CGnnMko21QDl4pkrq1dgLSgl2r2N1a6LJ2l8lLnQ1NJgPAev4BWo4WAwH2rZ94aukzAlkFizjZXmB/6em+lhinTR9hUeXpTwcaAvmCHmrUMxeOyhx+csO1uAPUjxL7olj2J83dv297RrpjMkDyuUOv8EJlPjvVogJF1QOd5MlkWdj+6vnVDRfO8zUwm2pqg25DABEBAAG0KkRhdmlkIEUuIEJveCA8ZGF2aWQuZS5ib3hAbGludXguaW50ZWwuY29tPokBTgQTAQgAOBYhBBFoZ8DYRC+DyeuV6X7Mry1gl3p/BQJdsNmAAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEH7Mry1gl3p/NusIAK9z1xnXphedgZMGNzifGUs2UUw/xNl91Q9qRaYGyNYATI6E7zBYmynsUL/4yNFnXK8P/I7WMffiLoMqmUvNp9pG6oYYj8ouvbCexS21jgw54I3m61M+wTokieRIO/GettVlCGhz7YHlHtGGqhzzWB3CGPSJMwsouDPvyFFE+28p5d2v9l6rXSb7T297Kh50VX9Ele8QEKngrG+Z/u2lr/bHEhvx24vI8ka22cuTaZvThYMwLTSC4kq9L9WgRv31JBSa1pcbcHLOCoUl0RaQwe6J8w9hN2uxCssHrrfhSA4YjxKNIIp3YH4IpvzuDR3AadYz1klFTnEOxIM7fvQ2iGu5AQ0EXbDZgAEIAPGbL3wvbYUDGMoBSN89GtiC6ybWo28JSiYIN5N9LhDTwfWROenkRvmTESaE5fAM24sh8S0h+F+eQ7j/E/RF3pM31gSovTKw0Pxk7GorK
+	FSa25CWemxSV97zV8fVegGkgfZkBMLUId+AYCD1d2R+tndtgjrHtVq/AeN0N09xv/d3a+Xzc4ib/SQh9mM50ksqiDY70EDe8hgPddYH80jHJtXFVA7Ar1ew24TIBF2rxYZQJGLe+Mt2zAzxOYeQTCW7WumD/ZoyMm7bg46/2rtricKnpaACM7M0r7g+1gUBowFjF4gFqY0tbLVQEB/H5e9We/C2zLG9r5/Lt22dj7I8A6kAEQEAAYkBNgQYAQgAIBYhBBFoZ8DYRC+DyeuV6X7Mry1gl3p/BQJdsNmAAhsMAAoJEH7Mry1gl3p/Z/AH/Re8YwzY5I9ByPM56B3Vkrh8qihZjsF7/WB14Ygl0HFzKSkSMTJ+fvZv19bk3lPIQi5lUBuU5rNruDNowCsnvXr+sFxFyTbXw0AQXIsnX+EkMg/JO+/V/UszZiqZPkvHsQipCFVLod/3G/yig9RUO7A/1efRi0E1iJAa6qHrPqE/kJANbz/x+9wcx1VfFwraFXbdT/P2JeOcW/USW89wzMRmOo+AiBSnTI4xvb1s/TxSfoLZvtoj2MR+2PW1zBALWYUKHOzhfFKs3cMufwIIoQUPVqGVeH+u6Asun6ZpNRxdDONop+uEXHe6q6LzI/NnczqoZQLhM8d1XqokYax/IZ4=
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.2 (3.50.2-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240205225608.3083251-1-nphamcs@gmail.com> <20240205225608.3083251-4-nphamcs@gmail.com>
-Message-ID: <ZcFpnokh3W1DFBCj@google.com>
-Subject: Re: [PATCH v3 3/3] selftests: add zswapin and no zswap tests
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: akpm@linux-foundation.org, riel@surriel.com, shuah@kernel.org, 
-	hannes@cmpxchg.org, tj@kernel.org, lizefan.x@bytedance.com, 
-	roman.gushchin@linux.dev, linux-mm@kvack.org, kernel-team@meta.com, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
 
-On Mon, Feb 05, 2024 at 02:56:08PM -0800, Nhat Pham wrote:
-> Add a selftest to cover the zswapin code path, allocating more memory
-> than the cgroup limit to trigger swapout/zswapout, then reading the
-> pages back in memory several times. This is inspired by a recently
-> encountered kernel crash on the zswapin path in our internal kernel,
-> which went undetected because of a lack of test coverage for this path.
-> 
-> Add a selftest to verify that when memory.zswap.max = 0, no pages can go
-> to the zswap pool for the cgroup.
-> 
-> Suggested-by: Rik van Riel <riel@surriel.com>
-> Suggested-by: Yosry Ahmed <yosryahmed@google.com>
-> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+On Mon, 2024-02-05 at 16:42 -0600, Bjorn Helgaas wrote:
+> On Mon, Feb 05, 2024 at 11:37:16AM -0800, David E. Box wrote:
+> > On Fri, 2024-02-02 at 18:05 -0600, Bjorn Helgaas wrote:
+> > > On Fri, Feb 02, 2024 at 03:11:12PM +0800, Jian-Hong Pan wrote:
+> > ...
+>=20
+> > > > @@ -775,6 +773,14 @@ static int vmd_pm_enable_quirk(struct pci_dev
+> > > > *pdev,
+> > > > void *userdata)
+> > > > =C2=A0	pci_write_config_dword(pdev, pos + PCI_LTR_MAX_SNOOP_LAT,
+> > > > ltr_reg);
+> > > > =C2=A0	pci_info(pdev, "VMD: Default LTR value set by driver\n");
+> > >=20
+> > > You're not changing this part, and I don't understand exactly how LTR
+> > > works, but it makes me a little bit queasy to read "set the LTR value
+> > > to the maximum required to allow the deepest power management
+> > > savings" and then we set the max snoop values to a fixed constant.
+> > >=20
+> > > I don't think the goal is to "allow the deepest power savings"; I
+> > > think it's to enable L1.2 *when the device has enough buffering to
+> > > absorb L1.2 entry/exit latencies*.
+> > >=20
+> > > The spec (PCIe r6.0, sec 7.8.2.2) says "Software should set this to
+> > > the platform's maximum supported latency or less," so it seems like
+> > > that value must be platform-dependent, not fixed.
+> > >=20
+> > > And I assume the "_DSM for Latency Tolerance Reporting" is part of th=
+e
+> > > way to get those platform-dependent values, but Linux doesn't actuall=
+y
+> > > use that yet.
+> >=20
+> > This may indeed be the best way but we need to double check with our
+> > BIOS folks.=C2=A0 AFAIK BIOS writes the LTR values directly so there
+> > hasn't been a need to use this _DSM. But under VMD the ports are
+> > hidden from BIOS which is why we added it here. I've brought up the
+> > question internally to find out how Windows handles the DSM and to
+> > get a recommendation from our firmware leads.
+>=20
+> We want Linux to be able to program LTR itself, don't we?=C2=A0 We
+> shouldn't have to rely on firmware to do it.=C2=A0 If Linux can't do
+> it, hot-added devices aren't going to be able to use L1.2, right?
 
-LGTM with a few nits below:
-Acked-by: Yosry Ahmed <yosryahmed@google.com>
+Agreed. We just want to make sure we are not conflicting with what BIOS may=
+ be
+doing.
 
-Thanks!
-
-> ---
->  tools/testing/selftests/cgroup/test_zswap.c | 120 +++++++++++++++++++-
->  1 file changed, 119 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
-> index 32ce975b21d1..c263610a4a60 100644
-> --- a/tools/testing/selftests/cgroup/test_zswap.c
-> +++ b/tools/testing/selftests/cgroup/test_zswap.c
-> @@ -60,6 +60,27 @@ static long get_zswpout(const char *cgroup)
->  	return cg_read_key_long(cgroup, "memory.stat", "zswpout ");
->  }
->  
-> +static int allocate_and_read_bytes(const char *cgroup, void *arg)
-> +{
-> +	size_t size = (size_t)arg;
-> +	char *mem = (char *)malloc(size);
-> +	int ret = 0;
-> +
-> +	if (!mem)
-> +		return -1;
-> +	for (int i = 0; i < size; i += 4095)
-> +		mem[i] = 'a';
-> +
-> +	/* go through the allocated memory to (z)swap in and out pages */
-
-nit: s/go/Go
-
-> +	for (int i = 0; i < size; i += 4095) {
-> +		if (mem[i] != 'a')
-> +			ret = -1;
-> +	}
-> +
-> +	free(mem);
-> +	return ret;
-> +}
-> +
->  static int allocate_bytes(const char *cgroup, void *arg)
->  {
->  	size_t size = (size_t)arg;
-> @@ -100,7 +121,6 @@ static int test_zswap_usage(const char *root)
->  	int ret = KSFT_FAIL;
->  	char *test_group;
->  
-> -	/* Set up */
-
-We removed this comment here.
-
->  	test_group = cg_name(root, "no_shrink_test");
->  	if (!test_group)
->  		goto out;
-> @@ -133,6 +153,102 @@ static int test_zswap_usage(const char *root)
->  	return ret;
->  }
->  
-> +/*
-> + * Check that when memory.zswap.max = 0, no pages can go to the zswap pool for
-> + * the cgroup.
-> + */
-> +static int test_swapin_nozswap(const char *root)
-> +{
-> +	int ret = KSFT_FAIL;
-> +	char *test_group;
-> +	long swap_peak, zswpout;
-> +
-> +	test_group = cg_name(root, "no_zswap_test");
-> +	if (!test_group)
-> +		goto out;
-> +	if (cg_create(test_group))
-> +		goto out;
-> +	if (cg_write(test_group, "memory.max", "8M"))
-> +		goto out;
-> +	if (cg_write(test_group, "memory.zswap.max", "0"))
-> +		goto out;
-> +
-> +	/* Allocate and read more than memory.max to trigger swapin */
-> +	if (cg_run(test_group, allocate_and_read_bytes, (void *)MB(32)))
-> +		goto out;
-> +
-> +	/* Verify that pages are swapped out, but no zswap happened */
-> +	swap_peak = cg_read_long(test_group, "memory.swap.peak");
-> +	if (swap_peak < 0) {
-> +		ksft_print_msg("failed to get cgroup's swap_peak\n");
-> +		goto out;
-> +	}
-> +
-> +	if (swap_peak == 0) {
-> +		ksft_print_msg("pages should be swapped out\n");
-> +		goto out;
-> +	}
-
-We can actually check that this number is >= 24M instead. Not a big
-deal, but might as well.
-
-> +
-> +	zswpout = get_zswpout(test_group);
-> +	if (zswpout < 0) {
-> +		ksft_print_msg("failed to get zswpout\n");
-> +		goto out;
-> +	}
-> +
-> +	if (zswpout > 0) {
-> +		ksft_print_msg("zswapout > 0 when memory.zswap.max = 0\n");
-> +		goto out;
-> +	}
-> +
-> +	ret = KSFT_PASS;
-> +
-> +out:
-> +	cg_destroy(test_group);
-> +	free(test_group);
-> +	return ret;
-> +}
-> +
-> +/* Simple test to verify the (z)swapin code paths */
-> +static int test_zswapin(const char *root)
-> +{
-> +	int ret = KSFT_FAIL;
-> +	char *test_group;
-> +	long zswpin;
-> +
-> +	/* Set up */
-
-Yet we added a similar one here :)
-
-> +	test_group = cg_name(root, "zswapin_test");
-> +	if (!test_group)
-> +		goto out;
-> +	if (cg_create(test_group))
-> +		goto out;
-> +	if (cg_write(test_group, "memory.max", "8M"))
-> +		goto out;
-> +	if (cg_write(test_group, "memory.zswap.max", "max"))
-> +		goto out;
-> +
-> +	/* Allocate and read more than memory.max to trigger (z)swap in */
-> +	if (cg_run(test_group, allocate_and_read_bytes, (void *)MB(32)))
-> +		goto out;
-> +
-> +	zswpin = cg_read_key_long(test_group, "memory.stat", "zswpin ");
-> +	if (zswpin < 0) {
-> +		ksft_print_msg("failed to get zswpin\n");
-> +		goto out;
-> +	}
-> +
-> +	if (zswpin == 0) {
-> +		ksft_print_msg("zswpin should not be 0\n");
-> +		goto out;
-> +	}
-
-Same here, we can check that zswpin is at least 24M worth of events.
-Again, not a big deal, but might as well.
+David
 
