@@ -1,178 +1,219 @@
-Return-Path: <linux-kernel+bounces-53882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53883-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B12A884A799
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:37:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C08B84A79C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 22:37:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D60211C276E6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:37:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7998283D8A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 21:37:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26C65629F6;
-	Mon,  5 Feb 2024 20:01:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF778128821;
+	Mon,  5 Feb 2024 20:02:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="mZq2Z8DJ"
-Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XOci+CJg"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE5EA127B7F
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 20:01:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6A4612881B
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 20:02:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707163265; cv=none; b=S7dEPqB4NxrjeSBN6Ey+/pwLSk0PrvJCsDaHgxIhIXeHbX6ago0FjiHTZRjqUup8WJOxtFDXJLtDAGY3l04Ch9maPQS6EbdorA0mfoP2cpRxdpXk6f1hFQBchn/QL14qvwHSQJSTP1O5YVuVBjdVqeJTnCzzFQTPydby5uY/ceQ=
+	t=1707163324; cv=none; b=LEqA+5PwEEcGz/509zCGShnjxP5pOfK8IAprM71u7cB5NM9vNc3f5jyA2BwHzGO2L3vV/pHqyeHBeG9lz3pKP6saXkca5ITDMtKqtaXJGvM7xbSnpWMm9bTnCtPjValtbY7C36pK0LhBD5OGE7eEFFZPsovpoFjsm8g93aKRQOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707163265; c=relaxed/simple;
-	bh=hJbMgD7E4Jeq3JYeyBlsdRwDJ32MwyzK6QU1xS9lnNg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jWXeN3bbSyysnQKEpsLQFMNwVGKtR/URShPhbPSI+SbijzqFv5sYPrF26LA2OZ1kV1mqFYgLh+2Gq/5mU+emm5NRjfmpuWsspzs9h+qMRoDyeRdhI3QfDWcpTgcM6IANBeSjMCCDJaVCpoI9O9kyXG6RjX53Fg4f6d7maVM4WAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=mZq2Z8DJ; arc=none smtp.client-ip=44.202.169.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-5007a.ext.cloudfilter.net ([10.0.29.141])
-	by cmsmtp with ESMTPS
-	id X3Onr0mx89gG6X59ErN2sA; Mon, 05 Feb 2024 20:00:56 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id X59Drtq1tdTw7X59Drq52e; Mon, 05 Feb 2024 20:00:55 +0000
-X-Authority-Analysis: v=2.4 cv=D57kKeRj c=1 sm=1 tr=0 ts=65c13e77
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
- a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
- a=cm27Pg_UAAAA:8 a=lXWNAtzADcZZgIjtGc4A:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=xmb-EsYY8bH0VWELuYED:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=7U7jwv7kw0IAiZjuYfDWc8VSfxYMNew1tgp5qVklIE0=; b=mZq2Z8DJn9x2Z89W+MQZrRkOtJ
-	/zoZ+eaBp6NDKHJoKVwcHhdBPaC0LHnhvwL83R12KqBkLigNK9tzHJyn1jWju6CRFBSHOvhkFhFr6
-	OWtBEB74MPKdrzrBVjZjH1+xhASvTz0GCSL3tUwBQzA+99jVP/z0JrOYcIo4ijfFZP4cE5N5O+mHC
-	z4sKK0Yit4Qed5mhBU5PWwgxB6Ft3QyLzhZkN6HH+btqRUtAevBYgcgH6lk4bLoieZ7mJbhjLScai
-	JQF2JFldI4l16MvRZKJlT8jdr7/32IzpqPKxKY+J6oWLFXFXVOhpApfQtA6N9ZuNo4jV2Jv2f4qZM
-	kf0Dt2fQ==;
-Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:34988 helo=[192.168.15.10])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rX59C-001Oci-2u;
-	Mon, 05 Feb 2024 14:00:54 -0600
-Message-ID: <992f0e89-3d24-4bc1-8850-e1314f031413@embeddedor.com>
-Date: Mon, 5 Feb 2024 14:00:53 -0600
+	s=arc-20240116; t=1707163324; c=relaxed/simple;
+	bh=/2F+Sqat3Ko5wi/4JmycWRWYNNOWf+ZQKZsSpCoS6r4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=BTCVGNBB4aB6WfmaDZqzSGgkD83uiAObSsWhCWCnrzND9Y9h6ymlJ/2vwV2pn6UubNql4HI28HrqkmfaN7mp48Iu+5FANkeWlNc+SKKo8R8Et7giMdEIiTcVTY8ft1Nclw9aYKM7CYktZji9DCAUWhRxnBkFDRkwILLOtf9B16c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XOci+CJg; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707163321;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=E8zENVDSDVSHR2uqkr4zv65dSkFxFna4B1bFIhcbej0=;
+	b=XOci+CJgpR7rDCsAYKe7zCWV2OmUxorvkMec68fGH2C1n3kV0H//i97WfYa7AQA6BiIcfx
+	gh96UT4cFcZ9BU1OqE1mbB29hsKFuXwyHZugtdvnHECqczZwm9/ISW6E77+LywF3hfYM8t
+	WxAqgXNoHpofY+3SQzq/W0WfNUnxZyg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-385-KzCqOMJQPj-9b5m3zOmyKg-1; Mon, 05 Feb 2024 15:01:53 -0500
+X-MC-Unique: KzCqOMJQPj-9b5m3zOmyKg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9926985A58A;
+	Mon,  5 Feb 2024 20:01:52 +0000 (UTC)
+Received: from rhel-developer-toolbox-latest.redhat.com (unknown [10.2.16.180])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 476215012;
+	Mon,  5 Feb 2024 20:01:51 +0000 (UTC)
+From: Chris Leech <cleech@redhat.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Nilesh Javali <njavali@marvell.com>
+Cc: Christoph Hellwig <hch@lst.de>,
+	John Meneghini <jmeneghi@redhat.com>,
+	Lee Duncan <lduncan@suse.com>,
+	Mike Christie <michael.christie@oracle.com>,
+	Hannes Reinecke <hare@kernel.org>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	GR-QLogic-Storage-Upstream@marvell.com,
+	Simon Horman <horms@kernel.org>
+Subject: [PATCH v6 1/4] uio: introduce UIO_MEM_DMA_COHERENT type
+Date: Mon,  5 Feb 2024 12:01:37 -0800
+Message-ID: <20240205200137.138302-1-cleech@redhat.com>
+In-Reply-To: <20240201233400.3394996-2-cleech@redhat.com>
+References: <20240201233400.3394996-2-cleech@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/3] overflow: Adjust check_*_overflow() kern-doc to
- reflect results
-Content-Language: en-US
-To: Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
- Mark Rutland <mark.rutland@arm.com>, Marco Elver <elver@google.com>,
- linux-kernel@vger.kernel.org
-References: <20240205090854.make.507-kees@kernel.org>
- <20240205091233.1357377-1-keescook@chromium.org>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20240205091233.1357377-1-keescook@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.21.192
-X-Source-L: No
-X-Exim-ID: 1rX59C-001Oci-2u
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.10]) [187.162.21.192]:34988
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 1
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfGHyvOv6KpsB1I2sRwlb+k8T4ALNvaSQb791+2tlOp8gHeYYjSJQ8GGbo4Cfp5vR+jOBPQhQjCxmWXBEwt+GIANzAEJ5xyHipUd0+AAcJOPysu/oT00e
- cmuy2f7rUd3gS55kfNph79E/hjGqHN2szEktyESF8MnakjmULx/+RwJsjryNpaxc8/7iK4X4RRzYp+HVtyTITidrzEY2mUJ9IYD+ZECNwx8VQ2cIks1LOSdV
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
+Add a UIO memtype specifically for sharing dma_alloc_coherent
+memory with userspace, backed by dma_mmap_coherent.
 
+This is mainly for the bnx2/bnx2x/bnx2i "cnic" interface, although there
+are a few other uio drivers which map dma_alloc_coherent memory and will
+be converted to use dma_mmap_coherent as well.
 
-On 2/5/24 03:12, Kees Cook wrote:
-> The check_*_overflow() helpers will return results with potentially
-> wrapped-around values. These values have always been checked by the
-> selftests, so avoid the confusing language in the kern-doc. The idea of
-> "safe for use" was relative to the expectation of whether or not the
-> caller wants a wrapped value -- the calculation itself will always follow
-> arithmetic wrapping rules.
-> 
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Nilesh Javali <njavali@marvell.com>
+Signed-off-by: Chris Leech <cleech@redhat.com>
+---
+v6: added kdoc comments
 
-Better to be concise and direct. :)
+ drivers/uio/uio.c          | 47 ++++++++++++++++++++++++++++++++++++++
+ include/linux/uio_driver.h | 13 +++++++++++
+ 2 files changed, 60 insertions(+)
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-
-Thanks!
+diff --git a/drivers/uio/uio.c b/drivers/uio/uio.c
+index 2d572f6c8ec83..bb77de6fa067e 100644
+--- a/drivers/uio/uio.c
++++ b/drivers/uio/uio.c
+@@ -24,6 +24,7 @@
+ #include <linux/kobject.h>
+ #include <linux/cdev.h>
+ #include <linux/uio_driver.h>
++#include <linux/dma-mapping.h>
+ 
+ #define UIO_MAX_DEVICES		(1U << MINORBITS)
+ 
+@@ -759,6 +760,49 @@ static int uio_mmap_physical(struct vm_area_struct *vma)
+ 			       vma->vm_page_prot);
+ }
+ 
++static int uio_mmap_dma_coherent(struct vm_area_struct *vma)
++{
++	struct uio_device *idev = vma->vm_private_data;
++	struct uio_mem *mem;
++	void *addr;
++	int ret = 0;
++	int mi;
++
++	mi = uio_find_mem_index(vma);
++	if (mi < 0)
++		return -EINVAL;
++
++	mem = idev->info->mem + mi;
++
++	if (mem->addr & ~PAGE_MASK)
++		return -ENODEV;
++	if (mem->dma_addr & ~PAGE_MASK)
++		return -ENODEV;
++	if (!mem->dma_device)
++		return -ENODEV;
++	if (vma->vm_end - vma->vm_start > mem->size)
++		return -EINVAL;
++
++	dev_warn(mem->dma_device,
++		 "use of UIO_MEM_DMA_COHERENT is highly discouraged");
++
++	/*
++	 * UIO uses offset to index into the maps for a device.
++	 * We need to clear vm_pgoff for dma_mmap_coherent.
++	 */
++	vma->vm_pgoff = 0;
++
++	addr = (void *)mem->addr;
++	ret = dma_mmap_coherent(mem->dma_device,
++				vma,
++				addr,
++				mem->dma_addr,
++				vma->vm_end - vma->vm_start);
++	vma->vm_pgoff = mi;
++
++	return ret;
++}
++
+ static int uio_mmap(struct file *filep, struct vm_area_struct *vma)
+ {
+ 	struct uio_listener *listener = filep->private_data;
+@@ -806,6 +850,9 @@ static int uio_mmap(struct file *filep, struct vm_area_struct *vma)
+ 	case UIO_MEM_VIRTUAL:
+ 		ret = uio_mmap_logical(vma);
+ 		break;
++	case UIO_MEM_DMA_COHERENT:
++		ret = uio_mmap_dma_coherent(vma);
++		break;
+ 	default:
+ 		ret = -EINVAL;
+ 	}
+diff --git a/include/linux/uio_driver.h b/include/linux/uio_driver.h
+index 47c5962b876b0..18238dc8bfd35 100644
+--- a/include/linux/uio_driver.h
++++ b/include/linux/uio_driver.h
+@@ -28,19 +28,26 @@ struct uio_map;
+  *			logical, virtual, or physical & phys_addr_t
+  *			should always be large enough to handle any of
+  *			the address types)
++ * @dma_addr:		DMA handle set by dma_alloc_coherent, used with
++ *			UIO_MEM_DMA_COHERENT only (@addr should be the
++ *			void * returned from the same dma_alloc_coherent call)
+  * @offs:               offset of device memory within the page
+  * @size:		size of IO (multiple of page size)
+  * @memtype:		type of memory addr points to
+  * @internal_addr:	ioremap-ped version of addr, for driver internal use
++ * @dma_device:		device struct that was passed to dma_alloc_coherent,
++ *			used with UIO_MEM_DMA_COHERENT only
+  * @map:		for use by the UIO core only.
+  */
+ struct uio_mem {
+ 	const char		*name;
+ 	phys_addr_t		addr;
++	dma_addr_t		dma_addr;
+ 	unsigned long		offs;
+ 	resource_size_t		size;
+ 	int			memtype;
+ 	void __iomem		*internal_addr;
++	struct device		*dma_device;
+ 	struct uio_map		*map;
+ };
+ 
+@@ -158,6 +165,12 @@ extern int __must_check
+ #define UIO_MEM_LOGICAL	2
+ #define UIO_MEM_VIRTUAL 3
+ #define UIO_MEM_IOVA	4
++/*
++ * UIO_MEM_DMA_COHERENT exists for legacy drivers that had been getting by with
++ * improperly mapping DMA coherent allocations through the other modes.
++ * Do not use in new drivers.
++ */
++#define UIO_MEM_DMA_COHERENT	5
+ 
+ /* defines for uio_port->porttype */
+ #define UIO_PORT_NONE	0
 -- 
-Gustavo
+2.43.0
 
-> ---
->   include/linux/overflow.h | 18 ++++++------------
->   1 file changed, 6 insertions(+), 12 deletions(-)
-> 
-> diff --git a/include/linux/overflow.h b/include/linux/overflow.h
-> index 7b5cf4a5cd19..4e741ebb8005 100644
-> --- a/include/linux/overflow.h
-> +++ b/include/linux/overflow.h
-> @@ -57,11 +57,9 @@ static inline bool __must_check __must_check_overflow(bool overflow)
->    * @b: second addend
->    * @d: pointer to store sum
->    *
-> - * Returns 0 on success.
-> + * Returns 0 on success, 1 on wrap-around.
->    *
-> - * *@d holds the results of the attempted addition, but is not considered
-> - * "safe for use" on a non-zero return value, which indicates that the
-> - * sum has overflowed or been truncated.
-> + * *@d holds the results of the attempted addition, which may wrap-around.
->    */
->   #define check_add_overflow(a, b, d)	\
->   	__must_check_overflow(__builtin_add_overflow(a, b, d))
-> @@ -72,11 +70,9 @@ static inline bool __must_check __must_check_overflow(bool overflow)
->    * @b: subtrahend; value to subtract from @a
->    * @d: pointer to store difference
->    *
-> - * Returns 0 on success.
-> + * Returns 0 on success, 1 on wrap-around.
->    *
-> - * *@d holds the results of the attempted subtraction, but is not considered
-> - * "safe for use" on a non-zero return value, which indicates that the
-> - * difference has underflowed or been truncated.
-> + * *@d holds the results of the attempted subtraction, which may wrap-around.
->    */
->   #define check_sub_overflow(a, b, d)	\
->   	__must_check_overflow(__builtin_sub_overflow(a, b, d))
-> @@ -87,11 +83,9 @@ static inline bool __must_check __must_check_overflow(bool overflow)
->    * @b: second factor
->    * @d: pointer to store product
->    *
-> - * Returns 0 on success.
-> + * Returns 0 on success, 1 on wrap-around.
->    *
-> - * *@d holds the results of the attempted multiplication, but is not
-> - * considered "safe for use" on a non-zero return value, which indicates
-> - * that the product has overflowed or been truncated.
-> + * *@d holds the results of the attempted multiplication, which may wrap-around.
->    */
->   #define check_mul_overflow(a, b, d)	\
->   	__must_check_overflow(__builtin_mul_overflow(a, b, d))
 
