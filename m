@@ -1,74 +1,59 @@
-Return-Path: <linux-kernel+bounces-52980-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7096849F18
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:01:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D97A8849F2E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 17:02:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 731241F23344
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:01:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 966572897F2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 16:02:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A7F250244;
-	Mon,  5 Feb 2024 15:56:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="RLt+XpOr"
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2720D45035;
+	Mon,  5 Feb 2024 15:58:57 +0000 (UTC)
+Received: from davidv.dev (mail.davidv.dev [78.46.233.60])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA9FA4BAB6;
-	Mon,  5 Feb 2024 15:56:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD5BC3D99E
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 15:58:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.46.233.60
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707148564; cv=none; b=Hfz/iHcpvnFqkr3lVzeku4YeB8OODuA49+meqhK0TKyEtdVopPIfbWwgaxmPVq/byTts4MHC3stJZkHLWndk9wzK8dtbGqftRItgFBVoHYB1hNvMhwr002YSs3llqJ31jmvN/47J57av7t/Sl5ANIt9trrEXMaiW8uKIK8txBlY=
+	t=1707148736; cv=none; b=Cvc5m0uANs6wr2pMs5uso+NwYYtSwWUg5vWfJcGTQoxdj9bQbTfm/rGckOTc8b2rRbRUw/WYi+k4OShKE+OK3xwyTgcFSYDBu5/HYFcUGdf11NRXU29Gj22djnWpjjdRbBWu4gQ9ZizJlIq17Iw50jQ2t69WNVRHTpO4pLVECg4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707148564; c=relaxed/simple;
-	bh=Xc0o3jbBAJ4zoyjIrykPdIA+JyN75J7/ftf7hDAal1A=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CEAuDucMqcJyMFSj31zCIzSrTOKT/VX93/vIbpIN8IX56oVS3elB96WPc11jw8+35vHedCe78XSRG0fLKtTOJlcm+xg5p9vzcCuqNAhSrlbmCX848c/BB1DZVhIc5kYqWtYgLNBij2FwzK8CThxHkYyQClmUxGDsx4BfMYxe6MU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=RLt+XpOr; arc=none smtp.client-ip=45.89.224.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 7D9F4120019;
-	Mon,  5 Feb 2024 18:55:58 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 7D9F4120019
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1707148558;
-	bh=lnEQAu9jSHDE3/ODiSZUSC4yHnPooP6ni0dyVvfYe+M=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=RLt+XpOre9NFUMeL4vT5T1IQ0zaXzzXDxya8nVlhGNFgvQrOnn6RqqJlA2nSH8Ee8
-	 ScJQnsO5B44R0xg4+NX20R/m4MQ8AqYL+uh9kfrm7krs05CVesxMjP+VN3wru1pTzU
-	 aLNu9P2QECn4hIO/HcQepxybPAixDG7QE++RgkcTVt9phMeMqU0G6C46SU4m7x4vuX
-	 U1xKbCaXTFryUlrN20uPGkHBCp5oSGx/RrDOCWrbqf72fp6Jkj0gGtIsSiRiKHH6iX
-	 639lpOA2uJ1hSMzG0bxe7+D4VZNt/SBeFWhrhZNcAemtFsKDiKEjuWZuQ0vZ+aShTs
-	 h3m5DOQOSCCNQ==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Mon,  5 Feb 2024 18:55:58 +0300 (MSK)
-Received: from user-A520M-DS3H.sberdevices.ru (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 5 Feb 2024 18:55:57 +0300
-From: Alexey Romanov <avromanov@salutedevices.com>
-To: <neil.armstrong@linaro.org>, <clabbe@baylibre.com>,
-	<herbert@gondor.apana.org.au>, <davem@davemloft.net>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-	<khilman@baylibre.com>, <jbrunet@baylibre.com>,
-	<martin.blumenstingl@googlemail.com>
-CC: <linux-crypto@vger.kernel.org>, <linux-amlogic@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <kernel@salutedevices.com>, Alexey
- Romanov <avromanov@salutedevices.com>
-Subject: [PATCH v3 20/20] arch: arm64: dts: meson: axg: add crypto node
-Date: Mon, 5 Feb 2024 18:55:21 +0300
-Message-ID: <20240205155521.1795552-21-avromanov@salutedevices.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240205155521.1795552-1-avromanov@salutedevices.com>
-References: <20240205155521.1795552-1-avromanov@salutedevices.com>
+	s=arc-20240116; t=1707148736; c=relaxed/simple;
+	bh=Pppg7VSwpwIuek6Wg6dxlq5yApM3fhfhfp70mFwuCPQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=APJ4dkZ2TcCaH862YxHTZO+7zErY+vcM5xb5ET/mZRonODMkRejSezRe/11o/he5EPeldv//9YZY/mH/MK0md4RCIGgCExV5ekD8A7CXElad49DS8I8v+DD0lYdPsVBy11Ua87LfAX2o15PLDlDo7AXR00I/07gVdpIUvE1xEXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidv.dev; spf=pass smtp.mailfrom=davidv.dev; arc=none smtp.client-ip=78.46.233.60
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidv.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=davidv.dev
+Received: from framework.labs
+	by mail.davidv.dev (chasquid) with ESMTPSA
+	tls TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+	(over submission+TLS, TLS-1.2, envelope from "david@davidv.dev")
+	; Mon, 05 Feb 2024 16:58:51 +0100
+From: David Ventura <david@davidv.dev>
+To: david@davidv.dev
+Cc: Jonathan Corbet <corbet@lwn.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Xiongwei Song <xiongwei.song@windriver.com>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH] net: Change default delay on IP autoconfig to 0ms
+Date: Mon,  5 Feb 2024 16:55:43 +0100
+Message-Id: <20240205155717.484198-1-david@davidv.dev>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <580001e3-17ef-4f24-8fd8-bc14110e874e@lunn.ch>
+References: <580001e3-17ef-4f24-8fd8-bc14110e874e@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,53 +61,45 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 183204 [Feb 05 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: avromanov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;100.64.160.123:7.1.2;127.0.0.199:7.1.2;salutedevices.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/02/05 10:19:00 #23362212
-X-KSMG-AntiVirus-Status: Clean, skipped
 
-This patch adds a crypto node declaration. With the
-Amlogic crypto driver we can use HW implementation
-of SHA1/224/256 and AES algo.
+As suggested, I'm updating the default to 0ms. 
 
-Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
+This patch depends on 1f0aa0c947eeb4edb60add141a5bc2309f2dc8dd ("
+net: make driver settling time configurable").
+
+Signed-off-by: David Ventura <david@davidv.dev>
 ---
- arch/arm64/boot/dts/amlogic/meson-axg.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
+ Documentation/admin-guide/nfs/nfsroot.rst | 2 +-
+ net/ipv4/ipconfig.c                       | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-index 7e5ac9db93f8..39ecb894668e 100644
---- a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-@@ -286,6 +286,12 @@ ethmac: ethernet@ff3f0000 {
- 			status = "disabled";
- 		};
+diff --git a/Documentation/admin-guide/nfs/nfsroot.rst b/Documentation/admin-guide/nfs/nfsroot.rst
+index f26f7a342af6..fce610a4ec54 100644
+--- a/Documentation/admin-guide/nfs/nfsroot.rst
++++ b/Documentation/admin-guide/nfs/nfsroot.rst
+@@ -225,7 +225,7 @@ ip=<client-ip>:<server-ip>:<gw-ip>:<netmask>:<hostname>:<device>:<autoconf>:<dns
  
-+		crypto: crypto@ff63e000 {
-+			compatible = "amlogic,axg-crypto";
-+			reg = <0x0 0xff63e000 0x0 0x48>;
-+			interrupts = <GIC_SPI 180 IRQ_TYPE_EDGE_RISING>;
-+		};
-+
- 		pcie_phy: phy@ff644000 {
- 			compatible = "amlogic,axg-pcie-phy";
- 			reg = <0x0 0xff644000 0x0 0x1c>;
+ ip.dev_wait_ms=<value>
+   Set the number of milliseconds to delay after opening the network device
+-  which will be autoconfigured. Defaults to 10 milliseconds.
++  which will be autoconfigured. Defaults to 0 milliseconds.
+ 
+ nfsrootdebug
+   This parameter enables debugging messages to appear in the kernel
+diff --git a/net/ipv4/ipconfig.c b/net/ipv4/ipconfig.c
+index cbf35163b973..8b7d08649b09 100644
+--- a/net/ipv4/ipconfig.c
++++ b/net/ipv4/ipconfig.c
+@@ -99,7 +99,7 @@
+ 
+ /* Wait for carrier timeout default in seconds */
+ static unsigned int carrier_timeout = 120;
+-static unsigned int dev_wait_ms = 10;
++static unsigned int dev_wait_ms = 0;
+ 
+ /*
+  * Public IP configuration
 -- 
-2.34.1
+2.39.2
 
 
