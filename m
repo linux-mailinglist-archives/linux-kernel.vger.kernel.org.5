@@ -1,53 +1,89 @@
-Return-Path: <linux-kernel+bounces-52063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 268698493A4
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 06:59:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E4238493AA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 07:04:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 957CE1F23A78
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 05:59:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5E19B20B11
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 06:04:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F045C154;
-	Mon,  5 Feb 2024 05:59:13 +0000 (UTC)
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08F00BE65;
+	Mon,  5 Feb 2024 06:04:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="kei2qE6/"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2083.outbound.protection.outlook.com [40.107.237.83])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1C8CBE47;
-	Mon,  5 Feb 2024 05:59:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707112752; cv=none; b=n2smXBviTyPH9SFANU6ierixrZ1ZdCPH6nlE4LmLKee/JmoJJuN+EWT5WiYEqc5jrUSPfzOB+jeFfdGDNlRlqXdmCu13jMdzNIqNPu+ydzsEP3Dvcd9G6AQjkT/EGmyxs1TRRoLhYD4tHr4nRxKdCMjovbcd4EMZmLX/HIg95gE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707112752; c=relaxed/simple;
-	bh=Hothx2P0nxUefkfPleWKDDimn2dK8Gpve0sPrvT3iR8=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QLBmwoUCGkgm0s81sZWRiOAWeKo6lHxnVQ/M2cECoeH5f1tME1uYaS0EYjMydhyCg1aB7SML6U5c7IXgYdtO6H1wRnfqLy1+Dze2mYvohMAO1eWhVPFp8dOlxxkI2uQALmVXguDhGB1WHbT86GX+Ff2LywrZh/3PMhTpU7Hjy9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 4155vEnK010987;
-	Mon, 5 Feb 2024 13:57:14 +0800 (+08)
-	(envelope-from zhaoyang.huang@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TSwd224ttz2SQ7Bg;
-	Mon,  5 Feb 2024 13:57:10 +0800 (CST)
-Received: from bj03382pcu01.spreadtrum.com (10.0.73.40) by
- BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Mon, 5 Feb 2024 13:57:11 +0800
-From: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
-To: Jens Axboe <axboe@kernel.dk>, Matthew Wilcox <willy@infradead.org>,
-        Yu
- Zhao <yuzhao@google.com>, <linux-block@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Zhaoyang
- Huang <huangzhaoyang@gmail.com>, <steve.kang@unisoc.com>
-Subject: [PATCHv7 1/1] block: introduce content activity based ioprio
-Date: Mon, 5 Feb 2024 13:57:05 +0800
-Message-ID: <20240205055705.7078-1-zhaoyang.huang@unisoc.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65B8010A09;
+	Mon,  5 Feb 2024 06:04:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.83
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707113058; cv=fail; b=S3mKy2hEXp8agIBPj3xnse6KXnPL/SaaU/mkmwJuhN16OHBxz01w7fETqbCdi+XJt6nb6lc1qtMLndNRIvoYBj2ef/aWKWDrqpnkr5oN8SkMaXlRANSbkMojgmDXPOzMMazLuuKc6Kf8veUT/CL6Q0k+ZcRclhHnrRHR/dYfdSM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707113058; c=relaxed/simple;
+	bh=5bdAiRAk/l152HqTBwD2uoe7FkXNh1INEkyYl9QjsRU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mDE/cW4b15vKew3qnPGdVv+U6/PNuonU07TKTRLbX+d1+Z2ri2/7Nm2fz41tq2hGGOWF+UGO5daJEbJNX43Begtvu1jEPcG04+fBWdRZ/J1hjYRd7R/ZdS4jIeJJiOiYvb9o1ZJYaSH638PxzH+5NJbeSYcfaX4btC0WPjKYaOw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=kei2qE6/; arc=fail smtp.client-ip=40.107.237.83
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O4GAC7QkUJBTtRcf5bCRibqxTeUp4JB5RfT49vk1EPgKD8t8zZKXQC2VIF95NziuUmeR0m7Hg09vnmu+v04lNt9ntwcN3NvEW0kK+KtKYegF/NdXylP4Zv8rCa/p8L4U80wSUmmwRikMFkkWxp94vw4NgdzIRd2nVB2ZleTL5wqxvmTSEJMM4UNRNTOl1aU1wUjrR+Tpc+jEq3MtOZ2YjUk258w8Bw061y7jm8Fly1IRU+C9UnR+0BFWMRh6E42FpXzhCP/F52194/zBWyL8XhArH3p1IoFJuj592cfux7UOykVEvIkeM+6goheAYvlpCS1v8FItCR5gSfwq0R/YVw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=t8/TJOxeoX5B1QWRHui5UbGv+vdgRdbntv/9SDefCE0=;
+ b=QpDsaKjAZMclU3aXUbfpNIgRXZF6fmg/saJddRsBRmIuc4DG7zQSF7chtYqkifZYlSLALmPZWGFImu5k5Dlv7Vt2G21onuSdhNAD/59MbzO8xAPfkIqiga7Xq4+Es51bzX3ipChQx974rAysKw2/+ZOyPtPtMGCriXNaYglVywrA+OCDUZWuEJK1mgW64J3iB53urK/+rYMHfkr/2OtuGzVUsZp+ckBJG9XOUSmbUznP9gmnwxpS2tSecXpX/5iG0C+gndsS1FY9CENS/t/WSFB0xOpSUz1qV2ACT0ccJdC5jiTeV87avOeK/enQ7/7mRP5oQm+p623OPw4jQCvJ/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=t8/TJOxeoX5B1QWRHui5UbGv+vdgRdbntv/9SDefCE0=;
+ b=kei2qE6/y4zujNZW59lKTqs5Z3Z0k78RSy02RN4KaXSTh1gAjpREnTYS4XBP4dgJ/9Pr4eZVp/fjJPD7+3mpw1KCCX7f/au3RD5CU4xLo76sIlmoicdDPNcyRlp90RkpopWAmB/SRPoiOg1VdiILm3TLteNUBlZIx0IWi/VJNfg=
+Received: from MN2PR13CA0019.namprd13.prod.outlook.com (2603:10b6:208:160::32)
+ by MN2PR12MB4359.namprd12.prod.outlook.com (2603:10b6:208:265::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.14; Mon, 5 Feb
+ 2024 06:04:14 +0000
+Received: from BL02EPF0001A0FC.namprd03.prod.outlook.com
+ (2603:10b6:208:160:cafe::15) by MN2PR13CA0019.outlook.office365.com
+ (2603:10b6:208:160::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.26 via Frontend
+ Transport; Mon, 5 Feb 2024 06:04:13 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BL02EPF0001A0FC.mail.protection.outlook.com (10.167.242.103) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7249.19 via Frontend Transport; Mon, 5 Feb 2024 06:04:13 +0000
+Received: from jasmine-meng.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Mon, 5 Feb
+ 2024 00:04:07 -0600
+From: Meng Li <li.meng@amd.com>
+To: "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Borislav Petkov
+	<bpetkov@amd.com>, Huang Rui <ray.huang@amd.com>
+CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<x86@kernel.org>, <linux-acpi@vger.kernel.org>, Shuah Khan
+	<skhan@linuxfoundation.org>, <linux-kselftest@vger.kernel.org>, "Nathan
+ Fontenot" <nathan.fontenot@amd.com>, Deepak Sharma <deepak.sharma@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>, Mario Limonciello
+	<mario.limonciello@amd.com>, Shimmer Huang <shimmer.huang@amd.com>, "Perry
+ Yuan" <Perry.Yuan@amd.com>, Xiaojian Du <Xiaojian.Du@amd.com>, Viresh Kumar
+	<viresh.kumar@linaro.org>, Borislav Petkov <bp@alien8.de>, "Oleksandr
+ Natalenko" <oleksandr@natalenko.name>, Meng Li <li.meng@amd.com>
+Subject: [PATCH] Fix the warning of amd-pstate.rst.
+Date: Mon, 5 Feb 2024 14:03:05 +0800
+Message-ID: <20240205060305.3594942-1-li.meng@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,217 +92,52 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
- BJMBX01.spreadtrum.com (10.0.64.7)
-X-MAIL:SHSQR01.spreadtrum.com 4155vEnK010987
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL02EPF0001A0FC:EE_|MN2PR12MB4359:EE_
+X-MS-Office365-Filtering-Correlation-Id: 61b640e8-5d4c-405f-8206-08dc2610476e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	AFxNiy0LW1mFXxpkKr+hHM+0lryalU3nxP54abietZc4XXzblZhhHXif3p+M1UDIs89FmC3D4k5gdllA7+JR/3mgM8azi98SAIbIAcyrsOaScUPT43dcQPtRjzogui+3vLvZb083ekDwMLZkfLRL44EXUzJIByhFakr4Fz6BPXwwL+PEfCe5sS0sjVVLW0ZXGymEH6Y4QD9wFl3hmyzzUiYAOjpbPBhQmgoVKfoITqkWsOgzyx14ptBWvXr355m24PJyMzKLLKuf1wQUxKJZ1DKUBqzWLv5/P/WpY0AfYU6BtoEYa+I7sXURfrPZKartXm1tPd8Nj2o+PWSaGfux5+l/WTXgcyRNkshdhKvG+i411rn9Pcrmb40H4YRNhieHM/nfNGVyqz2TT7cJZBZJlt/Y2krIp4mq4h8e1oMYbOqyUBQ5JbTWu5vWEQ2JXvq17Ya0xa+T4hKkq3YA7yFm1bd+G0uQOByYqX1EmBNMQrTHqtZtxpLVTLVCZlU1Sacsmbjl5Us09UYXCtSkSNGPtNk6qloiw5j80PXQ1JjMzG6yBMTB6lyD9AX5lN2LRGLn3AvZkuLUoOu8UXRYrd//WUrFnz9jG1qjQ+yfjm+KWoEBKFyRl7dUrHBPtsLFCCU5D2t10AOzxlP5tc7tivxZBH4ezd+uA2l9FlEhjqc5JMC+Xu/WQjgUubUj0pmTmwfqB4R//V4+Lh0ijUmYRryM1eDPmgYPxm2EW08VUlYmoZVyYhkh1qEmI0ghCFaMpMq/rTK6GSVa4vJMkXwvkLBf+Q==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(39860400002)(376002)(396003)(136003)(230922051799003)(64100799003)(1800799012)(82310400011)(186009)(451199024)(36840700001)(46966006)(40470700004)(110136005)(316002)(6636002)(83380400001)(54906003)(81166007)(82740400003)(356005)(2616005)(26005)(70206006)(7696005)(4326008)(86362001)(2906002)(5660300002)(4744005)(7416002)(70586007)(478600001)(426003)(47076005)(16526019)(1076003)(336012)(8676002)(8936002)(36756003)(40480700001)(40460700003)(36860700001)(41300700001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2024 06:04:13.9055
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 61b640e8-5d4c-405f-8206-08dc2610476e
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL02EPF0001A0FC.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4359
 
-From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+Title under line too short
 
-Currently, request's ioprio are set via task's schedule priority(when no
-blkcg configured), which has high priority tasks possess the privilege on
-both of CPU and IO scheduling. Furthermore, most of the write requestes
-are launched asynchronosly from kworker which can't know the submitter's
-priorities.
-This commit works as a hint of original policy by promoting the request
-ioprio based on the page/folio's activity. The original idea comes from
-LRU_GEN which provides more precised folio activity than before. This
-commit try to adjust the request's ioprio when certain part of its folios
-are hot, which indicate that this request carry important contents and
-need be scheduled ealier.
-The filesystem should call bio_set_active_ioprio() before submit_bio on the
-spot where they want(buffered read/write/sync etc).
-
-This commit is verified on a v6.6 6GB RAM android14 system via 4 test cases
-by calling bio_set_active_ioprio in erofs, ext4, f2fs and blkdev(raw
-partition of gendisk)
-
-Case 1:
-script[a] which get significant improved fault time as expected[b]*
-where dd's cost also shrink from 55s to 40s.
-(1). fault_latency.bin is an ebpf based test tool which measure all task's
-   iowait latency during page fault when scheduled out/in.
-(2). costmem generate page fault by mmaping a file and access the VA.
-(3). dd generate concurrent vfs io.
-
-[a]
-/fault_latency.bin 1 5 > /data/dd_costmem &
-costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-dd if=/dev/block/sda of=/data/ddtest bs=1024 count=2048000 &
-dd if=/dev/block/sda of=/data/ddtest1 bs=1024 count=2048000 &
-dd if=/dev/block/sda of=/data/ddtest2 bs=1024 count=2048000 &
-dd if=/dev/block/sda of=/data/ddtest3 bs=1024 count=2048000
-[b]
-                       mainline		commit
-io wait                736us            523us
-
-* provide correct result for test case 1 in v7 which was compared between
-EMMC and UFS wrongly.
-
-Case 2:
-fio -filename=/dev/block/by-name/userdata -rw=randread -direct=0 -bs=4k -size=2000M -numjobs=8 -group_reporting -name=mytest
-mainline: 513MiB/s
-READ: bw=531MiB/s (557MB/s), 531MiB/s-531MiB/s (557MB/s-557MB/s), io=15.6GiB (16.8GB), run=30137-30137msec
-READ: bw=543MiB/s (569MB/s), 543MiB/s-543MiB/s (569MB/s-569MB/s), io=15.6GiB (16.8GB), run=29469-29469msec
-READ: bw=474MiB/s (497MB/s), 474MiB/s-474MiB/s (497MB/s-497MB/s), io=15.6GiB (16.8GB), run=33724-33724msec
-READ: bw=535MiB/s (561MB/s), 535MiB/s-535MiB/s (561MB/s-561MB/s), io=15.6GiB (16.8GB), run=29928-29928msec
-READ: bw=523MiB/s (548MB/s), 523MiB/s-523MiB/s (548MB/s-548MB/s), io=15.6GiB (16.8GB), run=30617-30617msec
-READ: bw=492MiB/s (516MB/s), 492MiB/s-492MiB/s (516MB/s-516MB/s), io=15.6GiB (16.8GB), run=32518-32518msec
-READ: bw=533MiB/s (559MB/s), 533MiB/s-533MiB/s (559MB/s-559MB/s), io=15.6GiB (16.8GB), run=29993-29993msec
-READ: bw=524MiB/s (550MB/s), 524MiB/s-524MiB/s (550MB/s-550MB/s), io=15.6GiB (16.8GB), run=30526-30526msec
-READ: bw=529MiB/s (554MB/s), 529MiB/s-529MiB/s (554MB/s-554MB/s), io=15.6GiB (16.8GB), run=30269-30269msec
-READ: bw=449MiB/s (471MB/s), 449MiB/s-449MiB/s (471MB/s-471MB/s), io=15.6GiB (16.8GB), run=35629-35629msec
-
-commit: 633MiB/s
-READ: bw=668MiB/s (700MB/s), 668MiB/s-668MiB/s (700MB/s-700MB/s), io=15.6GiB (16.8GB), run=23952-23952msec
-READ: bw=589MiB/s (618MB/s), 589MiB/s-589MiB/s (618MB/s-618MB/s), io=15.6GiB (16.8GB), run=27164-27164msec
-READ: bw=638MiB/s (669MB/s), 638MiB/s-638MiB/s (669MB/s-669MB/s), io=15.6GiB (16.8GB), run=25071-25071msec
-READ: bw=714MiB/s (749MB/s), 714MiB/s-714MiB/s (749MB/s-749MB/s), io=15.6GiB (16.8GB), run=22409-22409msec
-READ: bw=600MiB/s (629MB/s), 600MiB/s-600MiB/s (629MB/s-629MB/s), io=15.6GiB (16.8GB), run=26669-26669msec
-READ: bw=592MiB/s (621MB/s), 592MiB/s-592MiB/s (621MB/s-621MB/s), io=15.6GiB (16.8GB), run=27036-27036msec
-READ: bw=691MiB/s (725MB/s), 691MiB/s-691MiB/s (725MB/s-725MB/s), io=15.6GiB (16.8GB), run=23150-23150msec
-READ: bw=569MiB/s (596MB/s), 569MiB/s-569MiB/s (596MB/s-596MB/s), io=15.6GiB (16.8GB), run=28142-28142msec
-READ: bw=563MiB/s (590MB/s), 563MiB/s-563MiB/s (590MB/s-590MB/s), io=15.6GiB (16.8GB), run=28429-28429msec
-READ: bw=712MiB/s (746MB/s), 712MiB/s-712MiB/s (746MB/s-746MB/s), io=15.6GiB (16.8GB), run=22478-22478msec
-
-Case 3:
-This commit is also verified by the case of launching camera APP which is
-usually considered as heavy working load on both of memory and IO, which
-shows 12%-24% improvement.
-
-		ttl = 0		ttl = 50	ttl = 100
-mainline        2267ms		2420ms		2316ms
-commit          1992ms          1806ms          1998ms
-
-case 4:
-androbench has no improvment as well as regression in RD/WR test item
-while make a 3% improvement in sqlite items.
-
-Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+Signed-off-by: Meng Li <li.meng@amd.com>
 ---
-change of v2: calculate page's activity via helper function
-change of v3: solve layer violation by move API into mm
-change of v4: keep block clean by removing the page related API
-change of v5: introduce the macros of bio_add_folio/page for read dir.
-change of v6: replace the macro of bio_add_xxx by submit_bio which
-                iterating the bio_vec before launching bio to block layer
-change of v7: introduce the function bio_set_active_ioprio
-	      provide updated test result
----
----
- block/Kconfig       | 15 ++++++++++++
- block/bio.c         | 56 +++++++++++++++++++++++++++++++++++++++++++++
- include/linux/bio.h |  1 +
- 3 files changed, 72 insertions(+)
+ Documentation/admin-guide/pm/amd-pstate.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/block/Kconfig b/block/Kconfig
-index f1364d1c0d93..2dbcd8d92052 100644
---- a/block/Kconfig
-+++ b/block/Kconfig
-@@ -228,6 +228,21 @@ config BLOCK_HOLDER_DEPRECATED
- config BLK_MQ_STACKING
- 	bool
+diff --git a/Documentation/admin-guide/pm/amd-pstate.rst b/Documentation/admin-guide/pm/amd-pstate.rst
+index 0a3aa6b8ffd5..1e0d101b020a 100644
+--- a/Documentation/admin-guide/pm/amd-pstate.rst
++++ b/Documentation/admin-guide/pm/amd-pstate.rst
+@@ -381,7 +381,7 @@ driver receives a message with the highest performance change, it will
+ update the core ranking and set the cpu's priority.
  
-+config BLK_CONT_ACT_BASED_IOPRIO
-+	bool "Enable content activity based ioprio"
-+	depends on LRU_GEN
-+	default n
-+	help
-+	  This item enable the feature of adjust bio's priority by
-+	  calculating its content's activity.
-+	  This feature works as a hint of original bio_set_ioprio
-+	  which means rt task get no change of its bio->bi_ioprio
-+	  while other tasks have the opportunity to raise the ioprio
-+	  if the bio take certain numbers of active pages.
-+	  The file system should use this by modifying their buffered
-+	  read/write/sync function to raise the bio->bi_ioprio before
-+	  calling submit_bio.
-+
- source "block/Kconfig.iosched"
+ ``amd-pstate`` Preferred Core Switch
+-=================================
++=====================================
+ Kernel Parameters
+ -----------------
  
- endif # BLOCK
-diff --git a/block/bio.c b/block/bio.c
-index 816d412c06e9..9e2d1e018c98 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -1476,6 +1476,62 @@ void bio_set_pages_dirty(struct bio *bio)
- }
- EXPORT_SYMBOL_GPL(bio_set_pages_dirty);
- 
-+/*
-+ * bio_set_active_ioprio() is helper function for fs to adjust the bio's ioprio via
-+ * calculating the content's activity which measured from MGLRU.
-+ * The file system should call this function before submit_bio for the buffered
-+ * read/write/sync.
-+ */
-+#ifdef CONFIG_BLK_CONT_ACT_BASED_IOPRIO
-+void bio_set_active_ioprio(struct bio *bio)
-+{
-+	struct bio_vec bv;
-+	struct bvec_iter iter;
-+	struct page *page;
-+	int class, level, hint;
-+	int activity = 0;
-+	int cnt = 0;
-+
-+	class = IOPRIO_PRIO_CLASS(bio->bi_ioprio);
-+	level = IOPRIO_PRIO_LEVEL(bio->bi_ioprio);
-+	hint = IOPRIO_PRIO_HINT(bio->bi_ioprio);
-+	/*apply legacy ioprio policy on RT task*/
-+	if (task_is_realtime(current)) {
-+		bio->bi_ioprio = IOPRIO_PRIO_VALUE_HINT(IOPRIO_CLASS_RT, level, hint);
-+		return;
-+	}
-+	bio_for_each_bvec(bv, bio, iter) {
-+		page = bv.bv_page;
-+		activity += PageWorkingset(page) ? 1 : 0;
-+		cnt++;
-+		if (activity > bio->bi_vcnt / 2) {
-+			class = IOPRIO_CLASS_RT;
-+			break;
-+		} else if (activity > bio->bi_vcnt / 4) {
-+			/*
-+			 * all itered pages are all active so far
-+			 * then raise to RT directly
-+			 */
-+			if (activity == cnt) {
-+				class = IOPRIO_CLASS_RT;
-+				break;
-+			} else
-+				class = max(IOPRIO_PRIO_CLASS(get_current_ioprio()),
-+						IOPRIO_CLASS_BE);
-+		}
-+	}
-+	if (!class && activity > cnt / 2)
-+		class = IOPRIO_CLASS_RT;
-+	else if (!class && activity > cnt / 4)
-+		class = max(IOPRIO_PRIO_CLASS(get_current_ioprio()), IOPRIO_CLASS_BE);
-+
-+	bio->bi_ioprio = IOPRIO_PRIO_VALUE_HINT(class, level, hint);
-+}
-+#else
-+void bio_set_active_ioprio(struct bio *bio) {}
-+#endif
-+EXPORT_SYMBOL_GPL(bio_set_active_ioprio);
-+
- /*
-  * bio_check_pages_dirty() will check that all the BIO's pages are still dirty.
-  * If they are, then fine.  If, however, some pages are clean then they must
-diff --git a/include/linux/bio.h b/include/linux/bio.h
-index 41d417ee1349..58e33d8b0f5f 100644
---- a/include/linux/bio.h
-+++ b/include/linux/bio.h
-@@ -487,6 +487,7 @@ void bio_iov_bvec_set(struct bio *bio, struct iov_iter *iter);
- void __bio_release_pages(struct bio *bio, bool mark_dirty);
- extern void bio_set_pages_dirty(struct bio *bio);
- extern void bio_check_pages_dirty(struct bio *bio);
-+extern void bio_set_active_ioprio(struct bio *bio);
- 
- extern void bio_copy_data_iter(struct bio *dst, struct bvec_iter *dst_iter,
- 			       struct bio *src, struct bvec_iter *src_iter);
 -- 
-2.25.1
+2.34.1
 
 
