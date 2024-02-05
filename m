@@ -1,140 +1,181 @@
-Return-Path: <linux-kernel+bounces-52383-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8061A849788
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:15:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94B6D849773
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:13:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68CA7B2BB90
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:09:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F02EB262C1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 10:09:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 363D01642A;
-	Mon,  5 Feb 2024 10:09:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E35CD168D9;
+	Mon,  5 Feb 2024 10:09:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ASKQUGmp"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0NmPUl2l";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="a2wU2Jsi";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0NmPUl2l";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="a2wU2Jsi"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD31C13AED;
-	Mon,  5 Feb 2024 10:09:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 474581429E;
+	Mon,  5 Feb 2024 10:09:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707127752; cv=none; b=QIFtT+BZz+d5Q6hQr4X+r7HjXR4mwSsyFX7nifkTCBlzToDKfzYKUwy4WE/nkxP5xHy6pWFJKRL74SA7GcVkQWhGx2uKnnz9pwzkK5aiLeUR12+52XtYs1vgv/N1XbNF3J9r6n8VncP6GWbzstIeZAs8Ogt8VRVWKp89diS4n5s=
+	t=1707127772; cv=none; b=BM6ivH4hE51g/m7xvAslLlckAtYMJQoOR+SE1oITURpMzs8u7eE/iI4sBdJspkY4UmmPb4d7CmpeMweyrEg+eoQ8HxtO0kWxQbgyN4l4QMQKizWRcfhJd/uSPw7lxdwDfV4K2IPycNbJeF9fTacOhkxSsr+QUQ2ssyLm8WEVh9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707127752; c=relaxed/simple;
-	bh=Zq7miwxbrFgr1QcCYOSeeksVLGohHwTXhO8tvxX9HyU=;
-	h=Date:From:To:Cc:Subject:Message-ID:Content-Type:
-	 Content-Disposition:MIME-Version; b=HB3yvm9zUTNNK5R3vV+vxMcG5EINFAFX4FW08RBaCjl5lJBJ4GUwv2MnQbLFsPdcoE/K2cMozJbAGQYLqeak2o5VRcompAJYSg2cQzy/+L2AIxYYoXnfqN3q0dYwsGme54PVBm36k/O4OXfP79YEh10/o5fIw/w7bH6ynOabKZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ASKQUGmp; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4159RNK6008177;
-	Mon, 5 Feb 2024 10:09:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : content-type : mime-version; s=pp1;
- bh=JcsoH4hXZcWxZ1RfuRdTg/y9BbNd2oLKGK/54T9lzzQ=;
- b=ASKQUGmpsPufyS1CSEksrmLgjgm8TIlT8FaDb9/cSiFRahkaXzFtnndy7ekQQ8Y+6KYO
- 1IIWj23gQCdpBvtPgj6L8LiZhfJEOK6oVqicL+CadBz4HnL3u1z73zX53S1PnVuNVaBE
- JzgTW2O+pFmpBdn0kU9LFX79BVMs2+yGoCBFoc7yYN9i62owz97gN5QD4vTPT9VQDUiZ
- NoqL+BDFp3IEEu/T7s91d8dS1+QKJ9Tk5PY2Tnmp080MGbsIfuIp38PEeTvbOzBJ/3iB
- gIeWIVsl19ftE5M2KDSuqmyJt4vJ7AvxmFnT9u8y4RveCkzIrNal2IIyhm6tP4kvyz16 fA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w2w240xyv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 05 Feb 2024 10:09:02 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4159ksgG007148;
-	Mon, 5 Feb 2024 10:09:02 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w2w240xy7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 05 Feb 2024 10:09:01 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4159Yqf2016148;
-	Mon, 5 Feb 2024 10:09:00 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w22h1q808-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 05 Feb 2024 10:09:00 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 415A8wKE15205002
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 5 Feb 2024 10:08:58 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A5EF620067;
-	Mon,  5 Feb 2024 10:08:58 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1C7222004F;
-	Mon,  5 Feb 2024 10:08:57 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.109.253.82])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon,  5 Feb 2024 10:08:56 +0000 (GMT)
-Date: Mon, 5 Feb 2024 15:38:54 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: tytso@mit.edu
-Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, jack@suse.cz,
-        ritesh.list@gmail.com, john.g.garry@oracle.com, djwong@kernel.org
-Subject: Running out of inode flags in ext4
-Message-ID: <ZcCztkt8KtMrsvPp@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: LRKy6uw2ycFonp9HiHTMQga5tMeeKhDh
-X-Proofpoint-GUID: 5vIVyb_WSIEbxEQn8QTo4T5SRouBM8zk
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1707127772; c=relaxed/simple;
+	bh=4lJmjeGnsuESibq4dkXn4aEwYKCDtRtnV3ik8Ze43YY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IW8zLK/dEqXUJc/lg1mf/qOxSnFkPR/4uqlDhT3V+jg27qOrgVtI/41dDNg6bKA6GJWF5DwX+X6k15ma4LpMN/Lia8mnde3d7yhGkj32o4IGFXnoDrIuB6f0dOfF+uQ1MRk9yuOMYlcWe9SwYQ6poFHUI0prkZ/BPO3epYL8b8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0NmPUl2l; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=a2wU2Jsi; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0NmPUl2l; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=a2wU2Jsi; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 68A761F8AE;
+	Mon,  5 Feb 2024 10:09:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707127768; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xeAME5NJejmJ4/yncKQREcQWWC8NXPkaZdoWiVbdd10=;
+	b=0NmPUl2lfDqYVyYzOjo1vTt3dIIQb2/H6htvcRok60CBOdaultS7Li0P3XJ3uT77aKafoa
+	YMG9+kq7m5jcwUWI+bZMaqMq40YBJB7V5dXvUgbAHiXUnuf1+XIy6RRS2TE7XT/poxoW2s
+	lJadgenBfXH1vXms6QedkM+JMtPRpiU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707127768;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xeAME5NJejmJ4/yncKQREcQWWC8NXPkaZdoWiVbdd10=;
+	b=a2wU2JsihZ7r0qS4ifZseKKcW3AB5l/OQWpxMAGukvELCRrEc+PcSNPdKQJs925fbWkhs9
+	VswdBMoSOVOii6Dg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707127768; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xeAME5NJejmJ4/yncKQREcQWWC8NXPkaZdoWiVbdd10=;
+	b=0NmPUl2lfDqYVyYzOjo1vTt3dIIQb2/H6htvcRok60CBOdaultS7Li0P3XJ3uT77aKafoa
+	YMG9+kq7m5jcwUWI+bZMaqMq40YBJB7V5dXvUgbAHiXUnuf1+XIy6RRS2TE7XT/poxoW2s
+	lJadgenBfXH1vXms6QedkM+JMtPRpiU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707127768;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xeAME5NJejmJ4/yncKQREcQWWC8NXPkaZdoWiVbdd10=;
+	b=a2wU2JsihZ7r0qS4ifZseKKcW3AB5l/OQWpxMAGukvELCRrEc+PcSNPdKQJs925fbWkhs9
+	VswdBMoSOVOii6Dg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5E79E136F5;
+	Mon,  5 Feb 2024 10:09:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id bl8LF9izwGXGKQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 05 Feb 2024 10:09:28 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 0E5A6A0809; Mon,  5 Feb 2024 11:09:24 +0100 (CET)
+Date: Mon, 5 Feb 2024 11:09:23 +0100
+From: Jan Kara <jack@suse.cz>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	peterz@infradead.org, boqun.feng@gmail.com,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>
+Subject: Re: [PATCH 1/4] fs/pipe: Convert to lockdep_cmp_fn
+Message-ID: <20240205100923.3vb3p247c5q2a5qe@quack3>
+References: <20240127020833.487907-1-kent.overstreet@linux.dev>
+ <20240127020833.487907-2-kent.overstreet@linux.dev>
+ <20240202120357.tfjdri5rfd2onajl@quack3>
+ <3nakly5rpn4eomhlxlzutvrisasm6yzqaccrfpnpw2lenxzfmy@vpft5f4osnye>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-05_05,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1031
- priorityscore=1501 malwarescore=0 mlxlogscore=581 spamscore=0
- impostorscore=0 mlxscore=0 suspectscore=0 adultscore=0 bulkscore=0
- phishscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311290000 definitions=main-2402050076
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3nakly5rpn4eomhlxlzutvrisasm6yzqaccrfpnpw2lenxzfmy@vpft5f4osnye>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -2.30
+X-Spamd-Result: default: False [-2.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,suse.cz:email,linux.org.uk:email,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[suse.cz,vger.kernel.org,infradead.org,gmail.com,zeniv.linux.org.uk,kernel.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 
-Hi folks,
+On Fri 02-02-24 07:47:50, Kent Overstreet wrote:
+> On Fri, Feb 02, 2024 at 01:03:57PM +0100, Jan Kara wrote:
+> > On Fri 26-01-24 21:08:28, Kent Overstreet wrote:
+> > > *_lock_nested() is fundamentally broken; lockdep needs to check lock
+> > > ordering, but we cannot device a total ordering on an unbounded number
+> > > of elements with only a few subclasses.
+> > > 
+> > > the replacement is to define lock ordering with a proper comparison
+> > > function.
+> > > 
+> > > fs/pipe.c was already doing everything correctly otherwise, nothing
+> > > much changes here.
+> > > 
+> > > Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> > > Cc: Christian Brauner <brauner@kernel.org>
+> > > Cc: Jan Kara <jack@suse.cz>
+> > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > 
+> > I had to digest for a while what this new lockdep lock ordering feature is
+> > about. I have one pending question - what is the motivation of this
+> > conversion of pipe code? AFAIU we don't have any problems with lockdep
+> > annotations on pipe->mutex because there are always only two subclasses?
+> 
+> It's one of the easier conversions to do, and ideally /all/ users of
+> subclasses would go away.
+> 
+> Start with the easier ones, figure out those patterns, then the
+> harder...
 
-I'm trying to rework the ext4 atomic write patchset so we have similar
-semantics as discussed here [1], which would look something like:
+I see, thanks for explanation. So in the pipes case I actually like that
+the patch makes the locking less obfuscated with lockdep details (to which
+I'm mostly used to but still ;)). So feel free to add:
 
-1. we call FS_IOC_FSSETXATTR to enable atomic write on inode
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-2. In the setxattr path, we need to mark the inode with
-atomic_write_enabled. XFS does it via an on disk inode flag which is
-straightforward enough 
+for this patch. I'm not 100% convinced it will be always possible to
+replace subclasses with the new ordering mechanism but I guess time will
+show.
 
-However, on ext4 we are almost out of 32 bits of inode flags and I don't
-think it's possible to add any flags2 field or something (iiuc, ondisk
-indoe doesn't have scope for expansion).
-
-Some ideas that I have:
-
-- I see that 0x00400000 (formerly EXT4_EOFBLOCKS_FL) is free to use but
-	as per my understanding, this is interpreted in some way by older fsck
-	versions. However, marking atomic writes as RO_COMPAT might help aavoid
-	confusion in fsck.
-
-- If we can't use inode flags, should we maybe use xattr to store
-	atomic_write details?
-	
-Should I go with either of above or is there a better way to mark
-ext4 inodes which I might be missing. Also, now that we are out of inode
-flags, what's the recommended way to handle such use cases in the
-future?
-
-Would appreciate some suggestions on this.
-
-Thanks,
-ojaswin
-
-[1]
-https://lore.kernel.org/all/20240124142645.9334-4-john.g.garry@oracle.com/
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
