@@ -1,141 +1,157 @@
-Return-Path: <linux-kernel+bounces-53189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-53190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C6B884A1DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:14:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4965684A1DD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 19:15:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA5B2285187
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:14:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DFF8EB21CED
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 18:15:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5812547F72;
-	Mon,  5 Feb 2024 18:14:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7747247F59;
+	Mon,  5 Feb 2024 18:15:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UUcpHxGF"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A41V3EW4"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11E3047F65
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 18:14:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10AB947794
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 18:15:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707156854; cv=none; b=EN8Fh+4RoFCpvUl8AVUxmi/EgUMSnt91sPPDGhqNKdREgGQzKkaaysyuKkmka8xTjbD6OMKHOZQnNNzeCBL72+p+cV1S6UB73RldSqflMUfYlRaazNZuYQ917G+Wn5IUh3PbxtxBbpI9IaWe7LwKoXWddARppWV8rKyb+p4tYVo=
+	t=1707156907; cv=none; b=DKvELuydeJSVRQ1cBOfW9s94fqGxf9au4KlaECKWl78+GmiVQHPI2PwfiKLN/+BEvu5fJd0aqJQExJ4KXpjTWETBRf0BC7OIx1RvHlZ8yGM05y1TtARAd5HIlGfDfMLqPAsaMQg8YJpPTUyw+RV+ZcGSbtUASTWUjq+Yfhy9iaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707156854; c=relaxed/simple;
-	bh=EY4hs20oX0mr1gYQJEJz+1Hmu7pWTI0ZEk8DKNCayfs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rM3FKm3PDpLAubEYh9iorznpRChQp0zmvk7Lb5XpegWqax6vDz/pUPfSq2OvfjqQHwleZ9+pVjEyHdRyduXFnFY4OAa4mfItGlkeOoNgBD3xvvar/F4qWwkUuNY+tIqqG7XLPgPdfjlVxO6VzucsxPUgssXPHuhErZaT7RCrN/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UUcpHxGF; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40fdd5bbe65so7602575e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 10:14:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707156851; x=1707761651; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qr+Vq/S1r4X6aZjVDF0PrU45ogtRloS0UmBuISXNtMI=;
-        b=UUcpHxGF9Y9+gICHErkFPGakpKZz1Q+KQuTlFz9dxxeDrzeqXKaLYRiK0Aa2UdnC6K
-         4FxxdCklRiLFXbzjF2MoNBXUDS3pHzjMoQMaI+sHGvts+xRBY6ySjZtOSKhCGXDs5b4l
-         /NqGDD5NXyxox7wq4VbXhrkpk/VvV9rLT5LlpOj9FEnsQZr9RzWBpr2fCZfiLdxBgG7j
-         6+Dgc+Lf7Xd7uHMs/KHMg0SxkYddAk1UWVs3pljXl3GhAXoAQ70E+Ex9LTCT9tIaL6sc
-         XMNP3oJ3N15wnnOyafGE4R7ohTohCcV+FUiMKDp52EnfcwD0ZsP54NCLkVENbbj3hEoD
-         w0hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707156851; x=1707761651;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qr+Vq/S1r4X6aZjVDF0PrU45ogtRloS0UmBuISXNtMI=;
-        b=bqvcm7TJkatU2MXKHO/BVAC6Zzvy0A4BIq7mBsDoED6NIUJpoaaCW8kcckR1mgib5x
-         Lbrvtw6Gz2jIkhmGIiD+FHwaVtNoYiBeV1BwAC1Uw9cLQO59Vdw4L5yeNqp15wBRi3AF
-         nfEdNCX4BKaemjt4IxEIc77L7FLdoWMrAd4LDYwd4P1LgQYYRS4v18Qzl08xMRt1W9Wx
-         E32DHdhGt0UJb0geoEsJAhYMw2rHswJmWhTYjSQZRLbRVGwihOJg9DM8v2ysjJDUjxiL
-         hMoTNoveKVFiQvrR/BnevhqJ70cZupKzDuU7eaEysdYqZZs4imQibN8e7dyb/NFDpEO7
-         iMiA==
-X-Gm-Message-State: AOJu0Ywc6Gk9YCOfAaSkkqZPThROiiSyV6E9/9YmPNydgJEfuhyHttr9
-	BQdp2kRt/Dp8yqhW9bThF+LDbEIkG3JKmuW8B4Zi+nLmtHdKw4US
-X-Google-Smtp-Source: AGHT+IF0wujzR+3gQ56QlL+FI5opt3CJKtvlwe+T2+Vdq05+o2wxVVN/hC3axtbK0Rj9lxWUjg/8kw==
-X-Received: by 2002:a05:600c:19c8:b0:40e:f557:738d with SMTP id u8-20020a05600c19c800b0040ef557738dmr383821wmq.26.1707156851150;
-        Mon, 05 Feb 2024 10:14:11 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVqIDzbypmAayHCkhdRi5vwvjHNh2aKNp3koseOzKUJx1C6WLjwtBw10a38BZZ+ME81zmG6yoeqO0QH49yXF17+q1Bq5DNFVhKbPGNn+IiGir6kyWCt7r/7J7kFe1Mjg6BO16OkPkrP6J825lsMBh+jENEbf9ivCWqsdAQyHqICoXSgD7/9+0Li1xtkjkJ98iqJNMdNW89e8zsWGohMesN2YeKkXI+fuEoYjr4VGLQd/g==
-Received: from jernej-laptop.localnet (82-149-13-182.dynamic.telemach.net. [82.149.13.182])
-        by smtp.gmail.com with ESMTPSA id h2-20020a05600c350200b0040fd24653d4sm558504wmq.36.2024.02.05.10.14.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 10:14:10 -0800 (PST)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Chen-Yu Tsai <wens@csie.org>, Samuel Holland <samuel@sholland.org>,
- "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
- linux-kernel@vger.kernel.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Ricardo B. Marliere" <ricardo@marliere.net>
-Subject: Re: [PATCH] bus: sunxi-rsb: make sunxi_rsb_bus const
-Date: Mon, 05 Feb 2024 19:14:09 +0100
-Message-ID: <10412979.nUPlyArG6x@jernej-laptop>
-In-Reply-To: <20240204-bus_cleanup-bus-v1-1-bda309c4b829@marliere.net>
-References: <20240204-bus_cleanup-bus-v1-1-bda309c4b829@marliere.net>
+	s=arc-20240116; t=1707156907; c=relaxed/simple;
+	bh=conKQZ6wiYv2oi5ekMEn/OIRAFGKnZQbNRkFZLGjHCQ=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=hzqZD1WojMv3uaFKD59q/K/KLcn6T6je7VwM0Z2Usdi6sO2V+xQXGhAdJZrCi/ckofHpCnrGIx9ZALqz9mXWeDIleKQEMpy2JTi+hDEVQORss2Nm/Rgp++rOtwbRm3JEhqy6yQtswjcIbWwbll0jcTX+uLYocVSApih7MXpIdjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A41V3EW4; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707156907; x=1738692907;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=conKQZ6wiYv2oi5ekMEn/OIRAFGKnZQbNRkFZLGjHCQ=;
+  b=A41V3EW49FLigU2wOo+iCfG4o3p/xNjXPlfqpXc7/kuW1X6RraE4N8Dj
+   kUGv5rcX1o7GVUaZDVdwrdeBvSBJkcAz1bZRol3Pw6ezZmtm//UTwDt0q
+   7q2HqVZi20FFYo7bOCQJdwre4iPpP8+CQrkqKu8SpAfNNkCWv6oh7xXU8
+   Hl2yP+oCCEBj9LoFKtbUy/t3hCicOwnquyfk79CvRtJY87c17bStqJFx5
+   XYAEPSMCj4lEXV9BlS2F+/weySvSwvo1J6zCjuSRUpbVWMUASkOtzrIKe
+   dGC0z1I8sxk9VfXo/oUZG0TfKaG5iyltouUoY/34FFbN8y8bSntrW4ff2
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="17995530"
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="17995530"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 10:15:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="5536044"
+Received: from cacunnin-mobl2.amr.corp.intel.com (HELO [10.209.92.172]) ([10.209.92.172])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 10:15:05 -0800
+Message-ID: <1fa1da19b0b929efec46bd02a6fc358fef1b9c42.camel@linux.intel.com>
+Subject: Re: [PATCH v2] mm: swap: async free swap slot cache entries
+From: Tim Chen <tim.c.chen@linux.intel.com>
+To: Chris Li <chrisl@kernel.org>
+Cc: "Huang, Ying" <ying.huang@intel.com>, Andrew Morton
+ <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org,  Wei =?UTF-8?Q?Xu=EF=BF=BC?= <weixugc@google.com>, Yu
+ =?UTF-8?Q?Zhao=EF=BF=BC?= <yuzhao@google.com>, Greg Thelen
+ <gthelen@google.com>, Chun-Tse Shao <ctshao@google.com>, Suren
+ =?UTF-8?Q?Baghdasaryan=EF=BF=BC?= <surenb@google.com>, Yosry
+ =?UTF-8?Q?Ahmed=EF=BF=BC?= <yosryahmed@google.com>,  Brain Geffon
+ <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, Michal Hocko
+ <mhocko@suse.com>, Mel Gorman <mgorman@techsingularity.net>, Nhat Pham
+ <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, Kairui Song
+ <kasong@tencent.com>, Zhongkun He <hezhongkun.hzk@bytedance.com>, Kemeng
+ Shi <shikemeng@huaweicloud.com>,  Barry Song <v-songbaohua@oppo.com>
+Date: Mon, 05 Feb 2024 10:15:04 -0800
+In-Reply-To: <CAF8kJuNvB8gXv3kj2nkN5j2ny0ZjJoVEdkeDDWSuWxySkKE=1g@mail.gmail.com>
+References: <20240131-async-free-v2-1-525f03e07184@kernel.org>
+	 <87sf2ceoks.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	 <7f19b4d69ff20efe8260a174c7866b4819532b1f.camel@linux.intel.com>
+	 <CAF8kJuNvB8gXv3kj2nkN5j2ny0ZjJoVEdkeDDWSuWxySkKE=1g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
 
-Dne nedelja, 04. februar 2024 ob 16:56:44 CET je Ricardo B. Marliere napisal(a):
-> Now that the driver core can properly handle constant struct bus_type,
-> move the sunxi_rsb_bus variable to be a constant structure as well,
-> placing it into read-only memory which can not be modified at runtime.
-> 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+On Sat, 2024-02-03 at 10:12 -0800, Chris Li wrote:
+>=20
+> > > >  {
+> > > >     struct swap_slots_cache *cache;
+> > > > @@ -282,17 +298,14 @@ void free_swap_slot(swp_entry_t entry)
+> > > >                     goto direct_free;
+> > > >             }
+> > > >             if (cache->n_ret >=3D SWAP_SLOTS_CACHE_SIZE) {
+> > > > -                   /*
+> > > > -                    * Return slots to global pool.
+> > > > -                    * The current swap_map value is SWAP_HAS_CACHE=
+.
+> > > > -                    * Set it to 0 to indicate it is available for
+> > > > -                    * allocation in global pool
+> > > > -                    */
+> > > > -                   swapcache_free_entries(cache->slots_ret, cache-=
+>n_ret);
+> > > > -                   cache->n_ret =3D 0;
+> > > > +                   spin_unlock_irq(&cache->free_lock);
+> > > > +                   schedule_work(&cache->async_free);
+> > > > +                   goto direct_free;
+> > > >             }
+> > > >             cache->slots_ret[cache->n_ret++] =3D entry;
+> > > >             spin_unlock_irq(&cache->free_lock);
+> > > > +           if (cache->n_ret >=3D SWAP_SLOTS_CACHE_SIZE)
+> > > > +                   schedule_work(&cache->async_free);
+> >=20
+> >=20
+> > I have some concerns about the current patch with the change above.
+> > We could hit the direct_free path very often.
+> >=20
+> > By delaying the freeing of entries in the return
+> > cache, we have to do more freeing of swap entry one at a time. When
+> > we try to free an entry, we can find the return cache still full, waiti=
+ng to be freed.
+>=20
+> You are describing the async free is not working. In that case it will al=
+ways
+> hit the direct free path one by one.
+>=20
+> >=20
+> > So we have fewer batch free of swap entries, resulting in an increase i=
+n
+> > number of sis->lock acquisitions overall. This could have the
+> > effect of reducing swap throughput overall when swap is under heavy
+> > operations and sis->lock is contended.
+>=20
+> I  can change the direct free path to free all entries. If the async
+> free hasn't freed up the batch by the time the next swap fault comes in.
+> The new swap fault will take the hit, just free the whole batch. It will =
+behave
+> closer to the original batch free behavior in this path.
+>=20
+Will that negate the benefit you are looking for?
 
-Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+A hack is to double the SWAP_SLOTS_CACHE_SIZE to 128, and trigger the
+background reclaim when entries reach 64. This will allow you to avoid
+the one by one relcaim direct path and hopefully the delayed job
+would have done its job when slots accumulate between 64 and 128.
 
-Best regards,
-Jernej
+However, I am unsure how well this hack is under really heavy
+swap load.  It means that the background reclaim will need to=C2=A0
+work through a larger backlog and
+hold the sis->lock longer. So if you hit the direct path while
+the background reclaim is underway, you may have longer tail latency
+to acquire the sis->lock.=20
 
-> ---
->  drivers/bus/sunxi-rsb.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/bus/sunxi-rsb.c b/drivers/bus/sunxi-rsb.c
-> index fd3e9d82340a..1e29ba76615d 100644
-> --- a/drivers/bus/sunxi-rsb.c
-> +++ b/drivers/bus/sunxi-rsb.c
-> @@ -128,7 +128,7 @@ struct sunxi_rsb {
->  };
->  
->  /* bus / slave device related functions */
-> -static struct bus_type sunxi_rsb_bus;
-> +static const struct bus_type sunxi_rsb_bus;
->  
->  static int sunxi_rsb_device_match(struct device *dev, struct device_driver *drv)
->  {
-> @@ -177,7 +177,7 @@ static int sunxi_rsb_device_modalias(const struct device *dev, struct kobj_ueven
->  	return of_device_uevent_modalias(dev, env);
->  }
->  
-> -static struct bus_type sunxi_rsb_bus = {
-> +static const struct bus_type sunxi_rsb_bus = {
->  	.name		= RSB_CTRL_NAME,
->  	.match		= sunxi_rsb_device_match,
->  	.probe		= sunxi_rsb_device_probe,
-> 
-> ---
-> base-commit: 38ed19495066966979ba821b9e0f549ad5ea620d
-> change-id: 20240204-bus_cleanup-bus-de90b25d7ce6
-> 
-> Best regards,
-> 
-
-
-
+Tim
 
 
