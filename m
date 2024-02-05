@@ -1,169 +1,114 @@
-Return-Path: <linux-kernel+bounces-52055-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52056-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A321849381
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 06:51:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3819849387
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 06:51:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6CB8282E5E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 05:51:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CEF7CB21DAB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 05:51:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A914BE4B;
-	Mon,  5 Feb 2024 05:50:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCFE2BE62;
+	Mon,  5 Feb 2024 05:51:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UYbEG4ns"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="a21RSwvO"
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C01EAB667;
-	Mon,  5 Feb 2024 05:50:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2360BA39
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 05:51:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707112251; cv=none; b=UntQzH8ZXCDiUsP1PmUus0VIXTHRCvym61TNVEOGU4I1g/AxtJSfBb0GtJXx2QnV4CKXAl7dR1LKvt8/L/2TTfmhfro6qYnYjn7USrk937l8ABzPL/reETL0rzop3rjhu5wW2RnRSxm8w7F8DxKVQbG0hwvK2wLYVg2f99UMJBA=
+	t=1707112296; cv=none; b=B5cfIvGdJMwFk2735XrSHZgwOTwWfkMga/fEaiBmVL6nYW6txNnENpS+YSNRb93Ps8I+A/tNNdr8pSQ5jHB9EQqchNn11dB+pwZO7rv+xYzhsRDeYyoLKdnjBGbVef0/OqPQ14U/D1VMvZeaUAUR7imYAnohXLVaZrd19giI7qU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707112251; c=relaxed/simple;
-	bh=lSM7C+vUc6UhPUqzZ2Tj67xDB4u+cxvZTB1BWRh9jbE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=pHSmu5Cx8w+ZBZxNwZjsdBGMuG//PWLCQQrxf6eKcKqR0R5+IoK6nEX17q1I07OaWRKNvgrE3waeSI4wk5ZfyOHBl43EmBX5wp9LgEXgH0xzVyJtWXAnB1pdhIajENb9oS8kIbWatvp9xGzQaIQIjYluFqtEsJGovTiy4WYzFpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UYbEG4ns; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707112249; x=1738648249;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=lSM7C+vUc6UhPUqzZ2Tj67xDB4u+cxvZTB1BWRh9jbE=;
-  b=UYbEG4ns4Vr6SuQRLbaWTwCk7SsjxNJslorXD6lbt5q61j9JojRgkQcL
-   CjQTy1CSAzlYkpWUKt0ZNA81vMBPg1xARHH/jXwYLph7+vGGGV+5S9eiP
-   acpEdVzcDVT9SV1Ev9fD2s281iErCzhxhV4qB8aqdLVM13iSljA8Su477
-   BeGd+JZXEeqHYDCzrugQy66/Om8fb4CkAGVVOzWwKizez/ykLdbdom0LN
-   TrTguBP8KfIHw66+t+kzHKT3oElPkkv+4xdl/QKerBx2Wxk+sANLtuM1Z
-   MZNQg4W8OsKznZjk/2JAjohZUVBd/sNU1UHO+CK4xNi+ywEN86k+FF+kV
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="25900774"
-X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
-   d="scan'208";a="25900774"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 21:50:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
-   d="scan'208";a="38038147"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 21:50:41 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Gregory Price <gourry.memverge@gmail.com>
-Cc: linux-mm@kvack.org,  linux-kernel@vger.kernel.org,
-  linux-doc@vger.kernel.org,  linux-fsdevel@vger.kernel.org,
-  linux-api@vger.kernel.org,  corbet@lwn.net,  akpm@linux-foundation.org,
-  gregory.price@memverge.com,  honggyu.kim@sk.com,  rakie.kim@sk.com,
-  hyeongtak.ji@sk.com,  mhocko@kernel.org,  vtavarespetr@micron.com,
-  jgroves@micron.com,  ravis.opensrc@micron.com,  sthanneeru@micron.com,
-  emirakhur@micron.com,  Hasan.Maruf@amd.com,  seungjun.ha@samsung.com,
-  hannes@cmpxchg.org,  dan.j.williams@intel.com
-Subject: Re: [PATCH v5 4/4] mm/mempolicy: protect task interleave functions
- with tsk->mems_allowed_seq
-In-Reply-To: <20240202170238.90004-5-gregory.price@memverge.com> (Gregory
-	Price's message of "Fri, 2 Feb 2024 12:02:38 -0500")
-References: <20240202170238.90004-1-gregory.price@memverge.com>
-	<20240202170238.90004-5-gregory.price@memverge.com>
-Date: Mon, 05 Feb 2024 13:48:44 +0800
-Message-ID: <87r0hr31hf.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1707112296; c=relaxed/simple;
+	bh=2noKBL5HYpd1xs5iDk72v8+AIEaGQwEt/KA4yFE7NKI=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Ae7D+h7/n4itFujzUJwv8QzEicwHrq9G29Z525jzeWw2xrbTZZ8Mew+J2KecBUEVogByCmYNg+bLHvyR2nwJQWiGh7jv4LM04rr0dpow9OToMxh8kse6gB3Ub2maVvX+xjZTdOiLTpv7aiFfI03Xc+W6xtr3mKHCV9MXSBOn9xk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=a21RSwvO; arc=none smtp.client-ip=210.61.82.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 9a2db1c4c3ea11eea2298b7352fd921d-20240205
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=yw30OqTt5AJHEMjDxcvTzl5oo4axO9cwqzp5IcfvIJk=;
+	b=a21RSwvOU8gnqph+tTxW52QNND2T9phXD5hNO+lNa2XqbYwmEB3/43gAzqmDbh2Gq5VC0ew3jEtwpES50FyXQWm13uQwhs9VUYRt1pCAkE+8h3zqQ/NxxGknKn3eyOOfMtMJFaZZHdps+5hNRBHY15HAMNSWapYH0PtCtmePx1Y=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:990677f4-d114-4e71-bcc0-60d69de6f4f5,IP:0,U
+	RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:6f543d0,CLOUDID:00af84fe-c16b-4159-a099-3b9d0558e447,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
+	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 9a2db1c4c3ea11eea2298b7352fd921d-20240205
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw02.mediatek.com
+	(envelope-from <mac.shen@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 624134815; Mon, 05 Feb 2024 13:51:27 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Mon, 5 Feb 2024 13:51:26 +0800
+Received: from mszsdhlt06.gcn.mediatek.inc (10.16.6.206) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Mon, 5 Feb 2024 13:51:25 +0800
+From: mac.shen <mac.shen@mediatek.com>
+To: <chunkuang.hu@kernel.org>, <p.zabel@pengutronix.de>, <airlied@gmail.com>,
+	<daniel@ffwll.ch>, <matthias.bgg@gmail.com>,
+	<angelogioacchino.delregno@collabora.com>, <jitao.shi@mediatek.com>
+CC: <mac.shen@mediatek.com>, <shuijing.li@mediatek.com>,
+	<linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+	<linux-mediatek@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v2 0/3] Add HDCP feature for DisplayPort
+Date: Mon, 5 Feb 2024 13:50:35 +0800
+Message-ID: <20240205055055.25340-1-mac.shen@mediatek.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK: N
 
-Gregory Price <gourry.memverge@gmail.com> writes:
+Add tee client application, HDCP 1.x and 2.x authentication for DisplayPort
+to support the HDCP feature.
 
-> In the event of rebind, pol->nodemask can change at the same time as an
-> allocation occurs.  We can detect this with tsk->mems_allowed_seq and
-> prevent a miscount or an allocation failure from occurring.
->
-> The same thing happens in the allocators to detect failure, but this
-> can prevent spurious failures in a much smaller critical section.
->
-> Suggested-by: "Huang, Ying" <ying.huang@intel.com>
-> Signed-off-by: Gregory Price <gregory.price@memverge.com>
-> ---
->  mm/mempolicy.c | 31 +++++++++++++++++++++++++------
->  1 file changed, 25 insertions(+), 6 deletions(-)
->
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index d8cc3a577986..ed0d5d2d456a 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -1878,11 +1878,17 @@ bool apply_policy_zone(struct mempolicy *policy, enum zone_type zone)
->  
->  static unsigned int weighted_interleave_nodes(struct mempolicy *policy)
->  {
-> -	unsigned int node = current->il_prev;
-> -
-> -	if (!current->il_weight || !node_isset(node, policy->nodes)) {
-> +	unsigned int node;
-> +	unsigned int cpuset_mems_cookie;
-> +
-> +retry:
-> +	/* to prevent miscount use tsk->mems_allowed_seq to detect rebind */
-> +	cpuset_mems_cookie = read_mems_allowed_begin();
-> +	node = current->il_prev;
-> +	if (!node || !node_isset(node, policy->nodes)) {
-            ~~~~~
-            !current->il_weight ?
+mac.shen (3):
+  Subject: [PATCH] drm/mediatek/dp: Add tee client application for HDCP
+    feature
+  Subject: [PATCH] drm/mediatek/dp: Add HDCP2.x feature for DisplayPort
+  Subject: [PATCH] drm/mediatek/dp: Add HDCP1.x feature for DisplayPort
 
---
-Best Regards,
-Huang, Ying
+ drivers/gpu/drm/mediatek/Makefile        |    7 +-
+ drivers/gpu/drm/mediatek/mtk_dp.c        |  324 +++++--
+ drivers/gpu/drm/mediatek/mtk_dp.h        |   99 +++
+ drivers/gpu/drm/mediatek/mtk_dp_hdcp1x.c |  589 +++++++++++++
+ drivers/gpu/drm/mediatek/mtk_dp_hdcp1x.h |   46 +
+ drivers/gpu/drm/mediatek/mtk_dp_hdcp2.c  | 1021 ++++++++++++++++++++++
+ drivers/gpu/drm/mediatek/mtk_dp_hdcp2.h  |   52 ++
+ drivers/gpu/drm/mediatek/mtk_dp_reg.h    |    7 +-
+ drivers/gpu/drm/mediatek/mtk_dpi.c       |    3 +
+ drivers/gpu/drm/mediatek/tci.h           |  156 ++++
+ drivers/gpu/drm/mediatek/tlc_dp_hdcp.c   |  598 +++++++++++++
+ drivers/gpu/drm/mediatek/tlc_dp_hdcp.h   |  414 +++++++++
+ 12 files changed, 3230 insertions(+), 86 deletions(-)
+ create mode 100644 drivers/gpu/drm/mediatek/mtk_dp.h
+ create mode 100644 drivers/gpu/drm/mediatek/mtk_dp_hdcp1x.c
+ create mode 100644 drivers/gpu/drm/mediatek/mtk_dp_hdcp1x.h
+ create mode 100644 drivers/gpu/drm/mediatek/mtk_dp_hdcp2.c
+ create mode 100644 drivers/gpu/drm/mediatek/mtk_dp_hdcp2.h
+ create mode 100644 drivers/gpu/drm/mediatek/tci.h
+ create mode 100644 drivers/gpu/drm/mediatek/tlc_dp_hdcp.c
+ create mode 100644 drivers/gpu/drm/mediatek/tlc_dp_hdcp.h
 
->  		node = next_node_in(node, policy->nodes);
-> -		/* can only happen if nodemask is being rebound */
-> +		if (read_mems_allowed_retry(cpuset_mems_cookie))
-> +			goto retry;
->  		if (node == MAX_NUMNODES)
->  			return node;
->  		current->il_prev = node;
-> @@ -1896,8 +1902,14 @@ static unsigned int weighted_interleave_nodes(struct mempolicy *policy)
->  static unsigned int interleave_nodes(struct mempolicy *policy)
->  {
->  	unsigned int nid;
-> +	unsigned int cpuset_mems_cookie;
-> +
-> +	/* to prevent miscount, use tsk->mems_allowed_seq to detect rebind */
-> +	do {
-> +		cpuset_mems_cookie = read_mems_allowed_begin();
-> +		nid = next_node_in(current->il_prev, policy->nodes);
-> +	} while (read_mems_allowed_retry(cpuset_mems_cookie));
->  
-> -	nid = next_node_in(current->il_prev, policy->nodes);
->  	if (nid < MAX_NUMNODES)
->  		current->il_prev = nid;
->  	return nid;
-> @@ -2374,6 +2386,7 @@ static unsigned long alloc_pages_bulk_array_weighted_interleave(gfp_t gfp,
->  		struct page **page_array)
->  {
->  	struct task_struct *me = current;
-> +	unsigned int cpuset_mems_cookie;
->  	unsigned long total_allocated = 0;
->  	unsigned long nr_allocated = 0;
->  	unsigned long rounds;
-> @@ -2391,7 +2404,13 @@ static unsigned long alloc_pages_bulk_array_weighted_interleave(gfp_t gfp,
->  	if (!nr_pages)
->  		return 0;
->  
-> -	nnodes = read_once_policy_nodemask(pol, &nodes);
-> +	/* read the nodes onto the stack, retry if done during rebind */
-> +	do {
-> +		cpuset_mems_cookie = read_mems_allowed_begin();
-> +		nnodes = read_once_policy_nodemask(pol, &nodes);
-> +	} while (read_mems_allowed_retry(cpuset_mems_cookie));
-> +
-> +	/* if the nodemask has become invalid, we cannot do anything */
->  	if (!nnodes)
->  		return 0;
+-- 
+2.43.0
+
 
