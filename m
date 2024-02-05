@@ -1,171 +1,163 @@
-Return-Path: <linux-kernel+bounces-52454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 770D284986E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:07:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B27DA849855
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 12:04:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3304E28181C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:07:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1EBD8B26C74
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 11:04:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA9851BC37;
-	Mon,  5 Feb 2024 11:05:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B170018638;
+	Mon,  5 Feb 2024 11:04:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SkWhEaVb"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="BDC4N4tL";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lHSJ5A72";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="BDC4N4tL";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lHSJ5A72"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D3931B964;
-	Mon,  5 Feb 2024 11:05:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 528F21862B
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 11:04:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707131134; cv=none; b=pmkpeQq7Juq41QBOsGWI3lysJAB7eGhWmAbdVYWrtaH97PC/seyEJ1wB2i4THVN+QMDSHiiMhSXWnBq38lOxR1dhF0Jp8wtYr+SxRIposH23la+OKzF6rKjKNh7uveFFDO0J38OebDZJseBzcTDeSUz0u+TwUKXaX6LzCITwiBA=
+	t=1707131071; cv=none; b=up3xecHOHag7ZlYOREV9oBPjogouuDMhrWmPUFWhp4JoA+oQ33fxRyjFwvqpdriiXD0FT4dmRd4WdYwB+qmtnWUc1O5VbwS4UaT9JgfpY4J/w/BTJl+sFFlJ0pkCYpkIdJE6u964G/cSdPBlQ8DGMhlVl7aQ72qtWuwxezhU1+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707131134; c=relaxed/simple;
-	bh=j5bCxYGboU2nsbzGInCNZJ3ihY7kPTLpx8cHouNYyPI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SRyCQQwbQmnMgTFW+xxh4FZVKTht6/AO26MlNqK1JkD9Me/0x8B731uuHhObE+T0H07D/cm4AgNPRi+5WOkwfO6rU1b1ldujSbh4kO0cQ6YPMrEGkswOb3kbUBjTQPHMtBgOhQ1w1SviHnh66fKelX+3lXE/HgOfQHO+HZ2dcT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SkWhEaVb; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707131132; x=1738667132;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=j5bCxYGboU2nsbzGInCNZJ3ihY7kPTLpx8cHouNYyPI=;
-  b=SkWhEaVbVUJyrNvLim5AORJbEsuJnWCH3c1X+xCOwSHdIKQRc0v4kykV
-   ZxIAOES6AnOJKygByB26fiSNJecg4NQN9NXeGhb2ZttJ7xgTMmAjAYpIs
-   kOGxXjYnOYTh0J3k8j0v7qL5JnvPfHPYOBqgT2EwvU9ZnO+giCN1lRroM
-   GcMV5dFBXwxnCo8jGiq6C9oYB6HnMhKz6ZFfoBgfcL4fxT2Cz/cvGq/Th
-   A5KC65CWGhuuuHku1+4QONXGS5jkNaauyGaKErNCq8pwn6Y9aZWsirey/
-   FRXEFsXJHvieYhtF99qGLd2LrMGTP86sTiv5rVVJOo/7JjcW5Mtaaq1bh
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10974"; a="25945508"
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="25945508"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 03:05:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="5328262"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmviesa004.fm.intel.com with ESMTP; 05 Feb 2024 03:05:28 -0800
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Christoph Hellwig <hch@lst.de>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Alexander Duyck <alexanderduyck@fb.com>,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2 6/7] page_pool: check for DMA sync shortcut earlier
-Date: Mon,  5 Feb 2024 12:04:25 +0100
-Message-ID: <20240205110426.764393-7-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240205110426.764393-1-aleksander.lobakin@intel.com>
-References: <20240205110426.764393-1-aleksander.lobakin@intel.com>
+	s=arc-20240116; t=1707131071; c=relaxed/simple;
+	bh=GJc/HD3I91CSWrhG1VaX5rx7KU7vffyvnTXbDyE7oOU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aEd1mbASl55vwHqPIx1jMGjhUMeAomI6HyK8LTbUJQB0JIXCgrLyTByV59TKHygegHzovuNx640jiRJyr9NuSzY2iz7a8tcpIWGvAoxI3si9yA3DNwaUfEoDtAAeEbxccmBw70wa2dg3xtOB/qOEjY12b3hUAB5WCKlSplh/5Ns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=BDC4N4tL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lHSJ5A72; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=BDC4N4tL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lHSJ5A72; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9119C22105;
+	Mon,  5 Feb 2024 11:04:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707131067;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GJc/HD3I91CSWrhG1VaX5rx7KU7vffyvnTXbDyE7oOU=;
+	b=BDC4N4tL77M7wzLYLPAISimsvrYlWFbo0F7ZUEt3zmNdUQ/taqEKloVf6lkhyp8AgBrVfJ
+	j00Q3Y2Rgbo+2or830GQOkfRs8XnbvJAolYJFSEq3yGuCmTBBd7GtHMKevxtcNRRpO/FNV
+	br2OnbT489xEsuow/Vjp+2ndtR8z5fU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707131067;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GJc/HD3I91CSWrhG1VaX5rx7KU7vffyvnTXbDyE7oOU=;
+	b=lHSJ5A72SdjNmwxr4mkb52PY4X2R8H7kQ+vLPvjtkWjsdww1giYMfT/6envWDBX0X1a3/i
+	TbN3Lb4ddAdZ/1AA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707131067;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GJc/HD3I91CSWrhG1VaX5rx7KU7vffyvnTXbDyE7oOU=;
+	b=BDC4N4tL77M7wzLYLPAISimsvrYlWFbo0F7ZUEt3zmNdUQ/taqEKloVf6lkhyp8AgBrVfJ
+	j00Q3Y2Rgbo+2or830GQOkfRs8XnbvJAolYJFSEq3yGuCmTBBd7GtHMKevxtcNRRpO/FNV
+	br2OnbT489xEsuow/Vjp+2ndtR8z5fU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707131067;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GJc/HD3I91CSWrhG1VaX5rx7KU7vffyvnTXbDyE7oOU=;
+	b=lHSJ5A72SdjNmwxr4mkb52PY4X2R8H7kQ+vLPvjtkWjsdww1giYMfT/6envWDBX0X1a3/i
+	TbN3Lb4ddAdZ/1AA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1561D132DD;
+	Mon,  5 Feb 2024 11:04:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id C5KCOrrAwGU8OgAAD6G6ig
+	(envelope-from <pvorel@suse.cz>); Mon, 05 Feb 2024 11:04:26 +0000
+Date: Mon, 5 Feb 2024 12:04:25 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it,
+	linux-kernel@vger.kernel.org, libc-alpha@sourceware.org,
+	lwn@lwn.net, automated-testing@lists.yoctoproject.org
+Cc: Andrea Cervesato <andrea.cervesato@suse.de>
+Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been released for
+ JANUARY 2024
+Message-ID: <20240205110425.GB201808@pevik>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+References: <ZbjZxy4vbxoXUJ-i@yuki>
+ <20240203235708.GA164636@pevik>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240203235708.GA164636@pevik>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [0.62 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[pvorel@suse.cz];
+	 REPLYTO_EQ_FROM(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.08)[63.23%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: 0.62
 
-We can save a couple more function calls in the Page Pool code if we
-check for dma_skip_sync() earlier, just when we test pp->p.dma_sync.
-Move both these checks into an inline wrapper and call the PP wrapper
-over the generic DMA sync function only when both are true.
-You can't cache the result of dma_skip_sync() in &page_pool, as it may
-change anytime if an SWIOTLB buffer is allocated or mapped.
+Hi all,
 
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
- net/core/page_pool.c | 30 +++++++++++++++++-------------
- 1 file changed, 17 insertions(+), 13 deletions(-)
+> Hi all,
 
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index 2c353906407c..d2b411095131 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -369,16 +369,24 @@ static struct page *__page_pool_get_cached(struct page_pool *pool)
- 	return page;
- }
- 
--static void page_pool_dma_sync_for_device(struct page_pool *pool,
--					  struct page *page,
--					  unsigned int dma_sync_size)
-+static void __page_pool_dma_sync_for_device(struct page_pool *pool,
-+					    struct page *page,
-+					    u32 dma_sync_size)
- {
- 	dma_addr_t dma_addr = page_pool_get_dma_addr(page);
- 
- 	dma_sync_size = min(dma_sync_size, pool->p.max_len);
--	dma_sync_single_range_for_device(pool->p.dev, dma_addr,
--					 pool->p.offset, dma_sync_size,
--					 pool->p.dma_dir);
-+	__dma_sync_single_range_for_device(pool->p.dev, dma_addr,
-+					   pool->p.offset, dma_sync_size,
-+					   pool->p.dma_dir);
-+}
-+
-+static __always_inline void
-+page_pool_dma_sync_for_device(struct page_pool *pool, struct page *page,
-+			      u32 dma_sync_size)
-+{
-+	if (pool->dma_sync && !dma_skip_sync(pool->p.dev))
-+		__page_pool_dma_sync_for_device(pool, page, dma_sync_size);
- }
- 
- static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
-@@ -400,8 +408,7 @@ static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
- 	if (page_pool_set_dma_addr(page, dma))
- 		goto unmap_failed;
- 
--	if (pool->dma_sync)
--		page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
-+	page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
- 
- 	return true;
- 
-@@ -665,9 +672,7 @@ __page_pool_put_page(struct page_pool *pool, struct page *page,
- 	if (likely(page_ref_count(page) == 1 && !page_is_pfmemalloc(page))) {
- 		/* Read barrier done in page_ref_count / READ_ONCE */
- 
--		if (pool->dma_sync)
--			page_pool_dma_sync_for_device(pool, page,
--						      dma_sync_size);
-+		page_pool_dma_sync_for_device(pool, page, dma_sync_size);
- 
- 		if (allow_direct && in_softirq() &&
- 		    page_pool_recycle_in_cache(page, pool))
-@@ -778,8 +783,7 @@ static struct page *page_pool_drain_frag(struct page_pool *pool,
- 		return NULL;
- 
- 	if (page_ref_count(page) == 1 && !page_is_pfmemalloc(page)) {
--		if (pool->dma_sync)
--			page_pool_dma_sync_for_device(pool, page, -1);
-+		page_pool_dma_sync_for_device(pool, page, -1);
- 
- 		return page;
- 	}
--- 
-2.43.0
+> > Good news everyone,
 
+> > the Linux Test Project test suite stable release for *January 2024* has been
+> > released.
+
+> > Since the last release 315 patches by 34 authors were merged.
+
+> > Patch review is what most of the projects struggle with and LTP is no
+> > different. If you can spare some effort helping with the patch review is more
+> > than welcomed.
+
+> > NOTABLE CHANGES
+> > ===============
+
+> FYI, there is missing removal of runtest/connectors [1], which can break some
+> tooling.
+
+And we removed also runtest/fsx [2] in this release.
+
+Kind regards,
+Petr
+
+> Kind regards,
+> Petr
+
+> [1] https://github.com/linux-test-project/ltp/commit/9b642d89c0bcf5885b051c2d5768fa94b61d86cb
+[2] https://github.com/linux-test-project/ltp/commit/fb2b6a0b3c840aa80229acf4360b7bdc3ced5edb
+..
 
