@@ -1,248 +1,153 @@
-Return-Path: <linux-kernel+bounces-52720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-52721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AD7E849BD8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:33:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB3EA849BDE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 14:34:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 903A31C22DA8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:33:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C128282BC7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 13:34:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E288D22EFD;
-	Mon,  5 Feb 2024 13:33:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63777208CF;
+	Mon,  5 Feb 2024 13:34:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="AekYs2nS";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="BGMT1n6x"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="QvflKCCq"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DBE822EED
-	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 13:33:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7817528E22
+	for <linux-kernel@vger.kernel.org>; Mon,  5 Feb 2024 13:34:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707139995; cv=none; b=nWUFG6cWNlT3TzAO6+vrK4DawKZjHNZsx+2i4jzQtE6JPg05HkrINtWEHHp0j5HB2yPK4HoyzW3wVPQFvj40WjgahSuEu0CY/ds1j7NL5vpfNGE6xbmQY+R8B7NgEcSAL4fkxcaG1ZRUsTqf5zfYA9D0pHcRMWr5fBvQVhFkB34=
+	t=1707140076; cv=none; b=qnW6TGTk5My3xKcOI6gs7eSyLk74T0kPk/qaarz19oyKkAiuBr9QCVAoPg0HL7lawRRDpvrmw5ZwGx6ZcaGC7HnqTeyUkLlsB+TDAbI+39t1bqRMLfDHrTzdedJqigfMF0B6iFSDLZRmSFMm4Mxs2lw2UvubpjhZ2xuE/t5Uh2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707139995; c=relaxed/simple;
-	bh=La/eaIeKBAw8pAPWSub0LJ1IVIKM4EzM45Kyy0Hc3Gc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=AFo0Mc72JVrnvf9MJ9YRn0hUK+fGJ5jTZ7w6wZm49gMCwRlDeLUV4Xfta7wQh6DyykDuccNOXTPc7V6cDkGBNbenniXMw98ZF1KZJYUiv7JIQljVtULaqy7OKpla9YGI7bdn7DK+4WQhRo71al+hCluFWk4wbY3eH4g1qrzIbbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=AekYs2nS; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=BGMT1n6x; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1707139991;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hbAq7mDhkwWr5LR/rECWxpDInKH2ifL77/bt24XfeCQ=;
-	b=AekYs2nSXScBJVjs/iGl9IjmaU2WS7zlw+AK+ynHWY+7pO+HumWmTP3YDmU0CyQ0QkETrj
-	ROIdQqNt5fQd2OwmgiGCdUT2A1WhO4y8CVIzqOhHZnVDnPjVa/lWOZH/Nxf2jYLw3NAans
-	zVrAJNHGufq6Rx0gZkGVIBUiy8V+ExAQelBrzgXfb0kVFVADqaRfm/N5Rs88B3+JTi089+
-	1Om3AhlM8WS3D+mt+b5EnCgrbUjpgmGlpTKxPOENC2nBpJ+SMqJmgWXyUSM8RKhGD/KZb7
-	nl42gyFXg9GladfQdXHFpBZaJvfRMIOtpdGiVqQVgmMuVoHrgoc/efNCzsef0A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1707139991;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hbAq7mDhkwWr5LR/rECWxpDInKH2ifL77/bt24XfeCQ=;
-	b=BGMT1n6xwLyHx73McQl3xezepcwd/PVbY4mLBchCC5VE5GYEBv7QXUqL8ZqdvgGPiSVUbZ
-	jdoM6JCw6m4jH5CA==
-To: Petr Mladek <pmladek@suse.com>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>, Steven Rostedt
- <rostedt@goodmis.org>, Thomas Gleixner <tglx@linutronix.de>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v3 09/14] printk: Wait for all reserved records
- with pr_flush()
-In-Reply-To: <ZbowlkOVWiSgCxNX@alley>
-References: <20231214214201.499426-1-john.ogness@linutronix.de>
- <20231214214201.499426-10-john.ogness@linutronix.de>
- <ZbowlkOVWiSgCxNX@alley>
-Date: Mon, 05 Feb 2024 14:39:03 +0106
-Message-ID: <87y1bznii8.fsf@jogness.linutronix.de>
+	s=arc-20240116; t=1707140076; c=relaxed/simple;
+	bh=UW3im1Ox52r7lMN+hqUD1btlAY9FG9HoD4t9HdhYE9w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P0sRhAULc8ogtFnqwNLfCA0HXYtd3HxbkY/budInJmEtfyh64s9iMUWVTY2+uUUaqoCs6Rdqoa37acvjPAWTMipzvsql1o7l+nmvkaTAkXof+PUz7oMG3pYQa+mV3nvdnbQTnmXOmbl0g2WHyTt4G9vNvPvxhHABWq+PZ+fyRF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=QvflKCCq; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-557dcb0f870so5763542a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 05:34:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1707140073; x=1707744873; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MoY22caN72Vu9KETh7xj+mgQ1cwoewKUNf39bRI8TM4=;
+        b=QvflKCCqPT8NaOkNUQLqtciDfXwlIRUFHRJxHry180Am8utFKkstCAa5P2g5wL2mTy
+         D0sx4+i69x94FFoLXRJy1kCNqOeTaP8hZT9pjzMCIXmPn2wTAuVlhQX3vp7s99NpTFn3
+         k+8quJ9db25UqbTP1YOTlzJyCHZH+HuV1O2a/H8bN6WCnN8N0C8OSaDlvA0lrkSmYos+
+         rnzavng8fi+1zc8YclT898Dg5PPbQCr/eN7j0qmZsTvavTkFMKGusMjaITS25Bl2mwoQ
+         PJ8KdLiyULQGEdsBt3YBR1z7Oal9l8fLGmK/ufHCnL5k8Jp9vWCSAdFeaJ4b7d5sOEDh
+         L8dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707140073; x=1707744873;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MoY22caN72Vu9KETh7xj+mgQ1cwoewKUNf39bRI8TM4=;
+        b=LHbTeHt0w6f7eeyex5UCe6rYuFgXc5GlNgUuo2Q/B5GibLGAwdYejTZIQmmWU0y6Mj
+         2sKCF/W8wyV9knrfinhCy4IfaFyvITezcKXeKDuQDr4m2c77mqTOUPc1WcUqjEYmAgAI
+         fmRSWJPXjaJjrMMgLroTcccsc6BVaDj5ggTkENfCsbzbSUzjB0bVtFhDGIATySAtE/jI
+         yhKObZ52MF+2HCKg+kCR31JL3jA8peaw87z+KKWEkggKVoEAgcIDHi0enq6ZcIHNX96Z
+         37QNrg5/jLVlYcA+1LppYGtZrI4NXxbVJi79eai69B4Xw/gdHApF1dAIe7YJ5I943lRv
+         1xQg==
+X-Gm-Message-State: AOJu0YyDP8QkoYBXNU9eKMN2J8faMgHABTSLpn1bujheXQ7jHOmJxVtc
+	A7wVQObungWjn0HHfgrjpW7WXsS9CFnEWgchjpYm8RYHe30Y4p/V/bwJqv6cvQE=
+X-Google-Smtp-Source: AGHT+IEC3kTLCzb3x/ZJNrQ3m7qH7T73JdE8hFqGPq0po96TlHhVpjsMylVBEMEi0JY0ZcznB5vRdA==
+X-Received: by 2002:aa7:d053:0:b0:560:1c4:cb31 with SMTP id n19-20020aa7d053000000b0056001c4cb31mr5211174edo.17.1707140072720;
+        Mon, 05 Feb 2024 05:34:32 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWHvq8X17Q4c52RNFavgb5jCUgIyRYRaA7nmdEqwDRd8gtd1CIP7FTGjqjnlcFy9HC8NgTPlJjX1a6MB1SL/XYNjUvOFM2/ZVKmpLUANk9reiPUl/r7cFZq6Q68RMZ2KMNNoY/OmBdTr+j6PY6OZIc5zehJcaXY0BkPHtJ10damWnmTsIx0rX9pELJEYlI9Xe2owYhNT403E92YKvFvEUMp1pa2HVpN7mZZyuJn9NDNJRU6CZqfvhNkn6T9lJUEYBIphM5I3ZOmlaEuSVPHpBs8vplk6Syf7V6K7JlPQ0J0wbhxTt2ei2bDeN9eZ7LeJxMUpvAx0PkkCr3yrS8CJtqu/8QLHetSIYcfOuWMOz/WvYKE8EXKJC9CQNXGJZcEIpASA8jdLhSxFRh2odfpdKd9/ek2MaaIraTkonN+f0hUE9QPTXArPcNnmkck7rIy3MM0ETv3Idb3C4RrF57UhHsdw1B+58QEW1NPQoR1KPCX4akh1v/2UWpgqR+bqq4pxdmblx13T0S6PxCqEggOia5cdZ+YVjqedsSGxGsi/fd5oGc01RTu8TYrZS9zvryqI3aKkVulI8oGLq7vxy9akEMaeGOP+BJxorOjjAngW/8vB0APgHAE18Hxtv/o8AZUn8x9r8GMLGt7q5qEidT9eOls2oUEuFQduq29WmCn6vkyYdPbsSySuYWuFOvLLH2TlQgo/DUbST2vDu2VgkbdgZVMpLa8VkepdEdNYtEAovYT8vqYkOKU0OT2DVj+wMwaM2NvPpdd3KoE9pLcmO0jLUvgUUe9XPTOA+2f8XlaVXA=
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id ew11-20020a056402538b00b0055fed0e2017sm3601596edb.16.2024.02.05.05.34.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 05:34:32 -0800 (PST)
+Date: Mon, 5 Feb 2024 14:34:30 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: Yoann Congal <yoann.congal@smile.fr>
+Cc: linux-fsdevel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+	x86@kernel.org,
+	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
+	Borislav Petkov <bp@alien8.de>, Darren Hart <dvhart@infradead.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Vegard Nossum <vegard.nossum@oracle.com>
+Subject: Re: [PATCH v3 1/2] printk: Fix LOG_CPU_MAX_BUF_SHIFT when BASE_SMALL
+ is enabled
+Message-ID: <ZcDj5hZeu_LqEsuH@alley>
+References: <20240204232945.1576403-1-yoann.congal@smile.fr>
+ <20240204232945.1576403-2-yoann.congal@smile.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240204232945.1576403-2-yoann.congal@smile.fr>
 
-On 2024-01-31, Petr Mladek <pmladek@suse.com> wrote:
->> +	last_finalized_seq = desc_last_finalized_seq(rb);
->> +
->> +	/*
->> +	 * @head_id is loaded after @last_finalized_seq to ensure that it is
->> +	 * at or beyond @last_finalized_seq.
->> +	 *
->> +	 * Memory barrier involvement:
->> +	 *
->> +	 * If desc_last_finalized_seq:A reads from
->> +	 * desc_update_last_finalized:A, then
->> +	 * prb_next_reserve_seq:A reads from desc_reserve:D.
->> +	 *
->> +	 * Relies on:
->> +	 *
->> +	 * RELEASE from desc_reserve:D to desc_update_last_finalized:A
->> +	 *    matching
->> +	 * ACQUIRE from desc_last_finalized_seq:A to prb_next_reserve_seq:A
->> +	 *
->> +	 * Note: desc_reserve:D and desc_update_last_finalized:A can be
->> +	 *       different CPUs. However, the desc_update_last_finalized:A CPU
->> +	 *       (which performs the release) must have previously seen
->> +	 *       desc_read:C, which implies desc_reserve:D can be seen.
->
-> The most tricky part is desc_reserve:D. It is a supper complicated
-> barrier which guarantees many things. But I think that there are
-> many more write barriers before the allocated descriptor reaches
-> finalized state. So that it should be easier to prove the correctness
-> here by other easier barriers.
+On Mon 2024-02-05 00:29:44, Yoann Congal wrote:
+> LOG_CPU_MAX_BUF_SHIFT default value depends on BASE_SMALL:
+>   config LOG_CPU_MAX_BUF_SHIFT
+>   	default 12 if !BASE_SMALL
+>   	default 0 if BASE_SMALL
+> But, BASE_SMALL is a config of type int and "!BASE_SMALL" is always
+> evaluated to true whatever is the value of BASE_SMALL.
+> 
+> This patch fixes this by using BASE_FULL (type bool) which is equivalent
+> to BASE_SMALL==0.
+> 
+> Note: This changes CONFIG_LOG_CPU_MAX_BUF_SHIFT=12 to
+> CONFIG_LOG_CPU_MAX_BUF_SHIFT=0 for BASE_SMALL defconfigs, but that will
+> not be a big impact due to this code in kernel/printk/printk.c:
+>   /* by default this will only continue through for large > 64 CPUs */
+>   if (cpu_extra <= __LOG_BUF_LEN / 2)
+>           return;
+> Systems using CONFIG_BASE_SMALL and having 64+ CPUs should be quite
+> rare.
+> 
+> John Ogness <john.ogness@linutronix.de> (printk reviewer) wrote:
+> > For printk this will mean that BASE_SMALL systems were probably
+> > previously allocating/using the dynamic ringbuffer and now they will
+> > just continue to use the static ringbuffer. Which is fine and saves
+> > memory (as it should).
 
-Yes, desc_reserve:D provides memory barriers for several orderings. But
-it is _not_ providing a memory barrier for this ordering. It only marks
-where @head_id is stored.
+More precisely, it allocated the buffer dynamically when the sum
+of per-CPU-extra space exceeded half of the default static ring
+buffer. This happened for systems with more than 64 CPUs with
+the default config values.
 
-The only memory barriers involved here are desc_update_last_finalized:A
-and its counterpart desc_last_finalized_seq:A.
+I believe that this patch won't have any effect in practice.
+It is hard to imagine a system with >64 CPUs which would require
+BASE_SMALL kernel. Well, never say never ;-)
 
-CPU0                                 CPU1
-====                                 ====
-store(head_id)
-store_release(last_finalized_seq)    load_acquire(last_finalized_seq)
-                                     load(head_id)
+> Signed-off-by: Yoann Congal <yoann.congal@smile.fr>
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Closes: https://lore.kernel.org/all/CAMuHMdWm6u1wX7efZQf=2XUAHascps76YQac6rdnQGhc8nop_Q@mail.gmail.com/
+> Reported-by: Vegard Nossum <vegard.nossum@oracle.com>
+> Closes: https://lore.kernel.org/all/f6856be8-54b7-0fa0-1d17-39632bf29ada@oracle.com/
+> Fixes: 4e244c10eab3 ("kconfig: remove unneeded symbol_empty variable")
 
-> To make it clear. I am all for keeping the above precise description
-> as is. I just think about adding one more human friendly note which
-> might help future generations to understand the correctness an easier
-> way.  Something like:
->
-> 	* Note: The above description might be hard to follow because
-> 	*	desc_reserve:D is a multi-purpose barrier. But this is
-> 	*	just the first barrier which makes sure that @head_id
-> 	*	is updated before the reserved descriptor gets finalized
-> 	*	and updates @last_finalized_seq.
-> 	*
-> 	*	There are more release barriers in between, especially,
-> 	*	desc_reserve:F and desc_update_last_finalized:A. Also these make
-> 	*	sure that the desc_last_finalized_seq:A acquire barrier allows
-> 	*	to read @head_id related to @last_finalized_seq or newer.
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-Non-global memory barriers must operate on the same memory. In this
-case, the acquire/release memory barriers are operating on
-@last_finalized_seq. The other ordered memory load in this situation is
-for @head_id, so it makes sense to specify the store of @head_id as the
-start of the release block.
-
-> In fact, the desc_update_last_finalized:A release and
-> desc_last_finalized_seq:A acquire barriers are enough to prove
-> that we read here @head_id related to @last_finalized_seq or newer.
-
-Yes, which is why they are listed here. ;-)
-
-> Or maybe it is exactly what you described and my "human friendly"
-> description is too naive. I am still not completely familiar
-> with the "Memory barrier involvement:" and "Relies on:"
-> format.
-
-Yes, the format takes some getting used to. I thank Andrea Parri for
-helping me to understand memory barriers and contributing ideas to
-formalize the documentation.
-
->> +	if (err == -EINVAL) {
->> +		if (last_finalized_seq == 0) {
->> +			/*
->> +			 * @last_finalized_seq still contains its initial
->> +			 * value. Probably no record has been finalized yet.
->> +			 * This means the ringbuffer is not yet full and the
->> +			 * @head_id value can be used directly (subtracting
->> +			 * off the id value corresponding to seq=0).
->> +			 */
->> +
->> +			/*
->> +			 * Because of hack#2 of the bootstrapping phase, the
->> +			 * @head_id initial value must be handled separately.
->> +			 */
->> +			if (head_id == DESC0_ID(desc_ring->count_bits))
->> +				return 0;
->> +
->> +			/*
->> +			 * The @head_id is initialized such that the first
->> +			 * increment will yield the first record (seq=0).
->> +			 * Therefore use the initial value +1 as the base to
->> +			 * subtract from @head_id.
->> +			 */
->> +			last_finalized_id = DESC0_ID(desc_ring->count_bits) + 1;
->
-> It took me long time to understand the above code and comments. I
-> wonder if the following looks easier even for you:
->
-> 	if (err == -EINVAL) {
-> 		if (last_finalized_seq == 0) {
-> 			/*
-> 			 * No record has been finalized or even	reserved yet.
-> 			 *
-> 			 * The @head_id is initialized such that the first
-> 			 * increment will yield the first record (seq=0).
-> 			 * Handle it separately to avoid a negative @diff below.
-> 			 */
-> 			if (head_id == DESC0_ID(desc_ring->count_bits))
-> 				return 0;
->
-> 			/* One or more descriptors are already reserved. Use
-> 			 * the descriptor ID of the first one (@seq=0) for
-> 			 * the @diff below.
-> 			 */
-> 			last_finalized_id = DESC0_ID(desc_ring->count_bits) + 1;
-
-I will use your comments for the next version.
-
->> +	/*
->> +	 * @diff is the number of records beyond the last record available
->> +	 * to readers.
->> +	 */
->
-> This is kind of obvious from the code. Also it is not true when the
-> first record has not been finalized yet. The following might
-> be more useful:
->
-> 	/* Diff of known descriptor IDs to compure releted sequence nubmers. */
->
->> +	diff = head_id - last_finalized_id;
-
-I will use your comments for the next version.
-
-> BTW: It came to my mind whether the logic might be more
->      straightforward if we store desc_ring->next_finalized_seq instead
->      of @last_finalized_seq.
-
-I thought about this as well. But I felt like the meaning was a bit
-confusing. Also @head_id points to the latest reserved descriptor, so it
-makes the code a bit easier to follow when creating a diff based on the
-latest finalized descriptor.
-
->      Even the initial value vould be valid. Also the value is
->      used only in prb_next_reserve_seq() and prb_next_seq() where
->      we need to start with this value anyway.
-
-Agreed. I just didn't like how the code looked, even though there were
-less +1 operations. It was hard(er) to follow.
-
->      Note that prb_next_seq() actually does not need to try _prb_read_valid()
->      for @last_finalized_seq. It should always be valid unless
->      the record has been already overwritten. In which case,
->      there should be a newer readable record.
-
-Correct. The current code increments before reading.
-
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
->
-> Well, it would be nice to update the comments if you liked the
-> proposals.
-
-Thanks. I will use your comments.
-
-John
+Best Regards,
+Petr
 
