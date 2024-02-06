@@ -1,111 +1,216 @@
-Return-Path: <linux-kernel+bounces-54179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F40D84ABE1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:03:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC46484ABD4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:57:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8271B1C2362C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:03:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C9A5286DDC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:57:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D77356B81;
-	Tue,  6 Feb 2024 02:03:32 +0000 (UTC)
-Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 590995676A;
+	Tue,  6 Feb 2024 01:57:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="ltA9KMUz"
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B560956B6D;
-	Tue,  6 Feb 2024 02:03:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB47B56B66
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 01:57:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707185012; cv=none; b=NwtvOVg/uSRvXttVIf1iP0L/sa0QWKaf2U7kououobA2udmt84k/C5V5hKnbhbZxmgsXCrDU4dVvSLgNEYeMcxdE0Gal/wVxgEKfX7LtYqV8r5vGuL/09cUOBfayTyhq4i3jWY9Kn3z9y3zHeQzRpRaDHNjG3lkv9JHpgTISr7k=
+	t=1707184623; cv=none; b=aErfOIzWA/3zb7jjJkCeAPLDTj7VtZCyX39d++7ryLyx5OTNo1LFc1EEJKisYm+Uws1dQ5k08XamrLBNpl7QGOU4t2cZGDecoyiowuPhwzDXdUYjr1eQn9Dtl7Ye6xl2HB16oKp8oo+vj4Z+0ZtRbAN180AybabxCtAaAeWP57I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707185012; c=relaxed/simple;
-	bh=HCHH0zlG8Okh9pH+9a449X/wcy1iGT612BVT0ULldVI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iFiKLaVIIbhCrnm4NhCIPhuw6GrPhjFA5nB7xHUjfLxsfegzdjrPWEDtqg3k0gr2MG3UVsBrL22PS9knF4/6HYRlcZBcFGxQNRC8EOHtVer/66i+k7O5vtaAFCbBMRt+XKiW3uzgpNargmGu7m6rWi40pv7ohMZGoOz+xcyAm88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from lijuan-ubuntu-04.home.arpa (unknown [124.16.138.129])
-	by APP-05 (Coremail) with SMTP id zQCowADX36OzkcFl3IMSAQ--.8824S2;
-	Tue, 06 Feb 2024 09:56:03 +0800 (CST)
-From: lilijuan@iscas.ac.cn
-To: clm@fb.com,
-	josef@toxicpanda.com,
-	dsterba@suse.com
-Cc: linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	pengpeng@iscas.ac.cn,
-	Lijuan Li <lilijuan@iscas.ac.cn>
-Subject: [PATCH] btrfs: mark __btrfs_add_free_space static
-Date: Tue,  6 Feb 2024 09:56:00 +0800
-Message-Id: <20240206015600.115756-1-lilijuan@iscas.ac.cn>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1707184623; c=relaxed/simple;
+	bh=AGGj7Vod8i/cMhIocRRjpJuktqfjt3MGtAOErqqB4RM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=n5zI7KD3ixcgAvTUvbKu45FmZh1CbwdfnEh9JBqmR2YCfpgO8+x3Bat8Tziajn3QosRzp2EgjTpj4+UkECS31KKr7EUPIne0+dzcSTe3kI4RnypwBcXx7iCfPrbVr6jEhfkIQXVoTHBrw5Ii4+GEfbCR95eLLjn50fIowxfITcw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=ltA9KMUz; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-296c827b4e5so87018a91.2
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 17:57:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1707184621; x=1707789421; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6RQcHLm5QazOeCq3JvR92kEunC3ZSrNlLeaxZZfWXA0=;
+        b=ltA9KMUzeuLgMRjVzDzeOMaw74k9rxYdDq2Xe7tYf3r+Www98/j8JrnAGL6cDFl3/b
+         1L1rjYYOO7PK1C7mgse1i9m83nP2iLi6j/t0X6Y1ipQJMZUwaahPph/0w6GQFUimxWps
+         b5NdFP4QqGBJ1piPMA//0Q8yzMt/rhskaWwTg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707184621; x=1707789421;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6RQcHLm5QazOeCq3JvR92kEunC3ZSrNlLeaxZZfWXA0=;
+        b=myB4cu2PElj/Y3yD2q7R7ysMuhRgaYZyH3dCji3a9NCUDETqYLRYPVynGuL/r4/EL/
+         Y5kN2849xtNtlvf6s2wnVw9vRtnflQXtQyIafKLiKrQ1KR7BzxCi8G5GRqPfojcqX5RF
+         Fx08e2OrNLNQffJ/+ODF8ofiYym3TH+a+iS1FVdoV+9Xoo1L5k0BDec/hG4rLGEvOGz0
+         VD59nN8b/qiqT+u6ZsxQpK/dnvYwNwHh898XW8F6bwIZuJVIolVsBp6cwY/lsyajRs4L
+         sxd3jNdquqPXUctl0bilb55FAKstBZdhMI+29NrhztkTB/GP1ALwVv2rH/qvH4Pc9c8T
+         swNw==
+X-Gm-Message-State: AOJu0YyuunMEnHhYxGZcyxb4LadFgOxHCpFeXG73c6DlbNcs3+Kk7obA
+	CQg9HrIRjascRCxLyzCVoNI6dH24478JZAreA3oJQTZuYPycRkPv3NJiCSI0pC8=
+X-Google-Smtp-Source: AGHT+IGFs+QR1LR1g/SgL6DV+s4jv4M3sRSbSYmRfFvgvR0v1IuEhSQTG8Ns1zi+PiHPUMgc4MzHuw==
+X-Received: by 2002:a17:90a:fd96:b0:294:4637:7ed with SMTP id cx22-20020a17090afd9600b00294463707edmr934326pjb.40.1707184621159;
+        Mon, 05 Feb 2024 17:57:01 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVBA5wCZeQQujcnRN2if4vYXLgeOnWqpsGt2RhCIP5kNPaGZ1rtE2O7x2BQuY6pRumfAfzgJqNgyPJXwU/vxU4WHg5E+XZVWuEfMZJ8y8STnkZGsZli4R5IsGpvmMIxqbFyPpvMNwW6fdYZJaYQtpUNALTtL4SuToFC7WxNNMUM3blZJuEpmG/NswDe86ACCfPTxB9CX8ITbB2yafBrdoO3WnRELaoXrxPNj103INBFxVzZP306rhguXjK+sRLylOc7AVLPEIW4wKfpT0iqcusN6mA+eluGz9+QTdsL7TITQaNDaAa8PyY=
+Received: from fastly.com (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id fa2-20020a17090af0c200b00296b90d93absm172768pjb.29.2024.02.05.17.56.59
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 05 Feb 2024 17:57:00 -0800 (PST)
+Date: Mon, 5 Feb 2024 17:56:58 -0800
+From: Joe Damato <jdamato@fastly.com>
+To: Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, tariqt@nvidia.com,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	"open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH net-next] eth: mlx5: link NAPI instances to queues and
+ IRQs
+Message-ID: <20240206015657.GA11257@fastly.com>
+References: <20240206010311.149103-1-jdamato@fastly.com>
+ <878r3ymlnk.fsf@nvidia.com>
+ <20240206013246.GA11217@fastly.com>
+ <874jemml1j.fsf@nvidia.com>
+ <20240206014151.GA11233@fastly.com>
+ <87zfwel5qi.fsf@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:zQCowADX36OzkcFl3IMSAQ--.8824S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFyDAFW5JF4fZFW5uFy5twb_yoW8Xw1kpF
-	n3AFsxtw1UArsYvFWvgw4qv34Sga4vqa1Uu3s8A3yfXrZxGr1DXFyqv3W8A3W3trWkJr4x
-	Xas09ryUArsIyr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUtVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwAKzVCY07xG64k0F24l
-	c2xSY4AK67AK6w4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r12
-	6r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AK
-	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0J
-	UfnYwUUUUU=
-X-CM-SenderInfo: poloxyxxdqqxpvfd2hldfou0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87zfwel5qi.fsf@nvidia.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 
-From: Lijuan Li <lilijuan@iscas.ac.cn>
+On Mon, Feb 05, 2024 at 05:44:27PM -0800, Rahul Rameshbabu wrote:
+> 
+> On Mon, 05 Feb, 2024 17:41:52 -0800 Joe Damato <jdamato@fastly.com> wrote:
+> > On Mon, Feb 05, 2024 at 05:33:39PM -0800, Rahul Rameshbabu wrote:
+> >> 
+> >> On Mon, 05 Feb, 2024 17:32:47 -0800 Joe Damato <jdamato@fastly.com> wrote:
+> >> > On Mon, Feb 05, 2024 at 05:09:09PM -0800, Rahul Rameshbabu wrote:
+> >> >> On Tue, 06 Feb, 2024 01:03:11 +0000 Joe Damato <jdamato@fastly.com> wrote:
+> >> >> > Make mlx5 compatible with the newly added netlink queue GET APIs.
+> >> >> >
+> >> >> > Signed-off-by: Joe Damato <jdamato@fastly.com>
+> >> >> > ---
+> >> >> >  drivers/net/ethernet/mellanox/mlx5/core/en.h      | 1 +
+> >> >> >  drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 8 ++++++++
+> >> >> >  2 files changed, 9 insertions(+)
+> >> >> >
+> >> >> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> >> >> > index 55c6ace0acd5..3f86ee1831a8 100644
+> >> >> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> >> >> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> >> >> > @@ -768,6 +768,7 @@ struct mlx5e_channel {
+> >> >> >  	u16                        qos_sqs_size;
+> >> >> >  	u8                         num_tc;
+> >> >> >  	u8                         lag_port;
+> >> >> > +	unsigned int		   irq;
+> >> >> >  
+> >> >> >  	/* XDP_REDIRECT */
+> >> >> >  	struct mlx5e_xdpsq         xdpsq;
+> >> >> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> >> >> > index c8e8f512803e..e1bfff1fb328 100644
+> >> >> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> >> >> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> >> >> > @@ -2473,6 +2473,9 @@ static void mlx5e_close_queues(struct mlx5e_channel *c)
+> >> >> >  	mlx5e_close_tx_cqs(c);
+> >> >> >  	mlx5e_close_cq(&c->icosq.cq);
+> >> >> >  	mlx5e_close_cq(&c->async_icosq.cq);
+> >> >> > +
+> >> >> > +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_TX, NULL);
+> >> >> > +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_RX, NULL);
+> >> >> 
+> >> >> This should be set to NULL *before* actually closing the rqs, sqs, and
+> >> >> related cqs right? I would expect these two lines to be the first ones
+> >> >> called in mlx5e_close_queues. Btw, I think this should be done in
+> >> >> mlx5e_deactivate_channel where the NAPI is disabled.
+> >> >> 
+> >> >> >  }
+> >> >> >  
+> >> >> >  static u8 mlx5e_enumerate_lag_port(struct mlx5_core_dev *mdev, int ix)
+> >> >> > @@ -2558,6 +2561,7 @@ static int mlx5e_open_channel(struct mlx5e_priv *priv, int ix,
+> >> >> >  	c->stats    = &priv->channel_stats[ix]->ch;
+> >> >> >  	c->aff_mask = irq_get_effective_affinity_mask(irq);
+> >> >> >  	c->lag_port = mlx5e_enumerate_lag_port(priv->mdev, ix);
+> >> >> > +	c->irq		= irq;
+> >> >> >  
+> >> >> >  	netif_napi_add(netdev, &c->napi, mlx5e_napi_poll);
+> >> >> >  
+> >> >> > @@ -2602,6 +2606,10 @@ static void mlx5e_activate_channel(struct mlx5e_channel *c)
+> >> >> >  		mlx5e_activate_xsk(c);
+> >> >> >  	else
+> >> >> >  		mlx5e_activate_rq(&c->rq);
+> >> >> > +
+> >> >> > +	netif_napi_set_irq(&c->napi, c->irq);
+> >> 
+> >> One small comment that I missed in my previous iteration. I think the
+> >> above should be moved to mlx5e_open_channel right after netif_napi_add.
+> >> This avoids needing to save the irq in struct mlx5e_channel.
+> >
+> > I couldn't move it to mlx5e_open_channel because of how safe_switch_params
+> > and the mechanics around that seem to work (at least as far as I could
+> > tell).
+> >
+> > mlx5 seems to create a new set of channels before closing the previous
+> > channel. So, moving this logic to open_channels and close_channels means
+> > you end up with a flow like this:
+> >
+> >   - Create new channels (NAPI netlink API is used to set NAPIs)
+> >   - Old channels are closed (NAPI netlink API sets NULL and overwrites the
+> >     previous NAPI netlink calls)
+> >
+> > Now, the associations are all NULL.
+> >
+> > I think moving the calls to active / deactivate fixes that problem, but
+> > requires that irq is stored, if I am understanding the driver correctly.
+> 
+> I believe moving the changes to activate / deactivate channels resolves
+> this problem because only one set of channels will be active, so you
+> will no longer have dangling association conflicts for the queue ->
+> napi. This is partially why I suggested the change in that iteration.
 
-__btrfs_add_free_space is only used in free-space-cache.c,
-so mark it static.
-
-Signed-off-by: Lijuan Li <lilijuan@iscas.ac.cn>
----
- fs/btrfs/free-space-cache.c | 2 +-
- fs/btrfs/free-space-cache.h | 2 --
- 2 files changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index d372c7ce0e6b..812994f456e4 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -2621,7 +2621,7 @@ static void steal_from_bitmap(struct btrfs_free_space_ctl *ctl,
- 	}
- }
+As far as I can tell, it does.
  
--int __btrfs_add_free_space(struct btrfs_block_group *block_group,
-+static int __btrfs_add_free_space(struct btrfs_block_group *block_group,
- 			   u64 offset, u64 bytes,
- 			   enum btrfs_trim_state trim_state)
- {
-diff --git a/fs/btrfs/free-space-cache.h b/fs/btrfs/free-space-cache.h
-index 33b4da3271b1..d9b7fbc2008a 100644
---- a/fs/btrfs/free-space-cache.h
-+++ b/fs/btrfs/free-space-cache.h
-@@ -114,8 +114,6 @@ int btrfs_write_out_cache(struct btrfs_trans_handle *trans,
- 
- void btrfs_init_free_space_ctl(struct btrfs_block_group *block_group,
- 			       struct btrfs_free_space_ctl *ctl);
--int __btrfs_add_free_space(struct btrfs_block_group *block_group, u64 bytenr,
--			   u64 size, enum btrfs_trim_state trim_state);
- int btrfs_add_free_space(struct btrfs_block_group *block_group,
- 			 u64 bytenr, u64 size);
- int btrfs_add_free_space_unused(struct btrfs_block_group *block_group,
--- 
-2.40.1
+> As for netif_napi_set_irq, that alone can be in mlx5e_open_channel (that
+> was the intention of my most recent comment. Not that all the other
+> associations should be moved as well). I agree that the other
+> association calls should be part of activate / deactivate channels.
 
+OK, sure that makes sense. I make that change, too.
+
+> >
+> >> >> > +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_TX, &c->napi);
+> >> >> > +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_RX, &c->napi);
+> >> >> 
+> >> >> It's weird that netlink queue API is being configured in
+> >> >> mlx5e_activate_channel and deconfigured in mlx5e_close_queues. This
+> >> >> leads to a problem where the napi will be falsely referred to even when
+> >> >> we deactivate the channels in mlx5e_switch_priv_channels and may not
+> >> >> necessarily get to closing the channels due to an error.
+> >> >> 
+> >> >> Typically, we use the following clean up patterns.
+> >> >> 
+> >> >> mlx5e_activate_channel -> mlx5e_deactivate_channel
+> >> >> mlx5e_open_queues -> mlx5e_close_queues
+> >> >
+> >> > OK, I'll move it to mlx5e_deactivate_channel before the NAPI is disabled.
+> >> > That makes sense to me.
+> >> 
+> >> Appreciated. Thank you for the patch btw.
+> >
+> > Sure, thanks for the review.
+> 
 
