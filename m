@@ -1,94 +1,93 @@
-Return-Path: <linux-kernel+bounces-55347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D244E84BB8A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:03:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36F0F84BB8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:04:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84C49285D9F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:03:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69BC51C23FA2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:04:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6377FC142;
-	Tue,  6 Feb 2024 17:03:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 211106AA0;
+	Tue,  6 Feb 2024 17:04:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b="RzH+usjA";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="XjRWJj1P"
+	dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b="PdkpBL6u";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="nFK0Oj36"
 Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82F09B660
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 17:03:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EF94DF67
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 17:04:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.29
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707239026; cv=none; b=QNWMdnfIhZq3CZVS7MI+knujM6dYgf5OyJXRqGcs+SPkF7z2MZGAOdjyrtfBYDPZ3wOMxGbwThwoIqyww/9lGaLse+VvwvT9EFSuMpScubjoVmJW2IGn/cn2c9wteIjbSPt4QVsoLgDRMA6+UF7eseHisdoWtvuY1gogHs+uQGg=
+	t=1707239053; cv=none; b=dCeVfjfz5WCpiUKTQWaq4XHCozYdsf/ZDf4I13xL1QuGHwLZKEV2isJrm6WiTe54SchrAZSlVlgyM+K3W4TUKdNyrMdC0qV6OCOyfGxcZ1+M2zbYfF0fDbF5EMCTBDB2xjepcxqQXgEeimMKuvjEUaI2mrcrh4AVg0s5tuj8SUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707239026; c=relaxed/simple;
-	bh=Pi2bQyjd4JrcnKiKXNf22cV4BhWExRbLQiYFOeF0mQg=;
+	s=arc-20240116; t=1707239053; c=relaxed/simple;
+	bh=q/OfiRJpq+x5oplySSR5jJ5wnGPv1JYrJIt8jWN2g44=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P2Y3vq/LcaZhl9e6zTenuiiEyzGwPvyozKd3t21/8ASUyDk4X1TI2ZRhtJJoCr23ej4n1PcyxlIduaOPZddUKMoqeiYMCmIh714a8RtdkdGzK8LumZ+IrydMKowocJYGF3/PBbTdkEuhgnffNijp50SRLUt9DknWrka2pm6hqCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza; spf=pass smtp.mailfrom=tycho.pizza; dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b=RzH+usjA; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=XjRWJj1P; arc=none smtp.client-ip=66.111.4.29
+	 Content-Type:Content-Disposition:In-Reply-To; b=DjXkyR+NIMTk6bi1VFCJoULWRUUUdG86ZSBJ/wvitsol7mZfCbTsX3YZV9kqA4HlbqXS/ehl/86jp9iDwVeh+HionGyzt7eJICkMWhkY4M/L4CJ7RJJ33Uyk3HxBupFnZfkuNIFqNVFLTjgmbTyJF44Xg7fUIfLtYOocUV5BTeo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza; spf=pass smtp.mailfrom=tycho.pizza; dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b=PdkpBL6u; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=nFK0Oj36; arc=none smtp.client-ip=66.111.4.29
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tycho.pizza
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.nyi.internal (Postfix) with ESMTP id 7F13D5C01DF;
-	Tue,  6 Feb 2024 12:03:43 -0500 (EST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.nyi.internal (Postfix) with ESMTP id 3670D5C01CC;
+	Tue,  6 Feb 2024 12:04:10 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 06 Feb 2024 12:03:43 -0500
+  by compute5.internal (MEProxy); Tue, 06 Feb 2024 12:04:10 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
 	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1707239023; x=1707325423; bh=rncCsbijlK
-	W5bm+uOCXcgesm6PuvgxlxVPQRyDZ1S1c=; b=RzH+usjAWVRDh+Cti/pnzv9Pmr
-	jqG5J6X0+aqdbqnl5jP/QeAhVR2cZ3rzV7PuvvC04IuefVFP5itdV/UbeeG19OnZ
-	EhPTP7FxhPBqvVeTxnDzNaAZ+fkQw3ggBg0D212fPpn6jsFhH1Pg6cKCHHtoZxxK
-	35Z4fXk1NevZvnvXtvjLVXqG2eh2l0+d9m4V3Sn86ak33Ei5QXXNfltKXpFnvKTL
-	gtyw2rdZQbyHooZj/xDrQ21yR6dupSYZ2jdGqs8w0tkvRs6CriI65S/+HC+HJ0Lx
-	uYR+quUB1hMcNHrdMTrw4NPadie6yFfxYmKMFaAvxETTUpUQl9+Y/KhNrSow==
+	:subject:to:to; s=fm2; t=1707239050; x=1707325450; bh=VN8Cd/6/QU
+	IMRCH56wbkEB8qncG2Wz7ukEomi/HXzmw=; b=PdkpBL6uXWQh544B3B7Muxtw5B
+	TgSqYOcRkvNUeSjItgvFabWYGEVty1rt+2At/Z9msuJC4yTt1i2UKi/OuJo6peJg
+	5pY9nY8hgXQINpWEYhzqM250HMysGLGWgE6T18Ct9FzmzUjZ+EfpL+oYbCOxQBGB
+	HBE3hUZm+ivOWFJTKT+upcUxf3y3kL6tOvMepjxPpGsqhTWTtjTFNalmWwEdJwfr
+	PtmxG5aV83permqbJgCjghi25jgAhFrZfimD8vOD1XLx2kEgN2iAKKfF/J62OX2S
+	iAw4C/u8ETNyYcWebuvHC0RDsDSdMmMHLZSrPoGmQnObLBKAFlaYrDvOncFA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1707239023; x=1707325423; bh=rncCsbijlKW5bm+uOCXcgesm6Puv
-	gxlxVPQRyDZ1S1c=; b=XjRWJj1P5dv9c6+k43wQ7sBpjgWKPTmR1+uMvYjlul8H
-	j8tz4AH4rNkCQsm+i53EWf6j2J/xMsOVeJrABQ7M3fnXLE99gjHsUYzYq7CzxZVs
-	XVfxDqB1oWOWKTLq1AUczai70MkcK5umrDqfxFao03Vm26SwzUVfR9uFdCPyAHTK
-	z91vYIkHRaKhF0z68doHY9NuovW4noBHSYmDOG2htfoL3bCX7TxPekbdIcPCiO8h
-	TkIhkmzBTZD3MvZEUDpsbcs9Pz0XOF7UQbMKF0pihkPAzpRpgFCkvE2dPjW56U5J
-	cpW3QhCNBwmxja33Tgj4i4T6LzE3BIm7XB0IYitGwg==
-X-ME-Sender: <xms:bmbCZc5eyvQblUGZQFzcL-uPQUWQfQPiNvxEuxNxUpzCp-H7ipnX9g>
-    <xme:bmbCZd6NNV2lcgx-MnJPoTx9pn-TqLooP-uo7n2GRJfCzaVeaOjBaX1DcBqCr07Hy
-    wxOkGJ1bjWg8ViTX0Q>
-X-ME-Received: <xmr:bmbCZbczSxFtBsIxZIFRryFbFEWJOBGJ4UFPO0ZZ7ryLGPUnuz2rLMZVsDaj-6sJj29syOWQ0CUFAOM750ichMieXHWp>
+	fm3; t=1707239050; x=1707325450; bh=VN8Cd/6/QUIMRCH56wbkEB8qncG2
+	Wz7ukEomi/HXzmw=; b=nFK0Oj36OyM4CdWrQx9JbFjjeu3YHOUWnmncUuN6Y8qk
+	Pwg4sqlRT6X3Lr6xHrg4GctS2IYHVO393i7mIF8nwnKiNQrZ+XeXn8L/OzIwqyDA
+	cvNFOh8skoNzTsJbU7VcGvMVcnhjqVyxjjMq1fvvKpHzBOsVGmEpd4TC9a2Oetu4
+	JC4fZzUIlOl0hIAYRtLRJRIGD7O0ZH26Xu8Mpkn/w4flBckGbGnNw3CULLHD/d4N
+	ZTnVkLTyFjvI57XKjfb1dnrIc0WaBkD9ZPDQ6bT68NyBSb+HuTVi5R+XQ39ZmqmP
+	Rw3FAevWBvDmeujJD8FXAN/ciMEbJHke5xhfAqzIBw==
+X-ME-Sender: <xms:iWbCZe08cKnJtQgTMhVWLvGXw7GvtPNsEQlx9rd9t3J6KKiLD5Gm4A>
+    <xme:iWbCZRH7-PPNABfYQB838B5Ce54-1fKGy6C3jqMsCGIfBlwXuZyZsdLexIBUuNbrL
+    MGp5bdBH3vAexNNKF4>
+X-ME-Received: <xmr:iWbCZW6EoLtE8fZy_ujJ2y2NTiY49SkpJ1kxt1fAbNo4IIrvJHCQj1eVSjUuVCUbxtDxoZ8RuLRe4Q5BJdMXNxRbxDMM>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrtddtgdeiiecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
     fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigthhho
     ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
-    htthgvrhhnpeelveduteeghfehkeeukefhudfftefhheetfedthfevgfetleevvdduveet
-    ueefheenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomhepthihtghhohesthihtghhohdrphhiiiii
-    rg
-X-ME-Proxy: <xmx:bmbCZRLbEpFqMEJamPqjhdiKdDgXwEwACPf7I667FgWz-7sBoHKQpA>
-    <xmx:bmbCZQI3tYJ8BlmUpJIioAdbOsgwhsQqOHq95VGeRPhilIlHZD8GdA>
-    <xmx:bmbCZSzUUmlJ5KIwGI-K0-NHiAgs0zK4ZUj071VPWrArBF6lf8h_Fw>
-    <xmx:b2bCZVEFdJlGbZtFyUdnb8_M12T8oU97Rf8GEXcqK8aJEq8zLlaS2g>
+    htthgvrhhnpeeutedttefgjeefffehffffkeejueevieefudelgeejuddtfeffteeklefh
+    leelteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hthigthhhosehthigthhhordhpihiiiigr
+X-ME-Proxy: <xmx:iWbCZf2intgLViOra3akTVnD1DG1PJGsy--NsACD_wk7_DMLnvm1ZQ>
+    <xmx:iWbCZRF4eqUWBSJgOD0t3om2OuDMCC5OQfHjxBdn2J8a-lTr_lIwAw>
+    <xmx:iWbCZY8Bl2v1pA9EOLRNb-HOgBylq54g6EF9JKh3u45tmKW6o4rjVg>
+    <xmx:imbCZVgoZTXtVs2lHh4fD6cDFOKL456noGOQV9PWSufOSIaHEVhNnA>
 Feedback-ID: i21f147d5:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 6 Feb 2024 12:03:42 -0500 (EST)
-Date: Tue, 6 Feb 2024 10:03:41 -0700
+ 6 Feb 2024 12:04:09 -0500 (EST)
+Date: Tue, 6 Feb 2024 10:04:08 -0700
 From: Tycho Andersen <tycho@tycho.pizza>
 To: Oleg Nesterov <oleg@redhat.com>
 Cc: Christian Brauner <brauner@kernel.org>,
 	Andy Lutomirski <luto@amacapital.net>,
 	"Eric W. Biederman" <ebiederm@xmission.com>,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pidfd: change do_notify_pidfd() to use
- __wake_up(poll_to_key(EPOLLIN))
-Message-ID: <ZcJmbUzox6Rd3587@tycho.pizza>
-References: <20240205141348.GA16539@redhat.com>
+Subject: Re: [PATCH] pidfd: exit: kill the no longer used
+ thread_group_exited()
+Message-ID: <ZcJmiBxpaElivX2J@tycho.pizza>
+References: <20240205174347.GA31461@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -97,19 +96,18 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240205141348.GA16539@redhat.com>
+In-Reply-To: <20240205174347.GA31461@redhat.com>
 
-On Mon, Feb 05, 2024 at 03:13:48PM +0100, Oleg Nesterov wrote:
-> rather than wake_up_all(). This way do_notify_pidfd() won't wakeup the
-> POLLHUP-only waiters which wait for pid_task() == NULL.
+On Mon, Feb 05, 2024 at 06:43:47PM +0100, Oleg Nesterov wrote:
+> It was used by pidfd_poll() but now it has no callers.
 > 
-> TODO:
->     - as Christian pointed out, this asks for the new wake_up_all_poll()
->       helper, it can already have other users.
-> 
->     - we can probably discriminate the PIDFD_THREAD and non-PIDFD_THREAD
->       waiters, but this needs more work. See
->       https://lore.kernel.org/all/20240205140848.GA15853@redhat.com/
+> If it finally finds a modular user we can revert this change, but note
+> that the comment above this helper and the changelog in 38fd525a4c61
+> ("exit: Factor thread_group_exited out of pidfd_poll") are not accurate,
+> thread_group_exited() won't return true if all other threads have passed
+> exit_notify() and are zombies, it returns true only when all other threads
+> are completely gone. Not to mention that it can only work if the task
+> identified by @pid is a thread-group leader.
 > 
 > Signed-off-by: Oleg Nesterov <oleg@redhat.com>
 
