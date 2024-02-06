@@ -1,188 +1,150 @@
-Return-Path: <linux-kernel+bounces-54273-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B57D484AD22
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:53:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EEF084AD26
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:54:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 721CA283DA5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:53:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E78C61F24510
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:54:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0859C745EC;
-	Tue,  6 Feb 2024 03:53:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A10EC5026D;
+	Tue,  6 Feb 2024 03:54:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g0kcoV/g"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KxTDWVvN"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 402416E2D0;
-	Tue,  6 Feb 2024 03:53:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ACE2745F7;
+	Tue,  6 Feb 2024 03:54:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707191601; cv=none; b=N3IX0RowkkbKDOk6AvWln2i3qwUvJPjODN9Pe51M/pTF1QhcU/en+53cKtm5NY1TngjxuApXQGTAJEC6nB5vZU5b7bR9BP4+7UT9jlmsS/pBQX1qLNMNAaxSsIwhaaVH4PAUsB9yHJzStvLXeo0to3NTfrlKIcHv9DcF7/8kfgY=
+	t=1707191648; cv=none; b=mhylG6bzfnxth2ZXvXd2wpcNKigP+lJ4OcROD1qIFLCmT6jnFEKNWMcrUPTvNAOQeRsZo6D4n4MVeN2mPdDni7wuEcRWPBggv/2VKeF362gwKPO92VwwWpefRci3l4WBUVJ0tpcMtbZZ5tzg6Mh73e6YjswtOX0VDtw/+O2Izng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707191601; c=relaxed/simple;
-	bh=/k++I+FlpxJrLePv6Y8ZWwlFxvuSh3CWBS9wIPPph6k=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=p02GxGXeeBEoUBXp/MnFPdq+Y39zDndntH7Fh2nXiLDsCMLnTfeP7s3FleW5QF1UC6hjc8bWUGeVU8Isw2X/ZamsvdB9ADiXg3jojvs4MDgCynxHel8gKcN/EoQsPEwkmOQT9i67Gd1VmvWja74PRy9+Xb8vTU83HgNgBJ4Qv+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g0kcoV/g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08E44C433F1;
-	Tue,  6 Feb 2024 03:53:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707191600;
-	bh=/k++I+FlpxJrLePv6Y8ZWwlFxvuSh3CWBS9wIPPph6k=;
-	h=From:To:Cc:Subject:Date:From;
-	b=g0kcoV/g2XabtIjn66NwsnSiaoUP0ML/i0+W8/WTGNZwmds5SyPwvE4hH8wVwAem1
-	 yir8NozK989nuDd+vL2czGitX8NXYPITfAKVQMpbyS4GPC5nKhP59xQX3n+UgJ0KId
-	 kn3W2uNoDrJFF7Nyhs8bRxyxIt6X4enJKbYcvi/gDWHJDWjQRIwz5bvsSceAKxMU4A
-	 Sxw6NEBK2Ip/xtgb1f7hrLLXkdm70oI8MyN/ISYFu7vAGlnsC+qmeYlKOmlY561MC5
-	 hAPQlzdWbB7/KPT3/gQTycNAaJndbB8GQ90WuHjp2mWF4jdieMZ/KmPZzxdjgt6ii6
-	 wEIUIKP1fxaVQ==
-From: Chao Yu <chao@kernel.org>
-To: "James E . J . Bottomley" <jejb@linux.ibm.com>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>
-Cc: linux-scsi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Chao Yu <chao@kernel.org>
-Subject: [PATCH v6] scsi: support packing multi-segment in UNMAP command
-Date: Tue,  6 Feb 2024 11:53:04 +0800
-Message-Id: <20240206035304.2503296-1-chao@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1707191648; c=relaxed/simple;
+	bh=t6ixaW+6H4/89KVyOXvsad4/xMeBBQWucAwxMQsaZTY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YDJEgnKPHd8RxPHpJdxH2INFypmDCEKd/cKTVUvQkQ2P0zxZDyh0f1HMW5/xw1UMnWy7sVhBzBjeJi4P3Sk5IKL7wR4NHucg0yQhi0Owt8sDTZQoi+hQ4P91JsVUz+a7TI9VinSaMbIujPAm1jSo/tOQuaynAKEYnBYHagnZdsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KxTDWVvN; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d09d90fa11so30737911fa.3;
+        Mon, 05 Feb 2024 19:54:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707191644; x=1707796444; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=EZHqfG5XPKO9mKULs9lbfSFN1v0+XqUhR2fg30tQFWc=;
+        b=KxTDWVvNfr40+ZE6PQBKWzUHhH+piRb8o0SBn8idOtzo+adkOsRkH8adyd7GGOxMup
+         cHIJoo42raH+VzjKOc+DoRUQ2yBbs7qf/ccHjWyRoH64IpRN4Tw5HJ60esV48ZtEvJi0
+         vPPD8R5B5oxJKHMkYyKPisiSx3EAkquN4ArKoQcoSRRPE8SU44uGApasuhduTK+5LsNp
+         WWd38hcXOv7TwzMGsH8p44yHyY1BV+VQ8fz3CTLtpg7V7K3dFMuUW8+8lqC+dIxDHCPQ
+         VJqyicA5OkIMVpFHvb6lAxtly+nCYYoXyO8QaPOlp8dO5Rc4jy5cRbpXrdHWZQkHkQPQ
+         yb2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707191644; x=1707796444;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EZHqfG5XPKO9mKULs9lbfSFN1v0+XqUhR2fg30tQFWc=;
+        b=or7vjHgHYgMjd+maKS3GBoNH06NLExV8GtZ4n6rDHt84BDCC4SejVAAEgTHw6+392r
+         1ZSzQMkD+PtNORdxciE52Hlj42aOH867xZcyOtiKrT57qR2YUjs6sPkXzrpYJbe7qZ90
+         +zyK1D69S5MR9Lbw+mPJTZNvz1WarsArTaJXF8DiO45M+ozI7S10tGt4i5TO+tIfNdmR
+         nvGZaPaPMsSQTHG1PmkehqayCUnCzAlHG7DQYwi9c8AzJndj367Cda81CK45lrfhfTmv
+         LjCUsK1SGe1E6IB4BFrkOD1X+tACXOKLGIOUwuaNXcpUtfBTKC+zKEQQRT6Pe/NLbb5w
+         hwdQ==
+X-Gm-Message-State: AOJu0YzfEB2/vzHLJSkyrSyiLQF+5Y0U9CSHNYyP1vWI+OF3xD5E2h30
+	bZ4JfqJ92WgBA4BnsuGdKe7iICRHV5EZ9o+QQZ/zCZvLe8TsvAOsQ912NaHxo1gvrPaoBTs1xbn
+	ZnYAy16ZzgEgIb2nNC82fUgJY954=
+X-Google-Smtp-Source: AGHT+IFPhe+tym3Y1EbWx7SXmOEgvof0leWdZvWa0cStvMwvhV6qBwSmhJF/qSRg4bgrypjlE9IdK08hGvb07MnuuO0=
+X-Received: by 2002:a05:651c:22a:b0:2cf:2781:8735 with SMTP id
+ z10-20020a05651c022a00b002cf27818735mr577251ljn.23.1707191643441; Mon, 05 Feb
+ 2024 19:54:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240205152013.3833940-1-chou.cosmo@gmail.com>
+ <20240205152013.3833940-2-chou.cosmo@gmail.com> <4a504043-e24d-4119-8c5d-107f0d371110@roeck-us.net>
+ <CAOeEDysSZEeKt==zyexLE1GhE5ZpeDHS7sDLRfcC=4JgiogLKQ@mail.gmail.com> <a05ec2fe-cfe4-48d8-bff4-9f3689c585d3@roeck-us.net>
+In-Reply-To: <a05ec2fe-cfe4-48d8-bff4-9f3689c585d3@roeck-us.net>
+From: Cosmo Chou <chou.cosmo@gmail.com>
+Date: Tue, 6 Feb 2024 11:53:51 +0800
+Message-ID: <CAOeEDyscobVHaAe+72P2wEiucgWUDX=2H2W5dq0P1q8RB=7tzg@mail.gmail.com>
+Subject: Re: [PATCH v5 1/1] hwmon: Add driver for Astera Labs PT5161L retimer
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	jdelvare@suse.com, corbet@lwn.net, broonie@kernel.org, 
+	naresh.solanki@9elements.com, vincent@vtremblay.dev, 
+	patrick.rudolph@9elements.com, luca.ceresoli@bootlin.com, bhelgaas@google.com, 
+	festevam@denx.de, alexander.stein@ew.tq-group.com, heiko@sntech.de, 
+	jernej.skrabec@gmail.com, macromorgan@hotmail.com, forbidden405@foxmail.com, 
+	sre@kernel.org, linus.walleij@linaro.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org, 
+	linux-doc@vger.kernel.org, cosmo.chou@quantatw.com
+Content-Type: text/plain; charset="UTF-8"
 
-As SCSI SBC4 specification section 5.30.2 describes that it can
-support unmapping one or more LBA range in single UNMAP command.
-
-However, previously we only pack one LBA range in UNMAP command
-by default no matter device gives the block limits that says it
-can support unmapping multiple LBA ranges with a single UNMAP
-command.
-
-This patch sets max_discard_segments config according to block
-limits of device, and supports unmapping multiple LBA ranges with
-a single UNMAP command.
-
-Signed-off-by: Chao Yu <chao@kernel.org>
----
-v6:
-- in this version, we fix a compatibility issue: for a scsi device
-which doesn't support handling multiple ranges in single UNMAP
-command, it should to load start LBA and length of target range
-from rq.__sector and rq.__data_len, instead of bi_sector and
-bi_size in first bio in bio chain, otherwise if there is multiple
-bios were chained in request, we may miss to add ranges of following
-bios in the chain into UNMAP command.
- drivers/scsi/sd.c | 46 +++++++++++++++++++++++++++++++++++-----------
- drivers/scsi/sd.h |  1 +
- 2 files changed, 36 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index 542a4bbb21bc..5d5420b36070 100644
---- a/drivers/scsi/sd.c
-+++ b/drivers/scsi/sd.c
-@@ -832,6 +832,8 @@ static void sd_config_discard(struct scsi_disk *sdkp, unsigned int mode)
- 	q->limits.discard_granularity =
- 		max(sdkp->physical_block_size,
- 		    sdkp->unmap_granularity * logical_block_size);
-+	blk_queue_max_discard_segments(q, min_t(u32, U16_MAX,
-+				sdkp->max_unmap_block_desc_count));
- 	sdkp->provisioning_mode = mode;
- 
- 	switch (mode) {
-@@ -891,9 +893,12 @@ static blk_status_t sd_setup_unmap_cmnd(struct scsi_cmnd *cmd)
- 	struct scsi_device *sdp = cmd->device;
- 	struct request *rq = scsi_cmd_to_rq(cmd);
- 	struct scsi_disk *sdkp = scsi_disk(rq->q->disk);
--	u64 lba = sectors_to_logical(sdp, blk_rq_pos(rq));
--	u32 nr_blocks = sectors_to_logical(sdp, blk_rq_sectors(rq));
--	unsigned int data_len = 24;
-+	struct bio *bio;
-+	unsigned short segments = blk_rq_nr_discard_segments(rq);
-+	unsigned int data_len = 8 + 16 * segments;
-+	unsigned int descriptor_offset = 8;
-+	u64 lba;
-+	u32 nr_blocks;
- 	char *buf;
- 
- 	buf = sd_set_special_bvec(rq, data_len);
-@@ -902,12 +907,28 @@ static blk_status_t sd_setup_unmap_cmnd(struct scsi_cmnd *cmd)
- 
- 	cmd->cmd_len = 10;
- 	cmd->cmnd[0] = UNMAP;
--	cmd->cmnd[8] = 24;
-+	cmd->cmnd[7] = data_len >> 8;
-+	cmd->cmnd[8] = data_len & 0xff;
-+
-+	put_unaligned_be16(6 + 16 * segments, &buf[0]);
-+	put_unaligned_be16(16 * segments, &buf[2]);
- 
--	put_unaligned_be16(6 + 16, &buf[0]);
--	put_unaligned_be16(16, &buf[2]);
--	put_unaligned_be64(lba, &buf[8]);
--	put_unaligned_be32(nr_blocks, &buf[16]);
-+	if (segments > 1) {
-+		__rq_for_each_bio(bio, rq) {
-+			lba = sectors_to_logical(sdp, bio->bi_iter.bi_sector);
-+			nr_blocks = sectors_to_logical(sdp, bio_sectors(bio));
-+
-+			put_unaligned_be64(lba, &buf[descriptor_offset]);
-+			put_unaligned_be32(nr_blocks, &buf[descriptor_offset + 8]);
-+			descriptor_offset += 16;
-+		}
-+	} else {
-+		lba = sectors_to_logical(sdp, blk_rq_pos(rq));
-+		nr_blocks = sectors_to_logical(sdp, blk_rq_sectors(rq));
-+
-+		put_unaligned_be64(lba, &buf[descriptor_offset]);
-+		put_unaligned_be32(nr_blocks, &buf[descriptor_offset + 8]);
-+	}
- 
- 	cmd->allowed = sdkp->max_retries;
- 	cmd->transfersize = data_len;
-@@ -3066,7 +3087,7 @@ static void sd_read_block_limits(struct scsi_disk *sdkp)
- 	sdkp->opt_xfer_blocks = get_unaligned_be32(&vpd->data[12]);
- 
- 	if (vpd->len >= 64) {
--		unsigned int lba_count, desc_count;
-+		unsigned int lba_count;
- 
- 		sdkp->max_ws_blocks = (u32)get_unaligned_be64(&vpd->data[36]);
- 
-@@ -3074,9 +3095,12 @@ static void sd_read_block_limits(struct scsi_disk *sdkp)
- 			goto out;
- 
- 		lba_count = get_unaligned_be32(&vpd->data[20]);
--		desc_count = get_unaligned_be32(&vpd->data[24]);
- 
--		if (lba_count && desc_count)
-+		/* Extract the MAXIMUM UNMAP BLOCK DESCRIPTOR COUNT. */
-+		sdkp->max_unmap_block_desc_count =
-+					get_unaligned_be32(&vpd->data[24]);
-+
-+		if (lba_count && sdkp->max_unmap_block_desc_count)
- 			sdkp->max_unmap_blocks = lba_count;
- 
- 		sdkp->unmap_granularity = get_unaligned_be32(&vpd->data[28]);
-diff --git a/drivers/scsi/sd.h b/drivers/scsi/sd.h
-index 409dda5350d1..c17f605f2bae 100644
---- a/drivers/scsi/sd.h
-+++ b/drivers/scsi/sd.h
-@@ -119,6 +119,7 @@ struct scsi_disk {
- 	u32		opt_xfer_blocks;
- 	u32		max_ws_blocks;
- 	u32		max_unmap_blocks;
-+	u32		max_unmap_block_desc_count;
- 	u32		unmap_granularity;
- 	u32		unmap_alignment;
- 	u32		index;
--- 
-2.40.1
-
+On Tue, Feb 06, 2024 at 11:26 AM +0800, Guenter Roeck wrote:
+>
+> On 2/5/24 19:05, Cosmo Chou wrote:
+> > On Tue, Feb 06, 2024 at 3:43 AM +0800, Guenter Roeck wrote:
+> >>
+> >> On Mon, Feb 05, 2024 at 11:20:13PM +0800, Cosmo Chou wrote:
+> >>> This driver implements support for temperature monitoring of Astera Labs
+> >>> PT5161L series PCIe retimer chips.
+> >>>
+> >>> This driver implementation originates from the CSDK available at
+> >>> Link: https://github.com/facebook/openbmc/tree/helium/common/recipes-lib/retimer-v2.14
+> >>> The communication protocol utilized is based on the I2C/SMBus standard.
+> >>>
+> >>> Signed-off-by: Cosmo Chou <chou.cosmo@gmail.com>
+> >>> ---
+> >> [ ... ]
+> >>
+> >>> +static ssize_t pt5161l_debugfs_read_fw_ver(struct file *file, char __user *buf,
+> >>> +                                        size_t count, loff_t *ppos)
+> >>> +{
+> >>> +     struct pt5161l_data *data = file->private_data;
+> >>> +     int ret;
+> >>> +     char ver[32];
+> >>> +
+> >>> +     mutex_lock(&data->lock);
+> >>> +     ret = pt5161l_fwsts_check(data);
+> >>> +     mutex_unlock(&data->lock);
+> >>> +     if (ret)
+> >>> +             return ret;
+> >>> +
+> >>> +     ret = snprintf(ver, sizeof(ver), "%u.%u.%u\n", data->fw_ver.major,
+> >>> +                    data->fw_ver.minor, data->fw_ver.build);
+> >>> +     if (ret < 0)
+> >>> +             return ret;
+> >>> +
+> >>
+> >> You almost got me here ;-). snprintf() never returns a negative error code,
+> >> so checking for it is not necessary.
+> >>
+> > Oh! You're right.
+> >
+> >>> +     return simple_read_from_buffer(buf, count, ppos, ver, ret + 1);
+> >>
+> >> Number of bytes written plus 1 ? Why ?
+> > It's just to include the string terminator '\0'.
+> >
+>
+> If that was needed, it would be risky. snprintf() truncates the output
+> if the buffer is not large enough. You might want to consider using
+> scnprintf() instead. But then I am not sure if that is needed in the first
+> place. Almost all code I checked doesn't do that, and it seems to be likely
+> that the few drivers who do that are simply wrong. Can you explain why the
+> string terminator needs to be added to the output ?
+>
+> Thanks,
+> Guenter
+>
+It's just in case someone reads and prints this, but with a dirty
+buffer and doesn't handle the terminator.
 
