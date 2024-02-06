@@ -1,168 +1,127 @@
-Return-Path: <linux-kernel+bounces-54715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B83884B2CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:53:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAE0084B2D8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:55:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 472C428AC09
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:53:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 528AEB22C35
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:55:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FC8012E1E3;
-	Tue,  6 Feb 2024 10:53:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EB0B12F361;
+	Tue,  6 Feb 2024 10:54:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="lW/aOBM0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 453884EB46;
-	Tue,  6 Feb 2024 10:53:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="LyN7n7NE"
+Received: from mail-177132.yeah.net (mail-177132.yeah.net [123.58.177.132])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B4F058101;
+	Tue,  6 Feb 2024 10:54:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707216795; cv=none; b=fZgeKjvtt2e0InrzYiytmqniuZyBDrKTDhnT8aV8X7tsuynCKv+I4chAoSa6U9/fx8XkS6FhZ7zULJhyDkvw6gI2TRo6F+r+ioNtMn6SiedNhJHZXN92zHTGW28dVd2EINidaSXIaVUCxHlPgajuliL85Z0gjbGRzeHINs2NmN4=
+	t=1707216858; cv=none; b=H3dfP4Ifg9PIiDMUINGRcLUV/vW8LmMaVd3dGj3zkL1jLnGNSNFv3cIhMPeFJ0gyYOhsOZeCiEmRf+fSJ+Qm9q3R/57O2nKByrKgvrX3AFNlE9W8rRyMUrJN/4JWpWAKlwyGgYH09gC7IDEI58E1x3smD+TfzRdXMq6GOid3YfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707216795; c=relaxed/simple;
-	bh=Jw80we5CtO+VxkV79VnROzych80YG1K0NYBVQWdtJA8=;
+	s=arc-20240116; t=1707216858; c=relaxed/simple;
+	bh=eq1o09ppvptz86ZQlz8Uakg295wPUJONuJsBuVt+BZA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FJkM5cmF/kGU1hTTpjEgtdC3YoE+tZp8NKFz6FlpfTZpFKEDPzgwI9q4SqZnqaWtEqI0KpvCAQ1nWgXO0w0xadLgAiRVcJXT/rT29GTnBoIRyFNEjNr2rsn9Jj9qOozN/PgYPN3GMwhhhmQH39oVtvCILC087x1l3SKhSM7dKQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=lW/aOBM0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AEA7C433C7;
-	Tue,  6 Feb 2024 10:53:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1707216794;
-	bh=Jw80we5CtO+VxkV79VnROzych80YG1K0NYBVQWdtJA8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lW/aOBM0QgorItLizvpr6oa7h1xAzOqlQ8RWA7zstrEHbIpXBp6Uc7hR//w7wsjAl
-	 ms1z9tgbwKajIEb8DO6bLaMsZJ1mwAElb5wImFKe23J9ARXIA9d/lMzUyg4t7Ixw5z
-	 Ls2dqfbVNo+EtPhXWlnETEO0z/zHuyqD2vYEjy8w=
-Date: Tue, 6 Feb 2024 10:53:10 +0000
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Zhiguo Niu <niuzhiguo84@gmail.com>
-Cc: Carlos Llamas <cmllamas@google.com>, Zhiguo Niu <zhiguo.niu@unisoc.com>,
-	bvanassche@acm.org, peterz@infradead.org, mingo@redhat.com,
-	will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
-	linux-kernel@vger.kernel.org, ke.wang@unisoc.com,
-	hongyu.jin@unisoc.com, stable@vger.kernel.org
-Subject: Re: [PATCH V3] lockdep: fix deadlock issue between lockdep and rcu
-Message-ID: <2024020613-abrasive-splashed-6fe3@gregkh>
-References: <1706861676-26574-1-git-send-email-zhiguo.niu@unisoc.com>
- <Zb1IxNd54z2Ib1N3@google.com>
- <2024020233-wildland-blouse-2f2e@gregkh>
- <CAHJ8P3L8A4uUwDuD5WQkDGdsOB6jWBdPFzR98mCiAh-0LtM91A@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=UyuPkH8E4AL5mLUCPtUTdkzo+tqfG87otFc41vgGMccHhusTx4udx/okp+sRJHn7e58S0TCuZyRBZBcmrG7KdNKXX3x2OX0EzNqg5u8qomHsYcws/dlGczamTsb1muQr4/jaH3nNzddojN7Q8IBdKql9DmAj/GZHT8oce5c7b+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=LyN7n7NE; arc=none smtp.client-ip=123.58.177.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
+	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
+	Content-Type; bh=V3wgQJBc9TAh3reLgQ6RIEOzbkagE4Tp6ZGLh43fz6U=;
+	b=LyN7n7NEMMssqA+dRI0WEKk4zAzHsgr8PLcQy3uS/K76QVnVfYge7BPUlbnrDa
+	0sQJ1HAotgOXWtQYqorabPdbgwMmA0cjkqHvmI7CRgfkKb2Zz3o6avojh/75j6PM
+	wvt7FjwRHoZSTSeY4fhsxe0fTRDKV4cfZMOa3naxxWlMk=
+Received: from dragon (unknown [183.213.196.254])
+	by smtp2 (Coremail) with SMTP id C1UQrADnbwmWD8Jln2UCAw--.35794S3;
+	Tue, 06 Feb 2024 18:53:12 +0800 (CST)
+Date: Tue, 6 Feb 2024 18:53:10 +0800
+From: Shawn Guo <shawnguo2@yeah.net>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>, Wei Fang <wei.fang@nxp.com>,
+	Shenwei Wang <shenwei.wang@nxp.com>,
+	Clark Wang <xiaoning.wang@nxp.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, imx@lists.linux.dev
+Subject: Re: [PATCH v2 4/4] arm64: dts: imx8qm: add smmu stream id information
+Message-ID: <ZcIPlp7BUxuo/ZeM@dragon>
+References: <20240201-8qm_smmu-v2-0-3d12a80201a3@nxp.com>
+ <20240201-8qm_smmu-v2-4-3d12a80201a3@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHJ8P3L8A4uUwDuD5WQkDGdsOB6jWBdPFzR98mCiAh-0LtM91A@mail.gmail.com>
+In-Reply-To: <20240201-8qm_smmu-v2-4-3d12a80201a3@nxp.com>
+X-CM-TRANSID:C1UQrADnbwmWD8Jln2UCAw--.35794S3
+X-Coremail-Antispam: 1Uf129KBjvJXoWrKryfGFWfZw1rWw4fCrW5GFg_yoW8JF17pa
+	s5Cr43tr4fWr17AryDXa4vkFZ8GanxuF4qgr17u3y8trnagFyYg3Z0gF1FkrWkWw4rW3yf
+	J3Z5Jr13Z3WDZr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jajgxUUUUU=
+X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiDhh8ZVszYTEy1gAAsT
 
-On Tue, Feb 06, 2024 at 06:37:05PM +0800, Zhiguo Niu wrote:
-> hi Greg,
+On Thu, Feb 01, 2024 at 03:22:44PM -0500, Frank Li wrote:
+> Add smmu stream id information for fec and esdhc.
 > 
-> On Sat, Feb 3, 2024 at 5:36 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Fri, Feb 02, 2024 at 07:55:48PM +0000, Carlos Llamas wrote:
-> > > On Fri, Feb 02, 2024 at 04:14:36PM +0800, Zhiguo Niu wrote:
-> > > > There is a deadlock scenario between lockdep and rcu when
-> > > > rcu nocb feature is enabled, just as following call stack:
-> > > >
-> > > >      rcuop/x
-> > > > -000|queued_spin_lock_slowpath(lock = 0xFFFFFF817F2A8A80, val = ?)
-> > > > -001|queued_spin_lock(inline) // try to hold nocb_gp_lock
-> > > > -001|do_raw_spin_lock(lock = 0xFFFFFF817F2A8A80)
-> > > > -002|__raw_spin_lock_irqsave(inline)
-> > > > -002|_raw_spin_lock_irqsave(lock = 0xFFFFFF817F2A8A80)
-> > > > -003|wake_nocb_gp_defer(inline)
-> > > > -003|__call_rcu_nocb_wake(rdp = 0xFFFFFF817F30B680)
-> > > > -004|__call_rcu_common(inline)
-> > > > -004|call_rcu(head = 0xFFFFFFC082EECC28, func = ?)
-> > > > -005|call_rcu_zapped(inline)
-> > > > -005|free_zapped_rcu(ch = ?)// hold graph lock
-> > > > -006|rcu_do_batch(rdp = 0xFFFFFF817F245680)
-> > > > -007|nocb_cb_wait(inline)
-> > > > -007|rcu_nocb_cb_kthread(arg = 0xFFFFFF817F245680)
-> > > > -008|kthread(_create = 0xFFFFFF80803122C0)
-> > > > -009|ret_from_fork(asm)
-> > > >
-> > > >      rcuop/y
-> > > > -000|queued_spin_lock_slowpath(lock = 0xFFFFFFC08291BBC8, val = 0)
-> > > > -001|queued_spin_lock()
-> > > > -001|lockdep_lock()
-> > > > -001|graph_lock() // try to hold graph lock
-> > > > -002|lookup_chain_cache_add()
-> > > > -002|validate_chain()
-> > > > -003|lock_acquire
-> > > > -004|_raw_spin_lock_irqsave(lock = 0xFFFFFF817F211D80)
-> > > > -005|lock_timer_base(inline)
-> > > > -006|mod_timer(inline)
-> > > > -006|wake_nocb_gp_defer(inline)// hold nocb_gp_lock
-> > > > -006|__call_rcu_nocb_wake(rdp = 0xFFFFFF817F2A8680)
-> > > > -007|__call_rcu_common(inline)
-> > > > -007|call_rcu(head = 0xFFFFFFC0822E0B58, func = ?)
-> > > > -008|call_rcu_hurry(inline)
-> > > > -008|rcu_sync_call(inline)
-> > > > -008|rcu_sync_func(rhp = 0xFFFFFFC0822E0B58)
-> > > > -009|rcu_do_batch(rdp = 0xFFFFFF817F266680)
-> > > > -010|nocb_cb_wait(inline)
-> > > > -010|rcu_nocb_cb_kthread(arg = 0xFFFFFF817F266680)
-> > > > -011|kthread(_create = 0xFFFFFF8080363740)
-> > > > -012|ret_from_fork(asm)
-> > > >
-> > > > rcuop/x and rcuop/y are rcu nocb threads with the same nocb gp thread.
-> > > > This patch release the graph lock before lockdep call_rcu.
-> > > >
-> > > > Fixes: a0b0fd53e1e6 ("locking/lockdep: Free lock classes that are no longer in use")
-> > > > Cc: <stable@vger.kernel.org>
-
-Oops, I missed this line ^^^
-
-> > > > Cc: Boqun Feng <boqun.feng@gmail.com>
-> > > > Cc: Waiman Long <longman@redhat.com>
-> > > > Cc: Carlos Llamas <cmllamas@google.com>
-> > > > Cc: Bart Van Assche <bvanassche@acm.org>
-> > > > Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-> > > > Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> > > > ---
-> > > > changes of v3: correct code comments and add Cc tag.
-> > > > changes of v2: update patch according to Boqun's suggestions.
-> > > > ---
-> > >
-> > > It seems v3 should have collected the review tags from Boqun and Waiman.
-> > > Also, I'm actually Cc'ing stable here. I hope that is enough.
-> > > FWIW, this looks fine to me.
-> > >
-> > > Reviewed-by: Carlos Llamas <cmllamas@google.com>
-> >
-> >
-> > <formletter>
-> >
-> > This is not the correct way to submit patches for inclusion in the
-> > stable kernel tree.  Please read:
-> >     https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-> > for how to do this properly.
-> >
-> > </formletter>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  arch/arm64/boot/dts/freescale/imx8qm-ss-conn.dtsi | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> I see that many commits in mainline use Cc: <stable@vger.kernel.org>
-> directly without other information,
-> and I also find this information from above link: "Note, such tagging
-> is unnecessary if the stable team can
-> derive the appropriate versions from Fixes: tags."
+> diff --git a/arch/arm64/boot/dts/freescale/imx8qm-ss-conn.dtsi b/arch/arm64/boot/dts/freescale/imx8qm-ss-conn.dtsi
+> index ec1639174e2e5..3cbc861400b43 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8qm-ss-conn.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8qm-ss-conn.dtsi
+> @@ -6,20 +6,26 @@
+>  
+>  &fec1 {
+>  	compatible = "fsl,imx8qm-fec", "fsl,imx6sx-fec";
+> +	iommus = <&smmu 0x12 0x7f80>;
+>  };
+>  
+>  &fec2 {
+>  	compatible = "fsl,imx8qm-fec", "fsl,imx6sx-fec";
+> +	iommus = <&smmu 0x12 0x7f80>;
+>  };
+>  
+>  &usdhc1 {
+>  	compatible = "fsl,imx8qm-usdhc", "fsl,imx8qxp-usdhc", "fsl,imx7d-usdhc";
+> +	iommus = <&smmu 0x11 0x7f80>;
+>  };
+>  
+>  &usdhc2 {
+>  	compatible = "fsl,imx8qm-usdhc", "fsl,imx8qxp-usdhc", "fsl,imx7d-usdhc";
+> +	iommus = <&smmu 0x11 0x7f80>;
+>  };
+>  
+>  &usdhc3 {
+>  	compatible = "fsl,imx8qm-usdhc", "fsl,imx8qxp-usdhc", "fsl,imx7d-usdhc";
+> +	iommus = <&smmu 0x11 0x7f80>;
+>  };
+> +
+
+Dropped this whitespace and applied.
+
+Shawn
+
 > 
-> In addition, this fixed commit "a0b0fd53e1e6 ("locking/lockdep: Free
-> lock classes that are no longer in use")"
-> was committed in 2019, so I am not very sure which start version
-> should be added to stabe tag.
-> Do you have any good suggestions?
+> -- 
+> 2.34.1
+> 
 
-Nope, you did this right, I missed it in the body of the changelog as
-listed above, my apologies for the incorrect response here.
-
-greg k-h
 
