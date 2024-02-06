@@ -1,123 +1,124 @@
-Return-Path: <linux-kernel+bounces-54386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 244FF84AEA0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:07:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DA6D84AEA1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:08:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92D7F1F246C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 07:07:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 587C2286BF1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 07:08:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6730E128804;
-	Tue,  6 Feb 2024 07:07:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S4Var3sV"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE585128810;
+	Tue,  6 Feb 2024 07:08:21 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4981A3D54A
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 07:07:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A7103D54A;
+	Tue,  6 Feb 2024 07:08:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707203252; cv=none; b=o/3FosngHlU/fxHk12uI9G3RITDXgz7PfUB/eq9Nt5zFsU+ldBdlDgP89nlmDvHMIdOZmxixtJFMqrBHqWgaSx6VM0UtVr4+6Zz7LJrvJQr2YvuufJNg5poV1rnS2kHfvYCjuKj9yRjb3LKZBjpmd0yJ14uJYEXRDaiS8GvfcqU=
+	t=1707203301; cv=none; b=PUKrIhzOJ1BjXI1K+yn01n0eOCrvkMNEwMTJE4UF7kIPzoKko32UnVZIHKP8xsifTSlC8LUA8bGNPiIaHKrCxy49oalDTTKoiSvRbKBMQyAm5mmgU0pPsZRHXZz/4GIzkEZ+QcHFy4Z28ILZd/L050uKNarqwHMfPCX7yC8YoE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707203252; c=relaxed/simple;
-	bh=wS6zlNuXwAPfuedZAvA3ZrUiC/nMjWU0rCS5L6PsMgk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EOYQDrizLT/E9nHOBkYxNyYZDCJfsbYdaNWsO23TGMO6lb81HOo2iCAag5f4KBQSLsXF73iuccd73SDHKY+9UIRCWLEGbk3pUEUsuRQEAgcRVRIWmPo/IwYXvgm5U4zeB6riEUs+MpOHoCnrt/Hb39BG3jxH/jEK7ykm86gdufQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S4Var3sV; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d9bd8fa49eso12318985ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 23:07:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707203250; x=1707808050; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1nVgxtxxB24ooM015/bjH1PamdQQY17NCPa4n0g2/8c=;
-        b=S4Var3sVfbMiuVftzK0izarCSDbhqj/Ihv0Z78mo9OzWKyMoSWvkuy6yvvY6A9IEug
-         +QEMb3jfdBWN/DDDJNyXCrpgWDfwQALNasNJR2VZo+3GYxgJrJZNTtMr0UNf70M9joP/
-         HVVoTe5zS4w4DQ3+70FkgETeCwxWSm+/3vROGojrSdWUDa3U6lvu0Zm+WsJ1dh95f5zK
-         Fv2KQdrIqnt4CcJx7B8ofphbVA9qhxaAxdKOuEDBUGq0FnCvkjV1gALcFrZPO+8HKdIv
-         Va4KEOU9xeXvWRez0PzzS3RoECzg7dgqJKr11lnU6Wylm9WFaY7QSWHGcvsH9pM7HsZ6
-         La4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707203250; x=1707808050;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1nVgxtxxB24ooM015/bjH1PamdQQY17NCPa4n0g2/8c=;
-        b=obSQFnVP9af4dF8lTmFYKixbAXpn0zkRfH+0WuCpyTcMB5gt97mc0dNW6lazYTon+9
-         KSNnkn/seDtuWn8UTTspXorZLPOzsc1TdBDYdK0SEjW2TS7O3p2bNgd6P4aKgy2qYzmY
-         4RYtJ39o/tcG6d8of1Jp11rQbW6L+jCrwId9doottnJmL9TyjmYLfRTTzj3xloBDNyMq
-         xU/Oe3EAUGB02nPXJjYAjVs8UZIOtErFoZ6UORNsHp4mIkT0Bg+Qfo2r1yg5UwH6Z2NR
-         hbpYvTC7mitoaOReoLg22BxkU+pPOCHQhzFbZ3FXa2RnQk2Y3nDdj0dyUjKJ0EbiqzcB
-         QI8Q==
-X-Gm-Message-State: AOJu0Yz0NBoOprE3pXrAGdklqbkPiG/HYsTdCeqMS5/k93au7VSwn2l3
-	57TTro7RaLWNokvR4hvK34TNVBS/+thLqdHBpLzceWY2E18MffvA
-X-Google-Smtp-Source: AGHT+IGOc6rrXPB1S9d1QiU78oRJLaHBtNbQ06ZRU0AUlLCWpIimBm/knEqicCOHNU4qjV4EH+7XAg==
-X-Received: by 2002:a17:902:d2cc:b0:1d9:bed3:ba0b with SMTP id n12-20020a170902d2cc00b001d9bed3ba0bmr975627plc.9.1707203250524;
-        Mon, 05 Feb 2024 23:07:30 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUCcxcEFPgZFK73jbaI0vIPkcdpUfWSZmClbsGqVh3dIf3HjD3nd6n7lkU1vNa+O+zLZzPBmPtKIiR/dPBY6pJ77ngNf/nPhvRmIFnjEwqrk+NE5OdG/Le/L6CON7GUw4mf+PjNzjnNFbiuVfHyNkf65KkDAKTpFSaZx0U+Eah+b/B4jA==
-Received: from dragon (144.34.186.27.16clouds.com. [144.34.186.27])
-        by smtp.gmail.com with ESMTPSA id iy15-20020a170903130f00b001d8f3c7fb96sm1079796plb.166.2024.02.05.23.07.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 23:07:29 -0800 (PST)
-Date: Tue, 6 Feb 2024 15:07:21 +0800
-From: Shawn Guo <shawn.gsc@gmail.com>
-To: Charles Perry <charles.perry@savoirfairelinux.com>
-Cc: shawnguo@kernel.org, robh@kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bus: imx-weim: fix imx_weim_gpr_setup()
-Message-ID: <ZcHaqasXS60LtbVn@dragon>
-References: <20240122205738.2432552-1-charles.perry@savoirfairelinux.com>
+	s=arc-20240116; t=1707203301; c=relaxed/simple;
+	bh=KeJ3vcGqkmCvMmwLJUf3uRoKdTBLPLdb/ZTxMTh81cw=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=BPrvfJpQ6Kt4U3xnoBz74e0P+U5HHyUIQ/4IaGMmRl1B82G2ZlJFKY8yLnvaxfDcBGWQ0SxixU73MGsBV/+Pwo3FiJqF84qpORXw/hKlY84e2aViRyQYsmqI9jxMel3wNUdLjBrwzpaABDuHZH2syzHIfxEbyCaKlJVLQdjUaK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TTZ7D2XPHz1xnJK;
+	Tue,  6 Feb 2024 15:07:04 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (unknown [7.193.23.202])
+	by mail.maildlp.com (Postfix) with ESMTPS id 9BE3A18001A;
+	Tue,  6 Feb 2024 15:08:10 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 6 Feb 2024 15:08:09 +0800
+Subject: Re: [PATCH 2/5] perf sched: Fix memory leak in perf_sched__map()
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+CC: <peterz@infradead.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
+	<mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+	<jolsa@kernel.org>, <irogers@google.com>, <adrian.hunter@intel.com>,
+	<linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240205104616.132417-1-yangjihong1@huawei.com>
+ <20240205104616.132417-3-yangjihong1@huawei.com> <ZcEv5BBvNEye4ZYf@x1>
+From: Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <9909979e-3123-60a0-05e7-e770c705416e@huawei.com>
+Date: Tue, 6 Feb 2024 15:08:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240122205738.2432552-1-charles.perry@savoirfairelinux.com>
+In-Reply-To: <ZcEv5BBvNEye4ZYf@x1>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
 
-On Mon, Jan 22, 2024 at 03:57:29PM -0500, Charles Perry wrote:
-> Commit 2a88e4792c6d ("bus: imx-weim: Remove open coded "ranges"
-> parsing") changes the parsing of the "ranges" field by using
-> for_each_of_range instead of of_property_for_each_u32. The number of
-> iteration of the loop is now equal to the number of range within
-> ranges. It is therefore no longer needed to check that i is divisible
-> by 4, otherwise, valid configurations will fail imx_weim_gpr_setup().
+Hello,
+
+On 2024/2/6 2:58, Arnaldo Carvalho de Melo wrote:
+> On Mon, Feb 05, 2024 at 10:46:13AM +0000, Yang Jihong wrote:
+>> +++ b/tools/perf/builtin-sched.c
+>> @@ -3267,20 +3264,34 @@ static int setup_color_cpus(struct perf_sched *sched)
+>>   
+>>   static int perf_sched__map(struct perf_sched *sched)
+>>   {
+>> +	int rc = -1;
+>> +
+>>   	if (setup_map_cpus(sched))
+>> -		return -1;
+>> +		return rc;
+>>   
+>>   	if (setup_color_pids(sched))
+>> -		return -1;
+>> +		goto out_free_map_cpus;
 > 
-> Fixes: 2a88e4792c6d ("bus: imx-weim: Remove open coded "ranges" parsing")
-> Signed-off-by: Charles Perry <charles.perry@savoirfairelinux.com>
-
-Thanks for the patch!  But I have picked up the one [1] from Lucas.
-
-Shawn
-
-[1] https://lore.kernel.org/all/20240119185026.1192333-1-l.stach@pengutronix.de/
-
-> ---
->  drivers/bus/imx-weim.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I think renaming the goto labels to what they will do, dropping a
+> refcount, is more clear, i.e.:
 > 
-> diff --git a/drivers/bus/imx-weim.c b/drivers/bus/imx-weim.c
-> index 6b5da73c85417..837bf9d51c6ec 100644
-> --- a/drivers/bus/imx-weim.c
-> +++ b/drivers/bus/imx-weim.c
-> @@ -120,7 +120,7 @@ static int imx_weim_gpr_setup(struct platform_device *pdev)
->  		i++;
->  	}
->  
-> -	if (i == 0 || i % 4)
-> +	if (i == 0)
->  		goto err;
->  
->  	for (i = 0; i < ARRAY_SIZE(gprvals); i++) {
-> -- 
-> 2.43.0
+> 		goto out_put_map_cpus;
+OK, will modify in v2.
 > 
+>>   
+>>   	if (setup_color_cpus(sched))
+>> -		return -1;
+>> +		goto out_free_color_pids;
+>>   
+>>   	setup_pager();
+>>   	if (perf_sched__read_events(sched))
+>> -		return -1;
+>> +		goto out_free_color_cpus;
+>> +
+>> +	rc = 0;
+>>   	print_bad_events(sched);
+>> -	return 0;
+>> +
+>> +out_free_color_cpus:
+>> +	perf_cpu_map__put(sched->map.color_cpus);
+>> +
+>> +out_free_color_pids:
+>> +	perf_thread_map__put(sched->map.color_pids);
+>> +
+>> +out_free_map_cpus:
+>> +	free(sched->map.comp_cpus);
+> 
+> Please use:
+> 
+> 	zfree(&sched->map.comp_cpus);
+> 
+OK, will change to use zfree in the next version.
+Other patches where uses free will also be changed to zfree.
+
+Thanks,
+Yang
 
