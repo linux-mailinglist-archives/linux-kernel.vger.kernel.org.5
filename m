@@ -1,136 +1,107 @@
-Return-Path: <linux-kernel+bounces-54470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 330A984AF98
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:07:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EB5C84AF9B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:07:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D00201F23294
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:07:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23FEA1F238D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:07:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AC5612B179;
-	Tue,  6 Feb 2024 08:05:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFF2112BF01;
+	Tue,  6 Feb 2024 08:05:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WjRlTHnf"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sWq7Fn6a"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47D3D12B16D
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 08:05:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93F8712BEA9
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 08:05:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707206714; cv=none; b=XmQjHJUVnCPYsSD41t11pgtpXtdvlr7hyGewh3ZEKOH+03PI4nxXI0DYxMM/peG49NLHtaq4WkXdFjvw3l5nATgFm/3dezFTYDf+eCSCzSwDBqh1MB3LJye2tr7KnICL6NDjsuCizAaUICSKa14nPh9uefiZlsEiHGdSy6ckZbA=
+	t=1707206724; cv=none; b=miYuzjD5tslsUsSAjAS4IisJjv0qpHDfZwtOmhTiIhvGs3v3UCeNnflfYJzvAMyXbVLYWBkMBb9zF1vuZN+zZDO4uTgIMawGcToWzcOt85nG5gYRqZs29TQ+/hGqlUTYW6H8Tbozh2vhnWp52uDGWIDDTb/sbrexa0t2cOzKjFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707206714; c=relaxed/simple;
-	bh=MsHf8cVdpuCFq4ctLxFOemRpS5F5u/extnlTkO7PvNY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QsE5qdXaOJaKCcgniG9zTek8UQ5RgiQMC5R+OYeERsbXfmhjMv/0b18UUW/1rjiEh433FiGf8XAibPigfzvgD9KBDiSmgaFhTGCxNKq9+hifxY84PZ8EwsKaUAcgnbIGKq/ocY2CrWhm+1R7QDKbQV9F9hZtFnDxwgkk84rWZME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WjRlTHnf; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707206712;
-	h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:in-reply-to:in-reply-to:  references:references;
-	bh=VoG77iC4V8mtXCplQh9IiWyiocJNF7CpVFSOwa43ZiE=;
-	b=WjRlTHnfXWY6Vw1QFvsuI4gM4LxpnlFzEuZ0IlNj+I56ctkg4dlUj8GOSkp+0+xspPEOft
-	8VoTowKv6KACm4BGbf0227CgLXvXtnwd5u8ureQKMzkvpwXqAcMNqEmket6BOT0ThY7lX+
-	cQVR67sxQcosonnLm+zgvIQwQPsaKLk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-148-IXlGMc1pNmqu9FkmToUdZQ-1; Tue, 06 Feb 2024 03:05:06 -0500
-X-MC-Unique: IXlGMc1pNmqu9FkmToUdZQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 85A4085A588;
-	Tue,  6 Feb 2024 08:05:05 +0000 (UTC)
-Received: from redhat.com (unknown [10.42.28.53])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id AECA02166B32;
-	Tue,  6 Feb 2024 08:05:00 +0000 (UTC)
-Date: Tue, 6 Feb 2024 08:04:57 +0000
-From: Daniel =?utf-8?B?UC4gQmVycmFuZ8Op?= <berrange@redhat.com>
-To: "Dr. Greg" <greg@enjellic.com>
-Cc: "Reshetova, Elena" <elena.reshetova@intel.com>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>,
-	"Hansen, Dave" <dave.hansen@intel.com>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	"Nakajima, Jun" <jun.nakajima@intel.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	"Kalra, Ashish" <ashish.kalra@amd.com>,
-	Sean Christopherson <seanjc@google.com>,
-	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] x86/random: Issue a warning if RDRAND or RDSEED fails
-Message-ID: <ZcHoKUElwXGPzrWb@redhat.com>
-Reply-To: Daniel =?utf-8?B?UC4gQmVycmFuZ8Op?= <berrange@redhat.com>
-References: <20240130083007.1876787-1-kirill.shutemov@linux.intel.com>
- <20240130083007.1876787-2-kirill.shutemov@linux.intel.com>
- <CAHmME9qsfOdOEHHw_MOBmt6YAtncbbqP9LPK2dRjuOp1CrHzRA@mail.gmail.com>
- <DM8PR11MB57507611D651E6D7CBC2A2F3E77D2@DM8PR11MB5750.namprd11.prod.outlook.com>
- <88a72370-e300-4bbc-8077-acd1cc831fe7@intel.com>
- <CAHmME9oSQbd3V8+qR0e9oPb7ppO=E7GrCW-a2RN8QNdY_ARbSQ@mail.gmail.com>
- <Zbk6h0ogqeInLa_1@redhat.com>
- <DM8PR11MB575052B985CA97B29A443F9AE77C2@DM8PR11MB5750.namprd11.prod.outlook.com>
- <20240206011247.GA29224@wind.enjellic.com>
+	s=arc-20240116; t=1707206724; c=relaxed/simple;
+	bh=Um60JkQzUBGSC64kTMW6YHQTuqTRStEzoO7ef+w5i3g=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=eLB7jKutT9Fo2l7grlZypUyQ/kAvvqNHbnd2EDkEOvtfz25sSoIS0PvJ/jKLtnN84vBVMlnnSoMvBIU0lhMwFzlkC5HJF477aR2P7PrEtycMoSRKyHfzgo2WkubY9dFx7Ydu7GPFY/0elZyfjmnO31WoecrcnhT+G6tHQ6SrECU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sWq7Fn6a; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40fc22f372cso41320495e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 00:05:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707206720; x=1707811520; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8/5O9hY7fbi4192+EtrSax1khEqAmyKf9Dz+7tj6y+c=;
+        b=sWq7Fn6aRDJoMuBXSiAJSNMVbHdBjYuyUNiSYfeXW3pnCWabSCBqK/AMh45fppIHxw
+         CbbV9Q+qMl61symnDksFeShlqdeN4YNe5aZQoTFoy6S9hKstfrCs7RObTKZel+t2G9GE
+         CJpg2Ehz0oAaHoMoTWya8Pk5Lpxw3uvpW0znb4WQ7/log/FvZqj3vtY1SiXTpWQ053ub
+         my61Lkg7Qyx0hGcbwmEmkfd9MhKTmICXKtkkCnUc/NpCmS7N0KbBXW9IsWY0d9k147w9
+         34OSZko7jOfiPfKYl4s8T6HWddBk6dLJQGKyXzKc7HvcePIzgFwPo/IL5++sXHxgBbmj
+         xjqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707206720; x=1707811520;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8/5O9hY7fbi4192+EtrSax1khEqAmyKf9Dz+7tj6y+c=;
+        b=ePVk5XoDV7ssxu0E9GWgT38E9p+6U6ZfdZfl8taq6rzPpUeW+WXgLPTGtbwEdbb2R8
+         SpnnxoRuqA03Vudxb7NtGyzzjMUR4RUCTxbe8lGemo5lny/mvs6CInXZFR0JmnjqA9A6
+         ZAhcb4e37gWAxe5E3imZdUfBHWH+tXgBx+5+ElaLTBmP4Hosv7dITimdulOQ9ZxLExvv
+         vm+oxqQtCtSsPRT0FG11GsgGU/eRlCutnnnug0/6odBOHm85V87oqXL8wRmg6HBVVFoJ
+         FyGJaUllhgLglNtqKzyfmR5cjIyCFNm6xctFgF37l0Ec9MMCAsMNd9wBkz3b5cviQFf6
+         uGKw==
+X-Gm-Message-State: AOJu0YxhuHzVvFzSjNzzx4E5mCo8MBY0yls+b7UozKGisDIsDdhA269K
+	he7HeMeQFcP4HXgXH1vDqVM7GtvXZrpCXOlUdGaKGfp7/Hu+lIxKAuxcoys2SoHmyd8O9gKxWcg
+	y
+X-Google-Smtp-Source: AGHT+IGKG+VSFIDgMfRKAK9AQt7FxNAXWRFHa1rOz7Jlm0XieP63tB7kyE+GfcKivT3w26JT/H8zfw==
+X-Received: by 2002:a05:600c:3543:b0:40f:c1fc:e5b6 with SMTP id i3-20020a05600c354300b0040fc1fce5b6mr985429wmq.38.1707206720460;
+        Tue, 06 Feb 2024 00:05:20 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUe2geaP+oOuiQq06DsJip5NUAjRyW2c5AmrzJdWbWmgqpiGz4B9lE4wLFq7BkQBvB6vfZPHDyjboN9/NH5vsJTCBaShQquJYv2PO1Osc6C9oKYH8yILcudw/fby9uHBL8do7bXOUoEC4zjtZgQ2ar5lbBBfMqxDNfgdXNSmaJURzAc938DAvXXBBcRqLyk7pnJVWYBM4Qie93K4nc9gnkDswT3pPMFCXyfp4Acgw0dS6GoykYRFLUzirYYhgdh9j6k6Ih/G70yi4N5WfvL
+Received: from [127.0.1.1] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id fa13-20020a05600c518d00b0040fb03f803esm1101405wmb.24.2024.02.06.00.05.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 00:05:20 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Sam Protsenko <semen.protsenko@linaro.org>
+Cc: Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240201183025.14566-1-semen.protsenko@linaro.org>
+References: <20240201183025.14566-1-semen.protsenko@linaro.org>
+Subject: Re: [PATCH v3] arm64: dts: exynos: Add SPI nodes for Exynos850
+Message-Id: <170720671934.8244.1763443195474086978.b4-ty@linaro.org>
+Date: Tue, 06 Feb 2024 09:05:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240206011247.GA29224@wind.enjellic.com>
-User-Agent: Mutt/2.2.12 (2023-09-09)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.4
 
-On Mon, Feb 05, 2024 at 07:12:47PM -0600, Dr. Greg wrote:
-> 
-> Actually, I now believe there is clear evidence that the problem is
-> indeed Intel specific.  In light of our testing, it will be
-> interesting to see what your 'AR' returns with respect to an official
-> response from Intel engineering on this issue.
-> 
-> One of the very bright young engineers collaborating on Quixote, who
-> has been following this conversation, took it upon himself to do some
-> very methodical engineering analysis on this issue.  I'm the messenger
-> but this is very much his work product.
-> 
-> Executive summary is as follows:
-> 
-> - No RDRAND depletion failures were observable with either the Intel
->   or AMD hardware that was load tested.
-> 
-> - RDSEED depletion is an Intel specific issue, AMD's RDSEED
->   implementation could not be provoked into failure.
 
-My colleague ran a multithread parallel stress test program on
-his 16core/2HT AMD Ryzen (Zen4 uarch) and saw a 80% failure rate
-in RDSEED.
+On Thu, 01 Feb 2024 12:30:25 -0600, Sam Protsenko wrote:
+> Some USI blocks can be configured as SPI controllers. Add corresponding
+> SPI nodes to Exynos850 SoC device tree.
+> 
+> 
 
-> - AMD's RDRAND/RDSEED implementation is significantly slower than
->   Intel's.
+Applied, thanks!
 
-Yes, we also noticed the AMD impl is horribly slow compared to Intel,
-had to cut test iterations x100
+[1/1] arm64: dts: exynos: Add SPI nodes for Exynos850
+      https://git.kernel.org/krzk/linux/c/2ef4cddd31950f563b5642e34d8fa38ad2352ef0
 
-With regards,
-Daniel
+Best regards,
 -- 
-|: https://berrange.com      -o-    https://www.flickr.com/photos/dberrange :|
-|: https://libvirt.org         -o-            https://fstop138.berrange.com :|
-|: https://entangle-photo.org    -o-    https://www.instagram.com/dberrange :|
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 
