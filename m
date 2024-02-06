@@ -1,157 +1,735 @@
-Return-Path: <linux-kernel+bounces-54512-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 765F684B023
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:43:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B6A384B02F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:45:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B6621C247EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:43:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C62202824C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:45:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDCE012D16B;
-	Tue,  6 Feb 2024 08:40:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3F3712BEA0;
+	Tue,  6 Feb 2024 08:41:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aZM6d4TY"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="SdVmj/yV"
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F4F412D170
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 08:40:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE86B12B17D;
+	Tue,  6 Feb 2024 08:41:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707208831; cv=none; b=UvPEVAKazAhQCjSvW7NEuG8zMiLg+vwj5VCQJH9HO3h7iztD7TGlNoA2w70BavwBivLH/A3D36wIe2YbtkcL0zFm81IQG28MpA35lRacEQj0wk4HeWrCfP71AxXY5Rb1jvbH+KpUiLeCDcsLUNCdtzzbojPLtriAr2M/y7bXplI=
+	t=1707208915; cv=none; b=Jw1aoSQXeTET/5iPdfW7MPALeRrp9wYzccyzuBcuZIsKhgPb/B1ji4k0idlKe+/AQTOtxzsccrdN7zsfQl9lFRRa7QnjEqSz84iubrNQs61axwMhcEhB4zuqvD2cWrPNtxlRL/iteVtdSJF7lPRiZt02I8IB8j8DmJNWCWvwVOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707208831; c=relaxed/simple;
-	bh=0+OljlHEvVulzoH2yMalpa0WXEZWeNlJXz6QgyzVqpI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ze6iv41i/KeDzcPuM0wUEBM0ewLWIiNq8Vi5KTwD8rQdQTX42xTOCWnz2Z80iw2T8wRECQmihrg7GoWaB7VC1lGd/Eox9bOzeq/OC/WUMKWQ+FWWSrsmLR2gEDcbUOHHkDefqbdeNNBKFylbY4C77G8x+zw+GNbLI6Na54hDaTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aZM6d4TY; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40fe2d3d5cbso2764015e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 00:40:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707208828; x=1707813628; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+BjCkuHYJ7wlRDiHwrpZK8dT4seUjek4Zt+IyiKbnqk=;
-        b=aZM6d4TYA15osmJRIJ3O+pSFkBd+t7S49Sdjo3fDzVX1NMCS+bqE+71vx4XJEI35Gl
-         Jdj8Jd3emMQyiUYnJ445BiHVPblp36jXyQlCO2yIZNvZ0fk54J/EQru/QXWPtlHO+ley
-         FSN1biproMmDHl4XVN7Scu/QsIZUqzSeuFRfJjO2Xl9CLZoAhW+5Lt82Q0RYN8DSHybO
-         g8z9syY6HT+rXKy05Vg7YjtnycxbNgD4yV2xtCUczErjw/8oD/Wd50p3fz8ilUB5vFu2
-         blecRpmI4GndaHVWk3j//pISAnSiGn1ht8cGlARetyQaQTb3VdsynyLmBBiWneI7khtW
-         5fAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707208828; x=1707813628;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+BjCkuHYJ7wlRDiHwrpZK8dT4seUjek4Zt+IyiKbnqk=;
-        b=EaGP/M6/HFJFJy2oO6GloZzUbYWiiRkt2RHrG8izUL62KPinLd2/KxipNZyD/3EoWz
-         hFoPfkWlGywucmGNrYV853oFChyQuh4g2aCFXu0ma5nHAUsftVIzcUJzW7DMm0b0ZtH1
-         ELYTlJ54J2I5f2SoD1FHHODSePy4tbyFoFt8DQsNnX19Ib6EEJcICrx/iFYv8QJVuDKL
-         bsn0qibC7UcXLvPgt44vYkKH10e6gf4iZdeYSLBEY/cI5D6g36jL574p929kfMNYQV9T
-         sascNOAZ8v84PVtOfTwSkXI1uAld1XBJ/DvOwEqe+zsesGP6Ka6FL629oZXNJfO6wWQl
-         nxIw==
-X-Gm-Message-State: AOJu0YwWmlMnK4ZwUcFSPpKllTTnaMh8XBHitpsU24ridv1q8gdjr2mq
-	kJc5+m8dgPDhvBHqG43439fy03tBB9r7jirebqsnakhmik9Y5L3vFF3Q68oTVX4=
-X-Google-Smtp-Source: AGHT+IG7W+xq1WtAZCy2pd+OKJEdMO65lf45G4Fm2KuM0FtJG1ZEjz4SCZC1hjA8rECCpqxKFH7Eiw==
-X-Received: by 2002:a05:600c:1c9a:b0:40e:b447:ae7d with SMTP id k26-20020a05600c1c9a00b0040eb447ae7dmr1449057wms.33.1707208827746;
-        Tue, 06 Feb 2024 00:40:27 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUIqujsHfAafAM73iPvBcIwOjt8p/ysmSU7y6fHLwCfDH3k8fMUjvwJ3wCK/4Njn1XM4BfldvX1kycr3a5uktNDjExozNAWqwkwY14WQr90iyLpO7M5wD/LGCB/yjFn9VqOFVIYBx53HOmWtexIm6/kCrob5iotbBJLFxUhpilDD4hxqvKWjp+KG+it4InIkIdOp4l9Ol1mf4lxGvq+W5lq7TjboAUwZt+qc2AMNxBvfMlWg8VGvTrSJxzwfmiCO7EQOGuvqucnh8l/Ktn1BfASXZtGCqs2hJrDkPgDu0WGfxUW1zJA3j2dlM2JVwlrHzEUP2a5yD4vRw==
-Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id r13-20020a05600c458d00b0040fe5994d0csm819865wmo.0.2024.02.06.00.40.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Feb 2024 00:40:27 -0800 (PST)
-Message-ID: <221f6e6e-0399-4b2e-8fcd-9af40b1b6f03@linaro.org>
-Date: Tue, 6 Feb 2024 09:40:25 +0100
+	s=arc-20240116; t=1707208915; c=relaxed/simple;
+	bh=f6pH1rkezKcbjAn9SSzVuWD0pdnJkQAVTdqLUP2oTSY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Fiw2OBPNzImBNcwNEnagQFBOu+tE6fwhGni4KzHGDxrW+BbQDmQHk2eBEk+Wt3TarFN0bLQJuST/+mleb39phJIUmE+uSWig1+D6DjZLq0sWHqvQXjPxHDfwpxRJdR5EwGe4cI5yBtJqtEG51kxKXtNkD5+p8TuK0D7I5LYAHCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=SdVmj/yV; arc=none smtp.client-ip=115.124.30.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1707208908; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=MILmR4KcRx9dT5JEzJg0dd4UmKyGtTF/qO7G0QRXJ8Y=;
+	b=SdVmj/yVCasipJ9qkrC3Cspo92GJ3nTE121EzMJSUyt8sh0WkUfmCE8m4UrZf+M+y/jxIqF1HXB6XvNL8Es1qmiQeHZBUkx9mPVNyZkKYG2weTJG68X5toDBkWMGEzv/6kQsxhKi7ILWlcLRz8eDeUTNx20TUtazXYhxpgdNR1I=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R991e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=xiangzao@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0W0Cxwfj_1707208896;
+Received: from localhost.localdomain(mailfrom:xiangzao@linux.alibaba.com fp:SMTPD_---0W0Cxwfj_1707208896)
+          by smtp.aliyun-inc.com;
+          Tue, 06 Feb 2024 16:41:47 +0800
+From: Yuanhe Shu <xiangzao@linux.alibaba.com>
+To: lkp@intel.com
+Cc: corbet@lwn.net,
+	gpiccoli@igalia.com,
+	keescook@chromium.org,
+	linux-doc@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	oe-kbuild-all@lists.linux.dev,
+	shuah@kernel.org,
+	tony.luck@intel.com,
+	xiangzao@linux.alibaba.com,
+	xlpang@linux.alibaba.com,
+	yixingrui@linux.alibaba.com
+Subject: [PATCH 1/3] pstore: add multi-backend support
+Date: Tue,  6 Feb 2024 16:41:23 +0800
+Message-Id: <20240206084123.472995-1-xiangzao@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
+In-Reply-To: <202402061551.EkLBF7yD-lkp@intel.com>
+References: <202402061551.EkLBF7yD-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/5] soc: qcom: llcc: Add regmap for Broadcast_AND
- region
-Content-Language: en-US
-To: Unnathi Chalicheemala <quic_uchalich@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, kernel@quicinc.com
-References: <cover.1707202761.git.quic_uchalich@quicinc.com>
- <169277f53affed98ef41e5a7cbf2401fe62716bd.1707202761.git.quic_uchalich@quicinc.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <169277f53affed98ef41e5a7cbf2401fe62716bd.1707202761.git.quic_uchalich@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 06/02/2024 08:15, Unnathi Chalicheemala wrote:
-> Define new regmap structure for Broadcast_AND region and initialize
-> regmap for Broadcast_AND region when HW block version
-> is greater than 4.1 for backwards compatibility.
-> 
-> Switch from broadcast_OR to broadcast_AND region for checking
-> status bit 1 as Broadcast_OR region checks only for bit 0.
-> 
+Currently, pstore supports only one backend open at a time.
+Specifically, due to the global variable "psinfo", pstore only accepts
+the first registered backend. If a new backend wants to register later,
+pstore will simply reject it and return an error. This design forced us
+to close existing backend in order to use the new ones.
 
-Driver changes cannot be after DTS, because there should be no
-dependency between hardware description and drivers. Hardware did not
-change, did it? Your patchset might have wrong ordering or might break
-bisectability.
+To enable pstore to support multiple backends, "psinfo" is replaced by
+"psinfo_list", a list that holds multiple "psinfo". If multiple backends
+are registered with the same frontend, the frontend is reused.
 
+User can specify multiple backends that are allowed to be registered by
+module parameter "pstore.backend=" separated by commas or "all" to
+enable all available backends. If no pstore.backend was specified,
+pstore would accept the first registered backend which is the same as
+before.
 
-Best regards,
-Krzysztof
+Signed-off-by: Xingrui Yi <yixingrui@linux.alibaba.com>
+Signed-off-by: Yuanhe Shu <xiangzao@linux.alibaba.com>
+---
+ fs/pstore/ftrace.c     |  31 +++++-
+ fs/pstore/inode.c      |  19 ++--
+ fs/pstore/internal.h   |   4 +-
+ fs/pstore/platform.c   | 225 ++++++++++++++++++++++++++++-------------
+ fs/pstore/pmsg.c       |  24 ++++-
+ include/linux/pstore.h |  29 ++++++
+ 6 files changed, 250 insertions(+), 82 deletions(-)
+
+diff --git a/fs/pstore/ftrace.c b/fs/pstore/ftrace.c
+index 776cae20af4e..1238d3946ca1 100644
+--- a/fs/pstore/ftrace.c
++++ b/fs/pstore/ftrace.c
+@@ -23,10 +23,11 @@
+ /* This doesn't need to be atomic: speed is chosen over correctness here. */
+ static u64 pstore_ftrace_stamp;
+ 
+-static void notrace pstore_ftrace_call(unsigned long ip,
++static void notrace pstore_do_ftrace(unsigned long ip,
+ 				       unsigned long parent_ip,
+ 				       struct ftrace_ops *op,
+-				       struct ftrace_regs *fregs)
++				       struct ftrace_regs *fregs,
++				       struct pstore_info *psinfo)
+ {
+ 	int bit;
+ 	unsigned long flags;
+@@ -57,6 +58,20 @@ static void notrace pstore_ftrace_call(unsigned long ip,
+ 	ftrace_test_recursion_unlock(bit);
+ }
+ 
++static void notrace pstore_ftrace_call(unsigned long ip,
++				       unsigned long parent_ip,
++				       struct ftrace_ops *op,
++				       struct ftrace_regs *regs)
++{
++	struct pstore_info_list *entry;
++
++	rcu_read_lock();
++	list_for_each_entry_rcu(entry, &psback->list_entry, list)
++		if (entry->psi->flags & PSTORE_FLAGS_FTRACE)
++			pstore_do_ftrace(ip, parent_ip, op, regs, entry->psi);
++	rcu_read_unlock();
++}
++
+ static struct ftrace_ops pstore_ftrace_ops __read_mostly = {
+ 	.func	= pstore_ftrace_call,
+ };
+@@ -131,8 +146,16 @@ MODULE_PARM_DESC(record_ftrace,
+ 
+ void pstore_register_ftrace(void)
+ {
+-	if (!psinfo->write)
+-		return;
++	struct pstore_info_list *entry;
++
++	rcu_read_lock();
++	list_for_each_entry_rcu(entry, &psback->list_entry, list)
++		if (entry->psi->flags & PSTORE_FLAGS_FTRACE)
++			if (!entry->psi->write) {
++				rcu_read_unlock();
++				return;
++			}
++	rcu_read_unlock();
+ 
+ 	pstore_ftrace_dir = debugfs_create_dir("pstore", NULL);
+ 
+diff --git a/fs/pstore/inode.c b/fs/pstore/inode.c
+index d0d9bfdad30c..bee71c7da995 100644
+--- a/fs/pstore/inode.c
++++ b/fs/pstore/inode.c
+@@ -285,7 +285,7 @@ static const struct super_operations pstore_ops = {
+ 	.show_options	= pstore_show_options,
+ };
+ 
+-static struct dentry *psinfo_lock_root(void)
++static struct dentry *psinfo_lock_root(struct pstore_info *psinfo)
+ {
+ 	struct dentry *root;
+ 
+@@ -309,7 +309,7 @@ int pstore_put_backend_records(struct pstore_info *psi)
+ 	struct dentry *root;
+ 	int rc = 0;
+ 
+-	root = psinfo_lock_root();
++	root = psinfo_lock_root(psi);
+ 	if (!root)
+ 		return 0;
+ 
+@@ -398,21 +398,22 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
+  * when we are re-scanning the backing store looking to add new
+  * error records.
+  */
+-void pstore_get_records(int quiet)
++void pstore_get_records(struct pstore_info *psi, int quiet)
+ {
+ 	struct dentry *root;
+ 
+-	root = psinfo_lock_root();
++	root = psinfo_lock_root(psi);
+ 	if (!root)
+ 		return;
+ 
+-	pstore_get_backend_records(psinfo, root, quiet);
++	pstore_get_backend_records(psi, root, quiet);
+ 	inode_unlock(d_inode(root));
+ }
+ 
+ static int pstore_fill_super(struct super_block *sb, void *data, int silent)
+ {
+ 	struct inode *inode;
++	struct pstore_info_list *entry;
+ 
+ 	sb->s_maxbytes		= MAX_LFS_FILESIZE;
+ 	sb->s_blocksize		= PAGE_SIZE;
+@@ -437,7 +438,13 @@ static int pstore_fill_super(struct super_block *sb, void *data, int silent)
+ 	scoped_guard(mutex, &pstore_sb_lock)
+ 		pstore_sb = sb;
+ 
+-	pstore_get_records(0);
++	if (!psback)
++		return 0;
++
++	mutex_lock(&psback_lock);
++	list_for_each_entry(entry, &psback->list_entry, list)
++		pstore_get_records(entry->psi, 0);
++	mutex_unlock(&psback_lock);
+ 
+ 	return 0;
+ }
+diff --git a/fs/pstore/internal.h b/fs/pstore/internal.h
+index 801d6c0b170c..4b1c7ba27052 100644
+--- a/fs/pstore/internal.h
++++ b/fs/pstore/internal.h
+@@ -33,10 +33,10 @@ static inline void pstore_register_pmsg(void) {}
+ static inline void pstore_unregister_pmsg(void) {}
+ #endif
+ 
+-extern struct pstore_info *psinfo;
++extern struct pstore_backends *psback;
+ 
+ extern void	pstore_set_kmsg_bytes(int);
+-extern void	pstore_get_records(int);
++extern void	pstore_get_records(struct pstore_info *psi, int quiet);
+ extern void	pstore_get_backend_records(struct pstore_info *psi,
+ 					   struct dentry *root, int quiet);
+ extern int	pstore_put_backend_records(struct pstore_info *psi);
+diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
+index 03425928d2fb..432a41852a07 100644
+--- a/fs/pstore/platform.c
++++ b/fs/pstore/platform.c
+@@ -62,12 +62,12 @@ static void pstore_dowork(struct work_struct *);
+ static DECLARE_WORK(pstore_work, pstore_dowork);
+ 
+ /*
+- * psinfo_lock protects "psinfo" during calls to
++ * psback_lock protects "psback" during calls to
+  * pstore_register(), pstore_unregister(), and
+  * the filesystem mount/unmount routines.
+  */
+-static DEFINE_MUTEX(psinfo_lock);
+-struct pstore_info *psinfo;
++DEFINE_MUTEX(psback_lock);
++struct pstore_backends *psback;
+ 
+ static char *backend;
+ module_param(backend, charp, 0444);
+@@ -104,7 +104,7 @@ static void *compress_workspace;
+  */
+ #define DMESG_COMP_PERCENT	60
+ 
+-static char *big_oops_buf;
++static char *big_oops_buf[PSTORE_BACKEND_NUM];
+ static size_t max_compressed_size;
+ 
+ void pstore_set_kmsg_bytes(int bytes)
+@@ -201,7 +201,7 @@ static int pstore_compress(const void *in, void *out,
+ 	return zstream.total_out;
+ }
+ 
+-static void allocate_buf_for_compression(void)
++static void allocate_buf_for_compression(struct pstore_info *psinfo, int pos)
+ {
+ 	size_t compressed_size;
+ 	char *buf;
+@@ -241,21 +241,21 @@ static void allocate_buf_for_compression(void)
+ 	}
+ 
+ 	/* A non-NULL big_oops_buf indicates compression is available. */
+-	big_oops_buf = buf;
++	big_oops_buf[pos] = buf;
+ 	max_compressed_size = compressed_size;
+ 
+ 	pr_info("Using crash dump compression: %s\n", compress);
+ }
+ 
+-static void free_buf_for_compression(void)
++static void free_buf_for_compression(int pos)
+ {
+ 	if (IS_ENABLED(CONFIG_PSTORE_COMPRESS) && compress_workspace) {
+ 		vfree(compress_workspace);
+ 		compress_workspace = NULL;
+ 	}
+ 
+-	kvfree(big_oops_buf);
+-	big_oops_buf = NULL;
++	kvfree(big_oops_buf[pos]);
++	big_oops_buf[pos] = NULL;
+ 	max_compressed_size = 0;
+ }
+ 
+@@ -274,8 +274,9 @@ void pstore_record_init(struct pstore_record *record,
+  * callback from kmsg_dump. Save as much as we can (up to kmsg_bytes) from the
+  * end of the buffer.
+  */
+-static void pstore_dump(struct kmsg_dumper *dumper,
+-			enum kmsg_dump_reason reason)
++static void pstore_do_dump(struct kmsg_dumper *dumper,
++			enum kmsg_dump_reason reason,
++			struct pstore_info *psinfo, int pos)
+ {
+ 	struct kmsg_dump_iter iter;
+ 	unsigned long	total = 0;
+@@ -315,7 +316,7 @@ static void pstore_dump(struct kmsg_dumper *dumper,
+ 		record.part = part;
+ 		record.buf = psinfo->buf;
+ 
+-		dst = big_oops_buf ?: psinfo->buf;
++		dst = big_oops_buf[pos] ?: psinfo->buf;
+ 		dst_size = max_compressed_size ?: psinfo->bufsize;
+ 
+ 		/* Write dump header. */
+@@ -328,7 +329,7 @@ static void pstore_dump(struct kmsg_dumper *dumper,
+ 					  dst_size, &dump_size))
+ 			break;
+ 
+-		if (big_oops_buf) {
++		if (big_oops_buf[pos]) {
+ 			zipped_len = pstore_compress(dst, psinfo->buf,
+ 						header_size + dump_size,
+ 						psinfo->bufsize);
+@@ -372,6 +373,19 @@ static void pstore_dump(struct kmsg_dumper *dumper,
+ 	}
+ }
+ 
++static void pstore_dump(struct kmsg_dumper *dumper,
++			enum kmsg_dump_reason reason)
++{
++	struct pstore_info_list *entry;
++
++	rcu_read_lock();
++	list_for_each_entry_rcu(entry, &psback->list_entry, list)
++		if (entry->psi->flags & PSTORE_FLAGS_DMESG)
++			pstore_do_dump(dumper, reason,
++				       entry->psi, entry->index);
++	rcu_read_unlock();
++}
++
+ static struct kmsg_dumper pstore_dumper = {
+ 	.dump = pstore_dump,
+ };
+@@ -390,13 +404,11 @@ static void pstore_unregister_kmsg(void)
+ }
+ 
+ #ifdef CONFIG_PSTORE_CONSOLE
+-static void pstore_console_write(struct console *con, const char *s, unsigned c)
++static void pstore_console_do_write(struct console *con, const char *s,
++				    unsigned c, struct pstore_info *psinfo)
+ {
+ 	struct pstore_record record;
+ 
+-	if (!c)
+-		return;
+-
+ 	pstore_record_init(&record, psinfo);
+ 	record.type = PSTORE_TYPE_CONSOLE;
+ 
+@@ -405,6 +417,21 @@ static void pstore_console_write(struct console *con, const char *s, unsigned c)
+ 	psinfo->write(&record);
+ }
+ 
++static void pstore_console_write(struct console *con, const char *s,
++				 unsigned int c)
++{
++	struct pstore_info_list *entry;
++
++	if (!c)
++		return;
++
++	rcu_read_lock();
++	list_for_each_entry_rcu(entry, &psback->list_entry, list)
++		if (entry->psi->flags & PSTORE_FLAGS_CONSOLE)
++			pstore_console_do_write(con, s, c, entry->psi);
++	rcu_read_unlock();
++}
++
+ static struct console pstore_console = {
+ 	.write	= pstore_console_write,
+ 	.index	= -1,
+@@ -413,7 +440,7 @@ static struct console pstore_console = {
+ static void pstore_register_console(void)
+ {
+ 	/* Show which backend is going to get console writes. */
+-	strscpy(pstore_console.name, psinfo->name,
++	strscpy(pstore_console.name, "pstore console",
+ 		sizeof(pstore_console.name));
+ 	/*
+ 	 * Always initialize flags here since prior unregister_console()
+@@ -464,12 +491,15 @@ static int pstore_write_user_compat(struct pstore_record *record,
+  */
+ int pstore_register(struct pstore_info *psi)
+ {
++	struct pstore_info_list *entry;
++	struct pstore_info_list *newpsi;
+ 	char *new_backend;
+ 
+-	if (backend && strcmp(backend, psi->name)) {
+-		pr_warn("backend '%s' already in use: ignoring '%s'\n",
+-			backend, psi->name);
+-		return -EBUSY;
++	/* backend has to be enabled for going on registering */
++	if (backend && !strstr(backend, psi->name) &&
++	    strcmp(backend, "all")) {
++		pr_warn("backend '%s' not enabled\n", psi->name);
++		return -EINVAL;
+ 	}
+ 
+ 	/* Sanity check flags. */
+@@ -486,79 +516,118 @@ int pstore_register(struct pstore_info *psi)
+ 		return -EINVAL;
+ 	}
+ 
+-	new_backend = kstrdup(psi->name, GFP_KERNEL);
+-	if (!new_backend)
+-		return -ENOMEM;
+-
+-	mutex_lock(&psinfo_lock);
+-	if (psinfo) {
+-		pr_warn("backend '%s' already loaded: ignoring '%s'\n",
+-			psinfo->name, psi->name);
+-		mutex_unlock(&psinfo_lock);
+-		kfree(new_backend);
+-		return -EBUSY;
++	mutex_lock(&psback_lock);
++
++	/*
++	 * If no backend specified, first come first served to
++	 * maintain backward compatibility
++	 */
++	if (!backend) {
++		pr_warn("no backend enabled, registering backend '%s'\n",
++			psi->name);
++		new_backend = kstrdup(psi->name, GFP_KERNEL);
++		if (!new_backend) {
++			mutex_unlock(&psback_lock);
++			return -ENOMEM;
++		}
++	}
++
++	if (psback) {
++		if (psback->flag == PSTORE_LIST_FULL) {
++			pr_warn("backend registration space is used up: "
++				"ignoring '%s'\n", psi->name);
++			mutex_unlock(&psback_lock);
++			return -EBUSY;
++		}
++		list_for_each_entry(entry, &psback->list_entry, list) {
++			if (strcmp(entry->psi->name, psi->name) == 0) {
++				pr_warn("backend '%s' already loaded\n",
++					psi->name);
++				mutex_unlock(&psback_lock);
++				return -EPERM;
++			}
++		}
++	} else {
++		psback = kzalloc(sizeof(*psback), GFP_KERNEL);
++		INIT_LIST_HEAD(&psback->list_entry);
+ 	}
+ 
+ 	if (!psi->write_user)
+ 		psi->write_user = pstore_write_user_compat;
+-	psinfo = psi;
+-	mutex_init(&psinfo->read_mutex);
+-	spin_lock_init(&psinfo->buf_lock);
++	newpsi = kzalloc(sizeof(*newpsi), GFP_KERNEL);
++	newpsi->psi = psi;
++	newpsi->index = ffz(psback->flag);
++	psback->flag |= (1 << newpsi->index);
++
++	mutex_init(&psi->read_mutex);
++	spin_lock_init(&psi->buf_lock);
++
++	if (psi->flags & PSTORE_FLAGS_DMESG &&
++	    !psback->front_cnt[PSTORE_TYPE_DMESG])
++		allocate_buf_for_compression(psi, newpsi->index);
+ 
+-	if (psi->flags & PSTORE_FLAGS_DMESG)
+-		allocate_buf_for_compression();
++	pstore_get_records(psi, 0);
+ 
+-	pstore_get_records(0);
++	list_add_rcu(&newpsi->list, &psback->list_entry);
+ 
+-	if (psi->flags & PSTORE_FLAGS_DMESG) {
+-		pstore_dumper.max_reason = psinfo->max_reason;
++	if (psi->flags & PSTORE_FLAGS_DMESG &&
++	    !psback->front_cnt[PSTORE_TYPE_DMESG]++) {
++		pstore_dumper.max_reason = psi->max_reason;
+ 		pstore_register_kmsg();
+ 	}
+-	if (psi->flags & PSTORE_FLAGS_CONSOLE)
++	if (psi->flags & PSTORE_FLAGS_CONSOLE
++	    && !psback->front_cnt[PSTORE_TYPE_CONSOLE]++)
+ 		pstore_register_console();
+-	if (psi->flags & PSTORE_FLAGS_FTRACE)
++	if (psi->flags & PSTORE_FLAGS_FTRACE &&
++	    !psback->front_cnt[PSTORE_TYPE_FTRACE]++)
+ 		pstore_register_ftrace();
+-	if (psi->flags & PSTORE_FLAGS_PMSG)
++	if (psi->flags & PSTORE_FLAGS_PMSG &&
++	    !psback->front_cnt[PSTORE_TYPE_PMSG]++)
+ 		pstore_register_pmsg();
+ 
+ 	/* Start watching for new records, if desired. */
+ 	pstore_timer_kick();
+ 
+ 	/*
+-	 * Update the module parameter backend, so it is visible
++	 * When module parameter backend is not specified,
++	 * update the module parameter backend, so it is visible
+ 	 * through /sys/module/pstore/parameters/backend
+ 	 */
+-	backend = new_backend;
++	if (!backend)
++		backend = new_backend;
+ 
+ 	pr_info("Registered %s as persistent store backend\n", psi->name);
+ 
+-	mutex_unlock(&psinfo_lock);
++	mutex_unlock(&psback_lock);
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(pstore_register);
+ 
+ void pstore_unregister(struct pstore_info *psi)
+ {
++	struct pstore_info_list *entry;
+ 	/* It's okay to unregister nothing. */
+ 	if (!psi)
+ 		return;
+ 
+-	mutex_lock(&psinfo_lock);
+-
+-	/* Only one backend can be registered at a time. */
+-	if (WARN_ON(psi != psinfo)) {
+-		mutex_unlock(&psinfo_lock);
++	/* Can not unregister an unenabled backend*/
++	if (WARN_ON(!strstr(backend, psi->name) && strcmp(backend, "all")))
+ 		return;
+-	}
++
++	mutex_lock(&psback_lock);
+ 
+ 	/* Unregister all callbacks. */
+-	if (psi->flags & PSTORE_FLAGS_PMSG)
++	if (psi->flags & PSTORE_FLAGS_PMSG &&
++	    !--psback->front_cnt[PSTORE_TYPE_PMSG])
+ 		pstore_unregister_pmsg();
+-	if (psi->flags & PSTORE_FLAGS_FTRACE)
++	if (psi->flags & PSTORE_FLAGS_FTRACE &&
++	    !--psback->front_cnt[PSTORE_TYPE_FTRACE])
+ 		pstore_unregister_ftrace();
+-	if (psi->flags & PSTORE_FLAGS_CONSOLE)
++	if (psi->flags & PSTORE_FLAGS_CONSOLE &&
++	    !--psback->front_cnt[PSTORE_TYPE_CONSOLE])
+ 		pstore_unregister_console();
+-	if (psi->flags & PSTORE_FLAGS_DMESG)
++	if (psi->flags & PSTORE_FLAGS_DMESG &&
++	    !--psback->front_cnt[PSTORE_TYPE_DMESG])
+ 		pstore_unregister_kmsg();
+ 
+ 	/* Stop timer and make sure all work has finished. */
+@@ -568,19 +637,30 @@ void pstore_unregister(struct pstore_info *psi)
+ 	/* Remove all backend records from filesystem tree. */
+ 	pstore_put_backend_records(psi);
+ 
+-	free_buf_for_compression();
++	list_for_each_entry(entry, &psback->list_entry, list) {
++		if (entry->psi == psi) {
++			list_del_rcu(&entry->list);
++			psback->flag ^= 1 << entry->index;
++			synchronize_rcu();
++			free_buf_for_compression(entry->index);
++			kfree(entry);
++			break;
++		}
++	}
+ 
+-	psinfo = NULL;
+-	kfree(backend);
+-	backend = NULL;
++	if (psback->flag == PSOTRE_LIST_EMPTY) {
++		kfree(psback);
++		psback = NULL;
++	}
+ 
+ 	pr_info("Unregistered %s as persistent store backend\n", psi->name);
+-	mutex_unlock(&psinfo_lock);
++	mutex_unlock(&psback_lock);
+ }
+ EXPORT_SYMBOL_GPL(pstore_unregister);
+ 
+ static void decompress_record(struct pstore_record *record,
+-			      struct z_stream_s *zstream)
++			      struct z_stream_s *zstream,
++			      struct pstore_info *psinfo)
+ {
+ 	int ret;
+ 	int unzipped_len;
+@@ -697,7 +777,7 @@ void pstore_get_backend_records(struct pstore_info *psi,
+ 			break;
+ 		}
+ 
+-		decompress_record(record, &zstream);
++		decompress_record(record, &zstream, psi);
+ 		rc = pstore_mkfile(root, record);
+ 		if (rc) {
+ 			/* pstore_mkfile() did not take record, so free it. */
+@@ -729,7 +809,12 @@ void pstore_get_backend_records(struct pstore_info *psi,
+ 
+ static void pstore_dowork(struct work_struct *work)
+ {
+-	pstore_get_records(1);
++	struct pstore_info_list *entry;
++
++	mutex_lock(&psback_lock);
++	list_for_each_entry(entry, &psback->list_entry, list)
++		pstore_get_records(entry->psi, 1);
++	mutex_unlock(&psback_lock);
+ }
+ 
+ static void pstore_timefunc(struct timer_list *unused)
+@@ -745,11 +830,15 @@ static void pstore_timefunc(struct timer_list *unused)
+ static int __init pstore_init(void)
+ {
+ 	int ret;
++	struct pstore_info_list *entry;
+ 
+ 	ret = pstore_init_fs();
+-	if (ret)
+-		free_buf_for_compression();
+-
++	if (ret) {
++		mutex_lock(&psback_lock);
++		list_for_each_entry(entry, &psback->list_entry, list)
++			free_buf_for_compression(entry->index);
++		mutex_unlock(&psback_lock);
++	}
+ 	return ret;
+ }
+ late_initcall(pstore_init);
+diff --git a/fs/pstore/pmsg.c b/fs/pstore/pmsg.c
+index 55f139afa327..9d5b8602e273 100644
+--- a/fs/pstore/pmsg.c
++++ b/fs/pstore/pmsg.c
+@@ -11,8 +11,9 @@
+ 
+ static DEFINE_MUTEX(pmsg_lock);
+ 
+-static ssize_t write_pmsg(struct file *file, const char __user *buf,
+-			  size_t count, loff_t *ppos)
++static ssize_t do_write_pmsg(struct file *file, const char __user *buf,
++			     size_t count, loff_t *ppos,
++			     struct pstore_info *psinfo)
+ {
+ 	struct pstore_record record;
+ 	int ret;
+@@ -34,6 +35,25 @@ static ssize_t write_pmsg(struct file *file, const char __user *buf,
+ 	return ret ? ret : count;
+ }
+ 
++static ssize_t write_pmsg(struct file *file, const char __user *buf,
++			  size_t count, loff_t *ppos)
++{
++	int ret, _ret;
++	struct pstore_info_list *entry;
++
++	mutex_lock(&psback_lock);
++	list_for_each_entry(entry, &psback->list_entry, list) {
++		if (entry->psi->flags & PSTORE_FLAGS_PMSG) {
++			_ret = do_write_pmsg(file, buf, count,
++					     ppos, entry->psi);
++			ret = ret > _ret ? ret : _ret;
++		}
++	}
++	mutex_unlock(&psback_lock);
++
++	return ret;
++}
++
+ static const struct file_operations pmsg_fops = {
+ 	.owner		= THIS_MODULE,
+ 	.llseek		= noop_llseek,
+diff --git a/include/linux/pstore.h b/include/linux/pstore.h
+index 638507a3c8ff..0d2be20c8929 100644
+--- a/include/linux/pstore.h
++++ b/include/linux/pstore.h
+@@ -201,6 +201,35 @@ struct pstore_info {
+ 	int		(*erase)(struct pstore_record *record);
+ };
+ 
++/* Supported multibackends */
++#define PSTORE_MAX_BACKEND_LENGTH 100
++#define PSTORE_BACKEND_NUM 16
++
++#define PSTORE_LIST_FULL (BIT(PSTORE_BACKEND_NUM) - 1)
++#define PSOTRE_LIST_EMPTY 0
++
++extern struct mutex psback_lock;
++
++struct pstore_info_list {
++	struct pstore_info *psi;
++	struct list_head list;
++	int index;
++};
++
++/**
++ * struct pstore_backends - management of pstore backends
++ * @list_entry:	entry of pstore backend driver information list
++ * @front_cnt:	count of each enabled frontend
++ * @flag:	bitmap of enabled pstore backend
++ *
++ */
++
++struct pstore_backends {
++	struct list_head list_entry;
++	int front_cnt[PSTORE_TYPE_MAX];
++	u16 flag;
++};
++
+ /* Supported frontends */
+ #define PSTORE_FLAGS_DMESG	BIT(0)
+ #define PSTORE_FLAGS_CONSOLE	BIT(1)
+-- 
+2.39.3
 
 
