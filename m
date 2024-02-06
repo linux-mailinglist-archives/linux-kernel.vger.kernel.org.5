@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-54740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54741-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73CE084B314
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:07:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75AB484B316
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:08:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 089D91F24897
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:07:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 677F2B26CC3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:08:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7DC8130AE2;
-	Tue,  6 Feb 2024 11:05:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9541130AFF;
+	Tue,  6 Feb 2024 11:05:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UGTxcVLx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XfNv2wNL"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5A26130AD3;
-	Tue,  6 Feb 2024 11:05:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7850130AF2;
+	Tue,  6 Feb 2024 11:05:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707217555; cv=none; b=imfEcmbWovZkCAyHb88spnYbHFt4PoWi+Z0FOf8y0NfdNuc/ZLf0g42yCdXydzZOhiquRuHzvZtQ/OX9Mj3l4WOJhS2eODuuqnkfvzBxqnh9NT+E8SIUT2bW9RCqzXL3imBQeDiVqoG20s9bEO4msKViBCzmvEuFDfCX30tja10=
+	t=1707217558; cv=none; b=hF+ek1yDNxbQryoDfwkH5coFcG2GxlrrGRCA1aVOfWbR2z54oUpbGxY8vVdL0AQ+QLHtwyIBnNZRLtboC79+LFOtSiTvc6afPYAMlf1vb65Spg0vciEZfLBlqqj/3OKq58iGtDljvNWQhzGB+xIL+lSza6oPfFGej+wdqzbWECs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707217555; c=relaxed/simple;
-	bh=rDmpciVOtng6F7rfQEs1JlIM6VsqeY8XNBiItpt3u0o=;
+	s=arc-20240116; t=1707217558; c=relaxed/simple;
+	bh=oBgtkf5GsR7oInvTgvXmuuezLk03GfOH/+6u6oZvCho=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fOaut82lchQs/3UPZS4znraoxV/7XrqqXhEiqYXqQyETEFmF3fN1YwpSijDBg4/Iqn5CV6hUtpjFk3S5P9vKnZDGpe65uDqHfsFdl+2i1V8zte6DsGoogQCEvcx8PyXAt6H/ASguN5CBMthxXxHLGfc3HXMSzZtGW6NSH6qjxfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UGTxcVLx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB4DBC433B1;
-	Tue,  6 Feb 2024 11:05:51 +0000 (UTC)
+	 MIME-Version; b=kSabcQ/qDLBbaDuc42kcGdTo4SK7BFblGdz7Wvr4zxYiiOmyGiDEjUd+5QRrbUAWEJ9I7shaIxEHCJhYJ7vS8udnVAbcpYicVPIIQmi6b8wfmaR1ot+nx5GQ2+udwHkuocboekKCaiWm5X54oP4I5lembpuF4JkMhfSXttPFloc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XfNv2wNL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE566C433F1;
+	Tue,  6 Feb 2024 11:05:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707217554;
-	bh=rDmpciVOtng6F7rfQEs1JlIM6VsqeY8XNBiItpt3u0o=;
+	s=k20201202; t=1707217557;
+	bh=oBgtkf5GsR7oInvTgvXmuuezLk03GfOH/+6u6oZvCho=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UGTxcVLx1FDdDingKcw57Mv7aaoCD1DBkey/KBRNxqwFqI5QwnsMNNwYez38KWT1R
-	 iGjKkGNQUJNL/0H0PC5LaijC5i3ai+UsENlOe8KWHw3JKg96rieo1KNV+6wAJWqXcF
-	 sQiHZXTr3horKlqnshJ8Eb+X/NizW/Do2rH7G1xpRsBK02xDSiA6tjSJgE5cb9G8Ib
-	 9bd/jHhQOfvZl7cfBoq676uY8FKex0PjODw/MRHbfbkk9qTirD+f2FWGtWD7vdQcVa
-	 Lajc++Ir9dNnkvvN2q2vaYB/14qDS7BWOaB98fKvT67NgER85qbQr7xq2jWSyIJyn/
-	 7IyhHwftf8hOQ==
+	b=XfNv2wNLBieC8aH78hNfv/GOF8mA9hhZmEPpD6sAgcVmpsetChkXkZxAQjZA8W/qB
+	 vq3e7vtbYLs9eWyE75mfegnu/BIje/RaSfhfkG3Z1lop7paRAhULue7h6ecnY7Ixj0
+	 4B4MIuqKYCqSdKbDx17zLMT+Q29oXRv6HpBrMnOMoeS+EipoolxR4oVoskghah3u3z
+	 zLPCI2iJO+c47fgM+nRJ2KETK5hbRdcunESQpSxzAgExHiEnoWLbj5WYUDYzhLxVf1
+	 hG0SEV0+v1h4yPYRixQHCHsap/5qDGLSe9LdB8BBsvW3LydH85CwtgNTJHgKhF8D+t
+	 ly5UkWT4NfseA==
 From: Daniel Bristot de Oliveira <bristot@kernel.org>
 To: Steven Rostedt <rostedt@goodmis.org>
 Cc: Daniel Bristot de Oliveira <bristot@kernel.org>,
@@ -53,9 +53,9 @@ Cc: Daniel Bristot de Oliveira <bristot@kernel.org>,
 	linux-trace-kernel@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	llvm@lists.linux.dev
-Subject: [PATCH 4/6] tools/rtla: Remove unused sched_getattr() function
-Date: Tue,  6 Feb 2024 12:05:32 +0100
-Message-ID: <eaed7ba122c4ae88ce71277c824ef41cbf789385.1707217097.git.bristot@kernel.org>
+Subject: [PATCH 5/6] tools/rv: Fix Makefile compiler options for clang
+Date: Tue,  6 Feb 2024 12:05:33 +0100
+Message-ID: <ed94a8ddc2ca8c8ef663cfb7ae9dd196c4a66b33.1707217097.git.bristot@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1707217097.git.bristot@kernel.org>
 References: <cover.1707217097.git.bristot@kernel.org>
@@ -67,42 +67,58 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Clang is reporting:
+The following errors are showing up when compiling rv with clang:
 
-$ make HOSTCC=clang CC=clang LLVM_IAS=1
-[...]
-clang -O -g -DVERSION=\"6.8.0-rc3\" -flto=auto -fexceptions -fstack-protector-strong -fasynchronous-unwind-tables -fstack-clash-protection  -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS $(pkg-config --cflags libtracefs)    -c -o src/utils.o src/utils.c
-src/utils.c:241:19: warning: unused function 'sched_getattr' [-Wunused-function]
-  241 | static inline int sched_getattr(pid_t pid, struct sched_attr *attr,
-      |                   ^~~~~~~~~~~~~
-1 warning generated.
+ $ make HOSTCC=clang CC=clang LLVM_IAS=1
+ [...]
+  clang -O -g -DVERSION=\"6.8.0-rc1\" -flto=auto -ffat-lto-objects
+  -fexceptions -fstack-protector-strong -fasynchronous-unwind-tables
+  -fstack-clash-protection  -Wall -Werror=format-security
+  -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS
+  -Wno-maybe-uninitialized $(pkg-config --cflags libtracefs)
+  -I include   -c -o src/utils.o src/utils.c
+  clang: warning: optimization flag '-ffat-lto-objects' is not supported [-Wignored-optimization-argument]
+  warning: unknown warning option '-Wno-maybe-uninitialized'; did you mean '-Wno-uninitialized'? [-Wunknown-warning-option]
+  1 warning generated.
 
-Which is correct, so remove the unused function.
+  clang -o rv -ggdb  src/in_kernel.o src/rv.o src/trace.o src/utils.o $(pkg-config --libs libtracefs)
+  src/in_kernel.o: file not recognized: file format not recognized
+  clang: error: linker command failed with exit code 1 (use -v to see invocation)
+  make: *** [Makefile:110: rv] Error 1
+
+Solve these issues by:
+  - removing -ffat-lto-objects and -Wno-maybe-uninitialized if using clang
+  - informing the linker about -flto=auto
 
 Cc: stable@vger.kernel.org
-Fixes: b1696371d865 ("rtla: Helper functions for rtla")
+Fixes: 4bc4b131d44c ("rv: Add rv tool")
+Suggested-by: Donald Zickus <dzickus@redhat.com>
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- tools/tracing/rtla/src/utils.c | 6 ------
- 1 file changed, 6 deletions(-)
+ tools/verification/rv/Makefile | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
-index b998b24edf1e..5fcd6495ff05 100644
---- a/tools/tracing/rtla/src/utils.c
-+++ b/tools/tracing/rtla/src/utils.c
-@@ -238,12 +238,6 @@ static inline int sched_setattr(pid_t pid, const struct sched_attr *attr,
- 	return syscall(__NR_sched_setattr, pid, attr, flags);
- }
+diff --git a/tools/verification/rv/Makefile b/tools/verification/rv/Makefile
+index 3d0f3888a58c..485f8aeddbe0 100644
+--- a/tools/verification/rv/Makefile
++++ b/tools/verification/rv/Makefile
+@@ -28,10 +28,15 @@ FOPTS	:=	-flto=auto -ffat-lto-objects -fexceptions -fstack-protector-strong \
+ 		-fasynchronous-unwind-tables -fstack-clash-protection
+ WOPTS	:= 	-Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -Wno-maybe-uninitialized
  
--static inline int sched_getattr(pid_t pid, struct sched_attr *attr,
--				unsigned int size, unsigned int flags)
--{
--	return syscall(__NR_sched_getattr, pid, attr, size, flags);
--}
--
- int __set_sched_attr(int pid, struct sched_attr *attr)
- {
- 	int flags = 0;
++ifeq ($(CC),clang)
++  FOPTS := $(filter-out -ffat-lto-objects, $(FOPTS))
++  WOPTS := $(filter-out -Wno-maybe-uninitialized, $(WOPTS))
++endif
++
+ TRACEFS_HEADERS	:= $$($(PKG_CONFIG) --cflags libtracefs)
+ 
+ CFLAGS	:=	-O -g -DVERSION=\"$(VERSION)\" $(FOPTS) $(MOPTS) $(WOPTS) $(TRACEFS_HEADERS) $(EXTRA_CFLAGS) -I include
+-LDFLAGS	:=	-ggdb $(EXTRA_LDFLAGS)
++LDFLAGS	:=	-flto=auto -ggdb $(EXTRA_LDFLAGS)
+ LIBS	:=	$$($(PKG_CONFIG) --libs libtracefs)
+ 
+ SRC	:=	$(wildcard src/*.c)
 -- 
 2.43.0
 
