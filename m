@@ -1,61 +1,70 @@
-Return-Path: <linux-kernel+bounces-55142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7165484B85F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:50:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C71A484B893
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:56:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4DA41C23FC9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:50:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFAF01C24514
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:56:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 866A8132C39;
-	Tue,  6 Feb 2024 14:50:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 866AA134724;
+	Tue,  6 Feb 2024 14:54:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="kLFOOydV"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jA8jF/7M"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7ED31E4BE;
-	Tue,  6 Feb 2024 14:50:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C43F1339A2;
+	Tue,  6 Feb 2024 14:54:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707231024; cv=none; b=ZLq5JClHXDOvF1O4Phd791iZAht+njlIPCDlOY+ehsD3ylI/X/0mQ+ItgNPZcfvDz7O6mao99iddl8yNnfRrhstupKLT5oFcsOnu1DLu2EauVPobJm14cmodz+2WaJPW27tGZpxGqiYlvfvhSD6ieSF7dcQPdgsT02SAvkZuuWw=
+	t=1707231297; cv=none; b=XHis8+ps0njDvKxH3BCYYFZ4zezfazuMzAI+CSCqS2E4KXeWnkY0xlY0SEco1IOm1g7wJwURcE475ekV0O+ibJzqeAFSQqeTjbpj6QidShAG620GpIACzp/K5IAwfeLx4pjOeufEUgTmJ4cjkAKzY2Y2IDgCsFuy/d7VuuQrQ4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707231024; c=relaxed/simple;
-	bh=TRNOZ2E0jVFr1j4Jk3WeOB19Tmkl0WCO11cXpH5xx0c=;
+	s=arc-20240116; t=1707231297; c=relaxed/simple;
+	bh=lOr+XGR2hJml6WGSq7dut5XfAyTVuZ4y58BVDSiEjas=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uLehfM0Tm/ri9VGKbGbGne2qY3konLpMXzCtKnFbP9yzWeW0U0FzFJxCWO66irpNJkCcjfDyygqDAwn/qIP+50BiBOmG8pjNAM8SehKqoX9T+a3NaDuqpyaE7Bji0aCzRlMDD5fC6JW6TKxyuWWVGRGTxU0xKrVXzjiyJVE053w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=kLFOOydV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 742AAC433C7;
-	Tue,  6 Feb 2024 14:50:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1707231024;
-	bh=TRNOZ2E0jVFr1j4Jk3WeOB19Tmkl0WCO11cXpH5xx0c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kLFOOydVz8hY/tZlvFGGUr5yxRLIh5a3MMj5zIRocdMkLDC1jdALkpy9OA3M9F8lD
-	 uRpBnMXQLY+8ovJ86Mu/N+WBHiVZCawbZRCXM749gkLpVYkyUjNoqP4OZx2B7X+6le
-	 95uqhpXCNWzr+Hy9rLJ6CQwMVmoMMdIisEZbF31o=
-Date: Tue, 6 Feb 2024 14:50:21 +0000
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
-	mathias.nyman@intel.com, perex@perex.cz, conor+dt@kernel.org,
-	corbet@lwn.net, lgirdwood@gmail.com, andersson@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, Thinh.Nguyen@synopsys.com,
-	broonie@kernel.org, bgoswami@quicinc.com, tiwai@suse.com,
-	robh+dt@kernel.org, konrad.dybcio@linaro.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
-	alsa-devel@alsa-project.org
-Subject: Re: [PATCH v13 32/53] ALSA: usb-audio: Check for support for
- requested audio format
-Message-ID: <2024020617-limb-name-f852@gregkh>
-References: <20240203023645.31105-1-quic_wcheng@quicinc.com>
- <20240203023645.31105-33-quic_wcheng@quicinc.com>
- <87wmrhvir7.wl-tiwai@suse.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Dx44NmUNbghg81i12tqjwjJqWgCrVqJKKqDqS8ymgdaAqi+BtDe/VIofwoPkc+Uo4BaaH4Hodu3nRyQuX4OdUkwAcXEPZLsAbiGuKX4I+ulolRiTBrlk5sn5D6E8K6UBe2OeHufAA/MbOa8O0eVxjknmCZKbxAjT9AxCLC9I/VU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jA8jF/7M; arc=none smtp.client-ip=192.55.52.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707231296; x=1738767296;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=lOr+XGR2hJml6WGSq7dut5XfAyTVuZ4y58BVDSiEjas=;
+  b=jA8jF/7ME2N9ead1vl+9g0/PtcsbYnGBpxzkFF+GFmUaLaGlQQ5BOIUn
+   m415YyPfB05LXzZeqvtr5F/jbdBjNUo2ctzfSvL4mKJfwTzv9eSpjeKBg
+   wfJEHCHoYBCqXA9UDDgYU34KnQFHt7Mzd1f+NTwzH28o+9J/XCOBLMKGG
+   tXJAQZUKGoudxcykkpflvTofb28EV9v8b4cmGtgkmW2sdLrujcA8kK7WH
+   R6yy2lJjFMKPp70qUZrUHE42JG2jpL/mKk8VlKMqpNjHU/D5gQtX4gY9p
+   II0NjEYysKxEXaYEoH4xwTEOBBvBLIwodajbqpIyciNhjOYS06sSSKheM
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="435901069"
+X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
+   d="scan'208";a="435901069"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 06:54:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
+   d="scan'208";a="1067177"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by orviesa010.jf.intel.com with ESMTP; 06 Feb 2024 06:54:50 -0800
+Date: Tue, 6 Feb 2024 22:51:14 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, David Matlack <dmatlack@google.com>,
+	Pattara Teerapong <pteerapong@google.com>
+Subject: Re: [PATCH 6/8] KVM: x86/mmu: Check for usable TDP MMU root while
+ holding mmu_lock for read
+Message-ID: <ZcJHYtMZsQHInVEI@yilunxu-OptiPlex-7050>
+References: <20240111020048.844847-1-seanjc@google.com>
+ <20240111020048.844847-7-seanjc@google.com>
+ <ZcIFTkWaTqItQPsj@yilunxu-OptiPlex-7050>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,77 +73,177 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87wmrhvir7.wl-tiwai@suse.de>
+In-Reply-To: <ZcIFTkWaTqItQPsj@yilunxu-OptiPlex-7050>
 
-On Tue, Feb 06, 2024 at 02:12:44PM +0100, Takashi Iwai wrote:
-> On Sat, 03 Feb 2024 03:36:24 +0100,
-> Wesley Cheng wrote:
+On Tue, Feb 06, 2024 at 06:09:18PM +0800, Xu Yilun wrote:
+> On Wed, Jan 10, 2024 at 06:00:46PM -0800, Sean Christopherson wrote:
+> > When allocating a new TDP MMU root, check for a usable root while holding
+> > mmu_lock for read and only acquire mmu_lock for write if a new root needs
+> > to be created.  There is no need to serialize other MMU operations if a
+> > vCPU is simply grabbing a reference to an existing root, holding mmu_lock
+> > for write is "necessary" (spoiler alert, it's not strictly necessary) only
+> > to ensure KVM doesn't end up with duplicate roots.
 > > 
-> > Allow for checks on a specific USB audio device to see if a requested PCM
-> > format is supported.  This is needed for support when playback is
-> > initiated by the ASoC USB backend path.
+> > Allowing vCPUs to get "new" roots in parallel is beneficial to VM boot and
+> > to setups that frequently delete memslots, i.e. which force all vCPUs to
+> > reload all roots.
 > > 
-> > Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> >  arch/x86/kvm/mmu/mmu.c     |  8 ++---
+> >  arch/x86/kvm/mmu/tdp_mmu.c | 60 +++++++++++++++++++++++++++++++-------
+> >  arch/x86/kvm/mmu/tdp_mmu.h |  2 +-
+> >  3 files changed, 55 insertions(+), 15 deletions(-)
+> > 
+> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > index 3c844e428684..ea18aca23196 100644
+> > --- a/arch/x86/kvm/mmu/mmu.c
+> > +++ b/arch/x86/kvm/mmu/mmu.c
+> > @@ -3693,15 +3693,15 @@ static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
+> >  	unsigned i;
+> >  	int r;
+> >  
+> > +	if (tdp_mmu_enabled)
+> > +		return kvm_tdp_mmu_alloc_root(vcpu);
+> > +
+> >  	write_lock(&vcpu->kvm->mmu_lock);
+> >  	r = make_mmu_pages_available(vcpu);
+> >  	if (r < 0)
+> >  		goto out_unlock;
+> >  
+> > -	if (tdp_mmu_enabled) {
+> > -		root = kvm_tdp_mmu_get_vcpu_root_hpa(vcpu);
+> > -		mmu->root.hpa = root;
+> > -	} else if (shadow_root_level >= PT64_ROOT_4LEVEL) {
+> > +	if (shadow_root_level >= PT64_ROOT_4LEVEL) {
+> >  		root = mmu_alloc_root(vcpu, 0, 0, shadow_root_level);
+> >  		mmu->root.hpa = root;
+> >  	} else if (shadow_root_level == PT32E_ROOT_LEVEL) {
+> > diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> > index e0a8343f66dc..9a8250a14fc1 100644
+> > --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> > +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> > @@ -223,21 +223,52 @@ static void tdp_mmu_init_child_sp(struct kvm_mmu_page *child_sp,
+> >  	tdp_mmu_init_sp(child_sp, iter->sptep, iter->gfn, role);
+> >  }
+> >  
+> > -hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu)
+> > +static struct kvm_mmu_page *kvm_tdp_mmu_try_get_root(struct kvm_vcpu *vcpu)
+> >  {
+> >  	union kvm_mmu_page_role role = vcpu->arch.mmu->root_role;
+> > +	int as_id = kvm_mmu_role_as_id(role);
+> >  	struct kvm *kvm = vcpu->kvm;
+> >  	struct kvm_mmu_page *root;
+> >  
+> > -	lockdep_assert_held_write(&kvm->mmu_lock);
+> > -
+> > -	/* Check for an existing root before allocating a new one. */
+> > -	for_each_valid_tdp_mmu_root(kvm, root, kvm_mmu_role_as_id(role)) {
+> > -		if (root->role.word == role.word &&
+> > -		    kvm_tdp_mmu_get_root(root))
+> > -			goto out;
+> > +	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, as_id) {
 > 
-> Just cosmetic:
+> No lock yielding attempt in this loop, why change to _yield_safe version?
+
+Oh, I assume you just want to early exit the loop with the reference to
+root hold.  But I feel it makes harder for us to have a clear
+understanding of the usage of _yield_safe and non _yield_safe helpers.
+
+Maybe change it back?
+
+Thanks,
+Yilun
+
 > 
-> > +struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
-> > +			struct snd_pcm_hw_params *params, int direction)
+> Thanks,
+> Yilun
+> 
+> > +		if (root->role.word == role.word)
+> > +			return root;
+> >  	}
+> >  
+> > +	return NULL;
+> > +}
+> > +
+> > +int kvm_tdp_mmu_alloc_root(struct kvm_vcpu *vcpu)
 > > +{
-> > +	struct snd_usb_audio *chip;
-> > +	struct snd_usb_substream *subs;
-> > +	struct snd_usb_stream *as;
-> > +	const struct audioformat *fmt;
+> > +	struct kvm_mmu *mmu = vcpu->arch.mmu;
+> > +	union kvm_mmu_page_role role = mmu->root_role;
+> > +	struct kvm *kvm = vcpu->kvm;
+> > +	struct kvm_mmu_page *root;
 > > +
 > > +	/*
-> > +	 * Register mutex is held when populating and clearing usb_chip
-> > +	 * array.
+> > +	 * Check for an existing root while holding mmu_lock for read to avoid
+> > +	 * unnecessary serialization if multiple vCPUs are loading a new root.
+> > +	 * E.g. when bringing up secondary vCPUs, KVM will already have created
+> > +	 * a valid root on behalf of the primary vCPU.
 > > +	 */
-> > +	mutex_lock(&register_mutex);
-> > +	chip = usb_chip[card_idx];
-> > +	if (!chip) {
-> > +		mutex_unlock(&register_mutex);
-> > +		return NULL;
-> > +	}
+> > +	read_lock(&kvm->mmu_lock);
+> > +	root = kvm_tdp_mmu_try_get_root(vcpu);
+> > +	read_unlock(&kvm->mmu_lock);
 > > +
-> > +	if (enable[card_idx]) {
-> > +		list_for_each_entry(as, &chip->pcm_list, list) {
-> > +			subs = &as->substream[direction];
-> > +			fmt = snd_usb_find_substream_format(subs, params);
-> > +			if (fmt) {
-> > +				mutex_unlock(&register_mutex);
-> > +				return as;
-> > +			}
-> > +		}
-> > +	}
-> > +	mutex_unlock(&register_mutex);
+> > +	if (root)
+> > +		goto out;
+> > +
+> > +	write_lock(&kvm->mmu_lock);
+> > +
+> > +	/*
+> > +	 * Recheck for an existing root after acquiring mmu_lock for write.  It
+> > +	 * is possible a new usable root was created between dropping mmu_lock
+> > +	 * (for read) and acquiring it for write.
+> > +	 */
+> > +	root = kvm_tdp_mmu_try_get_root(vcpu);
+> > +	if (root)
+> > +		goto out_unlock;
+> > +
+> >  	root = tdp_mmu_alloc_sp(vcpu);
+> >  	tdp_mmu_init_sp(root, NULL, 0, role);
+> >  
+> > @@ -254,8 +285,17 @@ hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu)
+> >  	list_add_rcu(&root->link, &kvm->arch.tdp_mmu_roots);
+> >  	spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
+> >  
+> > +out_unlock:
+> > +	write_unlock(&kvm->mmu_lock);
+> >  out:
+> > -	return __pa(root->spt);
+> > +	/*
+> > +	 * Note, KVM_REQ_MMU_FREE_OBSOLETE_ROOTS will prevent entering the guest
+> > +	 * and actually consuming the root if it's invalidated after dropping
+> > +	 * mmu_lock, and the root can't be freed as this vCPU holds a reference.
+> > +	 */
+> > +	mmu->root.hpa = __pa(root->spt);
+> > +	mmu->root.pgd = 0;
+> > +	return 0;
+> >  }
+> >  
+> >  static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+> > @@ -917,7 +957,7 @@ void kvm_tdp_mmu_zap_invalidated_roots(struct kvm *kvm)
+> >   * the VM is being destroyed).
+> >   *
+> >   * Note, kvm_tdp_mmu_zap_invalidated_roots() is gifted the TDP MMU's reference.
+> > - * See kvm_tdp_mmu_get_vcpu_root_hpa().
+> > + * See kvm_tdp_mmu_alloc_root().
+> >   */
+> >  void kvm_tdp_mmu_invalidate_all_roots(struct kvm *kvm)
+> >  {
+> > diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
+> > index 20d97aa46c49..6e1ea04ca885 100644
+> > --- a/arch/x86/kvm/mmu/tdp_mmu.h
+> > +++ b/arch/x86/kvm/mmu/tdp_mmu.h
+> > @@ -10,7 +10,7 @@
+> >  void kvm_mmu_init_tdp_mmu(struct kvm *kvm);
+> >  void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm);
+> >  
+> > -hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu);
+> > +int kvm_tdp_mmu_alloc_root(struct kvm_vcpu *vcpu);
+> >  
+> >  __must_check static inline bool kvm_tdp_mmu_get_root(struct kvm_mmu_page *root)
+> >  {
+> > -- 
+> > 2.43.0.275.g3460e3d667-goog
+> > 
+> > 
 > 
-> I prefer having the single lock/unlock call pair, e.g.
-> 
-> 	struct snd_usb_stream *as, *ret;
-> 
-> 	ret = NULL;
-> 	mutex_lock(&register_mutex);
-> 	chip = usb_chip[card_idx];
-> 	if (chip && enable[card_idx]) {
-> 		list_for_each_entry(as, &chip->pcm_list, list) {
-> 			subs = &as->substream[direction];
-> 			if (snd_usb_find_substream_format(subs, params)) {
-> 				ret = as;
-> 				break;
-> 			}
-> 		}
-> 	}
-> 	mutex_unlock(&register_mutex);
-> 	return ret;
-> }
-> 
-> In this case, we shouldn't reuse "as" for the return value since it
-> can be non-NULL after the loop end.
-
-Why not just use guard(mutex) for this, making it all not an issue?
-
-thanks,
-
-greg k-h
 
