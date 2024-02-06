@@ -1,474 +1,185 @@
-Return-Path: <linux-kernel+bounces-54510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4983E84B01E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:42:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1000C84B020
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:43:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D54D287813
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:42:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34DA71C24672
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:43:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC22512C7E1;
-	Tue,  6 Feb 2024 08:39:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2584312CDA0;
+	Tue,  6 Feb 2024 08:39:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b="faGgavkl"
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="L5BnLmBm"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E10612B174
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 08:39:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707208782; cv=none; b=Y0gsFNCGX8WwK8X5B5Oiql1imrSYiRatn6K749s87q5U6xjiaVGOEEdFFI9R3HDxHE6ZwFbgLfyUVQohw1XV0Znkh5eBkFXnL+FehP+JrUve+6f0X6qRt0siGlp9FboI+lgJiMVan3yzx84Oe18eFyxxCr9+ujqFvu1U2S6MqVE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707208782; c=relaxed/simple;
-	bh=gETlEzg2esE1f/lGOh9jJSjbWPdkbQv6cdoIuUKeZWA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pTqGxT2cZt/Wb/pmzXBCb3uFGXOBuZRBjthO5hjCUT6ZHoLYOJu19pcui/KKGiNGVH5d6lAEGyF+aMWP2RDWYeL+JqBdz7VIifWC8aaa1iXlsepp0cZxwYyKJuyU++tntd4KQpBwkK9+Mx5DxmKl2rzh94XZbOUqqSPrCriOKMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org; spf=pass smtp.mailfrom=endlessos.org; dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b=faGgavkl; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=endlessos.org
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-60410da20a2so5905817b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 00:39:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google; t=1707208778; x=1707813578; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mpKcDE0oF6UneqoDMI4KAgMzkUMeYsWsCldFNKODZvo=;
-        b=faGgavklJf9+0JH3i5m5+tdsAfWbSrZsOX0XDeMpDA8Fy3Ttg4JXwS0vH9R4M2exfU
-         0tQlhEFYYdH+nJXLvAKYCiemp/4cH7iWSFzhlgr9AXuHlLY1bDarOsblHn0xRaIYL7md
-         hgOb+Bx+Jo1BVlL60HNCKHt+iS31RwN0MKgfHHexCKC8RyjC+roOO7hixxCtYhxSy2PC
-         lLbX+JlgZ8tDjTFX+KczSyjRsHIDPVRJyEZ4QEFswIPX2GoWZH0ILIIutKc8ZTEJSPP1
-         IWLABaqkWJu/35xnICn60He0k9BY357gAR5nsHrCr6MDcxDyNT+shMl0v2hqxgcvIqT2
-         2uPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707208778; x=1707813578;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mpKcDE0oF6UneqoDMI4KAgMzkUMeYsWsCldFNKODZvo=;
-        b=e9z5pSTGcIVzy6Jv3n/tM7+C+dwiVtRUXhEFvxS2iyo4F+ZaLLM9+A/YqVQc+On2xa
-         xCec4J+VuaKBinzdDQw1Cs6X0OXlSghAPRzGr9xu1FZ27EtwmOxKFOTLOzLD7oJPQsft
-         vcJu1hiv52auz0SyaIrcG95Y1yyBK8hj4HrNHO6PqLPH45D6TMZRMBWlMhUBYLj79prS
-         DAZq64Taw7TYnMIStME+nIKLHlJ8B/hQBHIAvUoFR2XBR/qF3AB0j/U1VfsPgWhKxD7+
-         gJQ3oSKlpN9NS35Y+i38bO04dzbOOa9ccO3+Jxi3DQHOfwbAqlicBVWlGCnVSWj92Iiz
-         mM8w==
-X-Gm-Message-State: AOJu0YxqeKMC2Jhsp/0DX7iIVgJS6E2RgkdHGLgs4ht1Xl/Kd+Zl9dyS
-	Xw14KZpq5V2UdW+LR/zeh7MPaEnmt5qpNSF4Sm3otUn83AJXzhyiLABGIiia63FzdHMBjV2/xbe
-	oN6E/NwGyeIF8nXzJAstimWCUUswF8FMefkT3ow==
-X-Google-Smtp-Source: AGHT+IGDgfP9yAionAbg8oiXA5eKDQH8oGoHwijVFnsPL6Ajf1qYT4dk+IWDRiUC6fuwy4Tcve+rv2bBf6IgtvasI1s=
-X-Received: by 2002:a81:ef04:0:b0:603:1b35:5885 with SMTP id
- o4-20020a81ef04000000b006031b355885mr981784ywm.19.1707208778004; Tue, 06 Feb
- 2024 00:39:38 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B617B12D140;
+	Tue,  6 Feb 2024 08:39:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.19
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707208789; cv=fail; b=CeIguIYgIkLvsJMH9D5jLm9rjEwYEVZHroNmeMRG4Vn0t6/Lp1cI2Qw6awD3HDle81XFsmeljAGHibt1TGtGfFl2Ofsrkss3+15KIjRLPtUzL+ySUaGl6/tnJPq6ww7LgUih29yV8DtI1hIikTm+WC/UQo6Ojhz1nn37N0hCR/g=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707208789; c=relaxed/simple;
+	bh=7dkW/T2x/lDrFtgUljyq/Jj0A1XB2aXfaHlXBH/Kg7k=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=tbAArLt/gEKr/cZHmhulz6+E1nmfP7zH4VOTUclSwuHZ8Obe3niaT0OH96KzvKKiRsxuvdebMiIrK5gMjrW/7PU0s6W415eC2Z4eRddGp8hXL+JToqGhRg0OOqEg3K6Tx2dH9/npZqej592MaT0lFWx+nu8R1vHCcCylDjcwiqM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=L5BnLmBm; arc=fail smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707208788; x=1738744788;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=7dkW/T2x/lDrFtgUljyq/Jj0A1XB2aXfaHlXBH/Kg7k=;
+  b=L5BnLmBmut6DIQIV1kHgvBpFd7RgyiHwsoLM5Ez/+gE7Sx89DYGoKafW
+   3HLKy22GJVvXoDcH2dCpLG4u1Td/J8JkGvnu3AE/P/Q6YrCN94s70Viwx
+   bHsyqE+8ZN2/N+/kH2Uo5sFSJ6dAQfNjLIzU80gwerk3jjUEI6emxtz3s
+   GrK5w649DXugZS6PetIfJ05S//bSCTtn9Z3fxRihGPa4M+ZuDtNdfvYWh
+   3Z1czvKMk9kzExc7Lr60x3YXgZEOe4c/wmEQE75qlGKXMgByg6BcjztFM
+   9ESXN4b98OOduQw/B3d+2r2jtutocQS6VwU/SQqlNEorqpSOAAzhpF+bJ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="597145"
+X-IronPort-AV: E=Sophos;i="6.05,246,1701158400"; 
+   d="scan'208";a="597145"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 00:39:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,246,1701158400"; 
+   d="scan'208";a="1238420"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 06 Feb 2024 00:39:26 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 6 Feb 2024 00:39:24 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 6 Feb 2024 00:39:23 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 6 Feb 2024 00:39:23 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 6 Feb 2024 00:39:23 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HW4iq1WTwSE/TqVJfUFLj3wYM67oGDjWOcqwKCBxmr8CR/l/9G3jrYJ4mRiUidVbuIIb4B91GPaze7zNXeIgF3gAv5pEIpPPUkkOAyUByjBFz7eh3X9178zZ35+LkQNQVXyIXSL3/fBzc0Dfj0Xf9NqM8Pxtd7N8+J5haVkFRX4ZJSh6FDx1to0rc6becMoa5m1WwrohjNsNi16vO0928Q6koDlhYTTQd9DrbJj3d381X0WSSpfmLtgFY6LynozmTY+fo3r1X53O/rYEMjHq3UdFV909tn2U5P9kolfgJRuNkEOGch8CIyLEE3QyLtGepZXn9N/T1ccx8KoDxmyysw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7dkW/T2x/lDrFtgUljyq/Jj0A1XB2aXfaHlXBH/Kg7k=;
+ b=gyPUdQOTfPrLbHwKmjP8SURZpbGeFNAJ3MxunLklQPcQqctMoLMEnx719+2x10HvLa5aVQYXh7QaHsYBTkU9apfk+x9lTmVefsJ/z0Ft4mb1LYCKaxFIltsEnT0qR2Xkh5ReeWUrRKt9Ir1fQPYLtkAjvmkAyRSGEn8Jw0j6Okkik9PsZNfypWiARt1YhAyC72FSsHkU5mtRVESky7BHK3utxC5i8936yYJI6ny1Ih+LngxXIQ1oKjRtEWl42qYAnvA6S8K6WkREHGan2+U8vBqEATTXH0IZk0BpawUN0lumBhWR10GRhTQfer6QAvlqW+k6WJPrJ5PJ3fs+C5cuUA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by DM4PR11MB8130.namprd11.prod.outlook.com (2603:10b6:8:181::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36; Tue, 6 Feb
+ 2024 08:39:22 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::a8e9:c80f:9484:f7cb]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::a8e9:c80f:9484:f7cb%3]) with mapi id 15.20.7249.035; Tue, 6 Feb 2024
+ 08:39:21 +0000
+From: "Tian, Kevin" <kevin.tian@intel.com>
+To: Lu Baolu <baolu.lu@linux.intel.com>, Joerg Roedel <joro@8bytes.org>, "Will
+ Deacon" <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, "Jason
+ Gunthorpe" <jgg@ziepe.ca>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Nicolin Chen <nicolinc@nvidia.com>
+CC: "Liu, Yi L" <yi.l.liu@intel.com>, Jacob Pan
+	<jacob.jun.pan@linux.intel.com>, Longfang Liu <liulongfang@huawei.com>,
+	"Zhao, Yan Y" <yan.y.zhao@intel.com>, Joel Granados <j.granados@samsung.com>,
+	"iommu@lists.linux.dev" <iommu@lists.linux.dev>, "kvm@vger.kernel.org"
+	<kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, Jason Gunthorpe <jgg@nvidia.com>
+Subject: RE: [PATCH v11 16/16] iommu: Make iommu_report_device_fault() return
+ void
+Thread-Topic: [PATCH v11 16/16] iommu: Make iommu_report_device_fault() return
+ void
+Thread-Index: AQHaU1R/NF0uQzaXikurtIj0BN24LrD9CTKg
+Date: Tue, 6 Feb 2024 08:39:21 +0000
+Message-ID: <BN9PR11MB52769A2585FEAE31802518498C462@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <20240130080835.58921-1-baolu.lu@linux.intel.com>
+ <20240130080835.58921-17-baolu.lu@linux.intel.com>
+In-Reply-To: <20240130080835.58921-17-baolu.lu@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|DM4PR11MB8130:EE_
+x-ms-office365-filtering-correlation-id: eb4a7083-af00-4c8b-64be-08dc26ef1dd9
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: gtzmTB69zEB8ftavGXl/EHFiqUmMDuuvkpyaebj5ynP3gbiWN0rc/YW/Wosvl5+8Z9J6/VSo/ves4S6fdNK8p80O1gCbdH4whQ+kPeDg5zQP4FB1GHJNJDFZLnpvPtYuWrqPgT/pCROrBYPA8IhZyJfqYSQHKvT4wjCnahQ5ZkALk4p3ahH1btSIDvxRywtAWHzdqe1AxvnARUCLSCgLNk44trG2x/uk18z7ZvYfikFBHxs93WMjTWOKZPvOrUZhpGf2MzEBFPIFx650XEl3JE7A+jo480H6S3uvN5tDJfXtWpQeAoEPJ/tlrpkYhVcT9JYC4jubGski1a96Y2DXBPAgoeLkuKNgmkSWDaDS/orcO/IeeEGhHxka+RsjcMZ2is6TesbR/tKvFEHRemjIAE2u23om/pYgioKBY9NbWwgfIXQr6mpfgQSD0D+sacQBkYDmGcXUXTTFwPS50arpD8qScYN+VcLEHD6krz1rY3oYUfYokWoomygwCDUkhYg5lGPKT6kbA94EusRFo0HhRfMFQrrNAaJVppJI+kfDbfZ9RRUftXPRDDM6qhfiZ06QKTyNP9hVSeVCsN1SdEr14dMGFOHhZg9FhWE3xZRGwmQkRCsd7rqzdhBtEe5Ck9JR
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(136003)(366004)(39860400002)(376002)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(2906002)(38100700002)(122000001)(82960400001)(55016003)(41300700001)(26005)(110136005)(38070700009)(64756008)(66446008)(66556008)(54906003)(66476007)(66946007)(76116006)(316002)(4744005)(7416002)(86362001)(52536014)(8676002)(8936002)(4326008)(7696005)(6506007)(9686003)(33656002)(71200400001)(5660300002)(478600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?tfMPk4SQxyHtQmXw7xNaf6k0l87JyMGlpB5eEk5YdIVX2Zaufg+sC4ua/sbs?=
+ =?us-ascii?Q?ro4DTUBkTlxetRXWDz/uXnvWw5c9n9rTk5NB0KjbW/kiADa/vtBBjvTtWFXG?=
+ =?us-ascii?Q?OGw+ZKNBXfkPFXm2d1kk/7AgMsDUM6Yut9q1Oo/pLY8aIMLXqUe/fLdK+6j4?=
+ =?us-ascii?Q?fEvmB6q1fnNMzzlt+2YnNWxIdf+Yt7DcGnZaF2jXh19KkHG1tqxJexP+IQMS?=
+ =?us-ascii?Q?CSdVsAMQfQH6+7Bpc4S/9HQPONhgUVymK5sYDME+20RNugSUDKUlq/72jaWd?=
+ =?us-ascii?Q?dSs2+2Y30q7XxazUsqCzMtKv875dib7OriB/18pyU0o2GT1Qw0cOrhQenMn8?=
+ =?us-ascii?Q?BCX7TOlBE/A5rQOdfE69c2H3H4N7/HuF4Y60SXgKEk5xfycOvkOE3qoeNpzC?=
+ =?us-ascii?Q?4xj3UnH/EN6kVFDOMPMcIzMTe6nGPt1S/OBIRf2oDITvkm+L76BAmGV2eyR8?=
+ =?us-ascii?Q?5ObDwS83JwYr3CJ9yvI9dbOf+s8KIdt5gfwuNeHf5gQEtss/vsb32oeF0k8f?=
+ =?us-ascii?Q?2ExC/gg+RoYyMfRG6Jns5yXT/ud+/tnpvqifLHbx52ZSqUMX/5jKXXYMlaGP?=
+ =?us-ascii?Q?yOvNevKE/tk+NZ4vQReF5ngc4MrCa+k3uEH3HBgcHwrLKUIPtmi1VrcB6mSr?=
+ =?us-ascii?Q?C+hdcHa4RibPQkTcLLG8nrA3FCFcmyPIj9/vswzZAx4N9BSVpnRaWkP5S30j?=
+ =?us-ascii?Q?OsMCqueTzL301F+s48eFTIcLzJx3iPJLMCkasTo2M8XlVq+72b4eUg3PUd6t?=
+ =?us-ascii?Q?nBHSJy3Fco2GyayxDmZBmJmighJ+K1u2RS2nFGElBoaL5EhPyaYLE7QLOHOX?=
+ =?us-ascii?Q?jzc2uwfZlzKYVYKb2oFu++1RyWgNkywNbpZPrVk9HPYp0h8Xoqg8/AjYTdd+?=
+ =?us-ascii?Q?xSj2zekvxCEcbL7iZ9CW7+vsZ0vGkghulemZJ37kBbq1Vqd/OMOvteTxUNYd?=
+ =?us-ascii?Q?YoqnHyiRHc5XCLubcE3LMaiRIAEwDuwmcfvcA0ItkUBnTuTsXAHkpLr0LFst?=
+ =?us-ascii?Q?TXgC42cJHnNXnpvLjW4rZeijqKM96A5B9ZlJfoOKZXCxckkST5wRfAiyRpxl?=
+ =?us-ascii?Q?XQxO0tc3exarHIzrJ1Splbr95+gCg+HqR1yPYXJF/XErCCdxyvD+5OGeU8yT?=
+ =?us-ascii?Q?/TGrFWwvwg9gyo4KvFk1PHGyWvVa0UyeD9BEOtd24VHmnAZDnuDrXaRRhy5C?=
+ =?us-ascii?Q?Sv1yZyBLd3QHggDTD6PqOly6LTlRNPuwV3xNxmaY4v3ugNhu3DFaV2Yr0x1M?=
+ =?us-ascii?Q?R8W16Z7T27Fg34fs2yYnDGbj9/Km0rqflihWcX1GYtqB4zIJFacui39P49KZ?=
+ =?us-ascii?Q?pX/STkVo+dRkTz8vIDaoaDr7RcYg9ZuQpNWwXrp3gJwEpbjRY7hf8Zn/0s3q?=
+ =?us-ascii?Q?Ifjbn3XoBl9kzXj0gDHnhrtFa7VUkv/zn6cbnpG1rlpxlHtWFCObxeqbig2E?=
+ =?us-ascii?Q?7JDU5yeWT2xSY283PGAwewy7rdm+IL0+uTCf4cVb0XmOfAOpFj33jDTvq1X+?=
+ =?us-ascii?Q?pW3gwkUEvLHostxCgw/XT9wVt47mwihSeLhhpGplvCaMueq8C4rDQgqsGh4I?=
+ =?us-ascii?Q?NhL6CCbUA3OMQ15tjKdzontV0kxA+GBIVjd1+SFQ?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130095933.14158-1-jhp@endlessos.org> <20240130101335.GU2543524@black.fi.intel.com>
- <CAPpJ_ef4KuZzBaMupH-iW0ricyY_9toa7A4rB2vyeaFu7ROiDA@mail.gmail.com>
- <Zbonprq/1SircQon@x1-carbon> <CAD8Lp47SH+xcCbZ9qdRwrk2KOHNoHUE5AMieVHoSMbVsMrdiNg@mail.gmail.com>
- <ZbrNLxHL03R66PxQ@x1-carbon> <ZbuyVbMEBWKi729y@x1-carbon> <CAPpJ_efmzy_FU0urdHDmO5htOBCPaX-T5W+Er7AmWYhqUTwnyA@mail.gmail.com>
- <ZcDHjsYJNlJ/9nNT@x1-carbon>
-In-Reply-To: <ZcDHjsYJNlJ/9nNT@x1-carbon>
-From: Jian-Hong Pan <jhp@endlessos.org>
-Date: Tue, 6 Feb 2024 16:39:02 +0800
-Message-ID: <CAPpJ_ec0H6zr6wcNstFn9dRcFgPXspU3MYvgGMNAS5wnw-0pTw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] ata: ahci: Add force LPM policy quirk for ASUS B1400CEAE
-To: Niklas Cassel <cassel@kernel.org>
-Cc: Daniel Drake <drake@endlessos.org>, Vitalii Solomonov <solomonov.v@gmail.com>, 
-	Mika Westerberg <mika.westerberg@linux.intel.com>, David Box <david.e.box@linux.intel.com>, 
-	Damien Le Moal <dlemoal@kernel.org>, Nirmal Patel <nirmal.patel@linux.intel.com>, 
-	Jonathan Derrick <jonathan.derrick@linux.dev>, linux-ide@vger.kernel.org, 
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, linux@endlessos.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eb4a7083-af00-4c8b-64be-08dc26ef1dd9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Feb 2024 08:39:21.9171
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Qz00jyLYu1lFOygSBu9/JNkh4beDXOIZqHHfNdQvmuC3FpLrqtIsLff0jvIE0COk+L/QRRXAG80jxdkhuTg/dA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB8130
+X-OriginatorOrg: intel.com
 
-Niklas Cassel <cassel@kernel.org> =E6=96=BC 2024=E5=B9=B42=E6=9C=885=E6=97=
-=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=887:33=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Fri, Feb 02, 2024 at 04:49:00PM +0800, Jian-Hong Pan wrote:
-> > Niklas Cassel <cassel@kernel.org> =E6=96=BC 2024=E5=B9=B42=E6=9C=881=E6=
-=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=8811:01=E5=AF=AB=E9=81=93=EF=BC=
-=9A
-> > >
-> > > On Wed, Jan 31, 2024 at 11:43:59PM +0100, Niklas Cassel wrote:
-> > > > On Wed, Jan 31, 2024 at 07:08:12AM -0400, Daniel Drake wrote:
-> > >
-> > > (snip)
-> > >
-> > > > In libata we perform a reset of the port at boot, see:
-> > > > libata-sata.c:sata_link_hardreset()
-> > > > after writing to SControl, we call
-> > > > libata-core.c:ata_wait_ready() that will poll for the port being re=
-ady
-> > > > by calling the check_ready callback.
-> > > > For AHCI, this callback funcion is set to:
-> > > > libahci.c:ahci_check_ready().
-> > > >
-> > > > A reset should take the device out of deep power state and should b=
-e
-> > > > sufficient to establish a connection (and that also seems to be the
-> > > > case when not using Intel VMD).
-> > > >
-> > > > However, if you want to debug, I would start by adding prints to
-> > > > libata-sata.c:sata_link_hardreset()
-> > > > libata-core.c:ata_wait_ready()
-> > > > libahci.c:ahci_check_ready().
-> > >
-> > > FWIW, this will dump SStatus.DET every time the check_ready callback =
-function
-> > > (ahci_check_ready()) is called:
-> > >
-> > >
-> > > diff --git a/drivers/ata/libahci.c b/drivers/ata/libahci.c
-> > > index 1a63200ea437..0467e150601e 100644
-> > > --- a/drivers/ata/libahci.c
-> > > +++ b/drivers/ata/libahci.c
-> > > @@ -1533,6 +1533,12 @@ int ahci_check_ready(struct ata_link *link)
-> > >  {
-> > >         void __iomem *port_mmio =3D ahci_port_base(link->ap);
-> > >         u8 status =3D readl(port_mmio + PORT_TFDATA) & 0xFF;
-> > > +       u32 cur =3D 0;
-> > > +
-> > > +       sata_scr_read(link, SCR_STATUS, &cur);
-> > > +
-> > > +       ata_link_info(link, "BUSY ? %d (status: %#x) SStatus.DET: %#x=
-\n",
-> > > +                     status & ATA_BUSY, status, cur & 0xf);
-> > >
-> > >         return ata_check_ready(status);
-> > >  }
-> >
-> > I think I can join the test based on kernel v6.8-rc2, too.
-> >
-> > The original ASUS B1400CEAE has only one NVMe SSD.  I prepare the
-> > patch ("ata: ahci: Add force LPM policy quirk for ASUS B1400CEAE") to
-> > fix the power consumption issue for s2idle with enabled VMD.
-> >
-> > The patch is a quirk limiting ASUS B1400CEAE only, not generic for the
-> > SATA controller [8086:a0d3].  Then, I install another SATA HDD into
-> > ASUS B1400CEAE for test.  The SATA HDD shows up and works.
-> >
-> > $ dmesg | grep SATA
-> > [    0.785120] ahci 10000:e0:17.0: AHCI 0001.0301 32 slots 1 ports 6
-> > Gbps 0x1 impl SATA mode
-> > [    0.785269] ata1: SATA max UDMA/133 abar m2048@0x76102000 port
-> > 0x76102100 irq 144 lpm-pol 3
-> > [    1.096684] ata1: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
-> >
-> > However, if I simply revert the commit 6210038aeaf4 ("ata: ahci:
-> > Revert "ata: ahci: Add Tiger Lake UP{3,4} AHCI controller"") (fix the
-> > conflict, of course), then the SATA HDD disappears!!?  Both
-> > CONFIG_SATA_MOBILE_LPM_POLICY=3D3 and 0 can reproduce the issue.
-> >
-> > $ dmesg | grep SATA
-> > [    0.783211] ahci 10000:e0:17.0: AHCI 0001.0301 32 slots 1 ports 6
-> > Gbps 0x1 impl SATA mode
-> > [    0.783399] ata1: SATA max UDMA/133 abar m2048@0x76102000 port
-> > 0x76102100 irq 144 lpm-pol 3
-> > [    1.096685] ata1: SATA link down (SStatus 4 SControl 300)
-> >
-> > Here is the dmesg of reverting ("ata: ahci: Revert "ata: ahci: Add
-> > Tiger Lake UP{3,4} AHCI controller"")
-> > https://bugzilla.kernel.org/show_bug.cgi?id=3D217114#c27
-> > The code already includes the debug message in ahci_check_ready() from
-> > Niklas.  However, the dmesg does not show the "BUSY ? ..." from
-> > ahci_check_ready().
-> >
-> > From these scenarios mentioned above, they all apply LPM policy to the
-> > SATA controller [8086:a0d3].  But, they apply LPM policy at different
-> > time:
-> > * The patch ("ata: ahci: Add force LPM policy quirk for ASUS
-> > B1400CEAE") applies LPM policy in early ahci_init_one(), which is the
-> > probe callback.
-> > * Reverting 6210038aeaf4 ("ata: ahci: Revert "ata: ahci: Add Tiger
-> > Lake UP{3,4} AHCI controller"") applies LPM policy via "ahci_pci_tbl"
-> > table.
->
-> I don't see why it should matter if we set the AHCI_HFLAG_USE_LPM_POLICY
-> flag using ahci_pci_tbl, or by your suggested quirk in ahci_init_one(),
-> as in both cases the flag will be set before ahci_init_one() calls
-> ahci_update_initial_lpm_policy().
->
->
-> Could it perhaps be that in order for libata to be able to detect your
-> drive, when VMD is enabled, we also need your patch
-> "PCI: vmd: enable PCI PM's L1 substates of remapped PCIe port and NVMe" ?
+> From: Lu Baolu <baolu.lu@linux.intel.com>
+> Sent: Tuesday, January 30, 2024 4:09 PM
+>=20
+> As the iommu_report_device_fault() has been converted to auto-respond a
+> page fault if it fails to enqueue it, there's no need to return a code
+> in any case. Make it return void.
+>=20
+> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
 
-I only apply the patch ("ata: ahci: Add force LPM policy quirk for
-ASUS B1400CEAE") for this test.  No "PCI: vmd: enable PCI PM's L1
-substates of remapped PCIe port and NVMe".  :)
-
-> If that is not the case, and there actually is a difference between using
-> ahci_pci_tbl and your suggested quirk, then my next suggestion would be t=
-o
-> add prints to libata-sata.c:sata_link_scr_lpm(). That way you can dump th=
-e
-> exact SCR writes that are being done for the working case vs. the
-> non-working case. (Since I assume that there must be some difference.)
-
-I prepared debug messages as:
-
-diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
-index 7ecd56c8262a..b910c7856d08 100644
---- a/drivers/ata/ahci.c
-+++ b/drivers/ata/ahci.c
-@@ -1677,8 +1676,10 @@ static void
-ahci_update_initial_lpm_policy(struct ata_port *ap,
-/* Ignore processing for chipsets that don't use policy */
-- if (!(hpriv->flags & AHCI_HFLAG_USE_LPM_POLICY))
-+ if (!(hpriv->flags & AHCI_HFLAG_USE_LPM_POLICY)) {
-+ dev_info(ap->dev, "%s: do not use LPM policy\n", __func__);
-return;
-+ }
-/* user modified policy via module param */
-if (mobile_lpm_policy !=3D -1) {
-@@ -1696,6 +1697,7 @@ static void
-ahci_update_initial_lpm_policy(struct ata_port *ap,
-update_policy:
-if (policy >=3D ATA_LPM_UNKNOWN && policy <=3D ATA_LPM_MIN_POWER)
-ap->target_lpm_policy =3D policy;
-+ dev_info(ap->dev, "%s: policy %d\n", __func__, policy);
-}
-static void ahci_intel_pcs_quirk(struct pci_dev *pdev, struct
-ahci_host_priv *hpriv)
-@@ -1706,12 +1708,16 @@ static void ahci_intel_pcs_quirk(struct
-pci_dev *pdev, struct ahci_host_priv *hp
-/*
-* Only apply the 6-port PCS quirk for known legacy platforms.
-*/
-- if (!id || id->vendor !=3D PCI_VENDOR_ID_INTEL)
-+ if (!id || id->vendor !=3D PCI_VENDOR_ID_INTEL) {
-+ dev_info(&pdev->dev, "%s: not Intel, the vendor is 0x%08x\n",
-__func__, id->vendor);
-return;
-+ }
-/* Skip applying the quirk on Denverton and beyond */
-- if (((enum board_ids) id->driver_data) >=3D board_ahci_pcs7)
-+ if (((enum board_ids) id->driver_data) >=3D board_ahci_pcs7) {
-+ dev_info(&pdev->dev, "%s: skip\n", __func__);
-return;
-+ }
-/*
-* port_map is determined from PORTS_IMPL PCI register which is
-@@ -1722,8 +1728,10 @@ static void ahci_intel_pcs_quirk(struct pci_dev
-*pdev, struct ahci_host_priv *hp
-* before the OS boots.
-*/
-pci_read_config_word(pdev, PCS_6, &tmp16);
-+ dev_info(&pdev->dev, "%s: PCS_6 is 0x%04x", __func__, tmp16);
-if ((tmp16 & hpriv->port_map) !=3D hpriv->port_map) {
-tmp16 |=3D hpriv->port_map;
-+ dev_info(&pdev->dev, "%s: write PCS_6 with 0x%04x", __func__, tmp16);
-pci_write_config_word(pdev, PCS_6, tmp16);
-}
-}
-@@ -1998,6 +2006,7 @@ static int ahci_init_one(struct pci_dev *pdev,
-const struct pci_device_id *ent)
-if (rc)
-return rc;
-+ dev_info(&pdev->dev, "%s: probed\n", __func__);
-pm_runtime_put_noidle(&pdev->dev);
-return 0;
-}
-diff --git a/drivers/ata/libahci.c b/drivers/ata/libahci.c
-index 1a63200ea437..7e4f349554eb 100644
---- a/drivers/ata/libahci.c
-+++ b/drivers/ata/libahci.c
-@@ -812,6 +812,7 @@ static int ahci_set_lpm(struct ata_link *link,
-enum ata_lpm_policy policy,
-struct ahci_port_priv *pp =3D ap->private_data;
-void __iomem *port_mmio =3D ahci_port_base(ap);
-+ ata_link_info(link, "%s: policy=3D%d\n", __func__, policy);
-if (policy !=3D ATA_LPM_MAX_POWER) {
-/* wakeup flag only applies to the max power policy */
-hints &=3D ~ATA_LPM_WAKE_ONLY;
-@@ -1533,6 +1534,12 @@ int ahci_check_ready(struct ata_link *link)
-{
-void __iomem *port_mmio =3D ahci_port_base(link->ap);
-u8 status =3D readl(port_mmio + PORT_TFDATA) & 0xFF;
-+ u32 cur =3D 0;
-+
-+ sata_scr_read(link, SCR_STATUS, &cur);
-+
-+ ata_link_info(link, "BUSY ? %d (status: %#x) SStatus.DET: %#x\n",
-+ status & ATA_BUSY, status, cur & 0xf);
-return ata_check_ready(status);
-}
-diff --git a/drivers/ata/libata-sata.c b/drivers/ata/libata-sata.c
-index 0fb1934875f2..4bcedd46bcfa 100644
---- a/drivers/ata/libata-sata.c
-+++ b/drivers/ata/libata-sata.c
-@@ -344,6 +344,7 @@ int sata_link_resume(struct ata_link *link, const
-unsigned int *params,
-if (!(rc =3D sata_scr_read(link, SCR_ERROR, &serror)))
-rc =3D sata_scr_write(link, SCR_ERROR, serror);
-+ ata_link_info(link, "%s: rc=3D%d", __func__, rc);
-return rc !=3D -EINVAL ? rc : 0;
-}
-EXPORT_SYMBOL_GPL(sata_link_resume);
-@@ -378,6 +379,7 @@ int sata_link_scr_lpm(struct ata_link *link, enum
-ata_lpm_policy policy,
-if (rc)
-return rc;
-+ ata_link_info(link, "%s: policy is %d and original scontrol
-0x%08x\n", __func__, policy, scontrol);
-switch (policy) {
-case ATA_LPM_MAX_POWER:
-/* disable all LPM transitions */
-@@ -422,6 +424,7 @@ int sata_link_scr_lpm(struct ata_link *link, enum
-ata_lpm_policy policy,
-WARN_ON(1);
-}
-+ ata_link_info(link, "%s: write scontrol 0x%08x\n", __func__, scontrol);
-rc =3D sata_scr_write(link, SCR_CONTROL, scontrol);
-if (rc)
-return rc;
-@@ -586,9 +589,12 @@ int sata_link_hardreset(struct ata_link *link,
-const unsigned int *timing,
-rc =3D sata_link_resume(link, timing, deadline);
-if (rc)
-goto out;
-+
-/* if link is offline nothing more to do */
-- if (ata_phys_link_offline(link))
-+ if (ata_phys_link_offline(link)) {
-+ ata_link_info(link, "%s: ata_phys_link_offline is True\n", __func__);
-goto out;
-+ }
-/* Link is online. From this point, -ENODEV too is an error. */
-if (online)
-@@ -616,12 +622,15 @@ int sata_link_hardreset(struct ata_link *link,
-const unsigned int *timing,
-rc =3D 0;
-if (check_ready)
-rc =3D ata_wait_ready(link, deadline, check_ready);
-+
-+ ata_link_info(link, "%s: is %d\n", __func__, rc);
-out:
-if (rc && rc !=3D -EAGAIN) {
-/* online is set iff link is online && reset succeeded */
-if (online)
-*online =3D false;
-}
-+ ata_link_info(link, "%s: is %s line, returns %d\n", __func__,
-*online? "on":"off", rc);
-return rc;
-}
-EXPORT_SYMBOL_GPL(sata_link_hardreset);
-
-Have the comparison:
-
-* Bind LPM policy with the patch "ata: ahci: Add force LPM policy
-quirk for ASUS B1400CEAE" based on kernel v6.8-rc2:
-
-$ dmesg | grep -E "(SATA|ata1|ahci)"
-[    0.791497] ahci 10000:e0:17.0: version 3.0
-[    0.791499] ahci 10000:e0:17.0: force controller follow LPM policy
-[    0.791517] ahci 10000:e0:17.0: can't derive routing for PCI INT A
-[    0.791518] ahci 10000:e0:17.0: PCI INT A: no GSI
-[    0.791637] ahci 10000:e0:17.0: ahci_update_initial_lpm_policy: policy 3
-[    0.791652] ahci 10000:e0:17.0: ahci_intel_pcs_quirk: not Intel,
-the vendor is 0xffffffff
-[    0.791662] ahci 10000:e0:17.0: AHCI 0001.0301 32 slots 1 ports 6
-Gbps 0x1 impl SATA mode
-[    0.791663] ahci 10000:e0:17.0: flags: 64bit ncq sntf pm clo only
-pio slum part deso sadm sds
-[    0.791771] scsi host0: ahci
-[    0.791806] ata1: SATA max UDMA/133 abar m2048@0x76102000 port
-0x76102100 irq 145 lpm-pol 3
-[    0.791808] ahci 10000:e0:17.0: ahci_init_one: probed
-[    1.109393] ata1: sata_link_resume: rc=3D0
-[    1.109415] ata1: BUSY ? 0 (status: 0x50) SStatus.DET: 0x3
-[    1.109418] ata1: sata_link_hardreset: is 0
-[    1.109420] ata1: sata_link_hardreset: is on line, returns 0
-[    1.109444] ata1: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
-[    1.110161] ata1.00: ATA-10: WDC WD10SPZX-80Z10T2, 04.01A04, max UDMA/13=
-3
-[    1.112047] ata1.00: 1953525168 sectors, multi 16: LBA48 NCQ (depth 32),=
- AA
-[    1.112054] ata1.00: Features: NCQ-prio
-[    1.114814] ata1.00: configured for UDMA/133
-[    1.114821] ata1: ahci_set_lpm: policy=3D3
-[    1.114837] ata1: sata_link_scr_lpm: policy is 3 and original
-scontrol 0x00000300
-[    1.114840] ata1: sata_link_scr_lpm: write scontrol 0x00000000
-
-The SATA link is up and SATA storage shows up.
-Full dmesg as the attachment of
-https://bugzilla.kernel.org/show_bug.cgi?id=3D217114#c28
-
-* Bind LPM policy with PCI IDs like commit 104ff59af73a ("ata: ahci:
-Add Tiger Lake UP{3,4} AHCI controller"):
-
-$ dmesg | grep -E "(SATA|ata1|ahci)"
-[    0.783125] ahci 10000:e0:17.0: version 3.0
-[    0.783143] ahci 10000:e0:17.0: can't derive routing for PCI INT A
-[    0.783145] ahci 10000:e0:17.0: PCI INT A: no GSI
-[    0.783257] ahci 10000:e0:17.0: ahci_update_initial_lpm_policy: policy 3
-[    0.783280] ahci 10000:e0:17.0: ahci_intel_pcs_quirk: PCS_6 is 0x0000
-[    0.783281] ahci 10000:e0:17.0: ahci_intel_pcs_quirk: write PCS_6 with 0=
-x0001
-[    0.783296] ahci 10000:e0:17.0: AHCI 0001.0301 32 slots 1 ports 6
-Gbps 0x1 impl SATA mode
-[    0.783298] ahci 10000:e0:17.0: flags: 64bit ncq sntf pm clo only
-pio slum part deso sadm sds
-[    0.783402] scsi host0: ahci
-[    0.783440] ata1: SATA max UDMA/133 abar m2048@0x76102000 port
-0x76102100 irq 144 lpm-pol 3
-[    0.783442] ahci 10000:e0:17.0: ahci_init_one: probed
-[    1.096930] ata1: sata_link_resume: rc=3D0
-[    1.096960] ata1: sata_link_hardreset: ata_phys_link_offline is True
-[    1.096962] ata1: sata_link_hardreset: is off line, returns 0
-[    1.097000] ata1: SATA link down (SStatus 4 SControl 300)
-[    1.097025] ata1: ahci_set_lpm: policy=3D3
-[    1.097051] ata1: sata_link_scr_lpm: policy is 3 and original
-scontrol 0x00000300
-[    1.097054] ata1: sata_link_scr_lpm: write scontrol 0x00000304
-
-The SATA link is down and SATA storage disappears.
-Full dmesg as the attachment of
-https://bugzilla.kernel.org/show_bug.cgi?id=3D217114#c29
-
-The SCR writes different values with these two conditions.
-
-However, I notice more interesting thing:
-"drivers/ata/ahci.c:ahci_intel_pcs_quirk()"!
-If bind LPM policy with PCI IDs matching, then it does the PCS quirk.
-But, binding with the patch "ata: ahci: Add force LPM policy quirk for
-ASUS B1400CEAE" does not, because the vendor is ANY vendor, not Intel.
-
-So, I did following test:
-
-If I modify the PCI vendor check condition with the pdev, not the PCI
-ID's vendor:
-
-diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
-index 7ecd56c8262a..ece709ac20d6 100644
---- a/drivers/ata/ahci.c
-+++ b/drivers/ata/ahci.c
-@@ -1706,12 +1709,16 @@ static void ahci_intel_pcs_quirk(struct
-pci_dev *pdev, struct ahci_host_priv *hp
-        /*
-         * Only apply the 6-port PCS quirk for known legacy platforms.
-         */
--       if (!id || id->vendor !=3D PCI_VENDOR_ID_INTEL)
-+       if (!id || pdev->vendor !=3D PCI_VENDOR_ID_INTEL) {
-+               dev_info(&pdev->dev, "%s: not Intel, the vendor is
-0x%08x\n", __func__, id->vendor);
-                return;
-+       }
-
-Then, the SATA HDD always disappears like binding the LPM policy with
-PCI IDs matching, even with the patch "ata: ahci: Add force LPM policy
-quirk for ASUS B1400CEAE".
-So, I think ahci_intel_pcs_quirk() is the key point.
-
-BR,
-Jian-Hong Pan
+Reviewed-by: Kevin Tian <kevin.tian@intel.com>
 
