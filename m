@@ -1,185 +1,243 @@
-Return-Path: <linux-kernel+bounces-54217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93F2284AC59
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:52:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E201384AC5A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:52:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8B5D1C23AF2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:52:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CD211F251CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:52:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADCD86E2CD;
-	Tue,  6 Feb 2024 02:52:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C8CF6EB57;
+	Tue,  6 Feb 2024 02:52:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="WyEjg2d1"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vOmbmYCA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AC4B6E2A9
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 02:51:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71A6A6EB4C;
+	Tue,  6 Feb 2024 02:52:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707187919; cv=none; b=RKBDxGno6d2oTUZ4dCw2WvsP9juSpRXStFdkjUKwi2PuO2SPaA51/W/tiAZWchn6NUCjtmku4kf9MPe2lAf9l5F5Z5yhW74X3CbFnf/MFZFxpgMlyNOEAMRoBVyDUA9hu0KyjUOM0LwrNLl2a3OrXU9quY42k8BSLDpLGSN3Qhc=
+	t=1707187924; cv=none; b=VIpQZ965P/UqVLOweLO7Sc6//O5SivsN8uv12+qculjI5uwUKabpP6qbN6DsIATw3iDY2NqfJzYGA4TZAp7+5ABOT3di1HFNR4ACqdG7O95xmNKpio5b5imlzzlBxBpHM1f/fcLP4hv93toT/RwphLk3VzqBYfrf8OXrIaG7BDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707187919; c=relaxed/simple;
-	bh=H20o2pRiAp3zDlj6ATk2ndhSE7u7Z7yBRRi7B1Fd9VY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EEYWyVC73Llw6dMprpt/Ee+UaWmV5Yu0lQc6zq/+8lB/+1p3UN/uCf10jQy8YzIeuyCV4c2iyQx5gRDBPt+R8YF6bZlRxX2HIkN+EikJxlmYcZQWlJN9N3/QeAk/IY2klhWtpP8A89YnAb0yzQfroPXpwqaNgsRfGSLdvV64NKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=WyEjg2d1; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d73066880eso44250375ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 18:51:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1707187917; x=1707792717; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jRmaSESydCye1Hb8v6UAZsKFe9t/+9o70Uany0m6D1I=;
-        b=WyEjg2d1C5gA7WHPGdVE3dtYTyHWA+9bRppzSWee/EELVASTnU2bf1+ajzoVfE27d8
-         FoWVPylSaruFyS8hdUyqdvCWJ5CWtKmIsARTvFjyXcFxXeibHQ9VqlgKb9dGKz1hAbOk
-         0l/IXOhIgByj2Rcr/fsCo/eyXCcqVD1uk1NJU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707187917; x=1707792717;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jRmaSESydCye1Hb8v6UAZsKFe9t/+9o70Uany0m6D1I=;
-        b=sqiZits19EP+/pHClbkGzCrqHh2u3icWVS1xe+SHvICOJSUL8O/ioIRixriIT+Rca4
-         e0lpQUrViu8x73hAvdNyKyd1sPnu9JMzsfrlKs+/vK9Wd3AbHHOOaImKqC7vEX6O/HRo
-         uUsJ8F7ygrDbabNeG3xtPcQWnxqMpc/TxcdIIh9TcpnEn4PvsMSZKAck3IJouysVIabt
-         8Aj0baKjlHWNgDf7oNMxkvGdv70iWocDYphsE8ol+2ZASO5ns777kvn3kPebxtGIL98i
-         unzuFXSA1lOehnB4smgF7clhhjsrQ6EpDCz4oCehPeZzPQYHWF9/vJ79rqBRQUuCPl0I
-         sNYQ==
-X-Gm-Message-State: AOJu0YwbpAtujoO8J9AQUoGdsCVGCRylWAUsGed9XSgFbt0+AWCsqW4J
-	v//ePqa4NqQjQ4It0BMv0EVYmU/fLx03KqcTPFMBh2Gkpim2qrYUzhE4CQgYcs8=
-X-Google-Smtp-Source: AGHT+IGXrYULDcQXPMN47tiyvO4o5wW9ipPo6hAslswaupw5MVYTStW+rdwUzXOweN3lE/gIJUnt8A==
-X-Received: by 2002:a17:903:11d1:b0:1d9:859f:b529 with SMTP id q17-20020a17090311d100b001d9859fb529mr553891plh.19.1707187917497;
-        Mon, 05 Feb 2024 18:51:57 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU9bZ1WC8hcxV9Y1WfuNZk+4rS0vmwVdNP40966oBIlZQcjEkOXNgUEyoaNGSIPgAg1c6bA/Fz4rS7lvMxmofCuYiLS7j/ahCGNezmKeTPy1MZ8Jl1GztxxcQVeon7P4dsLSz4qUFwmtC5Ph+dPBjgDKQ4R7IXTaePmiufAxX3gjbfa8Cha+KrBYcaz+3L4sZIaG+y1ie4P/N65iQEidqN45PsxJthEWgMMwze7oxCQyB0eZ9hp1zH27Oi2XetcKorlAjueB5RmaqEWWoGD3yyCHm88WsOmlbyVi0hSgDwBwTvv96/M6oQ=
-Received: from fastly.com (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
-        by smtp.gmail.com with ESMTPSA id jg14-20020a17090326ce00b001d9711d3e83sm606826plb.204.2024.02.05.18.51.56
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 05 Feb 2024 18:51:57 -0800 (PST)
-Date: Mon, 5 Feb 2024 18:51:54 -0800
-From: Joe Damato <jdamato@fastly.com>
-To: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, tariqt@nvidia.com,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	"open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH net-next] eth: mlx5: link NAPI instances to queues and
- IRQs
-Message-ID: <20240206025153.GA11388@fastly.com>
-References: <20240206010311.149103-1-jdamato@fastly.com>
- <878r3ymlnk.fsf@nvidia.com>
- <20240206013246.GA11217@fastly.com>
- <874jemml1j.fsf@nvidia.com>
- <20240206014151.GA11233@fastly.com>
- <87zfwel5qi.fsf@nvidia.com>
- <20240206015657.GA11257@fastly.com>
- <87sf26l3go.fsf@nvidia.com>
+	s=arc-20240116; t=1707187924; c=relaxed/simple;
+	bh=bq2ABozIdInk9f3RiCusWCHq2XVIshtqRKWElNQQ11M=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oEcEq/Mj88Qx4mTI9wTdHFveUKsJ4jVIGa9lgIfs7JOD2Vq9WkHFpNHZCkX4PLPlXL0FrJRG+NFms75LgtB7NfnEQ2nEt6o3WmASQvHjOx5D/mRxUV0iFL7ItLEmz5M5fMnchpqqyb4oRsh6yZquDj1JT+kU4yyNSt8ic/1pFk8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vOmbmYCA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 540C8C433F1;
+	Tue,  6 Feb 2024 02:52:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707187923;
+	bh=bq2ABozIdInk9f3RiCusWCHq2XVIshtqRKWElNQQ11M=;
+	h=From:To:Cc:Subject:Date:From;
+	b=vOmbmYCAyMcjTPDBExa+YMMSUcJ7pNPhNxNGTj21aG7LYarjqx+ATjZ+0q49woSF5
+	 5AS4nIuWaVKSmgYxorBaiqwnZAmY7G1KvVBc2Ni3QxGwfJhuLdEN10EUAKe2swnmEV
+	 W0aR1ALWESt+pqsFlpW8qsWAkSNFHImkFcrwoUenw4n7tSf7E6gT0aeaDcdrmpu2PR
+	 bovUf1kqitI4jJuPp74WsRqI3vR9hOh70GvlIIl8wuxOEJh5p0+DlQk7DNaL5n4/pE
+	 bD/DglJhieuKy6XneJ5io1WWUgGFEqB1AGk/QEin1xzdK7+oFLjEVR/SG6r3CxgtgL
+	 1r813pvFf5kQQ==
+From: SeongJae Park <sj@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: SeongJae Park <sj@kernel.org>,
+	cuiyangpei@gmail.com,
+	xiongping1@xiaomi.com,
+	damon@lists.linux.dev,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/damon/sysfs: handle 'state' file inputs for every sampling interval if possible
+Date: Mon,  5 Feb 2024 18:51:58 -0800
+Message-Id: <20240206025158.203097-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87sf26l3go.fsf@nvidia.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
 
-On Mon, Feb 05, 2024 at 06:38:41PM -0800, Rahul Rameshbabu wrote:
-> On Mon, 05 Feb, 2024 17:56:58 -0800 Joe Damato <jdamato@fastly.com> wrote:
-> > On Mon, Feb 05, 2024 at 05:44:27PM -0800, Rahul Rameshbabu wrote:
-> >> 
-> >> On Mon, 05 Feb, 2024 17:41:52 -0800 Joe Damato <jdamato@fastly.com> wrote:
-> >> > On Mon, Feb 05, 2024 at 05:33:39PM -0800, Rahul Rameshbabu wrote:
-> >> >> 
-> >> >> On Mon, 05 Feb, 2024 17:32:47 -0800 Joe Damato <jdamato@fastly.com> wrote:
-> >> >> > On Mon, Feb 05, 2024 at 05:09:09PM -0800, Rahul Rameshbabu wrote:
-> >> >> >> On Tue, 06 Feb, 2024 01:03:11 +0000 Joe Damato <jdamato@fastly.com> wrote:
-> >> >> >> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> >> >> >> > index c8e8f512803e..e1bfff1fb328 100644
-> >> >> >> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> >> >> >> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> >> >> >> > @@ -2473,6 +2473,9 @@ static void mlx5e_close_queues(struct mlx5e_channel *c)
-> >> >> >> >  	mlx5e_close_tx_cqs(c);
-> >> >> >> >  	mlx5e_close_cq(&c->icosq.cq);
-> >> >> >> >  	mlx5e_close_cq(&c->async_icosq.cq);
-> >> >> >> > +
-> >> >> >> > +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_TX, NULL);
-> >> >> >> > +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_RX, NULL);
-> >> >> >> 
-> >> >> >> This should be set to NULL *before* actually closing the rqs, sqs, and
-> >> >> >> related cqs right? I would expect these two lines to be the first ones
-> >> >> >> called in mlx5e_close_queues. Btw, I think this should be done in
-> >> >> >> mlx5e_deactivate_channel where the NAPI is disabled.
-> >> >> >> 
-> >> >> >> >  }
-> >> >> >> >  
-> >> >> >> >  static u8 mlx5e_enumerate_lag_port(struct mlx5_core_dev *mdev, int ix)
-> >> >> >> > @@ -2558,6 +2561,7 @@ static int mlx5e_open_channel(struct mlx5e_priv *priv, int ix,
-> >> >> >> >  	c->stats    = &priv->channel_stats[ix]->ch;
-> >> >> >> >  	c->aff_mask = irq_get_effective_affinity_mask(irq);
-> >> >> >> >  	c->lag_port = mlx5e_enumerate_lag_port(priv->mdev, ix);
-> >> >> >> > +	c->irq		= irq;
-> >> >> >> >  
-> >> >> >> >  	netif_napi_add(netdev, &c->napi, mlx5e_napi_poll);
-> >> >> >> >  
-> >> >> >> > @@ -2602,6 +2606,10 @@ static void mlx5e_activate_channel(struct mlx5e_channel *c)
-> >> >> >> >  		mlx5e_activate_xsk(c);
-> >> >> >> >  	else
-> >> >> >> >  		mlx5e_activate_rq(&c->rq);
-> >> >> >> > +
-> >> >> >> > +	netif_napi_set_irq(&c->napi, c->irq);
-> >> >> 
-> >> >> One small comment that I missed in my previous iteration. I think the
-> >> >> above should be moved to mlx5e_open_channel right after netif_napi_add.
-> >> >> This avoids needing to save the irq in struct mlx5e_channel.
-> >> >
-> >> > I couldn't move it to mlx5e_open_channel because of how safe_switch_params
-> >> > and the mechanics around that seem to work (at least as far as I could
-> >> > tell).
-> >> >
-> >> > mlx5 seems to create a new set of channels before closing the previous
-> >> > channel. So, moving this logic to open_channels and close_channels means
-> >> > you end up with a flow like this:
-> >> >
-> >> >   - Create new channels (NAPI netlink API is used to set NAPIs)
-> >> >   - Old channels are closed (NAPI netlink API sets NULL and overwrites the
-> >> >     previous NAPI netlink calls)
-> >> >
-> >> > Now, the associations are all NULL.
-> >> >
-> >> > I think moving the calls to active / deactivate fixes that problem, but
-> >> > requires that irq is stored, if I am understanding the driver correctly.
-> >> 
-> >> I believe moving the changes to activate / deactivate channels resolves
-> >> this problem because only one set of channels will be active, so you
-> >> will no longer have dangling association conflicts for the queue ->
-> >> napi. This is partially why I suggested the change in that iteration.
-> >
-> > As far as I can tell, it does.
-> >  
-> >> As for netif_napi_set_irq, that alone can be in mlx5e_open_channel (that
-> >> was the intention of my most recent comment. Not that all the other
-> >> associations should be moved as well). I agree that the other
-> >> association calls should be part of activate / deactivate channels.
-> >
-> > OK, sure that makes sense. I make that change, too.
-> >
-> 
-> Also for your v2, it would be great if you can use the commit message
-> subject 'net/mlx5e: link NAPI instances to queues and IRQs' rather than
-> 'eth: mlx5: link NAPI instances to queues and IRQs'.
+DAMON sysfs interface need to access kdamond-touching data for some of
+kdamond user commands.  It uses ->after_aggregation() kdamond callback
+to safely access the data in the case.  It had to use the aggregation
+interval callback because that was the only callback that users can
+access complete monitoring results.
 
-Didn't see this before I sent it. If it matters that much, I can send a v3
-with an updated commit message.
+Since patch series "mm/damon: provide pseudo-moving sum based access
+rate", which starts from commit 78fbfb155d20 ("mm/damon/core: define and
+use a dedicated function for region access rate update"), DAMON provides
+good-to-use quality moitoring results for every sampling interval.  It
+aims to help users who need to quickly retrieve the monitoring results.
+When the aggregation interval is set too long and therefore waiting for
+the aggregation interval can degrade user experience, or when the access
+pattern is expected to be significantly changed[1] could be such cases.
+
+However, because DAMON sysfs interface is still handling the commands
+per aggregation interval, the end user cannot get the benefit.  Update
+DAMON sysfs interface to handle kdamond commands for every sampling
+interval if applicable.  Specifically, all kdamond data accessing
+commands except 'commit' command are applicable.
+
+[1] https://lore.kernel.org/r/20240129121316.GA9706@cuiyangpei
+
+Signed-off-by: SeongJae Park <sj@kernel.org>
+---
+ mm/damon/sysfs-common.h  |  2 ++
+ mm/damon/sysfs-schemes.c | 22 +++++++++-------------
+ mm/damon/sysfs.c         | 21 ++++++++++++++++++---
+ 3 files changed, 29 insertions(+), 16 deletions(-)
+
+diff --git a/mm/damon/sysfs-common.h b/mm/damon/sysfs-common.h
+index 4c37a166eb81..ec0703e1e90b 100644
+--- a/mm/damon/sysfs-common.h
++++ b/mm/damon/sysfs-common.h
+@@ -49,6 +49,8 @@ int damon_sysfs_schemes_update_regions_start(
+ 		struct damon_sysfs_schemes *sysfs_schemes,
+ 		struct damon_ctx *ctx, bool total_bytes_only);
+ 
++void damos_sysfs_mark_finished_regions_updates(struct damon_ctx *ctx);
++
+ bool damos_sysfs_regions_upd_done(void);
+ 
+ int damon_sysfs_schemes_update_regions_stop(struct damon_ctx *ctx);
+diff --git a/mm/damon/sysfs-schemes.c b/mm/damon/sysfs-schemes.c
+index dd2fb5127009..98c6e5376486 100644
+--- a/mm/damon/sysfs-schemes.c
++++ b/mm/damon/sysfs-schemes.c
+@@ -127,17 +127,17 @@ static const struct kobj_type damon_sysfs_scheme_region_ktype = {
+  *
+  * Once the tried regions update request is received, the request handling
+  * start function (damon_sysfs_scheme_update_regions_start()) sets the status
+- * of all schemes as 'idle' again, and register ->before_damos_apply() and
+- * ->after_sampling() callbacks.
++ * of all schemes as 'idle' again, and register ->before_damos_apply()
++ * callback.
+  *
+  * Then, the first followup ->before_damos_apply() callback
+  * (damon_sysfs_before_damos_apply()) sets the status 'started'.  The first
+- * ->after_sampling() callback (damon_sysfs_after_sampling()) after the call
+- * is called only after the scheme is completely applied
+- * to the given snapshot.  Hence the callback knows the situation by showing
+- * 'started' status, and sets the status as 'finished'.  Then,
+- * damon_sysfs_before_damos_apply() understands the situation by showing the
+- * 'finished' status and do nothing.
++ * ->after_sampling() or ->after_aggregation() callback
++ *  (damon_sysfs_cmd_request_callback()) after the call is called only after
++ *  the scheme is completely applied to the given snapshot.  Hence the callback
++ *  knows the situation by showing 'started' status, and sets the status as
++ *  'finished'.  Then, damon_sysfs_before_damos_apply() understands the
++ *  situation by showing the 'finished' status and do nothing.
+  *
+  * If DAMOS is not applied to any region due to any reasons including the
+  * access pattern, the watermarks, the quotas, and the filters,
+@@ -2118,7 +2118,7 @@ static int damon_sysfs_before_damos_apply(struct damon_ctx *ctx,
+  * callback is registered, damon_sysfs_lock should be held to ensure the
+  * regions directories exist.
+  */
+-static int damon_sysfs_after_sampling(struct damon_ctx *ctx)
++void damos_sysfs_mark_finished_regions_updates(struct damon_ctx *ctx)
+ {
+ 	struct damon_sysfs_schemes *sysfs_schemes =
+ 		damon_sysfs_schemes_for_damos_callback;
+@@ -2134,8 +2134,6 @@ static int damon_sysfs_after_sampling(struct damon_ctx *ctx)
+ 			sysfs_regions->upd_status =
+ 				DAMOS_TRIED_REGIONS_UPD_FINISHED;
+ 	}
+-
+-	return 0;
+ }
+ 
+ /* Called from damon_sysfs_cmd_request_callback under damon_sysfs_lock */
+@@ -2208,7 +2206,6 @@ int damon_sysfs_schemes_update_regions_start(
+ 	damos_tried_regions_init_upd_status(sysfs_schemes, ctx);
+ 	damos_regions_upd_total_bytes_only = total_bytes_only;
+ 	ctx->callback.before_damos_apply = damon_sysfs_before_damos_apply;
+-	ctx->callback.after_sampling = damon_sysfs_after_sampling;
+ 	return 0;
+ }
+ 
+@@ -2237,7 +2234,6 @@ int damon_sysfs_schemes_update_regions_stop(struct damon_ctx *ctx)
+ {
+ 	damon_sysfs_schemes_for_damos_callback = NULL;
+ 	ctx->callback.before_damos_apply = NULL;
+-	ctx->callback.after_sampling = NULL;
+ 	damon_sysfs_schemes_region_idx = 0;
+ 	return 0;
+ }
+diff --git a/mm/damon/sysfs.c b/mm/damon/sysfs.c
+index 1f891e18b4ee..678de97fcc88 100644
+--- a/mm/damon/sysfs.c
++++ b/mm/damon/sysfs.c
+@@ -1379,11 +1379,13 @@ static int damon_sysfs_commit_schemes_quota_goals(
+  * damon_sysfs_cmd_request_callback() - DAMON callback for handling requests.
+  * @c:		The DAMON context of the callback.
+  * @active:	Whether @c is not deactivated due to watermarks.
++ * @after_aggr:	Whether this is called from after_aggregation() callback.
+  *
+  * This function is periodically called back from the kdamond thread for @c.
+  * Then, it checks if there is a waiting DAMON sysfs request and handles it.
+  */
+-static int damon_sysfs_cmd_request_callback(struct damon_ctx *c, bool active)
++static int damon_sysfs_cmd_request_callback(struct damon_ctx *c, bool active,
++		bool after_aggregation)
+ {
+ 	struct damon_sysfs_kdamond *kdamond;
+ 	bool total_bytes_only = false;
+@@ -1401,6 +1403,8 @@ static int damon_sysfs_cmd_request_callback(struct damon_ctx *c, bool active)
+ 		err = damon_sysfs_upd_schemes_stats(kdamond);
+ 		break;
+ 	case DAMON_SYSFS_CMD_COMMIT:
++		if (!after_aggregation)
++			goto out;
+ 		err = damon_sysfs_commit_input(kdamond);
+ 		break;
+ 	case DAMON_SYSFS_CMD_COMMIT_SCHEMES_QUOTA_GOALS:
+@@ -1418,6 +1422,7 @@ static int damon_sysfs_cmd_request_callback(struct damon_ctx *c, bool active)
+ 				goto keep_lock_out;
+ 			}
+ 		} else {
++			damos_sysfs_mark_finished_regions_updates(c);
+ 			/*
+ 			 * Continue regions updating if DAMON is till
+ 			 * active and the update for all schemes is not
+@@ -1450,7 +1455,16 @@ static int damon_sysfs_after_wmarks_check(struct damon_ctx *c)
+ 	 * after_wmarks_check() is called back while the context is deactivated
+ 	 * by watermarks.
+ 	 */
+-	return damon_sysfs_cmd_request_callback(c, false);
++	return damon_sysfs_cmd_request_callback(c, false, false);
++}
++
++static int damon_sysfs_after_sampling(struct damon_ctx *c)
++{
++	/*
++	 * after_sampling() is called back only while the context is not
++	 * deactivated by watermarks.
++	 */
++	return damon_sysfs_cmd_request_callback(c, true, false);
+ }
+ 
+ static int damon_sysfs_after_aggregation(struct damon_ctx *c)
+@@ -1459,7 +1473,7 @@ static int damon_sysfs_after_aggregation(struct damon_ctx *c)
+ 	 * after_aggregation() is called back only while the context is not
+ 	 * deactivated by watermarks.
+ 	 */
+-	return damon_sysfs_cmd_request_callback(c, true);
++	return damon_sysfs_cmd_request_callback(c, true, true);
+ }
+ 
+ static struct damon_ctx *damon_sysfs_build_ctx(
+@@ -1478,6 +1492,7 @@ static struct damon_ctx *damon_sysfs_build_ctx(
+ 	}
+ 
+ 	ctx->callback.after_wmarks_check = damon_sysfs_after_wmarks_check;
++	ctx->callback.after_sampling = damon_sysfs_after_sampling;
+ 	ctx->callback.after_aggregation = damon_sysfs_after_aggregation;
+ 	ctx->callback.before_terminate = damon_sysfs_before_terminate;
+ 	return ctx;
+-- 
+2.39.2
+
 
