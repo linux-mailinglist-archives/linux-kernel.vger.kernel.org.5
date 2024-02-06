@@ -1,200 +1,206 @@
-Return-Path: <linux-kernel+bounces-54495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54507-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52D1784AFF9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:32:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5086784B013
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:39:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9509428645D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:32:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 755151C24607
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:39:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA2B712B16F;
-	Tue,  6 Feb 2024 08:32:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TnIKQq1U"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85BE612D148;
+	Tue,  6 Feb 2024 08:37:33 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56CB01DFCD;
-	Tue,  6 Feb 2024 08:32:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.14
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707208345; cv=fail; b=iSNH/vGgiNQcOxpvxfGzkLlRdJBH354r2+5briebje1Y8kd0Ukp/DjUkDJl9D+1FuuZopFaBLLeluVDshBOXrQ6Olq4i0qB7Xr4e7RIqs3JlF2NITPt1vip6NBDkxRYJ6qTKmc3k/uUgMeBp/fYA7BMYHxPgJKuxQs+3lfW4VZ0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707208345; c=relaxed/simple;
-	bh=NcSsCos5n5qRI5sF2KtP/5QUup4pUVZ992gVEkV/i4Q=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=UL0ZMLjbJUy1nsBWNOLk6ZQ/0QFyPNnX9F51SZLBmzqEY91PFV/BvEg9SOQVFp7PkZLmXxDcn+CTqorzGHsD8ccxyVvcxumMs2J0/OdXVgr9CFBQdHTYGqPLakWZXApPb1CsXsiaWNMPwhqGCbO+Nftm/NnqYWxSI9MVbiVcvT0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TnIKQq1U; arc=fail smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707208342; x=1738744342;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=NcSsCos5n5qRI5sF2KtP/5QUup4pUVZ992gVEkV/i4Q=;
-  b=TnIKQq1U7IArynBsDgmueUibSVl+ddF1vUma3pMylxxY0bnWzpudgfwr
-   x78E43pw5q7vhvbq7yaHVvCjpkrwnoZQJoZqbruBG3yYhlvkVOsi62TEe
-   mvLlP0Bun/NalXIbtcVzt3U3lIbjl1N0RMG0ptqV0iRQcUyHotdlWvb86
-   +4xv/y3PVFl9VEnN68bCS7ue6zOg2tyPS022Aa/+Uer4X4oo6xTAYE2gj
-   ZXipEsBJSDpjFiVlihW0BDtrpyFX26KRjeD70raEitCdO74uCCmMi8/AF
-   /0F4NHVSOceo/SzlH4qeAMWo+R1zVztpbU1SQ7kuzIP+JikIdYSPCwa5A
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="852053"
-X-IronPort-AV: E=Sophos;i="6.05,246,1701158400"; 
-   d="scan'208";a="852053"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 00:31:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,246,1701158400"; 
-   d="scan'208";a="984220"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orviesa010.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 06 Feb 2024 00:31:59 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B3F212BF0C;
+	Tue,  6 Feb 2024 08:37:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707208652; cv=none; b=CopzsllwKlSbkOsfdW6fl02iQBkctbJBAkvOd/pjcQq/lKaolAHBeZzEMwjaDq9BJ+WR2bdu7hjbwhYGLRLCftbVnoB4xJYLXchNGyD2YLTeyGXl3ke+xNywaqMLc9mWRjgpyGVhvoW1uMcjgzzd8+vl0SW1wOxnetgD+nDlFnY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707208652; c=relaxed/simple;
+	bh=GD182B84c75sEn+FAFQpkVm/e1Dq6ZO4k6F2hsOQWsA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=uVr9iLgNApiPzS3VJrtEzUeVSEE7gDI7UKOh1GVwuyNe9DWDEMzxjv3tze88HIJmYc/R8zygWsiwf3InbIkmK5d7RVYPIropSJiqCvZguEbjCb0x0Xj3pWNnMOT0euthgF0LGUmfzBLFjo248HfT6Kdy9w8b0DULI8E9eb7KR/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TTc2B2BhDz1FK8K;
+	Tue,  6 Feb 2024 16:32:50 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (unknown [7.193.23.202])
+	by mail.maildlp.com (Postfix) with ESMTPS id BB2551A016B;
+	Tue,  6 Feb 2024 16:37:25 +0800 (CST)
+Received: from ubuntu2204.huawei.com (10.67.174.22) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 6 Feb 2024 00:31:58 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 6 Feb 2024 00:31:58 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 6 Feb 2024 00:31:58 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AFMBXhd2puie1n+vHoVc3gcIU1UVpXHMBO60xubIeIItbiwoTqg9ruHYLeYWcrMHX1aVyEiIhDlZ621jmV9oi4ayvhX0pH6e1Sf2F0AdqnNTPjG51W9j7Y0l4IOs4NwwBpC3k9RcXr1wZh4/PA9b1gx7Z6QHbaVko63buOZIWy0SUzAktAi4NnSA8yvmw2oZmO7ongR5CAM2fysxXP6iRNbtVR6xd0YOa2IzEKd/Kq25E78wLoBzf5Z/UeRXFgWT0oxouDm4Uw6z4QI2bLGQna2iL38jTuqqtVDmGZVga1LS354fpgy27NwWdVX7oyj26MCupBJ/eHEL4ME5UspyRQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NcSsCos5n5qRI5sF2KtP/5QUup4pUVZ992gVEkV/i4Q=;
- b=DwcpFh2qtKXPDoTPZQvKAC5LUQOew2+wML+enDFC1WAqrzMPkf4ITN+9bxAQziZyKybUp8ZjuTImr+rd45XXkpQhg3p1IybYtpOHckF5Qa0xjoKatBGviPqYoSWFogcPdRIkiGPBgaWiMmUUsI47daDKuLnn2Hem8rxlEHvCeH0OZtftirVJLnGVbD08fO0wh47hsARxsxIAQUXP9tGFALottNyRnK79eD4phxZTzejQj7SD3QWxhiNRHKr8kTPfumq9k4Z+z/lfjcrxvE8teGhK+2WsC/KxOwSdvyCXTpAFniyZyIYVHX9XlPGoWEWxieiLQv6g/tkMdsUs1w2GIw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by DS7PR11MB6296.namprd11.prod.outlook.com (2603:10b6:8:94::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.34; Tue, 6 Feb
- 2024 08:31:51 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::a8e9:c80f:9484:f7cb]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::a8e9:c80f:9484:f7cb%3]) with mapi id 15.20.7249.035; Tue, 6 Feb 2024
- 08:31:51 +0000
-From: "Tian, Kevin" <kevin.tian@intel.com>
-To: Lu Baolu <baolu.lu@linux.intel.com>, Joerg Roedel <joro@8bytes.org>, "Will
- Deacon" <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, "Jason
- Gunthorpe" <jgg@ziepe.ca>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Nicolin Chen <nicolinc@nvidia.com>
-CC: "Liu, Yi L" <yi.l.liu@intel.com>, Jacob Pan
-	<jacob.jun.pan@linux.intel.com>, Longfang Liu <liulongfang@huawei.com>,
-	"Zhao, Yan Y" <yan.y.zhao@intel.com>, Joel Granados <j.granados@samsung.com>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>, "kvm@vger.kernel.org"
-	<kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, Jason Gunthorpe <jgg@nvidia.com>
-Subject: RE: [PATCH v11 14/16] iommu: Track iopf group instead of last fault
-Thread-Topic: [PATCH v11 14/16] iommu: Track iopf group instead of last fault
-Thread-Index: AQHaU1R69Srcwc/GAk+an+ZmIUzfr7D9Bxtw
-Date: Tue, 6 Feb 2024 08:31:51 +0000
-Message-ID: <BN9PR11MB5276D08766EF06B55F471EDC8C462@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20240130080835.58921-1-baolu.lu@linux.intel.com>
- <20240130080835.58921-15-baolu.lu@linux.intel.com>
-In-Reply-To: <20240130080835.58921-15-baolu.lu@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|DS7PR11MB6296:EE_
-x-ms-office365-filtering-correlation-id: c42c7936-d9c4-4861-06aa-08dc26ee1141
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: OMhpZQz8pyZx82szFefjwwt2oNBu51tFEpYBG7AjkUTr7bd1Ru3fVl/W1F9Klfa2XoEYjwnZeHfgfAaQXrI3Z0ji7VG6mAh7mpKDWDytg0OBwmkTKw7dze+zt/1ZV7/uZVX+Wg2xJNl3QFtk+aFh1vPbiSP1nEFlonLNjdURcPdjjWEjtLytu4+HWJoSNfpbb9AGGl+kvMbLoREmvlUkTPfp6Rl0+BVhs+oB2fXpBgIE2uu4z6GB6biHliUV2zxtfRvS8oFhpgpbSVpsx6oTYPJVbjqlItn8cvOcEJroiHOP9IuOTfH7qhe73XCtvfBI/tz4yYnwVnoO7Ib+suapJtQYtQN9ll+YiiZhnX5Qzmlp7p2U0/EWjlSqKQgPUHVwk0FD4bLHpGdq6gaH9iD0qLjLKev0KAqoeONvlEhDHpHDd7h/Kbv8eG7qxs8NtlYNUrbw6AD93qmrZRhA3IsXqRTv3mTY9YmCBnwN96ybGDJIYXV5sT71coARR0aiPRFzeim1GbhnEwnML6hbyvKLlAgI3QO4dg2hH28jwdKHdJRRxZg8+Ex/40KVBAO4txKUsZN3c9m14J7VBKNXXcF29c/zJdZ1Lbbcj417rW+Xf4cRIW3zOJ1kITt2JMstaAYb
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(396003)(136003)(376002)(346002)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(55016003)(33656002)(38070700009)(478600001)(86362001)(9686003)(41300700001)(7416002)(82960400001)(83380400001)(26005)(66446008)(316002)(71200400001)(66556008)(2906002)(66476007)(6506007)(5660300002)(8936002)(110136005)(8676002)(66946007)(64756008)(52536014)(38100700002)(7696005)(122000001)(76116006)(54906003)(4326008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?LEdT4SfViL3MKcqryNYqBR6ijN9HupH0jtPRenBxKorlZAppKctNHXkFjQZY?=
- =?us-ascii?Q?hKQL35Cexny4xoXMGrGSAuxq3D0x/fwMYBekTQuzf9oGV+FgYtID2v6mGNq1?=
- =?us-ascii?Q?ldExNKakdnhxoQIOLREWncIsR/k6GfU+CvGnxBxwZ+NILbmAIgeab5h1Bz3A?=
- =?us-ascii?Q?aDfSJqIrff2Vi8TyTPFkHmzmup5p8Wm9cMYfNMIH5PWfQ2DwcCFWb6rhwZ0q?=
- =?us-ascii?Q?zlgK9YteASn9Zhdt8cZRUG0i78PDzqhzwlMzATsTZ7lt08/LLFzllpoDvqWW?=
- =?us-ascii?Q?qoZUp2eEfrx5YWCPrWiP8870a7OlSjvZJi7xOxibFtxmFpnLdcdfqnp8FahH?=
- =?us-ascii?Q?L2h5XuNHo30SIqzuRulPqACaVkrGsUnWhhAJqTrIAtblBevNZiISDzPLuus6?=
- =?us-ascii?Q?hUxta8wRY1PSNI31Rw6/1/L+rWpjmz5bzs8irs2QK+H1QotzClv1bWYhJMoC?=
- =?us-ascii?Q?gxEa0goHq5Sa/k76rYAKU2/QraT5mIok4TXR+EJnKZUrLrLaEBh4R9RNMJAb?=
- =?us-ascii?Q?eHIf3TbFJIRzrGIpocIDqdGRO5YszokK/474E0sD6vkt0wSPirRN/5V19BhS?=
- =?us-ascii?Q?dcfU8v0zzpj57xhZZSh8bwq+Kweb+cFYx7YehJ5UAwLsfh45sPclTiREfpIT?=
- =?us-ascii?Q?lDhnl1gvo63A9ICEPtvEwQOZjx5H+gWfF8bFolSLubUqbnA33wgotMJilEwD?=
- =?us-ascii?Q?eC5OpA40xbUUEQBx9FiPBBAiF6wiy/4QIWR+98BwXPvrEOU5nJloEjNEBbc3?=
- =?us-ascii?Q?MOqT/b1pmHeEEVnRgH8uVbVvTIBxLXNynnDiHVZYeuUSAk6uip3HA0z4ooTJ?=
- =?us-ascii?Q?+Up8RvDq/7ejJmaNiljWIwgFmdwzeP4Z0FzNZd/EVDoWKrkud5tN0LmaV06+?=
- =?us-ascii?Q?gi0MpRSVK3U0Ic85Xxy+dIFs9D7ZVjY+2e6xTbGq40eJuVS1VpIl1d0k40+Z?=
- =?us-ascii?Q?0Atp4LoPY7ObK1WkNqUvXR192Gg9pVy62yLKRyBCfeJ6J0k6+HJ3sIW6zXOU?=
- =?us-ascii?Q?z6vgzjwEOvFc6gsTw9ehNaHTKsnFXTIU14EuyoR7xZWDtFzp//CRHf5Z829a?=
- =?us-ascii?Q?+yZGu9jgEf1Lc5heb7jp/Ol4hRBq/9LD836kviHmN9vLudDZ28qSxNsPfH2I?=
- =?us-ascii?Q?0U+8sQcMouYQDigSbYjGqmrVIorKJsocYdeyRjBHZsHKmpRwViX8aIwRyEch?=
- =?us-ascii?Q?GSF/FLUzUmmo9VdXHr8856GqkoSZ9Ur7vNwNEt1PGtcrGIhzJyh4Y3YD2REc?=
- =?us-ascii?Q?7dUuzJnO/YJPKwtu/ksabDajBOXwbyfiNxfQCMTc3TlNmJ3Vr7XSZJ4hVlwb?=
- =?us-ascii?Q?Z780X/wHo2zWXgxq7zNHjpUdqh9aWGxSs6RGgVlKkCUrhpdtZMZcNLqtcc9u?=
- =?us-ascii?Q?8mw8EV6S4TeRLKBxANh4slTSzWRjQeEz4c2gn/MZrOGUKf8zuEw4NeHNsLJg?=
- =?us-ascii?Q?jX/K+9Bq+sk6k2gWI7ZnOK00YKJlbFrtvFGN9vXWrfDsn8u817yZ84z58uF2?=
- =?us-ascii?Q?LsRpDHD2AyPKqxV43ZPp3TJhJ7PC8dko4KKTRwKq4Qe4ZWF1gw6Zzfjxsf2i?=
- =?us-ascii?Q?/Kns+ZTL4ZX4D0tz629SrurLZCa6spSm6PpGcYjM?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ 15.1.2507.35; Tue, 6 Feb 2024 16:37:25 +0800
+From: Yang Jihong <yangjihong1@huawei.com>
+To: <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+	<namhyung@kernel.org>, <mark.rutland@arm.com>,
+	<alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
+	<irogers@google.com>, <adrian.hunter@intel.com>,
+	<linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: <yangjihong1@huawei.com>
+Subject: [PATCH v2 0/5] perf sched: Minor optimizations for resource initialization
+Date: Tue, 6 Feb 2024 08:32:23 +0000
+Message-ID: <20240206083228.172607-1-yangjihong1@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c42c7936-d9c4-4861-06aa-08dc26ee1141
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Feb 2024 08:31:51.2932
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: btNSiemUFGoY/XOWXuhH2hsfJw2+fHbOsK/0T4kW6j43Hn52y+Bjxkwa1biS5wo7Zzm/BwcrbRxnJspICV76aQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB6296
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
 
-> From: Lu Baolu <baolu.lu@linux.intel.com>
-> Sent: Tuesday, January 30, 2024 4:09 PM
->=20
-> Previously, before a group of page faults was passed to the domain's iopf
-> handler, the last page fault of the group was kept in the list of
-> iommu_fault_param::faults. In the page fault response path, the group's
-> last page fault was used to look up the list, and the page faults were
-> responded to device only if there was a matched fault.
->=20
-> The previous approach seems unnecessarily complex and not performance
-> friendly. Put the page fault group itself to the outstanding fault list.
-> It can be removed in the page fault response path or in the
-> iopf_queue_remove_device() path. The pending list is protected by
-> iommu_fault_param::lock. To allow checking for the group's presence in
-> the list using list_empty(), the iopf group should be removed from the
-> list with list_del_init().
->=20
-> IOMMU_PAGE_RESP_PASID_VALID is set in the code but not used anywhere.
-> Remove it to make the code clean. IOMMU_PAGE_RESP_PASID_VALID is set
-> in the response message indicating that the response message includes
-> a valid PASID value. Actually, we should keep this hardware detail in
-> the individual driver. When the page fault handling framework in IOMMU
-> and IOMMUFD subsystems includes a valid PASID in the fault message, the
-> response message should always contain the same PASID value. Individual
-> drivers should be responsible for deciding whether to include the PASID
-> in the messages they provide for the hardware.
->=20
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> Tested-by: Yan Zhao <yan.y.zhao@intel.com>
+start_work_mutex, work_done_wait_mutex, curr_thread, curr_pid, and
+cpu_last_switched are initialized together in cmd_sched(),
+but for different perf sched subcommands, some actions are unnecessary,
+especially perf sched record.
+This series of patches initialize only required resources for different
+subcommands.
 
-Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+Simple functional testing:
+
+  # perf sched record perf bench sched messaging
+  # Running 'sched/messaging' benchmark:
+  # 20 sender and receiver processes per group
+  # 10 groups == 400 processes run
+
+       Total time: 0.204 [sec]
+  [ perf record: Woken up 1 times to write data ]
+  [ perf record: Captured and wrote 14.868 MB perf.data (133947 samples) ]
+
+  # perf sched latency
+
+   -------------------------------------------------------------------------------------------------------------------------------------------
+    Task                  |   Runtime ms  | Switches | Avg delay ms    | Max delay ms    | Max delay start           | Max delay end          |
+   -------------------------------------------------------------------------------------------------------------------------------------------
+    qemu-system-x86:(3)   |      2.753 ms |       10 | avg:   0.963 ms | max:   8.526 ms | max start: 457541.695704 s | max end: 457541.704230 s
+    sched-messaging:(401) |   2995.481 ms |    36312 | avg:   0.944 ms | max: 111.551 ms | max start: 457541.645349 s | max end: 457541.756900 s
+    rcu_sched:14          |      0.402 ms |       32 | avg:   0.266 ms | max:   7.996 ms | max start: 457541.581363 s | max end: 457541.589359 s
+    sshd:48125            |      0.461 ms |        2 | avg:   0.033 ms | max:   0.036 ms | max start: 457541.584374 s | max end: 457541.584410 s
+    perf:112408           |      2.321 ms |        2 | avg:   0.031 ms | max:   0.032 ms | max start: 457541.846874 s | max end: 457541.846906 s
+  <SNIP>
+    ksoftirqd/1:22        |      0.704 ms |        3 | avg:   0.005 ms | max:   0.005 ms | max start: 457541.845388 s | max end: 457541.845393 s
+    kworker/15:0-mm:61886 |      0.227 ms |       21 | avg:   0.005 ms | max:   0.006 ms | max start: 457541.739187 s | max end: 457541.739193 s
+    kworker/13:1-ev:92643 |      0.249 ms |       22 | avg:   0.005 ms | max:   0.006 ms | max start: 457541.768695 s | max end: 457541.768701 s
+    kworker/12:1-ev:61202 |      0.418 ms |       40 | avg:   0.005 ms | max:   0.007 ms | max start: 457541.739679 s | max end: 457541.739687 s
+   -----------------------------------------------------------------------------------------------------------------
+    TOTAL:                |   3007.424 ms |    36776 |
+   ---------------------------------------------------
+
+  # echo $?
+  0
+
+  # perf sched map
+    *A0                                                               457541.580856 secs A0 => migration/0:15
+    *.                                                                457541.580886 secs .  => swapper:0
+     .  *B0                                                           457541.581018 secs B0 => migration/1:21
+     .  *.                                                            457541.581050 secs
+     .   .  *C0                                                       457541.581147 secs C0 => migration/2:27
+     .   .  *.                                                        457541.581174 secs
+     .   .   .  *D0                                                   457541.581259 secs D0 => migration/3:33
+  <SNIP>
+     E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7 *E7  .   .   .   .    457541.847783 secs
+     E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7 *E7  .   .   .    457541.847873 secs
+     E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7 *E7  .   .    457541.847954 secs
+     E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7 *E7  .    457541.848034 secs
+     E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7  E7 *E7   457541.848108 secs
+  # echo $?
+  0
+
+  # perf sched replay
+  run measurement overhead: 108 nsecs
+  sleep measurement overhead: 65244 nsecs
+  the run test took 1000002 nsecs
+  the sleep test took 1079677 nsecs
+  nr_run_events:        40700
+  nr_sleep_events:      41415
+  nr_wakeup_events:     31601
+  target-less wakeups:  15
+  multi-target wakeups: 805
+  task      0 (             swapper:         0), nr_events: 7307
+  task      1 (             swapper:         1), nr_events: 1
+  task      2 (             swapper:         2), nr_events: 1
+  <SNIP>
+  task    713 (     sched-messaging:    112809), nr_events: 987
+  task    714 (     sched-messaging:    112810), nr_events: 2706
+  ------------------------------------------------------------
+  #1  : 1298.443, ravg: 1298.44, cpu: 8281.74 / 8281.74
+  #2  : 1316.426, ravg: 1300.24, cpu: 7577.61 / 8211.32
+  #3  : 1323.864, ravg: 1302.60, cpu: 7932.48 / 8183.44
+  #4  : 1329.423, ravg: 1305.29, cpu: 7646.17 / 8129.71
+  #5  : 1321.419, ravg: 1306.90, cpu: 7669.90 / 8083.73
+  #6  : 1322.082, ravg: 1308.42, cpu: 7755.66 / 8050.92
+  #7  : 1324.330, ravg: 1310.01, cpu: 7361.51 / 7981.98
+  #8  : 1312.489, ravg: 1310.26, cpu: 7170.11 / 7900.80
+  #9  : 1312.002, ravg: 1310.43, cpu: 7176.40 / 7828.36
+  #10 : 1311.737, ravg: 1310.56, cpu: 7121.14 / 7757.63
+  # echo $?
+  0
+
+  # perf sched script
+              perf  112408 [000] 457541.580826: sched:sched_stat_runtime: comm=perf pid=112408 runtime=53050 [ns] vruntime=621244222333 [ns]
+              perf  112408 [000] 457541.580831:       sched:sched_waking: comm=migration/0 pid=15 prio=0 target_cpu=000
+              perf  112408 [000] 457541.580853: sched:sched_stat_runtime: comm=perf pid=112408 runtime=24379 [ns] vruntime=621244246712 [ns]
+              perf  112408 [000] 457541.580856:       sched:sched_switch: prev_comm=perf prev_pid=112408 prev_prio=120 prev_state=R+ ==> next_comm=migration/0 next_pid=15 next_prio=0
+  <SNIP>
+           swapper       0 [012] 457541.847873:       sched:sched_switch: prev_comm=swapper/12 prev_pid=0 prev_prio=120 prev_state=R ==> next_comm=perf next_pid=112408 next_prio=120
+           swapper       0 [013] 457541.847954:       sched:sched_switch: prev_comm=swapper/13 prev_pid=0 prev_prio=120 prev_state=R ==> next_comm=perf next_pid=112408 next_prio=120
+           swapper       0 [014] 457541.848034:       sched:sched_switch: prev_comm=swapper/14 prev_pid=0 prev_prio=120 prev_state=R ==> next_comm=perf next_pid=112408 next_prio=120
+           swapper       0 [015] 457541.848108:       sched:sched_switch: prev_comm=swapper/15 prev_pid=0 prev_prio=120 prev_state=R ==> next_comm=perf next_pid=112408 next_prio=120
+  # echo $?
+  0
+
+  # perf sched timehist
+  Samples do not have callchains.
+             time    cpu  task name                       wait time  sch delay   run time
+                          [tid/pid]                          (msec)     (msec)     (msec)
+  --------------- ------  ------------------------------  ---------  ---------  ---------
+    457541.580856 [0000]  perf[112408]                        0.000      0.000      0.000
+    457541.580886 [0000]  migration/0[15]                     0.000      0.024      0.029
+    457541.581018 [0001]  perf[112408]                        0.000      0.000      0.000
+    457541.581050 [0001]  migration/1[21]                     0.000      0.006      0.032
+    457541.581147 [0002]  perf[112408]                        0.000      0.000      0.000
+    457541.581174 [0002]  migration/2[27]                     0.000      0.005      0.026
+  <SNIP>
+    457541.847623 [0009]  <idle>                              0.010      0.000      1.489
+    457541.847704 [0010]  <idle>                              0.012      0.000      1.777
+    457541.847783 [0011]  <idle>                              0.233      0.000      1.213
+    457541.847873 [0012]  <idle>                              0.008      0.000     24.188
+    457541.847954 [0013]  <idle>                              0.009      0.000      1.734
+    457541.848034 [0014]  <idle>                              0.009      0.000      2.969
+    457541.848108 [0015]  <idle>                              0.220      0.000      1.205
+  # echo $?
+  0
+
+Changes since v1:
+ - Change goto labels name to out_put_xxx in perf_sched__map().
+ - Use zfree to replace free.
+ - Add fixes tag and reviewed-by tag for Arnaldo.
+
+Yang Jihong (5):
+  perf sched: Move start_work_mutex and work_done_wait_mutex
+    initialization to perf_sched__replay()
+  perf sched: Fix memory leak in perf_sched__map()
+  perf sched: Move curr_thread initialization to perf_sched__map()
+  perf sched: Move curr_pid and cpu_last_switched initialization to
+    perf_sched__{lat|map|replay}()
+  perf thread_map: Free strlist on normal path in
+    thread_map__new_by_tid_str()
+
+ tools/perf/builtin-sched.c   | 163 ++++++++++++++++++++++-------------
+ tools/perf/util/thread_map.c |   2 +-
+ 2 files changed, 105 insertions(+), 60 deletions(-)
+
+-- 
+2.34.1
+
 
