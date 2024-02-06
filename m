@@ -1,220 +1,284 @@
-Return-Path: <linux-kernel+bounces-54159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 045AF84ABAA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:36:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA20B84ABA7
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:35:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DEF71C23496
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:36:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCD421C23892
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:35:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A40ED1C06;
-	Tue,  6 Feb 2024 01:36:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2587AD25;
+	Tue,  6 Feb 2024 01:35:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="qjIRBoo6"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2075.outbound.protection.outlook.com [40.107.243.75])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gRAcILvL"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFFA11109;
-	Tue,  6 Feb 2024 01:35:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.75
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707183360; cv=fail; b=M4+j3aJ/sUciy21wbsUlsfjKz4sM6Fv6xaM0T4nX7OgNSgiEfiMkWhLJ9upFl6chw3kXvNvPows7E/nY7KOznf5RQkXrkIFejvZlwd4MMkEf1+GWwHsL0ZKtIH6NYxvkAH7+iGR9NzQibGqbAI9lE2b7Dkysy72NHOBkQCIiYs4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707183360; c=relaxed/simple;
-	bh=pkHodM9lmzpkbdkkC4UAgp6J1FoiW5Iotynd2FopS+U=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 Content-Type:MIME-Version; b=skqr8x0WnFo32FywYY4KF7WH5yhrGN/K4V29G0n5yXK96o0myo6hfscRFxeY8RCLKvFaTBPPN9ca1nBeK4QRCTQ1Ey11ziiRGG0CQPyfbANmfRxC3fxmaLQlsI1xYI4MNPw/SjEXgvUeFnIe2sjgsiOKpLse7foNcwKIIYFeHWM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=qjIRBoo6; arc=fail smtp.client-ip=40.107.243.75
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hnnknzTQRWO3fo9p/AMZUqagyWx4yAJ0Y+fi1creTYWgcgKE5nEgoEHeamyy3BHLkUorz1qKChclknGdxzB9Kr7jMRvvl4IdN1tbB1+WICAsNIkeeMc94bvjExQAMtiOcb6HEF+hNC9qYgIPpzhdiSgvt4JiO21Fn9pLL832GCUS/btq5Oodu0BNNw/0IOTAv+bnMKfcDxKvCxMehxXw7pMC+v8nSL+tQuuZ1Dm/s7kloOzf4e8MW1rP5jPpP+X0TOYS7rqSFu3yDZcdWMUoJCQSrIGCCbmuPOmUaBtCS1OnYyRu3o6+XZOAAOn7h0KZeEjw85foKgmDkYn/pVcapw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9cXwBabEzo9lDMmgPMPu3A9MYLTjTIdoOpgYkHdWarM=;
- b=ALvZVmkuUGr721+G2+O6R4bJ7nH0UQxq6p42tGHMBxob/Kt5eK1sFUp7aw2kCXbCQeqhDufEgWv2YV4Fhos8u9Xz9tXCpJG3aCZGD5UmT60oUwAUsw0PpRkO0Hx/ucW14E5a9+QPhlGcU42Ba3NzFJWcb1jEWUIO3u4pVqVwUnFzFktnfPAHVKvLEpxXMLQjz2GKGM27CjTwUcDOtzralAglQ2iGq0ZlBDpckBK2sqen949NIvDc89tno/u/0aMcpSPaULfr2pHgBK2oYSM2IfoEqjz9kFFd6kMa2MnwYaOdQ2wqh7lurE35ZtWlC7xTZWQ/PGg6OkPnhQiPDNBukw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9cXwBabEzo9lDMmgPMPu3A9MYLTjTIdoOpgYkHdWarM=;
- b=qjIRBoo6da4hj6jPW5XWnIQa1khYf73e5bha4ISUMiQp1Emh8j93zt5cwK+7z3rBPbn9HJPdOwyrX8iAyc9yZdeCjd/rwGtke+Xo1SCOwC0r6+dOqK2gHPmldoOfgQ6d7TS6OZNNtFBqdrTsrk/My9FrM6IXc3E5Wc7PjtfgG2nT90a+ltKfUUQEKz5OUOha+kVyCVHkLnBiWsga771ou7gVws6CJwBNOpqHcrxtQDmtT50h3HgnTJbKoj4DsWY4xvthKsH4DehociHbXbsUUTjyH3Qj2LLpXoXuSTmfexIgSxgEG1KpqFuSfoKjvWKbpbqQt5uaDX5D3cTMDaP9wA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
- by BN9PR12MB5225.namprd12.prod.outlook.com (2603:10b6:408:11e::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.17; Tue, 6 Feb
- 2024 01:35:55 +0000
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::d726:fa79:bfce:f670]) by BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::d726:fa79:bfce:f670%7]) with mapi id 15.20.7270.012; Tue, 6 Feb 2024
- 01:35:54 +0000
-References: <20240206010311.149103-1-jdamato@fastly.com>
- <878r3ymlnk.fsf@nvidia.com> <20240206013246.GA11217@fastly.com>
-User-agent: mu4e 1.10.8; emacs 28.2
-From: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-To: Joe Damato <jdamato@fastly.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, tariqt@nvidia.com,
- Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, "open list:MELLANOX MLX5 core VPI driver"
- <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH net-next] eth: mlx5: link NAPI instances to queues and IRQs
-Date: Mon, 05 Feb 2024 17:33:39 -0800
-In-reply-to: <20240206013246.GA11217@fastly.com>
-Message-ID: <874jemml1j.fsf@nvidia.com>
-Content-Type: text/plain
-X-ClientProxiedBy: BY3PR05CA0059.namprd05.prod.outlook.com
- (2603:10b6:a03:39b::34) To BYAPR12MB2743.namprd12.prod.outlook.com
- (2603:10b6:a03:61::28)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E17A48F6E
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 01:35:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707183343; cv=none; b=s1aO92zXV/LWw3IO47r1URU+vGMjmXnsmox7Lk075KR+VlTkjVuS0y0Pm6xHPrEMQFBt1aXP+AsCTFMBrJnCbAIw5CRm1u+SdeG5oC58eNUKnKkBAEj1xbuR+EvtUxDynVacsvzSaOkGa5e7eMLJpEcvVRn1V0H9mXQt8iKrVpQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707183343; c=relaxed/simple;
+	bh=TdErOC3oBHrD3EqLQL/DmWpuLadgOHm4vmA2o+l7M2I=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=EjXF/AHI/3hY4gzV3tdzT+qF2WaqykEnpIuwjcbkp4h8GkV0KhfAiPMVEqdp0B6NYDnMA1MRPmGbaP0jAA4dAsQQ99r32OCPn4P4Uqi9l8XPXfLDpaGnc7pq/goRrtSgEz3Y6zw0TxpX6X7YGQPrayXYpYezCPB2a0AVo9led5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gRAcILvL; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707183342; x=1738719342;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=TdErOC3oBHrD3EqLQL/DmWpuLadgOHm4vmA2o+l7M2I=;
+  b=gRAcILvLvzW7Mf2swkby+vxfGzhiRXWfoR0xbTxoAgKiw5HSr39oLiHC
+   4ULtAsE8bx06zpvglcLv6Zh7C3zFwSzPO+B0S77f6fghIb/H1uzwViwaR
+   zGQkIv2KB/kDsZ8eLncJivzpHRaql7MPazXaIhNhsnfUdvZchHzPddUMu
+   BfKzVqlX1Bhjq6FUI9J0UHjkag+foLoqnxmjnTrw4qQNPLI7W8U/edvXP
+   +x5Ac8FdWWEubTlAOFVr/aC+XLvptQ8T5wgeMgyjneX6D3mu8b4dCPYzt
+   oy0egGOWdRb1qkxzhKlsX2+sxT/XzjbXtTHNsfsYqKqp7g2NGUp/XnHM+
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="18071355"
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="18071355"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 17:35:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
+   d="scan'208";a="928850"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 17:35:38 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Kairui Song <ryncsn@gmail.com>
+Cc: linux-mm@kvack.org,  Kairui Song <kasong@tencent.com>,  Andrew Morton
+ <akpm@linux-foundation.org>,  Chris Li <chrisl@kernel.org>,  Minchan Kim
+ <minchan@kernel.org>,  Hugh Dickins <hughd@google.com>,  Johannes Weiner
+ <hannes@cmpxchg.org>,  Matthew Wilcox <willy@infradead.org>,  Michal Hocko
+ <mhocko@suse.com>,  Yosry Ahmed <yosryahmed@google.com>,  David
+ Hildenbrand <david@redhat.com>,  Yu Zhao <yuzhao@google.com>,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/swap: fix race condition in direct swapin path
+In-Reply-To: <20240205110959.4021-1-ryncsn@gmail.com> (Kairui Song's message
+	of "Mon, 5 Feb 2024 19:09:59 +0800")
+References: <20240205110959.4021-1-ryncsn@gmail.com>
+Date: Tue, 06 Feb 2024 09:33:41 +0800
+Message-ID: <871q9q1imi.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2743:EE_|BN9PR12MB5225:EE_
-X-MS-Office365-Filtering-Correlation-Id: 59bf21fd-e4c0-4740-6c52-08dc26b3f57f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Dm4aZ0tzgxg8DSAnKZ9GG0Mxo9bz6hdb4+mxsO2SR8A0VWjqS87df6VCNbHR3kQjPfI9FGcS7TcdtVm5tvSCpg2yrqP+rPaYl0vvRbGOrn7yCiDg4WMM1VaPInBPcPMmILYYkt1wB3mKPeAiHWm0TADwxrtou/nfPntxv5qYcJNLn82xMl7nNLQIfdOdZ459TxHUF8i6/9tUxQ6KOjIFChLrKi1+8iAVaTdzSNvgHyIxoh94V22GPKY1Ug4oWwNfipG/qqhy8gSoR0FM4XE0mGahEHA5FhN77NQ61WvVJAr0ywrqSu6swEQa+cp/+XHN61gCmNiqMOEDfDlv57/Yc0pQpXnz1Oxz6f6RRhZrZi4hutZV+rYUvid4MTwTB7BcftpbMVLgoyZrrsULMih2uJB9npCtwqO5+uZnI5FOCPq55QGJrSRRIjpAOyIb7vt6yo1NDxnTUKKaB0D3uEDmdOhQZl3GInc25r6sbWworcpjI2To/Gja48uou98anr5+zigVm2GwXo4gPuP8M6iHa4WGw0lpOcLHW6QGPYMN/5b+0EMpxuV/xENO6XtP9PtO
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(39860400002)(136003)(346002)(366004)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(36756003)(2616005)(6486002)(26005)(6512007)(38100700002)(86362001)(6506007)(83380400001)(41300700001)(5660300002)(54906003)(8936002)(66556008)(8676002)(66946007)(4326008)(66476007)(6916009)(316002)(478600001)(2906002)(6666004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Wm6rEGaxkZLnhbewWV+uxklrR1cQjwgiyCeqeXW9fQENySC2iwukEJpUuCUy?=
- =?us-ascii?Q?uNFdPytiiPJet6Ar7D8oiRoavH88FH9cYu7bJIw1heJbn/2oEupzW7yjVD4K?=
- =?us-ascii?Q?2uaV+Y2ZYweiiKYGbgvkYfp2+xcDXWZa6Wv0l9jWg8Qr88Qq3m7X/B01eLZP?=
- =?us-ascii?Q?upPZA5GbibtvBG8XGPH2fIR2lD1Fu7U8xOn6zEV8FK3S8tnmjfU+ExA7QfMb?=
- =?us-ascii?Q?c3ngEvgd6BGBmKSl6fO1sSCzS0xxdh2nKyy3g0ZLeQZwvezwg7cxm3Mu7qTo?=
- =?us-ascii?Q?wvnhUDLIobYqjm039lYXizMxNvLWtCZ1hMTn2QgEBLemHSIm7a60+WzEtySK?=
- =?us-ascii?Q?aWaVFG7+jPYPx4UhZliunXrCTWONxMCfdxTehlbIdh7R2fil6xaanwLe1ABh?=
- =?us-ascii?Q?uq9G+c1KOuhbJZe8Ht81HgWPmBw7m+VtkpDLA9lcdC52zq7CjCQqApd8ChxX?=
- =?us-ascii?Q?wK5AL9RpoVnoPsfM6VESwdgVjKLdTUq5fpUyYxMNhBntWNnxi6uLjilaLl4C?=
- =?us-ascii?Q?sUdFZiwoWem4F3L39ptLExnQHC+PIEhVfze3sU6saPUG3oh4VORx0H65bKeY?=
- =?us-ascii?Q?q4h5BbrDq5i3XSl9CTJFy0FGzV1tv2YXDvjUlmanSFQbIEEb74J+nqRg/+EJ?=
- =?us-ascii?Q?iHsQ3w+6ScL4JP0ZiWcg2n1xNk+NOFwJ36KoVADTMxA70LrquXH3+j0pramj?=
- =?us-ascii?Q?rCk68j0T2o9OBraKTteL8mr5Zyj2KmFMqTS/AjizDtDEsgbJU+2AgHfFh8Cz?=
- =?us-ascii?Q?Ir++sJVBPZEgqU5VQCU1ioTwQRcLiNBxWlZ53qycW7kobpym9GQsC1PAuLYI?=
- =?us-ascii?Q?wyvaVUlAPC0MLe2ful7mDXMfCBtBv0Jm5dp7AKTsl7ecDr8uT9xznGGnTtW8?=
- =?us-ascii?Q?YGZuXofVnNP6ZVaCMDlyyN0wOL/wjLIS1ZztSKcoMBuMndn6AJWh1uI00Bfj?=
- =?us-ascii?Q?ItYcR833Tfic+Iz4YK+QaoQncMKbnt8EhXeA0SXQO5YOjiAmxH3r2+V26pWR?=
- =?us-ascii?Q?qPTZ1jaTXAHnS1qX+B4BfsZ15W+y+4/kxUGWvfe+o+owOa4ydoIp8dggG1Vh?=
- =?us-ascii?Q?jmmdFhyZgc59aSMTLW2kxUEPB7NVhAixBJJUq6XHB/2ffglE1SShDW8+UM51?=
- =?us-ascii?Q?NcQ8jDq25zAdSl2oPlXox3gdO4x5q3h6uFlhCmIhQZMEpRiY2TlmIVnNnBwx?=
- =?us-ascii?Q?QhgZma9KXcsoPhuehS+XOK8RxiTOhYKy8YQ7aylYxwIKg0vA6JSpz4YJcYkp?=
- =?us-ascii?Q?C5Upt8JhPmHZVbyw4Uy6CedM/ptq2VNIEi4bxmnq8HxCtITbNfVjGZBBHqW/?=
- =?us-ascii?Q?BwWbPJTxQUfTyEEK6POvQ57/7gVapYo3SV8eFwGKW4fdPHt0vNTvky3QIUn0?=
- =?us-ascii?Q?zl79c73wf+44Ify9ysyXN7zujJ1dPMgQg1pWEC0KmgbpgKzJbzEWRYfmH6cf?=
- =?us-ascii?Q?Xws5bPj6PzXCV7IZJUzj06iZ4BS+KvT/EsvWKBQaaOD1qI3IWkXfiJUFrNu5?=
- =?us-ascii?Q?Jopn6OHhuEf6XcK7Yn8DcPL5iPyS3N5DD267iLbM9mQZZQIl3v3CYgnAwxR8?=
- =?us-ascii?Q?RKXsYiMBBPc28rZ2P8eAdn6hIWcdaVl1exmbcJMX1pzuCTzJTcrxyN3dWugr?=
- =?us-ascii?Q?xg=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 59bf21fd-e4c0-4740-6c52-08dc26b3f57f
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2024 01:35:54.0681
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 16H0g9MZlxY+D88FpEdH/UI6NLjemm8nO6xypQI+q4PxEWNBvosdTKDS7uiBcXo7D0G7czc2DU8Es9oNU12wXg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5225
+Content-Type: text/plain; charset=ascii
 
+Kairui Song <ryncsn@gmail.com> writes:
 
-On Mon, 05 Feb, 2024 17:32:47 -0800 Joe Damato <jdamato@fastly.com> wrote:
-> On Mon, Feb 05, 2024 at 05:09:09PM -0800, Rahul Rameshbabu wrote:
->> On Tue, 06 Feb, 2024 01:03:11 +0000 Joe Damato <jdamato@fastly.com> wrote:
->> > Make mlx5 compatible with the newly added netlink queue GET APIs.
->> >
->> > Signed-off-by: Joe Damato <jdamato@fastly.com>
->> > ---
->> >  drivers/net/ethernet/mellanox/mlx5/core/en.h      | 1 +
->> >  drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 8 ++++++++
->> >  2 files changed, 9 insertions(+)
->> >
->> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
->> > index 55c6ace0acd5..3f86ee1831a8 100644
->> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
->> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
->> > @@ -768,6 +768,7 @@ struct mlx5e_channel {
->> >  	u16                        qos_sqs_size;
->> >  	u8                         num_tc;
->> >  	u8                         lag_port;
->> > +	unsigned int		   irq;
->> >  
->> >  	/* XDP_REDIRECT */
->> >  	struct mlx5e_xdpsq         xdpsq;
->> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
->> > index c8e8f512803e..e1bfff1fb328 100644
->> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
->> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
->> > @@ -2473,6 +2473,9 @@ static void mlx5e_close_queues(struct mlx5e_channel *c)
->> >  	mlx5e_close_tx_cqs(c);
->> >  	mlx5e_close_cq(&c->icosq.cq);
->> >  	mlx5e_close_cq(&c->async_icosq.cq);
->> > +
->> > +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_TX, NULL);
->> > +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_RX, NULL);
->> 
->> This should be set to NULL *before* actually closing the rqs, sqs, and
->> related cqs right? I would expect these two lines to be the first ones
->> called in mlx5e_close_queues. Btw, I think this should be done in
->> mlx5e_deactivate_channel where the NAPI is disabled.
->> 
->> >  }
->> >  
->> >  static u8 mlx5e_enumerate_lag_port(struct mlx5_core_dev *mdev, int ix)
->> > @@ -2558,6 +2561,7 @@ static int mlx5e_open_channel(struct mlx5e_priv *priv, int ix,
->> >  	c->stats    = &priv->channel_stats[ix]->ch;
->> >  	c->aff_mask = irq_get_effective_affinity_mask(irq);
->> >  	c->lag_port = mlx5e_enumerate_lag_port(priv->mdev, ix);
->> > +	c->irq		= irq;
->> >  
->> >  	netif_napi_add(netdev, &c->napi, mlx5e_napi_poll);
->> >  
->> > @@ -2602,6 +2606,10 @@ static void mlx5e_activate_channel(struct mlx5e_channel *c)
->> >  		mlx5e_activate_xsk(c);
->> >  	else
->> >  		mlx5e_activate_rq(&c->rq);
->> > +
->> > +	netif_napi_set_irq(&c->napi, c->irq);
-
-One small comment that I missed in my previous iteration. I think the
-above should be moved to mlx5e_open_channel right after netif_napi_add.
-This avoids needing to save the irq in struct mlx5e_channel.
-
->> > +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_TX, &c->napi);
->> > +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_RX, &c->napi);
->> 
->> It's weird that netlink queue API is being configured in
->> mlx5e_activate_channel and deconfigured in mlx5e_close_queues. This
->> leads to a problem where the napi will be falsely referred to even when
->> we deactivate the channels in mlx5e_switch_priv_channels and may not
->> necessarily get to closing the channels due to an error.
->> 
->> Typically, we use the following clean up patterns.
->> 
->> mlx5e_activate_channel -> mlx5e_deactivate_channel
->> mlx5e_open_queues -> mlx5e_close_queues
+> From: Kairui Song <kasong@tencent.com>
 >
-> OK, I'll move it to mlx5e_deactivate_channel before the NAPI is disabled.
-> That makes sense to me.
+> In the direct swapin path, when two or more threads swapin the same entry
+> at the same time, they get different pages (A, B) because swap cache is
+> skipped. Before one thread (T0) finishes the swapin and installs page (A)
+> to the PTE, another thread (T1) could finish swapin of page (B),
+> swap_free the entry, then modify and swap-out the page again, using the
+> same entry. It break the pte_same check because PTE value is unchanged,
+> causing ABA problem. Then thread (T0) will then install the stalled page
+> (A) into the PTE so new data in page (B) is lost, one possible callstack
+> is like this:
+>
+> CPU0                                CPU1
+> ----                                ----
+> do_swap_page()                      do_swap_page() with same entry
+> <direct swapin path>                <direct swapin path>
+> <alloc page A>                      <alloc page B>
+> swap_readpage() <- read to page A   swap_readpage() <- read to page B
+> <slow on later locks or interrupt>  <finished swapin first>
+> ...                                 set_pte_at()
+>                                     swap_free() <- Now the entry is freed.
+>                                     <write to page B, now page A stalled>
+>                                     <swap out page B using same swap entry>
+> pte_same() <- Check pass, PTE seems
+>               unchanged, but page A
+>               is stalled!
+> swap_free() <- page B content lost!
+> set_pte_at() <- staled page A installed!
+>
+> To fix this, reuse swapcache_prepare which will pin the swap entry using
+> the cache flag, and allow only one thread to pin it. Release the pin
+> after PT unlocked. Racers will simply busy wait since it's a rare
+> and very short event.
+>
+> Other methods like increasing the swap count don't seem to be a good
+> idea after some tests, that will cause racers to fall back to the
+> cached swapin path, two swapin path being used at the same time
+> leads to a much more complex scenario.
+>
+> Reproducer:
+>
+> This race issue can be triggered easily using a well constructed
+> reproducer and patched brd (with a delay in read path) [1]:
+>
+> With latest 6.8 mainline, race caused data loss can be observed easily:
+> $ gcc -g -lpthread test-thread-swap-race.c && ./a.out
+>   Polulating 32MB of memory region...
+>   Keep swapping out...
+>   Starting round 0...
+>   Spawning 65536 workers...
+>   32746 workers spawned, wait for done...
+>   Round 0: Error on 0x5aa00, expected 32746, got 32743, 3 data loss!
+>   Round 0: Error on 0x395200, expected 32746, got 32743, 3 data loss!
+>   Round 0: Error on 0x3fd000, expected 32746, got 32737, 9 data loss!
+>   Round 0 Failed, 15 data loss!
+>
+> This reproducer spawns multiple threads sharing the same memory region
+> using a small swap device. Every two threads updates mapped pages one by
+> one in opposite direction trying to create a race, with one dedicated
+> thread keep swapping out the data out using madvise.
+>
+> The reproducer created a reproduce rate of about once every 5 minutes,
+> so the race should be totally possible in production.
+>
+> After this patch, I ran the reproducer for over a few hundred rounds
+> and no data loss observed.
+>
+> Performance overhead is minimal, microbenchmark swapin 10G from 32G
+> zram:
+>
+> Before:     10934698 us
+> After:      11157121 us
+> Non-direct: 13155355 us (Dropping SWP_SYNCHRONOUS_IO flag)
+>
+> Fixes: 0bcac06f27d7 ("mm, swap: skip swapcache for swapin of synchronous device")
+> Link: https://github.com/ryncsn/emm-test-project/tree/master/swap-stress-race [1]
+> Signed-off-by: Kairui Song <kasong@tencent.com>
 
-Appreciated. Thank you for the patch btw.
+Reported-by: "Huang, Ying" <ying.huang@intel.com>
 
---
-Rahul Rameshbabu
+> ---
+> Huge thanks to Huang Ying and Chris Li for help finding this issue!
+>
+>  mm/memory.c   | 19 +++++++++++++++++++
+>  mm/swap.h     |  5 +++++
+>  mm/swapfile.c | 16 ++++++++++++++++
+>  3 files changed, 40 insertions(+)
+>
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 7e1f4849463a..fd7c55a292f1 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -3867,6 +3867,20 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>  	if (!folio) {
+>  		if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
+>  		    __swap_count(entry) == 1) {
+> +			/*
+> +			 * With swap count == 1, after we read the entry,
+> +			 * other threads could finish swapin first, free
+> +			 * the entry, then swapout the modified page using
+> +			 * the same entry. Now the content we just read is
+> +			 * stalled, and it's undetectable as pte_same()
+> +			 * returns true due to entry reuse.
+> +			 *
+> +			 * So pin the swap entry using the cache flag even
+
+"pin" doesn't sound intuitive here.  I know that the swap entry will not
+be freed with this.  But now, the parallel swap in will busy waiting.
+So, I suggest to say,
+
+Prevent parallel swapin from proceeding with the cache flag.  Otherwise,
+it may swapin first, free the entry, then swapout the modified page
+using the same entry ...
+
+> +			 * cache is not used.
+> +			 */
+> +			if (swapcache_prepare(entry))
+> +				goto out;
+> +
+>  			/* skip swapcache */
+>  			folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0,
+>  						vma, vmf->address, false);
+> @@ -4116,6 +4130,9 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>  unlock:
+>  	if (vmf->pte)
+>  		pte_unmap_unlock(vmf->pte, vmf->ptl);
+> +	/* Clear the swap cache pin for direct swapin after PTL unlock */
+> +	if (folio && !swapcache)
+> +		swapcache_clear(si, entry);
+>  out:
+>  	if (si)
+>  		put_swap_device(si);
+> @@ -4124,6 +4141,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>  	if (vmf->pte)
+>  		pte_unmap_unlock(vmf->pte, vmf->ptl);
+>  out_page:
+> +	if (!swapcache)
+> +		swapcache_clear(si, entry);
+>  	folio_unlock(folio);
+>  out_release:
+>  	folio_put(folio);
+> diff --git a/mm/swap.h b/mm/swap.h
+> index 758c46ca671e..fc2f6ade7f80 100644
+> --- a/mm/swap.h
+> +++ b/mm/swap.h
+> @@ -41,6 +41,7 @@ void __delete_from_swap_cache(struct folio *folio,
+>  void delete_from_swap_cache(struct folio *folio);
+>  void clear_shadow_from_swap_cache(int type, unsigned long begin,
+>  				  unsigned long end);
+> +void swapcache_clear(struct swap_info_struct *si, swp_entry_t entry);
+>  struct folio *swap_cache_get_folio(swp_entry_t entry,
+>  		struct vm_area_struct *vma, unsigned long addr);
+>  struct folio *filemap_get_incore_folio(struct address_space *mapping,
+> @@ -97,6 +98,10 @@ static inline int swap_writepage(struct page *p, struct writeback_control *wbc)
+>  	return 0;
+>  }
+>  
+> +static inline void swapcache_clear(struct swap_info_struct *si, swp_entry_t entry)
+> +{
+> +}
+> +
+>  static inline struct folio *swap_cache_get_folio(swp_entry_t entry,
+>  		struct vm_area_struct *vma, unsigned long addr)
+>  {
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 556ff7347d5f..f7d4ad152a7f 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -3365,6 +3365,22 @@ int swapcache_prepare(swp_entry_t entry)
+>  	return __swap_duplicate(entry, SWAP_HAS_CACHE);
+>  }
+>  
+> +/*
+> + * Clear the cache flag and release pinned entry.
+
+Even if we will keep "pin" in above comments, this is hard to be
+understood for reader.  Need a little more explanation like "release
+pinned entry for device with SWP_SYNCHRONOUS_IO.
+
+Or, just remove the comments.  We have comments in calling site already.
+
+> + */
+> +void swapcache_clear(struct swap_info_struct *si, swp_entry_t entry)
+> +{
+> +	struct swap_cluster_info *ci;
+> +	unsigned long offset = swp_offset(entry);
+> +	unsigned char usage;
+> +
+> +	ci = lock_cluster_or_swap_info(si, offset);
+> +	usage = __swap_entry_free_locked(si, offset, SWAP_HAS_CACHE);
+> +	unlock_cluster_or_swap_info(si, ci);
+> +	if (!usage)
+> +		free_swap_slot(entry);
+> +}
+> +
+>  struct swap_info_struct *swp_swap_info(swp_entry_t entry)
+>  {
+>  	return swap_type_to_swap_info(swp_type(entry));
+
+Otherwise it looks good for me, Thanks!
+
+Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
 
