@@ -1,256 +1,127 @@
-Return-Path: <linux-kernel+bounces-55455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C787C84BCE8
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:28:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B10B184BCED
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:29:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E1541F24FF6
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:28:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86CBDB2124B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:29:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7032A12E71;
-	Tue,  6 Feb 2024 18:28:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B46F2134AC;
+	Tue,  6 Feb 2024 18:29:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ffu3b+xg"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="c7LkG3fX"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C63134A6
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 18:28:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A44512E63;
+	Tue,  6 Feb 2024 18:29:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707244083; cv=none; b=IiGkKLkLcXxATQSj4L4PApB6J6/rFp8wPD6YPEBNeCw+RQcZCL/VGNpx9rSWtYCsvVlh58kBeTsxrv+S34jdHpB9heDP8gqRHLab10k5l5zzCklmTZNCdb2nP37h/CvC932W5LUhHq3rQ1krBLygYtPaEFsutJfer4k3dK+vr2U=
+	t=1707244172; cv=none; b=J14nj7W3m74J/vSU3dwlIVdStXyxBYMG28l+kfL7tNs1pimyh8PeCiIn/FxBKCBKLW3+J9eEmM0PJURz/2pQZ2ih2nfBBIKoIXkq7IIMKyg6Gp0kiKUSPY0xi8uvasA6hU3Nr8FMYX3UqcSUwOkxQ5s8hMPOLA7CkLptafrvCww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707244083; c=relaxed/simple;
-	bh=XHTHEUL3c1zqoIkdhMoTUTEvYUg9rrTol977ov8Dor4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DDkN7xwUMBWETx5xBa+yYY6YbDcJDRsB5YgHzSSB/WI4dC3xkGjlxLa3pXBefIJfanu1dZA0HZKgBi8pclAVjBZ/a06cx5Yx08h2uuxQ6zVKDO/UrE/Q+4p/VXxMpVXTo2KECGEvzdlJxoKQD0HjwzdB7xnw2LmDfSApSPyypok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ffu3b+xg; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56012eeb755so1229a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 10:28:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707244080; x=1707848880; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mssWr8/tMwfYzRYqB7GAnBjReP7gos18KJNG0Y4GNVI=;
-        b=Ffu3b+xgSQL4YWVMxwIquI/txW3BMRUO5/jdLgfhkOZ/4V03tHGZ5WSTv5JPuK9O1J
-         XTsTVX+svLiCOaFYp30WGZWeSwZaqTSgahL74D3neblDb5xuFWNTEpqbN0JoRne+1OdU
-         99ShoRmlgvGLynDaifqKYrj4jdEK3AAmHn1ztx6yz3NEsZvaTLAPdfBocOSTBYy/O2wP
-         RkzxtZmgtodczPvTfUoYAfIR9fgoI8NiWNf1BMCZAnd4QIAXav9zxS0RFBtDQPRrrb4l
-         TEyd1ENpRgu+cVNG1bO6KT6PT6V5Q0poaI/mgkHhJoYWM3dwt4iCc2R9+9TiXbESGTl9
-         AFfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707244080; x=1707848880;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mssWr8/tMwfYzRYqB7GAnBjReP7gos18KJNG0Y4GNVI=;
-        b=h5jFYl/w5F2NsUcn8lDlKAOHRcrWQ30Tp3ruCsGmTaOc1LuXrc5qfhisGQWI+Btlxn
-         fgPNeEFru7EtIHfunpnW2BBeo8nN9w38POcYKW/uOXE0fUPxxtMar1NtPPoT8HgVCbfQ
-         xw732N3nuIwRCCjdZyPJnoKjFspcsMAAauOj1Exm3QEbbOO0sYT9LPO99lXfwSPd8lxm
-         9Wi+yMy/jxQoELqlHW3XN0Ld2KOisTsFub1cUFBIOn6joyXlhJmIK80lVcA/cQisy5ts
-         olMYDKmmLekzrLyR8z97JiUHT8FKRkEDWuakWSeEq1BnPxDPtwLF3L8G/JxJmHjwHZaq
-         qbTw==
-X-Gm-Message-State: AOJu0YwpSxmeR0I8EWf/CkZ6iOFveWycX6TLAyWfK4ZNQBQX+WDeDA68
-	eGRxuom2BzWwiAYLsCkRKwTnLSofPPGK/B8MULYzMjUSByreszI9YHEAYMuKokAvU+NV9nuHcGq
-	9nd8VZKdlArmJsPMujAB6NvKfh60xYcm21G2J
-X-Google-Smtp-Source: AGHT+IGlFHjhMsclmD9laqfjKedcH6F5arabPzzT/YJDR4LP/EEGeTRmgXeW7NgKrSk3f6qUrTPuh0ae6i59DgzppUw=
-X-Received: by 2002:a50:ccd6:0:b0:560:1b3:970 with SMTP id b22-20020a50ccd6000000b0056001b30970mr7470edj.7.1707244080137;
- Tue, 06 Feb 2024 10:28:00 -0800 (PST)
+	s=arc-20240116; t=1707244172; c=relaxed/simple;
+	bh=PqB7AVu41nfUk/E52ijBFrD3I5saZlijxm0toW1x8/I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Z1D/kKnC+lyjEuY0Hr0bvzjw48io2xxpEOy2UrkyeXNKSydONhmchE6n7T2401X/GEEMVJNTmAt5Vw6MrPECchV7mJmyS3IbJj2Gg5Hj/gF5RwdUNXJh3ARodQbRyr4zDVQEtescUOQo2obBTjg2EbndF8sr8ZZx44AqVo0ElvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=c7LkG3fX; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 416ITE18113854;
+	Tue, 6 Feb 2024 12:29:14 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707244154;
+	bh=X/wNxrHWR+0ipqHOzo2Z3LxELm/8z/GsUjUq40unZHg=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=c7LkG3fXMnMm42k04ixEMTOsxjIHfUe966J5A4k/mIAoJgoVftbdzg8ZjaewKUhec
+	 wj7crwEthe3J5KdtHfyxt6gYYwbRQevVy4rK0WGLbNlGe5m9i6F5MqnAP2wSfLMYV9
+	 amV8K84Nh3ZigltdT99gtf8kxVyIk1eAAAzPW4ZA=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 416ITEr8016242
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 6 Feb 2024 12:29:14 -0600
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 6
+ Feb 2024 12:29:13 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 6 Feb 2024 12:29:13 -0600
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 416ITDfn104618;
+	Tue, 6 Feb 2024 12:29:13 -0600
+Message-ID: <65a24f21-4cc6-4843-b838-b1c7020ca45d@ti.com>
+Date: Tue, 6 Feb 2024 12:29:13 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206010919.1109005-1-lokeshgidra@google.com> <20240206010919.1109005-4-lokeshgidra@google.com>
-In-Reply-To: <20240206010919.1109005-4-lokeshgidra@google.com>
-From: Jann Horn <jannh@google.com>
-Date: Tue, 6 Feb 2024 19:27:22 +0100
-Message-ID: <CAG48ez0AdTijvuh0xueg_spwNE9tVcPuvqT9WpvmtiNNudQFMw@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] userfaultfd: use per-vma locks in userfaultfd operations
-To: Lokesh Gidra <lokeshgidra@google.com>
-Cc: akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, selinux@vger.kernel.org, 
-	surenb@google.com, kernel-team@android.com, aarcange@redhat.com, 
-	peterx@redhat.com, david@redhat.com, axelrasmussen@google.com, 
-	bgeffon@google.com, willy@infradead.org, kaleshsingh@google.com, 
-	ngeoffray@google.com, timmurray@google.com, rppt@kernel.org, 
-	Liam.Howlett@oracle.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] arm64: dts: ti: verdin-am62: mallow: add TPM device
+Content-Language: en-US
+To: Francesco Dolcini <francesco@dolcini.it>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob
+ Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC: Francesco Dolcini <francesco.dolcini@toradex.com>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20240126165136.28543-1-francesco@dolcini.it>
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <20240126165136.28543-1-francesco@dolcini.it>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Tue, Feb 6, 2024 at 2:09=E2=80=AFAM Lokesh Gidra <lokeshgidra@google.com=
-> wrote:
-> All userfaultfd operations, except write-protect, opportunistically use
-> per-vma locks to lock vmas. On failure, attempt again inside mmap_lock
-> critical section.
->
-> Write-protect operation requires mmap_lock as it iterates over multiple
-> vmas.
->
-> Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
-[...]
-> diff --git a/mm/memory.c b/mm/memory.c
-> index b05fd28dbce1..393ab3b0d6f3 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-[...]
-> +/*
-> + * lock_vma() - Lookup and lock VMA corresponding to @address.
-> + * @prepare_anon: If true, then prepare the VMA (if anonymous) with anon=
-_vma.
-> + *
-> + * Should be called without holding mmap_lock. VMA should be unlocked af=
-ter use
-> + * with unlock_vma().
-> + *
-> + * Return: A locked VMA containing @address, NULL of no VMA is found, or
-> + * -ENOMEM if anon_vma couldn't be allocated.
-> + */
-> +struct vm_area_struct *lock_vma(struct mm_struct *mm,
-> +                               unsigned long address,
-> +                               bool prepare_anon)
-> +{
-> +       struct vm_area_struct *vma;
+On 1/26/24 10:51 AM, Francesco Dolcini wrote:
+> From: Francesco Dolcini <francesco.dolcini@toradex.com>
+> 
+> Add TPM device to Mallow device tree file, the device is connected to
+> the SoC with SPI1/CS1, the same SPI interface is also available on an
+> extension header together with an additional CS0 signal.
+> 
+> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+> ---
+>   arch/arm64/boot/dts/ti/k3-am62-verdin-mallow.dtsi | 10 ++++++++++
+>   1 file changed, 10 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin-mallow.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin-mallow.dtsi
+> index 17b93534f658..77b1beb638ad 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am62-verdin-mallow.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am62-verdin-mallow.dtsi
+> @@ -127,6 +127,16 @@ &main_spi1 {
+>   		    <&pinctrl_qspi1_cs2_gpio>;
+>   	cs-gpios = <0>, <&main_gpio0 12 GPIO_ACTIVE_LOW>;
+>   	status = "okay";
 > +
-> +       vma =3D lock_vma_under_rcu(mm, address);
-> +
-> +       if (vma)
-> +               return vma;
-> +
-> +       mmap_read_lock(mm);
-> +       vma =3D vma_lookup(mm, address);
-> +       if (vma) {
-> +               if (prepare_anon && vma_is_anonymous(vma) &&
-> +                   anon_vma_prepare(vma))
-> +                       vma =3D ERR_PTR(-ENOMEM);
-> +               else
-> +                       vma_acquire_read_lock(vma);
+> +	tpm@1 {
+> +		compatible = "infineon,slb9670", "tcg,tpm_tis-spi";
+> +		reg = <1>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_qspi1_dqs_gpio>;
+> +		interrupt-parent = <&main_gpio1>;
+> +		interrupts = <18 IRQ_TYPE_EDGE_FALLING>;
 
-This new code only calls anon_vma_prepare() for VMAs where
-vma_is_anonymous() is true (meaning they are private anonymous).
+Just a heads-up, the SLB9670 datasheet says this device uses
+an active low interrupt (IRQ_TYPE_LEVEL_LOW). Using TYPE_EDGE
+here can cause missed interrupts if the line stays low for
+multiple interrupts.
 
-[...]
-> diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-> index 74aad0831e40..64e22e467e4f 100644
-> --- a/mm/userfaultfd.c
-> +++ b/mm/userfaultfd.c
-> @@ -19,20 +19,25 @@
->  #include <asm/tlb.h>
->  #include "internal.h"
->
-> -static __always_inline
-> -struct vm_area_struct *find_dst_vma(struct mm_struct *dst_mm,
-> -                                   unsigned long dst_start,
-> -                                   unsigned long len)
-> +/* Search for VMA and make sure it is valid. */
-> +static struct vm_area_struct *find_and_lock_dst_vma(struct mm_struct *ds=
-t_mm,
-> +                                                   unsigned long dst_sta=
-rt,
-> +                                                   unsigned long len)
->  {
-> -       /*
-> -        * Make sure that the dst range is both valid and fully within a
-> -        * single existing vma.
-> -        */
->         struct vm_area_struct *dst_vma;
->
-> -       dst_vma =3D find_vma(dst_mm, dst_start);
-> -       if (!range_in_vma(dst_vma, dst_start, dst_start + len))
-> -               return NULL;
-> +       /* Ensure anon_vma is assigned for anonymous vma */
-> +       dst_vma =3D lock_vma(dst_mm, dst_start, true);
+Andrew
 
-lock_vma() is now used by find_and_lock_dst_vma(), which is used by
-mfill_atomic().
-
-> +       if (!dst_vma)
-> +               return ERR_PTR(-ENOENT);
-> +
-> +       if (PTR_ERR(dst_vma) =3D=3D -ENOMEM)
-> +               return dst_vma;
-> +
-> +       /* Make sure that the dst range is fully within dst_vma. */
-> +       if (dst_start + len > dst_vma->vm_end)
-> +               goto out_unlock;
->
->         /*
->          * Check the vma is registered in uffd, this is required to
-[...]
-> @@ -597,7 +599,15 @@ static __always_inline ssize_t mfill_atomic(struct u=
-serfaultfd_ctx *ctx,
->         copied =3D 0;
->         folio =3D NULL;
->  retry:
-> -       mmap_read_lock(dst_mm);
-> +       /*
-> +        * Make sure the vma is not shared, that the dst range is
-> +        * both valid and fully within a single existing vma.
-> +        */
-> +       dst_vma =3D find_and_lock_dst_vma(dst_mm, dst_start, len);
-> +       if (IS_ERR(dst_vma)) {
-> +               err =3D PTR_ERR(dst_vma);
-> +               goto out;
-> +       }
->
->         /*
->          * If memory mappings are changing because of non-cooperative
-> @@ -609,15 +619,6 @@ static __always_inline ssize_t mfill_atomic(struct u=
-serfaultfd_ctx *ctx,
->         if (atomic_read(&ctx->mmap_changing))
->                 goto out_unlock;
->
-> -       /*
-> -        * Make sure the vma is not shared, that the dst range is
-> -        * both valid and fully within a single existing vma.
-> -        */
-> -       err =3D -ENOENT;
-> -       dst_vma =3D find_dst_vma(dst_mm, dst_start, len);
-> -       if (!dst_vma)
-> -               goto out_unlock;
-> -
->         err =3D -EINVAL;
->         /*
->          * shmem_zero_setup is invoked in mmap for MAP_ANONYMOUS|MAP_SHAR=
-ED but
-> @@ -647,16 +648,6 @@ static __always_inline ssize_t mfill_atomic(struct u=
-serfaultfd_ctx *ctx,
->             uffd_flags_mode_is(flags, MFILL_ATOMIC_CONTINUE))
->                 goto out_unlock;
->
-> -       /*
-> -        * Ensure the dst_vma has a anon_vma or this page
-> -        * would get a NULL anon_vma when moved in the
-> -        * dst_vma.
-> -        */
-> -       err =3D -ENOMEM;
-> -       if (!(dst_vma->vm_flags & VM_SHARED) &&
-> -           unlikely(anon_vma_prepare(dst_vma)))
-> -               goto out_unlock;
-
-But the check mfill_atomic() used to do was different, it checked for VM_SH=
-ARED.
-
-Each VMA has one of these three types:
-
-1. shared (marked by VM_SHARED; does not have an anon_vma)
-2. private file-backed (needs to have anon_vma when storing PTEs)
-3. private anonymous (what vma_is_anonymous() detects; needs to have
-anon_vma when storing PTEs)
-
-This old code would call anon_vma_prepare() for both private VMA types
-(which is correct). The new code only calls anon_vma_prepare() for
-private anonymous VMAs, not for private file-backed ones. I think this
-code will probably crash with a BUG_ON() in __folio_set_anon() if you
-try to use userfaultfd to insert a PTE into a private file-backed VMA
-of a shmem file. (Which you should be able to get by creating a file
-in /dev/shm/ and then mapping that file with mmap(NULL, <size>,
-PROT_READ|PROT_WRITE, MAP_PRIVATE, <fd>, 0).)
+> +		spi-max-frequency = <18500000>;
+> +	};
+>   };
+>   
+>   /* Verdin UART_3 */
 
