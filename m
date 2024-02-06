@@ -1,216 +1,111 @@
-Return-Path: <linux-kernel+bounces-55218-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 205F884B942
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:22:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C93A84B943
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:22:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7D052914EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:22:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B0B91F23586
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:22:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8B0E13BEB3;
-	Tue,  6 Feb 2024 15:13:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E41EA13C1CE;
+	Tue,  6 Feb 2024 15:13:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="olbKQznT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="KjThfL3J"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07EF8134751;
-	Tue,  6 Feb 2024 15:13:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 293B2134CCB
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 15:13:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707232423; cv=none; b=QwFXtlz99IQgt8CDUMaNnfSus0O9IDnjafl5Fh92tS7qxAgrgXkZIzMTQ27jI6jUgMMh/BgmdFJhB0ANgBO+UDXtEtRbYRpf9Uqczn1S8IkNE7NaMrkElo7vYrJLtKUF3zGlogm6NNlj58Km5Vuj5Yhdq7MMqNlhQjX3NFIIRMo=
+	t=1707232425; cv=none; b=Tb1IvhzxUV0y3eYdt+Wdj6y9qJjLXJVwySrbF/DOZwSU6/pq23g6u7Lz/F+eFA1L4XkhMfBnjB9vA/hNdOjdWfUFqEbmG0lWgW4ceAvTThIPIym6Po/3WYpSY5snQEwGU2plq9aLMaI3xFtOQZLxed1Gfaes8w+hCw3ghZgUK4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707232423; c=relaxed/simple;
-	bh=V7BE8q0MmiFvaddSn9SJAfAslRoLC7k0iroDoA8t4/U=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hxrF5Fjz7zCN9L8wWZ1o3PbpRIbLo2y/M0TL1WEB+5Z5NBxoapcYreO4zakOq8OQRcEWnWMi6n+BVdGh3PcMbJON5VefpcdFkebnGXuuspDs5HYP/i/xagw9ZfYzh2B9H9KFM11PkhLus7XJ4Olnp0YjcUgmIJpWwy1+6ojshdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=olbKQznT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67007C433C7;
-	Tue,  6 Feb 2024 15:13:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707232422;
-	bh=V7BE8q0MmiFvaddSn9SJAfAslRoLC7k0iroDoA8t4/U=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=olbKQznTE5mHYwrXPgaz/iJTvcrAClApN17NqE5mKbxyOlzRZIHq/madhzYg3ljEO
-	 D8jQIYwYtCmeTlwE5gTg5y84ZbjgW0gxCXk65wNgzJM+KqOvlOeE44vc5slYfrL/xW
-	 m13XUqvlwFUYfO1+B8RHZ0BiOmmO/v4H8kOL3WtDMghaCK9ED8mmBeVCBhT7vMwTTk
-	 9636QXyBzXsjCBO5XehVtc1CPeHK0OZI2wCDA/Zlb9l4cFNsUqRrPW/VhyjMawA0qG
-	 u0T6rWLRZOIFd3/PZ9Nfzt9JkgT7bORHUBVAkACjOsftoQaJZC+LZWUF3xih4pRk6T
-	 lLM3hK+AlqMiQ==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>
-Cc: linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	bpf <bpf@vger.kernel.org>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v7 33/36] tracing/fprobe: Remove nr_maxactive from fprobe
-Date: Wed,  7 Feb 2024 00:13:37 +0900
-Message-Id: <170723241719.502590.13823632735930550091.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <170723204881.502590.11906735097521170661.stgit@devnote2>
-References: <170723204881.502590.11906735097521170661.stgit@devnote2>
-User-Agent: StGit/0.19
+	s=arc-20240116; t=1707232425; c=relaxed/simple;
+	bh=S1P4AA6+64Bnd4QfzMrO9Q/Ly6SEZfMLPjm0EVLdqkI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lQRxTjNX9YD9JIm7P5/kVYRMZXMQFx3pGwSQeMUcm6llZHdE8UlRXBuR/ZflXu5nd8MySjyxFu6I4ul1HY2HUrvMhKQ8v1e1U/xwBHviOlhLEYKWJu5Dw7s5dH4fDTDZz4ZoSFFE+dzbtv85LvxwtoI1SNvdgP0cnLMNB9n2UG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=KjThfL3J; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d0b4ea773eso21720421fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 07:13:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707232421; x=1707837221; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QWyaCH5kvW4ESs4M9KfJgiCk+SaUNMNInQ13HAztrpU=;
+        b=KjThfL3JcCjpSmcmcsVWRcB3t9dDMEjYUWS07u2kTtTaG1qGq+xJ/dR0eJhIN/9USw
+         R3aTJwlyhoM1v7YXferAPcWXm/ZMw2hyW8fwM6mXvfQ2zD4L1h1wu6dPtlEoEO9WpZMb
+         vKaWjyRMMnIQAdi4DSIzUeuiBty2igaJHajqZQH+g4hLQ6nyjsj9oIGXx2HP6zPsR99G
+         AfBnY5jENU/M312ANShyjoy02Cg0XJZFVSdbkYeSD6JrBSOFLqV8jurV2/StHvv1RWPD
+         VmE5mGFBTJ4fj7ZY/+AefzDTiaN71KbTRgNjovU4c9k3iTv99CDJOO1DpwX1V9Mdxbce
+         1ruw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707232421; x=1707837221;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QWyaCH5kvW4ESs4M9KfJgiCk+SaUNMNInQ13HAztrpU=;
+        b=QWUBvK41fBazGD3RVUODbT2lBOktCvjXfg/pB0giLLbTBK8L58QfWmBxfkR7lvQvtA
+         b/OrSUBJLRi/6geP/0oOnGdy5I7w/2XHyPmJTxGA2OVgabKsuQBertae3RVe7DNQJGPP
+         G3pa16u+WeMz4+Ar4QNNACpO8yBw72ZB+JZbn/JZaFmVCTeu1i78DdptNlvFVBCx/mRA
+         wb+DUqZY95/biI1wlXDgD/eBFVVeI+RVF+BtIbk6d1AZDjrdWz4cbnPPBj3tx4tIR9kd
+         /Ze/JHo50uVsHt5eAB77IBeBwTi9GlFwvlPCqULKsUOdDbUyWXmit5XkoLBka/+BLY/B
+         E/hA==
+X-Gm-Message-State: AOJu0YyLP3TewJyt+nAWOBRHJx0ZtvGfh7zNYL7eWFkYngeRDpPd/UVv
+	lVBcM3s1hwB7gJrfN4RZDXwyTtHl2eFm31BrVQzKB5ISENQXK76Q0MyarXQKiac=
+X-Google-Smtp-Source: AGHT+IGixMnuJqGSOO1at9tSdlKV/uRXYeSHD7PzB5wvq+D88CIqZTbaqBdLuk5ykQQYRj9lYwj2oA==
+X-Received: by 2002:a2e:911a:0:b0:2d0:94b8:72f6 with SMTP id m26-20020a2e911a000000b002d094b872f6mr1876981ljg.20.1707232420922;
+        Tue, 06 Feb 2024 07:13:40 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWGUn9bDa/+cXpeDv22Bt5ksTKulOOn/dRxfCkNbPExvTOQ8/mbXtrpu7RRJZQHOjOXTlIM8+OEfU39pP0pdAIzfjNpdv3YOY6yhEe2++JI0Dx6STaNnH6EGMU2WZ6EpsX4e4JB5SXR3KzONHQfNt+IMQdI5zBMc5ssut3RJrb3jyiiDigMR7R+JW1iO2JXcwOw0e8a5QEI1d62NQqoN2rf9iJ7ftIsdZPxfsvHwDbREBQu0VCSUGL6h7m0A42MMmpKwontEOqmfvpHMRalFUFTYCQqxVseL+FkyQMl+4elp1rygVUk3j8yKETORIUp/cvJy92eTEsoSOtyj7MWyo8wN91AUX0p6/un/ouuxSlSWLnU1J5vWYPS+WiESocvAKoVuGF8shbNicLltg+Xw0gRolHIFHi2rSRkjQ==
+Received: from [192.168.1.172] ([93.5.22.158])
+        by smtp.gmail.com with ESMTPSA id p3-20020a05640243c300b0055c60ba9640sm1113733edc.77.2024.02.06.07.13.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Feb 2024 07:13:40 -0800 (PST)
+Message-ID: <2d97df42-1d23-456e-9f0f-36b8aef08670@baylibre.com>
+Date: Tue, 6 Feb 2024 16:13:39 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 6/9] drm/mediatek: dsi: Register DSI host after
+ acquiring clocks and PHY
+Content-Language: en-US
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ chunkuang.hu@kernel.org
+Cc: fshao@chromium.org, p.zabel@pengutronix.de, airlied@gmail.com,
+ daniel@ffwll.ch, matthias.bgg@gmail.com, dri-devel@lists.freedesktop.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, kernel@collabora.com
+References: <20240206120748.136610-1-angelogioacchino.delregno@collabora.com>
+ <20240206120748.136610-7-angelogioacchino.delregno@collabora.com>
+From: Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <20240206120748.136610-7-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Remove depercated fprobe::nr_maxactive. This involves fprobe events to
-rejects the maxactive number.
+On 06/02/2024 13:07, AngeloGioacchino Del Regno wrote:
+> Registering the dsi host with its ops before getting dsi->regs is
+> simply wrong: even though there's nothing (for now) asynchronously
+> calling those ops before the end of the probe function, installing
+> ops that are using iospace(s) and clocks before even initializing
+> those is too fragile.
+> 
+> Register the DSI host after getting clocks, iospace and PHY.
+> This wil also allow to simplify the error paths in a later commit.
+wil => will
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- Changes in v2:
-  - Newly added.
----
- include/linux/fprobe.h      |    2 --
- kernel/trace/trace_fprobe.c |   44 ++++++-------------------------------------
- 2 files changed, 6 insertions(+), 40 deletions(-)
+Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
 
-diff --git a/include/linux/fprobe.h b/include/linux/fprobe.h
-index 08b37b0d1d05..c28d06ddfb8e 100644
---- a/include/linux/fprobe.h
-+++ b/include/linux/fprobe.h
-@@ -47,7 +47,6 @@ struct fprobe_hlist {
-  * @nmissed: The counter for missing events.
-  * @flags: The status flag.
-  * @entry_data_size: The private data storage size.
-- * @nr_maxactive: The max number of active functions. (*deprecated)
-  * @entry_handler: The callback function for function entry.
-  * @exit_handler: The callback function for function exit.
-  * @hlist_array: The fprobe_hlist for fprobe search from IP hash table.
-@@ -56,7 +55,6 @@ struct fprobe {
- 	unsigned long		nmissed;
- 	unsigned int		flags;
- 	size_t			entry_data_size;
--	int			nr_maxactive;
- 
- 	int (*entry_handler)(struct fprobe *fp, unsigned long entry_ip,
- 			     unsigned long ret_ip, struct ftrace_regs *regs,
-diff --git a/kernel/trace/trace_fprobe.c b/kernel/trace/trace_fprobe.c
-index 7d2a66135f83..d96de0dbc0cb 100644
---- a/kernel/trace/trace_fprobe.c
-+++ b/kernel/trace/trace_fprobe.c
-@@ -375,7 +375,6 @@ static struct trace_fprobe *alloc_trace_fprobe(const char *group,
- 					       const char *event,
- 					       const char *symbol,
- 					       struct tracepoint *tpoint,
--					       int maxactive,
- 					       int nargs, bool is_return)
- {
- 	struct trace_fprobe *tf;
-@@ -395,7 +394,6 @@ static struct trace_fprobe *alloc_trace_fprobe(const char *group,
- 		tf->fp.entry_handler = fentry_dispatcher;
- 
- 	tf->tpoint = tpoint;
--	tf->fp.nr_maxactive = maxactive;
- 
- 	ret = trace_probe_init(&tf->tp, event, group, false);
- 	if (ret < 0)
-@@ -974,12 +972,11 @@ static int __trace_fprobe_create(int argc, const char *argv[])
- 	 *  FETCHARG:TYPE : use TYPE instead of unsigned long.
- 	 */
- 	struct trace_fprobe *tf = NULL;
--	int i, len, new_argc = 0, ret = 0;
-+	int i, new_argc = 0, ret = 0;
- 	bool is_return = false;
- 	char *symbol = NULL;
- 	const char *event = NULL, *group = FPROBE_EVENT_SYSTEM;
- 	const char **new_argv = NULL;
--	int maxactive = 0;
- 	char buf[MAX_EVENT_NAME_LEN];
- 	char gbuf[MAX_EVENT_NAME_LEN];
- 	char sbuf[KSYM_NAME_LEN];
-@@ -1000,33 +997,13 @@ static int __trace_fprobe_create(int argc, const char *argv[])
- 
- 	trace_probe_log_init("trace_fprobe", argc, argv);
- 
--	event = strchr(&argv[0][1], ':');
--	if (event)
--		event++;
--
--	if (isdigit(argv[0][1])) {
--		if (event)
--			len = event - &argv[0][1] - 1;
--		else
--			len = strlen(&argv[0][1]);
--		if (len > MAX_EVENT_NAME_LEN - 1) {
--			trace_probe_log_err(1, BAD_MAXACT);
--			goto parse_error;
--		}
--		memcpy(buf, &argv[0][1], len);
--		buf[len] = '\0';
--		ret = kstrtouint(buf, 0, &maxactive);
--		if (ret || !maxactive) {
-+	if (argv[0][1] != '\0') {
-+		if (argv[0][1] != ':') {
-+			trace_probe_log_set_index(0);
- 			trace_probe_log_err(1, BAD_MAXACT);
- 			goto parse_error;
- 		}
--		/* fprobe rethook instances are iterated over via a list. The
--		 * maximum should stay reasonable.
--		 */
--		if (maxactive > RETHOOK_MAXACTIVE_MAX) {
--			trace_probe_log_err(1, MAXACT_TOO_BIG);
--			goto parse_error;
--		}
-+		event = &argv[0][2];
- 	}
- 
- 	trace_probe_log_set_index(1);
-@@ -1036,12 +1013,6 @@ static int __trace_fprobe_create(int argc, const char *argv[])
- 	if (ret < 0)
- 		goto parse_error;
- 
--	if (!is_return && maxactive) {
--		trace_probe_log_set_index(0);
--		trace_probe_log_err(1, BAD_MAXACT_TYPE);
--		goto parse_error;
--	}
--
- 	trace_probe_log_set_index(0);
- 	if (event) {
- 		ret = traceprobe_parse_event_name(&event, &group, gbuf,
-@@ -1095,8 +1066,7 @@ static int __trace_fprobe_create(int argc, const char *argv[])
- 	}
- 
- 	/* setup a probe */
--	tf = alloc_trace_fprobe(group, event, symbol, tpoint, maxactive,
--				argc, is_return);
-+	tf = alloc_trace_fprobe(group, event, symbol, tpoint, argc, is_return);
- 	if (IS_ERR(tf)) {
- 		ret = PTR_ERR(tf);
- 		/* This must return -ENOMEM, else there is a bug */
-@@ -1172,8 +1142,6 @@ static int trace_fprobe_show(struct seq_file *m, struct dyn_event *ev)
- 		seq_putc(m, 't');
- 	else
- 		seq_putc(m, 'f');
--	if (trace_fprobe_is_return(tf) && tf->fp.nr_maxactive)
--		seq_printf(m, "%d", tf->fp.nr_maxactive);
- 	seq_printf(m, ":%s/%s", trace_probe_group_name(&tf->tp),
- 				trace_probe_name(&tf->tp));
- 
-
+-- 
+Regards,
+Alexandre
 
