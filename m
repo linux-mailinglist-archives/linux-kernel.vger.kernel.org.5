@@ -1,71 +1,67 @@
-Return-Path: <linux-kernel+bounces-54123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFEF884AB10
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:19:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8251884AB12
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:19:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F3EB1C23EBC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:19:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 282171F26806
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:19:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E6DA802;
-	Tue,  6 Feb 2024 00:19:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3061DED9;
+	Tue,  6 Feb 2024 00:19:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LBja+R3h"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D5wQd7aW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5903C440C;
-	Tue,  6 Feb 2024 00:19:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67E2D639;
+	Tue,  6 Feb 2024 00:19:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707178742; cv=none; b=DaoEl/6Qurf0isM28CEhuT0PZxSuxkiVBLVMkW4WO7HfmTACwEfY9HymJkRhCRVGi3354V8y+EqlqYqjjqoIY49lflxDZDtNWOl6//O0I5zx60ufQ6XMtudna9s6JHluUg30KcQDi4gpATHkRfzevR6Jw4o08iuKZwUhWyJgx9E=
+	t=1707178762; cv=none; b=jL0st7AsR5ME3IHkWac8psVeQcRVfeNbNEYvVhvFGpEPWaM2nIth8yeFku7XsmmmGhukG7PWmKAObMwpsnbqoiRZtcDMLjq4ex1m4cZv1TRGiX35x225RZcYCx21Jk+cXrvdSKsDEOFrDIrvCuIQ2eeVB6zpRtzxFRS1Hvr0jhg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707178742; c=relaxed/simple;
-	bh=AizJX3HR4Cujw1uwQ6p18WyvnXA1KEApkP/gg5RoHLA=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rM7VLfWKdISoGCfAoEDRszOeXhmu3yUnLMDx3hit9QRV7e8QArIYRw/vdlqgrj2nB2wb5roaW1FrzXIT/HYyhTHkqyHjuo26eNIwi/ysHCkHtpOom+GcGbD7+dXNrCkiJXu83erssG2johAW7EDtczFrlE9SHIWFYySEyNICP9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LBja+R3h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44F46C433C7;
-	Tue,  6 Feb 2024 00:19:01 +0000 (UTC)
+	s=arc-20240116; t=1707178762; c=relaxed/simple;
+	bh=3aAnESqvgKhvpJ+yZI83GQOT7qLCqZAwLtA+27U5RZ0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cPFw2uKc7h5gtILcnq3/r/7FdvBMgPZ7aPeE/92Svvw2QI/ornREQTvYlytGQ54vRL7oVi05z5WrSR9K+8H9icYvqmx6mU7SxTi/sd4Qbobi0pDmXJuIxstp+hkkCte2sfqd16HbkmGXohaJi9I+vkl4wyIeuwoXMcqNZyhv1rs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D5wQd7aW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 692B8C433F1;
+	Tue,  6 Feb 2024 00:19:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707178741;
-	bh=AizJX3HR4Cujw1uwQ6p18WyvnXA1KEApkP/gg5RoHLA=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=LBja+R3hHEz1hxMk+JFXe7qq0VaPheS+7FFmmaF1jNnqEjEVTYZaVcSKTA12MMVVg
-	 HRmCuNdZqGhXWyqB3Z61U3hwO5EKIVeiHHhoPEbQXvf+46nmR0DfhHvBVX5gRqEhSG
-	 vnWPYXS6wCsOzGhU+l4v2z4bGOdHSXhOcvyer26biRNLWixk5zOGM3uD7uBn0Y4Tn5
-	 rl8SArCD/nIKZVTuVoXzyiwpmPBugILTToSPTbcezLO1kDpFbC+gagbhdkLBIf2sEn
-	 5vpFPCITj5O8h1tyCKqEEPm8bGjRsFwl789jXkvCIleIS6euwkZZuOR+iV1voTtVVh
-	 e+TdvL/dF5Ycw==
+	s=k20201202; t=1707178761;
+	bh=3aAnESqvgKhvpJ+yZI83GQOT7qLCqZAwLtA+27U5RZ0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=D5wQd7aWl9E2lPx5X5GaIcdsNR2n6Bu6YFV08gC2l+mNpbkdGaZ4j1oQsBs4QVBg4
+	 8ToEqyDra8t8+oZtVplYxfiMAy7K52sLaur3SLGbZu+ghNrudvyTxyz/T7ew4VOMgK
+	 lj//zfi14aitFfcY19E93LSK9m623OrYiY9d9YxSmdKtyDO89iEe4Qh/aCePpz4g6S
+	 gAHh38/1VrFPOoaGOl1roJ9+8UIvyf8D8n8/9by+KH4DI8h4DkkEkOjy7Dt5KQUBmf
+	 lOVDjfbDp/O3rOK5FG6NJ9oXmUZgQg4q6uAFbJ3uFlv6F5/hDPbfsbJtMJi81ztBUK
+	 VPCBwJJcaqTcg==
 From: Namhyung Kim <namhyung@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Michael Petlan <mpetlan@redhat.com>,
-	Jing Zhang <renyu.zj@linux.alibaba.com>,
-	Weilin Wang <weilin.wang@intel.com>,
-	Ian Rogers <irogers@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
+To: Ian Rogers <irogers@google.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Veronika Molnarova <vmolnaro@redhat.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Kajol Jain <kjain@linux.ibm.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Perry Taylor <perry.taylor@intel.com>,
+	Yang Jihong <yangjihong1@huawei.com>,
 	Adrian Hunter <adrian.hunter@intel.com>,
+	James Clark <james.clark@arm.com>,
 	Mark Rutland <mark.rutland@arm.com>,
-	John Garry <john.g.garry@oracle.com>,
 	linux-perf-users@vger.kernel.org,
-	Edward Baker <edward.baker@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH v1] perf jevents: Drop or simplify small integer values
-Date: Mon,  5 Feb 2024 16:18:59 -0800
-Message-ID: <170717858571.1700937.8565679107024428144.b4-ty@kernel.org>
+	Jiri Olsa <jolsa@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: Re: [PATCH 1/1] perf bpf: Clean up the generated/copied vmlinux.h
+Date: Mon,  5 Feb 2024 16:19:19 -0800
+Message-ID: <170717858573.1700937.13255681716633001438.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-In-Reply-To: <20240131201429.792138-1-irogers@google.com>
-References: <20240131201429.792138-1-irogers@google.com>
+In-Reply-To: <Zbz89KK5wHfZ82jv@x1>
+References: <Zbz89KK5wHfZ82jv@x1>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,13 +71,13 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On Wed, 31 Jan 2024 12:14:29 -0800, Ian Rogers wrote:
-> Prior to this patch '0' would be dropped as the config values default
-> to 0. Some json values are hex and the string '0' wouldn't match '0x0'
-> as zero. Add a more robust is_zero test to drop these event terms.
+On Fri, 2 Feb 2024 11:32:20 -0300, Arnaldo Carvalho de Melo wrote:
+> When building perf with BPF skels we either copy the minimalistic
+> tools/perf/util/bpf_skel/vmlinux/vmlinux.h or use bpftool to generate a
+> vmlinux from BTF, storing the result in $(SKEL_OUT)/vmlinux.h.
 > 
-> When encoding numbers as hex, if the number is between 0 and 9
-> inclusive then don't add a 0x prefix.
+> We need to remove that when doing a 'make -C tools/perf clean', fix it.
+> 
 > 
 > [...]
 
