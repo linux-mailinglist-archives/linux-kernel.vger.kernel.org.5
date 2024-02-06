@@ -1,92 +1,679 @@
-Return-Path: <linux-kernel+bounces-54610-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54609-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9001C84B17B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:39:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB11C84B179
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:39:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C31711C227F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:39:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB98F1F23C23
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:39:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBC8F12D769;
-	Tue,  6 Feb 2024 09:39:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="DN2sTFai"
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8673C12D179;
+	Tue,  6 Feb 2024 09:39:08 +0000 (UTC)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00DDD12D146;
-	Tue,  6 Feb 2024 09:39:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DE6412D148;
+	Tue,  6 Feb 2024 09:39:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707212350; cv=none; b=GEyYyGXZIxVvEfRk5Gwt5HQC0GU2nJ/PkeUy7Ve8p2lkdMuATfbcSSB1OUB8dMi+vrLBwU6p+SBYNVcLjMVfltCgT8R+YaF9ToGGwjnGHxCj2bSATpM+KgEy+ZqyuzV3L6/+yNsdjmi5J/6mvBgdCmOBUfwgvyg4VBjcYHxbkVk=
+	t=1707212347; cv=none; b=K/E9LSzoqGCidTtwxYqq4aQ7NBkZkz7atH2r3ckEoyxTRS2aVfTAWr4dXLDBv4L7MneQ2/K3C6A3WzzAUVBxJGMM/5B0Ex3Q/NGCy17AOZQfimBEvxl/wRMHQHNa/oZrJVT4C6Bpl29jpO5swhfmrwQlB0MIKJDZo3RwzXsKROs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707212350; c=relaxed/simple;
-	bh=vOlUYbXqj6PLt5HGut6v/zsqfogoygFiPio5B13aQPs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TYZS54Tu6AazjrMGp3nWyz/YnMz2CpoxJNRA0aoPHMvbEo+RB6awSx3NJn0ZrE6ljM/v4l8aw76TQhQd8PaGgwnspxHoH9uGB/YuUbGxB/deoNWThIo/NVR6uEEEpWWpVRz21uOc/qROG4P7YlvrgbSXp31O0SGA4QD3csX04iQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=DN2sTFai; arc=none smtp.client-ip=115.124.30.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1707212339; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=toWhO0GkKnpG8md0AYP6xrKSj5a2GVH2yOYl3wdcLGw=;
-	b=DN2sTFaiG9lQwH7ajrsAtjnKt/z2IeXvS7Gyr5QSesfzlC4FHvbZY6zkcnkEU1sVoD3skhr0NIG8dL3ZK4GyiBO/FAx4q4/JpBTStF5Te3V5cYQML3rxEmBDCTQtWbTEPiptqJnD9+K8rboiFbKRAkENFtgGWdHtQHBDm7M6Z+8=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R431e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0W0D7L1b_1707212338;
-Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0W0D7L1b_1707212338)
-          by smtp.aliyun-inc.com;
-          Tue, 06 Feb 2024 17:38:58 +0800
-From: Yang Li <yang.lee@linux.alibaba.com>
-To: wim@linux-watchdog.org,
-	linux@roeck-us.net
-Cc: linux-watchdog@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH -next] watchdog: Add kernel-doc for wdt_set_timeout()
-Date: Tue,  6 Feb 2024 17:38:57 +0800
-Message-Id: <20240206093857.62444-1-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+	s=arc-20240116; t=1707212347; c=relaxed/simple;
+	bh=XRi5FZtUfoJKGHz1xMeySQ+48TdeSOs5OUsvmHhQj6s=;
+	h=CC:Subject:To:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=JJjikWZd/jfQhNpnn1/KOIX/6dqJnh6+MQmdtUoP2jNoXcVsRgeA1MSw5qMF3AvRYdHTAPSLC03w4PVgAOg+zQcEFxL8GCyofRs2ECUwVq7HHvZVpi7lF/Bvj7fqh7uEvtiGDmHQkTilTAmHUEvAvWhiu4elrRsOz5dty+DLTuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4TTdT04nwcz1Q8k8;
+	Tue,  6 Feb 2024 17:37:40 +0800 (CST)
+Received: from canpemm500009.china.huawei.com (unknown [7.192.105.203])
+	by mail.maildlp.com (Postfix) with ESMTPS id 5967D18006C;
+	Tue,  6 Feb 2024 17:39:00 +0800 (CST)
+Received: from [10.67.121.177] (10.67.121.177) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 6 Feb 2024 17:38:59 +0800
+CC: <yangyicong@hisilicon.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
+	<peterz@infradead.org>, <mingo@redhat.com>, <james.clark@arm.com>,
+	<alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
+	<namhyung@kernel.org>, <irogers@google.com>, <adrian.hunter@intel.com>,
+	<linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<zhanjie9@hisilicon.com>, <21cnbao@gmail.com>, <tim.c.chen@intel.com>,
+	<prime.zeng@hisilicon.com>, <fanghao11@huawei.com>, <linuxarm@huawei.com>,
+	<linux-arm-kernel@lists.infradead.org>, Tim Chen <tim.c.chen@linux.intel.com>
+Subject: Re: [RESEND v4] perf stat: Support per-cluster aggregation
+To: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+References: <20240206082016.22292-1-yangyicong@huawei.com>
+ <20240206091651.00007c1b@Huawei.com>
+From: Yicong Yang <yangyicong@huawei.com>
+Message-ID: <8af31d10-4779-77e7-1774-baf4d9280fbb@huawei.com>
+Date: Tue, 6 Feb 2024 17:38:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240206091651.00007c1b@Huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500009.china.huawei.com (7.192.105.203)
 
-The wdt_set_timeout function lacked a complete kernel-doc
-description. This patch adds missing parameter and return
-value descriptions in accordance with kernel-doc standards.
+On 2024/2/6 17:16, Jonathan Cameron wrote:
+> On Tue, 6 Feb 2024 16:20:16 +0800
+> Yicong Yang <yangyicong@huawei.com> wrote:
+> 
+>> From: Yicong Yang <yangyicong@hisilicon.com>
+>>
+>> Some platforms have 'cluster' topology and CPUs in the cluster will
+>> share resources like L3 Cache Tag (for HiSilicon Kunpeng SoC) or L2
+>> cache (for Intel Jacobsville). Currently parsing and building cluster
+>> topology have been supported since [1].
+>>
+>> perf stat has already supported aggregation for other topologies like
+>> die or socket, etc. It'll be useful to aggregate per-cluster to find
+>> problems like L3T bandwidth contention.
+>>
+>> This patch add support for "--per-cluster" option for per-cluster
+>> aggregation. Also update the docs and related test. The output will
+>> be like:
+>>
+>> [root@localhost tmp]# perf stat -a -e LLC-load --per-cluster -- sleep 5
+>>
+>>  Performance counter stats for 'system wide':
+>>
+>> S56-D0-CLS158    4      1,321,521,570      LLC-load
+>> S56-D0-CLS594    4        794,211,453      LLC-load
+>> S56-D0-CLS1030    4             41,623      LLC-load
+>> S56-D0-CLS1466    4             41,646      LLC-load
+>> S56-D0-CLS1902    4             16,863      LLC-load
+>> S56-D0-CLS2338    4             15,721      LLC-load
+>> S56-D0-CLS2774    4             22,671      LLC-load
+>> [...]
+>>
+>> On a legacy system without cluster or cluster support, the output will
+>> be look like:
+>> [root@localhost perf]# perf stat -a -e cycles --per-cluster -- sleep 1
+>>
+>>  Performance counter stats for 'system wide':
+>>
+>> S56-D0-CLS0   64         18,011,485      cycles
+>> S7182-D0-CLS0   64         16,548,835      cycles
+>>
+>> Note that this patch doesn't mix the cluster information in the outputs
+>> of --per-core to avoid breaking any tools/scripts using it.
+>>
+>> Note that perf recently supports "--per-cache" aggregation, but it's not
+>> the same with the cluster although cluster CPUs may share some cache
+>> resources. For example on my machine all clusters within a die share the
+>> same L3 cache:
+>> $ cat /sys/devices/system/cpu/cpu0/cache/index3/shared_cpu_list
+>> 0-31
+>> $ cat /sys/devices/system/cpu/cpu0/topology/cluster_cpus_list
+>> 0-3
+>>
+>> [1] commit c5e22feffdd7 ("topology: Represent clusters of CPUs within a die")
+>> Tested-by: Jie Zhan <zhanjie9@hisilicon.com>
+>> Reviewed-by: Tim Chen <tim.c.chen@linux.intel.com>
+>> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+>> ---
+>> Change since v3:
+>> - Rebase on v6.7-rc4 and resolve the conflicts
+>> Link: https://lore.kernel.org/all/20230404104951.27537-1-yangyicong@huawei.com/
+>>
+>> Change since v2:
+>> - Use 0 as cluster ID on legacy system without cluster support, keep consistenct
+>>   with what --per-die does.
+>> Link: https://lore.kernel.org/all/20230328112717.19573-1-yangyicong@huawei.com/
+>>
+>> Change since v1:
+>> - Provides the information about how to map the cluster to the CPUs in the manual
+> Given this change incorporates both the case in the example above where PPTT doesn't
+> have the IDs set for the Processor Hierarchy nodes and the one where it does 
+> (which would be the UIDs of the Processor Containers in DSDT) I think this is sufficient.
+> 
 
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/watchdog/it87_wdt.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Yes the perf only read the IDs from sysfs and if the firmware fill the ID more meaningfully
+we should get a more readable output like:
+[root@localhost yang]# ./perf stat -e ll_cache_miss --per-cluster --timeout 1000
 
-diff --git a/drivers/watchdog/it87_wdt.c b/drivers/watchdog/it87_wdt.c
-index 9297a5891912..3e8c15138edd 100644
---- a/drivers/watchdog/it87_wdt.c
-+++ b/drivers/watchdog/it87_wdt.c
-@@ -213,12 +213,16 @@ static int wdt_stop(struct watchdog_device *wdd)
- 
- /**
-  *	wdt_set_timeout - set a new timeout value with watchdog ioctl
-+ *	@wdd: pointer to the watchdog_device structure
-  *	@t: timeout value in seconds
-  *
-  *	The hardware device has a 8 or 16 bit watchdog timer (depends on
-  *	chip version) that can be configured to count seconds or minutes.
-  *
-  *	Used within WDIOC_SETTIMEOUT watchdog device ioctl.
-+ *
-+ *	Return: 0 if the timeout was set successfully, or a negative error code on
-+ *	failure.
-  */
- 
- static int wdt_set_timeout(struct watchdog_device *wdd, unsigned int t)
--- 
-2.20.1.7.g153144c
+ Performance counter stats for 'system wide':
 
+S0-D0-CLS0    4             944838      ll_cache_miss
+S0-D0-CLS1    4            4067300      ll_cache_miss
+S0-D0-CLS2    4           14804515      ll_cache_miss
+S0-D0-CLS3    4           11664175      ll_cache_miss
+S0-D0-CLS4    4           11301486      ll_cache_miss
+S0-D0-CLS5    4           11300000      ll_cache_miss
+S0-D0-CLS6    4            1996552      ll_cache_miss
+[...]
+
+> Not an expert on perftool but in general this looks both useful and correct to me.
+> 
+
+Thanks.
+
+> Jonathan
+> 
+>> - Thanks the review from Tim and test from Jie.
+>> Link: https://lore.kernel.org/all/20230313085911.61359-1-yangyicong@huawei.com/
+>>
+>>  tools/perf/Documentation/perf-stat.txt        | 11 ++++
+>>  tools/perf/builtin-stat.c                     | 52 +++++++++++++++++--
+>>  .../tests/shell/lib/perf_json_output_lint.py  |  4 +-
+>>  tools/perf/tests/shell/lib/stat_output.sh     | 12 +++++
+>>  tools/perf/tests/shell/stat+csv_output.sh     |  2 +
+>>  tools/perf/tests/shell/stat+json_output.sh    | 13 +++++
+>>  tools/perf/tests/shell/stat+std_output.sh     |  2 +
+>>  tools/perf/util/cpumap.c                      | 32 +++++++++++-
+>>  tools/perf/util/cpumap.h                      | 19 +++++--
+>>  tools/perf/util/env.h                         |  1 +
+>>  tools/perf/util/stat-display.c                | 13 +++++
+>>  tools/perf/util/stat.h                        |  1 +
+>>  12 files changed, 153 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
+>> index 5af2e432b54f..29756a87ab6f 100644
+>> --- a/tools/perf/Documentation/perf-stat.txt
+>> +++ b/tools/perf/Documentation/perf-stat.txt
+>> @@ -308,6 +308,14 @@ use --per-die in addition to -a. (system-wide).  The output includes the
+>>  die number and the number of online processors on that die. This is
+>>  useful to gauge the amount of aggregation.
+>>  
+>> +--per-cluster::
+>> +Aggregate counts per processor cluster for system-wide mode measurement.  This
+>> +is a useful mode to detect imbalance between clusters.  To enable this mode,
+>> +use --per-cluster in addition to -a. (system-wide).  The output includes the
+>> +cluster number and the number of online processors on that cluster. This is
+>> +useful to gauge the amount of aggregation. The information of cluster ID and
+>> +related CPUs can be gotten from /sys/devices/system/cpu/cpuX/topology/cluster_{id, cpus}.
+>> +
+>>  --per-cache::
+>>  Aggregate counts per cache instance for system-wide mode measurements.  By
+>>  default, the aggregation happens for the cache level at the highest index
+>> @@ -396,6 +404,9 @@ Aggregate counts per processor socket for system-wide mode measurements.
+>>  --per-die::
+>>  Aggregate counts per processor die for system-wide mode measurements.
+>>  
+>> +--per-cluster::
+>> +Aggregate counts perf processor cluster for system-wide mode measurements.
+>> +
+>>  --per-cache::
+>>  Aggregate counts per cache instance for system-wide mode measurements.  By
+>>  default, the aggregation happens for the cache level at the highest index
+>> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+>> index 5fe9abc6a524..6bba1a89d030 100644
+>> --- a/tools/perf/builtin-stat.c
+>> +++ b/tools/perf/builtin-stat.c
+>> @@ -1238,6 +1238,8 @@ static struct option stat_options[] = {
+>>  		     "aggregate counts per processor socket", AGGR_SOCKET),
+>>  	OPT_SET_UINT(0, "per-die", &stat_config.aggr_mode,
+>>  		     "aggregate counts per processor die", AGGR_DIE),
+>> +	OPT_SET_UINT(0, "per-cluster", &stat_config.aggr_mode,
+>> +		     "aggregate counts per processor cluster", AGGR_CLUSTER),
+>>  	OPT_CALLBACK_OPTARG(0, "per-cache", &stat_config.aggr_mode, &stat_config.aggr_level,
+>>  			    "cache level", "aggregate count at this cache level (Default: LLC)",
+>>  			    parse_cache_level),
+>> @@ -1428,6 +1430,7 @@ static struct aggr_cpu_id aggr_cpu_id__cache(struct perf_cpu cpu, void *data)
+>>  static const char *const aggr_mode__string[] = {
+>>  	[AGGR_CORE] = "core",
+>>  	[AGGR_CACHE] = "cache",
+>> +	[AGGR_CLUSTER] = "cluster",
+>>  	[AGGR_DIE] = "die",
+>>  	[AGGR_GLOBAL] = "global",
+>>  	[AGGR_NODE] = "node",
+>> @@ -1455,6 +1458,12 @@ static struct aggr_cpu_id perf_stat__get_cache_id(struct perf_stat_config *confi
+>>  	return aggr_cpu_id__cache(cpu, /*data=*/NULL);
+>>  }
+>>  
+>> +static struct aggr_cpu_id perf_stat__get_cluster(struct perf_stat_config *config __maybe_unused,
+>> +						 struct perf_cpu cpu)
+>> +{
+>> +	return aggr_cpu_id__cluster(cpu, /*data=*/NULL);
+>> +}
+>> +
+>>  static struct aggr_cpu_id perf_stat__get_core(struct perf_stat_config *config __maybe_unused,
+>>  					      struct perf_cpu cpu)
+>>  {
+>> @@ -1507,6 +1516,12 @@ static struct aggr_cpu_id perf_stat__get_die_cached(struct perf_stat_config *con
+>>  	return perf_stat__get_aggr(config, perf_stat__get_die, cpu);
+>>  }
+>>  
+>> +static struct aggr_cpu_id perf_stat__get_cluster_cached(struct perf_stat_config *config,
+>> +							struct perf_cpu cpu)
+>> +{
+>> +	return perf_stat__get_aggr(config, perf_stat__get_cluster, cpu);
+>> +}
+>> +
+>>  static struct aggr_cpu_id perf_stat__get_cache_id_cached(struct perf_stat_config *config,
+>>  							 struct perf_cpu cpu)
+>>  {
+>> @@ -1544,6 +1559,8 @@ static aggr_cpu_id_get_t aggr_mode__get_aggr(enum aggr_mode aggr_mode)
+>>  		return aggr_cpu_id__socket;
+>>  	case AGGR_DIE:
+>>  		return aggr_cpu_id__die;
+>> +	case AGGR_CLUSTER:
+>> +		return aggr_cpu_id__cluster;
+>>  	case AGGR_CACHE:
+>>  		return aggr_cpu_id__cache;
+>>  	case AGGR_CORE:
+>> @@ -1569,6 +1586,8 @@ static aggr_get_id_t aggr_mode__get_id(enum aggr_mode aggr_mode)
+>>  		return perf_stat__get_socket_cached;
+>>  	case AGGR_DIE:
+>>  		return perf_stat__get_die_cached;
+>> +	case AGGR_CLUSTER:
+>> +		return perf_stat__get_cluster_cached;
+>>  	case AGGR_CACHE:
+>>  		return perf_stat__get_cache_id_cached;
+>>  	case AGGR_CORE:
+>> @@ -1737,6 +1756,21 @@ static struct aggr_cpu_id perf_env__get_cache_aggr_by_cpu(struct perf_cpu cpu,
+>>  	return id;
+>>  }
+>>  
+>> +static struct aggr_cpu_id perf_env__get_cluster_aggr_by_cpu(struct perf_cpu cpu,
+>> +							    void *data)
+>> +{
+>> +	struct perf_env *env = data;
+>> +	struct aggr_cpu_id id = aggr_cpu_id__empty();
+>> +
+>> +	if (cpu.cpu != -1) {
+>> +		id.socket = env->cpu[cpu.cpu].socket_id;
+>> +		id.die = env->cpu[cpu.cpu].die_id;
+>> +		id.cluster = env->cpu[cpu.cpu].cluster_id;
+>> +	}
+>> +
+>> +	return id;
+>> +}
+>> +
+>>  static struct aggr_cpu_id perf_env__get_core_aggr_by_cpu(struct perf_cpu cpu, void *data)
+>>  {
+>>  	struct perf_env *env = data;
+>> @@ -1744,12 +1778,12 @@ static struct aggr_cpu_id perf_env__get_core_aggr_by_cpu(struct perf_cpu cpu, vo
+>>  
+>>  	if (cpu.cpu != -1) {
+>>  		/*
+>> -		 * core_id is relative to socket and die,
+>> -		 * we need a global id. So we set
+>> -		 * socket, die id and core id
+>> +		 * core_id is relative to socket, die and cluster, we need a
+>> +		 * global id. So we set socket, die id, cluster id and core id.
+>>  		 */
+>>  		id.socket = env->cpu[cpu.cpu].socket_id;
+>>  		id.die = env->cpu[cpu.cpu].die_id;
+>> +		id.cluster = env->cpu[cpu.cpu].cluster_id;
+>>  		id.core = env->cpu[cpu.cpu].core_id;
+>>  	}
+>>  
+>> @@ -1805,6 +1839,12 @@ static struct aggr_cpu_id perf_stat__get_die_file(struct perf_stat_config *confi
+>>  	return perf_env__get_die_aggr_by_cpu(cpu, &perf_stat.session->header.env);
+>>  }
+>>  
+>> +static struct aggr_cpu_id perf_stat__get_cluster_file(struct perf_stat_config *config __maybe_unused,
+>> +						      struct perf_cpu cpu)
+>> +{
+>> +	return perf_env__get_cluster_aggr_by_cpu(cpu, &perf_stat.session->header.env);
+>> +}
+>> +
+>>  static struct aggr_cpu_id perf_stat__get_cache_file(struct perf_stat_config *config __maybe_unused,
+>>  						    struct perf_cpu cpu)
+>>  {
+>> @@ -1842,6 +1882,8 @@ static aggr_cpu_id_get_t aggr_mode__get_aggr_file(enum aggr_mode aggr_mode)
+>>  		return perf_env__get_socket_aggr_by_cpu;
+>>  	case AGGR_DIE:
+>>  		return perf_env__get_die_aggr_by_cpu;
+>> +	case AGGR_CLUSTER:
+>> +		return perf_env__get_cluster_aggr_by_cpu;
+>>  	case AGGR_CACHE:
+>>  		return perf_env__get_cache_aggr_by_cpu;
+>>  	case AGGR_CORE:
+>> @@ -1867,6 +1909,8 @@ static aggr_get_id_t aggr_mode__get_id_file(enum aggr_mode aggr_mode)
+>>  		return perf_stat__get_socket_file;
+>>  	case AGGR_DIE:
+>>  		return perf_stat__get_die_file;
+>> +	case AGGR_CLUSTER:
+>> +		return perf_stat__get_cluster_file;
+>>  	case AGGR_CACHE:
+>>  		return perf_stat__get_cache_file;
+>>  	case AGGR_CORE:
+>> @@ -2398,6 +2442,8 @@ static int __cmd_report(int argc, const char **argv)
+>>  		     "aggregate counts per processor socket", AGGR_SOCKET),
+>>  	OPT_SET_UINT(0, "per-die", &perf_stat.aggr_mode,
+>>  		     "aggregate counts per processor die", AGGR_DIE),
+>> +	OPT_SET_UINT(0, "per-cluster", &perf_stat.aggr_mode,
+>> +		     "aggregate counts perf processor cluster", AGGR_CLUSTER),
+>>  	OPT_CALLBACK_OPTARG(0, "per-cache", &perf_stat.aggr_mode, &perf_stat.aggr_level,
+>>  			    "cache level",
+>>  			    "aggregate count at this cache level (Default: LLC)",
+>> diff --git a/tools/perf/tests/shell/lib/perf_json_output_lint.py b/tools/perf/tests/shell/lib/perf_json_output_lint.py
+>> index ea55d5ea1ced..abc1fd737782 100644
+>> --- a/tools/perf/tests/shell/lib/perf_json_output_lint.py
+>> +++ b/tools/perf/tests/shell/lib/perf_json_output_lint.py
+>> @@ -15,6 +15,7 @@ ap.add_argument('--event', action='store_true')
+>>  ap.add_argument('--per-core', action='store_true')
+>>  ap.add_argument('--per-thread', action='store_true')
+>>  ap.add_argument('--per-cache', action='store_true')
+>> +ap.add_argument('--per-cluster', action='store_true')
+>>  ap.add_argument('--per-die', action='store_true')
+>>  ap.add_argument('--per-node', action='store_true')
+>>  ap.add_argument('--per-socket', action='store_true')
+>> @@ -49,6 +50,7 @@ def check_json_output(expected_items):
+>>        'cgroup': lambda x: True,
+>>        'cpu': lambda x: isint(x),
+>>        'cache': lambda x: True,
+>> +      'cluster': lambda x: True,
+>>        'die': lambda x: True,
+>>        'event': lambda x: True,
+>>        'event-runtime': lambda x: isfloat(x),
+>> @@ -88,7 +90,7 @@ try:
+>>      expected_items = 7
+>>    elif args.interval or args.per_thread or args.system_wide_no_aggr:
+>>      expected_items = 8
+>> -  elif args.per_core or args.per_socket or args.per_node or args.per_die or args.per_cache:
+>> +  elif args.per_core or args.per_socket or args.per_node or args.per_die or args.per_cluster or args.per_cache:
+>>      expected_items = 9
+>>    else:
+>>      # If no option is specified, don't check the number of items.
+>> diff --git a/tools/perf/tests/shell/lib/stat_output.sh b/tools/perf/tests/shell/lib/stat_output.sh
+>> index 3cc158a64326..c81d6a9f7983 100644
+>> --- a/tools/perf/tests/shell/lib/stat_output.sh
+>> +++ b/tools/perf/tests/shell/lib/stat_output.sh
+>> @@ -97,6 +97,18 @@ check_per_cache_instance()
+>>  	echo "[Success]"
+>>  }
+>>  
+>> +check_per_cluster()
+>> +{
+>> +	echo -n "Checking $1 output: per cluster "
+>> +	if ParanoidAndNotRoot 0
+>> +	then
+>> +		echo "[Skip] paranoid and not root"
+>> +		return
+>> +	fi
+>> +	perf stat --per-cluster -a $2 true
+>> +	echo "[Success]"
+>> +}
+>> +
+>>  check_per_die()
+>>  {
+>>  	echo -n "Checking $1 output: per die "
+>> diff --git a/tools/perf/tests/shell/stat+csv_output.sh b/tools/perf/tests/shell/stat+csv_output.sh
+>> index f1818fa6d9ce..fc2d8cc6e5e0 100755
+>> --- a/tools/perf/tests/shell/stat+csv_output.sh
+>> +++ b/tools/perf/tests/shell/stat+csv_output.sh
+>> @@ -42,6 +42,7 @@ function commachecker()
+>>  	;; "--per-socket")	exp=8
+>>  	;; "--per-node")	exp=8
+>>  	;; "--per-die")		exp=8
+>> +	;; "--per-cluster")	exp=8
+>>  	;; "--per-cache")	exp=8
+>>  	esac
+>>  
+>> @@ -79,6 +80,7 @@ then
+>>  	check_system_wide_no_aggr "CSV" "$perf_cmd"
+>>  	check_per_core "CSV" "$perf_cmd"
+>>  	check_per_cache_instance "CSV" "$perf_cmd"
+>> +	check_per_cluster "CSV" "$perf_cmd"
+>>  	check_per_die "CSV" "$perf_cmd"
+>>  	check_per_socket "CSV" "$perf_cmd"
+>>  else
+>> diff --git a/tools/perf/tests/shell/stat+json_output.sh b/tools/perf/tests/shell/stat+json_output.sh
+>> index 3bc900533a5d..2b9c6212dffc 100755
+>> --- a/tools/perf/tests/shell/stat+json_output.sh
+>> +++ b/tools/perf/tests/shell/stat+json_output.sh
+>> @@ -122,6 +122,18 @@ check_per_cache_instance()
+>>  	echo "[Success]"
+>>  }
+>>  
+>> +check_per_cluster()
+>> +{
+>> +	echo -n "Checking json output: per cluster "
+>> +	if ParanoidAndNotRoot 0
+>> +	then
+>> +		echo "[Skip] paranoia and not root"
+>> +		return
+>> +	fi
+>> +	perf stat -j --per-cluster -a true 2>&1 | $PYTHON $pythonchecker --per-cluster
+>> +	echo "[Success]"
+>> +}
+>> +
+>>  check_per_die()
+>>  {
+>>  	echo -n "Checking json output: per die "
+>> @@ -200,6 +212,7 @@ then
+>>  	check_system_wide_no_aggr
+>>  	check_per_core
+>>  	check_per_cache_instance
+>> +	check_per_cluster
+>>  	check_per_die
+>>  	check_per_socket
+>>  else
+>> diff --git a/tools/perf/tests/shell/stat+std_output.sh b/tools/perf/tests/shell/stat+std_output.sh
+>> index 4fcdd1a9142c..16f61e86afc5 100755
+>> --- a/tools/perf/tests/shell/stat+std_output.sh
+>> +++ b/tools/perf/tests/shell/stat+std_output.sh
+>> @@ -40,6 +40,7 @@ function commachecker()
+>>  	;; "--per-node")	prefix=3
+>>  	;; "--per-die")		prefix=3
+>>  	;; "--per-cache")	prefix=3
+>> +	;; "--per-cluster")	prefix=3
+>>  	esac
+>>  
+>>  	while read line
+>> @@ -99,6 +100,7 @@ then
+>>  	check_system_wide_no_aggr "STD" "$perf_cmd"
+>>  	check_per_core "STD" "$perf_cmd"
+>>  	check_per_cache_instance "STD" "$perf_cmd"
+>> +	check_per_cluster "STD" "$perf_cmd"
+>>  	check_per_die "STD" "$perf_cmd"
+>>  	check_per_socket "STD" "$perf_cmd"
+>>  else
+>> diff --git a/tools/perf/util/cpumap.c b/tools/perf/util/cpumap.c
+>> index 0581ee0fa5f2..5907456d42a2 100644
+>> --- a/tools/perf/util/cpumap.c
+>> +++ b/tools/perf/util/cpumap.c
+>> @@ -222,6 +222,8 @@ static int aggr_cpu_id__cmp(const void *a_pointer, const void *b_pointer)
+>>  		return a->socket - b->socket;
+>>  	else if (a->die != b->die)
+>>  		return a->die - b->die;
+>> +	else if (a->cluster != b->cluster)
+>> +		return a->cluster - b->cluster;
+>>  	else if (a->cache_lvl != b->cache_lvl)
+>>  		return a->cache_lvl - b->cache_lvl;
+>>  	else if (a->cache != b->cache)
+>> @@ -309,6 +311,29 @@ struct aggr_cpu_id aggr_cpu_id__die(struct perf_cpu cpu, void *data)
+>>  	return id;
+>>  }
+>>  
+>> +int cpu__get_cluster_id(struct perf_cpu cpu)
+>> +{
+>> +	int value, ret = cpu__get_topology_int(cpu.cpu, "cluster_id", &value);
+>> +	return ret ?: value;
+>> +}
+>> +
+>> +struct aggr_cpu_id aggr_cpu_id__cluster(struct perf_cpu cpu, void *data)
+>> +{
+>> +	int cluster = cpu__get_cluster_id(cpu);
+>> +	struct aggr_cpu_id id;
+>> +
+>> +	/* There is no cluster_id on legacy system. */
+>> +	if (cluster == -1)
+>> +		cluster = 0;
+>> +
+>> +	id = aggr_cpu_id__die(cpu, data);
+>> +	if (aggr_cpu_id__is_empty(&id))
+>> +		return id;
+>> +
+>> +	id.cluster = cluster;
+>> +	return id;
+>> +}
+>> +
+>>  int cpu__get_core_id(struct perf_cpu cpu)
+>>  {
+>>  	int value, ret = cpu__get_topology_int(cpu.cpu, "core_id", &value);
+>> @@ -320,8 +345,8 @@ struct aggr_cpu_id aggr_cpu_id__core(struct perf_cpu cpu, void *data)
+>>  	struct aggr_cpu_id id;
+>>  	int core = cpu__get_core_id(cpu);
+>>  
+>> -	/* aggr_cpu_id__die returns a struct with socket and die set. */
+>> -	id = aggr_cpu_id__die(cpu, data);
+>> +	/* aggr_cpu_id__die returns a struct with socket die, and cluster set. */
+>> +	id = aggr_cpu_id__cluster(cpu, data);
+>>  	if (aggr_cpu_id__is_empty(&id))
+>>  		return id;
+>>  
+>> @@ -683,6 +708,7 @@ bool aggr_cpu_id__equal(const struct aggr_cpu_id *a, const struct aggr_cpu_id *b
+>>  		a->node == b->node &&
+>>  		a->socket == b->socket &&
+>>  		a->die == b->die &&
+>> +		a->cluster == b->cluster &&
+>>  		a->cache_lvl == b->cache_lvl &&
+>>  		a->cache == b->cache &&
+>>  		a->core == b->core &&
+>> @@ -695,6 +721,7 @@ bool aggr_cpu_id__is_empty(const struct aggr_cpu_id *a)
+>>  		a->node == -1 &&
+>>  		a->socket == -1 &&
+>>  		a->die == -1 &&
+>> +		a->cluster == -1 &&
+>>  		a->cache_lvl == -1 &&
+>>  		a->cache == -1 &&
+>>  		a->core == -1 &&
+>> @@ -708,6 +735,7 @@ struct aggr_cpu_id aggr_cpu_id__empty(void)
+>>  		.node = -1,
+>>  		.socket = -1,
+>>  		.die = -1,
+>> +		.cluster = -1,
+>>  		.cache_lvl = -1,
+>>  		.cache = -1,
+>>  		.core = -1,
+>> diff --git a/tools/perf/util/cpumap.h b/tools/perf/util/cpumap.h
+>> index 9df2aeb34d3d..26cf76c693f5 100644
+>> --- a/tools/perf/util/cpumap.h
+>> +++ b/tools/perf/util/cpumap.h
+>> @@ -20,6 +20,8 @@ struct aggr_cpu_id {
+>>  	int socket;
+>>  	/** The die id as read from /sys/devices/system/cpu/cpuX/topology/die_id. */
+>>  	int die;
+>> +	/** The cluster id as read from /sys/devices/system/cpu/cpuX/topology/cluster_id */
+>> +	int cluster;
+>>  	/** The cache level as read from /sys/devices/system/cpu/cpuX/cache/indexY/level */
+>>  	int cache_lvl;
+>>  	/**
+>> @@ -86,6 +88,11 @@ int cpu__get_socket_id(struct perf_cpu cpu);
+>>   * /sys/devices/system/cpu/cpuX/topology/die_id for the given CPU.
+>>   */
+>>  int cpu__get_die_id(struct perf_cpu cpu);
+>> +/**
+>> + * cpu__get_cluster_id - Returns the cluster id as read from
+>> + * /sys/devices/system/cpu/cpuX/topology/cluster_id for the given CPU
+>> + */
+>> +int cpu__get_cluster_id(struct perf_cpu cpu);
+>>  /**
+>>   * cpu__get_core_id - Returns the core id as read from
+>>   * /sys/devices/system/cpu/cpuX/topology/core_id for the given CPU.
+>> @@ -127,9 +134,15 @@ struct aggr_cpu_id aggr_cpu_id__socket(struct perf_cpu cpu, void *data);
+>>   */
+>>  struct aggr_cpu_id aggr_cpu_id__die(struct perf_cpu cpu, void *data);
+>>  /**
+>> - * aggr_cpu_id__core - Create an aggr_cpu_id with the core, die and socket
+>> - * populated with the core, die and socket for cpu. The function signature is
+>> - * compatible with aggr_cpu_id_get_t.
+>> + * aggr_cpu_id__cluster - Create an aggr_cpu_id with cluster, die and socket
+>> + * populated with the cluster, die and socket for cpu. The function signature
+>> + * is compatible with aggr_cpu_id_get_t.
+>> + */
+>> +struct aggr_cpu_id aggr_cpu_id__cluster(struct perf_cpu cpu, void *data);
+>> +/**
+>> + * aggr_cpu_id__core - Create an aggr_cpu_id with the core, cluster, die and
+>> + * socket populated with the core, die and socket for cpu. The function
+>> + * signature is compatible with aggr_cpu_id_get_t.
+>>   */
+>>  struct aggr_cpu_id aggr_cpu_id__core(struct perf_cpu cpu, void *data);
+>>  /**
+>> diff --git a/tools/perf/util/env.h b/tools/perf/util/env.h
+>> index 7c527e65c186..2a2c37cc40b7 100644
+>> --- a/tools/perf/util/env.h
+>> +++ b/tools/perf/util/env.h
+>> @@ -12,6 +12,7 @@ struct perf_cpu_map;
+>>  struct cpu_topology_map {
+>>  	int	socket_id;
+>>  	int	die_id;
+>> +	int	cluster_id;
+>>  	int	core_id;
+>>  };
+>>  
+>> diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
+>> index 8c61f8627ebc..4dfe7d9517a9 100644
+>> --- a/tools/perf/util/stat-display.c
+>> +++ b/tools/perf/util/stat-display.c
+>> @@ -201,6 +201,9 @@ static void print_aggr_id_std(struct perf_stat_config *config,
+>>  		snprintf(buf, sizeof(buf), "S%d-D%d-L%d-ID%d",
+>>  			 id.socket, id.die, id.cache_lvl, id.cache);
+>>  		break;
+>> +	case AGGR_CLUSTER:
+>> +		snprintf(buf, sizeof(buf), "S%d-D%d-CLS%d", id.socket, id.die, id.cluster);
+>> +		break;
+>>  	case AGGR_DIE:
+>>  		snprintf(buf, sizeof(buf), "S%d-D%d", id.socket, id.die);
+>>  		break;
+>> @@ -251,6 +254,10 @@ static void print_aggr_id_csv(struct perf_stat_config *config,
+>>  		fprintf(config->output, "S%d-D%d-L%d-ID%d%s%d%s",
+>>  			id.socket, id.die, id.cache_lvl, id.cache, sep, aggr_nr, sep);
+>>  		break;
+>> +	case AGGR_CLUSTER:
+>> +		fprintf(config->output, "S%d-D%d-CLS%d%s%d%s",
+>> +			id.socket, id.die, id.cluster, sep, aggr_nr, sep);
+>> +		break;
+>>  	case AGGR_DIE:
+>>  		fprintf(output, "S%d-D%d%s%d%s",
+>>  			id.socket, id.die, sep, aggr_nr, sep);
+>> @@ -300,6 +307,10 @@ static void print_aggr_id_json(struct perf_stat_config *config,
+>>  		fprintf(output, "\"cache\" : \"S%d-D%d-L%d-ID%d\", \"aggregate-number\" : %d, ",
+>>  			id.socket, id.die, id.cache_lvl, id.cache, aggr_nr);
+>>  		break;
+>> +	case AGGR_CLUSTER:
+>> +		fprintf(output, "\"cluster\" : \"S%d-D%d-CLS%d\", \"aggregate-number\" : %d, ",
+>> +			id.socket, id.die, id.cluster, aggr_nr);
+>> +		break;
+>>  	case AGGR_DIE:
+>>  		fprintf(output, "\"die\" : \"S%d-D%d\", \"aggregate-number\" : %d, ",
+>>  			id.socket, id.die, aggr_nr);
+>> @@ -1248,6 +1259,7 @@ static void print_header_interval_std(struct perf_stat_config *config,
+>>  	case AGGR_NODE:
+>>  	case AGGR_SOCKET:
+>>  	case AGGR_DIE:
+>> +	case AGGR_CLUSTER:
+>>  	case AGGR_CACHE:
+>>  	case AGGR_CORE:
+>>  		fprintf(output, "#%*s %-*s cpus",
+>> @@ -1550,6 +1562,7 @@ void evlist__print_counters(struct evlist *evlist, struct perf_stat_config *conf
+>>  	switch (config->aggr_mode) {
+>>  	case AGGR_CORE:
+>>  	case AGGR_CACHE:
+>> +	case AGGR_CLUSTER:
+>>  	case AGGR_DIE:
+>>  	case AGGR_SOCKET:
+>>  	case AGGR_NODE:
+>> diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
+>> index 4357ba114822..d6e5c8787ba2 100644
+>> --- a/tools/perf/util/stat.h
+>> +++ b/tools/perf/util/stat.h
+>> @@ -48,6 +48,7 @@ enum aggr_mode {
+>>  	AGGR_GLOBAL,
+>>  	AGGR_SOCKET,
+>>  	AGGR_DIE,
+>> +	AGGR_CLUSTER,
+>>  	AGGR_CACHE,
+>>  	AGGR_CORE,
+>>  	AGGR_THREAD,
+> 
+> .
+> 
 
