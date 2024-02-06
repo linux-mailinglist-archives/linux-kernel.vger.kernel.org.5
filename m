@@ -1,119 +1,99 @@
-Return-Path: <linux-kernel+bounces-55718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55719-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D4DE84C0BF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:18:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A71B84C0C0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:19:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D40E41F23E8C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:18:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 475FC28448A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:19:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 534121CAB7;
-	Tue,  6 Feb 2024 23:18:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="StElRlcS"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DA761CD20;
+	Tue,  6 Feb 2024 23:19:01 +0000 (UTC)
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C34A41C29C
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 23:18:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB6251CD17;
+	Tue,  6 Feb 2024 23:18:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707261504; cv=none; b=TPqomC+AYckfzjeEfQC2DXLehOlMW7yHVkNdFvzQyMBW2fX2SWtDIySepDbjkIA1FrpVWDVf+Y/2yotpABHxYBqCgXh6h3KvMcv0nv643wB3QT/4X222C2wWXU4PemH+YNedHKxzqqDyflVE/Ir2/SfC7jg4NVGx8CIm+TpxoxE=
+	t=1707261541; cv=none; b=KEk/0DtTytYfkHDBGt2YaGdkQqgBrytHvmtUtpqropeHnE3oPwxui3WvfjedJtbCIowfXkBwfcSxFPhqzDdbNOgGUP7JNmfv+98d1PKhQ2SvPF/Cz0Mv+9uqSHd2Alu3z2VR/R5DQtFLJSwVRMwt8QR4skDWMR2otQ1iabt2EYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707261504; c=relaxed/simple;
-	bh=6k2/v7t4Lc7qS2f3uGGBR4lHof09wjKlY6e2xCdE8G8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UQsnfVeIcGIwGyN4rJBk5t1r7VOI5hI2pTwobDeYmDYicdIV8Hk4f5RAHfLNIykm42zFWazXqBUS6pAC1HM1zF6SmC4BIw1/dbfNyQhtg0A91npL3bisQCAz00603/N5PcdCS1a9kjYWpQ2k2e/QneeSDD68HCleg6aNk6Qu89k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=StElRlcS; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=DKdDlBaoWLD1i+SswtNzDM+hpIQ9ywhkR3LkK9m+G3w=; b=StElRlcSH9oSxj07zjDse4KeZb
-	JMadwTYZgV3Oekw3j3odYlubfWwU2FxbHxxfvbtmPerYRfD2Fdz/rT5qsS/cYwagrYJqiUP9rnG6/
-	rRQnXey/kmQsTp1DUG7bi1vkNhSSGhbvkNmYGokw9mx12+pPUqUnMrLnZBFgzqIYXdZnfKAhL8isj
-	2S2hCuTWe5Mdcd19mk4IR4l80NSKrjqvRUpXfIfHS32mg01WRGowqs7MZbVshbCqrHQp/84zuJiIh
-	TN1VWOm++QJRkeafxPtYvXNZAvhNga5IGoksfC4ys0rskp+Wol5sb4EV+vpkHX2Nh6+EhptKuBUMq
-	bVdXUw0g==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:39202)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rXUhY-0002bh-1q;
-	Tue, 06 Feb 2024 23:18:04 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rXUhS-00040V-VN; Tue, 06 Feb 2024 23:17:59 +0000
-Date: Tue, 6 Feb 2024 23:17:58 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: "Christoph Lameter (Ampere)" <cl@gentwo.org>
-Cc: catalin.marinas@arm.com, Will Deacon <will@kernel.org>,
-	Jonathan.Cameron@huawei.com, Matteo.Carlini@arm.com,
-	Valentin.Schneider@arm.com, akpm@linux-foundation.org,
-	anshuman.khandual@arm.com, Eric Mackay <eric.mackay@oracle.com>,
-	dave.kleikamp@oracle.com, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	robin.murphy@arm.com, vanshikonda@os.amperecomputing.com,
-	yang@os.amperecomputing.com
-Subject: Re: [PATCH REPOST v2] ARM64: Dynamically allocate cpumasks and
- increase supported CPUs to 512
-Message-ID: <ZcK+JmY2KRfkdQj4@shell.armlinux.org.uk>
-References: <e0d41efb-a74e-6bb5-f325-63d42358c802@gentwo.org>
+	s=arc-20240116; t=1707261541; c=relaxed/simple;
+	bh=sMgP9pFFHrMMIn9L5CwdZGP8g4NZPoWoa5cyyu4+TPI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lzDozJQbKNZc4VuZFcX2vAcoZDq+sNq1Vg+orY1OfH/wQfTzfb0ftECesE62Nmp8ROLBaH+toI4P85dP6VW993afqsZnwNlcjFnb4w4sBovs+ew75VMacuOvLLJDf64Btvaq90k8rRZDFoyH3ZOlLur84Irk2j+y9TxeBlB03vg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d93ddd76adso564835ad.2;
+        Tue, 06 Feb 2024 15:18:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707261539; x=1707866339;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jPqZ7Ip2aFum8KHXYgnBN94F/8KhHuRmg9GEgL52ccE=;
+        b=TgyFbeKVfis3Q9Z85XbqgfMTqjAQC/+uo2VirVhIMbhJ8/iccl1qWhQXhZ1YfXiiIm
+         6EV3Z7kwJr9R1cKKtkzCphhXDBtU8vHuj3FQVpqTUCkS5dYtSYY5N/zcglAtdBWGmxiD
+         MsdZP7jR7SthRPzs0H5n6ZGpvnopEJjKL/Tyegdjdk+hB8qvsP0aAzQArmHfjVHxy4r/
+         azSYk9fN5TliBWiIsW8TtODsOd/W08zAHkThHFiM8KvSFRvlnupUtp7qGuc9YemRdBAG
+         PZeawswNQEE4dUnf3ffXbESrixlfXfFd/vpmcgQf7KNws4ACg7Ori6Yqq/gOk0qJz8E3
+         NNhA==
+X-Gm-Message-State: AOJu0YwYx2goUwneLsSxVowUj7HrY5Vgiv9PgCZAIJOUmlf5gDjfeWfV
+	AxJCeVf5CfMlTU/NEs9604Riqt/vRifH3XHi4xDAkowyiDGvVgssbPfZJbq6n9EGdIKRnA0kpye
+	/kkZn/QBLxThaNpQcCvyav+jFBwI=
+X-Google-Smtp-Source: AGHT+IH0Nbp2ZG0q/KxIx/5rXv4XbMfUBvfmRpT7CqVh2nDBPY/iQD8QZaXEJvTHi/33Rw9rH4VqpsbXpfH1iFVwUbg=
+X-Received: by 2002:a17:90a:ac0a:b0:296:235b:ac61 with SMTP id
+ o10-20020a17090aac0a00b00296235bac61mr1162467pjq.32.1707261538839; Tue, 06
+ Feb 2024 15:18:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e0d41efb-a74e-6bb5-f325-63d42358c802@gentwo.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <20240202220459.527138-1-namhyung@kernel.org> <20240202220459.527138-15-namhyung@kernel.org>
+ <CAP-5=fUWaKW7d6_YkET0o26=fjBwX6PPJ1gXQ9wndQM_Oi2O3A@mail.gmail.com>
+In-Reply-To: <CAP-5=fUWaKW7d6_YkET0o26=fjBwX6PPJ1gXQ9wndQM_Oi2O3A@mail.gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Tue, 6 Feb 2024 15:18:47 -0800
+Message-ID: <CAM9d7cgF_PYm2fG1Vgu25u1hVZUK0wmFBqY7DHW2eVpRV=iERA@mail.gmail.com>
+Subject: Re: [PATCH 14/14] perf annotate-data: Add stack canary type
+To: Ian Rogers <irogers@google.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org, 
+	linux-trace-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 06, 2024 at 10:09:59AM -0800, Christoph Lameter (Ampere) wrote:
-> Can we get this merged for 6.9? The patch has been around for awhile now.
-> 
-> 
-> 
-> Ampere Computing develops high end ARM processor that support an ever
-> increasing number of processors. The default 256 processors are
-> not enough for our newer products. The default is used by
-> distros and therefore our customers cannot use distro kernels because
-> the number of processors is not supported.
-> 
-> One of the objections against earlier patches to increase the limit
-> was that the memory use becomes too high. There is a feature called
-> CPUMASK_OFFSTACK that configures the cpumasks in the kernel to be
-> dynamically allocated. This was used in the X86 architecture in the
-> past to enable support for larger CPU configurations up to 8k cpus.
-> 
-> With that is becomes possible to dynamically size the allocation of
-> the cpu bitmaps depending on the quantity of processors detected on
-> bootup.
-> 
-> This patch enables that logic if more than 256 processors
-> are configured and increases the default to 512 processors.
-> 
-> Further increases may be needed if ARM processor vendors start
-> supporting more processors. Given the current inflationary trends
-> in core counts from multiple processor manufacturers this may occur.
-> 
-> Tested-by: Eric Mackay <eric.mackay@oracle.com>
+On Fri, Feb 2, 2024 at 7:21=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
+e:
+>
+> On Fri, Feb 2, 2024 at 2:05=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
+ wrote:
+> >
+> > When the stack protector is enabled, compiler would generate code to
+> > check stack overflow with a special value called 'stack carary' at
+> > runtime.  On x86_64, GCC hard-codes the stack canary as %gs:40.
+> >
+> > While there's a definition of fixed_percpu_data in asm/processor.h,
+> > it seems that the header is not included everywhere and many places
+> > it cannot find the type info.  As it's in the well-known location (at
+> > %gs:40), let's add a pseudo stack canary type to handle it specially.
+>
+> I wonder if cases like this can be handled by debug info rather than
+> special cases in the tool. Special cases are fine too, but are
+> potentially less portable.
 
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Agreed, but I couldn't find anything special in DWARF.
 
-Thanks!
-
-> Signed-off-by: Christoph Lameter (Ampere) <cl@linux.com>
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Thanks,
+Namhyung
 
