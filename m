@@ -1,105 +1,125 @@
-Return-Path: <linux-kernel+bounces-55163-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55164-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02CC184B8B4
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:00:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC24084B8B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:00:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 938891F260FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:00:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 953DF281E99
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:00:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D513132C38;
-	Tue,  6 Feb 2024 14:58:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D8F913248D;
+	Tue,  6 Feb 2024 14:58:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="M5HcTNXU"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="O8i5XN4L"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA6C213248D
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 14:58:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB8841332A1
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 14:58:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707231483; cv=none; b=bKvYiToT+MwWM1Qk9y8YTDZb7vd3wtp2NKxhud2PdJOcCDFNhJTBuhJHn+ktud/8RM7KO3K7a7qVe9/WwmUVD/UVF8xyA29Dzu7AXxkqhXHqCjt1p06b7Q8Bwg2oLTOdNq4A9kCM7Re1oLAB+SEHBf/+gvSmmDA7pS+F1Q5cL3s=
+	t=1707231523; cv=none; b=cbBf+EIm+rB4dXE51/4/TG/8hb88H4aJ5UUYuzDdQKakYuc0s7yEybDjxVexnU4HzRr/RQGphy3WQmZ99dQMFWO3/7ZKRR3TIUSbiTWTqrSJbuEqTVdZejU9HwIa98dNHKYn8moy2ZH1S6mNwxwg77pnRn1QABU/KU3h3Pr7aGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707231483; c=relaxed/simple;
-	bh=gWADUEyg3uQn/Gq8Pzig8n0lFzdFAhq6eYfy4LPqtyk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CtEIAhh66Um70NOU34AzKYGGi8K4LV4/sor9EZtDcZ8OmsF+p2ScjXZcfCCu+wESn/q/j7hfAvk76I6A1BMkUAl4e2zmwCueKAdLOxbD0yobo5FIAHS3qa2uBbOzj88nXzmGjUl8GrU88qg7+gfmtVu+UcpWaZ9fcmHwTA8IZmk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=M5HcTNXU; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-56061ad3d3dso1363025a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 06:58:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707231480; x=1707836280; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VCL4zV/fY4TbR6w8G33YGfXgioFiEYO2kvyU3dpfMUw=;
-        b=M5HcTNXUjboDWjJ5EtBsMVgDNKmNoaFxvJsg+v/VfqoMLiu4qOu7RF2WtIaIxdnj5M
-         5K+L/8UPh43F8I0JdvDyeCZcJ+pYpT44o94KBN7ZsZkk2wooEBtZhp+YZo8TMQt9LfpI
-         wOmpXjBfydA1Ml62v5LxM3iJpDLv1N09w9rL5yDmrrVw8CCPK2gOdlz9tOprlO8F0FgX
-         FYc9vLTvGoe1wEz9UOW5iwNUjecGPIG2orJGKdc4DhrLqMC5HMs4E9N8GgHhNTSbLmD4
-         QlKCTS/lwXH4YiE7lvjkFuF8Qmf2FbLj24ESsvzk7oXmvIVi7F+bwKdsTWeyiwRWmW2k
-         cSfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707231480; x=1707836280;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VCL4zV/fY4TbR6w8G33YGfXgioFiEYO2kvyU3dpfMUw=;
-        b=jMn9AE2rqzAybtnXnhtz1sg7HIgzVWbcdDacyXeclmU58kKzPSgl5kL6zVn0U/fdJ3
-         7W14Tud2+XRuBcmlIN/RRyu4DxXuBTrNnRBdgAys0KJaZB0LqxKgw+JYAaVxCiJyylNC
-         92m9ewjQMONT+0dfYF/uLmk5afyHHPehcYrC/b0g33zUwMUAlYk1gqxGujGXNjVEXTYj
-         KeCHgRG0Q4h/XODOENg4w6oSvM8VFs+SxRpA96H3k88utaPOtUBAomXl2tYHdhCczVjk
-         yvrQDV2x2Z9gkt0r6vE/uwanA1ew+01KgLxnW9BWpcIyn9uUCRS8Vt9vSRaOW0IIsTf/
-         Ny/Q==
-X-Gm-Message-State: AOJu0Yx5Pu1emJJtjXvPJ0rGJdIGHDcRVYVu0YIiYHIHN22Oze7vL57O
-	kz0z6rLFGvUVHvYYH9bbnt+K/M+CNc9NfaXEjxXzWE+Nfxc6sGq6p2M3Joj8cBI=
-X-Google-Smtp-Source: AGHT+IE/xkMN+vq5s766SYdEh9U5SinilVRtC+iNa3NXit0ZGBcC6EM87J5PH4nbqf7jKMIRuG73mw==
-X-Received: by 2002:a50:bac5:0:b0:560:bb98:6b7d with SMTP id x63-20020a50bac5000000b00560bb986b7dmr972125ede.10.1707231480008;
-        Tue, 06 Feb 2024 06:58:00 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCV2qU3BBiKmtKQKW+yzgCKFG+aWqLGGCGZ5OIYjaHTbPrBA4VcqyeA2tbkxDyqK6Uv8LGmGZPGVg/aF7sjjagiuwvo2enujdmA3klp0fgwUIN+gU1AzNmx4aroEb8uepPsd1ckdiGwcQLppJvKWeViTjAISYcxXJlRQNQobV1+h9N46OhD5XRfekGxm3mv6v+KkbSfEGnKXRve612YmHswTbkpE6Q8QEomA9mgR/4xdQh2ZQ/BypZUTAc3dypAI1dwEj/pjUdXaSZsxUqp3HXoriAHaLqyNWU7W8tr2n/zcCBqj87uGjm1hvswqATFsWZnCgOsQf/atT/OH4zWU+R0VND68NHY1JOs4JXbvrXFA1/20Bsofkh1KvYNu/bdPfyhikHRxpfWMAYDZ93zCfRYXOxRTclY7o89dMg==
-Received: from [192.168.1.172] ([93.5.22.158])
-        by smtp.gmail.com with ESMTPSA id cz6-20020a0564021ca600b0055d312732dbsm1120026edb.5.2024.02.06.06.57.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Feb 2024 06:57:59 -0800 (PST)
-Message-ID: <74778dc1-1c36-4db8-9d5e-abdff9f8d8a5@baylibre.com>
-Date: Tue, 6 Feb 2024 15:57:58 +0100
+	s=arc-20240116; t=1707231523; c=relaxed/simple;
+	bh=1sakcfwHbduv1QG55yUb/0QyrJ5pcF2H9gOitpIs5TE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cJRa+EgMfAKCReM20hNPLl6CQbhJSolLPN+JmZSdXvAWFbZkfDMw/aPLdNacebepHBO4+MNIpzKUJ46ipLy9ekvMoYkRggodt+1CS5zutUGv7PMg9ayl+vpiJjm11K7ddAxEKzR0L8SBiLcyvy3/VC6yONrntliP0vNGNaIEYEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=fail (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=O8i5XN4L reason="signature verification failed"; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 5736740E023B;
+	Tue,  6 Feb 2024 14:58:38 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
+	reason="fail (body has been altered)" header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 6N-2NqL4nxZb; Tue,  6 Feb 2024 14:58:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1707231514; bh=VW8dCTrnXsJ0MqUg+ae0MKX/eGhix3vlYzBavQRsGGQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=O8i5XN4LGLVqvv1rSIyKsiVP/kBmrr3nlrFKpWbYjbtK2w9oHJiTem4Xz5VZuhqKa
+	 zzDe0mAlTfdnn+21/oV+6SnD1dPTPYebLOs5u8ZdbeKz2abUv/2UyCcXPMqCxzAndK
+	 z0cUmLC/ykaB8JtgtTwYg1wnIxqOVoT6L469tcNx8/L/6RbywHlXb9fyCq/muuB1Q9
+	 iw1uxs+2KMUw1Q+oJPh7+wSGgGs4WKymsCQhfHNNhjb641IaEf9Yxv2yInhDm40qj2
+	 P8fnsjSBYaARNEhehff+ikNH6uZ3SkDfFq9rZeyGf0568TimjUqgw4MWb9PX13eQId
+	 PbgMGPdJ7o3wElluK7OakVqjlSPabkdt5jeC/6ZWknpUNYI3mLr7CtmcRzNE18SABh
+	 Evh5v3U1bPlGjQQPBHOFAI1tZwEeroeIEITd9xv2yhp5XNGHhWjh0YUnLaWA+Ixiig
+	 gOVzUFysY5JAXIUIVadM+xz11bL45yN2HS2NaX/q3d+p2sYdsW3Z5eCdU8nPnsgkfx
+	 QCKklXD0B2Y9BdSp4m1bvt8hjjkQm4PjEGQh1oe/8LerXYufzkBldipAAqlzQjuUZe
+	 69/LqsA5xclG9cEPcojLBDK5C4bH7ODmBc/AkaL6POGCd3ucGqIb7TkH5ZV4FBeYW2
+	 mZ96yoIyY4hKcsnPv7kZw4tI=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 20CB140E00B2;
+	Tue,  6 Feb 2024 14:58:28 +0000 (UTC)
+Date: Tue, 6 Feb 2024 15:58:23 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Hanno =?utf-8?B?QsO2Y2s=?= <hanno@hboeck.de>
+Cc: tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86: Improve description of
+ IA32_EMULATION_DEFAULT_DISABLED
+Message-ID: <20240206145823.GGZcJJD8rDtPRNBkhe@fat_crate.local>
+References: <20240130104543.28840812.hanno@hboeck.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/9] drm/mediatek: dsi: Cleanup functions
- mtk_dsi_ps_control{_vact}()
-Content-Language: en-US
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- chunkuang.hu@kernel.org
-Cc: fshao@chromium.org, p.zabel@pengutronix.de, airlied@gmail.com,
- daniel@ffwll.ch, matthias.bgg@gmail.com, dri-devel@lists.freedesktop.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-References: <20240206120748.136610-1-angelogioacchino.delregno@collabora.com>
- <20240206120748.136610-4-angelogioacchino.delregno@collabora.com>
-From: Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <20240206120748.136610-4-angelogioacchino.delregno@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240130104543.28840812.hanno@hboeck.de>
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+On Tue, Jan 30, 2024 at 10:45:43AM +0100, Hanno B=C3=B6ck wrote:
+> The description of the option disables a default, but does not mention
+> how to change that default. To make it easier to find out, mention boot
+> parameter ia32_emulation.
+>=20
+> Signed-off-by: Hanno B=C3=B6ck <hanno@hboeck.de>
+> ---
+>=20
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 5edec175b..a65ff33e0 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -3006,8 +3006,10 @@ config IA32_EMULATION_DEFAULT_DISABLED
+>  	depends on IA32_EMULATION
+>  	help
+>  	  Make IA32 emulation disabled by default. This prevents loading 32-b=
+it
+> -	  processes and access to 32-bit syscalls. If unsure, leave it to its
+> -	  default value.
+> +	  processes and access to 32-bit syscalls. If set, IA32 emulation can=
+ be
+> +	  re-enabled with the boot parameter ia32_emulation=3Dtrue.
 
-On 06/02/2024 13:07, AngeloGioacchino Del Regno wrote:
-> Function mtk_dsi_ps_control() is a subset of mtk_dsi_ps_control_vact():
-> merge the two in one mtk_dsi_ps_control() function by adding one
-> function parameter `config_vact` which, when true, writes the VACT
-> related registers.
+That sentence should say one can enable it *dynamically* with the cmdline
+param.
 
--- 
-Regards,
-Alexandre
+But this text reads weird: if I want to enable it, then I won't set
+IA32_EMULATION_DEFAULT_DISABLED in the first place and I won't have that
+problem.
+
+So the use case must be something along the lines of, ia32 emu is
+default-disabled at build time but for certain cases where one wants it,
+one can still enable it per-boot with a cmdline param.
+
+So what's the story here?
+
+Thx.
+
+--=20
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
