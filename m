@@ -1,199 +1,198 @@
-Return-Path: <linux-kernel+bounces-55720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA1C084C0C4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:19:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4873C84C0C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:20:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 459BE1F257DD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:19:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1E8E1F25803
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:20:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA9071CD1F;
-	Tue,  6 Feb 2024 23:19:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B8811CD1F;
+	Tue,  6 Feb 2024 23:20:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XPNLdvn5"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="vHnXIfK6"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AF6B1CD19
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 23:19:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53C731CF96
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 23:20:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707261582; cv=none; b=B9FKlnz/GFu40//F6p6VtG2x8pQcfCz7tvSQyuziHwJPh/w8DJIaGOY2VMawkUDbouSAquSSHhek4W8AzOZBImMbxL/YxlixMdRbs76tM5N9DXQ7EUyus/bcX5AnKzY1WKVsxXo2/EbL4/Q2XSqxVxfltLkePEzhQ/7gim+mHlc=
+	t=1707261605; cv=none; b=lBBuRLKQM2IIB9DtlxTmu710xeEu+YKqa/J2piNfqA070yYSl9IkaNx9q1VzAr3QL9l1xiWAQVM1FHW2yDGM7No5AJaBoZKut35flIPAa82PGoCFS/8yrcUTV8kx/BVK7CS8eMFbA1OmCF1TMjU0Uqa+vX3bUdI5k3ByPhv91Mo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707261582; c=relaxed/simple;
-	bh=mSp1+JYDb7NdH17RZ+qMLPdVmrJ42e3fPvlEjXiGpZc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Ou+DBM4KhntyAnBArlOydmJ4tSzTLstlIrX+j64SZvK4ORCcHG9tw6QGqtnsVgA7qW6bcjw9NUZD9WZ/UF3gKIKevoXZ6QFjucnrGYyQ7wWWRPReL44sudFHaRV84W/nn/+qeDk85yFogyxmXovsaCNpPDK6GJ51ZFMdtnhBEJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XPNLdvn5; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707261579;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/9lQWrs1kWLDUb9rNRJMZocZRASv82NRrn4c/SQZik0=;
-	b=XPNLdvn5V6bTVv/AXIx/40HLOU3SbTPJ8u609S6aAjQFMJ4I+PVOmI75YZRMH/X0Ne5/xU
-	lkEe57jZ+0cWUv9vlW/EhTMuGTurTeZpmFPwHXFsuQMzDSg6CTxnVPBNXO3C1wbGp0sLVg
-	kaeK+n2JdexH1DNU/4eXgiWGw/St1PE=
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
- [209.85.166.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-423-RiCdQmKUNUOF9k_qgt9ZeA-1; Tue, 06 Feb 2024 18:19:37 -0500
-X-MC-Unique: RiCdQmKUNUOF9k_qgt9ZeA-1
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7bfe777fe22so2914239f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 15:19:37 -0800 (PST)
+	s=arc-20240116; t=1707261605; c=relaxed/simple;
+	bh=m+y3HMZaCJPRB55/Kjusqw16ffP7mgbzzM/LpvoQeJI=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=R5L/DfyjTdLHgHPfNV3ObjkX73pGJlVYLK1rq6xJGUba/39TpPhsCCv/Tykqn8t+kW3RbMHNc+5L574I65ahS7VP7fIxeZ3P9/H0ryZ7GQu6yla3sWWDaJla+AT/TFDtLAtw+VQvKvfPrR9Ez7HptM+j9dvZQFjfGplYDfSJmXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com; spf=pass smtp.mailfrom=fairphone.com; dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b=vHnXIfK6; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40f02b8d176so54060815e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 15:20:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1707261601; x=1707866401; darn=vger.kernel.org;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m+y3HMZaCJPRB55/Kjusqw16ffP7mgbzzM/LpvoQeJI=;
+        b=vHnXIfK6P4iQ7iPcy+7IpycNZg7dLVdr0ew0To/mKZBzYuGjPsjKCUEpM5YD1sjgHt
+         /RaG8dTJRUf0etD/2x0Q/14QP1+Tp1+isboMEHWZb3569PInWqye9GqaQVvIluNb2rPo
+         XmcPlxXAIBrDieI24RiDbCwsq96O76a+0uq/FMn0XfTBpxHXgX2b4DOsloCHlWJTYITB
+         iQyvXcUd7CWX1sqlf8c1J9lmRmdvTrENpPvE5lGUYjKr4D2iXquFOEeDm0Nd2Gxl9MiT
+         Ynh55NqzjegdY+oOGTKIQ576noGsom5wCjCvn81Th2Z6HUvgZ1wjnWCwSgZGmVj72Npk
+         3Tvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707261577; x=1707866377;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/9lQWrs1kWLDUb9rNRJMZocZRASv82NRrn4c/SQZik0=;
-        b=OmIhBS2O+pxUljmLkAVKYfC6MpzhAn/EcA2c4xd1lkyhcepQZjcD4Lpn8McA3/f3V/
-         PckfXHXvs0Rn9V1ZJ6q6+8LYsWdZB3u321budQ/KJB1yFDWvoL6/CJQ6MgxfoM6pL7Hi
-         ruSVJ/y9cRXOdKepSH5D7X2zR8Jeb7RKmfABF/QMXxiS+2eBfF0Ekr3gchmtVcwIlKla
-         hfv3/NNzNDRbHQa3LZuTh4R/Aq0u4rB17qPiFMYwwYxJnNOMXmkLJA/GS+UCV8ASC1BK
-         DGx+POZnk0xB5Vy9DFgkvx3N5WiwB/B64IsCBPqnwI9zcuZ1zbzyG2ViPQ4b1PUkGyzM
-         fMjg==
-X-Forwarded-Encrypted: i=1; AJvYcCWkP5z2Ftj4lRoS1kTG9J6J8tCPOqG8/0nJOOWml6o0n2jtwj0PpsyOvXtfh8I27QAd4fQ6AFgCNBs7n7vhduOHKLMN80L4HmQ5nvh6
-X-Gm-Message-State: AOJu0YxIJXl+46b2+iwc9hf/xxNicOZIUsFtiFroUrhQcj3r5FOd49Ux
-	Utg/8OZKF/zyVIY+Jg0mVi40GSqebW9WtEHEg/yCTjEjHwaGKFOPgn6SxN0epX+eqvdmo4KuJvy
-	iMgy9LEUifZgjgsgmlmpBcqVzKFIyVeALg37kXyXT0js1Q49zTvQLCZ1pFLr14A==
-X-Received: by 2002:a6b:d90c:0:b0:7c3:eda4:ea11 with SMTP id r12-20020a6bd90c000000b007c3eda4ea11mr3842369ioc.16.1707261577162;
-        Tue, 06 Feb 2024 15:19:37 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEXK/MFQbXmN+Uf8XVzJe4tvZZl/EZvTIdNvNxAoxSmujnNBpZGeCU0PDhYylr2/KYfzAQzoA==
-X-Received: by 2002:a6b:d90c:0:b0:7c3:eda4:ea11 with SMTP id r12-20020a6bd90c000000b007c3eda4ea11mr3842343ioc.16.1707261576688;
-        Tue, 06 Feb 2024 15:19:36 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVxQNy7WM81D1KyTsj5b6dysZmQ7irl+mHz/wXIJCehZJzT0rzy+38bzv2vK3ShDIBzaGnFianyWRV+Hdsia6yEsRrKo2XUlAzSu2R7lPibY72NFRgkL6J1H4gguFl0tSVtOPFdoSDj6gOxqFGFXrShMogteJqdI2GP0UhDD2LGRyM9B5Wc+7HDrTXKN44RMTBUNTuq7aMfFxLTXCzPdV4FZ1UgM7UOCYN7m5m0EnQ23l/aEj0OzE8fhqLrcF+Mya/rFzyaRajzcLY69xrxYnzGhpt+N80pc4GtLcrRAz51m/QHUQtyk020l/znzMSPys9qDlGZ3Q==
-Received: from redhat.com ([38.15.36.11])
-        by smtp.gmail.com with ESMTPSA id s24-20020a6bdc18000000b007c3f616986csm369762ioc.40.2024.02.06.15.19.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 15:19:36 -0800 (PST)
-Date: Tue, 6 Feb 2024 16:19:34 -0700
-From: Alex Williamson <alex.williamson@redhat.com>
-To: Reinette Chatre <reinette.chatre@intel.com>
-Cc: <jgg@nvidia.com>, <yishaih@nvidia.com>,
- <shameerali.kolothum.thodi@huawei.com>, <kevin.tian@intel.com>,
- <kvm@vger.kernel.org>, <dave.jiang@intel.com>, <ashok.raj@intel.com>,
- <linux-kernel@vger.kernel.org>, <patches@lists.linux.dev>
-Subject: Re: [PATCH 15/17] vfio/pci: Let enable and disable of interrupt
- types use same signature
-Message-ID: <20240206161934.684237d3.alex.williamson@redhat.com>
-In-Reply-To: <ce617344-ab6e-49f3-adbd-47be9fb87bf9@intel.com>
-References: <cover.1706849424.git.reinette.chatre@intel.com>
-	<bf87e46c249941ebbfacb20ee9ff92e8efd2a595.1706849424.git.reinette.chatre@intel.com>
-	<20240205153542.0883e2ff.alex.williamson@redhat.com>
-	<5784cc9b-697a-40fa-99b0-b75530f51214@intel.com>
-	<20240206150341.798bb9fe.alex.williamson@redhat.com>
-	<ce617344-ab6e-49f3-adbd-47be9fb87bf9@intel.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        d=1e100.net; s=20230601; t=1707261601; x=1707866401;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=m+y3HMZaCJPRB55/Kjusqw16ffP7mgbzzM/LpvoQeJI=;
+        b=JMdEYut/ICel1awPfN2qJm+cMZNJMhNHsuqXnwpAIUkjddgp5OkXrYGcMGpdEgK56h
+         9FuETaFP/WNhFSSoCReq7K1Ob6bkP68AKC/jbKfcIEjxpKil3unoEGnII2hLqNTyvX2W
+         sPSjHBtHJthF0fz8lGjLTqQSKO2RKqUU/5R1cXcVc0pqgq3KHLmFmZ07MVdeFRetWuw6
+         g+OT6O5wf6/nlk3kiEhw4EEyfL0xMxG2l5v6uQMBve0dDelVRAXBT4yHSBqb1HCDCQuX
+         CDDaNDUOLhvV5km/8tSv15x4VOlNfUtho7aRrZy2iSAers64HK1D3TC7+w7YDRPAySQs
+         K8kQ==
+X-Gm-Message-State: AOJu0YxLahNXwB74Gw1IAXH+/+rEuqk+kIYtw8Gedktylbn0PK1fINdl
+	ikdkmZbjX8xq+PUwsscdZfWISYlAoMVKu2wMu12LDu/KiOgWmPGXnez1gqnlJqI=
+X-Google-Smtp-Source: AGHT+IENEbuIMFynxRe+Wi8NPp/CqyeM5LxIUwCMDFcU8gLj2jdJ1ytLAYX5dqEHv+2zydbn5noB1w==
+X-Received: by 2002:a5d:598a:0:b0:33b:47cf:323b with SMTP id n10-20020a5d598a000000b0033b47cf323bmr2925394wri.9.1707261601525;
+        Tue, 06 Feb 2024 15:20:01 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW349EHlkXDDbsZmbwaYsfxA2vIENiEKgFzpRZaaftD9z0CCD4Zj8CiKAkYwXT1IoZ/auwb1D3EOpPzDwkAwWoyEta0RG4Pgjj3v7Vq9gGhdJHj2CCAsKFymL3j0xZwEb84+sfzsCauHMExyFe5W0jyk94yJE9x+Ia/8xAcXJHc6qyzQ9XDzt0nj1DzUSfX9gs8F4RZmnPVGJ4PL3/s7JL4PR2aRSDawhmX52F86ewDGMsKzJyzY+0YIb2KURSNWnZw7jj1DOdi1okWBR9gISm6SY64ScpgvRBqiykC07EP5W+fxDCxZGCTdGNxz5oz+Q5FtE7hjKnHsTZBePmi1fN7Q1OpzI9tHngZ6BROJos4ITKTf/51HOCGzqTyIjSzhD5U8cnmYsXAlfRImTy5Q61h6Duxwf8ujHtcvpCyLfxyH3x0c2mI+3MQEftZd4nSgFAz0GrUG+mrYyZRch2IIc6cVaPyqX1tOQmDt9WlLY8nvJTDDBzcmagBoR5xgYAdQkPhb2jNrzdtNVb5w7LzgLAee7sTGO62aJANQW9TxJ/Czejd1nsKzhNelRV1
+Received: from localhost ([2a02:a03f:6aef:6800:2f37:ce90:b91c:e85a])
+        by smtp.gmail.com with ESMTPSA id s17-20020a5d4ed1000000b0033b17880eacsm94734wrv.56.2024.02.06.15.20.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Feb 2024 15:20:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 07 Feb 2024 00:20:00 +0100
+Message-Id: <CYYDQ7RF0HB7.G7R6KHP1Z42U@fairphone.com>
+Cc: "Konrad Dybcio" <konrad.dybcio@linaro.org>, "Dmitry Baryshkov"
+ <dmitry.baryshkov@linaro.org>, "Bjorn Andersson" <andersson@kernel.org>,
+ "Rob Herring" <robh+dt@kernel.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Heikki Krogerus" <heikki.krogerus@linux.intel.com>,
+ <cros-qcom-dts-watchers@chromium.org>,
+ <~postmarketos/upstreaming@lists.sr.ht>, <phone-devel@vger.kernel.org>,
+ <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH 0/3] Fairphone 5 PMIC-GLINK support (USB-C, charger,
+ fuel gauge)
+From: "Luca Weiss" <luca.weiss@fairphone.com>
+To: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+X-Mailer: aerc 0.15.2
+References: <20231220-fp5-pmic-glink-v1-0-2a1f8e3c661c@fairphone.com>
+ <8d042095-1e09-45cc-9762-909fe8d663a9@linaro.org>
+ <CXTU5MLN0YDS.29PPV8KZF8G9R@fairphone.com>
+ <CAA8EJpoD3x=kVLu4x2yLtAqCp=wmGSU4ssq5Oj_SD5VQ=GyAYQ@mail.gmail.com>
+ <d2007240-2779-4881-8e9d-1c4f5daa55e5@linaro.org>
+ <CXU22OZNAH2H.24YIQWBA4KE3C@fairphone.com>
+ <2024010227-darn-litmus-4ddf@gregkh>
+ <CY49JOEDOEZX.1KNYT91GHL3MX@fairphone.com>
+ <2024010205-placidly-expire-221c@gregkh>
+In-Reply-To: <2024010205-placidly-expire-221c@gregkh>
 
-On Tue, 6 Feb 2024 14:22:04 -0800
-Reinette Chatre <reinette.chatre@intel.com> wrote:
+On Tue Jan 2, 2024 at 2:53 PM CET, Greg Kroah-Hartman wrote:
+> On Tue, Jan 02, 2024 at 02:43:24PM +0100, Luca Weiss wrote:
+> > On Tue Jan 2, 2024 at 2:36 PM CET, Greg Kroah-Hartman wrote:
+> > > On Thu, Dec 21, 2023 at 02:45:26PM +0100, Luca Weiss wrote:
+> > > > On Thu Dec 21, 2023 at 1:53 PM CET, Konrad Dybcio wrote:
+> > > > > On 21.12.2023 11:34, Dmitry Baryshkov wrote:
+> > > > > > On Thu, 21 Dec 2023 at 09:33, Luca Weiss <luca.weiss@fairphone.=
+com> wrote:
+> > > > > >>
+> > > > > >> On Wed Dec 20, 2023 at 1:32 PM CET, Konrad Dybcio wrote:
+> > > > > >>> On 20.12.2023 11:02, Luca Weiss wrote:
+> > > > > >>>> This series adds all the necessary bits to enable USB-C role=
+ switching,
+> > > > > >>>> charger and fuel gauge (all via pmic-glink) on Fairphone 5.
+> > > > > >>>>
+> > > > > >>>> One thing that could be made different is the pmic-glink com=
+patible.
+> > > > > >>>> I've chosen to use qcm6490 compatible for it and not sc7280 =
+since
+> > > > > >>>> there's plenty of firmware variety on sc7280-based platforms=
+ and they
+> > > > > >>>> might require different quirks in the future, so limit this =
+PDOS quirk
+> > > > > >>>> to just qcm6490 for now.
+> > > > > >>>>
+> > > > > >>>> If someone thinks it should be qcom,sc7280-pmic-glink, pleas=
+e let me
+> > > > > >>>> know :)
+> > > > > >>> IMO it's best to continue using the "base soc" (which just so=
+ happened
+> > > > > >>> to fall onto sc7280 this time around) for all compatibles, un=
+less the
+> > > > > >>> derivatives actually had changes
+> > > > > >>
+> > > > > >> Hi Konrad,
+> > > > > >>
+> > > > > >> I think at some point I asked Dmitry what he thought and he me=
+ntioned
+> > > > > >> qcm6490. Even found the message again:
+> > > > > >>
+> > > > > >>> well, since it is a firmware thing, you might want to emphasi=
+se that.
+> > > > > >>> So from my POV qcm6490 makes more sense
+> > > > > >>
+> > > > > >> But yeah since it's likely that sc7280 firmware behaves the sa=
+me as
+> > > > > >> qcm6490 firmware it's probably okay to use sc7280 compatible, =
+worst case
+> > > > > >> we change it later :) I'll send a v2 with those changes.
+> > > > > >=20
+> > > > > > Worst case we end up with sc7280 which has yet another slightly
+> > > > > > different UCSI / PMIC GLINK implementation, but the compatible =
+string
+> > > > > > is already taken.
+> > > > > > I still suppose that this should be a qcm6490-related string.
+> > > > > Right, let's keep qcm then
+> > > >=20
+> > > > Ack from my side also. Thanks for the feedback!
+> > >
+> > > This doesn't apply to my tree, where should it be going through?
+> >=20
+> > As far as I can see the dependency for the driver commit 1d103d6af241
+> > ("usb: typec: ucsi: fix UCSI on buggy Qualcomm devices") was applied to
+> > Bjorn's qcom tree, so 2/3 should also go there then.
+> >=20
+> > Patch 3/3 (arm64 dts) definitely also Bjorn's qcom tree.
+> >=20
+> > So that leaves patch 1/3 which Bjorn can probably pick up as well but
+> > looking at git log you also picked up some for that file in the past,
+> > dunno.
+>
+> Ok, for any remaining ones that want to be merged before 6.8-rc1 is out,
+> feel free to add my:
+>
+> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>
+> If they don't get picked up by 6.8-rc1, feel free to rebase and send it
+> for me to take through my tree.
 
-> Hi Alex,
-> 
-> On 2/6/2024 2:03 PM, Alex Williamson wrote:
-> > On Tue, 6 Feb 2024 13:46:37 -0800
-> > Reinette Chatre <reinette.chatre@intel.com> wrote:
-> >   
-> >> Hi Alex,
-> >>
-> >> On 2/5/2024 2:35 PM, Alex Williamson wrote:  
-> >>> On Thu,  1 Feb 2024 20:57:09 -0800
-> >>> Reinette Chatre <reinette.chatre@intel.com> wrote:    
-> >>
-> >> ..
-> >>  
-> >>>> @@ -715,13 +724,13 @@ static int vfio_pci_set_intx_trigger(struct vfio_pci_core_device *vdev,
-> >>>>  		if (is_intx(vdev))
-> >>>>  			return vfio_irq_set_block(vdev, start, count, fds, index);
-> >>>>  
-> >>>> -		ret = vfio_intx_enable(vdev);
-> >>>> +		ret = vfio_intx_enable(vdev, start, count, index);    
-> >>>
-> >>> Please trace what happens when a user calls SET_IRQS to setup a trigger
-> >>> eventfd with start = 0, count = 1, followed by any other combination of
-> >>> start and count values once is_intx() is true.  vfio_intx_enable()
-> >>> cannot be the only place we bounds check the user, all of the INTx
-> >>> callbacks should be an error or nop if vector != 0.  Thanks,
-> >>>     
-> >>
-> >> Thank you very much for catching this. I plan to add the vector
-> >> check to the device_name() and request_interrupt() callbacks. I do
-> >> not think it is necessary to add the vector check to disable() since
-> >> it does not operate on a range and from what I can tell it depends on
-> >> a successful enable() that already contains the vector check. Similar,
-> >> free_interrupt() requires a successful request_interrupt() (that will
-> >> have vector check in next version).
-> >> send_eventfd() requires a valid interrupt context that is only
-> >> possible if enable() or request_interrupt() succeeded.  
-> > 
-> > Sounds reasonable.
-> >   
-> >> If user space creates an eventfd with start = 0 and count = 1
-> >> and then attempts to trigger the eventfd using another combination then
-> >> the changes in this series will result in a nop while the current
-> >> implementation will result in -EINVAL. Is this acceptable?  
-> > 
-> > I think by nop, you mean the ioctl returns success.  Was the call a
-> > success?  Thanks,  
-> 
-> Yes, I mean the ioctl returns success without taking any
-> action (nop).
-> 
-> It is not obvious to me how to interpret "success" because from what I
-> understand current INTx and MSI/MSI-x are behaving differently when
-> considering this flow. If I understand correctly, INTx will return
-> an error if user space attempts to trigger an eventfd that has not
-> been set up while MSI and MSI-x will return 0.
-> 
-> I can restore existing INTx behavior by adding more logic and a return
-> code to the send_eventfd() callback so that the different interrupt types
-> can maintain their existing behavior.
+Hi Greg,
 
-Ah yes, I see the dilemma now.  INTx always checked start/count were
-valid but MSI/X plowed through regardless, and with this series we've
-standardized the loop around the MSI/X flow.
+This applies cleanly on -next as of next-20240206 still.
 
-Tricky, but probably doesn't really matter.  Unless we break someone.
+Could you please pick it up for v6.9? I can also send a v2 with only
+the two remaining patches (dts was applied to qcom by Bjorn already).
 
-I can ignore that INTx can be masked and signaling a masked vector
-doesn't do anything, but signaling an unconfigured vector feels like an
-error condition and trying to create verbiage in the uAPI header to
-weasel out of that error and unconditionally return success makes me
-cringe.
+Regards
+Luca
 
-What if we did this:
-
-        uint8_t *bools = data;
-	...
-        for (i = start; i < start + count; i++) {
-                if ((flags & VFIO_IRQ_SET_DATA_NONE) ||
-                    ((flags & VFIO_IRQ_SET_DATA_BOOL) && bools[i - start])) {
-                        ctx = vfio_irq_ctx_get(vdev, i);
-                        if (!ctx || !ctx->trigger)
-                                return -EINVAL;
-                        intr_ops[index].send_eventfd(vdev, ctx);
-                }
-        }
-
-And we note the behavior change for MSI/X in the commit log and if
-someone shouts that we broke them, we can make that an -errno or
-continue based on is_intx().  Sound ok?  Thanks,
-
-Alex
+>
+> thanks,
+>
+> greg k-h
 
 
