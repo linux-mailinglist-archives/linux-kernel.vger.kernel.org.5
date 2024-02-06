@@ -1,148 +1,176 @@
-Return-Path: <linux-kernel+bounces-55324-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D80E284BB1C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:36:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 561AE84BB16
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:36:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 776511F254B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:36:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C056E1F25C82
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:36:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECDF9BA50;
-	Tue,  6 Feb 2024 16:35:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70B4C6FB0;
+	Tue,  6 Feb 2024 16:35:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="wm2GeNKk"
-Received: from mout.web.de (mout.web.de [212.227.15.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="EeRA6zSb"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1342E552;
-	Tue,  6 Feb 2024 16:35:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 107BCC133
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 16:35:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707237332; cv=none; b=Sl1aPlLkxJUBEnbrUgJQ3Mu+cNE3xKAAWihXtL9zVBZuZ9dlWGINhXvDh9blYE5eP0Rtp5RhfkvTyueKdPIosKYAX6Xu+SE8x8s/OEgWJqaWL7ZtTV1xo/UATFSVBuFTrL2E06N9Ms6LyUZmOQNu2A+MMfqkFQqB05sohZjrzKs=
+	t=1707237309; cv=none; b=PvD6KrOAYWcvn/02e3KdKL1F4u+/WRAhFRAKkrD4nMH1StPc+WLUV3bEm0S26wstOyCzCzQw7rEt+eiaEAW4kUZRUWEO4sitxAriu14fGGZ2uYl6TYRzHkUpxKBZgsvgu4vF+hFzZFbtuPTmQYRDkj76NIqvCCxPDA1POSzjVfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707237332; c=relaxed/simple;
-	bh=JM/dM6wGVgOsNpN99AnBS8S4uISuXxo9JPeocMSYoto=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=MxR1dU0V5ONRhVWkbh7oht/w5skTXHyWapXWRS663eYotNq8knsLFqwXFvbxgEMEzl7HyN9/amsVeVGw4vLKSLoXpJ/IqA8o+nv8SkwJTfss6/k1BjISby6tpZ1Ab5BQ2etsJPsdZLUkjnIiBiosALR/8oQjUMeIDqnrr4i04x8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=wm2GeNKk; arc=none smtp.client-ip=212.227.15.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1707237302; x=1707842102; i=markus.elfring@web.de;
-	bh=JM/dM6wGVgOsNpN99AnBS8S4uISuXxo9JPeocMSYoto=;
-	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
-	 In-Reply-To;
-	b=wm2GeNKkzOndkNz/FtcaFa4S9HHjec3kDslAkK3GraBiGHrAmC00TncNVhbeqBDk
-	 dI1i1sB69oHbVdYiHHSchrj9LrCVHAbTbNNk7nWefWQQkT2dHDB4cSNsZZLVRejnR
-	 y0TgGNQb3ZPou/oJ6mfKrKpU1cWirhDQhv4tL3qtjEMuOns6zeHCmeknH2GyPEeah
-	 qkIufCXsWWFi9+uQzCmj+a40Kba5FHwRvlbDV+NSkKCYvFwBEvn5/phnclWvdjtZb
-	 0dZt3Yd7WDZt/0zjDefOQ1i7mic/Yiyi1GzIqZ/hZcFA+tRk5EHp496fzC7c0mVa+
-	 XOVult7M7Rlgdp1nqw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MbCI8-1r0WVC29Yu-00bZlD; Tue, 06
- Feb 2024 17:35:02 +0100
-Message-ID: <6e6ce5f8-b701-4660-a71b-478b29197a21@web.de>
-Date: Tue, 6 Feb 2024 17:34:59 +0100
+	s=arc-20240116; t=1707237309; c=relaxed/simple;
+	bh=I1MfE6AhaDeVgzj4aA9PyyPGYZWM6AIX3a3/cMVgTaw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nmLofkN+9z3FHeXdeTKH0IDxYvhMuHcd5A8AIh+gmFIo6SoK5HoPovlAPu38FbgZvWpuvmuZhEJdHabQvjRswBJYCTMir3FlznDXBDc6pNHSE//kU+4PpC6hlMCevwQYeWvl3i7LC+AfumOSLuTz5Tyn9AvBldZ/kAe4Wy/f32Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=EeRA6zSb; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d98fc5ebceso16242935ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 08:35:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707237307; x=1707842107; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=l9k8qmh5FtuqJT0VlM3e5bdRxi2TqKIV+Oi2Qsz4LGI=;
+        b=EeRA6zSbxkQuNXdyLY3C5+++uJrEXJzDiD2Hs/eQ3woDOTwVKsUYtmr1uQ+jPoV9TI
+         RRpQNkocwFMaxUBrCzDU8bvsMdnhqmPEe8qu8hbWjtEWwk9J9BiwQ967+opu/L9PMTsD
+         6odQiI2HQtfsqdMilID04vqiQoC98SYtAbbCM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707237307; x=1707842107;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=l9k8qmh5FtuqJT0VlM3e5bdRxi2TqKIV+Oi2Qsz4LGI=;
+        b=vfRSmOm61nwDjzrPXPozBMuGj37grgbsnUyXaHUDfnRePIiFxjkbB25ket/ARX2gbT
+         sa9iOwFRnQQv3rrK/FmNGmGZr1CLxffgUwFEiVZlYmhEandS6Ki7KqsZ/uKLKpX9Sj+p
+         ZVq9KFzyly1ZKPhofOgV3IvBY8Niro2ZQkuJbn1R9lHXNwjvX1gY0QZki6pfug5FDj7x
+         c1Ku+z5MeC78/jyrqaEtHpomPWzM8ACEjgk/cgZehkNzhdBdZfWlHATYb4jQvrC/76J5
+         t9uefm1vB6SoUTDnhjIVDS6UtwuEi3LQmozYflYkIYtCU35M1WJZbYlgifVTDTztyyjX
+         dLzA==
+X-Gm-Message-State: AOJu0YzQ31sgN8+DRHfN934/q2PG4LmF7rotPo/2/B/i80D5W1skpPjv
+	BqrQEHiY7O/Ssk/ZNPnQ9GvgX3Kns6bK9DqBR2V9a5ot1HJK7piFT/yCoC0/HA==
+X-Google-Smtp-Source: AGHT+IG8UBzgoFf0n/CYjiadrh9Keq0fKG2KclHIN6IbzHjapSkd7T5jS0c/GDpxVFGoQoKnhSVs/A==
+X-Received: by 2002:a17:902:7842:b0:1d9:c01a:dee6 with SMTP id e2-20020a170902784200b001d9c01adee6mr2028518pln.44.1707237307417;
+        Tue, 06 Feb 2024 08:35:07 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCW5fumqxc1sH0MT/vwOXV2DI8bT3uU6YjbFErJAbqcnzXatDTQZA8UvmAQpn3MsO5TYa8t2ydZ5E7QAyfKaKjRBHmqs2qx9tGgj5OeJ6pRk9/CfUWTJ9wVbRwywVPp08C2Nz0lDEjiYP29tR+I7FErOnCh5DdrkGRO8T/i1YNI5HrjiZRCg6wzD3Zi1oJLZY4Xbp49ngh+pUWLvyE9zWQOZbhKlbTr+4+L1klJ74sj2y9Dwhvy2qgPQNFZbWyY/lFJrhXmB+MQd1JpFN2xgNuTGMHaHatWPrIeSTMNAGr02qkgjzZWaR3qIXHW59DlFoIV6jqLavP4FVl+QjkX9kzcjwWKyvD7M48MBHWCbOYvzH9jk7psJuuedBjanbpGG/hSC02PvBXGI2rlZfx8hsGFuVGz9ZcH5e+iJOzwWIx4zKflXlg==
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id k196-20020a6284cd000000b006e02f222c2esm2224188pfd.30.2024.02.06.08.35.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 08:35:06 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: Brian Norris <briannorris@chromium.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	Kalle Valo <kvalo@kernel.org>,
+	Dmitry Antipov <dmantipov@yandex.ru>,
+	Johannes Berg <johannes.berg@intel.com>,
+	zuoqilin <zuoqilin@yulong.com>,
+	Ruan Jinjie <ruanjinjie@huawei.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	"Gustavo A . R . Silva" <gustavoars@kernel.org>,
+	linux-wireless@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH] wifi: mwifiex: Refactor 1-element array into flexible array in struct mwifiex_ie_types_chan_list_param_set
+Date: Tue,  6 Feb 2024 08:35:04 -0800
+Message-Id: <20240206163501.work.158-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: [PATCH v2] EDAC/xgene: Use devm_platform_ioremap_resource() in
- xgene_edac_probe()
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-To: linux-edac@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Borislav Petkov <bp@alien8.de>, James Morse <james.morse@arm.com>,
- Khuong Dinh <khuong@os.amperecomputing.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Robert Richter
- <rric@kernel.org>, Tony Luck <tony.luck@intel.com>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <0b255d17-deab-4d6e-bf44-d950b512dc14@web.de>
-In-Reply-To: <0b255d17-deab-4d6e-bf44-d950b512dc14@web.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:hVEeAHWZkLBabGliku9TpAcPPUlMuNPVJGnTqc1ncndDJaWdiqz
- YkXhK1xHsPme+wPdYtE5z5VFxNbLpIa6lUSqXKzTxukevtlGSwPDKU8GaJfbE4+xK1ilUm9
- l4QodqIrM8Pc9YiHhoVkzkywvzjFktTpCw/HSRW9OGmg24lFh70VVurOGHjPrY4UYqLmLk+
- bgoWGL8r+og8Qow6uBrAQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:oJf/jY8IscE=;Q+dSKDZhB+CRZBgbdhZB6FGd8+h
- lZ4qQNrVgZ+UFYwLfo7r4KNrViFvHZE0po8IlJ5SFcT62UUivK3MYd1LPpkyY1MtsvKNfLxHi
- yEY8GM8dJro0FmRJJW4DwmWYcLciEVnVjlhgahgKZTCTgeS1hM7J773mBZuxJtNGzPlvqnEWM
- 8xIrbvQm+I5qJU3QPCxy/YiDlkToKOH3ZPeKPYk/9BGQ1GXUhXYD9+ODA99S+lAjj88ZD8s9O
- 78rzvWfPPFm5EKr4NUsttFqZ3tzM2x6Og+jwMs939+OV1MEQC0+BEeCKKQJYilh42i0KfM6Gk
- dwvqk53uqmXWcMURgq1xYrUPeeOEczS3UOwdb0i7VQE83bfFYz/OTpOQ8TuhyWmvGGjfzTxYa
- D4fkVJTKt7oR3INknULpqlrn9lGJYcHpaqiNqh8m4Dx4SqUPVrtoQD03VXVWS6keBhs+alSC+
- DSnn4PJ/9jyH1Cypg9DK39u9f3M9h+M1uSvWfhEqpTh4V22G3LPIcDxT1yOfG1CrDn4e5HG/+
- hKdDw2um0ilxPMG4y+9hcLTno6kxW30c8xrtT5wl5Srd57hDagJX9HmNQTNchh1CZ4rOr3uFK
- OImKxLGnDdR5MRaRbCxMKm4UvkNUnjL4xlQP2+3Rbe63tq+3bQZqKo6Luo5Jb3J3PCK/I2Fly
- Pr0pNEpiR9hM7QUOwyfJC0mYx25qcqMkPJAZkwl009TIzwh1x4to/MgsFjwyEt19aaZCTKy++
- z1HSWt3Ipakixy8V3vYm+sKPXxemyCebs56anaIa5OR13Yr90lAs/RVGSneZNPoiSgC2wfyjy
- M9h7ere6ST0hrdNh5w2+vM9H4GRFiToE9adw0RSiXKdjs=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2956; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=I1MfE6AhaDeVgzj4aA9PyyPGYZWM6AIX3a3/cMVgTaw=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlwl+4Lx4aPOoiEcILogqM539VTMsu2tv0D/daM
+ eRXD6FTw+aJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZcJfuAAKCRCJcvTf3G3A
+ JolcD/4yGn/OpLY/UrZ49y0DuN14RPalUzJvqINjBVH38HNl0YSWy2Rfpj9047GXuyUUMFFLHHx
+ QfEAYxSwu8rRhq3w1YjGVVOEOv0/QAMDghDgUwT2q8SRD/XsU/WS3jgjBcz8XZnyv050u2m3Gr8
+ a+8E+X9y7Mzf7XSetpEbknoE+CeWCfyMc/6wWHYOCbzhXXW8EY0AyJe6JgqAPEAaUw+XehXUSLD
+ EwFdq3dC0zKmBCzLrXC+zbIJvlG7z/CQIbYTodjvcAFGNBXlrjC8S3kqB74Fu2E1JobMDuPgX9O
+ dFKHJ6bPPNKVueX/dovLXiM7ESte1OMN1s0U/pOQz9feafcPSg6E8aEulB54RMsMbTfcXxFgWiP
+ dnmVDjQ9Dpv3NkwUZlY1zYB3BEciX9O4PwhwObEcF8gmY4LLaXSI6HP/mrr6tf/jKZ5S/4ksfuM
+ c2oouHiKEXQunEXv3nloSvYIN6cOycT1uyO997pesTbC8Z7TwGLZVEmJo+rW1McKlPe23Y6V92b
+ tywErVOd+98zGQPNz2v+AjwObBw79yyikxe4DzMj//96A1EPgSOPtnZHWaHFsl6fKp2xTHm0A55
+ 3KU2wEnoVlVgcP2tcnWD42CrVBPR62sT9IISncwlDrZ2b4kwRx38I1zw1aObyIBYt0QgcPStKtG
+ M+Hd05+ LE24MRPQ==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Tue, 6 Feb 2024 17:30:11 +0100
+struct mwifiex_ie_types_chan_list_param_set::chan_scan_param is treated
+as a flexible array, so convert it into one so that it doesn't trip the
+array bounds sanitizer[1]. The code was already calculating sizes by not
+including the trailing single element, so no sizeof() change are needed.
 
-A wrapper function is available since the commit 7945f929f1a77a1c8887a97ca=
-07f87626858ff42
-("drivers: provide devm_platform_ioremap_resource()").
+Link: https://github.com/KSPP/linux/issues/51 [1]
+Cc: Brian Norris <briannorris@chromium.org>
+Cc: Kalle Valo <kvalo@kernel.org>
+Cc: Dmitry Antipov <dmantipov@yandex.ru>
+Cc: Johannes Berg <johannes.berg@intel.com>
+Cc: zuoqilin <zuoqilin@yulong.com>
+Cc: Ruan Jinjie <ruanjinjie@huawei.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+Cc: linux-wireless@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/net/wireless/marvell/mwifiex/scan.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-* Thus reuse existing functionality instead of keeping duplicate source co=
-de.
-
-* Delete a local variable which became unnecessary with this refactoring.
-
-
-This issue was transformed by using the Coccinelle software.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
-
-v2:
-The transformation pattern was adjusted based on advices by known contribu=
-tors.
-
-Examples:
-* Doug Anderson
-* Geert Uytterhoeven
-* Robin Murphy
-
-
- drivers/edac/xgene_edac.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/edac/xgene_edac.c b/drivers/edac/xgene_edac.c
-index 1b50f8160013..59eb0e97adef 100644
-=2D-- a/drivers/edac/xgene_edac.c
-+++ b/drivers/edac/xgene_edac.c
-@@ -1845,7 +1845,6 @@ static int xgene_edac_probe(struct platform_device *=
-pdev)
- {
- 	struct xgene_edac *edac;
- 	struct device_node *child;
--	struct resource *res;
- 	int rc;
-
- 	edac =3D devm_kzalloc(&pdev->dev, sizeof(*edac), GFP_KERNEL);
-@@ -1903,8 +1902,7 @@ static int xgene_edac_probe(struct platform_device *=
-pdev)
- 		edac->rb_map =3D NULL;
+diff --git a/drivers/net/wireless/marvell/mwifiex/scan.c b/drivers/net/wireless/marvell/mwifiex/scan.c
+index a2ddac363b10..0326b121747c 100644
+--- a/drivers/net/wireless/marvell/mwifiex/scan.c
++++ b/drivers/net/wireless/marvell/mwifiex/scan.c
+@@ -664,15 +664,14 @@ mwifiex_scan_channel_list(struct mwifiex_private *priv,
+ 
+ 			/* Copy the current channel TLV to the command being
+ 			   prepared */
+-			memcpy(chan_tlv_out->chan_scan_param + tlv_idx,
++			memcpy(&chan_tlv_out->chan_scan_param[tlv_idx],
+ 			       tmp_chan_list,
+-			       sizeof(chan_tlv_out->chan_scan_param));
++			       sizeof(*chan_tlv_out->chan_scan_param));
+ 
+ 			/* Increment the TLV header length by the size
+ 			   appended */
+ 			le16_unaligned_add_cpu(&chan_tlv_out->header.len,
+-					       sizeof(
+-						chan_tlv_out->chan_scan_param));
++					       sizeof(*chan_tlv_out->chan_scan_param));
+ 
+ 			/*
+ 			 * The tlv buffer length is set to the number of bytes
+@@ -2369,12 +2368,11 @@ int mwifiex_cmd_802_11_bg_scan_config(struct mwifiex_private *priv,
+ 		     chan_idx < MWIFIEX_BG_SCAN_CHAN_MAX &&
+ 		     bgscan_cfg_in->chan_list[chan_idx].chan_number;
+ 		     chan_idx++) {
+-			temp_chan = chan_list_tlv->chan_scan_param + chan_idx;
++			temp_chan = &chan_list_tlv->chan_scan_param[chan_idx];
+ 
+ 			/* Increment the TLV header length by size appended */
+ 			le16_unaligned_add_cpu(&chan_list_tlv->header.len,
+-					       sizeof(
+-					       chan_list_tlv->chan_scan_param));
++					       sizeof(*chan_list_tlv->chan_scan_param));
+ 
+ 			temp_chan->chan_number =
+ 				bgscan_cfg_in->chan_list[chan_idx].chan_number;
+@@ -2413,7 +2411,7 @@ int mwifiex_cmd_802_11_bg_scan_config(struct mwifiex_private *priv,
+ 							   chan_scan_param);
+ 		le16_unaligned_add_cpu(&chan_list_tlv->header.len,
+ 				       chan_num *
+-			     sizeof(chan_list_tlv->chan_scan_param[0]));
++			     sizeof(*chan_list_tlv->chan_scan_param));
  	}
-
--	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	edac->pcp_csr =3D devm_ioremap_resource(&pdev->dev, res);
-+	edac->pcp_csr =3D devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(edac->pcp_csr)) {
- 		dev_err(&pdev->dev, "no PCP resource address\n");
- 		rc =3D PTR_ERR(edac->pcp_csr);
-=2D-
-2.43.0
+ 
+ 	tlv_pos += (sizeof(chan_list_tlv->header)
+-- 
+2.34.1
 
 
