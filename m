@@ -1,136 +1,346 @@
-Return-Path: <linux-kernel+bounces-54956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54957-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8902B84B55E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:36:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 380DB84B560
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:37:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B50EE1C2507B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:36:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59C091C250C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:37:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AECB2131725;
-	Tue,  6 Feb 2024 12:31:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B99A012D157;
+	Tue,  6 Feb 2024 12:34:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="W73jhNOc"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AUUrpDz4"
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05021130E48;
-	Tue,  6 Feb 2024 12:31:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A01DB13174F
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 12:34:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707222715; cv=none; b=qjKZZ8BYcRiRFOCABd3EZX9GawyRj7TxlzXZkFXC0Esq9JDBWDtptZBsAqpSU2YzcsVEdt55ET1oUTZCeH2bWB+1UGvMvIFI4CDBkp7V2O3MdBMOOuEzxRh1Em+HamsVh0yg+FXg4ScFx2rCSQQ7yKHozEu9L196uL4CRW+taGY=
+	t=1707222846; cv=none; b=s6tGBBQaCXaPifAUIswORetuvErrJWCef5PdCGHfN5p52jIy4Q9LYBfsDgOU3rUKh+uPmY43e+VYJEn6qL94DWOj5VPS0A4trCesmuz742H0RbFdQr9Wyew07A7KQNE8TYvmUNI+d/ReuUfU6fj3QouD3POdGA5c98WOgpEXY54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707222715; c=relaxed/simple;
-	bh=lKFmIHEUO+dJrK7RCAPNBhE2qNe6Nhep6pxKGWFpkfo=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=J3EWWZC4+4GEcFCz6CxbOypvRX4TF9cZd+AeTk5NaKQPeUMv9aZ+InEeohyr4znuYVcEqm70dHPx342+xswJLRS7vm44NS6NTs2Kq1cBzXDo9fAg5HJRgdeYlmjpq3v/Sor6reBCtHhrU2uU/LQXGfQZSJG4aRCAyRraWkgakmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=W73jhNOc; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1707222713; x=1738758713;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=lKFmIHEUO+dJrK7RCAPNBhE2qNe6Nhep6pxKGWFpkfo=;
-  b=W73jhNOc8459Y2bJC/7CrDini+cNR1rcWAuv5NDes62zODzb37e4mL8I
-   Rvt/k7S2rEh7htSOvlwaVp5p6Y9X0RqiOEea3aNbxAs8pT6Fe1KitwI/b
-   tXG5yqMNL0YBdbF+4WheWWmcd+H9rmTO7Y0JuHislh2YZ9sg9aBveTLAK
-   IyTQNZC2IG/J5m86jXpH9bUUOhC3MkS+JH6d0XFapdFkTVZOMPfAethVU
-   lhs8vN/h04yYBMdLcO2C6Xi0A3KEjDOjIm0p2C5OiKEjT/muditudC5in
-   o85Cmio0ekoaCZ6sJzqZTzNAQxEgkT4P4ujgA7czk1E0l48Kt75c/Z/bR
-   Q==;
-X-CSE-ConnectionGUID: VSc2D1OUSp6Kb5lb+VdjZg==
-X-CSE-MsgGUID: DPYhfQf4SVCc0h/wLVDLSg==
-X-IronPort-AV: E=Sophos;i="6.05,247,1701154800"; 
-   d="scan'208";a="16349947"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 06 Feb 2024 05:31:52 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 6 Feb 2024 05:31:21 -0700
-Received: from DEN-DL-M31836.microsemi.net (10.10.85.11) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Tue, 6 Feb 2024 05:31:19 -0700
-From: Horatiu Vultur <horatiu.vultur@microchip.com>
-To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <UNGLinuxDriver@microchip.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Horatiu Vultur
-	<horatiu.vultur@microchip.com>, Michal Swiatkowski
-	<michal.swiatkowski@linux.intel.com>
-Subject: [PATCH net v2] lan966x: Fix crash when adding interface under a lag
-Date: Tue, 6 Feb 2024 13:30:54 +0100
-Message-ID: <20240206123054.3052966-1-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1707222846; c=relaxed/simple;
+	bh=3sLJ2sl2D1Oah3+ouhgAEdp1SXatnOmvgV7IWT1hVDM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FPHxcPCeBEUqYPUyURtDdHEhk+q7vu04iTZFQ2uCTOKpMsOq9fnBWVrNzxnPKFFtDiHokm5kp1TxxQ0gW7XY6P07tUf2NatA5B7pSD558g+P8lYGqRdT1+Z/UBNSfSa3lw1H9FVVVu6+us6fUO+s3zMv1qlqUhgQC23VqPMx1cg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AUUrpDz4; arc=none smtp.client-ip=209.85.128.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-60482a5a570so2414337b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 04:34:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707222843; x=1707827643; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gFY/t9ZvMmydoyHyTCZk9/AaeOGiThxuGUqkKGbjuF4=;
+        b=AUUrpDz401hxkiKSY1LShgREcyavqVYM5oOgwFLBuu9bdRLK+oWIJbnXP4qL7tRuVc
+         IDyofd7C0bokN7TvTGO+bEzpVM3w8ZBvkDI0xm+HLsdqeniWTDnDg9RYTvmhQ/RrT8fg
+         ThCPHmYqPysVRBDoME6eGEYy739WmwCVneCDin+33YNPEa4ICeNAXGicz1r0LCyqmN+M
+         rhw3PrDe1yNvog07OUG4Py8sEYOUwBnza74LnJY+R0Ho65FGspECWZT0eeQCtZPg9FXb
+         aKMAPXkp0qZKUbbpaQAkkzGYx8c7MiPedQGAznjhoUsAGovg1R1wb8DyEgQN12Q7D2UD
+         VaOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707222843; x=1707827643;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gFY/t9ZvMmydoyHyTCZk9/AaeOGiThxuGUqkKGbjuF4=;
+        b=QHxixasVlqqm2FUAV7Anka2DJLkYtaNRq88bFBimrIFpdybbcyv1BzoNEwft5j321b
+         cr0L9ovmkdxkKxU79vohCEG8LB8YKnWUHXlYrQHWcm/emqDjGXw/WEV3QV/ehjDeF5BY
+         IGAQVE2DAgO8qWB8Af208zfrSXxiSOAT/AzX2Q+FoVcp9XPAq6p8+IOXz5HEyrmHm3JU
+         LIOTGX329F1wbg1sjj0f0Y25s0bV4sDhtxvhPSUWISVG9HiSnu+N8rWrSJTweo1hSvSi
+         ihc03r0iV/L105E+UxaJxcG918c8aliYmcNN/xA3mpVWi1XiF/IVSM1LlWACYUGmj6T9
+         DvSw==
+X-Gm-Message-State: AOJu0Yz8TYjUb1SsoOTWemPSJQ4Mfrj8yBBmyg3DnJ0h45tVim9CjVCw
+	okOCft/vSiOYd9OgoDrprtFCBy/FT9sCphD+WnIC1IXJZnNJ3UhlFV7aZkMyZrbuGMvCO2GOsSe
+	CFX2/ke/o0+W6t/phaLrimkan05EN4eciXfYtNA==
+X-Google-Smtp-Source: AGHT+IFRBh8X15m6VgLIbkSPGJc+OX0ewE98A+qNzCNrmr7jOphNRhDfAeLWE9zEEP4I5O/hi5U3D44ZbgSbHS73lXs=
+X-Received: by 2002:a81:e808:0:b0:604:7bab:dacd with SMTP id
+ a8-20020a81e808000000b006047babdacdmr1392728ywm.0.1707222843467; Tue, 06 Feb
+ 2024 04:34:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20240131174347.510961-1-jens.wiklander@linaro.org> <20240131174347.510961-2-jens.wiklander@linaro.org>
+In-Reply-To: <20240131174347.510961-2-jens.wiklander@linaro.org>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Tue, 6 Feb 2024 13:33:27 +0100
+Message-ID: <CAPDyKFqNhGWKm=+7niNsjXOjEJE3U=o7dRNG=JqpptUSo9G-ug@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] rpmb: add Replay Protected Memory Block (RPMB) subsystem
+To: Jens Wiklander <jens.wiklander@linaro.org>
+Cc: linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
+	op-tee@lists.trustedfirmware.org, 
+	Shyam Saini <shyamsaini@linux.microsoft.com>, 
+	Jerome Forissier <jerome.forissier@linaro.org>, Sumit Garg <sumit.garg@linaro.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Bart Van Assche <bvanassche@acm.org>, 
+	Randy Dunlap <rdunlap@infradead.org>, Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Tomas Winkler <tomas.winkler@intel.com>, 
+	=?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-There is a crash when adding one of the lan966x interfaces under a lag
-interface. The issue can be reproduced like this:
-ip link add name bond0 type bond miimon 100 mode balance-xor
-ip link set dev eth0 master bond0
+On Wed, 31 Jan 2024 at 18:44, Jens Wiklander <jens.wiklander@linaro.org> wr=
+ote:
+>
+> A number of storage technologies support a specialised hardware
+> partition designed to be resistant to replay attacks. The underlying
+> HW protocols differ but the operations are common. The RPMB partition
+> cannot be accessed via standard block layer, but by a set of specific
+> RPMB commands: WRITE, READ, GET_WRITE_COUNTER, and PROGRAM_KEY. Such a
+> partition provides authenticated and replay protected access, hence
+> suitable as a secure storage.
+>
+> The initial aim of this patch is to provide a simple RPMB Driver which
+> can be accessed by the optee driver to facilitate early RPMB access to
+> OP-TEE OS (secure OS) during the boot time.
 
-The reason is because when adding a interface under the lag it would go
-through all the ports and try to figure out which other ports are under
-that lag interface. And the issue is that lan966x can have ports that are
-NULL pointer as they are not probed. So then iterating over these ports
-it would just crash as they are NULL pointers.
-The fix consists in actually checking for NULL pointers before accessing
-something from the ports. Like we do in other places.
+How early do we expect OP-TEE to need RPMB access?
 
-Fixes: cabc9d49333d ("net: lan966x: Add lag support for lan966x")
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
----
-v1->v2:
-- replace lan966x->ports[lag]->bond with port->bond as it is the same
-  and easier to follow
----
- drivers/net/ethernet/microchip/lan966x/lan966x_lag.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+The way things work for mmc today, is that the eMMC card gets
+discovered/probed via a workqueue. The work is punted by the mmc host
+driver (typically a module-platform-driver), when it has probed
+successfully.
 
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_lag.c b/drivers/net/ethernet/microchip/lan966x/lan966x_lag.c
-index 41fa2523d91d3..5f2cd9a8cf8fb 100644
---- a/drivers/net/ethernet/microchip/lan966x/lan966x_lag.c
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_lag.c
-@@ -37,19 +37,24 @@ static void lan966x_lag_set_aggr_pgids(struct lan966x *lan966x)
- 
- 	/* Now, set PGIDs for each active LAG */
- 	for (lag = 0; lag < lan966x->num_phys_ports; ++lag) {
--		struct net_device *bond = lan966x->ports[lag]->bond;
-+		struct lan966x_port *port = lan966x->ports[lag];
- 		int num_active_ports = 0;
-+		struct net_device *bond;
- 		unsigned long bond_mask;
- 		u8 aggr_idx[16];
- 
--		if (!bond || (visited & BIT(lag)))
-+		if (!port || !port->bond || (visited & BIT(lag)))
- 			continue;
- 
-+		bond = port->bond;
- 		bond_mask = lan966x_lag_get_mask(lan966x, bond);
- 
- 		for_each_set_bit(p, &bond_mask, lan966x->num_phys_ports) {
- 			struct lan966x_port *port = lan966x->ports[p];
- 
-+			if (!port)
-+				continue;
-+
- 			lan_wr(ANA_PGID_PGID_SET(bond_mask),
- 			       lan966x, ANA_PGID(p));
- 			if (port->lag_tx_active)
--- 
-2.34.1
+The point is, it looks like we need some kind of probe deferral
+mechanism too. Whether we want the OP-TEE driver to manage this itself
+or whether we should let rpmb_dev_find_device() deal with it, I don't
+know.
 
+>
+> A TEE device driver can claim the RPMB interface, for example, via
+> class_interface_register() or rpmb_dev_find_device(). The RPMB driver
+> provides a callback to route RPMB frames to the RPMB device accessible
+> via rpmb_route_frames().
+
+By looking at the design of the interface, I do like it. It's simple
+and straightforward.
+
+However, I wonder if you considered avoiding using a class-device
+altogether? Even if it helps with lifecycle problems and the
+ops-lookup, we really don't need another struct device with a sysfs
+node, etc.
+
+To deal with the lifecycle issue, we could probably just add reference
+counting for the corresponding struct device that we already have at
+hand, which represents the eMMC/UFS/NVME card. That together with a
+simple list that contains the registered rpmb ops. But I may be
+overlooking something, so perhaps it's more complicated than that?
+
+>
+> The detailed operation of implementing the access is left to the TEE
+> device driver itself.
+>
+> Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+> Signed-off-by: Alex Benn=C3=A9e <alex.bennee@linaro.org>
+> Signed-off-by: Shyam Saini <shyamsaini@linux.microsoft.com>
+> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+> ---
+>  MAINTAINERS              |   7 ++
+>  drivers/misc/Kconfig     |   9 ++
+>  drivers/misc/Makefile    |   1 +
+>  drivers/misc/rpmb-core.c | 247 +++++++++++++++++++++++++++++++++++++++
+>  include/linux/rpmb.h     | 184 +++++++++++++++++++++++++++++
+>  5 files changed, 448 insertions(+)
+>  create mode 100644 drivers/misc/rpmb-core.c
+>  create mode 100644 include/linux/rpmb.h
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 8999497011a2..e83152c42499 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -19012,6 +19012,13 @@ T:     git git://linuxtv.org/media_tree.git
+>  F:     Documentation/devicetree/bindings/media/allwinner,sun8i-a83t-de2-=
+rotate.yaml
+>  F:     drivers/media/platform/sunxi/sun8i-rotate/
+>
+> +RPMB SUBSYSTEM
+> +M:     Jens Wiklander <jens.wiklander@linaro.org>
+> +L:     linux-kernel@vger.kernel.org
+> +S:     Supported
+> +F:     drivers/misc/rpmb-core.c
+> +F:     include/linux/rpmb.h
+> +
+>  RPMSG TTY DRIVER
+>  M:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+>  L:     linux-remoteproc@vger.kernel.org
+> diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+> index 4fb291f0bf7c..891aa5763666 100644
+> --- a/drivers/misc/Kconfig
+> +++ b/drivers/misc/Kconfig
+> @@ -104,6 +104,15 @@ config PHANTOM
+>           If you choose to build module, its name will be phantom. If uns=
+ure,
+>           say N here.
+>
+> +config RPMB
+> +       tristate "RPMB partition interface"
+
+Should we add a "depends on MMC"? (We can add the other NVME and UFS
+later on too).
+
+> +       help
+> +         Unified RPMB unit interface for RPMB capable devices such as eM=
+MC and
+> +         UFS. Provides interface for in kernel security controllers to a=
+ccess
+> +         RPMB unit.
+> +
+> +         If unsure, select N.
+> +
+>  config TIFM_CORE
+>         tristate "TI Flash Media interface support"
+>         depends on PCI
+> diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+> index ea6ea5bbbc9c..8af058ad1df4 100644
+> --- a/drivers/misc/Makefile
+> +++ b/drivers/misc/Makefile
+> @@ -15,6 +15,7 @@ obj-$(CONFIG_LKDTM)           +=3D lkdtm/
+>  obj-$(CONFIG_TIFM_CORE)        +=3D tifm_core.o
+>  obj-$(CONFIG_TIFM_7XX1)        +=3D tifm_7xx1.o
+>  obj-$(CONFIG_PHANTOM)          +=3D phantom.o
+> +obj-$(CONFIG_RPMB)             +=3D rpmb-core.o
+>  obj-$(CONFIG_QCOM_COINCELL)    +=3D qcom-coincell.o
+>  obj-$(CONFIG_QCOM_FASTRPC)     +=3D fastrpc.o
+>  obj-$(CONFIG_SENSORS_BH1770)   +=3D bh1770glc.o
+> diff --git a/drivers/misc/rpmb-core.c b/drivers/misc/rpmb-core.c
+> new file mode 100644
+> index 000000000000..a3c289051687
+> --- /dev/null
+> +++ b/drivers/misc/rpmb-core.c
+> @@ -0,0 +1,247 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright(c) 2015 - 2019 Intel Corporation. All rights reserved.
+> + * Copyright(c) 2021 - 2024 Linaro Ltd.
+> + */
+> +#include <linux/device.h>
+> +#include <linux/init.h>
+> +#include <linux/kernel.h>
+> +#include <linux/list.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+> +#include <linux/rpmb.h>
+> +#include <linux/slab.h>
+> +
+> +static DEFINE_IDA(rpmb_ida);
+> +static DEFINE_MUTEX(rpmb_mutex);
+> +
+> +/**
+> + * rpmb_dev_get() - increase rpmb device ref counter
+> + * @rdev: rpmb device
+> + */
+> +struct rpmb_dev *rpmb_dev_get(struct rpmb_dev *rdev)
+> +{
+> +       if (rdev)
+> +               get_device(&rdev->dev);
+> +       return rdev;
+> +}
+> +EXPORT_SYMBOL_GPL(rpmb_dev_get);
+> +
+> +/**
+> + * rpmb_dev_put() - decrease rpmb device ref counter
+> + * @rdev: rpmb device
+> + */
+> +void rpmb_dev_put(struct rpmb_dev *rdev)
+> +{
+> +       if (rdev)
+> +               put_device(&rdev->dev);
+> +}
+> +EXPORT_SYMBOL_GPL(rpmb_dev_put);
+> +
+> +/**
+> + * rpmb_route_frames() - route rpmb frames to rpmb device
+> + * @rdev:      rpmb device
+> + * @req:       rpmb request frames
+> + * @req_len:   length of rpmb request frames in bytes
+> + * @rsp:       rpmb response frames
+> + * @rsp_len:   length of rpmb response frames in bytes
+> + *
+> + * @return < 0 on failure
+> + */
+> +int rpmb_route_frames(struct rpmb_dev *rdev, u8 *req,
+> +                     unsigned int req_len, u8 *rsp, unsigned int rsp_len=
+)
+> +{
+> +       struct rpmb_frame *frm =3D (struct rpmb_frame *)req;
+
+Is there a reason why we are passing an u8 *req, in favor of a
+"rpmb_frame *frame" directly as the in-parameter?
+
+> +       u16 req_type;
+> +       bool write;
+> +
+> +       if (!req || req_len < sizeof(*frm) || !rsp || !rsp_len)
+> +               return -EINVAL;
+> +
+> +       req_type =3D be16_to_cpu(frm->req_resp);
+> +       switch (req_type) {
+> +       case RPMB_PROGRAM_KEY:
+> +               if (req_len !=3D sizeof(struct rpmb_frame) ||
+> +                   rsp_len !=3D sizeof(struct rpmb_frame))
+> +                       return -EINVAL;
+> +               write =3D true;
+> +               break;
+> +       case RPMB_GET_WRITE_COUNTER:
+> +               if (req_len !=3D sizeof(struct rpmb_frame) ||
+> +                   rsp_len !=3D sizeof(struct rpmb_frame))
+> +                       return -EINVAL;
+> +               write =3D false;
+> +               break;
+> +       case RPMB_WRITE_DATA:
+> +               if (req_len % sizeof(struct rpmb_frame) ||
+> +                   rsp_len !=3D sizeof(struct rpmb_frame))
+> +                       return -EINVAL;
+> +               write =3D true;
+> +               break;
+> +       case RPMB_READ_DATA:
+> +               if (req_len !=3D sizeof(struct rpmb_frame) ||
+> +                   rsp_len % sizeof(struct rpmb_frame))
+> +                       return -EINVAL;
+> +               write =3D false;
+> +               break;
+> +       default:
+> +               return -EINVAL;
+> +       }
+> +
+> +       return rdev->ops->route_frames(rdev->dev.parent, write,
+> +                                      req, req_len, rsp, rsp_len);
+> +}
+> +EXPORT_SYMBOL_GPL(rpmb_route_frames);
+
+[...]
+
+
+> +
+> +/**
+> + * enum rpmb_type - type of underlaying storage technology
+> + *
+> + * @RPMB_TYPE_EMMC  : emmc (JESD84-B50.1)
+> + * @RPMB_TYPE_UFS   : UFS (JESD220)
+> + * @RPMB_TYPE_NVME  : NVM Express
+> + */
+> +enum rpmb_type {
+> +       RPMB_TYPE_EMMC,
+> +       RPMB_TYPE_UFS,
+> +       RPMB_TYPE_NVME,
+> +};
+
+In what way do we expect these to be useful?
+
+Perhaps we should add some information about this, because currently
+in the series they seem not to be used. Maybe the OP-TEE driver needs
+it when extending support to NVME and UFS?
+
+[...]
+
+Kind regards
+Uffe
 
