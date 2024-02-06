@@ -1,438 +1,289 @@
-Return-Path: <linux-kernel+bounces-54266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDF9E84ACF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:36:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5246784AD07
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:39:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EB9C1F23652
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:36:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76A751C225B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:39:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 817E0745DB;
-	Tue,  6 Feb 2024 03:36:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F505745EF;
+	Tue,  6 Feb 2024 03:39:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IYo51v/0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LshS8m0M"
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33E8D5026D
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 03:36:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B53031EB3A;
+	Tue,  6 Feb 2024 03:39:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707190590; cv=none; b=d94ZgacT1K6BjM4MYCFiD6t/r53a4TNwlP6y+5eMn9L//bO9WgZ6SqH9JQleRTC0TY4dWBr2BL6xIW3ES5nkjWj1XPhB5PvrRamJ8lJCzbODYWpmiPURBCXG6d0dxba8wQ9hwwLqmygkF6zKQM9XWg7gDkvb26+2Rop91gk+CsE=
+	t=1707190758; cv=none; b=Vc40o8tzzewyrRAd0irqPBy9UlfM9XRvkpCkBDgj+jjmdU5uZ6NdmEtY1t4saXJ56rDvzdleQm0LK5KEPMi7N7AYutmWilH/LlyjL94ULVMtGgVQa7bATd9V2dhUk27AJrQjO3vs+DTFJOFNzEJTI+7e6IQrAcii8J9lCRssEtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707190590; c=relaxed/simple;
-	bh=EV4sYa/n38D6XJKysy1Ovo5D+uXKl0Lz3vicJpuENoA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KCrGBDpq11O5v+MV5Nqy9smdpuKQdDpNExqSi3CpER+VIWYH9FwzIABoJd68z++AeB9fA75dvnneJlJDE5hViowAuJfP9zEQDEAE5y1z+hHB0Bu0fSP90DohcOe7AmbY8rKUT87m+zIevvNL9tyK08H+Ud1tFwtJvFiFbFA5tfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IYo51v/0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 922B3C433F1;
-	Tue,  6 Feb 2024 03:36:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707190589;
-	bh=EV4sYa/n38D6XJKysy1Ovo5D+uXKl0Lz3vicJpuENoA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=IYo51v/09/3F1imTPs8gw7Wd81xVdIxwwGPfw9xHactsrVUkCK0cgJ1rcKisjW75i
-	 f4KQ2YcR1zAxeYVBBTMU70t9yaHChguK4Bpg5rVjBSQDbXZT3oNKUlWoUqPW84QgAI
-	 A3iwGad96rVVxw1Gh36PV+74rqvRQabm3KJrXF3qtDlXjIhRVtJeia9+0gNTygXHYk
-	 Hv31XN769Y6zl69VwRGcG0T54ERwAnJNAmQL/4Nk8xPsIk8Mv+CNi16eLoj86O7Vid
-	 mD2Vub/xszIUpGfiw//q3W/5rPLXgi/xJ/2uCb34fK4r0xc+GpGwWcgZ0u/qDh2Out
-	 LWN9DQ3Lil4Kg==
-Message-ID: <2155b7d2-f7ee-4ce6-b4c9-48f715f6aa00@kernel.org>
-Date: Tue, 6 Feb 2024 11:36:24 +0800
+	s=arc-20240116; t=1707190758; c=relaxed/simple;
+	bh=Eg9z6jEW9p/PugjKdtuVlFec6GWtC4u5Fc10RoOmES4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Qc/zmvuSsbFHTWw1bEnZ/qsU/pDlugeOvuRXlJp2qfBjAcN3svWe2l7b2jRf4U+JdohV67wflWMqiRk5mXfVN+Z1blevr/ZmutmC1HjSRiO0ixCcXnJKBTPFunF9KdIjmreU+uJLc/mDXPBJ0kwnBScfs6Ggj288Q08uTjABxUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LshS8m0M; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2906bcae4feso3950234a91.3;
+        Mon, 05 Feb 2024 19:39:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707190756; x=1707795556; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EYjlWLoy2riopH+zlSIcKPkCBJ5S6WcdaC4eCMXtR5k=;
+        b=LshS8m0MHIN/u/1fY2ptq+nTKztGCyRotMOeGwlTbjqwlLBYxRbXfc8/dY5pr+Z7FO
+         F16RFXi3hs6OldQd/ZSlANxPgTh4sMeU+ALAJJHTvKCoKXP3uYeyOhbhOESA4X45kHAx
+         4F6Efm112KxwP4QZHiNfMsR4MtTmb5w+Dyr035c8DVOuHbEvi2g5yUzTFgrHRQPWbyLb
+         09THTKa3be9P6MPgrD/3QFmUjLdB+ZYHDPjHES3KRCKatHVQBZt3mUd0+JpVoEbRHapO
+         JRjaq8us3kGdbcyQDMiD0NaWDrHTQEqvQV09iLmJPUZOrf1rt6tLEhirfRMI9xV1454n
+         H30g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707190756; x=1707795556;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EYjlWLoy2riopH+zlSIcKPkCBJ5S6WcdaC4eCMXtR5k=;
+        b=veXXWeeqxW5SzW9OJnV1K4VDTVQHBtnNqiktDlwuwPw+PvF7A1BvR3Qb4WdGrRnoyw
+         h9HUA730pyY0MRZFwwz7hnwr/b3tpODiCyLObUgoClSJ3XdF6KmyJJ6bfIPHWkM9xE6i
+         kvk7Y1ZHhWIu51y1vyMcujBOMy/3nEeaWjcuif2nxO5pVInP+kr+e1zjtvBCvef2nPf3
+         WwxxmJYnR3g0dhPl7q8DzNB/VUNadvUO0wjMwYXby80sp+5GLodI9qGyIaDXNsT7IO6B
+         14st3bhANe+WMERhkvgP4c7RZF0FEgCu6/0Q7suHlz7qqp1gm+zM6jAE6utrHckWiWhI
+         EEOA==
+X-Gm-Message-State: AOJu0YyMIzLW8Hy3As6yS1vKhRK6vwrUZ7W6xBmUY5ZN//e2tDTYNjU/
+	07ixyizRaTnDnGCjDEhp4rlHGjdH8WSsyBLVaCWQ/5U724qqlKT2Mi7Us1roVxlhoeb88mBsyxQ
+	c5NtyeGTFNoD6csUHQ+b1vMOHnkc=
+X-Google-Smtp-Source: AGHT+IEi3Qu7s8A5yqq9dadRqq+/DNxO2AVwQ1u94+npiHZDRfNlXaJVAhLSodnyi3Tw6RgQjNl4siYPcAtd7AmA2jQ=
+X-Received: by 2002:a17:90a:f195:b0:296:379b:6739 with SMTP id
+ bv21-20020a17090af19500b00296379b6739mr1208689pjb.48.1707190755465; Mon, 05
+ Feb 2024 19:39:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7] f2fs: unify the error handling of
- f2fs_is_valid_blkaddr
-Content-Language: en-US
-To: Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: Zhiguo Niu <zhiguo.niu@unisoc.com>,
- linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
- niuzhiguo84@gmail.com, ke.wang@unisoc.com, hongyu.jin@unisoc.com
-References: <1707103845-17220-1-git-send-email-zhiguo.niu@unisoc.com>
- <e2680238-9e9c-422a-adf3-bcee71dfe0a8@kernel.org>
- <ZcGoWAsl08d5-U0g@google.com>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <ZcGoWAsl08d5-U0g@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240203165307.7806-1-aford173@gmail.com> <20240203165307.7806-3-aford173@gmail.com>
+ <CAA8EJpo4omXogg48urEMzxQ+CA7DNTSf66pA6hoO8wpmtn_-MQ@mail.gmail.com> <20240205081719.z2uqa4dwn5ucsymv@pengutronix.de>
+In-Reply-To: <20240205081719.z2uqa4dwn5ucsymv@pengutronix.de>
+From: Adam Ford <aford173@gmail.com>
+Date: Mon, 5 Feb 2024 21:39:04 -0600
+Message-ID: <CAHCN7x+9pLZZhypgVh8Q3jAxeM6UKJrPCOdjVoszK3XLTh=gBQ@mail.gmail.com>
+Subject: Re: [PATCH V8 02/12] phy: freescale: add Samsung HDMI PHY
+To: Marco Felsch <m.felsch@pengutronix.de>
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Ulf Hansson <ulf.hansson@linaro.org>, 
+	Andrzej Hajda <andrzej.hajda@intel.com>, devicetree@vger.kernel.org, 
+	alexander.stein@ew.tq-group.com, Catalin Marinas <catalin.marinas@arm.com>, 
+	dri-devel@lists.freedesktop.org, frieder.schrempf@kontron.de, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, linux-phy@lists.infradead.org, 
+	David Airlie <airlied@gmail.com>, marex@denx.de, Robert Foss <rfoss@kernel.org>, 
+	Fabio Estevam <festevam@gmail.com>, linux-pm@vger.kernel.org, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, 
+	Philipp Zabel <p.zabel@pengutronix.de>, Kishon Vijay Abraham I <kishon@kernel.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, Will Deacon <will@kernel.org>, 
+	Jonas Karlman <jonas@kwiboo.se>, Liu Ying <victor.liu@nxp.com>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	linux-arm-kernel@lists.infradead.org, 
+	Neil Armstrong <neil.armstrong@linaro.org>, linux-kernel@vger.kernel.org, 
+	Vinod Koul <vkoul@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Lucas Stach <l.stach@pengutronix.de>, 
+	Shawn Guo <shawnguo@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/2/6 11:32, Jaegeuk Kim wrote:
-> On 02/05, Chao Yu wrote:
->> On 2024/2/5 11:30, Zhiguo Niu wrote:
->>> There are some cases of f2fs_is_valid_blkaddr not handled as
->>> ERROR_INVALID_BLKADDR,so unify the error handling about all of
->>> f2fs_is_valid_blkaddr.
->>>
->>> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
->>> Signed-off-by: Chao Yu <chao@kernel.org>
->>> ---
->>> changes of v7: update patch according to sync with Chao
->>>     -restore some code to original
->>>     -modify err handle of __is_bitmap_valid for covering all cases
->>> changes of v6: improve patch according to Chao's suggestions
->>>     -restore dump_stack to original position
->>>     -adjuest code sequence of __is_bitmap_check_valid
->>> changes of v5: improve patch according to Jaegeuk's suggestiongs
->>>     -restore return value of some f2fs_is_valid_blkaddr error case to original
->>>     -move cp_err checking to outermost for unified processing
->>>     -return true directly for case (type=DATA_GENERIC_ENHANCE_READ) in
->>>      __is_bitmap_valid to avoid meaningless flow
->>>     -rename __is_bitmap_valid to __is_bitmap_check_valid for avoiding ambiguity
->>>      and handling its return value in the caller uniformly, also cooperate
->>>      switch checking true to false for error case of
->>>      f2fs_is_valid_blkaddr(type=DATA_GENERIC_ENHANCE_UPDATE) in do_recover_data
->>>      for more readable
->>> changes of v4: update according to the latest code
->>> changes of v3:
->>>     -rebase patch to dev-test
->>>     -correct return value for some f2fs_is_valid_blkaddr error case
->>> changes of v2: improve patch according Chao's suggestions.
->>> ---
->>> ---
->>>    fs/f2fs/checkpoint.c   | 33 ++++++++++++++++++---------------
->>>    fs/f2fs/data.c         | 22 +++-------------------
->>>    fs/f2fs/extent_cache.c |  5 +----
->>>    fs/f2fs/file.c         | 16 +++-------------
->>>    fs/f2fs/gc.c           |  2 --
->>>    fs/f2fs/recovery.c     |  4 ----
->>>    fs/f2fs/segment.c      |  2 --
->>>    7 files changed, 25 insertions(+), 59 deletions(-)
->>>
->>> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
->>> index b85820e..3335619 100644
->>> --- a/fs/f2fs/checkpoint.c
->>> +++ b/fs/f2fs/checkpoint.c
->>> @@ -154,46 +154,43 @@ static bool __is_bitmap_valid(struct f2fs_sb_info *sbi, block_t blkaddr,
->>>    	if (unlikely(f2fs_cp_error(sbi)))
->>>    		return exist;
->>> -	if (exist && type == DATA_GENERIC_ENHANCE_UPDATE) {
->>> -		f2fs_err(sbi, "Inconsistent error blkaddr:%u, sit bitmap:%d",
->>> -			 blkaddr, exist);
->>> -		set_sbi_flag(sbi, SBI_NEED_FSCK);
->>> -		return exist;
->>> -	}
->>> -
->>> -	if (!exist && type == DATA_GENERIC_ENHANCE) {
->>> +	if ((exist && type == DATA_GENERIC_ENHANCE_UPDATE) ||
->>> +		(!exist && type == DATA_GENERIC_ENHANCE)) {
->>>    		f2fs_err(sbi, "Inconsistent error blkaddr:%u, sit bitmap:%d",
->>>    			 blkaddr, exist);
->>>    		set_sbi_flag(sbi, SBI_NEED_FSCK);
->>>    		dump_stack();
->>>    	}
->>> +
->>
->> No need to add one blank line.
->>
->> Otherwise, it looks good to me.
->>
->> Reviewed-by: Chao Yu <chao@kernel.org>
->>
->> Thanks,
->>
->>>    	return exist;
->>>    }
->>>    static bool __f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
->>>    					block_t blkaddr, int type)
->>>    {
->>> +	bool valid = false;
->>> +
->>>    	switch (type) {
->>>    	case META_NAT:
->>>    		break;
->>>    	case META_SIT:
->>>    		if (unlikely(blkaddr >= SIT_BLK_CNT(sbi)))
->>> -			return false;
->>> +			goto err;
->>>    		break;
->>>    	case META_SSA:
->>>    		if (unlikely(blkaddr >= MAIN_BLKADDR(sbi) ||
->>>    			blkaddr < SM_I(sbi)->ssa_blkaddr))
->>> -			return false;
->>> +			goto err;
->>>    		break;
->>>    	case META_CP:
->>>    		if (unlikely(blkaddr >= SIT_I(sbi)->sit_base_addr ||
->>>    			blkaddr < __start_cp_addr(sbi)))
->>> -			return false;
->>> +			goto err;
->>>    		break;
->>>    	case META_POR:
->>>    		if (unlikely(blkaddr >= MAX_BLKADDR(sbi) ||
->>>    			blkaddr < MAIN_BLKADDR(sbi)))
->>> -			return false;
->>> +			goto err;
->>>    		break;
->>>    	case DATA_GENERIC:
->>>    	case DATA_GENERIC_ENHANCE:
->>> @@ -210,21 +207,27 @@ static bool __f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
->>>    				  blkaddr);
->>>    			set_sbi_flag(sbi, SBI_NEED_FSCK);
->>>    			dump_stack();
->>> -			return false;
->>> +			goto err;
->>>    		} else {
->>> -			return __is_bitmap_valid(sbi, blkaddr, type);
->>> +			valid = __is_bitmap_valid(sbi, blkaddr, type);
->>> +			if ((!valid && type != DATA_GENERIC_ENHANCE_UPDATE) ||
->>> +				(valid && type == DATA_GENERIC_ENHANCE_UPDATE))
->>> +				goto err;
-> 
-> Please think about how to optimize this, which is really ugly now.
+On Mon, Feb 5, 2024 at 2:17=E2=80=AFAM Marco Felsch <m.felsch@pengutronix.d=
+e> wrote:
+>
+> On 24-02-04, Dmitry Baryshkov wrote:
+> > On Sat, 3 Feb 2024 at 17:53, Adam Ford <aford173@gmail.com> wrote:
+> > >
+> > > From: Lucas Stach <l.stach@pengutronix.de>
+> > >
+> > > This adds the driver for the Samsung HDMI PHY found on the
+> > > i.MX8MP SoC.
+> > >
+> > > Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+> > > Signed-off-by: Adam Ford <aford173@gmail.com>
+> > > Tested-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+> > > ---
+> > > V4:  Make lookup table hex values lower case.
+> > >
+> > > V3:  Re-order the Makefile to keep it alphabetical
+> > >      Remove unused defines
+> > >
+> > > V2:  Fixed some whitespace found from checkpatch
+> > >      Change error handling when enabling apbclk to use dev_err_probe
+> > >      Rebase on Linux-Next
+> > >
+> > >      I (Adam) tried to help move this along, so I took Lucas' patch a=
+nd
+> > >      attempted to apply fixes based on feedback.  I don't have
+> > >      all the history, so apologies for that.
+> > > ---
+> > >  drivers/phy/freescale/Kconfig                |    6 +
+> > >  drivers/phy/freescale/Makefile               |    1 +
+> > >  drivers/phy/freescale/phy-fsl-samsung-hdmi.c | 1075 ++++++++++++++++=
+++
+> > >  3 files changed, 1082 insertions(+)
+> > >  create mode 100644 drivers/phy/freescale/phy-fsl-samsung-hdmi.c
+> > >
+> > > diff --git a/drivers/phy/freescale/Kconfig b/drivers/phy/freescale/Kc=
+onfig
+> > > index 853958fb2c06..5c2b73042dfc 100644
+> > > --- a/drivers/phy/freescale/Kconfig
+> > > +++ b/drivers/phy/freescale/Kconfig
+> > > @@ -35,6 +35,12 @@ config PHY_FSL_IMX8M_PCIE
+> > >           Enable this to add support for the PCIE PHY as found on
+> > >           i.MX8M family of SOCs.
+> > >
+> > > +config PHY_FSL_SAMSUNG_HDMI_PHY
+> > > +       tristate "Samsung HDMI PHY support"
+> > > +       depends on OF && HAS_IOMEM
+> > > +       help
+> > > +         Enable this to add support for the Samsung HDMI PHY in i.MX=
+8MP.
+> > > +
+> > >  endif
+> > >
+> > >  config PHY_FSL_LYNX_28G
+> > > diff --git a/drivers/phy/freescale/Makefile b/drivers/phy/freescale/M=
+akefile
+> > > index cedb328bc4d2..79e5f16d3ce8 100644
+> > > --- a/drivers/phy/freescale/Makefile
+> > > +++ b/drivers/phy/freescale/Makefile
+> > > @@ -4,3 +4,4 @@ obj-$(CONFIG_PHY_MIXEL_LVDS_PHY)        +=3D phy-fsl-=
+imx8qm-lvds-phy.o
+> > >  obj-$(CONFIG_PHY_MIXEL_MIPI_DPHY)      +=3D phy-fsl-imx8-mipi-dphy.o
+> > >  obj-$(CONFIG_PHY_FSL_IMX8M_PCIE)       +=3D phy-fsl-imx8m-pcie.o
+> > >  obj-$(CONFIG_PHY_FSL_LYNX_28G)         +=3D phy-fsl-lynx-28g.o
+> > > +obj-$(CONFIG_PHY_FSL_SAMSUNG_HDMI_PHY)  +=3D phy-fsl-samsung-hdmi.o
+> > > diff --git a/drivers/phy/freescale/phy-fsl-samsung-hdmi.c b/drivers/p=
+hy/freescale/phy-fsl-samsung-hdmi.c
+> > > new file mode 100644
+> > > index 000000000000..bf0e2299d00f
+> > > --- /dev/null
+> > > +++ b/drivers/phy/freescale/phy-fsl-samsung-hdmi.c
+> > > @@ -0,0 +1,1075 @@
+> > > +// SPDX-License-Identifier: GPL-2.0+
+> > > +/*
+> > > + * Copyright 2020 NXP
+> > > + * Copyright 2022 Pengutronix, Lucas Stach <kernel@pengutronix.de>
+> > > + */
+> > > +
+> > > +#include <linux/clk-provider.h>
+> > > +#include <linux/clk.h>
+> > > +#include <linux/delay.h>
+> > > +#include <linux/io.h>
+> > > +#include <linux/iopoll.h>
+> > > +#include <linux/module.h>
+> > > +#include <linux/of_device.h>
+> > > +#include <linux/of.h>
+> > > +#include <linux/platform_device.h>
+> > > +#include <linux/pm_runtime.h>
+> > > +
+> > > +#define PHY_REG_33             0x84
+> > > +#define  REG33_MODE_SET_DONE   BIT(7)
+> > > +#define  REG33_FIX_DA          BIT(1)
+> > > +
+> > > +#define PHY_REG_34             0x88
+> > > +#define  REG34_PHY_READY       BIT(7)
+> > > +#define  REG34_PLL_LOCK                BIT(6)
+> > > +#define  REG34_PHY_CLK_READY   BIT(5)
+> > > +
+> > > +
+> > > +#define PHY_PLL_REGS_NUM 48
+> > > +
+> > > +struct phy_config {
+> > > +       u32     clk_rate;
+> > > +       u8 regs[PHY_PLL_REGS_NUM];
+> > > +};
+> > > +
+> > > +const struct phy_config phy_pll_cfg[] =3D {
+> > > +       {       22250000, {
+> > > +                       0x00, 0xd1, 0x4b, 0xf1, 0x89, 0x88, 0x80, 0x4=
+0,
+> > > +                       0x4f, 0x30, 0x33, 0x65, 0x00, 0x15, 0x25, 0x8=
+0,
+> > > +                       0x6c, 0xf2, 0x67, 0x00, 0x10, 0x8f, 0x30, 0x3=
+2,
+> > > +                       0x60, 0x8f, 0x00, 0x00, 0x08, 0x00, 0x00, 0x0=
+0,
+> > > +                       0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0=
+0,
+> > > +                       0x00, 0xe0, 0x83, 0x0f, 0x3e, 0xf8, 0x00, 0x0=
+0,
+> > > +               },
+> > > +       }, {
+> > > +               23750000, {
+> > > +                       0x00, 0xd1, 0x50, 0xf1, 0x86, 0x85, 0x80, 0x4=
+0,
+> > > +                       0x4f, 0x30, 0x33, 0x65, 0x00, 0x03, 0x25, 0x8=
+0,
+> > > +                       0x6c, 0xf2, 0x67, 0x00, 0x10, 0x8f, 0x30, 0x3=
+2,
+> > > +                       0x60, 0x8f, 0x00, 0x00, 0x08, 0x00, 0x00, 0x0=
+0,
+> > > +                       0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0=
+0,
+> > > +                       0x00, 0xe0, 0x83, 0x0f, 0x3e, 0xf8, 0x00, 0x0=
+0,
+> > > +               },
+> >
+> > Generally I see that these entries contain a high level of duplication.
+> > Could you please extract the common part and a rate-dependent part.
+> > Next, it would be best if instead of writing the register values via
+> > the rate LUT, the driver could calculate those values.
+> > This allows us to support other HDMI modes if the need arises at some p=
+oint.
+>
+> Hi Adam,
+>
+> can you please have a look at: https://lore.kernel.org/all/4830698.GXAFRq=
+VoOG@steina-w/
+>
+> there we have fixed this already. Not sure which version you picked for
+> your work.
 
-How about calling f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR) inside
-__is_bitmap_valid()? so that we may not add such logic outside
-__is_bitmap_valid()...
+It must have been an earlier version.  I got the list from Fabio, but
+I might have also gotten it mixed up.  I'll look at this version and
+base my series on it and try to address comments others made.  It'll
+likely take me a few days to catch up.
 
-Thanks,
+thanks for the pointer.
 
-> 
->>>    		}
->>>    		break;
->>>    	case META_GENERIC:
->>>    		if (unlikely(blkaddr < SEG0_BLKADDR(sbi) ||
->>>    			blkaddr >= MAIN_BLKADDR(sbi)))
->>> -			return false;
->>> +			goto err;
->>>    		break;
->>>    	default:
->>>    		BUG();
->>>    	}
->>>    	return true;
->>> +err:
->>> +	f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
->>> +	return valid;
->>>    }
->>>    bool f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
->>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
->>> index 05158f8..300f9ae 100644
->>> --- a/fs/f2fs/data.c
->>> +++ b/fs/f2fs/data.c
->>> @@ -738,10 +738,8 @@ int f2fs_submit_page_bio(struct f2fs_io_info *fio)
->>>    	if (!f2fs_is_valid_blkaddr(fio->sbi, fio->new_blkaddr,
->>>    			fio->is_por ? META_POR : (__is_meta_io(fio) ?
->>> -			META_GENERIC : DATA_GENERIC_ENHANCE))) {
->>> -		f2fs_handle_error(fio->sbi, ERROR_INVALID_BLKADDR);
->>> +			META_GENERIC : DATA_GENERIC_ENHANCE)))
->>>    		return -EFSCORRUPTED;
->>> -	}
->>>    	trace_f2fs_submit_page_bio(page, fio);
->>> @@ -946,10 +944,8 @@ int f2fs_merge_page_bio(struct f2fs_io_info *fio)
->>>    			fio->encrypted_page : fio->page;
->>>    	if (!f2fs_is_valid_blkaddr(fio->sbi, fio->new_blkaddr,
->>> -			__is_meta_io(fio) ? META_GENERIC : DATA_GENERIC)) {
->>> -		f2fs_handle_error(fio->sbi, ERROR_INVALID_BLKADDR);
->>> +			__is_meta_io(fio) ? META_GENERIC : DATA_GENERIC))
->>>    		return -EFSCORRUPTED;
->>> -	}
->>>    	trace_f2fs_submit_page_bio(page, fio);
->>> @@ -1286,8 +1282,6 @@ struct page *f2fs_get_read_data_page(struct inode *inode, pgoff_t index,
->>>    		if (!f2fs_is_valid_blkaddr(F2FS_I_SB(inode), dn.data_blkaddr,
->>>    						DATA_GENERIC_ENHANCE_READ)) {
->>>    			err = -EFSCORRUPTED;
->>> -			f2fs_handle_error(F2FS_I_SB(inode),
->>> -						ERROR_INVALID_BLKADDR);
->>>    			goto put_err;
->>>    		}
->>>    		goto got_it;
->>> @@ -1313,8 +1307,6 @@ struct page *f2fs_get_read_data_page(struct inode *inode, pgoff_t index,
->>>    						dn.data_blkaddr,
->>>    						DATA_GENERIC_ENHANCE)) {
->>>    		err = -EFSCORRUPTED;
->>> -		f2fs_handle_error(F2FS_I_SB(inode),
->>> -					ERROR_INVALID_BLKADDR);
->>>    		goto put_err;
->>>    	}
->>>    got_it:
->>> @@ -1642,7 +1634,6 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map, int flag)
->>>    	if (!is_hole &&
->>>    	    !f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE)) {
->>>    		err = -EFSCORRUPTED;
->>> -		f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
->>>    		goto sync_out;
->>>    	}
->>> @@ -2166,8 +2157,6 @@ static int f2fs_read_single_page(struct inode *inode, struct page *page,
->>>    		if (!f2fs_is_valid_blkaddr(F2FS_I_SB(inode), block_nr,
->>>    						DATA_GENERIC_ENHANCE_READ)) {
->>>    			ret = -EFSCORRUPTED;
->>> -			f2fs_handle_error(F2FS_I_SB(inode),
->>> -						ERROR_INVALID_BLKADDR);
->>>    			goto out;
->>>    		}
->>>    	} else {
->>> @@ -2707,11 +2696,8 @@ int f2fs_do_write_data_page(struct f2fs_io_info *fio)
->>>    	    f2fs_lookup_read_extent_cache_block(inode, page->index,
->>>    						&fio->old_blkaddr)) {
->>>    		if (!f2fs_is_valid_blkaddr(fio->sbi, fio->old_blkaddr,
->>> -						DATA_GENERIC_ENHANCE)) {
->>> -			f2fs_handle_error(fio->sbi,
->>> -						ERROR_INVALID_BLKADDR);
->>> +						DATA_GENERIC_ENHANCE))
->>>    			return -EFSCORRUPTED;
->>> -		}
->>>    		ipu_force = true;
->>>    		fio->need_lock = LOCK_DONE;
->>> @@ -2739,7 +2725,6 @@ int f2fs_do_write_data_page(struct f2fs_io_info *fio)
->>>    		!f2fs_is_valid_blkaddr(fio->sbi, fio->old_blkaddr,
->>>    						DATA_GENERIC_ENHANCE)) {
->>>    		err = -EFSCORRUPTED;
->>> -		f2fs_handle_error(fio->sbi, ERROR_INVALID_BLKADDR);
->>>    		goto out_writepage;
->>>    	}
->>> @@ -3706,7 +3691,6 @@ static int f2fs_write_begin(struct file *file, struct address_space *mapping,
->>>    		if (!f2fs_is_valid_blkaddr(sbi, blkaddr,
->>>    				DATA_GENERIC_ENHANCE_READ)) {
->>>    			err = -EFSCORRUPTED;
->>> -			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
->>>    			goto fail;
->>>    		}
->>>    		err = f2fs_submit_page_read(use_cow ?
->>> diff --git a/fs/f2fs/extent_cache.c b/fs/f2fs/extent_cache.c
->>> index ad8dfac7..48048fa 100644
->>> --- a/fs/f2fs/extent_cache.c
->>> +++ b/fs/f2fs/extent_cache.c
->>> @@ -43,7 +43,6 @@ bool sanity_check_extent_cache(struct inode *inode)
->>>    	if (!f2fs_is_valid_blkaddr(sbi, ei->blk, DATA_GENERIC_ENHANCE) ||
->>>    	    !f2fs_is_valid_blkaddr(sbi, ei->blk + ei->len - 1,
->>>    					DATA_GENERIC_ENHANCE)) {
->>> -		set_sbi_flag(sbi, SBI_NEED_FSCK);
->>>    		f2fs_warn(sbi, "%s: inode (ino=%lx) extent info [%u, %u, %u] is incorrect, run fsck to fix",
->>>    			  __func__, inode->i_ino,
->>>    			  ei->blk, ei->fofs, ei->len);
->>> @@ -856,10 +855,8 @@ static int __get_new_block_age(struct inode *inode, struct extent_info *ei,
->>>    		goto out;
->>>    	if (__is_valid_data_blkaddr(blkaddr) &&
->>> -	    !f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE)) {
->>> -		f2fs_bug_on(sbi, 1);
->>> +	    !f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE))
->>>    		return -EINVAL;
->>> -	}
->>>    out:
->>>    	/*
->>>    	 * init block age with zero, this can happen when the block age extent
->>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
->>> index 25b119cf..23cd6a1 100644
->>> --- a/fs/f2fs/file.c
->>> +++ b/fs/f2fs/file.c
->>> @@ -593,10 +593,8 @@ void f2fs_truncate_data_blocks_range(struct dnode_of_data *dn, int count)
->>>    			if (time_to_inject(sbi, FAULT_BLKADDR_CONSISTENCE))
->>>    				continue;
->>>    			if (!f2fs_is_valid_blkaddr_raw(sbi, blkaddr,
->>> -						DATA_GENERIC_ENHANCE)) {
->>> -				f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
->>> +						DATA_GENERIC_ENHANCE))
->>>    				continue;
->>> -			}
->>>    			if (compressed_cluster)
->>>    				valid_blocks++;
->>>    		}
->>> @@ -1196,7 +1194,6 @@ static int __read_out_blkaddrs(struct inode *inode, block_t *blkaddr,
->>>    			!f2fs_is_valid_blkaddr(sbi, *blkaddr,
->>>    					DATA_GENERIC_ENHANCE)) {
->>>    			f2fs_put_dnode(&dn);
->>> -			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
->>>    			return -EFSCORRUPTED;
->>>    		}
->>> @@ -1482,7 +1479,6 @@ static int f2fs_do_zero_range(struct dnode_of_data *dn, pgoff_t start,
->>>    		if (!f2fs_is_valid_blkaddr(sbi, dn->data_blkaddr,
->>>    					DATA_GENERIC_ENHANCE)) {
->>>    			ret = -EFSCORRUPTED;
->>> -			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
->>>    			break;
->>>    		}
->>> @@ -3442,10 +3438,8 @@ static int release_compress_blocks(struct dnode_of_data *dn, pgoff_t count)
->>>    		if (!__is_valid_data_blkaddr(blkaddr))
->>>    			continue;
->>>    		if (unlikely(!f2fs_is_valid_blkaddr(sbi, blkaddr,
->>> -					DATA_GENERIC_ENHANCE))) {
->>> -			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
->>> +					DATA_GENERIC_ENHANCE)))
->>>    			return -EFSCORRUPTED;
->>> -		}
->>>    	}
->>>    	while (count) {
->>> @@ -3607,10 +3601,8 @@ static int reserve_compress_blocks(struct dnode_of_data *dn, pgoff_t count)
->>>    		if (!__is_valid_data_blkaddr(blkaddr))
->>>    			continue;
->>>    		if (unlikely(!f2fs_is_valid_blkaddr(sbi, blkaddr,
->>> -					DATA_GENERIC_ENHANCE))) {
->>> -			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
->>> +					DATA_GENERIC_ENHANCE)))
->>>    			return -EFSCORRUPTED;
->>> -		}
->>>    	}
->>>    	while (count) {
->>> @@ -3894,8 +3886,6 @@ static int f2fs_sec_trim_file(struct file *filp, unsigned long arg)
->>>    						DATA_GENERIC_ENHANCE)) {
->>>    				ret = -EFSCORRUPTED;
->>>    				f2fs_put_dnode(&dn);
->>> -				f2fs_handle_error(sbi,
->>> -						ERROR_INVALID_BLKADDR);
->>>    				goto out;
->>>    			}
->>> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
->>> index a079eeb..30e93d8 100644
->>> --- a/fs/f2fs/gc.c
->>> +++ b/fs/f2fs/gc.c
->>> @@ -1197,7 +1197,6 @@ static int ra_data_block(struct inode *inode, pgoff_t index)
->>>    		if (unlikely(!f2fs_is_valid_blkaddr(sbi, dn.data_blkaddr,
->>>    						DATA_GENERIC_ENHANCE_READ))) {
->>>    			err = -EFSCORRUPTED;
->>> -			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
->>>    			goto put_page;
->>>    		}
->>>    		goto got_it;
->>> @@ -1216,7 +1215,6 @@ static int ra_data_block(struct inode *inode, pgoff_t index)
->>>    	if (unlikely(!f2fs_is_valid_blkaddr(sbi, dn.data_blkaddr,
->>>    						DATA_GENERIC_ENHANCE))) {
->>>    		err = -EFSCORRUPTED;
->>> -		f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
->>>    		goto put_page;
->>>    	}
->>>    got_it:
->>> diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
->>> index aad1d1a..289c0bf 100644
->>> --- a/fs/f2fs/recovery.c
->>> +++ b/fs/f2fs/recovery.c
->>> @@ -693,14 +693,12 @@ static int do_recover_data(struct f2fs_sb_info *sbi, struct inode *inode,
->>>    		if (__is_valid_data_blkaddr(src) &&
->>>    			!f2fs_is_valid_blkaddr(sbi, src, META_POR)) {
->>>    			err = -EFSCORRUPTED;
->>> -			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
->>>    			goto err;
->>>    		}
->>>    		if (__is_valid_data_blkaddr(dest) &&
->>>    			!f2fs_is_valid_blkaddr(sbi, dest, META_POR)) {
->>>    			err = -EFSCORRUPTED;
->>> -			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
->>>    			goto err;
->>>    		}
->>> @@ -755,8 +753,6 @@ static int do_recover_data(struct f2fs_sb_info *sbi, struct inode *inode,
->>>    				f2fs_err(sbi, "Inconsistent dest blkaddr:%u, ino:%lu, ofs:%u",
->>>    					dest, inode->i_ino, dn.ofs_in_node);
->>>    				err = -EFSCORRUPTED;
->>> -				f2fs_handle_error(sbi,
->>> -						ERROR_INVALID_BLKADDR);
->>>    				goto err;
->>>    			}
->>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->>> index 7901ede..ad6511f 100644
->>> --- a/fs/f2fs/segment.c
->>> +++ b/fs/f2fs/segment.c
->>> @@ -334,8 +334,6 @@ static int __f2fs_commit_atomic_write(struct inode *inode)
->>>    					DATA_GENERIC_ENHANCE)) {
->>>    				f2fs_put_dnode(&dn);
->>>    				ret = -EFSCORRUPTED;
->>> -				f2fs_handle_error(sbi,
->>> -						ERROR_INVALID_BLKADDR);
->>>    				goto out;
->>>    			}
+adam
+>
+> Regards,
+>   Marco
+>
+> >
+> > > +       }, {
+> > > +               24000000, {
+> > > +                       0x00, 0xd1, 0x50, 0xf0, 0x00, 0x00, 0x80, 0x0=
+0,
+> > > +                       0x4f, 0x30, 0x33, 0x65, 0x00, 0x01, 0x25, 0x8=
+0,
+> > > +                       0x6c, 0xf2, 0x67, 0x00, 0x10, 0x8f, 0x30, 0x3=
+2,
+> > > +                       0x60, 0x8f, 0x00, 0x00, 0x08, 0x00, 0x00, 0x0=
+0,
+> > > +                       0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0=
+0,
+> > > +                       0x00, 0xe0, 0x83, 0x0f, 0x3e, 0xf8, 0x00, 0x0=
+0,
+> > > +               },
+> >
+> >
+> > --
+> > With best wishes
+> > Dmitry
+> >
+> >
 
