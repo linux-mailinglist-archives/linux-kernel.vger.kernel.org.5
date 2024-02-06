@@ -1,142 +1,128 @@
-Return-Path: <linux-kernel+bounces-54297-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54298-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45E8884AD6F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 05:29:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8678384AD72
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 05:30:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E65961F24ACB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:29:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CBC31C23D0F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:30:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895B174E0A;
-	Tue,  6 Feb 2024 04:29:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E864C208CF;
+	Tue,  6 Feb 2024 04:30:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="nrVR97I6"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="RYcWZi1b"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6228B74E06;
-	Tue,  6 Feb 2024 04:28:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 740A12D052;
+	Tue,  6 Feb 2024 04:30:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707193739; cv=none; b=UJqbVPEg9m43FENsmv9PFxyU6OO18We/wVg6vUh8Jz9Hoi/0Tayq5HS0ocEf10FFw3b14pdYves+KfJb1KM+XSVCRyrh9jJN0onaG9bDiCqsThVFhWTYA2EvC0swcW+OMevmGpHozti/sTFIwEmxuJHfgiUpcN7gB3uSCBULHY0=
+	t=1707193806; cv=none; b=cMj3ZKtCSo0I+gcz4spKMjfR28ot9Yx+m0y46db47foYMPDcXd8P0SSEeeKTRC4wKoxQq9VEGevYcEuk+FXYMMdVJUYYaS5JTfcYj0nKjtkqrEwgIQLELd+oM/ZUxXKH9fCk4UPc9vPguXGzZ0nbLsfd+1hreG4U+oMjmqbIPWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707193739; c=relaxed/simple;
-	bh=Zy0GF+e5VWhkJg3CITxJZKjoEMKdDZ/8GzFJf7bPyeI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=XOMBuDXgwZ3kopbEPHDI8TPrYVx8+2RykrHahpwbiggzftheoHO5A9jEhgB3rcn3iq6h3zdLJr2KJzgz/COO0OrNZboBbqOSOsnxQmSEfq+FSXmo0GXyx3lTpl1Q6nSWzy9Vd2Q1Bkg9s0T00347J0gYUr4OZAbbwIrpbiVhQxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=nrVR97I6; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1707193733;
-	bh=dnMjULAeQjKUoGmPRhe1coGuGskZaD6h8z3MIPfgPs8=;
-	h=Date:From:To:Cc:Subject:From;
-	b=nrVR97I6Ea2OifH65kdK3jSc8ubBFbjquHicHDGHI4TXr5CbSa+P84H03RuJ30ILS
-	 OZITWgA7quRjZL/ld+8mqUB2U4r1mqoJ2+W3NzbpPys0Z0Fq8hC+CqUNIyCAQATlIj
-	 kG3QY+I0wNckDkDvNq0qaTvHms6Faq2ysNnYZ6DUF0PK3diLRuN49C4C7BQHgxYFsF
-	 QEbWbKqo8W9VH+zW32pRgODvCZ8N5NvMzJCz3Hn5mXexLdMNYiCNHArSRV4juaiktx
-	 kJp4xKR4fMbe7aOUAgMAZ3QSOOZZEbNap7BxMP2KorgoKXrTxc+D2jsLtVqKMoma9H
-	 3FMHLMtM1etRA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TTVch6nrBz4wcC;
-	Tue,  6 Feb 2024 15:28:52 +1100 (AEDT)
-Date: Tue, 6 Feb 2024 15:28:50 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>, Somalapuram
- Amaranath <Amaranath.Somalapuram@amd.com>, Intel Graphics
- <intel-gfx@lists.freedesktop.org>, DRI <dri-devel@lists.freedesktop.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the drm-misc tree
-Message-ID: <20240206152850.333f620d@canb.auug.org.au>
+	s=arc-20240116; t=1707193806; c=relaxed/simple;
+	bh=Zx+YKhvERm1JcAJVLFA4638UBYYXTDFqTFzZieNLA+o=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=CO95OmiNzYh28lO1uml00Z8TuPdgeRnKcic2zqprKRjqs3b0eK4fZKMvotO3YPcL46zWCy+F6J6uvri3pclJPe6vdoA2ajR8CeZCiRqrMAUNemytN0FZWnPXSNHN5CfMjyrckLDejuW1otat3CNbymLq6+ZfV3pq3dENbGHTec0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=RYcWZi1b; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4164Tpsa087778;
+	Mon, 5 Feb 2024 22:29:51 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707193791;
+	bh=A6BXY1U52Np3UNS4Lqr7bF3Hqk1NGFiDx+Tx0WfLMBQ=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=RYcWZi1b2OXhGhucmDVISejzB1s0U6XmkYH8AtGJoIE9YtoXXA2kpZ5CJolRjIK9J
+	 okKyWA2hyFNnqLUeMms9L+rrrEbaM9ng/DJbTj3Svo3yDlqdJwQAxp9CCtvwXJsCgt
+	 YqQEFdKCREAgv3b2kzHRRBsqUWqYmEOpDiYM0II8=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4164TpaK121051
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 5 Feb 2024 22:29:51 -0600
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 5
+ Feb 2024 22:29:51 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 5 Feb 2024 22:29:51 -0600
+Received: from uda0132425.dhcp.ti.com (uda0132425.dhcp.ti.com [172.24.227.94])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4164TlRM083629;
+	Mon, 5 Feb 2024 22:29:48 -0600
+From: Vignesh Raghavendra <vigneshr@ti.com>
+To: <linux-arm-kernel@lists.infradead.org>,
+        Sjoerd Simons
+	<sjoerd@collabora.com>
+CC: Vignesh Raghavendra <vigneshr@ti.com>, <kernel@collabora.com>,
+        Conor
+ Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Rob Herring
+	<robh+dt@kernel.org>,
+        Tero Kristo <kristo@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/2] Set boot tags for the usb0 port of AM62x SK and Beagleplay
+Date: Tue, 6 Feb 2024 09:59:10 +0530
+Message-ID: <170719349980.2245010.13978940073133357464.b4-ty@ti.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240112091745.1896922-1-sjoerd@collabora.com>
+References: <20240112091745.1896922-1-sjoerd@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/3Y6MoHeU/vcVg9/l.X7hCZH";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
---Sig_/3Y6MoHeU/vcVg9/l.X7hCZH
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Sjoerd Simons,
 
-Hi all,
+On Fri, 12 Jan 2024 10:17:06 +0100, Sjoerd Simons wrote:
+> The AM62x SoC can be booted from the first USB port using DFU. Set the
+> relevant boot tags for both
+> 
+> 
+> Sjoerd Simons (2):
+>   arm64: dts: ti: k3-am625-sk: Add boot phase tags for USB0
+>   arm64: dts: ti: k3-am625-beagleplay: Add boot phase tags for USB0
+> 
+> [...]
 
-After merging the drm-misc tree, today's linux-next build (i386 defconfig)
-failed like this:
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
 
-In function 'i915_ttm_placement_from_obj',
-    inlined from 'i915_ttm_get_pages' at drivers/gpu/drm/i915/gem/i915_gem_=
-ttm.c:847:2:
-drivers/gpu/drm/i915/gem/i915_gem_ttm.c:165:18: error: 'places[0].flags' is=
- used uninitialized [-Werror=3Duninitialized]
-  165 |         places[0].flags |=3D TTM_PL_FLAG_DESIRED;
-      |         ~~~~~~~~~^~~~~~
-drivers/gpu/drm/i915/gem/i915_gem_ttm.c: In function 'i915_ttm_get_pages':
-drivers/gpu/drm/i915/gem/i915_gem_ttm.c:837:26: note: 'places' declared here
-  837 |         struct ttm_place places[I915_TTM_MAX_PLACEMENTS + 1];
-      |                          ^~~~~~
+[1/2] arm64: dts: ti: k3-am625-sk: Add boot phase tags for USB0
+      commit: 524c8086a453b8df1002c1ccfa9f99589761fc80
+[2/2] arm64: dts: ti: k3-am625-beagleplay: Add boot phase tags for USB0
+      commit: f7d2844d848f8836e6a7923e3ea426f7be4f38d1
 
-Caused by commit
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-  a78a8da51b36 ("drm/ttm: replace busy placement with flags v6")
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-I applied the following hack for today:
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Tue, 6 Feb 2024 15:17:54 +1100
-Subject: [PATCH] drm/ttm: initialise places
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/gpu/drm/i915/gem/i915_gem_ttm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
+--
+Vignesh
 
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_ttm.c b/drivers/gpu/drm/i915=
-/gem/i915_gem_ttm.c
-index 80c6cafc8887..34e699e67c25 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_ttm.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_ttm.c
-@@ -834,7 +834,7 @@ static int __i915_ttm_get_pages(struct drm_i915_gem_obj=
-ect *obj,
-=20
- static int i915_ttm_get_pages(struct drm_i915_gem_object *obj)
- {
--	struct ttm_place places[I915_TTM_MAX_PLACEMENTS + 1];
-+	struct ttm_place places[I915_TTM_MAX_PLACEMENTS + 1] =3D {};
- 	struct ttm_placement placement;
-=20
- 	/* restricted by sg_alloc_table */
---=20
-2.43.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/3Y6MoHeU/vcVg9/l.X7hCZH
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXBtYIACgkQAVBC80lX
-0GxSHwf7B3D9Ebe7H+C1S84E/g/hlQwxf+jo8X+m4cEWbMKvzTuloTlIBADoL93W
-E4SolMFUwtAQtuAPTJIfJPfCwFGxPBUbqpY3cTzA6rBM6XHvLMjQLPubfeZoX6oB
-u0YtbT36l7g+26YUvQdz6FtFlA+X5A+bpVnX0KP1+sw6yhTNqRZEFjxoEvIeIMt+
-EUOkKoSO6lcokZTcWVWQxiBDPGHFXW+jyzj9JcEI0i0FbcEmvYbUz25NXDSeU6PJ
-3xAxI06Fe2ONdboipZyjWMnZNUO3iy24Wsp4RQ3eYLoL5QWYP8tgrTesTTaA8eyY
-WSqEqGwjt8cAeuR5aDcEoeSW116FbA==
-=rfsv
------END PGP SIGNATURE-----
-
---Sig_/3Y6MoHeU/vcVg9/l.X7hCZH--
 
