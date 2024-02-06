@@ -1,149 +1,102 @@
-Return-Path: <linux-kernel+bounces-55598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 460BB84BEB2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:29:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5763684BEB9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:33:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 210F1B228AF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:29:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1549628959D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:33:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C83E17BCF;
-	Tue,  6 Feb 2024 20:29:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73C8D1B80B;
+	Tue,  6 Feb 2024 20:33:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="xPb8YK/p"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="K0UR7+ei"
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 992FE17BA0;
-	Tue,  6 Feb 2024 20:29:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 981C31B800
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 20:33:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707251381; cv=none; b=ilCUY9X4mNqYXFF4OAy9JqZGIWZndofB0NbEgCRRytgTfZN1D+LG30AIG/cIq+1h/Ixboifq01M5vMATj768pEMreG9aeg44y0mI+7doumVOIQHLrpasRjcuEcD1V8nbZUpBKYursokD8Sh1youPN6gmOcATbvaUOf2bG2Jdn+w=
+	t=1707251608; cv=none; b=aUpUsXbYCU71MVkfyy7VuRxwMwYeURjCFfdLLfP/6aoCIPB8BkJoQiRWWv0SmbdA/JxJoUxHBsb+Gs7tCzq2Dp4NnLNwNUvguSyhQ/Iy1sqAPiad5FQpfPMqxSlStIF7rGk6TMLJ6MQM7lILkQ2FtyDCTClPL+sZiGXkU5Y69Xs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707251381; c=relaxed/simple;
-	bh=Cv3/fApky2dxdbAPQhPaduQHBrTiKI4IDLOmiw5VP2Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iwpfSmdnAAv+W4+oEydHHKCA/ORii0SZa+Q3cB7Q5LhCDIpKWVfHlvD4XEb2SyPSOeuDv1jeIRWca0K77m9JI3r9Vk4fOKoTh+tZ+mePXW3r7J4aVA2vTYOfdQNhOv7zLm1UWzs0aMjo0YLgyYP2SYyKAAkgd96MV36grRQvOO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=xPb8YK/p; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=g6B5BxwmsGyW+u9yeLS9SldYEcDJxD1IImH874f49+s=; b=xPb8YK/pn7c8wIJFp5mvckBcTk
-	ab3gmZx00G4IBmY8oFTdEHsPyeJh6dGmqzr1UuWad3J9zV7k8rw0eh9Ce/NubzvCy9exKgqabkQXh
-	DwWeIxueUouFZ1LrIJZ6NsG+n+nEMlTG//X7wrhz1xfnLsGtJpquoOCLee8vpuuHkohROBC5PpBRB
-	Zy8/uG5K1h6oQ9MgcRpxEyZocKW9k+XYZJxx+Ry+6otIp34FF9tIIGdVAAP3G+MYxH7Xzd93RTOhc
-	pkZAL4jXBvq5n0c7kM+MuV3bd27MF5yv1ROFsn5VTZBjqj/NPkpxOrZt45yrI3mps5GQtcd3hlprR
-	IJEnbYCw==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rXS4W-00000008oSt-3BVq;
-	Tue, 06 Feb 2024 20:29:36 +0000
-Message-ID: <865af278-e7c1-4e62-83ce-56f7ce6f7aba@infradead.org>
-Date: Tue, 6 Feb 2024 12:29:36 -0800
+	s=arc-20240116; t=1707251608; c=relaxed/simple;
+	bh=MPYoHxeKPCnc9gpbdDoN3NGU8IjyGGLHn+vuIM5QKh4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=rAd3nu7uccijYKrqiTOFR3pHD+CeNoDiqVAGjEqvqkLBvYLRT6n5BGjRxNqPE5TeylqsBWoqttVudYJhG3VhB3REvCnYSaBCPdOoM9Tysar2cVYZsfrW4uIuLSAXGYLMFAk8/A7iTGgZmgpfkXBeppUyz3edOvQam/kcmDe6iSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=K0UR7+ei; arc=none smtp.client-ip=209.85.210.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6e12b58a3beso564101a34.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 12:33:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707251604; x=1707856404; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ubZDa4GWwL/GMCOFFCbm4p521hfLHa5fIJTQTEH+mC4=;
+        b=K0UR7+eiRyU6G3jpRDUeWqAu7iC/OISFVgQBtg7w2V5NI4mzdkIw3y0MBNU3an8chS
+         ki36mByrOjRfjDvrGWFaWGgueP2sx3eo0JkibrmTDKSfPYkf6oAOWLSv7yEAuvcx86fM
+         r41SCGdSF4bQd5Gnu7jWXp0EGODdjAcnZ7v5g940zhUSdwFRPQUqs6P1FTmNAqzR35oR
+         a9WL1phrDOH5Sjcgdm9PWEbrawM7KMlIkhy/vkjSd060SLZ5v/BJCPmHRHTNYWYHcxBM
+         bizAp8pZ/RowrZ4XdJ4TCAO6F6T/Ryk+Gkby3iARdUm+n7bAQk1qGvH9UoyMmsqUwHO3
+         aEew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707251604; x=1707856404;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ubZDa4GWwL/GMCOFFCbm4p521hfLHa5fIJTQTEH+mC4=;
+        b=lzwumuyvbe//0R8ZYTTCTZpTIPqO/OqMoXc8J0FhkGGHlvitGe0MpmTrYoFMMjbW7O
+         LlNwS6HbrQPRwJuFkT4dG7yFU2PJJUquxl1Ynfh9oJktxln5oyYoTuw/nDZsrEJ1u4mn
+         qIVwDWH2ZYXMvPgk4QQ5nDTe84/0GVCQgY0OygVlqBmr0ID6tnIspwSjjliUeCInwh6j
+         sSs3UWvuzEQ374x4rwq8SzV/n2BvT2IiKTtgVxJMuBiVRhF+J/o5Xep+EOK3xEvhxlBv
+         eAjQkku7nca11bndF91BB8tkG9vjRaS8JRo9tHHAQ4osu3NMSrPs3CDnYxUSNs4oDgYO
+         rpNg==
+X-Gm-Message-State: AOJu0YzGUhEQkxHCpbnJskxicXxgUoF+okUB8c/WElbSiOAB+WfKzI/j
+	jElYhPJP0sW92mj5tm8g0/9KnxkOWU90m+C2G99PYrtkVodgQ6KATAOFKzf8zuA=
+X-Google-Smtp-Source: AGHT+IF0MmuI1nUFe/V6BG088Po9XJTU/8bWeJ/mJ+JIYIErtoYQg1qL7uENnk68DxBaPoLm840gHA==
+X-Received: by 2002:a05:6830:2b07:b0:6dd:e52e:1f53 with SMTP id l7-20020a0568302b0700b006dde52e1f53mr4437162otv.11.1707251604638;
+        Tue, 06 Feb 2024 12:33:24 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUc4QlC/D04/jFnLNY7nLmAqLbKweCSCNCkkSvJLolyaHb2T9nN3NySWtiFf98CM5bizcVXIkRpJ5ju+e4aKC/BUwjYjtiS+hFiXyY+Ssi2QCiXvux8G46o3V9eXGaqeCPosPvinboR3YCxzR22EfPPRimG/cP0Rg11U4+C9opdgaIkukQ6yFYV1MeTNyz6PyRJ8w==
+Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
+        by smtp.gmail.com with ESMTPSA id l2-20020a05683016c200b006e11d93ff09sm429581otr.72.2024.02.06.12.33.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 12:33:24 -0800 (PST)
+From: David Lechner <dlechner@baylibre.com>
+To: linux-spi@vger.kernel.org
+Cc: David Lechner <dlechner@baylibre.com>,
+	Mark Brown <broonie@kernel.org>,
+	Michael Hennerich <michael.hennerich@analog.com>,
+	=?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] spi: axi-spi-engine: performance improvements
+Date: Tue,  6 Feb 2024 14:31:26 -0600
+Message-ID: <20240206-axi-spi-engine-round-2-1-v1-0-ea6eeb60f4fb@baylibre.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/7] fs: FS_IOC_GETUUID
-Content-Language: en-US
-To: Kent Overstreet <kent.overstreet@linux.dev>, brauner@kernel.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Jan Kara <jack@suse.cz>, Dave Chinner <dchinner@redhat.com>,
- "Darrick J. Wong" <djwong@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
- linux-fsdevel@vger.kernel.or
-References: <20240206201858.952303-1-kent.overstreet@linux.dev>
- <20240206201858.952303-4-kent.overstreet@linux.dev>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240206201858.952303-4-kent.overstreet@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Mailer: b4 0.12.4
+Content-Transfer-Encoding: 8bit
 
+While researching potential performance improvements in the core SPI
+code, we found a few low-hanging opportunities for improvements in the
+AXI SPI Engine driver.
 
+---
+David Lechner (2):
+      spi: axi-spi-engine: remove use of ida for sync id
+      spi: axi-spi-engine: move msg finalization out of irq handler
 
-On 2/6/24 12:18, Kent Overstreet wrote:
-> Add a new generic ioctls for querying the filesystem UUID.
-> 
-> These are lifted versions of the ext4 ioctls, with one change: we're not
-> using a flexible array member, because UUIDs will never be more than 16
-> bytes.
-> 
-> This patch adds a generic implementation of FS_IOC_GETFSUUID, which
-> reads from super_block->s_uuid. We're not lifting SETFSUUID from ext4 -
-> that can be done on offline filesystems by the people who need it,
-> trying to do it online is just asking for too much trouble.
-> 
-> Cc: Christian Brauner <brauner@kernel.org>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: Dave Chinner <dchinner@redhat.com>
-> Cc: "Darrick J. Wong" <djwong@kernel.org>
-> Cc: Theodore Ts'o <tytso@mit.edu>
-> Cc: linux-fsdevel@vger.kernel.or
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> ---
->  fs/ioctl.c              | 16 ++++++++++++++++
->  include/uapi/linux/fs.h | 17 +++++++++++++++++
->  2 files changed, 33 insertions(+)
-> 
-
-
-> diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
-> index 48ad69f7722e..16a6ecadfd8d 100644
-> --- a/include/uapi/linux/fs.h
-> +++ b/include/uapi/linux/fs.h
-> @@ -64,6 +64,19 @@ struct fstrim_range {
->  	__u64 minlen;
->  };
->  
-> +/*
-> + * We include a length field because some filesystems (vfat) have an identifier
-> + * that we do want to expose as a UUID, but doesn't have the standard length.
-> + *
-> + * We use a fixed size buffer beacuse this interface will, by fiat, never
-
-                                 because
-
-> + * support "UUIDs" longer than 16 bytes; we don't want to force all downstream
-> + * users to have to deal with that.
-> + */
-> +struct fsuuid2 {
-> +	__u8	len;
-> +	__u8	uuid[16];
-> +};
-> +
->  /* extent-same (dedupe) ioctls; these MUST match the btrfs ioctl definitions */
->  #define FILE_DEDUPE_RANGE_SAME		0
->  #define FILE_DEDUPE_RANGE_DIFFERS	1
-> @@ -190,6 +203,9 @@ struct fsxattr {
->   * (see uapi/linux/blkzoned.h)
->   */
->  
-> +/* Returns the external filesystem UUID, the same one blkid returns */
-> +#define FS_IOC_GETFSUUID		_IOR(0x12, 142, struct fsuuid2)
-> +
->  #define BMAP_IOCTL 1		/* obsolete - kept for compatibility */
->  #define FIBMAP	   _IO(0x00,1)	/* bmap access */
->  #define FIGETBSZ   _IO(0x00,2)	/* get the block size used for bmap */
-> @@ -198,6 +214,7 @@ struct fsxattr {
->  #define FITRIM		_IOWR('X', 121, struct fstrim_range)	/* Trim */
->  #define FICLONE		_IOW(0x94, 9, int)
->  #define FICLONERANGE	_IOW(0x94, 13, struct file_clone_range)
-> +
->  #define FIDEDUPERANGE	_IOWR(0x94, 54, struct file_dedupe_range)
-
-Why the additional blank line? (nit)
-
->  
->  #define FSLABEL_MAX 256	/* Max chars for the interface; each fs may differ */
-
--- 
-#Randy
+ drivers/spi/spi-axi-spi-engine.c | 67 +++++++++++++---------------------------
+ 1 file changed, 21 insertions(+), 46 deletions(-)
+---
+base-commit: 80fa6a033ac8c395a3de4840e204638e92b8b371
+change-id: 20240206-axi-spi-engine-round-2-1-bb73990abac3
 
