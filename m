@@ -1,149 +1,141 @@
-Return-Path: <linux-kernel+bounces-55625-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55626-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 786E784BF2B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:25:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E26884BF30
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:28:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B7111F252F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:25:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01428288E12
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:28:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17E391B95B;
-	Tue,  6 Feb 2024 21:25:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B383E1B974;
+	Tue,  6 Feb 2024 21:28:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kg7PyCXe"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="TBgXOWI/"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C11D21B94C;
-	Tue,  6 Feb 2024 21:25:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D4821B81F;
+	Tue,  6 Feb 2024 21:28:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707254734; cv=none; b=pj+W58G/nTpUVqyffG0xUo9Dk/h3QWlvmIAWQEi7FrDqv+2jjFMxtt3+R4e5uzB+fdk7/ht3dGmFMpHVRqor5gMgTBqA2/9ic+G01Q7flT0daWWXWD74ZcUMYEI78EBqC98tyEH4iXvfVTIQRo75btYBEo4PvLy6HOTStRX3NgE=
+	t=1707254899; cv=none; b=Ad2G/Aphv7LlVji/Sn9Or0geWkk3mE2cGUUULEhhZh0mrqEFVAHo/0IGWPsErvfUabUp/Xgkq/7Fb3XflvHFAeEP9uJQlc1KdVaZybime5cYTtIaA0B22DzotRCaWRjBRE3QV2Oehb4GZ8unmM2T02XDCgDv8SIUD/Qr+IygeGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707254734; c=relaxed/simple;
-	bh=Syy1MLZwGxTTCjGzcJtKt49dnx/gi9kybwgAMuY3iWo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Q4kjKJBMhpxmNxD9kc6FRTJUvBeQTZapg416o3GU8vObFDQXwD41Fk6tFbK9oqiF4ZNoysLmuMr+1VpPZz7egygREQjLe5Sl+zuockzfqp/lLXzmNtG7Sj2sHIWGL+HPKBVR1vL9D3o61PBGsKXEe0EuMOD/ugbP9sXgT0ElZDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kg7PyCXe; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707254732; x=1738790732;
-  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=Syy1MLZwGxTTCjGzcJtKt49dnx/gi9kybwgAMuY3iWo=;
-  b=kg7PyCXe/255fWSgoAtewt12SeuRM/EOtLRCZLnwh44YWYlzTJO0nCMv
-   5MneCe4TLBFT4QelaAkjeeuEKSO5fuWZze0OYsxwhucUVoXY/YF3g3G9C
-   8GCKmv5SeLlQWjgD9AO73Tp4jGTBzhgQ+RB28PTp3YQS3j0qRnvfFL7hG
-   2Uzwhbrlz8eIQu7HLjLKTMN7ALM0Y7YJQyH8slpMjmDH8asq5RNLsR9vw
-   hjNw9lOapEXFV5p2SlCkA+WpaMtoc9fmChFLYcXAa6ly98dZLztlvAgep
-   AlkIa+zDK/ryYRZWilW78z8jGiAV3CskJDcnRflC99zmyZ2TY1rsFcxt3
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="11432748"
-X-IronPort-AV: E=Sophos;i="6.05,248,1701158400"; 
-   d="scan'208";a="11432748"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 13:25:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,248,1701158400"; 
-   d="scan'208";a="5765875"
-Received: from linux.intel.com ([10.54.29.200])
-  by orviesa003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 13:25:30 -0800
-Received: from dbhadrax-mobl5.amr.corp.intel.com (unknown [10.255.229.168])
-	by linux.intel.com (Postfix) with ESMTP id AFF27580DB9;
-	Tue,  6 Feb 2024 13:25:29 -0800 (PST)
-Message-ID: <9cfc65c594deef33f24b60a66b7c78c742da7203.camel@linux.intel.com>
-Subject: Re: [PATCH v2] PCI: vmd: Enable PCI PM's L1 substates of remapped
- PCIe Root Port and NVMe
-From: "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To: Bjorn Helgaas <helgaas@kernel.org>, puranjay12@gmail.com
-Cc: Jian-Hong Pan <jhp@endlessos.org>, Johan Hovold <johan@kernel.org>, Mika
- Westerberg <mika.westerberg@linux.intel.com>, Damien Le Moal
- <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>, Nirmal Patel
- <nirmal.patel@linux.intel.com>, Jonathan Derrick
- <jonathan.derrick@linux.dev>, linux-pci@vger.kernel.org,
- linux-kernel@vger.kernel.org,  linux@endlessos.org
-Date: Tue, 06 Feb 2024 13:25:29 -0800
-In-Reply-To: <02938148545933dc9865ddbc5551e3e8a579d57e.camel@linux.intel.com>
-References: <20240205224215.GA829734@bhelgaas>
-	 <02938148545933dc9865ddbc5551e3e8a579d57e.camel@linux.intel.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1707254899; c=relaxed/simple;
+	bh=7Pm8fH+QR8eYSwznrNxCN5gHgcDM4ULOqVSCbRSf0Jo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=sl8Rx1812SBka3eRPPLK7g/c4wsy1fk3EdPbX1TL5JsYnzIdEAbstEvCLlEpRuWiKUG0lCSFkgWvJaD1xUs+tlNWx0JTkPIz74i6FF2ufvatpNKPWHEyiVqTMb9rH0hutdtAyU4XIdx70CAdJVzE8kchv6ge05lga9/zmD7B6nM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=TBgXOWI/; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 416J147h023727;
+	Tue, 6 Feb 2024 21:28:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding; s=qcppdkim1; bh=hEoSiQdSIeE/Z9h6sh8I
+	iBbAA21LDJu25KZcrFHfcvo=; b=TBgXOWI/p8bpIG6bIIoqSlFsYmKfnbG6dlyY
+	m1TdeD6wz4IWtl3vEA9zT04+StO+A+FDvgYegTSIhTVXxnjjdB+B3eI4Qf5Y0uDZ
+	DtT7p1e5LOClGCfCtfywukuBL6OMJlAIPxWI0aroeXCRjK1/x15XlmMpBkjG9cJU
+	wkwqqjkiUXoLXYvA3QsuVXjNzw/jh03Upr4Fk42Vzzhd3LVOwINTnzeFb0EegZuK
+	tiWRQpep002lUHi9q1eRj3YvdbTdAIpZMmZZq2d37sIR72qsxEwLccNkOULG2HfH
+	SEQJ21Hp5cCQcbJ8spUXI3gfsTmi2q5DX4A9hX+ebCaH/mepvw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w3hsesjav-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 06 Feb 2024 21:28:03 +0000 (GMT)
+Received: from pps.filterd (NALASPPMTA03.qualcomm.com [127.0.0.1])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 416LN76W006027;
+	Tue, 6 Feb 2024 21:27:35 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by NALASPPMTA03.qualcomm.com (PPS) with ESMTPS id 3w1ejm0rw8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 06 Feb 2024 21:27:35 +0000
+Received: from NALASPPMTA03.qualcomm.com (NALASPPMTA03.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 416LRYTD010370;
+	Tue, 6 Feb 2024 21:27:34 GMT
+Received: from hu-devc-lv-u20-a-new.qualcomm.com (hu-abchauha-lv.qualcomm.com [10.81.25.35])
+	by NALASPPMTA03.qualcomm.com (PPS) with ESMTPS id 416LRY0u010367
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 06 Feb 2024 21:27:34 +0000
+Received: by hu-devc-lv-u20-a-new.qualcomm.com (Postfix, from userid 214165)
+	id 266132207A; Tue,  6 Feb 2024 13:27:34 -0800 (PST)
+From: Abhishek Chauhan <quic_abchauha@quicinc.com>
+To: Vinod Koul <vkoul@kernel.org>, Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        Prasad Sodagudi <psodagud@quicinc.com>,
+        Andrew Halaney <ahalaney@redhat.com>, Rob Herring <robh@kernel.org>
+Cc: kernel@quicinc.com
+Subject: [PATCH v1] TSO and TBS cannot co-exist. TBS requires special descriptor to be allocated at bootup. Initialising Tx queues at probe to support TSO and TBS can help in allocating those resources at bootup.
+Date: Tue,  6 Feb 2024 13:27:34 -0800
+Message-Id: <20240206212734.1209920-1-quic_abchauha@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: lfZlG20eE5DXVv3KFTogqAoLNjZneWf9
+X-Proofpoint-GUID: lfZlG20eE5DXVv3KFTogqAoLNjZneWf9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-06_14,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 mlxlogscore=646 mlxscore=0 impostorscore=0 bulkscore=0
+ phishscore=0 clxscore=1011 spamscore=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402060150
 
-Adding Puranjay
+TX queues with TBS can support etf qdisc hw offload.
 
-On Mon, 2024-02-05 at 15:05 -0800, David E. Box wrote:
-> On Mon, 2024-02-05 at 16:42 -0600, Bjorn Helgaas wrote:
-> > On Mon, Feb 05, 2024 at 11:37:16AM -0800, David E. Box wrote:
-> > > On Fri, 2024-02-02 at 18:05 -0600, Bjorn Helgaas wrote:
-> > > > On Fri, Feb 02, 2024 at 03:11:12PM +0800, Jian-Hong Pan wrote:
-> > > ...
-> >=20
-> > > > > @@ -775,6 +773,14 @@ static int vmd_pm_enable_quirk(struct pci_de=
-v
-> > > > > *pdev,
-> > > > > void *userdata)
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pci_write_config_=
-dword(pdev, pos + PCI_LTR_MAX_SNOOP_LAT,
-> > > > > ltr_reg);
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pci_info(pdev, "V=
-MD: Default LTR value set by driver\n");
-> > > >=20
-> > > > You're not changing this part, and I don't understand exactly how L=
-TR
-> > > > works, but it makes me a little bit queasy to read "set the LTR val=
-ue
-> > > > to the maximum required to allow the deepest power management
-> > > > savings" and then we set the max snoop values to a fixed constant.
-> > > >=20
-> > > > I don't think the goal is to "allow the deepest power savings"; I
-> > > > think it's to enable L1.2 *when the device has enough buffering to
-> > > > absorb L1.2 entry/exit latencies*.
-> > > >=20
-> > > > The spec (PCIe r6.0, sec 7.8.2.2) says "Software should set this to
-> > > > the platform's maximum supported latency or less," so it seems like
-> > > > that value must be platform-dependent, not fixed.
-> > > >=20
-> > > > And I assume the "_DSM for Latency Tolerance Reporting" is part of =
-the
-> > > > way to get those platform-dependent values, but Linux doesn't actua=
-lly
-> > > > use that yet.
-> > >=20
-> > > This may indeed be the best way but we need to double check with our
-> > > BIOS folks.=C2=A0 AFAIK BIOS writes the LTR values directly so there
-> > > hasn't been a need to use this _DSM. But under VMD the ports are
-> > > hidden from BIOS which is why we added it here. I've brought up the
-> > > question internally to find out how Windows handles the DSM and to
-> > > get a recommendation from our firmware leads.
-> >=20
-> > We want Linux to be able to program LTR itself, don't we?=C2=A0 We
-> > shouldn't have to rely on firmware to do it.=C2=A0 If Linux can't do
-> > it, hot-added devices aren't going to be able to use L1.2, right?
->=20
-> Agreed. We just want to make sure we are not conflicting with what BIOS m=
-ay be
-> doing.
+Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-So the feedback is to run the _DSM and just overwrite any BIOS values. Look=
-ing
-up the _DSM I saw there was an attempt to upstream this 4 years ago [1]. I'=
-m not
-sure why the effort stalled but we can pick up this work again.
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+index 31631e3f89d0..d2f9b8f6c027 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+@@ -728,7 +728,7 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
+ 	struct stmmac_resources stmmac_res;
+ 	struct device *dev = &pdev->dev;
+ 	struct qcom_ethqos *ethqos;
+-	int ret;
++	int ret, i;
+ 
+ 	ret = stmmac_get_platform_resources(pdev, &stmmac_res);
+ 	if (ret)
+@@ -822,6 +822,10 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
+ 		plat_dat->serdes_powerdown  = qcom_ethqos_serdes_powerdown;
+ 	}
+ 
++	/*Enable TSO on queue0 and enable TBS on rest of the queues*/
++	for (i = 1; i < plat_dat->tx_queues_to_use; i++)
++		plat_dat->tx_queues_cfg[i].tbs_en = 1;
++
+ 	return devm_stmmac_pltfr_probe(pdev, plat_dat, &stmmac_res);
+ }
+ 
+-- 
+2.25.1
 
-https://patchwork.kernel.org/project/linux-pci/patch/20201015080311.7811-1-=
-puranjay12@gmail.com/
 
