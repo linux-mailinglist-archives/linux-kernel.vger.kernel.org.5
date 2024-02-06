@@ -1,94 +1,158 @@
-Return-Path: <linux-kernel+bounces-54967-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5042484B599
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:54:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9340884B59E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:54:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 838811C23C0F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:54:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FF9128884F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:54:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03231DA3F;
-	Tue,  6 Feb 2024 12:54:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAA6A12B142;
+	Tue,  6 Feb 2024 12:54:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qWR4QWFO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PIZwU5YA"
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42E7F12F396
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 12:54:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B56A78F54;
+	Tue,  6 Feb 2024 12:54:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707224045; cv=none; b=EAqgIOmQZYnRCbA2Sh8QxidSHBonzyX6n7IfTmdYZPdq2qmM9PdsPP1AqbVjpKxYACX3Ip3zKV9W4qugANsiPM5rv9Ks68LhDJClMm2bqgD26Q125TwZi4VWCG1szUxzQHb0W2CRDLYwsuHRUUsllclOZ+x2x8fw2R7pmPnUgGg=
+	t=1707224087; cv=none; b=KwsmGRkIIt5pqVaG3hhctVb5p5ozmJCLS35/t1eH68uO5UlHkbAdsf6j4jI9mjsIkfkkfCXTsUZGaEvbU7+Acd58OFeJiAmcdh9X8wxvBKMSJc0+/7OKHUah+0X99jAbwrUNaSUKr06kwZy+vFOJMDNjLjSkLs8TS/rIPzz5zh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707224045; c=relaxed/simple;
-	bh=cdzUH6nl3R9j/UmKXAGaCg7Yh03Jd0qTIFg89qeQ4RY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QLInFifkv4kTeqKkz0dB4iuHxE6F8ZJ8jzYBPcF9fX+d8ePmA3JLdCjo+LCdwADUMZrXYhe0d0CBvFwmfNUBHXB6qu5cJgZE1Elq3dpwu3YZpr5tBz4mWR+sMqo7EUGzYpVVgdutACFLO5x3Qzm7za5ghXMI89sxZRELOeVpClM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qWR4QWFO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D02FC433F1;
-	Tue,  6 Feb 2024 12:54:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707224044;
-	bh=cdzUH6nl3R9j/UmKXAGaCg7Yh03Jd0qTIFg89qeQ4RY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qWR4QWFOXlnNAtvLaAfytF3QLK7zZDjrW62fVezaT3vV0vHRKQjg7T4nw7WueHe3h
-	 Y3OOV5EEB7GW6xWsyXyJQam4k4gor3Bh9LaYp0pfLHu0j2S+FoGhWDxWnNJNgrr49U
-	 3EAQBNcKdiSP/tbpkVy2Yb95U1r0X3dUlXdFWiIhIWJNDu6s3TPX+pNZAQt+A7erQ9
-	 VcNEyUtEnMVyFcMc8w0MS58ALO+E5/39f+ZOFDyF+vd9s5ulQ4is4kd1tQ/NqpZHj/
-	 fd5DDPELMxMNbmrV5a01aB7Z5Sdz9xIuISKw9z7YAl/ZMYXzd22+SrlBOv1pF77pr5
-	 lPfFPNI2feUaw==
-From: Christian Brauner <brauner@kernel.org>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Andy Lutomirski <luto@amacapital.net>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	Tycho Andersen <tycho@tycho.pizza>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pidfd: change do_notify_pidfd() to use __wake_up(poll_to_key(EPOLLIN))
-Date: Tue,  6 Feb 2024 13:53:55 +0100
-Message-ID: <20240206-erbsen-nahverkehr-b7bc2be9fce7@brauner>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240205141348.GA16539@redhat.com>
-References: <20240205141348.GA16539@redhat.com>
+	s=arc-20240116; t=1707224087; c=relaxed/simple;
+	bh=UJK9GaRRL6kPl4S1uDuZgmL4Sfxeyuf4N9Zx7KregaQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BPKpqlyZm6r0IEoj9x/EgZewF6uc1ejcPdFKgnD0LZgJ/kqq1V04GYb+P1OboCETmg+fq0r9d2I2rYyNOPI/4WrVapRNQIAtD/BzfxJ45FXMw9CEBL2UPtWUQR4L9pEu54M8ij0utiJxJRYN+7QOI1FtIo6hLTA6EYGoajK0tjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PIZwU5YA; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5dc20645871so381918a12.1;
+        Tue, 06 Feb 2024 04:54:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707224085; x=1707828885; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0eqgiERDvSpiSPKxHB5iRsf+0A8lyd+pOORVaquNyS8=;
+        b=PIZwU5YAWUy4moHX3hLNVgYEVRBma7p0s15BPWfVV9R9KBOfLWzOHeJkXUxuS+lJhm
+         ivNo4GBiofbgSG6znqTQ7SzN4zm82zu8KhnGp8O67quURPIobD8sPvDuVpIVXqa5ViQS
+         0vEpa5ZeBp+ipAS7GSLr1LVpJ8AOA7yD0DLmWAE3SGlHkriZWIFM6sbrhrK+eGCgNLlU
+         gMX2S+TNRoEPU7La4doBfhyvNSv4+J3mSpTTNTf/akIiB4OckJqh8/cgKpRb7GCYk8ay
+         uTR+hqmhoG6ox/AgCNdhdllvqlG91jSQZVFd3zOAdGDDmKaNykS7UynYxQGAZ1mYmEUe
+         08yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707224085; x=1707828885;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0eqgiERDvSpiSPKxHB5iRsf+0A8lyd+pOORVaquNyS8=;
+        b=oP7yfxRbIWD+Wb5rzhbW1/dr/Cx1wzn7ZVIgkA0aTpIpQyp2MtVslQ2dpSHEbm2zjS
+         KYbYxgueiNQ7U1Xsj8ltU+nreBmSohS4fp6wpssgjAipkgExsCFWncWnt2+yqHrizE7W
+         UiXjk/7ZUzrRAuVhD5j8V6BYQ+ZfbmcZTPnKag4aoJ6IGbC2t9UPNyOXDQ6bNenh/5iu
+         3S4znnc8hTsbtsh5oV8anXxTSRm3x6UfNTS611nMDBkI9XowLi3nGmwldomew4ej5cYa
+         1TApL/F+J9VfcfwcQUFXJvsX+0cDxXCrsiaEup5yzHwt1MWU5tHWWsWeSZwT3NYD+CC4
+         S8mg==
+X-Gm-Message-State: AOJu0YywryI0A2+AM+cYCGf8gp2LH0fL/uJr7iT2lW/Aon8mw2oo+aUN
+	HTsWp8Pows0TW4mc6EA3feYxwA4Nhy1vgFbwCeGF18R7/zmpNWMw
+X-Google-Smtp-Source: AGHT+IE6L3CJfxfSxtvuYXs2E1wg/gin9wFyGLDNWpoQxHLmvyHWnH6GtHWi4lgGQlaDgGEXHrAZAg==
+X-Received: by 2002:a62:ce0c:0:b0:6e0:44fd:687c with SMTP id y12-20020a62ce0c000000b006e044fd687cmr3697847pfg.6.1707224084394;
+        Tue, 06 Feb 2024 04:54:44 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXR8oib6yggmJvpyZigTsA0Wi4OrDybUkU8+YBb9gaWRJXqYqywO0vE0hbEcTrPtqB5hnxTOEkqkdH37r8sle/v1RVs0JNvTf5LwFNFnyuskQ5phXZ0aHLz+UEHOF5ms7ZPOkQOoUW5p+hU/mfMudS0Ds6x/jsjLnyz1Hs6Be5XzWaNzBMgqK+yPgewtNA7iVvMasvGOeemAWXpkE7kXHS7y0V72NG8fJLyeNWfXxbGJ/8aaDI4eDE+e9JGpDuge+2YoiG3eH+sKpQLHHkn5xjuxx8l0zn4wtvI14gbNvLcMkkQYLhDKaGu2yS6qv/IT2dIy8aoZUuvOp5qy1lccW4mi3Kn+uY+OlrlTc4iyMJtKAqwXH1IA75lze43U+3991LaR7gwEp/mqK+Xq2UkXseIkbgxcWorQOgXqAGjuc/sbRwisYpCANpvr38MmabaGp3ZhSFWeoptQjnBuux3tzsckN7tTxCQ3yjVWuuEXmdm6fMRoAqb0tMmthQCIt5rCDLqAAuC2d2fm20lP1bq7Ybo7mwFG4w+2QHcIgiqsW+ry0Bp3ZSVxRP5EvZkINHoGFvXPpV/nSETb/HTu9AU8Gz24NjAa1vf7jidRaeU/0X7DskAFiIl+lysCB1h1POCPSQ9Dzppo3SkwU+cWz12oyLpPD+vQ2WSZjDzxJHqYMC2VRG4Y8rxxK4RnoDu1BaBBtrVnz98poma5JS9K9oSX1byuBO3jXuvqfZ6pYySanfeFYeb/o1/bS42fT7nRcPRNVTXrwqIDXZPv7OvhsZ7E9m/f8EH6WDWaYRppsjRNd9kYh62eMCJ0roKy26wyEnnYwYiX3B1og==
+Received: from cosmo-ubuntu-2204.dhcpserver.bu9bmc.local (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
+        by smtp.gmail.com with ESMTPSA id f10-20020a056a001aca00b006dae568baedsm1795590pfv.24.2024.02.06.04.54.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 04:54:43 -0800 (PST)
+From: Cosmo Chou <chou.cosmo@gmail.com>
+To: linux@roeck-us.net,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	jdelvare@suse.com,
+	corbet@lwn.net,
+	broonie@kernel.org,
+	naresh.solanki@9elements.com,
+	vincent@vtremblay.dev,
+	patrick.rudolph@9elements.com,
+	luca.ceresoli@bootlin.com,
+	bhelgaas@google.com,
+	festevam@denx.de,
+	alexander.stein@ew.tq-group.com,
+	heiko@sntech.de,
+	jernej.skrabec@gmail.com,
+	macromorgan@hotmail.com,
+	forbidden405@foxmail.com,
+	sre@kernel.org,
+	linus.walleij@linaro.org
+Cc: devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hwmon@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	chou.cosmo@gmail.com,
+	cosmo.chou@quantatw.com
+Subject: [PATCH v6 0/1] hwmon: Add driver for Astera Labs PT5161L retimer
+Date: Tue,  6 Feb 2024 20:54:19 +0800
+Message-Id: <20240206125420.3884300-1-chou.cosmo@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1128; i=brauner@kernel.org; h=from:subject:message-id; bh=cdzUH6nl3R9j/UmKXAGaCg7Yh03Jd0qTIFg89qeQ4RY=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQe0n5y3mmxga8Za2TWTtc8z0Wvzl+ty/M9fEl8/peEx 3b5RhvkO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACbyaivD/+BD4m9uPqryXfQw N7lL4fzyF3a92be/TPRxue5y+cua6DKGv0LiAY/7Qk5q77y5YcUax+8rn//MMTE/atb5eMb0o3N vZDACAA==
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-On Mon, 05 Feb 2024 15:13:48 +0100, Oleg Nesterov wrote:
-> rather than wake_up_all(). This way do_notify_pidfd() won't wakeup the
-> POLLHUP-only waiters which wait for pid_task() == NULL.
-> 
-> TODO:
->     - as Christian pointed out, this asks for the new wake_up_all_poll()
->       helper, it can already have other users.
-> 
-> [...]
+This driver implements support for temperature monitoring of Astera Labs
+PT5161L series PCIe retimer chips.
 
-Applied to the vfs.pidfd branch of the vfs/vfs.git tree.
-Patches in the vfs.pidfd branch should appear in linux-next soon.
+LINK: [v1] https://lore.kernel.org/all/20231205074723.3546295-1-chou.cosmo@gmail.com/
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+v6:
+  - Remove unnecessary return value checking
+  - Correct the available size for simple_read_from_buffer()
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
+v5:
+  - Fix warning and check messages of 'checkpatch --strict'
+  - Without resubmitting the applied patches
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
+v4:
+  - Rebased
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.pidfd
+v3:
+  - Revise pt5161l.rst
+  - Revise the style of comments
+  - Remove unused pec_enable
+  - Add back safe access wide registers
+  - fix build warning
 
-[1/1] pidfd: change do_notify_pidfd() to use __wake_up(poll_to_key(EPOLLIN))
-      https://git.kernel.org/vfs/vfs/c/e1358f104c9e
+v2:
+  - Add "asteralabs,pt5161l" to trivial-devices.yaml
+  - Change naming PT516XX/pt516xx to PT5161L/pt5161l
+  - Separated debugfs files for health status
+  - Revise the style of comments
+  - Remove unused defines
+  - Remove including unused header files
+  - Remove unnecessary debugging messages
+  - Revise the data parsing for a big-endian system
+  - Use read_block_data instead of accessing wide registers
+  - Remove the debugfs files when the device is unloaded
+  - Add acpi_match_table
+
+Cosmo Chou (1):
+  hwmon: Add driver for Astera Labs PT5161L retimer
+
+ Documentation/hwmon/index.rst   |   1 +
+ Documentation/hwmon/pt5161l.rst |  42 ++
+ MAINTAINERS                     |   7 +
+ drivers/hwmon/Kconfig           |  10 +
+ drivers/hwmon/Makefile          |   1 +
+ drivers/hwmon/pt5161l.c         | 667 ++++++++++++++++++++++++++++++++
+ 6 files changed, 728 insertions(+)
+ create mode 100644 Documentation/hwmon/pt5161l.rst
+ create mode 100644 drivers/hwmon/pt5161l.c
+
+-- 
+2.34.1
+
 
