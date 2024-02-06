@@ -1,219 +1,183 @@
-Return-Path: <linux-kernel+bounces-55265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55259-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FF8F84B9EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:42:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 309F584B9D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:39:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FF5C1F2273B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:42:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E08CB285074
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:39:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE3751339A2;
-	Tue,  6 Feb 2024 15:42:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF99C133982;
+	Tue,  6 Feb 2024 15:39:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="B3k903NX"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lJwtKpxX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38B05132C1B;
-	Tue,  6 Feb 2024 15:42:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0136D132C1B;
+	Tue,  6 Feb 2024 15:39:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707234163; cv=none; b=uPtcVCZLMyjA3LIeKHnLIoEKLN9W06Q6RbKlJMEL2kJd8GLV44f4vFqzj3YUzAOpiAm7tU6dvhZeqsRCHUwb5ujJ34Ri7OhIOCHPzqNcN0WyqtP7tJCEBWfxwBT5gcQT/vTHrr8WTUPiYCWDpIBgGaEK857VXPkSfx65g4DP2Tg=
+	t=1707233970; cv=none; b=icMp75xNw98bh0Vco3idyfaEGWxMIaLT1lWpsEC26hH8a4vJNzKx7nvZEJaNlF9BsxvpPy0zoqpwsHeFXmpQyGltlpA5+lT76kpIqvzwvmGD4I3gqMwkuOV1X/508aGc0jWZ0Pwi6XdO0OfF2FugH+TeF+AQ+/71ne4Dpop/a78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707234163; c=relaxed/simple;
-	bh=55QXQxJDQOG7HqlXSoDBC52tqHTe/Q36kRchCdnTUcI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tIeftYzwhHghTAGne+57+cD94WUK5Fy7JjkB41oTwBg6PXK1yVHxTp+DNVNVw3g0OLr4LGbHGIZEzJ7qcsApYsreDTdMnIM7vVf/yXdTO99AdQMUgC5ei/R3zOnXD2l6+e1VVYc5gKwDv5j+9npZhkvMBfyfeM+kPIrUGS8NEkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=B3k903NX; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707234162; x=1738770162;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=55QXQxJDQOG7HqlXSoDBC52tqHTe/Q36kRchCdnTUcI=;
-  b=B3k903NXNFGR7OTHxZ04GvCh2TKKQpsK73bQcsi2SJJDGxPVgVhbC+cn
-   fVApJWqqvpVLvo6anWzVTRxT9gzX3jaVNu9cYQrFS/C+UXdlgo1Cp+Ira
-   FwPmr8UsT4+VovhaahzB6FSe9NaUhAHHROmEvmsyZD7Rc5MNIPfwWcPfJ
-   q3plPjPKEMfx8EVdu7skb7KrzG8kQbpg+g6t4WDSdCiXBSPtD6O4b1k6w
-   Q+LU+UJwKqeyKmtemG8xJImGWE811dYIH8Yg4f/txjYv0HqfF3QVqOaIy
-   hqbmqfKsnEQ7v8Q0Z9ph/yWr3k7y+mhXQjbXP7BRZnMHmmyxg6Tb2MTE3
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="4655672"
-X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
-   d="scan'208";a="4655672"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 07:42:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
-   d="scan'208";a="32132035"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by fmviesa001.fm.intel.com with ESMTP; 06 Feb 2024 07:42:40 -0800
-Date: Tue, 6 Feb 2024 23:39:04 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, David Matlack <dmatlack@google.com>,
-	Pattara Teerapong <pteerapong@google.com>
-Subject: Re: [PATCH 7/8] KVM: x86/mmu: Alloc TDP MMU roots while holding
- mmu_lock for read
-Message-ID: <ZcJSmNRLbKacPfoq@yilunxu-OptiPlex-7050>
-References: <20240111020048.844847-1-seanjc@google.com>
- <20240111020048.844847-8-seanjc@google.com>
+	s=arc-20240116; t=1707233970; c=relaxed/simple;
+	bh=Sw9sxL8rwotSLvEI0YXtEhgz3yDEvv8z0ArKKOYw20A=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=rcHJdexD1FMpGrPR3NCETv/iCpUpGuE5Rp8l64BA6tHCoixUVG+t+5KiokktgdqQk6NfwTJIZfxRtJSAw+I9SZxM+yZFt6EH9XTNHZKhp8150isTn0C0alNPCGoloWTkAGWPoXPIrP1Veiapp9NG6G3h1QMWfYdxdYTstnuun/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lJwtKpxX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73E7AC433C7;
+	Tue,  6 Feb 2024 15:39:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707233969;
+	bh=Sw9sxL8rwotSLvEI0YXtEhgz3yDEvv8z0ArKKOYw20A=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=lJwtKpxXCVWyIxGtyzAk0eSe/KWcOkyRdn3p7XKjCgwywfRgQ8tsOII8BjWNLzFTs
+	 Ji7qSCGV0CPwo/29fWHWn/Mzbr79imv4J3RNwrRZtoop0zFb//PQSW5KohvRsfnzvE
+	 +DGqNDQfSQ82lJN3KWz072k4tBvG/P+2dyMgtRMtebmEn+nL9SqPWA2Sf/3ayfZsCL
+	 Yy5YVJDwe0AlvJf943czv4bpftcLc3j7RfU46LfnHsRHRyG2wqcqY2srqJKmJnq2zq
+	 LdEf9ixvxviaBXgYFCla9g55X/j2TvWphZxapvx8Mug3dVohlRQtwwAS0Qmr03NjmQ
+	 BtbzIOzCtdKaw==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Anup Patel <apatel@ventanamicro.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, Thomas
+ Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand
+ <frowand.list@gmail.com>, Conor Dooley <conor+dt@kernel.org>
+Cc: Anup Patel <apatel@ventanamicro.com>, devicetree@vger.kernel.org,
+ Saravana Kannan <saravanak@google.com>, Marc Zyngier <maz@kernel.org>,
+ Anup Patel <anup@brainfault.org>, linux-kernel@vger.kernel.org, Atish
+ Patra <atishp@atishpatra.org>, linux-riscv@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, Andrew Jones
+ <ajones@ventanamicro.com>
+Subject: Re: [PATCH v12 00/25] Linux RISC-V AIA Support
+In-Reply-To: <20240127161753.114685-1-apatel@ventanamicro.com>
+References: <20240127161753.114685-1-apatel@ventanamicro.com>
+Date: Tue, 06 Feb 2024 16:39:27 +0100
+Message-ID: <87h6ily53k.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240111020048.844847-8-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 10, 2024 at 06:00:47PM -0800, Sean Christopherson wrote:
-> Allocate TDP MMU roots while holding mmu_lock for read, and instead use
-> tdp_mmu_pages_lock to guard against duplicate roots.  This allows KVM to
-> create new roots without forcing kvm_tdp_mmu_zap_invalidated_roots() to
-> yield, e.g. allows vCPUs to load new roots after memslot deletion without
-> forcing the zap thread to detect contention and yield (or complete if the
-> kernel isn't preemptible).
-> 
-> Note, creating a new TDP MMU root as an mmu_lock reader is safe for two
-> reasons: (1) paths that must guarantee all roots/SPTEs are *visited* take
-> mmu_lock for write and so are still mutually exclusive, e.g. mmu_notifier
-> invalidations, and (2) paths that require all roots/SPTEs to *observe*
-> some given state without holding mmu_lock for write must ensure freshness
-> through some other means, e.g. toggling dirty logging must first wait for
-> SRCU readers to recognize the memslot flags change before processing
-> existing roots/SPTEs.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/mmu/tdp_mmu.c | 55 +++++++++++++++-----------------------
->  1 file changed, 22 insertions(+), 33 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 9a8250a14fc1..d078157e62aa 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -223,51 +223,42 @@ static void tdp_mmu_init_child_sp(struct kvm_mmu_page *child_sp,
->  	tdp_mmu_init_sp(child_sp, iter->sptep, iter->gfn, role);
->  }
->  
-> -static struct kvm_mmu_page *kvm_tdp_mmu_try_get_root(struct kvm_vcpu *vcpu)
-> -{
-> -	union kvm_mmu_page_role role = vcpu->arch.mmu->root_role;
-> -	int as_id = kvm_mmu_role_as_id(role);
-> -	struct kvm *kvm = vcpu->kvm;
-> -	struct kvm_mmu_page *root;
-> -
-> -	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, as_id) {
-> -		if (root->role.word == role.word)
-> -			return root;
-> -	}
-> -
-> -	return NULL;
-> -}
-> -
->  int kvm_tdp_mmu_alloc_root(struct kvm_vcpu *vcpu)
->  {
->  	struct kvm_mmu *mmu = vcpu->arch.mmu;
->  	union kvm_mmu_page_role role = mmu->root_role;
-> +	int as_id = kvm_mmu_role_as_id(role);
->  	struct kvm *kvm = vcpu->kvm;
->  	struct kvm_mmu_page *root;
->  
->  	/*
-> -	 * Check for an existing root while holding mmu_lock for read to avoid
-> +	 * Check for an existing root before acquiring the pages lock to avoid
->  	 * unnecessary serialization if multiple vCPUs are loading a new root.
->  	 * E.g. when bringing up secondary vCPUs, KVM will already have created
->  	 * a valid root on behalf of the primary vCPU.
->  	 */
->  	read_lock(&kvm->mmu_lock);
-> -	root = kvm_tdp_mmu_try_get_root(vcpu);
-> -	read_unlock(&kvm->mmu_lock);
->  
-> -	if (root)
-> -		goto out;
-> +	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, as_id) {
-> +		if (root->role.word == role.word)
-> +			goto out_read_unlock;
-> +	}
->  
-> -	write_lock(&kvm->mmu_lock);
+Hi Anup,
 
-It seems really complex to me...
+Anup Patel <apatel@ventanamicro.com> writes:
 
-I failed to understand why the following KVM_BUG_ON() could be avoided
-without the mmu_lock for write. I thought a valid root could be added
-during zapping.
+> The RISC-V AIA specification is ratified as-per the RISC-V international
+> process. The latest ratified AIA specifcation can be found at:
+> https://github.com/riscv/riscv-aia/releases/download/1.0/riscv-interrupts=
+-1.0.pdf
+>
+> At a high-level, the AIA specification adds three things:
+> 1) AIA CSRs
+>    - Improved local interrupt support
+> 2) Incoming Message Signaled Interrupt Controller (IMSIC)
+>    - Per-HART MSI controller
+>    - Support MSI virtualization
+>    - Support IPI along with virtualization
+> 3) Advanced Platform-Level Interrupt Controller (APLIC)
+>    - Wired interrupt controller
+>    - In MSI-mode, converts wired interrupt into MSIs (i.e. MSI generator)
+>    - In Direct-mode, injects external interrupts directly into HARTs
+>
+> For an overview of the AIA specification, refer the AIA virtualization
+> talk at KVM Forum 2022:
+> https://static.sched.com/hosted_files/kvmforum2022/a1/AIA_Virtualization_=
+in_KVM_RISCV_final.pdf
+> https://www.youtube.com/watch?v=3Dr071dL8Z0yo
 
-  void kvm_tdp_mmu_zap_invalidated_roots(struct kvm *kvm)
-  {
-	struct kvm_mmu_page *root;
+Thank you for continuing to work on this series! I like this
+direction of the series!
 
-	read_lock(&kvm->mmu_lock);
+TL;DR: I think we can get rid of most of the id/householding data
+structures, except for the irq matrix.
 
-	for_each_tdp_mmu_root_yield_safe(kvm, root) {
-		if (!root->tdp_mmu_scheduled_root_to_zap)
-			continue;
+Most of my comments are more of a design/overview nature, so I'll
+comment here in the cover letter.
 
-		root->tdp_mmu_scheduled_root_to_zap = false;
-		KVM_BUG_ON(!root->role.invalid, kvm);
+I took the series for a spin with and it with Alex' ftrace fix it,
+passes all my tests nicely!
 
-Thanks,
-Yilun
+Now some thoughts/comments (I'm coming from the x86 side of things!):
 
-> +	spin_lock(&kvm->arch.tdp_mmu_pages_lock);
->  
->  	/*
-> -	 * Recheck for an existing root after acquiring mmu_lock for write.  It
-> -	 * is possible a new usable root was created between dropping mmu_lock
-> -	 * (for read) and acquiring it for write.
-> +	 * Recheck for an existing root after acquiring the pages lock, another
-> +	 * vCPU may have raced ahead and created a new usable root.  Manually
-> +	 * walk the list of roots as the standard macros assume that the pages
-> +	 * lock is *not* held.  WARN if grabbing a reference to a usable root
-> +	 * fails, as the last reference to a root can only be put *after* the
-> +	 * root has been invalidated, which requires holding mmu_lock for write.
->  	 */
-> -	root = kvm_tdp_mmu_try_get_root(vcpu);
-> -	if (root)
-> -		goto out_unlock;
-> +	list_for_each_entry(root, &kvm->arch.tdp_mmu_roots, link) {
-> +		if (root->role.word == role.word &&
-> +		    !WARN_ON_ONCE(!kvm_tdp_mmu_get_root(root)))
-> +			goto out_spin_unlock;
-> +	}
->  
->  	root = tdp_mmu_alloc_sp(vcpu);
->  	tdp_mmu_init_sp(root, NULL, 0, role);
-> @@ -280,14 +271,12 @@ int kvm_tdp_mmu_alloc_root(struct kvm_vcpu *vcpu)
->  	 * is ultimately put by kvm_tdp_mmu_zap_invalidated_roots().
->  	 */
->  	refcount_set(&root->tdp_mmu_root_count, 2);
-> -
-> -	spin_lock(&kvm->arch.tdp_mmu_pages_lock);
->  	list_add_rcu(&root->link, &kvm->arch.tdp_mmu_roots);
-> -	spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
->  
-> -out_unlock:
-> -	write_unlock(&kvm->mmu_lock);
-> -out:
-> +out_spin_unlock:
-> +	spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
-> +out_read_unlock:
-> +	read_unlock(&kvm->mmu_lock);
->  	/*
->  	 * Note, KVM_REQ_MMU_FREE_OBSOLETE_ROOTS will prevent entering the guest
->  	 * and actually consuming the root if it's invalidated after dropping
-> -- 
-> 2.43.0.275.g3460e3d667-goog
-> 
-> 
+id/enable-tracking: There are a lot of different id/enabled tracking
+with corresponding locks, where there's IMO overlap with what the
+matrix provides.
+
+Let's start with struct imsic_priv:
+
+   | /* Dummy HW interrupt numbers */
+   | unsigned int nr_hwirqs;
+   | raw_spinlock_t hwirqs_lock;
+   | unsigned long *hwirqs_used_bitmap;
+
+These are used to for the domain routing (hwirq -> desc/virq), and not
+needed. Just use the same id as virq (at allocation time), and get rid
+of these data structures/corresponding functions. The lookup in the
+interrupt handler via imsic_local_priv.vectors doesn't care about
+hwirq. This is what x86 does... The imsic_vector roughly corresponds
+to apic_chip_data (nit: imsic_vector could have the chip_data suffix
+as well, at least it would have helped me!)
+
+Moving/affinity changes. The moving of a vector to another CPU
+currently involves:
+
+1. Allocate a new vector from the matrix
+2. Disable/enable the corresponding per-cpu ids_enabled_bitmap (nested
+   spinlocks)
+3. Trigger two IPIs to apply the bitmap
+4. On each CPU target (imsic_local_sync()) loop the bitmap and flip
+   all bits, and potentially rearm
+
+This seems a bit heavy-weight: Why are you explicitly setting/clearing
+all the bits in a loop at the local sync?
+
+x86 does it a bit differently (more lazily): The chip_data has
+prev_{cpu,vector}/move_in_progress fields, and keep both vectors
+enabled until there's an interrupt on the new vector, and then the old
+one is cleaned (irq_complete_move()).
+
+Further; When it's time to remove the old vector, x86 doesn't trigger
+an IPI on the disabling side, but queues a cleanup job on a per-cpu
+list and triggers a timeout. So, the per-cpu chip_data (per-cpu
+"vectors" in your series) can reside in two places during the transit.
+
+I wonder if this clean up is less intrusive, and you just need to
+perform what's in the per-list instead of dealing with the
+ids_enabled_bitmap? Maybe we can even remove that bitmap as well. The
+chip_data/desc has that information. This would mean that
+imsic_local_priv() would only have the local vectors (chip_data), and
+a cleanup list/timer.
+
+My general comment is that instead of having these global id-tracking
+structures, use the matrix together with some desc/chip_data local
+data, which should be sufficient.
+
+Random thought: Do we need to explicitly disable (csr) the vector,
+when we're changing the affinity? What if we just leave it enabled,
+and only when mask/unmask is performed it's actually explicitly masked
+(writes to the csr)?
+
+Missing features (which can be added later):
+* Reservation mode/activate support (allocate many MSI, but only
+  request/activate a subset)
+* Handle managed interrupts
+* There might be some irqd flags are missing, which mostly cpuhp care
+  about (e.g. irqd_*_single_target())...
+
+Finally; Given that the APLIC requires a lot more patches, depending
+on how the review process moves on -- maybe the IMSIC side could go as
+a separate series?
+
+
+Cheers,
+Bj=C3=B6rn
+
 
