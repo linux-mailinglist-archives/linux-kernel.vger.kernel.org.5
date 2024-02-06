@@ -1,171 +1,123 @@
-Return-Path: <linux-kernel+bounces-54586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5DC284B135
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:26:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A41484B13D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:27:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B960B2559F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:26:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB105284E0B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:27:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B284E12D14B;
-	Tue,  6 Feb 2024 09:26:45 +0000 (UTC)
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B9DE12D14E;
+	Tue,  6 Feb 2024 09:27:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RH4QTPNR"
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A03D112D148
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 09:26:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33BE874E2A;
+	Tue,  6 Feb 2024 09:27:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707211605; cv=none; b=SiijAt/9wUGLz8b0Bu2CU7qCPdii6RfRetJJVz4Ou+M6tHuG35aR/k7VcrndmoNFyOStBFIoX9U3orAI0jMiyT/1DNqT6cKBDSwWB/ZfDml+FIoZyoQeJMnYbJg34Zm6zwuduaUCr3ycAsJEfBf5NBHCO+XnKztqjYTc4yQJdJg=
+	t=1707211666; cv=none; b=N/b7DnPUiprO4e+M6bNYjlGJiTHYrkuGT/gW5dM1UqZxHVEQntzx+gzVHAb/ZQP/z4fcDd7NI8tb96MxcUcYf9v0SWWuybbYojer42sM49xtTT8U6/4eKLsDfhFWiOCVIjf+LC2ZXmwMchUJdUKzAl+QTPhabse0MA4q02ojksg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707211605; c=relaxed/simple;
-	bh=CUBYtXR7dZ7ul+I+hlU20jxSKtrjlcfOsGQaeCYKjRE=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=BcTa4IiU5qw0kHHBnRQQJeFEdEcLJ3S0mkFq3BJEQk+JSRgni+0alRltuRnQ8vwi2z4ksmvQV6FjJFrLlD2U+c6IX+MJxy6s3+uO2PefDn1OrKkYX052T9ovXKnKvYpry50Px9kTEdBA+ntmZdoH9UIv+lbWLWVEtN7COzp6Myo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TTd9z0Pk5z1Q8fm;
-	Tue,  6 Feb 2024 17:24:39 +0800 (CST)
-Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
-	by mail.maildlp.com (Postfix) with ESMTPS id 10280140382;
-	Tue,  6 Feb 2024 17:26:35 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.125) by
- kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 6 Feb 2024 17:26:33 +0800
-From: Peng Zhang <zhangpeng362@huawei.com>
-To: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-CC: <akpm@linux-foundation.org>, <willy@infradead.org>,
-	<ying.huang@intel.com>, <fengwei.yin@intel.com>,
-	<aneesh.kumar@linux.ibm.com>, <shy828301@gmail.com>, <hughd@google.com>,
-	<david@redhat.com>, <wangkefeng.wang@huawei.com>, <zhangpeng362@huawei.com>
-Subject: [PATCH v2] filemap: avoid unnecessary major faults in filemap_fault()
-Date: Tue, 6 Feb 2024 17:26:27 +0800
-Message-ID: <20240206092627.1421712-1-zhangpeng362@huawei.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1707211666; c=relaxed/simple;
+	bh=ITxHgj/HKver78KkpB/A9c0skZ5CAVBg6r/R2aNy218=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WkavaJYhNQJ3AMlKjoS30myrN5HdB0A9tX7vxbJsE9e74CMMbCuUdB60gNCC7j0oc3IUYB+j//DK3tj3cjd9GxPzBx938RZf2nds83stObxryGe5MHKCElY9ZYXHnIzcsyY+7wWmQ0TnLbqi8cKe9fIChI8pSY2AaP2IQP/FR2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RH4QTPNR; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e04eca492fso928015b3a.1;
+        Tue, 06 Feb 2024 01:27:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707211664; x=1707816464; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mvhTyBVNUZ9ioizrTOoXbcsU/A9dZDN/VfmQnyeAdwU=;
+        b=RH4QTPNRMOEUqvCHeRAht2MOMa0rIhxQNTkDRNPh3F7FxeqCXroEjt9uTeYPXkgUAL
+         8gAPFGAINtrRIzBqHoPwragxookwGSSbPdks40IhpElDfg/7IK+WJe24GiV4ZUkzUtob
+         xpWVy3Z5h+lihrCEKXmsJjIA1Xv2nWgumybDp8+1XDt10MvRXy45OBqEoeoFOZbjo1kR
+         Og629/hpoHD4VD0xM14YRGZRdSdy6SNASfmYGscsPR0HYe5aetRrozPs8eFbMGLsmJqC
+         /M2QTh1wCCWEsiTGOb08pdkSXyqKqX18dw/fHAFsfAeAsYbNEwBwlkT745HK+hgy8pYF
+         NraA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707211664; x=1707816464;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mvhTyBVNUZ9ioizrTOoXbcsU/A9dZDN/VfmQnyeAdwU=;
+        b=SDmfgsgYoCzYYsOFExnjyW18XW1KwPMBLABX/hVWGXEr7ge8aWENlROL9lV1QJhc2c
+         tpnahdKcQKmGWBFipbbB3cZ1hxnD57k2s6JBl2ts1qac07/eravpA5AoNa40gkOWxoOc
+         9Vo3OXLC7Mb+TlKGcPgt3Ddp5d34jLx7yhCJSmNfEnJ1eNHVN5ccteJ/gMDJrjNoOkU0
+         R5Y2Cll/2orDK4wXWeFFwEE7CYAAKA9s8YdxIrwtNjp8X9Xd08BWJC5pWxH6/SqOVQkl
+         rqqhjpeRePuXd5uuH3CVEZUncu8W2j+fy0uFLzzUI7jtaSnq9LSfF1CsrqUGobivf4u3
+         w1Mw==
+X-Gm-Message-State: AOJu0YwJsDTI2OACW6dbLKbwHsHGlBCQLK1PC0Qejl9IsMNjYmWtGMP/
+	2hVojJ1PKAKaOPEeaCZTU0j7z6x6RatbwAzyzGUuOz/HUyvithz6/UfEhP0lkxJRGg==
+X-Google-Smtp-Source: AGHT+IGzFrTe1/hBI8CQ3sgpfJnoz/OEGzNIZ8ZdA+2fVAyYdWU4zc8d93v4q05weBH2FL+s6QT+8A==
+X-Received: by 2002:aa7:8594:0:b0:6e0:4a24:e91 with SMTP id w20-20020aa78594000000b006e04a240e91mr1979754pfn.15.1707211664287;
+        Tue, 06 Feb 2024 01:27:44 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWWPT/DSbkR/OaMobx/mOFfKnXv87qCdSxXXXbnu5/o/i1ElAKvmZR0I/RwaxfHdbyMFfusz5mxgp/x0sJd3ySR6fYXfr61Yq7096KP107G+jh1ETc5ujLKI48yDFbZ4IXibSk7xxPjebZvk1D+NzhnjWCsRCu+fnoneUd22yQndEApd8N2TfPG0xRiT3UWg/cMvLvGvOotmk2BeBAm6JW7/heSgYDA9c/wWDjy2A5UJ2PLtm07E6F28q2p0M2BA+O1WZDJmcdtJ5S/JeHTlWQBY5waBjoLNV8ggxPyntT4XaPshGuIR1/FOT2xlsHy3iWkuSg3RanyVPicVf8pOHRuiqwNOM3x3wgDl8ucmtMx/rgBCm7g4xHNAmE3FCQVNPxjsXDchDIDJpMPz9PnbpqdYgu8yYfw9K+9CvyjpwJAmwi76asJq7RG0M/BIQ==
+Received: from Laptop-X1 ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id i11-20020a63584b000000b005c6e8fa9f24sm1541854pgm.49.2024.02.06.01.27.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 01:27:43 -0800 (PST)
+Date: Tue, 6 Feb 2024 17:27:37 +0800
+From: Hangbin Liu <liuhangbin@gmail.com>
+To: Aahil Awatramani <aahila@google.com>
+Cc: David Dillow <dave@thedillows.org>,
+	Mahesh Bandewar <maheshb@google.com>,
+	Jay Vosburgh <j.vosburgh@gmail.com>,
+	Andy Gospodarek <andy@greyhouse.net>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v7] bonding: Add independent control state
+ machine
+Message-ID: <ZcH7icQHZdRchADi@Laptop-X1>
+References: <20240202175858.1573852-1-aahila@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600020.china.huawei.com (7.193.23.147)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240202175858.1573852-1-aahila@google.com>
 
-From: ZhangPeng <zhangpeng362@huawei.com>
+On Fri, Feb 02, 2024 at 05:58:58PM +0000, Aahil Awatramani wrote:
+> Add support for the independent control state machine per IEEE
+> 802.1AX-2008 5.4.15 in addition to the existing implementation of the
+> coupled control state machine.
+> 
+> Introduces two new states, AD_MUX_COLLECTING and AD_MUX_DISTRIBUTING in
+> the LACP MUX state machine for separated handling of an initial
+> Collecting state before the Collecting and Distributing state. This
+> enables a port to be in a state where it can receive incoming packets
+> while not still distributing. This is useful for reducing packet loss when
+> a port begins distributing before its partner is able to collect.
+> 
+> Added new functions such as bond_set_slave_tx_disabled_flags and
+> bond_set_slave_rx_enabled_flags to precisely manage the port's collecting
+> and distributing states. Previously, there was no dedicated method to
+> disable TX while keeping RX enabled, which this patch addresses.
+> 
+> Note that the regular flow process in the kernel's bonding driver remains
+> unaffected by this patch. The extension requires explicit opt-in by the
+> user (in order to ensure no disruptions for existing setups) via netlink
+> support using the new bonding parameter coupled_control. The default value
+> for coupled_control is set to 1 so as to preserve existing behaviour.
+> 
+> Signed-off-by: Aahil Awatramani <aahila@google.com>
 
-The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
-in application, which leading to an unexpected performance issue[1].
-
-This caused by temporarily cleared PTE during a read+clear/modify/write
-update of the PTE, eg, do_numa_page()/change_pte_range().
-
-For the data segment of the user-mode program, the global variable area
-is a private mapping. After the pagecache is loaded, the private anonymous
-page is generated after the COW is triggered. Mlockall can lock COW pages
-(anonymous pages), but the original file pages cannot be locked and may
-be reclaimed. If the global variable (private anon page) is accessed when
-vmf->pte is zeroed in numa fault, a file page fault will be triggered.
-
-At this time, the original private file page may have been reclaimed.
-If the page cache is not available at this time, a major fault will be
-triggered and the file will be read, causing additional overhead.
-
-Fix this by rechecking the PTE without acquiring PTL in filemap_fault()
-before triggering a major fault.
-
-Testing file anonymous page read and write page fault performance in ext4
-and ramdisk using will-it-scale[2] on a x86 physical machine. The data
-is the average change compared with the mainline after the patch is
-applied. The test results are within the range of fluctuation, and there
-is no obvious difference. The test results are as follows:
-	                 processes processes_idle threads threads_idle
-ext4    private file write: -1.14%  -0.08%         -1.87%   0.13%
-ext4    shared  file write:  0.14%  -0.53%          2.88%  -0.77%
-ext4    private file  read:  0.03%  -0.65%         -0.51%  -0.08%
-tmpfs   private file write: -0.34%  -0.11%          0.20%   0.15%
-tmpfs   shared  file write:  0.96%   0.10%          2.78%  -0.34%
-ramdisk private file write: -1.21%  -0.21%         -1.12%   0.11%
-ramdisk private file  read:  0.00%  -0.68%         -0.33%  -0.02%
-
-[1] https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
-[2] https://github.com/antonblanchard/will-it-scale/
-
-Suggested-by: "Huang, Ying" <ying.huang@intel.com>
-Suggested-by: Yin Fengwei <fengwei.yin@intel.com>
-Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
-v1->v2:
-- Add more test results per Huang, Ying
-- Add more comments before check PTE per Huang, Ying, David Hildenbrand
-  and Yin Fengwei
-- Change pte_offset_map_nolock to pte_offset_map as the ptl lock won't
-  be used
-
-RFC->v1:
-- Add error handling when ptep == NULL per Huang, Ying and Matthew
-  Wilcox
-- Check the PTE without acquiring PTL in filemap_fault(), suggested by
-  Huang, Ying and Yin Fengwei
-- Add pmd_none() check before PTE map
-- Update commit message and add performance test information
-
- mm/filemap.c | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
-
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 142864338ca4..a2c1a98bc771 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -3238,6 +3238,40 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
- 			mapping_locked = true;
- 		}
- 	} else {
-+		if (!pmd_none(*vmf->pmd)) {
-+			pte_t *ptep;
-+
-+			ptep = pte_offset_map(vmf->pmd, vmf->address);
-+			if (unlikely(!ptep))
-+				return VM_FAULT_NOPAGE;
-+			/*
-+			 * Recheck PTE as the PTE can be cleared temporarily
-+			 * during a read+clear/modify/write update of the PTE,
-+			 * eg, do_numa_page()/change_pte_range(). This will
-+			 * trigger a major fault, even if we use mlockall,
-+			 * which may affect performance.
-+			 * We don't hold PTL here as acquiring PTL hurts
-+			 * performance. So the check is still racy, but
-+			 * the race window seems small enough.
-+			 *
-+			 * If we lose the race during the check, the page_fault
-+			 * will be triggered. Butthe page table entry lock
-+			 * still make sure the correctness:
-+			 * - If the page cache is not reclaimed, the page_fault
-+			 *   will work like the page fault was served already
-+			 *   and bail out.
-+			 * - If the page cache is reclaimed, the major fault
-+			 *   will be triggered, page cache is filled,
-+			 *   page_fault also work like the page fault was
-+			 *   served already and bail out.
-+			 */
-+			if (unlikely(!pte_none(ptep_get_lockless(ptep))))
-+				ret = VM_FAULT_NOPAGE;
-+			pte_unmap(ptep);
-+			if (unlikely(ret))
-+				return ret;
-+		}
-+
- 		/* No page in the page cache at all */
- 		count_vm_event(PGMAJFAULT);
- 		count_memcg_event_mm(vmf->vma->vm_mm, PGMAJFAULT);
--- 
-2.25.1
-
+Reviewed-by: Hangbin Liu <liuhangbin@gmail.com>
 
