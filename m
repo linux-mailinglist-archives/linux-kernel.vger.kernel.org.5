@@ -1,105 +1,108 @@
-Return-Path: <linux-kernel+bounces-54695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54685-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A8FC84B28B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:33:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2746884B274
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:24:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4741C283727
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:33:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A5361C240B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:24:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA47F1EA7D;
-	Tue,  6 Feb 2024 10:32:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F27C12E1EA;
+	Tue,  6 Feb 2024 10:23:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="Gq4i2HaZ"
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AfwUCx/D"
+Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com [209.85.221.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E6051EA76;
-	Tue,  6 Feb 2024 10:32:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30DF812E1EE
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 10:23:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707215556; cv=none; b=I/UUERpJ3wy+Ww8Q9Ch7GrKcSZawUwNiT0MkSt5mEZ6ab1mTZda6MdacBo9M7iCtFiwevUway/FoByYo/D3b5zCZBYgTnfMzZbVLIfXP56lKfSaYZYD2ha1/vos9/YTM4GG964qgjGjssdvWwAzFrCvubahX/2UOzYeElWwuW2U=
+	t=1707215028; cv=none; b=eu7AvGyoPO4ZZ3+u2faDv3jlQskiavHkXm0HgGirRVr+yTjKIxszJYExXRg2SFIZlEuHH+RKAUfEEnLlBZT6k/Vw3B1EPhH7cJy0kQs03famzTA/pHCbKSnwJVKroZnJKGPmExNflSHzglGLsVF1um8P58wI7przYjSld3QcIrk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707215556; c=relaxed/simple;
-	bh=+WeGa3Eq4sDl93t4zuFq8b2hQy60542lYtYLgCSbIrQ=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lJtBxX8WfVPHurMipH7RaEuXnC4d8SXtqWLQrr71Pekk0iwrKpXlxF0lwc3DscyI6w1nPIOe+BTLPM4fj5Wwe8pfG/F4wfs7dt9sJPXenP90Pg8jVVDjY8Tik2JW6iTLqFfEsE373sD5Spcc3qdRzJeI4xVXGF2D4gfkWdHP+YI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=Gq4i2HaZ; arc=none smtp.client-ip=67.231.152.168
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4169iw9L025133;
-	Tue, 6 Feb 2024 04:23:30 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=PODMain02222019; bh=v8WU0lB9flpGY7v
-	YDfUpKZOIGwF1bC5Mlqhymq+hVuI=; b=Gq4i2HaZBxfaa9D+cEHHCkIim11Aq+L
-	PsNfQCWEW/RohMHzj0MnwF9nyXJoQyaQubAxDrlPApglgBXw0Tvtf/px2vdmfLYv
-	GSjZyVUaRg/A4TXB1Af6DwIP7K9jOLni5AgK8O8el8CUiAcoiNI36wfWIX7Yx9q2
-	+RH3aKAEpHFGg8h+W7RkXMCEL92bLlBaIANFvIFkv6MSF3OqKzKVI/GtcmBt1Aeh
-	D0TDVyCkgJ/ydhQx45QDBWNy8Sn9N1sMqxP6Ly0ZgAumPhVzd4GcBPh4MHToFQP3
-	wnUaon/CBqLht8YtsL+jDbw4Z9onUqFhuTc/zsVljd2CV0kWe2AGiSA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3w1jsnk6h5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Feb 2024 04:23:30 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 6 Feb
- 2024 10:23:28 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40 via Frontend Transport; Tue, 6 Feb 2024 10:23:28 +0000
-Received: from ediswmail9.ad.cirrus.com (ediswmail9.ad.cirrus.com [198.61.86.93])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTPS id 9CD37820241;
-	Tue,  6 Feb 2024 10:23:28 +0000 (UTC)
-Date: Tue, 6 Feb 2024 10:23:27 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Bo Liu <liubo03@inspur.com>
-CC: <lee@kernel.org>, <wens@csie.org>, <marek.vasut+renesas@gmail.com>,
-        <support.opensource@diasemi.com>, <neil.armstrong@linaro.org>,
-        <rf@opensource.cirrus.com>, <mazziesaccount@gmail.com>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
-        <linux-kernel@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-        <linux-amlogic@lists.infradead.org>, <patches@opensource.cirrus.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 10/18] mfd: wolfson: convert to use maple tree register
- cache
-Message-ID: <ZcIIn6b+BFR/FRIS@ediswmail9.ad.cirrus.com>
-References: <20240206071314.8721-1-liubo03@inspur.com>
- <20240206071314.8721-11-liubo03@inspur.com>
- <ZcIEFxh76TTXBTiT@ediswmail9.ad.cirrus.com>
+	s=arc-20240116; t=1707215028; c=relaxed/simple;
+	bh=JQc7I9dtacgIh6dzApcTtL71VyIWn4aWCD9+Rsus/uU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OIqSoo4tjjX9Mow8PZmwEV9QbDx93TDg8r6IfuhOdW7odKiuag7cgCDAUxXDoAt/BEf3gypT+luDeJlzWN/RPOdEvdNPJMtLrggLTDDPOqzZPijqZ3E3LqoHDaydNoO1J/YcnEPDQ2a1s2IEmfySrAuwOtjPjneL0YCyheFecJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AfwUCx/D; arc=none smtp.client-ip=209.85.221.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-4c033928deaso299008e0c.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 02:23:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707215026; x=1707819826; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=DvZiY9ihexG/Lq+UzYShBWDLaHBQcaLwobbBS4o9zoI=;
+        b=AfwUCx/DJRNaiaKS1iipnlPsd5rZMmrz3I0s+8EEhKEvO4fZfrHxyhbJE3BovUA43g
+         9tpanRMVnVovsVs3uMjdIu3BWWQRlDzKwCEQa8NaLkKDHYmX+l4DiEJscEkTeSynMpdq
+         OOoiFliI+RBOdL6G2hSQpVC9qiI8wPPo+sNZeHE5Ebp+V5AiUEcHGcFQXl8dJylkzs2l
+         Gogs5RDRwN09qnCUXn9vG32/kXPxcO78z+ipLk8WsqQvi9Knni5kArfFxxxWkndCrdDH
+         Ugju7rBdGrXx5U4xXLXZPUydxBc27pQKhw1DvuXULYMuTlmqPVLF/DG+A+3lo7CJ0Cuh
+         rf6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707215026; x=1707819826;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DvZiY9ihexG/Lq+UzYShBWDLaHBQcaLwobbBS4o9zoI=;
+        b=bKLHLSwSKnDOUnTgjNG/11Z8AqTLqwr0kjoR2feKoCZL7PPosk5xZS3DWbR4sE++WY
+         pW1TzmucT5Eh+9MdKGFvV4cxaTx5IWmkpQuCFhFJMReGpPwXUUXAdgrjoD2LckyfLZX1
+         2z/g3PVUl2j1pt0MgXV5+3UVw5LvOOu51FI7Jw9tx3OjL65mH2YvaEzsK62I4MIZJMAZ
+         nj2WeoTRMZ8f669zIVUJBd0ajiaJHbhVLvpWQOmCHdF8C1EoKPeW2UxMwix9ap8BGQ/C
+         bu2Xq0CO4a1BkghywPwaXdVqK5n+bXdAoeiXS50ZpLRSFpA+OK5w64aGWhdonF6Febyx
+         4JhQ==
+X-Gm-Message-State: AOJu0Yz5YXd9atS4fA20g5GgOaxLByGMJ15fEXxQNDp1nyK5tocj4NgB
+	V80saxxCtK6nky2KQZsimC+Hge1v3My8aG7ccWJ7fTbYnWMpdoyTbj/avaBS3xzjvG3rHnyHKdn
+	NeXuLMPiRjuN9B8LeI0qJ1mbFB/eJL0iGjNLH8A==
+X-Google-Smtp-Source: AGHT+IGfDOnd2EhP4TWByrQOkcid9KL+1EpEAi8LxcA+nJejScdKhoTZckC004/fc+VBarRks/cvEIzLg7CHcNC2TZ8=
+X-Received: by 2002:a05:6122:17a8:b0:4b9:e8bd:3b2 with SMTP id
+ o40-20020a05612217a800b004b9e8bd03b2mr1876525vkf.2.1707215025681; Tue, 06 Feb
+ 2024 02:23:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZcIEFxh76TTXBTiT@ediswmail9.ad.cirrus.com>
-X-Proofpoint-GUID: VZagnLkW2TlCS_BzEYBGYEssTNO5DPkf
-X-Proofpoint-ORIG-GUID: VZagnLkW2TlCS_BzEYBGYEssTNO5DPkf
-X-Proofpoint-Spam-Reason: safe
+References: <CA+G9fYttTwsbFuVq10igbSvP5xC6bf_XijM=mpUqrJV=uvUirQ@mail.gmail.com>
+ <20240206101529.orwe3ofwwcaghqvz@quack3>
+In-Reply-To: <20240206101529.orwe3ofwwcaghqvz@quack3>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Tue, 6 Feb 2024 15:53:34 +0530
+Message-ID: <CA+G9fYup=QzTAhV2Bh_p8tujUGYNzGYKBHXkcW7jhhG6QFUo_g@mail.gmail.com>
+Subject: Re: next: /dev/root: Can't open blockdev
+To: Jan Kara <jack@suse.cz>
+Cc: linux-block <linux-block@vger.kernel.org>, 
+	Linux-Next Mailing List <linux-next@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
+	Linux Regressions <regressions@lists.linux.dev>, linux-fsdevel@vger.kernel.org, 
+	lkft-triage@lists.linaro.org, Arnd Bergmann <arnd@arndb.de>, 
+	Christian Brauner <brauner@kernel.org>, Dan Carpenter <dan.carpenter@linaro.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Feb 06, 2024 at 10:04:07AM +0000, Charles Keepax wrote:
-> On Tue, Feb 06, 2024 at 02:13:06AM -0500, Bo Liu wrote:
-> >  drivers/mfd/wm5102-tables.c | 2 +-
-> >  drivers/mfd/wm5110-tables.c | 2 +-
-> >  drivers/mfd/wm8350-regmap.c | 2 +-
-> >  drivers/mfd/wm8400-core.c   | 2 +-
-> >  drivers/mfd/wm97xx-core.c   | 6 +++---
+On Tue, 6 Feb 2024 at 15:45, Jan Kara <jack@suse.cz> wrote:
 >
-> seems a bit weird not to convert wm8997, wm8998 and cs47l24.
-> These are part of the same driver as wm5102 and wm5110.
+> On Tue 06-02-24 14:41:17, Naresh Kamboju wrote:
+> > All qemu's mount rootfs failed on Linux next-20230206 tag due to the following
+> > kernel crash.
+> >
+> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> >
+> > Crash log:
+> > ---------
+> > <3>[    3.257960] /dev/root: Can't open blockdev
+> > <4>[    3.258940] VFS: Cannot open root device "/dev/sda" or
+> > unknown-block(8,0): error -16
+>
+> Uhuh, -16 is EBUSY so it seems Christian's block device opening changes are
+> suspect? Do you have some sample kconfig available somewhere?
 
-Nevermind, it seems those parts were already converted.
+All build information is in this url,
+https://storage.tuxsuite.com/public/linaro/lkft/builds/2byqguFVp7MYAEjKo6nJGba2FcP/
 
-Thanks,
-Charles
+- Naresh
 
