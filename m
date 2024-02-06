@@ -1,145 +1,162 @@
-Return-Path: <linux-kernel+bounces-55439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D3FA84BCB7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:09:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C581284BCB5
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:09:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD48D1F276EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:09:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7BC3E284A35
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:09:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C1C9134A8;
-	Tue,  6 Feb 2024 18:09:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 592801095A;
+	Tue,  6 Feb 2024 18:09:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="ngeSN2ip"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YrjHuDDO"
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 208FEDF56;
-	Tue,  6 Feb 2024 18:08:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C565DF5A
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 18:08:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707242941; cv=none; b=HuDN+zEcFc2oPvRAwxn8vo5+ZYT+DO61QymJCGHWQMGnoAclYCG1sVp5V/wCi3PuX7CT7AeuRkoe6yF4gytY+0cjY1A/kAu6SPE5Qe4lDNqsLkpEQmibiAp/Q1IQnMe8iNIqvLG54RXq2WwuU9a/dNHctf96WxNOD91ivgyJ0Ew=
+	t=1707242939; cv=none; b=o1ayYBWFq1CADTn5XIB8DwnGcuL19Vqx1CDvWv79FGl5AaV/7xmQ2U+O+BJFktWBd/7P5nDOuf+j4E0oAfzO2O/Ft2c+MBMV4LKTaG0IpiZonXDRqinvsd9dDnMAQfiBag97oGJq+7NNBijTmRBhg2jQbmZV4Cn75FJ+xR0BjNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707242941; c=relaxed/simple;
-	bh=RZqo/CCOLuo6/mBZDZJlacFlaFZNq+k1w2fQRKVHdgk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pEA4DHcPgOelw+qHkzjE4UE6e3le29WLsndUqx2wMiJccfMXI4g8Mu9r9+vkXK6QBhOD0Ofgn3yiCmcves5D3J6ouaFE6skBzgn+/g1q8t6ldVd/uA/WG/w75dMRjTdX17qhwIr9xc5D3+SIO7Gjl47XwbTlxgEtM+ASGzEk1Fc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=ngeSN2ip; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-	s=s31663417; t=1707242921; x=1707847721; i=wahrenst@gmx.net;
-	bh=RZqo/CCOLuo6/mBZDZJlacFlaFZNq+k1w2fQRKVHdgk=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=ngeSN2ipgNISfo3ot/k7BPYUYbWJackL55ol67WN3oPCxRHgg67/V5GYi49mZhBq
-	 7BQV7UOQgxruT4ui1XmwxPJgGCzERjoEwsWmRp8P5jNuGt/9fE08vVGRfqai7lUuL
-	 ibU9SraTHLohKoygGUiNntwezFw2pVqzugyGtudT7vkt6otrB+bvgVWQCuTDVK3xs
-	 2/LfhZ93Oelz+MJ0F4E02dJeLKNyAt6DSGxW0S1f563OYd1N+/wgizHVqZJNmzSD8
-	 JuOpdv3xd3DNVXySyPB2+O1OQBmYEuOWoyw3cMnt4bwb5fv6a7mFd3luX5kmSJujC
-	 8bun/cAI0jJ4muvBCg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.1.167] ([37.4.248.43]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mzyyk-1qlcPn2Eyc-00x5m8; Tue, 06
- Feb 2024 19:08:41 +0100
-Message-ID: <42e760f9-8304-4237-bb68-54c98eb7fcb9@gmx.net>
-Date: Tue, 6 Feb 2024 19:08:40 +0100
+	s=arc-20240116; t=1707242939; c=relaxed/simple;
+	bh=vLJFxU6b1pO+fC/tdopN/qTyNi4/3U8xVhcMlyIaSOA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tUdD3ojTk7lLNeMjMTrHdxbh4xa3TfK7Mum7Pfy55xTyw1CsDrMyIfLVs+Et1FhFspAdYItoCdlO+mvl0Ac6qv44rXBSM38eKLY/s4frC7lBkihlcu4sdJl2KT4R152+8qA+QUlCjJ0NnvrkMK/wpyQX0AUPK6PPmq86mNHjtHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YrjHuDDO; arc=none smtp.client-ip=209.85.222.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7810827e54eso353532385a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 10:08:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707242937; x=1707847737; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GVfn3yVJysCN6urYRnVBYjglKBmxv1NsB7G+hjAd4ic=;
+        b=YrjHuDDORwCij76vS0FoGOjoDGtZHKF9yKZI4HMgMKxsG901CXryhcsHJuFVXdTgAf
+         WISIf3VnHYOCP6KaEM0F+My0uMX6KX1EZZu6HDNaXh96A2so+o5svMzQ65y9CImSviFZ
+         YjzOQh2IeEUe9RWw+m457S+HsJg49iwfnNz3PP6X96DhGWyGduWD8+t79cubcyO7wtq0
+         ixObR0oUGrccMKAgNzw8mfIOBj4hoR7AmCgQV+o4fCu+kYHiN5eFrw+ykDYoz8rhMNO/
+         4ht4jjBq10DrC9Whg8oncgAqvbdgtdSZFV1T04dDWO6cvcA3fybY/J1EAS6FcpnRIK+W
+         FeCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707242937; x=1707847737;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GVfn3yVJysCN6urYRnVBYjglKBmxv1NsB7G+hjAd4ic=;
+        b=rt64TTQmJu3xxnQjSQ+AGyeeqa9LDAGpVOYAZHxdbL2sdwdsP4BZsdqFccmcHoAEZg
+         4aNdO6f/PnmJQNBG9Bb6PIUORPRWsDHHdyiElYKRzpTXmIsCohxeaMLwnQ4X8sec/N2f
+         CZ6gKW/M7TF5AS4IqlMsQJ4OSPgqlogZYxI75qTwxmW9/P8Nw/HzRTGkbyq7C4ImW9SB
+         PifiMp5K848hkh7vEpeaPJNxUd9rvfG6jarj4puFZVJ9clQi3O6RVxp5z/HHa8eBK4Gw
+         R+5QPcSJRtEuHnX+PrGCxb+SWg3LFOQXDWa7scFMbT8ejr3g2TmZY1i53DXqVqzz+MV/
+         VE2A==
+X-Gm-Message-State: AOJu0Yy1WT+O6pveqb5MYOG7Bdiik9IhOKMogDajCoN1HPMZ13pLVSX1
+	Crtrrn2DFThSQ8XbUvoBqoCkcQa/IsVSF784lDzGeTwukp8jeQEJ
+X-Google-Smtp-Source: AGHT+IGL0WmHhYtgOpTaS5LrzQhDiax3sgFnCfWdJYij4bZqe7hOr9v4rEs98j5t0MqBd4pusEJz9w==
+X-Received: by 2002:a05:620a:3956:b0:785:53ab:9d07 with SMTP id qs22-20020a05620a395600b0078553ab9d07mr3821813qkn.58.1707242936748;
+        Tue, 06 Feb 2024 10:08:56 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUTBdxwgDZtkc1xm7cEiIvYQT4+U0qYkwHHctgvx4pBrsQfWSjOeJFE6Wbqq0vXR1VQsv3NGmsx2sqLqPoNjG/rAbIKCvCHqDmwUEPByImfRkpiDb5KA17tvpFTxAKFvEzFEIlLbM8SYRN/3G0a9sjIw7hAR97MTUyuvjqaAO9vO6NurtQOIbPt/T4S0a+NvXBiMkqJypU4uNjY8qrt8SBygS/0tR2BbA==
+Received: from localhost (fwdproxy-nao-002.fbsv.net. [2a03:2880:23ff:2::face:b00c])
+        by smtp.gmail.com with ESMTPSA id q27-20020a05620a0c9b00b00783ddf9b9d5sm1118937qki.91.2024.02.06.10.08.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 10:08:56 -0800 (PST)
+From: Nhat Pham <nphamcs@gmail.com>
+To: akpm@linux-foundation.org
+Cc: hannes@cmpxchg.org,
+	chengming.zhou@linux.dev,
+	yosryahmed@google.com,
+	linux-mm@kvack.org,
+	kernel-team@meta.com,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] mm/swap_state: update zswap LRU's protection range with the folio locked
+Date: Tue,  6 Feb 2024 10:08:55 -0800
+Message-Id: <20240206180855.3987204-1-nphamcs@gmail.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/12] bcm2835-dma: Add proper 40-bit DMA support
-To: Dave Stevenson <dave.stevenson@raspberrypi.com>,
- Andrea della Porta <andrea.porta@suse.com>
-Cc: Vinod Koul <vkoul@kernel.org>,
- Florian Fainelli <florian.fainelli@broadcom.com>, Ray Jui
- <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
- Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>, dmaengine@vger.kernel.org,
- linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
- Dom Cobley <popcornmix@gmail.com>, Phil Elwell <phil@raspberrypi.com>
-References: <cover.1706948717.git.andrea.porta@suse.com>
- <eeb94204c30c2182f5ffd3ec083c04399ecdee32.1706948717.git.andrea.porta@suse.com>
- <8736c115-e11c-41ca-85eb-7cd19a205068@gmx.net>
- <CAPY8ntCEvsTJwoEBYc7JsTaYfdMURhmytvvVMcLVNBkmdTNcZQ@mail.gmail.com>
-Content-Language: en-US
-From: Stefan Wahren <wahrenst@gmx.net>
-In-Reply-To: <CAPY8ntCEvsTJwoEBYc7JsTaYfdMURhmytvvVMcLVNBkmdTNcZQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:82iQlRV0DZeC1hAWFcigJgICSkiPyPuQqoLMtpl5EGz6/okZ3fE
- I6SidVufMLwq7EC1vruL05BJaE5u0q/VGaSys3AbvrQD8uxR2U+HsJwuTKDo5d3Jp5L3eMs
- HUDAajmfPFfluKH+FrQfUop7UA4q95fLfhJz9IwiXwrmlfh4WuldAkk0RfUs/XNMQIcSjPa
- K6Eu6Kwlz66lDe5rQyf1Q==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:rGYYoGkFhs8=;E2CkH0DchG7qHZki2J7Pqf6e/Y9
- O3nyAvJr4ZdrVhtDOWtSV0gngMgbdBULBSXrol6BvL01MoaQe4/QT9yCZm40aSu6voYAuZHIO
- ZqXjplQMVZnxpYbIzb7eL+FJY7vu/f32oMjjCIZRPrlwsdY32Axp8MVdGqWa06gCGB6xsW507
- sqOtxghlNUeAQg59SSY1fnDYY/QfXlwwnobXi9iX4C7ucy+ERlWp+RMZxgjtTA1Oy9NvL7tED
- dtXxZMfHZaMai1TCQ3Nndy2p4GxoryYiXRXeKeW2F+6Rd8i2XsY18iVP3bPjcCXr6nHHfHTd0
- TaKCmnryV8KOdpwH0W3bfmWtHfqbuFLyj4jiPp3VZpDRtWQP1nfh3/RabAxasiyYKqIhdM3T/
- bEaqIjAPBMGzYxnOqsMN36FdboKiQs9BdLAYag0tCRJZcCROQB9VGgEH2WQcX+t9UTK3e888Q
- cmnyjtwKGacbndniuFapznFbuuCq8eKcR57rg2i6AyMoLORYL9CL7KdJgsSRyq/ki4LFptnR/
- BdhCGGaSB9jvcNg6SH2kkaw77h9ilJr88qHQtQ5LHAnL+vBkCLmwoHKYbv4MvdYL3gzt0Y/A+
- +7k0iHQhKzrsayGAPU2UG1YvmpWSSgZeQZ/zPikBWypK6QY70/lmVZDdmSnVf9rO2OfJ+aZpB
- OLCSJWUfFGysEyLGopIqhGKGFuWa1oXXQeIKNyRnb+a2x0Rnmes8J/UljrIb4Gnp3pWMV39I5
- LlYEI0RdK130rVHsUe91Z4I2liPtv5MUTVEfkhIEsBA88plryq3ZRuCfQOBnIO59uM49xbNhm
- xB8k7jy4E6JboWXln/ta28Nm31V+2fM/B0X+WTMNC0zPU=
+Content-Transfer-Encoding: 8bit
 
-Hi Dave and Andrea,
+When a folio is swapped in, the protection size of the corresponding
+zswap LRU is incremented, so that the zswap shrinker is more
+conservative with its reclaiming action. This field is embedded within
+the struct lruvec, so updating it requires looking up the folio's memcg
+and lruvec. However, currently this lookup can happen after the folio is
+unlocked, for instance if a new folio is allocated, and
+swap_read_folio() unlocks the folio before returning. In this scenario,
+there is no stability guarantee for the binding between a folio and its
+memcg and lruvec:
 
-Am 06.02.24 um 17:31 schrieb Dave Stevenson:
-> Hi Stefan and Andrea
->
-> On Mon, 5 Feb 2024 at 18:50, Stefan Wahren <wahrenst@gmx.net> wrote:
->> Hi Andrea,
->>
->> [add Dave]
->>
->> Am 04.02.24 um 07:59 schrieb Andrea della Porta:
->>> From: Phil Elwell <phil@raspberrypi.org>
->>>
->>> BCM2711 has 4 DMA channels with a 40-bit address range, allowing them
->>> to access the full 4GB of memory on a Pi 4.
->>>
->>> Cc: Phil Elwell <phil@raspberrypi.org>
->>> Cc: Maxime Ripard <maxime@cerno.tech>
->>> Signed-off-by: Andrea della Porta <andrea.porta@suse.com>
->> mainlining isn't that simple by sending just the downstream patches to
->> the mailing list. In many cases there reasons why this hasn't been
->> upstreamed yet.
->>
->> In my opinion just this feature is worth a separate patch series. In
->> 2021 i already send an initial version, which tried to implement it in =
-a
->> cleaner & maintainabler way [1]. In the meantime Dave Stevenson from
->> Raspberry Pi wrote that he also wanted to work on this. Maybe you want
->> to work on this together?
-> Yes, I'm looking at reworking Stefan's series to work on Pi4 & Pi5 as
-> it's needed for HDMI audio (and other things) on those platforms which
-> I'm working to upstream.
->
-> I was getting weirdness from the sdhci block when I was last looking
-> at it, so it was just proving a little trickier than first thought.
-> Hopefully I'll get some time on it in the next couple of weeks.
-i must confess that my series was just a draft to see that the general
-approach would be accepted. Yes, it's possible that there are issues :-(
+* A folio's memcg and lruvec can be freed between the lookup and the
+  update, leading to a UAF.
+* Folio migration can clear the now-unlocked folio's memcg_data, which
+  directs the zswap LRU protection size update towards the root memcg
+  instead of the original memcg. This was recently picked up by the
+  syzbot thanks to a warning in the inlined folio_lruvec() call.
 
-Maybe i can help you a little bit by taking care of first two patches
-(node name fix & YAML conversion)?
+Move the zswap LRU protection range update above the swap_read_folio()
+call, and only when a new page is allocated, to prevent this.
 
-Regards
->    Dave
->
->> [1] -
->> https://lore.kernel.org/linux-arm-kernel/13ec386b-2305-27da-9765-8fa3ad=
-71146c@i2se.com/T/
+Reported-by: syzbot+17a611d10af7d18a7092@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/all/000000000000ae47f90610803260@google.com/
+Fixes: b5ba474f3f51 ("zswap: shrink zswap pool based on memory pressure")
+Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+---
+ mm/swap_state.c | 10 ++++++----
+ mm/zswap.c      |  1 +
+ 2 files changed, 7 insertions(+), 4 deletions(-)
 
+diff --git a/mm/swap_state.c b/mm/swap_state.c
+index e671266ad772..7255c01a1e4e 100644
+--- a/mm/swap_state.c
++++ b/mm/swap_state.c
+@@ -680,9 +680,10 @@ struct folio *swap_cluster_readahead(swp_entry_t entry, gfp_t gfp_mask,
+ 	/* The page was likely read above, so no need for plugging here */
+ 	folio = __read_swap_cache_async(entry, gfp_mask, mpol, ilx,
+ 					&page_allocated, false);
+-	if (unlikely(page_allocated))
++	if (unlikely(page_allocated)) {
++		zswap_folio_swapin(folio);
+ 		swap_read_folio(folio, false, NULL);
+-	zswap_folio_swapin(folio);
++	}
+ 	return folio;
+ }
+ 
+@@ -855,9 +856,10 @@ static struct folio *swap_vma_readahead(swp_entry_t targ_entry, gfp_t gfp_mask,
+ 	/* The folio was likely read above, so no need for plugging here */
+ 	folio = __read_swap_cache_async(targ_entry, gfp_mask, mpol, targ_ilx,
+ 					&page_allocated, false);
+-	if (unlikely(page_allocated))
++	if (unlikely(page_allocated)) {
++		zswap_folio_swapin(folio);
+ 		swap_read_folio(folio, false, NULL);
+-	zswap_folio_swapin(folio);
++	}
+ 	return folio;
+ }
+ 
+diff --git a/mm/zswap.c b/mm/zswap.c
+index 4aea03285532..8c548f73d52e 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -827,6 +827,7 @@ void zswap_folio_swapin(struct folio *folio)
+ 	struct lruvec *lruvec;
+ 
+ 	if (folio) {
++		VM_WARN_ON_ONCE(!folio_test_locked(folio));
+ 		lruvec = folio_lruvec(folio);
+ 		atomic_long_inc(&lruvec->zswap_lruvec_state.nr_zswap_protected);
+ 	}
+
+base-commit: 91f3daa1765ee4e0c89987dc25f72c40f07af34d
+-- 
+2.39.3
 
