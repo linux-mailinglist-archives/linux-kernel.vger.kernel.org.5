@@ -1,56 +1,86 @@
-Return-Path: <linux-kernel+bounces-54218-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E201384AC5A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:52:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3D9E84AC5D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:52:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CD211F251CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:52:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABA312858CA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:52:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C8CF6EB57;
-	Tue,  6 Feb 2024 02:52:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B6C46E2C7;
+	Tue,  6 Feb 2024 02:52:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vOmbmYCA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cV5n33+a"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71A6A6EB4C;
-	Tue,  6 Feb 2024 02:52:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 107D43D543;
+	Tue,  6 Feb 2024 02:52:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707187924; cv=none; b=VIpQZ965P/UqVLOweLO7Sc6//O5SivsN8uv12+qculjI5uwUKabpP6qbN6DsIATw3iDY2NqfJzYGA4TZAp7+5ABOT3di1HFNR4ACqdG7O95xmNKpio5b5imlzzlBxBpHM1f/fcLP4hv93toT/RwphLk3VzqBYfrf8OXrIaG7BDI=
+	t=1707187953; cv=none; b=ISsk6goRFnQSZQaJkKCF9fANFrsb2oyr32Pv/RkpLZ/MT/qnT3DJicBQTKgo2PrhXAxTWyAkCGjcyZjjo+xhhAeOzzgLDo2rUzKIpYYxd4u/pA28tEKXdr6cSj/SOMsh9fQcfCgsSPjqILShAgkTfvWKvagAF0PpBRXw3ZA9WeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707187924; c=relaxed/simple;
-	bh=bq2ABozIdInk9f3RiCusWCHq2XVIshtqRKWElNQQ11M=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oEcEq/Mj88Qx4mTI9wTdHFveUKsJ4jVIGa9lgIfs7JOD2Vq9WkHFpNHZCkX4PLPlXL0FrJRG+NFms75LgtB7NfnEQ2nEt6o3WmASQvHjOx5D/mRxUV0iFL7ItLEmz5M5fMnchpqqyb4oRsh6yZquDj1JT+kU4yyNSt8ic/1pFk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vOmbmYCA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 540C8C433F1;
-	Tue,  6 Feb 2024 02:52:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707187923;
-	bh=bq2ABozIdInk9f3RiCusWCHq2XVIshtqRKWElNQQ11M=;
-	h=From:To:Cc:Subject:Date:From;
-	b=vOmbmYCAyMcjTPDBExa+YMMSUcJ7pNPhNxNGTj21aG7LYarjqx+ATjZ+0q49woSF5
-	 5AS4nIuWaVKSmgYxorBaiqwnZAmY7G1KvVBc2Ni3QxGwfJhuLdEN10EUAKe2swnmEV
-	 W0aR1ALWESt+pqsFlpW8qsWAkSNFHImkFcrwoUenw4n7tSf7E6gT0aeaDcdrmpu2PR
-	 bovUf1kqitI4jJuPp74WsRqI3vR9hOh70GvlIIl8wuxOEJh5p0+DlQk7DNaL5n4/pE
-	 bD/DglJhieuKy6XneJ5io1WWUgGFEqB1AGk/QEin1xzdK7+oFLjEVR/SG6r3CxgtgL
-	 1r813pvFf5kQQ==
-From: SeongJae Park <sj@kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: SeongJae Park <sj@kernel.org>,
-	cuiyangpei@gmail.com,
-	xiongping1@xiaomi.com,
-	damon@lists.linux.dev,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mm/damon/sysfs: handle 'state' file inputs for every sampling interval if possible
-Date: Mon,  5 Feb 2024 18:51:58 -0800
-Message-Id: <20240206025158.203097-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1707187953; c=relaxed/simple;
+	bh=CIhBAn1OTElk4h1B5drR6PBQbg52jGxbabczO2S5kCE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gI2HOngu+Wx5TWHXnPMlSzWF4uG6JMTcAMv8vOkh0rQQSPNHn6YSO/09rWeOADatZPEKcqUAAL0ll1ePc+X0lemPLteHyjOogYXXBTzfVXBDRXb75TDHMLy2RWkzyK7pt5vhaso2wl5PZMIPIbILamQAxNjdDYvKK1YTXhtwRzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cV5n33+a; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6e02fa257eeso107727b3a.0;
+        Mon, 05 Feb 2024 18:52:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707187951; x=1707792751; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ISGNh/R7KOPf4WD4INL9jBNwxYTfU9uVKM4TWwNiAak=;
+        b=cV5n33+aOGpkpJga1F+EZArsaJsbHTZZSzEaZ+iuDbLAaXb8y2ojZeL5itLpDUox32
+         //LN5OIAs66AlihKQ5aih031MGYA66VbEXKNV3/kkFVQq2Ho8bhGhXJ6ejhSYdm1g9QT
+         w/KFnovWEocw+EAqpOpWZzaHNhzK/YKRugMIpoH/1HcCq1qI7RF0WLlXWpcOv5Q9f/u2
+         oz6Yset/eZNT24ITvXJS/88rC4mNP+a9517+WAa4466dBDssJHZ0202SAJi9nrFz078f
+         HTln7WLhc3wmFHABc/RhWnCUrKQu8YEfKE75GoNgVUasIAmObL9V/j4JLoOG6dXG2kez
+         wxpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707187951; x=1707792751;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ISGNh/R7KOPf4WD4INL9jBNwxYTfU9uVKM4TWwNiAak=;
+        b=d7/BMgLskOWbibASPgXJpq1uBfIVVyqH/ck5DCMyk7Cgc4iNpFPxDvZQU3qdIe9Op8
+         iJmg8olfLap5UJhWex7YOktY62j4vd7yiyoUwHHy5GyH0tuIcQMRQ/TH6ZxLydqGi6Ei
+         bRte9M1T5mEA/8iDj24kPquiiR+eJY0i8PUoQmEynBaJkDMcPlLLdJLR8TrVWmqS7Ye0
+         Tf1oIKwIoaRacg1g110vSKwCVXeOn/6yUliQlIyJz3rGVoRf7BnHu9yTkt2Mk61/VIIX
+         fQXHSx3Lb/d4H4vPai5VXxg5XJFk6f+pL1Hde9DfL4qrJg8FN/0kAqFZqC/lu5JfZzph
+         XWqg==
+X-Gm-Message-State: AOJu0Yxo7vBKqSUS5v99V22IrOwpnp390qbcoNgxCNysAJ0C/Uj4Nu9v
+	Pmd0mRp+R31acfqeqw4+DAAHCHakkzLZ6EnLMPuArsi0HHJpAJtbatDCyTMM
+X-Google-Smtp-Source: AGHT+IHcz7hjFdYEduLcrpKjrNiierqBL1EIINAQvCoE+O54HnPZInn81NLvC2skbbIpiABC+oQX2w==
+X-Received: by 2002:a05:6a20:549e:b0:19c:95cc:1d47 with SMTP id i30-20020a056a20549e00b0019c95cc1d47mr707770pzk.6.1707187951157;
+        Mon, 05 Feb 2024 18:52:31 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVaKhEroopJl8jNwSlu5JoFk1bbAHKcM0/61+X1Kd0DVgc3yAXdgaRARRU2iSAbBgG4YmY9Kd42uNXVzTgkSW+6N0iLPuFduZqzEKPt4fMUSQzB3fYA8en0PYXVZjmepuXpjgHXqZ3jKH51vMfrIfACVk2TgEB0V3GdUDl6vlqGnhccSAhyqL9VT5DZnG7YkrrYmKE4ob7f1Gldck/6FQSnKe6JFmo3rCMIKuuUaxy7e4MlJx8LG8GW3GJ9MoNE2qzR4NYNobS3djwBSrM9U4cNAJtIrX2EzdmitcwObPSsg4IJ0nU+V96MtdhJNaVOybpVo4ohQdB+P3/dBlkZfK07fMjTflKVJVC1wUH/mFnehPOUiApMo3devNoEHk1cP4N4vL+yM+nnY3s=
+Received: from a28aa0606c51.. (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
+        by smtp.gmail.com with ESMTPSA id gx22-20020a056a001e1600b006d94291679asm622542pfb.78.2024.02.05.18.52.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 18:52:30 -0800 (PST)
+From: Jacky Huang <ychuang570808@gmail.com>
+To: linus.walleij@linaro.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	p.zabel@pengutronix.de,
+	j.neuschaefer@gmx.net
+Cc: linux-arm-kernel@lists.infradead.org,
+	linux-gpio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	ychuang3@nuvoton.com,
+	schung@nuvoton.com
+Subject: [PATCH v4 0/4] Add support for nuvoton ma35d1 pin control
+Date: Tue,  6 Feb 2024 02:52:19 +0000
+Message-Id: <20240206025223.35147-1-ychuang570808@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,185 +89,70 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-DAMON sysfs interface need to access kdamond-touching data for some of
-kdamond user commands.  It uses ->after_aggregation() kdamond callback
-to safely access the data in the case.  It had to use the aggregation
-interval callback because that was the only callback that users can
-access complete monitoring results.
+From: Jacky Huang <ychuang3@nuvoton.com>
 
-Since patch series "mm/damon: provide pseudo-moving sum based access
-rate", which starts from commit 78fbfb155d20 ("mm/damon/core: define and
-use a dedicated function for region access rate update"), DAMON provides
-good-to-use quality moitoring results for every sampling interval.  It
-aims to help users who need to quickly retrieve the monitoring results.
-When the aggregation interval is set too long and therefore waiting for
-the aggregation interval can degrade user experience, or when the access
-pattern is expected to be significantly changed[1] could be such cases.
+This patch series adds the pin control and GPIO driver for the nuvoton ma35d1
+ARMv8 SoC. It includes DT binding documentation, the ma35d1 pin control driver,
+and device tree updates.
 
-However, because DAMON sysfs interface is still handling the commands
-per aggregation interval, the end user cannot get the benefit.  Update
-DAMON sysfs interface to handle kdamond commands for every sampling
-interval if applicable.  Specifically, all kdamond data accessing
-commands except 'commit' command are applicable.
+This pin control driver has been tested on the ma35d1 som board with Linux 6.8-rc1.
 
-[1] https://lore.kernel.org/r/20240129121316.GA9706@cuiyangpei
+v4:
+  - Update the pinctrl driver Kconfig
+    - Add depends to CONFIG_PINCTRL_MA35D1 to prevent compilation errors.
+  - Update the pinctrl driver
+    - Utilize devm_kcalloc() instead of devm_kzalloc().
+    - Employ ARRAY_SIZE() instead of sizeof()/sizeof().
 
-Signed-off-by: SeongJae Park <sj@kernel.org>
----
- mm/damon/sysfs-common.h  |  2 ++
- mm/damon/sysfs-schemes.c | 22 +++++++++-------------
- mm/damon/sysfs.c         | 21 ++++++++++++++++++---
- 3 files changed, 29 insertions(+), 16 deletions(-)
+v3:
+  - Update DTS and YAML files
+    - Corrected the unit address of nodes gpioa ~ gpion.
+    - Removed the invalid "pin-default" node.
+    - Removed the phandle entry from "nuvoton,pins".
+  - Update pinctrl driver
+    - Fixed the Kconfig by using "depend on" instead of "if".
+    - Removed unused #include of header files.
+    - Utilized immutable irq_chip instead of dynamic irq_chip.
+    - Replaced ma35_dt_free_map() with pinconf_generic_dt_free_map().
+    - Implemented other minor fixes as suggested by the reviewer.
 
-diff --git a/mm/damon/sysfs-common.h b/mm/damon/sysfs-common.h
-index 4c37a166eb81..ec0703e1e90b 100644
---- a/mm/damon/sysfs-common.h
-+++ b/mm/damon/sysfs-common.h
-@@ -49,6 +49,8 @@ int damon_sysfs_schemes_update_regions_start(
- 		struct damon_sysfs_schemes *sysfs_schemes,
- 		struct damon_ctx *ctx, bool total_bytes_only);
- 
-+void damos_sysfs_mark_finished_regions_updates(struct damon_ctx *ctx);
-+
- bool damos_sysfs_regions_upd_done(void);
- 
- int damon_sysfs_schemes_update_regions_stop(struct damon_ctx *ctx);
-diff --git a/mm/damon/sysfs-schemes.c b/mm/damon/sysfs-schemes.c
-index dd2fb5127009..98c6e5376486 100644
---- a/mm/damon/sysfs-schemes.c
-+++ b/mm/damon/sysfs-schemes.c
-@@ -127,17 +127,17 @@ static const struct kobj_type damon_sysfs_scheme_region_ktype = {
-  *
-  * Once the tried regions update request is received, the request handling
-  * start function (damon_sysfs_scheme_update_regions_start()) sets the status
-- * of all schemes as 'idle' again, and register ->before_damos_apply() and
-- * ->after_sampling() callbacks.
-+ * of all schemes as 'idle' again, and register ->before_damos_apply()
-+ * callback.
-  *
-  * Then, the first followup ->before_damos_apply() callback
-  * (damon_sysfs_before_damos_apply()) sets the status 'started'.  The first
-- * ->after_sampling() callback (damon_sysfs_after_sampling()) after the call
-- * is called only after the scheme is completely applied
-- * to the given snapshot.  Hence the callback knows the situation by showing
-- * 'started' status, and sets the status as 'finished'.  Then,
-- * damon_sysfs_before_damos_apply() understands the situation by showing the
-- * 'finished' status and do nothing.
-+ * ->after_sampling() or ->after_aggregation() callback
-+ *  (damon_sysfs_cmd_request_callback()) after the call is called only after
-+ *  the scheme is completely applied to the given snapshot.  Hence the callback
-+ *  knows the situation by showing 'started' status, and sets the status as
-+ *  'finished'.  Then, damon_sysfs_before_damos_apply() understands the
-+ *  situation by showing the 'finished' status and do nothing.
-  *
-  * If DAMOS is not applied to any region due to any reasons including the
-  * access pattern, the watermarks, the quotas, and the filters,
-@@ -2118,7 +2118,7 @@ static int damon_sysfs_before_damos_apply(struct damon_ctx *ctx,
-  * callback is registered, damon_sysfs_lock should be held to ensure the
-  * regions directories exist.
-  */
--static int damon_sysfs_after_sampling(struct damon_ctx *ctx)
-+void damos_sysfs_mark_finished_regions_updates(struct damon_ctx *ctx)
- {
- 	struct damon_sysfs_schemes *sysfs_schemes =
- 		damon_sysfs_schemes_for_damos_callback;
-@@ -2134,8 +2134,6 @@ static int damon_sysfs_after_sampling(struct damon_ctx *ctx)
- 			sysfs_regions->upd_status =
- 				DAMOS_TRIED_REGIONS_UPD_FINISHED;
- 	}
--
--	return 0;
- }
- 
- /* Called from damon_sysfs_cmd_request_callback under damon_sysfs_lock */
-@@ -2208,7 +2206,6 @@ int damon_sysfs_schemes_update_regions_start(
- 	damos_tried_regions_init_upd_status(sysfs_schemes, ctx);
- 	damos_regions_upd_total_bytes_only = total_bytes_only;
- 	ctx->callback.before_damos_apply = damon_sysfs_before_damos_apply;
--	ctx->callback.after_sampling = damon_sysfs_after_sampling;
- 	return 0;
- }
- 
-@@ -2237,7 +2234,6 @@ int damon_sysfs_schemes_update_regions_stop(struct damon_ctx *ctx)
- {
- 	damon_sysfs_schemes_for_damos_callback = NULL;
- 	ctx->callback.before_damos_apply = NULL;
--	ctx->callback.after_sampling = NULL;
- 	damon_sysfs_schemes_region_idx = 0;
- 	return 0;
- }
-diff --git a/mm/damon/sysfs.c b/mm/damon/sysfs.c
-index 1f891e18b4ee..678de97fcc88 100644
---- a/mm/damon/sysfs.c
-+++ b/mm/damon/sysfs.c
-@@ -1379,11 +1379,13 @@ static int damon_sysfs_commit_schemes_quota_goals(
-  * damon_sysfs_cmd_request_callback() - DAMON callback for handling requests.
-  * @c:		The DAMON context of the callback.
-  * @active:	Whether @c is not deactivated due to watermarks.
-+ * @after_aggr:	Whether this is called from after_aggregation() callback.
-  *
-  * This function is periodically called back from the kdamond thread for @c.
-  * Then, it checks if there is a waiting DAMON sysfs request and handles it.
-  */
--static int damon_sysfs_cmd_request_callback(struct damon_ctx *c, bool active)
-+static int damon_sysfs_cmd_request_callback(struct damon_ctx *c, bool active,
-+		bool after_aggregation)
- {
- 	struct damon_sysfs_kdamond *kdamond;
- 	bool total_bytes_only = false;
-@@ -1401,6 +1403,8 @@ static int damon_sysfs_cmd_request_callback(struct damon_ctx *c, bool active)
- 		err = damon_sysfs_upd_schemes_stats(kdamond);
- 		break;
- 	case DAMON_SYSFS_CMD_COMMIT:
-+		if (!after_aggregation)
-+			goto out;
- 		err = damon_sysfs_commit_input(kdamond);
- 		break;
- 	case DAMON_SYSFS_CMD_COMMIT_SCHEMES_QUOTA_GOALS:
-@@ -1418,6 +1422,7 @@ static int damon_sysfs_cmd_request_callback(struct damon_ctx *c, bool active)
- 				goto keep_lock_out;
- 			}
- 		} else {
-+			damos_sysfs_mark_finished_regions_updates(c);
- 			/*
- 			 * Continue regions updating if DAMON is till
- 			 * active and the update for all schemes is not
-@@ -1450,7 +1455,16 @@ static int damon_sysfs_after_wmarks_check(struct damon_ctx *c)
- 	 * after_wmarks_check() is called back while the context is deactivated
- 	 * by watermarks.
- 	 */
--	return damon_sysfs_cmd_request_callback(c, false);
-+	return damon_sysfs_cmd_request_callback(c, false, false);
-+}
-+
-+static int damon_sysfs_after_sampling(struct damon_ctx *c)
-+{
-+	/*
-+	 * after_sampling() is called back only while the context is not
-+	 * deactivated by watermarks.
-+	 */
-+	return damon_sysfs_cmd_request_callback(c, true, false);
- }
- 
- static int damon_sysfs_after_aggregation(struct damon_ctx *c)
-@@ -1459,7 +1473,7 @@ static int damon_sysfs_after_aggregation(struct damon_ctx *c)
- 	 * after_aggregation() is called back only while the context is not
- 	 * deactivated by watermarks.
- 	 */
--	return damon_sysfs_cmd_request_callback(c, true);
-+	return damon_sysfs_cmd_request_callback(c, true, true);
- }
- 
- static struct damon_ctx *damon_sysfs_build_ctx(
-@@ -1478,6 +1492,7 @@ static struct damon_ctx *damon_sysfs_build_ctx(
- 	}
- 
- 	ctx->callback.after_wmarks_check = damon_sysfs_after_wmarks_check;
-+	ctx->callback.after_sampling = damon_sysfs_after_sampling;
- 	ctx->callback.after_aggregation = damon_sysfs_after_aggregation;
- 	ctx->callback.before_terminate = damon_sysfs_before_terminate;
- 	return ctx;
+v2:
+  - Update nuvoton,ma35d1-pinctrl.yaml
+    - Update the 'nuvoton,pins' to follow the style of rockchip pinctrl approch.
+    - Use power-source to indicate the pin voltage selection which follow the
+      realtek pinctrl approch.
+    - Instead of integer, use drive-strength-microamp to specify the real driving
+      strength capability of IO pins.
+  - Update ma35d1 pinctrl driver
+    - Add I/O drive strength lookup table for translating device tree setting
+      into control register.
+  - Remove ma35d1-pinfunc.h which is unused after update definition of 'nuvoton,pins'.
+
+
+Jacky Huang (4):
+  dt-bindings: reset: Add syscon to nuvoton ma35d1 system-management
+    node
+  dt-bindings: pinctrl: Document nuvoton ma35d1 pin control
+  arm64: dts: nuvoton: Add pinctrl support for ma35d1
+  pinctrl: nuvoton: Add ma35d1 pinctrl and GPIO driver
+
+ .../pinctrl/nuvoton,ma35d1-pinctrl.yaml       |  163 ++
+ .../bindings/reset/nuvoton,ma35d1-reset.yaml  |    3 +-
+ .../boot/dts/nuvoton/ma35d1-iot-512m.dts      |   80 +-
+ .../boot/dts/nuvoton/ma35d1-som-256m.dts      |   83 +-
+ arch/arm64/boot/dts/nuvoton/ma35d1.dtsi       |  150 +-
+ drivers/pinctrl/nuvoton/Kconfig               |   19 +
+ drivers/pinctrl/nuvoton/Makefile              |    2 +
+ drivers/pinctrl/nuvoton/pinctrl-ma35.c        | 1211 +++++++++++
+ drivers/pinctrl/nuvoton/pinctrl-ma35.h        |   50 +
+ drivers/pinctrl/nuvoton/pinctrl-ma35d1.c      | 1797 +++++++++++++++++
+ 10 files changed, 3548 insertions(+), 10 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/nuvoton,ma35d1-pinctrl.yaml
+ create mode 100644 drivers/pinctrl/nuvoton/pinctrl-ma35.c
+ create mode 100644 drivers/pinctrl/nuvoton/pinctrl-ma35.h
+ create mode 100644 drivers/pinctrl/nuvoton/pinctrl-ma35d1.c
+
 -- 
-2.39.2
+2.34.1
 
 
