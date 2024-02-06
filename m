@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-54864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54867-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 807BA84B492
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:11:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 829B984B495
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:11:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF1E81C23362
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:11:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FB3C280F5D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:11:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8343E130E57;
-	Tue,  6 Feb 2024 12:08:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1DB5131E2B;
+	Tue,  6 Feb 2024 12:08:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="jJ/IENCd"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="j/XEAJC3"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FA7312F5A5
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 12:08:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A89FD130AE3
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 12:08:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707221290; cv=none; b=S6UnVFTgOc9idyipvXGI+LK+MAtZ5CtK9r5Z/nFeRxQ7c/lIlk5xgaDmeelc4ACjW8OItpI97IK878aTOFuR9drMz2Fw05D6wVuo0nufbB/7Y2koXDZ/YYzyijcN+WtfNzx2skiX2nyqVRX375kgcWwtc4aTnzDrEiHmMrMi1cs=
+	t=1707221292; cv=none; b=RuL2k5JqCtvp5J3tUAktj8XzaR4TXn4lrbhi788Fflg2OVB/rd/uPZZ/bCrc3dDIPPT4sfdMf8xZO6onc6ITgD+sFlfWHTiOPgLXJXj+RF8iQ9nWlHknt1Le5DAXmrFjw44/sn5mXv234Heu+rJcJcFC3YDTUttYNfC5rMTn0Lc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707221290; c=relaxed/simple;
-	bh=vdKksTE0KMJx45MY9qZ2GtileIIp3RIq9EHUTXskHDc=;
+	s=arc-20240116; t=1707221292; c=relaxed/simple;
+	bh=yXoRgeiQ6ZbdAo4rsLu5fJfcoA4FVsw4hwaCPWMqWAY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=S6sA7SOvk6nhzRXBkUMXUcDO7GrIPv6oVWHdPjOa0iiWurnwvb/VzLzxtENCThKoP9CFEioJflyg/V1A4ofS0bw6yDYYniQhZmtFw9YhPvg4hdYXqATHMrf41J8+cN3S2XfciXVorQcNr2+JOG63A0+UallNSBv9wH8hitB/IJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=jJ/IENCd; arc=none smtp.client-ip=46.235.227.194
+	 MIME-Version; b=H82ad+OVz6DnEISBZynKJQpqjajoFpGEdcG/hwYMjYEyE4G6Ri5bhWNhApgkfpl5a1ourSlRiO7caBwcKbhkJfybo2fEYRHTtDGBjsdlf+GlAccXfUM2vS44YohuYloeYHrV/NhQaGo+pKQECjkC1W30faTzbKhw30omb9GOPLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=j/XEAJC3; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707221279;
-	bh=vdKksTE0KMJx45MY9qZ2GtileIIp3RIq9EHUTXskHDc=;
+	s=mail; t=1707221280;
+	bh=yXoRgeiQ6ZbdAo4rsLu5fJfcoA4FVsw4hwaCPWMqWAY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jJ/IENCda0kWOSqR5sOuVwPK5hBAPmBj/MWKcQD2ZQ+N16lBYKRrhp1IPPdyWcViN
-	 mJ6sLpbCfXiQW8fTyzRhxO20NlIosNtx53MkJ35wIjP8OgkGAerifmaOAKHq/KG9fE
-	 uRAUKOnz5g8l/MXVozjwZSsoEU3Ku5iDlyoWq/CZkpqHD6FI4b5Op4kCrIPLxyH8pq
-	 fVUV51/+Fu7WEZpXW/9h5ZxrJeuqKGtvtySLonbsUOm0KrOxDyl0GPfc0pErU3b6se
-	 s1BB6wZfl5Kw/w/2PnXCer9Dg6hN1tGO1OC6yo+IgLntlyp+Og+5wNXqvWVWVW21Fc
-	 xExJU+CcVALHg==
+	b=j/XEAJC3o4Pi5BjFITL3Xa3wyFVckJh3TSEjUWRS0CNYeDsvWSxkjhmACQ35mIICE
+	 GTdeho7DPqK9M6qpAKYKXtp+6tstykD3FdOHZ1xJRQqi1SAbUGIYhxMn1y4qWulE5N
+	 cdtGoUWxRk22E9jkpyqPONPtbpzJdjdgubxiYKiVrmmB6iLCs7SXo8mxspdc0EC5fC
+	 +TqAkycTsY8ED1wbWL9tMA8VIRxhf4blg/GCXwhcGV6jmS1N+X/6jL3os2t6VFYa+M
+	 4+fLEDfr24qb+upb1fvOzuRu4y0aNZ/Q4nMAUqkezJnXdKmrN8/LgQGbXTs7RVsS+K
+	 qsQpqIEO+Gnfg==
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id DD41D378207E;
-	Tue,  6 Feb 2024 12:07:58 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id DFA293782089;
+	Tue,  6 Feb 2024 12:07:59 +0000 (UTC)
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: chunkuang.hu@kernel.org
 Cc: fshao@chromium.org,
@@ -60,9 +60,9 @@ Cc: fshao@chromium.org,
 	linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	kernel@collabora.com
-Subject: [PATCH v4 7/9] drm/mediatek: dsi: Simplify with dev_err_probe and remove gotos
-Date: Tue,  6 Feb 2024 13:07:46 +0100
-Message-ID: <20240206120748.136610-8-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v4 8/9] drm/mediatek: dsi: Compress of_device_id entries and add sentinel
+Date: Tue,  6 Feb 2024 13:07:47 +0100
+Message-ID: <20240206120748.136610-9-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240206120748.136610-1-angelogioacchino.delregno@collabora.com>
 References: <20240206120748.136610-1-angelogioacchino.delregno@collabora.com>
@@ -74,116 +74,44 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Most of the functions that are called in the probe callback are
-devm managed, or all but mipi_dsi_host_register(): simplify the probe
-function's error paths with dev_err_probe() and remove the lonely
-instance of `goto err_unregister_host` by just directly calling the
-mipi_dsi_host_unregister() function in the devm_request_irq() error
-path, allowing to also remove the same label.
+All entries fit in 82 columns, which is acceptable: compress all of
+the mtk_dsi_of_match[] entries to a single line for each.
+
+While at it, also add the usual sentinel comment to the last entry.
 
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- drivers/gpu/drm/mediatek/mtk_dsi.c | 60 +++++++++---------------------
- 1 file changed, 18 insertions(+), 42 deletions(-)
+ drivers/gpu/drm/mediatek/mtk_dsi.c | 17 ++++++-----------
+ 1 file changed, 6 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
-index 6ee01626d55c..8d407d71e9db 100644
+index 8d407d71e9db..545c5cc071d9 100644
 --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
 +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-@@ -1117,64 +1117,44 @@ static int mtk_dsi_probe(struct platform_device *pdev)
- 	dsi->driver_data = of_device_get_match_data(dev);
+@@ -1204,17 +1204,12 @@ static const struct mtk_dsi_driver_data mt8188_dsi_driver_data = {
+ };
  
- 	dsi->engine_clk = devm_clk_get(dev, "engine");
--	if (IS_ERR(dsi->engine_clk)) {
--		ret = PTR_ERR(dsi->engine_clk);
-+	if (IS_ERR(dsi->engine_clk))
-+		return dev_err_probe(dev, PTR_ERR(dsi->engine_clk),
-+				     "Failed to get engine clock\n");
+ static const struct of_device_id mtk_dsi_of_match[] = {
+-	{ .compatible = "mediatek,mt2701-dsi",
+-	  .data = &mt2701_dsi_driver_data },
+-	{ .compatible = "mediatek,mt8173-dsi",
+-	  .data = &mt8173_dsi_driver_data },
+-	{ .compatible = "mediatek,mt8183-dsi",
+-	  .data = &mt8183_dsi_driver_data },
+-	{ .compatible = "mediatek,mt8186-dsi",
+-	  .data = &mt8186_dsi_driver_data },
+-	{ .compatible = "mediatek,mt8188-dsi",
+-	  .data = &mt8188_dsi_driver_data },
+-	{ },
++	{ .compatible = "mediatek,mt2701-dsi", .data = &mt2701_dsi_driver_data },
++	{ .compatible = "mediatek,mt8173-dsi", .data = &mt8173_dsi_driver_data },
++	{ .compatible = "mediatek,mt8183-dsi", .data = &mt8183_dsi_driver_data },
++	{ .compatible = "mediatek,mt8186-dsi", .data = &mt8186_dsi_driver_data },
++	{ .compatible = "mediatek,mt8188-dsi", .data = &mt8188_dsi_driver_data },
++	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, mtk_dsi_of_match);
  
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "Failed to get engine clock: %d\n", ret);
--		return ret;
--	}
- 
- 	dsi->digital_clk = devm_clk_get(dev, "digital");
--	if (IS_ERR(dsi->digital_clk)) {
--		ret = PTR_ERR(dsi->digital_clk);
--
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "Failed to get digital clock: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(dsi->digital_clk))
-+		return dev_err_probe(dev, PTR_ERR(dsi->digital_clk),
-+				     "Failed to get digital clock\n");
- 
- 	dsi->hs_clk = devm_clk_get(dev, "hs");
--	if (IS_ERR(dsi->hs_clk)) {
--		ret = PTR_ERR(dsi->hs_clk);
--		dev_err(dev, "Failed to get hs clock: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(dsi->hs_clk))
-+		return dev_err_probe(dev, PTR_ERR(dsi->hs_clk), "Failed to get hs clock\n");
- 
- 	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	dsi->regs = devm_ioremap_resource(dev, regs);
--	if (IS_ERR(dsi->regs)) {
--		ret = PTR_ERR(dsi->regs);
--		dev_err(dev, "Failed to ioremap memory: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(dsi->regs))
-+		return dev_err_probe(dev, PTR_ERR(dsi->regs), "Failed to ioremap memory\n");
- 
- 	dsi->phy = devm_phy_get(dev, "dphy");
--	if (IS_ERR(dsi->phy)) {
--		ret = PTR_ERR(dsi->phy);
--		dev_err(dev, "Failed to get MIPI-DPHY: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(dsi->phy))
-+		return dev_err_probe(dev, PTR_ERR(dsi->phy), "Failed to get MIPI-DPHY\n");
- 
- 	irq_num = platform_get_irq(pdev, 0);
--	if (irq_num < 0) {
--		ret = irq_num;
--		return ret;
--	}
-+	if (irq_num < 0)
-+		return irq_num;
- 
- 	dsi->host.ops = &mtk_dsi_ops;
- 	dsi->host.dev = dev;
- 	ret = mipi_dsi_host_register(&dsi->host);
--	if (ret < 0) {
--		dev_err(dev, "failed to register DSI host: %d\n", ret);
--		return ret;
--	}
-+	if (ret < 0)
-+		return dev_err_probe(dev, ret, "Failed to register DSI host\n");
- 
- 	ret = devm_request_irq(&pdev->dev, irq_num, mtk_dsi_irq,
- 			       IRQF_TRIGGER_NONE, dev_name(&pdev->dev), dsi);
- 	if (ret) {
--		dev_err(&pdev->dev, "failed to request mediatek dsi irq\n");
--		goto err_unregister_host;
-+		mipi_dsi_host_unregister(&dsi->host);
-+		return dev_err_probe(&pdev->dev, ret, "Failed to request DSI irq\n");
- 	}
- 
- 	init_waitqueue_head(&dsi->irq_wait_queue);
-@@ -1186,10 +1166,6 @@ static int mtk_dsi_probe(struct platform_device *pdev)
- 	dsi->bridge.type = DRM_MODE_CONNECTOR_DSI;
- 
- 	return 0;
--
--err_unregister_host:
--	mipi_dsi_host_unregister(&dsi->host);
--	return ret;
- }
- 
- static void mtk_dsi_remove(struct platform_device *pdev)
 -- 
 2.43.0
 
