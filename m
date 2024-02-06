@@ -1,402 +1,105 @@
-Return-Path: <linux-kernel+bounces-55198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6374184B93E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:21:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8341284B90D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:16:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9461B2C5A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:15:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 695DA1C25204
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:16:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1E4F137C2E;
-	Tue,  6 Feb 2024 15:11:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D681A137C51;
+	Tue,  6 Feb 2024 15:11:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AwYQ1uPI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="ypv4GNO+"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1F7F1339B6;
-	Tue,  6 Feb 2024 15:11:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DFD6137C32
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 15:11:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707232266; cv=none; b=KUYOpfVzjqyIlS1iJfIb66XBpWq1ekpw8JX47VtGFDs1DKyKMZnLqmHp4KthmpOEY3ZaHNP+7j59BWsarEexmMJmpBbuaKInWgvaIk9fpHu0lwEzYgY95fZiyO5sPXNE6YguHzacWlebEjBaDAwrqO3wECa+C2FpVuFwhni5SE0=
+	t=1707232271; cv=none; b=jAmAlKALrj0RtwIharY7Bnl+ecSFQ1EZUACr/vdFURrXd+sD8fbhobX1Vpb9COdUR5RER//oAkJ/FxCiDSxz95XyjiBG2Rd/CHVtg/MmJPGomXPDPss9VxEeM4GBAjUbvFPWyEhYRp/uiVMkaoDdEDUa1OVqW504NW8JnOzoCyU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707232266; c=relaxed/simple;
-	bh=mCsnjbx0olUYMnP8Idg8RaURtW9wE/3l9D3uy0XJrV8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Fbrq1t378vFZvvDcHhGvisAIfkJf1LiYzjvJLfgw4V7pMkkUItG0UY6u9ioMlPCMHIFVA26BOBLlqRqmP1+i+wXZA5yZuiq+c9TreCLIF4r4TC7NrIKlzMgjPZz6CnKDF2fJBuDmU20ct2elgL7CFEjd9Tyz5cEG0rRTHYjNz34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AwYQ1uPI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1133C433C7;
-	Tue,  6 Feb 2024 15:11:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707232266;
-	bh=mCsnjbx0olUYMnP8Idg8RaURtW9wE/3l9D3uy0XJrV8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AwYQ1uPItdeS+ImEPRutmA0TbW+BF1DYRSN3yVszthOAZlHg5RtXJSvHDZd8/v0I/
-	 eu0JqBULwdLt4KxyXQVwJF6AfKy0W5y1BRTMgEs+74xm7Eiwm6ZWjaG50JeDRpn38b
-	 EcZuDn9c8Yho7ScLB7ufh0oOhv+753MmAUF6n52BU9XmRMj4q2+M529L7Mm98SPRo1
-	 omfg1BDcFSKvogrl2lBhRwiE9zdnQv2D4ChbfyV/ZLUCFeX2v3Bh1dVVRpTnYksu5y
-	 uH1Y8CtC+vYFoIIiit0sbdcFMzD/R+7aktXNFtt8e4oQRWz6yYVNVWwvFGAyIN4No5
-	 YrtvGY2h9seBQ==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>
-Cc: linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	bpf <bpf@vger.kernel.org>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v7 19/36] function_graph: Implement fgraph_reserve_data() and fgraph_retrieve_data()
-Date: Wed,  7 Feb 2024 00:11:01 +0900
-Message-Id: <170723226123.502590.4924916690354403889.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <170723204881.502590.11906735097521170661.stgit@devnote2>
-References: <170723204881.502590.11906735097521170661.stgit@devnote2>
-User-Agent: StGit/0.19
+	s=arc-20240116; t=1707232271; c=relaxed/simple;
+	bh=52BRVFLdK1qe4Ymca2cm8/Pnx8d4g6f28T31akBpkBc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Fv3deBGefAZDAT+Oz6kNAvoaAgQODxpcpHDLBdHiOeCq3YbCmBNhnEYnkQmGnTey+UQ75E2SpA57C+daARTka2m1Q9Vgp7Q/iDcm8mIr5FwqeXf/RSxQzbaKH7xptjoFwzoL3X0wMWCQSQhJ47zelM0Hz1FklN2rv6dVpBgafJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=ypv4GNO+; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-55ff4dbe6a8so5076609a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 07:11:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707232267; x=1707837067; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BjQKrJiqto5Ob+/v96nV9FtvyMGmkQizdinJfF9BpvA=;
+        b=ypv4GNO+M9L4+p7HhFJaLQoBjb/98uHtGwO7G+iTQRPHrVo1Vm7J3A2wmx0jpq4Of0
+         i8ozAWUt9W5Yv0XWlpbpYMrrHCFjTRJtzEA8iboteTB+nV1QmAhwoymnuO8VtjixvFeL
+         CPiLAxJiguyNQJxY5eQIb6RlQSF3IJliQlJz09O8CvVkaVAhBwFZEwfZJaFHHnxhQc43
+         Q5pgKnr4TY+DYIFDrd+6iOmGel3UiCml5rOJmYjUpQbhHAdVnMe7uHv5WHINCZo4WYui
+         wHGidmOox95k9GhVyhgj3QKvvJ8vfXs9tagpUaZuUWJngweYrtNeAHplnvjBwKI2yWFz
+         H1+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707232267; x=1707837067;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BjQKrJiqto5Ob+/v96nV9FtvyMGmkQizdinJfF9BpvA=;
+        b=oWNepOp6LhbCTR+OEEw33LMQXj97/Nr/v8rd+QbS2foO7HcS3XZT0uTsB+hBDi49Um
+         n0D/p9oXIZlu+U0MkxlenBHr81aaK9z+urSx0/ppa3aPnsVLj8vkT7sxaQpKkR/aJiJr
+         oFoNrcLPKdxDugK/GPAj+DYTt8JulVW6b80AXf6Ts9YbovVBxenowRDmm9FZd4exUod7
+         YcKl39uCOCaNsjHN53vJjFrMZCA5shYPbyl7C2dubb83wNjfJJI2Jan9FoxecrDjro75
+         82uJcNMQ1tuSYxp/VWtv597B+dvc1rT8//Y159k9A+MuDLQSYsy6jN9LBnx6zgAw9Ki8
+         ORVw==
+X-Gm-Message-State: AOJu0YxQ/OYY2kFC5b/HdMnSMxwmjaD/FEdErlgcip/RzEPZCbvy5RMe
+	7nJ4szLODZZUWMgxipYhB5suPhBCZx9qlE75Yv7w9GtB3kg+6nuin73L4pgR6+rWF5Y4nz8fMQH
+	S
+X-Google-Smtp-Source: AGHT+IEWuOCt8voz4u+MBpvA4hP3K9km7MbtGtHA6Mv+jBPk9rsHCMaPnCNkcUZWrixdQ7z0/q5ymA==
+X-Received: by 2002:a17:906:6d6:b0:a37:e8fb:1649 with SMTP id v22-20020a17090606d600b00a37e8fb1649mr1637365ejb.56.1707232267526;
+        Tue, 06 Feb 2024 07:11:07 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUpfUWzNOin8Ev9feQsK28lEv8UY0ytQSJdQbrL0dFp3df/wU1rkIi0XWIR+aedXQuVIQ+IECaHKD3CF9ZI/qNZAqfN4Zf4BHDYckYLgx32eiSYvGe7YIk1fuuFSVizeqs7XgsZlVDMntB+zN0F1jtZVVgaYCdOVTviENfQlW4JMbuzm4iXFVqd8j/p98p+uTZWiUUUmPx+3sI+RySJ4tEDABdeq3H2ciFF4JAvcU6vmXN9YbRaTPAAwi2Lclnl9fgxtZhU61QLEBtclp2uGB85QDKPNL1CwAyUJTzFiCFXwO7e/2XpHKhsbqjtmb/yKrzL8qQNsYW6JS7VWBh5aoeW102u+H8B4WTJ2d6EfzI7+hFSdw1aLDw2Z+eBKdgP8sX04McHhz8ZNx39/2sG8carxkbv4HTmZQeD4Q==
+Received: from [192.168.1.172] ([93.5.22.158])
+        by smtp.gmail.com with ESMTPSA id f14-20020a170906048e00b00a378377030csm1252795eja.41.2024.02.06.07.11.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Feb 2024 07:11:07 -0800 (PST)
+Message-ID: <594a9b63-0e3d-4ab9-a1c4-bd25ee40d9c7@baylibre.com>
+Date: Tue, 6 Feb 2024 16:11:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 5/9] drm/mediatek: dsi: Replace open-coded instance of
+ HZ_PER_MHZ
+Content-Language: en-US
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ chunkuang.hu@kernel.org
+Cc: fshao@chromium.org, p.zabel@pengutronix.de, airlied@gmail.com,
+ daniel@ffwll.ch, matthias.bgg@gmail.com, dri-devel@lists.freedesktop.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, kernel@collabora.com
+References: <20240206120748.136610-1-angelogioacchino.delregno@collabora.com>
+ <20240206120748.136610-6-angelogioacchino.delregno@collabora.com>
+From: Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <20240206120748.136610-6-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
 
-Added functions that can be called by a fgraph_ops entryfunc and retfunc to
-store state between the entry of the function being traced to the exit of
-the same function. The fgraph_ops entryfunc() may call
-fgraph_reserve_data() to store up to 32 words onto the task's shadow
-ret_stack and this then can be retrieved by fgraph_retrieve_data() called
-by the corresponding retfunc().
+On 06/02/2024 13:07, AngeloGioacchino Del Regno wrote:
+> In mtk_dsi_phy_timconfig(), we're dividing the `data_rate` variable,
+> expressed in Hz to retrieve a value in MHz: instead of open-coding,
+> use the HZ_PER_MHZ definition, available in linux/units.h.
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- Changes in v3:
-  - Store fgraph_array index to the data entry.
-  - Both function requires fgraph_array index to store/retrieve data.
-  - Reserve correct size of the data.
-  - Return correct data area.
- Changes in v2:
-  - Retrieve the reserved size by fgraph_retrieve_data().
-  - Expand the maximum data size to 32 words.
-  - Update stack index with __get_index(val) if FGRAPH_TYPE_ARRAY entry.
-  - fix typos and make description lines shorter than 76 chars.
----
- include/linux/ftrace.h |    3 +
- kernel/trace/fgraph.c  |  175 ++++++++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 170 insertions(+), 8 deletions(-)
-
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index 737f84104577..815e865f46c9 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -1075,6 +1075,9 @@ struct fgraph_ops {
- 	int				idx;
- };
- 
-+void *fgraph_reserve_data(int idx, int size_bytes);
-+void *fgraph_retrieve_data(int idx, int *size_bytes);
-+
- /*
-  * Stack of return addresses for functions
-  * of a thread.
-diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-index 4705681e65fd..5cc7f44037cd 100644
---- a/kernel/trace/fgraph.c
-+++ b/kernel/trace/fgraph.c
-@@ -41,17 +41,29 @@
-  * bits: 10 - 11	Type of storage
-  *			  0 - reserved
-  *			  1 - bitmap of fgraph_array index
-+ *			  2 - reserved data
-  *
-  * For bitmap of fgraph_array index
-  *  bits: 12 - 27	The bitmap of fgraph_ops fgraph_array index
-  *
-+ * For reserved data:
-+ *  bits: 12 - 17	The size in words that is stored
-+ *  bits: 18 - 23	The index of fgraph_array, which shows who is stored
-+ *
-  * That is, at the end of function_graph_enter, if the first and forth
-  * fgraph_ops on the fgraph_array[] (index 0 and 3) needs their retfunc called
-- * on the return of the function being traced, this is what will be on the
-- * task's shadow ret_stack: (the stack grows upward)
-+ * on the return of the function being traced, and the forth fgraph_ops
-+ * stored two words of data, this is what will be on the task's shadow
-+ * ret_stack: (the stack grows upward)
-  *
-  * |                                            | <- task->curr_ret_stack
-  * +--------------------------------------------+
-+ * | data_type(idx:3, size:2,                   |
-+ * |           offset:FGRAPH_RET_INDEX+3)       | ( Data with size of 2 words)
-+ * +--------------------------------------------+ ( It is 4 words from the ret_stack)
-+ * |            STORED DATA WORD 2              |
-+ * |            STORED DATA WORD 1              |
-+ * +------i-------------------------------------+
-  * | bitmap_type(bitmap:(BIT(3)|BIT(0)),        |
-  * |             offset:FGRAPH_RET_INDEX)       | <- the offset is from here
-  * +--------------------------------------------+
-@@ -78,14 +90,23 @@
- enum {
- 	FGRAPH_TYPE_RESERVED	= 0,
- 	FGRAPH_TYPE_BITMAP	= 1,
-+	FGRAPH_TYPE_DATA	= 2,
- };
- 
- #define FGRAPH_INDEX_SIZE	16
- #define FGRAPH_INDEX_MASK	GENMASK(FGRAPH_INDEX_SIZE - 1, 0)
- #define FGRAPH_INDEX_SHIFT	(FGRAPH_TYPE_SHIFT + FGRAPH_TYPE_SIZE)
- 
--/* Currently the max stack index can't be more than register callers */
--#define FGRAPH_MAX_INDEX	(FGRAPH_INDEX_SIZE + FGRAPH_RET_INDEX)
-+#define FGRAPH_DATA_SIZE	5
-+#define FGRAPH_DATA_MASK	((1 << FGRAPH_DATA_SIZE) - 1)
-+#define FGRAPH_DATA_SHIFT	(FGRAPH_TYPE_SHIFT + FGRAPH_TYPE_SIZE)
-+
-+#define FGRAPH_DATA_INDEX_SIZE	4
-+#define FGRAPH_DATA_INDEX_MASK	((1 << FGRAPH_DATA_INDEX_SIZE) - 1)
-+#define FGRAPH_DATA_INDEX_SHIFT	(FGRAPH_DATA_SHIFT + FGRAPH_DATA_SIZE)
-+
-+#define FGRAPH_MAX_INDEX	\
-+	((FGRAPH_INDEX_SIZE << FGRAPH_DATA_SIZE) + FGRAPH_RET_INDEX)
- 
- #define FGRAPH_ARRAY_SIZE	FGRAPH_INDEX_SIZE
- 
-@@ -97,6 +118,8 @@ enum {
- 
- #define RET_STACK(t, index) ((struct ftrace_ret_stack *)(&(t)->ret_stack[index]))
- 
-+#define FGRAPH_MAX_DATA_SIZE (sizeof(long) * (1 << FGRAPH_DATA_SIZE))
-+
- /*
-  * Each fgraph_ops has a reservered unsigned long at the end (top) of the
-  * ret_stack to store task specific state.
-@@ -145,14 +168,39 @@ static int fgraph_lru_alloc_index(void)
- 	return idx;
- }
- 
-+static inline int __get_index(unsigned long val)
-+{
-+	return val & FGRAPH_RET_INDEX_MASK;
-+}
-+
-+static inline int __get_type(unsigned long val)
-+{
-+	return (val >> FGRAPH_TYPE_SHIFT) & FGRAPH_TYPE_MASK;
-+}
-+
-+static inline int __get_data_index(unsigned long val)
-+{
-+	return (val >> FGRAPH_DATA_INDEX_SHIFT) & FGRAPH_DATA_INDEX_MASK;
-+}
-+
-+static inline int __get_data_size(unsigned long val)
-+{
-+	return (val >> FGRAPH_DATA_SHIFT) & FGRAPH_DATA_MASK;
-+}
-+
-+static inline unsigned long get_fgraph_entry(struct task_struct *t, int index)
-+{
-+	return t->ret_stack[index];
-+}
-+
- static inline int get_ret_stack_index(struct task_struct *t, int offset)
- {
--	return t->ret_stack[offset] & FGRAPH_RET_INDEX_MASK;
-+	return __get_index(t->ret_stack[offset]);
- }
- 
- static inline int get_fgraph_type(struct task_struct *t, int offset)
- {
--	return (t->ret_stack[offset] >> FGRAPH_TYPE_SHIFT) & FGRAPH_TYPE_MASK;
-+	return __get_type(t->ret_stack[offset]);
- }
- 
- static inline unsigned long
-@@ -179,6 +227,22 @@ add_fgraph_index_bitmap(struct task_struct *t, int offset, unsigned long bitmap)
- 	t->ret_stack[offset] |= (bitmap << FGRAPH_INDEX_SHIFT);
- }
- 
-+static inline void *get_fgraph_data(struct task_struct *t, int index)
-+{
-+	unsigned long val = t->ret_stack[index];
-+
-+	if (__get_type(val) != FGRAPH_TYPE_DATA)
-+		return NULL;
-+	index -= __get_data_size(val);
-+	return (void *)&t->ret_stack[index];
-+}
-+
-+static inline unsigned long make_fgraph_data(int idx, int size, int offset)
-+{
-+	return (idx << FGRAPH_DATA_INDEX_SHIFT) | (size << FGRAPH_DATA_SHIFT) |
-+		(FGRAPH_TYPE_DATA << FGRAPH_TYPE_SHIFT) | offset;
-+}
-+
- /* ftrace_graph_entry set to this to tell some archs to run function graph */
- static int entry_run(struct ftrace_graph_ent *trace, struct fgraph_ops *ops)
- {
-@@ -212,6 +276,92 @@ static void ret_stack_init_task_vars(unsigned long *ret_stack)
- 	memset(gvals, 0, sizeof(*gvals) * FGRAPH_ARRAY_SIZE);
- }
- 
-+/**
-+ * fgraph_reserve_data - Reserve storage on the task's ret_stack
-+ * @idx:	The index of fgraph_array
-+ * @size_bytes: The size in bytes to reserve
-+ *
-+ * Reserves space of up to FGRAPH_MAX_DATA_SIZE bytes on the
-+ * task's ret_stack shadow stack, for a given fgraph_ops during
-+ * the entryfunc() call. If entryfunc() returns zero, the storage
-+ * is discarded. An entryfunc() can only call this once per iteration.
-+ * The fgraph_ops retfunc() can retrieve this stored data with
-+ * fgraph_retrieve_data().
-+ *
-+ * Returns: On success, a pointer to the data on the stack.
-+ *   Otherwise, NULL if there's not enough space left on the
-+ *   ret_stack for the data, or if fgraph_reserve_data() was called
-+ *   more than once for a single entryfunc() call.
-+ */
-+void *fgraph_reserve_data(int idx, int size_bytes)
-+{
-+	unsigned long val;
-+	void *data;
-+	int curr_ret_stack = current->curr_ret_stack;
-+	int data_size;
-+
-+	if (size_bytes > FGRAPH_MAX_DATA_SIZE)
-+		return NULL;
-+
-+	/* Convert to number of longs + data word */
-+	data_size = DIV_ROUND_UP(size_bytes, sizeof(long));
-+
-+	val = get_fgraph_entry(current, curr_ret_stack - 1);
-+	data = &current->ret_stack[curr_ret_stack];
-+
-+	curr_ret_stack += data_size + 1;
-+	if (unlikely(curr_ret_stack >= SHADOW_STACK_MAX_INDEX))
-+		return NULL;
-+
-+	val = make_fgraph_data(idx, data_size, __get_index(val) + data_size + 1);
-+
-+	/* Set the last word to be reserved */
-+	current->ret_stack[curr_ret_stack - 1] = val;
-+
-+	/* Make sure interrupts see this */
-+	barrier();
-+	current->curr_ret_stack = curr_ret_stack;
-+	/* Again sync with interrupts, and reset reserve */
-+	current->ret_stack[curr_ret_stack - 1] = val;
-+
-+	return data;
-+}
-+
-+/**
-+ * fgraph_retrieve_data - Retrieve stored data from fgraph_reserve_data()
-+ * @idx:	the index of fgraph_array (fgraph_ops::idx)
-+ * @size_bytes: pointer to retrieved data size.
-+ *
-+ * This is to be called by a fgraph_ops retfunc(), to retrieve data that
-+ * was stored by the fgraph_ops entryfunc() on the function entry.
-+ * That is, this will retrieve the data that was reserved on the
-+ * entry of the function that corresponds to the exit of the function
-+ * that the fgraph_ops retfunc() is called on.
-+ *
-+ * Returns: The stored data from fgraph_reserve_data() called by the
-+ *    matching entryfunc() for the retfunc() this is called from.
-+ *   Or NULL if there was nothing stored.
-+ */
-+void *fgraph_retrieve_data(int idx, int *size_bytes)
-+{
-+	int index = current->curr_ret_stack - 1;
-+	unsigned long val;
-+
-+	val = get_fgraph_entry(current, index);
-+	while (__get_type(val) == FGRAPH_TYPE_DATA) {
-+		if (__get_data_index(val) == idx)
-+			goto found;
-+		index -= __get_data_size(val) + 1;
-+		val = get_fgraph_entry(current, index);
-+	}
-+	return NULL;
-+found:
-+	if (size_bytes)
-+		*size_bytes = __get_data_size(val) *
-+			      sizeof(long);
-+	return get_fgraph_data(current, index);
-+}
-+
- /**
-  * fgraph_get_task_var - retrieve a task specific state variable
-  * @gops: The ftrace_ops that owns the task specific variable
-@@ -449,13 +599,18 @@ int function_graph_enter(unsigned long ret, unsigned long func,
- 
- 	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
- 		struct fgraph_ops *gops = fgraph_array[i];
-+		int save_curr_ret_stack;
- 
- 		if (gops == &fgraph_stub)
- 			continue;
- 
-+		save_curr_ret_stack = current->curr_ret_stack;
- 		if (ftrace_ops_test(&gops->ops, func, NULL) &&
- 		    gops->entryfunc(&trace, gops))
- 			bitmap |= BIT(i);
-+		else
-+			/* Clear out any saved storage */
-+			current->curr_ret_stack = save_curr_ret_stack;
- 	}
- 
- 	if (!bitmap)
-@@ -481,6 +636,7 @@ int function_graph_enter_ops(unsigned long ret, unsigned long func,
- 			     struct fgraph_ops *gops)
- {
- 	struct ftrace_graph_ent trace;
-+	int save_curr_ret_stack;
- 	int index;
- 	int type;
- 
-@@ -500,13 +656,15 @@ int function_graph_enter_ops(unsigned long ret, unsigned long func,
- 
- 	trace.func = func;
- 	trace.depth = current->curr_ret_depth;
-+	save_curr_ret_stack = current->curr_ret_stack;
- 	if (gops->entryfunc(&trace, gops)) {
- 		if (type == FGRAPH_TYPE_RESERVED)
- 			set_fgraph_index_bitmap(current, index, BIT(gops->idx));
- 		else
- 			add_fgraph_index_bitmap(current, index, BIT(gops->idx));
- 		return 0;
--	}
-+	} else
-+		current->curr_ret_stack = save_curr_ret_stack;
- 
- 	if (type == FGRAPH_TYPE_RESERVED) {
- 		current->curr_ret_stack -= FGRAPH_RET_INDEX + 1;
-@@ -651,7 +809,8 @@ static unsigned long __ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs
- 	 * curr_ret_stack is after that.
- 	 */
- 	barrier();
--	current->curr_ret_stack -= FGRAPH_RET_INDEX + 1;
-+	current->curr_ret_stack = index - FGRAPH_RET_INDEX;
-+
- 	current->curr_ret_depth--;
- 	return ret;
- }
-
+-- 
+Regards,
+Alexandre
 
