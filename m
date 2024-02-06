@@ -1,194 +1,101 @@
-Return-Path: <linux-kernel+bounces-55136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F69A84B845
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:46:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5050484B870
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:53:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 355DB281C32
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:46:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44A7DB2E4FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:47:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BBA013249E;
-	Tue,  6 Feb 2024 14:46:43 +0000 (UTC)
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ABD413249F;
+	Tue,  6 Feb 2024 14:47:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HQ3Mcsit"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFFA3A59;
-	Tue,  6 Feb 2024 14:46:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C470FA59;
+	Tue,  6 Feb 2024 14:47:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707230803; cv=none; b=jyqo98j9va7KALPGMOhmA5qDQsVFFahQlz7nr3o82SEQwDbiE2U/Mz1My1uXVdrK4/GUGAybyDzSw0WOeapNvKFtSdR1YKEu9VcFXFuTww+i8utmymVDlfOCigQgZMvAeEqnLb4uTaOhy5/BxzmDOHbtZEZCVRB8dikg49Ni994=
+	t=1707230839; cv=none; b=Hjqp8B7y91QrbXuuBe/KSgMK/1K6a101flM7hMg9bbFAzXcZmorFhO6Da1p7pukdfn2w4eaYTRAGZuft2DvKHUvb4LI8BfnNCGm81d77DS3igVd3W/vhikIUk6nZpVGvk/I3LxvlLO7fCqDP7rVrKda5mv7Ji3o6cL755sVg4ds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707230803; c=relaxed/simple;
-	bh=ZzXnpvwPJC6XGz40vdMnVlfhgML6fznUfbnkGiDItuc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kP8f1APLMXBqJXMNQdv8QR64b/A5U5TOE7ZxICLlDPVdu7T0MNGckayzcfPKmdFTJOwfqDxs4yyZ+/B8RFKI9pQ1YQKixP/hBwT1Ud/NTdqihEj1h+nB83iksTljREJux4SrpFGAwCieibo0u63MpveahNyChUJ8nfjfDGFyPJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rXMiY-0006tA-EV; Tue, 06 Feb 2024 15:46:34 +0100
-Message-ID: <a92ca042-b981-4f35-beec-ebf416e4239b@leemhuis.info>
-Date: Tue, 6 Feb 2024 15:46:33 +0100
+	s=arc-20240116; t=1707230839; c=relaxed/simple;
+	bh=8r7LG2kurSI2U4sQrA5AELqTkRZ0whAc1ZKiEc5C0Lk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KVUe+X6is1yYm2V0qRUacf18gW0vFB61F0wlbgFyYzsAGEc4L1hXxAYtesOa6EcwYV2SL2JT2p25yO45pipgTPmnZNa72iJw813p3JRcf6gUmnZniea86UjqDy5410Z4McLAxMWiXhx/7ZuNyyNL7Wz8J3OEJlqNovPouBmW/Q4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HQ3Mcsit; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A2C4C433C7;
+	Tue,  6 Feb 2024 14:47:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707230839;
+	bh=8r7LG2kurSI2U4sQrA5AELqTkRZ0whAc1ZKiEc5C0Lk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HQ3McsitDHbr6XqfDLKVSy93H54aZbnwF+4iLq4GkopQQqhGaLOtUPaY6hyY+uw4A
+	 pT7fKBrFF5ebu9VkjDHZygFcoEA67srGFH4/zIgosdS/VWYMm2gbqIv+HuNaieqH9m
+	 lO3L1zJEIlABmhYD7xc/BVKjuGN28r0ZmMKQPv0uhcbnloTfXpb8XUAwyRrSow7bHJ
+	 UWS55jXAabVPvu3Z3w6UWaGeeFjgfAInSsJ21k8S2jAlS20HKuSopZRgrGdHVj0lWp
+	 z6TbHWCqFcWE8Q+QkFTMH2LBx54/1s3CiEO8/M+I4taUbPth+dsPOfHCm1vqUaX4S0
+	 9O+ROwNjTRY1Q==
+Date: Tue, 6 Feb 2024 14:47:13 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+Cc: Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Matti Vaittinen <mazziesaccount@gmail.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Marek Vasut <marex@denx.de>, Anshul Dalal <anshulusr@gmail.com>,
+	Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+	Matt Ranostay <matt@ranostay.sg>,
+	Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
+	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 0/5] Support for Avago APDS9306 Ambient Light Sensor
+Message-ID: <20240206-gambling-tricycle-510794e20ca8@spud>
+References: <20240206130017.7839-1-subhajit.ghosh@tweaklogic.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Re: [PATCH 2/2] md: create symlink with disk holder after mddev
- resume
-Content-Language: en-US, de-DE
-To: Yu Kuai <yukuai1@huaweicloud.com>, linan666@huaweicloud.com,
- song@kernel.org
-Cc: linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
- yi.zhang@huawei.com, houtao1@huawei.com, yangerkun@huawei.com,
- "yukuai (C)" <yukuai3@huawei.com>,
- Linux kernel regressions list <regressions@lists.linux.dev>
-References: <20231221071109.1562530-1-linan666@huaweicloud.com>
- <20231221071109.1562530-3-linan666@huaweicloud.com>
- <3b240652-580e-73d5-a318-612984902aad@huaweicloud.com>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-In-Reply-To: <3b240652-580e-73d5-a318-612984902aad@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1707230801;15674f02;
-X-HE-SMSGID: 1rXMiY-0006tA-EV
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="9RWAyZGM2mdtXYww"
+Content-Disposition: inline
+In-Reply-To: <20240206130017.7839-1-subhajit.ghosh@tweaklogic.com>
 
-Hi, Thorsten here, the Linux kernel's regression tracker.
 
-On 21.12.23 09:49, Yu Kuai wrote:
-> 在 2023/12/21 15:11, linan666@huaweicloud.com 写道:
->> From: Li Nan <linan122@huawei.com>
->>
->> There is a risk of deadlock when a process gets disk->open_mutex after
->> suspending mddev, because other processes may hold open_mutex while
->> submitting io. For example:
->> [...]
-> Nice catch! This patch looks good except that the new flag
-> 'SymlinkCreated' doesn't look accurate, perhaps 'HolderLinked'
-> will make more sense.
-> 
->> Fix it by getting disk->open_mutex after mddev resume, iterating each
->> mddev->disk to create symlink for rdev which has not been created yet.
->> and moving bd_unlink_disk_holder() to mddev_unlock(), rdev has been
->> deleted from mddev->disks here, which can avoid concurrent bind and
->> unbind,
->>
->> Fixes: 1b0a2d950ee2 ("md: use new apis to suspend array for ioctls
->> involed array reconfiguration")
+--9RWAyZGM2mdtXYww
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hey, what happened to that patch? It looks a lot like things stalled
-here. I'm asking, because there is a regression report that claims
-1b0a2d950ee2 to be the culprit that might or might not be causes by the
-problem this patch tries to fix:
-https://bugzilla.kernel.org/show_bug.cgi?id=218459
+On Tue, Feb 06, 2024 at 11:30:12PM +1030, Subhajit Ghosh wrote:
+>   dt-bindings: iio: light: adps9300: Add property vdd-supply
+>   dt-bindings: iio: light: adps9300: Update interrupt definitions
+>   dt-bindings: iio: light: Avago APDS9306
 
-Ciao, Thorsten
+For these 3,
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
->> Signed-off-by: Li Nan <linan122@huawei.com>
->> ---
->>   drivers/md/md.c | 39 +++++++++++++++++++++++++++++----------
->>   1 file changed, 29 insertions(+), 10 deletions(-)
->>
->> diff --git a/drivers/md/md.c b/drivers/md/md.c
->> index d6612b922c76..c128570f2a5d 100644
->> --- a/drivers/md/md.c
->> +++ b/drivers/md/md.c
->> @@ -521,6 +521,20 @@ void mddev_resume(struct mddev *mddev)
->>   }
->>   EXPORT_SYMBOL_GPL(mddev_resume);
->>   +static void md_link_disk_holder(struct mddev *mddev)
->> +{
->> +    struct md_rdev *rdev;
->> +
->> +    rcu_read_lock();
->> +    rdev_for_each_rcu(rdev, mddev) {
->> +        if (test_bit(SymlinkCreated, &rdev->flags))
->> +            continue;
->> +        if (!bd_link_disk_holder(rdev->bdev, mddev->gendisk))
->> +            set_bit(SymlinkCreated, &rdev->flags);
->> +    }
->> +    rcu_read_unlock();
->> +}
->> +
->>   /*
->>    * Generic flush handling for md
->>    */
->> @@ -902,6 +916,11 @@ void mddev_unlock(struct mddev *mddev)
->>         list_for_each_entry_safe(rdev, tmp, &delete, same_set) {
->>           list_del_init(&rdev->same_set);
->> +        if (test_bit(SymlinkCreated, &rdev->flags)) {
->> +            bd_unlink_disk_holder(rdev->bdev, rdev->mddev->gendisk);
->> +            clear_bit(SymlinkCreated, &rdev->flags);
->> +        }
->> +        rdev->mddev = NULL;
->>           kobject_del(&rdev->kobj);
->>           export_rdev(rdev, mddev);
->>       }
->> @@ -2526,8 +2545,6 @@ static int bind_rdev_to_array(struct md_rdev
->> *rdev, struct mddev *mddev)
->>           sysfs_get_dirent_safe(rdev->kobj.sd, "bad_blocks");
->>         list_add_rcu(&rdev->same_set, &mddev->disks);
->> -    if (!bd_link_disk_holder(rdev->bdev, mddev->gendisk))
->> -        set_bit(SymlinkCreated, &rdev->flags);
->>         /* May as well allow recovery to be retried once */
->>       mddev->recovery_disabled++;
->> @@ -2562,14 +2579,9 @@ static void md_kick_rdev_from_array(struct
->> md_rdev *rdev)
->>   {
->>       struct mddev *mddev = rdev->mddev;
->>   -    if (test_bit(SymlinkCreated, &rdev->flags)) {
->> -        bd_unlink_disk_holder(rdev->bdev, rdev->mddev->gendisk);
->> -        clear_bit(SymlinkCreated, &rdev->flags);
->> -    }
->>       list_del_rcu(&rdev->same_set);
->>       pr_debug("md: unbind<%pg>\n", rdev->bdev);
->>       mddev_destroy_serial_pool(rdev->mddev, rdev);
->> -    rdev->mddev = NULL;
->>       sysfs_remove_link(&rdev->kobj, "block");
->>       sysfs_put(rdev->sysfs_state);
->>       sysfs_put(rdev->sysfs_unack_badblocks);
->> @@ -4667,8 +4679,10 @@ new_dev_store(struct mddev *mddev, const char
->> *buf, size_t len)
->>       if (err)
->>           export_rdev(rdev, mddev);
->>       mddev_unlock_and_resume(mddev);
->> -    if (!err)
->> +    if (!err) {
->> +        md_link_disk_holder(mddev);
->>           md_new_event();
->> +    }
->>       return err ? err : len;
->>   }
->>   @@ -6606,6 +6620,7 @@ static void autorun_devices(int part)
->>               }
->>               autorun_array(mddev);
->>               mddev_unlock_and_resume(mddev);
->> +            md_link_disk_holder(mddev);
->>           }
->>           /* on success, candidates will be empty, on error
->>            * it won't...
->> @@ -7832,8 +7847,12 @@ static int md_ioctl(struct block_device *bdev,
->> blk_mode_t mode,
->>           err != -EINVAL)
->>           mddev->hold_active = 0;
->>   -    md_ioctl_need_suspend(cmd) ? mddev_unlock_and_resume(mddev) :
->> -                     mddev_unlock(mddev);
->> +    if (md_ioctl_need_suspend(cmd)) {
->> +        mddev_unlock_and_resume(mddev);
->> +        md_link_disk_holder(mddev);
->> +    } else {
->> +        mddev_unlock(mddev);
->> +    }
->>     out:
->>       if(did_set_md_closing)
->>
-> 
+Cheers,
+Conor.
+
+--9RWAyZGM2mdtXYww
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcJGcQAKCRB4tDGHoIJi
+0jpAAP9RTj4ultRO2eoh8kQrFmAOYj0b0xbfVJ7XJZ7CPsqLpAD/ecM7AEhbDZO0
+iO2empQP5jhq/FyNI1iK89zuEKtCJQs=
+=Z4KA
+-----END PGP SIGNATURE-----
+
+--9RWAyZGM2mdtXYww--
 
