@@ -1,110 +1,136 @@
-Return-Path: <linux-kernel+bounces-54469-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54470-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2148184AF95
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:06:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 330A984AF98
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:07:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B76C0B254C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:06:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D00201F23294
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:07:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8C7B12B157;
-	Tue,  6 Feb 2024 08:03:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AC5612B179;
+	Tue,  6 Feb 2024 08:05:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XmHCnEb1"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WjRlTHnf"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7818912AAE4
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 08:03:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47D3D12B16D
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 08:05:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707206607; cv=none; b=TX6KV69bLYQYRD8qSvSpO8m5wGazYPqjSUSrfs4aknDTNJBlkolB2X94Omqvx9OOK1LPBMOMT2dPGwnxtjqPnig/sTNs9cpP+bMhDU+nBbRZn1M+YmFQEusKD4MdHEnQ+yJsVPpQRAzty7vq9j+8pMCh4YPi57E5H1myII0n/mY=
+	t=1707206714; cv=none; b=XmQjHJUVnCPYsSD41t11pgtpXtdvlr7hyGewh3ZEKOH+03PI4nxXI0DYxMM/peG49NLHtaq4WkXdFjvw3l5nATgFm/3dezFTYDf+eCSCzSwDBqh1MB3LJye2tr7KnICL6NDjsuCizAaUICSKa14nPh9uefiZlsEiHGdSy6ckZbA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707206607; c=relaxed/simple;
-	bh=iR7Dp43vLV43jmYtK9RRuY1wh/t+bKfF/SwycneEMrg=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=dywpLalDT8dTNGafEwhxHD0IWxyg76CbWiUXSb11XFHE7TaBOzKreIIauftlqjoS85xqPH2l4UEmkbAH8JN7nJukdcrP1UR+L7zqR50cQN870dhfHKvcAPmADgWv13pPeKl7ahnGs86GMd+c11zD6HnZi8VzF3ijkNU0V2C6mYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XmHCnEb1; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc6d2e82f72so4952541276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 00:03:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707206604; x=1707811404; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KPtn9t6KngOO4E52t8K9CtsJTT8VzsbSpS4TQtbHZkU=;
-        b=XmHCnEb1i6fvc5H4QBt/HZO0ddi9twWLipV2GKIP+XPxGeTcUOvROx5YKAXVHSOpd/
-         QlEe77OORC5hdwkrY5ArxukTEtszIAEv5z607LvcVgEda98AMK2jNb4bLUX111KLlHCk
-         HYHzag8sa+IIfgAMxyZVGLcQtvfDYMVWj7Wvl7j+VSxyd/kr9qzC8AK4gCd1jm0VTnei
-         pE3SkWMkS5vU6z2qO6b3rn2Gk3Fmg3fcvoevbICAjRAaa8qX0HQ88+bdaK5EAzjQnYk7
-         e86lSkaT/XzTCjPCcEmKQv0pt5d/gQBJf7W5lH1DEAyIRg3V3J1gFfL3ZU0awGF6abxV
-         95Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707206604; x=1707811404;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KPtn9t6KngOO4E52t8K9CtsJTT8VzsbSpS4TQtbHZkU=;
-        b=ddm+C0BDEQp6V2DmI233+rCzyj3VO3SwpBB2zWmMyOy4mNk6S608qPXLv4Ej1SZYHm
-         1hDyL+wyDjdm96YN4yhwBMLtJvEEC81CfyXfgvOk9ASdFnXoPOMuHlm7r7p2iJzwFY3n
-         mPr+usgbL/i91fFXqFPhpmblM4A+GYivhL4EtE5GmWkC/ggDceR2OxecbPWT8keJg1u1
-         JmPpJfkf5d8VbdGItjcCch/zpDgPeG5qUG6iLY1QOyvRL3xtYuCNdmWPUDXCgISB1oMR
-         Fcp4ItojTrzb1hVfQ4xAZBSD1mSMUOl8FtIVX8EeLqhKew95rE19QIRaBDXsxhkh0CRn
-         gevQ==
-X-Gm-Message-State: AOJu0Yzf5rBTXarHq2M0p2dBTnGAXk7khfaGSfthQqsJTyKXI+q19lTJ
-	5VUWChal177pzu2xOokX294HEdUkeQ6W8zVI+I7MG+D6tvQ3uK7o2VxBGRxqBXo=
-X-Google-Smtp-Source: AGHT+IEH1UpLuRSo1/8SURkuZLiDgqyEq9XxWEL/5IqxnqCKtpwpju0S+5SUvSyjCnYp+14RqJ03ow==
-X-Received: by 2002:a5b:951:0:b0:dbe:9f26:2159 with SMTP id x17-20020a5b0951000000b00dbe9f262159mr685500ybq.48.1707206604475;
-        Tue, 06 Feb 2024 00:03:24 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXqg8C7PRl8We0vH1TlWO+XUCwTn72sn0WRNI5oDA6wtLQn78BcANmdb1R8IMNVpbFkhR3vxSg122HohS76cXBRVzmcBdWT/RE0gBBS7+u4cecx76l0RP/96pOw8BQKos68JDTKJAnTsbmXzRHf2qJvYKqzwgMAQa/TeQ4gLyiErfVNTT2xI6OiVxbMsnXiiJkmAK1SgsB62xmN0+NRlOaabe0yVZaM9dJKMeUfIs42+/JZOBU6dxVbOQ==
-Received: from [127.0.1.1] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id l31-20020a25ad5f000000b00dc727104273sm87171ybe.34.2024.02.06.00.03.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 00:03:24 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: linux-samsung-soc@vger.kernel.org, Tomasz Figa <tomasz.figa@gmail.com>
-Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>, 
- Alim Akhtar <alim.akhtar@samsung.com>, Chanwoo Choi <cw00.choi@samsung.com>, 
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240201140134.4345-1-tomasz.figa@gmail.com>
-References: <20240201140134.4345-1-tomasz.figa@gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: Remove Tomasz from Samsung clock and
- pinctrl entries
-Message-Id: <170720660257.7713.7995799928562429624.b4-ty@linaro.org>
-Date: Tue, 06 Feb 2024 09:03:22 +0100
+	s=arc-20240116; t=1707206714; c=relaxed/simple;
+	bh=MsHf8cVdpuCFq4ctLxFOemRpS5F5u/extnlTkO7PvNY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QsE5qdXaOJaKCcgniG9zTek8UQ5RgiQMC5R+OYeERsbXfmhjMv/0b18UUW/1rjiEh433FiGf8XAibPigfzvgD9KBDiSmgaFhTGCxNKq9+hifxY84PZ8EwsKaUAcgnbIGKq/ocY2CrWhm+1R7QDKbQV9F9hZtFnDxwgkk84rWZME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WjRlTHnf; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707206712;
+	h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:in-reply-to:in-reply-to:  references:references;
+	bh=VoG77iC4V8mtXCplQh9IiWyiocJNF7CpVFSOwa43ZiE=;
+	b=WjRlTHnfXWY6Vw1QFvsuI4gM4LxpnlFzEuZ0IlNj+I56ctkg4dlUj8GOSkp+0+xspPEOft
+	8VoTowKv6KACm4BGbf0227CgLXvXtnwd5u8ureQKMzkvpwXqAcMNqEmket6BOT0ThY7lX+
+	cQVR67sxQcosonnLm+zgvIQwQPsaKLk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-148-IXlGMc1pNmqu9FkmToUdZQ-1; Tue, 06 Feb 2024 03:05:06 -0500
+X-MC-Unique: IXlGMc1pNmqu9FkmToUdZQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 85A4085A588;
+	Tue,  6 Feb 2024 08:05:05 +0000 (UTC)
+Received: from redhat.com (unknown [10.42.28.53])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id AECA02166B32;
+	Tue,  6 Feb 2024 08:05:00 +0000 (UTC)
+Date: Tue, 6 Feb 2024 08:04:57 +0000
+From: Daniel =?utf-8?B?UC4gQmVycmFuZ8Op?= <berrange@redhat.com>
+To: "Dr. Greg" <greg@enjellic.com>
+Cc: "Reshetova, Elena" <elena.reshetova@intel.com>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>,
+	"Hansen, Dave" <dave.hansen@intel.com>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	"Nakajima, Jun" <jun.nakajima@intel.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	"Kalra, Ashish" <ashish.kalra@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] x86/random: Issue a warning if RDRAND or RDSEED fails
+Message-ID: <ZcHoKUElwXGPzrWb@redhat.com>
+Reply-To: Daniel =?utf-8?B?UC4gQmVycmFuZ8Op?= <berrange@redhat.com>
+References: <20240130083007.1876787-1-kirill.shutemov@linux.intel.com>
+ <20240130083007.1876787-2-kirill.shutemov@linux.intel.com>
+ <CAHmME9qsfOdOEHHw_MOBmt6YAtncbbqP9LPK2dRjuOp1CrHzRA@mail.gmail.com>
+ <DM8PR11MB57507611D651E6D7CBC2A2F3E77D2@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <88a72370-e300-4bbc-8077-acd1cc831fe7@intel.com>
+ <CAHmME9oSQbd3V8+qR0e9oPb7ppO=E7GrCW-a2RN8QNdY_ARbSQ@mail.gmail.com>
+ <Zbk6h0ogqeInLa_1@redhat.com>
+ <DM8PR11MB575052B985CA97B29A443F9AE77C2@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <20240206011247.GA29224@wind.enjellic.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240206011247.GA29224@wind.enjellic.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-
-On Thu, 01 Feb 2024 23:01:34 +0900, Tomasz Figa wrote:
-> I have been no longer at Samsung for a long time, the platforms
-> that I am knowledgable about (S3C24xx, S3C64xx, Exynos 4) are no longer
-> relevant and we have people with better capabilities as maintainers
-> already, so let me remove myself. Thanks for the nice collaboration
-> everyone!
+On Mon, Feb 05, 2024 at 07:12:47PM -0600, Dr. Greg wrote:
 > 
+> Actually, I now believe there is clear evidence that the problem is
+> indeed Intel specific.  In light of our testing, it will be
+> interesting to see what your 'AR' returns with respect to an official
+> response from Intel engineering on this issue.
 > 
-> [...]
+> One of the very bright young engineers collaborating on Quixote, who
+> has been following this conversation, took it upon himself to do some
+> very methodical engineering analysis on this issue.  I'm the messenger
+> but this is very much his work product.
+> 
+> Executive summary is as follows:
+> 
+> - No RDRAND depletion failures were observable with either the Intel
+>   or AMD hardware that was load tested.
+> 
+> - RDSEED depletion is an Intel specific issue, AMD's RDSEED
+>   implementation could not be provoked into failure.
 
-Applied, thanks!
+My colleague ran a multithread parallel stress test program on
+his 16core/2HT AMD Ryzen (Zen4 uarch) and saw a 80% failure rate
+in RDSEED.
 
-[1/1] MAINTAINERS: Remove Tomasz from Samsung clock and pinctrl entries
-      https://git.kernel.org/krzk/linux/c/dde76e324c65969fda35165694b5e982d0033bf7
+> - AMD's RDRAND/RDSEED implementation is significantly slower than
+>   Intel's.
 
-Best regards,
+Yes, we also noticed the AMD impl is horribly slow compared to Intel,
+had to cut test iterations x100
+
+With regards,
+Daniel
 -- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+|: https://berrange.com      -o-    https://www.flickr.com/photos/dberrange :|
+|: https://libvirt.org         -o-            https://fstop138.berrange.com :|
+|: https://entangle-photo.org    -o-    https://www.instagram.com/dberrange :|
 
 
