@@ -1,111 +1,105 @@
-Return-Path: <linux-kernel+bounces-54643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54642-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 892E084B1E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:05:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7349F84B1E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:04:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4646D286375
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:05:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29A5A2863E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:04:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F65812E1C9;
-	Tue,  6 Feb 2024 10:04:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 991B012D777;
+	Tue,  6 Feb 2024 10:04:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="PAMHxqr4"
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="eH7neTiI"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F8C412C7E1;
-	Tue,  6 Feb 2024 10:04:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EED611E4AE;
+	Tue,  6 Feb 2024 10:04:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707213885; cv=none; b=sklkRAHcZjFe8kmLJNnF9a05pshrByiOZVYFo5bl8M9FnBC3CjbsEfv0ZC5parMEBtxZhpDVkNdDM14uzWdHNNasoyMSPo8lVg9g/D0tHSs7y1nr75KziFe9wAg+QHMxVgtTWDriXaPE+7xswTIvpi6ysscrORwi/INrwGiPimE=
+	t=1707213879; cv=none; b=hPaeQO4M/j4LNhyaOd0GagSrY9rXUYIhNX0ijqFpdyI42xg10zEVU12jbbjvrVtemmNBNme3briSbLPCpn05Nh1n5qwzjtbGzBJcYw7KJAf6c8x/cNFMTOhXNLqFfj4FsTpbg+9jK1MzPMKiEMdBULKRxNbWVjj4RnnCn74fVMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707213885; c=relaxed/simple;
-	bh=aavDWnk6//c/Ub+nrQ0I1UAI5F+LCVH+chmlRSbpFx4=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a4c7aCr2y4+ni9426sYaFhLnL1RJ1AlGH1dpaeM9RKjgyWlFStgwm+c9M3DuM6+wRnizYSsNtmtabYKqxFH9IL8hbeXtztAEfNN859/5hgBjVSOZxXtPngxC8a326s65Z9MGoVxRK/gf0dnshxaRalvx7+7MbHfYc5H/IX1t2xI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=PAMHxqr4; arc=none smtp.client-ip=67.231.149.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4164p8Bf011574;
-	Tue, 6 Feb 2024 04:04:11 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=PODMain02222019; bh=uPUFH7eDTg7/caX
-	3/YYHyrwvuZijGhOyQY2h4OtQApg=; b=PAMHxqr48BmEQnxAFkzb87smOGK99mJ
-	Kj4UKHiW81B6PtnP+G8OtT5jp7g8jBfdSuA6983a0MRdn4PRyxz+A2XhmPCR1pb3
-	M8OgeVUCqKEllRphB274vk9ZNxXOIoLOLDWVwlIH3SvdqHtsYRliw4DlyUdzTZqo
-	DXjEmbUGw9/ihSxp83mCfJEUKMkfChgkVnWPPGKUvUhzz7puvmyRbbSwDdhzN7zo
-	Y8/IVP2YA0EsdRYutWzW9I5Zm+YKYGJTGLupwZwnYCzeKH3NjoY5K5ZEDSZV+6Aq
-	MVOI0eShWi4M2QEHB//snLM7ErBPHj04SZxU0vtQYu0JAJHXxVUjoWQ==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3w1ks2b7uk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Feb 2024 04:04:10 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 6 Feb
- 2024 10:04:08 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40 via Frontend Transport; Tue, 6 Feb 2024 10:04:08 +0000
-Received: from ediswmail9.ad.cirrus.com (ediswmail9.ad.cirrus.com [198.61.86.93])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTPS id 97273820241;
-	Tue,  6 Feb 2024 10:04:08 +0000 (UTC)
-Date: Tue, 6 Feb 2024 10:04:07 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Bo Liu <liubo03@inspur.com>
-CC: <lee@kernel.org>, <wens@csie.org>, <marek.vasut+renesas@gmail.com>,
-        <support.opensource@diasemi.com>, <neil.armstrong@linaro.org>,
-        <rf@opensource.cirrus.com>, <mazziesaccount@gmail.com>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
-        <linux-kernel@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-        <linux-amlogic@lists.infradead.org>, <patches@opensource.cirrus.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 10/18] mfd: wolfson: convert to use maple tree register
- cache
-Message-ID: <ZcIEFxh76TTXBTiT@ediswmail9.ad.cirrus.com>
-References: <20240206071314.8721-1-liubo03@inspur.com>
- <20240206071314.8721-11-liubo03@inspur.com>
+	s=arc-20240116; t=1707213879; c=relaxed/simple;
+	bh=gW7t8hW3imp+PqsXZyr05n6ePuqZalGznC/r4/tBlcw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D63hFMIW6FCAJyXRlU3+WEVNPUtP36XFrdubWGHUOI0M+rT1ZyvOlgZEbHzMZ74PPjEXTUnfA1RxN/xEjhe1oyvZH2kV7QEMNketLRzbNYYBu2VYZ5o51x+Nl3rtPGS7n28DEP9nFeFznI7racEPC8n0rbxjFOTSnK+zloG0zIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=eH7neTiI; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 1DD5B40E00B2;
+	Tue,  6 Feb 2024 10:04:33 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id mAzo3U_xm5y6; Tue,  6 Feb 2024 10:04:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1707213870; bh=YQPRmOIMAlWlSmT/Yk/DsVNxBZ/3BBFLfb2NXakTptQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=eH7neTiISK8x2qljS9HWtxySFGDAEFJLhsCUMgzUi+nyvbxe61vVKpAVLQQ/Y0Hsz
+	 QbFim+qqKgFGFstfykWBP7HRs+OqtdHjejgsAJbbveZyyEm/cf/ZbIzt58pXpt8wrC
+	 t1yg/KiMm44vvn4iROf6uTyDfVkAb/VkEkkkccUVTGeTWF+54/sStjb1OiTVc/G9vz
+	 z5jqKlo+dGPnbgVTIgq78XmFRMlmVTNKZTs7akZ7pcq4DGJgYVxCWAsmn4WhWuUlly
+	 lCYX0BUrBa+AkdJUD3K9Dsd003Hnk2R1T1gxqh55/ynRZ0o+HMyG+7npPeuVtbH6nz
+	 idZg8oCKMgQrzjLGBZw0NcTz+H2bySzbFwCI9fo4KnZbI8s1zxsk46TcpGTxFnF8FH
+	 R9/9bNuxhw1ymwCI5QARv6lcQaAqtf7nYZT5XG1cec+HDPKUJU1h9O9ePtya8mvk1Z
+	 cliv8WR5y/1ZCQtaLSIJo83sGYhgTu7I/MU0yEWrYgLNNyw/7MVqiOGb80yRf/K750
+	 qvDc/4/vxFBwClc8PoslwGwebaK2A4x2G3X90mS1IlnQ1G46lw/KYPMVOSHl5mI+vN
+	 A5qmze+/2xTTKirUpAQvT1CRGGfIVIrf4UWJtPJ7pwquNh6KTpOMhrbjXr9QN/ih7v
+	 pZnu89Ds9cXfwN6kT2/2qARs=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8947740E016D;
+	Tue,  6 Feb 2024 10:04:18 +0000 (UTC)
+Date: Tue, 6 Feb 2024 11:04:12 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Nikunj A. Dadhania" <nikunj@amd.com>
+Cc: linux-kernel@vger.kernel.org, thomas.lendacky@amd.com, x86@kernel.org,
+	kvm@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
+	dave.hansen@linux.intel.com, dionnaglaze@google.com,
+	pgonda@google.com, seanjc@google.com, pbonzini@redhat.com
+Subject: Re: [PATCH v7 03/16] virt: sev-guest: Add SNP guest request structure
+Message-ID: <20240206100412.GAZcIEHGET2NfMPHnk@fat_crate.local>
+References: <20231220151358.2147066-1-nikunj@amd.com>
+ <20231220151358.2147066-4-nikunj@amd.com>
+ <20240125115952.GXZbJNOGfxfuiC5WRT@fat_crate.local>
+ <03719b26-9b59-4e88-9e7e-60c6f2617565@amd.com>
+ <20240201102946.GCZbtymsufm3j2KI85@fat_crate.local>
+ <98b23de9-48e4-4599-9e7f-0736055893fc@amd.com>
+ <20240201140727.GDZbuln8aOnCn1Hooz@fat_crate.local>
+ <408e40b4-4428-4bef-bb96-8009194a9633@amd.com>
+ <20240202161455.GCZb0U_9jckCT8loBc@fat_crate.local>
+ <ec2be3f2-b20a-46c1-815c-9065e10f292a@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240206071314.8721-11-liubo03@inspur.com>
-X-Proofpoint-GUID: ovCDYOzOk03aaOgaUtGd9-ILGLhAAQBp
-X-Proofpoint-ORIG-GUID: ovCDYOzOk03aaOgaUtGd9-ILGLhAAQBp
-X-Proofpoint-Spam-Reason: safe
+In-Reply-To: <ec2be3f2-b20a-46c1-815c-9065e10f292a@amd.com>
 
-On Tue, Feb 06, 2024 at 02:13:06AM -0500, Bo Liu wrote:
-> The maple tree register cache is based on a much more modern data structure
-> than the rbtree cache and makes optimisation choices which are probably
-> more appropriate for modern systems than those made by the rbtree cache.
+On Mon, Feb 05, 2024 at 02:53:30PM +0530, Nikunj A. Dadhania wrote:
+> Sure, below is the updated patch. Complete series is pushed here 
 > 
-> Signed-off-by: Bo Liu <liubo03@inspur.com>
-> ---
->  drivers/mfd/wm5102-tables.c | 2 +-
->  drivers/mfd/wm5110-tables.c | 2 +-
->  drivers/mfd/wm8350-regmap.c | 2 +-
->  drivers/mfd/wm8400-core.c   | 2 +-
->  drivers/mfd/wm97xx-core.c   | 6 +++---
->  5 files changed, 7 insertions(+), 7 deletions(-)
+> https://github.com/AMDESE/linux-kvm/commits/sectsc-guest-latest/
 
-The change looks good, but whilst it won't cause any problems, it
-seems a bit weird not to convert wm8997, wm8998 and cs47l24.
-These are part of the same driver as wm5102 and wm5110.
+Yap, that looks more like it.
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Thx.
 
-Thanks,
-Charles
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
