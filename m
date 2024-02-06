@@ -1,184 +1,215 @@
-Return-Path: <linux-kernel+bounces-55269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D4FA84B9FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:45:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F42884B9FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:45:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32A72282C4A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:45:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9A69285957
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:45:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 221AC134CD6;
-	Tue,  6 Feb 2024 15:44:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CB16134742;
+	Tue,  6 Feb 2024 15:44:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="IAxpNCor"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IRCQM48t"
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A67C513341F;
-	Tue,  6 Feb 2024 15:44:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.40
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707234276; cv=fail; b=mAe7ZuPE51ExVNOtQswNUpbvhW9Ie+GzMq+uSqK8JBOVF8RGIWy+IRGztxAjT8rS9R4IpsgOULRm17WHZn3f/oLov42k/9/lYdIfE9SEiOWxAbeK6c3Ry+iO9E7+Zzgtoz7rF4vqj/L5qTWvJg55bB1X8gtQc8X9XSLkXcMBHgY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707234276; c=relaxed/simple;
-	bh=yzi6Aet5NQgrz1IFknaDYzit2dEPlCuRlLFmWmrofMQ=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=YZcQiJlHczeeNn10K0wfktHiO1Pj2jj3vtkOntIHe1e3Unl3xnJ5GYeZhojL489jCzozBl3E4mQxCGFNbqmV8uix4oLSZuUhhGORFl+5dOShLcywdWozy+ZVJCWMwXP9aJi1kgdZYKhlsnYvWWNllnmZklXqL2ND33LOUCJmcZU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=IAxpNCor; arc=fail smtp.client-ip=40.107.236.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HMbAKSHMVAJxTm1/dlsjGRXZ9HMgBKh9aYS0e1EsBxEk68AMPnUrgTzZvnd8TiEnuHSmTPtrKL9f9y6QNcw0cF8Kq36jl7DEfBYGRUodS8kQZT03U9dOH1+Xkml3HgJFXO17f1J3d85oNBWnf0zSHHDreHe+KM043SB5upKc+YcorBV24z+Wo2VLuVVDmWk3McQXEl27BgVD+ydp3DyMhPvEHHb8fWJA1nVPznn6G+++Flk9JoXGEnzGEMTzrJ2uk4nOdJ2hiDIStB1ASwQBk9112YWhemTCHOancxD98VNX6ppA2Xqrx+X58FaSvKkP21M6VlEuRyFojAdmtREiIg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LqYuLiDxLoGz2bnGZ1MMzjkR0YDHN/CpJP6U8bluhm8=;
- b=nxtoc60FIesKoJ+4/WKDA29boR2zB9KnW2pHbM5p9lI+K9z8KPNXv5qTc0sbRoLwK34RHhTNeyXBEyEO7jyRpy6Pe9P9ZIp19tFgeXUWsuwbaqK2mHXrwD/o04nArSXepykPgA1AcBRXht1jVFZrWTd4NzszOOl+doU6pSJ8G4NyyCeI2U+ZRjFKouIbjB+FyJpArfivLPpvpvMZUMfjNf7Pi3/LNvSs/ne8PfYNozNKjnsCBkSvKoe/y7nCZ3aKCay9h31cHxQM3J3SU4L88ORJnK2BQEvIHszR4g1bgfmHjeVF6zDdOcCf/48+egF/t/zuUUIVw0lTGzvYtZK3fw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LqYuLiDxLoGz2bnGZ1MMzjkR0YDHN/CpJP6U8bluhm8=;
- b=IAxpNCorxFyvS8djOWB9Fp2YmGqyUxMwxv0n+i/TKNLd4bPZWf12T0c1DFBfWw0jQn5HiunMd5xo1XLi3vZDY3ENB/lO2doG5Yah65aAOXgectZxunVj3tMXJgoC169Drba/AsdiOhGrhlPAeCWmZgSMDQTAYJ60exeCdIvqj8U=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL1PR12MB5946.namprd12.prod.outlook.com (2603:10b6:208:399::8)
- by SA0PR12MB4446.namprd12.prod.outlook.com (2603:10b6:806:71::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.16; Tue, 6 Feb
- 2024 15:44:31 +0000
-Received: from BL1PR12MB5946.namprd12.prod.outlook.com
- ([fe80::1602:61fd:faf5:d6e2]) by BL1PR12MB5946.namprd12.prod.outlook.com
- ([fe80::1602:61fd:faf5:d6e2%5]) with mapi id 15.20.7270.016; Tue, 6 Feb 2024
- 15:44:31 +0000
-Message-ID: <70a44ceb-2d52-4189-af42-b56e8f60d0f2@amd.com>
-Date: Tue, 6 Feb 2024 21:14:21 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 1/3] net: macb: queue tie-off or disable during
- WOL suspend
-Content-Language: en-US
-To: claudiu beznea <claudiu.beznea@tuxon.dev>, nicolas.ferre@microchip.com,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, linux@armlinux.org.uk
-Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, git@amd.com
-References: <20240130104845.3995341-1-vineeth.karumanchi@amd.com>
- <20240130104845.3995341-2-vineeth.karumanchi@amd.com>
- <d8c48839-8b22-47ad-b270-e96a1ad1adee@tuxon.dev>
-From: "Karumanchi, Vineeth" <vineeth.karumanchi@amd.com>
-In-Reply-To: <d8c48839-8b22-47ad-b270-e96a1ad1adee@tuxon.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN3PR01CA0151.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:c8::14) To BL1PR12MB5946.namprd12.prod.outlook.com
- (2603:10b6:208:399::8)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98554130E30;
+	Tue,  6 Feb 2024 15:44:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707234291; cv=none; b=eGSfhoNAakdEYC7ua9n8TTmA1LtIyBHwZUMiIf4qV0YuBQ3lJNZ659I1wvj3XpGjvH57MCJrt6NGW9+9iquqdq5T76NvCR0dPgKJ8UMiK6BACQrh0Dc0UVxT8OVBUMi3mv8Nvv05NNGU8bKOzFrYBMfuySnUrJagYafwxABnd10=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707234291; c=relaxed/simple;
+	bh=20rBJPvW0ki5HAC6tEqivD7tcdOAj9/l8qbYGLquaDw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pKMtpb+tryyRKdFrmgS0+nOOSoEYZFbYQ36TUB+E/k2WZTK+thT1zM8ujXOJdZOcjSFGApN8KWqnBKpcvgQ5F2bN4oBvkvXdU5NejiJk7GLxORWT9eGVUS+QaN7sJdNfxwWF9bVwI4z+o8Gxws8sfysCIDZ6kr4/+LRiBHW5W8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IRCQM48t; arc=none smtp.client-ip=209.85.222.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-783d84ecb13so381046885a.0;
+        Tue, 06 Feb 2024 07:44:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707234288; x=1707839088; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MEVnp7BLgdz+RNJeBn2lM+4rzpBiVnnsB0k+LnFpYpU=;
+        b=IRCQM48ty4MBCmjDjx82DWUIKxjrqtgomAq3s5136xlI7gS30JcOSACVxZ3YlQgnlF
+         Mkf0B7PyNjKTl7zCUaFv4xDi8nFJATl2RVad8ewUYcM/kRWJPkU/ugcD0RZAtTDsJymn
+         PPaaMB2nH6JYW/EX8fWQdy3vQFVR66cazxtnIN57OYj2f6jKfsXwUieCYFWkBUD/7jmw
+         UJaqL+n6D1A+TqIWd/CrfgqW5YGQcBUc2z71PmeqmvTw+aLJof0lvXaJy06Qww75a9J5
+         uKrVOsmQMhRm1YdUK90uKa9aK+YGE5covZjWb+aDu6wJW4O0tGWHXz4zDHtJYZc9oN7Z
+         rZ7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707234288; x=1707839088;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MEVnp7BLgdz+RNJeBn2lM+4rzpBiVnnsB0k+LnFpYpU=;
+        b=wWuuq4aSp11AQWSFB3whFJSk8/UAHlf+htp1zA2SSQlFQ3LWDrmXckL6v3I7qQdOHF
+         EOwt8fo51HPCvN7g07qj8G211E9wmmLx/k6+kgafOUF1zMorX6WsE0B2VhGHnx0Gtmnw
+         7zonT94IS/xfyygyBvinCndxoDR+ObugBraJwZy5ipgSQv8EuhfIsovc89RiWMWy+G8K
+         Kic7tgDx0pGKy/en9ksYuYb7SetmmRxvMq3lDpmfrLsIZ+ml1P1Nc7fFzN+/xpOqsy9F
+         OxphXK9p3aAVwNy+C8+0LvN++sn2DPNe1ynfQZOtEk2lboSdlfrEQzzWYgB+jXPcRWcZ
+         cs0A==
+X-Gm-Message-State: AOJu0Yz4NKUNFG1tIxN17eMS9YSzyJeOOnOl/3vvykX9FcnTWWlldS4x
+	8k7Cv0PJK9Xg5xt7NKUYDggMXvGb+YQY/IuILgU6+kGz4gjDXThqAdLq4AY831pWqTcnoLAGmkL
+	TlRB2YvUjOeO8qWFgnhHzEdu/QMA=
+X-Google-Smtp-Source: AGHT+IHQ1TtI2QK5lG3OHm5V73qLiLrvk3UwD4oZu4jitN1NzNMsx7OkSmGjv9Y0dzJ8/ZezqimM9yvvnIisMRx8BTI=
+X-Received: by 2002:ad4:5d67:0:b0:68c:3df9:c3c9 with SMTP id
+ fn7-20020ad45d67000000b0068c3df9c3c9mr2955221qvb.2.1707234288358; Tue, 06 Feb
+ 2024 07:44:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5946:EE_|SA0PR12MB4446:EE_
-X-MS-Office365-Filtering-Correlation-Id: be07759b-deae-4999-8b66-08dc272a8295
-X-LD-Processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	2fKt8lS9AY8S/v1bptGt8spfgvA4PZPyxsMFtSQQUeAvEvG3rWSn+JAlI/vMeuwkODmQtkLrOKls69SRz9/qNrunudvknPQZRiWQuGPnQb6LRE9n/dPCegB+oXKgdVk2LVBamFlozTw/Q0fnMqxcnT3PqbQ1EsPO80q+tfadrr7nAkrWFME0Dlb1iTOC+5pHPleeSEC2mkiGcIGUGlhC4lSWJBTdjy+RlgfSAA/pnOf5vKppSpZm+E0LkGDn3Zm7qdmCz58jVXnZaPZ6GdhJQRacBujh5h7Y0ZV5kKfz/nHMDwSfQsFd5R2LbQhXLrTs+xy8Z58FDCUwgU4kGXTDH++wxwpwFYnDgfpD8imbtT4JONvdzr9HDLvpr58fWDmstbvabuHyLVrkDDExNtd04rY0polwC3qHVQS2FsUv+WGZG6Y45330ezJ0yGsy48dbIFZvOLYhjmZz4vcWm3hfepGB/BmqbVXjBZ/uGrKEjfaSmCzHsrEIiHHAB63hmJoPTbWyvNBTIdSK6AUsc3oQml7DKevO+PpyCj3VPMXZPM/vwxMqWWDbw0qFn2OqfzR4/auYIaald6I/AIhONgndjdX9/W8Y2/91C2q42Z3NvBJ80GlF4cBx/RGKwcAXLfboWd7O00DvH0jqcNduRLuJztU5ViU+3BExva1ZOqJiXEo=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5946.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(396003)(346002)(366004)(376002)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(921011)(2616005)(26005)(31686004)(6512007)(41300700001)(38100700002)(36756003)(478600001)(66556008)(66476007)(316002)(6666004)(6506007)(53546011)(83380400001)(6486002)(66946007)(7416002)(5660300002)(8936002)(8676002)(4744005)(4326008)(15650500001)(31696002)(86362001)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?WXpKU0ZDRWEzczFPL0RISEZ0ZXM3MlljTk1Gb2RQaWpFMWx3cEg5S2JJZk5L?=
- =?utf-8?B?cXpJZ3RrRG42ZTd1ZDNxampDWERRb1QzVGtYQjJITEdkSE5WdVQ5ZmVEY1Nm?=
- =?utf-8?B?alF2dExCeWhWOVNIaUlHRDh4V0hkeWY3R1JhVm94Sktlc29xbWp3K0dEblhJ?=
- =?utf-8?B?L1R4WTh2Mjc0eWExT2RSSUtHV3Rqa28rRENJODFLMUZ6dHhvK0JQQkVKY0Jp?=
- =?utf-8?B?cEd0Z2JFaUZSZ2pObWVQRndkdzBoRjJJK0FvMUlzYVRnQ0NOcG53eGhaQUEz?=
- =?utf-8?B?bUs4QllsU0NTMjNNd1lVYWlremducEhiSnkzNXJhbEJnK2ZnL0c4c1JrcWJB?=
- =?utf-8?B?ZWxGNm5VQ05TVE44ZURKTWZaanRwYjQ5Y2JMd1ZSWHEybWtCZzFjLzRPVUI2?=
- =?utf-8?B?SDFHMlo1SzNja0p2Q2lFQ2VmQ3cyQlJlOCtzQ212bzIxcERJeUQwczhwSXF5?=
- =?utf-8?B?WVIzVEhTbUZnby83SkhDbm1SS1Rnbm1EeWxSMVVhZWdQaURoZEJ2UHFpeTZj?=
- =?utf-8?B?R2xLTjMyd1U3T0Z1K2l5NjZhcVhDUHN6dExqbllJVHQrTVgwdFpQV0kwd3VT?=
- =?utf-8?B?N3BzWEtHdk5OK2pyUmhsaFVkLzZPMXVTLytUMEd3QXQwOTdETGxDUWpRbTZh?=
- =?utf-8?B?VXF3ejdkVXU2OXR4azI1bDlRbzZzZkxIYzdLa3dmMDVmeFdkc3NVWkVCZUND?=
- =?utf-8?B?cytjcVlMdjNBMkhaOWpXYjcrd2NLNzZCc0k0Z0sxRDZlOVhWOW94QWEzNWpF?=
- =?utf-8?B?RFJza1c5bkJocUl1MStlb0xwYTJmcHA2ckNEem9UZjZvMVgrYXV3NmFKSnMw?=
- =?utf-8?B?Vk9WQTlQUjFQTWhzY1BDNVQxa2dDNENFRnY1RlZ4Qm5uamxJVVU5b0NRR2Mv?=
- =?utf-8?B?ZW42ZFpLTTFtMzZNcjVGeEVSNTE4bjkwd1U0YW9EakZYVGFkTGpVSFRid3lD?=
- =?utf-8?B?QW1uaTFJSDFIWE5QOWFVRVBRdTJxeVVuNkMwczcwcUlGQ0lJb0o0a0Z4Nml5?=
- =?utf-8?B?VnU2RkxtekRlaWFaeTl4Q3M0cnZhdXZsTEVCaXUreCtxeG1MSHRXeGdROG91?=
- =?utf-8?B?MEt4ZlBVamMyMEJONUgwRGwrNGFZNEFvQ2ozd1ZzNm1JTmVFcEl4ZzdZN1Ey?=
- =?utf-8?B?TWVCYUtaVEFWQ0xkdUcrNXc2dml1SEU5VDFIR0FtY2IrcE5mMnVicXlUTWN3?=
- =?utf-8?B?YUF4MTNBaHFOZitLYXpzUkZUTWJIYVEwUDBaLzR1eHdTYXFKQkVmbnJlY09P?=
- =?utf-8?B?QzREVzNmelFTdUQ4RDJUQzBaZEdBcjlqYzYrV25NeUd5RDlZV0xOQXFYT1l2?=
- =?utf-8?B?ZDFZT3lOSmE5UVhTd0JHV25hM2s0V3JVQ1YwNnJqWjZnZUlmTzdMbGhXNyth?=
- =?utf-8?B?ZlZJUzVDM0xVSWExc2l4OXJQdjcvK0NuYm84U3BGT0xteWwwRGt5OHNHRmxW?=
- =?utf-8?B?NEN0R2V4bG5qendqSVVPMm5KUjNsMW9yOWMyc21TWkpZSER2c00yek5Da3ln?=
- =?utf-8?B?LzZhTmFYa3JoaEE2RGYwclNGdVVXb3dwYnR5MjdKTVpUdUtoWnNMQUp5bC8r?=
- =?utf-8?B?WEIzcjBTZ20xNHZMb0RuaEZCUTZtME9qTWRTMGd1MytDTks0S000aklUWHZu?=
- =?utf-8?B?V1BOampzOGdtRFY0L3laUlNDcEh3ZEtZZ0lqRktzWFJzeHpmZ1Jud00yMkVY?=
- =?utf-8?B?bkc5SzNudi9jQ0RpNGNPbUZwblZsRlV2SlE2V2xKRmwrZVZ6cy92V1Z2bzQ5?=
- =?utf-8?B?NzdEa3prNkJpUURXZ3pqclduTk1PUW56Rm5MN05RdERaelJJVVRCSFp4Z3kv?=
- =?utf-8?B?YzIyeU5mbHY2cFFXODRPR2JKWmkvL29zNm50MFFJSURGMjFwTkg4c2NDK1FZ?=
- =?utf-8?B?UDUzWXRoK25PNmIvVEVmUGhPYldJWG8wNWtQa1R3bXA5OXlQSEovNGRqZEt0?=
- =?utf-8?B?RG9mcE1tTmoxSlRCcGVBTTBQNVRrdlIwaHJXekFhOXhPbWxhMUVNWmpkMXBO?=
- =?utf-8?B?MXVmc2xjTnJpN3ZYS2pLQ2EycEIyZ0xGa0ovb2k2VGViM3oxR1pIMkU0RzFu?=
- =?utf-8?B?T016OVN0MWpFUDE3YlArN3ZKcjRjL2xCR3FRVlh0ZThpWkhDUGV1KzY3R3BO?=
- =?utf-8?Q?mecurPPKfHMiJG93XZFKzqkbo?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: be07759b-deae-4999-8b66-08dc272a8295
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5946.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2024 15:44:31.5635
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: njGOXmoH5Uw6idWAIbBCArSdj1KwRPBL+ey1Y97iaNaVYSDxIuFuZW7va2cPgdnU
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4446
+References: <20240205182506.3569743-1-stefanb@linux.ibm.com> <20240205182506.3569743-5-stefanb@linux.ibm.com>
+In-Reply-To: <20240205182506.3569743-5-stefanb@linux.ibm.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 6 Feb 2024 17:44:36 +0200
+Message-ID: <CAOQ4uxgbURYypK1Ycib8ojrRvZGtQYBMF6CwY86DDSWqMVHW2Q@mail.gmail.com>
+Subject: Re: [PATCH v2 4/9] ima: Reset EVM status upon detecting changes to
+ the real file
+To: Stefan Berger <stefanb@linux.ibm.com>
+Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, 
+	roberto.sassu@huawei.com, brauner@kernel.org, miklos@szeredi.hu
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Claudiu,
+On Mon, Feb 5, 2024 at 8:25=E2=80=AFPM Stefan Berger <stefanb@linux.ibm.com=
+> wrote:
+>
+> Piggyback the resetting of EVM status on IMA's file content detection tha=
+t
+> is triggered when a not-yet-copied-up file on the 'lower' layer was
+> changed. However, since EVM only cares about changes to the file metadata=
+,
+> only reset the EVM status if the 'lower' layer file is also the one holdi=
+ng
+> the file metadata.
+>
+> Note that in the case of a stacked filesystem (e.g., overlayfs) the iint
+> represents the file_inode() of a file on the overlay layer. The data in
+> the in iint must help detect file content (IMA) and file metadata (EVM)
+> changes occurring on the lower layer for as long as the content or
+> metadata have not been copied up yet. After copy-up the iit must continue
+> detecting them on the overlay layer.
+>
+> Changes to the file metadata on the overlay layer are causing an EVM
+> status reset through existing evm_inode_post_sattr/setxattr/removexattr
+> functions *if* an iint for a file exist. An iint exists if the file is
+> 'in (IMA) policy', meaning that IMA created an iint for the file's inode
+> since the file is covered by the IMA policy.
+>
+> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> ---
+>  include/linux/evm.h               | 8 ++++++++
+>  security/integrity/evm/evm_main.c | 7 +++++++
+>  security/integrity/ima/ima_main.c | 5 +++++
+>  3 files changed, 20 insertions(+)
+>
+> diff --git a/include/linux/evm.h b/include/linux/evm.h
+> index 840ffbdc2860..eade9fff7d0b 100644
+> --- a/include/linux/evm.h
+> +++ b/include/linux/evm.h
+> @@ -66,6 +66,8 @@ extern int evm_protected_xattr_if_enabled(const char *r=
+eq_xattr_name);
+>  extern int evm_read_protected_xattrs(struct dentry *dentry, u8 *buffer,
+>                                      int buffer_size, char type,
+>                                      bool canonical_fmt);
+> +extern void evm_reset_cache_status(struct dentry *dentry,
+> +                                  struct integrity_iint_cache *iint);
+>  #ifdef CONFIG_FS_POSIX_ACL
+>  extern int posix_xattr_acl(const char *xattrname);
+>  #else
+> @@ -190,5 +192,11 @@ static inline int evm_read_protected_xattrs(struct d=
+entry *dentry, u8 *buffer,
+>         return -EOPNOTSUPP;
+>  }
+>
+> +static inline void evm_reset_cache_status(struct dentry *dentry,
+> +                                         struct integrity_iint_cache *ii=
+nt)
+> +{
+> +       return;
+> +}
+> +
+>  #endif /* CONFIG_EVM */
+>  #endif /* LINUX_EVM_H */
+> diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/e=
+vm_main.c
+> index 565c36471408..81c94967f136 100644
+> --- a/security/integrity/evm/evm_main.c
+> +++ b/security/integrity/evm/evm_main.c
+> @@ -721,6 +721,13 @@ static void evm_reset_status(struct inode *inode)
+>                 iint->evm_status =3D INTEGRITY_UNKNOWN;
+>  }
+>
+> +void evm_reset_cache_status(struct dentry *dentry,
+> +                           struct integrity_iint_cache *iint)
+> +{
+> +       if (d_real_inode(dentry) !=3D d_backing_inode(dentry))
 
+Is this really needed?
+You get here after checking (real_inode !=3D inode) already
 
-On 2/3/2024 9:08 PM, claudiu beznea wrote:
-<...>
->> +		for (q = 0, queue = bp->queues; q < bp->num_queues;
->> +		     ++q, ++queue) {
->> +			/* Disable RX queues */
-> Operation in this for loop could be moved in the the above IRQ disable
-> loop. Have you tried it? are there any issues with it?
+> +               iint->evm_status =3D INTEGRITY_UNKNOWN;
+> +}
+> +
+>  /**
+>   * evm_revalidate_status - report whether EVM status re-validation is ne=
+cessary
+>   * @xattr_name: pointer to the affected extended attribute name
+> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/i=
+ma_main.c
+> index f1a01d32b92a..b6ba829c4e67 100644
+> --- a/security/integrity/ima/ima_main.c
+> +++ b/security/integrity/ima/ima_main.c
+> @@ -26,6 +26,7 @@
+>  #include <linux/ima.h>
+>  #include <linux/fs.h>
+>  #include <linux/iversion.h>
+> +#include <linux/evm.h>
+>
+>  #include "ima.h"
+>
+> @@ -297,6 +298,10 @@ static int process_measurement(struct file *file, co=
+nst struct cred *cred,
+>                     !inode_eq_iversion(real_inode, iint->version)) {
+>                         iint->flags &=3D ~IMA_DONE_MASK;
+>                         iint->measured_pcrs =3D 0;
+> +
+> +                       if (real_inode =3D=3D d_inode(d_real(file_dentry(=
+file),
+> +                                                        D_REAL_METADATA)=
+))
+> +                               evm_reset_cache_status(file_dentry(file),=
+ iint);
 
-OK. I haven't tried it. I will try and update.
+Technically, you'd also need to store iint->real_meta_{dev,ino}
+when calculating EVM to be sure if the metadata inode had changed,
+because there is a possibility that file was not copied up yet, but the fil=
+e
+is a metacopy in a middle layer and the lower data is in another layer.
 
-> 
->> +			if (bp->caps & MACB_CAPS_QUEUE_DISABLE) {
->> +				queue_writel(queue, RBQP, GEM_RBQP_DISABLE);
->> +			} else {
->> +				/* Tie off RX queues */
->> +				queue_writel(queue, RBQP,
->> +					     lower_32_bits(bp->rx_ring_tieoff_dma));
-> I think this should be guarded by:
-> #ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
->> +				queue_writel(queue, RBQPH,
->> +					     upper_32_bits(bp->rx_ring_tieoff_dma));
->> +			}
->> +		}
->> +		/* Enable Receive engine */
->> +		ctrlmask = macb_readl(bp, NCR);
-> Is this needed?
+Think file metadata was copied from lower to upper layer, then the
+upper layer was made a middle layer and another upper layer added
+on top of it.
 
-Yes, not needed, we can use earlier value directly.
+In this situation, real_inode is in the lower layer, real_meta_inode is in
+the middle layer and after copy up of metadata, real_meta_inode will
+become in the upper layer.
 
-> 
->> +		ctrlmask |= MACB_BIT(RE);
-<...>
--- 
-🙏 vineeth
+Not sure if this use case is interesting to EVM.
+
+Thanks,
+Amir.
 
