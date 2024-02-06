@@ -1,190 +1,192 @@
-Return-Path: <linux-kernel+bounces-54518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B119084B030
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:45:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7707884B035
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:46:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20FE61F21B6D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:45:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E06151F265CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:46:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DB9112BF14;
-	Tue,  6 Feb 2024 08:42:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=prevas.dk header.i=@prevas.dk header.b="asKSGC0Z"
-Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2074.outbound.protection.outlook.com [40.107.241.74])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57E3212C541;
+	Tue,  6 Feb 2024 08:43:27 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDEE012BEB6;
-	Tue,  6 Feb 2024 08:42:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.241.74
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707208958; cv=fail; b=efQgR+zRBtGMY7L20ZY1gHxfwTc77ZLAON9FESW0oaKRXlIfWG9c5mRAFvLGX2TwS1gGbY4BvNVkNP593U8rrN+pl4MUwUSiMad79nEl4l7rPzOvK3xu4LekYFVk3d3c9CdfgJVEE55Pj4zerIGOHf064l+RpMkKRjUKRFe4soA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707208958; c=relaxed/simple;
-	bh=EqWvdiMRZ7ljqQ1exOF4MyAedqXHMzEbmF7vev9qw9E=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=MuzC9d4erBbamv/oduxOjv/QpUuF8vW6ALu5BiiAbO//YXQ6sP5AHs5Sr9ATsqXhYAwIv57sqrnLbiiTbtQ1YTBTcNKWbRD/eeaHjnwXDQy5h+bbLI5AVs/oBG4okS1x6kaG9l4tusdo+I3iqQlxkSG0YmthAW1xkLMPjBkYpnM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=prevas.dk; spf=pass smtp.mailfrom=prevas.dk; dkim=pass (1024-bit key) header.d=prevas.dk header.i=@prevas.dk header.b=asKSGC0Z; arc=fail smtp.client-ip=40.107.241.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=prevas.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=prevas.dk
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D2/Wm9gMg/tnVme2Rv4DPcYQ164QQYhg43zrkC+eA29C86IDzB/rB04M4lxvUqpSija/wZHERmi7QrPIaE7BlyjZWF/eBt3F6KPaY9uKaxh8PLqY2GSEagaeMPMtWCUgvJnnb02hsd4/HKTLZ8UI2w7g73SqoQxvFpEJa0PL3fJMwjemNlcpdMVoi1qUmMDfKucfC2MmY5ubW+2JFwpeER4VTiojWXuJTAOGXOrD/P8fZDZFsdZLyplNorACxVYrucE6zPXPPXzxSsIQxHvswrP+9Ghxm7O/qcGGsPXZadUCD+8SLF6pytIOGDojlbfWHx8KVF0yOl4BONAo+0rUtg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EGPjGqp6FMwvgVibuvaJTE7X1rRkUrnQ2mtfS2dQRLI=;
- b=a8+jsH7ZYo/0F00LYHup1wXIM8M5y/QOXOXNdL9bF/lX70A6uSEh49eXm8YbqsUoN+bJZVjVShnXmQaEczUUyFa05sb59Hy6LO+8LxF0cb1QhArwwHjL0Cbpu0myVS9T+htkzYvj/Hf3FB3zkIlS+mVU1U+Vy5uiyjLJEac86ppl8bTRlk9hREYLR8+6Rg27nFSk9t3n+Hdme9FOAXrt3Qz3yKu6TB/C+rUin4qVcpomM81Ps5h4cV2LEpcePhIhu5svEagIeWIvDrTr3AC3J8H+gNIMd1XjmourcjxNiLqcd9Mdbf9+EEMgPVdHZW9LTdiMBuyLHQ7gntUd6sVjBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
- dkim=pass header.d=prevas.dk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EGPjGqp6FMwvgVibuvaJTE7X1rRkUrnQ2mtfS2dQRLI=;
- b=asKSGC0ZJtK/X+U/v/Zyl+qn6nHbLw6USvphuExSAMtiKQSfH7fkS/5doMiAZcCjVX8LoF1o6arKppr6vu5ifqWoDkpRQFRVE5FTd3KnveuZ4mw6QC2gN54YUJWh/OH9JRkepkAQAmQCZZ0dpZfifjy5w4g/DSzpmtpY2jf5gZM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=prevas.dk;
-Received: from DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:45a::14)
- by DB9PR10MB6668.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:3d0::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36; Tue, 6 Feb
- 2024 08:42:29 +0000
-Received: from DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::f059:23ad:b039:15de]) by DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::f059:23ad:b039:15de%7]) with mapi id 15.20.7249.035; Tue, 6 Feb 2024
- 08:42:29 +0000
-Message-ID: <1ee4bd0f-2a70-4696-bad3-782b5c0887f7@prevas.dk>
-Date: Tue, 6 Feb 2024 09:42:26 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] overflow: Introduce add_wrap(), sub_wrap(), and
- mul_wrap()
-Content-Language: en-US, da
-To: Kees Cook <kees@kernel.org>, Eric Biggers <ebiggers@kernel.org>,
- Kees Cook <keescook@chromium.org>
-Cc: linux-hardening@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>, Marco Elver
- <elver@google.com>, linux-kernel@vger.kernel.org
-References: <20240205090854.make.507-kees@kernel.org>
- <20240205091233.1357377-2-keescook@chromium.org>
- <20240205202145.GB2220@sol.localdomain> <202402051443.A813E4D@keescook>
- <20240205231712.GC2220@sol.localdomain>
- <51025C22-0FEF-4047-BC36-EA7ED7A3BD62@kernel.org>
-From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-In-Reply-To: <51025C22-0FEF-4047-BC36-EA7ED7A3BD62@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AS4P250CA0015.EURP250.PROD.OUTLOOK.COM
- (2603:10a6:20b:5df::14) To DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:10:45a::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C383612C55C;
+	Tue,  6 Feb 2024 08:43:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707209006; cv=none; b=kuhrf5w9teDdHTCajL9m7854lMT7aplIIROXXZm+ru+IBJU7Wt/PNooBtDAvRe0x2oWPPDkzrBOKdtBSBu3IV8pJ66QzT7xavJBwzf3jsqWA/fW0GdT5rH95XPjwG8DAjYj+u2shljQPcTZ4wSToIelYJK9jCeOyO+9NrkSHHrw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707209006; c=relaxed/simple;
+	bh=XR9woyvyvAvsz9+sI2jnlhYiYEIwwwgqIjlmNK9XGkw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=U5zWFcXcCMQ1A5XUai/sCFPOSpDxyNeuE2jQ9vMxUGwE1D1+0uZvJEAHpOqHtAI0BHDMxzYRG+UHlTwopMvOpuc354+K5P5MreN+cFarzNmYnESZWaHZwz5xMy0yhocZwEgyM5nQ4krJ5K0KQd5wcPrujykJTvhZEIqMG10ltUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35992C433F1;
+	Tue,  6 Feb 2024 08:43:25 +0000 (UTC)
+Message-ID: <c7ddcc17-b739-4b1e-bb03-e21036716089@xs4all.nl>
+Date: Tue, 6 Feb 2024 09:43:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB9PR10MB7100:EE_|DB9PR10MB6668:EE_
-X-MS-Office365-Filtering-Correlation-Id: c18da68a-9205-4ea2-7a53-08dc26ef8d52
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	FQY4LcMBzE27fI9ECNM8q9+W6ekRy92okZ21BnUSSuTv3PZaTgr42xnZtre5Ip/NwTXX+E0SVha7YdIXHPdDaM8/OFvTfZIxwOWvXoqxFTB1I1gEtWeiwmtwzuQI5Y585D15gQhNMetFrp4gern/roLGxuFF4J+k8Srq08vIsKDLSiOmoDO1878+1+zybJvluFBCt4vLPpS/5Did33OyUEGlt9Wt+E4frwveq0fFXu2o2B8RDxf65bBLJwjReusEFO/ZOo4C2PEquYsN0LAOGEmTn2aeULnEHb8IC7g7TVQv5zzJqgFYpo4O8p9IKItyotw2g7IQJvV53tlzyLHQ52gKw7ootm9IoCSq+Ban3shHp+/sOcFj2yDwj5UI+zqaARZ9Ekz5PGnyD6T6h9+GEJOiWiTN9e9+xTEOpozsEv4K/lRMzrPdIRfzvVB7ew0zbaF+5Y3EiJ3tDTsdyTdlHdLZXdaUp+HAFBB8opOb1OFb37vQc8kz842GBplQEJkmO2yH1FYHYPe7hZPiNjbuOulRggbBeHQT2oaqXlX/6IEX0T7q/qVVin4XeVcLNOdipl8p3NmFtOCSC4Q2gufz5Wr650+ab5PSgly+HTcIOHLxnr8MYRT4kgfo+si+m8p4jEZYBt1QpRbgPjXDoysbhg==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(366004)(396003)(39850400004)(346002)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(5660300002)(44832011)(2906002)(31686004)(41300700001)(83380400001)(38100700002)(31696002)(26005)(2616005)(86362001)(6506007)(6512007)(66476007)(54906003)(6666004)(478600001)(6486002)(66556008)(66946007)(110136005)(36756003)(4326008)(8976002)(8676002)(8936002)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Y3cyWk9SdkZMOEdYOXp0cHVKbVFTeFBpcW9qSUNRTDIrNGZkUDd4b2NSQjU3?=
- =?utf-8?B?RzZwTzA4OFBuUDI3M2dPa0ZDV2l3ejUvKzRpZjNGbGRTRGlRSEFpSDJCckxT?=
- =?utf-8?B?Nk5ocmZONkgwSjhwWjJGZ0dEd0x2aThaMHVLZDBQZlYxUlZaY3RpYXNIWjBy?=
- =?utf-8?B?ZXBIMlMwQ2FRTUZQV01XMmQ5UDNEd1owc1FKUkI0blJ6SWNzZWNPcWdqU2lI?=
- =?utf-8?B?bVUwOTNGazZqcUUxYUZ3Z1hpV01UWjNCc1pRZnA3OCtSMU95SE11V08xSVpH?=
- =?utf-8?B?dkY2VWZzZDEzdERIL3pLY1ljZ2E3SkxjbUVtL2tPSzlESHUzcTBjTEsvdHpx?=
- =?utf-8?B?aU5UNHFpY3NOV0c4NXJQZC9nK0Z2aUJ6clkxMi9IYms4Q1YxRStlZzRzMzJC?=
- =?utf-8?B?V1ovU05lYlBZMTZXRjlnbGxWaTk0S1RvQlVTNnlDWDVaS244R01Lcjh1R2xq?=
- =?utf-8?B?anU3ZklheTUraHQwOXN0SUR0R2toWG5GWEExRXVUUVVWSkVEZ0VzRmVnNmM0?=
- =?utf-8?B?ODlCMGlkS3ZLemJZRzRFbFdYSG1wTlA5UHB3UTBva1o2SHZkUzFVUjZabjhR?=
- =?utf-8?B?QVRiczhrWlRjZTJEUXh4bThEcUxhTzRHM080eTlBU0dCYnRuaXVLcVJWTWRz?=
- =?utf-8?B?UytpSXYybDlEWitORU45NHlhVytRaDU2Kzg5cTdDcWdEa0hCMnFOdDhtK01x?=
- =?utf-8?B?MExpS3J3eWkzYnBrOTdrWkRMYXRIbHlJRXZTbUI1VmtTWEIwSHhIWVRhV0Nj?=
- =?utf-8?B?Wi9sZFhvYUlEV2xrSk5nNkJjOHRKcEwyOTlQNVJEKzVHWjNwb2xpUWY3WEtm?=
- =?utf-8?B?ZUxSZVR4cHY2Q1BpYUtzZG03bitMaldscDNvVEtFMjJJMmIwNHM2MGJiOHYv?=
- =?utf-8?B?aE1KbWtqM1gwT0lyVzJlcWFHR3U4a1huVWh2ajZXQTNrdGgzMDlld3hSTnVy?=
- =?utf-8?B?OHB6QVJuTXZZUEdjeXB6QnczcEtza2g0RzZ3cjdqZnFmWHd0Nm5zamdsTmJw?=
- =?utf-8?B?UlVTRHdwa21xUjk0WFRpdVlvaHhCZDBtaUVHQkR5UFNnZHpRYlRRbldtRFYv?=
- =?utf-8?B?ZDdWNjZwT3VHNy9HRTRKbE1xY2wvTmg5U3FnNk95L3dPalU5Nk5WSUxkcHlT?=
- =?utf-8?B?dkVaM08xMTZyQzNMMG50Q2Z2QThGbWVsSStkWDFjOVZwM3d1V0YySmNSQUpO?=
- =?utf-8?B?NERwcVVpZmwxK0VvaXlpTGtyQytXa3dzYVdjYytFMjFEcEdldmUwNmY4ckpm?=
- =?utf-8?B?Z1FwalpsYURlNTZabndmMmt3UVB0emR2Z2lKR0JtUHFZOVBLd3p3L0NXNmhC?=
- =?utf-8?B?eElYUFdzdWl3QTZEbkZUNXRJL2pUY0hzRldiOVdKSmUzTmM0S0kwT04vOEFW?=
- =?utf-8?B?U1lqRjNGSC9DMzhFMk1NNHNRQWZiZmw2YnNJTi96MFlYdFJoRlBBeTRtUFlj?=
- =?utf-8?B?djk2aFZIWi9TZ0o2c2UzT2FTbjlxc05SdG9mMVdldC81blhkWkxRNVJJRjV4?=
- =?utf-8?B?aTNJeXFyUGovMVJsNlNYaHoxa0o4TWtnb1Azb1lYeEU5dVlZc3pLNGdwcDM2?=
- =?utf-8?B?NWt1Smg2YVlEbVJleTVpTG9BL2ozRFRvUmlzamtrSlFRREJwZTgzOEpOTU50?=
- =?utf-8?B?U2VXVjlKN0dJWTlRUGpxMlBKdE1KWjNtOEEzMHhRN1Arcy9tSDZhcGJ6TWFu?=
- =?utf-8?B?WEpaaVloUkg3dHZhdEcrbzRNUzdmMm5aQjNPQmdIdEwvWUhMZENybXQ3UmFZ?=
- =?utf-8?B?VkxIbjN4SG5vcnVpdDNDVkZNdVM3S2wxOUxFTng1T0JUUm5jZmF2OXRNOUhX?=
- =?utf-8?B?MktVTWRoN1FDaEhLYWxRQ1ArNW1wVXJGdWJwd0puVHlSSkQwM2VMcEhmTEdj?=
- =?utf-8?B?aXpRS3piWTNiNUp4aE1jZnAyZlFZRU43Vk5kWkp0Z2hYTkgySU5aUG83djVF?=
- =?utf-8?B?UEg5VUlFYkR2TjlKclNiSE82U1VoRDlta1NCeXJKcG8yZUZjVzViSGVIa3pC?=
- =?utf-8?B?dWlBZEVEMlIvZnliOCtwSXYrcE1qdC9NcjJGak1EMVlYR2c3a1hCT1FjTnBi?=
- =?utf-8?B?V0tyRzVzdTh4QjBhY3EvRFF0WE5WOGdDbENBYW5iSVcxVDVJZFI3dDBHZlBT?=
- =?utf-8?B?Nm5WYVdjajBsL0wzT0FGRVM0dEZPaVRKNWY0RSs4ZVhQcTlZdGFHNEkxMDd4?=
- =?utf-8?B?RFE9PQ==?=
-X-OriginatorOrg: prevas.dk
-X-MS-Exchange-CrossTenant-Network-Message-Id: c18da68a-9205-4ea2-7a53-08dc26ef8d52
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2024 08:42:29.0735
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3FCxC9rDikHcH2u4qKFtLX+iEFk42ZwgojLXhPGaC1R3BV4jDqHwi5E8HrrrtlcqddCC7BGU5WXjjisQfowT6xiTcbDG/oR6P/EUtZkmnLI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR10MB6668
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 1/9] media: videobuf2: Update vb2_is_busy() logic
+Content-Language: en-US, nl
+To: Benjamin Gaignard <benjamin.gaignard@collabora.com>, mchehab@kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+ kernel@collabora.com
+References: <20240206080219.11951-1-benjamin.gaignard@collabora.com>
+ <20240206080219.11951-2-benjamin.gaignard@collabora.com>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <20240206080219.11951-2-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 06/02/2024 00.21, Kees Cook wrote:
-> 
-> 
-> On February 5, 2024 11:17:12 PM GMT, Eric Biggers <ebiggers@kernel.org> wrote:
->> On Mon, Feb 05, 2024 at 02:44:14PM -0800, Kees Cook wrote:
->>> On Mon, Feb 05, 2024 at 12:21:45PM -0800, Eric Biggers wrote:
->>>> On Mon, Feb 05, 2024 at 01:12:30AM -0800, Kees Cook wrote:
->>>>> Subject: Re: [PATCH v3 2/3] overflow: Introduce add_wrap(), sub_wrap(), and mul_wrap()
->>>>
->>>> Maybe these should be called wrapping_add, wrapping_sub, and wrapping_mul?
->>>> Those names are more grammatically correct, and Rust chose those names too.
->>>
->>> Sure, that works for me. What bout the inc_wrap() and dec_wrap() names?
->>> I assume wrapping_inc() and wrapping_dec() ?
->>>
->>
->> Yes, though I'm not sure those should exist at all.  Maybe a += b should just
->> become a = wrapping_add(a, b), instead of wrapping_inc(a, b)?
->> wrapping_inc(a, b) isn't as self-explanatory.  Likewise for wrapping_dec.
-> 
-> It was to avoid repeating type information, as it would go from:
-> 
-> var_a += var_b;
-> 
-> to:
-> 
-> var_a = wrapping_add(typeof(var_a), var_a, var_b);
-> 
-> Which repeats "var_a" 3 times. :|
+On 06/02/2024 09:02, Benjamin Gaignard wrote:
+> Do not rely on the number of allocated buffers to know if the
+> queue is busy but on a flag set when at least buffer has been allocated
 
-Yeah, I think that's a reasonable rationale. I'm fine with the
-wrapping_* naming, and then the _inc and _dec helpers should follow.
+You missed one change: least buffer -> least one buffer
 
-However, I now wonder if those should really also return the new value.
-Yes, that corresponds to the value of the expression (a += b), but
-nobody would ever write c = (a += b) or otherwise make use of that
-value, and the naming doesn't immediately imply whether one should think
-of ++a or a++.
+Can you post a v19.1 for just this patch with that typo fixed? It's a
+rather important typo.
 
-Rasmus
+Regards,
+
+	Hans
+
+> by REQBUFS or CREATE_BUFS ioctl.
+> The flag is reset when REQBUFS is called with count = 0 or the file
+> handle is closed.
+> This is needed because delete buffers feature will be able to remove
+> all the buffers from a queue while streaming so relying on the number
+> of allocated buffers in the queue won't be possible.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> ---
+> version 19:
+> - Add q->is_busy = 0 in vb2_core_queue_release()
+> - Fix q->is_busy usage in vb2_core_reqbufs()
+> - Reword commit message.
+> 
+>  drivers/media/common/videobuf2/videobuf2-core.c | 4 ++++
+>  include/media/videobuf2-core.h                  | 4 +++-
+>  2 files changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+> index b6bf8f232f48..d8b3c04cb3b5 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+> @@ -854,6 +854,7 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
+>  		__vb2_queue_free(q, q_num_bufs);
+>  		mutex_unlock(&q->mmap_lock);
+>  
+> +		q->is_busy = 0;
+>  		/*
+>  		 * In case of REQBUFS(0) return immediately without calling
+>  		 * driver's queue_setup() callback and allocating resources.
+> @@ -966,6 +967,7 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
+>  	 */
+>  	*count = allocated_buffers;
+>  	q->waiting_for_buffers = !q->is_output;
+> +	q->is_busy = 1;
+>  
+>  	return 0;
+>  
+> @@ -1091,6 +1093,7 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
+>  	 * to the userspace.
+>  	 */
+>  	*count = allocated_buffers;
+> +	q->is_busy = 1;
+>  
+>  	return 0;
+>  
+> @@ -2555,6 +2558,7 @@ void vb2_core_queue_release(struct vb2_queue *q)
+>  	__vb2_queue_free(q, vb2_get_num_buffers(q));
+>  	kfree(q->bufs);
+>  	q->bufs = NULL;
+> +	q->is_busy = 0;
+>  	mutex_unlock(&q->mmap_lock);
+>  }
+>  EXPORT_SYMBOL_GPL(vb2_core_queue_release);
+> diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
+> index 56719a26a46c..b317286a7b08 100644
+> --- a/include/media/videobuf2-core.h
+> +++ b/include/media/videobuf2-core.h
+> @@ -579,6 +579,7 @@ struct vb2_buf_ops {
+>   *		called since poll() needs to return %EPOLLERR in that situation.
+>   * @is_multiplanar: set if buffer type is multiplanar
+>   * @is_output:	set if buffer type is output
+> + * @is_busy:	set if at least one buffer has been allocated at some time.
+>   * @copy_timestamp: set if vb2-core should set timestamps
+>   * @last_buffer_dequeued: used in poll() and DQBUF to immediately return if the
+>   *		last decoded buffer was already dequeued. Set for capture queues
+> @@ -644,6 +645,7 @@ struct vb2_queue {
+>  	unsigned int			waiting_in_dqbuf:1;
+>  	unsigned int			is_multiplanar:1;
+>  	unsigned int			is_output:1;
+> +	unsigned int			is_busy:1;
+>  	unsigned int			copy_timestamp:1;
+>  	unsigned int			last_buffer_dequeued:1;
+>  
+> @@ -1163,7 +1165,7 @@ static inline unsigned int vb2_get_num_buffers(struct vb2_queue *q)
+>   */
+>  static inline bool vb2_is_busy(struct vb2_queue *q)
+>  {
+> -	return vb2_get_num_buffers(q) > 0;
+> +	return !!q->is_busy;
+>  }
+>  
+>  /**
 
 
