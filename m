@@ -1,235 +1,113 @@
-Return-Path: <linux-kernel+bounces-55579-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 254D984BE71
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:07:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8F8584BE78
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:16:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 480261C22642
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:07:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82F75B2513A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:16:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19BF1179AF;
-	Tue,  6 Feb 2024 20:07:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EBD217BCB;
+	Tue,  6 Feb 2024 20:16:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="ebFeEHn6"
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Kh0EGZnx"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 015E717BA0
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 20:07:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8407617744
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 20:16:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707250035; cv=none; b=TDze6Pw5KwUEGZAlv6NKXjdU2+AAsj41D81WVHxX6Tir1+mlcrWRcOH5VLDFi/ubI/8pRWAgq5J4Gt2vgp/pcKfQoUfbMYMLQJZLQzUr5HK3M5f0VdCN0UPukx+wyrzEl4uWSyBMOE/J1bRyFJyhVNOXMxLl06oV7KCLSJ+QFis=
+	t=1707250588; cv=none; b=CG7tB+8r/PV2aCG4X4TkC+AiArC+Mq7WfpKPSriGM8I1OaQQRAWe8TM0eBsZTFeqRzbfeSXUShFCFt7/qkcOQ7vzCjrDW8JJjqXAlK1r5ihbmN2uaLcgR29jV5Vf52xsxac0YFsX4K2QQ+YUCFlifey4DiFLTG5JNATJ+xwl434=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707250035; c=relaxed/simple;
-	bh=jUJ5txeuTrJIO3eaW1kqxV28UKwZzqPZVONJzpB8gbQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aLQK8PYO+2typ4k0gl2aLejWT8egWOEiEZOlJkqYDIYRbRbrww/Zmce+kanTOUe/3QSays/SjbeGS1MX9tZslAuCz881w65u8xJx8FoAXIUvVBukUhuUrv3pZRWgSIEatU8qToMEu2/ApT+vOOoJISyK6e8+oglVkv6B9kaUjkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=ebFeEHn6; arc=none smtp.client-ip=209.85.167.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bda4bd14e2so5254017b6e.2
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 12:07:11 -0800 (PST)
+	s=arc-20240116; t=1707250588; c=relaxed/simple;
+	bh=S3wWG9LTmSphdVASpsfJh7lu61NHORPIUR+AmLJvQ/A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=K/A0NsdYzOk2YF1bs2TTXNyUtzHw+ndtCvj3udFJX5nHxof7df4aPnQPpnojQQCXtathScjdNrQXmZFg3WtsIQYOuFxcyF2VBaekPNzclq+iDzGGrLThLOXNpMMEHpkvetsMad6FAaI8VjHlqpfwN7hcvlRcyk8EfT7CBWnxPSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Kh0EGZnx; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a293f2280c7so796144166b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 12:16:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707250031; x=1707854831; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UeBXYxW5TvJCXcyEazsNfsDYcAc2yu/IZuUSf2VlU18=;
-        b=ebFeEHn6KS9npxDv/6LNKnwYM+HgfmYMPVDK1eI3IPNBJcmtw1k2uqt+AeMikdL1MW
-         bhL6yW7Lqxdvq1AZHq/8foRnCt/plVAkJQMpJH2k1lp9I2kf5BgCvTk2U1i+K72Fz3p3
-         X5Xc14ZtsGLtUJEw/T3xi47ldVoYIGE2srj8DPy/QxTZ3ScHaf79jaAXhnXRQUbblnnx
-         vmnJbyqHfXtqEgi7hV8Gq/ks/6UmOXReZbeN0+ZWPMpsDOgdLoX9Od7fWfl3fXzYSnbE
-         OIHJeF3Bu8PJXqOj1c4ww9bh3tIpcH54UX3qqiTgQOli+IMCJyJ6O2n/lrJi6JMkSPXw
-         yH4w==
+        d=suse.com; s=google; t=1707250585; x=1707855385; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7le/nZAlZWBvqI0RxW8GICAQ2PrKEymWw23KWwUuOaQ=;
+        b=Kh0EGZnxOSNJ9ENhNFXwZG7s0+a4ktIpjz18w3ZOZcc+IFEcnhUO1UfASITT+Mq6Ib
+         4cfdr6vi+GK40qG88cx5bn6ZcyJAJusSK8HhITN0yCROP3j3m7jG2Fk0BiKsCnIB+qzk
+         35VVir2V3YgJyRVxsaFQgMHGnPUEjDWrq/+uANxCfoCv6X/uXH5UxWz6dTDkHX8Mw2n/
+         OOo4F39kVHfm+xbwmXdd2g3PMzU+SrR6cPNEjxYbXIVJEADGnS8woaK9ZdczS1ZuEQxr
+         aesdVJWNuJnDvc2bzk+RfPtBgCxfPDZgiGqkvd4GWPADj/rwTt7CBaa1k/dRq6H6xRrN
+         Fzmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707250031; x=1707854831;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UeBXYxW5TvJCXcyEazsNfsDYcAc2yu/IZuUSf2VlU18=;
-        b=VHff28+8A7oGbaXQlA1A58FPKdK5+y85MbUzlFirVjAKzkCMLi4k1GiyTxFhgcq9/A
-         BRxaMdKRKMbortqbMkQmZ2Nk6GpqxfdyS2u7wv9V5LMEss0+H7arw+R5Fe3ZTocvIg0n
-         5batEXE7CuGBEnWRwAkd0OBV8ID24ar+PDnzsg4i6Q4phQFGm2mEaIPvO9JvPDLL01HU
-         KPNPs4Gn0UBk4SFh+t40Ug3xwIyf8hzG9moDZnVCEjr0PorBlUBhgUCj+BFi26y1hWGD
-         8Fs+PFpjM74jQ8A0iYCm1fEgNrIqvfe45CIQrri+0JpI6YSD5LeWGean6qFG/rjGdXb2
-         eX2A==
-X-Gm-Message-State: AOJu0YyGSDOEk9VuLU0t3HIXM5p2EavxVYf47ChwXSNKUQKW3Q0gxB4O
-	ijRLjCJv5bBe0Vtrt/+G2P4mrPxPUK1RcNQPxiLEPOaZhZq0j7PHK0BFheSN4VA=
-X-Google-Smtp-Source: AGHT+IFuObE8RLCSG43YjDz974IG8KvcqthwJ6ZAtRS/7qVGeo9TWZtH9h3WHQTkX8/5LS2tCw/m3g==
-X-Received: by 2002:a05:6808:120a:b0:3bf:d0ee:9873 with SMTP id a10-20020a056808120a00b003bfd0ee9873mr4046929oil.3.1707250030989;
-        Tue, 06 Feb 2024 12:07:10 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUgm87u0rmtYgY+Ov2zo4VlVzmeu0wG5JizNIBPlgh5Bf7BAFdYDvI+RFde/tAq5xWofsF7uOew748xJKgCzQyl+bTcdTLnB7e0eAE6hYKfADHxi57ahCz9mwH/AA26br44wDxgQc5mi8xtPgrNBzf6kFbXrxD+YGw/KvreBaU+fMAeJ+6jpNTBY+Fem+CJiXj+LBqUxrfG6D7nLzodMiwLeaTGbf/i5DGTth1jDk+hpnrdNAShFleA7sf7dbxRq2O/Av1qxzrBPubouWZ9KLojd7++ld+j7gyBE6azUh1Ga7e+83X0TVb6TBBc5IAWmznP0br1WFGiNphDaX27chNx4FCo
-Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id cg6-20020a056808328600b003beb12430basm421579oib.26.2024.02.06.12.07.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 12:07:10 -0800 (PST)
-From: David Lechner <dlechner@baylibre.com>
-To: linux-spi@vger.kernel.org
-Cc: David Lechner <dlechner@baylibre.com>,
-	Mark Brown <broonie@kernel.org>,
-	Alain Volmat <alain.volmat@foss.st.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] spi: drop gpf arg from __spi_split_transfer_maxsize()
-Date: Tue,  6 Feb 2024 14:06:46 -0600
-Message-ID: <20240206200648.1782234-1-dlechner@baylibre.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1707250585; x=1707855385;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7le/nZAlZWBvqI0RxW8GICAQ2PrKEymWw23KWwUuOaQ=;
+        b=DjXikECkSAtqR0Dtqje3pfWHnOf67xuSGv/8lD1s6Yrtf9M+HnRyDvisgIJ3KEVdcQ
+         jdNethx6OVhjchAxHG33H2xCwk2d2t9bD2kLAw79dMF30tPx5dqvr4nDDLlMt5Lnhq0q
+         0UenBOE56AY/bGHfsiBmV8m3ikWVLu6qxLf1UpKqwCsSwSY3s9//fRO3VnYr2XmL77KB
+         5SCB+kknqfi+F8TrK47UnZL8hE0htoZvv4l51ehBIuDZVxzCLCeUnaRcMjH2akVi1zSz
+         cLO+PY2aNJUf8pDupB28okcERYMAhY3cUMBvEShgOk+9RIHii+MfOEUmGODGqfV+kuuY
+         bO+A==
+X-Gm-Message-State: AOJu0YzVHOk5deG1SPbIXIB7ObF5kSh3K0/xlP01m01fdN3ROlDmoiQ5
+	ds/XYRJJ4qzgCOzl6XSNbNmk2I49cvw22CNSwSO78DKidsplXE5SZKfgBVqfNmHwbN6+oqLqH6u
+	5JwS8qysti1HtIQAe8zanrQ7+tgT875GSMbzRdA==
+X-Google-Smtp-Source: AGHT+IEVs4Xs7p29Q96OwqRVeFJ8EMOehRF8A29Y2kht3xE/Ymr+45P+8l6jtmyV3CIs+8vJx1bx40ihmubL2LzKOTg=
+X-Received: by 2002:a17:906:4088:b0:a37:1c56:8979 with SMTP id
+ u8-20020a170906408800b00a371c568979mr2399908ejj.76.1707250584794; Tue, 06 Feb
+ 2024 12:16:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240201233400.3394996-1-cleech@redhat.com> <5228a235-69f4-4a9b-8142-96d9b4a5a1c8@intel.com>
+ <ZcE8JC0o9swkNzmr@rhel-developer-toolbox-latest> <20240206075436.4d6b11f2@kernel.org>
+In-Reply-To: <20240206075436.4d6b11f2@kernel.org>
+From: Lee Duncan <lduncan@suse.com>
+Date: Tue, 6 Feb 2024 12:16:13 -0800
+Message-ID: <CAPj3X_VQcnGwuG1OP4E4Qt=jwt_gStVigYS53BTVaL7PUnd4Jg@mail.gmail.com>
+Subject: Re: [PATCH v5 0/4] UIO_MEM_DMA_COHERENT for cnic/bnx2/bnx2x
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>, Chris Leech <cleech@redhat.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Nilesh Javali <njavali@marvell.com>, 
+	Christoph Hellwig <hch@lst.de>, John Meneghini <jmeneghi@redhat.com>, 
+	Mike Christie <michael.christie@oracle.com>, Hannes Reinecke <hare@kernel.org>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org, 
+	GR-QLogic-Storage-Upstream@marvell.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The __spi_split_transfer_maxsize() function has a gpf argument to allow
-callers to specify the type of memory allocation that needs to be used.
-However, this function only allocates struct spi_transfer and is not
-intended to be used from atomic contexts so this type should always be
-GFP_KERNEL, so we can just drop the argument.
+On Tue, Feb 6, 2024 at 7:54=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wro=
+te:
+>
+> On Mon, 5 Feb 2024 11:51:00 -0800 Chris Leech wrote:
+> > > IIRC Jakub mentioned some time ago that he doesn't want to see
+> > > third-party userspace <-> kernel space communication in the networkin=
+g
+> > > drivers, to me this looks exactly like that :z
+> >
+> > This isn't something anyone likes, but it's an interface that's been in
+> > the kernel and in use since 2009.  I'm trying to see if it can be fixed
+> > "enough" to keep existing users functioning.  If not, maybe the cnic
+> > interface and the stacking protocol drivers (bnx2i/bnx2fc) should be
+> > marked as broken.
+>
+> Yeah, is this one of the "converged Ethernet" monstrosities from
+> the 2000s. All the companies which went deep into this stuff are
+> now defunct AFAIK, and we're left holding the bag.
+>
+> Yay.
 
-Some callers of these functions also passed GFP_DMA, but since only
-struct spi_transfer is allocated and not any tx/rx buffers, this is
-not actually necessary and is removed in this commit.
-
-Signed-off-by: David Lechner <dlechner@baylibre.com>
----
- drivers/spi/spi-stm32.c |  4 +---
- drivers/spi/spi.c       | 22 ++++++++--------------
- include/linux/spi/spi.h |  6 ++----
- 3 files changed, 11 insertions(+), 21 deletions(-)
-
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index e61302ef3c21..c32e57bb38bd 100644
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -1170,9 +1170,7 @@ static int stm32_spi_prepare_msg(struct spi_controller *ctrl,
- 	if (spi->cfg->set_number_of_data) {
- 		int ret;
- 
--		ret = spi_split_transfers_maxwords(ctrl, msg,
--						   spi->t_size_max,
--						   GFP_KERNEL | GFP_DMA);
-+		ret = spi_split_transfers_maxwords(ctrl, msg, spi->t_size_max);
- 		if (ret)
- 			return ret;
- 	}
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index a8b8474abc74..99ffc179f77d 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -1756,7 +1756,7 @@ static int __spi_pump_transfer_message(struct spi_controller *ctlr,
- 	 */
- 	if ((msg->spi->mode & SPI_CS_WORD) && (!(ctlr->mode_bits & SPI_CS_WORD) ||
- 					       spi_is_csgpiod(msg->spi))) {
--		ret = spi_split_transfers_maxwords(ctlr, msg, 1, GFP_KERNEL);
-+		ret = spi_split_transfers_maxwords(ctlr, msg, 1);
- 		if (ret) {
- 			msg->status = ret;
- 			spi_finalize_current_message(ctlr);
-@@ -1771,8 +1771,7 @@ static int __spi_pump_transfer_message(struct spi_controller *ctlr,
- 		}
- 	} else {
- 		ret = spi_split_transfers_maxsize(ctlr, msg,
--						  spi_max_transfer_size(msg->spi),
--						  GFP_KERNEL | GFP_DMA);
-+						  spi_max_transfer_size(msg->spi));
- 		if (ret) {
- 			msg->status = ret;
- 			spi_finalize_current_message(ctlr);
-@@ -3711,8 +3710,7 @@ static struct spi_replaced_transfers *spi_replace_transfers(
- static int __spi_split_transfer_maxsize(struct spi_controller *ctlr,
- 					struct spi_message *msg,
- 					struct spi_transfer **xferp,
--					size_t maxsize,
--					gfp_t gfp)
-+					size_t maxsize)
- {
- 	struct spi_transfer *xfer = *xferp, *xfers;
- 	struct spi_replaced_transfers *srt;
-@@ -3723,7 +3721,7 @@ static int __spi_split_transfer_maxsize(struct spi_controller *ctlr,
- 	count = DIV_ROUND_UP(xfer->len, maxsize);
- 
- 	/* Create replacement */
--	srt = spi_replace_transfers(msg, xfer, 1, count, NULL, 0, gfp);
-+	srt = spi_replace_transfers(msg, xfer, 1, count, NULL, 0, GFP_KERNEL);
- 	if (IS_ERR(srt))
- 		return PTR_ERR(srt);
- 	xfers = srt->inserted_transfers;
-@@ -3783,14 +3781,12 @@ static int __spi_split_transfer_maxsize(struct spi_controller *ctlr,
-  * @ctlr:    the @spi_controller for this transfer
-  * @msg:   the @spi_message to transform
-  * @maxsize:  the maximum when to apply this
-- * @gfp: GFP allocation flags
-  *
-  * Return: status of transformation
-  */
- int spi_split_transfers_maxsize(struct spi_controller *ctlr,
- 				struct spi_message *msg,
--				size_t maxsize,
--				gfp_t gfp)
-+				size_t maxsize)
- {
- 	struct spi_transfer *xfer;
- 	int ret;
-@@ -3805,7 +3801,7 @@ int spi_split_transfers_maxsize(struct spi_controller *ctlr,
- 	list_for_each_entry(xfer, &msg->transfers, transfer_list) {
- 		if (xfer->len > maxsize) {
- 			ret = __spi_split_transfer_maxsize(ctlr, msg, &xfer,
--							   maxsize, gfp);
-+							   maxsize);
- 			if (ret)
- 				return ret;
- 		}
-@@ -3823,14 +3819,12 @@ EXPORT_SYMBOL_GPL(spi_split_transfers_maxsize);
-  * @ctlr:     the @spi_controller for this transfer
-  * @msg:      the @spi_message to transform
-  * @maxwords: the number of words to limit each transfer to
-- * @gfp:      GFP allocation flags
-  *
-  * Return: status of transformation
-  */
- int spi_split_transfers_maxwords(struct spi_controller *ctlr,
- 				 struct spi_message *msg,
--				 size_t maxwords,
--				 gfp_t gfp)
-+				 size_t maxwords)
- {
- 	struct spi_transfer *xfer;
- 
-@@ -3848,7 +3842,7 @@ int spi_split_transfers_maxwords(struct spi_controller *ctlr,
- 		maxsize = maxwords * roundup_pow_of_two(BITS_TO_BYTES(xfer->bits_per_word));
- 		if (xfer->len > maxsize) {
- 			ret = __spi_split_transfer_maxsize(ctlr, msg, &xfer,
--							   maxsize, gfp);
-+							   maxsize);
- 			if (ret)
- 				return ret;
- 		}
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index 9e3866809a0e..1ec2c07eb711 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -1365,12 +1365,10 @@ struct spi_replaced_transfers {
- 
- extern int spi_split_transfers_maxsize(struct spi_controller *ctlr,
- 				       struct spi_message *msg,
--				       size_t maxsize,
--				       gfp_t gfp);
-+				       size_t maxsize);
- extern int spi_split_transfers_maxwords(struct spi_controller *ctlr,
- 					struct spi_message *msg,
--					size_t maxwords,
--					gfp_t gfp);
-+					size_t maxwords);
- 
- /*---------------------------------------------------------------------------*/
- 
--- 
-2.43.0
-
+Actually, Marvel is around but seems loath to invest in re-architecting thi=
+s
+driver since it's so long in the tooth.
 
