@@ -1,188 +1,120 @@
-Return-Path: <linux-kernel+bounces-54251-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5ACB84ACD3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:25:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CDA4984ACD9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:26:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D268A1C2284F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:25:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C31D1C225DA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:26:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 459C87319F;
-	Tue,  6 Feb 2024 03:25:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 660D7745C0;
+	Tue,  6 Feb 2024 03:26:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ite.com.tw header.i=@ite.com.tw header.b="QqhHu8qc"
-Received: from ironport.ite.com.tw (60-251-196-230.hinet-ip.hinet.net [60.251.196.230])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tNOLalON"
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 116F55026D
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 03:25:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.251.196.230
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39B8A6E2B0
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 03:26:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707189950; cv=none; b=fhaOTeQ2dLEZorKN9JWgD4bjb19sJ2xXUn+lFsZArqqR9tgOolXey4vYwi4JDv9jCGs+QNbYIs/QfBIDqbXARbizNEpApj5t7S2S9sfgeC73nQneTRfWbakagsEtNE8R7pOsA7Z1oQChDcXHp7gNpI/IRns7Ni9PFLfHFlpjClM=
+	t=1707189988; cv=none; b=knTxdyeUxXgN9pyoHB60dQCSTE5UAW5rt0IvXwT0YPy47dXFClI5xGxNzQk73eR6JI3IgegVEfoZf1NO0RyyFq4buGSdnMI5oOf0DzZT0QYT7AfcmLqUMUJWYuhJ4cgKL70ER3oAKVt7Q1183R8hhV4RzM3NRjy4ED7u2bT/O0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707189950; c=relaxed/simple;
-	bh=yRocNbYAv0o1LDOLTf19hzFWuhthm9QITxsxnExRzNU=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=L11d9J9bMGBIT4Xx9OgM7oMp6yuJCBQH9VDUkjkw5wLIZRVSteCVtx5orS20MvCzTPwh4sP30fQb13N7ZRbINmvj0hMW05Crvo9bRkQwoYk4F3rsaBgXW9LYnKyGU0Ry7JX9fYUy8glKPOu+uW79Vnx3tFmvaHPUrO70IsJ+UQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ite.com.tw; spf=pass smtp.mailfrom=ite.com.tw; dkim=pass (2048-bit key) header.d=ite.com.tw header.i=@ite.com.tw header.b=QqhHu8qc; arc=none smtp.client-ip=60.251.196.230
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ite.com.tw
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ite.com.tw
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=ite.com.tw; s=dkim;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=yRocNbYAv0o1LDOLTf19hzFWuhthm9QITxsxnExRzNU=;
-  b=QqhHu8qc8LMv/+IQarQYRLXXTJ0n8k8S6Rhwx3Qdkoa/zOrvvWfx1MQ4
-   vJgrkJieqZfXAxZsjVG3KZTAKYnGNpWgelti9ptV4Otvyem6Fv3sIHumu
-   lmVH9KfYBUeTeHVI5V9MjuAS0az1gOszlgT/o9WTDZH4gDrvaSUv7miyG
-   tHz5YkMvS9plYcWSWUEHT1SofVNFzxaPYV9LQEJzW/tzNhox8vyf6qB+K
-   2fWFwmGpZH4+jrS2s2n5VJMlj/+2OrdSGCJuMMJPvT+JRiBz0xTgwQYhf
-   c2dUo8VKRbvldE78F6lJBWzcZmObjeJlJf02s4yBdA2YHsj23RYdR7B6z
-   Q==;
-Received: from unknown (HELO mse.ite.com.tw) ([192.168.35.30])
-  by ironport.ite.com.tw with ESMTP; 06 Feb 2024 11:25:46 +0800
-Received: from CSBMAIL1.internal.ite.com.tw (CSBMAIL2.internal.ite.com.tw [192.168.65.41])
-	by mse.ite.com.tw with ESMTP id 4163Pgc8050603;
-	Tue, 6 Feb 2024 11:25:42 +0800 (GMT-8)
-	(envelope-from kuro.chung@ite.com.tw)
-Received: from CSBMAIL1.internal.ite.com.tw (192.168.65.58) by
- CSBMAIL2.internal.ite.com.tw (192.168.65.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 6 Feb 2024 11:25:41 +0800
-Received: from CSBMAIL1.internal.ite.com.tw ([fe80::c9da:6689:2b22:a2d6]) by
- CSBMAIL1.internal.ite.com.tw ([fe80::c9da:6689:2b22:a2d6%3]) with mapi id
- 15.01.2507.035; Tue, 6 Feb 2024 11:25:41 +0800
-From: <kuro.chung@ite.com.tw>
-To: <treapking@chromium.org>
-CC: <allen.chen@ite.com.tw>, <Kenneth.Hung@ite.com.tw>, <a.hajda@samsung.com>,
-        <narmstrong@baylibre.com>, <robert.foss@linaro.org>,
-        <Laurent.pinchart@ideasonboard.com>, <jonas@kwiboo.se>,
-        <jernej.skrabec@gmail.com>, <airlied@gmail.com>, <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] UPSTREAM: drm/bridge: it6505: fix hibernate to resume no
- display issue
-Thread-Topic: [PATCH] UPSTREAM: drm/bridge: it6505: fix hibernate to resume no
- display issue
-Thread-Index: AQHaWKmgnb6ilPbqZU+EAROdJJqexrD8pI6g
-Date: Tue, 6 Feb 2024 03:25:41 +0000
-Message-ID: <268c752f453d4cbdbc5c05ee251af252@ite.com.tw>
-References: <20240206031857.113981-1-kuro.chung@ite.com.tw>
-In-Reply-To: <20240206031857.113981-1-kuro.chung@ite.com.tw>
-Accept-Language: en-US
-Content-Language: zh-TW
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tm-snts-smtp: 4A621066F75D306F1CE949A6B21D910DF838BFF0DC51E6F19C34138F76B57E362002:8
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1707189988; c=relaxed/simple;
+	bh=ZkTX61I2tt36xodQQmRzMrJjNf1JsLLmeuhhpXbqOYo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bcUQh9ySaVF1ZY6NmE5NvK8CF0PkfooaSfJW14M9xh3muSpD5iiM4vRsubyn3H057Ir+j93ZjnXXP0l0QCuji4b9ce/mwJljuWW/EwvLhT5gxv1z16pfqbmdEXsb+sX1H4gIfoJaEAKItikMX9j468tmzT4NKbe4NhjFKA+enbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tNOLalON; arc=none smtp.client-ip=95.215.58.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <f5e918d6-e0a0-4233-b2c1-58505f5e8655@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707189984;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ClD2Z6Jo52GcH++My4a6PnVyBVRkcPKgaDGiH7iNA/k=;
+	b=tNOLalON7SIXvMIFxF/K/Mn422ezvF3obOVRSojEkr+3MyY7JBT2TZoivbxMFGfoheZSZR
+	Cjk3ZAZpBimhXqD+8iYSQYcMYlV8DxvXn2ro4ZHCi5H/JKQ9WJ+o7Rkm9/Fio8gfwcKH7V
+	yhPF3WxlasNzIK//syGGSWpPSfbWb1E=
+Date: Tue, 6 Feb 2024 11:25:53 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MAIL:mse.ite.com.tw 4163Pgc8050603
+Subject: Re: Do we still need SLAB_MEM_SPREAD (and possibly others)?
+Content-Language: en-US
+To: Waiman Long <longman@redhat.com>,
+ "Song, Xiongwei" <Xiongwei.Song@windriver.com>,
+ "Christoph Lameter (Ampere)" <cl@linux.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>, Yosry Ahmed <yosryahmed@google.com>,
+ Steven Rostedt <rostedt@goodmis.org>, LKML <linux-kernel@vger.kernel.org>,
+ "linux-mm@kvack.org" <linux-mm@kvack.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Zefan Li <lizefan.x@bytedance.com>, Kees Cook <keescook@chromium.org>,
+ David Rientjes <rientjes@google.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+ Chengming Zhou <zhouchengming@bytedance.com>,
+ Zheng Yejian <zhengyejian1@huawei.com>,
+ "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>
+References: <20240131172027.10f64405@gandalf.local.home>
+ <CAJD7tkYCrFAXLey-WK8k1Nkt4SoUQ00GWNjU43HJgaLqycBm7Q@mail.gmail.com>
+ <61af19ca-5f9a-40da-a04d-b04ed27b8754@suse.cz>
+ <698633db-b066-4f75-b201-7b785819277b@linux.dev>
+ <PH0PR11MB519280092AA66FAE6BB3FACEEC402@PH0PR11MB5192.namprd11.prod.outlook.com>
+ <fb8161d9-16c0-da8c-09ee-905e39ae199b@linux.com>
+ <PH0PR11MB5192FC6A7AA3CB84BA3BC7E6EC462@PH0PR11MB5192.namprd11.prod.outlook.com>
+ <da2417c0-49f1-4674-95f9-297d6cd9e0fa@redhat.com>
+ <2efa10b2-6732-4aa5-98ae-34053a5838ee@redhat.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <2efa10b2-6732-4aa5-98ae-34053a5838ee@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-SGkgUGluLXllbiwgDQoNCgkJSSB3YW50IHRvIHVwbG9hZCB0aGUgcGF0Y2ggdG8gbGV0IHRoZSBw
-YXRjaCBjb3VsZCBiZSByZXZpZXcgb24gd2Vic2l0ZSwgaHR0cHM6Ly9jaHJvbWl1bS1yZXZpZXcu
-Z29vZ2xlc291cmNlLmNvbS9kYXNoYm9hcmQvc2VsZg0KCQlCdXQgdGhlIG1lc3NhZ2UgJyBObyBD
-b250cmlidXRvciBBZ3JlZW1lbnQgb24gZmlsZSBmb3IgdXNlciBBbGxlbiBDaGVuICcgc2VlbXMg
-bm8gbG9uZ2VyIGhhdmUgUGVybWlzc2lvbnMgZm9yIHRoaXMgZmlsZSwgcmlnaHQ/DQoJCUl0IGhh
-dmUgYW4gaXNzdWUgbmVlZCB0byB1cGRhdGUgdGhlIGl0ZS1pdDY1MDUuYywgCUNvdWxkIHlvdSBn
-aXZlIG1lIHNvbWUgYWR2aXNpbmc/DQoJCVRoYW5rIHlvdSB2ZXJ5IG11Y2guDQoNCkJSIEt1cm8g
-Q2h1bmcNCml0ZUBpdGUtWFBTLTEzLTkzNjA6fi9wcm9qZWN0L2l0NjUwNS9nb29nbGUvc291cmNl
-L2Nyb3Mvc3JjL3RoaXJkX3BhcnR5L2tlcm5lbC92NS4xNSQgZ2l0IHB1c2ggY3JvcyBIRUFEOnJl
-ZnMvZm9yL2Nocm9tZW9zLTUuMTUNCnJlbW90ZTogUEVSTUlTU0lPTl9ERU5JRUQ6IFRoZSBjYWxs
-ZXIgZG9lcyBub3QgaGF2ZSBwZXJtaXNzaW9uDQpyZW1vdGU6IFt0eXBlLmdvb2dsZWFwaXMuY29t
-L2dvb2dsZS5ycGMuTG9jYWxpemVkTWVzc2FnZV0NCnJlbW90ZTogbG9jYWxlOiAiZW4tVVMiDQpy
-ZW1vdGU6IG1lc3NhZ2U6ICJObyBDb250cmlidXRvciBBZ3JlZW1lbnQgb24gZmlsZSBmb3IgdXNl
-ciBBbGxlbiBDaGVuIDxhbGxlbi5jaGVuQGl0ZS5jb3JwLXBhcnRuZXIuZ29vZ2xlLmNvbT4gKGlk
-PTEzMjE1MTUpIg0KcmVtb3RlOg0KcmVtb3RlOiBbdHlwZS5nb29nbGVhcGlzLmNvbS9nb29nbGUu
-cnBjLlJlcXVlc3RJbmZvXQ0KcmVtb3RlOiByZXF1ZXN0X2lkOiAiM2MxNzFmMmZlNzhlNDU4ZWJi
-YjI5OTBiYWI5M2NmYjMiDQpyZW1vdGU6DQpyZW1vdGU6IFt0eXBlLmdvb2dsZWFwaXMuY29tL2dv
-b2dsZS5ycGMuUmVxdWVzdEluZm9dDQpyZW1vdGU6IHJlcXVlc3RfaWQ6ICJjNTY2MjY3MmUwMGY0
-MmUxYjY1NjIxNDkyNzBjNzg2NCINCmZhdGFsOiB1bmFibGUgdG8gYWNjZXNzICdodHRwczovL2No
-cm9taXVtLmdvb2dsZXNvdXJjZS5jb20vY2hyb21pdW1vcy90aGlyZF9wYXJ0eS9rZXJuZWwvJzog
-VGhlIHJlcXVlc3RlZCBVUkwgcmV0dXJuZWQgZXJyb3I6IDQwMw0KDQpCUiBLdXJvIENodW5nDQoN
-Ci0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBLdXJvIENodW5nICjEwaVLp8opIDxr
-dXJvLmNodW5nQGl0ZS5jb20udHc+IA0KU2VudDogVHVlc2RheSwgRmVicnVhcnkgNiwgMjAyNCAx
-MToxOSBBTQ0KQ2M6IEFsbGVuIENoZW4gPGFsbGVuLmNoZW5AaXRlLmNvbS50dz47IFBpbi15ZW4g
-TGluIDx0cmVhcGtpbmdAY2hyb21pdW0ub3JnPjsgS3VybyBDaHVuZyAoxMGlS6fKKSA8a3Vyby5j
-aHVuZ0BpdGUuY29tLnR3PjsgS2VubmV0aCBIdW5nICiseK5hrdspIDxLZW5uZXRoLkh1bmdAaXRl
-LmNvbS50dz47IEFuZHJ6ZWogSGFqZGEgPGEuaGFqZGFAc2Ftc3VuZy5jb20+OyBOZWlsIEFybXN0
-cm9uZyA8bmFybXN0cm9uZ0BiYXlsaWJyZS5jb20+OyBSb2JlcnQgRm9zcyA8cm9iZXJ0LmZvc3NA
-bGluYXJvLm9yZz47IExhdXJlbnQgUGluY2hhcnQgPExhdXJlbnQucGluY2hhcnRAaWRlYXNvbmJv
-YXJkLmNvbT47IEpvbmFzIEthcmxtYW4gPGpvbmFzQGt3aWJvby5zZT47IEplcm5laiBTa3JhYmVj
-IDxqZXJuZWouc2tyYWJlY0BnbWFpbC5jb20+OyBEYXZpZCBBaXJsaWUgPGFpcmxpZWRAZ21haWwu
-Y29tPjsgRGFuaWVsIFZldHRlciA8ZGFuaWVsQGZmd2xsLmNoPjsgb3BlbiBsaXN0OkRSTSBEUklW
-RVJTIDxkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnPjsgb3BlbiBsaXN0IDxsaW51eC1r
-ZXJuZWxAdmdlci5rZXJuZWwub3JnPg0KU3ViamVjdDogW1BBVENIXSBVUFNUUkVBTTogZHJtL2Jy
-aWRnZTogaXQ2NTA1OiBmaXggaGliZXJuYXRlIHRvIHJlc3VtZSBubyBkaXNwbGF5IGlzc3VlDQoN
-CkZyb206IGFsbGVuIGNoZW4gPGFsbGVuLmNoZW5AaXRlLmNvbS50dz4NCg0KQ2hhbmdlLUlkOiBJ
-YWEzY2Q5ZGE5MmE2MjU0OTZmNTc5ZDg3ZDBhYjc0Y2E5YzQ5MzdjNA0KLS0tDQogZHJpdmVycy9n
-cHUvZHJtL2JyaWRnZS9pdGUtaXQ2NTA1LmMgfCA0MiArKysrKysrKysrKysrKysrKysrKysrLS0t
-LS0tLQ0KIDEgZmlsZSBjaGFuZ2VkLCAzMyBpbnNlcnRpb25zKCspLCA5IGRlbGV0aW9ucygtKQ0K
-DQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9pdGUtaXQ2NTA1LmMgYi9kcml2
-ZXJzL2dwdS9kcm0vYnJpZGdlL2l0ZS1pdDY1MDUuYw0KaW5kZXggYjUzZGE5YmI2NWExLi4wNzg4
-MzAwMWU2Y2EgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL2dwdS9kcm0vYnJpZGdlL2l0ZS1pdDY1MDUu
-Yw0KKysrIGIvZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9pdGUtaXQ2NTA1LmMNCkBAIC0xMzE4LDYg
-KzEzMTgsOCBAQCBzdGF0aWMgdm9pZCBpdDY1MDVfdmlkZW9fcmVzZXQoc3RydWN0IGl0NjUwNSAq
-aXQ2NTA1KQ0KIAlpdDY1MDVfc2V0X2JpdHMoaXQ2NTA1LCBSRUdfREFUQV9NVVRFX0NUUkwsIEVO
-X1ZJRF9NVVRFLCBFTl9WSURfTVVURSk7DQogCWl0NjUwNV9zZXRfYml0cyhpdDY1MDUsIFJFR19J
-TkZPRlJBTUVfQ1RSTCwgRU5fVklEX0NUUkxfUEtULCAweDAwKTsNCiAJaXQ2NTA1X3NldF9iaXRz
-KGl0NjUwNSwgUkVHX1JFU0VUX0NUUkwsIFZJREVPX1JFU0VULCBWSURFT19SRVNFVCk7DQorCWl0
-NjUwNV9zZXRfYml0cyhpdDY1MDUsIFJFR19WSURfQlVTX0NUUkwxLCBUWF9GSUZPX1JFU0VULCAw
-eDAyKTsNCisJaXQ2NTA1X3NldF9iaXRzKGl0NjUwNSwgUkVHX1ZJRF9CVVNfQ1RSTDEsIFRYX0ZJ
-Rk9fUkVTRVQsIDB4MDApOw0KIAlpdDY1MDVfc2V0X2JpdHMoaXQ2NTA1LCBSRUdfNTAxX0ZJRk9f
-Q1RSTCwgUlNUXzUwMV9GSUZPLCBSU1RfNTAxX0ZJRk8pOw0KIAlpdDY1MDVfc2V0X2JpdHMoaXQ2
-NTA1LCBSRUdfNTAxX0ZJRk9fQ1RSTCwgUlNUXzUwMV9GSUZPLCAweDAwKTsNCiAJaXQ2NTA1X3Nl
-dF9iaXRzKGl0NjUwNSwgUkVHX1JFU0VUX0NUUkwsIFZJREVPX1JFU0VULCAweDAwKTsgQEAgLTI0
-ODAsMTAgKzI0ODIsNiBAQCBzdGF0aWMgdm9pZCBpdDY1MDVfaXJxX3ZpZGVvX2ZpZm9fZXJyb3Io
-c3RydWN0IGl0NjUwNSAqaXQ2NTA1KQ0KIAlzdHJ1Y3QgZGV2aWNlICpkZXYgPSAmaXQ2NTA1LT5j
-bGllbnQtPmRldjsNCiANCiAJRFJNX0RFVl9ERUJVR19EUklWRVIoZGV2LCAidmlkZW8gZmlmbyBv
-dmVyZmxvdyBpbnRlcnJ1cHQiKTsNCi0JaXQ2NTA1LT5hdXRvX3RyYWluX3JldHJ5ID0gQVVUT19U
-UkFJTl9SRVRSWTsNCi0JZmx1c2hfd29yaygmaXQ2NTA1LT5saW5rX3dvcmtzKTsNCi0JaXQ2NTA1
-X3N0b3BfaGRjcChpdDY1MDUpOw0KLQlpdDY1MDVfdmlkZW9fcmVzZXQoaXQ2NTA1KTsNCiB9DQog
-DQogc3RhdGljIHZvaWQgaXQ2NTA1X2lycV9pb19sYXRjaF9maWZvX292ZXJmbG93KHN0cnVjdCBp
-dDY1MDUgKml0NjUwNSkgQEAgLTI0OTEsMTAgKzI0ODksNiBAQCBzdGF0aWMgdm9pZCBpdDY1MDVf
-aXJxX2lvX2xhdGNoX2ZpZm9fb3ZlcmZsb3coc3RydWN0IGl0NjUwNSAqaXQ2NTA1KQ0KIAlzdHJ1
-Y3QgZGV2aWNlICpkZXYgPSAmaXQ2NTA1LT5jbGllbnQtPmRldjsNCiANCiAJRFJNX0RFVl9ERUJV
-R19EUklWRVIoZGV2LCAiSU8gbGF0Y2ggZmlmbyBvdmVyZmxvdyBpbnRlcnJ1cHQiKTsNCi0JaXQ2
-NTA1LT5hdXRvX3RyYWluX3JldHJ5ID0gQVVUT19UUkFJTl9SRVRSWTsNCi0JZmx1c2hfd29yaygm
-aXQ2NTA1LT5saW5rX3dvcmtzKTsNCi0JaXQ2NTA1X3N0b3BfaGRjcChpdDY1MDUpOw0KLQlpdDY1
-MDVfdmlkZW9fcmVzZXQoaXQ2NTA1KTsNCiB9DQogDQogc3RhdGljIGJvb2wgaXQ2NTA1X3Rlc3Rf
-Yml0KHVuc2lnbmVkIGludCBiaXQsIGNvbnN0IHVuc2lnbmVkIGludCAqYWRkcikgQEAgLTI1MjIs
-NyArMjUxNiw3IEBAIHN0YXRpYyBpcnFyZXR1cm5fdCBpdDY1MDVfaW50X3RocmVhZGVkX2hhbmRs
-ZXIoaW50IHVudXNlZCwgdm9pZCAqZGF0YSkNCiAJCXsgQklUX0lOVF9WSURfRklGT19FUlJPUiwg
-aXQ2NTA1X2lycV92aWRlb19maWZvX2Vycm9yIH0sDQogCQl7IEJJVF9JTlRfSU9fRklGT19PVkVS
-RkxPVywgaXQ2NTA1X2lycV9pb19sYXRjaF9maWZvX292ZXJmbG93IH0sDQogCX07DQotCWludCBp
-bnRfc3RhdHVzWzNdLCBpOw0KKwlpbnQgaW50X3N0YXR1c1szXSwgaSwgcmVnXzBkOw0KIA0KIAlp
-ZiAoaXQ2NTA1LT5lbmFibGVfZHJ2X2hvbGQgfHwgIWl0NjUwNS0+cG93ZXJlZCkNCiAJCXJldHVy
-biBJUlFfSEFORExFRDsNCkBAIC0yNTUwLDYgKzI1NDQsMzYgQEAgc3RhdGljIGlycXJldHVybl90
-IGl0NjUwNV9pbnRfdGhyZWFkZWRfaGFuZGxlcihpbnQgdW51c2VkLCB2b2lkICpkYXRhKQ0KIAkJ
-CWlmIChpdDY1MDVfdGVzdF9iaXQoaXJxX3ZlY1tpXS5iaXQsICh1bnNpZ25lZCBpbnQgKilpbnRf
-c3RhdHVzKSkNCiAJCQkJaXJxX3ZlY1tpXS5oYW5kbGVyKGl0NjUwNSk7DQogCQl9DQorDQorCQlp
-ZiAoKGl0NjUwNV90ZXN0X2JpdChpcnFfdmVjWzldLmJpdCwgKHVuc2lnbmVkIGludCAqKWludF9z
-dGF0dXMpKSB8fA0KKwkJCShpdDY1MDVfdGVzdF9iaXQoaXJxX3ZlY1sxMF0uYml0LCAodW5zaWdu
-ZWQgaW50ICopaW50X3N0YXR1cykpKSB7DQorCQkJaXQ2NTA1LT5hdXRvX3RyYWluX3JldHJ5ID0g
-QVVUT19UUkFJTl9SRVRSWTsNCisJCQlmbHVzaF93b3JrKCZpdDY1MDUtPmxpbmtfd29ya3MpOw0K
-KwkJCWl0NjUwNV9zdG9wX2hkY3AoaXQ2NTA1KTsNCisJCQlpdDY1MDVfdmlkZW9fcmVzZXQoaXQ2
-NTA1KTsNCisNCisJCQlEUk1fREVWX0RFQlVHX0RSSVZFUihkZXYsICJWaWRlbyBFcnJvciByZXNl
-dCB3YWl0IHZpZGVvLi4uIik7DQorDQorCQkJZm9yIChpID0gMDsgaSA8IDEwOyBpKyspIHsNCisJ
-CQkJdXNsZWVwX3JhbmdlKDEwMDAwLCAxMTAwMCk7DQorCQkJCWludF9zdGF0dXNbMl0gPSBpdDY1
-MDVfcmVhZChpdDY1MDUsIElOVF9TVEFUVVNfMDMpOw0KKwkJCQlyZWdfMGQgPSBpdDY1MDVfcmVh
-ZChpdDY1MDUsIFJFR19TWVNURU1fU1RTKTsNCisJCQkJaXQ2NTA1X3dyaXRlKGl0NjUwNSwgSU5U
-X1NUQVRVU18wMywgaW50X3N0YXR1c1syXSk7DQorDQorCQkJCURSTV9ERVZfREVCVUdfRFJJVkVS
-KGRldiwgInJlZzA4ID0gMHglMDJ4IiwgaW50X3N0YXR1c1syXSk7DQorCQkJCURSTV9ERVZfREVC
-VUdfRFJJVkVSKGRldiwgInJlZzBEID0gMHglMDJ4IiwgcmVnXzBkKTsNCisJCQkJaWYgKChyZWdf
-MGQgJiBWSURFT19TVEIpICYmIChyZWdfMGQgPj0gMCkpDQorCQkJCQlicmVhazsNCisNCisJCQkJ
-aWYgKChpdDY1MDVfdGVzdF9iaXQoaXJxX3ZlY1s5XS5iaXQsICh1bnNpZ25lZCBpbnQgKilpbnRf
-c3RhdHVzKSkgfHwgKGl0NjUwNV90ZXN0X2JpdChpcnFfdmVjWzEwXS5iaXQsICh1bnNpZ25lZCBp
-bnQgKilpbnRfc3RhdHVzKSkpIHsNCisJCQkJCWl0NjUwNV92aWRlb19yZXNldChpdDY1MDUpOw0K
-KwkJCQkJRFJNX0RFVl9ERUJVR19EUklWRVIoZGV2LCAiVmlkZW8gRXJyb3IgcmVzZXQgd2FpdCB2
-aWRlbyAoJWQpIiwgaSk7DQorCQkJCX0NCisNCisJCQl9DQorDQorCQl9DQorDQogCX0NCiANCiAJ
-cG1fcnVudGltZV9wdXRfc3luYyhkZXYpOw0KLS0NCjIuMjUuMQ0KDQo=
+On 2024/2/6 11:20, Waiman Long wrote:
+> 
+> On 2/5/24 22:16, Waiman Long wrote:
+>>
+>> On 2/5/24 20:46, Song, Xiongwei wrote:
+>>> Adding the maintainers of cpuset of cgroup.
+>>>
+>>>> On Sun, 4 Feb 2024, Song, Xiongwei wrote:
+>>>>
+>>>>> Once SLAB_MEM_SPREAD is removed, IMO, cpuset.memory_spread_slab is useless.
+>>>> SLAB_MEM_SPREAD does not do anything anymore. SLUB relies on the
+>>>> "spreading" via the page allocator memory policies instead of doing its
+>>>> own like SLAB used to do.
+>>>>
+>>>> What does FILE_SPREAD_SLAB do? Dont see anything there either.
+>>> The FILE_SPREAD_SLAB flag is used by cpuset.memory_spread_slab with read/write operations:
+>>>
+>>> In kernel/cgroup/cpuset.c,
+>>> static struct cftype legacy_files[] = {
+>>> ... snip ...
+>>>          {
+>>>                  .name = "memory_spread_slab",
+>>>                  .read_u64 = cpuset_read_u64,
+>>>                  .write_u64 = cpuset_write_u64,
+>>>                  .private = FILE_SPREAD_SLAB,
+>>>          },
+>>> ... snip ...
+>>> };
+>>
+>> It looks like that memory_spread_slab may have effect only on the slab allocator. With the removal of the slab allocator, memory_spread_slab is now a no-op. However, the memory_spread_slab cgroupfs file is an externally visible API. So we can't just remove it as it may break existing applications. We can certainly deprecate it and advise users not to use it.
+> 
+> BTW, cpuset doesn't use SLAB_MEM_SPREAD directly. Instead it set the task's PFA_SPREAD_SLAB and let other subsystems test it to act appropriately. Other than cpuset, the latest upstream kernel doesn't check or use this flag at all.
+> 
+
+Ok, get it. So cpuset_do_slab_mem_spread() can be removed, but
+this cpuset file interface and PFA_SPREAD_SLAB will be keeped.
+
+Thanks.
 
