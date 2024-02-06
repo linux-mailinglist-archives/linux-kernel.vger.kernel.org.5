@@ -1,193 +1,165 @@
-Return-Path: <linux-kernel+bounces-54749-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54750-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9290084B32A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:11:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87FEB84B32F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:12:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F7B1B27718
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:11:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA8DE1C241AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:12:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC377130E2F;
-	Tue,  6 Feb 2024 11:08:30 +0000 (UTC)
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F12FC130E59;
+	Tue,  6 Feb 2024 11:09:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="uH8brE24";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lpmpijBp";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="uH8brE24";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lpmpijBp"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF989130AD3;
-	Tue,  6 Feb 2024 11:08:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68A1212F5A7;
+	Tue,  6 Feb 2024 11:09:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707217710; cv=none; b=ICBV5RZ6QXaKQK4knTQPbncmlelyAh2Db3h5bjkH3fM0Ix5sPQ7b3zs1nlxbbz42qUdreUxkJoYPPwgA12AISY9xnNRvF8lahIqObEIExbe5Lq4Sub5NwYl907q7GxDCjX95pklAzZTDQH6KnDmPdkQip8QoLXv7sUdLCHTiymE=
+	t=1707217749; cv=none; b=PgE4XQTpaQQZFkUGytM7xA1TL0zAWYnx0juu8KzzaZd24JCzrRp9XReR2K315pGdeJ9+vcak1C2xGcUHLkPCI6j+R9Fg2ea9TxVV3vOsiu0r7VKLYFlUU1uGH6x31Jd4N5PYIYXCumd+1oru1Q+/zm5XUueP3KKmyTQocyW2Sk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707217710; c=relaxed/simple;
-	bh=4oIPZpDeoZVGe7GmWnId7XVlTWi57XyHUKaP1aysZog=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=a7HJNr/Ispd95LggADMwyUoSqmhpdKK5RW5ucX2UDvuXinNjx7z5g5pAeBTk9QaUxRU3tHxtQi1vardjdUX6gn5uIDqr+7scXFCQmNT7XelRhldNNj5ukmTGjss6dSU4BuPy2798rqPOkcLUMfWpQfHb4cvJujaKuubYR/IrI9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=v0yd.nl; spf=pass smtp.mailfrom=v0yd.nl; arc=none smtp.client-ip=80.241.56.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=v0yd.nl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=v0yd.nl
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
+	s=arc-20240116; t=1707217749; c=relaxed/simple;
+	bh=JobQ2CoI/T2II61TjDEzXR1IyAwC4J3VElbAVa6K1nw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oS0e1jXlLpyk9QNYHpBRQOgpdWyh1DmYJuyqQT710toJkbZfBb+Z2batJp2czDAt/soZlKBrgySFCd5KO3cg4bGF6siKZJwaXNjbh5XIOsOhJu+zDgSxx/O/qnYuXVWfnzUfOpQ7FBREmETwvMDPKAjoY/KTKcSCOQd33YUZwLI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=uH8brE24; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lpmpijBp; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=uH8brE24; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lpmpijBp; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from lion.mk-sys.cz (unknown [10.100.225.114])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4TTgTg6L9qz9skM;
-	Tue,  6 Feb 2024 12:08:23 +0100 (CET)
-From: =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>
-To: Marcel Holtmann <marcel@holtmann.org>,
-	Johan Hedberg <johan.hedberg@gmail.com>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
-	linux-bluetooth@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH v4 2/2] Bluetooth: Remove pending ACL connection attempts
-Date: Tue,  6 Feb 2024 12:08:14 +0100
-Message-ID: <20240206110816.74995-3-verdre@v0yd.nl>
-In-Reply-To: <20240206110816.74995-1-verdre@v0yd.nl>
-References: <20240206110816.74995-1-verdre@v0yd.nl>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 66EA5220E4;
+	Tue,  6 Feb 2024 11:09:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707217745; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6OT4WYVPWB8v21SxhnQOwkhxXC/BXklZ/lKe1YRVr9A=;
+	b=uH8brE24jrrN27ewLBBwxFEoWwm8k+2jtNJdZ3iGI5JqIoSbYyDY2tWJgBllFNX6+yNDiA
+	dVVQw32FtJ+MxF1+n3boiMNXBQpzDSiVhpLYoR6sUG9Gkikn2csf8Ig+SGbumpZMQjJ1aT
+	1jX4w/a52YA3ACPS6sC0BrpaPHYjA0k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707217745;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6OT4WYVPWB8v21SxhnQOwkhxXC/BXklZ/lKe1YRVr9A=;
+	b=lpmpijBpuVV0Nb/HzsCBUOKupzpkFp5k1j6sPiWaXNYEVj0gDKQr4o9W5Dam6K9r0+o0oc
+	M3vWhxeb/NQ3h2BA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707217745; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6OT4WYVPWB8v21SxhnQOwkhxXC/BXklZ/lKe1YRVr9A=;
+	b=uH8brE24jrrN27ewLBBwxFEoWwm8k+2jtNJdZ3iGI5JqIoSbYyDY2tWJgBllFNX6+yNDiA
+	dVVQw32FtJ+MxF1+n3boiMNXBQpzDSiVhpLYoR6sUG9Gkikn2csf8Ig+SGbumpZMQjJ1aT
+	1jX4w/a52YA3ACPS6sC0BrpaPHYjA0k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707217745;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6OT4WYVPWB8v21SxhnQOwkhxXC/BXklZ/lKe1YRVr9A=;
+	b=lpmpijBpuVV0Nb/HzsCBUOKupzpkFp5k1j6sPiWaXNYEVj0gDKQr4o9W5Dam6K9r0+o0oc
+	M3vWhxeb/NQ3h2BA==
+Received: by lion.mk-sys.cz (Postfix, from userid 1000)
+	id 4B1C220147; Tue,  6 Feb 2024 12:09:05 +0100 (CET)
+Date: Tue, 6 Feb 2024 12:09:05 +0100
+From: Michal Kubecek <mkubecek@suse.cz>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Florian Westphal <fw@strlen.de>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org, andrea.mattiazzo@suse.com
+Subject: Re: [PATCH net] netfilter: nf_tables: fix pointer math issue in
+ nft_byteorder_eval()
+Message-ID: <20240206110905.ydxjbhiciiyuoq3m@lion.mk-sys.cz>
+References: <15fdceb5-2de5-4453-98b3-cfa9d486e8da@moroto.mountain>
+ <20240206104336.ctigqpkunom2ufmn@lion.mk-sys.cz>
+ <032e2c72-c2a1-4b8b-96da-b0da73473648@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="7ezp3d6y6tx5uysi"
+Content-Disposition: inline
+In-Reply-To: <032e2c72-c2a1-4b8b-96da-b0da73473648@moroto.mountain>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-2.37 / 50.00];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 SIGNED_PGP(-2.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_COUNT_ZERO(0.00)[0];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:~];
+	 BAYES_HAM(-0.17)[69.99%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -2.37
 
-With the last commit we moved to using the hci_sync queue for "Create
-Connection" requests, removing the need for retrying the paging after
-finished/failed "Create Connection" requests and after the end of
-inquiries.
 
-hci_conn_check_pending() was used to trigger this retry, we can remove it
-now.
+--7ezp3d6y6tx5uysi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Note that we can also remove the special handling for COMMAND_DISALLOWED
-errors in the completion handler of "Create Connection", because "Create
-Connection" requests are now always serialized.
+On Tue, Feb 06, 2024 at 02:04:10PM +0300, Dan Carpenter wrote:
+> On Tue, Feb 06, 2024 at 11:43:36AM +0100, Michal Kubecek wrote:
+> >=20
+> > I stumbled upon this when the issue got a CVE id (sigh) and I share
+> > Andrea's (Cc-ed) concern that the fix is incomplete. While the fix,
+> > commit c301f0981fdd ("netfilter: nf_tables: fix pointer math issue in
+> > nft_byteorder_eval()") now, fixes the destination side, src is still
+> > a pointer to u32, i.e. we are reading 64-bit values with relative
+> > offsets which are multiples of 32 bits.
+> >=20
+> > Shouldn't we fix this as well, e.g. like indicated below?
+> >=20
+>=20
+> Yep.  You're right.  Could you send that as a patch.
 
-This is somewhat reverting commit 4c67bc74f016 ("[Bluetooth] Support
-concurrent connect requests").
+Thank you for checking. I'll send a patch in a moment.
 
-With this, the BT_CONNECT2 state of ACL hci_conn objects should now be
-back to meaning only one thing: That we received a "Connection Request"
-from another device (see hci_conn_request_evt), but the response to that
-is going to be deferred.
----
- include/net/bluetooth/hci_core.h |  1 -
- net/bluetooth/hci_conn.c         | 16 ----------------
- net/bluetooth/hci_event.c        | 21 ++++-----------------
- 3 files changed, 4 insertions(+), 34 deletions(-)
+Michal
 
-diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-index 8f8dd91737..34aa9d0290 100644
---- a/include/net/bluetooth/hci_core.h
-+++ b/include/net/bluetooth/hci_core.h
-@@ -1480,7 +1480,6 @@ struct hci_conn *hci_conn_add_unset(struct hci_dev *hdev, int type,
- 				    bdaddr_t *dst, u8 role);
- void hci_conn_del(struct hci_conn *conn);
- void hci_conn_hash_flush(struct hci_dev *hdev);
--void hci_conn_check_pending(struct hci_dev *hdev);
- 
- struct hci_chan *hci_chan_create(struct hci_conn *conn);
- void hci_chan_del(struct hci_chan *chan);
-diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
-index 816be7667a..a4beed8587 100644
---- a/net/bluetooth/hci_conn.c
-+++ b/net/bluetooth/hci_conn.c
-@@ -2592,22 +2592,6 @@ void hci_conn_hash_flush(struct hci_dev *hdev)
- 	}
- }
- 
--/* Check pending connect attempts */
--void hci_conn_check_pending(struct hci_dev *hdev)
--{
--	struct hci_conn *conn;
--
--	BT_DBG("hdev %s", hdev->name);
--
--	hci_dev_lock(hdev);
--
--	conn = hci_conn_hash_lookup_state(hdev, ACL_LINK, BT_CONNECT2);
--	if (conn)
--		hci_acl_create_connection_sync(hdev, conn);
--
--	hci_dev_unlock(hdev);
--}
--
- static u32 get_link_mode(struct hci_conn *conn)
- {
- 	u32 link_mode = 0;
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 271c007928..e7887bae33 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -118,8 +118,6 @@ static u8 hci_cc_inquiry_cancel(struct hci_dev *hdev, void *data,
- 		hci_discovery_set_state(hdev, DISCOVERY_STOPPED);
- 	hci_dev_unlock(hdev);
- 
--	hci_conn_check_pending(hdev);
--
- 	return rp->status;
- }
- 
-@@ -150,8 +148,6 @@ static u8 hci_cc_exit_periodic_inq(struct hci_dev *hdev, void *data,
- 
- 	hci_dev_clear_flag(hdev, HCI_PERIODIC_INQ);
- 
--	hci_conn_check_pending(hdev);
--
- 	return rp->status;
- }
- 
-@@ -2312,10 +2308,8 @@ static void hci_cs_inquiry(struct hci_dev *hdev, __u8 status)
- {
- 	bt_dev_dbg(hdev, "status 0x%2.2x", status);
- 
--	if (status) {
--		hci_conn_check_pending(hdev);
-+	if (status)
- 		return;
--	}
- 
- 	if (hci_sent_cmd_data(hdev, HCI_OP_INQUIRY))
- 		set_bit(HCI_INQUIRY, &hdev->flags);
-@@ -2340,12 +2334,9 @@ static void hci_cs_create_conn(struct hci_dev *hdev, __u8 status)
- 
- 	if (status) {
- 		if (conn && conn->state == BT_CONNECT) {
--			if (status != HCI_ERROR_COMMAND_DISALLOWED || conn->attempt > 2) {
--				conn->state = BT_CLOSED;
--				hci_connect_cfm(conn, status);
--				hci_conn_del(conn);
--			} else
--				conn->state = BT_CONNECT2;
-+			conn->state = BT_CLOSED;
-+			hci_connect_cfm(conn, status);
-+			hci_conn_del(conn);
- 		}
- 	} else {
- 		if (!conn) {
-@@ -3035,8 +3026,6 @@ static void hci_inquiry_complete_evt(struct hci_dev *hdev, void *data,
- 
- 	bt_dev_dbg(hdev, "status 0x%2.2x", ev->status);
- 
--	hci_conn_check_pending(hdev);
--
- 	if (!test_and_clear_bit(HCI_INQUIRY, &hdev->flags))
- 		return;
- 
-@@ -3258,8 +3247,6 @@ static void hci_conn_complete_evt(struct hci_dev *hdev, void *data,
- 
- unlock:
- 	hci_dev_unlock(hdev);
--
--	hci_conn_check_pending(hdev);
- }
- 
- static void hci_reject_conn(struct hci_dev *hdev, bdaddr_t *bdaddr)
--- 
-2.43.0
+--7ezp3d6y6tx5uysi
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEWN3j3bieVmp26mKO538sG/LRdpUFAmXCE00ACgkQ538sG/LR
+dpXa3Qf9EFBC4n7Zbu8vkttkV1PhDpvlxZbiBTX2d4ss2GthPDKjJhOjVXmgc0v6
+2ctb+Aglx15NnbMm4bGL9G7XWSIpS+8XkmW0jNJN2b944SdGSjEngAZTSiXRC3Ee
+QZqzbgmkimjv/ZQtFVIIEbAhOfUlxoCKcgHLog5i8SlQGnpgMLSGRzU+Fd+Ef+TE
+qTI2U5hNvxBoBki9Z7UYGcReFz6oP8IfEzQnv7Qk+l6cmQJnmVBPTRfA7/LMXJS6
+aMW/C7rkq4+0cZntN+WDM/EBHW1+ymiL+sHAflA7dmDesRHyH8FVWdlnAowW7uMw
+XXjB3y1kSE6pPnkcXCRM8hRfVRKDig==
+=iE/Q
+-----END PGP SIGNATURE-----
+
+--7ezp3d6y6tx5uysi--
 
