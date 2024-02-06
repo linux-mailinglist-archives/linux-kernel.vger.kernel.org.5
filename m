@@ -1,125 +1,137 @@
-Return-Path: <linux-kernel+bounces-54492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54493-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA12084AFEC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:28:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72AAE84AFF3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:31:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18DCF1C22C1D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:28:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D7101F21EA9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:31:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F095412B15A;
-	Tue,  6 Feb 2024 08:28:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F5FE12B177;
+	Tue,  6 Feb 2024 08:31:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TM+8ouuk"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="rh6lwEtt"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33CDD12AAD9;
-	Tue,  6 Feb 2024 08:28:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A00262E827;
+	Tue,  6 Feb 2024 08:31:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707208098; cv=none; b=cV5A/sMIkEogKw6MeLQ3oYW+JrBz4ZagqdwV3E8ydpnDdNtIUoVjHXrSYMB4uzFax9GeZYz+SiBMDiAiJ2XoVjqybVeN+pNJIPY79PN895O2Rw3919UYHxT89vH0HRMVgtcwXB/WN8W58isrsF7eYYclX7PkcESkWEPMdBdI16k=
+	t=1707208276; cv=none; b=PZLvMPw43hbH9XSgNn8yayDvpLaO+91lpduTwxJTYKHjSZNFs/e1RW1F9R57+HKg+EsJipW9cDtKmFocsuIVnLUSPKDzcIPeleAy96q5eUx1W12Fvz6RCDEKcTMxJbQN6f0+q7C5G/7Wem76mGLaK5K+mcdlaINz0yXBtQy3At4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707208098; c=relaxed/simple;
-	bh=koRftp4MHR3PWopvdU9KfvvbZmwaKfHJJheC6bS279o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m2GUc2ZGol5uUYEYT7W8iYVzZHv9oPceqdPDObOJuWgP8Nua9FmQ7BMQrPWlCH5DB1mcZPhvDLXYd4HnITdJFxsMMoMIliGG35RK0gSw5k7NC81LfBIG34KbfOsIOvFdHF+N2Q7vzXShIMPg46KgLyrj4ZbAve3u6+GZcF6FX/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TM+8ouuk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7B87C433C7;
-	Tue,  6 Feb 2024 08:28:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707208097;
-	bh=koRftp4MHR3PWopvdU9KfvvbZmwaKfHJJheC6bS279o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TM+8ouukUsUZLm3TN5OzwtVC43etkDvx/XBzBl8myT81EbZpPx3AMCEv+HP0mxN7X
-	 kWwSb6Ut7d4c+M2y2bTzFo8o762ullHauFEXiEXgXm0r1+ab+NeOeVyMFWUJ+VcnBc
-	 YnsPEQJqjr7bu04kV14y/askf0G9GypboFKDT+2qBOZyNPVm99WOK5W+a6wMlromea
-	 B5YGgVY2mAp5S/slHe3Th4sCt/aA4CgmEySVkPPxzo7FUeZl76Y1XD/pJbabnTtQZE
-	 64W4Hz5DXlQDs9Y71M9tYVOH6EG6e6n5EnKdTzB7Fc5QcxFngz+jdrB2LPEg1j23vf
-	 K3dCkA5JDa/6Q==
-Date: Tue, 6 Feb 2024 09:28:10 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Dan Carpenter <dan.carpenter@linaro.org>
-Subject: Re: [PATCH v5 1/2] PCI: dwc: Fix a 64bit bug in
- dw_pcie_ep_raise_msix_irq()
-Message-ID: <ZcHtmkOkvutz/DvR@x1-carbon>
-References: <af59c7ad-ab93-40f7-ad4a-7ac0b14d37f5@moroto.mountain>
+	s=arc-20240116; t=1707208276; c=relaxed/simple;
+	bh=lt+1mLGMhm5l0/t98hXG5WEqjqSEDt/EpMtIkFWy9NU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=XQ+j5XrxhtrChOqTQdLL4folFTgg6st0wSLJvLPM7j/IWbdKdDb8QivRx+EVHZ2pBQ9twE18MBl6psp/h0X1yPBsa0GiOWnRu4SilN34n7FEQir0UaPu4cE7rqs/fuuzfqbq60tbvyyRA/kLXajJeGAr3313+7si7XPhn3Zvvlk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=rh6lwEtt; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4168RIdS004498;
+	Tue, 6 Feb 2024 08:31:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=//lNQevsjJgdzeHg50s9onUHKe1xQCX2+UPDb9DoeP0=;
+ b=rh6lwEtt59EPNSZgyJTZZ3AfxXY2SK4OTZ//QreeCxTGTMbz28PUlQdihGPAoM7BaPd2
+ L2HOTfsroDCi4vzfvScqJOv4srnEyVFDmErsf0tyw1fBBpv72+w6M1C2bM2JALRdIS2B
+ cwYUYapLk0O8AV0Qt4pdy3gwLfrOJQy3LtRXqq6XC6HqUTWiLwwogFW/x0+SjSF97ioZ
+ ceXffgWIyrPyfmi8SO8WZyIcfAc04n7sCajGs4UGbXxBVNwmlHeXwdfyerI2vbV5eQ5C
+ o7R4gVb6Lg8ztBQsRuDLcldrGaiHmj4PZZnIcU3E8ds3sh7BRNBLkDtPo0ELK5p6hESR Rw== 
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w3h9206j3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 06 Feb 2024 08:31:09 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4168CE8p016137;
+	Tue, 6 Feb 2024 08:31:08 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w22h1wb1j-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 06 Feb 2024 08:31:08 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4168V4Yq52232682
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 6 Feb 2024 08:31:04 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6830C20043;
+	Tue,  6 Feb 2024 08:31:04 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B12D320040;
+	Tue,  6 Feb 2024 08:31:03 +0000 (GMT)
+Received: from osiris (unknown [9.171.32.22])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue,  6 Feb 2024 08:31:03 +0000 (GMT)
+Date: Tue, 6 Feb 2024 09:31:02 +0100
+From: Heiko Carstens <hca@linux.ibm.com>
+To: "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        Tony Krowiak <akrowiak@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>, Jason Herne <jjherne@linux.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/6] s390: struct bus_type cleanup
+Message-ID: <20240206083102.11958-A-hca@linux.ibm.com>
+References: <20240203-bus_cleanup-s390-v1-0-ac891afc7282@marliere.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240203-bus_cleanup-s390-v1-0-ac891afc7282@marliere.net>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: y8XyZBvmITDIouv76GEN38J5rB9EztLM
+X-Proofpoint-ORIG-GUID: y8XyZBvmITDIouv76GEN38J5rB9EztLM
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <af59c7ad-ab93-40f7-ad4a-7ac0b14d37f5@moroto.mountain>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-06_02,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ clxscore=1011 adultscore=0 impostorscore=0 priorityscore=1501 bulkscore=0
+ mlxlogscore=566 lowpriorityscore=0 malwarescore=0 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402060059
 
-On Fri, Jan 26, 2024 at 11:40:37AM +0300, Dan Carpenter wrote:
-> The "msg_addr" variable is u64.  However, the "aligned_offset" is an
-> unsigned int.  This means that when the code does:
+On Sat, Feb 03, 2024 at 11:57:57AM -0300, Ricardo B. Marliere wrote:
+> This series is part of an effort to cleanup the users of the driver
+> core, as can be seen in many recent patches authored by Greg across the
+> tree (e.g. [1]). Specifically, this series is part of the task of
+> splitting one of his TODOs [2].
 > 
->         msg_addr &= ~aligned_offset;
-> 
-> it will unintentionally zero out the high 32 bits.  Use ALIGN_DOWN()
-> to do the alignment instead.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 2217fffcd63f ("PCI: dwc: endpoint: Fix dw_pcie_ep_raise_msix_irq() alignment support")
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Reviewed-by: Niklas Cassel <cassel@kernel.org>
-> Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 > ---
-> v5: Add the #include.
-> v4: Add stable and r-b from Niklas
-> v3: Use ALIGN_DOWN()
-> v2: fix typo in commit message
+> [1]: https://lore.kernel.org/lkml/?q=f%3Agregkh%40linuxfoundation.org+s%3A%22make%22+and+s%3A%22const%22
+> [2]: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/commit/?h=bus_cleanup&id=26105f537f0c60eacfeb430abd2e05d7ddcdd8aa
 > 
->  drivers/pci/controller/dwc/pcie-designware-ep.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 > 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> index 5befed2dc02b..d6b66597101e 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> @@ -6,6 +6,7 @@
->   * Author: Kishon Vijay Abraham I <kishon@ti.com>
->   */
->  
-> +#include <linux/align.h>
->  #include <linux/bitfield.h>
->  #include <linux/of.h>
->  #include <linux/platform_device.h>
-> @@ -551,7 +552,7 @@ int dw_pcie_ep_raise_msix_irq(struct dw_pcie_ep *ep, u8 func_no,
->  	}
->  
->  	aligned_offset = msg_addr & (epc->mem->window.page_size - 1);
-> -	msg_addr &= ~aligned_offset;
-> +	msg_addr = ALIGN_DOWN(msg_addr, epc->mem->window.page_size);
->  	ret = dw_pcie_ep_map_addr(epc, func_no, 0, ep->msi_mem_phys, msg_addr,
->  				  epc->mem->window.page_size);
->  	if (ret)
-> -- 
-> 2.43.0
+> ---
+> Ricardo B. Marliere (6):
+>       s390: ccwgroup: make ccwgroup_bus_type const
+>       s390: cio: make css_bus_type const
+>       s390: cio: make ccw_bus_type const
+>       s390: cio: make scm_bus_type const
+>       s390: AP: make ap_bus_type const
+>       s390: vfio-ap: make matrix_bus const
 > 
+>  drivers/s390/cio/ccwgroup.c       | 4 ++--
+>  drivers/s390/cio/css.c            | 4 ++--
+>  drivers/s390/cio/device.c         | 4 ++--
+>  drivers/s390/cio/scm.c            | 2 +-
+>  drivers/s390/crypto/ap_bus.c      | 4 ++--
+>  drivers/s390/crypto/vfio_ap_drv.c | 2 +-
+>  6 files changed, 10 insertions(+), 10 deletions(-)
 
-Ping on these two patches.
-
-Patch 1/2 is a strict fix and should go in v6.8 IMO.
-
-
-Kind regards,
-Niklas
+Applied, thanks!
 
