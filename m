@@ -1,97 +1,253 @@
-Return-Path: <linux-kernel+bounces-55620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55621-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 545A084BF14
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:12:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5C8F84BF21
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:17:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 096571F2457E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:12:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D30331C21FD2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:17:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CFAB1B956;
-	Tue,  6 Feb 2024 21:12:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94F061B960;
+	Tue,  6 Feb 2024 21:17:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="WcOizr7B"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="k1d3oCnY";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="F40f5fbh";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="k1d3oCnY";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="F40f5fbh"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E93F1B947;
-	Tue,  6 Feb 2024 21:12:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 886911B949;
+	Tue,  6 Feb 2024 21:17:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707253964; cv=none; b=S8rmdeynlsJSXEiVSBfn9Jp2RXSHzQO1Z+yttshpuNYmP1LUzpfXh7RuiB1ajmrV0jCGSaeYMnMmk45ClDVrozb2ElBJo9zbjB9U4oskT26u01hnm4sNhIlwXHPwLOBw7SllqzcoNX7fooqDzpXXAf9FM18uD7WJmVXlUzXcjQ8=
+	t=1707254228; cv=none; b=FYPLWrT24Y+c/M4MqeM5jVPS3rtCz4TBPFr82/mBinhuc0O/9WE01yueNfjocADUybULNOrCQMcwW8TpO8KegwKGIBB5NkUTN3uuhxxrzTIX/geJ+zwRal8dRgtK2uhQEB9xroiYI6TOYYd6OEB6p85rPfTnadwyrZcya0F629A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707253964; c=relaxed/simple;
-	bh=FPuvvimZTpaY25Gs4EyvjPMeN6Ad+s68r//oKWLrE98=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WZHSCptCEOevTYFedKr985Ysm3RnIVpJy6eBE93DEUk+Zi9FWijwhAx6DiWy2772PD4qEXd/jk99vkSISlz4f25iSu1iNXGdeSVTcF+C5pie8DxmgQeUUHjGKT5hWnx2QByPYJ/Hh5v4p7xL6GKovN87UV8vsa+8TIGwlIyw8ys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=WcOizr7B; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5541A1C0002;
-	Tue,  6 Feb 2024 21:12:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707253959;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1707254228; c=relaxed/simple;
+	bh=uwEMzGckHBO1KSpcMS2s/3KiVhfDWEZdmc5ffrHPtsA=;
+	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
+	 References:Date:Message-id; b=OXzg4OGsd7Byq9828VGHnvpkii+rv0HOjevp+iMBzDgDkUu2uZbPhPJXL8HbrptZN/X7tkKPWTVz1cdSaLycyWfbjbxJTthHSwkVDdAz7KHik9SGIcDrDR1VkI496Jdys60mrcyWqtIblUdAmrYfD+rrNP4Z0FhaGZMtwilRUqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=k1d3oCnY; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=F40f5fbh; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=k1d3oCnY; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=F40f5fbh; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id AA6892219C;
+	Tue,  6 Feb 2024 21:17:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707254224; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=pH4z4UKwceDQ2f9zFX4FLpXxDjaZqCXvUUyn1++Jaag=;
-	b=WcOizr7B6r3RSJEO2d4RUKr8qOpQnPtM3BbM8ZhVPH0bboCmQaVP35Ve06Vet6+OG7hOpz
-	DEM9gWKljSJ65UWpjFy/CRK6Y0ZoRrfnjopM2Bam2GMga0j+WF2hEvXcKbBjNkU493sCjY
-	yGV8L8LEzdKab7yy4M9K4B+YvjOGew3l1c3s+VOOtHBW3THZOOeNxpn3a+ZvOGqYPBLMcU
-	f+qK8tkvXYqC9w2L5czXDVbt3vyiHM4mbQYfT044Z1+cEz+SxZ32GG7zpIaspd0qIpL0+s
-	Yef6Zw59Rozepg5kjU989wQmbdR4W0267nMMDFVUyG3IF8XjxISSP1FAVizJzg==
-Date: Tue, 6 Feb 2024 22:12:37 +0100
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>,
-	"jdelvare@suse.com" <jdelvare@suse.com>,
-	"linux@roeck-us.net" <linux@roeck-us.net>,
-	"antoniu.miclaus@analog.com" <antoniu.miclaus@analog.com>,
-	"noname.nuno@gmail.com" <noname.nuno@gmail.com>,
-	"linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-	Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
-	Zeynep Arslanbenzer <Zeynep.Arslanbenzer@analog.com>
-Subject: Re: [PATCH v6 2/2] dt-bindings: rtc: add max313xx RTCs
-Message-ID: <20240206211237d9192660@mail.local>
-References: <20240202025241.834283-1-chris.packham@alliedtelesis.co.nz>
- <20240202025241.834283-3-chris.packham@alliedtelesis.co.nz>
- <aecd80a3-a017-405f-b77d-6deda67ef704@linaro.org>
- <5d4b7fa1-5cc2-4a4a-8fa4-d2c7a8d070b7@alliedtelesis.co.nz>
+	bh=87Ylwb7RHQpUL7m4lvn75IdWsX8BWP7o6iatgAA8NTY=;
+	b=k1d3oCnY6UIT9CwC8F8K19X7A3A4Of/jKOF8wToLJzXbMC3ZWVG84vjTLTGrFuXlxHwuHM
+	m7QOgUBLj+tFMlhDXvM9Ax9zzDYBY6Hkb5KiL4t7LgPf7EVoNXHDRVDEPtAx0i7w09I8OM
+	L/wneE8ke9Ovzr5gNfSk67CuzW/EnJE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707254224;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=87Ylwb7RHQpUL7m4lvn75IdWsX8BWP7o6iatgAA8NTY=;
+	b=F40f5fbh9qYm2ldnJ7NTe22HeXtso14MjztF9iw7eaVLJpc4MhXoLKnXkM8TLIjqqCu6R1
+	/KjG2wSW+aeB94AA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707254224; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=87Ylwb7RHQpUL7m4lvn75IdWsX8BWP7o6iatgAA8NTY=;
+	b=k1d3oCnY6UIT9CwC8F8K19X7A3A4Of/jKOF8wToLJzXbMC3ZWVG84vjTLTGrFuXlxHwuHM
+	m7QOgUBLj+tFMlhDXvM9Ax9zzDYBY6Hkb5KiL4t7LgPf7EVoNXHDRVDEPtAx0i7w09I8OM
+	L/wneE8ke9Ovzr5gNfSk67CuzW/EnJE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707254224;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=87Ylwb7RHQpUL7m4lvn75IdWsX8BWP7o6iatgAA8NTY=;
+	b=F40f5fbh9qYm2ldnJ7NTe22HeXtso14MjztF9iw7eaVLJpc4MhXoLKnXkM8TLIjqqCu6R1
+	/KjG2wSW+aeB94AA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8E0B0132DD;
+	Tue,  6 Feb 2024 21:17:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id wfO8EMyhwmWLOQAAD6G6ig
+	(envelope-from <neilb@suse.de>); Tue, 06 Feb 2024 21:17:00 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5d4b7fa1-5cc2-4a4a-8fa4-d2c7a8d070b7@alliedtelesis.co.nz>
-X-GND-Sasl: alexandre.belloni@bootlin.com
+From: "NeilBrown" <neilb@suse.de>
+To: "Christian Brauner" <brauner@kernel.org>
+Cc: "Jeff Layton" <jlayton@kernel.org>,
+ "Alexander Viro" <viro@zeniv.linux.org.uk>, "Jan Kara" <jack@suse.cz>,
+ "Chuck Lever" <chuck.lever@oracle.com>,
+ "Olga Kornievskaia" <kolga@netapp.com>, "Dai Ngo" <Dai.Ngo@oracle.com>,
+ "Tom Talpey" <tom@talpey.com>, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
+ Ondrej =?utf-8?q?Mosn=C3=A1=C4=8Dek?= <omosnacek@gmail.com>,
+ "Zdenek Pytela" <zpytela@redhat.com>
+Subject: Re: [PATCH] filelock: don't do security checks on nfsd setlease calls
+In-reply-to: <20240206-gewaschen-bauen-f7932047a1be@brauner>
+References: <20240205-bz2248830-v1-1-d0ec0daecba1@kernel.org>,
+ <170716318935.13976.13465352731929804157@noble.neil.brown.name>,
+ <20240206-gewaschen-bauen-f7932047a1be@brauner>
+Date: Wed, 07 Feb 2024 08:16:57 +1100
+Message-id: <170725421733.13976.232570371514420308@noble.neil.brown.name>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -4.30
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[13];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[kernel.org,zeniv.linux.org.uk,suse.cz,oracle.com,netapp.com,talpey.com,vger.kernel.org,gmail.com,redhat.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
 
-On 06/02/2024 20:19:20+0000, Chris Packham wrote:
-> That is an incredibly good point. The max31335 binding covers one specific chip. This binding covers more and with that there are a few more properties that the max31335 on it's own doesn't have (e.g. the clock consumer, the ability to have different i2c addresses). Binding wise I could probably roll all of the max31335 into this max313xx binding.
-> 
-> Driver wise things are a bit trickier. I've only got access to one of
-> the variants so I am hoping to leverage the work Ibrahim had already
-> done. I could attempt to incorporate max31335 support into the
-> max313xx driver but I wouldn't really be able to test it properly and
-> there is a reasonably high chance of regressing something.
+On Wed, 07 Feb 2024, Christian Brauner wrote:
+> On Tue, Feb 06, 2024 at 06:59:49AM +1100, NeilBrown wrote:
+> > On Mon, 05 Feb 2024, Jeff Layton wrote:
+> > > Zdenek reported seeing some AVC denials due to nfsd trying to set
+> > > delegations:
+> > >=20
+> > >     type=3DAVC msg=3Daudit(09.11.2023 09:03:46.411:496) : avc:  denied =
+ { lease } for  pid=3D5127 comm=3Drpc.nfsd capability=3Dlease  scontext=3Dsys=
+tem_u:system_r:nfsd_t:s0 tcontext=3Dsystem_u:system_r:nfsd_t:s0 tclass=3Dcapa=
+bility permissive=3D0
+> > >=20
+> > > When setting delegations on behalf of nfsd, we don't want to do all of
+> > > the normal capabilty and LSM checks. nfsd is a kernel thread and runs
+> > > with CAP_LEASE set, so the uid checks end up being a no-op in most cases
+> > > anyway.
+> > >=20
+> > > Some nfsd functions can end up running in normal process context when
+> > > tearing down the server. At that point, the CAP_LEASE check can fail and
+> > > cause the client to not tear down delegations when expected.
+> > >=20
+> > > Also, the way the per-fs ->setlease handlers work today is a little
+> > > convoluted. The non-trivial ones are wrappers around generic_setlease,
+> > > so when they fail due to permission problems they usually they end up
+> > > doing a little extra work only to determine that they can't set the
+> > > lease anyway. It would be more efficient to do those checks earlier.
+> > >=20
+> > > Transplant the permission checking from generic_setlease to
+> > > vfs_setlease, which will make the permission checking happen earlier on
+> > > filesystems that have a ->setlease operation. Add a new kernel_setlease
+> > > function that bypasses these checks, and switch nfsd to use that instead
+> > > of vfs_setlease.
+> > >=20
+> > > There is one behavioral change here: prior this patch the
+> > > setlease_notifier would fire even if the lease attempt was going to fail
+> > > the security checks later. With this change, it doesn't fire until the
+> > > caller has passed them. I think this is a desirable change overall. nfsd
+> > > is the only user of the setlease_notifier and it doesn't benefit from
+> > > being notified about failed attempts.
+> > >=20
+> > > Cc: Ondrej Mosn=C3=A1=C4=8Dek <omosnacek@gmail.com>
+> > > Reported-by: Zdenek Pytela <zpytela@redhat.com>
+> > > Closes: https://bugzilla.redhat.com/show_bug.cgi?id=3D2248830
+> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> >=20
+> > Reviewed-by: NeilBrown <neilb@suse.de>
+> >=20
+> > It definitely nice to move all the security and sanity check early.
+> > This patch allows a minor clean-up in cifs which could possibly be
+> > included:
+> > diff --git a/fs/smb/client/cifsfs.c b/fs/smb/client/cifsfs.c
+> > index 2a4a4e3a8751..0f142d1ec64f 100644
+> >=20
+> > --- a/fs/smb/client/cifsfs.c
+> > +++ b/fs/smb/client/cifsfs.c
+> > @@ -1094,9 +1094,6 @@ cifs_setlease(struct file *file, int arg, struct fi=
+le_lock **lease, void **priv)
+> >  	struct inode *inode =3D file_inode(file);
+> >  	struct cifsFileInfo *cfile =3D file->private_data;
+> > =20
+> > -	if (!(S_ISREG(inode->i_mode)))
+> > -		return -EINVAL;
+> > -
+> >  	/* Check if file is oplocked if this is request for new lease */
+> >  	if (arg =3D=3D F_UNLCK ||
+> >  	    ((arg =3D=3D F_RDLCK) && CIFS_CACHE_READ(CIFS_I(inode))) ||
+> >=20
+> >=20
+> > as ->setlease() is now never called for non-ISREG files.
+>=20
+> I've added the following on top. I've made you author and added your
+> SoB. Please tell me if you have any problems with this:
 
-But I won't take a separate driver. Everything would be better if Analog
-was sharing the datasheets...
+No problems at all - thanks for doing this!
+
+NeilBrown
 
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+>=20
+> From d30e52329760873bf0d7984a442cace3a4b5f39d Mon Sep 17 00:00:00 2001
+> From: NeilBrown <neilb@suse.de>
+> Date: Tue, 6 Feb 2024 14:08:57 +0100
+> Subject: [PATCH] smb: remove redundant check
+>=20
+> ->setlease() is never called on non-regular files now. So remove the
+> check from cifs_setlease().
+>=20
+> Link: https://lore.kernel.org/r/170716318935.13976.13465352731929804157@nob=
+le.neil.brown.name
+> Signed-off-by: NeilBrown <neilb@suse.de>
+> Signed-off-by: Christian Brauner <brauner@kernel.org>
+> ---
+>  fs/smb/client/cifsfs.c | 3 ---
+>  1 file changed, 3 deletions(-)
+>=20
+> diff --git a/fs/smb/client/cifsfs.c b/fs/smb/client/cifsfs.c
+> index 5eee5b00547f..cbcb98d5f2d7 100644
+> --- a/fs/smb/client/cifsfs.c
+> +++ b/fs/smb/client/cifsfs.c
+> @@ -1094,9 +1094,6 @@ cifs_setlease(struct file *file, int arg, struct file=
+_lease **lease, void **priv
+>  	struct inode *inode =3D file_inode(file);
+>  	struct cifsFileInfo *cfile =3D file->private_data;
+> =20
+> -	if (!(S_ISREG(inode->i_mode)))
+> -		return -EINVAL;
+> -
+>  	/* Check if file is oplocked if this is request for new lease */
+>  	if (arg =3D=3D F_UNLCK ||
+>  	    ((arg =3D=3D F_RDLCK) && CIFS_CACHE_READ(CIFS_I(inode))) ||
+> --=20
+> 2.43.0
+>=20
+>=20
+
 
