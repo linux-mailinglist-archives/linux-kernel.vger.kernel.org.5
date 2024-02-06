@@ -1,124 +1,111 @@
-Return-Path: <linux-kernel+bounces-55744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4682B84C119
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:56:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E308B84C11B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:59:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D02581F24D53
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:56:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20D6A1C23C29
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:59:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11B8E1CD26;
-	Tue,  6 Feb 2024 23:56:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89E921CD36;
+	Tue,  6 Feb 2024 23:59:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Nhh79qqR"
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1dPSKB+G"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D90941CD1E
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 23:56:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 659971CD2E
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 23:59:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707263800; cv=none; b=ScP4b1qyvcqQi6yrqFYKOvPsq8rignpBWSUg8IaVzW5xgXCSCezNiZqTu4F8FY3KpZjK64lnSR1/f16lvwIzOZJvV59wmWm5MedDaShQS0snIFZ8H37vG6ky/lP1PQcc5PDnDVXMMnzBpOGhqLSeCr3SWpqF1lFzym1pvhs69BE=
+	t=1707263948; cv=none; b=kdcXzpu64ZLtvSci2dogm8m4RzHP56HjzMEI4JpheDfbtdA46NixuXZjpwl9EF3VvBrSz/A1wUNiIxWr2vVw1URfP1zivBWHVRDwrfbfaqOYKDso5cZCETro3o3bmI2HFaZKSKBiHnjYZkz48Bq/xk0BwlFJ4vKd8CNK72E6Mj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707263800; c=relaxed/simple;
-	bh=CY6CnplEQSBuLw8QELN4NeQcXpf6PsLxs6bvLTXkwG0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PvZQ8h3XCpAm6nxBRvtaYRptoF5mOjzIiOTkGKVgHlFB0CJXjvhwFyPH1VEm27dgM6Pd8MZSmHZt4f76OR2HOoY5NPQ61qyJKrZhq9P8FU5NMn+xeDmgT5nkcJOKXJQ1/OmZ2jtDxIYlbNwIQ/frRypPZ5BXh8eH+UqxXDxBtok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Nhh79qqR; arc=none smtp.client-ip=209.85.128.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-60480ce9933so743627b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 15:56:38 -0800 (PST)
+	s=arc-20240116; t=1707263948; c=relaxed/simple;
+	bh=J/QN8zKxBRKEaursFD0Y5X672RX9T9JXQd5PC4sd3i8=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=FTCBWVq3KTYzJ060zi7s/G3+wg3i0576d0NbXB9MVfwgMJuqO6b8HFsWlePANk2Z+YEhvcmDAa3GodyRGlW0Z1Ql3JPJD6cnPG5cTNK5gH1gazPMkpv/Li5BzXBywfoXpdHQe5HExaCQCiquVW5WaY+bu7xTXPNG3ZXJyurhU1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1dPSKB+G; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5eba564eb3fso1294477b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 15:59:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707263798; x=1707868598; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=lPO0vylciwlxHh3ogoVDX/Xe2KENfa+Qqy6uMd1Hm4s=;
-        b=Nhh79qqRVSw7MgVM+B31xuUdjRaHgs3VGwZza6qfaHCETSh85SfMBonEYaWK4fun+6
-         NAMmEDvVhlqjzVV3VXpLSobZoNgEypblMOflEj0fDqTcUV/phmXAgeE3UrhP1aHoVh7y
-         H5ZMNXJnL5yQ7+HqDypSaKi0cOAGkwzzjVe8pKgM1/TWSVZCcOA19JwbBfleZHDO1NBl
-         EUs+N8yC1IYStMG9UklTKKL/8H8eQZHWPD3iTKyKUye0pzpYhHhcV7PCe2VUMsRxAFoM
-         rgvWyk/CAeKr+Iy0huoV4Coz0lxPYdogd5DvZ+2HFhFJPNInxkFaIz8sC/4nVdbOXGDg
-         fNYA==
+        d=google.com; s=20230601; t=1707263946; x=1707868746; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=BcvFG/3vRgvYTER/Aj2IaMSgKq/80efIXBEBLE9WTco=;
+        b=1dPSKB+Gel2PpzNtC68eR1GoVZz8G4/qhp3TNd19ewayqAKBQstja4NhNFgYzxSMtX
+         Vwujk0nVd/lgGH9QOFCWZ0RhAPtMRAIX3EkuBWppxasETtofXu/SVpgaEVdk9gcNOUjc
+         zawiFIaGUooh4uV9rXVxfaXVs+avyW1iaEUz45JhEnJDYUDnWRxXhgGyQzfctwQPoUfa
+         9jdV2BqD1x5iN8gWDmc0R/vm2AykA/u7LeVAtn9KeN09kbjFvEWuUE3I4Vx5fc4T8zoP
+         7faqPed2mHTngj54MxGrhQ/95xextfQ3kA1A/GW9n/NA/pytXeU/I8lPKa6HEBFg/9Zo
+         wGaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707263798; x=1707868598;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lPO0vylciwlxHh3ogoVDX/Xe2KENfa+Qqy6uMd1Hm4s=;
-        b=kIB0PgUt/kjzD6LHC/CjYvpf712pdwyX0rBEN3GlBQc3OEtj74hrQ06y2DDZjRUqDL
-         A4moS9SEmh8rF2ddMPkY4Nm4jKA56UiJlYDKEKn+x3RzxWj1hQ2pw92Hn7VWhMbjIUQt
-         TDKB4MZC3oBNoTPDFFTLgN5GjdCmK4+H2lliWY6K8FBttjV4H3IwuZI469BuIvqBugEG
-         KRDsgLQoXsXGWhiWWDD1RlEgNE2PHvYIV4ocxh4hFPP61UTtZRq38TTtb+obzxhOEqMU
-         4LRRrzbulAjIRZYq17TQI2Zd6lAI31fIr4Eyx2SNLgjoyOyT6tTMbjBSxDX7hF/kGtR4
-         Ifsw==
-X-Gm-Message-State: AOJu0YyA14xPO+Jt5R4mbhKvH6dFvGY9zG/0jwFps+slzGd2FloccbxN
-	UeRLPOXK9pZjb5ehmKnQDzLWYZ6Nyhi2KQu01dhDpGYy1/cqw8hmqBsfLCcz54KvMeT9798S+Y1
-	+CXEj3YoXQvHA2lyR94gNxo8wEoa6vpPvQtvN20rZszyV8xGD
-X-Google-Smtp-Source: AGHT+IE6M0Dg1dF1XKQ5SZog5KVbT6+bWDmKAq1fr/keDl6DkOU0HeAaW6wB4lOG1URtDhlO4e8pMxN/MBRT07NjCl8=
-X-Received: by 2002:a81:d441:0:b0:5ff:f176:9fd3 with SMTP id
- g1-20020a81d441000000b005fff1769fd3mr3364581ywl.4.1707263797880; Tue, 06 Feb
- 2024 15:56:37 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707263946; x=1707868746;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BcvFG/3vRgvYTER/Aj2IaMSgKq/80efIXBEBLE9WTco=;
+        b=pBZEAPnujcdvuRozLoko6ObQzc3RQuWixp+rBibhrRTuBbO3WS4DbYhGGLcbO2INM3
+         QbjCztF5bMBgGu6svnJvJgp/GhjeS84gxedMr7NVL9lZFJyCPFA+o2xto5EchtmUclWx
+         3qYoeiHKng9oKxHQsmOOLkQcczMt6v20FXE0HgO/p+zJIRfNoslDCXI5UO5GEy++RZU5
+         HXFWgBF3TxeulWPqAaGAbSfJn6n8E83wI8uRr1QpsiHJbaQtYrqjN2uXqkEvoehaFNNS
+         OBFA5oziYmQnmvf9EdME6EctqGFvTs10dfFUXP67H+rwSMJGacBkXsBCmpIiP1LkC5iw
+         iA0A==
+X-Gm-Message-State: AOJu0YzbH17i2jhgnZ0KQvyN2hcRMiS6T9ijl7mtksoMUCSkchFCo1Es
+	dCVjde8vKzuVqzQNZ2kBZbTbSai4rIInTLJo54Wvj7GrAQfqjxgCJ32HTI8/GFLRgYaCDvqpe/4
+	yAOnp1A==
+X-Google-Smtp-Source: AGHT+IESGOMBrNLysoqBfEec3Vp5mrNBDpipKfIEWH3i9r8/NRYTso38MmfMfZNYqoVy5gwpSx7XVVDq6+Nq
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:7842:a360:67f8:5683])
+ (user=irogers job=sendgmr) by 2002:a81:9b82:0:b0:5fb:7e5b:b87f with SMTP id
+ s124-20020a819b82000000b005fb7e5bb87fmr642235ywg.1.1707263946437; Tue, 06 Feb
+ 2024 15:59:06 -0800 (PST)
+Date: Tue,  6 Feb 2024 15:59:02 -0800
+Message-Id: <20240206235902.2917395-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <cover.1707202761.git.quic_uchalich@quicinc.com>
- <cf138f258ecbfbcc94717e4914de2f60153e5abb.1707202761.git.quic_uchalich@quicinc.com>
- <1e26c5b3-716b-4f16-bae4-2682667550a5@linaro.org> <79a01e7c-3a88-49cf-b227-804155a65a4b@quicinc.com>
-In-Reply-To: <79a01e7c-3a88-49cf-b227-804155a65a4b@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 7 Feb 2024 01:56:26 +0200
-Message-ID: <CAA8EJprbyvRMo0gEw0_Aa9akRNsgUwGA03sgQKLNv0fxupm3hQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] arm64: dts: qcom: sm8450: Add mapping to llcc
- Broadcast_AND region
-To: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kernel@quicinc.com
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
+Subject: [PATCH v1] perf kvm powerpc: Fix build
+From: Ian Rogers <irogers@google.com>
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Leo Yan <leo.yan@linaro.org>, 
+	James Clark <james.clark@arm.com>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, sfr@canb.auug.org.au
 Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 6 Feb 2024 at 22:07, Unnathi Chalicheemala
-<quic_uchalich@quicinc.com> wrote:
->
-> On 2/6/2024 12:35 AM, Krzysztof Kozlowski wrote:
-> > On 06/02/2024 08:15, Unnathi Chalicheemala wrote:
-> >> Mapping Broadcast_AND region for LLCC in SM8450.
-> >
-> > Why?
-> >
-> > And why your DTS is in the middle of driver changes? Driver cannot
-> > depend on DTS - you are now breaking all existing boards and users.
-> >
->
-> I was following a similar patch which has DT and driver changes in the
-> same patchset:
-> https://lore.kernel.org/all/20230314080443.64635-1-manivannan.sadhasivam@linaro.org/
->
-> The AND region was added in the IP block in SM8450, but was not added to the DT or
-> driver. That is why I included both in the same patchset - if you think the DT
-> changes should be separate I can correct it in the next version.
+Updates to struct parse_events_error needed to be carried through to
+PowerPC specific event parsing.
 
-Just move the DT changes to be the last patches in the patchset.
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Fixes: fd7b8e8fb20f ("perf parse-events: Print all errors")
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/arch/powerpc/util/kvm-stat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->
-> Thanks a lot for taking the time to review Krzysztof.
->
-> >
-> > Best regards,
-> > Krzysztof
-> >
->
-
-
+diff --git a/tools/perf/arch/powerpc/util/kvm-stat.c b/tools/perf/arch/powerpc/util/kvm-stat.c
+index d9a0ac1cdf30..c8357b571ccf 100644
+--- a/tools/perf/arch/powerpc/util/kvm-stat.c
++++ b/tools/perf/arch/powerpc/util/kvm-stat.c
+@@ -114,7 +114,7 @@ static int is_tracepoint_available(const char *str, struct evlist *evlist)
+ 
+ 	parse_events_error__init(&err);
+ 	ret = parse_events(evlist, str, &err);
+-	if (err.str)
++	if (ret)
+ 		parse_events_error__print(&err, "tracepoint");
+ 	parse_events_error__exit(&err);
+ 	return ret;
 -- 
-With best wishes
-Dmitry
+2.43.0.594.gd9cf4e227d-goog
+
 
