@@ -1,180 +1,209 @@
-Return-Path: <linux-kernel+bounces-54448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2DC684AF67
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:55:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A6BC84AF69
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:55:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E2F01C22C39
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 07:55:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA3A5B245E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 07:55:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6692212AAEA;
-	Tue,  6 Feb 2024 07:53:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD5A412B153;
+	Tue,  6 Feb 2024 07:53:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Hk0ux+z7"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bf6WmOk8"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4726839AD5
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 07:53:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FC7E39AD5;
+	Tue,  6 Feb 2024 07:53:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707206003; cv=none; b=bUCB63J6EWHTEMdaGnlkA6K01URg097hkSwFTpj27Qm84X+S5jPTyHuezzEIp9OjMWC0WzRoRNP8lMooOM2XE8YNmEWAJiRYQHJyncOmPofRXmScKL95V3zfiLrEvVE009Qn5mc/MC6LykeJgQ7x9l/DBJWL2sqMs9KyDRVLP2c=
+	t=1707206020; cv=none; b=aa2ZUj2AqdSF5JaljPqlQLpEDm1FTczLmMvzo0ZuXi5RsmBlShm+xBO/SWLw5ZeoM4M1ej79+mltJGcOd3pw97c1oNKr8TsYsO3CamqznkgB7clhWVQKX1lI3vOdhX+VB6PRDSImtNP9+8SSVvQbZ/jVJaQTUPkjHCnrZ8t1xm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707206003; c=relaxed/simple;
-	bh=obWOM6TFlo2FgGYkpzWWGKAuo5dtPTIDBPqBHEIf3FY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=U1dvMtppLui6+3nJjleL9Nkl5mrrlT5PH9O6XNFnhxhlwhg0dqK2MDcX1ip5K03iwVPEd0vfB5dQyiNgGXbhybVCDyHPJqmiXvoPRlki7RaF1NYz2ugRkFrIe+eMc8+ZOAIQ11fGzrL0oVBX7J3K4go3fRiJ0Uox+9/GqzrUO8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Hk0ux+z7; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707205999;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=icL9xgt+okoiIa8KIawJnZGJufjcsaHmokkEgkrGkRw=;
-	b=Hk0ux+z7Z2JUZe9IY8jl+yg1612S5YF7jlyyoOqHJ7VFmSOhVjRXZ2eJmIkcNRfFUZ1qJS
-	grX31mGH+BhsP1V3uPBR82H1tX1RGd71a6NquGbkKkHr2aypEEXQySpJfyxXUZeLjsTb5R
-	m2xPVvULp+1O6i23sahEdntLr7opjxM=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-493-VGu6odaTOiOXzDwnH1IfgA-1; Tue, 06 Feb 2024 02:53:17 -0500
-X-MC-Unique: VGu6odaTOiOXzDwnH1IfgA-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40ef6441d1aso7593755e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 23:53:17 -0800 (PST)
+	s=arc-20240116; t=1707206020; c=relaxed/simple;
+	bh=jz2+5YFHxsUaP9YhKbytE2vv1d82tUYGMWDtEarsyBg=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=OzyPssqPo/w54214R4YDfnirzYpc7hKF0j46WMbXzGRLR1llLCMadf/YFeroE4+HU9aupk+3pjNsrIhJpZF9xeELzwrB91r8/wLE/F0a8s/oedF/lHNMkGhXuHcnvuE+DorvW2Hp9+uxvQBf8dGNo2qWw5eLYOYibPTiyuEacQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bf6WmOk8; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40fe59b22dbso1243555e9.3;
+        Mon, 05 Feb 2024 23:53:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707206017; x=1707810817; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zfkBm1RhD0fBqif8h7QjuzJWyO2tJjvDMiDZcwNsAPg=;
+        b=Bf6WmOk8nKvmg/lh/mdSCfazUqcsLx85LCEmJOJZAS1veBDJrkbd68DhmsHEiRwwCG
+         9sXcjGcFrdVvmcQWzLq+vXi46UHncQ3+beBENCmeW2H/4nFJ+EV5YgwyOJB4OnQbIdDq
+         7CKVH2HjvQyaFwHk7C1sy9q0rexcx0wfD+Qnzp6yOY8vLmfGd6bS8Y74LAJc8btuz6+N
+         PYkE65+6PBCsCB6yoDwizmPVPlenF6R/hgeG1P6tUUUGuGedgD4bv7nrt+QSLOpmC4kD
+         qyb7OPLUKxcifyb1U8pJ14m/YLH6sG97p5Y9c8qxav88OyfVH1lSfkwNyUDF0lmiJwFI
+         vISg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707205996; x=1707810796;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=icL9xgt+okoiIa8KIawJnZGJufjcsaHmokkEgkrGkRw=;
-        b=MAhfh16HVFUarqBxhOyXM2Sd8W3CWcmyYQxkcwB+vqhQFmn35cGRX97/qR84XTHURa
-         LCgQC3RfHbRbm8w39Xmroyh0zXWHXOGBBJBeR8J6PEHZJJ2mWswoMGTJZwpexKg61Gyl
-         4gUdWCR9iqSnJARRgxJJhoy3h2lFKgJIFCf4YmyJ0pgdKNiCxzEFxEx8hIKPhAUV8uPu
-         ZsrnyRurWMBnqEIvno20l6tb812rur1SrV/hR/rW2+vgmqbkBvm5qbZg4A1BAmUMU7Df
-         +3qqt4G7d3ZvGhy7Icrjz5aOpBbgvTjZY9m7vkwS2FiqAQXokFeB9GklkRBDnJHIuF2Z
-         sxmg==
-X-Forwarded-Encrypted: i=1; AJvYcCVgV9s2NP6yKIVvWU2gqQy9vbfY9bx/epRKqJe1cUnmMjnrnGjGAFqACojxvm9G8berxRx52bMJTixsp1Ka9Bwp520cNtuqDiWsHBe1
-X-Gm-Message-State: AOJu0Yyx0bNJ/tvnjrAifCc6wz+7fvLJHr3LbJDell42enT3s2nbbDa1
-	dZbSUlJZdbuNRvQMwj1jVm8QAXMoT/wlErjvBjgj/Y9HHFCExT1GQneItAL76KhlhsmRtiBs4pk
-	h77BLziNKm9psTL6XBaT3xPRVF4DSC4yfAqVk85S81eVUTbcSe0yihYnFEyJQ3Q==
-X-Received: by 2002:a05:600c:3d8e:b0:40f:e930:9ebe with SMTP id bi14-20020a05600c3d8e00b0040fe9309ebemr254398wmb.0.1707205996323;
-        Mon, 05 Feb 2024 23:53:16 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGe/30s9BtAjJknrNne4a3i19xDqYUQqrMKONRN7zRpgvM7EmA9DYgL8s0gna5HY/DwETdRLw==
-X-Received: by 2002:a05:600c:3d8e:b0:40f:e930:9ebe with SMTP id bi14-20020a05600c3d8e00b0040fe9309ebemr254388wmb.0.1707205995971;
-        Mon, 05 Feb 2024 23:53:15 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUgl822PQpTYd3y8770KJ+eBsN6Jld3qSZlxNoUNaHQRBR03y4ae+h0Y+NL0L57Sd6l4BjfSJ/w1d6GwxKOSNDE6FXMRDErbrOG3dl6v9C7YtALDRZMy3mTKktTBFV6iD18ZadZ/YvfAWviloaA/DXDu/u8Kk0cUc9CtoL6yGLrUed25LB2TC4HedoP5hr5Ft6Is6iuRbEyCp1zFQxPHGTea0/0PbZTzGFUKqvAAFlV8FwqeA6tKQL4xmkhm/KuiXFfCcaXuhBlCZ6mgldcwWeNn0Js9qGpScABAvcuYeDujWPl9B/r5BPLi0k1GuzmY6b/MATAkJV6Db7XAwYmRjYVSjlQrJ2LaFRerJhbuw5kng==
-Received: from gerbillo.redhat.com (146-241-224-127.dyn.eolo.it. [146.241.224.127])
-        by smtp.gmail.com with ESMTPSA id z10-20020a05600c078a00b0040fe078fb03sm1052920wmo.32.2024.02.05.23.53.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 23:53:15 -0800 (PST)
-Message-ID: <fd487c4e7cbf9842c810f497be31acdd76e6682c.camel@redhat.com>
-Subject: Re: [PATCH net] tipc: Check the bearer type before calling
- tipc_udp_nl_bearer_add()
-From: Paolo Abeni <pabeni@redhat.com>
-To: Shigeru Yoshida <syoshida@redhat.com>, jmaloy@redhat.com, 
- ying.xue@windriver.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org
-Cc: netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net, 
-	linux-kernel@vger.kernel.org, 
-	syzbot+5142b87a9abc510e14fa@syzkaller.appspotmail.com
-Date: Tue, 06 Feb 2024 08:53:14 +0100
-In-Reply-To: <20240131152310.4089541-1-syoshida@redhat.com>
-References: <20240131152310.4089541-1-syoshida@redhat.com>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+        d=1e100.net; s=20230601; t=1707206017; x=1707810817;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zfkBm1RhD0fBqif8h7QjuzJWyO2tJjvDMiDZcwNsAPg=;
+        b=ig00w6NefTSAD8bKtGlVYRa5LpHMR+i1f21uwNDGYpZeqjZumxaiCHCp6ani17pG9r
+         N1QIPwNlaWUk/hnP3tCdtifrsr6V6AfoC8JM9YpCppLPd+v8WzmA7zHovuy6nh7vrcXI
+         qjDHZf9KPRjjTs+Igkk6o6gnH5uZOMj1t1qIVB1JgZscYEYKxdSa5twpa4QDRuL+su1o
+         uX2qYM8qievOeBoaToLqahetIrDXGNFrtwDLGC85hbYk4pKzmFdpSTQrY2C0WKwCkSAT
+         HFfq4QFw0BsNwY8FkYOF8dzY2OJMzC3toB9FvU2lV5AnPZGsvpt6VZn98hIxshQ8LhEF
+         ojZw==
+X-Gm-Message-State: AOJu0YzCutsayyfoPVgDSSGDxhbA3rcNveC2XQcEAV+qvj4sTDpfklLl
+	NojMu3C3y56YJMTVPPrCZqu5PiDflnti6F6tqh8pKiIjSiQFm2dN
+X-Google-Smtp-Source: AGHT+IEkxytFY/M7v//MYcmidm4cgYusdjWKs3q86A1TUXUqt3jP1s6OjJY1u1rglqfVV597ka2Dzg==
+X-Received: by 2002:a05:600c:511a:b0:40f:dd91:2d06 with SMTP id o26-20020a05600c511a00b0040fdd912d06mr1483545wms.32.1707206016988;
+        Mon, 05 Feb 2024 23:53:36 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUCzbly27GvMKMmnHbmpUcxQJNeYbM47wEtSHLWabBiurZKyKWh49Lz4iBP4jbXue+rmAlQwV/GUKAZVhSZYzoNp/PSnkviJ5DZIhCznLX+ZqBW5kL3E58zGL4IhmL2cjYNXFOEbOnvVpAuTfWZhZ8vcYtsQLeO1eDr3zWM66TVUdfc5P7MS1R+MpUnxjlIxGLzU7uy289P73Xeo/WSW2L38L/r+cJ92XOfzD2cWga6qtZFC4JTyCgEn0+5cIMy+P9SWvxzYE/GYA95GjjXrrRG8Tp08gxzZg3dtLiJzGQa+6GJKpXPcs+hcMMXQzm4xEyAfUsJiMF3Q7uTIT8OdpVVNlawYaJImFVJ66cb4E2hypzDnq5yZ0NePmDdlkNmtKfB5mWagTYqwV0eYePM2EnBh8Rk0j6CX8W360MJ5ic7spXAFvsjGh4XVbCAYkKph5VoFAf+bf14DtFpXAGGb0qrMN4FSKw=
+Received: from smtpclient.apple ([167.99.200.149])
+        by smtp.gmail.com with ESMTPSA id n29-20020a05600c3b9d00b0040ef2e7041esm1093717wms.6.2024.02.05.23.53.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 05 Feb 2024 23:53:36 -0800 (PST)
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
+Subject: Re: [PATCHv1 3/5] arm64: dts: amlogic: Add cache information to the
+ Amlogic G12A SoCS
+From: Christian Hewitt <christianshewitt@gmail.com>
+In-Reply-To: <4248e19e-5f2f-4e4f-a869-a0fec81b16bd@lexina.in>
+Date: Tue, 6 Feb 2024 11:53:22 +0400
+Cc: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Kevin Hilman <khilman@baylibre.com>,
+ Jerome Brunet <jbrunet@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ devicetree <devicetree@vger.kernel.org>,
+ linux-arm-kernel@lists.infradead.org,
+ AML <linux-amlogic@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ Viacheslav <adeep@lexina.in>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E850AF1E-BF7E-45F7-8AF0-68B548166094@gmail.com>
+References: <20240205171930.968-1-linux.amoon@gmail.com>
+ <20240205171930.968-4-linux.amoon@gmail.com>
+ <4248e19e-5f2f-4e4f-a869-a0fec81b16bd@lexina.in>
+To: Anand Moon <linux.amoon@gmail.com>
+X-Mailer: Apple Mail (2.3774.400.31)
 
-On Thu, 2024-02-01 at 00:23 +0900, Shigeru Yoshida wrote:
-> syzbot reported the following general protection fault [1]:
+> On 6 Feb 2024, at 11:48=E2=80=AFam, Viacheslav <adeep@lexina.in> =
+wrote:
 >=20
-> general protection fault, probably for non-canonical address 0xdffffc0000=
-000010: 0000 [#1] PREEMPT SMP KASAN
-> KASAN: null-ptr-deref in range [0x0000000000000080-0x0000000000000087]
-> ...
-> RIP: 0010:tipc_udp_is_known_peer+0x9c/0x250 net/tipc/udp_media.c:291
-> ...
-> Call Trace:
->  <TASK>
->  tipc_udp_nl_bearer_add+0x212/0x2f0 net/tipc/udp_media.c:646
->  tipc_nl_bearer_add+0x21e/0x360 net/tipc/bearer.c:1089
->  genl_family_rcv_msg_doit+0x1fc/0x2e0 net/netlink/genetlink.c:972
->  genl_family_rcv_msg net/netlink/genetlink.c:1052 [inline]
->  genl_rcv_msg+0x561/0x800 net/netlink/genetlink.c:1067
->  netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2544
->  genl_rcv+0x28/0x40 net/netlink/genetlink.c:1076
->  netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
->  netlink_unicast+0x53b/0x810 net/netlink/af_netlink.c:1367
->  netlink_sendmsg+0x8b7/0xd70 net/netlink/af_netlink.c:1909
->  sock_sendmsg_nosec net/socket.c:730 [inline]
->  __sock_sendmsg+0xd5/0x180 net/socket.c:745
->  ____sys_sendmsg+0x6ac/0x940 net/socket.c:2584
->  ___sys_sendmsg+0x135/0x1d0 net/socket.c:2638
->  __sys_sendmsg+0x117/0x1e0 net/socket.c:2667
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x63/0x6b
->=20
-> The cause of this issue is that when tipc_nl_bearer_add() is called with
-> the TIPC_NLA_BEARER_UDP_OPTS attribute, tipc_udp_nl_bearer_add() is calle=
-d
-> even if the bearer is not UDP.
->=20
-> tipc_udp_is_known_peer() called by tipc_udp_nl_bearer_add() assumes that
-> the media_ptr field of the tipc_bearer has an udp_bearer type object, so
-> the function goes crazy for non-UDP bearers.
->=20
-> This patch fixes the issue by checking the bearer type before calling
-> tipc_udp_nl_bearer_add() in tipc_nl_bearer_add().
->=20
-> Fixes: ef20cd4dd163 ("tipc: introduce UDP replicast")
-> Reported-and-tested-by: syzbot+5142b87a9abc510e14fa@syzkaller.appspotmail=
-com
-> Closes: https://syzkaller.appspot.com/bug?extid=3D5142b87a9abc510e14fa [1=
-]
-> Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
-> ---
->  net/tipc/bearer.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->=20
-> diff --git a/net/tipc/bearer.c b/net/tipc/bearer.c
-> index 2cde375477e3..878415c43527 100644
-> --- a/net/tipc/bearer.c
-> +++ b/net/tipc/bearer.c
-> @@ -1086,6 +1086,12 @@ int tipc_nl_bearer_add(struct sk_buff *skb, struct=
- genl_info *info)
-> =20
->  #ifdef CONFIG_TIPC_MEDIA_UDP
->  	if (attrs[TIPC_NLA_BEARER_UDP_OPTS]) {
-> +		if (b->media->type_id !=3D TIPC_MEDIA_TYPE_UDP) {
-> +			rtnl_unlock();
-> +			NL_SET_ERR_MSG(info->extack, "UDP option is unsupported");
-> +			return -EINVAL;
-> +		}
-> +
+> You missed the AXG family with the Cortex-A53 CPU. The datasheet does =
+not provide information on cache sizes. Given that the A113X/A113D are =
+equipped with the Arm Cortex-A53 processor, it is assumed they use the =
+same cache size as the S905/S905X/S905X2 models.
 
-The patch LGTM, thanks!
+GXM is also missing, and also using A53 cores.
 
-As a side note, this function could probably deserve a net-next follow-
-up consolidation the error paths under a common label.
+Christian
 
-Cheers,
+> 05/02/2024 20.19, Anand Moon wrote:
+>> As per the S905X2 datasheet add missing cache information to the =
+Amlogic
+>> G12A SoC.
+>> - Each Cortex-A53 core has 32KB of L1 instruction cache available and
+>> 32KB of L1 data cache available.
+>> - Along with 512KB Unified L2 cache.
+>> To improve system performance.
+>> Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+>> ---
+>> No public dataheet available, since S905X2 support Arm Cortex-A53 cpu
+>> nence used the same cache size as S905 and S905X.
+>> ---
+>>  arch/arm64/boot/dts/amlogic/meson-g12a.dtsi | 27 =
++++++++++++++++++++++
+>>  1 file changed, 27 insertions(+)
+>> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12a.dtsi =
+b/arch/arm64/boot/dts/amlogic/meson-g12a.dtsi
+>> index 543e70669df5..6e1e3a3f5f18 100644
+>> --- a/arch/arm64/boot/dts/amlogic/meson-g12a.dtsi
+>> +++ b/arch/arm64/boot/dts/amlogic/meson-g12a.dtsi
+>> @@ -17,6 +17,12 @@ cpu0: cpu@0 {
+>>   compatible =3D "arm,cortex-a53";
+>>   reg =3D <0x0 0x0>;
+>>   enable-method =3D "psci";
+>> + d-cache-line-size =3D <32>;
+>> + d-cache-size =3D <0x8000>;
+>> + d-cache-sets =3D <32>;
+>> + i-cache-line-size =3D <32>;
+>> + i-cache-size =3D <0x8000>;
+>> + i-cache-sets =3D <32>;
+>>   next-level-cache =3D <&l2>;
+>>   #cooling-cells =3D <2>;
+>>   };
+>> @@ -26,6 +32,12 @@ cpu1: cpu@1 {
+>>   compatible =3D "arm,cortex-a53";
+>>   reg =3D <0x0 0x1>;
+>>   enable-method =3D "psci";
+>> + d-cache-line-size =3D <32>;
+>> + d-cache-size =3D <0x8000>;
+>> + d-cache-sets =3D <32>;
+>> + i-cache-line-size =3D <32>;
+>> + i-cache-size =3D <0x8000>;
+>> + i-cache-sets =3D <32>;
+>>   next-level-cache =3D <&l2>;
+>>   #cooling-cells =3D <2>;
+>>   };
+>> @@ -35,6 +47,12 @@ cpu2: cpu@2 {
+>>   compatible =3D "arm,cortex-a53";
+>>   reg =3D <0x0 0x2>;
+>>   enable-method =3D "psci";
+>> + d-cache-line-size =3D <32>;
+>> + d-cache-size =3D <0x8000>;
+>> + d-cache-sets =3D <32>;
+>> + i-cache-line-size =3D <32>;
+>> + i-cache-size =3D <0x8000>;
+>> + i-cache-sets =3D <32>;
+>>   next-level-cache =3D <&l2>;
+>>   #cooling-cells =3D <2>;
+>>   };
+>> @@ -44,6 +62,12 @@ cpu3: cpu@3 {
+>>   compatible =3D "arm,cortex-a53";
+>>   reg =3D <0x0 0x3>;
+>>   enable-method =3D "psci";
+>> + d-cache-line-size =3D <32>;
+>> + d-cache-size =3D <0x8000>;
+>> + d-cache-sets =3D <32>;
+>> + i-cache-line-size =3D <32>;
+>> + i-cache-size =3D <0x8000>;
+>> + i-cache-sets =3D <32>;
+>>   next-level-cache =3D <&l2>;
+>>   #cooling-cells =3D <2>;
+>>   };
+>> @@ -52,6 +76,9 @@ l2: l2-cache0 {
+>>   compatible =3D "cache";
+>>   cache-level =3D <2>;
+>>   cache-unified;
+>> + cache-size =3D <0x7d000>; /* L2. 512 KB */
+>> + cache-line-size =3D <64>;
+>> + cache-sets =3D <512>;
+>>   };
+>>   };
+>> =20
+>=20
+>=20
+> Best regards,
+> --
+> Viacheslav Bocharov <adeep@lexina.in>
+>=20
+> _______________________________________________
+> linux-amlogic mailing list
+> linux-amlogic@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-amlogic
 
-Paolo
 
 
