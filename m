@@ -1,173 +1,131 @@
-Return-Path: <linux-kernel+bounces-55296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64EBC84BA8E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:03:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A673E84BA91
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:03:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65AF81C2359A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:03:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A4761F204E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:03:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 850C5134CF5;
-	Tue,  6 Feb 2024 16:03:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8766613474F;
+	Tue,  6 Feb 2024 16:03:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=grimler.se header.i=@grimler.se header.b="ERIDsCH8"
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E+3wpa4z"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28CC113475E;
-	Tue,  6 Feb 2024 16:03:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC789134CED;
+	Tue,  6 Feb 2024 16:03:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707235397; cv=none; b=GIpYMvaRBcBFzgqfIRr6kO+toG2VhyfhhgDp3rEypTj2Ho7Ci0qcg9SqYa1fa4ztddy9HN/XscHnMXqeBkdnFahTaXDns5645U6mgR4Cl/ZtBBZlJGrf6M1kiJ0Ezl0RnwBRoXh5OqkhJfUG7Th6UcnH2He5sqiFvvIGzenBekQ=
+	t=1707235399; cv=none; b=d7NJy4iPr6PUP+UvfdYiXOoSKvUWwGrwyjCmwBDTmd2kNovFpmvaLzY22KNBs3CAjMJStvDTTbLbb8310CJliP1KsGB88lBRgjMTGPx3fA21+NKLrMrz+2ZoBeGIvS58gpyQRDw6epwLDZ/kaidZ4SgeqFnduGLcPtBLDiGjbVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707235397; c=relaxed/simple;
-	bh=FwS54/PYqrUZiY7LxxdxSfAFIu5FraPSc4TQ7aShN3A=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=npna4m11DZwvM0+L0LNpDYctUZs+xFLWWUW7tZupIps4Zt1+SDWjsRQuSW8qBeuiNLbgoMlEqu/upTHZLpiUTGN+1QELGG/xq9BbqxHrQcNYuDSbWWqUWOv3DUi/D7h7Ue+t8eJLARhcErNpQWVGJCSPz+todXo5Xrmw7OHIcrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=grimler.se; spf=pass smtp.mailfrom=grimler.se; dkim=pass (1024-bit key) header.d=grimler.se header.i=@grimler.se header.b=ERIDsCH8; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=grimler.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=grimler.se
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=grimler.se; s=key1;
-	t=1707235389;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=bCNSmZUNy207qqwBIb7GldZJs6ZNLGxpkyWc6+ezBmo=;
-	b=ERIDsCH8L/DuCVRwH71hqYtjBJw0TtTTblEe1zg1vXbqeZcE5DJ7iutSBZD2wV6VZpeZeI
-	W8FoC9EnzfHFYLLRJ/R+eKkAIr/Lc/bFcp0EEO+M9YCmsNmuSJd6jT8b9Pnzr3C5ztG4h3
-	r8NUzLJLP0kCqIGW3OopWiKQROwXxOY=
-From: Henrik Grimler <henrik@grimler.se>
-Date: Tue, 06 Feb 2024 17:02:27 +0100
-Subject: [PATCH v2] ARM: dts: samsung: exynos5420-galaxy-tab-common: add
- wifi node
+	s=arc-20240116; t=1707235399; c=relaxed/simple;
+	bh=eevfwA00ob/jZaiIvXO5cLFT/iQRzo/AiWwse8KJiO4=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cBb0NZM8JwVwYPNobEW6K19j4WUbpTRsgeh7M7QVVleERAhMdjIdy2KupF6K40oRuQ932hm8WKhFn0AmYpN562c/fnuskNwkmuqFG1HpZuP5wzlWCaRRqdDtZgjxq2mhuerUsty+5t7vb4Z0eeqTCm8I+BAOR5kSEtIpyJydBcA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E+3wpa4z; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-557dcb0f870so7598949a12.2;
+        Tue, 06 Feb 2024 08:03:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707235393; x=1707840193; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ca7sqJlEHwlMaWT7ZGfBAoeIoHX1VcE3nux1pQdxFAw=;
+        b=E+3wpa4z4csc97d3+xthjd6Ji9IxyZpvXCNkq0bx6b+tKFUYb0Xjz345Uu/RflACcL
+         fSwcphcpuemyW/9PoCUwKccfKYZAAO/+w3ALg0zZdnIPNKd+QaNjyCLGa2IOusF7byFn
+         ogf41dkMumSP5Uo4aMrM0Fw/4SmveDLj45IHES45hQ0ZBK3LFHg/WB73dYuZTp34XBlC
+         grZdYBbXwRj28VWdlyvWMXjZ4gMwel+QQK8M30b7mmW49Kd4694nf8OQ0rccKoy98gmb
+         Yjptez6+iy2O1IE2gL6FH1uBMFkgRSLWsqaDhK23nqNF60964U8LhSom1gk6jp82DYNg
+         HJUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707235393; x=1707840193;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ca7sqJlEHwlMaWT7ZGfBAoeIoHX1VcE3nux1pQdxFAw=;
+        b=jm8I/32BUFEFpsRqtBZ//5dVqeUpR33AmCC6vtbhmy6IHz5OD0WkGnztrXaMnWiawd
+         v2fDa6lxLAX/UYWK33MetS1Hk4oicn7Np1qHP3p4ecOm4tG951dFPirwe/RWRKNraT0B
+         fo3owSCrA87noB7dx080s0n8A1Q58N7u7ktE43v8hxepunI6GJWGuJAq1272ufezp1z9
+         0oJHbXb/uZIptsQhvYzohfaz4sZ+3DK619QpADcIBqJz9/pSfNICVKZF+21q83ipF4Og
+         ZA+SAfph3mkh41oftVCXxtCV1cTe7XFS/dMO6p3RHWXEBEK0bjfRK4hSokRHQGQhnlJN
+         3ssg==
+X-Gm-Message-State: AOJu0YxSS+jBbjhWHCnOuPU7ULpYJY8TG7QdfczaXgfG7TLLGCn2wVPB
+	MSVChvS+9jphaU0UVvqNBcb0GCJd8+VeHqi0X638yZ2ebAQZ4QtK
+X-Google-Smtp-Source: AGHT+IHx7wr4tpsrFne4mYKGJ67aMXu4rXFBAw+QNa3wk3pEjYuSj6HjrNmrxRIbr48OnxmCgWZ3Pg==
+X-Received: by 2002:a17:906:1b4f:b0:a37:b5c2:d9a3 with SMTP id p15-20020a1709061b4f00b00a37b5c2d9a3mr1620690ejg.4.1707235392743;
+        Tue, 06 Feb 2024 08:03:12 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUfKJSUSnXlBhd01RlU5A+mSuF0ndZJ1emC+SkE6TngGBdET0ZzWC0I2H5GIvBiZT/kPfUZQY9QGLkCC0sMfRRru6WIH5GIt41MxKAA3Vlijf9GR/AqFIlOMjWqy9YnM9hj9Eq7+gdj/Urs2YDodENXWXkGxR+8A7wH03a5I/0OYOTiGZXC2XbYDqTMHw7CbPLgH2XPiiDaJtBKTziVkUcaRKmAwa1kz9/xyh64cbY1lNkOy+aQBsyLQrVgCV76j3N+tufffnQTtaPCQD5mYWFwBblVZXyUvzz9FRI3krNe1mVeDGpdmSVgcpYzJBnI/o56LxLRnam2avSI55Bllkt57f8yj1XixkdM0gQx5kYinvEG8BoHkiG7hjvhz/wdWpNFfYlUc9sto3U3/mQRQt4CFHO1PYVGXvO18lfpLaq2DFCByTJJQ3XXj1W2agY+z/jfSRJuBIU93KQY5po/w5vtAcGiM8dMDmGpB+LP6Bg=
+Received: from krava ([144.178.231.99])
+        by smtp.gmail.com with ESMTPSA id k6-20020a170906680600b00a372b8ac53fsm1286628ejr.169.2024.02.06.08.03.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 08:03:12 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 6 Feb 2024 17:03:10 +0100
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: Jiri Olsa <olsajiri@gmail.com>, andrii@kernel.org, daniel@iogearbox.net,
+	ast@kernel.org, quentin@isovalent.com, alan.maguire@oracle.com,
+	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+	yonghong.song@linux.dev, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Have bpf_rdonly_cast() take a const
+ pointer
+Message-ID: <ZcJYPhiVoK-WIV6z@krava>
+References: <cover.1707080349.git.dxu@dxuuu.xyz>
+ <dfd3823f11ffd2d4c838e961d61ec9ae8a646773.1707080349.git.dxu@dxuuu.xyz>
+ <ZcI3Pt6Gr45wiig7@krava>
+ <cn7sqqtplcle3udyxsbywfxs25wqnwxoutdf7w7cbbucmxkfsm@x67uxj6ubmzk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240206-galaxy-tab-s-cleanup-v2-1-89025c6c66c5@grimler.se>
-X-B4-Tracking: v=1; b=H4sIABJYwmUC/3WNQQ6CMBBFr0Jm7ZhOqYCuvIdhUegIkyCQFgmEc
- HcLe5fvJf/9DQJ74QCPZAPPswQZ+gj6kkDd2r5hFBcZtNIpaVLY2M4uK062woB1x7b/jkjG2Xt
- R6TRTGcTp6Pkty5l9lZFbCdPg1/NlpsMeQaMo/ROcCRU6w5QXt1wbcs/Gy6djfw0M5b7vP2l8a
- Cm5AAAA
-To: Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>, 
- Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
- ~postmarketos/upstreaming@lists.sr.ht, Henrik Grimler <henrik@grimler.se>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2519; i=henrik@grimler.se;
- h=from:subject:message-id; bh=FwS54/PYqrUZiY7LxxdxSfAFIu5FraPSc4TQ7aShN3A=;
- b=owEBbQGS/pANAwAIAbAHbkkLcWFrAcsmYgBlwlg0er+4/CLb0qwwpf95RB9X42yX26KC0zeOp
- b4BmsKT2SyJATMEAAEIAB0WIQQsfymul4kfZBmp4s2wB25JC3FhawUCZcJYNAAKCRCwB25JC3Fh
- a1ZVB/9gyUlCTrObtkaHhdcNuPOwchwxWirjKeoJtQBDS+IX8ly8ND2fzsCgFqPOuuQlAy7d00E
- GSE5+55NpE7lJwCXP7LyrxV6cYetIOnlf2fnhG0DchAxzswoPe47VcT84I1kBVCkYTldoFH32bD
- r3HM84ILghZndJw8dFrzCuo1ZQveliS0jBS2Gnr96CHUKh36ptt7U8Q+jfWTgz+Vf0ixsThWOB+
- CCdv+MxpxPSQ0h+ZvMYCYnkOpgVf3AeW72aJ1iMnnidQQaODJVBiTlJ9oXwKDaSzIY/eQkf1ImS
- pSJVt5dOpv8n+z509v1VtYEu4fiNERcm9MRgRKGvHvn/OsrN
-X-Developer-Key: i=henrik@grimler.se; a=openpgp;
- fpr=2C7F29AE97891F6419A9E2CDB0076E490B71616B
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cn7sqqtplcle3udyxsbywfxs25wqnwxoutdf7w7cbbucmxkfsm@x67uxj6ubmzk>
 
-By using brcm/brcmfmac4354-sdio.bin from linux-firmware together with
-nvram.txt from vendor firmware wifi works well on the chagall-wifi and
-klimt-lte.
+On Tue, Feb 06, 2024 at 08:44:18AM -0700, Daniel Xu wrote:
+> Hi Jiri,
+> 
+> On Tue, Feb 06, 2024 at 02:42:22PM +0100, Jiri Olsa wrote:
+> > On Sun, Feb 04, 2024 at 02:06:34PM -0700, Daniel Xu wrote:
+> > > Since 20d59ee55172 ("libbpf: add bpf_core_cast() macro"), libbpf is now
+> > > exporting a const arg version of bpf_rdonly_cast(). This causes the
+> > > following conflicting type error when generating kfunc prototypes from
+> > > BTF:
+> > > 
+> > > In file included from skeleton/pid_iter.bpf.c:5:
+> > > /home/dxu/dev/linux/tools/bpf/bpftool/bootstrap/libbpf/include/bpf/bpf_core_read.h:297:14: error: conflicting types for 'bpf_rdonly_cast'
+> > > extern void *bpf_rdonly_cast(const void *obj__ign, __u32 btf_id__k) __ksym __weak;
+> > >              ^
+> > > ./vmlinux.h:135625:14: note: previous declaration is here
+> > > extern void *bpf_rdonly_cast(void *obj__ign, u32 btf_id__k) __weak __ksym;
+> > 
+> > hi,
+> > I'm hiting more of these when compiling bpf selftests (attached),
+> > it looks like some kfuncs declarations in bpf_kfuncs.h might be in conflict
+> 
+> Yep, I was actually going to put that as an office hours topic on how we
+> want to handle that for selftests. Marking kfuncs in bpf_kfuncs.h and
+> bpf_experimental.h as __weak is an option. ifdef is another option.
+> Final option I can think of is bumping required pahole version up and
+> simply deleting all the kfunc definitions.
+> 
+> But given that pahole changes come with the feature flag, I don't see
+> this as a pressing issue. So I was planning on getting to that after
+> current outstanding patchsets (just so there's less stuff for me to
+> juggle).
 
-Signed-off-by: Henrik Grimler <henrik@grimler.se>
----
-Describe wifi node for exynos5420-chagall-wifi and
-exynos5420-klimt-wifi, and decrease available memory.
----
-Changes in v2:
-- Drop patch 1 and 3 (the latter was applied)
-- Fixup patch 2 so it applies cleanly after dropping patch 1
-- Link to v1: https://lore.kernel.org/r/20240130-galaxy-tab-s-cleanup-v1-0-d4e17857241d@grimler.se
----
+ok, I guess if the fix goes in together with the scripts/Makefile.btf
+change then we're fine
 
-Changes since v1:
-- Fix conflicts after dropping patch 1
----
- .../dts/samsung/exynos5420-galaxy-tab-common.dtsi  | 32 ++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
-
-diff --git a/arch/arm/boot/dts/samsung/exynos5420-galaxy-tab-common.dtsi b/arch/arm/boot/dts/samsung/exynos5420-galaxy-tab-common.dtsi
-index 3532f1e8e902..246040967082 100644
---- a/arch/arm/boot/dts/samsung/exynos5420-galaxy-tab-common.dtsi
-+++ b/arch/arm/boot/dts/samsung/exynos5420-galaxy-tab-common.dtsi
-@@ -30,6 +30,7 @@ / {
- 
- 	aliases {
- 		mmc0 = &mmc_0;
-+		mmc1 = &mmc_1;
- 		mmc2 = &mmc_2;
- 	};
- 
-@@ -87,6 +88,13 @@ key-volume-down {
- 			linux,code = <KEY_VOLUMEDOWN>;
- 		};
- 	};
-+
-+	mmc1_pwrseq: pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		reset-gpios = <&gpy7 7 GPIO_ACTIVE_LOW>;
-+		clocks = <&s2mps11_osc S2MPS11_CLK_BT>;
-+		clock-names = "ext_clock";
-+	};
- };
- 
- &cci {
-@@ -620,6 +628,25 @@ &mmc_0 {
- 	vqmmc-supply = <&ldo3_reg>;
- };
- 
-+/* WiFi */
-+&mmc_1 {
-+	bus-width = <4>;
-+	cap-sd-highspeed;
-+	cap-sdio-irq;
-+	card-detect-delay = <200>;
-+	keep-power-in-suspend;
-+	mmc-pwrseq = <&mmc1_pwrseq>;
-+	non-removable;
-+	pinctrl-0 = <&sd1_clk>, <&sd1_cmd>, <&sd1_int>, <&sd1_bus1>,
-+		    <&sd1_bus4>, <&wifi_en>;
-+	pinctrl-names = "default";
-+	vqmmc-supply = <&ldo2_reg>;
-+	samsung,dw-mshc-ciu-div = <1>;
-+	samsung,dw-mshc-ddr-timing = <0 2>;
-+	samsung,dw-mshc-sdr-timing = <0 1>;
-+	status = "okay";
-+};
-+
- /* External sdcard */
- &mmc_2 {
- 	status = "okay";
-@@ -649,6 +676,11 @@ s2mps11_irq: s2mps11-irq-pins {
- 		samsung,pin-pud = <EXYNOS_PIN_PULL_NONE>;
- 		samsung,pin-drv = <EXYNOS5420_PIN_DRV_LV1>;
- 	};
-+
-+	wifi_en: wifi-en-pins {
-+		samsung,pins = "gpy7-7";
-+		samsung,pin-pud = <EXYNOS_PIN_PULL_NONE>;
-+	};
- };
- 
- &rtc {
-
----
-base-commit: 9a5dbb835fd396c78da34b26ee91db6d529d096d
-change-id: 20231210-galaxy-tab-s-cleanup-14da98b23606
-
-Best regards,
--- 
-Henrik Grimler <henrik@grimler.se>
-
+jirka
 
