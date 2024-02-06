@@ -1,110 +1,118 @@
-Return-Path: <linux-kernel+bounces-55670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8532884BFBF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:05:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C81784BFC1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:06:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B74811C23209
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:05:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE8C11C22E29
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:06:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E947B1CAB3;
-	Tue,  6 Feb 2024 22:05:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B64B1CF8B;
+	Tue,  6 Feb 2024 22:05:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="MxWKY3jK"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="AzbJ8oAW"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A7191BDE7;
-	Tue,  6 Feb 2024 22:05:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 551B81BF54;
+	Tue,  6 Feb 2024 22:05:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707257114; cv=none; b=lr+QDmsxIg5TRnScmEV4EFNtD7G8eWFK/QTE/V/EFlk55U0veCxMeEfbLSlks5F4g9s4i4C5KQr5D6XdTtLy5+KUXko2/As7XzjS44hM6EOKcpEr//aHDJIc4udHDL9K5B9LFh11gD+7O6jSKLGCi7oAG+n2uG8P95xcgEK0IXY=
+	t=1707257115; cv=none; b=WlUBdbGrjDIqSBtBFUhJz9qQF4BlmduNpEL6pWVJTXfjuPaEA3iPrzzpvMqR2zVCRXQ4VFZir90zSZvVDcdqRt53zbHWtOUVyni19nK6OCKO20F1ZMCseMQeL/9zpxW58OipDWYwpFz8kWuaqgccqs7pqVYajoZvYWMkr/UxnNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707257114; c=relaxed/simple;
-	bh=2PZ9F0FDkdVbqGbkUnpibkVEhoyYv+tqjfurNqK2CQQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YgP8KhEaapXQPWnswqxJQFePmARwLuBjhu5coCuMaEh9wywj89nXylanTsOz20xtCgH3HIbV/GbhCnknL7nvhVENSJK8rww/3QsMJXGNwWklE0nkEWhMNbzJufsqE2s540K+C03UWTfVxLD5OXjEN4w9FI26VSs0n7TOg05rscQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=MxWKY3jK; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1707257105; x=1707861905; i=w_armin@gmx.de;
-	bh=2PZ9F0FDkdVbqGbkUnpibkVEhoyYv+tqjfurNqK2CQQ=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-	 References;
-	b=MxWKY3jKu5UyB2iR5D3Qpo5+94ZcqcmJPPAEiQHkfZHInCNnyrL0+WNhMpSfa+SW
-	 sRq8sB0JYMJqgYs+usICt/8TpbbMqlB9/+OM4JtTbP99NqJXAwhQ3py9f+JIbpzh1
-	 ZJ6YDRuX77jk7IzOdqO1s7TMN+U9Ipa15odjmsa8e23PYBEMO1D9CqmNSfmHJx4v7
-	 /R1yeW5F/zQFVmRhRRQ+ov5pVFsU/tbMAZhd8FPImIfcMCGC8Fvy42g5CZyfRmnv3
-	 TBBjTRdoS/PDv0rXBuLmv/oRaBqH9f9uxCV7A8k65r0KBeXyEQ3E8ht+WWv9B4M4z
-	 d3PKDeVSbfguD053ow==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1MSKuA-1rQu0v38p6-00SdAN; Tue, 06 Feb 2024 23:05:05 +0100
-From: Armin Wolf <W_Armin@gmx.de>
-To: hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com
-Cc: platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] platform/x86: wmi: Replace pr_err() with dev_err()
-Date: Tue,  6 Feb 2024 23:04:47 +0100
-Message-Id: <20240206220447.3102-4-W_Armin@gmx.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240206220447.3102-1-W_Armin@gmx.de>
-References: <20240206220447.3102-1-W_Armin@gmx.de>
+	s=arc-20240116; t=1707257115; c=relaxed/simple;
+	bh=pLx45ZyN16CoVvyCmAES3lZN6QuPwJOPZMLTntdQ++A=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Ei0+4HA9DGFyhh58W9dgV4jJU1nI18/7/j5ki66G8lnVdMiEV2FmjPTFm8w0iuXzzrHr+qc01VTft88IyBjVEqWp4GuvYsbEz/k1+W9Q5YR/dIvrI4z/rC65BM7KS9eQIMnvPF3hSlIfJRZ6q/uE7IF2+xo9Nj3SgZtXAnQUyDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=AzbJ8oAW; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1707257106;
+	bh=pLx45ZyN16CoVvyCmAES3lZN6QuPwJOPZMLTntdQ++A=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=AzbJ8oAWaf/4CMmlwT49aWVBz5WWZurnJ98jL/jRxSgunDt4Th5fAd+oiGBslr+02
+	 gWf7w320c/LuivZG6Q5XsILFYcMehKnuKFzyr3gxPPDarSN3hNVP3mKGTg941YLUpL
+	 eh1yX+ahlyPMPEJnndN8XVI8q3HmYpH0qdFB98i+2s0T5psLS+v/+O7rJz+OLXvek+
+	 N1miqIsZEhNMW1Jof2ifU+5sIiYFF5DFl6/a8Ubb6MOmeFTnnJN/UqgSU21EI9ZP5T
+	 jr4IddBThKJ9NvzTNSBvDVWzKG4up9ij+9+hrc5Tb5KHw60SGzaK/r5k7U33s6AZpj
+	 xuwqnW3gyLXtg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TTy3Q3BNCz4wcR;
+	Wed,  7 Feb 2024 09:05:06 +1100 (AEDT)
+Date: Wed, 7 Feb 2024 09:05:05 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@kernel.org>
+Cc: Linux Next Mailing List <linux-next@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Matthias
+ Brugger <matthias.bgg@gmail.com>
+Subject: Re: MediaTek for-next: Replace matthias.bgg tree with mediatek
+Message-ID: <20240207090505.515d8977@canb.auug.org.au>
+In-Reply-To: <00a81be6-7dd7-4959-b1dc-eb94022bf0e5@kernel.org>
+References: <00a81be6-7dd7-4959-b1dc-eb94022bf0e5@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_//kqB9L+dqKQom4VAqEr07Kq";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_//kqB9L+dqKQom4VAqEr07Kq
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:sjpexojcG9PhmG/lOiKCA5maxHpxMZEgTZaPWlB9tq2zb8HGmDY
- zlAqeQl95KlNkQ1wItLe0qWIbeY9EcaIVIfhV3kgRCJ2VIqdaJhAnnteCsp/5bOIuqI/nNY
- q1OMxCzQmUKzbpaAsvzsDdOKFs30qpCrrXWIwTfDtMfQao/UbS1/tOknnIvPaldV2OIICDX
- t0Qp9kl8iUnzpjL7eZqJw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Tc5kJptXQpU=;/a1v9N+iZs6Y4ZYwWs/5ujvMmEe
- 3jpcwle5lBWYMfHu4D6xaejL0nw3LauiM4qKb+U5yjctQ1BRuEUBByuq8jrerwP4Jd6KAg5QB
- lX2OFKZrT1NmPA0tVuFF1IK5/kEPGbtNvKkg2bJeAjH+9/76WKZ4bPOQcsoQQ8/ckiHdSPq58
- Mskvw8owdjdjOlpBjrNPNXP69zFcTwgz5cRuGitxb9w8Po1C8Fl+Knyr3K6+zk9TPIX0XvFqg
- MWoXbBFGFAwqIgmDa3JuDSh4f5KGX5nu5JUegOEMNuevtzcwsejCd5ngWecWA5HT6uAnYJfa5
- kMnJIV9jhG+kQaDDmurzrGcXrbwXE3STOoFQdult8eBA6rrpedAf/QZVloZ3G9luDU5qlT5Uu
- L7MmfXyhPJjoVBgEq8BVLsuSFJvT67UlitPuf/L3oFwp6vRf7Mjtp+Pv6FSiKSMuMBrhx7fTb
- Bn9LUJozJNBJSyvoNTwTrgoWTM4H89DRY9ig/QLwDQHWcQ5sRw9aJFu2+UZk0QgPuY0X4vUi2
- g9p0YeFGqrHoSgST3EJBLuyCsz6+vCNrEoWSiZRMcydbByc+aPixTnITsDX+y7kjQOQ/AGITI
- teRv84gQBAxE7xa4i8N8lS81oYjyQcbGhm5W0a3kBgGhQ612cbXBjStixbbbyLG6XsdUIYNzD
- XkAsY3a3urVyddjE5sSx4p0ebyyjCFiwleREsDlffP2KN/ISFH0JYUnIGmcu/tK4O3/q/4u6G
- 9PbBHRmgGFEOMI1qauQJ1ZiqIaqKnkIyv/kUf85V6qLHfefdUu7oEUR79x/2dJVmHIc+XfRF+
- tFeeXK1VkukHH7U+2hVWMDNtD0gAB+XqEgVrLiGfn3AiQ=
 
-Using dev_err() allows users to find out from which
-device the error message came from.
+Hi Angelo,
 
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-=2D--
- drivers/platform/x86/wmi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, 6 Feb 2024 11:08:25 +0100 AngeloGioacchino Del Regno <angelogioacch=
+ino.delregno@kernel.org> wrote:
+>
+> A while ago we migrated the MediaTek SoC trees from Matthias' GIT repo to=
+ the new
+> MediaTek collaborative one. I just noticed that the linux-next branch did=
+n't get
+> replaced (we didn't tell you anything about it, so that's our bad!).
+>=20
+> Can you please replace the tracked for-next branch?
+>=20
+> ...The old one, to remove, is:
+> git://git.kernel.org/pub/scm/linux/kernel/git/matthias.bgg/linux.git#for-=
+next
+>=20
+> ...the new one, to add, is:
+> git://git.kernel.org/pub/scm/linux/kernel/git/mediatek/linux.git#for-next
 
-diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-index 396344523bce..63906fdd0abf 100644
-=2D-- a/drivers/platform/x86/wmi.c
-+++ b/drivers/platform/x86/wmi.c
-@@ -1339,7 +1339,7 @@ static int acpi_wmi_probe(struct platform_device *de=
-vice)
+Done.
 
- 	error =3D parse_wdg(wmi_bus_dev, device);
- 	if (error) {
--		pr_err("Failed to parse WDG method\n");
-+		dev_err(&device->dev, "Failed to parse _WDG method\n");
- 		return error;
- 	}
+I have only Matthias listed as a contact for that tree, should I add anyone
+else?
 
-=2D-
-2.39.2
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_//kqB9L+dqKQom4VAqEr07Kq
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXCrREACgkQAVBC80lX
+0Gw1Zwf8DBARVS5WGVz//g7J2GVrsXBFlFObC3KucMu6kepa5X3LbqYRhQokYA0N
+Ja4nAN+xfl88fC+4IJN4dFICOKwgE2Uuu9PpcLu8fjJE6rVWJemA9o/TzV5kwmIM
+jBenYR8HW7LVklJVcGbZlYTdPkGbBiOeaVYru3e++v9dEchAdtKCLX/XIRASMZ/P
+A7vMqClMWjjpQZwaueH5jO/+UlZ7uUi44jO+hEEei8Hh+CF/OiUFUcOfqunedhFq
+j/dMxf6L47CiVlybvAiN04Y6AkR/Ebq+5rggY1cbSoApAreyAac5DuVyoeQqi2Lb
+T6frGdnUjs/R0Ko2+Juh5i0xu5jQGA==
+=VFwn
+-----END PGP SIGNATURE-----
+
+--Sig_//kqB9L+dqKQom4VAqEr07Kq--
 
