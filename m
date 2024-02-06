@@ -1,111 +1,167 @@
-Return-Path: <linux-kernel+bounces-54969-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54971-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2173C84B5A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:55:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3683A84B5AD
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:56:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D101528A061
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:55:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E70402859D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:56:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D785130ACC;
-	Tue,  6 Feb 2024 12:54:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CC2C12F5B4;
+	Tue,  6 Feb 2024 12:56:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bU+oRkTq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cefG3SlK"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64E4F12FF9F;
-	Tue,  6 Feb 2024 12:54:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C19291EA80;
+	Tue,  6 Feb 2024 12:56:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707224092; cv=none; b=jtzTs/YHE/YQd0FynmsG7wAAwNPdVdkYnL6M5XB5KwXGnIIe1codoxbrRmsDSjjIBhWeaAf0zy1SKjp3wdEiUGBQw7zzQCU5kg67/pLbGm4Y6AXQ5nuR7ZyIoPaY8B+0fYYsAyopDDa9F98UkcTD0Aahf70THaT9t9NY0i+Spn8=
+	t=1707224186; cv=none; b=GzVo1K0iVv54zGtDjqSKzxdAFZwqyNkxldwK0RE1YDIR1JOpFQFbZA+mCrraHDWRe0UZ9SIabs2JuBsvVuU/XEgOWxMgy4EItez7L1wC3KYkgI1+oS+TOf6keJLQZ+ipWubDAnlx/W11tMY4rpCDtZVtp29tUasfHrf/S/j8Ht8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707224092; c=relaxed/simple;
-	bh=5zDs4bCJCg9fhWhJufayFel6oMRJyIadeFkzq2VZtnM=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JjNC59RIwmKbDKIkXySV4Pt1uQWeY5q6XIuzNB6UUh7KNpzJCyGSfZd9sc8masd8IKwZQkyWyNVhEDbBN3QD5tAo0mOmPczKwntqKguzJ8kkKvHzQUza3u0mh6jn2my/Fy6tKojkT5ZpwGLRgCLjLJSsGuxF8EfB2i2Iy42J3i0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bU+oRkTq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2464C433F1;
-	Tue,  6 Feb 2024 12:54:51 +0000 (UTC)
+	s=arc-20240116; t=1707224186; c=relaxed/simple;
+	bh=hPZSu02P2dfzA6Y4MG5ytfc6LxdzfYU+fY/Tl4zL5jM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ChF9qjuesjM228xt51lKSYWh8/RLnxv3rUyG2u5ERKqcv+V+CEc9FJwllXNb8MMMmmbX9C4gUVL78X1jf8/5CC7SSd+Ovse6Wj2GcTjy+ND8/ju024xi71BK7+6H7TzhfnmSBZdVCOQqrAtP8+v9xv9hNU9vu5TMQ96qVKhD5ME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cefG3SlK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5FBBC433F1;
+	Tue,  6 Feb 2024 12:56:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707224091;
-	bh=5zDs4bCJCg9fhWhJufayFel6oMRJyIadeFkzq2VZtnM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=bU+oRkTqb1zaIpJ1yo9/YCK+2iXPfc+d0U0jKNJWzCFE7GnIfe9Bji/nrJiiNoUSo
-	 4bzbxjgsemqG4MJ4P3/4XQLnxl9qlgNlMkbq8f9kCgQIVCgcDwa4lj3UbbxsmX/7Ja
-	 Vz16y745ziRgIcvNkGuUdTTDHgvAcvxF/mqcgfdEh4rpzX0ezNXhH7upMoYirEXuT0
-	 6/kop5ZKomX9TAJs5jVVESQZojkmH+mfFxku4dgU1WTmjj67coF1utCvXsM28WcX5z
-	 SQSle5w+ShMKQTzhwnBFsHbFfp70z5Jsqvspw1ZfC0xDwSz9K9Tg7tyP+Ewo4Ek1JY
-	 36/KQutHmdwkA==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rXKyP-000ocS-He;
-	Tue, 06 Feb 2024 12:54:49 +0000
-Date: Tue, 06 Feb 2024 12:54:48 +0000
-Message-ID: <86ttml69d3.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Jon Hunter <jonathanh@nvidia.com>
-Cc: Sumit Gupta <sumitg@nvidia.com>,
-	treding@nvidia.com,
-	krzysztof.kozlowski@linaro.org,
-	mark.rutland@arm.com,
-	linux-kernel@vger.kernel.org,
-	linux-tegra@vger.kernel.org,
-	amhetre@nvidia.com,
-	bbasu@nvidia.com
-Subject: Re: [Patch] memory: tegra: Skip SID override from Guest VM
-In-Reply-To: <c7e71e7e-ef01-4539-b481-9f4a95e6a444@nvidia.com>
-References: <20240206114852.8472-1-sumitg@nvidia.com>
-	<86wmrh6b2n.wl-maz@kernel.org>
-	<252d6094-b2d6-496d-b28f-93507a193ede@nvidia.com>
-	<c7e71e7e-ef01-4539-b481-9f4a95e6a444@nvidia.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=k20201202; t=1707224186;
+	bh=hPZSu02P2dfzA6Y4MG5ytfc6LxdzfYU+fY/Tl4zL5jM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cefG3SlKw+inRWFc3vcRQS1w3RgS3nyUQpf4AcH3AIpRY+RrehgF9qN2E3TxAOwIN
+	 mBelaXz3vxZGk+ksUPseP9Tnq4XQBmED9DFuwn9vir+UJsYXW3V5XlQ7ko66nRR0AF
+	 H4gfnUlHYTzz6FLQqGiHeoT6zTkPPtq/g6RDneyM07t4DVULZoitFY1xq2KXAaFHJC
+	 UOs/OYm5FGKGD3xZEm4/FMz+/8v4uF6fWQ3gbTaTa5OSFRGojFpNlUXm9TQLkkC8rs
+	 /oMAkGl1yArPwXD4UUZCjh6AL5WVM2y0OJBnvZAU2wmnVK0U65lsb3ztL957APWAk9
+	 2Wol22Eiq73xQ==
+Date: Tue, 6 Feb 2024 13:56:23 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, Shuah Khan <shuah@kernel.org>,
+	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
+	Ryan Phillips <rphillips@redhat.com>,
+	Brent Rowsell <browsell@redhat.com>, Peter Hunt <pehunt@redhat.com>,
+	Cestmir Kalina <ckalina@redhat.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	Alex Gladkov <agladkov@redhat.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>, Phil Auld <pauld@redhat.com>,
+	Paul Gortmaker <paul.gortmaker@windriver.com>,
+	Daniel Bristot de Oliveira <bristot@kernel.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Costa Shulyupin <cshulyup@redhat.com>
+Subject: Re: [RFC PATCH 0/8] cgroup/cpuset: Support RCU_NOCB on isolated
+ partitions
+Message-ID: <ZcIsd6fjgmsb2dxr@localhost.localdomain>
+References: <20240117163511.88173-1-longman@redhat.com>
+ <ZagJPoEsLZ6Dg-NG@mtj.duckdns.org>
+ <5ee5bf79-6cdc-4d1b-a19f-f0d5165a5f16@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: jonathanh@nvidia.com, sumitg@nvidia.com, treding@nvidia.com, krzysztof.kozlowski@linaro.org, mark.rutland@arm.com, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, amhetre@nvidia.com, bbasu@nvidia.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5ee5bf79-6cdc-4d1b-a19f-f0d5165a5f16@redhat.com>
 
-On Tue, 06 Feb 2024 12:51:35 +0000,
-Jon Hunter <jonathanh@nvidia.com> wrote:
->=20
->=20
-> On 06/02/2024 12:28, Jon Hunter wrote:
->=20
-> ...
->=20
-> >> - My own tegra186 HW doesn't have VHE, since it is ARMv8.0, and this
-> >> =C2=A0=C2=A0 helper will always return 'false'. How could this result =
-in
-> >> =C2=A0=C2=A0 something that still works? Can I get a free CPU upgrade?
-> >=20
-> > I thought this API just checks to see if we are in EL2?
->=20
->=20
-> Sorry to add a bit more info, I see EL2 is used for hypervisor [0],
-> but on my Tegra186 with no hypervisor I see ...
->=20
->  CPU: All CPU(s) started at EL2
+Le Wed, Jan 17, 2024 at 12:15:07PM -0500, Waiman Long a écrit :
+> 
+> On 1/17/24 12:07, Tejun Heo wrote:
+> > Hello,
+> > 
+> > On Wed, Jan 17, 2024 at 11:35:03AM -0500, Waiman Long wrote:
+> > > The first 2 patches are adopted from Federic with minor twists to fix
+> > > merge conflicts and compilation issue. The rests are for implementing
+> > > the new cpuset.cpus.isolation_full interface which is essentially a flag
+> > > to globally enable or disable full CPU isolation on isolated partitions.
+> > I think the interface is a bit premature. The cpuset partition feature is
+> > already pretty restrictive and makes it really clear that it's to isolate
+> > the CPUs. I think it'd be better to just enable all the isolation features
+> > by default. If there are valid use cases which can't be served without
+> > disabling some isolation features, we can worry about adding the interface
+> > at that point.
+> 
+> My current thought is to make isolated partitions act like isolcpus=domain,
+> additional CPU isolation capabilities are optional and can be turned on
+> using isolation_full. However, I am fine with making all these turned on by
+> default if it is the consensus.
 
-Yes. and yet the kernel runs at EL1 (on ARMv8.0, we can't run the
-kernel at EL2 at all).
+Right it was the consensus last time I tried. Along with the fact that mutating
+this isolation_full set has to be done on offline CPUs to simplify the whole
+picture.
 
-	M.
+So lemme try to summarize what needs to be done:
 
---=20
-Without deviation from the norm, progress is not possible.
+1) An all-isolation feature file (that is, all the HK_TYPE_* things) on/off for
+  now. And if it ever proves needed, provide a way later for more finegrained
+  tuning.
+
+2) This file must only apply to offline CPUs because it avoids migrations and
+  stuff.
+
+3) I need to make RCU NOCB tunable only on offline CPUs, which isn't that much
+   changes.
+
+4) HK_TYPE_TIMER:
+   * Wrt. timers in general, not much needs to be done, the CPUs are
+     offline. But:
+   * arch/x86/kvm/x86.c does something weird
+   * drivers/char/random.c might need some care
+   * watchdog needs to be (de-)activated
+   
+5) HK_TYPE_DOMAIN:
+   * This one I fear is not mutable, this is isolcpus...
+
+6) HK_TYPE_MANAGED_IRQ:
+   * I prefer not to think about it :-)
+
+7) HK_TYPE_TICK:
+   * Maybe some tiny ticks internals to revisit, I'll check that.
+   * There is a remote tick to take into consideration, but again the
+     CPUs are offline so it shouldn't be too complicated.
+
+8) HK_TYPE_WQ:
+   * Fortunately we already have all the mutable interface in place.
+     But we must make it live nicely with the sysfs workqueue affinity
+     files.
+
+9) HK_FLAG_SCHED:
+   * Oops, this one is ignored by nohz_full/isolcpus, isn't it?
+   Should be removed?
+
+10) HK_TYPE_RCU:
+    * That's point 3) and also some kthreads to affine, which leads us
+     to the following in HK_TYPE_KTHREAD:
+
+11) HK_FLAG_KTHREAD:
+    * I'm guessing it's fine as long as isolation_full is also an
+      isolated partition. Then unbound kthreads shouldn't run there.
+
+12) HK_TYPE_MISC:
+    * Should be fine as ILB isn't running on offline CPUs.
+
+Thanks.
 
