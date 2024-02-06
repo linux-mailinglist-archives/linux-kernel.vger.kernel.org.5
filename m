@@ -1,106 +1,94 @@
-Return-Path: <linux-kernel+bounces-54576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54577-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4460684B0F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:21:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F80C84B0F7
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:22:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00331285E21
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:21:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02922B23E0D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:22:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE0B112F38F;
-	Tue,  6 Feb 2024 09:19:50 +0000 (UTC)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com [210.160.252.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B98712F386;
-	Tue,  6 Feb 2024 09:19:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.160.252.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D4D812D164;
+	Tue,  6 Feb 2024 09:21:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="pXgSMjur"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B94612D143;
+	Tue,  6 Feb 2024 09:21:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707211190; cv=none; b=aPVtSolvTgHCUQCFBsoPWzBHkz7EV1SacPjyuv4SInB8HVm9nN3kP43j+T9k6yXe9LMvM7tR7EOiSZaO4wFvdZfQS9/l7F/a+Zw69+B4uchcYQw6ICnY6v9fAadu6KO3ed0/iyyxOUcYX2ioftbVTSsU6GBRwmnh7o46y/I+HRg=
+	t=1707211284; cv=none; b=Lg/mknpggZDIqgR80spIypJTX+88RqlgdRRHf5nZrQp1dApGOW3QW0FqdTFUl6OYEzTwSg8uPgc53N0meh0q29CIPDxbsMHdMVC5M/JNOOO4Y8RZ0AE9zDPPn9RhAVz44WKaytXtyArfMwNm7hxNieGxk4f/khuDgIsj9X2kh9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707211190; c=relaxed/simple;
-	bh=v30FjsWUe3ZhLh+6uEKl3Kbs4m0Yb16dWTX3b3fdzp8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GbynWw0Ew48m1AaJbTPC2Tyf7uRoVT4SAxPnDEQJvJRVIC5fOAKPbMwNP0xlVHTbKPeLKN+EYuT7TquEpfkPG6WDx6iLVLQQSNZ91H6IDBhYArvkGIpkoPMPgI9TnLOode2F6vdNoWBYTux81nMsDEX7jwK1fumhr915XpOl+mE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; arc=none smtp.client-ip=210.160.252.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
-X-IronPort-AV: E=Sophos;i="6.05,246,1701097200"; 
-   d="scan'208";a="196934676"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 06 Feb 2024 18:19:47 +0900
-Received: from GBR-5CG2373LKG.adwin.renesas.com (unknown [10.226.93.63])
-	by relmlir6.idc.renesas.com (Postfix) with ESMTP id 0C8F041B8EF7;
-	Tue,  6 Feb 2024 18:19:43 +0900 (JST)
-From: Paul Barker <paul.barker.ct@bp.renesas.com>
-To: Sergey Shtylyov <s.shtylyov@omp.ru>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Paul Barker <paul.barker.ct@bp.renesas.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	netdev@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [RFC PATCH net-next v2 7/7] net: ravb: Use NAPI threaded mode on 1-core CPUs with GbEth IP
-Date: Tue,  6 Feb 2024 09:19:09 +0000
-Message-Id: <20240206091909.3191-8-paul.barker.ct@bp.renesas.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240206091909.3191-1-paul.barker.ct@bp.renesas.com>
-References: <20240206091909.3191-1-paul.barker.ct@bp.renesas.com>
+	s=arc-20240116; t=1707211284; c=relaxed/simple;
+	bh=GhYT5UYlUwjUnGnJLzVb+yqrzxe5xuH4W1+Hl/X1RiU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TQCWviF1Q/jGogkMHJq9DyG6PhV31FpAcfx5k3BeSIIn4Em+AAmI2XEUbNV8TU1eJa480H3JT22oTifJOI/8uW2ThJmxkvO5amFrkWFM7nar0LB3EOULW4sBIr7y7h7ome1ASVgbfLUfXy9RB4oi/SYbj10qv9ywus6X/3R8O+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=pXgSMjur; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707211281;
+	bh=GhYT5UYlUwjUnGnJLzVb+yqrzxe5xuH4W1+Hl/X1RiU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=pXgSMjurtDcRf712AK1hGeRPnaZ2p6F7eDXIU+By9gziz97HzEwFq2dt6stJnT21i
+	 ysEFrzEOLH8X4haPCHn21RwZheEaxr+as95wXW6zUpp0qL8KhcnI7UZcmXFLl5KlAQ
+	 sPV4PgspK+x0cEUkKlwDZ2eQg4XlqvPQ0itfxFXdLVZVNfeAxgtiMUqKvBeLTMfM84
+	 wtlw3v2tVEFqA6LTiBVTDnqC7+gEjrUN5kjF7X7kPXhgk9jRuWAXQBPYJ1Cj08cCet
+	 sr9CahscikPXCEAOmT5GObaJ2I96LI6cqdpD7q+VWyrNkuD87BxbbjuuCX9hQJCVQA
+	 Bfw5kj/bQl/OQ==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 80BC93782039;
+	Tue,  6 Feb 2024 09:21:20 +0000 (UTC)
+Message-ID: <bec4bde4-4800-4188-8b31-4e6d162cd80d@collabora.com>
+Date: Tue, 6 Feb 2024 10:21:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] spmi: pmic-arb: Replace three IS_ERR() calls by null
+ pointer checks in spmi_pmic_arb_probe()
+To: Markus Elfring <Markus.Elfring@web.de>, kernel-janitors@vger.kernel.org,
+ Bjorn Andersson <andersson@kernel.org>,
+ David Collins <quic_collinsd@quicinc.com>, Fei Shao <fshao@chromium.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Peng Wu <wupeng58@huawei.com>, Stephen Boyd <sboyd@kernel.org>,
+ Vinod Koul <vkoul@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+References: <82a0768e-95b0-4091-bdd1-14c3e893726b@web.de>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <82a0768e-95b0-4091-bdd1-14c3e893726b@web.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-NAPI Threaded mode (along with the previously enabled SW IRQ Coalescing)
-is required to improve network stack performance for single core SoCs
-using the GbEth IP (currently the RZ/G2L SoC family and the RZ/G3S SoC).
+Il 04/02/24 10:24, Markus Elfring ha scritto:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Sun, 4 Feb 2024 09:39:48 +0100
+> 
+> The devm_ioremap() function does not return error pointers.
+> It returns NULL on error.
+> This issue was detected once more also by using the Coccinelle software.
+> 
+> Update three checks (and corresponding error codes) for failed
+> function calls accordingly.
+> 
+> Fixes: ffdfbafdc4f4 ("spmi: Use devm_spmi_controller_alloc()")
+> Fixes: 231601cd22bd ("spmi: pmic-arb: Add support for PMIC v7")
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 
-For the RZ/G2UL, network throughput is greatly increased by this change
-(results obtained with iperf3) for all test cases except UDP TX:
-  * TCP TX: 30% more throughput
-  * TCP RX: 9.8% more throughput
-  * UDP TX: 9.7% less throughput
-  * UDP RX: 89% more throughput
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-For the RZ/G3S we see improvements in network throughput similar to the
-RZ/G2UL.
-
-The improvement of UDP RX bandwidth for the single core SoCs (RZ/G2UL &
-RZ/G3S) is particularly critical. NAPI Threaded mode can be disabled at
-runtime via sysfs for applications where UDP TX performance is a
-priority.
-
-Signed-off-by: Paul Barker <paul.barker.ct@bp.renesas.com>
----
- drivers/net/ethernet/renesas/ravb_main.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-index 7bb80608f260..522df82524ff 100644
---- a/drivers/net/ethernet/renesas/ravb_main.c
-+++ b/drivers/net/ethernet/renesas/ravb_main.c
-@@ -2984,8 +2984,11 @@ static int ravb_probe(struct platform_device *pdev)
- 	if (info->nc_queues)
- 		netif_napi_add(ndev, &priv->napi[RAVB_NC], ravb_poll);
- 
--	if (info->needs_irq_coalesce)
-+	if (info->needs_irq_coalesce) {
- 		netdev_sw_irq_coalesce_default_on(ndev);
-+		if (num_present_cpus() == 1)
-+			dev_set_threaded(ndev, true);
-+	}
- 
- 	/* Network device register */
- 	error = register_netdev(ndev);
--- 
-2.39.2
 
 
