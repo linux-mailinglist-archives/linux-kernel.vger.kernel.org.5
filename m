@@ -1,164 +1,115 @@
-Return-Path: <linux-kernel+bounces-54194-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54195-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C729F84AC1C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:16:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C878884AC1E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:18:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D747287F2D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:16:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F1701F2490A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:18:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66C5359B41;
-	Tue,  6 Feb 2024 02:15:14 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9584356B6E;
+	Tue,  6 Feb 2024 02:18:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="DEYBXZwN"
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8CA157327;
-	Tue,  6 Feb 2024 02:15:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AF4F56B68
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 02:18:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707185713; cv=none; b=deyJODwNqqVrQ/lGLbJ8tKZeGhmFAfzT2IpLJQYbJiwqVv2iHts163KGuii8qYvFpGdzkEhcV2Au+EDBHazQRM/i3PkXS/kgVCp0cZP0D5l9R6eSrYYntqA8qggodG9GkDYoEvIlq6Vc5RYH5XVdjuh0KiAT4FXzUu45PnFSDYM=
+	t=1707185912; cv=none; b=k8Sx5YM4xmP8pxyheu3ND7fuL8opumm7sPqmOY+EMSyHPfiiomKn0+WQE5FigBUd/P35RGz/+xfG/clAYDtJWR6KCi4cTgfotPygfcRTyQabW3yNfep1W/32yFc1HpPwpkF3gx0KVmlp2t3wJ1zNcYh/bRZmtBU0GrRfPQN01UU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707185713; c=relaxed/simple;
-	bh=L+pZSq0Y2ocTmSe9NysyU/JS36LXhGL7+0Fxp73TbbE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HLANteqj4XSceuT8qKzD7vZP6D6gP+pPVmM8nyX4I1VM1WfvWWW4+pK7J2KJMHIJRZ4YGCyMetURFC7BmP8d2DDmgoM94CC169lpvWoXrqtMft/v9QS0fwGpcSd9wPW1fW8c66xUQ/sBDg9tPVAGIWEOJwnDADPWpW6lLIAJxIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TTRc90ZJMz29ktV;
-	Tue,  6 Feb 2024 10:13:13 +0800 (CST)
-Received: from kwepemd100002.china.huawei.com (unknown [7.221.188.184])
-	by mail.maildlp.com (Postfix) with ESMTPS id 77E061A0172;
-	Tue,  6 Feb 2024 10:15:08 +0800 (CST)
-Received: from M910t.huawei.com (10.110.54.157) by
- kwepemd100002.china.huawei.com (7.221.188.184) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.28; Tue, 6 Feb 2024 10:15:06 +0800
-From: Changbin Du <changbin.du@huawei.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>
-CC: Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin
-	<alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Namhyung
- Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter
-	<adrian.hunter@intel.com>, <linux-kernel@vger.kernel.org>,
-	<linux-perf-users@vger.kernel.org>, Andi Kleen <ak@linux.intel.com>, Thomas
- Richter <tmricht@linux.ibm.com>, <changbin.du@gmail.com>, Changbin Du
-	<changbin.du@huawei.com>
-Subject: [PATCH v6 5/5] perf: script: prefer capstone to XED
-Date: Tue, 6 Feb 2024 10:14:38 +0800
-Message-ID: <20240206021438.768731-6-changbin.du@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240206021438.768731-1-changbin.du@huawei.com>
-References: <20240206021438.768731-1-changbin.du@huawei.com>
+	s=arc-20240116; t=1707185912; c=relaxed/simple;
+	bh=gZkw2d6GEVsCKvdSDVLYHTC96kmhi9x5abFW4GTX54w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=p8JODsBpQdVikeMUfh1XlsP6mZXw46Wnxk62S2g/XVbHwgu4IFZdF2cezA2+ecWBCOmGl/rJYIH2zS9JU/z1WGS8lkyUrvPTZF4+qKLVA9MpvPD7C5STZcqiynE4hXSuKTmElCnOL40Gal1z7imwTQD+eE+JsonR1j9UOFLSHUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=DEYBXZwN; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-60406da718aso51192767b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 18:18:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umich.edu; s=google-2016-06-03; t=1707185910; x=1707790710; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gZkw2d6GEVsCKvdSDVLYHTC96kmhi9x5abFW4GTX54w=;
+        b=DEYBXZwNmfJ7lMCZ7Uu1FQPNRue751FezuY1O97slzyj3kLCRwSOS7FAWwx4cluFIC
+         keL25Fchygu0p6oiT4YFQ6eAUsHJ4Cv6LHA+ADhbfaSf6Gl3YfIDOgv91bYTLE18lDXj
+         AnFHBi/EtzitM/BRfXHQH30PYlBiv89O0Lgh0nGeQKQzVAjIfdS8rQGZrKUYzYIxMBU/
+         W3xKCn1cvX/hbQ91ilPRgaeta+HCIrzfzQQWrS0N2gRGD6qFy03R3N1ZfiJ/0fsVmDRW
+         7xrIARYrREbZYd3arC0x99GtxCFTJ7EeRXzWE0QKIS6obVwQ0sGlPJnMG/CZRnxYrjch
+         hcwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707185910; x=1707790710;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gZkw2d6GEVsCKvdSDVLYHTC96kmhi9x5abFW4GTX54w=;
+        b=cXlbIAOuMV6xMl3uUWT72EpLq0Ld9jr/yrCG3w08optuua+OzFrTq6T/jx7bPDXZOK
+         j9sXFZO+6SG1ysx+vnOV/gkpYVkgoGGQ82eBRdQW3oZYmmFJWZECfd/IvdkMHtu3Chwa
+         CnKeCpQOqDRCq9vPaASH0VsodzXBIR+Magr8WqmiPGAMaLTRMEYNcWjm9OCGMH6f8SWu
+         6Ersx1oOjCZTmPLLwQcgP/XaUZJjOK5VssTD7htVe3mPrZ4vDg/WUJSi4QnUBTI7NGXu
+         dKYKTt+dfmxj7H7sB3zObBCjSCGwXgWro5kgUOEjo9iuZYjOYyK/1x6gGQy7PC9Sd13t
+         FLTg==
+X-Gm-Message-State: AOJu0YzXTotVkAmwUTLl87ysdC0UOxMfL3AL5uhGO8mNOroWGRDy88Qf
+	tcT7Hw2JyGHXqa1tKCPY4yf0SW/X8aCIxcrcBiR4yX9X9A4UskcZr+nKYuURJHaqwE2HAYqZ44g
+	g+jOyX8Tbu97gQA7gmFi2ET4wPFYglQ2TnwRzMg==
+X-Google-Smtp-Source: AGHT+IFZqDHvvmCo/0VYZMxcZsnzywrmE/o8Pirfqy6QTFEOvP66oRP6OMJ9bMGs8gYJXJdFmWKwyb76YELKJy3YiO0=
+X-Received: by 2002:a81:aa46:0:b0:5f4:a5ab:4105 with SMTP id
+ z6-20020a81aa46000000b005f4a5ab4105mr373824ywk.8.1707185909958; Mon, 05 Feb
+ 2024 18:18:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemd100002.china.huawei.com (7.221.188.184)
+References: <20240202-alice-file-v4-0-fc9c2080663b@google.com> <20240202-alice-file-v4-2-fc9c2080663b@google.com>
+In-Reply-To: <20240202-alice-file-v4-2-fc9c2080663b@google.com>
+From: Trevor Gross <tmgross@umich.edu>
+Date: Mon, 5 Feb 2024 21:18:18 -0500
+Message-ID: <CALNs47vEo1ghfrCZh0=XB2u2vkRAoTAqp=FLpJLb3BEw63FEMw@mail.gmail.com>
+Subject: Re: [PATCH v4 2/9] rust: task: add `Task::current_raw`
+To: Alice Ryhl <aliceryhl@google.com>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Dan Williams <dan.j.williams@intel.com>, 
+	Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, 
+	rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Now perf can show assembly instructions with libcapstone for x86, and the
-capstone is better in general.
+On Fri, Feb 2, 2024 at 5:56=E2=80=AFAM Alice Ryhl <aliceryhl@google.com> wr=
+ote:
+>
+> Introduces a safe function for getting a raw pointer to the current
+> task.
+>
+> When writing bindings that need to access the current task, it is often
+> more convenient to call a method that directly returns a raw pointer
+> than to use the existing `Task::current` method. However, the only way
+> to do that is `bindings::get_current()` which is unsafe since it calls
+> into C. By introducing `Task::current_raw()`, it becomes possible to
+> obtain a pointer to the current task without using unsafe.
+>
+> Link: https://lore.kernel.org/all/CAH5fLgjT48X-zYtidv31mox3C4_Ogoo_2cBOCm=
+X0Ang3tAgGHA@mail.gmail.com/
+> Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+> ---
 
-Signed-off-by: Changbin Du <changbin.du@huawei.com>
-
----
-v2:
-  - update Documentation.  (Adrian Hunter)
-  - fix typo.
----
- tools/perf/Documentation/perf-intel-pt.txt | 14 +++++++++-----
- tools/perf/ui/browsers/res_sample.c        |  2 +-
- tools/perf/ui/browsers/scripts.c           |  2 +-
- 3 files changed, 11 insertions(+), 7 deletions(-)
-
-diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
-index 2109690b0d5f..59ab1ff9d75f 100644
---- a/tools/perf/Documentation/perf-intel-pt.txt
-+++ b/tools/perf/Documentation/perf-intel-pt.txt
-@@ -115,9 +115,13 @@ toggle respectively.
- 
- perf script also supports higher level ways to dump instruction traces:
- 
-+	perf script --insn-trace=disasm
-+
-+or to use the xed disassembler, which requires installing the xed tool
-+(see XED below):
-+
- 	perf script --insn-trace --xed
- 
--Dump all instructions. This requires installing the xed tool (see XED below)
- Dumping all instructions in a long trace can be fairly slow. It is usually better
- to start with higher level decoding, like
- 
-@@ -130,12 +134,12 @@ or
- and then select a time range of interest. The time range can then be examined
- in detail with
- 
--	perf script --time starttime,stoptime --insn-trace --xed
-+	perf script --time starttime,stoptime --insn-trace=disasm
- 
- While examining the trace it's also useful to filter on specific CPUs using
- the -C option
- 
--	perf script --time starttime,stoptime --insn-trace --xed -C 1
-+	perf script --time starttime,stoptime --insn-trace=disasm -C 1
- 
- Dump all instructions in time range on CPU 1.
- 
-@@ -1306,7 +1310,7 @@ Without timestamps, --per-thread must be specified to distinguish threads.
- 
- perf script can be used to provide an instruction trace
- 
-- $ perf script --guestkallsyms $KALLSYMS --insn-trace --xed -F+ipc | grep -C10 vmresume | head -21
-+ $ perf script --guestkallsyms $KALLSYMS --insn-trace=disasm -F+ipc | grep -C10 vmresume | head -21
-        CPU 0/KVM  1440  ffffffff82133cdd __vmx_vcpu_run+0x3d ([kernel.kallsyms])                movq  0x48(%rax), %r9
-        CPU 0/KVM  1440  ffffffff82133ce1 __vmx_vcpu_run+0x41 ([kernel.kallsyms])                movq  0x50(%rax), %r10
-        CPU 0/KVM  1440  ffffffff82133ce5 __vmx_vcpu_run+0x45 ([kernel.kallsyms])                movq  0x58(%rax), %r11
-@@ -1407,7 +1411,7 @@ There were none.
- 
- 'perf script' can be used to provide an instruction trace showing timestamps
- 
-- $ perf script -i perf.data.kvm --guestkallsyms $KALLSYMS --insn-trace --xed -F+ipc | grep -C10 vmresume | head -21
-+ $ perf script -i perf.data.kvm --guestkallsyms $KALLSYMS --insn-trace=disasm -F+ipc | grep -C10 vmresume | head -21
-        CPU 1/KVM 17006 [001] 11500.262865593:  ffffffff82133cdd __vmx_vcpu_run+0x3d ([kernel.kallsyms])                 movq  0x48(%rax), %r9
-        CPU 1/KVM 17006 [001] 11500.262865593:  ffffffff82133ce1 __vmx_vcpu_run+0x41 ([kernel.kallsyms])                 movq  0x50(%rax), %r10
-        CPU 1/KVM 17006 [001] 11500.262865593:  ffffffff82133ce5 __vmx_vcpu_run+0x45 ([kernel.kallsyms])                 movq  0x58(%rax), %r11
-diff --git a/tools/perf/ui/browsers/res_sample.c b/tools/perf/ui/browsers/res_sample.c
-index 7cb2d6678039..5f60e515b12e 100644
---- a/tools/perf/ui/browsers/res_sample.c
-+++ b/tools/perf/ui/browsers/res_sample.c
-@@ -83,7 +83,7 @@ int res_sample_browse(struct res_sample *res_samples, int num_res,
- 		     r->tid ? "--tid " : "",
- 		     r->tid ? (sprintf(tidbuf, "%d", r->tid), tidbuf) : "",
- 		     extra_format,
--		     rstype == A_ASM ? "-F +insn --xed" :
-+		     rstype == A_ASM ? "-F +disasm" :
- 		     rstype == A_SOURCE ? "-F +srcline,+srccode" : "",
- 		     symbol_conf.inline_name ? "--inline" : "",
- 		     "--show-lost-events ",
-diff --git a/tools/perf/ui/browsers/scripts.c b/tools/perf/ui/browsers/scripts.c
-index 50d45054ed6c..e437d7889de6 100644
---- a/tools/perf/ui/browsers/scripts.c
-+++ b/tools/perf/ui/browsers/scripts.c
-@@ -107,7 +107,7 @@ static int list_scripts(char *script_name, bool *custom,
- 	if (evsel)
- 		attr_to_script(scriptc.extra_format, &evsel->core.attr);
- 	add_script_option("Show individual samples", "", &scriptc);
--	add_script_option("Show individual samples with assembler", "-F +insn --xed",
-+	add_script_option("Show individual samples with assembler", "-F +disasm",
- 			  &scriptc);
- 	add_script_option("Show individual samples with source", "-F +srcline,+srccode",
- 			  &scriptc);
--- 
-2.25.1
-
+Reviewed-by: Trevor Gross <tmgross@umich.edu>
 
