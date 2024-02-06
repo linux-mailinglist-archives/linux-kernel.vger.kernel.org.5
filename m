@@ -1,146 +1,117 @@
-Return-Path: <linux-kernel+bounces-55319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB9F384BAF9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:32:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D91A84BAFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:33:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70C881F2527D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:32:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE2AA28937E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:33:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B89941C06;
-	Tue,  6 Feb 2024 16:32:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D63AD15A7;
+	Tue,  6 Feb 2024 16:33:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="InhSnCUv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BPfO+0m4"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECBDF1109;
-	Tue,  6 Feb 2024 16:32:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7160F6FD9;
+	Tue,  6 Feb 2024 16:33:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707237156; cv=none; b=tkpnxRTQoY7mw9XSfDyx7px6Idf5qIMcAmcQhB/2SeWi9TmztC1AyltVae3I/bEJon5lFGoucn5ikUCaUqrUzCFi7ge5wAG9RMZVRYTraKVDxItwODO5gjl8lkXEWpyU7xP6Dj8cS4u7s9U2JUzz8ZqgeUEw0rp/oEAphzXIZjU=
+	t=1707237187; cv=none; b=iCgs9u+VUpdpdKQihNY7O9uhrkrUa5t04xB22Zf1GnxsShiIRak+tVScL6TLRlq43DkekH32bNo3+fYA9FVTKR4ESznPM0Uu3N+CDZIJyJyds4XjFyfIAfHg51zW983hMO2QBxeT6qb1xTLABmFkCGc8sK36PMIZ/3Y6t4Rd51M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707237156; c=relaxed/simple;
-	bh=VUVf9m+WpTmCOVnNMaOwkUB5XVPEoBw58bzOPnIkiW0=;
+	s=arc-20240116; t=1707237187; c=relaxed/simple;
+	bh=GSuiWPKyc+YVVjRbfb/kMab24liziVoCM3MPWEYyLNg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fQJ8kfgVezwgFbcRjH7G0kN3DOfhoo2ZyVZIC/K8VdjtiXjH25zC78fSGYjDq36nRJi3nMxXcWwtdCVKSfqjLFMckcfDUft+nFUk15MVAweTJuD3hkxtdyQt5weY/9OF1NSR+ds65jKd9gb63u7+bTH980j3BypVCuMvpoY1CdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=InhSnCUv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 990B6C433C7;
-	Tue,  6 Feb 2024 16:32:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707237155;
-	bh=VUVf9m+WpTmCOVnNMaOwkUB5XVPEoBw58bzOPnIkiW0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=InhSnCUvkTocP2EuFSB8wXe5XoRhXPnCJWLvJPtGmNFYnhfkx32p1VY+NDXJ/tz8v
-	 v9Q/JvOgJVcOMYV1WkQSjPAbmmSq5NvATxL7yR36wc8WO6E2X7yZqzAGJpTK2wQXst
-	 YwKKx9TCqpOOdUrCwO09ZwE/Pt1+rDpIGNvoym7BwL5eMXcQZKiTtppWeP4Jp01aNj
-	 cC5uQae8LpnnTWEd/k2cd1423ghlMtPlzfpJYKhR6wu/HSUtGXdIN2II8O7rAq+Him
-	 51ou/AWe0CPyNY4sBlqdOWVGtbGeeWK5s7/F2qW54rKvcnYQJsgy5EyftJoqCc86AQ
-	 xL2yy5ISBD7JQ==
-Date: Tue, 6 Feb 2024 16:32:29 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org
-Subject: Re: [net-next PATCH v6 05/10] dt-bindings: net: Document Qcom
- QCA807x PHY package
-Message-ID: <20240206-correct-viscous-1f8c163f4d0c@spud>
-References: <20240205164851.1351-1-ansuelsmth@gmail.com>
- <20240205164851.1351-6-ansuelsmth@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=soKsNPT1pq+PK43nLvXKgR5layEw2C6j0p+Tjs0eiAtHd5IhZkzycr7CwmmOzyKxsfAtHmETL1k6e7BNCBo1bDeUdhxloYhi6m3EidhnpO8YSH4y+Ay9gPSfTI1+iHI5yyTUwayU9DJcc21RxqLY0d1XKlHgBDT7ZN1ZuWLEeY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BPfO+0m4; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707237186; x=1738773186;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=GSuiWPKyc+YVVjRbfb/kMab24liziVoCM3MPWEYyLNg=;
+  b=BPfO+0m4oYvwTnUZ8RET7DOs0SYhFYxbeeRz+aDrAKvAj0Hc3AblrRVe
+   i9/A7bcvmvCGUUp8iTy+ZGmA9M4taI5YGwzJjYXZQD7Nw3GkUV4Wf4nLj
+   gAPGMCPTTWcbuQkeRqXv3vLYU8Hne6iT+EsRq7/dn2Js7o1Qk8jpPHjrs
+   JAoRaQWlA4qr8lz4mLU6eI4GRHotTA2s17l80efhsoz+TRcRsYKVNZ9rA
+   GTlRLVC47qUw1Z068MZWMR1nblibp5sXp1WPcmkze/9H8EKpWt8NxIN2s
+   Xiu8zDR+N1JnWjVV4mHVZDokobRN64dfNr5+v89QoySNoVi4x+Ib7QjD1
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="696612"
+X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
+   d="scan'208";a="696612"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 08:33:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="909687822"
+X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
+   d="scan'208";a="909687822"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 08:33:01 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rXONW-00000002O8X-2XGc;
+	Tue, 06 Feb 2024 18:32:58 +0200
+Date: Tue, 6 Feb 2024 18:32:58 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Mike Looijmans <mike.looijmans@topic.nl>
+Cc: devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Liam Beguin <liambeguin@gmail.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Maksim Kiselev <bigunclemax@gmail.com>,
+	Marcus Folkesson <marcus.folkesson@gmail.com>,
+	Marius Cristea <marius.cristea@microchip.com>,
+	Mark Brown <broonie@kernel.org>,
+	Niklas Schnelle <schnelle@linux.ibm.com>,
+	Okan Sahin <okan.sahin@analog.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] iio: adc: ti-ads1298: Add driver
+Message-ID: <ZcJfOgDMmLBpEho2@smile.fi.intel.com>
+References: <20240206065818.2016910-1-mike.looijmans@topic.nl>
+ <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.fd628a1a-a926-426e-a239-bfd8c9858b94@emailsignatures365.codetwo.com>
+ <20240206065818.2016910-2-mike.looijmans@topic.nl>
+ <ZcIsuiuisQjTIxJv@smile.fi.intel.com>
+ <4c6654f5-2d9e-4c1b-a5de-7bdeacf5e99f@topic.nl>
+ <ZcI5PoWojKRrdpVl@smile.fi.intel.com>
+ <67387cf4-1065-4313-b4c6-054128ba8f3a@topic.nl>
+ <40a3a47b-1388-4ed0-a24b-2c0bcef3be3d@topic.nl>
+ <ZcJLnOiFoaABami1@smile.fi.intel.com>
+ <e04ca010-289c-4216-95ea-2f2418613378@topic.nl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="a/vFkjiZ+/oGlKeY"
-Content-Disposition: inline
-In-Reply-To: <20240205164851.1351-6-ansuelsmth@gmail.com>
-
-
---a/vFkjiZ+/oGlKeY
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <e04ca010-289c-4216-95ea-2f2418613378@topic.nl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Hey Christian,
+On Tue, Feb 06, 2024 at 04:44:03PM +0100, Mike Looijmans wrote:
+> On 06-02-2024 16:09, Andy Shevchenko wrote:
+> > On Tue, Feb 06, 2024 at 03:47:45PM +0100, Mike Looijmans wrote:
 
-On Mon, Feb 05, 2024 at 05:48:37PM +0100, Christian Marangi wrote:
-> Document Qcom QCA807x PHY package.
->=20
-> Qualcomm QCA807X Ethernet PHY is PHY package of 2 or 5
-> IEEE 802.3 clause 22 compliant 10BASE-Te, 100BASE-TX and
-> 1000BASE-T PHY-s.
->=20
-> Document the required property to make the PHY package correctly
-> configure and work.
->=20
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+..
 
-I think this looks pretty decent, some minor comments.
+> > But it's up to you what to do with that.
+> > Maybe Jonathan can advice something different.
+> > 
+> The spinlock also protects the call to spi_async().
 
-> +  qcom,package-mode:
-> +    description: |
-> +      PHY package can be configured in 3 mode following this table:
-> +
-> +                    First Serdes mode       Second Serdes mode
-> +      Option 1      PSGMII for copper       Disabled
-> +                    ports 0-4
-> +      Option 2      PSGMII for copper       1000BASE-X / 100BASE-FX
-> +                    ports 0-4
-> +      Option 3      QSGMII for copper       SGMII for
-> +                    ports 0-3               copper port 4
-> +
-> +      PSGMII mode (option 1 or 2) is configured dynamically by the driver
+I don't get this. Locks usually protect the data and not the code.
+Can you elaborate?
 
-I'd drop mention of the driver here, with s/by the driver//.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> +      based on the presence of a connected SFP device.
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    enum:
-> +      - qsgmii
-> +      - psgmii
-> +    default: psgmii
-> +
-> +  qcom,tx-driver-strength-milliwatt:
 
-Is this a typo? Should not it be "drive-strength"? There's 39 mentions
-in tree of "driver-strength" and 3500 for "drive-strength".
-
-Otherwise I think the review comments have been resolved:
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-Conor.
-
---a/vFkjiZ+/oGlKeY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcJfHQAKCRB4tDGHoIJi
-0tXdAQCygPRitHtARrZJDmyO9gAZQRI5ZN6riGQM9vasnNvVqwD/YZY1UhnCp8RP
-gpI63/IURIEemQZndCY9SfLKbTrt9gA=
-=2+Jh
------END PGP SIGNATURE-----
-
---a/vFkjiZ+/oGlKeY--
 
