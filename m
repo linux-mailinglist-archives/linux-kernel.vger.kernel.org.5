@@ -1,121 +1,171 @@
-Return-Path: <linux-kernel+bounces-54623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B35884B1A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:56:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90BF084B1AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:57:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CC472859E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:56:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00D491F24150
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:57:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0980E12D77B;
-	Tue,  6 Feb 2024 09:56:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CFA712D76D;
+	Tue,  6 Feb 2024 09:56:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dNw332XI"
-Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="f34EUJS7"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA34E12D759
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 09:56:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BFE312D750
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 09:56:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707213378; cv=none; b=D2d50ts7zCslqUmiVDXaE8/Y2DLT7b86WxdQQoF2RIOacdiRMUNvdfDYqke6jSXe7vxByKKzFU8neXDnCB12V3+Vd7FATZJMYGI3J1In69aYjlvpZFpvkUjBYjUyfuRaeq7wOCtmooF8YH9oIMiM3DyrRaAX7TRDbpX2NYRR2yw=
+	t=1707213415; cv=none; b=nkLrE9ja7Z4/Hz3gGrOE9+hw3pa17WxUM8UnWzIe/6OQtCiCcs3hDtfbpzKDS7zAt2qqz/FV97fJRmUd3jcIbDrdih1vK76PYH5exRbl9WV/okJH9N02Wc4m51ueJW0ZIyW0bj52tWRIi13IzByIQesfXSkdNZhfet5e1BBMCOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707213378; c=relaxed/simple;
-	bh=pwU543wkEC4pEjHTs+niRFnjN9ZiwdPq48b+x0FBCPI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fQpNNorYBGgxcxyDVQ3Yat/JH8+1FsBoAXPt85Qqg+9vG7M0k7LlC0RYOrW3vFLMWUYgZc+z+M7fYJwy3by7jfVr3RnPSyVNy5Ban2ribrVcmYIPkz/Wmy8V8GzJuGpKnHhxgsULeQZmx6d4aRi37QmZpvOjYGjSBwLeDPHzd+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dNw332XI; arc=none smtp.client-ip=209.85.219.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-68c7a26a5cbso2876986d6.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 01:56:16 -0800 (PST)
+	s=arc-20240116; t=1707213415; c=relaxed/simple;
+	bh=gFwQT9q2MQDOLZo3TSNZibKCNFI0OYg5lS2v/Yij/5o=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fsmUSH8Zcf+E+A+HJlbr/6Z5O22CVS3uqkp6peZCxlZAuirVCypvFiTr6IuzXA+CX3yVm25D9DhoXEp2qwmy/KQeijDmj0ysqj2r2dsZT+dC8M1pUsbnYaYooVMTIq7Dn76hNAt7aroapTXGE+fMg4aiB33Rl1nub61LZm1MdYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=f34EUJS7; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d74045c463so42494625ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 01:56:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707213375; x=1707818175; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CMShq1kVjIqxhVRjaGYU4SJMpzxmIaFIwT3PC41eekc=;
-        b=dNw332XIaoEHTnyiiMk3asBU5CHbddzHvxKV9wLeuItnrU4cNtduoGyNdd36GEdJkC
-         K3CnLNDrnykRWlRm+USnYor2iY2Vw9p/MFMAG7BigFgvXnXDpN9atbjihgFjITDKxVVp
-         GWbd14Jh3My/BF7yOQoUkXkjXdRc2gzqQ9TVlYgiLwM/MiVYRF6QO4sodB3OBjFT9H+h
-         ZoI7kqDAj+LWDk4LtUU8S3adz+M4yzXfndyXVVnsh1QnDMdj4ap14jREpBZ5X/GYzYvv
-         IPfP5CrbYFXq+GhE1IVc66+guvIGAusPwA7q8SKNU5B6cccyiK2yRITHySeD1SrHWE7i
-         CRiA==
+        d=chromium.org; s=google; t=1707213413; x=1707818213; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YvtejigsA6lvJftTJlUnU81wJFgRlPFcDxMvj4jJa74=;
+        b=f34EUJS7pq9JB9Iq765rxANwGO2iY+6kBVrCtx5b+JeiCZJI2tS4++CcyEJRrjm9pJ
+         Zukik37Sc6QeteFfd9fdViXQjXdIcguZkN0p6UbaQgQ0Vfm7aBUrhoc3HyX3EzyruySH
+         vDMqKuVeBMQSwI8hac4pK7CMJcfljIZPWLhaQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707213375; x=1707818175;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1707213413; x=1707818213;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=CMShq1kVjIqxhVRjaGYU4SJMpzxmIaFIwT3PC41eekc=;
-        b=Pz+ap0hGblxLis3+Y+2dD4qrZm0vZceEn6HRAMpJajALz10VLhK9L7RtfBBiLg11Nc
-         0AKWkazxaTghuXrbHAFEABhTxFKswLUfPeVIYvSQQX99CTC3NIozEj8bM4JEFd3E3ekv
-         SMZev3nf1wNQLDemzQrziMRteXWS71g0yclomNOjtM3pM0HoJpeCuvfJTGjjS+FmNc+7
-         BpmfbYtMA4pQaHZaRA3js3129tVVh7k5kbTiMG4NjoAPkA71ALUtPXnEIJiqiXEsjYDE
-         5x06ylz5E0/muM+we9Ph5Ko322GoiB5ooVzXNBTnZUnIfkkhgEd5lauvQ42T5VPddMbr
-         EyIA==
-X-Gm-Message-State: AOJu0YxxmcIy60ToSqCvP+hwNh3FwHE24OdirnbJltetOUdrJa4keGwk
-	JX6XDscQE3qEmwDJnSxzDKV88310YVBuR4vCW4IZ16LGQp0HLCy0vuQGit4OaNB3p5o1WDMBNuF
-	poPRKIT7vVyaC9MeFHuegvnVwgGgXTRQ9FqrfLA==
-X-Google-Smtp-Source: AGHT+IFSdhPP6seqkN3QxA7HFQZjJlBC9D2/9kKIGZd292r7UcQK8SRWFqqkFkZYfhENYbBAeL3ygtD/3krIkOa2XD8=
-X-Received: by 2002:a0c:dc09:0:b0:682:bfd0:d79e with SMTP id
- s9-20020a0cdc09000000b00682bfd0d79emr4046715qvk.27.1707213375539; Tue, 06 Feb
- 2024 01:56:15 -0800 (PST)
+        bh=YvtejigsA6lvJftTJlUnU81wJFgRlPFcDxMvj4jJa74=;
+        b=gPE0QZGlFyw892Uwgn+fh0lAYC8vTRDnRyH5rqcewb3r6wJwwwGIsk7Sive2s6GNCW
+         zBPTVXMdbDqSj0dCmayRt6eY3UyYyAGo+byFQbS2QFptaJYTSQUQ3MGN1SKE6CjMA7v4
+         tRKjOCjgl5Qar1npjc4lvNttxjKjQ06EemvQwXX8DIUjPJ19QoBeSGUX6bC2RiEIHbH3
+         6SFlemQrFrgMAROD6EW/ghfHKuZey+D/7Rn16DvghRLBHvwAiB0ckCz3Qk/8wxwacBk8
+         9ujJ3OAS2fL7sLL3H2Tm11KCtNBVmS8drOFqguLhgzlkvqcExnKWZhfk2nS9iRQ+kT58
+         bTjQ==
+X-Gm-Message-State: AOJu0Yx9vjzpIbRST5D/VtS/583H1h2/t+IT6e4xncuiBU8bZ7qizWos
+	oJWe7877ji5QqEJ42Meft8lUb+7T0w8u+/jJUzbNaOTAg+ljpI9Sqno46YtSVw==
+X-Google-Smtp-Source: AGHT+IEoS/Kl4hf4JsN5prm6mSrUJ2HBa0Fmc9/TJ19QJ5pdSUTD1wSZuuqJ9x9OlMDqrSJRoUYDeg==
+X-Received: by 2002:a17:903:2304:b0:1d8:f394:da39 with SMTP id d4-20020a170903230400b001d8f394da39mr1326364plh.65.1707213413601;
+        Tue, 06 Feb 2024 01:56:53 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCW4XJapeWoVq693/JjVCP6x9T70VxgvoAa9DEw2WL3YUgGW4WylfVi6E9yCu/nZNSoV8n43/+0umk95KhnOt/x3SF1igjAd/G1ohmsrXg287GxUeFSUugHodmJNjmQjtCelCvT+SwNKnAj5DX82/i78b1orLqkyP3dJCq1XPf08nSCspRRCe1fG9nVRcnzcUCt7gLD7nY45bAP8OYcLPS731zpVcdW9njc8SUc5Q3THJUHoEfAWbo6jLbrCg8XZOPeqDU2e63BMRaVG8g3I/p3Lurfv0TjvBccwKmDzuvE=
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id iy15-20020a170903130f00b001c407fac227sm1456525plb.41.2024.02.06.01.56.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 01:56:53 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	kernel test robot <oliver.sang@intel.com>,
+	Andy Lutomirski <luto@amacapital.net>,
+	Will Drewry <wad@chromium.org>,
+	Shuah Khan <shuah@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH] selftests/seccomp: Pin benchmark to single CPU
+Date: Tue,  6 Feb 2024 01:56:47 -0800
+Message-Id: <20240206095642.work.502-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206085238.1208256-1-tudor.ambarus@linaro.org> <20240206085238.1208256-2-tudor.ambarus@linaro.org>
-In-Reply-To: <20240206085238.1208256-2-tudor.ambarus@linaro.org>
-From: Peter Griffin <peter.griffin@linaro.org>
-Date: Tue, 6 Feb 2024 09:56:04 +0000
-Message-ID: <CADrjBPr7AjCOi_sgzpJWRmKdyYkgB8Vcw0HW-e4VKUVh_yT6wA@mail.gmail.com>
-Subject: Re: [PATCH 1/4] spi: s3c64xx: explicitly include <linux/types.h>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: broonie@kernel.org, andi.shyti@kernel.org, semen.protsenko@linaro.org, 
-	krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com, 
-	linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	andre.draszik@linaro.org, kernel-team@android.com, willmcvicker@google.com, 
-	robh+dt@kernel.org, conor+dt@kernel.org, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2238; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=gFwQT9q2MQDOLZo3TSNZibKCNFI0OYg5lS2v/Yij/5o=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlwgJfCsxNqlw4QkCwa0uTjz9m+WERqUM1QnArU
+ Nk8peGOJtCJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZcICXwAKCRCJcvTf3G3A
+ JqyTD/9FjpTBzQ/U/pDNYWZkbNEqKOmTGswAI5nhxPwJETkBv2PFztRglzljETLPB6slHXo50Xq
+ aaLyg3Tx0jUQWvCNGmus+ZcUaZeUc9ERbP7FajXNyUdvtd4FvpLqXrb7YLGBIyJRTt0pUvwsp08
+ dCXkfBVP0NEg+OM1SXDxtM43MKV8KNktVyLCjDueRmNXPGfukDqLPleO02h/dRCuc6UsznNrz7W
+ eJN8zn12je2bB+26ikjlbccbihquSHNFLUnCJShgg3EvXM9ywmZsFLlMzb4Fl5COijs0xPYrBNm
+ FWh1ZbJ1xA0G9GAvwpDF+lUEOvluGYMWudXBwiY48XSPsLcLS1ZluT5L/+SPsljItEjPo6hqk0n
+ CrBxjLamMqteQUQX9pIft8jHROCFAcOg0qF0sgPUzePBdn9BDi+gYjb4r6w18iT24tp090XbdnL
+ zD5pCjM7IO/PmNZsEsgYHqW5lww/o7nBOiGje91P116WFA9RvghnOY+qJ3tBxnmm6stuujMgFa9
+ wBFLrpkHt8ll0GUr0Wqlh6zkFIAB2+1Y36Vby3hcpVshfevj+rPFBwAbc/4VmkOGaKchlnUZCoe
+ fiRUeabcdhzM4JXK4d0mJYyjz8qcKzKZG5vWpDOW9gHHQNh2rYZitp7MV2ksHepXPw8qRdCK0Wz
+ HJa76r6 9E8DwurA==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-On Tue, 6 Feb 2024 at 08:52, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
->
-> The driver uses u32 and relies on an implicit inclusion of
-> <linux/types.h>.
->
-> It is good practice to directly include all headers used, it avoids
-> implicit dependencies and spurious breakage if someone rearranges
-> headers and causes the implicit include to vanish.
->
-> Include the missing header.
->
-> Fixes: 230d42d422e7 ("spi: Add s3c64xx SPI Controller driver")
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> ---
+The seccomp benchmark test (for validating the benefit of bitmaps) can
+be sensitive to scheduling speed, so pin the process to a single CPU,
+which appears to significantly improve reliability.
 
-Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Closes: https://lore.kernel.org/oe-lkp/202402061002.3a8722fd-oliver.sang@intel.com
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Andy Lutomirski <luto@amacapital.net>
+Cc: Will Drewry <wad@chromium.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ .../selftests/seccomp/seccomp_benchmark.c     | 27 +++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
->  drivers/spi/spi-s3c64xx.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-> index 72c35dbe53b2..c15ca6a910dc 100644
-> --- a/drivers/spi/spi-s3c64xx.c
-> +++ b/drivers/spi/spi-s3c64xx.c
-> @@ -17,6 +17,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/spi/spi.h>
-> +#include <linux/types.h>
->
->  #define MAX_SPI_PORTS          12
->  #define S3C64XX_SPI_QUIRK_CS_AUTO      (1 << 1)
-> --
-> 2.43.0.594.gd9cf4e227d-goog
->
+diff --git a/tools/testing/selftests/seccomp/seccomp_benchmark.c b/tools/testing/selftests/seccomp/seccomp_benchmark.c
+index 5b5c9d558dee..d0b733e708cc 100644
+--- a/tools/testing/selftests/seccomp/seccomp_benchmark.c
++++ b/tools/testing/selftests/seccomp/seccomp_benchmark.c
+@@ -4,7 +4,9 @@
+  */
+ #define _GNU_SOURCE
+ #include <assert.h>
++#include <err.h>
+ #include <limits.h>
++#include <sched.h>
+ #include <stdbool.h>
+ #include <stddef.h>
+ #include <stdio.h>
+@@ -119,6 +121,29 @@ long compare(const char *name_one, const char *name_eval, const char *name_two,
+ 	return good ? 0 : 1;
+ }
+ 
++/* Pin to a single CPU so the benchmark won't bounce around the system. */
++void affinity(void)
++{
++	long cpu;
++	ulong ncores = sysconf(_SC_NPROCESSORS_CONF);
++	cpu_set_t *setp = CPU_ALLOC(ncores);
++	ulong setsz = CPU_ALLOC_SIZE(ncores);
++
++	/* Set from highest CPU down. */
++	for (cpu = ncores - 1; cpu >= 0; cpu--) {
++		CPU_ZERO_S(setsz, setp);
++		CPU_SET_S(cpu, setsz, setp);
++		if (sched_setaffinity(getpid(), setsz, setp) == -1)
++			continue;
++		printf("Pinned to CPU %lu of %lu\n", cpu + 1, ncores);
++		goto out;
++	}
++	fprintf(stderr, "Could not set CPU affinity -- calibration may not work well");
++
++out:
++	CPU_FREE(setp);
++}
++
+ int main(int argc, char *argv[])
+ {
+ 	struct sock_filter bitmap_filter[] = {
+@@ -153,6 +178,8 @@ int main(int argc, char *argv[])
+ 	system("grep -H . /proc/sys/net/core/bpf_jit_enable");
+ 	system("grep -H . /proc/sys/net/core/bpf_jit_harden");
+ 
++	affinity();
++
+ 	if (argc > 1)
+ 		samples = strtoull(argv[1], NULL, 0);
+ 	else
+-- 
+2.34.1
+
 
