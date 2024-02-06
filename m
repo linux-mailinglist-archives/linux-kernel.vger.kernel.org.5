@@ -1,139 +1,90 @@
-Return-Path: <linux-kernel+bounces-54485-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54488-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0304284AFD5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:21:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66E9984AFDF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:24:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E79F1C23187
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:21:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05CE81F24C02
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:24:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2F3E12B14D;
-	Tue,  6 Feb 2024 08:21:24 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC7912AAD9
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 08:21:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8982D12B147;
+	Tue,  6 Feb 2024 08:24:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="e0eaNymx"
+Received: from mail-177132.yeah.net (mail-177132.yeah.net [123.58.177.132])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A06AC12AAE5;
+	Tue,  6 Feb 2024 08:24:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707207684; cv=none; b=epJb8/uk1ix7wirQ4+a/FxPdZtzAoJ+C4gllbnVyyAZt3PuJjbe9djuKErKz81NgKSgx1vwgZlUrezssX3EXsesfTZMPvseCULkMzTYxtDK4o1nPLyygqRvI5/Hmq4BTMiCyLAIo7OP8xxpJsWq44mVCpIDnrU5MKXmMBRNNKmg=
+	t=1707207870; cv=none; b=WAB3bGxmesQyq6LCdY3c2OdTHfKWDBpbIVg+0WdTxjVqE6TE4RcPJ9zEwoa4890WGABN+hzYXt9smMJiJTxW5iXz7uEFMo2Q26e6hkvOoWppxS6ac6hmvQY/iXsERHm+feZb6qZdPIdHJG6D7LarUu96TlWVsiad7On+asqVvhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707207684; c=relaxed/simple;
-	bh=qK+6gsbdbhaMWLT2zAP4/bSvk0MWrDRejO/dlXF6JJw=;
-	h=CC:Subject:To:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=RLNvgb2fQ6ERGAewLV4elfzbHyhIOHFI/2MbDny8+66D5Yw3QLMBG+e1I3dqD6VBrcQLoBPeje9E8NLruOEjzuKhN9d+2N6W5oYS9vpGx9rl2C08AP8UL2AorMMiUdIwda//MqkcSUb7og6meXAzb2fDHxTiznOEksjTOK+oxQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TTbkf6X3Qz1gy8r;
-	Tue,  6 Feb 2024 16:19:22 +0800 (CST)
-Received: from canpemm500009.china.huawei.com (unknown [7.192.105.203])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5C7771A0172;
-	Tue,  6 Feb 2024 16:21:18 +0800 (CST)
-Received: from [10.67.121.177] (10.67.121.177) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 6 Feb 2024 16:21:17 +0800
-CC: <yangyicong@hisilicon.com>
-Subject: Re: [PATCH v3 1/4] sched/fair: add SD_CLUSTER in comments
-To: Valentin Schneider <vschneid@redhat.com>, <alexs@kernel.org>, Ingo Molnar
-	<mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Juri Lelli
-	<juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt
-	<rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Daniel Bristot de
- Oliveira <bristot@redhat.com>, <linux-kernel@vger.kernel.org>,
-	<ricardo.neri-calderon@linux.intel.com>, <sshegde@linux.ibm.com>
-References: <20240201115447.522627-1-alexs@kernel.org>
- <xhsmhzfwjgcvf.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
-From: Yicong Yang <yangyicong@huawei.com>
-Message-ID: <36ca372f-5f08-5c1a-e468-4db026051e17@huawei.com>
-Date: Tue, 6 Feb 2024 16:21:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+	s=arc-20240116; t=1707207870; c=relaxed/simple;
+	bh=3rTfeK+5Ypr+qRLrvZMhottSRh7ZVqqWADL419UrUqM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=E8RjZ13d1356ZUVdyIuMasmtIfZ+1VRk5McVbkR0Sw0SjaU5Gl9VZMiX3rSwqJxDUGIJKs3qjUz2yHQtD5I6FVh2RC7LumBm0kGKZeZEDVch9IeuOE7hjaV6Q0wwFcUQC1TpVcr8pTD720WTLIK1Hg1wf6TArD9tWUXvfBDJOJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=e0eaNymx; arc=none smtp.client-ip=123.58.177.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
+	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
+	Content-Type; bh=05aE/9eHsUQZ50ME8wmdv/83+oShG2SGhiQl1AxYjJw=;
+	b=e0eaNymxBy7OqSXKnovdNrk6BZCrQSm6Io5Fe7VngtvZHWEzKF/MEJXCD9QhWw
+	CXJ3jVc/HIZ38GjP3jcTckacciXBdUS3AQenftfji6EN+ETZI0zWxGp7xjuxpqST
+	xNm0eadTMrpsUuc0+aJlxY0NJ2nAlDwFVHUoSftF1inPo=
+Received: from dragon (unknown [183.213.196.254])
+	by smtp2 (Coremail) with SMTP id C1UQrAD3HwiB7MFln1EAAw--.34917S3;
+	Tue, 06 Feb 2024 16:23:31 +0800 (CST)
+Date: Tue, 6 Feb 2024 16:23:29 +0800
+From: Shawn Guo <shawnguo2@yeah.net>
+To: Francesco Dolcini <francesco@dolcini.it>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+	Francesco Dolcini <francesco.dolcini@toradex.com>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v1 0/2] arm64: dts: freescale: imx8qm: add apalis eval
+ v1.2 carrier board
+Message-ID: <ZcHsgUoiB0JCp6U0@dragon>
+References: <20240125101457.9873-1-francesco@dolcini.it>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <xhsmhzfwjgcvf.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500009.china.huawei.com (7.192.105.203)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240125101457.9873-1-francesco@dolcini.it>
+X-CM-TRANSID:C1UQrAD3HwiB7MFln1EAAw--.34917S3
+X-Coremail-Antispam: 1Uf129KBjvdXoW7JF4kWF1UCrWkKrW7Jr4Utwb_yoW3Crb_uF
+	n5Kr48Gw4DWr15Ga15G34jgrW2g3yrCw1rtw1DW3Z3JFyxJrWqqas5Kr4rZa1rCa13Cw43
+	K3Z5GFn5Jry3ujkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8ZXo7UUUUU==
+X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiDQN8ZVszXNjQIgAAsJ
 
-On 2024/2/2 22:27, Valentin Schneider wrote:
+On Thu, Jan 25, 2024 at 11:14:55AM +0100, Francesco Dolcini wrote:
+> From: Francesco Dolcini <francesco.dolcini@toradex.com>
 > 
-> Subject nit: the prefix should be sched/topology
+> This series introduces support for the new Apalis Evaluation Board v1.2
+> for imx8qm-based Toradex SoM. With the introduction of board v1.2, a common
+> board configurations dtsi file and two version-specific dtsi board files were
+> added. Consequently, four possible dts files are generated to support the
+> range of different SoM versions. Additionally, updates have been made to dts
+> freescale/Makefile and arm/fsl.yaml to accommodate the changes.
 > 
-> On 01/02/24 19:54, alexs@kernel.org wrote:
->> From: Alex Shi <alexs@kernel.org>
->>
->> The description of SD_CLUSTER is missing. Add it.
->>
->> Signed-off-by: Alex Shi <alexs@kernel.org>
->> To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
->> To: Valentin Schneider <vschneid@redhat.com>
->> To: Vincent Guittot <vincent.guittot@linaro.org>
->> To: Juri Lelli <juri.lelli@redhat.com>
->> To: Peter Zijlstra <peterz@infradead.org>
->> To: Ingo Molnar <mingo@redhat.com>
->> ---
->>  kernel/sched/topology.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
->> index 10d1391e7416..8b45f16a1890 100644
->> --- a/kernel/sched/topology.c
->> +++ b/kernel/sched/topology.c
->> @@ -1554,6 +1554,7 @@ static struct cpumask		***sched_domains_numa_masks;
->>   * function:
->>   *
->>   *   SD_SHARE_CPUCAPACITY   - describes SMT topologies
->> + *   SD_CLUSTER             - describes CPU Cluster topologies
 > 
-> So I know this is the naming we've gone for the "Cluster" naming, but this
-> comment isn't really explaining anything.
-> 
-> include/linux/sched/sd_flags.h has a bit more info already:
->  * Domain members share CPU cluster (LLC tags or L2 cache)
-> 
+> Joao Paulo Goncalves (2):
+>   dt-bindings: arm: fsl: add imx8qm apalis eval v1.2 carrier board
+>   arm64: dts: freescale: imx8qm: add apalis eval v1.2 carrier board
 
-Cluster topology in scheduler should mean CPUs beyond the SMT which are sharing
-some cache resources (currently L2 on some Intel platforms or L3 Tag on our platforms)
-but not the LLC.
+Applied both, thanks!
 
-A drawing in c5e22feffdd7 ("topology: Represent clusters of CPUs within a die") has
-a good illustration and comment of cpus_share_resources() also illustrate this a bit:
-
-/*
- * Whether CPUs are share cache resources, which means LLC on non-cluster
- * machines and LLC tag or L2 on machines with clusters.
- */
-bool cpus_share_resources(int this_cpu, int that_cpu)
-
-> I had to go through a bit of git history to remember what the CLUSTER thing
-> was about, how about this:
-> 
-> * SD_CLUSTER             - describes shared shared caches, cache tags or busses
-> * SD_SHARE_PKG_RESOURCES - describes shared LLC cache
-> 
-> And looking at this it would make sense to:
->   rename SD_CLUSTER into SD_SHARE_PKG_RESOURCES
->   rename SD_SHARE_PKG_RESOURCES into SD_SHARE_LLC
-> but that's another topic...
-> 
->>   *   SD_SHARE_PKG_RESOURCES - describes shared caches
->>   *   SD_NUMA                - describes NUMA topologies
->>   *
->> --
->> 2.43.0
-> 
-> 
-> .
-> 
 
