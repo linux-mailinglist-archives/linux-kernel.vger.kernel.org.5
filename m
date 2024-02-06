@@ -1,122 +1,201 @@
-Return-Path: <linux-kernel+bounces-54959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F5A584B568
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:39:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B5FF84B571
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:39:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D89A1F2229F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:39:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50FE5287AD0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:39:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2417C12B14E;
-	Tue,  6 Feb 2024 12:38:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1666130AD4;
+	Tue,  6 Feb 2024 12:39:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eg44X9Mu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dQTc/9j5"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64E411DA2E;
-	Tue,  6 Feb 2024 12:38:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2030D5677B;
+	Tue,  6 Feb 2024 12:39:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707223134; cv=none; b=Y5ZdcZGjCt/iM/ngQsHGTjceYOqKotRfqmQZsW4FkTPLxdrYQKKcRWlWgoB8icOmWeuOwM9+MjIqtgpidr7KHiNq4pKFsQSJAc36hiw2lIqAguMTTgEFbNzZnUCNTm7oV69lfXrliYPnAg6B1ic94qwXVK5KEaXgQ3LtnjsPzX8=
+	t=1707223179; cv=none; b=XzyTQtBpFrGe2VdezVgo+J/WqxaE5MWATa8VPxl4J4IyWrIzK80/iR3ojUNyz9lWWKVrcETgNbDf0kquUcPpYspZ2AnnpsOKN7gfm/GiIfNmAxIgDGE/m+7kY66e/u9e5CSzRXcucbzfGmO3yzjBERuTEZkw0orrhQrW5miM3wg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707223134; c=relaxed/simple;
-	bh=rAaXwG/hql/Td11pAFuRE/oGUvtdCYuh+e5Wb3L0Hbo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NMCs++MB4yRuE3/RlmTQcS4XDKX0h2ieHxNKQvtZzqTBNlWEnAeLOGVWc8jlLkPcfsi99SCSyabX0WnwmzlkV6090FAogNBFLgrM+VOIQqlpsh3gbnZ3GakEP674pFFvx8S73zauHEy6scpaQXGyToKq90UjIKOuO1ohMIy/vmA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eg44X9Mu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93D35C43390;
-	Tue,  6 Feb 2024 12:38:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707223134;
-	bh=rAaXwG/hql/Td11pAFuRE/oGUvtdCYuh+e5Wb3L0Hbo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eg44X9Muw9xBoFXyBn6EpHbUYN9znrikVglh7VK/emp0p87aEYf8G2qyF5UIBB7yt
-	 EXOW/ExUkJXMjmGaSteF/7J/6bBcmjwv2ybk9H80Njqu00VMfC/FzbJIzVLQAcK7SC
-	 fLn5uArLGhsFwmKiqi9ObRgWEzUEzvawOyo/NwbReLAhE1Jq5CDXHPkA1e26r+5eCD
-	 GELw/4Zpxb3FYKfSvN48PG7z9jRH6uq8epv2oHE7NMGJsqaobGKG+kQ6RQE6wC2PVD
-	 oF6l9xaLYihDLbEypzikXxs/EkohLtgjlaudetm6qQKvtL0nnTNaOHPk0ZabiVhUHv
-	 eF3hygcH2nHDg==
-Date: Tue, 6 Feb 2024 12:38:50 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Thangaraj Samynathan <thangaraj.s@microchip.com>
-Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	UNGLinuxDriver@microchip.com, kumaravel.thiagarajan@microchip.com,
-	tharunkumar.pasumarthi@microchip.com
-Subject: Re: [PATCH v2 SPI for-next 2/3] spi: mchp-pci1xxxx: DMA Read support
- for copying data into SPI Buf
-Message-ID: <ZcIoWplpBp5A5yjr@finisterre.sirena.org.uk>
-References: <20240206034118.748801-1-thangaraj.s@microchip.com>
- <20240206034118.748801-3-thangaraj.s@microchip.com>
+	s=arc-20240116; t=1707223179; c=relaxed/simple;
+	bh=ra/xUfbSKYDM5fd6fzYePv8MQqb5eTjtRhASrDYHMgk=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=olhJvE6Q3ssjZM2480qKTo8lsUJZgZ8BIUx1vJCwoeiZAIpvbhroVigWdq2bMTHoMdb7ngSu2CuvJbcH0QkCCk7omRspiwzOmOPGLnyD0xjh3N9p/zAYUzkTNSF5dPcil+GIvbCPU6OWSFOMhw4h3nykhA8KHVGI2DfH20vQ6sg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dQTc/9j5; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707223178; x=1738759178;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=ra/xUfbSKYDM5fd6fzYePv8MQqb5eTjtRhASrDYHMgk=;
+  b=dQTc/9j50YDcvjXXky6gOZ/FUWIFlaMymZrGybN7GFTloApLclfvdUjL
+   R/hoS5AtRL8hx3btLExd/GtXZ/LRQ6W01e60MLuQ+5BQe9PPAan89Riiu
+   85fC/AujA1SAT+3uOQEoBtxD2KsK8X7wZmcVXWub4tbqSwPKDfe2itleA
+   ciE5ZueCUWBYOzL8jgpqZYgPPn+4OJFFw2CQeaKkA12rmR8Eulpl6n6Op
+   DpeZHM+5Fy8IGxLuSZxX8Fmc87dP7okkwNEekBo5D5XTYWuUA3D5n5DSQ
+   bML4sj89rXlfoVExyZHvTr5355bIbr5NVFoZxDK6fWaKr8ini3q0RvCkm
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="900870"
+X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
+   d="scan'208";a="900870"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 04:39:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
+   d="scan'208";a="5631089"
+Received: from mstribae-mobl.ger.corp.intel.com (HELO [10.249.254.52]) ([10.249.254.52])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 04:39:31 -0800
+Message-ID: <f9a027765a3c65c69c2d49cf2964fe1155e914f4.camel@linux.intel.com>
+Subject: Re: linux-next: build failure after merge of the drm-misc tree
+From: Thomas =?ISO-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>, Daniel Vetter
+	 <daniel.vetter@ffwll.ch>
+Cc: Matthew Brost <matthew.brost@intel.com>, Rodrigo Vivi
+ <rodrigo.vivi@intel.com>, Christian =?ISO-8859-1?Q?K=F6nig?=
+ <christian.koenig@amd.com>, Somalapuram Amaranath
+ <Amaranath.Somalapuram@amd.com>, Intel Graphics
+ <intel-gfx@lists.freedesktop.org>, DRI <dri-devel@lists.freedesktop.org>, 
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Date: Tue, 06 Feb 2024 13:39:28 +0100
+In-Reply-To: <20240206122822.12a2df89@canb.auug.org.au>
+References: <20240206122822.12a2df89@canb.auug.org.au>
+Autocrypt: addr=thomas.hellstrom@linux.intel.com; prefer-encrypt=mutual;
+ keydata=mDMEZaWU6xYJKwYBBAHaRw8BAQdAj/We1UBCIrAm9H5t5Z7+elYJowdlhiYE8zUXgxcFz360SFRob21hcyBIZWxsc3Ryw7ZtIChJbnRlbCBMaW51eCBlbWFpbCkgPHRob21hcy5oZWxsc3Ryb21AbGludXguaW50ZWwuY29tPoiTBBMWCgA7FiEEbJFDO8NaBua8diGTuBaTVQrGBr8FAmWllOsCGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQuBaTVQrGBr/yQAD/Z1B+Kzy2JTuIy9LsKfC9FJmt1K/4qgaVeZMIKCAxf2UBAJhmZ5jmkDIf6YghfINZlYq6ixyWnOkWMuSLmELwOsgPuDgEZaWU6xIKKwYBBAGXVQEFAQEHQF9v/LNGegctctMWGHvmV/6oKOWWf/vd4MeqoSYTxVBTAwEIB4h4BBgWCgAgFiEEbJFDO8NaBua8diGTuBaTVQrGBr8FAmWllOsCGwwACgkQuBaTVQrGBr/P2QD9Gts6Ee91w3SzOelNjsus/DcCTBb3fRugJoqcfxjKU0gBAKIFVMvVUGbhlEi6EFTZmBZ0QIZEIzOOVfkaIgWelFEH
+Organization: Intel Sweden AB, Registration Number: 556189-6027
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="LW+MsQIIcEXwJQui"
-Content-Disposition: inline
-In-Reply-To: <20240206034118.748801-3-thangaraj.s@microchip.com>
-X-Cookie: You might have mail.
+
+Hi
+
+On Tue, 2024-02-06 at 12:28 +1100, Stephen Rothwell wrote:
+> Hi all,
+>=20
+> After merging the drm-misc tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+>=20
+>=20
+> Caused by commit
+>=20
+> =C2=A0 a78a8da51b36 ("drm/ttm: replace busy placement with flags v6")
+>=20
+> interacting with commit
+>=20
+> =C2=A0 dd08ebf6c352 ("drm/xe: Introduce a new DRM driver for Intel GPUs")
+>=20
+> (and maybe others) from Linus' tree (v6.8-rc1).
+>=20
+> I have applied the following merge fix patch for today.=C2=A0 This makes
+> it build,
+> but more is likely needed ...
+
+There was a manual fixup for the drm-misc-next merge into drm-tip that
+did the right thing here.
+
+How do we ensure these are included into the linux-next builds?
+
+Thanks,
+Thomas
 
 
---LW+MsQIIcEXwJQui
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Feb 06, 2024 at 09:11:17AM +0530, Thangaraj Samynathan wrote:
+>=20
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Tue, 6 Feb 2024 12:21:07 +1100
+> Subject: [PATCH] fix up for "drm/ttm: replace busy placement with
+> flags v6"
+>=20
+> interacting with commit
+>=20
+> =C2=A0 dd08ebf6c352 ("drm/xe: Introduce a new DRM driver for Intel GPUs")
+>=20
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+> =C2=A0drivers/gpu/drm/xe/xe_bo.c | 11 -----------
+> =C2=A01 file changed, 11 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/xe/xe_bo.c b/drivers/gpu/drm/xe/xe_bo.c
+> index 0b0e262e2166..280dbda8ae5a 100644
+> --- a/drivers/gpu/drm/xe/xe_bo.c
+> +++ b/drivers/gpu/drm/xe/xe_bo.c
+> @@ -38,8 +38,6 @@ static const struct ttm_place sys_placement_flags =3D
+> {
+> =C2=A0static struct ttm_placement sys_placement =3D {
+> =C2=A0	.num_placement =3D 1,
+> =C2=A0	.placement =3D &sys_placement_flags,
+> -	.num_busy_placement =3D 1,
+> -	.busy_placement =3D &sys_placement_flags,
+> =C2=A0};
+> =C2=A0
+> =C2=A0static const struct ttm_place tt_placement_flags =3D {
+> @@ -52,8 +50,6 @@ static const struct ttm_place tt_placement_flags =3D
+> {
+> =C2=A0static struct ttm_placement tt_placement =3D {
+> =C2=A0	.num_placement =3D 1,
+> =C2=A0	.placement =3D &tt_placement_flags,
+> -	.num_busy_placement =3D 1,
+> -	.busy_placement =3D &sys_placement_flags,
+> =C2=A0};
+> =C2=A0
+> =C2=A0bool mem_type_is_vram(u32 mem_type)
+> @@ -230,8 +226,6 @@ static int __xe_bo_placement_for_flags(struct
+> xe_device *xe, struct xe_bo *bo,
+> =C2=A0	bo->placement =3D (struct ttm_placement) {
+> =C2=A0		.num_placement =3D c,
+> =C2=A0		.placement =3D bo->placements,
+> -		.num_busy_placement =3D c,
+> -		.busy_placement =3D bo->placements,
+> =C2=A0	};
+> =C2=A0
+> =C2=A0	return 0;
+> @@ -251,7 +245,6 @@ static void xe_evict_flags(struct
+> ttm_buffer_object *tbo,
+> =C2=A0		/* Don't handle scatter gather BOs */
+> =C2=A0		if (tbo->type =3D=3D ttm_bo_type_sg) {
+> =C2=A0			placement->num_placement =3D 0;
+> -			placement->num_busy_placement =3D 0;
+> =C2=A0			return;
+> =C2=A0		}
+> =C2=A0
+> @@ -1353,8 +1346,6 @@ static int __xe_bo_fixed_placement(struct
+> xe_device *xe,
+> =C2=A0	bo->placement =3D (struct ttm_placement) {
+> =C2=A0		.num_placement =3D 1,
+> =C2=A0		.placement =3D place,
+> -		.num_busy_placement =3D 1,
+> -		.busy_placement =3D place,
+> =C2=A0	};
+> =C2=A0
+> =C2=A0	return 0;
+> @@ -2112,9 +2103,7 @@ int xe_bo_migrate(struct xe_bo *bo, u32
+> mem_type)
+> =C2=A0
+> =C2=A0	xe_place_from_ttm_type(mem_type, &requested);
+> =C2=A0	placement.num_placement =3D 1;
+> -	placement.num_busy_placement =3D 1;
+> =C2=A0	placement.placement =3D &requested;
+> -	placement.busy_placement =3D &requested;
+> =C2=A0
+> =C2=A0	/*
+> =C2=A0	 * Stolen needs to be handled like below VRAM handling if we
+> ever need
+> --=20
+> 2.43.0
+>=20
 
-> pci1xxxx_spi_transfer_with_dma is registered as transfer_one callback
-> when DMA can be supported. This function adds DMA read operation which
-> copies the data from host cpu buffer to SPI Tx Buffer.
-> On DMA Read Completion interrupt, SPI transaction is initiated in isr.
-> Helper functions pci1xxxx_spi_setup, pci1xxxx_spi_setup_dma_read and
-> pci1xxxx_start_spi_xfer are added for starting spi transfer, setting up
-> spi and dma read operation. In the existing implementation, codes are
-> replaced with helper wherever applicable.
-
-This description is kind of hard to follow and it seems like the
-hardware is quite weirdly designed which doesn't help.  What you appear
-to be saying here is that the DMA here is transmit only as far as SPI is
-concerned (it's a bit confusing that you say it's read DMA but AFAICT
-it's reading from CPU memory and writing to the SPI controller).  This
-is a bit off in terms of the core DMA support, the core is assuming that
-DMA will be bidirectional and mapping both the TX and RX buffers for DMA
-which isn't great if the RX path is PIO.  If that's the case then you
-might be better off open coding the mapping of the buffers.
-
-> +static irqreturn_t pci1xxxx_spi_isr_dma(int irq, void *dev)
-> +{
-
-> +	if (regval & SPI_INTR) {
-> +		rx_buf = p->rx_buf;
-> +		memcpy_fromio(rx_buf + p->bytes_recvd, p->parent->reg_base +
-> +				      SPI_MST_RSP_BUF_OFFSET(p->hw_inst), p->tx_sgl_len);
-> +		p->bytes_recvd += p->tx_sgl_len;
-> +
-> +		p->tx_sgl = sg_next(p->tx_sgl);
-
-If we're doing DMA why do we need to have a memcpy() here?  That would
-tie in with the DMA being transmit only.
-
---LW+MsQIIcEXwJQui
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXCKFkACgkQJNaLcl1U
-h9CO8gf/Q9/ofpTTfX8yzMbs0GE18AmhcBSt51lFfhMaHSsLvdCNSTciImJS7027
-BCGjP9vqD7iT5iZMDBSTeycenTSzyc5wx51iruEePuMc7YNQzLOdU94uOibQog/i
-RaeblDnsnb/mz1koYE86r7HFJbWulNXZr5ax6a4aXO8VLbDoLydud94stYJGv1TV
-t5oJdlqVKl7SknP+/856O/Pmj6lIgqAH8+AFtTYiOjt+SQ7Q1L6JF1b546hP031g
-JzaV3NzrAOGqB3tEfuqZM91FxaEwjM/J20GaTRgApqjX3MfoWUcPaxfx1ldBDavh
-rHmGeS+2B+vIOKQ/UyEvL6Rki7qKgw==
-=/J8H
------END PGP SIGNATURE-----
-
---LW+MsQIIcEXwJQui--
 
