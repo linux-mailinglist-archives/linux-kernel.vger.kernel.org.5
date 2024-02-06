@@ -1,164 +1,191 @@
-Return-Path: <linux-kernel+bounces-54232-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54233-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F01C84AC9A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:04:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1D8384AC9B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:04:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E18EB2263D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:04:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D53B81C22B40
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:04:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48A8C67C41;
-	Tue,  6 Feb 2024 03:04:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FB7F7318F;
+	Tue,  6 Feb 2024 03:04:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="aRu7T3pQ";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="8rrEetDg";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="aRu7T3pQ";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="8rrEetDg"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="t+wZN6y9"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B63836E2B0
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 03:04:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CF096E2D0
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 03:04:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707188652; cv=none; b=FngidlQ+a+E5IS3pFVcF/yo2MnK62sWluJQAOkXONOTXOLF1J+M+1n1H4mD5+ogsf3TI6EVKm4Pe7QFDqL4AeCKPSbEcJllEV7mLb6c0/TAWTixQoysn/abODf8OHw4YnAENcK8yL18yXyai1VXyPbEvlLqQNmTkPKN7t9fU7Xw=
+	t=1707188678; cv=none; b=HvZV5Ci4hldOLj8b8L3AdBXIzNmvI299R27bo6dLvU8E6dDd2A5s7lIyeDuxDB6gh7QnxiUD57dz3YgfFRwtA0DZkyQG1MkNI09k09LLNvmDoyjTzgB00t+/TBV4MkHTVsI3rNM3IWEu2q90SSmIUB9caDGXXgU3lGSUpJkDH2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707188652; c=relaxed/simple;
-	bh=ww46tD2Od0nYH5J4gwEy8wBZVzCwJinYr6xWvnQIAak=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jposxYoI+tVE3zUPekjYdc9Sy/MoMT3q1rMRenwnpKUcaLX8mt0BPEHRsOdYBFpyM7xJPeFBwF7otQbTGuIbbStoJc++iB7tlC0X66GsgvSGw2PTXrofdooMepv3eXKUGtGnnYw4wW6EM0miEjM4x6UOxhgUmzFK1n2IAyH/ngw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=aRu7T3pQ; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=8rrEetDg; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=aRu7T3pQ; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=8rrEetDg; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 80E37221A0;
-	Tue,  6 Feb 2024 03:04:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707188648; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PMJ17O1CmqNUVr9CqnSAoYW18iVFOklGqfFbXcdL5RQ=;
-	b=aRu7T3pQG6tTCRTJTiS1mIQsc8jAB5BLHZuqWknkOAoBJsDjEm/msx5XEAKgOMyoxpTYde
-	b7gua5F7B3Rd1c796/UmIHGif7MR3NzUmXen200XdpvdcY9Keg/T7xXx31GrppifP9WgNt
-	/bzte79pyZzQ6bUUE9SJWHaDVx0CVbk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707188648;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PMJ17O1CmqNUVr9CqnSAoYW18iVFOklGqfFbXcdL5RQ=;
-	b=8rrEetDgjr9nA6tQE19WnulbyHkTuwtID7tiyqiWfecIztXvF6vTDQNqDqhVkajdDUNace
-	M51pM2PYDm3ILPBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707188648; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PMJ17O1CmqNUVr9CqnSAoYW18iVFOklGqfFbXcdL5RQ=;
-	b=aRu7T3pQG6tTCRTJTiS1mIQsc8jAB5BLHZuqWknkOAoBJsDjEm/msx5XEAKgOMyoxpTYde
-	b7gua5F7B3Rd1c796/UmIHGif7MR3NzUmXen200XdpvdcY9Keg/T7xXx31GrppifP9WgNt
-	/bzte79pyZzQ6bUUE9SJWHaDVx0CVbk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707188648;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PMJ17O1CmqNUVr9CqnSAoYW18iVFOklGqfFbXcdL5RQ=;
-	b=8rrEetDgjr9nA6tQE19WnulbyHkTuwtID7tiyqiWfecIztXvF6vTDQNqDqhVkajdDUNace
-	M51pM2PYDm3ILPBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3B851132DD;
-	Tue,  6 Feb 2024 03:04:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id USo/OKWhwWW4GgAAD6G6ig
-	(envelope-from <hare@suse.de>); Tue, 06 Feb 2024 03:04:05 +0000
-Message-ID: <68049531-3114-4afc-b6ba-e226b14b7806@suse.de>
-Date: Tue, 6 Feb 2024 12:03:59 +0900
+	s=arc-20240116; t=1707188678; c=relaxed/simple;
+	bh=ne9JUsjTXyxLjlyYsZnE6He33Wl0F4KvtV6zAXvFlbA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fyA2LNn/ZX8UXrcf0QnsmrMc97lUa43a6mVJ9XoQE/4cH/JdbUxzU9X4Thsip9GLPYAVO/HDdpXgEwf8tm2iIqJBENqPsL2KY1v7ElL2YUEca721w9aKFUrFsemYT7bPhPFMPb8+X3n9TMQOYDzfG0CuBD2od/R/A634m7v1LVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=t+wZN6y9; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d93b982761so150745ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 19:04:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707188676; x=1707793476; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0XVXU4jAI/ZUz/I4D5gYYVK37UMhSbbkdn1X91/JlTo=;
+        b=t+wZN6y9Ffl/AmEMSY0oio0GMdYUO/RablQv7b6jzA2IdbVFPaQ1qPLpKG+LIFTidY
+         5+ySQa0mGqmHOs0tdjkj0dlrWRJSpN8Gq+nSncL58cN3Yt9ceJFeE4YoPNN2Y7+XoYi4
+         U2zB3rTho2ODaDpcGPEr2dxHL8izaTWuX6trFoCHCQUFR0f9vI9sdCJKMa2Kw9m/4Ran
+         BWx+V+7Ij0rDFXR/qJIyASZMl9saqL4lIbEgzFOEdUnysTWyMZdaeEvnDv5gyBVi08Hv
+         5A/T/1Cwry2ZEpJsqsaaplGVedXxsWbG3q69yYEh4D9TRxT2YT7yceCxRxiEFgpjmuBO
+         mWdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707188676; x=1707793476;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0XVXU4jAI/ZUz/I4D5gYYVK37UMhSbbkdn1X91/JlTo=;
+        b=HoIO4wmULzoDJxfnk/cM1nCkLa3BxXDy9a9rRRkl8xrEzkH+j+87zrAhx96XcHlTkk
+         iKJS7NzkWMu2rFi6TKiwDhzGka4iZXvTIEcDvLUkx/3gV6ZoRNsnqW5/8TshTKsM+N8u
+         AbwSUhLBWLq3ZuJTohWKYmYN51lCJIBr4f43ZxtYQkijKS3knVHbwqTHRQTyySpalhLx
+         evfLscbEu3u1zHuPrN1lQQbMxTovY8C5A+FQsPJJGg5C0guafYm5+KQJwP11lh4DzGe6
+         PQxO8YzQxolegPH/wiDqEYJ5x2sh4u1zI+c++lpqGVkg6ukFO3uX2Wl622zQaWEVYEEW
+         IoUg==
+X-Gm-Message-State: AOJu0YwcUJWUZdt07CAcpmG8dyj+XmtLdBEWhT4JCU/K0qafFfPgFyF5
+	b8gBaKvvMzdUxnKhQEgO4KJdS4dvFL+ogSrjYyLYVY6fIvo/Ok09rjqBv2lsDaGGq5BKlebgwH1
+	fWxVFdx59iCI4zOPDBS5fXXEwjlCYWR4LnXvn
+X-Google-Smtp-Source: AGHT+IENXxmgQziH6fpQsqF7G4W2/PhhQ3etqtTZVXpMqrnIzVWVS5i2UCg5LADUiUHntlFr2fQ/EcYtDA0F+Y7n5+E=
+X-Received: by 2002:a17:902:d507:b0:1d9:aa55:e4c1 with SMTP id
+ b7-20020a170902d50700b001d9aa55e4c1mr149250plg.20.1707188676257; Mon, 05 Feb
+ 2024 19:04:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 10/12] nvmet-fc: avoid deadlock on delete association
- path
-Content-Language: en-US
-To: Daniel Wagner <dwagner@suse.de>, James Smart <james.smart@broadcom.com>
-Cc: Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>,
- linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240131085112.21668-1-dwagner@suse.de>
- <20240131085112.21668-11-dwagner@suse.de>
-From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20240131085112.21668-11-dwagner@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=aRu7T3pQ;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=8rrEetDg
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.48 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 BAYES_HAM(-2.98)[99.91%];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCPT_COUNT_FIVE(0.00)[6];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Score: -4.48
-X-Rspamd-Queue-Id: 80E37221A0
-X-Spam-Flag: NO
+References: <20231127220902.1315692-1-irogers@google.com> <20231127220902.1315692-2-irogers@google.com>
+ <CAM9d7cjCO8e7nbrtrcy4rsbexemQ94=XK+b5byMFFTDDgoJ2eg@mail.gmail.com>
+ <CAP-5=fUBr60o22P4Op-J=TPkdfnby9vLetHQZ4UqjuX+nvbG9w@mail.gmail.com>
+ <CAM9d7cjO2vxa_bvKFrVpX2PViHqZy_dtyf28EaSACwKv6BEHiw@mail.gmail.com> <CAP-5=fUBf41b=p7iVwoANZtRifR8ftuE00zQqLWz54KZ-9VWtw@mail.gmail.com>
+In-Reply-To: <CAP-5=fUBf41b=p7iVwoANZtRifR8ftuE00zQqLWz54KZ-9VWtw@mail.gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Mon, 5 Feb 2024 19:04:24 -0800
+Message-ID: <CAP-5=fVm4rcieqApYP9ai0FO10qW0Q8VWeYxnpfTKgeKFzwRPQ@mail.gmail.com>
+Subject: Re: [PATCH v5 01/50] perf comm: Use regular mutex
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Nick Terrell <terrelln@fb.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Andi Kleen <ak@linux.intel.com>, 
+	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+	Huacai Chen <chenhuacai@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Vincent Whitchurch <vincent.whitchurch@axis.com>, "Steinar H. Gunderson" <sesse@google.com>, 
+	Liam Howlett <liam.howlett@oracle.com>, Miguel Ojeda <ojeda@kernel.org>, 
+	Colin Ian King <colin.i.king@gmail.com>, Dmitrii Dolgov <9erthalion6@gmail.com>, 
+	Yang Jihong <yangjihong1@huawei.com>, Ming Wang <wangming01@loongson.cn>, 
+	James Clark <james.clark@arm.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
+	Sean Christopherson <seanjc@google.com>, Leo Yan <leo.yan@linaro.org>, 
+	Ravi Bangoria <ravi.bangoria@amd.com>, German Gomez <german.gomez@arm.com>, 
+	Changbin Du <changbin.du@huawei.com>, Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>, 
+	Sandipan Das <sandipan.das@amd.com>, liuwenyu <liuwenyu7@huawei.com>, 
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	Guilherme Amadio <amadio@gentoo.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/31/24 16:51, Daniel Wagner wrote:
-> When deleting an association the shutdown path is deadlocking because we
-> try to flush the nvmet_wq nested. Avoid this by deadlock by deferring
-> the put work into its own work item.
-> 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
-> ---
->   drivers/nvme/target/fc.c | 16 +++++++++++++---
->   1 file changed, 13 insertions(+), 3 deletions(-)
-> 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+On Wed, Dec 6, 2023 at 4:05=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
+e:
+>
+> On Sat, Dec 2, 2023 at 3:55=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
+ wrote:
+> >
+> > On Thu, Nov 30, 2023 at 10:28=E2=80=AFAM Ian Rogers <irogers@google.com=
+> wrote:
+> > >
+> > > On Wed, Nov 29, 2023 at 4:56=E2=80=AFPM Namhyung Kim <namhyung@kernel=
+org> wrote:
+> > > >
+> > > > On Mon, Nov 27, 2023 at 2:09=E2=80=AFPM Ian Rogers <irogers@google.=
+com> wrote:
+> > > > >
+> > > > > The rwsem is only after used for writing so switch to a mutex tha=
+t has
+> > > > > better error checking.
+> > > > >
+> > > > > Fixes: 7a8f349e9d14 ("perf rwsem: Add debug mode that uses a mute=
+x")
+> > > >
+> > > > I think we talked about fixing this separately, no?
+> > >
+> > > Sorry, I'm unclear on an action to do. Currently changing the
+> > > RWS_ERRORCHECK in tools/perf/util/rwsem.h will break the build withou=
+t
+> > > this change.
+> >
+> > Can it be like this?
+> >
+> > #ifdef RWS_ERRORCHECK
+> > #define RWSEM_INITIALIZER  { .lock =3D PTHREAD_MUTEX_INITIALIZER, }
+> > #else
+> > #define RWSEM_INITIALIZER  { .lock =3D PTHREAD_RWLOCK_INITIALIZER, }
+> > #endif
+> >
+> > >
+> > > > > Signed-off-by: Ian Rogers <irogers@google.com>
+> > > > > ---
+> > > > >  tools/perf/util/comm.c | 10 +++++-----
+> > > > >  1 file changed, 5 insertions(+), 5 deletions(-)
+> > > > >
+> > > > > diff --git a/tools/perf/util/comm.c b/tools/perf/util/comm.c
+> > > > > index afb8d4fd2644..4ae7bc2aa9a6 100644
+> > > > > --- a/tools/perf/util/comm.c
+> > > > > +++ b/tools/perf/util/comm.c
+> > > > > @@ -17,7 +17,7 @@ struct comm_str {
+> > > > >
+> > > > >  /* Should perhaps be moved to struct machine */
+> > > > >  static struct rb_root comm_str_root;
+> > > > > -static struct rw_semaphore comm_str_lock =3D {.lock =3D PTHREAD_=
+RWLOCK_INITIALIZER,};
+> > > > > +static struct mutex comm_str_lock =3D {.lock =3D PTHREAD_ERRORCH=
+ECK_MUTEX_INITIALIZER_NP,};
+> > > >
+> > > > IIUC it has a problem with musl libc.  Actually I think it's better=
+ to
+> > > > hide the field and the pthread initializer under some macro like
+> > > > MUTEX_INITIALIZER or DEFINE_MUTEX() like in the kernel.
+> > >
+> > > Will there be enough use to justify this? I think ideally we'd not be
+> > > having global locks needing global initializers as we run into
+> > > problems like we see in metrics needing to mix counting and sampling.
+> >
+> > I don't know but there might be a reason to use global locks.
+> > Then we need to support the initialization and it'd be better
+> > to make it easier to handle internal changes like this.
+>
+> Right. So you are suggesting I make a macro for initialization but
+> when this change is applied it will remove the only user of the macro.
+> The macro would clearly be redundant which is why I didn't do a
+> separate fix for that before doing this change - to use a mutex as the
+> rwsem here is only ever used as a write lock. If we're looking to
+> improve rwsem I don't think adding unused macros is the best thing,
+> for example, we could remove references to perf_singlethreaded which
+> is an idea that has had its day.
 
-Cheers,
+Note, RWS_ERRORCHECK being enabled still is broken without this.
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), GF: Ivo Totev, Andrew McDonald,
-Werner Knoblich
+Thanks,
+Ian
 
+> Thanks,
+> Ian
+>
+> > Thanks,
+> > Namhyung
 
