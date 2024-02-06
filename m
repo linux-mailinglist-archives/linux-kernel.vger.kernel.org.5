@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-54343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8821484ADEC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 06:19:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6DDD84ADF0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 06:20:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F22141F25015
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 05:19:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9328F285CE8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 05:20:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A940B7F470;
-	Tue,  6 Feb 2024 05:19:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FDA07FBD2;
+	Tue,  6 Feb 2024 05:19:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="oZhv+byl"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="WlAS455d"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D4E67FBA4;
-	Tue,  6 Feb 2024 05:19:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 728B67FBB2;
+	Tue,  6 Feb 2024 05:19:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707196742; cv=none; b=gMb1Y7CSWXhdeuv6rRv2aJiwYIKfbg0Z5vB4pEfseoqrfEyqiKPeWQX7Q1oWqJ8JbjOFMQgDnXSvP22iCEAUkwT5CrcAukQUygqNgKSwn0Quxiy9Kp3AMzAVwz/SkoZ1+vpPhP70+P+XyeohIcYMsHVu+EaRhIUchIhlSGNi6e4=
+	t=1707196746; cv=none; b=m2AQ3OOMbx3FnYpR8kk1SijUVcs2ech1sse053OJIsFYmOaDqDyd00lThwLoPOz3xTf1uMh6lPNK2ImdrCadZtV0IcdZb8TXyRQlJhufOkUhgSvbStGVv1L4ufTTC/yRFDzJezbae+DdF8phDOVNWNx9MQCIrAqBaRGtXrffULo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707196742; c=relaxed/simple;
-	bh=7Nu/WAf1PwRMnklpVvxIjToLJEGYYcGuhg6LEqcQ17E=;
+	s=arc-20240116; t=1707196746; c=relaxed/simple;
+	bh=genjBk3uvlsaAJU2yoYHfO+ITR5u2b7rhyQVgSXjeaI=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EEXQX4IDnIwDUOlFX0q9pm+00Yanrn3KFSy9WwUT/xzSDVp0611pqpoJQ8lYmhCdOiTD7OQXiDHSMBRytAL5IAkQg0jp56fS7iYE4zRNGv90UwxidU2ap3WI5Pjm2cuaqbEwhx5dtyWZefX0pJKQVFws6zErJxm/xJfNzsJd9lE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=oZhv+byl; arc=none smtp.client-ip=205.220.180.131
+	 MIME-Version:Content-Type; b=IdDczZERg7fkUoKWKsCfZrh140hR8rPuKbuYTRTBJ7/olJUW66Qt+xNuPEOV0Wf83rP9ndNYB2mxlzS+w3ogqjMiE0XsO/+/cDkk1j7KazGGRkvwGTxOJr27aqTh6zVyooxyqJ8LoXmXLJe48HCNHorjdzz7b1SDdaR8dPB8x1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=WlAS455d; arc=none smtp.client-ip=205.220.168.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4161HfKA018159;
-	Tue, 6 Feb 2024 05:18:53 GMT
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4164xaI5031651;
+	Tue, 6 Feb 2024 05:18:59 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=pkjs8faK3ksJnw2OHK2ukYiZ0uNTQluler6sFQ/kuVM=; b=oZ
-	hv+byl5rWORl8qY7xkQJ/Tb/vwLY4E1AJqeHj7VlQ8lL2y2qkrnu5xldTAvMIyTc
-	Kh4nB000rLlv7u5RnYmQuOH/pcZr+2Pp1dEi62QET104CpssZ1m8TREWQkepmZMX
-	YiM4sA0w5Y9Jx34ke8pJPfcFEyzXf1DjUfnp4xPVI+ZuGjHVf4ymX6nSxB4w2EHZ
-	XwDiP38NmdtJvCHaANQ8D8eLlEFId/rbCjsVO76x3QJdMB+5Eno1+mxFxod/jgmG
-	RDJBQ6j7ifquovf3oxr6HSaoaSFquPuMXtDr3xyCELlINdMtnTPa1siFFGgigw0r
-	MPnlcmqFO9bybYtsqIbg==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w32s1sgfp-1
+	qcppdkim1; bh=+y0cDrTLtTyYxuXcifRN7tNYkgbdfiJfM2ekZ4zgrFI=; b=Wl
+	AS455dnBkV/zhE4I8p8MDy22DEJ2qUhHsw6gjhGyJ1brBIBDKs8DYSpa0L+miLIl
+	me3755BZ74+lW3pZAGYhhTTUk5s7sfuKwKcAG70CWqJ3Z9HK1ASfsrbqQ4SsKpVR
+	G5ilZ63ISemNgm8ruTcIeJZhdW/gYVisx/4kezWOkfd4RWQ9c/NSPg489QOLCM7m
+	kCbE9PYladxN3BX8iDHrg7mFbJg11az1ryClR0K57/xTNv+yiBXMXLoN/PxS33Ls
+	lltypJTvVKm4qtK/slRT3BS9RCyM1kS57rq2x1+x3spbtIXdbNSYHk7sjaa0WExy
+	Z3jfQmQPxXq9sJ8ztn9w==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w3e7g0125-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Feb 2024 05:18:53 +0000 (GMT)
+	Tue, 06 Feb 2024 05:18:59 +0000 (GMT)
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4165IqvQ007555
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4165Iwfg026025
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 6 Feb 2024 05:18:52 GMT
+	Tue, 6 Feb 2024 05:18:58 GMT
 Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 5 Feb 2024 21:18:47 -0800
+ 15.2.1118.40; Mon, 5 Feb 2024 21:18:53 -0800
 From: Krishna Kurapati <quic_kriskura@quicinc.com>
 To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Rob Herring
@@ -74,10 +74,13 @@ CC: <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
         <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
         Krishna Kurapati
-	<quic_kriskura@quicinc.com>
-Subject: [PATCH v14 2/9] usb: dwc3: core: Access XHCI address space temporarily to read port info
-Date: Tue, 6 Feb 2024 10:48:18 +0530
-Message-ID: <20240206051825.1038685-3-quic_kriskura@quicinc.com>
+	<quic_kriskura@quicinc.com>,
+        Johan Hovold <johan@kernel.org>,
+        Johan Hovold
+	<johan+linaro@kernel.org>
+Subject: [PATCH v14 3/9] usb: dwc3: core: Skip setting event buffers for host only controllers
+Date: Tue, 6 Feb 2024 10:48:19 +0530
+Message-ID: <20240206051825.1038685-4-quic_kriskura@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240206051825.1038685-1-quic_kriskura@quicinc.com>
 References: <20240206051825.1038685-1-quic_kriskura@quicinc.com>
@@ -93,163 +96,71 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: lpdEQ3Ld1fDQoO8L2XG9g-utaCRCyCzU
-X-Proofpoint-ORIG-GUID: lpdEQ3Ld1fDQoO8L2XG9g-utaCRCyCzU
+X-Proofpoint-GUID: CUgJNCvzaQBnG66iT1RDAKlIF5FiX3w8
+X-Proofpoint-ORIG-GUID: CUgJNCvzaQBnG66iT1RDAKlIF5FiX3w8
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-02-05_18,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- suspectscore=0 bulkscore=0 phishscore=0 adultscore=0 spamscore=0
- mlxlogscore=999 malwarescore=0 lowpriorityscore=0 priorityscore=1501
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 adultscore=0 mlxscore=0 mlxlogscore=894 lowpriorityscore=0
+ bulkscore=0 spamscore=0 clxscore=1015 priorityscore=1501 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2401310000 definitions=main-2402060035
 
-Currently Multiport DWC3 controllers are host-only capable.
-Temporarily map XHCI address space for host-only controllers and parse
-XHCI Extended Capabilities registers to read number of usb2 ports and
-usb3 ports present on multiport controller. Each USB Port is at least HS
-capable.
+On some SoC's like SA8295P where the tertiary controller is host-only
+capable, GEVTADDRHI/LO, GEVTSIZ, GEVTCOUNT registers are not accessible.
+Trying to access them leads to a crash.
 
-The port info for usb2 and usb3 phy are identified as num_usb2_ports
-and num_usb3_ports. The intention is as follows:
+For DRD/Peripheral supported controllers, event buffer setup is done
+again in gadget_pullup. Skip setup or cleanup of event buffers if
+controller is host-only capable.
 
-Wherever we need to perform phy operations like:
-
-LOOP_OVER_NUMBER_OF_AVAILABLE_PORTS()
-{
-	phy_set_mode(dwc->usb2_generic_phy[i], PHY_MODE_USB_HOST);
-	phy_set_mode(dwc->usb3_generic_phy[i], PHY_MODE_USB_HOST);
-}
-
-If number of usb2 ports is 3, loop can go from index 0-2 for
-usb2_generic_phy. If number of usb3-ports is 2, we don't know for sure,
-if the first 2 ports are SS capable or some other ports like (2 and 3)
-are SS capable. So instead, num_usb2_ports is used to loop around all
-phy's (both hs and ss) for performing phy operations. If any
-usb3_generic_phy turns out to be NULL, phy operation just bails out.
-num_usb3_ports is used to modify GUSB3PIPECTL registers while setting up
-phy's as we need to know how many SS capable ports are there for this.
-
+Suggested-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+Acked-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
 ---
- drivers/usb/dwc3/core.c | 62 +++++++++++++++++++++++++++++++++++++++++
- drivers/usb/dwc3/core.h |  5 ++++
- 2 files changed, 67 insertions(+)
+ drivers/usb/dwc3/core.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
 diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index 3b68e8e45b8b..965eaad195fb 100644
+index 965eaad195fb..c47fec10b231 100644
 --- a/drivers/usb/dwc3/core.c
 +++ b/drivers/usb/dwc3/core.c
-@@ -39,6 +39,7 @@
- #include "io.h"
- 
- #include "debug.h"
-+#include "../host/xhci-ext-caps.h"
- 
- #define DWC3_DEFAULT_AUTOSUSPEND_DELAY	5000 /* ms */
- 
-@@ -1882,10 +1883,57 @@ static int dwc3_get_clocks(struct dwc3 *dwc)
- 	return 0;
- }
- 
-+static int dwc3_read_port_info(struct dwc3 *dwc)
-+{
-+	void __iomem *base;
-+	u8 major_revision;
-+	u32 offset;
-+	u32 val;
-+
-+	/*
-+	 * Remap xHCI address space to access XHCI ext cap regs since it is
-+	 * needed to get information on number of ports present.
-+	 */
-+	base = ioremap(dwc->xhci_resources[0].start,
-+		       resource_size(&dwc->xhci_resources[0]));
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
-+
-+	offset = 0;
-+	do {
-+		offset = xhci_find_next_ext_cap(base, offset,
-+						XHCI_EXT_CAPS_PROTOCOL);
-+		if (!offset)
-+			break;
-+
-+		val = readl(base + offset);
-+		major_revision = XHCI_EXT_PORT_MAJOR(val);
-+
-+		val = readl(base + offset + 0x08);
-+		if (major_revision == 0x03) {
-+			dwc->num_usb3_ports += XHCI_EXT_PORT_COUNT(val);
-+		} else if (major_revision <= 0x02) {
-+			dwc->num_usb2_ports += XHCI_EXT_PORT_COUNT(val);
-+		} else {
-+			dev_warn(dwc->dev,
-+				 "unrecognized port major revision %d\n",
-+							major_revision);
-+		}
-+	} while (1);
-+
-+	dev_dbg(dwc->dev, "hs-ports: %u ss-ports: %u\n",
-+		dwc->num_usb2_ports, dwc->num_usb3_ports);
-+
-+	iounmap(base);
-+
-+	return 0;
-+}
-+
- static int dwc3_probe(struct platform_device *pdev)
+@@ -486,6 +486,13 @@ static void dwc3_free_event_buffers(struct dwc3 *dwc)
+ static int dwc3_alloc_event_buffers(struct dwc3 *dwc, unsigned int length)
  {
- 	struct device		*dev = &pdev->dev;
- 	struct resource		*res, dwc_res;
-+	unsigned int		hw_mode;
- 	void __iomem		*regs;
- 	struct dwc3		*dwc;
- 	int			ret;
-@@ -1969,6 +2017,20 @@ static int dwc3_probe(struct platform_device *pdev)
- 			goto err_disable_clks;
- 	}
- 
-+	/*
-+	 * Currently only DWC3 controllers that are host-only capable
-+	 * support Multiport.
-+	 */
+ 	struct dwc3_event_buffer *evt;
++	unsigned int hw_mode;
++
 +	hw_mode = DWC3_GHWPARAMS0_MODE(dwc->hwparams.hwparams0);
 +	if (hw_mode == DWC3_GHWPARAMS0_MODE_HOST) {
-+		ret = dwc3_read_port_info(dwc);
-+		if (ret)
-+			goto err_disable_clks;
-+	} else {
-+		dwc->num_usb2_ports = 1;
-+		dwc->num_usb3_ports = 1;
++		dwc->ev_buf = NULL;
++		return 0;
 +	}
+ 
+ 	evt = dwc3_alloc_one_event_buffer(dwc, length);
+ 	if (IS_ERR(evt)) {
+@@ -507,6 +514,9 @@ int dwc3_event_buffers_setup(struct dwc3 *dwc)
+ {
+ 	struct dwc3_event_buffer	*evt;
+ 
++	if (!dwc->ev_buf)
++		return 0;
 +
- 	spin_lock_init(&dwc->lock);
- 	mutex_init(&dwc->mutex);
+ 	evt = dwc->ev_buf;
+ 	evt->lpos = 0;
+ 	dwc3_writel(dwc->regs, DWC3_GEVNTADRLO(0),
+@@ -524,6 +534,9 @@ void dwc3_event_buffers_cleanup(struct dwc3 *dwc)
+ {
+ 	struct dwc3_event_buffer	*evt;
  
-diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-index df544ec730d2..4c52fef99838 100644
---- a/drivers/usb/dwc3/core.h
-+++ b/drivers/usb/dwc3/core.h
-@@ -1039,6 +1039,8 @@ struct dwc3_scratchpad_array {
-  * @usb3_phy: pointer to USB3 PHY
-  * @usb2_generic_phy: pointer to USB2 PHY
-  * @usb3_generic_phy: pointer to USB3 PHY
-+ * @num_usb2_ports: number of USB2 ports
-+ * @num_usb3_ports: number of USB3 ports
-  * @phys_ready: flag to indicate that PHYs are ready
-  * @ulpi: pointer to ulpi interface
-  * @ulpi_ready: flag to indicate that ULPI is initialized
-@@ -1187,6 +1189,9 @@ struct dwc3 {
- 	struct phy		*usb2_generic_phy;
- 	struct phy		*usb3_generic_phy;
- 
-+	u8			num_usb2_ports;
-+	u8			num_usb3_ports;
++	if (!dwc->ev_buf)
++		return;
 +
- 	bool			phys_ready;
+ 	evt = dwc->ev_buf;
  
- 	struct ulpi		*ulpi;
+ 	evt->lpos = 0;
 -- 
 2.34.1
 
