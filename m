@@ -1,123 +1,185 @@
-Return-Path: <linux-kernel+bounces-55738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D834184C0FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:40:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA8A984C0FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:41:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35ABB2826E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:40:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 462E91F256E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:41:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1C551CD1B;
-	Tue,  6 Feb 2024 23:40:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EB2B1CD2A;
+	Tue,  6 Feb 2024 23:41:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TGbk96Ew"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rZ3RpgqE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD6CA1CD13
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 23:40:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E4D31CABD;
+	Tue,  6 Feb 2024 23:40:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707262843; cv=none; b=Ga6jYe0+r9bnBF8cfEWy19/Wbey454PrYlnmYwel5QeKDL09osmpLWHQS8QhU+h9AoL3PX08Dhlx6dJf1Xd+q1A/wO+1Xcd0gF/1NNxpWHqAt/qzKuGUk9BV8LqQ/AJQaT2Ad+r1iKFt7nEk3yAC6JFh4jp9pIRgaBa0D0dVl18=
+	t=1707262860; cv=none; b=Kz2UVN4E79WBfkJ/tWjb0ztx6LjnVyYvtSFcWcxGC3/nd11B0zKOPjNbK16iZMd4gD1x0mYAcDzr4kwNBwOiweKHahXW02EAV34wTk27BMAKpah3vacZdEVan4HGMpisBvH7iF2DdFTjk/FmiMtsnIioOnT3/iBb9X27uNWMrNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707262843; c=relaxed/simple;
-	bh=SMfV3zP9TAVxc9qHJ5pF8CYvegtpia1rL9pv1jbHIgA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=USLiqegJPTfTlDRf1PxKfbA3UEKlBI88v8Mt4BUPtRknQqp4/6CZnRIWM5Hy9EqC7Rsqi8lAwVwjbfP0iSMI4hWuOXO2TTMlj98nBK/7296NTczhUrKrUVf9MlDRYppyrxDd15puQR1FqxCrN1uL+Uf/aJv6SV1mIgF/+4vPbPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TGbk96Ew; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d89f0ab02bso22545ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 15:40:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707262841; x=1707867641; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uMZl2B6r90pWxe6d/UAGhzRXMHrchHR7+niCYeN7Fhg=;
-        b=TGbk96Ewq1REq9s2z/x5LddL5yHfbjQmeDEawV+AMUxdZx6zdXgPF+EmoSXDlF2nLR
-         YHnEvdafzHcNEbgdQGDpHyqyyNYmxmCjMZktu5MV6/+bb8AiP1hI3ZI7NVnniIzYiTVE
-         miZBP3zSyzstobqL6S7Y3u1zT0Sw3GOvbP4ezDTiTr6Uxq9iQuoz+j67s4B4UniNcHSc
-         Sm+dFigggiGJeAKowvLoU4lRCs6AqjwqR4lTS+V8qZzeJwFgHuGHYPPdCeFegMMJcvIb
-         gCa8d3wQFS/MkyPXD4/2T/qAr9a33XjGzyjIRSbwxmEiLY/5a15+zG6ZGcA9Kn0gRgYP
-         iUtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707262841; x=1707867641;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uMZl2B6r90pWxe6d/UAGhzRXMHrchHR7+niCYeN7Fhg=;
-        b=J3VeMNPdoSm/vbGMCFDmEGkj6M4mYX0VheQISgJhgnMNNFFA/2yMSolXPiNQaOk2KS
-         oONu24ISxCkKBUAs8WbzmLUUBT9T+okst7NmUyK0WrBmxhto6EUbynlrjNgHZvq1oSO7
-         niZTR+KKCKv5GgX1Nwku+OszWYvb61B3YtqAKLg+qtoIr8C9m7wfhwf9TPoMAEuD3c+r
-         XaKrMtd9QBxUNbsQg3kXdvPtX1ox0kDoDyFpmaatANCfcsRsip6L60mH+YOZqOKetHpC
-         H2SZp17Vc1Zy64S4stkVS3SetcXpWSnMLZ30RhERVpz0fvQp3D70t6zcKmBMDJ261jr7
-         IYVQ==
-X-Gm-Message-State: AOJu0Yxhrftn7rDtM0JGITv/sNENEnijh13IuExSGWb76u8/9HYV3w4P
-	/gYoTrDOhSdpyOZ8M1awS6M9hekq9XA50/D1ywJ2UH540qudGrvZUqEvMudZyAc3afFhZV3qcYn
-	Lk0LYen+QxY33umeixDrNZcmThkwZsvVKMtlM
-X-Google-Smtp-Source: AGHT+IHk0GZQ2blDgfVf+w1vAv7QhoskH4BtElhsBkxqHLSk2Tcp1LsvWXMaotUCkZJtfW8YHpS5xDLHn+e73DW4hrM=
-X-Received: by 2002:a17:902:dac6:b0:1d8:d6bf:145b with SMTP id
- q6-20020a170902dac600b001d8d6bf145bmr46775plx.15.1707262840823; Tue, 06 Feb
- 2024 15:40:40 -0800 (PST)
+	s=arc-20240116; t=1707262860; c=relaxed/simple;
+	bh=PRL2AU8Ec4e9wjqPqZ5xSv6RBbyoPP0VSFP7n7tEZso=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=SPYUPGzF0mHXXSDfwGe2Uszk2C4n5Pff/zfdi3mWHVZNlKwkKFetBScqvknRkZRTchRXoLoyc5Mbkz8/eF7nEO3frWSlYEBUX6PagNqHdcHlx5V8vEmNXM8Ye6NoN+YM2bqeRWCY0lxq3rK04VmV2KDn0QJSPQzKia8GRuTPBAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rZ3RpgqE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8EABC433C7;
+	Tue,  6 Feb 2024 23:40:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707262859;
+	bh=PRL2AU8Ec4e9wjqPqZ5xSv6RBbyoPP0VSFP7n7tEZso=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=rZ3RpgqEI9xGCHR5iT0jRJXfgRa1YA/syYc2SWDw4ufHIbG61OvHeoaaF0tzQlCP2
+	 pzDR9VPlmI9rbOYkUPvDkMO/kWVdCfwgQTRmJov6TYZcBC7lV3VHDaHDMd+oILJwuL
+	 /ds+4i7rTEBSsM9Oab6c4VyN3s+tZJ0ofWbEFNvDnMQ6NcgiqEVkBTlYU2qlLCfUwi
+	 lIPaxnb5wW/DXVb4Qgf1NGPGNPNMU4Iqz2FYdoGkx+ziyyQu90FMir/DL4I5h/iUD1
+	 1K1JcvUKnnMrm/gf5gXM5GbJJFYu2I6jrUwe5yg9+pisoDAG/uELoZqwKkcmQ23HI4
+	 pDnWCVWEp8T1A==
+Date: Wed, 7 Feb 2024 08:40:54 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jinghao Jia <jinghao7@illinois.edu>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra
+ <peterz@infradead.org>, Xin Li <xin@zytor.com>,
+ linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] x86/kprobes: Boost more instructions from
+ grp2/3/4/5
+Message-Id: <20240207084054.190a6103e40fe890363fb151@kernel.org>
+In-Reply-To: <14799708-1f90-464f-9432-5b11755c3fca@illinois.edu>
+References: <20240204031300.830475-1-jinghao7@illinois.edu>
+	<20240204031300.830475-4-jinghao7@illinois.edu>
+	<20240204210932.bd112a37dd3c276b046f6b16@kernel.org>
+	<14799708-1f90-464f-9432-5b11755c3fca@illinois.edu>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240202220459.527138-1-namhyung@kernel.org> <20240202220459.527138-15-namhyung@kernel.org>
- <CAP-5=fUWaKW7d6_YkET0o26=fjBwX6PPJ1gXQ9wndQM_Oi2O3A@mail.gmail.com> <CAM9d7cgF_PYm2fG1Vgu25u1hVZUK0wmFBqY7DHW2eVpRV=iERA@mail.gmail.com>
-In-Reply-To: <CAM9d7cgF_PYm2fG1Vgu25u1hVZUK0wmFBqY7DHW2eVpRV=iERA@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 6 Feb 2024 15:40:29 -0800
-Message-ID: <CAP-5=fV7fWHM53roUJOU+0vAYQJAbhdE1EkgzHLv7jPgeLc2HQ@mail.gmail.com>
-Subject: Re: [PATCH 14/14] perf annotate-data: Add stack canary type
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-perf-users@vger.kernel.org, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org, 
-	linux-trace-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Feb 6, 2024 at 3:19=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
-rote:
->
-> On Fri, Feb 2, 2024 at 7:21=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
-> >
-> > On Fri, Feb 2, 2024 at 2:05=E2=80=AFPM Namhyung Kim <namhyung@kernel.or=
-g> wrote:
-> > >
-> > > When the stack protector is enabled, compiler would generate code to
-> > > check stack overflow with a special value called 'stack carary' at
-> > > runtime.  On x86_64, GCC hard-codes the stack canary as %gs:40.
-> > >
-> > > While there's a definition of fixed_percpu_data in asm/processor.h,
-> > > it seems that the header is not included everywhere and many places
-> > > it cannot find the type info.  As it's in the well-known location (at
-> > > %gs:40), let's add a pseudo stack canary type to handle it specially.
-> >
-> > I wonder if cases like this can be handled by debug info rather than
-> > special cases in the tool. Special cases are fine too, but are
-> > potentially less portable.
->
-> Agreed, but I couldn't find anything special in DWARF.
+On Sun, 4 Feb 2024 22:39:32 -0600
+Jinghao Jia <jinghao7@illinois.edu> wrote:
 
-The fs and gs selectors are commonly used for thread local storage, so
-could something like DW_OP_form_tls_address be used?
-https://dwarfstd.org/issues/110803.1.html
+> On 2/4/24 06:09, Masami Hiramatsu (Google) wrote:
+> > On Sat,  3 Feb 2024 21:13:00 -0600
+> > Jinghao Jia <jinghao7@illinois.edu> wrote:
+> > 
+> >> With the instruction decoder, we are now able to decode and recognize
+> >> instructions with opcode extensions. There are more instructions in
+> >> these groups that can be boosted:
+> >>
+> >> Group 2: ROL, ROR, RCL, RCR, SHL/SAL, SHR, SAR
+> >> Group 3: TEST, NOT, NEG, MUL, IMUL, DIV, IDIV
+> >> Group 4: INC, DEC (byte operation)
+> >> Group 5: INC, DEC (word/doubleword/quadword operation)
+> >>
+> >> These instructions are not boosted previously because there are reserved
+> >> opcodes within the groups, e.g., group 2 with ModR/M.nnn == 110 is
+> >> unmapped. As a result, kprobes attached to them requires two int3 traps
+> >> as being non-boostable also prevents jump-optimization.
+> >>
+> >> Some simple tests on QEMU show that after boosting and jump-optimization
+> >> a single kprobe on these instructions with an empty pre-handler runs 10x
+> >> faster (~1000 cycles vs. ~100 cycles).
+> >>
+> >> Since these instructions are mostly ALU operations and do not touch
+> >> special registers like RIP, let's boost them so that we get the
+> >> performance benefit.
+> >>
+> > 
+> > This looks good to me. And can you check how many instructions in the
+> > vmlinux will be covered by this change typically?
+> > 
+> 
+> I collected the stats from the LLVM CodeGen backend on kernel version 6.7.3
+> using Gentoo's dist-kernel config (with a mod2yesconfig to make modules
+> builtin) and here are the number of Grp 2/3/4/5 instructions that are newly
+> covered by this patch:
+> 
+> Kernel total # of insns:    28552017    (from objdump)
+> Grp2 insns:                 286249      (from LLVM)
+> Grp3 insns:                 286556      (from LLVM)
+> Grp4 insns:                 5832        (from LLVM)
+> Grp5 insns:                 146314      (from LLVM)
+> 
+> Note that using LLVM means we miss the stats from inline assembly and
+> assembly source files.
 
-Thanks,
-Ian
+Thanks for checking! so it increases the coverage ~2.5% :)
 
-> Thanks,
-> Namhyung
+Thank you,
+ 
+
+> 
+> --Jinghao
+> 
+> > Thank you,
+> > 
+> >> Signed-off-by: Jinghao Jia <jinghao7@illinois.edu>
+> >> ---
+> >>  arch/x86/kernel/kprobes/core.c | 23 +++++++++++++++++------
+> >>  1 file changed, 17 insertions(+), 6 deletions(-)
+> >>
+> >> diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+> >> index 7a08d6a486c8..530f6d4b34f4 100644
+> >> --- a/arch/x86/kernel/kprobes/core.c
+> >> +++ b/arch/x86/kernel/kprobes/core.c
+> >> @@ -169,22 +169,33 @@ bool can_boost(struct insn *insn, void *addr)
+> >>  	case 0x62:		/* bound */
+> >>  	case 0x70 ... 0x7f:	/* Conditional jumps */
+> >>  	case 0x9a:		/* Call far */
+> >> -	case 0xc0 ... 0xc1:	/* Grp2 */
+> >>  	case 0xcc ... 0xce:	/* software exceptions */
+> >> -	case 0xd0 ... 0xd3:	/* Grp2 */
+> >>  	case 0xd6:		/* (UD) */
+> >>  	case 0xd8 ... 0xdf:	/* ESC */
+> >>  	case 0xe0 ... 0xe3:	/* LOOP*, JCXZ */
+> >>  	case 0xe8 ... 0xe9:	/* near Call, JMP */
+> >>  	case 0xeb:		/* Short JMP */
+> >>  	case 0xf0 ... 0xf4:	/* LOCK/REP, HLT */
+> >> -	case 0xf6 ... 0xf7:	/* Grp3 */
+> >> -	case 0xfe:		/* Grp4 */
+> >>  		/* ... are not boostable */
+> >>  		return false;
+> >> +	case 0xc0 ... 0xc1:	/* Grp2 */
+> >> +	case 0xd0 ... 0xd3:	/* Grp2 */
+> >> +		/*
+> >> +		 * AMD uses nnn == 110 as SHL/SAL, but Intel makes it reserved.
+> >> +		 */
+> >> +		return X86_MODRM_REG(insn->modrm.bytes[0]) != 0b110;
+> >> +	case 0xf6 ... 0xf7:	/* Grp3 */
+> >> +		/* AMD uses nnn == 001 as TEST, but Intel makes it reserved. */
+> >> +		return X86_MODRM_REG(insn->modrm.bytes[0]) != 0b001;
+> >> +	case 0xfe:		/* Grp4 */
+> >> +		/* Only INC and DEC are boostable */
+> >> +		return X86_MODRM_REG(insn->modrm.bytes[0]) == 0b000 ||
+> >> +		       X86_MODRM_REG(insn->modrm.bytes[0]) == 0b001;
+> >>  	case 0xff:		/* Grp5 */
+> >> -		/* Only indirect jmp is boostable */
+> >> -		return X86_MODRM_REG(insn->modrm.bytes[0]) == 4;
+> >> +		/* Only INC, DEC, and indirect JMP are boostable */
+> >> +		return X86_MODRM_REG(insn->modrm.bytes[0]) == 0b000 ||
+> >> +		       X86_MODRM_REG(insn->modrm.bytes[0]) == 0b001 ||
+> >> +		       X86_MODRM_REG(insn->modrm.bytes[0]) == 0b100;
+> >>  	default:
+> >>  		return true;
+> >>  	}
+> >> -- 
+> >> 2.43.0
+> >>
+> > 
+> > 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
