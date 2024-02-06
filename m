@@ -1,255 +1,225 @@
-Return-Path: <linux-kernel+bounces-54209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54211-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 208D684AC44
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:40:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29C8A84AC4A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:41:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84F021F24F99
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:40:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 251451C233C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:41:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 487601AB7FC;
-	Tue,  6 Feb 2024 02:40:29 +0000 (UTC)
-Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DB9E6E2C7;
+	Tue,  6 Feb 2024 02:41:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="MTqgnV+b"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2078.outbound.protection.outlook.com [40.107.237.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB19C56B62;
-	Tue,  6 Feb 2024 02:40:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707187228; cv=none; b=LjUjnoCtkERkG3FYv7fZUCtG9owDScUqm0xpvMBRvhhAkJ3mm4V3Yb2h33ZlkIkKvlfh4elROy5P99Ysm/95nXTDS1jG5wJtGXF/rSXlwK20UDzfbMB7TpfEagM5wM4s8zh33ExVA/PNrT1icrfMtmdbUksSB7GBIYLzEGl6XQ8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707187228; c=relaxed/simple;
-	bh=6MzavmIa27EVGiJIPGA6KackNXrvNk/WnRyxDDaM6DU=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TUUS6H8qzU3uX3QqvMW8QQQ0KaGOJnWJQwtsQuS9fns+cIQhZ4cMfKyKbv159lq5nmDtiWJ8VN8s1lNQRDaE/zfRq2xdO0xktEcX8U4qo5S/IHCaZ4AMmxJtlZUCKZaWQ02/cPLOQ3BwUWshXACXF+h+sRXCgfzAeq8HlS5C8jY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 4162buqD029897;
-	Tue, 6 Feb 2024 10:37:56 +0800 (+08)
-	(envelope-from zhaoyang.huang@unisoc.com)
-Received: from SHDLP.spreadtrum.com (shmbx06.spreadtrum.com [10.0.1.11])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TTS8Z2MM3z2SRHsP;
-	Tue,  6 Feb 2024 10:37:50 +0800 (CST)
-Received: from bj03382pcu01.spreadtrum.com (10.0.73.40) by
- shmbx06.spreadtrum.com (10.0.1.11) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Tue, 6 Feb 2024 11:09:23 +0800
-From: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
-To: Jens Axboe <axboe@kernel.dk>, Matthew Wilcox <willy@infradead.org>,
-        Yu
- Zhao <yuzhao@google.com>, <linux-block@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Zhaoyang
- Huang <huangzhaoyang@gmail.com>, <steve.kang@unisoc.com>
-Subject: [PATCHv9 1/1] block: introduce content activity based ioprio
-Date: Tue, 6 Feb 2024 10:37:40 +0800
-Message-ID: <20240206023740.81351-1-zhaoyang.huang@unisoc.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06F1C6D1CA;
+	Tue,  6 Feb 2024 02:40:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.78
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707187262; cv=fail; b=curkqP9G/g4ATYUAmAjABc+Bh2p9LIBkoDUTwaJD26Q67ukfdttZCjgR9jCP2IOyvKssG8MFUN17lJT/xszZBES+/hDBcFbT0EXo+lL3Ija8iVfgkhbys0NSVeiGhG1mcxgaYkKhmeTMgnAgjV0PaBUJv/2qAo4vMu6S/T6yhbg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707187262; c=relaxed/simple;
+	bh=vNn/QlFpq3ggmyNs3bfO5OPqgDk9saRN0GJlwOPPyfE=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 Content-Type:MIME-Version; b=o1UCthAKMGbFH2N/bSFyHGhKzrFP3I+CvKOmkwo40KDtEffMLodbOVC7CduXG+pUSZOe+29o+FfTaFowesqZvewPHH5pzo2xT4/hui5sXyplelnu4/ZRjDzY7skobT44bwQvoKb08YePUPUaFBme94nBxN7TMipgFXezXxq+l04=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=MTqgnV+b; arc=fail smtp.client-ip=40.107.237.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LDSTbfUoI4Q04vRUOFFR9zRKnZfUrWjpHVZjjBkO+cEysYh95StA6xcr85gcy+Rn2uV2IzkuDWGtibyIhBxUm9f0WISNi5eEfl25A74pzg3Ddnkl73fDaTKTmZqa2jqzO6ZFYdkfp6ukQRSH0QkAPXxuHhM1kGZiI2HVz+5h3iOzr/Iva7amXZcPe3+7bhW42IXvo5HytrV6qjCzptO0rpMx6ZeF592e5cxNWYiFPqRGDcYqL5lWx7zG679drBQ289WpLhwOqdQhq9agMiKdHb88UOfHUxX22LKm/TBz8c58Zl/CIpL2jTCGmhFpzWPj+50sg9q5ix+4Ew4SfbHwoA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Nott87pMpqPJR41yq3setuRCQLYbuGkaVpsyNyAbexo=;
+ b=Q/OvCnstYC4QQ+6MS9TEI1iSUGGxJZ9ubpKcq/8K2RLgmXOVSl46TDcekBGYLq/5GjKeV127r4ZhRGj7oOcwiPBhM7TZvh7/Gff4AwIL/29uqnANF3D+yrI0NxY2+5Ic3N9+lVd2Dp06iXbBLTANRVlmR0QoMpg/lXxwHmCyhy0gCJR2S0coCyTPNAfwXTN2spVjDTB0ovh5x1H7bYQJb/zGPZbilfyLmgEqZCSsVTkWryJAIn6L5nnamQ+4W9hesPNtGQrrezo5DU5thCeJ1U03gFE1ORxJxnbkvKyKKRuMYuoDBdPXs4S2XYxDo6tAI63Wn4YJBiHF5ktiyphlCw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Nott87pMpqPJR41yq3setuRCQLYbuGkaVpsyNyAbexo=;
+ b=MTqgnV+baLn4X6A3hPLSwyv8lDDcpEgR4VdYvbUGXuGvmvmW58d9fn+dPAczJL44T/RNB/iLVJ3S20pDTg0I7J6fnyhDYr9n7BXLhAhJ/IM2ijsPc8g/+uNlQIZ2MpzHzeoRwB/UQgi8HZTDIcZxO63//8OgnhKU1g8CYsUmXPY4l6ztRX0PrNh7Qc6f1e7SRQ0jdwrfwAV9elTYMBw9p3sEkh3Zjm6o+oyuBcuKPEFmJde/1lURg+mlydXkwf0mA7k+wlVhZoZZ7Z5+LRl9jIWCjsI0RPmvN/gzSmxrXg6LuIJ/MNCiM8xYcc1cw3wHS1PE2sK26YzEhAe/MMMCAg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
+ by DM4PR12MB7549.namprd12.prod.outlook.com (2603:10b6:8:10f::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.17; Tue, 6 Feb
+ 2024 02:40:57 +0000
+Received: from BYAPR12MB2743.namprd12.prod.outlook.com
+ ([fe80::d726:fa79:bfce:f670]) by BYAPR12MB2743.namprd12.prod.outlook.com
+ ([fe80::d726:fa79:bfce:f670%7]) with mapi id 15.20.7270.012; Tue, 6 Feb 2024
+ 02:40:56 +0000
+References: <20240206010311.149103-1-jdamato@fastly.com>
+ <878r3ymlnk.fsf@nvidia.com> <20240206013246.GA11217@fastly.com>
+ <874jemml1j.fsf@nvidia.com> <20240206014151.GA11233@fastly.com>
+ <87zfwel5qi.fsf@nvidia.com> <20240206015657.GA11257@fastly.com>
+User-agent: mu4e 1.10.8; emacs 28.2
+From: Rahul Rameshbabu <rrameshbabu@nvidia.com>
+To: Joe Damato <jdamato@fastly.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, tariqt@nvidia.com,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>, "open list:MELLANOX MLX5 core VPI driver"
+ <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH net-next] eth: mlx5: link NAPI instances to queues and IRQs
+Date: Mon, 05 Feb 2024 18:38:41 -0800
+In-reply-to: <20240206015657.GA11257@fastly.com>
+Message-ID: <87sf26l3go.fsf@nvidia.com>
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR01CA0051.prod.exchangelabs.com (2603:10b6:a03:94::28)
+ To BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- shmbx06.spreadtrum.com (10.0.1.11)
-X-MAIL:SHSQR01.spreadtrum.com 4162buqD029897
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR12MB2743:EE_|DM4PR12MB7549:EE_
+X-MS-Office365-Filtering-Correlation-Id: 933c9777-bc41-4e65-33b6-08dc26bd0b88
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	EAtRNz2sqFrwUXepGuQVSN6AZlSywX2+nboXZdDB96XhZ6VQPPE03HhqgtyC2Kjx6AodKbhJuWViddA/9SIWEJa77zSQak+48utaJgKbmI8KnZuDcgalgQERfgHPxuk1KcKyfU389j+jfNAoTE52FklQl5G0pijLzg4my5AqiOk9g+s9NNXNmCXj87m4Hq21iE7vuy2056tzboR060SnsHo2KTX7ptyZoiB1RFHdD7YSLYfvBTQam9xun2OQXkuPm/AHGHa46XqciAKBIkocKqRlcl/0bPJWdefPy9jTtm+YUk4si3CSZb2lZPAp2K//YMRp7iW7WivXFldKgTzDZHbPnnci/Ff0ub6+012veLOGi+1pJ0CGFwk1GpcYKNnYKl3cvZUZgY6ri+oDj8cIDyD29UhRhnqU1dM3CrEWLG2z4vKreOmoCHpcD9jTPJxvJwqCuzSX1fTY4cAYJAInKgXKcwlSxmnDdUNMlDWTYcbiT7/qyZIX/qJvR9Hnyfdyt0X1heovIydI05q9FfE1UdMDwKkHWdUF5z8VQ/quaXnEirGS5IRYxnIUi8Dc7v53
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(346002)(39860400002)(136003)(376002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(41300700001)(66556008)(478600001)(4326008)(8936002)(66946007)(6486002)(8676002)(6916009)(316002)(36756003)(2906002)(5660300002)(86362001)(38100700002)(2616005)(6512007)(6506007)(54906003)(6666004)(26005)(83380400001)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?sPglla8n7Ur3UEa1KpVVCWVjLtZdOx2JP6bw8jMo9ax1ta5lnMkNvYoZuTnn?=
+ =?us-ascii?Q?afo1kA4PIUf7PKdMo1Ng76VF+i2NdosaKs3vy1CQ+8ctrXbQa1dLUIU5e4I6?=
+ =?us-ascii?Q?Z7wDULCPfD75Q2hk6ZYFYKf7bW7llwpr6w5h125E98Q/PKHqe/q0x6y4tajs?=
+ =?us-ascii?Q?P87i5C8TjyT33ga1Dn6KL5fChPZdHXkZeyVXdEJVozW52Rk1E6Vt7Xc3mBIr?=
+ =?us-ascii?Q?X7QMF9Bkb7hinXkwvp8fdiLiQOYaNRqNc+9ItS9K/JlpKAh8Wr8rWHTjLKxQ?=
+ =?us-ascii?Q?LtLssBvCfbb0Y6lV3dWK+suiLwkOmV6VOC2VPBD0uGvhQGIINOYNvyiwvUa0?=
+ =?us-ascii?Q?WpD6oCiI9xGqRj6huGcWmdD5MKIc2MdV6qM0lmfMVtDi/HTIPLDCTGcH5y0k?=
+ =?us-ascii?Q?bogS9WCaydD+o7BRJiwE1oIamU/lf7bN4WC34Wq5dP3uX7whcnXCDJ/CKo1g?=
+ =?us-ascii?Q?fp3p6flC5QilX1+pfOU66Zcv5X459SSCoSJCAdPmv9wyChMr/K5gV4RnaD36?=
+ =?us-ascii?Q?JQlrleUGW5jKNo/U/VyPXY1CLwCrMALmTgfYKBXeMBKxxedom09ZSPM61Cjs?=
+ =?us-ascii?Q?9X7k6moXak5bqdkprtdSHaJlghwTY2QoBIxuJgYoq5fJMwlPtz2J0J44QcCn?=
+ =?us-ascii?Q?5SVYFJ+YMUpxyogQ3nNaZ4rUsbJ29nPZzWAOcDD1WHsXmSXKuANaCw83Aj0f?=
+ =?us-ascii?Q?DbBChyJpAYBqu4EVrxHEtDRxhj5Fyv2N9vseYjf8vzzZsu5gIePrDzSYf4d7?=
+ =?us-ascii?Q?NWxm0jgPTRvq3j50S5F9Y37YMymx7CCzSzGvq9QxX1Rf6UF9p0M/L0ZE/Kx5?=
+ =?us-ascii?Q?8iuv205YdfTAEEQ/x14oniaGOrwuSUWT/UoGkE90Y7lStA/XJ587+ejLjiW9?=
+ =?us-ascii?Q?HT/4IJOTAxq5eMftDP7EYgjsTnEWy42jJfDSpQVjcbZK57b89Ibzr+0a7/tQ?=
+ =?us-ascii?Q?G4hvSY7GXblW9GD86TLAXSatMU13gUezQux2gGy3MQBRmbmmY2K1GOAYBRrx?=
+ =?us-ascii?Q?P50y55S0UQJVwz93PzN7kQk74TAw2tkVH5t3mbNWRASXL+8nz7mpS06xec1X?=
+ =?us-ascii?Q?GseS9q8TKuepVB1twQ57ltA0hxlO08toHdnEnFI60KtjfRI39x0ynPFr0rdZ?=
+ =?us-ascii?Q?R6UGZpqyAv1E31BtCXvi+oFabW/VK2xP9VbZy3GqpO5BbRP09nc5S6J54Qg2?=
+ =?us-ascii?Q?X+h/x0kc8p3RjX5xQWPVBj3e6KDLfif0/zXPmp/7G4ify8dLInoDAhn8e7N+?=
+ =?us-ascii?Q?84eBVpOE2pWQt8WaMgxPORBSpmtjDsJjK/urZhoM1kwrqO9PoP8SjhxQ7lVf?=
+ =?us-ascii?Q?nUK/KUcbJEqEOfqm4gG8JnKCOKr/u8ceNQbq/yrZLurYmHOod/AORUc4LYEK?=
+ =?us-ascii?Q?P2AoRufTPzbJ6VGD14f5uW/6NlgVGZudBMPMuZACSYy18en74BhkTu26cYQ3?=
+ =?us-ascii?Q?vi4oln7reE96ldnXzyGqqlajfjB9nI0QIMPtVAPDfl61gnemEvRx7/X4Ehff?=
+ =?us-ascii?Q?QEAfaQZIuLKgtkQ/Ivbc4Xs/kFBmNnQ3NZHXbXmaJJzn2NGNirAhJnPhyyMm?=
+ =?us-ascii?Q?eS3SWb5KO9qsla6Cr0LOelXAxRARXSZ4wlgeTDGx0QArgYSXzyWKxb4dNj/5?=
+ =?us-ascii?Q?Yw=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 933c9777-bc41-4e65-33b6-08dc26bd0b88
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2024 02:40:56.5513
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ia1GSg4kEAEtjGMXqr8qOIZ9BqBeqpwT1At5eei5ok0aVQ+aFwVoJfbbS4K9gWHlI9ay8XMmuO5i/SEe7D7LCw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7549
 
-From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+On Mon, 05 Feb, 2024 17:56:58 -0800 Joe Damato <jdamato@fastly.com> wrote:
+> On Mon, Feb 05, 2024 at 05:44:27PM -0800, Rahul Rameshbabu wrote:
+>> 
+>> On Mon, 05 Feb, 2024 17:41:52 -0800 Joe Damato <jdamato@fastly.com> wrote:
+>> > On Mon, Feb 05, 2024 at 05:33:39PM -0800, Rahul Rameshbabu wrote:
+>> >> 
+>> >> On Mon, 05 Feb, 2024 17:32:47 -0800 Joe Damato <jdamato@fastly.com> wrote:
+>> >> > On Mon, Feb 05, 2024 at 05:09:09PM -0800, Rahul Rameshbabu wrote:
+>> >> >> On Tue, 06 Feb, 2024 01:03:11 +0000 Joe Damato <jdamato@fastly.com> wrote:
+>> >> >> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+>> >> >> > index c8e8f512803e..e1bfff1fb328 100644
+>> >> >> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+>> >> >> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+>> >> >> > @@ -2473,6 +2473,9 @@ static void mlx5e_close_queues(struct mlx5e_channel *c)
+>> >> >> >  	mlx5e_close_tx_cqs(c);
+>> >> >> >  	mlx5e_close_cq(&c->icosq.cq);
+>> >> >> >  	mlx5e_close_cq(&c->async_icosq.cq);
+>> >> >> > +
+>> >> >> > +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_TX, NULL);
+>> >> >> > +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_RX, NULL);
+>> >> >> 
+>> >> >> This should be set to NULL *before* actually closing the rqs, sqs, and
+>> >> >> related cqs right? I would expect these two lines to be the first ones
+>> >> >> called in mlx5e_close_queues. Btw, I think this should be done in
+>> >> >> mlx5e_deactivate_channel where the NAPI is disabled.
+>> >> >> 
+>> >> >> >  }
+>> >> >> >  
+>> >> >> >  static u8 mlx5e_enumerate_lag_port(struct mlx5_core_dev *mdev, int ix)
+>> >> >> > @@ -2558,6 +2561,7 @@ static int mlx5e_open_channel(struct mlx5e_priv *priv, int ix,
+>> >> >> >  	c->stats    = &priv->channel_stats[ix]->ch;
+>> >> >> >  	c->aff_mask = irq_get_effective_affinity_mask(irq);
+>> >> >> >  	c->lag_port = mlx5e_enumerate_lag_port(priv->mdev, ix);
+>> >> >> > +	c->irq		= irq;
+>> >> >> >  
+>> >> >> >  	netif_napi_add(netdev, &c->napi, mlx5e_napi_poll);
+>> >> >> >  
+>> >> >> > @@ -2602,6 +2606,10 @@ static void mlx5e_activate_channel(struct mlx5e_channel *c)
+>> >> >> >  		mlx5e_activate_xsk(c);
+>> >> >> >  	else
+>> >> >> >  		mlx5e_activate_rq(&c->rq);
+>> >> >> > +
+>> >> >> > +	netif_napi_set_irq(&c->napi, c->irq);
+>> >> 
+>> >> One small comment that I missed in my previous iteration. I think the
+>> >> above should be moved to mlx5e_open_channel right after netif_napi_add.
+>> >> This avoids needing to save the irq in struct mlx5e_channel.
+>> >
+>> > I couldn't move it to mlx5e_open_channel because of how safe_switch_params
+>> > and the mechanics around that seem to work (at least as far as I could
+>> > tell).
+>> >
+>> > mlx5 seems to create a new set of channels before closing the previous
+>> > channel. So, moving this logic to open_channels and close_channels means
+>> > you end up with a flow like this:
+>> >
+>> >   - Create new channels (NAPI netlink API is used to set NAPIs)
+>> >   - Old channels are closed (NAPI netlink API sets NULL and overwrites the
+>> >     previous NAPI netlink calls)
+>> >
+>> > Now, the associations are all NULL.
+>> >
+>> > I think moving the calls to active / deactivate fixes that problem, but
+>> > requires that irq is stored, if I am understanding the driver correctly.
+>> 
+>> I believe moving the changes to activate / deactivate channels resolves
+>> this problem because only one set of channels will be active, so you
+>> will no longer have dangling association conflicts for the queue ->
+>> napi. This is partially why I suggested the change in that iteration.
+>
+> As far as I can tell, it does.
+>  
+>> As for netif_napi_set_irq, that alone can be in mlx5e_open_channel (that
+>> was the intention of my most recent comment. Not that all the other
+>> associations should be moved as well). I agree that the other
+>> association calls should be part of activate / deactivate channels.
+>
+> OK, sure that makes sense. I make that change, too.
+>
 
-Currently, request's ioprio are set via task's schedule priority(when no
-blkcg configured), which has high priority tasks possess the privilege on
-both of CPU and IO scheduling. Furthermore, most of the write requestes
-are launched asynchronosly from kworker which can't know the submitter's
-priorities.
-This commit works as a hint of original policy by promoting the request
-ioprio based on the page/folio's activity. The original idea comes from
-LRU_GEN which provides more precised folio activity than before. This
-commit try to adjust the request's ioprio when certain part of its folios
-are hot, which indicate that this request carry important contents and
-need be scheduled ealier.
+Also for your v2, it would be great if you can use the commit message
+subject 'net/mlx5e: link NAPI instances to queues and IRQs' rather than
+'eth: mlx5: link NAPI instances to queues and IRQs'.
 
-The filesystem should call bio_set_active_ioprio_folio() after
-calling bio_add_folio. Please be noted that this set of API can not
-handle bvec_try_merge_page cases.
+--
+Thanks,
 
-This commit is verified on a v6.6 6GB RAM android14 system via 4 test cases
-by calling bio_set_active_ioprio in erofs, ext4, f2fs and blkdev(raw
-partition of gendisk)
-
-Case 1:
-script[a] which get significant improved fault time as expected[b]*
-where dd's cost also shrink from 55s to 40s.
-(1). fault_latency.bin is an ebpf based test tool which measure all task's
-   iowait latency during page fault when scheduled out/in.
-(2). costmem generate page fault by mmaping a file and access the VA.
-(3). dd generate concurrent vfs io.
-
-[a]
-/fault_latency.bin 1 5 > /data/dd_costmem &
-costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-dd if=/dev/block/sda of=/data/ddtest bs=1024 count=2048000 &
-dd if=/dev/block/sda of=/data/ddtest1 bs=1024 count=2048000 &
-dd if=/dev/block/sda of=/data/ddtest2 bs=1024 count=2048000 &
-dd if=/dev/block/sda of=/data/ddtest3 bs=1024 count=2048000
-[b]
-                       mainline		commit
-io wait                736us            523us
-
-* provide correct result for test case 1 in v7 which was compared between
-EMMC and UFS wrongly.
-
-Case 2:
-fio -filename=/dev/block/by-name/userdata -rw=randread -direct=0 -bs=4k -size=2000M -numjobs=8 -group_reporting -name=mytest
-mainline: 513MiB/s
-READ: bw=531MiB/s (557MB/s), 531MiB/s-531MiB/s (557MB/s-557MB/s), io=15.6GiB (16.8GB), run=30137-30137msec
-READ: bw=543MiB/s (569MB/s), 543MiB/s-543MiB/s (569MB/s-569MB/s), io=15.6GiB (16.8GB), run=29469-29469msec
-READ: bw=474MiB/s (497MB/s), 474MiB/s-474MiB/s (497MB/s-497MB/s), io=15.6GiB (16.8GB), run=33724-33724msec
-READ: bw=535MiB/s (561MB/s), 535MiB/s-535MiB/s (561MB/s-561MB/s), io=15.6GiB (16.8GB), run=29928-29928msec
-READ: bw=523MiB/s (548MB/s), 523MiB/s-523MiB/s (548MB/s-548MB/s), io=15.6GiB (16.8GB), run=30617-30617msec
-READ: bw=492MiB/s (516MB/s), 492MiB/s-492MiB/s (516MB/s-516MB/s), io=15.6GiB (16.8GB), run=32518-32518msec
-READ: bw=533MiB/s (559MB/s), 533MiB/s-533MiB/s (559MB/s-559MB/s), io=15.6GiB (16.8GB), run=29993-29993msec
-READ: bw=524MiB/s (550MB/s), 524MiB/s-524MiB/s (550MB/s-550MB/s), io=15.6GiB (16.8GB), run=30526-30526msec
-READ: bw=529MiB/s (554MB/s), 529MiB/s-529MiB/s (554MB/s-554MB/s), io=15.6GiB (16.8GB), run=30269-30269msec
-READ: bw=449MiB/s (471MB/s), 449MiB/s-449MiB/s (471MB/s-471MB/s), io=15.6GiB (16.8GB), run=35629-35629msec
-
-commit: 633MiB/s
-READ: bw=668MiB/s (700MB/s), 668MiB/s-668MiB/s (700MB/s-700MB/s), io=15.6GiB (16.8GB), run=23952-23952msec
-READ: bw=589MiB/s (618MB/s), 589MiB/s-589MiB/s (618MB/s-618MB/s), io=15.6GiB (16.8GB), run=27164-27164msec
-READ: bw=638MiB/s (669MB/s), 638MiB/s-638MiB/s (669MB/s-669MB/s), io=15.6GiB (16.8GB), run=25071-25071msec
-READ: bw=714MiB/s (749MB/s), 714MiB/s-714MiB/s (749MB/s-749MB/s), io=15.6GiB (16.8GB), run=22409-22409msec
-READ: bw=600MiB/s (629MB/s), 600MiB/s-600MiB/s (629MB/s-629MB/s), io=15.6GiB (16.8GB), run=26669-26669msec
-READ: bw=592MiB/s (621MB/s), 592MiB/s-592MiB/s (621MB/s-621MB/s), io=15.6GiB (16.8GB), run=27036-27036msec
-READ: bw=691MiB/s (725MB/s), 691MiB/s-691MiB/s (725MB/s-725MB/s), io=15.6GiB (16.8GB), run=23150-23150msec
-READ: bw=569MiB/s (596MB/s), 569MiB/s-569MiB/s (596MB/s-596MB/s), io=15.6GiB (16.8GB), run=28142-28142msec
-READ: bw=563MiB/s (590MB/s), 563MiB/s-563MiB/s (590MB/s-590MB/s), io=15.6GiB (16.8GB), run=28429-28429msec
-READ: bw=712MiB/s (746MB/s), 712MiB/s-712MiB/s (746MB/s-746MB/s), io=15.6GiB (16.8GB), run=22478-22478msec
-
-Case 3:
-This commit is also verified by the case of launching camera APP which is
-usually considered as heavy working load on both of memory and IO, which
-shows 12%-24% improvement.
-
-		ttl = 0		ttl = 50	ttl = 100
-mainline        2267ms		2420ms		2316ms
-commit          1992ms          1806ms          1998ms
-
-case 4:
-androbench has no improvment as well as regression in RD/WR test item
-while make a 3% improvement in sqlite items.
-
-Suggested-by: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
----
-change of v2: calculate page's activity via helper function
-change of v3: solve layer violation by move API into mm
-change of v4: keep block clean by removing the page related API
-change of v5: introduce the macros of bio_add_folio/page for read dir.
-change of v6: replace the macro of bio_add_xxx by submit_bio which
-                iterating the bio_vec before launching bio to block layer
-change of v7: introduce the function bio_set_active_ioprio
-              provide updated test result
-change of v8: provide two sets of APIs for bio_set_active_ioprio_xxx
-change of v9: modify the code according to Matthew's opinion, leave
-	      bio_set_active_ioprio_folio only
----
----
- block/Kconfig       | 15 +++++++++++++++
- block/bio.c         | 33 +++++++++++++++++++++++++++++++++
- include/linux/bio.h |  1 +
- 3 files changed, 49 insertions(+)
-
-diff --git a/block/Kconfig b/block/Kconfig
-index f1364d1c0d93..fb3a888194c0 100644
---- a/block/Kconfig
-+++ b/block/Kconfig
-@@ -228,6 +228,21 @@ config BLOCK_HOLDER_DEPRECATED
- config BLK_MQ_STACKING
- 	bool
- 
-+config BLK_CONT_ACT_BASED_IOPRIO
-+	bool "Enable content activity based ioprio"
-+	depends on LRU_GEN
-+	default n
-+	help
-+	  This item enable the feature of adjust bio's priority by
-+	  calculating its content's activity.
-+	  This feature works as a hint of original bio_set_ioprio
-+	  which means rt task get no change of its bio->bi_ioprio
-+	  while other tasks have the opportunity to raise the ioprio
-+	  if the bio take certain numbers of active pages.
-+	  The file system should use the API after bio_add_folio for
-+	  their buffered read/write/sync function to adjust the
-+	  bio->bi_ioprio.
-+
- source "block/Kconfig.iosched"
- 
- endif # BLOCK
-diff --git a/block/bio.c b/block/bio.c
-index 816d412c06e9..2c0b8f2ae4d4 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -1476,6 +1476,39 @@ void bio_set_pages_dirty(struct bio *bio)
- }
- EXPORT_SYMBOL_GPL(bio_set_pages_dirty);
- 
-+/*
-+ * bio_set_active_ioprio_folio is helper function to count the bio's
-+ * content's activities which measured by MGLRU.
-+ * The file system should call this function after bio_add_page/folio for
-+ * the buffered read/write/sync.
-+ */
-+#ifdef CONFIG_BLK_CONT_ACT_BASED_IOPRIO
-+void bio_set_active_ioprio_folio(struct bio *bio, struct folio *folio)
-+{
-+	int class, level, hint;
-+	int activities;
-+
-+	/*
-+	 * use bi_ioprio to record the activities, assume no one will set it
-+	 * before submit_bio
-+	 */
-+	bio->bi_ioprio += folio_test_workingset(folio) ? 1 : 0;
-+	activities = IOPRIO_PRIO_DATA(bio->bi_ioprio);
-+	level = IOPRIO_PRIO_LEVEL(bio->bi_ioprio);
-+	hint = IOPRIO_PRIO_HINT(bio->bi_ioprio);
-+
-+	if (activities > bio->bi_vcnt / 2)
-+		class = IOPRIO_CLASS_RT;
-+	else if (activities > bio->bi_vcnt / 4)
-+		class = max(IOPRIO_PRIO_CLASS(get_current_ioprio()), IOPRIO_CLASS_BE);
-+
-+	bio->bi_ioprio = IOPRIO_PRIO_VALUE_HINT(class, level, hint);
-+}
-+#else
-+void bio_set_active_ioprio_folio(struct bio *bio, struct folio *folio) {}
-+#endif
-+EXPORT_SYMBOL_GPL(bio_set_active_ioprio_folio);
-+
- /*
-  * bio_check_pages_dirty() will check that all the BIO's pages are still dirty.
-  * If they are, then fine.  If, however, some pages are clean then they must
-diff --git a/include/linux/bio.h b/include/linux/bio.h
-index 41d417ee1349..6c36546f6b9b 100644
---- a/include/linux/bio.h
-+++ b/include/linux/bio.h
-@@ -487,6 +487,7 @@ void bio_iov_bvec_set(struct bio *bio, struct iov_iter *iter);
- void __bio_release_pages(struct bio *bio, bool mark_dirty);
- extern void bio_set_pages_dirty(struct bio *bio);
- extern void bio_check_pages_dirty(struct bio *bio);
-+void bio_set_active_ioprio_folio(struct bio *bio, struct folio *folio);
- 
- extern void bio_copy_data_iter(struct bio *dst, struct bvec_iter *dst_iter,
- 			       struct bio *src, struct bvec_iter *src_iter);
--- 
-2.25.1
-
+Rahul Rameshbabu
 
