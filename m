@@ -1,142 +1,150 @@
-Return-Path: <linux-kernel+bounces-54566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54567-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C51884B0CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:11:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF5F584B0D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:14:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 489F028225D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:11:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 041741C21C6B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:14:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7609912D141;
-	Tue,  6 Feb 2024 09:11:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rlC2veuO"
-Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4083912C81F;
+	Tue,  6 Feb 2024 09:14:23 +0000 (UTC)
+Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 314EF12A159
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 09:11:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2C685B687;
+	Tue,  6 Feb 2024 09:14:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707210691; cv=none; b=oiwpvPmOKflkwmlZWeP6aoVP5Ta033G7MpXK/WJldEgXlkIFK4XSXfBk+sEv+XEBFn3eJ+GXxIJ4PlUt7BxSOP9rW4RJX3upzVyMVGVUSRcHcg5qp/rQ7nYpAyphpTUo16AlxQMJcGRqAGRGC2deKPiMT2mvBGZbdE9PMMx515I=
+	t=1707210862; cv=none; b=TUzaRRJj0/lF1aSA7PsdUisXCP1PEVL1vZLZP5KiF58TvEAx01s6pvWKuNU+HWfW5g6jXZjRw75v5d/LiqceG8hNKVEjxq2Mr2ILM5lIJNZVNlkkPxGh5oHKD/7KoSFjs2iiVmDO7M5y7rqggCslKrt8RZNK9SY9ozFaCWOSmT8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707210691; c=relaxed/simple;
-	bh=rfF/2hEZvke0SrtkyH4eMd943eOFLhj786txrpm8IRc=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=tTKTvBRiBVZ6pFCE+t2qENUZojH7pyS8O5tXIPiS1irkNF7hpY1MDfOfhHOUau1czHg5RVhnOFvm7WYrzmtuoaeS/fTz50iDdzH9qFxGR+6Ja8gXeXmYLH5ADOKDrjNtqwEgOZXbl6bR/tO5bj7/s1LTJ0NEmRhwrbdDCyPEJHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rlC2veuO; arc=none smtp.client-ip=209.85.221.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-4b978e5e240so2172399e0c.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 01:11:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707210689; x=1707815489; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Dt8kqDOU/E24oKSolewG5gpnabtVYYG3lPQtya8JjLk=;
-        b=rlC2veuOyWZQRcKxlt7MC1NjBYmpD+03HNQNRlVPH/rXxhZE2Tpkw8yitNkN1wlF1Y
-         aX09qW9wd8/QTG41QQcd8rE+MZColHBD8VssWkG0zu9TsvXozH1UhiYP1sYN2lAdSd0p
-         gngYBDfRLTE5UlMGjxLPR/OJcLfrFiUTH+DyDEYz/wGHjkCJPbv+o5roM6CIe9ZmE2QP
-         Bzbyberz0WZc11UfasTJ8rhuzuVl+VjfjBU3o6xOPkwA70eH/WiUxxkW5jJK+J87jHTT
-         YYvdobpSk6lENCcIcIpHPxNQPphk1+ev/pr3x1DgiU40HQu8GWWCk3K9qXk76gl8/XxQ
-         BjpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707210689; x=1707815489;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Dt8kqDOU/E24oKSolewG5gpnabtVYYG3lPQtya8JjLk=;
-        b=MGxT0yeWa2etbWskd1bk3CtvbLW+rZb+8iVjN7cmqponw4y/IWYMNdrfTO8R6mfp1h
-         NcuNIFcMq9G0g/zArvgbEFYcoRbEcbs+F6TBXssOAHsCUW0uFZbxLdkh2rIP0zwtFYvn
-         6QWA387jW2arJ4GfDRiO6hqR0fXZGspE/17zCrP+0BmN1npwzFw4AATqlF22KW9XD3j4
-         8rryyqJjgtSGRtF06rB3Qx6iIGcc464U6tOMfBRxRABV/MDYVlfEhtfNgwkn3H4JhPBh
-         qZczHEBUb0RRsCFqQ+cBMQaLDudl72AkBgrZevi+KGSQLTxy645fQLJ/vSUoQ6/T39Cf
-         6wvw==
-X-Gm-Message-State: AOJu0Yxw8sYH0ZfokpnW+rMzn9+MCaQYcCQZ4E+iwCLzPvmAbiVbvF7V
-	9OT7/vgH/9BJGNV7M9yVmm7lme76TP4oBIqrbhTgUqIdwRDNf4yieUVjRm1EgK+gDHpjgWwDikd
-	zdfTk5t9Y8d7n9jhkZZKiH4E7F2H6eTolygx6UQ==
-X-Google-Smtp-Source: AGHT+IF6WWYrlBchEW0hvYZVNUtoLNY60FaTDcfmV9bCAdemD+s2jyOnG/4mz1rNqY28ZHvSjRzTK9XeDR3BEloMUHA=
-X-Received: by 2002:ac5:c64f:0:b0:4c0:1a5c:9185 with SMTP id
- j15-20020ac5c64f000000b004c01a5c9185mr1828685vkl.4.1707210689106; Tue, 06 Feb
- 2024 01:11:29 -0800 (PST)
+	s=arc-20240116; t=1707210862; c=relaxed/simple;
+	bh=bEoN3M17mEv9B3162HEP9uHxhQ9Pp2M9knWH2/SA5EY=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=kwF1dzDrNwRvXfKguHF6AkKS7nhvX7p+iwKCq626HIlHQcW37FH3u5QpQdxJy1lWMsMKEUTYXobq9M+rxzNw9OUgzg4kLdQG3hZ1/fSc/Dnj5onx1kAR51DjUn4DxC04gnY56ssGs9V79Akh2VISlhb6IQSxRl12RIDPzKZIxas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=free.fr; spf=pass smtp.mailfrom=free.fr; arc=none smtp.client-ip=212.27.42.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=free.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
+Received: from [IPV6:2a01:e34:ec1e:c710:76bc:3b92:8186:7430] (unknown [IPv6:2a01:e34:ec1e:c710:76bc:3b92:8186:7430])
+	(Authenticated sender: lagiraudiere@free.fr)
+	by smtp2-g21.free.fr (Postfix) with ESMTPSA id 0F4BA2005A5;
+	Tue,  6 Feb 2024 10:14:04 +0100 (CET)
+Message-ID: <eac660b7-5202-4ea1-836c-8d3cdb97c5d4@free.fr>
+Date: Tue, 6 Feb 2024 10:14:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Tue, 6 Feb 2024 14:41:17 +0530
-Message-ID: <CA+G9fYttTwsbFuVq10igbSvP5xC6bf_XijM=mpUqrJV=uvUirQ@mail.gmail.com>
-Subject: next: /dev/root: Can't open blockdev
-To: linux-block <linux-block@vger.kernel.org>, 
-	Linux-Next Mailing List <linux-next@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
-	Linux Regressions <regressions@lists.linux.dev>, linux-fsdevel@vger.kernel.org, 
-	lkft-triage@lists.linaro.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Christian Brauner <brauner@kernel.org>, 
-	Dan Carpenter <dan.carpenter@linaro.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Jan Kara <jack@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+From: =?UTF-8?Q?Jean-Lo=C3=AFc_Charroud?= <lagiraudiere+linux@free.fr>
+Subject: [PATCH] ALSA: hda/realtek: cs35l41: Fix internal speaker support for
+ ASUS UM3402 with missing DSD
+To: Stefan Binding <sbinding@opensource.cirrus.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Richard Fitzgerald <rf@opensource.cirrus.com>,
+ linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+ patches@opensource.cirrus.com
+Content-Language: en-US, fr-FR
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-All qemu's mount rootfs failed on Linux next-20230206 tag due to the following
-kernel crash.
+Fix device ID for "ASUS UM3402" and "ASUS UM6702RA/RC".
+Add DSD values for "ASUS UM3402" to cs35l41_config_table[].
+Reorder alc269_fixup_tbl[] by device id and remove duplicate QUIRK
+entry for device {0x1043, 0x1f62, "ASUS UX7602ZM"}.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Signed-off-by: Jean-Loïc Charroud <lagiraudiere+linux@free.fr>
+---
+  sound/pci/hda/cs35l41_hda_property.c | 2 ++
+  sound/pci/hda/patch_realtek.c        | 7 +++----
+  2 files changed, 5 insertions(+), 4 deletions(-)
 
-Crash log:
----------
-<3>[    3.257960] /dev/root: Can't open blockdev
-<4>[    3.258940] VFS: Cannot open root device "/dev/sda" or
-unknown-block(8,0): error -16
-<4>[    3.259704] Please append a correct "root=" boot option; here
-are the available partitions:
-<4>[    3.261088] 0800         2500336 sda
-<4>[    3.261186]  driver: sd
-<4>[    3.262260] 0b00         1048575 sr0
-<4>[    3.262409]  driver: sr
-<3>[    3.263022] List of all bdev filesystems:
-<3>[    3.263553]  ext3
-<3>[    3.263708]  ext2
-<3>[    3.263994]  ext4
-<3>[    3.264160]  vfat
-<3>[    3.264419]  msdos
-<3>[    3.264589]  iso9660
-<3>[    3.264773]
-<0>[    3.265665] Kernel panic - not syncing: VFS: Unable to mount
-root fs on unknown-block(8,0)
-<4>[    3.266991] CPU: 0 PID: 1 Comm: swapper/0 Not tainted
-6.8.0-rc3-next-20240206 #1
-<4>[    3.267593] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
-BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-<4>[    3.268937] Call Trace:
-<4>[    3.269316]  <TASK>
-<4>[    3.270113]  dump_stack_lvl+0x71/0xb0
-<4>[    3.271837]  dump_stack+0x14/0x20
-<4>[    3.272128]  panic+0x12f/0x2f0
-<4>[    3.272812]  ? _printk+0x5d/0x80
-<4>[    3.273097]  mount_root_generic+0x26e/0x2b0
-<4>[    3.273941]  mount_block_root+0x3f/0x50
-<4>[    3.274212]  mount_root+0x60/0x80
-<4>[    3.274610]  prepare_namespace+0x7a/0xb0
-<4>[    3.276008]  kernel_init_freeable+0x137/0x180
-<4>[    3.276285]  ? __pfx_kernel_init+0x10/0x10
-<4>[    3.276563]  kernel_init+0x1e/0x1a0
-<4>[    3.276837]  ret_from_fork+0x45/0x50
-<4>[    3.277319]  ? __pfx_kernel_init+0x10/0x10
-<4>[    3.278176]  ret_from_fork_asm+0x1a/0x30
-<4>[    3.278560]  </TASK>
-<0>[    3.280750] Kernel Offset: 0x1a800000 from 0xffffffff81000000
-(relocation range: 0xffffffff80000000-0xffffffffbfffffff)
-<0>[    3.281985] ---[ end Kernel panic - not syncing: VFS: Unable to
-mount root fs on unknown-block(8,0) ]---
+diff --git a/sound/pci/hda/cs35l41_hda_property.c 
+b/sound/pci/hda/cs35l41_hda_property.c
+index 923c0813fa08..d8cd62ef6afc 100644
+--- a/sound/pci/hda/cs35l41_hda_property.c
++++ b/sound/pci/hda/cs35l41_hda_property.c
+@@ -102,6 +102,7 @@ static const struct cs35l41_config 
+cs35l41_config_table[] = {
+      { "10431D1F", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 
+0, 1, -1, 1000, 4500, 24 },
+      { "10431DA2", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 
+1, 2, 0, 0, 0, 0 },
+      { "10431E02", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 
+1, 2, 0, 0, 0, 0 },
++    { "10431E12", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 
+0, 1, -1, 0, 0, 0 },
+      { "10431EE2", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 
+0, -1, -1, 0, 0, 0 },
+      { "10431F12", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 
+0, 1, -1, 1000, 4500, 24 },
+      { "10431F1F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 
+1, -1, 0, 0, 0, 0 },
+@@ -485,6 +486,7 @@ static const struct cs35l41_prop_model 
+cs35l41_prop_model_table[] = {
+      { "CSC3551", "10431D1F", generic_dsd_config },
+      { "CSC3551", "10431DA2", generic_dsd_config },
+      { "CSC3551", "10431E02", generic_dsd_config },
++    { "CSC3551", "10431E12", generic_dsd_config },
+      { "CSC3551", "10431EE2", generic_dsd_config },
+      { "CSC3551", "10431F12", generic_dsd_config },
+      { "CSC3551", "10431F1F", generic_dsd_config },
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 7aa88ed04bde..16cb19eee589 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9893,6 +9893,7 @@ static const struct snd_pci_quirk 
+alc269_fixup_tbl[] = {
+      SND_PCI_QUIRK(0x1043, 0x1662, "ASUS GV301QH", 
+ALC294_FIXUP_ASUS_DUAL_SPK),
+      SND_PCI_QUIRK(0x1043, 0x1663, "ASUS GU603ZI/ZJ/ZQ/ZU/ZV", 
+ALC285_FIXUP_ASUS_HEADSET_MIC),
+      SND_PCI_QUIRK(0x1043, 0x1683, "ASUS UM3402YAR", 
+ALC287_FIXUP_CS35L41_I2C_2),
++    SND_PCI_QUIRK(0x1043, 0x16a3, "ASUS UX3402VA", 
+ALC245_FIXUP_CS35L41_SPI_2),
+      SND_PCI_QUIRK(0x1043, 0x16b2, "ASUS GU603", ALC289_FIXUP_ASUS_GA401),
+      SND_PCI_QUIRK(0x1043, 0x16d3, "ASUS UX5304VA", 
+ALC245_FIXUP_CS35L41_SPI_2),
+      SND_PCI_QUIRK(0x1043, 0x16e3, "ASUS UX50", ALC269_FIXUP_STEREO_DMIC),
+@@ -9936,14 +9937,12 @@ static const struct snd_pci_quirk 
+alc269_fixup_tbl[] = {
+      SND_PCI_QUIRK(0x1043, 0x1d4e, "ASUS TM420", ALC256_FIXUP_ASUS_HPE),
+      SND_PCI_QUIRK(0x1043, 0x1da2, "ASUS UP6502ZA/ZD", 
+ALC245_FIXUP_CS35L41_SPI_2),
+      SND_PCI_QUIRK(0x1043, 0x1e02, "ASUS UX3402ZA", 
+ALC245_FIXUP_CS35L41_SPI_2),
+-    SND_PCI_QUIRK(0x1043, 0x16a3, "ASUS UX3402VA", 
+ALC245_FIXUP_CS35L41_SPI_2),
+-    SND_PCI_QUIRK(0x1043, 0x1f62, "ASUS UX7602ZM", 
+ALC245_FIXUP_CS35L41_SPI_2),
+      SND_PCI_QUIRK(0x1043, 0x1e11, "ASUS Zephyrus G15", 
+ALC289_FIXUP_ASUS_GA502),
+-    SND_PCI_QUIRK(0x1043, 0x1e12, "ASUS UM6702RA/RC", 
+ALC287_FIXUP_CS35L41_I2C_2),
++    SND_PCI_QUIRK(0x1043, 0x1e12, "ASUS UM3402", 
+ALC287_FIXUP_CS35L41_I2C_2),
+      SND_PCI_QUIRK(0x1043, 0x1e51, "ASUS Zephyrus M15", 
+ALC294_FIXUP_ASUS_GU502_PINS),
+      SND_PCI_QUIRK(0x1043, 0x1e5e, "ASUS ROG Strix G513", 
+ALC294_FIXUP_ASUS_G513_PINS),
+      SND_PCI_QUIRK(0x1043, 0x1e8e, "ASUS Zephyrus G15", 
+ALC289_FIXUP_ASUS_GA401),
+-    SND_PCI_QUIRK(0x1043, 0x1ee2, "ASUS UM3402", 
+ALC287_FIXUP_CS35L41_I2C_2),
++    SND_PCI_QUIRK(0x1043, 0x1ee2, "ASUS UM6702RA/RC", 
+ALC287_FIXUP_CS35L41_I2C_2),
+      SND_PCI_QUIRK(0x1043, 0x1c52, "ASUS Zephyrus G15 2022", 
+ALC289_FIXUP_ASUS_GA401),
+      SND_PCI_QUIRK(0x1043, 0x1f11, "ASUS Zephyrus G14", 
+ALC289_FIXUP_ASUS_GA401),
+      SND_PCI_QUIRK(0x1043, 0x1f12, "ASUS UM5302", 
+ALC287_FIXUP_CS35L41_I2C_2),
+-- 
+2.40.1
 
-
-Links:
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240206/testrun/22547673/suite/log-parser-test/test/check-kernel-panic/log
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240206/testrun/22547673/suite/log-parser-test/tests/
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
