@@ -1,141 +1,130 @@
-Return-Path: <linux-kernel+bounces-54320-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54321-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3FD784ADA0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 05:40:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E25584ADA2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 05:41:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 028DA1C23CCE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:40:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 598BD285E90
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:41:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6D197CF00;
-	Tue,  6 Feb 2024 04:39:33 +0000 (UTC)
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8253677F2E;
+	Tue,  6 Feb 2024 04:41:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="LZOegb8m"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E66E57C088
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 04:39:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34E677319A;
+	Tue,  6 Feb 2024 04:41:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707194373; cv=none; b=mkEjixLMhAbcVFtGPQ2bsia9spPaDbSDSPrt/Qt4VSHp7m2CFHJySM1ArHtFwvsfMJ0VmtrY8UmKLNmQOK42swHM4Kus4T6sdq58aoesZ1wMsLH1N/P1efltEZZ4ctS6zA/0HtbVa/qB9ldEqgkgFOOHtKdd2hpmR3mv86eZWfQ=
+	t=1707194510; cv=none; b=MNC2iXKNXFwLGOQ6qvsoSmqqHwvcXCFYoP4oHCdQcTSIoBo//Hh8vSFGR1eNGShElsq30muctAvoyoO98J5O8pFLwjqiWZbL/K9u1IaXDklVzcgFNgyCKEZjkJhsnb9zbXZZA63EdY31GE/HiUzlf3d/ioaygBcbGXfg4cGy8P8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707194373; c=relaxed/simple;
-	bh=D0GWn07QSrQNKcLM0EZX6f62nVaGa9qePJ8JuBS0Phc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=C2Xs6zTeFs2mCEuo6OfDCt3S2WH/yaDM5eEA6qzVrJlcdQvBCUkHglXS0nijE4jNvz6gLGrN6u7qHyE0LUB/ho12LJRxkChPqUJ2fkViG4/2Sux8FmKJO1Ub2jJ69KJG0RgMu1CRyXcVbPICfDBu2pkegCkDeV+luz//54wEcl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-68c794970d5so1499356d6.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 20:39:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707194370; x=1707799170;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OweXHWUMGZlBLk7CQUqL8P+eAADd+iVa1P4u5q9wuCA=;
-        b=s+34o9Lo7gaR+7862p3T4u3BguXCwUF/04Wk6Mhou61MyoBvbRRIlx9LuE51diomvv
-         xwxIUyAFKXrwnNdEGcYz2QD7dJKaEoCQYzm6l7ahPIKWL/85D2xH+b9yCiQs8AsDDJLC
-         TntNnbghvPpJIvwPx9yVxJQgd2e6qFSZN9xVKZeddPxa5h4mQElnl+So35l3uBABeLgs
-         d+PPSZ81n8YzVwzU0pb9GONr7u9GcpheJAjVXdcsH33v0w2T7v7a+W2HG+QWL/SsELNp
-         FHmDHNJQc/lv5ZIZ7gd5MXdLIW5r6cM/9iAMRrXq6L8ScDoPLfmK2sBiaAlZBVQRPQ0e
-         eiHg==
-X-Gm-Message-State: AOJu0YzL/Yu9B+xSyWCZXdpw7VPov+65f/novCyigkSw7BWr12QR4PGY
-	GGjCIalb5shxikLsN/q+aC+7LW/zGaVwYnO833SmkZwRge3QhzQF9YEMegqJbs9cLA==
-X-Google-Smtp-Source: AGHT+IF3mi+rmRAok/VSPYBZN3kyqm7aNnS3Pl97TIRUsLUB1I/FBvbY+HSN98zr17n4c5YaPBHZuw==
-X-Received: by 2002:a05:6214:1d28:b0:68c:8218:30a2 with SMTP id f8-20020a0562141d2800b0068c821830a2mr19466751qvd.0.1707194370393;
-        Mon, 05 Feb 2024 20:39:30 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXB1wpEtOw8AUVfamqVIhtmaNPh6FPGwA2PmblCOucWpKiQRbP+BXxOBdLCHMdyOborem7tLZ57EHPgpRd+APgTYiK1ZS1vyrAusIYSyQIZO4ZFr7lKnovzUyv3r5MQJDSZ5YwZLPGUwKY7i2UQpN16Ki3eYT007ocCN2IXFCJlAxG51hf0RP03NoCPJrHEXBH5r3jSPe1++5ExseB+V141RZ5cYAbc4UZGhVXoMv3CguHKD1XX1FZhUT73xjaMByYlcYzGaoX+rcAkdyyzfIDkLzv1WGRqRiMUPzCi3vbIl74lkVc=
-Received: from localhost (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id f7-20020ad45587000000b0068c81299a2bsm671836qvx.15.2024.02.05.20.39.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 20:39:29 -0800 (PST)
-From: David Vernet <void@manifault.com>
-To: linux-kernel@vger.kernel.org
-Cc: mingo@redhat.com,
-	peterz@infradead.org,
-	juri.lelli@redhat.com,
-	vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com,
-	bsegall@google.com,
-	bristot@redhat.com,
-	vschneid@redhat.com,
-	kernel-team@meta.com
-Subject: [PATCH v3 3/3] sched/fair: Simplify some logic in update_sd_pick_busiest()
-Date: Mon,  5 Feb 2024 22:39:21 -0600
-Message-ID: <20240206043921.850302-4-void@manifault.com>
+	s=arc-20240116; t=1707194510; c=relaxed/simple;
+	bh=H86YPC9Yt7D4hlMVdYpOsRZKRfQvO8saUTAZIVPq0C0=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LB0VWDfYPygTgQOVhicAREWfRzZV51NZPrD66z7ptFQ0ftaJXZMUNJkI6SA9XSZBLQWwDmC4/uHnhyK4EbOnvd5ZdYta2NxTeKcRiKwUAhPNCnjOfDlbiYiGSYQmJOWnXO0hobARk7s5dikCOh7DFCUixZKMIMD95iw12A83d04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=LZOegb8m; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4164fdcN003352;
+	Mon, 5 Feb 2024 22:41:39 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707194499;
+	bh=I6KnNRVPruimnqniN3MXKgnXwy8Y5l+gmXwMdLMDokE=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=LZOegb8mL23+X0kdnvZh3L9ZujVxceGb+tabT6rjVTWbcbx3Nu+dZmxNu8oGdlSNj
+	 N7AroIDAcEQfjXwmTjjBqPTqGt2jgF6ipFZtP8Ro87CTyzCmTI+sSajuLQGD/WlGv1
+	 bvmrCSdB8J6b6XTzQ4a0irEK+d0EHJqywSyfJ0mo=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4164fd6m009625
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 5 Feb 2024 22:41:39 -0600
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 5
+ Feb 2024 22:41:38 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 5 Feb 2024 22:41:38 -0600
+Received: from uda0132425.dhcp.ti.com (uda0132425.dhcp.ti.com [172.24.227.94])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4164fZhM115442;
+	Mon, 5 Feb 2024 22:41:36 -0600
+From: Vignesh Raghavendra <vigneshr@ti.com>
+To: Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring
+	<robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Andrew Davis <afd@ti.com>
+CC: Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/4] arm64: dts: ti: k3-j7200: Enable PCIe nodes at the board level
+Date: Tue, 6 Feb 2024 10:11:25 +0530
+Message-ID: <170719349982.2245010.16848121374381229501.b4-ty@ti.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240206043921.850302-1-void@manifault.com>
-References: <20240206043921.850302-1-void@manifault.com>
+In-Reply-To: <20240124183659.149119-1-afd@ti.com>
+References: <20240124183659.149119-1-afd@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-When comparing the current struct sched_group with the yet-busiest
-domain in update_sd_pick_busiest(), if the two groups have the same
-group type, we're currently doing a bit of unnecessary work for any
-group >= group_misfit_task. We're comparing the two groups, and then
-returning only if false (the group in question is not the busiest).
-Othewise, we break, do an extra unnecessary conditional check that's
-vacuously false for any group type > group_fully_busy, and then always
-return true.
+Hi Andrew Davis,
 
-Let's just return directly in the switch statement instead. This doesn't
-change the size of vmlinux with llvm 17 (not surprising given that all
-of this is inlined in load_balance()), but it does shrink load_balance()
-by 88 bytes on x86. Given that it also improves readability, this seems
-worth doing.
+On Wed, 24 Jan 2024 12:36:56 -0600, Andrew Davis wrote:
+> PCIe node defined in the top-level J7200 SoC dtsi file is incomplete
+> and will not be functional unless it is extended with a SerDes PHY.
+> 
+> As the PHY and mode is only known at the board integration level, this
+> node should only be enabled when provided with this information.
+> 
+> Disable the PCIe node in the dtsi files and only enable when it is
+> actually pinned out on a given board.
+> 
+> [...]
 
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Reviewed-by: Valentin Schneider <vschneid@redhat.com>
-Signed-off-by: David Vernet <void@manifault.com>
----
- kernel/sched/fair.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 76d03106040d..fa049f866461 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -10006,9 +10006,7 @@ static bool update_sd_pick_busiest(struct lb_env *env,
- 	switch (sgs->group_type) {
- 	case group_overloaded:
- 		/* Select the overloaded group with highest avg_load. */
--		if (sgs->avg_load <= busiest->avg_load)
--			return false;
--		break;
-+		return sgs->avg_load > busiest->avg_load;
- 
- 	case group_imbalanced:
- 		/*
-@@ -10019,18 +10017,14 @@ static bool update_sd_pick_busiest(struct lb_env *env,
- 
- 	case group_asym_packing:
- 		/* Prefer to move from lowest priority CPU's work */
--		if (sched_asym_prefer(sg->asym_prefer_cpu, sds->busiest->asym_prefer_cpu))
--			return false;
--		break;
-+		return sched_asym_prefer(sds->busiest->asym_prefer_cpu, sg->asym_prefer_cpu);
- 
- 	case group_misfit_task:
- 		/*
- 		 * If we have more than one misfit sg go with the biggest
- 		 * misfit.
- 		 */
--		if (sgs->group_misfit_task_load <= busiest->group_misfit_task_load)
--			return false;
--		break;
-+		return sgs->group_misfit_task_load > busiest->group_misfit_task_load;
- 
- 	case group_smt_balance:
- 		/*
--- 
-2.43.0
+[1/4] arm64: dts: ti: k3-j7200: Enable PCIe nodes at the board level
+      commit: 1b63a1b480c27764d30a0924a4982d31e15df6fd
+[2/4] arm64: dts: ti: k3-j7200: Remove PCIe endpoint node
+      commit: 0b16abe711bd5136f2319c4f548fb20588540266
+[3/4] arm64: dts: ti: k3-am65: Remove PCIe endpoint nodes
+      commit: e074d9d9a52eec11cd8b3f98e2576b0c762686f1
+[4/4] arm64: dts: ti: k3-am64: Remove PCIe endpoint node
+      commit: 6cce60550763564360beadf57ecf2e4d45b585e1
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
+--
+Vignesh
 
 
