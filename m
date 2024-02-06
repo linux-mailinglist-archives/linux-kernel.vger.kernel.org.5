@@ -1,40 +1,40 @@
-Return-Path: <linux-kernel+bounces-54796-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54792-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 422B784B3DD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:46:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2576084B3CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:44:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 632A51F23405
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:46:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58CA41C223C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:44:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3A07135415;
-	Tue,  6 Feb 2024 11:33:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D7A9134CF7;
+	Tue,  6 Feb 2024 11:33:33 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 873BC13399F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B136133987;
 	Tue,  6 Feb 2024 11:33:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707219211; cv=none; b=Hbi3YIqnCcpGxKoFQnTYNQtcZ3QLovp2pE3ErykzzTulWA1HhGK8n3TQOoiJhpCeVh6Z2f4TAx+OFGzPbLYtxx0sy7+6UHjyg3Y76tAXF3vK1XVal9pkyD9+tcmftcyOAbHcVTw4H+9u7PvIe6WhkA1mN5hWH5XZEPwXwrdJTVY=
+	t=1707219211; cv=none; b=PBJwj2CcHbU3Qsc2uLHuio2wxfLDKOR+bISjr4W6Rlgo9TFYRVjihSvNQPCO9wy/ZSEPPlGuAkTZuzsmaFkCu6AKvOjnqKosHhFZXfpFvBTgtTVFl7pnEkOfiHAqhH9IxQjAO7zva6kHUOaX3eaiZ4zcF4f3rgCR1igS6bocz1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707219211; c=relaxed/simple;
-	bh=KBGhBIbjsMRKtn4hdiJH0PuIBiRoV1R54hmlDTiI6ZI=;
+	bh=JSygnlx6+56lX3XXzthIgsNjw4j5XL26vPR3L/z2tEs=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=gGHJi9W05AmW0q/MANbK6ReNScgqdc/PMfeYtgwS9vVRhqchugnLaiPPolJdFj1LMCaIDjQdEXsBgatMIX4s1wYuBzbYmlxjncL6nY5Fox/zC6MGX42aLpjc56inf5mJRZ5f5RgEYbLnASsyXQrV2g+VoxKtx7v4kRziaFeqr3s=
+	 Content-Type; b=aNHJpennxOWhSmaLTPRnq8Jd5WX9qI7JzeT/ryWz5eDLa7h9pLVmzERqmx6kY8LKI0DYF0BrbvzojNd1VImkrhKE6G/gxVYIcHoWH7wJuGRKbtqm0ycDNBlmQa8NM+ERVCzzWx+Hq26FyUAotuibgIGnxb7TJN4M73Gay3Jdxm0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10A93C3277D;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EEF0C43330;
 	Tue,  6 Feb 2024 11:33:31 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1rXJiB-00000006aJp-1YvH;
+	id 1rXJiB-00000006aKJ-2Ejb;
 	Tue, 06 Feb 2024 06:33:59 -0500
-Message-ID: <20240206113359.229236339@rostedt.homelinux.com>
+Message-ID: <20240206113359.393228331@rostedt.homelinux.com>
 User-Agent: quilt/0.67
-Date: Tue, 06 Feb 2024 06:32:05 -0500
+Date: Tue, 06 Feb 2024 06:32:06 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  stable@vger.kernel.org
@@ -44,10 +44,11 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
  Masami Hiramatsu <mhiramat@kernel.org>,
  Mark Rutland <mark.rutland@arm.com>,
  Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Al Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>
-Subject: [v6.7][PATCH v2 07/23] eventfs: Shortcut eventfs_iterate() by skipping entries already read
+ Christian Brauner <brauner@kernel.org>,
+ Al  Viro <viro@ZenIV.linux.org.uk>,
+ Ajay Kaher <ajay.kaher@broadcom.com>
+Subject: [v6.7][PATCH v2 08/23] eventfs: Have the inodes all for files and directories all be the
+ same
 References: <20240206113158.822006147@rostedt.homelinux.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -59,88 +60,64 @@ Content-Type: text/plain; charset=UTF-8
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-As the ei->entries array is fixed for the duration of the eventfs_inode,
-it can be used to skip over already read entries in eventfs_iterate().
+The dentries and inodes are created in the readdir for the sole purpose of
+getting a consistent inode number. Linus stated that is unnecessary, and
+that all inodes can have the same inode number. For a virtual file system
+they are pretty meaningless.
 
-That is, if ctx->pos is greater than zero, there's no reason in doing the
-loop across the ei->entries array for the entries less than ctx->pos.
-Instead, start the lookup of the entries at the current ctx->pos.
+Instead use a single unique inode number for all files and one for all
+directories.
 
-Link: https://lore.kernel.org/all/CAHk-=wiKwDUDv3+jCsv-uacDcHDVTYsXtBR9=6sGM5mqX+DhOg@mail.gmail.com/
-Link: https://lore.kernel.org/linux-trace-kernel/20240104220048.494956957@goodmis.org
+Link: https://lore.kernel.org/all/20240116133753.2808d45e@gandalf.local.home/
+Link: https://lore.kernel.org/linux-trace-kernel/20240116211353.412180363@goodmis.org
 
 Cc: Masami Hiramatsu <mhiramat@kernel.org>
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
 Cc: Christian Brauner <brauner@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Al  Viro <viro@ZenIV.linux.org.uk>
+Cc: Ajay Kaher <ajay.kaher@broadcom.com>
 Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-(cherry picked from commit 1de94b52d5e8d8b32f0252f14fad1f1edc2e71f1)
+(cherry picked from commit 53c41052ba3121761e6f62a813961164532a214f)
 ---
- fs/tracefs/event_inode.c | 23 ++++++++++-------------
- 1 file changed, 10 insertions(+), 13 deletions(-)
+ fs/tracefs/event_inode.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
 diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index a1934e0eea3b..fdff53d5a1f8 100644
+index fdff53d5a1f8..5edf0b96758b 100644
 --- a/fs/tracefs/event_inode.c
 +++ b/fs/tracefs/event_inode.c
-@@ -746,21 +746,15 @@ static int eventfs_iterate(struct file *file, struct dir_context *ctx)
- 	if (!ei || !ei_dentry)
- 		goto out;
+@@ -32,6 +32,10 @@
+  */
+ static DEFINE_MUTEX(eventfs_mutex);
  
--	ret = 0;
--
- 	/*
- 	 * Need to create the dentries and inodes to have a consistent
- 	 * inode number.
- 	 */
--	for (i = 0; i < ei->nr_entries; i++) {
--		void *cdata = ei->data;
--
--		if (c > 0) {
--			c--;
--			continue;
--		}
-+	ret = 0;
- 
--		ctx->pos++;
-+	/* Start at 'c' to jump over already read entries */
-+	for (i = c; i < ei->nr_entries; i++, ctx->pos++) {
-+		void *cdata = ei->data;
- 
- 		entry = &ei->entries[i];
- 		name = entry->name;
-@@ -769,7 +763,7 @@ static int eventfs_iterate(struct file *file, struct dir_context *ctx)
- 		/* If ei->is_freed then just bail here, nothing more to do */
- 		if (ei->is_freed) {
- 			mutex_unlock(&eventfs_mutex);
--			goto out_dec;
-+			goto out;
- 		}
- 		r = entry->callback(name, &mode, &cdata, &fops);
- 		mutex_unlock(&eventfs_mutex);
-@@ -778,14 +772,17 @@ static int eventfs_iterate(struct file *file, struct dir_context *ctx)
- 
- 		dentry = create_file_dentry(ei, i, ei_dentry, name, mode, cdata, fops);
- 		if (!dentry)
--			goto out_dec;
-+			goto out;
- 		ino = dentry->d_inode->i_ino;
- 		dput(dentry);
- 
- 		if (!dir_emit(ctx, name, strlen(name), ino, DT_REG))
--			goto out_dec;
-+			goto out;
- 	}
- 
-+	/* Subtract the skipped entries above */
-+	c -= min((unsigned int)c, (unsigned int)ei->nr_entries);
++/* Choose something "unique" ;-) */
++#define EVENTFS_FILE_INODE_INO		0x12c4e37
++#define EVENTFS_DIR_INODE_INO		0x134b2f5
 +
- 	list_for_each_entry_srcu(ei_child, &ei->children, list,
- 				 srcu_read_lock_held(&eventfs_srcu)) {
+ /*
+  * The eventfs_inode (ei) itself is protected by SRCU. It is released from
+  * its parent's list and will have is_freed set (under eventfs_mutex).
+@@ -352,6 +356,9 @@ static struct dentry *create_file(const char *name, umode_t mode,
+ 	inode->i_fop = fop;
+ 	inode->i_private = data;
+ 
++	/* All files will have the same inode number */
++	inode->i_ino = EVENTFS_FILE_INODE_INO;
++
+ 	ti = get_tracefs(inode);
+ 	ti->flags |= TRACEFS_EVENT_INODE;
+ 	d_instantiate(dentry, inode);
+@@ -388,6 +395,9 @@ static struct dentry *create_dir(struct eventfs_inode *ei, struct dentry *parent
+ 	inode->i_op = &eventfs_root_dir_inode_operations;
+ 	inode->i_fop = &eventfs_file_operations;
+ 
++	/* All directories will have the same inode number */
++	inode->i_ino = EVENTFS_DIR_INODE_INO;
++
+ 	ti = get_tracefs(inode);
+ 	ti->flags |= TRACEFS_EVENT_INODE;
  
 -- 
 2.43.0
