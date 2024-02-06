@@ -1,242 +1,325 @@
-Return-Path: <linux-kernel+bounces-54754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54755-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 027A684B337
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:14:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86EB384B339
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:15:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB6751F24E1F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:14:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AEF3285F8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:15:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 035FA12F5B7;
-	Tue,  6 Feb 2024 11:11:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ru7YIgLH"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7EA612FF99;
+	Tue,  6 Feb 2024 11:12:16 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08B5B12F597
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 11:11:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BCC612FF86;
+	Tue,  6 Feb 2024 11:12:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707217903; cv=none; b=ZASUUPVW2fUOgXwOY39rh+auo+hArhRMgwiMYN4y5PBS3S9TCwERnc3e5Uhe8x8SmxqVoFdaHUGP9ePJK4XqGC4yfgSN+2VAvKPryEsS9YghKOObE5Z80THaVHl+P+L2yQmfuKIJEhFIoS5lm6D19iaBfC+tR40kzHlMRFsEous=
+	t=1707217936; cv=none; b=bIUl9bav8r7sgqrspWzuEWCC5YSq8sjKwXj2eo+pLGSEzgcEtHBvEZOoyLMFEexf4LRYf60XrbnWUfUiLCYm/o+Q5Y9qkC/8RPaewudBtjae/S2XRw7iczmgD87714/ZrxjQgGUuobvSFggspMTe6ydq+x7v5jTCuSZD1tYpXKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707217903; c=relaxed/simple;
-	bh=dmSq+bpK8qgv3sVbVhWlAJTOcyO7Sly5wG8jJDMrQw4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Bh7MK3UDRWHmCbolEHJIxqYx6ceNKADts7V1YM0A0AjIM4N4srjzLzTpLoAGZg3Jd+sDLcluqQs3sARCHLl3TvmoazvHJL1qh0f29d5Xi9vfvAwdXeImbfjItbiG6CxDz1Yf7IHL9SMjIq1mtoMddNfOi0p7yDz5saN8MUFCoYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ru7YIgLH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 285D9C433F1;
-	Tue,  6 Feb 2024 11:11:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707217902;
-	bh=dmSq+bpK8qgv3sVbVhWlAJTOcyO7Sly5wG8jJDMrQw4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ru7YIgLHxLi8g1i48f0S6BxUsFpo3UfovJPRa+u+qUlQpWKD0DgiDVQYIa9LUxAOu
-	 z0Lwyi6sgnrHQ8u+HXsGppHJcWfCxP7tTMp8UCO0gTXIPlqd2vnumVZviYhvHE2Pk7
-	 2gQK6Y/mpjxly2Rt+PL+oHiFnN2Eg5IXp9wzbv/9xndnQM/SF0VJH2zkTLhMiiVfaQ
-	 VxBw8ZY6P9k9ouS7sBkrNEshkSHkHRwBxu+rqarnnJ+OKzGvLh6MqBnEkdr29I1kHv
-	 7PuJhO5WMbOwSYYDe0lOSxzW4m29ysMM5yx8whFEzCeSHPDxoOdxjtO5skg+b66ZiB
-	 2V43PWLTJDb4Q==
-Date: Tue, 6 Feb 2024 12:11:39 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Eric Dumazet <edumazet@google.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	Arjan van de Ven <arjan@infradead.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Rik van Riel <riel@surriel.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Sebastian Siewior <bigeasy@linutronix.de>,
-	Giovanni Gherdovich <ggherdovich@suse.cz>,
-	Lukasz Luba <lukasz.luba@arm.com>,
-	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>
-Subject: Re: [PATCH v10 18/20] timers: Implement the hierarchical pull model
-Message-ID: <ZcIT6643Mdzns7l3@localhost.localdomain>
-References: <20240115143743.27827-1-anna-maria@linutronix.de>
- <20240115143743.27827-19-anna-maria@linutronix.de>
- <ZcAJjhZKlcUDxzKc@pavilion.home>
- <87h6il3ldn.fsf@somnus>
+	s=arc-20240116; t=1707217936; c=relaxed/simple;
+	bh=4t37dY+6LrjLLrcvGKx0ybYOkIudEMHqf0fO7TueuFA=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jua7q/Cm0TrfeaihK0ka+N25SPt4Vwt7SRKIiX1WIt9mCQPyk6lbMcslVcTQnXGOkVt8CNO7ExumUwDRDfvMd3vMIm8Ln6ZZ7hRRxTtW3I7b5OTl5Kf1qUhYUUWGr48W7qCHnKypN32AXrZ2rIXYaT7/yCBMGjKbBJVA5KmX+vI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TTgSl2Wxnz1FKJt;
+	Tue,  6 Feb 2024 19:07:35 +0800 (CST)
+Received: from kwepemd100002.china.huawei.com (unknown [7.221.188.184])
+	by mail.maildlp.com (Postfix) with ESMTPS id E3095140412;
+	Tue,  6 Feb 2024 19:12:10 +0800 (CST)
+Received: from M910t (10.110.54.157) by kwepemd100002.china.huawei.com
+ (7.221.188.184) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Tue, 6 Feb
+ 2024 19:12:09 +0800
+Date: Tue, 6 Feb 2024 19:11:50 +0800
+From: Changbin Du <changbin.du@huawei.com>
+To: Adrian Hunter <adrian.hunter@intel.com>
+CC: Changbin Du <changbin.du@huawei.com>, Peter Zijlstra
+	<peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de
+ Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander
+ Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
+	<linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>, Andi
+ Kleen <ak@linux.intel.com>, Thomas Richter <tmricht@linux.ibm.com>,
+	<changbin.du@gmail.com>
+Subject: Re: [PATCH v6 2/5] perf: util: use capstone disasm engine to show
+ assembly instructions
+Message-ID: <20240206111150.zqjyx33wqipqitzu@M910t>
+References: <20240206021438.768731-1-changbin.du@huawei.com>
+ <20240206021438.768731-3-changbin.du@huawei.com>
+ <631f8b5e-2bd2-4419-885f-34be07012b29@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87h6il3ldn.fsf@somnus>
+In-Reply-To: <631f8b5e-2bd2-4419-885f-34be07012b29@intel.com>
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemd100002.china.huawei.com (7.221.188.184)
 
-Le Tue, Feb 06, 2024 at 12:03:32PM +0100, Anna-Maria Behnsen a écrit :
-> Frederic Weisbecker <frederic@kernel.org> writes:
+On Tue, Feb 06, 2024 at 12:33:10PM +0200, Adrian Hunter wrote:
+> On 6/02/24 04:14, Changbin Du wrote:
+> > Currently, the instructions of samples are shown as raw hex strings
+> > which are hard to read. x86 has a special option '--xed' to disassemble
+> > the hex string via intel XED tool.
+> > 
+> > Here we use capstone as our disassembler engine to give more friendly
+> > instructions. We select libcapstone because capstone can provide more
+> > insn details. Perf will fallback to raw instructions if libcapstone is
+> > not available.
+> > 
+> > The advantages compared to XED tool:
+> >  * Support arm, arm64, x86-32, x86_64 (more could be supported),
+> >    xed only for x86_64.
+> >  * Immediate address operands are shown as symbol+offs.
+> > 
+> > Signed-off-by: Changbin Du <changbin.du@huawei.com>
+> > 
+> > ---
+> > v3:
+> >   - show warning msg if libcapstone is not available.
+> > v2:
+> >   - line up the output by preceding two tabs. (Adrian Hunter)
+> >   - removed the tailing space. (Adrian Hunter)
+> >   - forward declaration for perf_sample, thread, machine. (Adrian Hunter)
+> >   - other trivial fixes (Adrian Hunter)
+> > ---
+> >  tools/perf/builtin-script.c  |   8 +--
+> >  tools/perf/util/Build        |   1 +
+> >  tools/perf/util/print_insn.c | 134 +++++++++++++++++++++++++++++++++++
+> >  tools/perf/util/print_insn.h |  16 +++++
+> >  4 files changed, 154 insertions(+), 5 deletions(-)
+> >  create mode 100644 tools/perf/util/print_insn.c
+> >  create mode 100644 tools/perf/util/print_insn.h
+> > 
+> > diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+> > index b1f57401ff23..4817a37f16e2 100644
+> > --- a/tools/perf/builtin-script.c
+> > +++ b/tools/perf/builtin-script.c
+> > @@ -34,6 +34,7 @@
+> >  #include "util/event.h"
+> >  #include "ui/ui.h"
+> >  #include "print_binary.h"
+> > +#include "print_insn.h"
+> >  #include "archinsn.h"
+> >  #include <linux/bitmap.h>
+> >  #include <linux/kernel.h>
+> > @@ -1511,11 +1512,8 @@ static int perf_sample__fprintf_insn(struct perf_sample *sample,
+> >  	if (PRINT_FIELD(INSNLEN))
+> >  		printed += fprintf(fp, " ilen: %d", sample->insn_len);
+> >  	if (PRINT_FIELD(INSN) && sample->insn_len) {
+> > -		int i;
+> > -
+> > -		printed += fprintf(fp, " insn:");
+> > -		for (i = 0; i < sample->insn_len; i++)
+> > -			printed += fprintf(fp, " %02x", (unsigned char)sample->insn[i]);
+> > +		printed += fprintf(fp, " insn: ");
+> > +		printed += sample__fprintf_insn_raw(sample, fp);
+> >  	}
+> >  	if (PRINT_FIELD(BRSTACKINSN) || PRINT_FIELD(BRSTACKINSNLEN))
+> >  		printed += perf_sample__fprintf_brstackinsn(sample, thread, attr, machine, fp);
+> > diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+> > index 8027f450fa3e..2cbeeb79b6ef 100644
+> > --- a/tools/perf/util/Build
+> > +++ b/tools/perf/util/Build
+> > @@ -32,6 +32,7 @@ perf-y += perf_regs.o
+> >  perf-y += perf-regs-arch/
+> >  perf-y += path.o
+> >  perf-y += print_binary.o
+> > +perf-y += print_insn.o
+> >  perf-y += rlimit.o
+> >  perf-y += argv_split.o
+> >  perf-y += rbtree.o
+> > diff --git a/tools/perf/util/print_insn.c b/tools/perf/util/print_insn.c
+> > new file mode 100644
+> > index 000000000000..163307a02274
+> > --- /dev/null
+> > +++ b/tools/perf/util/print_insn.c
+> > @@ -0,0 +1,134 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Instruction binary disassembler based on capstone.
+> > + *
+> > + * Author(s): Changbin Du <changbin.du@huawei.com>
+> > + */
+> > +#include <string.h>
+> > +#include <stdbool.h>
+> > +#include "debug.h"
+> > +#include "event.h"
+> > +#include "symbol.h"
+> > +#include "machine.h"
+> > +#include "thread.h"
+> > +#include "print_insn.h"
+> > +
+> > +size_t sample__fprintf_insn_raw(struct perf_sample *sample, FILE *fp)
+> > +{
+> > +	int printed = 0;
+> > +
+> > +	for (int i = 0; i < sample->insn_len; i++) {
+> > +		printed += fprintf(fp, "%02x ", (unsigned char)sample->insn[i]);
 > 
-> > Le Mon, Jan 15, 2024 at 03:37:41PM +0100, Anna-Maria Behnsen a écrit :
-> >> +/*
-> >> + * Returns true, if there is nothing to be propagated to the next level
-> >> + *
-> >> + * @data->firstexp is set to expiry of first gobal event of the (top level of
-> >> + * the) hierarchy, but only when hierarchy is completely idle.
-> >> + *
-> >> + * This is the only place where the group event expiry value is set.
-> >> + */
-> >> +static
-> >> +bool tmigr_update_events(struct tmigr_group *group, struct tmigr_group *child,
-> >> +			 struct tmigr_walk *data, union tmigr_state childstate,
-> >> +			 union tmigr_state groupstate)
-> >> +{
-> >> +	struct tmigr_event *evt, *first_childevt;
-> >> +	bool walk_done, remote = data->remote;
-> >> +	bool leftmost_change = false;
-> >> +	u64 nextexp;
-> >> +
-> >> +	if (child) {
-> >> +		raw_spin_lock(&child->lock);
-> >> +		raw_spin_lock_nested(&group->lock, SINGLE_DEPTH_NESTING);
-> >> +
-> >> +		if (childstate.active) {
-> >> +			walk_done = true;
-> >> +			goto unlock;
-> >> +		}
-> >> +
-> >> +		first_childevt = tmigr_next_groupevt(child);
-> >> +		nextexp = child->next_expiry;
-> >> +		evt = &child->groupevt;
-> >> +	} else {
-> >> +		nextexp = data->nextexp;
-> >> +
-> >> +		first_childevt = evt = data->evt;
-> >> +
-> >> +		/*
-> >> +		 * Walking the hierarchy is required in any case when a
-> >> +		 * remote expiry was done before. This ensures to not lose
-> >> +		 * already queued events in non active groups (see section
-> >> +		 * "Required event and timerqueue update after a remote
-> >> +		 * expiry" in the documentation at the top).
-> >> +		 *
-> >> +		 * The two call sites which are executed without a remote expiry
-> >> +		 * before, are not prevented from propagating changes through
-> >> +		 * the hierarchy by the return:
-> >> +		 *  - When entering this path by tmigr_new_timer(), @evt->ignore
-> >> +		 *    is never set.
-> >> +		 *  - tmigr_inactive_up() takes care of the propagation by
-> >> +		 *    itself and ignores the return value. But an immediate
-> >> +		 *    return is required because nothing has to be done in this
-> >> +		 *    level as the event could be ignored.
-> >> +		 */
-> >> +		if (evt->ignore && !remote)
-> >> +			return true;
-> >> +
-> >> +		raw_spin_lock(&group->lock);
-> >> +	}
-> >> +
-> >> +	if (nextexp == KTIME_MAX) {
-> >> +		evt->ignore = true;
-> >> +
-> >> +		/*
-> >> +		 * When the next child event could be ignored (nextexp is
-> >> +		 * KTIME_MAX) and there was no remote timer handling before or
-> >> +		 * the group is already active, there is no need to walk the
-> >> +		 * hierarchy even if there is a parent group.
-> >> +		 *
-> >> +		 * The other way round: even if the event could be ignored, but
-> >> +		 * if a remote timer handling was executed before and the group
-> >> +		 * is not active, walking the hierarchy is required to not miss
-> >> +		 * an enqueued timer in the non active group. The enqueued timer
-> >> +		 * of the group needs to be propagated to a higher level to
-> >> +		 * ensure it is handled.
-> >> +		 */
-> >> +		if (!remote || groupstate.active) {
-> >> +			walk_done = true;
-> >> +			goto unlock;
-> >> +		}
-> >> +	} else {
-> >> +		/*
-> >> +		 * An update of @evt->cpu and @evt->ignore flag is required only
-> >> +		 * when @child is set (the child is equal or higher than lvl0),
-> >> +		 * but it doesn't matter if it is written once more to the per
-> >> +		 * CPU event; make the update unconditional.
-> >> +		 */
-> >> +		evt->cpu = first_childevt->cpu;
-> >> +		evt->ignore = false;
-> >> +	}
-> >> +
-> >> +	walk_done = !group->parent;
-> >> +
-> >> +	/*
-> >> +	 * If the child event is already queued in the group, remove it from the
-> >> +	 * queue when the expiry time changed only.
-> >> +	 */
-> >> +	if (timerqueue_node_queued(&evt->nextevt)) {
-> >> +		if (evt->nextevt.expires == nextexp)
-> >> +			goto check_toplvl;
-> >> +
-> >> +		leftmost_change = timerqueue_getnext(&group->events) == &evt->nextevt;
-> >> +		if (!timerqueue_del(&group->events, &evt->nextevt))
-> >> +			WRITE_ONCE(group->next_expiry, KTIME_MAX);
-> >> +	}
-> >> +
-> >> +	evt->nextevt.expires = nextexp;
-> >> +
-> >> +	if (timerqueue_add(&group->events, &evt->nextevt)) {
-> >> +		leftmost_change = true;
-> >> +		WRITE_ONCE(group->next_expiry, nextexp);
-> >> +	}
-> >> +
-> >> +check_toplvl:
-> >> +	if (walk_done && (groupstate.migrator == TMIGR_NONE)) {
-> >> +		/*
-> >> +		 * Nothing to do when first event didn't changed and update was
-> >> +		 * done during remote timer handling.
-> >> +		 */
-> >> +		if (remote && !leftmost_change)
-> >
-> > So if the first timer in the list hasn't changed, and that first timer belongs
-> > to another CPU (and another group) than the tmc for which we are remotely
-> > handling timers and re-propagating timers up, then data->firstexp will be
-> > after the leftmost timer expiration (data->firstexp could even be KTIME_MAX
-> > in the worst case), and so will be tmc->wakeup for the caller of
-> > tmigr_handle_remote()?
-> >
+> Same as last time, there are 2 spaces between bytes
+> instead of 1.  It needs:
 > 
-> This is related to the discussion regarding tmigr_handle_remote_up(). So
-> this should be also covered by the change I proposed there.
-> 
-> And then we definitely do not need the update of data->firstevt here, as
-> we are still on the way to top to make sure all events are handled. And
-> the first event which needs to be handled by the migrator CPU is set by
-> the call to tmigr_next_expired_groupevt().
+> 	"%02x "      ->      "%02x"
+>
+My fault. Fixed. Thanks!
 
-Sounds good!
-
-Thanks.
-
+> > +		if (sample->insn_len - i > 1)
+> > +			printed += fprintf(fp, " ");
+> > +	}
+> > +	return printed;
+> > +}
+> > +
+> > +#ifdef HAVE_LIBCAPSTONE_SUPPORT
+> > +#include <capstone/capstone.h>
+> > +
+> > +static int capstone_init(struct machine *machine, csh *cs_handle)
+> > +{
+> > +	cs_arch arch;
+> > +	cs_mode mode;
+> > +
+> > +	if (machine__is(machine, "x86_64")) {
+> > +		arch = CS_ARCH_X86;
+> > +		mode = CS_MODE_64;
+> > +	} else if (machine__normalized_is(machine, "x86")) {
+> > +		arch = CS_ARCH_X86;
+> > +		mode = CS_MODE_32;
+> > +	} else if (machine__normalized_is(machine, "arm64")) {
+> > +		arch = CS_ARCH_ARM64;
+> > +		mode = CS_MODE_ARM;
+> > +	} else if (machine__normalized_is(machine, "arm")) {
+> > +		arch = CS_ARCH_ARM;
+> > +		mode = CS_MODE_ARM + CS_MODE_V8;
+> > +	} else if (machine__normalized_is(machine, "s390")) {
+> > +		arch = CS_ARCH_SYSZ;
+> > +		mode = CS_MODE_BIG_ENDIAN;
+> > +	} else {
+> > +		return -1;
+> > +	}
+> > +
+> > +	if (cs_open(arch, mode, cs_handle) != CS_ERR_OK) {
+> > +		pr_warning_once("cs_open failed\n");
+> > +		return -1;
+> > +	}
+> > +
+> > +	if (machine__normalized_is(machine, "x86")) {
+> > +		cs_option(*cs_handle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
+> > +		/*
+> > +		 * Resolving address operands to symbols is implemented
+> > +		 * on x86 by investigating instruction details.
+> > +		 */
+> > +		cs_option(*cs_handle, CS_OPT_DETAIL, CS_OPT_ON);
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static size_t print_insn_x86(struct perf_sample *sample, struct thread *thread,
+> > +			     cs_insn *insn, FILE *fp)
+> > +{
+> > +	struct addr_location al;
+> > +	size_t printed = 0;
+> > +
+> > +	if (insn->detail && insn->detail->x86.op_count == 1) {
+> > +		cs_x86_op *op = &insn->detail->x86.operands[0];
+> > +
+> > +		addr_location__init(&al);
+> > +		if (op->type == X86_OP_IMM &&
+> > +		    thread__find_symbol(thread, sample->cpumode, op->imm, &al)) {
+> > +			printed += fprintf(fp, "%s ", insn[0].mnemonic);
+> > +			printed += symbol__fprintf_symname_offs(al.sym, &al, fp);
+> > +			addr_location__exit(&al);
+> > +			return printed;
+> > +		}
+> > +		addr_location__exit(&al);
+> > +	}
+> > +
+> > +	printed += fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
+> > +	return printed;
+> > +}
+> > +
+> > +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread,
+> > +			    struct machine *machine, FILE *fp)
+> > +{
+> > +	csh cs_handle;
+> > +	cs_insn *insn;
+> > +	size_t count;
+> > +	size_t printed = 0;
+> > +	int ret;
+> > +
+> > +	/* TODO: Try to initiate capstone only once but need a proper place. */
+> > +	ret = capstone_init(machine, &cs_handle);
+> > +	if (ret < 0) {
+> > +		/* fallback */
+> > +		return sample__fprintf_insn_raw(sample, fp);
+> > +	}
+> > +
+> > +	count = cs_disasm(cs_handle, (uint8_t *)sample->insn, sample->insn_len,
+> > +			  sample->ip, 1, &insn);
+> > +	if (count > 0) {
+> > +		if (machine__normalized_is(machine, "x86"))
+> > +			printed += print_insn_x86(sample, thread, &insn[0], fp);
+> > +		else
+> > +			printed += fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
+> > +		cs_free(insn, count);
+> > +	} else {
+> > +		printed += fprintf(fp, "illegal instruction");
+> > +	}
+> > +
+> > +	cs_close(&cs_handle);
+> > +	return printed;
+> > +}
+> > +#else
+> > +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread __maybe_unused,
+> > +			    struct machine *machine __maybe_unused, FILE *fp)
+> > +{
+> > +	pr_warning_once("perf needs to be built with libcapstone support to disassemble instructions\n");
+> > +	return sample__fprintf_insn_raw(sample, fp);
 > 
-> >
-> >> +			goto unlock;
-> >> +		/*
-> >> +		 * The top level group is idle and it has to be ensured the
-> >> +		 * global timers are handled in time. (This could be optimized
-> >> +		 * by keeping track of the last global scheduled event and only
-> >> +		 * arming it on the CPU if the new event is earlier. Not sure if
-> >> +		 * its worth the complexity.)
-> >> +		 */
-> >> +		data->firstexp = tmigr_next_groupevt_expires(group);
-> >> +	}
-> >> +
-> >> +unlock:
-> >> +	raw_spin_unlock(&group->lock);
-> >> +
-> >> +	if (child)
-> >> +		raw_spin_unlock(&child->lock);
-> >> +
-> >> +	return walk_done;
-> >> +}
+> The validation stops this being called so could just leave
+> out the 2 lines above, and add __maybe_unused as necessary.
+> 
+I expect this being a generic api and could be invoked by other functions which
+may not require the validation (raw code is acceptable).
+
+> > +}
+> > +#endif
+> > diff --git a/tools/perf/util/print_insn.h b/tools/perf/util/print_insn.h
+> > new file mode 100644
+> > index 000000000000..80dda6da7c60
+> > --- /dev/null
+> > +++ b/tools/perf/util/print_insn.h
+> > @@ -0,0 +1,16 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +#ifndef PERF_PRINT_INSN_H
+> > +#define PERF_PRINT_INSN_H
+> > +
+> > +#include <stddef.h>
+> > +#include <stdio.h>
+> > +
+> > +struct perf_sample;
+> > +struct thread;
+> > +struct machine;
+> > +
+> > +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread,
+> > +			    struct machine *machine, FILE *fp);
+> > +size_t sample__fprintf_insn_raw(struct perf_sample *sample, FILE *fp);
+> > +
+> > +#endif /* PERF_PRINT_INSN_H */
+> 
+
+-- 
+Cheers,
+Changbin Du
 
