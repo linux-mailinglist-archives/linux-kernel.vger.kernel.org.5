@@ -1,107 +1,144 @@
-Return-Path: <linux-kernel+bounces-54634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AAEB84B1CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:00:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C89E384B1CB
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:00:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 206C31F24C74
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:00:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C5271F2498F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:00:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0C3412DD8B;
-	Tue,  6 Feb 2024 09:59:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aLuKKcQv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AFF012DD91;
-	Tue,  6 Feb 2024 09:59:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F38E12DD86;
+	Tue,  6 Feb 2024 10:00:26 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00CA914265
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 10:00:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707213574; cv=none; b=Rd0ZMoBE9DvOrq6Sn2eIbCMd6zy7rrXt47N70UY9Y9T1WgSfExkRwZYSkhaaECFpJCsZvb6hKpkaNe4VQCUy4wUzV8jvuBM3+EI0Ac1QIdo/myvqx6TMtQ5jwNYRYCUl0UsaUIId+90p21F2v0Y+eDUcekLma8JZSwF8j3ALOB8=
+	t=1707213625; cv=none; b=MICdledOrYlKh/G//fnPzu+tA8E2v9zJ42o0dgJvd1HdO4WYAyXvG5lR5a6BSHa2YbekRe9JSs3Z+vSEueOC/89lDigl1pehORbX/eU0vu0026rWZTyKIDZwo8+/liLOjtrj9IRAIxuEKIrGGTzUK2v5DjSXX/7R74k17p9wU7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707213574; c=relaxed/simple;
-	bh=Ig8ijTw3hCT/GkZgw1zFTglUsDgaQwNI3+0+e16OyXA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uQq9VPzIoWcTYsN+XjrTbWxMZEVtE06iaG26hxxFl6T22CeWSS5dWdWi7V9FeZ8nSF3LNgz9ObuK3zCYacYovZ5J63r+Y5pQ0m3islxW298oo2xyQmpv8E+548NokIW/ie2zDZEU850ZvRmhHGuwwejdTxnGIupErJDOodYx2O8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aLuKKcQv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 668A8C433F1;
-	Tue,  6 Feb 2024 09:59:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707213573;
-	bh=Ig8ijTw3hCT/GkZgw1zFTglUsDgaQwNI3+0+e16OyXA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aLuKKcQvVvD2zJsExDgivbWwcPaG3Ay56C06p/YQGyrgd6R+SMTceoDfjuQaomhFa
-	 JSrzO44v+l/EsFYkQBTFlSHQNcstUtrtJOHSBEjGS7+TUjsXbJztzWxx8MmFEikoCb
-	 Lfh+/kLSmF+xv+MuyRyGwSvu/yYEmgIdLXbyAOO82qSjY67PmMHIj+LzBnbbLnaidU
-	 SegePhHwR9ot3na3p5hcKcWxOUt08XhSQUI7g9mIPj4IUj6vac65YfvNdJoP2Shi++
-	 ENc0EKE5WI+AwPe3aMKUadmrCJll/bm7TDqxcc7SX3D6l3y43tsBvYAJxHfw30VQJe
-	 jT3FsIBZ0oadw==
-Date: Tue, 6 Feb 2024 10:59:26 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Hari Prasath Gujulan Elango <Hari.PrasathGE@microchip.com>
-Cc: dlemoal@kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-	claudiu.beznea@tuxon.dev, linux-ide@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: ata: atmel: remove at91 compact flash
- documentation
-Message-ID: <ZcIC/gP0WeI4BYU3@x1-carbon>
-References: <20240205105201.81060-1-Hari.PrasathGE@microchip.com>
+	s=arc-20240116; t=1707213625; c=relaxed/simple;
+	bh=x0IM0g07rijXhIpSmLDBsct0Y6ERlj/neCBrqrhvZcc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=APdSSJLudrsTuUG50n8A2qLlQz2vtSAqRNkoBRonWz5jth0UWXUunIZ0Y5AMv0cXHcJzvj0+fjVXw4WPLvx+G4US+t75LDHD46ckePY4rpJ9V0qGTVXMcc/9qb3fh2Emi2uBg4Ti6mziL/YS5S4+6/ow37AlSCs++MQIKQIHivo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B5C431FB;
+	Tue,  6 Feb 2024 02:01:04 -0800 (PST)
+Received: from [10.1.31.46] (010265703453.arm.com [10.1.31.46])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6BFDD3F641;
+	Tue,  6 Feb 2024 02:00:21 -0800 (PST)
+Message-ID: <dd862d7a-11bd-482a-b248-60d4616fb6ef@arm.com>
+Date: Tue, 6 Feb 2024 10:00:19 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240205105201.81060-1-Hari.PrasathGE@microchip.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] perf/arm-cmn: Workaround AmpereOneX errata AC04_MESH_1
+ (incorrect child count)
+Content-Language: en-GB
+To: Ilkka Koskinen <ilkka@os.amperecomputing.com>,
+ Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240205194655.1567434-1-ilkka@os.amperecomputing.com>
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20240205194655.1567434-1-ilkka@os.amperecomputing.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 05, 2024 at 04:22:01PM +0530, Hari Prasath Gujulan Elango wrote:
-> The compatible "at91rm9200-cf" is not used by any driver,hence remove the
-> corresponding documentation.
+On 2024-02-05 7:46 pm, Ilkka Koskinen wrote:
+> AmpereOneX mesh implementation has a bug in HN-P nodes that makes them
+> report incorrect child count. The failing crosspoints report 8 children
+> while they only have two.
+
+Ooh, fun :)
+
+> When the driver tries to access the inexistent child nodes, it believes it
+> has reached an invalid node type and probing fails. The workaround is to
+> ignore those incorrect child nodes and continue normally.
 > 
-> Signed-off-by: Hari Prasath Gujulan Elango <Hari.PrasathGE@microchip.com>
+> Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
 > ---
->  .../devicetree/bindings/ata/atmel-at91_cf.txt | 19 -------------------
->  1 file changed, 19 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/ata/atmel-at91_cf.txt
+>   drivers/perf/arm-cmn.c | 25 +++++++++++++++++++++++++
+>   1 file changed, 25 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/ata/atmel-at91_cf.txt b/Documentation/devicetree/bindings/ata/atmel-at91_cf.txt
-> deleted file mode 100644
-> index c1d22b3ae134..000000000000
-> --- a/Documentation/devicetree/bindings/ata/atmel-at91_cf.txt
-> +++ /dev/null
-> @@ -1,19 +0,0 @@
-> -Atmel AT91RM9200 CompactFlash
-> -
-> -Required properties:
-> -- compatible : "atmel,at91rm9200-cf".
-> -- reg : should specify localbus address and size used.
-> -- gpios : specifies the gpio pins to control the CF device. Detect
-> -  and reset gpio's are mandatory while irq and vcc gpio's are
-> -  optional and may be set to 0 if not present.
-> -
-> -Example:
-> -compact-flash@50000000 {
-> -	compatible = "atmel,at91rm9200-cf";
-> -	reg = <0x50000000 0x30000000>;
-> -	gpios = <&pioC 13 0	/* irq */
-> -		 &pioC 15 0 	/* detect */
-> -		 0		/* vcc */
-> -		 &pioC  5 0	/* reset */
-> -		>;
-> -};
-> -- 
-> 2.34.1
-> 
+> diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
+> index c584165b13ba..97fed8ec3693 100644
+> --- a/drivers/perf/arm-cmn.c
+> +++ b/drivers/perf/arm-cmn.c
+> @@ -2168,6 +2168,23 @@ static enum cmn_node_type arm_cmn_subtype(enum cmn_node_type type)
+>   	}
+>   }
+>   
+> +static inline bool arm_cmn_is_ampereonex_bug(const struct arm_cmn *cmn,
+> +					     struct arm_cmn_node *dn,
+> +					     u16 child_count, int child)
+> +{
+> +	/*
+> +	 * The bug occurs only when a crosspoint reports 8 children
+> +	 * while it only has two HN-P child nodes.
+> +	 */
+> +	dn -= 2;
+> +
+> +	if (arm_cmn_model(cmn) == CMN650 && child_count == 8 &&
+> +	    child == 2 && dn->type == CMN_TYPE_HNP)
+> +		return true;
+> +
+> +	return false;
+> +}
+> +
+>   static int arm_cmn_discover(struct arm_cmn *cmn, unsigned int rgn_offset)
+>   {
+>   	void __iomem *cfg_region;
+> @@ -2292,6 +2309,14 @@ static int arm_cmn_discover(struct arm_cmn *cmn, unsigned int rgn_offset)
+>   
+>   		for (j = 0; j < child_count; j++) {
+>   			reg = readq_relaxed(xp_region + child_poff + j * 8);
+> +			if (reg == 0)
+> +				if (arm_cmn_is_ampereonex_bug(cmn, dn, child_count, j))
+> +					/*
+> +					 * We know there are only two real children and the rest 6
+> +					 * are inexistent. Thus, we can skip the rest of the loop
+> +					 */
+> +					break;
+> +
 
-Applied:
-https://git.kernel.org/pub/scm/linux/kernel/git/libata/linux.git/log/?h=for-6.9
+TBH I don't see much harm in taking an even simpler approach, so I'd be
+inclined to not bother being all that specific beyond documenting it,
+something like the below:
+
+Cheers,
+Robin.
+
+----->8-----
+
+diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
+index c584165b13ba..7e3aa7e2345f 100644
+--- a/drivers/perf/arm-cmn.c
++++ b/drivers/perf/arm-cmn.c
+@@ -2305,6 +2305,17 @@ static int arm_cmn_discover(struct arm_cmn *cmn, unsigned int rgn_offset)
+  				dev_dbg(cmn->dev, "ignoring external node %llx\n", reg);
+  				continue;
+  			}
++			/*
++			 * AmpereOneX erratum AC04_MESH_1 makes some XPs report a bogus
++			 * child count larger than the number of valid child pointers.
++			 * A child offset of 0 can only occur on CMN-600; otherwise it
++			 * would imply the root node being its own grandchild, which
++			 * we can safely dismiss in general.
++			 */
++			if (reg == 0 && cmn->part != PART_CMN600) {
++				dev_dbg(cmn->dev, "bogus child pointer?\n");
++				continue;
++			}
+  
+  			arm_cmn_init_node_info(cmn, reg & CMN_CHILD_NODE_ADDR, dn);
+  
 
