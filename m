@@ -1,193 +1,182 @@
-Return-Path: <linux-kernel+bounces-55623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBC5B84BF24
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:19:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6633084BF28
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:23:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0EAF1C22B9F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:19:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFCBD1F24E28
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:23:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E0341B953;
-	Tue,  6 Feb 2024 21:19:19 +0000 (UTC)
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C801C1B953;
+	Tue,  6 Feb 2024 21:23:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nREWfIz0"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ED271B949;
-	Tue,  6 Feb 2024 21:19:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3176D1B949
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 21:23:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707254358; cv=none; b=A2cZDqVaTSdOQJb+8oxSSxYcS5LSjuGLhocb+KK2VREMpYiS/JVVk2UBBsTMHfH9CSWsGyi/G7o7iYA12oG2Bhu/Y1vYAJ9txGjoQxXN2ze6EwEWBjcOrFvrbZJ+QK+68R+Anpg+dU+3vOvH4rl4PgzA/CBubyGMpY4xl7kTngQ=
+	t=1707254583; cv=none; b=kuJ5XV0V4UhFESSEzKFTzwMN8KF7GwYtcTkfrlxL0/geh5uG+suJMoww820FJsoLykAIJBeI2Prib2IAzucjoiB8b0dQQNj2/bbvTNMZRhLNA6NQ27CeBWWZjPzoAakG7xobRxdFJjJUIJVGcT2Lrp1k1HZ/jTR7p3VhHVzPobU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707254358; c=relaxed/simple;
-	bh=JERqMQ96ksA+8SNr6Sb2aF7oJ+HCIrtvFbhpArvNsPM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rzjeIB0oki/CcNiKNT4yDd0NTEemudg0+XNKm4Xphb6YKGCPktqdct9uh4hOA2WMdzOyS+1MI6VBWkcaCuqhiSkb09rORROPcOP/ZhHxpmizmLVB86Mu33afqkL/mPRZFHLqK34Mu5/q6Pw9XZ+WLqJg/gJHl3qGQreVu808iaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e05d958b61so727809b3a.2;
-        Tue, 06 Feb 2024 13:19:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707254356; x=1707859156;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=12Qx9B0ZnSFBsqRDrOP1gg0dYTMVEEBnv/fg/4P2Dug=;
-        b=gE3iXnCZ6j1GIq16Q6Ax+iwcWvVAMKbnRP+UIjeYu4EAFfc9wABWD/F/doMyCcXudN
-         etT4Uu2WOpnJV+BfD1HB2b3EOS4EAed0C36rBNLNWNohIfy2nrAyG5lnMMlaPTN6QLnb
-         9bvfswjNo1JP0WKqj3EihiqmifYCWqtPBBXL1oJbj/kuzqSawXddEvcJmy8L3d59vOv+
-         2Ss2JlEEOkK5OoaWKF9QbtMclyF0YRjF5LPOumrwai8FQYEi92aumh++1YI1CduSsdsi
-         ai/nEYFvAS4WabgZe6jQWJwmPHaf24LMKUhszAecKhT7B4jifvTR6aoR/WkNDEHcGS+h
-         ui+A==
-X-Gm-Message-State: AOJu0Ywy4IL/HYEVA6LviznGQ0Ulr77KDR+wKtcFt+LaQsDyoEaI905W
-	EmS0BHxzl6ajhmvjQyIQl4Zz8U6IrPgvsQvE6rq8pMJYT3fHNzmFY/1bmqXBDJsuhK/2g1xg3+U
-	pFI416Lo/GhDfLvq5U8Ae1msT4+o=
-X-Google-Smtp-Source: AGHT+IEe9lCvb+yV4P8niK2REAzqF734Mpq5zUhD0bIadcPA/gp1AVaf31fRBdBA7kSzNXn/ebfFVwVt9G0TgyRK9Rg=
-X-Received: by 2002:a05:6a00:4e4e:b0:6e0:4b8f:f585 with SMTP id
- gu14-20020a056a004e4e00b006e04b8ff585mr718484pfb.7.1707254356244; Tue, 06 Feb
- 2024 13:19:16 -0800 (PST)
+	s=arc-20240116; t=1707254583; c=relaxed/simple;
+	bh=mFw5pANaM+E7fTa/QIBb7DTO8TWgq8m2d82tmMq2mYE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mLCiMceVFt4uMVwWS1QzSqe0I5dDCYpP0Yn/D82Z0Cz0zamMChprAaUOowUINyWf8JtoT9LRK0obEtPycfyJUGTQ/8bZOdYzRxSea1JotSo66Vx9mdKl+95JYUK5vmL19rVjexpaFe29ap7kKN6CDybA7yIGZ+oA5G7vv9BYdAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nREWfIz0; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707254581; x=1738790581;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mFw5pANaM+E7fTa/QIBb7DTO8TWgq8m2d82tmMq2mYE=;
+  b=nREWfIz0FgacRx3NRRxpVSAWU/IfuBzmX/d+dzUZAhYYbveb3xyW+Oti
+   PljFxNtXdbouRfN7IXBeNHrQ+KdKOIZySPbhuaoOSjn6MYnPUzyDsODQX
+   9HGzdJ5uejR7/1W3aVOGpGEZlnSh3pY8qg3/B5gnhhl/CyYKdYJcO4AmH
+   XYzvX+8M1K7xcsrmFcrIVNSfcLbs+kbSha427N4h7t7Lgs41LDQwtViBz
+   rXjUVz0iCyDyJ3yR4UtIa0mQdveUdNcVLyNxX/WCRzdn29us/ML55QaUh
+   xJj3PXsWyEMEXZEco/GqUPgTiw+F6MT9ZT33sYALuYOeLhPdoMKo9rod+
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="11432279"
+X-IronPort-AV: E=Sophos;i="6.05,248,1701158400"; 
+   d="scan'208";a="11432279"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 13:23:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="909765130"
+X-IronPort-AV: E=Sophos;i="6.05,248,1701158400"; 
+   d="scan'208";a="909765130"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 13:22:59 -0800
+Date: Tue, 6 Feb 2024 13:24:18 -0800
+From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To: kuiliang Shi <seakeel@gmail.com>
+Cc: Valentin Schneider <vschneid@redhat.com>, alexs@kernel.org,
+	Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	linux-kernel@vger.kernel.org, sshegde@linux.ibm.com
+Subject: Re: [PATCH v3 1/4] sched/fair: add SD_CLUSTER in comments
+Message-ID: <20240206212418.GA19695@ranerica-svr.sc.intel.com>
+References: <20240201115447.522627-1-alexs@kernel.org>
+ <xhsmhzfwjgcvf.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <20240206024633.GD17602@ranerica-svr.sc.intel.com>
+ <b19487fe-cc9b-412d-8b70-c0be6ad224ae@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231216072830.1009339-1-namhyung@kernel.org> <ae648bc4-b32c-4b15-8dfc-9dbd481bb927@linux.intel.com>
- <CAM9d7cgVHHAA0ZHaTYNx9Lmw0+hJJu_EfQRnX8K3AtLCVMznOw@mail.gmail.com>
-In-Reply-To: <CAM9d7cgVHHAA0ZHaTYNx9Lmw0+hJJu_EfQRnX8K3AtLCVMznOw@mail.gmail.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Tue, 6 Feb 2024 13:19:05 -0800
-Message-ID: <CAM9d7cjHJ2FYU-P0B2LA=vX1WUCOwCqC1j4LGFWMYDLFRKPCnA@mail.gmail.com>
-Subject: Re: [PATCH] perf/x86: Fix out of range data
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Stephane Eranian <eranian@google.com>, stable@vger.kernel.org, 
-	"Liang, Kan" <kan.liang@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b19487fe-cc9b-412d-8b70-c0be6ad224ae@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 
-Ping!
+On Tue, Feb 06, 2024 at 04:56:02PM +0800, kuiliang Shi wrote:
+> 
+> 
+> On 2/6/24 10:46 AM, Ricardo Neri wrote:
+> > On Fri, Feb 02, 2024 at 03:27:32PM +0100, Valentin Schneider wrote:
+> >>
+> >> Subject nit: the prefix should be sched/topology
+> >>
+> >> On 01/02/24 19:54, alexs@kernel.org wrote:
+> >>> From: Alex Shi <alexs@kernel.org>
+> >>>
+> >>> The description of SD_CLUSTER is missing. Add it.
+> >>>
+> >>> Signed-off-by: Alex Shi <alexs@kernel.org>
+> >>> To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+> >>> To: Valentin Schneider <vschneid@redhat.com>
+> >>> To: Vincent Guittot <vincent.guittot@linaro.org>
+> >>> To: Juri Lelli <juri.lelli@redhat.com>
+> >>> To: Peter Zijlstra <peterz@infradead.org>
+> >>> To: Ingo Molnar <mingo@redhat.com>
+> >>> ---
+> >>>  kernel/sched/topology.c | 1 +
+> >>>  1 file changed, 1 insertion(+)
+> >>>
+> >>> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> >>> index 10d1391e7416..8b45f16a1890 100644
+> >>> --- a/kernel/sched/topology.c
+> >>> +++ b/kernel/sched/topology.c
+> >>> @@ -1554,6 +1554,7 @@ static struct cpumask		***sched_domains_numa_masks;
+> >>>   * function:
+> >>>   *
+> >>>   *   SD_SHARE_CPUCAPACITY   - describes SMT topologies
+> >>> + *   SD_CLUSTER             - describes CPU Cluster topologies
+> >>
+> >> So I know this is the naming we've gone for the "Cluster" naming, but this
+> >> comment isn't really explaining anything.
+> >>
+> >> include/linux/sched/sd_flags.h has a bit more info already:
+> >>  * Domain members share CPU cluster (LLC tags or L2 cache)
+> > 
+> > I also thought of this, but I didn't want to suggest to repeat in topolog.c
+> > what is described in sd_flags.h.
+> > 
+> > Maybe it is better to remove the descriptions of all flags here and instead
+> > direct the reader to sd_flags.h?
+> 
+> yes, good idea for getting their meaning directly from the header file. 
+> So is it fine for next sending?
 
-On Tue, Jan 9, 2024 at 1:28=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
-rote:
->
-> Hello,
->
-> On Sat, Dec 16, 2023 at 4:42=E2=80=AFAM Liang, Kan <kan.liang@linux.intel=
-com> wrote:
-> >
-> >
-> >
-> > On 2023-12-16 2:28 a.m., Namhyung Kim wrote:
-> > > On x86 each cpu_hw_events maintains a table for counter assignment bu=
-t
-> > > it missed to update one for the deleted event in x86_pmu_del().  This
-> > > can make perf_clear_dirty_counters() reset used counter if it's calle=
-d
-> > > before event scheduling or enabling.  Then it would return out of ran=
-ge
-> > > data which doesn't make sense.
-> > >
-> > > The following code can reproduce the problem.
-> > >
-> > >   $ cat repro.c
-> > >   #include <pthread.h>
-> > >   #include <stdio.h>
-> > >   #include <stdlib.h>
-> > >   #include <unistd.h>
-> > >   #include <linux/perf_event.h>
-> > >   #include <sys/ioctl.h>
-> > >   #include <sys/mman.h>
-> > >   #include <sys/syscall.h>
-> > >
-> > >   struct perf_event_attr attr =3D {
-> > >       .type =3D PERF_TYPE_HARDWARE,
-> > >       .config =3D PERF_COUNT_HW_CPU_CYCLES,
-> > >       .disabled =3D 1,
-> > >   };
-> > >
-> > >   void *worker(void *arg)
-> > >   {
-> > >       int cpu =3D (long)arg;
-> > >       int fd1 =3D syscall(SYS_perf_event_open, &attr, -1, cpu, -1, 0)=
-;
-> > >       int fd2 =3D syscall(SYS_perf_event_open, &attr, -1, cpu, -1, 0)=
-;
-> > >       void *p;
-> > >
-> > >       do {
-> > >               ioctl(fd1, PERF_EVENT_IOC_ENABLE, 0);
-> > >               p =3D mmap(NULL, 4096, PROT_READ, MAP_SHARED, fd1, 0);
-> > >               ioctl(fd2, PERF_EVENT_IOC_ENABLE, 0);
-> > >
-> > >               ioctl(fd2, PERF_EVENT_IOC_DISABLE, 0);
-> > >               munmap(p, 4096);
-> > >               ioctl(fd1, PERF_EVENT_IOC_DISABLE, 0);
-> > >       } while (1);
-> > >
-> > >       return NULL;
-> > >   }
-> > >
-> > >   int main(void)
-> > >   {
-> > >       int i;
-> > >       int n =3D sysconf(_SC_NPROCESSORS_ONLN);
-> > >       pthread_t *th =3D calloc(n, sizeof(*th));
-> > >
-> > >       for (i =3D 0; i < n; i++)
-> > >               pthread_create(&th[i], NULL, worker, (void *)(long)i);
-> > >       for (i =3D 0; i < n; i++)
-> > >               pthread_join(th[i], NULL);
-> > >
-> > >       free(th);
-> > >       return 0;
-> > >   }
-> > >
-> > > And you can see the out of range data using perf stat like this.
-> > > Probably it'd be easier to see on a large machine.
-> > >
-> > >   $ gcc -o repro repro.c -pthread
-> > >   $ ./repro &
-> > >   $ sudo perf stat -A -I 1000 2>&1 | awk '{ if (length($3) > 15) prin=
-t }'
-> > >        1.001028462 CPU6   196,719,295,683,763      cycles            =
-               # 194290.996 GHz                       (71.54%)
-> > >        1.001028462 CPU3   396,077,485,787,730      branch-misses     =
-               # 15804359784.80% of all branches      (71.07%)
-> > >        1.001028462 CPU17  197,608,350,727,877      branch-misses     =
-               # 14594186554.56% of all branches      (71.22%)
-> > >        2.020064073 CPU4   198,372,472,612,140      cycles            =
-               # 194681.113 GHz                       (70.95%)
-> > >        2.020064073 CPU6   199,419,277,896,696      cycles            =
-               # 195720.007 GHz                       (70.57%)
-> > >        2.020064073 CPU20  198,147,174,025,639      cycles            =
-               # 194474.654 GHz                       (71.03%)
-> > >        2.020064073 CPU20  198,421,240,580,145      stalled-cycles-fro=
-ntend          #  100.14% frontend cycles idle        (70.93%)
-> > >        3.037443155 CPU4   197,382,689,923,416      cycles            =
-               # 194043.065 GHz                       (71.30%)
-> > >        3.037443155 CPU20  196,324,797,879,414      cycles            =
-               # 193003.773 GHz                       (71.69%)
-> > >        3.037443155 CPU5   197,679,956,608,205      stalled-cycles-bac=
-kend           # 1315606428.66% backend cycles idle   (71.19%)
-> > >        3.037443155 CPU5   198,571,860,474,851      instructions      =
-               # 13215422.58  insn per cycle
-> > >
-> > > It should move the contents in the cpuc->assign as well.
-> >
-> > Yes, the patch looks good to me.
-> >
-> > Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
->
-> Thanks for your review, Kan.
->
-> Ingo, Peter, can you please pick this up?
->
-> Thanks,
-> Namhyung
+Some tweaks below.
+
+> 
+>     sched/fair: remove duplicate comments for SD_ flags
+
+      sched/topology: Remove duplicate descriptions from TOPOLOGY_SD_FLAGS
+>     
+>     Originally, it missed SD_CLUSTER flag description, but comparing to copy
+>     the flags meaning from sd_flags.h, reader is better to get info from
+>     there.
+
+      These flags are already documented in include/linux/sched/sd_flags.h.
+
+      Keep the comment on SD_ASYM_PACKING as it is a special case.
+>     
+>     Keep SD_ASYM_PACKING unchange for a point from another way.
+>     
+>     Signed-off-by: Alex Shi <alexs@kernel.org>
+>     To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+>     To: Valentin Schneider <vschneid@redhat.com>
+>     To: Vincent Guittot <vincent.guittot@linaro.org>
+>     To: Juri Lelli <juri.lelli@redhat.com>
+>     To: Peter Zijlstra <peterz@infradead.org>
+>     To: Ingo Molnar <mingo@redhat.com>
+> 
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index 10d1391e7416..96a24bf954ad 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -1551,11 +1551,7 @@ static struct cpumask            ***sched_domains_numa_masks;
+>   *
+>   * These flags are purely descriptive of the topology and do not prescribe
+>   * behaviour. Behaviour is artificial and mapped in the below sd_init()
+> - * function:
+> - *
+> - *   SD_SHARE_CPUCAPACITY   - describes SMT topologies
+> - *   SD_SHARE_PKG_RESOURCES - describes shared caches
+> - *   SD_NUMA                - describes NUMA topologies
+
+Maybe only remove the descriptions but keep the enumeration?
+
+> + * function, for details in include/linux/sched/sd_flags.h:
+
+      function. For details, see include/linux/sched/sd_flags.h.
+
+
 
