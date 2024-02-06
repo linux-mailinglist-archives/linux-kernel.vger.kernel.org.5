@@ -1,450 +1,643 @@
-Return-Path: <linux-kernel+bounces-54483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE0F884AFD1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:19:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3ACC584AFE0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:24:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23C941F24732
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:19:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4A5E1F2524A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:24:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5D3112B156;
-	Tue,  6 Feb 2024 08:18:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oAmdNyXc"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C45C12B169;
+	Tue,  6 Feb 2024 08:24:38 +0000 (UTC)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E4E412B141
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 08:18:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E54712B16F;
+	Tue,  6 Feb 2024 08:24:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707207509; cv=none; b=Z+G/vJKvfIfO64PsmTSWC+MBI0Gxv03y6TOe1BEZyWHjKi1hNsPyyzoXPinfOw2Td9gyobIrnxZsHDMo1dvclxQnt8Js+UMfshCd+mN8OrD5bkXQrkSQafxGae9kv4UOuhIHoQO/1u9B8tzK67jILp2bWkWkfU/kqvD9b4ykh9g=
+	t=1707207877; cv=none; b=D1wi+CreDbJNGbL15uitW5wQQecEh3BsRcJVUEx+rgACYdRflpi3YaUvgQcMtKopCEFrau+rslRsgfKib67/UJpXKU7MTpR9KgD+bYbxWp0mrWcnfiwBxs98lW1Nuze9wuH/oAc1n4E0zW8eMMoL0ba9hz2v5l6UEBvZyrCOus0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707207509; c=relaxed/simple;
-	bh=v0qAQzKCYiK16KuYacg7ZfnO7Llc9RpQykKW18aVyEI=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=iM0ebQvJEBsSKGXszcM/mmPrSXBbYje22RlYMXqV4D7R9nR9rs1CTbPpl4pkVx/9swuIcy59zmrmMCRQohOaO8n5YKz1OzAxHOQskR53HFrGQKRbNgJVimIQ2pWHDr5DIzm8gTLBOSjgqN6ie3N9GWjrduNkHEutd6nAi0PnS18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oAmdNyXc; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d09b21a8bbso6413641fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 00:18:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707207505; x=1707812305; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0NbGjmBXOr3ajqGRcxf6QpNhQ6ZKM1Dxc1E0/xzNWzQ=;
-        b=oAmdNyXcI0+6E6N6LHUZZFdNs8h4z6kY6g6ijeg9DcMpjGgIOHKVfOY/JdF4MOXPlq
-         6lwXe3qSm3iH8rrjVxl5zKB58cwPk+QAkZWbNz4Q1Ke17ZVkigEYXPIQxdzWeuOWM35e
-         iprayK7irsCG8617/rhmbyDG6Frjm2aFZKDiWyRnVXniYlpsenkhsxALXsRQT+Bq3l9m
-         rYLs2aGpgKoelj8iaHZ4+XB4vWhWk7nRBn6OZ2DO1tr3AvBzW9gB28WFJGoAUIT1MkyL
-         I3CRSB6dsBU2OpaVud+EluloBG46J69jvFVNax5/SqsxphPczU5ALtg9vPE6PH4NwdEy
-         xROA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707207505; x=1707812305;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=0NbGjmBXOr3ajqGRcxf6QpNhQ6ZKM1Dxc1E0/xzNWzQ=;
-        b=O7DSKZtz6S0Rnf0qCpgFIRBVZNMCySXRgiAdXY7viDh91Y8OACBSfo9QWon1uAMcR/
-         1XDVsLwECpVVSxZQrcJ5HW6Lu9p57rHdrpAj47G6CRZCs9j44AN+LUpIH/qOQcaCc+Rd
-         AB+xH2gM1jAL2TkxwL5wMFyxI6ILi+9yuDkW9DadyxVVAYFl9DXRKzN7GGacYzCjh/my
-         +I0EUeXwKTCUCqVdeB1jVzefqNXhYNnqSeyOwjZnLTeIB2gVH55r8ycsaUT7+wt4Tiqy
-         PBYSDelzaB0rQ1cJQNFlivHO7UjQK7LNRbY98LV3DDYyGo4BrNiJf2SIkgL9m0CVaUWO
-         wgKA==
-X-Gm-Message-State: AOJu0YwpMIHorZjyuzli2J9RCLg4rBVksZ3Fl5hc6hlCMl1keTAzLgib
-	8jVJvmcs4Iqj27Jbd54uvprTNEdrDJvy5WKi52nc33v0CUPZMJczms4c/H/EnDc=
-X-Google-Smtp-Source: AGHT+IHPNkEtW7r21UxRZAk+trReCW8z0LncEllZkLmnlhYb594dP8soanm0ywzv0rr0JUXsHe0xAA==
-X-Received: by 2002:a2e:921a:0:b0:2d0:aa28:6f77 with SMTP id k26-20020a2e921a000000b002d0aa286f77mr1349200ljg.45.1707207505441;
-        Tue, 06 Feb 2024 00:18:25 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWK5ffB5C8uuh8Ip1vs26kwAqeX2afdD/UYpQFXlGPS6AyTgawfdAqCa0JDrDoAcyg0ThorFhtOYRgrexrpRe5BtMXKtE92zRguEVl9wISnYLeb4hlllaPocGL1xN+TLeFrGN+SRPdxHROi6ddBx9TV/9rEFx3EKRg7xmQeadY3SIU6LwH+IuQIV9ZanVeKTsZXNz8oaUptoy8Uh76M5PLpTkMQ76BifLJBlp7Mf8iQdn1kLK83UiujuCw7cx/KHIdwcrz4bhiqRlLCW13BI4Cu58eIqBB5KQsJehYd9q2l1fiTjBCdQyRWRLSUvGSJQexrw2brUhJOl6rGl3HxvRMD7g==
-Received: from ?IPV6:2a01:e0a:982:cbb0:ba23:8574:fa8:28dd? ([2a01:e0a:982:cbb0:ba23:8574:fa8:28dd])
-        by smtp.gmail.com with ESMTPSA id n2-20020a5d67c2000000b0033b4335dce5sm1418976wrw.85.2024.02.06.00.18.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Feb 2024 00:18:24 -0800 (PST)
-Message-ID: <760f15d7-897f-48b2-b4b8-d64f70f47dd6@linaro.org>
-Date: Tue, 6 Feb 2024 09:18:24 +0100
+	s=arc-20240116; t=1707207877; c=relaxed/simple;
+	bh=08lBaTUar7SyLBrxItX34TLwL1E0y5Pf3Rld/i37fRQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=D22S+FQZQWriIjNczzq8/TAFqjefRcI6JRdIFw/QfWOsUXTi2r7yq2xV/9RE6CDWhaI4yeSdBN+opbcQlUv3kOdakSJZAkP0GbGqZc3CCAA8MdUEZed4twFD/jZCXHHAza4pRQJ16Am0aRwP9N8yRZLE60wTOx2wH//weNcS/WI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TTbpM2MH0z1Q8lw;
+	Tue,  6 Feb 2024 16:22:35 +0800 (CST)
+Received: from canpemm500009.china.huawei.com (unknown [7.192.105.203])
+	by mail.maildlp.com (Postfix) with ESMTPS id 4D04B140390;
+	Tue,  6 Feb 2024 16:24:31 +0800 (CST)
+Received: from localhost.localdomain (10.50.165.33) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 6 Feb 2024 16:24:30 +0800
+From: Yicong Yang <yangyicong@huawei.com>
+To: <acme@kernel.org>, <mark.rutland@arm.com>, <peterz@infradead.org>,
+	<mingo@redhat.com>, <james.clark@arm.com>,
+	<alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
+	<namhyung@kernel.org>, <irogers@google.com>, <adrian.hunter@intel.com>,
+	<linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: <Jonathan.Cameron@huawei.com>, <zhanjie9@hisilicon.com>,
+	<21cnbao@gmail.com>, <tim.c.chen@intel.com>, <prime.zeng@hisilicon.com>,
+	<fanghao11@huawei.com>, <linuxarm@huawei.com>, <yangyicong@hisilicon.com>,
+	<linux-arm-kernel@lists.infradead.org>, Tim Chen <tim.c.chen@linux.intel.com>
+Subject: [RESEND v4] perf stat: Support per-cluster aggregation
+Date: Tue, 6 Feb 2024 16:20:16 +0800
+Message-ID: <20240206082016.22292-1-yangyicong@huawei.com>
+X-Mailer: git-send-email 2.31.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v2] drm/panel: re-alphabetize the menu list
-Content-Language: en-US, fr
-To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc: Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg
- <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- dri-devel@lists.freedesktop.org, Aradhya Bhatia <a-bhatia1@ti.com>
-References: <20240205062711.3513-1-rdunlap@infradead.org>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20240205062711.3513-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500009.china.huawei.com (7.192.105.203)
 
-On 05/02/2024 07:27, Randy Dunlap wrote:
-> A few of the DRM_PANEL entries have become out of alphabetical order,
-> so move them around a bit to restore alpha order.
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Neil Armstrong <neil.armstrong@linaro.org>
-> Cc: Jessica Zhang <quic_jesszhan@quicinc.com>
-> Cc: Sam Ravnborg <sam@ravnborg.org>
-> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: David Airlie <airlied@gmail.com>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: Aradhya Bhatia <a-bhatia1@ti.com>
-> ---
-> v2: rebase, move more driver entries around
-> 
-> Aradhya Bhatia <a-bhatia1@ti.com> had responded with Reviewed-by:
-> for v1, but I mode quite a few additions in v2 so I didn't include
-> that R-B: here.
-> 
->   drivers/gpu/drm/panel/Kconfig |  202 ++++++++++++++++----------------
->   1 file changed, 101 insertions(+), 101 deletions(-)
-> 
-> diff -- a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
-> --- a/drivers/gpu/drm/panel/Kconfig
-> +++ b/drivers/gpu/drm/panel/Kconfig
-> @@ -76,53 +76,6 @@ config DRM_PANEL_BOE_TV101WUM_NL6
->   	  Say Y here if you want to support for BOE TV101WUM and AUO KD101N80
->   	  45NA WUXGA PANEL DSI Video Mode panel
->   
-> -config DRM_PANEL_DSI_CM
-> -	tristate "Generic DSI command mode panels"
-> -	depends on OF
-> -	depends on DRM_MIPI_DSI
-> -	depends on BACKLIGHT_CLASS_DEVICE
-> -	help
-> -	  DRM panel driver for DSI command mode panels with support for
-> -	  embedded and external backlights.
-> -
-> -config DRM_PANEL_LVDS
-> -	tristate "Generic LVDS panel driver"
-> -	depends on OF
-> -	depends on BACKLIGHT_CLASS_DEVICE
-> -	select VIDEOMODE_HELPERS
-> -	help
-> -	  This driver supports LVDS panels that don't require device-specific
-> -	  handling of power supplies or control signals. It implements automatic
-> -	  backlight handling if the panel is attached to a backlight controller.
-> -
-> -config DRM_PANEL_SIMPLE
-> -	tristate "support for simple panels (other than eDP ones)"
-> -	depends on OF
-> -	depends on BACKLIGHT_CLASS_DEVICE
-> -	depends on PM
-> -	select VIDEOMODE_HELPERS
-> -	help
-> -	  DRM panel driver for dumb non-eDP panels that need at most a regulator
-> -	  and a GPIO to be powered up. Optionally a backlight can be attached so
-> -	  that it can be automatically turned off when the panel goes into a
-> -	  low power state.
-> -
-> -config DRM_PANEL_EDP
-> -	tristate "support for simple Embedded DisplayPort panels"
-> -	depends on OF
-> -	depends on BACKLIGHT_CLASS_DEVICE
-> -	depends on PM
-> -	select VIDEOMODE_HELPERS
-> -	select DRM_DISPLAY_DP_HELPER
-> -	select DRM_DISPLAY_HELPER
-> -	select DRM_DP_AUX_BUS
-> -	select DRM_KMS_HELPER
-> -	help
-> -	  DRM panel driver for dumb eDP panels that need at most a regulator and
-> -	  a GPIO to be powered up. Optionally a backlight can be attached so
-> -	  that it can be automatically turned off when the panel goes into a
-> -	  low power state.
-> -
->   config DRM_PANEL_EBBG_FT8719
->   	tristate "EBBG FT8719 panel driver"
->   	depends on OF
-> @@ -162,6 +115,25 @@ config DRM_PANEL_FEIYANG_FY07024DI26A30D
->   	  Say Y if you want to enable support for panels based on the
->   	  Feiyang FY07024DI26A30-D MIPI-DSI interface.
->   
-> +config DRM_PANEL_DSI_CM
-> +	tristate "Generic DSI command mode panels"
-> +	depends on OF
-> +	depends on DRM_MIPI_DSI
-> +	depends on BACKLIGHT_CLASS_DEVICE
-> +	help
-> +	  DRM panel driver for DSI command mode panels with support for
-> +	  embedded and external backlights.
-> +
-> +config DRM_PANEL_LVDS
-> +	tristate "Generic LVDS panel driver"
-> +	depends on OF
-> +	depends on BACKLIGHT_CLASS_DEVICE
-> +	select VIDEOMODE_HELPERS
-> +	help
-> +	  This driver supports LVDS panels that don't require device-specific
-> +	  handling of power supplies or control signals. It implements automatic
-> +	  backlight handling if the panel is attached to a backlight controller.
-> +
->   config DRM_PANEL_HIMAX_HX8394
->   	tristate "HIMAX HX8394 MIPI-DSI LCD panels"
->   	depends on OF
-> @@ -251,17 +223,6 @@ config DRM_PANEL_JADARD_JD9365DA_H3
->   	  WXGA MIPI DSI panel. The panel support TFT dot matrix LCD with
->   	  800RGBx1280 dots at maximum.
->   
-> -config DRM_PANEL_JDI_LT070ME05000
-> -	tristate "JDI LT070ME05000 WUXGA DSI panel"
-> -	depends on OF
-> -	depends on DRM_MIPI_DSI
-> -	depends on BACKLIGHT_CLASS_DEVICE
-> -	help
-> -	  Say Y here if you want to enable support for JDI DSI video mode
-> -	  panel as found in Google Nexus 7 (2013) devices.
-> -	  The panel has a 1200(RGB)×1920 (WUXGA) resolution and uses
-> -	  24 bit per pixel.
-> -
->   config DRM_PANEL_JDI_LPM102A188A
->   	tristate "JDI LPM102A188A DSI panel"
->   	depends on OF && GPIOLIB
-> @@ -273,6 +234,17 @@ config DRM_PANEL_JDI_LPM102A188A
->   	  The panel has a 2560×1800 resolution. It provides a MIPI DSI interface
->   	  to the host.
->   
-> +config DRM_PANEL_JDI_LT070ME05000
-> +	tristate "JDI LT070ME05000 WUXGA DSI panel"
-> +	depends on OF
-> +	depends on DRM_MIPI_DSI
-> +	depends on BACKLIGHT_CLASS_DEVICE
-> +	help
-> +	  Say Y here if you want to enable support for JDI DSI video mode
-> +	  panel as found in Google Nexus 7 (2013) devices.
-> +	  The panel has a 1200(RGB)×1920 (WUXGA) resolution and uses
-> +	  24 bit per pixel.
-> +
->   config DRM_PANEL_JDI_R63452
->   	tristate "JDI R63452 Full HD DSI panel"
->   	depends on OF
-> @@ -326,12 +298,6 @@ config DRM_PANEL_LEADTEK_LTK500HD1829
->   	  24 bit RGB per pixel. It provides a MIPI DSI interface to
->   	  the host and has a built-in LED backlight.
->   
-> -config DRM_PANEL_SAMSUNG_LD9040
-> -	tristate "Samsung LD9040 RGB/SPI panel"
-> -	depends on OF && SPI
-> -	depends on BACKLIGHT_CLASS_DEVICE
-> -	select VIDEOMODE_HELPERS
-> -
->   config DRM_PANEL_LG_LB035Q02
->   	tristate "LG LB035Q024573 RGB panel"
->   	depends on GPIOLIB && OF && SPI
-> @@ -359,6 +325,17 @@ config DRM_PANEL_MAGNACHIP_D53E6EA8966
->   	  with the Magnachip D53E6EA8966 panel IC. This panel receives
->   	  video data via DSI but commands via 9-bit SPI using DBI.
->   
-> +config DRM_PANEL_MANTIX_MLAF057WE51
-> +	tristate "Mantix MLAF057WE51-X MIPI-DSI LCD panel"
-> +	depends on OF
-> +	depends on DRM_MIPI_DSI
-> +	depends on BACKLIGHT_CLASS_DEVICE
-> +	help
-> +	  Say Y here if you want to enable support for the Mantix
-> +	  MLAF057WE51-X MIPI DSI panel as e.g. used in the Librem 5. It
-> +	  has a resolution of 720x1440 pixels, a built in backlight and touch
-> +	  controller.
-> +
->   config DRM_PANEL_NEC_NL8048HL11
->   	tristate "NEC NL8048HL11 RGB panel"
->   	depends on GPIOLIB && OF && SPI
-> @@ -447,17 +424,6 @@ config DRM_PANEL_NOVATEK_NT39016
->   	  Say Y here if you want to enable support for the panels built
->   	  around the Novatek NT39016 display controller.
->   
-> -config DRM_PANEL_MANTIX_MLAF057WE51
-> -	tristate "Mantix MLAF057WE51-X MIPI-DSI LCD panel"
-> -	depends on OF
-> -	depends on DRM_MIPI_DSI
-> -	depends on BACKLIGHT_CLASS_DEVICE
-> -	help
-> -	  Say Y here if you want to enable support for the Mantix
-> -	  MLAF057WE51-X MIPI DSI panel as e.g. used in the Librem 5. It
-> -	  has a resolution of 720x1440 pixels, a built in backlight and touch
-> -	  controller.
-> -
->   config DRM_PANEL_OLIMEX_LCD_OLINUXINO
->   	tristate "Olimex LCD-OLinuXino panel"
->   	depends on OF
-> @@ -554,6 +520,12 @@ config DRM_PANEL_RONBO_RB070D30
->   	  Say Y here if you want to enable support for Ronbo Electronics
->   	  RB070D30 1024x600 DSI panel.
->   
-> +config DRM_PANEL_SAMSUNG_S6E88A0_AMS452EF01
-> +	tristate "Samsung AMS452EF01 panel with S6E88A0 DSI video mode controller"
-> +	depends on OF
-> +	select DRM_MIPI_DSI
-> +	select VIDEOMODE_HELPERS
-> +
->   config DRM_PANEL_SAMSUNG_ATNA33XC20
->   	tristate "Samsung ATNA33XC20 eDP panel"
->   	depends on OF
-> @@ -577,6 +549,12 @@ config DRM_PANEL_SAMSUNG_DB7430
->   	  DB7430 DPI display controller used in such devices as the
->   	  LMS397KF04 480x800 DPI panel.
->   
-> +config DRM_PANEL_SAMSUNG_LD9040
-> +	tristate "Samsung LD9040 RGB/SPI panel"
-> +	depends on OF && SPI
-> +	depends on BACKLIGHT_CLASS_DEVICE
-> +	select VIDEOMODE_HELPERS
-> +
->   config DRM_PANEL_SAMSUNG_S6D16D0
->   	tristate "Samsung S6D16D0 DSI video mode panel"
->   	depends on OF
-> @@ -642,12 +620,6 @@ config DRM_PANEL_SAMSUNG_S6E63M0_DSI
->   	  Say Y here if you want to be able to access the Samsung
->   	  S6E63M0 panel using DSI.
->   
-> -config DRM_PANEL_SAMSUNG_S6E88A0_AMS452EF01
-> -	tristate "Samsung AMS452EF01 panel with S6E88A0 DSI video mode controller"
-> -	depends on OF
-> -	select DRM_MIPI_DSI
-> -	select VIDEOMODE_HELPERS
-> -
->   config DRM_PANEL_SAMSUNG_S6E8AA0
->   	tristate "Samsung S6E8AA0 DSI video mode panel"
->   	depends on OF
-> @@ -746,15 +718,6 @@ config DRM_PANEL_SITRONIX_ST7789V
->   	  Say Y here if you want to enable support for the Sitronix
->   	  ST7789V controller for 240x320 LCD panels
->   
-> -config DRM_PANEL_SYNAPTICS_R63353
-> -	tristate "Synaptics R63353-based panels"
-> -	depends on OF
-> -	depends on DRM_MIPI_DSI
-> -	depends on BACKLIGHT_CLASS_DEVICE
-> -	help
-> -	  Say Y if you want to enable support for panels based on the
-> -	  Synaptics R63353 controller.
-> -
->   config DRM_PANEL_SONY_ACX565AKM
->   	tristate "Sony ACX565AKM panel"
->   	depends on GPIOLIB && OF && SPI
-> @@ -794,6 +757,43 @@ config DRM_PANEL_STARTEK_KD070FHFID015
->   	  with a resolution of 1024 x 600 pixels. It provides a MIPI DSI interface to
->   	  the host, a built-in LED backlight and touch controller.
->   
-> +config DRM_PANEL_EDP
-> +	tristate "support for simple Embedded DisplayPort panels"
-> +	depends on OF
-> +	depends on BACKLIGHT_CLASS_DEVICE
-> +	depends on PM
-> +	select VIDEOMODE_HELPERS
-> +	select DRM_DISPLAY_DP_HELPER
-> +	select DRM_DISPLAY_HELPER
-> +	select DRM_DP_AUX_BUS
-> +	select DRM_KMS_HELPER
-> +	help
-> +	  DRM panel driver for dumb eDP panels that need at most a regulator and
-> +	  a GPIO to be powered up. Optionally a backlight can be attached so
-> +	  that it can be automatically turned off when the panel goes into a
-> +	  low power state.
-> +
-> +config DRM_PANEL_SIMPLE
-> +	tristate "support for simple panels (other than eDP ones)"
-> +	depends on OF
-> +	depends on BACKLIGHT_CLASS_DEVICE
-> +	depends on PM
-> +	select VIDEOMODE_HELPERS
-> +	help
-> +	  DRM panel driver for dumb non-eDP panels that need at most a regulator
-> +	  and a GPIO to be powered up. Optionally a backlight can be attached so
-> +	  that it can be automatically turned off when the panel goes into a
-> +	  low power state.
-> +
-> +config DRM_PANEL_SYNAPTICS_R63353
-> +	tristate "Synaptics R63353-based panels"
-> +	depends on OF
-> +	depends on DRM_MIPI_DSI
-> +	depends on BACKLIGHT_CLASS_DEVICE
-> +	help
-> +	  Say Y if you want to enable support for panels based on the
-> +	  Synaptics R63353 controller.
-> +
->   config DRM_PANEL_TDO_TL070WSH30
->   	tristate "TDO TL070WSH30 DSI panel"
->   	depends on OF
-> @@ -837,6 +837,17 @@ config DRM_PANEL_TRULY_NT35597_WQXGA
->   	  Say Y here if you want to enable support for Truly NT35597 WQXGA Dual DSI
->   	  Video Mode panel
->   
-> +config DRM_PANEL_VISIONOX_R66451
-> +	tristate "Visionox R66451"
-> +	depends on OF
-> +	depends on DRM_MIPI_DSI
-> +	depends on BACKLIGHT_CLASS_DEVICE
-> +	select DRM_DISPLAY_DP_HELPER
-> +	select DRM_DISPLAY_HELPER
-> +	help
-> +	  Say Y here if you want to enable support for Visionox
-> +	  R66451 1080x2340 AMOLED DSI panel.
-> +
->   config DRM_PANEL_VISIONOX_RM69299
->   	tristate "Visionox RM69299"
->   	depends on OF
-> @@ -854,17 +865,6 @@ config DRM_PANEL_VISIONOX_VTDR6130
->   	  Say Y here if you want to enable support for Visionox
->   	  VTDR6130 1080x2400 AMOLED DSI panel.
->   
-> -config DRM_PANEL_VISIONOX_R66451
-> -	tristate "Visionox R66451"
-> -	depends on OF
-> -	depends on DRM_MIPI_DSI
-> -	depends on BACKLIGHT_CLASS_DEVICE
-> -	select DRM_DISPLAY_DP_HELPER
-> -	select DRM_DISPLAY_HELPER
-> -	help
-> -	  Say Y here if you want to enable support for Visionox
-> -	  R66451 1080x2340 AMOLED DSI panel.
-> -
->   config DRM_PANEL_WIDECHIPS_WS2401
->   	tristate "Widechips WS2401 DPI panel driver"
->   	depends on SPI && GPIOLIB
+From: Yicong Yang <yangyicong@hisilicon.com>
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+Some platforms have 'cluster' topology and CPUs in the cluster will
+share resources like L3 Cache Tag (for HiSilicon Kunpeng SoC) or L2
+cache (for Intel Jacobsville). Currently parsing and building cluster
+topology have been supported since [1].
+
+perf stat has already supported aggregation for other topologies like
+die or socket, etc. It'll be useful to aggregate per-cluster to find
+problems like L3T bandwidth contention.
+
+This patch add support for "--per-cluster" option for per-cluster
+aggregation. Also update the docs and related test. The output will
+be like:
+
+[root@localhost tmp]# perf stat -a -e LLC-load --per-cluster -- sleep 5
+
+ Performance counter stats for 'system wide':
+
+S56-D0-CLS158    4      1,321,521,570      LLC-load
+S56-D0-CLS594    4        794,211,453      LLC-load
+S56-D0-CLS1030    4             41,623      LLC-load
+S56-D0-CLS1466    4             41,646      LLC-load
+S56-D0-CLS1902    4             16,863      LLC-load
+S56-D0-CLS2338    4             15,721      LLC-load
+S56-D0-CLS2774    4             22,671      LLC-load
+[...]
+
+On a legacy system without cluster or cluster support, the output will
+be look like:
+[root@localhost perf]# perf stat -a -e cycles --per-cluster -- sleep 1
+
+ Performance counter stats for 'system wide':
+
+S56-D0-CLS0   64         18,011,485      cycles
+S7182-D0-CLS0   64         16,548,835      cycles
+
+Note that this patch doesn't mix the cluster information in the outputs
+of --per-core to avoid breaking any tools/scripts using it.
+
+Note that perf recently supports "--per-cache" aggregation, but it's not
+the same with the cluster although cluster CPUs may share some cache
+resources. For example on my machine all clusters within a die share the
+same L3 cache:
+$ cat /sys/devices/system/cpu/cpu0/cache/index3/shared_cpu_list
+0-31
+$ cat /sys/devices/system/cpu/cpu0/topology/cluster_cpus_list
+0-3
+
+[1] commit c5e22feffdd7 ("topology: Represent clusters of CPUs within a die")
+Tested-by: Jie Zhan <zhanjie9@hisilicon.com>
+Reviewed-by: Tim Chen <tim.c.chen@linux.intel.com>
+Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+---
+Change since v3:
+- Rebase on v6.7-rc4 and resolve the conflicts
+Link: https://lore.kernel.org/all/20230404104951.27537-1-yangyicong@huawei.com/
+
+Change since v2:
+- Use 0 as cluster ID on legacy system without cluster support, keep consistenct
+  with what --per-die does.
+Link: https://lore.kernel.org/all/20230328112717.19573-1-yangyicong@huawei.com/
+
+Change since v1:
+- Provides the information about how to map the cluster to the CPUs in the manual
+- Thanks the review from Tim and test from Jie.
+Link: https://lore.kernel.org/all/20230313085911.61359-1-yangyicong@huawei.com/
+
+ tools/perf/Documentation/perf-stat.txt        | 11 ++++
+ tools/perf/builtin-stat.c                     | 52 +++++++++++++++++--
+ .../tests/shell/lib/perf_json_output_lint.py  |  4 +-
+ tools/perf/tests/shell/lib/stat_output.sh     | 12 +++++
+ tools/perf/tests/shell/stat+csv_output.sh     |  2 +
+ tools/perf/tests/shell/stat+json_output.sh    | 13 +++++
+ tools/perf/tests/shell/stat+std_output.sh     |  2 +
+ tools/perf/util/cpumap.c                      | 32 +++++++++++-
+ tools/perf/util/cpumap.h                      | 19 +++++--
+ tools/perf/util/env.h                         |  1 +
+ tools/perf/util/stat-display.c                | 13 +++++
+ tools/perf/util/stat.h                        |  1 +
+ 12 files changed, 153 insertions(+), 9 deletions(-)
+
+diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
+index 5af2e432b54f..29756a87ab6f 100644
+--- a/tools/perf/Documentation/perf-stat.txt
++++ b/tools/perf/Documentation/perf-stat.txt
+@@ -308,6 +308,14 @@ use --per-die in addition to -a. (system-wide).  The output includes the
+ die number and the number of online processors on that die. This is
+ useful to gauge the amount of aggregation.
+ 
++--per-cluster::
++Aggregate counts per processor cluster for system-wide mode measurement.  This
++is a useful mode to detect imbalance between clusters.  To enable this mode,
++use --per-cluster in addition to -a. (system-wide).  The output includes the
++cluster number and the number of online processors on that cluster. This is
++useful to gauge the amount of aggregation. The information of cluster ID and
++related CPUs can be gotten from /sys/devices/system/cpu/cpuX/topology/cluster_{id, cpus}.
++
+ --per-cache::
+ Aggregate counts per cache instance for system-wide mode measurements.  By
+ default, the aggregation happens for the cache level at the highest index
+@@ -396,6 +404,9 @@ Aggregate counts per processor socket for system-wide mode measurements.
+ --per-die::
+ Aggregate counts per processor die for system-wide mode measurements.
+ 
++--per-cluster::
++Aggregate counts perf processor cluster for system-wide mode measurements.
++
+ --per-cache::
+ Aggregate counts per cache instance for system-wide mode measurements.  By
+ default, the aggregation happens for the cache level at the highest index
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index 5fe9abc6a524..6bba1a89d030 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -1238,6 +1238,8 @@ static struct option stat_options[] = {
+ 		     "aggregate counts per processor socket", AGGR_SOCKET),
+ 	OPT_SET_UINT(0, "per-die", &stat_config.aggr_mode,
+ 		     "aggregate counts per processor die", AGGR_DIE),
++	OPT_SET_UINT(0, "per-cluster", &stat_config.aggr_mode,
++		     "aggregate counts per processor cluster", AGGR_CLUSTER),
+ 	OPT_CALLBACK_OPTARG(0, "per-cache", &stat_config.aggr_mode, &stat_config.aggr_level,
+ 			    "cache level", "aggregate count at this cache level (Default: LLC)",
+ 			    parse_cache_level),
+@@ -1428,6 +1430,7 @@ static struct aggr_cpu_id aggr_cpu_id__cache(struct perf_cpu cpu, void *data)
+ static const char *const aggr_mode__string[] = {
+ 	[AGGR_CORE] = "core",
+ 	[AGGR_CACHE] = "cache",
++	[AGGR_CLUSTER] = "cluster",
+ 	[AGGR_DIE] = "die",
+ 	[AGGR_GLOBAL] = "global",
+ 	[AGGR_NODE] = "node",
+@@ -1455,6 +1458,12 @@ static struct aggr_cpu_id perf_stat__get_cache_id(struct perf_stat_config *confi
+ 	return aggr_cpu_id__cache(cpu, /*data=*/NULL);
+ }
+ 
++static struct aggr_cpu_id perf_stat__get_cluster(struct perf_stat_config *config __maybe_unused,
++						 struct perf_cpu cpu)
++{
++	return aggr_cpu_id__cluster(cpu, /*data=*/NULL);
++}
++
+ static struct aggr_cpu_id perf_stat__get_core(struct perf_stat_config *config __maybe_unused,
+ 					      struct perf_cpu cpu)
+ {
+@@ -1507,6 +1516,12 @@ static struct aggr_cpu_id perf_stat__get_die_cached(struct perf_stat_config *con
+ 	return perf_stat__get_aggr(config, perf_stat__get_die, cpu);
+ }
+ 
++static struct aggr_cpu_id perf_stat__get_cluster_cached(struct perf_stat_config *config,
++							struct perf_cpu cpu)
++{
++	return perf_stat__get_aggr(config, perf_stat__get_cluster, cpu);
++}
++
+ static struct aggr_cpu_id perf_stat__get_cache_id_cached(struct perf_stat_config *config,
+ 							 struct perf_cpu cpu)
+ {
+@@ -1544,6 +1559,8 @@ static aggr_cpu_id_get_t aggr_mode__get_aggr(enum aggr_mode aggr_mode)
+ 		return aggr_cpu_id__socket;
+ 	case AGGR_DIE:
+ 		return aggr_cpu_id__die;
++	case AGGR_CLUSTER:
++		return aggr_cpu_id__cluster;
+ 	case AGGR_CACHE:
+ 		return aggr_cpu_id__cache;
+ 	case AGGR_CORE:
+@@ -1569,6 +1586,8 @@ static aggr_get_id_t aggr_mode__get_id(enum aggr_mode aggr_mode)
+ 		return perf_stat__get_socket_cached;
+ 	case AGGR_DIE:
+ 		return perf_stat__get_die_cached;
++	case AGGR_CLUSTER:
++		return perf_stat__get_cluster_cached;
+ 	case AGGR_CACHE:
+ 		return perf_stat__get_cache_id_cached;
+ 	case AGGR_CORE:
+@@ -1737,6 +1756,21 @@ static struct aggr_cpu_id perf_env__get_cache_aggr_by_cpu(struct perf_cpu cpu,
+ 	return id;
+ }
+ 
++static struct aggr_cpu_id perf_env__get_cluster_aggr_by_cpu(struct perf_cpu cpu,
++							    void *data)
++{
++	struct perf_env *env = data;
++	struct aggr_cpu_id id = aggr_cpu_id__empty();
++
++	if (cpu.cpu != -1) {
++		id.socket = env->cpu[cpu.cpu].socket_id;
++		id.die = env->cpu[cpu.cpu].die_id;
++		id.cluster = env->cpu[cpu.cpu].cluster_id;
++	}
++
++	return id;
++}
++
+ static struct aggr_cpu_id perf_env__get_core_aggr_by_cpu(struct perf_cpu cpu, void *data)
+ {
+ 	struct perf_env *env = data;
+@@ -1744,12 +1778,12 @@ static struct aggr_cpu_id perf_env__get_core_aggr_by_cpu(struct perf_cpu cpu, vo
+ 
+ 	if (cpu.cpu != -1) {
+ 		/*
+-		 * core_id is relative to socket and die,
+-		 * we need a global id. So we set
+-		 * socket, die id and core id
++		 * core_id is relative to socket, die and cluster, we need a
++		 * global id. So we set socket, die id, cluster id and core id.
+ 		 */
+ 		id.socket = env->cpu[cpu.cpu].socket_id;
+ 		id.die = env->cpu[cpu.cpu].die_id;
++		id.cluster = env->cpu[cpu.cpu].cluster_id;
+ 		id.core = env->cpu[cpu.cpu].core_id;
+ 	}
+ 
+@@ -1805,6 +1839,12 @@ static struct aggr_cpu_id perf_stat__get_die_file(struct perf_stat_config *confi
+ 	return perf_env__get_die_aggr_by_cpu(cpu, &perf_stat.session->header.env);
+ }
+ 
++static struct aggr_cpu_id perf_stat__get_cluster_file(struct perf_stat_config *config __maybe_unused,
++						      struct perf_cpu cpu)
++{
++	return perf_env__get_cluster_aggr_by_cpu(cpu, &perf_stat.session->header.env);
++}
++
+ static struct aggr_cpu_id perf_stat__get_cache_file(struct perf_stat_config *config __maybe_unused,
+ 						    struct perf_cpu cpu)
+ {
+@@ -1842,6 +1882,8 @@ static aggr_cpu_id_get_t aggr_mode__get_aggr_file(enum aggr_mode aggr_mode)
+ 		return perf_env__get_socket_aggr_by_cpu;
+ 	case AGGR_DIE:
+ 		return perf_env__get_die_aggr_by_cpu;
++	case AGGR_CLUSTER:
++		return perf_env__get_cluster_aggr_by_cpu;
+ 	case AGGR_CACHE:
+ 		return perf_env__get_cache_aggr_by_cpu;
+ 	case AGGR_CORE:
+@@ -1867,6 +1909,8 @@ static aggr_get_id_t aggr_mode__get_id_file(enum aggr_mode aggr_mode)
+ 		return perf_stat__get_socket_file;
+ 	case AGGR_DIE:
+ 		return perf_stat__get_die_file;
++	case AGGR_CLUSTER:
++		return perf_stat__get_cluster_file;
+ 	case AGGR_CACHE:
+ 		return perf_stat__get_cache_file;
+ 	case AGGR_CORE:
+@@ -2398,6 +2442,8 @@ static int __cmd_report(int argc, const char **argv)
+ 		     "aggregate counts per processor socket", AGGR_SOCKET),
+ 	OPT_SET_UINT(0, "per-die", &perf_stat.aggr_mode,
+ 		     "aggregate counts per processor die", AGGR_DIE),
++	OPT_SET_UINT(0, "per-cluster", &perf_stat.aggr_mode,
++		     "aggregate counts perf processor cluster", AGGR_CLUSTER),
+ 	OPT_CALLBACK_OPTARG(0, "per-cache", &perf_stat.aggr_mode, &perf_stat.aggr_level,
+ 			    "cache level",
+ 			    "aggregate count at this cache level (Default: LLC)",
+diff --git a/tools/perf/tests/shell/lib/perf_json_output_lint.py b/tools/perf/tests/shell/lib/perf_json_output_lint.py
+index ea55d5ea1ced..abc1fd737782 100644
+--- a/tools/perf/tests/shell/lib/perf_json_output_lint.py
++++ b/tools/perf/tests/shell/lib/perf_json_output_lint.py
+@@ -15,6 +15,7 @@ ap.add_argument('--event', action='store_true')
+ ap.add_argument('--per-core', action='store_true')
+ ap.add_argument('--per-thread', action='store_true')
+ ap.add_argument('--per-cache', action='store_true')
++ap.add_argument('--per-cluster', action='store_true')
+ ap.add_argument('--per-die', action='store_true')
+ ap.add_argument('--per-node', action='store_true')
+ ap.add_argument('--per-socket', action='store_true')
+@@ -49,6 +50,7 @@ def check_json_output(expected_items):
+       'cgroup': lambda x: True,
+       'cpu': lambda x: isint(x),
+       'cache': lambda x: True,
++      'cluster': lambda x: True,
+       'die': lambda x: True,
+       'event': lambda x: True,
+       'event-runtime': lambda x: isfloat(x),
+@@ -88,7 +90,7 @@ try:
+     expected_items = 7
+   elif args.interval or args.per_thread or args.system_wide_no_aggr:
+     expected_items = 8
+-  elif args.per_core or args.per_socket or args.per_node or args.per_die or args.per_cache:
++  elif args.per_core or args.per_socket or args.per_node or args.per_die or args.per_cluster or args.per_cache:
+     expected_items = 9
+   else:
+     # If no option is specified, don't check the number of items.
+diff --git a/tools/perf/tests/shell/lib/stat_output.sh b/tools/perf/tests/shell/lib/stat_output.sh
+index 3cc158a64326..c81d6a9f7983 100644
+--- a/tools/perf/tests/shell/lib/stat_output.sh
++++ b/tools/perf/tests/shell/lib/stat_output.sh
+@@ -97,6 +97,18 @@ check_per_cache_instance()
+ 	echo "[Success]"
+ }
+ 
++check_per_cluster()
++{
++	echo -n "Checking $1 output: per cluster "
++	if ParanoidAndNotRoot 0
++	then
++		echo "[Skip] paranoid and not root"
++		return
++	fi
++	perf stat --per-cluster -a $2 true
++	echo "[Success]"
++}
++
+ check_per_die()
+ {
+ 	echo -n "Checking $1 output: per die "
+diff --git a/tools/perf/tests/shell/stat+csv_output.sh b/tools/perf/tests/shell/stat+csv_output.sh
+index f1818fa6d9ce..fc2d8cc6e5e0 100755
+--- a/tools/perf/tests/shell/stat+csv_output.sh
++++ b/tools/perf/tests/shell/stat+csv_output.sh
+@@ -42,6 +42,7 @@ function commachecker()
+ 	;; "--per-socket")	exp=8
+ 	;; "--per-node")	exp=8
+ 	;; "--per-die")		exp=8
++	;; "--per-cluster")	exp=8
+ 	;; "--per-cache")	exp=8
+ 	esac
+ 
+@@ -79,6 +80,7 @@ then
+ 	check_system_wide_no_aggr "CSV" "$perf_cmd"
+ 	check_per_core "CSV" "$perf_cmd"
+ 	check_per_cache_instance "CSV" "$perf_cmd"
++	check_per_cluster "CSV" "$perf_cmd"
+ 	check_per_die "CSV" "$perf_cmd"
+ 	check_per_socket "CSV" "$perf_cmd"
+ else
+diff --git a/tools/perf/tests/shell/stat+json_output.sh b/tools/perf/tests/shell/stat+json_output.sh
+index 3bc900533a5d..2b9c6212dffc 100755
+--- a/tools/perf/tests/shell/stat+json_output.sh
++++ b/tools/perf/tests/shell/stat+json_output.sh
+@@ -122,6 +122,18 @@ check_per_cache_instance()
+ 	echo "[Success]"
+ }
+ 
++check_per_cluster()
++{
++	echo -n "Checking json output: per cluster "
++	if ParanoidAndNotRoot 0
++	then
++		echo "[Skip] paranoia and not root"
++		return
++	fi
++	perf stat -j --per-cluster -a true 2>&1 | $PYTHON $pythonchecker --per-cluster
++	echo "[Success]"
++}
++
+ check_per_die()
+ {
+ 	echo -n "Checking json output: per die "
+@@ -200,6 +212,7 @@ then
+ 	check_system_wide_no_aggr
+ 	check_per_core
+ 	check_per_cache_instance
++	check_per_cluster
+ 	check_per_die
+ 	check_per_socket
+ else
+diff --git a/tools/perf/tests/shell/stat+std_output.sh b/tools/perf/tests/shell/stat+std_output.sh
+index 4fcdd1a9142c..16f61e86afc5 100755
+--- a/tools/perf/tests/shell/stat+std_output.sh
++++ b/tools/perf/tests/shell/stat+std_output.sh
+@@ -40,6 +40,7 @@ function commachecker()
+ 	;; "--per-node")	prefix=3
+ 	;; "--per-die")		prefix=3
+ 	;; "--per-cache")	prefix=3
++	;; "--per-cluster")	prefix=3
+ 	esac
+ 
+ 	while read line
+@@ -99,6 +100,7 @@ then
+ 	check_system_wide_no_aggr "STD" "$perf_cmd"
+ 	check_per_core "STD" "$perf_cmd"
+ 	check_per_cache_instance "STD" "$perf_cmd"
++	check_per_cluster "STD" "$perf_cmd"
+ 	check_per_die "STD" "$perf_cmd"
+ 	check_per_socket "STD" "$perf_cmd"
+ else
+diff --git a/tools/perf/util/cpumap.c b/tools/perf/util/cpumap.c
+index 0581ee0fa5f2..5907456d42a2 100644
+--- a/tools/perf/util/cpumap.c
++++ b/tools/perf/util/cpumap.c
+@@ -222,6 +222,8 @@ static int aggr_cpu_id__cmp(const void *a_pointer, const void *b_pointer)
+ 		return a->socket - b->socket;
+ 	else if (a->die != b->die)
+ 		return a->die - b->die;
++	else if (a->cluster != b->cluster)
++		return a->cluster - b->cluster;
+ 	else if (a->cache_lvl != b->cache_lvl)
+ 		return a->cache_lvl - b->cache_lvl;
+ 	else if (a->cache != b->cache)
+@@ -309,6 +311,29 @@ struct aggr_cpu_id aggr_cpu_id__die(struct perf_cpu cpu, void *data)
+ 	return id;
+ }
+ 
++int cpu__get_cluster_id(struct perf_cpu cpu)
++{
++	int value, ret = cpu__get_topology_int(cpu.cpu, "cluster_id", &value);
++	return ret ?: value;
++}
++
++struct aggr_cpu_id aggr_cpu_id__cluster(struct perf_cpu cpu, void *data)
++{
++	int cluster = cpu__get_cluster_id(cpu);
++	struct aggr_cpu_id id;
++
++	/* There is no cluster_id on legacy system. */
++	if (cluster == -1)
++		cluster = 0;
++
++	id = aggr_cpu_id__die(cpu, data);
++	if (aggr_cpu_id__is_empty(&id))
++		return id;
++
++	id.cluster = cluster;
++	return id;
++}
++
+ int cpu__get_core_id(struct perf_cpu cpu)
+ {
+ 	int value, ret = cpu__get_topology_int(cpu.cpu, "core_id", &value);
+@@ -320,8 +345,8 @@ struct aggr_cpu_id aggr_cpu_id__core(struct perf_cpu cpu, void *data)
+ 	struct aggr_cpu_id id;
+ 	int core = cpu__get_core_id(cpu);
+ 
+-	/* aggr_cpu_id__die returns a struct with socket and die set. */
+-	id = aggr_cpu_id__die(cpu, data);
++	/* aggr_cpu_id__die returns a struct with socket die, and cluster set. */
++	id = aggr_cpu_id__cluster(cpu, data);
+ 	if (aggr_cpu_id__is_empty(&id))
+ 		return id;
+ 
+@@ -683,6 +708,7 @@ bool aggr_cpu_id__equal(const struct aggr_cpu_id *a, const struct aggr_cpu_id *b
+ 		a->node == b->node &&
+ 		a->socket == b->socket &&
+ 		a->die == b->die &&
++		a->cluster == b->cluster &&
+ 		a->cache_lvl == b->cache_lvl &&
+ 		a->cache == b->cache &&
+ 		a->core == b->core &&
+@@ -695,6 +721,7 @@ bool aggr_cpu_id__is_empty(const struct aggr_cpu_id *a)
+ 		a->node == -1 &&
+ 		a->socket == -1 &&
+ 		a->die == -1 &&
++		a->cluster == -1 &&
+ 		a->cache_lvl == -1 &&
+ 		a->cache == -1 &&
+ 		a->core == -1 &&
+@@ -708,6 +735,7 @@ struct aggr_cpu_id aggr_cpu_id__empty(void)
+ 		.node = -1,
+ 		.socket = -1,
+ 		.die = -1,
++		.cluster = -1,
+ 		.cache_lvl = -1,
+ 		.cache = -1,
+ 		.core = -1,
+diff --git a/tools/perf/util/cpumap.h b/tools/perf/util/cpumap.h
+index 9df2aeb34d3d..26cf76c693f5 100644
+--- a/tools/perf/util/cpumap.h
++++ b/tools/perf/util/cpumap.h
+@@ -20,6 +20,8 @@ struct aggr_cpu_id {
+ 	int socket;
+ 	/** The die id as read from /sys/devices/system/cpu/cpuX/topology/die_id. */
+ 	int die;
++	/** The cluster id as read from /sys/devices/system/cpu/cpuX/topology/cluster_id */
++	int cluster;
+ 	/** The cache level as read from /sys/devices/system/cpu/cpuX/cache/indexY/level */
+ 	int cache_lvl;
+ 	/**
+@@ -86,6 +88,11 @@ int cpu__get_socket_id(struct perf_cpu cpu);
+  * /sys/devices/system/cpu/cpuX/topology/die_id for the given CPU.
+  */
+ int cpu__get_die_id(struct perf_cpu cpu);
++/**
++ * cpu__get_cluster_id - Returns the cluster id as read from
++ * /sys/devices/system/cpu/cpuX/topology/cluster_id for the given CPU
++ */
++int cpu__get_cluster_id(struct perf_cpu cpu);
+ /**
+  * cpu__get_core_id - Returns the core id as read from
+  * /sys/devices/system/cpu/cpuX/topology/core_id for the given CPU.
+@@ -127,9 +134,15 @@ struct aggr_cpu_id aggr_cpu_id__socket(struct perf_cpu cpu, void *data);
+  */
+ struct aggr_cpu_id aggr_cpu_id__die(struct perf_cpu cpu, void *data);
+ /**
+- * aggr_cpu_id__core - Create an aggr_cpu_id with the core, die and socket
+- * populated with the core, die and socket for cpu. The function signature is
+- * compatible with aggr_cpu_id_get_t.
++ * aggr_cpu_id__cluster - Create an aggr_cpu_id with cluster, die and socket
++ * populated with the cluster, die and socket for cpu. The function signature
++ * is compatible with aggr_cpu_id_get_t.
++ */
++struct aggr_cpu_id aggr_cpu_id__cluster(struct perf_cpu cpu, void *data);
++/**
++ * aggr_cpu_id__core - Create an aggr_cpu_id with the core, cluster, die and
++ * socket populated with the core, die and socket for cpu. The function
++ * signature is compatible with aggr_cpu_id_get_t.
+  */
+ struct aggr_cpu_id aggr_cpu_id__core(struct perf_cpu cpu, void *data);
+ /**
+diff --git a/tools/perf/util/env.h b/tools/perf/util/env.h
+index 7c527e65c186..2a2c37cc40b7 100644
+--- a/tools/perf/util/env.h
++++ b/tools/perf/util/env.h
+@@ -12,6 +12,7 @@ struct perf_cpu_map;
+ struct cpu_topology_map {
+ 	int	socket_id;
+ 	int	die_id;
++	int	cluster_id;
+ 	int	core_id;
+ };
+ 
+diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
+index 8c61f8627ebc..4dfe7d9517a9 100644
+--- a/tools/perf/util/stat-display.c
++++ b/tools/perf/util/stat-display.c
+@@ -201,6 +201,9 @@ static void print_aggr_id_std(struct perf_stat_config *config,
+ 		snprintf(buf, sizeof(buf), "S%d-D%d-L%d-ID%d",
+ 			 id.socket, id.die, id.cache_lvl, id.cache);
+ 		break;
++	case AGGR_CLUSTER:
++		snprintf(buf, sizeof(buf), "S%d-D%d-CLS%d", id.socket, id.die, id.cluster);
++		break;
+ 	case AGGR_DIE:
+ 		snprintf(buf, sizeof(buf), "S%d-D%d", id.socket, id.die);
+ 		break;
+@@ -251,6 +254,10 @@ static void print_aggr_id_csv(struct perf_stat_config *config,
+ 		fprintf(config->output, "S%d-D%d-L%d-ID%d%s%d%s",
+ 			id.socket, id.die, id.cache_lvl, id.cache, sep, aggr_nr, sep);
+ 		break;
++	case AGGR_CLUSTER:
++		fprintf(config->output, "S%d-D%d-CLS%d%s%d%s",
++			id.socket, id.die, id.cluster, sep, aggr_nr, sep);
++		break;
+ 	case AGGR_DIE:
+ 		fprintf(output, "S%d-D%d%s%d%s",
+ 			id.socket, id.die, sep, aggr_nr, sep);
+@@ -300,6 +307,10 @@ static void print_aggr_id_json(struct perf_stat_config *config,
+ 		fprintf(output, "\"cache\" : \"S%d-D%d-L%d-ID%d\", \"aggregate-number\" : %d, ",
+ 			id.socket, id.die, id.cache_lvl, id.cache, aggr_nr);
+ 		break;
++	case AGGR_CLUSTER:
++		fprintf(output, "\"cluster\" : \"S%d-D%d-CLS%d\", \"aggregate-number\" : %d, ",
++			id.socket, id.die, id.cluster, aggr_nr);
++		break;
+ 	case AGGR_DIE:
+ 		fprintf(output, "\"die\" : \"S%d-D%d\", \"aggregate-number\" : %d, ",
+ 			id.socket, id.die, aggr_nr);
+@@ -1248,6 +1259,7 @@ static void print_header_interval_std(struct perf_stat_config *config,
+ 	case AGGR_NODE:
+ 	case AGGR_SOCKET:
+ 	case AGGR_DIE:
++	case AGGR_CLUSTER:
+ 	case AGGR_CACHE:
+ 	case AGGR_CORE:
+ 		fprintf(output, "#%*s %-*s cpus",
+@@ -1550,6 +1562,7 @@ void evlist__print_counters(struct evlist *evlist, struct perf_stat_config *conf
+ 	switch (config->aggr_mode) {
+ 	case AGGR_CORE:
+ 	case AGGR_CACHE:
++	case AGGR_CLUSTER:
+ 	case AGGR_DIE:
+ 	case AGGR_SOCKET:
+ 	case AGGR_NODE:
+diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
+index 4357ba114822..d6e5c8787ba2 100644
+--- a/tools/perf/util/stat.h
++++ b/tools/perf/util/stat.h
+@@ -48,6 +48,7 @@ enum aggr_mode {
+ 	AGGR_GLOBAL,
+ 	AGGR_SOCKET,
+ 	AGGR_DIE,
++	AGGR_CLUSTER,
+ 	AGGR_CACHE,
+ 	AGGR_CORE,
+ 	AGGR_THREAD,
+-- 
+2.24.0
+
 
