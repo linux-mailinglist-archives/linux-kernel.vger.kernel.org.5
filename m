@@ -1,265 +1,193 @@
-Return-Path: <linux-kernel+bounces-55235-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D32D184B974
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:27:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D90C284B979
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:28:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A76B291A0F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:27:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FC2D291C66
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:28:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82E41134751;
-	Tue,  6 Feb 2024 15:23:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 712C813666F;
+	Tue,  6 Feb 2024 15:23:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="TQ9uC3nL"
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2052.outbound.protection.outlook.com [40.107.6.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j3D7GsJ/"
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E0791332B6;
-	Tue,  6 Feb 2024 15:23:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.52
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707232991; cv=fail; b=EIK7Amw6xE5jSmvh4NCyj7nVqip6XwNYEoPDpjlArl6BQs8VhWeQXVb/WFCDjAf4bzIgTddOF3bvamPpnrjC6H2Htmm225+lHQJ8axnYn9hVyGOGhUluQcNJP7g88PzUySM0aMlxJebTinSrVyi+l5SC5oCwK8LlL+3k0nj5CQ8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707232991; c=relaxed/simple;
-	bh=hMs6kAzw5hj6SXE6Q3kiQR4Id6NLuiYaMuMUx1C59Zs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=t7aGQ0dMPwJ32ZrzLhz/Jp+v6Gw1sSmJwg7sCGzfP0h3cytZD/7+kpFrhmahtaoEki2EasFoFxH97PBTRKrlOfG1DBuaLyu0zzLAMGDXm1EUQAKHM2j8BxTilQQIOwxd2ddGLj4rsH/rK2iP60ejqNFqcG0E87i5sbJQJFUTZYo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=fail (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=TQ9uC3nL reason="signature verification failed"; arc=fail smtp.client-ip=40.107.6.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KlJqNhoUPxnTA3L+dn9WEKfGnpsTT7rAiezeG4zc7XUOmcvol5jxFi0cJfOWaCC10MYwFYF/TpjGiMDcV62kqx//4hos1Tu6vzu1geNTMuro209EpiMAn2VqTGBWqzGAeqkyswFykaF+6l0cZailn/ZM7IYUnjR1cPQ7SprdAXE7IWLlgjfJ8Mi+tLyLjP5Hcxl8SSX4RJffN8InbOYHN1QXxqLhqkSXmJENKJLHdwY72nUll2DH89+/NuzjGWyieVyhUwVYwXXhMA2m/eVG0ZiACr7LPNPUkK52LLJK6lP4zrziqFlhtEc97+TijHqpG6sfjvE1RsiivoJP9qlmLQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8gUZZxx38fB6OkPHG7WJuIb31fjqYEyeKW3RnVc72Gg=;
- b=GN1YwLxy0iYwAzhEzmTJftFFo8I0lDxtBu7vF9IPw8I3GUuBsa0u6fIJjMxuDHy0NZ5maPX05yi1t6CKfqA2/KP2Q5ufkK2M+uDjesdodUsdQVwHR2noDwtZBwcGLoe8YG4inC4PC6tXoLa+4qA2khS639ixBHw2tvRLTjOKPcxg+/UkTyOSb06wkz2re5bIBZgOeu8N3HIvMuXSkJp2Xpf8MS9DgL0IRUosiArOlvxSATVzwAt4ptyUS0NSRpXBlAiqedWRS30chxnMVme2VSzpgu/c3CM7X/jlmXv2IR+kNewtFJeVxvvVsUTf++a0aNdoNYE0wv11hCj3viSzsw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8gUZZxx38fB6OkPHG7WJuIb31fjqYEyeKW3RnVc72Gg=;
- b=TQ9uC3nLqS3r0b01gPf6wkEL2Rz1O1WcmjRgixvlaXhsZ2hsNZBGksp8M1UQlyqPAWPcg9CaYzsqaO/Dv9Od76leMKVVuexIbQNQdb/5wupo0WkzP7mAbEILT4boXLH9FvGyW22JEfOoGeVMuztI/AmivQ1Xpi5qEzSjknVIXQE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by AS8PR04MB8882.eurprd04.prod.outlook.com (2603:10a6:20b:42d::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36; Tue, 6 Feb
- 2024 15:23:06 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c%3]) with mapi id 15.20.7249.032; Tue, 6 Feb 2024
- 15:23:06 +0000
-Date: Tue, 6 Feb 2024 10:22:58 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: alexandre.belloni@bootlin.com, conor.culhane@silvaco.com,
-	devicetree@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	imx@lists.linux.dev, Jiri Slaby <jirislaby@kernel.org>,
-	joe@perches.com, krzysztof.kozlowski+dt@linaro.org,
-	krzysztof.kozlowski@linaro.org, linux-i3c@lists.infradead.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-serial <linux-serial@vger.kernel.org>,
-	miquel.raynal@bootlin.com, robh@kernel.org,
-	zbigniew.lukwinski@linux.intel.com
-Subject: Re: [PATCH v7 6/8] i3c: target: func: add tty driver
-Message-ID: <ZcJO0u8rKgrIH4k8@lizhi-Precision-Tower-5810>
-References: <20240205233326.552576-1-Frank.Li@nxp.com>
- <20240205233326.552576-7-Frank.Li@nxp.com>
- <9b5bb389-4238-0a32-5e16-3c62ea6c00e7@linux.intel.com>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9b5bb389-4238-0a32-5e16-3c62ea6c00e7@linux.intel.com>
-X-ClientProxiedBy: SJ0PR03CA0059.namprd03.prod.outlook.com
- (2603:10b6:a03:33e::34) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17494134CE4;
+	Tue,  6 Feb 2024 15:23:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707233008; cv=none; b=aErXIwhlW3QxWI7Wp1x/IYiMKLZbVpQaKgYqM3+MQ+tzj4VEyrYYLugmEoTBEYQ4u9IHAJICcziW3mn/YHMKeLDg/2H1Z//IcN9lO6/aQRzgZIRyBu9RkQVrL510CGUys3480urlagZGBbVIs0icfXcZYYzn2PJB0BJKhcm7Rzk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707233008; c=relaxed/simple;
+	bh=Gh9wuJm14vCFANUo4tl3lHc80pd3ixaoVbcshke1Wt8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LaSAxMAlgZWpy9F2nzYFReA+DA2zHmJL67BvMkcofr7PS5MmGFNlJH6UPBUKrumtiJvdO7fPfsryxuXrNx9NzcohBl/9IYRxe2mEA5qhNBZF1egPtUp5v7LAOtsASvVacXA5LP5UikiZtR/0PI9OqYEVJyDmAABxVbeihmeHozc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j3D7GsJ/; arc=none smtp.client-ip=209.85.219.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-6869e87c8d8so20933836d6.2;
+        Tue, 06 Feb 2024 07:23:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707233006; x=1707837806; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H/7TPM7Tazk5LDtz7VEiySoWxaEy9ATdPXGmfgfBPRA=;
+        b=j3D7GsJ/B5dHkqAnAZ0JY6IgHpWZOjvcpvTmsrmjG5jSzegqhp7p90t2HAwiiXDn+S
+         jzoKpn5gzjq3u7D3gstDWbrlJ48oV+kjy7JeRdWswljKjx2G871uRFL+/FJusVEN5oJ5
+         yMutPKuBb0SDy3PVRp+NbJDTuVX68QkdDK6tO+uqvnkcRjXlsZGEZ2BRbYiWhZPtOp7s
+         3Z8lQWY1+5VAp/TMSU4Zrb2PiYY0TktLuDRk8Gplq9Jf8DzSe2B3VRchfhXuMhhzgidN
+         5Mno2W6ILbn3SvNTSgrRioxch7ySVxVMDVjOg6w0ew5DrJ2fyKGbBBx4D2ONbs3tSuKC
+         G/KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707233006; x=1707837806;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H/7TPM7Tazk5LDtz7VEiySoWxaEy9ATdPXGmfgfBPRA=;
+        b=mfwgLIiqgirfUaAto2mTfzgTL1zoXRH17jB6Kd6anL0B3zPn6Rf/RLdqQs531w68KH
+         nPiF1edoPAA7vb+FXIZCetq7/g4p2fAq5JWJtJ5ePbQeIaoTstOlsm+cc+r1CIiDyFLX
+         Ews+RDS3JAD1grfdL7qxim24phQTeeonzehWC4QBf8wmXywSIlABTtLQ+jSEq14y/ns2
+         bIFPlwHfvQfKHzwdy4lv3o15pJxvujZYyIrrBZY3oi7V8s7fxPvoMWhLdxIbVsMJxig+
+         9SZW9KttwypC8BXAUt07crO77pxib121JDVlvolqGhI/MuDULDoHGWtXNLJqbKML4whr
+         eIcg==
+X-Gm-Message-State: AOJu0Yw92kUa3yEoehph7O0msDf0u9P6JK1uDm7vxxF01eWag9kxehub
+	clD95cN62odmxy4+1IbUF1ZeNTLBAee9gYecbcb/Usy/FkcHOwN1180lLcshUj/s1n0lP0z2LfZ
+	itDd575LyMU2AJyOKMZLTRQgTCfKVWC5yXqk=
+X-Google-Smtp-Source: AGHT+IFRvj8iQLkOF9LHUyNODvtxMMSaPlVZsDFwsH1v0atlDvgj+vMTCL06Sjyl5NiGm4tS/mE2f3YB2XRYAjZAdrI=
+X-Received: by 2002:a05:6214:c6a:b0:68c:88a4:3fdd with SMTP id
+ t10-20020a0562140c6a00b0068c88a43fddmr2834431qvj.27.1707233005762; Tue, 06
+ Feb 2024 07:23:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS8PR04MB8882:EE_
-X-MS-Office365-Filtering-Correlation-Id: 884cfaad-1066-44d7-abfa-08dc272784e9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	T7Zbt+NFSYapiuFHtEytalNkj/r3AVS1f57KnVRvKip4Ba0354DKjDBCD7Gj3LJGKWM6cnJzQpWDIg3Yxj2OwCnVbfuKlcUO9frhthRSaoiHzQjZDO28faZTq6gT2K5xu8s7zYR30dRN/zCuu+l2mk+n/IX5lXCtlu3AXlFKDdh2iErwCIrNglHFx0Bo1h43cg5li1wquE5Aat2sb6pBWaq3Olh63gKSDwzFFlOxGx4fX3rR0/ckV6CzIppCDuAubac8nIdnK7nifFPVGFinrC1fT2aZH7Ny0FDRQ9Ddi0ZA67deQXqTLGld+ebghFVjPvjRxrLK6b82ZfTI5LpX/ua2eZ9UAawFHkQmW9QO5xDaaRVDFqgal6Qj7ge3CIW5qL6lqjBNhdMhnxen9WOoYFNzPgKzSwnsO0mxD6Lj2zFZ7omfCcICe+LSLIHGBbwBK6aPbiBk4pd/4MCXga50KiSDr8eLervSTTZyDHc7YbN/jlXSjz+Wz/3ZUi79t5i+1zaqjfLzbpk+dRBNck8gmsWRkeJY1o0j94JXZ3JIwzf9NlfHwaX6WFLo4jxruXk/a4rQ8ObFNypQxYSJaYC9AKB6Rj0ul6avhqpBntXizbokOp0NpYpdwZ/RlG1OYiz4
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(396003)(39860400002)(346002)(366004)(376002)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(33716001)(41300700001)(86362001)(66574015)(8936002)(8676002)(4326008)(7416002)(5660300002)(6486002)(6512007)(52116002)(6666004)(6506007)(478600001)(9686003)(38350700005)(26005)(66556008)(66476007)(54906003)(6916009)(316002)(66946007)(2906002)(83380400001)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?iso-8859-1?Q?UfXdN5IgbIHYjHGFrHxTAjTZK/ics5mdUtfmdNiMkDs561BWuNXhXtuoFF?=
- =?iso-8859-1?Q?7Py/2GsdKFnIbXC7QW0UF9YJmhwBTzdQwWOms3lVrVuoufDhmsa3zT3/+k?=
- =?iso-8859-1?Q?whMZJAxc4KtmZcXgokZw5vuQKWmE7jKSTvsbG20MJnpSLvhg1lvIDtKGul?=
- =?iso-8859-1?Q?emSr/7v74NJOUL6qpgoOes7qq70+h5KQaeD1fPSC9tCstwIsAYwZ5H5FC6?=
- =?iso-8859-1?Q?eZBuJu/rJUt1Q0UfYVDgpcVcexKq5e5NmcrbvpKyBdwMS2i7xxaRuQPWPh?=
- =?iso-8859-1?Q?Ph4F4kB6hF7YmTB5vJTFd5g2B4o/dDS8P9D9SK63+GS+6jE18tVnojSKvZ?=
- =?iso-8859-1?Q?rCBkpxhZ5qbwxkt13CoiJFTkpL9DjnKrC/cKzjoxRIj0XHAoJc7zpl0mA0?=
- =?iso-8859-1?Q?Wr4VTwvQsH908uI+xbODAQ+oi1fT1w545COopJyHulUH/YbS/dvH7WfJTq?=
- =?iso-8859-1?Q?ocbleyuE7SIrYbRCMZlEoDyLE1aEAJxUmLX5vAsHxcJX7JD3KXPKS+XQb8?=
- =?iso-8859-1?Q?LvxA9UgqKsFw3Jz4vZWkSSqpCqGlA0vivilWctp85THkLpF/zTE0SGeKZ3?=
- =?iso-8859-1?Q?COkaDk8fu9CeKBEAD0zi2YqaRC91rRlkL05gw98sd0h8MjWovVjR6rB7Wx?=
- =?iso-8859-1?Q?WBMTPtQo93D/poASucllwdTT5n6UfrzKbFSfw3LLi5U6y7PytTnSXQVp/E?=
- =?iso-8859-1?Q?a1sXPjDcDvoo+llD+5AxN6Axb8CMEFu2hj6gv0DnkMdJj9Gk7gCEQX4umZ?=
- =?iso-8859-1?Q?2Jh/03XZtc/+1Z0TVyR8/dFKoHNA/roJab26Spw0DVkiDqSeHM4BKNVFfw?=
- =?iso-8859-1?Q?Ub6Qv4DpH6E5MANnFz8LX7ZLjahlu/jZBg23H96mqZypCqDYymS5iaW/V4?=
- =?iso-8859-1?Q?wwAV90Xnd3AaOXhEp0NZ+mDcOQB79VpoznmZs0YXtqpsPD7MYqUozKKRBC?=
- =?iso-8859-1?Q?hs0PbiwI5p0m0nT4KjdXK2WvSlpNmMx63n6zVwl5tCjXtVz1+LpeGpu2QR?=
- =?iso-8859-1?Q?o0L67bVpdtP+jDXWVyDWOS19R3RYHtNZJa1klUGJkSRMZd9+kDdwTv9Sp3?=
- =?iso-8859-1?Q?+r+Q5Hq6gbkTL+komr3IgR1WfoOS3BmwULJW+Fbc+5TJmGW5gdY2BMghdk?=
- =?iso-8859-1?Q?P3xoraGZ5ifk9sxnJvWaOrVmf+TyyCFQQSZnxPaQXuJ2CNQZYSpm202e6E?=
- =?iso-8859-1?Q?RG7QmjTW+Ux+m1iJEhBr+QOtkLAgMkNvvU7/F3FStxI7b2huPrR8qp2Wlb?=
- =?iso-8859-1?Q?XnsDu1R/QQjX9pV+kHn7IunyxZKvDyurY66sYBJzXZak5vj/xfoPKU4X0z?=
- =?iso-8859-1?Q?btGV+ciu+Lz34h65nfV3RVBXm/rlmHcz80bdWEdNVXttpiKw0uAWfq27u+?=
- =?iso-8859-1?Q?HGTvaUxIGPreJLj7bjb6hgjvC6bWeQBS0WY/Mzf+WTZ2RH6lbDhir9YJbq?=
- =?iso-8859-1?Q?FKbZoMwWSp2EothIRyb4+KuS0L1vR4bkxVyHjj05rV+znlLmA42/KlDEAG?=
- =?iso-8859-1?Q?DgmvnoC52qNCmVo+X44ZtLPJcb35NPj1C9SOiWsuzkHafRL/32iHGF6LoN?=
- =?iso-8859-1?Q?yKZWIJPmzobrVORIfYYP9n99bEdoaBXVC2EQVkegTlwFT6KmW+iivRIods?=
- =?iso-8859-1?Q?g0EG4Bazy5jUFlXnjK07a1GrFaPtCWG14Q?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 884cfaad-1066-44d7-abfa-08dc272784e9
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2024 15:23:06.8389
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7NJpFkVIWPU6OndC7OYzLjQVmSj56ZHRqG3wxM4scO15JWk7VxnVwW3h2GYjOr4aB6T14/YAXnzSE3kSs/4BKg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8882
+References: <20240205182506.3569743-1-stefanb@linux.ibm.com> <20240205182506.3569743-10-stefanb@linux.ibm.com>
+In-Reply-To: <20240205182506.3569743-10-stefanb@linux.ibm.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 6 Feb 2024 17:23:14 +0200
+Message-ID: <CAOQ4uxhQgCqNZ_4Dy1PghCHBg7H4qaf-st2pWhXe9eq1+dsHHA@mail.gmail.com>
+Subject: Re: [PATCH v2 9/9] ima: Record i_version of real_inode for change detection
+To: Stefan Berger <stefanb@linux.ibm.com>, Jeff Layton <jlayton@kernel.org>
+Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, 
+	roberto.sassu@huawei.com, brauner@kernel.org, miklos@szeredi.hu
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 06, 2024 at 01:54:42PM +0200, Ilpo Järvinen wrote:
-> On Mon, 5 Feb 2024, Frank Li wrote:
-> 
-> > Add tty over I3C target function driver.
-> > 
-> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > ---
-> > 
-> > Notes:
-> >     Change from v4 to v5
-> >     - remove void*
-> >     - include bitfield.h
-> >     - remove extra ()
-> >     - oneline for struct ttyi3c_port *sport
-> > 
-> >  drivers/i3c/Kconfig       |   3 +
-> >  drivers/i3c/Makefile      |   1 +
-> >  drivers/i3c/func/Kconfig  |   9 +
-> >  drivers/i3c/func/Makefile |   3 +
-> >  drivers/i3c/func/tty.c    | 474 ++++++++++++++++++++++++++++++++++++++
-> >  5 files changed, 490 insertions(+)
-> >  create mode 100644 drivers/i3c/func/Kconfig
-> >  create mode 100644 drivers/i3c/func/Makefile
-> >  create mode 100644 drivers/i3c/func/tty.c
-> > 
-> > diff --git a/drivers/i3c/Kconfig b/drivers/i3c/Kconfig
-> > index d59a7eb83d13a..fca808cda87b3 100644
-> > --- a/drivers/i3c/Kconfig
-> > +++ b/drivers/i3c/Kconfig
-> > @@ -48,3 +48,6 @@ config I3C_TARGET_CONFIGFS
-> >  	  the target function and used to bind the function with a target
-> >  	  controller.
-> >  
-> > +if I3C_TARGET
-> > +source "drivers/i3c/func/Kconfig"
-> > +endif # I3C_TARGET
-> > diff --git a/drivers/i3c/Makefile b/drivers/i3c/Makefile
-> > index c275aeae8970c..11f026d6876fe 100644
-> > --- a/drivers/i3c/Makefile
-> > +++ b/drivers/i3c/Makefile
-> > @@ -4,3 +4,4 @@ obj-$(CONFIG_I3C)		+= i3c.o
-> >  obj-$(CONFIG_I3C_TARGET)                += target.o
-> >  obj-$(CONFIG_I3C_TARGET_CONFIGFS)       += i3c-cfs.o
-> >  obj-$(CONFIG_I3C)		+= master/
-> > +obj-$(CONFIG_I3C_TARGET)	+= func/
-> > diff --git a/drivers/i3c/func/Kconfig b/drivers/i3c/func/Kconfig
-> > new file mode 100644
-> > index 0000000000000..7115129eb7d5a
-> > --- /dev/null
-> > +++ b/drivers/i3c/func/Kconfig
-> > @@ -0,0 +1,9 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +
-> > +config I3C_TARGET_FUNC_TTY
-> > +	tristate "I3C target tty driver"
-> > +	depends on I3C_TARGET
-> > +	help
-> > +	  I3C Target TTY Function Driver.
-> > +
-> > +	  General TTY over I3C target controller function drivers.
-> > diff --git a/drivers/i3c/func/Makefile b/drivers/i3c/func/Makefile
-> > new file mode 100644
-> > index 0000000000000..16b3b9301496b
-> > --- /dev/null
-> > +++ b/drivers/i3c/func/Makefile
-> > @@ -0,0 +1,3 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +
-> > +obj-$(CONFIG_I3C_TARGET_FUNC_TTY)              += tty.o
-> > diff --git a/drivers/i3c/func/tty.c b/drivers/i3c/func/tty.c
-> > new file mode 100644
-> > index 0000000000000..50673bfb6a003
-> > --- /dev/null
-> > +++ b/drivers/i3c/func/tty.c
-> > @@ -0,0 +1,474 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright (C) 2023 NXP
-> > + * Author: Frank Li <Frank.Li@nxp.com>
-> > + */
-> > +
-> > +#include <linux/bitfield.h>
-> > +#include <linux/iopoll.h>
-> > +#include <linux/i3c/target.h>
-> > +#include <linux/serial_core.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/tty_flip.h>
-> > +
-> > +static DEFINE_IDR(i3c_tty_minors);
-> > +
-> > +static struct tty_driver *i3c_tty_driver;
-> > +
-> > +#define I3C_TTY_MINORS		8
-> > +
-> > +#define I3C_TX_NOEMPTY		BIT(0)
-> > +#define I3C_TTY_TRANS_SIZE	16
-> > +#define I3C_TTY_IBI_TX		BIT(0)
-> 
-> This is #include <linux/bits.h>
-> 
-> ...which will include <vdso/bits.h> that contains the actual definition.
-> 
-> #include <bitfield.h> is for FIELD_GET/PREP(), etc.
-> 
-> > +struct ttyi3c_port {
-> > +	struct tty_port port;
-> > +	int minor;
-> > +	struct i3c_target_func *i3cdev;
-> > +	struct completion txcomplete;
-> > +	spinlock_t xlock;
-> > +	void *buffer;
-> > +	struct work_struct work;
-> 
-> This file seems to also lack some includes. Please go through your 
-> #include in the series and add those you use.
+On Mon, Feb 5, 2024 at 8:25=E2=80=AFPM Stefan Berger <stefanb@linux.ibm.com=
+> wrote:
+>
+> process_measurement() will try to detect file content changes for not-yet=
+-
+> copied-up files on a stacked filesystem based on the i_version number of
+> the real inode: !inode_eq_iversion(real_inode, iint->version)
+> Therefore, take a snapshot of the i_version of the real file to be used
+> for i_version number-based file content change detection by IMA in
+> process_meassurements().
+>
+> In this case vfs_getattr_nosec() cannot be used since it will return the
+> i_version number of the file on the overlay layer which will trigger more
+> iint resets in process_measurements() than necessary since this i_version
+> number represents different state than that of the real_inode (of a
+> not-yet-copied up file).
+>
+> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> ---
+>  security/integrity/ima/ima_api.c | 28 +++++++++++++++-------------
+>  1 file changed, 15 insertions(+), 13 deletions(-)
+>
+> diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/im=
+a_api.c
+> index 597ea0c4d72f..530888cc481e 100644
+> --- a/security/integrity/ima/ima_api.c
+> +++ b/security/integrity/ima/ima_api.c
+> @@ -14,6 +14,7 @@
+>  #include <linux/xattr.h>
+>  #include <linux/evm.h>
+>  #include <linux/fsverity.h>
+> +#include <linux/iversion.h>
+>
+>  #include "ima.h"
+>
+> @@ -250,7 +251,6 @@ int ima_collect_measurement(struct integrity_iint_cac=
+he *iint,
+>         int result =3D 0;
+>         int length;
+>         void *tmpbuf;
+> -       u64 i_version =3D 0;
+>
+>         /*
+>          * Always collect the modsig, because IMA might have already coll=
+ected
+> @@ -263,16 +263,6 @@ int ima_collect_measurement(struct integrity_iint_ca=
+che *iint,
+>         if (iint->flags & IMA_COLLECTED)
+>                 goto out;
+>
+> -       /*
+> -        * Detecting file change is based on i_version. On filesystems
+> -        * which do not support i_version, support was originally limited
+> -        * to an initial measurement/appraisal/audit, but was modified to
+> -        * assume the file changed.
+> -        */
+> -       result =3D vfs_getattr_nosec(&file->f_path, &stat, STATX_CHANGE_C=
+OOKIE,
+> -                                  AT_STATX_SYNC_AS_STAT);
+> -       if (!result && (stat.result_mask & STATX_CHANGE_COOKIE))
+> -               i_version =3D stat.change_cookie;
+>         hash.hdr.algo =3D algo;
+>         hash.hdr.length =3D hash_digest_size[algo];
+>
+> @@ -302,10 +292,22 @@ int ima_collect_measurement(struct integrity_iint_c=
+ache *iint,
+>
+>         iint->ima_hash =3D tmpbuf;
+>         memcpy(iint->ima_hash, &hash, length);
+> -       iint->version =3D i_version;
+> -       if (real_inode !=3D inode) {
+> +       if (real_inode =3D=3D inode) {
+> +               /*
+> +                * Detecting file change is based on i_version. On filesy=
+stems
+> +                * which do not support i_version, support was originally=
+ limited
+> +                * to an initial measurement/appraisal/audit, but was mod=
+ified to
+> +                * assume the file changed.
+> +                */
+> +               result =3D vfs_getattr_nosec(&file->f_path, &stat,
+> +                                          STATX_CHANGE_COOKIE,
+> +                                          AT_STATX_SYNC_AS_STAT);
+> +               if (!result && (stat.result_mask & STATX_CHANGE_COOKIE))
+> +                       iint->version =3D stat.change_cookie;
+> +       } else {
+>                 iint->real_ino =3D real_inode->i_ino;
+>                 iint->real_dev =3D real_inode->i_sb->s_dev;
+> +               iint->version =3D inode_query_iversion(real_inode);
+>         }
+>
 
-Do you have tools to check?  It is easy to missed some header files.
+The commit that removed inode_query_iversion db1d1e8b9867 ("IMA: use
+vfs_getattr_nosec to get the i_version") claimed to do that because
+inode_query_iversion() did not work in overlayfs and now this commit
+uses inode_query_iversion() only for overlayfs.
 
-Frank
+STATX_CHANGE_COOKIE does not seem to make much sense in this
+code anymore, unless it is still needed, according to original commit to
+"allow IMA to work properly with a broader class of filesystems in the futu=
+re."
+Jeff?
 
-> 
-> -- 
->  i.
-> 
+
+Thanks,
+Amir.
 
