@@ -1,201 +1,129 @@
-Return-Path: <linux-kernel+bounces-54961-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54962-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B5FF84B571
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:39:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D49484B57E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:45:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50FE5287AD0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:39:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10ED1B21FF1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:45:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1666130AD4;
-	Tue,  6 Feb 2024 12:39:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC64012EBE1;
+	Tue,  6 Feb 2024 12:45:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dQTc/9j5"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="OdgGO4Sp"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2030D5677B;
-	Tue,  6 Feb 2024 12:39:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D0941AB811;
+	Tue,  6 Feb 2024 12:45:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707223179; cv=none; b=XzyTQtBpFrGe2VdezVgo+J/WqxaE5MWATa8VPxl4J4IyWrIzK80/iR3ojUNyz9lWWKVrcETgNbDf0kquUcPpYspZ2AnnpsOKN7gfm/GiIfNmAxIgDGE/m+7kY66e/u9e5CSzRXcucbzfGmO3yzjBERuTEZkw0orrhQrW5miM3wg=
+	t=1707223519; cv=none; b=sEUo5LCZSqeJjhyyVJg3VSOOJ69Rv2zpN34FO3tOVKlZA1bLwc37EratsjEYgaDNdTvaSTGhW9smjkaKN4k2jdY/rdjB/Dwax38X6FTj+6do4T8wXhnmp5ZPYRGA86gcWp1SiP6t3YHvt/GoqpsXAi1iuapHUOYs5U0CFf4dbjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707223179; c=relaxed/simple;
-	bh=ra/xUfbSKYDM5fd6fzYePv8MQqb5eTjtRhASrDYHMgk=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=olhJvE6Q3ssjZM2480qKTo8lsUJZgZ8BIUx1vJCwoeiZAIpvbhroVigWdq2bMTHoMdb7ngSu2CuvJbcH0QkCCk7omRspiwzOmOPGLnyD0xjh3N9p/zAYUzkTNSF5dPcil+GIvbCPU6OWSFOMhw4h3nykhA8KHVGI2DfH20vQ6sg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dQTc/9j5; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707223178; x=1738759178;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=ra/xUfbSKYDM5fd6fzYePv8MQqb5eTjtRhASrDYHMgk=;
-  b=dQTc/9j50YDcvjXXky6gOZ/FUWIFlaMymZrGybN7GFTloApLclfvdUjL
-   R/hoS5AtRL8hx3btLExd/GtXZ/LRQ6W01e60MLuQ+5BQe9PPAan89Riiu
-   85fC/AujA1SAT+3uOQEoBtxD2KsK8X7wZmcVXWub4tbqSwPKDfe2itleA
-   ciE5ZueCUWBYOzL8jgpqZYgPPn+4OJFFw2CQeaKkA12rmR8Eulpl6n6Op
-   DpeZHM+5Fy8IGxLuSZxX8Fmc87dP7okkwNEekBo5D5XTYWuUA3D5n5DSQ
-   bML4sj89rXlfoVExyZHvTr5355bIbr5NVFoZxDK6fWaKr8ini3q0RvCkm
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="900870"
-X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
-   d="scan'208";a="900870"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 04:39:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
-   d="scan'208";a="5631089"
-Received: from mstribae-mobl.ger.corp.intel.com (HELO [10.249.254.52]) ([10.249.254.52])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 04:39:31 -0800
-Message-ID: <f9a027765a3c65c69c2d49cf2964fe1155e914f4.camel@linux.intel.com>
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-From: Thomas =?ISO-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>, Daniel Vetter
-	 <daniel.vetter@ffwll.ch>
-Cc: Matthew Brost <matthew.brost@intel.com>, Rodrigo Vivi
- <rodrigo.vivi@intel.com>, Christian =?ISO-8859-1?Q?K=F6nig?=
- <christian.koenig@amd.com>, Somalapuram Amaranath
- <Amaranath.Somalapuram@amd.com>, Intel Graphics
- <intel-gfx@lists.freedesktop.org>, DRI <dri-devel@lists.freedesktop.org>, 
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Date: Tue, 06 Feb 2024 13:39:28 +0100
-In-Reply-To: <20240206122822.12a2df89@canb.auug.org.au>
-References: <20240206122822.12a2df89@canb.auug.org.au>
-Autocrypt: addr=thomas.hellstrom@linux.intel.com; prefer-encrypt=mutual;
- keydata=mDMEZaWU6xYJKwYBBAHaRw8BAQdAj/We1UBCIrAm9H5t5Z7+elYJowdlhiYE8zUXgxcFz360SFRob21hcyBIZWxsc3Ryw7ZtIChJbnRlbCBMaW51eCBlbWFpbCkgPHRob21hcy5oZWxsc3Ryb21AbGludXguaW50ZWwuY29tPoiTBBMWCgA7FiEEbJFDO8NaBua8diGTuBaTVQrGBr8FAmWllOsCGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQuBaTVQrGBr/yQAD/Z1B+Kzy2JTuIy9LsKfC9FJmt1K/4qgaVeZMIKCAxf2UBAJhmZ5jmkDIf6YghfINZlYq6ixyWnOkWMuSLmELwOsgPuDgEZaWU6xIKKwYBBAGXVQEFAQEHQF9v/LNGegctctMWGHvmV/6oKOWWf/vd4MeqoSYTxVBTAwEIB4h4BBgWCgAgFiEEbJFDO8NaBua8diGTuBaTVQrGBr8FAmWllOsCGwwACgkQuBaTVQrGBr/P2QD9Gts6Ee91w3SzOelNjsus/DcCTBb3fRugJoqcfxjKU0gBAKIFVMvVUGbhlEi6EFTZmBZ0QIZEIzOOVfkaIgWelFEH
-Organization: Intel Sweden AB, Registration Number: 556189-6027
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+	s=arc-20240116; t=1707223519; c=relaxed/simple;
+	bh=wgk0R6xYpdvfMbfC3hL5n90HcTa0N22dWHpnm/GidCM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=cSGpcMZKNGQZfNDipLnmMyLQ3AjPNH5vcDj/b90OhideWrL89j9zx8tbZfXXQRATYkB9mOmI1zONL6mAh3HzG4chTEYWvnz8Pho7snX2pqA3AFtDi9OliwGce1hSZYBguOqsGFx4gUK8s3t5uTV4eizM3DKPKuA2aHbyQ4QJXNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=OdgGO4Sp; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4168NiKs018049;
+	Tue, 6 Feb 2024 12:45:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=fURlMuDtt1YpTEY8UBIo59b/87YA6fm1XN/jKUCmreI=; b=Od
+	gGO4SpmYbOXzNDSvrbywDtLN2C9x46ofQnuInQVAkeOvb7z8Z3FMug4CF2L1sBBm
+	tsHaSULL58cBNJAHh3U0ht7P7/eq5+rkUE+FmsUmDYp0+CMiCyYt+E0iRtXWrcI9
+	SxWEODhQGm4jmtqfKQ7ti2uHB1s2e2Lkrvi1S4NbF5PEDkzK8k86FWeY8igrSmfj
+	hd59IcNyO8+8QsguZFx28mLtYm5gh1D/1k4JO5ClYLy1V4L4ATNiGUczcoOthbca
+	pY5kSCDQNFRVjnZuANP3HMNQJ8BGEf/6YSf5gdJXGs5SgE3W+BTglexfx+PYYJkk
+	r7asstyJmY2wGv1NwVUw==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w3h7hrfsa-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 06 Feb 2024 12:45:12 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 416CjBxI029529
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 6 Feb 2024 12:45:12 GMT
+Received: from [10.214.82.119] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 6 Feb
+ 2024 04:45:07 -0800
+Message-ID: <5af1ed27-2c59-4d8e-90cb-9ca7a2184b92@quicinc.com>
+Date: Tue, 6 Feb 2024 18:15:03 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11] bus: mhi: host: Add tracing support
+To: Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+        "Manivannan
+ Sadhasivam" <mani@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Masami
+ Hiramatsu" <mhiramat@kernel.org>,
+        Manivannan Sadhasivam
+	<manivannan.sadhasivam@linaro.org>
+CC: <linux-kernel@vger.kernel.org>, <mhi@lists.linux.dev>,
+        <linux-arm-msm@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+        <quic_vbadigan@quicinc.com>, <quic_ramkri@quicinc.com>,
+        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
+        <quic_parass@quicinc.com>
+References: <20240206-ftrace_support-v11-1-3f71dc187544@quicinc.com>
+Content-Language: en-US
+From: Naman Jain <quic_namajain@quicinc.com>
+In-Reply-To: <20240206-ftrace_support-v11-1-3f71dc187544@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: IoCosgZZG8vc7WDqIJP3N1SlIftcIJv3
+X-Proofpoint-ORIG-GUID: IoCosgZZG8vc7WDqIJP3N1SlIftcIJv3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-06_06,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ spamscore=0 lowpriorityscore=0 bulkscore=0 mlxlogscore=639 mlxscore=0
+ priorityscore=1501 adultscore=0 suspectscore=0 clxscore=1011
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402060090
 
-Hi
+On 2/6/2024 10:02 AM, Krishna chaitanya chundru wrote:
+> This change adds ftrace support for following functions which
+> helps in debugging the issues when there is Channel state & MHI
+> state change and also when we receive data and control events:
 
-On Tue, 2024-02-06 at 12:28 +1100, Stephen Rothwell wrote:
-> Hi all,
->=20
-> After merging the drm-misc tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
->=20
->=20
-> Caused by commit
->=20
-> =C2=A0 a78a8da51b36 ("drm/ttm: replace busy placement with flags v6")
->=20
-> interacting with commit
->=20
-> =C2=A0 dd08ebf6c352 ("drm/xe: Introduce a new DRM driver for Intel GPUs")
->=20
-> (and maybe others) from Linus' tree (v6.8-rc1).
->=20
-> I have applied the following merge fix patch for today.=C2=A0 This makes
-> it build,
-> but more is likely needed ...
+Please write commit msg in imperative mood.
+https://www.kernel.org/doc/html/v4.10/process/submitting-patches.html#describe-your-changes
 
-There was a manual fixup for the drm-misc-next merge into drm-tip that
-did the right thing here.
+> 1. mhi_intvec_mhi_states
+> 2. mhi_process_data_event_ring
+> 3. mhi_process_ctrl_ev_ring
+> 4. mhi_gen_tre
+> 5. mhi_update_channel_state
+> 6. mhi_tryset_pm_state
+> 7. mhi_pm_st_worker
+> 
+> Change the implementation of the arrays which has enum to strings mapping
+> to make it consistent in both trace header file and other files.
+> 
+> Where ever the trace events are added, debug messages are removed.
 
-How do we ensure these are included into the linux-next builds?
+Ditto.
 
-Thanks,
-Thomas
+Regards,
+Naman
 
-
-
->=20
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Tue, 6 Feb 2024 12:21:07 +1100
-> Subject: [PATCH] fix up for "drm/ttm: replace busy placement with
-> flags v6"
->=20
-> interacting with commit
->=20
-> =C2=A0 dd08ebf6c352 ("drm/xe: Introduce a new DRM driver for Intel GPUs")
->=20
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
-> =C2=A0drivers/gpu/drm/xe/xe_bo.c | 11 -----------
-> =C2=A01 file changed, 11 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/xe/xe_bo.c b/drivers/gpu/drm/xe/xe_bo.c
-> index 0b0e262e2166..280dbda8ae5a 100644
-> --- a/drivers/gpu/drm/xe/xe_bo.c
-> +++ b/drivers/gpu/drm/xe/xe_bo.c
-> @@ -38,8 +38,6 @@ static const struct ttm_place sys_placement_flags =3D
-> {
-> =C2=A0static struct ttm_placement sys_placement =3D {
-> =C2=A0	.num_placement =3D 1,
-> =C2=A0	.placement =3D &sys_placement_flags,
-> -	.num_busy_placement =3D 1,
-> -	.busy_placement =3D &sys_placement_flags,
-> =C2=A0};
-> =C2=A0
-> =C2=A0static const struct ttm_place tt_placement_flags =3D {
-> @@ -52,8 +50,6 @@ static const struct ttm_place tt_placement_flags =3D
-> {
-> =C2=A0static struct ttm_placement tt_placement =3D {
-> =C2=A0	.num_placement =3D 1,
-> =C2=A0	.placement =3D &tt_placement_flags,
-> -	.num_busy_placement =3D 1,
-> -	.busy_placement =3D &sys_placement_flags,
-> =C2=A0};
-> =C2=A0
-> =C2=A0bool mem_type_is_vram(u32 mem_type)
-> @@ -230,8 +226,6 @@ static int __xe_bo_placement_for_flags(struct
-> xe_device *xe, struct xe_bo *bo,
-> =C2=A0	bo->placement =3D (struct ttm_placement) {
-> =C2=A0		.num_placement =3D c,
-> =C2=A0		.placement =3D bo->placements,
-> -		.num_busy_placement =3D c,
-> -		.busy_placement =3D bo->placements,
-> =C2=A0	};
-> =C2=A0
-> =C2=A0	return 0;
-> @@ -251,7 +245,6 @@ static void xe_evict_flags(struct
-> ttm_buffer_object *tbo,
-> =C2=A0		/* Don't handle scatter gather BOs */
-> =C2=A0		if (tbo->type =3D=3D ttm_bo_type_sg) {
-> =C2=A0			placement->num_placement =3D 0;
-> -			placement->num_busy_placement =3D 0;
-> =C2=A0			return;
-> =C2=A0		}
-> =C2=A0
-> @@ -1353,8 +1346,6 @@ static int __xe_bo_fixed_placement(struct
-> xe_device *xe,
-> =C2=A0	bo->placement =3D (struct ttm_placement) {
-> =C2=A0		.num_placement =3D 1,
-> =C2=A0		.placement =3D place,
-> -		.num_busy_placement =3D 1,
-> -		.busy_placement =3D place,
-> =C2=A0	};
-> =C2=A0
-> =C2=A0	return 0;
-> @@ -2112,9 +2103,7 @@ int xe_bo_migrate(struct xe_bo *bo, u32
-> mem_type)
-> =C2=A0
-> =C2=A0	xe_place_from_ttm_type(mem_type, &requested);
-> =C2=A0	placement.num_placement =3D 1;
-> -	placement.num_busy_placement =3D 1;
-> =C2=A0	placement.placement =3D &requested;
-> -	placement.busy_placement =3D &requested;
-> =C2=A0
-> =C2=A0	/*
-> =C2=A0	 * Stolen needs to be handled like below VRAM handling if we
-> ever need
-> --=20
-> 2.43.0
->=20
 
 
