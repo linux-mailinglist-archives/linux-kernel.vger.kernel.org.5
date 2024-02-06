@@ -1,106 +1,149 @@
-Return-Path: <linux-kernel+bounces-54605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B01A584B16E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:38:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB81184B173
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:38:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E360A1C2250E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:38:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63D332866A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:38:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A38B012D77B;
-	Tue,  6 Feb 2024 09:37:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7424712E1D6;
+	Tue,  6 Feb 2024 09:37:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tPlwOkxI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="g05AKgIC"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E32BF12D75F;
-	Tue,  6 Feb 2024 09:37:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 342D212CD97
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 09:37:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707212266; cv=none; b=H2dX/Ddw+Vh9Ka9+pZAT1tgT+LvV6Oghv/Ug6hVSH1H9JUPCyeqxBurlLiMbfHd7rHcrBygATI74P0nKfAdtW4LkyX+eEC/kepLg55BKeHAJOmbRAkvsbet28B4Mxh87MXzjLzD9bZrCMPgPMbd5f5OAgqYWR9GLN3MXrkgNYFo=
+	t=1707212276; cv=none; b=BckYJSWZRR5S+1Ek+ooMtgVS4gN9bJv4HlGK7ibx5RTGtYmG1zAxir71aDxNAx9Khv6o9O5NBME3z/jwoCWLJj2ARkpkQ1447bPBybUsaQz93sygWuXFIne6rIc0K9ZUQ8jaIII6W4JTAdqlrhX/T4C1oXwv+WZ3BB3UbCvLvk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707212266; c=relaxed/simple;
-	bh=ey/KtjqK4Luic175rFym94Q389ddvbeiHhTJCzGxn5E=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=Qms3tcw+31vhNdx+CDeYuga1lcMGeaTcnXKnf/+pwTQuqmLsxGJhDTD/d0hmMfDYQMuG05Ym2oNZebj4U0sXmT3eieKAcI7BWO6aed5+r3IzDa+5rcwCzLuJjwJ2DxosRZdKsa35hiXsQG2ubC0qb6A8JpzujSKj27B5Hde4Kio=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tPlwOkxI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE808C43394;
-	Tue,  6 Feb 2024 09:37:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707212265;
-	bh=ey/KtjqK4Luic175rFym94Q389ddvbeiHhTJCzGxn5E=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=tPlwOkxI80fYnUhabLFCowUT4kfZuNuI3s/5fw/IsdFWfh+vAXCobRxeOIdiXZgvr
-	 ewKFTWAO8YNzfj+NEFEf0S1FWZzaNbal3rAxlMu1DqlfMLP7cT7uy9IqNvBNOCkn71
-	 yiDcEO3E7FvfYxzXFo6uJt69SNdPysCxTiz3tppi2TX9yPAkfARsAfbOE2Eemp9UNa
-	 jNS/Ywy+nHEmJU39JtBUAv77aomj2BI8im2kUAmLT99bHNh87z0/b+vpdIlYJKCwX3
-	 0GUvIP+Qy4LiN9WEnpAhUpM+gZ9xJIyXL7wJSabFHXeL5KRObx3BSn7u38cO8fLCFC
-	 RkPJh1lI5rYEg==
-From: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
- linux-sound@vger.kernel.org, Daniel Mack <daniel@zonque.org>, 
- Haojian Zhuang <haojian.zhuang@gmail.com>, 
- Robert Jarzmik <robert.jarzmik@free.fr>, 
- linux-arm-kernel@lists.infradead.org, 
- Masahiro Yamada <masahiroy@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
-In-Reply-To: <20240204091424.38306-1-masahiroy@kernel.org>
-References: <20240204091424.38306-1-masahiroy@kernel.org>
-Subject: Re: [PATCH v2] ASoC: pxa: remove duplicated CONFIG_SND_PXA2XX_AC97
- entry
-Message-Id: <170721226176.850647.15506347741778971521.b4-ty@kernel.org>
-Date: Tue, 06 Feb 2024 09:37:41 +0000
+	s=arc-20240116; t=1707212276; c=relaxed/simple;
+	bh=UFw0/tki7MzcuGpQDjCWPan97sbo8eZxmh34JYGWwvw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=FEzy7oH31jOyzca6E2LFGcNswCSwcfDKG1KUc1s6aSoM0/KFgt2kFwpKKxM31kUHSmEJ3ftcfGQbGx+wcH4eVpzuYKwKdWtq2bYLfEyb2JIR4QGan5Rgs+kEuMG531MZOkdXDxE8Dx8YyKVX1p/V9dWdq6kZh7aM+AGP3iNYRh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=g05AKgIC; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707212274;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UFw0/tki7MzcuGpQDjCWPan97sbo8eZxmh34JYGWwvw=;
+	b=g05AKgICNqTkFjgWbcfI1jPw3/I4Hqw7d4kwgTCI433HoChVEnnjln+IyFTD+wr/VTh1FP
+	5OCDSQPZiwwdIy19ls7IIW4tsT242vHPCqDPyEjjX0TBDt7x8atUGtKNNGkK8TaVCSRe4q
+	JBXlNORQe/J8FfrPv3NPtfQxPUTo5w8=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-441--HOCGMJfMjCo3i3yHAR7-Q-1; Tue, 06 Feb 2024 04:37:52 -0500
+X-MC-Unique: -HOCGMJfMjCo3i3yHAR7-Q-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-78552f73660so90549485a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 01:37:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707212272; x=1707817072;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UFw0/tki7MzcuGpQDjCWPan97sbo8eZxmh34JYGWwvw=;
+        b=pj1iVREnYTNwG06FajiE3GYOBjZIduztZe73u17uK/Zf1VqJSzVgcNPndkAUtsCBAb
+         f9UCEbK2fIX63G/0jfDNGxyKZvDv9lrNSP6BGc/I7Uv00HqSZJintXdIPnro46/eMpKS
+         O6Jxp6lAHExUtsqUeCL51gpVV6x9bcx5dZR5WVaQ20/3An6T7pORqfSPDRl8PwTAH7Or
+         76TFZ8BbDmL8EOVZ4J3nJo17EWSHA5kGZlIQagxzKPd1nOdJ7VZVikKHZPcntjC0Y9HG
+         9bSBhKsPMNAHhMpvUgDdYeHq2LEXNaaIT27Esf19uXpMFscRdl/LkeR72k4x6AcbkHdO
+         5cbw==
+X-Forwarded-Encrypted: i=1; AJvYcCWMGxUIjsGlpLJa/D8s/gKHtj41SsoAqrKOl0JcsRp00bmwd0uRhHycGDZktPg/CfjZi7dUBTlhN8llNwbX+GSvhJaISSGAySE5Ktjr
+X-Gm-Message-State: AOJu0YznCBLFbeIfe4ghAIvfA27rt2oApppUYwia2d6n44ZIUwVDMMC3
+	ThG2ZsWCeyaZd2DboCuXYKKCfDZln6QbzvVgA9+kvGMty3gQWzWQmbzw54JkvX5wJqPP8R6oLf/
+	EZvocrtSn5oq5lUgZdjuT6Xo4ziEbUsteDLswVnZ2iyW8+e/82Xd62Lg+ey+48A==
+X-Received: by 2002:a0c:fd81:0:b0:68c:892d:3580 with SMTP id p1-20020a0cfd81000000b0068c892d3580mr1906097qvr.2.1707212272264;
+        Tue, 06 Feb 2024 01:37:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFf8jMGPfr9HK+wkVYLwf6cn8LeUVvvC77sfjQ9swGgq33sBn/RFP3wypkxfuqD7DIvGYoWnw==
+X-Received: by 2002:a0c:fd81:0:b0:68c:892d:3580 with SMTP id p1-20020a0cfd81000000b0068c892d3580mr1906059qvr.2.1707212271977;
+        Tue, 06 Feb 2024 01:37:51 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWfUoaFEr7eaRe5ycg1DbG6mUeacI7DqXnDEQAqR/uOtVZi5iFHBIfAHWtmdID07LMES9Vqtbf3/fDfcaZBNv9q/LKcJCvpZ+uQgCEVeMTU7NVUBYA6uY3aLynfiw2uUhE6tdAOuqYInOKJAQMomBkV5l/VJHC3+6tIX1TH85D9DfaFx4gpu4oHJ9rLu6wOO0BQ0v7WkpB66r/8MT495M3IZvXMbKXAho54eYMqxSohWmzS4Zd18vYFR4tA84odtM96MQSFKSOl66yhSwJICX8VzbMZ86CzFpYkQOtXuq4de74sUrDbH2gwURZHiKSoRT+JAmDyPQmqGzsTWGvejl0gWUwHvuLSpEMqIhBpD0ajsqFXhituE+IuAVn9KzdCPnsmVJsflajKjmzFfzx68lxghXJEfEVQcBMshWKP+AkEELVUdAv396VdpP5cA1WWIjG78Eo70CI60B+/VpjL+S7Gd66bOCtvZNl1TF8bp6nsW/g7ptgrScj9NXW78jFSRoABrhjp6hePZSYF5zjuX/QCUCpgLIh/t/9sqHaAjQ3eLvBVeYWIl6Q3glSL6Z2/hF7z65mnsPfgT0Q1j2b/ZRVPyzV0wIt+YyUirpjo5VPamlgylLEZoE52w/gYK37P7Tz/dx3lm+IGXJl/voSUee/Jo89OYHX2E9Tg2064/fHk9rU2p93kU70XkZ0op6YcaD5MRTq8NgaDFjOfnUEOGsKHwv0WaugrX0/jDwkA8bmBGJuaYo+1TM+wHVksIRvhJJ+G+MLpXKZOgqyPD16p8gvlfK2Lc81+EI4sm4Ef2kz7Oz2nXhnO3UB1jo36t2eCbozlgmx4xz7ijA==
+Received: from pstanner-thinkpadt14sgen1.remote.csb (nat-pool-muc-t.redhat.com. [149.14.88.26])
+        by smtp.gmail.com with ESMTPSA id bo14-20020a05621414ae00b0068c67a3647dsm846048qvb.76.2024.02.06.01.37.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 01:37:51 -0800 (PST)
+Message-ID: <20c967ffac2cec6c9d89017d606967551b30d20d.camel@redhat.com>
+Subject: Re: [PATCH v6 4/4] PCI: Move devres code from pci.c to devres.c
+From: Philipp Stanner <pstanner@redhat.com>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>, 
+ Johannes Berg <johannes@sipsolutions.net>, Randy Dunlap
+ <rdunlap@infradead.org>, NeilBrown <neilb@suse.de>,  John Sanpe
+ <sanpeqf@gmail.com>, Kent Overstreet <kent.overstreet@gmail.com>, Niklas
+ Schnelle <schnelle@linux.ibm.com>, Dave Jiang <dave.jiang@intel.com>,
+ Uladzislau Koshchanka <koshchanka@gmail.com>, "Masami Hiramatsu (Google)"
+ <mhiramat@kernel.org>, David Gow <davidgow@google.com>, Kees Cook
+ <keescook@chromium.org>, Rae Moar <rmoar@google.com>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, "wuqiang.matt" <wuqiang.matt@bytedance.com>, Yury
+ Norov <yury.norov@gmail.com>, Jason Baron <jbaron@akamai.com>, Thomas
+ Gleixner <tglx@linutronix.de>, Marco Elver <elver@google.com>, Andrew
+ Morton <akpm@linux-foundation.org>, Ben Dooks <ben.dooks@codethink.co.uk>,
+ dakr@redhat.com, linux-kernel@vger.kernel.org,  linux-pci@vger.kernel.org,
+ linux-arch@vger.kernel.org, stable@vger.kernel.org
+Date: Tue, 06 Feb 2024 10:37:47 +0100
+In-Reply-To: <20240131211235.GA599807@bhelgaas>
+References: <20240131211235.GA599807@bhelgaas>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
 
-On Sun, 04 Feb 2024 18:14:24 +0900, Masahiro Yamada wrote:
-> 'config SND_PXA2XX_AC97' is already present in sound/arm/Kconfig with
-> a prompt.
-> 
-> Commit 734c2d4bb7cf ("[ALSA] ASoC pxa2xx build support") redundantly
-> added the second one to sound/soc/pxa/Kconfig.
-> 
-> Remove it.
-> 
-> [...]
+On Wed, 2024-01-31 at 15:12 -0600, Bjorn Helgaas wrote:
+> On Wed, Jan 31, 2024 at 10:00:23AM +0100, Philipp Stanner wrote:
+> > The file pci.c is very large and contains a number of devres-
+> > functions.
+> > These functions should now reside in devres.c
+> > ...
+>=20
+> > +struct pci_devres *find_pci_dr(struct pci_dev *pdev)
+> > +{
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (pci_is_managed(pdev))
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0return devres_find(&pdev->dev, pcim_release, NULL,
+> > NULL);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return NULL;
+> > +}
+> > +EXPORT_SYMBOL(find_pci_dr);
+>=20
+> find_pci_dr() was not previously exported, and I don't think it needs
+> to be exported now, so I dropped the EXPORT_SYMBOL.=C2=A0 It's still
+> usable
+> inside drivers/pci since it's declared in drivers/pci/pci.h; it's
+> just
+> not usable from modules.=C2=A0 Let me know if I missed something.
 
-Applied to
+No, ACK, you are right.
+I forgot this since find_pci_dr() is removed later anyways.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Thanks!
+P.
 
-[1/1] ASoC: pxa: remove duplicated CONFIG_SND_PXA2XX_AC97 entry
-      commit: 8f501d29c7a6a03303c1a085fd27948e1edb0c90
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+>=20
+> > -static struct pci_devres *find_pci_dr(struct pci_dev *pdev)
+> > -{
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (pci_is_managed(pdev))
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0return devres_find(&pdev->dev, pcim_release, NULL,
+> > NULL);
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return NULL;
+> > -}
+>=20
 
 
