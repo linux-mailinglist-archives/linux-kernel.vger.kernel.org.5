@@ -1,191 +1,135 @@
-Return-Path: <linux-kernel+bounces-54233-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54234-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1D8384AC9B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:04:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CB3884AC9E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:05:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D53B81C22B40
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:04:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5EA11F253D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:05:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FB7F7318F;
-	Tue,  6 Feb 2024 03:04:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2CF77319E;
+	Tue,  6 Feb 2024 03:05:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="t+wZN6y9"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="U+FfCzqO"
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CF096E2D0
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 03:04:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 823D26E2B0
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 03:05:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707188678; cv=none; b=HvZV5Ci4hldOLj8b8L3AdBXIzNmvI299R27bo6dLvU8E6dDd2A5s7lIyeDuxDB6gh7QnxiUD57dz3YgfFRwtA0DZkyQG1MkNI09k09LLNvmDoyjTzgB00t+/TBV4MkHTVsI3rNM3IWEu2q90SSmIUB9caDGXXgU3lGSUpJkDH2c=
+	t=1707188706; cv=none; b=bX9iAiQlWABAGje4Nc8dxCBBB9g5tGkrenS2fiPxYuZ8L2q5pZP9Wjgfh8DkRYFIcA8R4QsMWH85WSp6+Lx8QQQORtZ+Bio/nM/SU2caOkyVlUET9HBcshLcZReM0KWfk+A102xjF0NYELltq8+zVxqo1j8m9yAxv/m/f11RhiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707188678; c=relaxed/simple;
-	bh=ne9JUsjTXyxLjlyYsZnE6He33Wl0F4KvtV6zAXvFlbA=;
+	s=arc-20240116; t=1707188706; c=relaxed/simple;
+	bh=HyRrmX8bhSNFlvuh2ssOWx1Ww9UPRMeRQF3Qp15vtq4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fyA2LNn/ZX8UXrcf0QnsmrMc97lUa43a6mVJ9XoQE/4cH/JdbUxzU9X4Thsip9GLPYAVO/HDdpXgEwf8tm2iIqJBENqPsL2KY1v7ElL2YUEca721w9aKFUrFsemYT7bPhPFMPb8+X3n9TMQOYDzfG0CuBD2od/R/A634m7v1LVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=t+wZN6y9; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d93b982761so150745ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 19:04:37 -0800 (PST)
+	 To:Cc:Content-Type; b=DvaAVUmUJowV+QvfUTAsY57Re3pRZHiXX8e42MGwEejA7MHvSv1kG9MrIsm4iXPpX+EjifsktY9QbsQj85nl9EQay+mVUZPrt1gn3azX2So6WtITE+9hzhf05M0KCf3Or1LTdRWKW5zMsP1nJc4Dp8osQkdpnwdRKpFp3zPZFrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=U+FfCzqO; arc=none smtp.client-ip=209.85.219.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dc6e080c1f0so4328951276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 19:05:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707188676; x=1707793476; darn=vger.kernel.org;
+        d=umich.edu; s=google-2016-06-03; t=1707188703; x=1707793503; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0XVXU4jAI/ZUz/I4D5gYYVK37UMhSbbkdn1X91/JlTo=;
-        b=t+wZN6y9Ffl/AmEMSY0oio0GMdYUO/RablQv7b6jzA2IdbVFPaQ1qPLpKG+LIFTidY
-         5+ySQa0mGqmHOs0tdjkj0dlrWRJSpN8Gq+nSncL58cN3Yt9ceJFeE4YoPNN2Y7+XoYi4
-         U2zB3rTho2ODaDpcGPEr2dxHL8izaTWuX6trFoCHCQUFR0f9vI9sdCJKMa2Kw9m/4Ran
-         BWx+V+7Ij0rDFXR/qJIyASZMl9saqL4lIbEgzFOEdUnysTWyMZdaeEvnDv5gyBVi08Hv
-         5A/T/1Cwry2ZEpJsqsaaplGVedXxsWbG3q69yYEh4D9TRxT2YT7yceCxRxiEFgpjmuBO
-         mWdg==
+        bh=b0UfQpHEtXO/8VzhpaBnVDwPH0mrKoy/5y/LWxRdi0E=;
+        b=U+FfCzqO/0WaB4SXxX5/yr/yviTTSOYos/ZP/LkbKGeJYo+7cxQfbyud86glEPoQQf
+         +vMasZKTH5s77ikXoSsX5inDmgdtdLfVvx4XiO0ndyOnCmoV92oqUScnJZxKs+qNacVQ
+         f+Srn3HOdHhOg3/Crvo5MmedfsERjFoS8/h8v9Ygo674H3NcSHWNTGa/Luup5CqLV6B1
+         Zs7CssIRNyVjKjk5fjRj8Li7vdGKjnMFOAkUWDPP41MdpaHhZnrEt7Mz/Tz2W1Eka+K4
+         /G/Zu5G3QinkO25AyEUlqo3ELy53IsAbtLk/tvAEZlSw+itGwD3O4gpxOUpf0uexqXJA
+         CJWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707188676; x=1707793476;
+        d=1e100.net; s=20230601; t=1707188703; x=1707793503;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0XVXU4jAI/ZUz/I4D5gYYVK37UMhSbbkdn1X91/JlTo=;
-        b=HoIO4wmULzoDJxfnk/cM1nCkLa3BxXDy9a9rRRkl8xrEzkH+j+87zrAhx96XcHlTkk
-         iKJS7NzkWMu2rFi6TKiwDhzGka4iZXvTIEcDvLUkx/3gV6ZoRNsnqW5/8TshTKsM+N8u
-         AbwSUhLBWLq3ZuJTohWKYmYN51lCJIBr4f43ZxtYQkijKS3knVHbwqTHRQTyySpalhLx
-         evfLscbEu3u1zHuPrN1lQQbMxTovY8C5A+FQsPJJGg5C0guafYm5+KQJwP11lh4DzGe6
-         PQxO8YzQxolegPH/wiDqEYJ5x2sh4u1zI+c++lpqGVkg6ukFO3uX2Wl622zQaWEVYEEW
-         IoUg==
-X-Gm-Message-State: AOJu0YwcUJWUZdt07CAcpmG8dyj+XmtLdBEWhT4JCU/K0qafFfPgFyF5
-	b8gBaKvvMzdUxnKhQEgO4KJdS4dvFL+ogSrjYyLYVY6fIvo/Ok09rjqBv2lsDaGGq5BKlebgwH1
-	fWxVFdx59iCI4zOPDBS5fXXEwjlCYWR4LnXvn
-X-Google-Smtp-Source: AGHT+IENXxmgQziH6fpQsqF7G4W2/PhhQ3etqtTZVXpMqrnIzVWVS5i2UCg5LADUiUHntlFr2fQ/EcYtDA0F+Y7n5+E=
-X-Received: by 2002:a17:902:d507:b0:1d9:aa55:e4c1 with SMTP id
- b7-20020a170902d50700b001d9aa55e4c1mr149250plg.20.1707188676257; Mon, 05 Feb
- 2024 19:04:36 -0800 (PST)
+        bh=b0UfQpHEtXO/8VzhpaBnVDwPH0mrKoy/5y/LWxRdi0E=;
+        b=UzQm5F1z2xriwlY/xg2fSiyZ8NYhHaEOmBn7pBW9ILk0LCWMdptO4AdZp5GnwVtKte
+         3c6H9wCm04P5p050yYv2BOjw1NjgcYE+g1qGjLvA3urS7HH2coJStmCOP0rHbhn8TN9u
+         4RcJ9IWE8dOb2MFbxTVMqGIOIbaEJS+8fMoNwq7hRZrWwi10UtIvEbrR5tKhOnnrvjvo
+         jxg8cPbJcRlhw7tUe1EQIbLFxdQY82LXjbBll1wyEIB1a/v+6KeTJVTTgMWM8kPPnhAE
+         ro1sGKQleR08cWUfIeIAiA0lfqKrtaBHfnJuvgGbwHocCzb7U4+eH3+lX0PYpzGnNAk/
+         eenQ==
+X-Gm-Message-State: AOJu0Yx5o05M60dMLv7YzjO1CeQv/WLFM4OAj+/JPbSNsA9AsQ54cx0s
+	tTA5AuarbPUnMNxMQa7YgPcURgXVGFRNATkhegZyfgVyzdoANmbnjhDGhYOfH3q/aWGYrLK+SRv
+	GSuw45zR9dVVfgIgKMAK91HybTn8SQxAqyQ3aAA==
+X-Google-Smtp-Source: AGHT+IEJx+K53xO7GfUQBPXRZwMr6StUxyeVMXXiQhrhcF2qFKZZbyc5AdTajC0P8HZ+8NkgjBq9bmcptrYEpTKEFFA=
+X-Received: by 2002:a05:6902:2485:b0:dc6:d541:74be with SMTP id
+ ds5-20020a056902248500b00dc6d54174bemr451795ybb.64.1707188703522; Mon, 05 Feb
+ 2024 19:05:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231127220902.1315692-1-irogers@google.com> <20231127220902.1315692-2-irogers@google.com>
- <CAM9d7cjCO8e7nbrtrcy4rsbexemQ94=XK+b5byMFFTDDgoJ2eg@mail.gmail.com>
- <CAP-5=fUBr60o22P4Op-J=TPkdfnby9vLetHQZ4UqjuX+nvbG9w@mail.gmail.com>
- <CAM9d7cjO2vxa_bvKFrVpX2PViHqZy_dtyf28EaSACwKv6BEHiw@mail.gmail.com> <CAP-5=fUBf41b=p7iVwoANZtRifR8ftuE00zQqLWz54KZ-9VWtw@mail.gmail.com>
-In-Reply-To: <CAP-5=fUBf41b=p7iVwoANZtRifR8ftuE00zQqLWz54KZ-9VWtw@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Mon, 5 Feb 2024 19:04:24 -0800
-Message-ID: <CAP-5=fVm4rcieqApYP9ai0FO10qW0Q8VWeYxnpfTKgeKFzwRPQ@mail.gmail.com>
-Subject: Re: [PATCH v5 01/50] perf comm: Use regular mutex
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Nick Terrell <terrelln@fb.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, Andi Kleen <ak@linux.intel.com>, 
-	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-	Huacai Chen <chenhuacai@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Vincent Whitchurch <vincent.whitchurch@axis.com>, "Steinar H. Gunderson" <sesse@google.com>, 
-	Liam Howlett <liam.howlett@oracle.com>, Miguel Ojeda <ojeda@kernel.org>, 
-	Colin Ian King <colin.i.king@gmail.com>, Dmitrii Dolgov <9erthalion6@gmail.com>, 
-	Yang Jihong <yangjihong1@huawei.com>, Ming Wang <wangming01@loongson.cn>, 
-	James Clark <james.clark@arm.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
-	Sean Christopherson <seanjc@google.com>, Leo Yan <leo.yan@linaro.org>, 
-	Ravi Bangoria <ravi.bangoria@amd.com>, German Gomez <german.gomez@arm.com>, 
-	Changbin Du <changbin.du@huawei.com>, Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>, 
-	Sandipan Das <sandipan.das@amd.com>, liuwenyu <liuwenyu7@huawei.com>, 
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	Guilherme Amadio <amadio@gentoo.org>
+References: <20240202-alice-file-v4-0-fc9c2080663b@google.com> <20240202-alice-file-v4-5-fc9c2080663b@google.com>
+In-Reply-To: <20240202-alice-file-v4-5-fc9c2080663b@google.com>
+From: Trevor Gross <tmgross@umich.edu>
+Date: Mon, 5 Feb 2024 22:04:52 -0500
+Message-ID: <CALNs47tX6BvGB9wVmo6Pxg9mU2FLYG51o4tT+LcTS7Kcfsd0Ow@mail.gmail.com>
+Subject: Re: [PATCH v4 5/9] rust: security: add abstraction for secctx
+To: Alice Ryhl <aliceryhl@google.com>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Dan Williams <dan.j.williams@intel.com>, 
+	Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, 
+	rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 6, 2023 at 4:05=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
-e:
+On Fri, Feb 2, 2024 at 5:57=E2=80=AFAM Alice Ryhl <aliceryhl@google.com> wr=
+ote:
 >
-> On Sat, Dec 2, 2023 at 3:55=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
- wrote:
-> >
-> > On Thu, Nov 30, 2023 at 10:28=E2=80=AFAM Ian Rogers <irogers@google.com=
-> wrote:
-> > >
-> > > On Wed, Nov 29, 2023 at 4:56=E2=80=AFPM Namhyung Kim <namhyung@kernel=
-org> wrote:
-> > > >
-> > > > On Mon, Nov 27, 2023 at 2:09=E2=80=AFPM Ian Rogers <irogers@google.=
-com> wrote:
-> > > > >
-> > > > > The rwsem is only after used for writing so switch to a mutex tha=
-t has
-> > > > > better error checking.
-> > > > >
-> > > > > Fixes: 7a8f349e9d14 ("perf rwsem: Add debug mode that uses a mute=
-x")
-> > > >
-> > > > I think we talked about fixing this separately, no?
-> > >
-> > > Sorry, I'm unclear on an action to do. Currently changing the
-> > > RWS_ERRORCHECK in tools/perf/util/rwsem.h will break the build withou=
-t
-> > > this change.
-> >
-> > Can it be like this?
-> >
-> > #ifdef RWS_ERRORCHECK
-> > #define RWSEM_INITIALIZER  { .lock =3D PTHREAD_MUTEX_INITIALIZER, }
-> > #else
-> > #define RWSEM_INITIALIZER  { .lock =3D PTHREAD_RWLOCK_INITIALIZER, }
-> > #endif
-> >
-> > >
-> > > > > Signed-off-by: Ian Rogers <irogers@google.com>
-> > > > > ---
-> > > > >  tools/perf/util/comm.c | 10 +++++-----
-> > > > >  1 file changed, 5 insertions(+), 5 deletions(-)
-> > > > >
-> > > > > diff --git a/tools/perf/util/comm.c b/tools/perf/util/comm.c
-> > > > > index afb8d4fd2644..4ae7bc2aa9a6 100644
-> > > > > --- a/tools/perf/util/comm.c
-> > > > > +++ b/tools/perf/util/comm.c
-> > > > > @@ -17,7 +17,7 @@ struct comm_str {
-> > > > >
-> > > > >  /* Should perhaps be moved to struct machine */
-> > > > >  static struct rb_root comm_str_root;
-> > > > > -static struct rw_semaphore comm_str_lock =3D {.lock =3D PTHREAD_=
-RWLOCK_INITIALIZER,};
-> > > > > +static struct mutex comm_str_lock =3D {.lock =3D PTHREAD_ERRORCH=
-ECK_MUTEX_INITIALIZER_NP,};
-> > > >
-> > > > IIUC it has a problem with musl libc.  Actually I think it's better=
- to
-> > > > hide the field and the pthread initializer under some macro like
-> > > > MUTEX_INITIALIZER or DEFINE_MUTEX() like in the kernel.
-> > >
-> > > Will there be enough use to justify this? I think ideally we'd not be
-> > > having global locks needing global initializers as we run into
-> > > problems like we see in metrics needing to mix counting and sampling.
-> >
-> > I don't know but there might be a reason to use global locks.
-> > Then we need to support the initialization and it'd be better
-> > to make it easier to handle internal changes like this.
+> Adds an abstraction for viewing the string representation of a security
+> context.
+
+Adds -> add
+
+> This is needed by Rust Binder because it has feature where a process can
+
+has feature -> has a feature
+
+> view the string representation of the security context for incoming
+> transactions. The process can use that to authenticate incoming
+> transactions, and since the feature is provided by the kernel, the
+> process can trust that the security context is legitimate.
 >
-> Right. So you are suggesting I make a macro for initialization but
-> when this change is applied it will remove the only user of the macro.
-> The macro would clearly be redundant which is why I didn't do a
-> separate fix for that before doing this change - to use a mutex as the
-> rwsem here is only ever used as a write lock. If we're looking to
-> improve rwsem I don't think adding unused macros is the best thing,
-> for example, we could remove references to perf_singlethreaded which
-> is an idea that has had its day.
-
-Note, RWS_ERRORCHECK being enabled still is broken without this.
-
-Thanks,
-Ian
-
-> Thanks,
-> Ian
+> Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+> ---
+> [...]
+> diff --git a/rust/kernel/cred.rs b/rust/kernel/cred.rs
+> index fabc50e48c9e..0640356a8c29 100644
+> --- a/rust/kernel/cred.rs
+> +++ b/rust/kernel/cred.rs
+> @@ -48,6 +48,14 @@ pub unsafe fn from_ptr<'a>(ptr: *const bindings::cred)=
+ -> &'a Credential {
+>          unsafe { &*ptr.cast() }
+>      }
 >
-> > Thanks,
-> > Namhyung
+> +    /// Get the id for this security context.
+> +    pub fn get_secid(&self) -> u32 {
+
+Since this is used in multiple places, would a typedef be useful?
+
+    type SecurityId =3D u32;
+
+> [...]
+
+Reviewed-by: Trevor Gross <tmgross@umich.edu>
 
