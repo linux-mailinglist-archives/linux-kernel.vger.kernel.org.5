@@ -1,218 +1,121 @@
-Return-Path: <linux-kernel+bounces-55192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55197-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB94184B903
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:13:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32B6084B90A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:15:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 267B21C241E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:13:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBCB528AB5B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:15:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A945136656;
-	Tue,  6 Feb 2024 15:10:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B80481369B4;
+	Tue,  6 Feb 2024 15:10:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g4P0vbF/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=hefring-com.20230601.gappssmtp.com header.i=@hefring-com.20230601.gappssmtp.com header.b="P4ty6tuF"
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3AAC13328A;
-	Tue,  6 Feb 2024 15:10:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11DA2134CFB
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 15:10:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707232210; cv=none; b=obSeae4A+MGHVFZvmSeXLgkWTp60y3Vb+t3yGw8vYGpPoSquQ7qJGXEhscxKi3jD+Ka3ZOiDZZ5ERXY91FgHhU8ybW/uXlrwHLuRVvw2wK/YTWo3TRCKMysXyvsnPygIzVpxV48uoVHr1wzoC1+eH3pAXYZiNY4CFrHiwwsCuqc=
+	t=1707232258; cv=none; b=uhQTgpr9f/EnaYxew4wMUJ8i9chqwsp4v8ui8Vr8BMChWqxoAjFhifeczHJw/xgrlZ2H6/krJUYRXRO5hbN/3+qbab0V5WjiZl7Pepgp9wnMUzY9hS2TIzZaB1ngnNh9zxTcWMpwz6csdoFugqRq757nRJf6mLrSM+ptsrBqPfs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707232210; c=relaxed/simple;
-	bh=FOu7YqSOLWC5YAYXAHa1AHM2WwjkEtKXf4zI3+QaxKc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=k89Ps37mR8q2HTxjEpItpLAZPVmJcgQWRfymZugsdxvZ3H6yWBx9IjE6AERu/hdkzpAHs4P4Ztr7uCrIrCogh4CXLG/JORfakT8FMiJuJ4t9wgiI59FTz/ZnXU+TphPIVe35NndyoYgIY65GmH//d1Gmafbi6sWSqjmUzPgOCEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g4P0vbF/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F927C433F1;
-	Tue,  6 Feb 2024 15:10:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707232210;
-	bh=FOu7YqSOLWC5YAYXAHa1AHM2WwjkEtKXf4zI3+QaxKc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=g4P0vbF/d5giNFPKpulD6m9kxqKCKQri3erw44CiBzN6J391JkRXviVOn6w09UTRo
-	 xGwLuXW7XcMfUOq63hHh4B5aY/B+dgyhpuhh7ClsYaK5WZaq58XlwykPWsDmhT/Ps1
-	 jwzwpsHCldO5//3HkOYYfRPCJ+TVS4RQSwOLJ/ru/VHN4wAAaYUTfF5q68V08kR+dJ
-	 Dc0FcBkRrcA8wSaZnv2DagjUPqu+dman7WfeFqzt0WaEA7lypKdQQ3s6yMFxroaOEC
-	 IsU6Vce8oqRueQe58lTAgEuKEgUFa89Or/liSj8a0OcAuKOoMJwlzI0HWnssjW97I4
-	 /PZalWNMp1TXg==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>
-Cc: linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	bpf <bpf@vger.kernel.org>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v7 14/36] function_graph: Use a simple LRU for fgraph_array index number
-Date: Wed,  7 Feb 2024 00:10:04 +0900
-Message-Id: <170723220474.502590.7646977373091779892.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <170723204881.502590.11906735097521170661.stgit@devnote2>
-References: <170723204881.502590.11906735097521170661.stgit@devnote2>
-User-Agent: StGit/0.19
+	s=arc-20240116; t=1707232258; c=relaxed/simple;
+	bh=osnqFI0ZtxEkvRbQ0EWBH7BL7X2o86yrUG9y9rOwtI0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AKz801q9qD6lQCWaWw8Y8u+JQOHuv4qF7D+/A6pJvfBREJuPRg4IXeepoA9rgADs0uNzpMDsXPQxH7AnaFntEQYOhhMJtE2C4lzZ7grBG+9dJXCsASjh6s+h8GkbViRazs75hDk+Q03ghDICbX1H5HKGf4XCUdL1YL2K9FbuZ/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hefring.com; spf=none smtp.mailfrom=hefring.com; dkim=pass (2048-bit key) header.d=hefring-com.20230601.gappssmtp.com header.i=@hefring-com.20230601.gappssmtp.com header.b=P4ty6tuF; arc=none smtp.client-ip=209.85.219.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hefring.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=hefring.com
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-68c4300518bso26197086d6.3
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 07:10:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1707232254; x=1707837054; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sYfFNAiageIfuh4cpngMOun9DVS7g39fafIbd6OpWGY=;
+        b=P4ty6tuF3lnD/vP2lHwLsaYqiyTrK09sHgAeX9FAbdghmUbaHsi9sybwdouYgPGbDF
+         93aU3aPWWFi2H5ii56tK36hc4K5y5T1u9uK0jIO/rrkuaRiuwpDGL/M83t7qklOVmBhG
+         h3e+OAOShTVkzGmmmM/ULlUEkCMn278lS583FeQqjTEpeBHk6+fUFfZ+KfLbkf4VqAel
+         s2I0KHSgKb8rx91ekhjQ3HxIPJ5m8kEmEHDqn2Rk/kYegR6BielkF8XuF7Wj3Pw61bjb
+         jLIIVNuyHkkLq3jJqpjDJEh47lXS07qjslnyq8mMfs1D227eHW+S40N8KGIJcRE52ZsY
+         c1Dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707232254; x=1707837054;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sYfFNAiageIfuh4cpngMOun9DVS7g39fafIbd6OpWGY=;
+        b=Oa3GR1GQ0Wwg2KWTjc8lkxQhUwse7oZy9NMJxTuk1zUo/7Y9e6QwZNHLWCFu6J73h2
+         EPrb8CUUK1Xgfjl2t7tz05T6WToAPgO3hN8t4XHfN1Qr2mZthQIm8DWpPiNIuJbr4yzK
+         r56uH7FNP4j5AprbcxI2fToFyg8n6/iPHUUDs4E3a8OVOzJlHkeADg8gTc+QHc7tUj4x
+         PJJmkApHJkhsr5qnx31qEExDce00Jsip2O8tKJobTBcLFFwPXMhU6VrSHKfZ17OjUCon
+         9T1ZvFD+tRl2eC9477VUe1FLaP61nQUv1R+58qha8Hc1GbGrX3fiqsUS572XwRdttooD
+         +3ww==
+X-Gm-Message-State: AOJu0Ywhi00SfpJnQdn/SQGM6z3jLXvKuWNTJUxd4rQKw86Ez6mx/S1D
+	+eKUJU+SCFGprcjTSLL3JSRC1qDApqahN8lNRuO6E1svwzW6IWxTEpnWtjd5cHtej5B5Vk8pX5x
+	7iPk=
+X-Google-Smtp-Source: AGHT+IFd2Cwl2Ki6XrgGXh9DfcDLR1Dl/x4H6+7N97GLFsJK4P3ngm8vBHQ8ekDm1Fc/SQwcG1IZ4g==
+X-Received: by 2002:a05:6214:2262:b0:68c:a7f6:12b2 with SMTP id gs2-20020a056214226200b0068ca7f612b2mr3736640qvb.8.1707232254207;
+        Tue, 06 Feb 2024 07:10:54 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWpxvvPlLKxDbC6P8YYRRL2v77MAgpJ3Xwr2pa35c4v0MFlgGUgk3Oz70gojR8ZlTNx4Albf4/vEBVcLo7na/+3ha3bx7dJGwlkc7WsgKouh+xYj7riiNc7ndIdv19qyVnvPj1hnOJRyV6B6w9hhgW6hRfQuDNJ0tSIjUqpkh0yXpvujo0DbDl5vOMwQOc=
+Received: from localhost.localdomain ([50.212.55.90])
+        by smtp.gmail.com with ESMTPSA id i11-20020ad44bab000000b0068c3a7e4789sm1074190qvw.103.2024.02.06.07.10.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 07:10:53 -0800 (PST)
+From: Ben Wolsieffer <ben.wolsieffer@hefring.com>
+To: linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Ben Wolsieffer <ben.wolsieffer@hefring.com>
+Subject: [PATCH] regmap: kunit: fix raw noinc write test wrapping
+Date: Tue,  6 Feb 2024 10:10:05 -0500
+Message-ID: <20240206151004.1636761-2-ben.wolsieffer@hefring.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+The raw noinc write test places a known value in the register following
+the noinc register to verify that it is not disturbed by the noinc
+write. This test ensures this value is distinct by adding 100 to the
+second element of the noinc write data.
 
-Since the fgraph_array index is used for the bitmap on the shadow
-stack, it may leave some entries after a function_graph instance is
-removed. Thus if another instance reuses the fgraph_array index soon
-after releasing it, the fgraph may confuse to call the newer callback
-for the entries which are pushed by the older instance.
-To avoid reusing the fgraph_array index soon after releasing, introduce
-a simple LRU table for managing the index number. This will reduce the
-possibility of this confusion.
+The regmap registers are 16-bit, while the test value is stored in an
+unsigned int. Therefore, adding 100 may cause the register to wrap while
+the test value does not, causing the test to fail. This patch fixes this
+by changing val_test and val_last from unsigned int to u16.
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Closes: https://lore.kernel.org/linux-kernel/745d3a11-15bc-48b6-84c8-c8761c943bed@roeck-us.net/T/
 ---
- Changes in v5:
-  - Fix the underflow bug in fgraph_lru_release_index() and return 0
-    if the release is succeded.
- Changes in v4:
-  - Newly added.
----
- kernel/trace/fgraph.c |   67 ++++++++++++++++++++++++++++++++++---------------
- 1 file changed, 47 insertions(+), 20 deletions(-)
+ drivers/base/regmap/regmap-kunit.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-index ae42de909845..323a74623543 100644
---- a/kernel/trace/fgraph.c
-+++ b/kernel/trace/fgraph.c
-@@ -99,10 +99,44 @@ enum {
- DEFINE_STATIC_KEY_FALSE(kill_ftrace_graph);
- int ftrace_graph_active;
+diff --git a/drivers/base/regmap/regmap-kunit.c b/drivers/base/regmap/regmap-kunit.c
+index 026bdcb45127..4eb18f5d3265 100644
+--- a/drivers/base/regmap/regmap-kunit.c
++++ b/drivers/base/regmap/regmap-kunit.c
+@@ -1202,7 +1202,8 @@ static void raw_noinc_write(struct kunit *test)
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+-	unsigned int val, val_test, val_last;
++	unsigned int val;
++	u16 val_test, val_last;
+ 	u16 val_array[BLOCK_TEST_SIZE];
  
--static int fgraph_array_cnt;
--
- static struct fgraph_ops *fgraph_array[FGRAPH_ARRAY_SIZE];
- 
-+/* LRU index table for fgraph_array */
-+static int fgraph_lru_table[FGRAPH_ARRAY_SIZE];
-+static int fgraph_lru_next;
-+static int fgraph_lru_last;
-+
-+static void fgraph_lru_init(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++)
-+		fgraph_lru_table[i] = i;
-+}
-+
-+static int fgraph_lru_release_index(int idx)
-+{
-+	if (idx < 0 || idx >= FGRAPH_ARRAY_SIZE ||
-+	    fgraph_lru_table[fgraph_lru_last] != -1)
-+		return -1;
-+
-+	fgraph_lru_table[fgraph_lru_last] = idx;
-+	fgraph_lru_last = (fgraph_lru_last + 1) % FGRAPH_ARRAY_SIZE;
-+	return 0;
-+}
-+
-+static int fgraph_lru_alloc_index(void)
-+{
-+	int idx = fgraph_lru_table[fgraph_lru_next];
-+
-+	if (idx == -1)
-+		return -1;
-+
-+	fgraph_lru_table[fgraph_lru_next] = -1;
-+	fgraph_lru_next = (fgraph_lru_next + 1) % FGRAPH_ARRAY_SIZE;
-+	return idx;
-+}
-+
- static inline int get_ret_stack_index(struct task_struct *t, int offset)
- {
- 	return t->ret_stack[offset] & FGRAPH_RET_INDEX_MASK;
-@@ -367,7 +401,7 @@ int function_graph_enter(unsigned long ret, unsigned long func,
- 	if (index < 0)
- 		goto out;
- 
--	for (i = 0; i < fgraph_array_cnt; i++) {
-+	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
- 		struct fgraph_ops *gops = fgraph_array[i];
- 
- 		if (gops == &fgraph_stub)
-@@ -935,21 +969,17 @@ int register_ftrace_graph(struct fgraph_ops *gops)
- 		/* The array must always have real data on it */
- 		for (i = 0; i < FGRAPH_ARRAY_SIZE; i++)
- 			fgraph_array[i] = &fgraph_stub;
-+		fgraph_lru_init();
- 	}
- 
--	/* Look for an available spot */
--	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
--		if (fgraph_array[i] == &fgraph_stub)
--			break;
--	}
--	if (i >= FGRAPH_ARRAY_SIZE) {
-+	i = fgraph_lru_alloc_index();
-+	if (i < 0 ||
-+	    WARN_ON_ONCE(fgraph_array[i] != &fgraph_stub)) {
- 		ret = -EBUSY;
- 		goto out;
- 	}
- 
- 	fgraph_array[i] = gops;
--	if (i + 1 > fgraph_array_cnt)
--		fgraph_array_cnt = i + 1;
- 	gops->idx = i;
- 
- 	ftrace_graph_active++;
-@@ -979,25 +1009,22 @@ int register_ftrace_graph(struct fgraph_ops *gops)
- void unregister_ftrace_graph(struct fgraph_ops *gops)
- {
- 	int command = 0;
--	int i;
- 
- 	mutex_lock(&ftrace_lock);
- 
- 	if (unlikely(!ftrace_graph_active))
- 		goto out;
- 
--	if (unlikely(gops->idx < 0 || gops->idx >= fgraph_array_cnt))
-+	if (unlikely(gops->idx < 0 || gops->idx >= FGRAPH_ARRAY_SIZE))
-+		goto out;
-+
-+	if (WARN_ON_ONCE(fgraph_array[gops->idx] != gops))
- 		goto out;
- 
--	WARN_ON_ONCE(fgraph_array[gops->idx] != gops);
-+	if (fgraph_lru_release_index(gops->idx) < 0)
-+		goto out;
- 
- 	fgraph_array[gops->idx] = &fgraph_stub;
--	if (gops->idx + 1 == fgraph_array_cnt) {
--		i = gops->idx;
--		while (i >= 0 && fgraph_array[i] == &fgraph_stub)
--			i--;
--		fgraph_array_cnt = i + 1;
--	}
- 
- 	ftrace_graph_active--;
- 
+ 	config = raw_regmap_config;
+-- 
+2.43.0
 
 
