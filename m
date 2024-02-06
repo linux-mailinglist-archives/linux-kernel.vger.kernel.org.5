@@ -1,78 +1,125 @@
-Return-Path: <linux-kernel+bounces-54491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EF3084AFE7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:26:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA12084AFEC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:28:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8BB1B22899
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:26:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18DCF1C22C1D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:28:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE6EA12B147;
-	Tue,  6 Feb 2024 08:26:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F095412B15A;
+	Tue,  6 Feb 2024 08:28:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="AAULVMV+"
-Received: from mail-177132.yeah.net (mail-177132.yeah.net [123.58.177.132])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C3722AD19;
-	Tue,  6 Feb 2024 08:26:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.132
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TM+8ouuk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33CDD12AAD9;
+	Tue,  6 Feb 2024 08:28:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707207968; cv=none; b=PDvq7JJiFQF5iq5YsDc4zhY610rcZIbg7aeWJzV0NR2kpvxOYIzViLH3msUNu4CTHAH2dbYTb7Y8xCNInBzD1GKpqXS8Tv7iIXm+K6JpbyNa7L4ckUDyLNSQLH3Euu+PMNpVw2WPcTY5H0Z9zQej9wle/12nIz05+DgthGxhkQk=
+	t=1707208098; cv=none; b=cV5A/sMIkEogKw6MeLQ3oYW+JrBz4ZagqdwV3E8ydpnDdNtIUoVjHXrSYMB4uzFax9GeZYz+SiBMDiAiJ2XoVjqybVeN+pNJIPY79PN895O2Rw3919UYHxT89vH0HRMVgtcwXB/WN8W58isrsF7eYYclX7PkcESkWEPMdBdI16k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707207968; c=relaxed/simple;
-	bh=t2yAKJurDDjfKO/vW3wSmRuW40exRI8aIXUdYqj/Qbs=;
+	s=arc-20240116; t=1707208098; c=relaxed/simple;
+	bh=koRftp4MHR3PWopvdU9KfvvbZmwaKfHJJheC6bS279o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fpOjI7cbBhnZBi1REAmApR7EG3FUwkYjjzAqx+g6gwqhOj6bWCgWA3LiFTETg/NdC7/D1UVeuhKkZXqUaV/IgvyVf2PpZBznOBjWES2tnpdX6f0QWFB+wO9+Oj6/SA17Dbv1k425ZJica8HbECPSBV13AzTY04tQ7nF/SrTaty0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=AAULVMV+; arc=none smtp.client-ip=123.58.177.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
-	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=D+dpyHzkxQAg52iRrnWaJV0X6pa+2auyDsk3A0BdquY=;
-	b=AAULVMV+MICK1NxhCyh7A5PJpnCV3zfU3AAeoC/MWQxveM7mKH1ZvIwKknIFai
-	bgYxE4uJWEDXt9YX41RkJAAFIGUUvxhxM8rLN3IQoT5Vsj9cP5Rd5WJj7zatlVop
-	S3cggOMA62ozRomCYOa7K1X9vImhh/+RTihLW+PP/4Nyc=
-Received: from dragon (unknown [183.213.196.254])
-	by smtp2 (Coremail) with SMTP id C1UQrAAH74jf7MFlzVcAAw--.44150S3;
-	Tue, 06 Feb 2024 16:25:05 +0800 (CST)
-Date: Tue, 6 Feb 2024 16:25:03 +0800
-From: Shawn Guo <shawnguo2@yeah.net>
-To: Christoph Niedermaier <cniedermaier@dh-electronics.com>
-Cc: linux-arm-kernel@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Marek Vasut <marex@denx.de>, Fabio Estevam <festevam@denx.de>,
-	NXP Linux Team <linux-imx@nxp.com>, kernel@dh-electronics.com,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: imx6ull-dhcom: Remove /omit-if-no-ref/ from
- node usdhc1-pwrseq
-Message-ID: <ZcHs36/WVSlBQxcQ@dragon>
-References: <20240125124621.16011-1-cniedermaier@dh-electronics.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=m2GUc2ZGol5uUYEYT7W8iYVzZHv9oPceqdPDObOJuWgP8Nua9FmQ7BMQrPWlCH5DB1mcZPhvDLXYd4HnITdJFxsMMoMIliGG35RK0gSw5k7NC81LfBIG34KbfOsIOvFdHF+N2Q7vzXShIMPg46KgLyrj4ZbAve3u6+GZcF6FX/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TM+8ouuk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7B87C433C7;
+	Tue,  6 Feb 2024 08:28:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707208097;
+	bh=koRftp4MHR3PWopvdU9KfvvbZmwaKfHJJheC6bS279o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TM+8ouukUsUZLm3TN5OzwtVC43etkDvx/XBzBl8myT81EbZpPx3AMCEv+HP0mxN7X
+	 kWwSb6Ut7d4c+M2y2bTzFo8o762ullHauFEXiEXgXm0r1+ab+NeOeVyMFWUJ+VcnBc
+	 YnsPEQJqjr7bu04kV14y/askf0G9GypboFKDT+2qBOZyNPVm99WOK5W+a6wMlromea
+	 B5YGgVY2mAp5S/slHe3Th4sCt/aA4CgmEySVkPPxzo7FUeZl76Y1XD/pJbabnTtQZE
+	 64W4Hz5DXlQDs9Y71M9tYVOH6EG6e6n5EnKdTzB7Fc5QcxFngz+jdrB2LPEg1j23vf
+	 K3dCkA5JDa/6Q==
+Date: Tue, 6 Feb 2024 09:28:10 +0100
+From: Niklas Cassel <cassel@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Dan Carpenter <dan.carpenter@linaro.org>
+Subject: Re: [PATCH v5 1/2] PCI: dwc: Fix a 64bit bug in
+ dw_pcie_ep_raise_msix_irq()
+Message-ID: <ZcHtmkOkvutz/DvR@x1-carbon>
+References: <af59c7ad-ab93-40f7-ad4a-7ac0b14d37f5@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240125124621.16011-1-cniedermaier@dh-electronics.com>
-X-CM-TRANSID:C1UQrAAH74jf7MFlzVcAAw--.44150S3
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxU4Xo2UUUUU
-X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiDgF8ZVszYTDk5AAAsv
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <af59c7ad-ab93-40f7-ad4a-7ac0b14d37f5@moroto.mountain>
 
-On Thu, Jan 25, 2024 at 01:46:21PM +0100, Christoph Niedermaier wrote:
-> Remove /omit-if-no-ref/ from node usdhc1-pwrseq, because if the compile
-> flag -@ (include symbols) is used the node will always be there. In this
-> case, GPIO H is not released and therefore cannot be used. Therefore,
-> remove this node manually from the corresponding devicetree file and
-> don't rely on /omit-if-no-ref/.
+On Fri, Jan 26, 2024 at 11:40:37AM +0300, Dan Carpenter wrote:
+> The "msg_addr" variable is u64.  However, the "aligned_offset" is an
+> unsigned int.  This means that when the code does:
 > 
-> Signed-off-by: Christoph Niedermaier <cniedermaier@dh-electronics.com>
+>         msg_addr &= ~aligned_offset;
+> 
+> it will unintentionally zero out the high 32 bits.  Use ALIGN_DOWN()
+> to do the alignment instead.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 2217fffcd63f ("PCI: dwc: endpoint: Fix dw_pcie_ep_raise_msix_irq() alignment support")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Reviewed-by: Niklas Cassel <cassel@kernel.org>
+> Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+> v5: Add the #include.
+> v4: Add stable and r-b from Niklas
+> v3: Use ALIGN_DOWN()
+> v2: fix typo in commit message
+> 
+>  drivers/pci/controller/dwc/pcie-designware-ep.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
+> index 5befed2dc02b..d6b66597101e 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
+> @@ -6,6 +6,7 @@
+>   * Author: Kishon Vijay Abraham I <kishon@ti.com>
+>   */
+>  
+> +#include <linux/align.h>
+>  #include <linux/bitfield.h>
+>  #include <linux/of.h>
+>  #include <linux/platform_device.h>
+> @@ -551,7 +552,7 @@ int dw_pcie_ep_raise_msix_irq(struct dw_pcie_ep *ep, u8 func_no,
+>  	}
+>  
+>  	aligned_offset = msg_addr & (epc->mem->window.page_size - 1);
+> -	msg_addr &= ~aligned_offset;
+> +	msg_addr = ALIGN_DOWN(msg_addr, epc->mem->window.page_size);
+>  	ret = dw_pcie_ep_map_addr(epc, func_no, 0, ep->msi_mem_phys, msg_addr,
+>  				  epc->mem->window.page_size);
+>  	if (ret)
+> -- 
+> 2.43.0
+> 
 
-Applied, thanks!
+Ping on these two patches.
 
+Patch 1/2 is a strict fix and should go in v6.8 IMO.
+
+
+Kind regards,
+Niklas
 
