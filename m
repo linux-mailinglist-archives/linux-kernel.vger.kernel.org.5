@@ -1,125 +1,99 @@
-Return-Path: <linux-kernel+bounces-54952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57CA484B556
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:35:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A766A84B55A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:35:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 124E32899D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:35:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CFA41F266F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:35:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3794E12F39D;
-	Tue,  6 Feb 2024 12:30:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70C15130AD5;
+	Tue,  6 Feb 2024 12:30:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BmFbcJeD"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="equofCpE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 067D55D8FC;
-	Tue,  6 Feb 2024 12:30:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A051012E1D9;
+	Tue,  6 Feb 2024 12:30:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707222626; cv=none; b=HVXRFK7fAdxjp2ISt5XoEVWk5ZMV8+OAc/3+R9I0BYw6YuIz0D5+l38wuzD/08iph2r/P4q5viwyixL3aBE5w8lQ8Foru0T6OJe5HfAVj2qIGOCoRfv5gcOhFCiC67/apG/gSp63eSg9U/QFsb+N+zwAk0Oh7RNWQ1wIxOpkVMU=
+	t=1707222628; cv=none; b=r4NTdGWf8DaP6RXgT6j1PsUjRKArw+wOUiujYmwPSxxLecsqMBtSNGkjdPHhcM14a4jYpsU9wvtvErR/3o8R/VRPoh9ULAbQGtmu3WA2dlCOi/RU0/f0pp9lmUKg2c/qSe4sJ3BRKTV9LHwTMdlgQtAMN51d4LpgKVqX6M35Jr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707222626; c=relaxed/simple;
-	bh=hTgkI8aNc7DauvgizYJN2eynljPZb4ZGr+yoeugS+cE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Qb2Fg8A8I+86Oj1w0TDVa4eh0N73FX0Jo9VyX3r+GhMebD0lQswgNawimt/dIqaD84bcpfbQAibFqruPGm8ef+NWNlCCqPMLb+LNo+fHNpwiXesaw0KMoSrilBNxxnaTm7rhawRAYzx3kwx4zjiVe7K927v0/vMv9fCx6J+5twE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BmFbcJeD; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707222625; x=1738758625;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=hTgkI8aNc7DauvgizYJN2eynljPZb4ZGr+yoeugS+cE=;
-  b=BmFbcJeDhcFMyCSzMCzqcIi5TAjTzpxsUKMWs+iVQjmVQd+1U5bWMxDl
-   YptKvM4gIUYNWRR3S7MP7hoV58MMl24bqHOoV1KiCvtHhBYoMXYJtsC/s
-   NPCIFkxrwQHphVVsSbBB6vTAgknwo6OzBNmWAvqkY25BknMEmYT2vVuVI
-   soJcoGw2aQXu6QNPmEa+4weJgGAQKnRV+E0KXskLtzQEOEVaHVfj7GLHp
-   t4ejzqnCanBrqWv9zYTwOKogaz/zDLD551yzfRvGDhtpy2z/xZT1PhTOY
-   z2LQ9JYOrSqsELUGU91mdBGNnrgO1FDbd4ss0G9cb+x94kyQhcedHGS0z
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="18253494"
-X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
-   d="scan'208";a="18253494"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 04:30:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="909626381"
-X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
-   d="scan'208";a="909626381"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 04:30:21 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rXKag-00000002Kx3-3c7b;
-	Tue, 06 Feb 2024 14:30:18 +0200
-Date: Tue, 6 Feb 2024 14:30:18 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Wolfram Sang <wsa@the-dreams.de>, linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v2 17/23] gpio: reduce the functionality of
- validate_desc()
-Message-ID: <ZcImWuSiBgSO0yO6@smile.fi.intel.com>
-References: <20240205093418.39755-1-brgl@bgdev.pl>
- <20240205093418.39755-18-brgl@bgdev.pl>
- <ZcDS60dB39y-B6WR@smile.fi.intel.com>
- <CAMRc=Mf+nTw1iwbDvmF2=93KxEimxBndVEhdp9V7kAzvGqizTQ@mail.gmail.com>
+	s=arc-20240116; t=1707222628; c=relaxed/simple;
+	bh=W1RbxcbJIO5Vcnrc/LNdjNQ6jCjFYklzx5UjpRAgW5s=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=LXxFR//NHGTYP58cMxa3jYRrOrJe2HOTpSYASCAWu0PBoGQlNv+Vl7ltYxHtvUOw6lwePPt90LvEaPRRPlfiqWea1+kfn7T8WHwljWBiMtt2U7sLEScyi/eEbP4Zanp3NsoYoGpMw3T9TYhg70fqzgcSt0E69vnPxhVtFg/xfYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=equofCpE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 30ABBC43399;
+	Tue,  6 Feb 2024 12:30:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707222628;
+	bh=W1RbxcbJIO5Vcnrc/LNdjNQ6jCjFYklzx5UjpRAgW5s=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=equofCpEHHT0kXeJDFKFTj2fieU91ZQm/HLEzKW0zFZIIoSMLGtMrs+xLvIfR52V5
+	 /U6LjIL9wsLxziuawmwPlwJVxjgWGZmog7Kk4nAXhQYmj3hCDtyz6xwUuwzypzm7cR
+	 tcO2pogCNoDtvmBvRl+RBnevnsjBtSLvWCHmpmvABnyAXw8bhKMvzuW+WAI7uuoMWq
+	 4CZzo3x2p4w1GYVVWIkPE4lRLPziBFqL9JmjqTT7ea9hr4qWzP+5nMGSXPqI32MUkt
+	 LkgkM59djE7b7vc03OoYi0U+grWSJQsylA3Xwf1FDzfr+HkhqBkKFVZKSejDElsvC/
+	 gbdNCr7hwGUJw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1B25EE2F2F9;
+	Tue,  6 Feb 2024 12:30:28 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=Mf+nTw1iwbDvmF2=93KxEimxBndVEhdp9V7kAzvGqizTQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Subject: Re: [PATCH net-next 0/4] pds_core: Various improvements/cleanups
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170722262810.15492.5820938953818805527.git-patchwork-notify@kernel.org>
+Date: Tue, 06 Feb 2024 12:30:28 +0000
+References: <20240202195911.65338-1-brett.creeley@amd.com>
+In-Reply-To: <20240202195911.65338-1-brett.creeley@amd.com>
+To: Brett Creeley <brett.creeley@amd.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ shannon.nelson@amd.com
 
-On Mon, Feb 05, 2024 at 08:22:23PM +0100, Bartosz Golaszewski wrote:
-> On Mon, Feb 5, 2024 at 2:47 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Mon, Feb 05, 2024 at 10:34:12AM +0100, Bartosz Golaszewski wrote:
+Hello:
 
-..
+This series was applied to netdev/net-next.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-> > >  void gpiod_free(struct gpio_desc *desc)
-> > >  {
-> > > -     /*
-> > > -      * We must not use VALIDATE_DESC_VOID() as the underlying gdev->chip
-> > > -      * may already be NULL but we still want to put the references.
-> > > -      */
-> > > -     if (!desc)
-> > > -             return;
-> > > +     VALIDATE_DESC_VOID(desc);
-> >
-> > IIRC we (used to) have two cases like this (you added one in some code like
-> > last year).
-> >
+On Fri, 2 Feb 2024 11:59:07 -0800 you wrote:
+> This series contains various improvements and cleanups for the
+> pds_core driver. These patches were originally part of the following
+> net-next series:
 > 
-> None of the consumer-facing functions does it anymore. Not sure about
-> this, maybe it was removed earlier.
+> https://lore.kernel.org/netdev/20240126174255.17052-1-brett.creeley@amd.com/
+> 
+> However, some of the patches from the above series were actually fixes,
+> so they were pushed and accepted to net. That series can be found here:
+> 
+> [...]
 
-Okay, the only place that might be considered is gpiod_to_gpio_device().
+Here is the summary with links:
+  - [net-next,1/4] pds_core: Don't assign interrupt index/bound_intr to notifyq
+    https://git.kernel.org/netdev/net-next/c/02daffa903e6
+  - [net-next,2/4] pds_core: Unmask adminq interrupt in work thread
+    https://git.kernel.org/netdev/net-next/c/bca10f2c2518
+  - [net-next,3/4] pds_core: Fix up some minor issues
+    https://git.kernel.org/netdev/net-next/c/247c4ed03321
+  - [net-next,4/4] pds_core: Clean up init/uninit flows to be more readable
+    https://git.kernel.org/netdev/net-next/c/792d36ccc163
 
-But that API seems new, I don't know if VALIDATE_DESC_VOID() is okay to use there,
-maybe it should be commented if not. Also there is a typo in the kernel doc —
-'the users already holds' --> 'the user already holds'.
-
+You are awesome, thank you!
 -- 
-With Best Regards,
-Andy Shevchenko
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
 
