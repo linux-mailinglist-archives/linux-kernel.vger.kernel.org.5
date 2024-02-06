@@ -1,129 +1,104 @@
-Return-Path: <linux-kernel+bounces-55245-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55246-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE95184B9BC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:35:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20A3184B9B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:34:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 400AEB2B5FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:34:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 382651C236F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:34:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8298B133423;
-	Tue,  6 Feb 2024 15:33:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07372133982;
+	Tue,  6 Feb 2024 15:34:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DtX7qbUH"
-Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vK3OPCHn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6897A132C3A;
-	Tue,  6 Feb 2024 15:33:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D1051332BC;
+	Tue,  6 Feb 2024 15:34:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707233631; cv=none; b=J9jnv6TgO6tJUICfISA/7GeoCyfycHvbt5qFGgCdro+m3LKBsiDJB1bux+CrReGPFyt8uYyFXkrDKo4xVIuO6QUR1LbaSFWQW+B250wio6HCFnvMuVyb1LDQOgzdduIVDzeFEGFtTIkox1gFwG/p6LclerCxYyPE8AvwjwBU9ag=
+	t=1707233646; cv=none; b=h59aDP6FGeNBQlECC00WMvpmGXD5XwYrCv/W0jDNLdEsug5u8zSkkC2xRwBs1GYZ8E/6N9tz/6SIJLxUHbqxhy+Oz+scSzYsMQ6brUd9ClIrxJ7xWBbkaUMZaxofz/0itryqjnLRhkPbLyx+FrRTkwx6sF52Py3ogDOTGFs0Y9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707233631; c=relaxed/simple;
-	bh=Pq675YyLd2zT05WD6JVqAm14l+wk2+OREl+RR7JEuKw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EOcPWecZU5ldOzA1AV8GaXkx3P2v/cJUAEpmY8GseQy4pFtVajqEk1LxBXMNarBOSVplZZtDt2HYvJOCza0uXxCnMCMwQUEyoO02/wifwIMvwLmTaFh/AWCZjlU5t8nLDbnMWXt1FdwYrJpcGg1zxdGOoEBgOuNZ5X82XQZmKtE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DtX7qbUH; arc=none smtp.client-ip=209.85.219.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-68c8790aeadso29973666d6.1;
-        Tue, 06 Feb 2024 07:33:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707233629; x=1707838429; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wsCHj3o7AvzybMtFe1QCWiHO2CXrsBDEsd537/xdmUc=;
-        b=DtX7qbUHimmUdlP6/vlkbPtPxW8eLyYTeRbQstiYuOUN8c0ZGXm5NuRdRlGaCDb1Ay
-         wQT4RP7uZ4ZDnyZ4EUo7AGX5yeEiWFjBZBJ+tzW4Lm1D0eX4A3u/5V/Gqmp7otyzP1uM
-         yOO9HG688SyduVHbj3eax5+TMJuWDBbSk3aCKPmvR+p7jg8oAwI5dv6+mtx23aD+Fxne
-         9dcEYSEi7PUFILslYFjm9VO6MU1uzGBi0ng8WMMptm5P9cS0HaiHALISvOVftoJAYJyj
-         D2b6JIOSqb6h0xdGGAmhyvq5JhfBcMonYmOCCr590Q1cDDcmvsKA2MBYbr6Okc1wVzAs
-         J7Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707233629; x=1707838429;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wsCHj3o7AvzybMtFe1QCWiHO2CXrsBDEsd537/xdmUc=;
-        b=WolLrPEzMQ0ys6YrTzsjwEhu3uE2h190TdfdJN/aEX+TMu/aEZl0N9YmUMfZ/wVdtQ
-         Kf8bh6+TVRRQiFknkzMuEqYw6wXCNgpz1oGl8o+K0iqowoKAlWDIMZXprRSjHzVmQMMS
-         2nEpygr6qD0eBLqNKNCVSikfAJ0QXFnyfFzbGoEZMpQ3I1rBRB2I+Hmkes6YPOCxEaih
-         H03WHHq0N5/dRPHyPCUwsfR8pwexGna0TsVoc/son4ZOswaIS3yfzyD+Mcq+LscdVsmA
-         RUiQuhO/ZrPWk07tA5usdy9wDt8u9bSKHkvj2N8w2TBmwJWXxhBsl/nd4I4vTB7C9ov8
-         IsYA==
-X-Gm-Message-State: AOJu0YyKVgZci3BH+5DJbmxb3c08Y94PYtrwNMu/Wi7EQmbsIp2tz7CR
-	Iy3+D2k+h5Tro4gmrru9pyod8iPvmpJNhbkfTQ6JrAt+XfHqJiNf7t8LmWhG5jrRnWVDRJ4rvt3
-	x4jkei1fxp9nT6RS+9rhUBBrXcZE=
-X-Google-Smtp-Source: AGHT+IGmSM9ZFMWDa22ikiTXuqAqMVu+DEw5ne3rtVqJanmk61QSXJoEdS9UumRX+As1rDxB5ImrAaje8zrMgMrR1l8=
-X-Received: by 2002:a05:6214:519b:b0:68c:9b50:b839 with SMTP id
- kl27-20020a056214519b00b0068c9b50b839mr2980214qvb.61.1707233629215; Tue, 06
- Feb 2024 07:33:49 -0800 (PST)
+	s=arc-20240116; t=1707233646; c=relaxed/simple;
+	bh=mV3IQfXUED3m7nZ6eR8IfdFIfnHb01zoGzJ3cf6A6kE=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=Zit4VxG/+Mhg3T3G9hKSiJ83MLa18e0T1wBqWDdY6zvO1hJEz8Nv6WDuoXgGuN+hl3oaAqk1NqmJdz3XbmD8KTYoh9bPjpG/WaZkq+hJ5njjOoPusUGIkvyn7WBX6EuOga6y08+Qky+vBg9QoTjIKc7fvf6oxMWozWz/nwFHR6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vK3OPCHn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 560FBC433F1;
+	Tue,  6 Feb 2024 15:34:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707233645;
+	bh=mV3IQfXUED3m7nZ6eR8IfdFIfnHb01zoGzJ3cf6A6kE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=vK3OPCHnCFve5b9RytgRk5bjikuZ9r9QhUTB2Ftm0GDGmzSiZ6SEPPInJm/9NfmWp
+	 0czS12fX0j2hu06KOn2l2iGPjKRLaymIPPIKc2FPWDSecmNgJ+BM02mIwGYY8t7vVY
+	 wDehQUNcnTL6qVbanBPhB645p4RUvI88ej6vhHeBKblYIoq98eV1R25rQoxLLFUqTl
+	 z6brer/ZuUBy++ObqYWGqTLD2ejXfxlunm2qWy3+c3kV+jK2cxKaElTvCpes5adgrY
+	 THpUvb4ihC1T+zjXIZrfnIBNhvPa62Pa1reyB2m35vF6GRx4EcqiUcMynQnIfaa+hF
+	 GEwVyEyYysMag==
+Date: Tue, 6 Feb 2024 09:34:03 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Philipp Stanner <pstanner@redhat.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Randy Dunlap <rdunlap@infradead.org>, NeilBrown <neilb@suse.de>,
+	John Sanpe <sanpeqf@gmail.com>,
+	Kent Overstreet <kent.overstreet@gmail.com>,
+	Niklas Schnelle <schnelle@linux.ibm.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Uladzislau Koshchanka <koshchanka@gmail.com>,
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+	David Gow <davidgow@google.com>, Kees Cook <keescook@chromium.org>,
+	Rae Moar <rmoar@google.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	"wuqiang.matt" <wuqiang.matt@bytedance.com>,
+	Yury Norov <yury.norov@gmail.com>, Jason Baron <jbaron@akamai.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Marco Elver <elver@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Ben Dooks <ben.dooks@codethink.co.uk>, dakr@redhat.com,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-arch@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v6 0/4] Regather scattered PCI-Code
+Message-ID: <20240206153403.GA866283@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205182506.3569743-1-stefanb@linux.ibm.com> <20240205182506.3569743-6-stefanb@linux.ibm.com>
-In-Reply-To: <20240205182506.3569743-6-stefanb@linux.ibm.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 6 Feb 2024 17:33:38 +0200
-Message-ID: <CAOQ4uxhhRo20oCrDvs42e4m=HzdUSZ+YtMv8JVykuNoHGP8ypA@mail.gmail.com>
-Subject: Re: [PATCH v2 5/9] evm: Use the inode holding the metadata to
- calculate metadata hash
-To: Stefan Berger <stefanb@linux.ibm.com>
-Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, 
-	roberto.sassu@huawei.com, brauner@kernel.org, miklos@szeredi.hu
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1f1be7418b6f52854abdd25ad7b1c526a9a7e35d.camel@redhat.com>
 
-On Mon, Feb 5, 2024 at 8:25=E2=80=AFPM Stefan Berger <stefanb@linux.ibm.com=
-> wrote:
->
-> Changes to file attributes (mode bits, uid, gid) on the lower layer are
-> not taken into account when d_backing_inode() is used when a file is
-> accessed on the overlay layer and this file has not yet been copied up.
-> This is because d_backing_inode() does not return the real inode of the
-> lower layer but instead returns the backing inode which in this case
-> holds wrong file attributes. Further, when CONFIG_OVERLAY_FS_METACOPY is
-> enabled and a copy-up is triggered due to file metadata changes, then
-> the metadata are held by the backing inode while the data are still held
-> by the real inode. Therefore, use d_inode(d_real(dentry, D_REAL_METADATA)=
-)
-> to get to the inode holding the file's metadata and use it to calculate
-> the metadata hash with.
->
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+On Tue, Feb 06, 2024 at 10:41:13AM +0100, Philipp Stanner wrote:
+> On Wed, 2024-01-31 at 15:08 -0600, Bjorn Helgaas wrote:
+> > On Wed, Jan 31, 2024 at 10:00:19AM +0100, Philipp Stanner wrote:
+> > > @Bjorn:
+> > > I decided that it's now actually possible to just embed the docu
+> > > updates
+> > > to the respective patches, instead of a separate patch.
+> > > Also dropped the ioport_unmap() for now.
+> > 
+> > Thanks.  I didn't see any documentation updates (other than those
+> > related to the changed path names) in this series, so I assume the
+> > updates you mention would be in a future series.
+> 
+> No, I actually meant the changed path names.
+> 
+> The next series (new devres functions) just adds more docstrings to
+> iomap.c, devres.c and pci.c in drivers/pci/, which, after this series
+> here is applied, are all already added to the Docu.
 
-Acked-by: Amir Goldstein <amir73il@gmail.com>
+OK.  Other doc issues, I'm sure you've seen already:
+https://lore.kernel.org/r/20240205160908.6df5e790@canb.auug.org.au
 
-> ---
->  security/integrity/evm/evm_crypto.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm=
-/evm_crypto.c
-> index b1ffd4cc0b44..51e24a75742c 100644
-> --- a/security/integrity/evm/evm_crypto.c
-> +++ b/security/integrity/evm/evm_crypto.c
-> @@ -223,7 +223,7 @@ static int evm_calc_hmac_or_hash(struct dentry *dentr=
-y,
->                                  size_t req_xattr_value_len,
->                                  uint8_t type, struct evm_digest *data)
->  {
-> -       struct inode *inode =3D d_backing_inode(dentry);
-> +       struct inode *inode =3D d_inode(d_real(dentry, D_REAL_METADATA));
->         struct xattr_list *xattr;
->         struct shash_desc *desc;
->         size_t xattr_size =3D 0;
-> --
-> 2.43.0
->
+I'll squash the fixes into this series when they're ready.
+
+Bjorn
 
