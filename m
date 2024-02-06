@@ -1,198 +1,121 @@
-Return-Path: <linux-kernel+bounces-54435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFECD84AF31
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:48:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 89FC784AF34
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:49:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A0C61F23968
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 07:48:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F5A61F2267F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 07:49:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DB821292E6;
-	Tue,  6 Feb 2024 07:48:34 +0000 (UTC)
-Received: from mx.msync.work (mx.msync.work [62.182.159.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E23271292F1;
+	Tue,  6 Feb 2024 07:49:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quanta-corp-partner-google-com.20230601.gappssmtp.com header.i=@quanta-corp-partner-google-com.20230601.gappssmtp.com header.b="kO9nWSKW"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75E9D55E40;
-	Tue,  6 Feb 2024 07:48:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.182.159.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4A6A12883D
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 07:49:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707205713; cv=none; b=Cl42FRgg/6P3a3Encw2MnlSAnPuljCLuMc1l50WNd7Rvyl+Bj2LzmhET0fuNnegtipH74cBiAPae3QJZ07fdDnkgnTltHgvaKEey8+MyLyvRN77Nr5IqgI1xj0JLkkwYpPplkfdiMWoMfZ3WIHVcJDTv/Eb637hLf1GtvHVcYRo=
+	t=1707205786; cv=none; b=abziQ79V62oQ/PHHdHEc4POm/Vz9Om914xepj7tyWcg0FtSJa6ceysqX0S0LpqbZNfx8N+b2kmkFXJLuKc0+Nf3V+3cTb92FmD2oMSk5BvC4WdYuxAgntYUvQZOoRAIsZjZ+6Rds+zGECbIcdEL50z3YbucRJrpkb3UyKiwBggY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707205713; c=relaxed/simple;
-	bh=4jEdupVxgTG+iiH9uyvUhWF4J92USuZZDRzBIix0h8I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=e/fwYUQiWZrjAoHc8gC0gsqBoJ6vXEIaYxcwpmwLKdfYkYU6cVxSJT/TBAEPr0eGGrHx4cbFK35dP87PJ3JjLBRARh+Ah2P2SY6CFUSMxYmSh0SI8XZn9SerFBXGT0KBM9xTzXAb+PAYUTegnGSjJgxA46cyFyrprHxr80XXLKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=lexina.in; spf=pass smtp.mailfrom=lexina.in; dkim=pass (2048-bit key) header.d=lexina.in header.i=@lexina.in header.b=ue+Bezo6; arc=none smtp.client-ip=62.182.159.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=lexina.in
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lexina.in
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 02E11ECB94;
-	Tue,  6 Feb 2024 07:48:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lexina.in; s=dkim;
-	t=1707205693; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references:autocrypt;
-	bh=S3M9EroVDAgqRoipWcralP7huHBJRMins8OTjwghy7w=;
-	b=ue+Bezo6XcL7NRELmUH12w4hO2kpZQTYTpcwBoAv5hZVpxa3+AcqLLVyEJ34NiFYSV2o0W
-	fopWIlP5WzGC/fXqZ/ruEON68QY494u1mfZNlSYO5fyuMt+4+uYlutTzSKlNmfpVOqkYTl
-	nEx3jcaRH3HB0znG2K5vwmQ6xnzbj/wX5hZeBKo0nxdTw6ZlT4i5p6ma4djUxuUQoXlyGs
-	ZgSsvPDvTMwfnvnhauEbJFN8+R/vgH6JuojRrS/43ZOSvwR9spYFL2PYu9LnA/70EN2qeW
-	zF0eDGgQwQW+irH7V39wrYydudH3Slw/NeZuKxGkwV5XrTWIhsqfTP9hxoe20A==
-Message-ID: <4248e19e-5f2f-4e4f-a869-a0fec81b16bd@lexina.in>
-Date: Tue, 6 Feb 2024 10:48:09 +0300
+	s=arc-20240116; t=1707205786; c=relaxed/simple;
+	bh=OK5lRA7V7FsFnorYgS3IOSgU4KdjRhWcO5SvFbUkZsg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=B5ysduJQKOjlulGdOYOXCz2yHxR0K1FAooFi007L4Rt+7ev+3whCXYAjZNjaSJrAsUfL55mu5dEae0TK/Clx5Bjh/0AXd487PUvNpAG9YUU41CG+YONOY3pSoriOo9YgBxlC6DXOyanktu/CuMPSHmeFEABugFYdzPWQI4UB+aE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=quanta.corp-partner.google.com; spf=pass smtp.mailfrom=quanta.corp-partner.google.com; dkim=pass (2048-bit key) header.d=quanta-corp-partner-google-com.20230601.gappssmtp.com header.i=@quanta-corp-partner-google-com.20230601.gappssmtp.com header.b=kO9nWSKW; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=quanta.corp-partner.google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quanta.corp-partner.google.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d93ddd76adso4150595ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 23:49:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=quanta-corp-partner-google-com.20230601.gappssmtp.com; s=20230601; t=1707205783; x=1707810583; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=V3BkzWidJIUO6a5Li3rvGAaKQcBMxM0YR6nza1WJwCE=;
+        b=kO9nWSKWQv/wasE3YQPBEOWCkH+shhX72CCQH6ZkHKx52cClMQqh2AaCp546w/ebx6
+         tK/h3DsYXnvV3gzv/+jF6E/zZKQ2lo67WqmZSLj2NUwM40iTrjbdKrkUS9QlB7F/dCzZ
+         6NLIBQU3r4xSfq4p+18SRzd5L+lPOjQrAhD4d/x5UXHeHbFxgc5VjJCKY53I6GZhEaG8
+         CEJz7YvlW6oCg21nkbw3bdZdZzGJ8VXwDF8evHOC64FbH6+/GhEkNeK5xJ0XswkXvWuc
+         R/+qg7CiljV5nHv32Iu2CAWY3QL2bB/jpFlPvQVyNFtuT9aWt01b5RlvLBgkywlIP3rK
+         SN7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707205783; x=1707810583;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=V3BkzWidJIUO6a5Li3rvGAaKQcBMxM0YR6nza1WJwCE=;
+        b=WgaQp+2zhCwP+pSehY/yW4VO2HHEmUEZiz64QLSlUkMZb8U6Yss8EX8VbrDmDOaylN
+         duHNnwu7UOe16JWDKKW2mOXT03deR2f7lQDs2iwlptJo8TV2KGiVGJPupV61qUp6Nsoy
+         ZIwbnqSQtzlIp75BhtttLMZTrL53xDgAtW71O7dKgUtbBw4rGX/te1ioF/nK5O5+kCp9
+         JzC5/NRKN/vPlIbFs8EjPVC8KE1j1ULoGnS5VeABfQm8f/xeI4/khOykYnYBBh6hkRRe
+         nALsKu1TWlsfC58mkqrF5yqXh/QzZ6kGZnb3zJbiDIYzVulySTJPO1lmZ9R0ScM6mMOH
+         6vlg==
+X-Gm-Message-State: AOJu0YyuneP4x2qHfDV7PlSAw5nGGzklIJ9lTWgcyPrpsjaDXid2SRgl
+	v+48VXXP6O4rOmrhAbI87o1LhE6PxlPnv2A/GZdR4KSO+OLID+uFVM1Qkjj5yPxr0hVcJ4kGknY
+	ebqE=
+X-Google-Smtp-Source: AGHT+IFDevANh84iQ1483ULm4E0yqwag9AtHapByfK7FNk/QEDKBINLaUH9tPZNYc2pM/dNHJSnWag==
+X-Received: by 2002:a17:902:fc84:b0:1d8:f129:a0bc with SMTP id mf4-20020a170902fc8400b001d8f129a0bcmr1083908plb.13.1707205783032;
+        Mon, 05 Feb 2024 23:49:43 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUlYLAD2TI0URNOjz1VP3E2L0Tm8XPfE+3jlygdTA3W/OaqPBY+ELn5r7O804/7e1oEqu4ngclAOcg+4SHooCRmTfWMx6MTsWYOB9MG95zlsEH9U/D0OqAMMWKAyDagTWhd7TkI8vpjrd8R6LkQmmsyW9Zgan/OUucupBSVmvobJ672nU4KFzXKHC5Cf/BnAphl2Or3aUTDMUPABi9I+6bsh4s13ZtEGsYJiI1tOmmO9X49okYlmF5nnz25J/0N2aGYc5rG7W7zI9dNdTZHUozUeY4V9rkWrKIdwNE+BM7Kxt3PtaQcdy8uyZ1S4uI+jFGwF7+Yck4+7heO9ORVMqPbJtoz7YQx8YjYteKVJsogs8hCQ8SE8ogeCfuKN18TjedPJqYAH/te7PEq2qpoGvy38JiBB4q/YpiJgd+C8kWTs+Nz4kJ5980TjAvhs0I224O9yLAfBwriz9TLTfh8HljPJGdXK50DGNlG62o4mhlSngGdS/93HC/Wb9DPL74sqq6sicdLntsrJLRJLu5lmAO5gX46
+Received: from kells-TravelMate-P414P-53G.mshome.net (211-75-10-161.hinet-ip.hinet.net. [211.75.10.161])
+        by smtp.gmail.com with ESMTPSA id z3-20020a170903018300b001d9773a1993sm1163819plg.213.2024.02.05.23.49.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 23:49:42 -0800 (PST)
+From: Kells Ping <kells.ping@quanta.corp-partner.google.com>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: groeck@chromium.org,
+	Kells Ping <kells.ping@quanta.corp-partner.google.com>,
+	Benson Leung <bleung@chromium.org>,
+	Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+	Ken Lin <kenlin5@quanta.corp-partner.google.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Reka Norman <rekanorman@chromium.org>,
+	Ricky Chang <rickytlchang@chromium.org>,
+	Sam McNally <sammc@chromium.org>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	linux-media@vger.kernel.org,
+	"rasheed.hsueh" <rasheed.hsueh@lcfc.corp-partner.google.com>
+Subject: [PATCH] media: platform: cros-ec: Add Dita to the match table
+Date: Tue,  6 Feb 2024 15:49:26 +0800
+Message-Id: <20240206154554.1.Ic01f1c2400bac3dc97ff0ec232a5da41c0578554@changeid>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHv1 3/5] arm64: dts: amlogic: Add cache information to the
- Amlogic G12A SoCS
-Content-Language: en-US, ru-RU
-To: Anand Moon <linux.amoon@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240205171930.968-1-linux.amoon@gmail.com>
- <20240205171930.968-4-linux.amoon@gmail.com>
-From: Viacheslav <adeep@lexina.in>
-Autocrypt: addr=adeep@lexina.in; keydata=
- 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
-In-Reply-To: <20240205171930.968-4-linux.amoon@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi!
+The Google Dita device uses the same approach as the Google Brask
+which enables the HDMI CEC via the cros-ec-cec driver.
 
-You missed the AXG family with the Cortex-A53 CPU. The datasheet does 
-not provide information on cache sizes. Given that the A113X/A113D are 
-equipped with the Arm Cortex-A53 processor, it is assumed they use the 
-same cache size as the S905/S905X/S905X2 models.
+Signed-off-by: Kells Ping <kells.ping@quanta.corp-partner.google.com>
+---
 
-05/02/2024 20.19, Anand Moon wrote:
-> As per the S905X2 datasheet add missing cache information to the Amlogic
-> G12A SoC.
-> 
-> - Each Cortex-A53 core has 32KB of L1 instruction cache available and
-> 	32KB of L1 data cache available.
-> - Along with 512KB Unified L2 cache.
-> 
-> To improve system performance.
-> 
-> Signed-off-by: Anand Moon <linux.amoon@gmail.com>
-> ---
-> No public dataheet available, since S905X2 support Arm Cortex-A53 cpu
-> nence used the same cache size as S905 and S905X.
-> ---
->   arch/arm64/boot/dts/amlogic/meson-g12a.dtsi | 27 +++++++++++++++++++++
->   1 file changed, 27 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12a.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12a.dtsi
-> index 543e70669df5..6e1e3a3f5f18 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-g12a.dtsi
-> +++ b/arch/arm64/boot/dts/amlogic/meson-g12a.dtsi
-> @@ -17,6 +17,12 @@ cpu0: cpu@0 {
->   			compatible = "arm,cortex-a53";
->   			reg = <0x0 0x0>;
->   			enable-method = "psci";
-> +			d-cache-line-size = <32>;
-> +			d-cache-size = <0x8000>;
-> +			d-cache-sets = <32>;
-> +			i-cache-line-size = <32>;
-> +			i-cache-size = <0x8000>;
-> +			i-cache-sets = <32>;
->   			next-level-cache = <&l2>;
->   			#cooling-cells = <2>;
->   		};
-> @@ -26,6 +32,12 @@ cpu1: cpu@1 {
->   			compatible = "arm,cortex-a53";
->   			reg = <0x0 0x1>;
->   			enable-method = "psci";
-> +			d-cache-line-size = <32>;
-> +			d-cache-size = <0x8000>;
-> +			d-cache-sets = <32>;
-> +			i-cache-line-size = <32>;
-> +			i-cache-size = <0x8000>;
-> +			i-cache-sets = <32>;
->   			next-level-cache = <&l2>;
->   			#cooling-cells = <2>;
->   		};
-> @@ -35,6 +47,12 @@ cpu2: cpu@2 {
->   			compatible = "arm,cortex-a53";
->   			reg = <0x0 0x2>;
->   			enable-method = "psci";
-> +			d-cache-line-size = <32>;
-> +			d-cache-size = <0x8000>;
-> +			d-cache-sets = <32>;
-> +			i-cache-line-size = <32>;
-> +			i-cache-size = <0x8000>;
-> +			i-cache-sets = <32>;
->   			next-level-cache = <&l2>;
->   			#cooling-cells = <2>;
->   		};
-> @@ -44,6 +62,12 @@ cpu3: cpu@3 {
->   			compatible = "arm,cortex-a53";
->   			reg = <0x0 0x3>;
->   			enable-method = "psci";
-> +			d-cache-line-size = <32>;
-> +			d-cache-size = <0x8000>;
-> +			d-cache-sets = <32>;
-> +			i-cache-line-size = <32>;
-> +			i-cache-size = <0x8000>;
-> +			i-cache-sets = <32>;
->   			next-level-cache = <&l2>;
->   			#cooling-cells = <2>;
->   		};
-> @@ -52,6 +76,9 @@ l2: l2-cache0 {
->   			compatible = "cache";
->   			cache-level = <2>;
->   			cache-unified;
-> +			cache-size = <0x7d000>; /* L2. 512 KB */
-> +			cache-line-size = <64>;
-> +			cache-sets = <512>;
->   		};
->   	};
->   
+ drivers/media/platform/cros-ec-cec/cros-ec-cec.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/drivers/media/platform/cros-ec-cec/cros-ec-cec.c b/drivers/media/platform/cros-ec-cec/cros-ec-cec.c
+index 488147b71338..9340d117314b 100644
+--- a/drivers/media/platform/cros-ec-cec/cros-ec-cec.c
++++ b/drivers/media/platform/cros-ec-cec/cros-ec-cec.c
+@@ -309,6 +309,8 @@ static const struct cec_dmi_match cec_dmi_match_table[] = {
+ 	{ "Google", "Taranza", "0000:00:02.0", port_db_conns },
+ 	/* Google Dexi */
+ 	{ "Google", "Dexi", "0000:00:02.0", port_db_conns },
++	/* Google Dita */↲
++	{ "Google", "Dita", "0000:00:02.0", port_db_conns },
+ };
+ 
+ static struct device *cros_ec_cec_find_hdmi_dev(struct device *dev,
+-- 
+2.34.1
 
-Best regards,
---
-Viacheslav Bocharov <adeep@lexina.in>
 
