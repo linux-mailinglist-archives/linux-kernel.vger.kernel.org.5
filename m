@@ -1,73 +1,53 @@
-Return-Path: <linux-kernel+bounces-55533-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55538-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C15284BDC1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:04:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C611284BDCF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:05:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4222B2281B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:04:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BF711F23FF4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:05:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 540EC199DC;
-	Tue,  6 Feb 2024 19:03:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE5D9175BB;
+	Tue,  6 Feb 2024 19:04:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XqO/6S4r"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="gAfIpztm"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C19D218AF8
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 19:03:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 183DC171CE;
+	Tue,  6 Feb 2024 19:04:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707246199; cv=none; b=XpQCwijTrSrK06YXNcqz6w2rQgAhnPxh90kLGScj+JYmU1IctZO+P6bWY+w1ulon6IGIVjy61gkQdJW2ZFAG0wwhl0iLrGLTi92z4Pd9H/+y0HjsNEjIysa+2ISeuSoCpLsYwBj4vCU9G/uL2qMroEpsMd1NyXt91P+ZuJmtXf4=
+	t=1707246279; cv=none; b=MQ3cSPvf3uTel/pPw19nFuiP5ycMdmJWRWx18gZducqWUcexTFBKQVqiAjL9dya2KaKaohjeJgAkq5NicRi/Vjgp2e/QCVkKdb5QqIiPNDwawdEgJtrr4KZ5oTvHu2nH72A7+f4mVGT+AOeeDh9a0SH+6NAchJ8aPpJnwfmA/F4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707246199; c=relaxed/simple;
-	bh=tDvmcC1XqmYlk3POBmSOvim37fc2ev/y133pBpqytMs=;
+	s=arc-20240116; t=1707246279; c=relaxed/simple;
+	bh=buJR1N1JKmiEzwvWxz4AycboLbdgQYYGQJs4d3sTe1w=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=h3VZcC+ZwBLdTorVk8GQICNLmIg3rPR6fKhfik55uoOkmTqc/orUtcWOtgCODqbcWxm4i08xjelWHYgkbqlN3h7jVNCocQyC1tQFF1a9EmVZiSRqtTf7DvFk5MRF2pNnaosB+R3Pday9hOoJ/2BvuEmqZMgoPgnPNI4tqBosHcU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XqO/6S4r; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a3832a61a79so104218666b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 11:03:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707246196; x=1707850996; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fJQuKhpYgmCz8uFDkKBClqGKhdKVeotRI0CTyIAbsOo=;
-        b=XqO/6S4rkNz3MPjy5uQu4rVViIifN1s5wx20BHHLRCjhV1YGomndDBwp56nBRQ8UKa
-         1m877rVG8r4tRvGJdVSBPiIm1f8Ti+goJEM+4UmHQ9DjohZb8yywVNY7FU15cCaisOK0
-         LR9Q0OoZgptG1o4NBDs8IjcKJ9e/0I/sh+Eg6XNVAhqHmEIbPrF4hutao756Y4CZO3jC
-         MRS5qg2kYrmT13yfrWtEIHWj+/1ngcKbQ4pW2sj9BcL2hKqTPR780Cia9NUD5nbzjGdG
-         TSEli0syYaG8fqON/lHTjwMVf9bm6/v83at3GeFDVqGk4FM2cGKy1A9OuSnsHzfkn4aj
-         Dc3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707246196; x=1707850996;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fJQuKhpYgmCz8uFDkKBClqGKhdKVeotRI0CTyIAbsOo=;
-        b=lAuTyoZXS378szGNFTaNQrC2S7CSTOsrotodT/OxOD+wlSCbmj3cH/Ec3EXwReqoVq
-         5DUdR85Oa0MnawHEFfsaih6fThLjP4oNyH38l6ZM7K29ArGuG18B7POUUh/aPYOIf5LA
-         XbE7IwSaGqG8YrdwEMEg/fpmOZsjyuYXRZVEKH/U3ImLl24M93hSzLUherGZPo++1zlA
-         ZN4j5HdcErJckg6wl7yf3sjSeLQJDAAe0Ku4uZ2+UosHoXgB8FFm6QG/h/GV0amI3JHa
-         14EHmWvNJQsJgyrfF8UEPRnxPZ4Vpq6ymclcpsWVPEuQLIKl3rrKOI1x30jfJw8+ZDXj
-         1XPg==
-X-Gm-Message-State: AOJu0YytoB88/lnNy8zOtxs8Rz0XHkDaQ9sfd6IDKgJ/GfpCTKxk4+qP
-	pgEOBnntrZLJ+HcsgLuX5/i010Np3wzPXY5KyuVtshF/6Fx1cK0DK+8P0N0FXMM=
-X-Google-Smtp-Source: AGHT+IHrT+cq12J+05wj4WSmFPVlHw5YX4iwYI8HIph8SvWYgFT2S8x61SGUTMa3owcEV7CJAV+4Dg==
-X-Received: by 2002:a17:906:374f:b0:a38:526e:8474 with SMTP id e15-20020a170906374f00b00a38526e8474mr738482ejc.53.1707246196181;
-        Tue, 06 Feb 2024 11:03:16 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWs0HWuUqBlgV+KrpUzHzlsP21V0+qXJc41T5A+N9DtxQ42588M1LFGct8vDUwdM+rbTIStTzxDwgzx78dcvjxZuJcM9P6NalC9l9+50eTeF+dPhIMfQkBfrlxp6GsbjLPth3DaoqzWy3NMn8vTxNdkt6BkqOaW5zWUbncLOMDaiD+selb0cuMuoanQEJ1qwqyHU9Bn0Rv7D7RsiNo6OHcjCe1D9i0Qi2ytosmQVWU0LqvqiFiA5698LjjbdfEHCYvjtSt2AaRZoFzA6a1FjemdZK2xlKYoG3j2IRdd5vRbQsK3RDkvL/NTN6DWEvkkca+jVQXF70+Q18Ddu/NC6skdBm59nNlnqw9JJVkmXob05F+d7AegTprTTYAxkwHE84S0N2tV/9cCXQIWdjmrkZfcFXtJsbQ856It55sZ0GrlEM0Eg9kQvCdkAwXgPDVcB2W8vgPbPNt6tQp0/u9TekDyoLMgw0DyBgvZJ6K7z9QJy/tAaZg2lI095348H/0+aBFrLo6LW+jCV6IxEaqwvTGft/maxI5WYNC789xCbILm3mGT5aDHvbKZ0QJnDbsCLd83YZcZsIkbm1FadC+moN2UY6axyHtMIuCD
-Received: from [192.168.192.207] (037008245233.garwolin.vectranet.pl. [37.8.245.233])
-        by smtp.gmail.com with ESMTPSA id h16-20020a17090619d000b00a385535a02asm224018ejd.171.2024.02.06.11.03.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Feb 2024 11:03:15 -0800 (PST)
-Message-ID: <b92fea72-c5c3-4938-bb2c-7c62904010dd@linaro.org>
-Date: Tue, 6 Feb 2024 20:03:12 +0100
+	 In-Reply-To:Content-Type; b=aDmgXzKGcua/1F79MJqOp4f73n4CBvyk9GlLFsTKegaBGWURp0gwdYRWtRC4JGQhIT7vMHEynZ9xALpWg8NvTv5CA8us/SfT2yl2bbYz1fsb7BL9MGBRDrIHSu7+Z++cGqwSKzqMEYga4wmyZvkjggzVBXeNGeoMLQ36IxmpbFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=gAfIpztm; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [192.168.7.187] ([71.202.196.111])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 416J4EOc2335101
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Tue, 6 Feb 2024 11:04:15 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 416J4EOc2335101
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024011201; t=1707246256;
+	bh=qyfVNWpyqoM1vvSh+tJNcbDbSOXkO0xESw6Y3a7Dsa4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=gAfIpztmYC1o5qrdjt/YAnDKdO7oS46hVVBXMN9lIODYngWeQH9uN1E5JQYtUn9nX
+	 ql7LUOyqglhOwKo6aHtQtcRF+EgTpnOjDrzs0GBcQE9TbNGBZOozbmBWPpXMcpm1pD
+	 0FiYSoUSlzflbAI0yIL9h+LDWkRDp35WTgxAlcaAM3Cv6LANZ/WiMciu5T6g0BCTPX
+	 vCyYsX4fZjlkmRwK8CDx9A5yP5EzESFwqgZcSDg9uwyOqetKyWr3xXjojwztjS2tE/
+	 8+FvItOnra99oy9T3IKcQFbEKcIVhJRnPOvG+HU/S7KQKijJsZMtn62qMKgoZ3NYKc
+	 S11RCIQW5p6YA==
+Message-ID: <8f260a93-08f3-48af-81e5-8ee53246e262@zytor.com>
+Date: Tue, 6 Feb 2024 11:04:13 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,77 +55,118 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 10/10] clk: qcom: Add camcc clock driver for x1e80100
+Subject: Re: [tip: x86/fred] x86/ptrace: Cleanup the definition of the pt_regs
+ structure
+To: "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        tip-bot2 for Xin Li <tip-bot2@linutronix.de>,
+        linux-tip-commits@vger.kernel.org
+Cc: Thomas Gleixner <tglx@linutronix.de>, Xin Li <xin3.li@intel.com>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>,
+        Shan Kang <shan.kang@intel.com>, x86@kernel.org
+References: <20231205105030.8698-14-xin3.li@intel.com>
+ <170673569232.398.15041548048531772130.tip-bot2@tip-bot2>
+ <2A59D51B-0AA0-4DFC-9957-67CC0C9E37B3@zytor.com>
 Content-Language: en-US
-To: Abel Vesa <abel.vesa@linaro.org>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- Rajendra Nayak <quic_rjendra@quicinc.com>,
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-References: <20240129-x1e80100-clock-controllers-v3-0-d96dacfed104@linaro.org>
- <20240129-x1e80100-clock-controllers-v3-10-d96dacfed104@linaro.org>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240129-x1e80100-clock-controllers-v3-10-d96dacfed104@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+From: Xin Li <xin@zytor.com>
+Autocrypt: addr=xin@zytor.com; keydata=
+ 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
+ l75w1xInsg==
+In-Reply-To: <2A59D51B-0AA0-4DFC-9957-67CC0C9E37B3@zytor.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 28.01.2024 23:52, Abel Vesa wrote:
-> From: Rajendra Nayak <quic_rjendra@quicinc.com>
+On 2/3/2024 3:52 PM, H. Peter Anvin wrote:
+> On January 31, 2024 1:14:52 PM PST, tip-bot2 for Xin Li <tip-bot2@linutronix.de> wrote:
+>> The following commit has been merged into the x86/fred branch of tip:
+>>
+>> Commit-ID:     ee63291aa8287cb7ded767d340155fe8681fc075
+>> Gitweb:        https://git.kernel.org/tip/ee63291aa8287cb7ded767d340155fe8681fc075
+>> Author:        Xin Li <xin3.li@intel.com>
+>> AuthorDate:    Tue, 05 Dec 2023 02:50:02 -08:00
+>> Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+>> CommitterDate: Wed, 31 Jan 2024 22:01:13 +01:00
+>>
+>> x86/ptrace: Cleanup the definition of the pt_regs structure
+>>
+>> struct pt_regs is hard to read because the member or section related
+>> comments are not aligned with the members.
+>>
+>> The 'cs' and 'ss' members of pt_regs are type of 'unsigned long' while
+>> in reality they are only 16-bit wide. This works so far as the
+>> remaining space is unused, but FRED will use the remaining bits for
+>> other purposes.
+>>
+>> To prepare for FRED:
+>>
+>>   - Cleanup the formatting
+>>   - Convert 'cs' and 'ss' to u16 and embed them into an union
+>>     with a u64
+>>   - Fixup the related printk() format strings
+>>
+>> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+>> Originally-by: H. Peter Anvin (Intel) <hpa@zytor.com>
+>> Signed-off-by: Xin Li <xin3.li@intel.com>
+>> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+>> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+>> Tested-by: Shan Kang <shan.kang@intel.com>
+>> Link: https://lore.kernel.org/r/20231205105030.8698-14-xin3.li@intel.com
+
+[...]
+
+>> diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
+>> index 33b2687..0f78b58 100644
+>> --- a/arch/x86/kernel/process_64.c
+>> +++ b/arch/x86/kernel/process_64.c
+>> @@ -117,7 +117,7 @@ void __show_regs(struct pt_regs *regs, enum show_regs_mode mode,
+>>
+>> 	printk("%sFS:  %016lx(%04x) GS:%016lx(%04x) knlGS:%016lx\n",
+>> 	       log_lvl, fs, fsindex, gs, gsindex, shadowgs);
+>> -	printk("%sCS:  %04lx DS: %04x ES: %04x CR0: %016lx\n",
+>> +	printk("%sCS:  %04x DS: %04x ES: %04x CR0: %016lx\n",
+>> 		log_lvl, regs->cs, ds, es, cr0);
+>> 	printk("%sCR2: %016lx CR3: %016lx CR4: %016lx\n",
+>> 		log_lvl, cr2, cr3, cr4);
 > 
-> Add the camcc clock driver for x1e80100
+> Incidentally, the comment about callee-saved registers is long since both obsolete and is now outright wrong.
 > 
-> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
-> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> Tested-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> ---
+> The next version of gcc (14 I think) will have an attribute to turn off saving registers which we can use for top-level C functions.
+> 
 
-Modulo pm_clk
+Forgive my ignorance, do we have an official definition for "top-level C 
+functions"?
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Thanks!
+     Xin
 
-Konrad
 
