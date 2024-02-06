@@ -1,201 +1,286 @@
-Return-Path: <linux-kernel+bounces-54178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF8CD84ABE0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:03:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8354B84ABDF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:03:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3ADD6B22A97
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:03:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4EBBB2304C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:03:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C271B5676C;
-	Tue,  6 Feb 2024 02:03:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="DyNgFWkn"
-Received: from esa5.hc1455-7.c3s2.iphmx.com (esa5.hc1455-7.c3s2.iphmx.com [68.232.139.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FC7356B64;
+	Tue,  6 Feb 2024 02:02:55 +0000 (UTC)
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1595C56755
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 02:03:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.139.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1502C5675B;
+	Tue,  6 Feb 2024 02:02:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707185002; cv=none; b=L5a4iiUnmDxNqoBeAS1Q3RtyS2Xf8loKgwu1Jlqu4xnBo5HBxoHnuReDFhdqx14ovb4ACBsq2v2lj4IOKYpymNwYaLgGHYYy1c+M8DI/sWe5Nopk9QbvMw6I6w4si+Eu9lajopJEzliUSDf8m8DxYRHB1lgFx+vU7mscbVQJfbM=
+	t=1707184974; cv=none; b=aN1d7GJgWH9v1B61ZdL/n9JbtzrVSwBPWzWsvwHQArCWGdZyA10IIt+xDITs6wI6sYlI0Z6SfzlkskCK7Udl9CWlqRg3t2J7k6Vw40+SArWPUC4onywzF+Leb2UTLcCdGPq+l/3WYwsygsK8p8VsnBGcPTUA/qaApCrT+qKVu34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707185002; c=relaxed/simple;
-	bh=A6c6C805cvInprc5DfIwyhw/cznXAQ4Ac7UCK9u+NGQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=m0B/7fnNeX6Na/JsCanlOSRJGLaLHHs8rdOcnE8vps4JppIwQ5C/EyS9iVBaFndPQNym0t4eEhBdRSQZdxLLCNolR+E+p5FYfpLLIQMjyWyxBE/NqDI8jARspTnqOYuK2wsi6ju/KzruSLcwVvvc1dLPf2JfQoJQ49hkSKn41Rk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=DyNgFWkn; arc=none smtp.client-ip=68.232.139.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
-  t=1707185000; x=1738721000;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=A6c6C805cvInprc5DfIwyhw/cznXAQ4Ac7UCK9u+NGQ=;
-  b=DyNgFWknmGn9vnHk8AQKTpcrzgLCFB8bL6YdAzJ/EHqPK4zaiea7dX+F
-   6IxtBg8uTpG5v31pVVEOPJUNXAg6mvZTnYjTcNVh1Bm9AbAlZNkWk2uCy
-   AHQwb8YAgt3ZjEAXEEeFlAheBx6cu9WH3HHQu34R4aqIPgsHQ1y4O4l7y
-   G+hrXi+FplfmiU0EkAmSLAiW8cxfFYprCnBH5riWbJsBUXfyZ4r8s/Zop
-   s+Ivm/lKN8R2DWju8Dk+2v2HQyKVVovDYvnpE2oKG3U4Ojj5/zBavVR/a
-   oN+UmYTrbgdm2vUwckq8jaPUgNazfEp+7p1+VL8x53bNm9Ka304ujU0k8
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="147963445"
-X-IronPort-AV: E=Sophos;i="6.05,245,1701097200"; 
-   d="scan'208";a="147963445"
-Received: from unknown (HELO yto-r3.gw.nic.fujitsu.com) ([218.44.52.219])
-  by esa5.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 11:02:06 +0900
-Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com [192.168.83.64])
-	by yto-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id DA458D55C6
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 11:02:03 +0900 (JST)
-Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com [192.51.206.22])
-	by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id EB247CFBBF
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 11:02:02 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
-	by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 739886B4D8
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 11:02:02 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.226.45])
-	by edo.cn.fujitsu.com (Postfix) with ESMTP id 9CAD01A009A;
-	Tue,  6 Feb 2024 10:02:01 +0800 (CST)
-From: Li Zhijian <lizhijian@fujitsu.com>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org,
-	Li Zhijian <lizhijian@fujitsu.com>,
-	"Huang, Ying" <ying.huang@intel.com>,
-	"Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
-Subject: [PATCH v2] mm/demotion: print demotion targets
-Date: Tue,  6 Feb 2024 10:01:51 +0800
-Message-Id: <20240206020151.605516-1-lizhijian@fujitsu.com>
-X-Mailer: git-send-email 2.31.1
+	s=arc-20240116; t=1707184974; c=relaxed/simple;
+	bh=o7p4l451b42i8P3WAvXEX6P6/8g1ZcZZJ4JdcH7FOto=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mx0VwtlUfFynrneXMUQ36EZTAjJzTr2hxfQIH9wp9Q4J1I0WPdWGX7RnDkMsPHj27+lmMPnYa4nNkcoov0mJu9FelEH5/k4C1g/XasISfvTGTEsMy2nyrONr/1jnHb0KAxJ4DdWcpMoboTpORuyTg8ryDi6/euWFrJOw/EVW104=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3bda4bd14e2so4504754b6e.2;
+        Mon, 05 Feb 2024 18:02:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707184972; x=1707789772;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VbWG5P5LKH6JeXdd57gmbHwoExYBxYEX1BmES5BVCOg=;
+        b=vD46fO5BNzCxRD3Nx5FZBoadeKtpfSPtl6Y56MfEx/t5NYVRiIaDmU4MlcKrKIxBXe
+         ipUDAjLGUnQKp7HTJQpV+4S7UwRLd1mSVSrKCqV48GynkyswXIQ79iv0sXiPvcA2LFmp
+         XpGfrwhaR1XYjtIkaFGd7i19oFf8yr6ds/i7/SWqS/VdDW494yVLRvjyJq5GsiiUmoyQ
+         0ySjfxKHSXmoxaBrkFxiOD5XKo0nyXwBXXcJd2jGkC8ncLM89txFBGh6TJr114nu2Bb0
+         VbSd09wmId0kmI3zI7aMTCR7LaVINyz3VBud9tcMpDpbr7tyI6Wapl2d5yhYP8Nk4x5s
+         umIQ==
+X-Gm-Message-State: AOJu0YwdXymVPL6J8b0jbpoQ6Lc26QWuT0yvnYvvBMY5tnqboaYDgOhX
+	SxxNRBk4qIj59Fvrb7ILni7BN0MEKzTnhRfsTkYm0eSoccEayVf0Uz+TX5EPk5JSY994jdZZkUi
+	fiWjt7vLM5PbLRacUMSoTN++wRLE=
+X-Google-Smtp-Source: AGHT+IEOKicIAVppBbtoAv5yBeUTTbF86HVVLo8F8dMmYDIUqIBIQgVWb4dpIPckDmnVq8e/X7n4J7fi2jOy8jPmwUU=
+X-Received: by 2002:a05:6808:2019:b0:3bf:bd6e:9384 with SMTP id
+ q25-20020a056808201900b003bfbd6e9384mr1108809oiw.33.1707184971903; Mon, 05
+ Feb 2024 18:02:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28170.003
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28170.003
-X-TMASE-Result: 10--7.256200-10.000000
-X-TMASE-MatchedRID: 84oovQVhL8FELNYIFEAu6zmKlJefBFwzvhf/zJ92tsM6Zx3YUNQTGzAW
-	5be84JTB+7QmOJudfuM0MAPuOAsAkxvtxLq45qm9Ojf3A4DTYuEfimmlcABuN+g3wNKii1r5gKe
-	r2q0Zy9XA2G3OXMO97Otno5Fr47QU0ekSi+00U24ReM8i8p3vgEyQ5fRSh26513Gq5v1TibNVcX
-	P3eMLfFyuV2J6ODXDa78NWCssKwqTSTldzGIIsPnaNJ/iTxXCafS0Ip2eEHnz3IzXlXlpamPoLR
-	4+zsDTtJC9jS54qtzWMv0MkyTdeRcnUaQwUzbCHhhYN1k2z0iGM878aKTOCmQ==
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+References: <20240202022512.467636-1-irogers@google.com> <20240202022512.467636-2-irogers@google.com>
+In-Reply-To: <20240202022512.467636-2-irogers@google.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Mon, 5 Feb 2024 18:02:40 -0800
+Message-ID: <CAM9d7cgv3zPNohz6eWwH7qaQyY0QMRK_sqtJdumeGrD5tMW9Yg@mail.gmail.com>
+Subject: Re: [PATCH v1 2/3] perf metrics: Compute unmerged uncore metrics individually
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Kajol Jain <kjain@linux.ibm.com>, John Garry <john.g.garry@oracle.com>, Kaige Ye <ye@kaige.org>, 
+	K Prateek Nayak <kprateek.nayak@amd.com>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Currently, when a demotion occurs, it will prioritize selecting a node
-from the preferred targets as the destination node for the demotion. If
-the preferred node does not meet the requirements, it will try from all
-the lower memory tier nodes until it finds a suitable demotion destination
-node or ultimately fails.
+On Thu, Feb 1, 2024 at 6:25=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
+e:
+>
+> When merging counts from multiple uncore PMUs the metric is only
+> computed for the metric leader. When merging/aggregation is disabled,
+> prior to this patch just the leader's metric would be computed. Fix
+> this by computing the metric for each PMU.
+>
+> On a SkylakeX:
+> Before:
+> ```
+> $ perf stat -A -M memory_bandwidth_total -a sleep 1
+>
+>  Performance counter stats for 'system wide':
+>
+> CPU0               82,217      UNC_M_CAS_COUNT.RD [uncore_imc_0] #      9=
+2 MB/s  memory_bandwidth_total
+> CPU18                   0      UNC_M_CAS_COUNT.RD [uncore_imc_0] #      0=
+0 MB/s  memory_bandwidth_total
+> CPU0               61,395      UNC_M_CAS_COUNT.WR [uncore_imc_0]
+> CPU18                   0      UNC_M_CAS_COUNT.WR [uncore_imc_0]
+> CPU0                    0      UNC_M_CAS_COUNT.RD [uncore_imc_1]
+> CPU18                   0      UNC_M_CAS_COUNT.RD [uncore_imc_1]
+> CPU0                    0      UNC_M_CAS_COUNT.WR [uncore_imc_1]
+> CPU18                   0      UNC_M_CAS_COUNT.WR [uncore_imc_1]
+> CPU0               81,570      UNC_M_CAS_COUNT.RD [uncore_imc_2]
+> CPU18             113,886      UNC_M_CAS_COUNT.RD [uncore_imc_2]
+> CPU0               62,330      UNC_M_CAS_COUNT.WR [uncore_imc_2]
+> CPU18              66,942      UNC_M_CAS_COUNT.WR [uncore_imc_2]
+> CPU0               75,489      UNC_M_CAS_COUNT.RD [uncore_imc_3]
+> CPU18              27,958      UNC_M_CAS_COUNT.RD [uncore_imc_3]
+> CPU0               55,864      UNC_M_CAS_COUNT.WR [uncore_imc_3]
+> CPU18              38,727      UNC_M_CAS_COUNT.WR [uncore_imc_3]
+> CPU0                    0      UNC_M_CAS_COUNT.RD [uncore_imc_4]
+> CPU18                   0      UNC_M_CAS_COUNT.RD [uncore_imc_4]
+> CPU0                    0      UNC_M_CAS_COUNT.WR [uncore_imc_4]
+> CPU18                   0      UNC_M_CAS_COUNT.WR [uncore_imc_4]
+> CPU0               75,423      UNC_M_CAS_COUNT.RD [uncore_imc_5]
+> CPU18             104,527      UNC_M_CAS_COUNT.RD [uncore_imc_5]
+> CPU0               57,596      UNC_M_CAS_COUNT.WR [uncore_imc_5]
+> CPU18              56,777      UNC_M_CAS_COUNT.WR [uncore_imc_5]
+> CPU0        1,003,440,851 ns   duration_time
+>
+>        1.003440851 seconds time elapsed
+> ```
+>
+> After:
+> ```
+> $ perf stat -A -M memory_bandwidth_total -a sleep 1
+>
+>  Performance counter stats for 'system wide':
+>
+> CPU0               88,968      UNC_M_CAS_COUNT.RD [uncore_imc_0] #      9=
+5 MB/s  memory_bandwidth_total
+> CPU18                   0      UNC_M_CAS_COUNT.RD [uncore_imc_0] #      0=
+0 MB/s  memory_bandwidth_total
+> CPU0               59,498      UNC_M_CAS_COUNT.WR [uncore_imc_0]
+> CPU18                   0      UNC_M_CAS_COUNT.WR [uncore_imc_0]
+> CPU0                    0      UNC_M_CAS_COUNT.RD [uncore_imc_1] #      0=
+0 MB/s  memory_bandwidth_total
+> CPU18                   0      UNC_M_CAS_COUNT.RD [uncore_imc_1] #      0=
+0 MB/s  memory_bandwidth_total
+> CPU0                    0      UNC_M_CAS_COUNT.WR [uncore_imc_1]
+> CPU18                   0      UNC_M_CAS_COUNT.WR [uncore_imc_1]
+> CPU0               88,635      UNC_M_CAS_COUNT.RD [uncore_imc_2] #      9=
+5 MB/s  memory_bandwidth_total
+> CPU18             117,975      UNC_M_CAS_COUNT.RD [uncore_imc_2] #     11=
+5 MB/s  memory_bandwidth_total
+> CPU0               60,829      UNC_M_CAS_COUNT.WR [uncore_imc_2]
+> CPU18              62,105      UNC_M_CAS_COUNT.WR [uncore_imc_2]
+> CPU0               82,238      UNC_M_CAS_COUNT.RD [uncore_imc_3] #      8=
+7 MB/s  memory_bandwidth_total
+> CPU18              22,906      UNC_M_CAS_COUNT.RD [uncore_imc_3] #      3=
+6 MB/s  memory_bandwidth_total
+> CPU0               53,959      UNC_M_CAS_COUNT.WR [uncore_imc_3]
+> CPU18              32,990      UNC_M_CAS_COUNT.WR [uncore_imc_3]
+> CPU0                    0      UNC_M_CAS_COUNT.RD [uncore_imc_4] #      0=
+0 MB/s  memory_bandwidth_total
+> CPU18                   0      UNC_M_CAS_COUNT.RD [uncore_imc_4] #      0=
+0 MB/s  memory_bandwidth_total
+> CPU0                    0      UNC_M_CAS_COUNT.WR [uncore_imc_4]
+> CPU18                   0      UNC_M_CAS_COUNT.WR [uncore_imc_4]
+> CPU0               83,595      UNC_M_CAS_COUNT.RD [uncore_imc_5] #      8=
+9 MB/s  memory_bandwidth_total
+> CPU18             110,151      UNC_M_CAS_COUNT.RD [uncore_imc_5] #     10=
+5 MB/s  memory_bandwidth_total
+> CPU0               56,540      UNC_M_CAS_COUNT.WR [uncore_imc_5]
+> CPU18              53,816      UNC_M_CAS_COUNT.WR [uncore_imc_5]
+> CPU0        1,003,353,416 ns   duration_time
+> ```
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/metricgroup.c |  2 ++
+>  tools/perf/util/stat-shadow.c | 31 +++++++++++++++++++++++++++----
+>  2 files changed, 29 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.=
+c
+> index ca3e0404f187..c33ffee837ca 100644
+> --- a/tools/perf/util/metricgroup.c
+> +++ b/tools/perf/util/metricgroup.c
+> @@ -44,6 +44,8 @@ struct metric_event *metricgroup__lookup(struct rblist =
+*metric_events,
+>         if (!metric_events)
+>                 return NULL;
+>
+> +       if (evsel->metric_leader)
+> +               me.evsel =3D evsel->metric_leader;
+>         nd =3D rblist__find(metric_events, &me);
+>         if (nd)
+>                 return container_of(nd, struct metric_event, nd);
+> diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.=
+c
+> index f6c9d2f98835..1be23b0eee2f 100644
+> --- a/tools/perf/util/stat-shadow.c
+> +++ b/tools/perf/util/stat-shadow.c
+> @@ -356,6 +356,7 @@ static void print_nsecs(struct perf_stat_config *conf=
+ig,
+>  }
+>
+>  static int prepare_metric(const struct metric_expr *mexp,
+> +                         const struct evsel *evsel,
+>                           struct expr_parse_ctx *pctx,
+>                           int aggr_idx)
+>  {
+> @@ -398,8 +399,29 @@ static int prepare_metric(const struct metric_expr *=
+mexp,
+>                         source_count =3D 1;
+>                 } else {
+>                         struct perf_stat_evsel *ps =3D mexp->metric_event=
+s[i]->stats;
+> -                       struct perf_stat_aggr *aggr =3D &ps->aggr[aggr_id=
+x];
+> +                       struct perf_stat_aggr *aggr;
+>
+> +                       /*
+> +                        * If there are multiple uncore PMUs and we're no=
+t
+> +                        * reading the leader's stats, determine the stat=
+s for
+> +                        * the appropriate uncore PMU.
+> +                        */
+> +                       if (evsel && evsel->metric_leader &&
+> +                           evsel->pmu !=3D evsel->metric_leader->pmu &&
+> +                           mexp->metric_events[i]->pmu =3D=3D evsel->met=
+ric_leader->pmu) {
 
-However, the demotion target information isn't exposed to the users,
-especially the preferred target information, which relies on more factors.
-This makes users hard to understand the exact demotion behavior.
+Is it just to check we're in --no-aggr (or --no-merge)?
+Then it'd be simpler to use stat_config->aggr_mode.
 
-Rather than having a new sys interface to expose this information,
-printing directly to kernel messages, just like the current page
-allocation fallback order does.
+Thanks,
+Namhyung
 
-A dmesg example with this patch is as follows:
-[    0.704860] Demotion targets for Node 0: null
-[    0.705456] Demotion targets for Node 1: null
-// node 2 is onlined
-[   32.259775] Demotion targets for Node 0: perferred: 2, fallback: 2
-[   32.261290] Demotion targets for Node 1: perferred: 2, fallback: 2
-[   32.262726] Demotion targets for Node 2: null
-// node 3 is onlined
-[   42.448809] Demotion targets for Node 0: perferred: 2, fallback: 2-3
-[   42.450704] Demotion targets for Node 1: perferred: 2, fallback: 2-3
-[   42.452556] Demotion targets for Node 2: perferred: 3, fallback: 3
-[   42.454136] Demotion targets for Node 3: null
-// node 4 is onlined
-[   52.676833] Demotion targets for Node 0: perferred: 2, fallback: 2-4
-[   52.678735] Demotion targets for Node 1: perferred: 2, fallback: 2-4
-[   52.680493] Demotion targets for Node 2: perferred: 4, fallback: 3-4
-[   52.682154] Demotion targets for Node 3: null
-[   52.683405] Demotion targets for Node 4: null
-// node 5 is onlined
-[   62.931902] Demotion targets for Node 0: perferred: 2, fallback: 2-5
-[   62.938266] Demotion targets for Node 1: perferred: 5, fallback: 2-5
-[   62.943515] Demotion targets for Node 2: perferred: 4, fallback: 3-4
-[   62.947471] Demotion targets for Node 3: null
-[   62.949908] Demotion targets for Node 4: null
-[   62.952137] Demotion targets for Node 5: perferred: 3, fallback: 3-4
 
-CC: "Huang, Ying" <ying.huang@intel.com>
-CC: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
----
-V2:
-Regarding this requirement, we have previously discussed [1].
-The initial proposal involved introducing a new sys interface.
-However, due to concerns about potential changes and compatibility
-issues with the interface in the future, a consensus was not
-reached with the community. Therefore, this time, we are directly
-printing out the information.
-
-[1] https://lore.kernel.org/all/d1d5add8-8f4a-4578-8bf0-2cbe79b09989@fujitsu.com/
----
- mm/memory-tiers.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
-
-diff --git a/mm/memory-tiers.c b/mm/memory-tiers.c
-index 5462d9e3c84c..4d3506a290b7 100644
---- a/mm/memory-tiers.c
-+++ b/mm/memory-tiers.c
-@@ -359,6 +359,26 @@ static void disable_all_demotion_targets(void)
- 	synchronize_rcu();
- }
- 
-+static void dump_demotion_targets(void)
-+{
-+	int node;
-+
-+	for_each_node_state(node, N_MEMORY) {
-+		struct memory_tier *memtier = __node_get_memory_tier(node);
-+		nodemask_t preferred = node_demotion[node].preferred;
-+
-+		if (!memtier)
-+			continue;
-+
-+		if (nodes_empty(preferred))
-+			pr_info("Demotion targets for Node %d: null\n", node);
-+		else
-+			pr_info("Demotion targets for Node %d: preferred: %*pbl, fallback: %*pbl\n",
-+				node, nodemask_pr_args(&preferred),
-+				nodemask_pr_args(&memtier->lower_tier_mask));
-+	}
-+}
-+
- /*
-  * Find an automatic demotion target for all memory
-  * nodes. Failing here is OK.  It might just indicate
-@@ -443,7 +463,7 @@ static void establish_demotion_targets(void)
- 	 * Now build the lower_tier mask for each node collecting node mask from
- 	 * all memory tier below it. This allows us to fallback demotion page
- 	 * allocation to a set of nodes that is closer the above selected
--	 * perferred node.
-+	 * preferred node.
- 	 */
- 	lower_tier = node_states[N_MEMORY];
- 	list_for_each_entry(memtier, &memory_tiers, list) {
-@@ -456,6 +476,8 @@ static void establish_demotion_targets(void)
- 		nodes_andnot(lower_tier, lower_tier, tier_nodes);
- 		memtier->lower_tier_mask = lower_tier;
- 	}
-+
-+	dump_demotion_targets();
- }
- 
- #else
--- 
-2.29.2
-
+> +                               struct evsel *pos;
+> +
+> +                               evlist__for_each_entry(evsel->evlist, pos=
+) {
+> +                                       if (pos->pmu !=3D evsel->pmu)
+> +                                               continue;
+> +                                       if (pos->metric_leader !=3D mexp-=
+>metric_events[i])
+> +                                               continue;
+> +                                       ps =3D pos->stats;
+> +                                       source_count =3D 1;
+> +                                       break;
+> +                               }
+> +                       }
+> +                       aggr =3D &ps->aggr[aggr_idx];
+>                         if (!aggr)
+>                                 break;
+>
+> @@ -420,7 +442,8 @@ static int prepare_metric(const struct metric_expr *m=
+exp,
+>                                  * metric.
+>                                  */
+>                                 val =3D aggr->counts.val * (1.0 / mexp->m=
+etric_events[i]->scale);
+> -                               source_count =3D evsel__source_count(mexp=
+->metric_events[i]);
+> +                               if (!source_count)
+> +                                       source_count =3D evsel__source_co=
+unt(mexp->metric_events[i]);
+>                         }
+>                 }
+>                 n =3D strdup(evsel__metric_id(mexp->metric_events[i]));
+> @@ -461,7 +484,7 @@ static void generic_metric(struct perf_stat_config *c=
+onfig,
+>                 pctx->sctx.user_requested_cpu_list =3D strdup(config->use=
+r_requested_cpu_list);
+>         pctx->sctx.runtime =3D mexp->runtime;
+>         pctx->sctx.system_wide =3D config->system_wide;
+> -       i =3D prepare_metric(mexp, pctx, aggr_idx);
+> +       i =3D prepare_metric(mexp, evsel, pctx, aggr_idx);
+>         if (i < 0) {
+>                 expr__ctx_free(pctx);
+>                 return;
+> @@ -522,7 +545,7 @@ double test_generic_metric(struct metric_expr *mexp, =
+int aggr_idx)
+>         if (!pctx)
+>                 return NAN;
+>
+> -       if (prepare_metric(mexp, pctx, aggr_idx) < 0)
+> +       if (prepare_metric(mexp, /*evsel=3D*/NULL, pctx, aggr_idx) < 0)
+>                 goto out;
+>
+>         if (expr__parse(&ratio, pctx, mexp->metric_expr))
+> --
+> 2.43.0.594.gd9cf4e227d-goog
+>
 
