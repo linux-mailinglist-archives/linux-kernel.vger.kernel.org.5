@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-54739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56E2984B312
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:07:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73CE084B314
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:07:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EFFC4B26702
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:07:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 089D91F24897
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:07:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE02D12FB3C;
-	Tue,  6 Feb 2024 11:05:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7DC8130AE2;
+	Tue,  6 Feb 2024 11:05:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MWvy0TH6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UGTxcVLx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED22112FF76;
-	Tue,  6 Feb 2024 11:05:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5A26130AD3;
+	Tue,  6 Feb 2024 11:05:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707217552; cv=none; b=EPYKXp91RrvGyMwZY0DjL4rsaTh7X+FpZVveQz51rXe+93DWREGEmYTVsMJ1MmKqbd6c0kWOc9EXV02jCJzGlhEaB00YjgwCcLEM6RRRAsYM9KBR7R6opvn4C1aVN8zz4tM+xj9T2MbZWphYsOEKLChqh6aWIxoaO9FeNwW10wc=
+	t=1707217555; cv=none; b=imfEcmbWovZkCAyHb88spnYbHFt4PoWi+Z0FOf8y0NfdNuc/ZLf0g42yCdXydzZOhiquRuHzvZtQ/OX9Mj3l4WOJhS2eODuuqnkfvzBxqnh9NT+E8SIUT2bW9RCqzXL3imBQeDiVqoG20s9bEO4msKViBCzmvEuFDfCX30tja10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707217552; c=relaxed/simple;
-	bh=HBpkihUOz+42qTZ8E70fvuC94UrnuMtLk3YD9XXg8zY=;
+	s=arc-20240116; t=1707217555; c=relaxed/simple;
+	bh=rDmpciVOtng6F7rfQEs1JlIM6VsqeY8XNBiItpt3u0o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MO7a6/9IFYc0qHhdKGvORfTX0NK1WESqqTYPa9iiZnHGNHIboaO2hlQGjRhv6vWa76mu7S7wvi6oExTEIIdhZ/FwRHGxrK3d8RXRcUGvEyjE9/5wgcV85e3G4BoSr9muufk7G7v48bKNm6ehS73yhE5qSe5+XGW+zxId2UNqneo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MWvy0TH6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5F89C433C7;
-	Tue,  6 Feb 2024 11:05:48 +0000 (UTC)
+	 MIME-Version; b=fOaut82lchQs/3UPZS4znraoxV/7XrqqXhEiqYXqQyETEFmF3fN1YwpSijDBg4/Iqn5CV6hUtpjFk3S5P9vKnZDGpe65uDqHfsFdl+2i1V8zte6DsGoogQCEvcx8PyXAt6H/ASguN5CBMthxXxHLGfc3HXMSzZtGW6NSH6qjxfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UGTxcVLx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB4DBC433B1;
+	Tue,  6 Feb 2024 11:05:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707217551;
-	bh=HBpkihUOz+42qTZ8E70fvuC94UrnuMtLk3YD9XXg8zY=;
+	s=k20201202; t=1707217554;
+	bh=rDmpciVOtng6F7rfQEs1JlIM6VsqeY8XNBiItpt3u0o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MWvy0TH6y70WyLpUralBEy1uvKuZYhREElojJQhvCasstwIFVA6ZDTE3y2ZhvVnf3
-	 Uvg/RBvyK7RRGTSI3dU1S5Mu9YS5yTRt7zy7P/kScj0CeSKOaduC4l+lQ2zqzzKBt7
-	 EW5b10Br+lMZJ+yp9TDtxhlq64u+0ePeOWOxFfJq3k/LhKhvTaevgTzUKjdRb7nqCw
-	 fN7JdlbEDUcQm89rxay+oxj7kyKk9IB4z5MdrVmyWu91xVk33aEnPKTbQKCwi1gVKc
-	 mgyEPNSFKKjUJZg+AHkXW73VMoL9iuRGe+VOWkogskl4IOOLKKpLOp1RiEdwzccEZg
-	 ToL6obNvwEUXg==
+	b=UGTxcVLx1FDdDingKcw57Mv7aaoCD1DBkey/KBRNxqwFqI5QwnsMNNwYez38KWT1R
+	 iGjKkGNQUJNL/0H0PC5LaijC5i3ai+UsENlOe8KWHw3JKg96rieo1KNV+6wAJWqXcF
+	 sQiHZXTr3horKlqnshJ8Eb+X/NizW/Do2rH7G1xpRsBK02xDSiA6tjSJgE5cb9G8Ib
+	 9bd/jHhQOfvZl7cfBoq676uY8FKex0PjODw/MRHbfbkk9qTirD+f2FWGtWD7vdQcVa
+	 Lajc++Ir9dNnkvvN2q2vaYB/14qDS7BWOaB98fKvT67NgER85qbQr7xq2jWSyIJyn/
+	 7IyhHwftf8hOQ==
 From: Daniel Bristot de Oliveira <bristot@kernel.org>
 To: Steven Rostedt <rostedt@goodmis.org>
 Cc: Daniel Bristot de Oliveira <bristot@kernel.org>,
@@ -53,9 +53,9 @@ Cc: Daniel Bristot de Oliveira <bristot@kernel.org>,
 	linux-trace-kernel@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	llvm@lists.linux.dev
-Subject: [PATCH 3/6] tools/rtla: Fix clang warning about mount_point var size
-Date: Tue,  6 Feb 2024 12:05:31 +0100
-Message-ID: <1b46712e93a2f4153909514a36016959dcc4021c.1707217097.git.bristot@kernel.org>
+Subject: [PATCH 4/6] tools/rtla: Remove unused sched_getattr() function
+Date: Tue,  6 Feb 2024 12:05:32 +0100
+Message-ID: <eaed7ba122c4ae88ce71277c824ef41cbf789385.1707217097.git.bristot@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1707217097.git.bristot@kernel.org>
 References: <cover.1707217097.git.bristot@kernel.org>
@@ -67,42 +67,42 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-clang is reporting this warning:
+Clang is reporting:
 
 $ make HOSTCC=clang CC=clang LLVM_IAS=1
 [...]
-clang -O -g -DVERSION=\"6.8.0-rc3\" -flto=auto -fexceptions
-	-fstack-protector-strong -fasynchronous-unwind-tables
-	-fstack-clash-protection  -Wall -Werror=format-security
-	-Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS
-	$(pkg-config --cflags libtracefs)    -c -o src/utils.o src/utils.c
+clang -O -g -DVERSION=\"6.8.0-rc3\" -flto=auto -fexceptions -fstack-protector-strong -fasynchronous-unwind-tables -fstack-clash-protection  -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS $(pkg-config --cflags libtracefs)    -c -o src/utils.o src/utils.c
+src/utils.c:241:19: warning: unused function 'sched_getattr' [-Wunused-function]
+  241 | static inline int sched_getattr(pid_t pid, struct sched_attr *attr,
+      |                   ^~~~~~~~~~~~~
+1 warning generated.
 
-src/utils.c:548:66: warning: 'fscanf' may overflow; destination buffer in argument 3 has size 1024, but the corresponding specifier may require size 1025 [-Wfortify-source]
-  548 |         while (fscanf(fp, "%*s %" STR(MAX_PATH) "s %99s %*s %*d %*d\n", mount_point, type) == 2) {
-      |                                                                         ^
-
-Increase mount_point variable size to MAX_PATH+1 to avoid the overflow.
+Which is correct, so remove the unused function.
 
 Cc: stable@vger.kernel.org
-Fixes: a957cbc02531 ("rtla: Add -C cgroup support")
+Fixes: b1696371d865 ("rtla: Helper functions for rtla")
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- tools/tracing/rtla/src/utils.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/tracing/rtla/src/utils.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
 diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
-index c769d7b3842c..b998b24edf1e 100644
+index b998b24edf1e..5fcd6495ff05 100644
 --- a/tools/tracing/rtla/src/utils.c
 +++ b/tools/tracing/rtla/src/utils.c
-@@ -536,7 +536,7 @@ int set_cpu_dma_latency(int32_t latency)
-  */
- static const int find_mount(const char *fs, char *mp, int sizeof_mp)
+@@ -238,12 +238,6 @@ static inline int sched_setattr(pid_t pid, const struct sched_attr *attr,
+ 	return syscall(__NR_sched_setattr, pid, attr, flags);
+ }
+ 
+-static inline int sched_getattr(pid_t pid, struct sched_attr *attr,
+-				unsigned int size, unsigned int flags)
+-{
+-	return syscall(__NR_sched_getattr, pid, attr, size, flags);
+-}
+-
+ int __set_sched_attr(int pid, struct sched_attr *attr)
  {
--	char mount_point[MAX_PATH];
-+	char mount_point[MAX_PATH+1];
- 	char type[100];
- 	int found = 0;
- 	FILE *fp;
+ 	int flags = 0;
 -- 
 2.43.0
 
