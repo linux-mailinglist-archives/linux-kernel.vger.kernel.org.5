@@ -1,248 +1,151 @@
-Return-Path: <linux-kernel+bounces-55172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6C3384B8CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:07:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAC3B84B8E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:09:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BAE128923A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:07:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8399328D74B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:09:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06608131738;
-	Tue,  6 Feb 2024 15:07:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99DD113474B;
+	Tue,  6 Feb 2024 15:08:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="DhvpJd1u"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X1qyTm/0"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0AEE38D
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 15:06:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC86013328A;
+	Tue,  6 Feb 2024 15:08:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707232020; cv=none; b=br8dN+w4tLndbK4W6QWf3ab5/iLH0ROnM2zRd/PztyanqHJpwPYKtCp6otzLE5Z3jWAnr13HTPJqSeX+MF3IlK7CiNa7JfJVOaWUL8XqBd628H9O7xY4IUSu8HcWfrW4MSQFCx+YUo67aeIBbHx57ugqnhAZ/P23O3RdAUJaGls=
+	t=1707232120; cv=none; b=Suyrc69GgZ0iysh3tmdT4VUri4Fgsd4zDeurId9ugjdnU+5LmSF91zjZTwlNcRd9YPUoDTctoNWOB9lI16GA2GDgZAsc/+D9mA4xWFeUCn29Ajirvpy5FUI9Y8HE9RGsrjiDXrBY2lWDULGANscX7a5LtgNC+rTV1E+xD+OIjgM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707232020; c=relaxed/simple;
-	bh=jQEYv3jIAy4MqZMCKc+hokmr2pwdSZDR8UEHWdNGDiQ=;
+	s=arc-20240116; t=1707232120; c=relaxed/simple;
+	bh=y0RNzdVJndYWSP0vGgdOxK1NMGHChFiuRWotjCrpl0Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W5egd2NKa6SidYB8I0d4I8ptjCoaGR9nPq44IKF1g6/EvLr07d/xcc1hofMzCP/LwwwixA+LLM58fUGP1J+/mtY8Sbzn1CpKQEGTpJSJn7An7tBoTzWl2A7N3pOKSHmATad/bWY1pWywrxW58vncoJocTvTGbOp/j1fVOIXK4p8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=DhvpJd1u; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33b401fd72bso1486431f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 07:06:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1707232016; x=1707836816; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dQ7y3Y7lXB7e+rY0LpFvOr02gZDXpOWLyRQYElaW0F8=;
-        b=DhvpJd1uCuJzV6OhB861n2VtjYXLlgRbWNjAMZnDRQuRQtgyY2Z0noOX92+TuJtc/7
-         tlwsIXjhf2PLSdVlPLxNLwiW9Ua4iTTFw59XRb8j5crxQOlnQyBXPypwsa8srBiY2YCQ
-         uzpJWxCd13w61QrjSsydZU2c9LEs3vZJpCA8Lm7L0YN1XBMi80j06k7L+6//kmF2yaSJ
-         zVo6NuouELeG4JCeSDWUBIXyLJipuXlYCYENgd+5AhNms/5caWaykmMYqwCBBT7a0BC+
-         tUT6yE/d8GplGbntU3zgvYw6fLs99aPBhBMcEfFsVu7omRHeBsRbY/wC5SlOFv2py44g
-         AUBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707232016; x=1707836816;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dQ7y3Y7lXB7e+rY0LpFvOr02gZDXpOWLyRQYElaW0F8=;
-        b=IgZoI6yO2TUkRlo81Sx9j8Y9uXxNSGWR10qN7LR5tGVYhi60WF0UVb80Kehut/ZQjN
-         0OKHViyeAKP0ZCMLifK/axf1dUwXEIdYBucAlD9Hq1UCyFGg7U4gE4iFcuAztjTwcPr/
-         Fw3cTAHsdJQLNCKA5ACzv7xmkRDU1GtCVKmj/b0ObJrwW/YzlhkGV8i2fv4PKNsEYvLD
-         2MzzKSLcLtrhtZhJjheojBrStGw9m9YWPmtsZ0YTqSuEqXpM3AWmE86gCh87Ecv+YllL
-         tZ3p43D5Kg9k4xlm0KAg3xg3XLqzYHovpdqcJkSCGpGPWANTIxSeXfoLV7l+cpFc3UUq
-         UNag==
-X-Gm-Message-State: AOJu0YydZvlYxxxpus2MGN4bBZ1eVeLlnNm9TF3iSGAtot3Z5rB9SIhi
-	YAEv/gCYHr8CL5Et+caw1S+UV+3PeClQNgzc4gDwYNsSfUFW2mn9JNqQOHgGq8o=
-X-Google-Smtp-Source: AGHT+IEN/8cQ0Z0MASmXqjo9YCJ2D9uX3HFp9lPHKp/WN84VlCwUisWDaCbHBh3sIPcH5EjSWveeAQ==
-X-Received: by 2002:adf:9bd1:0:b0:33b:28b0:752a with SMTP id e17-20020adf9bd1000000b0033b28b0752amr1579439wrc.4.1707232015880;
-        Tue, 06 Feb 2024 07:06:55 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVY7LC4FbWJph26Fi0xFYdlrL6mgK4G76Sr2/Y49Brg4veedUVJtm6ycgkouT2JjGqsgI5q8hjPlPo77VNit4jZv3p2atzyEZRpKWku9XNua0m70lXzqRdDLh5cqSSZSgI3F6SAyXeZZUre8wByzE3bs2Tcx77Abd5EBzFfYwI8x1lMDwtWPl45Bf+DLA==
-Received: from airbuntu (host109-154-238-234.range109-154.btcentralplus.com. [109.154.238.234])
-        by smtp.gmail.com with ESMTPSA id n8-20020a5d4c48000000b0033afe816977sm2296404wrt.66.2024.02.06.07.06.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 07:06:55 -0800 (PST)
-Date: Tue, 6 Feb 2024 15:06:53 +0000
-From: Qais Yousef <qyousef@layalina.io>
-To: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
-	Pierre Gondois <Pierre.Gondois@arm.com>
-Subject: Re: [PATCH v4 1/2] sched/fair: Check a task has a fitting cpu when
- updating misfit
-Message-ID: <20240206150653.34ouqhbt4yz2cmgo@airbuntu>
-References: <20240105222014.1025040-1-qyousef@layalina.io>
- <20240105222014.1025040-2-qyousef@layalina.io>
- <CAKfTPtBYcVWxYOhWZjzcQUB1ebUBA-B30hvToqGBq6JnfRUZNg@mail.gmail.com>
- <20240124222959.ikwnbxkcjaxuiqp2@airbuntu>
- <CAKfTPtDxqcrf0kaBQG_zpFx-DEZTMKfyxBu_bzCuZ_UZhJwOnA@mail.gmail.com>
- <20240126014602.wdcro3ajffpna4fp@airbuntu>
- <5249d534-d7ac-4cbc-a696-f269cb61c7d1@arm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=MXVLakBmOB7V2UeMyJ+UNhW+y5gEuBO8ruRI6/Oz2G9dytldbqeVEVjzqxyp9et+Zk72zJ/KbiIFWWpvyRC6izI6b1omhEApQ7YS2rutHGQ5lCHRqP/hvWXSZx++jIHW9pqazWy9i87wAl+IaKo3MaaMnn3JK9GYsXdKjWkiQqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X1qyTm/0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94A01C433C7;
+	Tue,  6 Feb 2024 15:08:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707232119;
+	bh=y0RNzdVJndYWSP0vGgdOxK1NMGHChFiuRWotjCrpl0Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=X1qyTm/0U+yzlb1K9Uzww22xl2BagUxKRr4E8pXRsIdKwRSutYO3C14gDCXxpMJ/d
+	 mPOgS/R5rdvmKhQPQqWgN6jB7CDkL8nbolZ2Qy/dVFSlBpc02UqkxXnh7lru3JQ6R+
+	 FHexHrssJkeJ0Fd0gepitxGMeB4XtUeU2WGxGWqZ3zdiPdsxBL08iYXnB8ZViIjSxA
+	 dIWYMhwbfW8ZcorLnhgSnUkLUOhsgtkMEZW26ZLWcZm+/Zd/OfuBb1lKum6H/aHwQE
+	 L/6ijl3lLIUQXQtXH+qlWsgLKPeSGfGP7TDQBtNzbBsFUoIx0ta5PUN+LzABn/gHKU
+	 RmXipacSQ1HGg==
+Date: Tue, 6 Feb 2024 15:07:04 +0000
+From: Simon Horman <horms@kernel.org>
+To: Pavel Sakharov <p.sakharov@ispras.ru>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org,
+	Alexey Khoroshilov <khoroshilov@ispras.ru>
+Subject: Re: [PATCH] stmmac: Fix incorrect dereference in stmmac_*_interrupt()
+Message-ID: <20240206150704.GD1104779@kernel.org>
+References: <20240203150323.1041736-1-p.sakharov@ispras.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5249d534-d7ac-4cbc-a696-f269cb61c7d1@arm.com>
+In-Reply-To: <20240203150323.1041736-1-p.sakharov@ispras.ru>
 
-On 02/05/24 20:49, Dietmar Eggemann wrote:
-> On 26/01/2024 02:46, Qais Yousef wrote:
-> > On 01/25/24 18:40, Vincent Guittot wrote:
-> >> On Wed, 24 Jan 2024 at 23:30, Qais Yousef <qyousef@layalina.io> wrote:
-> >>>
-> >>> On 01/23/24 09:26, Vincent Guittot wrote:
-> >>>> On Fri, 5 Jan 2024 at 23:20, Qais Yousef <qyousef@layalina.io> wrote:
-> >>>>>
-> >>>>> From: Qais Yousef <qais.yousef@arm.com>
+On Sat, Feb 03, 2024 at 06:03:21PM +0300, Pavel Sakharov wrote:
+> If 'dev' is NULL, the 'priv' variable has an incorrect address when
+> dereferencing calling netdev_err().
 > 
-> [...]
+> Pass 'dev' instead of 'priv->dev" to the function.
 > 
-> >>> And to be honest I am not sure if flattening of topology matters too since
-> >>> I first noticed this, which was on Juno which doesn't have flat topology.
-> >>>
-> >>> FWIW I can still reproduce this, but I have a different setup now. On M1 mac
-> >>> mini if I spawn a busy task affined to littles then expand the mask for
-> >>> a single big core; I see big delays (>500ms) without the patch. But with the
-> >>> patch it moves in few ms. The delay without the patch is too large and I can't
-> >>> explain it. So the worry here is that generally misfit migration not happening
-> >>> fast enough due to this fake misfit cases.
-> >>
-> >> I tried a similar scenario on RB5 but I don't see any difference with
-> >> your patch. And that could be me not testing it correctly...
-> >>
-> >> I set the affinity of always running task to cpu[0-3] for a few
-> >> seconds then extend it to [0-3,7] and the time to migrate is almost
-> >> the same.
-> > 
-> > That matches what I do.
-> > 
-> > I write a trace_marker when I change affinity to help see when it should move.
-> > 
-> >>
-> >> I'm using tip/sched/core + [0]
-> >>
-> >> [0] https://lore.kernel.org/all/20240108134843.429769-1-vincent.guittot@linaro.org/
-> > 
-> > I tried on pinebook pro which has a rk3399 and I can't reproduce there too.
-> > 
-> > On the M1 I get two sched domains, MC and DIE. But on the pine64 it has only
-> > MC. Could this be the difference as lb has sched domains dependencies?
-> > 
-> > It seems we flatten topologies but not sched domains. I see all cpus shown as
-> > core_siblings. The DT for apple silicon sets clusters in the cpu-map - which
-> > seems the flatten topology stuff detect LLC correctly but still keeps the
-> > sched-domains not flattened. Is this a bug? I thought we will end up with one
-> > sched domain still.
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
 > 
-> IMHO, if you have a cpu_map entry with > 1 cluster in your dtb, you end
-> up with MC and PKG (former DIE) Sched Domain (SD) level. And misfit load
+> Signed-off-by: Pavel Sakharov <p.sakharov@ispras.ru>
 
-Hmm, okay. I thought the detection of topology where we know the LLC is shared
-will cause the sched domains to collapse too.
+Thanks Pavel,
 
-> balance takes potentially longer on PKG than to MC.
+I agree with your analysis that this can result in a NULL dereference.
+And that your proposed fix is good: netdev_err() can handle a NULL
+dev argument.
 
-Why potentially longer? We iterate through the domains the CPU belong to. If
-the first iteration (at MC) pulled something, then once we go to PKG then we're
-less likely to pull again?
+As this seems to be a fix I suggest it should be for net.
+And that it should be based on that tree and designated as such
+in the subject:
 
-Anyway. I think I am hitting a bug here. The behavior doesn't look right to me
-given the delays I'm seeing and the fact we do the ilb but for some reason fail
-to pull
+Subject: [PATCH net] ...
 
+Also if it is a fix, it should have a fixes tag.
+Perhaps this one:
+
+Fixes: 8532f613bc78 ("net: stmmac: introduce MSI Interrupt routines for mac, safety, RX & TX")
+
+
+I don't think there is a need to respin for the above, though please
+keep this in mind when posting Networking patches in future.
+
+
+Looking at the patch above, and stmmac_main.c, it seems that the following
+functions also suffer from a similar problem:
+
+static irqreturn_t stmmac_msi_intr_tx(int irq, void *data)
+{
+	struct stmmac_tx_queue *tx_q = (struct stmmac_tx_queue *)data;
+	...
+	dma_conf = container_of(tx_q, struct stmmac_dma_conf, tx_queue[chan]);
+	priv = container_of(dma_conf, struct stmmac_priv, dma_conf);
+
+	if (unlikely(!data)) {
+		netdev_err(priv->dev, "%s: invalid dev pointer\n", __func__);
+		...
+
+And stmmac_msi_intr_rx(), which follows a similar pattern
+to stmmac_msi_intr_tx().
+
+I also note that in those functions "invalid dev pointer" seems misleading,
+perhaps it ought to be "invalid queue" pointer.
+
+As these problems seem to all have been introduced at the same time,
+perhaps it is appropriate to fix them all in one patch?
+
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> (1) Vanilla Juno-r0 [L b b L L L)
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> index 4727f7be4f86..5ab5148013cd 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> @@ -5848,7 +5848,7 @@ static irqreturn_t stmmac_mac_interrupt(int irq, void *dev_id)
+>  	struct stmmac_priv *priv = netdev_priv(dev);
 > 
-> root@juno:~# echo 1 > /sys/kernel/debug/sched/verbose
-> root@juno:~# cat /sys/kernel/debug/sched/domains/cpu0/domain*/name
-> MC
-> PKG
+>  	if (unlikely(!dev)) {
+> -		netdev_err(priv->dev, "%s: invalid dev pointer\n", __func__);
+> +		netdev_err(dev, "%s: invalid dev pointer\n", __func__);
+>  		return IRQ_NONE;
+>  	}
 > 
-> root@juno:~# cat /proc/schedstat | head -5 | grep ^[cd]
-> cpu0 0 0 0 0 0 0 2441100800 251426780 6694
-> domain0 39 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-> domain1 3f 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+> @@ -5868,7 +5868,7 @@ static irqreturn_t stmmac_safety_interrupt(int irq, void *dev_id)
+>  	struct stmmac_priv *priv = netdev_priv(dev);
 > 
-> (2) flattened topology (including SDs):
+>  	if (unlikely(!dev)) {
+> -		netdev_err(priv->dev, "%s: invalid dev pointer\n", __func__);
+> +		netdev_err(dev, "%s: invalid dev pointer\n", __func__);
+>  		return IRQ_NONE;
+>  	}
 > 
-> Remove cluster1 from cpu_map and A57_L2 $ entry.
-> 
-> --- a/arch/arm64/boot/dts/arm/juno.dts
-> +++ b/arch/arm64/boot/dts/arm/juno.dts
-> @@ -44,19 +44,16 @@ core0 {
->                                 core1 {
->                                         cpu = <&A57_1>;
->                                 };
-> -                       };
-> -
-> -                       cluster1 {
-> -                               core0 {
-> +                               core2 {
->                                         cpu = <&A53_0>;
->                                 };
-> -                               core1 {
-> +                               core3 {
->                                         cpu = <&A53_1>;
->                                 };
-> -                               core2 {
-> +                               core4 {
->                                         cpu = <&A53_2>;
->                                 };
-> -                               core3 {
-> +                               core5 {
->                                         cpu = <&A53_3>;
->                                 };
->                         };
-> @@ -95,7 +92,7 @@ A57_0: cpu@0 {
->                         d-cache-size = <0x8000>;
->                         d-cache-line-size = <64>;
->                         d-cache-sets = <256>;
-> -                       next-level-cache = <&A57_L2>;
-> +                       next-level-cache = <&A53_L2>;
->                         clocks = <&scpi_dvfs 0>;
->                         cpu-idle-states = <&CPU_SLEEP_0 &CLUSTER_SLEEP_0>;
->                         capacity-dmips-mhz = <1024>;
-> @@ -113,7 +110,7 @@ A57_1: cpu@1 {
->                         d-cache-size = <0x8000>;
->                         d-cache-line-size = <64>;
->                         d-cache-sets = <256>;
-> -                       next-level-cache = <&A57_L2>;
-> +                       next-level-cache = <&A53_L2>;
->                         clocks = <&scpi_dvfs 0>;
->                         cpu-idle-states = <&CPU_SLEEP_0 &CLUSTER_SLEEP_0>;
->                         capacity-dmips-mhz = <1024>;
-> @@ -192,15 +189,6 @@ A53_3: cpu@103 {
->                         dynamic-power-coefficient = <140>;
->                 };
->  
-> -               A57_L2: l2-cache0 {
-> -                       compatible = "cache";
-> -                       cache-unified;
-> -                       cache-size = <0x200000>;
-> -                       cache-line-size = <64>;
-> -                       cache-sets = <2048>;
-> -                       cache-level = <2>;
-> -               };
-> -
->                 A53_L2: l2-cache1 {
->                         compatible = "cache";
->                         cache-unified;
-> 
-> root@juno:~#  echo 1 > /sys/kernel/debug/sched/verbose
-> root@juno:~# cat /sys/kernel/debug/sched/domains/cpu0/domain*/name
-> MC
-> 
-> root@juno:~# cat /proc/schedstat | head -4 | grep ^[cd]
-> cpu0 0 0 0 0 0 0 2378087600 310618500 8152
-> domain0 3f 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-> 
-> [...]
 > 
 
