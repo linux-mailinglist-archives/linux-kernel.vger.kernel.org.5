@@ -1,105 +1,88 @@
-Return-Path: <linux-kernel+bounces-55336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1404584BB55
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:48:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38CEC84BB58
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:48:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 465931C25182
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:48:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 966F528A45B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:48:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28B184C6B;
-	Tue,  6 Feb 2024 16:48:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kqtuhPB8"
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E991A946F;
+	Tue,  6 Feb 2024 16:48:25 +0000 (UTC)
+Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32A9A4A11;
-	Tue,  6 Feb 2024 16:48:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 473E479C4
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 16:48:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707238097; cv=none; b=cDrncft3ygL2fIJOd9Oxq0uIC+1uJ7URCbpEdsL3FAfm0cS/vQxFQ+urc3zBlDdsSuYjBuAqzMUp+WSg4HDQrxl7u7t92ncb/u5bEieaIvBY8P9Ty+RffwfANtZQfzzTOBndAGYao6x5xzihmyRUJuVwKwxWudZcTPKtpZeCclk=
+	t=1707238105; cv=none; b=W0aAUrb2bt+rzl8soy7KNQoSsPLRx5G3JK5Y5Jh/usSidVW+HeVlZAPf/F2slowQVLQ5ebyWPParZYZ3tl7u6czXBQjPeYrI6TdxyebDSHZ8p6gGP2OWbX7cAAiK7IpK8iL+xvR8YkbkHMzW8lfe6/mbm9/t3SqhSKXknFxF9OE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707238097; c=relaxed/simple;
-	bh=fnUc3ch09Q7XPuc21JoYJnzg6/oFdy32QGbmPJyBzpY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=j40s4CN9baoJ+6Lup6cpNTvFNWqSelgqCYScF2Jy/435kjG9Of5zMcoQ3upeFwhNSoeBylAcsKXN0XCtVcLxQngrLiKwHJ27DuKG268QiXljQLarfN9UTwOr0oP2tGU79lF9UIoJA5Fv2A+2evHCrXSTy3hYDyYplqWXsGK1tok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kqtuhPB8; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-295c67ab2ccso4388159a91.1;
-        Tue, 06 Feb 2024 08:48:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707238095; x=1707842895; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1Wo9TbjRKDGkCmqo7Xc5Ga2dxiubzrhcmojXzIQdzFY=;
-        b=kqtuhPB8Sz3oEFmhpw3YvgPHWEfpDomiknP3xh1kbFIoRvTNXZoXVqHvmfUZ7k7J3M
-         42qCGmsUjVVlySF7oE2g0AaC879z8x2UFt041vyC4+VU8i4e/x24+x9RTuDsZBVK6wb2
-         vKCqz9RL7gClCFFsUCwu2x5voFDnEoDvzfTB6zMXxbwMy9dnFqeCa2dDoIX3Dp1onmkL
-         5DVnOytwn6zDhCHJ/iJLX7CVV5T8pZUDNvUeSeu74r93rTGomB/NyvFA4jpa+sm3ROHX
-         m+1OWcX7H1tEEV3OrxxZzQTeP+anWL5OYACLuZW0YYL3Ll5BAPHGAlxzslgaFwJV6Xye
-         Jy+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707238095; x=1707842895;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1Wo9TbjRKDGkCmqo7Xc5Ga2dxiubzrhcmojXzIQdzFY=;
-        b=ncnaAOkEthVIA+nfllMjQyDXtAClwBw1TErH36N+1lEzxj9a6IrcIMmSw4P4ke3XBP
-         GPdCYdVYA0rDVuym0T7I7xn4iYFT7JHzlS7hg2Sg6BiaYYjuyyWvYsaZEZJBzm+ixBDM
-         fbqLgvlV+eja2NsSK7dSq5oMEPz/4GXU/X7TLVSrTZEGV3dnzKjiLZITbUB5mAvyCcwL
-         0I4+vFKV6kJe9gMNgSDiwWztAh/j93ClVlpKl/uH7DFCyB8wAGB7Gsxrm9EXeTZcXjmu
-         6HPzf0tsNOfWVN0nVdvIy6+IxH0a3s9rq2gImmvZzTLV9zNBlQv8Ky+FZ1ctZtl3gWP6
-         9alQ==
-X-Gm-Message-State: AOJu0Yw/LBtq2Kk0ZcNg8xN5FmaY8ej8//JxKQCsg97FjU5W1Xrtdyp0
-	xH9VCFD/uQor9kLffK8zCvvDUpLTGPVfETlvjSpR10/r6oKHgfO1FEhYFtEjZV4SZHLmV9DeQIF
-	u1ql3ZElN2nqGj9QsY/t0qWfZ9qiA6/CcAAH/Rdw=
-X-Google-Smtp-Source: AGHT+IGyxBMnZVGOaKjqcUgn31TN13lpmM+OWY/WdMiqCVufN/OJQrRMWoTaP4g+EvTo5DATiOgBGW+ZYxZ//VvIQ4Q=
-X-Received: by 2002:a17:90b:3bc4:b0:296:9d64:956d with SMTP id
- ph4-20020a17090b3bc400b002969d64956dmr62593pjb.35.1707238095479; Tue, 06 Feb
- 2024 08:48:15 -0800 (PST)
+	s=arc-20240116; t=1707238105; c=relaxed/simple;
+	bh=jJ8xqiaWJQBzbf0uudJOx8kuxiusqiHaqmj0MzojhCY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Mc//JxeTBHOqG4IbTQJ91vl6XT414bP0oSjcSxTP2WzUxA/hRQU02znGlxdYLy7eWSbZt4hPxpLU+FZp0DMJ4MRpVRMWZkFrMBH1sSDiSEmlOUNH2zFWXbdBMeMXyz54YFdQz4EnH5iW3cXwup65A5IFObky7V2YSGyX722cfZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.169) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 6 Feb
+ 2024 19:48:20 +0300
+Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 6 Feb 2024
+ 19:48:19 +0300
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+To: Alex Deucher <alexander.deucher@amd.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+CC: Nikita Zhandarovich <n.zhandarovich@fintech.ru>, "Pan, Xinhui"
+	<Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>, Daniel Vetter
+	<daniel@ffwll.ch>, <amd-gfx@lists.freedesktop.org>,
+	<dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+	<lvc-project@linuxtesting.org>
+Subject: [PATCH] drm/radeon/ni: Fix wrong firmware size logging in ni_init_microcode()
+Date: Tue, 6 Feb 2024 08:48:14 -0800
+Message-ID: <20240206164814.46984-1-n.zhandarovich@fintech.ru>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205191808.998754-1-frut3k7@gmail.com> <ZcH9u7Vo2sFERIHJ@finisterre.sirena.org.uk>
- <CAKEyCaB2Cw0Ey73je96xDgofuXDnsC4DgeS9=HkOM6Kufrwbaw@mail.gmail.com>
- <ZcIwGRU5NEZGpRy9@finisterre.sirena.org.uk> <CAKEyCaCQk+iL_zOr_0LFOA4Fw+SwyuzSWOvVgmO0Tn8Ygv-4hw@mail.gmail.com>
- <ZcI9tWsthu8XMiZ1@finisterre.sirena.org.uk>
-In-Reply-To: <ZcI9tWsthu8XMiZ1@finisterre.sirena.org.uk>
-From: frut3k7 <frut3k7@gmail.com>
-Date: Tue, 6 Feb 2024 17:48:04 +0100
-Message-ID: <CAKEyCaC79kMoNSOOs1SREsvEGMGWPftqzDDMebvTVKDvTHeCMw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] spi: spidev: Add Qualcomm spidev device compatible
-To: Mark Brown <broonie@kernel.org>
-Cc: Robert Marko <robimarko@gmail.com>, linux-spi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
+ (10.0.10.18)
 
-On Tue, Feb 6, 2024 at 3:10=E2=80=AFPM Mark Brown <broonie@kernel.org> wrot=
-e:
->
-> On Tue, Feb 06, 2024 at 02:57:49PM +0100, frut3k7 wrote:
-> > On Tue, Feb 6, 2024 at 2:11=E2=80=AFPM Mark Brown <broonie@kernel.org> =
-wrote:
->
-> > > This is out of tree, it's not exactly a good guide for mainline.  The=
- DT
-> > > should describe the hardware, not how some particular software stack
-> > > chooses to drive it.
->
-> > Will changing from "spidev" to "qca4024" be enough?
->
-> Should be I think.
+Clean up a typo in pr_err() erroneously printing NI MC 'rdev->mc_fw->size'
+during SMC firmware load. Log 'rdev->smc_fw->size' instead.
 
-Should both patches (spi and devicetree) be sent to two projects
-(Linux SPI and Devicetree Bindings)?
+Found by Linux Verification Center (linuxtesting.org) with static
+analysis tool SVACE.
+
+Fixes: 6596afd48af4 ("drm/radeon/kms: add dpm support for btc (v3)")
+Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+---
+ drivers/gpu/drm/radeon/ni.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/radeon/ni.c b/drivers/gpu/drm/radeon/ni.c
+index 927e5f42e97d..3e48cbb522a1 100644
+--- a/drivers/gpu/drm/radeon/ni.c
++++ b/drivers/gpu/drm/radeon/ni.c
+@@ -813,7 +813,7 @@ int ni_init_microcode(struct radeon_device *rdev)
+ 			err = 0;
+ 		} else if (rdev->smc_fw->size != smc_req_size) {
+ 			pr_err("ni_mc: Bogus length %zu in firmware \"%s\"\n",
+-			       rdev->mc_fw->size, fw_name);
++			       rdev->smc_fw->size, fw_name);
+ 			err = -EINVAL;
+ 		}
+ 	}
+-- 
+2.25.1
+
 
