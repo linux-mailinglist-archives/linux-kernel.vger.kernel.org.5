@@ -1,168 +1,182 @@
-Return-Path: <linux-kernel+bounces-55659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DD9084BF9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:55:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A101384BF9F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:58:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 411821C22172
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:55:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5313E288F7A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:58:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BBA91BC26;
-	Tue,  6 Feb 2024 21:55:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 856BE1BC30;
+	Tue,  6 Feb 2024 21:58:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="L5y2FL9P"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="nBGKjew1"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22D061B948
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 21:55:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E874B1B948;
+	Tue,  6 Feb 2024 21:58:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707256546; cv=none; b=WiUxQYbWKVPgDZnkWUBipGGQ1rhov+64OFp7t/RggP7dZoi7ErTQrcibc/qAqNmAwFSp8538CPMebHGVDlwiTTYB9GOD/Yz5EDju3CfJJJt2PbTaHbf7l+VgDF/31IUNeglJbgArZkPcMFA7ODnbDkMGsLb3V9FoZRgbF7nsxh8=
+	t=1707256700; cv=none; b=EoAln9owmWgT0KPdQM/WBnwd1NHbzrHQBw1mjr6L2xYNaZXhHmepi2zSgDhJyZ/FXwusR3FETL5gzBet+ebkQDOS4dwi1zavOwm1FkpTMHRcdtYBKFTFkN7rdAFPk2PEmuxUdnWrSXZYeuS4a7Si5dtkNW8RsMu9U9RZS81M9rI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707256546; c=relaxed/simple;
-	bh=ScFWhTYt+HvHgJN5dBTn7rmIWKDNAZP3JLX6ELdw0t8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZrwQK71Lpif9Q8rrh2MZ+Nx73e1fbAoRSSYJjwMn76bAM8tUX3njhi4j+dJ6F+Hj//v7FFSSFyxBxfFgslVn6Acy5cy9V0vYUhOpFOYxqyoctvwjj8okBvuB9Cz0ZZJArr4M1AeWDxsbepQgoXSuvWtx7DfsTFVL1Veo5UU5O1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=L5y2FL9P; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707256545; x=1738792545;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ScFWhTYt+HvHgJN5dBTn7rmIWKDNAZP3JLX6ELdw0t8=;
-  b=L5y2FL9PGEHw1w8HSlK0GtK+7x9mR6hbzKsBfptlyYUQyHwu58U5cVkt
-   h16H2JvOEwxUPEKUs4kv1yMuF/t95umiZzi9Y1m+iTRwY7JBgUmjCF9i2
-   Sl4t6Rzoiv1B8eV5bdIuZ0fHJkYeIcc9XDHxji8L58r/q08IoD69fk8P0
-   sy8jzq0d3XajzOJS8FiNo0oOxlTwbSsRQwuK0fvKw4QUpVHLkckNk31LV
-   flJ0ChO0A0xHBBBstzMDh0MAlUKgjZNUSZ8mPx4XdCX1cEoe/u9zhzMJH
-   9NDHE//HjPuLMsJ7SU4Hdmqv32yLZNfCsQuJZd6izi+8WYHw2YseiNs9r
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="26297014"
-X-IronPort-AV: E=Sophos;i="6.05,248,1701158400"; 
-   d="scan'208";a="26297014"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 13:55:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,248,1701158400"; 
-   d="scan'208";a="1368577"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by fmviesa008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 13:55:44 -0800
-Date: Tue, 6 Feb 2024 13:57:02 -0800
-From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: alexs@kernel.org, Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	linux-kernel@vger.kernel.org, sshegde@linux.ibm.com
-Subject: Re: [PATCH v3 1/4] sched/fair: add SD_CLUSTER in comments
-Message-ID: <20240206215702.GB19695@ranerica-svr.sc.intel.com>
-References: <20240201115447.522627-1-alexs@kernel.org>
- <xhsmhzfwjgcvf.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <20240206024633.GD17602@ranerica-svr.sc.intel.com>
- <xhsmheddphgx5.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	s=arc-20240116; t=1707256700; c=relaxed/simple;
+	bh=hqJ1SlImOe9JvV0wm/kF77N7yTOOfyQP6epyE53p3LA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ZDx4CnzbnmCWJMHvTNtI1yEwkUe/EMhGzk5nP1zPCXmdg/pTaKLBaXb9/18mMEh4pcibb+yU68ARurmZop4ljMP00wV/yXkoeft/7YSS5NckrDdYTStjgC/STBaxT5NqTNMwSkgtG3DWuvjTKdcWv+LmRZcX6cnsXvEhYQx9rIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=nBGKjew1; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 416LwGA1007895;
+	Tue, 6 Feb 2024 15:58:16 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707256696;
+	bh=b1s9rfXj+N0sFH6z6mNwZwYz8hF7sawp1kD2vIthMvM=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=nBGKjew1S0BDGYgcTXjKc5yTdR9i14F/gwHXCQWDkDonxcKowEA0t3X9OtZnSQCKI
+	 2jVosEb3wPIJHXWlSM4hZ9WBO2g83xBbdN/mokGmHVJ0dYx8qgBL+ZQgB4yWqdR7k/
+	 jnIQGwI3uaxhcCyyZqhu0E2VB6UKjxUScCpRLa2k=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 416LwGPP048045
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 6 Feb 2024 15:58:16 -0600
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 6
+ Feb 2024 15:58:16 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 6 Feb 2024 15:58:16 -0600
+Received: from [128.247.81.105] (judy-hp.dhcp.ti.com [128.247.81.105])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 416LwFuR127714;
+	Tue, 6 Feb 2024 15:58:15 -0600
+Message-ID: <fb524ead-0560-44b4-8e49-27618d53d263@ti.com>
+Date: Tue, 6 Feb 2024 15:58:15 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <xhsmheddphgx5.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 2/5] mmc: sdhci_am654: Write ITAPDLY for DDR52 timing
+Content-Language: en-US
+To: Andrew Davis <afd@ti.com>, Ulf Hansson <ulf.hansson@linaro.org>
+CC: Adrian Hunter <adrian.hunter@intel.com>, <linux-mmc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Randolph Sapp <rs@ti.com>,
+        Vignesh
+ Raghavendra <vigneshr@ti.com>
+References: <20240131215044.3163469-1-jm@ti.com>
+ <20240131215044.3163469-3-jm@ti.com>
+ <54161b26-329c-4faa-b6f7-73fe82efb525@ti.com>
+From: Judith Mendez <jm@ti.com>
+In-Reply-To: <54161b26-329c-4faa-b6f7-73fe82efb525@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Tue, Feb 06, 2024 at 02:16:06PM +0100, Valentin Schneider wrote:
-> On 05/02/24 18:46, Ricardo Neri wrote:
-> > On Fri, Feb 02, 2024 at 03:27:32PM +0100, Valentin Schneider wrote:
-> >>
-> >> Subject nit: the prefix should be sched/topology
-> >>
-> >> On 01/02/24 19:54, alexs@kernel.org wrote:
-> >> > From: Alex Shi <alexs@kernel.org>
-> >> >
-> >> > The description of SD_CLUSTER is missing. Add it.
-> >> >
-> >> > Signed-off-by: Alex Shi <alexs@kernel.org>
-> >> > To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-> >> > To: Valentin Schneider <vschneid@redhat.com>
-> >> > To: Vincent Guittot <vincent.guittot@linaro.org>
-> >> > To: Juri Lelli <juri.lelli@redhat.com>
-> >> > To: Peter Zijlstra <peterz@infradead.org>
-> >> > To: Ingo Molnar <mingo@redhat.com>
-> >> > ---
-> >> >  kernel/sched/topology.c | 1 +
-> >> >  1 file changed, 1 insertion(+)
-> >> >
-> >> > diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> >> > index 10d1391e7416..8b45f16a1890 100644
-> >> > --- a/kernel/sched/topology.c
-> >> > +++ b/kernel/sched/topology.c
-> >> > @@ -1554,6 +1554,7 @@ static struct cpumask		***sched_domains_numa_masks;
-> >> >   * function:
-> >> >   *
-> >> >   *   SD_SHARE_CPUCAPACITY   - describes SMT topologies
-> >> > + *   SD_CLUSTER             - describes CPU Cluster topologies
-> >>
-> >> So I know this is the naming we've gone for the "Cluster" naming, but this
-> >> comment isn't really explaining anything.
-> >>
-> >> include/linux/sched/sd_flags.h has a bit more info already:
-> >>  * Domain members share CPU cluster (LLC tags or L2 cache)
-> >
-> > I also thought of this, but I didn't want to suggest to repeat in topolog.c
-> > what is described in sd_flags.h.
-> >
-> > Maybe it is better to remove the descriptions of all flags here and instead
-> > direct the reader to sd_flags.h?
-> >
+Hi Andrew,
+
+On 2/1/24 1:36 PM, Andrew Davis wrote:
+> On 1/31/24 3:50 PM, Judith Mendez wrote:
+>> For DDR52 timing, DLL is enabled but tuning is not carried
+>> out, therefore the ITAPDLY value in PHY CTRL 4 register is
+>> not correct. Fix this by writing ITAPDLY after enabling DLL.
+>>
+>> Fixes: a161c45f2979 ("mmc: sdhci_am654: Enable DLL only for some speed 
+>> modes")
+>> Signed-off-by: Judith Mendez <jm@ti.com>
+>> ---
+>>   drivers/mmc/host/sdhci_am654.c | 27 +++++++++++++++------------
+>>   1 file changed, 15 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/drivers/mmc/host/sdhci_am654.c 
+>> b/drivers/mmc/host/sdhci_am654.c
+>> index a3798c9912f6..ff18a274b6f2 100644
+>> --- a/drivers/mmc/host/sdhci_am654.c
+>> +++ b/drivers/mmc/host/sdhci_am654.c
+>> @@ -170,7 +170,19 @@ struct sdhci_am654_driver_data {
+>>   #define DLL_CALIB    (1 << 4)
+>>   };
+>> -static void sdhci_am654_setup_dll(struct sdhci_host *host, unsigned 
+>> int clock)
+>> +static void sdhci_am654_write_itapdly(struct sdhci_am654_data 
+>> *sdhci_am654,
+>> +                      u32 itapdly)
 > 
-> Yeah I agree on less duplication.
+> This patch is confusing, looks like you switched the place of these two
+> functions, but diff is not really liking that. You can mess with
+> --diff-algorithm and the like to get a more readable patch. But in
+> this case why switch their spots at all?
 > 
-> >>
-> >> I had to go through a bit of git history to remember what the CLUSTER thing
-> >> was about, how about this:
-> >>
-> >> * SD_CLUSTER             - describes shared shared caches, cache tags or busses
-> >
-> > AFAIK, this describes a subset of CPUs in the package that share a
-> > resource, likely L2 cache.
-> >
-> >> * SD_SHARE_PKG_RESOURCES - describes shared LLC cache
-> >>
-> >> And looking at this it would make sense to:
-> >>   rename SD_CLUSTER into SD_SHARE_PKG_RESOURCES
-> >
-> > but not all CPUs in the package share the resource
+> Seems to be so you can call sdhci_am654_write_itapdly() from
+> sdhci_am654_setup_dll() without a forward declaration, instead
+> why not just call sdhci_am654_write_itapdly() after calling
+> sdhci_am654_setup_dll() below. That also saves to from having
+> to pass in `timing` to sdhci_am654_write_itapdly() just to
+> have it pass it right through to sdhci_am654_setup_dll().
+
+Really the only reason I did this is because we call
+sdhci_am654_write_itapdly() in sdhci_am654_setup_delay_chain and
+I wanted to keep the flow for setting up DLL the same.
+I agree the patch looks confusing, so I will fix this for v2.
+
+~ Judith
+
+> Andrew
 > 
-> But SD_CLUSTER never expands beyond the package, right?
+>> +{
+>> +    /* Set ITAPCHGWIN before writing to ITAPDLY */
+>> +    regmap_update_bits(sdhci_am654->base, PHY_CTRL4, ITAPCHGWIN_MASK,
+>> +               0x1 << ITAPCHGWIN_SHIFT);
+>> +    regmap_update_bits(sdhci_am654->base, PHY_CTRL4, ITAPDLYSEL_MASK,
+>> +               itapdly << ITAPDLYSEL_SHIFT);
+>> +    regmap_update_bits(sdhci_am654->base, PHY_CTRL4, ITAPCHGWIN_MASK, 
+>> 0);
+>> +}
+>> +
+>> +static void sdhci_am654_setup_dll(struct sdhci_host *host, unsigned 
+>> int clock,
+>> +                  unsigned char timing)
+>>   {
+>>       struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+>>       struct sdhci_am654_data *sdhci_am654 = 
+>> sdhci_pltfm_priv(pltfm_host);
+>> @@ -236,17 +248,8 @@ static void sdhci_am654_setup_dll(struct 
+>> sdhci_host *host, unsigned int clock)
+>>           dev_err(mmc_dev(host->mmc), "DLL failed to relock\n");
+>>           return;
+>>       }
+>> -}
+>> -static void sdhci_am654_write_itapdly(struct sdhci_am654_data 
+>> *sdhci_am654,
+>> -                      u32 itapdly)
+>> -{
+>> -    /* Set ITAPCHGWIN before writing to ITAPDLY */
+>> -    regmap_update_bits(sdhci_am654->base, PHY_CTRL4, ITAPCHGWIN_MASK,
+>> -               1 << ITAPCHGWIN_SHIFT);
+>> -    regmap_update_bits(sdhci_am654->base, PHY_CTRL4, ITAPDLYSEL_MASK,
+>> -               itapdly << ITAPDLYSEL_SHIFT);
+>> -    regmap_update_bits(sdhci_am654->base, PHY_CTRL4, ITAPCHGWIN_MASK, 
+>> 0);
+>> +    sdhci_am654_write_itapdly(sdhci_am654, 
+>> sdhci_am654->itap_del_sel[timing]);
+>>   }
+>>   static void sdhci_am654_setup_delay_chain(struct sdhci_am654_data 
+>> *sdhci_am654,
+>> @@ -298,7 +301,7 @@ static void sdhci_am654_set_clock(struct 
+>> sdhci_host *host, unsigned int clock)
+>>       regmap_update_bits(sdhci_am654->base, PHY_CTRL4, mask, val);
+>>       if (timing > MMC_TIMING_UHS_SDR25 && clock >= CLOCK_TOO_SLOW_HZ) {
+>> -        sdhci_am654_setup_dll(host, clock);
+>> +        sdhci_am654_setup_dll(host, clock, timing);
+>>           sdhci_am654->dll_enable = true;
+>>       } else {
+>>           sdhci_am654_setup_delay_chain(sdhci_am654, timing);
 
-Correct.
-
-> 
-> Regardless, my main point is that having both SD_CLUSTER and
-> SD_SHARE_PKG_RESOURCES is a source of confusion (at the very least for
-> myself),
-
-Agreed!
-
-> and given SD_SHARE_PKG_RESOURCES is really used to mean "shares
-> LLC" (see update_top_cache_domain()), we could make that flag more explicit
-> and lift some ambiguity with SD_CLUSTER.
-
-As Yicong stated, cluster topology should mean CPUs beyond SMT that share
-some resource but not LLC.
-
-It makes sense to me to keep SD_CLUSTER name as it is today and rename
-SD_SHARE_PKG_RESOURCES as SD_SHARE_LLC.
 
