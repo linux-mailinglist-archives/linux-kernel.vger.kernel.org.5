@@ -1,331 +1,100 @@
-Return-Path: <linux-kernel+bounces-54696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0370A84B28C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:34:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 801BA84B290
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:35:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3EB37B26B86
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:34:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31947287AC1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:35:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 109031EA71;
-	Tue,  6 Feb 2024 10:33:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 174941EA71;
+	Tue,  6 Feb 2024 10:35:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GmKWZY1v"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JmID3Hp2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D83D6FD2;
-	Tue,  6 Feb 2024 10:33:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51A701AB810;
+	Tue,  6 Feb 2024 10:35:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707215602; cv=none; b=cjaYuVVrz6DMo7bZKFx2cCjDxfSHJDPQIG+auTliVw0qlfJKwdzN476TAMcMaAL14Gy490HMVyzjOHCipbWK7l8ISv/ZVX9j8buibMsawGMqnjNRefyDBLwzdPG8pUpvMMfkh+xl3PRzKUMVt4smirx8jEA6k5R+d99HVqb3sYA=
+	t=1707215715; cv=none; b=ikzkYur0bE/L+hOycmxmtmh1PhQ2KDCKJrPRkrvBLmzK+4zijrLIZhiCtuFeNVkGwuIbfzEp27vcZ1BM0kYLzKR2IvRAoVNtio5LypS0Dze8kbQTJm/x4qkDJEjBaXkkRGM7wP3A97IxHZPB6Vhi/HBUlV8P4Y0BYWI0J7oh/9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707215602; c=relaxed/simple;
-	bh=+FWqw+IGT6Rh/19WOjrXZesbGAlIO/NS/vd3VcCYUw4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iFnVphjdpXuYQmBs0EBvJ9CiQgquMLtyVc9zDgnVZip4Ev4cnFLtqDFIB2NioVKhDsbbaqBr2ut3Q2RZkaoyN2mXZBmSPyxhTKzTYq9sBebdShGyuNhZdc7KQ2/V7HfCZaSqIc6nhBIMm0eKADofqdOFXpi8e02DkzEvZt+JaMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GmKWZY1v; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707215599; x=1738751599;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=+FWqw+IGT6Rh/19WOjrXZesbGAlIO/NS/vd3VcCYUw4=;
-  b=GmKWZY1vd6YMwXipZDmjePecSeulqtHPEjlKNAoA5XZ/5z6d4a4s6QIh
-   7Im9HdDFoyi6lEgY/FzimwAA4MpNKULHfMlUJqx/dKgnnpTP3bMu8Ao+M
-   w5cOPREeNWp3nblGcMfHq+o2OBMHz4et1V9oyOuEBuPEjqsQvWwgEucNQ
-   YX6F4Yp6jhFyVaevXtDFRuz377j6CZSqujrvs9sO/ic/V9sIPBrroHaZm
-   zDbKZ+ArcyqWn5AJDQ7neJ98vfLEfNP3TWMEnaBvYQOOMIHUkrFWNiUUh
-   EHYV9xI9VTyZY0bMHak+o8l40JaPRAEwIRFHIz6b5b2/A/hEf1YBWlh3L
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="3676492"
-X-IronPort-AV: E=Sophos;i="6.05,246,1701158400"; 
-   d="scan'208";a="3676492"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 02:33:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,246,1701158400"; 
-   d="scan'208";a="1032531"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.42.101])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 02:33:15 -0800
-Message-ID: <631f8b5e-2bd2-4419-885f-34be07012b29@intel.com>
-Date: Tue, 6 Feb 2024 12:33:10 +0200
+	s=arc-20240116; t=1707215715; c=relaxed/simple;
+	bh=3c5PNyqEGTv1ShH7PDfncWm8E3oj2yIaY/8aKD+F4Hc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AoUFshmuY1tqJlB3rT8hLsFvSvR+tnvmobiDNdClZRF3ohuJM1PS+q4LAl73/WTkuCmng1f1QKbw587+ueXywbv3lExP/V53DZqxZVQgCjVSe8q948d89qojaH6RMstrNkBXlTq6iXXXExJwl4dDA86AoQziCpSi12YHLhtYgVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JmID3Hp2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74C97C433C7;
+	Tue,  6 Feb 2024 10:35:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707215714;
+	bh=3c5PNyqEGTv1ShH7PDfncWm8E3oj2yIaY/8aKD+F4Hc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JmID3Hp2rCViqbulMK+0TZTIic7I+aL8OH7r4vok0IY74BMh4kkpLyw6qUzouGRkw
+	 GrfY5+NqmV6SdLrQI+1XyxinOUwkxrRBQ0qn+YiS5NUyNPLqyqNj1nG0wSs8YwcgVL
+	 DTN/IGYwwLO68yAL+0PBTjXcjF/94nYr4CeGgunpAtia3EUCBe59ACmxsc/s5iK784
+	 TczoddAZCVLMp3JNN8MbfjsGi/KHWe3vBC+y+bNB8NSwEU480sHq008K6ppIhYuwtY
+	 0HkQroYlE0y5nv5y220QIxdtFuTVesUiS5KHVYvBlefWtkgx+mLYF8yy1ccHouE4Sh
+	 WON6q44+gU3kA==
+Date: Tue, 6 Feb 2024 10:35:11 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Louis Chauvet <louis.chauvet@bootlin.com>
+Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	thomas.petazzoni@bootlin.com,
+	Miquel Raynal <miquel.raynal@bootlin.com>, yen-mei.goh@keysight.com,
+	koon-kee.lie@keysight.com
+Subject: Re: [PATCH 1/2] Revert "spi: spi-omap2-mcspi.c: Toggle CS after each
+ word"
+Message-ID: <ZcILX84KZpGKgpgl@finisterre.sirena.org.uk>
+References: <20240126-spi-omap2-mcspi-multi-mode-v1-0-d143d33f0fe0@bootlin.com>
+ <20240126-spi-omap2-mcspi-multi-mode-v1-1-d143d33f0fe0@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 2/5] perf: util: use capstone disasm engine to show
- assembly instructions
-Content-Language: en-US
-To: Changbin Du <changbin.du@huawei.com>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
- Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
- linux-perf-users@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
- Thomas Richter <tmricht@linux.ibm.com>, changbin.du@gmail.com
-References: <20240206021438.768731-1-changbin.du@huawei.com>
- <20240206021438.768731-3-changbin.du@huawei.com>
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20240206021438.768731-3-changbin.du@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="azcLN1ODoDsB9Bpu"
+Content-Disposition: inline
+In-Reply-To: <20240126-spi-omap2-mcspi-multi-mode-v1-1-d143d33f0fe0@bootlin.com>
+X-Cookie: You might have mail.
 
-On 6/02/24 04:14, Changbin Du wrote:
-> Currently, the instructions of samples are shown as raw hex strings
-> which are hard to read. x86 has a special option '--xed' to disassemble
-> the hex string via intel XED tool.
-> 
-> Here we use capstone as our disassembler engine to give more friendly
-> instructions. We select libcapstone because capstone can provide more
-> insn details. Perf will fallback to raw instructions if libcapstone is
-> not available.
-> 
-> The advantages compared to XED tool:
->  * Support arm, arm64, x86-32, x86_64 (more could be supported),
->    xed only for x86_64.
->  * Immediate address operands are shown as symbol+offs.
-> 
-> Signed-off-by: Changbin Du <changbin.du@huawei.com>
-> 
-> ---
-> v3:
->   - show warning msg if libcapstone is not available.
-> v2:
->   - line up the output by preceding two tabs. (Adrian Hunter)
->   - removed the tailing space. (Adrian Hunter)
->   - forward declaration for perf_sample, thread, machine. (Adrian Hunter)
->   - other trivial fixes (Adrian Hunter)
-> ---
->  tools/perf/builtin-script.c  |   8 +--
->  tools/perf/util/Build        |   1 +
->  tools/perf/util/print_insn.c | 134 +++++++++++++++++++++++++++++++++++
->  tools/perf/util/print_insn.h |  16 +++++
->  4 files changed, 154 insertions(+), 5 deletions(-)
->  create mode 100644 tools/perf/util/print_insn.c
->  create mode 100644 tools/perf/util/print_insn.h
-> 
-> diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-> index b1f57401ff23..4817a37f16e2 100644
-> --- a/tools/perf/builtin-script.c
-> +++ b/tools/perf/builtin-script.c
-> @@ -34,6 +34,7 @@
->  #include "util/event.h"
->  #include "ui/ui.h"
->  #include "print_binary.h"
-> +#include "print_insn.h"
->  #include "archinsn.h"
->  #include <linux/bitmap.h>
->  #include <linux/kernel.h>
-> @@ -1511,11 +1512,8 @@ static int perf_sample__fprintf_insn(struct perf_sample *sample,
->  	if (PRINT_FIELD(INSNLEN))
->  		printed += fprintf(fp, " ilen: %d", sample->insn_len);
->  	if (PRINT_FIELD(INSN) && sample->insn_len) {
-> -		int i;
-> -
-> -		printed += fprintf(fp, " insn:");
-> -		for (i = 0; i < sample->insn_len; i++)
-> -			printed += fprintf(fp, " %02x", (unsigned char)sample->insn[i]);
-> +		printed += fprintf(fp, " insn: ");
-> +		printed += sample__fprintf_insn_raw(sample, fp);
->  	}
->  	if (PRINT_FIELD(BRSTACKINSN) || PRINT_FIELD(BRSTACKINSNLEN))
->  		printed += perf_sample__fprintf_brstackinsn(sample, thread, attr, machine, fp);
-> diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-> index 8027f450fa3e..2cbeeb79b6ef 100644
-> --- a/tools/perf/util/Build
-> +++ b/tools/perf/util/Build
-> @@ -32,6 +32,7 @@ perf-y += perf_regs.o
->  perf-y += perf-regs-arch/
->  perf-y += path.o
->  perf-y += print_binary.o
-> +perf-y += print_insn.o
->  perf-y += rlimit.o
->  perf-y += argv_split.o
->  perf-y += rbtree.o
-> diff --git a/tools/perf/util/print_insn.c b/tools/perf/util/print_insn.c
-> new file mode 100644
-> index 000000000000..163307a02274
-> --- /dev/null
-> +++ b/tools/perf/util/print_insn.c
-> @@ -0,0 +1,134 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Instruction binary disassembler based on capstone.
-> + *
-> + * Author(s): Changbin Du <changbin.du@huawei.com>
-> + */
-> +#include <string.h>
-> +#include <stdbool.h>
-> +#include "debug.h"
-> +#include "event.h"
-> +#include "symbol.h"
-> +#include "machine.h"
-> +#include "thread.h"
-> +#include "print_insn.h"
-> +
-> +size_t sample__fprintf_insn_raw(struct perf_sample *sample, FILE *fp)
-> +{
-> +	int printed = 0;
-> +
-> +	for (int i = 0; i < sample->insn_len; i++) {
-> +		printed += fprintf(fp, "%02x ", (unsigned char)sample->insn[i]);
 
-Same as last time, there are 2 spaces between bytes
-instead of 1.  It needs:
+--azcLN1ODoDsB9Bpu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-	"%02x "      ->      "%02x"
+On Tue, Feb 06, 2024 at 11:00:49AM +0100, Louis Chauvet wrote:
 
-> +		if (sample->insn_len - i > 1)
-> +			printed += fprintf(fp, " ");
-> +	}
-> +	return printed;
-> +}
-> +
-> +#ifdef HAVE_LIBCAPSTONE_SUPPORT
-> +#include <capstone/capstone.h>
-> +
-> +static int capstone_init(struct machine *machine, csh *cs_handle)
-> +{
-> +	cs_arch arch;
-> +	cs_mode mode;
-> +
-> +	if (machine__is(machine, "x86_64")) {
-> +		arch = CS_ARCH_X86;
-> +		mode = CS_MODE_64;
-> +	} else if (machine__normalized_is(machine, "x86")) {
-> +		arch = CS_ARCH_X86;
-> +		mode = CS_MODE_32;
-> +	} else if (machine__normalized_is(machine, "arm64")) {
-> +		arch = CS_ARCH_ARM64;
-> +		mode = CS_MODE_ARM;
-> +	} else if (machine__normalized_is(machine, "arm")) {
-> +		arch = CS_ARCH_ARM;
-> +		mode = CS_MODE_ARM + CS_MODE_V8;
-> +	} else if (machine__normalized_is(machine, "s390")) {
-> +		arch = CS_ARCH_SYSZ;
-> +		mode = CS_MODE_BIG_ENDIAN;
-> +	} else {
-> +		return -1;
-> +	}
-> +
-> +	if (cs_open(arch, mode, cs_handle) != CS_ERR_OK) {
-> +		pr_warning_once("cs_open failed\n");
-> +		return -1;
-> +	}
-> +
-> +	if (machine__normalized_is(machine, "x86")) {
-> +		cs_option(*cs_handle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
-> +		/*
-> +		 * Resolving address operands to symbols is implemented
-> +		 * on x86 by investigating instruction details.
-> +		 */
-> +		cs_option(*cs_handle, CS_OPT_DETAIL, CS_OPT_ON);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static size_t print_insn_x86(struct perf_sample *sample, struct thread *thread,
-> +			     cs_insn *insn, FILE *fp)
-> +{
-> +	struct addr_location al;
-> +	size_t printed = 0;
-> +
-> +	if (insn->detail && insn->detail->x86.op_count == 1) {
-> +		cs_x86_op *op = &insn->detail->x86.operands[0];
-> +
-> +		addr_location__init(&al);
-> +		if (op->type == X86_OP_IMM &&
-> +		    thread__find_symbol(thread, sample->cpumode, op->imm, &al)) {
-> +			printed += fprintf(fp, "%s ", insn[0].mnemonic);
-> +			printed += symbol__fprintf_symname_offs(al.sym, &al, fp);
-> +			addr_location__exit(&al);
-> +			return printed;
-> +		}
-> +		addr_location__exit(&al);
-> +	}
-> +
-> +	printed += fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
-> +	return printed;
-> +}
-> +
-> +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread,
-> +			    struct machine *machine, FILE *fp)
-> +{
-> +	csh cs_handle;
-> +	cs_insn *insn;
-> +	size_t count;
-> +	size_t printed = 0;
-> +	int ret;
-> +
-> +	/* TODO: Try to initiate capstone only once but need a proper place. */
-> +	ret = capstone_init(machine, &cs_handle);
-> +	if (ret < 0) {
-> +		/* fallback */
-> +		return sample__fprintf_insn_raw(sample, fp);
-> +	}
-> +
-> +	count = cs_disasm(cs_handle, (uint8_t *)sample->insn, sample->insn_len,
-> +			  sample->ip, 1, &insn);
-> +	if (count > 0) {
-> +		if (machine__normalized_is(machine, "x86"))
-> +			printed += print_insn_x86(sample, thread, &insn[0], fp);
-> +		else
-> +			printed += fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
-> +		cs_free(insn, count);
-> +	} else {
-> +		printed += fprintf(fp, "illegal instruction");
-> +	}
-> +
-> +	cs_close(&cs_handle);
-> +	return printed;
-> +}
-> +#else
-> +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread __maybe_unused,
-> +			    struct machine *machine __maybe_unused, FILE *fp)
-> +{
-> +	pr_warning_once("perf needs to be built with libcapstone support to disassemble instructions\n");
-> +	return sample__fprintf_insn_raw(sample, fp);
+> Revert commit 5cbc7ca987fb ("spi: spi-omap2-mcspi.c: Toggle CS after each word")
+> This commit introduced the toggling of CS after each word for the
+> omap2-mcspi controller.
 
-The validation stops this being called so could just leave
-out the 2 lines above, and add __maybe_unused as necessary.
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
-> +}
-> +#endif
-> diff --git a/tools/perf/util/print_insn.h b/tools/perf/util/print_insn.h
-> new file mode 100644
-> index 000000000000..80dda6da7c60
-> --- /dev/null
-> +++ b/tools/perf/util/print_insn.h
-> @@ -0,0 +1,16 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef PERF_PRINT_INSN_H
-> +#define PERF_PRINT_INSN_H
-> +
-> +#include <stddef.h>
-> +#include <stdio.h>
-> +
-> +struct perf_sample;
-> +struct thread;
-> +struct machine;
-> +
-> +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread,
-> +			    struct machine *machine, FILE *fp);
-> +size_t sample__fprintf_insn_raw(struct perf_sample *sample, FILE *fp);
-> +
-> +#endif /* PERF_PRINT_INSN_H */
+--azcLN1ODoDsB9Bpu
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXCC18ACgkQJNaLcl1U
+h9CFPgf+Nzd4M6GNRWfxi5aN6tQuav9R23DvP/f+fald06ePtIKSmAE/E+ibjvZ8
+aNKSzYLZtP5jMvadm0s+ySmYZ3Q66OvL5UarJRJo8oiLTt9ULtYvu10xXmLLpvn2
+9sjtYniFp700x53wz/7E+ixz23dBmMoO7nXmP5eHk5LMpW8yr2Ct7qe7CvvbhLGd
+PdZNp3Zeko7BR4xPF2DcSoOEVIBVu16RV3QiMMlVVxdP9gYKx1wv3Uqy4hVR6z3L
+DYqiCbl9wwIQZQIb0mpWh7zCReHxLszElRle48qYgFOwG0zAGGkPzJAA65KicvUZ
+uTGQABpF7+AGuD1Wdq01Z76liRLtkQ==
+=h/jM
+-----END PGP SIGNATURE-----
+
+--azcLN1ODoDsB9Bpu--
 
