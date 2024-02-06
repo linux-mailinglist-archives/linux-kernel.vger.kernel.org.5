@@ -1,115 +1,165 @@
-Return-Path: <linux-kernel+bounces-55174-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42CF084B8FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:12:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6191384B8D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:08:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6B90B2B1E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:08:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1651328968B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:08:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9756A133407;
-	Tue,  6 Feb 2024 15:07:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DEE4133429;
+	Tue,  6 Feb 2024 15:07:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aeyuFkSf"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NaqzKEw1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0F531E866;
-	Tue,  6 Feb 2024 15:07:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF09A13340A;
+	Tue,  6 Feb 2024 15:07:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707232065; cv=none; b=TLk1dBfHd340oCt7xuUDGFEu1cx80XQ7hq8A1U2R6cn4Rwuy/jHpOnkuPDfKVXQz11OIexd2aFYcz/uebMV6iXno3UrZKpCVY1Q7jty9Z6HglVJr/sFyiAaaV8jE8n6XebsqLsWbuCyfNEK7Lt/VgVukcNNxwdDDicK6e537EDc=
+	t=1707232066; cv=none; b=mTG8hlRk/rtE+RD8cGqh7tEvrjFJdzcye9u1OZgEGJ13FYM3vJjOPGdNvzyy3aat3vg29Wqyb5m8NVCKpJ92TLEIdc4QNjT/W7QWM4jy475BuXIsdLkjXHWggoIWoqyllCK9CgCLW4b+vmgfAqE9jq3jbbnG+30AXOeilVwJPek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707232065; c=relaxed/simple;
-	bh=xHfs6v4q9Cn/MM6C3D51On1JjdwuprUsJ7h22brXSIw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uZGhuRQp9AVxN7QfPFzeceWwMBJwoyoxwTjmGuHSdbft0L+SPQW7EVgRW6cW53VOzzla/ZR+McKEWT3Rq+T3TWuWFK/xoWxT1FpZxyqB/mWSgD3zXgTSc8kf3AimNpxh04FcIaReH96sRctXx2/lsz7gquaMlpghTB4eY76Vank=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aeyuFkSf; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707232064; x=1738768064;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xHfs6v4q9Cn/MM6C3D51On1JjdwuprUsJ7h22brXSIw=;
-  b=aeyuFkSfeXzmau6v9pePMa3PzP+TVL0cP7eRDm39ue7JyRvMsA0Zw2Wf
-   QZ/bm6HavAHphyBVLW7QaCjC4DBPQNmHQ6ykGRJtEMlt0fSbZJn/7xCSd
-   sRfeFS0dYsvtqP0pbhLU/43W9oTYNwvM4hq5f6sPYB+4kjc9b+mBqVRSk
-   CDCNHzU2uPvhDmoAl3I3FnpoDnWHP3iEQ3kVDVAgquLv0g65olY1r/qKN
-   h6gwj+ZmPafPzX+ufZy0tFSPqpkvubYy35PwbmCF22NbsCW+Xy5gg9bD3
-   u9CBFojpaehSl2ayyDhAPHRIXSoQGXz39oAR/Zo0B2Oc7GjFX6oq/C9f4
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="11410884"
-X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
-   d="scan'208";a="11410884"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 07:07:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="909661991"
-X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
-   d="scan'208";a="909661991"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 07:07:39 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rXN2u-00000002N1u-3OMM;
-	Tue, 06 Feb 2024 17:07:36 +0200
-Date: Tue, 6 Feb 2024 17:07:36 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Mike Looijmans <mike.looijmans@topic.nl>
-Cc: devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Liam Beguin <liambeguin@gmail.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Maksim Kiselev <bigunclemax@gmail.com>,
-	Marcus Folkesson <marcus.folkesson@gmail.com>,
-	Marius Cristea <marius.cristea@microchip.com>,
-	Mark Brown <broonie@kernel.org>,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Okan Sahin <okan.sahin@analog.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] iio: adc: ti-ads1298: Add driver
-Message-ID: <ZcJLOC7FenCecRMm@smile.fi.intel.com>
-References: <20240206065818.2016910-1-mike.looijmans@topic.nl>
- <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.fd628a1a-a926-426e-a239-bfd8c9858b94@emailsignatures365.codetwo.com>
- <20240206065818.2016910-2-mike.looijmans@topic.nl>
- <ZcIsuiuisQjTIxJv@smile.fi.intel.com>
- <4c6654f5-2d9e-4c1b-a5de-7bdeacf5e99f@topic.nl>
- <ZcI5PoWojKRrdpVl@smile.fi.intel.com>
- <67387cf4-1065-4313-b4c6-054128ba8f3a@topic.nl>
+	s=arc-20240116; t=1707232066; c=relaxed/simple;
+	bh=l4T04Izc/70L9UMANWu0UT3Aiu5pk/yJS8gqVOArAYs=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=e2pc+VrefPDAr2NCv6gSA4ezs07CfXfxaeRs031+aMxlQpm0dStfOost5MFHy5c9bnvbuISCuip2ITvRAQCYkFiCVIezE6gSjPePETvi5HKw3OPFYLGJPKew8x1J0IOYaMOUs35Hr70zpGntfgKWRCIDegyBFum5E5o4y5jEszw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NaqzKEw1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C0A5C433F1;
+	Tue,  6 Feb 2024 15:07:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707232066;
+	bh=l4T04Izc/70L9UMANWu0UT3Aiu5pk/yJS8gqVOArAYs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=NaqzKEw1xsfKMQxUEuZGZbGnKx7aPkxumq+8Er01Ga3scD14xpW2rtbO6NgOcsAjC
+	 nrVWxEMzpD9svER2A5OvqWmM5mirDKJGahKqTWQekP/dKEN3ErvcWl7IqiYwynCO6P
+	 Q7vlvMQonaQplT3SXVbIVcpLqx9El8ZQiV0lCMrMkH/fGRZSmtzXlgLL9Vwo56cf8D
+	 hck1XMn9jxFYnqbdxee4VDjbedfqffLW4f4cN5doNsrDwnhDoXPpJWIjHil1hPUF7x
+	 5WR44h/NNgnY6TEK5BInh5y555GwSNF/dkPJn7HWJcdssuibwbRe09FtH/876F1IkO
+	 gNwjGSMMBmQ8Q==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>
+Cc: linux-trace-kernel@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	bpf <bpf@vger.kernel.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Guo Ren <guoren@kernel.org>
+Subject: [PATCH v7 01/36] ftrace: Fix DIRECT_CALLS to use SAVE_REGS by default
+Date: Wed,  7 Feb 2024 00:07:40 +0900
+Message-Id: <170723206048.502590.12669769721979471462.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <170723204881.502590.11906735097521170661.stgit@devnote2>
+References: <170723204881.502590.11906735097521170661.stgit@devnote2>
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <67387cf4-1065-4313-b4c6-054128ba8f3a@topic.nl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 06, 2024 at 03:25:30PM +0100, Mike Looijmans wrote:
-> On 06-02-2024 14:50, Andy Shevchenko wrote:
-> > On Tue, Feb 06, 2024 at 02:33:47PM +0100, Mike Looijmans wrote:
-> > > On 06-02-2024 13:57, Andy Shevchenko wrote:
-> > > > On Tue, Feb 06, 2024 at 07:58:18AM +0100, Mike Looijmans wrote:
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-..
+The commit 60c8971899f3 ("ftrace: Make DIRECT_CALLS work WITH_ARGS
+and !WITH_REGS") changed DIRECT_CALLS to use SAVE_ARGS when there
+are multiple ftrace_ops at the same function, but since the x86 only
+support to jump to direct_call from ftrace_regs_caller, when we set
+the function tracer on the same target function on x86, ftrace-direct
+does not work as below (this actually works on arm64.)
 
-> > You never know what may go wrong in the future :-) That said, I prefer robust
-> > code against non-robust.
-> 
-> Maybe: BUG_ON(!priv->rdata_xfer_busy)
+At first, insmod ftrace-direct.ko to put a direct_call on
+'wake_up_process()'.
 
-Definitely not. Linus T. will scream at us on this.
+ # insmod kernel/samples/ftrace/ftrace-direct.ko
+ # less trace
+.
+          <idle>-0       [006] ..s1.   564.686958: my_direct_func: waking up rcu_preempt-17
+          <idle>-0       [007] ..s1.   564.687836: my_direct_func: waking up kcompactd0-63
+          <idle>-0       [006] ..s1.   564.690926: my_direct_func: waking up rcu_preempt-17
+          <idle>-0       [006] ..s1.   564.696872: my_direct_func: waking up rcu_preempt-17
+          <idle>-0       [007] ..s1.   565.191982: my_direct_func: waking up kcompactd0-63
 
--- 
-With Best Regards,
-Andy Shevchenko
+Setup a function filter to the 'wake_up_process' too, and enable it.
 
+ # cd /sys/kernel/tracing/
+ # echo wake_up_process > set_ftrace_filter
+ # echo function > current_tracer
+ # less trace
+.
+          <idle>-0       [006] ..s3.   686.180972: wake_up_process <-call_timer_fn
+          <idle>-0       [006] ..s3.   686.186919: wake_up_process <-call_timer_fn
+          <idle>-0       [002] ..s3.   686.264049: wake_up_process <-call_timer_fn
+          <idle>-0       [002] d.h6.   686.515216: wake_up_process <-kick_pool
+          <idle>-0       [002] d.h6.   686.691386: wake_up_process <-kick_pool
+
+Then, only function tracer is shown on x86.
+But if you enable 'kprobe on ftrace' event (which uses SAVE_REGS flag)
+on the same function, it is shown again.
+
+ # echo 'p wake_up_process' >> dynamic_events
+ # echo 1 > events/kprobes/p_wake_up_process_0/enable
+ # echo > trace
+ # less trace
+.
+          <idle>-0       [006] ..s2.  2710.345919: p_wake_up_process_0: (wake_up_process+0x4/0x20)
+          <idle>-0       [006] ..s3.  2710.345923: wake_up_process <-call_timer_fn
+          <idle>-0       [006] ..s1.  2710.345928: my_direct_func: waking up rcu_preempt-17
+          <idle>-0       [006] ..s2.  2710.349931: p_wake_up_process_0: (wake_up_process+0x4/0x20)
+          <idle>-0       [006] ..s3.  2710.349934: wake_up_process <-call_timer_fn
+          <idle>-0       [006] ..s1.  2710.349937: my_direct_func: waking up rcu_preempt-17
+
+To fix this issue, use SAVE_REGS flag for multiple ftrace_ops flag of
+direct_call by default.
+
+Link: https://lore.kernel.org/all/170484558617.178953.1590516949390270842.stgit@devnote2/
+
+Fixes: 60c8971899f3 ("ftrace: Make DIRECT_CALLS work WITH_ARGS and !WITH_REGS")
+Cc: stable@vger.kernel.org
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+Tested-by: Mark Rutland <mark.rutland@arm.com> [arm64]
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+---
+ kernel/trace/ftrace.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index b01ae7d36021..c060d5b47910 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -5325,7 +5325,17 @@ static LIST_HEAD(ftrace_direct_funcs);
+ 
+ static int register_ftrace_function_nolock(struct ftrace_ops *ops);
+ 
++/*
++ * If there are multiple ftrace_ops, use SAVE_REGS by default, so that direct
++ * call will be jumped from ftrace_regs_caller. Only if the architecture does
++ * not support ftrace_regs_caller but direct_call, use SAVE_ARGS so that it
++ * jumps from ftrace_caller for multiple ftrace_ops.
++ */
++#ifndef HAVE_DYNAMIC_FTRACE_WITH_REGS
+ #define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT | FTRACE_OPS_FL_SAVE_ARGS)
++#else
++#define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT | FTRACE_OPS_FL_SAVE_REGS)
++#endif
+ 
+ static int check_direct_multi(struct ftrace_ops *ops)
+ {
 
 
