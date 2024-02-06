@@ -1,125 +1,107 @@
-Return-Path: <linux-kernel+bounces-54137-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54138-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 575D984AB60
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:06:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8559884AB61
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:07:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5DEB1F2589D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:06:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C7E01C23753
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:07:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13DF415D1;
-	Tue,  6 Feb 2024 01:06:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCC2D4A15;
+	Tue,  6 Feb 2024 01:07:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="D45K9hca"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QeAa6s+R"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F26310E4;
-	Tue,  6 Feb 2024 01:06:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C8634A06
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 01:07:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707181609; cv=none; b=SxBSmwNYv6DwRBefo8ebRzm01AfKTeirnrqy21IA0zcAZp5y9GChrirhwMoAr+sl+9xMFglP5AeVc5XPr4TlRtoULfKmRkvsDjIFY5rkLj3kq14fh+uB+2aTj5WTlwRjujetZg/e8GfUOodcT+FJAK2DKHccJw8whiypI9Apuh4=
+	t=1707181672; cv=none; b=iShUNS70bVSRpQzM3y7i7g/mGIfutAuDz/qdUcxcFfn1FejEEutkAqR6b05A7Ddtqyiwja3t5/K8DAmAUK5x4+bjLQJovFXOg0hE8MIkjai/x01LCnLd3GKTmUOBenjtJ7KmqabSBFFWqji/Un2GGajE56VTA75FkM/KWN9mgM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707181609; c=relaxed/simple;
-	bh=8brotDgIv/mOm2mHmMZq1YeN7q4v6JJ4y6F71FYbX64=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MrdiQXnHib/4XmseP+fOhNvy5hLy38dyQNKu8klsX3Imc5w/LUcefRho/GIRW21M4JV8lUwcFy/t/1F96XoaNjA13IaqmtV4muoPOs5gHWDRWO7b40dCTxeR86/5ENTdVP72p6mIFmcqbxkM7um/FNEDf0SDoVk6DiYRla6xz2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=D45K9hca; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1707181605;
-	bh=2vDOcQqrXnD/DT/s1m9g+ZZ/YWdvacfHhw9HRCRbVXI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=D45K9hcao5cQV0oSsPK8wHRiIIN1VEH1Vy6r1G22jOBIiFG8j14AeQLoRPnaMagYc
-	 0SMrxahnPfIBmZXMjGv5ywu33YKjAFAiKSaz5heHi0cn6uO3W4aLBdjcKyqVPkAXdF
-	 2iWOpDu+Go+rGX7CnsIQwlFaiuG8A7Sw9pTqjaTZE9cOsU4vBhrfzaPtdmD/iL06K+
-	 z0+oHHjdOgLhov4jO1GQnuvhToeM4hNYs1+ANrJ5WaM31cJnzVCsSeMgDYkhjraP6w
-	 ve7vBAgjS9lhNPpAAUYvWDCHzmcu7lO15cwvAQECUVK5mWwAziIt+jaII+LUnKOxpk
-	 QNI4XQxnIsXpw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	s=arc-20240116; t=1707181672; c=relaxed/simple;
+	bh=DP4FmgXcccO+rK4IKEraucp1wQntMzDreh9T6ETZ8oU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EBlPz23Qt4PmVbTaxQ/CdBQFnWmWGxi6Q9wljDDRrxlLAzK+ARvegPK9KADiizhYrOwQSip/VaprYJlrDJbe2mA0DLkQFXfdaX1vH2B9TjFuX1S+UyIBkeK+bYrWyT3bk6wwhdCtoeuwEPBvmrtXEh6reU0LeyDGVMplWk2idl4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QeAa6s+R; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707181669;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Qx0YFEsgX9UDCD0E+Npx4uOUY3x3FOt3qs6zB+rlWnE=;
+	b=QeAa6s+R9TbrX50hVSrrPBfE9Mcfstrrl6CRMRbzRlKdDsaxi4Gtlu5/6+8DYPKNSHq+YA
+	L/nBsfJQYndg0zyiTN0RUnb6dnvEyBcrZMGFxSMSpyegoms8cpNPOnVTiug8/8jlEEmIMd
+	VCatpFLvQ+5MjbAYXumJK4JfBAwB810=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-114-Hp_jRAt_OQqpQogeRMuzng-1; Mon,
+ 05 Feb 2024 20:07:45 -0500
+X-MC-Unique: Hp_jRAt_OQqpQogeRMuzng-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TTQ7S3np1z4wxx;
-	Tue,  6 Feb 2024 12:06:44 +1100 (AEDT)
-Date: Tue, 6 Feb 2024 12:06:43 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Daniel Vetter <daniel.vetter@ffwll.ch>, Intel Graphics
- <intel-gfx@lists.freedesktop.org>, DRI <dri-devel@lists.freedesktop.org>
-Cc: Dario Binacchi <dario.binacchi@amarulasolutions.com>, Inki Dae
- <inki.dae@samsung.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>, Michael Trimarchi
- <michael@amarulasolutions.com>, Michael Walle <mwalle@kernel.org>, Robert
- Foss <rfoss@kernel.org>
-Subject: Re: linux-next: manual merge of the drm-misc tree with Linus' tree
-Message-ID: <20240206120643.1d30764c@canb.auug.org.au>
-In-Reply-To: <20240206115956.4570e9b1@canb.auug.org.au>
-References: <20240206115956.4570e9b1@canb.auug.org.au>
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 491113C11C62;
+	Tue,  6 Feb 2024 01:07:45 +0000 (UTC)
+Received: from [10.22.17.212] (unknown [10.22.17.212])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id D17DBC0FDEF;
+	Tue,  6 Feb 2024 01:07:44 +0000 (UTC)
+Message-ID: <166aca9d-d4f2-4057-9fc4-e551114e97b8@redhat.com>
+Date: Mon, 5 Feb 2024 20:07:44 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/R5MrDFgjJgkcfwl1oGYogXX";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH-wq v3 0/4] workqueue: Enable unbound cpumask update on
+ ordered workqueues
+Content-Language: en-US
+To: Tejun Heo <tj@kernel.org>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org,
+ Juri Lelli <juri.lelli@redhat.com>, Cestmir Kalina <ckalina@redhat.com>,
+ Alex Gladkov <agladkov@redhat.com>, Phil Auld <pauld@redhat.com>,
+ Costa Shulyupin <cshulyup@redhat.com>
+References: <20240205194602.871505-1-longman@redhat.com>
+ <ZcE8pUuHfa7gVZs6@slm.duckdns.org> <ZcF3qmion7H6qyYY@slm.duckdns.org>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <ZcF3qmion7H6qyYY@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
---Sig_/R5MrDFgjJgkcfwl1oGYogXX
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On 2/5/24 19:04, Tejun Heo wrote:
+> On Mon, Feb 05, 2024 at 09:53:09AM -1000, Tejun Heo wrote:
+>> On Mon, Feb 05, 2024 at 02:45:58PM -0500, Waiman Long wrote:
+>>>   v3:
+>>>    - [v2] https://lore.kernel.org/lkml/20240203154334.791910-1-longman@redhat.com/
+>>>    - Drop patch 1 as it has been merged into the for-6.9 branch.
+>>>    - Use rcu_access_pointer() to access wq->dfl_pwq.
+>>>    - Use RCU protection instead of acquiring wq->mutex in
+>>>      apply_wqattrs_cleanup().
+>> Looks like we raced each other. I'll wait for v4.
+> BTW, please don't bother to handle __WQ_ORDERED being cleared. We are very
+> close to removing the implicit ORDERED promotion, so we should be able to
+> apply the patch to remove the distinction between explicitly and implicitly
+> ordered workqueues.
 
-On Tue, 6 Feb 2024 11:59:56 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> Today's linux-next merge of the drm-misc tree got a conflict in:
->=20
->   drivers/gpu/drm/bridge/samsung-dsim.c
->=20
-> between commit:
->=20
->   ff3d5d04db07 ("drm: bridge: samsung-dsim: Don't use FORCE_STOP_STATE")
->=20
-> from Linus' tree and commit:
->=20
->   b2fe2292624a ("drm: bridge: samsung-dsim: enter display mode in the ena=
-ble() callback")
->=20
-> from the drm-misc tree.
->=20
-> I fixed it up (see below, please check) and can carry the fix as
-> necessary. This is now fixed as far as linux-next is concerned, but any
-> non trivial conflicts should be mentioned to your upstream maintainer
-> when your tree is submitted for merging.  You may also want to consider
-> cooperating with the maintainer of the conflicting tree to minimise any
-> particularly complex conflicts.
+OK, I saw your new commit 3bc1e711c26b ("workqueue: Don't implicitly 
+make UNBOUND workqueues w/ @max_active==1 ordered") in the for-6.9 
+branch. Will rebase my patch series on top of that and make the 
+necessary modification.
 
-I changed my mind and just used the latter version of this file.
---=20
-Cheers,
-Stephen Rothwell
+Thanks,
+Longman
 
---Sig_/R5MrDFgjJgkcfwl1oGYogXX
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXBhiMACgkQAVBC80lX
-0GxeKAgAkwQiFzWc9h4CfzDkViFqu8H/3j8jQCOL2MrI0BRFd//8tfIgFyEx7a3Y
-NM6ij5nZP/7LrEELmOe7J/L8xBjhJel34x+aoKXlRFVtgUpauNQLYf8f4vL7CE1F
-hP09q3GOWEMo9q+FyhmlZBBE7NDYFXtSPYm2pedIKe0VxrJtnMREtnn4nZ+vsaQn
-wxdaWppYiN7eSLHc8dKE85tjr3sn6ILBDMLoRWgDX9EENec2Tnhc+HD7+cmt/OhF
-yUiyenHVxTZwjeyUd0SPgT0jZHtklj5tRvO2/kT2xp3NC7yAgptFunRdtVBGbMoz
-tSZeRFmfZOsf1V45x4vkJrSD+fgeCg==
-=L2LP
------END PGP SIGNATURE-----
-
---Sig_/R5MrDFgjJgkcfwl1oGYogXX--
 
