@@ -1,79 +1,57 @@
-Return-Path: <linux-kernel+bounces-54537-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93BB584B074
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:55:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C214E84B088
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:00:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6F251C20FE3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:55:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30BAAB229DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:00:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3702F12D76D;
-	Tue,  6 Feb 2024 08:54:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="epbaG7tz"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5571912C541;
+	Tue,  6 Feb 2024 08:59:58 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0760312C55E
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 08:54:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0C0B12D14B;
+	Tue,  6 Feb 2024 08:59:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707209674; cv=none; b=bgHnUNMWCSL4r0xuVmj9jsraQzIEsqJPc7aukPPMgU4b7cXeT2QYqsQb+0Ja3tUG9NwSo7VW4jZfutq0bNyJ+9K/J0jjtgcFn+Nma9q/kpQuBbPGLbG9p7PrS72v2J4NFxfP+AfsJoT11HUps/PYxNJybIw9Tw0zwauzNbWHwSo=
+	t=1707209997; cv=none; b=TRepieV/Wwe1WDf1MklNKokMzapl6Qg+V7Srp5F1KwH2nLqcQGJXGnUT3oXGz8OT0zFCHGl0LzsuDJHE1gNFZbD7/DXVhQGq+c14losiO9CKpedS0D7J9+6xAlb+7+Piz8LXr2c10y4iKKfXMjjVUptff0XZmZYNXLjiqKJNJoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707209674; c=relaxed/simple;
-	bh=cyh9GNwkSeiWX8VVWJet6cmrStrv1Y1BhHYKMAKCy08=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DMGCbMeOVrpauzykUoZ4Ut3OQEadUNHfZipvSXxeDlVTUDcii04fPIMFnIfnMsYVXA468KKr80JimO+U22f7mf4Krt8XykB9Y3klmTbqszP8OuH2rdDFr3b6e/WJE49tmIXCJ/IOUG3wo94CNVHwbFwtbyo5M61BHfGAEpxSheI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=epbaG7tz; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707209672;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cyh9GNwkSeiWX8VVWJet6cmrStrv1Y1BhHYKMAKCy08=;
-	b=epbaG7tzP1Y86tJRGGDByEufoYUDjI2MPhXPEExClam+z1RlM9jwADMLYOUpO3SaDfjpg4
-	VzTxSs4G57v/qEK6aUCKoI1YHQNUp1GBSdPJkTRhL24c7nV2mb5otQvBOEu+/1GbjnDqmE
-	Gb/fxhqpVGJLW5VOzXeUdQGYtLTJcyk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-222-b5yTF-sQNnSYpfbUNxo2oQ-1; Tue, 06 Feb 2024 03:54:29 -0500
-X-MC-Unique: b5yTF-sQNnSYpfbUNxo2oQ-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EFF2584AC60;
-	Tue,  6 Feb 2024 08:54:28 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 5572D492BF0;
-	Tue,  6 Feb 2024 08:54:28 +0000 (UTC)
-From: Paolo Bonzini <pbonzini@redhat.com>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: pbonzini@redhat.com,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	kirill.shutemov@linux.intel.com,
-	ndesaulniers@google.com,
-	morbo@google.com,
-	justinstitt@google.com,
+	s=arc-20240116; t=1707209997; c=relaxed/simple;
+	bh=LSJURmfYmqv5RFHR10D+DrFUTJ9KA2W9tOGt9KbH8NI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Tk9FbxSN9Se0nUN41EhlbKbf3lGhHwy5dNnuwAZB4/5LvOcrmkdJO4qQP4rKZ0LKr0hEGzCVI7kyOF/ug2rRAEd4ZgxsV7LnBvjEWbB4s5JJHy3d80YZyvB5Mw18MrdIWymvP6MOyMoOgz6IJg6WRZf8HYI7JlQAjrcFoBWdH0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TTcdJ18N3z4f3khn;
+	Tue,  6 Feb 2024 16:59:48 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 90DC61A027B;
+	Tue,  6 Feb 2024 16:59:52 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgCXaBEG9cFldA+QDA--.34552S4;
+	Tue, 06 Feb 2024 16:59:52 +0800 (CST)
+From: linan666@huaweicloud.com
+To: song@kernel.org,
+	mariusz.tkaczyk@linux.intel.com,
+	shli@fb.com,
+	neilb@suse.com
+Cc: linux-raid@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev,
-	patches@lists.linux.dev
-Subject: Re: [PATCH] x86/coco: Define cc_vendor without CONFIG_ARCH_HAS_CC_PLATFORM
-Date: Tue,  6 Feb 2024 03:54:26 -0500
-Message-Id: <20240206085426.3262128-1-pbonzini@redhat.com>
-In-Reply-To: <20240202-provide-cc._5Fvendor-without-arch._5Fhas._5Fcc._5Fplatform-v1-1-09ad5f2a3099@kernel.org>
-References: 
+	linan666@huaweicloud.com,
+	yukuai3@huawei.com,
+	yi.zhang@huawei.com,
+	houtao1@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH v6 0/9] bugfix of MD_CLOSING and clean up md_ioctl()
+Date: Tue,  6 Feb 2024 16:55:02 +0800
+Message-Id: <20240206085511.2841555-1-linan666@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,11 +59,56 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+X-CM-TRANSID:cCh0CgCXaBEG9cFldA+QDA--.34552S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrurW8KF4fAFy3tryUWFyfWFg_yoWkuFc_WF
+	Z5Aas8Wr18CF43Ka45ZF15ArWUtrW09ryUJF47Cr4ayw1xtw15ZFWDJFZxXw1xXayI9FnY
+	9r4DAa1Iyan7XjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbf8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+	Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+	0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+	64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+	Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
+	YxC7M4IIrI8v6xkF7I0E8cxan2IY04v7M4kE6xkIj40Ew7xC0wCF04k20xvY0x0EwIxGrw
+	CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
+	14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
+	IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxK
+	x2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267
+	AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbSApUUUUUU==
+X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
 
-Queued, thanks.
+From: Li Nan <linan122@huawei.com>
 
-Paolo
+Changes in v6:
+ - in patch 2, return directly.
+ - in patch 4, return directly in case GET_DISK_INFO and GET_ARRAY_INFO.
+ - in patch 7, rewrite commit message.
+ - add patch 8, clean up openers check.
 
+Changes in v5:
+ - add patches 1-4 to clean up md_ioct(), pathc 4 can help us clean up
+   local variable 'clear_md_closing'.
+ - in patches 5 and 7, clean up local variable 'clear_md_closing'.
+
+By the way, md_ioctl() is not readable now, I wanna to re-write it later
+to make it only have one 'switch' like other drivers.
+
+Li Nan (9):
+  md: merge the check of capabilities into md_ioctl_valid()
+  md: changed the switch of RAID_VERSION to if
+  md: clean up invalid BUG_ON in md_ioctl
+  md: return directly before setting did_set_md_closing
+  md: Don't clear MD_CLOSING when the raid is about to stop
+  md: factor out a helper to sync mddev
+  md: sync blockdev before stopping raid or setting readonly
+  md: clean up openers check in do_md_stop() and md_set_readonly()
+  md: check mddev->pers before calling md_set_readonly()
+
+ drivers/md/md.c | 190 ++++++++++++++++++++++++------------------------
+ 1 file changed, 94 insertions(+), 96 deletions(-)
+
+-- 
+2.39.2
 
 
