@@ -1,170 +1,150 @@
-Return-Path: <linux-kernel+bounces-55442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55444-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A5FE84BCBE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:11:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 577BC84BCC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:12:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A572B25C7A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:10:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D323B1F224B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:12:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FF6011702;
-	Tue,  6 Feb 2024 18:10:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D89011CAF;
+	Tue,  6 Feb 2024 18:11:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FgvvNVaG"
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="fN9o3gxl"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5665BDF42
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 18:10:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABF48DF5C;
+	Tue,  6 Feb 2024 18:11:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707243047; cv=none; b=a07XImC1kunEVCtGDvnGPMz5zIK/HZDSJQGh/LBqAgAFBhmy5if2DCgCAc9XWoOUUptI0CGBjKJOypRcQki5Hk7jTftCoxnIPYWW7wszqAL4CfiZlFtn32EYmQgcAjtP6ZqQ7XLzhz8SAcJp83ptuOA22tPzzsBLgmnU4oBVtxs=
+	t=1707243116; cv=none; b=X5iYTCGVKQur5hL1kblyjAE/QfGZIsVZ/G4NfKNbk5Lg6WoeQDyuTNxYFC91KmBznSq20gL5EbZ2NlwDpwfhOwy+c9H16kKiEYJLURvqk9VTQWRcvF7NzW4lFj5q8Dd4GeWuDsUrtpYmlXRW13KLVxO9aDy/7ZZVALqJhrB32Ts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707243047; c=relaxed/simple;
-	bh=+K4hkLAVOGFO0w9WP+eWJkb0HlQJo+4K5nbl+fFFDd0=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=T4+7lolLD/9JnmvF+G95ZYgvCCh68Uau1rZrU0+l3k0RTEy+05KGc2J96nEQ1NtsFsduiL43TupwNjhEoc9f11/lnr6kHcfmuQPBFjmGMkSYh0W3Adzxyf3pw09RJKZzlgSFlqn6Lufu7jb0Hm0SG+6bV49CSNadq27vz7JzK+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FgvvNVaG; arc=none smtp.client-ip=209.85.215.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5ca5b61c841so4213989a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 10:10:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707243045; x=1707847845; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=l5PpeFFqdP626r1RWYoCpd0vGeqNqbDwh/mrIllBBs0=;
-        b=FgvvNVaGjmIXER1pWm0mJz7IZdvsjRiBc9IijX8SzzB5iXmJxhRuVTtQ96w0lkrBBN
-         rkt4C9H9+nYzsWpbuSOIEhuwRW1egFwyWTwx/+MyddsDqR5OKHKqweN3ryWaGxx2elBZ
-         RW00EZFQdTIkOwQRmCJRxdQEGO21sqaTsoi25wHt71o5XtkCBQnC3p1qPk0GJHcItP0S
-         YCkV7VVOh5QTexBKz/x2rXYpd9+/POp/bT2eeNWhaE61+znQCAkwVLmH1px/OVeJ7doP
-         9Fj4XLU5tyMuWNQnwWT1jbkdrA69rwoiqMYiEV4pFTto1Xe/+H660r1V0GHf/MTaBH+Q
-         1PdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707243045; x=1707847845;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=l5PpeFFqdP626r1RWYoCpd0vGeqNqbDwh/mrIllBBs0=;
-        b=XnVPHmvsA1xgaSUUHPSWHsJMjbQ+ynMEVw7UKXnKCbAc1v62ooOLcXjs5sBLTERi2e
-         cDywT5U25tuTtaF68eCWzP0EuL3B0FVmhOOq5j+dY6vHKgy1lMH7w+s5Ov62o4qyz8nc
-         PYgwi7rnqoYRtzxwhd+x3wxRzcdSK978TXXQM8lQdddu+e02wJkqxYcPJYpBLLfGpsKq
-         w3bIIwiyv3k1ySsC/uXlsAq6M78d98sumR29JoFaT/JPXdFes0yGABaH35Y3W/Phwlmv
-         NZ+WwuNUMR0yLBvavPvD7+iX0HU7ecLwzIkVgEbbefqW/I7ZVz+lEDvMrtPgJj5KKzRE
-         Oc+A==
-X-Gm-Message-State: AOJu0YxEVjQhmkciSPUX7AQQdjxueykDeo3+CmtaMSdrf9/Tqjly7xrA
-	4aIqCoX41yJNKo9VkPEDdnMk+1qXbtj8ZUxOfJMuzH0dB0psCzWyWPisoCGawfyLm25C6mwhRZT
-	SRA==
-X-Google-Smtp-Source: AGHT+IHv/cfRhAxqlasS5Lb0Ej71aI4uOvnC4FgqsJn62AiiXiLOJkXlvzZYOYZ1hv3zAcbaNW4EBX3qdYM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90b:4e8d:b0:295:c117:d9e9 with SMTP id
- sr13-20020a17090b4e8d00b00295c117d9e9mr597pjb.4.1707243045534; Tue, 06 Feb
- 2024 10:10:45 -0800 (PST)
-Date: Tue, 6 Feb 2024 10:10:44 -0800
-In-Reply-To: <ZcJSmNRLbKacPfoq@yilunxu-OptiPlex-7050>
+	s=arc-20240116; t=1707243116; c=relaxed/simple;
+	bh=0xCltA7q5mR+wvdJo77KvomyKBNbq4PakOFRBQWRUlo=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=hM6qNgmy8Iq9xqRLA5x6dy9dIDvQCbabORjwu6i19UaP8s+eTmkB+63brqtqHd0N0nSG8B0IEHmIGs3WFiMYjb22+cGt7BlF1Pr0OugXpSp1UYdD4ycPTkFveE2n1r0epPyHRXEM6kxvBmgwcACKCPAyJyMADNq7hiS+hu74Y1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=fN9o3gxl; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+	s=s31663417; t=1707243098; x=1707847898; i=wahrenst@gmx.net;
+	bh=0xCltA7q5mR+wvdJo77KvomyKBNbq4PakOFRBQWRUlo=;
+	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
+	 In-Reply-To;
+	b=fN9o3gxlcphThgIoTQbySPzUKLbbsi8VcWQ6xHxGScSJggm6ELjI/5HDK+dObCF8
+	 3hRPzNwplGHEBrsWjbC3baAqdE89F+fQOVIrYvaeeatnKDZxnY5DYGM7FNk3D54lK
+	 duwOCZZ6WmlrCOZEWKUqdKz3R0vzFNhng2a5zzECXfGV5vi5Yn+VEuRQ0A7yEu/NW
+	 R3L7gQ49Fka0hGEcrSoMa1f4rC3Ri9+smnzYBx3x2mViZ0Cc1lnJsT8PLs7byp+3Q
+	 Z1rcJJ0uvfPsCtfHUUlcU5FdhvxLP7s/B/8ih+4I5u9EMFtUl7vRpQ6J/FXkW9my1
+	 vOQpyvgsRvoXrX0cKQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.1.167] ([37.4.248.43]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1M26r3-1rZtxL28Sn-002XWj; Tue, 06
+ Feb 2024 19:11:38 +0100
+Message-ID: <956e0b7c-b1b2-4eaa-bb6d-da6f9dc2335d@gmx.net>
+Date: Tue, 6 Feb 2024 19:11:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240111020048.844847-1-seanjc@google.com> <20240111020048.844847-8-seanjc@google.com>
- <ZcJSmNRLbKacPfoq@yilunxu-OptiPlex-7050>
-Message-ID: <ZcJ2JG54O0g07e-P@google.com>
-Subject: Re: [PATCH 7/8] KVM: x86/mmu: Alloc TDP MMU roots while holding
- mmu_lock for read
-From: Sean Christopherson <seanjc@google.com>
-To: Xu Yilun <yilun.xu@linux.intel.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	David Matlack <dmatlack@google.com>, Pattara Teerapong <pteerapong@google.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 02/12] bcm2835-dma: Add proper 40-bit DMA support
+Content-Language: en-US
+From: Stefan Wahren <wahrenst@gmx.net>
+To: Dave Stevenson <dave.stevenson@raspberrypi.com>,
+ Andrea della Porta <andrea.porta@suse.com>
+Cc: Vinod Koul <vkoul@kernel.org>,
+ Florian Fainelli <florian.fainelli@broadcom.com>, Ray Jui
+ <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, dmaengine@vger.kernel.org,
+ linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
+ Dom Cobley <popcornmix@gmail.com>, Phil Elwell <phil@raspberrypi.com>
+References: <cover.1706948717.git.andrea.porta@suse.com>
+ <eeb94204c30c2182f5ffd3ec083c04399ecdee32.1706948717.git.andrea.porta@suse.com>
+ <8736c115-e11c-41ca-85eb-7cd19a205068@gmx.net>
+ <CAPY8ntCEvsTJwoEBYc7JsTaYfdMURhmytvvVMcLVNBkmdTNcZQ@mail.gmail.com>
+ <42e760f9-8304-4237-bb68-54c98eb7fcb9@gmx.net>
+In-Reply-To: <42e760f9-8304-4237-bb68-54c98eb7fcb9@gmx.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:nllgblqBmJF4zoJgDkTdDxoz/jEocWqLZhyH92vrzLMmpjtK34m
+ IiNTqRD0hh4FUybvEsZgpu90X1qWq7P3L3Wgl/qkDh0AHIDyWB33PjNd0iTLQQZfEHI8g0N
+ hMpuKJWkIIwg47fpy7TnEM6bmdREJBiU2lB9Muj4CPE7LSJ2ekHxCjwFEZZTma1pJbsCSfb
+ XSym7HdR+wBzWj66qYIyA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:ipCYQAYl42Y=;9awlrRFIDrjhwjZwhMLwIKp+pyF
+ 93QqdbxqN3frwaNwGiCFMMl8hJZNZzkZsHfbje7RPtTixAct0rBLX9BRQ9leHZ4SxcqYUPcHA
+ 2FVVa8pdxKxCis1W8N2NWd8MqRFknRfR+fuPbmnmxvsn28wbKnfifXx/zpt4wXBNiMuzx4VTb
+ GScP362CD14hQ98tqS8hslR6xLOmslGNm69iiajVysJdTxNXOdEjdUHSdktrOFdP1/IBI5JEF
+ b5+x1WFmJJ0kg1bmQhxiqD2+RrospR6nFoWZweAWF6175Sxvp1g/0Vfnbhop0NsOnvm/VGvgS
+ q+ju+UpTC1kj34Jdnu5COx4p16DblCUrNfe3BvVPYduedQKofLWXcS9VAo9GwTkypIxCFsZun
+ QZXyQhenfaf14hSXpAVsW/LwqcBpa1/2nhkTlIGwFj9QH8mRPq0OBF5vaALqca22gpl2LxCN1
+ CdAeZZW2ePmqQQzDvXJV1oZTLcDW+2U3pckkTfSBHJc50T6c5hURFM/MtLprPjwnHeQ3fC2CA
+ HMUtslcK/k8KJq7co7DU1o5FNTpvEpKhdibFKWxomEunETqy9uBYhTD0w0FcB8+L6Uezac74S
+ zUKZfaMmagT/12Vkg5wweTEyURGeNiQnjuRgIqjSA21f5POTeqOo5tQCnMVJed20heuz7W6rG
+ DLUHs6DnIt6cLDRyXzFX0Ig2L9Td8jlPxEfojWzDciYYsr9yX5OeMEnXkNnJI4ePc8S1f8lnU
+ vj+1S6aBl66M0mmjpu10BDT4TZhVCnR+59zeXAtJcsrNbhcoNzGXjF57XcMU5CRWyzUX6rpiw
+ wVPlF9qj1g6fTwZ19bQH5lGFN3PRkGRtTQYZykgYbdBWo=
 
-On Tue, Feb 06, 2024, Xu Yilun wrote:
-> On Wed, Jan 10, 2024 at 06:00:47PM -0800, Sean Christopherson wrote:
-> > ---
-> >  arch/x86/kvm/mmu/tdp_mmu.c | 55 +++++++++++++++-----------------------
-> >  1 file changed, 22 insertions(+), 33 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> > index 9a8250a14fc1..d078157e62aa 100644
-> > --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> > +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> > @@ -223,51 +223,42 @@ static void tdp_mmu_init_child_sp(struct kvm_mmu_page *child_sp,
-> >  	tdp_mmu_init_sp(child_sp, iter->sptep, iter->gfn, role);
-> >  }
-> >  
-> > -static struct kvm_mmu_page *kvm_tdp_mmu_try_get_root(struct kvm_vcpu *vcpu)
-> > -{
-> > -	union kvm_mmu_page_role role = vcpu->arch.mmu->root_role;
-> > -	int as_id = kvm_mmu_role_as_id(role);
-> > -	struct kvm *kvm = vcpu->kvm;
-> > -	struct kvm_mmu_page *root;
-> > -
-> > -	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, as_id) {
-> > -		if (root->role.word == role.word)
-> > -			return root;
-> > -	}
-> > -
-> > -	return NULL;
-> > -}
-> > -
-> >  int kvm_tdp_mmu_alloc_root(struct kvm_vcpu *vcpu)
-> >  {
-> >  	struct kvm_mmu *mmu = vcpu->arch.mmu;
-> >  	union kvm_mmu_page_role role = mmu->root_role;
-> > +	int as_id = kvm_mmu_role_as_id(role);
-> >  	struct kvm *kvm = vcpu->kvm;
-> >  	struct kvm_mmu_page *root;
-> >  
-> >  	/*
-> > -	 * Check for an existing root while holding mmu_lock for read to avoid
-> > +	 * Check for an existing root before acquiring the pages lock to avoid
-> >  	 * unnecessary serialization if multiple vCPUs are loading a new root.
-> >  	 * E.g. when bringing up secondary vCPUs, KVM will already have created
-> >  	 * a valid root on behalf of the primary vCPU.
-> >  	 */
-> >  	read_lock(&kvm->mmu_lock);
-> > -	root = kvm_tdp_mmu_try_get_root(vcpu);
-> > -	read_unlock(&kvm->mmu_lock);
-> >  
-> > -	if (root)
-> > -		goto out;
-> > +	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, as_id) {
-> > +		if (root->role.word == role.word)
-> > +			goto out_read_unlock;
-> > +	}
-> >  
-> > -	write_lock(&kvm->mmu_lock);
-> 
-> It seems really complex to me...
-> 
-> I failed to understand why the following KVM_BUG_ON() could be avoided
-> without the mmu_lock for write. I thought a valid root could be added
-> during zapping.
-> 
->   void kvm_tdp_mmu_zap_invalidated_roots(struct kvm *kvm)
->   {
-> 	struct kvm_mmu_page *root;
-> 
-> 	read_lock(&kvm->mmu_lock);
-> 
-> 	for_each_tdp_mmu_root_yield_safe(kvm, root) {
-> 		if (!root->tdp_mmu_scheduled_root_to_zap)
-> 			continue;
-> 
-> 		root->tdp_mmu_scheduled_root_to_zap = false;
-> 		KVM_BUG_ON(!root->role.invalid, kvm);
+Am 06.02.24 um 19:08 schrieb Stefan Wahren:
+> Hi Dave and Andrea,
+>
+> Am 06.02.24 um 17:31 schrieb Dave Stevenson:
+>> Hi Stefan and Andrea
+>>
+>> On Mon, 5 Feb 2024 at 18:50, Stefan Wahren <wahrenst@gmx.net> wrote:
+>>> Hi Andrea,
+>>>
+>>> [add Dave]
+>>>
+>>> Am 04.02.24 um 07:59 schrieb Andrea della Porta:
+>>>> From: Phil Elwell <phil@raspberrypi.org>
+>>>>
+>>>> BCM2711 has 4 DMA channels with a 40-bit address range, allowing them
+>>>> to access the full 4GB of memory on a Pi 4.
+>>>>
+>>>> Cc: Phil Elwell <phil@raspberrypi.org>
+>>>> Cc: Maxime Ripard <maxime@cerno.tech>
+>>>> Signed-off-by: Andrea della Porta <andrea.porta@suse.com>
+>>> mainlining isn't that simple by sending just the downstream patches to
+>>> the mailing list. In many cases there reasons why this hasn't been
+>>> upstreamed yet.
+>>>
+>>> In my opinion just this feature is worth a separate patch series. In
+>>> 2021 i already send an initial version, which tried to implement it
+>>> in a
+>>> cleaner & maintainabler way [1]. In the meantime Dave Stevenson from
+>>> Raspberry Pi wrote that he also wanted to work on this. Maybe you want
+>>> to work on this together?
+>> Yes, I'm looking at reworking Stefan's series to work on Pi4 & Pi5 as
+>> it's needed for HDMI audio (and other things) on those platforms which
+>> I'm working to upstream.
+>>
+>> I was getting weirdness from the sdhci block when I was last looking
+>> at it, so it was just proving a little trickier than first thought.
+>> Hopefully I'll get some time on it in the next couple of weeks.
+> i must confess that my series was just a draft to see that the general
+> approach would be accepted. Yes, it's possible that there are issues :-(
+>
+> Maybe i can help you a little bit by taking care of first two patches
+> (node name fix & YAML conversion)?
+Forget about this, it's already done
+>
+> Regards
+>> =C2=A0=C2=A0 Dave
+>>
+>>> [1] -
+>>> https://lore.kernel.org/linux-arm-kernel/13ec386b-2305-27da-9765-8fa3a=
+d71146c@i2se.com/T/
+>>>
+>
 
-tdp_mmu_scheduled_root_to_zap is set only when mmu_lock is held for write, i.e.
-it's mutually exclusive with allocating a new root.
-
-And tdp_mmu_scheduled_root_to_zap is cleared if and only if kvm_tdp_mmu_zap_invalidated_roots
-is already set, and is only processed by kvm_tdp_mmu_zap_invalidated_roots(),
-which runs under slots_lock (a mutex).
-
-So a new, valid root can be added, but it won't have tdp_mmu_scheduled_root_to_zap
-set, at least not until the current "fast zap" completes and a new one beings,
-which as above requires taking mmu_lock for write.
 
