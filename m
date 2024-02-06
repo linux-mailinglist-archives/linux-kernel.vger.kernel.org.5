@@ -1,145 +1,129 @@
-Return-Path: <linux-kernel+bounces-55362-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55363-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86EA984BBBE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:23:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE90F84BBC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:23:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B46931C226C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:23:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9C18286D7C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:23:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54D238F61;
-	Tue,  6 Feb 2024 17:23:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ADC9D51A;
+	Tue,  6 Feb 2024 17:23:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="P0UbiIuB"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VbH/xjJY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E29958F68;
-	Tue,  6 Feb 2024 17:23:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88E4CCA4A;
+	Tue,  6 Feb 2024 17:23:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707240213; cv=none; b=Q3foSvEmsRcIL49pAvhi0m/NVMi7UfJ196wdpJp9Kc4tuwJJfddyldUE3cyLFVNGDY7fYG4Wmj7vr0K3sX6XOx/88fgRBErbFKiw8++a8/YyS9QrkM4AeX5fPcjzlkFWSsxlxMLXQz++SbkmY5LytXx0xXtwJR0iUWImvUHsOEs=
+	t=1707240217; cv=none; b=W+NRZ+NbhvI6LkVxj25VuVzbT6bhH9pEyLGEyYuHKp8kyj0CisKCFo3AfoSS34wZtBlDHyTkollysPsYrt66B6rULPmCtx4BO2wsJ5XVIy8DiM9YRN34EW6q3ZiDFJqUG0njBOHACavmpRRg9whkJEW+vs5ebUcJ3iT9F5L3A1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707240213; c=relaxed/simple;
-	bh=8JZuQFl5Ktp+sBXs223hELh4OCBn2C06QW6nfIbxPBA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lkA7T2qeAO2Cp5qL1hH+/bL/TBJobG/I0/VUMKrMw0SgvwkyFbPAmz/awy1b4O6XnBtTtCgD55wBEqwD8AxQ3voT7+hxt2ZJz8DyYDUYYpjvX9+Qoc94FpDo8IUge0FcjEw9ZSRtligiQVgeauwCSzzE45FdWqmfbwAQffPvm74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=P0UbiIuB; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707240212; x=1738776212;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=8JZuQFl5Ktp+sBXs223hELh4OCBn2C06QW6nfIbxPBA=;
-  b=P0UbiIuB5BoDOP76geca/1kQpBTs0p/ndiSnuIV5TdAJJBlt1lNJtCEO
-   3PL9JXwHMYMi3m+I1CduNSFHQdO90H8e8n/Zyv1LBL+Fufz6xFbGgsj0+
-   myF8PDRWI6c2P2sOPloOOo3g+/Guyy2o4OTgDYTa9zjQQZKjDY3LEy1lv
-   XLUVDtx7IHWKbR2Rc9kUObSajidKwTaCW56w9tlZ1R5VbpH/5Nn4Vtz7M
-   fMV7Rm2DYwrjR92mB92RKEAalNwIlm31Uakx1eRbIYzeIMwLcGISumzQJ
-   FTn0linDn5anhb/Z3oFCINTDAg5hv+VTNuUrL4kbKps4sDpyw3Fxmnpey
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="950189"
-X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
-   d="scan'208";a="950189"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 09:23:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
-   d="scan'208";a="5678183"
-Received: from djiang5-mobl3.amr.corp.intel.com (HELO [10.246.113.99]) ([10.246.113.99])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 09:23:30 -0800
-Message-ID: <f1935db3-14a5-443d-8994-f24e3cd8b98f@intel.com>
-Date: Tue, 6 Feb 2024 10:23:29 -0700
+	s=arc-20240116; t=1707240217; c=relaxed/simple;
+	bh=po8vFxWrgnIMI30IcGK3wKjOx+diDmMTZZJBoYh+eQs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=ptp/Ub1Vh+vRM3vexZNK4ipHEDE4MBnoiODARqM4nuUtT/wjZ76mPTUIrQIrF+NnmC6p2iZs6KhXvKQInMbbFWjvX9gXMgBQ/zzosX3e0m+o4wVJzj3LBZJ2llRSs9BwTTv91vEvUg1DrR7Ikdkklf/tDOvTariT/aj0KJcAzu0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VbH/xjJY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C145DC433F1;
+	Tue,  6 Feb 2024 17:23:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707240217;
+	bh=po8vFxWrgnIMI30IcGK3wKjOx+diDmMTZZJBoYh+eQs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=VbH/xjJYNUgcSHYX8q6R3XOgMBMYdLFz0wwh7u9in+aDxvfieDaQsfcKyvc8IJljm
+	 b4KjHmApQTFpV3dO3iDbgzIq452iChe4Hlh+NbWkOfvbUZAwcqMJKOmdrdWJDvx820
+	 yGKAU6o3UzpUqJtxSEDdVVdgjfhrjOOzt539Zz72GbRfzqXZni2RnBmRWm0weRDqIa
+	 abarX5VsT/PfIoUpx71JSSklbKAA2HtBv69vFwRwxqV13L9xCWMblKCxtAmGpAIqwi
+	 8sqKs24ZwA9C+e3TEvivW9S6Jps4z6qQAk8w70V+oieQDehciCMb6nvmk5plKPIwiL
+	 i1EveBd1FnZ6A==
+Date: Tue, 6 Feb 2024 11:23:35 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: "Wang, Qingshun" <qingshun.wang@linux.intel.com>
+Cc: linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-acpi@vger.kernel.org, chao.p.peng@linux.intel.com,
+	erwin.tsaur@intel.com, feiting.wanyan@intel.com,
+	qingshun.wang@intel.com, "Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, James Morse <james.morse@arm.com>,
+	Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Jonathan Cameron <jonathan.cameron@huawei.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Ira Weiny <ira.weiny@intel.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+	Oliver O'Halloran <oohall@gmail.com>,
+	Miaohe Lin <linmiaohe@huawei.com>,
+	Shiju Jose <shiju.jose@huawei.com>,
+	Adam Preble <adam.c.preble@intel.com>, Li Yang <leoyang.li@nxp.com>,
+	Lukas Wunner <lukas@wunner.de>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+	Robert Richter <rrichter@amd.com>, linux-kernel@vger.kernel.org,
+	linux-cxl@vger.kernel.org, linux-edac@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] PCI/AER: Store more information in aer_err_info
+Message-ID: <20240206172335.GA872811@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2 v3] cleanup: Add cond_guard() to conditional guards
-Content-Language: en-US
-To: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Dan Williams <dan.j.williams@intel.com>, linux-kernel@vger.kernel.org
-Cc: linux-cxl@vger.kernel.org, Jonathan Cameron
- <Jonathan.Cameron@huawei.com>, Ingo Molnar <mingo@kernel.org>,
- Ira Weiny <ira.weiny@intel.com>
-References: <20240206121301.7225-1-fabio.maria.de.francesco@linux.intel.com>
- <20240206121301.7225-2-fabio.maria.de.francesco@linux.intel.com>
-From: Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20240206121301.7225-2-fabio.maria.de.francesco@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2rfnevhnhylik4r6smr56uunsxweo7s5elo65sjhiztvxnr6bq@5fcyv22zxyyp>
 
+On Wed, Feb 07, 2024 at 12:41:41AM +0800, Wang, Qingshun wrote:
+> On Mon, Feb 05, 2024 at 05:12:31PM -0600, Bjorn Helgaas wrote:
+> > On Thu, Jan 25, 2024 at 02:27:59PM +0800, Wang, Qingshun wrote:
+> > > When Advisory Non-Fatal errors are raised, both correctable and
+> > > uncorrectable error statuses will be set. The current kernel code cannot
+> > > store both statuses at the same time, thus failing to handle ANFE properly.
+> > > In addition, to avoid clearing UEs that are not ANFE by accident, UE
+> > > severity and Device Status also need to be recorded: any fatal UE cannot
+> > > be ANFE, and if Fatal/Non-Fatal Error Detected is set in Device Status, do
+> > > not take any assumption and let UE handler to clear UE status.
+> > > 
+> > > Store status and mask of both correctable and uncorrectable errors in
+> > > aer_err_info. The severity of UEs and the values of the Device Status
+> > > register are also recorded, which will be used to determine UEs that should
+> > > be handled by the ANFE handler. Refactor the rest of the code to use
+> > > cor/uncor_status and cor/uncor_mask fields instead of status and mask
+> > > fields.
+> > 
+> > There's a lot going on in this patch.  Could it possibly be split up a
+> > bit, e.g., first tease apart aer_err_info.status/.mask into
+> > .cor_status/mask and .uncor_status/mask, then add .uncor_severity,
+> > then add the device_status bit separately?  If it could be split up, I
+> > think the ANFE case would be easier to see.
+> 
+> Thanks for the feedback! Will split it up into two pacthes in the next
+> version.
 
+Or even three:
 
-On 2/6/24 5:13 AM, Fabio M. De Francesco wrote:
-> Add cond_guard() macro to conditional guards.
-> 
-> cond_guard() is a guard to be used with the conditional variants of locks,
-> like down_read_trylock() or mutex_lock_interruptible().
-> 
-> It takes a statement (or statement-expression) that is passed as its
-> second argument. That statement (or statement-expression) is executed if
-> waiting for a lock is interrupted or if a _trylock() fails in case of
-> contention.
-> 
-> Usage example:
-> 
-> 	cond_guard(mutex_intr, return -EINTR, &mutex);
-> 
-> Consistent with other usage of _guard(), locks are unlocked at the exit of the
-> scope where cond_guard() is called.
-> 
-> Cc: Dave Jiang <dave.jiang@intel.com>
-> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Suggested-by: Dan Williams <dan.j.williams@intel.com>
-> Suggested-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Fabio M. De Francesco <fabio.maria.de.francesco@linux.intel.com>
+  1) tease apart aer_err_info.status/.mask into .cor_status/mask and
+     .uncor_status/mask
 
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-> ---
->  include/linux/cleanup.h | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
-> 
-> diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
-> index c2d09bc4f976..d70454e9f8dc 100644
-> --- a/include/linux/cleanup.h
-> +++ b/include/linux/cleanup.h
-> @@ -134,6 +134,16 @@ static inline class_##_name##_t class_##_name##ext##_constructor(_init_args) \
->   *	an anonymous instance of the (guard) class, not recommended for
->   *	conditional locks.
->   *
-> + * cond_guard(name, fail, args...):
-> + *	a guard to be used with the conditional variants of locks, like
-> + *	down_read_trylock() or mutex_lock_interruptible. 'fail' is a
-> + *	statement or statement-expression that is executed if waiting for a
-> + *	lock is interrupted or if a _trylock() fails in case of contention.
-> + *
-> + *	Example:
-> + *
-> + *		cond_guard(mutex_intr, return -EINTR, &mutex);
-> + *
->   * scoped_guard (name, args...) { }:
->   *	similar to CLASS(name, scope)(args), except the variable (with the
->   *	explicit name 'scope') is declard in a for-loop such that its scope is
-> @@ -165,6 +175,11 @@ static inline class_##_name##_t class_##_name##ext##_constructor(_init_args) \
->  
->  #define __guard_ptr(_name) class_##_name##_lock_ptr
->  
-> +#define cond_guard(_name, _fail, args...) \
-> +	CLASS(_name, scope)(args); \
-> +	if (!__guard_ptr(_name)(&scope)) _fail; \
-> +	else
-> +
->  #define scoped_guard(_name, args...)					\
->  	for (CLASS(_name, scope)(args),					\
->  	     *done = NULL; __guard_ptr(_name)(&scope) && !done; done = (void *)1)
+  2) add .uncor_severity
+
+  3) add device_status
+
+Looking at this again, I'm a little confused about 2) and 3).  I see
+the new read of PCI_ERR_UNCOR_SEVER into .uncor_severity, but there's
+no actual *use* of it.
+
+Same for 3), I see the new read of PCI_EXP_DEVSTA, but AFAICS there's
+no use of that value.
+
+We should have the addition of these new values in the same patch
+that *uses* them.
+
+Bjorn
 
