@@ -1,124 +1,132 @@
-Return-Path: <linux-kernel+bounces-55092-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A757384B796
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:16:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE88184B7A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:19:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B737287EE9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:16:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F06511C222F8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:19:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0449D131E43;
-	Tue,  6 Feb 2024 14:16:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F5A5132470;
+	Tue,  6 Feb 2024 14:19:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="YbhDIhlY"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W38Z4H0q"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EFA0130E4F;
-	Tue,  6 Feb 2024 14:15:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FBFB131E44;
+	Tue,  6 Feb 2024 14:19:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707228962; cv=none; b=kTJemrD9bnulabFScVnWKrpG/VVAPuBLo3yyz5fantNKrey9nR3qWuAyPWYT4mUyYbYirs+7EGjneMi6FDjQbEubWQs3AewwH89lN30JBLedBfqS0fPJDr4QSIKKqQKXLl1NHyrdsJL88f3QaMkHj2cyJn/tuArl1Qc39uBJH4g=
+	t=1707229181; cv=none; b=ndKk16MNrPiw0vLWF4p7w8dXVoq6Js/SH34tPIGwd+xkDk4wT+ygkRSG7+HhA15GvGO6SdiufTQ+8o8dmSHH9ZdctA/RVaKMjNsIumBVyX0lbjDAwr/zSOzhoBI8Mpa/k86vHase6L88cs5fMzWUFRtT32yFs2xr+zF8BYOwoEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707228962; c=relaxed/simple;
-	bh=7tlTMuFjAjMwNCwiRRG5+QXtQ/MwY5GdCZoCBOZRQ9o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=reTxWfGDdrig30C9w1H6retudWqgDi5hjEEbZb36TUCj8O7DyjVoH+MVxEw6ZJH0iguC3BJfbE0ZttIzUuH99+yt0DvkZx1YK1XkjKjF2VNnylMmLr4tfuboJx1BOWoUWd3R5L+6VLAogFN5tBSPvActHjHXuisWacYmsuQHxGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=YbhDIhlY; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 416EFqxS034992;
-	Tue, 6 Feb 2024 08:15:52 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707228952;
-	bh=5nhVmZo58knSfgmGXShQ9V9c5OqXdispK8mj8/jUycU=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=YbhDIhlYxuExrVyCDQ6BPS5QMnHgtsssuDl7F1yQWn8/SpowBxrY/Xp80bvoqBehh
-	 J3xwCNaF8+pPkRqI6PSQcT1geK7Se87IvDExEa6V+uEAA1hp3wkgRVYl5TG88wX9Ri
-	 yfrBUmPYDQgx28Vt8C4sYMRzvr+zoZuk+e60tFSo=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 416EFqu2070971
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 6 Feb 2024 08:15:52 -0600
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 6
- Feb 2024 08:15:52 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 6 Feb 2024 08:15:52 -0600
-Received: from [10.249.141.75] ([10.249.141.75])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 416EFlZI104081;
-	Tue, 6 Feb 2024 08:15:48 -0600
-Message-ID: <c5b6bd1d-dbb4-4bfb-8b3e-9b0733e2ba5d@ti.com>
-Date: Tue, 6 Feb 2024 19:45:47 +0530
+	s=arc-20240116; t=1707229181; c=relaxed/simple;
+	bh=1MnTEbxeUsGA7HMcn2eRPHhXYWih9ZllJehloa4wpsc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S52rviG5FewOV0w2x8v3Rpx0LCna1+d58BnHpcVAL3a8sKm5bsu3hdhjDCdFkPzJDImAExN4rvAE1bvvpJcp4fK+PInTayzuBQACEOeoXOV7gvr4a4i3nogcnqWqqF5yD1eK/jbRbyz7VzqEpzWD5qlqH5MVH91MLzQqNk9c3WQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W38Z4H0q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41C92C433C7;
+	Tue,  6 Feb 2024 14:19:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707229181;
+	bh=1MnTEbxeUsGA7HMcn2eRPHhXYWih9ZllJehloa4wpsc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=W38Z4H0qdYqSxhn84T7haOHArqaXgeHjfaoKy44OX19ZDhSftyULq0r/FMg70Ayyg
+	 e7xwz0dqu7rFdptm5oHyeXQbqIlKCTw2IHPb8ifn0IWhpuVUdjUtd1/vqHYHiskKus
+	 emdg0gItkGetPQPwjMbX3W3fHloS4plorEAOZb4jp8m6WWubTwO7C7KUNEfmuWtWJd
+	 zDY6/0HI6/GQqpBuO8do0WL0/4o+XXYwSsg8BKoJsCU5N+SjQ257MPnim1lXkUHSj8
+	 ZK/ph766zwqJpWxF6v4UD+bEzWaUrTNjU17rOna6yYGAL3WbiXN7oAf1vGxX8Vd7MR
+	 Shtxv60zYzbrg==
+Date: Tue, 6 Feb 2024 14:19:34 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Conor Dooley <conor.dooley@microchip.com>,
+	linux-riscv@lists.infradead.org,
+	Daire McNamara <daire.mcnamara@microchip.com>,
+	Wolfgang Grandegger <wg@grandegger.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, linux-can@vger.kernel.org,
+	netdev@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [PATCH v2 2/7] dt-bindings: can: mpfs: add missing required clock
+Message-ID: <20240206-parole-cinnamon-2fe369f6ca74@spud>
+References: <20240122-catty-roast-d3625dbb02fe@spud>
+ <20240122-breeder-lying-0d3668d98886@spud>
+ <20240122-surely-crimp-ba4a8c55106d-mkl@pengutronix.de>
+ <20240122-cruelly-dainty-002081f0beb2@spud>
+ <20240122-smokeless-ion-63e4148c22e5-mkl@pengutronix.de>
+ <20240122-uncoated-cherub-a29cba1c0035@spud>
+ <20240122-pogo-reputable-b1d06ae1f1f1-mkl@pengutronix.de>
+ <20240130-narrow-lyricism-8b25baac7bb2@wendy>
+ <20240130-fragrance-disinfect-22cc1911bf48-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] clk: keystone: sci-clk: Adding support for non
- contiguous clocks
-Content-Language: en-US
-To: Kamlesh Gurudasani <kamlesh@ti.com>, Nishanth Menon <nm@ti.com>,
-        <chandru@ti.com>
-CC: <kristo@kernel.org>, <ssantosh@kernel.org>, <rishabh@ti.com>,
-        <vigneshr@ti.com>, <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>, <u-kumar1@ti.com>
-References: <20240206104357.3803517-1-u-kumar1@ti.com>
- <20240206131420.wtitflgav23jto2q@verbally>
- <871q9pzoiq.fsf@kamlesh.i-did-not-set--mail-host-address--so-tickle-me>
-From: "Kumar, Udit" <u-kumar1@ti.com>
-In-Reply-To: <871q9pzoiq.fsf@kamlesh.i-did-not-set--mail-host-address--so-tickle-me>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="5oAuP6RxMdm00jg7"
+Content-Disposition: inline
+In-Reply-To: <20240130-fragrance-disinfect-22cc1911bf48-mkl@pengutronix.de>
 
 
-On 2/6/2024 7:24 PM, Kamlesh Gurudasani wrote:
-> Nishanth Menon <nm@ti.com> writes:
->
->> On 16:13-20240206, Udit Kumar wrote:
->>> Most of clocks and their parents are defined in contiguous range,
->>> But in few cases, there is gap in clock numbers[0].
->>> Driver assumes clocks to be in contiguous range, and add their clock
->>> ids incrementally.
->>>
->>> New firmware started returning error while calling get_freq and is_on
->>> API for non-available clock ids.
->>>
->>> In this fix, driver checks and adds only valid clock ids.
->>>
->>> Fixes: 3c13933c6033 ("clk: keystone: sci-clk: add support for dynamically probing clocks")
->>>
->>> [0] https://software-dl.ti.com/tisci/esd/latest/5_soc_doc/j7200/clocks.html
->>> Section Clocks for NAVSS0_CPTS_0 Device,
->>> clock id 12-15 not present.
->>>
->>> Signed-off-by: Udit Kumar <u-kumar1@ti.com>
->>>   				while (num_parents--) {
->>> +					/* Check if this clock id is valid */
->>> +					ret = provider->ops->get_freq(provider->sci,
->>> +						sci_clk->dev_id, clk_id, &freq);
->> get_freq is a bit expensive as it has to walk the clock tree to find
->> the clock frequency (at least the first time?). just wondering if
->> there is lighter alternative here?
->>
-> How about get_clock? Doesn't read the registers at least.
+--5oAuP6RxMdm00jg7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Said API needs, some flags to be passed,
+On Tue, Jan 30, 2024 at 02:01:09PM +0100, Marc Kleine-Budde wrote:
+> On 30.01.2024 12:11:44, Conor Dooley wrote:
+> > On Mon, Jan 22, 2024 at 04:31:32PM +0100, Marc Kleine-Budde wrote:
+> > > On 22.01.2024 14:56:09, Conor Dooley wrote:
+> >=20
+> > > > I think we already had this discussion on v1, where I said that the
+> > > > binding requires the clocks to be in that order, regardless of whet=
+her
+> > > > or not clock-names is provided. You feel more strongly about it tha=
+n I
+> > > > do, so I will add them when I get around to sending a v3.
+> > >=20
+> > > Yes, this discussion sounded very familiar to me, never mind. Keep it=
+ as
+> > > is, and let's get this binding and the CAN driver upstream!
+> >=20
+> > BTW, I didn't see an ack on this nor do I see it in linux-next (yet).
+> > Are you expecting the patch to go with the rest via the clock tree,
+> > via the DT tree or will you be taking it with CAN stuff via netdev?
+> >=20
+> > I can resend this one patch with a netdev appropriate subject prefix
+> > if you like.
+>=20
+> Feel free to take the whole series via the clock tree.
 
-Can those flag be set to zero, Chandru ?
+Okay, I've gone and applied all of the binding and driver patches to the
+branch we will send to Stephen. Thanks!
 
 
-> Regards,
-> Kamlesh
+
+--5oAuP6RxMdm00jg7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcI/9gAKCRB4tDGHoIJi
+0kHUAP0e+rt2LDSpTC952WOfj4vXNDY3wh2XgO1MsZQXw131LQEA1UPbV0N5gf+J
+ALoxbvkmhHo0E10iiUy+SgrU+qL5yAM=
+=rlvY
+-----END PGP SIGNATURE-----
+
+--5oAuP6RxMdm00jg7--
 
