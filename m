@@ -1,106 +1,307 @@
-Return-Path: <linux-kernel+bounces-55394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55395-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84A0984BC2C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:37:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC12184BC32
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:37:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F146287DE0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:37:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82CC028784C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:37:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C249DF71;
-	Tue,  6 Feb 2024 17:34:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45E2F134BC;
+	Tue,  6 Feb 2024 17:35:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Ei6AcsfA"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="SSCnh8vr"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43E66DF49;
-	Tue,  6 Feb 2024 17:34:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34C16134AE;
+	Tue,  6 Feb 2024 17:34:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707240894; cv=none; b=LvM+sBJGwSStZVRY5TAuFDOV5f+BRXrfSxjNPeml5ALDCkoBgHkAQ0wfw4dJLjC3y5RQY2cipXMqZbo0xDm5SGqYrvgP9q2l2SeGcw8N3heYCC2er0QKQbder7BIcsyrP/pzsaDN8mVI2tKggEI4T7NV5QbvukwQ62UjXB1YTQE=
+	t=1707240900; cv=none; b=WMTqgfSm/RWvuGB/F8++5DLi0agicdrKWCNS1xMyAf2hsGZXkgTU5D0uilypX4KPdjUUgQrm39u9JrtCYO22a2Uy9/1smJgaHf0eQUOGqLgRjjjBEWtw2IOK/B9SObG4HkFZHeYYfeule8qXRJo4+uyoiEufONVQec+nThCxioY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707240894; c=relaxed/simple;
-	bh=EiCtPGcVCaudpVhVA6Gi8lcZa5cPm96eEObaix+UIss=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MZZWSJny6GzqMT1b9d22/jEnbMG4yIFiO4mo7+YF2bpqFKTwbwbwnsrow5OhRBc0elocn6sy3TnfQkH1WUpIOMSpDervCVVDlNhd7Gb3IVIui2wL6viKZAALIQg7ZCJbaX5BTuZGgte7nibi6buqVSgzyuQVcd3KYW1LXwMdOIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Ei6AcsfA; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1762D1C0011;
-	Tue,  6 Feb 2024 17:34:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707240889;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=i4B04GY4vnOTHYtk0bhdleBQty1iDee+JlHm0bxvCe0=;
-	b=Ei6AcsfAETxB/nrhVk18gXN9oUwxDHfLz5X36Xq2Pwh6yheQOhj6sB9NpOYUsflquoGoQi
-	71AG7mvafc6Fkipy6fEqxqaEE8/fM3Oi2sb3KOfqN6pyUDTOx40j64/mDpzUggNRT5r+8Q
-	KX3v3ntkm3Os7+mmFporjg4RDrqMFevdv6N8AAZ6YGu28OFWbHxlPehHSS6lHr96RCm4Hh
-	m8CGYQLGUvxG1bdtK0k5xCshvEhIqdummU8poN02NQr0tfbbUjNsTa260QTey+tFsdQkEx
-	9oyPfOdWcGq60T5zRTzEBKsFtK5hT7uvUYRfGWUSEOgEu5Mt9dDHzgJCdjiw6w==
-Date: Tue, 6 Feb 2024 18:34:43 +0100
-From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-To: Adam Ford <aford173@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org, marex@denx.de,
- alexander.stein@ew.tq-group.com, frieder.schrempf@kontron.de, Lucas Stach
- <l.stach@pengutronix.de>, Krzysztof Kozlowski
- <krzysztof.kozlowski@linaro.org>, Andrzej Hajda <andrzej.hajda@intel.com>,
- Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Jonas Karlman
- <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, Maarten
- Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
- <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam
- <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, Philipp Zabel
- <p.zabel@pengutronix.de>, Vinod Koul <vkoul@kernel.org>, Kishon Vijay
- Abraham I <kishon@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will@kernel.org>, Liu Ying <victor.liu@nxp.com>, Ulf Hansson
- <ulf.hansson@linaro.org>, dri-devel@lists.freedesktop.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-phy@lists.infradead.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH V8 01/12] dt-bindings: phy: add binding for the i.MX8MP
- HDMI PHY
-Message-ID: <20240206183443.000dca1b@booty>
-In-Reply-To: <20240203165307.7806-2-aford173@gmail.com>
-References: <20240203165307.7806-1-aford173@gmail.com>
- <20240203165307.7806-2-aford173@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707240900; c=relaxed/simple;
+	bh=n1OjFUbiSBxtEwfT9hwBksIgWc9LatXbEG7/U+MyOJQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=GipPwez+9dfkNnsRyRGk6WZ1IefSNU9DrIUEpmc6CX5N2S5bpnI/+rwkL5zW6oMifCqTNgq89tksTld55TfcHqNFoLMf6rsm1yOJ0VscjFyu27wCCdJ+JxvZABxiEm9gpIX2Sp4r0Xc5TuO+cSPtAGUkCYNEsOOUW2f1wYUsMTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=SSCnh8vr; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 416HYnGh025255;
+	Tue, 6 Feb 2024 11:34:49 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707240890;
+	bh=nqyfejU/iRQtWdKjptdnMJMmLk/Lxdc1KbjlbhrK4jQ=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=SSCnh8vrMVYXbCtDCE6DjRLBMT8T8oFFuUPASFXIdH5+RbE0t4yat5E1zfeMnB1Ny
+	 iIl97geeeUmHaw/UnpmDfxND3MfvXMIuTGnv9Dz5Lay6HaK3h0jmNWH56fJFT4UJ4S
+	 RSExGWFMSBAqYoxk5VSoJQ0ij2qlOvyTf8Y/MY5g=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 416HYnmV016903
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 6 Feb 2024 11:34:49 -0600
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 6
+ Feb 2024 11:34:49 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 6 Feb 2024 11:34:49 -0600
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 416HYmPX033526;
+	Tue, 6 Feb 2024 11:34:48 -0600
+Message-ID: <8f9e8ec5-fc78-4b51-b36f-3ba06768ce62@ti.com>
+Date: Tue, 6 Feb 2024 11:34:48 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: luca.ceresoli@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 3/3] arm64: dts: ti: k3-am62p: add the USB sub-system
+Content-Language: en-US
+To: Roger Quadros <rogerq@kernel.org>, <nm@ti.com>, <vigneshr@ti.com>
+CC: <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <srk@ti.com>, <r-gunasekaran@ti.com>, <b-liu@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20240205135908.54656-1-rogerq@kernel.org>
+ <20240205135908.54656-4-rogerq@kernel.org>
+ <45a0ed98-8dd2-4c5b-8e89-40c70e3fe831@ti.com>
+ <77f7b127-e609-45e3-90aa-67aa7838ce6b@kernel.org>
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <77f7b127-e609-45e3-90aa-67aa7838ce6b@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Sat,  3 Feb 2024 10:52:41 -0600
-Adam Ford <aford173@gmail.com> wrote:
-
-> From: Lucas Stach <l.stach@pengutronix.de>
+On 2/6/24 6:30 AM, Roger Quadros wrote:
 > 
-> Add a DT binding for the HDMI PHY found on the i.MX8MP SoC.
 > 
-> Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> On 05/02/2024 19:34, Andrew Davis wrote:
+>> On 2/5/24 7:59 AM, Roger Quadros wrote:
+>>> There are two USB instances available on the am62p5 starter kit. Include
+>>> and enable them for use on the board.
+>>>
+>>> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+>>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+>>> ---
+>>>
+>>> Notes:
+>>>       Changelog:
+>>>            v4 - no change
+>>>            v3 - no change
+>>>       https://lore.kernel.org/all/20240201120332.4811-4-rogerq@kernel.org/
+>>>            v2:
+>>>       - added USB PHY CTRL node changes here
+>>>       - changed USB wrapper node names to usb@
+>>>       - changed Type-C chip node name to usb-power-control@
+>>>
+>>>    arch/arm64/boot/dts/ti/k3-am62p-main.dtsi   | 46 ++++++++++++++
+>>>    arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi | 10 +++
+>>>    arch/arm64/boot/dts/ti/k3-am62p5-sk.dts     | 67 +++++++++++++++++++++
+>>>    3 files changed, 123 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
+>>> index 4c51bae06b57..17d28390d587 100644
+>>> --- a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
+>>> +++ b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
+>>> @@ -560,6 +560,52 @@ sdhci2: mmc@fa20000 {
+>>>            status = "disabled";
+>>>        };
+>>>    +    usbss0: usb@f900000 {
+>>> +        compatible = "ti,am62-usb";
+>>> +        reg = <0x00 0x0f900000 0x00 0x800>;
+>>> +        clocks = <&k3_clks 161 3>;
+>>> +        clock-names = "ref";
+>>> +        ti,syscon-phy-pll-refclk = <&usb0_phy_ctrl 0x0>;
+>>> +        #address-cells = <2>;
+>>> +        #size-cells = <2>;
+>>> +        power-domains = <&k3_pds 178 TI_SCI_PD_EXCLUSIVE>;
+>>> +        ranges;
+>>> +        status = "disabled";
+>>> +
+>>> +        usb0: usb@31000000 {
+>>> +            compatible = "snps,dwc3";
+>>> +            reg = <0x00 0x31000000 0x00 0x50000>;
+>>> +            interrupts = <GIC_SPI 188 IRQ_TYPE_LEVEL_HIGH>, /* irq.0 */
+>>> +            <GIC_SPI 188 IRQ_TYPE_LEVEL_HIGH>; /* irq.0 */
+>>> +            interrupt-names = "host", "peripheral";
+>>> +            maximum-speed = "high-speed";
+>>> +            dr_mode = "otg";
+>>> +        };
+>>> +    };
+>>> +
+>>> +    usbss1: usb@f910000 {
+>>> +        compatible = "ti,am62-usb";
+>>> +        reg = <0x00 0x0f910000 0x00 0x800>;
+>>> +        clocks = <&k3_clks 162 3>;
+>>> +        clock-names = "ref";
+>>> +        ti,syscon-phy-pll-refclk = <&usb1_phy_ctrl 0x0>;
+>>> +        #address-cells = <2>;
+>>> +        #size-cells = <2>;
+>>> +        power-domains = <&k3_pds 179 TI_SCI_PD_EXCLUSIVE>;
+>>> +        ranges;
+>>> +        status = "disabled";
+>>> +
+>>> +        usb1: usb@31100000 {
+>>> +            compatible = "snps,dwc3";
+>>> +            reg = <0x00 0x31100000 0x00 0x50000>;
+>>> +            interrupts = <GIC_SPI 226 IRQ_TYPE_LEVEL_HIGH>, /* irq.0 */
+>>> +            <GIC_SPI 226 IRQ_TYPE_LEVEL_HIGH>; /* irq.0 */
+>>> +            interrupt-names = "host", "peripheral";
+>>> +            maximum-speed = "high-speed";
+>>> +            dr_mode = "otg";
+>>> +        };
+>>> +    };
+>>> +
+>>>        fss: bus@fc00000 {
+>>>            compatible = "simple-bus";
+>>>            reg = <0x00 0x0fc00000 0x00 0x70000>;
+>>> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
+>>> index 19f42b39394e..00dd38b02a52 100644
+>>> --- a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
+>>> +++ b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
+>>> @@ -18,6 +18,16 @@ chipid: chipid@14 {
+>>>                reg = <0x14 0x4>;
+>>>                bootph-all;
+>>>            };
+>>> +
+>>> +        usb0_phy_ctrl: syscon@4008 {
+>>> +            compatible = "ti,am62-usb-phy-ctrl", "syscon";
+>>> +            reg = <0x4008 0x4>;
+>>> +        };
+>>> +
+>>> +        usb1_phy_ctrl: syscon@4018 {
+>>> +            compatible = "ti,am62-usb-phy-ctrl", "syscon";
+>>> +            reg = <0x4018 0x4>;
+>>> +        };
+>>>        };
+>>>          wkup_uart0: serial@2b300000 {
+>>> diff --git a/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts b/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
+>>> index 1773c05f752c..80be56c0a4e0 100644
+>>> --- a/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
+>>> +++ b/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
+>>> @@ -27,6 +27,8 @@ aliases {
+>>>            spi0 = &ospi0;
+>>>            ethernet0 = &cpsw_port1;
+>>>            ethernet1 = &cpsw_port2;
+>>> +        usb0 = &usb0;
+>>> +        usb1 = &usb1;
+>>>        };
+>>>          chosen {
+>>> @@ -297,6 +299,12 @@ AM62PX_IOPAD(0x01b0, PIN_OUTPUT, 2) /* (G20) MCASP0_ACLKR.UART1_TXD */
+>>>            bootph-all;
+>>>        };
+>>>    +    main_usb1_pins_default: main-usb1-default-pins {
+>>> +        pinctrl-single,pins = <
+>>> +            AM62PX_IOPAD(0x0258, PIN_INPUT, 0) /* (G21) USB1_DRVVBUS */
+>>> +        >;
+>>> +    };
+>>> +
+>>>        main_wlirq_pins_default: main-wlirq-default-pins {
+>>>            pinctrl-single,pins = <
+>>>                AM62PX_IOPAD(0x0128, PIN_INPUT, 7) /* (K25) MMC2_SDWP.GPIO0_72 */
+>>> @@ -340,6 +348,36 @@ AM62PX_IOPAD(0x0124, PIN_INPUT, 7) /* (J25) MMC2_SDCD.GPIO0_71 */
+>>>        };
+>>>    };
+>>>    +&main_i2c0 {
+>>> +    status = "okay";
+>>> +    pinctrl-names = "default";
+>>> +    pinctrl-0 = <&main_i2c0_pins_default>;
+>>> +    clock-frequency = <400000>;
+>>> +
+>>> +    typec_pd0: usb-power-controller@3f {
+>>> +        compatible = "ti,tps6598x";
+>>> +        reg = <0x3f>;
+>>> +
+>>> +        connector {
+>>> +            compatible = "usb-c-connector";
+>>> +            label = "USB-C";
+>>> +            self-powered;
+>>> +            data-role = "dual";
+>>> +            power-role = "sink";
+>>> +            ports {
+>>> +                #address-cells = <1>;
+>>> +                #size-cells = <0>;
+>>> +                port@0 {
+>>> +                    reg = <0>;
+>>> +                    usb_con_hs: endpoint {
+>>> +                        remote-endpoint = <&usb0_hs_ep>;
+>>> +                    };
+>>> +                };
+>>> +            };
+>>> +        };
+>>> +    };
+>>> +};
+>>> +
+>>>    &main_i2c1 {
+>>>        status = "okay";
+>>>        pinctrl-names = "default";
+>>> @@ -460,6 +498,35 @@ cpsw3g_phy1: ethernet-phy@1 {
+>>>        };
+>>>    };
+>>>    +&usbss0 {
+>>> +    status = "okay";
+>>> +    ti,vbus-divider;
+>>> +};
+>>> +
+>>> +&usbss1 {
+>>> +    status = "okay";
+>>> +    ti,vbus-divider;
+>>> +};
+>>> +
+>>> +&usb0 {
+>>> +    usb-role-switch;
+>>> +    #address-cells = <1>;
+>>> +    #size-cells = <0>;
+>>> +
+>>> +    port@0 {
+>>> +        reg = <0>;
+>>> +        usb0_hs_ep: endpoint {
+>>> +            remote-endpoint = <&usb_con_hs>;
+>>> +        };
+>>> +    };
+>>> +};
+>>> +
+>>> +&usb1 {
+>>> +    dr_mode = "host";
+>>> +    pinctrl-names = "default";
+>>> +    pinctrl-0 = <&main_usb1_pins_default>;
+>>
+>> I'm not super familiar with USB, but I see this pinmux for the
+>> "DRVVBUS" pin is usually added the the parent USB subsystem node (usbss).
+>> Does this pin belong to the subsystem or the specific USB instance?
+>>
+> There is only 1 USB instance per USB sub-system.
+> The "DRVVBUS" pin is a control signal to enable the VBUS regulator
+> while in host mode.
+> 
+> Just probing the usbss1 driver has no use of "DRVVBUS".
+> I think usb1 is the right place as it is used there.
+> 
 
-Reviewed-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+Seems reasonable, so if there ever was more than 1 instance
+per sub-system, each instance would need its own pin?
 
--- 
-Luca Ceresoli, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+We should move these pinctrl to the instance node in the other
+dts files at some point then.
+
+Reviewed-by: Andrew Davis <afd@ti.com>
+
+>> Andrew
+>>
+>>> +};
+>>> +
+>>>    &mcasp1 {
+>>>        status = "okay";
+>>>        #sound-dai-cells = <0>;
+> 
 
