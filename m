@@ -1,120 +1,123 @@
-Return-Path: <linux-kernel+bounces-54385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C2CA84AE9F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:05:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 244FF84AEA0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:07:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD3371C20A0E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 07:05:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92D7F1F246C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 07:07:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEAA7128817;
-	Tue,  6 Feb 2024 07:05:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6730E128804;
+	Tue,  6 Feb 2024 07:07:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="bg93yf9p"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S4Var3sV"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FBC33D54A;
-	Tue,  6 Feb 2024 07:05:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4981A3D54A
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 07:07:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707203120; cv=none; b=U3kVMijZ56WsQhzqr+lxLBmWXgmPXL92Zi/xP/bKbhCVi1IHMGQLJx8AyWgac8QNU/od+luR/3BlbZgOJRFxZzKk3ffM2AFIVGPuXjXXjTQ0gIpf24NPMNehKnAzSxYLheTy1Rebyc5e1h64KRuPLqv/TMqXZYpmCDpTMSYkKT0=
+	t=1707203252; cv=none; b=o/3FosngHlU/fxHk12uI9G3RITDXgz7PfUB/eq9Nt5zFsU+ldBdlDgP89nlmDvHMIdOZmxixtJFMqrBHqWgaSx6VM0UtVr4+6Zz7LJrvJQr2YvuufJNg5poV1rnS2kHfvYCjuKj9yRjb3LKZBjpmd0yJ14uJYEXRDaiS8GvfcqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707203120; c=relaxed/simple;
-	bh=8OOrirsFiRy+jWhBqLtOU1x+le6UyiBmtrdSLeywYtc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UFp/MX1EkK5fB/ZnpT61IEFeL63VG0R0/mO4FYy97h6FOS2ZJHhqDgu7Or1MDjCWS0C3j3WwsWLYxnmy5HVO1BQSbp6ClioPqCP745In47S7Exy2znjDAX44y6P0IsYEKG01/pEUH8B5yyCutMWGUcnPd1iP9dltmvtnXtxhSqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=bg93yf9p; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41671T8f030646;
-	Tue, 6 Feb 2024 07:05:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=oubYTPzQSYjeDnzcKC/PnXh+JcfYD5SlolpovnPWjdI=;
- b=bg93yf9poH+ZDELZY9yzTGmRj8fIH0ujT6Q63iSqOwC4rz0giurLn6WfWNaF3ZG6ifQO
- QvmF5Zwbd9pJJlP/N1Iww5MZni8noEq/I+QyeN8AVifuQUMdqVunZ58XzpOGt3FZyg23
- LPt4cD0sPnTyNTGPxO0isG3V4d7yS4unKvPOQMvpuftXb6rh/h0jBa29caVpDvXWbYlm
- MjOlba3CGbzCFpvow1ZSHoFli+iaz69SjeVadkn/RFqaaEl5s3+mn4gbPOxTA2xWL25B
- JJ2tv+YX6A3WLLCj2AQJpLIKXS8+LXoPbhWpZEQbbZ+0tDMgfOavpmTZGz8UQNXTrHrF Uw== 
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w3fnj8k3n-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Feb 2024 07:05:06 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4166pf7i005421;
-	Tue, 6 Feb 2024 07:05:04 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w21akd9u5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Feb 2024 07:05:04 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 416752wu39584124
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 6 Feb 2024 07:05:02 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7BBF020043;
-	Tue,  6 Feb 2024 07:05:02 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4F56C20040;
-	Tue,  6 Feb 2024 07:05:02 +0000 (GMT)
-Received: from [9.152.212.156] (unknown [9.152.212.156])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue,  6 Feb 2024 07:05:02 +0000 (GMT)
-Message-ID: <35d17995-8707-4ddc-879b-9ed89d292c91@linux.ibm.com>
-Date: Tue, 6 Feb 2024 08:05:02 +0100
+	s=arc-20240116; t=1707203252; c=relaxed/simple;
+	bh=wS6zlNuXwAPfuedZAvA3ZrUiC/nMjWU0rCS5L6PsMgk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EOYQDrizLT/E9nHOBkYxNyYZDCJfsbYdaNWsO23TGMO6lb81HOo2iCAag5f4KBQSLsXF73iuccd73SDHKY+9UIRCWLEGbk3pUEUsuRQEAgcRVRIWmPo/IwYXvgm5U4zeB6riEUs+MpOHoCnrt/Hb39BG3jxH/jEK7ykm86gdufQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S4Var3sV; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d9bd8fa49eso12318985ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 23:07:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707203250; x=1707808050; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1nVgxtxxB24ooM015/bjH1PamdQQY17NCPa4n0g2/8c=;
+        b=S4Var3sVfbMiuVftzK0izarCSDbhqj/Ihv0Z78mo9OzWKyMoSWvkuy6yvvY6A9IEug
+         +QEMb3jfdBWN/DDDJNyXCrpgWDfwQALNasNJR2VZo+3GYxgJrJZNTtMr0UNf70M9joP/
+         HVVoTe5zS4w4DQ3+70FkgETeCwxWSm+/3vROGojrSdWUDa3U6lvu0Zm+WsJ1dh95f5zK
+         Fv2KQdrIqnt4CcJx7B8ofphbVA9qhxaAxdKOuEDBUGq0FnCvkjV1gALcFrZPO+8HKdIv
+         Va4KEOU9xeXvWRez0PzzS3RoECzg7dgqJKr11lnU6Wylm9WFaY7QSWHGcvsH9pM7HsZ6
+         La4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707203250; x=1707808050;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1nVgxtxxB24ooM015/bjH1PamdQQY17NCPa4n0g2/8c=;
+        b=obSQFnVP9af4dF8lTmFYKixbAXpn0zkRfH+0WuCpyTcMB5gt97mc0dNW6lazYTon+9
+         KSNnkn/seDtuWn8UTTspXorZLPOzsc1TdBDYdK0SEjW2TS7O3p2bNgd6P4aKgy2qYzmY
+         4RYtJ39o/tcG6d8of1Jp11rQbW6L+jCrwId9doottnJmL9TyjmYLfRTTzj3xloBDNyMq
+         xU/Oe3EAUGB02nPXJjYAjVs8UZIOtErFoZ6UORNsHp4mIkT0Bg+Qfo2r1yg5UwH6Z2NR
+         hbpYvTC7mitoaOReoLg22BxkU+pPOCHQhzFbZ3FXa2RnQk2Y3nDdj0dyUjKJ0EbiqzcB
+         QI8Q==
+X-Gm-Message-State: AOJu0Yz0NBoOprE3pXrAGdklqbkPiG/HYsTdCeqMS5/k93au7VSwn2l3
+	57TTro7RaLWNokvR4hvK34TNVBS/+thLqdHBpLzceWY2E18MffvA
+X-Google-Smtp-Source: AGHT+IGOc6rrXPB1S9d1QiU78oRJLaHBtNbQ06ZRU0AUlLCWpIimBm/knEqicCOHNU4qjV4EH+7XAg==
+X-Received: by 2002:a17:902:d2cc:b0:1d9:bed3:ba0b with SMTP id n12-20020a170902d2cc00b001d9bed3ba0bmr975627plc.9.1707203250524;
+        Mon, 05 Feb 2024 23:07:30 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUCcxcEFPgZFK73jbaI0vIPkcdpUfWSZmClbsGqVh3dIf3HjD3nd6n7lkU1vNa+O+zLZzPBmPtKIiR/dPBY6pJ77ngNf/nPhvRmIFnjEwqrk+NE5OdG/Le/L6CON7GUw4mf+PjNzjnNFbiuVfHyNkf65KkDAKTpFSaZx0U+Eah+b/B4jA==
+Received: from dragon (144.34.186.27.16clouds.com. [144.34.186.27])
+        by smtp.gmail.com with ESMTPSA id iy15-20020a170903130f00b001d8f3c7fb96sm1079796plb.166.2024.02.05.23.07.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 23:07:29 -0800 (PST)
+Date: Tue, 6 Feb 2024 15:07:21 +0800
+From: Shawn Guo <shawn.gsc@gmail.com>
+To: Charles Perry <charles.perry@savoirfairelinux.com>
+Cc: shawnguo@kernel.org, robh@kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bus: imx-weim: fix imx_weim_gpr_setup()
+Message-ID: <ZcHaqasXS60LtbVn@dragon>
+References: <20240122205738.2432552-1-charles.perry@savoirfairelinux.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] tracing: use ring_buffer_record_is_set_on() in
- tracer_tracing_is_on()
-To: Sven Schnelle <svens@linux.ibm.com>, Steven Rostedt
- <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-References: <20240205065340.2848065-1-svens@linux.ibm.com>
-Content-Language: en-US
-From: Mete Durlu <meted@linux.ibm.com>
-In-Reply-To: <20240205065340.2848065-1-svens@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 7jn7VMlhO6aBxIcF0qfoBiZ3kpz_4ToD
-X-Proofpoint-GUID: 7jn7VMlhO6aBxIcF0qfoBiZ3kpz_4ToD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-05_18,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 adultscore=0
- bulkscore=0 phishscore=0 priorityscore=1501 mlxlogscore=940
- lowpriorityscore=0 suspectscore=0 malwarescore=0 impostorscore=0
- mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402060048
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240122205738.2432552-1-charles.perry@savoirfairelinux.com>
 
-On 2/5/24 07:53, Sven Schnelle wrote:
-> tracer_tracing_is_on() checks whether record_disabled is not zero. This
-> checks both the record_disabled counter and the RB_BUFFER_OFF flag.
-> Reading the source it looks like this function should only check for
-> the RB_BUFFER_OFF flag. Therefore use ring_buffer_record_is_set_on().
-> This fixes spurious fails in the 'test for function traceon/off triggers'
-> test from the ftrace testsuite when the system is under load.
+On Mon, Jan 22, 2024 at 03:57:29PM -0500, Charles Perry wrote:
+> Commit 2a88e4792c6d ("bus: imx-weim: Remove open coded "ranges"
+> parsing") changes the parsing of the "ranges" field by using
+> for_each_of_range instead of of_property_for_each_u32. The number of
+> iteration of the loop is now equal to the number of range within
+> ranges. It is therefore no longer needed to check that i is divisible
+> by 4, otherwise, valid configurations will fail imx_weim_gpr_setup().
 > 
-> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+> Fixes: 2a88e4792c6d ("bus: imx-weim: Remove open coded "ranges" parsing")
+> Signed-off-by: Charles Perry <charles.perry@savoirfairelinux.com>
+
+Thanks for the patch!  But I have picked up the one [1] from Lucas.
+
+Shawn
+
+[1] https://lore.kernel.org/all/20240119185026.1192333-1-l.stach@pengutronix.de/
+
 > ---
->   kernel/trace/trace.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/bus/imx-weim.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 2a7c6fd934e9..47e221e1e720 100644
-
-Tested-By: Mete Durlu <meted@linux.ibm.com>
+> diff --git a/drivers/bus/imx-weim.c b/drivers/bus/imx-weim.c
+> index 6b5da73c85417..837bf9d51c6ec 100644
+> --- a/drivers/bus/imx-weim.c
+> +++ b/drivers/bus/imx-weim.c
+> @@ -120,7 +120,7 @@ static int imx_weim_gpr_setup(struct platform_device *pdev)
+>  		i++;
+>  	}
+>  
+> -	if (i == 0 || i % 4)
+> +	if (i == 0)
+>  		goto err;
+>  
+>  	for (i = 0; i < ARRAY_SIZE(gprvals); i++) {
+> -- 
+> 2.43.0
+> 
 
