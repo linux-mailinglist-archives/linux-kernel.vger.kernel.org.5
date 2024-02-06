@@ -1,162 +1,274 @@
-Return-Path: <linux-kernel+bounces-54825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85FFB84B41E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:01:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3596C84B41C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:00:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24FF31F21523
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:01:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 295D0B25311
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:00:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D275132C11;
-	Tue,  6 Feb 2024 11:45:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="bJfVVmN2"
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0B03132C10;
+	Tue,  6 Feb 2024 11:45:15 +0000 (UTC)
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CADF132C2B;
-	Tue,  6 Feb 2024 11:45:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9B7A132468
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 11:45:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707219921; cv=none; b=kszi8mhfZlftwtHdFn4OlizFdmy4h2R4j9vsGfpqCORhFrP6QYp1tS09TJBChT+43FIq1m2dX3pNHfW3CFE6VQ5YEVA5utCKQd78wloUqBj1ukrcWrOrQDhiJc4vWwIfpWRnpZntok1CJHellmTAvbWwEMaINI7pitjQir9Fni0=
+	t=1707219915; cv=none; b=VCZ/2X0SMIEj7XJYx12Ijic91djQzzYY91UMf7bF2tJ+i05GTy4ZaKicMPV1PgpdPkQTF/MHAXzdSik/Q4qwa/7gt7hJm/HsrTPotBNaCxXHaifJWKvPka/1PiPfoSimSrdU8Gt+zkfHaZN+MSta2tvFMKr3nibe8OWRorTtEKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707219921; c=relaxed/simple;
-	bh=CvtzeV3LJoPwbA5d/XDUSj8ICkXD0P1E718iT2JTfg8=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OxMRgoA1XutswAHQg1g/VuPAnfaMqvfB4O7uT8q0Uxt4wHkO+74/fYdwa9KHasMsuNAMFET/zy5gfl1HfYoVVcrG/J5XlI7OjbmRrRnbV2aB6vj/6i7Yc9wMxINhPmz217XAwqhzqPcLgd4Tof0ST2RCxs5hUv27EI0pSXOO+d0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=bJfVVmN2; arc=none smtp.client-ip=67.231.156.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 416B5pjH027405;
-	Tue, 6 Feb 2024 03:45:16 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	pfpt0220; bh=I7YJVFpHyhttKaVQSn+im9bTu9lSBp0OqXLztLyaCtY=; b=bJf
-	VVmN27517dICSL874oGjKtDHMq5puiyUCjqonmrgFWzrxh8rcXSKH10NZ1PeW1lf
-	40izrpQFdeNKO7bdFeHCvt6/+32X9Cn10uCu+jzQwu9Ud73evXKFpf1jM1BsUWMA
-	P3Edr9NICGZ3OWjWtTOOwdUpeNWku7zfLB/Qkt1K/pjpO6eI1WV3SHolB4ZQqPZN
-	rA4vY9UkCJi+J0N8iep5An+O2au0AuaAgS2fEurOUPrFUFDeLIgLtnN8tvKkoE1H
-	2PULZ/q4R2j1bq93/Ge8701F6AzVFXVdvQYo0ph2O6cMf3EyEjNn668uqysxL/kf
-	Ep+C9bJRHF+IzCjpgiw==
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3w38u81xvt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-	Tue, 06 Feb 2024 03:45:16 -0800 (PST)
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 6 Feb
- 2024 03:45:14 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Tue, 6 Feb 2024 03:45:14 -0800
-Received: from localhost.localdomain (unknown [10.110.150.250])
-	by maili.marvell.com (Postfix) with ESMTP id 0E5723F7088;
-	Tue,  6 Feb 2024 03:45:14 -0800 (PST)
-From: Piyush Malgujar <pmalgujar@marvell.com>
-To: <andi.shyti@kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC: <sgarapati@marvell.com>, <cchavva@marvell.com>, <jannadurai@marvell.com>,
-        Piyush Malgujar <pmalgujar@marvell.com>
-Subject: [PATCH v3 4/4] i2c: thunderx: Adding ioclk support
-Date: Tue, 6 Feb 2024 03:43:49 -0800
-Message-ID: <20240206114349.32197-5-pmalgujar@marvell.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240206114349.32197-1-pmalgujar@marvell.com>
-References: <20240206114349.32197-1-pmalgujar@marvell.com>
+	s=arc-20240116; t=1707219915; c=relaxed/simple;
+	bh=HCsSN7olhvXJs/2wLqhN4v/w4yNjAhygxT+49NJS1lM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=bz+oayOP5H9bbkksKu2jMorKwDc3GSkmIGe8SNr1TfvEtQiYkOiz/lKlsIPn2IVX1j39Qx20pnTkUe/JrRzrc/Eur/DFMgBZ4yvYx/TDeglpF0YUL+6Tq+U5tVEdjBW/76HXsD5FMARyh5tHaN+wFIArF74IsZZy3g76CSlDir8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 416Bj16J094778;
+	Tue, 6 Feb 2024 19:45:01 +0800 (+08)
+	(envelope-from Zhiguo.Niu@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TThHq6JvDz2K25NP;
+	Tue,  6 Feb 2024 19:44:55 +0800 (CST)
+Received: from bj08434pcu.spreadtrum.com (10.0.73.87) by
+ BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Tue, 6 Feb 2024 19:44:59 +0800
+From: Zhiguo Niu <zhiguo.niu@unisoc.com>
+To: <peterz@infradead.org>, <mingo@redhat.com>, <will@kernel.org>,
+        <longman@redhat.com>, <boqun.feng@gmail.com>
+CC: <bvanassche@acm.org>, <cmllamas@google.com>,
+        <linux-kernel@vger.kernel.org>, <niuzhiguo84@gmail.com>,
+        <zhiguo.niu@unisoc.com>, <ke.wang@unisoc.com>, <xuewen.yan@unisoc.com>,
+        <hongyu.jin@unisoc.com>
+Subject: [PATCH V4] lockdep: fix deadlock issue between lockdep and rcu
+Date: Tue, 6 Feb 2024 19:44:55 +0800
+Message-ID: <1707219895-31977-1-git-send-email-zhiguo.niu@unisoc.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: z5SwNWQCHvtpq0aAnR00QFbgnzIt3PiB
-X-Proofpoint-GUID: z5SwNWQCHvtpq0aAnR00QFbgnzIt3PiB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-06_04,2024-01-31_01,2023-05-22_02
+X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
+ BJMBX02.spreadtrum.com (10.0.64.8)
+X-MAIL:SHSQR01.spreadtrum.com 416Bj16J094778
 
-Adding support to use ioclk as reference clock if sclk not
-present to make it SOC agnostic.
-In case, it's not defined in dts/acpi table, use 800MHz as
-default clock.
+There is a deadlock scenario between lockdep and rcu when
+rcu nocb feature is enabled, just as following call stack:
 
-Signed-off-by: Piyush Malgujar <pmalgujar@marvell.com>
+     rcuop/x
+-000|queued_spin_lock_slowpath(lock = 0xFFFFFF817F2A8A80, val = ?)
+-001|queued_spin_lock(inline) // try to hold nocb_gp_lock
+-001|do_raw_spin_lock(lock = 0xFFFFFF817F2A8A80)
+-002|__raw_spin_lock_irqsave(inline)
+-002|_raw_spin_lock_irqsave(lock = 0xFFFFFF817F2A8A80)
+-003|wake_nocb_gp_defer(inline)
+-003|__call_rcu_nocb_wake(rdp = 0xFFFFFF817F30B680)
+-004|__call_rcu_common(inline)
+-004|call_rcu(head = 0xFFFFFFC082EECC28, func = ?)
+-005|call_rcu_zapped(inline)
+-005|free_zapped_rcu(ch = ?)// hold graph lock
+-006|rcu_do_batch(rdp = 0xFFFFFF817F245680)
+-007|nocb_cb_wait(inline)
+-007|rcu_nocb_cb_kthread(arg = 0xFFFFFF817F245680)
+-008|kthread(_create = 0xFFFFFF80803122C0)
+-009|ret_from_fork(asm)
+
+     rcuop/y
+-000|queued_spin_lock_slowpath(lock = 0xFFFFFFC08291BBC8, val = 0)
+-001|queued_spin_lock()
+-001|lockdep_lock()
+-001|graph_lock() // try to hold graph lock
+-002|lookup_chain_cache_add()
+-002|validate_chain()
+-003|lock_acquire
+-004|_raw_spin_lock_irqsave(lock = 0xFFFFFF817F211D80)
+-005|lock_timer_base(inline)
+-006|mod_timer(inline)
+-006|wake_nocb_gp_defer(inline)// hold nocb_gp_lock
+-006|__call_rcu_nocb_wake(rdp = 0xFFFFFF817F2A8680)
+-007|__call_rcu_common(inline)
+-007|call_rcu(head = 0xFFFFFFC0822E0B58, func = ?)
+-008|call_rcu_hurry(inline)
+-008|rcu_sync_call(inline)
+-008|rcu_sync_func(rhp = 0xFFFFFFC0822E0B58)
+-009|rcu_do_batch(rdp = 0xFFFFFF817F266680)
+-010|nocb_cb_wait(inline)
+-010|rcu_nocb_cb_kthread(arg = 0xFFFFFF817F266680)
+-011|kthread(_create = 0xFFFFFF8080363740)
+-012|ret_from_fork(asm)
+
+rcuop/x and rcuop/y are rcu nocb threads with the same nocb gp thread.
+This patch release the graph lock before lockdep call_rcu.
+
+Fixes: a0b0fd53e1e6 ("locking/lockdep: Free lock classes that are no longer in use")
+Cc: <stable@vger.kernel.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Waiman Long <longman@redhat.com>
+Cc: Carlos Llamas <cmllamas@google.com>
+Cc: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+Reviewed-by: Waiman Long <longman@redhat.com>
+Reviewed-by: Carlos Llamas <cmllamas@google.com>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 ---
- drivers/i2c/busses/i2c-thunderx-pcidrv.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+changes of v4: add Reviewed-by info from reviewers.
+changes of v3: correct code comments and add Cc tag.
+changes of v2: update patch according to Boqun's suggestions.
+---
+---
+ kernel/locking/lockdep.c | 48 ++++++++++++++++++++++++++++++++----------------
+ 1 file changed, 32 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-thunderx-pcidrv.c b/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-index 31f11b77ab663626967c86086a03213876bf4a07..15cf794a776533d1b0dbb08597fc0d9acf791b44 100644
---- a/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-+++ b/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-@@ -27,7 +27,7 @@
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 151bd3d..3468d82 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -6184,25 +6184,27 @@ static struct pending_free *get_pending_free(void)
+ static void free_zapped_rcu(struct rcu_head *cb);
  
- #define PCI_DEVICE_ID_THUNDER_TWSI	0xa012
+ /*
+- * Schedule an RCU callback if no RCU callback is pending. Must be called with
+- * the graph lock held.
+- */
+-static void call_rcu_zapped(struct pending_free *pf)
++* See if we need to queue an RCU callback, must called with
++* the lockdep lock held, returns false if either we don't have
++* any pending free or the callback is already scheduled.
++* Otherwise, a call_rcu() must follow this function call.
++*/
++static bool prepare_call_rcu_zapped(struct pending_free *pf)
+ {
+ 	WARN_ON_ONCE(inside_selftest());
  
--#define SYS_FREQ_DEFAULT		700000000
-+#define SYS_FREQ_DEFAULT		800000000
- #define OTX2_REF_FREQ_DEFAULT		100000000
+ 	if (list_empty(&pf->zapped))
+-		return;
++		return false;
  
- #define TWSI_INT_ENA_W1C		0x1028
-@@ -100,7 +100,8 @@ static void thunder_i2c_clock_enable(struct device *dev, struct octeon_i2c *i2c)
- 		i2c->sys_freq = clk_get_rate(i2c->clk);
- 	} else {
- 		/* ACPI */
--		device_property_read_u32(dev, "sclk", &i2c->sys_freq);
-+		if (device_property_read_u32(dev, "sclk", &i2c->sys_freq))
-+			device_property_read_u32(dev, "ioclk", &i2c->sys_freq);
- 	}
+ 	if (delayed_free.scheduled)
+-		return;
++		return false;
  
- skip:
-@@ -182,7 +183,6 @@ static int thunder_i2c_probe_pci(struct pci_dev *pdev,
- 	if (!i2c->twsi_base)
- 		return -EINVAL;
+ 	delayed_free.scheduled = true;
  
--	thunder_i2c_clock_enable(dev, i2c);
- 	ret = device_property_read_u32(dev, "clock-frequency", &i2c->twsi_freq);
- 	if (ret)
- 		i2c->twsi_freq = I2C_MAX_STANDARD_MODE_FREQ;
-@@ -196,12 +196,12 @@ static int thunder_i2c_probe_pci(struct pci_dev *pdev,
+ 	WARN_ON_ONCE(delayed_free.pf + delayed_free.index != pf);
+ 	delayed_free.index ^= 1;
  
- 	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_MSIX);
- 	if (ret < 0)
--		goto error;
-+		return ret;
- 
- 	ret = devm_request_irq(dev, pci_irq_vector(pdev, 0), octeon_i2c_isr, 0,
- 			       DRV_NAME, i2c);
- 	if (ret)
--		goto error;
-+		return ret;
- 
- 	ret = octeon_i2c_init_lowlevel(i2c);
- 	if (ret)
-@@ -213,6 +213,9 @@ static int thunder_i2c_probe_pci(struct pci_dev *pdev,
- 	 */
- 	if (octeon_i2c_is_otx2(pdev) && IS_LS_FREQ(i2c->twsi_freq))
- 		i2c->sys_freq = OTX2_REF_FREQ_DEFAULT;
-+	else
-+		thunder_i2c_clock_enable(dev, i2c);
-+
- 	octeon_i2c_set_clock(i2c);
- 
- 	i2c->adap = thunderx_i2c_ops;
-@@ -240,6 +243,8 @@ static int thunder_i2c_probe_pci(struct pci_dev *pdev,
- 
- error:
- 	thunder_i2c_clock_disable(dev, i2c->clk);
-+	if (!IS_LS_FREQ(i2c->twsi_freq))
-+		thunder_i2c_clock_disable(dev, i2c->clk);
- 	return ret;
+-	call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
++	return true;
  }
  
+ /* The caller must hold the graph lock. May be called from RCU context. */
+@@ -6228,6 +6230,7 @@ static void free_zapped_rcu(struct rcu_head *ch)
+ {
+ 	struct pending_free *pf;
+ 	unsigned long flags;
++	bool need_callback;
+ 
+ 	if (WARN_ON_ONCE(ch != &delayed_free.rcu_head))
+ 		return;
+@@ -6239,14 +6242,18 @@ static void free_zapped_rcu(struct rcu_head *ch)
+ 	pf = delayed_free.pf + (delayed_free.index ^ 1);
+ 	__free_zapped_classes(pf);
+ 	delayed_free.scheduled = false;
++	need_callback =
++		prepare_call_rcu_zapped(delayed_free.pf + delayed_free.index);
++	lockdep_unlock();
++	raw_local_irq_restore(flags);
+ 
+ 	/*
+-	 * If there's anything on the open list, close and start a new callback.
+-	 */
+-	call_rcu_zapped(delayed_free.pf + delayed_free.index);
++	* If there's pending free and its callback has not been scheduled,
++	* queue an RCU callback.
++	*/
++	if (need_callback)
++		call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
+ 
+-	lockdep_unlock();
+-	raw_local_irq_restore(flags);
+ }
+ 
+ /*
+@@ -6286,6 +6293,7 @@ static void lockdep_free_key_range_reg(void *start, unsigned long size)
+ {
+ 	struct pending_free *pf;
+ 	unsigned long flags;
++	bool need_callback;
+ 
+ 	init_data_structures_once();
+ 
+@@ -6293,10 +6301,11 @@ static void lockdep_free_key_range_reg(void *start, unsigned long size)
+ 	lockdep_lock();
+ 	pf = get_pending_free();
+ 	__lockdep_free_key_range(pf, start, size);
+-	call_rcu_zapped(pf);
++	need_callback = prepare_call_rcu_zapped(pf);
+ 	lockdep_unlock();
+ 	raw_local_irq_restore(flags);
+-
++	if (need_callback)
++		call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
+ 	/*
+ 	 * Wait for any possible iterators from look_up_lock_class() to pass
+ 	 * before continuing to free the memory they refer to.
+@@ -6390,6 +6399,7 @@ static void lockdep_reset_lock_reg(struct lockdep_map *lock)
+ 	struct pending_free *pf;
+ 	unsigned long flags;
+ 	int locked;
++	bool need_callback = false;
+ 
+ 	raw_local_irq_save(flags);
+ 	locked = graph_lock();
+@@ -6398,11 +6408,13 @@ static void lockdep_reset_lock_reg(struct lockdep_map *lock)
+ 
+ 	pf = get_pending_free();
+ 	__lockdep_reset_lock(pf, lock);
+-	call_rcu_zapped(pf);
++	need_callback = prepare_call_rcu_zapped(pf);
+ 
+ 	graph_unlock();
+ out_irq:
+ 	raw_local_irq_restore(flags);
++	if (need_callback)
++		call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
+ }
+ 
+ /*
+@@ -6446,6 +6458,7 @@ void lockdep_unregister_key(struct lock_class_key *key)
+ 	struct pending_free *pf;
+ 	unsigned long flags;
+ 	bool found = false;
++	bool need_callback = false;
+ 
+ 	might_sleep();
+ 
+@@ -6466,11 +6479,14 @@ void lockdep_unregister_key(struct lock_class_key *key)
+ 	if (found) {
+ 		pf = get_pending_free();
+ 		__lockdep_free_key_range(pf, key, 1);
+-		call_rcu_zapped(pf);
++		need_callback = prepare_call_rcu_zapped(pf);
+ 	}
+ 	lockdep_unlock();
+ 	raw_local_irq_restore(flags);
+ 
++	if (need_callback)
++		call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
++
+ 	/* Wait until is_dynamic_key() has finished accessing k->hash_entry. */
+ 	synchronize_rcu();
+ }
 -- 
-2.42.0
+1.9.1
 
 
