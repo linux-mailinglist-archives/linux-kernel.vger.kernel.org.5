@@ -1,117 +1,112 @@
-Return-Path: <linux-kernel+bounces-55252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD94D84B9BF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:36:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3602684B9BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:36:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A21E1F251C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:36:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4EF171C2129C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:36:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58D1C13341C;
-	Tue,  6 Feb 2024 15:36:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 472BD133435;
+	Tue,  6 Feb 2024 15:35:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="HaiVIfge"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pI3rU8dP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 683EC133400
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 15:36:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7866B13248D;
+	Tue,  6 Feb 2024 15:35:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707233762; cv=none; b=eoXP3XIZuprUp17m/BXLUkiDauOPxBUY+BdtJJO3V3sNrKmukfZtCDbMuasWFPVKs7SeKlrrSYZ4gvGW4z5vDn7XSJ2k2rxO0+BQykQNb60q4GDuN6t89HIbs4Hpa8xqk0pBHT+R0V8yKCLIEOJHhplTam7VUYKZ7Ct+c6W2W6g=
+	t=1707233753; cv=none; b=axHP9yf+U3fb6ETxYBCT/KdBjw4KIXqiih5U01KaquuY20XGIFebmkAlZvhtUvT97NTGJS43Xa0MBBnopc+Gp+RHwSMKnxNazDtFh792MZtCa74Dlciqa0ceAsz/AHD5tNsA6QWvGRAEmD8MCPnU7OFLAfqryBQI/jv47lGHTMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707233762; c=relaxed/simple;
-	bh=C8ZczL4/bNIoycAPQlQvXPphm+/mjzHScMFO5zq0pwY=;
+	s=arc-20240116; t=1707233753; c=relaxed/simple;
+	bh=0KrNOJDRkbAkqfoLeqFsoZ3vbkqMpEdzLQxX2yRCMKw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UuDzjYJWy33IrXuafwkZLFmj/jpDMxd7pVeuJZHY/zTQwv4DgzhoNTi0Jye9lxAT/veDTpINBW8NkFx8C9ifujGXlMeRgxz2yo8CLuKkaTZoKpXM1YvG1eSitMwUtz9hycgaTfAxe+yW2WmtFbHwmd2FJhKLSpJLHqD6KYpmvxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=HaiVIfge; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id CF42340E01A2;
-	Tue,  6 Feb 2024 15:35:57 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id X3LtCRBid0wA; Tue,  6 Feb 2024 15:35:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707233755; bh=+yirkz4/vPsUM99izCZuk7S6K6+bIxctJ+MAhodIqVA=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=mTW6+zBNDfM0ZiDQuRSkaXVaACJjYnvEXpVVVkHcsvewfKjtwzZbZofEznQZTVezm2G+Cqoi6FLRJakkm3Etr2dKw7ZygHmu0Dpm9AEjva3GRWGPT0KVnZGPE1M2x9Noobc3qpdwiq7/lXC1BvlwjatyTyol/6jSQlXrTDjoXq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pI3rU8dP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EF15C433F1;
+	Tue,  6 Feb 2024 15:35:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707233752;
+	bh=0KrNOJDRkbAkqfoLeqFsoZ3vbkqMpEdzLQxX2yRCMKw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HaiVIfgeDLswx2sjAemFnU7Tctj33+O4U4Cn3/HgsRf9lwmds16LJ1sHAQRz9hxgd
-	 u6ogzF3VTitk3/bPXTY0/CeoOWIA/8oFF4G+GqCUbZS9O6tRUzb44CC57ZMqbqMSfy
-	 3n8oTj+1RwTbnkJnxncCXIdycPoXWoOBQ53/+K4+Qyxg8s95sUezr1+mWWfP1WjKUQ
-	 v1y/H13GVKv4vyvwXaHwK9YYcC2tLCuhhtgCFaWfMSIEuX4tXsj/dlovpehQDavySX
-	 oioq9/FlVNo/EYAUJHhAMJhFb7t+zrF6r7ESpza7ZxCkjG9z8YP/t9niAMLCWKcbsx
-	 b0BHInfsvTLXw82eqMt/x8wJH4smlXmp7+y0canyyV3ZYvQo/4iHfTtMzLi4V2gAeK
-	 MAti3B3dIPsASNFO6m99KqACWxzmUhjp8P1SNEhRyXD+pCJWxS1w5Rmn2vUI0ibkwY
-	 9cdShZkxR8MlhPuKHLQ6yIayKxMklJ2nuDuUUkFsbt/zy9+SIZmHYHpxdsCTxQnW3F
-	 50aKAumbBAcGvCo/mdVWeEGjPdtHRrg2wHRiJorMStp/qzPfzYiIq+DWMW+VeSDu/h
-	 AmvaaLGGbTAlr/Fo5VMCYxIC/yvFQgatM0i2iVOUSbR3dF66NHTpMF/oghTYKGerE1
-	 NjNggl6GxN5xlot8nF+ZYTnY=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3A53240E023B;
-	Tue,  6 Feb 2024 15:35:36 +0000 (UTC)
-Date: Tue, 6 Feb 2024 16:35:29 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "Dr. Greg" <greg@enjellic.com>
-Cc: "Daniel P. Berrang??" <berrange@redhat.com>,
-	"Reshetova, Elena" <elena.reshetova@intel.com>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>,
-	"Hansen, Dave" <dave.hansen@intel.com>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	"Nakajima, Jun" <jun.nakajima@intel.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	"Kalra, Ashish" <ashish.kalra@amd.com>,
-	Sean Christopherson <seanjc@google.com>,
-	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] x86/random: Issue a warning if RDRAND or RDSEED fails
-Message-ID: <20240206153529.GHZcJRwTdDkWXuopOQ@fat_crate.local>
-References: <20240130083007.1876787-2-kirill.shutemov@linux.intel.com>
- <CAHmME9qsfOdOEHHw_MOBmt6YAtncbbqP9LPK2dRjuOp1CrHzRA@mail.gmail.com>
- <DM8PR11MB57507611D651E6D7CBC2A2F3E77D2@DM8PR11MB5750.namprd11.prod.outlook.com>
- <88a72370-e300-4bbc-8077-acd1cc831fe7@intel.com>
- <CAHmME9oSQbd3V8+qR0e9oPb7ppO=E7GrCW-a2RN8QNdY_ARbSQ@mail.gmail.com>
- <Zbk6h0ogqeInLa_1@redhat.com>
- <DM8PR11MB575052B985CA97B29A443F9AE77C2@DM8PR11MB5750.namprd11.prod.outlook.com>
- <20240206011247.GA29224@wind.enjellic.com>
- <ZcHoKUElwXGPzrWb@redhat.com>
- <20240206120445.GA1247@wind.enjellic.com>
+	b=pI3rU8dP8jGv4mglg2ZRcQgvLeRGuGWK5Ol1WAR+e4Qxp/s+JH8+eIiO96st/TdKL
+	 Ktpw/Rm57jiMWOGMlQxkgvZGe4z720CcmyFUINO1aJgBXlQrzFf3iUsW6yed6HYMY/
+	 +p9KiyFh5LrAUh1WoV1j8FsLvmj66YXmisPTIaVpx5TplXfRjQw+0EFWgErbQ6uvsN
+	 Q9nnenuzaUugiL2Pf5v2mzXoIH6W2rYJmitaO5hWQJJRx4mLqtw/KRFb/dCFq+RWJq
+	 QkSPhMGTuBP79P49B7pBZIP3pv45Vio4vvK5DHnEDc3XRMOy32ZEbDjkJCnkMcq+oA
+	 KQfvFlv3LTomw==
+Date: Tue, 6 Feb 2024 15:35:44 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Javier Carrasco <javier.carrasco@wolfvision.net>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Matthias Kaehlcke <mka@chromium.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH v3 6/7] ASoC: dt-bindings: xmos,xvf3500: add XMOS XVF3500
+ voice processor
+Message-ID: <ZcJR0LrwaS5GAf5h@finisterre.sirena.org.uk>
+References: <20240206-onboard_xvf3500-v3-0-f85b04116688@wolfvision.net>
+ <20240206-onboard_xvf3500-v3-6-f85b04116688@wolfvision.net>
+ <ZcJDFi+iIQOWzgYw@finisterre.sirena.org.uk>
+ <7b472cb2-6658-446a-ae47-411d08798cca@wolfvision.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="yHkGcuLiRp18RW+b"
 Content-Disposition: inline
-In-Reply-To: <20240206120445.GA1247@wind.enjellic.com>
+In-Reply-To: <7b472cb2-6658-446a-ae47-411d08798cca@wolfvision.net>
+X-Cookie: You might have mail.
 
-On Tue, Feb 06, 2024 at 06:04:45AM -0600, Dr. Greg wrote:
-> The silence appears to be deafening out of the respective engineering
-> camps... :-)
 
-I usually wait for those threads to "relax" themselves first. :)
+--yHkGcuLiRp18RW+b
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-So, what do you wanna know?
+On Tue, Feb 06, 2024 at 04:05:15PM +0100, Javier Carrasco wrote:
 
--- 
-Regards/Gruss,
-    Boris.
+> The names in the datasheet are vdd for the 1V0 supply and vddio for the
+> 3V3 supply. I named the latter vdd2 instead because this device does not
+> have its own driver and instead it uses the onboard_usb_hub generic
+> driver, where the supplies are named vdd and vdd2.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+> Those are the names used for devm_regulator_bulk_get(). Is that not the
+> right way to match them?
+
+The binding should really use vddio instead of vdd2 but if that's an
+existing binding then it gets more annoying, probably that existing
+binding is wrong too since vddio does sound like an entirely plausible
+standard name for a 3.3V supply. :/  At the very least the binding
+should document the weird mapping, though ideally the driver would be
+tought to request names matching the datasheet if the compatible is the
+one for this device.  Doing the better naming might be too much hassle
+though.
+
+--yHkGcuLiRp18RW+b
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXCUcsACgkQJNaLcl1U
+h9DpOQf/e2VJ3sICtCkXqELdceSjZb2aBilKyDRW+yrS9zM+XjePLiGl0BCmvQCo
+9xKfaleXD/fevcqAQKlB1JelXF2reqrMZ6zG0eFPXXXEPsLuCj5eHgGrP3hnRrTK
+Y8r3GXf5L7FdtB4hm3IOZu+1tEKOhJCAGpSEXgKsSheE0sTCDl7OzE6mwDJCRAR5
+1Ewbd9va+gUBu9y8k7UjWvqDvRX0uxmxw3Ducq7QM74MjysXrwBIwk0Fz3WOqUUK
+VxMDwpa7jySK0g9bisyhlZxnTtO9nKyOfAB+4IbiaECQ1yW/5TeJvD04kh9fgdts
+it0qrPmYBtvT5+nR/fdydnBAe4YEUA==
+=CAS2
+-----END PGP SIGNATURE-----
+
+--yHkGcuLiRp18RW+b--
 
