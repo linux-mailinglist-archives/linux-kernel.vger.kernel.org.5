@@ -1,142 +1,141 @@
-Return-Path: <linux-kernel+bounces-55446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D85884BCCA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:16:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EA9EC84BCCE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:17:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B8941F2425C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:16:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 886031F259FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:17:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C0A9134BC;
-	Tue,  6 Feb 2024 18:15:54 +0000 (UTC)
-Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDEFF11CAF;
+	Tue,  6 Feb 2024 18:17:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ofAMUZFH"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28E4E134B4;
-	Tue,  6 Feb 2024 18:15:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AE5A134A6
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 18:17:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707243353; cv=none; b=mRkcmd9bF7TDFAD3dGRPTZAZoHnDxnfHrs0BpdguCy/4slsvH8oOhJFmUYjYNKoponNRG5vjsxqoVtzq6glEYXdhRSivrhata+q0jN8iJqWxkr+VjuMiB4sHJpJtD42Gk59vpM5ef3vyrk97lXjVAaZqFbcIakGMxVFE1y1sczM=
+	t=1707243467; cv=none; b=bTCmzBIRMzzMfOCYN66M5GfFANgMaUKR6E2r8KiiDB3ju+TODldao4VJnuedMkwqDuNMpgjKxo6onBMhMyqB9yguCRDkWffYWiBeH+9dGX+LaQutPFiRVHVU9ScxWCuXqCHSWOv+xc/lNxKHb0TjkJ59NeNbRvtcTu3amHg/TWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707243353; c=relaxed/simple;
-	bh=PNSprH9eWLH60SllEMizCLaXGIo9pxrBofe0UJpcjSQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=u3gSVYeH9w/CELXKzV1uS1DaOWhzyjpVxjPYE675hz6q90hgXADDPOSdY8WBUX05X6/gffN70h7X8gSIkaP+830TL3Gk0njAhFmsg44XmRsux/rb3tsrRnPk7ymkW/sSdagq5nlvHHrft3NM6KMrzpTA1USn2vIgQbmiGUdlabw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
-Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
- (195.54.195.169) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 6 Feb
- 2024 21:15:41 +0300
-Received: from [192.168.211.130] (10.0.253.138) by Ex16-01.fintech.ru
- (10.0.10.18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 6 Feb 2024
- 21:15:41 +0300
-Message-ID: <95702cc6-187e-4ce9-b9b8-6320c9ddc7da@fintech.ru>
-Date: Tue, 6 Feb 2024 10:15:37 -0800
+	s=arc-20240116; t=1707243467; c=relaxed/simple;
+	bh=hdKmjhASF46rbObskXulPw+dctUILb9sWSBGdEm2MkY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FswDRyRfzu9tuuB4aadXb882MfejelC9J25YlPGv9aOeKGoRcaK83zl7wAr7XVYhgsgGzH5AMoCroPsXtdC81X3hcUh5zS65oWusDwZQIhDMeC88Tr9ytnLnDjO9bZjiqTUZXLl+5CzAv/UHT7oDa2osFe+TkbL9XEfvLJAEMO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ofAMUZFH; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3510d79ae9so698749766b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 10:17:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707243464; x=1707848264; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HJxm5o5JwedjLGG4ET8BuqK0l6wSaCzMfVG0K+Iz704=;
+        b=ofAMUZFHsJegEgvbCEwdotHB/me2r+0g0wLAGyzbz40zY0IHVtvASI7EI9bD8XLrrE
+         W9PKow7thoHuUlvrxgF+3o0WjTKMQZ5SHvRmL/fy4mpLpOXyWpdFv2YNjo4JdyKgtPLh
+         eU1uT+U9oTF2lBk7BwMNo3Nqg5m8LcXe9xZBp7lVkv73LhsNpNcA7JokG1EPQlw2IJ7A
+         cmmhMNAq3B3rhIGFx+ib/9K/gXJSl6ItXfA4NFStL/SELUxa+mxGeDfYHTQbZJPo0IpG
+         kmR0C2oikckLSacDtGUbC5JUFhg317HS85NNwYnE5TD7iWPx5Qsql/iwTZg8Cs7sNFdw
+         uBvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707243464; x=1707848264;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HJxm5o5JwedjLGG4ET8BuqK0l6wSaCzMfVG0K+Iz704=;
+        b=I1efr1wCNF8Rtg2vgur68oV/w5Ji8017c/Lb26VFZA/v1fnm9hHwjQwh6c15iuJ1Xc
+         /eCQ/SCiSyybZV0vDes2La2/b2ZGcaTpJTZttCu54AEaZhZrtRzPBjlEteFGhpF5Eeox
+         MdqfcuD201FMaR9Yd7LieW/I4zxKCxiIOA/UaE4Xqi7dYAFpo8+SNZbNmHrSVZqa0YBO
+         g54nZUr9mwqESG0nbPM0CeRf9gS8yr508zQlEqgnwQurovXfnF1wu+zhhDqa6GFDQM++
+         mYst8tkjGP3wCrW6Fwh7+96ankxr+Ksv6BEI5uaFje8dk6hgU5zsyhpWjVCUR/jlYiWI
+         5A4Q==
+X-Gm-Message-State: AOJu0YxLW7j4mnrTfBetMt7a7sS37hrZJTcY4MRmFWjy+irD8sPO6tgO
+	DI8JPgxSBa9sXoUf4gtKBJuHoQixPfZN3AHUdhWdYPoYdRrkVbCqgHc7+4zKuyO17S9NC9wl3Y9
+	YOyf7JNzJmezHdLMgJJdtV5pQTbTOoiinfeoC
+X-Google-Smtp-Source: AGHT+IGWmPcNjm+wpDbul+AOT67RZaICat9JknWnwinU+ss7qWQ27bTyn7o4GQeZ3P1FafwEylGLQlPwraAAnqMleUs=
+X-Received: by 2002:a17:906:710e:b0:a36:5079:d6c9 with SMTP id
+ x14-20020a170906710e00b00a365079d6c9mr2033956ejj.76.1707243463572; Tue, 06
+ Feb 2024 10:17:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND] mac802154: Fix uninit-value access in
- ieee802154_hdr_push_sechdr
-To: Alexander Aring <aahringo@redhat.com>
-CC: Zhang Shurong <zhang_shurong@foxmail.com>, <alex.aring@gmail.com>,
-	<stefan@datenfreihafen.org>, <davem@davemloft.net>, <edumazet@google.com>,
-	<kuba@kernel.org>, <pabeni@redhat.com>, <linux-wpan@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<harperchen1110@gmail.com>
-References: <CAK-6q+jsZ13Cs9iuk_WjFeYFCEnnj-dJ9QYkWaw4fh6Gi=JtHA@mail.gmail.com>
- <20240112131554.10352-1-n.zhandarovich@fintech.ru>
- <CAK-6q+gcs2djQfKRsuGpD7WERmbLhzjkHEm80MRe+2UE3bteKw@mail.gmail.com>
- <CAK-6q+hRbsFkQec3O8FnT-G9Mx07rdhEMfmTE2Q0SDN0kKN-8g@mail.gmail.com>
- <64dbd05c-4939-49ba-a8d5-807fe3ff2987@fintech.ru>
- <CAK-6q+gEjqCrnFkpKSuQiuhpx9zyuWr6y0tQpJOLquoz2pnmzw@mail.gmail.com>
-Content-Language: en-US
-From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-In-Reply-To: <CAK-6q+gEjqCrnFkpKSuQiuhpx9zyuWr6y0tQpJOLquoz2pnmzw@mail.gmail.com>
+References: <20240201213429.4120839-1-almasrymina@google.com>
+ <20240201213429.4120839-3-almasrymina@google.com> <1560533cb4eb3f36e640c9931fba93e0d0378652.camel@redhat.com>
+In-Reply-To: <1560533cb4eb3f36e640c9931fba93e0d0378652.camel@redhat.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Tue, 6 Feb 2024 10:17:30 -0800
+Message-ID: <CAHS8izM-QqyiYz100sC-QPhVOnD0zbc4TZhcTxZzritOa_z7FA@mail.gmail.com>
+Subject: Re: [PATCH net-next v7 2/2] net: add netmem to skb_frag_t
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>, 
+	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Shakeel Butt <shakeelb@google.com>, Yunsheng Lin <linyunsheng@huawei.com>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
- (10.0.10.18)
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Tue, Feb 6, 2024 at 1:30=E2=80=AFAM Paolo Abeni <pabeni@redhat.com> wrot=
+e:
+>
+> On Thu, 2024-02-01 at 13:34 -0800, Mina Almasry wrote:
+> > @@ -2528,8 +2562,25 @@ static inline void skb_fill_page_desc_noacc(stru=
+ct sk_buff *skb, int i,
+> >       shinfo->nr_frags =3D i + 1;
+> >  }
+> >
+> > -void skb_add_rx_frag(struct sk_buff *skb, int i, struct page *page, in=
+t off,
+> > -                  int size, unsigned int truesize);
+> > +static inline void skb_add_rx_frag_netmem(struct sk_buff *skb, int i,
+> > +                                       netmem_ref netmem, int off, int=
+ size,
+> > +                                       unsigned int truesize)
+> > +{
+> > +     DEBUG_NET_WARN_ON_ONCE(size > truesize);
+> > +
+> > +     skb_fill_netmem_desc(skb, i, netmem, off, size);
+> > +     skb->len +=3D size;
+> > +     skb->data_len +=3D size;
+> > +     skb->truesize +=3D truesize;
+> > +}
+>
+> > +
+> > +static inline void skb_add_rx_frag(struct sk_buff *skb, int i,
+> > +                                struct page *page, int off, int size,
+> > +                                unsigned int truesize)
+> > +{
+> > +     skb_add_rx_frag_netmem(skb, i, page_to_netmem(page), off, size,
+> > +                            truesize);
+> > +}
+>
+> I'm very sorry, I was not clear in my previous feedback: only
+> skb_add_rx_frag() was supposed to be 'static inline'.
+>
+> skb_add_rx_frag_netmem() contains a few more instructions and there are
+> a lot of callers, always inline it does not look the best option.
+>
+> I'm sorry for requiring an additional iteration, but feel free to ad my
+> Acked-by with the above change.
+>
 
-On 2/5/24 11:49, Alexander Aring wrote:
-> Hi,
-> 
-> On Thu, Jan 18, 2024 at 8:00 AM Nikita Zhandarovich
-> <n.zhandarovich@fintech.ru> wrote:
-> ...
->>
->> I was curious whether a smaller change would suffice since I might be
->> too green to see the full picture here.
->>
->> In all honesty I am failing to see how exactly it happens that cb->secen
->> == 1 and cb->secen_override == 0 (which is exactly what occurs during
->> this error repro) at the start of mac802154_set_header_security().
->> Since there is a check in mac802154_set_header_security()
->>
->>         if (!params.enabled && cb->secen_override && cb->secen)
->>
->> maybe we take off 'cb->secen_override' part of the condition? That way
->> we catch the case when security is supposedly enabled without parameters
->> being available (not enabled) and return with error. Or is this approach
->> too lazy?
-> 
-> I need to see the full patch for this. In my opinion there are two patches here:
-> 
+No worries, minor miscommunication. I'm happy to respin with the change. Th=
+anks!
 
-Alex, I am gonna try to test your version and send out patches before
-the end of week, thank you for reminding me.
 
-> 1. fix uninit values
-> 2. return an error with some mismatched security parameters. (I think
-> this is where your approach comes in place)
-> 
-> The 1. case is what syzbot is complaining about and in my opinion easy
-> to fix at [0] to init some more default values of "struct dgram_sock"
-> [1].
 
-However, if I may, I am still worried that initing stuff in [0] won't
-help much. They way I see it, there are mismatched sec. parameters that
-lead to the actual uninit issue, but are not victim of it themselves.
-
-Specifically, once we enter mac802154_set_header_security() all fields
-of 'cb' have values (albeit a possibly wrong combo of them), values
-copied from 'ro' seemingly w/o a hitch; the function ends early (cause
-of mismatch); we end up NOT filling values in ieee802154_hdr *hdr, at
-the very least these:
-
-	hdr->sec.level = level;
-	hdr->sec.key_id_mode = params.out_key.mode;
-
-Then we are back in ieee802154_header_create():
-ieee802154_header_create -> ieee802154_hdr_push ->
-ieee802154_hdr_push_sechdr, where we finally access aforementioned
-values despite putting nothing in them.
-
-In other words, I am unsure that mismatch in sec. parameters (cb->secen,
-params.enabled etc.), which leads to uninit issues in hdr->sec.XXX
-fields, is itself caused by the uninit values in dgram_sock (since KMSAN
-should have caught it earlier). But if you are certain, I don't mind
-taking on the patches you suggested.
-
-> 
-> Then 2. can be fixed afterwards.
-> 
-> - Alex
-> 
-> [0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/net/ieee802154/socket.c#n474
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/net/ieee802154/socket.c#n435
-> 
-
-Thank you for your patience,
-Nikita
+--=20
+Thanks,
+Mina
 
