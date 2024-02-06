@@ -1,230 +1,158 @@
-Return-Path: <linux-kernel+bounces-55693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D1EC84C019
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:33:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 854F684C026
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:37:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03846288F77
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:33:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE6191F24065
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:37:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB0B31CD26;
-	Tue,  6 Feb 2024 22:33:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14E6E1CD2C;
+	Tue,  6 Feb 2024 22:36:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DSFz46fx"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="G5LxyzAO"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83E401C694
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 22:33:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B13F51CD23
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 22:36:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707258790; cv=none; b=E9OqfTWT1WqlUSWOX8W+Gxvv3kfclLKV65rMMmlX+HeZqV3H35veewRAqUKQMNO6QlvrTU48UFDb9ervok/c1Cwn+o7afPpvNSovPM7G+ElYsPpRVH1qjM2L9FhhJwdATjhXdOMd99TV8Aa3nT4+cFcjwV9ytW7Y3k56L1oPNQQ=
+	t=1707259010; cv=none; b=EhbPB0TRkX/rWN34Nx1vHZQRClAYNvVtVJ9TBtP6CPZIfiHzfR/hWmYGUFGMJ0PN5bJRIaS9rt+fisnNuMCUjmJw3SmH5XgBkb9KlbjhNtG47Ohx66GUWLbu9PxHzwOPGDDpGzWLkJYO+tB5HsFqgI7dr2eIAF+sLrmDx/sQiDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707258790; c=relaxed/simple;
-	bh=VPLzgYSU/JVdj5M5bhzldmNLypV0tiHKJ2uCNlyny0Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rXsNtcRnCTkHvnbo/11fpZCFgrZx0u/WbuZWAQxTW2qewpmP8c/cBWcm4RV4dhdtefgM2YfQfiGpYRrNOVZTGpj9v/FBFfYb0Xz7Z8VZgWydl8Kc0Vz+c4HdYIfA2B83ZyMhROzXd1F+yAGj6ao9wmR3Utbx5vaDoSvZWuILFFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DSFz46fx; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d71cb97937so246965ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 14:33:08 -0800 (PST)
+	s=arc-20240116; t=1707259010; c=relaxed/simple;
+	bh=N6KTTGVlioPgR9j+o8pygtYiTQpajG3elp7P2BRhHJ4=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=hVpOrXczGgyEXAfNTcYjviOe1gWrroMzPn44yEHYm5CoWXZ4z9uxNjynuvSelSMPqoQQsq6+o3TxXjP0OKiAyAbyOYJIAz2vW1mmzdcfhqMH2bQbG5kmtnBPguQ2/aPqhhF65E4wys67gtEbuOpzgPGEpPrpTBlynCFJUEAuBgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--acdunlap.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=G5LxyzAO; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--acdunlap.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-604833eb9c3so230047b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 14:36:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707258787; x=1707863587; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wX4f3WxNax0yrGD3k4jTwh/vCGQc2wn1RTN07jtNKD0=;
-        b=DSFz46fxEkyrlL98sGiICCWHGTkY4gRRgDBUOCQ89IFJ4W8ElymPsqvMTFReUKlWnu
-         IACO9JLCepWYHDcEqxDMohcsu0wglNvTAa9u9Q72L6Y261zHQNPqO8nxIOdSd0zDNlGj
-         M/rU4d+LPgeYZWljAP/1/VgD68UL6hJvuso/wJfnQOktBFPlmZdIscHNendMr/j8b20+
-         HI/ZaXWszb35RsUt0y1tbYKbzg7PT7E628Zb6e5t1icwZHAAGofakjC77I/q1Ep7T3Ep
-         NqbfvvtXxbG1fSDPj64qHOD2kEGvAOIz9pte7Ua3JByi5kt6w8P5iengPCx25ab6AMiR
-         Xc7A==
+        d=google.com; s=20230601; t=1707259007; x=1707863807; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=S9KktXhbpCP9EKhC0dGFOyn7FIX3yfw9fFagtMfvzvU=;
+        b=G5LxyzAO+ayBNRBm0069VkDnn7tWoSqNRp4l92H/aVhLoI/DkPKbdM69tW/Fu2QPI2
+         rhfsXF/soqYDh07e9TWooiKYsyOcyfHNB251QWlH4v67Pyz69bYy8uiN5haXKbC64uI2
+         lx77BlPY/e89QCLrArwxUd5NW515iTIMttNE+PgwHq3tealykgze1QNCGAVwmE6rZZ1A
+         u3IlBwSzSii0AZyfU3iTE6bl+jLiDLAiOHoKov/85sqeBXqKaZZUQRMrBB9ReHilwygL
+         TtisyvfXDx0Rcb5Sm7kEzgA5EsuTUc3IgVm/zpix9FgEas4u1g1Aoh4bDxlahOFLRB9V
+         KGuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707258787; x=1707863587;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wX4f3WxNax0yrGD3k4jTwh/vCGQc2wn1RTN07jtNKD0=;
-        b=Q60qiNC6OHlR/a/JnLxIZ5YGPv3C+GPXiPjuk/ZMf7oM01GUA4TNJ/7nEyIcmvPjFO
-         tAQets+JaGaYWV4UoatkSbfg2EUuXgNSWq5mkWA6HPAP3fU7EMVqvuVThX+7oqSxgfVU
-         SIq5ivXnlBLZFX/fJ4Au3Frucq5Y9wv0SjO94j2LRO14xHzm5y6Dru4tdQQBb4wRSHuz
-         Q+MapjgLGgz+rKPnS4nQVCbyLhGZ2YtAtE4yKS37BG5tNpZPIbq6SvNigTx7wRMu6Fad
-         WpGZPECrHgAdJi4eF98GqM/+ykK/pRgvvNdpSBJPquIPKT4q4w8LCoYZeD9dn4TWWFaC
-         toig==
-X-Gm-Message-State: AOJu0YyngGU9fSd2kzn/hoL2HlmnVdDwpJIB1sf8c0xrzuG49xkHWQIa
-	Sj6C6k2m0v+eJO+p/UT+V1F07HWxmnF8+VgzXsk6/Q1ZeYaTKc3ZBtxkpv7z
-X-Google-Smtp-Source: AGHT+IHfgJmvmNrZmd4aXfeVQ89FIAnMw/1SID/bJpZjM5E3+xKmKxuoA6/aiTxv2qPGZnjPba45gw==
-X-Received: by 2002:a17:903:2384:b0:1d9:8082:4577 with SMTP id v4-20020a170903238400b001d980824577mr3344088plh.17.1707258787618;
-        Tue, 06 Feb 2024 14:33:07 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWNOpv8rOlo8TCfKwGJroovU1eMRu/KL1OCxn0n6wFaqz2gpI03/r7Ik9ituO9iOkDmBfExo3HmdF8WGKPcQlzMfLaUKv2vKHK0FNi2YE712lJG3vIPdR2lz8FWF9XBbyAsJDN4/lSxOkQiHWVPb9smRXq3yc5MitIO5BvQiwkX8yBcfg==
-Received: from daehojeong-desktop.mtv.corp.google.com ([2620:0:1000:8411:6e38:9e6f:4818:7d04])
-        by smtp.gmail.com with ESMTPSA id n3-20020a170902dc8300b001d6f091ca04sm32371pld.13.2024.02.06.14.33.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 14:33:07 -0800 (PST)
-From: Daeho Jeong <daeho43@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	kernel-team@android.com
-Cc: Daeho Jeong <daehojeong@google.com>,
-	Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH 3/3] f2fs: support swap file pinning for zoned devices
-Date: Tue,  6 Feb 2024 14:32:57 -0800
-Message-ID: <20240206223257.3461359-3-daeho43@gmail.com>
-X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-In-Reply-To: <20240206223257.3461359-1-daeho43@gmail.com>
-References: <20240206223257.3461359-1-daeho43@gmail.com>
+        d=1e100.net; s=20230601; t=1707259007; x=1707863807;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=S9KktXhbpCP9EKhC0dGFOyn7FIX3yfw9fFagtMfvzvU=;
+        b=GNHk3DZsFFBMYS9idGF9RwE8WAeSDhbPpFTUzWhwMUu5yMbhUrtgwjYDPLjFSWhhem
+         iLmcTpLaSKPmVc9fD397aybQ6V5PinEMEiziyJ1OlAz5RdNnUicl8Khmlbqo6r8UyF/1
+         YZnRv9VNRtbU3F+2ZyxdSH37CoaCaAzlnuqGgtdt3HB7z/psR12BcQ71GAS+dkECIitF
+         wU6nWaKJ9qN9fM0K2xoUdy7YAOADEe9i2r8PUMzeaGHl11gxXtCVeCOO19HvRORkGKX7
+         i5cMBcnC54ZKVC4BbK9OLsv9oSgKNV+lYCOxyU1UEXaG5i0XgzOHnsrrQ6WQACo/szMY
+         seaw==
+X-Gm-Message-State: AOJu0Yzm3gk8AG7edMUDU35bYy8629XbE9qP4zI/j6WFz5mZiY3p3T4b
+	q84PSJsFpon+dmq0DM4/ybkqF+P7QBVfuXw+wGwzmko/driQ6UC0sRVwqKmE9GYXfg+pBMXPD93
+	INHD+fEBxbA==
+X-Google-Smtp-Source: AGHT+IG7gLSaa9jMCT9d0NEPqxvKadBuDEXuteGmsRb0eeA7aKaH3TsZ4sN4MtvnolZG6mfBKokO9qJycTAqRA==
+X-Received: from anticipation.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:4517])
+ (user=acdunlap job=sendgmr) by 2002:a05:690c:fd0:b0:604:1eea:a39e with SMTP
+ id dg16-20020a05690c0fd000b006041eeaa39emr435630ywb.3.1707259007638; Tue, 06
+ Feb 2024 14:36:47 -0800 (PST)
+Date: Tue,  6 Feb 2024 14:36:20 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
+Message-ID: <20240206223620.1833276-1-acdunlap@google.com>
+Subject: [PATCH v3] x86/asm: Force native_apic_mem_read to use mov
+From: Adam Dunlap <acdunlap@google.com>
+To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, "Peter Zijlstra (Intel)" <peterz@infradead.org>, 
+	Arjan van de Ven <arjan@linux.intel.com>, Wei Liu <wei.liu@kernel.org>, linux-kernel@vger.kernel.org, 
+	llvm@lists.linux.dev, Jacob Xu <jacobhxu@google.com>, Alper Gun <alpergun@google.com>, 
+	Kevin Loughlin <kevinloughlin@google.com>, Peter Gonda <pgonda@google.com>, 
+	Ard Biesheuvel <ardb@kernel.org>
+Cc: Adam Dunlap <acdunlap@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-From: Daeho Jeong <daehojeong@google.com>
+When done from a virtual machine, instructions that touch APIC memory
+must be emulated. By convention, MMIO access are typically performed via
+io.h helpers such as 'readl()' or 'writeq()' to simplify instruction
+emulation/decoding (ex: in KVM hosts and SEV guests) [0].
 
-Support swap file pinning for zoned devices
+Currently, native_apic_mem_read does not follow this convention,
+allowing the compiler to emit instructions other than the mov generated
+by readl(). In particular, when compiled with clang and run as a SEV-ES
+or SEV-SNP guest, the compiler would emit a testl instruction which is
+not supported by the SEV-ES emulator, causing a boot failure in that
+environment. It is likely the same problem would happen in a TDX guest
+as that uses the same instruction emulator as SEV-ES.
 
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+To make sure all emulators can emulate APIC memory reads via mov, use
+the readl function in native_apic_mem_read. It is expected that any
+emulator would support mov in any addressing mode it is the most generic
+and is what is ususally emitted currently.
+
+The testl instruction is emitted when native_apic_mem_read
+is inlined into __xapic_wait_icr_idle. The emulator comes from
+insn_decode_mmio in arch/x86/lib/insn-eval.c. It would not be worth it
+to extend insn_decode_mmio to support more instructions since, in
+theory, the compiler could choose to output nearly any instruction for
+such reads which would bloat the emulator beyond reason.
+
+An alterative to this approach would be to use inline assembly instead
+of the readl helper, as that is what native_apic_mem_write does. I
+consider using readl to be cleaner since it is documented to be a simple
+wrapper and inline assembly is less readable. native_apic_mem_write
+cannot be trivially updated to use writel since it appears to use custom
+asm to workaround for a processor-specific bug.
+
+[0] https://lore.kernel.org/all/20220405232939.73860-12-kirill.shutemov@linux.intel.com/
+
+Signed-off-by: Adam Dunlap <acdunlap@google.com>
+Tested-by: Kevin Loughlin <kevinloughlin@google.com>
 ---
- fs/f2fs/data.c | 54 ++++++++++++++++++++++++++++++++------------------
- 1 file changed, 35 insertions(+), 19 deletions(-)
 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 05158f89ef32..5d8ee6e73dbe 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -3905,28 +3905,40 @@ static int f2fs_migrate_blocks(struct inode *inode, block_t start_blk,
- 							unsigned int blkcnt)
+Patch changelog:
+V1 -> V2: Replaced asm with readl function which does the same thing
+V2 -> V3: Updated commit message to show more motivation and
+justification
+
+Link to v2 discussion: https://lore.kernel.org/all/20220908170456.3177635-1-acdunlap@google.com/
+
+ arch/x86/include/asm/apic.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
+index 9d159b771dc8..dddd3fc195ef 100644
+--- a/arch/x86/include/asm/apic.h
++++ b/arch/x86/include/asm/apic.h
+@@ -13,6 +13,7 @@
+ #include <asm/mpspec.h>
+ #include <asm/msr.h>
+ #include <asm/hardirq.h>
++#include <asm/io.h>
+ 
+ #define ARCH_APICTIMER_STOPS_ON_C3	1
+ 
+@@ -96,7 +97,7 @@ static inline void native_apic_mem_write(u32 reg, u32 v)
+ 
+ static inline u32 native_apic_mem_read(u32 reg)
  {
- 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-+	struct f2fs_map_blocks map = { .m_next_pgofs = NULL,
-+		.m_next_extent = NULL, .m_seg_type = CURSEG_COLD_DATA_PINNED,
-+		.m_may_create = true };
- 	unsigned int blkofs;
- 	unsigned int blk_per_sec = BLKS_PER_SEC(sbi);
- 	unsigned int secidx = start_blk / blk_per_sec;
--	unsigned int end_sec = secidx + blkcnt / blk_per_sec;
-+	unsigned int end_sec;
- 	int ret = 0;
- 
-+	if (!blkcnt)
-+		return 0;
-+	end_sec = secidx + (blkcnt - 1) / blk_per_sec;
-+
- 	f2fs_down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
- 	filemap_invalidate_lock(inode->i_mapping);
- 
- 	set_inode_flag(inode, FI_ALIGNED_WRITE);
- 	set_inode_flag(inode, FI_OPU_WRITE);
- 
--	for (; secidx < end_sec; secidx++) {
-+	for (; secidx <= end_sec; secidx++) {
-+		unsigned int blkofs_end = secidx == end_sec ?
-+			(blkcnt - 1) % blk_per_sec : blk_per_sec - 1;
-+
- 		f2fs_down_write(&sbi->pin_sem);
- 
--		f2fs_lock_op(sbi);
--		f2fs_allocate_new_section(sbi, CURSEG_COLD_DATA_PINNED, false);
--		f2fs_unlock_op(sbi);
-+		ret = f2fs_allocate_pinning_section(sbi);
-+		if (ret) {
-+			f2fs_up_write(&sbi->pin_sem);
-+			break;
-+		}
- 
- 		set_inode_flag(inode, FI_SKIP_WRITES);
- 
--		for (blkofs = 0; blkofs < blk_per_sec; blkofs++) {
-+		for (blkofs = 0; blkofs <= blkofs_end; blkofs++) {
- 			struct page *page;
- 			unsigned int blkidx = secidx * blk_per_sec + blkofs;
- 
-@@ -3944,6 +3956,12 @@ static int f2fs_migrate_blocks(struct inode *inode, block_t start_blk,
- 		clear_inode_flag(inode, FI_SKIP_WRITES);
- 
- 		ret = filemap_fdatawrite(inode->i_mapping);
-+		if (!ret && blkofs != blk_per_sec) {
-+			map.m_lblk = secidx * blk_per_sec + blkofs;
-+			map.m_len = blk_per_sec - blkofs;
-+			ret = f2fs_map_blocks(inode, &map,
-+					F2FS_GET_BLOCK_PRE_DIO);
-+		}
- 
- 		f2fs_up_write(&sbi->pin_sem);
- 
-@@ -4015,19 +4033,17 @@ static int check_swap_activate(struct swap_info_struct *sis,
- 		nr_pblocks = map.m_len;
- 
- 		if ((pblock - SM_I(sbi)->main_blkaddr) & sec_blks_mask ||
--				nr_pblocks & sec_blks_mask) {
-+				nr_pblocks & sec_blks_mask ||
-+				!f2fs_valid_pinned_area(sbi, pblock)) {
- 			not_aligned++;
- 
- 			nr_pblocks = roundup(nr_pblocks, blks_per_sec);
- 			if (cur_lblock + nr_pblocks > sis->max)
- 				nr_pblocks -= blks_per_sec;
- 
--			if (!nr_pblocks) {
--				/* this extent is last one */
--				nr_pblocks = map.m_len;
--				f2fs_warn(sbi, "Swapfile: last extent is not aligned to section");
--				goto next;
--			}
-+			/* this extent is last one */
-+			if (!nr_pblocks)
-+				nr_pblocks = last_lblock - cur_lblock;
- 
- 			ret = f2fs_migrate_blocks(inode, cur_lblock,
- 							nr_pblocks);
-@@ -4035,7 +4051,7 @@ static int check_swap_activate(struct swap_info_struct *sis,
- 				goto out;
- 			goto retry;
- 		}
--next:
-+
- 		if (cur_lblock + nr_pblocks >= sis->max)
- 			nr_pblocks = sis->max - cur_lblock;
- 
-@@ -4073,17 +4089,17 @@ static int f2fs_swap_activate(struct swap_info_struct *sis, struct file *file,
- 				sector_t *span)
- {
- 	struct inode *inode = file_inode(file);
-+	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
- 	int ret;
- 
- 	if (!S_ISREG(inode->i_mode))
- 		return -EINVAL;
- 
--	if (f2fs_readonly(F2FS_I_SB(inode)->sb))
-+	if (f2fs_readonly(sbi->sb))
- 		return -EROFS;
- 
--	if (f2fs_lfs_mode(F2FS_I_SB(inode))) {
--		f2fs_err(F2FS_I_SB(inode),
--			"Swapfile not supported in LFS mode");
-+	if (f2fs_lfs_mode(sbi) && !f2fs_sb_has_blkzoned(sbi)) {
-+		f2fs_err(sbi, "Swapfile not supported in LFS mode");
- 		return -EINVAL;
- 	}
- 
-@@ -4102,7 +4118,7 @@ static int f2fs_swap_activate(struct swap_info_struct *sis, struct file *file,
- 
- 	stat_inc_swapfile_inode(inode);
- 	set_inode_flag(inode, FI_PIN_FILE);
--	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
-+	f2fs_update_time(sbi, REQ_TIME);
- 	return ret;
+-	return *((volatile u32 *)(APIC_BASE + reg));
++	return readl((void __iomem *)(APIC_BASE + reg));
  }
  
+ static inline void native_apic_mem_eoi(void)
 -- 
 2.43.0.594.gd9cf4e227d-goog
 
