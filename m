@@ -1,118 +1,150 @@
-Return-Path: <linux-kernel+bounces-54554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38D8284B09E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:03:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AAD084B0A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:03:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D77DD280FF3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:03:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03DC81F22D57
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:03:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CF4612D16E;
-	Tue,  6 Feb 2024 09:00:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6896F12D74D;
+	Tue,  6 Feb 2024 09:00:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sBYs4aO+"
-Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="T28rIBlf"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9966412D153
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 09:00:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4671E12C803
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 09:00:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707210023; cv=none; b=E3IzZcAjYh0zh2zOvaohjrDYiFfAY6nTIjeszc5cQcGqYtnBPD92o51bkaCVu05LhmyU/3lQ3H5CFEBoCclw5EE/dQTuUoAcGn3n+aa7Xnhc1P8LzGVAaXEKXi0GLtaVpiZXfin2yQERPPP31vFOp4mMFGkag0IHGokJIn47jsg=
+	t=1707210053; cv=none; b=py/2eAp/MUfoFrMgtbxbijESJwAO3LG35XlPuV5fCKoonWNuSvLHRFblrD71GnAr0W8WDfiCOWAafav+KiQgVGn8+2ByvfO8Wm5lFKS8nymWSd4eibq1az875QqL5gmrNqg0PWBr8vOE4BgAKmSyVthjYN/doSicDofhFtJ50PY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707210023; c=relaxed/simple;
-	bh=SxQjK5o9m31vC6NqNadgVRjnw+ctZnP6AU8Uj28TlSI=;
+	s=arc-20240116; t=1707210053; c=relaxed/simple;
+	bh=TvMzRlANL0jtJ3DpxaqQjdEF2h9X+naRAxINr00NogQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZzTmiTCUHg8vtrEX3kLiO/Dhuih63l063LG1av8Jsw4t9ymAT71BrXpferML0gYSP5X4QJ6XX9mvkuv7WH7ZlCLru2s+yGi5HVS7sYGeN+ZKgtbGFrKgmJo5a2OrxQSVkOIyOyoSwGSjtKr3ePSGf6mzEY8bNmFLfFU1WjP3m6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sBYs4aO+; arc=none smtp.client-ip=91.218.175.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 6 Feb 2024 04:00:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707210019;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZBttTWG6B/hRu2GKdAEHTEeg0dT4Isyo/6hlXj+LQvY=;
-	b=sBYs4aO+Y++ATlpT84BjTAhvWvoR0GYL0haejynyHKmKzxc28Vx8Pg51rmmqil7SzLhoiI
-	d5AdLXPE5ZwYz5sYyDaH9a+hTGsy6CsjgIIEBWj6XRBCRXJAap7LePIe9HRmGU7MVsnI1A
-	zn+Kynfd1VuvtLUGES2isUkNIiqoSYY=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: Dave Chinner <david@fromorbit.com>, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	linux-ext4@vger.kernel.org, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	Dave Chinner <dchinner@redhat.com>, "Darrick J. Wong" <djwong@kernel.org>, 
-	Theodore Ts'o <tytso@mit.edu>, linux-fsdevel@vger.kernel.or, Miklos Szeredi <miklos@szeredi.hu>
-Subject: Re: [PATCH 2/6] fs: FS_IOC_GETUUID
-Message-ID: <nmmxuryl7shlwionp6htpiifwosyl53hwbeurkcwkxwxb4ikdk@yxmtogitrx5w>
-References: <20240205200529.546646-1-kent.overstreet@linux.dev>
- <20240205200529.546646-3-kent.overstreet@linux.dev>
- <ZcFelmKPb374aebH@dread.disaster.area>
- <l2zdnuczo24zxc6z6hh7q5mmux3wr5iltscnrc7axdugt6ct2k@qzrpj6vc2ct5>
- <CAOQ4uxjvEL4P4vV5SKpHVS5DtOwKpxAn4n4+Kfqawcu+H-MC5g@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=rAsAiu2OQjneMYafOG4R6GDr8Ey2SdIpnnJcb9/UvvZeFFhWQNtCWGJYNL21NaA9QS8uNtvwcDrANdrBWSpS9IJAHFtApdTg0J4XU3MxV4wVP+L4ZYv4fo5Jgx+eY4Bqos2m07p6Yx19ciaf2z7oyuLu15FqHjsA+N/xj/ug/38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=T28rIBlf; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a380a1fa56fso63736866b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 01:00:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1707210049; x=1707814849; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3w2Fem2j7S7z0DDbEilMJqR16t4YZ9fG3OZkjVcRUHQ=;
+        b=T28rIBlfszubYomdtb7M+V7SDS7E+/fCpzAi8Aw/n7DgHiaPPbr3UO6gwd7/NXBm59
+         bmLLCpugwpeS9QXagDgJPN40IoNoAjTUd8hmc3LSGqTppxXmVBcFPCDemtUgA5XCFH5Y
+         t5UgX3X4fhwTNNSOOG+VZG2pIlB933HF+uej/9X58cNYd1FN6bh0eqo3/cHPIgVFWHND
+         GQX7R0uarVHFHcjOg4z9QD8u93ETDJrkNvu/TUGZYnMFQL2COUEfjj5sj5AZd4CMrr9Z
+         tScWphzIwVS6qNDfhbZ9lMPFuqBdzFpNQWagFLkHgUHPWPechXoRxd9sSCKQQ6Vm20hk
+         VRBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707210049; x=1707814849;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3w2Fem2j7S7z0DDbEilMJqR16t4YZ9fG3OZkjVcRUHQ=;
+        b=JxkeD2ZeAdcY7eLIo9StaB9rBOrvZssMoFOqb8/mxBaIZUayphRFcqOrmmQvvDmyFc
+         7SB3nS9/IRacKuK8ArEDu+Egtay7bMyEZS6VnscQVY9p4KxuKBeW0S2ntItMn+Q37T6k
+         bXBYae0qsYF43vd1Ghs6zoTbHYXrDuHdECaqcBMLpvwNHjGs7XyN6yILWx5/7GLgxSkg
+         Ss1o3+DsFQ3zpNDnlm6LXWj69UyaFg+2IZsZWihYpQO1ogkElPQhUlga/BiuXp+v9IJN
+         npN1H3IoLlShWYvMwMGWeq/Fl0UCv27NcMCyQHjaX+P+/Yx950+lTwSt5nATs4qk2gr9
+         d4ow==
+X-Gm-Message-State: AOJu0YxIEMBAoKptWDwteEieBjk1qyV/WtuDsA/odaAvZedqhFZkrbjM
+	9K/b9b6BRXJtx5XAtXE6hX5AmUL5BZEVKtZtcywBoUsqMrXtYn1coSCsdrIUM1w=
+X-Google-Smtp-Source: AGHT+IGetnEyTbcs/WDZMoJan0QVx5H5uxwQSSkhE/VpsBLFYggmERawnnw7Orxwyhkrk0xX5dBrFw==
+X-Received: by 2002:a17:906:198d:b0:a37:7a6d:79c with SMTP id g13-20020a170906198d00b00a377a6d079cmr2043614ejd.34.1707210049477;
+        Tue, 06 Feb 2024 01:00:49 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCV12l6OfRkzbaNeF3aQei5kaPmQp6IYIQdbL+tNL6glqrH5R8vLreyGWwDgzYdZv2fLIIAnnDjIavZg7Q5R8iqhWOAOWXorWi9vJ3yP/fgWA7iSoDr7W0SVasP4Uj5gOLFkAfz/St9uQB3QcUzXVcJYu8OyfHYCX7qEKRrT+cBZHNjVgtspYMmhJiTdBjZpz0Hryoez7JLtddhPHfuO/hlntA0cFX25lE6tnVYRD30ZBMvd7cTQJVG8Mn7u8kDMzL181rAwlfXzipyQEN4UBCMni8LhempQhUzY0JnfKrxeygH4UNYMxCLDivWazlGEKu+dCl1c9X13ckAuOOdhbjr9RCTZhFd0ijWwmQzv4Emx2ONKsiyc291y7FMGtcAve638ZkQMHxGDzkL0fTFeKyAEwKGyled2G1dhbGnlYbNKoysDi1ALDmaFf+QrobeiPa7g6gR0EakDzqL+p5/xa8H5s7/B9o89r0DoZZOlRztnlgdUzYsi4VH1BIiAgHRtZiNRMci+miN1CXGU539yKoZnOtuSX5J3+fA3v5RlWpC4kuY/t2G8SIke/1EKHIN6tSCwzeejLFZxHu5L67UAWUGc3/QYTj+O6W3G2JUwew3sgvhHDkCOEycQV7L3xFw1BiJXZFsxume3oZaNV0DT84qRQeYxgsOVLVOQQxBhdqG4r9aJ1ZkMHO/00jW41Opl4fBe+AyUdwlt/4IjEXdNz2J/x6Ffm3ShTi06DXEU2/WJgpUfPBTWXLzlUY7yNkiTl6oYAgKzAA3xMLhnm3SnqTWa5h9OX2TNmypSbhshICM=
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id ll5-20020a170907190500b00a358b6242fcsm888424ejc.114.2024.02.06.01.00.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 01:00:49 -0800 (PST)
+Date: Tue, 6 Feb 2024 10:00:47 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: Yoann Congal <yoann.congal@smile.fr>
+Cc: linux-fsdevel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+	x86@kernel.org,
+	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
+	Borislav Petkov <bp@alien8.de>, Darren Hart <dvhart@infradead.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Vegard Nossum <vegard.nossum@oracle.com>
+Subject: Re: [PATCH v4 1/3] printk: Fix LOG_CPU_MAX_BUF_SHIFT when BASE_SMALL
+ is enabled
+Message-ID: <ZcH1KFac4AD6tKrV@alley>
+References: <20240206001333.1710070-1-yoann.congal@smile.fr>
+ <20240206001333.1710070-2-yoann.congal@smile.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOQ4uxjvEL4P4vV5SKpHVS5DtOwKpxAn4n4+Kfqawcu+H-MC5g@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20240206001333.1710070-2-yoann.congal@smile.fr>
 
-On Tue, Feb 06, 2024 at 10:24:45AM +0200, Amir Goldstein wrote:
-> On Tue, Feb 6, 2024 at 12:49 AM Kent Overstreet
-> <kent.overstreet@linux.dev> wrote:
-> >
-> > On Tue, Feb 06, 2024 at 09:17:58AM +1100, Dave Chinner wrote:
-> > > On Mon, Feb 05, 2024 at 03:05:13PM -0500, Kent Overstreet wrote:
-> > > > Add a new generic ioctls for querying the filesystem UUID.
-> > > >
-> > > > These are lifted versions of the ext4 ioctls, with one change: we're not
-> > > > using a flexible array member, because UUIDs will never be more than 16
-> > > > bytes.
-> > > >
-> > > > This patch adds a generic implementation of FS_IOC_GETFSUUID, which
-> > > > reads from super_block->s_uuid; FS_IOC_SETFSUUID is left for individual
-> > > > filesystems to implement.
-> > > >
+On Tue 2024-02-06 01:13:31, Yoann Congal wrote:
+> LOG_CPU_MAX_BUF_SHIFT default value depends on BASE_SMALL:
+>   config LOG_CPU_MAX_BUF_SHIFT
+>   	default 12 if !BASE_SMALL
+>   	default 0 if BASE_SMALL
+> But, BASE_SMALL is a config of type int and "!BASE_SMALL" is always
+> evaluated to true whatever is the value of BASE_SMALL.
 > 
-> It's fine to have a generic implementation, but the filesystem should
-> have the option to opt-in for a specific implementation.
+> This patch fixes this by using the correct conditional operator for int
+> type : BASE_SMALL != 0.
 > 
-> There are several examples, even with xfs and btrfs where ->s_uuid
-> does not contain the filesystem's UUID or there is more than one
-> uuid and ->s_uuid is not the correct one to expose to the user.
+> Note: This changes CONFIG_LOG_CPU_MAX_BUF_SHIFT=12 to
+> CONFIG_LOG_CPU_MAX_BUF_SHIFT=0 for BASE_SMALL defconfigs, but that will
+> not be a big impact due to this code in kernel/printk/printk.c:
+>   /* by default this will only continue through for large > 64 CPUs */
+>   if (cpu_extra <= __LOG_BUF_LEN / 2)
+>           return;
+> Systems using CONFIG_BASE_SMALL and having 64+ CPUs should be quite
+> rare.
+> 
+> John Ogness <john.ogness@linutronix.de> (printk reviewer) wrote:
+> > For printk this will mean that BASE_SMALL systems were probably
+> > previously allocating/using the dynamic ringbuffer and now they will
+> > just continue to use the static ringbuffer. Which is fine and saves
+> > memory (as it should).
+> 
+> Petr Mladek <pmladek@suse.com> (printk maintainer) wrote:
+> > More precisely, it allocated the buffer dynamically when the sum
+> > of per-CPU-extra space exceeded half of the default static ring
+> > buffer. This happened for systems with more than 64 CPUs with
+> > the default config values.
+> 
+> Signed-off-by: Yoann Congal <yoann.congal@smile.fr>
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Closes: https://lore.kernel.org/all/CAMuHMdWm6u1wX7efZQf=2XUAHascps76YQac6rdnQGhc8nop_Q@mail.gmail.com/
+> Reported-by: Vegard Nossum <vegard.nossum@oracle.com>
+> Closes: https://lore.kernel.org/all/f6856be8-54b7-0fa0-1d17-39632bf29ada@oracle.com/
+> Fixes: 4e244c10eab3 ("kconfig: remove unneeded symbol_empty variable")
 
-Yeah, some of you were smoking some good stuff from the stories I've
-been hearing...
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-> A model like ioctl_[gs]etflags() looks much more appropriate
-> and could be useful for network filesystems/FUSE as well.
-
-A filesystem needs to store two UUIDs (that identify the filesystem as a
-whole).
-
- - Your internal UUID, which can never change because it's referenced in
-   various other on disk data structures
- - Your external UUID, which identifies the filesystem to the outside
-   world. Users want to be able to change this - which is why it has to
-   be distinct from the internal UUID.
-
-The internal UUID must never be exposed to the outside world, and that
-includes the VFS; storing your private UUID in sb->s_uuid is wrong -
-separation of concerns.
-
-yes, I am aware of fscrypt, and yes, someone's going to have to fix
-that.
-
-This interface is only for the external/public UUID.
+Best Regards,
+Petr
 
