@@ -1,439 +1,355 @@
-Return-Path: <linux-kernel+bounces-55083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64EFB84B772
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:09:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5948584B777
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:09:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88F311C25827
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:09:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D32931F277EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:09:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3E4813399A;
-	Tue,  6 Feb 2024 14:07:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45776131E53;
+	Tue,  6 Feb 2024 14:07:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="i+ZxKnK6"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IcAd4Iv/"
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53B2B132482;
-	Tue,  6 Feb 2024 14:07:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D45D134754
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 14:07:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707228449; cv=none; b=CR3hgJ9YUaZUVcOG3qHJFBSKPWuvYFPcymacFXaTucWq9yYtNpBlVOoitvw751LLV18b5Mtp6E9cs4IPqehCOvvm8citNA0Y7XJ8lFW2CTEPvZZoD5sw1BNIC9ZYirJVCd0hoKDfcgqZ7gIh4mIXC4odBk33lRRKt0c2H9oVOTY=
+	t=1707228469; cv=none; b=mGFKu0FcyxgfsEtZGMhnNSPZg/WdJYjR1AOEJr8x32WXL1Qw+TFsHqS+lsYotxA86JQaMcyoSGwjAtYwcOFp+FBwsnGqkmm6yH+kUD8njYxpy4hQeHZTxPG9usbyteQ1HSO5EzcVg1cARA3fz4aWDw6ihPLkwSkCMcJ8uZ9rj/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707228449; c=relaxed/simple;
-	bh=hU4776sYBDi68msbbKmdhIQkHDVJX9tyYRGpSrCg92A=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Pv69lyXT5jCMCuziBrg05y/fH0iqhfUYfS9XCahf6JxggPpJZJqUIhEDeo3mMAIpnODwaakH0NUuCS8vt/YS4ABFoZ+YU7/XZKO5QgxbNrjtO0TxqbR/H4ece1ZZuWd3vKcAmlzxl5uek+Tu+2hpO2kVBNGhn/Rq7prZM4QMJBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=i+ZxKnK6; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPA id C90EB1C0013;
-	Tue,  6 Feb 2024 14:07:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707228445;
+	s=arc-20240116; t=1707228469; c=relaxed/simple;
+	bh=mVwWWrTDAgwS1pEK3S2+uKoqMrH7DFsvi9QuzAu6wkM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BX0MZl8nqYd8gv5XfUM75dI2a+tm1Ry5hJw2VEFeO+6kZGfqn3J+0+DqOU5oAoalFkaxYyZO6dIrY3sHJjuFXfzcYKmtev8SQRtIbDNEYgK7Ew3AUQbioIf1JZW8wdnQaSoQ/BGV3NAHifUpKNEUCGo0SyFc9rcG+06zt3WRk1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IcAd4Iv/; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <f4ff9d98-a1ae-4214-9740-c6f921d1bc48@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707228460;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BiEtrlkAacMQ7ZsOH+miZS1Nj46VD4t7KhVmkzLQVRU=;
-	b=i+ZxKnK6+BZCsUqvL713sswRyD9fX9Qm6CvbXFptiH88CopePOW82bBBzBm/1RGb4z+Iyk
-	uHUg1U3SJ7hE8soJQs4d5BqDcMja8xs/X5xBtCYhRf34o399yRZ+osmhiFXhiyP2Yfb4jm
-	1UW56KjJ+uaeiCn6Mdo6aRc4w5cWzORqKzJ/WisJuYROvPBywjlpS2Pdx4Iw+I+BRGJkd2
-	mn/tf+zz+HBoDTJcoljrmF7oDFnlgagqrfXBE57NYSehJNfdoWM5JgBMLvxYLV7YVz1LGb
-	QjkzJllx1SAa0byg+zkPb2cJ4iVesH86XJM0QQKRVB8o23pv+ihFWttLUa+F6w==
-From: Herve Codina <herve.codina@bootlin.com>
-To: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Herve Codina <herve.codina@bootlin.com>
-Cc: linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	Andrew Lunn <andrew@lunn.ch>,
-	Mark Brown <broonie@kernel.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v3 6/6] net: wan: fsl_qmc_hdlc: Add framer support
-Date: Tue,  6 Feb 2024 15:07:16 +0100
-Message-ID: <20240206140717.107930-7-herve.codina@bootlin.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240206140717.107930-1-herve.codina@bootlin.com>
-References: <20240206140717.107930-1-herve.codina@bootlin.com>
+	bh=kQ1uNrQgl7Q6ppJI7ZiOp0IhPwQJqVIgFs5DYq1SlBY=;
+	b=IcAd4Iv/HZ4cSLrn8NbUVcz4NyCZptygJT1QmfoU7zAShjb6RlNpW6z9vHqXg+fwVdiTYp
+	o0JwJIltEuV8fZj7vXnm395Yp8bun24KAEat+Nn/vIjgrZwl3CbJCjGDP5W5Uu0zfZ9wOj
+	x5HkYaq5CGaU0tfvwDhN6n59gASF8E4=
+Date: Tue, 6 Feb 2024 14:07:32 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+Subject: Re: [PATCH v3 09/20] drivers: crypto: meson: process more than
+ MAXDESCS descriptors
+Content-Language: en-US
+To: Alexey Romanov <avromanov@salutedevices.com>, neil.armstrong@linaro.org,
+ clabbe@baylibre.com, herbert@gondor.apana.org.au, davem@davemloft.net,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ khilman@baylibre.com, jbrunet@baylibre.com,
+ martin.blumenstingl@googlemail.com
+Cc: linux-crypto@vger.kernel.org, linux-amlogic@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, kernel@salutedevices.com
+References: <20240205155521.1795552-1-avromanov@salutedevices.com>
+ <20240205155521.1795552-10-avromanov@salutedevices.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <20240205155521.1795552-10-avromanov@salutedevices.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Add framer support in the fsl_qmc_hdlc driver in order to be able to
-signal carrier changes to the network stack based on the framer status
-Also use this framer to provide information related to the E1/T1 line
-interface on IF_GET_IFACE and configure the line interface according to
-IF_IFACE_{E1,T1} information.
+On 05/02/2024 15:55, Alexey Romanov wrote:
+> 1. The old alhorithm was not designed to process a large
+> amount of memory, and therefore gave incorrect results.
+> 
+> 2. Not all Amlogic SoC's use 3 KEY/IV descriptors.
+> Add keyiv descriptors count parameter to platform data.
+> 
+> Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
+> ---
+>   drivers/crypto/amlogic/amlogic-gxl-cipher.c | 443 ++++++++++++--------
+>   drivers/crypto/amlogic/amlogic-gxl-core.c   |   1 +
+>   drivers/crypto/amlogic/amlogic-gxl.h        |   2 +
+>   3 files changed, 281 insertions(+), 165 deletions(-)
+> 
+> diff --git a/drivers/crypto/amlogic/amlogic-gxl-cipher.c b/drivers/crypto/amlogic/amlogic-gxl-cipher.c
+> index c662c4b86e97..9c96e7b65e1e 100644
+> --- a/drivers/crypto/amlogic/amlogic-gxl-cipher.c
+> +++ b/drivers/crypto/amlogic/amlogic-gxl-cipher.c
+> @@ -17,35 +17,41 @@
+>   #include <crypto/internal/skcipher.h>
+>   #include "amlogic-gxl.h"
+>   
 
-Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- drivers/net/wan/fsl_qmc_hdlc.c | 239 ++++++++++++++++++++++++++++++++-
- 1 file changed, 235 insertions(+), 4 deletions(-)
+[.. skip ..]
 
-diff --git a/drivers/net/wan/fsl_qmc_hdlc.c b/drivers/net/wan/fsl_qmc_hdlc.c
-index b25d918d5e4e..432b5111b106 100644
---- a/drivers/net/wan/fsl_qmc_hdlc.c
-+++ b/drivers/net/wan/fsl_qmc_hdlc.c
-@@ -9,6 +9,7 @@
- 
- #include <linux/bitmap.h>
- #include <linux/dma-mapping.h>
-+#include <linux/framer/framer.h>
- #include <linux/hdlc.h>
- #include <linux/module.h>
- #include <linux/of.h>
-@@ -28,6 +29,9 @@ struct qmc_hdlc {
- 	struct device *dev;
- 	struct qmc_chan *qmc_chan;
- 	struct net_device *netdev;
-+	struct framer *framer;
-+	spinlock_t carrier_lock; /* Protect carrier detection */
-+	struct notifier_block nb;
- 	bool is_crc32;
- 	spinlock_t tx_lock; /* Protect tx descriptors */
- 	struct qmc_hdlc_desc tx_descs[8];
-@@ -41,6 +45,195 @@ static struct qmc_hdlc *netdev_to_qmc_hdlc(struct net_device *netdev)
- 	return dev_to_hdlc(netdev)->priv;
- }
- 
-+static int qmc_hdlc_framer_set_carrier(struct qmc_hdlc *qmc_hdlc)
-+{
-+	struct framer_status framer_status;
-+	unsigned long flags;
-+	int ret;
-+
-+	if (!qmc_hdlc->framer)
-+		return 0;
-+
-+	spin_lock_irqsave(&qmc_hdlc->carrier_lock, flags);
-+
-+	ret = framer_get_status(qmc_hdlc->framer, &framer_status);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "get framer status failed (%d)\n", ret);
-+		goto end;
-+	}
-+	if (framer_status.link_is_on)
-+		netif_carrier_on(qmc_hdlc->netdev);
-+	else
-+		netif_carrier_off(qmc_hdlc->netdev);
-+
-+end:
-+	spin_unlock_irqrestore(&qmc_hdlc->carrier_lock, flags);
-+	return ret;
-+}
-+
-+static int qmc_hdlc_framer_notifier(struct notifier_block *nb, unsigned long action,
-+				    void *data)
-+{
-+	struct qmc_hdlc *qmc_hdlc = container_of(nb, struct qmc_hdlc, nb);
-+	int ret;
-+
-+	if (action != FRAMER_EVENT_STATUS)
-+		return NOTIFY_DONE;
-+
-+	ret = qmc_hdlc_framer_set_carrier(qmc_hdlc);
-+	return ret ? NOTIFY_DONE : NOTIFY_OK;
-+}
-+
-+static int qmc_hdlc_framer_start(struct qmc_hdlc *qmc_hdlc)
-+{
-+	struct framer_status framer_status;
-+	int ret;
-+
-+	if (!qmc_hdlc->framer)
-+		return 0;
-+
-+	ret = framer_power_on(qmc_hdlc->framer);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "framer power-on failed (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	/* Be sure that get_status is supported */
-+	ret = framer_get_status(qmc_hdlc->framer, &framer_status);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "get framer status failed (%d)\n", ret);
-+		goto framer_power_off;
-+	}
-+
-+	qmc_hdlc->nb.notifier_call = qmc_hdlc_framer_notifier;
-+	ret = framer_notifier_register(qmc_hdlc->framer, &qmc_hdlc->nb);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "framer notifier register failed (%d)\n", ret);
-+		goto framer_power_off;
-+	}
-+
-+	return 0;
-+
-+framer_power_off:
-+	framer_power_off(qmc_hdlc->framer);
-+	return ret;
-+}
-+
-+static void qmc_hdlc_framer_stop(struct qmc_hdlc *qmc_hdlc)
-+{
-+	if (!qmc_hdlc->framer)
-+		return;
-+
-+	framer_notifier_unregister(qmc_hdlc->framer, &qmc_hdlc->nb);
-+	framer_power_off(qmc_hdlc->framer);
-+}
-+
-+static int qmc_hdlc_framer_set_iface(struct qmc_hdlc *qmc_hdlc, int if_iface,
-+				     const te1_settings *te1)
-+{
-+	struct framer_config config;
-+	int ret;
-+
-+	if (!qmc_hdlc->framer)
-+		return 0;
-+
-+	ret = framer_get_config(qmc_hdlc->framer, &config);
-+	if (ret)
-+		return ret;
-+
-+	switch (if_iface) {
-+	case IF_IFACE_E1:
-+		config.iface = FRAMER_IFACE_E1;
-+		break;
-+	case IF_IFACE_T1:
-+		config.iface = FRAMER_IFACE_T1;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (te1->clock_type) {
-+	case CLOCK_DEFAULT:
-+		/* Keep current value */
-+		break;
-+	case CLOCK_EXT:
-+		config.clock_type = FRAMER_CLOCK_EXT;
-+		break;
-+	case CLOCK_INT:
-+		config.clock_type = FRAMER_CLOCK_INT;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	config.line_clock_rate = te1->clock_rate;
-+
-+	return framer_set_config(qmc_hdlc->framer, &config);
-+}
-+
-+static int qmc_hdlc_framer_get_iface(struct qmc_hdlc *qmc_hdlc, int *if_iface, te1_settings *te1)
-+{
-+	struct framer_config config;
-+	int ret;
-+
-+	if (!qmc_hdlc->framer) {
-+		*if_iface = IF_IFACE_E1;
-+		return 0;
-+	}
-+
-+	ret = framer_get_config(qmc_hdlc->framer, &config);
-+	if (ret)
-+		return ret;
-+
-+	switch (config.iface) {
-+	case FRAMER_IFACE_E1:
-+		*if_iface = IF_IFACE_E1;
-+		break;
-+	case FRAMER_IFACE_T1:
-+		*if_iface = IF_IFACE_T1;
-+		break;
-+	}
-+
-+	if (!te1)
-+		return 0; /* Only iface type requested */
-+
-+	switch (config.clock_type) {
-+	case FRAMER_CLOCK_EXT:
-+		te1->clock_type = CLOCK_EXT;
-+		break;
-+	case FRAMER_CLOCK_INT:
-+		te1->clock_type = CLOCK_INT;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	te1->clock_rate = config.line_clock_rate;
-+	return 0;
-+}
-+
-+static int qmc_hdlc_framer_init(struct qmc_hdlc *qmc_hdlc)
-+{
-+	int ret;
-+
-+	if (!qmc_hdlc->framer)
-+		return 0;
-+
-+	ret = framer_init(qmc_hdlc->framer);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "framer init failed (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static void qmc_hdlc_framer_exit(struct qmc_hdlc *qmc_hdlc)
-+{
-+	if (!qmc_hdlc->framer)
-+		return;
-+
-+	framer_exit(qmc_hdlc->framer);
-+}
-+
- static int qmc_hdlc_recv_queue(struct qmc_hdlc *qmc_hdlc, struct qmc_hdlc_desc *desc, size_t size);
- 
- #define QMC_HDLC_RX_ERROR_FLAGS (QMC_RX_FLAG_HDLC_OVF | \
-@@ -300,6 +493,12 @@ static int qmc_hdlc_set_iface(struct qmc_hdlc *qmc_hdlc, int if_iface, const te1
- 
- 	qmc_hdlc->slot_map = te1->slot_map;
- 
-+	ret = qmc_hdlc_framer_set_iface(qmc_hdlc, if_iface, te1);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "framer set iface failed %d\n", ret);
-+		return ret;
-+	}
-+
- 	return 0;
- }
- 
-@@ -307,11 +506,16 @@ static int qmc_hdlc_ioctl(struct net_device *netdev, struct if_settings *ifs)
- {
- 	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
- 	te1_settings te1;
-+	int ret;
- 
- 	switch (ifs->type) {
- 	case IF_GET_IFACE:
--		ifs->type = IF_IFACE_E1;
- 		if (ifs->size < sizeof(te1)) {
-+			/* Retrieve type only */
-+			ret = qmc_hdlc_framer_get_iface(qmc_hdlc, &ifs->type, NULL);
-+			if (ret)
-+				return ret;
-+
- 			if (!ifs->size)
- 				return 0; /* only type requested */
- 
-@@ -321,6 +525,11 @@ static int qmc_hdlc_ioctl(struct net_device *netdev, struct if_settings *ifs)
- 
- 		memset(&te1, 0, sizeof(te1));
- 
-+		/* Retrieve info from framer */
-+		ret = qmc_hdlc_framer_get_iface(qmc_hdlc, &ifs->type, &te1);
-+		if (ret)
-+			return ret;
-+
- 		/* Update slot_map */
- 		te1.slot_map = qmc_hdlc->slot_map;
- 
-@@ -354,10 +563,17 @@ static int qmc_hdlc_open(struct net_device *netdev)
- 	int ret;
- 	int i;
- 
--	ret = hdlc_open(netdev);
-+	ret = qmc_hdlc_framer_start(qmc_hdlc);
- 	if (ret)
- 		return ret;
- 
-+	ret = hdlc_open(netdev);
-+	if (ret)
-+		goto framer_stop;
-+
-+	/* Update carrier */
-+	qmc_hdlc_framer_set_carrier(qmc_hdlc);
-+
- 	chan_param.mode = QMC_HDLC;
- 	/* HDLC_MAX_MRU + 4 for the CRC
- 	 * HDLC_MAX_MRU + 4 + 8 for the CRC and some extraspace needed by the QMC
-@@ -407,6 +623,8 @@ static int qmc_hdlc_open(struct net_device *netdev)
- 	}
- hdlc_close:
- 	hdlc_close(netdev);
-+framer_stop:
-+	qmc_hdlc_framer_stop(qmc_hdlc);
- 	return ret;
- }
- 
-@@ -442,6 +660,7 @@ static int qmc_hdlc_close(struct net_device *netdev)
- 	}
- 
- 	hdlc_close(netdev);
-+	qmc_hdlc_framer_stop(qmc_hdlc);
- 	return 0;
- }
- 
-@@ -490,6 +709,7 @@ static int qmc_hdlc_probe(struct platform_device *pdev)
- 
- 	qmc_hdlc->dev = &pdev->dev;
- 	spin_lock_init(&qmc_hdlc->tx_lock);
-+	spin_lock_init(&qmc_hdlc->carrier_lock);
- 
- 	qmc_hdlc->qmc_chan = devm_qmc_chan_get_bychild(qmc_hdlc->dev, np);
- 	if (IS_ERR(qmc_hdlc->qmc_chan)) {
-@@ -518,10 +738,19 @@ static int qmc_hdlc_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
-+	qmc_hdlc->framer = devm_framer_optional_get(qmc_hdlc->dev, "fsl,framer");
-+	if (IS_ERR(qmc_hdlc->framer))
-+		return PTR_ERR(qmc_hdlc->framer);
-+
-+	ret = qmc_hdlc_framer_init(qmc_hdlc);
-+	if (ret)
-+		return ret;
-+
- 	qmc_hdlc->netdev = alloc_hdlcdev(qmc_hdlc);
- 	if (!qmc_hdlc->netdev) {
- 		dev_err(qmc_hdlc->dev, "failed to alloc hdlc dev\n");
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto framer_exit;
- 	}
- 
- 	hdlc = dev_to_hdlc(qmc_hdlc->netdev);
-@@ -537,11 +766,12 @@ static int qmc_hdlc_probe(struct platform_device *pdev)
- 	}
- 
- 	platform_set_drvdata(pdev, qmc_hdlc);
--
- 	return 0;
- 
- free_netdev:
- 	free_netdev(qmc_hdlc->netdev);
-+framer_exit:
-+	qmc_hdlc_framer_exit(qmc_hdlc);
- 	return ret;
- }
- 
-@@ -551,6 +781,7 @@ static int qmc_hdlc_remove(struct platform_device *pdev)
- 
- 	unregister_hdlc_device(qmc_hdlc->netdev);
- 	free_netdev(qmc_hdlc->netdev);
-+	qmc_hdlc_framer_exit(qmc_hdlc);
- 
- 	return 0;
- }
--- 
-2.43.0
+> @@ -84,176 +295,78 @@ static int meson_cipher(struct skcipher_request *areq)
+>   	struct meson_dev *mc = op->mc;
+>   	struct skcipher_alg *alg = crypto_skcipher_alg(tfm);
+>   	struct meson_alg_template *algt;
+> -	int flow = rctx->flow;
+> -	unsigned int todo, eat, len;
+> -	struct scatterlist *src_sg = areq->src;
+> -	struct scatterlist *dst_sg = areq->dst;
+> -	struct meson_desc *desc;
+> -	int nr_sgs, nr_sgd;
+> -	int i, err = 0;
+> -	unsigned int keyivlen, ivsize, offset, tloffset;
+> -	dma_addr_t phykeyiv;
+> -	void *backup_iv = NULL, *bkeyiv;
+> -	u32 v;
+> -
+> -	algt = container_of(alg, struct meson_alg_template, alg.skcipher.base);
+> +	struct cipher_ctx ctx = {
+> +		.areq = areq,
+> +		.src_offset = 0,
+> +		.dst_offset = 0,
+> +		.src_sg = areq->src,
+> +		.dst_sg = areq->dst,
+> +		.cryptlen = areq->cryptlen,
+> +	};
+> +	unsigned int ivsize = crypto_skcipher_ivsize(tfm);
+> +	int err;
+>   
+> -	dev_dbg(mc->dev, "%s %s %u %x IV(%u) key=%u flow=%d\n", __func__,
+> +	dev_dbg(mc->dev, "%s %s %u %x IV(%u) key=%u ctx.flow=%d\n", __func__,
+>   		crypto_tfm_alg_name(areq->base.tfm),
+>   		areq->cryptlen,
+>   		rctx->op_dir, crypto_skcipher_ivsize(tfm),
+> -		op->keylen, flow);
+> +		op->keylen, rctx->flow);
+> +
+> +	algt = container_of(alg, struct meson_alg_template, alg.skcipher.base);
+>   
+>   #ifdef CONFIG_CRYPTO_DEV_AMLOGIC_GXL_DEBUG
+>   	algt->stat_req++;
+> -	mc->chanlist[flow].stat_req++;
+> +	mc->chanlist[rctx->flow].stat_req++;
+>   #endif
+>   
+> -	/*
+> -	 * The hardware expect a list of meson_desc structures.
+> -	 * The 2 first structures store key
+> -	 * The third stores IV
+> -	 */
+> -	bkeyiv = kzalloc(48, GFP_KERNEL | GFP_DMA);
+> -	if (!bkeyiv)
+> +	op->key = kzalloc(48, GFP_KERNEL | GFP_DMA);
+> +	if (!op.key)
+>   		return -ENOMEM;
+>   
+> -	memcpy(bkeyiv, op->key, op->keylen);
+> -	keyivlen = op->keylen;
+> +	memcpy(op->key, op->key, op->keylen);
+
+Apart form invalid if() you try to copy op->key to itself.
+I believe it should be removed, because you initialize ctx.key.addr
+later
+
+> +	ctx.keyiv.len = op->keylen;
+> +	if (ctx.keyiv.len == AES_KEYSIZE_192)
+> +		ctx.keyiv.len = AES_MAX_KEY_SIZE;
+>   
+> -	ivsize = crypto_skcipher_ivsize(tfm);
+> -	if (areq->iv && ivsize > 0) {
+> -		if (ivsize > areq->cryptlen) {
+> -			dev_err(mc->dev, "invalid ivsize=%d vs len=%d\n", ivsize, areq->cryptlen);
+> -			err = -EINVAL;
+> -			goto theend;
+> -		}
+> -		memcpy(bkeyiv + 32, areq->iv, ivsize);
+> -		keyivlen = 48;
+> -		if (rctx->op_dir == MESON_DECRYPT) {
+> -			backup_iv = kzalloc(ivsize, GFP_KERNEL);
+> -			if (!backup_iv) {
+> -				err = -ENOMEM;
+> -				goto theend;
+> -			}
+> -			offset = areq->cryptlen - ivsize;
+> -			scatterwalk_map_and_copy(backup_iv, areq->src, offset,
+> -						 ivsize, 0);
+> -		}
+> -	}
+> -	if (keyivlen == AES_KEYSIZE_192)
+> -		keyivlen = AES_MAX_KEY_SIZE;
+> -
+> -	phykeyiv = dma_map_single(mc->dev, bkeyiv, keyivlen,
+> +	ctx.keyiv.addr = dma_map_single(mc->dev, op->key, ctx.keyiv.len,
+>   				  DMA_TO_DEVICE);
+> -	err = dma_mapping_error(mc->dev, phykeyiv);
+> +	err = dma_mapping_error(mc->dev, ctx.keyiv.addr);
+>   	if (err) {
+>   		dev_err(mc->dev, "Cannot DMA MAP KEY IV\n");
+>   		goto theend;
+>   	}
+>   
+> -	tloffset = 0;
+> -	eat = 0;
+> -	i = 0;
+> -	while (keyivlen > eat) {
+> -		desc = &mc->chanlist[flow].tl[tloffset];
+> -		memset(desc, 0, sizeof(struct meson_desc));
+> -		todo = min(keyivlen - eat, 16u);
+> -		desc->t_src = cpu_to_le32(phykeyiv + i * 16);
+> -		desc->t_dst = cpu_to_le32(i * 16);
+> -		v = DESC_MODE_KEY | DESC_OWN | 16;
+> -		desc->t_status = cpu_to_le32(v);
+> -
+> -		eat += todo;
+> -		i++;
+> -		tloffset++;
+> -	}
+> -
+> -	if (areq->src == areq->dst) {
+> -		nr_sgs = dma_map_sg(mc->dev, areq->src, sg_nents(areq->src),
+> -				    DMA_BIDIRECTIONAL);
+> -		if (!nr_sgs) {
+> -			dev_err(mc->dev, "Invalid SG count %d\n", nr_sgs);
+> -			err = -EINVAL;
+> -			goto theend;
+> -		}
+> -		nr_sgd = nr_sgs;
+> -	} else {
+> -		nr_sgs = dma_map_sg(mc->dev, areq->src, sg_nents(areq->src),
+> -				    DMA_TO_DEVICE);
+> -		if (!nr_sgs || nr_sgs > MAXDESC - 3) {
+> -			dev_err(mc->dev, "Invalid SG count %d\n", nr_sgs);
+> -			err = -EINVAL;
+> -			goto theend;
+> -		}
+> -		nr_sgd = dma_map_sg(mc->dev, areq->dst, sg_nents(areq->dst),
+> -				    DMA_FROM_DEVICE);
+> -		if (!nr_sgd || nr_sgd > MAXDESC - 3) {
+> -			dev_err(mc->dev, "Invalid SG count %d\n", nr_sgd);
+> -			err = -EINVAL;
+> -			goto theend;
+> -		}
+> -	}
+> -
+> -	src_sg = areq->src;
+> -	dst_sg = areq->dst;
+> -	len = areq->cryptlen;
+> -	while (src_sg) {
+> -		desc = &mc->chanlist[flow].tl[tloffset];
+> -		memset(desc, 0, sizeof(struct meson_desc));
+> -
+> -		desc->t_src = cpu_to_le32(sg_dma_address(src_sg));
+> -		desc->t_dst = cpu_to_le32(sg_dma_address(dst_sg));
+> -		todo = min(len, sg_dma_len(src_sg));
+> -		v = op->keymode | DESC_OWN | todo | algt->blockmode;
+> -		if (rctx->op_dir)
+> -			v |= DESC_ENCRYPTION;
+> -		len -= todo;
+> -
+> -		if (!sg_next(src_sg))
+> -			v |= DESC_LAST;
+> -		desc->t_status = cpu_to_le32(v);
+> -		tloffset++;
+> -		src_sg = sg_next(src_sg);
+> -		dst_sg = sg_next(dst_sg);
+> -	}
+> +	err = meson_map_scatterlist(areq, mc);
+> +	if (err)
+> +		goto theend;
+>   
+> -	reinit_completion(&mc->chanlist[flow].complete);
+> -	meson_dma_start(mc, flow);
+> +	ctx.tloffset = 0;
+>   
+> -	err = wait_for_completion_interruptible_timeout(&mc->chanlist[flow].complete,
+> -							msecs_to_jiffies(500));
+> -	if (err == 0) {
+> -		dev_err(mc->dev, "DMA timeout for flow %d\n", flow);
+> -		err = -EINVAL;
+> -	} else if (err < 0) {
+> -		dev_err(mc->dev, "Waiting for DMA completion is failed (%d)\n", err);
+> -	} else {
+> -		/* No error */
+> -		err = 0;
+> -	}
+> +	while (ctx.cryptlen) {
+> +		meson_setup_keyiv_descs(&ctx);
+>   
+> -	dma_unmap_single(mc->dev, phykeyiv, keyivlen, DMA_TO_DEVICE);
+> +		if (meson_setup_data_descs(&ctx)) {
+> +			err = meson_kick_hardware(&ctx);
+> +			if (err)
+> +				break;
+> +		}
+>   
+> -	if (areq->src == areq->dst) {
+> -		dma_unmap_sg(mc->dev, areq->src, sg_nents(areq->src), DMA_BIDIRECTIONAL);
+> -	} else {
+> -		dma_unmap_sg(mc->dev, areq->src, sg_nents(areq->src), DMA_TO_DEVICE);
+> -		dma_unmap_sg(mc->dev, areq->dst, sg_nents(areq->dst), DMA_FROM_DEVICE);
+> -	}
+> +		if (ctx.src_offset == sg_dma_len(ctx.src_sg)) {
+> +			ctx.src_offset = 0;
+> +			ctx.src_sg = sg_next(ctx.src_sg);
+> +		}
+>   
+> -	if (areq->iv && ivsize > 0) {
+> -		if (rctx->op_dir == MESON_DECRYPT) {
+> -			memcpy(areq->iv, backup_iv, ivsize);
+> -		} else {
+> -			scatterwalk_map_and_copy(areq->iv, areq->dst,
+> -						 areq->cryptlen - ivsize,
+> -						 ivsize, 0);
+> +		if (ctx.dst_offset == sg_dma_len(ctx.dst_sg)) {
+> +			ctx.dst_offset = 0;
+> +			ctx.dst_sg = sg_next(ctx.dst_sg);
+>   		}
+>   	}
+> +
+> +	dma_unmap_single(mc->dev, ctx.keyiv.addr, ctx.keyiv.len, DMA_TO_DEVICE);
+> +	meson_unmap_scatterlist(areq, mc);
+> +
+>   theend:
+> -	kfree_sensitive(bkeyiv);
+> -	kfree_sensitive(backup_iv);
+> +	kfree_sensitive(op->key);
+>   
+>   	return err;
+>   }
+> diff --git a/drivers/crypto/amlogic/amlogic-gxl-core.c b/drivers/crypto/amlogic/amlogic-gxl-core.c
+> index 22ff2768b5e5..f93e14f5717d 100644
+> --- a/drivers/crypto/amlogic/amlogic-gxl-core.c
+> +++ b/drivers/crypto/amlogic/amlogic-gxl-core.c
+> @@ -199,6 +199,7 @@ static const struct meson_pdata meson_gxl_pdata = {
+>   	.descs_reg = 0x0,
+>   	.status_reg = 0x4,
+>   	.need_clk = true,
+> +	.setup_desc_cnt = 3,
+>   };
+>   
+>   static const struct of_device_id meson_crypto_of_match_table[] = {
+> diff --git a/drivers/crypto/amlogic/amlogic-gxl.h b/drivers/crypto/amlogic/amlogic-gxl.h
+> index a0d83c82906d..eb2f8cd72b65 100644
+> --- a/drivers/crypto/amlogic/amlogic-gxl.h
+> +++ b/drivers/crypto/amlogic/amlogic-gxl.h
+> @@ -83,11 +83,13 @@ struct meson_flow {
+>    * @reg_descs:	offset to descriptors register
+>    * @reg_status:	offset to status register
+>    * @need_clk:	clock input is needed
+> + * @setup_desc_cnt:	number of setup descriptor to configure.
+>    */
+>   struct meson_pdata {
+>   	u32 descs_reg;
+>   	u32 status_reg;
+>   	bool need_clk;
+> +	u32 setup_desc_cnt;
+>   };
+>   
+>   /*
 
 
