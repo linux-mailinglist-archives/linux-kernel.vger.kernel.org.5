@@ -1,110 +1,161 @@
-Return-Path: <linux-kernel+bounces-55006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2786884B62F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:17:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F07684B630
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:20:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6F20288765
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:17:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38C111C20CD1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:20:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53EC9130AF4;
-	Tue,  6 Feb 2024 13:17:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF0B0130AE1;
+	Tue,  6 Feb 2024 13:19:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="c5OKFycE"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KGjZfM/+";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KGjZfM/+"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6F93130E2E
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 13:17:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 591DE12EBD6
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 13:19:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707225450; cv=none; b=n2+OXn1WpyxYHCYkLrf3fQ/qpHPb8nRfw7FzAAxJpP4t7raw9tSw6E/ycpo3ItOmpRJTpKwjqZJ12a8x4zd+nyPyWR3aBVcqX2fpekJORhcXBHRe7TEUMI8QOTzMobtQX7cJsGRA1o/hGk/zQjxqbIuSxNAKIRXRrB3BIYW3wak=
+	t=1707225599; cv=none; b=gcwzkYEvA+iNG6EBT7vWo8if1tthhh4Bdl0WIuJ8mcxy90KJF42kRnSlR2rhj3a1v2A5/yro9hCvcYKn3gO6w7i5bPCEcspeMGZYtmUnAx5W9tIL17Fcq1Iy/ALTdN9fM7qq2e0/7HZxtstiVQUKtVMUh/BCjWFPHPllTORwRkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707225450; c=relaxed/simple;
-	bh=4i3zRtRM11Cg2KpgT0q+2//W7pMM2xt1zWoak+1GerU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=cDJec5Yj81BfziCOOeL7PnI4XcKz/8iDr9BJ2jzjB5nOCVCUmPVW2BIJTGaerjuZs4hQB9vyPB3DECKRmxTk3d8EoOWeDEFUl/VSNOvl2fZ4SXHGqVANyG+nktcYvDJdo8I76TmvzQqxSkMNWc04gDRRbPKrLMUdlb9DQ77spgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=c5OKFycE; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707225447;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1707225599; c=relaxed/simple;
+	bh=d6E4qoI7v5gjzR3UZHAJ1Lk7ETYM50N8rH9/3UgxbIA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XDdxam/05CC5WJCxl5+B27VNvS17LAMF65d7+Jv/Cp2AgPvgXNIqfiiI8ftnGSsge8KUMLe/gdMM2VWcqOBzp+Lmkv0lwmo365gDIzBI57IFSpfnij96RhPd6yUeHAPeqfpNFRxhPLM7fGjiU5jL1ReUl+0nAFrn9vdEyq0WTLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KGjZfM/+; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KGjZfM/+; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9C40F221A7;
+	Tue,  6 Feb 2024 13:19:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707225594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4i3zRtRM11Cg2KpgT0q+2//W7pMM2xt1zWoak+1GerU=;
-	b=c5OKFycEeK9v1xhdI8NC9KPHtOa52uJ0PRyj9tZvC8mrWv6ZMGAiyz4vXQJLppCFWKmdac
-	4UuEmoloNKzyxeLhKLQ9P2EWP6EPUpecIE20S16sNqQtKV2A5ruDbmdT2noxY5KVxQNVLu
-	66NveEsXgKraWNYduwh35iY3rPHU9zY=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-141-Y3D3Sr9TNKyLFHJFVFsXHA-1; Tue, 06 Feb 2024 08:17:26 -0500
-X-MC-Unique: Y3D3Sr9TNKyLFHJFVFsXHA-1
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-78319f64126so676154685a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 05:17:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707225445; x=1707830245;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4i3zRtRM11Cg2KpgT0q+2//W7pMM2xt1zWoak+1GerU=;
-        b=epaABqJSaW4Pt95KR2dzMMI2G1OSxFtSORsZn+A6/m7eyeVEDT97U8nSVNPhdAvzae
-         ZZU136cbmbsKb8IirF49DReuxklaUlPb4NYMGXzE3jfF8UaoGW09J38UjhblqYcfTAzb
-         yDK2nZExiimjVrzO2xUf8CkjLq3pFBSA6yKrArcvkPP07l7AJnFb8+u3g3NBafRBtrMz
-         VgPe1UtPyBm32D++VTzstHYUPSjiVpQ/JImTiV9Dn6HBRqZS76v4llLlXZuKLzolGmle
-         komo2AXPc56CgcZ1wCD++fxKLCoKXx4evh0w3O/wtld8bdw2gRE5HJZSy8CfHCGgNa0h
-         NTiQ==
-X-Gm-Message-State: AOJu0YwQDlOi80zH91oUzJtDBBvBaj0Ju6PpvDUgUWqF8WCaZgXgyhlr
-	ggf+J+RyAEU8V0cJu+lGOAbPpMVRktNQuuOS7vJk1ccGRYVgi/1Mx9DrgDCVtjcOF13syxaVuPH
-	e4fJuZr4gqy2zJU9+7jwVkHJGTxc+aOreLuE4BM9RBnEx9k9H94fLGytztdoK1g==
-X-Received: by 2002:a05:620a:4d3:b0:785:60d6:36f7 with SMTP id 19-20020a05620a04d300b0078560d636f7mr2634908qks.69.1707225445712;
-        Tue, 06 Feb 2024 05:17:25 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IENMrym6fMHLO/71HKMNXgxwio0b/TAbj1n6jotgc+hsRZhjLd6Sj7rEbTesFS9dlqqpsP+rQ==
-X-Received: by 2002:a05:620a:4d3:b0:785:60d6:36f7 with SMTP id 19-20020a05620a04d300b0078560d636f7mr2634894qks.69.1707225445464;
-        Tue, 06 Feb 2024 05:17:25 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCX0IH2H9+nXjZ1Q8HRdi8rqyjYN++D0V0oiE0yASIfA1mJeoL3phBfHCPsaJWS8UL2wEQp8GyXKWAixT5//NtDlUxuB/KQ+47QSP8B2gJ6NWedFvPBpfHTnPRnMKqKRwJZArnwwtQtLeSnoedJkjzWMZPhSYstCmucHNtehR8NEcUDds+hLfFJrJS3UHNgPRKND5VhBmCEqWb0jBhWRCPrAwP2sFKiTkFq4RbX5jqi4Yyo9kPsT9LQQB6rftXJ2nnDIqIfAARhEFxaxNsmcb+6jjQRpuD+TmdI4vcXw+khLLeCxR/UQnHLRr+CJiJo=
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id a11-20020a05620a02eb00b007856bff53d3sm880694qko.54.2024.02.06.05.17.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 05:17:24 -0800 (PST)
-From: Valentin Schneider <vschneid@redhat.com>
-To: David Vernet <void@manifault.com>, linux-kernel@vger.kernel.org
-Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
- vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com,
- bristot@redhat.com, kernel-team@meta.com
-Subject: Re: [PATCH v3 2/3] sched/fair: Do strict inequality check for
- busiest misfit task group
-In-Reply-To: <20240206043921.850302-3-void@manifault.com>
-References: <20240206043921.850302-1-void@manifault.com>
- <20240206043921.850302-3-void@manifault.com>
-Date: Tue, 06 Feb 2024 14:17:22 +0100
-Message-ID: <xhsmhbk8thgv1.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	bh=jIPgOyeIYL9r0eG/hKiBxs+y+4PiJBAJiwveUceKmG0=;
+	b=KGjZfM/+UVaYOKUcTJtRkPTY5oNZNLarIiuiZWWT5saOhUjV1cmktOm5HPdcZQuiFI5czv
+	hhw5u9ErWm138FhM3SGJhIqLp3i9eUZpeGlk8dRlsFUpByLYoHOTNklZ5bJvjCScEPx6Az
+	x+NPmovmRfx4yckHhBy+YApP6IeOq3g=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707225594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jIPgOyeIYL9r0eG/hKiBxs+y+4PiJBAJiwveUceKmG0=;
+	b=KGjZfM/+UVaYOKUcTJtRkPTY5oNZNLarIiuiZWWT5saOhUjV1cmktOm5HPdcZQuiFI5czv
+	hhw5u9ErWm138FhM3SGJhIqLp3i9eUZpeGlk8dRlsFUpByLYoHOTNklZ5bJvjCScEPx6Az
+	x+NPmovmRfx4yckHhBy+YApP6IeOq3g=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 94628132DD;
+	Tue,  6 Feb 2024 13:19:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id fio2JPoxwmVGOwAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Tue, 06 Feb 2024 13:19:54 +0000
+Date: Tue, 6 Feb 2024 14:19:54 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Baolin Wang <baolin.wang@linux.alibaba.com>, muchun.song@linux.dev
+Cc: akpm@linux-foundation.org, osalvador@suse.de, david@redhat.com,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] mm: hugetlb: remove __GFP_THISNODE flag when
+ dissolving the old hugetlb
+Message-ID: <ZcIx-uQm5MUzzyL1@tiehlicka>
+References: <Zbu4cD1XLFLfKan8@tiehlicka>
+ <3f31cd89-f349-4f9e-bc29-35f29f489633@linux.alibaba.com>
+ <ZbylJr_bbWCUMjMl@tiehlicka>
+ <f1606912-5bcc-46be-b4f4-666149eab7bd@linux.alibaba.com>
+ <Zby7-dTtPIy2k5pj@tiehlicka>
+ <909cee7d-0201-4429-b85d-7d2662516e45@linux.alibaba.com>
+ <ZcCnNPkNpE7KTHZu@tiehlicka>
+ <2613b670-84f8-4f97-ab4e-0d480fc1a3f8@linux.alibaba.com>
+ <ZcDvVA84s9-Azr33@tiehlicka>
+ <67e0d81f-7125-455c-b02f-a9e675d55c6c@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <67e0d81f-7125-455c-b02f-a9e675d55c6c@linux.alibaba.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -0.80
+X-Spamd-Result: default: False [-0.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[43.81%]
+X-Spam-Flag: NO
 
-On 05/02/24 22:39, David Vernet wrote:
-> In update_sd_pick_busiest(), when comparing two sched groups that are
-> both of type group_misfit_task, we currently consider the new group as
-> busier than the current busiest group even if the new group has the
-> same misfit task load as the current busiest group. We can avoid some
-> unnecessary writes if we instead only consider the newest group to be
-> the busiest if it has a higher load than the current busiest. This
-> matches the behavior of other group types where we compare load, such as
-> two groups that are both overloaded.
->
-> Let's update the group_misfit_task type comparison to also only update
-> the busiest group in the event of strict inequality.
->
-> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+On Tue 06-02-24 16:18:22, Baolin Wang wrote:
+> 
+> 
+> On 2024/2/5 22:23, Michal Hocko wrote:
+> > On Mon 05-02-24 21:06:17, Baolin Wang wrote:
+> > [...]
+> > > > It is quite possible that traditional users (like large DBs) do not use
+> > > > CMA heavily so such a problem was not observed so far. That doesn't mean
+> > > > those problems do not really matter.
+> > > 
+> > > CMA is just one case, as I mentioned before, other situations can also break
+> > > the per-node hugetlb pool now.
+> > 
+> > Is there any other case than memory hotplug which is arguably different
+> > as it is a disruptive operation already.
+> 
+> Yes, like I said before the longterm pinning, memory failure and the users
+> of alloc_contig_pages() may also break the per-node hugetlb pool.
 
-Reviewed-by: Valentin Schneider <vschneid@redhat.com>
+memory failure is similar to the memory hotplug in the sense that it is
+a disruptive operation and fallback to a different node might be the
+only option to handle it. On the other hand longterm pinning is similar to 
+a_c_p and it should fail if it cannot be migrated within the node.
 
+It seems that hugetlb is quite behind with many other features and I am
+not really sure how to deal with that. What is your take Munchun Song?
+
+> > > Let's focus on the main point, why we should still keep inconsistency
+> > > behavior to handle free and in-use hugetlb for alloc_contig_range()? That's
+> > > really confused.
+> > 
+> > yes, this should behave consistently. And the least surprising way to
+> > handle that from the user configuration POV is to not move outside of
+> > the original NUMA node.
+> 
+> So you mean we should also add __GFP_THISNODE flag in
+> alloc_migration_target() when allocating a new hugetlb as the target for
+> migration, that can unify the behavior and avoid breaking the per-node pool?
+
+Not as simple as that, because alloc_migration_target is used also from
+an user driven migration.
+-- 
+Michal Hocko
+SUSE Labs
 
