@@ -1,119 +1,130 @@
-Return-Path: <linux-kernel+bounces-55529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A097F84BDB3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:03:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AB0D584BDBA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:04:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 404431F21C4E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:03:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4ABEC1F20F17
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:04:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B36B71429B;
-	Tue,  6 Feb 2024 19:02:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4854117731;
+	Tue,  6 Feb 2024 19:02:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g1ztfrLP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=peacevolution.org header.i=@peacevolution.org header.b="AD8RDoDq"
+Received: from a.peacevolution.org (a.peacevolution.org [206.189.193.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF15514006;
-	Tue,  6 Feb 2024 19:02:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 122B5175BD;
+	Tue,  6 Feb 2024 19:02:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=206.189.193.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707246125; cv=none; b=p/YIHjgRxhTz5kd4NveQsXhKoOS5wlapcM2OWBfTlzC7TplMULF35EkfJ//fMmSffUh7+GoQyJRXeGfqBXv+uroTbRQY0f+xo+H+oZ0IGnjQQMgLKInJp1CGk70L80tUpCDIQUovFnNOWSS9q5UsFkOfdr7YUGF3Ua3v+nwduTc=
+	t=1707246178; cv=none; b=ddgi0iSNnESpPw5Xb2Gx6bi0HuirQfu6GLkX62mnL51Ie5gEe/dWY2cfT+EN5kO3mP1pVuYVlDL5UJyJpiVy+AL1WXLFwRmWtMUH3i3m+Za5PQmHSGjcgRDx2a1HG2sEjtGHbuGmXXA9/NnJBbDp8obz+wl0tPzJxaLq32UiDdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707246125; c=relaxed/simple;
-	bh=Dx9E9yWYBkPkRZpeRlRMB+rccONyDzn/HrjXdlDcw6s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZeukscotXB22v3sg4QBpKzXnFFaYakkVoFYHKlUXD+IjC3asjHCPOl/Yy3aBkzg8yl67ACTSxmpJfbKePwEmAk2HUhhd0nu/3LYr9QncpyTA6du5xjLXYIy08zDyKoZx48G3P91awZZKx+QB9h8OyrmXDQVSiDtWKxokBCZhPFs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g1ztfrLP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F155C433F1;
-	Tue,  6 Feb 2024 19:02:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707246124;
-	bh=Dx9E9yWYBkPkRZpeRlRMB+rccONyDzn/HrjXdlDcw6s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=g1ztfrLPO/SsVoXiVW7vNVraGgBbZ5ao9p2I8aBbrBMpWCVHSyKEJUD8ISeV3JdDb
-	 egozPyftyyabRb6RccVztHqXaXrjHg71iva/HfrFfSNAiAnt02FX91ykFS7S5gzsFs
-	 /lOGOvy0es6+BAqQ4rHbnaWJPpM36Guv1J0zhFwdQvJdU/NoKkazPVkXq0CzFPHOVE
-	 CTcq557d20fAh167k4wcJCmWByOQZ0NL9EzhhT9TjNgRBlxu5BTVZiCt4i5orXeIpx
-	 XPhYYSa06Og/Gkq4u4+PkYutqV9orLFyBvWd+BQizTSMYjqFw8t6CFYKjCTFXQAPlg
-	 WaN26DQGofzZQ==
-Date: Tue, 6 Feb 2024 11:06:36 -0800
-From: Bjorn Andersson <andersson@kernel.org>
-To: Andrew Davis <afd@ti.com>
-Cc: Baolin Wang <baolin.wang@linux.alibaba.com>, 
-	linux-omap@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] hwspinlock: omap: Use devm_pm_runtime_enable() helper
-Message-ID: <73jxbyqatxc7r56df2iweewb22qvmqo33rhpsu3darczn7ldof@p2qepqpdf5ds>
-References: <20240123160405.360437-1-afd@ti.com>
- <20240123160405.360437-2-afd@ti.com>
+	s=arc-20240116; t=1707246178; c=relaxed/simple;
+	bh=qXVPXyupoi6y4mfGDfx6l8JDOF1+lMDDn4mbVnSTzr0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=vE5C2+t6LWqlUP4zC3HHwiMEsfo5JSLT/1t4+1rgWo6JchBtRxKkLK+vZ8jqWbet9s8WnN4LV4Cq3Fx12BzrWEndsto1o1iqSFw5u2MnzYMqtjYX9g2/88pB/MGDF8W1LecuBHLxEjTiOIss+yaZmuMxdsK7tN934EmgDWku1qs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=peacevolution.org; spf=pass smtp.mailfrom=peacevolution.org; dkim=pass (1024-bit key) header.d=peacevolution.org header.i=@peacevolution.org header.b=AD8RDoDq; arc=none smtp.client-ip=206.189.193.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=peacevolution.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=peacevolution.org
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+	by a.peacevolution.org (Postfix) with ESMTPA id DD9644583E;
+	Tue,  6 Feb 2024 19:02:48 +0000 (UTC)
+From: Aren Moynihan <aren@peacevolution.org>
+To: linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	devicetree@vger.kernel.org,
+	Jean-Jacques Hiblot <jjhiblot@traphandler.com>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Ondrej Jirman <megi@xff.cz>,
+	linux-sunxi@lists.linux.dev,
+	Lee Jones <lee@kernel.org>,
+	Pavel Machek <pavel@ucw.cz>,
+	linux-arm-kernel@lists.infradead.org,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	linux-leds@vger.kernel.org,
+	Conor Dooley <conor+dt@kernel.org>,
+	Miles Alan <m@milesalan.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Aren Moynihan <aren@peacevolution.org>
+Subject: [PATCH v2 1/4] leds: rgb: leds-group-multicolor: allow leds to stay on in suspend
+Date: Tue,  6 Feb 2024 13:13:17 -0500
+Message-ID: <20240206185400.596979-1-aren@peacevolution.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240123160405.360437-2-afd@ti.com>
+Content-Transfer-Encoding: 8bit
+Authentication-Results: auth=pass smtp.auth=aren@peacevolution.org smtp.mailfrom=aren@peacevolution.org
+X-Spam-Level: ****
+X-Spamd-Bar: ++++
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=peacevolution.org;
+	s=dkim; t=1707246170;
+	h=from:subject:date:message-id:to:cc:mime-version:content-transfer-encoding;
+	bh=NQIirmVOCAxOql2DLF2KDYdkndurgToAOXdUzzfrUao=;
+	b=AD8RDoDqSuMzuW8WjS6hsO4Ihd7f8WOWW5QsXpSI7G+B3S/ZAOv9zFcgzVMoPwDLVcGvsZ
+	3jyUXi4dQD42GwETLjspanbyyc4gtnAGlP9du/NQeqpq3AQNfhm+zqS098d0N0cu3STJr2
+	Os7WmPNxQ97X0MQofjfo76Zlw56NSU0=
 
-On Tue, Jan 23, 2024 at 10:04:03AM -0600, Andrew Davis wrote:
-> This disables runtime PM on module exit, allowing us to simplify
-> the probe exit path and remove callbacks. Do that here.
+If none of the managed leds enable LED_CORE_SUSPENDRESUME, then we
+shouldn't need to set it here. This makes it possible to use multicolor
+groups with gpio leds that enable retain-state-suspended in the device
+tree.
 
-As with the later patch, unless I'm misreading the code, you already do
-disable runtime PM in omap_hwspinlock_remove().
+Signed-off-by: Aren Moynihan <aren@peacevolution.org>
+---
 
-> 
-> Signed-off-by: Andrew Davis <afd@ti.com>
-> ---
->  drivers/hwspinlock/omap_hwspinlock.c | 26 ++++++++------------------
->  1 file changed, 8 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/hwspinlock/omap_hwspinlock.c b/drivers/hwspinlock/omap_hwspinlock.c
-[..]
-> @@ -129,16 +125,12 @@ static int omap_hwspinlock_probe(struct platform_device *pdev)
->  	ret = hwspin_lock_register(bank, &pdev->dev, &omap_hwspinlock_ops,
->  						base_id, num_locks);
->  	if (ret)
-> -		goto runtime_err;
-> +		return ret;
->  
->  	dev_dbg(&pdev->dev, "Registered %d locks with HwSpinlock core\n",
->  		num_locks);
+Changes in v2:
+ - make sure count gets initialized
+ - send the patch to (hopefully) all the correct people this time
 
-I don't fancy these debug information messages, there are other ways to
-confirm that the device probed successfully etc.
+ drivers/leds/rgb/leds-group-multicolor.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Now that you don't need the goto runtime_err, I'd prefer the tail of
-this function:
+diff --git a/drivers/leds/rgb/leds-group-multicolor.c b/drivers/leds/rgb/leds-group-multicolor.c
+index 39f58be32af5..b6c7679015fd 100644
+--- a/drivers/leds/rgb/leds-group-multicolor.c
++++ b/drivers/leds/rgb/leds-group-multicolor.c
+@@ -69,7 +69,7 @@ static int leds_gmc_probe(struct platform_device *pdev)
+ 	struct mc_subled *subled;
+ 	struct leds_multicolor *priv;
+ 	unsigned int max_brightness = 0;
+-	int i, ret, count = 0;
++	int i, ret, count = 0, common_flags = 0;
+ 
+ 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+@@ -91,6 +91,7 @@ static int leds_gmc_probe(struct platform_device *pdev)
+ 		if (!priv->monochromatics)
+ 			return -ENOMEM;
+ 
++		common_flags |= led_cdev->flags;
+ 		priv->monochromatics[count] = led_cdev;
+ 
+ 		max_brightness = max(max_brightness, led_cdev->max_brightness);
+@@ -114,12 +115,15 @@ static int leds_gmc_probe(struct platform_device *pdev)
+ 
+ 	/* Initialise the multicolor's LED class device */
+ 	cdev = &priv->mc_cdev.led_cdev;
+-	cdev->flags = LED_CORE_SUSPENDRESUME;
+ 	cdev->brightness_set_blocking = leds_gmc_set;
+ 	cdev->max_brightness = max_brightness;
+ 	cdev->color = LED_COLOR_ID_MULTI;
+ 	priv->mc_cdev.num_colors = count;
+ 
++	/* we only need suspend/resume if a sub-led requests it */
++	if (common_flags & LED_CORE_SUSPENDRESUME)
++		cdev->flags = LED_CORE_SUSPENDRESUME;
++
+ 	init_data.fwnode = dev_fwnode(dev);
+ 	ret = devm_led_classdev_multicolor_register_ext(dev, &priv->mc_cdev, &init_data);
+ 	if (ret)
+-- 
+2.43.0
 
-	return hwspin_lock_register(...);
-
-Regards,
-Bjorn
-
->  
->  	return 0;
-> -
-> -runtime_err:
-> -	pm_runtime_disable(&pdev->dev);
-> -	return ret;
->  }
->  
->  static void omap_hwspinlock_remove(struct platform_device *pdev)
-> @@ -151,8 +143,6 @@ static void omap_hwspinlock_remove(struct platform_device *pdev)
->  		dev_err(&pdev->dev, "%s failed: %d\n", __func__, ret);
->  		return;
->  	}
-> -
-> -	pm_runtime_disable(&pdev->dev);
->  }
->  
->  static const struct of_device_id omap_hwspinlock_of_match[] = {
-> -- 
-> 2.39.2
-> 
 
