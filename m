@@ -1,170 +1,100 @@
-Return-Path: <linux-kernel+bounces-54423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E3B884AF0F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:36:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1CD884AF11
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:36:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D86C8281ADF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 07:36:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E61D281E67
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 07:36:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32C7812883C;
-	Tue,  6 Feb 2024 07:36:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D591129A62;
+	Tue,  6 Feb 2024 07:36:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QRawCnYN"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F2my4gcc"
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E1FB7EEE0
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 07:36:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46DF7128810;
+	Tue,  6 Feb 2024 07:36:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707204966; cv=none; b=O9LTghK6gn9t4FAGPud+DoF+jJy/OI0V0DA+55+4vrD6R82LLeAyKHB609E8yISnJMHylz1zhcaGy9j2SYKqkibZwH5uMmhUHL5fA/M9o2k7fTLFcfieAgU2JwdhCEVATFZeYU0T7LVMwoy3B5UAAhJX4Cd+GwNESUWsSSN+HjU=
+	t=1707204973; cv=none; b=W7x84Ly+/XYlE+N9M9t89B1KYCamWltxLxdqi3H+Y9aGEmt+6sEVwCDz+IIknAvn98nj3D6Ia5uugjY0EMfT7XZfXDO3nSShEY12SUAAlFuSAQ8t6BQh7/74+7bLnuQ/i+WwbFssL2eIxY+XEMTtiCahDmAow2kVfFoi9yV30JU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707204966; c=relaxed/simple;
-	bh=DFskdFdCKPRzDv02Dcbg6y+WldIQKvyY6n0beoWbUL8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YboRJYqXTcAw0rUCKD3EhDcXrf6S/YomhdwFTrKfcg2cd1EPtbt1XIRagq/h77H13d9h2oVu3ltwSPI2s61+LzI9iqlObDiowq91soux4hoK/xsb8JbB9EAp5D+XKlUEaOxhGiKq+pe4wQHvcpgYWutK0a2bmjkddGbb5z/mPa4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QRawCnYN; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5115744dfe5so970525e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 23:36:02 -0800 (PST)
+	s=arc-20240116; t=1707204973; c=relaxed/simple;
+	bh=5AVucqvHHQeCB5i+pnqtLwGPQwdCwI6har4PBPr+VRc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gNZ6BC58ERPdescGAkHgCbGRV+MJe4EHzPf/0eqOio0UzA/xkAr/nBfE7sd0AgcaOPL+fiYf2lc6eRPlxL0lPl34MqpbJ6rDowfRLNzIij5bK83M8uJRQmQKb8CCr7PWovl7a9GNFWy3YQMvKVEb3vb+AqDi6vvTCscUOdDzcAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F2my4gcc; arc=none smtp.client-ip=209.85.215.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5ce2aada130so573192a12.1;
+        Mon, 05 Feb 2024 23:36:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707204960; x=1707809760; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=F3OS6JpXZ4JmhyvGCfnTkhLWlKdY/LU1F8HDg+hjeGo=;
-        b=QRawCnYNpEj15F8Gnrb7srzO3ZA+5WdYLslGniiBP7iiPeLWmSB5nA13jSwqX0ddMR
-         xXxorTUipsqy0wpiU5i2vQrK+QK5AUtbsNeuplC7M6Z0t9yyclsU5D4z50GTgQwuU5fk
-         J8QaPGE71xSzIXWqvgjX3aKLVyOAoY8HGVc3VhtvA2xaW8bfQ+izzVpxCdeP5g/hA4JD
-         EGa1qKjWAr838ahVRfX6iRZftvRwyYvgrVADQsBgBkXawXekY9/FXPtmVp1fdDL6EpjD
-         utuuTOPR+dh+ZO4n+ToOWFhjxDp5UoWVeAzk8JMN+6I4fImo6mvVq5Yvr81EWT5bCCnE
-         gNkg==
+        d=gmail.com; s=20230601; t=1707204971; x=1707809771; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RHs7O/QopkuZxQ4Wui33o3EXSlPxuhBABpxuVZjKt2M=;
+        b=F2my4gccVMOUojuN7KvBEso1YBYEPqVW6BTNa7usMR6VL9Hq2fSADFdhUewubb10aa
+         P60CDB+jKk22lyR7hxKsFPcKqDFr2JDNldOG09P4W1EJh+NKolxt451pizQkhyx3yAJ7
+         3dOSvhx2b/o0PARGrPuC0tLokMOi984Yv6q9JI2/lNtRAgG3mz+d8YWTiDrDAlg/1oY+
+         6J4iu+A1Qj4/mxNzM2alGoUBkFr7IFlazdh8NhLHrXXNszd4ky33HM9yJGY1H045/e3K
+         a0kaD0WVFbBNakDifQi6k35F+DuhrFTwc1ml3Jbb3R2VfRg2xwB3YXnX9VTlQMpghvr1
+         eaZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707204960; x=1707809760;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F3OS6JpXZ4JmhyvGCfnTkhLWlKdY/LU1F8HDg+hjeGo=;
-        b=jtc1DByqKnQRwO3WZgCAnZLHLEiXkq/RXm9XEO3ItBJIEqH+bZGfOP17NTeDLJ89Cf
-         dqYU4BcVxHXbYUwZ/hOGiwwVaovvJXB7zdpX4FucME9fmBuWBWisTvjJG09aTijh1uGO
-         r/J/i+3MihYLwUff8azQlnBbG83/tW72cKQSiGMv5zrSAiuXTyeISam7VUrIgiC1xEq4
-         1c6+fvhB/S4Vyfx9xZiHXm/uMNrLAZMDZubUbF/pNaNGx8demejtb6/Pjcp6xYAeNHo9
-         nEsRZW9kdzPfcIjYGoxcZNrZlaScabrRYhzENO1qBss46uQB21cDpeNbXzL+qKrKPf50
-         QG0Q==
-X-Gm-Message-State: AOJu0YyEHWfBwYLpVDAbB7C5r5O49X4D28drLAxHbJccz9jx+y/gdTF2
-	9tJE54sWLjSSzTDRo4tb2WnGLi/qnMFTKM4wi0UP8nLUdUEdkOhj//6UBer8J/w=
-X-Google-Smtp-Source: AGHT+IEQwiJurTNovZlvAvog7XlMM0FtbWRXxqKmXcb8W5DlY0wuT8cBeDM5vvdFKofVYpGNwVwx4g==
-X-Received: by 2002:ac2:5184:0:b0:511:501e:1cc7 with SMTP id u4-20020ac25184000000b00511501e1cc7mr1218123lfi.44.1707204960464;
-        Mon, 05 Feb 2024 23:36:00 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCURdP9tKaw6psAPYYg0/H0LzPhShvF4S6kiT5LD9ErXUDPvXmuFG0FmddwbS+89DafmrP43Y8hoLmT3OaBqIcF2xTniCpUlhSKkrB8a0hwxGoC0lVRrJAH1yTENU4cThq+s9VME9vtY7wuMKpU9IeQgqUoDfyL+j5lYtrmtRJ+GwphVbSaQNuNR3kZWzuh2oZIM7Zw3s7Qy2AKkBFyRHsj4DQrvJYqa9DLq7eCs80q/BmURwGr6OVSVot4TDSZZpT0xRAipI2+KTIxniSwxFU3J25KPOt4nJvccoSYRUnWhHn0KKoq0lPe14mAnvQ8=
-Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id h13-20020a05600c314d00b0040fdc7f4fcdsm1051245wmo.4.2024.02.05.23.35.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Feb 2024 23:35:59 -0800 (PST)
-Message-ID: <47d66b4a-5608-4fc9-88bc-911f74d62819@linaro.org>
-Date: Tue, 6 Feb 2024 08:35:58 +0100
+        d=1e100.net; s=20230601; t=1707204971; x=1707809771;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RHs7O/QopkuZxQ4Wui33o3EXSlPxuhBABpxuVZjKt2M=;
+        b=u2hsL/DWwoqNoQHeKVCbFVugmaiQaaM02PzhJfLDVccrH0eofqiWQrlptSfyWeszYq
+         5CqTRC4RHGJR+jgByd1f2JlkLev3+EHeGjUgP6FPbWd+YUMDEFaO4lRp/VVseVfPbsK3
+         knm1551XLORt4rSkLUZiJPCKg+PXCx8SOse+JKg28s2S6N9jZe5lxn678HYcQjasVLDd
+         gipunCWrxPfQb6f752HufvD6AZhmDqEanvVKXUpEUDl5MIePdQID391KzQzVSuI4MQ7z
+         HTsV2tiNCVM5mN/5JJE/9/en/M1bWhUg4HT21zp2kHvswdErc7QbvOaSLfgM4VZ63d/F
+         XryQ==
+X-Gm-Message-State: AOJu0Yywp1WB4JT2GyX2V2qR06atvGAQ/LkiTF4+7btmoGKRSZZlIhIj
+	TXbDkQtP1Q8qtjnWHA/JFOqfUKE2/eiFRQ0nNSaEu/K9i4TWo09h
+X-Google-Smtp-Source: AGHT+IGGXt9+HwT1MkhBUFPAsWZA4hFwSGBKEEzw3Os0sJtoWdrRD5UexGVClpsSNHTzuAgUfpCbYA==
+X-Received: by 2002:a05:6a20:54a9:b0:19e:982e:c402 with SMTP id i41-20020a056a2054a900b0019e982ec402mr860449pzk.59.1707204971562;
+        Mon, 05 Feb 2024 23:36:11 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWoam9MBSL5DCdTFJEakALYkte3pG/Kwe5nEoLMVYXQn+Ng7iS6pXbZ6Zyz4HMxU47R0KJtms5WwP5eHa1ptKckQqH0Kd4dyBii3OxmI5OXsXrIGm8Vca4NhSByHH2JgceltX7lTG+6lOgZDb+Hkv3gZAuvVftUxt1DhCdN6BH4f+IjF210hdKal8yj8YeGTrDbpa+99AIChLQreIWDA2n0AMpuMDkZAhkS4P5DmwmX9mhT7WSWYKUUoLIBPnjBvpH4pbs9RJT6WU4fCixBbbYgoCZ2T5vCyECj95srjzopxrZQ02k1dhIaZXdHuidauMx6Wd3WnTDSjsPtBW+wEbiWVU6Ah9QUUEKO0lMcYVSwBmba0M4vHeGl8XJGBUz//iGT5JNm8463eQ==
+Received: from dragon (144.34.186.27.16clouds.com. [144.34.186.27])
+        by smtp.gmail.com with ESMTPSA id hy9-20020a056a006a0900b006d9b2694b0csm1128899pfb.200.2024.02.05.23.36.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 23:36:10 -0800 (PST)
+Date: Tue, 6 Feb 2024 15:35:58 +0800
+From: Shawn Guo <shawn.gsc@gmail.com>
+To: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Fabio Estevam <festevam@gmail.com>,
+	=?iso-8859-1?Q?S=F8ren?= Andersen <san@skov.dk>
+Subject: Re: [PATCH v1 1/1] ARM: dts: imx6: skov: add aliases for all
+ ethernet nodes
+Message-ID: <ZcHhXosBK4obwNYW@dragon>
+References: <20240124124455.738187-1-o.rempel@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: mfd: Update pattern property case
-Content-Language: en-US
-To: Naresh Solanki <naresh.solanki@9elements.com>
-Cc: Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Patrick Rudolph <patrick.rudolph@9elements.com>, mazziesaccount@gmail.com,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240205110244.676779-1-naresh.solanki@9elements.com>
- <8714b420-58b9-4d5b-a489-31670c8d325f@linaro.org>
- <CABqG17jfHpi5oDt+=E925Fp6DN2OftmDEjpmvb5=3nxMt+d2iw@mail.gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CABqG17jfHpi5oDt+=E925Fp6DN2OftmDEjpmvb5=3nxMt+d2iw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240124124455.738187-1-o.rempel@pengutronix.de>
 
-On 05/02/2024 15:00, Naresh Solanki wrote:
-> Hi Krzysztof,
+On Wed, Jan 24, 2024 at 01:44:55PM +0100, Oleksij Rempel wrote:
+> Add aliases for all ethernet nodes including the switch. It makes it
+> easier to find this nodes by the boot loader.
 > 
-> 
-> On Mon, 5 Feb 2024 at 18:38, Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
->>
->> On 05/02/2024 12:02, Naresh Solanki wrote:
->>> Driver expects regulator child node in upper case.
->>> Hence align with the same.
->>
->> Did the driver have DT support before? I think no, so why aligning that
->> way? I would argue that driver should be aligned with bindings, the
->> moment you add DT for the first time.
-> Yes the driver has DT support already.
-> This patch is to align with driver:
-> https://github.com/torvalds/linux/blob/master/drivers/regulator/max5970-regulator.c#L381
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-That's not support for DT, but just naming regulators.
-
-> 
-> It was aligned but I missed on case sensitivity.
-
-I don't see the alignment. Where did you align it? Which commit?
-
-> Driver expects it to be SW0/SW1
-> but DT had it as sw0/sw1.
-
-
-Best regards,
-Krzysztof
-
+Applied, thanks! 
 
