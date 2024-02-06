@@ -1,304 +1,352 @@
-Return-Path: <linux-kernel+bounces-55370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55371-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60F8D84BBD6
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:28:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 192E484BBD7
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:28:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85AE91C211A2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:28:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF4F2286FEC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:28:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A394134C6;
-	Tue,  6 Feb 2024 17:27:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13641B67E;
+	Tue,  6 Feb 2024 17:28:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="M/U57joK"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mkPI3ZMR"
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82FAC134BC
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 17:27:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4176F6FD7
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 17:28:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707240446; cv=none; b=UFEQmZd1sMPp7smf+iIgUAt0KOAQGeZVECpsmcBFF+0WH3oL5GT0tZzB7yR3U4RCOr8+uF9EZgIhPcrB++pro1PhaYkH7KKUfQ6zp8cIlYRyq+NZg0iCmmALAs1kRQEXK1KgrWeqp52RAasGdDFOuwDKQD0l6Y36F3lgGu8X75w=
+	t=1707240498; cv=none; b=MmeeeeDrQxappEztc+kZBFlDDeIb4JsEWdLPpGZJtHsobI4x6/M8zEWo8TuwGhg7saTxOJQLzGkIslzM1sJ/jOqccAzc1JaUxDjEQ5wz10E0Y6Ez/1TW510aZ/iIsoTAMYZd63ueivlHXHUfe7PwVmsNiB6QCzCgoO5RNx1CnKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707240446; c=relaxed/simple;
-	bh=z3SvTIWCBj3dDHZAf/+OxWygHM3oDaa1MoxvXSwg+sw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VR8ErcP5tGFUrsXYNmi7bIN6KXU5yw+B/6E6vDz9hYFBKFWJ8hPw2whjMCcbJFVfKrxKdvIFXiGXmMW6D1/dznVj64ignl6587o0nC8XQUcNWVt49vI1g3Ql6imQvd+RMfDAiXGlQxOuBGf8M9AAHIv6+RVjE3f3RJTFn4xAVvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=M/U57joK; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a29c4bbb2f4so713212966b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 09:27:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1707240441; x=1707845241; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=P/HHEhgM2zyiBgcEROBuZtDDunDwNkAdKGtbKx2KyjY=;
-        b=M/U57joKUZxQWqWlL4tQfIBnSNUGe0clXVceCFhNtlI7s0xqOTEkx/hqrWyKvAnjJB
-         UGL29wXdeWTnT9liXEH18lFA9/jxXFgmTamP0coOxp72vXRiJAostZSeFuVwuWd2a6/D
-         5csFlL4gbRc0RtmoCiGJM2jZMkmZVPx464QEzH8ImSfqNuKI8AUHh3UGpWeofs8GZiS+
-         VeHi12LpnjUnHNSXx/c/+lTpvgCdmvzUYeLKPpEl3foptoYGbRyW18JB/W1rqL2Faodn
-         JWGQSOYIvZC6WEab/ssNHmHs1cdv2EpWbf0gJmQEG/oyIZVv5SqI4M3Bq7+JXXj/37KB
-         J8rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707240441; x=1707845241;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P/HHEhgM2zyiBgcEROBuZtDDunDwNkAdKGtbKx2KyjY=;
-        b=HWX6R/VSMEIIPosVNfxmv3YoowNbkKzhBmc2sgqyuI+ISXCwnkBNvEmzYilIhmKHjQ
-         ZcwAEW3KW7wTIG3s5f+8CNzMAbVKJtgDN8JWLJiCpcR2gVZZUJk0XULDOrm5aXNHJDe+
-         bLpip6+UO7mvz2W8pRcZfx4XJ2BdghtkfUvYaks/SXR1HEyDTbeYxSjRjuxJaZUQfZlT
-         YEp8Q/+YGvpBJdoz6epXBSICMpixO2nJU/sC0XWRB9vXMah513hWFT6ng8NuTfIo+0dT
-         nytLoo5/kEqOs6VWyyV7/R9BG1sPSI+jRQhkeDeExQwWmLUS4/OFVRgHEYtpcfqGbmep
-         SsSQ==
-X-Gm-Message-State: AOJu0YyEjKVAgQTP9O5ivMjjntX2mzO5Og8ON56DHKxi6DVhRdLPlmcT
-	xcUvsbVJw1pphagSIEaG0B+Wz8kWL5J5/9OvrV4XpYSHK/t0Us4C+ijSXBi9+Zw=
-X-Google-Smtp-Source: AGHT+IGfVu/ZBOOxuOcGwmvBZ4iF9m3PcOLU1nxdvt6/JYZGoYtRfUr7B+duPImLoW2eHhAmAajKpA==
-X-Received: by 2002:a17:906:f755:b0:a35:b73b:e626 with SMTP id jp21-20020a170906f75500b00a35b73be626mr1925264ejb.73.1707240441397;
-        Tue, 06 Feb 2024 09:27:21 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU5bVdrZFCXJBGCILai2TbcoVqgbrrHESlvvF0YiYv4UEPI+9HgpbkPRoFDDyuNITy/SbqZdnC8Z3dAdj3KspcR2pT5+JkVt+o5XJrd96BagA2MKF1lG3UhYqOXCV+lsMP/6ge+AThUduWXBke9vEMe5dk0FH/mK8CKot2UaZCWDZg0dNi3//MJHS88G1c=
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id e9-20020a170906248900b00a3687cde34asm1370309ejb.5.2024.02.06.09.27.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 09:27:21 -0800 (PST)
-Date: Tue, 6 Feb 2024 18:27:19 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	Mukesh Ojha <quic_mojha@quicinc.com>
-Subject: Re: [PATCH printk v3 04/14] printk: ringbuffer: Do not skip
- non-finalized records with prb_next_seq()
-Message-ID: <ZcJr931mCz-JdoJh@alley>
-References: <20231214214201.499426-1-john.ogness@linutronix.de>
- <20231214214201.499426-5-john.ogness@linutronix.de>
- <ZaF_eJ_BCddZl5z1@alley>
- <874jfeg69z.fsf@jogness.linutronix.de>
- <ZaVkqJ-KMRp9mbLR@alley>
- <871q9rp2lx.fsf@jogness.linutronix.de>
+	s=arc-20240116; t=1707240498; c=relaxed/simple;
+	bh=j4/bW/bI/ZcA7Qd0wUBY278a5vLp4PS6zp2OrSC2R68=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=S0aeCuee7p79Yfod33tYgpQwVB2eNmEKTSnFqQIF2elM0bn4aPezPzwhfI/MiYGfJXlJhohTq6OgDAtskPPF0OXBG1p3ZMxQRhte5AhCCdETQwk2LDY+nKHlOGPNel7vbRrv8Q8GduqwDwbVSIpTTotV2/NePNSWP1UL8DQzu3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mkPI3ZMR; arc=none smtp.client-ip=95.215.58.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707240492;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=r9uhU/1Yz/BW8+krzY0IV0p01k0UZCjjcXxxC+SD40E=;
+	b=mkPI3ZMR2+Ejg3nQwG10cVmFX2ad4xarkRG8WbSPJSmgWd53tJUl7EqvZE5DNXePt8H7HR
+	/2xiVkyr2QInskx6V13CHoNGkEuSiCnQfLGT92/Ms8NzGtRqV0RHgn9iVNBXd5KVtURZpS
+	xkOc1GIg9rXIAiA7gKzuIi4buS6d1M8=
+From: Sui Jingfeng <sui.jingfeng@linux.dev>
+To: Lucas Stach <l.stach@pengutronix.de>
+Cc: Russell King <linux+etnaviv@armlinux.org.uk>,
+	Christian Gmeiner <christian.gmeiner@gmail.com>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	dri-devel@lists.freedesktop.org,
+	etnaviv@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	Sui Jingfeng <sui.jingfeng@linux.dev>
+Subject: [etnaviv-next v13 0/7] drm/etnaviv: Add driver wrapper for vivante GPUs attached on PCI(e) device
+Date: Wed,  7 Feb 2024 01:27:52 +0800
+Message-Id: <20240206172759.421737-1-sui.jingfeng@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <871q9rp2lx.fsf@jogness.linutronix.de>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon 2024-02-05 12:39:30, John Ogness wrote:
-> On 2024-01-15, Petr Mladek <pmladek@suse.com> wrote:
-> >> The acquire is with @last_finalized_seq. So the release must also be
-> >> with @last_finalized_seq. The important thing is that the CPU that
-> >> updates @last_finalized_seq has actually read the corresponding
-> >> record beforehand. That is exactly what desc_update_last_finalized()
-> >> does.
-> >
-> > I probably did not describe it well. The CPU updating
-> > @last_finalized_seq does the right thing. I was not sure about the CPU
-> > which reads @last_finalized_seq via prb_next_seq().
-> >
-> > To make it more clear:
-> >
-> > u64 prb_next_seq(struct printk_ringbuffer *rb)
-> > {
-> > 	u64 seq;
-> >
-> > 	seq = desc_last_finalized_seq(rb);
-> > 	      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> > 	      |
-> > 	      `-> This includes atomic_long_read_acquire(last_finalized_seq)
-> >
-> >
-> > 	if (seq != 0)
-> > 		seq++;
-> >
-> > 	while (_prb_read_valid(rb, &seq, NULL, NULL))
-> > 		seq++;
-> >
-> > 	return seq;
-> > }
-> >
-> > But where is the atomic_long_read_release(last_finalized_seq) in
-> > this code path?
-> 
-> read_release? The counterpart of this load_acquire is a
-> store_release. For example:
-> 
-> CPU0                     CPU1
-> ====                     ====
-> load(varA)
-> store_release(varB)      load_acquire(varB)
->                          load(varA)
-> 
-> If CPU1 reads the value in varB that CPU0 stored, then it is guaranteed
-> that CPU1 will read the value (or a later value) in varA that CPU0 read.
-> 
-> Translating the above example to this particular patch, we have:
-> 
-> CPU0: desc_update_last_finalized()       CPU1: prb_next_seq()
-> ====                                     ====
-> _prb_read_valid(seq)
-> cmpxchg_release(last_finalized_seq,seq)  seq=read_acquire(last_finalized_seq)
->                                          _prb_read_valid(seq)
+This patch adds PCI driver wrapper on the top of what drm/etnaviv already
+have, with the expectation that to keep component framework untoughed and
+to preserve code sharing.
 
-I think that I was confused because I had acquire/release mentally
-connected with lock/unlock. Where the lock/unlock surrounds some
-critical code section. I think that it is actually the most common
-usecase.
+drm/etnaviv use the component framework to bind multiple GPU cores to a
+virtual master platform device, the virtual master is create during driver
+load time. For the PCI(e) device who integrate vivante GPU ip, the process
+to going to be reverse. Create virtual platform device as a representation
+for the vivante GPU ip core attached on the real PCIe master. The master
+already there by the time the driver is loaded, what we need to do is to
+devide the big MMIO resource and assign it tp the child. All the virtual
+childs are bind to the master with component framework.
 
-Our usage is not typical from my POV. There are two aspects:
+v6:
+	* Fix build issue on system without CONFIG_PCI enabled
+v7:
+	* Add a separate patch for the platform driver rearrangement (Bjorn)
+	* Switch to runtime check if the GPU is dma coherent or not (Lucas)
+	* Add ETNAVIV_PARAM_GPU_COHERENT to allow userspace to query (Lucas)
+	* Remove etnaviv_gpu.no_clk member (Lucas)
+	* Various Typos and coding style fixed (Bjorn)
+v8:
+	* Fix typos and remove unnecessary header included (Bjorn).
+	* Add a dedicated function to create the virtual master platform
+	  device.
+v9:
+	* Use PCI_VDEVICE() macro (Bjorn)
+	* Add trivial stubs for the PCI driver (Bjorn)
+	* Remove a redundant dev_err() usage (Bjorn)
+	* Clean up etnaviv_pdev_probe() with etnaviv_of_first_available_node()
+v10:
+	* Add one more cleanup patch
+	* Resolve the conflict with a patch from Rob
+	* Make the dummy PCI stub inlined
+	* Print only if the platform is dma-coherrent
+V11:
+	* Drop unnecessary changes (Lucas)
+	* Tweak according to other reviews of v10.
 
-   1. They do not surround a critical section, at least not
-      an obvious one.
+V12:
+	* Create a virtual platform device for the subcomponent GPU cores
+	* Bind all subordinate GPU cores to the real PCI master via component.
 
-   2. In my mental code, this patch patch uses the release
-      before the acquire. When I think about this code,
-      than I first imagine the write path (using release)
-      and then the reader (using acquire).
+V13:
+	* Drop the non-component code path (side-by-side implement), always
+	  use the component framework to bind subcomponent GPU core. Even
+	  though this is only one core.
+	* Defer the irq handler register.
+	* Rebase and improve the commit message
 
-I think that this code (mis)uses the acquire/release
-semantic just for optimized memory barriers.
+The whole patch series have been tested on X86-64 and LoongArch platform.
 
-It might be worth a note that this is not a typical acquire/release
-scenario.
+Tested with JD9230P GPU, only brief product overview is available[1].
 
-> > IMHO, the barrier provided by the acquire() is _important_ to make
-> > sure that _prb_read_valid() would see the valid descriptor.
-> 
-> Correct.
-> 
-> > Now, I think that the related read_release(seq) is hidden in:
-> >
-> > static int prb_read(struct printk_ringbuffer *rb, u64 seq,
-> > 		    struct printk_record *r, unsigned int *line_count)
-> > {
-> > 	/* Get a local copy of the correct descriptor (if available). */
-> > 	err = desc_read_finalized_seq(desc_ring, id, seq, &desc);
-> >
-> > 	/* If requested, copy meta data. */
-> > 	if (r->info)
-> > 		memcpy(r->info, info, sizeof(*(r->info)));
-> >
-> > 	/* Copy text data. If it fails, this is a data-less record. */
-> > 	if (!copy_data(&rb->text_data_ring, &desc.text_blk_lpos, info->text_len,
-> > 		       r->text_buf, r->text_buf_size, line_count)) {
-> > 		return -ENOENT;
-> > 	}
-> >
-> > 	/* Ensure the record is still finalized and has the same @seq. */
-> > 	return desc_read_finalized_seq(desc_ring, id, seq, &desc);
-> > 	       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> > 	       |
-> > 	       `-> This includes a memory barrier /* LMM(desc_read:A) */
-> > 		   which makes sure that the data are read before
-> > 		   the desc/data could be reused.
-> > }
-> >
-> > I consider this /* LMM(desc_read:A) */ as a counter part for that
-> > acquire() in prb_next_seq().
-> 
-> desc_read:A is not a memory barrier. It only marks the load of the
-> descriptor state.
+[1] http://www.goldendisk.cn/index.php?s=index/show/index&id=273
 
-I see. The real read barriers are desc_read:B and desc_read:D
+$ dmesg | grep etnaviv:
 
-> This is a significant load because prb_next_seq() must
-> see at least the descriptor state that desc_update_last_finalized() saw.
-> 
-> The memory barrier comments in desc_update_last_finalized() state:
-> 
->     * If desc_last_finalized_seq:A reads from
->     * desc_update_last_finalized:A, then desc_read:A reads from
->     * _prb_commit:B.
-> 
-> This is referring to a slightly different situation than the example I
-> used above because it is referencing where the descriptor state was
-> stored (_prb_commit:B). The same general picture is valid:
-> 
-> CPU0                              CPU1
-> ====                              ====
-> _prb_commit:B
-> desc_update_last_finalized:A      desc_last_finalized_seq:A
->                                   desc_read:A
-> 
-> desc_read:A is loding the descriptor state that _prb_commit:B stored.
-> 
-> The extra note in the comment clarifies that _prb_commit:B could also be
-> denoted as desc_read:A because desc_update_last_finalized() performs a
-> read (i.e. must have seen) _prb_commit:B.
-> 
->     * Note: _prb_commit:B and desc_update_last_finalized:A can be
->     *       different CPUs. However, the desc_update_last_finalized:A
->     *       CPU (which performs the release) must have previously seen
->     *       _prb_commit:B.
-> 
-> Normally the CPU committing the record will also update
-> last_finalized_seq. But it is possible that another CPU updates
-> last_finalized_seq before the committing CPU because it already sees the
-> finalized record. In that case the complete (maximally complex) picture
-> looks like this.
-> 
-> CPU0            CPU1                           CPU2
-> ====            ====                           ====
-> _prb_commit:B   desc_read:A
->                 desc_update_last_finalized:A   desc_last_finalized_seq:A
->                                                desc_read:A
->
-> Any memory barriers in _prb_commit() or desc_read() are irrelevant for
-> guaranteeing that a CPU reading a sequence value from
-> desc_last_finalized_seq() will always be able to read that record.
+ etnaviv 0000:05:00.0: JingJia Micro JD9230P has 2 GPU cores
+ etnaviv 0000:05:00.0: bound etnaviv-gpu,3d.0 (ops gpu_ops [etnaviv])
+ etnaviv 0000:05:00.0: bound etnaviv-gpu,3d.1 (ops gpu_ops [etnaviv])
+ etnaviv-gpu etnaviv-gpu,3d.0: model: GC9200, revision: 6304
+ etnaviv-gpu etnaviv-gpu,3d.1: model: GC9200, revision: 6304
+ [drm] Initialized etnaviv 1.3.0 20151214 for 0000:05:00.0 on minor 0
 
-I believe that they are relevant exactly because 3 CPUs might be
-involved here. I believe that
+$ cd /sys/kernel/debug/dri/0
+$ cat gpu
 
-  + _prb_commit:B makes sure that CPU0 stores all data before
-    setting the state as finalized.
+etnaviv-gpu,3d.0 Status:
+	identity
+	 model: 0x9200
+	 revision: 0x6304
+	 product_id: 0x92004
+	 customer_id: 0x49
+	 eco_id: 0x0
+	features
+	 major_features: 0xe0287cad
+	 minor_features0: 0xc9799eff
+	 minor_features1: 0xfefbfadb
+	 minor_features2: 0xeb9d6fbf
+	 minor_features3: 0xedfffcfd
+	 minor_features4: 0xdb0dafc7
+	 minor_features5: 0xbb5ac733
+	 minor_features6: 0x00000000
+	 minor_features7: 0x00000000
+	 minor_features8: 0x00000000
+	 minor_features9: 0x00000000
+	 minor_features10: 0x00000000
+	 minor_features11: 0x00000000
+	specs
+	 stream_count:  16
+	 register_max: 64
+	 thread_count: 4096
+	 vertex_cache_size: 16
+	 shader_core_count: 16
+	 nn_core_count: 0
+	 pixel_pipes: 1
+	 vertex_output_buffer_size: 1024
+	 buffer_size: 0
+	 instruction_count: 256
+	 num_constants: 320
+	 varyings_count: 16
+	axi: 0x00000000
+	idle: 0x7fffffff
+	DMA seems to be stuck
+	 address 0: 0xccd2a7e8
+	 address 1: 0xccd2a7e8
+	 state 0: 0x00000000
+	 state 1: 0x00000000
+	 last fetch 64 bit word: 0x08ddbdb6 0x85ec1955
 
-  + desc_read:B makes sure that CPU1 will see all data written
-    when it reads the finalized state.
+etnaviv-gpu,3d.1 Status:
+	identity
+	 model: 0x9200
+	 revision: 0x6304
+	 product_id: 0x92004
+	 customer_id: 0x49
+	 eco_id: 0x0
+	features
+	 major_features: 0xe0287cad
+	 minor_features0: 0xc9799eff
+	 minor_features1: 0xfefbfadb
+	 minor_features2: 0xeb9d6fbf
+	 minor_features3: 0xedfffcfd
+	 minor_features4: 0xdb0dafc7
+	 minor_features5: 0xbb5ac733
+	 minor_features6: 0x00000000
+	 minor_features7: 0x00000000
+	 minor_features8: 0x00000000
+	 minor_features9: 0x00000000
+	 minor_features10: 0x00000000
+	 minor_features11: 0x00000000
+	specs
+	 stream_count:  16
+	 register_max: 64
+	 thread_count: 4096
+	 vertex_cache_size: 16
+	 shader_core_count: 16
+	 nn_core_count: 0
+	 pixel_pipes: 1
+	 vertex_output_buffer_size: 1024
+	 buffer_size: 0
+	 instruction_count: 256
+	 num_constants: 320
+	 varyings_count: 16
+	axi: 0x00000000
+	idle: 0x7fffffff
+	DMA seems to be stuck
+	 address 0: 0x5756fef8
+	 address 1: 0x5756fef8
+	 state 0: 0x00000000
+	 state 1: 0x00000000
+	 last fetch 64 bit word: 0x68de88ef 0xcffa3d57
 
-  + desc_update_last_finalized:A makes sure that saw the record
-    with the given seq in finalized state.
+Tested with LingJiu GP102 GPU, only brief product overview is available[2].
 
-  + desc_last_finalized_seq:A makes sure that it sees the record
-    associated with "last_finalized_seq" in the finalized state.
+[2] http://www.goldendisk.cn/index.php?s=index/show/index&id=3028
 
-This is why the "Note:" is very important. And maybe desc_read:B
-or desc_read:D should be mentioned in the note as well.
+$ dmesg | grep etnaviv:
 
-Also all these dependencies are really hard to follow. This
-is why I suggested to add another note in the 9th patch,
-see https://lore.kernel.org/all/ZbowlkOVWiSgCxNX@alley/
+ etnaviv 0000:06:00.0: LingJiu GP102 has 2 GPU cores
+ etnaviv 0000:06:00.0: bound etnaviv-gpu,3d.0 (ops gpu_ops [etnaviv])
+ etnaviv 0000:06:00.0: bound etnaviv-gpu,2d.0 (ops gpu_ops [etnaviv])
+ etnaviv-gpu etnaviv-gpu,3d.0: model: GC860, revision: 4601
+ etnaviv-gpu etnaviv-gpu,2d.0: model: GC300, revision: 2000
+ [drm] Initialized etnaviv 1.3.0 20151214 for 0000:06:00.0 on minor 0
 
-Or maybe we should document that pr_read() and _prb_read_valid()
-provides these guarantees and just reference it here.
+$ cd /sys/kernel/debug/dri/0
+$ cat gpu
 
-By another words. IMHO, the current "Note:" tries to
-prove that _prb_read_valid() guarantees that all data
-can be read when it sees the finalized state. IMHO,
-we should document this above these functions and
-just reference it here.
+etnaviv-gpu,3d.0 Status:
+	identity
+	 model: 0x860
+	 revision: 0x4601
+	 product_id: 0x0
+	 customer_id: 0x0
+	 eco_id: 0x0
+	features
+	 major_features: 0xe02c2ced
+	 minor_features0: 0xcbf99fff
+	 minor_features1: 0x00000001
+	 minor_features2: 0x00000000
+	 minor_features3: 0x00000000
+	 minor_features4: 0x00000000
+	 minor_features5: 0x00000000
+	 minor_features6: 0x00000000
+	 minor_features7: 0x00000000
+	 minor_features8: 0x00000000
+	 minor_features9: 0x00000000
+	 minor_features10: 0x00000000
+	 minor_features11: 0x00000000
+	specs
+	 stream_count:  1
+	 register_max: 64
+	 thread_count: 256
+	 vertex_cache_size: 8
+	 shader_core_count: 1
+	 nn_core_count: 0
+	 pixel_pipes: 1
+	 vertex_output_buffer_size: 512
+	 buffer_size: 0
+	 instruction_count: 256
+	 num_constants: 168
+	 varyings_count: 8
+	axi: 0x00000000
+	idle: 0x7fffffff
+	DMA seems to be stuck
+	 address 0: 0x00000000
+	 address 1: 0x00000000
+	 state 0: 0x00000000
+	 state 1: 0x00000000
+	 last fetch 64 bit word: 0x00000000 0x00000000
 
-The current comments for desc_update_last_finalized:A
-and prb_next_reserve_seq:A are really hard to follow
-because they both try to explain these transitional
-guarantees between prb_commit() and prb_read() APIs.
-The comments mention many barriers even though the guarantees
-should be there by design and should be mentioned
-in the prb_read() API.
+etnaviv-gpu,2d.0 Status:
+	identity
+	 model: 0x300
+	 revision: 0x2000
+	 product_id: 0x0
+	 customer_id: 0x0
+	 eco_id: 0x0
+	features
+	 major_features: 0xe02c2ee9
+	 minor_features0: 0xcbf99fff
+	 minor_features1: 0x00000001
+	 minor_features2: 0x00000000
+	 minor_features3: 0x00000000
+	 minor_features4: 0x00000000
+	 minor_features5: 0x00000000
+	 minor_features6: 0x00000000
+	 minor_features7: 0x00000000
+	 minor_features8: 0x00000000
+	 minor_features9: 0x00000000
+	 minor_features10: 0x00000000
+	 minor_features11: 0x00000000
+	specs
+	 stream_count:  1
+	 register_max: 64
+	 thread_count: 256
+	 vertex_cache_size: 8
+	 shader_core_count: 1
+	 nn_core_count: 0
+	 pixel_pipes: 1
+	 vertex_output_buffer_size: 512
+	 buffer_size: 0
+	 instruction_count: 256
+	 num_constants: 168
+	 varyings_count: 8
+	axi: 0x00000000
+	idle: 0x7fffffff
+	DMA seems to be stuck
+	 address 0: 0x00000000
+	 address 1: 0x00000000
+	 state 0: 0x00000000
+	 state 1: 0x00000000
+	 last fetch 64 bit word: 0x00000000 0x00000000
 
-My motivation is that it took me long time to understand this.
-And I am still not sure if I understand it correctly.
-IMHO, it might be better to describe some guarantees of
-upper level API so that we do not need to look at
-the low level barriers again and again.
 
-Best Regards,
-Petr
+Sui Jingfeng (7):
+  drm/etnaviv: Add a helper function to get clocks
+  drm/etnaviv: Add constructor and destructor for the
+    etnaviv_drm_private struct
+  drm/etnaviv: Embed struct drm_device in struct etnaviv_drm_private
+  drm/etnaviv: Add support for cached coherent caching mode
+  drm/etnaviv: Replace the '&pdev->dev' with 'dev'
+  drm/etnaviv: Update the implement of etnaviv_create_platform_device()
+  drm/etnaviv: Add support for vivante GPU cores attached via PCI(e)
+
+ drivers/gpu/drm/etnaviv/Kconfig              |   8 +
+ drivers/gpu/drm/etnaviv/Makefile             |   2 +
+ drivers/gpu/drm/etnaviv/etnaviv_drv.c        | 157 ++++++++-----
+ drivers/gpu/drm/etnaviv/etnaviv_drv.h        |  24 ++
+ drivers/gpu/drm/etnaviv/etnaviv_gem.c        |  22 +-
+ drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c |   2 +-
+ drivers/gpu/drm/etnaviv/etnaviv_gpu.c        | 146 ++++++++----
+ drivers/gpu/drm/etnaviv/etnaviv_gpu.h        |   4 +
+ drivers/gpu/drm/etnaviv/etnaviv_mmu.c        |   4 +-
+ drivers/gpu/drm/etnaviv/etnaviv_pci_drv.c    | 224 +++++++++++++++++++
+ drivers/gpu/drm/etnaviv/etnaviv_pci_drv.h    |  18 ++
+ include/uapi/drm/etnaviv_drm.h               |   1 +
+ 12 files changed, 502 insertions(+), 110 deletions(-)
+ create mode 100644 drivers/gpu/drm/etnaviv/etnaviv_pci_drv.c
+ create mode 100644 drivers/gpu/drm/etnaviv/etnaviv_pci_drv.h
+
+-- 
+2.34.1
+
 
