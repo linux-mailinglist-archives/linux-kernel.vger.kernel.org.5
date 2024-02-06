@@ -1,142 +1,210 @@
-Return-Path: <linux-kernel+bounces-55328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55325-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6D2E84BB28
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:41:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95B3484BB1F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:37:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 849B01F26540
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:41:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F41B8B239E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:37:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 674746116;
-	Tue,  6 Feb 2024 16:40:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58D8A12B90;
+	Tue,  6 Feb 2024 16:35:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="jJTGrxPM"
-Received: from out203-205-221-202.mail.qq.com (out203-205-221-202.mail.qq.com [203.205.221.202])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ECQqCXpv"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F26324A08;
-	Tue,  6 Feb 2024 16:40:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 978338F4E;
+	Tue,  6 Feb 2024 16:35:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707237653; cv=none; b=TQR4XQJx3dxJ5hfC8Si61oHeh0fyw1f9YcuTPxk4qlAbxArD/Gak2187kf+6oKF1sLe/QMlOISBcesPcsLXA7DQUwxvRr/1MXHjAIp2x+zdJ8PxKgwdTCEJoOVL3NvoZmDVlzshV7q/6wSWLMiaWFrgh+R9EymHg8cUbk7fZBKA=
+	t=1707237341; cv=none; b=YFiHDXnu0hFq34h4EoQ9dXrZfj6D7BXdNPRJk/IMyuNMK6M2MAy05sAGntiM6zDtnGOeRzIjmJK8WtvXyy9BwoRwouD6KwZfidUO9mVOnsMy0Q60fZ3JPjuzWUZozBTKOyfrUVdGpnxxPBolf6a7Y3cbWoDbPI04OiZUSzXlzt0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707237653; c=relaxed/simple;
-	bh=1TTnethT9ACWbE+2/u7LuqUNvlepRYWJQLWF5PV4eVo=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=rXAXcGKewsNXlLq6YeFIesywAd2x+MBX4+5YKsFVeCMGFkm0PuaiOMED4gIgcZ192NRp89ozHpUG1mRS/vbniLKlk3ujJ3YM5Xjj3NzDT+gXxciK7PPqTnIFiwHOSZwkd3sqK1eTNSfLiogMtwfQYeBtJvNQi97qxW/32dNpoKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=jJTGrxPM; arc=none smtp.client-ip=203.205.221.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1707237338;
-	bh=nq8N3iJKzTg/aO9s2k31bxowdIKIrZYsvIlCVzu6Hsk=;
-	h=From:To:Cc:Subject:Date;
-	b=jJTGrxPMkWKgIPx/Lt8hzE0b+hk0gRCHObtmBodsyn5bkf/rJeeG0tEishDin6CpU
-	 0BsL+oHt/WwJBjDWUmOeQoDm+/Nk1HbQ2FrIyAcE5enoPDnUKemO7etI9aJZQTAcOp
-	 mNF8GkGva/BL73BWBifepzsVsU8g99II1JPiIUK0=
-Received: from localhost.localdomain ([2409:8962:5b2:1ce9:ee76:89e4:5983:4db0])
-	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
-	id 8E113278; Wed, 07 Feb 2024 00:35:33 +0800
-X-QQ-mid: xmsmtpt1707237333tgwzpj2kr
-Message-ID: <tencent_10AAA44731FFFA493F9F5501521F07DD4D0A@qq.com>
-X-QQ-XMAILINFO: NKv2G1wnhDBn0Qeh0KEAELRU5PYymkJtjrJl0x9WPh7uY2FwQzhHGIHIUWLC+F
-	 9FTchisw4zfIsnJod27XT91951dwj1nw8gua0iYpm6z0susMJjdrMtjZZ380LYrjlX+wNkPNlwde
-	 TQTebx3ih0f7TTayCpVB7ENm9xf9Ki0WaEUxp7YRYSjQavgepJwA2JnHxoDAKDgk0eKPZ/JNqv9G
-	 CR7ShxvokbDpzgW+VokAJiZXd1nM8JovPS0kKNJpS5Z4Z/cSi7EhwYBAjH5am2NV3af9BtaCO66W
-	 Qi8N5E6gjB1esSulFhp2DI/hxozXirRN1mItweYx/XMhH+QWPFiiPWeck/wFORWpriUNw0vzYgG5
-	 r5vcQemzDaAZ5bUW5Q0ae1rPpTXxyU+wi+Q1YF8+cB08622la1N3exP8lA+Am6jkBQ5+R8t1/zgt
-	 Yr4eVxROlPP9bimPPbxciyq2/pLLX8xJDKxervzmf9IIq1UDWQV/Kgw0ua9BuDqaldOL8MikkCQw
-	 x8Op2sQfD97ORuELvNyL95EdMAmfz5bKvCEJDeeH8Zh1agCqXhunlmfQbBHi2KjlrEHP7+s1jx+G
-	 08K8b27J2cOqszbAYygspb1E3z+zQW2pNgtcr7k1hvjFAkbvCNN3T9bNd2R4m7jgSkIf9+6mzayT
-	 0TSstqJusKSZ04oc3V6N1kI+4SZ5jhykzHX4wVRoVuxE5RP9hG9Xqa2IwFIv55Dx/7YJKLC5F5l5
-	 im5iVya06TUKbVd44+DkEYyD8mUZV6Hnmha3A9n63ZR5LwTINrg5EMyzzka1kPS/WL2/2N0nAJ1r
-	 g+WjIT6jPeTiVi3Cb0lZPh2AB/Uxad7X3ePSmCd+I6BFX+qOUMyV6N3vm1pYpdG0U+geAvMXAziu
-	 88jC5oa8XQRL+NAUsfUnciGliz+W5x+tP/SzPQ5q5ye2xudAAnriscZhHdUa9qSKypxtQcH/2njb
-	 gq2nVhigbnxNUSH8Rf1JhVyDRTUaVWmy4Kiflf9IarASsirh88Fi9BCsFzAfEgYCfyHn6lzFoWGj
-	 /JgsXFqZAMK1IX9+o6JTAu5hNlXCcHQ0lypBVY3w==
-X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
-From: wenyang.linux@foxmail.com
-To: Christian Brauner <brauner@kernel.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Wen Yang <wenyang.linux@foxmail.com>,
-	Jan Kara <jack@suse.cz>,
-	David Woodhouse <dwmw@amazon.co.uk>,
-	Matthew Wilcox <willy@infradead.org>,
-	Eric Biggers <ebiggers@google.com>,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] eventfd: strictly check the count parameter of eventfd_write to avoid inputting illegal strings
-Date: Wed,  7 Feb 2024 00:35:18 +0800
-X-OQ-MSGID: <20240206163518.3811-1-wenyang.linux@foxmail.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1707237341; c=relaxed/simple;
+	bh=2jaTxy897HSNhvuo0scMIqWlSeWhphdBTeyqW2FVe8c=;
+	h=Message-ID:Date:MIME-Version:From:Subject:Cc:To:Content-Type; b=IYTNivN49zfMO3xLlTrFHeQUXj05UKNaDpCccG/w/io41fwyev3JCzg3DJJLzNMDWp60HyEXLLnWCTYxzPMxD/KMvJEGrF3yJpzKUUIZRqb9gi6nS8R9I2hqyQsrfOmeEm+1merWa/mXa2kanlJoGp57pGSm3NaNPQ2cSQaNIds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.vnet.ibm.com; spf=none smtp.mailfrom=linux.vnet.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ECQqCXpv; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.vnet.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.vnet.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 416FqRtR008291;
+	Tue, 6 Feb 2024 16:35:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : from : subject : cc : to : content-type :
+ content-transfer-encoding; s=pp1;
+ bh=mF1bxTg83JCcbT2p2VNjnSZdKXCMHgjUucY1HXSBHp4=;
+ b=ECQqCXpvGIsdxNYSso/q56Ake+eF2U2THTENgPB6fP/yIAPTqxuH2UXxeBrmZtiWSVX7
+ 5hkWFgbphxRWWr7OsvtoPNs9NxuYC5hgXpZ2XrW7jveVuThfnb1lJsBXizcQPg+9h3Bj
+ f8nIYyoUnP/dsnkdHGZ1Kttqs1QkTWDm2GDo5mMSChOiVY3V7gzmVxMMfT8wUY6d93Ut
+ fZ5u2NVeeRTbUS+8C9m5rAxGRs11PZwMJv7oTypv1kGrGKdj+jVJtO8R15UCPX6FWIx7
+ ZLENj8XpLYEn/xY+NfUlFb0qsKe5iOoS6gCnLL+LJSZ7ZKmW0DtQF3cU3dBu28hpFjxa Cg== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w3qsw98jx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 06 Feb 2024 16:35:26 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 416EtUPZ008770;
+	Tue, 6 Feb 2024 16:35:25 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w206ygbyx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 06 Feb 2024 16:35:25 +0000
+Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
+	by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 416GZO4H2622116
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 6 Feb 2024 16:35:25 GMT
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id DC1865805D;
+	Tue,  6 Feb 2024 16:35:24 +0000 (GMT)
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CF2E958057;
+	Tue,  6 Feb 2024 16:35:21 +0000 (GMT)
+Received: from [9.43.109.155] (unknown [9.43.109.155])
+	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Tue,  6 Feb 2024 16:35:21 +0000 (GMT)
+Message-ID: <a54c8860-18c7-474d-95e2-a0153a2da885@linux.vnet.ibm.com>
+Date: Tue, 6 Feb 2024 22:05:20 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+From: Tasmiya Nalatwad <tasmiya@linux.vnet.ibm.com>
+Subject: [revert commit 9f079dda1433] [mainline] [6.8.0-rc3] [NVME] OOPS
+ kernel crash while booting
+Cc: alan.adamson@oracle.com, kch@nvidia.com, hch@lst.de, kbusch@kernel.org,
+        "sachinp@linux.vnet.com" <sachinp@linux.vnet.com>,
+        "mputtash@linux.vnet.com" <mputtash@linux.vnet.com>,
+        "abdhalee@linux.vnet.ibm.com" <abdhalee@linux.vnet.ibm.com>
+To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: eRSAn1IgLACeoIXaugRY1X-ApsOlxI6z
+X-Proofpoint-ORIG-GUID: eRSAn1IgLACeoIXaugRY1X-ApsOlxI6z
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-06_10,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
+ spamscore=0 suspectscore=0 impostorscore=0 lowpriorityscore=0 mlxscore=0
+ mlxlogscore=635 priorityscore=1501 adultscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402060116
 
-From: Wen Yang <wenyang.linux@foxmail.com>
+Greetings,
 
-Since eventfd's document has clearly stated: A write(2) call adds
-the 8-byte integer value supplied in its buffer to the counter.
+[revert commit 9f079dda1433] [mainline] [6.8.0-rc3] [NVME] OOPS kernel 
+crash while booting to kernel
 
-However, in the current implementation, the following code snippet
-did not cause an error:
+Reverting below commit fixes the problem
 
-	char str[16] = "hello world";
-	uint64_t value;
-	ssize_t size;
-	int fd;
+commit 9f079dda14339ee87d864306a9dc8c6b4e4da40b
+     nvme: allow passthru cmd error logging
 
-	fd = eventfd(0, 0);
-	size = write(fd, &str, strlen(str));
-	printf("eventfd: test writing a string, size=%ld\n", size);
-	size = read(fd, &value, sizeof(value));
-	printf("eventfd: test reading as uint64, size=%ld, valus=0x%lX\n",
-	       size, value);
+--- Traces ---
 
-	close(fd);
+[   15.639835] BUG: Kernel NULL pointer dereference on read at 0x000003d8
+[   15.639840] Faulting instruction address: 0xc0080000215b01dc
+[   15.639845] Oops: Kernel access of bad area, sig: 11 [#1]
+[   15.639849] LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=8192 NUMA pSeries
+[   15.639855] Modules linked in: xsk_diag bonding tls nft_compat 
+nf_tables nfnetlink rfkill binfmt_misc dm_multipath dm_mod pseries_rng 
+dax_pmem drm drm_panel_orientation_quirks ext4 mbcache jbd2 ibmvfc 
+nd_pmem nd_btt scsi_transport_fc ibmveth nvme papr_scm bnx2x nvme_core 
+t10_pi vmx_crypto libnvdimm crc64_rocksoft_generic crc64_rocksoft mdio 
+crc64 libcrc32c fuse
+[   15.639901] CPU: 1 PID: 3289 Comm: udevadm Not tainted 
+6.8.0-rc3-auto-g99bd3cb0d12e #1
+[   15.639907] Hardware name: IBM,9009-42A POWER9 (raw) 0x4e0202 
+0xf000005 of:IBM,FW950.A0 (VL950_141) hv:phyp pSeries
+[   15.639913] NIP:  c0080000215b01dc LR: c000000000a197bc CTR: 
+c0080000215b01b8
+[   15.639918] REGS: c00000006f3177f0 TRAP: 0300   Not tainted 
+(6.8.0-rc3-auto-g99bd3cb0d12e)
+[   15.639923] MSR:  8000000000009033 <SF,EE,ME,IR,DR,RI,LE>  CR: 
+84888480  XER: 20040000
+[   15.639936] CFAR: c00000000000dbbc DAR: 00000000000003d8 DSISR: 
+40000000 IRQMASK: 0
+[   15.639936] GPR00: c000000000a197bc c00000006f317a90 c0080000215d8200 
+c000000092810000
+[   15.639936] GPR04: c0080000215d2570 c000000092810000 c000000092820000 
+0000000000000000
+[   15.639936] GPR08: c000000092810000 0000000000000000 0000000000010000 
+0000000022888482
+[   15.639936] GPR12: c0080000215b01b8 c00000000f8cf300 0000000000000000 
+0000000000000000
+[   15.639936] GPR16: 0000000000000000 0000000000000000 0000000000000000 
+0000000000000001
+[   15.639936] GPR20: 0000000000000000 0000000000400cc0 c000000086d14c28 
+000000007fff0000
+[   15.639936] GPR24: fffffffffffff000 0000000000000000 c000000086d14c18 
+0000000000010000
+[   15.639936] GPR28: c00000007509c180 c000000005bc1448 c0080000215d2570 
+c000000086d14bf0
+[   15.639999] NIP [c0080000215b01dc] 
+nvme_io_passthru_err_log_enabled_show+0x24/0x80 [nvme_core]
+[   15.640013] LR [c000000000a197bc] dev_attr_show+0x40/0xac
+[   15.640020] Call Trace:
+[   15.640023] [c00000006f317a90] [c00000006f317b10] 0xc00000006f317b10 
+(unreliable)
+[   15.640030] [c00000006f317af0] [c000000000a197bc] dev_attr_show+0x40/0xac
+[   15.640037] [c00000006f317b60] [c0000000006c11a0] 
+sysfs_kf_seq_show+0xcc/0x1f0
+[   15.640045] [c00000006f317bf0] [c0000000006be224] 
+kernfs_seq_show+0x44/0x58
+[   15.640052] [c00000006f317c10] [c00000000060882c] 
+seq_read_iter+0x254/0x69c
+[   15.640060] [c00000006f317cf0] [c0000000006bed60] 
+kernfs_fop_read_iter+0x4c/0x60
+[   15.640067] [c00000006f317d10] [c0000000005bf61c] vfs_read+0x2bc/0x390
+[   15.640074] [c00000006f317dc0] [c0000000005c040c] ksys_read+0x84/0x144
+[   15.640081] [c00000006f317e10] [c000000000033358] 
+system_call_exception+0x138/0x330
+[   15.640088] [c00000006f317e50] [c00000000000d05c] 
+system_call_vectored_common+0x15c/0x2ec
+[   15.640096] --- interrupt: 3000 at 0x7fff87d342e4
+[   15.640101] NIP:  00007fff87d342e4 LR: 0000000000000000 CTR: 
+0000000000000000
+[   15.640106] REGS: c00000006f317e80 TRAP: 3000   Not tainted 
+(6.8.0-rc3-auto-g99bd3cb0d12e)
+[   15.640110] MSR:  800000000280f033 
+<SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 42884482  XER: 00000000
+[   15.640126] IRQMASK: 0
+[   15.640126] GPR00: 0000000000000003 00007fffea617e80 00007fff87e47200 
+0000000000000003
+[   15.640126] GPR04: 0000010009494f20 0000000000010008 00007fff87e40e18 
+00000100094a4f20
+[   15.640126] GPR08: 0000000000010008 0000000000000000 0000000000000000 
+0000000000000000
+[   15.640126] GPR12: 0000000000000000 00007fff88434ba0 0000000000000000 
+0000000000000000
+[   15.640126] GPR16: 0000000000000000 000000013e082f48 00007fffea618290 
+00007fffea617ee8
+[   15.640126] GPR20: 00000000003ffffe 00007fffea618108 00007fffea618110 
+0000000000008000
+[   15.640126] GPR24: 0000000000000000 0000000000000002 00000000003ffffe 
+ffffffffffffffff
+[   15.640126] GPR28: 0000000000010007 0000000000010008 0000010009494f20 
+0000000000000003
+[   15.640185] NIP [00007fff87d342e4] 0x7fff87d342e4
+[   15.640189] LR [0000000000000000] 0x0
+[   15.640193] --- interrupt: 3000
+[   15.640196] Code: e8410018 00028048 00000000 3c4c0003 38428048 
+7c0802a6 60000000 7c0802a6 f8010010 f821ffa1 e9230078 7ca32b78 
+<892903d8> 2c090000 4082002c 3d220000
+[   15.640217] ---[ end trace 0000000000000000 ]---
 
-And its output is:
-eventfd: test writing a string, size=8
-eventfd: test reading as uint64, size=8, valus=0x6F77206F6C6C6568
-
-By checking whether count is equal to sizeof(ucnt), such errors
-could be detected. It also follows the requirements of the manual.
-
-Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Jan Kara <jack@suse.cz>
-Cc: David Woodhouse <dwmw@amazon.co.uk>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Eric Biggers <ebiggers@google.com>
-Cc: <linux-fsdevel@vger.kernel.org>
-Cc: <linux-kernel@vger.kernel.org>
----
- fs/eventfd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/eventfd.c b/fs/eventfd.c
-index fc4d81090763..9afdb722fa92 100644
---- a/fs/eventfd.c
-+++ b/fs/eventfd.c
-@@ -251,7 +251,7 @@ static ssize_t eventfd_write(struct file *file, const char __user *buf, size_t c
- 	ssize_t res;
- 	__u64 ucnt;
- 
--	if (count < sizeof(ucnt))
-+	if (count != sizeof(ucnt))
- 		return -EINVAL;
- 	if (copy_from_user(&ucnt, buf, sizeof(ucnt)))
- 		return -EFAULT;
 -- 
-2.25.1
+Regards,
+Tasmiya Nalatwad
+IBM Linux Technology Center
 
 
