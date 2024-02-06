@@ -1,345 +1,297 @@
-Return-Path: <linux-kernel+bounces-55264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DC5D84BA1A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:49:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40A5284B9E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:41:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9E61B2BC8D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:42:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9911287D95
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:41:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B12BE13399B;
-	Tue,  6 Feb 2024 15:42:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01DD213398A;
+	Tue,  6 Feb 2024 15:41:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="V1Mll6Co"
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="p47jcIjT"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2056.outbound.protection.outlook.com [40.107.244.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD36413398A
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 15:42:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707234124; cv=none; b=V+U2i7i5MYrkqzhwwP9LERTmcFJJYhc4Owa5dEvhyazOXIN5a5UEDr+7xEXPxP2v8jehE/hZqNfuoryTa+tYvOTmJ/BRuNaTxhxJ74uaqIFUeXvKRmiGqjtJWJdt0teev3zkb+F+Lt4xfTIsUB47IYMAwzervGHKhhBambLEpT0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707234124; c=relaxed/simple;
-	bh=eYRTJmOtYcWQAnASXaHSok8ye5YC98QuTwfe5/baHxQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=hSQj8z7YzaMFZB7jemi5ET01UOGgVB7/+0B6xXj+oyv41sRimZ3PkStwPuMrQbAKABMv2IrgzS3MPb7+FGwGwelJJQ6YIeK8+fNkCj13Eu4ad1uBSASbap/72buLKJZWfYLJbQpQQ5YkRTeSm/ZXGddv+LN1YRQuVR+/rvojHTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=V1Mll6Co; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2904c81f26eso738955a91.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 07:42:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1707234122; x=1707838922; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0serQGLJfMuAm7UCmFlRU9sglml/pgZOh7w7pdhvabI=;
-        b=V1Mll6CoUA2FbMs73143uQAUJNPBm7DEjnsM3a82e5H3/h9aLoohcyNYKSgfTx2UZJ
-         yKjWPcvD9jc13EeeByigsgKkaC2KK6jC1h1ObOGraK/IZJIykW0rBMvoB1HjrNfeHabX
-         C/NuSr5sy/CI+llVmJsXis2ePpLiQoOPucRUDQcRMVjT7eBl2oRyrIDSVIAhT4Zaceqn
-         CPUY4PqpbkmrSYe/tCjJUO8gpDORyt+5XieZ5vj0KxfYXD1Xfrm/xg/98EKN/Q1CF/2p
-         MSuq3ZfU0yCm17woxks+oNn74ct3Qvx8Zz4L76Gitya4AvB8AgzbdF65zzkas+9gSSE4
-         PyiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707234122; x=1707838922;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0serQGLJfMuAm7UCmFlRU9sglml/pgZOh7w7pdhvabI=;
-        b=uj7wY5eT7RYfjiB+jxkm4V3Kggv2eYnNUCF7fwjkM08tSVzEuoH5aCP7046X/Au7cf
-         W/79k3AiYBuqCTBoRWnUAH9ehKqYD0cpRC6gedxye4a3qsG7TeOMM9F/CRkt2jkVVOzm
-         EjLPC3O4lM3Nl6IjXVyXiA5D0kl3QMI7KflE/qTqD7DPOHdYbzWREQt0aACLzmyNrFnk
-         Ci7uLHL0jN0+QZ3uqK8Kl7b3GB+xZ4XJE6BWGAZ1Zf/042wZ/7I8TLogxNzbO0/mUIVN
-         MhmwKugtE6b55F86LtECzzpmkQEl4kbsEHLE61NjvHKfibqsbUyTdzSiIorA4SGU+bIJ
-         Jlyw==
-X-Gm-Message-State: AOJu0Yx6/+YDd3xyLy56yRIcFj4dBvhDaFhI9+BJSI9847NzrehISFyG
-	GZzS2Ku/+oV3EyFuBXOeOxWUgZ9BVQE0SlbxreGIabSCH25D49cdy+zYXDUrf3o=
-X-Google-Smtp-Source: AGHT+IFMiM2uZXFaxsSt1Nw4LHlEplX/O/CZzHeieUF/qxwXcb9uaJCEqVrp6PvS/KS/7rS3FEo+Tw==
-X-Received: by 2002:a17:90b:1d0c:b0:296:9dd2:2dd4 with SMTP id on12-20020a17090b1d0c00b002969dd22dd4mr3027842pjb.2.1707234121881;
-        Tue, 06 Feb 2024 07:42:01 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWaBqnyH0ebZtH7mMP0+4qY9XgtTGkr3tgX5sFeZYjL2+z8OusJmTJ8EHv6DyExJnYaGtnEeRso7OHaiuN0RSVodWWPaXLWG1CGKY9IqGOAhUKwda51Abk/dZJ3ch1fCRAAT6eVou0Lzqo7g6LgUllOpYejlSRrWKir/X1YWD4bHYrjJU2pK2Aynua4CNz3JGWA5EWIruD40WwVAmtGhD/emAgGSFQX+knjPSiTmisfhgS5jrGW0XWvTflb84QxgJtZK53BeIkzp+2uFM2UtUi2D6PKnfH8Os2zaJTguXjmZfZH
-Received: from carbon-x1.. ([2a01:e0a:999:a3a0:20a2:d2ee:941a:156e])
-        by smtp.gmail.com with ESMTPSA id kx18-20020a17090b229200b0029454cca5c3sm1803609pjb.39.2024.02.06.07.41.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 07:42:01 -0800 (PST)
-From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
-To: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
-	Ben Dooks <ben.dooks@codethink.co.uk>,
-	David Laight <David.Laight@ACULAB.COM>,
-	Charlie Jenkins <charlie@rivosinc.com>
-Subject: [PATCH v2] riscv: misaligned: remove CONFIG_RISCV_M_MODE specific code
-Date: Tue,  6 Feb 2024 16:40:59 +0100
-Message-ID: <20240206154104.896809-1-cleger@rivosinc.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 070DD13398B;
+	Tue,  6 Feb 2024 15:41:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.56
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707234095; cv=fail; b=I2njEzE8Sx9mOemTIv3kBd4CtiS10Mez9eFOLh0tjaNzf8yx+0i5b4uUQ4SMeL82lYQQoqouRAbvGO8CE6XhOpXUDk8ex/4Kqv8JC9cktOlerqHo5wHxYydtjK+cLZ2WC4QL9zoTI7EmU3w+xEX6j68rgcxO6v930GETqZ4IifI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707234095; c=relaxed/simple;
+	bh=SS36S5csg1vXQu9OvCXT3QYPyv6yBzydKqnWCFBxd6U=;
+	h=Message-ID:Date:Subject:To:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=eJlaFF38S7vjEwISoYiO4dkXXmOZ/hWZbubuRjGSy4d8URt5+WbcnToSfMIH1xARXNmi+DqqmczzhtVHaKHd19+4kzGs1QXm9jGEbt559VKd56xtHlwlkvz6S/Lg4itmXNNyMNM/S4l6LChDkD38w20hosxmMZpnOgtamkMgVq8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=p47jcIjT; arc=fail smtp.client-ip=40.107.244.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kTwzaBSR0PXwkr1XRHQ5vHCL+hXwr9v6ZhbHheFI6nPBSLp656nZqt4223+pxW4PTKzOtbRVnlTlXpinQRABdLWyYD8usti069F6antO/8ey3s4XZrdX1w5kD1IYXWo1vdJA12eK/A0Sk0rvBgzxIn9/ril0vboAoImrrXgc8a6gQLAzko+fc5/ZNULKl+7271MjiYLsaiuKxWH1xUTP0bway0ir/T8HT3wEl9oKkiTYE5qUoMTnFRSAWNGqYyWirGycOG3VWQLvZHEFoJEVOA9Nb+jmL/VgUc2ouSrkl6DBh9Oh1U8Ub4nBncPYfTyHsxwhk+91ad+USalVbdQFJQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BABUTrbv+RW+c3AQ7L7r8IgpZ5jRk5/tpMWK9EC6Q7g=;
+ b=L/8KUK2Trc0FSGsPwHSxagUgtMtgiqYqckcGy99yoYJiHnQxir2aq9mRILrp9fGmmCkSo0GkgEjte09nxHrgKogxPmaarf09pg8C98GfZ6q+pPXws6fFnDgsJZrqC9WJ/0LBIGvlQnhg9hYPzl2aL0WPjUxY6ULvBz7ABhEmsjwtOlT6fNotRVPapp2sqsCbWHhOARc4MSs/mdbmnyGEatZJCrAC2YG6CIlhNH6E2NncofMgMSgBaUlR/8C9BqsbPHSvTgTKug/RgWOqnP8cvOVvgG6+GohmOZLhcl+u6ywn2NF/4DhwlHSiZJnJrDnU5xZ0HuEgHjaGv7xkAh1hYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BABUTrbv+RW+c3AQ7L7r8IgpZ5jRk5/tpMWK9EC6Q7g=;
+ b=p47jcIjTg1sDYeb0sMhW6M3q3OGFx/Vd4EBtBaXxI7aU1YxbTkls6rDa7HGvX2f3RDWKUKPtpzTpcfPaXpmxCQqD7XrQoBn6mMa9SkUSznrSTbE1yivcFqJo/VNzwEETydVdyeo7pkp9En1+pEfEd/Nja1HfeH+P6d+72z9C+eM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by IA1PR12MB8261.namprd12.prod.outlook.com (2603:10b6:208:3f7::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.16; Tue, 6 Feb
+ 2024 15:41:31 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::f6d2:541d:5eda:d826]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::f6d2:541d:5eda:d826%5]) with mapi id 15.20.7270.016; Tue, 6 Feb 2024
+ 15:41:30 +0000
+Message-ID: <e4fc61ae-97f5-4fa1-bfed-1312466a2a22@amd.com>
+Date: Tue, 6 Feb 2024 09:41:29 -0600
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] fbcon: Defer console takeover for splash screens
+ to first switch
+To: Daniel van Vugt <daniel.van.vugt@canonical.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Helge Deller
+ <deller@gmx.de>, Jani Nikula <jani.nikula@intel.com>,
+ Danilo Krummrich <dakr@redhat.com>, linux-fbdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <f037df4a-8a97-4fcd-b196-43f484b63d8d@amd.com>
+ <20240206101100.25536-1-daniel.van.vugt@canonical.com>
+ <20240206101100.25536-2-daniel.van.vugt@canonical.com>
+ <ZcJAVSyH3gRYx3EG@phenom.ffwll.local>
+Content-Language: en-US
+From: Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <ZcJAVSyH3gRYx3EG@phenom.ffwll.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN1PR12CA0089.namprd12.prod.outlook.com
+ (2603:10b6:802:21::24) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|IA1PR12MB8261:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8283c294-3f38-4dd3-0f94-08dc272a16f4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	PZV8/4XFDFAQ9qaaiilFL8GqUmk03dtrHrw+VatPKZy02/8KJ0mAF0zCbMRohM+NHwMMrczlYzaxut3oxcJvGtdRPAKyP/7akkOG05tsIP2rWiMcaBr7xeH1lHin1/n+ESPJhGIG/WOH69kbze8stsRAsgDF2Yii+0A1rySKXTabbSKO0NQiZWB7NDJ+bZ2NHgCzh/TVQJpDZz6HTWAIiuz73RjEeD0Tl0OOxdXA9PUFzx9N6gfo6NYt//KYSIe8TBQwJdsNVAstkVIirLLYOFY2D4P14z/XDfvvek1FOR4h45/G6Vh2lO46mlFoyq4FftWiCblL7uM6tIYQpYvT/87JebN3ZhPYHO+hu7uHWE5mNxwVtCUG/NVDgPCEOvy8w4hSsivuWJ31+cjOnEX31tcHwKiRoffgn3a7woSWRmyUWb+zSXVGPkJVMvC5Q4vmL04Xi9cKJ+nvj5oZNqaTHXtxs2EIW5Ry9hm2c4IHGiRqnghaEG3WK8fjuSj4quLTnoBeuSwaupjGqlxB8Oe38NxnjAxhWDmlzX5wRhhpBowBTrOmoAdbNvNW2cLKDfBgFhPsb89gEuHOGyhpViEVNT47FpshskrQO1fSc2uRo6DFndNxkxLeTQj5VDdec02h
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(366004)(396003)(136003)(39860400002)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(36756003)(44832011)(2906002)(5660300002)(41300700001)(26005)(2616005)(83380400001)(6512007)(478600001)(6486002)(966005)(6506007)(86362001)(31696002)(53546011)(31686004)(38100700002)(66476007)(66946007)(66556008)(8936002)(110136005)(8676002)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?cVVCT3oveDR4SjJHK28wR1RnR2hQVytVVU9yamhwT2Nsak1IdzBRcTA1N3hz?=
+ =?utf-8?B?eDhUc0kzeGxrWHhhWWxPaDRrZUxoa0RzR2p4clh5dUN4djMwSWUxL21MTmU0?=
+ =?utf-8?B?ZEdWVzVzUEhaQU50S2htOVJHUHo0QUhDaFVDdkhMZEljWndSdTJWY3FvNGpK?=
+ =?utf-8?B?UHIwd2haNmZiN1ZHM0N5S2VHbmxxZG0rK3hRVG8xcmdtQ1BBelVMY3BaL3VT?=
+ =?utf-8?B?OG55NENuNFJ5bFprbS8zOWwybU5LRUdLQUVSNUhRRnRNSDVyTzJSYVVPVkVL?=
+ =?utf-8?B?QW40ckJqUUxFbjJlamlkbmZmdkI1bU1xeEZ1R25neFA4c01nRW5MQW8xOFNz?=
+ =?utf-8?B?bkZCcngxV2NCMVJ5V0ZTeWFhK1hjaDV1am9FUmZwWnh4NUxVbFVGNTlGUkJ0?=
+ =?utf-8?B?MXpDUjBvMjhCZkJxd0c0NnV3ZWdxMFAxUCtjV3BwVW01WDJja3AvV1MwTzB4?=
+ =?utf-8?B?eFA3TnR2Tk1zckdiZEdQYUwxcWUrYXVyTEV0bnFaQzU5QmwxN1VJYWd6Yno2?=
+ =?utf-8?B?K3dHcXdGZmtRWGsvbDFzcnVLL2ZVS3pyczlGaGtHOHlrVFB3Tys1UUxQZ3M0?=
+ =?utf-8?B?R1M1OFROREh5c2Rzczh1R3dROGU0TXdEcmV1Rm0xU3lMOHYzOHhzcWJwSjQ4?=
+ =?utf-8?B?UGNQT3hPWGZiZytEVG5TWHNFei9haXlsM3BvMkV0VzZjcTJiK0hSais5QjlX?=
+ =?utf-8?B?RktSM3hnd05UVDhGWkRoWDRlcVJtd1BKZ3RaWWpRY3dhTXc3US8xY2RYVEx3?=
+ =?utf-8?B?YlFoam9hdmVITit6RGVGcEI0THlGeDZvaTVBdTBDaTBQYVZmcVQ5RlBqTnJF?=
+ =?utf-8?B?dCswRktKYUx1WlZtbVA2eHBkUUdDR2t5Q1BDTzBWU2lmT2hTem1zZXA5azdW?=
+ =?utf-8?B?ZjRSMjV5Y1VvUXVzak1tTGZxbWZKSTRYVzNKTmZLOVdxZ3FUZXVweU9qRWQy?=
+ =?utf-8?B?Z0NZVWd1c3FNSTB5QUNNbkRvdnBZZ2Q4cVNnODdoZS9hL3VsT2hta045Vno0?=
+ =?utf-8?B?dnhLQ3AvQXhzOXd3THJndjBGM0wxUmFVVTd2b0NYaldSWndYaVFQNk10cHEy?=
+ =?utf-8?B?aUdsRHJrd1FmRFkvRmRPK1VCZUJFUFZPY3VRUHAyR1BQdi9WM05BNHMra1ZV?=
+ =?utf-8?B?dkdYSVk0ay85a2J1cm9wdlFaa0xjYit6dVVNaE9lMm9MSWpLakJITUl3N29x?=
+ =?utf-8?B?M3Y5bTZPRjVFNDRRN0MvL0N0Wjc3UURnelNLNEpJS3o3REJ6a0gxdmpjYkVo?=
+ =?utf-8?B?NWFSbGhrQWtlTUc5V0Njc0Y2TGZWaXRvMm9IUVIxcjZTQU9BWkh5M1lxcDJE?=
+ =?utf-8?B?di9UUUk3NTk2R0c0TzhqWlY5ZGFlNVVSbE9sTzIzSGwvMkJ1bWUwcTI0N053?=
+ =?utf-8?B?YS9JUlR3c3B1VEdxYmVjUWlnMURtNzNhdndQQzd1RDRwc0lmcm1jVGRVZGRJ?=
+ =?utf-8?B?UmFlSnllTWcxdUZFMFpzVkt4TUVxRXlGT2lwYWFqdkdiNGh1VjRBZDZ2a1Fa?=
+ =?utf-8?B?M1luSzV4WXlrUzRWNXVHTDdQdXJLZ0w1dEF1TFIwKytTdWorSGI2c3dzMG9k?=
+ =?utf-8?B?dUxFT0l3NWcrMGVnUXhLRzNjUDlwMjRGU3lQWFZXUzhzZXJIait4VTFVS0dl?=
+ =?utf-8?B?Q0NPMS9IMEdXbzllOEJ2TnBGK25xdndJRTdPVlpYUTlERFQwUTRFTWY3dmZF?=
+ =?utf-8?B?SjJERFFoQ2swZVhmaDZocmh5OW9DQlE1MGZMbFZuREUva3dJMnZEQjVHUEFT?=
+ =?utf-8?B?d3dFRGE0c3lJRGNrb3BOdUw1Q2wvLzB1L2hENXRRZDdqTFQwYVg3Q2FCMVFo?=
+ =?utf-8?B?RjVhTittajN4R2pKNUttRDFzRThaOUJvYXd5RGZ6VDZiaDQ3S3RQV0F3YlBU?=
+ =?utf-8?B?c1RPQXpWY0RXeVRGR05JTVpHejV0MnlHZklUOC9xbnJpbTdmOC92RXA2ZzlK?=
+ =?utf-8?B?MEs3aDc0SWs2N1NoU3o4MWVMcW9QRks5UFEzbTFaY0swc3JmU3MzcTBGRlNG?=
+ =?utf-8?B?NDVkdEs3b1FlSGNwUlpoSmxJT01iWkk1aEh0Zy9ZYXEva3ZKTlFGbHo5ZnFv?=
+ =?utf-8?B?T29vc3hOb0FsMjY0Mm1UL1I1QWxTUTdqOVVmM21NOGlSZlVmbkZFT2hNaUV3?=
+ =?utf-8?Q?GFzpxjAOqa3VBbTKA63kUZ7SY?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8283c294-3f38-4dd3-0f94-08dc272a16f4
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2024 15:41:30.8568
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: J4wL7F47exmAEGTYoweMJGqkTDxSWUSS/olLvyTxR3A+g0HKwvkJV5SVpe2ceN0s2ImHVimwocJ1+uCPxeBSdA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8261
 
-While reworking code to fix sparse errors, it appears that the
-RISCV_M_MODE specific could actually be removed and use the one for
-normal mode. Even though RISCV_M_MODE can do direct user memory access,
-using the user uaccess helpers is also going to work. Since there is no
-need anymore for specific accessors (load_u8()/store_u8()), we can
-directly use memcpy()/copy_{to/from}_user() and get rid of the copy
-loop entirely. __read_insn() is also fixed to use an unsigned long
-instead of a pointer which was cast in __user address space. The
-insn_addr parameter is now cast from unsigned lnog to the correct
-address space directly.
+On 2/6/2024 08:21, Daniel Vetter wrote:
+> On Tue, Feb 06, 2024 at 06:10:51PM +0800, Daniel van Vugt wrote:
+>> Until now, deferred console takeover only meant defer until there is
+>> output. But that risks stepping on the toes of userspace splash screens,
+>> as console messages may appear before the splash screen. So check the
+>> command line for the expectation of userspace splash and if present then
+>> extend the deferral until after the first switch.
+>>
+>> V2: Added Kconfig option instead of hard coding "splash".
+>>
+>> Closes: https://bugs.launchpad.net/bugs/1970069
+>> Cc: Mario Limonciello <mario.limonciello@amd.com>
+>> Signed-off-by: Daniel van Vugt <daniel.van.vugt@canonical.com>
+>> ---
+>>   drivers/video/console/Kconfig    | 13 +++++++++++
+>>   drivers/video/fbdev/core/fbcon.c | 38 ++++++++++++++++++++++++++++++--
+>>   2 files changed, 49 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/video/console/Kconfig b/drivers/video/console/Kconfig
+>> index bc31db6ef7..a6e371bfb4 100644
+>> --- a/drivers/video/console/Kconfig
+>> +++ b/drivers/video/console/Kconfig
+>> @@ -138,6 +138,19 @@ config FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER
+>>   	  by the firmware in place, rather then replacing the contents with a
+>>   	  black screen as soon as fbcon loads.
+>>   
+>> +config FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER_CONDITION
+>> +	string "Framebuffer Console Deferred Takeover Condition"
+>> +	depends on FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER
+>> +	default "splash"
+>> +	help
+>> +	  If enabled this defers further the framebuffer console taking over
+>> +	  until the first console switch has occurred. And even then only if
+>> +	  text has been output, and only if the specified parameter is found
+>> +	  on the command line. This ensures fbcon does not interrupt userspace
+>> +	  splash screens such as Plymouth which may be yet to start rendering
+>> +	  at the time of the first console output. "splash" is the simplest
+>> +	  distro-agnostic condition for this that Plymouth checks for.
+> 
+> Hm this seems a bit strange since a lot of complexity that no one needs,
+> also my impression is that it's rather distro specific how you want this
+> to work. So why not just a Kconfig option that lets you choose how much
+> you want to delay fbcon setup, with the following options:
+> 
+> - no delay at all
+> - dely until first output from the console (which then works for distros
+>    which set a log-level to suppress unwanted stuff)
+> - delay until first vt-switch. In that case I don't think we also need to
+>    delay for first output, since vt switch usually means you'll get first
+>    output right away (if it's a vt terminal) or you switch to a different
+>    graphical console (which will keep fbcon fully suppressed on the drm
+>    side).
+> 
 
-Signed-off-by: Clément Léger <cleger@rivosinc.com>
+IIUC there is an "automatic" VT switch that happens with Ubuntu GRUB + 
+Ubuntu kernels.
 
----
+Why?
 
-The test used to validate these changes is the one used originally for
-S-mode misaligned support:
+Couldn't this also be suppressed by just not doing that?
 
-https://github.com/clementleger/unaligned_test
-
-This test exercise (almost) all the supported instructions, all the
-registers for FPU instructions and is compiled with and without
-compressed instructions.
-
-For S-mode, you simply need a classic toolchain and export CROSS_COMPILE
-to match it.
-
-For M-mode validation, the following steps can be used:
-
-Build a nommu toolchain with buildroot toolchain:
-$ git clone https://github.com/buildroot/buildroot.git
-$ cd buildroot
-$ make O=build_nommu qemu_riscv64_nommu_virt_defconfig
-
-Test:
-$ git clone https://github.com/clementleger/unaligned_test.git
-$ cd unaligned_test
-$ make CFLAGS="-fPIC -Wl,-elf2flt=-r"
-CROSS_COMPILE=<buildroot>/build_nommu/host/bin/riscv64-buildroot-linux-uclibc-
-
-Copy the resulting elf files (unaligned & unaligned_c) to buildroot rootfs and rebuild it.
-$ cp unaligned unaligned_c <buildroot>/build_nommu/target/root
-$ cd <buildroot>/build_nommu/
-$ make
-
-Kernel:
-$ make O=build_nommu nommu_virt_defconfig
-$ make O=build_nommu loader
-
-Either set the kernel initramfs or provide one on spike command line
-using the one built with buildroot
-
-Then to run it on spike (QEMU always emulate misaligned accesses and
-won't generate any misaligned exception):
-
-$ spike <kernel>/build_nommu/loader
-
----
-
-V2:
- - Rebased on master
- - Align macro end "\"
-
-Link to v1: https://lore.kernel.org/linux-riscv/20231128165206.589240-1-cleger@rivosinc.com/
-
-Notes: This patch is a complete rework of a previous one [1] and thus is
-not a V3.
-
-[1] https://lore.kernel.org/linux-riscv/d156242a-f104-4925-9736-624a4ba8210d@rivosinc.com/
----
- arch/riscv/kernel/traps_misaligned.c | 106 +++++----------------------
- 1 file changed, 17 insertions(+), 89 deletions(-)
-
-diff --git a/arch/riscv/kernel/traps_misaligned.c b/arch/riscv/kernel/traps_misaligned.c
-index 8ded225e8c5b..fb202dd18fe5 100644
---- a/arch/riscv/kernel/traps_misaligned.c
-+++ b/arch/riscv/kernel/traps_misaligned.c
-@@ -264,86 +264,14 @@ static unsigned long get_f32_rs(unsigned long insn, u8 fp_reg_offset,
- #define GET_F32_RS2C(insn, regs) (get_f32_rs(insn, 2, regs))
- #define GET_F32_RS2S(insn, regs) (get_f32_rs(RVC_RS2S(insn), 0, regs))
- 
--#ifdef CONFIG_RISCV_M_MODE
--static inline int load_u8(struct pt_regs *regs, const u8 *addr, u8 *r_val)
--{
--	u8 val;
--
--	asm volatile("lbu %0, %1" : "=&r" (val) : "m" (*addr));
--	*r_val = val;
--
--	return 0;
--}
--
--static inline int store_u8(struct pt_regs *regs, u8 *addr, u8 val)
--{
--	asm volatile ("sb %0, %1\n" : : "r" (val), "m" (*addr));
--
--	return 0;
--}
--
--static inline int get_insn(struct pt_regs *regs, ulong mepc, ulong *r_insn)
--{
--	register ulong __mepc asm ("a2") = mepc;
--	ulong val, rvc_mask = 3, tmp;
--
--	asm ("and %[tmp], %[addr], 2\n"
--		"bnez %[tmp], 1f\n"
--#if defined(CONFIG_64BIT)
--		__stringify(LWU) " %[insn], (%[addr])\n"
--#else
--		__stringify(LW) " %[insn], (%[addr])\n"
--#endif
--		"and %[tmp], %[insn], %[rvc_mask]\n"
--		"beq %[tmp], %[rvc_mask], 2f\n"
--		"sll %[insn], %[insn], %[xlen_minus_16]\n"
--		"srl %[insn], %[insn], %[xlen_minus_16]\n"
--		"j 2f\n"
--		"1:\n"
--		"lhu %[insn], (%[addr])\n"
--		"and %[tmp], %[insn], %[rvc_mask]\n"
--		"bne %[tmp], %[rvc_mask], 2f\n"
--		"lhu %[tmp], 2(%[addr])\n"
--		"sll %[tmp], %[tmp], 16\n"
--		"add %[insn], %[insn], %[tmp]\n"
--		"2:"
--	: [insn] "=&r" (val), [tmp] "=&r" (tmp)
--	: [addr] "r" (__mepc), [rvc_mask] "r" (rvc_mask),
--	  [xlen_minus_16] "i" (XLEN_MINUS_16));
--
--	*r_insn = val;
--
--	return 0;
--}
--#else
--static inline int load_u8(struct pt_regs *regs, const u8 *addr, u8 *r_val)
--{
--	if (user_mode(regs)) {
--		return __get_user(*r_val, (u8 __user *)addr);
--	} else {
--		*r_val = *addr;
--		return 0;
--	}
--}
--
--static inline int store_u8(struct pt_regs *regs, u8 *addr, u8 val)
--{
--	if (user_mode(regs)) {
--		return __put_user(val, (u8 __user *)addr);
--	} else {
--		*addr = val;
--		return 0;
--	}
--}
--
--#define __read_insn(regs, insn, insn_addr)		\
-+#define __read_insn(regs, insn, insn_addr, type)	\
- ({							\
- 	int __ret;					\
- 							\
- 	if (user_mode(regs)) {				\
--		__ret = __get_user(insn, insn_addr);	\
-+		__ret = __get_user(insn, (type __user *) insn_addr); \
- 	} else {					\
--		insn = *(__force u16 *)insn_addr;	\
-+		insn = *(type *)insn_addr;		\
- 		__ret = 0;				\
- 	}						\
- 							\
-@@ -356,9 +284,8 @@ static inline int get_insn(struct pt_regs *regs, ulong epc, ulong *r_insn)
- 
- 	if (epc & 0x2) {
- 		ulong tmp = 0;
--		u16 __user *insn_addr = (u16 __user *)epc;
- 
--		if (__read_insn(regs, insn, insn_addr))
-+		if (__read_insn(regs, insn, epc, u16))
- 			return -EFAULT;
- 		/* __get_user() uses regular "lw" which sign extend the loaded
- 		 * value make sure to clear higher order bits in case we "or" it
-@@ -369,16 +296,14 @@ static inline int get_insn(struct pt_regs *regs, ulong epc, ulong *r_insn)
- 			*r_insn = insn;
- 			return 0;
- 		}
--		insn_addr++;
--		if (__read_insn(regs, tmp, insn_addr))
-+		epc += sizeof(u16);
-+		if (__read_insn(regs, tmp, epc, u16))
- 			return -EFAULT;
- 		*r_insn = (tmp << 16) | insn;
- 
- 		return 0;
- 	} else {
--		u32 __user *insn_addr = (u32 __user *)epc;
--
--		if (__read_insn(regs, insn, insn_addr))
-+		if (__read_insn(regs, insn, epc, u32))
- 			return -EFAULT;
- 		if ((insn & __INSN_LENGTH_MASK) == __INSN_LENGTH_32) {
- 			*r_insn = insn;
-@@ -390,7 +315,6 @@ static inline int get_insn(struct pt_regs *regs, ulong epc, ulong *r_insn)
- 		return 0;
- 	}
- }
--#endif
- 
- union reg_data {
- 	u8 data_bytes[8];
-@@ -409,7 +333,7 @@ int handle_misaligned_load(struct pt_regs *regs)
- 	unsigned long epc = regs->epc;
- 	unsigned long insn;
- 	unsigned long addr = regs->badaddr;
--	int i, fp = 0, shift = 0, len = 0;
-+	int fp = 0, shift = 0, len = 0;
- 
- 	perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS, 1, regs, addr);
- 
-@@ -490,9 +414,11 @@ int handle_misaligned_load(struct pt_regs *regs)
- 		return -EOPNOTSUPP;
- 
- 	val.data_u64 = 0;
--	for (i = 0; i < len; i++) {
--		if (load_u8(regs, (void *)(addr + i), &val.data_bytes[i]))
-+	if (user_mode(regs)) {
-+		if (raw_copy_from_user(&val, (u8 __user *)addr, len))
- 			return -1;
-+	} else {
-+		memcpy(&val, (u8 *)addr, len);
- 	}
- 
- 	if (!fp)
-@@ -513,7 +439,7 @@ int handle_misaligned_store(struct pt_regs *regs)
- 	unsigned long epc = regs->epc;
- 	unsigned long insn;
- 	unsigned long addr = regs->badaddr;
--	int i, len = 0, fp = 0;
-+	int len = 0, fp = 0;
- 
- 	perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS, 1, regs, addr);
- 
-@@ -586,9 +512,11 @@ int handle_misaligned_store(struct pt_regs *regs)
- 	if (!IS_ENABLED(CONFIG_FPU) && fp)
- 		return -EOPNOTSUPP;
- 
--	for (i = 0; i < len; i++) {
--		if (store_u8(regs, (void *)(addr + i), val.data_bytes[i]))
-+	if (user_mode(regs)) {
-+		if (raw_copy_to_user((u8 __user *)addr, &val, len))
- 			return -1;
-+	} else {
-+		memcpy((u8 *)addr, &val, len);
- 	}
- 
- 	regs->epc = epc + INSN_LEN(insn);
--- 
-2.43.0
+> I think you could even reuse the existing
+> CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER for this, and then just
+> compile-time select which kind of notifier to register (well plus the
+> check for "splash" on the cmdline for the vt switch one I guess).
+> 
+> Thoughts?
+> 
+> Cheers, Sima
+> 
+> 
+>> +
+>>   config STI_CONSOLE
+>>   	bool "STI text console"
+>>   	depends on PARISC && HAS_IOMEM
+>> diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
+>> index 63af6ab034..98155d2256 100644
+>> --- a/drivers/video/fbdev/core/fbcon.c
+>> +++ b/drivers/video/fbdev/core/fbcon.c
+>> @@ -76,6 +76,7 @@
+>>   #include <linux/crc32.h> /* For counting font checksums */
+>>   #include <linux/uaccess.h>
+>>   #include <asm/irq.h>
+>> +#include <asm/cmdline.h>
+>>   
+>>   #include "fbcon.h"
+>>   #include "fb_internal.h"
+>> @@ -3358,6 +3359,26 @@ static int fbcon_output_notifier(struct notifier_block *nb,
+>>   
+>>   	return NOTIFY_OK;
+>>   }
+>> +
+>> +#ifdef CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER_CONDITION
+>> +static int initial_console;
+>> +static struct notifier_block fbcon_switch_nb;
+>> +
+>> +static int fbcon_switch_notifier(struct notifier_block *nb,
+>> +				 unsigned long action, void *data)
+>> +{
+>> +	struct vc_data *vc = data;
+>> +
+>> +	WARN_CONSOLE_UNLOCKED();
+>> +
+>> +	if (vc->vc_num != initial_console) {
+>> +		dummycon_unregister_switch_notifier(&fbcon_switch_nb);
+>> +		dummycon_register_output_notifier(&fbcon_output_nb);
+>> +	}
+>> +
+>> +	return NOTIFY_OK;
+>> +}
+>> +#endif
+>>   #endif
+>>   
+>>   static void fbcon_start(void)
+>> @@ -3370,7 +3391,16 @@ static void fbcon_start(void)
+>>   
+>>   	if (deferred_takeover) {
+>>   		fbcon_output_nb.notifier_call = fbcon_output_notifier;
+>> -		dummycon_register_output_notifier(&fbcon_output_nb);
+>> +#ifdef CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER_CONDITION
+>> +		if (cmdline_find_option_bool(boot_command_line,
+>> +		      CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER_CONDITION)) {
+>> +			initial_console = fg_console;
+>> +			fbcon_switch_nb.notifier_call = fbcon_switch_notifier;
+>> +			dummycon_register_switch_notifier(&fbcon_switch_nb);
+>> +		} else
+>> +#endif
+>> +			dummycon_register_output_notifier(&fbcon_output_nb);
+>> +
+>>   		return;
+>>   	}
+>>   #endif
+>> @@ -3417,8 +3447,12 @@ void __exit fb_console_exit(void)
+>>   {
+>>   #ifdef CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER
+>>   	console_lock();
+>> -	if (deferred_takeover)
+>> +	if (deferred_takeover) {
+>>   		dummycon_unregister_output_notifier(&fbcon_output_nb);
+>> +#ifdef CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER_CONDITION
+>> +		dummycon_unregister_switch_notifier(&fbcon_switch_nb);
+>> +#endif
+>> +	}
+>>   	console_unlock();
+>>   
+>>   	cancel_work_sync(&fbcon_deferred_takeover_work);
+>> -- 
+>> 2.43.0
+>>
+> 
 
 
