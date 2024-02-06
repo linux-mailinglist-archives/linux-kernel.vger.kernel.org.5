@@ -1,196 +1,271 @@
-Return-Path: <linux-kernel+bounces-54429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C389484AF21
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:39:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E24584AF1E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:39:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3978E1F23F84
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 07:39:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4D6F284BA8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 07:39:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E62A212883F;
-	Tue,  6 Feb 2024 07:39:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gakFgU7O"
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7470129A62;
+	Tue,  6 Feb 2024 07:39:03 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E1C7128837
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 07:39:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26F70128833;
+	Tue,  6 Feb 2024 07:39:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707205154; cv=none; b=Srb2FVg2fpjGIcNK9+xhvTA7ByBRBOn5gBT+qS0aaIjwpDGv9Jq3fA9UBMabrFnEGRcpYe55uyW1DQDPrQ0Z4RVRTifbfaLFUIqS2RrRxFhuz6uklhtvD94x4H56KKbokBXTo/xXukXgXXr0A6UObTkOwaVi02gdCvpWAnHKOzo=
+	t=1707205143; cv=none; b=fQbflNArZq8GQpvfTmYenptEMegOLFhfNkSNZZmleY1157PPgGUn8JJBkLmYMhj5k79CvoiyUFRubGuq/LiWJhXSnS9FMFA1CvaFKPXLJZhB0erXJngPeho6kSwFCXt2s4spc7Mod42TIXc9893jIyBG/VQiXm4aLVLAGC3/kcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707205154; c=relaxed/simple;
-	bh=BWWMFVM2s4Ox494CaC5CyZo0UajFxda/MzFAPnh2eVc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N2xm4IdxDl5PEjmCV6EoodO+9n8aMptD2iMq4CigOSuEoW5IHSuX9R/394Ch/kMippbDJO+UzxRTrp3grp4+yAZlNLIJAWvEnh08gaNkZI+lOlICbgAhRLGjpOi5Q12O6UZlUerOpDv7pessWR8TyZIbNXgP+D+OEpQSiXABCOw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gakFgU7O; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d093cb1ef3so38028471fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 23:39:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707205150; x=1707809950; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FEm7mOJ011S0VyrqJbaw++p65z5dZn5VqwG07p5sWdU=;
-        b=gakFgU7ORmv2Te5egLHZ7PGFhuafM3OtC2ZQoz6mvGtt910MMGWBkzYuENP0DUcXZ1
-         H6egPQWD2iDNHkCkS24zNB9rfpkmGwxobZo7QSTTraVeOMyVLrn0jNWtGpWcdyQkQSpp
-         KdqGxqatNXNF5whSf1zSBKfrPATDAkMJVW1Uh07EvhjumvKeaCiQnE/LDpRmbl8vIaAM
-         mO4bt2hyjMFEZ+3ngZ16BNQ7CvNM4vjUSorVpjMU8JjQkm+lWT6ykpp94fm/Rw4dYqVz
-         GKH0pN6kHFohpTAWE/x/3eQ/oNZ59Sl2Sx/lW4rB20n83XrEPi6dS+6s8hubT4e/pAdy
-         3+ZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707205150; x=1707809950;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FEm7mOJ011S0VyrqJbaw++p65z5dZn5VqwG07p5sWdU=;
-        b=VaOPhoHUw+aoTDwroDY8RRqG2KmVrCxx8kSDc4S0g1ZN63VZsIVgxE5fuSNFfRRBDp
-         I1AXDf2ay1MyP79KXBzklUrD0vSwvsEwGwDuAgoZG93QlvG1VP7AJ4Dj8h1tbQqiNALB
-         seK+OPjLRa/7oyeqonhbHztU+vFdeTi413v91saYyu+Fx1m3X2Pi03Eu69maoloLKGV9
-         tF4l45Vze25xQVU7HZJzUMdYq6dDjNb7ZKX36cX+khZYvihQfF0++goCquYorSvQDRow
-         VsTKQTI8e1s39bTJGtIZNwD0FpJ45jJEapMz2h6TOWi8jo6L3E/qgNcNU9lYYgi3opNY
-         5wPQ==
-X-Gm-Message-State: AOJu0Yx8QlHSCmvywTTrRSjZ7mX84kIqupaLkxc4v3jJzDgf/Xzs5lqd
-	rFK6EgO9MKd/dbTSoNLtQ4umbBSVyQYaNpO949Cnq64rFTFC57/l0BAJvN94UVOmaWVEbrXqOMK
-	AatHQD06TdWgYa+wV6vbXC0uLUEU=
-X-Google-Smtp-Source: AGHT+IHzLBDl5xvhebPGq0XGAgn7QlfFsf14RlJNyjGTura3QNWPW72aHbwGFBgkdYfHOouaEaBHb4FASTpHpHSaKUY=
-X-Received: by 2002:a2e:be23:0:b0:2d0:bf7f:a964 with SMTP id
- z35-20020a2ebe23000000b002d0bf7fa964mr503930ljq.32.1707205150041; Mon, 05 Feb
- 2024 23:39:10 -0800 (PST)
+	s=arc-20240116; t=1707205143; c=relaxed/simple;
+	bh=CLBSsXpLFwXgVGHcFk5IYEud4mRKbYRtZ92O1B4ULrA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WasiwR50wMDcljc1/3e0fnGOYICBaREU0QSNQg5lhrILwn0QapSkqy2EXFLolQHbZGiCJFbZRGW35LRThkxleOR/b8ZG2uup2rv7xk9zRzppYjqaX+/E3PMlriOs6x4ZgAIssbj4hC8MdLvZfBGIruF2WuUAJuqjCnWQUYxLIcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12340C433F1;
+	Tue,  6 Feb 2024 07:39:00 +0000 (UTC)
+Message-ID: <ae539786-f73a-41ba-97a4-ea409fb88e2f@xs4all.nl>
+Date: Tue, 6 Feb 2024 08:38:59 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205110959.4021-1-ryncsn@gmail.com> <CAOUHufYYoW6Nn26YsdBwxDw8iNLRf2c6ZLoF530YCgYZ2uvikQ@mail.gmail.com>
-In-Reply-To: <CAOUHufYYoW6Nn26YsdBwxDw8iNLRf2c6ZLoF530YCgYZ2uvikQ@mail.gmail.com>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Tue, 6 Feb 2024 15:38:51 +0800
-Message-ID: <CAMgjq7ALbFbmQDnt8KPwB0h9j5E5SBEJn7bC+NVMhX__U8w12Q@mail.gmail.com>
-Subject: Re: [PATCH] mm/swap: fix race condition in direct swapin path
-To: Yu Zhao <yuzhao@google.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
-	"Huang, Ying" <ying.huang@intel.com>, Chris Li <chrisl@kernel.org>, 
-	Minchan Kim <minchan@kernel.org>, Hugh Dickins <hughd@google.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>, Michal Hocko <mhocko@suse.com>, 
-	Yosry Ahmed <yosryahmed@google.com>, David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] media: adv7180: Fix cppcheck warnings
+Content-Language: en-US, nl
+To: Bhavin Sharma <bhavin.sharma@siliconsignals.io>,
+ "mchehab@kernel.org" <mchehab@kernel.org>,
+ "kieran.bingham@ideasonboard.com" <kieran.bingham@ideasonboard.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>,
+ "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240102142729.1743421-1-bhavin.sharma@siliconsignals.io>
+ <16ef7746-d038-4607-8e2f-8f7cef5a8b48@xs4all.nl>
+ <MAZPR01MB695711E70CEDFC41DE5C2C8DF2462@MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <MAZPR01MB695711E70CEDFC41DE5C2C8DF2462@MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 6, 2024 at 2:03=E2=80=AFPM Yu Zhao <yuzhao@google.com> wrote:
->
-> On Mon, Feb 5, 2024 at 4:10=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wro=
-te:
-> >
-> > From: Kairui Song <kasong@tencent.com>
-> >
-> > In the direct swapin path, when two or more threads swapin the same ent=
-ry
->
-> There is no other places referring to that path as "direct" swapin.
->
-> I'd rephrase it as: "When skipping swapcache for SWP_SYNCHRONOUS_IO,
-> ...", and similarly for the subject: "mm: fix race when skipping
-> swapcache".
+On 06/02/2024 06:05, Bhavin Sharma wrote:
+> Hi Hans,
+> 
+>> Hi Bhavin,
+> 
+>> On 02/01/2024 15:27, Bhavin Sharma wrote:
+>>> WARNING: Missing a blank line after declarations
+>>>
+>>> Signed-off-by: Bhavin Sharma <bhavin.sharma@siliconsignals.io>
+>>> ---
+>>>   drivers/media/i2c/adv7180.c | 27 ++++++++++++++++++---------
+>>>   1 file changed, 18 insertions(+), 9 deletions(-)
+>>>
+>>> diff --git a/drivers/media/i2c/adv7180.c b/drivers/media/i2c/adv7180.c
+>>> index 54134473186b..0023a546b3c9 100644
+>>> --- a/drivers/media/i2c/adv7180.c
+>>> +++ b/drivers/media/i2c/adv7180.c
+>>> @@ -335,8 +335,9 @@ static u32 adv7180_status_to_v4l2(u8 status1)
+>>>   static int __adv7180_status(struct adv7180_state *state, u32 *status,
+>>>                            v4l2_std_id *std)
+>>>   {
+>>> -     int status1 = adv7180_read(state, ADV7180_REG_STATUS1);
+>>> +     int status1;
+>>>
+>>> +     status1 = adv7180_read(state, ADV7180_REG_STATUS1);
+>>>        if (status1 < 0)
+>>>                return status1;
+>>>
+>>> @@ -356,7 +357,9 @@ static inline struct adv7180_state *to_state(struct v4l2_subdev *sd)
+>>>   static int adv7180_querystd(struct v4l2_subdev *sd, v4l2_std_id *std)
+>>>   {
+>>>        struct adv7180_state *state = to_state(sd);
+>>> -     int err = mutex_lock_interruptible(&state->mutex);
+>>> +     int err;
+>>> +
+>>> +     err = mutex_lock_interruptible(&state->mutex);
+> 
+>> The problem here is the missing empty line, not that 'int err = <something>;' part.
+>> So just add the empty line and don't split up the variable assignment.
+> 
+> Yes, the error is of missing empty line and I only resolved that particular error in the first version
+> of this patch.
+> 
+> But I was recommended to keep the conditional statement close to the line it is associated with
+> and to make changes in the code wherever similar format is followed. 
+> 
+> So I followed the advise of Kieran Bingham and made changes accordingly. 
+> 
+> Below is the link of the full discussion : https://lore.kernel.org/lkml/MAZPR01MB695752E4ADB0110443EA695CF2432@MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM/T/
 
-Good suggestion.
+Kieran said this:
 
->
-> > at the same time, they get different pages (A, B) because swap cache is
-> > skipped. Before one thread (T0) finishes the swapin and installs page (=
-A)
-> > to the PTE, another thread (T1) could finish swapin of page (B),
-> > swap_free the entry, then modify and swap-out the page again, using the
-> > same entry. It break the pte_same check because PTE value is unchanged,
-> > causing ABA problem. Then thread (T0) will then install the stalled pag=
-e
-> > (A) into the PTE so new data in page (B) is lost, one possible callstac=
-k
-> > is like this:
-> >
-> > CPU0                                CPU1
-> > ----                                ----
-> > do_swap_page()                      do_swap_page() with same entry
-> > <direct swapin path>                <direct swapin path>
-> > <alloc page A>                      <alloc page B>
-> > swap_readpage() <- read to page A   swap_readpage() <- read to page B
-> > <slow on later locks or interrupt>  <finished swapin first>
-> > ...                                 set_pte_at()
-> >                                     swap_free() <- Now the entry is fre=
-ed.
-> >                                     <write to page B, now page A stalle=
-d>
-> >                                     <swap out page B using same swap en=
-try>
-> > pte_same() <- Check pass, PTE seems
-> >               unchanged, but page A
-> >               is stalled!
-> > swap_free() <- page B content lost!
-> > set_pte_at() <- staled page A installed!
-> >
-> > To fix this, reuse swapcache_prepare which will pin the swap entry usin=
-g
-> > the cache flag, and allow only one thread to pin it. Release the pin
-> > after PT unlocked. Racers will simply busy wait since it's a rare
-> > and very short event.
-> >
-> > Other methods like increasing the swap count don't seem to be a good
-> > idea after some tests, that will cause racers to fall back to the
-> > cached swapin path, two swapin path being used at the same time
-> > leads to a much more complex scenario.
-> >
-> > Reproducer:
-> >
-> > This race issue can be triggered easily using a well constructed
-> > reproducer and patched brd (with a delay in read path) [1]:
-> >
-> > With latest 6.8 mainline, race caused data loss can be observed easily:
-> > $ gcc -g -lpthread test-thread-swap-race.c && ./a.out
-> >   Polulating 32MB of memory region...
-> >   Keep swapping out...
-> >   Starting round 0...
-> >   Spawning 65536 workers...
-> >   32746 workers spawned, wait for done...
-> >   Round 0: Error on 0x5aa00, expected 32746, got 32743, 3 data loss!
-> >   Round 0: Error on 0x395200, expected 32746, got 32743, 3 data loss!
-> >   Round 0: Error on 0x3fd000, expected 32746, got 32737, 9 data loss!
-> >   Round 0 Failed, 15 data loss!
-> >
-> > This reproducer spawns multiple threads sharing the same memory region
-> > using a small swap device. Every two threads updates mapped pages one b=
-y
-> > one in opposite direction trying to create a race, with one dedicated
-> > thread keep swapping out the data out using madvise.
-> >
-> > The reproducer created a reproduce rate of about once every 5 minutes,
-> > so the race should be totally possible in production.
-> >
-> > After this patch, I ran the reproducer for over a few hundred rounds
-> > and no data loss observed.
-> >
-> > Performance overhead is minimal, microbenchmark swapin 10G from 32G
-> > zram:
-> >
-> > Before:     10934698 us
-> > After:      11157121 us
-> > Non-direct: 13155355 us (Dropping SWP_SYNCHRONOUS_IO flag)
-> >
-> > Fixes: 0bcac06f27d7 ("mm, swap: skip swapcache for swapin of synchronou=
-s device")
-> > Link: https://github.com/ryncsn/emm-test-project/tree/master/swap-stres=
-s-race [1]
-> > Signed-off-by: Kairui Song <kasong@tencent.com>
->
-> Cc: stable@vger.kernel.org
->
-> Acked-by: Yu Zhao <yuzhao@google.com>
+>> @@ -357,6 +357,7 @@ static int adv7180_querystd(struct v4l2_subdev *sd, v4l2_std_id *std)
+>>  {
+>>         struct adv7180_state *state = to_state(sd);
+> 
+> Personally, I would keep the if (err) hugging the line it's associated
+> with.
+> 
+> 
+>>         int err = mutex_lock_interruptible(&state->mutex);
+>> +
+>>         if (err)
+>>                 return err;
+>>  
 
-Thanks!
+which I interpret as saying that he doesn't like adding the extra empty line.
+
+> 
+>>>        if (err)
+>>>                return err;
+>>>
+>>> @@ -388,8 +391,9 @@ static int adv7180_s_routing(struct v4l2_subdev *sd, u32 input,
+>>>                             u32 output, u32 config)
+>>>   {
+>>>        struct adv7180_state *state = to_state(sd);
+>>> -     int ret = mutex_lock_interruptible(&state->mutex);
+>>> +     int ret;
+>>>
+>>> +     ret = mutex_lock_interruptible(&state->mutex);
+
+I don't believe he meant doing this.
+
+In any case, none of this is worth the effort, just leave this driver as-is.
+
+Regards,
+
+	Hans
+
+>>>        if (ret)
+>>>                return ret;
+>>>
+>>> @@ -399,7 +403,6 @@ static int adv7180_s_routing(struct v4l2_subdev *sd, u32 input,
+>>>        }
+>>>
+>>>        ret = state->chip_info->select_input(state, input);
+>>> -
+> 
+>> Why remove this empty line? It has nothing to do with what you are trying
+>> to fix.
+> 
+>>>        if (ret == 0)
+>>>                state->input = input;
+>>>   out:
+>>> @@ -410,7 +413,9 @@ static int adv7180_s_routing(struct v4l2_subdev *sd, u32 input,
+>>>   static int adv7180_g_input_status(struct v4l2_subdev *sd, u32 *status)
+>>>   {
+>>>        struct adv7180_state *state = to_state(sd);
+>>> -     int ret = mutex_lock_interruptible(&state->mutex);
+>>> +     int ret;
+>>> +
+>>> +     ret = mutex_lock_interruptible(&state->mutex);
+>>>        if (ret)
+>>>                return ret;
+>>>
+>>> @@ -436,8 +441,9 @@ static int adv7180_program_std(struct adv7180_state *state)
+>>>   static int adv7180_s_std(struct v4l2_subdev *sd, v4l2_std_id std)
+>>>   {
+>>>        struct adv7180_state *state = to_state(sd);
+>>> -     int ret = mutex_lock_interruptible(&state->mutex);
+>>> +     int ret;
+>>>
+>>> +     ret = mutex_lock_interruptible(&state->mutex);
+>>>        if (ret)
+>>>                return ret;
+>>>
+>>> @@ -466,8 +472,9 @@ static int adv7180_g_std(struct v4l2_subdev *sd, v4l2_std_id *norm)
+>>>   static int adv7180_g_frame_interval(struct v4l2_subdev *sd,
+>>>                                    struct v4l2_subdev_frame_interval *fi)
+>>>   {
+>>> -     struct adv7180_state *state = to_state(sd);
+>>> +     struct adv7180_state *state;
+>>>
+>>> +     state = to_state(sd);
+> 
+>> And I am sure this never produced a cppcheck warning since there is an
+>> empty line. If cppcheck DOES produce a warning on this, then it is a
+>> useless application.
+> 
+>>>        if (state->curr_norm & V4L2_STD_525_60) {
+>>>                fi->interval.numerator = 1001;
+>>>                fi->interval.denominator = 30000;
+>>> @@ -828,8 +835,9 @@ static int adv7180_get_mbus_config(struct v4l2_subdev *sd,
+>>>                                   unsigned int pad,
+>>>                                   struct v4l2_mbus_config *cfg)
+>>>   {
+>>> -     struct adv7180_state *state = to_state(sd);
+>>> +     struct adv7180_state *state;
+>>>
+>>> +     state = to_state(sd);
+>>>        if (state->chip_info->flags & ADV7180_FLAG_MIPI_CSI2) {
+>>>                cfg->type = V4L2_MBUS_CSI2_DPHY;
+>>>                cfg->bus.mipi_csi2.num_data_lanes = 1;
+>>> @@ -857,8 +865,9 @@ static int adv7180_get_skip_frames(struct v4l2_subdev *sd, u32 *frames)
+>>>
+>>>   static int adv7180_g_pixelaspect(struct v4l2_subdev *sd, struct v4l2_fract *aspect)
+>>>   {
+>>> -     struct adv7180_state *state = to_state(sd);
+>>> +     struct adv7180_state *state;
+>>>
+>>> +     state = to_state(sd);
+>>>        if (state->curr_norm & V4L2_STD_525_60) {
+>>>                aspect->numerator = 11;
+>>>                aspect->denominator = 10;
+> 
+>> Honestly, none of these changes are worth the effort, so I just reject this.
+> 
+> Kindly give your suggestions.
+> 
+> Regards,
+> Bhavin Sharma
+
 
