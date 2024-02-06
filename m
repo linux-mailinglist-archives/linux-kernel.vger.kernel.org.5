@@ -1,92 +1,196 @@
-Return-Path: <linux-kernel+bounces-54702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A842284B298
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:38:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F17484B29A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:38:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6499B284850
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:38:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 382C81C23694
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:38:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53C1D1EB24;
-	Tue,  6 Feb 2024 10:37:41 +0000 (UTC)
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50BAA1EA80;
+	Tue,  6 Feb 2024 10:38:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KRch0bcX"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99B1818EB2
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 10:37:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADA1A18EB2;
+	Tue,  6 Feb 2024 10:37:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707215860; cv=none; b=PRjN1ZTuJScAoWnuActMq/JwSesqoPDr4ujImBdZg0cQLawrP2tJ3LNbwB8tGgeextLTTaSsg2MMbyjb+X9nIGH1uGi8FTl02Hot1ZFYXFcDWADfvc3sdizMpi/FlzAIdcTkSSj4STWARxhk9X1kFmbJC/u9abeXzmSpkSb/rCI=
+	t=1707215879; cv=none; b=YbVTw23tsmZHh5C5c0CJiF1rxAuFoZ3DcboQxcETu+plXwhj71X4xmeBFNlQTDPmZbybt0lBaAc+jOl6r44Zq4X0V2XwaXNhuZDsCR07UOzor7mo3HIhOdEy7D0J3aHFcCrW8/nrEWjnFlWdXsYVZt843krvaIqfmMZRnuDIuXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707215860; c=relaxed/simple;
-	bh=vYqglejBEbIWhsWJJRgary59v9AvUT3cInJMjawD7nc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hsoHYIMnVIKkSzIeDpQb/yVihYFRccyAX8EOvRzCJHzAQDvhKVpkiUFuK4o+GEjQfCOs3cvT96J9Og7Md7vSxqOj2gNAnjKDZ22kXedqWhKeaip/5cTDHxlL87sdvl8hR2o5cOzfKnUbaLl+DyTyGB6R0GUd9H+dEQvKk5rJhLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-290d59df3f0so4423371a91.2
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 02:37:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707215859; x=1707820659;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vYqglejBEbIWhsWJJRgary59v9AvUT3cInJMjawD7nc=;
-        b=ln3WvuxCzIHXlGV0SC+y/A9DEwPkeh2dpaTTcmasZN5VENljWO27dxipTQmgthjX7l
-         xboQihjdxcS/JY5jTfo/AHnms6nRpobtt+J/bHcfBgF0PGfB/Mkw34q0HbgeVNvQAE7S
-         G85zvqEavAvhuUZZsjZ/ycDfWksXRy0YJyrJvWDOee1Dsg3r+thg9Pf0Bej6WBvkA/1T
-         BaegtVyQkGu/enXCXaY/pDWrLFp+ykb9ottZHLYeUNVODy6FLIqQtqk4o6BpIUVP1VGc
-         3q1tvkscIDRf/P5+4umRoMdW9MG92bppdEtH7AyVSZN4n5WDe9ncugDS7DZupTvdBALV
-         6spQ==
-X-Gm-Message-State: AOJu0YwsAZ8PcHrV8dRsoZoErQXBB3/mVOh2Q0keXvztALkVjR4e0RgQ
-	y4pnkLdKEhSgfROkOcPndHZd8QPWbQk7tDf7mX2kRivpinEtI3sEV6oo+drpXGRYqQ==
-X-Google-Smtp-Source: AGHT+IEtRSGeej+ME2jvYs9A4uZnQmYhV7MqlhSScfDOTwYmlLtelmefEXtHf1H4MOcNiZp83c8AMQ==
-X-Received: by 2002:a17:90a:ea07:b0:296:2d0f:bba8 with SMTP id w7-20020a17090aea0700b002962d0fbba8mr2183021pjy.43.1707215858910;
-        Tue, 06 Feb 2024 02:37:38 -0800 (PST)
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com. [209.85.210.180])
-        by smtp.gmail.com with ESMTPSA id cm17-20020a17090afa1100b00296885dcef7sm1178917pjb.16.2024.02.06.02.37.38
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Feb 2024 02:37:38 -0800 (PST)
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6da202aa138so3431155b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 02:37:38 -0800 (PST)
-X-Received: by 2002:aa7:868f:0:b0:6e0:3ef3:db3c with SMTP id
- d15-20020aa7868f000000b006e03ef3db3cmr2091250pfo.29.1707215858019; Tue, 06
- Feb 2024 02:37:38 -0800 (PST)
+	s=arc-20240116; t=1707215879; c=relaxed/simple;
+	bh=aHkUF5YCR/boc9eFPrsYpkQzvcIHp6Qno9oWGGB7Ka8=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=GH13yXxPlQs/0MKco/3QZIG3UpsD9S0MtZdT00gs/q7ABejJgwVz0WbpHEBtwzc/nx2uxnghyqiC/tpwm6TSYqchs2wZC7oO4eQ/42z5BFS7QA5sjDe6n3XiKDz2fYOG3TCobCQ1NFsVAmF8sIXteauHDrLVGKVl4h+Zew4W7+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KRch0bcX; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707215877; x=1738751877;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=aHkUF5YCR/boc9eFPrsYpkQzvcIHp6Qno9oWGGB7Ka8=;
+  b=KRch0bcXQHVsknwxFNrET2Jjl2yIeeJCIcemTuCXKdfHyWyyQikMtY4M
+   1Ter8IT64qvBC+WnQBtcYLs3N2icLBQijtbxaTVZo1+4VFVbrnwHGxyia
+   V3Tw1wOrvalEqCpFhVMhfy8+86OCq7ZSSx3rnETL5miB7vWNRaXG7djhX
+   C/lHRrgOUxi6kZnpBlwXXa7PiUMGfazumNXObWoO765vzJAzP0qedpSKc
+   QBU9ig4/QuXapmjvdlSFQBOTwG80UjOADNFtkH8nj1p7hlnEuJcagfb4m
+   nszDvH6gZvvklNtpafByeKtC1XmKQrawSWhQ3/9zrBAlbau0Dde/ZiA50
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="601604"
+X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
+   d="scan'208";a="601604"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 02:37:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="933422448"
+X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
+   d="scan'208";a="933422448"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.36.139])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 02:37:54 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Tue, 6 Feb 2024 12:37:50 +0200 (EET)
+To: Armin Wolf <W_Armin@gmx.de>
+cc: dennisn@dennisn.mooo.com, lkml@vorpal.se, 
+    Hans de Goede <hdegoede@redhat.com>, coproscefalo@gmail.com, 
+    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] platform/x86: Add ACPI quickstart button (PNP0C32)
+ driver
+In-Reply-To: <20240131111641.4418-2-W_Armin@gmx.de>
+Message-ID: <93abd9ac-f76d-2bbc-dfef-a0483921e701@linux.intel.com>
+References: <20240131111641.4418-1-W_Armin@gmx.de> <20240131111641.4418-2-W_Armin@gmx.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240204-bus_cleanup-mcb-v1-1-d84b2ef51a0b@marliere.net>
-In-Reply-To: <20240204-bus_cleanup-mcb-v1-1-d84b2ef51a0b@marliere.net>
-From: Johannes Thumshirn <jth@kernel.org>
-Date: Tue, 6 Feb 2024 11:37:26 +0100
-X-Gmail-Original-Message-ID: <CAGH8bx40HJdwf23GFZbbnUa0CsFEXjOod9ea1bWOvm-Uqpt6iQ@mail.gmail.com>
-Message-ID: <CAGH8bx40HJdwf23GFZbbnUa0CsFEXjOod9ea1bWOvm-Uqpt6iQ@mail.gmail.com>
-Subject: Re: [PATCH] mcb: make mcb_bus_type const
-To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: linux-kernel@vger.kernel.org, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 
-On Sun, Feb 4, 2024 at 9:02=E2=80=AFPM Ricardo B. Marliere <ricardo@marlier=
-e.net> wrote:
->
-> Now that the driver core can properly handle constant struct bus_type,
-> move the mcb_bus_type variable to be a constant structure as well,
-> placing it into read-only memory which can not be modified at runtime.
->
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+On Wed, 31 Jan 2024, Armin Wolf wrote:
 
-Looks good,
-Reviewed-by: Johannes Thumshirn <jth@kernel.org>
+> This drivers supports the ACPI quickstart button device, which
+> is used to send manufacturer-specific events to userspace.
+> Since the meaning of those events is not standardized, userspace
+> has to use for example hwdb to decode them.
+> 
+> The driver itself is based on an earlier proposal, but contains
+> some improvements and uses the device wakeup API instead of a
+> custom sysfs file.
+> 
+> Compile-tested only.
+> 
+> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+
+> diff --git a/drivers/platform/x86/quickstart.c b/drivers/platform/x86/quickstart.c
+> new file mode 100644
+> index 000000000000..ba3a7a25dda7
+> --- /dev/null
+> +++ b/drivers/platform/x86/quickstart.c
+> @@ -0,0 +1,225 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * quickstart.c - ACPI Direct App Launch driver
+
+ACPI Quickstart ?
+
+> + * Copyright (C) 2024 Armin Wolf <W_Armin@gmx.de>
+> + * Copyright (C) 2022 Arvid Norlander <lkml@vorapal.se>
+> + * Copyright (C) 2007-2010 Angelo Arrifano <miknix@gmail.com>
+> + *
+> + * Information gathered from disassembled dsdt and from here:
+> + * <https://archive.org/details/microsoft-acpi-dirapplaunch>
+> + */
+
+> +static void quickstart_notify(acpi_handle handle, u32 event, void *context)
+> +{
+> +	struct quickstart_data *data = context;
+> +
+> +	switch (event) {
+> +	case QUICKSTART_EVENT_RUNTIME:
+> +		sparse_keymap_report_event(data->input_device, 0x1, 1, true);
+> +		acpi_bus_generate_netlink_event(DRIVER_NAME, dev_name(data->dev), event, 0);
+> +		break;
+> +	default:
+> +		dev_err(data->dev, FW_INFO "Unexpected ACPI notify event (%u)\n", event);
+
+Could this end up spamming the logs so perhaps use _ratelimited variant?
+
+> +static int quickstart_probe(struct platform_device *pdev)
+> +{
+> +	struct quickstart_data *data;
+> +	acpi_handle handle;
+> +	acpi_status status;
+> +	int ret;
+> +
+> +	handle = ACPI_HANDLE(&pdev->dev);
+> +	if (!handle)
+> +		return -ENODEV;
+> +
+> +	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
+> +	if (!data)
+> +		return -ENOMEM;
+> +
+> +	data->dev = &pdev->dev;
+> +	dev_set_drvdata(&pdev->dev, data);
+> +
+> +	/* We have to initialize the device wakeup before evaluating GHID because
+> +	 * doing so will notify the device if the button was used to wake the machine
+> +	 * from S5.
+> +	 */
+> +	device_init_wakeup(&pdev->dev, true);
+> +
+> +	ret = quickstart_get_ghid(data);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	data->input_device = devm_input_allocate_device(&pdev->dev);
+> +	if (!data->input_device)
+> +		return -ENOMEM;
+> +
+> +	ret = sparse_keymap_setup(data->input_device, quickstart_keymap, NULL);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	snprintf(data->input_name, sizeof(data->input_name), "Quickstart Button %u", data->id);
+> +	snprintf(data->phys, sizeof(data->phys), DRIVER_NAME "/input%u", data->id);
+> +
+> +	data->input_device->name = data->input_name;
+> +	data->input_device->phys = data->phys;
+
+Why not devm_kasprintf() these directly into data->input_device->xx + 
+NULL check instead of storing into struct quickstart_data ?
+
+> +static struct platform_driver quickstart_platform_driver = {
+> +	.driver	= {
+> +		.name = DRIVER_NAME,
+> +		.dev_groups = quickstart_groups,
+> +		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+> +		.acpi_match_table = quickstart_device_ids,
+> +	},
+> +	.probe = quickstart_probe,
+> +};
+> +module_platform_driver(quickstart_platform_driver);
+> +
+> +MODULE_AUTHOR("Armin Wolf <W_Armin@gmx.de>");
+> +MODULE_AUTHOR("Arvid Norlander <lkml@vorpal.se>");
+> +MODULE_AUTHOR("Angelo Arrifano");
+> +MODULE_DESCRIPTION("ACPI Direct App Launch driver");
+
+ACPI Quickstart Button ?
+
+> +MODULE_LICENSE("GPL");
+> --
+> 2.39.2
+> 
+
+-- 
+ i.
+
 
