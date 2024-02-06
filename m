@@ -1,147 +1,228 @@
-Return-Path: <linux-kernel+bounces-55049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41E6884B6E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:51:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1096384B6E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:51:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F14AB227BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:51:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB915288944
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:51:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A37F813173C;
-	Tue,  6 Feb 2024 13:51:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F193131734;
+	Tue,  6 Feb 2024 13:51:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BPCbsBYh"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CMdm1TN0"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72246130E46
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 13:51:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9A60130E5E;
+	Tue,  6 Feb 2024 13:51:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707227462; cv=none; b=Qb1FM/coPwHYiyeaG8scdhmWKFu9O0s4YE4d6s3A1IBrASB/I+fA0wsVegxtDEVaxb/anlWFltMhlBUk/IXk9z1qiCXJ5+d+uA1OpQq/9js0iCyOXIqmNXTRlT6c/o2zw0ZTDKAzbU8JHHqpUlGA+cefWhopCMV53+6mHGNG0mM=
+	t=1707227463; cv=none; b=VOEF6MDykm1PpzqlMthK5+/cGKiHMIGeC/r8Nqf4Gci8cklrlwPBv4sZez9CGpat0b7mD3YOmoYkd3VDya6Tt5M8VBFYs528S1TQFPHVTyKvokH4GnMfjj1Vw7Am8v/4HclAGnpr2roHaUVhhcqXnq6FlJfKOBm3j7T6gh7sioM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707227462; c=relaxed/simple;
-	bh=JrTLEj/P/bLggB2CYtICvyRY2gy+ysmhmplkgnJ5umM=;
+	s=arc-20240116; t=1707227463; c=relaxed/simple;
+	bh=40318rXtRK8bMlqY1+g0mB2+CszJHFdZCwiUpgUGL6Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EUzHDK2vgnaNdbOGSs9S0PsWw8cs2F/WJifhiLdBiFqouiyZ9VwvKUKueqXZGHjrw3H7OjGMaJki1Xoi/ccWQOtznDix6p4QoBAyc3usDbPwXVHR9BGtDOsE165sA0Yf42Ey/B996FLn3THIpXH1eBJIhZ6PZMDVMalGspsKFpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BPCbsBYh; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707227459;
-	h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:in-reply-to:in-reply-to:  references:references;
-	bh=hDAT/zjFR+rsqu0eNuA+lIlhinoDTvsuZK32rJjfCLY=;
-	b=BPCbsBYhk6Zl6xBzBytdAnHE0R4wfoMgp7yeRvCb1W0yJcsMNsx1AzSw1piv1N6NbHYeVY
-	zktFgIyBoZUO9CIe/g4Ol+u2le+xYQWJwWO7DHjuG68mRSthPdk3uCkl6hoeKxD+VxX1DU
-	npvYZs4KzedEG0a/tgyfRRf0hmFXEsw=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-656-gy3Ie8tlPyqbcmXNnrbXxQ-1; Tue,
- 06 Feb 2024 08:50:56 -0500
-X-MC-Unique: gy3Ie8tlPyqbcmXNnrbXxQ-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 100BA383DCD6;
-	Tue,  6 Feb 2024 13:50:55 +0000 (UTC)
-Received: from redhat.com (unknown [10.42.28.53])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 73F74492BF0;
-	Tue,  6 Feb 2024 13:50:52 +0000 (UTC)
-Date: Tue, 6 Feb 2024 13:50:50 +0000
-From: Daniel =?utf-8?B?UC4gQmVycmFuZ8Op?= <berrange@redhat.com>
-To: "Dr. Greg" <greg@enjellic.com>
-Cc: "Reshetova, Elena" <elena.reshetova@intel.com>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>,
-	"Hansen, Dave" <dave.hansen@intel.com>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	"Nakajima, Jun" <jun.nakajima@intel.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	"Kalra, Ashish" <ashish.kalra@amd.com>,
-	Sean Christopherson <seanjc@google.com>,
-	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] x86/random: Issue a warning if RDRAND or RDSEED fails
-Message-ID: <ZcI5Op9lnAEpyjbv@redhat.com>
-Reply-To: Daniel =?utf-8?B?UC4gQmVycmFuZ8Op?= <berrange@redhat.com>
-References: <20240130083007.1876787-2-kirill.shutemov@linux.intel.com>
- <CAHmME9qsfOdOEHHw_MOBmt6YAtncbbqP9LPK2dRjuOp1CrHzRA@mail.gmail.com>
- <DM8PR11MB57507611D651E6D7CBC2A2F3E77D2@DM8PR11MB5750.namprd11.prod.outlook.com>
- <88a72370-e300-4bbc-8077-acd1cc831fe7@intel.com>
- <CAHmME9oSQbd3V8+qR0e9oPb7ppO=E7GrCW-a2RN8QNdY_ARbSQ@mail.gmail.com>
- <Zbk6h0ogqeInLa_1@redhat.com>
- <DM8PR11MB575052B985CA97B29A443F9AE77C2@DM8PR11MB5750.namprd11.prod.outlook.com>
- <20240206011247.GA29224@wind.enjellic.com>
- <ZcHoKUElwXGPzrWb@redhat.com>
- <20240206120445.GA1247@wind.enjellic.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=itmliTmvtjBAwZQ18ipWNnHbiEaQjqyBHDLg5j8FMWL8waeTgPDJqrYmZPhzi6yG8JYy/QeITF5RNST1IOj/56rU8xQT5zHeNzMQ8d195JrC+W9FIm66KtvW6EmH960HYcTJhqvhQ/fmsemM56tj+JtqBdpnZD0r3XCBf62HT3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CMdm1TN0; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707227462; x=1738763462;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=40318rXtRK8bMlqY1+g0mB2+CszJHFdZCwiUpgUGL6Y=;
+  b=CMdm1TN0RK9fcsUSI1yNL5KCcS7uV1Ly3vF0krifkr9rpg+WKsQ87B3L
+   W74p8/BN0Bsf35AxClOsdOWB0Jf6+eSYyo0g1aF+SV2YNdQzJapQhwloO
+   GNbiWKJl9p/yqpgWue41CoOlCE7897pxXD0OMZhOt6nbZPRAQCy+cfa/b
+   P6EaZOACVrCuSoApXZNeTaGTvdMxl79f4d0JF+i5vzxBDWSARawQ+W1JX
+   2hyYiGrSNEBv0kqOCzoBbNa4otaw6H3OJnX9zaW1LMT1JmJ+dQjVvhh1S
+   UixoiSR67HkLeLzGTbWKDRN7DQnce6C3skQtBUMKpQecUywWK7IDdWJ+V
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="1017395"
+X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
+   d="scan'208";a="1017395"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 05:51:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="909641034"
+X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
+   d="scan'208";a="909641034"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 05:50:57 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rXLqg-00000002M0b-34Uz;
+	Tue, 06 Feb 2024 15:50:54 +0200
+Date: Tue, 6 Feb 2024 15:50:54 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Mike Looijmans <mike.looijmans@topic.nl>
+Cc: devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Liam Beguin <liambeguin@gmail.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Maksim Kiselev <bigunclemax@gmail.com>,
+	Marcus Folkesson <marcus.folkesson@gmail.com>,
+	Marius Cristea <marius.cristea@microchip.com>,
+	Mark Brown <broonie@kernel.org>,
+	Niklas Schnelle <schnelle@linux.ibm.com>,
+	Okan Sahin <okan.sahin@analog.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] iio: adc: ti-ads1298: Add driver
+Message-ID: <ZcI5PoWojKRrdpVl@smile.fi.intel.com>
+References: <20240206065818.2016910-1-mike.looijmans@topic.nl>
+ <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.fd628a1a-a926-426e-a239-bfd8c9858b94@emailsignatures365.codetwo.com>
+ <20240206065818.2016910-2-mike.looijmans@topic.nl>
+ <ZcIsuiuisQjTIxJv@smile.fi.intel.com>
+ <4c6654f5-2d9e-4c1b-a5de-7bdeacf5e99f@topic.nl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240206120445.GA1247@wind.enjellic.com>
-User-Agent: Mutt/2.2.12 (2023-09-09)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4c6654f5-2d9e-4c1b-a5de-7bdeacf5e99f@topic.nl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Tue, Feb 06, 2024 at 06:04:45AM -0600, Dr. Greg wrote:
-> On Tue, Feb 06, 2024 at 08:04:57AM +0000, Daniel P. Berrang?? wrote:
+On Tue, Feb 06, 2024 at 02:33:47PM +0100, Mike Looijmans wrote:
+> On 06-02-2024 13:57, Andy Shevchenko wrote:
+> > On Tue, Feb 06, 2024 at 07:58:18AM +0100, Mike Looijmans wrote:
+
+..
+
+> > > +	factor = (rate >> ADS1298_SHIFT_DR_HR) / val;
+> > > +	if (factor >= 128)
+> > I just realized that this comparison is probably better in a form
+> > 
+> > 	if (factor >= ADS1298_MASK_CONFIG1_HR)
+> > 
+> > as it points out why this is a special case in comparison to 'if (factor)'
+> > below. What do you think?
 > 
-> Good morning to everyone.
+> The "HR" bit sets the device to high-res mode (which apparently doubles the
+> internal sample rate).
 > 
-> > On Mon, Feb 05, 2024 at 07:12:47PM -0600, Dr. Greg wrote:
-> > > 
-> > > Actually, I now believe there is clear evidence that the problem is
-> > > indeed Intel specific.  In light of our testing, it will be
-> > > interesting to see what your 'AR' returns with respect to an official
-> > > response from Intel engineering on this issue.
-> > > 
-> > > One of the very bright young engineers collaborating on Quixote, who
-> > > has been following this conversation, took it upon himself to do some
-> > > very methodical engineering analysis on this issue.  I'm the messenger
-> > > but this is very much his work product.
-> > > 
-> > > Executive summary is as follows:
-> > > 
-> > > - No RDRAND depletion failures were observable with either the Intel
-> > >   or AMD hardware that was load tested.
-> > > 
-> > > - RDSEED depletion is an Intel specific issue, AMD's RDSEED
-> > >   implementation could not be provoked into failure.
+> But "128" could be written as "1 << ADS1298_SHIFT_DR_LP" which is the max
+> oversampling factor.
+
+Use BIT(..._DR_LP) and we are done here.
+
+..
+
+> > > +	wasbusy = --priv->rdata_xfer_busy;
+> > Why preincrement? How would it be different from postincrement?
 > 
-> > My colleague ran a multithread parallel stress test program on his
-> > 16core/2HT AMD Ryzen (Zen4 uarch) and saw a 80% failure rate in
-> > RDSEED.
+> Maybe better write this as:
 > 
-> Interesting datapoint, thanks for forwarding it along, so the issue
-> shows up on at least some AMD platforms as well.
+> --priv->rdata_xfer_busy;
+> 
+> wasbusy = priv->rdata_xfer_busy;
+> 
+> I want the value after decrementing it.
 
-I got access to a couple more AMD machines. An EPYC 24core/2HT
-(Zen-1 uarch) and an EPYC 2socket/16core/2HT (Zen-3 uarch).
+Yes, looks more obvious.
 
-Both of these show 100% success with RDSEED. So there's clearly
-some variance across AMD SKUs. So perhaps this is an EPYC vs Ryzen
-distinction, with the server focused EPYCs able to sustain RDSEED.
+> > > +	if (wasbusy) {
+> > To me more robust code would look like
+> > 
+> > 	if (wasbusy < 1)
+> > 		return;
+> > 	...
+> > 	if (wasbusy > 1)
+> > 		...
+> 
+> wasbusy could have been unsigned.
+> 
+> This code will only ever execute with rdata_xfer_busy > 0 (or the SPI driver
+> called our completion callback without us calling spi_async first)
+
+You never know what may go wrong in the future :-) That said, I prefer robust
+code against non-robust.
+
+..
+
+> > > +	wasbusy = priv->rdata_xfer_busy++;
+> > So, it starts from negative?
+> > 
+> > > +	/* When no SPI transfer in transit, start one now */
+> > > +	if (!wasbusy)
+> > To be compatible with above perhaps
+> > 
+> > 	if (wasbusy < 1)
+> > 
+> > also makes it more robust (all negative numbers will be considered the same.
+> > 
+> > > +		spi_async(priv->spi, &priv->rdata_msg);
+> 
+> The "rdata_xfer_busy" starts at 0.
+> 
+> Increments when a DRDY occurs.
+> 
+> Decrements when SPI completion is reported.
+> 
+> So the meaning of "rdata_xfer_busy" is:
+> 
+> 0 = Waiting for DRDY interrupt
+> 
+> 1 = SPI transfer in progress
+> 
+> 2 = DRDY occured during SPI transfer, should start another on completion
+> 
+> >2 = Multiple DRDY during SPI transfer, overflow, we lost rdata_xfer_busy -
+> 2 samples
 
 
-With regards,
-Daniel
+Maybe another good comment is needed here as well?
+
+..
+
+> > > +	dev_dbg(dev, "Found %s, %u channels\n", ads1298_family_name(val),
+> > > +		(unsigned int)(4 + 2 * (val & ADS1298_MASK_ID_CHANNELS)));
+> > Castings in printf() is a big red flag usually (it's rarely we need them).
+> > Why is it here?
+> 
+> Compiler complains that the expression is "unsigned long". Probably because
+>  of ADS1298_MASK_ID_CHANNELS being so.
+
+So, use the unsigned long specifier and drop casting.
+
+..
+
+> > > +	if (reset_gpio) {
+> > > +		/* Minimum reset pulsewidth is 2 clock cycles */
+> > > +		udelay(ADS1298_CLOCKS_TO_USECS(2));
+> > > +		gpiod_set_value(reset_gpio, 0);
+> > I would rewrite it as
+> > 
+> > 		/* Minimum reset pulsewidth is 2 clock cycles */
+> > 		gpiod_set_value(reset_gpio, 1);
+> > 		udelay(ADS1298_CLOCKS_TO_USECS(2));
+> > 		gpiod_set_value(reset_gpio, 0);
+> > 
+> > to be sure we have a reset done correctly, and the comment will make more
+> > sense.
+> 
+> If used, the reset must be asserted *before* the voltages and clocks are
+> activated. This would obfuscate that, and add a redundant call to set_value.
+
+Then perhaps you want reset framework to be used instead?
+
+Dunno, but this comment seems confusing in a way that you somewhere asserted it
+and it's not obvious where and here is the delay out of a blue. Perhaps you may
+extend the comment?
+
+> I did forget to use "cansleep" here, will add that.
+
 -- 
-|: https://berrange.com      -o-    https://www.flickr.com/photos/dberrange :|
-|: https://libvirt.org         -o-            https://fstop138.berrange.com :|
-|: https://entangle-photo.org    -o-    https://www.instagram.com/dberrange :|
+With Best Regards,
+Andy Shevchenko
+
 
 
