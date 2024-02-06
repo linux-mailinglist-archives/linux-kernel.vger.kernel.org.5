@@ -1,160 +1,110 @@
-Return-Path: <linux-kernel+bounces-54117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A12384AB08
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:14:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 977A884AAF9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:13:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5F63289F30
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:14:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8990284B75
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:13:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ACD2610B;
-	Tue,  6 Feb 2024 00:13:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EAD77FD;
+	Tue,  6 Feb 2024 00:13:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b="rgV6cLJB"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nFmrFKbu"
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C6E333F9
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 00:13:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D7B038D;
+	Tue,  6 Feb 2024 00:13:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707178437; cv=none; b=q0M+pG3gG+nPZltvz3awyn155PTFv41UUmHu3GeNb5ZhV8GCHSjIvu7PVBeECPVkKHL/F8zHc35DPdJ96HiGJMLFC9mP9SYTg6GEDYARwOlp6LYXDSEjXQtMtF3XDLlZzVNrdR4vn+yvf1zypfDicv5qc55rw1BrTWHDxQ0Wa60=
+	t=1707178426; cv=none; b=rM+Rerlc04aTFV/QxLRfKijtXMv7PwxqQMqTXZppA3vZDMsiq1McPoFem4oVSHUf+GhBa11MTyHWWBoOsIiK//7Zfyu19lgrKKXm6SaJxzyXYMMCzR7pdVKQ8BWONtFc/6G8zv4NgZYpFgOkjEj0dzdapTG4uZQB7H/utWVsjGA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707178437; c=relaxed/simple;
-	bh=BvD7KT+7ul13q1wVJvqPxQDUSv1WiR9wKCxQbbEr318=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ZnKuDvKPdUdMuoscoEw7bPoWWU6dPtE6Uff1JMDgbqZf6OKWRcG0eX7BKX9VYdKVWrSxMiHoyGXTJnY7zSazUdogylrKLq16wExlMQ+eNc9bv4/ByFlynomMU5/Vt8PrqAVOc5I6BwNohlwas0bKyB7atNuenZSGL7LJMKCuFh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=smile.fr; spf=pass smtp.mailfrom=smile.fr; dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b=rgV6cLJB; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=smile.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=smile.fr
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40fe2e746bdso229895e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 16:13:55 -0800 (PST)
+	s=arc-20240116; t=1707178426; c=relaxed/simple;
+	bh=wVoOc7tXbiz0JhSMMYV6nNNHF10fB0vLJK8KhFXOa0c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dMp3/mrupYpWbpSh5i7Bej6oZny2g8uWBErvgsjuwtlfoMBF75GlOAwy07W39aVC9HbzjIWUEvrAX7jiA55oHibTAbwIAioW9AVAt/2VX0aIH14+EAYLMUaQPeilBRZC69OCsPDWrgkg+NBlr2oHyjILxlKqF5u8HsL8AXCEmuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nFmrFKbu; arc=none smtp.client-ip=209.85.167.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3bd884146e9so3985237b6e.0;
+        Mon, 05 Feb 2024 16:13:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smile-fr.20230601.gappssmtp.com; s=20230601; t=1707178434; x=1707783234; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sFNpFi093TpETZs6mdYZEjtXAaH8xI625rElwAZwslo=;
-        b=rgV6cLJB9BmJCHfqJ7i6XQ1wFQ3K/bhMQOZuHD0bMnpzwrZjXvrpplDfavsz1jBG1l
-         nhaTW42WP5l5kiUjRYDnpH6iYluRCWnwtZcxSoxyXEuVs6RUBlKVU/uejeApAKpSrhwf
-         bT63NS4n1c8yS+FTqtCrVOpA45xwRGfaCIlJUGpn2QtiyRKb5PWNII7/Em+nzFWBmCIw
-         a5BGFEbIaiKe60WyONXW8QOsisCHHEDgPJgL+1iL2Elx+C7V40f5cCJ3KObisQIy9uZU
-         hHaQ/YT5weS9MjgRdfY+Sf7Ki4iyMViS8GUEx9mgp9zgaRew2T/6g2il60+E+VTKrxNK
-         /GOw==
+        d=gmail.com; s=20230601; t=1707178424; x=1707783224; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=98cWYkQ6MbAJUoSKUpZHTfrV4NmGt6n3dGfyyLHqfaI=;
+        b=nFmrFKbumGdtfhyyluA76OBLt19Lv7+35hcBK7M1sbXKdn3clz52uZiKEWXTNP3QU6
+         Z4DzqUQZzcm+InvvO13hfQNUBojWZBKblySnKZKSmAnmIzjdrL3TOhQ2SvPlY7exPfrc
+         HUb+nI++oqmEyk1GJh2n8T7f33d4PNDdxDvPHjt2TNcswj/hegjqngT2T6QG/afqTFkR
+         kyTJatOql52qdF/dZgTqC3LgNPgu35KdHT15l/V1ufj+WgXtO15G6xhOfxRTSv0YKQ6s
+         6hKIxvi/OnmZEyuNj/bB1ndrYgEGsNRNVS7eCjinj96diezzYVHyCKQvn1W5+xO40zBT
+         x7xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707178434; x=1707783234;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1707178424; x=1707783224;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sFNpFi093TpETZs6mdYZEjtXAaH8xI625rElwAZwslo=;
-        b=v3WYa77YCa1puTb4R3NwRZtslVrmJwNYjvAqszvRvTY89B7aYhVn8o+oJTV2yioxh/
-         A2BBudCOb7wjOLiSvYyzsZnRMYszmF3GO49ITLonP4bc0FF+2NLtIbq0lTKxDGDmbjDl
-         KK3bqSHvQXlnw76vnoKAoZz6qvcHIgxVWH46ATgjgR93X8c+OsiGq2hDUYIawvc+IswE
-         5IVwqOY2s9OIQYFxqw84cPFJB5GfZlO3n+lRCXdLMYLnw7o4LS/FZ3vcKXXcwM5Xiz75
-         CHgorA66FK/91H1mk5eQWyF9Ak08iYNyp/Md7KA2wCFtTtDy7+WAtKrBkjmcp1tFTmTv
-         pTWw==
-X-Gm-Message-State: AOJu0Yy1errU+0sHcCKSi9DKFBXHu+fqiWcULCZDqdQ9m51FWe8N06H9
-	+5yofD3/4zxe304lx9ouNAfOBsQ8obXiBK0I6qKw/pnTFpcPwSK1kN2yvftoquU=
-X-Google-Smtp-Source: AGHT+IGxueG8VUZUtZseYHBtudaN2Dfg+xA2i2bfaWYL+JCkmwEsiBKAFZ4MHTohsZXzG6iymVm9Pw==
-X-Received: by 2002:a05:600c:3c8a:b0:40f:de23:b8f3 with SMTP id bg10-20020a05600c3c8a00b0040fde23b8f3mr267229wmb.23.1707178433811;
-        Mon, 05 Feb 2024 16:13:53 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXWwuJ25X3TFhf5cpubZjv3P0jtvVpxgluOyArwnSdlojbnQ4acGDwOCQfPrJE6Ev1XGktp7X3OjOkNEWC2yAp9QZw3MG7u7//ot52N8OQSL6BXaarM6yxmsJrfjFOBI3LuRCJQoLhrF2rRzhxobhoeFmtq3dhpWhv723aainhkH/CRmlvbt/WWnIMyJhu2dHqJPEM7SKlViiT3cT3VWECjVsyvwwQsr0IWdLi60kkUo6P+PpKO3E4VjYcSN4hyazIpoxZyCmXReAaDPECKyQZsEyLNJDNB8dJKgLzM+t5pa9SrRRMYhCwfrxj0yDZesLWim46+bNg+5wgJJsU9kWHgZ4XVQDaGeyYaYmsN8Af4GwvMaVRAukQHsY8dwK7S/lxgFTYSy7mki4cLxPv8tNnKbbbagqoToFaJcAAP4UBOx1MaBxCr8auuEfWN0sSG6BUqCf34j2LCFBtxK/RlrgdH0CJBVnVwRW1V8MaW1H86a1L5177676DURWdKISZO0/jJGyI/khY/ovy6RBZXJUDEVJ6UW2I6Kr2RiAsWiw1N+UADfzIFEVHhwUxh9lNBVRb0gpNjzlTjH1iY8ybmRwcQPK332VQ+XaL9M8yYVZRjK/U/WWgbFVA4u2SlDpSKHLSYAaO0DiNohXVm1fxdHjyKizT+v78PdmWH9Flv891/HffxvBd89gwEerzZVYqpcyK5Osv4DD2lMhkHc7VI1A6U6icC2G1Jo2szIa8SFb5s52iftg/IU9tIE0qAfElAxQS4W8WABNAun8aUexQA4+Q0C4pODpA=
-Received: from P-ASN-ECS-830T8C3.local ([89.159.1.53])
-        by smtp.gmail.com with ESMTPSA id b17-20020a5d40d1000000b0033ae7d768b2sm686959wrq.117.2024.02.05.16.13.52
+        bh=98cWYkQ6MbAJUoSKUpZHTfrV4NmGt6n3dGfyyLHqfaI=;
+        b=oZU2DuQV6QvpzTxjXwBEIYxGUVd+jQ6dqOq8/OiBOFTWi9NDYOBoW36JU2AfvQPUXg
+         vHIyFwIMlnVGEC6qE43qtTt2KBcNzPq9UHIBXyiGuOtRZGKjIMRAtxTe6hJSt9pDfRP5
+         u15uqZXrWADq75Ny3lq1tvpRuU0VrbSOnl9ifNDZaMpvxEkv4vMUBcook0C3x0XLXKaN
+         dmC6sb2lOq8iS7REhbcWuaDC9rmlOTAGH8o7aGgiZFXs7Q0GbmaXnbaQCVeme+mhTgT9
+         V0htvF4GwcCcYP4hT1qNg5qzuGGuMy098ekKnZX25Ph62ldwgKUdTX/VpXy17WlGKGdh
+         mclg==
+X-Gm-Message-State: AOJu0Yzsf1aPoYiKL/NFM5U1HMUTif+8wXxpZq0z4f94ziZEslRma6eH
+	oYBRhYbSBKEIsRbLfg5yjkayr8lnwBMgn6h04r4y3ORuIxYaa6qi
+X-Google-Smtp-Source: AGHT+IHLUR+sBwjDr6IOm1zDoDAON4oNTIGY9LMTcemysoH13cqXI49AucLFmhVmc38zQ+c6K/xdlA==
+X-Received: by 2002:a05:6358:290d:b0:178:fe3e:1e35 with SMTP id y13-20020a056358290d00b00178fe3e1e35mr236386rwb.13.1707178423964;
+        Mon, 05 Feb 2024 16:13:43 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVyiXIEPlCl9kH9g5Q6KP568yzf3dLpU+37lr8nKGWWDIMOQhkdiFTYzoxjOsd+7uGCJMTatPWmPtzs7cNXWIGci+W6lg+PPlTiSNsKgdmFuC0jmuie5esKcL0sQB0lcEJNc1I1Y/8Ghv0r7tiYdgOTnbUWQNJrMh/6MnmpfKw=
+Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
+        by smtp.gmail.com with ESMTPSA id w20-20020aa78594000000b006e046c04b81sm481143pfn.147.2024.02.05.16.13.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 16:13:53 -0800 (PST)
-From: Yoann Congal <yoann.congal@smile.fr>
-To: linux-fsdevel@vger.kernel.org,
-	linux-kbuild@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	x86@kernel.org
-Cc: =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Darren Hart <dvhart@infradead.org>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Petr Mladek <pmladek@suse.com>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Yoann Congal <yoann.congal@smile.fr>
-Subject: [PATCH v4 3/3] printk: Remove redundant CONFIG_BASE_FULL
-Date: Tue,  6 Feb 2024 01:13:33 +0100
-Message-Id: <20240206001333.1710070-4-yoann.congal@smile.fr>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240206001333.1710070-1-yoann.congal@smile.fr>
-References: <20240206001333.1710070-1-yoann.congal@smile.fr>
+        Mon, 05 Feb 2024 16:13:43 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Mon, 5 Feb 2024 14:13:42 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bcachefs: Use alloc_ordered_workqueue() to create
+ ordered workqueues
+Message-ID: <ZcF5tm8b9XaljHf-@slm.duckdns.org>
+References: <ZcF2JaEuwMdg9kYi@slm.duckdns.org>
+ <kksa5w6lgxu66h223quzkw33523zgoltqvl74lmthb4aaj7iat@rss6cnpn3t2p>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <kksa5w6lgxu66h223quzkw33523zgoltqvl74lmthb4aaj7iat@rss6cnpn3t2p>
 
-CONFIG_BASE_FULL is equivalent to !CONFIG_BASE_SMALL and is enabled by
-default: CONFIG_BASE_SMALL is the special case to take care of.
-So, remove CONFIG_BASE_FULL and move the config choice to
-CONFIG_BASE_SMALL (which defaults to 'n')
+Hello, Kent.
 
-Signed-off-by: Yoann Congal <yoann.congal@smile.fr>
----
-v3->v4:
-* Split "switch CONFIG_BASE_SMALL to bool" and "Remove the redundant
-  config" (this patch) into two patches
-* keep CONFIG_BASE_SMALL instead of CONFIG_BASE_FULL
----
- init/Kconfig | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+On Mon, Feb 05, 2024 at 07:10:25PM -0500, Kent Overstreet wrote:
+> This one doesn't actually need to be ordered - if anything, we might
+> want to bump up max_active.
+> 
+> Tejun, can you drop this patch? If you're trying to get rid of all
 
-diff --git a/init/Kconfig b/init/Kconfig
-index d4b16cad98502..4ecf2572d00ee 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1581,11 +1581,11 @@ config PCSPKR_PLATFORM
- 	  This option allows to disable the internal PC-Speaker
- 	  support, saving some memory.
- 
--config BASE_FULL
--	default y
--	bool "Enable full-sized data structures for core" if EXPERT
-+config BASE_SMALL
-+	default n
-+	bool "Enable smaller-sized data structures for core" if EXPERT
- 	help
--	  Disabling this option reduces the size of miscellaneous core
-+	  Enabling this option reduces the size of miscellaneous core
- 	  kernel data structures. This saves memory on small machines,
- 	  but may reduce performance.
- 
-@@ -1940,11 +1940,6 @@ config RT_MUTEXES
- 	bool
- 	default y if PREEMPT_RT
- 
--config BASE_SMALL
--	bool
--	default y if !BASE_FULL
--	default n
--
- config MODULE_SIG_FORMAT
- 	def_bool n
- 	select SYSTEM_DATA_VERIFICATION
+Will drop it.
+
+> WQ_UNBOUND with max_active=1 workqueues for your own auditing, either
+> you or I could change that to 8.
+
+Yeah, can you please either add a comment saying that it doesn't require
+ordered execution or bump max_active?
+
+Thanks.
+
 -- 
-2.39.2
-
+tejun
 
