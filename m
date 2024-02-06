@@ -1,126 +1,141 @@
-Return-Path: <linux-kernel+bounces-55281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03A0084BA2D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:54:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F32884BA2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:54:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4087285BD4
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:54:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39EBF286B30
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:54:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF098134728;
-	Tue,  6 Feb 2024 15:54:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D6BB134CC0;
+	Tue,  6 Feb 2024 15:54:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="V7K5QaTF"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="S/AOz21X"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88CCE134CCC
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 15:53:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4A0712E1E9;
+	Tue,  6 Feb 2024 15:54:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707234841; cv=none; b=ckLP4zSFe1xTtBn8egAoHVeNKMgVkC5GJKu95H4u0zqDUPgqbxJuqFNBlbXSz9yAgb75NKbtqGGy87UjdFkhRLM9SWHmLM3nbxcHUxdQXGm5E9KevPAZi/qhnqd9/QNvZ+xto4739jvxFHgEnMRrWtY9jOXX70B/maEsv7DG4qI=
+	t=1707234854; cv=none; b=P4Hq4C7nwws/sJgFLeKLuTojDI0IF/wEeRbv1ayzjTEnO/4bXiKSRVs4vcPsOaAYs1q9ZHPd453skKiYB3bv3qA3e5kTbVLHUCXq/FxaR1yBElZJMAZY1QP55w/nupL3DO9v4U+00gV8N3Fk1ax5Giipwd2/8PQHcCisPrzq7wE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707234841; c=relaxed/simple;
-	bh=ocHaZpvDjxc0rwWNi54f+f6bams80D+RxoX1ovTeVl4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eN+ynpH4vegPI86e7QMp9dYrXYW0gfmSe2qBs+qNmItkUsNQ4eywf4A3hFvRuyTYJA9ltflpfk1rgyF+1BfMIXOC2KTtlPIT4VAx77e1ZVOCm0JoRE1/++dN29e3lMAt1bXM0aj7vXebAYDxaRUEzIdil/0pHhdyUBXuRJxO+sA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=V7K5QaTF; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707234837;
-	bh=ocHaZpvDjxc0rwWNi54f+f6bams80D+RxoX1ovTeVl4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=V7K5QaTFmBBj0jF9OBR5noaRpQTZDw9Xl5i1A050PYI1Pv9NppAiV7yHeTBDp5nEN
-	 7LckCp+WWAF8/QJQrikGSGvJydLGMjuSlmFWBQa804UzNxojOI2zARlmeMuiejyzcf
-	 Gt8wNMvbT7i5xT5flazIdXjg50s6SaJe6ngZnwVVyF9vZyZ76G+lYlbBHypn5L2f3b
-	 E+jvFsHCXt/eiaKk8Dt+Ey6G/tsgL0FR58ISC5cJO9vie0l5n9oGkt0XMDUnBqNuS3
-	 gc4WgpIO2qQxYRqTR0yVI2BtKWCjnQnbgqwGiqxAMdTot8z9h/xbKNxZTN9lt+0g1d
-	 QsBZ3YcbvWHqQ==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D92CF37803EE;
-	Tue,  6 Feb 2024 15:53:56 +0000 (UTC)
-Message-ID: <c1e2c380-21b5-47c1-b83b-f7f2b481df21@collabora.com>
-Date: Tue, 6 Feb 2024 16:53:56 +0100
+	s=arc-20240116; t=1707234854; c=relaxed/simple;
+	bh=kQhsrTRwdHJ9NWwS8cGdFIDk12FxEBq7Mik2i9lD4q0=;
+	h=From:To:CC:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Z0Hhr4h7doir+XZzHICAV8evV2PPQALl6EuuKVq6HfjZARDu0XXhmTcXMABvwUt7sTrIlPbrmKVh5bCu1wvneel29se2WSbgiF12J+nQ7+cvh45ZvPPE6MBNHWTmimNCAudiDRxi9qVyZV10X01gVwowOfxKCqxPM4pjRytxfuk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=S/AOz21X; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 416Fs3tQ123333;
+	Tue, 6 Feb 2024 09:54:03 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707234843;
+	bh=ZCan28bMKu4/QLOXWI8DFZSRkG92ndMcg10Of7DyJDw=;
+	h=From:To:CC:Subject:In-Reply-To:References:Date;
+	b=S/AOz21XpWPP7fWql4RI0GltgVvT5o32mikL8S7M30PdvWuKvguh3InIR18EiTB6U
+	 6H/+s4rH0Ao3gUoB1Sb8DbV6lSw0y/LZpmcukq9bJYgaE/xMSP1TP/XPq0o4+Fr1jn
+	 ef3AR/yxXJIjsJDeVCp0JvhXJWwhs0ownSEbqMi0=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 416Fs3o7063174
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 6 Feb 2024 09:54:03 -0600
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 6
+ Feb 2024 09:54:02 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 6 Feb 2024 09:54:03 -0600
+Received: from localhost (kamlesh.dhcp.ti.com [172.24.227.123])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 416Fs23g018189;
+	Tue, 6 Feb 2024 09:54:02 -0600
+From: Kamlesh Gurudasani <kamlesh@ti.com>
+To: "Kumar, Udit" <u-kumar1@ti.com>, CHANDRU DHAVAMANI <chandru@ti.com>,
+        Nishanth Menon <nm@ti.com>
+CC: <kristo@kernel.org>, <ssantosh@kernel.org>, <rishabh@ti.com>,
+        <vigneshr@ti.com>, <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <u-kumar1@ti.com>
+Subject: Re: [PATCH v2] clk: keystone: sci-clk: Adding support for non
+ contiguous clocks
+In-Reply-To: <a4fdbcfe-e0e0-4280-8638-e39b6b46778e@ti.com>
+References: <20240206104357.3803517-1-u-kumar1@ti.com>
+ <20240206131420.wtitflgav23jto2q@verbally>
+ <871q9pzoiq.fsf@kamlesh.i-did-not-set--mail-host-address--so-tickle-me>
+ <c5b6bd1d-dbb4-4bfb-8b3e-9b0733e2ba5d@ti.com>
+ <c2b7f22d-f07d-4cac-8a01-af7b014e7ff4@ti.com>
+ <a4fdbcfe-e0e0-4280-8638-e39b6b46778e@ti.com>
+Date: Tue, 6 Feb 2024 21:24:01 +0530
+Message-ID: <87ttmly4fa.fsf@kamlesh.i-did-not-set--mail-host-address--so-tickle-me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/9] drm/mediatek: dsi: Use GENMASK() for register mask
- definitions
-Content-Language: en-US
-To: Alexandre Mergnat <amergnat@baylibre.com>, chunkuang.hu@kernel.org
-Cc: fshao@chromium.org, p.zabel@pengutronix.de, airlied@gmail.com,
- daniel@ffwll.ch, matthias.bgg@gmail.com, dri-devel@lists.freedesktop.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-References: <20240206120748.136610-1-angelogioacchino.delregno@collabora.com>
- <20240206120748.136610-2-angelogioacchino.delregno@collabora.com>
- <f91db779-ad94-4c18-9a06-1029da4edaab@baylibre.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <f91db779-ad94-4c18-9a06-1029da4edaab@baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Il 06/02/24 15:47, Alexandre Mergnat ha scritto:
-> 
-> 
-> On 06/02/2024 13:07, AngeloGioacchino Del Regno wrote:
->> Change magic numerical masks with usage of the GENMASK() macro
->> to improve readability.
+"Kumar, Udit" <u-kumar1@ti.com> writes:
+
+>>>>> get_freq is a bit expensive as it has to walk the clock tree to find
+>>>>> the clock frequency (at least the first time?). just wondering if
+>>>>> there is lighter alternative here?
+>>>>>
+>>>> How about get_clock? Doesn't read the registers at least.
+>>>
+>>> Said API needs, some flags to be passed,
+>>>
+>>> Can those flag be set to zero, Chandru ?
 >>
->> While at it, also fix the DSI_PS_SEL mask to include all bits instead
->> of just a subset of them.
 >>
->> This commit brings no functional changes.
+>> get_clock doesn't require any flags to be passed.
+>
+>
+> May be firmware does not need it but=A0 I was referring to
+>
+> https://elixir.bootlin.com/linux/latest/source/drivers/clk/keystone/sci-c=
+lk.c#L78
+Just took a look,
+
+I now understand the reason for confusion,
+
+#define TI_SCI_MSG_SET_CLOCK_STATE	0x0100
+#define TI_SCI_MSG_GET_CLOCK_STATE	0x0101
+
+cops->get_clock =3D ti_sci_cmd_get_clock;  --> refers to
+TI_SCI_MSG_SET_CLOCK_STATE
+That's why we are passing the flag from linux for get_clock
+
+Linux is using terminology of get/put.
+
+As Chandru pointed, we don't have to pass flags, cause he is refering
+to TI_SCI_MSG_GET_CLOCK_STATE
+
+Below functions passes TI_SCI_MSG_GET_CLOCK_STATE to DM, which is what
+we actually want.
+cops->is_auto =3D ti_sci_cmd_clk_is_auto;
+cops->is_on =3D ti_sci_cmd_clk_is_on;
+cops->is_off =3D ti_sci_cmd_clk_is_off;
+
+Which should be safe to call, Chandru can confirm.
+
+Regards,
+Kamlesh
+>
+>
+>
 >>
->> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->> ---
->>   drivers/gpu/drm/mediatek/mtk_dsi.c | 45 +++++++++++++++---------------
->>   1 file changed, 23 insertions(+), 22 deletions(-)
 >>
->> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
->> index a2fdfc8ddb15..3b7392c03b4d 100644
->> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
->> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
->> @@ -58,18 +58,18 @@
-> 
-> ...snip...
-> 
->>   #define DSI_PSCTRL        0x1c
->> -#define DSI_PS_WC            0x3fff
->> -#define DSI_PS_SEL            (3 << 16)
->> +#define DSI_PS_WC            GENMASK(14, 0)
->> +#define DSI_PS_SEL            GENMASK(19, 16)
-> 
-> 0011 0000 0000 0000 0000 => GENMASK(17, 16)
-
-Alexandre, the reason for that is in the commit description :-P
-
-"While at it, also fix the DSI_PS_SEL mask to include all bits instead
-of just a subset of them."
-
-Thanks for the reviews, btw!
-
-Cheers!
-Angelo
-
-> 
->>   #define PACKED_PS_16BIT_RGB565        (0 << 16)
->>   #define LOOSELY_PS_18BIT_RGB666        (1 << 16)
->>   #define PACKED_PS_18BIT_RGB666        (2 << 16)
->> @@ -109,26 +109,26 @@
->>   #define LD0_WAKEUP_EN            BIT(2)
-> 
-
+>>>
+>>>
+>>>> Regards,
+>>>> Kamlesh
 
