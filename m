@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-55452-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55453-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A5A684BCDD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:24:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 484B684BCDF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:24:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA7ED285072
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:24:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF7F7B23B07
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:24:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81C4D134AA;
-	Tue,  6 Feb 2024 18:23:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A412134BD;
+	Tue,  6 Feb 2024 18:23:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VfFjdEgT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RJPpe0Lq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B81F71118A;
-	Tue,  6 Feb 2024 18:23:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1E6F13FF2;
+	Tue,  6 Feb 2024 18:23:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707243822; cv=none; b=fryvwwGAtXWox5J3u6X5mn5gU5JSLvcgFe2SIXLGdbBmGFKrpJsjb8G9qWcpQpPt2/At4qKOAqgb8ND7agrxZMAkBd+0xF2zv5Fl82C4VLPc3TxCpkXUCK6AZXIRK9xyvywfAh9KcmuUwguyeffJZGsFkNIoxraa/9HwUZg7my8=
+	t=1707243827; cv=none; b=kHc1MUQXOKXSn2x2Zi3g+vBjpoae7a2cAH8YaAXPVf4oGauG0toaibOrFdUPZe+avahs0KKBnPH/BJMGHWLuxs6QcURWOn1yWfQX9Ad7mULwkVTXPaq/5xASq7FDJFbODlQak56yxp4LMC4eGj8fAIIgvAStG3oOQf3pfYiiaEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707243822; c=relaxed/simple;
-	bh=/8n9Kr9l4Sw1yum7U8xJubl081hOJbXFL+loiNN+f3Q=;
+	s=arc-20240116; t=1707243827; c=relaxed/simple;
+	bh=P4tdr7VlNtzN9kXz294+TUo4fwBUFBllYS4JLqJJo8Q=;
 	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=QXmUpQ+/dDXjTDJWuLhBbkkzZtiwFMmiURFB3wb5jvmXySmEMQvXeGqQVBqm4lziTW1BsGi3Jn14Yu0ndXfTz/j4czl8N/YJBNrzHf2fk2KewhA5VpRKzntnmMeHEjmGxrJZLqpGjQffuqgcu37tv1xeDbYhPctdBzxkd/gKJaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VfFjdEgT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CA31C43390;
-	Tue,  6 Feb 2024 18:23:39 +0000 (UTC)
+	 Message-Id:Subject; b=Gr+5zIbAE0wF8cC54vU0DgEyJqPl88zBbv1RJvz4rQWMLjO0UoGgCCS5FbxVZz6Nf3y8SpLSVGEd2B+AuV5rZdUqRqCK3fJo+lQht/fYDzlMTwfQk0+Yqmj25c/XXTD2g7NmVk3Pxi/DXSgJzLbGULV6DvWmebuuERrGVMthmEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RJPpe0Lq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AC91C433F1;
+	Tue,  6 Feb 2024 18:23:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707243822;
-	bh=/8n9Kr9l4Sw1yum7U8xJubl081hOJbXFL+loiNN+f3Q=;
+	s=k20201202; t=1707243827;
+	bh=P4tdr7VlNtzN9kXz294+TUo4fwBUFBllYS4JLqJJo8Q=;
 	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=VfFjdEgT1J4LiAMho3HkP7m9Pl0ujNDEqh+XARqNwTjWgoFkGLzw9niS0kuxWT2aR
-	 5t1qp7nA9TOKhz2pa70UxGbrM/Opyy3keYQ154lifEKkoXXVBBliZjHgSd5EBbCD6m
-	 J/CTmiukWr8r30kUqrSIgsaarhtXS8tC/UElaHMoBiahKr8tronCYlQQXh5SRBy47V
-	 36BwwYpcSk9e5bC1AHOCHFZW71VuTguU5+K/mqk5IOYqmg8NivgHErvf3qSLPPIFjc
-	 ahxT3YBPQ74CF3fSP/eEYTw/ksbCN/ccfzG9kH2f7+80jViT8uczOoTqDZpFyyU+ON
-	 wWF4aSp8taNig==
-Date: Tue, 06 Feb 2024 18:23:32 +0000
+	b=RJPpe0LqxliRr6FhlR6esMqeAmntIRf4UHBU+ygAKeT1t9Jl8jp118/4LHp/6uSdF
+	 Y+wdixThS1ivhd2TrkAZEe6jFfWK8bzphRUJsB2J/t/JhxbGaa7hWo2fimaJr9cldA
+	 l392tFzWJh1M7g0//CaHUIiyB7wHWDCCBeJiTKOkP68ZJFoG7Okf6CFQiS3rBHBSUB
+	 u+/WQSqbL2gHn1fcoxKyiGGWucG5jfc3NVWoIt4rtxBhJ8F3yp7EVe09MiTwAKpYP7
+	 MnyNs9/KfjGDud7LBemXUH7E4UANFGocoO8RwDmRbyP2A8f6X5L4Bf+D9Xe++/qsG+
+	 P94XU6SYvx9Yg==
+Date: Tue, 06 Feb 2024 18:23:43 +0000
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -50,36 +50,37 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 From: Rob Herring <robh@kernel.org>
-To: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Bjorn Andersson <andersson@kernel.org>, devicetree@vger.kernel.org, 
+To: Markus Schneider-Pargmann <msp@baylibre.com>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, 
+ Santosh Shilimkar <ssantosh@kernel.org>, Andrew Davis <afd@ti.com>, 
+ linux-arm-kernel@lists.infradead.org, Tero Kristo <kristo@kernel.org>, 
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- linux-arm-msm@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
- linux-kernel@vger.kernel.org, kernel@quicinc.com, 
- Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh+dt@kernel.org>
-In-Reply-To: <53ba029fb1e3f66505b9f6487030e5d981e1621f.1707202761.git.quic_uchalich@quicinc.com>
-References: <cover.1707202761.git.quic_uchalich@quicinc.com>
- <53ba029fb1e3f66505b9f6487030e5d981e1621f.1707202761.git.quic_uchalich@quicinc.com>
-Message-Id: <170724381060.1723303.7103861511476056588.robh@kernel.org>
-Subject: Re: [PATCH v2 1/5] dt-bindings: arm: msm: Add llcc Broadcast_AND
- register region
+ Rob Herring <robh+dt@kernel.org>, 
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
+ devicetree@vger.kernel.org, Nishanth Menon <nm@ti.com>, 
+ linux-kernel@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>
+In-Reply-To: <20240206143711.2410135-3-msp@baylibre.com>
+References: <20240206143711.2410135-1-msp@baylibre.com>
+ <20240206143711.2410135-3-msp@baylibre.com>
+Message-Id: <170724381132.1723363.3827684466667274405.robh@kernel.org>
+Subject: Re: [PATCH 2/4] dt-bindings: hwinfo: ti,k3-socinfo: Add
+ nvmem-cells
 
 
-On Mon, 05 Feb 2024 23:15:52 -0800, Unnathi Chalicheemala wrote:
-> The LLCC driver in SM8450, SM8550 and SM8650 have a new register
-> space for Broadcast_AND region. This is used to check that all
-> channels have bit set to "1", mainly in SCID activation/deactivation.
+On Tue, 06 Feb 2024 15:37:09 +0100, Markus Schneider-Pargmann wrote:
+> The information k3-socinfo requires is stored in an efuse area. This
+> area is required by other devices/drivers as well, so using nvmem-cells
+> can be a cleaner way to describe which information are used.
 > 
-> Previously we were mapping only the Broadcast_OR region assuming
-> there was only one broadcast register region. Now we also map
-> Broadcast_AND region.
+> If nvmem-cells are supplied, the address range is not required.
+> Cells chipvariant, chippartno and chipmanufacturer are introduced to
+> cover all required information.
 > 
-> Signed-off-by: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
+> Reviewed-by: Andrew Davis <afd@ti.com>
 > ---
->  .../devicetree/bindings/cache/qcom,llcc.yaml  | 41 +++++++++++++++----
->  1 file changed, 33 insertions(+), 8 deletions(-)
+>  .../bindings/hwinfo/ti,k3-socinfo.yaml        | 23 ++++++++++++++++++-
+>  1 file changed, 22 insertions(+), 1 deletion(-)
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -88,12 +89,11 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/cache/qcom,llcc.example.dtb: system-cache-controller@25000000: reg: [[0, 622854144, 0, 2097152], [0, 624951296, 0, 2097152], [0, 627048448, 0, 2097152], [0, 629145600, 0, 2097152], [0, 631242752, 0, 2097152]] is too short
-	from schema $id: http://devicetree.org/schemas/cache/qcom,llcc.yaml#
+Documentation/devicetree/bindings/hwinfo/ti,k3-socinfo.example.dts:39.27-43.11: Warning (unit_address_vs_reg): /example-1/chipid@14: node has a unit name, but no reg or ranges property
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/53ba029fb1e3f66505b9f6487030e5d981e1621f.1707202761.git.quic_uchalich@quicinc.com
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240206143711.2410135-3-msp@baylibre.com
 
 The base for the series is generally the latest rc1. A different dependency
 should be noted in *this* patch.
