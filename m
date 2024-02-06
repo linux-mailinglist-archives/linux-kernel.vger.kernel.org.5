@@ -1,211 +1,229 @@
-Return-Path: <linux-kernel+bounces-55601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F76684BEBB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:33:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C09984BEB5
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:32:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50C4DB25781
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:33:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B54231F25EC7
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:32:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7A9B1B94D;
-	Tue,  6 Feb 2024 20:33:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 575AD1B940;
+	Tue,  6 Feb 2024 20:32:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="uNXpjRXu"
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="ruoixArX"
+Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01FFE1B807
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 20:33:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEC511B807
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 20:32:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707251609; cv=none; b=qyk5iqdZy9jSWjqYFAa4ySfc/6B1VrNMl/4sMzm+AJYLPOmMQakyfKZ5FeB4T+IpjyNB84V/CjRw01oN/wagbmVoXkrxXR+obHEgiyCy+iU3G4o8xyUfOFgrPWmwB3plZr5GJ6SEaNIi1ElgfIMN95q/SsO13mIa2pbkMd7neek=
+	t=1707251566; cv=none; b=Ryvg2QLmlG6HVp9H6z6oHfhE02v29PHpxuzK3ngfJhO4HCd4i8bH4/CjqCcKYLBMpXAOAAdRaIZXDJ8BaIHARFQTFkc/CA0gcwnIZ5ZmMHdnrF78XjbJifp6GdjODBdsuTvVfs3ZnKZcrFp/l2UFCv5qfFMNFTvcxhRsQWmicC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707251609; c=relaxed/simple;
-	bh=zV6UMa6KGS3460hptBgo8h2zveZj4vaThxc5kbb1euc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=A8VOgSoW7JcnNlH4W/LJOGNHOt/EnmgQtYlogaBtHaHa+402805RRhx65d+VMyChlKzU5B1CP5wRO5pbzjzlT4pOy36+tBx0/quEWIBefn3mnqrULI0nIWCCEGA+i6TBM1PSXHrIhQCMzxVYl9owXGVYn0zHvDKCFo4fPcSyOM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=uNXpjRXu; arc=none smtp.client-ip=209.85.210.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6e1149c16d4so2164552a34.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 12:33:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707251606; x=1707856406; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YfTOMRIgy5yUmp1Zi1mrOXV6NTegVTcyJrqWrXnDXfo=;
-        b=uNXpjRXuSdTOAMczG5ehg8nEJRUSsmBl2egbaAmgfkpCErvlAYEHr8b352FcupFRI/
-         UXhBA9Jw1SM+ofjnymnO95qugGdn/douklZiU/AcaOt7QvX1D4FxgzC8J9GxM3TKGPqd
-         Iw7rHvETzE/pV1pb0F4PilII5vCVOeFJTjV71wdJFsIme6QI9m8QwskF/tTqaN17Snrf
-         JXdfZd57ksGUUTL2GzeWjl02CBleHt/O2vhPfRb+q3nJN/EwMWAMJx72ji2bjgifdL5j
-         cAOUHOvXBRzD59dZGGTIyw0nwJ8I04xSJt0menMljtiN/qUxrASKhVspGuA7HvNTSq3v
-         JhwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707251606; x=1707856406;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YfTOMRIgy5yUmp1Zi1mrOXV6NTegVTcyJrqWrXnDXfo=;
-        b=vW/8a8/b5+C3P3t6EYoxPX8QNVscqhFI8ovT/VNxrX3nNkQ2xAXX1P0NKfpaVEqOch
-         1NazcziA4tidJolu2p/3wh+E/jQIt01/GReNmcyTUyEyCmqPS8uij3Ofxg65+IYIM88R
-         YMoFkOF+MOXskNgwprczvqmwzADm1qNFnKpJmn20AWLRWaAD3lTpjiF146jbH0iDjy8B
-         iGX4A7phcrzfQac9jEsN8MuipT3yRxfBUo8vQ1Zz2s8J1cvXRE6Y6uS/JpF+QiBNcdjL
-         rsvXylmAhdUP4Y2uUGD0m/QyyrweL9tty8ErROqrr2Mw3RGCiAR80C1ukJxFmQqxBnqk
-         tLxw==
-X-Gm-Message-State: AOJu0YxRWiTFVoaq8pd6DCc7AN7peFx0FzDh+L3AMHW3EvDvT/Ks6qDe
-	H5NsA0xkQoGfS+jE3xmIM8s043dXrBjevZhbNzPA29isNlzE8oeL9ZL/3sVU6H4=
-X-Google-Smtp-Source: AGHT+IGJf9ep/lPbbuizFAQfco/oZLYeI9cVSfpniFdRh+hPnl269EOax256xe26Om84BuZyOssTWQ==
-X-Received: by 2002:a9d:77d2:0:b0:6e0:f903:f7a6 with SMTP id w18-20020a9d77d2000000b006e0f903f7a6mr4073222otl.36.1707251606042;
-        Tue, 06 Feb 2024 12:33:26 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCV+uanjprraKmO3BJdbA8N8V3mZg3/e56x/S+A6o4ojIU2WsGbOoQVl0I9ozFPnU5QepvkfdTSsww7u4InLod8SgXN3j2jrCTvp2CLa+HMZhFUdVj22pGJIxuMYMU+JUEki6KNLWwe01zeKUHEF+s99igBfSGrU4txJtszHp+ndQ3XwYO7lwQ1Tmh/CM7n3+tKIXQ==
-Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id l2-20020a05683016c200b006e11d93ff09sm429581otr.72.2024.02.06.12.33.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 12:33:25 -0800 (PST)
-From: David Lechner <dlechner@baylibre.com>
-To: linux-spi@vger.kernel.org
-Cc: David Lechner <dlechner@baylibre.com>,
-	Mark Brown <broonie@kernel.org>,
-	Michael Hennerich <michael.hennerich@analog.com>,
-	=?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] spi: axi-spi-engine: move msg finalization out of irq handler
-Date: Tue,  6 Feb 2024 14:31:28 -0600
-Message-ID: <20240206-axi-spi-engine-round-2-1-v1-2-ea6eeb60f4fb@baylibre.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240206-axi-spi-engine-round-2-1-v1-0-ea6eeb60f4fb@baylibre.com>
-References: <20240206-axi-spi-engine-round-2-1-v1-0-ea6eeb60f4fb@baylibre.com>
+	s=arc-20240116; t=1707251566; c=relaxed/simple;
+	bh=zTX2u1hoRPQcMQPKj5Ece+F9DX0/+16099nKCTz+ggY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LVipgzigF6keUbz7hDkA2+YhMh/bpegduign0BL8VMJ71I73jPOOluqYeuvTrsmG7UL02s7vTbJSZPJTVT5Ojo9miv+FBGq7kHqIPpzi2ODekwRcK31TTvl9Stg8waweb/BqJ4GQB1uMAVhlieGgZIqmuvwmyl4Lw6r4jyQh8EQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=ruoixArX; arc=none smtp.client-ip=44.202.169.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-5003a.ext.cloudfilter.net ([10.0.29.159])
+	by cmsmtp with ESMTPS
+	id XKpur4ydL9gG6XS7SrZC8R; Tue, 06 Feb 2024 20:32:38 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id XS7RrxYAkOmWYXS7Srq4fU; Tue, 06 Feb 2024 20:32:38 +0000
+X-Authority-Analysis: v=2.4 cv=T/MvTOKQ c=1 sm=1 tr=0 ts=65c29766
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
+ a=cm27Pg_UAAAA:8 a=VwQbUJbxAAAA:8 a=vaJtXVxTAAAA:8 a=QyXUC8HyAAAA:8
+ a=KS6gg5_tAAAA:8 a=i0EeH86SAAAA:8 a=iqgMOriEywssfaGR4noA:9 a=QEXdDO2ut3YA:10
+ a=xmb-EsYY8bH0VWELuYED:22 a=AjGcO6oz07-iQ99wixmX:22 a=hZ4L7c2QG0rhM108vGPe:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=KbvZVHNUxJAyFSSXDQTy9du7K8PY4t9oyk36I6Z3RzY=; b=ruoixArXBrzejUnF5nEmrIJ+vU
+	1CS7vGqxi3ro/tP/pvgZo+u8vJn8wNVLYvoy3cPTEuscmEkqh7Q1W+X4GsnLUwDSUDKn1ChMz+PjO
+	7NWcgikxivgr1PKIqATJwqX01o32myrrcxbTH+TUzh4/S3InQZrZViKMnfAV9RzSE/J6DR3NVQLqs
+	oazIwd4Duzg8DEooIN+fKc1ujztYdVf+ladzPfq13X9P25OudlLanEnPQIWm+gKFUdBitEfuXNZ4E
+	MbXJ9JGdNvE6shyKEeR08L8Vf139px3MPH5Hi5hGbYTe2kCPfnEvwrJEuoKYWG6x27qioiQaWJb9t
+	ogA889LQ==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:51298 helo=[192.168.15.10])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rXS7P-002bZx-0r;
+	Tue, 06 Feb 2024 14:32:35 -0600
+Message-ID: <fb9ec7de-7c8a-4e94-94c2-eeea6369550e@embeddedor.com>
+Date: Tue, 6 Feb 2024 14:32:32 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Mailer: b4 0.12.4
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] wifi: mwifiex: Refactor 1-element array into flexible
+ array in struct mwifiex_ie_types_chan_list_param_set
+Content-Language: en-US
+To: Kees Cook <keescook@chromium.org>, Brian Norris <briannorris@chromium.org>
+Cc: Kalle Valo <kvalo@kernel.org>, Dmitry Antipov <dmantipov@yandex.ru>,
+ Johannes Berg <johannes.berg@intel.com>, zuoqilin <zuoqilin@yulong.com>,
+ Ruan Jinjie <ruanjinjie@huawei.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+ linux-wireless@vger.kernel.org, Dan Carpenter <error27@gmail.com>,
+ Rafael Beims <rafael.beims@toradex.com>, David Lin <yu-hao.lin@nxp.com>,
+ Lukas Wunner <lukas@wunner.de>, Simon Horman <horms@kernel.org>,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20240206183857.it.362-kees@kernel.org>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20240206183857.it.362-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1rXS7P-002bZx-0r
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.10]) [187.162.21.192]:51298
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 2
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfCoYbCWXt9S1ozTGSidq+ig6Hp1I8FrS1bL/xliRDwCQd/Ei0XXWA5hHaBw79pIKbdxHdXiA/9UlgQta4cd/0+sMmLsc8m5iDhxED6bl7HGan4Anmnpd
+ 0KYMJjyoGepZxmYFALM8EsDJfWUe4onzK7/z5T5+MVvR4P+bgwfL1B+KOjefwHX4xJXgdxEPQUENyrvP9McnnhhNdxHINKF2lyL1uSRastJDHHnStGBMdghZ
 
-As a general principal, it is best to do as little as possible in an
-interrupt handler. This patch reworks the AXI SPI Engine driver to move
-timer_delete_sync() and spi_finalize_current_message() out of the
-interrupt handler. Instead, spi_finalize_current_message() is moved to
-the transfer_one_message function (similar to nearly all other SPI
-controllers). A completion is now used to wait for the sync interrupt
-that indicates that the message is complete. The watchdog timer is no
-longer needed since we can use the wait_for_completion_timeout()
-function to wait for the message to complete with the same effect.
 
-As a bonus, these changes also improve throughput of the SPI controller.
-For example, this was tested on a ZynqMP with a 80MHz SCLK reading 4
-byte samples from an ADC. The max measured throughput increased from
-26k to 28k samples per second.
 
-Signed-off-by: David Lechner <dlechner@baylibre.com>
----
- drivers/spi/spi-axi-spi-engine.c | 40 +++++++++++++++-------------------------
- 1 file changed, 15 insertions(+), 25 deletions(-)
+On 2/6/24 12:39, Kees Cook wrote:
+> struct mwifiex_ie_types_chan_list_param_set::chan_scan_param is treated
+> as a flexible array, so convert it into one so that it doesn't trip the
+> array bounds sanitizer[1]. Only once place was using sizeof() on the
+> whole struct (in 11n.c), so adjust it to follow the calculation pattern
+> used by scan.c to avoid including the trailing single element.
+> 
+> Link: https://github.com/KSPP/linux/issues/51 [1]
+> Cc: Brian Norris <briannorris@chromium.org>
+> Cc: Kalle Valo <kvalo@kernel.org>
+> Cc: Dmitry Antipov <dmantipov@yandex.ru>
+> Cc: Johannes Berg <johannes.berg@intel.com>
+> Cc: zuoqilin <zuoqilin@yulong.com>
+> Cc: Ruan Jinjie <ruanjinjie@huawei.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Cc: linux-wireless@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>   drivers/net/wireless/marvell/mwifiex/11n.c  |  8 +++-----
+>   drivers/net/wireless/marvell/mwifiex/fw.h   |  2 +-
+>   drivers/net/wireless/marvell/mwifiex/scan.c | 14 ++++++--------
+>   3 files changed, 10 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/marvell/mwifiex/11n.c b/drivers/net/wireless/marvell/mwifiex/11n.c
+> index 90e401100898..9ed90da4dfcf 100644
+> --- a/drivers/net/wireless/marvell/mwifiex/11n.c
+> +++ b/drivers/net/wireless/marvell/mwifiex/11n.c
+> @@ -392,12 +392,10 @@ mwifiex_cmd_append_11n_tlv(struct mwifiex_private *priv,
+>   
+>   		chan_list =
+>   			(struct mwifiex_ie_types_chan_list_param_set *) *buffer;
+> -		memset(chan_list, 0,
+> -		       sizeof(struct mwifiex_ie_types_chan_list_param_set));
+> +		memset(chan_list, 0, struct_size(chan_list, chan_scan_param, 1));
+>   		chan_list->header.type = cpu_to_le16(TLV_TYPE_CHANLIST);
+> -		chan_list->header.len = cpu_to_le16(
+> -			sizeof(struct mwifiex_ie_types_chan_list_param_set) -
+> -			sizeof(struct mwifiex_ie_types_header));
+> +		chan_list->header.len =
+> +			cpu_to_le16(sizeof(struct mwifiex_chan_scan_param_set));
+>   		chan_list->chan_scan_param[0].chan_number =
+>   			bss_desc->bcn_ht_oper->primary_chan;
+>   		chan_list->chan_scan_param[0].radio_type =
+This probably still needs a bit more work.
 
-diff --git a/drivers/spi/spi-axi-spi-engine.c b/drivers/spi/spi-axi-spi-engine.c
-index 9cc602075c17..3c96aa9232b3 100644
---- a/drivers/spi/spi-axi-spi-engine.c
-+++ b/drivers/spi/spi-axi-spi-engine.c
-@@ -6,6 +6,7 @@
-  */
- 
- #include <linux/clk.h>
-+#include <linux/completion.h>
- #include <linux/fpga/adi-axi-common.h>
- #include <linux/idr.h>
- #include <linux/interrupt.h>
-@@ -14,7 +15,6 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/spi/spi.h>
--#include <linux/timer.h>
- 
- #define SPI_ENGINE_REG_RESET			0x40
- 
-@@ -110,9 +110,7 @@ struct spi_engine {
- 	spinlock_t lock;
- 
- 	void __iomem *base;
--	struct timer_list watchdog_timer;
--	struct spi_controller *controller;
--
-+	struct completion msg_complete;
- 	unsigned int int_enable;
- };
- 
-@@ -484,11 +482,9 @@ static irqreturn_t spi_engine_irq(int irq, void *devid)
- 
- 	if (pending & SPI_ENGINE_INT_SYNC && msg) {
- 		if (completed_id == AXI_SPI_ENGINE_CUR_MSG_SYNC_ID) {
--			if (timer_delete_sync(&spi_engine->watchdog_timer)) {
--				msg->status = 0;
--				msg->actual_length = msg->frame_length;
--				spi_finalize_current_message(host);
--			}
-+			msg->status = 0;
-+			msg->actual_length = msg->frame_length;
-+			complete(&spi_engine->msg_complete);
- 			disable_int |= SPI_ENGINE_INT_SYNC;
- 		}
- 	}
-@@ -559,7 +555,7 @@ static int spi_engine_transfer_one_message(struct spi_controller *host,
- 	unsigned int int_enable = 0;
- 	unsigned long flags;
- 
--	mod_timer(&spi_engine->watchdog_timer, jiffies + msecs_to_jiffies(5000));
-+	reinit_completion(&spi_engine->msg_complete);
- 
- 	spin_lock_irqsave(&spi_engine->lock, flags);
- 
-@@ -581,21 +577,16 @@ static int spi_engine_transfer_one_message(struct spi_controller *host,
- 	spi_engine->int_enable = int_enable;
- 	spin_unlock_irqrestore(&spi_engine->lock, flags);
- 
--	return 0;
--}
--
--static void spi_engine_timeout(struct timer_list *timer)
--{
--	struct spi_engine *spi_engine = from_timer(spi_engine, timer, watchdog_timer);
--	struct spi_controller *host = spi_engine->controller;
--
--	if (WARN_ON(!host->cur_msg))
--		return;
-+	if (!wait_for_completion_timeout(&spi_engine->msg_complete,
-+					 msecs_to_jiffies(5000))) {
-+		dev_err(&host->dev,
-+			"Timeout occurred while waiting for transfer to complete. Hardware is probably broken.\n");
-+		msg->status = -ETIMEDOUT;
-+	}
- 
--	dev_err(&host->dev,
--		"Timeout occurred while waiting for transfer to complete. Hardware is probably broken.\n");
--	host->cur_msg->status = -ETIMEDOUT;
- 	spi_finalize_current_message(host);
-+
-+	return msg->status;
- }
- 
- static void spi_engine_release_hw(void *p)
-@@ -626,8 +617,7 @@ static int spi_engine_probe(struct platform_device *pdev)
- 	spi_engine = spi_controller_get_devdata(host);
- 
- 	spin_lock_init(&spi_engine->lock);
--	timer_setup(&spi_engine->watchdog_timer, spi_engine_timeout, TIMER_IRQSAFE);
--	spi_engine->controller = host;
-+	init_completion(&spi_engine->msg_complete);
- 
- 	spi_engine->clk = devm_clk_get_enabled(&pdev->dev, "s_axi_aclk");
- 	if (IS_ERR(spi_engine->clk))
+There are a couple more instances of `sizeof()` that should probably be
+audited and adjusted:
 
--- 
-2.43.0
+drivers/net/wireless/marvell/mwifiex/11n.c:414:         *buffer += sizeof(struct mwifiex_ie_types_chan_list_param_set);
+drivers/net/wireless/marvell/mwifiex/11n.c:415:         ret_len += sizeof(struct mwifiex_ie_types_chan_list_param_set);
 
+--
+Gustavo
+
+> diff --git a/drivers/net/wireless/marvell/mwifiex/fw.h b/drivers/net/wireless/marvell/mwifiex/fw.h
+> index 62f3c9a52a1d..3adc447b715f 100644
+> --- a/drivers/net/wireless/marvell/mwifiex/fw.h
+> +++ b/drivers/net/wireless/marvell/mwifiex/fw.h
+> @@ -770,7 +770,7 @@ struct mwifiex_chan_scan_param_set {
+>   
+>   struct mwifiex_ie_types_chan_list_param_set {
+>   	struct mwifiex_ie_types_header header;
+> -	struct mwifiex_chan_scan_param_set chan_scan_param[1];
+> +	struct mwifiex_chan_scan_param_set chan_scan_param[];
+>   } __packed;
+>   
+>   struct mwifiex_ie_types_rxba_sync {
+> diff --git a/drivers/net/wireless/marvell/mwifiex/scan.c b/drivers/net/wireless/marvell/mwifiex/scan.c
+> index a2ddac363b10..0326b121747c 100644
+> --- a/drivers/net/wireless/marvell/mwifiex/scan.c
+> +++ b/drivers/net/wireless/marvell/mwifiex/scan.c
+> @@ -664,15 +664,14 @@ mwifiex_scan_channel_list(struct mwifiex_private *priv,
+>   
+>   			/* Copy the current channel TLV to the command being
+>   			   prepared */
+> -			memcpy(chan_tlv_out->chan_scan_param + tlv_idx,
+> +			memcpy(&chan_tlv_out->chan_scan_param[tlv_idx],
+>   			       tmp_chan_list,
+> -			       sizeof(chan_tlv_out->chan_scan_param));
+> +			       sizeof(*chan_tlv_out->chan_scan_param));
+>   
+>   			/* Increment the TLV header length by the size
+>   			   appended */
+>   			le16_unaligned_add_cpu(&chan_tlv_out->header.len,
+> -					       sizeof(
+> -						chan_tlv_out->chan_scan_param));
+> +					       sizeof(*chan_tlv_out->chan_scan_param));
+>   
+>   			/*
+>   			 * The tlv buffer length is set to the number of bytes
+> @@ -2369,12 +2368,11 @@ int mwifiex_cmd_802_11_bg_scan_config(struct mwifiex_private *priv,
+>   		     chan_idx < MWIFIEX_BG_SCAN_CHAN_MAX &&
+>   		     bgscan_cfg_in->chan_list[chan_idx].chan_number;
+>   		     chan_idx++) {
+> -			temp_chan = chan_list_tlv->chan_scan_param + chan_idx;
+> +			temp_chan = &chan_list_tlv->chan_scan_param[chan_idx];
+>   
+>   			/* Increment the TLV header length by size appended */
+>   			le16_unaligned_add_cpu(&chan_list_tlv->header.len,
+> -					       sizeof(
+> -					       chan_list_tlv->chan_scan_param));
+> +					       sizeof(*chan_list_tlv->chan_scan_param));
+>   
+>   			temp_chan->chan_number =
+>   				bgscan_cfg_in->chan_list[chan_idx].chan_number;
+> @@ -2413,7 +2411,7 @@ int mwifiex_cmd_802_11_bg_scan_config(struct mwifiex_private *priv,
+>   							   chan_scan_param);
+>   		le16_unaligned_add_cpu(&chan_list_tlv->header.len,
+>   				       chan_num *
+> -			     sizeof(chan_list_tlv->chan_scan_param[0]));
+> +			     sizeof(*chan_list_tlv->chan_scan_param));
+>   	}
+>   
+>   	tlv_pos += (sizeof(chan_list_tlv->header)
 
