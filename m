@@ -1,203 +1,323 @@
-Return-Path: <linux-kernel+bounces-54230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54224-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA2FE84AC96
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:58:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 040F284AC6F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:54:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CCD7282F78
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:58:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 704F2B2221D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:54:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 635737319F;
-	Tue,  6 Feb 2024 02:58:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFEC46E2DF;
+	Tue,  6 Feb 2024 02:54:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Y21gOgqz"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2079.outbound.protection.outlook.com [40.107.223.79])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="V+de5hb8"
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD8E46E2D0;
-	Tue,  6 Feb 2024 02:58:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.79
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707188318; cv=fail; b=WNT3iXAPX5FW57Rq7ZAdBqXoSCAo+y7euaZlUk8dIADLeBopS7K+vX/eqgXaZMTDImD6Yr/sR5fdmDfDuAaSqczM7JtQMOR6BFPUj2WQbCajR0++kVLR7b0M1o2D8yyiL8dwzm/ddVOjb6N7hwewmiD7jIRWKOhT6vYOjvxEn0c=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707188318; c=relaxed/simple;
-	bh=zym+UZ9HvNw+7bpSide0NsXwc6itk3aewxVhj+kSL4Q=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 Content-Type:MIME-Version; b=sryRRgfyTe9OOLOeDqLfsnwuWUypfIeoGpBaXcserxOmYZV4K/nmPVGM8kTyrkYFbMvS889dz5FFMI91GsQjz8Qa3fEQ6G+XmSSIvgt42vDhhOj5Lf9yXkhi0PK7ilzO2U63i3yHSvbT7p8ngDjKFMHO/IdYwjvCWrJzUkTVz1M=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Y21gOgqz; arc=fail smtp.client-ip=40.107.223.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YaapRGEJA8+wFVkq4nRLBX0szITiGyEwlLb7Z6c6YJl3Z3v3tPMxjle31L6iQ0rq/oXZucQkflWcORcV9bDRu922U0L17PVSHSqMleedFykKeH/vgoOmq+weoUDD3knZGBkGPypnJ0lc8N+sUk0W45d3N344CdkQQzQvMBmn7viICXcw/MSnHTCOPNzwC1xinINzZUbaqvG7gWFNBm5KwU4j9DRgB0IlTFAPRoDL5yNlvyeBVtdOEPl5YAo3JzF4JBzR4MO1+W4Fi6VezML+A4U+7KO4n9QbXJGV4bvE6XUTJqx08C85GEIkNkEdhQO8cccpgjU9VBmD2JE7p8KcSA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=C9W48bTm7CaPzZxXhn/mG8OUJdcHLIVWdvEIlJH67tE=;
- b=V7nnuRc5I9xd1M+oR8SkdC4PSCl8H1kMMm/C7ePPZuikajCdHRr71Xplftmf0szr6ecb56RG+cE5MzcpMvqttDyyIAL/HB0jVDinf9NUtsZsGYZhaW5M0qfBr8nu9VV8T8JqPtMceIeAwE+lFmQOk0Gm/c236uK5mmWFn6Hp4qnlN2GKs4ftoP6e7URbllikfMxtAJg5b85Fc1nC3f2qzpsVFJZOKP710leypSXtMyhdWWOkcG5j25nYATI5R271eiRInCkST7Q1Y1Nz+BWtvpq/7KdCLeJ1WCORaM5/gjoqfOXvcS6S3eZ9qpFcN+pBIfHTDaMzV9ngpuipFGOdcg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C9W48bTm7CaPzZxXhn/mG8OUJdcHLIVWdvEIlJH67tE=;
- b=Y21gOgqzHs72+wNgXjNah2kKTmcy77A71LaCRSzv+DKboq0h1+kCOtdbptLI96otOhMZC19Tci1cZ4LEtI76HI05Rabnuh7NVr1gDYsikaQbouCe9LHJUAZ3HyQaiu6tzrUVlhqkChLxqWOorYk7qpdWBXLbit9WCjSQl/D4iWrRmZ/1h0Uo/G5SvJia+YO3XASh99xvNlml+2kRFHM5JuGFdsnJzqZZVKlYsvC9mw1auvgA3h6PB1IggFCvoIpBV5NH+N1JjmEHBhQfq166c46VNZFMHdHqQsUT7dWx668gEXC66pQ9h0hsBHOZPwhgGEkigdpAZuaMmZrGtDtFzQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
- by IA1PR12MB8556.namprd12.prod.outlook.com (2603:10b6:208:452::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.14; Tue, 6 Feb
- 2024 02:58:33 +0000
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::d726:fa79:bfce:f670]) by BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::d726:fa79:bfce:f670%7]) with mapi id 15.20.7270.012; Tue, 6 Feb 2024
- 02:58:32 +0000
-References: <20240206024956.226452-1-jdamato@fastly.com>
-User-agent: mu4e 1.10.8; emacs 28.2
-From: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-To: Joe Damato <jdamato@fastly.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, tariqt@nvidia.com,
- Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, "open list:MELLANOX MLX5 core VPI driver"
- <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH net-next v2] eth: mlx5: link NAPI instances to queues
- and IRQs
-Date: Mon, 05 Feb 2024 18:52:45 -0800
-In-reply-to: <20240206024956.226452-1-jdamato@fastly.com>
-Message-ID: <87o7cul2nf.fsf@nvidia.com>
-Content-Type: text/plain
-X-ClientProxiedBy: BY3PR04CA0006.namprd04.prod.outlook.com
- (2603:10b6:a03:217::11) To BYAPR12MB2743.namprd12.prod.outlook.com
- (2603:10b6:a03:61::28)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D098C6E2AF
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 02:54:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707188058; cv=none; b=owogRcuZjJYnFzALXgHwAqxyb0uhIuzX5cluNtNyIzx/Z7VdcQasMs1SqLyeaij7lY0QC8tEKJJeAVMWi0BatVnCq2D/utjqS28cXjFIjtiKMK8DzYjun1ufpVLbwwVS9B+HEoxUi6fqllV8LEyfKJo2SltoI0N18pULPbFlskY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707188058; c=relaxed/simple;
+	bh=D2q0b2o4Z7APki3fn4YvD4ddqaMhZR/spymtio8X6wQ=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=UeAkyH9YULwXoG123HFiwhzI/MfgLUJf37ZjqDbtstFuXjlZhzkGkEjyQ+ikhkzoHc5edmqNq+x7q5AdSNQ12R1pTI7vJ7O6LAov3GfGxQtDNEsUZkOvfCJBek5k8BcKaSbW1zVdSsXC7PPrSwH+BxnOyC0R2IVSxhuThe/2mAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=V+de5hb8; arc=none smtp.client-ip=209.85.210.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6e04e162d4cso1182947b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 18:54:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707188055; x=1707792855; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BxnDC9PEjh2Qaq1re7GgqS1U0z2T5fJxN7gaOqoJ4CQ=;
+        b=V+de5hb8w9zg3BeTfo6MPug76mBSF87FYPJuG724dxM+l8xeJsdlKj9cd+ZrM5uDUo
+         AX/60wQmlMhOrqnoWVL4fz24A6jFZtcWiVGeaamsTBCUzXvxogYWPKu7/73Aq4p3D3wD
+         9B1u9ixiAwhDcRGUQXsDMaJCOVhCAqXs3k5JkL8P5Hl2v/oV/w59Z1lT5h2JLs7+Eps1
+         aYMZqK9tOoUT7BMN42YYvoQMnva+neKuigGVyrJ71iTZlHxdoSu6vP5zyqqMwDv8xkKT
+         8v7oYXoPBk7wBJqNftHVuHHuYvx/Ni/AIBHw6SNynThKhp/XUAmZrBFpQOR+EbcKtW6R
+         RweQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707188055; x=1707792855;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=BxnDC9PEjh2Qaq1re7GgqS1U0z2T5fJxN7gaOqoJ4CQ=;
+        b=ZQugG1GBGPuxvfkxFOX5K2DUPYdyNIg5I4rasVWwsWxZpvWpN4JJJfHfQDQvqEETU0
+         4f54vxk7FiXgeTkbJ3/HvSTa1adi+pqDubET0y6DDVBIOHyz+/0ccTrn6/Jedo5mbgCZ
+         GaH9i3HyWDR/eagvD28dc+JJ/UweZuuIEmxeVqRJZ75kSE36XpT04BQVyXFDCmfjF+u/
+         0PbUAqRwzScqGCdYvrCuFGpPJopQfhOsfmLc7oZKDaJc6M7/xu5buo5Opi3bxCsxlTVL
+         1sUz3lzO8Wek0+9xddypEi3ZbjWlO81gmGaBxSOyZKzYG1jDvIhCXFh9gS2/76qO6stU
+         mYVg==
+X-Gm-Message-State: AOJu0YyLzHhRAaxDDGQ1OOoOkQlp/DbFKd8s2zhTdBYfV0MI62YPTarT
+	hbMArl/7Onwvbf87hlDEyrwLrf2IbcWg/UPbA290coPCWHjlWFbHAV8tAwQhz7BtGEtG2EeBVvv
+	GwQ==
+X-Google-Smtp-Source: AGHT+IHSYeFR6s+Vr1FAbsEgBRv1jPSIvn/jfhYNPnvMF5ySJNTuzlbNCgmGA/LEAVQ2w75wt3mkYNdAwJc=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:93a6:b0:6df:e45b:3ef8 with SMTP id
+ ka38-20020a056a0093a600b006dfe45b3ef8mr93164pfb.3.1707188055193; Mon, 05 Feb
+ 2024 18:54:15 -0800 (PST)
+Date: Mon, 5 Feb 2024 18:54:13 -0800
+In-Reply-To: <91b97ed81a70c778352b2f569001820ea8b1c48b.camel@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2743:EE_|IA1PR12MB8556:EE_
-X-MS-Office365-Filtering-Correlation-Id: 85a56818-36f5-452d-e7ee-08dc26bf80b1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	ZJle3s+kVBifsKYHvydKwxfzboLiE3rFL0rBH8JMS8qcXQOgi1UM45EMXMZKZQ+k/XGXJ9Ew5jS87VuCi4w477g7hxe09a5f0u0WSYdRZg4KknmSQueteHYAHbx1FWo+yoe1G5NF6b/CV9jhywc86munM+P/yLE4UYWE3jhpHQOJVg+ZxpCQhK0HXBm9XsORq30HZy4FRaobV4XDaxnsZD/RHiuSDdFfNYG57O20dNWl9VOEGd8QZzsguj9TjF4l7AgJLMN5CGmRqXU82vspYKJosYwJGaSJjOC+cmLTryEwd+nAmNunf2z5z4s63iDN8tnVuCPkfVrHSSYk6E8C0VollivJw+UJOR3LZYfxQRmCHqcXLHgaCMGr2XnhvuIm3TeeVu8CNEHcge0B7cTKuBRQAceQwU54XHnnxnd51dEzKxomkBDYJv+48OZuVWqbSSQVJi6Lahz//bPADDCWCrvIz2n0NB77jF+pO+98M/sLiuc60s0ZYFV9zNc8UkHOEE1RbtaD7kRU1OLWiIkpVD9TlBr1IZ8/bdW8b3hACGlmqG/k25NWrgR8g6jefqhEgyw7WtlH3taKuBdHaCg9kJPt5/DLfF5Hv5Yfthq1uTE=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(366004)(376002)(136003)(396003)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(2616005)(26005)(6486002)(41300700001)(36756003)(38100700002)(966005)(54906003)(6666004)(6506007)(478600001)(6512007)(66946007)(83380400001)(316002)(8676002)(5660300002)(2906002)(86362001)(66476007)(6916009)(8936002)(66556008)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?6schq388WSemHouyHwoOVJeKXZngJ6tbL1rYW1fVNxaboLxBKWP/4C1QP69t?=
- =?us-ascii?Q?JhGIM4yfDEw9DASKtEIJoNrHOc+mT0veRpJj3mbjVAbDx6LWne/jS+3ujgd/?=
- =?us-ascii?Q?xqO/7cREqP0GGYiM6VcOZVvs9O1eiWiT3PNbiRdc0TPqLcdwou5t0mUhtP2g?=
- =?us-ascii?Q?b8cDeb3FyRfoHxmmDLZznj13GR2iaiDXKCLveF2q1+0Tk0oJeETTuyKAz2z6?=
- =?us-ascii?Q?2Zx8tCLJUsI4Lrd/8IjkCepuaUoaThojbsU0k37PLmLUcI9P6rryliRRO62K?=
- =?us-ascii?Q?1vJ7HY3QfOMIOfwnrd0eQDYqatOmxaN7YJvyvCnO2edTMTpDA2iuhQkwTh7N?=
- =?us-ascii?Q?X/7kj81eFrk2UT5AeEhMsvT5gYtD+wspZ0Hk6WHyIi5D0dbDmu0jlifsCPZm?=
- =?us-ascii?Q?tIh2droNjXwyCmOQTBp1VREXQu0uHaz3BcFZXGASvXEj3UGhTWKqaQ0c6NYu?=
- =?us-ascii?Q?cgtUOS07oFymlhoN4HlBsTaoUokb2KfaufgWzVEaclB+6GPqr9QUFClTBtJG?=
- =?us-ascii?Q?1UgfoVnNlOVjAOD5BGyAgtsxzlvVYo6ECFiT1AGYmUsUITg+yaXM/F9SiuKv?=
- =?us-ascii?Q?sx7NAUpVY0SW+uJIMlzN2f/IOnHasWE1nkdPQynLJuo1d1tErsKbLZMoMrGS?=
- =?us-ascii?Q?ok+sZ+kD0LQNEENOgLf88sXSPPTpgZLi32JP1xXIkn+pjLOlN6+Nnf3WBuLi?=
- =?us-ascii?Q?lf1gtV1wr7m0Xw8/TnQHPv9zNTZfba5X4n6IrD8RzBjTJ9SIzrKf626JdLAe?=
- =?us-ascii?Q?EuNFRuuYdl+CQtd7RIHFr9prWEuqMnpknDAp03BC/okxFnZyUPRfxbHk+qVl?=
- =?us-ascii?Q?fgfW/4BxjuPUWt2x9PwSDiz4VHKscQ1Jpj3JnzAjIrmUWEp/D9glVL5TCKMw?=
- =?us-ascii?Q?t8PWbtVdOScxGrEfwN3FuV2k0hgXSPXEL3NVSaV2XzwY8MrKGhL4sINSbzha?=
- =?us-ascii?Q?SP+ljCdAAjWLOJtB0AUtOh3IBYa2//Z3FwmKyjDHoJl3t14a7yMmGzoL6BBW?=
- =?us-ascii?Q?nWVeZ4Z1Vlp05Glu5ZESLetmCO4Ln+xfZc9sibS4CI36Wog7s/OXoaCReBef?=
- =?us-ascii?Q?P63ExrE9WFtrT+mMt6iQxek285KlRf3d8+jSIc6IZMWwMyWAf7ZGrJ2LI4V9?=
- =?us-ascii?Q?/tOraDkM4SAOPnfuuVUCcDj4vY+74JuCM/ayBtL3JQmDQuFt0aqcNYY0HuIa?=
- =?us-ascii?Q?Ynu+fK9niKtBHFgFQh/7XGDlbmnabAMJI1Npvy70O07BTz7GAUYEsrjH0cb8?=
- =?us-ascii?Q?lbWFEtlesExN8Tyj8LtylVlePBld0DTxbyWpM6JP/SiwugGFWOwq1013jPbY?=
- =?us-ascii?Q?+U1p6AbEzJOwvedR4cOOeit+HATlFuwzDuVG3eXfQoAvzd70YhDGcgzWKJfq?=
- =?us-ascii?Q?9Xlp/R/faYqN8G7gRNxO9oEudlhPM3r2YvSwTY0cYDWaOhTpwVldXst97TZV?=
- =?us-ascii?Q?HDjv53Hw9EUkPyfb0ZKFQ/FTRBOq0YDuJgTBzdp5kFDsUoBl5mJwY/+/Se9a?=
- =?us-ascii?Q?q4cwTC5J0k8ksJliO0GtQFG8S3tXrF82ufy/8kg9fShbJr29PmkgjgYgRx8o?=
- =?us-ascii?Q?Tu8KK6sham2HvDFD0PiZ+Ds+/6SRp5JnPU4k9KJ/M7n5ysXmbZM82m16YDkH?=
- =?us-ascii?Q?sg=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 85a56818-36f5-452d-e7ee-08dc26bf80b1
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2024 02:58:32.1000
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZYYYDo+tDuEOJlM/qLR8bu/ksrUkBB7ad9VnAj0MFxobCXU+ulWiHGSRsB7jc2UVaXzpBHHbJjFotqFEN5gkFg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8556
+Mime-Version: 1.0
+References: <20230911021637.1941096-1-stevensd@google.com> <20230911021637.1941096-4-stevensd@google.com>
+ <91b97ed81a70c778352b2f569001820ea8b1c48b.camel@redhat.com>
+Message-ID: <ZcGfVRhp2WmCsyhi@google.com>
+Subject: Re: [PATCH v9 3/6] KVM: mmu: Improve handling of non-refcounted pfns
+From: Sean Christopherson <seanjc@google.com>
+To: Maxim Levitsky <mlevitsk@redhat.com>
+Cc: David Stevens <stevensd@chromium.org>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
+	Isaku Yamahata <isaku.yamahata@gmail.com>, Zhi Wang <zhi.wang.linux@gmail.com>, 
+	kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 06 Feb, 2024 02:49:56 +0000 Joe Damato <jdamato@fastly.com> wrote:
-> Make mlx5 compatible with the newly added netlink queue GET APIs.
->
-> v1 -> v2:
->   - Move netlink NULL code to mlx5e_deactivate_channel
->   - Move netif_napi_set_irq to mlx5e_open_channel and avoid storing the
->     irq, after netif_napi_add which itself sets the IRQ to -1.
->   - Fix white space where IRQ is stored in mlx5e_open_channel
->
-> Signed-off-by: Joe Damato <jdamato@fastly.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> index c8e8f512803e..3e74c7de6050 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> @@ -2560,6 +2560,7 @@ static int mlx5e_open_channel(struct mlx5e_priv *priv, int ix,
->  	c->lag_port = mlx5e_enumerate_lag_port(priv->mdev, ix);
->  
->  	netif_napi_add(netdev, &c->napi, mlx5e_napi_poll);
-> +	netif_napi_set_irq(&c->napi, irq);
->  
->  	err = mlx5e_open_queues(c, params, cparam);
->  	if (unlikely(err))
-> @@ -2602,6 +2603,9 @@ static void mlx5e_activate_channel(struct mlx5e_channel *c)
->  		mlx5e_activate_xsk(c);
->  	else
->  		mlx5e_activate_rq(&c->rq);
-> +
-> +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_TX, &c->napi);
-> +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_RX, &c->napi);
->  }
->  
->  static void mlx5e_deactivate_channel(struct mlx5e_channel *c)
-> @@ -2619,6 +2623,9 @@ static void mlx5e_deactivate_channel(struct mlx5e_channel *c)
->  		mlx5e_deactivate_txqsq(&c->sq[tc]);
->  	mlx5e_qos_deactivate_queues(c);
->  
-> +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_TX, NULL);
-> +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_RX, NULL);
-> +
+On Tue, Oct 03, 2023, Maxim Levitsky wrote:
+> =D0=A3 =D0=BF=D0=BD, 2023-09-11 =D1=83 11:16 +0900, David Stevens =D0=BF=
+=D0=B8=D1=88=D0=B5:
+> > From: David Stevens <stevensd@chromium.org>
+> > The fact that non-refcounted pfns can no longer be accessed without mmu
+> > notifier protection is a breaking change. Since there is no timeline fo=
+r
+> > updating everything in KVM to use mmu notifiers, this change adds an
+> > opt-in module parameter called allow_unsafe_mappings to allow such
+> > mappings. Systems which trust userspace not to tear down such unsafe
+> > mappings while KVM is using them can set this parameter to re-enable th=
+e
+> > legacy behavior.
+>=20
+> Do you have a practical example of a VM that can break with this change?
+> E.g will a normal VM break? will a VM with VFIO devices break? Will a VM =
+with
+> hugepages mapped into it break?
+>=20
+> Will the trick of limiting the kernel memory with 'mem=3DX', and then use=
+ the=20
+> extra 'upper memory' for VMs still work?
 
-I think it would be better to clean the associations before actually
-deactivating the queues. Your teardown becomes LIFO/flipped order of
-what is done in mlx5_activate_channel.
+This is the trick that will require an opt-in from the admin.  Anything whe=
+re KVM
+is effectively relying on userspace to pinky swear that the memory won't be
+migrated, freed, etc.
 
->  	napi_disable(&c->napi);
->  }
+It's unlikely, but theoretically possible that it might break existing setu=
+ps for
+"normal" VMs.  E.g. if a VM is using VM_PFNMAP'd memory for a nested VMCS. =
+ But
+such setups are already wildly broken, their users just don't know it.  The=
+ proposal
+here is to require admins for such setups to opt-in to the "unsafe" behavio=
+r,
+i.e. give backwards compatibility, but make the admin explicitly acknowledg=
+e that
+what they are doing may have unwanted consequences.
 
-In general, the netdev community maintains a rule for not reposting new
-versions of patches in 24hr periods to avoid these types of situations.
+> > +	/*
+> > +	 * True if the returned pfn is for a page with a valid refcount. Fals=
+e
+> > +	 * if the returned pfn has no struct page or if the struct page is no=
+t
+> > +	 * being refcounted (e.g. tail pages of non-compound higher order
+> > +	 * allocations from IO/PFNMAP mappings).
+> >=20
+> Aren't all tail pages not-refcounted (e.g tail page of a hugepage?)
+> I haven't researched this topic yet.
 
-Lets add the feedback of updating the commit message feedback in the v1
-thread into v3.
+Nope.  As Christoph stated, they are most definitely "weird" allocations th=
+ough.
+In this case, IIRC, it's the DRM's Translation Table Manager (TTM) code tha=
+t
+kmalloc's a large chunk of memory, and then stuffs the pfn into the page ta=
+bles
+courtesy of the vmf_insert_pfn_prot() in ttm_bo_vm_fault_reserved().
 
-       https://lore.kernel.org/netdev/20240206025153.GA11388@fastly.com/T/#mcbf987c817c0d06c29364410ba8ab10b144c753d
+The head page has a non-zero refcount, but it's not really refcounted.  And=
+ the
+tail pages have nothing, which IIRC, results in KVM inadvertantly causing p=
+ages
+to be freed due to putting the last refeferences.
 
-Lets send out that v3 a day from now if that's alright. This way we can
-pick up feedback from others if needed, but I think we are converging
-here.
+[*] https://lore.kernel.org/all/ZRZeaP7W5SuereMX@infradead.org
 
---
-Thanks,
 
-Rahul Rameshbabu
+> > +	 *
+> > +	 * When this output flag is false, callers should not try to convert
+> > +	 * the pfn to a struct page.
+
+This should explain what the flag tracks, not what callers should or should=
+n't
+do with the flag.  E.g. strictly speaking, there's no danger in grabbing th=
+e
+corresponding "struct page" if the caller verifies it's a valid PFN.  Tryin=
+g to
+use the page outside of mmu_notifier protection is where things would get d=
+icey.
+
+> > +	 */
+> > +	bool is_refcounted_page;
+> >  };
+> > =20
+> >  kvm_pfn_t __kvm_follow_pfn(struct kvm_follow_pfn *foll);
+> > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> > index 9b33a59c6d65..235c5cb3fdac 100644
+> > --- a/virt/kvm/kvm_main.c
+> > +++ b/virt/kvm/kvm_main.c
+> > @@ -96,6 +96,10 @@ unsigned int halt_poll_ns_shrink;
+> >  module_param(halt_poll_ns_shrink, uint, 0644);
+> >  EXPORT_SYMBOL_GPL(halt_poll_ns_shrink);
+> > =20
+> > +/* Allow non-struct page memory to be mapped without MMU notifier prot=
+ection. */
+> > +static bool allow_unsafe_mappings;
+> > +module_param(allow_unsafe_mappings, bool, 0444);
+> > +
+> >  /*
+> >   * Ordering of locks:
+> >   *
+> > @@ -2507,6 +2511,15 @@ static inline int check_user_page_hwpoison(unsig=
+ned long addr)
+> >  	return rc =3D=3D -EHWPOISON;
+> >  }
+> > =20
+> > +static kvm_pfn_t kvm_follow_refcounted_pfn(struct kvm_follow_pfn *foll=
+,
+> > +					   struct page *page)
+> > +{
+> > +	kvm_pfn_t pfn =3D page_to_pfn(page);
+> > +
+> > +	foll->is_refcounted_page =3D true;
+> > +	return pfn;
+> > +}
+>=20
+> Just a matter of taste but to me this function looks confusing.
+> IMHO, just duplicating these two lines of code is better.
+> However if you prefer I won't argue over this.
+
+Hrm, when I suggested this, there was also a put_page() and a comment about=
+ hacky
+code in there:
+
+static kvm_pfn_t kvm_follow_refcounted_pfn(struct kvm_follow_pfn *foll,
+                                          struct page *page)
+{
+       kvm_pfn_t pfn =3D page_to_pfn(page);
+
+       foll->is_refcounted_page =3D true;
+
+       /*
+        * FIXME: Ideally, KVM wouldn't pass FOLL_GET to gup() when the call=
+er
+        * doesn't want to grab a reference, but gup() doesn't support getti=
+ng
+        * just the pfn, i.e. FOLL_GET is effectively mandatory.  If that ev=
+er
+        * changes, drop this and simply don't pass FOLL_GET to gup().
+        */
+       if (!(foll->flags & FOLL_GET))
+               put_page(page);
+
+       return pfn;
+}
+
+
+More below.
+
+> > -	/*
+> > -	 * Get a reference here because callers of *hva_to_pfn* and
+> > -	 * *gfn_to_pfn* ultimately call kvm_release_pfn_clean on the
+> > -	 * returned pfn.  This is only needed if the VMA has VM_MIXEDMAP
+> > -	 * set, but the kvm_try_get_pfn/kvm_release_pfn_clean pair will
+> > -	 * simply do nothing for reserved pfns.
+> > -	 *
+> > -	 * Whoever called remap_pfn_range is also going to call e.g.
+> > -	 * unmap_mapping_range before the underlying pages are freed,
+> > -	 * causing a call to our MMU notifier.
+> > -	 *
+> > -	 * Certain IO or PFNMAP mappings can be backed with valid
+> > -	 * struct pages, but be allocated without refcounting e.g.,
+> > -	 * tail pages of non-compound higher order allocations, which
+> > -	 * would then underflow the refcount when the caller does the
+> > -	 * required put_page. Don't allow those pages here.
+> > -	 */
+>=20
+> Why the comment is removed? as far as I see the code still grabs a refere=
+nce
+> to the page.
+
+Because what the above comment is saying is effectively obsoleted by is_ref=
+counted_page.
+The old comment is essentially saying, "grab a reference because KVM expect=
+s to
+put a reference", whereas as the new code grabs a reference because it's ne=
+cessary
+to honor allow_unsafe_mappings.
+
+So I agree with David that the existing comment should go away, but I agree=
+ with
+you in that kvm_follow_refcounted_pfn() really needs a comment, e.g. to exp=
+lain
+how KVM manages struct page refcounts.
+
+> > -	if (!kvm_try_get_pfn(pfn))
+> > -		r =3D -EFAULT;
+> > +	if (get_page_unless_zero(page))
+> > +		WARN_ON_ONCE(kvm_follow_refcounted_pfn(foll, page) !=3D pfn);
+>=20
+> Once again, the kvm_follow_refcounted_pfn usage is confusing IMHO.  It se=
+ts
+> the 'foll->is_refcounted_page', and yet someone can think that it's only
+> there for the WARN_ON_ONCE.
+>=20
+> That IMHO would read better:
+>=20
+> if (get_page_unless_zero(page))
+> 	foll->is_refcounted_page =3D true;
+>=20
+> WARN_ON_ONCE(page_to_pfn(page) !=3D pfn);
+>=20
+> Note that I moved the warn out of the 'get_page_unless_zero' condition
+> because I think that this condition should be true for non refcounted pag=
+es
+> as well.
+
+Yeah, let me see if I can piece together what happened to the put_page() ca=
+ll.
+
+> Also I don't understand why 'get_page_unless_zero(page)' result is ignore=
+d.
+> As I understand it, it will increase refcount of a page unless it is zero=
+=20
+>=20
+> If a refcount of a refcounted page is 0 isn't that a bug?
+
+Yes, the problem is that KVM doesn't know if a page is refcounted or not, w=
+ithout
+actually trying to acquire a reference.  See the TTM mess mentioned above.
+
+Note, Christoph is suggesting that KVM instead refuse to play nice and forc=
+e the
+TTM code to properly refcount things.  I very much like that idea in theory=
+, but
+I have no idea how feasible it is (that code is all kinds of twisty).
+
+> The page was returned from kvm_pfn_to_refcounted_page which supposed only=
+ to
+> return pages that are refcounted.
+>=20
+> I might not understand something in regard to 'get_page_unless_zero(page)=
+'
+> usage both in old and the new code.
+
 
