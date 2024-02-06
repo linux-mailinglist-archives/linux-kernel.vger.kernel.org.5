@@ -1,147 +1,97 @@
-Return-Path: <linux-kernel+bounces-54590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54591-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0044F84B148
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:30:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB96A84B14A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:30:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98A2F28286A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:30:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38EC3B240FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:30:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8EE912D169;
-	Tue,  6 Feb 2024 09:30:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2327C12D777;
+	Tue,  6 Feb 2024 09:30:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dNj/372O"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="JP2eRrv2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70D7312D14E
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 09:30:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48AE412D165;
+	Tue,  6 Feb 2024 09:30:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707211822; cv=none; b=mfTSygik8X24tF/rwXYESv3SCidQSHI407wPOj9lrkJVScl2wOYZsUIME87antWG81Bdbs3vEXrzzRn1XI+NFON+qNmX7XEe4nyjcYZdpb/c1gmBB2mXyTIddWxqr7uvVYl59ezoEdkbejvEIXbBdIExReBvLV4ZtW4N5LXCMcc=
+	t=1707211825; cv=none; b=hYGioQt/Mq9SsfupfkkogH2p0pHQSmDuEbKTiYOOuoyWrIMHPs7IKNgPLMmwLkiHtwzPdmY9uv+YBRQiIIeEOGGx91taByhyiyTrNbnIZHZQEKjhujQonpAA+dcuhsqNG3huasQH37bKdCZSoSL0uy8ugo/caEiROS2jygHm8xM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707211822; c=relaxed/simple;
-	bh=IaLwVJub9rHcisqDpzt7cqCm29yob7EzfEts20Hi9/0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=qVg2UAF4SVRMMktU+XL76HTaQuu4CxGKbB1tm4LUPMoKIn/JNpKgQtrc/So7yfADN5LhYeAESjzFoulj5Uc6ZXE2JMyOMvWSrlaG+rKwotueiqN0FZqI5Og55cUBi/BYAOorfELEwKHACl/HvXI6Mo95dktcm91BJC1cgJaPbjI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dNj/372O; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707211819;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Q9Ni5zD5aI924WZ523dxW6LOPKJDwR4jYge/oaVIYGM=;
-	b=dNj/372Ow7fsIjxsBpdzBn/Le6W3NcoyTK8PgOAKnctnkJG2BZvaSGGcp52x2T9BF0CQ5/
-	DZo/os5SBGfskqtdRWB6TXuSFzp3aF3+iTjJLIjdRsYATQxX2e2ZeIQvk3rtibII8V3eW9
-	NN7f4CYwAcyTcKhJm+JtCxT378ldEx0=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-622-2aKSgjslPP6WSQtDW54mig-1; Tue, 06 Feb 2024 04:30:18 -0500
-X-MC-Unique: 2aKSgjslPP6WSQtDW54mig-1
-Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-50e93545a26so1551344e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 01:30:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707211816; x=1707816616;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q9Ni5zD5aI924WZ523dxW6LOPKJDwR4jYge/oaVIYGM=;
-        b=E/JhfOEepVIuB8btALZsTeGVo+aAJQY9kGZb49kWUb/iAfTG38ive3Me2wB8Bp1wNQ
-         RqhSK7WTbsuCdZOspLnYVfoBuaAFPLtZQh7fDkEeJKUCg4zWOBaVafKQ5/o8UzNkkWxD
-         X3D8FmSs4HC0r4lZqwxj22tX63j+xSH7BjyoVWuwLlgGAxJN5Jmta1tAghgrxun2ky/V
-         /q85ucMWaOAXblL8beNV+7+LYJTDRrcohB3tlrQE66VgrmutAdEUD8mVirHJ9Vj9BLCm
-         f72A1wHAtKOG8FqqjSPcRT7B1fIS45YAth1AMD4MF8KEMXmA+zGj2NomT6mCVGqQAqoi
-         CXXg==
-X-Gm-Message-State: AOJu0YxN9FywhIaN8gtS0JVLX1ZaUAPaN2cL7Mvx8JzvEuLZIim1BAlp
-	Pbdqj/XcDIUGJNe7weoQaXeRLOeZBoYUskndyHO/jCXtkV1k5v9IqgQyS6V4UN0IVwuOrfd0gNT
-	IwACm0N/FL/tRDhc4hj4bG7zzlttGo4AUCpxUf8Va1s2qzn4ZFpn9Q0y1llpIW0hFNaKS1w==
-X-Received: by 2002:a19:384c:0:b0:511:4643:d913 with SMTP id d12-20020a19384c000000b005114643d913mr1195756lfj.6.1707211816295;
-        Tue, 06 Feb 2024 01:30:16 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFMB0/STrE7JrMd5kBEqFqNmfmjV32dXZjCP+f+uWlN9W1BEG6pveY9Pa63dAWcUuvsh41igg==
-X-Received: by 2002:a19:384c:0:b0:511:4643:d913 with SMTP id d12-20020a19384c000000b005114643d913mr1195729lfj.6.1707211815823;
-        Tue, 06 Feb 2024 01:30:15 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU432sw/2m+/j/8srsRaQtPTmvUrOd+PxO+6YBAHkDOj2n4y6nGcdpph4yJc2HJYhdYWQiGlicLkKkfo6/S2aRS+IHFELV8dj5Ls5u3ERe5+1dB48VRSuPEAqU9e1IdRHmyTaeEgiROftztwuedM1O9NZGdVbQBdaz9hAUv5AEghY6ErU49D2rHcKXC91tTv421JWCFgLluaxr+9373URMDQxmSPGQkpudoZnvVdCavhhzv3QwXRPfwG12vLtJ8+VzorlsT6NeiK/BvY3/ZSPYCoDT17rGhiWOgLTz6I9O6IfCXmWpWo72QOEtId7LBndSwKekXwiVwwTiElVxQxxXfOVk=
-Received: from gerbillo.redhat.com (146-241-224-127.dyn.eolo.it. [146.241.224.127])
-        by smtp.gmail.com with ESMTPSA id fl6-20020a05600c0b8600b0040efb490814sm1368826wmb.27.2024.02.06.01.30.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 01:30:15 -0800 (PST)
-Message-ID: <1560533cb4eb3f36e640c9931fba93e0d0378652.camel@redhat.com>
-Subject: Re: [PATCH net-next v7 2/2] net: add netmem to skb_frag_t
-From: Paolo Abeni <pabeni@redhat.com>
-To: Mina Almasry <almasrymina@google.com>, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>, Jason Gunthorpe
- <jgg@nvidia.com>, Christian =?ISO-8859-1?Q?K=F6nig?=
- <christian.koenig@amd.com>, Shakeel Butt <shakeelb@google.com>, Yunsheng
- Lin <linyunsheng@huawei.com>, Willem de Bruijn
- <willemdebruijn.kernel@gmail.com>
-Date: Tue, 06 Feb 2024 10:30:14 +0100
-In-Reply-To: <20240201213429.4120839-3-almasrymina@google.com>
-References: <20240201213429.4120839-1-almasrymina@google.com>
-	 <20240201213429.4120839-3-almasrymina@google.com>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+	s=arc-20240116; t=1707211825; c=relaxed/simple;
+	bh=qWfeTTeoBr9rdFyPV0/HnKFKUfJuboySmGfliyMAN5I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RwFGd52tDLy74zLl1GDkOBJgFGIyhWV/iD+yIcA4ydDBpqry66/T+xc8+kvQiNR71cWh12rC4XCYOEo0GPQhu8sq2DHBXlTsHjlZbwr+AaX+bLGbCNRBzvpGVdfNAG8wegtNcgjZpfP6udRqQ5oe2Y1fqUaG8zQHlcWgERU/pTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=JP2eRrv2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34263C43399;
+	Tue,  6 Feb 2024 09:30:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1707211824;
+	bh=qWfeTTeoBr9rdFyPV0/HnKFKUfJuboySmGfliyMAN5I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JP2eRrv27P+yVwGdvNeOV136R0Nxxg5THl2E57UM0HnyihU+2ZJHbf00shnK8sp00
+	 LKLy8sFh3kuhSFkm1n3NTG+HaIX6MpyjjryeWVroXZVvr9i4nWqbjiGn0SiH5brmSX
+	 ryeOz++PE86+bqiZnN9a79M8HB2frumgS6vuUZeI=
+Date: Tue, 6 Feb 2024 09:30:21 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Joy Chakraborty <joychakr@google.com>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	linux-kernel@vger.kernel.org, manugautam@google.com,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v2] nvmem: rmem: Fix return value of rmem_read()
+Message-ID: <2024020647-submarine-lucid-ea7b@gregkh>
+References: <20240206042408.224138-1-joychakr@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240206042408.224138-1-joychakr@google.com>
 
-On Thu, 2024-02-01 at 13:34 -0800, Mina Almasry wrote:
-> @@ -2528,8 +2562,25 @@ static inline void skb_fill_page_desc_noacc(struct=
- sk_buff *skb, int i,
->  	shinfo->nr_frags =3D i + 1;
->  }
-> =20
-> -void skb_add_rx_frag(struct sk_buff *skb, int i, struct page *page, int =
-off,
-> -		     int size, unsigned int truesize);
-> +static inline void skb_add_rx_frag_netmem(struct sk_buff *skb, int i,
-> +					  netmem_ref netmem, int off, int size,
-> +					  unsigned int truesize)
-> +{
-> +	DEBUG_NET_WARN_ON_ONCE(size > truesize);
-> +
-> +	skb_fill_netmem_desc(skb, i, netmem, off, size);
-> +	skb->len +=3D size;
-> +	skb->data_len +=3D size;
-> +	skb->truesize +=3D truesize;
-> +}
+On Tue, Feb 06, 2024 at 04:24:08AM +0000, Joy Chakraborty wrote:
+> reg_read() callback registered with nvmem core expects an integer error
+> as a return value but rmem_read() returns the number of bytes read, as a
+> result error checks in nvmem core fail even when they shouldn't.
+> 
+> Return 0 on success where number of bytes read match the number of bytes
+> requested and a negative error -EINVAL on all other cases.
+> 
+> Fixes: 5a3fa75a4d9c ("nvmem: Add driver to expose reserved memory as nvmem")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Joy Chakraborty <joychakr@google.com>
+> ---
+>  drivers/nvmem/rmem.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/nvmem/rmem.c b/drivers/nvmem/rmem.c
+> index 752d0bf4445e..a74dfa279ff4 100644
+> --- a/drivers/nvmem/rmem.c
+> +++ b/drivers/nvmem/rmem.c
+> @@ -46,7 +46,12 @@ static int rmem_read(void *context, unsigned int offset,
+>  
+>  	memunmap(addr);
+>  
+> -	return count;
+> +	if (count != bytes) {
+> +		dev_err(priv->dev, "Failed read memory (%d)\n", count);
+> +		return -EINVAL;
 
-> +
-> +static inline void skb_add_rx_frag(struct sk_buff *skb, int i,
-> +				   struct page *page, int off, int size,
-> +				   unsigned int truesize)
-> +{
-> +	skb_add_rx_frag_netmem(skb, i, page_to_netmem(page), off, size,
-> +			       truesize);
-> +}
+Why is a "short read" somehow illegal here?  What internal changes need
+to be made now that this has changed?
 
-I'm very sorry, I was not clear in my previous feedback: only
-skb_add_rx_frag() was supposed to be 'static inline'.
+And what will userspace do with this error message in the kernel log?
 
-skb_add_rx_frag_netmem() contains a few more instructions and there are
-a lot of callers, always inline it does not look the best option.
+thanks,
 
-I'm sorry for requiring an additional iteration, but feel free to ad my
-Acked-by with the above change.
-
-Cheers,
-
-Paolo
-
+greg k-h
 
