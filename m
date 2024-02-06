@@ -1,330 +1,266 @@
-Return-Path: <linux-kernel+bounces-55409-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 074E084BC57
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:41:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E69284BC5E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:42:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E9F81F234A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:41:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E818F1F25A69
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:42:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07FC5171D4;
-	Tue,  6 Feb 2024 17:39:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ABD61B803;
+	Tue,  6 Feb 2024 17:40:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NLgJ5XHh"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="W7KIvb2M"
+Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4468D51D
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 17:39:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C9CB1AAAE
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 17:39:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707241182; cv=none; b=dI807HwjhqKFHWimttQz3/UpnA0mln6RVBCUQIZXLzuuRw1Qxhdhsxq2UMbkNMhex7XGY3GL1U9LL0kBEvijBdhhE8m7op19aHfwnABHfGckFKYSVEry3Gc1ehzl9oTIWmt3MjI9q+JP4Sas5Bidtr5UkeFkywgGEvhDCV2zjO0=
+	t=1707241199; cv=none; b=P+qPziUrn7PZoCqdfftBxfTijcQqdG9dR/LpQOwTbjhKJ/xjjJME4qct1kp/5QUlp3uZayaK33tspiSd5v/U0mCbcvuvgpFlRM6lbLVjrTPXrWHIEq5NZtkP/CFo3c2anCyTWw0I22UPhtP4Tl0vaHrYdcGsf+OziOwz4FLDIF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707241182; c=relaxed/simple;
-	bh=VVhzDt1nzxBLlkryootH7gB0a0OIdkDAPabVbkIWJxQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k3GDxblx4gwATJ9tqzAvnMpTmPejq5IKuUX7w1jpZEO9eXNgekRx9Htxok5Ztv7+15VEJnVXYtjCu3LDTKMJjnKphHGxPHM88B8mp8al0Z7QvSws4dD2KHUV8X6cZ8LUK064TJ3UlQV1O3GQ+9P44LTOS90dboImU7ucnretW28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NLgJ5XHh; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e02fa257eeso633960b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 09:39:38 -0800 (PST)
+	s=arc-20240116; t=1707241199; c=relaxed/simple;
+	bh=muU83VQwgdQrXuKRFa0wK3OfDInPsZQktGHV8MIhSHE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MHbtB1qEsC0y8EczdSpIIfNRK3ECmQu2ZACmI1ixOrX0dc5e0Jgpp/Ty1zdYkRhZn/EOgx/SmrYUZ8HWHF6IGqg2tP+/sX6gwgH6xRg388HCXbvVJtJYAvmV4H+4MdDGxBKiy5a6i+I1hXLaYDpiqCRkIawpH1zzNys1MhfPjlY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=W7KIvb2M; arc=none smtp.client-ip=209.85.166.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
+Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7c00cfd7156so239151839f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 09:39:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707241178; x=1707845978; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rb9xEyirtGCsTVMLq3WXEVsBdomE7xpr3Gl07IaIp9Y=;
-        b=NLgJ5XHh4AM2IGUouqqFKmoERVPw22jAiHWpGGz1p+NaOUNxXt4lnTjtoxZViAHJgd
-         9/lGYnkLdzTkfY4Abyz+kl1kqerKTnOKvwJisCRCTpCddC6HzDsH0YsmtN15vr4LbepS
-         mXfcymXaDLvDe50uPENtJQLLLdzMZ+Y+o63pcJ/cK5TLGJ9bi7qvYMZ1mwx4mL+8bfCc
-         5bf/f8jWX4ZnbG+7TE7TSgHuYhg0azyJN1xGfYcIyMyOOb6HgIOqzqpIGIyIqbUQvOWZ
-         mDYZsmNNCrZtQhNgOTP8kWsCzA9M/0M3KTzxCpnHGmLPWTvrx4F0L4LA/wejBMDFDjSt
-         b0CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707241178; x=1707845978;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1707241196; x=1707845996; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rb9xEyirtGCsTVMLq3WXEVsBdomE7xpr3Gl07IaIp9Y=;
-        b=COXDEHeKzmm/0dqvM/0SHKzjhSZg2FjCKQSBIcOnsx9K3uM/bO1WuxYBL9v5h1PpEz
-         q2rklyoyloJNQorG9JyMb1DjTt38Q28FWtolhZrdPE4y3+K3XbQlHIUxM4zbmOHokcgr
-         uwmTr0M86CHbeuZwImer+hbtJvBbkqgJB9KgfxCWnp+TeDiZF715ZM4K2ArwRHZE2Gvb
-         shES6PxFS+30tgAE6JMrf/Wnk7r6H2kGMJW9t+Tpn0mall1tKgWeq3J0m+CNAkffFeSm
-         KI0Ig+eKOjhyTL9Mt8N+BuWgn+yb78GG2MKDsvW+mu/GPNFjuUIR5IhM4haSXAHXAWFt
-         AHFA==
-X-Gm-Message-State: AOJu0YwV14JSjphlYu/RuO1X2exvQlHIyo7k9lvt5LiOfnrKRSFSzCiF
-	r3GZxNq5eTyZz88vir9VEqCL6j+XAyExmrpkmI333BTaPOMnXPNXqde8L9NHyoWN7bN0l/+EDrd
-	D
-X-Google-Smtp-Source: AGHT+IEi/8CfW9wDHyEA2OHQP6EePASJl1jizXwsc41zLMMs2c3n0jD1ZcH8FWiqgRxsqI02AF9mSA==
-X-Received: by 2002:a05:6a00:13a6:b0:6df:ee93:570 with SMTP id t38-20020a056a0013a600b006dfee930570mr216558pfg.6.1707241177800;
-        Tue, 06 Feb 2024 09:39:37 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVbO66R4TOpmw2ZmlS3Fyp5Baz/4XtRIsg/bhQYV5FusHW7Xai8QXnA009TZVYEJ5O84/RAgTQ1ApRvxTGjgjXsvyKT7WZ9KYrN1ieff/P+aHcnidvtfzqOsC854JRhqVJrVD6E7chZ4KXRN5ckqA==
-Received: from p14s ([2604:3d09:148c:c800:628f:df28:fb60:e513])
-        by smtp.gmail.com with ESMTPSA id d22-20020aa78696000000b006e04a659ed6sm2244047pfo.67.2024.02.06.09.39.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 09:39:37 -0800 (PST)
-Date: Tue, 6 Feb 2024 10:39:35 -0700
-From: Mathieu Poirier <mathieu.poirier@linaro.org>
-To: Tanmay Shah <tanmay.shah@amd.com>
-Cc: andersson@kernel.org, linux-remoteproc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] remoteproc: zynqmp: fix lockstep mode memory region
-Message-ID: <ZcJu10CIVYF9iodF@p14s>
-References: <20240201004812.1471407-1-tanmay.shah@amd.com>
+        bh=HvfgmunFGFtkyRTL3y0u1hUwzBDb/t5fOC1RyGSPoBE=;
+        b=W7KIvb2M9D0hj3+690bm9XEthiJ/NAVXLi4QrVnoUFk4QsaKkR3dsrOij5E3kRSWrL
+         1wZckZLthNcMBBezvp26twpdtsyopvLAZLsnIOr9mX6tV9CEo98+KfwUjS6JIyyXRgSj
+         ubdRP2lLG97GvDMr1TBZSdTmPphE8RYj+ZmIOWQkR0Fg/qdJv5MU221Z8cGIk+mViCFF
+         in9RHuNm38NhM2VITWUySmm2k7oz14zj68TaeNQ6IWyur8S+pK8pVaYN/lZPSW0+m/uQ
+         udYW66P1QqGta6CMcFJIp28586f/6fygOFApq/kEXRqd8nwBN5LuiYwQJM/J9pzihEqf
+         jksA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707241196; x=1707845996;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HvfgmunFGFtkyRTL3y0u1hUwzBDb/t5fOC1RyGSPoBE=;
+        b=KjeL7I2H6BwSqmt72ZI4mPIpHpR9q+yFfXu1onLkcXAJ9ITQnS9yLwgaKe4gWkexlI
+         AOK2dj++XxbCmwuTOrh2+1FpUDlghmSPCGwNSsPfJp4iPrvwdH5bqcDIYwb7zORkHn9m
+         ye48tKp+VNZz5KbaGfcGyvOZaxr1uvghqyHmAIJ1Re4989OaDQ8Ctx+cT3K9ZpC5luI0
+         ws5JbohC//y3c0reYbs1CjU9KTn+mYPewEl5b9KnTCe5uy5pmNm/J6HFenYCoR8bP/iB
+         A95wzp5LODUs6GTlLPr0ym8dXezoGVc4tQIKw2icX9SqfnD3lLDijzQexGB4vSvWgbqe
+         +t8Q==
+X-Gm-Message-State: AOJu0YzCo2ZtoGpsLGThPfIZ4gl6oLvucLQQ8SIEnHJ3HvZsFmXDWLyQ
+	P1yYvGpu0ql94xGgpOXsIYSrR5ln9I88RKy4YUVhRlQlmXqAtC+ohx+zROGfH5URBgfuVSu/s06
+	n78jCoKKayDObJXshsrg/V3mtXGcu1GuGILwZKw==
+X-Google-Smtp-Source: AGHT+IHPc2cBADHjssHhxrSRF6tDOtzD6+RerOAu4zsdDVok37467SYLbs4n4+eGFMyAky2qmsk1zAWzM0ufxw7kOUw=
+X-Received: by 2002:a92:c64f:0:b0:363:76dd:9d37 with SMTP id
+ 15-20020a92c64f000000b0036376dd9d37mr3453665ill.27.1707241196423; Tue, 06 Feb
+ 2024 09:39:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240201004812.1471407-1-tanmay.shah@amd.com>
+References: <20240127161753.114685-1-apatel@ventanamicro.com> <87h6ily53k.fsf@all.your.base.are.belong.to.us>
+In-Reply-To: <87h6ily53k.fsf@all.your.base.are.belong.to.us>
+From: Anup Patel <anup@brainfault.org>
+Date: Tue, 6 Feb 2024 23:09:44 +0530
+Message-ID: <CAAhSdy2PPjS6++Edh8NkgiBmcovTUjS5oXE2eR5ZwPfAfVA0ng@mail.gmail.com>
+Subject: Re: [PATCH v12 00/25] Linux RISC-V AIA Support
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Cc: Anup Patel <apatel@ventanamicro.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand <frowand.list@gmail.com>, 
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org, 
+	Saravana Kannan <saravanak@google.com>, Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org, 
+	Atish Patra <atishp@atishpatra.org>, linux-riscv@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, Andrew Jones <ajones@ventanamicro.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 31, 2024 at 04:48:12PM -0800, Tanmay Shah wrote:
-> In lockstep mode, r5 core0 uses TCM of R5 core1. Following is lockstep
-> mode memory region as per hardware reference manual.
-> 
->     |      *TCM*         |   *R5 View* | *Linux view* |
->     | R5_0 ATCM (128 KB) | 0x0000_0000 | 0xFFE0_0000  |
->     | R5_0 BTCM (128 KB) | 0x0002_0000 | 0xFFE2_0000  |
-> 
-> However, driver shouldn't model it as above because R5 core0 TCM and core1
-> TCM has different power-domains mapped to it.
-> Hence, TCM address space in lockstep mode should be modeled as 64KB
-> regions only where each region has its own power-domain as following:
-> 
->     |      *TCM*         |   *R5 View* | *Linux view* |
->     | R5_0 ATCM0 (64 KB) | 0x0000_0000 | 0xFFE0_0000  |
->     | R5_0 BTCM0 (64 KB) | 0x0002_0000 | 0xFFE2_0000  |
->     | R5_0 ATCM1 (64 KB) | 0x0001_0000 | 0xFFE1_0000  |
->     | R5_0 BTCM1 (64 KB) | 0x0003_0000 | 0xFFE3_0000  |
-> 
-> This fix makes driver maintanance easy and makes design robust for future
-> platorms as well.
-> 
-> Fixes: 9af45bbdcbbb ("remoteproc: zynqmp: fix TCM carveouts in lockstep mode")
+On Tue, Feb 6, 2024 at 9:09=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.=
+org> wrote:
+>
+> Hi Anup,
+>
+> Anup Patel <apatel@ventanamicro.com> writes:
+>
+> > The RISC-V AIA specification is ratified as-per the RISC-V internationa=
+l
+> > process. The latest ratified AIA specifcation can be found at:
+> > https://github.com/riscv/riscv-aia/releases/download/1.0/riscv-interrup=
+ts-1.0.pdf
+> >
+> > At a high-level, the AIA specification adds three things:
+> > 1) AIA CSRs
+> >    - Improved local interrupt support
+> > 2) Incoming Message Signaled Interrupt Controller (IMSIC)
+> >    - Per-HART MSI controller
+> >    - Support MSI virtualization
+> >    - Support IPI along with virtualization
+> > 3) Advanced Platform-Level Interrupt Controller (APLIC)
+> >    - Wired interrupt controller
+> >    - In MSI-mode, converts wired interrupt into MSIs (i.e. MSI generato=
+r)
+> >    - In Direct-mode, injects external interrupts directly into HARTs
+> >
+> > For an overview of the AIA specification, refer the AIA virtualization
+> > talk at KVM Forum 2022:
+> > https://static.sched.com/hosted_files/kvmforum2022/a1/AIA_Virtualizatio=
+n_in_KVM_RISCV_final.pdf
+> > https://www.youtube.com/watch?v=3Dr071dL8Z0yo
+>
+> Thank you for continuing to work on this series! I like this
+> direction of the series!
+>
+> TL;DR: I think we can get rid of most of the id/householding data
+> structures, except for the irq matrix.
+>
+> Most of my comments are more of a design/overview nature, so I'll
+> comment here in the cover letter.
+>
+> I took the series for a spin with and it with Alex' ftrace fix it,
+> passes all my tests nicely!
+>
+> Now some thoughts/comments (I'm coming from the x86 side of things!):
+>
+> id/enable-tracking: There are a lot of different id/enabled tracking
+> with corresponding locks, where there's IMO overlap with what the
+> matrix provides.
 
-This patch doesn't fix a bug, i.e users won't see any changes once this patch
-gets applied.  As such there is no need for a "Fixes" tag.  When you resend this
-patch (see below), please remove the line.
+The matrix allocator does not track the enabled/disabled state of
+the per-CPU IDs. This is why we have a separate per-CPU
+ids_enabled_bitmap which is also used for remote synchronization
+across CPUs.
 
-> Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
-> ---
->  drivers/remoteproc/xlnx_r5_remoteproc.c | 145 ++----------------------
->  1 file changed, 12 insertions(+), 133 deletions(-)
+>
+> Let's start with struct imsic_priv:
+>
+>    | /* Dummy HW interrupt numbers */
+>    | unsigned int nr_hwirqs;
+>    | raw_spinlock_t hwirqs_lock;
+>    | unsigned long *hwirqs_used_bitmap;
+
+The matrix allocator manages actual IDs for each CPU whereas
+the Linux irq_data expects a fixed hwirq which does not change.
+
+Due to this, we have a dummy hwirq space which is always
+fixed. The only thing that is changed under-the-hood by the
+IMSIC driver is the dummy hwirq to actual HW vector (cpu, id)
+mapping.
+
+>
+> These are used to for the domain routing (hwirq -> desc/virq), and not
+> needed. Just use the same id as virq (at allocation time), and get rid
+> of these data structures/corresponding functions. The lookup in the
+> interrupt handler via imsic_local_priv.vectors doesn't care about
+> hwirq. This is what x86 does... The imsic_vector roughly corresponds
+> to apic_chip_data (nit: imsic_vector could have the chip_data suffix
+> as well, at least it would have helped me!)
+
+Yes, imsic_vector corresponds to apic_chip_data in the x86 world.
+
+>
+> Moving/affinity changes. The moving of a vector to another CPU
+> currently involves:
+>
+> 1. Allocate a new vector from the matrix
+> 2. Disable/enable the corresponding per-cpu ids_enabled_bitmap (nested
+>    spinlocks)
+> 3. Trigger two IPIs to apply the bitmap
+> 4. On each CPU target (imsic_local_sync()) loop the bitmap and flip
+>    all bits, and potentially rearm
+>
+> This seems a bit heavy-weight: Why are you explicitly setting/clearing
+> all the bits in a loop at the local sync?
+
+This can be certainly optimized by introducing another
+ids_dirty_bitmap. I will add this in the next revision.
+
+>
+> x86 does it a bit differently (more lazily): The chip_data has
+> prev_{cpu,vector}/move_in_progress fields, and keep both vectors
+> enabled until there's an interrupt on the new vector, and then the old
+> one is cleaned (irq_complete_move()).
+>
+> Further; When it's time to remove the old vector, x86 doesn't trigger
+> an IPI on the disabling side, but queues a cleanup job on a per-cpu
+> list and triggers a timeout. So, the per-cpu chip_data (per-cpu
+> "vectors" in your series) can reside in two places during the transit.
+
+We can't avoid IPIs when moving vectors from one CPU to another
+CPU because IMSIC id enable/disable is only possible through
+CSRs. Also, keep in-mind that irq affinity change might be initiated
+on CPU X for some interrupt targeting CPU Y which is then changed
+to target CPU Z.
+
+In the case of x86, they have memory mapped registers which
+allows one CPU to enable/disable the ID of another CPU.
+
+>
+> I wonder if this clean up is less intrusive, and you just need to
+> perform what's in the per-list instead of dealing with the
+> ids_enabled_bitmap? Maybe we can even remove that bitmap as well. The
+> chip_data/desc has that information. This would mean that
+> imsic_local_priv() would only have the local vectors (chip_data), and
+> a cleanup list/timer.
+>
+> My general comment is that instead of having these global id-tracking
+> structures, use the matrix together with some desc/chip_data local
+> data, which should be sufficient.
+
+The "ids_enabled_bitmap", "dummy hwirqs" and private imsic_vectors
+are required since the matrix allocator only manages allocation of
+per-CPU IDs.
+
+>
+> Random thought: Do we need to explicitly disable (csr) the vector,
+> when we're changing the affinity? What if we just leave it enabled,
+> and only when mask/unmask is performed it's actually explicitly masked
+> (writes to the csr)?
+
+We should not leave it enabled because some rough/buggy device
+can inject spurious interrupts using MSI writes to unused enabled
+interrupts.
+
+>
+> Missing features (which can be added later):
+> * Reservation mode/activate support (allocate many MSI, but only
+>   request/activate a subset)
+
+I did not see any PCIe or platform device requiring this kind of
+reservation. Any examples ?
+
+> * Handle managed interrupts
+
+Any examples of managed interrupts in the RISC-V world ?
+
+> * There might be some irqd flags are missing, which mostly cpuhp care
+>   about (e.g. irqd_*_single_target())...
+
+Okay, let me check and update.
+
+>
+> Finally; Given that the APLIC requires a lot more patches, depending
+> on how the review process moves on -- maybe the IMSIC side could go as
+> a separate series?
 >
 
-I am happy with this patch but won't apply it because I want to see what comes
-next.  Please include it in your next patchet.
+The most popular implementation choice across RISC-V platforms
+will be IMSIC + APLIC so both drivers should go together. In fact,
+we need both drivers for the QEMU virt machine as well because
+UART interrupt (and other wired interrupts) on the QEMU virt
+machine goes through APLIC.
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-
-> diff --git a/drivers/remoteproc/xlnx_r5_remoteproc.c b/drivers/remoteproc/xlnx_r5_remoteproc.c
-> index 4395edea9a64..42b0384d34f2 100644
-> --- a/drivers/remoteproc/xlnx_r5_remoteproc.c
-> +++ b/drivers/remoteproc/xlnx_r5_remoteproc.c
-> @@ -84,12 +84,12 @@ static const struct mem_bank_data zynqmp_tcm_banks_split[] = {
->  	{0xffeb0000UL, 0x20000, 0x10000UL, PD_R5_1_BTCM, "btcm1"},
->  };
->  
-> -/* In lockstep mode cluster combines each 64KB TCM and makes 128KB TCM */
-> +/* In lockstep mode cluster uses each 64KB TCM from second core as well */
->  static const struct mem_bank_data zynqmp_tcm_banks_lockstep[] = {
-> -	{0xffe00000UL, 0x0, 0x20000UL, PD_R5_0_ATCM, "atcm0"}, /* TCM 128KB each */
-> -	{0xffe20000UL, 0x20000, 0x20000UL, PD_R5_0_BTCM, "btcm0"},
-> -	{0, 0, 0, PD_R5_1_ATCM, ""},
-> -	{0, 0, 0, PD_R5_1_BTCM, ""},
-> +	{0xffe00000UL, 0x0, 0x10000UL, PD_R5_0_ATCM, "atcm0"}, /* TCM 64KB each */
-> +	{0xffe20000UL, 0x20000, 0x10000UL, PD_R5_0_BTCM, "btcm0"},
-> +	{0xffe10000UL, 0x10000, 0x10000UL, PD_R5_1_ATCM, "atcm1"},
-> +	{0xffe30000UL, 0x30000, 0x10000UL, PD_R5_1_BTCM, "btcm1"},
->  };
->  
->  /**
-> @@ -540,14 +540,14 @@ static int tcm_mem_map(struct rproc *rproc,
->  }
->  
->  /*
-> - * add_tcm_carveout_split_mode()
-> + * add_tcm_banks()
->   * @rproc: single R5 core's corresponding rproc instance
->   *
-> - * allocate and add remoteproc carveout for TCM memory in split mode
-> + * allocate and add remoteproc carveout for TCM memory
->   *
->   * return 0 on success, otherwise non-zero value on failure
->   */
-> -static int add_tcm_carveout_split_mode(struct rproc *rproc)
-> +static int add_tcm_banks(struct rproc *rproc)
->  {
->  	struct rproc_mem_entry *rproc_mem;
->  	struct zynqmp_r5_core *r5_core;
-> @@ -580,10 +580,10 @@ static int add_tcm_carveout_split_mode(struct rproc *rproc)
->  					     ZYNQMP_PM_REQUEST_ACK_BLOCKING);
->  		if (ret < 0) {
->  			dev_err(dev, "failed to turn on TCM 0x%x", pm_domain_id);
-> -			goto release_tcm_split;
-> +			goto release_tcm;
->  		}
->  
-> -		dev_dbg(dev, "TCM carveout split mode %s addr=%llx, da=0x%x, size=0x%lx",
-> +		dev_dbg(dev, "TCM carveout %s addr=%llx, da=0x%x, size=0x%lx",
->  			bank_name, bank_addr, da, bank_size);
->  
->  		rproc_mem = rproc_mem_entry_init(dev, NULL, bank_addr,
-> @@ -593,7 +593,7 @@ static int add_tcm_carveout_split_mode(struct rproc *rproc)
->  		if (!rproc_mem) {
->  			ret = -ENOMEM;
->  			zynqmp_pm_release_node(pm_domain_id);
-> -			goto release_tcm_split;
-> +			goto release_tcm;
->  		}
->  
->  		rproc_add_carveout(rproc, rproc_mem);
-> @@ -601,7 +601,7 @@ static int add_tcm_carveout_split_mode(struct rproc *rproc)
->  
->  	return 0;
->  
-> -release_tcm_split:
-> +release_tcm:
->  	/* If failed, Turn off all TCM banks turned on before */
->  	for (i--; i >= 0; i--) {
->  		pm_domain_id = r5_core->tcm_banks[i]->pm_domain_id;
-> @@ -610,127 +610,6 @@ static int add_tcm_carveout_split_mode(struct rproc *rproc)
->  	return ret;
->  }
->  
-> -/*
-> - * add_tcm_carveout_lockstep_mode()
-> - * @rproc: single R5 core's corresponding rproc instance
-> - *
-> - * allocate and add remoteproc carveout for TCM memory in lockstep mode
-> - *
-> - * return 0 on success, otherwise non-zero value on failure
-> - */
-> -static int add_tcm_carveout_lockstep_mode(struct rproc *rproc)
-> -{
-> -	struct rproc_mem_entry *rproc_mem;
-> -	struct zynqmp_r5_core *r5_core;
-> -	int i, num_banks, ret;
-> -	phys_addr_t bank_addr;
-> -	size_t bank_size = 0;
-> -	struct device *dev;
-> -	u32 pm_domain_id;
-> -	char *bank_name;
-> -	u32 da;
-> -
-> -	r5_core = rproc->priv;
-> -	dev = r5_core->dev;
-> -
-> -	/* Go through zynqmp banks for r5 node */
-> -	num_banks = r5_core->tcm_bank_count;
-> -
-> -	/*
-> -	 * In lockstep mode, TCM is contiguous memory block
-> -	 * However, each TCM block still needs to be enabled individually.
-> -	 * So, Enable each TCM block individually.
-> -	 * Although ATCM and BTCM is contiguous memory block, add two separate
-> -	 * carveouts for both.
-> -	 */
-> -	for (i = 0; i < num_banks; i++) {
-> -		pm_domain_id = r5_core->tcm_banks[i]->pm_domain_id;
-> -
-> -		/* Turn on each TCM bank individually */
-> -		ret = zynqmp_pm_request_node(pm_domain_id,
-> -					     ZYNQMP_PM_CAPABILITY_ACCESS, 0,
-> -					     ZYNQMP_PM_REQUEST_ACK_BLOCKING);
-> -		if (ret < 0) {
-> -			dev_err(dev, "failed to turn on TCM 0x%x", pm_domain_id);
-> -			goto release_tcm_lockstep;
-> -		}
-> -
-> -		bank_size = r5_core->tcm_banks[i]->size;
-> -		if (bank_size == 0)
-> -			continue;
-> -
-> -		bank_addr = r5_core->tcm_banks[i]->addr;
-> -		da = r5_core->tcm_banks[i]->da;
-> -		bank_name = r5_core->tcm_banks[i]->bank_name;
-> -
-> -		/* Register TCM address range, TCM map and unmap functions */
-> -		rproc_mem = rproc_mem_entry_init(dev, NULL, bank_addr,
-> -						 bank_size, da,
-> -						 tcm_mem_map, tcm_mem_unmap,
-> -						 bank_name);
-> -		if (!rproc_mem) {
-> -			ret = -ENOMEM;
-> -			zynqmp_pm_release_node(pm_domain_id);
-> -			goto release_tcm_lockstep;
-> -		}
-> -
-> -		/* If registration is success, add carveouts */
-> -		rproc_add_carveout(rproc, rproc_mem);
-> -
-> -		dev_dbg(dev, "TCM carveout lockstep mode %s addr=0x%llx, da=0x%x, size=0x%lx",
-> -			bank_name, bank_addr, da, bank_size);
-> -	}
-> -
-> -	return 0;
-> -
-> -release_tcm_lockstep:
-> -	/* If failed, Turn off all TCM banks turned on before */
-> -	for (i--; i >= 0; i--) {
-> -		pm_domain_id = r5_core->tcm_banks[i]->pm_domain_id;
-> -		zynqmp_pm_release_node(pm_domain_id);
-> -	}
-> -	return ret;
-> -}
-> -
-> -/*
-> - * add_tcm_banks()
-> - * @rproc: single R5 core's corresponding rproc instance
-> - *
-> - * allocate and add remoteproc carveouts for TCM memory based on cluster mode
-> - *
-> - * return 0 on success, otherwise non-zero value on failure
-> - */
-> -static int add_tcm_banks(struct rproc *rproc)
-> -{
-> -	struct zynqmp_r5_cluster *cluster;
-> -	struct zynqmp_r5_core *r5_core;
-> -	struct device *dev;
-> -
-> -	r5_core = rproc->priv;
-> -	if (!r5_core)
-> -		return -EINVAL;
-> -
-> -	dev = r5_core->dev;
-> -
-> -	cluster = dev_get_drvdata(dev->parent);
-> -	if (!cluster) {
-> -		dev_err(dev->parent, "Invalid driver data\n");
-> -		return -EINVAL;
-> -	}
-> -
-> -	/*
-> -	 * In lockstep mode TCM banks are one contiguous memory region of 256Kb
-> -	 * In split mode, each TCM bank is 64Kb and not contiguous.
-> -	 * We add memory carveouts accordingly.
-> -	 */
-> -	if (cluster->mode == SPLIT_MODE)
-> -		return add_tcm_carveout_split_mode(rproc);
-> -	else if (cluster->mode == LOCKSTEP_MODE)
-> -		return add_tcm_carveout_lockstep_mode(rproc);
-> -
-> -	return -EINVAL;
-> -}
-> -
->  /*
->   * zynqmp_r5_parse_fw()
->   * @rproc: single R5 core's corresponding rproc instance
-> 
-> base-commit: 99f59b148871dadb9104366e3d25b120a97f897b
-> -- 
-> 2.25.1
-> 
+Regards,
+Anup
 
