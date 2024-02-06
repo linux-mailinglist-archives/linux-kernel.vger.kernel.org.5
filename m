@@ -1,66 +1,73 @@
-Return-Path: <linux-kernel+bounces-55326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92CC684BB22
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:37:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BFA584BB24
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:37:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7171B268B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:37:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 607291C24803
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:37:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54C6346AD;
-	Tue,  6 Feb 2024 16:36:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02D6BD51A;
+	Tue,  6 Feb 2024 16:37:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="FYm38sxs"
-Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="pAq+m1hV"
+Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E4D3D527
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 16:36:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1A6EC129
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 16:37:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707237387; cv=none; b=u0wI7UyrlNPeFA84M3WfKeotn7GRsLzH6lfVlDLex5GsCFxDZHFosVxGHXNR3jiIkdfW5Q+5jIFvDl6mymGJaMhKBYYjVm3bW8f6vsHxKHycNToVpxVg6keQ+0h+mu2lm0ZagKyvQLeCcOoPaqF8QLE5Fopt8pOkF2DoXfDxETE=
+	t=1707237457; cv=none; b=NwaAbt51lUq8fqv9R0/j6txzwOBJO6eevBIMpRwrzuMrmc9n74meOFDISBGXpO5iyz1dQMsKkvmDmYR0Wf9wGxUMQGTocWRGiQConJsejJPms/fQ8hCYa+85C9TPB3e19thkkDLH/H8ul4praVRwNN0awl30hXY4+hfgNdQj4hk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707237387; c=relaxed/simple;
-	bh=mgZOgLB1HuathAGqKmjNnG/0xoJq5roM2WNaXcdTp9U=;
+	s=arc-20240116; t=1707237457; c=relaxed/simple;
+	bh=jljibtEnrL5qs/+L9RQviAE8du1HVx4lbuNPnRgMbO8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NLdO7ieWrwfNZvSwerh4vZYQ8dTv0oyyyFlyfkvv0U/Dh1qLulFuN/TU3TFuf19j/XWtxcsYG7ivvltqRwZgbmqhdAoL0IJggwasXs5lGFwEDSy3Fpv9DTYFDoPRFLqvhtyJt3XHTPtkuLjf9cRe14/XcbXQ9dzYyiQwiV8ZpUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=FYm38sxs; arc=none smtp.client-ip=35.89.44.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-5003a.ext.cloudfilter.net ([10.0.29.159])
-	by cmsmtp with ESMTPS
-	id XKpvrG1oK80oiXOQlrrgX7; Tue, 06 Feb 2024 16:36:19 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id XOQkruWp4OmWYXOQkrn8UU; Tue, 06 Feb 2024 16:36:18 +0000
-X-Authority-Analysis: v=2.4 cv=T/MvTOKQ c=1 sm=1 tr=0 ts=65c26002
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
- a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
- a=cm27Pg_UAAAA:8 a=lXWNAtzADcZZgIjtGc4A:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
- a=8LfgHNaa6p4A:10 a=AjGcO6oz07-iQ99wixmX:22 a=xmb-EsYY8bH0VWELuYED:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=ho3hrp7XcTsBErJhywPAagDi6Mkqk4q72L1K4GsdTRQ=; b=FYm38sxsIiXyEaRic6gNnCyQPN
-	jieaLQ1ZUefC3lameJVtACCu3wIbgJUUS6oVj3kQ+T7XD7iHEv/92rQ1LXloUwkRIyVUn01oN42l/
-	vgdZLOhtn8Z3YWHilM6+epHYQ4yIlsBW10IoRD7WoBBSIg5vnBL9M4hzpZF95UVj9cS5BaY6NeDWo
-	G9ULvv2gM2B20XmTUxPloOo1w1kCxMo6qeQFDJWzZh2dUnXSNjVBAHJ6cGmfyVKwOMWVBJ+G7S9Rs
-	bj4sTK5brhJDOxaaw5Gmx48u0cmt7mfa0mpI4FgzRnCyntjdpXjv2BuMT067jS/wH+j5/7tjQg4gS
-	iOLAF0jg==;
-Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:36786 helo=[192.168.15.10])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rXOQj-003Ba7-1b;
-	Tue, 06 Feb 2024 10:36:17 -0600
-Message-ID: <89a743fb-37fa-40b9-8ce5-d118ae95af38@embeddedor.com>
-Date: Tue, 6 Feb 2024 10:36:15 -0600
+	 In-Reply-To:Content-Type; b=TAIHL1vl+ZL7WlVEoWUYPf6M/HH/hFWUPGloX7b2U9RR6XDO4ZuPqoRCut59yTicCyyntYZ0x1QXAtTtekLYSK9E9ZR+h2Wbg8VdwZfyWmckPVB2LrprDECptmyjuF2Py7aRviZ4nbQSAqK9R3GvCAcDlWkCRqNDwINwabLhcMk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=pAq+m1hV; arc=none smtp.client-ip=209.85.166.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7bff8f21b74so59184739f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 08:37:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1707237455; x=1707842255; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rMKa9vx2csPH/9vnVAWHORedkxFcj1vRCUSAMzGARdg=;
+        b=pAq+m1hVHYPiZV2I6AaXZSjpA4wAAKK4N1N8T0Idj5sasRsgGJy8uWy0T2CEe2hNkj
+         jy+gAjYiB9V2Y6cWQ/su5/6u3ObENYN2isavjArSbuZ6o8u4HVrb9Qq5XojHFLjkbfoK
+         X/u8THtvYyujFX/8Qp7E/ev/1vHDTFUnhFuerdB49Vf20p7JX93YfEQbFvghirM5K8xp
+         wDmQ9EH1JFLP01E593lq42cTNFnYFc5rnXgcADTSrb9FH/YBYMAnrFMSMjqnmDcdUIAf
+         +wDx/IHJwXI6othYrXVd3WLycrLQSUHR2UZhr4wHOq9VU23y+5+d/bafUE9Y9/suSLS9
+         5+Ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707237455; x=1707842255;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rMKa9vx2csPH/9vnVAWHORedkxFcj1vRCUSAMzGARdg=;
+        b=Dxt/o/Gz0Aayg3/zR2cMvK2Jtqezs04shE2Rfj/jLmZL471Eh97El1miknnP2LRpyD
+         klOkANPvN89KgyFBBx6y74jwRB3HBL25/TtAMwXeZb0kfQiwWUIVEv7b92JuRAXPU0mr
+         18A40GqehIUS9g8gZ9eQxhs4SdCFHy0Rg+oxZqPUxTbMXGrhaq3sqxGJEynG8lcYHgSw
+         dq6zBWw5n0Env3e+DfByAfb0Slvb0EW4G6jRBja3nvQ2zIMo+9z+MFfRgXSv0NqWZo2U
+         L4S1XZVj4UGHpcBB0KeSLGs+bU24KJudM6VNyTUtEnVE2liWDkqeL6r8XHtn6gt3EzKa
+         VHoQ==
+X-Gm-Message-State: AOJu0Yz0Vdz0Im63HeOSVbNGXHAzEEnZ6tyuYucVwI/abxYHicR0TI6Y
+	gbfhDEsTHdxmhLFyRQy5TDbdPPOn8Gf0oQLc9Z7pLIDOR7hUbnpB4qPaKKcAEP8=
+X-Google-Smtp-Source: AGHT+IEBUar7ymwYDA53iN7yKehnTg3OxaGvYRImNKd6+XLKBquZempTK/akY2fwvmFaAiT8s/k6GA==
+X-Received: by 2002:a05:6602:123a:b0:7c0:2ea0:b046 with SMTP id z26-20020a056602123a00b007c02ea0b046mr3708151iot.1.1707237455016;
+        Tue, 06 Feb 2024 08:37:35 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVkIUq1r2b1tNBwaFkIo6mEAbuTiIypPKWB720Oi37L0kUtffvOlSBzn+yGtA44HQzU8aZxnf67Xqr3PZnvrtyPLKm4WDb4rOM3H/NWOItFbrCG5vovBy8RrZioC9mw
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id k2-20020a02c762000000b0046ecafac861sm603295jao.153.2024.02.06.08.37.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Feb 2024 08:37:34 -0800 (PST)
+Message-ID: <332c106c-21af-4691-8b3f-ffbdf30fecf0@kernel.dk>
+Date: Tue, 6 Feb 2024 09:37:33 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,112 +75,52 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/3] overflow: Adjust check_*_overflow() kern-doc to
- reflect results
+Subject: Re: linux-next: manual merge of the block tree with the vfs-brauner
+ tree
 Content-Language: en-US
-To: Kees Cook <keescook@chromium.org>,
- Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- linux-hardening@vger.kernel.org, Marco Elver <elver@google.com>,
- Eric Biggers <ebiggers@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org
-References: <20240206102354.make.081-kees@kernel.org>
- <20240206103201.2013060-1-keescook@chromium.org>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20240206103201.2013060-1-keescook@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.21.192
-X-Source-L: No
-X-Exim-ID: 1rXOQj-003Ba7-1b
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.10]) [187.162.21.192]:36786
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 1
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfBue6D50HEGO5CIPVHuIETEoeaAIr2DRy5TuyMNZwJwFgavRXvf6hwLfezPzMzHqubHEr+pmzVBNNfKBrUazMRD7gzPuO4ANs6QYOMrwzpYfmuKLhW1J
- 1di6FgJbZy6xdIBcvN2IcohGxIz7R9E8pxeYnUrKtYVrEDArqQCQK8EmFksNj4/4LBsz64LtQuZHAQPo0/Ct3GpIR02SGBwFoODXjw6pv7MaV4iieFNyQFWL
+To: Stephen Rothwell <sfr@canb.auug.org.au>,
+ Christian Brauner <brauner@kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20240206124852.6183d0f7@canb.auug.org.au>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20240206124852.6183d0f7@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-
-
-On 2/6/24 04:31, Kees Cook wrote:
-> The check_*_overflow() helpers will return results with potentially
-> wrapped-around values. These values have always been checked by the
-> selftests, so avoid the confusing language in the kern-doc. The idea of
-> "safe for use" was relative to the expectation of whether or not the
-> caller wants a wrapped value -- the calculation itself will always follow
-> arithmetic wrapping rules.
+On 2/5/24 6:48 PM, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Today's linux-next merge of the block tree got a conflict in:
+> 
+>   block/blk.h
+> 
+> between commits:
+> 
+>   19db932fd2b0 ("bdev: make bdev_{release, open_by_dev}() private to block layer")
+>   09f8289e1b74 ("bdev: make struct bdev_handle private to the block layer")
+>   d75140abba91 ("bdev: remove bdev pointer from struct bdev_handle")
+> 
+> from the vfs-brauner tree and commits:
+> 
+>   c4e47bbb00da ("block: move cgroup time handling code into blk.h")
+>   08420cf70cfb ("block: add blk_time_get_ns() and blk_time_get() helpers")
+>   da4c8c3d0975 ("block: cache current nsec time in struct blk_plug")
+>   06b23f92af87 ("block: update cached timestamp post schedule/preemption")
+> 
+> from the block tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-Better to be concise and direct. 🙂
+That's a lot of conflicts. Christian, we really should separate some of
+these so we can have the shared bits in a shared branch.
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-
-Thanks!
 -- 
-Gustavo
+Jens Axboe
 
-> ---
->   include/linux/overflow.h | 18 ++++++------------
->   1 file changed, 6 insertions(+), 12 deletions(-)
-> 
-> diff --git a/include/linux/overflow.h b/include/linux/overflow.h
-> index 7b5cf4a5cd19..4e741ebb8005 100644
-> --- a/include/linux/overflow.h
-> +++ b/include/linux/overflow.h
-> @@ -57,11 +57,9 @@ static inline bool __must_check __must_check_overflow(bool overflow)
->    * @b: second addend
->    * @d: pointer to store sum
->    *
-> - * Returns 0 on success.
-> + * Returns 0 on success, 1 on wrap-around.
->    *
-> - * *@d holds the results of the attempted addition, but is not considered
-> - * "safe for use" on a non-zero return value, which indicates that the
-> - * sum has overflowed or been truncated.
-> + * *@d holds the results of the attempted addition, which may wrap-around.
->    */
->   #define check_add_overflow(a, b, d)	\
->   	__must_check_overflow(__builtin_add_overflow(a, b, d))
-> @@ -72,11 +70,9 @@ static inline bool __must_check __must_check_overflow(bool overflow)
->    * @b: subtrahend; value to subtract from @a
->    * @d: pointer to store difference
->    *
-> - * Returns 0 on success.
-> + * Returns 0 on success, 1 on wrap-around.
->    *
-> - * *@d holds the results of the attempted subtraction, but is not considered
-> - * "safe for use" on a non-zero return value, which indicates that the
-> - * difference has underflowed or been truncated.
-> + * *@d holds the results of the attempted subtraction, which may wrap-around.
->    */
->   #define check_sub_overflow(a, b, d)	\
->   	__must_check_overflow(__builtin_sub_overflow(a, b, d))
-> @@ -87,11 +83,9 @@ static inline bool __must_check __must_check_overflow(bool overflow)
->    * @b: second factor
->    * @d: pointer to store product
->    *
-> - * Returns 0 on success.
-> + * Returns 0 on success, 1 on wrap-around.
->    *
-> - * *@d holds the results of the attempted multiplication, but is not
-> - * considered "safe for use" on a non-zero return value, which indicates
-> - * that the product has overflowed or been truncated.
-> + * *@d holds the results of the attempted multiplication, which may wrap-around.
->    */
->   #define check_mul_overflow(a, b, d)	\
->   	__must_check_overflow(__builtin_mul_overflow(a, b, d))
 
