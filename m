@@ -1,171 +1,117 @@
-Return-Path: <linux-kernel+bounces-54624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54626-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90BF084B1AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:57:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 763D584B1B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:57:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00D491F24150
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:57:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E8CFB2227F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:57:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CFA712D76D;
-	Tue,  6 Feb 2024 09:56:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD68712DD93;
+	Tue,  6 Feb 2024 09:57:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="f34EUJS7"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EG9HtWog"
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BFE312D750
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 09:56:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73E1212D74D
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 09:57:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707213415; cv=none; b=nkLrE9ja7Z4/Hz3gGrOE9+hw3pa17WxUM8UnWzIe/6OQtCiCcs3hDtfbpzKDS7zAt2qqz/FV97fJRmUd3jcIbDrdih1vK76PYH5exRbl9WV/okJH9N02Wc4m51ueJW0ZIyW0bj52tWRIi13IzByIQesfXSkdNZhfet5e1BBMCOc=
+	t=1707213453; cv=none; b=Gn46bC1GC3oGfPk1oYqtwasBwqrF8/6HbX0Zsxa8UAOYTJT94yyfHMei8dk6IccA9i6KiIrg1lU4NFl/Uj/zN6pJqUcNEQ00QkbFqKfzUFujXgf9e4L6rJZZStFWtqtyaXZyQNoaUO1oDCeLU8m2uqW7NQjBb6qFL+sqq9JYXO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707213415; c=relaxed/simple;
-	bh=gFwQT9q2MQDOLZo3TSNZibKCNFI0OYg5lS2v/Yij/5o=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fsmUSH8Zcf+E+A+HJlbr/6Z5O22CVS3uqkp6peZCxlZAuirVCypvFiTr6IuzXA+CX3yVm25D9DhoXEp2qwmy/KQeijDmj0ysqj2r2dsZT+dC8M1pUsbnYaYooVMTIq7Dn76hNAt7aroapTXGE+fMg4aiB33Rl1nub61LZm1MdYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=f34EUJS7; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d74045c463so42494625ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 01:56:54 -0800 (PST)
+	s=arc-20240116; t=1707213453; c=relaxed/simple;
+	bh=NpPH85owZ20SCl7gPDrD1ciS1nl+zM/WUwZ0z1dCHO0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=o7ETltSEOXKURX/4dWrATa9JeozimmedZhHzBOMpYz/YFySUbKWKt75+yhuzgd22aRuZawqYiBmMam4VqiorSiFTcByftNjw/P6H45MGHSHNQjlumauZovUaoaudgOvYtU3isVA/QZON3HuXVKo+CsmB6HLJIL7b88wgXOr748Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EG9HtWog; arc=none smtp.client-ip=209.85.128.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-60406da718aso53755967b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 01:57:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707213413; x=1707818213; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YvtejigsA6lvJftTJlUnU81wJFgRlPFcDxMvj4jJa74=;
-        b=f34EUJS7pq9JB9Iq765rxANwGO2iY+6kBVrCtx5b+JeiCZJI2tS4++CcyEJRrjm9pJ
-         Zukik37Sc6QeteFfd9fdViXQjXdIcguZkN0p6UbaQgQ0Vfm7aBUrhoc3HyX3EzyruySH
-         vDMqKuVeBMQSwI8hac4pK7CMJcfljIZPWLhaQ=
+        d=linaro.org; s=google; t=1707213450; x=1707818250; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Eq2wg0lmtUf7Y9KbMkjM4LSzECZ5og9xajY9d90SZeA=;
+        b=EG9HtWogWkY3LttZ95TAM5ISxGu6ZbqC3fGmwfQAZQbpGGpXmIROgzJZcbqFzGPFlW
+         3yVGcUt6o9UUa/LpB5o/WvUNqhlTLy+rMDzg5WjfJq6bYna/9JxiFxs1xkYeXm98mUB7
+         RjOAI77umQ2omLoLOB+CKee5qFSxJ+ttbbIw6HH9SsneW6ZFTadO8Hdj/cpbZn+MR6Xq
+         jioj6nuk9VvcBNRE8AqPFUyU7eQnDmzeg+FUZGIyKmfevtjbUDG3vGUAQPQ4ZJkhRpWy
+         K9K+tGfvbSdxdWw66XsLf+DBaCaulj16nntdI4RBwt9VergnalW56yj9sU81mpkdOFy3
+         BoJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707213413; x=1707818213;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1707213450; x=1707818250;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=YvtejigsA6lvJftTJlUnU81wJFgRlPFcDxMvj4jJa74=;
-        b=gPE0QZGlFyw892Uwgn+fh0lAYC8vTRDnRyH5rqcewb3r6wJwwwGIsk7Sive2s6GNCW
-         zBPTVXMdbDqSj0dCmayRt6eY3UyYyAGo+byFQbS2QFptaJYTSQUQ3MGN1SKE6CjMA7v4
-         tRKjOCjgl5Qar1npjc4lvNttxjKjQ06EemvQwXX8DIUjPJ19QoBeSGUX6bC2RiEIHbH3
-         6SFlemQrFrgMAROD6EW/ghfHKuZey+D/7Rn16DvghRLBHvwAiB0ckCz3Qk/8wxwacBk8
-         9ujJ3OAS2fL7sLL3H2Tm11KCtNBVmS8drOFqguLhgzlkvqcExnKWZhfk2nS9iRQ+kT58
-         bTjQ==
-X-Gm-Message-State: AOJu0Yx9vjzpIbRST5D/VtS/583H1h2/t+IT6e4xncuiBU8bZ7qizWos
-	oJWe7877ji5QqEJ42Meft8lUb+7T0w8u+/jJUzbNaOTAg+ljpI9Sqno46YtSVw==
-X-Google-Smtp-Source: AGHT+IEoS/Kl4hf4JsN5prm6mSrUJ2HBa0Fmc9/TJ19QJ5pdSUTD1wSZuuqJ9x9OlMDqrSJRoUYDeg==
-X-Received: by 2002:a17:903:2304:b0:1d8:f394:da39 with SMTP id d4-20020a170903230400b001d8f394da39mr1326364plh.65.1707213413601;
-        Tue, 06 Feb 2024 01:56:53 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCW4XJapeWoVq693/JjVCP6x9T70VxgvoAa9DEw2WL3YUgGW4WylfVi6E9yCu/nZNSoV8n43/+0umk95KhnOt/x3SF1igjAd/G1ohmsrXg287GxUeFSUugHodmJNjmQjtCelCvT+SwNKnAj5DX82/i78b1orLqkyP3dJCq1XPf08nSCspRRCe1fG9nVRcnzcUCt7gLD7nY45bAP8OYcLPS731zpVcdW9njc8SUc5Q3THJUHoEfAWbo6jLbrCg8XZOPeqDU2e63BMRaVG8g3I/p3Lurfv0TjvBccwKmDzuvE=
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id iy15-20020a170903130f00b001c407fac227sm1456525plb.41.2024.02.06.01.56.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 01:56:53 -0800 (PST)
-From: Kees Cook <keescook@chromium.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>,
-	kernel test robot <oliver.sang@intel.com>,
-	Andy Lutomirski <luto@amacapital.net>,
-	Will Drewry <wad@chromium.org>,
-	Shuah Khan <shuah@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH] selftests/seccomp: Pin benchmark to single CPU
-Date: Tue,  6 Feb 2024 01:56:47 -0800
-Message-Id: <20240206095642.work.502-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        bh=Eq2wg0lmtUf7Y9KbMkjM4LSzECZ5og9xajY9d90SZeA=;
+        b=Fo0SQ8caXxibgDcSyc6x98mjF09bh3tTiUf4fwnROMty9rC6n9u/qtKPJhWu7b8x8H
+         rddtPWfUavUulqEnbzDf3XwecRHx+rxKevX1hdoXSVI8TnT25c8NqaqpXuwTOTUPWvuP
+         aSBGki8Z5o8D++AD4TB3bMhSn7GCSSrJ6SYR3tec6iWhwRunupApO/Rg18z622UAQe/k
+         v+QIlKZu0DjsKa1SNr72fdnWyQv07lJEUu53Zjm0AXSjy9Yh/y6PD2TBQ/jM6QAR1WCS
+         rBYw2UUvzLaxtrxQ/69txQqbok6NVKrwvblwj5dnMT5wq2gvSqFH5lJ5lerswJj0sRjC
+         W65A==
+X-Gm-Message-State: AOJu0YzysV9xaGeUNLBBN3OSW2gGO3jP0ybVW9cPmYPXjSZZbpSJwKqr
+	8uX+PZP5Wsxvgt0HOltUg1T3wCxShEVm+nw7khZgoNZio1yi0CPco8uq7kPc+OAw+B2DqTiJ+4w
+	EmLga5KNmlOfh9/ui90wWIUHTbkLCbXrLKy1HSg==
+X-Google-Smtp-Source: AGHT+IG5u0RUlCzKGSN5/5B0/qLQhE4mJ3srJl6aZpIRhRrSpKuDOaDOTP0OKh3xCd6YwxwgJxwWKTKO4NRUn/AvJf0=
+X-Received: by 2002:a05:6902:102e:b0:dc6:83c:dce7 with SMTP id
+ x14-20020a056902102e00b00dc6083cdce7mr1271773ybt.38.1707213450425; Tue, 06
+ Feb 2024 01:57:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2238; i=keescook@chromium.org;
- h=from:subject:message-id; bh=gFwQT9q2MQDOLZo3TSNZibKCNFI0OYg5lS2v/Yij/5o=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlwgJfCsxNqlw4QkCwa0uTjz9m+WERqUM1QnArU
- Nk8peGOJtCJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZcICXwAKCRCJcvTf3G3A
- JqyTD/9FjpTBzQ/U/pDNYWZkbNEqKOmTGswAI5nhxPwJETkBv2PFztRglzljETLPB6slHXo50Xq
- aaLyg3Tx0jUQWvCNGmus+ZcUaZeUc9ERbP7FajXNyUdvtd4FvpLqXrb7YLGBIyJRTt0pUvwsp08
- dCXkfBVP0NEg+OM1SXDxtM43MKV8KNktVyLCjDueRmNXPGfukDqLPleO02h/dRCuc6UsznNrz7W
- eJN8zn12je2bB+26ikjlbccbihquSHNFLUnCJShgg3EvXM9ywmZsFLlMzb4Fl5COijs0xPYrBNm
- FWh1ZbJ1xA0G9GAvwpDF+lUEOvluGYMWudXBwiY48XSPsLcLS1ZluT5L/+SPsljItEjPo6hqk0n
- CrBxjLamMqteQUQX9pIft8jHROCFAcOg0qF0sgPUzePBdn9BDi+gYjb4r6w18iT24tp090XbdnL
- zD5pCjM7IO/PmNZsEsgYHqW5lww/o7nBOiGje91P116WFA9RvghnOY+qJ3tBxnmm6stuujMgFa9
- wBFLrpkHt8ll0GUr0Wqlh6zkFIAB2+1Y36Vby3hcpVshfevj+rPFBwAbc/4VmkOGaKchlnUZCoe
- fiRUeabcdhzM4JXK4d0mJYyjz8qcKzKZG5vWpDOW9gHHQNh2rYZitp7MV2ksHepXPw8qRdCK0Wz
- HJa76r6 9E8DwurA==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+References: <20240206085238.1208256-1-tudor.ambarus@linaro.org> <20240206085238.1208256-3-tudor.ambarus@linaro.org>
+In-Reply-To: <20240206085238.1208256-3-tudor.ambarus@linaro.org>
+From: Peter Griffin <peter.griffin@linaro.org>
+Date: Tue, 6 Feb 2024 09:57:19 +0000
+Message-ID: <CADrjBPpLB0RJO6xH=0+jvc=EnaNX6eCg2JV2DNkDdFAoS1mJQw@mail.gmail.com>
+Subject: Re: [PATCH 2/4] spi: dt-bindings: samsung: add google,gs101-spi compatible
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: broonie@kernel.org, andi.shyti@kernel.org, semen.protsenko@linaro.org, 
+	krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com, 
+	linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	andre.draszik@linaro.org, kernel-team@android.com, willmcvicker@google.com, 
+	robh+dt@kernel.org, conor+dt@kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-The seccomp benchmark test (for validating the benefit of bitmaps) can
-be sensitive to scheduling speed, so pin the process to a single CPU,
-which appears to significantly improve reliability.
+On Tue, 6 Feb 2024 at 08:52, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+>
+> Add "google,gs101-spi" dedicated compatible for representing SPI of
+> Google GS101 SoC.
+>
+> Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Acked-by: Andi Shyti <andi.shyti@kernel.org>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> ---
 
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202402061002.3a8722fd-oliver.sang@intel.com
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Andy Lutomirski <luto@amacapital.net>
-Cc: Will Drewry <wad@chromium.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- .../selftests/seccomp/seccomp_benchmark.c     | 27 +++++++++++++++++++
- 1 file changed, 27 insertions(+)
+Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
 
-diff --git a/tools/testing/selftests/seccomp/seccomp_benchmark.c b/tools/testing/selftests/seccomp/seccomp_benchmark.c
-index 5b5c9d558dee..d0b733e708cc 100644
---- a/tools/testing/selftests/seccomp/seccomp_benchmark.c
-+++ b/tools/testing/selftests/seccomp/seccomp_benchmark.c
-@@ -4,7 +4,9 @@
-  */
- #define _GNU_SOURCE
- #include <assert.h>
-+#include <err.h>
- #include <limits.h>
-+#include <sched.h>
- #include <stdbool.h>
- #include <stddef.h>
- #include <stdio.h>
-@@ -119,6 +121,29 @@ long compare(const char *name_one, const char *name_eval, const char *name_two,
- 	return good ? 0 : 1;
- }
- 
-+/* Pin to a single CPU so the benchmark won't bounce around the system. */
-+void affinity(void)
-+{
-+	long cpu;
-+	ulong ncores = sysconf(_SC_NPROCESSORS_CONF);
-+	cpu_set_t *setp = CPU_ALLOC(ncores);
-+	ulong setsz = CPU_ALLOC_SIZE(ncores);
-+
-+	/* Set from highest CPU down. */
-+	for (cpu = ncores - 1; cpu >= 0; cpu--) {
-+		CPU_ZERO_S(setsz, setp);
-+		CPU_SET_S(cpu, setsz, setp);
-+		if (sched_setaffinity(getpid(), setsz, setp) == -1)
-+			continue;
-+		printf("Pinned to CPU %lu of %lu\n", cpu + 1, ncores);
-+		goto out;
-+	}
-+	fprintf(stderr, "Could not set CPU affinity -- calibration may not work well");
-+
-+out:
-+	CPU_FREE(setp);
-+}
-+
- int main(int argc, char *argv[])
- {
- 	struct sock_filter bitmap_filter[] = {
-@@ -153,6 +178,8 @@ int main(int argc, char *argv[])
- 	system("grep -H . /proc/sys/net/core/bpf_jit_enable");
- 	system("grep -H . /proc/sys/net/core/bpf_jit_harden");
- 
-+	affinity();
-+
- 	if (argc > 1)
- 		samples = strtoull(argv[1], NULL, 0);
- 	else
--- 
-2.34.1
-
+>  Documentation/devicetree/bindings/spi/samsung,spi.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/Documentation/devicetree/bindings/spi/samsung,spi.yaml b/Documentation/devicetree/bindings/spi/samsung,spi.yaml
+> index f71099852653..2f0a0835ecfb 100644
+> --- a/Documentation/devicetree/bindings/spi/samsung,spi.yaml
+> +++ b/Documentation/devicetree/bindings/spi/samsung,spi.yaml
+> @@ -17,6 +17,7 @@ properties:
+>    compatible:
+>      oneOf:
+>        - enum:
+> +          - google,gs101-spi
+>            - samsung,s3c2443-spi # for S3C2443, S3C2416 and S3C2450
+>            - samsung,s3c6410-spi
+>            - samsung,s5pv210-spi # for S5PV210 and S5PC110
+> --
+> 2.43.0.594.gd9cf4e227d-goog
+>
 
