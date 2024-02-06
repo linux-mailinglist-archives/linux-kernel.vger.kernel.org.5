@@ -1,116 +1,235 @@
-Return-Path: <linux-kernel+bounces-55145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 327F984B8C9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:06:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76DB784B8C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:04:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8AEF0B2DE62
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:53:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0192B2F445
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:55:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A19C13329A;
-	Tue,  6 Feb 2024 14:52:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6219B1332B8;
+	Tue,  6 Feb 2024 14:53:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b="2hNU11hz";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="PxhQtply"
-Received: from fhigh7-smtp.messagingengine.com (fhigh7-smtp.messagingengine.com [103.168.172.158])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Gd8XC4jH";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="KlIBRPwB";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Gd8XC4jH";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="KlIBRPwB"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20408131E53;
-	Tue,  6 Feb 2024 14:52:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C75FD131E40;
+	Tue,  6 Feb 2024 14:53:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707231164; cv=none; b=FBMk2PVSUVsP/qmPphUFC6NmGaVrMKkXH0v740YSHrZwcpnyvsBA1keOhoy+Z6SkmhnlNrIiwzxkXQ8nb5rA3AURtN1WKsp+2MFGh70jlLhudyVbHc2WLd7YYqETe9hG9Ty23I9JGQ/4Ef80ECD5ry5dJcsmhxpndC5+hCEiSF0=
+	t=1707231228; cv=none; b=bOheV+cEtcACrHeEY02/BeBb7Z6fSETI7TucQOUvqWFGBBg3pOjpVR+ojav6qWVyFZyTwcYLWSc0vMI/RN0b5d8oVI0OoGTRzjNWHNHAg9ipLmk7JDm3iyXIE6vMBP6co8gDoaJaauf3lWL7ysRccaRmhACV9ofWSkkHvPM+x5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707231164; c=relaxed/simple;
-	bh=R/742LRkouuAuethox2x2vtIJsIKE4T+HK1LMPu93+s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VBCbwrF/FcxWrBFMQkgCLye6iAhYC3skKHEgsICaOJn0OZZvksV1oXDCCgVgv0hWSLmCkUzmDhkhd7VBK437oK4Cr3/Jtyk7XtL384QWrRfNp/UXnm4Pdvwaj4YoImx3RzOq0AQRx27mSGudNycEW/Nh2FNIqSRlThbqykktkno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza; spf=pass smtp.mailfrom=tycho.pizza; dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b=2hNU11hz; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=PxhQtply; arc=none smtp.client-ip=103.168.172.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tycho.pizza
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 0DDF5114008D;
-	Tue,  6 Feb 2024 09:52:41 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Tue, 06 Feb 2024 09:52:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1707231161; x=1707317561; bh=Fd2EgqbFxv
-	tE/GJ2R79t8CbsMl7dcUlSu6Hik69SEuI=; b=2hNU11hze/lK2HnZ81Yq+0e3X0
-	WzYn3FVaMIa8MOVt9PNrgJxS7KJ/VR+q+bTlfHfw0ZoAcaHapXgEDeMNnjq7nfyK
-	Doa09EyBz+2cuF4H/uHe6I6C2Oum8CPQ/Kug75/foHx4h7aRgidAjpBmbw60lmdr
-	4QO5inVfGlDaX0aWe9qDiKAqb8RcsRIK5NFcZIRWTDAXD5ifRacv1IYYBWFwyLvz
-	JD4x/UuKP4ECVVq9HIXl7WzpNFXa16afqWJyDZi8A1X5HBqxdb6/3Elarm7zQqhf
-	yyjC27G9NVVb86aHVhOx0ML6l2AF2CxVI0xz5qig+kSFsqN1g0KWW9Ks7W5w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1707231161; x=1707317561; bh=Fd2EgqbFxvtE/GJ2R79t8CbsMl7d
-	cUlSu6Hik69SEuI=; b=PxhQtplyTcojFzSGgmYlbpBx7uOUQyhGtdJG/0ttwfeO
-	qUB2ekHR9YirbggSssgFSi3i1xTDho8n0hT4OMZDfVII9ps+yhIb8w5j8lG69FF1
-	J+/+GuRqOZnqiLwXEQqIPdqBnqT2e7h4EouoX9A+E7915tBLPVG8xvRuwWAxXSF3
-	O7sc8ukp/zA1EKA4N3tl0Vrsn8ObCpgi8lThdidM/NgC/fPGU9WwVZr+U/mbY2Fn
-	6Amak1Bl7cF6qxaiX+2F0cD4G1ZQDgUEo3808F//jI+y83oC8ycg19PWNW4ELmTT
-	cuFtEg4MZtCC6twI91NOleCKhncYwVANcyv/vifaLw==
-X-ME-Sender: <xms:uEfCZQstBdf7ESZL-l7RypKCL9D5fPr2K0oQDzh2EHR1fPHKxnxxlg>
-    <xme:uEfCZdcrxouWN6N-CkTVKCHruUWXxU426wYRxigOT-vQ4zRi0v7SdWgf2bqymBTaV
-    tPTG4IPkgy4_VPJAo8>
-X-ME-Received: <xmr:uEfCZbwsWGJXLxsADBFggu0Ox0-O5UAMjF63gPibNRShusdsgIpDs2T2PFHazFweFWi7too7Fa2Z9f7BWB-a-OYXSwAv>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrtddtgdegtdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdortddttddvnecuhfhrohhmpefvhigthhho
-    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
-    htthgvrhhnpeelffekveduvefftdejkefhtefhgeduhffghfejtdehieevjedtkeejveej
-    keeuieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hthigthhhosehthigthhhordhpihiiiigr
-X-ME-Proxy: <xmx:uEfCZTNg76HajRWw_mXDbHKTr18PHxW1MD238fZjPQg_nwl8wazqvw>
-    <xmx:uEfCZQ-MoSgqVKPN1xpnnJHI3aOrf9v4vfF8bXTD0MtxstzO65PRyA>
-    <xmx:uEfCZbW4WBElWaAQXCT8NnMUM0DJp313g2Tdd4kfG60Owjne_VdY9g>
-    <xmx:uUfCZQzrE9cKwfPLQw8jf3ruscWAyMtdEMvQt9K9FvtbUfA_cBpQYQ>
-Feedback-ID: i21f147d5:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 6 Feb 2024 09:52:39 -0500 (EST)
-Date: Tue, 6 Feb 2024 07:52:38 -0700
-From: Tycho Andersen <tycho@tycho.pizza>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Andy Lutomirski <luto@amacapital.net>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	linux-api@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pidfd: clone: allow CLONE_THREAD | CLONE_PIDFD together
-Message-ID: <ZcJHtqqvxUoBJLRo@tycho.pizza>
-References: <20240205145532.GA28823@redhat.com>
+	s=arc-20240116; t=1707231228; c=relaxed/simple;
+	bh=6imiZNz13DtNsVm7OhjM91Tu6n6+upch3RjcbTaBXbo=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Xo0s8OlMXUSr3/VFrf7GUAHVWrnDJ5Sg36Im770oJdFgQcpZRi1bKj6kMO3cJ9CtzrlPOkZo1gsp9EXDq0oS68sB8AX10gRo9ulbSRXVVaRCcXnP6M5HvYo7JqUKPqY4baLaVev3V4DXwDjYOQZxczQW7jLuIaInVyhRbaYdMBI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Gd8XC4jH; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=KlIBRPwB; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Gd8XC4jH; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=KlIBRPwB; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 890D8220AD;
+	Tue,  6 Feb 2024 14:53:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707231224; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AEGImGG0Ff6z25ekPfLY3b5KTypKA7hNz0dlcxRASQs=;
+	b=Gd8XC4jHmAO2wIh9frwlto9XxCy5MYvJewPaeif1JTc76zhIL49XXS+ftX3Nrk5y5F+0Ib
+	kb8zevdT/b2sOVr+QUkTw6EwrWVxuckdhiafBvDzV0N9OaXfGzC/QBrFNDJJRGXPG3Gu2Q
+	6w5NhzyGSL+gLom0GAbnm4gRoV5pe20=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707231224;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AEGImGG0Ff6z25ekPfLY3b5KTypKA7hNz0dlcxRASQs=;
+	b=KlIBRPwBqPNyqo9m1MMtV8YIVgZTYkqY4/WYuTbYOsetUNgX+vC8/51oPkoo8pHPgzYyZX
+	CNIYGmYF15FKqCCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707231224; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AEGImGG0Ff6z25ekPfLY3b5KTypKA7hNz0dlcxRASQs=;
+	b=Gd8XC4jHmAO2wIh9frwlto9XxCy5MYvJewPaeif1JTc76zhIL49XXS+ftX3Nrk5y5F+0Ib
+	kb8zevdT/b2sOVr+QUkTw6EwrWVxuckdhiafBvDzV0N9OaXfGzC/QBrFNDJJRGXPG3Gu2Q
+	6w5NhzyGSL+gLom0GAbnm4gRoV5pe20=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707231224;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AEGImGG0Ff6z25ekPfLY3b5KTypKA7hNz0dlcxRASQs=;
+	b=KlIBRPwBqPNyqo9m1MMtV8YIVgZTYkqY4/WYuTbYOsetUNgX+vC8/51oPkoo8pHPgzYyZX
+	CNIYGmYF15FKqCCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 46FC3139D8;
+	Tue,  6 Feb 2024 14:53:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id K0myEPhHwmUiVwAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Tue, 06 Feb 2024 14:53:44 +0000
+Date: Tue, 06 Feb 2024 15:53:43 +0100
+Message-ID: <87sf25wsnc.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Wesley Cheng <quic_wcheng@quicinc.com>,
+	srinivas.kandagatla@linaro.org,
+	mathias.nyman@intel.com,
+	perex@perex.cz,
+	conor+dt@kernel.org,
+	corbet@lwn.net,
+	lgirdwood@gmail.com,
+	andersson@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	Thinh.Nguyen@synopsys.com,
+	broonie@kernel.org,
+	bgoswami@quicinc.com,
+	tiwai@suse.com,
+	robh+dt@kernel.org,
+	konrad.dybcio@linaro.org,
+	linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	alsa-devel@alsa-project.org
+Subject: Re: [PATCH v13 32/53] ALSA: usb-audio: Check for support for requested audio format
+In-Reply-To: <2024020617-limb-name-f852@gregkh>
+References: <20240203023645.31105-1-quic_wcheng@quicinc.com>
+	<20240203023645.31105-33-quic_wcheng@quicinc.com>
+	<87wmrhvir7.wl-tiwai@suse.de>
+	<2024020617-limb-name-f852@gregkh>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240205145532.GA28823@redhat.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Gd8XC4jH;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=KlIBRPwB
+X-Spamd-Result: default: False [2.11 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 BAYES_HAM(-0.08)[63.26%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[dt];
+	 MIME_GOOD(-0.10)[text/plain];
+	 R_RATELIMIT(0.00)[to_ip_from(RLe67txhfobum3fqdb5xx8e3au)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[23];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[quicinc.com,linaro.org,intel.com,perex.cz,kernel.org,lwn.net,gmail.com,synopsys.com,suse.com,vger.kernel.org,alsa-project.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: 2.11
+X-Rspamd-Queue-Id: 890D8220AD
+X-Spam-Level: **
+X-Spam-Flag: NO
+X-Spamd-Bar: ++
 
-On Mon, Feb 05, 2024 at 03:55:32PM +0100, Oleg Nesterov wrote:
-> copy_process() just needs to pass PIDFD_THREAD to __pidfd_prepare()
-> if clone_flags & CLONE_THREAD.
+On Tue, 06 Feb 2024 15:50:21 +0100,
+Greg KH wrote:
 > 
-> We can also add another CLONE_ flag (or perhaps reuse CLONE_DETACHED)
-> to enforce PIDFD_THREAD without CLONE_THREAD.
+> On Tue, Feb 06, 2024 at 02:12:44PM +0100, Takashi Iwai wrote:
+> > On Sat, 03 Feb 2024 03:36:24 +0100,
+> > Wesley Cheng wrote:
+> > > 
+> > > Allow for checks on a specific USB audio device to see if a requested PCM
+> > > format is supported.  This is needed for support when playback is
+> > > initiated by the ASoC USB backend path.
+> > > 
+> > > Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+> > 
+> > Just cosmetic:
+> > 
+> > > +struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
+> > > +			struct snd_pcm_hw_params *params, int direction)
+> > > +{
+> > > +	struct snd_usb_audio *chip;
+> > > +	struct snd_usb_substream *subs;
+> > > +	struct snd_usb_stream *as;
+> > > +	const struct audioformat *fmt;
+> > > +
+> > > +	/*
+> > > +	 * Register mutex is held when populating and clearing usb_chip
+> > > +	 * array.
+> > > +	 */
+> > > +	mutex_lock(&register_mutex);
+> > > +	chip = usb_chip[card_idx];
+> > > +	if (!chip) {
+> > > +		mutex_unlock(&register_mutex);
+> > > +		return NULL;
+> > > +	}
+> > > +
+> > > +	if (enable[card_idx]) {
+> > > +		list_for_each_entry(as, &chip->pcm_list, list) {
+> > > +			subs = &as->substream[direction];
+> > > +			fmt = snd_usb_find_substream_format(subs, params);
+> > > +			if (fmt) {
+> > > +				mutex_unlock(&register_mutex);
+> > > +				return as;
+> > > +			}
+> > > +		}
+> > > +	}
+> > > +	mutex_unlock(&register_mutex);
+> > 
+> > I prefer having the single lock/unlock call pair, e.g.
+> > 
+> > 	struct snd_usb_stream *as, *ret;
+> > 
+> > 	ret = NULL;
+> > 	mutex_lock(&register_mutex);
+> > 	chip = usb_chip[card_idx];
+> > 	if (chip && enable[card_idx]) {
+> > 		list_for_each_entry(as, &chip->pcm_list, list) {
+> > 			subs = &as->substream[direction];
+> > 			if (snd_usb_find_substream_format(subs, params)) {
+> > 				ret = as;
+> > 				break;
+> > 			}
+> > 		}
+> > 	}
+> > 	mutex_unlock(&register_mutex);
+> > 	return ret;
+> > }
+> > 
+> > In this case, we shouldn't reuse "as" for the return value since it
+> > can be non-NULL after the loop end.
 > 
-> Originally-from: Tycho Andersen <tycho@tycho.pizza>
+> Why not just use guard(mutex) for this, making it all not an issue?
 
-Goes without saying I suppose, but,
+Heh, it's too new ;)
+That should work gracefully, yes.
 
-Reviewed-by: Tycho Andersen <tandersen@netflix.com>
 
-as well.
-
-Tycho
+Takashi
 
