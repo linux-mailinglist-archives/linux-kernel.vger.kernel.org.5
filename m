@@ -1,824 +1,272 @@
-Return-Path: <linux-kernel+bounces-54380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47DD884AE84
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 07:56:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E1A684AE8C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 07:58:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 766021C22D39
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 06:56:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9EF91F239E6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 06:58:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0FAF128803;
-	Tue,  6 Feb 2024 06:55:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2043A12880E;
+	Tue,  6 Feb 2024 06:58:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="nWJHnGSF"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=topic.nl header.i=@topic.nl header.b="cmWnmJNb"
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2096.outbound.protection.outlook.com [40.107.6.96])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC20A14265;
-	Tue,  6 Feb 2024 06:55:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707202551; cv=none; b=HMrP17oXsZWjU2TpStY32DVFH4wuLHHwAwPUd5666atQqrGqCdvz3POUQ1cKP9pWI4S/isZ07VDrQLEAcqGgeCIZYqkofj4qsWdkkN0rQeqohOMj1PyAdBHzzh8GRnMvD42pHe5M5Q9xUGmXyqsqpKH2z9tGlBXzuFgtdpp6vZ8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707202551; c=relaxed/simple;
-	bh=UsL+FKSeTRenRfbwGhCqeHkky3aojHr6oaehx2guBGY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=jiI5zwtroXGWn2qfzGGz+CUIYtRjqg6cp44QkuCaLdVroPebTfFeYA7rVLgAPMWOpCUnOKHclIAWO5gHOAGbw0fjqIvYp5Sk9iQ3AmvuoTuWPwHtX2uIQn1pWyfizCwlAuH5q+yH4c6iq9nsRzg3NEqqIk3h+cRRhAqtpnrN+8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=nWJHnGSF; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4164QoXL002613;
-	Tue, 6 Feb 2024 06:55:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=/Phnwkc11Gx3rJ7NMhJD8KL5WL3c64Dd3E9/F3tW5co=; b=nW
-	JHnGSFrJdwzEI3d1pUtWF97Hrbsm53KtzIdwGEIo3lvCGujoL90txglgkCzoAono
-	jgE/MjqewxEPZBUy1V7CzKWBqHwriBPU1SJJ7eCrZrN+OvBrCHWweN2zmjlq27mB
-	YZZTLxcIzhV+9SyMwpd7A9rQsDNLMakgA5xujnko0JjGZ93xXD37bjFy3MEbBsc5
-	ezLHDvsgDo7a3ODupco/Rx2IJ5+7GW6uZsQ2ucW27fY6NOus3r2vNuNbCcK+fDwZ
-	SSY0t8W7mRYOeCpFUQMi9RmJZYnfONa72u32/KM/AoIHC+nK7s0s5I/+j6uiQXnp
-	n1tPEJAUOoHK/+azYWdg==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w3cafrcvv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Feb 2024 06:55:39 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4166tcqT001764
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 6 Feb 2024 06:55:38 GMT
-Received: from [10.216.36.240] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 5 Feb
- 2024 22:55:34 -0800
-Message-ID: <eded3ffe-882d-9514-9c9a-9c49d3a7a9a6@quicinc.com>
-Date: Tue, 6 Feb 2024 12:25:30 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80AB482897;
+	Tue,  6 Feb 2024 06:58:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.96
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707202720; cv=fail; b=SvZlkmcAb6O0YDlcZAJ9oHp6sY5j58sij3dIEAZyZzYRXwV6LDVrD0ivHHseIhqqx19F89ACHzOGHycSyr7K2LmI2Ld79Az62SK94fSqJGBIbUWCcFLSGhHdWzQP6K9KYdHyWLymqOM9NXSDAwmbHgBLNgKyCXKgXfBFbw8P/VI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707202720; c=relaxed/simple;
+	bh=hvUWXNvGIfjXZ9YEhKWqj0hh61196rXpWIPF1Atimi4=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version:
+	 References; b=dT6V2gvqLUDGnSTaP2BehF1WZug4UJddQYpK6fhfZooMlVSSwyHY5OhCi7es8UIKazJ7SXBYgOUIJ1f9j/8s0hFPqM9WgJrRnmDl7kiIuR9bJAAIolfqMh6O5mxodhcbAU7O5Kzsfc5/mTjy0cstCp5A/xse6qTlq0kKH+AU0B8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=topic.nl; spf=pass smtp.mailfrom=topic.nl; dkim=pass (2048-bit key) header.d=topic.nl header.i=@topic.nl header.b=cmWnmJNb; arc=fail smtp.client-ip=40.107.6.96
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=topic.nl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=topic.nl
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lBQVpwQu15yA/jfVoRH6SDqK5QMgbcHbUsgGz1ATZfJ9SBtxDfewAxkUIiW/Nji4dCU0mcD1spdbeRcAqtUMQIGyR+2/mc2b2cx5yGpXQTqbtdMaXvqX3YVfBeywjvxEzxpVEKBIG/gEi4eZcd0NYHbbvfCYL1R5dKQNejNuwQcIBfZWimCEBztIFVV5WdlmnvtbtSMD8YmPcy//nDcSjDLndQe9MyMEf0rlcIO2AeenbbQJ2F7AoN6mBPOH03llm+9GsHf7Dg8IJPoOtC8zwN3z1fklyH28cNJ7Svoa7yacoVVxdJS2rRvDwV9cl1xizpoWyYAKkEn+PO05m63bgQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JDbjHSh1/fIvXfuARBVeEiC8XjSZLW0jvU5KYnvO8mY=;
+ b=PwJ3v/7nJqFMBMhQt/DXYZ80LBGaTdy2tlbMwvu+5ppShDHoZBeYhJKZSJPDVIkFy0cVPR3/ySNylP3euFC1jw93tW/9Mdf4FJkJ6sC/TILIXEyDx48mBOJu9VNPPJ8kWILbX/nouxe4iQTi/Fm7Q8Hc9VPyGPtXdAzczUKAwJwDsqnltPbYhVjKavBurvw8RAXiDeIMWb78eYc2XbKmRwQxuwg63cn6TRmusLhZPBdQ7uczc4iAljaGRye8IRyag0cNaWaClQC+/Fzlw5UPlSEqBW5XHfWs4SP5snIR+8tZlPkhNdat5h11DdKB8X7i/gjHrtCqOTYVEAHGyBLdTg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 20.93.157.195) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=topic.nl;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=topic.nl;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=topic.nl; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JDbjHSh1/fIvXfuARBVeEiC8XjSZLW0jvU5KYnvO8mY=;
+ b=cmWnmJNbYOpaWFMuNvY/IXbMGL8Fbtc/pUv6EH1fDBOafRb4pH/oLju+u0r5OEzXxv2nFT4+OhYx5dBgPu5VIR4gzU7V3vsQG5FSSXJCrmFX1HbojNv+k7qi8lEEuOaoaQ8Wu9IrNsUXFbkYvRekFWJBQA2fI400w8/17BrsTg/C0/DfQM3s5wlheXLyL+lMdCzqog5/rHzfwXKj7YfunS2fk2JIuRm/0THerQGvpbWJ6c90YJNUafWzWmxzJgEuYTMB6sZbOyDH//kV4kpmlVHyoPKjvjLwq6L6AdzReRSl2yXubZ5Wx2V9x8r7fte9Gs+JZwTAxLsJTgofXoEIpw==
+Received: from AS4P191CA0046.EURP191.PROD.OUTLOOK.COM (2603:10a6:20b:657::6)
+ by DBBPR04MB7754.eurprd04.prod.outlook.com (2603:10a6:10:1ee::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36; Tue, 6 Feb
+ 2024 06:58:33 +0000
+Received: from AM3PEPF0000A797.eurprd04.prod.outlook.com
+ (2603:10a6:20b:657:cafe::1f) by AS4P191CA0046.outlook.office365.com
+ (2603:10a6:20b:657::6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36 via Frontend
+ Transport; Tue, 6 Feb 2024 06:58:33 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 20.93.157.195)
+ smtp.mailfrom=topic.nl; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=topic.nl;
+Received-SPF: Pass (protection.outlook.com: domain of topic.nl designates
+ 20.93.157.195 as permitted sender) receiver=protection.outlook.com;
+ client-ip=20.93.157.195; helo=westeu11-emailsignatures-cloud.codetwo.com;
+ pr=C
+Received: from westeu11-emailsignatures-cloud.codetwo.com (20.93.157.195) by
+ AM3PEPF0000A797.mail.protection.outlook.com (10.167.16.102) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7249.19 via Frontend Transport; Tue, 6 Feb 2024 06:58:32 +0000
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (104.47.18.104) by westeu11-emailsignatures-cloud.codetwo.com with CodeTwo SMTP Server (TLS12) via SMTP; Tue, 06 Feb 2024 06:58:32 +0000
+Authentication-Results-Original: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=topic.nl;
+Received: from AS8PR04MB8644.eurprd04.prod.outlook.com (2603:10a6:20b:42b::12)
+ by DBBPR04MB7787.eurprd04.prod.outlook.com (2603:10a6:10:1e3::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36; Tue, 6 Feb
+ 2024 06:58:28 +0000
+Received: from AS8PR04MB8644.eurprd04.prod.outlook.com
+ ([fe80::651a:dedd:945a:d1dd]) by AS8PR04MB8644.eurprd04.prod.outlook.com
+ ([fe80::651a:dedd:945a:d1dd%6]) with mapi id 15.20.7249.035; Tue, 6 Feb 2024
+ 06:58:28 +0000
+From: Mike Looijmans <mike.looijmans@topic.nl>
+To: devicetree@vger.kernel.org,
+	linux-iio@vger.kernel.org
+CC: Mike Looijmans <mike.looijmans@topic.nl>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/2] dt-bindings: iio: adc: ti-ads1298: Add bindings
+Date: Tue, 6 Feb 2024 07:58:17 +0100
+Message-ID: <20240206065818.2016910-1-mike.looijmans@topic.nl>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR05CA0077.eurprd05.prod.outlook.com
+ (2603:10a6:208:136::17) To AS8PR04MB8644.eurprd04.prod.outlook.com
+ (2603:10a6:20b:42b::12)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH v11] bus: mhi: host: Add tracing support
-Content-Language: en-US
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-CC: Manivannan Sadhasivam <mani@kernel.org>,
-        Steven Rostedt
-	<rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
-        <quic_ramkri@quicinc.com>, <quic_nitegupt@quicinc.com>,
-        <quic_skananth@quicinc.com>, <quic_parass@quicinc.com>
-References: <20240206-ftrace_support-v11-1-3f71dc187544@quicinc.com>
- <20240206062636.GA8333@thinkpad>
-From: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-In-Reply-To: <20240206062636.GA8333@thinkpad>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: iUA-luAFtwvUiJUQNACY7HzPN5hH-31z
-X-Proofpoint-GUID: iUA-luAFtwvUiJUQNACY7HzPN5hH-31z
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-05_18,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- mlxscore=0 lowpriorityscore=0 malwarescore=0 spamscore=0 clxscore=1015
- bulkscore=0 impostorscore=0 priorityscore=1501 suspectscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402060045
+X-MS-TrafficTypeDiagnostic:
+	AS8PR04MB8644:EE_|DBBPR04MB7787:EE_|AM3PEPF0000A797:EE_|DBBPR04MB7754:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3ca01208-57d1-421b-7a16-08dc26e10874
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original:
+ AbO/JB+lGGPMge7YPKbYdH9Cb5wEiQlU7ABnDega3hW3ogBVQmDn72nNqTDGhS/xnbbbgOGK3tK1SrCgcGYSz/jKkirCfiuvPf2cYreT0qXwv6VNcff90KnwBvbpoxhyoOYmcs5mcyGFf4A/I39XdT2e14dDHNBRnYJFgscRJHI0LqoSVexrg5Vzqx7FctBtOiTv8FnEZJkM9UhG7wI4bHAV/6Fo0zvE0dk1fzysKK8BYN/AurXjmyMO8K/3Pcv4IN4PPJWZ1n9V7kxIMrNRzNBGBeaAEDwXoPZg8Db+S3MtpLswpdlXpSMhUzzZqmKU4xaHFI5R3Zwg9OIa/7hwYVVec2EGLI49Lzf9xp30hqi9XAnWr+TJhMm5BzDj83ZcXW1MOaSGVagQzCgSvVCtaoKdsAbHAD41ZoDLIN6I9Gb0cbYJeEPlYgjW6aCF2rPXAV33EdqEaQs5hw6RI3nUdWp9yvAfCUEzHveTAJRzcGaUoM7AIiqEKdJYn89cr/s02txc60PnntWSUg5NVLSZJb/v6hHznkHVWlPJMaEs8isukRpLM3sD8qlWjqpH6LE4ni6se68F18KZvWcwMsG+BYbCPQiC648OtvtD09XCKHo=
+X-Forefront-Antispam-Report-Untrusted:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8644.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39840400004)(376002)(396003)(346002)(136003)(366004)(230273577357003)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(38100700002)(83380400001)(2906002)(54906003)(41300700001)(26005)(316002)(66556008)(66946007)(66476007)(86362001)(38350700005)(8936002)(8676002)(4326008)(44832011)(52116002)(2616005)(6512007)(6506007)(1076003)(6666004)(6486002)(966005)(5660300002)(478600001)(36756003);DIR:OUT;SFP:1102;
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7787
+X-CodeTwo-MessageID: 0bca6c5f-55d8-4df0-b6fc-753b31b90f66.20240206065832@westeu11-emailsignatures-cloud.codetwo.com
+X-CodeTwoProcessed: true
+References: <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.ad72f8ca-a017-42d2-9c07-f17f282264d0@emailsignatures365.codetwo.com>
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped:
+ AM3PEPF0000A797.eurprd04.prod.outlook.com
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id-Prvs:
+	703edf6f-83bf-43e6-c2b4-08dc26e105ae
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	7d6SypoZPzvZAdqZ50Wazq4dztl7lSJxswlcZcyAP21BSFxVkSM1GybPmBWkAgTAeHPYdwGC9L83vpOZRPhq2pD/AmvbBlgBr7w94AmXsbaJtJvEAEaVqHxtdf2i0w9rRz5C3a/WGVhbuhi00EcuJxVJqG9mioK9eAGc38qCpK5umfta9iaikugUNKzPq1LKPeWE/9j4X1qKmfgaTeDmZ01xlexZFnzyd5CSHOp1Gih2EnS+4b0viT2gGSF+bnqUEF3ByHBtb5yplgVyLrDd3a3po1JAn7+vbc3YjS+UdotH6kXALSUqm6OI5WF03SlIxXSLVtq3URUCVqb/PfW+4ggsK5YflUf8xi3b7sh6wtjW1GkvulePJTf5dfWruujAHXb2surqJLoOvilZEzz/1zUuG+upVqD7KQnXVEtRvq7cNpsImksYPy4iQvQVaurTnYkK79HVAoibB/UbOA4C+4Ef8jw1a8/HdlUqmluAzL7kZb0IdGHrKRXnBl9Dv0+uCy0UWyPT1EhkwZqP+8ivxy/Koec1yaDQbFG6stsiiL1Af/OUudO9gcMDZ4RB05EoZBOOp7uVDk4tw3TKNFBpkxFtUbVC0mOxMghfa/NdPZAE/CgxZViXsUE8nll0WaAnKpe+TWryf+epHbqUo8f77PuO+3j2H24cUz28X5cp84DBma4+Y/o21WGeJlDYV/C6
+X-Forefront-Antispam-Report:
+	CIP:20.93.157.195;CTRY:NL;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:westeu11-emailsignatures-cloud.codetwo.com;PTR:westeu11-emailsignatures-cloud.codetwo.com;CAT:NONE;SFS:(13230031)(4636009)(39840400004)(346002)(376002)(136003)(396003)(230922051799003)(230273577357003)(186009)(1800799012)(451199024)(82310400011)(64100799003)(46966006)(36840700001)(36860700001)(7596003)(7636003)(356005)(83380400001)(2906002)(40480700001)(41300700001)(47076005)(70586007)(26005)(54906003)(70206006)(316002)(336012)(86362001)(8676002)(8936002)(4326008)(44832011)(2616005)(6506007)(6512007)(1076003)(6666004)(966005)(5660300002)(15974865002)(6486002)(36756003)(478600001);DIR:OUT;SFP:1102;
+X-OriginatorOrg: topic.nl
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2024 06:58:32.8615
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3ca01208-57d1-421b-7a16-08dc26e10874
+X-MS-Exchange-CrossTenant-Id: 449607a5-3517-482d-8d16-41dd868cbda3
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=449607a5-3517-482d-8d16-41dd868cbda3;Ip=[20.93.157.195];Helo=[westeu11-emailsignatures-cloud.codetwo.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	AM3PEPF0000A797.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7754
+
+Bindings for the TI ADS1298 medical ADC. This device is
+typically used for ECG and similar measurements. Supports data
+acquisition at configurable scale and sampling frequency.
+
+The device has so many options for connecting stuff, at this
+point the bindings aren't nearly complete but partial bindings
+are better than no bindings at all.
+
+Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+
+---
+
+(no changes since v2)
+
+Changes in v2:
+Remove "clk" name
+Add datasheet and "incomplete" note
+
+ .../bindings/iio/adc/ti,ads1298.yaml          | 80 +++++++++++++++++++
+ 1 file changed, 80 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,ads1298.ya=
+ml
+
+diff --git a/Documentation/devicetree/bindings/iio/adc/ti,ads1298.yaml b/Do=
+cumentation/devicetree/bindings/iio/adc/ti,ads1298.yaml
+new file mode 100644
+index 000000000000..bf5a43a81d59
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/adc/ti,ads1298.yaml
+@@ -0,0 +1,80 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/adc/ti,ads1298.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Texas Instruments' ads1298 medical ADC chips
++
++description: |
++  Datasheet at: https://www.ti.com/product/ADS1298
++  Bindings for this chip aren't complete.
++
++maintainers:
++  - Mike Looijmans <mike.looijmans@topic.nl>
++
++properties:
++  compatible:
++    enum:
++      - ti,ads1298
++
++  reg:
++    maxItems: 1
++
++  spi-cpha: true
++
++  reset-gpios:
++    maxItems: 1
++
++  avdd-supply:
++    description:
++      Analog power supply, voltage between AVDD and AVSS. When providing a
++      symmetric +/- 2.5V, the regulator should report 5V.
++
++  vref-supply:
++    description:
++      Optional reference voltage. If omitted, internal reference is used,
++      which is 2.4V when analog supply is below 4.4V, 4V otherwise.
++
++  clocks:
++    description: Optional 2.048 MHz external source clock on CLK pin
++    maxItems: 1
++
++  interrupts:
++    description: Interrupt on DRDY pin, triggers on falling edge
++    maxItems: 1
++
++  label: true
++
++required:
++  - compatible
++  - reg
++  - avdd-supply
++  - interrupts
++
++allOf:
++  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    spi {
++        #address-cells =3D <1>;
++        #size-cells =3D <0>;
++
++        adc@1 {
++          reg =3D <1>;
++          compatible =3D "ti,ads1298";
++          label =3D "ads1298-1-ecg";
++          avdd-supply =3D <&reg_iso_5v_a>;
++          clocks =3D <&clk_ads1298>;
++          interrupt-parent =3D <&gpio0>;
++          interrupts =3D <78 IRQ_TYPE_EDGE_FALLING>;
++          spi-max-frequency =3D <20000000>;
++          spi-cpha;
++        };
++    };
++...
+--=20
+2.34.1
 
 
-
-On 2/6/2024 11:56 AM, Manivannan Sadhasivam wrote:
-> On Tue, Feb 06, 2024 at 10:02:05AM +0530, Krishna chaitanya chundru wrote:
->> This change adds ftrace support for following functions which
->> helps in debugging the issues when there is Channel state & MHI
->> state change and also when we receive data and control events:
->> 1. mhi_intvec_mhi_states
->> 2. mhi_process_data_event_ring
->> 3. mhi_process_ctrl_ev_ring
->> 4. mhi_gen_tre
->> 5. mhi_update_channel_state
->> 6. mhi_tryset_pm_state
->> 7. mhi_pm_st_worker
->>
->> Change the implementation of the arrays which has enum to strings mapping
->> to make it consistent in both trace header file and other files.
->>
->> Where ever the trace events are added, debug messages are removed.
->>
->> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-> 
-> There are a lot of checkpatch errors. Please fix them and resubmit.
-> 
-> - Mani
-> 
-Hi Mani,
-
-The errors which is pointing in the checkpatch are false positive, those
-errors are being shown from v2 onwards and kernel test boot is also not
-throwing any errors for it.
-
-I checked with internal team they said these errors are false positive.
-
-Thanks & Regards,
-Krishna Chaitanya.
-
->> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
->> Reviewed-by: "Steven Rostedt (Google)" <rostedt@goodmis.org>
->> ---
->> Changes in v11:
->> - Rebased with mhi next.
->> - Link to v10: https://lore.kernel.org/r/20240131-ftrace_support-v10-1-4349306b8f81@quicinc.com
->>
->> Changes in v10:
->> - Modified command_start and command_end traces to take string as input to mention correct
->> - string as suggested by mani
->> - As sugggested by mani modified the print format from lower format to upper case format.
->> - Link to v9: https://lore.kernel.org/r/20240105-ftrace_support-v9-1-a2dca64cc6ea@quicinc.com
->>
->> Changes in v9:
->> - Change the implementations of some array so that the strings to enum mapping
->> - is same in both trace header and other files as suggested by steve.
->> - Link to v8: https://lore.kernel.org/r/20231207-ftrace_support-v8-1-7f62d4558555@quicinc.com
->>
->> Changes in v8:
->> - Pass the structure and derefernce the variables in TP_fast_assign as suggested by steve
->> - Link to v7: https://lore.kernel.org/r/20231206-ftrace_support-v7-1-aca49a04268b@quicinc.com
->>
->> Changes in v7:
->> - change log format as pointed by mani.
->> - Link to v6: https://lore.kernel.org/r/20231204-ftrace_support-v6-1-9b206546dac2@quicinc.com
->>
->> Changes in v6:
->> - use 'rp' directly as suggested by jeffrey.
->> - Link to v5: https://lore.kernel.org/r/20231127-ftrace_support-v5-1-eb67daead4f1@quicinc.com
->>
->> Changes in v5:
->> - Use DECLARE_EVENT_CLASS for multiple events as suggested by steve.
->> - Instead of converting to u64 to print address, use %px to print the address to avoid
->> - warnings in some platforms.
->> - Link to v4: https://lore.kernel.org/r/20231111-ftrace_support-v4-1-c83602399461@quicinc.com
->>
->> Changes in v4:
->> - Fix compilation issues in previous patch which happended due to rebasing.
->> - In the defconfig FTRACE config is not enabled due to that the compilation issue is not
->> - seen in my workspace.
->> - Link to v3: https://lore.kernel.org/r/20231111-ftrace_support-v3-1-f358d2911a74@quicinc.com
->>
->> Changes in v3:
->> - move trace header file from include/trace/events to drivers/bus/mhi/host/ so that
->> - we can include driver header files.
->> - Use macros directly in the trace events as suggested Jeffrey Hugo.
->> - Reorder the structure in the events as suggested by steve to avoid holes in the buffer.
->> - removed the mhi_to_physical function as this can give security issues.
->> - removed macros to define strings as we can get those from driver headers.
->> - Link to v2: https://lore.kernel.org/r/20231013-ftrace_support-v2-1-6e893ce010b5@quicinc.com
->>
->> Changes in v2:
->> - Passing the raw state into the trace event and using  __print_symbolic() as suggested by bjorn.
->> - Change mhi_pm_st_worker to mhi_pm_st_transition as suggested by bjorn.
->> - Fixed the kernel test rebot issues.
->> - Link to v1: https://lore.kernel.org/r/20231005-ftrace_support-v1-1-23a2f394fa49@quicinc.com
->> ---
->>   drivers/bus/mhi/common.h        |  38 +++---
->>   drivers/bus/mhi/host/init.c     |  64 +++++----
->>   drivers/bus/mhi/host/internal.h |  41 ++++++
->>   drivers/bus/mhi/host/main.c     |  19 ++-
->>   drivers/bus/mhi/host/pm.c       |   7 +-
->>   drivers/bus/mhi/host/trace.h    | 280 ++++++++++++++++++++++++++++++++++++++++
->>   6 files changed, 384 insertions(+), 65 deletions(-)
->>
->> diff --git a/drivers/bus/mhi/common.h b/drivers/bus/mhi/common.h
->> index f794b9c8049e..dda340aaed95 100644
->> --- a/drivers/bus/mhi/common.h
->> +++ b/drivers/bus/mhi/common.h
->> @@ -297,30 +297,30 @@ struct mhi_ring_element {
->>   	__le32 dword[2];
->>   };
->>   
->> +#define MHI_STATE_LIST				\
->> +	mhi_state(RESET,	"RESET")	\
->> +	mhi_state(READY,	"READY")	\
->> +	mhi_state(M0,		"M0")		\
->> +	mhi_state(M1,		"M1")		\
->> +	mhi_state(M2,		"M2")		\
->> +	mhi_state(M3,		"M3")		\
->> +	mhi_state(M3_FAST,	"M3_FAST")	\
->> +	mhi_state(BHI,		"BHI")		\
->> +	mhi_state_end(SYS_ERR,	"SYS ERROR")
->> +
->> +#undef mhi_state
->> +#undef mhi_state_end
->> +
->> +#define mhi_state(a, b)		case MHI_STATE_##a: return b;
->> +#define mhi_state_end(a, b)	case MHI_STATE_##a: return b;
->> +
->>   static inline const char *mhi_state_str(enum mhi_state state)
->>   {
->>   	switch (state) {
->> -	case MHI_STATE_RESET:
->> -		return "RESET";
->> -	case MHI_STATE_READY:
->> -		return "READY";
->> -	case MHI_STATE_M0:
->> -		return "M0";
->> -	case MHI_STATE_M1:
->> -		return "M1";
->> -	case MHI_STATE_M2:
->> -		return "M2";
->> -	case MHI_STATE_M3:
->> -		return "M3";
->> -	case MHI_STATE_M3_FAST:
->> -		return "M3 FAST";
->> -	case MHI_STATE_BHI:
->> -		return "BHI";
->> -	case MHI_STATE_SYS_ERR:
->> -		return "SYS ERROR";
->> +	MHI_STATE_LIST
->>   	default:
->>   		return "Unknown state";
->>   	}
->> -};
->> +}
->>   
->>   #endif /* _MHI_COMMON_H */
->> diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
->> index 6d3b045ab259..944da46e6f11 100644
->> --- a/drivers/bus/mhi/host/init.c
->> +++ b/drivers/bus/mhi/host/init.c
->> @@ -20,51 +20,49 @@
->>   #include <linux/wait.h>
->>   #include "internal.h"
->>   
->> +#define CREATE_TRACE_POINTS
->> +#include "trace.h"
->> +
->>   static DEFINE_IDA(mhi_controller_ida);
->>   
->> +#undef mhi_ee
->> +#undef mhi_ee_end
->> +
->> +#define mhi_ee(a, b)		[MHI_EE_##a] = b,
->> +#define mhi_ee_end(a, b)	[MHI_EE_##a] = b,
->> +
->>   const char * const mhi_ee_str[MHI_EE_MAX] = {
->> -	[MHI_EE_PBL] = "PRIMARY BOOTLOADER",
->> -	[MHI_EE_SBL] = "SECONDARY BOOTLOADER",
->> -	[MHI_EE_AMSS] = "MISSION MODE",
->> -	[MHI_EE_RDDM] = "RAMDUMP DOWNLOAD MODE",
->> -	[MHI_EE_WFW] = "WLAN FIRMWARE",
->> -	[MHI_EE_PTHRU] = "PASS THROUGH",
->> -	[MHI_EE_EDL] = "EMERGENCY DOWNLOAD",
->> -	[MHI_EE_FP] = "FLASH PROGRAMMER",
->> -	[MHI_EE_DISABLE_TRANSITION] = "DISABLE",
->> -	[MHI_EE_NOT_SUPPORTED] = "NOT SUPPORTED",
->> +	MHI_EE_LIST
->>   };
->>   
->> +#undef dev_st_trans
->> +#undef dev_st_trans_end
->> +
->> +#define dev_st_trans(a, b)	[DEV_ST_TRANSITION_##a] = b,
->> +#define dev_st_trans_end(a, b)	[DEV_ST_TRANSITION_##a] = b,
->> +
->>   const char * const dev_state_tran_str[DEV_ST_TRANSITION_MAX] = {
->> -	[DEV_ST_TRANSITION_PBL] = "PBL",
->> -	[DEV_ST_TRANSITION_READY] = "READY",
->> -	[DEV_ST_TRANSITION_SBL] = "SBL",
->> -	[DEV_ST_TRANSITION_MISSION_MODE] = "MISSION MODE",
->> -	[DEV_ST_TRANSITION_FP] = "FLASH PROGRAMMER",
->> -	[DEV_ST_TRANSITION_SYS_ERR] = "SYS ERROR",
->> -	[DEV_ST_TRANSITION_DISABLE] = "DISABLE",
->> +	DEV_ST_TRANSITION_LIST
->>   };
->>   
->> +#undef ch_state_type
->> +#undef ch_state_type_end
->> +
->> +#define ch_state_type(a, b)	[MHI_CH_STATE_TYPE_##a] = b,
->> +#define ch_state_type_end(a, b)	[MHI_CH_STATE_TYPE_##a] = b,
->> +
->>   const char * const mhi_ch_state_type_str[MHI_CH_STATE_TYPE_MAX] = {
->> -	[MHI_CH_STATE_TYPE_RESET] = "RESET",
->> -	[MHI_CH_STATE_TYPE_STOP] = "STOP",
->> -	[MHI_CH_STATE_TYPE_START] = "START",
->> +	MHI_CH_STATE_TYPE_LIST
->>   };
->>   
->> +#undef mhi_pm_state
->> +#undef mhi_pm_state_end
->> +
->> +#define mhi_pm_state(a, b)	[MHI_PM_STATE_##a] = b,
->> +#define mhi_pm_state_end(a, b)	[MHI_PM_STATE_##a] = b,
->> +
->>   static const char * const mhi_pm_state_str[] = {
->> -	[MHI_PM_STATE_DISABLE] = "DISABLE",
->> -	[MHI_PM_STATE_POR] = "POWER ON RESET",
->> -	[MHI_PM_STATE_M0] = "M0",
->> -	[MHI_PM_STATE_M2] = "M2",
->> -	[MHI_PM_STATE_M3_ENTER] = "M?->M3",
->> -	[MHI_PM_STATE_M3] = "M3",
->> -	[MHI_PM_STATE_M3_EXIT] = "M3->M0",
->> -	[MHI_PM_STATE_FW_DL_ERR] = "Firmware Download Error",
->> -	[MHI_PM_STATE_SYS_ERR_DETECT] = "SYS ERROR Detect",
->> -	[MHI_PM_STATE_SYS_ERR_PROCESS] = "SYS ERROR Process",
->> -	[MHI_PM_STATE_SYS_ERR_FAIL] = "SYS ERROR Failure",
->> -	[MHI_PM_STATE_SHUTDOWN_PROCESS] = "SHUTDOWN Process",
->> -	[MHI_PM_STATE_LD_ERR_FATAL_DETECT] = "Linkdown or Error Fatal Detect",
->> +	MHI_PM_STATE_LIST
->>   };
->>   
->>   const char *to_mhi_pm_state_str(u32 state)
->> diff --git a/drivers/bus/mhi/host/internal.h b/drivers/bus/mhi/host/internal.h
->> index 4b6deea17bcd..091244cf17c6 100644
->> --- a/drivers/bus/mhi/host/internal.h
->> +++ b/drivers/bus/mhi/host/internal.h
->> @@ -42,6 +42,11 @@ enum mhi_ch_state_type {
->>   	MHI_CH_STATE_TYPE_MAX,
->>   };
->>   
->> +#define MHI_CH_STATE_TYPE_LIST				\
->> +	ch_state_type(RESET,		"RESET")	\
->> +	ch_state_type(STOP,		"STOP")		\
->> +	ch_state_type_end(START,	"START")
->> +
->>   extern const char * const mhi_ch_state_type_str[MHI_CH_STATE_TYPE_MAX];
->>   #define TO_CH_STATE_TYPE_STR(state) (((state) >= MHI_CH_STATE_TYPE_MAX) ? \
->>   				     "INVALID_STATE" : \
->> @@ -50,6 +55,18 @@ extern const char * const mhi_ch_state_type_str[MHI_CH_STATE_TYPE_MAX];
->>   #define MHI_INVALID_BRSTMODE(mode) (mode != MHI_DB_BRST_DISABLE && \
->>   				    mode != MHI_DB_BRST_ENABLE)
->>   
->> +#define MHI_EE_LIST						\
->> +	mhi_ee(PBL,			"PRIMARY BOOTLOADER")	\
->> +	mhi_ee(SBL,			"SECONDARY BOOTLOADER")	\
->> +	mhi_ee(AMSS,			"MISSION MODE")		\
->> +	mhi_ee(RDDM,			"RAMDUMP DOWNLOAD MODE")\
->> +	mhi_ee(WFW,			"WLAN FIRMWARE")	\
->> +	mhi_ee(PTHRU,			"PASS THROUGH")		\
->> +	mhi_ee(EDL,			"EMERGENCY DOWNLOAD")	\
->> +	mhi_ee(FP,			"FLASH PROGRAMMER")	\
->> +	mhi_ee(DISABLE_TRANSITION,	"DISABLE")		\
->> +	mhi_ee_end(NOT_SUPPORTED,	"NOT SUPPORTED")
->> +
->>   extern const char * const mhi_ee_str[MHI_EE_MAX];
->>   #define TO_MHI_EXEC_STR(ee) (((ee) >= MHI_EE_MAX) ? \
->>   			     "INVALID_EE" : mhi_ee_str[ee])
->> @@ -72,6 +89,15 @@ enum dev_st_transition {
->>   	DEV_ST_TRANSITION_MAX,
->>   };
->>   
->> +#define DEV_ST_TRANSITION_LIST					\
->> +	dev_st_trans(PBL,		"PBL")			\
->> +	dev_st_trans(READY,		"READY")		\
->> +	dev_st_trans(SBL,		"SBL")			\
->> +	dev_st_trans(MISSION_MODE,	"MISSION MODE")		\
->> +	dev_st_trans(FP,		"FLASH PROGRAMMER")	\
->> +	dev_st_trans(SYS_ERR,		"SYS ERROR")		\
->> +	dev_st_trans_end(DISABLE,	"DISABLE")
->> +
->>   extern const char * const dev_state_tran_str[DEV_ST_TRANSITION_MAX];
->>   #define TO_DEV_STATE_TRANS_STR(state) (((state) >= DEV_ST_TRANSITION_MAX) ? \
->>   				"INVALID_STATE" : dev_state_tran_str[state])
->> @@ -94,6 +120,21 @@ enum mhi_pm_state {
->>   	MHI_PM_STATE_MAX
->>   };
->>   
->> +#define MHI_PM_STATE_LIST							\
->> +	mhi_pm_state(DISABLE,			"DISABLE")			\
->> +	mhi_pm_state(POR,			"POWER ON RESET")		\
->> +	mhi_pm_state(M0,			"M0")				\
->> +	mhi_pm_state(M2,			"M2")				\
->> +	mhi_pm_state(M3_ENTER,			"M?->M3")			\
->> +	mhi_pm_state(M3,			"M3")				\
->> +	mhi_pm_state(M3_EXIT,			"M3->M0")			\
->> +	mhi_pm_state(FW_DL_ERR,			"Firmware Download Error")	\
->> +	mhi_pm_state(SYS_ERR_DETECT,		"SYS ERROR Detect")		\
->> +	mhi_pm_state(SYS_ERR_PROCESS,		"SYS ERROR Process")		\
->> +	mhi_pm_state(SYS_ERR_FAIL,		"SYS ERROR Failure")		\
->> +	mhi_pm_state(SHUTDOWN_PROCESS,		"SHUTDOWN Process")		\
->> +	mhi_pm_state_end(LD_ERR_FATAL_DETECT,	"Linkdown or Error Fatal Detect")
->> +
->>   #define MHI_PM_DISABLE					BIT(0)
->>   #define MHI_PM_POR					BIT(1)
->>   #define MHI_PM_M0					BIT(2)
->> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
->> index abb561db9ae1..2d38f6005da6 100644
->> --- a/drivers/bus/mhi/host/main.c
->> +++ b/drivers/bus/mhi/host/main.c
->> @@ -15,6 +15,7 @@
->>   #include <linux/skbuff.h>
->>   #include <linux/slab.h>
->>   #include "internal.h"
->> +#include "trace.h"
->>   
->>   int __must_check mhi_read_reg(struct mhi_controller *mhi_cntrl,
->>   			      void __iomem *base, u32 offset, u32 *out)
->> @@ -493,11 +494,8 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
->>   
->>   	state = mhi_get_mhi_state(mhi_cntrl);
->>   	ee = mhi_get_exec_env(mhi_cntrl);
->> -	dev_dbg(dev, "local ee: %s state: %s device ee: %s state: %s\n",
->> -		TO_MHI_EXEC_STR(mhi_cntrl->ee),
->> -		mhi_state_str(mhi_cntrl->dev_state),
->> -		TO_MHI_EXEC_STR(ee), mhi_state_str(state));
->>   
->> +	trace_mhi_intvec_states(mhi_cntrl, ee, state);
->>   	if (state == MHI_STATE_SYS_ERR) {
->>   		dev_dbg(dev, "System error detected\n");
->>   		pm_state = mhi_tryset_pm_state(mhi_cntrl,
->> @@ -838,6 +836,8 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
->>   	while (dev_rp != local_rp) {
->>   		enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
->>   
->> +		trace_mhi_ctrl_event(mhi_cntrl, local_rp);
->> +
->>   		switch (type) {
->>   		case MHI_PKT_TYPE_BW_REQ_EVENT:
->>   		{
->> @@ -1003,6 +1003,8 @@ int mhi_process_data_event_ring(struct mhi_controller *mhi_cntrl,
->>   	while (dev_rp != local_rp && event_quota > 0) {
->>   		enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
->>   
->> +		trace_mhi_data_event(mhi_cntrl, local_rp);
->> +
->>   		chan = MHI_TRE_GET_EV_CHID(local_rp);
->>   
->>   		WARN_ON(chan >= mhi_cntrl->max_chan);
->> @@ -1243,6 +1245,7 @@ int mhi_gen_tre(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
->>   	mhi_tre->dword[0] = MHI_TRE_DATA_DWORD0(info->len);
->>   	mhi_tre->dword[1] = MHI_TRE_DATA_DWORD1(bei, eot, eob, chain);
->>   
->> +	trace_mhi_gen_tre(mhi_cntrl, mhi_chan, mhi_tre);
->>   	/* increment WP */
->>   	mhi_add_ring_element(mhi_cntrl, tre_ring);
->>   	mhi_add_ring_element(mhi_cntrl, buf_ring);
->> @@ -1337,9 +1340,7 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
->>   	enum mhi_cmd_type cmd = MHI_CMD_NOP;
->>   	int ret;
->>   
->> -	dev_dbg(dev, "%d: Updating channel state to: %s\n", mhi_chan->chan,
->> -		TO_CH_STATE_TYPE_STR(to_state));
->> -
->> +	trace_mhi_channel_command_start(mhi_cntrl, mhi_chan, to_state, "Updating");
->>   	switch (to_state) {
->>   	case MHI_CH_STATE_TYPE_RESET:
->>   		write_lock_irq(&mhi_chan->lock);
->> @@ -1406,9 +1407,7 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
->>   		write_unlock_irq(&mhi_chan->lock);
->>   	}
->>   
->> -	dev_dbg(dev, "%d: Channel state change to %s successful\n",
->> -		mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
->> -
->> +	trace_mhi_channel_command_end(mhi_cntrl, mhi_chan, to_state, "Updated");
->>   exit_channel_update:
->>   	mhi_cntrl->runtime_put(mhi_cntrl);
->>   	mhi_device_put(mhi_cntrl->mhi_dev);
->> diff --git a/drivers/bus/mhi/host/pm.c b/drivers/bus/mhi/host/pm.c
->> index d0d033ce9984..8b40d3f01acc 100644
->> --- a/drivers/bus/mhi/host/pm.c
->> +++ b/drivers/bus/mhi/host/pm.c
->> @@ -15,6 +15,7 @@
->>   #include <linux/slab.h>
->>   #include <linux/wait.h>
->>   #include "internal.h"
->> +#include "trace.h"
->>   
->>   /*
->>    * Not all MHI state transitions are synchronous. Transitions like Linkdown,
->> @@ -131,6 +132,7 @@ enum mhi_pm_state __must_check mhi_tryset_pm_state(struct mhi_controller *mhi_cn
->>   	if (unlikely(!(dev_state_transitions[index].to_states & state)))
->>   		return cur_state;
->>   
->> +	trace_mhi_tryset_pm_state(mhi_cntrl, state);
->>   	mhi_cntrl->pm_state = state;
->>   	return mhi_cntrl->pm_state;
->>   }
->> @@ -772,7 +774,6 @@ void mhi_pm_st_worker(struct work_struct *work)
->>   	struct mhi_controller *mhi_cntrl = container_of(work,
->>   							struct mhi_controller,
->>   							st_worker);
->> -	struct device *dev = &mhi_cntrl->mhi_dev->dev;
->>   
->>   	spin_lock_irq(&mhi_cntrl->transition_lock);
->>   	list_splice_tail_init(&mhi_cntrl->transition_list, &head);
->> @@ -780,8 +781,8 @@ void mhi_pm_st_worker(struct work_struct *work)
->>   
->>   	list_for_each_entry_safe(itr, tmp, &head, node) {
->>   		list_del(&itr->node);
->> -		dev_dbg(dev, "Handling state transition: %s\n",
->> -			TO_DEV_STATE_TRANS_STR(itr->state));
->> +
->> +		trace_mhi_pm_st_transition(mhi_cntrl, itr->state);
->>   
->>   		switch (itr->state) {
->>   		case DEV_ST_TRANSITION_PBL:
->> diff --git a/drivers/bus/mhi/host/trace.h b/drivers/bus/mhi/host/trace.h
->> new file mode 100644
->> index 000000000000..d12a98d44272
->> --- /dev/null
->> +++ b/drivers/bus/mhi/host/trace.h
->> @@ -0,0 +1,280 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
->> +/*
->> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
->> + */
->> +
->> +#undef TRACE_SYSTEM
->> +#define TRACE_SYSTEM mhi_host
->> +
->> +#if !defined(_TRACE_EVENT_MHI_HOST_H) || defined(TRACE_HEADER_MULTI_READ)
->> +#define _TRACE_EVENT_MHI_HOST_H
->> +
->> +#include <linux/tracepoint.h>
->> +#include <linux/trace_seq.h>
->> +#include "../common.h"
->> +#include "internal.h"
->> +
->> +#undef mhi_state
->> +#undef mhi_state_end
->> +
->> +#define mhi_state(a, b)		TRACE_DEFINE_ENUM(MHI_STATE_##a);
->> +#define mhi_state_end(a, b)	TRACE_DEFINE_ENUM(MHI_STATE_##a);
->> +
->> +MHI_STATE_LIST
->> +
->> +#undef mhi_state
->> +#undef mhi_state_end
->> +
->> +#define mhi_state(a, b)		{ MHI_STATE_##a, b },
->> +#define mhi_state_end(a, b)	{ MHI_STATE_##a, b }
->> +
->> +#undef mhi_pm_state
->> +#undef mhi_pm_state_end
->> +
->> +#define mhi_pm_state(a, b)		TRACE_DEFINE_ENUM(MHI_PM_STATE_##a);
->> +#define mhi_pm_state_end(a, b)		TRACE_DEFINE_ENUM(MHI_PM_STATE_##a);
->> +
->> +MHI_PM_STATE_LIST
->> +
->> +#undef mhi_pm_state
->> +#undef mhi_pm_state_end
->> +
->> +#define mhi_pm_state(a, b)		{ MHI_PM_STATE_##a, b },
->> +#define mhi_pm_state_end(a, b)		{ MHI_PM_STATE_##a, b }
->> +
->> +#undef mhi_ee
->> +#undef mhi_ee_end
->> +
->> +#define mhi_ee(a, b)			TRACE_DEFINE_ENUM(MHI_EE_##a);
->> +#define mhi_ee_end(a, b)		TRACE_DEFINE_ENUM(MHI_EE_##a);
->> +
->> +MHI_EE_LIST
->> +
->> +#undef mhi_ee
->> +#undef mhi_ee_end
->> +
->> +#define mhi_ee(a, b)			{ MHI_EE_##a, b },
->> +#define mhi_ee_end(a, b)		{ MHI_EE_##a, b }
->> +
->> +#undef ch_state_type
->> +#undef ch_state_type_end
->> +
->> +#define ch_state_type(a, b)		TRACE_DEFINE_ENUM(MHI_CH_STATE_TYPE_##a);
->> +#define ch_state_type_end(a, b)		TRACE_DEFINE_ENUM(MHI_CH_STATE_TYPE_##a);
->> +
->> +MHI_CH_STATE_TYPE_LIST
->> +
->> +#undef ch_state_type
->> +#undef ch_state_type_end
->> +
->> +#define ch_state_type(a, b)		{ MHI_CH_STATE_TYPE_##a, b },
->> +#define ch_state_type_end(a, b)		{ MHI_CH_STATE_TYPE_##a, b }
->> +
->> +#undef dev_st_trans
->> +#undef dev_st_trans_end
->> +
->> +#define dev_st_trans(a, b)		TRACE_DEFINE_ENUM(DEV_ST_TRANSITION_##a);
->> +#define dev_st_trans_end(a, b)		TRACE_DEFINE_ENUM(DEV_ST_TRANSITION_##a);
->> +
->> +DEV_ST_TRANSITION_LIST
->> +
->> +#undef dev_st_trans
->> +#undef dev_st_trans_end
->> +
->> +#define dev_st_trans(a, b)		{ DEV_ST_TRANSITION_##a, b },
->> +#define dev_st_trans_end(a, b)		{ DEV_ST_TRANSITION_##a, b }
->> +
->> +TRACE_EVENT(mhi_gen_tre,
->> +
->> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
->> +		 struct mhi_ring_element *mhi_tre),
->> +
->> +	TP_ARGS(mhi_cntrl, mhi_chan, mhi_tre),
->> +
->> +	TP_STRUCT__entry(
->> +		__string(name, mhi_cntrl->mhi_dev->name)
->> +		__field(int, ch_num)
->> +		__field(void *, wp)
->> +		__field(__le64, tre_ptr)
->> +		__field(__le32, dword0)
->> +		__field(__le32, dword1)
->> +	),
->> +
->> +	TP_fast_assign(
->> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
->> +		__entry->ch_num = mhi_chan->chan;
->> +		__entry->wp = mhi_tre;
->> +		__entry->tre_ptr = mhi_tre->ptr;
->> +		__entry->dword0 = mhi_tre->dword[0];
->> +		__entry->dword1 = mhi_tre->dword[1];
->> +	),
->> +
->> +	TP_printk("%s: Chan: %d TRE: 0x%p TRE buf: 0x%llx DWORD0: 0x%08x DWORD1: 0x%08x\n",
->> +		  __get_str(name), __entry->ch_num, __entry->wp, __entry->tre_ptr,
->> +		  __entry->dword0, __entry->dword1)
->> +);
->> +
->> +TRACE_EVENT(mhi_intvec_states,
->> +
->> +	TP_PROTO(struct mhi_controller *mhi_cntrl, int dev_ee, int dev_state),
->> +
->> +	TP_ARGS(mhi_cntrl, dev_ee, dev_state),
->> +
->> +	TP_STRUCT__entry(
->> +		__string(name, mhi_cntrl->mhi_dev->name)
->> +		__field(int, local_ee)
->> +		__field(int, state)
->> +		__field(int, dev_ee)
->> +		__field(int, dev_state)
->> +	),
->> +
->> +	TP_fast_assign(
->> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
->> +		__entry->local_ee = mhi_cntrl->ee;
->> +		__entry->state = mhi_cntrl->dev_state;
->> +		__entry->dev_ee = dev_ee;
->> +		__entry->dev_state = dev_state;
->> +	),
->> +
->> +	TP_printk("%s: Local EE: %s State: %s Device EE: %s Dev State: %s\n",
->> +		  __get_str(name),
->> +		  __print_symbolic(__entry->local_ee, MHI_EE_LIST),
->> +		  __print_symbolic(__entry->state, MHI_STATE_LIST),
->> +		  __print_symbolic(__entry->dev_ee, MHI_EE_LIST),
->> +		  __print_symbolic(__entry->dev_state, MHI_STATE_LIST))
->> +);
->> +
->> +TRACE_EVENT(mhi_tryset_pm_state,
->> +
->> +	TP_PROTO(struct mhi_controller *mhi_cntrl, int pm_state),
->> +
->> +	TP_ARGS(mhi_cntrl, pm_state),
->> +
->> +	TP_STRUCT__entry(
->> +		__string(name, mhi_cntrl->mhi_dev->name)
->> +		__field(int, pm_state)
->> +	),
->> +
->> +	TP_fast_assign(
->> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
->> +		if (pm_state)
->> +			pm_state = __fls(pm_state);
->> +		__entry->pm_state = pm_state;
->> +	),
->> +
->> +	TP_printk("%s: PM state: %s\n", __get_str(name),
->> +		  __print_symbolic(__entry->pm_state, MHI_PM_STATE_LIST))
->> +);
->> +
->> +DECLARE_EVENT_CLASS(mhi_process_event_ring,
->> +
->> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_ring_element *rp),
->> +
->> +	TP_ARGS(mhi_cntrl, rp),
->> +
->> +	TP_STRUCT__entry(
->> +		__string(name, mhi_cntrl->mhi_dev->name)
->> +		__field(__le32, dword0)
->> +		__field(__le32, dword1)
->> +		__field(int, state)
->> +		__field(__le64, ptr)
->> +		__field(void *, rp)
->> +	),
->> +
->> +	TP_fast_assign(
->> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
->> +		__entry->rp = rp;
->> +		__entry->ptr = rp->ptr;
->> +		__entry->dword0 = rp->dword[0];
->> +		__entry->dword1 = rp->dword[1];
->> +		__entry->state = MHI_TRE_GET_EV_STATE(rp);
->> +	),
->> +
->> +	TP_printk("%s: TRE: 0x%p TRE buf: 0x%llx DWORD0: 0x%08x DWORD1: 0x%08x State: %s\n",
->> +		  __get_str(name), __entry->rp, __entry->ptr, __entry->dword0,
->> +		  __entry->dword1, __print_symbolic(__entry->state, MHI_STATE_LIST))
->> +);
->> +
->> +DEFINE_EVENT(mhi_process_event_ring, mhi_data_event,
->> +
->> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_ring_element *rp),
->> +
->> +	TP_ARGS(mhi_cntrl, rp)
->> +);
->> +
->> +DEFINE_EVENT(mhi_process_event_ring, mhi_ctrl_event,
->> +
->> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_ring_element *rp),
->> +
->> +	TP_ARGS(mhi_cntrl, rp)
->> +);
->> +
->> +DECLARE_EVENT_CLASS(mhi_update_channel_state,
->> +
->> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan, int state,
->> +		 const char *reason),
->> +
->> +	TP_ARGS(mhi_cntrl, mhi_chan, state, reason),
->> +
->> +	TP_STRUCT__entry(
->> +		__string(name, mhi_cntrl->mhi_dev->name)
->> +		__field(int, ch_num)
->> +		__field(int, state)
->> +		__field(const char *, reason)
->> +	),
->> +
->> +	TP_fast_assign(
->> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
->> +		__entry->ch_num = mhi_chan->chan;
->> +		__entry->state = state;
->> +		__entry->reason = reason;
->> +	),
->> +
->> +	TP_printk("%s: chan%d: %s state to: %s\n",
->> +		  __get_str(name),  __entry->ch_num, __entry->reason,
->> +		  __print_symbolic(__entry->state, MHI_CH_STATE_TYPE_LIST))
->> +);
->> +
->> +DEFINE_EVENT(mhi_update_channel_state, mhi_channel_command_start,
->> +
->> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan, int state,
->> +		 const char *reason),
->> +
->> +	TP_ARGS(mhi_cntrl, mhi_chan, state, reason)
->> +);
->> +
->> +DEFINE_EVENT(mhi_update_channel_state, mhi_channel_command_end,
->> +
->> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan, int state,
->> +		 const char *reason),
->> +
->> +	TP_ARGS(mhi_cntrl, mhi_chan, state, reason)
->> +);
->> +
->> +TRACE_EVENT(mhi_pm_st_transition,
->> +
->> +	TP_PROTO(struct mhi_controller *mhi_cntrl, int state),
->> +
->> +	TP_ARGS(mhi_cntrl, state),
->> +
->> +	TP_STRUCT__entry(
->> +		__string(name, mhi_cntrl->mhi_dev->name)
->> +		__field(int, state)
->> +	),
->> +
->> +	TP_fast_assign(
->> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
->> +		__entry->state = state;
->> +	),
->> +
->> +	TP_printk("%s: Handling state transition: %s\n", __get_str(name),
->> +		  __print_symbolic(__entry->state, DEV_ST_TRANSITION_LIST))
->> +);
->> +
->> +#endif
->> +#undef TRACE_INCLUDE_PATH
->> +#define TRACE_INCLUDE_PATH ../../drivers/bus/mhi/host
->> +#undef TRACE_INCLUDE_FILE
->> +#define TRACE_INCLUDE_FILE trace
->> +
->> +#include <trace/define_trace.h>
->>
->> ---
->> base-commit: ae1d892d518af5c092f2b1f8e6921996c6a95cb3
->> change-id: 20240206-ftrace_support-8ef0fbecf85e
->>
->> Best regards,
->> -- 
->> Krishna chaitanya chundru <quic_krichai@quicinc.com>
->>
-> 
+Met vriendelijke groet / kind regards,=0A=
+=0A=
+Mike Looijmans=0A=
+System Expert=0A=
+=0A=
+=0A=
+TOPIC Embedded Products B.V.=0A=
+Materiaalweg 4, 5681 RJ Best=0A=
+The Netherlands=0A=
+=0A=
+T: +31 (0) 499 33 69 69=0A=
+E: mike.looijmans@topic.nl=0A=
+W: www.topic.nl=0A=
+=0A=
+Please consider the environment before printing this e-mail=0A=
 
