@@ -1,148 +1,345 @@
-Return-Path: <linux-kernel+bounces-55261-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55264-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3447684B9DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:41:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DC5D84BA1A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:49:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDA1B1F22B75
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:41:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9E61B2BC8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:42:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF6EB1339AF;
-	Tue,  6 Feb 2024 15:40:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B12BE13399B;
+	Tue,  6 Feb 2024 15:42:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="cOQ0SDQJ"
-Received: from mout.web.de (mout.web.de [212.227.15.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="V1Mll6Co"
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82011132C1B;
-	Tue,  6 Feb 2024 15:40:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD36413398A
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 15:42:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707234054; cv=none; b=OgXF71P9YXdLfg6bDJIrZA9J40i/hNw6OzJpE9NsljBYl9vjKQ7tJfmRNgVC/CGYEqyw7TNNukwiW2neBcBtED23KUV3YuKGmKyrZujWmCISNRecmbJaasHsmzcVdt8Er9ZK/Z/0h4pSsUt+OsCjxDcLr2AjPe51LG6vbcEdaxk=
+	t=1707234124; cv=none; b=V+U2i7i5MYrkqzhwwP9LERTmcFJJYhc4Owa5dEvhyazOXIN5a5UEDr+7xEXPxP2v8jehE/hZqNfuoryTa+tYvOTmJ/BRuNaTxhxJ74uaqIFUeXvKRmiGqjtJWJdt0teev3zkb+F+Lt4xfTIsUB47IYMAwzervGHKhhBambLEpT0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707234054; c=relaxed/simple;
-	bh=7eaZzjz+wMCUEjnyDUB3tK901K9kXxGQ/BL0sTc923A=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=rKYrivgI24lk0nav2VKfUEnnlBHM9dogJKEiwVV9B76MNQ7Pl8vj+/9qahipx5njmBYs1uXqqmfJ8wD7VI5Yet6/waYX/0bLKaSSUbg1zLb9PoEzXHDJoVK3N5Cy+Zm13e580zIBGLQAwWB5t6qfo45hxc1fWZeEkgdgFc+CtBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=cOQ0SDQJ; arc=none smtp.client-ip=212.227.15.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1707234025; x=1707838825; i=markus.elfring@web.de;
-	bh=7eaZzjz+wMCUEjnyDUB3tK901K9kXxGQ/BL0sTc923A=;
-	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
-	 In-Reply-To;
-	b=cOQ0SDQJMGw6cB+eoiYjY1HUTQgSn/XZm/c0ffcAKYO5cFpdpIRopiIc8CLezkIW
-	 7jnl73aWjDtJ/Up4KHDhjdUTlel1Dl85PpeYWTqIyLnrUs8pvGaG8R3gmGneBuiHZ
-	 5ZaWUr0xVRIePqmvbWd3JQCPaUoQ7DIWlnp+dBie9NuNjUyXXz5phD46iixCzn8gm
-	 jPO0wKzm2Ar7JEMx+Xs3KEDn9AHCkd19keNOzsfPyoceOz5803tj3dk5cV1quUmgc
-	 WQ+ZWgC+KRcC0+ATkdH4sVI57ZZLXjqWVFscTA4jddnVM3Ch9PJtDMJYHFr/qspjM
-	 SUZ8WLRLuFqCUek6uA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MkElZ-1r9dVw33mL-00kNmR; Tue, 06
- Feb 2024 16:40:25 +0100
-Message-ID: <e4585b03-3629-4bd7-a349-f5471ebd8685@web.de>
-Date: Tue, 6 Feb 2024 16:40:24 +0100
+	s=arc-20240116; t=1707234124; c=relaxed/simple;
+	bh=eYRTJmOtYcWQAnASXaHSok8ye5YC98QuTwfe5/baHxQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=hSQj8z7YzaMFZB7jemi5ET01UOGgVB7/+0B6xXj+oyv41sRimZ3PkStwPuMrQbAKABMv2IrgzS3MPb7+FGwGwelJJQ6YIeK8+fNkCj13Eu4ad1uBSASbap/72buLKJZWfYLJbQpQQ5YkRTeSm/ZXGddv+LN1YRQuVR+/rvojHTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=V1Mll6Co; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2904c81f26eso738955a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 07:42:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1707234122; x=1707838922; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0serQGLJfMuAm7UCmFlRU9sglml/pgZOh7w7pdhvabI=;
+        b=V1Mll6CoUA2FbMs73143uQAUJNPBm7DEjnsM3a82e5H3/h9aLoohcyNYKSgfTx2UZJ
+         yKjWPcvD9jc13EeeByigsgKkaC2KK6jC1h1ObOGraK/IZJIykW0rBMvoB1HjrNfeHabX
+         C/NuSr5sy/CI+llVmJsXis2ePpLiQoOPucRUDQcRMVjT7eBl2oRyrIDSVIAhT4Zaceqn
+         CPUY4PqpbkmrSYe/tCjJUO8gpDORyt+5XieZ5vj0KxfYXD1Xfrm/xg/98EKN/Q1CF/2p
+         MSuq3ZfU0yCm17woxks+oNn74ct3Qvx8Zz4L76Gitya4AvB8AgzbdF65zzkas+9gSSE4
+         PyiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707234122; x=1707838922;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0serQGLJfMuAm7UCmFlRU9sglml/pgZOh7w7pdhvabI=;
+        b=uj7wY5eT7RYfjiB+jxkm4V3Kggv2eYnNUCF7fwjkM08tSVzEuoH5aCP7046X/Au7cf
+         W/79k3AiYBuqCTBoRWnUAH9ehKqYD0cpRC6gedxye4a3qsG7TeOMM9F/CRkt2jkVVOzm
+         EjLPC3O4lM3Nl6IjXVyXiA5D0kl3QMI7KflE/qTqD7DPOHdYbzWREQt0aACLzmyNrFnk
+         Ci7uLHL0jN0+QZ3uqK8Kl7b3GB+xZ4XJE6BWGAZ1Zf/042wZ/7I8TLogxNzbO0/mUIVN
+         MhmwKugtE6b55F86LtECzzpmkQEl4kbsEHLE61NjvHKfibqsbUyTdzSiIorA4SGU+bIJ
+         Jlyw==
+X-Gm-Message-State: AOJu0Yx6/+YDd3xyLy56yRIcFj4dBvhDaFhI9+BJSI9847NzrehISFyG
+	GZzS2Ku/+oV3EyFuBXOeOxWUgZ9BVQE0SlbxreGIabSCH25D49cdy+zYXDUrf3o=
+X-Google-Smtp-Source: AGHT+IFMiM2uZXFaxsSt1Nw4LHlEplX/O/CZzHeieUF/qxwXcb9uaJCEqVrp6PvS/KS/7rS3FEo+Tw==
+X-Received: by 2002:a17:90b:1d0c:b0:296:9dd2:2dd4 with SMTP id on12-20020a17090b1d0c00b002969dd22dd4mr3027842pjb.2.1707234121881;
+        Tue, 06 Feb 2024 07:42:01 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWaBqnyH0ebZtH7mMP0+4qY9XgtTGkr3tgX5sFeZYjL2+z8OusJmTJ8EHv6DyExJnYaGtnEeRso7OHaiuN0RSVodWWPaXLWG1CGKY9IqGOAhUKwda51Abk/dZJ3ch1fCRAAT6eVou0Lzqo7g6LgUllOpYejlSRrWKir/X1YWD4bHYrjJU2pK2Aynua4CNz3JGWA5EWIruD40WwVAmtGhD/emAgGSFQX+knjPSiTmisfhgS5jrGW0XWvTflb84QxgJtZK53BeIkzp+2uFM2UtUi2D6PKnfH8Os2zaJTguXjmZfZH
+Received: from carbon-x1.. ([2a01:e0a:999:a3a0:20a2:d2ee:941a:156e])
+        by smtp.gmail.com with ESMTPSA id kx18-20020a17090b229200b0029454cca5c3sm1803609pjb.39.2024.02.06.07.41.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 07:42:01 -0800 (PST)
+From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+To: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
+	Ben Dooks <ben.dooks@codethink.co.uk>,
+	David Laight <David.Laight@ACULAB.COM>,
+	Charlie Jenkins <charlie@rivosinc.com>
+Subject: [PATCH v2] riscv: misaligned: remove CONFIG_RISCV_M_MODE specific code
+Date: Tue,  6 Feb 2024 16:40:59 +0100
+Message-ID: <20240206154104.896809-1-cleger@rivosinc.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: [PATCH v2] sparc: leon: grpci1: Use devm_platform_ioremap_resource()
- in grpci1_of_probe()
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-To: sparclinux@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Andreas Larsson <andreas@gaisler.com>, "David S. Miller"
- <davem@davemloft.net>, Rob Herring <robh@kernel.org>,
- Sam Ravnborg <sam@ravnborg.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <4fc017e4-c695-40d3-aed4-cbf34d44e6fa@web.de>
-In-Reply-To: <4fc017e4-c695-40d3-aed4-cbf34d44e6fa@web.de>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:delG0OP3p85cu5vnIQwdHsvL/LKQZkLgZh9jHMmoyj2Z2ieh6lG
- 8/dT9mLr/M+pNYBTkNChAYflEc1ItFeq/D/kvRuf2/e7N2j4GeZPqwlb1hQwHbq4FwMjBxe
- Zv94gYPqjexmo5puO4ySl7u3KZJt71vLMpUNFMN8eptVvmi4NbWiYtCO+yqTcQ4HqVftt2A
- UIoUZ1FDZ8dWPhidHpnZA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:cWb4CakeEFE=;GWpIyvQCZXa8OBC1L6tHGGyQvDw
- fDypwyDhiClo+6+q47h+fOgversLTaVVeehc+0ELLDL9++VJIyKswhBM1mUGSEpWrJUubT6o/
- WTzi+bUpwz1zEA75WEeay9M05+d4Cz8sUVVYKF3aZLhL+9CiCyw4dMD0L763LvwEc8h74efm9
- PcjzOGDqAeqK7H8LZ3KrFOLcK45/sG+lCGaCNord8Lb7zOAGbRpqyTd+q6yte8ylOUInuuuiq
- Se/IlSLj9GP12mbQcF3NfeBk2Z68s57jCDwGelr8JoU0X2VPa84ZZjKuJjUOulzsVm2O/IK0p
- oBUbjHSsXYqjuV6T4qcLpLxs+XND/XSPSGuCHVLwx42z4F/8tnoMCz2DQ6QGJN8XVdXrQk6A/
- Ex4FcP7g39r/EC+Xc92BZIm6D9kRt3cHecBVzFEmonkyu2ocTv21K9JfZgvnGASoEBm2MLR+8
- Vgv3+iLSlrkym48EJAksrk3FCI6u/gj+rUv/RtXZZTsVaD+QONe2LRhzDcAn5SdIdenvGho1I
- dYlp61T1r+qRLqBXXlnN7HRS3eK1bX6R9U9CAWOq3nC3ByakMQRIqh9EZgWhiDT2vhfsdNbGc
- V4HrY0QTVd3PXO1nSlPh7biirEpMUF18thxjPLkYh5PQh0EgKEOscb14VkxYPFn6N+/D1ZOzq
- Jg69j7PAgVvmciKwmSzUczSChUUimbmurLoqRNNa1oWlNjLPhuqUlN9AUG+kuNkJAOd5I7qsm
- sOxlRJulUAcMShIg3BKw0nbkDJBADdYqmnZFW7V6zAW61nBcimWPiZqjH9HCZ1nPIB5ZY1Xvi
- ecnrJtTgzansC4SlW3h/KqBRlN+l/scmcwp2JVDFUIIyo=
+Content-Transfer-Encoding: 8bit
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Tue, 6 Feb 2024 16:30:15 +0100
+While reworking code to fix sparse errors, it appears that the
+RISCV_M_MODE specific could actually be removed and use the one for
+normal mode. Even though RISCV_M_MODE can do direct user memory access,
+using the user uaccess helpers is also going to work. Since there is no
+need anymore for specific accessors (load_u8()/store_u8()), we can
+directly use memcpy()/copy_{to/from}_user() and get rid of the copy
+loop entirely. __read_insn() is also fixed to use an unsigned long
+instead of a pointer which was cast in __user address space. The
+insn_addr parameter is now cast from unsigned lnog to the correct
+address space directly.
 
-A wrapper function is available since the commit 7945f929f1a77a1c8887a97ca=
-07f87626858ff42
-("drivers: provide devm_platform_ioremap_resource()").
+Signed-off-by: Clément Léger <cleger@rivosinc.com>
 
-* Thus reuse existing functionality instead of keeping duplicate source co=
-de.
+---
 
-* Delete a local variable which became unnecessary with this refactoring.
+The test used to validate these changes is the one used originally for
+S-mode misaligned support:
 
+https://github.com/clementleger/unaligned_test
 
-This issue was transformed by using the Coccinelle software.
+This test exercise (almost) all the supported instructions, all the
+registers for FPU instructions and is compiled with and without
+compressed instructions.
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
+For S-mode, you simply need a classic toolchain and export CROSS_COMPILE
+to match it.
 
-v2:
-The transformation pattern was adjusted based on advices by known contribu=
-tors.
+For M-mode validation, the following steps can be used:
 
-Examples:
-* Doug Anderson
-* Geert Uytterhoeven
-* Robin Murphy
+Build a nommu toolchain with buildroot toolchain:
+$ git clone https://github.com/buildroot/buildroot.git
+$ cd buildroot
+$ make O=build_nommu qemu_riscv64_nommu_virt_defconfig
 
+Test:
+$ git clone https://github.com/clementleger/unaligned_test.git
+$ cd unaligned_test
+$ make CFLAGS="-fPIC -Wl,-elf2flt=-r"
+CROSS_COMPILE=<buildroot>/build_nommu/host/bin/riscv64-buildroot-linux-uclibc-
 
- arch/sparc/kernel/leon_pci_grpci1.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Copy the resulting elf files (unaligned & unaligned_c) to buildroot rootfs and rebuild it.
+$ cp unaligned unaligned_c <buildroot>/build_nommu/target/root
+$ cd <buildroot>/build_nommu/
+$ make
 
-diff --git a/arch/sparc/kernel/leon_pci_grpci1.c b/arch/sparc/kernel/leon_=
-pci_grpci1.c
-index 8700a0e3b0df..a01ecee18e1e 100644
-=2D-- a/arch/sparc/kernel/leon_pci_grpci1.c
-+++ b/arch/sparc/kernel/leon_pci_grpci1.c
-@@ -516,7 +516,6 @@ static int grpci1_of_probe(struct platform_device *ofd=
-ev)
- 	int err, len;
- 	const int *tmp;
- 	u32 cfg, size, err_mask;
--	struct resource *res;
+Kernel:
+$ make O=build_nommu nommu_virt_defconfig
+$ make O=build_nommu loader
 
- 	if (grpci1priv) {
- 		dev_err(&ofdev->dev, "only one GRPCI1 supported\n");
-@@ -537,8 +536,7 @@ static int grpci1_of_probe(struct platform_device *ofd=
-ev)
- 	priv->dev =3D &ofdev->dev;
+Either set the kernel initramfs or provide one on spike command line
+using the one built with buildroot
 
- 	/* find device register base address */
--	res =3D platform_get_resource(ofdev, IORESOURCE_MEM, 0);
--	regs =3D devm_ioremap_resource(&ofdev->dev, res);
-+	regs =3D devm_platform_ioremap_resource(ofdev, 0);
- 	if (IS_ERR(regs))
- 		return PTR_ERR(regs);
+Then to run it on spike (QEMU always emulate misaligned accesses and
+won't generate any misaligned exception):
 
-=2D-
+$ spike <kernel>/build_nommu/loader
+
+---
+
+V2:
+ - Rebased on master
+ - Align macro end "\"
+
+Link to v1: https://lore.kernel.org/linux-riscv/20231128165206.589240-1-cleger@rivosinc.com/
+
+Notes: This patch is a complete rework of a previous one [1] and thus is
+not a V3.
+
+[1] https://lore.kernel.org/linux-riscv/d156242a-f104-4925-9736-624a4ba8210d@rivosinc.com/
+---
+ arch/riscv/kernel/traps_misaligned.c | 106 +++++----------------------
+ 1 file changed, 17 insertions(+), 89 deletions(-)
+
+diff --git a/arch/riscv/kernel/traps_misaligned.c b/arch/riscv/kernel/traps_misaligned.c
+index 8ded225e8c5b..fb202dd18fe5 100644
+--- a/arch/riscv/kernel/traps_misaligned.c
++++ b/arch/riscv/kernel/traps_misaligned.c
+@@ -264,86 +264,14 @@ static unsigned long get_f32_rs(unsigned long insn, u8 fp_reg_offset,
+ #define GET_F32_RS2C(insn, regs) (get_f32_rs(insn, 2, regs))
+ #define GET_F32_RS2S(insn, regs) (get_f32_rs(RVC_RS2S(insn), 0, regs))
+ 
+-#ifdef CONFIG_RISCV_M_MODE
+-static inline int load_u8(struct pt_regs *regs, const u8 *addr, u8 *r_val)
+-{
+-	u8 val;
+-
+-	asm volatile("lbu %0, %1" : "=&r" (val) : "m" (*addr));
+-	*r_val = val;
+-
+-	return 0;
+-}
+-
+-static inline int store_u8(struct pt_regs *regs, u8 *addr, u8 val)
+-{
+-	asm volatile ("sb %0, %1\n" : : "r" (val), "m" (*addr));
+-
+-	return 0;
+-}
+-
+-static inline int get_insn(struct pt_regs *regs, ulong mepc, ulong *r_insn)
+-{
+-	register ulong __mepc asm ("a2") = mepc;
+-	ulong val, rvc_mask = 3, tmp;
+-
+-	asm ("and %[tmp], %[addr], 2\n"
+-		"bnez %[tmp], 1f\n"
+-#if defined(CONFIG_64BIT)
+-		__stringify(LWU) " %[insn], (%[addr])\n"
+-#else
+-		__stringify(LW) " %[insn], (%[addr])\n"
+-#endif
+-		"and %[tmp], %[insn], %[rvc_mask]\n"
+-		"beq %[tmp], %[rvc_mask], 2f\n"
+-		"sll %[insn], %[insn], %[xlen_minus_16]\n"
+-		"srl %[insn], %[insn], %[xlen_minus_16]\n"
+-		"j 2f\n"
+-		"1:\n"
+-		"lhu %[insn], (%[addr])\n"
+-		"and %[tmp], %[insn], %[rvc_mask]\n"
+-		"bne %[tmp], %[rvc_mask], 2f\n"
+-		"lhu %[tmp], 2(%[addr])\n"
+-		"sll %[tmp], %[tmp], 16\n"
+-		"add %[insn], %[insn], %[tmp]\n"
+-		"2:"
+-	: [insn] "=&r" (val), [tmp] "=&r" (tmp)
+-	: [addr] "r" (__mepc), [rvc_mask] "r" (rvc_mask),
+-	  [xlen_minus_16] "i" (XLEN_MINUS_16));
+-
+-	*r_insn = val;
+-
+-	return 0;
+-}
+-#else
+-static inline int load_u8(struct pt_regs *regs, const u8 *addr, u8 *r_val)
+-{
+-	if (user_mode(regs)) {
+-		return __get_user(*r_val, (u8 __user *)addr);
+-	} else {
+-		*r_val = *addr;
+-		return 0;
+-	}
+-}
+-
+-static inline int store_u8(struct pt_regs *regs, u8 *addr, u8 val)
+-{
+-	if (user_mode(regs)) {
+-		return __put_user(val, (u8 __user *)addr);
+-	} else {
+-		*addr = val;
+-		return 0;
+-	}
+-}
+-
+-#define __read_insn(regs, insn, insn_addr)		\
++#define __read_insn(regs, insn, insn_addr, type)	\
+ ({							\
+ 	int __ret;					\
+ 							\
+ 	if (user_mode(regs)) {				\
+-		__ret = __get_user(insn, insn_addr);	\
++		__ret = __get_user(insn, (type __user *) insn_addr); \
+ 	} else {					\
+-		insn = *(__force u16 *)insn_addr;	\
++		insn = *(type *)insn_addr;		\
+ 		__ret = 0;				\
+ 	}						\
+ 							\
+@@ -356,9 +284,8 @@ static inline int get_insn(struct pt_regs *regs, ulong epc, ulong *r_insn)
+ 
+ 	if (epc & 0x2) {
+ 		ulong tmp = 0;
+-		u16 __user *insn_addr = (u16 __user *)epc;
+ 
+-		if (__read_insn(regs, insn, insn_addr))
++		if (__read_insn(regs, insn, epc, u16))
+ 			return -EFAULT;
+ 		/* __get_user() uses regular "lw" which sign extend the loaded
+ 		 * value make sure to clear higher order bits in case we "or" it
+@@ -369,16 +296,14 @@ static inline int get_insn(struct pt_regs *regs, ulong epc, ulong *r_insn)
+ 			*r_insn = insn;
+ 			return 0;
+ 		}
+-		insn_addr++;
+-		if (__read_insn(regs, tmp, insn_addr))
++		epc += sizeof(u16);
++		if (__read_insn(regs, tmp, epc, u16))
+ 			return -EFAULT;
+ 		*r_insn = (tmp << 16) | insn;
+ 
+ 		return 0;
+ 	} else {
+-		u32 __user *insn_addr = (u32 __user *)epc;
+-
+-		if (__read_insn(regs, insn, insn_addr))
++		if (__read_insn(regs, insn, epc, u32))
+ 			return -EFAULT;
+ 		if ((insn & __INSN_LENGTH_MASK) == __INSN_LENGTH_32) {
+ 			*r_insn = insn;
+@@ -390,7 +315,6 @@ static inline int get_insn(struct pt_regs *regs, ulong epc, ulong *r_insn)
+ 		return 0;
+ 	}
+ }
+-#endif
+ 
+ union reg_data {
+ 	u8 data_bytes[8];
+@@ -409,7 +333,7 @@ int handle_misaligned_load(struct pt_regs *regs)
+ 	unsigned long epc = regs->epc;
+ 	unsigned long insn;
+ 	unsigned long addr = regs->badaddr;
+-	int i, fp = 0, shift = 0, len = 0;
++	int fp = 0, shift = 0, len = 0;
+ 
+ 	perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS, 1, regs, addr);
+ 
+@@ -490,9 +414,11 @@ int handle_misaligned_load(struct pt_regs *regs)
+ 		return -EOPNOTSUPP;
+ 
+ 	val.data_u64 = 0;
+-	for (i = 0; i < len; i++) {
+-		if (load_u8(regs, (void *)(addr + i), &val.data_bytes[i]))
++	if (user_mode(regs)) {
++		if (raw_copy_from_user(&val, (u8 __user *)addr, len))
+ 			return -1;
++	} else {
++		memcpy(&val, (u8 *)addr, len);
+ 	}
+ 
+ 	if (!fp)
+@@ -513,7 +439,7 @@ int handle_misaligned_store(struct pt_regs *regs)
+ 	unsigned long epc = regs->epc;
+ 	unsigned long insn;
+ 	unsigned long addr = regs->badaddr;
+-	int i, len = 0, fp = 0;
++	int len = 0, fp = 0;
+ 
+ 	perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS, 1, regs, addr);
+ 
+@@ -586,9 +512,11 @@ int handle_misaligned_store(struct pt_regs *regs)
+ 	if (!IS_ENABLED(CONFIG_FPU) && fp)
+ 		return -EOPNOTSUPP;
+ 
+-	for (i = 0; i < len; i++) {
+-		if (store_u8(regs, (void *)(addr + i), val.data_bytes[i]))
++	if (user_mode(regs)) {
++		if (raw_copy_to_user((u8 __user *)addr, &val, len))
+ 			return -1;
++	} else {
++		memcpy((u8 *)addr, &val, len);
+ 	}
+ 
+ 	regs->epc = epc + INSN_LEN(insn);
+-- 
 2.43.0
 
 
