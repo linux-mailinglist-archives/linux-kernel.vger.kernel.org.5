@@ -1,101 +1,120 @@
-Return-Path: <linux-kernel+bounces-54632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54630-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9862484B1C3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:59:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D70E84B1BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:59:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 539B2286423
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:59:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16C09287759
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:59:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AA3812DD89;
-	Tue,  6 Feb 2024 09:59:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC3A912DDA9;
+	Tue,  6 Feb 2024 09:59:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="CN8aUZeq"
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Fs8htcWW"
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C576312DD8B;
-	Tue,  6 Feb 2024 09:59:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58ADC12D776
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 09:59:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707213560; cv=none; b=nlvgnr96YilrNzphjW/Tt9VUn4Hf9Odv7SHr83/xRvGXQMZVt9HIpuzp1JSI2zepHht7Mj5i+sI3kYgDldokEhmgrilgA0YEHigir44fZ9kLlq6Jm3XN3kAkxwR76noP9gODyS5Pv8l3lVtmwjl4PhRU8VqCbpYoJPp6cIwEggc=
+	t=1707213558; cv=none; b=srJKyeWs8x5wjyISQ7gzn+Y21kOKH1EE+j+LjbAtmT1Mk7YV9IeGl21unU1fO/QSQRH+zr5OuF6g+aH7aQ7T5k0hzSgYLe0EKH9C53jT6KxsKfZ6/6jZQqWLXkOPXeHx2+g/KvNHsAnEyp59p544mwyYdK4lDl68kSLj1Be8D/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707213560; c=relaxed/simple;
-	bh=LATC3GHoWk4vcKrr195GbFLPo1L9HxJmDR8iymTwdaM=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ApS87gg10NV+9CRBxhN2T0V2ZFY45kB+aboLYOT8I8gG0rxWjHuDZzxPU2ivwvmdpDjq/eKPqv2xig1OahIPMpr8k+ffwNyZ0FJVfES+AcrhaXl/R7OMSTqfauVL487d84zJ/o3KRleuY7pygIjhXh5tu/y/p+bQbqUDTlvOyLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=CN8aUZeq; arc=none smtp.client-ip=67.231.149.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4166xSAC022910;
-	Tue, 6 Feb 2024 03:58:53 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=PODMain02222019; bh=v5p55IOITpqmhF7
-	sZSnOxfOy/BsQIdVVFm5xhqj7f9s=; b=CN8aUZeqvFd31h49unpgQ89je93VaRH
-	rrRbjFcRdvJI7Wgt+s6nVW5BCmZk3kbVOwu/CNVLRLufi+5MpG0xYDqxTb+6FGR1
-	o9Z5Tgj1grqrrtHgHitQltAZFv+FlcF78BNTWogNQGy0jcjoRvRBTMp+qYGKcyKV
-	XNDICT/OwcoiEoN5lqMTQvkzBMfp+afdgbGJ3JbvaGKz8NqjjJWipW4mj1Jxnuzl
-	zV/KdBSpOsXYlEhP/chL66QeINs8nWkqGzvCzBvxVMGhAB+swBUB0wHEydjeg+4f
-	DUmUgJYKr9SezvgEgFSr8PTmX+JsuzS5ZkVX/kvEhcim+tQrksQp1zg==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3w1ks2b7fk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Feb 2024 03:58:53 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 6 Feb
- 2024 09:58:51 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.40 via Frontend Transport; Tue, 6 Feb 2024 09:58:51 +0000
-Received: from ediswmail9.ad.cirrus.com (ediswmail9.ad.cirrus.com [198.61.86.93])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTPS id E135E820241;
-	Tue,  6 Feb 2024 09:58:50 +0000 (UTC)
-Date: Tue, 6 Feb 2024 09:58:49 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Bo Liu <liubo03@inspur.com>
-CC: <lee@kernel.org>, <wens@csie.org>, <marek.vasut+renesas@gmail.com>,
-        <support.opensource@diasemi.com>, <neil.armstrong@linaro.org>,
-        <rf@opensource.cirrus.com>, <mazziesaccount@gmail.com>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
-        <linux-kernel@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-        <linux-amlogic@lists.infradead.org>, <patches@opensource.cirrus.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 09/18] mfd: lochnagar-i2c: convert to use maple tree
- register cache
-Message-ID: <ZcIC2V/hM8nnekJr@ediswmail9.ad.cirrus.com>
-References: <20240206071314.8721-1-liubo03@inspur.com>
- <20240206071314.8721-10-liubo03@inspur.com>
+	s=arc-20240116; t=1707213558; c=relaxed/simple;
+	bh=rgBw88hJolSgSZ/34zK+NzRZplSTArpsDUnxWP5SxIo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=FxpW8Eq+khMJUFPhy/lqiS6jY4lXudgOpK1YBizfhdcE9fxDR7gmca59XtswbUceJpD+a8hQIRykbadQiAfPt9SVPvrBINJaWEwWtT0/umcM3XRTSS5urPKIYiVkgoSaB3r1MvjocM0qIc2Y8+DsPs29+u8zg9/1BZNkHnx++Xo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Fs8htcWW; arc=none smtp.client-ip=115.124.30.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1707213547; h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
+	bh=O+E9jRj6xzPvVoIr+app9sg3ad2aS4jITRcsHfNdvI8=;
+	b=Fs8htcWWAiDFLrDrj1wig1ONFpB+15sRqi3p1lqQ1cI5hT2SIpaNTggEGhCieE3Oc72xH5V1WmERTApPQlRNs2iZZlV7Dc9mA8AOpzrCfgCxR1kcTF9Ie9eVN031ZCQXTSyFRWqb3Skk+//mzLhz47fuZZ8RiABpnTJcO5UVy2Y=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W0DCVLK_1707213545;
+Received: from localhost.localdomain(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W0DCVLK_1707213545)
+          by smtp.aliyun-inc.com;
+          Tue, 06 Feb 2024 17:59:06 +0800
+From: Bitao Hu <yaoma@linux.alibaba.com>
+To: dianders@chromium.org,
+	akpm@linux-foundation.org,
+	pmladek@suse.com,
+	kernelfans@gmail.com,
+	liusong@linux.alibaba.com
+Cc: linux-kernel@vger.kernel.org,
+	yaoma@linux.alibaba.com
+Subject: [PATCHv5 0/3] *** Detect interrupt storm in softlockup ***
+Date: Tue,  6 Feb 2024 17:58:59 +0800
+Message-Id: <20240206095902.56406-1-yaoma@linux.alibaba.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240206071314.8721-10-liubo03@inspur.com>
-X-Proofpoint-GUID: VCnUsQ6Tbcxl1dxM9nGNsPvgd74iHvZt
-X-Proofpoint-ORIG-GUID: VCnUsQ6Tbcxl1dxM9nGNsPvgd74iHvZt
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 06, 2024 at 02:13:05AM -0500, Bo Liu wrote:
-> The maple tree register cache is based on a much more modern data structure
-> than the rbtree cache and makes optimisation choices which are probably
-> more appropriate for modern systems than those made by the rbtree cache.
-> 
-> Signed-off-by: Bo Liu <liubo03@inspur.com>
-> ---
+Hi, guys.
+I have implemented a low-overhead method for detecting interrupt storm
+in softlockup. Please review it, all comments are welcome.
 
-Tested-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Changes from v4 to v5:
 
-Thanks,
-Charles
+- Rearranging variable placement to make code look neater.
+
+Changes from v3 to v4:
+
+- Renaming some variable and function names to make the code logic
+more readable.
+
+- Change the code location to avoid predeclaring.
+
+- Just swap rather than a double loop in tabulate_irq_count.
+
+- Since nr_irqs has the potential to grow at runtime, bounds-check
+logic has been implemented.
+
+- Add SOFTLOCKUP_DETECTOR_INTR_STORM Kconfig knob.
+
+Changes from v2 to v3:
+
+- From Liu Song, using enum instead of macro for cpu_stats, shortening
+the name 'idx_to_stat' to 'stats', adding 'get_16bit_precesion' instead
+of using right shift operations, and using 'struct irq_counts'.
+
+- From kernel robot test, using '__this_cpu_read' and '__this_cpu_write'
+instead of accessing to an per-cpu array directly, in order to avoid
+this warning.
+'sparse: incorrect type in initializer (different modifiers)'
+
+Changes from v1 to v2:
+
+- From Douglas, optimize the memory of cpustats. With the maximum number
+of CPUs, that's now this.
+2 * 8192 * 4 + 1 * 8192 * 5 * 4 + 1 * 8192 = 237,568 bytes.
+
+- From Liu Song, refactor the code format and add necessary comments.
+
+- From Douglas, use interrupt counts instead of interrupt time to
+determine the cause of softlockup.
+
+- Remove the cmdline parameter added in PATCHv1.
+
+Bitao Hu (3):
+  watchdog/softlockup: low-overhead detection of interrupt
+  watchdog/softlockup: report the most frequent interrupts
+  watchdog/softlockup: add SOFTLOCKUP_DETECTOR_INTR_STORM Kconfig knob
+
+ kernel/watchdog.c | 245 ++++++++++++++++++++++++++++++++++++++++++++++
+ lib/Kconfig.debug |  13 +++
+ 2 files changed, 258 insertions(+)
+
+-- 
+2.37.1 (Apple Git-137.1)
+
 
