@@ -1,117 +1,119 @@
-Return-Path: <linux-kernel+bounces-55731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0EFC84C0F2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:34:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7590584C0F7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:36:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E42EF1C2329A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:34:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92158286898
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:36:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A03C21CF96;
-	Tue,  6 Feb 2024 23:34:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE3061CABD;
+	Tue,  6 Feb 2024 23:36:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="DqohHpns"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xY2jbs2a"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B74B1CD2D;
-	Tue,  6 Feb 2024 23:33:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA8961CD1E
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 23:36:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707262439; cv=none; b=Wp+kPyXC9/ocS+26FExWNj6hsFCo2JZtMTevWwMxR73sQEcI6MtN6wGkLScNia0/DH17Oi7VP3vQpzURiZx3Pu2G9EyPlq7MAxT6EqJC8hfU4PsyAY5LFjJRa7gEs/ASg4AbWNoDARHtTTHoqplBECMZRj4qusGYzbjTs9uXm74=
+	t=1707262574; cv=none; b=mOIzESsbigcfXOwQ68r/hCsN0463q8tpZizGj6dWvmAhKEn937UE7NoQwmY2i855YR5XqLOBwfubpZ9uMHzX+bo/BGFnKe6hdCKkDYrB7gUI/61TYon2nq//+Gqty6ZOgXdk9Bm8mpUL7cwCMltDevZxobbqjEYaPVzHBh4oKdw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707262439; c=relaxed/simple;
-	bh=2ujnuBthhHC/WoSoD6QQnKnumAsVCVROyse7z/cd2Sk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aF8ijqeXeJWedsx4I4J9xdTzauUxkCSodJkBjin6O0WLbAFEROlnfRqwgQIJ64I1Yq5WgD49UWN1fiTgvA+++S5LQw3X0NIvARc3LVQqG5nafN0mE6osI14GjRBXoataVSMxXLDbbwAc0i+bGvvnVUVHjCNvF41Jv3TSKP5/hZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=DqohHpns; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=8/qSJOR+zkPPH2i9c8ryKssFXsF/wlJRBdyNQ7Hk1aE=; b=DqohHpnsHhxigSOb2sDDtK0Fhc
-	fyh+uGH2Fco/NlpE7qCu1h0/QL08p7YxPsuyrr82HitYHg6Wl50QXE2uT6iPlhiH8TG+3oGbvJTlN
-	Q2tM0egXmVzf8Cq2CKFxaPIwHE6GHtD6rc9vs5lJ34/ALMtAKvYB0XomAiNX97VaykYZH+PilsDL4
-	g/g3eMmOauaS3wMA5ZNZ9wQqGJhIFxATgaihdzr1DPe9v6ITphy1NzysdvfqhkZDvsE3sYE7Ohn9k
-	ZvQ2EzS7RqqmpLIyHYMtgJpHtE3wtyaMSjmMmuVZAa+NQ/6dEylc3uMbVwOcdBnsfaNinNliG2KP0
-	9QDf7r/w==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rXUwo-0000000DaA9-1Twe;
-	Tue, 06 Feb 2024 23:33:50 +0000
-Date: Tue, 6 Feb 2024 23:33:50 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Dave Chinner <david@fromorbit.com>
-Cc: JonasZhou-oc <JonasZhou-oc@zhaoxin.com>, viro@zeniv.linux.org.uk,
-	brauner@kernel.org, jack@suse.cz, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, CobeChen@zhaoxin.com,
-	LouisQi@zhaoxin.com, JonasZhou@zhaoxin.com
-Subject: Re: [PATCH] fs/address_space: move i_mmap_rwsem to mitigate a false
- sharing with i_mmap.
-Message-ID: <ZcLB3pCSFRXRodzN@casper.infradead.org>
-References: <20240202093407.12536-1-JonasZhou-oc@zhaoxin.com>
- <Zb0EV8rTpfJVNAJA@casper.infradead.org>
- <Zb1DVNGaorZCDS7R@casper.infradead.org>
- <ZcBUat4yjByQC7zg@dread.disaster.area>
- <ZcFvHfYGH7EwGBRK@casper.infradead.org>
- <ZcKmP3zVdBwJVxGd@dread.disaster.area>
+	s=arc-20240116; t=1707262574; c=relaxed/simple;
+	bh=bT8iSDQ7VIIkJ0SalPInfLv65CJM5qhL0227zSPb0uw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NTcB4qUJyAnsAQvy8N+OhvdGycGMzw8pZGw8QR3p9bZPlv7mnW5wPT2tml0oCoLmq7zydjSId37olNKN1NwgE6vXeTQlysto7DXk8BSvildDVCkosgpM9nE4TQNXGl+TWUTJKkCzxl/lVWqDCTVCgKCBF0iu1+F+OyPSCPzeMZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xY2jbs2a; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d93b982761so98905ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 15:36:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707262572; x=1707867372; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0xi1hqRLQYsZ7IksfZ2m5n0Ha2D4yNJBsDeETYfat3Y=;
+        b=xY2jbs2awvqTI+zdITKVPR3nf/vmnNUtySSS9btOdLoqnNKM3d1fQBVDcAnNDRKhnz
+         r5549pmIACd2nT8vimA1KTLW6iPC2FDGz8QCE744rVCDDc4EbhZfnjipjOp4AMF67IoQ
+         ymgMUpcsp17e4rj+qYPE6ZHI26EnG3Ld1xceSPiFoxISkSSaTygRlcVClV0cliTHvmOk
+         1u/dkrRTGow/kq5s0WJsJ3wwsf9hYwIWHgs9/NKWBaR0ck+dYNoHtUiyQ+Hjf0dNoAXm
+         GVvKPMAhh/jM8YxrsXD948YWP+Fpkd7ONKoopq94+GyW75VwoO7RiVdiN8+9Rd7vLWXF
+         6oAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707262572; x=1707867372;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0xi1hqRLQYsZ7IksfZ2m5n0Ha2D4yNJBsDeETYfat3Y=;
+        b=WO5PZYyJCxcU6REg6OWS1R1H1HKqWuCaFz6GZnuAQmkI36bM04RjFReuCxP2n2OEcf
+         R6YCMQtQMQGZBr75QUsVGQbWwm8FFklXKFKGxCp/ZFRQoFZbB/+ouiZltIVaBLy8he4g
+         0jvIwl/VcMjDhqyeeiQeSNe+YBQOItz9KiaVjHELLRy6wj3us7JlGB7khHI6W5T4IGu3
+         Pv+FF7DX8MZger3dm3Nm7aCqF8/30Hez/ZXeA62QVnZbE65dAEMhexWKSw95kfRh0Cfp
+         pKZ8jt9oHpRF6b9nqaKKqDxaekBuDsSnchh9qEz6x3Xwkbm8dZARZLEMfxXe458RC0P0
+         dS6A==
+X-Gm-Message-State: AOJu0YxZiGErzpG3rau+a9s3S8riyDr5AW81BA4sYgD3tNfdzix5OW/h
+	Bg5BGPXaaSn7Ucvn29LQG9tFMlgQdnDGvOE2dscutAd8Xvwc4ZyVTxdpFY1XJ0L0MYZ+fn0oLuK
+	U8Gw96zAm/x59WHwMY0UgP6q8f+u394cFsvZw
+X-Google-Smtp-Source: AGHT+IHUaiRg0gv0A4PhdoXFVOz9ohKuZkpJ/MI21N+l3SsCRsghs2NzEr8ElhMb20dBHkuxfNLL5As+po3JgE65Kfg=
+X-Received: by 2002:a17:902:db06:b0:1d8:d225:699d with SMTP id
+ m6-20020a170902db0600b001d8d225699dmr1428plx.16.1707262571902; Tue, 06 Feb
+ 2024 15:36:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZcKmP3zVdBwJVxGd@dread.disaster.area>
+References: <20240202220459.527138-1-namhyung@kernel.org> <20240202220459.527138-10-namhyung@kernel.org>
+ <CAP-5=fWhHb8iomEQ_rhwC50kGhPEVbDZv6X6riY_3pr787bhAQ@mail.gmail.com> <CAM9d7cg4Apu0OhDrn2uPzRnzV24-vK=L-yR04=2eGR=n_YngTA@mail.gmail.com>
+In-Reply-To: <CAM9d7cg4Apu0OhDrn2uPzRnzV24-vK=L-yR04=2eGR=n_YngTA@mail.gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Tue, 6 Feb 2024 15:36:00 -0800
+Message-ID: <CAP-5=fVPfSBGi1DrNkv3Moug_HyPZdEyab6X6sDyg=1-F2NAWw@mail.gmail.com>
+Subject: Re: [PATCH 09/14] perf annotate-data: Handle call instructions
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org, 
+	linux-trace-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 07, 2024 at 08:35:59AM +1100, Dave Chinner wrote:
-> > The solution to this problem is to change the interval tree data structure
-> > from an Red-Black tree to a B-tree, or something similar where we use
-> > an array of pointers instead of a single pointer.
-> 
-> .... B-trees are not immune to pointer chasing problems, either.
-> Most use binary searches within the nodes, and so we have the
-> problem of unpredictable cacheline misses within the nodes as well
-> as being unable to do depth based prefetch similar to rbtrees.
-> 
-> Perhaps we should be looking at something like this:
-> 
-> https://lore.kernel.org/linux-fsdevel/20240126220655.395093-2-kent.overstreet@linux.dev/
+On Tue, Feb 6, 2024 at 3:17=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
+rote:
+>
+> On Fri, Feb 2, 2024 at 7:09=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+ote:
+> >
+> > On Fri, Feb 2, 2024 at 2:05=E2=80=AFPM Namhyung Kim <namhyung@kernel.or=
+g> wrote:
+> > >
+> > > When updating instruction states, the call instruction should play a
+> > > role since it can change the register states.  For simplicity, mark s=
+ome
+> > > registers as scratch registers (should be arch-dependent), and
+> > > invalidate them all after a function call.
+> >
+> > nit: Volatile or caller-save would be a more conventional name than scr=
+atch.
+>
+> 'volatile' is a keyword and 'caller_saved' seems somewhat verbose.
+> Maybe 'temporary'?
 
-I need more data (and maybe Kent has it!)
+Sgtm, perhaps temp for brevity and the documentation to call them caller sa=
+ve?
 
-Without any data, I believe that Eytzinger layout is an idea that was
-a really good one in the 1990s/2000s and has now passed its expiration
-date because of the changed nature of hardware.
+Thanks,
+Ian
 
-In the mid-90s, we could do O(10) instructions in the time it took to
-service a LLC miss.  Today, it's more like O(2500).  That means it is
-far more important to be predictable than it is to execute the minimum
-number of instructions.  If your B-tree nodes are 256kB in size (I believe
-that's what bacachefs is using?), then Eytzinger layout may make some
-sense, but if you're using smaller nodes (which I further believe is
-appropriate for an in-memory B-tree), then a straight 'load each index
-and compare it' may outperform a search that jumps around inside a node.
-
-I'm pontificating and will happily yield to someone who has data.
-I've tried to mark my assumptions clearly above.
-
-
-Something else I'm not aware of (and filesystem B-trees will not have
-any experience of) is what research exists on efficiently adding new
-entries to a balanced tree so as to minimise rebalances.  Filesystems
-are like the Maple Tree in that for every logical offset inside a file,
-there is precisely one answer to "what physical block does this map to".
-
-For the i_mmap tree, we want instead to answer the question "Which VMAs
-have an intersection with this range of the file", and for the benchmark
-in question, we will have a large number of entries that compare equal to
-each other (they have the same start, and same end, but different values).
-So they could be inserted at many different points in the tree.  We'd like
-to choose the point which causes the least amount of rebalancing.
+> Thanks,
+> Namhyung
 
