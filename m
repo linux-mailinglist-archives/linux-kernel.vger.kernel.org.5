@@ -1,111 +1,103 @@
-Return-Path: <linux-kernel+bounces-55219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C93A84B943
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:22:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF67384B947
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:22:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B0B91F23586
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:22:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E68231C247B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:22:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E41EA13C1CE;
-	Tue,  6 Feb 2024 15:13:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3465E13C1E6;
+	Tue,  6 Feb 2024 15:13:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="KjThfL3J"
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D9RTYE2r"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 293B2134CCB
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 15:13:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75098133432;
+	Tue,  6 Feb 2024 15:13:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707232425; cv=none; b=Tb1IvhzxUV0y3eYdt+Wdj6y9qJjLXJVwySrbF/DOZwSU6/pq23g6u7Lz/F+eFA1L4XkhMfBnjB9vA/hNdOjdWfUFqEbmG0lWgW4ceAvTThIPIym6Po/3WYpSY5snQEwGU2plq9aLMaI3xFtOQZLxed1Gfaes8w+hCw3ghZgUK4M=
+	t=1707232433; cv=none; b=V3TOQug9Ug5HdB7vdJO1qWcBG348rrWvVKVdRFPWHF6kghrSkir1kGn4N74sg7gdgicZPkiyJkjkqWT7UDWGLlsHTau7Xezr4wNu5fgqbr5B1pIETH5+ov7N9oRCxtKc3WbzGMFovEQ1DAVlPgMHQz1TkIDwtci0k33jQHHa8Mc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707232425; c=relaxed/simple;
-	bh=S1P4AA6+64Bnd4QfzMrO9Q/Ly6SEZfMLPjm0EVLdqkI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lQRxTjNX9YD9JIm7P5/kVYRMZXMQFx3pGwSQeMUcm6llZHdE8UlRXBuR/ZflXu5nd8MySjyxFu6I4ul1HY2HUrvMhKQ8v1e1U/xwBHviOlhLEYKWJu5Dw7s5dH4fDTDZz4ZoSFFE+dzbtv85LvxwtoI1SNvdgP0cnLMNB9n2UG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=KjThfL3J; arc=none smtp.client-ip=209.85.208.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d0b4ea773eso21720421fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 07:13:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707232421; x=1707837221; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QWyaCH5kvW4ESs4M9KfJgiCk+SaUNMNInQ13HAztrpU=;
-        b=KjThfL3JcCjpSmcmcsVWRcB3t9dDMEjYUWS07u2kTtTaG1qGq+xJ/dR0eJhIN/9USw
-         R3aTJwlyhoM1v7YXferAPcWXm/ZMw2hyW8fwM6mXvfQ2zD4L1h1wu6dPtlEoEO9WpZMb
-         vKaWjyRMMnIQAdi4DSIzUeuiBty2igaJHajqZQH+g4hLQ6nyjsj9oIGXx2HP6zPsR99G
-         AfBnY5jENU/M312ANShyjoy02Cg0XJZFVSdbkYeSD6JrBSOFLqV8jurV2/StHvv1RWPD
-         VmE5mGFBTJ4fj7ZY/+AefzDTiaN71KbTRgNjovU4c9k3iTv99CDJOO1DpwX1V9Mdxbce
-         1ruw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707232421; x=1707837221;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QWyaCH5kvW4ESs4M9KfJgiCk+SaUNMNInQ13HAztrpU=;
-        b=QWUBvK41fBazGD3RVUODbT2lBOktCvjXfg/pB0giLLbTBK8L58QfWmBxfkR7lvQvtA
-         b/OrSUBJLRi/6geP/0oOnGdy5I7w/2XHyPmJTxGA2OVgabKsuQBertae3RVe7DNQJGPP
-         G3pa16u+WeMz4+Ar4QNNACpO8yBw72ZB+JZbn/JZaFmVCTeu1i78DdptNlvFVBCx/mRA
-         wb+DUqZY95/biI1wlXDgD/eBFVVeI+RVF+BtIbk6d1AZDjrdWz4cbnPPBj3tx4tIR9kd
-         /Ze/JHo50uVsHt5eAB77IBeBwTi9GlFwvlPCqULKsUOdDbUyWXmit5XkoLBka/+BLY/B
-         E/hA==
-X-Gm-Message-State: AOJu0YyLP3TewJyt+nAWOBRHJx0ZtvGfh7zNYL7eWFkYngeRDpPd/UVv
-	lVBcM3s1hwB7gJrfN4RZDXwyTtHl2eFm31BrVQzKB5ISENQXK76Q0MyarXQKiac=
-X-Google-Smtp-Source: AGHT+IGixMnuJqGSOO1at9tSdlKV/uRXYeSHD7PzB5wvq+D88CIqZTbaqBdLuk5ykQQYRj9lYwj2oA==
-X-Received: by 2002:a2e:911a:0:b0:2d0:94b8:72f6 with SMTP id m26-20020a2e911a000000b002d094b872f6mr1876981ljg.20.1707232420922;
-        Tue, 06 Feb 2024 07:13:40 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWGUn9bDa/+cXpeDv22Bt5ksTKulOOn/dRxfCkNbPExvTOQ8/mbXtrpu7RRJZQHOjOXTlIM8+OEfU39pP0pdAIzfjNpdv3YOY6yhEe2++JI0Dx6STaNnH6EGMU2WZ6EpsX4e4JB5SXR3KzONHQfNt+IMQdI5zBMc5ssut3RJrb3jyiiDigMR7R+JW1iO2JXcwOw0e8a5QEI1d62NQqoN2rf9iJ7ftIsdZPxfsvHwDbREBQu0VCSUGL6h7m0A42MMmpKwontEOqmfvpHMRalFUFTYCQqxVseL+FkyQMl+4elp1rygVUk3j8yKETORIUp/cvJy92eTEsoSOtyj7MWyo8wN91AUX0p6/un/ouuxSlSWLnU1J5vWYPS+WiESocvAKoVuGF8shbNicLltg+Xw0gRolHIFHi2rSRkjQ==
-Received: from [192.168.1.172] ([93.5.22.158])
-        by smtp.gmail.com with ESMTPSA id p3-20020a05640243c300b0055c60ba9640sm1113733edc.77.2024.02.06.07.13.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Feb 2024 07:13:40 -0800 (PST)
-Message-ID: <2d97df42-1d23-456e-9f0f-36b8aef08670@baylibre.com>
-Date: Tue, 6 Feb 2024 16:13:39 +0100
+	s=arc-20240116; t=1707232433; c=relaxed/simple;
+	bh=AhqKrJz5NqAxQZJTxzvS35/o9mTQRDXLSjKOCvX5P6o=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=NwIsWq2obpNmKei22Aww1/3qB2gPtZ7TYLqG3qqQKa4ImKWxQV78DNfebXHvSrE9Zjb5389Ionm7WPFtqCbIdk+qUfUeyEsGz2Ctyui3jyGLvf4HHTPeXyYhUYJDo0GOM80XIzez2erHeSoybSg5hL9RwTXVT92kr89pCaNwt/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D9RTYE2r; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 432A2C433C7;
+	Tue,  6 Feb 2024 15:13:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707232433;
+	bh=AhqKrJz5NqAxQZJTxzvS35/o9mTQRDXLSjKOCvX5P6o=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=D9RTYE2rucHhwjfXu5vYc7a/lKZrG1OEFTu3RxUQe9O1kV1sEL7ZTgjAUtjlkJXlI
+	 SAQi6Q0dpZAFRuGIna2o4T9/63f9sz6b1kLXqNUv3CUgCKD+rz8ntl38VXFBTwuQvq
+	 Uot4bN+NSUdc3127XooI+id/bYzOUZM/6TJHDMZ/2qD5wkc9hWEvv1MDDHM57uhrK1
+	 ZR5XTXBkUpitJ9lprIqDB9dnE90FXUQLveEthaVMm1Es/yEl95zYLez21/wmFfDb/m
+	 mh4wOdFMAH26Y+dTZgaCul1kDuZZHuZPEmHg56R08bNZ5qy04udC6xWGTlLN9FWaNX
+	 cLq/yltWbMwUA==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>
+Cc: linux-trace-kernel@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	bpf <bpf@vger.kernel.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Guo Ren <guoren@kernel.org>
+Subject: [PATCH v7 34/36] selftests: ftrace: Remove obsolate maxactive syntax check
+Date: Wed,  7 Feb 2024 00:13:48 +0900
+Message-Id: <170723242825.502590.11677076282887486945.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <170723204881.502590.11906735097521170661.stgit@devnote2>
+References: <170723204881.502590.11906735097521170661.stgit@devnote2>
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 6/9] drm/mediatek: dsi: Register DSI host after
- acquiring clocks and PHY
-Content-Language: en-US
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- chunkuang.hu@kernel.org
-Cc: fshao@chromium.org, p.zabel@pengutronix.de, airlied@gmail.com,
- daniel@ffwll.ch, matthias.bgg@gmail.com, dri-devel@lists.freedesktop.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-References: <20240206120748.136610-1-angelogioacchino.delregno@collabora.com>
- <20240206120748.136610-7-angelogioacchino.delregno@collabora.com>
-From: Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <20240206120748.136610-7-angelogioacchino.delregno@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-On 06/02/2024 13:07, AngeloGioacchino Del Regno wrote:
-> Registering the dsi host with its ops before getting dsi->regs is
-> simply wrong: even though there's nothing (for now) asynchronously
-> calling those ops before the end of the probe function, installing
-> ops that are using iospace(s) and clocks before even initializing
-> those is too fragile.
-> 
-> Register the DSI host after getting clocks, iospace and PHY.
-> This wil also allow to simplify the error paths in a later commit.
-wil => will
+Since the fprobe event does not support maxactive anymore, stop
+testing the maxactive syntax error checking.
 
-Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+---
+ .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
--- 
-Regards,
-Alexandre
+diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
+index 20e42c030095..66516073ff27 100644
+--- a/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
++++ b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
+@@ -16,9 +16,7 @@ aarch64)
+   REG=%r0 ;;
+ esac
+ 
+-check_error 'f^100 vfs_read'		# MAXACT_NO_KPROBE
+-check_error 'f^1a111 vfs_read'		# BAD_MAXACT
+-check_error 'f^100000 vfs_read'		# MAXACT_TOO_BIG
++check_error 'f^100 vfs_read'		# BAD_MAXACT
+ 
+ check_error 'f ^non_exist_func'		# BAD_PROBE_ADDR (enoent)
+ check_error 'f ^vfs_read+10'		# BAD_PROBE_ADDR
+
 
