@@ -1,168 +1,117 @@
-Return-Path: <linux-kernel+bounces-55308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26AE084BAB2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:15:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71F2784BAB9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:17:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5A3AB260A6
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:15:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 048AA1F248E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:17:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6125D134CD3;
-	Tue,  6 Feb 2024 16:14:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="iMtyp49N";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="JRtN7CXY";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="lXiP/ZYD";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="IDJJySEM"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69968134CE0;
+	Tue,  6 Feb 2024 16:17:31 +0000 (UTC)
+Received: from akranes.kaiser.cx (akranes.kaiser.cx [152.53.16.207])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1FE1134CC6;
-	Tue,  6 Feb 2024 16:14:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E807612E1ED;
+	Tue,  6 Feb 2024 16:17:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=152.53.16.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707236097; cv=none; b=WvpALxjJHMJRa/NvYfi8cdG4S7wJK/CshmZXiXBEzQEGpZWkzD15anNHHGgCnXeD9/mqqcnRvrrzC3gqfaZsFaaidIAJxGpFnRYeMavi444NjI6RU0RkeynE3TjU/Qb1N63tXec27fEEUXEBsvN8ycOAYk4x7pVuJyhyQ4UmbqE=
+	t=1707236251; cv=none; b=bPS0td5Mh0X14N9VB5fwoRlwaCu4CZoFFuBicKNleAwMUZoML8e3c7no7t8PjwqAEg2h6HGnFUh3DQvPi5i3lu5hJHrfT6Kg2sFSnX2o1LRsgtwSaaKCA4b7vzVR+5JwdUt9p4kgDw2DyUw5fr6DQdfSPw7AZy0YXT3ZqteSkDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707236097; c=relaxed/simple;
-	bh=rYgMKuXeeYNNmpYJbDLDGfYk707E0qHWmVKLXAui73k=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=D6rF2Pfb/pDpQiIEvzWdNbjDzxrSVby44t7T48hWMP1Qso4lL0vw2RsfWT9DsZLaniIK3OCs1uIDCCrCoC3xulRSXKUBVllbgBFdUp4O4lmPDrTsbcpIEX2JMlCCAbi0A9gaR/sb2w3Sy5QkfrEpKVY3moKGdlcibI+CTxorMZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=iMtyp49N; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=JRtN7CXY; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=lXiP/ZYD; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=IDJJySEM; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id CE2822211D;
-	Tue,  6 Feb 2024 16:14:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707236094; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4N5m6Gf+OHcDb2SVGZM06tiTZHwCdlGokSrfyyYoxjk=;
-	b=iMtyp49Np6kRjAglceliOVxQxpMofrzhDOr2C0EOXbenYv4Edkk+9MYGWosVXUrrOhBDTY
-	sJzBTPXrdWhxe59M7+GbqPtep0EBKAs7u+Qj7V7dG8PlUZP+Zpk7d4f97B1azaCWbU0GHS
-	RyOw6ZZ34zeHKx2IfayXe/DHV65EF9Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707236094;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4N5m6Gf+OHcDb2SVGZM06tiTZHwCdlGokSrfyyYoxjk=;
-	b=JRtN7CXYAAk8c88QJyr1WkA8DnF44d/sXmTcwv0hyxH3KfaEEb4lafLci8vlI0ZPhJgjNI
-	fEkKrLH25n5/hmDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707236093; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4N5m6Gf+OHcDb2SVGZM06tiTZHwCdlGokSrfyyYoxjk=;
-	b=lXiP/ZYDU0aTkoJ2nydfrogFvBQSdcV9SaCykLSk1MenNCY65YGetDSLAcygpdPR0zUbAD
-	kMPrh2xfYgtf5gLyx92PnHYYQr8pEZrYRul+Z5WaSTOhk/bUePW4zkkv90zpcTrFLYajqB
-	ZlotnV+8gBUdjxJ9eFrufIbNX8e/Ypo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707236093;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4N5m6Gf+OHcDb2SVGZM06tiTZHwCdlGokSrfyyYoxjk=;
-	b=IDJJySEMEE4JolTPgptTnastNKZs6s3aJkAfj2wokW8AtWYYFuPcCi6KmhZmE2mev6YXiE
-	ui2NRbeEG+wPLGCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 88A8A139D8;
-	Tue,  6 Feb 2024 16:14:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id cPWlH/1awmVSbwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 06 Feb 2024 16:14:53 +0000
-Date: Tue, 06 Feb 2024 17:14:53 +0100
-Message-ID: <87o7ct7eo2.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: =?ISO-8859-1?Q?Jean-Lo=EFc?= Charroud <lagiraudiere+linux@free.fr>
-Cc: Stefan Binding <sbinding@opensource.cirrus.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Richard Fitzgerald <rf@opensource.cirrus.com>,
-	linux-sound@vger.kernel.org,
+	s=arc-20240116; t=1707236251; c=relaxed/simple;
+	bh=ZIkXxwfLDy2zEl+CsRwUflruol8oIHsF7djmGyspYHk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iPHBYtqwVWrfmJvZDWI/GlFna8UhllNPQ5+sMAqlkBRKFuJPqBi8Z2TfYOU/43yAsl2pfcLw/HBidt2uy5CfBmG5rZb1bwpWQgT+1syQMKWyWf7web7GNxGVl9zKM1EW/+LJx9rpUszLBiy6DM9Ftadq0QB5On8Q/rkYcdLkRBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kaiser.cx; spf=pass smtp.mailfrom=kaiser.cx; arc=none smtp.client-ip=152.53.16.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kaiser.cx
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kaiser.cx
+Received: from dslb-178-004-206-106.178.004.pools.vodafone-ip.de ([178.4.206.106] helo=martin-debian-2.paytec.ch)
+	by akranes.kaiser.cx with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <martin@kaiser.cx>)
+	id 1rXO8N-000CUo-2f;
+	Tue, 06 Feb 2024 17:17:19 +0100
+From: Martin Kaiser <martin@kaiser.cx>
+To: Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Anna Schumaker <anna@kernel.org>,
+	David Howells <dhowells@redhat.com>
+Cc: linux-nfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	patches@opensource.cirrus.com
-Subject: Re: [PATCH] ALSA: hda/realtek: cs35l41: Fix internal speaker support for ASUS UM3402 with missing DSD
-In-Reply-To: <eac660b7-5202-4ea1-836c-8d3cdb97c5d4@free.fr>
-References: <eac660b7-5202-4ea1-836c-8d3cdb97c5d4@free.fr>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	Martin Kaiser <martin@kaiser.cx>
+Subject: [PATCH] nfs: keep server info for remounts
+Date: Tue,  6 Feb 2024 17:16:25 +0100
+Message-Id: <20240206161625.145373-1-martin@kaiser.cx>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="lXiP/ZYD";
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=IDJJySEM
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-2.56 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FREEMAIL_TO(0.00)[free.fr];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-2.05)[95.35%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[free.fr];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[linux];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:97:from];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -2.56
-X-Rspamd-Queue-Id: CE2822211D
-X-Spam-Flag: NO
 
-On Tue, 06 Feb 2024 10:14:04 +0100,
-Jean-Loïc Charroud wrote:
-> 
-> Fix device ID for "ASUS UM3402" and "ASUS UM6702RA/RC".
-> Add DSD values for "ASUS UM3402" to cs35l41_config_table[].
-> Reorder alc269_fixup_tbl[] by device id and remove duplicate QUIRK
-> entry for device {0x1043, 0x1f62, "ASUS UX7602ZM"}.
-> 
-> Signed-off-by: Jean-Loïc Charroud <lagiraudiere+linux@free.fr>
+With newer kernels that use fs_context for nfs mounts, remounts fail with
+-EINVAL.
 
-The patch isn't cleanly applicable, the tabs and spaces got broken
-likely by your mailer.
-Could you fix your mailer setup and resubmit?  At best with
-git-send-email.
+$ mount -t nfs -o nolock 10.0.0.1:/tmp/test /mnt/test/
+$ mount -t nfs -o remount /mnt/test/
+mount: mounting 10.0.0.1:/tmp/test on /mnt/test failed: Invalid argument
+
+For remounts, the nfs server address and port are populated in
+nfs_init_fs_context and later overwritten with invalid data by
+nfs23_parse_monolithic. The remount then fails as the server address is
+invalid.
+
+Fix this by not overwriting nfs server info in nfs23_parse_monolithic if
+we're doing a remount.
+
+Fixes: f2aedb713c28 ("NFS: Add fs_context support.")
+Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+---
+
+I guess that we're taking this path for remounts
+
+do_remount
+    fs_context_for_reconfigure
+        alloc_fs_context
+            init_fs_context == nfs_init_fs_context
+               fc->root is set for remounts
+               ctx->nfs_server is populated
+    parse_monolithic_mount_data
+        nfs_fs_context_parse_monolithic
+            nfs23_parse_monolithic
+               ctx->nfs_server is overwritten with data from mount request
+
+An alternative to checking for !is_remount_fc(fc) would be to check 
+if (ctx->nfs_server.addrlen == 0)
 
 
-thanks,
+ fs/nfs/fs_context.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-Takashi
+diff --git a/fs/nfs/fs_context.c b/fs/nfs/fs_context.c
+index 853e8d609bb3..41126d6dcd76 100644
+--- a/fs/nfs/fs_context.c
++++ b/fs/nfs/fs_context.c
+@@ -1111,9 +1111,12 @@ static int nfs23_parse_monolithic(struct fs_context *fc,
+ 		ctx->acdirmax	= data->acdirmax;
+ 		ctx->need_mount	= false;
+ 
+-		memcpy(sap, &data->addr, sizeof(data->addr));
+-		ctx->nfs_server.addrlen = sizeof(data->addr);
+-		ctx->nfs_server.port = ntohs(data->addr.sin_port);
++		if (!is_remount_fc(fc)) {
++			memcpy(sap, &data->addr, sizeof(data->addr));
++			ctx->nfs_server.addrlen = sizeof(data->addr);
++			ctx->nfs_server.port = ntohs(data->addr.sin_port);
++		}
++
+ 		if (sap->ss_family != AF_INET ||
+ 		    !nfs_verify_server_address(sap))
+ 			goto out_no_address;
+-- 
+2.39.2
+
 
