@@ -1,140 +1,133 @@
-Return-Path: <linux-kernel+bounces-55436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18A5484BCB1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:07:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1853B84BCAD
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:07:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C0581C24BE2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:07:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 978C71F26C59
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:07:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E4281078B;
-	Tue,  6 Feb 2024 18:07:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1520B134C1;
+	Tue,  6 Feb 2024 18:07:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="P8XgOjRz"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r7tui5s3"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFE96DF42
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 18:07:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 562FC134A5;
+	Tue,  6 Feb 2024 18:07:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707242854; cv=none; b=II9Zf6LWJATZY7MtCMVlSIufe6Ff7wKVc8ZUAP2Cs7ZwkgbuspohFioftjNhKB0jdVNu4I8wuFpNz3n2KxqS8OeZm7GiQUPySUyDkN/r6o7NUuvu3TwMF3kSnHhu5sqCbczp2Exy9SohJ/4UBoU3AP/Tpn8tBHNMUuYrbYkVTLQ=
+	t=1707242820; cv=none; b=scG+KNJ9TPl3cvG8/XR0wl918ZHfxJXrkA08YaGrc8KQTpf236MXhgXPkPGBNUKGIeMq3+BrFowwgZDzX7AHmVo5MSCcxkp69PorbtHP9ruhhASak4eOSbUJ3NABWJ1T86Aa+uqEnhvWxH+JXoABNCep8MGCxxqa23Tw0siEV2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707242854; c=relaxed/simple;
-	bh=GP3AdmJhwLFXuWiy7rvWADVhXvVh1fs62Emf7JRG3WQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BCskNuT897HSdMDLTGmr1l3zO22DcM4MyaFSxYpen/zPwA59/5Bf+SzxYWBx71z8UwHs/JG7fFnMnQnYrJZ3S8DFDRGiGrV06C3793skE1UZwOCat2LCMXeCFbDjvvbrtzzdBc+bexFulVt2tjLMFg4/CNJ10GfI5uYWJldv2pE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=P8XgOjRz; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707242851;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SvMLQJZTmssaBchGK7lN9IcLsx2n0fKoUI5Hxr88UkU=;
-	b=P8XgOjRzUDnR+cYdyV7IDULjN9GZxqX512RDQmhxqQIUohxEmgGxor1eD+mtjM3fVFYSET
-	RDgYsjC+CwdHGh3ITxbnO+5/FnmOL2yZvj46r0plt+7FGfoTRmdgSuD6cKeJ3MNpV5bv/e
-	RlsNv8Rl5TVD5E0yHjRv2f/Jtwi3KUw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-674-Acl4GtxYMTGuC8p1BvC62A-1; Tue, 06 Feb 2024 13:07:26 -0500
-X-MC-Unique: Acl4GtxYMTGuC8p1BvC62A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id ACA0B101FA2F;
-	Tue,  6 Feb 2024 18:07:25 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.46])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 0E6EE112132A;
-	Tue,  6 Feb 2024 18:07:23 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Tue,  6 Feb 2024 19:06:09 +0100 (CET)
-Date: Tue, 6 Feb 2024 19:06:07 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Tycho Andersen <tycho@tycho.pizza>
-Cc: Christian Brauner <brauner@kernel.org>,
-	"Eric W . Biederman" <ebiederm@xmission.com>,
-	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-	Tycho Andersen <tandersen@netflix.com>
-Subject: Re: [PATCH] pidfd: getfd should always report ESRCH if a task is
- exiting
-Message-ID: <20240206180607.GB3593@redhat.com>
-References: <20240206164308.62620-1-tycho@tycho.pizza>
- <20240206173722.GA3593@redhat.com>
+	s=arc-20240116; t=1707242820; c=relaxed/simple;
+	bh=HvEv2Kfd6eukGI9whK4yWFO/flKDzwX8BfuUE6HpwbE=;
+	h=Content-Type:MIME-Version:Subject:From:In-Reply-To:References:To:
+	 Cc:Message-ID:Date; b=WPWPI2y8A8tiEaPWJgU3Ygaul0xNElpei8zVfbtdZiLTagf7P+b83cs0xniPU2Q4PmZol2onJadr+ysGXdM9wKkEJ8vA8k0yGGipCKLX9VK324PlhpASMyJXnSVZSGps+1MyvPxYz1LsBoq3rEF9+obuX1CQ80/LthwuOxgne2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r7tui5s3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8885DC433F1;
+	Tue,  6 Feb 2024 18:06:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707242819;
+	bh=HvEv2Kfd6eukGI9whK4yWFO/flKDzwX8BfuUE6HpwbE=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=r7tui5s3ZqCJds0HWpLtSd+v77o7tJ1ss/1E0cmi0CeCo/8VTZi5bnc6ekDXZvktQ
+	 +vDF9ds0Q7Uh2J3QKeHWRKtNhfzcyvzUnl5S56hv4OMVYpjN9JBOMnCiUcM66wgvRR
+	 b5CQH73p8n+4Sv3d/HCAd80099qglu+QeZT82carplk8f/daglOXS2ERCNkC89E9iA
+	 yZhnKjj61ukvhHI2xGYCZAn8qBQCL+UbRtSuVM5DEgklsblV3ABl7vfS5Rzxlid33j
+	 NMpia9BqIAYwpYv/8ygVZR8Bs8dofdG0D3np5qOza3KCQk/fbVPEom/qwWNUEibNKF
+	 r6dMZNbKrf8ag==
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240206173722.GA3593@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] wifi: wfx: fix memory leak when starting AP
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20240202164213.1606145-1-jerome.pouiller@silabs.com>
+References: <20240202164213.1606145-1-jerome.pouiller@silabs.com>
+To: =?utf-8?b?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>
+Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-devel@silabs.com,
+ =?utf-8?b?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>,
+ Ulrich Mohr <u.mohr@semex-engcon.com>
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <170724281653.1979906.14756847148616354771.kvalo@kernel.org>
+Date: Tue,  6 Feb 2024 18:06:58 +0000 (UTC)
 
-Sorry for noise, forgot to mention...
+Jérôme Pouiller <jerome.pouiller@silabs.com> wrote:
 
-On 02/06, Oleg Nesterov wrote:
->
-> On 02/06, Tycho Andersen wrote:
-> >
-> > From: Tycho Andersen <tandersen@netflix.com>
-> >
-> > We can get EBADF from __pidfd_fget() if a task is currently exiting, which
-> > might be confusing.
+> Kmemleak reported this error:
 > 
-> agreed, because EBADF looks as if the "fd" argument was wrong,
+>     unreferenced object 0xd73d1180 (size 184):
+>       comm "wpa_supplicant", pid 1559, jiffies 13006305 (age 964.245s)
+>       hex dump (first 32 bytes):
+>         00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>         00 00 00 00 00 00 00 00 1e 00 01 00 00 00 00 00  ................
+>       backtrace:
+>         [<5ca11420>] kmem_cache_alloc+0x20c/0x5ac
+>         [<127bdd74>] __alloc_skb+0x144/0x170
+>         [<fb8a5e38>] __netdev_alloc_skb+0x50/0x180
+>         [<0f9fa1d5>] __ieee80211_beacon_get+0x290/0x4d4 [mac80211]
+>         [<7accd02d>] ieee80211_beacon_get_tim+0x54/0x18c [mac80211]
+>         [<41e25cc3>] wfx_start_ap+0xc8/0x234 [wfx]
+>         [<93a70356>] ieee80211_start_ap+0x404/0x6b4 [mac80211]
+>         [<a4a661cd>] nl80211_start_ap+0x76c/0x9e0 [cfg80211]
+>         [<47bd8b68>] genl_rcv_msg+0x198/0x378
+>         [<453ef796>] netlink_rcv_skb+0xd0/0x130
+>         [<6b7c977a>] genl_rcv+0x34/0x44
+>         [<66b2d04d>] netlink_unicast+0x1b4/0x258
+>         [<f965b9b6>] netlink_sendmsg+0x1e8/0x428
+>         [<aadb8231>] ____sys_sendmsg+0x1e0/0x274
+>         [<d2b5212d>] ___sys_sendmsg+0x80/0xb4
+>         [<69954f45>] __sys_sendmsg+0x64/0xa8
+>     unreferenced object 0xce087000 (size 1024):
+>       comm "wpa_supplicant", pid 1559, jiffies 13006305 (age 964.246s)
+>       hex dump (first 32 bytes):
+>         00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>         10 00 07 40 00 00 00 00 00 00 00 00 00 00 00 00  ...@............
+>       backtrace:
+>         [<9a993714>] __kmalloc_track_caller+0x230/0x600
+>         [<f83ea192>] kmalloc_reserve.constprop.0+0x30/0x74
+>         [<a2c61343>] __alloc_skb+0xa0/0x170
+>         [<fb8a5e38>] __netdev_alloc_skb+0x50/0x180
+>         [<0f9fa1d5>] __ieee80211_beacon_get+0x290/0x4d4 [mac80211]
+>         [<7accd02d>] ieee80211_beacon_get_tim+0x54/0x18c [mac80211]
+>         [<41e25cc3>] wfx_start_ap+0xc8/0x234 [wfx]
+>         [<93a70356>] ieee80211_start_ap+0x404/0x6b4 [mac80211]
+>         [<a4a661cd>] nl80211_start_ap+0x76c/0x9e0 [cfg80211]
+>         [<47bd8b68>] genl_rcv_msg+0x198/0x378
+>         [<453ef796>] netlink_rcv_skb+0xd0/0x130
+>         [<6b7c977a>] genl_rcv+0x34/0x44
+>         [<66b2d04d>] netlink_unicast+0x1b4/0x258
+>         [<f965b9b6>] netlink_sendmsg+0x1e8/0x428
+>         [<aadb8231>] ____sys_sendmsg+0x1e0/0x274
+>         [<d2b5212d>] ___sys_sendmsg+0x80/0xb4
 > 
-> > Let's check PF_EXITING, and just report ESRCH if so.
+> However, since the kernel is build optimized, it seems the stack is not
+> accurate. It appears the issue is related to wfx_set_mfp_ap(). The issue
+> is obvious in this function: memory allocated by ieee80211_beacon_get()
+> is never released. Fixing this leak makes kmemleak happy.
 > 
-> agreed, we can pretend that the task has already exited,
-> 
-> But:
-> 
-> > --- a/kernel/pid.c
-> > +++ b/kernel/pid.c
-> > @@ -688,7 +688,7 @@ static int pidfd_getfd(struct pid *pid, int fd)
-> >  	int ret;
-> >  
-> >  	task = get_pid_task(pid, PIDTYPE_PID);
-> > -	if (!task)
-> > +	if (!task || task->flags & PF_EXITING)
-> >  		return -ESRCH;
-> 
-> This looks racy. Suppose that pidfd_getfd() races with the exiting task.
-> 
-> It is possible that this task sets PF_EXITING and does exit_files()
-> after the "task->flags & PF_EXITING" check above and before pidfd_getfd()
-> does __pidfd_fget(), in this case pidfd_getfd() still returns the same
-> EBADF we want to avoid.
-> 
-> Perhaps we can change pidfd_getfd() to do
-> 
-> 	if (IS_ERR(file))
-> 		return (task->flags & PF_EXITING) ? -ESRCH : PTR_ERR(file);
+> Reported-by: Ulrich Mohr <u.mohr@semex-engcon.com>
+> Co-developed-by: Ulrich Mohr <u.mohr@semex-engcon.com>
+> Signed-off-by: Ulrich Mohr <u.mohr@semex-engcon.com>
+> Fixes: 268bceec1684 ("staging: wfx: fix BA when device is AP and MFP is enabled")
+> Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
 
-Or we can check task->files != NULL rather than PF_EXITING.
+Patch applied to wireless-next.git, thanks.
 
-To me this looks even better, but looks more confusing without a comment.
-OTOH, imo this needs a comment anyway ;)
+b8cfb7c819dd wifi: wfx: fix memory leak when starting AP
 
-> 
-> instead?
-> 
-> This needs a comment to explain the PF_EXITING check. And perhaps another
-> comment to explain that we can't miss PF_EXITING if the target task has
-> already passed exit_files, both exit_files() and fget_task() take the same
-> task_lock(task).
-> 
-> What do you think?
-> 
-> Oleg.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20240202164213.1606145-1-jerome.pouiller@silabs.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
