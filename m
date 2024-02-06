@@ -1,110 +1,152 @@
-Return-Path: <linux-kernel+bounces-54420-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54425-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A24E684AF04
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:32:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5756384AF13
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:37:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 419691F23C3F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 07:32:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D52B1C22680
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 07:37:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 443F97EEE0;
-	Tue,  6 Feb 2024 07:32:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KldxFJC1"
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50050128837;
+	Tue,  6 Feb 2024 07:37:41 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20CBB128821;
-	Tue,  6 Feb 2024 07:32:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 380B67EEE0;
+	Tue,  6 Feb 2024 07:37:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707204736; cv=none; b=fdA335vhYymtrpjpKwy8IQ6uypSq9vPB2wYpYvQAeErLhVj03D8esRfVX2Nhqk3IL6gLu2ezhkYlUfgbIzan83dw3JqaYa625BlPUrR4w/vF8bKnkcrBcXAI+Cymobe57UnHT4tSmyNgAbKILJM8RAK4zzOwaVt2Cmb5H785ZRI=
+	t=1707205060; cv=none; b=AawgMmZRUModxbWHqFg55GZE++scZ0292SBvZ4rzeneSY46oR5KHSSrdKh+MW3SUGXlmnSTBTEKJdyEl2lVpuO0A/fPpMthw73J5xYnLhlwl5Q4xZ2v2zhFlpw0LY1fCIC9nEoU11Mi9bA6iGHL6+OriWPrK8i8M5HER1k3no0E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707204736; c=relaxed/simple;
-	bh=byYCRMx/N+GZh+e3eL8SF/WkTDnPO2LUbyw3eCLNJNk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kESevwbd9whXqajJJ27bkcSvH5d2VkD0NiI4ZZpkUkDhxhJub2WCgeIkSdQycX567Hs+YYkIWkFcPEk45tDDRvwf94dIvVs0zV9gTQL6biBI2O39aKJNU/mXE/mOB+PxrsxnkJVYN9Og1V/xAvQSxDIPlxoRNRWlqK9l/lpulLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KldxFJC1; arc=none smtp.client-ip=209.85.215.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5d8df34835aso250716a12.0;
-        Mon, 05 Feb 2024 23:32:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707204734; x=1707809534; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=l8Ic/7ZqQNN9pKqwAasZzAHy//XqdnT4TIY9t8+tW+U=;
-        b=KldxFJC1sVEqj5Pw9hnlmXdw19Ybw8mDFJDRc7o/YyABW9sL4rpAVAI/+fbq/UQJ+Q
-         dFGSa8divf8K5CQiRfbXYHzprnR9aFFL1WyGuxDT0NYNRlHJ9e9yuWPkKCIUwIHpaIwH
-         iYCwX2cVMt+pfOl3f10yQDiEtrFPIVKd/vBCHyzNbTsOZ97d5La2CiPc3Un4iETqwaLW
-         1NvJ2P4mAuTINUTv8dn8dJb7VOJFw1Nz9wBgiJkqjCRh3saNZSO1VIaB5+g042grs+PW
-         ekZlcZvZDTbt6UYLppgi1EgD6yXMrVMkuTFosuTbiyRgDlOUzVye2YOOW9KtBNmCsdzw
-         lGpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707204734; x=1707809534;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l8Ic/7ZqQNN9pKqwAasZzAHy//XqdnT4TIY9t8+tW+U=;
-        b=hy+GDh2SkkSDmVY4eLNSpSd5axhku+aqO9NaThOVRDV6u1pRxgZIuEYQqL1wl8X2Mj
-         mgQhuuGhPvvpQdbQOnmAqcvDgqoy2h+5CJjXrgJyoN2yZFdcSvov8XH8LJ9d4QMMT/bO
-         65jV5rd7FSAn+mRirchHGyUCUq80OQajWu+2XmipBmq9m+i0PZxIHe9b4R9udBrP/R5w
-         o7YxpMg1UeseuDkGwxZFVSunjIS6lj58VIDGzjiSuiy9anjgKJ6aXIOgk4t3P6G5JYNM
-         kjXvQTb0owu6Cxu62kaq4rMV4Lq/WGD0liXE7jJLEgQdUO8jTGAjyREx+ZjMKk2hLwW1
-         L3ug==
-X-Gm-Message-State: AOJu0YwQxXBqTJzC4rJypE4ZA47gqb2v8L61FLdraGp+wIB5ip4CgdOR
-	lzW91UN8PlMcgrNtF18rbwihklCF/5lYPqohWjjIXm4rNAFY5Ebr
-X-Google-Smtp-Source: AGHT+IEd+h+zMzYf095OK36P2DgF0n7FFAe5VTL2/fjW+Z0Fyq7R6VLQwHKKUXgaG3EG5SYnm9VZtg==
-X-Received: by 2002:a05:6a20:6f8e:b0:19e:5ac2:a342 with SMTP id gv14-20020a056a206f8e00b0019e5ac2a342mr1485684pzb.17.1707204734407;
-        Mon, 05 Feb 2024 23:32:14 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU/Gj84XSufReOxKgpj72n1VzF06njLWMKKj+fvYxf3vdNdY8gKR2zt9GHd4ZtWh0vFYyhavtfOU1jdRuvUaOiVIr1AO6G0qyvaXYQrOMlUkT795WN54Wmz4qslwm2ClHa8WPFWaJznX72eMyppxOrwu3TvTuJkmgNhHUCsmVs/v1AY+DhIMpLVnb97SEV2/aoqPwitWRDANa3lyD6PHkyTLwyhqKuzrfQlUI/Er53AQZSXeySOkU6bgicJrWJkTRMcnfiWLFtzRY02fI6p2Po4kffwBr+l/svj+0HwRgnP6+QjeGlE/di7MizYx3HFXkurYJ9hh9MHLKolLPu+jbhRbamYsEyhPTwPXCvfOXjxufcBXq7dMIhvEn42hCLRcIHiLT7kljqV6vD6kiDAOyKysiz/dqEoPmPZmmiRIDpoid36YdMIUkZNJ8ACNygXmdxH0bditA7H0rog+Vc+ok6vK++vq39oqhSGzXwkmVVXd85idwKd+X9aO+u68R/9aA7b9F41BsqDRhDWly/4IhEPvY0niImU52GQ
-Received: from dragon (144.34.186.27.16clouds.com. [144.34.186.27])
-        by smtp.gmail.com with ESMTPSA id z12-20020aa79e4c000000b006dfbecb5027sm1160173pfq.171.2024.02.05.23.32.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 23:32:13 -0800 (PST)
-Date: Tue, 6 Feb 2024 15:31:59 +0800
-From: Shawn Guo <shawn.gsc@gmail.com>
-To: Mathieu Othacehe <othacehe@gnu.org>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-	Primoz Fiser <primoz.fiser@norik.com>,
-	Stefan Wahren <wahrenst@gmx.net>,
-	Christoph Stoidner <c.stoidner@phytec.de>,
-	Wadim Egorov <w.egorov@phytec.de>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v5 3/3] arm64: dts: imx93: Add phyBOARD-Segin-i.MX93
- support
-Message-ID: <ZcHgb4egPKh+Yqnf@dragon>
-References: <20240124074930.26101-1-othacehe@gnu.org>
- <20240124074930.26101-4-othacehe@gnu.org>
+	s=arc-20240116; t=1707205060; c=relaxed/simple;
+	bh=IxrNPNPtjGZn3RxttgDRL2Vy8atvYyynJNHIEF2IW9U=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Fg3pCyV8X6NUs1/P79ImpXPwnNkTa7EClWAHHSjBGXTUS+bwr3pN3G8i9+IhjqGaj0FmZ5/98AfVmLdT+8DyZHYb6kZvdVwzURIcN42Tj9RMpgorUOCzFzH5zTyo1mM5GDSoMJ1Wyz2L4XMKrJ3J1CSZ8EpUyMi9rTMauF+eqn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TTZmC0092z29lMf;
+	Tue,  6 Feb 2024 15:35:38 +0800 (CST)
+Received: from canpemm500009.china.huawei.com (unknown [7.192.105.203])
+	by mail.maildlp.com (Postfix) with ESMTPS id 9887B1A0172;
+	Tue,  6 Feb 2024 15:37:34 +0800 (CST)
+Received: from localhost.localdomain (10.50.165.33) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 6 Feb 2024 15:37:34 +0800
+From: Yicong Yang <yangyicong@huawei.com>
+To: <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>, <tony@atomide.com>,
+	<linux-kernel@vger.kernel.org>, <linux-serial@vger.kernel.org>
+CC: <john.ogness@linutronix.de>, <andriy.shevchenko@linux.intel.com>,
+	<tglx@linutronix.de>, <yangyicong@hisilicon.com>, <linuxarm@huawei.com>,
+	<prime.zeng@hisilicon.com>, <jonathan.cameron@huawei.com>,
+	<fanghao11@huawei.com>
+Subject: [PATCH v2] serial: port: Don't suspend if the port is still busy
+Date: Tue, 6 Feb 2024 15:33:22 +0800
+Message-ID: <20240206073322.5560-1-yangyicong@huawei.com>
+X-Mailer: git-send-email 2.31.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240124074930.26101-4-othacehe@gnu.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500009.china.huawei.com (7.192.105.203)
 
-On Wed, Jan 24, 2024 at 08:49:30AM +0100, Mathieu Othacehe wrote:
-> Add basic support for phyBOARD-Segin-i.MX93.
-> Main features are:
-> * eMMC
-> * Ethernet
-> * SD-Card
-> * UART
-> 
-> Tested-by: Primoz Fiser <primoz.fiser@norik.com>
-> Signed-off-by: Mathieu Othacehe <othacehe@gnu.org>
+From: Yicong Yang <yangyicong@hisilicon.com>
 
-Applied, thanks!
+We accidently met the issue that the bash prompt is not shown after the
+previous command done and until the next input if there's only one CPU
+(In our issue other CPUs are isolated by isolcpus=). Further analysis
+shows it's because the port entering runtime suspend even if there's
+still pending chars in the buffer and the pending chars will only be
+processed in next device resuming. We are using amba-pl011 and the
+problematic flow is like below:
+
+Bash                                         kworker
+tty_write()
+  file_tty_write()
+    n_tty_write()
+      uart_write()
+        __uart_start()
+          pm_runtime_get() // wakeup waker
+            queue_work()
+                                             pm_runtime_work()
+                                               rpm_resume()
+                                                status = RPM_RESUMING
+                                                serial_port_runtime_resume()
+                                                  port->ops->start_tx()
+                                                    pl011_tx_chars()
+                                                      uart_write_wakeup()
+        […]
+        __uart_start()
+          pm_runtime_get() < 0 // because runtime status = RPM_RESUMING
+                               // later data are not commit to the port driver
+                                                status = RPM_ACTIVE
+                                                rpm_idle() -> rpm_suspend()
+
+This patch tries to fix this by checking the port busy before entering
+runtime suspending. A runtime_suspend callback is added for the port
+driver. When entering runtime suspend the callback is invoked, if there's
+still pending chars in the buffer then flush the buffer.
+
+Cc: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+---
+Change since v1:
+- Use port lock wrapper per John
+- Flush the pending chars and return -EBUSY per Tony.
+Thanks.
+Link: https://lore.kernel.org/all/20240204031957.58176-1-yangyicong@huawei.com/
+
+ drivers/tty/serial/serial_port.c | 26 +++++++++++++++++++++++++-
+ 1 file changed, 25 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/tty/serial/serial_port.c b/drivers/tty/serial/serial_port.c
+index 88975a4df306..0617d5158235 100644
+--- a/drivers/tty/serial/serial_port.c
++++ b/drivers/tty/serial/serial_port.c
+@@ -46,8 +46,32 @@ static int serial_port_runtime_resume(struct device *dev)
+ 	return 0;
+ }
+ 
++static int serial_port_runtime_suspend(struct device *dev)
++{
++	struct serial_port_device *port_dev = to_serial_base_port_device(dev);
++	struct uart_port *port;
++	unsigned long flags;
++	int ret = 0;
++
++	port = port_dev->port;
++
++	if (port->flags & UPF_DEAD)
++		return ret;
++
++	uart_port_lock_irqsave(port, &flags);
++	if (__serial_port_busy(port)) {
++		port->ops->start_tx(port);
++		pm_runtime_mark_last_busy(dev);
++		ret = -EBUSY;
++	}
++	uart_port_unlock_irqrestore(port, flags);
++
++	return ret;
++}
++
+ static DEFINE_RUNTIME_DEV_PM_OPS(serial_port_pm,
+-				 NULL, serial_port_runtime_resume, NULL);
++				 serial_port_runtime_suspend,
++				 serial_port_runtime_resume, NULL);
+ 
+ static int serial_port_probe(struct device *dev)
+ {
+-- 
+2.24.0
+
 
