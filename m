@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-54738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76BD284B310
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:06:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56E2984B312
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:07:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80A761C2279E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:06:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EFFC4B26702
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:07:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 802F212FB06;
-	Tue,  6 Feb 2024 11:05:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE02D12FB3C;
+	Tue,  6 Feb 2024 11:05:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bcwBOYz1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MWvy0TH6"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A27C512F592;
-	Tue,  6 Feb 2024 11:05:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED22112FF76;
+	Tue,  6 Feb 2024 11:05:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707217548; cv=none; b=fFHd3qwfhaoapvWWQ72aegCbAI9Cw5zRhJ3nmagWpsdPBfhYSaT4dp93ea04Nh4JHcqZXsNdyJR/YKVu5UKZ1kS6thtcjyslTWFU+9S6q8/1lDGGi4pouL1TjwzdfvwRcnQxw4lCYr6p8YbctuSY1RUWngGJHsD7F/tUEMIuMrU=
+	t=1707217552; cv=none; b=EPYKXp91RrvGyMwZY0DjL4rsaTh7X+FpZVveQz51rXe+93DWREGEmYTVsMJ1MmKqbd6c0kWOc9EXV02jCJzGlhEaB00YjgwCcLEM6RRRAsYM9KBR7R6opvn4C1aVN8zz4tM+xj9T2MbZWphYsOEKLChqh6aWIxoaO9FeNwW10wc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707217548; c=relaxed/simple;
-	bh=hJBcq6G53sR+Sok4UfO9asd3HIeiHC7fn0zZDIFhFKw=;
+	s=arc-20240116; t=1707217552; c=relaxed/simple;
+	bh=HBpkihUOz+42qTZ8E70fvuC94UrnuMtLk3YD9XXg8zY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=goiCOaVPIJfKQlEwb9Hty2TfDYqq/nmN3n2PVfWZoftZQtSkMRJhiAWeNPoP+vMFG6DfIGmDLCSFGO7cyffn04nfl+UuWuJtuTK647nTXV+u54EU1omxVX+3N/cN2THk3c6GqwOJMBlQo/gLN4LUQ5zNs7thvPBdu97bH64vFtk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bcwBOYz1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF0A1C433F1;
-	Tue,  6 Feb 2024 11:05:45 +0000 (UTC)
+	 MIME-Version; b=MO7a6/9IFYc0qHhdKGvORfTX0NK1WESqqTYPa9iiZnHGNHIboaO2hlQGjRhv6vWa76mu7S7wvi6oExTEIIdhZ/FwRHGxrK3d8RXRcUGvEyjE9/5wgcV85e3G4BoSr9muufk7G7v48bKNm6ehS73yhE5qSe5+XGW+zxId2UNqneo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MWvy0TH6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5F89C433C7;
+	Tue,  6 Feb 2024 11:05:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707217548;
-	bh=hJBcq6G53sR+Sok4UfO9asd3HIeiHC7fn0zZDIFhFKw=;
+	s=k20201202; t=1707217551;
+	bh=HBpkihUOz+42qTZ8E70fvuC94UrnuMtLk3YD9XXg8zY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bcwBOYz1BMGlcZEu4c59TB4CPKUsT2QK1ewkFW+0mBdhO4CM8hRvndL7AHm4wI+Q4
-	 g9WJvsh4FAsHgR3mUJFsLDAkrD7p4n+kzbdf+5wbUMjZarqCPtjb1TlgedNm7bjVvS
-	 9/hjcRzqqIi9TdAsjXOu+0PvqlpTS5FIvuY71mRr0AYi0xIk9nZZg/bzZtWDqzbf+M
-	 p4Ed8JBdvVlr1/kONzexSsLh0xcXtXCkLN3jQnpJbiJhAq0enuqhLU/FXyTZN2S+eX
-	 JEdu0w1MgxQbzzpkkh99Ie291zgXpSTB2WB6m5nhauJKf+IXr5Dqj8OxYEisPgwId6
-	 AUr3L3KgjEUtg==
+	b=MWvy0TH6y70WyLpUralBEy1uvKuZYhREElojJQhvCasstwIFVA6ZDTE3y2ZhvVnf3
+	 Uvg/RBvyK7RRGTSI3dU1S5Mu9YS5yTRt7zy7P/kScj0CeSKOaduC4l+lQ2zqzzKBt7
+	 EW5b10Br+lMZJ+yp9TDtxhlq64u+0ePeOWOxFfJq3k/LhKhvTaevgTzUKjdRb7nqCw
+	 fN7JdlbEDUcQm89rxay+oxj7kyKk9IB4z5MdrVmyWu91xVk33aEnPKTbQKCwi1gVKc
+	 mgyEPNSFKKjUJZg+AHkXW73VMoL9iuRGe+VOWkogskl4IOOLKKpLOp1RiEdwzccEZg
+	 ToL6obNvwEUXg==
 From: Daniel Bristot de Oliveira <bristot@kernel.org>
 To: Steven Rostedt <rostedt@goodmis.org>
 Cc: Daniel Bristot de Oliveira <bristot@kernel.org>,
@@ -53,9 +53,9 @@ Cc: Daniel Bristot de Oliveira <bristot@kernel.org>,
 	linux-trace-kernel@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	llvm@lists.linux.dev
-Subject: [PATCH 2/6] tools/rtla: Fix uninitialized bucket/data->bucket_size warning
-Date: Tue,  6 Feb 2024 12:05:30 +0100
-Message-ID: <6e1b1665cd99042ae705b3e0fc410858c4c42346.1707217097.git.bristot@kernel.org>
+Subject: [PATCH 3/6] tools/rtla: Fix clang warning about mount_point var size
+Date: Tue,  6 Feb 2024 12:05:31 +0100
+Message-ID: <1b46712e93a2f4153909514a36016959dcc4021c.1707217097.git.bristot@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1707217097.git.bristot@kernel.org>
 References: <cover.1707217097.git.bristot@kernel.org>
@@ -67,99 +67,42 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When compiling rtla with clang, I am getting the following warnings:
+clang is reporting this warning:
 
 $ make HOSTCC=clang CC=clang LLVM_IAS=1
-
-[..]
-clang -O -g -DVERSION=\"6.8.0-rc3\" -flto=auto -fexceptions
-	-fstack-protector-strong -fasynchronous-unwind-tables
-	-fstack-clash-protection  -Wall -Werror=format-security
-	-Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS
-	$(pkg-config --cflags libtracefs)
-	-c -o src/osnoise_hist.o src/osnoise_hist.c
-src/osnoise_hist.c:138:6: warning: variable 'bucket' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
-  138 |         if (data->bucket_size)
-      |             ^~~~~~~~~~~~~~~~~
-src/osnoise_hist.c:149:6: note: uninitialized use occurs here
-  149 |         if (bucket < entries)
-      |             ^~~~~~
-src/osnoise_hist.c:138:2: note: remove the 'if' if its condition is always true
-  138 |         if (data->bucket_size)
-      |         ^~~~~~~~~~~~~~~~~~~~~~
-  139 |                 bucket = duration / data->bucket_size;
-src/osnoise_hist.c:132:12: note: initialize the variable 'bucket' to silence this warning
-  132 |         int bucket;
-      |                   ^
-      |                    = 0
-1 warning generated.
-
 [...]
-
 clang -O -g -DVERSION=\"6.8.0-rc3\" -flto=auto -fexceptions
 	-fstack-protector-strong -fasynchronous-unwind-tables
 	-fstack-clash-protection  -Wall -Werror=format-security
 	-Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS
-	$(pkg-config --cflags libtracefs)
-	-c -o src/timerlat_hist.o src/timerlat_hist.c
-src/timerlat_hist.c:181:6: warning: variable 'bucket' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
-  181 |         if (data->bucket_size)
-      |             ^~~~~~~~~~~~~~~~~
-src/timerlat_hist.c:204:6: note: uninitialized use occurs here
-  204 |         if (bucket < entries)
-      |             ^~~~~~
-src/timerlat_hist.c:181:2: note: remove the 'if' if its condition is always true
-  181 |         if (data->bucket_size)
-      |         ^~~~~~~~~~~~~~~~~~~~~~
-  182 |                 bucket = latency / data->bucket_size;
-src/timerlat_hist.c:175:12: note: initialize the variable 'bucket' to silence this warning
-  175 |         int bucket;
-      |                   ^
-      |                    = 0
-1 warning generated.
+	$(pkg-config --cflags libtracefs)    -c -o src/utils.o src/utils.c
 
-This is a legit warning, but data->bucket_size is always > 0 (see
-timerlat_hist_parse_args()), so the if is not necessary.
+src/utils.c:548:66: warning: 'fscanf' may overflow; destination buffer in argument 3 has size 1024, but the corresponding specifier may require size 1025 [-Wfortify-source]
+  548 |         while (fscanf(fp, "%*s %" STR(MAX_PATH) "s %99s %*s %*d %*d\n", mount_point, type) == 2) {
+      |                                                                         ^
 
-Remove the unneeded if (data->bucket_size) to avoid the warning.
+Increase mount_point variable size to MAX_PATH+1 to avoid the overflow.
 
 Cc: stable@vger.kernel.org
-Fixes: 1eeb6328e8b3 ("rtla/timerlat: Add timerlat hist mode")
-Fixes: 829a6c0b5698 ("rtla/osnoise: Add the hist mode")
+Fixes: a957cbc02531 ("rtla: Add -C cgroup support")
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- tools/tracing/rtla/src/osnoise_hist.c  | 3 +--
- tools/tracing/rtla/src/timerlat_hist.c | 3 +--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ tools/tracing/rtla/src/utils.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/tracing/rtla/src/osnoise_hist.c b/tools/tracing/rtla/src/osnoise_hist.c
-index 8f81fa007364..67128171c29d 100644
---- a/tools/tracing/rtla/src/osnoise_hist.c
-+++ b/tools/tracing/rtla/src/osnoise_hist.c
-@@ -135,8 +135,7 @@ static void osnoise_hist_update_multiple(struct osnoise_tool *tool, int cpu,
- 	if (params->output_divisor)
- 		duration = duration / params->output_divisor;
- 
--	if (data->bucket_size)
--		bucket = duration / data->bucket_size;
-+	bucket = duration / data->bucket_size;
- 
- 	total_duration = duration * count;
- 
-diff --git a/tools/tracing/rtla/src/timerlat_hist.c b/tools/tracing/rtla/src/timerlat_hist.c
-index 47d3d8b53cb2..3a5b8c409e7d 100644
---- a/tools/tracing/rtla/src/timerlat_hist.c
-+++ b/tools/tracing/rtla/src/timerlat_hist.c
-@@ -178,8 +178,7 @@ timerlat_hist_update(struct osnoise_tool *tool, int cpu,
- 	if (params->output_divisor)
- 		latency = latency / params->output_divisor;
- 
--	if (data->bucket_size)
--		bucket = latency / data->bucket_size;
-+	bucket = latency / data->bucket_size;
- 
- 	if (!context) {
- 		hist = data->hist[cpu].irq;
+diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
+index c769d7b3842c..b998b24edf1e 100644
+--- a/tools/tracing/rtla/src/utils.c
++++ b/tools/tracing/rtla/src/utils.c
+@@ -536,7 +536,7 @@ int set_cpu_dma_latency(int32_t latency)
+  */
+ static const int find_mount(const char *fs, char *mp, int sizeof_mp)
+ {
+-	char mount_point[MAX_PATH];
++	char mount_point[MAX_PATH+1];
+ 	char type[100];
+ 	int found = 0;
+ 	FILE *fp;
 -- 
 2.43.0
 
