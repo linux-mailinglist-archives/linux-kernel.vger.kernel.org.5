@@ -1,162 +1,192 @@
-Return-Path: <linux-kernel+bounces-55358-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55357-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A0DA84BBB3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:15:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 964A884BBAB
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:12:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84C5D286030
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:15:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E1B82837CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:12:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C8956FD9;
-	Tue,  6 Feb 2024 17:15:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B59EC8F7A;
+	Tue,  6 Feb 2024 17:12:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TcjBjMVP"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="w85xzmud"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6CA98F61;
-	Tue,  6 Feb 2024 17:15:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C87A6AA0
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 17:12:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707239740; cv=none; b=MtjabP77vO8n6qcG7L9fxLIHqIoSPyABr8MgOtmqzm2qZcfxLUUALPl01bKY1xx3ViRbKMwxUPAYCIF2w2ql7NYeTp8/6Aoz+kGjo0E0vhjLTnZb1OReOJP2+mc2h28Sl2+s/4DwbSTc1rYDKuuWStj9TYHCJyJ75t0vEnYIXes=
+	t=1707239525; cv=none; b=ekQ6jIya2HH3ZC86qlukIWXX28KTgEqFeD8X4v7D2eEi9tLZQK4PoK9aGfR3ifqEErqJKdLf1esyRoXoquQ1k7/OUXsLQVKLzp+cgRKvf3YYDqmH09jdZZvX59gpGZU0+DNjDqIRHRjvvSZ2FqMVH01UcjWgaQ6UA5EQrVoYGWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707239740; c=relaxed/simple;
-	bh=4COZZH6G6FQq+/0+Kgrlad6dIW22WDXbcZYFPu1fyDA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TZUQ+GtIjUwKUyvoXC+rFcVGDGxG/9q/QryxeeRLM8dCsMWqopLzQFT9bTl6a3Ddojk9tF2KbR2RHpNKk4UTGT9MO/xE4/V3VLzh0e8+i1YgIvt+N/tZtVyjbmSCHdoEqBOnshMPSlCHo2V4T1Q2FhOJpZmpMNpLf8SuQp0Du30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TcjBjMVP; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33b18099411so1748100f8f.0;
-        Tue, 06 Feb 2024 09:15:38 -0800 (PST)
+	s=arc-20240116; t=1707239525; c=relaxed/simple;
+	bh=udwk8gkp2gItjLFFyN+0LjX+L2AaB7Z0ACySQafe79Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Pl4SwpFHFdJcbEOT/r21JVqvW9l+nVoUyaPZVU/F0gB+Rp9oyELrrBrMvSSFdeR34R9DEPOx486LhrTlxz6CJE1gliiwjDZ0Drt44mEDUnfrWE4nTS4hJVG4UA1B/IaVfJNMEeH7fxS/pwlhslSyb2rsfS/dH6PlweWmdiw7WhQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=w85xzmud; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d7431e702dso50024365ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 09:12:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707239737; x=1707844537; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=fastly.com; s=google; t=1707239524; x=1707844324; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=o+ehnWB1iuhsMXHLtvIAjkfWYjL8PQoZ4ssRw0UvkKI=;
-        b=TcjBjMVPFgYwToOMHHfBmbqK8Aqqf59kP9S6h6GbuhKHsBt/NPk1eHxYrSEAVMTlNd
-         VFR/ja84pbwtq+lh9594Xw8tF6N115ULPMrV87MdaouTaXxmpgWI93kwKfVoRGq9kmPh
-         X8VoM9cOhNiZP5hnJ8pwQQbR9M+nAZM1h2s8hmwxFRYLal3P0UsjZKyo+/9SwiUCj0aX
-         fwUK8DMbFwbGbWWvZMysd8FYfIVdtsQbb+4ap6roV8PC3sWUAl1rAZH8xKCVIdEKGFUM
-         sfCMLt3AGgoo4SVsO2BYnlxeVPVNIAtXEeLOVjvjEYVMouvbz9HPida3H+DKE6uupuL1
-         K2dw==
+        bh=CldblDMAlebalb5iiDPGGktolx1oR4ruKO4COeXHSk8=;
+        b=w85xzmudwnF2iNK5vpHYW7Mn7dtzYgzhc6RrwtR6um0ny4mW7oVNGiDGHXlDgOOYRG
+         XzFMiguVkXLiPzbrVAVE3YOC0xLSZn5B1m/YBSPfvcUywAXYj2CpkBPypo3FP6I0CQ/F
+         5TxSJ/ApR/KT2/HWlk1W1SfSxolwSeYJbgJdQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707239737; x=1707844537;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1707239524; x=1707844324;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=o+ehnWB1iuhsMXHLtvIAjkfWYjL8PQoZ4ssRw0UvkKI=;
-        b=vkHKFhHmi+x/yExAXafUoiv9PSxlPX/QJq64Scp0ETYLgvVgvP1EwzyvCXPHB8rbnp
-         Cs5bGYamI3NaH1qe0wX2oW7csF+KUaDaMIT2iqacQ/6hIpUgbNmMWHHKmjrpSRtKkmFv
-         UW/GrCZDVCsU0ejfrAPtx+WdS1RCJmuBUszjJrRZ3fDoMaX/Ndo1zqbTKoS8AJo8mMeJ
-         JaoKL6kr2cwK8lCdEDaOKdY3S9gEYjfMYSC6Dsn5EFsZooHT9E1/T3hUuPYUu3lZT0tW
-         mxpApIJxvRs1twJTYggFmLvIM9qdOpLmSeLWoj/uTz8SOdQQ+lOEgOkdKWWFJP81N7rE
-         1rFQ==
-X-Gm-Message-State: AOJu0YwXmfWp+Itn6XOV8wCOkgbmHviB0wCoZXLDoVhPsP+W0ODUc6AF
-	ls5QIAx8w2mU3n8D2IwVVcgeIJQ97PCaWLs/jKRlooDy/4lcqekH
-X-Google-Smtp-Source: AGHT+IEXaJBJzQ/XZSko2SnYnQnfL3fQIPvkWGEIhGfQjFjNkDke13mR9mgVIIKPjafAQWtDUYazSQ==
-X-Received: by 2002:a05:6000:1847:b0:33b:4aeb:82f0 with SMTP id c7-20020a056000184700b0033b4aeb82f0mr867427wri.49.1707239736665;
-        Tue, 06 Feb 2024 09:15:36 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVkOUkb7cc5uAFLxGlcP4ZB/qqb8xUp8xEdu578z77fHAZ0FCiD/6cZ03WpRdSUIuE4Wm4kvwtrTA33lhxIrC0Xtd5+zXo4g8E5yUevIhfklQa9kI2bscD0JvWyzlHbWrXHYVdgBvRtgrV+Sea5s43dk0ch48cDhXGlx2Y2ZOebWXK8yw==
-Received: from localhost.localdomain (i577B692F.versanet.de. [87.123.105.47])
-        by smtp.gmail.com with ESMTPSA id q12-20020adff78c000000b0033ae4df3cf4sm2546808wrp.40.2024.02.06.09.15.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 09:15:36 -0800 (PST)
-From: Jesus Gonzalez <jesusmgh@gmail.com>
-To: andriy.shevchenko@linux.intel.com,
-	jic23@kernel.org,
-	lars@metafoo.de
-Cc: linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jesus Gonzalez <jesusmgh@gmail.com>
-Subject: [PATCH v3 1/1] Add 10EC5280 to bmi160_i2c ACPI IDs to allow binding on some devices
-Date: Tue,  6 Feb 2024 18:11:33 +0100
-Message-ID: <20240206171132.35000-2-jesusmgh@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <ZcIniuk0TMAIrHIB@smile.fi.intel.com>
-References: <ZcIniuk0TMAIrHIB@smile.fi.intel.com>
+        bh=CldblDMAlebalb5iiDPGGktolx1oR4ruKO4COeXHSk8=;
+        b=FZDHXQ5a8LxhSgL6rSZmuSMIrucHpfO7xgxkZot2Ca+lByQIzYJItOaC8afckh1lRN
+         pZrHYsgq5BCIah8jReX3rlApSWyn0OnD2VdUQqVV8I7N8eAKv1S3OayrMAzvPZKZh24e
+         L44IfV0Dx4GUIsLM2gVMC8RkJCv1Z5wpZbJxnDQUwRbfXLOE9iFXeJTewrdN/ZcVu0+i
+         p4wYutrw0HyhI0CkonK03myoakH0LzIMvi05t96UgvqNxfBGy5gFmpmyO0WZSmK1k43Y
+         VyHXU/Rfrngq++NxSvOSWnejWm1O5T8doT1FWZwWrHuWzcvMF3oLLdNONiyU/D8sZKqJ
+         TTJw==
+X-Gm-Message-State: AOJu0YyghF2hWSSn3tTodWJ/5bvvfsWx4pC9pKuKFLBu+miHQIDiW/o2
+	QGZPdxp7ndVLSjcWxMkRKOdufxxPtZMZaQ0V0fz/78dbzCTntiuHJ8iDjnm3hII=
+X-Google-Smtp-Source: AGHT+IH5WvOaU75WLDm51dcSu+n4M28I0YcP7YgAbDLBSHRa8AGItFSIR2hOfeubimVXzgpAHZ4roQ==
+X-Received: by 2002:a17:902:c20c:b0:1d9:c2c4:c61a with SMTP id 12-20020a170902c20c00b001d9c2c4c61amr2248084pll.18.1707239523686;
+        Tue, 06 Feb 2024 09:12:03 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUe8JnVkJkj2WH/Mo1AlT5+oRZICMK2rBSPsygipayB+l+44RVrar5aiC0GyfceQkazA3TL5AvjOqwd2FbXDV9S2YBXTgEgjF6mgRgcySjbtd5QRmSt7QZ/4lC8QkQ3ILQB3rPwkzTSmmqGYlDgJLsCgT3XYh4vC6AS3dReT9zLRTGoa7D8w80hk6gM34Ki36Ai8zrLv9M7GVtD3LmKQ47qknZRRJBZqEHSYIhsW7l8wflyz/l9SNLR48A8Kny/8+b9edP3hrXHlPTys+hl9tMviuDI4jGz6hjCDmYBBD2ckclLpfJNI5TTPTps/ojaOG0cEeZILHh3quD6A/IKFBCOcJHT7sxFH5tKGahTAOLE
+Received: from fastly.com (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id g18-20020a170902c99200b001d95909478dsm2129848plc.75.2024.02.06.09.12.02
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 06 Feb 2024 09:12:03 -0800 (PST)
+Date: Tue, 6 Feb 2024 09:12:00 -0800
+From: Joe Damato <jdamato@fastly.com>
+To: Tariq Toukan <ttoukan.linux@gmail.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	Gal Pressman <gal@nvidia.com>, tariqt@nvidia.com,
+	rrameshbabu@nvidia.com, Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	"open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH net-next] eth: mlx5: link NAPI instances to queues and
+ IRQs
+Message-ID: <20240206171159.GA11565@fastly.com>
+References: <20240206010311.149103-1-jdamato@fastly.com>
+ <7e338c2a-6091-4093-8ca2-bb3b2af3e79d@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7e338c2a-6091-4093-8ca2-bb3b2af3e79d@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 
-"10EC5280" is used by several manufacturers like Lenovo, GPD, or AYA (and
-probably others) in their ACPI table as the ID for the bmi160 IMU. This
-means the bmi160_i2c driver won't bind to it, and the IMU is unavailable
-to the user. Manufacturers have been approached on several occasions to
-try getting a BIOS with a fixed ID, mostly without actual positive
-results, and since affected devices are already a few years old, this is
-not expected to change. This patch enables using the bmi160_i2c driver for
-the bmi160 IMU on these devices.
+On Tue, Feb 06, 2024 at 10:11:28AM +0200, Tariq Toukan wrote:
+> 
+> 
+> On 06/02/2024 3:03, Joe Damato wrote:
+> >Make mlx5 compatible with the newly added netlink queue GET APIs.
+> >
+> >Signed-off-by: Joe Damato <jdamato@fastly.com>
+> 
+> + Gal
+> 
+> Hi Joe,
+> Thanks for your patch.
+> 
+> We have already prepared a similar patch, and it's part of our internal
+> submission queue, and planned to be submitted soon.
+> 
+> Please see my comments below, let us know if you're welling to respin a V2
+> or wait for our patch.
 
-Here is the relevant extract from the DSDT of a GPD Win Max 2 (AMD 6800U
-model) with the latest firmware 1.05 installed. GPD sees this as WONTFIX
-with the argument of the device working with the Windows drivers.
+Do you have a rough estimate on when it'll be submitted?
 
-	Device (BMA2)
-	{
-	    Name (_ADR, Zero)  // _ADR: Address
-	    Name (_HID, "10EC5280")  // _HID: Hardware ID
-	    Name (_CID, "10EC5280")  // _CID: Compatible ID
-	    Name (_DDN, "Accelerometer")  // _DDN: DOS Device Name
-	    Name (_UID, One)  // _UID: Unique ID
-	    Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
-	    {
-		Name (RBUF, ResourceTemplate ()
-		{
-		    I2cSerialBusV2 (0x0069, ControllerInitiated, 0x00061A80,
-		        AddressingMode7Bit, "\\_SB.I2CC",
-		        0x00, ResourceConsumer, , Exclusive,
-		        )
-		})
-		Return (RBUF) /* \_SB_.I2CC.BMA2._CRS.RBUF */
-	    }
-	    
-	    ...
-	    
-	}
+If it's several months out I'll try again, but if it's expected to be
+submit in the next few weeks I'll wait for your official change.
 
-Signed-off-by: Jesus Gonzalez <jesusmgh@gmail.com>
----
-v3: - Add ID to the actual i2c driver instead of the spi driver
-(Mistake while manually transferring change to clean master, lesson learned)
-    - Move comment to outside of the function as per coding style
-    - Adapt comment style to standard multi-line comment style
-    - Reduce unnecessary noise from DSDT in the explanation body
+BTW, are the per queue coalesce changes in that same queue? It was
+mentioned previously [1] that this feature is coming after we submit a
+simple attempt as an RFC. If that feature isn't planned or won't be submit
+anytime soon, can you let us know and we can try to attempt an RFC v3 for
+it?
 
+[1]: https://lore.kernel.org/lkml/874jj34e67.fsf@nvidia.com/
 
- drivers/iio/imu/bmi160/bmi160_i2c.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+> >---
+> >  drivers/net/ethernet/mellanox/mlx5/core/en.h      | 1 +
+> >  drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 8 ++++++++
+> >  2 files changed, 9 insertions(+)
+> >
+> >diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> >index 55c6ace0acd5..3f86ee1831a8 100644
+> >--- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> >+++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> >@@ -768,6 +768,7 @@ struct mlx5e_channel {
+> >  	u16                        qos_sqs_size;
+> >  	u8                         num_tc;
+> >  	u8                         lag_port;
+> >+	unsigned int		   irq;
+> >  	/* XDP_REDIRECT */
+> >  	struct mlx5e_xdpsq         xdpsq;
+> >diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> >index c8e8f512803e..e1bfff1fb328 100644
+> >--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> >+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> >@@ -2473,6 +2473,9 @@ static void mlx5e_close_queues(struct mlx5e_channel *c)
+> >  	mlx5e_close_tx_cqs(c);
+> >  	mlx5e_close_cq(&c->icosq.cq);
+> >  	mlx5e_close_cq(&c->async_icosq.cq);
+> >+
+> >+	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_TX, NULL);
+> >+	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_RX, NULL);
+> >  }
+> >  static u8 mlx5e_enumerate_lag_port(struct mlx5_core_dev *mdev, int ix)
+> >@@ -2558,6 +2561,7 @@ static int mlx5e_open_channel(struct mlx5e_priv *priv, int ix,
+> >  	c->stats    = &priv->channel_stats[ix]->ch;
+> >  	c->aff_mask = irq_get_effective_affinity_mask(irq);
+> >  	c->lag_port = mlx5e_enumerate_lag_port(priv->mdev, ix);
+> >+	c->irq		= irq;
+> >  	netif_napi_add(netdev, &c->napi, mlx5e_napi_poll);
+> >@@ -2602,6 +2606,10 @@ static void mlx5e_activate_channel(struct mlx5e_channel *c)
+> >  		mlx5e_activate_xsk(c);
+> >  	else
+> >  		mlx5e_activate_rq(&c->rq);
+> >+
+> >+	netif_napi_set_irq(&c->napi, c->irq);
+> 
+> Can be safely moved to mlx5e_open_channel without interfering with other
+> existing mapping. This would save the new irq field in mlx5e_channel.
 
-diff --git a/drivers/iio/imu/bmi160/bmi160_i2c.c b/drivers/iio/imu/bmi160/bmi160_i2c.c
-index 81652c08e644..fc72445204e6 100644
---- a/drivers/iio/imu/bmi160/bmi160_i2c.c
-+++ b/drivers/iio/imu/bmi160/bmi160_i2c.c
-@@ -42,7 +42,16 @@ static const struct i2c_device_id bmi160_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, bmi160_i2c_id);
+Sure, yea, I have that change queued already from last night.
+
+> >+	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_TX, &c->napi);
+> 
+> In some configurations we have multiple txqs per channel, so the txq indices
+> are not 1-to-1 with their channel index.
+> 
+> This should be called per each txq, with the proper txq index.
+>
+> It should be done also for feture-dedicated SQs (like QOS/HTB).
+
+OK. I think the above makes sense and I'll look into it if I have some time
+this week.
  
-+/*
-+ * FIRMWARE BUG WORKAROUND: ID "10EC5280"
-+ * Some manufacturers like GPD, Lenovo or Aya used the incorrect
-+ * ID "10EC5280" for bmi160 in their DSDT. A fixed firmware is not
-+ * available as of Feb 2024 after trying to work with OEMs, and
-+ * this is not expected to change anymore since at least some of
-+ * the affected devices are from 2021/2022.
-+ */
- static const struct acpi_device_id bmi160_acpi_match[] = {
-+	{"10EC5280", 0},
- 	{"BMI0160", 0},
- 	{ },
- };
--- 
-2.43.0
+> >+	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_RX, &c->napi);
+> 
+> For consistency, I'd move this one as well, to match the TX handling.
 
+Sure.
+
+> >  }
+> >  static void mlx5e_deactivate_channel(struct mlx5e_channel *c)
 
