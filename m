@@ -1,60 +1,85 @@
-Return-Path: <linux-kernel+bounces-54110-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF18684AAEE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:59:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A089D84AAF0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:05:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A776228B2D2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Feb 2024 23:59:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48E021F24F8C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:05:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BEFC4D131;
-	Mon,  5 Feb 2024 23:59:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C2C14A08;
+	Tue,  6 Feb 2024 00:05:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Va3lu6Nc"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DcPc2FTm"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6A534D11B;
-	Mon,  5 Feb 2024 23:59:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA9FC4A02
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 00:05:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707177571; cv=none; b=kjNHYwySgcbyr8dRlWWPjuDhoUwRmVwltvWdm88m6BLrqOxOPCzGq6S7R8YfF4AwRfGtKBdrwsE0b4PTfsq2EP2Wj9rdX0mkcAax4FriehceUOKVn6hBZJhMSmMQ0aQoNIqEmY52aJ2DBjLm3XIEaYlEF3cCymwgl+PTRbnfEDY=
+	t=1707177902; cv=none; b=bdcpp0qp3/WFfiyhi7vEpyc/3y7kduZbRgVXsolsMYjy3LV74ZYD+ALZ0XidBrwPVEQQOSdMspLP63Q0VRUrbxAgr74paomng7cGA3na9lu1iHw2NkCtSXR3qM0MbkINdulTv/HbDlKaBu2q2xvOHwIEmg7d7SN6CCdcSFMd4Hw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707177571; c=relaxed/simple;
-	bh=311rEKidzYaFW4/d84Q1AgvS1KB7if5JdpM6hqvaaio=;
+	s=arc-20240116; t=1707177902; c=relaxed/simple;
+	bh=psWXJCTJ++nnIOoeAlSD7GIyMRWEuWxsSjf1mNPqqAQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fSJMce713LXnE7uatxXyCKB6LoJWOFlySBQfO+azOt/OReGcYHoGlU+p/eHX81juVeNuAMirU+FdfotGAalVE8Qncef2cDwHiXuaoQfJN9OO+M0ez7Sl2xMI8lUYV7mrp60DOOtziRL2qwdKv8J8CgeVTfwKBUrf4d1YZWzUWNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Va3lu6Nc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2906AC433C7;
-	Mon,  5 Feb 2024 23:59:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707177571;
-	bh=311rEKidzYaFW4/d84Q1AgvS1KB7if5JdpM6hqvaaio=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Va3lu6NcfuOkDZ0rurlc66h9UYINPbbON9v32BDL6fLEOoCWixiQbP/GsoYWNOA9c
-	 WrfJ/1yk5q56bec70Pyx1deQVXeDTBl+jUu1HDjn1HjncpMvRYfEKTomPG8oxuGgVy
-	 MnYK+k5MrGBa5pvBhh3dWjIlh5rTAwtrwOkVehDO9qJHq5osMC9cLHgN9AzIEgmpAE
-	 /o7koH7OJOFk3JuAMj2OHiCiHYE/DSNlok7ASCCWyGxrMRLslbDkzf2HjCepbaYLaE
-	 qrLHrMjXHSVC0YFmuyK+1Vr6HcFZWCwZ9yddbnpvxWPuxKSQ+cyyHMPEqzTLlO3h69
-	 nA1nhIf9FgNRA==
-Date: Mon, 5 Feb 2024 15:59:30 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Dave Chinner <david@fromorbit.com>, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Dave Chinner <dchinner@redhat.com>, Theodore Ts'o <tytso@mit.edu>,
-	linux-fsdevel@vger.kernel.or
-Subject: Re: [PATCH 2/6] fs: FS_IOC_GETUUID
-Message-ID: <20240205235930.GP616564@frogsfrogsfrogs>
-References: <20240205200529.546646-1-kent.overstreet@linux.dev>
- <20240205200529.546646-3-kent.overstreet@linux.dev>
- <ZcFelmKPb374aebH@dread.disaster.area>
- <l2zdnuczo24zxc6z6hh7q5mmux3wr5iltscnrc7axdugt6ct2k@qzrpj6vc2ct5>
+	 Content-Type:Content-Disposition:In-Reply-To; b=SudRo0VVBH1/A5UY+I0Z1a49WIsPhlc+ktn46irSBjcIPmaR6Zb4JARKzoD0NdGvrHwg7iZEZkdy4dAPGJWwgA8FhjuuwlrLGRgXadYRKexCTh45BOA6yVXGiFVlcxOajWRfc+niE1zNdTbX5OUj7WpOUQEo0naoddq94yZi5sw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DcPc2FTm; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6da9c834646so4029905b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 16:05:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707177900; x=1707782700; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hOORU3ocIizNBlePylvH6BnL7JMGtggAGg4oYomnTLo=;
+        b=DcPc2FTmHGrRbsPN8ARw93kp72oMdgyn0ukx2CodsxeOKONPEDlWxGKZgb0F/4s+wu
+         bCvTIAFYhGrde7kXx7QA7/6tf/Ub7sCBcr3PHtz6IzHdyz/itjurgm4UzaIG3av8B+YQ
+         zZr5rNlDD8qG8MWOgoJE99pIuforCkn7tGtJ7DPljTtrzoxKeU/GNMNozMtwIdHu5KRa
+         8CiXbNEwRRbSgrytzMc0jpUbWbIafQIbsYiEYz4AVfA8Y7qT6U4PhSWNNOEtrNSFTPxr
+         pFthggsGb2UFKxrb90Ig/GnEXEkOSGKapcALJZ1l9Z6W52J4skbrz0YY/Z0El7Vtyo4f
+         hlfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707177900; x=1707782700;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hOORU3ocIizNBlePylvH6BnL7JMGtggAGg4oYomnTLo=;
+        b=IlNjnW203V6+ud4+p/Ztz6tysOeJ5EwCjcBSm4OSkE+tbuW5jG9DYHfGd2x1SmlfO3
+         8RN+/OV1WLChEYitvXiCiRsTx/MoaJIYc7yuGpm0G5rvJHaX+Ww6jcE/Dg9b7y5POfeX
+         F3fil//hn/GGYVkaECn0hkYC5yHTdq/sYb78p0yp88CmEZigFn7UBkQOBBlL4roayOvR
+         P0+UWPqW+D0h140uygufE+pGTZ6hIeTSViCKYOy4YsdGE2emDmqexo6u+SYJpRKn94Nv
+         wgcTvP7CFnnECPp+5kfAd0ddxLE0+p9rLgDHF/Xtp6gVNy/XEro3lPsqznwgDefyalPi
+         rc9A==
+X-Gm-Message-State: AOJu0YyJVwH1QtqNFZf/2bYgM71KNsstEMAvBfOPIjj9vYsHf1dQkMxz
+	GKi5ciuOadygCyNyD1x8ov52ANndu5SRzx7mTQrsA+Gr0Ht0tglG
+X-Google-Smtp-Source: AGHT+IHXaVmyfynFYQg3CbFfEsnTkkF7KskS9sLvCPg8+v8KcGtVVUcHxl8UlO29cZNtkH/ICIZm+w==
+X-Received: by 2002:aa7:868f:0:b0:6e0:3ef3:db3c with SMTP id d15-20020aa7868f000000b006e03ef3db3cmr1027997pfo.29.1707177900125;
+        Mon, 05 Feb 2024 16:05:00 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXbTAiE6ZlFO3wzdD7u+tdLxGgK9H5mambq+eOxN8Lq2llnoVgVCPauLdePbGNDBzJNeqyb5Jr1CfM7oIlzPNZcd+AAetm21ZF459DoLxwZn7S0LHm/yM++jdX5IsmtgGhGc/wDlM2o3fU+EQoDDAVVX4xutviU4vF62nQkwSB1UWrB8gBuUgFQPdjhHabL8o/zkiKIKE7MFG+/8/M+hlf1IUiZ5PYAtmUQlux8Jk+SJzB7AyVFS76PyiIY18hOeTVMFpXGUQ==
+Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
+        by smtp.gmail.com with ESMTPSA id o1-20020a056a001b4100b006ddc7ed6edfsm476810pfv.51.2024.02.05.16.04.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 16:04:59 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Mon, 5 Feb 2024 14:04:58 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Cestmir Kalina <ckalina@redhat.com>,
+	Alex Gladkov <agladkov@redhat.com>, Phil Auld <pauld@redhat.com>,
+	Costa Shulyupin <cshulyup@redhat.com>
+Subject: Re: [PATCH-wq v3 0/4] workqueue: Enable unbound cpumask update on
+ ordered workqueues
+Message-ID: <ZcF3qmion7H6qyYY@slm.duckdns.org>
+References: <20240205194602.871505-1-longman@redhat.com>
+ <ZcE8pUuHfa7gVZs6@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,98 +88,26 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <l2zdnuczo24zxc6z6hh7q5mmux3wr5iltscnrc7axdugt6ct2k@qzrpj6vc2ct5>
+In-Reply-To: <ZcE8pUuHfa7gVZs6@slm.duckdns.org>
 
-On Mon, Feb 05, 2024 at 05:49:30PM -0500, Kent Overstreet wrote:
-> On Tue, Feb 06, 2024 at 09:17:58AM +1100, Dave Chinner wrote:
-> > On Mon, Feb 05, 2024 at 03:05:13PM -0500, Kent Overstreet wrote:
-> > > Add a new generic ioctls for querying the filesystem UUID.
-> > > 
-> > > These are lifted versions of the ext4 ioctls, with one change: we're not
-> > > using a flexible array member, because UUIDs will never be more than 16
-> > > bytes.
-> > > 
-> > > This patch adds a generic implementation of FS_IOC_GETFSUUID, which
-> > > reads from super_block->s_uuid; FS_IOC_SETFSUUID is left for individual
-> > > filesystems to implement.
-> > > 
-> > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > > Cc: Christian Brauner <brauner@kernel.org>
-> > > Cc: Jan Kara <jack@suse.cz>
-> > > Cc: Dave Chinner <dchinner@redhat.com>
-> > > Cc: "Darrick J. Wong" <djwong@kernel.org>
-> > > Cc: Theodore Ts'o <tytso@mit.edu>
-> > > Cc: linux-fsdevel@vger.kernel.or
-> > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > > ---
-> > >  fs/ioctl.c              | 16 ++++++++++++++++
-> > >  include/uapi/linux/fs.h | 16 ++++++++++++++++
-> > >  2 files changed, 32 insertions(+)
-> > > 
-> > > diff --git a/fs/ioctl.c b/fs/ioctl.c
-> > > index 76cf22ac97d7..858801060408 100644
-> > > --- a/fs/ioctl.c
-> > > +++ b/fs/ioctl.c
-> > > @@ -763,6 +763,19 @@ static int ioctl_fssetxattr(struct file *file, void __user *argp)
-> > >  	return err;
-> > >  }
-> > >  
-> > > +static int ioctl_getfsuuid(struct file *file, void __user *argp)
-> > > +{
-> > > +	struct super_block *sb = file_inode(file)->i_sb;
-> > > +
-> > > +	if (WARN_ON(sb->s_uuid_len > sizeof(sb->s_uuid)))
-> > > +		sb->s_uuid_len = sizeof(sb->s_uuid);
-> > 
-> > A "get"/read only ioctl should not be change superblock fields -
-> > this is not the place for enforcing superblock filed constraints.
-> > Make a helper function super_set_uuid(sb, uuid, uuid_len) for the
-> > filesystems to call that does all the validity checking and then
-> > sets the superblock fields appropriately.
+On Mon, Feb 05, 2024 at 09:53:09AM -1000, Tejun Heo wrote:
+> On Mon, Feb 05, 2024 at 02:45:58PM -0500, Waiman Long wrote:
+> >  v3:
+> >   - [v2] https://lore.kernel.org/lkml/20240203154334.791910-1-longman@redhat.com/
+> >   - Drop patch 1 as it has been merged into the for-6.9 branch.
+> >   - Use rcu_access_pointer() to access wq->dfl_pwq.
+> >   - Use RCU protection instead of acquiring wq->mutex in
+> >     apply_wqattrs_cleanup().
 > 
-> *nod* good thought...
-> 
-> > > +struct fsuuid2 {
-> > > +	__u32       fsu_len;
-> > > +	__u32       fsu_flags;
-> > > +	__u8        fsu_uuid[16];
-> > > +};
-> > 
-> > Nobody in userspace will care that this is "version 2" of the ext4
-> > ioctl. I'd just name it "fs_uuid" as though the ext4 version didn't
-> > ever exist.
-> 
-> I considered that - but I decided I wanted the explicit versioning,
-> because too often we live with unfixed mistakes because versioning is
-> ugly, or something?
-> 
-> Doing a new revision of an API should be a normal, frequent thing, and I
-> want to start making it a convention.
-> 
-> > 
-> > > +
-> > >  /* extent-same (dedupe) ioctls; these MUST match the btrfs ioctl definitions */
-> > >  #define FILE_DEDUPE_RANGE_SAME		0
-> > >  #define FILE_DEDUPE_RANGE_DIFFERS	1
-> > > @@ -215,6 +229,8 @@ struct fsxattr {
-> > >  #define FS_IOC_FSSETXATTR		_IOW('X', 32, struct fsxattr)
-> > >  #define FS_IOC_GETFSLABEL		_IOR(0x94, 49, char[FSLABEL_MAX])
-> > >  #define FS_IOC_SETFSLABEL		_IOW(0x94, 50, char[FSLABEL_MAX])
-> > > +#define FS_IOC_GETFSUUID		_IOR(0x94, 51, struct fsuuid2)
-> > > +#define FS_IOC_SETFSUUID		_IOW(0x94, 52, struct fsuuid2)
-> > 
-> > 0x94 is the btrfs ioctl space, not the VFS space - why did you
-> > choose that? That said, what is the VFS ioctl space identifier? 'v',
-> > perhaps?
-> 
-> "Promoting ioctls from fs to vfs without revising and renaming
-> considered harmful"... this is a mess that could have been avoided if we
-> weren't taking the lazy route.
-> 
-> And 'v' doesn't look like it to me, I really have no idea what to use
-> here. Does anyone?
+> Looks like we raced each other. I'll wait for v4.
 
-I thought it was 'f' but apparently that's ext?
+BTW, please don't bother to handle __WQ_ORDERED being cleared. We are very
+close to removing the implicit ORDERED promotion, so we should be able to
+apply the patch to remove the distinction between explicitly and implicitly
+ordered workqueues.
 
---D
+Thanks.
+
+-- 
+tejun
 
