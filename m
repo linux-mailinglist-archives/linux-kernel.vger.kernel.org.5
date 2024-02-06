@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-55641-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55642-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DEBC84BF5F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:42:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFAFA84BF61
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:42:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02F101F21DC9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:42:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6752D2890B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:42:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A5721BC30;
-	Tue,  6 Feb 2024 21:42:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B4781BF40;
+	Tue,  6 Feb 2024 21:42:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="fwsW/SiH"
+	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="VdUKMERz"
 Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E511F1BF27;
-	Tue,  6 Feb 2024 21:42:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F9B91B963;
+	Tue,  6 Feb 2024 21:42:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.120.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707255742; cv=none; b=BEsRG1aM7jT2oMPq891dESPJQIKEwKwqhZVapBqtg4KGyb8m1Zt9MOaqHErFmgZBtmBm7HJlm0iZovo9B+ASdNu4hXOdsyyuql9Hg0DqGMkBFK7MsA7QUsHJIyRu22GTwgxZVRhoQ84tgCTN1PgCn/rXKhC3CTnd8b4g1QBDWkc=
+	t=1707255744; cv=none; b=GhmQAYO5fy0Sgb1WulJX7GTqJsA/U6E7lhn36m39/YcFRuwjxTdkhDVSCepo+hUVpxJUJTSuCsTAcTYJ+6LNNDC4hG2Jw9gxbqG8i82M52SPZyHPr39Nl9oE1gRmf5PyejvrTiMlK76pQ+BVoPwMDTLp+WddEue5hqpuhcZN3qM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707255742; c=relaxed/simple;
-	bh=q9fwZBAXTcQtKBv6I5CxylABhvION6OPfRGnEWczYgM=;
+	s=arc-20240116; t=1707255744; c=relaxed/simple;
+	bh=sV3k/j9J5B++drgSu+cGIrn3j32CbFIY0tqZsiotMlU=;
 	h=From:To:Cc:Date:Message-Id:In-Reply-To:References:MIME-Version:
-	 Subject; b=hAFDS2Zz1yS/pF95W+XQltKCpr6ym7ca1/zqap9Zs91zURURqRCE1l0dbi2VHAP0zd8ox9b7VvQLmTEYLF/T9cWkywxi6UojRcjHkOV/4du3EI9uPC6FbMB6LBsgl4DkOZml/Bw8U9UcIKS7xATthNbUJtQlfL2aTn0QbCrC9eM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=fwsW/SiH; arc=none smtp.client-ip=162.243.120.170
+	 Subject; b=NM3PY+QLNBgl5rIDDWUMuo0VTCJ3oZNVOnmmyliP7XutipW79VVFz/Ta6RvoxvXVhNxIHgQTX74rVW1i40Qn5KRC8/lsCRaxFvluN0S8LwQepOfUnVP69FAHailvsaa1/rpvBBedYzpYdpCh2IavaU5lLYM+pBlg48SD/BsXyVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=VdUKMERz; arc=none smtp.client-ip=162.243.120.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
 	; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
 	:From:subject:date:message-id:reply-to;
-	bh=fRQcONYVjPAuJ2IXtLvfbv954R7Ufy3J7dtvn6r3BZs=; b=fwsW/SiHMdayWibIXMwqX98qqb
-	/ZOySCo2eS5wf4JshM66p90SZT4ETeTQZEGXn7ueG6RaWUL/+jGMyeHsEeKcCslATc3N4nZ3KwVAr
-	cWS25rpAKvnh7QB16RPHhvx3ZgUiTkNQrsIKEANHKFPS59DWgmpLQrPZ+qvKMc5EMNOQ=;
+	bh=S8GKrBx7k32D5TQmOeQBgeGGSVzTirjzknxQ6smCCHw=; b=VdUKMERzJuOYo8CYPfpAAw1yyg
+	HMOFPakOOiSF9GphkQb9HQPguSMGozhvzln1MryMY/MwYaff6+ZOdijyV2FAXYXfuUfXLIH6H6p8y
+	VwJWFGZC7MAn4U+L0pPf7AtIDw/SyUCsxHZZZ8i1g7GxxwbkYDUH5QpVC1qdAMUBlA3A=;
 Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:41434 helo=pettiford.lan)
 	by mail.hugovil.com with esmtpa (Exim 4.92)
 	(envelope-from <hugo@hugovil.com>)
-	id 1rXTCs-0006XX-8A; Tue, 06 Feb 2024 16:42:19 -0500
+	id 1rXTCu-0006XX-3M; Tue, 06 Feb 2024 16:42:21 -0500
 From: Hugo Villeneuve <hugo@hugovil.com>
 To: gregkh@linuxfoundation.org,
 	jirislaby@kernel.org
@@ -47,8 +47,8 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-serial@vger.kernel.org,
 	hugo@hugovil.com,
 	Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Date: Tue,  6 Feb 2024 16:42:07 -0500
-Message-Id: <20240206214208.2141067-4-hugo@hugovil.com>
+Date: Tue,  6 Feb 2024 16:42:08 -0500
+Message-Id: <20240206214208.2141067-5-hugo@hugovil.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240206214208.2141067-1-hugo@hugovil.com>
 References: <20240206214208.2141067-1-hugo@hugovil.com>
@@ -65,87 +65,115 @@ X-Spam-Level:
 X-Spam-Report: 
 	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
 	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-Subject: [PATCH 3/4] serial: sc16is7xx: split into core and I2C/SPI parts (sc16is7xx_lines)
+Subject: [PATCH 4/4] serial: sc16is7xx: split into core and I2C/SPI parts (sc16is7xx_regcfg)
 X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
 X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
 From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-Before, sc16is7xx_lines was checked for a free (zero) bit first, and then
-later it was set only if UART port registration succeeded.
-
-Now that sc16is7xx_lines is shared for the I2C and SPI drivers, make sure
-it is reserved and modified atomically, and use a new variable to hold the
-status of UART port regisration.
-
-Remove need to check for previous port registration in sc16is7xx_remove(),
-because if sc16is7xx_probe() succeeded, we are guaranteed to have
-successfully registered both ports.
+Since each I2C/SPI probe function can modify sc16is7xx_regcfg at the same
+time, change structure to be constant and do the required modifications on
+a local copy.
 
 Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 ---
- drivers/tty/serial/sc16is7xx.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+ drivers/tty/serial/sc16is7xx.c     |  2 +-
+ drivers/tty/serial/sc16is7xx.h     |  2 +-
+ drivers/tty/serial/sc16is7xx_i2c.c | 11 +++++++----
+ drivers/tty/serial/sc16is7xx_spi.c | 11 +++++++----
+ 4 files changed, 16 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-index 5b53c88b7133..5073ebfc45bf 100644
+index 5073ebfc45bf..706c8b18250b 100644
 --- a/drivers/tty/serial/sc16is7xx.c
 +++ b/drivers/tty/serial/sc16is7xx.c
-@@ -1468,6 +1468,7 @@ int sc16is7xx_probe(struct device *dev, const struct sc16is7xx_devtype *devtype,
- 	u32 uartclk = 0;
- 	int i, ret;
- 	struct sc16is7xx_port *s;
-+	bool port_registered[SC16IS7XX_MAX_PORTS];
+@@ -1696,7 +1696,7 @@ const struct of_device_id __maybe_unused sc16is7xx_dt_ids[] = {
+ EXPORT_SYMBOL_GPL(sc16is7xx_dt_ids);
+ MODULE_DEVICE_TABLE(of, sc16is7xx_dt_ids);
  
- 	for (i = 0; i < devtype->nr_uart; i++)
- 		if (IS_ERR(regmaps[i]))
-@@ -1533,8 +1534,10 @@ int sc16is7xx_probe(struct device *dev, const struct sc16is7xx_devtype *devtype,
- 		     SC16IS7XX_IOCONTROL_SRESET_BIT);
+-struct regmap_config sc16is7xx_regcfg = {
++const struct regmap_config sc16is7xx_regcfg = {
+ 	.reg_bits = 5,
+ 	.pad_bits = 3,
+ 	.val_bits = 8,
+diff --git a/drivers/tty/serial/sc16is7xx.h b/drivers/tty/serial/sc16is7xx.h
+index 410f34b1005c..8d03357e35c7 100644
+--- a/drivers/tty/serial/sc16is7xx.h
++++ b/drivers/tty/serial/sc16is7xx.h
+@@ -19,7 +19,7 @@ struct sc16is7xx_devtype {
+ 	int	nr_uart;
+ };
  
- 	for (i = 0; i < devtype->nr_uart; ++i) {
--		s->p[i].port.line = find_first_zero_bit(sc16is7xx_lines,
--							SC16IS7XX_MAX_DEVS);
-+		port_registered[i] = false;
+-extern struct regmap_config sc16is7xx_regcfg;
++extern const struct regmap_config sc16is7xx_regcfg;
+ 
+ extern const struct of_device_id __maybe_unused sc16is7xx_dt_ids[];
+ 
+diff --git a/drivers/tty/serial/sc16is7xx_i2c.c b/drivers/tty/serial/sc16is7xx_i2c.c
+index 70f0c329cc13..5667c56cf2aa 100644
+--- a/drivers/tty/serial/sc16is7xx_i2c.c
++++ b/drivers/tty/serial/sc16is7xx_i2c.c
+@@ -12,17 +12,20 @@ static int sc16is7xx_i2c_probe(struct i2c_client *i2c)
+ {
+ 	const struct sc16is7xx_devtype *devtype;
+ 	struct regmap *regmaps[SC16IS7XX_MAX_PORTS];
++	struct regmap_config regcfg;
+ 	unsigned int i;
+ 
+ 	devtype = i2c_get_match_data(i2c);
+ 	if (!devtype)
+ 		return dev_err_probe(&i2c->dev, -ENODEV, "Failed to match device\n");
+ 
++	memcpy(&regcfg, &sc16is7xx_regcfg, sizeof(struct regmap_config));
 +
-+		s->p[i].port.line = find_and_set_bit(sc16is7xx_lines,
-+						     SC16IS7XX_MAX_DEVS);
- 		if (s->p[i].port.line >= SC16IS7XX_MAX_DEVS) {
- 			ret = -ERANGE;
- 			goto out_ports;
-@@ -1584,7 +1587,7 @@ int sc16is7xx_probe(struct device *dev, const struct sc16is7xx_devtype *devtype,
- 		if (ret)
- 			goto out_ports;
- 
--		set_bit(s->p[i].port.line, sc16is7xx_lines);
-+		port_registered[i] = true;
- 
- 		/* Enable EFR */
- 		sc16is7xx_port_write(&s->p[i].port, SC16IS7XX_LCR_REG,
-@@ -1642,9 +1645,11 @@ int sc16is7xx_probe(struct device *dev, const struct sc16is7xx_devtype *devtype,
- #endif
- 
- out_ports:
--	for (i = 0; i < devtype->nr_uart; i++)
--		if (test_and_clear_bit(s->p[i].port.line, sc16is7xx_lines))
-+	for (i = 0; i < devtype->nr_uart; i++) {
-+		clear_bit(s->p[i].port.line, sc16is7xx_lines);
-+		if (port_registered[i])
- 			uart_remove_one_port(&sc16is7xx_uart, &s->p[i].port);
-+	}
- 
- 	kthread_stop(s->kworker_task);
- 
-@@ -1667,8 +1672,8 @@ void sc16is7xx_remove(struct device *dev)
- 
- 	for (i = 0; i < s->devtype->nr_uart; i++) {
- 		kthread_cancel_delayed_work_sync(&s->p[i].ms_work);
--		if (test_and_clear_bit(s->p[i].port.line, sc16is7xx_lines))
--			uart_remove_one_port(&sc16is7xx_uart, &s->p[i].port);
-+		clear_bit(s->p[i].port.line, sc16is7xx_lines);
-+		uart_remove_one_port(&sc16is7xx_uart, &s->p[i].port);
- 		sc16is7xx_power(&s->p[i].port, 0);
+ 	for (i = 0; i < devtype->nr_uart; i++) {
+-		sc16is7xx_regcfg.name = sc16is7xx_regmap_name(i);
+-		sc16is7xx_regcfg.read_flag_mask = sc16is7xx_regmap_port_mask(i);
+-		sc16is7xx_regcfg.write_flag_mask = sc16is7xx_regmap_port_mask(i);
+-		regmaps[i] = devm_regmap_init_i2c(i2c, &sc16is7xx_regcfg);
++		regcfg.name = sc16is7xx_regmap_name(i);
++		regcfg.read_flag_mask = sc16is7xx_regmap_port_mask(i);
++		regcfg.write_flag_mask = sc16is7xx_regmap_port_mask(i);
++		regmaps[i] = devm_regmap_init_i2c(i2c, &regcfg);
  	}
  
+ 	return sc16is7xx_probe(&i2c->dev, devtype, regmaps, i2c->irq);
+diff --git a/drivers/tty/serial/sc16is7xx_spi.c b/drivers/tty/serial/sc16is7xx_spi.c
+index 3942fc1b7455..55c1d4ad83f5 100644
+--- a/drivers/tty/serial/sc16is7xx_spi.c
++++ b/drivers/tty/serial/sc16is7xx_spi.c
+@@ -16,6 +16,7 @@ static int sc16is7xx_spi_probe(struct spi_device *spi)
+ {
+ 	const struct sc16is7xx_devtype *devtype;
+ 	struct regmap *regmaps[SC16IS7XX_MAX_PORTS];
++	struct regmap_config regcfg;
+ 	unsigned int i;
+ 	int ret;
+ 
+@@ -35,17 +36,19 @@ static int sc16is7xx_spi_probe(struct spi_device *spi)
+ 	if (!devtype)
+ 		return dev_err_probe(&spi->dev, -ENODEV, "Failed to match device\n");
+ 
++	memcpy(&regcfg, &sc16is7xx_regcfg, sizeof(struct regmap_config));
++
+ 	for (i = 0; i < devtype->nr_uart; i++) {
+-		sc16is7xx_regcfg.name = sc16is7xx_regmap_name(i);
++		regcfg.name = sc16is7xx_regmap_name(i);
+ 		/*
+ 		 * If read_flag_mask is 0, the regmap code sets it to a default
+ 		 * of 0x80. Since we specify our own mask, we must add the READ
+ 		 * bit ourselves:
+ 		 */
+-		sc16is7xx_regcfg.read_flag_mask = sc16is7xx_regmap_port_mask(i) |
++		regcfg.read_flag_mask = sc16is7xx_regmap_port_mask(i) |
+ 			SC16IS7XX_SPI_READ_BIT;
+-		sc16is7xx_regcfg.write_flag_mask = sc16is7xx_regmap_port_mask(i);
+-		regmaps[i] = devm_regmap_init_spi(spi, &sc16is7xx_regcfg);
++		regcfg.write_flag_mask = sc16is7xx_regmap_port_mask(i);
++		regmaps[i] = devm_regmap_init_spi(spi, &regcfg);
+ 	}
+ 
+ 	return sc16is7xx_probe(&spi->dev, devtype, regmaps, spi->irq);
 -- 
 2.39.2
 
