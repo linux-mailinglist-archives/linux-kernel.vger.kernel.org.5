@@ -1,99 +1,101 @@
-Return-Path: <linux-kernel+bounces-54627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54632-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89F3A84B1B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:58:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9862484B1C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:59:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28C7A1F244C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:58:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 539B2286423
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:59:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9275F12D776;
-	Tue,  6 Feb 2024 09:58:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AA3812DD89;
+	Tue,  6 Feb 2024 09:59:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kkyj0Nmt"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="CN8aUZeq"
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D660212D75F;
-	Tue,  6 Feb 2024 09:58:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C576312DD8B;
+	Tue,  6 Feb 2024 09:59:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707213525; cv=none; b=jxAYmqVeoecSkL3iq9msKeywUqfWZ8+OE18K0DA3PcVjWuRNMvumThP3O2KLea+yagOej//3xzhGrDbZTToU8WdSxenAF+1BMSdesdpS3FLw0fvRPGFo7E3OaO40g38jz0PA3rEjXTAU2MRJfo3a6TIK4KHDBK7TxamyuCD1N/g=
+	t=1707213560; cv=none; b=nlvgnr96YilrNzphjW/Tt9VUn4Hf9Odv7SHr83/xRvGXQMZVt9HIpuzp1JSI2zepHht7Mj5i+sI3kYgDldokEhmgrilgA0YEHigir44fZ9kLlq6Jm3XN3kAkxwR76noP9gODyS5Pv8l3lVtmwjl4PhRU8VqCbpYoJPp6cIwEggc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707213525; c=relaxed/simple;
-	bh=KIw9pkwtzkhaYD3K7hUNGz3stRQS87xMY9nZNhbOoZI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jdmoW5nNo8x92jQO/OnVybcWyeOuRSM3w3Mn2bfEMDCaIvJWGUasj74Yxkim/UiloPOaPOVqzAyr+ZdpxnXuKwzoe6Inb8oxqWOuOZGBiLkPPXz9UoiBr/YUbLwVLDhTqgKeSckZVi/UYlVTUzLxP+07aP9WctigrWC5PyqAY2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kkyj0Nmt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB6CDC433F1;
-	Tue,  6 Feb 2024 09:58:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707213525;
-	bh=KIw9pkwtzkhaYD3K7hUNGz3stRQS87xMY9nZNhbOoZI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Kkyj0Nmtn5Vq9L1QSAB8+ysOyWl8xHDC/o6ySNtFlntKlNnSKHzlR/ekfHAbnlQ4D
-	 Y2GkK3MqW//zdj9DGqyGVd4SJp2INPWmQW+Om9xgb3291nR5D2w6KHbt4xTXRMAYCA
-	 BtSEolJQ6BGHl6EvvLR+t8Ni6WfBquO6jBOsTaGUx+kCAAr7WT8/WWThrCh4zdAdcE
-	 +OwIqwlI0KxT7cSZesx5AKouDp5lx8EVsrDv0U+AG8gNWSsjFJgFXqon3aiQuuipRv
-	 MQYowdIRiwhHlxm0hsGlnmbNP5/EhsFApmavZNr/aQeGbt97v/gFjMio4Z97+DwvP8
-	 msOrTreFrUX/w==
-Date: Tue, 6 Feb 2024 10:58:38 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: Damien Le Moal <dlemoal@kernel.org>, linux-ide@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] ata: pata_parport: make pata_parport_bus_type const
-Message-ID: <ZcICztae//cs8tep@x1-carbon>
-References: <20240204-bus_cleanup-ata-v1-1-2bdc1fadf356@marliere.net>
+	s=arc-20240116; t=1707213560; c=relaxed/simple;
+	bh=LATC3GHoWk4vcKrr195GbFLPo1L9HxJmDR8iymTwdaM=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ApS87gg10NV+9CRBxhN2T0V2ZFY45kB+aboLYOT8I8gG0rxWjHuDZzxPU2ivwvmdpDjq/eKPqv2xig1OahIPMpr8k+ffwNyZ0FJVfES+AcrhaXl/R7OMSTqfauVL487d84zJ/o3KRleuY7pygIjhXh5tu/y/p+bQbqUDTlvOyLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=CN8aUZeq; arc=none smtp.client-ip=67.231.149.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4166xSAC022910;
+	Tue, 6 Feb 2024 03:58:53 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=PODMain02222019; bh=v5p55IOITpqmhF7
+	sZSnOxfOy/BsQIdVVFm5xhqj7f9s=; b=CN8aUZeqvFd31h49unpgQ89je93VaRH
+	rrRbjFcRdvJI7Wgt+s6nVW5BCmZk3kbVOwu/CNVLRLufi+5MpG0xYDqxTb+6FGR1
+	o9Z5Tgj1grqrrtHgHitQltAZFv+FlcF78BNTWogNQGy0jcjoRvRBTMp+qYGKcyKV
+	XNDICT/OwcoiEoN5lqMTQvkzBMfp+afdgbGJ3JbvaGKz8NqjjJWipW4mj1Jxnuzl
+	zV/KdBSpOsXYlEhP/chL66QeINs8nWkqGzvCzBvxVMGhAB+swBUB0wHEydjeg+4f
+	DUmUgJYKr9SezvgEgFSr8PTmX+JsuzS5ZkVX/kvEhcim+tQrksQp1zg==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3w1ks2b7fk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 06 Feb 2024 03:58:53 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 6 Feb
+ 2024 09:58:51 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.40 via Frontend Transport; Tue, 6 Feb 2024 09:58:51 +0000
+Received: from ediswmail9.ad.cirrus.com (ediswmail9.ad.cirrus.com [198.61.86.93])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTPS id E135E820241;
+	Tue,  6 Feb 2024 09:58:50 +0000 (UTC)
+Date: Tue, 6 Feb 2024 09:58:49 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Bo Liu <liubo03@inspur.com>
+CC: <lee@kernel.org>, <wens@csie.org>, <marek.vasut+renesas@gmail.com>,
+        <support.opensource@diasemi.com>, <neil.armstrong@linaro.org>,
+        <rf@opensource.cirrus.com>, <mazziesaccount@gmail.com>,
+        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
+        <linux-kernel@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+        <linux-amlogic@lists.infradead.org>, <patches@opensource.cirrus.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 09/18] mfd: lochnagar-i2c: convert to use maple tree
+ register cache
+Message-ID: <ZcIC2V/hM8nnekJr@ediswmail9.ad.cirrus.com>
+References: <20240206071314.8721-1-liubo03@inspur.com>
+ <20240206071314.8721-10-liubo03@inspur.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20240204-bus_cleanup-ata-v1-1-2bdc1fadf356@marliere.net>
+In-Reply-To: <20240206071314.8721-10-liubo03@inspur.com>
+X-Proofpoint-GUID: VCnUsQ6Tbcxl1dxM9nGNsPvgd74iHvZt
+X-Proofpoint-ORIG-GUID: VCnUsQ6Tbcxl1dxM9nGNsPvgd74iHvZt
+X-Proofpoint-Spam-Reason: safe
 
-On Sun, Feb 04, 2024 at 12:23:29PM -0300, Ricardo B. Marliere wrote:
-> Now that the driver core can properly handle constant struct bus_type,
-> move the pata_parport_bus_type variable to be a constant structure as well,
-> placing it into read-only memory which can not be modified at runtime.
+On Tue, Feb 06, 2024 at 02:13:05AM -0500, Bo Liu wrote:
+> The maple tree register cache is based on a much more modern data structure
+> than the rbtree cache and makes optimisation choices which are probably
+> more appropriate for modern systems than those made by the rbtree cache.
 > 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> Signed-off-by: Bo Liu <liubo03@inspur.com>
 > ---
->  drivers/ata/pata_parport/pata_parport.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/ata/pata_parport/pata_parport.c b/drivers/ata/pata_parport/pata_parport.c
-> index a7adfdcb5e27..9a2cb9ca9d1d 100644
-> --- a/drivers/ata/pata_parport/pata_parport.c
-> +++ b/drivers/ata/pata_parport/pata_parport.c
-> @@ -464,7 +464,7 @@ static void pata_parport_bus_release(struct device *dev)
->  	/* nothing to do here but required to avoid warning on device removal */
->  }
->  
-> -static struct bus_type pata_parport_bus_type = {
-> +static const struct bus_type pata_parport_bus_type = {
->  	.name = DRV_NAME,
->  };
->  
-> 
-> ---
-> base-commit: c8474c7273ac3bad718c33118aa82efb7b374f6e
-> change-id: 20240204-bus_cleanup-ata-bd1625fdab09
-> 
-> Best regards,
-> -- 
-> Ricardo B. Marliere <ricardo@marliere.net>
-> 
 
-Applied:
-https://git.kernel.org/pub/scm/linux/kernel/git/libata/linux.git/log/?h=for-6.9
+Tested-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+
+Thanks,
+Charles
 
