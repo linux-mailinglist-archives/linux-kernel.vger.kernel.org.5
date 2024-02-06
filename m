@@ -1,99 +1,199 @@
-Return-Path: <linux-kernel+bounces-55719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A71B84C0C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:19:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA1C084C0C4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:19:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 475FC28448A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:19:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 459BE1F257DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:19:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DA761CD20;
-	Tue,  6 Feb 2024 23:19:01 +0000 (UTC)
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA9071CD1F;
+	Tue,  6 Feb 2024 23:19:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XPNLdvn5"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB6251CD17;
-	Tue,  6 Feb 2024 23:18:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AF6B1CD19
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 23:19:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707261541; cv=none; b=KEk/0DtTytYfkHDBGt2YaGdkQqgBrytHvmtUtpqropeHnE3oPwxui3WvfjedJtbCIowfXkBwfcSxFPhqzDdbNOgGUP7JNmfv+98d1PKhQ2SvPF/Cz0Mv+9uqSHd2Alu3z2VR/R5DQtFLJSwVRMwt8QR4skDWMR2otQ1iabt2EYE=
+	t=1707261582; cv=none; b=B9FKlnz/GFu40//F6p6VtG2x8pQcfCz7tvSQyuziHwJPh/w8DJIaGOY2VMawkUDbouSAquSSHhek4W8AzOZBImMbxL/YxlixMdRbs76tM5N9DXQ7EUyus/bcX5AnKzY1WKVsxXo2/EbL4/Q2XSqxVxfltLkePEzhQ/7gim+mHlc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707261541; c=relaxed/simple;
-	bh=sMgP9pFFHrMMIn9L5CwdZGP8g4NZPoWoa5cyyu4+TPI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lzDozJQbKNZc4VuZFcX2vAcoZDq+sNq1Vg+orY1OfH/wQfTzfb0ftECesE62Nmp8ROLBaH+toI4P85dP6VW993afqsZnwNlcjFnb4w4sBovs+ew75VMacuOvLLJDf64Btvaq90k8rRZDFoyH3ZOlLur84Irk2j+y9TxeBlB03vg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d93ddd76adso564835ad.2;
-        Tue, 06 Feb 2024 15:18:59 -0800 (PST)
+	s=arc-20240116; t=1707261582; c=relaxed/simple;
+	bh=mSp1+JYDb7NdH17RZ+qMLPdVmrJ42e3fPvlEjXiGpZc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Ou+DBM4KhntyAnBArlOydmJ4tSzTLstlIrX+j64SZvK4ORCcHG9tw6QGqtnsVgA7qW6bcjw9NUZD9WZ/UF3gKIKevoXZ6QFjucnrGYyQ7wWWRPReL44sudFHaRV84W/nn/+qeDk85yFogyxmXovsaCNpPDK6GJ51ZFMdtnhBEJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XPNLdvn5; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707261579;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/9lQWrs1kWLDUb9rNRJMZocZRASv82NRrn4c/SQZik0=;
+	b=XPNLdvn5V6bTVv/AXIx/40HLOU3SbTPJ8u609S6aAjQFMJ4I+PVOmI75YZRMH/X0Ne5/xU
+	lkEe57jZ+0cWUv9vlW/EhTMuGTurTeZpmFPwHXFsuQMzDSg6CTxnVPBNXO3C1wbGp0sLVg
+	kaeK+n2JdexH1DNU/4eXgiWGw/St1PE=
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
+ [209.85.166.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-423-RiCdQmKUNUOF9k_qgt9ZeA-1; Tue, 06 Feb 2024 18:19:37 -0500
+X-MC-Unique: RiCdQmKUNUOF9k_qgt9ZeA-1
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7bfe777fe22so2914239f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 15:19:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707261539; x=1707866339;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1707261577; x=1707866377;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jPqZ7Ip2aFum8KHXYgnBN94F/8KhHuRmg9GEgL52ccE=;
-        b=TgyFbeKVfis3Q9Z85XbqgfMTqjAQC/+uo2VirVhIMbhJ8/iccl1qWhQXhZ1YfXiiIm
-         6EV3Z7kwJr9R1cKKtkzCphhXDBtU8vHuj3FQVpqTUCkS5dYtSYY5N/zcglAtdBWGmxiD
-         MsdZP7jR7SthRPzs0H5n6ZGpvnopEJjKL/Tyegdjdk+hB8qvsP0aAzQArmHfjVHxy4r/
-         azSYk9fN5TliBWiIsW8TtODsOd/W08zAHkThHFiM8KvSFRvlnupUtp7qGuc9YemRdBAG
-         PZeawswNQEE4dUnf3ffXbESrixlfXfFd/vpmcgQf7KNws4ACg7Ori6Yqq/gOk0qJz8E3
-         NNhA==
-X-Gm-Message-State: AOJu0YwYx2goUwneLsSxVowUj7HrY5Vgiv9PgCZAIJOUmlf5gDjfeWfV
-	AxJCeVf5CfMlTU/NEs9604Riqt/vRifH3XHi4xDAkowyiDGvVgssbPfZJbq6n9EGdIKRnA0kpye
-	/kkZn/QBLxThaNpQcCvyav+jFBwI=
-X-Google-Smtp-Source: AGHT+IH0Nbp2ZG0q/KxIx/5rXv4XbMfUBvfmRpT7CqVh2nDBPY/iQD8QZaXEJvTHi/33Rw9rH4VqpsbXpfH1iFVwUbg=
-X-Received: by 2002:a17:90a:ac0a:b0:296:235b:ac61 with SMTP id
- o10-20020a17090aac0a00b00296235bac61mr1162467pjq.32.1707261538839; Tue, 06
- Feb 2024 15:18:58 -0800 (PST)
+        bh=/9lQWrs1kWLDUb9rNRJMZocZRASv82NRrn4c/SQZik0=;
+        b=OmIhBS2O+pxUljmLkAVKYfC6MpzhAn/EcA2c4xd1lkyhcepQZjcD4Lpn8McA3/f3V/
+         PckfXHXvs0Rn9V1ZJ6q6+8LYsWdZB3u321budQ/KJB1yFDWvoL6/CJQ6MgxfoM6pL7Hi
+         ruSVJ/y9cRXOdKepSH5D7X2zR8Jeb7RKmfABF/QMXxiS+2eBfF0Ekr3gchmtVcwIlKla
+         hfv3/NNzNDRbHQa3LZuTh4R/Aq0u4rB17qPiFMYwwYxJnNOMXmkLJA/GS+UCV8ASC1BK
+         DGx+POZnk0xB5Vy9DFgkvx3N5WiwB/B64IsCBPqnwI9zcuZ1zbzyG2ViPQ4b1PUkGyzM
+         fMjg==
+X-Forwarded-Encrypted: i=1; AJvYcCWkP5z2Ftj4lRoS1kTG9J6J8tCPOqG8/0nJOOWml6o0n2jtwj0PpsyOvXtfh8I27QAd4fQ6AFgCNBs7n7vhduOHKLMN80L4HmQ5nvh6
+X-Gm-Message-State: AOJu0YxIJXl+46b2+iwc9hf/xxNicOZIUsFtiFroUrhQcj3r5FOd49Ux
+	Utg/8OZKF/zyVIY+Jg0mVi40GSqebW9WtEHEg/yCTjEjHwaGKFOPgn6SxN0epX+eqvdmo4KuJvy
+	iMgy9LEUifZgjgsgmlmpBcqVzKFIyVeALg37kXyXT0js1Q49zTvQLCZ1pFLr14A==
+X-Received: by 2002:a6b:d90c:0:b0:7c3:eda4:ea11 with SMTP id r12-20020a6bd90c000000b007c3eda4ea11mr3842369ioc.16.1707261577162;
+        Tue, 06 Feb 2024 15:19:37 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEXK/MFQbXmN+Uf8XVzJe4tvZZl/EZvTIdNvNxAoxSmujnNBpZGeCU0PDhYylr2/KYfzAQzoA==
+X-Received: by 2002:a6b:d90c:0:b0:7c3:eda4:ea11 with SMTP id r12-20020a6bd90c000000b007c3eda4ea11mr3842343ioc.16.1707261576688;
+        Tue, 06 Feb 2024 15:19:36 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVxQNy7WM81D1KyTsj5b6dysZmQ7irl+mHz/wXIJCehZJzT0rzy+38bzv2vK3ShDIBzaGnFianyWRV+Hdsia6yEsRrKo2XUlAzSu2R7lPibY72NFRgkL6J1H4gguFl0tSVtOPFdoSDj6gOxqFGFXrShMogteJqdI2GP0UhDD2LGRyM9B5Wc+7HDrTXKN44RMTBUNTuq7aMfFxLTXCzPdV4FZ1UgM7UOCYN7m5m0EnQ23l/aEj0OzE8fhqLrcF+Mya/rFzyaRajzcLY69xrxYnzGhpt+N80pc4GtLcrRAz51m/QHUQtyk020l/znzMSPys9qDlGZ3Q==
+Received: from redhat.com ([38.15.36.11])
+        by smtp.gmail.com with ESMTPSA id s24-20020a6bdc18000000b007c3f616986csm369762ioc.40.2024.02.06.15.19.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 15:19:36 -0800 (PST)
+Date: Tue, 6 Feb 2024 16:19:34 -0700
+From: Alex Williamson <alex.williamson@redhat.com>
+To: Reinette Chatre <reinette.chatre@intel.com>
+Cc: <jgg@nvidia.com>, <yishaih@nvidia.com>,
+ <shameerali.kolothum.thodi@huawei.com>, <kevin.tian@intel.com>,
+ <kvm@vger.kernel.org>, <dave.jiang@intel.com>, <ashok.raj@intel.com>,
+ <linux-kernel@vger.kernel.org>, <patches@lists.linux.dev>
+Subject: Re: [PATCH 15/17] vfio/pci: Let enable and disable of interrupt
+ types use same signature
+Message-ID: <20240206161934.684237d3.alex.williamson@redhat.com>
+In-Reply-To: <ce617344-ab6e-49f3-adbd-47be9fb87bf9@intel.com>
+References: <cover.1706849424.git.reinette.chatre@intel.com>
+	<bf87e46c249941ebbfacb20ee9ff92e8efd2a595.1706849424.git.reinette.chatre@intel.com>
+	<20240205153542.0883e2ff.alex.williamson@redhat.com>
+	<5784cc9b-697a-40fa-99b0-b75530f51214@intel.com>
+	<20240206150341.798bb9fe.alex.williamson@redhat.com>
+	<ce617344-ab6e-49f3-adbd-47be9fb87bf9@intel.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202220459.527138-1-namhyung@kernel.org> <20240202220459.527138-15-namhyung@kernel.org>
- <CAP-5=fUWaKW7d6_YkET0o26=fjBwX6PPJ1gXQ9wndQM_Oi2O3A@mail.gmail.com>
-In-Reply-To: <CAP-5=fUWaKW7d6_YkET0o26=fjBwX6PPJ1gXQ9wndQM_Oi2O3A@mail.gmail.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Tue, 6 Feb 2024 15:18:47 -0800
-Message-ID: <CAM9d7cgF_PYm2fG1Vgu25u1hVZUK0wmFBqY7DHW2eVpRV=iERA@mail.gmail.com>
-Subject: Re: [PATCH 14/14] perf annotate-data: Add stack canary type
-To: Ian Rogers <irogers@google.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-perf-users@vger.kernel.org, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org, 
-	linux-trace-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 2, 2024 at 7:21=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
-e:
->
-> On Fri, Feb 2, 2024 at 2:05=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
- wrote:
-> >
-> > When the stack protector is enabled, compiler would generate code to
-> > check stack overflow with a special value called 'stack carary' at
-> > runtime.  On x86_64, GCC hard-codes the stack canary as %gs:40.
-> >
-> > While there's a definition of fixed_percpu_data in asm/processor.h,
-> > it seems that the header is not included everywhere and many places
-> > it cannot find the type info.  As it's in the well-known location (at
-> > %gs:40), let's add a pseudo stack canary type to handle it specially.
->
-> I wonder if cases like this can be handled by debug info rather than
-> special cases in the tool. Special cases are fine too, but are
-> potentially less portable.
+On Tue, 6 Feb 2024 14:22:04 -0800
+Reinette Chatre <reinette.chatre@intel.com> wrote:
 
-Agreed, but I couldn't find anything special in DWARF.
+> Hi Alex,
+> 
+> On 2/6/2024 2:03 PM, Alex Williamson wrote:
+> > On Tue, 6 Feb 2024 13:46:37 -0800
+> > Reinette Chatre <reinette.chatre@intel.com> wrote:
+> >   
+> >> Hi Alex,
+> >>
+> >> On 2/5/2024 2:35 PM, Alex Williamson wrote:  
+> >>> On Thu,  1 Feb 2024 20:57:09 -0800
+> >>> Reinette Chatre <reinette.chatre@intel.com> wrote:    
+> >>
+> >> ..
+> >>  
+> >>>> @@ -715,13 +724,13 @@ static int vfio_pci_set_intx_trigger(struct vfio_pci_core_device *vdev,
+> >>>>  		if (is_intx(vdev))
+> >>>>  			return vfio_irq_set_block(vdev, start, count, fds, index);
+> >>>>  
+> >>>> -		ret = vfio_intx_enable(vdev);
+> >>>> +		ret = vfio_intx_enable(vdev, start, count, index);    
+> >>>
+> >>> Please trace what happens when a user calls SET_IRQS to setup a trigger
+> >>> eventfd with start = 0, count = 1, followed by any other combination of
+> >>> start and count values once is_intx() is true.  vfio_intx_enable()
+> >>> cannot be the only place we bounds check the user, all of the INTx
+> >>> callbacks should be an error or nop if vector != 0.  Thanks,
+> >>>     
+> >>
+> >> Thank you very much for catching this. I plan to add the vector
+> >> check to the device_name() and request_interrupt() callbacks. I do
+> >> not think it is necessary to add the vector check to disable() since
+> >> it does not operate on a range and from what I can tell it depends on
+> >> a successful enable() that already contains the vector check. Similar,
+> >> free_interrupt() requires a successful request_interrupt() (that will
+> >> have vector check in next version).
+> >> send_eventfd() requires a valid interrupt context that is only
+> >> possible if enable() or request_interrupt() succeeded.  
+> > 
+> > Sounds reasonable.
+> >   
+> >> If user space creates an eventfd with start = 0 and count = 1
+> >> and then attempts to trigger the eventfd using another combination then
+> >> the changes in this series will result in a nop while the current
+> >> implementation will result in -EINVAL. Is this acceptable?  
+> > 
+> > I think by nop, you mean the ioctl returns success.  Was the call a
+> > success?  Thanks,  
+> 
+> Yes, I mean the ioctl returns success without taking any
+> action (nop).
+> 
+> It is not obvious to me how to interpret "success" because from what I
+> understand current INTx and MSI/MSI-x are behaving differently when
+> considering this flow. If I understand correctly, INTx will return
+> an error if user space attempts to trigger an eventfd that has not
+> been set up while MSI and MSI-x will return 0.
+> 
+> I can restore existing INTx behavior by adding more logic and a return
+> code to the send_eventfd() callback so that the different interrupt types
+> can maintain their existing behavior.
 
-Thanks,
-Namhyung
+Ah yes, I see the dilemma now.  INTx always checked start/count were
+valid but MSI/X plowed through regardless, and with this series we've
+standardized the loop around the MSI/X flow.
+
+Tricky, but probably doesn't really matter.  Unless we break someone.
+
+I can ignore that INTx can be masked and signaling a masked vector
+doesn't do anything, but signaling an unconfigured vector feels like an
+error condition and trying to create verbiage in the uAPI header to
+weasel out of that error and unconditionally return success makes me
+cringe.
+
+What if we did this:
+
+        uint8_t *bools = data;
+	...
+        for (i = start; i < start + count; i++) {
+                if ((flags & VFIO_IRQ_SET_DATA_NONE) ||
+                    ((flags & VFIO_IRQ_SET_DATA_BOOL) && bools[i - start])) {
+                        ctx = vfio_irq_ctx_get(vdev, i);
+                        if (!ctx || !ctx->trigger)
+                                return -EINVAL;
+                        intr_ops[index].send_eventfd(vdev, ctx);
+                }
+        }
+
+And we note the behavior change for MSI/X in the commit log and if
+someone shouts that we broke them, we can make that an -errno or
+continue based on is_intx().  Sound ok?  Thanks,
+
+Alex
+
 
