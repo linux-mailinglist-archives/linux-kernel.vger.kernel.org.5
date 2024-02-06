@@ -1,72 +1,66 @@
-Return-Path: <linux-kernel+bounces-55325-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95B3484BB1F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:37:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92CC684BB22
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:37:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F41B8B239E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:37:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7171B268B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:37:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58D8A12B90;
-	Tue,  6 Feb 2024 16:35:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54C6346AD;
+	Tue,  6 Feb 2024 16:36:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ECQqCXpv"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="FYm38sxs"
+Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 978338F4E;
-	Tue,  6 Feb 2024 16:35:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E4D3D527
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 16:36:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707237341; cv=none; b=YFiHDXnu0hFq34h4EoQ9dXrZfj6D7BXdNPRJk/IMyuNMK6M2MAy05sAGntiM6zDtnGOeRzIjmJK8WtvXyy9BwoRwouD6KwZfidUO9mVOnsMy0Q60fZ3JPjuzWUZozBTKOyfrUVdGpnxxPBolf6a7Y3cbWoDbPI04OiZUSzXlzt0=
+	t=1707237387; cv=none; b=u0wI7UyrlNPeFA84M3WfKeotn7GRsLzH6lfVlDLex5GsCFxDZHFosVxGHXNR3jiIkdfW5Q+5jIFvDl6mymGJaMhKBYYjVm3bW8f6vsHxKHycNToVpxVg6keQ+0h+mu2lm0ZagKyvQLeCcOoPaqF8QLE5Fopt8pOkF2DoXfDxETE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707237341; c=relaxed/simple;
-	bh=2jaTxy897HSNhvuo0scMIqWlSeWhphdBTeyqW2FVe8c=;
-	h=Message-ID:Date:MIME-Version:From:Subject:Cc:To:Content-Type; b=IYTNivN49zfMO3xLlTrFHeQUXj05UKNaDpCccG/w/io41fwyev3JCzg3DJJLzNMDWp60HyEXLLnWCTYxzPMxD/KMvJEGrF3yJpzKUUIZRqb9gi6nS8R9I2hqyQsrfOmeEm+1merWa/mXa2kanlJoGp57pGSm3NaNPQ2cSQaNIds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.vnet.ibm.com; spf=none smtp.mailfrom=linux.vnet.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ECQqCXpv; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.vnet.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.vnet.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 416FqRtR008291;
-	Tue, 6 Feb 2024 16:35:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : from : subject : cc : to : content-type :
- content-transfer-encoding; s=pp1;
- bh=mF1bxTg83JCcbT2p2VNjnSZdKXCMHgjUucY1HXSBHp4=;
- b=ECQqCXpvGIsdxNYSso/q56Ake+eF2U2THTENgPB6fP/yIAPTqxuH2UXxeBrmZtiWSVX7
- 5hkWFgbphxRWWr7OsvtoPNs9NxuYC5hgXpZ2XrW7jveVuThfnb1lJsBXizcQPg+9h3Bj
- f8nIYyoUnP/dsnkdHGZ1Kttqs1QkTWDm2GDo5mMSChOiVY3V7gzmVxMMfT8wUY6d93Ut
- fZ5u2NVeeRTbUS+8C9m5rAxGRs11PZwMJv7oTypv1kGrGKdj+jVJtO8R15UCPX6FWIx7
- ZLENj8XpLYEn/xY+NfUlFb0qsKe5iOoS6gCnLL+LJSZ7ZKmW0DtQF3cU3dBu28hpFjxa Cg== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w3qsw98jx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Feb 2024 16:35:26 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 416EtUPZ008770;
-	Tue, 6 Feb 2024 16:35:25 GMT
-Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w206ygbyx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Feb 2024 16:35:25 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-	by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 416GZO4H2622116
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 6 Feb 2024 16:35:25 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id DC1865805D;
-	Tue,  6 Feb 2024 16:35:24 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id CF2E958057;
-	Tue,  6 Feb 2024 16:35:21 +0000 (GMT)
-Received: from [9.43.109.155] (unknown [9.43.109.155])
-	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Tue,  6 Feb 2024 16:35:21 +0000 (GMT)
-Message-ID: <a54c8860-18c7-474d-95e2-a0153a2da885@linux.vnet.ibm.com>
-Date: Tue, 6 Feb 2024 22:05:20 +0530
+	s=arc-20240116; t=1707237387; c=relaxed/simple;
+	bh=mgZOgLB1HuathAGqKmjNnG/0xoJq5roM2WNaXcdTp9U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NLdO7ieWrwfNZvSwerh4vZYQ8dTv0oyyyFlyfkvv0U/Dh1qLulFuN/TU3TFuf19j/XWtxcsYG7ivvltqRwZgbmqhdAoL0IJggwasXs5lGFwEDSy3Fpv9DTYFDoPRFLqvhtyJt3XHTPtkuLjf9cRe14/XcbXQ9dzYyiQwiV8ZpUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=FYm38sxs; arc=none smtp.client-ip=35.89.44.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-5003a.ext.cloudfilter.net ([10.0.29.159])
+	by cmsmtp with ESMTPS
+	id XKpvrG1oK80oiXOQlrrgX7; Tue, 06 Feb 2024 16:36:19 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id XOQkruWp4OmWYXOQkrn8UU; Tue, 06 Feb 2024 16:36:18 +0000
+X-Authority-Analysis: v=2.4 cv=T/MvTOKQ c=1 sm=1 tr=0 ts=65c26002
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
+ a=cm27Pg_UAAAA:8 a=lXWNAtzADcZZgIjtGc4A:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+ a=8LfgHNaa6p4A:10 a=AjGcO6oz07-iQ99wixmX:22 a=xmb-EsYY8bH0VWELuYED:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=ho3hrp7XcTsBErJhywPAagDi6Mkqk4q72L1K4GsdTRQ=; b=FYm38sxsIiXyEaRic6gNnCyQPN
+	jieaLQ1ZUefC3lameJVtACCu3wIbgJUUS6oVj3kQ+T7XD7iHEv/92rQ1LXloUwkRIyVUn01oN42l/
+	vgdZLOhtn8Z3YWHilM6+epHYQ4yIlsBW10IoRD7WoBBSIg5vnBL9M4hzpZF95UVj9cS5BaY6NeDWo
+	G9ULvv2gM2B20XmTUxPloOo1w1kCxMo6qeQFDJWzZh2dUnXSNjVBAHJ6cGmfyVKwOMWVBJ+G7S9Rs
+	bj4sTK5brhJDOxaaw5Gmx48u0cmt7mfa0mpI4FgzRnCyntjdpXjv2BuMT067jS/wH+j5/7tjQg4gS
+	iOLAF0jg==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:36786 helo=[192.168.15.10])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rXOQj-003Ba7-1b;
+	Tue, 06 Feb 2024 10:36:17 -0600
+Message-ID: <89a743fb-37fa-40b9-8ce5-d118ae95af38@embeddedor.com>
+Date: Tue, 6 Feb 2024 10:36:15 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,137 +68,112 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/3] overflow: Adjust check_*_overflow() kern-doc to
+ reflect results
 Content-Language: en-US
-From: Tasmiya Nalatwad <tasmiya@linux.vnet.ibm.com>
-Subject: [revert commit 9f079dda1433] [mainline] [6.8.0-rc3] [NVME] OOPS
- kernel crash while booting
-Cc: alan.adamson@oracle.com, kch@nvidia.com, hch@lst.de, kbusch@kernel.org,
-        "sachinp@linux.vnet.com" <sachinp@linux.vnet.com>,
-        "mputtash@linux.vnet.com" <mputtash@linux.vnet.com>,
-        "abdhalee@linux.vnet.ibm.com" <abdhalee@linux.vnet.ibm.com>
-To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+To: Kees Cook <keescook@chromium.org>,
+ Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ linux-hardening@vger.kernel.org, Marco Elver <elver@google.com>,
+ Eric Biggers <ebiggers@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org
+References: <20240206102354.make.081-kees@kernel.org>
+ <20240206103201.2013060-1-keescook@chromium.org>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20240206103201.2013060-1-keescook@chromium.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: eRSAn1IgLACeoIXaugRY1X-ApsOlxI6z
-X-Proofpoint-ORIG-GUID: eRSAn1IgLACeoIXaugRY1X-ApsOlxI6z
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-06_10,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
- spamscore=0 suspectscore=0 impostorscore=0 lowpriorityscore=0 mlxscore=0
- mlxlogscore=635 priorityscore=1501 adultscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402060116
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1rXOQj-003Ba7-1b
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.10]) [187.162.21.192]:36786
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 1
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfBue6D50HEGO5CIPVHuIETEoeaAIr2DRy5TuyMNZwJwFgavRXvf6hwLfezPzMzHqubHEr+pmzVBNNfKBrUazMRD7gzPuO4ANs6QYOMrwzpYfmuKLhW1J
+ 1di6FgJbZy6xdIBcvN2IcohGxIz7R9E8pxeYnUrKtYVrEDArqQCQK8EmFksNj4/4LBsz64LtQuZHAQPo0/Ct3GpIR02SGBwFoODXjw6pv7MaV4iieFNyQFWL
 
-Greetings,
 
-[revert commit 9f079dda1433] [mainline] [6.8.0-rc3] [NVME] OOPS kernel 
-crash while booting to kernel
 
-Reverting below commit fixes the problem
+On 2/6/24 04:31, Kees Cook wrote:
+> The check_*_overflow() helpers will return results with potentially
+> wrapped-around values. These values have always been checked by the
+> selftests, so avoid the confusing language in the kern-doc. The idea of
+> "safe for use" was relative to the expectation of whether or not the
+> caller wants a wrapped value -- the calculation itself will always follow
+> arithmetic wrapping rules.
+> 
+> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-commit 9f079dda14339ee87d864306a9dc8c6b4e4da40b
-     nvme: allow passthru cmd error logging
+Better to be concise and direct. 🙂
 
---- Traces ---
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-[   15.639835] BUG: Kernel NULL pointer dereference on read at 0x000003d8
-[   15.639840] Faulting instruction address: 0xc0080000215b01dc
-[   15.639845] Oops: Kernel access of bad area, sig: 11 [#1]
-[   15.639849] LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=8192 NUMA pSeries
-[   15.639855] Modules linked in: xsk_diag bonding tls nft_compat 
-nf_tables nfnetlink rfkill binfmt_misc dm_multipath dm_mod pseries_rng 
-dax_pmem drm drm_panel_orientation_quirks ext4 mbcache jbd2 ibmvfc 
-nd_pmem nd_btt scsi_transport_fc ibmveth nvme papr_scm bnx2x nvme_core 
-t10_pi vmx_crypto libnvdimm crc64_rocksoft_generic crc64_rocksoft mdio 
-crc64 libcrc32c fuse
-[   15.639901] CPU: 1 PID: 3289 Comm: udevadm Not tainted 
-6.8.0-rc3-auto-g99bd3cb0d12e #1
-[   15.639907] Hardware name: IBM,9009-42A POWER9 (raw) 0x4e0202 
-0xf000005 of:IBM,FW950.A0 (VL950_141) hv:phyp pSeries
-[   15.639913] NIP:  c0080000215b01dc LR: c000000000a197bc CTR: 
-c0080000215b01b8
-[   15.639918] REGS: c00000006f3177f0 TRAP: 0300   Not tainted 
-(6.8.0-rc3-auto-g99bd3cb0d12e)
-[   15.639923] MSR:  8000000000009033 <SF,EE,ME,IR,DR,RI,LE>  CR: 
-84888480  XER: 20040000
-[   15.639936] CFAR: c00000000000dbbc DAR: 00000000000003d8 DSISR: 
-40000000 IRQMASK: 0
-[   15.639936] GPR00: c000000000a197bc c00000006f317a90 c0080000215d8200 
-c000000092810000
-[   15.639936] GPR04: c0080000215d2570 c000000092810000 c000000092820000 
-0000000000000000
-[   15.639936] GPR08: c000000092810000 0000000000000000 0000000000010000 
-0000000022888482
-[   15.639936] GPR12: c0080000215b01b8 c00000000f8cf300 0000000000000000 
-0000000000000000
-[   15.639936] GPR16: 0000000000000000 0000000000000000 0000000000000000 
-0000000000000001
-[   15.639936] GPR20: 0000000000000000 0000000000400cc0 c000000086d14c28 
-000000007fff0000
-[   15.639936] GPR24: fffffffffffff000 0000000000000000 c000000086d14c18 
-0000000000010000
-[   15.639936] GPR28: c00000007509c180 c000000005bc1448 c0080000215d2570 
-c000000086d14bf0
-[   15.639999] NIP [c0080000215b01dc] 
-nvme_io_passthru_err_log_enabled_show+0x24/0x80 [nvme_core]
-[   15.640013] LR [c000000000a197bc] dev_attr_show+0x40/0xac
-[   15.640020] Call Trace:
-[   15.640023] [c00000006f317a90] [c00000006f317b10] 0xc00000006f317b10 
-(unreliable)
-[   15.640030] [c00000006f317af0] [c000000000a197bc] dev_attr_show+0x40/0xac
-[   15.640037] [c00000006f317b60] [c0000000006c11a0] 
-sysfs_kf_seq_show+0xcc/0x1f0
-[   15.640045] [c00000006f317bf0] [c0000000006be224] 
-kernfs_seq_show+0x44/0x58
-[   15.640052] [c00000006f317c10] [c00000000060882c] 
-seq_read_iter+0x254/0x69c
-[   15.640060] [c00000006f317cf0] [c0000000006bed60] 
-kernfs_fop_read_iter+0x4c/0x60
-[   15.640067] [c00000006f317d10] [c0000000005bf61c] vfs_read+0x2bc/0x390
-[   15.640074] [c00000006f317dc0] [c0000000005c040c] ksys_read+0x84/0x144
-[   15.640081] [c00000006f317e10] [c000000000033358] 
-system_call_exception+0x138/0x330
-[   15.640088] [c00000006f317e50] [c00000000000d05c] 
-system_call_vectored_common+0x15c/0x2ec
-[   15.640096] --- interrupt: 3000 at 0x7fff87d342e4
-[   15.640101] NIP:  00007fff87d342e4 LR: 0000000000000000 CTR: 
-0000000000000000
-[   15.640106] REGS: c00000006f317e80 TRAP: 3000   Not tainted 
-(6.8.0-rc3-auto-g99bd3cb0d12e)
-[   15.640110] MSR:  800000000280f033 
-<SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 42884482  XER: 00000000
-[   15.640126] IRQMASK: 0
-[   15.640126] GPR00: 0000000000000003 00007fffea617e80 00007fff87e47200 
-0000000000000003
-[   15.640126] GPR04: 0000010009494f20 0000000000010008 00007fff87e40e18 
-00000100094a4f20
-[   15.640126] GPR08: 0000000000010008 0000000000000000 0000000000000000 
-0000000000000000
-[   15.640126] GPR12: 0000000000000000 00007fff88434ba0 0000000000000000 
-0000000000000000
-[   15.640126] GPR16: 0000000000000000 000000013e082f48 00007fffea618290 
-00007fffea617ee8
-[   15.640126] GPR20: 00000000003ffffe 00007fffea618108 00007fffea618110 
-0000000000008000
-[   15.640126] GPR24: 0000000000000000 0000000000000002 00000000003ffffe 
-ffffffffffffffff
-[   15.640126] GPR28: 0000000000010007 0000000000010008 0000010009494f20 
-0000000000000003
-[   15.640185] NIP [00007fff87d342e4] 0x7fff87d342e4
-[   15.640189] LR [0000000000000000] 0x0
-[   15.640193] --- interrupt: 3000
-[   15.640196] Code: e8410018 00028048 00000000 3c4c0003 38428048 
-7c0802a6 60000000 7c0802a6 f8010010 f821ffa1 e9230078 7ca32b78 
-<892903d8> 2c090000 4082002c 3d220000
-[   15.640217] ---[ end trace 0000000000000000 ]---
-
+Thanks!
 -- 
-Regards,
-Tasmiya Nalatwad
-IBM Linux Technology Center
+Gustavo
 
+> ---
+>   include/linux/overflow.h | 18 ++++++------------
+>   1 file changed, 6 insertions(+), 12 deletions(-)
+> 
+> diff --git a/include/linux/overflow.h b/include/linux/overflow.h
+> index 7b5cf4a5cd19..4e741ebb8005 100644
+> --- a/include/linux/overflow.h
+> +++ b/include/linux/overflow.h
+> @@ -57,11 +57,9 @@ static inline bool __must_check __must_check_overflow(bool overflow)
+>    * @b: second addend
+>    * @d: pointer to store sum
+>    *
+> - * Returns 0 on success.
+> + * Returns 0 on success, 1 on wrap-around.
+>    *
+> - * *@d holds the results of the attempted addition, but is not considered
+> - * "safe for use" on a non-zero return value, which indicates that the
+> - * sum has overflowed or been truncated.
+> + * *@d holds the results of the attempted addition, which may wrap-around.
+>    */
+>   #define check_add_overflow(a, b, d)	\
+>   	__must_check_overflow(__builtin_add_overflow(a, b, d))
+> @@ -72,11 +70,9 @@ static inline bool __must_check __must_check_overflow(bool overflow)
+>    * @b: subtrahend; value to subtract from @a
+>    * @d: pointer to store difference
+>    *
+> - * Returns 0 on success.
+> + * Returns 0 on success, 1 on wrap-around.
+>    *
+> - * *@d holds the results of the attempted subtraction, but is not considered
+> - * "safe for use" on a non-zero return value, which indicates that the
+> - * difference has underflowed or been truncated.
+> + * *@d holds the results of the attempted subtraction, which may wrap-around.
+>    */
+>   #define check_sub_overflow(a, b, d)	\
+>   	__must_check_overflow(__builtin_sub_overflow(a, b, d))
+> @@ -87,11 +83,9 @@ static inline bool __must_check __must_check_overflow(bool overflow)
+>    * @b: second factor
+>    * @d: pointer to store product
+>    *
+> - * Returns 0 on success.
+> + * Returns 0 on success, 1 on wrap-around.
+>    *
+> - * *@d holds the results of the attempted multiplication, but is not
+> - * considered "safe for use" on a non-zero return value, which indicates
+> - * that the product has overflowed or been truncated.
+> + * *@d holds the results of the attempted multiplication, which may wrap-around.
+>    */
+>   #define check_mul_overflow(a, b, d)	\
+>   	__must_check_overflow(__builtin_mul_overflow(a, b, d))
 
