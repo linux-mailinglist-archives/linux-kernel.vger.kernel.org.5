@@ -1,198 +1,158 @@
-Return-Path: <linux-kernel+bounces-54538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05BDE84B077
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:56:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8920C84B07A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:58:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB89B280F0E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:56:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 023FD1F21E36
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:58:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3246512C7E9;
-	Tue,  6 Feb 2024 08:56:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE2BE12C7E9;
+	Tue,  6 Feb 2024 08:57:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lxA8KO68"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="bAj/eEVD";
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="bAj/eEVD"
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE4042E3F0
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 08:56:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D4E712AAD6;
+	Tue,  6 Feb 2024 08:57:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707209769; cv=none; b=KxguPsIh1c0AJwDtotwaRKmuL/BQJ6UU39VigQUoLJqqWCD4S8NbJhMymuJOIwTjGQj4sYolcpxqg0VG24gDFBa+BIbfc8iJsGserAzpvqwa+2AvWn45XN4Kx1Wohp3FKO1T7tuZ4xqUIlhl9B3d3bMA/TyyPl6+qzat5i1bZj0=
+	t=1707209876; cv=none; b=qh6y6TseXKPmwZeGFbqtThCBBCLHcjcb16ymEmXy/QI5udE2+3OC9F+63dWVHp8YzQ0sPB3CWBjccsd0bD7+e6a3BGKVYonf2xrBJtJ4SG7ahCsLOWvbUjkWXqEZ58By+Mz68sMXT04XFTGq7cVwKCCPg78sEDVXOIrnccs37u8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707209769; c=relaxed/simple;
-	bh=LbIzFpWvezThBH1cplk4wwF3hF+yCXbHXDj3e/TAAQQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mXGy56sReI69E2M9pr3FmX7oKRJ+EgTBqi4OvOy/cznSuT2DdAXnlVXxeiAswQ4gYjtYzgAYQER8IPZ8B8/i87qxyRgpg+vNbWUzYWj11i3fTJtGvZZvWfLIUg9bYfMMPLJfwaM1A0+nvfCSfgx7zBhAO/Tj1yj/1YbOyLxpJAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lxA8KO68; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d72f71f222so43184785ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 00:56:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707209767; x=1707814567; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sEXZKbhbrHoTiwVMMa4yTBLdv8gLq/MCuU1qinu7mqE=;
-        b=lxA8KO68x/V6Cki+Eio/qtyE9/xo/853hlh8iwTLrvrJzBeDqXSPnQPwcsF3tvQsa4
-         fAneTM5oW6VGwzK5XItvE4g6lVn1V+p1WfiL/RGSh5857mAnnriXkxqeHEYuoRuC4Qca
-         s34HEx4Pup/XH76FcWEAG+cMK2V1UbxNgIeYaWNtVJFU+waE4/SImH8gSRFtJIZWK03h
-         nMZKxTDl7tL7glUdfbW//Cwxh/Y5OsXpSvyKqemlnSM65lgG1/VuwS27oVASwuI+hIRZ
-         yYsF9f+nT1CEcjJ6WDb/Etw0Djr8FDQslu8aGiy2kyrfUGBnYuoKgnR/728By2ZypHiQ
-         x4uA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707209767; x=1707814567;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sEXZKbhbrHoTiwVMMa4yTBLdv8gLq/MCuU1qinu7mqE=;
-        b=gCqkXVErYPHH34Wp1ud0T+hFm4tOTYZOEQUGpqy8PwVQ5D5mXUX7+rT6vkN/51wmU+
-         XiwtRvfsShb+Jy0l6r8TbmdWzLONIclH8hqkBpSYLX2rBofMDeeHN0BPSo9byZf1ZI8o
-         rq6w6yGb0FlUbRS5JbD2DSS08m8t+2F373vICyYYoq+6GNqUg5Fa79sZ/iFMLFzJEf5W
-         6AIUbGT2t87ajB0GCsmUymt3SHfkPh1XAEbCsqaMxVL2JyS9NO5l2yKdDT6y0BozVEAD
-         Usb1v93jVYgFlJxGvLxalCsgTeKXY/53XT9Ijh/UGZPZZ1N2SCcVUDfdnvXEfn87m1F1
-         CcGA==
-X-Gm-Message-State: AOJu0Yzbc2Whi5XnScCLuipwAAkmRXQ1pPtGBYYwbVHGAesA0rEND7DU
-	nxhbO/n42bWyje3Ow5UBDnCtCXeYxqeYf7J4N9w85i50oXy2D0li
-X-Google-Smtp-Source: AGHT+IEgpSXcY0QUO2vOIwbtvPf6234Ts1FJVUl2tgY8Y35fgoIJBBYpHOkPaXpweaKIKMMwIoT3cg==
-X-Received: by 2002:a17:902:ec8c:b0:1d9:a647:5579 with SMTP id x12-20020a170902ec8c00b001d9a6475579mr1157305plg.1.1707209767070;
-        Tue, 06 Feb 2024 00:56:07 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXeO9PuDMVDnfm9CRkiLWbROnaADMSxPqvk+ziATDDW+Bb3W/n1VfZ85G5kHgQzl2RkrEN9HqgyD0122WeEjhaRjhGtClUW/Yt1tavkEP6VtMbFZQxaiGMhlUnc8Q1Y3e1uQNNgPjgXtAPwjz4WTZASM0Ceg48b4tOsGper4Y1fScDW/dk35+BK4rjdKSZYF0vTRgQU9RIf/HPqghtMNudnhnCLqUSy5AJY2asfFo4BsMILb18srVZPakOW6ZGlkx04Vj6uJMfv3X7nRy50wX7ZYQSjWFhSfPiKhkjdO1JRBHHV0XqKhDGo7TxQSmLm2e9lyEaAEpz456niU8InxtvavuSUyxUFnPAHZgMzOIVEr62u0i+b2gq966mv5fz2EgHS8fUpc6t+dMyl
-Received: from [192.168.255.10] ([43.132.141.24])
-        by smtp.gmail.com with ESMTPSA id 11-20020a170902c14b00b001d74dd065e5sm1311193plj.136.2024.02.06.00.56.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Feb 2024 00:56:06 -0800 (PST)
-Message-ID: <b19487fe-cc9b-412d-8b70-c0be6ad224ae@gmail.com>
-Date: Tue, 6 Feb 2024 16:56:02 +0800
+	s=arc-20240116; t=1707209876; c=relaxed/simple;
+	bh=zWlDDsNgIAFDlXYYsMxg8m2uMuE5A3i7ukXkyc7rkmk=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=i+F7OD4y6fjjOmlJk+AaBkF55xXuUeqiBlYDO6Up1yyCpz7yUH+YAuVq4VQCuamzFGzA/fDxBg9S6N7tLDnNK5IBJAgmw564CGh/pj41kTW3XTERf4fMN76U1zgOb0NQGxarKXqin7kJDdLxXKQALF5nuZ47JnRurCSZoXtvLdM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=bAj/eEVD; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=bAj/eEVD; arc=none smtp.client-ip=96.44.175.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1707209870;
+	bh=zWlDDsNgIAFDlXYYsMxg8m2uMuE5A3i7ukXkyc7rkmk=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=bAj/eEVDl+krx60izBrMvuGrvvbwH7kqpwEpjRbmw0l4mNM9BpIIM/dsrJWjObozA
+	 X/6sgC+gHUgoOPGQIctMApODGluk3b61I4871jrX/xVi7C50sRSz1fa0pyaXZuNSjb
+	 XcCmg6VfI917qlT7tgV7kyoXdfvb4LPRLOZXbPfk=
+Received: from localhost (localhost [127.0.0.1])
+	by bedivere.hansenpartnership.com (Postfix) with ESMTP id 755F21286825;
+	Tue,  6 Feb 2024 03:57:50 -0500 (EST)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id jeBuSS9UoaOe; Tue,  6 Feb 2024 03:57:50 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1707209870;
+	bh=zWlDDsNgIAFDlXYYsMxg8m2uMuE5A3i7ukXkyc7rkmk=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=bAj/eEVDl+krx60izBrMvuGrvvbwH7kqpwEpjRbmw0l4mNM9BpIIM/dsrJWjObozA
+	 X/6sgC+gHUgoOPGQIctMApODGluk3b61I4871jrX/xVi7C50sRSz1fa0pyaXZuNSjb
+	 XcCmg6VfI917qlT7tgV7kyoXdfvb4LPRLOZXbPfk=
+Received: from [192.168.28.110] (unknown [151.2.154.214])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id F0FE91286815;
+	Tue,  6 Feb 2024 03:57:47 -0500 (EST)
+Message-ID: <fe1722c3618a8216cb53b8fd3f1b7cbb6fdff5a0.camel@HansenPartnership.com>
+Subject: Re: [RFC PATCH v2 0/4] tsm: Runtime measurement registers ABI
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: "Xing, Cedric" <cedric.xing@intel.com>, Kuppuswamy Sathyanarayanan
+	 <sathyanarayanan.kuppuswamy@linux.intel.com>, Dan Middleton
+	 <dan.middleton@linux.intel.com>, Samuel Ortiz <sameo@rivosinc.com>, Dan
+	Williams <dan.j.williams@intel.com>
+Cc: Qinkun Bao <qinkun@google.com>, "Yao, Jiewen" <jiewen.yao@intel.com>, 
+ Dionna Amalie Glaze <dionnaglaze@google.com>, biao.lu@intel.com,
+ linux-coco@lists.linux.dev,  linux-integrity@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Date: Tue, 06 Feb 2024 08:57:45 +0000
+In-Reply-To: <b8140cc8-a56b-40f6-a593-7be49db14c77@intel.com>
+References: <20240128212532.2754325-1-sameo@rivosinc.com>
+	 <c17a31e4fb30f5f9d4a337e5bd8d54cc6f99eef7.camel@HansenPartnership.com>
+	 <a255bc36-2438-41b7-b304-bcf7a6628bef@linux.intel.com>
+	 <42e14f74d3819c95fdb97cd2e9b2829dcb1b1563.camel@HansenPartnership.com>
+	 <1557f98a-3d52-4a02-992b-4401c7c85dd7@linux.intel.com>
+	 <85b7a4a679eada1d17b311bf004c2d9e18ab5cd3.camel@HansenPartnership.com>
+	 <b8140cc8-a56b-40f6-a593-7be49db14c77@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/4] sched/fair: add SD_CLUSTER in comments
-Content-Language: en-US
-To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
- Valentin Schneider <vschneid@redhat.com>
-Cc: alexs@kernel.org, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Daniel Bristot de Oliveira <bristot@redhat.com>,
- linux-kernel@vger.kernel.org, sshegde@linux.ibm.com
-References: <20240201115447.522627-1-alexs@kernel.org>
- <xhsmhzfwjgcvf.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <20240206024633.GD17602@ranerica-svr.sc.intel.com>
-From: kuiliang Shi <seakeel@gmail.com>
-In-Reply-To: <20240206024633.GD17602@ranerica-svr.sc.intel.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
+On Tue, 2024-02-06 at 00:34 -0800, Xing, Cedric wrote:
+[...]
+> I'm not familiar with existing TPM code. Per 
+> https://elixir.free-electrons.com/linux/latest/source/drivers/char/tpm/tpm-interface.c#L314
+> ,
+> tpm_pcr_extend() doesn't seem to take/log the actual event, but only 
+> extends the PCR.
 
+That's the low level code we build on.  The TPM doesn't maintain a log
+at all, just the measuring entity.
 
-On 2/6/24 10:46 AM, Ricardo Neri wrote:
-> On Fri, Feb 02, 2024 at 03:27:32PM +0100, Valentin Schneider wrote:
->>
->> Subject nit: the prefix should be sched/topology
->>
->> On 01/02/24 19:54, alexs@kernel.org wrote:
->>> From: Alex Shi <alexs@kernel.org>
->>>
->>> The description of SD_CLUSTER is missing. Add it.
->>>
->>> Signed-off-by: Alex Shi <alexs@kernel.org>
->>> To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
->>> To: Valentin Schneider <vschneid@redhat.com>
->>> To: Vincent Guittot <vincent.guittot@linaro.org>
->>> To: Juri Lelli <juri.lelli@redhat.com>
->>> To: Peter Zijlstra <peterz@infradead.org>
->>> To: Ingo Molnar <mingo@redhat.com>
->>> ---
->>>  kernel/sched/topology.c | 1 +
->>>  1 file changed, 1 insertion(+)
->>>
->>> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
->>> index 10d1391e7416..8b45f16a1890 100644
->>> --- a/kernel/sched/topology.c
->>> +++ b/kernel/sched/topology.c
->>> @@ -1554,6 +1554,7 @@ static struct cpumask		***sched_domains_numa_masks;
->>>   * function:
->>>   *
->>>   *   SD_SHARE_CPUCAPACITY   - describes SMT topologies
->>> + *   SD_CLUSTER             - describes CPU Cluster topologies
->>
->> So I know this is the naming we've gone for the "Cluster" naming, but this
->> comment isn't really explaining anything.
->>
->> include/linux/sched/sd_flags.h has a bit more info already:
->>  * Domain members share CPU cluster (LLC tags or L2 cache)
-> 
-> I also thought of this, but I didn't want to suggest to repeat in topolog.c
-> what is described in sd_flags.h.
-> 
-> Maybe it is better to remove the descriptions of all flags here and instead
-> direct the reader to sd_flags.h?
+>  IMA seems to maintain the measurement list/log by itself.
 
-yes, good idea for getting their meaning directly from the header file. 
-So is it fine for next sending?
+It does, yes.
 
-    sched/fair: remove duplicate comments for SD_ flags
-    
-    Originally, it missed SD_CLUSTER flag description, but comparing to copy
-    the flags meaning from sd_flags.h, reader is better to get info from
-    there.
-    
-    Keep SD_ASYM_PACKING unchange for a point from another way.
-    
-    Signed-off-by: Alex Shi <alexs@kernel.org>
-    To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-    To: Valentin Schneider <vschneid@redhat.com>
-    To: Vincent Guittot <vincent.guittot@linaro.org>
-    To: Juri Lelli <juri.lelli@redhat.com>
-    To: Peter Zijlstra <peterz@infradead.org>
-    To: Ingo Molnar <mingo@redhat.com>
+>  Am I right? If so, why do we want logging to be part of TSM
+> here?
 
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 10d1391e7416..96a24bf954ad 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -1551,11 +1551,7 @@ static struct cpumask            ***sched_domains_numa_masks;
-  *
-  * These flags are purely descriptive of the topology and do not prescribe
-  * behaviour. Behaviour is artificial and mapped in the below sd_init()
-- * function:
-- *
-- *   SD_SHARE_CPUCAPACITY   - describes SMT topologies
-- *   SD_SHARE_PKG_RESOURCES - describes shared caches
-- *   SD_NUMA                - describes NUMA topologies
-+ * function, for details in include/linux/sched/sd_flags.h:
-  *
-  * Odd one out, which beside describing the topology has a quirk also
-  * prescribes the desired behaviour that goes along with it:
+Well, as I said above: without a log you have a combinatoric explosion
+of events that lead to the PCR value.
+
+> For measured boots, I think UEFI BIOS has already maintained a log so
+> what's needed here is just to expose the log somewhere in sysfs.
+> IMHO, I don't think logging is even necessary because everything in
+> the boot flow is static, hence a relying party can simply compare
+> measurement registers against known good values without looking at
+> any log. But please correct me if I have missed anything.
+
+Without the log the UEFI boot flow is way too brittle because
+measurements aren't actually static and without knowing what happened
+you can't reproduce the PCR value.  It was actually the earliest
+insight from the keylime project that it couldn't just define state by
+PCR values and had to parse the log instead.
+
+> > If you have a kernel backed log, the ABI for extending it should be
+> > where you get the PCR extensions from, that way nothing can go
+> > wrong. An API to extend the PCRs separately will only cause pain
+> > for people who get it wrong (and lead to ordering issues if more
+> > than one thing wants to add to the log, which they will do because
+> > neither the TPM nor the RTMRs have enough registers to do one per
+> > process that wants to use it if this becomes popular).
+> > 
+> There's an easy way to solve the synchronization problem in user mode
+> by applying flock() on the log file - i.e., a process can extend a 
+> measurement register only when holding an exclusive lock on the 
+> corresponding log file.
+
+Which would be where exactly? and owned by whom?
+
+>  A possible drawback is it'd allow a malicious
+> process to starve all other processes by holding the lock forever, or
+> to mess up the log file content intentionally. But that shouldn't be
+> a practical problem because the existence of such malicious processes
+> would have rendered the CVM untrustworthy anyway - i.e., should the
+> CVM still be able to generate a valid attestation, that would only
+> lead to a distrust decision by any sane relying party.
 > 
->>
->> I had to go through a bit of git history to remember what the CLUSTER thing
->> was about, how about this:
->>
->> * SD_CLUSTER             - describes shared shared caches, cache tags or busses
-> 
-> AFAIK, this describes a subset of CPUs in the package that share a
-> resource, likely L2 cache.
-> 
->> * SD_SHARE_PKG_RESOURCES - describes shared LLC cache
->>
->> And looking at this it would make sense to:
->>   rename SD_CLUSTER into SD_SHARE_PKG_RESOURCES
-> 
-> but not all CPUs in the package share the resource
-> 
->>   rename SD_SHARE_PKG_RESOURCES into SD_SHARE_LLC
->> but that's another topic...
->>
+> IMHO, if something can be easily solved in user mode, probably it 
+> shouldn't be solved in kernel mode.
+
+There isn't really anything more complex about an interface that takes
+a log entry, and does the record an extend, than an interface which
+takes a PCR extension value.  So best practice would say that you
+should create the ABI that you can't get wrong (log and record) rather
+than creating one that causes additional problems for userspace.
+
+James
+
 
