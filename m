@@ -1,191 +1,111 @@
-Return-Path: <linux-kernel+bounces-54151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E00FF84AB8F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:28:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2D4384AB92
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:28:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EA071F251AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:28:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A3AA2840F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:28:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CA47139D;
-	Tue,  6 Feb 2024 01:28:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E11581113;
+	Tue,  6 Feb 2024 01:28:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="p3Xvi+hM"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eo+yWVfu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F242C1109;
-	Tue,  6 Feb 2024 01:28:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 231EF4A12;
+	Tue,  6 Feb 2024 01:28:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707182911; cv=none; b=irpQVRRkL4H0YR5EHIuu0EbX27rs4nOJJVYeukTN3n/OSDPB28gGQW2o4Eu6ShbWKI4Z4PxYtJxV+MZNIqd6fL4AwLLXRmw9Me/80GD0mjDvQ9aGos4mlxjBJvPwY6sMnIza3tcLOxvDksMwW0NA0qjUARsu/W/YphE9KKH4+h0=
+	t=1707182919; cv=none; b=NNsd2MHE5N7p9Ykall8fn8LXUNfeAuBUBlfFVCJxJyslYAzKl8DKUQi8WEq40pY8BolMNMLyUqXtnpvlEkeGSdmGWmlq9z2+o917DG843+sxIsvAym6ULomiJa4KkLrNWMLTOYF0v0sCmccy4MWsoOl1Ot5krgdbPcORaoR+kQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707182911; c=relaxed/simple;
-	bh=FK0LAAXd0iQ5ZyxzXGxUaI+ge6k/xBudQVnCEI9DX5k=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Ht1lzo7JDumPg0EUWtQ0c05G1yZAUZpn1PPpVY+6MF7n3YD7kV9V+XJZtCnZmT9DkaGovjWtTuNETY1axabaOnrAGquuBhSpFLLej6Mt5lHg99tW1Tc1BLUQiudEyxkq0pcZ3eluGFL/LDwvR/nNob5/DqijSHDrvQaIgRomWIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=p3Xvi+hM; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1707182905;
-	bh=zKY0CiN5eVCwjR4J5nAX4GlXw1p1JS0IYgVBmlyJXhU=;
-	h=Date:From:To:Cc:Subject:From;
-	b=p3Xvi+hMgs/tLQ65WhXY7emQZorkU4vGyAiUEQbvWBp1E981nzdmSgyKCCXXuf7Na
-	 blaobyUTeSuF1zEg0PR5GrBjvuOgKjy+D+XB/AiawYhwC1Z6Z4DdVUJZezpvl/6OkZ
-	 +xplFY/nIQV5Bfu0dUqTUlnEHdEAKoDBrpBC9lUCkRNrbZjuqDlDCrpfXj2Ir4BOLA
-	 CkrTYUobEbgY0e7DYRsUUkc2xxG7MgDjbIP95NJsY8diIbX7AyAxgj5mMu86Ml/lv4
-	 BWk5g1OMgbHjtRIuOAmzM14lqUw1KD6LP9KbDI8AT5ev+rJN9Fn+SxH5mk5RpQLEnw
-	 fBfhei6CorH1w==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TTQcR1p92z4wcJ;
-	Tue,  6 Feb 2024 12:28:23 +1100 (AEDT)
-Date: Tue, 6 Feb 2024 12:28:22 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: Matthew Brost <matthew.brost@intel.com>, Rodrigo Vivi
- <rodrigo.vivi@intel.com>, Christian =?UTF-8?B?S8O2bmln?=
- <christian.koenig@amd.com>, Somalapuram Amaranath
- <Amaranath.Somalapuram@amd.com>, Intel Graphics
- <intel-gfx@lists.freedesktop.org>, DRI <dri-devel@lists.freedesktop.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the drm-misc tree
-Message-ID: <20240206122822.12a2df89@canb.auug.org.au>
+	s=arc-20240116; t=1707182919; c=relaxed/simple;
+	bh=QYynlXCJIaRqirBsQY44in81LETdg2sbfbHwxOyF3eM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oxONZ+QJUAMsfngo1kgZ74fXlXfNRtTF41pxZOgHr5pmHsdftVOZwYm4J+tLVw4UhbjkOjCFnWUlY5WBM3Lm212DBhAmc5fZRQhzCdeAmq4Z+Tr1HF6fhQ9v/sMSrLSdvWu5T0Y/6VnxzW8Cp9RdKLcpupRwuv4hsXjeqtQsPJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eo+yWVfu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A526C433F1;
+	Tue,  6 Feb 2024 01:28:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707182918;
+	bh=QYynlXCJIaRqirBsQY44in81LETdg2sbfbHwxOyF3eM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=eo+yWVfuelWwmRzpCVrimfvhnQxEfqkeMD6EGK/xaMY/z8pmZiFRXS01L/0OUE0XU
+	 EvKd72oJiF64QGNg9qOJT1JdbcaKJL0AJo/R72zV8xUSoQtVSgCAiMr9S7TO58bG2L
+	 02rr2dTK7PNMik1kFC9nj8uCYPwa2qtqYdI5KIOl6RJCtV8PW6dP8BmSEP/BEDkfcY
+	 j9x4efhb7kC+N7upswSEpJc9x7viZpM/1adzYgKPQ6eeV0g6EhV5Rz0EcmMePfs7qS
+	 Ag6BsCJxvatkC/tXS+OFTkHLH6KcE0lrc9i8Y/jwq3HDnm7ojIKHpMC92SvxkyPPHU
+	 ORg0pqti2Frxw==
+Date: Mon, 5 Feb 2024 18:28:36 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Heiko Carstens <hca@linux.ibm.com>
+Cc: Kees Cook <keescook@chromium.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>
+Subject: Re: [PATCH 1/2] Compiler Attributes: Add __uninitialized macro
+Message-ID: <20240206012836.GA2616098@dev-arch.thelio-3990X>
+References: <20240205154844.3757121-1-hca@linux.ibm.com>
+ <20240205154844.3757121-2-hca@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/qoofQSLe6__zbq+lF9FrpkO";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240205154844.3757121-2-hca@linux.ibm.com>
 
---Sig_/qoofQSLe6__zbq+lF9FrpkO
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Feb 05, 2024 at 04:48:43PM +0100, Heiko Carstens wrote:
+> With INIT_STACK_ALL_PATTERN or INIT_STACK_ALL_ZERO enabled the kernel will
+> be compiled with -ftrivial-auto-var-init=<...> which causes initialization
+> of stack variables at function entry time.
+> 
+> In order to avoid the performance impact that comes with this users can use
+> the "uninitialized" attribute to prevent such initialization.
+> 
+> Therefore provide the __uninitialized macro which can be used for cases
+> where INIT_STACK_ALL_PATTERN or INIT_STACK_ALL_ZERO is enabled, but only
+> selected variables should not be initialized.
+> 
+> Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 
-Hi all,
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-After merging the drm-misc tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
-
-
-Caused by commit
-
-  a78a8da51b36 ("drm/ttm: replace busy placement with flags v6")
-
-interacting with commit
-
-  dd08ebf6c352 ("drm/xe: Introduce a new DRM driver for Intel GPUs")
-
-(and maybe others) from Linus' tree (v6.8-rc1).
-
-I have applied the following merge fix patch for today.  This makes it buil=
-d,
-but more is likely needed ...
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Tue, 6 Feb 2024 12:21:07 +1100
-Subject: [PATCH] fix up for "drm/ttm: replace busy placement with flags v6"
-
-interacting with commit
-
-  dd08ebf6c352 ("drm/xe: Introduce a new DRM driver for Intel GPUs")
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/gpu/drm/xe/xe_bo.c | 11 -----------
- 1 file changed, 11 deletions(-)
-
-diff --git a/drivers/gpu/drm/xe/xe_bo.c b/drivers/gpu/drm/xe/xe_bo.c
-index 0b0e262e2166..280dbda8ae5a 100644
---- a/drivers/gpu/drm/xe/xe_bo.c
-+++ b/drivers/gpu/drm/xe/xe_bo.c
-@@ -38,8 +38,6 @@ static const struct ttm_place sys_placement_flags =3D {
- static struct ttm_placement sys_placement =3D {
- 	.num_placement =3D 1,
- 	.placement =3D &sys_placement_flags,
--	.num_busy_placement =3D 1,
--	.busy_placement =3D &sys_placement_flags,
- };
-=20
- static const struct ttm_place tt_placement_flags =3D {
-@@ -52,8 +50,6 @@ static const struct ttm_place tt_placement_flags =3D {
- static struct ttm_placement tt_placement =3D {
- 	.num_placement =3D 1,
- 	.placement =3D &tt_placement_flags,
--	.num_busy_placement =3D 1,
--	.busy_placement =3D &sys_placement_flags,
- };
-=20
- bool mem_type_is_vram(u32 mem_type)
-@@ -230,8 +226,6 @@ static int __xe_bo_placement_for_flags(struct xe_device=
- *xe, struct xe_bo *bo,
- 	bo->placement =3D (struct ttm_placement) {
- 		.num_placement =3D c,
- 		.placement =3D bo->placements,
--		.num_busy_placement =3D c,
--		.busy_placement =3D bo->placements,
- 	};
-=20
- 	return 0;
-@@ -251,7 +245,6 @@ static void xe_evict_flags(struct ttm_buffer_object *tb=
-o,
- 		/* Don't handle scatter gather BOs */
- 		if (tbo->type =3D=3D ttm_bo_type_sg) {
- 			placement->num_placement =3D 0;
--			placement->num_busy_placement =3D 0;
- 			return;
- 		}
-=20
-@@ -1353,8 +1346,6 @@ static int __xe_bo_fixed_placement(struct xe_device *=
-xe,
- 	bo->placement =3D (struct ttm_placement) {
- 		.num_placement =3D 1,
- 		.placement =3D place,
--		.num_busy_placement =3D 1,
--		.busy_placement =3D place,
- 	};
-=20
- 	return 0;
-@@ -2112,9 +2103,7 @@ int xe_bo_migrate(struct xe_bo *bo, u32 mem_type)
-=20
- 	xe_place_from_ttm_type(mem_type, &requested);
- 	placement.num_placement =3D 1;
--	placement.num_busy_placement =3D 1;
- 	placement.placement =3D &requested;
--	placement.busy_placement =3D &requested;
-=20
- 	/*
- 	 * Stolen needs to be handled like below VRAM handling if we ever need
---=20
-2.43.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/qoofQSLe6__zbq+lF9FrpkO
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXBizYACgkQAVBC80lX
-0GyAJgf9Hild1zSurCMflzSa/SDNJVx/KSmIxojPE0TyUGi7s03D5gM99mKXR30J
-yRSZ1KM8B41FEGlmQRMoNHBnkUk8tYz7aajNjxnhIXXcIxU8xiGqgsjQ+bJ2kimg
-+xkn/SB7HMKW761o4k3ETBJKDUmOw9lUEGW4KCpmzM446mxF8Lc2RoqHWWSzggfS
-9nVAH9NcStDpFWT6vCYY19fmd1g8S+LSAYE0Z5wFu088tJd+8liM/8l/+NBihDRV
-n0cR9Gec6OmN2YTozZrqRnVgRi/Cd90NzTdA9c2VHb2x4dK3/GlA3qZfnl1DEXjF
-1Rg3OYiVjN3JObhHkODbJgQNsLJZDQ==
-=xKqJ
------END PGP SIGNATURE-----
-
---Sig_/qoofQSLe6__zbq+lF9FrpkO--
+> ---
+>  include/linux/compiler_attributes.h | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
+> index 28566624f008..f5859b8c68b4 100644
+> --- a/include/linux/compiler_attributes.h
+> +++ b/include/linux/compiler_attributes.h
+> @@ -333,6 +333,18 @@
+>   */
+>  #define __section(section)              __attribute__((__section__(section)))
+>  
+> +/*
+> + * Optional: only supported since gcc >= 12
+> + *
+> + *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html#index-uninitialized-variable-attribute
+> + * clang: https://clang.llvm.org/docs/AttributeReference.html#uninitialized
+> + */
+> +#if __has_attribute(__uninitialized__)
+> +# define __uninitialized		__attribute__((__uninitialized__))
+> +#else
+> +# define __uninitialized
+> +#endif
+> +
+>  /*
+>   *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-unused-function-attribute
+>   *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Type-Attributes.html#index-unused-type-attribute
+> -- 
+> 2.40.1
+> 
 
