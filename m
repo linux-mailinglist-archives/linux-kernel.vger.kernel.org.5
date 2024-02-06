@@ -1,97 +1,57 @@
-Return-Path: <linux-kernel+bounces-55562-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55563-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F190E84BE28
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:35:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4F0784BE2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:35:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3FAB1F2428C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:35:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0359F1C2337A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:35:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 369BE175BB;
-	Tue,  6 Feb 2024 19:35:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B35B175BD;
+	Tue,  6 Feb 2024 19:35:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b="2ftn8JTt";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Cqvw0PAn"
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hCmeBxbP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72052175B4;
-	Tue,  6 Feb 2024 19:35:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.27
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 981A418EB8;
+	Tue,  6 Feb 2024 19:35:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707248115; cv=none; b=rlxTId1w6oII4GySyIGLrl1BIWBKvhDMTHe0tAIdYEc7ldEuG7ncB5Uist8bTb+5FH4SjOsNhX1V1XECm/FlZ5psM1qSk0mlY+vxR1lKZr5CEE2Loq4U/sX7+sO9lhx7N0N2nxGzYULvkrJqON9QLwTMfBdoUGyxdi5D0Hu5OoA=
+	t=1707248124; cv=none; b=KrAPla3tIj9gfDwfdgoux1gUal0qee/j06gmarhoBNuswPkBWHbH9b8RtrUQCpsAkh6+HphVZ01XYOe2XNDcR5iKoNXVAh2uRfTUY0v9/qWOvMRwHKC79J1qS5tS3uTo2jHKnB28lQx+gqbjD0Ko5yTXnH0/xE93in6bgZ8h994=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707248115; c=relaxed/simple;
-	bh=xWAHkj6oLXesB9J7U7zS+HoVDGaRAHiH8XlBjN5iCTQ=;
+	s=arc-20240116; t=1707248124; c=relaxed/simple;
+	bh=VcMUhBJzCMvFkw6yy4caxGpPNtGcOssoN/sMaO6Et8o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bA6AweEPrcNUnUdz2kwJK0TRyA5l6RJhPOvCpxmle9Xxll0kAsZmTmrlxYGX0P3v3nZTxT562shHq6RnXHQ6Sy9E6bCFnZnEMuDW4t1/oI/0UA/M0nOSMiosHdC5bRTLLHQqGkzcoNHTfayD23YksuO9FsI5U83LEqSAkC3Yuuw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza; spf=pass smtp.mailfrom=tycho.pizza; dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b=2ftn8JTt; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Cqvw0PAn; arc=none smtp.client-ip=66.111.4.27
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tycho.pizza
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailout.nyi.internal (Postfix) with ESMTP id 60D425C01D0;
-	Tue,  6 Feb 2024 14:35:12 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Tue, 06 Feb 2024 14:35:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1707248112; x=1707334512; bh=xWAHkj6oLX
-	esB9J7U7zS+HoVDGaRAHiH8XlBjN5iCTQ=; b=2ftn8JTtc0FEL/uRu0/zdm6hnh
-	9I3B2gi4ZVSlhq5PA1xD9Ri+CRHRSJR4Wom5s4m38gQI4ElNpmG3aLK+j+FJcN6+
-	G5h23N/omTigJxauz4MWQf9NcOwkTGwCsLwpGQLAQsm9Bq2ke2Lh7H6Q9Wgtps/L
-	nEED3+NJ4gfFWa9VEsjFRE54CrHO/DD3MCJqttska0ABBc1vVCc/NVtp03lSPPWy
-	DStHMq22wUGzktQu7jrSLS3NH/llobBKXklnEFN8LZWdG7zWuvWzpQR2RmDjZ9Xc
-	+wj25QT6E5HE9yUUQ5oNabdxjzrNw1n9snRRiDKdbXUg5QOLIvwG73X5Y61w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1707248112; x=1707334512; bh=xWAHkj6oLXesB9J7U7zS+HoVDGaR
-	AHiH8XlBjN5iCTQ=; b=Cqvw0PAnhbfxvhzKaTvH6ohivQshuONbPDBaBjTZkH+8
-	gbjLXtKivBMtMSCg83sCjBWIrInwuCRPVDwYvNSPCL4YWA7udtSGPbNyc/8HXUyN
-	hfSv3+ni2406B/nOfz8ALavd+yDAwPhTkWChcdDTiPgFKVx7/8MBzfQ4sLBPWZy4
-	EbffNFErh/mH5nZSe4o3Vs7o97aVexIAmzxYc1TYQxHW6PHbpjy34t70VfG6SCXb
-	LF53do1fOmMMM5lPbpacekFioteSmolKFf5CIqY9KyP0xM9G1d6eJJDewWAGDaFW
-	2sAZg3fvdsY2vlbEfXKP9bMJ9ZIAFczFys3GhHVfCQ==
-X-ME-Sender: <xms:74nCZcfEPAEEmMMjg5MnS0tjuMsg4LONWtM9XyNsemQWf5MTwt8xuQ>
-    <xme:74nCZeOuFGHwmQF5susKfPJZtti1-ZM-sqL239sB7ubwwClVNHXN4B1ZERcO6VuQb
-    zMgi-v1gaF4iIRpkzU>
-X-ME-Received: <xmr:74nCZdjAkvVff1o7ZMUpPO5xlUvInUphL8QO9W7aYrQqQ6NS6MbGkVzJCOc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrtddtgdeljecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigthhho
-    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
-    htthgvrhhnpeeutedttefgjeefffehffffkeejueevieefudelgeejuddtfeffteeklefh
-    leelteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hthigthhhosehthigthhhordhpihiiiigr
-X-ME-Proxy: <xmx:74nCZR-YwcTBaOHBLPBjTowHSS5Ts_4Hw0eAP-A0gDC-w5MRgXBuvA>
-    <xmx:74nCZYtj8Q_kOTGsQSUJ12l9G-rYg8l1HtGnzxFoMZoUD5sTaHR9FQ>
-    <xmx:74nCZYHgQHjY03ib78d3MIL3iCby-xTwl0ALMq5BMUCps7ZEkLFOQA>
-    <xmx:8InCZSW_Bv2i8pVCn6ZjdgH3T35Y6dixGVwJYmq6WnITa622QCugrQ>
-Feedback-ID: i21f147d5:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 6 Feb 2024 14:35:10 -0500 (EST)
-Date: Tue, 6 Feb 2024 12:35:09 -0700
-From: Tycho Andersen <tycho@tycho.pizza>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Christian Brauner <brauner@kernel.org>,
-	"Eric W . Biederman" <ebiederm@xmission.com>,
-	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-	Tycho Andersen <tandersen@netflix.com>
-Subject: Re: [PATCH] pidfd: getfd should always report ESRCH if a task is
- exiting
-Message-ID: <ZcKJ7YYJK9przO8K@tycho.pizza>
-References: <20240206164308.62620-1-tycho@tycho.pizza>
- <20240206173722.GA3593@redhat.com>
- <20240206180607.GB3593@redhat.com>
- <ZcJ13uLxD6rTqqZZ@tycho.pizza>
- <20240206192553.GC3593@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ksj3l7jmo9HzMnAy8qu98AffQhckC5Z9i+OocNbruIpsT65niQU/rX0DDDvFEe3KbfEz3KGcGkWkEhMbbOjr6Ll1fAscOcrQwELRoOH65R+8/hDJ4oiHATJLM9kiH9VIreGRGf8psoDBMQewBwglq7yFHa1iilJmgLo6ePNesws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hCmeBxbP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B51FC433C7;
+	Tue,  6 Feb 2024 19:35:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707248124;
+	bh=VcMUhBJzCMvFkw6yy4caxGpPNtGcOssoN/sMaO6Et8o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hCmeBxbPO6Pi2OEha8/Iq9oDSMwM8/oHvWcIriMU8r0FPoK0QhiXbbd3iFlVY282+
+	 6mu74Dai7ldME1f5iwnc1XEwudPuF94OczM+E65CcQ7xoUKAodzXQJJsXtcLCKa/C8
+	 c7q7utY5SJ73VWEEAbD5cDbpl02e4/rzUzic4q5BwQl+1evudU7d88V8C+ye+rcI5H
+	 dHxjeYXUYOgC0kH3ubfT9mQ6brTALotpA0gnhgDVkrxLzeIakZ4Hop9+SFdcEVbiLO
+	 e671Xe32GTj2Srpyyp+kufjR9eYrLHUMqXvGeNM7xShm5qMrLDTeo29NuhEyK3XH1R
+	 r/656eJBgdqaw==
+Date: Tue, 6 Feb 2024 19:35:19 +0000
+From: Simon Horman <horms@kernel.org>
+To: Wen Gu <guwen@linux.alibaba.com>
+Cc: wenjia@linux.ibm.com, jaka@linux.ibm.com, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+	linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net/smc: change the term virtual ISM to
+ Emulated-ISM
+Message-ID: <20240206193519.GI1104779@kernel.org>
+References: <20240205033317.127269-1-guwen@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -100,14 +60,18 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240206192553.GC3593@redhat.com>
+In-Reply-To: <20240205033317.127269-1-guwen@linux.alibaba.com>
 
-On Tue, Feb 06, 2024 at 08:25:54PM +0100, Oleg Nesterov wrote:
-> But Tycho, I won't insist. If you prefer to check PF_EXITING, I am fine.
+On Mon, Feb 05, 2024 at 11:33:17AM +0800, Wen Gu wrote:
+> According to latest release of SMCv2.1[1], the term 'virtual ISM' has
+> been changed to 'Emulated-ISM' to avoid the ambiguity of the word
+> 'virtual' in different contexts. So the names or comments in the code
+> need be modified accordingly.
+> 
+> [1] https://www.ibm.com/support/pages/node/7112343
+> 
+> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
 
-Looks like we raced, I sent a v2 with PF_EXITING, mostly because I
-didn't want to run into weird things I didn't understand. I'm happy to
-fix it up to check ->files if that's what you prefer Christian?
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-Tycho
 
