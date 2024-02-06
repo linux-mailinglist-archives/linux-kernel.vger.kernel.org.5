@@ -1,216 +1,332 @@
-Return-Path: <linux-kernel+bounces-54172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC46484ABD4
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:57:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0B7C84ABD5
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:59:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C9A5286DDC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:57:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42E1C1F2319F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:59:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 590995676A;
-	Tue,  6 Feb 2024 01:57:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="ltA9KMUz"
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 363EC5676F;
+	Tue,  6 Feb 2024 01:59:24 +0000 (UTC)
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB47B56B66
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 01:57:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D491256755;
+	Tue,  6 Feb 2024 01:59:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707184623; cv=none; b=aErfOIzWA/3zb7jjJkCeAPLDTj7VtZCyX39d++7ryLyx5OTNo1LFc1EEJKisYm+Uws1dQ5k08XamrLBNpl7QGOU4t2cZGDecoyiowuPhwzDXdUYjr1eQn9Dtl7Ye6xl2HB16oKp8oo+vj4Z+0ZtRbAN180AybabxCtAaAeWP57I=
+	t=1707184763; cv=none; b=bgdWTHUb9kIbXKfa+c2qIJENk50g7/ggPf+7iHHSEvVCzP6xRVDNdXadIq5elSZccECRKferVj1o85CkbacuCKaRYaVW/HLwdaiIGOg9Ns6ZblRMMXvqPLI1Qd2/0juN9/IRuN9T4zILN6bMndre7MxSxSZPhaiom4Yr3FEbM+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707184623; c=relaxed/simple;
-	bh=AGGj7Vod8i/cMhIocRRjpJuktqfjt3MGtAOErqqB4RM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n5zI7KD3ixcgAvTUvbKu45FmZh1CbwdfnEh9JBqmR2YCfpgO8+x3Bat8Tziajn3QosRzp2EgjTpj4+UkECS31KKr7EUPIne0+dzcSTe3kI4RnypwBcXx7iCfPrbVr6jEhfkIQXVoTHBrw5Ii4+GEfbCR95eLLjn50fIowxfITcw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=ltA9KMUz; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-296c827b4e5so87018a91.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 17:57:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1707184621; x=1707789421; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6RQcHLm5QazOeCq3JvR92kEunC3ZSrNlLeaxZZfWXA0=;
-        b=ltA9KMUzeuLgMRjVzDzeOMaw74k9rxYdDq2Xe7tYf3r+Www98/j8JrnAGL6cDFl3/b
-         1L1rjYYOO7PK1C7mgse1i9m83nP2iLi6j/t0X6Y1ipQJMZUwaahPph/0w6GQFUimxWps
-         b5NdFP4QqGBJ1piPMA//0Q8yzMt/rhskaWwTg=
+	s=arc-20240116; t=1707184763; c=relaxed/simple;
+	bh=r9vumAN298IoFTVS6I0M+7tr2vqxdeO5Wmn0EhONg0M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pTQ6CJ0pO0B4KkGarDdl3vBrScbMeKhZlQvc/BrYgLvG2yZ8ivRYfq8ATkTDbjZJBd04d8nvLhvQg0JvIbdTw39l+ji7keCM1BLLgmvjErWxvXf18reCbY3riQ0OQ/bW4hcHPygKlHfHSGEqIune7uCeFoXxS6F9XG/lPBzr9To=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6e055baec89so85711b3a.1;
+        Mon, 05 Feb 2024 17:59:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707184621; x=1707789421;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1707184761; x=1707789561;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6RQcHLm5QazOeCq3JvR92kEunC3ZSrNlLeaxZZfWXA0=;
-        b=myB4cu2PElj/Y3yD2q7R7ysMuhRgaYZyH3dCji3a9NCUDETqYLRYPVynGuL/r4/EL/
-         Y5kN2849xtNtlvf6s2wnVw9vRtnflQXtQyIafKLiKrQ1KR7BzxCi8G5GRqPfojcqX5RF
-         Fx08e2OrNLNQffJ/+ODF8ofiYym3TH+a+iS1FVdoV+9Xoo1L5k0BDec/hG4rLGEvOGz0
-         VD59nN8b/qiqT+u6ZsxQpK/dnvYwNwHh898XW8F6bwIZuJVIolVsBp6cwY/lsyajRs4L
-         sxd3jNdquqPXUctl0bilb55FAKstBZdhMI+29NrhztkTB/GP1ALwVv2rH/qvH4Pc9c8T
-         swNw==
-X-Gm-Message-State: AOJu0YyuunMEnHhYxGZcyxb4LadFgOxHCpFeXG73c6DlbNcs3+Kk7obA
-	CQg9HrIRjascRCxLyzCVoNI6dH24478JZAreA3oJQTZuYPycRkPv3NJiCSI0pC8=
-X-Google-Smtp-Source: AGHT+IGFs+QR1LR1g/SgL6DV+s4jv4M3sRSbSYmRfFvgvR0v1IuEhSQTG8Ns1zi+PiHPUMgc4MzHuw==
-X-Received: by 2002:a17:90a:fd96:b0:294:4637:7ed with SMTP id cx22-20020a17090afd9600b00294463707edmr934326pjb.40.1707184621159;
-        Mon, 05 Feb 2024 17:57:01 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVBA5wCZeQQujcnRN2if4vYXLgeOnWqpsGt2RhCIP5kNPaGZ1rtE2O7x2BQuY6pRumfAfzgJqNgyPJXwU/vxU4WHg5E+XZVWuEfMZJ8y8STnkZGsZli4R5IsGpvmMIxqbFyPpvMNwW6fdYZJaYQtpUNALTtL4SuToFC7WxNNMUM3blZJuEpmG/NswDe86ACCfPTxB9CX8ITbB2yafBrdoO3WnRELaoXrxPNj103INBFxVzZP306rhguXjK+sRLylOc7AVLPEIW4wKfpT0iqcusN6mA+eluGz9+QTdsL7TITQaNDaAa8PyY=
-Received: from fastly.com (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
-        by smtp.gmail.com with ESMTPSA id fa2-20020a17090af0c200b00296b90d93absm172768pjb.29.2024.02.05.17.56.59
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 05 Feb 2024 17:57:00 -0800 (PST)
-Date: Mon, 5 Feb 2024 17:56:58 -0800
-From: Joe Damato <jdamato@fastly.com>
-To: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, tariqt@nvidia.com,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	"open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH net-next] eth: mlx5: link NAPI instances to queues and
- IRQs
-Message-ID: <20240206015657.GA11257@fastly.com>
-References: <20240206010311.149103-1-jdamato@fastly.com>
- <878r3ymlnk.fsf@nvidia.com>
- <20240206013246.GA11217@fastly.com>
- <874jemml1j.fsf@nvidia.com>
- <20240206014151.GA11233@fastly.com>
- <87zfwel5qi.fsf@nvidia.com>
+        bh=pEiZj/ZXcZZxKH4nqZMCH9OZNvgzBPAEeqnI2Uq/nDI=;
+        b=Xun1Xv8nYH470q9JO9Cilq0RYObM83gocZ3hyJkOEbHcBGDrI6+nHgkqEe4Z4ghHYw
+         LTZp2g3ctrOesd/YU7wLywnNo2yTV48MnbPGsFt0JZtl+Yp6d0YLbvWe2KB2EroeYGGE
+         d234+0LXvEVfIfJlK32/q4sm7pkanM0WHYW5Re+mPinI2Smtn8q4l16D25F8sz2Jq5Zx
+         yfZj+Fcw3BI00rLW+7Iwne7UxOA0xFgNrrQGYquhIoTwIcamYvCxURoqsgMI8gFd1juL
+         p/8eyaaNd9/wf2o3hm0Is5d4XQOhGWdks/bS1B8Kp3rf3Zp2442KO1sHw4N5T0vskUzD
+         Dtyw==
+X-Gm-Message-State: AOJu0Yz/6HotvCtemkfDqSteh3ZBafoF49W0dNiDwkJ7nUXVYnHvEQit
+	WIwgeUGDiKUH4Ln+jQ4KJMuqazc+rqW2+7QWCi5m/JxsN527ENYMaqSIJ3NlUfks68Br2idOlGd
+	dGmd8nSm0y8u90hfJ767ueGre2to=
+X-Google-Smtp-Source: AGHT+IFtTT+cNJ2Ga/C9pnXdHHiwdsgl3cX+ktVlsQ113oFR3LoU8gSJJmD60Ez0iQMFxRs82lHfzl6iuApxo9YT+js=
+X-Received: by 2002:a05:6a00:23cc:b0:6e0:5372:48a2 with SMTP id
+ g12-20020a056a0023cc00b006e0537248a2mr3004692pfc.15.1707184760909; Mon, 05
+ Feb 2024 17:59:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87zfwel5qi.fsf@nvidia.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20240202022512.467636-1-irogers@google.com>
+In-Reply-To: <20240202022512.467636-1-irogers@google.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Mon, 5 Feb 2024 17:59:09 -0800
+Message-ID: <CAM9d7chAU=arK2y7RDHtxfRcQ80Az6dzGB0_+01iZ346tSob3w@mail.gmail.com>
+Subject: Re: [PATCH v1 1/3] perf stat: Pass fewer metric arguments
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Kajol Jain <kjain@linux.ibm.com>, John Garry <john.g.garry@oracle.com>, Kaige Ye <ye@kaige.org>, 
+	K Prateek Nayak <kprateek.nayak@amd.com>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 05, 2024 at 05:44:27PM -0800, Rahul Rameshbabu wrote:
-> 
-> On Mon, 05 Feb, 2024 17:41:52 -0800 Joe Damato <jdamato@fastly.com> wrote:
-> > On Mon, Feb 05, 2024 at 05:33:39PM -0800, Rahul Rameshbabu wrote:
-> >> 
-> >> On Mon, 05 Feb, 2024 17:32:47 -0800 Joe Damato <jdamato@fastly.com> wrote:
-> >> > On Mon, Feb 05, 2024 at 05:09:09PM -0800, Rahul Rameshbabu wrote:
-> >> >> On Tue, 06 Feb, 2024 01:03:11 +0000 Joe Damato <jdamato@fastly.com> wrote:
-> >> >> > Make mlx5 compatible with the newly added netlink queue GET APIs.
-> >> >> >
-> >> >> > Signed-off-by: Joe Damato <jdamato@fastly.com>
-> >> >> > ---
-> >> >> >  drivers/net/ethernet/mellanox/mlx5/core/en.h      | 1 +
-> >> >> >  drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 8 ++++++++
-> >> >> >  2 files changed, 9 insertions(+)
-> >> >> >
-> >> >> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-> >> >> > index 55c6ace0acd5..3f86ee1831a8 100644
-> >> >> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
-> >> >> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-> >> >> > @@ -768,6 +768,7 @@ struct mlx5e_channel {
-> >> >> >  	u16                        qos_sqs_size;
-> >> >> >  	u8                         num_tc;
-> >> >> >  	u8                         lag_port;
-> >> >> > +	unsigned int		   irq;
-> >> >> >  
-> >> >> >  	/* XDP_REDIRECT */
-> >> >> >  	struct mlx5e_xdpsq         xdpsq;
-> >> >> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> >> >> > index c8e8f512803e..e1bfff1fb328 100644
-> >> >> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> >> >> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> >> >> > @@ -2473,6 +2473,9 @@ static void mlx5e_close_queues(struct mlx5e_channel *c)
-> >> >> >  	mlx5e_close_tx_cqs(c);
-> >> >> >  	mlx5e_close_cq(&c->icosq.cq);
-> >> >> >  	mlx5e_close_cq(&c->async_icosq.cq);
-> >> >> > +
-> >> >> > +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_TX, NULL);
-> >> >> > +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_RX, NULL);
-> >> >> 
-> >> >> This should be set to NULL *before* actually closing the rqs, sqs, and
-> >> >> related cqs right? I would expect these two lines to be the first ones
-> >> >> called in mlx5e_close_queues. Btw, I think this should be done in
-> >> >> mlx5e_deactivate_channel where the NAPI is disabled.
-> >> >> 
-> >> >> >  }
-> >> >> >  
-> >> >> >  static u8 mlx5e_enumerate_lag_port(struct mlx5_core_dev *mdev, int ix)
-> >> >> > @@ -2558,6 +2561,7 @@ static int mlx5e_open_channel(struct mlx5e_priv *priv, int ix,
-> >> >> >  	c->stats    = &priv->channel_stats[ix]->ch;
-> >> >> >  	c->aff_mask = irq_get_effective_affinity_mask(irq);
-> >> >> >  	c->lag_port = mlx5e_enumerate_lag_port(priv->mdev, ix);
-> >> >> > +	c->irq		= irq;
-> >> >> >  
-> >> >> >  	netif_napi_add(netdev, &c->napi, mlx5e_napi_poll);
-> >> >> >  
-> >> >> > @@ -2602,6 +2606,10 @@ static void mlx5e_activate_channel(struct mlx5e_channel *c)
-> >> >> >  		mlx5e_activate_xsk(c);
-> >> >> >  	else
-> >> >> >  		mlx5e_activate_rq(&c->rq);
-> >> >> > +
-> >> >> > +	netif_napi_set_irq(&c->napi, c->irq);
-> >> 
-> >> One small comment that I missed in my previous iteration. I think the
-> >> above should be moved to mlx5e_open_channel right after netif_napi_add.
-> >> This avoids needing to save the irq in struct mlx5e_channel.
-> >
-> > I couldn't move it to mlx5e_open_channel because of how safe_switch_params
-> > and the mechanics around that seem to work (at least as far as I could
-> > tell).
-> >
-> > mlx5 seems to create a new set of channels before closing the previous
-> > channel. So, moving this logic to open_channels and close_channels means
-> > you end up with a flow like this:
-> >
-> >   - Create new channels (NAPI netlink API is used to set NAPIs)
-> >   - Old channels are closed (NAPI netlink API sets NULL and overwrites the
-> >     previous NAPI netlink calls)
-> >
-> > Now, the associations are all NULL.
-> >
-> > I think moving the calls to active / deactivate fixes that problem, but
-> > requires that irq is stored, if I am understanding the driver correctly.
-> 
-> I believe moving the changes to activate / deactivate channels resolves
-> this problem because only one set of channels will be active, so you
-> will no longer have dangling association conflicts for the queue ->
-> napi. This is partially why I suggested the change in that iteration.
+On Thu, Feb 1, 2024 at 6:25=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
+e:
+>
+> Pass metric_expr and evsel rather than specific variables from the
+> struct, thereby reducing the number of arguments. This will enable
+> later fixes.
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/stat-shadow.c | 75 +++++++++++++++--------------------
+>  1 file changed, 33 insertions(+), 42 deletions(-)
+>
+> diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.=
+c
+> index e31426167852..f6c9d2f98835 100644
+> --- a/tools/perf/util/stat-shadow.c
+> +++ b/tools/perf/util/stat-shadow.c
+> @@ -355,23 +355,22 @@ static void print_nsecs(struct perf_stat_config *co=
+nfig,
+>                 print_metric(config, ctxp, NULL, NULL, "CPUs utilized", 0=
+);
+>  }
+>
+> -static int prepare_metric(struct evsel **metric_events,
+> -                         struct metric_ref *metric_refs,
+> +static int prepare_metric(const struct metric_expr *mexp,
+>                           struct expr_parse_ctx *pctx,
+>                           int aggr_idx)
+>  {
+>         int i;
 
-As far as I can tell, it does.
- 
-> As for netif_napi_set_irq, that alone can be in mlx5e_open_channel (that
-> was the intention of my most recent comment. Not that all the other
-> associations should be moved as well). I agree that the other
-> association calls should be part of activate / deactivate channels.
+You may add local variables with the same name to reduce
+the amount of diff.
 
-OK, sure that makes sense. I make that change, too.
+Thanks,
+Namhyung
 
-> >
-> >> >> > +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_TX, &c->napi);
-> >> >> > +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_RX, &c->napi);
-> >> >> 
-> >> >> It's weird that netlink queue API is being configured in
-> >> >> mlx5e_activate_channel and deconfigured in mlx5e_close_queues. This
-> >> >> leads to a problem where the napi will be falsely referred to even when
-> >> >> we deactivate the channels in mlx5e_switch_priv_channels and may not
-> >> >> necessarily get to closing the channels due to an error.
-> >> >> 
-> >> >> Typically, we use the following clean up patterns.
-> >> >> 
-> >> >> mlx5e_activate_channel -> mlx5e_deactivate_channel
-> >> >> mlx5e_open_queues -> mlx5e_close_queues
-> >> >
-> >> > OK, I'll move it to mlx5e_deactivate_channel before the NAPI is disabled.
-> >> > That makes sense to me.
-> >> 
-> >> Appreciated. Thank you for the patch btw.
-> >
-> > Sure, thanks for the review.
-> 
+>
+> -       for (i =3D 0; metric_events[i]; i++) {
+> +       for (i =3D 0; mexp->metric_events[i]; i++) {
+>                 char *n;
+>                 double val;
+>                 int source_count =3D 0;
+>
+> -               if (evsel__is_tool(metric_events[i])) {
+> +               if (evsel__is_tool(mexp->metric_events[i])) {
+>                         struct stats *stats;
+>                         double scale;
+>
+> -                       switch (metric_events[i]->tool_event) {
+> +                       switch (mexp->metric_events[i]->tool_event) {
+>                         case PERF_TOOL_DURATION_TIME:
+>                                 stats =3D &walltime_nsecs_stats;
+>                                 scale =3D 1e-9;
+> @@ -391,19 +390,20 @@ static int prepare_metric(struct evsel **metric_eve=
+nts,
+>                                 pr_err("Invalid tool event 'max'");
+>                                 abort();
+>                         default:
+> -                               pr_err("Unknown tool event '%s'", evsel__=
+name(metric_events[i]));
+> +                               pr_err("Unknown tool event '%s'",
+> +                                      evsel__name(mexp->metric_events[i]=
+));
+>                                 abort();
+>                         }
+>                         val =3D avg_stats(stats) * scale;
+>                         source_count =3D 1;
+>                 } else {
+> -                       struct perf_stat_evsel *ps =3D metric_events[i]->=
+stats;
+> +                       struct perf_stat_evsel *ps =3D mexp->metric_event=
+s[i]->stats;
+>                         struct perf_stat_aggr *aggr =3D &ps->aggr[aggr_id=
+x];
+>
+>                         if (!aggr)
+>                                 break;
+>
+> -                        if (!metric_events[i]->supported) {
+> +                       if (!mexp->metric_events[i]->supported) {
+>                                 /*
+>                                  * Not supported events will have a count=
+ of 0,
+>                                  * which can be confusing in a
+> @@ -419,19 +419,19 @@ static int prepare_metric(struct evsel **metric_eve=
+nts,
+>                                  * reverse the scale before computing the
+>                                  * metric.
+>                                  */
+> -                               val =3D aggr->counts.val * (1.0 / metric_=
+events[i]->scale);
+> -                               source_count =3D evsel__source_count(metr=
+ic_events[i]);
+> +                               val =3D aggr->counts.val * (1.0 / mexp->m=
+etric_events[i]->scale);
+> +                               source_count =3D evsel__source_count(mexp=
+->metric_events[i]);
+>                         }
+>                 }
+> -               n =3D strdup(evsel__metric_id(metric_events[i]));
+> +               n =3D strdup(evsel__metric_id(mexp->metric_events[i]));
+>                 if (!n)
+>                         return -ENOMEM;
+>
+>                 expr__add_id_val_source_count(pctx, n, val, source_count)=
+;
+>         }
+>
+> -       for (int j =3D 0; metric_refs && metric_refs[j].metric_name; j++)=
+ {
+> -               int ret =3D expr__add_ref(pctx, &metric_refs[j]);
+> +       for (int j =3D 0; mexp->metric_refs && mexp->metric_refs[j].metri=
+c_name; j++) {
+> +               int ret =3D expr__add_ref(pctx, &mexp->metric_refs[j]);
+>
+>                 if (ret)
+>                         return ret;
+> @@ -441,14 +441,8 @@ static int prepare_metric(struct evsel **metric_even=
+ts,
+>  }
+>
+>  static void generic_metric(struct perf_stat_config *config,
+> -                          const char *metric_expr,
+> -                          const char *metric_threshold,
+> -                          struct evsel **metric_events,
+> -                          struct metric_ref *metric_refs,
+> -                          char *name,
+> -                          const char *metric_name,
+> -                          const char *metric_unit,
+> -                          int runtime,
+> +                       struct metric_expr *mexp,
+> +                       struct evsel *evsel,
+>                            int aggr_idx,
+>                            struct perf_stat_output_ctx *out)
+>  {
+> @@ -465,55 +459,55 @@ static void generic_metric(struct perf_stat_config =
+*config,
+>
+>         if (config->user_requested_cpu_list)
+>                 pctx->sctx.user_requested_cpu_list =3D strdup(config->use=
+r_requested_cpu_list);
+> -       pctx->sctx.runtime =3D runtime;
+> +       pctx->sctx.runtime =3D mexp->runtime;
+>         pctx->sctx.system_wide =3D config->system_wide;
+> -       i =3D prepare_metric(metric_events, metric_refs, pctx, aggr_idx);
+> +       i =3D prepare_metric(mexp, pctx, aggr_idx);
+>         if (i < 0) {
+>                 expr__ctx_free(pctx);
+>                 return;
+>         }
+> -       if (!metric_events[i]) {
+> -               if (expr__parse(&ratio, pctx, metric_expr) =3D=3D 0) {
+> +       if (!mexp->metric_events[i]) {
+> +               if (expr__parse(&ratio, pctx, mexp->metric_expr) =3D=3D 0=
+) {
+>                         char *unit;
+>                         char metric_bf[64];
+>
+> -                       if (metric_threshold &&
+> -                           expr__parse(&threshold, pctx, metric_threshol=
+d) =3D=3D 0 &&
+> +                       if (mexp->metric_threshold &&
+> +                           expr__parse(&threshold, pctx, mexp->metric_th=
+reshold) =3D=3D 0 &&
+>                             !isnan(threshold)) {
+>                                 color =3D fpclassify(threshold) =3D=3D FP=
+_ZERO
+>                                         ? PERF_COLOR_GREEN : PERF_COLOR_R=
+ED;
+>                         }
+>
+> -                       if (metric_unit && metric_name) {
+> -                               if (perf_pmu__convert_scale(metric_unit,
+> +                       if (mexp->metric_unit && mexp->metric_name) {
+> +                               if (perf_pmu__convert_scale(mexp->metric_=
+unit,
+>                                         &unit, &scale) >=3D 0) {
+>                                         ratio *=3D scale;
+>                                 }
+> -                               if (strstr(metric_expr, "?"))
+> +                               if (strstr(mexp->metric_expr, "?"))
+>                                         scnprintf(metric_bf, sizeof(metri=
+c_bf),
+> -                                         "%s  %s_%d", unit, metric_name,=
+ runtime);
+> +                                         "%s  %s_%d", unit, mexp->metric=
+_name, mexp->runtime);
+>                                 else
+>                                         scnprintf(metric_bf, sizeof(metri=
+c_bf),
+> -                                         "%s  %s", unit, metric_name);
+> +                                         "%s  %s", unit, mexp->metric_na=
+me);
+>
+>                                 print_metric(config, ctxp, color, "%8.1f"=
+,
+>                                              metric_bf, ratio);
+>                         } else {
+>                                 print_metric(config, ctxp, color, "%8.2f"=
+,
+> -                                       metric_name ?
+> -                                       metric_name :
+> -                                       out->force_header ?  name : "",
+> +                                       mexp->metric_name ?
+> +                                       mexp->metric_name :
+> +                                       out->force_header ?  evsel->name =
+: "",
+>                                         ratio);
+>                         }
+>                 } else {
+>                         print_metric(config, ctxp, color, /*unit=3D*/NULL=
+,
+>                                      out->force_header ?
+> -                                    (metric_name ? metric_name : name) :=
+ "", 0);
+> +                                    (mexp->metric_name ?: evsel->name) :=
+ "", 0);
+>                 }
+>         } else {
+>                 print_metric(config, ctxp, color, /*unit=3D*/NULL,
+>                              out->force_header ?
+> -                            (metric_name ? metric_name : name) : "", 0);
+> +                            (mexp->metric_name ?: evsel->name) : "", 0);
+>         }
+>
+>         expr__ctx_free(pctx);
+> @@ -528,7 +522,7 @@ double test_generic_metric(struct metric_expr *mexp, =
+int aggr_idx)
+>         if (!pctx)
+>                 return NAN;
+>
+> -       if (prepare_metric(mexp->metric_events, mexp->metric_refs, pctx, =
+aggr_idx) < 0)
+> +       if (prepare_metric(mexp, pctx, aggr_idx) < 0)
+>                 goto out;
+>
+>         if (expr__parse(&ratio, pctx, mexp->metric_expr))
+> @@ -630,10 +624,7 @@ void *perf_stat__print_shadow_stats_metricgroup(stru=
+ct perf_stat_config *config,
+>
+>                 if ((*num)++ > 0)
+>                         out->new_line(config, ctxp);
+> -               generic_metric(config, mexp->metric_expr, mexp->metric_th=
+reshold,
+> -                              mexp->metric_events, mexp->metric_refs, ev=
+sel->name,
+> -                              mexp->metric_name, mexp->metric_unit, mexp=
+->runtime,
+> -                              aggr_idx, out);
+> +               generic_metric(config, mexp, evsel, aggr_idx, out);
+>         }
+>
+>         return NULL;
+> --
+> 2.43.0.594.gd9cf4e227d-goog
+>
 
