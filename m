@@ -1,124 +1,176 @@
-Return-Path: <linux-kernel+bounces-54330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 341BF84ADBC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 05:56:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE6CE84ADBD
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 05:57:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 673C91C2300A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:56:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A456283793
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:57:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 878DD7A723;
-	Tue,  6 Feb 2024 04:56:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="GFjPN5fx"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C7837A717;
-	Tue,  6 Feb 2024 04:56:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9287877F2A;
+	Tue,  6 Feb 2024 04:57:44 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A9F877F19
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 04:57:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707195398; cv=none; b=MepZfYJ5FYJ7l8ENJ1HLBf3SJwEFcO32gKryTiTe7KlVi8UuIm2xGJzxsMOst4JqCmNBX2cwAEIolyiAItzzHew8gCVFSH/gU1XAM6GzKDns/OeLiyswCbjpyUK95zcJA3CsHtwXa8lcpTSw6UO9h0Q7cI48EuYvf3LyX+cRdVg=
+	t=1707195464; cv=none; b=d/ODRF7Ral9Zwe2xx4e4pKRay8ep/lyiK09Oiv3tILjuGRCG8fzc9iW3l3+zHgnUzTGyzdICQzuraOufMUfBSzS6qmF+ZItnvmd1EGCG2YaFvDB8aRMYNwItvKQgf6/oRtmxWF/Kp0h4yCxScTXcjV4LclYhj5Nee67iewC94Gk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707195398; c=relaxed/simple;
-	bh=NnPw6mvP/VB8UpLRC8XMPV9oMyheCzH1T0rxj01LA2g=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UuHAHWmuoXuLU+Fk2U2BGE7AoIVAPInKaZD6Oo62IaS6VycQ4jaGWKMUSF9ZC/XcuI40z07oLTuk+l+aISqWUtkhGomFREAUXDRZVDiAX7IOWMqztF6u3yPKOjJHrXJsKYMtnEmfFnvkJpfUWZ1hAts/Wx7Mo2gJYFr2sKC5LJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=GFjPN5fx; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4164uVDO023136;
-	Mon, 5 Feb 2024 22:56:31 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707195391;
-	bh=XpyZjwViMGROJ6p2FDtValaqDMAeg75JuE5DxuTdHpk=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=GFjPN5fxSAXj+yx4TSu/fP8NAS8qD+GJIkiv+LzimDjQK9PO7i3dajqM3DybCkCsS
-	 9/WjKmM/7lOO8xhHN9QCaG5Gu7sjvewaAbKKVNMoRybeE23jr+lNvFDhL8jHXckNtj
-	 GcrMyM8e4B+aqLGkmJTPg9iQRFsor6pAjHhSx1K8=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4164uVSr127057
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 5 Feb 2024 22:56:31 -0600
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 5
- Feb 2024 22:56:31 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 5 Feb 2024 22:56:31 -0600
-Received: from uda0132425.dhcp.ti.com (uda0132425.dhcp.ti.com [172.24.227.94])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4164uRxB002383;
-	Mon, 5 Feb 2024 22:56:28 -0600
-From: Vignesh Raghavendra <vigneshr@ti.com>
-To: Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring
-	<robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Bryan Brattlof <bb@ti.com>,
-        Jai Luthra <j-luthra@ti.com>
-CC: Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Ravi Gunasekaran <r-gunasekaran@ti.com>
-Subject: Re: [PATCH] arm64: dts: ti: k3-am62p5-sk: Enable CPSW MDIO node
-Date: Tue, 6 Feb 2024 10:26:25 +0530
-Message-ID: <170719349983.2245010.18430004394937215893.b4-ty@ti.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240201-am62p_cpsw_mdio-v1-1-05f758300f6e@ti.com>
-References: <20240201-am62p_cpsw_mdio-v1-1-05f758300f6e@ti.com>
+	s=arc-20240116; t=1707195464; c=relaxed/simple;
+	bh=C7dEciQXByHTE3Dmv/L9UCYEwE6MR5xRJb9k0LLOyYw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=d9CHyX+Z6burNoBrYAA0RQBuKM+k19RJazXMVpQCO3wSlVIfStbVbz/VqB9PqeO2L6x7XpElKN6X4OWltHKILPszaMqCGXJqfTdvWfzoflLyA1brUxKg8znGwx2f7kjnZrgklaDuv2zOsMV2D5FgoQLlpCmjAjKV40TEpNtXOI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3A5AE12FC;
+	Mon,  5 Feb 2024 20:58:23 -0800 (PST)
+Received: from a077893.arm.com (unknown [10.163.42.38])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A26283F641;
+	Mon,  5 Feb 2024 20:57:38 -0800 (PST)
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+To: linux-mm@kvack.org
+Cc: alexandru.elisei@arm.com,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/cma: Add sysfs file 'release_pages_success'
+Date: Tue,  6 Feb 2024 10:27:31 +0530
+Message-Id: <20240206045731.472759-1-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi Jai Luthra,
+This adds the following new sysfs file tracking the number of successfully
+released pages from a given CMA heap area. Also like before - this will be
+available via CONFIG_CMA_SYSFS, and help in determining active CMA pages
+available on the system.
 
-On Thu, 01 Feb 2024 18:13:53 +0530, Jai Luthra wrote:
-> Enable the CPSW MDIO node, and link the pinctrl information to enable
-> ethernet on SK-AM62P.
-> 
-> Ethernet was unintentally broken on this board, even though these nodes
-> were already present, as enabling them was missed in the original
-> patch.
-> 
-> [...]
+/sys/kernel/mm/cma/<cma-heap-area>/release_pages_success
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
+It adds an element 'nr_pages_released' (with CONFIG_CMA_SYSFS config) into
+'struct cma' which gets updated during cma_release().
 
-[1/1] arm64: dts: ti: k3-am62p5-sk: Enable CPSW MDIO node
-      commit: 8839a9af397e803e0447a6b3e69fad54ed22d26d
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+This patch applies on v6.8-rc3
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Some earlier relevant discussions regarding arm64 MTE dynamic tag storage
+in this regard can be found here.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+https://lore.kernel.org/all/ZbpKyNVHfhf1-AAv@raptor/
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+ Documentation/ABI/testing/sysfs-kernel-mm-cma |  6 ++++++
+ mm/cma.c                                      |  1 +
+ mm/cma.h                                      |  5 +++++
+ mm/cma_sysfs.c                                | 15 +++++++++++++++
+ 4 files changed, 27 insertions(+)
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
---
-Vignesh
+diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-cma b/Documentation/ABI/testing/sysfs-kernel-mm-cma
+index 02b2bb60c296..dfd755201142 100644
+--- a/Documentation/ABI/testing/sysfs-kernel-mm-cma
++++ b/Documentation/ABI/testing/sysfs-kernel-mm-cma
+@@ -23,3 +23,9 @@ Date:		Feb 2021
+ Contact:	Minchan Kim <minchan@kernel.org>
+ Description:
+ 		the number of pages CMA API failed to allocate
++
++What:		/sys/kernel/mm/cma/<cma-heap-name>/release_pages_success
++Date:		Feb 2024
++Contact:	Anshuman Khandual <anshuman.khandual@arm.com>
++Description:
++		the number of pages CMA API succeeded to release
+diff --git a/mm/cma.c b/mm/cma.c
+index 2627f4ba481f..4f95266eba1d 100644
+--- a/mm/cma.c
++++ b/mm/cma.c
+@@ -559,6 +559,7 @@ bool cma_release(struct cma *cma, const struct page *pages,
+ 
+ 	free_contig_range(pfn, count);
+ 	cma_clear_bitmap(cma, pfn, count);
++	cma_sysfs_account_release_pages(cma, count);
+ 	trace_cma_release(cma->name, pfn, pages, count);
+ 
+ 	return true;
+diff --git a/mm/cma.h b/mm/cma.h
+index 88a0595670b7..ad61cc6dd439 100644
+--- a/mm/cma.h
++++ b/mm/cma.h
+@@ -27,6 +27,8 @@ struct cma {
+ 	atomic64_t nr_pages_succeeded;
+ 	/* the number of CMA page allocation failures */
+ 	atomic64_t nr_pages_failed;
++	/* the number of CMA page released */
++	atomic64_t nr_pages_released;
+ 	/* kobject requires dynamic object */
+ 	struct cma_kobject *cma_kobj;
+ #endif
+@@ -44,10 +46,13 @@ static inline unsigned long cma_bitmap_maxno(struct cma *cma)
+ #ifdef CONFIG_CMA_SYSFS
+ void cma_sysfs_account_success_pages(struct cma *cma, unsigned long nr_pages);
+ void cma_sysfs_account_fail_pages(struct cma *cma, unsigned long nr_pages);
++void cma_sysfs_account_release_pages(struct cma *cma, unsigned long nr_pages);
+ #else
+ static inline void cma_sysfs_account_success_pages(struct cma *cma,
+ 						   unsigned long nr_pages) {};
+ static inline void cma_sysfs_account_fail_pages(struct cma *cma,
+ 						unsigned long nr_pages) {};
++static inline void cma_sysfs_account_release_pages(struct cma *cma,
++						   unsigned long nr_pages) {};
+ #endif
+ #endif
+diff --git a/mm/cma_sysfs.c b/mm/cma_sysfs.c
+index 56347d15b7e8..f50db3973171 100644
+--- a/mm/cma_sysfs.c
++++ b/mm/cma_sysfs.c
+@@ -24,6 +24,11 @@ void cma_sysfs_account_fail_pages(struct cma *cma, unsigned long nr_pages)
+ 	atomic64_add(nr_pages, &cma->nr_pages_failed);
+ }
+ 
++void cma_sysfs_account_release_pages(struct cma *cma, unsigned long nr_pages)
++{
++	atomic64_add(nr_pages, &cma->nr_pages_released);
++}
++
+ static inline struct cma *cma_from_kobj(struct kobject *kobj)
+ {
+ 	return container_of(kobj, struct cma_kobject, kobj)->cma;
+@@ -48,6 +53,15 @@ static ssize_t alloc_pages_fail_show(struct kobject *kobj,
+ }
+ CMA_ATTR_RO(alloc_pages_fail);
+ 
++static ssize_t release_pages_success_show(struct kobject *kobj,
++					  struct kobj_attribute *attr, char *buf)
++{
++	struct cma *cma = cma_from_kobj(kobj);
++
++	return sysfs_emit(buf, "%llu\n", atomic64_read(&cma->nr_pages_released));
++}
++CMA_ATTR_RO(release_pages_success);
++
+ static void cma_kobj_release(struct kobject *kobj)
+ {
+ 	struct cma *cma = cma_from_kobj(kobj);
+@@ -60,6 +74,7 @@ static void cma_kobj_release(struct kobject *kobj)
+ static struct attribute *cma_attrs[] = {
+ 	&alloc_pages_success_attr.attr,
+ 	&alloc_pages_fail_attr.attr,
++	&release_pages_success_attr.attr,
+ 	NULL,
+ };
+ ATTRIBUTE_GROUPS(cma);
+-- 
+2.25.1
 
 
