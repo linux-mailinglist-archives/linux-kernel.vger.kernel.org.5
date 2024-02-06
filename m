@@ -1,303 +1,377 @@
-Return-Path: <linux-kernel+bounces-55272-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55273-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5ED2784BA2A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:54:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E9F2684BA1E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:50:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 507C0B30907
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:46:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8B57B30AF4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:46:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5EFE134721;
-	Tue,  6 Feb 2024 15:45:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C07161339AB;
+	Tue,  6 Feb 2024 15:46:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Oo4xhbWk"
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2066.outbound.protection.outlook.com [40.107.101.66])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TkasSpuj";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MRtDDbZe"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C263130E30;
-	Tue,  6 Feb 2024 15:45:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.66
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707234355; cv=fail; b=urLbBmxXHPMsDeX7lEfgUVAPBUg2N0TXdGyuZfM3INUJlBLBAS0DZzHG5LuF+/gNqEEoXgBNDd8UdsPQm9kw4JRYL1z0ZvEpO2Uyk3JHBprRUGAfL/QQP8zkKPlro6ZxH7V1e028RTZB+oWHVp28KDR2sjffV8fnTjotU6BxwUM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707234355; c=relaxed/simple;
-	bh=tvEZVM81awavjsa1g3nQL0EvvrzRsFOpMDvWq0rFe0M=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=J4Pc2jktIoM0LRvBnTdna7GVK1wI1g3rTuuY+IUXXscCoA9AB5e0KT5YjyQVIA5BjXyPNmuIodb2hjSw/Aj4U22f5n0WcnufBlnsrRl76lg/HNSkDsGg+JpCX4ZfUPEygVYKQ+Jyt32CAbLlWdsq3mrrPGOXaaCfeOawjrZqkmw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Oo4xhbWk; arc=fail smtp.client-ip=40.107.101.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fmGKdcDqzgb+nk0HKV7IKesxJQ+bJHAcYnm7bYtTDs2WwueMrEPy7aQKwhc2/id/zeIdoUGIqrwe1e/1/T5K16Rj1pZuNCDyMpjKJqX0nqG+ZGkb6iYuqqHRSG57b6JFpPIOoJjNGUVH9ryk7yuTYhYPMPYKw2cUzp5Ne6yKWFEbr/JLExCv/bIIaXhA1o3rNQ6dWBJAyDvXJ3Pjc2AWz5+9k5Psj/9Z721TTWfXrnJ/SFAtUivINNVMK+KPR6wOnyWRpt7gwwsun/dmY1JhERCqlmvRcpmRrUEqaqzYFiX2NHUaWh9KKW2Nh5WmHsen4toJ9KB3DWpRm6c4iR7gFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ifn3ClyEG00ViJ7aB3qDSWWmoXUaazplkaXEB7TZLSE=;
- b=iWj9v6JuHDtrrf4NIQROjo/uK8OuTY7WR3ThPygcCKVZzvOu+V5S3FL9F39/bJa/N4B+1mgiEGACVlhvQGPgx4iYDABLiwQULWjG7AfKshkDd/NJufmA9Hz3v3fksFWnrfs558j4LJbGwwBBj/pEAC5F5ZNyqkhnP9HEsZB4QTtq5DRQCd6WOgg9Q3ZdlOdTyfcZzgdi4I3PvBoPC964TViDvPrHhWqjPGxFhtlc44hjcobLTy/xnkOkRfCctJTxzU4+iYUjxvzjOLJjsnFnHz1+t5gxVnh0jGXoVfCTfVCj2CCbrbNrNrC3/5AaRVMfU/PbZFwb+ENfmeTCT3fyxA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ifn3ClyEG00ViJ7aB3qDSWWmoXUaazplkaXEB7TZLSE=;
- b=Oo4xhbWkauG2o7V3pKKHakXqaENANgy+Mlrr3wWXgdzdLMGu+q3KuYrlxzoUSiXQpODVpX+iiHNfp2o3SQCftFPwDXCU9tu8jbri2v8Jd3wLyyth52YTiX/epYNeEO7KY6I0mPeSlI7loN5VXp+7U0DrPW8e7D2cA4lnXONiU98=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by DM6PR12MB4545.namprd12.prod.outlook.com (2603:10b6:5:2a3::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.15; Tue, 6 Feb
- 2024 15:45:50 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::f6d2:541d:5eda:d826]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::f6d2:541d:5eda:d826%5]) with mapi id 15.20.7270.016; Tue, 6 Feb 2024
- 15:45:49 +0000
-Message-ID: <80c4a2fd-d24b-468c-9aae-1a4ef509babc@amd.com>
-Date: Tue, 6 Feb 2024 09:45:47 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 6/6] cpufreq:amd-pstate: add quirk for the pstate CPPC
- capabilities missing
-Content-Language: en-US
-To: Perry Yuan <perry.yuan@amd.com>, rafael.j.wysocki@intel.com,
- viresh.kumar@linaro.org, Ray.Huang@amd.com, gautham.shenoy@amd.com,
- Borislav.Petkov@amd.com
-Cc: Alexander.Deucher@amd.com, Xinmei.Huang@amd.com, Xiaojian.Du@amd.com,
- Li.Meng@amd.com, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1707193566.git.perry.yuan@amd.com>
- <4626a4aff50921be3b7a0345ae51e5aa246504d0.1707193566.git.perry.yuan@amd.com>
-From: Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <4626a4aff50921be3b7a0345ae51e5aa246504d0.1707193566.git.perry.yuan@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN4PR0501CA0119.namprd05.prod.outlook.com
- (2603:10b6:803:42::36) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A32DA13341A;
+	Tue,  6 Feb 2024 15:46:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707234397; cv=none; b=FwDRNAsh15m4lJ6b+N1qiwsLv15KW+w2dRK477jhBGxhSWUSiiTzWCtkG4jH9X2qz0wfg3YmBzEa0bjnbGzm9A7MqChEjSjJEbb6Y6VH+RO4LLQSg9RZhgORl6wxaebJJ/zogWnYra+FwSZuFcW1lXSxR/2wzhkcwhzajy8fjpA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707234397; c=relaxed/simple;
+	bh=SEdns8smKMGR5dhngyDhyIEnCtDt7MMyHzlgKHDW3+0=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=RZSzxu9rdCzIdQBcjdeGGLJzfXGYNSp5ep1Hf7j9pUD6jlBiPpjHmoBPJAvx7vfI4mIsGrdh9sH/QcUSfRy2GN5a0UVi6ZVGzrK8p6IcM95ZizOdZpaoWHv1XZUXTA0CGnKhoD+U9wj9zlIZhfktyAcLeiJl/+g6CGVQ/AuEybA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=TkasSpuj; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MRtDDbZe; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 06 Feb 2024 15:46:32 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1707234393;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zM41oB1Pf2A6ttloJasxcrcys5oQ/ucDuSO7nHCkIJM=;
+	b=TkasSpujSwxYfsBjrfro6u75kefs6NY/PI+0feZzGIrWlx6p2bbcie6vjAIP1AkB59vjHR
+	v7275Ak/647+xm5yLkB+cNN70TnhEt7yM7mGp19/ufc67BIKIKXh4qKHWAyHxb4K7HzTin
+	DOrLNMVb1msnrtHb6/x4AgNFpZxAMoCssH6o0Q4iEk8IgWiwsS0P6qbFhgX78WdP+1sqfb
+	BxE1VB7YnCbHsaMnCEgtCtgLc88kQeBgTelk5p60IAHBnqxbEQPo/SNc7BYGWTUdkONXkn
+	Xqm6rrPTalxRNGo2Jtu7GV8cvaHhYdIKaNJkTqC7VO6EekhoavqgvET6jUhU7w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1707234393;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zM41oB1Pf2A6ttloJasxcrcys5oQ/ucDuSO7nHCkIJM=;
+	b=MRtDDbZeJWWVqkHxBWzrd39GejLtCJsNg7n83JH1ZIPjwwG95Iw1X9lpw4/tVqE4xlVU6D
+	WWk2580MLo7eUxCA==
+From: "tip-bot2 for Ard Biesheuvel" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/sev] x86/sev: Fix position dependent variable references in
+ startup code
+Cc: Kevin Loughlin <kevinloughlin@google.com>,
+ Ard Biesheuvel <ardb@kernel.org>, "Borislav Petkov (AMD)" <bp@alien8.de>,
+  <stable@kernel.org>, x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240130220845.1978329-1-kevinloughlin@google.com>
+References: <20240130220845.1978329-1-kevinloughlin@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|DM6PR12MB4545:EE_
-X-MS-Office365-Filtering-Correlation-Id: e5654c96-eb62-4c07-edeb-08dc272ab152
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	jrC6WYyua0ih1IUcSJQpBHU3BEhZDvZcku7XdYvmR9csSWCZpA0IupvWVffpdoShXvS+LBqzRu0YGBMbkSSnFB2e6+U5b+berrEvcpaj6+vC33G7NZijAVY3i+UjJjshDcJP1p/krLIpYMhEq/naZa05dHsUAJix8OeNoBqcMbyytaoif+zDiPeVtOGzc0pUnwgH+FlxllpsKhunEAi8Rq9hAKl+Be7UFR0le6kT5w/Wv+Mz8c5onPdxZFeSuX83iUuF1xl5IrQHMvrHLaBgcylO9I+NWeUukWnSrWLJAuz14+LyKaSa3TvoUkodMoBGOn3VrFCZ+dOcRTvT1a/kFvdaEqF8PpQ95E1RCdnpTXWg52YYL9g1J6KKWyM7ZtqLniGiSvx0qAtMGj8XS4Clex859ygNoLK25VnAvWcgtim2cX9hQ24DG5yrEyj6e+kodZrpz2OeYeW0i33XKRdBZXg81LCBUukhHpJp0gP+bxB0JBEOh3ByxsXMp0VkrECEf+MbpMLRBu/qRHQsL38cYNgRgMR8m9lLkVAMCfYGF7bi2Rri4lOdOmAbX3sahz0a/5RnK09o2fUd+0YlEyUyHqWY/JGIMePs1PG06kv56xXBwfCBLHurJaBb0LCiKaGE3fMGoaLfBcRXcpYJbY8oRg==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(396003)(376002)(366004)(136003)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(2616005)(26005)(31686004)(41300700001)(66476007)(38100700002)(6636002)(316002)(478600001)(53546011)(6512007)(6486002)(83380400001)(6506007)(36756003)(66556008)(66946007)(86362001)(5660300002)(8936002)(4326008)(31696002)(44832011)(2906002)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?aUUxUHJZMDRieEFnVVNOUS9LaDJQK1JjSWdNV0RTcUdBb2U0RitzbE1id014?=
- =?utf-8?B?NUFFNFpYVVJXYlBmeDNIci9iT2dPQW5LYno4OFRLMUhFUnVqRUdHNVNIY0Qv?=
- =?utf-8?B?N24wa2xQdXNZK1dTM1V6LzlWb0p1ZlIyNFp6RmZQQWU1c1l6YlJNeUVSdS9M?=
- =?utf-8?B?dCtPRFJaZjMvNEo1WjFJOW9RNHJxQzFKUmFYSjJRZXNPN3VVYktSdGRxQUM1?=
- =?utf-8?B?Nm1OeTlOWW1mTy96OURXQWt4b0dwcHJlcUpCcmFoK0p0UWxzNEJrdzVSeXlC?=
- =?utf-8?B?TGtucTlQYTRZd1A3RHpJUitxdnN1MUhtTURpd2ZoaXZsU2o5bmNqU3RESGYy?=
- =?utf-8?B?S3ZWeVBuUVpTKzg0Y0pTMWZDeTNkNzY3cnBHTitqYkV2YUNTcTdQZXRXdnBi?=
- =?utf-8?B?TVoyb08wbSs5dVhQNjUyRUZScldiYjJaYmhqcFFRTHhlalQvTis2K1JqWmJa?=
- =?utf-8?B?SmwxYmw5SG5jci9xWkxCZXB5eE9UT2JTcTcxQnUvQ3h1cWFWOGpldmVKYXpI?=
- =?utf-8?B?bG1LZEhtbmFjbUZURWFXaDQvclNrcjdRdTZMWkgyRTJhRlYrKzR0YWxYZldK?=
- =?utf-8?B?aVdlTTg3TFNGbzBtbXNCYlIrdVNCZ1VLa1l1QVNzb1lCd3hlVE5CL1pIeWg1?=
- =?utf-8?B?Q214MUdocUZBNDQ4b3BOLzRHV3R6RExpblY0aXJjVHEzVldiZUQ0RmZXSThG?=
- =?utf-8?B?akh0VkR5cksrQWM0dmhxK2hMbjNvUnFtNlBlU241d0FHbFNMTHNqS2ZCWXkz?=
- =?utf-8?B?NktDQk56SzBUY0tCSWpFQVVjd0xjMHM0d3kwMXlGSzhLSGFKQVFhU0h3S2l4?=
- =?utf-8?B?Y1Awa1NlVGoxcGhwSDlFazNnNWJnVG1HT3l2Rmp4NUIyUmVLcGJ3ZmFnQnRn?=
- =?utf-8?B?SW9VNjhYZ1ROTitCV2ZQUWxBS3FFMUtqQjJPSEtOVUlTMUZzaW9LK0w0eDFJ?=
- =?utf-8?B?WHBHZlEyS3VGVjQrQkNibEdacmFySlEzT0YybzZBM3Z4QjcwemR2dW01TDhk?=
- =?utf-8?B?VStDNjFBSTZ1dHd0dXJvZXVOcXFuMUxWVHoyYmNyZjBaTFl3VERiR1RVOGtC?=
- =?utf-8?B?cWNFckhrYkc2cG9kb3FucXZtSzB3NkhzTCtGNG5LdjBXWi9OZGY1Y3Bwckcv?=
- =?utf-8?B?dmloT3l3RlZxRUdSQkhadDZsQldDZEtlczdTRnNQa3Y3T0NUTklXUW52eFFL?=
- =?utf-8?B?ZkZwb1ZGV2lZRDdLbUJ4UUhRUm55am50UzBidVlNNWNydHIrbU04bGljeCsy?=
- =?utf-8?B?ZFNjQ0NUU0d0MlpDaG12NlNjYitQOEdRWHdFYkJrc1lpeFJlNDhGRE5wTzRX?=
- =?utf-8?B?bis0WnVDZ3o3TmxNQmtKUjg4N2FraVFOODV0VGRPN1JTazRkUGcwb0ZSemVs?=
- =?utf-8?B?RzFWNE9XQ0IxbDBDRHpCZEMzTDJ3Zk50MlZCTmV2YUpIMmVoM09rUlRsdXZG?=
- =?utf-8?B?SlEwN3V5UjJncU4vbC85RTZCV3pCYm9FazdobjRUMjBSbnVzR1VDL2ZhSC9H?=
- =?utf-8?B?WmExMlh2Nk5uMm50WHZsT29uc2ZHRmJKUmFJMzFSMkIrSkMrRFRIUk8yOVhU?=
- =?utf-8?B?MEI5WGV0MTlHZGtEVGJ0cUk1SkdKSXJCNEwyb3hsY2t3ZTJtTTJNSDkwZUhz?=
- =?utf-8?B?ZzVZVWNLeVRYbTE4Q2dmZnFUeXNGOElxSC9mSlRacXR0a1c4bVZaZmwzVWpH?=
- =?utf-8?B?V1ZmVjNMMGpRdlkvOUx2U0RWTzRnSkc0aFcyYTNYTnVubUgrOHBkSS90YlYw?=
- =?utf-8?B?cmZnY3lCb0RvOG8rWTBsbkNaOUZTZ3ZHbWtKbndMSGpIRlJRbXhMZWdzVnlP?=
- =?utf-8?B?TXJldjloSjRpaUs4VE1ZWURyZW5qd1A0S2hqVWtGa3dsUmdBcHNkazNsRFF3?=
- =?utf-8?B?NmNWUUNCTUxaWjNIcStRem9wRVhLWGtGOTNGdmhiU3FOU2FHeFdFcE15bzc5?=
- =?utf-8?B?NEZXVnFZU0V0WWRQTGFEUjgyc2Z0d0VLYUUrWnBDRzdhb0tTd0NvbGFHa28r?=
- =?utf-8?B?VVFkekFjSUlEV2JsMVBVTFV3UUlUVW9RK0tBRlhFWWdvSlpaYWgxRG5xS3M3?=
- =?utf-8?B?ODJFSG1iTG9pUEVGNXJzUzkrLzNjRXJ3c3h3NE0wekNWbjdKQ1VocFdFRUM0?=
- =?utf-8?Q?LE5Lu1xkGLDuZRFe0YUZWM3HW?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e5654c96-eb62-4c07-edeb-08dc272ab152
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2024 15:45:49.8609
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VMkadMLja2VBeO5XAm1+m5sOg2e8KsvKkUXHMMVmA81wQfmu+OlfFGIfmrRxDwWOIqQonPgZXhP/2x8tvl/Y5A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4545
+Message-ID: <170723439231.398.15349370352197964831.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On 2/5/2024 22:33, Perry Yuan wrote:
-> Add quirks table to get CPPC capabilities issue fixed by providing
-> correct perf or frequency values while driver loading.
-> 
-> If CPPC capabilities are not defined in the ACPI tables or wrongly
-> defined by platform firmware, it needs to use quick to get those
-s,quick,a quirk,
-> issues fixed with correct workaround values to make pstate driver
-> can be loaded even though there are CPPC capabilities errors.
-> 
-> The workaround will match the broken BIOS which lack of CPPC capabilities
-> nominal_freq and lowest_freq definition in the ACPI table.
-> 
-> $ cat /sys/devices/system/cpu/cpu0/acpi_cppc/lowest_freq
-> 0
-> $ cat /sys/devices/system/cpu/cpu0/acpi_cppc/nominal_freq
-> 0
-> 
-> Signed-off-by: Perry Yuan <perry.yuan@amd.com>
-> ---
->   drivers/cpufreq/amd-pstate.c | 59 ++++++++++++++++++++++++++++++++++--
->   include/linux/amd-pstate.h   |  6 ++++
->   2 files changed, 63 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
-> index 77effc3caf6c..874d8b663790 100644
-> --- a/drivers/cpufreq/amd-pstate.c
-> +++ b/drivers/cpufreq/amd-pstate.c
-> @@ -67,6 +67,7 @@ static struct cpufreq_driver amd_pstate_epp_driver;
->   static int cppc_state = AMD_PSTATE_UNDEFINED;
->   static bool cppc_enabled;
->   static bool amd_pstate_prefcore = true;
-> +static struct quirk_entry *quirks;
->   
->   /*
->    * AMD Energy Preference Performance (EPP)
-> @@ -111,6 +112,43 @@ static unsigned int epp_values[] = {
->   
->   typedef int (*cppc_mode_transition_fn)(int);
->   
-> +static struct quirk_entry quirk_amd_7k62 = {
-> +	.nominal_freq = 2600,
-> +	.lowest_freq = 550,
-> +};
-> +
-> +static int __init dmi_matched_7k62_bios_bug(const struct dmi_system_id *dmi)
-> +{
-> +	/**
-> +	 * match the broken bios for family 17h, model 31h processor
-> +	 * broken BIOS lack of nominal_freq and lowest_freq capabilities
-> +	 * definition in ACPI tables
-> +	 */
-> +	if (boot_cpu_data.x86 == 0x17 && boot_cpu_data.x86_model == 0x31 &&
-> +			boot_cpu_has(X86_FEATURE_ZEN2)) {
+The following commit has been merged into the x86/sev branch of tip:
 
-I think you should use one or the other (17/31) or (X86_FEATURE_ZEN2).
+Commit-ID:     1c811d403afd73f04bde82b83b24c754011bd0e8
+Gitweb:        https://git.kernel.org/tip/1c811d403afd73f04bde82b83b24c754011bd0e8
+Author:        Ard Biesheuvel <ardb@kernel.org>
+AuthorDate:    Sat, 03 Feb 2024 13:53:06 +01:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Tue, 06 Feb 2024 16:38:42 +01:00
 
-> +		quirks = dmi->driver_data;
-> +		pr_info("hardware type %s found\n", dmi->ident);
+x86/sev: Fix position dependent variable references in startup code
 
-I think a better message explains what is happening.  For example:
-"Overriding nominal and lowest frequencies for %s\n"
+The early startup code executes from a 1:1 mapping of memory, which
+differs from the mapping that the code was linked and/or relocated to
+run at. The latter mapping is not active yet at this point, and so
+symbol references that rely on it will fault.
 
-> +		return 1;
-> +	}
-> +
-> +
+Given that the core kernel is built without -fPIC, symbol references are
+typically emitted as absolute, and so any such references occuring in
+the early startup code will therefore crash the kernel.
 
-Only need one newline needed here.
+While an attempt was made to work around this for the early SEV/SME
+startup code, by forcing RIP-relative addressing for certain global
+SEV/SME variables via inline assembly (see snp_cpuid_get_table() for
+example), RIP-relative addressing must be pervasively enforced for
+SEV/SME global variables when accessed prior to page table fixups.
 
-> +	return 0;
-> +}
-> +
-> +static const struct dmi_system_id amd_pstate_quirks_table[] __initconst = {
-> +	{
-> +		.callback = dmi_matched_7k62_bios_bug,
-> +		.ident = "AMD EPYC 7K62",
-> +		.matches = {
-> +			DMI_MATCH(DMI_BIOS_VERSION, "5.14"),
-> +			DMI_MATCH(DMI_BIOS_RELEASE, "12/12/2019"),
-> +		},
-> +		.driver_data = &quirk_amd_7k62,
-> +	},
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(dmi, amd_pstate_quirks_table);
-> +
->   static inline int get_mode_idx_from_str(const char *str, size_t size)
->   {
->   	int i;
-> @@ -600,13 +638,19 @@ static void amd_pstate_adjust_perf(unsigned int cpu,
->   static int amd_get_min_freq(struct amd_cpudata *cpudata)
->   {
->   	struct cppc_perf_caps cppc_perf;
-> +	u32 lowest_freq;
->   
->   	int ret = cppc_get_perf_caps(cpudata->cpu, &cppc_perf);
->   	if (ret)
->   		return ret;
->   
-> +	if (quirks && quirks->lowest_freq)
-> +		lowest_freq = quirks->lowest_freq;
-> +	else
-> +		lowest_freq = cppc_perf.lowest_freq;
-> +
->   	/* Switch to khz */
-> -	return cppc_perf.lowest_freq * 1000;
-> +	return lowest_freq * 1000;
->   }
->   
->   static int amd_get_max_freq(struct amd_cpudata *cpudata)
-> @@ -635,12 +679,18 @@ static int amd_get_max_freq(struct amd_cpudata *cpudata)
->   static int amd_get_nominal_freq(struct amd_cpudata *cpudata)
->   {
->   	struct cppc_perf_caps cppc_perf;
-> +	u32 nominal_freq;
->   
->   	int ret = cppc_get_perf_caps(cpudata->cpu, &cppc_perf);
->   	if (ret)
->   		return ret;
->   
-> -	return cppc_perf.nominal_freq;
-> +	if (quirks && quirks->nominal_freq)
-> +		nominal_freq = quirks->nominal_freq;
-> +	else
-> +		nominal_freq = cppc_perf.nominal_freq;
-> +
-> +	return nominal_freq;
->   }
->   
->   static int amd_get_lowest_nonlinear_freq(struct amd_cpudata *cpudata)
-> @@ -1672,6 +1722,11 @@ static int __init amd_pstate_init(void)
->   	if (cpufreq_get_current_driver())
->   		return -EEXIST;
->   
-> +	quirks = NULL;
-> +
-> +	/* check if this machine need CPPC quirks */
-> +	dmi_check_system(amd_pstate_quirks_table);
-> +
->   	switch (cppc_state) {
->   	case AMD_PSTATE_UNDEFINED:
->   		/* Disable on the following configs by default:
-> diff --git a/include/linux/amd-pstate.h b/include/linux/amd-pstate.h
-> index d21838835abd..7b2cbb892fd9 100644
-> --- a/include/linux/amd-pstate.h
-> +++ b/include/linux/amd-pstate.h
-> @@ -124,4 +124,10 @@ static const char * const amd_pstate_mode_string[] = {
->   	[AMD_PSTATE_GUIDED]      = "guided",
->   	NULL,
->   };
-> +
-> +struct quirk_entry {
-> +	u32 nominal_freq;
-> +	u32 lowest_freq;
-> +};
-> +
->   #endif /* _LINUX_AMD_PSTATE_H */
+__startup_64() already handles this issue for select non-SEV/SME global
+variables using fixup_pointer(), which adjusts the pointer relative to a
+`physaddr` argument. To avoid having to pass around this `physaddr`
+argument across all functions needing to apply pointer fixups, introduce
+a macro RIP_RELATIVE_REF() which generates a RIP-relative reference to
+a given global variable. It is used where necessary to force
+RIP-relative accesses to global variables.
 
+For backporting purposes, this patch makes no attempt at cleaning up
+other occurrences of this pattern, involving either inline asm or
+fixup_pointer(). Those will be addressed later.
+
+  [ bp: Call it "rip_rel_ref" everywhere like other code shortens
+    "rIP-relative reference" and make the asm wrapper __always_inline. ]
+
+Co-developed-by: Kevin Loughlin <kevinloughlin@google.com>
+Signed-off-by: Kevin Loughlin <kevinloughlin@google.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Cc: <stable@kernel.org>
+Link: https://lore.kernel.org/all/20240130220845.1978329-1-kevinloughlin@google.com
+---
+ arch/x86/coco/core.c               |  7 +------
+ arch/x86/include/asm/asm.h         | 14 ++++++++++++++
+ arch/x86/include/asm/coco.h        |  8 +++++++-
+ arch/x86/include/asm/mem_encrypt.h | 15 +++++++++------
+ arch/x86/kernel/sev-shared.c       | 12 ++++++------
+ arch/x86/kernel/sev.c              |  4 ++--
+ arch/x86/mm/mem_encrypt_identity.c | 27 ++++++++++++---------------
+ 7 files changed, 51 insertions(+), 36 deletions(-)
+
+diff --git a/arch/x86/coco/core.c b/arch/x86/coco/core.c
+index eeec998..d07be9d 100644
+--- a/arch/x86/coco/core.c
++++ b/arch/x86/coco/core.c
+@@ -14,7 +14,7 @@
+ #include <asm/processor.h>
+ 
+ enum cc_vendor cc_vendor __ro_after_init = CC_VENDOR_NONE;
+-static u64 cc_mask __ro_after_init;
++u64 cc_mask __ro_after_init;
+ 
+ static bool noinstr intel_cc_platform_has(enum cc_attr attr)
+ {
+@@ -148,8 +148,3 @@ u64 cc_mkdec(u64 val)
+ 	}
+ }
+ EXPORT_SYMBOL_GPL(cc_mkdec);
+-
+-__init void cc_set_mask(u64 mask)
+-{
+-	cc_mask = mask;
+-}
+diff --git a/arch/x86/include/asm/asm.h b/arch/x86/include/asm/asm.h
+index fbcfec4..ca8eed1 100644
+--- a/arch/x86/include/asm/asm.h
++++ b/arch/x86/include/asm/asm.h
+@@ -113,6 +113,20 @@
+ 
+ #endif
+ 
++#ifndef __ASSEMBLY__
++#ifndef __pic__
++static __always_inline __pure void *rip_rel_ptr(void *p)
++{
++	asm("leaq %c1(%%rip), %0" : "=r"(p) : "i"(p));
++
++	return p;
++}
++#define RIP_REL_REF(var)	(*(typeof(&(var)))rip_rel_ptr(&(var)))
++#else
++#define RIP_REL_REF(var)	(var)
++#endif
++#endif
++
+ /*
+  * Macros to generate condition code outputs from inline assembly,
+  * The output operand must be type "bool".
+diff --git a/arch/x86/include/asm/coco.h b/arch/x86/include/asm/coco.h
+index 6ae2d16..21940ef 100644
+--- a/arch/x86/include/asm/coco.h
++++ b/arch/x86/include/asm/coco.h
+@@ -2,6 +2,7 @@
+ #ifndef _ASM_X86_COCO_H
+ #define _ASM_X86_COCO_H
+ 
++#include <asm/asm.h>
+ #include <asm/types.h>
+ 
+ enum cc_vendor {
+@@ -11,9 +12,14 @@ enum cc_vendor {
+ };
+ 
+ extern enum cc_vendor cc_vendor;
++extern u64 cc_mask;
+ 
+ #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
+-void cc_set_mask(u64 mask);
++static inline void cc_set_mask(u64 mask)
++{
++	RIP_REL_REF(cc_mask) = mask;
++}
++
+ u64 cc_mkenc(u64 val);
+ u64 cc_mkdec(u64 val);
+ #else
+diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/asm/mem_encrypt.h
+index 359ada4..b31eb9f 100644
+--- a/arch/x86/include/asm/mem_encrypt.h
++++ b/arch/x86/include/asm/mem_encrypt.h
+@@ -15,7 +15,8 @@
+ #include <linux/init.h>
+ #include <linux/cc_platform.h>
+ 
+-#include <asm/bootparam.h>
++#include <asm/asm.h>
++struct boot_params;
+ 
+ #ifdef CONFIG_X86_MEM_ENCRYPT
+ void __init mem_encrypt_init(void);
+@@ -58,6 +59,11 @@ void __init mem_encrypt_free_decrypted_mem(void);
+ 
+ void __init sev_es_init_vc_handling(void);
+ 
++static inline u64 sme_get_me_mask(void)
++{
++	return RIP_REL_REF(sme_me_mask);
++}
++
+ #define __bss_decrypted __section(".bss..decrypted")
+ 
+ #else	/* !CONFIG_AMD_MEM_ENCRYPT */
+@@ -89,6 +95,8 @@ early_set_mem_enc_dec_hypercall(unsigned long vaddr, unsigned long size, bool en
+ 
+ static inline void mem_encrypt_free_decrypted_mem(void) { }
+ 
++static inline u64 sme_get_me_mask(void) { return 0; }
++
+ #define __bss_decrypted
+ 
+ #endif	/* CONFIG_AMD_MEM_ENCRYPT */
+@@ -106,11 +114,6 @@ void add_encrypt_protection_map(void);
+ 
+ extern char __start_bss_decrypted[], __end_bss_decrypted[], __start_bss_decrypted_unused[];
+ 
+-static inline u64 sme_get_me_mask(void)
+-{
+-	return sme_me_mask;
+-}
+-
+ #endif	/* __ASSEMBLY__ */
+ 
+ #endif	/* __X86_MEM_ENCRYPT_H__ */
+diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
+index 5db24d0..ae79f95 100644
+--- a/arch/x86/kernel/sev-shared.c
++++ b/arch/x86/kernel/sev-shared.c
+@@ -560,9 +560,9 @@ static int snp_cpuid(struct ghcb *ghcb, struct es_em_ctxt *ctxt, struct cpuid_le
+ 		leaf->eax = leaf->ebx = leaf->ecx = leaf->edx = 0;
+ 
+ 		/* Skip post-processing for out-of-range zero leafs. */
+-		if (!(leaf->fn <= cpuid_std_range_max ||
+-		      (leaf->fn >= 0x40000000 && leaf->fn <= cpuid_hyp_range_max) ||
+-		      (leaf->fn >= 0x80000000 && leaf->fn <= cpuid_ext_range_max)))
++		if (!(leaf->fn <= RIP_REL_REF(cpuid_std_range_max) ||
++		      (leaf->fn >= 0x40000000 && leaf->fn <= RIP_REL_REF(cpuid_hyp_range_max)) ||
++		      (leaf->fn >= 0x80000000 && leaf->fn <= RIP_REL_REF(cpuid_ext_range_max))))
+ 			return 0;
+ 	}
+ 
+@@ -1072,11 +1072,11 @@ static void __init setup_cpuid_table(const struct cc_blob_sev_info *cc_info)
+ 		const struct snp_cpuid_fn *fn = &cpuid_table->fn[i];
+ 
+ 		if (fn->eax_in == 0x0)
+-			cpuid_std_range_max = fn->eax;
++			RIP_REL_REF(cpuid_std_range_max) = fn->eax;
+ 		else if (fn->eax_in == 0x40000000)
+-			cpuid_hyp_range_max = fn->eax;
++			RIP_REL_REF(cpuid_hyp_range_max) = fn->eax;
+ 		else if (fn->eax_in == 0x80000000)
+-			cpuid_ext_range_max = fn->eax;
++			RIP_REL_REF(cpuid_ext_range_max) = fn->eax;
+ 	}
+ }
+ 
+diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+index 002af6c..1ef7ae8 100644
+--- a/arch/x86/kernel/sev.c
++++ b/arch/x86/kernel/sev.c
+@@ -748,7 +748,7 @@ void __init early_snp_set_memory_private(unsigned long vaddr, unsigned long padd
+ 	 * This eliminates worries about jump tables or checking boot_cpu_data
+ 	 * in the cc_platform_has() function.
+ 	 */
+-	if (!(sev_status & MSR_AMD64_SEV_SNP_ENABLED))
++	if (!(RIP_REL_REF(sev_status) & MSR_AMD64_SEV_SNP_ENABLED))
+ 		return;
+ 
+ 	 /*
+@@ -767,7 +767,7 @@ void __init early_snp_set_memory_shared(unsigned long vaddr, unsigned long paddr
+ 	 * This eliminates worries about jump tables or checking boot_cpu_data
+ 	 * in the cc_platform_has() function.
+ 	 */
+-	if (!(sev_status & MSR_AMD64_SEV_SNP_ENABLED))
++	if (!(RIP_REL_REF(sev_status) & MSR_AMD64_SEV_SNP_ENABLED))
+ 		return;
+ 
+ 	 /* Ask hypervisor to mark the memory pages shared in the RMP table. */
+diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
+index efe9f21..0166ab1 100644
+--- a/arch/x86/mm/mem_encrypt_identity.c
++++ b/arch/x86/mm/mem_encrypt_identity.c
+@@ -304,7 +304,8 @@ void __init sme_encrypt_kernel(struct boot_params *bp)
+ 	 * instrumentation or checking boot_cpu_data in the cc_platform_has()
+ 	 * function.
+ 	 */
+-	if (!sme_get_me_mask() || sev_status & MSR_AMD64_SEV_ENABLED)
++	if (!sme_get_me_mask() ||
++	    RIP_REL_REF(sev_status) & MSR_AMD64_SEV_ENABLED)
+ 		return;
+ 
+ 	/*
+@@ -541,11 +542,11 @@ void __init sme_enable(struct boot_params *bp)
+ 	me_mask = 1UL << (ebx & 0x3f);
+ 
+ 	/* Check the SEV MSR whether SEV or SME is enabled */
+-	sev_status   = __rdmsr(MSR_AMD64_SEV);
+-	feature_mask = (sev_status & MSR_AMD64_SEV_ENABLED) ? AMD_SEV_BIT : AMD_SME_BIT;
++	RIP_REL_REF(sev_status) = msr = __rdmsr(MSR_AMD64_SEV);
++	feature_mask = (msr & MSR_AMD64_SEV_ENABLED) ? AMD_SEV_BIT : AMD_SME_BIT;
+ 
+ 	/* The SEV-SNP CC blob should never be present unless SEV-SNP is enabled. */
+-	if (snp && !(sev_status & MSR_AMD64_SEV_SNP_ENABLED))
++	if (snp && !(msr & MSR_AMD64_SEV_SNP_ENABLED))
+ 		snp_abort();
+ 
+ 	/* Check if memory encryption is enabled */
+@@ -571,7 +572,6 @@ void __init sme_enable(struct boot_params *bp)
+ 			return;
+ 	} else {
+ 		/* SEV state cannot be controlled by a command line option */
+-		sme_me_mask = me_mask;
+ 		goto out;
+ 	}
+ 
+@@ -590,16 +590,13 @@ void __init sme_enable(struct boot_params *bp)
+ 	cmdline_ptr = (const char *)((u64)bp->hdr.cmd_line_ptr |
+ 				     ((u64)bp->ext_cmd_line_ptr << 32));
+ 
+-	if (cmdline_find_option(cmdline_ptr, cmdline_arg, buffer, sizeof(buffer)) < 0)
+-		goto out;
+-
+-	if (!strncmp(buffer, cmdline_on, sizeof(buffer)))
+-		sme_me_mask = me_mask;
++	if (cmdline_find_option(cmdline_ptr, cmdline_arg, buffer, sizeof(buffer)) < 0 ||
++	    strncmp(buffer, cmdline_on, sizeof(buffer)))
++		return;
+ 
+ out:
+-	if (sme_me_mask) {
+-		physical_mask &= ~sme_me_mask;
+-		cc_vendor = CC_VENDOR_AMD;
+-		cc_set_mask(sme_me_mask);
+-	}
++	RIP_REL_REF(sme_me_mask) = me_mask;
++	physical_mask &= ~me_mask;
++	cc_vendor = CC_VENDOR_AMD;
++	cc_set_mask(me_mask);
+ }
 
