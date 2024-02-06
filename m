@@ -1,110 +1,94 @@
-Return-Path: <linux-kernel+bounces-54615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54616-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCD6184B188
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:44:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4791384B189
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:45:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84B04285937
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:44:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAAED1F23FED
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:45:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 215A912D17B;
-	Tue,  6 Feb 2024 09:44:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E346812D16D;
+	Tue,  6 Feb 2024 09:45:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="JO6Eluaq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yd/PM0gW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50F0E12D146;
-	Tue,  6 Feb 2024 09:44:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3668712D145
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 09:45:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707212674; cv=none; b=kYjW3RRmTCbR56TtRVKVNBDevJpTlKbUqC1HypGxlaefkttOlJTK4pJUMQD/vN5CXjIbtafnwEda1moSIZcijJMQL38VcoEGkFYPSIkdrv+kq+WmbLT51o3J5rGuDTrAWmv7JypG2vp2386VjziZhAPNseI+c6yIuRTt5XfYoSE=
+	t=1707212735; cv=none; b=nbPA3fA1xwOoqcA2ANfdB3wSOg+qDNG7HTxeNuPu2RAk0nh3CGlIZpF9PksA9qL0G2l+9tz2Ow0FSP0iV/t2zElZlMpAmZxyrTiHWQ10RdThI6wUkY70XSEss1UDj/ahUxQh9Siewqt18p+KKikEn7qUA+1j30LB3xodjbwzlpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707212674; c=relaxed/simple;
-	bh=tg9pHfnMgYgL/Q/jdYJ/Y5q7DJviTwxBb9aNHAB6+1o=;
+	s=arc-20240116; t=1707212735; c=relaxed/simple;
+	bh=FNqxpnmPzeDypyr0PapIxFvem5/h1m4TDwTMiSLWKhQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ecTbAgfXvbJ5Gf8OQzNTMZOcIHxvEWPmri18SszTdDrd4kRw1BrnuHGfkS/W8QOlOjWOZ9A2y1tbKJpskAc+1tL4jILv7xm5QBdmgrJp1b8sdl+gjZAW9jirUSnQ3l8G8+0JDDC+92C8vW1j2h1GSZO4r8XlQsOlvmzf48yu1tk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=JO6Eluaq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D799C433C7;
-	Tue,  6 Feb 2024 09:44:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1707212673;
-	bh=tg9pHfnMgYgL/Q/jdYJ/Y5q7DJviTwxBb9aNHAB6+1o=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=F86wtOC3TpkuADY5mpaAutg4kvQF4IYjtDi1Nfe0BVbBuywWu3jGaNoVHM2+zNltpgzC5DAWSUNHetAyNW8L3bLtVdi90JK1Pcai2gVACb8ivmAhPXBbnhql/oOxrCvHOYbk9WiAZB8zuUMfqxOtBXzgFh72XTtWiNEPTA2ypAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yd/PM0gW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E65C2C433F1;
+	Tue,  6 Feb 2024 09:45:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707212734;
+	bh=FNqxpnmPzeDypyr0PapIxFvem5/h1m4TDwTMiSLWKhQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JO6EluaqjikBYJ17aVisH1Kw8Bz59GJOa5l880B3n3Vljz9Mc3hIDqBeHImTnC5HE
-	 cThoXmAfLV6WR9qqztBXWnZaeGOtKenm1tL19ROp28o8ziVVMJ5aEYDKJFJpe00HHE
-	 iaJzqQLoNqQg1VljCvnZAdtHl8xQcQNNaBz5z3ao=
-Date: Tue, 6 Feb 2024 09:44:30 +0000
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Yicong Yang <yangyicong@huawei.com>
-Cc: jirislaby@kernel.org, tony@atomide.com, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org, john.ogness@linutronix.de,
-	andriy.shevchenko@linux.intel.com, tglx@linutronix.de,
-	yangyicong@hisilicon.com, linuxarm@huawei.com,
-	prime.zeng@hisilicon.com, jonathan.cameron@huawei.com,
-	fanghao11@huawei.com
-Subject: Re: [PATCH v2] serial: port: Don't suspend if the port is still busy
-Message-ID: <2024020600-attendant-verbally-6441@gregkh>
-References: <20240206073322.5560-1-yangyicong@huawei.com>
+	b=Yd/PM0gWwb1+x8TiJ29IOA34CG2QyNc4NlQ/gy1yYLSoNvRhgThNngfUa1edOpsWl
+	 5YWj/Cyp/aYq9jBgVauMEdB7Ql5KNgiFdJEVuCCaMv+FIGWcpGmHpkoKKdW8GqXFdr
+	 GadFPsW0xttPrGKNM++ws4wGX3QyVT7RxsS1SQzsSdtF8bUMM6HBWRka/qI16Upxwl
+	 p+iJeSfMMceinMJl9TojDbsKRnIih08pqTz9zMOjHn0SuRjK77+LFVAI9Rrs0mCBCU
+	 52lSZhsIcyp4RXWbDwZ3KsKJLNvRERI8osMYyQ/DOb4c4Rogrxv05NgMkgBoRrbaOT
+	 rAr1+72aNP52w==
+Date: Tue, 6 Feb 2024 09:45:30 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: Spurious problems when running regmap unit tests in qemu
+Message-ID: <ZcH/uglviDbsPIQC@finisterre.sirena.org.uk>
+References: <fc1d865d-3e2e-48bc-8cd1-389ec6b15909@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="nqluStmxa6iNnK3w"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240206073322.5560-1-yangyicong@huawei.com>
+In-Reply-To: <fc1d865d-3e2e-48bc-8cd1-389ec6b15909@roeck-us.net>
+X-Cookie: You might have mail.
 
-On Tue, Feb 06, 2024 at 03:33:22PM +0800, Yicong Yang wrote:
-> From: Yicong Yang <yangyicong@hisilicon.com>
-> 
-> We accidently met the issue that the bash prompt is not shown after the
-> previous command done and until the next input if there's only one CPU
-> (In our issue other CPUs are isolated by isolcpus=). Further analysis
-> shows it's because the port entering runtime suspend even if there's
-> still pending chars in the buffer and the pending chars will only be
-> processed in next device resuming. We are using amba-pl011 and the
-> problematic flow is like below:
-> 
-> Bash                                         kworker
-> tty_write()
->   file_tty_write()
->     n_tty_write()
->       uart_write()
->         __uart_start()
->           pm_runtime_get() // wakeup waker
->             queue_work()
->                                              pm_runtime_work()
->                                                rpm_resume()
->                                                 status = RPM_RESUMING
->                                                 serial_port_runtime_resume()
->                                                   port->ops->start_tx()
->                                                     pl011_tx_chars()
->                                                       uart_write_wakeup()
->         […]
->         __uart_start()
->           pm_runtime_get() < 0 // because runtime status = RPM_RESUMING
->                                // later data are not commit to the port driver
->                                                 status = RPM_ACTIVE
->                                                 rpm_idle() -> rpm_suspend()
-> 
-> This patch tries to fix this by checking the port busy before entering
-> runtime suspending. A runtime_suspend callback is added for the port
-> driver. When entering runtime suspend the callback is invoked, if there's
-> still pending chars in the buffer then flush the buffer.
-> 
-> Cc: Tony Lindgren <tony@atomide.com>
-> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
 
-Is this a regression that was caused by the port code?  If so, what
-commit id does this fix?  Should it be backported to older kernels?
+--nqluStmxa6iNnK3w
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-thanks,
+On Mon, Feb 05, 2024 at 10:03:01AM -0800, Guenter Roeck wrote:
 
-greg k-h
+> Any idea how to debug this problem would be welcome. I'll try to bisect,
+> but of course that will only help if the problem was introduced recently.
+
+No real ideas off hand, I wouldn't expect any of these tests to be
+intermittent - the only randomness is the data used to fill the buffers
+which we're not terribly sensitive to the values of.
+
+--nqluStmxa6iNnK3w
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXB/7kACgkQJNaLcl1U
+h9BBcgf9EL1T6T9PgpHBkxjQ/gk/o05kNb3O/fS9+K9Z6gpNAD+WovaSR+Q/d8zn
+6ELEtPeVojTduNEppAs1uRHf1IUE83UCMFaFi5udKug3Z2syJlHaHxWqYZJHyOc9
+CXYVcuv5seqx+39pBBOX/O6nSP8CHP7r1ByYOHsp9tkyxu9t8GgW6wPxY2JW27lm
+xGXHZgj3KnQagRJ9YAMXSrgrVikyELhvCfZcaW7ieMwnxdfWBe+RI89aTg5uQd3f
+I5Hn2Xym9agog98yqESmQE61DeoNxi+EDDnQvyeZ5JDrptIF/FpFmpmWeQxFwhRn
+At020fG+8L1XNM4twgYtE+4PyYoJpQ==
+=C5RP
+-----END PGP SIGNATURE-----
+
+--nqluStmxa6iNnK3w--
 
