@@ -1,135 +1,136 @@
-Return-Path: <linux-kernel+bounces-54234-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54235-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CB3884AC9E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:05:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 229ED84ACA2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:05:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5EA11F253D2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:05:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4322D1C22B28
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:05:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2CF77319E;
-	Tue,  6 Feb 2024 03:05:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89FDA73196;
+	Tue,  6 Feb 2024 03:05:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="U+FfCzqO"
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VxZh61Sj"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 823D26E2B0
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 03:05:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E5D2745C9;
+	Tue,  6 Feb 2024 03:05:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707188706; cv=none; b=bX9iAiQlWABAGje4Nc8dxCBBB9g5tGkrenS2fiPxYuZ8L2q5pZP9Wjgfh8DkRYFIcA8R4QsMWH85WSp6+Lx8QQQORtZ+Bio/nM/SU2caOkyVlUET9HBcshLcZReM0KWfk+A102xjF0NYELltq8+zVxqo1j8m9yAxv/m/f11RhiI=
+	t=1707188729; cv=none; b=f+9TBGmJJGcX3avHOIaRjmZlq0lqGvLntTNCPNRCSIEI1z8rUCPu+5eY7KBHuC2wiVqr7P6f9pvbjsTBBG842t9YfefieCVRc8XfFOVYfDVg+CXPqMlqBn30rwSnsdqyz9uQ9Ip4OVLHeI1HDB5mYj/XPOzOKSbu4mWxTsnyv5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707188706; c=relaxed/simple;
-	bh=HyRrmX8bhSNFlvuh2ssOWx1Ww9UPRMeRQF3Qp15vtq4=;
+	s=arc-20240116; t=1707188729; c=relaxed/simple;
+	bh=McwGGPgRVkavoNQoMXPL2VXwhEZL1rZM8bw+shBA+Fw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DvaAVUmUJowV+QvfUTAsY57Re3pRZHiXX8e42MGwEejA7MHvSv1kG9MrIsm4iXPpX+EjifsktY9QbsQj85nl9EQay+mVUZPrt1gn3azX2So6WtITE+9hzhf05M0KCf3Or1LTdRWKW5zMsP1nJc4Dp8osQkdpnwdRKpFp3zPZFrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=U+FfCzqO; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dc6e080c1f0so4328951276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 19:05:04 -0800 (PST)
+	 To:Cc:Content-Type; b=CSvPvutmjuFrrxl8XbtryII9oW3nvPqkqD2gI9MAjTVitg0ydbcciKQCSs3tP19d13TecIYz/YhtXe3UqWlLjWfRpi8woitJbLJI0sSCSgYp6RkHixprUEHvDk6+eYTRqRip77IYna7Tx4Th7ROK97MQ1aRTCIRLJh+E/fSdBN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VxZh61Sj; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a3796032418so189019666b.3;
+        Mon, 05 Feb 2024 19:05:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umich.edu; s=google-2016-06-03; t=1707188703; x=1707793503; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b0UfQpHEtXO/8VzhpaBnVDwPH0mrKoy/5y/LWxRdi0E=;
-        b=U+FfCzqO/0WaB4SXxX5/yr/yviTTSOYos/ZP/LkbKGeJYo+7cxQfbyud86glEPoQQf
-         +vMasZKTH5s77ikXoSsX5inDmgdtdLfVvx4XiO0ndyOnCmoV92oqUScnJZxKs+qNacVQ
-         f+Srn3HOdHhOg3/Crvo5MmedfsERjFoS8/h8v9Ygo674H3NcSHWNTGa/Luup5CqLV6B1
-         Zs7CssIRNyVjKjk5fjRj8Li7vdGKjnMFOAkUWDPP41MdpaHhZnrEt7Mz/Tz2W1Eka+K4
-         /G/Zu5G3QinkO25AyEUlqo3ELy53IsAbtLk/tvAEZlSw+itGwD3O4gpxOUpf0uexqXJA
-         CJWg==
+        d=gmail.com; s=20230601; t=1707188726; x=1707793526; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Ku75UCViTWac7boa5tWLVJAO47alPJRNpLs6NkWusg=;
+        b=VxZh61SjW20wYxVweRwHmc60M+9EUl2QiSm5azciVqG+qk62FoZE2Jc7x5eYAZCPuP
+         jhf9HvQ3xwOFs4KiQfroNgphQyo6v7OtCG0Emfv9/M79aV1dcxbZW7EV3PJpcViti/3Y
+         jFJ5aIpd6u2z/J1IXqnBs4qVfsgnz/gbMRPn41j1yCEV6wJ1+ooCnizredNnilUbc7IW
+         xsdcZ5yO5sdYlbyyAmZMUFB/LOaXT24TZZs6lDJQ8Lkq9nVCk7e/uwSsMU3EOG3i9ZbK
+         9Voq/RPlpaZnQfJS/hgO+cMHXmj2dc/qQYbqrbnoQB5wTRuKS5d0udJ6BURVzEf0jJU8
+         XiMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707188703; x=1707793503;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=b0UfQpHEtXO/8VzhpaBnVDwPH0mrKoy/5y/LWxRdi0E=;
-        b=UzQm5F1z2xriwlY/xg2fSiyZ8NYhHaEOmBn7pBW9ILk0LCWMdptO4AdZp5GnwVtKte
-         3c6H9wCm04P5p050yYv2BOjw1NjgcYE+g1qGjLvA3urS7HH2coJStmCOP0rHbhn8TN9u
-         4RcJ9IWE8dOb2MFbxTVMqGIOIbaEJS+8fMoNwq7hRZrWwi10UtIvEbrR5tKhOnnrvjvo
-         jxg8cPbJcRlhw7tUe1EQIbLFxdQY82LXjbBll1wyEIB1a/v+6KeTJVTTgMWM8kPPnhAE
-         ro1sGKQleR08cWUfIeIAiA0lfqKrtaBHfnJuvgGbwHocCzb7U4+eH3+lX0PYpzGnNAk/
-         eenQ==
-X-Gm-Message-State: AOJu0Yx5o05M60dMLv7YzjO1CeQv/WLFM4OAj+/JPbSNsA9AsQ54cx0s
-	tTA5AuarbPUnMNxMQa7YgPcURgXVGFRNATkhegZyfgVyzdoANmbnjhDGhYOfH3q/aWGYrLK+SRv
-	GSuw45zR9dVVfgIgKMAK91HybTn8SQxAqyQ3aAA==
-X-Google-Smtp-Source: AGHT+IEJx+K53xO7GfUQBPXRZwMr6StUxyeVMXXiQhrhcF2qFKZZbyc5AdTajC0P8HZ+8NkgjBq9bmcptrYEpTKEFFA=
-X-Received: by 2002:a05:6902:2485:b0:dc6:d541:74be with SMTP id
- ds5-20020a056902248500b00dc6d54174bemr451795ybb.64.1707188703522; Mon, 05 Feb
- 2024 19:05:03 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707188726; x=1707793526;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+Ku75UCViTWac7boa5tWLVJAO47alPJRNpLs6NkWusg=;
+        b=MzYTWrIiDTM45oIMJ+cxWi703iHONDEs8W44h7PT8buiL4j/6Q3Fhy73MFlvHj9UYs
+         W3SUqTNTHzbShA9vFqoBZ0pBjmmcDGNswXkTLqop7PerL75xmJoXighNO+YGxOaYqLxH
+         t7AQP0GLE7Uddp89vNkUjAI7/VNEO0DU5i50PUN7Rixus1z2533mFZx5vxle26fIU/PN
+         p2WmjDHfbfkLc1KTcR2W6HuIGkLJzFkcqsuAT4sbz97aa6VPGkgsvvgeeU8tPf4jAwEl
+         R4oVOyaBOy2I/PGx5Ct6E4wWeJZvya/pDSO+Prl/iaPbVO93emGOpLPX1HC2lES1J8Q+
+         02iA==
+X-Gm-Message-State: AOJu0YwkZEh8BgKT2ucbTcTTUfRCDeMajk/7qPsa2l6U26G9ji/dVxJG
+	1ijmnrPrgyHsksdiAX7WKRb/gIaI/3VAvMgIP9prGc5ERQEQ8pje35uOOG3lPOPoB3kBCP8nYfz
+	VvLchAP4yXoFM6hbs0x6LKe5cVOkY0HExnv0=
+X-Google-Smtp-Source: AGHT+IFFtkSco0Nn4trbVLlcxRdt06Mavs1dxjdC8tfMdK4uxDm7E2j/S1fPE2WZ+9OvvL+APbgi2zuPGcLjt73Lrzc=
+X-Received: by 2002:a17:906:e091:b0:a37:9793:60fe with SMTP id
+ gh17-20020a170906e09100b00a37979360femr820985ejb.54.1707188726369; Mon, 05
+ Feb 2024 19:05:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202-alice-file-v4-0-fc9c2080663b@google.com> <20240202-alice-file-v4-5-fc9c2080663b@google.com>
-In-Reply-To: <20240202-alice-file-v4-5-fc9c2080663b@google.com>
-From: Trevor Gross <tmgross@umich.edu>
-Date: Mon, 5 Feb 2024 22:04:52 -0500
-Message-ID: <CALNs47tX6BvGB9wVmo6Pxg9mU2FLYG51o4tT+LcTS7Kcfsd0Ow@mail.gmail.com>
-Subject: Re: [PATCH v4 5/9] rust: security: add abstraction for secctx
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Dan Williams <dan.j.williams@intel.com>, 
-	Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20240205152013.3833940-1-chou.cosmo@gmail.com>
+ <20240205152013.3833940-2-chou.cosmo@gmail.com> <4a504043-e24d-4119-8c5d-107f0d371110@roeck-us.net>
+In-Reply-To: <4a504043-e24d-4119-8c5d-107f0d371110@roeck-us.net>
+From: Cosmo Chou <chou.cosmo@gmail.com>
+Date: Tue, 6 Feb 2024 11:05:14 +0800
+Message-ID: <CAOeEDysSZEeKt==zyexLE1GhE5ZpeDHS7sDLRfcC=4JgiogLKQ@mail.gmail.com>
+Subject: Re: [PATCH v5 1/1] hwmon: Add driver for Astera Labs PT5161L retimer
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	jdelvare@suse.com, corbet@lwn.net, broonie@kernel.org, 
+	naresh.solanki@9elements.com, vincent@vtremblay.dev, 
+	patrick.rudolph@9elements.com, luca.ceresoli@bootlin.com, bhelgaas@google.com, 
+	festevam@denx.de, alexander.stein@ew.tq-group.com, heiko@sntech.de, 
+	jernej.skrabec@gmail.com, macromorgan@hotmail.com, forbidden405@foxmail.com, 
+	sre@kernel.org, linus.walleij@linaro.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org, 
+	linux-doc@vger.kernel.org, cosmo.chou@quantatw.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 2, 2024 at 5:57=E2=80=AFAM Alice Ryhl <aliceryhl@google.com> wr=
-ote:
+On Tue, Feb 06, 2024 at 3:43 AM +0800, Guenter Roeck wrote:
 >
-> Adds an abstraction for viewing the string representation of a security
-> context.
-
-Adds -> add
-
-> This is needed by Rust Binder because it has feature where a process can
-
-has feature -> has a feature
-
-> view the string representation of the security context for incoming
-> transactions. The process can use that to authenticate incoming
-> transactions, and since the feature is provided by the kernel, the
-> process can trust that the security context is legitimate.
+> On Mon, Feb 05, 2024 at 11:20:13PM +0800, Cosmo Chou wrote:
+> > This driver implements support for temperature monitoring of Astera Labs
+> > PT5161L series PCIe retimer chips.
+> >
+> > This driver implementation originates from the CSDK available at
+> > Link: https://github.com/facebook/openbmc/tree/helium/common/recipes-lib/retimer-v2.14
+> > The communication protocol utilized is based on the I2C/SMBus standard.
+> >
+> > Signed-off-by: Cosmo Chou <chou.cosmo@gmail.com>
+> > ---
+> [ ... ]
 >
-> Reviewed-by: Benno Lossin <benno.lossin@proton.me>
-> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
-> ---
-> [...]
-> diff --git a/rust/kernel/cred.rs b/rust/kernel/cred.rs
-> index fabc50e48c9e..0640356a8c29 100644
-> --- a/rust/kernel/cred.rs
-> +++ b/rust/kernel/cred.rs
-> @@ -48,6 +48,14 @@ pub unsafe fn from_ptr<'a>(ptr: *const bindings::cred)=
- -> &'a Credential {
->          unsafe { &*ptr.cast() }
->      }
+> > +static ssize_t pt5161l_debugfs_read_fw_ver(struct file *file, char __user *buf,
+> > +                                        size_t count, loff_t *ppos)
+> > +{
+> > +     struct pt5161l_data *data = file->private_data;
+> > +     int ret;
+> > +     char ver[32];
+> > +
+> > +     mutex_lock(&data->lock);
+> > +     ret = pt5161l_fwsts_check(data);
+> > +     mutex_unlock(&data->lock);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     ret = snprintf(ver, sizeof(ver), "%u.%u.%u\n", data->fw_ver.major,
+> > +                    data->fw_ver.minor, data->fw_ver.build);
+> > +     if (ret < 0)
+> > +             return ret;
+> > +
 >
-> +    /// Get the id for this security context.
-> +    pub fn get_secid(&self) -> u32 {
+> You almost got me here ;-). snprintf() never returns a negative error code,
+> so checking for it is not necessary.
+>
+Oh! You're right.
 
-Since this is used in multiple places, would a typedef be useful?
+> > +     return simple_read_from_buffer(buf, count, ppos, ver, ret + 1);
+>
+> Number of bytes written plus 1 ? Why ?
+It's just to include the string terminator '\0'.
 
-    type SecurityId =3D u32;
-
-> [...]
-
-Reviewed-by: Trevor Gross <tmgross@umich.edu>
+>
+> Thanks,
+> Guenter
 
