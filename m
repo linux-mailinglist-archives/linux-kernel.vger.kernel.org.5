@@ -1,92 +1,51 @@
-Return-Path: <linux-kernel+bounces-54359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54360-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F146184AE2B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 06:51:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CE4784AE2E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 06:53:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24CD31C23D00
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 05:51:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FBAB1C23C8C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 05:53:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF9B87F46F;
-	Tue,  6 Feb 2024 05:51:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E031B7F474;
+	Tue,  6 Feb 2024 05:53:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="FigCCNTf";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="9lMbQusC";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="FigCCNTf";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="9lMbQusC"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="yWtPDNoN"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF96777F00
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 05:51:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC64077F00;
+	Tue,  6 Feb 2024 05:53:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707198694; cv=none; b=FzhCI2r8xXXNzATgs8dTOQQbQDAAl2znQOH4k38isNb0gDpy5RvhU9Q9CR1fkjgbNuXf/AEdoihQwl2HL0gHYBySygXZyb1tR3QBtTcKVBuQoTa2msUgP4SmklPsBXC5PqMqtWDjgviAi+Q8DEPqCak86CtnKar4Xl/CwrJ/I+4=
+	t=1707198790; cv=none; b=K+/vuUfxQOAVKc852TWQewxAhTts12lh8DKXMFO03/tZ0UA0AzW6xsFYZcPxhyGj4AEhpWB00XZmwxOOUdNxzZ8a6AOcpuoZNtGlOaN97Uv/FcvgsE7vYOd3Fs+9j20GsAkDn3kSc3Kg3twJhEtO0Ig4jkExwnJ5Oz4Sm1cELUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707198694; c=relaxed/simple;
-	bh=uuSmtJ2gn7uGhnDypGX1gXSi2B4n95awpVrdTWswRw8=;
+	s=arc-20240116; t=1707198790; c=relaxed/simple;
+	bh=z3pnyMy6CWb5booVEHbYu24GXOgyrWVlLFTfAlV0gmc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cLXebeZYLY4fEKZTEm1w1/oUrfgy6v3a0YurKvlhFRqWlPHEKdO3qO1VoBoqW8jznaw0JJShGBekUB/Wt6zP8GBjSYqHgiVygNkxmp+uO9Q+yQn2ckVVwjCJ/lX6+K9kPwLE820aGszU3wu6cDDPrdScPnJet0MqChiP9uxHibU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=FigCCNTf; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=9lMbQusC; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=FigCCNTf; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=9lMbQusC; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id AA8281F896;
-	Tue,  6 Feb 2024 05:51:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707198690; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6S6OaTQ90hrwvH+v/ItjXZMzr6AaGm6+jITopHlp8XY=;
-	b=FigCCNTfoUkjysf0OLwgDlQ0LR+eXaH2WuOxWJRfhTxZNYm1LAST1bQhaeFpnjPni2x6WW
-	PmG9LlZximPRIitvRU0RR3HIxrwK6jy4yKiSwF/1jckkw4ssaN3zkjPhHxRGMMrn/8dcwe
-	o79+fNN6E9Kggh/L0T54asrmnqVrtvo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707198690;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6S6OaTQ90hrwvH+v/ItjXZMzr6AaGm6+jITopHlp8XY=;
-	b=9lMbQusCAO+2V0qa5SBdltKQmDBJOy+PRsYz1kybIUKhBCbjsj93QsGTvql0t5Qc6U0rxw
-	sKuUlbfQhS29GRCQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707198690; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6S6OaTQ90hrwvH+v/ItjXZMzr6AaGm6+jITopHlp8XY=;
-	b=FigCCNTfoUkjysf0OLwgDlQ0LR+eXaH2WuOxWJRfhTxZNYm1LAST1bQhaeFpnjPni2x6WW
-	PmG9LlZximPRIitvRU0RR3HIxrwK6jy4yKiSwF/1jckkw4ssaN3zkjPhHxRGMMrn/8dcwe
-	o79+fNN6E9Kggh/L0T54asrmnqVrtvo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707198690;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6S6OaTQ90hrwvH+v/ItjXZMzr6AaGm6+jITopHlp8XY=;
-	b=9lMbQusCAO+2V0qa5SBdltKQmDBJOy+PRsYz1kybIUKhBCbjsj93QsGTvql0t5Qc6U0rxw
-	sKuUlbfQhS29GRCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1EC3213A25;
-	Tue,  6 Feb 2024 05:51:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id cFk3Kt/IwWXiOAAAD6G6ig
-	(envelope-from <hare@suse.de>); Tue, 06 Feb 2024 05:51:27 +0000
-Message-ID: <b19e0b0f-6b1c-4126-931b-d7b0d01fb3da@suse.de>
-Date: Tue, 6 Feb 2024 14:51:24 +0900
+	 In-Reply-To:Content-Type; b=DaoI84aeUGPrpRhg83jT3cyqHtCrA2/7+/9vtuA2bDrHRutIC1tHO9MvuIIPs14zd5BKbWRCqLCIJVTNaPtjlljtT+G7Y8v0hzUA5GUMlffUCwm08Y2M0BaoMPqNwkdX2aDqTMxXC6fBzlMyh4TsDFtcE4ccWIdC69BdHP1TqxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=yWtPDNoN; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=w3Q42N/e2eCew/j8uEMfyElkzHhqrTXgEIBh4kRIFbk=; b=yWtPDNoN5tJ5DYCV9E0cJbndTg
+	SwomS3W/+jZdg3CoGSYr41fxanlYFkt7NXd0Z/Hq5DFyn9lyKxXS/hUtEBTi6fXb28L3NZ5XKHhGM
+	BJRUc9RzGxK0qnMI5LXW2p0CKXmY6q8M390rtXsbYyGsNWQasIF+BkCPIzDZzvpeEIbOlspQYLaI1
+	wnUvTVgu87H6eE475HMRPxEMjsa9B+AhT3UKtDABS9zzCSQJGBYB3C0MB2epLIEu1oIn4Cyrbs75o
+	6P3mm5BNXqlr7HOQDeGZb0P4r2xN7bckWmlAMPQmZ29/yHOBG7HfWe3IxgWTqIaCXHIbPqQNT7BJZ
+	7OZ7v/Pw==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rXEOI-000000069rh-2Xul;
+	Tue, 06 Feb 2024 05:53:06 +0000
+Message-ID: <1b36c0aa-8a41-48e1-b21b-65f0ad521bcb@infradead.org>
+Date: Mon, 5 Feb 2024 21:53:05 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,136 +53,95 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 12/12] nvmet-fc: use RCU list iterator for assoc_list
+Subject: Re: linux-next: Tree for Feb 6 (gpu/drm/amd/display/ kernel-doc
+ warnings)
 Content-Language: en-US
-To: Daniel Wagner <dwagner@suse.de>, James Smart <james.smart@broadcom.com>
-Cc: Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>,
- linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240131085112.21668-1-dwagner@suse.de>
- <20240131085112.21668-13-dwagner@suse.de>
-From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20240131085112.21668-13-dwagner@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=FigCCNTf;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=9lMbQusC
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.46 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 MIME_GOOD(-0.10)[text/plain];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCPT_COUNT_FIVE(0.00)[6];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.16)[-0.789];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Score: -4.46
-X-Rspamd-Queue-Id: AA8281F896
-X-Spam-Flag: NO
+To: Stephen Rothwell <sfr@canb.auug.org.au>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+ amd-gfx list <amd-gfx@lists.freedesktop.org>,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+References: <20240206154329.6a8464fd@canb.auug.org.au>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240206154329.6a8464fd@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 1/31/24 16:51, Daniel Wagner wrote:
-> The assoc_list is a RCU protected list, thus use the RCU flavor of list
-> functions.
+
+
+On 2/5/24 20:43, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Let's use this opportunity and refactor this code and move the lookup
-> into a helper and give it a descriptive name.
+> Changes since 20240205:
 > 
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
-> ---
->   drivers/nvme/target/fc.c | 34 ++++++++++++++++++++++------------
->   1 file changed, 22 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/nvme/target/fc.c b/drivers/nvme/target/fc.c
-> index 671d096745a5..fd229f310c93 100644
-> --- a/drivers/nvme/target/fc.c
-> +++ b/drivers/nvme/target/fc.c
-> @@ -1114,14 +1114,27 @@ nvmet_fc_schedule_delete_assoc(struct nvmet_fc_tgt_assoc *assoc)
->   	queue_work(nvmet_wq, &assoc->del_work);
->   }
->   
-> +static bool
-> +nvmet_fc_assoc_exits(struct nvmet_fc_tgtport *tgtport, u64 association_id)
-> +{
-> +	struct nvmet_fc_tgt_assoc *a;
-> +
-> +	list_for_each_entry_rcu(a, &tgtport->assoc_list, a_list) {
-> +		if (association_id == a->association_id)
-> +			return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
->   static struct nvmet_fc_tgt_assoc *
->   nvmet_fc_alloc_target_assoc(struct nvmet_fc_tgtport *tgtport, void *hosthandle)
->   {
-> -	struct nvmet_fc_tgt_assoc *assoc, *tmpassoc;
-> +	struct nvmet_fc_tgt_assoc *assoc;
->   	unsigned long flags;
-> +	bool done;
->   	u64 ran;
->   	int idx;
-> -	bool needrandom = true;
->   
->   	if (!tgtport->pe)
->   		return NULL;
-> @@ -1145,24 +1158,21 @@ nvmet_fc_alloc_target_assoc(struct nvmet_fc_tgtport *tgtport, void *hosthandle)
->   	INIT_WORK(&assoc->del_work, nvmet_fc_delete_assoc_work);
->   	atomic_set(&assoc->terminating, 0);
->   
-> -	while (needrandom) {
-> +	done = false;
-> +	do {
->   		get_random_bytes(&ran, sizeof(ran) - BYTES_FOR_QID);
->   		ran = ran << BYTES_FOR_QID_SHIFT;
->   
->   		spin_lock_irqsave(&tgtport->lock, flags);
-> -		needrandom = false;
-> -		list_for_each_entry(tmpassoc, &tgtport->assoc_list, a_list) {
-> -			if (ran == tmpassoc->association_id) {
-> -				needrandom = true;
-> -				break;
-> -			}
-> -		}
-> -		if (!needrandom) {
-> +		rcu_read_lock();
-> +		if (!nvmet_fc_assoc_exits(tgtport, ran)) {
->   			assoc->association_id = ran;
->   			list_add_tail_rcu(&assoc->a_list, &tgtport->assoc_list);
-> +			done = true;
->   		}
-> +		rcu_read_unlock();
->   		spin_unlock_irqrestore(&tgtport->lock, flags);
 
-Odd. You already take the tgtport lock, so there really is no point in 
-using rcu_read_lock() here.
-Or does the tgtport lock not protect the assoc_list?
+Hi Rodrigo,
 
-Cheers,
+Are you aware of these kernel-doc warnings?
+I think they are due to
 
-Hannes
+commit b8c1c3a82e75
+Author: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Date:   Mon Jan 22 14:24:57 2024 -0700
+    Documentation/gpu: Add kernel doc entry for MPC
+
+
+
+./drivers/gpu/drm/amd/display/dc/inc/hw/hubp.h:1: warning: no structured comments found
+./drivers/gpu/drm/amd/display/dc/inc/hw/hubp.h:1: warning: no structured comments found
+./drivers/gpu/drm/amd/display/dc/inc/hw/hubp.h:1: warning: no structured comments found
+./drivers/gpu/drm/amd/display/dc/inc/hw/hubp.h:1: warning: no structured comments found
+./drivers/gpu/drm/amd/display/dc/inc/hw/hubp.h:1: warning: no structured comments found
+./drivers/gpu/drm/amd/display/dc/inc/hw/hubp.h:1: warning: no structured comments found
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:1: warning: no structured comments found
+./drivers/gpu/drm/amd/display/dc/inc/hw/opp.h:1: warning: no structured comments found
+./drivers/gpu/drm/amd/display/dc/inc/hw/opp.h:1: warning: no structured comments found
+./drivers/gpu/drm/amd/display/dc/link/hwss/link_hwss_dio.h:1: warning: no structured comments found
+./drivers/gpu/drm/amd/display/dc/link/hwss/link_hwss_dio.h:1: warning: no structured comments found
+
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:132: warning: Incorrect use of kernel-doc format:          * @@overlap_only: Whether overlapping of different planes is allowed.
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:132: warning: Incorrect use of kernel-doc format:          * @@overlap_only: Whether overlapping of different planes is allowed.
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:132: warning: Incorrect use of kernel-doc format:          * @@overlap_only: Whether overlapping of different planes is allowed.
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:162: warning: Function parameter or struct member 'pre_multiplied_alpha' not described in 'mpcc_blnd_cfg'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:162: warning: Function parameter or struct member 'overlap_only' not described in 'mpcc_blnd_cfg'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'read_mpcc_state' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'mpc_init_single_inst' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'get_mpcc_for_dpp_from_secondary' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'get_mpcc_for_dpp' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'wait_for_idle' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'assert_mpcc_idle_before_connect' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'init_mpcc_list_from_hw' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'set_denorm' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'set_denorm_clamp' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'set_output_csc' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'set_ocsc_default' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'set_output_gamma' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'power_on_mpc_mem_pwr' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'set_dwb_mux' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'disable_dwb_mux' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'is_dwb_idle' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'set_out_rate_control' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'set_gamut_remap' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'program_1dlut' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'program_shaper' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'acquire_rmu' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'program_3dlut' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'release_rmu' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'get_mpc_out_mux' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'set_bg_color' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:548: warning: Function parameter or struct member 'set_mpc_mem_lp_mode' not described in 'mpc_funcs'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:132: warning: Incorrect use of kernel-doc format:          * @@overlap_only: Whether overlapping of different planes is allowed.
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:162: warning: Function parameter or struct member 'pre_multiplied_alpha' not described in 'mpcc_blnd_cfg'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:162: warning: Function parameter or struct member 'overlap_only' not described in 'mpcc_blnd_cfg'
+./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:132: warning: Incorrect use of kernel-doc format:          * @@overlap_only: Whether overlapping of different planes is allowed.
+
+
+
+Can you address these, please?
+
+Thanks.
+
 -- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), GF: Ivo Totev, Andrew McDonald,
-Werner Knoblich
-
+#Randy
 
