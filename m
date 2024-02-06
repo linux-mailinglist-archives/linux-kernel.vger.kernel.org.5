@@ -1,213 +1,229 @@
-Return-Path: <linux-kernel+bounces-55227-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A64984B95B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:25:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3454D84B9C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:37:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D53861F26BF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:25:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77E73B2BE42
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:25:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60AAA1E48E;
-	Tue,  6 Feb 2024 15:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3A17135411;
+	Tue,  6 Feb 2024 15:20:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LL9W02Ic"
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Vkb9JBRZ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1929133424;
-	Tue,  6 Feb 2024 15:19:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E171D133424
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 15:19:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707232762; cv=none; b=t1Cy1xbt/GqWzk+If5Gwg4kRmoEG1ax+ClhiPLND8PjMZg9XRvwr44RergiIXaomLk7IDAqNWQiVtmpUCUuAsF5TBRljKAM8lPakzg8qW7eTd464jk96JxIJVI8MiNWiGn+2YUOtM+LNChirdsoiQrYbKhv5f1eoXLU+D0k+Xmc=
+	t=1707232800; cv=none; b=ZirvwSMbqxDbC2hTCW9A8JCpWw3WpDWYpSpTI+lmQPXIhzvf+OQzm3urAa0imLabgwPpO6VdlQcrpxMQ4ce0Dbi3R3acL5HmITqZ12i/BpfNvFzckDip2kpkzRsTXbWGfLmS+KiC5/jSPypu8tfmXn+154arb3+K+79mwP8Q+zU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707232762; c=relaxed/simple;
-	bh=xJGB+7srefq3wP/QouS+voPpa5cGHrkHxOsv5UEZqfs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i9QM8aPP1npttR1Ylyl1Abi9h/1SWh9CUgS66VgzmZaIeq9RLVfTFJC3GU0D3SyA23bv5oVnLfpw+ASUaQ05DbkPBsOfibuAw7RLK9no3/lbT41wQ03FrEacEbMNOW0ALHF7oUeG7TABGtS06wFaoAeQRr9RTeVxSFKc1ZVvVW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LL9W02Ic; arc=none smtp.client-ip=209.85.215.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5ce07cf1e5dso4781131a12.2;
-        Tue, 06 Feb 2024 07:19:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707232760; x=1707837560; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=VoZK7Hq3Jn7l/cY+m/wVGoxbjgscYBvxr8QICpwqhd4=;
-        b=LL9W02IckeOX6P6Fy3IZzHRK2Thi++PPyLAtbCvo6H3R/Lk/rYNeINl9IPQIwHFGaZ
-         5KnqaKYR7/eBEhObFbAcKnMalOo8nxL51oNCBh4PthSybxFnirSh0FxlJUvzMdd/FYxq
-         cnh8SvQJl40k0wBokLazI63fSPafGHkRDGpbYI0hSzdqAAWt1MqzF5/99endfnLt4TgG
-         fGwuTPQGeqrINIAqfntOY2orwbcGxFANis0fB32rbpXuOPB3zXXGANcy0pWioEFIdJCx
-         GKFF+KtSKNe65ul3TNLYHCdRzdsBSQ0zl/zCGQAQwgaES0efPhBE/a6GQpr1wLcuxrS8
-         jzhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707232760; x=1707837560;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VoZK7Hq3Jn7l/cY+m/wVGoxbjgscYBvxr8QICpwqhd4=;
-        b=oTshDBmYElyci+3p42s/M2DjCFYQYEwkiOIQD8bhqLghLnimvSkOu524PJdmk4YUCb
-         PvIZawZ9yI82VnhYFPjYX1wNDQFhwkjBC2dBmZrIpvqBvJd+ukiJcwn/L66RxsjK6P75
-         vKkVxeFAz46NubDOP6QnZi1GPyjxwVLarTm9ec0p1lVCdR12ZVYPkHvYaiGw+J/yH4VD
-         hMgXkHE2pMf2PC9/KuOaAbsJbvFm4Eb/mwlNp0+i8DKb312FQlSFLVxZafk3knrBg8/y
-         tcCQ5KSN7OYby3n6lqhPZkE+c+FbgITJ698bk6OHHjOubCrJez7tgwlohP6FOWGdhEix
-         NZQw==
-X-Gm-Message-State: AOJu0YxnIJlBgjaSSobAzS6HIcK2GImntSipiPiLN3cRBgOwspIdSI42
-	YKevmqg+DToAHoS5WbV4QRgmQjyqG4+GdX9ldjBX5cowmK4Wk6wZ
-X-Google-Smtp-Source: AGHT+IGYrBe3Vq4QE2ZXQZOrGTMmqcaPZsfO1jDVJ1rojwgM26puufUzog+DlqMAHYYGf/xu2hoYdQ==
-X-Received: by 2002:a05:6a20:9597:b0:19e:9c5f:d01d with SMTP id iu23-20020a056a20959700b0019e9c5fd01dmr1017562pzb.19.1707232760125;
-        Tue, 06 Feb 2024 07:19:20 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU6getdF1ioqn5poAkjBomr/roUyyM3SPdA06kjTZU1tomul3HWCe6Ug03z6f9kG7fiIRKfazoSl9MF1EQSm/6iMVayZ8dNgA2T0S7dM4I9pZqO1jvn6tWNjbeDY36TOd+fN1vCqKSjixB0nGRtQzktaGF65ob+HdEE1wjoCAslQ5pEZJIu5BP9zrQPKl2ZyOvORmCmcRv34EotMawBbG2VbenlGFM6ILDD4yH/9p7G2BuTo2WtHiYEk0vqQ3ri52/9+JfVh0EmeroqO9OmfQfAtik7sYKuiOFuc1dZTfv+t26/x885m6VtYAMiLlwcyQrqJzTzzQ9KCcyMsJMYVRzUnS/+vS6jlL3vO8Mi6w3OAAy3M5WoMuErS53VoaQdN3k13wYE64zYZm8moik6zcMmMxOxtiI/xfR69zRAwif5+L8QRQ7KgGYV6jsnw64xrSQTx1Yk7SFJUfGBoH7onZo0mY/EhB8esaI+EOEsYXJ2G1SpjuaRgpLZG+wnIEvC4Sp0p6+qx7dBFfAaqAfWzqs7APiJ/nvrzmx2YU+BiLIqZYP2VXuuQgZKxPn37ANwFkGiNlI+4vUsJoCCYp77ytauXqQrm7dvP0DWp6cV8UPNaXChTuOlq6lmtrW9BKteEX+KQYs6GM//Raur/VO83ck+WTcFhRusqQefwsTx3SRk7uP6cGFulcdXm+PmPDfnDHog9cWcwkl5G5lHTLcG8QEPJUgpPzlHtZlOpfq2SSWf1bCJ/46bvW9TdeR/WqOD9h0Vy9lMff6VUKc9HcgfHUkpCOSRONnloKg=
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id e3-20020a63db03000000b005d66caee3d0sm2231778pgg.22.2024.02.06.07.19.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Feb 2024 07:19:19 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <b8c92781-cf41-45c5-ab25-b4e5a1b6d6b7@roeck-us.net>
-Date: Tue, 6 Feb 2024 07:19:16 -0800
+	s=arc-20240116; t=1707232800; c=relaxed/simple;
+	bh=oyBbD9O77fdzA3mKoUnOeLqCcbuiPoR6Vq4YQ19WT8g=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dX0YymNS59fK6502v7KMX0SC4H7JmQAYI9lXdbhVtnrctpzksYd9857SjYynrZNJcV089yP4yclLYUUZhulGoqKZ60yF0qp0fd3tK7JA6Ye7laV1pBkSfpbDUNTqFvu9aj8SmO6tVMJoYxqQA9ig1cpqqlP76SNbfXTRQLHJj8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Vkb9JBRZ; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707232795;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=J8tSMCLStu5rYwI8aLzXD9+zfv3RFVQ4/1ORcx+dqxU=;
+	b=Vkb9JBRZ/N1gmhvsHJSZLpNqSVuKV547CXnuxaqIPnwHTp1ZAT9suzignHQXKgXpruvwXj
+	ZkBUG2BgBvSkH5/1oN4nF66GwZ2PgcVl8HMJ74yMl2C530W1vovG5jXxzZqAjM9jn6WbFD
+	yYFbnjC03tBrWDvxGr9FszxbKT4IL54=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-561-4CMy8lo5Nk2OaA6PlWeI_g-1; Tue,
+ 06 Feb 2024 10:19:52 -0500
+X-MC-Unique: 4CMy8lo5Nk2OaA6PlWeI_g-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2CE1A3813BD2;
+	Tue,  6 Feb 2024 15:19:52 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.45.226.57])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 1EBCB1C060AF;
+	Tue,  6 Feb 2024 15:19:51 +0000 (UTC)
+From: Vitaly Kuznetsov <vkuznets@redhat.com>
+To: kvm@vger.kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Sean Christopherson <seanjc@google.com>,
+	David Woodhouse <dwmw@amazon.co.uk>
+Cc: Jan Richter <jarichte@redhat.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] KVM: selftests: Compare wall time from xen shinfo against KVM_GET_CLOCK
+Date: Tue,  6 Feb 2024 16:19:50 +0100
+Message-ID: <20240206151950.31174-1-vkuznets@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/1] hwmon: Add driver for Astera Labs PT5161L retimer
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Cosmo Chou <chou.cosmo@gmail.com>, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, jdelvare@suse.com,
- corbet@lwn.net, broonie@kernel.org, naresh.solanki@9elements.com,
- vincent@vtremblay.dev, patrick.rudolph@9elements.com,
- luca.ceresoli@bootlin.com, bhelgaas@google.com, festevam@denx.de,
- alexander.stein@ew.tq-group.com, heiko@sntech.de, jernej.skrabec@gmail.com,
- macromorgan@hotmail.com, forbidden405@foxmail.com, sre@kernel.org,
- linus.walleij@linaro.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
- linux-doc@vger.kernel.org, cosmo.chou@quantatw.com
-References: <20240205152013.3833940-1-chou.cosmo@gmail.com>
- <20240205152013.3833940-2-chou.cosmo@gmail.com>
- <99a1a309-41d6-448f-b622-b62dbabb2c52@linaro.org>
- <b932533c-d1fe-46bb-8187-b0560861e982@roeck-us.net>
- <027fddd4-d572-4f9f-bf7a-1980c73017fa@linaro.org>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <027fddd4-d572-4f9f-bf7a-1980c73017fa@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-On 2/5/24 23:33, Krzysztof Kozlowski wrote:
-> On 05/02/2024 17:15, Guenter Roeck wrote:
->> On Mon, Feb 05, 2024 at 04:26:08PM +0100, Krzysztof Kozlowski wrote:
->>> On 05/02/2024 16:20, Cosmo Chou wrote:
->>>> This driver implements support for temperature monitoring of Astera Labs
->>>> PT5161L series PCIe retimer chips.
->>>>
->>>> This driver implementation originates from the CSDK available at
->>>> Link: https://github.com/facebook/openbmc/tree/helium/common/recipes-lib/retimer-v2.14
->>>> The communication protocol utilized is based on the I2C/SMBus standard.
->>>>
->>>> Signed-off-by: Cosmo Chou <chou.cosmo@gmail.com>
->>>> ---
->> [ ... ]
->>
->>>> +
->>>> +static int __init pt5161l_init(void)
->>>> +{
->>>> +	pt5161l_debugfs_dir = debugfs_create_dir("pt5161l", NULL);
->>>
->>> Drivers don't need initcalls. For sure any debugfs should not be handled
->>> here but in probe.
->>>
->>
->> Lots of hwmon drivers have init functions, for basic chip detection of
->> Super-I/O chips (example: drivers/hwmon/nct6775-platform.c) and to create
->> a parent debugfs subdirectory for the driver. The probe function then adds
->> subdirecties per chip instantiation. Example for pmbus, in
->> drivers/hwmon/pmbus/pmbus_core.c:
-> 
-> Core bus components are a bit different...
-> 
->>
->> static int __init pmbus_core_init(void)
->> {
->>          pmbus_debugfs_dir = debugfs_create_dir("pmbus", NULL);
->>          if (IS_ERR(pmbus_debugfs_dir))
->>                  pmbus_debugfs_dir = NULL;
->>
->>          return 0;
->> }
->>
->> static void __exit pmbus_core_exit(void)
->> {
->>          debugfs_remove_recursive(pmbus_debugfs_dir);
->> }
->>
->> Are you saying this is all wrong ? What alternative would you suggest ?
-> 
-> Just create parent directory in probe and only keep remove in __exit.
-> But you are right that might not be much better approach.
-> 
+xen_shinfo_test is observed to be flaky failing sporadically with
+"VM time too old". With min_ts/max_ts debug print added:
 
-That would just add more code and increase complexity since it would require
-a mutex to protect against parallel probes. On the plus side, it would only
-create the driver root directory if necessary, that is, if there is an
-actual device. I am not sure if that would be worth the increased complexity.
+Wall clock (v 3269818) 1704906491.986255664
+Time info 1: v 1282712 tsc 33530585736 time 14014430025 mul 3587552223 shift 4294967295 flags 1
+Time info 2: v 1282712 tsc 33530585736 time 14014430025 mul 3587552223 shift 4294967295 flags 1
+min_ts: 1704906491.986312153
+max_ts: 1704906506.001006963
+==== Test Assertion Failure ====
+  x86_64/xen_shinfo_test.c:1003: cmp_timespec(&min_ts, &vm_ts) <= 0
+  pid=32724 tid=32724 errno=4 - Interrupted system call
+     1	0x00000000004030ad: main at xen_shinfo_test.c:1003
+     2	0x00007fca6b23feaf: ?? ??:0
+     3	0x00007fca6b23ff5f: ?? ??:0
+     4	0x0000000000405e04: _start at ??:?
+  VM time too old
 
-That makes me wonder, though, if an API function such as
-	struct dentry *hwmon_debugfs_get_root(char *name);
-would make sense. That would move the complexity to the hwmon core and
-unify its handling. I'll think about that. For the time being, I'll
-accept the code as-is.
+The test compares wall clock data from shinfo (which is the output of
+kvm_get_wall_clock_epoch()) against clock_gettime(CLOCK_REALTIME) in the
+host system before the VM is created. In the example above, it compares
 
-Thanks,
-Guenter
+ shinfo: 1704906491.986255664 vs min_ts: 1704906491.986312153
+
+and fails as the later is greater than the former.  While this sounds like
+a sane test, it doesn't pass reality check: kvm_get_wall_clock_epoch()
+calculates guest's epoch (realtime when the guest was created) by
+subtracting kvmclock from the current realtime and the calculation happens
+when shinfo is setup. The problem is that kvmclock is a raw clock and
+realtime clock is affected by NTP. This means that if realtime ticks with a
+slightly reduced frequency, "guest's epoch" calculated by
+kvm_get_wall_clock_epoch() will actually tick backwards! This is not a big
+issue from guest's perspective as the guest can't really observe this but
+this epoch can't be compared with a fixed clock_gettime() on the host.
+
+Replace the check with comparing wall clock data from shinfo to
+KVM_GET_CLOCK. The later gives both realtime and kvmclock so guest's epoch
+can be calculated by subtraction. Note, CLOCK_REALTIME is susceptible to
+leap seconds jumps but there's no better alternative in KVM at this
+moment. Leave a comment and accept 1s delta.
+
+Reported-by: Jan Richter <jarichte@redhat.com>
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+---
+Changes since v1 [David Woodhouse]:
+- Check for KVM_CLOCK_REALTIME and skip testing shinfo epoch sanity in case
+it's missing (e.g. when a non-TSC clocksource is used)
+- Add a comment about a potential jump of CLOCK_REALTIME because of a leap
+second injection and accept 1s delta. While this is very unlikely anyone
+will even hit this in testing, this mostly serves a documentation purpose.
+---
+ .../selftests/kvm/x86_64/xen_shinfo_test.c    | 50 +++++++++++--------
+ 1 file changed, 28 insertions(+), 22 deletions(-)
+
+diff --git a/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c b/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c
+index 9ec9ab60b63e..e6e3553633b1 100644
+--- a/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c
++++ b/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c
+@@ -375,20 +375,6 @@ static void guest_code(void)
+ 	GUEST_SYNC(TEST_DONE);
+ }
+ 
+-static int cmp_timespec(struct timespec *a, struct timespec *b)
+-{
+-	if (a->tv_sec > b->tv_sec)
+-		return 1;
+-	else if (a->tv_sec < b->tv_sec)
+-		return -1;
+-	else if (a->tv_nsec > b->tv_nsec)
+-		return 1;
+-	else if (a->tv_nsec < b->tv_nsec)
+-		return -1;
+-	else
+-		return 0;
+-}
+-
+ static struct vcpu_info *vinfo;
+ static struct kvm_vcpu *vcpu;
+ 
+@@ -425,7 +411,6 @@ static void *juggle_shinfo_state(void *arg)
+ 
+ int main(int argc, char *argv[])
+ {
+-	struct timespec min_ts, max_ts, vm_ts;
+ 	struct kvm_xen_hvm_attr evt_reset;
+ 	struct kvm_vm *vm;
+ 	pthread_t thread;
+@@ -443,8 +428,6 @@ int main(int argc, char *argv[])
+ 	bool do_eventfd_tests = !!(xen_caps & KVM_XEN_HVM_CONFIG_EVTCHN_2LEVEL);
+ 	bool do_evtchn_tests = do_eventfd_tests && !!(xen_caps & KVM_XEN_HVM_CONFIG_EVTCHN_SEND);
+ 
+-	clock_gettime(CLOCK_REALTIME, &min_ts);
+-
+ 	vm = vm_create_with_one_vcpu(&vcpu, guest_code);
+ 
+ 	/* Map a region for the shared_info page */
+@@ -969,7 +952,6 @@ int main(int argc, char *argv[])
+ 	vm_ioctl(vm, KVM_XEN_HVM_SET_ATTR, &evt_reset);
+ 
+ 	alarm(0);
+-	clock_gettime(CLOCK_REALTIME, &max_ts);
+ 
+ 	/*
+ 	 * Just a *really* basic check that things are being put in the
+@@ -978,6 +960,8 @@ int main(int argc, char *argv[])
+ 	 */
+ 	struct pvclock_wall_clock *wc;
+ 	struct pvclock_vcpu_time_info *ti, *ti2;
++	struct kvm_clock_data kcdata;
++	long long delta;
+ 
+ 	wc = addr_gpa2hva(vm, SHINFO_REGION_GPA + 0xc00);
+ 	ti = addr_gpa2hva(vm, SHINFO_REGION_GPA + 0x40 + 0x20);
+@@ -993,12 +977,34 @@ int main(int argc, char *argv[])
+ 		       ti2->tsc_shift, ti2->flags);
+ 	}
+ 
+-	vm_ts.tv_sec = wc->sec;
+-	vm_ts.tv_nsec = wc->nsec;
+ 	TEST_ASSERT(wc->version && !(wc->version & 1),
+ 		    "Bad wallclock version %x", wc->version);
+-	TEST_ASSERT(cmp_timespec(&min_ts, &vm_ts) <= 0, "VM time too old");
+-	TEST_ASSERT(cmp_timespec(&max_ts, &vm_ts) >= 0, "VM time too new");
++
++	vm_ioctl(vm, KVM_GET_CLOCK, &kcdata);
++
++	if (kcdata.flags & KVM_CLOCK_REALTIME) {
++		if (verbose) {
++			printf("KVM_GET_CLOCK clock: %lld.%09lld\n",
++			       kcdata.clock / NSEC_PER_SEC, kcdata.clock % NSEC_PER_SEC);
++			printf("KVM_GET_CLOCK realtime: %lld.%09lld\n",
++			       kcdata.realtime / NSEC_PER_SEC, kcdata.realtime % NSEC_PER_SEC);
++		}
++
++		delta = (wc->sec * NSEC_PER_SEC + wc->nsec) - (kcdata.realtime - kcdata.clock);
++
++		/*
++		 * KVM_GET_CLOCK gives CLOCK_REALTIME which jumps on leap seconds updates but
++		 * unfortunately KVM doesn't currently offer a CLOCK_TAI alternative. Accept 1s
++		 * delta as testing clock accuracy is not the goal here. The test just needs to
++		 * check that the value in shinfo is somewhat sane.
++		 */
++		TEST_ASSERT(llabs(delta) < NSEC_PER_SEC,
++			    "Guest's epoch from shinfo %d.%09d differs from KVM_GET_CLOCK %lld.%lld",
++			    wc->sec, wc->nsec, (kcdata.realtime - kcdata.clock) / NSEC_PER_SEC,
++			    (kcdata.realtime - kcdata.clock) % NSEC_PER_SEC);
++	} else {
++		pr_info("Missing KVM_CLOCK_REALTIME, skipping shinfo epoch sanity check\n");
++	}
+ 
+ 	TEST_ASSERT(ti->version && !(ti->version & 1),
+ 		    "Bad time_info version %x", ti->version);
+-- 
+2.43.0
 
 
