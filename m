@@ -1,100 +1,107 @@
-Return-Path: <linux-kernel+bounces-54424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1CD884AF11
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:36:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E833684AF16
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:38:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E61D281E67
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 07:36:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4B39281FBA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 07:38:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D591129A62;
-	Tue,  6 Feb 2024 07:36:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F2my4gcc"
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46DF7128810;
-	Tue,  6 Feb 2024 07:36:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7A6E12883C;
+	Tue,  6 Feb 2024 07:38:21 +0000 (UTC)
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [207.46.229.174])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1320C2C877;
+	Tue,  6 Feb 2024 07:38:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.46.229.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707204973; cv=none; b=W7x84Ly+/XYlE+N9M9t89B1KYCamWltxLxdqi3H+Y9aGEmt+6sEVwCDz+IIknAvn98nj3D6Ia5uugjY0EMfT7XZfXDO3nSShEY12SUAAlFuSAQ8t6BQh7/74+7bLnuQ/i+WwbFssL2eIxY+XEMTtiCahDmAow2kVfFoi9yV30JU=
+	t=1707205101; cv=none; b=s/q3w0W/48EnrOwadBXBLnex8XP/TYwMaQfcI5WH6StqQHieWylXC6D6aQQ9nbuQgDafSTIj/bgopMekFy3Ax8+hn4WtSEI9Sp5X92yVFVZy7oLaYx19+0DjONbYCvxB4V4AJFbXdWyoFezC60Rk9lEZEuvKBaCykBnlxVTDJNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707204973; c=relaxed/simple;
-	bh=5AVucqvHHQeCB5i+pnqtLwGPQwdCwI6har4PBPr+VRc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gNZ6BC58ERPdescGAkHgCbGRV+MJe4EHzPf/0eqOio0UzA/xkAr/nBfE7sd0AgcaOPL+fiYf2lc6eRPlxL0lPl34MqpbJ6rDowfRLNzIij5bK83M8uJRQmQKb8CCr7PWovl7a9GNFWy3YQMvKVEb3vb+AqDi6vvTCscUOdDzcAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F2my4gcc; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5ce2aada130so573192a12.1;
-        Mon, 05 Feb 2024 23:36:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707204971; x=1707809771; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RHs7O/QopkuZxQ4Wui33o3EXSlPxuhBABpxuVZjKt2M=;
-        b=F2my4gccVMOUojuN7KvBEso1YBYEPqVW6BTNa7usMR6VL9Hq2fSADFdhUewubb10aa
-         P60CDB+jKk22lyR7hxKsFPcKqDFr2JDNldOG09P4W1EJh+NKolxt451pizQkhyx3yAJ7
-         3dOSvhx2b/o0PARGrPuC0tLokMOi984Yv6q9JI2/lNtRAgG3mz+d8YWTiDrDAlg/1oY+
-         6J4iu+A1Qj4/mxNzM2alGoUBkFr7IFlazdh8NhLHrXXNszd4ky33HM9yJGY1H045/e3K
-         a0kaD0WVFbBNakDifQi6k35F+DuhrFTwc1ml3Jbb3R2VfRg2xwB3YXnX9VTlQMpghvr1
-         eaZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707204971; x=1707809771;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RHs7O/QopkuZxQ4Wui33o3EXSlPxuhBABpxuVZjKt2M=;
-        b=u2hsL/DWwoqNoQHeKVCbFVugmaiQaaM02PzhJfLDVccrH0eofqiWQrlptSfyWeszYq
-         5CqTRC4RHGJR+jgByd1f2JlkLev3+EHeGjUgP6FPbWd+YUMDEFaO4lRp/VVseVfPbsK3
-         knm1551XLORt4rSkLUZiJPCKg+PXCx8SOse+JKg28s2S6N9jZe5lxn678HYcQjasVLDd
-         gipunCWrxPfQb6f752HufvD6AZhmDqEanvVKXUpEUDl5MIePdQID391KzQzVSuI4MQ7z
-         HTsV2tiNCVM5mN/5JJE/9/en/M1bWhUg4HT21zp2kHvswdErc7QbvOaSLfgM4VZ63d/F
-         XryQ==
-X-Gm-Message-State: AOJu0Yywp1WB4JT2GyX2V2qR06atvGAQ/LkiTF4+7btmoGKRSZZlIhIj
-	TXbDkQtP1Q8qtjnWHA/JFOqfUKE2/eiFRQ0nNSaEu/K9i4TWo09h
-X-Google-Smtp-Source: AGHT+IGGXt9+HwT1MkhBUFPAsWZA4hFwSGBKEEzw3Os0sJtoWdrRD5UexGVClpsSNHTzuAgUfpCbYA==
-X-Received: by 2002:a05:6a20:54a9:b0:19e:982e:c402 with SMTP id i41-20020a056a2054a900b0019e982ec402mr860449pzk.59.1707204971562;
-        Mon, 05 Feb 2024 23:36:11 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWoam9MBSL5DCdTFJEakALYkte3pG/Kwe5nEoLMVYXQn+Ng7iS6pXbZ6Zyz4HMxU47R0KJtms5WwP5eHa1ptKckQqH0Kd4dyBii3OxmI5OXsXrIGm8Vca4NhSByHH2JgceltX7lTG+6lOgZDb+Hkv3gZAuvVftUxt1DhCdN6BH4f+IjF210hdKal8yj8YeGTrDbpa+99AIChLQreIWDA2n0AMpuMDkZAhkS4P5DmwmX9mhT7WSWYKUUoLIBPnjBvpH4pbs9RJT6WU4fCixBbbYgoCZ2T5vCyECj95srjzopxrZQ02k1dhIaZXdHuidauMx6Wd3WnTDSjsPtBW+wEbiWVU6Ah9QUUEKO0lMcYVSwBmba0M4vHeGl8XJGBUz//iGT5JNm8463eQ==
-Received: from dragon (144.34.186.27.16clouds.com. [144.34.186.27])
-        by smtp.gmail.com with ESMTPSA id hy9-20020a056a006a0900b006d9b2694b0csm1128899pfb.200.2024.02.05.23.36.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 23:36:10 -0800 (PST)
-Date: Tue, 6 Feb 2024 15:35:58 +0800
-From: Shawn Guo <shawn.gsc@gmail.com>
-To: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Fabio Estevam <festevam@gmail.com>,
-	=?iso-8859-1?Q?S=F8ren?= Andersen <san@skov.dk>
-Subject: Re: [PATCH v1 1/1] ARM: dts: imx6: skov: add aliases for all
- ethernet nodes
-Message-ID: <ZcHhXosBK4obwNYW@dragon>
-References: <20240124124455.738187-1-o.rempel@pengutronix.de>
+	s=arc-20240116; t=1707205101; c=relaxed/simple;
+	bh=TY6CKuc56ilxCQShfvIczFkUwQACgH40x6+RS1ysuBE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eK08ke+/TTFmsdSO2DQF2i8crpYBCAxhhri+OS8eQpPcdg2WF/ldMbe+fZ4kywqBZAz2nn28mnPC5pGB75FC/7Kai1LaTSdQTNZGOdiq056yqjOKOuv7/AJrS2OPncsY96K0Aby7DQLwjNPX/deu1qyMK+iWJdZcHKrkZELBLbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=207.46.229.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from luzhipeng.223.5.5.5 (unknown [115.200.229.48])
+	by mail-app2 (Coremail) with SMTP id by_KCgDHCang4cFlG2tnAQ--.21117S2;
+	Tue, 06 Feb 2024 15:38:09 +0800 (CST)
+From: Zhipeng Lu <alexious@zju.edu.cn>
+To: alexious@zju.edu.cn
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+	Yu Zhe <yuzhe@nfschina.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] media: ttpci: fix two memleaks in budget_av_attach
+Date: Tue,  6 Feb 2024 15:37:10 +0800
+Message-Id: <20240206073719.3133481-1-alexious@zju.edu.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240124124455.738187-1-o.rempel@pengutronix.de>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:by_KCgDHCang4cFlG2tnAQ--.21117S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cw4xKF13Ww4UAr1DKrW8tFb_yoW8XF1fpa
+	yFqa4rAryUXrW0vr1DX3WYk3W5t3ZagFW3WrsYgw4avFyfZw1Dt348X34UAFn5Ga9rAa4U
+	Kwn09r1jgw1jkaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AFwI0_
+	JF0_Jw1lc2xSY4AK67AK6r4xMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+	4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+	67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+	x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
+	z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
+	UI43ZEXa7VUbYLvtUUUUU==
+X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
 
-On Wed, Jan 24, 2024 at 01:44:55PM +0100, Oleksij Rempel wrote:
-> Add aliases for all ethernet nodes including the switch. It makes it
-> easier to find this nodes by the boot loader.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+When saa7146_register_device and saa7146_vv_init fails, budget_av_attach
+should free the resources it allocates, like the error-handling of
+ttpci_budget_init does. Besides, there are two fixme comment refers to
+such deallocations.
 
-Applied, thanks! 
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+---
+ drivers/media/pci/ttpci/budget-av.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/pci/ttpci/budget-av.c b/drivers/media/pci/ttpci/budget-av.c
+index 230b104a7cdf..4f897f848581 100644
+--- a/drivers/media/pci/ttpci/budget-av.c
++++ b/drivers/media/pci/ttpci/budget-av.c
+@@ -1463,7 +1463,8 @@ static int budget_av_attach(struct saa7146_dev *dev, struct saa7146_pci_extensio
+ 		budget_av->has_saa7113 = 1;
+ 		err = saa7146_vv_init(dev, &vv_data);
+ 		if (err != 0) {
+-			/* fixme: proper cleanup here */
++			ttpci_budget_deinit(&budget_av->budget);
++			kfree(budget_av);
+ 			ERR("cannot init vv subsystem\n");
+ 			return err;
+ 		}
+@@ -1472,7 +1473,8 @@ static int budget_av_attach(struct saa7146_dev *dev, struct saa7146_pci_extensio
+ 		vv_data.vid_ops.vidioc_s_input = vidioc_s_input;
+ 
+ 		if ((err = saa7146_register_device(&budget_av->vd, dev, "knc1", VFL_TYPE_VIDEO))) {
+-			/* fixme: proper cleanup here */
++			ttpci_budget_deinit(&budget_av->budget);
++			kfree(budget_av);
+ 			ERR("cannot register capture v4l2 device\n");
+ 			saa7146_vv_release(dev);
+ 			return err;
+-- 
+2.34.1
+
 
