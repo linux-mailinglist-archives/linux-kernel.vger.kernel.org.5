@@ -1,150 +1,194 @@
-Return-Path: <linux-kernel+bounces-54941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54943-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96D9484B534
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:32:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BEE384B53B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:32:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B511AB23BDF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:31:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2AA31F21418
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:32:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1152C13246B;
-	Tue,  6 Feb 2024 12:17:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92DF4133286;
+	Tue,  6 Feb 2024 12:18:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NYvyxt96"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="l1+a2SIR"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51A13132462;
-	Tue,  6 Feb 2024 12:17:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7FFB132C25;
+	Tue,  6 Feb 2024 12:18:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707221875; cv=none; b=tJFxTIFiRSosVp8MwZMh7Sd83gKrSrypy0lvAOF75pqikiYT+Kj00BWR96QkQo51i1BwK6naVgKa4BDc1/b7x2dYtFu7y06aOEeiOAixuaHJ2PBgAn91jYlgpSN7Mgwr2RkF7acsgJhNOBnb1/xctIGuonoDRt6Sko6dDgZIhms=
+	t=1707221918; cv=none; b=A5R6k2nCZSHduDO7U7uEu1TNcYZYbnqn+PTnetRgnBcg8djv9/WG01EAPtyflHK8tc2XBWKImXEVEdt9PhpmSYb6GWPkw9Vr2De+esmVu107KaF5juewafJhVCVKhnm3HMLDZOMLGOw8P//zY6eWzF73NScpE66mPeWjeZ1azlI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707221875; c=relaxed/simple;
-	bh=6cGoZ9xn2z86dvXzudclTsATn7caJfz0ANjzsrSWXwI=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MQuVWsHHuu4ja6TK6+PgZqlzl58nhWxUUmj9IUD3xczq3vIJ4ljhrXzxUmeIz4dRhL8SZdqPhi4TriMQMOcAWB56b6KliETrSGr23ceB3xiUSNKslGIy3/X5GtbOge+xZCgCFPvuHvFluf1HUbdKWxqALxHdyHYUkeArBOP8euo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NYvyxt96; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 112D3C433F1;
-	Tue,  6 Feb 2024 12:17:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707221875;
-	bh=6cGoZ9xn2z86dvXzudclTsATn7caJfz0ANjzsrSWXwI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=NYvyxt96dLFX15ufMTUANHq/Ku10m9H6gA1NT9B5/sOzstyEwH+p/i26hYTzWs0KD
-	 xB9p8+4ku6TAekjZ7ysQYP/gesba0NmOv3vrs0pZQe/bGJcWc9FTzKogpUHzsjqRjR
-	 ch2TpSNN48FYBg/obV/jxD1QnN/M7MkZ12BniDAKFUjfY25M2OAKQyPHf3JlBB11sK
-	 swTagh7h4TtzFKKdotwYTeYdHAJQT0zCGpSG6Pd4hPPf596GkkuOWAUTJPYSjbr4+Q
-	 HwTTqGGWyODghjaFJX6NbCXXDbIhS6QwkqxsnSbSg4MpBv9X7wHbnn2R2osKsC7pul
-	 yDq33it+P2Ppg==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rXKOe-000nz4-Gx;
-	Tue, 06 Feb 2024 12:17:52 +0000
-Date: Tue, 06 Feb 2024 12:17:52 +0000
-Message-ID: <86wmrh6b2n.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Sumit Gupta <sumitg@nvidia.com>
-Cc: <treding@nvidia.com>,
-	<krzysztof.kozlowski@linaro.org>,
-	<jonathanh@nvidia.com>,
-	<mark.rutland@arm.com>,
-	<linux-kernel@vger.kernel.org>,
-	<linux-tegra@vger.kernel.org>,
-	<amhetre@nvidia.com>,
-	<bbasu@nvidia.com>
-Subject: Re: [Patch] memory: tegra: Skip SID override from Guest VM
-In-Reply-To: <20240206114852.8472-1-sumitg@nvidia.com>
-References: <20240206114852.8472-1-sumitg@nvidia.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1707221918; c=relaxed/simple;
+	bh=Tn8WnY+a+ept61qhjcmZvxSEPFge8/SObTTCDWxJS7g=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=iAvYu3iEFvLAhKiwRzkdSpMZuK36OW9P8j6dYBmSkK37iR8u6BcWYlb3dA2GvyRDGPT5uPDwXjAeBU7ifBJP/z236BPMHa/e6yI09WDukF/t/FfhVVucsCgj5ouAKhRG0hnRP3p5jLPITN8FB4aVr3qYB2uGk61WcnXCVzpxaZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=l1+a2SIR; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 416BtAUJ022474;
+	Tue, 6 Feb 2024 12:18:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=J0YDXL0DMuZx6qRUUagB7lMLHl0D1nro9nj04PRHnTw=;
+ b=l1+a2SIRg5PF4zDhqgXL9qLL/CahK7oNE6lSCOLCeyP8ZBo/1PhrWcNquUdgrjuzue9d
+ c/cXX+TCvKQq59XIkl8go5kDa3zo2ifNdk++37Br4OQJ8Y56gdxSFLaWBtuPvTbuHtrx
+ JBU5FPGXbqUYMAqJM21ug+/kPVUr2YIxksEkVx+9KkTHxrPDSwFgUXHMWzKsNbnbVFvI
+ y3xK4uELaBM1cmNW6Fz+I7jHDTCVDLku0BVhBqc+W4aUDuwGSWkvnAfxfrR30pHJkJ7F
+ PSc6w4oUotwRPDhbuyy6V8Dnfny190MEu8p7XKHgE23MFxde6CuufAb0u49halqZgsVR kg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w3mafrqqy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 06 Feb 2024 12:18:31 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 416BtShm024011;
+	Tue, 6 Feb 2024 12:18:31 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w3mafrqq1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 06 Feb 2024 12:18:31 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 416BXUwl019991;
+	Tue, 6 Feb 2024 12:18:29 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w1ytsy53u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 06 Feb 2024 12:18:29 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 416CIRTf28115506
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 6 Feb 2024 12:18:27 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 031232009F;
+	Tue,  6 Feb 2024 12:18:27 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 88BB5200A1;
+	Tue,  6 Feb 2024 12:18:26 +0000 (GMT)
+Received: from [9.152.224.145] (unknown [9.152.224.145])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue,  6 Feb 2024 12:18:26 +0000 (GMT)
+Message-ID: <83b9d600-339c-4c9f-860d-ab4539a0ae6b@linux.ibm.com>
+Date: Tue, 6 Feb 2024 13:18:26 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 00/15] net/smc: implement loopback-ism used by
+ SMC-D
+To: Wen Gu <guwen@linux.alibaba.com>, wenjia@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        jaka@linux.ibm.com
+Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com, alibuda@linux.alibaba.com,
+        tonylu@linux.alibaba.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240111120036.109903-1-guwen@linux.alibaba.com>
+Content-Language: en-US
+From: Alexandra Winter <wintera@linux.ibm.com>
+In-Reply-To: <20240111120036.109903-1-guwen@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 9Oq93biWMDhGTymW9bQMJeO9SqpPP0os
+X-Proofpoint-ORIG-GUID: zrdy_-uaFOs7-O2Gw8JOKcJKPynszSJC
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: sumitg@nvidia.com, treding@nvidia.com, krzysztof.kozlowski@linaro.org, jonathanh@nvidia.com, mark.rutland@arm.com, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, amhetre@nvidia.com, bbasu@nvidia.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-06_05,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ bulkscore=0 adultscore=0 impostorscore=0 clxscore=1015 malwarescore=0
+ mlxlogscore=999 suspectscore=0 phishscore=0 lowpriorityscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402060087
 
-Hi Sumit,
 
-On Tue, 06 Feb 2024 11:48:52 +0000,
-Sumit Gupta <sumitg@nvidia.com> wrote:
+
+On 11.01.24 13:00, Wen Gu wrote:
+> This patch set acts as the second part of the new version of [1] (The first
+> part can be referred from [2]), the updated things of this version are listed
+> at the end.
 > 
-> MC SID register access is restricted for Guest VM.
-> So, skip the SID override programming from the Guest VM.
+> # Background
 > 
-> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
-> ---
->  drivers/memory/tegra/tegra186.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/drivers/memory/tegra/tegra186.c b/drivers/memory/tegra/tegra186.c
-> index 1b3183951bfe..df441896b69d 100644
-> --- a/drivers/memory/tegra/tegra186.c
-> +++ b/drivers/memory/tegra/tegra186.c
-> @@ -10,6 +10,7 @@
->  #include <linux/of.h>
->  #include <linux/of_platform.h>
->  #include <linux/platform_device.h>
-> +#include <asm/virt.h>
->  
->  #include <soc/tegra/mc.h>
->  
-> @@ -118,6 +119,11 @@ static int tegra186_mc_probe_device(struct tegra_mc *mc, struct device *dev)
->  	unsigned int i, index = 0;
->  	u32 sid;
->  
-> +	if (!is_kernel_in_hyp_mode()) {
-> +		dev_dbg(mc->dev, "Register access not allowed\n");
-> +		return 0;
-> +	}
-> +
->  	if (!tegra_dev_iommu_get_stream_id(dev, &sid))
->  		return 0;
->  
-> @@ -146,6 +152,11 @@ static int tegra186_mc_resume(struct tegra_mc *mc)
->  #if IS_ENABLED(CONFIG_IOMMU_API)
->  	unsigned int i;
->  
-> +	if (!is_kernel_in_hyp_mode()) {
-> +		dev_dbg(mc->dev, "Register access not allowed\n");
-> +		return 0;
-> +	}
-> +
->  	for (i = 0; i < mc->soc->num_clients; i++) {
->  		const struct tegra_mc_client *client = &mc->soc->clients[i];
->  
+> SMC-D is now used in IBM z with ISM function to optimize network interconnect
+> for intra-CPC communications. Inspired by this, we try to make SMC-D available
+> on the non-s390 architecture through a software-implemented virtual ISM device,
+> that is the loopback-ism device here, to accelerate inter-process or
+> inter-containers communication within the same OS instance.
 
-This doesn't look right. Multiple reasons:
 
-- This helper really has nothing to do in a driver. This is
-  architectural stuff that is not intended for use outside of arch
-  core code.
+Hello Wen Gu,
 
-- My own tegra186 HW doesn't have VHE, since it is ARMv8.0, and this
-  helper will always return 'false'. How could this result in
-  something that still works? Can I get a free CPU upgrade?
+thank you very much for this patchset. I have been looking at it a bit.
+I installed in on a testserver, but did not yet excercise the loopback-ism device.
+I want to continue investigations, but daily work interferes, so I thought I
+send you some comments now. So this is not at all a code review, but some 
+thoughts and observations about the general concept.
 
-- If you assign this device to a VM and that the hypervisor doesn't
-  correctly virtualise it, then it is a different device and you
-  should simply advertise it something else. Or even better, fix your
-  hypervisor.
 
-Thanks,
+In [1] there was a discussion about an abstraction layer between smc-d and the
+ism devices. 
+I am not sure what you are proposing now, is it an smc-d feature or independent of smc?
+In 3/15 you say it is part of the SMC module, but then it has its own device entry.
+Didn't you want to use it for other things as well? Or is it an SMC-D only feature?
+Is it a device (Config help: "kind of virtual device")? Or an SMC-D feature?
 
-	M.
+Will we have a class of ism devices (s390 ism, ism-loopback, virtio-ism)
+That share common properties (internal API?)
+and smc-d will work with any of those?
+But they all can exist without smc ?! BTW: This is what we want for s390-ism.
+The client-registration interface [2] is currently the way to achieve this. 
+But maybe we need a more general concept?
 
--- 
-Without deviation from the norm, progress is not possible.
+Maybe first a preparation patchset that introduces a class/ism
+Together with an improved API?
+In case you want to use ISM devices for other purposes as well..
+But then the whole picture of ism-loopback in one patchset (RFC?) 
+has its benefits as well.
+
+
+Other points that I noticed:
+
+Naming: smc loopback, ism-loopback, loopback-ism ?
+
+config: why not tristate? Why under net/smc?
+
+/sys/devices/virtual/smc  does not initially show up in my installation!!!
+root@t35lp50:/sys/devices/virtual/> ls
+3270/  bdi/  block/  graphics/  iommu/  mem/  memory_tiering/  misc/  net/  tty/  vc/  vtconsole/  workqueue/
+root@t35lp50:/sys/devices/virtual/> ls smc/loopback-ism
+active  dmb_copy  dmbs_cnt  dmb_type  subsystem@  uevent  xfer_bytes
+root@t35lp50:/sys/devices/virtual/> ls
+3270/  bdi/  block/  graphics/  iommu/  mem/  memory_tiering/  misc/  net/  smc/  tty/  vc/  vtconsole/  workqueue/
+Is that normal behaviour?
+
+You introduced a class/smc
+Maybe class/ism would be better?
+The other smc interfaces do not show up in class/smc!! Not so good
+
+Why doesn't it show in smc_rnics?
+(Maybe some deficiency of smc_rnics?)
+
+But then it shows in other smc-tools:
+root@t35lp50:/sys/> smcd device
+FID  Type  PCI-ID        PCHID  InUse  #LGs  PNET-ID
+0000 0     loopback-ism  ffff   No        0
+0029 ISM   0000:00:00.0  07c1   No        0  NET1
+Nice!
+
+Kind regards
+Sandy
+
+
+[1] https://lore.kernel.org/lkml/e3819550-7b10-4f9c-7347-dcf1f97b8e6b@linux.alibaba.com/
+[2] 89e7d2ba61b7 ("net/ism: Add new API for client registration")
 
