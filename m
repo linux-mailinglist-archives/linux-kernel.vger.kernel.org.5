@@ -1,234 +1,148 @@
-Return-Path: <linux-kernel+bounces-55495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A744884BD65
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:51:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1588C84BD69
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:51:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8C421C24D40
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:51:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA878B222AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:51:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C0B214003;
-	Tue,  6 Feb 2024 18:50:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E3C8171A9;
+	Tue,  6 Feb 2024 18:51:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PWMwKVzY"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="xqh2WmC1"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A80F36ABA;
-	Tue,  6 Feb 2024 18:50:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DE81168DD;
+	Tue,  6 Feb 2024 18:50:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707245430; cv=none; b=Q2rYTMRyIik6uOjwq1uIdM0TR06yQ9PgCFwqRpRXd2N3+/Mqpza/tYVIvi0Loh9fCUqm9SyRefFkVWCkoQ9VECFaBdiR7X4sJfXG0+y0juUXwhJy9QsPp/fJ3rBv95y+NS84xYMEkiXJv/C4gIZq1Uft9B+fSjji750Yr6bAgdk=
+	t=1707245459; cv=none; b=lpK6FBQmd3bkq81Jg2NgoE98nMVqv0KQ/NQQ2siSeV/P7xcY/+QwiJhnydnq9md1tBi8NzVkK08rAML2iQZ4dUg0sCtg6a65lrx5nmnY8+2L6+4bacDwcZJ9mez9mFAbg5KDXszQSt21DUaGbQyBZliw6kGNgN8kOs35w2/Gej0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707245430; c=relaxed/simple;
-	bh=39JGumuJFV1iKne13aiVpCuPKyWknv6UBw07siBgN2I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dL0Hx8iy5GMrci3sAhih95jyZUkCVSxstJAcQ5UZ/Qh+UgC6HguSftzBGBJ3fuI28Vyjxi+KMFPwSSBl6I3aHwPRNMZaMybViDeef8VzJupMOx5v4BTDWJPZro8r2qp0UXOh6I/ffax6DanUPnxlpjQSHdM64R/WjN/Zuz6vQIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PWMwKVzY; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6da9c834646so4767500b3a.3;
-        Tue, 06 Feb 2024 10:50:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707245428; x=1707850228; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=04H/P6C7O8nfc1XeC8v5p8UgUl9tQRxBxfBvOdudh+M=;
-        b=PWMwKVzYMAHaNmM1qHdY/I/ZfaFoPMAdtUyP22EhQA28lC9yx1sWJ53nvwkB58h7gt
-         38+Aw2GKH+9v8YTEKPCV/4QWk6leGjuqkvoNBk0wk0KWnSO2OiB/t+IwIw9iSbMkC+/K
-         g8jnVf5rGK1k/emX4RhMLZc+Z7f0y7pbcVr9Q3ayzXsK3fZD/9narSYQsjufIii3DGWX
-         MHkqThoTZy/gpwNz/wTkGZYsEpN4LMsa8u2ti+1+p2VaHDXJmrCa9OySwvXvQ1WnWZxO
-         UFNWVFQ2CfB6XU9VPWXrZTmzR4F0KsDiyJWXgwmO1oLFr6HKvDUnxv+vDa4pn3EZpLS0
-         61LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707245428; x=1707850228;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=04H/P6C7O8nfc1XeC8v5p8UgUl9tQRxBxfBvOdudh+M=;
-        b=l5SHmYEF30+1KPuX9URI0ho0qv54TVoRaHZ7MbcRAiZKH8ncHXhYegElnsh6Dkd5zR
-         gMqsTYpw+ggc1CRw8jVKDvshAMpRJEBZOdepWIlR1FOb0RtJt3HmthMvzoWuqMmtvFXb
-         X7Kckx9RriwH7BDTD3OlwHLkGLvHPacurewAuf2c3PSlBTxSD+7dwRRNnHY567BFhxr0
-         MohIUCKYn3X3exXAvdeSuUSYmk7R80iss+eWpohCXizkvSqD/Gs/euSIBDctYIu1jMxz
-         Ta+2QAUNK35NUTvzaqpIzA4hn8c3VRV0occGyRR2e4wES78WNcJzqDuGHRv+KChMIPxi
-         QH0g==
-X-Gm-Message-State: AOJu0YzucNdMHq6VOUhxX4b+DgLJZy9aGGmPVnPLGkWN6ZxRixyFjY8c
-	WVtCjTjQYwZK/9XC66pIx4O5w4gRW6q/ggKl3LudeuSRLfZZu3F/8tROEI/8/X368B82BYkd/vO
-	zx6nmmF9ell2nxEo62lw1CJL2PxU=
-X-Google-Smtp-Source: AGHT+IFew76+8/ONbppJJ5WidlzjDP61Dg+kG6gaTcWUbl+84Ejsp+SlpxQLfB/R2PqIEfDeyhbfqm2nzrGeNSGeDLs=
-X-Received: by 2002:a05:6a00:994:b0:6e0:3f2d:4c04 with SMTP id
- u20-20020a056a00099400b006e03f2d4c04mr433802pfg.23.1707245427825; Tue, 06 Feb
- 2024 10:50:27 -0800 (PST)
+	s=arc-20240116; t=1707245459; c=relaxed/simple;
+	bh=Vr/Q4qfwvGJrydQHPnsIop8KV5TVqh0RZULrvzhraFI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=n00oIm0g+rgAhn/o0eRyjw2dh32AtB1LgCRlep29WqJghDBn6F9CmQpH6oYKcvLBVWOX3OXRvby3ZqYbXk4bfiXkxduJqZzwW54CeSnU+UT9kDgdsfFPud0PdUfpdBeK2DZTIV5GIvxtArz/Q3oAXjCJnOGBmI6uK+oJny05BEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=xqh2WmC1; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 416IodJv046178;
+	Tue, 6 Feb 2024 12:50:39 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707245439;
+	bh=jW5SdOE3WyIMKBSfBWIvIauASsolGdLvD8Pbpcc1dQk=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=xqh2WmC1g3vctyVP9kXUSfO/jFugnzYdAJs6EE3aKG9eD3brYzYEOhI3nCUbc1j4Q
+	 zR3UewsfOIL3LsYRv0iJOljmZUnCUf+D/7fQ8Hn+QeMPIoAVsjmacj16OFw1qkwoOv
+	 19khursHfDW4HuYaMUpK2Ry4GfHCBXTh8aNOV1dA=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 416Iodbf104944
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 6 Feb 2024 12:50:39 -0600
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 6
+ Feb 2024 12:50:39 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 6 Feb 2024 12:50:39 -0600
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 416Iocwt005084;
+	Tue, 6 Feb 2024 12:50:38 -0600
+Message-ID: <b5b70049-81f6-455e-b2bf-d03431e5b27b@ti.com>
+Date: Tue, 6 Feb 2024 12:50:38 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240203165307.7806-1-aford173@gmail.com> <20240203165307.7806-9-aford173@gmail.com>
- <20240206170632.GA2183819@dev-arch.thelio-3990X>
-In-Reply-To: <20240206170632.GA2183819@dev-arch.thelio-3990X>
-From: Adam Ford <aford173@gmail.com>
-Date: Tue, 6 Feb 2024 12:50:16 -0600
-Message-ID: <CAHCN7x+Jt8Qfyjxg=TasUgezA3ZDk=6mFZkMyFEwk2Evt-6c5Q@mail.gmail.com>
-Subject: Re: [PATCH V8 08/12] drm/bridge: imx: add driver for HDMI TX Parallel
- Video Interface
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, marex@denx.de, 
-	alexander.stein@ew.tq-group.com, frieder.schrempf@kontron.de, 
-	Lucas Stach <l.stach@pengutronix.de>, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
-	Richard Leitner <richard.leitner@skidata.com>, 
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Fabio Estevam <festevam@gmail.com>, 
-	Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
-	Pengutronix Kernel Team <kernel@pengutronix.de>, NXP Linux Team <linux-imx@nxp.com>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, Vinod Koul <vkoul@kernel.org>, 
-	Kishon Vijay Abraham I <kishon@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Liu Ying <victor.liu@nxp.com>, 
-	Ulf Hansson <ulf.hansson@linaro.org>, dri-devel@lists.freedesktop.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-phy@lists.infradead.org, linux-pm@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] arm64: dts: ti: verdin-am62: mallow: add TPM device
+Content-Language: en-US
+To: Francesco Dolcini <francesco@dolcini.it>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob
+ Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC: Francesco Dolcini <francesco.dolcini@toradex.com>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20240126165136.28543-1-francesco@dolcini.it>
+ <65a24f21-4cc6-4843-b838-b1c7020ca45d@ti.com>
+ <26F9C286-606C-40C6-994E-EABDFFCDFDC4@dolcini.it>
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <26F9C286-606C-40C6-994E-EABDFFCDFDC4@dolcini.it>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Tue, Feb 6, 2024 at 11:06=E2=80=AFAM Nathan Chancellor <nathan@kernel.or=
-g> wrote:
->
-> Hi all,
->
-> On Sat, Feb 03, 2024 at 10:52:48AM -0600, Adam Ford wrote:
-> > From: Lucas Stach <l.stach@pengutronix.de>
-> >
-> > This IP block is found in the HDMI subsystem of the i.MX8MP SoC. It has=
- a
-> > full timing generator and can switch between different video sources. O=
-n
-> > the i.MX8MP however the only supported source is the LCDIF. The block
-> > just needs to be powered up and told about the polarity of the video
-> > sync signals to act in bypass mode.
-> >
-> > Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
-> > Reviewed-by: Luca Ceresoli <luca.ceresoli@bootlin.com> (v7)
-> > Tested-by: Marek Vasut <marex@denx.de> (v1)
-> > Tested-by: Luca Ceresoli <luca.ceresoli@bootlin.com> (v7)
-> > Tested-by: Richard Leitner <richard.leitner@skidata.com> (v2)
-> > Tested-by: Frieder Schrempf <frieder.schrempf@kontron.de> (v2)
-> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com> (v3)
-> > Reviewed-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
-> > Tested-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
-> > Tested-by: Fabio Estevam <festevam@gmail.com>
-> > Signed-off-by: Adam Ford <aford173@gmail.com>
->
-> <snip>
->
-> > diff --git a/drivers/gpu/drm/bridge/imx/imx8mp-hdmi-pvi.c b/drivers/gpu=
-/drm/bridge/imx/imx8mp-hdmi-pvi.c
-> > new file mode 100644
-> > index 000000000000..a76b7669fe8a
-> > --- /dev/null
-> > +++ b/drivers/gpu/drm/bridge/imx/imx8mp-hdmi-pvi.c
-> ...
-> > +static void imx8mp_hdmi_pvi_bridge_enable(struct drm_bridge *bridge,
-> > +                                       struct drm_bridge_state *bridge=
-_state)
-> > +{
-> > +     struct drm_atomic_state *state =3D bridge_state->base.state;
-> > +     struct imx8mp_hdmi_pvi *pvi =3D to_imx8mp_hdmi_pvi(bridge);
-> > +     struct drm_connector_state *conn_state;
-> > +     const struct drm_display_mode *mode;
-> > +     struct drm_crtc_state *crtc_state;
-> > +     struct drm_connector *connector;
-> > +     u32 bus_flags, val;
-> > +
-> > +     connector =3D drm_atomic_get_new_connector_for_encoder(state, bri=
-dge->encoder);
-> > +     conn_state =3D drm_atomic_get_new_connector_state(state, connecto=
-r);
-> > +     crtc_state =3D drm_atomic_get_new_crtc_state(state, conn_state->c=
-rtc);
-> > +
-> > +     if (WARN_ON(pm_runtime_resume_and_get(pvi->dev)))
-> > +             return;
-> > +
-> > +     mode =3D &crtc_state->adjusted_mode;
-> > +
-> > +     val =3D FIELD_PREP(PVI_CTRL_MODE_MASK, PVI_CTRL_MODE_LCDIF) | PVI=
-_CTRL_EN;
-> > +
-> > +     if (mode->flags & DRM_MODE_FLAG_PVSYNC)
-> > +             val |=3D PVI_CTRL_OP_VSYNC_POL | PVI_CTRL_INP_VSYNC_POL;
-> > +
-> > +     if (mode->flags & DRM_MODE_FLAG_PHSYNC)
-> > +             val |=3D PVI_CTRL_OP_HSYNC_POL | PVI_CTRL_INP_HSYNC_POL;
-> > +
-> > +     if (pvi->next_bridge->timings)
-> > +             bus_flags =3D pvi->next_bridge->timings->input_bus_flags;
-> > +     else if (bridge_state)
-> > +             bus_flags =3D bridge_state->input_bus_cfg.flags;
-> > +
-> > +     if (bus_flags & DRM_BUS_FLAG_DE_HIGH)
-> > +             val |=3D PVI_CTRL_OP_DE_POL | PVI_CTRL_INP_DE_POL;
-> > +
-> > +     writel(val, pvi->regs + HTX_PVI_CTRL);
-> > +}
->
-> Apologies if this has already been reported or fixed, I searched lore
-> and did not find anything. Clang warns (or errors with CONFIG_WERROR=3Dy)
-> for this function:
->
->   drivers/gpu/drm/bridge/imx/imx8mp-hdmi-pvi.c:81:11: error: variable 'bu=
-s_flags' is used uninitialized whenever 'if' condition is false [-Werror,-W=
-sometimes-uninitialized]
->      81 |         else if (bridge_state)
->         |                  ^~~~~~~~~~~~
->   drivers/gpu/drm/bridge/imx/imx8mp-hdmi-pvi.c:84:6: note: uninitialized =
-use occurs here
->      84 |         if (bus_flags & DRM_BUS_FLAG_DE_HIGH)
->         |             ^~~~~~~~~
->   drivers/gpu/drm/bridge/imx/imx8mp-hdmi-pvi.c:81:7: note: remove the 'if=
-' if its condition is always true
->      81 |         else if (bridge_state)
->         |              ^~~~~~~~~~~~~~~~~
->      82 |                 bus_flags =3D bridge_state->input_bus_cfg.flags=
-;
->   drivers/gpu/drm/bridge/imx/imx8mp-hdmi-pvi.c:60:15: note: initialize th=
-e variable 'bus_flags' to silence this warning
->      60 |         u32 bus_flags, val;
->         |                      ^
->         |                       =3D 0
->   1 error generated.
->
-> This seems legitimate. If bridge_state can be NULL, should bus_flags be
-> initialized to zero like it suggests or should that 'else if' be turned
-> into a plain 'else'? I am happy to send a patch with that guidance.
+On 2/6/24 12:36 PM, Francesco Dolcini wrote:
+> 
+> 
+> Il 6 febbraio 2024 19:29:13 CET, Andrew Davis <afd@ti.com> ha scritto:
+>> On 1/26/24 10:51 AM, Francesco Dolcini wrote:
+>>> From: Francesco Dolcini <francesco.dolcini@toradex.com>
+>>>
+>>> Add TPM device to Mallow device tree file, the device is connected to
+>>> the SoC with SPI1/CS1, the same SPI interface is also available on an
+>>> extension header together with an additional CS0 signal.
+>>>
+>>> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+>>> ---
+>>>    arch/arm64/boot/dts/ti/k3-am62-verdin-mallow.dtsi | 10 ++++++++++
+>>>    1 file changed, 10 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin-mallow.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin-mallow.dtsi
+>>> index 17b93534f658..77b1beb638ad 100644
+>>> --- a/arch/arm64/boot/dts/ti/k3-am62-verdin-mallow.dtsi
+>>> +++ b/arch/arm64/boot/dts/ti/k3-am62-verdin-mallow.dtsi
+>>> @@ -127,6 +127,16 @@ &main_spi1 {
+>>>    		    <&pinctrl_qspi1_cs2_gpio>;
+>>>    	cs-gpios = <0>, <&main_gpio0 12 GPIO_ACTIVE_LOW>;
+>>>    	status = "okay";
+>>> +
+>>> +	tpm@1 {
+>>> +		compatible = "infineon,slb9670", "tcg,tpm_tis-spi";
+>>> +		reg = <1>;
+>>> +		pinctrl-names = "default";
+>>> +		pinctrl-0 = <&pinctrl_qspi1_dqs_gpio>;
+>>> +		interrupt-parent = <&main_gpio1>;
+>>> +		interrupts = <18 IRQ_TYPE_EDGE_FALLING>;
+>>
+>> Just a heads-up, the SLB9670 datasheet says this device uses
+>> an active low interrupt (IRQ_TYPE_LEVEL_LOW). Using TYPE_EDGE
+>> here can cause missed interrupts if the line stays low for
+>> multiple interrupts.
+> 
+> 
+> The driver interrupt handler would need to take care of it, if needed.
+> 
+> The SOC does not support level interrupt, so there is no other solution, am I wrong?
 
-I don't think we can turn the else-if into a blind else, because in
-order to make bus_flags point to bridge_state->input_bus_cfg.flags,
-bridge_state must not be NULL, but we could add an additional else to
-set bus_flags to 0, but I think the simplest thing to do would be to
-set bus_flags =3D 0 at the initialization on line 60 as it suggests.
+Correct, our K3 SoCs do not support level interrupts and so are not compatible
+with most hardware that uses interrupts (unless you are okay with missing
+some interrupts every now and then..).
 
-If you agree, I can submit a patch later tonight.  I need to fix
-another issue found by the build-bot [1]  to make line 113 return NULL
-instead of 0 anyway.  I figured I could just fix them both at the same
-time.
+As you say, our interrupt driver needs to be modified to handle that. Possibly
+by re-checking the line level after the interrupt handlers have all run to see
+if it is still high/low, then manually re-triggering the interrupt if so.
 
-adam
+The heads-up is just that you should be aware of this in case you have issues.
+When(if) our interrupt driver is ever fixed you will need to update the DT here
+to take advantage of the level handler.
 
-[1] - https://lore.kernel.org/oe-kbuild-all/202402062134.a6CqAt3s-lkp@intel=
-com/
+Andrew
 
->
-> Cheers,
-> Nathan
+>   
+> Francesco
+> 
 
