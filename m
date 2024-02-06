@@ -1,210 +1,652 @@
-Return-Path: <linux-kernel+bounces-55284-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55285-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3223584BA39
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:55:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FC0084BA44
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:57:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1B321F271AF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:55:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E307128DB7E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:56:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE8A8134CE4;
-	Tue,  6 Feb 2024 15:54:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D4CF134727;
+	Tue,  6 Feb 2024 15:56:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N65wTlj5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="D8gjlWlR"
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 903A3134721;
-	Tue,  6 Feb 2024 15:54:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDF54134721
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 15:56:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707234892; cv=none; b=TAK3noGrxW47tEAQS474/WL5PgM0QMzZpAdsBZFVq6NqFmvvsXyd6iIiv709YtWTeCO2ZHgfGZVN8sh9qOg+qcs+1cVA8UZmLK+GlVa7eUXlaLMPZXSRFgQw+RY9wQFb0ElArum/Lyp11BwWy3zmOGjeZyl4iLX/gHVL8XE9T+8=
+	t=1707235015; cv=none; b=WmtwknYm4zwsusXi4O4cCpXjjQxVUSXy2eFFf2GlSgazCUhMq58L1nkmKI2TBGnEx1ARdkkBc1Iib84edDvR7FY0K9NkBTSvZ5P9DVIeCGbsCfkWqLp1b6l0eBeQV/hjhJjdIX6+K20YV6IvFqH9Bu/jGok8HRla1qVaW8VwDs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707234892; c=relaxed/simple;
-	bh=JzUN8NRfEN8J79MKketfCz33yTukYvRMzD5SnRIwdf8=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=c/ITP0pryQy7fNpxOtVKZE83cBocSY6RJWd2BZf/4vzxDcgO8CADkZ18VGEYL/LVJVNUYfSeTj2vGb94pyngAq3vaIY97O5pDYwflFbwz2tUAGpHii4MQO1jmEPFj1UMAz52nF3yqO2V8R5ARwZCtytwI9Q9ea30trznhIxvF5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N65wTlj5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D579AC433C7;
-	Tue,  6 Feb 2024 15:54:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707234892;
-	bh=JzUN8NRfEN8J79MKketfCz33yTukYvRMzD5SnRIwdf8=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=N65wTlj5j/CVPuYM6+9wagicwPDMPhG1QVmDYuhaNv237wZB/x11+EQay27cfujQ3
-	 np2usMDhFqQp21CBSFwoVnJSzp8xqb/jur4fv2dHluNKvmzrLJ5W+KcSJTEyvnoaE6
-	 JAQEyRMamjkMGw7qxrYbajssAuoS7aVArHSCdTmGWE8zhYppcPAMlcjdNSfWkctPY0
-	 szf1GkDjJSMipS1jKhzsVb3EZaGzD0jBejM5WRVsgQM3U9te5duKwC5ESrGeUZXZ28
-	 X1jdOhk7lkOMPbL/jLImyXiuM43Bjp8/nJcP/eEyrDdO+wMYKHREHPfy6hQdthFBjp
-	 vQEuDC3MJif2Q==
-Message-ID: <754c1617c27660eff17bc0d7f4921c59d2471603.camel@kernel.org>
-Subject: Re: [PATCH v2 9/9] ima: Record i_version of real_inode for change
- detection
-From: Jeff Layton <jlayton@kernel.org>
-To: Amir Goldstein <amir73il@gmail.com>, Stefan Berger
- <stefanb@linux.ibm.com>
-Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, 
- linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- paul@paul-moore.com,  jmorris@namei.org, serge@hallyn.com,
- zohar@linux.ibm.com, roberto.sassu@huawei.com,  brauner@kernel.org,
- miklos@szeredi.hu
-Date: Tue, 06 Feb 2024 10:54:49 -0500
-In-Reply-To: <CAOQ4uxhQgCqNZ_4Dy1PghCHBg7H4qaf-st2pWhXe9eq1+dsHHA@mail.gmail.com>
-References: <20240205182506.3569743-1-stefanb@linux.ibm.com>
-	 <20240205182506.3569743-10-stefanb@linux.ibm.com>
-	 <CAOQ4uxhQgCqNZ_4Dy1PghCHBg7H4qaf-st2pWhXe9eq1+dsHHA@mail.gmail.com>
-Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
- keydata=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
-	kZWuOsJdJQdmwlWC5L5ln9xgfr/4mOY38B0U=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+	s=arc-20240116; t=1707235015; c=relaxed/simple;
+	bh=hcnRWbYRwOSqHk002c9kotwOL7cYJtXPGdPu/Tyleq4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Y7x0v4yrSQVNsZ2+gGkHLZQDvA0DTB1av5IkC/JoWR69eUTUFaMpUKIzo1uN5E+xD8ehZn15btNVQNjmKfAAp5Rk1/cMqxaINeZ6ieVWWZb2DWiBxzII/8wAKOGukW2EDMa58g9nR/xzAAV+TsDef39F2hfnfyMZC8s0UYvP1lk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=D8gjlWlR; arc=none smtp.client-ip=209.85.219.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-6818aa07d81so34485276d6.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 07:56:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707235011; x=1707839811; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=teFCdIN1/38ZQJ7TM5uLrqELZ67nou7BTJ2vhyrwL+E=;
+        b=D8gjlWlRcTSNskA0Phin9HG0u+5kxOd0HWNg+m8MD5EjfTcTNiQ8+BdmYQOODuF99U
+         hUNoVvrOePWZgpK9czfGGnftk7retlqpsIlN1QHBQPmu2Ov1WelKQqF+ovv1gs3iHlSl
+         L7DT9kzU3Q2vbcq6y1QFnzTxSTpw3KqdTHwrKVg4MJaThdcBCy+C5ySRZSooS9MgP8Sd
+         jGdoS/4/54SZexccFHvADwg0/XmwfLjdbth7ElijyGP0msM9xEkMVFr6fapFvCcWydTK
+         d2XU2rFoXSaQti6AOgf1BCBFtwWyV9fDtoN5HStHd5Lu8uPab4g9RQyQsM48P3DG/lfn
+         HPOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707235011; x=1707839811;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=teFCdIN1/38ZQJ7TM5uLrqELZ67nou7BTJ2vhyrwL+E=;
+        b=VW6xROADcLuAwkhu4AD4rhmz1isU4yaoZTSI3FLwTpnOERjx3fQ+MZ9A+7I3H6KqD9
+         tkc8VU8s/jv7VaH84b6SYhYqKmFxTBj3D1+t2vOBl7PZfO0PW6AGvRJIvsqiv44n/5S7
+         oogMHPhEy3cwMHQNqmQ1jYEiB7Eg7CVvMNoWoQ+RvlTinbtAcHY/D9v+5l1+g8TTC34I
+         v/9939F7VLE5UoD5ZnhKku1s9AgYVgPsR0xg5db1w3GC9aOEM9LpeTGyUhXtRbgk8ZRc
+         0iNKSe74OXX7Kz+tL7CevEdzwaKCMyFMdZ8l9xVmLpKAf5uOXiLasl6o9U3USP+HV/vV
+         bmZg==
+X-Gm-Message-State: AOJu0YyoKOPfNzqwlNcnZlhPWP4cAdNfA6c7vdia9oSWxwjfo/ngnArR
+	tNHaJz+q26BrF6be9DUZZ4zNNP3V7Ec948dGcYS2buFF9TX9ib634qWd1yrL8yzz8OTkKOtrBI3
+	Yoz5E2zuJVTkqCIjsyDzQTSQ9EYODPiTHUwjSrw==
+X-Google-Smtp-Source: AGHT+IEAOkJygRnR2vqgPJYGvM2ij3dPkOEY1847GvMuBNjDobmrg9H7RVPXArjHM2L2VMHZcYaZ+LYEV89MzQad9KQ=
+X-Received: by 2002:a0c:9c0c:0:b0:68c:b646:acf7 with SMTP id
+ v12-20020a0c9c0c000000b0068cb646acf7mr1354567qve.38.1707235010662; Tue, 06
+ Feb 2024 07:56:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240202145731.4082033-1-peter.griffin@linaro.org>
+ <20240202145731.4082033-2-peter.griffin@linaro.org> <CAPLW+4=Cm36Q311Y7mCGgm+3fe5NNNc5XhNSMkbigTG2BVCTpA@mail.gmail.com>
+In-Reply-To: <CAPLW+4=Cm36Q311Y7mCGgm+3fe5NNNc5XhNSMkbigTG2BVCTpA@mail.gmail.com>
+From: Peter Griffin <peter.griffin@linaro.org>
+Date: Tue, 6 Feb 2024 15:56:39 +0000
+Message-ID: <CADrjBPqT=F+MALssnWsMa1E1RcPN7Sz8s+HfEZRU3pSgPO+z6w@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] soc: samsung: exynos-pmu: Add regmap support for
+ SoCs that protect PMU regs
+To: Sam Protsenko <semen.protsenko@linaro.org>
+Cc: arnd@arndb.de, krzysztof.kozlowski@linaro.org, linux@roeck-us.net, 
+	wim@linux-watchdog.org, alim.akhtar@samsung.com, jaewon02.kim@samsung.com, 
+	kernel-team@android.com, alexey.klimov@linaro.org, tudor.ambarus@linaro.org, 
+	andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com, 
+	linux-fsd@tesla.com, linux-watchdog@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2024-02-06 at 17:23 +0200, Amir Goldstein wrote:
-> On Mon, Feb 5, 2024 at 8:25=E2=80=AFPM Stefan Berger <stefanb@linux.ibm.c=
-om> wrote:
-> >=20
-> > process_measurement() will try to detect file content changes for not-y=
-et-
-> > copied-up files on a stacked filesystem based on the i_version number o=
-f
-> > the real inode: !inode_eq_iversion(real_inode, iint->version)
-> > Therefore, take a snapshot of the i_version of the real file to be used
-> > for i_version number-based file content change detection by IMA in
-> > process_meassurements().
-> >=20
-> > In this case vfs_getattr_nosec() cannot be used since it will return th=
-e
-> > i_version number of the file on the overlay layer which will trigger mo=
-re
-> > iint resets in process_measurements() than necessary since this i_versi=
-on
-> > number represents different state than that of the real_inode (of a
-> > not-yet-copied up file).
-> >=20
-> > Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+Hi Sam,
+
+Thanks for the great review feedback.
+
+On Fri, 2 Feb 2024 at 17:35, Sam Protsenko <semen.protsenko@linaro.org> wro=
+te:
+>
+> On Fri, Feb 2, 2024 at 8:57=E2=80=AFAM Peter Griffin <peter.griffin@linar=
+o.org> wrote:
+> >
+> > Some Exynos based SoCs like Tensor gs101 protect the PMU registers for
+> > security hardening reasons so that they are only write accessible in el=
+3
+> > via an SMC call.
+> >
+> > As most Exynos drivers that need to write PMU registers currently obtai=
+n a
+> > regmap via syscon (phys, pinctrl, watchdog). Support for the above usec=
+ase
+> > is implemented in this driver using a custom regmap similar to syscon t=
+o
+> > handle the SMC call. Platforms that don't secure PMU registers, get a m=
+mio
+> > regmap like before. As regmaps abstract out the underlying register acc=
+ess
+> > changes to the leaf drivers are minimal.
+> >
+> > A new API exynos_get_pmu_regmap_by_phandle() is provided for leaf drive=
+rs
+> > that currently use syscon_regmap_lookup_by_phandle(). This also handles
+> > deferred probing.
+> >
+> > Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
 > > ---
-> >  security/integrity/ima/ima_api.c | 28 +++++++++++++++-------------
-> >  1 file changed, 15 insertions(+), 13 deletions(-)
-> >=20
-> > diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/=
-ima_api.c
-> > index 597ea0c4d72f..530888cc481e 100644
-> > --- a/security/integrity/ima/ima_api.c
-> > +++ b/security/integrity/ima/ima_api.c
-> > @@ -14,6 +14,7 @@
-> >  #include <linux/xattr.h>
-> >  #include <linux/evm.h>
-> >  #include <linux/fsverity.h>
-> > +#include <linux/iversion.h>
-> >=20
-> >  #include "ima.h"
-> >=20
-> > @@ -250,7 +251,6 @@ int ima_collect_measurement(struct integrity_iint_c=
-ache *iint,
-> >         int result =3D 0;
-> >         int length;
-> >         void *tmpbuf;
-> > -       u64 i_version =3D 0;
-> >=20
-> >         /*
-> >          * Always collect the modsig, because IMA might have already co=
-llected
-> > @@ -263,16 +263,6 @@ int ima_collect_measurement(struct integrity_iint_=
-cache *iint,
-> >         if (iint->flags & IMA_COLLECTED)
-> >                 goto out;
-> >=20
-> > -       /*
-> > -        * Detecting file change is based on i_version. On filesystems
-> > -        * which do not support i_version, support was originally limit=
-ed
-> > -        * to an initial measurement/appraisal/audit, but was modified =
-to
-> > -        * assume the file changed.
-> > -        */
-> > -       result =3D vfs_getattr_nosec(&file->f_path, &stat, STATX_CHANGE=
-_COOKIE,
-> > -                                  AT_STATX_SYNC_AS_STAT);
-> > -       if (!result && (stat.result_mask & STATX_CHANGE_COOKIE))
-> > -               i_version =3D stat.change_cookie;
-> >         hash.hdr.algo =3D algo;
-> >         hash.hdr.length =3D hash_digest_size[algo];
-> >=20
-> > @@ -302,10 +292,22 @@ int ima_collect_measurement(struct integrity_iint=
-_cache *iint,
-> >=20
-> >         iint->ima_hash =3D tmpbuf;
-> >         memcpy(iint->ima_hash, &hash, length);
-> > -       iint->version =3D i_version;
-> > -       if (real_inode !=3D inode) {
-> > +       if (real_inode =3D=3D inode) {
-> > +               /*
-> > +                * Detecting file change is based on i_version. On file=
-systems
-> > +                * which do not support i_version, support was original=
-ly limited
-> > +                * to an initial measurement/appraisal/audit, but was m=
-odified to
-> > +                * assume the file changed.
-> > +                */
-> > +               result =3D vfs_getattr_nosec(&file->f_path, &stat,
-> > +                                          STATX_CHANGE_COOKIE,
-> > +                                          AT_STATX_SYNC_AS_STAT);
-> > +               if (!result && (stat.result_mask & STATX_CHANGE_COOKIE)=
-)
-> > +                       iint->version =3D stat.change_cookie;
+> > Changes since v2
+> >  - Add select REGMAP to Kconfig
+> >  - Add constant for SET/CLEAR bits
+> >  - Replace kerneldoc with one line comment
+> >  - Fix kerneldoc for EXPORT_SYMBOL_GPL funcs
+> >  - remove superflous extern keyword
+> >  - dev_err_probe() on probe error
+> >  - shorten regmcfg name
+> >  - no compatibles inside probe, use match data
+> >  - don't mix declarations with/without initializations
+> >  - tensor_sec_reg_read() use mmio to avoid access restrictions
+> >  - Collect up Reviewed-by
+> >  - const for regmap_config structs
+> > ---
+> >  drivers/soc/samsung/Kconfig            |   1 +
+> >  drivers/soc/samsung/exynos-pmu.c       | 233 ++++++++++++++++++++++++-
+> >  drivers/soc/samsung/exynos-pmu.h       |   1 +
+> >  include/linux/soc/samsung/exynos-pmu.h |  11 +-
+> >  4 files changed, 241 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/soc/samsung/Kconfig b/drivers/soc/samsung/Kconfig
+> > index 27ec99af77e3..1a5dfdc978dc 100644
+> > --- a/drivers/soc/samsung/Kconfig
+> > +++ b/drivers/soc/samsung/Kconfig
+> > @@ -42,6 +42,7 @@ config EXYNOS_PMU
+> >         depends on ARCH_EXYNOS || ((ARM || ARM64) && COMPILE_TEST)
+> >         select EXYNOS_PMU_ARM_DRIVERS if ARM && ARCH_EXYNOS
+> >         select MFD_CORE
+> > +       select REGMAP_MMIO
+> >
+> >  # There is no need to enable these drivers for ARMv8
+> >  config EXYNOS_PMU_ARM_DRIVERS
+> > diff --git a/drivers/soc/samsung/exynos-pmu.c b/drivers/soc/samsung/exy=
+nos-pmu.c
+> > index 250537d7cfd6..adf3549370d6 100644
+> > --- a/drivers/soc/samsung/exynos-pmu.c
+> > +++ b/drivers/soc/samsung/exynos-pmu.c
+> > @@ -5,6 +5,7 @@
+> >  //
+> >  // Exynos - CPU PMU(Power Management Unit) support
+> >
+> > +#include <linux/arm-smccc.h>
+> >  #include <linux/of.h>
+> >  #include <linux/of_address.h>
+> >  #include <linux/mfd/core.h>
+> > @@ -12,19 +13,130 @@
+> >  #include <linux/of_platform.h>
+> >  #include <linux/platform_device.h>
+> >  #include <linux/delay.h>
+> > +#include <linux/regmap.h>
+> >
+> >  #include <linux/soc/samsung/exynos-regs-pmu.h>
+> >  #include <linux/soc/samsung/exynos-pmu.h>
+> >
+> >  #include "exynos-pmu.h"
+> >
+> > +#define PMUALIVE_MASK GENMASK(14, 0)
+>
+> Are you sure it's not GENMASK(13, 0)?
+
+Yes, you're right, mask should be 0x3fff.
+
+> Because SET_BITS has bit #14
+> set, which overlaps with bit #14 from PMUALIVE_MASK, when being added
+> in tensor_set_bit_atomic().
+>
+> This also can be aligned with below definitions.
+
+Will update alignment
+>
+> > +#define SET_BITS       0xc000
+> > +#define CLEAR_BITS     0x8000
+>
+> All 3 above values seem to be gs101 specific. At least I can't find
+> any similar atomic registers in Exynos850 TRM, in PMU block. So I'd
+> suggest also adding TENSOR_ prefix to those to make it clear and to
+> prevent possible naming conflicts in future.
+
+Sure, I can add a Tensor prefix. Unfortunately these atomic registers
+aren't mentioned anywhere in gs101 TRM's either, so it is a bit of a
+nature study :( It was implemented and used in the downstream drivers
+though (and doesn't look to be implemented downstream for exynos850,
+so you're likely correct it doesn't have it.). I tried to check some
+other downstream product tree's, I found the hardware looks to exist
+on Exynos 9820 [1]. But I think we can update the name if somebody
+tries to upstream that platform in the future.
+
+[1] https://github.com/PixelOS-Devices/kernel_samsung_exynos9820/blob/thirt=
+een/drivers/soc/samsung/exynos-pmu.c#L32
+
+>
+> Also, not sure if it makes things better, but FWIW:
+>
+>     #define CLEAR_BITS     BIT(15)
+>     #define SET_BITS       (BIT(15) | BIT(14))
+
+I agree that would make it clearer.
+
+>
+> Just to show that those two bits don't overlap with PMUALIVE_MASK (if
+> it can be fixed to 13:0), and show their relation. If I understand
+> correctly what's going on anyway.
+
+I think you've understood what's happening here perfectly
+
+>
+> > +
+> > +#define TENSOR_SMC_PMU_SEC_REG         0x82000504
+> > +#define TENSOR_PMUREG_READ             0
+> > +#define TENSOR_PMUREG_WRITE            1
+> > +#define TENSOR_PMUREG_RMW              2
+> > +
+> >  struct exynos_pmu_context {
+> >         struct device *dev;
+> >         const struct exynos_pmu_data *pmu_data;
+> > +       struct regmap *pmureg;
+> >  };
+> >
+> >  void __iomem *pmu_base_addr;
+> >  static struct exynos_pmu_context *pmu_context;
+> > +static struct platform_driver exynos_pmu_driver;
+>
+> Just an idea: maybe add a comment saying it's a forward declaration,
+> and the variable is assigned below, as it might be confusing. Not sure
+> if it's worth it though.
+>
+> > +
+> > +/*
+> > + * Tensor SoCs are configured so that PMU_ALIVE registers can only be =
+written
+> > + * from EL3, but are still read accessible. As Linux needs to write so=
+me of
+> > + * these registers, the following functions are provided and exposed v=
+ia
+> > + * regmap.
+> > + *
+> > + * Note: This SMC interface is known to be implemented on gs101 and de=
+rivative
+> > + * SoCs.
+> > + */
+> > +
+> > +/* Write to a protected PMU register. */
+> > +static int tensor_sec_reg_write(void *base, unsigned int reg, unsigned=
+ int val)
+> > +{
+> > +       struct arm_smccc_res res;
+> > +       unsigned long pmu_base =3D (unsigned long)base;
+> > +
+> > +       arm_smccc_smc(TENSOR_SMC_PMU_SEC_REG, pmu_base + reg,
+> > +                     TENSOR_PMUREG_WRITE, val, 0, 0, 0, 0, &res);
+> > +
+> > +       /* returns -EINVAL if access isn't allowed or 0 */
+> > +       if (res.a0)
+> > +               pr_warn("%s(): SMC failed: %d\n", __func__, (int)res.a0=
+);
+> > +
+> > +       return (int)res.a0;
+> > +}
+> > +
+> > +/* Read/Modify/Write a protected PMU register. */
+> > +static int tensor_sec_reg_rmw(void *base, unsigned int reg,
+> > +                             unsigned int mask, unsigned int val)
+> > +{
+> > +       struct arm_smccc_res res;
+> > +       unsigned long pmu_base =3D (unsigned long)base;
+> > +
+> > +       arm_smccc_smc(TENSOR_SMC_PMU_SEC_REG, pmu_base + reg,
+> > +                     TENSOR_PMUREG_RMW, mask, val, 0, 0, 0, &res);
+> > +
+> > +       /* returns -EINVAL if access isn't allowed or 0*/
+> > +       if (res.a0)
+> > +               pr_warn("%s(): SMC failed: %d\n", __func__, (int)res.a0=
+);
+> > +
+> > +       return (int)res.a0;
+> > +}
+> > +
+> > +/*
+> > + * Read a protected PMU register. All PMU registers can be read by Lin=
+ux.
+> > + * Note: The SMC read register is not used, as only registers that can=
+ be
+> > + * written are readable via SMC.
+> > + */
+> > +static int tensor_sec_reg_read(void *base, unsigned int reg, unsigned =
+int *val)
+> > +{
+> > +       *val =3D pmu_raw_readl(reg);
+> > +       return 0;
+> > +}
+> > +
+> > +/*
+> > + * For SoCs that have set/clear bit hardware this function can be used=
+ when
+> > + * the PMU register will be accessed by multiple masters.
+> > + *
+> > + * For example, to set bits 13:8 in PMU reg offset 0x3e80
+> > + * tensor_set_bit_atomic(0x3e80, 0x3f00, 0x3f00);
+> > + *
+> > + * To clear bits 13:8 in PMU offset 0x3e80
+> > + * tensor_set_bit_atomic(0x3e80, 0x0, 0x3f00);
+> > + */
+> > +static inline int tensor_set_bit_atomic(void *ctx, unsigned int offset=
+,
+>
+> set_bit -> set_bits?
+
+Will change
+
+>
+> > +                                       u32 val, u32 mask)
+> > +{
+> > +       int ret;
+> > +       unsigned int i;
+> > +
+> > +       for (i =3D 0; i < 32; i++) {
+> > +               if (mask & BIT(i)) {
+>
+> Maybe replace it with:
+>
+>     if (!(mask & BIT(i)))
+>         continue;
+>
+> to reduce the indentation level?
+
+Will do
+
+>
+> > +                       if (val & BIT(i))
+> > +                               offset |=3D SET_BITS;
+> > +                       else
+> > +                               offset |=3D CLEAR_BITS;
+>
+> What if someone calls this functions like this:
+>
+>     tensor_set_bit_atomic(0x3e80, 0x100, 0x3f00);
+>
+> which means "set bit #8, and clear bits 13:9). But because the offset
+> variable will hold SET_BITS set during bit #8 handling, bits 13:9 are
+> also going to be set, effectively making that call act like
+> tensor_set_bit_atomic(0x3e80, 0x3f00, 0x3f00) instead. So I'd add
+> something like:
+>
+>     offset &=3D ~SET_BITS;
+>
+> before doing |=3D operations.
+
+Good catch! Will fix in v4
+
+>
+> > +
+> > +                       ret =3D tensor_sec_reg_write(ctx, offset, i);
+> > +                       if (ret)
+> > +                               goto out;
+>
+> Maybe remove "out" and just do return ret here?
+
+Will update
+
+>
+> > +               }
+> > +       }
+> > +out:
+> > +       return ret;
+> > +}
+> > +
+> > +static int tensor_sec_update_bits(void *ctx, unsigned int reg,
+> > +                                 unsigned int mask, unsigned int val)
+> > +{
+> > +       /*
+> > +        * Use atomic operations for PMU_ALIVE registers (offset 0~0x3F=
+FF)
+> > +        * as the target registers can be accessed by multiple masters.
+> > +        */
+> > +       if (reg > PMUALIVE_MASK)
+> > +               return tensor_sec_reg_rmw(ctx, reg, mask, val);
+> > +
+> > +       return tensor_set_bit_atomic(ctx, reg, val, mask);
+> > +}
+> >
+> >  void pmu_raw_writel(u32 val, u32 offset)
+> >  {
+> > @@ -75,11 +187,41 @@ void exynos_sys_powerdown_conf(enum sys_powerdown =
+mode)
+> >  #define exynos_pmu_data_arm_ptr(data)  NULL
+> >  #endif
+> >
+> > +static const struct regmap_config regmap_smccfg =3D {
+> > +       .name =3D "pmu_regs",
+> > +       .reg_bits =3D 32,
+> > +       .reg_stride =3D 4,
+> > +       .val_bits =3D 32,
+> > +       .fast_io =3D true,
+> > +       .use_single_read =3D true,
+> > +       .use_single_write =3D true,
+> > +       .reg_read =3D tensor_sec_reg_read,
+> > +       .reg_write =3D tensor_sec_reg_write,
+> > +       .reg_update_bits =3D tensor_sec_update_bits,
+> > +};
+> > +
+> > +static const struct regmap_config regmap_mmiocfg =3D {
+> > +       .name =3D "pmu_regs",
+> > +       .reg_bits =3D 32,
+> > +       .reg_stride =3D 4,
+> > +       .val_bits =3D 32,
+> > +       .fast_io =3D true,
+> > +       .use_single_read =3D true,
+> > +       .use_single_write =3D true,
+> > +};
+> > +
+> > +static const struct exynos_pmu_data gs101_pmu_data =3D {
+> > +       .pmu_secure =3D true
+> > +};
+> > +
+> >  /*
+> >   * PMU platform driver and devicetree bindings.
+> >   */
+> >  static const struct of_device_id exynos_pmu_of_device_ids[] =3D {
+> >         {
+> > +               .compatible =3D "google,gs101-pmu",
+> > +               .data =3D &gs101_pmu_data,
+> > +       }, {
+> >                 .compatible =3D "samsung,exynos3250-pmu",
+> >                 .data =3D exynos_pmu_data_arm_ptr(exynos3250_pmu_data),
+> >         }, {
+> > @@ -113,19 +255,73 @@ static const struct mfd_cell exynos_pmu_devs[] =
+=3D {
+> >         { .name =3D "exynos-clkout", },
+> >  };
+> >
+> > +/**
+> > + * exynos_get_pmu_regmap() - Obtain pmureg regmap
+> > + *
+> > + * Find the pmureg regmap previously configured in probe() and return =
+regmap
+> > + * pointer.
+> > + *
+> > + * Return: A pointer to regmap if found or ERR_PTR error value.
+> > + */
+> >  struct regmap *exynos_get_pmu_regmap(void)
+> >  {
+> >         struct device_node *np =3D of_find_matching_node(NULL,
+> >                                                       exynos_pmu_of_dev=
+ice_ids);
+> >         if (np)
+> > -               return syscon_node_to_regmap(np);
+> > +               return exynos_get_pmu_regmap_by_phandle(np, NULL);
+> >         return ERR_PTR(-ENODEV);
+> >  }
+> >  EXPORT_SYMBOL_GPL(exynos_get_pmu_regmap);
+> >
+> > +/**
+> > + * exynos_get_pmu_regmap_by_phandle() - Obtain pmureg regmap via phand=
+le
+> > + * @np: Pointer to device's Device Tree node
+> > + * @property: Device Tree property name which references the pmu
+> > + *
+> > + * Find the pmureg regmap previously configured in probe() and return =
+regmap
+> > + * pointer.
+> > + *
+> > + * Return: A pointer to regmap if found or ERR_PTR error value.
+> > + */
+> > +struct regmap *exynos_get_pmu_regmap_by_phandle(struct device_node *np=
+,
+> > +                                               const char *property)
+> > +{
+> > +       struct device *dev;
+> > +       struct exynos_pmu_context *ctx;
+> > +       struct device_node *pmu_np;
+> > +
+> > +       if (property)
+> > +               pmu_np =3D of_parse_phandle(np, property, 0);
+> > +       else
+> > +               pmu_np =3D np;
+> > +
+> > +       if (!pmu_np)
+> > +               return ERR_PTR(-ENODEV);
+> > +
+> > +       /*
+> > +        * Determine if exynos-pmu device has probed and therefore regm=
+ap
+> > +        * has been created and can be returned to the caller. Otherwis=
+e we
+> > +        * return -EPROBE_DEFER.
+> > +        */
+> > +       dev =3D driver_find_device_by_of_node(&exynos_pmu_driver.driver=
+,
+> > +                                           (void *)pmu_np);
+> > +
+> > +       of_node_put(pmu_np);
+> > +       if (!dev)
+> > +               return ERR_PTR(-EPROBE_DEFER);
+> > +
+> > +       ctx =3D dev_get_drvdata(dev);
+> > +
+> > +       return ctx->pmureg;
+> > +}
+> > +EXPORT_SYMBOL_GPL(exynos_get_pmu_regmap_by_phandle);
+> > +
+> >  static int exynos_pmu_probe(struct platform_device *pdev)
+> >  {
+> >         struct device *dev =3D &pdev->dev;
+> > +       struct regmap_config pmu_regmcfg;
+> > +       struct regmap *regmap;
+> > +       struct resource *res;
+> >         int ret;
+> >
+> >         pmu_base_addr =3D devm_platform_ioremap_resource(pdev, 0);
+> > @@ -133,13 +329,42 @@ static int exynos_pmu_probe(struct platform_devic=
+e *pdev)
+> >                 return PTR_ERR(pmu_base_addr);
+> >
+> >         pmu_context =3D devm_kzalloc(&pdev->dev,
+> > -                       sizeof(struct exynos_pmu_context),
+> > -                       GFP_KERNEL);
+> > +                                  sizeof(struct exynos_pmu_context),
+> > +                                  GFP_KERNEL);
+> >         if (!pmu_context)
+> >                 return -ENOMEM;
+> > -       pmu_context->dev =3D dev;
+> > +
+> > +       res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > +       if (!res)
+> > +               return -ENODEV;
+> > +
+> >         pmu_context->pmu_data =3D of_device_get_match_data(dev);
+> >
+> > +       /* For SoCs that secure PMU register writes use custom regmap *=
+/
+> > +       if (pmu_context->pmu_data && pmu_context->pmu_data->pmu_secure)=
+ {
+> > +               pmu_regmcfg =3D regmap_smccfg;
+> > +               pmu_regmcfg.max_register =3D resource_size(res) -
+> > +                                          pmu_regmcfg.reg_stride;
+> > +               /* Need physical address for SMC call */
+> > +               regmap =3D devm_regmap_init(dev, NULL,
+> > +                                         (void *)(uintptr_t)res->start=
+,
+> > +                                         &pmu_regmcfg);
 > > +       } else {
-> >                 iint->real_ino =3D real_inode->i_ino;
-> >                 iint->real_dev =3D real_inode->i_sb->s_dev;
-> > +               iint->version =3D inode_query_iversion(real_inode);
+> > +               /* all other SoCs use a MMIO regmap */
+>
+> Suggest starting with a capital letter, for consistency with previous com=
+ments.
 
-You only want to do this if IS_I_VERSION(inode) is true. If the
-underlying filesystem is doing its own thing wrt the i_version field,
-calling inode_query_iversion on it may corrupt it.
+Will update
+
+>
+> > +               pmu_regmcfg =3D regmap_mmiocfg;
+> > +               pmu_regmcfg.max_register =3D resource_size(res) -
+> > +                                          pmu_regmcfg.reg_stride;
+> > +               regmap =3D devm_regmap_init_mmio(dev, pmu_base_addr,
+> > +                                              &pmu_regmcfg);
+> > +       }
+> > +
+> > +       if (IS_ERR(regmap))
+> > +               dev_err_probe(&pdev->dev, PTR_ERR(regmap),
+> > +                             "regmap init failed\n");
+>
+> Why not "return dev_err_probe()"? Is it ok to continue with no regmap cre=
+ated?
+
+That should have been return dev_err_probe. Will fix
+
+Peter
 
 
-> >         }
-> >=20
->=20
-> The commit that removed inode_query_iversion db1d1e8b9867 ("IMA: use
-> vfs_getattr_nosec to get the i_version") claimed to do that because
-> inode_query_iversion() did not work in overlayfs and now this commit
-> uses inode_query_iversion() only for overlayfs.
->=20
-> STATX_CHANGE_COOKIE does not seem to make much sense in this
-> code anymore, unless it is still needed, according to original commit to
-> "allow IMA to work properly with a broader class of filesystems in the fu=
-ture."
 
-I don't have a real opinion here. When I did the original patch that
-switched this over to to use vfs_getattr_nosec, I didn't consider that
-it could end up being called from an atomic context. Reverting that
-seems like the correct thing to do if it's still broken.
-
-If you're fine with this only working on a subset of local filesystems,
-then doing something like this is probably fine:
-
-	if (IS_I_VERSION(real_inode))
-		iint->version =3D inode_query_iversion(real_inode);
-
-..but it's not clear to me what you should do if IS_I_VERSION is false.
-I guess IMA just falls back to checking the ctime in that case?
---=20
-Jeff Layton <jlayton@kernel.org>
+>
+> > +
+> > +       pmu_context->pmureg =3D regmap;
+> > +       pmu_context->dev =3D dev;
+> > +
+> >         if (pmu_context->pmu_data && pmu_context->pmu_data->pmu_init)
+> >                 pmu_context->pmu_data->pmu_init();
+> >
+> > diff --git a/drivers/soc/samsung/exynos-pmu.h b/drivers/soc/samsung/exy=
+nos-pmu.h
+> > index 1c652ffd79b4..0a49a2c9a08e 100644
+> > --- a/drivers/soc/samsung/exynos-pmu.h
+> > +++ b/drivers/soc/samsung/exynos-pmu.h
+> > @@ -21,6 +21,7 @@ struct exynos_pmu_conf {
+> >  struct exynos_pmu_data {
+> >         const struct exynos_pmu_conf *pmu_config;
+> >         const struct exynos_pmu_conf *pmu_config_extra;
+> > +       bool pmu_secure;
+> >
+> >         void (*pmu_init)(void);
+> >         void (*powerdown_conf)(enum sys_powerdown);
+> > diff --git a/include/linux/soc/samsung/exynos-pmu.h b/include/linux/soc=
+/samsung/exynos-pmu.h
+> > index a4f5516cc956..406ed73614fd 100644
+> > --- a/include/linux/soc/samsung/exynos-pmu.h
+> > +++ b/include/linux/soc/samsung/exynos-pmu.h
+> > @@ -20,12 +20,21 @@ enum sys_powerdown {
+> >
+> >  extern void exynos_sys_powerdown_conf(enum sys_powerdown mode);
+> >  #ifdef CONFIG_EXYNOS_PMU
+> > -extern struct regmap *exynos_get_pmu_regmap(void);
+> > +struct regmap *exynos_get_pmu_regmap(void);
+> > +
+>
+> Usually empty line delimeter is not needed in cases like that.
+>
+> > +struct regmap *exynos_get_pmu_regmap_by_phandle(struct device_node *np=
+,
+> > +                                               const char *property);
+> >  #else
+> >  static inline struct regmap *exynos_get_pmu_regmap(void)
+> >  {
+> >         return ERR_PTR(-ENODEV);
+> >  }
+> > +
+> > +static inline struct regmap *exynos_get_pmu_regmap_by_phandle(struct d=
+evice_node *np,
+> > +                                                             const cha=
+r *property)
+> > +{
+> > +       return ERR_PTR(-ENODEV);
+> > +}
+> >  #endif
+> >
+> >  #endif /* __LINUX_SOC_EXYNOS_PMU_H */
+> > --
+> > 2.43.0.594.gd9cf4e227d-goog
+> >
 
