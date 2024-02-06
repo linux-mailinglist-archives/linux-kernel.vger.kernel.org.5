@@ -1,167 +1,122 @@
-Return-Path: <linux-kernel+bounces-54971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3683A84B5AD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:56:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0548D84B5B4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:57:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E70402859D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:56:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3BD72872D3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:57:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CC2C12F5B4;
-	Tue,  6 Feb 2024 12:56:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C453212F5B4;
+	Tue,  6 Feb 2024 12:56:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cefG3SlK"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MVKFo0G5"
+Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C19291EA80;
-	Tue,  6 Feb 2024 12:56:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6343012F39D
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 12:56:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707224186; cv=none; b=GzVo1K0iVv54zGtDjqSKzxdAFZwqyNkxldwK0RE1YDIR1JOpFQFbZA+mCrraHDWRe0UZ9SIabs2JuBsvVuU/XEgOWxMgy4EItez7L1wC3KYkgI1+oS+TOf6keJLQZ+ipWubDAnlx/W11tMY4rpCDtZVtp29tUasfHrf/S/j8Ht8=
+	t=1707224215; cv=none; b=ouYuorb4n5ckp2FwdYgt6qyEuTAW+p+j184J7/+cpGCHrmu9HSgw0VMk3mQ36ZmOhbjPyGOQIU+mQmcTLCmtt3/bN1BWnlAN4UcHxcLv73H57FNdHeQ3xdcjASQtG0zM0yq4txyzO09uMs+MaeWwL/McDi4T4k2BaB23FlO6xgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707224186; c=relaxed/simple;
-	bh=hPZSu02P2dfzA6Y4MG5ytfc6LxdzfYU+fY/Tl4zL5jM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ChF9qjuesjM228xt51lKSYWh8/RLnxv3rUyG2u5ERKqcv+V+CEc9FJwllXNb8MMMmmbX9C4gUVL78X1jf8/5CC7SSd+Ovse6Wj2GcTjy+ND8/ju024xi71BK7+6H7TzhfnmSBZdVCOQqrAtP8+v9xv9hNU9vu5TMQ96qVKhD5ME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cefG3SlK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5FBBC433F1;
-	Tue,  6 Feb 2024 12:56:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707224186;
-	bh=hPZSu02P2dfzA6Y4MG5ytfc6LxdzfYU+fY/Tl4zL5jM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cefG3SlKw+inRWFc3vcRQS1w3RgS3nyUQpf4AcH3AIpRY+RrehgF9qN2E3TxAOwIN
-	 mBelaXz3vxZGk+ksUPseP9Tnq4XQBmED9DFuwn9vir+UJsYXW3V5XlQ7ko66nRR0AF
-	 H4gfnUlHYTzz6FLQqGiHeoT6zTkPPtq/g6RDneyM07t4DVULZoitFY1xq2KXAaFHJC
-	 UOs/OYm5FGKGD3xZEm4/FMz+/8v4uF6fWQ3gbTaTa5OSFRGojFpNlUXm9TQLkkC8rs
-	 /oMAkGl1yArPwXD4UUZCjh6AL5WVM2y0OJBnvZAU2wmnVK0U65lsb3ztL957APWAk9
-	 2Wol22Eiq73xQ==
-Date: Tue, 6 Feb 2024 13:56:23 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Waiman Long <longman@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Shuah Khan <shuah@kernel.org>,
-	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
-	Ryan Phillips <rphillips@redhat.com>,
-	Brent Rowsell <browsell@redhat.com>, Peter Hunt <pehunt@redhat.com>,
-	Cestmir Kalina <ckalina@redhat.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	Alex Gladkov <agladkov@redhat.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>, Phil Auld <pauld@redhat.com>,
-	Paul Gortmaker <paul.gortmaker@windriver.com>,
-	Daniel Bristot de Oliveira <bristot@kernel.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Costa Shulyupin <cshulyup@redhat.com>
-Subject: Re: [RFC PATCH 0/8] cgroup/cpuset: Support RCU_NOCB on isolated
- partitions
-Message-ID: <ZcIsd6fjgmsb2dxr@localhost.localdomain>
-References: <20240117163511.88173-1-longman@redhat.com>
- <ZagJPoEsLZ6Dg-NG@mtj.duckdns.org>
- <5ee5bf79-6cdc-4d1b-a19f-f0d5165a5f16@redhat.com>
+	s=arc-20240116; t=1707224215; c=relaxed/simple;
+	bh=5nc+dSrwAnzE25GipJSV9pefmc4RGp+04RrqQWJYpRU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=D5ixSRaSVpeNd1br0hk5AmPfGLkioChXvb20BoAZJPH1daNdLGdAUo1vhQBYQuGv238COJ0rJDwXnIueo6ghI9p5FzLjJDR6l8XAsV7z9H13erIHKGCY5vgsU4z1d4Iwu4q/oZcpPla1Z0q2zZaNcXsQs/jL6oAytQzGHfh8UOs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MVKFo0G5; arc=none smtp.client-ip=209.85.222.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ua1-f54.google.com with SMTP id a1e0cc1a2514c-7d5c2502ea2so2074359241.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 04:56:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707224212; x=1707829012; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=AGJfUloIH7xui8NFEtstIa05IECpt+Jab8Vg6t76P4w=;
+        b=MVKFo0G5yWZsFjQnbNwhW98ZKBxSlpbKPOE2/9YwgJNutprtBjxNG0dwyzYGjQBF8V
+         7LozfmDeLgLRWvC0XHjVvKmPmuTJJVxPeNIp03Uv+LaPjowziqE+Fk8TBtFBsPfSeFTW
+         rG7ir/W6LElanTcwyBUtMVMz0R+/zgtuKPOuUHWJzKUZ3b4iAkTGwlg07N7B2Ft4oHpb
+         wrBl3Ld9Lw6kBuphNyb7YHw4JDdmkBAcaHoZieOFbvusmiqMHp37TMvzTsYmR63ISyK9
+         2qC1073eEH8ffHATaXSGliClRYOxzGEueQW4XO3DN/2ylkJ19CDJDXSezfwYo55Wujmv
+         5YUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707224212; x=1707829012;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AGJfUloIH7xui8NFEtstIa05IECpt+Jab8Vg6t76P4w=;
+        b=DH5SrIo5NiEpJZbT34KWMSwS7z4X4jRcWs1gf2UK4iS74vEP+PbLJyL9RcatNJ0QZu
+         1CFO7vV2a5/wYpw6iX2sT+lMJ6KVmN4yIjZMZMH9qfgYYcxbRqa14rl96eagzF7vUIDU
+         6haZ0qnrjARDmL7UAFbLB1JnkL5V3EAQx0zusMASLq3r+ccEB0xK4lQoM4vWTBbdq362
+         sDf2AjAzQoiSHOP9bc2zEGqLyU7wUxXnCGetcURi6qy9fbQ+DMmum5/einq6xpJaahpS
+         qeXmCPRQr+azPduIZRcMRU+4wzUHbpGXgVa2V3BoRqHLuIqbpHsNqif14CuREWYpsrtd
+         85SA==
+X-Gm-Message-State: AOJu0Yw2uMhkUYP5gjRpid4Q4w51gAE0DMrT8XnddbagGtvR4OQ2OXum
+	mfVv477B/yS5AxfULfECpSV5IQigjmCOcERs1/VB4PEqm8BiMWAkQHvTLsqkU116Oms3z/zj3JQ
+	V4XdkcGhNJkedpaGjRNmiNbE4fBFG4f2a7Zp2nQ==
+X-Google-Smtp-Source: AGHT+IFS1PZd7e63zNC9r8KPu6xCRNyWYmZqFgNbrdl0EFkTq/aO1Lm+I9bc80TlV88R1TjdJ7cY5RYVnQe3pc/jcBs=
+X-Received: by 2002:a05:6102:303c:b0:46d:2f1e:3d15 with SMTP id
+ v28-20020a056102303c00b0046d2f1e3d15mr2561235vsa.35.1707224212310; Tue, 06
+ Feb 2024 04:56:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5ee5bf79-6cdc-4d1b-a19f-f0d5165a5f16@redhat.com>
+References: <CA+G9fYttTwsbFuVq10igbSvP5xC6bf_XijM=mpUqrJV=uvUirQ@mail.gmail.com>
+ <20240206101529.orwe3ofwwcaghqvz@quack3> <CA+G9fYup=QzTAhV2Bh_p8tujUGYNzGYKBHXkcW7jhhG6QFUo_g@mail.gmail.com>
+ <20240206122857.svm2ptz2hsvk4sco@quack3>
+In-Reply-To: <20240206122857.svm2ptz2hsvk4sco@quack3>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Tue, 6 Feb 2024 18:26:41 +0530
+Message-ID: <CA+G9fYvKfeRHfY3d_Df+9V+4tE_ZcvMGVJ-acewmgfjxb1qtpg@mail.gmail.com>
+Subject: Re: next: /dev/root: Can't open blockdev
+To: Jan Kara <jack@suse.cz>
+Cc: linux-block <linux-block@vger.kernel.org>, 
+	Linux-Next Mailing List <linux-next@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
+	Linux Regressions <regressions@lists.linux.dev>, linux-fsdevel@vger.kernel.org, 
+	lkft-triage@lists.linaro.org, Arnd Bergmann <arnd@arndb.de>, 
+	Christian Brauner <brauner@kernel.org>, Dan Carpenter <dan.carpenter@linaro.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Anders Roxell <anders.roxell@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Le Wed, Jan 17, 2024 at 12:15:07PM -0500, Waiman Long a écrit :
-> 
-> On 1/17/24 12:07, Tejun Heo wrote:
-> > Hello,
-> > 
-> > On Wed, Jan 17, 2024 at 11:35:03AM -0500, Waiman Long wrote:
-> > > The first 2 patches are adopted from Federic with minor twists to fix
-> > > merge conflicts and compilation issue. The rests are for implementing
-> > > the new cpuset.cpus.isolation_full interface which is essentially a flag
-> > > to globally enable or disable full CPU isolation on isolated partitions.
-> > I think the interface is a bit premature. The cpuset partition feature is
-> > already pretty restrictive and makes it really clear that it's to isolate
-> > the CPUs. I think it'd be better to just enable all the isolation features
-> > by default. If there are valid use cases which can't be served without
-> > disabling some isolation features, we can worry about adding the interface
-> > at that point.
-> 
-> My current thought is to make isolated partitions act like isolcpus=domain,
-> additional CPU isolation capabilities are optional and can be turned on
-> using isolation_full. However, I am fine with making all these turned on by
-> default if it is the consensus.
+On Tue, 6 Feb 2024 at 17:58, Jan Kara <jack@suse.cz> wrote:
+>
+> On Tue 06-02-24 15:53:34, Naresh Kamboju wrote:
+> > On Tue, 6 Feb 2024 at 15:45, Jan Kara <jack@suse.cz> wrote:
+> > >
+> > > On Tue 06-02-24 14:41:17, Naresh Kamboju wrote:
+> > > > All qemu's mount rootfs failed on Linux next-20230206 tag due to the following
+> > > > kernel crash.
+> > > >
+> > > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > > >
+> > > > Crash log:
+> > > > ---------
+> > > > <3>[    3.257960] /dev/root: Can't open blockdev
+> > > > <4>[    3.258940] VFS: Cannot open root device "/dev/sda" or
+> > > > unknown-block(8,0): error -16
+> > >
+> > > Uhuh, -16 is EBUSY so it seems Christian's block device opening changes are
+> > > suspect? Do you have some sample kconfig available somewhere?
+> >
+> > All build information is in this url,
+> > https://storage.tuxsuite.com/public/linaro/lkft/builds/2byqguFVp7MYAEjKo6nJGba2FcP/
+>
+> Thanks! So for record the config has:
+>
+> CONFIG_BLK_DEV_WRITE_MOUNTED=y
+>
+> So we are not hitting any weird corner case with blocking writes to mounted
+> filesystems. It must be something else.
 
-Right it was the consensus last time I tried. Along with the fact that mutating
-this isolation_full set has to be done on offline CPUs to simplify the whole
-picture.
+As per Anders bisection results the first bad commit pointing to
+   ba858e55b205 ("bdev: open block device as files")
 
-So lemme try to summarize what needs to be done:
-
-1) An all-isolation feature file (that is, all the HK_TYPE_* things) on/off for
-  now. And if it ever proves needed, provide a way later for more finegrained
-  tuning.
-
-2) This file must only apply to offline CPUs because it avoids migrations and
-  stuff.
-
-3) I need to make RCU NOCB tunable only on offline CPUs, which isn't that much
-   changes.
-
-4) HK_TYPE_TIMER:
-   * Wrt. timers in general, not much needs to be done, the CPUs are
-     offline. But:
-   * arch/x86/kvm/x86.c does something weird
-   * drivers/char/random.c might need some care
-   * watchdog needs to be (de-)activated
-   
-5) HK_TYPE_DOMAIN:
-   * This one I fear is not mutable, this is isolcpus...
-
-6) HK_TYPE_MANAGED_IRQ:
-   * I prefer not to think about it :-)
-
-7) HK_TYPE_TICK:
-   * Maybe some tiny ticks internals to revisit, I'll check that.
-   * There is a remote tick to take into consideration, but again the
-     CPUs are offline so it shouldn't be too complicated.
-
-8) HK_TYPE_WQ:
-   * Fortunately we already have all the mutable interface in place.
-     But we must make it live nicely with the sysfs workqueue affinity
-     files.
-
-9) HK_FLAG_SCHED:
-   * Oops, this one is ignored by nohz_full/isolcpus, isn't it?
-   Should be removed?
-
-10) HK_TYPE_RCU:
-    * That's point 3) and also some kthreads to affine, which leads us
-     to the following in HK_TYPE_KTHREAD:
-
-11) HK_FLAG_KTHREAD:
-    * I'm guessing it's fine as long as isolation_full is also an
-      isolated partition. Then unbound kthreads shouldn't run there.
-
-12) HK_TYPE_MISC:
-    * Should be fine as ILB isn't running on offline CPUs.
-
-Thanks.
+- Naresh
 
