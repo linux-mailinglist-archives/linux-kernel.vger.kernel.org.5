@@ -1,67 +1,65 @@
-Return-Path: <linux-kernel+bounces-54124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54125-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8251884AB12
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:19:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 976A784AB13
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:19:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 282171F26806
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:19:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3DCE7B23262
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 00:19:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3061DED9;
-	Tue,  6 Feb 2024 00:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CEBE7FD;
+	Tue,  6 Feb 2024 00:19:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D5wQd7aW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pZj3wRvl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67E2D639;
-	Tue,  6 Feb 2024 00:19:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1A1F3FE4;
+	Tue,  6 Feb 2024 00:19:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707178762; cv=none; b=jL0st7AsR5ME3IHkWac8psVeQcRVfeNbNEYvVhvFGpEPWaM2nIth8yeFku7XsmmmGhukG7PWmKAObMwpsnbqoiRZtcDMLjq4ex1m4cZv1TRGiX35x225RZcYCx21Jk+cXrvdSKsDEOFrDIrvCuIQ2eeVB6zpRtzxFRS1Hvr0jhg=
+	t=1707178783; cv=none; b=D9YZHbnfCALGRsrqATeoTSxILg8W0qQpstOozjZkjNcRffIxXIYk6Yii8ePdjiF5w8IWynZHcflSSyMudMweiNYYXQtoUNIF+n0e5u+7oaWiddojHUuqErQpWU8J3F7YXVEfEJf+dvjsr4AxKZj3Qdf0w4Tlkq7hoDbfi1kpuaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707178762; c=relaxed/simple;
-	bh=3aAnESqvgKhvpJ+yZI83GQOT7qLCqZAwLtA+27U5RZ0=;
+	s=arc-20240116; t=1707178783; c=relaxed/simple;
+	bh=s+JNYYoa/aWZY28sbi5PW8y/reMlR60lqXxnm7UTLXk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cPFw2uKc7h5gtILcnq3/r/7FdvBMgPZ7aPeE/92Svvw2QI/ornREQTvYlytGQ54vRL7oVi05z5WrSR9K+8H9icYvqmx6mU7SxTi/sd4Qbobi0pDmXJuIxstp+hkkCte2sfqd16HbkmGXohaJi9I+vkl4wyIeuwoXMcqNZyhv1rs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D5wQd7aW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 692B8C433F1;
-	Tue,  6 Feb 2024 00:19:21 +0000 (UTC)
+	 MIME-Version:Content-Type; b=kwuL81EUa22ASg/bLfb60WsuEDKCsu1xlzti5xHG0jAXnmb23BfSBCG/9cjyosdhDKIdUQX9Zlyq73K2t04jKCbm8jhCoHdTzoRaI3EEMhsq6Aq5tAvA2Qx0R24X8KBCN0kR4PsOCEBE7kG6Lkoq3lUZUjSDfN6kKWfDHKgwe2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pZj3wRvl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE966C433F1;
+	Tue,  6 Feb 2024 00:19:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707178761;
-	bh=3aAnESqvgKhvpJ+yZI83GQOT7qLCqZAwLtA+27U5RZ0=;
+	s=k20201202; t=1707178783;
+	bh=s+JNYYoa/aWZY28sbi5PW8y/reMlR60lqXxnm7UTLXk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=D5wQd7aWl9E2lPx5X5GaIcdsNR2n6Bu6YFV08gC2l+mNpbkdGaZ4j1oQsBs4QVBg4
-	 8ToEqyDra8t8+oZtVplYxfiMAy7K52sLaur3SLGbZu+ghNrudvyTxyz/T7ew4VOMgK
-	 lj//zfi14aitFfcY19E93LSK9m623OrYiY9d9YxSmdKtyDO89iEe4Qh/aCePpz4g6S
-	 gAHh38/1VrFPOoaGOl1roJ9+8UIvyf8D8n8/9by+KH4DI8h4DkkEkOjy7Dt5KQUBmf
-	 lOVDjfbDp/O3rOK5FG6NJ9oXmUZgQg4q6uAFbJ3uFlv6F5/hDPbfsbJtMJi81ztBUK
-	 VPCBwJJcaqTcg==
+	b=pZj3wRvlUT9c54nEafsfJYHDK0xPTOGUpoXrwfggnIV9MmWY0qRs6pEovQGyediXY
+	 LSLD/5yieSqosM6U5LR0lct798Z4cu4DckvpMJ2G4H3bHXFluJ+y8yQcchpGShU+Zz
+	 atOoK5A8urutWa1duho8H2H+4/576uAvcu0nnzvW+gLC8lxhmS64A+TeEy54jPAdIQ
+	 2zhefxB5EXveCOgpKYWxvxFGo2RVzkEqhQxquyV7/1VARKzaUWIoXwwXYSh3XK5RD0
+	 5EYNRpTDWSJJveVufGUFkued6Ez5PnOr9E4nzQ01Cq9AD3TmTfpkHvWwGRZZrVjws0
+	 U0NT9/k4wm4mg==
 From: Namhyung Kim <namhyung@kernel.org>
-To: Ian Rogers <irogers@google.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	bpf@vger.kernel.org,
+To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	Yang Jihong <yangjihong1@huawei.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	James Clark <james.clark@arm.com>,
-	Mark Rutland <mark.rutland@arm.com>,
 	linux-perf-users@vger.kernel.org,
-	Jiri Olsa <jolsa@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Re: [PATCH 1/1] perf bpf: Clean up the generated/copied vmlinux.h
-Date: Mon,  5 Feb 2024 16:19:19 -0800
-Message-ID: <170717858573.1700937.13255681716633001438.b4-ty@kernel.org>
+	Ben Gainey <ben.gainey@arm.com>
+Cc: adrian.hunter@intel.com,
+	mingo@redhat.com,
+	acme@kernel.org,
+	irogers@google.com,
+	will@kernel.org,
+	mark.rutland@arm.com,
+	peterz@infradead.org,
+	jolsa@kernel.org,
+	alexander.shishkin@linux.intel.com
+Subject: Re: [PATCH 0/1] tools: perf: Expose sample ID / stream ID to python scripts
+Date: Mon,  5 Feb 2024 16:19:40 -0800
+Message-ID: <170717858575.1700937.1642994669335608980.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-In-Reply-To: <Zbz89KK5wHfZ82jv@x1>
-References: <Zbz89KK5wHfZ82jv@x1>
+In-Reply-To: <20240123103137.1890779-1-ben.gainey@arm.com>
+References: <20240123103137.1890779-1-ben.gainey@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,13 +69,14 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On Fri, 2 Feb 2024 11:32:20 -0300, Arnaldo Carvalho de Melo wrote:
-> When building perf with BPF skels we either copy the minimalistic
-> tools/perf/util/bpf_skel/vmlinux/vmlinux.h or use bpftool to generate a
-> vmlinux from BTF, storing the result in $(SKEL_OUT)/vmlinux.h.
+On Tue, 23 Jan 2024 10:31:36 +0000, Ben Gainey wrote:
+> This patch modifies the perf python scripting engine so that the ID and
+> STREAM_ID are exposed as part of the sample so that they may be
+> correlated to the corresponding throttle/unthrottle event (for example).
 > 
-> We need to remove that when doing a 'make -C tools/perf clean', fix it.
-> 
+> NB: For scripts where perf_db_export_mode = True, this may be a breaking
+> change depending on how the script is constructed. Each field is passed
+> to `sample_table` as an argument so any script that is written as:
 > 
 > [...]
 
