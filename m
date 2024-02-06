@@ -1,135 +1,188 @@
-Return-Path: <linux-kernel+bounces-55379-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B14384BBE8
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:31:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6187A84BBF2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:33:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE89B1C22DF7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:31:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB908285B53
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:33:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57433D517;
-	Tue,  6 Feb 2024 17:31:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D605C142;
+	Tue,  6 Feb 2024 17:32:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UKCcp7q4"
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kJ9/syYM"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A1A6BA50
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 17:31:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18CAD12B9C;
+	Tue,  6 Feb 2024 17:32:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707240678; cv=none; b=sfHNWFqTrXV+zs4pXjg6tLd3f1vE7L21ml/TiBPSpHtjLlGxyAq19a9HX/E6UIdGeJztOjRJH/iwjGRdrz1lQb8XNzUqE/GK69K4cPe92wEQ6ltERsV8t7qOOtlAYM+Xu0dnMS5Y2fMNjdxYX1QY2AqhHE2DmvtIU+REjnXyyXo=
+	t=1707240754; cv=none; b=BvYkGs/INv14giJv67Cf6xJRUDFICuKHXkXQ7iKu1hCS3oMiL/vJW9sewD+O9olbloSCgtJsbPY/BdsET1ysEGbTbHbgbqUA5i1sdqPE44pWBsfAJeccMG8LN1VTELDYSNxmdOAw5Zb3xxK4utfF8H9d9uljngM68Jm65oP9rUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707240678; c=relaxed/simple;
-	bh=tr6m+R2THwf3zvHVbBb44TsmN3M31ERvqZA3x4Ing70=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=icv2F7H9MqC3nl/9x2BDwKyLbucGXURDh9dxOzfG3TIu9KyzUWBwSI90UZLSi2//RkVTe0wVbFG3EFC4HM6JiELdJ7BCIeeMXxATYoe0QzOUbRFHTwrIDEOd8rtluWx5GB/ACrsKc7IgeWHXpYRp8okmFgo+Q6Vrj7VTGxbMOQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UKCcp7q4; arc=none smtp.client-ip=209.85.166.51
+	s=arc-20240116; t=1707240754; c=relaxed/simple;
+	bh=ilTj5VWnzbXDnAmzljy5yyfGbnvyZnNPzs2eb6s2nj8=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=YPyjp+bYUfggKtQHKTs9gkaEwUMOy925DRPNbHzH27m6k2E8xWsAU2bsQlz2oqVs0Y+2c/W830j5dGb8y+Mk9Q3le/4CAM5PeWVWLoKxXqgDOyx3c/LUiEHFElxNyxnXlakleshIiKK3nIb/CUy5SzDwfVrm8GcC5qWn0UKGhYs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kJ9/syYM; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7c00cfd7156so238704639f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 09:31:16 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40fd2f7ef55so5342615e9.0;
+        Tue, 06 Feb 2024 09:32:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707240676; x=1707845476; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oPcqdTOG7hsb6OetsSk6gwLuDAB08ptM/Ebrl9LX+uc=;
-        b=UKCcp7q4/8YDZM2OrSGBRdmzum3D7HLixr9FaphZklaA+pV9PipaLpGTRY0ZaAbuHA
-         Dca3InrmGLW3A72ma/A9HaP6StRX2NQ0J7hV18KqMpAg/57/cKwszgl4FqJXu+3790op
-         lsuZPIkUafGnQUOBvEc3ksPBtI7kqYoo7V2WV9auEd+mOwsTnSP/jK4xHPZ0XKTAAc9u
-         Dsn/6oeuDekffjlJL084Lfuyx9Z5Ed0XHPeL1Pc0pkEcHGE+uf9R9a0zMx15rOb5//Vr
-         1E5TD/lzF+BP2SbaQaFX8tgLdWlY+fki2fn2fbuD00QCpigOrcNlp4qWdczeIRIhw/SL
-         28qw==
+        d=gmail.com; s=20230601; t=1707240751; x=1707845551; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9hloNsWsZXa6Vf2TLiftzXJ4XARi6FJ1Kn6mZNuM3PA=;
+        b=kJ9/syYMXuy8TjN31Rk8350olIkgfMDeIvS4VfOMoxHCw61GJU+LD+mMWt9dOjXFlr
+         goFkeJScEZf8pCPN0wwwsc26cE2pX6OyeLzXtvx2Eph33Gd7LJgCP0fitNAq36Uu7Lj9
+         w/aJn3pP71BYHc8BbPvbGVqfasdj/O7azqJ5LepEpOOrTVNP7QOD1fd1OjG8W1nY5oSU
+         VJ//HflgeefLF1Wd8knf6eyzAQijzCcAF60vfvftaTGjXc0slngCxRA0u0RCxkKf9O1Q
+         DpJP0D3XydX+jb/m0az7HPQhFC9o23DsEc0BlTe7GnG5/i0dXqpiU/u51vuQvsn/978L
+         qiMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707240676; x=1707845476;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1707240751; x=1707845551;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oPcqdTOG7hsb6OetsSk6gwLuDAB08ptM/Ebrl9LX+uc=;
-        b=gIrhSVTaDe0Sg4uMxK/Xz1KCTqHz9VKauitwzQAUo1+HK5zSrnB1BAqsnyfmNDQx+N
-         uSrFlSuGQ8JeA1HvlVblXKXP+FfmDNAMgUpLO/oZrvv2o6dKj9oRksEclzhpEF4Vw+7O
-         TzP/FamYoSwl2skGOJMBV2qQbfFE2fRGTQHEJhL3XyyMLiabDb1yneIdbNwec9xsKiXW
-         A0V9UZ++z7zLCVR6VW8AgISAXW4a/+3aGWTeGBTrWRJkd3gOGv6E6hEpPKnlUJ4F8cQy
-         95LwiiXKN7j31xrCb6UTmNnrV3bJ8E4nMTbKg6eChOq5ElIWX9uvlLuN+eaZ3mQpz/y/
-         EIrA==
-X-Gm-Message-State: AOJu0Yzm+KEfKwQIpp6W1Dd+Wk3+WzCZ1nsC4Ho1ptfwzNjndwtxhGtS
-	D1ouI7z8D4UKK+wrAzisAmK3zGkwNXVf0lo/xmUulSzMxwi2wj1GTJ1yDwBs1QmrIIXe15mdw5t
-	E4l6YnPtFbAbBMTLsC2NTgXDdJT4=
-X-Google-Smtp-Source: AGHT+IHwZvUC74P4q/l1EaSnsg7ta7gOlVu/FmAfqhuEXq0gxrEH6mxcei45FQXey0KBh+cOaM345ptlFi+YwfS3W3Q=
-X-Received: by 2002:a05:6602:17c6:b0:7c3:f303:e274 with SMTP id
- z6-20020a05660217c600b007c3f303e274mr2201238iox.8.1707240676003; Tue, 06 Feb
- 2024 09:31:16 -0800 (PST)
+        bh=9hloNsWsZXa6Vf2TLiftzXJ4XARi6FJ1Kn6mZNuM3PA=;
+        b=Qm1nIu1i1FvFzY63ILdT4gKy7f+ncluty8LG2HJzYk1bz37q2TU8TY5fAq2bkAOsh9
+         vPE2oot3kW3xZGAEl3QeauxDNRS1gXztkpYsfwBfDbsYaqnk+E3wpuurmcfGL2p6ygws
+         S1oGOSNSzTYpA/ihE8HK0bA2YmgJfw+azDeYHHA1b1krONJRcGFwOqQXw+gNFjBm2E1s
+         r6SCKE6sybQ4sxa7N/Uxm3G/TC74hynbMDhOKUi3XC8ROHJSrQqJhZMXz+O9p5A+UFPU
+         Qg9swBFa02YyZJjH1ekOnlbN7mUCYLtf1U/0PgQVtfhPguqH6Vo56Nkk79fUBSF5eN6G
+         MBYA==
+X-Gm-Message-State: AOJu0YznX5MDsy3eQARUyc3+3UPCMuz0eHOSC/LDDiNTde0MOPA1gHfJ
+	YjyB1zVSh051F3+NiTSLq+nzKJs6rpje0DMYguKkMhg9lWmGE1qO
+X-Google-Smtp-Source: AGHT+IEA4QrnnNM/8eK+gYClRi1ppp1d2OpxthfD7v0aXswCDlRC1NXg547xJqw8pQ36v+HQxLemqw==
+X-Received: by 2002:a05:600c:5128:b0:40f:b0d9:632a with SMTP id o40-20020a05600c512800b0040fb0d9632amr8007669wms.14.1707240751116;
+        Tue, 06 Feb 2024 09:32:31 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWgFauZBrcLwuGEQZ+pUc5FPpEwZmhYtSW7xcv5F7v51NwwN+53pqsLhik7Fjd9JMukH1SMkY2X98V3OAoT1VyNK0Dhc48eRNk4KAaeMBVdt44kVL2vGI7ufgBBwMH5IsXPIWNF8o2KTKYSb9iSxbEmkjP5yaOYNYh3fQyhLdLhZKpocvth8SEhZ4J9rIFZepv8PCNOKWZg33H2nOAOJ34Yi+XlMRxup14Y6BicswuXaIeNCyN71TdBWtNPGtRbSaGVhUXdYVHIEj3KgW4R0Q040AmFobIAW0gQivurX+VrEzTitjvHyMKoDqu9dZSNUyZdAy5t5AOJ/BVP/pu+WgCGQxRu5Zv1jytEwYxU9oucjyHrEePGS02uIgu39r0hwcN5cH02F/8bYZizBTC94RvB96/qRcWDc3nDoMAlYi3nByNqCZ/73Kt582xKmEex0CoUxenSL9CulzSBvcEIbr+MRemT1NjLJyZ18FZDUB/lJ2i/es1aL05IxzQD+rfaogZt9sHtEOcWVhzYcH/+H82CHl8Qe56Ir93GDLy7sIfwvLVL4qwJs0RFtqOXTXkpA09Z3sdxakUfJ2/qC+kwmxO1OTlqM9/3lIOBiumTg0TAPCOFx0/ZQov6kZP4w7pqgB6uzcK+LdLesPVM4528wHRVKhDq5DhNWaDBIwSSQnqnE0Wlo0rB9Q==
+Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.googlemail.com with ESMTPSA id l14-20020a05600c4f0e00b0040fc56712e8sm2621215wmq.17.2024.02.06.09.32.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 09:32:17 -0800 (PST)
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Christian Marangi <ansuelsmth@gmail.com>,
+	Robert Marko <robert.marko@sartura.hr>,
+	netdev@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org
+Subject: [net-next PATCH v7 01/10] dt-bindings: net: document ethernet PHY package nodes
+Date: Tue,  6 Feb 2024 18:31:04 +0100
+Message-ID: <20240206173115.7654-2-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240206173115.7654-1-ansuelsmth@gmail.com>
+References: <20240206173115.7654-1-ansuelsmth@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205232442.3240571-1-nphamcs@gmail.com> <20240206151523.GB54958@cmpxchg.org>
-In-Reply-To: <20240206151523.GB54958@cmpxchg.org>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Tue, 6 Feb 2024 09:31:04 -0800
-Message-ID: <CAKEwX=NxY+MsTO9vxrpSPHu-i4fJ+m=9=_U5beo5XLAtbADivw@mail.gmail.com>
-Subject: Re: [PATCH] mm/swap_state: update zswap LRU's protection range with
- the folio locked
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: akpm@linux-foundation.org, chengming.zhou@linux.dev, yosryahmed@google.com, 
-	linux-mm@kvack.org, kernel-team@meta.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 6, 2024 at 7:15=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org>=
- wrote:
->
-> On Mon, Feb 05, 2024 at 03:24:42PM -0800, Nhat Pham wrote:
-> > Move the zswap LRU protection range update above the swap_read_folio()
-> > call, and only when a new page is allocated. This is the case where
-> > (z)swapin could happen, which is a signal that the zswap shrinker shoul=
-d
-> > be more conservative with its reclaiming action.
-> >
-> > It also prevents a race, in which folio migration can clear the
-> > memcg_data of the now unlocked folio, resulting in a warning in the
-> > inlined folio_lruvec() call.
->
-> The warning is the most probable outcome, and it will cause the update
-> to go against the root cgroup which is safe at least.
->
-> But AFAICS there is no ordering guarantee to rule out a UAF if the
-> lookup succeeds but the memcg and lruvec get freed before the update.
+Document ethernet PHY package nodes used to describe PHY shipped in
+bundle of 2-5 PHY. The special node describe a container of PHY that
+share common properties. This is a generic schema and PHY package
+should create specialized version with the required additional shared
+properties.
 
-Ah nice. I didn't consider that. IIUC, having the folio locked should
-prevent this too. Based on the documentation:
+Example are PHY packages that have some regs only in one PHY of the
+package and will affect every other PHY in the package, for example
+related to PHY interface mode calibration or global PHY mode selection.
 
- * For a non-kmem folio any of the following ensures folio and memcg bindin=
-g
- * stability:
- *
- * - the folio lock
+The PHY package node MUST declare the base address used by the PHY driver
+for global configuration by calculating the offsets of the global PHY
+based on the base address of the PHY package.
 
-I'll rework the commit log to include this, and make this more prominent :)
+Each reg of the PHYs defined in the PHY package node is absolute and
+describe the real address of the Ethernet PHY on the bus.
 
->
-> I think that part should be more prominent in the changelog. It's more
-> important than the first paragraph. Consider somebody scrolling
-> through the git log and trying to decide whether to backport or not;
-> it's helpful to describe the bug and its impact first thing, then put
-> the explanation of the fix after.
->
-> > Reported-by: syzbot+17a611d10af7d18a7092@syzkaller.appspotmail.com
-> > Closes: https://lore.kernel.org/all/000000000000ae47f90610803260@google=
-com/
-> > Fixes: b5ba474f3f51 ("zswap: shrink zswap pool based on memory pressure=
-")
-> > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
->
-> Would it make sense to add
->
->         VM_WARN_ON_ONCE(!folio_test_locked(folio));
->
-> to zswap_folio_swapin() as well?
+Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+---
+ .../bindings/net/ethernet-phy-package.yaml    | 52 +++++++++++++++++++
+ 1 file changed, 52 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/ethernet-phy-package.yaml
+
+diff --git a/Documentation/devicetree/bindings/net/ethernet-phy-package.yaml b/Documentation/devicetree/bindings/net/ethernet-phy-package.yaml
+new file mode 100644
+index 000000000000..e567101e6f38
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/ethernet-phy-package.yaml
+@@ -0,0 +1,52 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/ethernet-phy-package.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Ethernet PHY Package Common Properties
++
++maintainers:
++  - Christian Marangi <ansuelsmth@gmail.com>
++
++description:
++  PHY packages are multi-port Ethernet PHY of the same family
++  and each Ethernet PHY is affected by the global configuration
++  of the PHY package.
++
++  Each reg of the PHYs defined in the PHY package node is
++  absolute and describe the real address of the Ethernet PHY on
++  the MDIO bus.
++
++properties:
++  $nodename:
++    pattern: "^ethernet-phy-package@[a-f0-9]+$"
++
++  reg:
++    minimum: 0
++    maximum: 31
++    description:
++      The base ID number for the PHY package.
++      Commonly the ID of the first PHY in the PHY package.
++
++      Some PHY in the PHY package might be not defined but
++      still occupy ID on the device (just not attached to
++      anything) hence the PHY package reg might correspond
++      to a not attached PHY (offset 0).
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++patternProperties:
++  ^ethernet-phy@[a-f0-9]+$:
++    $ref: ethernet-phy.yaml#
++
++required:
++  - reg
++  - '#address-cells'
++  - '#size-cells'
++
++additionalProperties: true
+-- 
+2.43.0
+
 
