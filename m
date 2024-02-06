@@ -1,135 +1,158 @@
-Return-Path: <linux-kernel+bounces-54809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4694284B3F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:51:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D2CF84B3FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:55:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 793F31C21C70
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:51:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5EC12858FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:55:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12C021384A2;
-	Tue,  6 Feb 2024 11:33:38 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE1B4137C45;
+	Tue,  6 Feb 2024 11:34:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="qhO+Bfh/"
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9948E1350D0;
-	Tue,  6 Feb 2024 11:33:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C8B134CD7;
+	Tue,  6 Feb 2024 11:34:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707219213; cv=none; b=qlnBMp8+kCeV4V1+Q62WxuIk+YD3hEzqzeHNUg8vPKTIPuTBBaDxJ8WhgqRXgCZd5OYXB5Sf+NnBMFVgCVYhSRM1iYi5uXGZPi6s93COdvfFakPpWBVZiY8+q1JVZ1IqYEB5fyVJJBpUplUtSVmOo6sL3RAOhjAlC1U7so2p/nE=
+	t=1707219250; cv=none; b=paS3J4syc8UNIVKkqz2Ikiie12nZOdcXeQeWoVFwRtG1qh3Lb5nvLR+HQC+Y9md507UHPY8k42agKSBbF6oDaRkKjdPWKdDXcvV2cCDP0hixG3naloYIJhWsQYL5xmv6U3HtZvCOZl4SrzH3Klg45PiNCfYMd+1NbNy4ih3qc/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707219213; c=relaxed/simple;
-	bh=K0Ph34GY80unDV6Wcvz0AavqMJytP5uSNCEE07y3Q00=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=R+YfVpntuY9rMvHY0L0Mo0ERrA38qXWVQ2UtCgSZFn5ZaDq+feRj6v+R6nGllm5NlVUMobZhhInF04QtlJV9j8EKIg0RJScD9Qu57Sn7UgGCxBhsPrT19491kTAs82UkvNrY5xenfkLCFUqSs5kwDqX53Q4jcp66hPqlIDq8fdA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 849F1C43141;
-	Tue,  6 Feb 2024 11:33:33 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97)
-	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1rXJiD-00000006aRp-42bw;
-	Tue, 06 Feb 2024 06:34:01 -0500
-Message-ID: <20240206113401.818811467@rostedt.homelinux.com>
-User-Agent: quilt/0.67
-Date: Tue, 06 Feb 2024 06:32:21 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Sasha Levin <sashal@kernel.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Christian Brauner <brauner@kernel.org>,
- Al Viro <viro@ZenIV.linux.org.uk>,
- Ajay Kaher <ajay.kaher@broadcom.com>,
- Al Viro <viro@zeniv.linux.org.uk>
-Subject: [v6.7][PATCH v2 23/23] eventfs: Keep all directory links at 1
-References: <20240206113158.822006147@rostedt.homelinux.com>
+	s=arc-20240116; t=1707219250; c=relaxed/simple;
+	bh=KdFnP9vKXts3Zxyh+A/cDJTR6ebINmKjdLrcR5kJ2GU=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type:To:CC; b=EvNRwjVMhwBOTcoPwCNOtd7IXH2N364wmyh2ZhoD3EpF60QrFLI5SDVSDUPTA5Rr7KeNnicnp/XC6Z0vpQ/uzGP31E560n5v9wtXF6PQEpGCG+3Il6JacN3KOU1qwNERYqoeKNsWg4ORYOsGcz+cJN6CS77vE0NVLBGeFbyRdJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=qhO+Bfh/; arc=none smtp.client-ip=91.207.212.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4167ikJX007589;
+	Tue, 6 Feb 2024 12:33:22 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	from:subject:date:message-id:mime-version:content-type
+	:content-transfer-encoding:to:cc; s=selector1; bh=SOtV+sCcBdJgMh
+	qsCXgG5URgeoPNwCNuRe6hbvhKZYI=; b=qhO+Bfh/JZtZfri++DUq6saDrluOIT
+	U9R7BYfmZdMreDQ8gaMKR++julShPimllzbgZtMfPgIjwjYNzoqdJIPU/4xQeQPO
+	079jai8Sy+WOEVWm6m7z2SjPpaHaw50UKWl8gy/ydxVP9/FFS7ht2DGN6BgXR3sO
+	ED7nm8a2RFoBkWm5HAMwgEpGdZCSZRUAbnXXH9k296qHOIKk6iWHHS3PupFxtw1h
+	YCosMevXgR34bHh4h3jQbTcs4JsEEnVK0ckZzna9bfdcMOiN2LA7C7X5h/6QqpQU
+	UQk9thoEN/Tfw9PSNGaGsC5aVdy5cEexloTsYThRRqmg8oxGX0POsS9Q==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3w1eyktxpk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 06 Feb 2024 12:33:22 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 16BC7100056;
+	Tue,  6 Feb 2024 12:33:22 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0937623C6B7;
+	Tue,  6 Feb 2024 12:33:22 +0100 (CET)
+Received: from localhost (10.129.178.155) by SHFDAG1NODE2.st.com
+ (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 6 Feb
+ 2024 12:33:19 +0100
+From: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Subject: [PATCH v4 0/3] Introduce STM32 LVDS driver
+Date: Tue, 6 Feb 2024 12:33:15 +0100
+Message-ID: <20240206-lvds-v4-0-98d5f9af399d@foss.st.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAPsYwmUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyTHQUlJIzE
+ vPSU3UzU4B8JSMDIxMDIwNT3ZyylGLdVAMLk9RkU4NUC3MLJaDSgqLUtMwKsDHRsbW1AAZmdnZ
+ WAAAA
+To: David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten
+ Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard
+	<mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Herring
+	<robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue
+	<alexandre.torgue@foss.st.com>,
+        Yannick Fertre <yannick.fertre@foss.st.com>,
+        Philippe Cornu <philippe.cornu@foss.st.com>,
+        Philipp Zabel
+	<p.zabel@pengutronix.de>
+CC: <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+X-Mailer: b4 0.12.4
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-06_04,2024-01-31_01,2023-05-22_02
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+This serie introduces a new DRM bridge driver for STM32MP257 platforms
+based on Arm Cortex-35. It also adds an instance in the device-tree and
+handle the inclusion of the driver within the DRM framework. First patch
+adds a new panel compatible in the panel-lvds driver, which is used by
+default on the STM32MP257.
 
-The directory link count in eventfs was somewhat bogus. It was only being
-updated when a directory child was being looked up and not on creation.
+Changes in v4:
+	- Align dt-bindings filename and compatible
+	- Remove redundant word in [1/6] subject
+	- Fix example on typo
+	- Some minor fixes on YAML syntax
+	- Explicitly include linux/platform_device.h
+	- Drop device-tree related patch after internal discussions
+	- Rebase on latest drm-misc-next
 
-One solution would be to update in get_attr() the link count by iterating
-the ei->children list and then adding 2. But that could slow down simple
-stat() calls, especially if it's done on all directories in eventfs.
+Changes in v3:
+	- Changed the compatible to show SoC specificity
+	- Fixed includes in dt-binding example
+	- Added "#clock-cells" description in dt-binding example
+	- Some minor fixes on typo
 
-Another solution would be to add a parent pointer to the eventfs_inode
-and keep track of the number of sub directories it has on creation. But
-this adds overhead for something not really worthwhile.
+Changes in v2:
+	- Dropped [1/8] because already merged
+	- Dropped [4/8] since not mandatory for this serie
+	- [1/6]: Switch compatible and clock-cells related areas
+	- [1/6]: Remove faulty #include in the example.
+	- [1/6]: Add missing entry in MAINTAINERS
+	- [2/6]: Removed CamelCase macros
+	- [2/6]: Removed hard to read debug log
+	- [3/6]: Fixed my address
+	- [3/6]: Fixed smatch warning
+	- [5/6]: Move changes to stm32mp255.dtsi
 
-The solution decided upon is to keep all directory links in eventfs as 1.
-This tells user space not to rely on the hard links of directories. Which
-in this case it shouldn't.
-
-Link: https://lore.kernel.org/linux-trace-kernel/20240201002719.GS2087318@ZenIV/
-Link: https://lore.kernel.org/linux-trace-kernel/20240201161617.339968298@goodmis.org
-
-Cc: stable@vger.kernel.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Al Viro <viro@ZenIV.linux.org.uk>
-Cc: Ajay Kaher <ajay.kaher@broadcom.com>
-Fixes: c1504e510238 ("eventfs: Implement eventfs dir creation functions")
-Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-(cherry picked from commit ca185770db914869ff9fe773bac5e0e5e4165b83)
+Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
 ---
- fs/tracefs/event_inode.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+Raphael Gallais-Pou (3):
+      dt-bindings: display: add STM32 LVDS device
+      drm/stm: lvds: add new STM32 LVDS Display Interface Transmitter driver
+      drm/stm: ltdc: add lvds pixel clock
 
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index 9e031e5a2713..110e8a272189 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -404,9 +404,7 @@ static struct dentry *lookup_dir_entry(struct dentry *dentry,
- 
- 	dentry->d_fsdata = get_ei(ei);
- 
--	inc_nlink(inode);
- 	d_add(dentry, inode);
--	inc_nlink(dentry->d_parent->d_inode);
- 	return NULL;
- }
- 
-@@ -769,9 +767,17 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
- 
- 	dentry->d_fsdata = get_ei(ei);
- 
--	/* directory inodes start off with i_nlink == 2 (for "." entry) */
--	inc_nlink(inode);
-+	/*
-+	 * Keep all eventfs directories with i_nlink == 1.
-+	 * Due to the dynamic nature of the dentry creations and not
-+	 * wanting to add a pointer to the parent eventfs_inode in the
-+	 * eventfs_inode structure, keeping the i_nlink in sync with the
-+	 * number of directories would cause too much complexity for
-+	 * something not worth much. Keeping directory links at 1
-+	 * tells userspace not to trust the link number.
-+	 */
- 	d_instantiate(dentry, inode);
-+	/* The dentry of the "events" parent does keep track though */
- 	inc_nlink(dentry->d_parent->d_inode);
- 	fsnotify_mkdir(dentry->d_parent->d_inode, dentry);
- 	tracefs_end_creating(dentry);
+ .../bindings/display/st,stm32mp25-lvds.yaml        |  119 ++
+ MAINTAINERS                                        |    1 +
+ drivers/gpu/drm/stm/Kconfig                        |   11 +
+ drivers/gpu/drm/stm/Makefile                       |    2 +
+ drivers/gpu/drm/stm/ltdc.c                         |   19 +
+ drivers/gpu/drm/stm/ltdc.h                         |    1 +
+ drivers/gpu/drm/stm/lvds.c                         | 1226 ++++++++++++++++++++
+ 7 files changed, 1379 insertions(+)
+---
+base-commit: bb3bc3eac316b7c388733e625cc2343131b69dee
+change-id: 20240205-lvds-e084ec50e878
+
+Best regards,
 -- 
-2.43.0
-
+Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
 
 
