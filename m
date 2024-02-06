@@ -1,117 +1,103 @@
-Return-Path: <linux-kernel+bounces-55603-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55604-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2657F84BEC0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:34:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 59E1E84BEC6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:36:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84A4628260F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:34:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14FA8285B03
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:36:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F36761B81C;
-	Tue,  6 Feb 2024 20:34:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B4B41B941;
+	Tue,  6 Feb 2024 20:36:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="mbYuYh4b"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="btVILNSJ"
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1748C1B805
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 20:34:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B2701B800
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 20:36:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707251682; cv=none; b=lHopWBebhG8cSN50lcCQo+MPF3BZ2vHE60cPIQn5FB7LB9dQiw3O0hFpIMCvdmcX7B20kFtV6/T8CiAC/Edpu2LTJFDTBfo7+5euvd+sUKUkMfV0qiHGtbZ1qtTHB1x8LVdOrEBDc+AN4ivgFG3lV1iRNXCEJmYBaYdmLfbxzOY=
+	t=1707251785; cv=none; b=Duf2odKBxWJaZXHtI3k6yV0A0hrPTdz7E7qudvAUsPCB/ttVKSsaLGRSnW6cAtMxKSaEsFDWgcU650urs8T/tBNgkOgMUHphbV92/idnDcjK47PgSIVbIKHrJfunzDuQ6h+Akw+etod7ylXU3iiIoRkol+T+3AL7VsjCB1AG6I8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707251682; c=relaxed/simple;
-	bh=vEPV3I+CAx1isv/X5nA0vNG0WKopV7VQ2VCaydbvYVU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=f3lDcc4Yj+52pkY3D5W5pzoCfx/OuMhAgxYgrarZBlboBDvuYzrv8qgFYMRjQDQGpHpw9eHs6kQTPrOGmOl5u3dY6UG/VUsWNIqx954J53SV+2ROpGh4T0ZDVzyqBaQzqRHIk2ty0ED/mHuNDM0AflPyFXEiEyr9VQXTUVoX0Vk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=mbYuYh4b; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=diTbNYcTVwWZWU1JxmlHPNl3Y2LldxuZSFDXcVz3gu4=; b=mbYuYh4bxqq1fmVPmdXpueaKA7
-	G9h6t1i7TzErN/lDGbekifPNoFpMcMbcqXEHgvjtf6TK/T3hVM7yDEA2djz6bD1aKXuLx3eUX6yKt
-	SS2g7l2W3CA0iEgO3ySRDi3bLoCNC0YfFK68r2e/UxsWSoHNzSBF+OnWh7pSUFMUwT4Fm5P6GYYUQ
-	DcwMAMDFo0GFnml4Af3sBb01W9JEW8JA91hMW24hbHAbeQkgPvOINpZxikxC6GD03zMPzsPPMnMmP
-	iLqOKqkcwLny1SBy+kwcd57Mrv0LGjYJabW9gZ8v1FN5yGCv9vozDZC5xCJ40Q1xtIqLWWi+O75q/
-	dqsQdiWg==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rXS9P-00000008rc7-1KML;
-	Tue, 06 Feb 2024 20:34:39 +0000
-Message-ID: <11173c11-ce80-4ae1-86a1-bf16c836eb6d@infradead.org>
-Date: Tue, 6 Feb 2024 12:34:38 -0800
+	s=arc-20240116; t=1707251785; c=relaxed/simple;
+	bh=se8P+Bqy2T9rM626GcSkDCI8mK7oGhCqfOiPGu9wZkE=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Content-Type; b=X+80P48EBedkSWxoqufz+CoWuvXL0Au0D3kLPB5WKNV55bI/9VS6SEhP6qrtMfkP+OObMfmMjkrxNKoRQDEhLjlejChAnKVo+6DRIBt+PfMmaKpDjcvjs2aYqJ1Rqy/FxfYA1Lb2SVAX/L41dw2pGUiDWwrD7vBfD51A/BkUoDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=btVILNSJ; arc=none smtp.client-ip=209.85.215.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5ce632b2adfso6096543a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 12:36:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707251784; x=1707856584; darn=vger.kernel.org;
+        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Jzwz3V63szJHlExhCZvPC7c2dtOM+k/FDHvQAaa+NEw=;
+        b=btVILNSJbLhDX+8sChHwWXByUoczQaX1QsEtBu3tcptnNHaUHbwI9JyOPuBddk4WP9
+         7dsjrsiAMdTYpi86RAUDECKLc+qWFM7B4KIPjVkrHBTdMb6r0+VavfWfGzcpRVL5wVd5
+         3MdnDCl0vmhrVvEzRYM484Pjm6zYt/Cf4aXFJIZjR+hxGuiUihCEVA8ZK5mT9nwfYoT1
+         SLp1RBhTdQh9ESnG1XTfz9+Pu5gU8leL5pwo44CmUoeBaL1aiu/d32AKNeV/oop2d+gf
+         zAIhJDmBGwDQmCXunyguPCnMqJUxqG6x8h0Flb+poN4+A2qPUXDVUpW9GuNWHLR25LPI
+         NkfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707251784; x=1707856584;
+        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Jzwz3V63szJHlExhCZvPC7c2dtOM+k/FDHvQAaa+NEw=;
+        b=ISiAKUHZhRGdxdvV7HrbzdOTGHEkdE6J+UluM510s6q3CfaXpzWDxC+PdzntesHqJc
+         WLlyPjpQALmqlAwRpHghgA7qlLFf951lSDO7d5CV0/cXznA/O0Zupx1UUAbRHinzzQ9N
+         2/RSA1jXaS+xqbOX5JN5PJhdMXSURHMugqMm8RCwDnpTDNHIMXFsSCYjQG030w8skGWZ
+         sbiJ8i8N+XzZqMxYPLkD57tCd44AeiUsJsG2vOEfZzNRBf0GYkCWKYoeYstqdq71lPzc
+         s5NCqA8/fORgiqYgurpubz0yD11eOKa7/jVopLDiFmCwde/nDOZL/b1LK+zbmaZkj5xn
+         YXwg==
+X-Forwarded-Encrypted: i=1; AJvYcCV7PPWcC6dAhfCVzB3GNIq5GPcouNyfWd2zeAbJLxotz/AzTWFWPkPS2wiKLy5+Ynfn5hNnqUv/cJ8sr+eG4oxqUCK0wWNUW8Kyi3qf
+X-Gm-Message-State: AOJu0YyAVFxHCHt4T5ePabEfm6ckXfiFfT15bV/JnBEp+PVTIuO5F/P7
+	lklvFZcfE99uxX84eoZP3FRV3yKfmyFkRYxbcmMQs6BWhYjvG1PmxNISFS0Mu1hrL9eRtdpq8Sy
+	LfA==
+X-Google-Smtp-Source: AGHT+IE+O6nMTqNGYB/t77HMprboX4PQjl7+xgDRrny/aw5DBBLxjaHIIhAZ2fE2KVmSzCD1jBDPxM7Dmrc=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a02:313:b0:5ca:45d0:dc1b with SMTP id
+ bn19-20020a056a02031300b005ca45d0dc1bmr1646pgb.9.1707251783750; Tue, 06 Feb
+ 2024 12:36:23 -0800 (PST)
+Date: Tue, 6 Feb 2024 12:36:22 -0800
+In-Reply-To: <20240203000917.376631-11-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/8] x86/tsc: Fix major kernel-doc warnings for tsc.c
-Content-Language: en-US
-To: Peter Hilber <peter.hilber@opensynergy.com>, linux-kernel@vger.kernel.org
-Cc: Simon Horman <horms@kernel.org>,
- "D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>,
- Thomas Gleixner <tglx@linutronix.de>, jstultz@google.com,
- giometti@enneenne.com, corbet@lwn.net, "Dong, Eddie" <eddie.dong@intel.com>,
- "Hall, Christopher S" <christopher.s.hall@intel.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>, x86@kernel.org,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>
-References: <20240201010453.2212371-1-peter.hilber@opensynergy.com>
- <20240201010453.2212371-2-peter.hilber@opensynergy.com>
- <2b482c41-4eb0-4a49-a425-469b05d63018@infradead.org>
- <e25f9bc4-4155-4b55-bebd-48ae18fe856b@opensynergy.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <e25f9bc4-4155-4b55-bebd-48ae18fe856b@opensynergy.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+References: <20240203000917.376631-1-seanjc@google.com> <20240203000917.376631-11-seanjc@google.com>
+Message-ID: <ZcKYRsNUAngWGy2a@google.com>
+Subject: Re: [PATCH v8 10/10] KVM: selftests: Add a basic SEV smoke test
+From: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>, 
+	Oliver Upton <oliver.upton@linux.dev>, Anup Patel <anup@brainfault.org>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Janosch Frank <frankja@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, 
+	kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, Vishal Annapurve <vannapurve@google.com>, 
+	Ackerley Tng <ackerleytng@google.com>, Andrew Jones <andrew.jones@linux.dev>, 
+	Tom Lendacky <thomas.lendacky@amd.com>, Michael Roth <michael.roth@amd.com>, 
+	Peter Gonda <pgonda@google.com>
+Content-Type: text/plain; charset="us-ascii"
 
+On Fri, Feb 02, 2024, Sean Christopherson wrote:
+> +int main(int argc, char *argv[])
+> +{
+> +	TEST_REQUIRE(is_kvm_sev_supported());
 
+This also needs
 
-On 2/6/24 02:54, Peter Hilber wrote:
-> On 01.02.24 05:52, Randy Dunlap wrote:
->>
->>
->> On 1/31/24 17:04, Peter Hilber wrote:
->>> Fix the kernel-doc warnings which show up with default arguments for tsc.c:
->>>
->>> 	$ ./scripts/kernel-doc arch/x86/kernel/tsc.c >/dev/null
->>> 	arch/x86/kernel/tsc.c:1339: warning: Excess function parameter 'cycles' description in 'convert_art_ns_to_tsc'
->>> 	arch/x86/kernel/tsc.c:1339: warning: Excess function parameter 'cs' description in 'convert_art_ns_to_tsc'
->>> 	arch/x86/kernel/tsc.c:1373: warning: Function parameter or struct member 'work' not described in 'tsc_refine_calibration_work'
->>>
->>> The first two warnings stem from members of the convert_art_ns_to_tsc()
->>> return type (struct system_counterval_t). For convert_art_ns_to_tsc(),
->>> the return type members are documented like parameters.
->>>
->>> Since these members are already documented with the struct
->>> system_counterval_t definition, remove the redundant documentation for
->>> convert_art_ns_to_tsc(). This resolves the first two warnings.
->>>
->>> Fix the third warning by appending a ':' instead of a '-' to the '@work'
->>> documentation parameter.
->>>
->>> Suggested-by: Simon Horman <horms@kernel.org>
->>> Signed-off-by: Peter Hilber <peter.hilber@opensynergy.com>
->>
->> Hi,
->> or this way:
->>
->> https://lore.kernel.org/lkml/20231221033620.32379-1-rdunlap@infradead.org/
-> 
-> Thanks for the link! I did not see your patch, I think I could add it to my
-> patch series instead of my patch.
+	TEST_REQUIRE(kvm_cpu_has(X86_FEATURE_SEV));
 
-Sure, go with it. :)
-
-thanks.
--- 
-#Randy
+to handle the case where the platform supports SEV, i.e. /dev/sev exists, but
+KVM doesn't support SEV, e.g. if TDP is disabled, if SEV was explicitly disabled
+via module param, etc.
 
