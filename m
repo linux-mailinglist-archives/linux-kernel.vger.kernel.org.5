@@ -1,151 +1,104 @@
-Return-Path: <linux-kernel+bounces-54721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB49884B2DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:56:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C1E784B2E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:56:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E863B24221
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:56:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 849E31C22781
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:56:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 289F11292CF;
-	Tue,  6 Feb 2024 10:55:57 +0000 (UTC)
-Received: from mail115-100.sinamail.sina.com.cn (mail115-100.sinamail.sina.com.cn [218.30.115.100])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67F1412B16C;
+	Tue,  6 Feb 2024 10:56:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cU3+y6Om"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127C158131
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 10:55:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2D6F537FA;
+	Tue,  6 Feb 2024 10:56:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707216956; cv=none; b=HkmK8pTRPC5rA24Zj9aWHhc1ZYETv8kXrzYBcbTLr9t9xp5VO4DE6n3G3EiCAZGTYFkmU0Kt4vc8X0T+1zVaLa/S0DtjNYRDpl3oCeW8kVh+VfhmxrtzAxWF2j214p0mCb7c8VDd1dXF3KTNbco8H2KO+P36EV73YKpIRaDlQuM=
+	t=1707216983; cv=none; b=abgZ7vPYRozm5aFsT6O4jAnXdmEgzNPB5AaETp4Jclw7I71y/AOCcqj2OiLdTvKodRQ9yHUlSyCP9Q3kCOAs1PjYtJfs86oiz3uLt4gkRHMViLWrnbEktjHfXjh+WGQdXbuect1BWgAURCuoWfViufjiGiA9r3A1szP40XBbq9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707216956; c=relaxed/simple;
-	bh=Rz8sbgycJLKAZBfAqkmFCkKszu2C/D37PBPjyk4d8LU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HhNt3NMDnjMFdetTr2YbKLFppB1KNVEZwxzDuhSd33eaWXNt3cJbJiLStINmhYH6Ifk+y90hkbfiL1t0x1fTCTb4ncpntULjx4Xiw0IGGAF+/zD7yrY32KBX2jY3PzcCVAXJ6xmJMG4Q9hWylLpBaH1n3bI4ev0FlFHlEKSTues=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([113.88.51.138])
-	by sina.com (172.16.235.24) with ESMTP
-	id 65C2102B00005DAB; Tue, 6 Feb 2024 18:55:42 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 34362945088986
-X-SMAIL-UIID: 363A5DE36BF243C2AA6DAD8F9285E6A2-20240206-185542-1
-From: Hillf Danton <hdanton@sina.com>
-To: Qais Yousef <qyousef@layalina.io>
-Cc: Ingo Molnar <mingo@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	linux-kernel@vger.kernel.org,
-	Pierre Gondois <Pierre.Gondois@arm.com>
-Subject: Re: [PATCH v5 2/2] sched/fair: Check a task has a fitting cpu when updating misfit
-Date: Tue,  6 Feb 2024 18:55:30 +0800
-Message-Id: <20240206105530.763-1-hdanton@sina.com>
-In-Reply-To: <20240205021123.2225933-3-qyousef@layalina.io>
-References: <20240205021123.2225933-1-qyousef@layalina.io>
+	s=arc-20240116; t=1707216983; c=relaxed/simple;
+	bh=OrVgVwy+hsicCxLOVEd9BgaOAQJZYA4HacT+HKV6LLs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=h++wsUR+yHZ9t4jUCmOFrTMDZB5QPfvx4S8wGYT53gPlVyfMw8d0NscB6wh1ehtpwa5pKx1EbwFRXO/A7rOE1+E6cUTGVrwWGp94AOn8OV4UXps8zq7azrM1O3op3byhzMM5hAPLa0gxRfA/3DaBxggehdfNxqEmKYYtuTgDCuw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cU3+y6Om; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA721C433F1;
+	Tue,  6 Feb 2024 10:56:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707216983;
+	bh=OrVgVwy+hsicCxLOVEd9BgaOAQJZYA4HacT+HKV6LLs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cU3+y6OmF2hpV4Vn2Q/SOGqu9IRUgTO7hPkYUMc/sZ6HbBFdDsQR0TG4lRZUux+LK
+	 lztDU8Km8UM21u1zJ+rFPjelvDMz1C++WSsCx2UfEwZHYGrUvLOrIuAgxPrLGcserq
+	 xs8z6O3aTDDvwsZzvBf9AU+QkpdabIhTVBSMq6nde9FRH+dpbbu5uccYEo/vrAGMEJ
+	 Qk4zTQCvf0MkPJdCZBpsE+lZkqSLulhBnQmNAfax39OTiu+tqquJSnaONxeuQRDPaW
+	 i7S4dEJ3ebUcl+b5A4ad1q4l4JHh8J/44KU1hc0NbfgZHqUyTcXJPRG5vnD+nv5/qx
+	 b6ZhzkytNVClA==
+Date: Tue, 6 Feb 2024 10:56:20 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Louis Chauvet <louis.chauvet@bootlin.com>
+Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	thomas.petazzoni@bootlin.com,
+	Miquel Raynal <miquel.raynal@bootlin.com>, yen-mei.goh@keysight.com,
+	koon-kee.lie@keysight.com
+Subject: Re: [PATCH 2/2] spi: omap2-mcspi: Add support for MULTI-mode
+Message-ID: <ZcIQVKibMmGegw+j@finisterre.sirena.org.uk>
+References: <20240126-spi-omap2-mcspi-multi-mode-v1-0-d143d33f0fe0@bootlin.com>
+ <20240126-spi-omap2-mcspi-multi-mode-v1-2-d143d33f0fe0@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="1uXBsuND+NmkCmGl"
+Content-Disposition: inline
+In-Reply-To: <20240126-spi-omap2-mcspi-multi-mode-v1-2-d143d33f0fe0@bootlin.com>
+X-Cookie: You might have mail.
 
-On Mon,  5 Feb 2024 02:11:23 +0000 Qais Yousef <qyousef@layalina.io>
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -5092,24 +5092,36 @@ static inline int task_fits_cpu(struct task_struct *p, int cpu)
->  
->  static inline void update_misfit_status(struct task_struct *p, struct rq *rq)
->  {
-> +	unsigned long cpu_cap;
-> +	int cpu = cpu_of(rq);
-> +
->  	if (!sched_asym_cpucap_active())
->  		return;
->  
-> -	if (!p || p->nr_cpus_allowed == 1) {
-> -		rq->misfit_task_load = 0;
-> -		return;
-> -	}
-> +	if (!p || p->nr_cpus_allowed == 1)
-> +		goto out;
->  
-> -	if (task_fits_cpu(p, cpu_of(rq))) {
-> -		rq->misfit_task_load = 0;
-> -		return;
-> -	}
-> +	cpu_cap = arch_scale_cpu_capacity(cpu);
-> +
-> +	/* If we can't fit the biggest CPU, that's the best we can ever get. */
-> +	if (cpu_cap == rq->rd->max_cpu_capacity)
-> +		goto out;
-> +
-> +	/* Affinity allows us to go somewhere higher? */
-> +	if (cpu_cap == p->max_allowed_capacity)
-> +		goto out;
 
-Looks good.
-> +
-> +	if (task_fits_cpu(p, cpu))
-> +		goto out;
->  
->  	/*
->  	 * Make sure that misfit_task_load will not be null even if
->  	 * task_h_load() returns 0.
->  	 */
->  	rq->misfit_task_load = max_t(unsigned long, task_h_load(p), 1);
-> +	return;
-> +out:
-> +	rq->misfit_task_load = 0;
->  }
->  
->  #else /* CONFIG_SMP */
-> @@ -8241,6 +8253,36 @@ static void task_dead_fair(struct task_struct *p)
->  	remove_entity_load_avg(&p->se);
->  }
->  
-> +/*
-> + * Check the max capacity the task is allowed to run at for misfit detection.
-> + */
-> +static void set_task_max_allowed_capacity(struct task_struct *p)
-> +{
-> +	struct asym_cap_data *entry;
-> +
-> +	if (!sched_asym_cpucap_active())
-> +		return;
-> +
-> +	rcu_read_lock();
-> +	list_for_each_entry_rcu(entry, &asym_cap_list, link) {
-> +		cpumask_t *cpumask;
-> +
-> +		cpumask = cpu_capacity_span(entry);
-> +		if (!cpumask_intersects(p->cpus_ptr, cpumask))
-> +			continue;
-> +
-> +		p->max_allowed_capacity = entry->capacity;
-> +		break;
+--1uXBsuND+NmkCmGl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Given what max_allowed_capacity could mean, it is needed to find the max
-capacity by iterating the asym_cap_list instead of the first capacity
-determined by the allowed CPU mask.
-> +	}
-> +	rcu_read_unlock();
-> +}
+On Tue, Feb 06, 2024 at 11:00:50AM +0100, Louis Chauvet wrote:
 
-BTW is it working in case of systems with a super core?
+> Introduce support for MULTI-mode in the OMAP2 MCSPI driver. Currently, the
+> driver always uses SINGLE mode to handle the chip select (CS). With this
+> enhancement, MULTI-mode is enabled for specific messages, allowing for a
+> shorter delay between CS enable and the message (some FPGA devices are
+> sensitive to this delay).
 
-	cpu0-3	cpu4-6	cpu7
-	little	big	super
-	core	core	core
+I have no idea based on this commit message what either of these modes
+is or how this shorter delay would be achieved, these terms are specific
+to the OMAP hardware AFAICT.  Please clarify this, it's hard to follow
+what the change does.  It looks like this is just a CS per word thing?
+
+Note that you may not have to tell the hardware the same word length as
+the transfer specifies, so long as the wire result is the same it
+doesn't matter.
+
+--1uXBsuND+NmkCmGl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXCEFMACgkQJNaLcl1U
+h9DKjAf/W41ubd9F4AL5xNDGXx0GXCzvwTgjG8n+1FoDhInLiggXU97xVnUGp63/
+grVBFZCoJmEV6kXCzob8sRiOQyYTiIWq7g98voFlAbvprraMOniul0eZqmvKpNSy
+HktuQR9QIbDuiNHCRD4a/qat06cgi/ij6oF/r5F9VdvOUu3UyAhMzVm46yEsFIqV
+1PqA8y0/6DVGM+NUEwXevlAKx7pP2IYb2LBi51SHKBvwvxIhXIw99H4kQ9XdRJu1
+zzp08wL8eWiZQNM1QOuhuLoa1sfvKQBRZmErHf0o0i99rfCblO5q0JqrvuT2qCsX
+WrQ21twP7gkv1mwIVJIIut9LJGNZQg==
+=rKBz
+-----END PGP SIGNATURE-----
+
+--1uXBsuND+NmkCmGl--
 
