@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-54156-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B790184ABA4
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:35:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8413384ABA6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:35:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BC93288D0A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:35:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 234871F24FDF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:35:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 344BD1373;
-	Tue,  6 Feb 2024 01:35:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57561523A;
+	Tue,  6 Feb 2024 01:35:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FtM5IkFT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="byseLhi4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75D4CED9;
-	Tue,  6 Feb 2024 01:35:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 985E14A12;
+	Tue,  6 Feb 2024 01:35:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707183311; cv=none; b=BZK7SSEj3mL0zVlAZIpiLVBuRsNLw2+BtXk0GPD3KmqKD4LcLZgZYJL6MHqf92+rI9mThXIST2RJWNheazXxaqiciZhOObkY9xFIvriM8LP68qCVlbeyfLmBgYHYiy8QjmVEcDecuImjw7IJ4wkpdPqC1Mm+fG7DgLYU8fs3P6M=
+	t=1707183326; cv=none; b=CcCoWcjXgM40mAz6ml3/fTQt92d8Fd/7BOuKlPCLr914K4KmQucYxNLqjAGNtZNA5fpyIclOjFDEHwaUNqKlpkjdBlu+q0AtY/9SmRUULqdA5gVCokuqqtMCZClZQXvec/ko0QYN0o6ZHnSB4XW4hgxuaXlXEX/HncKdgt1LRTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707183311; c=relaxed/simple;
-	bh=nxiuL3ikLLQlErz9ldxF1gm9uIpqXguVlOjsCUXQYjk=;
+	s=arc-20240116; t=1707183326; c=relaxed/simple;
+	bh=GTypLeGQD+FlzS9/zrkSLFidGHzGhNVLfKzk8fk8Lq0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QAGgUIeqvC0EnXyhIKKXWM9jUwQ7gksK2ze7ENkgu6i7vjqLMEARHlSttvjLnHLQ7SoT0/uaWTbiVb9BO7x9OjQmI9G9pZ2pyD5qgsupibdrdzSvH1okYv/Hd8Imi4k+xrYdNnREn312/OV86CspGQCCzZQTXZOD0K6l9CPQfL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FtM5IkFT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D705C433F1;
-	Tue,  6 Feb 2024 01:35:10 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=Drx5wo97XvlmYG+qfrrI++0D5NVmZr7MSThjflEWSy0A6Hlsfk2UoCRnJQek3N2BuS5pkczuOCRHmvTpLDZyYrwskI6TrWKGzZc1y8tRfpoqW6rsiGNh/75zKawUvfANyU/gr21VU0iRy2NzhQj1pV/B0e9y/8l2h9h/pVZJqkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=byseLhi4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7BD8C433C7;
+	Tue,  6 Feb 2024 01:35:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707183310;
-	bh=nxiuL3ikLLQlErz9ldxF1gm9uIpqXguVlOjsCUXQYjk=;
+	s=k20201202; t=1707183326;
+	bh=GTypLeGQD+FlzS9/zrkSLFidGHzGhNVLfKzk8fk8Lq0=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FtM5IkFTnjk5ZpDHC788Rxt38lwYYMfr/VRkFbM3m/CepnPLZmp9tzM+HBbk5jBSa
-	 RZtCHE52oMUBQ13Kog7H2s7k1noO3CulClCMA+lQlvHu5j6zp2PvlDLBdSad2usOaV
-	 QC/+zlUYn2AqL6RHJIa3zlO6oNjbreiKjUl1Hc1nIIx2rw7evrcxOFzACaBqo9AYuR
-	 mSw5x2NeJKuFST0GKLRpMMcziAMOqsr9ZgCOjQor6N9sD8jIHFaEobfBuAK5YKl2lc
-	 qKyJl8z/cz0/aYUVFgeZAqQtNgJg5WcJvLBQfCZfEVIYwTdYWPmLwSowg53DGAivu9
-	 LD80M3+6rzq2g==
-Date: Mon, 5 Feb 2024 18:35:08 -0700
+	b=byseLhi4ko8ezhY9OGnbrVUra+uZuwttTrKNF+xhNjRRVUZF2ha7eNIt+zRbK3RvF
+	 djq7s40BpArHEP/S4wTeZkrVP5F6TS8s2xUoK9NUh74njy3uwFdqRggWW3cLjUMxth
+	 zysHHoF25GekW6YrXp7c6o099yLnqtH7/N5BEpB2bJ8UIGQ6LqaO8rhTVe9mu8TiNk
+	 QOULH2fjV3KDEVCoX5dcIUmB0wLobCunYRjFCWBB49niOUYS/WBEEAxZoXALCeTtyf
+	 GVmVy/NilbK64+7anIbuZUOdHH+YpjN3f2sc4dY3TUOMDeJU8n3zFHM9QTRoOhmwhj
+	 2uPAaedyZ6Z5A==
+Date: Mon, 5 Feb 2024 18:35:24 -0700
 From: Nathan Chancellor <nathan@kernel.org>
 To: Masahiro Yamada <masahiroy@kernel.org>
 Cc: linux-kbuild@vger.kernel.org, Nicolas Schier <nicolas@fjasle.eu>,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] kbuild: rpm-pkg: do not include depmod-generated
- files
-Message-ID: <20240206013508.GA3151678@dev-arch.thelio-3990X>
+Subject: Re: [PATCH 2/4] kbuild: rpm-pkg: mark installed files in /boot as
+ %ghost
+Message-ID: <20240206013524.GB3151678@dev-arch.thelio-3990X>
 References: <20240202133520.302738-1-masahiroy@kernel.org>
+ <20240202133520.302738-2-masahiroy@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,30 +58,11 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240202133520.302738-1-masahiroy@kernel.org>
+In-Reply-To: <20240202133520.302738-2-masahiroy@kernel.org>
 
-On Fri, Feb 02, 2024 at 10:35:17PM +0900, Masahiro Yamada wrote:
-> Installing the kernel package is fine, but when uninstalling it, the
-> following warnings are shown:
-> 
->   warning: file modules.symbols.bin: remove failed: No such file or directory
->   warning: file modules.symbols: remove failed: No such file or directory
->   warning: file modules.softdep: remove failed: No such file or directory
->   warning: file modules.devname: remove failed: No such file or directory
->   warning: file modules.dep.bin: remove failed: No such file or directory
->   warning: file modules.dep: remove failed: No such file or directory
->   warning: file modules.builtin.bin: remove failed: No such file or directory
->   warning: file modules.builtin.alias.bin: remove failed: No such file or directory
->   warning: file modules.alias.bin: remove failed: No such file or directory
->   warning: file modules.alias: remove failed: No such file or directory
-> 
-> The %preun scriptlet runs 'kernel-install remove', which in turn invokes
-> /usr/lib/kernel/install.d/50-depmod.install to remove those files before
-> the actual package removal.
-> 
-> RPM-based distributions do not ship files generated by depmod. Mark them
-> as %ghost in order to exclude them from the package, but still claim the
-> ownership on them.
+On Fri, Feb 02, 2024 at 10:35:18PM +0900, Masahiro Yamada wrote:
+> Mark the files installed to /boot as %ghost to make sure they will be
+> removed when the package is uninstalled.
 > 
 > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
@@ -88,57 +70,24 @@ Tested-by: Nathan Chancellor <nathan@kernel.org>
 
 > ---
 > 
->  scripts/package/kernel.spec | 22 +++++++++++++++++++---
->  1 file changed, 19 insertions(+), 3 deletions(-)
+>  scripts/package/kernel.spec | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
 > diff --git a/scripts/package/kernel.spec b/scripts/package/kernel.spec
-> index f58726671fb3..aaedb6d1b26f 100644
+> index aaedb6d1b26f..ecedcfc11e73 100644
 > --- a/scripts/package/kernel.spec
 > +++ b/scripts/package/kernel.spec
-> @@ -66,6 +66,20 @@ ln -fns /usr/src/kernels/%{KERNELRELEASE} %{buildroot}/lib/modules/%{KERNELRELEA
->  %{make} %{makeflags} run-command KBUILD_RUN_COMMAND='${srctree}/scripts/package/install-extmod-build %{buildroot}/usr/src/kernels/%{KERNELRELEASE}'
->  %endif
+> @@ -77,6 +77,10 @@ ln -fns /usr/src/kernels/%{KERNELRELEASE} %{buildroot}/lib/modules/%{KERNELRELEA
+>  		echo "%ghost /lib/modules/%{KERNELRELEASE}/modules.${x}"
+>  	done
 >  
-> +{
-> +	for x in System.map config kernel modules.builtin \
-> +			modules.builtin.modinfo modules.order vmlinuz; do
-> +		echo "/lib/modules/%{KERNELRELEASE}/${x}"
+> +	for x in System.map config vmlinuz; do
+> +		echo "%ghost /boot/${x}-%{KERNELRELEASE}"
 > +	done
 > +
-> +	for x in alias alias.bin builtin.alias.bin builtin.bin dep dep.bin \
-> +					devname softdep symbols symbols.bin; do
-> +		echo "%ghost /lib/modules/%{KERNELRELEASE}/modules.${x}"
-> +	done
-> +
-> +	echo "%exclude /lib/modules/%{KERNELRELEASE}/build"
-> +} > %{buildroot}/kernel.list
-> +
->  %clean
->  rm -rf %{buildroot}
+>  	echo "%exclude /lib/modules/%{KERNELRELEASE}/build"
+>  } > %{buildroot}/kernel.list
 >  
-> @@ -78,6 +92,9 @@ for file in vmlinuz System.map config; do
->  		cp "/lib/modules/%{KERNELRELEASE}/${file}" "/boot/${file}-%{KERNELRELEASE}"
->  	fi
->  done
-> +if [ ! -e "/lib/modules/%{KERNELRELEASE}/modules.dep" ]; then
-> +	/usr/sbin/depmod %{KERNELRELEASE}
-> +fi
->  
->  %preun
->  if [ -x /sbin/new-kernel-pkg ]; then
-> @@ -91,10 +108,9 @@ if [ -x /sbin/update-bootloader ]; then
->  /sbin/update-bootloader --remove %{KERNELRELEASE}
->  fi
->  
-> -%files
-> +%files -f %{buildroot}/kernel.list
->  %defattr (-, root, root)
-> -/lib/modules/%{KERNELRELEASE}
-> -%exclude /lib/modules/%{KERNELRELEASE}/build
-> +%exclude /kernel.list
->  
->  %files headers
->  %defattr (-, root, root)
 > -- 
 > 2.40.1
 > 
