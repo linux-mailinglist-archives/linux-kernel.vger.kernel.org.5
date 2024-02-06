@@ -1,165 +1,113 @@
-Return-Path: <linux-kernel+bounces-55561-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55562-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E86584BE25
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:34:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F190E84BE28
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:35:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD6601F24495
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:34:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3FAB1F2428C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:35:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FB89175BE;
-	Tue,  6 Feb 2024 19:33:52 +0000 (UTC)
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 369BE175BB;
+	Tue,  6 Feb 2024 19:35:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b="2ftn8JTt";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Cqvw0PAn"
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0EDC17588;
-	Tue,  6 Feb 2024 19:33:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72052175B4;
+	Tue,  6 Feb 2024 19:35:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.27
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707248031; cv=none; b=devFnr7DNUCofOG9W1jXVJ4H2FGwHZXpHd6T1u3w1DLuuATOr64EQrzHluRKB/SYDwpoPckHh2/qN4DmtPb8d40aeB+0eHeio+bkeJwoouyuqy2fn+DCRveIZhe+I5A/+VHyuiSF9o7MIJkRxZYoxlOCRpDi0iv9Q/NQBhW913I=
+	t=1707248115; cv=none; b=rlxTId1w6oII4GySyIGLrl1BIWBKvhDMTHe0tAIdYEc7ldEuG7ncB5Uist8bTb+5FH4SjOsNhX1V1XECm/FlZ5psM1qSk0mlY+vxR1lKZr5CEE2Loq4U/sX7+sO9lhx7N0N2nxGzYULvkrJqON9QLwTMfBdoUGyxdi5D0Hu5OoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707248031; c=relaxed/simple;
-	bh=hPCr97Z9WyFkP6rn0WJSREQ0TMUx4xLjks+aVxQlXd4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=e36PzRZCZL+1JxqSIJr7lCHtpUCtyv9IGXrdCtd/BW+HZAqlm7M46hw57W2BWyt7+lmzi5ZAcveyt6rISFt1l6JRnR+khXh2tKFzrSBXvtY2Lx6TCawtZCCp1KWgmwk3FiYv0c3sv3S3vjmsyXq93a0YwmhP6tHKrbmDcf0u1U8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id 2129a190197e812a; Tue, 6 Feb 2024 20:33:46 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id C2DB7669A9F;
-	Tue,  6 Feb 2024 20:33:45 +0100 (CET)
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux ACPI <linux-acpi@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
- Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
- David Box <david.e.box@linux.intel.com>,
- Mario Limonciello <mario.limonciello@amd.com>
-Subject:
- [PATCH v1] ACPI: PM: s2idle: Enable Low-Power S0 Idle MSFT UUID for non-AMD
- systems
-Date: Tue, 06 Feb 2024 20:33:45 +0100
-Message-ID: <12388452.O9o76ZdvQC@kreacher>
+	s=arc-20240116; t=1707248115; c=relaxed/simple;
+	bh=xWAHkj6oLXesB9J7U7zS+HoVDGaRAHiH8XlBjN5iCTQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bA6AweEPrcNUnUdz2kwJK0TRyA5l6RJhPOvCpxmle9Xxll0kAsZmTmrlxYGX0P3v3nZTxT562shHq6RnXHQ6Sy9E6bCFnZnEMuDW4t1/oI/0UA/M0nOSMiosHdC5bRTLLHQqGkzcoNHTfayD23YksuO9FsI5U83LEqSAkC3Yuuw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza; spf=pass smtp.mailfrom=tycho.pizza; dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b=2ftn8JTt; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Cqvw0PAn; arc=none smtp.client-ip=66.111.4.27
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tycho.pizza
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailout.nyi.internal (Postfix) with ESMTP id 60D425C01D0;
+	Tue,  6 Feb 2024 14:35:12 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Tue, 06 Feb 2024 14:35:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1707248112; x=1707334512; bh=xWAHkj6oLX
+	esB9J7U7zS+HoVDGaRAHiH8XlBjN5iCTQ=; b=2ftn8JTtc0FEL/uRu0/zdm6hnh
+	9I3B2gi4ZVSlhq5PA1xD9Ri+CRHRSJR4Wom5s4m38gQI4ElNpmG3aLK+j+FJcN6+
+	G5h23N/omTigJxauz4MWQf9NcOwkTGwCsLwpGQLAQsm9Bq2ke2Lh7H6Q9Wgtps/L
+	nEED3+NJ4gfFWa9VEsjFRE54CrHO/DD3MCJqttska0ABBc1vVCc/NVtp03lSPPWy
+	DStHMq22wUGzktQu7jrSLS3NH/llobBKXklnEFN8LZWdG7zWuvWzpQR2RmDjZ9Xc
+	+wj25QT6E5HE9yUUQ5oNabdxjzrNw1n9snRRiDKdbXUg5QOLIvwG73X5Y61w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707248112; x=1707334512; bh=xWAHkj6oLXesB9J7U7zS+HoVDGaR
+	AHiH8XlBjN5iCTQ=; b=Cqvw0PAnhbfxvhzKaTvH6ohivQshuONbPDBaBjTZkH+8
+	gbjLXtKivBMtMSCg83sCjBWIrInwuCRPVDwYvNSPCL4YWA7udtSGPbNyc/8HXUyN
+	hfSv3+ni2406B/nOfz8ALavd+yDAwPhTkWChcdDTiPgFKVx7/8MBzfQ4sLBPWZy4
+	EbffNFErh/mH5nZSe4o3Vs7o97aVexIAmzxYc1TYQxHW6PHbpjy34t70VfG6SCXb
+	LF53do1fOmMMM5lPbpacekFioteSmolKFf5CIqY9KyP0xM9G1d6eJJDewWAGDaFW
+	2sAZg3fvdsY2vlbEfXKP9bMJ9ZIAFczFys3GhHVfCQ==
+X-ME-Sender: <xms:74nCZcfEPAEEmMMjg5MnS0tjuMsg4LONWtM9XyNsemQWf5MTwt8xuQ>
+    <xme:74nCZeOuFGHwmQF5susKfPJZtti1-ZM-sqL239sB7ubwwClVNHXN4B1ZERcO6VuQb
+    zMgi-v1gaF4iIRpkzU>
+X-ME-Received: <xmr:74nCZdjAkvVff1o7ZMUpPO5xlUvInUphL8QO9W7aYrQqQ6NS6MbGkVzJCOc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrtddtgdeljecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigthhho
+    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
+    htthgvrhhnpeeutedttefgjeefffehffffkeejueevieefudelgeejuddtfeffteeklefh
+    leelteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hthigthhhosehthigthhhordhpihiiiigr
+X-ME-Proxy: <xmx:74nCZR-YwcTBaOHBLPBjTowHSS5Ts_4Hw0eAP-A0gDC-w5MRgXBuvA>
+    <xmx:74nCZYtj8Q_kOTGsQSUJ12l9G-rYg8l1HtGnzxFoMZoUD5sTaHR9FQ>
+    <xmx:74nCZYHgQHjY03ib78d3MIL3iCby-xTwl0ALMq5BMUCps7ZEkLFOQA>
+    <xmx:8InCZSW_Bv2i8pVCn6ZjdgH3T35Y6dixGVwJYmq6WnITa622QCugrQ>
+Feedback-ID: i21f147d5:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 6 Feb 2024 14:35:10 -0500 (EST)
+Date: Tue, 6 Feb 2024 12:35:09 -0700
+From: Tycho Andersen <tycho@tycho.pizza>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	"Eric W . Biederman" <ebiederm@xmission.com>,
+	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+	Tycho Andersen <tandersen@netflix.com>
+Subject: Re: [PATCH] pidfd: getfd should always report ESRCH if a task is
+ exiting
+Message-ID: <ZcKJ7YYJK9przO8K@tycho.pizza>
+References: <20240206164308.62620-1-tycho@tycho.pizza>
+ <20240206173722.GA3593@redhat.com>
+ <20240206180607.GB3593@redhat.com>
+ <ZcJ13uLxD6rTqqZZ@tycho.pizza>
+ <20240206192553.GC3593@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrtddtgdeljecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeffffffkefgheehffelteeiveeffeevhfelteejvddvieejjeelvdeiheeuveeuffenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeekpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehsrhhinhhivhgr
- shdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepshhtrghnihhslhgrfidrghhruhhsiihkrgeslhhinhhugidrihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=8 Fuz1=8 Fuz2=8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240206192553.GC3593@redhat.com>
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Tue, Feb 06, 2024 at 08:25:54PM +0100, Oleg Nesterov wrote:
+> But Tycho, I won't insist. If you prefer to check PF_EXITING, I am fine.
 
-Systems based on Intel platforms that use the MSFT UUID for Low-Power S0
-Idle (LPS0) have started to ship, so allow the kernel to use the MSFT
-UUID in the non-AMD case too, but in that case make it avoid evaluating
-the same _DSM function for two different UUIDs and prioritize the MSFT
-one.
+Looks like we raced, I sent a v2 with PF_EXITING, mostly because I
+didn't want to run into weird things I didn't understand. I'm happy to
+fix it up to check ->files if that's what you prefer Christian?
 
-While at it, combine two MSFT _DSM function mask checks in
-acpi_s2idle_restore_early() so as to make it reflect the
-acpi_s2idle_prepare_late() flow more closely and adjust the
-Modern Standby entry and exit comments slightly.
-
-Non-AMD systems that do not support MSFT UUID for Low-power S0 Idle are
-not expected to be affected by this change in any way.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/x86/s2idle.c |   37 +++++++++++++++++++++++++++----------
- 1 file changed, 27 insertions(+), 10 deletions(-)
-
-Index: linux-pm/drivers/acpi/x86/s2idle.c
-===================================================================
---- linux-pm.orig/drivers/acpi/x86/s2idle.c
-+++ linux-pm/drivers/acpi/x86/s2idle.c
-@@ -488,7 +488,21 @@ static int lps0_device_attach(struct acp
- 		rev_id = 1;
- 		lps0_dsm_func_mask = validate_dsm(adev->handle,
- 					ACPI_LPS0_DSM_UUID, rev_id, &lps0_dsm_guid);
--		lps0_dsm_func_mask_microsoft = -EINVAL;
-+		if (lps0_dsm_func_mask > 0 && lps0_dsm_func_mask_microsoft > 0) {
-+			unsigned int func_mask;
-+
-+			/*
-+			 * Avoid evaluating the same _DSM function for two
-+			 * different UUIDs and prioritize the MSFT one.
-+			 */
-+			func_mask = lps0_dsm_func_mask & lps0_dsm_func_mask_microsoft;
-+			if (func_mask) {
-+				acpi_handle_info(adev->handle,
-+						 "Duplicate LPS0 _DSM functions (mask: 0x%x)\n",
-+						 func_mask);
-+				lps0_dsm_func_mask &= ~func_mask;
-+			}
-+		}
- 	}
- 
- 	if (lps0_dsm_func_mask < 0 && lps0_dsm_func_mask_microsoft < 0)
-@@ -549,19 +563,22 @@ int acpi_s2idle_prepare_late(void)
- 				lps0_dsm_func_mask_microsoft, lps0_dsm_guid_microsoft);
- 
- 	/* LPS0 entry */
--	if (lps0_dsm_func_mask > 0)
--		acpi_sleep_run_lps0_dsm(acpi_s2idle_vendor_amd() ?
--					ACPI_LPS0_ENTRY_AMD :
--					ACPI_LPS0_ENTRY,
-+	if (lps0_dsm_func_mask > 0 && acpi_s2idle_vendor_amd())
-+		acpi_sleep_run_lps0_dsm(ACPI_LPS0_ENTRY_AMD,
- 					lps0_dsm_func_mask, lps0_dsm_guid);
-+
- 	if (lps0_dsm_func_mask_microsoft > 0) {
--		/* modern standby entry */
-+		/* Modern Standby entry */
- 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_MS_ENTRY,
- 				lps0_dsm_func_mask_microsoft, lps0_dsm_guid_microsoft);
- 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_ENTRY,
- 				lps0_dsm_func_mask_microsoft, lps0_dsm_guid_microsoft);
- 	}
- 
-+	if (lps0_dsm_func_mask > 0 && !acpi_s2idle_vendor_amd())
-+		acpi_sleep_run_lps0_dsm(ACPI_LPS0_ENTRY,
-+					lps0_dsm_func_mask, lps0_dsm_guid);
-+
- 	list_for_each_entry(handler, &lps0_s2idle_devops_head, list_node) {
- 		if (handler->prepare)
- 			handler->prepare();
-@@ -600,14 +617,14 @@ void acpi_s2idle_restore_early(void)
- 					ACPI_LPS0_EXIT_AMD :
- 					ACPI_LPS0_EXIT,
- 					lps0_dsm_func_mask, lps0_dsm_guid);
--	if (lps0_dsm_func_mask_microsoft > 0)
-+
-+	if (lps0_dsm_func_mask_microsoft > 0) {
- 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_EXIT,
- 				lps0_dsm_func_mask_microsoft, lps0_dsm_guid_microsoft);
--
--	/* Modern standby exit */
--	if (lps0_dsm_func_mask_microsoft > 0)
-+		/* Modern Standby exit */
- 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_MS_EXIT,
- 				lps0_dsm_func_mask_microsoft, lps0_dsm_guid_microsoft);
-+	}
- 
- 	/* Screen on */
- 	if (lps0_dsm_func_mask_microsoft > 0)
-
-
-
+Tycho
 
