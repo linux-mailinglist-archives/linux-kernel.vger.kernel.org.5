@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-54859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1A7384B48D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:10:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C823A84B48E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:10:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88EEA283A78
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:10:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83FC22839BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:10:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA12A12F399;
-	Tue,  6 Feb 2024 12:08:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3814D12FB33;
+	Tue,  6 Feb 2024 12:08:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="uTXrWNub"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="IZAJ7ATo"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D4C112EBEB
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 12:07:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54CB612F384
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 12:07:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707221277; cv=none; b=NXkbQ3s/d/dtJIzTYUaVByVvsJkCFUxQ6RShWtbZSW9pMf+qjK32BfYXVtNcB3YPJRJxpVCyG8dv/UaGyw8Wpg8mUeYVOpamOpSrVGDO773L8JSNbaqfcsPLAMgl6H48VGvJaaL+kKCFwCL7QAWkI6g+Kz7/NuDuV096gvpbhH4=
+	t=1707221278; cv=none; b=plwrG2OnThYZ62DUDZOqJYXqnWVjvKdGJotnmca3c7Yklumle0sqdNbiB26qShyo0+MXQiXT5bcbGAXyMoMa9TON88lJCM6WdHnuUG1zWbgS/0nAihEmusEAaRqxwDSm0I6MAYuN2MX0+hA3+uHKb9mhLSdSVBLYSrWOqAgLWnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707221277; c=relaxed/simple;
-	bh=T7wyLM2XaOr0LZopSINK1iR5VVf323V2jZ2xWU3QUPI=;
+	s=arc-20240116; t=1707221278; c=relaxed/simple;
+	bh=yL5B8N6E81+j3ROUqp66U9vkQ3wYW8h9lFRA+1sZxDY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CG9lK1s8lU/3xIc4stxCSHQPo/Ys+A5Rgm9pLpdjQelcWSTREalwvy96CtFz1fFnxjlfl0mXfiAJQbcGpMgtBg2vNuO8RkQ0qysPE4LPYAVm/neNkdEEKbh3gqWu1SsMY7PPMmQRdXazyg8LsoodJaP/ucJQ3RDde8QnFZhhQxU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=uTXrWNub; arc=none smtp.client-ip=46.235.227.194
+	 MIME-Version; b=EVYis7LIt5oz8o7ThTtrGq8fxu0a5VVu27FplEpmZNnwLmu7HS3iQeuJ025Wp7e6TviDUV5I6dWxchs7s0SDCllZgnrMU5WQpAUOg6fS3ZppTYvh4JtD2EgUP8PpV/7ICEIIkA9I8qqwcxpWa5HxXvu4xxKvib3rUMllCyxG+LA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=IZAJ7ATo; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707221273;
-	bh=T7wyLM2XaOr0LZopSINK1iR5VVf323V2jZ2xWU3QUPI=;
+	s=mail; t=1707221274;
+	bh=yL5B8N6E81+j3ROUqp66U9vkQ3wYW8h9lFRA+1sZxDY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uTXrWNubyLzCiIBjGuyeLuaLctOfWgzRYqR/gLqFmdyFPgJ8ldFddvCijIJamxOj1
-	 wUq/gY1IEpZd1luuilgZ0H9HTjG5U+B6NmO5iKp9jyw2QskNV0KyZZidUklVG8mNvm
-	 QTyJwIvJumibZNQlsUbdWCVfnn7+wwZg7F7zU59hlTYycy1q62/X7Km6gySBvgn/uZ
-	 sLoUjvYLpYu2eKm16CJhbp3C1ZQSpywxap+kn58vVXXKP9Kt3WEbQ1taWXdMq38G9k
-	 039OFf4YkxBqshTegzFxcNZyrM35vK64L2eaG6H6hnJG+VkWbO6e3jlBwPYitzYsam
-	 hTsYEOYCIMcYg==
+	b=IZAJ7ATombfarBAlVMMwEeKRK5mDRLVmnMnRXdzCMZW+IG/2FkSFRvE1aFfgKNyOO
+	 IjKAFp0g4jnfEiMAOmgBx7gItpwS0Hegq1lJzYvkRL68cwA5d8GZ8EgZrzjWJFKiYe
+	 Rwpxf9Nv3BDbNN9XlvJYvBxqL2hUCr9vK/lZqUiU6uJbpDyze3JgxzIaaafprSG3N2
+	 IMdrnVqMnTcVo/NVmj7UcewDwjqb5ALajTLKJHb21dC68cBOTjy80aJKWoOsl2sCfb
+	 NmX+SpMOSdHXbHOOSNEbWaXly7Agt2c7mKMeDFHc/uyGpBmQx0kSWE/TZko5xMzrUM
+	 Msx0mAAqZGg0g==
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id CE8583782072;
-	Tue,  6 Feb 2024 12:07:52 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id C74943782077;
+	Tue,  6 Feb 2024 12:07:53 +0000 (UTC)
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: chunkuang.hu@kernel.org
 Cc: fshao@chromium.org,
@@ -60,9 +60,9 @@ Cc: fshao@chromium.org,
 	linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	kernel@collabora.com
-Subject: [PATCH v4 1/9] drm/mediatek: dsi: Use GENMASK() for register mask definitions
-Date: Tue,  6 Feb 2024 13:07:40 +0100
-Message-ID: <20240206120748.136610-2-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v4 2/9] drm/mediatek: dsi: Fix DSI RGB666 formats and definitions
+Date: Tue,  6 Feb 2024 13:07:41 +0100
+Message-ID: <20240206120748.136610-3-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240206120748.136610-1-angelogioacchino.delregno@collabora.com>
 References: <20240206120748.136610-1-angelogioacchino.delregno@collabora.com>
@@ -74,106 +74,67 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Change magic numerical masks with usage of the GENMASK() macro
-to improve readability.
+The register bits definitions for RGB666 formats are wrong in multiple
+ways: first, in the DSI_PS_SEL bits region, the Packed 18-bits RGB666
+format is selected with bit 1, while the Loosely Packed one is bit 2,
+and second - the definition name "LOOSELY_PS_18BIT_RGB666" is wrong
+because the loosely packed format is 24 bits instead!
 
-While at it, also fix the DSI_PS_SEL mask to include all bits instead
-of just a subset of them.
+Either way, functions mtk_dsi_ps_control_vact() and mtk_dsi_ps_control()
+do not even agree on the DSI_PS_SEL bit to set in DSI_PSCTRL: one sets
+loosely packed (24) on RGB666, the other sets packed (18), and the other
+way around for RGB666_PACKED.
 
-This commit brings no functional changes.
+Fixing this entire stack of issues is done in one go:
+ - Use the correct bit for the Loosely Packed RGB666 definition
+ - Rename LOOSELY_PS_18BIT_RGB666 to LOOSELY_PS_24BIT_RGB666
+ - Change ps_bpp_mode in mtk_dsi_ps_control_vact() to set:
+    - Loosely Packed, 24-bits for MIPI_DSI_FMT_RGB666
+    - Packed, 18-bits for MIPI_DSI_FMT_RGB666_PACKED
 
+Fixes: 2e54c14e310f ("drm/mediatek: Add DSI sub driver")
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- drivers/gpu/drm/mediatek/mtk_dsi.c | 45 +++++++++++++++---------------
- 1 file changed, 23 insertions(+), 22 deletions(-)
+ drivers/gpu/drm/mediatek/mtk_dsi.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
-index a2fdfc8ddb15..3b7392c03b4d 100644
+index 3b7392c03b4d..9fbf293db1c8 100644
 --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
 +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-@@ -58,18 +58,18 @@
- 
- #define DSI_TXRX_CTRL		0x18
- #define VC_NUM				BIT(1)
--#define LANE_NUM			(0xf << 2)
-+#define LANE_NUM			GENMASK(5, 2)
- #define DIS_EOT				BIT(6)
- #define NULL_EN				BIT(7)
- #define TE_FREERUN			BIT(8)
- #define EXT_TE_EN			BIT(9)
- #define EXT_TE_EDGE			BIT(10)
--#define MAX_RTN_SIZE			(0xf << 12)
-+#define MAX_RTN_SIZE			GENMASK(15, 12)
- #define HSTX_CKLP_EN			BIT(16)
- 
- #define DSI_PSCTRL		0x1c
--#define DSI_PS_WC			0x3fff
--#define DSI_PS_SEL			(3 << 16)
-+#define DSI_PS_WC			GENMASK(14, 0)
-+#define DSI_PS_SEL			GENMASK(19, 16)
+@@ -71,8 +71,8 @@
+ #define DSI_PS_WC			GENMASK(14, 0)
+ #define DSI_PS_SEL			GENMASK(19, 16)
  #define PACKED_PS_16BIT_RGB565		(0 << 16)
- #define LOOSELY_PS_18BIT_RGB666		(1 << 16)
- #define PACKED_PS_18BIT_RGB666		(2 << 16)
-@@ -109,26 +109,26 @@
- #define LD0_WAKEUP_EN			BIT(2)
+-#define LOOSELY_PS_18BIT_RGB666		(1 << 16)
+-#define PACKED_PS_18BIT_RGB666		(2 << 16)
++#define PACKED_PS_18BIT_RGB666		(1 << 16)
++#define LOOSELY_PS_24BIT_RGB666		(2 << 16)
+ #define PACKED_PS_24BIT_RGB888		(3 << 16)
  
- #define DSI_PHY_TIMECON0	0x110
--#define LPX				(0xff << 0)
--#define HS_PREP				(0xff << 8)
--#define HS_ZERO				(0xff << 16)
--#define HS_TRAIL			(0xff << 24)
-+#define LPX				GENMASK(7, 0)
-+#define HS_PREP				GENMASK(15, 8)
-+#define HS_ZERO				GENMASK(23, 16)
-+#define HS_TRAIL			GENMASK(31, 24)
- 
- #define DSI_PHY_TIMECON1	0x114
--#define TA_GO				(0xff << 0)
--#define TA_SURE				(0xff << 8)
--#define TA_GET				(0xff << 16)
--#define DA_HS_EXIT			(0xff << 24)
-+#define TA_GO				GENMASK(7, 0)
-+#define TA_SURE				GENMASK(15, 8)
-+#define TA_GET				GENMASK(23, 16)
-+#define DA_HS_EXIT			GENMASK(31, 24)
- 
- #define DSI_PHY_TIMECON2	0x118
--#define CONT_DET			(0xff << 0)
--#define CLK_ZERO			(0xff << 16)
--#define CLK_TRAIL			(0xff << 24)
-+#define CONT_DET			GENMASK(7, 0)
-+#define CLK_ZERO			GENMASK(23, 16)
-+#define CLK_TRAIL			GENMASK(31, 24)
- 
- #define DSI_PHY_TIMECON3	0x11c
--#define CLK_HS_PREP			(0xff << 0)
--#define CLK_HS_POST			(0xff << 8)
--#define CLK_HS_EXIT			(0xff << 16)
-+#define CLK_HS_PREP			GENMASK(7, 0)
-+#define CLK_HS_POST			GENMASK(15, 8)
-+#define CLK_HS_EXIT			GENMASK(23, 16)
- 
- #define DSI_VM_CMD_CON		0x130
- #define VM_CMD_EN			BIT(0)
-@@ -138,13 +138,14 @@
- #define FORCE_COMMIT			BIT(0)
- #define BYPASS_SHADOW			BIT(1)
- 
--#define CONFIG				(0xff << 0)
-+/* CMDQ related bits */
-+#define CONFIG				GENMASK(7, 0)
- #define SHORT_PACKET			0
- #define LONG_PACKET			2
- #define BTA				BIT(2)
--#define DATA_ID				(0xff << 8)
--#define DATA_0				(0xff << 16)
--#define DATA_1				(0xff << 24)
-+#define DATA_ID				GENMASK(15, 8)
-+#define DATA_0				GENMASK(23, 16)
-+#define DATA_1				GENMASK(31, 24)
- 
- #define NS_TO_CYCLE(n, c)    ((n) / (c) + (((n) % (c)) ? 1 : 0))
- 
+ #define DSI_VSA_NL		0x20
+@@ -370,10 +370,10 @@ static void mtk_dsi_ps_control_vact(struct mtk_dsi *dsi)
+ 		ps_bpp_mode |= PACKED_PS_24BIT_RGB888;
+ 		break;
+ 	case MIPI_DSI_FMT_RGB666:
+-		ps_bpp_mode |= PACKED_PS_18BIT_RGB666;
++		ps_bpp_mode |= LOOSELY_PS_24BIT_RGB666;
+ 		break;
+ 	case MIPI_DSI_FMT_RGB666_PACKED:
+-		ps_bpp_mode |= LOOSELY_PS_18BIT_RGB666;
++		ps_bpp_mode |= PACKED_PS_18BIT_RGB666;
+ 		break;
+ 	case MIPI_DSI_FMT_RGB565:
+ 		ps_bpp_mode |= PACKED_PS_16BIT_RGB565;
+@@ -427,7 +427,7 @@ static void mtk_dsi_ps_control(struct mtk_dsi *dsi)
+ 		dsi_tmp_buf_bpp = 3;
+ 		break;
+ 	case MIPI_DSI_FMT_RGB666:
+-		tmp_reg = LOOSELY_PS_18BIT_RGB666;
++		tmp_reg = LOOSELY_PS_24BIT_RGB666;
+ 		dsi_tmp_buf_bpp = 3;
+ 		break;
+ 	case MIPI_DSI_FMT_RGB666_PACKED:
 -- 
 2.43.0
 
