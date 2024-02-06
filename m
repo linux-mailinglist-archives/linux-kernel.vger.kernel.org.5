@@ -1,210 +1,72 @@
-Return-Path: <linux-kernel+bounces-55041-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E32084B6BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:43:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA8DA84B6BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:44:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FDA3B27C62
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:43:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67C0D1F23431
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:44:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24198131E36;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8CF4131E54;
 	Tue,  6 Feb 2024 13:41:50 +0000 (UTC)
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [195.130.137.89])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oRcZ7Qtm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B96E313172D
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 13:41:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.89
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D97D6131E32;
+	Tue,  6 Feb 2024 13:41:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707226909; cv=none; b=Q8js1ca4S/LGHgzsTRtlj2P+pSq1UkbZegAoZ27WJi4PGJsfw1LYFj50QPXqKGCWB8RlQ1SRY/knCQ3AVnszFAuqW8HGSIVV6idWjwGPRpM2GF0iVZno2Xwto/572LLJ5+/RWryVg7YCHYBbf5MGrHNG3mPOyhFpaikjo460wXg=
+	t=1707226910; cv=none; b=gLJ0nB0Ya4MkiuSr5A+G8lEo3GD+izz74aHh7wPec/OqUeWBuz2Uh2DTjaDjWXkmMjupZp/ig3DvgOoGkmqO9g9ngzESLDYk/6t8Kt1kZ9LQr1T32p3Ytkcss77LUi0mQqzR0rD23PW3IAkuz3HEIp4PAMlAee3zST2YPCiyK+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707226909; c=relaxed/simple;
-	bh=4wIZ2jTwtVGOUJGF0vRSAy0R6gYVisVKKtOkbt/2Z/U=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=iEFp5D/USuc1EwVABqEabvsnl2K7n4DQSzYC6wHerwMhqK91vOTNfDZ7aXoblLzxI2buPhVQifuUDqC4jFKZw/ThuMXfCXTh4KkpLMnLIiIegXtYeUV0KgpkLuEkZHnpavUVrhDDlZ5pEGv6JStg49VGBZDPSBTfg6WpMQnwwIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.89
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:1289:761a:478e:8420])
-	by laurent.telenet-ops.be with bizsmtp
-	id jphf2B00C1XjtVL01phfgc; Tue, 06 Feb 2024 14:41:39 +0100
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rXLhg-00HNlB-Dt;
-	Tue, 06 Feb 2024 14:41:39 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rXLhj-002Hce-1x;
-	Tue, 06 Feb 2024 14:41:39 +0100
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Jens Axboe <axboe@kernel.dk>,
-	Pavel Begunkov <asml.silence@gmail.com>
-Cc: io-uring@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH -next] io_uring: switch struct io_kiocb flag definitions to BIT_ULL()
-Date: Tue,  6 Feb 2024 14:41:37 +0100
-Message-Id: <1960190f37b94276df50d382b9f1488cd6b6e662.1707226862.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1707226910; c=relaxed/simple;
+	bh=rijJprixsoGa1LEszPiuReprOlb3xU0SeTQMJIfqyYo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Pl4J+GBQ7vtAp9EZJk2ktwILMLxVcmCMIKM4hlQy0xj3DRvObee2WEseiN9j/DKC9VHvb7Dce9WdyTb/vABj55ZhiblHlECzYM7GKCz52qF2h7UGlrs2k0+GnHOdDozkAdgmPy/DlXc+8Frf6uWhJKivG+vtop7fNenV9aVucAo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oRcZ7Qtm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AE6EC433C7;
+	Tue,  6 Feb 2024 13:41:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707226909;
+	bh=rijJprixsoGa1LEszPiuReprOlb3xU0SeTQMJIfqyYo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oRcZ7QtmpJG6Ehmg0NLkY8PI/2FobmeD+jljY4r6JXS855u+EN0yWHn6uTojN+LjS
+	 LjROsnPNfDRLBivjBOIOpLM5NsbaA5n5WZcVXTSIFF/N0q0vDu0F3s/RHYfXce9B+0
+	 uhfHRAgogtuX5+NGpyKL07/Z7TdFK+bIyhxmaIHJqWP9vcbVTKpNJyT+Gu5iupBkqq
+	 nsmbw7fpPz5kC8R4X+MJCGb+lSMgjEfungB4ia/JEIFBm1lqAUsgWQDdonbEt44dK9
+	 PCqah0nV3cqr+0koRiWQ5MHmcVSMbRG7brN20Vr8ci2TWqsB3UGljzyBWSza0kpx7i
+	 /1wCrBxbfA3iA==
+Date: Tue, 6 Feb 2024 14:41:43 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: Jan Kara <jack@suse.cz>, linux-block <linux-block@vger.kernel.org>, 
+	Linux-Next Mailing List <linux-next@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
+	Linux Regressions <regressions@lists.linux.dev>, linux-fsdevel@vger.kernel.org, lkft-triage@lists.linaro.org, 
+	Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@linaro.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Anders Roxell <anders.roxell@linaro.org>
+Subject: Re: next: /dev/root: Can't open blockdev
+Message-ID: <20240206-ahnen-abnahmen-73999e173927@brauner>
+References: <CA+G9fYttTwsbFuVq10igbSvP5xC6bf_XijM=mpUqrJV=uvUirQ@mail.gmail.com>
+ <20240206101529.orwe3ofwwcaghqvz@quack3>
+ <CA+G9fYup=QzTAhV2Bh_p8tujUGYNzGYKBHXkcW7jhhG6QFUo_g@mail.gmail.com>
+ <20240206122857.svm2ptz2hsvk4sco@quack3>
+ <CA+G9fYvKfeRHfY3d_Df+9V+4tE_ZcvMGVJ-acewmgfjxb1qtpg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYvKfeRHfY3d_Df+9V+4tE_ZcvMGVJ-acewmgfjxb1qtpg@mail.gmail.com>
 
-When building for 32-bit platforms:
+> As per Anders bisection results the first bad commit pointing to
+>    ba858e55b205 ("bdev: open block device as files")
 
-    In file included from include/linux/bits.h:6,
-		     from include/linux/bitops.h:6,
-		     from include/linux/kernel.h:23,
-		     from io_uring/io_uring.c:42:
-    include/vdso/bits.h:7:40: warning: left shift count >= width of type [-Wshift-count-overflow]
-	7 | #define BIT(nr)                 (UL(1) << (nr))
-	  |                                        ^~
-    include/linux/io_uring_types.h:538:35: note: in expansion of macro ‘BIT’
-      538 |         REQ_F_CAN_POLL          = BIT(REQ_F_CAN_POLL_BIT),
-	  |                                   ^~~
-    include/vdso/bits.h:7:40: warning: left shift count >= width of type [-Wshift-count-overflow]
-	7 | #define BIT(nr)                 (UL(1) << (nr))
-	  |                                        ^~
-    include/linux/io_uring_types.h:540:35: note: in expansion of macro ‘BIT’
-      540 |         REQ_F_CANCEL_SEQ        = BIT(REQ_F_CANCEL_SEQ_BIT),
-	  |                                   ^~~
-
-The io_kiocb.flags variable was expanded to 64 bits, but none of the
-existing or newly-added flag definitions were updated, causing build
-issues on 32-bit platforms, where unsigned long is a 32-bit value.
-
-Fix this by switching all flag definitions from BIT() (32 or 64 bits) to
-BIT_ULL() (always 64 bits).
-
-Fixes: e247b2bea90786fb ("io_uring: expand main struct io_kiocb flags to 64-bits")
-Fixes: d964e844044278bf ("io_uring: add io_file_can_poll() helper")
-Fixes: 3bdfba1b2a1fc23a ("io_uring/cancel: don't default to setting req->work.cancel_seq")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-Boot-tested on arm32 and arm64.
----
- include/linux/io_uring_types.h | 66 +++++++++++++++++-----------------
- 1 file changed, 33 insertions(+), 33 deletions(-)
-
-diff --git a/include/linux/io_uring_types.h b/include/linux/io_uring_types.h
-index 431e099bb2c07682..f99330b177171003 100644
---- a/include/linux/io_uring_types.h
-+++ b/include/linux/io_uring_types.h
-@@ -472,72 +472,72 @@ enum {
- 
- enum {
- 	/* ctx owns file */
--	REQ_F_FIXED_FILE	= BIT(REQ_F_FIXED_FILE_BIT),
-+	REQ_F_FIXED_FILE	= BIT_ULL(REQ_F_FIXED_FILE_BIT),
- 	/* drain existing IO first */
--	REQ_F_IO_DRAIN		= BIT(REQ_F_IO_DRAIN_BIT),
-+	REQ_F_IO_DRAIN		= BIT_ULL(REQ_F_IO_DRAIN_BIT),
- 	/* linked sqes */
--	REQ_F_LINK		= BIT(REQ_F_LINK_BIT),
-+	REQ_F_LINK		= BIT_ULL(REQ_F_LINK_BIT),
- 	/* doesn't sever on completion < 0 */
--	REQ_F_HARDLINK		= BIT(REQ_F_HARDLINK_BIT),
-+	REQ_F_HARDLINK		= BIT_ULL(REQ_F_HARDLINK_BIT),
- 	/* IOSQE_ASYNC */
--	REQ_F_FORCE_ASYNC	= BIT(REQ_F_FORCE_ASYNC_BIT),
-+	REQ_F_FORCE_ASYNC	= BIT_ULL(REQ_F_FORCE_ASYNC_BIT),
- 	/* IOSQE_BUFFER_SELECT */
--	REQ_F_BUFFER_SELECT	= BIT(REQ_F_BUFFER_SELECT_BIT),
-+	REQ_F_BUFFER_SELECT	= BIT_ULL(REQ_F_BUFFER_SELECT_BIT),
- 	/* IOSQE_CQE_SKIP_SUCCESS */
--	REQ_F_CQE_SKIP		= BIT(REQ_F_CQE_SKIP_BIT),
-+	REQ_F_CQE_SKIP		= BIT_ULL(REQ_F_CQE_SKIP_BIT),
- 
- 	/* fail rest of links */
--	REQ_F_FAIL		= BIT(REQ_F_FAIL_BIT),
-+	REQ_F_FAIL		= BIT_ULL(REQ_F_FAIL_BIT),
- 	/* on inflight list, should be cancelled and waited on exit reliably */
--	REQ_F_INFLIGHT		= BIT(REQ_F_INFLIGHT_BIT),
-+	REQ_F_INFLIGHT		= BIT_ULL(REQ_F_INFLIGHT_BIT),
- 	/* read/write uses file position */
--	REQ_F_CUR_POS		= BIT(REQ_F_CUR_POS_BIT),
-+	REQ_F_CUR_POS		= BIT_ULL(REQ_F_CUR_POS_BIT),
- 	/* must not punt to workers */
--	REQ_F_NOWAIT		= BIT(REQ_F_NOWAIT_BIT),
-+	REQ_F_NOWAIT		= BIT_ULL(REQ_F_NOWAIT_BIT),
- 	/* has or had linked timeout */
--	REQ_F_LINK_TIMEOUT	= BIT(REQ_F_LINK_TIMEOUT_BIT),
-+	REQ_F_LINK_TIMEOUT	= BIT_ULL(REQ_F_LINK_TIMEOUT_BIT),
- 	/* needs cleanup */
--	REQ_F_NEED_CLEANUP	= BIT(REQ_F_NEED_CLEANUP_BIT),
-+	REQ_F_NEED_CLEANUP	= BIT_ULL(REQ_F_NEED_CLEANUP_BIT),
- 	/* already went through poll handler */
--	REQ_F_POLLED		= BIT(REQ_F_POLLED_BIT),
-+	REQ_F_POLLED		= BIT_ULL(REQ_F_POLLED_BIT),
- 	/* buffer already selected */
--	REQ_F_BUFFER_SELECTED	= BIT(REQ_F_BUFFER_SELECTED_BIT),
-+	REQ_F_BUFFER_SELECTED	= BIT_ULL(REQ_F_BUFFER_SELECTED_BIT),
- 	/* buffer selected from ring, needs commit */
--	REQ_F_BUFFER_RING	= BIT(REQ_F_BUFFER_RING_BIT),
-+	REQ_F_BUFFER_RING	= BIT_ULL(REQ_F_BUFFER_RING_BIT),
- 	/* caller should reissue async */
--	REQ_F_REISSUE		= BIT(REQ_F_REISSUE_BIT),
-+	REQ_F_REISSUE		= BIT_ULL(REQ_F_REISSUE_BIT),
- 	/* supports async reads/writes */
--	REQ_F_SUPPORT_NOWAIT	= BIT(REQ_F_SUPPORT_NOWAIT_BIT),
-+	REQ_F_SUPPORT_NOWAIT	= BIT_ULL(REQ_F_SUPPORT_NOWAIT_BIT),
- 	/* regular file */
--	REQ_F_ISREG		= BIT(REQ_F_ISREG_BIT),
-+	REQ_F_ISREG		= BIT_ULL(REQ_F_ISREG_BIT),
- 	/* has creds assigned */
--	REQ_F_CREDS		= BIT(REQ_F_CREDS_BIT),
-+	REQ_F_CREDS		= BIT_ULL(REQ_F_CREDS_BIT),
- 	/* skip refcounting if not set */
--	REQ_F_REFCOUNT		= BIT(REQ_F_REFCOUNT_BIT),
-+	REQ_F_REFCOUNT		= BIT_ULL(REQ_F_REFCOUNT_BIT),
- 	/* there is a linked timeout that has to be armed */
--	REQ_F_ARM_LTIMEOUT	= BIT(REQ_F_ARM_LTIMEOUT_BIT),
-+	REQ_F_ARM_LTIMEOUT	= BIT_ULL(REQ_F_ARM_LTIMEOUT_BIT),
- 	/* ->async_data allocated */
--	REQ_F_ASYNC_DATA	= BIT(REQ_F_ASYNC_DATA_BIT),
-+	REQ_F_ASYNC_DATA	= BIT_ULL(REQ_F_ASYNC_DATA_BIT),
- 	/* don't post CQEs while failing linked requests */
--	REQ_F_SKIP_LINK_CQES	= BIT(REQ_F_SKIP_LINK_CQES_BIT),
-+	REQ_F_SKIP_LINK_CQES	= BIT_ULL(REQ_F_SKIP_LINK_CQES_BIT),
- 	/* single poll may be active */
--	REQ_F_SINGLE_POLL	= BIT(REQ_F_SINGLE_POLL_BIT),
-+	REQ_F_SINGLE_POLL	= BIT_ULL(REQ_F_SINGLE_POLL_BIT),
- 	/* double poll may active */
--	REQ_F_DOUBLE_POLL	= BIT(REQ_F_DOUBLE_POLL_BIT),
-+	REQ_F_DOUBLE_POLL	= BIT_ULL(REQ_F_DOUBLE_POLL_BIT),
- 	/* request has already done partial IO */
--	REQ_F_PARTIAL_IO	= BIT(REQ_F_PARTIAL_IO_BIT),
-+	REQ_F_PARTIAL_IO	= BIT_ULL(REQ_F_PARTIAL_IO_BIT),
- 	/* fast poll multishot mode */
--	REQ_F_APOLL_MULTISHOT	= BIT(REQ_F_APOLL_MULTISHOT_BIT),
-+	REQ_F_APOLL_MULTISHOT	= BIT_ULL(REQ_F_APOLL_MULTISHOT_BIT),
- 	/* recvmsg special flag, clear EPOLLIN */
--	REQ_F_CLEAR_POLLIN	= BIT(REQ_F_CLEAR_POLLIN_BIT),
-+	REQ_F_CLEAR_POLLIN	= BIT_ULL(REQ_F_CLEAR_POLLIN_BIT),
- 	/* hashed into ->cancel_hash_locked, protected by ->uring_lock */
--	REQ_F_HASH_LOCKED	= BIT(REQ_F_HASH_LOCKED_BIT),
-+	REQ_F_HASH_LOCKED	= BIT_ULL(REQ_F_HASH_LOCKED_BIT),
- 	/* don't use lazy poll wake for this request */
--	REQ_F_POLL_NO_LAZY	= BIT(REQ_F_POLL_NO_LAZY_BIT),
-+	REQ_F_POLL_NO_LAZY	= BIT_ULL(REQ_F_POLL_NO_LAZY_BIT),
- 	/* file is pollable */
--	REQ_F_CAN_POLL		= BIT(REQ_F_CAN_POLL_BIT),
-+	REQ_F_CAN_POLL		= BIT_ULL(REQ_F_CAN_POLL_BIT),
- 	/* cancel sequence is set and valid */
--	REQ_F_CANCEL_SEQ	= BIT(REQ_F_CANCEL_SEQ_BIT),
-+	REQ_F_CANCEL_SEQ	= BIT_ULL(REQ_F_CANCEL_SEQ_BIT),
- };
- 
- typedef void (*io_req_tw_func_t)(struct io_kiocb *req, struct io_tw_state *ts);
--- 
-2.34.1
-
+On it.
 
