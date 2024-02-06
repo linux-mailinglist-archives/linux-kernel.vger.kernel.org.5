@@ -1,157 +1,150 @@
-Return-Path: <linux-kernel+bounces-54532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54533-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2197484B066
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:54:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D251384B068
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:54:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAA2E1F2665B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:54:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89E50284087
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:54:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEFE312D765;
-	Tue,  6 Feb 2024 08:52:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8642F12BF3B;
+	Tue,  6 Feb 2024 08:53:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZXBi6tlO"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="AASB5pa1"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5C1112D749
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 08:52:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ADA512C542
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 08:53:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707209575; cv=none; b=ukB9qDUe3dvf5yDwHBUSjLWZOkba8dNTzbH9uR584GRlyrv38JPPnvegB1Da4DxvQvRLLkJRgck++q8bmlppkq9+tK8unR7/qOoYGSRWFbqWgA760dGa5YMk2JqerZO26N8Q2o8OAzGYO4x6WZJqniY+j1LwOKZkHkUcm6Wq3d8=
+	t=1707209588; cv=none; b=bKjEbZNIDtUgPDMdePu0X0t87EJtxbXZ1qOKtsnFRemZL6+MyWRgfJtRigWCWC0125REEBIJpi0NAsaUvXIP/H6gu20KPIXrQjXYLLgcee87xZZn8WfudRQnuVyKNO0sODROCOuGh/ddyP9x1uXaknBdvWnY/JARHE/SPt2Hy68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707209575; c=relaxed/simple;
-	bh=vL9XGX/qXOFd69mq78FHNcCXv1VBdvoclaPktVPZJqg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RunD327Ybpes3EynAcRJPXoeBS/d5fVPIUxeQml4y5fOextLT83gMDRANaJB2nPfj/K6gdwWNmj2WEy4LoOefy4r/cZK8Z9H3zwHGmBOKF/CPjKEtow2qAXJdweQoa4Oz1XyHUmJsToZgDeooeZ/sRRNkgaPdqZKTen/6X8L8l0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZXBi6tlO; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33b2960ff60so175397f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 00:52:52 -0800 (PST)
+	s=arc-20240116; t=1707209588; c=relaxed/simple;
+	bh=IkPuQ84N43CJPITRNgIwZvKuIcHHnEU4bjoIXAe0YqA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LUSMA6m6J8aZwrOxX436iQamIfifm1NIlqAKKmzKm0ZUc/IDnTXZw6QJ7K+VLgZhkiUQ0JUddknd6n4Rjx6br3eY400zAzJuDNDoXvjLdxnPGyNwptXUS1ikuHDTjOa6brj9UmuRGU60MyNR3vHt/j9l8PavWAUEae276FS/N3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=AASB5pa1; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-337d05b8942so4079781f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 00:53:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707209571; x=1707814371; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Vgk20b1Z6sAxu7dsDANnrkj2LKv2bPazc+HqZKqdJoY=;
-        b=ZXBi6tlO7hHW7YCiGhJQ23I4SfO2Fwt52JzSrUY7JF0JY5+KEMTaB6jRbBj0LItTzz
-         JEmU6phkM6t0el78BWCNtZSadXR94VXpooXgscf47N/r5ZwPi6CAvdQYm7m5U72C8vU1
-         bEdzKKFQ1w7ywYGf6xocWwLiedt+1iYo5FnP66ltk3MgQ8YLEEQMU893jI2TjFneks95
-         xsFPp/EvG/tKfdal+Fgm6GqtQBFRojBCxjnW1b0TKbGy7yhtIBQyUC9iHVy62BIIL0K6
-         7Y/gu8nVpg9RiTX5EXnIDOywIOrcQj1h9N0WMp3mrveWPhA8KfRq/lCqO/Oms2naQ2XD
-         b4zQ==
+        d=tuxon.dev; s=google; t=1707209585; x=1707814385; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HOB+7yx/h2D9LzRqpjI3KvwptvPg8iNwQL8CUYIoCCY=;
+        b=AASB5pa1R6nmfzihMkxJcrPNCv8tX6dPQhqOSScJJQYKZq9J93Xj76a0hmIqbprN7Y
+         fXrwqR9npCjjwKfeR9WfyQTHKZpb+uMXg6EHfD1Hg7r6dbNGhuE293r1070B0Zg3vT9X
+         YoF/giLbftatC9Z6TP+aZM82tf4YSfi2HOJb2hB0f1lr5ByYR649zDuR2BjuABnJcAkd
+         UnPr++ZGiD4XFtGPxZUOdhbR1dU8IFKSF8Mzup7nTdOWdloY84S6ipnN+ZY+sVlfGZOi
+         hjWHJHUFAN1swTiWuMFFbWwDMOXLFeVB70yMIYiA9G3Y5o3BvF60aMWDvr/S9afFC3N7
+         Niqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707209571; x=1707814371;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Vgk20b1Z6sAxu7dsDANnrkj2LKv2bPazc+HqZKqdJoY=;
-        b=He6719kTsl646Uxc7a6KJWC9UJSWgTz01nKjM/rzT6I9Vu45J6htBq+CQ5cd5DJ982
-         mBkFwF3P97Fa4v+9BnxleR94PLZDCg4lpmeWx0XxhVQzGeYaMHdLwmSbA2dsEMgAqGkj
-         TRyeBcAnsrOkhqScN96qFVa7HMmZWU4WHKtjcMK5STG4C9sGggj+wlpCTU0+r4PgbvTf
-         6R+dHDy5DD5GoBjN7FnrQH+C1uT+DtivFIvO7OOg7WW48h+XC42JWFY9AnjJIuBIuv6n
-         qRrXdRHENy0SkMV188ntPimprhAXGKpGZCJsBdnDrx0vxqw9d2P6QmJIz8G6JmlvbPaQ
-         LlRg==
-X-Gm-Message-State: AOJu0Yxmy+VcBwx9r/L5Jim9F+ygmxf93YIoOWZ6TrEJB4UA9BA693oQ
-	t/IwtIKOvH9bqBU1CirFXp+uLzTNZH57i1Ko1p9LzRnPagiyMlR2i5kfMTXpUqbb2jN3Uladq5Q
-	D7JE=
-X-Google-Smtp-Source: AGHT+IFxujVssWEiqmgO6bi09eUeCSXUTDLiXgomG617SNK7Y2jrytsLzsqe8YugL4+0WqsUaUGoRg==
-X-Received: by 2002:a5d:444a:0:b0:33b:3aa7:3b80 with SMTP id x10-20020a5d444a000000b0033b3aa73b80mr735235wrr.15.1707209570962;
-        Tue, 06 Feb 2024 00:52:50 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWiauRuBcFvG8IhewBVIQJKg4NAHxVG6ayQFJPqsd+Sz1L+Z6KUJ/ke/7A2Jp1CzjZetiLMuh7F6Qxt/B2+5Ah9FFrn8saFp1ldnZtCFkCvnwgNhwWQbZ3fI14qQeAGnBjVt5FfYpBPyk8XUo8MyUDwqWKFqTSRk6qFuurmI8ezF9D+HevlhKyOtk+DnCUDkQzyBqj/nun6RK9jn8SZEUmvdNzwCZpb28PCo0W5wgki3ekC6td0taN99bUDT0dLmRjpobe/6GKuvaZK9RNqCV3a2j/yEuSDsLHGdaIo0GyQbn+FB7rNp5YkMdnNpOtoaiEUjCO4Mh8P6THC7YqYSSEgwXLDpEwUzfK3rxEz0KKJ5e8MHAmhWUwDomSo8qpLwSSau85/ZEBUzCmrm6dH3nEZ4LqGZzQkPhD9yzsG+d5fwlyd+4Lzj5MHonbDDel6ZRWeg12ZebHQRm+5svNxpUH+wlJvUoKUJPpqG7ymqNlxOwhZgkasUdym3Smsjt6O51Psw8Ewm/ILlj94zWT/pYIflr//PN+2HsFTkFX+0qcap8D2bSOxCuztnISU41DDs4cGsWC8M/qBAoykebwoEnDlsw==
-Received: from ta2.c.googlers.com.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id z10-20020a05600c078a00b0040fe078fb03sm1221591wmo.32.2024.02.06.00.52.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 00:52:49 -0800 (PST)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: broonie@kernel.org,
-	andi.shyti@kernel.org,
-	semen.protsenko@linaro.org
-Cc: krzysztof.kozlowski@linaro.org,
-	alim.akhtar@samsung.com,
-	linux-spi@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	andre.draszik@linaro.org,
-	peter.griffin@linaro.org,
-	kernel-team@android.com,
-	willmcvicker@google.com,
-	robh+dt@kernel.org,
-	conor+dt@kernel.org,
-	devicetree@vger.kernel.org,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH 4/4] spi: s3c64xx: add support for google,gs101-spi
-Date: Tue,  6 Feb 2024 08:52:38 +0000
-Message-ID: <20240206085238.1208256-5-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-In-Reply-To: <20240206085238.1208256-1-tudor.ambarus@linaro.org>
-References: <20240206085238.1208256-1-tudor.ambarus@linaro.org>
+        d=1e100.net; s=20230601; t=1707209585; x=1707814385;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HOB+7yx/h2D9LzRqpjI3KvwptvPg8iNwQL8CUYIoCCY=;
+        b=FMpo8ijhIVMbf1FE6u4LpQGrgqqZhtguFrFzgq0xvXMLWJ5frK6QMLaiF6PyNozBZq
+         LdcruGlOOuHvyGQWqE//tue73BXDPyBcoJx+mp2w6Zyjm3b3aJfONXiROmvDIy0Akswh
+         LqIW3RKePnaNz2rGM3xD7d2qf70kIq4cIgdIdEVDy5QUOoAXFKy+qjExClyZtZLB9+vE
+         zDSu5IGHDeyCYnTCEAxhbwRkLtVUEMJqs5b3tvTi+5In9x5qfOAw84czVWhUUE9HnFCe
+         Z1AKlOczmx5p3s7M6kQ4yf+mH6KJAojtZDPevCkOn37f9maO2ts/mb51FcjUGgvL1ix1
+         OCFg==
+X-Gm-Message-State: AOJu0Yz/gVk2rb20mt/7fAmfY6q+Z3R6T1yBBgz+L7ppInj3EWjx+ApC
+	1SGD9l21xz3langG3v9a3652a4oFiEtLz0UKs7fmmB6OGyPivZS7WVE72M/xUGA=
+X-Google-Smtp-Source: AGHT+IGS8MfQ65GOqo3MYqcajLE4932ZgjiunnST14lr6aRb8+7Jw4H1H3uGhAdEe8GMGs4XPr/6Lg==
+X-Received: by 2002:a5d:64ab:0:b0:33a:e4b9:d810 with SMTP id m11-20020a5d64ab000000b0033ae4b9d810mr987579wrp.40.1707209585154;
+        Tue, 06 Feb 2024 00:53:05 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUX77xMI4C4mm1puygvAWHHx0R8IaKaob0ea0+Ds+26gxMCDz9n4rcygqOHZxAFkxmPk7DAcebrs8jUrSorldHTAETyZVeOhQBFUSoOm73vzeuaz0jtXziyxT+spNYjPcXoJd3vzALLPS0j99iaBk1olyvhC+KOn+NDeXYwtdTEawt6DVzS72Xr5JSQBuKp5i6xg6cfXLiLbNNiVqNgh7QZfdBfhznE8LQRvOCUjdQ1crM/ejvYxvNXFUST/sG37H/RMBG1ijUd7fxkUWrRAczODnI5MDY7iPKLra2aEDvMQKACuvWADc7ABHhTKOZdbXai230STx2OKNvFZCLtxaa4ZdhGCpP9rqiVE79Y6zwWR2dpQiIQcE7hMofUfE+NxY2vbGcaYZYn6B4uWius9KLvNOUGpccIpdsFuS1/jHP/20T9Ok8vcwG1YEHFv13Lk4iwrWZtcPHXqVJKCGuS8yVS6vHactlHvjWa78xGawhPsob1DQKAYjOzMMJeWXdZyJszihDAL+0G5nw5OGiacqoTEReO/7lceVvA5kQqkYCWolH7GssL6lcP
+Received: from [192.168.50.4] ([82.78.167.154])
+        by smtp.gmail.com with ESMTPSA id p4-20020a056000018400b0033b1cb8135asm1518359wrx.88.2024.02.06.00.53.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Feb 2024 00:53:04 -0800 (PST)
+Message-ID: <4578780f-cb79-42c1-abc1-56faea4794e2@tuxon.dev>
+Date: Tue, 6 Feb 2024 10:53:02 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/9] watchdog: rzg2l_wdt: Make the driver depend on PM
+Content-Language: en-US
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: wim@linux-watchdog.org, linux@roeck-us.net, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ p.zabel@pengutronix.de, geert+renesas@glider.be, magnus.damm@gmail.com,
+ biju.das.jz@bp.renesas.com, linux-watchdog@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240206075149.864996-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240206075149.864996-3-claudiu.beznea.uj@bp.renesas.com>
+ <CAMuHMdXtNgoTEBjC92BB2NSLL_8MM78sVm3A3WbhY=b-6J=vqA@mail.gmail.com>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <CAMuHMdXtNgoTEBjC92BB2NSLL_8MM78sVm3A3WbhY=b-6J=vqA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Add support for GS101 SPI. GS101 integrates 16 SPI nodes, all with 64
-bytes FIFOs. GS101 allows just 32 bit register accesses, otherwise a
-Serror Interrupt is raised. Do the write reg accesses in 32 bits.
+Hi, Geert,
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
- drivers/spi/spi-s3c64xx.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+On 06.02.2024 10:34, Geert Uytterhoeven wrote:
+> Hi Claudiu,
+> 
+> Thanks for your patch!
+> 
+> On Tue, Feb 6, 2024 at 8:52 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> The rzg2l_wdt watchdog driver cannot work w/o CONFIG_PM=y (e.g. the
+>> clocks are enabled though pm_runtime_* specific APIs). To avoid building
+>> a driver that don't work select CONFIG_PM.
+> 
+> depend on?
 
-diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-index cb45ad615f3d..9ad0d513fb30 100644
---- a/drivers/spi/spi-s3c64xx.c
-+++ b/drivers/spi/spi-s3c64xx.c
-@@ -19,7 +19,7 @@
- #include <linux/spi/spi.h>
- #include <linux/types.h>
- 
--#define MAX_SPI_PORTS		12
-+#define MAX_SPI_PORTS		16
- #define S3C64XX_SPI_QUIRK_CS_AUTO	(1 << 1)
- #define AUTOSUSPEND_TIMEOUT	2000
- 
-@@ -1538,6 +1538,19 @@ static const struct s3c64xx_spi_port_config fsd_spi_port_config = {
- 	.quirks		= S3C64XX_SPI_QUIRK_CS_AUTO,
- };
- 
-+static const struct s3c64xx_spi_port_config gs101_spi_port_config = {
-+	.fifo_lvl_mask	= { 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f,
-+			    0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f},
-+	.rx_lvl_offset	= 15,
-+	.tx_st_done	= 25,
-+	.clk_div	= 4,
-+	.high_speed	= true,
-+	.clk_from_cmu	= true,
-+	.has_loopback	= true,
-+	.use_32bit_io	= true,
-+	.quirks		= S3C64XX_SPI_QUIRK_CS_AUTO,
-+};
-+
- static const struct platform_device_id s3c64xx_spi_driver_ids[] = {
- 	{
- 		.name		= "s3c2443-spi",
-@@ -1550,6 +1563,9 @@ static const struct platform_device_id s3c64xx_spi_driver_ids[] = {
- };
- 
- static const struct of_device_id s3c64xx_spi_dt_match[] = {
-+	{ .compatible = "google,gs101-spi",
-+			.data = &gs101_spi_port_config,
-+	},
- 	{ .compatible = "samsung,s3c2443-spi",
- 			.data = &s3c2443_spi_port_config,
- 	},
--- 
-2.43.0.594.gd9cf4e227d-goog
+I knew I missed something...
 
+> 
+>> Suggested-by: Guenter Roeck <linux@roeck-us.net>
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+>> --- a/drivers/watchdog/Kconfig
+>> +++ b/drivers/watchdog/Kconfig
+>> @@ -910,7 +910,7 @@ config RENESAS_RZN1WDT
+>>
+>>  config RENESAS_RZG2LWDT
+>>         tristate "Renesas RZ/G2L WDT Watchdog"
+>> -       depends on ARCH_RZG2L || ARCH_R9A09G011 || COMPILE_TEST
+>> +       depends on ((ARCH_RZG2L || ARCH_R9A09G011) && PM) || COMPILE_TEST
+> 
+> IMHO this is still a bit futile, as both ARCH_RZG2L and ARCH_R9A09G011
+> select PM, so this is always met.  In addition, the "&& PM" clutters
+> the logic, and makes the expression harder to read.
+
+I agree with all these.
+
+> 
+> If Günter insists on having the dependency, what about adding a
+> separate line instead?
+> 
+>     depends on PM || COMPILE_TEST
+
+OK for me.
+
+> 
+>>         select WATCHDOG_CORE
+>>         help
+>>           This driver adds watchdog support for the integrated watchdogs in the
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
 
