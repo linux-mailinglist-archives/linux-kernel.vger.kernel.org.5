@@ -1,101 +1,195 @@
-Return-Path: <linux-kernel+bounces-55086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC1B984B77A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:10:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE74F84B78A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:12:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6D5B1C25470
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:10:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A53B3285FF9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:12:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81FB713175B;
-	Tue,  6 Feb 2024 14:10:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED7BC131E36;
+	Tue,  6 Feb 2024 14:12:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CNWuza2T"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="AHmmrBUN"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1E266DCED;
-	Tue,  6 Feb 2024 14:10:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1A21131752
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 14:12:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707228601; cv=none; b=VLFytjfk2M/p8K/6us/ezdlJm2m82qElabvCtLBayISakyEHN0o+kXx9y30pIMnziSsKRo5lyu6oduJr1odPV0RNd1k+JmINAkojeiu/vy9gjQDaOf/5Tb2/z/iw2NyUDyQU3J3gB/lijm1yIY0ZZuzvuJvgcdZXcBc5TEEYkYM=
+	t=1707228763; cv=none; b=HlZKKx1qO+dLZF4TC5LlGkcg853kCdMKTfp9xTquAA6XRhLubQ9KdhMfsL8UO29mHSAXIo5I0UTOAbNbJJ9sNdV1KGYZFmBTUrAClGxYCkYIbYXOpPRDjSgcDh9cTCV0zuhUm69FbR8t264fVxcilVr7WU/O8iC6F+OlSxN0ZbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707228601; c=relaxed/simple;
-	bh=hvmqSmkmFWutE9hUmwv9X3rui7sLEKtbeE/rAUiiKJY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tk8O/hEOi+R4CPM3gIkpg0FndOr5dBaaQ+ySaF6AgCsW2emTqQ83Ki/haKtS2CrlXWKWZ149ZHq3pDfJPp9SPSr8fwuxNMSvLX+mK5AV1l/RcmLwLBKaxn7zRDJyIYiIREBHBXmSHBGi0Izoiag1aS0ZeRcyz0yrQOl8gZMwOuw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CNWuza2T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0F85C433C7;
-	Tue,  6 Feb 2024 14:10:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707228601;
-	bh=hvmqSmkmFWutE9hUmwv9X3rui7sLEKtbeE/rAUiiKJY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CNWuza2TVVhuJEoZDi6iwLXYMDjDdzW4VERhWUfGkG1M23Pb8FCjXdb4tCWEfU/gD
-	 18Wl6j0ThMgFAlr4yprL0217oNh5eHX9+1jWqrQOzELUixvMA5wRMIwtLFk0nBErUu
-	 s+Ev6oG3+cqJ77C+iV6hUMWCNzx2gwN9a39c6Yf52+tNnTbXhWdwQxfHxvDXmSkxOA
-	 ezmWrPN4eNIqWSzxv+hFeGWqY6ba4JBl5ck5YjE4c3Xi0OsqpOIVFNvsYI1ayC6XsT
-	 Tkjmvr3sRbMBXRY3/okBob+bW/xCmYY1zMK1WyaqYkFOQWklHT64fgwmwe63q2KwdQ
-	 Tock1+TTUF3Vg==
-Date: Tue, 6 Feb 2024 14:09:57 +0000
-From: Mark Brown <broonie@kernel.org>
-To: frut3k7 <frut3k7@gmail.com>
-Cc: Robert Marko <robimarko@gmail.com>, linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] spi: spidev: Add Qualcomm spidev device compatible
-Message-ID: <ZcI9tWsthu8XMiZ1@finisterre.sirena.org.uk>
-References: <20240205191808.998754-1-frut3k7@gmail.com>
- <ZcH9u7Vo2sFERIHJ@finisterre.sirena.org.uk>
- <CAKEyCaB2Cw0Ey73je96xDgofuXDnsC4DgeS9=HkOM6Kufrwbaw@mail.gmail.com>
- <ZcIwGRU5NEZGpRy9@finisterre.sirena.org.uk>
- <CAKEyCaCQk+iL_zOr_0LFOA4Fw+SwyuzSWOvVgmO0Tn8Ygv-4hw@mail.gmail.com>
+	s=arc-20240116; t=1707228763; c=relaxed/simple;
+	bh=Wt1T7etqlQIEFK5ye8kbDen9dDtuHaTDaBefpNZivFc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=goFsLBZ5nZBqWtjLkbJCmZWOh1gOqWLgexG5DpJQZoThGFM6GMsfSiWQMsHQMnkS9NvTkGmeQdgEMA5Ko1nt+kXMZG6lNp73VBFf9DxMVZCDslTT7WLm2aC37qszjD20WP2/VfNWdy5ZW1AfbW1oFMdJbzfyg5CiyuRK0rLVtgw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=AHmmrBUN; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6da4a923b1bso3750007b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 06:12:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707228761; x=1707833561; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7SA4faVVJYDMfy/r36fEUOihZ2CAD3tpPWMLG1ykrqg=;
+        b=AHmmrBUNQbpQBUNTNGMp4onxodtEw1ZYMd8Z89tho4tDr3F3rA1D2BHCQojlgbCZTv
+         voJb+ixLHF2RBEdcTuFIwEAB6SXfv4PnUSbYSXRhw+OSeooEo4p3JGFgY06PgHbIgUGG
+         6uECBK4Kt9YjqsL9rICiwTJLANX0H7ZLd8SYc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707228761; x=1707833561;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7SA4faVVJYDMfy/r36fEUOihZ2CAD3tpPWMLG1ykrqg=;
+        b=VrZH24nrzrUl7s5A6E1kaWKE8pjnrNWRW4uGbj6mT5w9D60tzJ2J9DpBz2gKGSMr9s
+         J5lZ2AE8AeQFjTeHeuSVnjnG0hH4xn/iPS1TuAzz/mZi4qTtN0vGzZdIqhwptXkDW7R3
+         vJm6IjzaVj9qnPhq/yP/VmfTTj7QMiOQfJUt1tmG/0EovmON4Wde9cJnk3WZKJ5alhIr
+         Yedllp4bqWluOYAh1o72Yj2kITAfOhA4Ig5MdV2NGw+si28vmjvqWX7UFJswyX6zGfY2
+         a6k6z8PUKtrcx2d1huAaeiIWcp0YeHWIZ5AyVQ2pKEGRTf80s9t82g632YG1m2uy1YEn
+         XomA==
+X-Gm-Message-State: AOJu0Yy/6CQ4G5zr3IclUI5YrHXGLfVvavPYTHp43K/DbC6aPolB7ASP
+	wbWduTy7CxpoxHGZ+1PVtEiDb/SBa/VTfnqkGoDUWnkFFAJgjReypNQK+BafcA==
+X-Google-Smtp-Source: AGHT+IFjIm7YicmBYMed0INjWHvRfa4gZyjy/0xpwHIjp3Smy4PnQ4TfpOO5epSssOkF+8jtNXBFAg==
+X-Received: by 2002:a05:6a00:938d:b0:6df:f634:4f83 with SMTP id ka13-20020a056a00938d00b006dff6344f83mr3185288pfb.2.1707228760934;
+        Tue, 06 Feb 2024 06:12:40 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWIazxDHvc79fqGX/yKrNSWou2+R1ZUiqoDY3X9PldKpTEv1Buai/LBFC1rxMdTEClTGBPyS9UXo1TbQPDov/pY4NIG97DF8PsVhgxuupuIRcwqKOihklIN97P2bPpvksyOfhcpc2OnmIpdWoXcSFem/2d/Jv3PiU2y5PltgyI0uLDhIJCQpQAVvsayTdZH3DmlzBRXXuwDiv3Wnnxh2jT8A4WzcrVuj2kY3tZD1mLLyhBGvsPJK7aeLf4T/uJ1tJXZo4eCWnug8/gsFuOgoKbM5BzOgdVqS6zg2IYUZ3c=
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id i27-20020a056a00005b00b006ddcf5d5b0bsm1939165pfk.153.2024.02.06.06.12.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 06:12:40 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	kernel test robot <oliver.sang@intel.com>,
+	Andy Lutomirski <luto@amacapital.net>,
+	Will Drewry <wad@chromium.org>,
+	Shuah Khan <shuah@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH v2] selftests/seccomp: Pin benchmark to single CPU
+Date: Tue,  6 Feb 2024 06:12:38 -0800
+Message-Id: <20240206141234.it.656-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="y7mmJmroElizUbXr"
-Content-Disposition: inline
-In-Reply-To: <CAKEyCaCQk+iL_zOr_0LFOA4Fw+SwyuzSWOvVgmO0Tn8Ygv-4hw@mail.gmail.com>
-X-Cookie: You might have mail.
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3071; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=Wt1T7etqlQIEFK5ye8kbDen9dDtuHaTDaBefpNZivFc=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlwj5WFrkcgZ8hALvXjbxNjhFAKG7jNJ00NXZx4
+ ZMCIEaIQp2JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZcI+VgAKCRCJcvTf3G3A
+ Jj8PD/0RojU69usxAsxYgxt3MI1BZ+ud7tXZFqO7D6VqR1yC1k33YfPK8CB0aIfflDa9URbWbKt
+ UPHooy6DVrSjD4M+JTp7ulrAm+M6i5r/ZLjowZz3dd09rUoe2v776gu8lUxlkugnR33mNwz63Du
+ okWgEALg9W7IhpRRrTG2p9d54Chwc6Ztr9DXueR+XyeSiN1JmTGO7NP2Um1NcaXQZKj07ea135h
+ i65RDTEz9fjIAgbjjzmXPr/agb6H29o36M/CMc9UFfm2+uBV3OTSEG8c1mM/7ZNHuS6Wv5PN9bW
+ aKzCnwyDequy3FkbCVmi81f9SKoME+VUTcKD4PTlcrJuSSxnJ1Ef9v2VdZk2A3Y8LBsH/Vd0yPL
+ SFlcUB/fA2p0f6s2M0XYKyT1z1+1mBPC680zuWdNoMZHb0A9RZ/0QpOzAehag3j88cLjyorG6CD
+ ejXuSDPLXaTzd6SE8ly0UMU4W89GfmE+zHS4P69nK6ECGe8yIjwvctektdgRADC1zglg9yCamKC
+ W0e1rjaLHQQwkIkThNmkh9PE0LewY94M2yia91t0/EX9hLcL2qW3xzRDMcRDOGEXMOx9AmOKQqD
+ rWLNo55g+I70dTA8MqlSwR/RlaYOoDcaPrHj5pKz238be1bNDPcbI45Oh8N0xOiq9IaToYXnls6
+ nQC2Vfm cMCiWoxw==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
+The seccomp benchmark test (for validating the benefit of bitmaps) can
+be sensitive to scheduling speed, so pin the process to a single CPU,
+which appears to significantly improve reliability, and loosen the
+"close enough" checking to allow up to 10% variance instead of 1%.
 
---y7mmJmroElizUbXr
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Closes: https://lore.kernel.org/oe-lkp/202402061002.3a8722fd-oliver.sang@intel.com
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Andy Lutomirski <luto@amacapital.net>
+Cc: Will Drewry <wad@chromium.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+v2:
+ - improve comment about selecting CPU (broonie)
+ - loosen variance check from 1% to 10%
+v1: https://lore.kernel.org/all/20240206095642.work.502-kees@kernel.org/
+---
+ .../selftests/seccomp/seccomp_benchmark.c     | 38 ++++++++++++++++++-
+ 1 file changed, 36 insertions(+), 2 deletions(-)
 
-On Tue, Feb 06, 2024 at 02:57:49PM +0100, frut3k7 wrote:
-> On Tue, Feb 6, 2024 at 2:11=E2=80=AFPM Mark Brown <broonie@kernel.org> wr=
-ote:
+diff --git a/tools/testing/selftests/seccomp/seccomp_benchmark.c b/tools/testing/selftests/seccomp/seccomp_benchmark.c
+index 5b5c9d558dee..9d7aa5a730e0 100644
+--- a/tools/testing/selftests/seccomp/seccomp_benchmark.c
++++ b/tools/testing/selftests/seccomp/seccomp_benchmark.c
+@@ -4,7 +4,9 @@
+  */
+ #define _GNU_SOURCE
+ #include <assert.h>
++#include <err.h>
+ #include <limits.h>
++#include <sched.h>
+ #include <stdbool.h>
+ #include <stddef.h>
+ #include <stdio.h>
+@@ -76,8 +78,12 @@ unsigned long long calibrate(void)
+ 
+ bool approx(int i_one, int i_two)
+ {
+-	double one = i_one, one_bump = one * 0.01;
+-	double two = i_two, two_bump = two * 0.01;
++	/*
++	 * This continues to be a noisy test. Instead of a 1% comparison
++	 * go with 10%.
++	 */
++	double one = i_one, one_bump = one * 0.1;
++	double two = i_two, two_bump = two * 0.1;
+ 
+ 	one_bump = one + MAX(one_bump, 2.0);
+ 	two_bump = two + MAX(two_bump, 2.0);
+@@ -119,6 +125,32 @@ long compare(const char *name_one, const char *name_eval, const char *name_two,
+ 	return good ? 0 : 1;
+ }
+ 
++/* Pin to a single CPU so the benchmark won't bounce around the system. */
++void affinity(void)
++{
++	long cpu;
++	ulong ncores = sysconf(_SC_NPROCESSORS_CONF);
++	cpu_set_t *setp = CPU_ALLOC(ncores);
++	ulong setsz = CPU_ALLOC_SIZE(ncores);
++
++	/*
++	 * Totally unscientific way to avoid CPUs that might be busier:
++	 * choose the highest CPU instead of the lowest.
++	 */
++	for (cpu = ncores - 1; cpu >= 0; cpu--) {
++		CPU_ZERO_S(setsz, setp);
++		CPU_SET_S(cpu, setsz, setp);
++		if (sched_setaffinity(getpid(), setsz, setp) == -1)
++			continue;
++		printf("Pinned to CPU %lu of %lu\n", cpu + 1, ncores);
++		goto out;
++	}
++	fprintf(stderr, "Could not set CPU affinity -- calibration may not work well");
++
++out:
++	CPU_FREE(setp);
++}
++
+ int main(int argc, char *argv[])
+ {
+ 	struct sock_filter bitmap_filter[] = {
+@@ -153,6 +185,8 @@ int main(int argc, char *argv[])
+ 	system("grep -H . /proc/sys/net/core/bpf_jit_enable");
+ 	system("grep -H . /proc/sys/net/core/bpf_jit_harden");
+ 
++	affinity();
++
+ 	if (argc > 1)
+ 		samples = strtoull(argv[1], NULL, 0);
+ 	else
+-- 
+2.34.1
 
-> > This is out of tree, it's not exactly a good guide for mainline.  The DT
-> > should describe the hardware, not how some particular software stack
-> > chooses to drive it.
-
-> Will changing from "spidev" to "qca4024" be enough?
-
-Should be I think.
-
---y7mmJmroElizUbXr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXCPa8ACgkQJNaLcl1U
-h9AEoQf/dpUGORasBT+OGcDX7Qyt5KaqiCxjXrnGDZBRyJCuvIlnm8lLcAmVSAiZ
-fgxhwUHEVQNvU3s88a3E+AVvCeZ+l58BqSuZfgbm5CMx+RB/gRbJv994bi3LzuVt
-2wmjrJ+1Ge+eYL2J5/O13eGez9bWrgcglQRGqBoVaXcSeLDjpP03QR0IAurW+XCK
-/r8IE6qbz1M/kyymjgrgVDA3Da34FdkVsRCajSE6TeIuD88haRJdO21y6WydpNQU
-IDmohpPCVcyFYjcB71dewDn7/mPrebMlAuCS3CiJEPyyro/qn+BB6MfZvc1fr4WC
-tIPUf/vcih5fOWEeDASAhHZ1OYhc3A==
-=ZDS1
------END PGP SIGNATURE-----
-
---y7mmJmroElizUbXr--
 
