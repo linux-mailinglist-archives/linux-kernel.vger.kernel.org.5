@@ -1,180 +1,219 @@
-Return-Path: <linux-kernel+bounces-55258-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4E6B84B9D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:38:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FF8F84B9EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:42:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C6DA28164A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:38:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FF5C1F2273B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:42:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A94C1339A1;
-	Tue,  6 Feb 2024 15:38:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE3751339A2;
+	Tue,  6 Feb 2024 15:42:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b="A0X5EcZY"
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2131.outbound.protection.outlook.com [40.107.20.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="B3k903NX"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD50A13248D;
-	Tue,  6 Feb 2024 15:38:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.131
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707233925; cv=fail; b=NcBGxvl6yeEvbB0WinIea67l6AL2Y16qYl8fHhxB5EdSBV9RUNk9q/py7XLn10sLalmvIRgcED5AVXQzm8bI6U7dDGRtJqx/LLUj9gU8t4akRahi8Z+qjFf7pzy5pdn+OwMtqp0vfeFJAijrF9r4V4p6hkGNnJarCxUQzL4RFxE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707233925; c=relaxed/simple;
-	bh=kxmw3Iifjwi6nPtr26GFMmCb5T+8MjN8o+/fabMOugg=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=htEY70fvzBs84fl7BvbNtofygy++LhIcSHdPJVutGAbTkS8WdqWflwDNtsoSBFT8CqcKPczaUkHEcxQqN8c2xRWjd6TOxTxy15tiURERuPTjOeUoHCzF/bLH4aIhk6Z3ztfA8aTDjbG4SPyK+vgjtON/FQGTm7VZ8bHj3uNNWPI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net; spf=pass smtp.mailfrom=wolfvision.net; dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b=A0X5EcZY; arc=fail smtp.client-ip=40.107.20.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wolfvision.net
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KGVrC9qKG3k5pGk8BBAnwyqCf2kqJKpiHE0dUnVnNdHjLwLxY/2caukXH6K6OWvEgo9j39MzdSQTlbzmcsan0T+x8fWnkhCdFrFqgboh0ZKFKi+wgXo5o5OMG76hu+NukthzTmR3bf/18uYq7MpgDZ4r//vNaIeyKZ+P5zxXNSgrgsafORznGbIQ0cEIxfigV0HJg4GWXtFmJ/1VBTxHuE8Z0yXeWLkVRnn9lH8Tu1rxiEyqNGMwrs0GY0cXUnTE/Qdmj+uOx/uupbrrxTr6AETj7u1WDyJBDc1b7kEm/uEil431kAFPrZNh2dqVr3KNMqVepyw+k50b4XZUfpSbUg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6pjWmqYBSPobbz+fuyObfpLqkcPazZBx26kXlbOVOyo=;
- b=lVwf7/UQWUtKUxpp59//Wzb+HhruOwtMwlAhMYt8Z0dDUqpSihK0DbAel9y60q8F8B8rpfwqDwQvXUAhWQMeQVfr2MiyqyK10kZ/3RGptuIalvt62RjReeINdGUbgrg1okKab677qG4A8ooD393l+IVzNJ9ynT8zZ+/iwMv3GHPJBI7hwhQmbuNQf488mNFfErS6YrI5KCVUYUJiSCSpN+Ewq8JD1rN2h8K2R4TfIfmDTKi1yYeNsl+YycUyn4P0C79QSQu56VR1Ayk36tTifwE1kGx3idJ7csHv6/t9GL68xbDy29jUPMLjJ6CKVebk5zht6wbxWuXlH8RJZe6L7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wolfvision.net; dmarc=pass action=none
- header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6pjWmqYBSPobbz+fuyObfpLqkcPazZBx26kXlbOVOyo=;
- b=A0X5EcZYfPHd54lAAb/krDFuhigfiXVyc1z4fs0mPH4ZC+5HEtB86qTqP2FUR/fnmKmfgNIqlGo+aeVEJtV04p48I/DOYUwvIedH+wNYGeEN43d9ppgkuWFcdabPmcH2W8FQEkbO/XcCMPY1HWpXIor9JHqegAfMOtHsuNPFFxw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wolfvision.net;
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
- by GVXPR08MB10763.eurprd08.prod.outlook.com (2603:10a6:150:15c::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36; Tue, 6 Feb
- 2024 15:38:41 +0000
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::c8ee:9414:a0c6:42ab]) by VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::c8ee:9414:a0c6:42ab%7]) with mapi id 15.20.7249.035; Tue, 6 Feb 2024
- 15:38:41 +0000
-Message-ID: <920c2c18-6cf9-4a88-84a5-eb1208ad1d42@wolfvision.net>
-Date: Tue, 6 Feb 2024 16:38:39 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 6/7] ASoC: dt-bindings: xmos,xvf3500: add XMOS XVF3500
- voice processor
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Kaehlcke <mka@chromium.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-References: <20240206-onboard_xvf3500-v3-0-f85b04116688@wolfvision.net>
- <20240206-onboard_xvf3500-v3-6-f85b04116688@wolfvision.net>
- <ZcJDFi+iIQOWzgYw@finisterre.sirena.org.uk>
- <7b472cb2-6658-446a-ae47-411d08798cca@wolfvision.net>
- <ZcJR0LrwaS5GAf5h@finisterre.sirena.org.uk>
-From: Javier Carrasco <javier.carrasco@wolfvision.net>
-In-Reply-To: <ZcJR0LrwaS5GAf5h@finisterre.sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: VI1P190CA0037.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:800:1bb::12) To VE1PR08MB4974.eurprd08.prod.outlook.com
- (2603:10a6:803:111::15)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38B05132C1B;
+	Tue,  6 Feb 2024 15:42:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707234163; cv=none; b=uPtcVCZLMyjA3LIeKHnLIoEKLN9W06Q6RbKlJMEL2kJd8GLV44f4vFqzj3YUzAOpiAm7tU6dvhZeqsRCHUwb5ujJ34Ri7OhIOCHPzqNcN0WyqtP7tJCEBWfxwBT5gcQT/vTHrr8WTUPiYCWDpIBgGaEK857VXPkSfx65g4DP2Tg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707234163; c=relaxed/simple;
+	bh=55QXQxJDQOG7HqlXSoDBC52tqHTe/Q36kRchCdnTUcI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tIeftYzwhHghTAGne+57+cD94WUK5Fy7JjkB41oTwBg6PXK1yVHxTp+DNVNVw3g0OLr4LGbHGIZEzJ7qcsApYsreDTdMnIM7vVf/yXdTO99AdQMUgC5ei/R3zOnXD2l6+e1VVYc5gKwDv5j+9npZhkvMBfyfeM+kPIrUGS8NEkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=B3k903NX; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707234162; x=1738770162;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=55QXQxJDQOG7HqlXSoDBC52tqHTe/Q36kRchCdnTUcI=;
+  b=B3k903NXNFGR7OTHxZ04GvCh2TKKQpsK73bQcsi2SJJDGxPVgVhbC+cn
+   fVApJWqqvpVLvo6anWzVTRxT9gzX3jaVNu9cYQrFS/C+UXdlgo1Cp+Ira
+   FwPmr8UsT4+VovhaahzB6FSe9NaUhAHHROmEvmsyZD7Rc5MNIPfwWcPfJ
+   q3plPjPKEMfx8EVdu7skb7KrzG8kQbpg+g6t4WDSdCiXBSPtD6O4b1k6w
+   Q+LU+UJwKqeyKmtemG8xJImGWE811dYIH8Yg4f/txjYv0HqfF3QVqOaIy
+   hqbmqfKsnEQ7v8Q0Z9ph/yWr3k7y+mhXQjbXP7BRZnMHmmyxg6Tb2MTE3
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="4655672"
+X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
+   d="scan'208";a="4655672"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 07:42:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
+   d="scan'208";a="32132035"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmviesa001.fm.intel.com with ESMTP; 06 Feb 2024 07:42:40 -0800
+Date: Tue, 6 Feb 2024 23:39:04 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, David Matlack <dmatlack@google.com>,
+	Pattara Teerapong <pteerapong@google.com>
+Subject: Re: [PATCH 7/8] KVM: x86/mmu: Alloc TDP MMU roots while holding
+ mmu_lock for read
+Message-ID: <ZcJSmNRLbKacPfoq@yilunxu-OptiPlex-7050>
+References: <20240111020048.844847-1-seanjc@google.com>
+ <20240111020048.844847-8-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|GVXPR08MB10763:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0a27da28-a719-4f30-5b3c-08dc2729b1ba
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	v8otOjXwT1c5M8174mbfnpZ7ObjkD/bQyCP+yYl/0YsycBBsEdvBJyPX98aeJiGfihlv2NuvG1gnc5ivPRUnG9pcH26RaSxAbpDqNzCY0p9txZ7qCGnPGh+zfIhChDgiPQ4SO6h0g0zDKZimr1egSPv1pEWO/tLhwWJkyqG3drpKXtxjvh1RN4loR9EpM3JPY2J3TlzbaR3iNAp/cZA08GYDO8pqBbQfh6piY9zRVKYhVcb6v9524W0CsfdgEh/r+chd/m/Pi5OJmQ9qZPVlh0IUgzIgUOfrJavGK+gS0DKiFSBpsKlo2XzxOYFWGQ2uDDFvJTHFrgpAv0RAFIasMPmUzsEGg+olMGX07ADrjBLt3o2XiYW1XKFcPuc6uUtbSCHthLNyz/yfJBaNwJtVIt/KPRB2LttBSoAl372XvEDwpUveu2HzWRM33IaXdBDuRowFOJx2ZUVSTFJnNAJsYS9TU65ChHGtIRHzVoS0K63hpb2YyehauTHY5ZAtBPOHIqdkXEh3gXWE7LawewsECAbQLQFAE9M48fIPLmOEGcP4woK9d1REH31/3YUq58i/xSe8ZqmYMotayQA2EwP4P8bcjuFDS9igvsnsQYjooceM9oLq7xdWYmqHmGHS4F7QmT4JCybxuQVauQm/fyYPWQ==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(396003)(366004)(376002)(39850400004)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(31686004)(2906002)(83380400001)(38100700002)(66899024)(41300700001)(26005)(6916009)(54906003)(66476007)(66946007)(66556008)(316002)(31696002)(7416002)(86362001)(4326008)(8676002)(8936002)(44832011)(53546011)(2616005)(6506007)(6512007)(5660300002)(36756003)(6486002)(478600001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?bnVVcjRMamhXZEIvRUVMOWVMbUgwNnordm42VnhOQ0hsTGZtaEwxNTRwUDAr?=
- =?utf-8?B?aWRLSmU4OWY1UHh5UGZtZnVjdXZiVllCR3FXZ3FPR1o5bHA0US9CQzRlY3d5?=
- =?utf-8?B?ZTV4dXIxWmlqVWpIR01FekJaWm42TjhvUURFbmpJRjNRWUNBa0c1c0cwMk5H?=
- =?utf-8?B?UnIrekFPbkVSWHM3LzJma3d1d0VCaXREbE9WVWFHeEk5MGtSblZCL3pPY2N5?=
- =?utf-8?B?bEJuVVlRNHpVZzNMcUJxZk5jTkk1YnVPdVRLK3Q5eC9zMHU2V25FdGhScG9G?=
- =?utf-8?B?Vm9icnA4OVRyLzBVc2MwQ01kSmZZSEwwRmRmcS8wSzhnekJZQ2pFM3krcXVQ?=
- =?utf-8?B?L042dFRTR3JOTXBXbHVWM3VZQVV1QmdjY0lpTVlLOFBSUXVkYUJ1ek9TU1Vw?=
- =?utf-8?B?emZPQno2N3d4cVgrWVU4R0VWVmFuQklnV29raHE2RHpMaXlwYnhhWk9jMHR5?=
- =?utf-8?B?QlVQdG53OXl2ZFhFczVpQ2EwR3lyb3FadzI0UGJDU0RLOFVIM2Y2Y0lnUDJB?=
- =?utf-8?B?aGI2OGkwUmpwSGdkQm5DaXdUd21LQ3p0Vks3aTJVazRKanoyZ2lBdUJFU0tw?=
- =?utf-8?B?Ty9ERGNIdXlsK1lpaXlZQUVtN1FHZWd0MVBEay9JTUpzUVd4bmZtMVY5T0M5?=
- =?utf-8?B?bTlLQTFWOUx1Q0dQZy80ZWRTVHhoVEM4bDlOaDBFdU9mSmJIN0xET3NDYWtW?=
- =?utf-8?B?OVgvUG5zUnBlTmg4c0UwblJDR3dNY2ZGQk9SQUNwWW9OOEs2L2VtZEg0SzFy?=
- =?utf-8?B?TjEvVXlxaThPanRqTDJXRGtCSEl5MnpBdkZBWmZlaUs5aFZlMFZFNHg3VEF4?=
- =?utf-8?B?VlpkNzV5bnhlWGF1Z1d6ay9aTGNiRng2bHJtRUFLQ0p4OEtmY2tFeVAvMUJL?=
- =?utf-8?B?aXJZQlBucXlIMEl2THNteWgxL2FrVmMvaWdpcENhUTkra2JlQ01rNFlKSWFx?=
- =?utf-8?B?c09BT2R6QUt4cCtVRW9vN05VY2tGRDc0THJweWh3VjhPOWtPeVEwOEJiZStw?=
- =?utf-8?B?dkVyRXd5TlF6bkUwYWVMWHBCUk1HVUxac0RUYWpOdkFkc2lBNGNWR2ErQk42?=
- =?utf-8?B?VUR2aFo2R3Y0VHViQ05FcEptNVdyTFExVFpranVYaHhRUURPSkZGQ1Z0L05k?=
- =?utf-8?B?R1A5N2EvTGQwVDFkSjhzbi9Tb0ZWT29OUWhIbmtLR1ltcmhJbHBBWVduMjVV?=
- =?utf-8?B?ay82WWFxbDcyd0xQcUkyYXFmT05Xc2dKT0U2akdKY1p1dkE0YmwxWTZJc0sx?=
- =?utf-8?B?TDVlRUhDdGhkeGxSdVlQc3R0MERYMzY1SVNRZnhuVXpxQ1J5SVZnNkZiS3Vw?=
- =?utf-8?B?cmFadlRXMXZZdm9IeTBmLzFjbUpRZHRsbmlvdlNkUG8wTFlLTk9DeFVRbUJz?=
- =?utf-8?B?V0lIOWNlUlhSeEh1UVRPYUltL1ZmMCt4RmJIMkluNkNIWE4rWlljMUc0bng0?=
- =?utf-8?B?anZkM3JaTFNwbmgxYldIK2lZaWhhU05HVFNTbHRYem5RYmFjeVFDWE9tS0kv?=
- =?utf-8?B?WFBaYk1ZcXB0cHJZM1p3MVhZWWNuVFBsRmpzZ01DVmh6blN2SkpWRE1ta1RO?=
- =?utf-8?B?cWFUK0o0aUFyRzlZYmZXdFhCaHYwTHRtSjVUYlU5MXRTSS9ZQnBGMWdsT291?=
- =?utf-8?B?cUx6VkcvVzF4elFQNi9kSllQZWdXVUtUelM1b204UXJpNW9MMThZK2F6V2sv?=
- =?utf-8?B?VkdpVjlGYXF5MUZ6N0d6UThRQSt4aS9hUGduQW5IbXh4dHhaWlBvbjl1OVB5?=
- =?utf-8?B?enRRTTk0OGg1Mkh1VE1ZQ3p2blowWWN3WFBsNjVZUjRJdnFtZ0M5cnVaSzRp?=
- =?utf-8?B?VVRGVW9oZFRUQmNNTkJuNmxRakV2a1U1aFU3eTJaRkdKdW5kc3N4SE1idTlr?=
- =?utf-8?B?K3h4WWdQU0pkazdlcUFwSHJKYVVJd0p6OWtxemgxWUFPS0ZrdVlYNXZoSStq?=
- =?utf-8?B?d2tKSkRnMkJ1UnpJbDJ3d2wzYzZUM3dGRldKR0RyVjZqNGJkTGk2a2Q1TW5Q?=
- =?utf-8?B?Y0NiWEZ1Yll1WWJqUTJBSTlqd3VqOGVmclhMZ2VkdFFIcWlYbWFRSnliekRH?=
- =?utf-8?B?NlJPSW9UVElmektDTlZVeEhRVEtsSHhTTElFcUFxS28yZm9ZNitqK2xJWGNE?=
- =?utf-8?B?RHlmRG04T01sWVpsNjV0cGo5TGw4aFJ4VWNFaWJETVBLbXN6dTFRUTg1OGx5?=
- =?utf-8?Q?sdJxkMj6XiydO3u137tq9O8=3D?=
-X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0a27da28-a719-4f30-5b3c-08dc2729b1ba
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2024 15:38:40.9666
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9GSTzWsGcEcH+3go6+lBd9nC4aPDTOmlYe6Ydd4L06oG76/T+uJg7qmv+9cFmO/arAbKYt3chjdmvS7ijf7gvGcQCRQlpW6yOz8fyCIOHM8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR08MB10763
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240111020048.844847-8-seanjc@google.com>
 
-On 06.02.24 16:35, Mark Brown wrote:
-> On Tue, Feb 06, 2024 at 04:05:15PM +0100, Javier Carrasco wrote:
+On Wed, Jan 10, 2024 at 06:00:47PM -0800, Sean Christopherson wrote:
+> Allocate TDP MMU roots while holding mmu_lock for read, and instead use
+> tdp_mmu_pages_lock to guard against duplicate roots.  This allows KVM to
+> create new roots without forcing kvm_tdp_mmu_zap_invalidated_roots() to
+> yield, e.g. allows vCPUs to load new roots after memslot deletion without
+> forcing the zap thread to detect contention and yield (or complete if the
+> kernel isn't preemptible).
 > 
->> The names in the datasheet are vdd for the 1V0 supply and vddio for the
->> 3V3 supply. I named the latter vdd2 instead because this device does not
->> have its own driver and instead it uses the onboard_usb_hub generic
->> driver, where the supplies are named vdd and vdd2.
+> Note, creating a new TDP MMU root as an mmu_lock reader is safe for two
+> reasons: (1) paths that must guarantee all roots/SPTEs are *visited* take
+> mmu_lock for write and so are still mutually exclusive, e.g. mmu_notifier
+> invalidations, and (2) paths that require all roots/SPTEs to *observe*
+> some given state without holding mmu_lock for write must ensure freshness
+> through some other means, e.g. toggling dirty logging must first wait for
+> SRCU readers to recognize the memslot flags change before processing
+> existing roots/SPTEs.
 > 
->> Those are the names used for devm_regulator_bulk_get(). Is that not the
->> right way to match them?
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/mmu/tdp_mmu.c | 55 +++++++++++++++-----------------------
+>  1 file changed, 22 insertions(+), 33 deletions(-)
 > 
-> The binding should really use vddio instead of vdd2 but if that's an
-> existing binding then it gets more annoying, probably that existing
-> binding is wrong too since vddio does sound like an entirely plausible
-> standard name for a 3.3V supply. :/  At the very least the binding
-> should document the weird mapping, though ideally the driver would be
-> tought to request names matching the datasheet if the compatible is the
-> one for this device.  Doing the better naming might be too much hassle
-> though.
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 9a8250a14fc1..d078157e62aa 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -223,51 +223,42 @@ static void tdp_mmu_init_child_sp(struct kvm_mmu_page *child_sp,
+>  	tdp_mmu_init_sp(child_sp, iter->sptep, iter->gfn, role);
+>  }
+>  
+> -static struct kvm_mmu_page *kvm_tdp_mmu_try_get_root(struct kvm_vcpu *vcpu)
+> -{
+> -	union kvm_mmu_page_role role = vcpu->arch.mmu->root_role;
+> -	int as_id = kvm_mmu_role_as_id(role);
+> -	struct kvm *kvm = vcpu->kvm;
+> -	struct kvm_mmu_page *root;
+> -
+> -	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, as_id) {
+> -		if (root->role.word == role.word)
+> -			return root;
+> -	}
+> -
+> -	return NULL;
+> -}
+> -
+>  int kvm_tdp_mmu_alloc_root(struct kvm_vcpu *vcpu)
+>  {
+>  	struct kvm_mmu *mmu = vcpu->arch.mmu;
+>  	union kvm_mmu_page_role role = mmu->root_role;
+> +	int as_id = kvm_mmu_role_as_id(role);
+>  	struct kvm *kvm = vcpu->kvm;
+>  	struct kvm_mmu_page *root;
+>  
+>  	/*
+> -	 * Check for an existing root while holding mmu_lock for read to avoid
+> +	 * Check for an existing root before acquiring the pages lock to avoid
+>  	 * unnecessary serialization if multiple vCPUs are loading a new root.
+>  	 * E.g. when bringing up secondary vCPUs, KVM will already have created
+>  	 * a valid root on behalf of the primary vCPU.
+>  	 */
+>  	read_lock(&kvm->mmu_lock);
+> -	root = kvm_tdp_mmu_try_get_root(vcpu);
+> -	read_unlock(&kvm->mmu_lock);
+>  
+> -	if (root)
+> -		goto out;
+> +	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, as_id) {
+> +		if (root->role.word == role.word)
+> +			goto out_read_unlock;
+> +	}
+>  
+> -	write_lock(&kvm->mmu_lock);
 
-That is in line with my last reply, where the bindings I used as an
-example mention the real names of the supplies as they are defined in
-the datasheet.
+It seems really complex to me...
 
-I can add that for the next version.
+I failed to understand why the following KVM_BUG_ON() could be avoided
+without the mmu_lock for write. I thought a valid root could be added
+during zapping.
 
-Best regards,
-Javier Carrasco
+  void kvm_tdp_mmu_zap_invalidated_roots(struct kvm *kvm)
+  {
+	struct kvm_mmu_page *root;
 
+	read_lock(&kvm->mmu_lock);
+
+	for_each_tdp_mmu_root_yield_safe(kvm, root) {
+		if (!root->tdp_mmu_scheduled_root_to_zap)
+			continue;
+
+		root->tdp_mmu_scheduled_root_to_zap = false;
+		KVM_BUG_ON(!root->role.invalid, kvm);
+
+Thanks,
+Yilun
+
+> +	spin_lock(&kvm->arch.tdp_mmu_pages_lock);
+>  
+>  	/*
+> -	 * Recheck for an existing root after acquiring mmu_lock for write.  It
+> -	 * is possible a new usable root was created between dropping mmu_lock
+> -	 * (for read) and acquiring it for write.
+> +	 * Recheck for an existing root after acquiring the pages lock, another
+> +	 * vCPU may have raced ahead and created a new usable root.  Manually
+> +	 * walk the list of roots as the standard macros assume that the pages
+> +	 * lock is *not* held.  WARN if grabbing a reference to a usable root
+> +	 * fails, as the last reference to a root can only be put *after* the
+> +	 * root has been invalidated, which requires holding mmu_lock for write.
+>  	 */
+> -	root = kvm_tdp_mmu_try_get_root(vcpu);
+> -	if (root)
+> -		goto out_unlock;
+> +	list_for_each_entry(root, &kvm->arch.tdp_mmu_roots, link) {
+> +		if (root->role.word == role.word &&
+> +		    !WARN_ON_ONCE(!kvm_tdp_mmu_get_root(root)))
+> +			goto out_spin_unlock;
+> +	}
+>  
+>  	root = tdp_mmu_alloc_sp(vcpu);
+>  	tdp_mmu_init_sp(root, NULL, 0, role);
+> @@ -280,14 +271,12 @@ int kvm_tdp_mmu_alloc_root(struct kvm_vcpu *vcpu)
+>  	 * is ultimately put by kvm_tdp_mmu_zap_invalidated_roots().
+>  	 */
+>  	refcount_set(&root->tdp_mmu_root_count, 2);
+> -
+> -	spin_lock(&kvm->arch.tdp_mmu_pages_lock);
+>  	list_add_rcu(&root->link, &kvm->arch.tdp_mmu_roots);
+> -	spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
+>  
+> -out_unlock:
+> -	write_unlock(&kvm->mmu_lock);
+> -out:
+> +out_spin_unlock:
+> +	spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
+> +out_read_unlock:
+> +	read_unlock(&kvm->mmu_lock);
+>  	/*
+>  	 * Note, KVM_REQ_MMU_FREE_OBSOLETE_ROOTS will prevent entering the guest
+>  	 * and actually consuming the root if it's invalidated after dropping
+> -- 
+> 2.43.0.275.g3460e3d667-goog
+> 
+> 
 
