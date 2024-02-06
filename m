@@ -1,152 +1,110 @@
-Return-Path: <linux-kernel+bounces-55005-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55006-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A437584B627
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:17:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2786884B62F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:17:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54620281EE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:17:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6F20288765
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:17:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5FB412F399;
-	Tue,  6 Feb 2024 13:17:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53EC9130AF4;
+	Tue,  6 Feb 2024 13:17:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hw2DzfVz"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="c5OKFycE"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6F6412D15B
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 13:16:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6F93130E2E
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 13:17:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707225421; cv=none; b=ecDyCWtpCuwLkcz2vA0istjmsQ+tVY5lQN5IIv/b+46MMII6QPHStw8VfaQGuNOmQPmNqWh3frw/9jSCTd6GStJtthow3taMWS09WbfaYo9VJ4IUuOBemZZ+6l9VHg1jqDBPrJPXHjgumnLvAe0mMZAgjfgIPQ7yzwN1GPD4l+Q=
+	t=1707225450; cv=none; b=n2+OXn1WpyxYHCYkLrf3fQ/qpHPb8nRfw7FzAAxJpP4t7raw9tSw6E/ycpo3ItOmpRJTpKwjqZJ12a8x4zd+nyPyWR3aBVcqX2fpekJORhcXBHRe7TEUMI8QOTzMobtQX7cJsGRA1o/hGk/zQjxqbIuSxNAKIRXRrB3BIYW3wak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707225421; c=relaxed/simple;
-	bh=HXxhJVAyHx/W37xVN/24XsRqORi0igd6ghovLD/bGLY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 Cc:Content-Type; b=A++2VFmujnDH8JSkKxTjnJv5YPjPgJmxEUipfJf48bja6exnOomCJnWP1ivIOfyX4cCY3bFJq9HiMnc9GeLJFFgew+tLDLdQj7IxSYRjSaMPnJpYPzgzbg/z/X9tma0vhgHevEUuKZBMY6X4Smu+d7tpeYRfNV8bKZPp2zGXeu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hw2DzfVz; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e0523fbc27so745638b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 05:16:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707225419; x=1707830219; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=su9eLQyozGoYwvsgPziPXxeHO+JNdUgx8LdusrIXvt0=;
-        b=hw2DzfVzsNhpaCRlq8zOE6b9rINxCQAyGsvbOxbKrnouH9RBuDkbbLva0+ElSSV9oP
-         DqOpdEcLlJOI/zbknWvO9t4R6I5OdNymHfQkCpXQYbOiplrdZK+/C6VWqdyZyuxW4O8+
-         NMyk+RhXVRPvf9DbLc7F7wYx3nKotv+7641zDxxwmCBYzU0I7WSzIpbalnz9nngIYerD
-         c7Ir7U2ylgbJ2UAciosJvYZZW/Z+MPchb3/QtHlCXrCLAxXCD4cGqqwDM6zhkmjLvWgT
-         YU4UC3KdhP7Ee/omAVL9xsxEM/8CeduiBXuYMi6oLzpsiVP+7du6f0ERBpdEtAmO3+rI
-         14fw==
+	s=arc-20240116; t=1707225450; c=relaxed/simple;
+	bh=4i3zRtRM11Cg2KpgT0q+2//W7pMM2xt1zWoak+1GerU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=cDJec5Yj81BfziCOOeL7PnI4XcKz/8iDr9BJ2jzjB5nOCVCUmPVW2BIJTGaerjuZs4hQB9vyPB3DECKRmxTk3d8EoOWeDEFUl/VSNOvl2fZ4SXHGqVANyG+nktcYvDJdo8I76TmvzQqxSkMNWc04gDRRbPKrLMUdlb9DQ77spgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=c5OKFycE; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707225447;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4i3zRtRM11Cg2KpgT0q+2//W7pMM2xt1zWoak+1GerU=;
+	b=c5OKFycEeK9v1xhdI8NC9KPHtOa52uJ0PRyj9tZvC8mrWv6ZMGAiyz4vXQJLppCFWKmdac
+	4UuEmoloNKzyxeLhKLQ9P2EWP6EPUpecIE20S16sNqQtKV2A5ruDbmdT2noxY5KVxQNVLu
+	66NveEsXgKraWNYduwh35iY3rPHU9zY=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-141-Y3D3Sr9TNKyLFHJFVFsXHA-1; Tue, 06 Feb 2024 08:17:26 -0500
+X-MC-Unique: Y3D3Sr9TNKyLFHJFVFsXHA-1
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-78319f64126so676154685a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 05:17:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707225419; x=1707830219;
-        h=content-transfer-encoding:cc:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=su9eLQyozGoYwvsgPziPXxeHO+JNdUgx8LdusrIXvt0=;
-        b=EAbzu9C5y3um53LEB6OD7iYtB22jLHM/cxXmt7PYnZeIE0TlFIYW6gn+/61Vwwvdb6
-         31PDGEMkS/ltgpDhi0GfTT2Llplo/K621zbTAO3UUiDe8P1RJKCFrX864GhESO1kx28s
-         qUZvd4DCVqDfvZPbzjfFtn39Hbou+l5J2jEMpwP7Z+DA5Fk3qZzy+CM8BwfEf29xYV/V
-         Rww3osxzVgH2/2iKoyTOQCeSC5o/iO2PGfS+Fp5NsxuyIeJ1uRP36CVqFinIlJKBsdRv
-         JxjXCaJNSN3pfkEOKs/mj0guyGv1GkjFYyvEKOeDNnV3mqG0TrSbNGiESLGy/2bpQOYX
-         vMlA==
-X-Gm-Message-State: AOJu0Yykg3/lehMk+7khYhagPuKt2p8q+JkbT71oX6E8ygQQ30SOQGU3
-	S1uaiDOuimWzAm50K6vwrqw6z5d3l5B4a9vGzNZKvmjMRiotK7eKfzaV3hW0t5X9eta+XRq6UIE
-	r0GZRYN89EmRlam+qWPRM1MZ6GA==
-X-Received: by 2002:aa7:98c9:0:b0:6dd:c1b4:2643 with SMTP id
- e9-20020aa798c9000000b006ddc1b42643mt1926605pfm.28.1707225419139; Tue, 06 Feb
- 2024 05:16:59 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707225445; x=1707830245;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4i3zRtRM11Cg2KpgT0q+2//W7pMM2xt1zWoak+1GerU=;
+        b=epaABqJSaW4Pt95KR2dzMMI2G1OSxFtSORsZn+A6/m7eyeVEDT97U8nSVNPhdAvzae
+         ZZU136cbmbsKb8IirF49DReuxklaUlPb4NYMGXzE3jfF8UaoGW09J38UjhblqYcfTAzb
+         yDK2nZExiimjVrzO2xUf8CkjLq3pFBSA6yKrArcvkPP07l7AJnFb8+u3g3NBafRBtrMz
+         VgPe1UtPyBm32D++VTzstHYUPSjiVpQ/JImTiV9Dn6HBRqZS76v4llLlXZuKLzolGmle
+         komo2AXPc56CgcZ1wCD++fxKLCoKXx4evh0w3O/wtld8bdw2gRE5HJZSy8CfHCGgNa0h
+         NTiQ==
+X-Gm-Message-State: AOJu0YwQDlOi80zH91oUzJtDBBvBaj0Ju6PpvDUgUWqF8WCaZgXgyhlr
+	ggf+J+RyAEU8V0cJu+lGOAbPpMVRktNQuuOS7vJk1ccGRYVgi/1Mx9DrgDCVtjcOF13syxaVuPH
+	e4fJuZr4gqy2zJU9+7jwVkHJGTxc+aOreLuE4BM9RBnEx9k9H94fLGytztdoK1g==
+X-Received: by 2002:a05:620a:4d3:b0:785:60d6:36f7 with SMTP id 19-20020a05620a04d300b0078560d636f7mr2634908qks.69.1707225445712;
+        Tue, 06 Feb 2024 05:17:25 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IENMrym6fMHLO/71HKMNXgxwio0b/TAbj1n6jotgc+hsRZhjLd6Sj7rEbTesFS9dlqqpsP+rQ==
+X-Received: by 2002:a05:620a:4d3:b0:785:60d6:36f7 with SMTP id 19-20020a05620a04d300b0078560d636f7mr2634894qks.69.1707225445464;
+        Tue, 06 Feb 2024 05:17:25 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCX0IH2H9+nXjZ1Q8HRdi8rqyjYN++D0V0oiE0yASIfA1mJeoL3phBfHCPsaJWS8UL2wEQp8GyXKWAixT5//NtDlUxuB/KQ+47QSP8B2gJ6NWedFvPBpfHTnPRnMKqKRwJZArnwwtQtLeSnoedJkjzWMZPhSYstCmucHNtehR8NEcUDds+hLfFJrJS3UHNgPRKND5VhBmCEqWb0jBhWRCPrAwP2sFKiTkFq4RbX5jqi4Yyo9kPsT9LQQB6rftXJ2nnDIqIfAARhEFxaxNsmcb+6jjQRpuD+TmdI4vcXw+khLLeCxR/UQnHLRr+CJiJo=
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id a11-20020a05620a02eb00b007856bff53d3sm880694qko.54.2024.02.06.05.17.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 05:17:24 -0800 (PST)
+From: Valentin Schneider <vschneid@redhat.com>
+To: David Vernet <void@manifault.com>, linux-kernel@vger.kernel.org
+Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+ vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com,
+ bristot@redhat.com, kernel-team@meta.com
+Subject: Re: [PATCH v3 2/3] sched/fair: Do strict inequality check for
+ busiest misfit task group
+In-Reply-To: <20240206043921.850302-3-void@manifault.com>
+References: <20240206043921.850302-1-void@manifault.com>
+ <20240206043921.850302-3-void@manifault.com>
+Date: Tue, 06 Feb 2024 14:17:22 +0100
+Message-ID: <xhsmhbk8thgv1.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205191808.998754-1-frut3k7@gmail.com> <ZcH9u7Vo2sFERIHJ@finisterre.sirena.org.uk>
-In-Reply-To: <ZcH9u7Vo2sFERIHJ@finisterre.sirena.org.uk>
-From: frut3k7 <frut3k7@gmail.com>
-Date: Tue, 6 Feb 2024 14:16:47 +0100
-Message-ID: <CAKEyCaBnxumU0otxbtzAqLqUN+n5+qwWuvfNGCJa=rCfzE=ibg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] spi: spidev: Add Qualcomm spidev device compatible
-Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Tue, Feb 6, 2024 at 10:37=E2=80=AFAM Mark Brown <broonie@kernel.org> wro=
-te:
+On 05/02/24 22:39, David Vernet wrote:
+> In update_sd_pick_busiest(), when comparing two sched groups that are
+> both of type group_misfit_task, we currently consider the new group as
+> busier than the current busiest group even if the new group has the
+> same misfit task load as the current busiest group. We can avoid some
+> unnecessary writes if we instead only consider the newest group to be
+> the busiest if it has a higher load than the current busiest. This
+> matches the behavior of other group types where we compare load, such as
+> two groups that are both overloaded.
 >
-> On Mon, Feb 05, 2024 at 08:18:05PM +0100, Pawe=C5=82 Owoc wrote:
-> > Add compatible string for Qualcomm spidev device (used for QCA4024).
+> Let's update the group_misfit_task type comparison to also only update
+> the busiest group in the event of strict inequality.
 >
-> > --- a/drivers/spi/spidev.c
-> > +++ b/drivers/spi/spidev.c
-> > @@ -710,6 +710,7 @@ static const struct spi_device_id spidev_spi_ids[] =
-=3D {
-> >       { .name =3D "spi-authenta" },
-> >       { .name =3D "em3581" },
-> >       { .name =3D "si3210" },
-> > +     { .name =3D "spidev" },
-> >       {},
->
-> Why?
->
-> >       { .compatible =3D "lwn,bk4", .data =3D &spidev_of_check },
-> >       { .compatible =3D "menlo,m53cpld", .data =3D &spidev_of_check },
-> >       { .compatible =3D "micron,spi-authenta", .data =3D &spidev_of_che=
-ck },
-> > +     { .compatible =3D "qca,spidev", .data =3D &spidev_of_check },
->
-> No, this needs to correspond to the hardware being controlled via spidev
-> not to an implementation detail.  Any new compatibles also need to be
-> documented.
+> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
+Reviewed-by: Valentin Schneider <vschneid@redhat.com>
 
-The device for which I want to add compatibility is originally used in
-the router and this is what the dts fragment looks like:
-
-    spi@78b8000 {
-      #address-cells =3D <0x01>;
-      #size-cells =3D <0x00>;
-      clock-names =3D "core\0iface";
-      clocks =3D <0x03 0x5c 0x03 0x54>;
-      compatible =3D "qcom,spi-qup-v2.2.1";
-      cs-select =3D <0x02>;
-      dma-names =3D "tx\0rx";
-      dmas =3D <0x06 0x12 0x06 0x13>;
-      interrupts =3D <0x00 0x62 0x00>;
-      pinctrl-0 =3D <0x08>;
-      pinctrl-names =3D "default";
-      quartz-reset-gpio =3D <0x09 0x15 0x01>;
-      reg =3D <0x78b8000 0x600>;
-      spi-max-frequency =3D <0x2faf080>;
-      status =3D "ok";
-
-      spi@3 {
-        compatible =3D "qca,spidev";
-        reg =3D <0x00>;
-        spi-max-frequency =3D <0x16e3600>;
-      };
-    };
-
-The first part has already been added:
-https://lore.kernel.org/all/20231123121324.1046164-1-robimarko@gmail.com/
-
-According to this commit, Qualcomm use this compatibility:
-https://github.com/dissent1/msm-2/commit/d6160218393552fea1b7973787f2bd154f=
-870ee2
-
->
-> I'm also missing patch 2 of this series so don't know what's going on
-> there.
-
-
-The second patch was sent only to the devicetree bindings project:
-https://lore.kernel.org/all/20240205191828.998783-1-frut3k7@gmail.com/
-It's probably done wrong...
 
