@@ -1,325 +1,123 @@
-Return-Path: <linux-kernel+bounces-54755-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86EB384B339
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:15:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 352AD84B33B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:15:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AEF3285F8B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:15:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A3191C20DC4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:15:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7EA612FF99;
-	Tue,  6 Feb 2024 11:12:16 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10FD6130AE2;
+	Tue,  6 Feb 2024 11:12:53 +0000 (UTC)
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BCC612FF86;
-	Tue,  6 Feb 2024 11:12:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C4006DCF7;
+	Tue,  6 Feb 2024 11:12:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707217936; cv=none; b=bIUl9bav8r7sgqrspWzuEWCC5YSq8sjKwXj2eo+pLGSEzgcEtHBvEZOoyLMFEexf4LRYf60XrbnWUfUiLCYm/o+Q5Y9qkC/8RPaewudBtjae/S2XRw7iczmgD87714/ZrxjQgGUuobvSFggspMTe6ydq+x7v5jTCuSZD1tYpXKA=
+	t=1707217972; cv=none; b=LBKDR93b+fc0So7EhruAfqw4lHVkzIuOqm61kO49Pu8v24WobqHYTq/9Jfdjd6yYgoyGTejbRMv+yeSzukP3+FDqz1Pqm2sZmNmppdzupM52uN3hWxJUhu/98PHZI9ZMIlZfwlEZ3psikEULm+4sMVsOoJZIIHUjtU9X7ounl6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707217936; c=relaxed/simple;
-	bh=4t37dY+6LrjLLrcvGKx0ybYOkIudEMHqf0fO7TueuFA=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jua7q/Cm0TrfeaihK0ka+N25SPt4Vwt7SRKIiX1WIt9mCQPyk6lbMcslVcTQnXGOkVt8CNO7ExumUwDRDfvMd3vMIm8Ln6ZZ7hRRxTtW3I7b5OTl5Kf1qUhYUUWGr48W7qCHnKypN32AXrZ2rIXYaT7/yCBMGjKbBJVA5KmX+vI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TTgSl2Wxnz1FKJt;
-	Tue,  6 Feb 2024 19:07:35 +0800 (CST)
-Received: from kwepemd100002.china.huawei.com (unknown [7.221.188.184])
-	by mail.maildlp.com (Postfix) with ESMTPS id E3095140412;
-	Tue,  6 Feb 2024 19:12:10 +0800 (CST)
-Received: from M910t (10.110.54.157) by kwepemd100002.china.huawei.com
- (7.221.188.184) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Tue, 6 Feb
- 2024 19:12:09 +0800
-Date: Tue, 6 Feb 2024 19:11:50 +0800
-From: Changbin Du <changbin.du@huawei.com>
-To: Adrian Hunter <adrian.hunter@intel.com>
-CC: Changbin Du <changbin.du@huawei.com>, Peter Zijlstra
-	<peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de
- Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander
- Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
-	<linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>, Andi
- Kleen <ak@linux.intel.com>, Thomas Richter <tmricht@linux.ibm.com>,
-	<changbin.du@gmail.com>
-Subject: Re: [PATCH v6 2/5] perf: util: use capstone disasm engine to show
- assembly instructions
-Message-ID: <20240206111150.zqjyx33wqipqitzu@M910t>
-References: <20240206021438.768731-1-changbin.du@huawei.com>
- <20240206021438.768731-3-changbin.du@huawei.com>
- <631f8b5e-2bd2-4419-885f-34be07012b29@intel.com>
+	s=arc-20240116; t=1707217972; c=relaxed/simple;
+	bh=xLsUrWAF94DFAah13mIxpHx4xGej5buoLWWu3kHIIuA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Pgyg27h9Y/MVfRdZO1EDJKMtaDxfkiMkS80/rPivSYM9Rd2tc9MIdT0xnvxJLwg+j9CvxefCLs22rrOu3f1JlfDiknu9ynRtguCo+IXW22iGfiNfk/mBVLD6VGY//Euu6GX//LArCjX5K8HrG8/1DnnvfTwRNWQvVu9RYnst3qQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-60412f65124so50328727b3.3;
+        Tue, 06 Feb 2024 03:12:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707217969; x=1707822769;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=m8fQrZ9bDID7Tr4RFzpi8NTxLyF9LrFzXifM+3Heoz0=;
+        b=ZnW7njt3Qk0NpsL3pOtOhKYH2ShgZmkOarfPvt9p+nMAsuGIgWz0Nn+z2AOZlZ/9DA
+         Bp/q7rfUdAJrswzdgBmk6lCl9oBdWHwAurmqWt6HfAVYXHnwLVJFKArhN40C3BtjBrnE
+         l9LHkwbme2TY4xgnWOJPuJIG+WfkwXtduaocPD/HhEceh64do9jF6QOVKprtdwwJJ0kS
+         2mfj1JIkN1lh4k4Ak+T/Dcl7uftEvfdO7HueCDYVh5g3l2t28hAx5fij2bTPKB9BZmGR
+         poWtS/OcOoeDi4T7cyUa0P8NA7rSLhPCCmOkZ6C6rNS/4NG8j6M8qtf4BHRe2t2Ra5vx
+         jEKw==
+X-Gm-Message-State: AOJu0YwjvTtybBZVZe2DeSKGFzSiLbslncF1QU4S/s7JhvczrglKVnFV
+	KnlaFONgz79TxS1aSKKVx1+o6jg00Z3sKeP+rcito1K+4lWP3/6JntHxrWgXLAo=
+X-Google-Smtp-Source: AGHT+IF6UNKTDJ5HQAXbkqL/RGf2jTZ8oKvmExoMjbYS8CvqOSsyteqaGwKD0a/19JNUuos30y6/ww==
+X-Received: by 2002:a81:ed03:0:b0:5ee:a910:107 with SMTP id k3-20020a81ed03000000b005eea9100107mr1379968ywm.21.1707217969102;
+        Tue, 06 Feb 2024 03:12:49 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVbLaxEdSyUjrxYAZHBYgMUAOsP23xov8DDpMe6UDjv+GmwiMIPDscIrM1DKdCxRBeDcIkDitCL1rnUS7ePeY955OXY8qNllhKLWkratu1KiJ7a6CU4swJSe5E9NHehIse3myF+gfCOPg==
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
+        by smtp.gmail.com with ESMTPSA id p206-20020a8198d7000000b0060480a0e282sm125934ywg.60.2024.02.06.03.12.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Feb 2024 03:12:48 -0800 (PST)
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc6d8f19ab3so5450495276.3;
+        Tue, 06 Feb 2024 03:12:48 -0800 (PST)
+X-Received: by 2002:a5b:991:0:b0:dc2:2654:5139 with SMTP id
+ c17-20020a5b0991000000b00dc226545139mr1313669ybq.15.1707217968613; Tue, 06
+ Feb 2024 03:12:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <631f8b5e-2bd2-4419-885f-34be07012b29@intel.com>
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemd100002.china.huawei.com (7.221.188.184)
+References: <20240206131050.0e86d882@canb.auug.org.au>
+In-Reply-To: <20240206131050.0e86d882@canb.auug.org.au>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 6 Feb 2024 12:12:36 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWjAKbt_bne8Mjpg3N_7R8TcKvAoVV8T4VrwTC2apAr_g@mail.gmail.com>
+Message-ID: <CAMuHMdWjAKbt_bne8Mjpg3N_7R8TcKvAoVV8T4VrwTC2apAr_g@mail.gmail.com>
+Subject: Re: linux-next: build warnings after merge of the block tree
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Jens Axboe <axboe@kernel.dk>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 06, 2024 at 12:33:10PM +0200, Adrian Hunter wrote:
-> On 6/02/24 04:14, Changbin Du wrote:
-> > Currently, the instructions of samples are shown as raw hex strings
-> > which are hard to read. x86 has a special option '--xed' to disassemble
-> > the hex string via intel XED tool.
-> > 
-> > Here we use capstone as our disassembler engine to give more friendly
-> > instructions. We select libcapstone because capstone can provide more
-> > insn details. Perf will fallback to raw instructions if libcapstone is
-> > not available.
-> > 
-> > The advantages compared to XED tool:
-> >  * Support arm, arm64, x86-32, x86_64 (more could be supported),
-> >    xed only for x86_64.
-> >  * Immediate address operands are shown as symbol+offs.
-> > 
-> > Signed-off-by: Changbin Du <changbin.du@huawei.com>
-> > 
-> > ---
-> > v3:
-> >   - show warning msg if libcapstone is not available.
-> > v2:
-> >   - line up the output by preceding two tabs. (Adrian Hunter)
-> >   - removed the tailing space. (Adrian Hunter)
-> >   - forward declaration for perf_sample, thread, machine. (Adrian Hunter)
-> >   - other trivial fixes (Adrian Hunter)
-> > ---
-> >  tools/perf/builtin-script.c  |   8 +--
-> >  tools/perf/util/Build        |   1 +
-> >  tools/perf/util/print_insn.c | 134 +++++++++++++++++++++++++++++++++++
-> >  tools/perf/util/print_insn.h |  16 +++++
-> >  4 files changed, 154 insertions(+), 5 deletions(-)
-> >  create mode 100644 tools/perf/util/print_insn.c
-> >  create mode 100644 tools/perf/util/print_insn.h
-> > 
-> > diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-> > index b1f57401ff23..4817a37f16e2 100644
-> > --- a/tools/perf/builtin-script.c
-> > +++ b/tools/perf/builtin-script.c
-> > @@ -34,6 +34,7 @@
-> >  #include "util/event.h"
-> >  #include "ui/ui.h"
-> >  #include "print_binary.h"
-> > +#include "print_insn.h"
-> >  #include "archinsn.h"
-> >  #include <linux/bitmap.h>
-> >  #include <linux/kernel.h>
-> > @@ -1511,11 +1512,8 @@ static int perf_sample__fprintf_insn(struct perf_sample *sample,
-> >  	if (PRINT_FIELD(INSNLEN))
-> >  		printed += fprintf(fp, " ilen: %d", sample->insn_len);
-> >  	if (PRINT_FIELD(INSN) && sample->insn_len) {
-> > -		int i;
-> > -
-> > -		printed += fprintf(fp, " insn:");
-> > -		for (i = 0; i < sample->insn_len; i++)
-> > -			printed += fprintf(fp, " %02x", (unsigned char)sample->insn[i]);
-> > +		printed += fprintf(fp, " insn: ");
-> > +		printed += sample__fprintf_insn_raw(sample, fp);
-> >  	}
-> >  	if (PRINT_FIELD(BRSTACKINSN) || PRINT_FIELD(BRSTACKINSNLEN))
-> >  		printed += perf_sample__fprintf_brstackinsn(sample, thread, attr, machine, fp);
-> > diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-> > index 8027f450fa3e..2cbeeb79b6ef 100644
-> > --- a/tools/perf/util/Build
-> > +++ b/tools/perf/util/Build
-> > @@ -32,6 +32,7 @@ perf-y += perf_regs.o
-> >  perf-y += perf-regs-arch/
-> >  perf-y += path.o
-> >  perf-y += print_binary.o
-> > +perf-y += print_insn.o
-> >  perf-y += rlimit.o
-> >  perf-y += argv_split.o
-> >  perf-y += rbtree.o
-> > diff --git a/tools/perf/util/print_insn.c b/tools/perf/util/print_insn.c
-> > new file mode 100644
-> > index 000000000000..163307a02274
-> > --- /dev/null
-> > +++ b/tools/perf/util/print_insn.c
-> > @@ -0,0 +1,134 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Instruction binary disassembler based on capstone.
-> > + *
-> > + * Author(s): Changbin Du <changbin.du@huawei.com>
-> > + */
-> > +#include <string.h>
-> > +#include <stdbool.h>
-> > +#include "debug.h"
-> > +#include "event.h"
-> > +#include "symbol.h"
-> > +#include "machine.h"
-> > +#include "thread.h"
-> > +#include "print_insn.h"
-> > +
-> > +size_t sample__fprintf_insn_raw(struct perf_sample *sample, FILE *fp)
-> > +{
-> > +	int printed = 0;
-> > +
-> > +	for (int i = 0; i < sample->insn_len; i++) {
-> > +		printed += fprintf(fp, "%02x ", (unsigned char)sample->insn[i]);
-> 
-> Same as last time, there are 2 spaces between bytes
-> instead of 1.  It needs:
-> 
-> 	"%02x "      ->      "%02x"
+On Tue, Feb 6, 2024 at 3:11=E2=80=AFAM Stephen Rothwell <sfr@canb.auug.org.=
+au> wrote:
+> After merging the block tree, today's linux-next build (arm
+> multi_v7_defconfig) produced these warnings:
 >
-My fault. Fixed. Thanks!
+> In file included from /home/sfr/next/next/include/linux/bits.h:6,
+>                  from /home/sfr/next/next/include/linux/bitops.h:6,
+>                  from /home/sfr/next/next/include/linux/kernel.h:23,
+>                  from /home/sfr/next/next/io_uring/nop.c:2:
+> /home/sfr/next/next/include/vdso/bits.h:7:40: warning: left shift count >=
+=3D width of type [-Wshift-count-overflow]
+>     7 | #define BIT(nr)                 (UL(1) << (nr))
+>       |                                        ^~
+> /home/sfr/next/next/include/linux/io_uring_types.h:538:35: note: in expan=
+sion of macro 'BIT'
+>   538 |         REQ_F_CAN_POLL          =3D BIT(REQ_F_CAN_POLL_BIT),
+>       |                                   ^~~
+>
+> (and mny more similar)
+>
+> Introduced by commit
+>
+>   d964e8440442 ("io_uring: add io_file_can_poll() helper")
+>
+> REQ_F_CAN_POLL_BIT is 32.
 
-> > +		if (sample->insn_len - i > 1)
-> > +			printed += fprintf(fp, " ");
-> > +	}
-> > +	return printed;
-> > +}
-> > +
-> > +#ifdef HAVE_LIBCAPSTONE_SUPPORT
-> > +#include <capstone/capstone.h>
-> > +
-> > +static int capstone_init(struct machine *machine, csh *cs_handle)
-> > +{
-> > +	cs_arch arch;
-> > +	cs_mode mode;
-> > +
-> > +	if (machine__is(machine, "x86_64")) {
-> > +		arch = CS_ARCH_X86;
-> > +		mode = CS_MODE_64;
-> > +	} else if (machine__normalized_is(machine, "x86")) {
-> > +		arch = CS_ARCH_X86;
-> > +		mode = CS_MODE_32;
-> > +	} else if (machine__normalized_is(machine, "arm64")) {
-> > +		arch = CS_ARCH_ARM64;
-> > +		mode = CS_MODE_ARM;
-> > +	} else if (machine__normalized_is(machine, "arm")) {
-> > +		arch = CS_ARCH_ARM;
-> > +		mode = CS_MODE_ARM + CS_MODE_V8;
-> > +	} else if (machine__normalized_is(machine, "s390")) {
-> > +		arch = CS_ARCH_SYSZ;
-> > +		mode = CS_MODE_BIG_ENDIAN;
-> > +	} else {
-> > +		return -1;
-> > +	}
-> > +
-> > +	if (cs_open(arch, mode, cs_handle) != CS_ERR_OK) {
-> > +		pr_warning_once("cs_open failed\n");
-> > +		return -1;
-> > +	}
-> > +
-> > +	if (machine__normalized_is(machine, "x86")) {
-> > +		cs_option(*cs_handle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
-> > +		/*
-> > +		 * Resolving address operands to symbols is implemented
-> > +		 * on x86 by investigating instruction details.
-> > +		 */
-> > +		cs_option(*cs_handle, CS_OPT_DETAIL, CS_OPT_ON);
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static size_t print_insn_x86(struct perf_sample *sample, struct thread *thread,
-> > +			     cs_insn *insn, FILE *fp)
-> > +{
-> > +	struct addr_location al;
-> > +	size_t printed = 0;
-> > +
-> > +	if (insn->detail && insn->detail->x86.op_count == 1) {
-> > +		cs_x86_op *op = &insn->detail->x86.operands[0];
-> > +
-> > +		addr_location__init(&al);
-> > +		if (op->type == X86_OP_IMM &&
-> > +		    thread__find_symbol(thread, sample->cpumode, op->imm, &al)) {
-> > +			printed += fprintf(fp, "%s ", insn[0].mnemonic);
-> > +			printed += symbol__fprintf_symname_offs(al.sym, &al, fp);
-> > +			addr_location__exit(&al);
-> > +			return printed;
-> > +		}
-> > +		addr_location__exit(&al);
-> > +	}
-> > +
-> > +	printed += fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
-> > +	return printed;
-> > +}
-> > +
-> > +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread,
-> > +			    struct machine *machine, FILE *fp)
-> > +{
-> > +	csh cs_handle;
-> > +	cs_insn *insn;
-> > +	size_t count;
-> > +	size_t printed = 0;
-> > +	int ret;
-> > +
-> > +	/* TODO: Try to initiate capstone only once but need a proper place. */
-> > +	ret = capstone_init(machine, &cs_handle);
-> > +	if (ret < 0) {
-> > +		/* fallback */
-> > +		return sample__fprintf_insn_raw(sample, fp);
-> > +	}
-> > +
-> > +	count = cs_disasm(cs_handle, (uint8_t *)sample->insn, sample->insn_len,
-> > +			  sample->ip, 1, &insn);
-> > +	if (count > 0) {
-> > +		if (machine__normalized_is(machine, "x86"))
-> > +			printed += print_insn_x86(sample, thread, &insn[0], fp);
-> > +		else
-> > +			printed += fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
-> > +		cs_free(insn, count);
-> > +	} else {
-> > +		printed += fprintf(fp, "illegal instruction");
-> > +	}
-> > +
-> > +	cs_close(&cs_handle);
-> > +	return printed;
-> > +}
-> > +#else
-> > +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread __maybe_unused,
-> > +			    struct machine *machine __maybe_unused, FILE *fp)
-> > +{
-> > +	pr_warning_once("perf needs to be built with libcapstone support to disassemble instructions\n");
-> > +	return sample__fprintf_insn_raw(sample, fp);
-> 
-> The validation stops this being called so could just leave
-> out the 2 lines above, and add __maybe_unused as necessary.
-> 
-I expect this being a generic api and could be invoked by other functions which
-may not require the validation (raw code is acceptable).
+All of these BIT() have to be changed to BIT_ULL().
+And let's hope all variables used for storing these flags have been
+changed from unsigned long to u64...
 
-> > +}
-> > +#endif
-> > diff --git a/tools/perf/util/print_insn.h b/tools/perf/util/print_insn.h
-> > new file mode 100644
-> > index 000000000000..80dda6da7c60
-> > --- /dev/null
-> > +++ b/tools/perf/util/print_insn.h
-> > @@ -0,0 +1,16 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +#ifndef PERF_PRINT_INSN_H
-> > +#define PERF_PRINT_INSN_H
-> > +
-> > +#include <stddef.h>
-> > +#include <stdio.h>
-> > +
-> > +struct perf_sample;
-> > +struct thread;
-> > +struct machine;
-> > +
-> > +size_t sample__fprintf_insn(struct perf_sample *sample, struct thread *thread,
-> > +			    struct machine *machine, FILE *fp);
-> > +size_t sample__fprintf_insn_raw(struct perf_sample *sample, FILE *fp);
-> > +
-> > +#endif /* PERF_PRINT_INSN_H */
-> 
+Gr{oetje,eeting}s,
 
--- 
-Cheers,
-Changbin Du
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
