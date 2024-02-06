@@ -1,67 +1,63 @@
-Return-Path: <linux-kernel+bounces-54338-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED9E684ADDA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 06:16:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ABB8184ADD2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 06:15:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6318A1F23F33
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 05:16:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 481CB1F24A3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 05:15:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B21A57A726;
-	Tue,  6 Feb 2024 05:14:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E8967CF32;
+	Tue,  6 Feb 2024 05:13:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gMy8qoU1"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VdauWuR6"
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA41C77F2A;
-	Tue,  6 Feb 2024 05:14:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A1E87C090
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 05:13:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707196484; cv=none; b=TmEmEjj4crXrMyGByBJfh2CQXEK6FPGlZysJ2+NvqAnwdYC2NBzrc3g0ncxLS0lCmBPAQ3HrpdOMXuumOWwb0NybFWRTs6ON+0x90CEhuvVos/1gNeoP0oGDlLimULsZsUuEWDyQIiiO8N2DZxAgTXjfLJIoTke3JifME9IAonU=
+	t=1707196405; cv=none; b=f9SWw0Y/uY7ACXZ9nf+CxTwCTUAsFz/zpNCpoLtjZS0FhR41a/7nTkwsg/9XWzgVu7zHh/h35JHYkqOCUb+D0WtPVyY8qJvIQoLY7BOIw+Bi/LnvEY6Df5sc1nrJFQQSci4SRTJILljp5aoVpDhmys9Vflm7XwwJoyV0bwu/EcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707196484; c=relaxed/simple;
-	bh=vSJhso2JZf75lQS3y3aRewHIckrS3lQXcRZxC1OiZpM=;
+	s=arc-20240116; t=1707196405; c=relaxed/simple;
+	bh=Dx6Og2qKBOC9/kdVvY6Nv9dhBbtczwNYqoJh2KK9vQE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z2tnfFg0XSw4LgvyELlkxP7JhIjGTMhNZG6gYkBHURB4t9gitV6WAGECF9xCUxgLzXbeDV1cbVPYP0oR1oK3MsM3i2fwlCVlVN1MDaUniAWWnfGHJvjHeffYUS14M6CZH2Y3krGe2QmGkgh8gyjMWKXVs4gHH7u1PT0uxNSXMuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gMy8qoU1; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707196482; x=1738732482;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=vSJhso2JZf75lQS3y3aRewHIckrS3lQXcRZxC1OiZpM=;
-  b=gMy8qoU1qxaky/Vi9+FqHbBaFViUuJxQi/JuLATurPxIzCV+r0wbZ717
-   m7Ql3ofzizqRyXwVRTPDnblAuQNjvGikiLjEZjkIPl+9Bp6gL4GnbAa8k
-   EMjIBGBTd9xfP5ZvnIpH31SsDO/VC8914QCWzls30jzD2agb2LOOX+URg
-   3Hu/8gd5Cbm//EuiGPhFJkJIPHGhQ4Cn0xmvtjYvi8o53rPTEitC3cVz/
-   XIFP5YHvhAl9wTBJToBh81BR0YTyQvaqHcjmec1M6j1F/LMRNrfH6djBz
-   BvGLZ5uKiyc35WWLV/D6w/IB6P6FfCC4HrGcmnTBXr9IfJn2bD2XBdKOT
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="555200"
-X-IronPort-AV: E=Sophos;i="6.05,246,1701158400"; 
-   d="scan'208";a="555200"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 21:14:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,246,1701158400"; 
-   d="scan'208";a="5518282"
-Received: from linux.bj.intel.com ([10.238.157.71])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 21:14:22 -0800
-Date: Tue, 6 Feb 2024 13:11:24 +0800
-From: Tao Su <tao1.su@linux.intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Yi Lai <yi1.lai@intel.com>
-Subject: Re: [PATCH] KVM: selftests: Don't assert on exact number of 4KiB in
- dirty log split test
-Message-ID: <ZcG/fB5me7wWUNQL@linux.bj.intel.com>
-References: <20240131222728.4100079-1-seanjc@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=VVnFCRGl5bgAGBvHETQuV3wFRDuiuCCeNXToZwzyFilfRgY2udM9IbmQBUIaGWAt50QyIYXnbMZf6CNP4a/CZAqOgJB6hmz0MG3U5eIB7kATosDXc7b8RyUtzte97UnkB5GRQslTy0ad579CE6w3+MvX9TD+9X005dPUAWVV9tQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VdauWuR6; arc=none smtp.client-ip=95.215.58.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 6 Feb 2024 00:13:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707196401;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M67dP06bznKXKLynj8t19rv2NZMnEI3pdWkIiizmI8g=;
+	b=VdauWuR6rRX/kTjcpWCglj6tRGZomg4I15P8WkjLZyMJhYTFbHhQlv4QODRcKc/vLbyBII
+	AbG/gam9CRZVaM2TvvJ6WrOAJxgTSVHdKSjLFgzT9Qe1fQV7C9O5a0ecXElwHBsLtbp2UI
+	LDFouBB4MGbZuYM/hLSKuGP8rbON4aE=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Randy Dunlap <rdunlap@infradead.org>, dsterba@suse.cz, 
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Dave Chinner <dchinner@redhat.com>, 
+	Theodore Ts'o <tytso@mit.edu>, Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH 4/6] fs: FS_IOC_GETSYSFSNAME
+Message-ID: <bhxmfqyqjkpjtxhyj2w2pnzbx2whnc2qurg2fcjpphuli2lyzc@bea4fzncsnhc>
+References: <20240205200529.546646-1-kent.overstreet@linux.dev>
+ <20240205200529.546646-5-kent.overstreet@linux.dev>
+ <20240205222732.GO616564@frogsfrogsfrogs>
+ <7si54ajkdqbauf2w64xnzfdglkokifgsjptmkxwdhgymxpk353@zf6nfn53manb>
+ <20240206013931.GK355@twin.jikos.cz>
+ <ca885dd8-4ac1-43a9-9b0c-79b63cae0620@infradead.org>
+ <xutnab3bbeeyp7gq2wwy36lus275d5tapdclmcg5sl7bfngo6a@ek5u4ja56gut>
+ <20240206050853.GQ616564@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,103 +66,63 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240131222728.4100079-1-seanjc@google.com>
+In-Reply-To: <20240206050853.GQ616564@frogsfrogsfrogs>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Jan 31, 2024 at 02:27:28PM -0800, Sean Christopherson wrote:
-> Drop dirty_log_page_splitting_test's assertion that the number of 4KiB
-> pages remains the same across dirty logging being enabled and disabled, as
-> the test doesn't guarantee that mappings outside of the memslots being
-> dirty logged are stable, e.g. KVM's mappings for code and pages in
-> memslot0 can be zapped by things like NUMA balancing.
+On Mon, Feb 05, 2024 at 09:08:53PM -0800, Darrick J. Wong wrote:
+> On Mon, Feb 05, 2024 at 11:33:11PM -0500, Kent Overstreet wrote:
+> > On Mon, Feb 05, 2024 at 08:20:10PM -0800, Randy Dunlap wrote:
+> > > 
+> > > 
+> > > On 2/5/24 17:39, David Sterba wrote:
+> > > > On Mon, Feb 05, 2024 at 05:43:37PM -0500, Kent Overstreet wrote:
+> > > >> On Mon, Feb 05, 2024 at 02:27:32PM -0800, Darrick J. Wong wrote:
+> > > >>> On Mon, Feb 05, 2024 at 03:05:15PM -0500, Kent Overstreet wrote:
+> > > >>>> @@ -231,6 +235,7 @@ struct fsxattr {
+> > > >>>>  #define FS_IOC_SETFSLABEL		_IOW(0x94, 50, char[FSLABEL_MAX])
+> > > >>>>  #define FS_IOC_GETFSUUID		_IOR(0x94, 51, struct fsuuid2)
+> > > >>>>  #define FS_IOC_SETFSUUID		_IOW(0x94, 52, struct fsuuid2)
+> > > >>>> +#define FS_IOC_GETFSSYSFSNAME		_IOR(0x94, 53, struct fssysfsname)
+> > > >>>
+> > > >>> 0x94 is btrfs, don't add things to their "name" space.
+> > > >>
+> > > >> Can we please document this somewhere!?
+> > > >>
+> > > >> What, dare I ask, is the "namespace" I should be using?
+> > > > 
+> > > > Grep for _IOCTL_MAGIC in include/uapi:
+> > > > 
+> > > > uapi/linux/aspeed-lpc-ctrl.h:#define __ASPEED_LPC_CTRL_IOCTL_MAGIC 0xb2
+> > > > uapi/linux/aspeed-p2a-ctrl.h:#define __ASPEED_P2A_CTRL_IOCTL_MAGIC 0xb3
+> > > > uapi/linux/bt-bmc.h:#define __BT_BMC_IOCTL_MAGIC        0xb1
+> > > > uapi/linux/btrfs.h:#define BTRFS_IOCTL_MAGIC 0x94
+> > > > uapi/linux/f2fs.h:#define F2FS_IOCTL_MAGIC              0xf5
+> > > > uapi/linux/ipmi_bmc.h:#define __IPMI_BMC_IOCTL_MAGIC        0xB1
+> > > > uapi/linux/pfrut.h:#define PFRUT_IOCTL_MAGIC 0xEE
+> > > > uapi/rdma/rdma_user_ioctl.h:#define IB_IOCTL_MAGIC RDMA_IOCTL_MAGIC
+> > > > uapi/rdma/rdma_user_ioctl_cmds.h:#define RDMA_IOCTL_MAGIC       0x1b
+> > > > 
+> > > > The label ioctls inherited the 0x94 namespace for backward
+> > > > compatibility but as already said, it's the private namespace of btrfs.
+> > > > 
+> > > 
+> > > or more generally, see Documentation/userspace-api/ioctl/ioctl-number.rst.
+> > > 
+> > > For 0x94, it says:
+> > > 
+> > > 0x94  all    fs/btrfs/ioctl.h                                        Btrfs filesystem
+> > >              and linux/fs.h                                          some lifted to vfs/generic
+> > 
+> > You guys keep giving the same info over and over again, instead of
+> > anything that would be actually helpful...
+> > 
+> > Does anyone know what the proper "namespace" is for new VFS level
+> > ioctls?
+> > 
+> > ...Anyone?
 > 
-> To preserve the spirit of the check, assert that (a) the number of 4KiB
-> pages after splitting is _at least_ the number of 4KiB pages across all
-> memslots under test, and (b) the number of hugepages before splitting adds
-> up to the number of pages across all memslots under test.  (b) is a little
-> tenuous as it relies on memslot0 being incompatible with transparent
-> hugepages, but that holds true for now as selftests explicitly madvise()
-> MADV_NOHUGEPAGE for memslot0 (__vm_create() unconditionally specifies the
-> backing type as VM_MEM_SRC_ANONYMOUS).
-> 
-> Reported-by: Yi Lai <yi1.lai@intel.com>
-> Reported-by: Tao Su <tao1.su@linux.intel.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  .../x86_64/dirty_log_page_splitting_test.c    | 21 +++++++++++--------
->  1 file changed, 12 insertions(+), 9 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/x86_64/dirty_log_page_splitting_test.c b/tools/testing/selftests/kvm/x86_64/dirty_log_page_splitting_test.c
-> index 634c6bfcd572..4864cf3fae57 100644
-> --- a/tools/testing/selftests/kvm/x86_64/dirty_log_page_splitting_test.c
-> +++ b/tools/testing/selftests/kvm/x86_64/dirty_log_page_splitting_test.c
-> @@ -92,7 +92,6 @@ static void run_test(enum vm_guest_mode mode, void *unused)
->  	uint64_t host_num_pages;
->  	uint64_t pages_per_slot;
->  	int i;
-> -	uint64_t total_4k_pages;
->  	struct kvm_page_stats stats_populated;
->  	struct kvm_page_stats stats_dirty_logging_enabled;
->  	struct kvm_page_stats stats_dirty_pass[ITERATIONS];
-> @@ -107,6 +106,9 @@ static void run_test(enum vm_guest_mode mode, void *unused)
->  	guest_num_pages = vm_adjust_num_guest_pages(mode, guest_num_pages);
->  	host_num_pages = vm_num_host_pages(mode, guest_num_pages);
->  	pages_per_slot = host_num_pages / SLOTS;
-> +	TEST_ASSERT_EQ(host_num_pages, pages_per_slot * SLOTS);
-> +	TEST_ASSERT(!(host_num_pages % 512),
-> +		    "Number of pages, '%lu' not a multiple of 2MiB", host_num_pages);
->  
->  	bitmaps = memstress_alloc_bitmaps(SLOTS, pages_per_slot);
->  
-> @@ -165,10 +167,8 @@ static void run_test(enum vm_guest_mode mode, void *unused)
->  	memstress_free_bitmaps(bitmaps, SLOTS);
->  	memstress_destroy_vm(vm);
->  
-> -	/* Make assertions about the page counts. */
-> -	total_4k_pages = stats_populated.pages_4k;
-> -	total_4k_pages += stats_populated.pages_2m * 512;
-> -	total_4k_pages += stats_populated.pages_1g * 512 * 512;
-> +	TEST_ASSERT_EQ((stats_populated.pages_2m * 512 +
-> +			stats_populated.pages_1g * 512 * 512), host_num_pages);
->  
->  	/*
->  	 * Check that all huge pages were split. Since large pages can only
-> @@ -180,19 +180,22 @@ static void run_test(enum vm_guest_mode mode, void *unused)
->  	 */
->  	if (dirty_log_manual_caps) {
->  		TEST_ASSERT_EQ(stats_clear_pass[0].hugepages, 0);
-> -		TEST_ASSERT_EQ(stats_clear_pass[0].pages_4k, total_4k_pages);
-> +		TEST_ASSERT(stats_clear_pass[0].pages_4k >= host_num_pages,
-> +			    "Expected at least '%lu' 4KiB pages, found only '%lu'",
-> +			    host_num_pages, stats_clear_pass[0].pages_4k);
->  		TEST_ASSERT_EQ(stats_dirty_logging_enabled.hugepages, stats_populated.hugepages);
->  	} else {
->  		TEST_ASSERT_EQ(stats_dirty_logging_enabled.hugepages, 0);
-> -		TEST_ASSERT_EQ(stats_dirty_logging_enabled.pages_4k, total_4k_pages);
-> +		TEST_ASSERT(stats_dirty_logging_enabled.pages_4k >= host_num_pages,
-> +			    "Expected at least '%lu' 4KiB pages, found only '%lu'",
-> +			    host_num_pages, stats_clear_pass[0].pages_4k);
+> I propose you use 0x15 (NAK) and add it to the Documentation/ as the
+> official VFS ioctl namespace. ;)
 
-Here should print stats_dirty_logging_enabled.pages_4k, not stats_clear_pass[0].pages_4k.
-
-Everything else looks great.
-
-Reviewed-by: Tao Su <tao1.su@linux.intel.com>
-
->  	}
->  
->  	/*
->  	 * Once dirty logging is disabled and the vCPUs have touched all their
-> -	 * memory again, the page counts should be the same as they were
-> +	 * memory again, the hugepage counts should be the same as they were
->  	 * right after initial population of memory.
->  	 */
-> -	TEST_ASSERT_EQ(stats_populated.pages_4k, stats_repopulated.pages_4k);
->  	TEST_ASSERT_EQ(stats_populated.pages_2m, stats_repopulated.pages_2m);
->  	TEST_ASSERT_EQ(stats_populated.pages_1g, stats_repopulated.pages_1g);
->  }
-> 
-> base-commit: f0f3b810edda57f317d79f452056786257089667
-> -- 
-> 2.43.0.429.g432eaa2c6b-goog
-> 
+Done!
 
