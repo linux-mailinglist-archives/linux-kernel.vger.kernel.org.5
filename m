@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-55129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55130-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BC7384B818
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:39:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0279D84B819
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:39:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13A8528E4F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:39:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B3751F242AD
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:39:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87D1A13341D;
-	Tue,  6 Feb 2024 14:38:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29F6712FB2F;
+	Tue,  6 Feb 2024 14:38:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="pIO21g6D"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="jBmxg05D"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2245132C39
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 14:38:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EFF912D157
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 14:38:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707230284; cv=none; b=rcR9qKx7qbtVtXk8P7W6DjLXNMggrqtK++xT6r6sNLz27TVf4c9ZRMNhKpAfi0uEmElJsbSW9JE4jUcqFpb7OpaGadMFaME+GEONNeHTLv6KF2F+7g5yX5Y0J4BEHn4Je1/IrEVuGwMySwQ+8L7xzaCgwJwOiYpikhQezIaAjfQ=
+	t=1707230285; cv=none; b=YmccoXWTHYW/Xy9VDIVN32qr/lb+71wvapJEd8M/0vJikzSPWvxmwJiTuQr6Flf8S5ciRYs/nuLq47uZgmPUJZKe4AzWGPsh4PIz1lpNbeKp7ZLnJ+A84URIaQmNsFAc/NJ1fOkUsCRpgYtggdMhzFuN3AYYEOaZjCPXwNwVwtw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707230284; c=relaxed/simple;
-	bh=JSA+JTxZwyy4vGSW5/N+RDxQNtaOg/Fg9ZTWoKkSIvc=;
+	s=arc-20240116; t=1707230285; c=relaxed/simple;
+	bh=f/2cueG3Db+hUw8yHz3480LbSCbMp3PrxDGJJ7LSl0E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=E+ar8OTcENLCKvEgj4wWaOzGWbaHNlyIoroiZw6ShCtqTTZ+0+IXfERX9VJ33PZY2FyoEgMqGsO+eH7aZJlvuYpoCrV6+FeqKcFkKPENZikngjXULmDvLrHYgn5OBIHeWFkdTpjqI9I6fSi68K90c3mOwMg3m1ERKxqHOYDHS/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=pIO21g6D; arc=none smtp.client-ip=209.85.167.43
+	 MIME-Version; b=Ry7DO01fiYCWRlBgB7M5JJGXulue51Ck9UnPksaLgl3Vvh4IChPcFANLU2N/RmW/A1lvEnvU0xBKb2WNn2N93e+FwwfyjwUqTzJO+vjdpKiIjpRrdOMkBBSi5WgAK1ZzRRgkjwVoYE9WFqomM0GZvS4Zgzo7A+EW9z5D72pZhYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=jBmxg05D; arc=none smtp.client-ip=209.85.218.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51025cafb51so8430704e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 06:38:02 -0800 (PST)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a384a7e6103so30326666b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 06:38:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707230281; x=1707835081; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707230282; x=1707835082; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2W+bhvv0j8yck+8GT/uP++ViHHwBweYBoHrSumeE15A=;
-        b=pIO21g6DwTfnp6YimaXLBSBWFgadK8O8cYB0d+aV717JRS0dMUkeLY2zox8sO4Gikd
-         a3gaHeV1QQTrGP2AcfTR8B9IU4geZoY/Lac0et8y0FhojuOxTqY2U5gCGsIZaJc/XQU2
-         wlIRmZ7hj6riSBhLSNaC3NN0MWYk/UuYC9u0lp64r2+cU0lMKBobusfCy9NVUYR6I1qa
-         vbeZJGsd4Zd4RgRArCfWuo5JKhLqx/kxYUVHDkiGGO/y1zclvEkYmiHAqnVch2YQxrLX
-         V1fSEbwI6zxztIb4obKvK8mtDBKPP3NreSCrrGL19ZOlNE5lsOXIeGUwvPKvuPNM+JuQ
-         Kd4g==
+        bh=mF/Kh9xpZHCKBcFBIr8xXoDa+aUxtWpcGMnQGhXMLkY=;
+        b=jBmxg05Dm5E3NktloA/xRoS5uZ4xl9neYw7iVqBflK4DDvmOBKVQbeyaYJr+mG/F2C
+         VqrZ6wukyCEE0Xmbw7Zye7P0LJHoTdQRhDJ1AxyFrS1ExZtBGR3uxR8a6RkNOYkBR9UL
+         BzoWeaSsAVH89tnU+zlM+Mteu41EqGXtY2urXDE5Nzav4KVEExQ4U3K/IONgYw972l1j
+         TvZWESFtxEg5EN1S1v/j0uiG4Kh6Y9mTVAFqe6lZIkBqpOBYM8FMXLuSn0tkacD0YUiL
+         RBJxjHkTSez4RBHVdc40CDoXffC+bRNMrvAvhN5jdL5rN6wgejQ1GunvUh3vy2mfYhqc
+         IVog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707230281; x=1707835081;
+        d=1e100.net; s=20230601; t=1707230282; x=1707835082;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2W+bhvv0j8yck+8GT/uP++ViHHwBweYBoHrSumeE15A=;
-        b=A3KUqDh0UUFLDwk4T87JTibf8eMV1o9lkAk0NSXGiIETyvqROXKiLsP9l+g2o9qKQl
-         4RiNRRPTLyIATbKvUn2huyU4hd1WsEAQ8VrurQ71NQBPMrf3Pvr6ITCp195d1ttCJhri
-         fR1bVERHKQPj9NFM70fehufJsDPgEKF5ojZHaqfHcSb+leVd4gLYEaYuhNs7jmsw8swc
-         yXOpQXbGUlyuE7lEV6bc7OyKpyUzIeeylxaN48spnlGkXCU5YsUatoPB4WN+Qj/Keb4l
-         HESmijJq0qT3B7rhQdJmEd+q+i91kYsw8iFDOLT9FoXOa4LrBXcj/HVdLMsYdTjxpcPB
-         Z9Jg==
-X-Gm-Message-State: AOJu0YzBET5DDOj1qFD7Bbh5xqhhuSRchp82H5PdDy5QOHRTO/KfNtxf
-	ZX9kQhyYEjsV8PMdH08+w6srDB5Ak7j9XPMAFUBqMvR/hYVmouMw4u8Y63CtQNw=
-X-Google-Smtp-Source: AGHT+IFq40p5PGRZgK2PDID88ekIhXGdOYju/iR3pvUeF7F3dzHYw/J6u+QgBb2DegU7Af/HkHjnCw==
-X-Received: by 2002:a05:6512:31c7:b0:511:54e8:b82e with SMTP id j7-20020a05651231c700b0051154e8b82emr2165876lfe.47.1707230280818;
-        Tue, 06 Feb 2024 06:38:00 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWA4bduWkPXsrwXkvP0AHmjMJ9kVUsar3ZVfJ6PAFzztWBt2XGLA/HzTQ6kKQA2T2M0Vz3Tvtm9r4I1EInMLHaOwmsXzoXCHER82pTbiprCITW7TUc/O+baBK0j3xcC7EgLztJSgxkqxbKHFq42s2O8XnO9xWIfiJws9S1IRFCGb4LeYD+TNSOpTtuEihJAiPrWAGEWgcn7PhGGQdOKheWHIJGGHxMkc5hLlbr/3X0TWkGLbIlFkJrSu6f+vWYZ1sbX/ZWiJB1grXNb2xwWroT1eR2lN0WY5o3Wd/fPj2NOePxj572MJUiNU6PI1Gf/ASEYH14JsZRfsyHelKP/KFfKkT0QHAlPKTK3xJBcwbsWiRFeN0UVsm7riXT/P8shLWjTVmssYHVIJJIObse8UfoeZyNuMXBQCLHsQxUbkTXlUB4jjQb8
+        bh=mF/Kh9xpZHCKBcFBIr8xXoDa+aUxtWpcGMnQGhXMLkY=;
+        b=lJXFp7SmgKE9SsaXb9ZV9uR9044NbeZ2su7GSZYwRgKECzTPnpA6iwl+9QmCgPPUgj
+         vSKJiEsukddNYbchwizedkX/U4EueM/ZrVRu2d4tiqDiAK59IMEId+bBqtI2t1cFDWX+
+         CYSseem9GS3siwgdWfyB0gWbzB5tLBtvmd9HrZXyBXcaBhbURy4NtZXGKo5uljAUppBk
+         XIpmx1c6osgFVDBQSwF8a0zGNKT6Hno7srUbGDetaAvhZ16Zbvx371rVYbVuK3zTOczl
+         0Fc+x+TtCI9WimnQ/1l5b2p5WGaEJtpOF34fbF6gt/GJS+J4mC1GfhuQZkBUAxo1iz7X
+         MCSg==
+X-Gm-Message-State: AOJu0YxTs1olcHFRx+eXncMZaQfq6WhT0Q2o7FCMaU1AvpuYwlhe2zel
+	AVzYCtIch2gBt9OJ4P03R+DrJcD5PZntStIlr8sRtpq34KyNx4UWSNsxbDA3Ulo=
+X-Google-Smtp-Source: AGHT+IHZfXlRztOFWyUn+W5rBXN6rG8fTnzJ55i3wn/3ulNLFu5Yebta9oiXtBwhzBua28ZaBdpg+g==
+X-Received: by 2002:a17:906:3153:b0:a38:52f0:4c49 with SMTP id e19-20020a170906315300b00a3852f04c49mr62055eje.64.1707230281826;
+        Tue, 06 Feb 2024 06:38:01 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWF7Gbu3yiSZnF1ETXTHDiJ8j6rUVsH9sOiCmFo5k2yFXDoldLJ1izSQQaA9RXmZZmNp+qLlULjPfXHqm7ogWNcOZLhw4IC9HCMNsX46i+jfx322iexmcNPklL+RqQP9Rg/+jCY4jPJa0TVRmAQk2YWTarNeFdv26AMZgPkx4hORRzSNXMUqjRxJj51rLnsFUTcF9w9laW/S33d8koZvlJiQIT+W3XrF9B0vtMhIkEg6D0Op46FxUbc1MxMn7JZC25/a3IUxGGhj0iUNaEywe0KGk1UTlKXXIETHfBKfPV/+fSkJOXrwU20C+2qsMDmEEK2+e37VY6obU7yaYO3/1PcWC0hhSX69LkUoGujCEpVGA77Zg3NkL0f7o289CNaocrofjeVb0PQ4oYTGI9EI/dKhbUTmMIlVXXMWUEZ510E+j1M78VE
 Received: from blmsp.fritz.box ([2001:4091:a246:821e:6f3b:6b50:4762:8343])
-        by smtp.gmail.com with ESMTPSA id e22-20020a1709062c1600b00a37585d5dcesm1224418ejh.51.2024.02.06.06.37.59
+        by smtp.gmail.com with ESMTPSA id e22-20020a1709062c1600b00a37585d5dcesm1224418ejh.51.2024.02.06.06.38.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 06:38:00 -0800 (PST)
+        Tue, 06 Feb 2024 06:38:01 -0800 (PST)
 From: Markus Schneider-Pargmann <msp@baylibre.com>
 To: Nishanth Menon <nm@ti.com>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
@@ -80,9 +80,9 @@ Cc: Andrew Davis <afd@ti.com>,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Markus Schneider-Pargmann <msp@baylibre.com>
-Subject: [PATCH 3/4] soc: ti: k3-socinfo: Add support for nvmem cells
-Date: Tue,  6 Feb 2024 15:37:10 +0100
-Message-ID: <20240206143711.2410135-4-msp@baylibre.com>
+Subject: [PATCH 4/4] arm64: dts: ti: k3-am62-wakeup: Add chip efuse nodes
+Date: Tue,  6 Feb 2024 15:37:11 +0100
+Message-ID: <20240206143711.2410135-5-msp@baylibre.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240206143711.2410135-1-msp@baylibre.com>
 References: <20240206143711.2410135-1-msp@baylibre.com>
@@ -94,134 +94,62 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Support nvmem cells to retrieve chip variant, part number and
-manufacturer. As multiple different devices depend on these information
-it is cleaner to abstract efuse fields with nvmem cells.
-
-If chipvariant nvmem cell is found, the driver assumes nvmem cells are
-being used and tries to find the other fields as well. If it can't find
-'chipvariant' it will try to create a regmap.
-
-Some prints had to be updated as I don't read the full jtagid anymore.
+Add efuse nodes describing chip variant and speed grade.
 
 Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-Acked-by: Andrew Davis <afd@ti.com>
 ---
- drivers/soc/ti/k3-socinfo.c | 67 +++++++++++++++++++++++++------------
- 1 file changed, 46 insertions(+), 21 deletions(-)
+ arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi | 36 +++++++++++++++++++++-
+ 1 file changed, 35 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/soc/ti/k3-socinfo.c b/drivers/soc/ti/k3-socinfo.c
-index 59101bf7cf23..99794aeb6206 100644
---- a/drivers/soc/ti/k3-socinfo.c
-+++ b/drivers/soc/ti/k3-socinfo.c
-@@ -6,6 +6,7 @@
-  */
+diff --git a/arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi
+index fef76f52a52e..14419df43624 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi
+@@ -14,10 +14,44 @@ wkup_conf: syscon@43000000 {
+ 		#size-cells = <1>;
+ 		ranges = <0x0 0x00 0x43000000 0x20000>;
  
- #include <linux/mfd/syscon.h>
-+#include <linux/nvmem-consumer.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/regmap.h>
-@@ -114,45 +115,68 @@ static int k3_chipinfo_probe(struct platform_device *pdev)
- 	struct regmap *regmap;
- 	u32 partno_id;
- 	u32 variant;
--	u32 jtag_id;
- 	u32 mfg;
- 	int ret;
- 
--	regmap = device_node_to_regmap(node);
--	if (IS_ERR(regmap))
--		return PTR_ERR(regmap);
--
--	ret = regmap_read(regmap, CTRLMMR_WKUP_JTAGID_REG, &jtag_id);
--	if (ret < 0)
--		return ret;
--
--	mfg = (jtag_id & CTRLMMR_WKUP_JTAGID_MFG_MASK) >>
--	       CTRLMMR_WKUP_JTAGID_MFG_SHIFT;
-+	ret = nvmem_cell_read_u32(dev, "chipvariant", &variant);
-+	if (ret && ret != -ENOENT)
-+		return dev_err_probe(dev, ret,
-+				     "Failed to read nvmem cell 'chipvariant': %pe",
-+				     ERR_PTR(ret));
++		wkup_efuse: efuse@0 {
++			compatible = "socionext,uniphier-efuse";
++			#address-cells = <1>;
++			#size-cells = <1>;
++			reg = <0x0 0x200>;
 +
-+	if (ret != -ENOENT) {
-+		ret = nvmem_cell_read_u32(dev, "chippartno", &partno_id);
-+		if (ret)
-+			return dev_err_probe(dev, ret,
-+					     "Failed to read nvmem cell 'chippartno': %pe",
-+					     ERR_PTR(ret));
++			nvmem-layout {
++				compatible = "fixed-layout";
++				#address-cells = <1>;
++				#size-cells = <1>;
 +
-+		ret = nvmem_cell_read_u32(dev, "chipmanufacturer", &mfg);
-+		if (ret)
-+			return dev_err_probe(dev, ret,
-+					     "Failed to read nvmem cell 'chipmanufacturer': %pe",
-+					     ERR_PTR(ret));
-+	} else {
-+		u32 jtag_id;
++				chip_manufacturer: jtagidmfg@14 {
++					reg = <0x14 0x2>;
++					bits = <1 11>;
++				};
 +
-+		regmap = device_node_to_regmap(node);
-+		if (IS_ERR(regmap))
-+			return PTR_ERR(regmap);
++				chip_partno: jtagidpartno@15 {
++					reg = <0x15 0x3>;
++					bits = <4 16>;
++				};
 +
-+		ret = regmap_read(regmap, CTRLMMR_WKUP_JTAGID_REG, &jtag_id);
-+		if (ret < 0)
-+			return ret;
++				chip_variant: jtagidvariant@17 {
++					reg = <0x17 0x1>;
++					bits = <4 4>;
++				};
 +
-+		mfg = (jtag_id & CTRLMMR_WKUP_JTAGID_MFG_MASK) >>
-+		       CTRLMMR_WKUP_JTAGID_MFG_SHIFT;
++				chip_speed: jtaguseridspeed@18 {
++					reg = <0x18 0x4>;
++					bits = <6 5>;
++				};
++			};
++		};
 +
-+		variant = (jtag_id & CTRLMMR_WKUP_JTAGID_VARIANT_MASK) >>
-+			  CTRLMMR_WKUP_JTAGID_VARIANT_SHIFT;
-+
-+		partno_id = (jtag_id & CTRLMMR_WKUP_JTAGID_PARTNO_MASK) >>
-+			 CTRLMMR_WKUP_JTAGID_PARTNO_SHIFT;
-+	}
- 
- 	if (mfg != CTRLMMR_WKUP_JTAGID_MFG_TI) {
- 		dev_err(dev, "Invalid MFG SoC\n");
- 		return -ENODEV;
- 	}
- 
--	variant = (jtag_id & CTRLMMR_WKUP_JTAGID_VARIANT_MASK) >>
--		  CTRLMMR_WKUP_JTAGID_VARIANT_SHIFT;
--
--	partno_id = (jtag_id & CTRLMMR_WKUP_JTAGID_PARTNO_MASK) >>
--		 CTRLMMR_WKUP_JTAGID_PARTNO_SHIFT;
--
- 	soc_dev_attr = kzalloc(sizeof(*soc_dev_attr), GFP_KERNEL);
- 	if (!soc_dev_attr)
- 		return -ENOMEM;
- 
- 	ret = k3_chipinfo_partno_to_names(partno_id, soc_dev_attr);
- 	if (ret) {
--		dev_err(dev, "Unknown SoC JTAGID[0x%08X]: %d\n", jtag_id, ret);
-+		dev_err(dev, "Unknown SoC JTAGID[variant=0x%X, partno=0x%X]: %d\n",
-+			variant, partno_id, ret);
- 		goto err;
- 	}
- 
- 	ret = k3_chipinfo_variant_to_sr(partno_id, variant, soc_dev_attr);
- 	if (ret) {
--		dev_err(dev, "Unknown SoC SR[0x%08X]: %d\n", jtag_id, ret);
-+		dev_err(dev, "Unknown SoC SR[variant=0x%X, partno=0x%X]: %d\n",
-+			variant, partno_id, ret);
- 		goto err;
- 	}
- 
-@@ -166,9 +190,10 @@ static int k3_chipinfo_probe(struct platform_device *pdev)
- 		goto err_free_rev;
- 	}
- 
--	dev_info(dev, "Family:%s rev:%s JTAGID[0x%08x] Detected\n",
-+	dev_info(dev, "Family:%s rev:%s JTAGID[variant=0x%X, partno=0x%X] Detected\n",
- 		 soc_dev_attr->family,
--		 soc_dev_attr->revision, jtag_id);
-+		 soc_dev_attr->revision,
-+		 variant, partno_id);
- 
- 	return 0;
+ 		chipid: chipid@14 {
+ 			bootph-all;
+ 			compatible = "ti,am654-chipid";
+-			reg = <0x14 0x4>;
++			nvmem-cells = <&chip_variant>, <&chip_partno>, <&chip_manufacturer>;
++			nvmem-cell-names = "chipvariant", "chippartno", "chipmanufacturer";
+ 		};
+ 	};
  
 -- 
 2.43.0
