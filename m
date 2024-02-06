@@ -1,158 +1,106 @@
-Return-Path: <linux-kernel+bounces-55393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65A8984BC29
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:36:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84A0984BC2C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:37:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E655E1F23C8B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:36:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F146287DE0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:37:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 063EBEDF;
-	Tue,  6 Feb 2024 17:34:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C249DF71;
+	Tue,  6 Feb 2024 17:34:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="14eBsMkD"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Ei6AcsfA"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97587D51C
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 17:34:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43E66DF49;
+	Tue,  6 Feb 2024 17:34:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707240869; cv=none; b=RRKP00Rg/nEpj5nqryN1QfqYJatJyMINTFRjB3zgcStKqdfrX0ToCgqRoezqLT7djtS9pymR+vgkv3bzw4EZ3tl6tf0RIY1Tm8RrdNiQkgaj5reT+gImmzKm5CVeFRg6eECChR7a2rWcj3XFt8BBLKOXpLkd2fJ784DzG0h93Tw=
+	t=1707240894; cv=none; b=LvM+sBJGwSStZVRY5TAuFDOV5f+BRXrfSxjNPeml5ALDCkoBgHkAQ0wfw4dJLjC3y5RQY2cipXMqZbo0xDm5SGqYrvgP9q2l2SeGcw8N3heYCC2er0QKQbder7BIcsyrP/pzsaDN8mVI2tKggEI4T7NV5QbvukwQ62UjXB1YTQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707240869; c=relaxed/simple;
-	bh=BGYgn4pwip7xm8wZ1TGqp7QgodhzA/a+8J+7CXk661c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DH7udH1nV34uxBrT6HYoJGdrvCvSTetQB3dZ7uRTDiA+AQBzyEP4jE6er+f7nN8SpKHLdRnQksFEz1McmMjayQ6CWI3gNut4qOKpMftuEIKijm+d2qW4M1SCxqhsnjG+1cW5KBjcvUxQl9LFK2p1MGLZurEoQvSCWE4wDMgphCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=14eBsMkD; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d0a96bad85so40719921fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 09:34:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707240864; x=1707845664; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZpmnZurxd3Ncre4ry66TEipTMru+C8BAh2dBgzUnWpc=;
-        b=14eBsMkDUc9gezEe/s8BYcTt157KxEyD121V8Bt8QksVs/mHnTugZXycIC7lJ3TPjP
-         Bv9YoMeD0n6/Gn9r6f+0ZgHJm42UdNHfIhU7c4iDmFy7a8U6mLPrKauwKPsB/f2bWSHJ
-         xlnJk4UFM4Kxs7l0Efh1F8WApCuVMbQvu8Adp2dSxKq62fZbgKkAPqkxgmc1bx9g2AaX
-         QdXYcgodDN+vs6EoiTZ7l69svRWOW8JoqfCTDLGXpTwJkaneynIK0z915zPcx1FWOdxT
-         75qfpKagLmOzfu6W0+tq+2XvMekdrwtqZFVuFdHLHLis8Nte3KINVcKw95SM2ljL40v5
-         zLjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707240864; x=1707845664;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZpmnZurxd3Ncre4ry66TEipTMru+C8BAh2dBgzUnWpc=;
-        b=aKiY5MDAhJBxlR0hS8YZ3G+dEa81VCs9zBS4Z6O+/I6W98INzS1dhATlXatyLTfsB9
-         Q/Uyznby1kLQgG9vLqkiBew7PxEx9gR+eswqsBzDPDu7AEjLM9dVKFTVRf16XnbM8lMX
-         tKFYtxGPHMLL7Q7DRbESmFlrG2oidwfcOhYbCLzDFwcctuiW3KhMNQzqT5f7xtiu/8Bp
-         +k7rZi+AsUFrGHRkKqoGA1sClM27pXRWr2Zm/uQima5Cc6+sF8npgK8PRSGF3IGfpw5Z
-         BJ+kn9EJY2wssVmE1yNSDru4dIx8ucvuT+khcNB2BbQUtTv7cV9flvFj0yhQ2igSocEb
-         I77Q==
-X-Gm-Message-State: AOJu0YzYL4nqSkYRsS6aQINDtg8sNaPQpZByCl1VoKebYoYEr+oJrmM+
-	WE2Yg7Aub11CH/MnawtAB4wep1eQg+lCygc4gTQMJr8ylRGX3HtwVULtoqqHtEsqf3le8Ku/E74
-	ddDMB1HVjZsfi6gHvl5GPwgBReCiPW1LoCEhGnkLpD7PGaSwfWEM=
-X-Google-Smtp-Source: AGHT+IHeO+vgPTOIdvMuGjPatUo0mlDXrgtJyq8JotpLBwIQn4VQzamYSWR9VNr613H7eBXZT5jM1Kx3+NpKtIU81Us=
-X-Received: by 2002:a05:651c:23c:b0:2d0:a464:747 with SMTP id
- z28-20020a05651c023c00b002d0a4640747mr2286725ljn.49.1707240864576; Tue, 06
- Feb 2024 09:34:24 -0800 (PST)
+	s=arc-20240116; t=1707240894; c=relaxed/simple;
+	bh=EiCtPGcVCaudpVhVA6Gi8lcZa5cPm96eEObaix+UIss=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=MZZWSJny6GzqMT1b9d22/jEnbMG4yIFiO4mo7+YF2bpqFKTwbwbwnsrow5OhRBc0elocn6sy3TnfQkH1WUpIOMSpDervCVVDlNhd7Gb3IVIui2wL6viKZAALIQg7ZCJbaX5BTuZGgte7nibi6buqVSgzyuQVcd3KYW1LXwMdOIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Ei6AcsfA; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1762D1C0011;
+	Tue,  6 Feb 2024 17:34:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1707240889;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=i4B04GY4vnOTHYtk0bhdleBQty1iDee+JlHm0bxvCe0=;
+	b=Ei6AcsfAETxB/nrhVk18gXN9oUwxDHfLz5X36Xq2Pwh6yheQOhj6sB9NpOYUsflquoGoQi
+	71AG7mvafc6Fkipy6fEqxqaEE8/fM3Oi2sb3KOfqN6pyUDTOx40j64/mDpzUggNRT5r+8Q
+	KX3v3ntkm3Os7+mmFporjg4RDrqMFevdv6N8AAZ6YGu28OFWbHxlPehHSS6lHr96RCm4Hh
+	m8CGYQLGUvxG1bdtK0k5xCshvEhIqdummU8poN02NQr0tfbbUjNsTa260QTey+tFsdQkEx
+	9oyPfOdWcGq60T5zRTzEBKsFtK5hT7uvUYRfGWUSEOgEu5Mt9dDHzgJCdjiw6w==
+Date: Tue, 6 Feb 2024 18:34:43 +0100
+From: Luca Ceresoli <luca.ceresoli@bootlin.com>
+To: Adam Ford <aford173@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org, marex@denx.de,
+ alexander.stein@ew.tq-group.com, frieder.schrempf@kontron.de, Lucas Stach
+ <l.stach@pengutronix.de>, Krzysztof Kozlowski
+ <krzysztof.kozlowski@linaro.org>, Andrzej Hajda <andrzej.hajda@intel.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Jonas Karlman
+ <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, Maarten
+ Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+ <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
+ <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam
+ <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, Philipp Zabel
+ <p.zabel@pengutronix.de>, Vinod Koul <vkoul@kernel.org>, Kishon Vijay
+ Abraham I <kishon@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>, Liu Ying <victor.liu@nxp.com>, Ulf Hansson
+ <ulf.hansson@linaro.org>, dri-devel@lists.freedesktop.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-phy@lists.infradead.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH V8 01/12] dt-bindings: phy: add binding for the i.MX8MP
+ HDMI PHY
+Message-ID: <20240206183443.000dca1b@booty>
+In-Reply-To: <20240203165307.7806-2-aford173@gmail.com>
+References: <20240203165307.7806-1-aford173@gmail.com>
+ <20240203165307.7806-2-aford173@gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206-ad7944-mainline-v1-0-bf115fa9474f@baylibre.com> <20240206-ad7944-mainline-v1-1-bf115fa9474f@baylibre.com>
-In-Reply-To: <20240206-ad7944-mainline-v1-1-bf115fa9474f@baylibre.com>
-From: David Lechner <dlechner@baylibre.com>
-Date: Tue, 6 Feb 2024 11:34:13 -0600
-Message-ID: <CAMknhBGG_RS1t0OJw6_UnNQ_=S4YgN4i1YN26V8n=f9y28J9hQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: add ad7944 ADCs
-To: linux-iio@vger.kernel.org
-Cc: Michael Hennerich <Michael.Hennerich@analog.com>, Jonathan Cameron <jic23@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	=?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
-	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: luca.ceresoli@bootlin.com
 
-On Tue, Feb 6, 2024 at 11:26=E2=80=AFAM David Lechner <dlechner@baylibre.co=
-m> wrote:
->
-> This adds a new binding for the Analog Devices, Inc. AD7944, AD7985, and
-> AD7986 ADCs.
->
-> Signed-off-by: David Lechner <dlechner@baylibre.com>
-> ---
->  .../devicetree/bindings/iio/adc/adi,ad7944.yaml    | 231 +++++++++++++++=
-++++++
->  MAINTAINERS                                        |   8 +
->  2 files changed, 239 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7944.yaml b/=
-Documentation/devicetree/bindings/iio/adc/adi,ad7944.yaml
-> new file mode 100644
-> index 000000000000..a023adbeba42
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7944.yaml
+On Sat,  3 Feb 2024 10:52:41 -0600
+Adam Ford <aford173@gmail.com> wrote:
 
-..
+> From: Lucas Stach <l.stach@pengutronix.de>
+> 
+> Add a DT binding for the HDMI PHY found on the i.MX8MP SoC.
+> 
+> Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
+Reviewed-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
 
-+  adi,reference:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    enum: [ internal, internal-buffer, external ]
-+    default: internal
-
-..
-
-> +allOf:
-> +  # ref-supply is only used for external reference voltage
-> +  - if:
-> +      not:
-> +        required:
-> +          - adi,reference
-> +    then:
-> +      properties:
-> +        ref-supply: false
-> +    else:
-> +      if:
-> +        properties:
-> +          adi,reference:
-> +            const: external
-> +      then:
-> +        required:
-> +          - ref-supply
-> +      else:
-> +        properties:
-> +          ref-supply: false
-
-This seems like something that could potentially be improved in the
-dtschema tooling. Since adi,reference has a default of "internal", I
-would expect:
-
-     if:
-       properties:
-         adi,reference:
-           const: external
-     then:
-       required:
-         - ref-supply
-     else:
-       properties:
-         ref-supply: false
-
-to be sufficient here. However, currently, if the adi,reference
-property is omitted from the dts/dtb, the condition here evaluates to
-true and unexpectedly (incorrectly?) the validator requires the
-ref-supply property.
+-- 
+Luca Ceresoli, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
