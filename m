@@ -1,195 +1,147 @@
-Return-Path: <linux-kernel+bounces-55741-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55742-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5235D84C10D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:51:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CD53184C10F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:52:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCECF1F24A14
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:51:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C89E1F22C8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:52:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 923CA1CD35;
-	Tue,  6 Feb 2024 23:51:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1923A1CD33;
+	Tue,  6 Feb 2024 23:52:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="L1uqz4TW"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fels2s3I"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 033641CAB7;
-	Tue,  6 Feb 2024 23:51:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8CD71CF87
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 23:52:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707263479; cv=none; b=T5ILCQSQGXChkPp304bJOUbwz7MBattaJqCQX+VSB6/UXjJ0xkRTAhA2NQF3MCSOl2oNVkzTptJa76jzCEqY7FzK1E0/ebox4uKpQj74FinxoQk5d8cGir9yxmFIHDTisN1vqwU3AwlZ7IJGibIElR76CvB69nGfYGNr/DkS2UI=
+	t=1707263522; cv=none; b=D/fG0E9WBfjBj0a2cBtpVyVjLgAYEQByr4Hbsm4f8TnXKfbf6CvJHynw1Ymv5YtFdodLX1ZOv3gX9pHNIx6HDyxSY9eq2brK+aAhN9oxRNXB+YXqml+XFk0GflCbagTTxCbd8VA2f7OJKHTUZvawAs2TuntCFwyqmwuHrsKMg4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707263479; c=relaxed/simple;
-	bh=spty8AvkVL9Bt1VeS+W6dnQA391hBnF8pcqsQvgJUq0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=aIiQGDRXwxvC1kXjjpZ9wfgpBV8cbXM+4smhjDgFa99wElFBBX6mVGhXkjQFLT24Es8GOPjOR8zKpttNQaNvnEE/MJl5pHZdBpQ8I5ENUfuI1sH3Zv/qdqmx6cvWFy9f6bPqp5MGI43G2nufVLIKUXmy/18JM6HQj2r/adDQo0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=L1uqz4TW; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 416NRT0b006382;
-	Tue, 6 Feb 2024 23:51:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:date:subject:mime-version:content-type
-	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=fR3
-	BIanxRqA5hDEquxVPHhJD0+is0HzOqyK/Fw2mmi0=; b=L1uqz4TWBAatMQuSiLP
-	Ki5xbFdjC22Hy3SBjFFj0//UpR44LU5rMESEx6hJU3OdLCsBL8a4uZIAFE58PLzG
-	qcotxwcf3QgVyD3Loyi4C2nmv/DXs8lyF9hAHbVZmIaD/It0Op2vr43TuXS5fcpm
-	ubJYhf+ycnA9gRWrJjkTiZnCN+m/EeyHXOjooummBUez51Lv4xk4fuuXqYpCeGTD
-	ri9vssSmEn2qngwqpk3vC2QWYkCzGBddckwX27nYdntY6rIqgXwfCP9st8o857Kv
-	vxCSRh5rkqCt+scRAdaRgsmgbBFbkEyTs3K+BYU5VFjMrosseXZrzBocxQzMlxlF
-	P8Q==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w3x41r25a-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Feb 2024 23:51:13 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 416NpDrq023574
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 6 Feb 2024 23:51:13 GMT
-Received: from [169.254.0.1] (10.49.16.6) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 6 Feb
- 2024 15:51:12 -0800
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-Date: Tue, 6 Feb 2024 15:51:11 -0800
-Subject: [PATCH v3] arm64: dts: qcom: sc8280xp: Introduce additional tsens
- instances
+	s=arc-20240116; t=1707263522; c=relaxed/simple;
+	bh=ve66283HQWjoTIfCCyXOJ53dpz5pgvyRfthFOrG2wSQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TnKeG201wNjVis+DCYz7Wrh39Wt+6IryteA3p44M76Z8SwbqaysBdHNAQhsjoc650lelhAjNBGapBk2HGerAq6kcisXsAFAGgFWB2vAU0n32Lfl4MN4TNGXr+PVl9gwk9tRiu2Z9ERp2YIkPwyCUrokmkYPP/34cn706fAEPCYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fels2s3I; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707263519;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QlaMHMv+OFsz29LUU+CREUFzhlwBZ5CupOOm81GfonI=;
+	b=fels2s3IuSxeSTU0T1hhpedDNZri0VY5q4h8xVz36HJgxtjdNUWCw5/tp6GvyaYiEe4+AY
+	BjYVVSEgV16IjWuescU2tlfpHz9qrAhwtCYmz+rMMkPr0JLNE3eQstlzVX16jruBBIgD3R
+	BqOHb00jFRULkYfrz4tx9+MO8unakes=
+Received: from mail-ua1-f71.google.com (mail-ua1-f71.google.com
+ [209.85.222.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-186-jmlqsbpyMl6jlvmaxY9mJg-1; Tue, 06 Feb 2024 18:51:58 -0500
+X-MC-Unique: jmlqsbpyMl6jlvmaxY9mJg-1
+Received: by mail-ua1-f71.google.com with SMTP id a1e0cc1a2514c-7d2df8a3e4dso1593241.3
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 15:51:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707263518; x=1707868318;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QlaMHMv+OFsz29LUU+CREUFzhlwBZ5CupOOm81GfonI=;
+        b=iZf5OaObs4QhaHGSTBz68AZOFoyOPkSIVRxhih4Wf1gsrToSA4YkN7Q15mPeXzbq9p
+         BVp7tg8onQZRIIh1cU4f4l9cFWYol0bNsXEo9sBvBA6uuY8FGcR2pFx2hAjZ/Ki2SE7h
+         eUPBMlnfM6dCvXNZ/+QeWihhT5+R3gGqoqAAxuWq5dExJPn7GLQtOYIMJg0WG1rgPA7n
+         kLqDqTpXCMl2GwSMwcx/CEnvtzB6B5Onsa6lRRt/p8vtJhilA5LKv8A3uV5WZRfnE27A
+         WevhQnijiGuIWcA05giQRRZrtn0cFezlatFy2qx5SD+IDdjiK910WzwXYEfpcR9pKfZj
+         kg2w==
+X-Gm-Message-State: AOJu0YwnfemhfxI6f6FLMk9GI0OvKe2u0yU6IFvscHMYWaoMGKmm9sJl
+	pNOqGkUApnX66dMAd4nBvB0vSHWaC4p748pf1yK/vQTCQFs/zDMD3X40CfX84ADw5mK5WknTcVJ
+	yNBMHZWD1njQHPCFRkTBph6U+4BMVeCl8SMmO8scBoP5nLuJhP472jA4SJOngZc7NolX6HdOapK
+	IqT8S5KtZJgxJ4x2NOoHBWw3cXudNEl4PzL0Uo
+X-Received: by 2002:a05:6102:cf:b0:46c:fd63:bde1 with SMTP id u15-20020a05610200cf00b0046cfd63bde1mr1286413vsp.19.1707263518113;
+        Tue, 06 Feb 2024 15:51:58 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF70k2IB6sfXGMG5DxBsPeJSyX4Z7lyvMyz2eIY0biSnZnIU+nH0ONxsk7eIwQOzejVn484uJrg8s77iTZynRo=
+X-Received: by 2002:a05:6102:cf:b0:46c:fd63:bde1 with SMTP id
+ u15-20020a05610200cf00b0046cfd63bde1mr1286379vsp.19.1707263517863; Tue, 06
+ Feb 2024 15:51:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240206-sc8280xp-tsens2_3-v3-1-4577b3b38ea8@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIAO7FwmUC/33NwQ7CIAyA4VdZOIsBBgQ9+R7GmA2K60E2YZKZZ
- e8u20kT4/Fv068zSRAREjlWM4mQMWEfStS7itiuCTeg6EoTwYRknBuarBGGTQMdE4QkrjVtlHe
- HRhqnlSLlbojgcdrM86V0h2ns42t7kfk6/adlTjkFo1sLXHrd+tPjiRaD3dv+TlYviw9D6F+GK
- IZRTDpuys7Bt7EsyxskRhcg+AAAAA==
-To: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>
-CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Johan Hovold <johan@kernel.org>,
-        Johan Hovold
-	<johan+linaro@kernel.org>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1707263472; l=2593;
- i=quic_bjorande@quicinc.com; s=20230915; h=from:subject:message-id;
- bh=spty8AvkVL9Bt1VeS+W6dnQA391hBnF8pcqsQvgJUq0=;
- b=TEZUDBwEcrj4TLlpziE0tAIdrq+Jr36MrKI4UFTwb3jo+l8TjzauOADPiHYLPVv4MquFDhCrL
- /k5MQVlaAWDCgF6GLNtTIXSc2/AK8M4Gxgll41+tzbY4S5/gPHtHuwD
-X-Developer-Key: i=quic_bjorande@quicinc.com; a=ed25519;
- pk=VkhObtljigy9k0ZUIE1Mvr0Y+E1dgBEH9WoLQnUtbIM=
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: eqdG9L0eJomh6E7HJ-Z6w2sfODcl6LDr
-X-Proofpoint-GUID: eqdG9L0eJomh6E7HJ-Z6w2sfODcl6LDr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-06_15,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
- mlxlogscore=679 clxscore=1015 spamscore=0 priorityscore=1501
- suspectscore=0 adultscore=0 phishscore=0 lowpriorityscore=0 malwarescore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402060169
+References: <20231230172351.574091-1-michael.roth@amd.com> <20231230172351.574091-16-michael.roth@amd.com>
+In-Reply-To: <20231230172351.574091-16-michael.roth@amd.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Wed, 7 Feb 2024 00:51:46 +0100
+Message-ID: <CABgObfYDeUWMT03=yjvKG5J2GHYc9M7+A4+oY22gpqMCk1eQBg@mail.gmail.com>
+Subject: Re: [PATCH v11 15/35] KVM: SEV: Add KVM_SNP_INIT command
+To: Michael Roth <michael.roth@amd.com>
+Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org, 
+	linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, 
+	tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de, 
+	thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, seanjc@google.com, 
+	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org, 
+	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com, 
+	peterz@infradead.org, srinivas.pandruvada@linux.intel.com, 
+	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de, 
+	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com, 
+	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com, 
+	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
+	pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com, 
+	Brijesh Singh <brijesh.singh@amd.com>, Pavan Kumar Paluri <papaluri@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The SC8280XP contains two additional tsens instances, providing among
-other things thermal measurements for the GPU.
+On Sat, Dec 30, 2023 at 6:26=E2=80=AFPM Michael Roth <michael.roth@amd.com>=
+ wrote:
+>
+> From: Brijesh Singh <brijesh.singh@amd.com>
+>
+> The KVM_SNP_INIT command is used by the hypervisor to initialize the
+> SEV-SNP platform context. In a typical workflow, this command should be
+> the first command issued. When creating SEV-SNP guest, the VMM must use
+> this command instead of the KVM_SEV_INIT or KVM_SEV_ES_INIT.
+>
+> The flags value must be zero, it will be extended in future SNP support
+> to communicate the optional features (such as restricted INT injection
+> etc).
 
-Add these and a GPU thermal-zone.
+We have a (preexisting) problem in that KVM_SEV_INIT and
+KVM_SEV_ES_INIT are not flexible enough. debug_swap has broken
+measurements of the VMSA because it changed the contents of the VMSA
+under userspace's feet, therefore VMSA features need to be passed into
+the API somehow. It's preexisting but we need to fix it before the new
+KVM_SNP_INIT API makes it worse.
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
-Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
----
-Changes in v3:
-- Sorted tsens nodes by address.
-- Link to v2: https://lore.kernel.org/r/20240126-sc8280xp-tsens2_3-v2-1-8504d18828de@quicinc.com
+I have started prototyping a change to move SEV-ES/SEV-SNP to
+KVM_CREATE_VM, and introduce a single KVM_SEV_INIT_VM operation that
+can be used for the PSP initialization.
 
-Changes in v2:
-- Drop TM/SROT comments
-- Remove polling delays, rely on interrupts
-- Link to v1: https://lore.kernel.org/r/20240118-sc8280xp-tsens2_3-v1-1-e86bce14f6bf@quicinc.com
----
- arch/arm64/boot/dts/qcom/sc8280xp.dtsi | 37 ++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+> +The flags bitmap is defined as::
+> +
+> +   /* enable the restricted injection */
+> +   #define KVM_SEV_SNP_RESTRICTED_INJET   (1<<0)
+> +
+> +   /* enable the restricted injection timer */
+> +   #define KVM_SEV_SNP_RESTRICTED_TIMER_INJET   (1<<1)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-index febf28356ff8..38ecf6768b1a 100644
---- a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-@@ -4011,6 +4011,28 @@ pdc: interrupt-controller@b220000 {
- 			interrupt-controller;
- 		};
- 
-+		tsens2: thermal-sensor@c251000 {
-+			compatible = "qcom,sc8280xp-tsens", "qcom,tsens-v2";
-+			reg = <0 0x0c251000 0 0x1ff>,
-+			      <0 0x0c224000 0 0x8>;
-+			#qcom,sensors = <11>;
-+			interrupts-extended = <&pdc 122 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&pdc 124 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "uplow", "critical";
-+			#thermal-sensor-cells = <1>;
-+		};
-+
-+		tsens3: thermal-sensor@c252000 {
-+			compatible = "qcom,sc8280xp-tsens", "qcom,tsens-v2";
-+			reg = <0 0x0c252000 0 0x1ff>,
-+			      <0 0x0c225000 0 0x8>;
-+			#qcom,sensors = <5>;
-+			interrupts-extended = <&pdc 123 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&pdc 125 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "uplow", "critical";
-+			#thermal-sensor-cells = <1>;
-+		};
-+
- 		tsens0: thermal-sensor@c263000 {
- 			compatible = "qcom,sc8280xp-tsens", "qcom,tsens-v2";
- 			reg = <0 0x0c263000 0 0x1ff>, /* TM */
-@@ -5212,6 +5234,21 @@ cpu-crit {
- 			};
- 		};
- 
-+		gpu-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens2 2>;
-+
-+			trips {
-+				cpu-crit {
-+					temperature = <110000>;
-+					hysteresis = <1000>;
-+					type = "critical";
-+				};
-+			};
-+		};
-+
- 		mem-thermal {
- 			polling-delay-passive = <250>;
- 			polling-delay = <1000>;
+These are not yet supported, so they might as well not be documented.
+If you want to document them, you need to provide an API to query
+SEV_SNP_SUPPORTED_FLAGS. Let's do that later.
 
----
-base-commit: 943b9f0ab2cfbaea148dd6ac279957eb08b96904
-change-id: 20240118-sc8280xp-tsens2_3-a5fd9a48d655
+> +       if (params.flags & ~SEV_SNP_SUPPORTED_FLAGS)
+> +               ret =3D -EOPNOTSUPP;
+> +
+> +       params.flags =3D SEV_SNP_SUPPORTED_FLAGS;
 
-Best regards,
--- 
-Bjorn Andersson <quic_bjorande@quicinc.com>
+This assignment is not necessary.
+
+Paolo
 
 
