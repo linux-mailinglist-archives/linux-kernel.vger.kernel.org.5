@@ -1,107 +1,119 @@
-Return-Path: <linux-kernel+bounces-54305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54306-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B12A84AD82
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 05:33:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D9AF84AD85
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 05:34:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9728284565
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:33:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 464E7284DAC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:33:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76F9978B41;
-	Tue,  6 Feb 2024 04:33:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A3807AE54;
+	Tue,  6 Feb 2024 04:33:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="LCd02Lyh"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xmAr9XdI"
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA70F77F09;
-	Tue,  6 Feb 2024 04:33:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E117995B
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 04:33:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707193996; cv=none; b=pCT60ZqaoQjnVw18eAFLkxaraRiuBxGLRMDtoNEFhiTVBSM7SUxRp9x2Z8zwYN23oDUFVehJZo9a8e1gaU/G73qimyq17KgYQEJZTIIhMxqnyAJJQ6Ka/8z7s72HPq6I10kxBMe7Nn2dnOKUTIjVUxVMPdxNLZEr7DiM1ONs9Cs=
+	t=1707194000; cv=none; b=oc4mt1PRMk6IVDald9L1i1PfW/EJQ81WLEKpWotIWVsI9ur4gs17eLYMlAOW+AN5tzdvb8kWtAccRagE+LL2END/CZt3sslH4RjmDogmcZPDZrrEmHB70y+6GEJhZltXACE6VyyrRCMkP3NWAks2t7fhAnNPCNYWKeqVoNe5tao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707193996; c=relaxed/simple;
-	bh=0uR3n4fttqT1p7FWfc0C3esoKe9BC2WmZ1XoiTJeJ28=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=R3IjwMFV82COSeqaIVV4aq92W/dwKeNfTPfjt8gHUJOOri7Q9MKhQm+Ph+4UV+e78klh4YfRLpQmjy8iwL3IIy3z3bZFS+ATl/cXnyAQ376fHGVAWzfube1rfe+UK+GKt3CWqq5J20eFJfEJsLL09EUfh7zfsj/038wNqysYDS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=LCd02Lyh; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1707193983;
-	bh=f7gSZSLZ5vY/ihKDYbvdOhv83urdobxkXG0WjH3jFAo=;
-	h=Date:From:To:Cc:Subject:From;
-	b=LCd02Lyh3kooDWmhYNfLt1CNF1Wf07AidYzWYIV8Zj2ui96QEykO3WLm1n68cgEp4
-	 qnelsOKpmffPpJzCw+Dl+VV9uK17vXxD1J4suy9Rzea7HfGhhC7QCZ8P8corERie9o
-	 NJFSNXfrT0lkdyqyT4p0c5F0OmPbpCNgg40f1YD8fwQsFl6Pz8HoDtpLCWs1KTRHmy
-	 d/YG1jzVbE96YF01eiWjH9esZ6J2Rwfh++eVPlufalHVW7ouuPYwgHolvH5DYOGuzM
-	 AYFCa9zoUOxc9gc3B4qDdQ1rhQKfU6vHhkt18j4YVT3t4XUQ1RDfUw45DWFQN/dSGV
-	 kGTh3YS5XW/Ag==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TTVjV6Ctcz4wxx;
-	Tue,  6 Feb 2024 15:33:02 +1100 (AEDT)
-Date: Tue, 6 Feb 2024 15:33:01 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
- <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, bpf
- <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
-Cc: Dave Thaler <dthaler1968@gmail.com>, Dave Thaler
- <dthaler1968@googlemail.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the bpf-next tree
-Message-ID: <20240206153301.4ead0bad@canb.auug.org.au>
+	s=arc-20240116; t=1707194000; c=relaxed/simple;
+	bh=3HMlSFSdCDhMO6gJVMf2WLFfrFcJg3v8tdbkDsERj88=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oNesvbpDrQGdOeE8sNsex2fy0SBK1FdQfHd6LntGYXFL6FSZZz6Gnx3kQ27QXhsToxGUUEXi1VMoMzk0pv2uq6HQURTmcy73B5FBJNLDc4Fy5ZwpHSwI0Gb0QX6ErLqBPe1Np4YTTF8ot1+/AloJkY/RJROuEGF4lBCKCuMSknU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xmAr9XdI; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 5 Feb 2024 23:33:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707193996;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=a66pbZwscvarBnD+4+x9Xp+uM49PnGDOy0Ekbd5y6P0=;
+	b=xmAr9XdIaiuSbg7G524OdopdZGJnXlahP/PlKK610rUry8vhvI3uRZhnqzBjQHAZpQTp6I
+	/r+h+/gVADl7mS675AFIPCt4p/AADQl2Ti8CNyz+h+PJ2+sdCnwTWOBmIyl9tyEylsYrJg
+	oo89TNAKpWJqVHcYMTFSzICDl1ARIbY=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: dsterba@suse.cz, "Darrick J. Wong" <djwong@kernel.org>, 
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Dave Chinner <dchinner@redhat.com>, 
+	Theodore Ts'o <tytso@mit.edu>, Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH 4/6] fs: FS_IOC_GETSYSFSNAME
+Message-ID: <xutnab3bbeeyp7gq2wwy36lus275d5tapdclmcg5sl7bfngo6a@ek5u4ja56gut>
+References: <20240205200529.546646-1-kent.overstreet@linux.dev>
+ <20240205200529.546646-5-kent.overstreet@linux.dev>
+ <20240205222732.GO616564@frogsfrogsfrogs>
+ <7si54ajkdqbauf2w64xnzfdglkokifgsjptmkxwdhgymxpk353@zf6nfn53manb>
+ <20240206013931.GK355@twin.jikos.cz>
+ <ca885dd8-4ac1-43a9-9b0c-79b63cae0620@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/H2w1hUZ5byQHubw2m6jhPLB";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ca885dd8-4ac1-43a9-9b0c-79b63cae0620@infradead.org>
+X-Migadu-Flow: FLOW_OUT
 
---Sig_/H2w1hUZ5byQHubw2m6jhPLB
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Feb 05, 2024 at 08:20:10PM -0800, Randy Dunlap wrote:
+> 
+> 
+> On 2/5/24 17:39, David Sterba wrote:
+> > On Mon, Feb 05, 2024 at 05:43:37PM -0500, Kent Overstreet wrote:
+> >> On Mon, Feb 05, 2024 at 02:27:32PM -0800, Darrick J. Wong wrote:
+> >>> On Mon, Feb 05, 2024 at 03:05:15PM -0500, Kent Overstreet wrote:
+> >>>> @@ -231,6 +235,7 @@ struct fsxattr {
+> >>>>  #define FS_IOC_SETFSLABEL		_IOW(0x94, 50, char[FSLABEL_MAX])
+> >>>>  #define FS_IOC_GETFSUUID		_IOR(0x94, 51, struct fsuuid2)
+> >>>>  #define FS_IOC_SETFSUUID		_IOW(0x94, 52, struct fsuuid2)
+> >>>> +#define FS_IOC_GETFSSYSFSNAME		_IOR(0x94, 53, struct fssysfsname)
+> >>>
+> >>> 0x94 is btrfs, don't add things to their "name" space.
+> >>
+> >> Can we please document this somewhere!?
+> >>
+> >> What, dare I ask, is the "namespace" I should be using?
+> > 
+> > Grep for _IOCTL_MAGIC in include/uapi:
+> > 
+> > uapi/linux/aspeed-lpc-ctrl.h:#define __ASPEED_LPC_CTRL_IOCTL_MAGIC 0xb2
+> > uapi/linux/aspeed-p2a-ctrl.h:#define __ASPEED_P2A_CTRL_IOCTL_MAGIC 0xb3
+> > uapi/linux/bt-bmc.h:#define __BT_BMC_IOCTL_MAGIC        0xb1
+> > uapi/linux/btrfs.h:#define BTRFS_IOCTL_MAGIC 0x94
+> > uapi/linux/f2fs.h:#define F2FS_IOCTL_MAGIC              0xf5
+> > uapi/linux/ipmi_bmc.h:#define __IPMI_BMC_IOCTL_MAGIC        0xB1
+> > uapi/linux/pfrut.h:#define PFRUT_IOCTL_MAGIC 0xEE
+> > uapi/rdma/rdma_user_ioctl.h:#define IB_IOCTL_MAGIC RDMA_IOCTL_MAGIC
+> > uapi/rdma/rdma_user_ioctl_cmds.h:#define RDMA_IOCTL_MAGIC       0x1b
+> > 
+> > The label ioctls inherited the 0x94 namespace for backward
+> > compatibility but as already said, it's the private namespace of btrfs.
+> > 
+> 
+> or more generally, see Documentation/userspace-api/ioctl/ioctl-number.rst.
+> 
+> For 0x94, it says:
+> 
+> 0x94  all    fs/btrfs/ioctl.h                                        Btrfs filesystem
+>              and linux/fs.h                                          some lifted to vfs/generic
 
-Hi all,
+You guys keep giving the same info over and over again, instead of
+anything that would be actually helpful...
 
-After merging the bpf-next tree, today's linux-next build (htmldocs)
-produced this warning:
+Does anyone know what the proper "namespace" is for new VFS level
+ioctls?
 
-Documentation/bpf/standardization/instruction-set.rst:121: ERROR: Unexpecte=
-d indentation.
-Documentation/bpf/standardization/instruction-set.rst:122: WARNING: Block q=
-uote ends without a blank line; unexpected unindent.
-
-Introduced by commit
-
-  2d9a925d0fbf ("bpf, docs: Expand set of initial conformance groups")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/H2w1hUZ5byQHubw2m6jhPLB
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXBtn0ACgkQAVBC80lX
-0Gy8jgf/TYBszW6L0UFX1TbQIkcJW5dItvNy8aOw14JiGonipbT5LHQGxu1KeRko
-ynfSZiQa8DKTzuHKF+0B/FebmcvxIieRnX8HIdwVQgs18BAIhEfqNzwRg0FRiS8H
-HYw8iqTqzjQn4FZzmsnpYp5j4n5RmKOsytiUrNM5LergAgVYbwtoIzEIUhXw+goB
-T7Gv4JX4syMyoFgzTlI4w5qcbezYOpjsrVZdpBgg9wtJjjSe7hq/T0NxWwdlfpFB
-uXZnKh/q9vUa1w3p5J3GLE/KbgkQnjgHnF7+5a4efeH6Z/iS5iewRFBskYnz3Jlh
-x7xWdyobiOUXCIDo2JuEnk8arLRakA==
-=VxuT
------END PGP SIGNATURE-----
-
---Sig_/H2w1hUZ5byQHubw2m6jhPLB--
+..Anyone?
 
