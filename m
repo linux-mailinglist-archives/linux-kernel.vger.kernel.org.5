@@ -1,136 +1,131 @@
-Return-Path: <linux-kernel+bounces-55627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55628-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7882584BF36
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:30:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD32684BF3D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:31:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BDD01F24DE9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:30:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27168B26350
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:31:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AEE01B963;
-	Tue,  6 Feb 2024 21:30:26 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 170571BC2D;
+	Tue,  6 Feb 2024 21:31:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="lnMYX+xS"
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A53E1B951
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 21:30:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D84F1B950
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 21:31:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707255025; cv=none; b=Cie5BYxIznA5fljFieIDocQ2aiwA361JCy35EZ/5/tqqPpN4ftjUYAajpjvj0VVR6japX8r3C2zIp8ae8Fj1WJ1iYQOL7VkC/R7Qc1S47hrM5M3k2EldE85ioXiIWpsyi6uEv5+5Jvx5ZLkgjIdb04z//gXtejoNEn7IlKrRJV8=
+	t=1707255071; cv=none; b=IsoL6ZOO3lRQ4y4q2KjeDq6ILogXZuXHm7ZZSjwd0pBJ6C/fsdcR4B8VM/cFuzoMJXHCR61r9MNclLTCtebGb0cyZtpSPvGl1M/ueLS5rPiik9XNl5xeYo6H6vl0H5HzhTNFBLByyr/fLsxW4ozA8MibAZ6gpgev2C1T7JjQvFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707255025; c=relaxed/simple;
-	bh=Qa7jhZJJ6qa4mQ7ze76AeuzBQ/7QDoZ/wMhuH/ohcy0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tgsSVzK3nKB5Si2r3ZUfzcoYxx8LGuifK9bZyuB+kjfM7cm2Ve+p4emamFn4f6O2KM7UPObaMTlNQP7Sy5R1EuYo3aZNO4HhOXrIBcfXJBShqzkzfsIbmXb8Arhf5f7VM5OG3qBvdgMuzwyJ5E6AFaNsH8mZDtYzNlGeXmcr7HY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mgr@pengutronix.de>)
-	id 1rXT1G-0001hH-Ie; Tue, 06 Feb 2024 22:30:18 +0100
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mgr@pengutronix.de>)
-	id 1rXT1F-004tny-I7; Tue, 06 Feb 2024 22:30:17 +0100
-Received: from mgr by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <mgr@pengutronix.de>)
-	id 1rXT1F-00EJpQ-1V;
-	Tue, 06 Feb 2024 22:30:17 +0100
-Date: Tue, 6 Feb 2024 22:30:17 +0100
-From: Michael Grzeschik <mgr@pengutronix.de>
-To: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Subject: Re: duplicate requests on host side while streaming via uvcvideo
- gadget
-Message-ID: <ZcKk6QJXfGGo2DH9@pengutronix.de>
-References: <ZcFx7P30Su_Mx4AV@pengutronix.de>
- <20240206032301.6e4tmbvmk7vs72gg@synopsys.com>
+	s=arc-20240116; t=1707255071; c=relaxed/simple;
+	bh=VhV9Y2ehoq2QR/dvYkGZ3565MBi13h4c1EWlFat09sM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=E3gc1NOeu33QFok69Bm9sSJMnb6PIAANRdk9IojjoXl3CoGOnY9UPzN0JAvm6/pDg4NBLmCIncHgcXQUx9qYrInRqCoGEKDA7Uykd9NckfmHDOqEAxdd11Iyqbi4SwB11TpEikkaZ1XePGA9i38PK8IM3zx1uCvwVa1q8RjrUeE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=lnMYX+xS; arc=none smtp.client-ip=209.85.128.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-60484ffb635so4428877b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 13:31:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umich.edu; s=google-2016-06-03; t=1707255068; x=1707859868; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VhV9Y2ehoq2QR/dvYkGZ3565MBi13h4c1EWlFat09sM=;
+        b=lnMYX+xSSKdpMZr27IDA7Zu4pzAF+15Kege5EY3dGOt+5lSSekvOr8NqA1N6eoaHA8
+         b9Q+CjpSHeszCI0BaL/Qzpn2pt+L02fJGEnIE/y5ktMNP/fKAFAgBk6PGP3ye6RO0ItK
+         Ixx1cOtTLlM4gWb4+brUkw9dcPMh22QMX6wyWMv8MZJ7XAdE5NnlZ485RcWak+bxGswT
+         /EZk0fmS6wgeecGvFF8q77AVtk2xr3d60hMF9N+a8BBt0m2kKakSFPp3tG2LKF37YNNU
+         pMY3oyFiIc+ka0YyM5evLuHRQJ8RGJ8f14qCiWds4du5gE2Vjpiz4G2lmMwr1k6I5Nk4
+         TEnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707255068; x=1707859868;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VhV9Y2ehoq2QR/dvYkGZ3565MBi13h4c1EWlFat09sM=;
+        b=t3xjPxyD5QKRM6XsZTbxsoKAib3UaBaYSCZzGvdNDpIS1+kT6JWefAghlYvv0UJN4U
+         QBoMQhBBjBXnuCDi+eVz8FAYDWt8DVEHqNBAYCufNsfV+Kr2lwRLabvW/7qHeHgQFZBC
+         KYUeR1eyCEfTrs6qEbiWQouyxJvK96drgH/H8Z6cMZXrJDiks6uFyhw0qFJ7rw+crfvF
+         nDj2tzTzlKcOxuFNlCv4iVlcw273UVqMaHfqpz1w+J13Ul8ztAr+ZirfUnm0QHUj6tH/
+         KtRV49KwYMCOQ62XX2EoTCaHBsSXk/acRPo5PwSlgBTRYiUHemlmJeCDxXPSiPdCL6GH
+         l3Pg==
+X-Gm-Message-State: AOJu0YySmgyX/vp409o7b1654bXYSkrHawNcvYOBXKs0zQGI7KFiimAN
+	XZrl/3EYLuDxFL6/tdYvqir30uqmvHRFaksVUGupOkYQOFZDjKwBfrIrWzfYQ0ldfF4ff+vfMzB
+	yRl7tmrbqzjPZMe8hVc6n7FqbDPugiYdWM6yMfg==
+X-Google-Smtp-Source: AGHT+IFD2ZtVNg+yyFr7gOe+lmhrUgZsDA+InS6rti8MMhXWEbu1XvWLZZAzBuooSjg26Rp0Iuv+ch+bOB9DNvbOdYw=
+X-Received: by 2002:a0d:db4f:0:b0:604:3ef:a729 with SMTP id
+ d76-20020a0ddb4f000000b0060403efa729mr2685245ywe.15.1707255068386; Tue, 06
+ Feb 2024 13:31:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="lZ2nk/6fFAtZkSwG"
-Content-Disposition: inline
-In-Reply-To: <20240206032301.6e4tmbvmk7vs72gg@synopsys.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mgr@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-
-
---lZ2nk/6fFAtZkSwG
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+References: <20240201-rockchip-rust-phy_depend-v2-0-c5fa4faab924@christina-quast.de>
+ <20240201-rockchip-rust-phy_depend-v2-3-c5fa4faab924@christina-quast.de>
+ <CALNs47tnwCgyvM2jBo=bTt1=2AJFt3b6W+JsTHM3Np2tbNJYCA@mail.gmail.com> <eb229460-0efc-448a-863f-ac0634a72f2c@christina-quast.de>
+In-Reply-To: <eb229460-0efc-448a-863f-ac0634a72f2c@christina-quast.de>
+From: Trevor Gross <tmgross@umich.edu>
+Date: Tue, 6 Feb 2024 16:30:56 -0500
+Message-ID: <CALNs47tfmcayLdbLbArPS=AHwETiaQKZ09h69_Q4HmfrMPk4-A@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] net: phy: add Rust Rockchip PHY driver
+To: Christina Quast <chrysh@christina-quast.de>, Shashwat Kishore <kshashwat13@gmail.com>
+Cc: Christina Quast <contact@christina-quast.de>, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, FUJITA Tomonori <fujita.tomonori@gmail.com>, 
+	Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, 
+	Russell King <linux@armlinux.org.uk>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Heiko Stuebner <heiko@sntech.de>, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 06, 2024 at 03:23:17AM +0000, Thinh Nguyen wrote:
->On Tue, Feb 06, 2024, Michael Grzeschik wrote:
->> Hi Thinh
->>
->> I found some strange situation while streaming via uvc-gadget to some
->> usb host. It happens when some requests are missed due to higher load on
->> the gadget machine. In some cases some requests will reach the host
->> twice. In my special case, I added the following changes [1] for the
->> host and gadget side.
+On Tue, Feb 6, 2024 at 2:20=E2=80=AFPM Christina Quast
+<chrysh@christina-quast.de> wrote:
 >
->Does this only happen to some specific hosts?
+> Hi Trevor!
+>
+> Thanks a lot for your review, I learned a lot! I felt, from the feedback
+> in the Zulip forum that rewriting more phy drivers might be interesting,
+> but I think I misunderstood something.
+>
+> There is no specific goal behind the rewrite, I just thought it would be
+> useful to bring more Rust into the Kernel.
+>
+> Cheers,
+>
+> Christina
 
->Are all the data of the duplicate requests matching or just some bits of
->the transfer? Were you able to confirm from some usb analyzer/sniffer
->that the data out the wire is actually duplicate?
+Happy to help :)
 
-Turns out, this duplicates are just misinterpretations.
+There is definitely no harm in experimenting, but the general
+(reasonable) rule is that there shouldn't be duplicate drivers
+in-tree, even across languages.
 
-The linux uvcvideo driver will parse the uvc header payload twice. (If
-the FID was incremented inbetween). This led to those double misleading
-outputs. Although this means that there is a bug in
-uvc_video_stats_decode for incrementing the error count.
+What you probably saw on Zulip is that we were trying to locate newer
+phys that don't already have a C driver. Shashwat reached out to a few
+companies and mentioned that Microchip was interested in drivers for
+some of their VSC84xx/82xx families. They are a bit more complicated
+(MACSec, XFI/SFP+) and apparently somewhat difficult to get hardware
+for, but that might be an option if you are interested in working on
+something like this.
 
-Anyway, so just ignore this whole thread and be thanked for even having any
-thoghts on this.
+Andrew might have some ideas too. There are a lot of new phys coming
+out since MACsec is getting more popular, also some newer specs like
+10GBase-T1 and 10Base-T1S.
 
-Regards,
-Michael
-
---=20
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
---lZ2nk/6fFAtZkSwG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEElXvEUs6VPX6mDPT8C+njFXoeLGQFAmXCpOYACgkQC+njFXoe
-LGRyhA/+PWoSLMRAgimPA9pVguJJcQucVmDEsL42OinP52U74EYK/lVnfDL1xhnT
-8XmPh9yUnnvtDlZKUmTMzeqkU27IzwtFGbZYr/5M7vxgmpdvZ3B+h0cy9/g41Bht
-fjV1DI5cJs49IvcW52tLaQJIJj34mSG3i9XeG7lM4m6SACnNGp+APegHBFrmSpv3
-EusP4NcM0PWpQbhTXn/iYnPFEXZUQOgdEdiN4voYbhHiZ1qLeg38v5kDOk35wwKJ
-Y7Ru5P1Zq7xRSkmBFG6fVLnqHunUEcyJnn3pURmRTXYKt0xBjpZN5sOEM7jC85Mq
-VidIFRGJdBPK66Lda00bLuF2UTWYuK505/glmzsow4o3JnZTt+6GQhwFtiMelSjA
-t4xC2lRmbhiiCVHMWZurR1zhvYcUD8KqpB918RAhqAR59jnlOQYAn3GTXYN8/WZT
-qgpqVL0Rus+M4If4Sy8MZLDo1itAm+yX/5qKO9n2gTyamlKY8pGLbhpL8lVQUEEh
-/FqX0+MD+iU0ULT3An8RO7IPiZKZGh7sd8V2xzLknw5KBT+oWaztJQuSEJVaElyU
-Y1AA5Kkrpb7dqI0jSx+hfuWowi2Wc8chjQ8jrcqsChvMPItOQjYc+M0MS3o3mXji
-I+iectvgFaMvJj8+gmjaqpmGN2kVufbnbIu8MJvfFDiH2do5l+8=
-=MSIJ
------END PGP SIGNATURE-----
-
---lZ2nk/6fFAtZkSwG--
+- Trevor
 
