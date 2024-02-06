@@ -1,213 +1,94 @@
-Return-Path: <linux-kernel+bounces-54966-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54967-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 767CD84B595
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:53:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5042484B599
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:54:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 13D711F24681
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:53:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 838811C23C0F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:54:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2E9812F39D;
-	Tue,  6 Feb 2024 12:53:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03231DA3F;
+	Tue,  6 Feb 2024 12:54:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k29cbhWS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qWR4QWFO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1357E12B142;
-	Tue,  6 Feb 2024 12:53:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42E7F12F396
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 12:54:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707223985; cv=none; b=FusSo9qE8XQHQcrtfyzota0vcFBlEvcAW24MMb3NxZUtB3/ayr05F+5rS9QHpNqNngpFJVqw6oIoqxnabbVIGHnlorFr8guYNJm0LMKiYeAKDuShnbftILhuAxubj027xfb/WjzZ6Yk52zKUUYuAMMWJfZRqqs3+RLuapoZjsO0=
+	t=1707224045; cv=none; b=EAqgIOmQZYnRCbA2Sh8QxidSHBonzyX6n7IfTmdYZPdq2qmM9PdsPP1AqbVjpKxYACX3Ip3zKV9W4qugANsiPM5rv9Ks68LhDJClMm2bqgD26Q125TwZi4VWCG1szUxzQHb0W2CRDLYwsuHRUUsllclOZ+x2x8fw2R7pmPnUgGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707223985; c=relaxed/simple;
-	bh=cC1iXIgYkNIh5eG5Gpxr3dx4+vBY/05hPu9acNFeElM=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hiTma7j0FwE8MZlBsDHjNMU8ziZ4EEfzuhqwgFSo1UZq5RobUpcpINS3Zc0HmaqUvbKfU+riz1UwOiet9pwXpwf8GTMS7jvSzuq/8Mwl7a056yrofqKS8AT3Src9W3JhFXCPn/HaXi+OxHjsMJChTpriGjejwYD+kil7Zj7Pgzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k29cbhWS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A0DBC433C7;
-	Tue,  6 Feb 2024 12:53:04 +0000 (UTC)
+	s=arc-20240116; t=1707224045; c=relaxed/simple;
+	bh=cdzUH6nl3R9j/UmKXAGaCg7Yh03Jd0qTIFg89qeQ4RY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=QLInFifkv4kTeqKkz0dB4iuHxE6F8ZJ8jzYBPcF9fX+d8ePmA3JLdCjo+LCdwADUMZrXYhe0d0CBvFwmfNUBHXB6qu5cJgZE1Elq3dpwu3YZpr5tBz4mWR+sMqo7EUGzYpVVgdutACFLO5x3Qzm7za5ghXMI89sxZRELOeVpClM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qWR4QWFO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D02FC433F1;
+	Tue,  6 Feb 2024 12:54:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707223984;
-	bh=cC1iXIgYkNIh5eG5Gpxr3dx4+vBY/05hPu9acNFeElM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=k29cbhWS6DbbBWvLmOXATqMie993iIw7OOhgB8O5SsDgRv3ETZ4OtgZcTRGtsMfJY
-	 k4Q6fs2XLxOgjiqAZ1OJzIiEcRkSDl9qG14xeiNqdrvHyfqRuPCZSxo9WQBzcr0fxN
-	 l8TC75xfxnkM/CUq78l/VxHkL9mpbP6ssBEDxYwBo8VJfcyicwrdx4LEw15gJQJg1t
-	 4ZbUGoMqX+lbqMwBtMZMVDsmOreSYjt79mpUlrR9Sru2vJE3dt0kVue52lmdHA/wQo
-	 u7FO8tpmVYPMk+4Vg5DyxSaZaaHQUjOmr/j5v5FZ/I8rCGtYZjJcmabuMVVuwCxvQg
-	 oD6vDVz1d0OdA==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rXKwg-000obR-Ab;
-	Tue, 06 Feb 2024 12:53:02 +0000
-Date: Tue, 06 Feb 2024 12:53:01 +0000
-Message-ID: <86v87169g2.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Jon Hunter <jonathanh@nvidia.com>
-Cc: Sumit Gupta <sumitg@nvidia.com>,
-	treding@nvidia.com,
-	krzysztof.kozlowski@linaro.org,
-	mark.rutland@arm.com,
-	linux-kernel@vger.kernel.org,
-	linux-tegra@vger.kernel.org,
-	amhetre@nvidia.com,
-	bbasu@nvidia.com
-Subject: Re: [Patch] memory: tegra: Skip SID override from Guest VM
-In-Reply-To: <252d6094-b2d6-496d-b28f-93507a193ede@nvidia.com>
-References: <20240206114852.8472-1-sumitg@nvidia.com>
-	<86wmrh6b2n.wl-maz@kernel.org>
-	<252d6094-b2d6-496d-b28f-93507a193ede@nvidia.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=k20201202; t=1707224044;
+	bh=cdzUH6nl3R9j/UmKXAGaCg7Yh03Jd0qTIFg89qeQ4RY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=qWR4QWFOXlnNAtvLaAfytF3QLK7zZDjrW62fVezaT3vV0vHRKQjg7T4nw7WueHe3h
+	 Y3OOV5EEB7GW6xWsyXyJQam4k4gor3Bh9LaYp0pfLHu0j2S+FoGhWDxWnNJNgrr49U
+	 3EAQBNcKdiSP/tbpkVy2Yb95U1r0X3dUlXdFWiIhIWJNDu6s3TPX+pNZAQt+A7erQ9
+	 VcNEyUtEnMVyFcMc8w0MS58ALO+E5/39f+ZOFDyF+vd9s5ulQ4is4kd1tQ/NqpZHj/
+	 fd5DDPELMxMNbmrV5a01aB7Z5Sdz9xIuISKw9z7YAl/ZMYXzd22+SrlBOv1pF77pr5
+	 lPfFPNI2feUaw==
+From: Christian Brauner <brauner@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Andy Lutomirski <luto@amacapital.net>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	Tycho Andersen <tycho@tycho.pizza>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pidfd: change do_notify_pidfd() to use __wake_up(poll_to_key(EPOLLIN))
+Date: Tue,  6 Feb 2024 13:53:55 +0100
+Message-ID: <20240206-erbsen-nahverkehr-b7bc2be9fce7@brauner>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240205141348.GA16539@redhat.com>
+References: <20240205141348.GA16539@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: jonathanh@nvidia.com, sumitg@nvidia.com, treding@nvidia.com, krzysztof.kozlowski@linaro.org, mark.rutland@arm.com, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, amhetre@nvidia.com, bbasu@nvidia.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1128; i=brauner@kernel.org; h=from:subject:message-id; bh=cdzUH6nl3R9j/UmKXAGaCg7Yh03Jd0qTIFg89qeQ4RY=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQe0n5y3mmxga8Za2TWTtc8z0Wvzl+ty/M9fEl8/peEx 3b5RhvkO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACbyaivD/+BD4m9uPqryXfQw N7lL4fzyF3a92be/TPRxue5y+cua6DKGv0LiAY/7Qk5q77y5YcUax+8rn//MMTE/atb5eMb0o3N vZDACAA==
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-Hi Jon,
-
-On Tue, 06 Feb 2024 12:28:27 +0000,
-Jon Hunter <jonathanh@nvidia.com> wrote:
+On Mon, 05 Feb 2024 15:13:48 +0100, Oleg Nesterov wrote:
+> rather than wake_up_all(). This way do_notify_pidfd() won't wakeup the
+> POLLHUP-only waiters which wait for pid_task() == NULL.
 > 
-> Hi Marc,
+> TODO:
+>     - as Christian pointed out, this asks for the new wake_up_all_poll()
+>       helper, it can already have other users.
 > 
-> On 06/02/2024 12:17, Marc Zyngier wrote:
-> > Hi Sumit,
-> > 
-> > On Tue, 06 Feb 2024 11:48:52 +0000,
-> > Sumit Gupta <sumitg@nvidia.com> wrote:
-> >> 
-> >> MC SID register access is restricted for Guest VM.
-> >> So, skip the SID override programming from the Guest VM.
-> >> 
-> >> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
-> >> ---
-> >>   drivers/memory/tegra/tegra186.c | 11 +++++++++++
-> >>   1 file changed, 11 insertions(+)
-> >> 
-> >> diff --git a/drivers/memory/tegra/tegra186.c b/drivers/memory/tegra/tegra186.c
-> >> index 1b3183951bfe..df441896b69d 100644
-> >> --- a/drivers/memory/tegra/tegra186.c
-> >> +++ b/drivers/memory/tegra/tegra186.c
-> >> @@ -10,6 +10,7 @@
-> >>   #include <linux/of.h>
-> >>   #include <linux/of_platform.h>
-> >>   #include <linux/platform_device.h>
-> >> +#include <asm/virt.h>
-> >>     #include <soc/tegra/mc.h>
-> >>   @@ -118,6 +119,11 @@ static int tegra186_mc_probe_device(struct
-> >> tegra_mc *mc, struct device *dev)
-> >>   	unsigned int i, index = 0;
-> >>   	u32 sid;
-> >>   +	if (!is_kernel_in_hyp_mode()) {
-> >> +		dev_dbg(mc->dev, "Register access not allowed\n");
-> >> +		return 0;
-> >> +	}
-> >> +
-> >>   	if (!tegra_dev_iommu_get_stream_id(dev, &sid))
-> >>   		return 0;
-> >>   @@ -146,6 +152,11 @@ static int tegra186_mc_resume(struct
-> >> tegra_mc *mc)
-> >>   #if IS_ENABLED(CONFIG_IOMMU_API)
-> >>   	unsigned int i;
-> >>   +	if (!is_kernel_in_hyp_mode()) {
-> >> +		dev_dbg(mc->dev, "Register access not allowed\n");
-> >> +		return 0;
-> >> +	}
-> >> +
-> >>   	for (i = 0; i < mc->soc->num_clients; i++) {
-> >>   		const struct tegra_mc_client *client = &mc->soc->clients[i];
-> >>   
-> > 
-> > This doesn't look right. Multiple reasons:
-> > 
-> > - This helper really has nothing to do in a driver. This is
-> >    architectural stuff that is not intended for use outside of arch
-> >    core code.
-> 
-> We see a few other drivers using this ...
-> 
-> drivers/perf/arm_pmuv3.c
-> drivers/clocksource/arm_arch_timer.c
+> [...]
 
-These two are definitely part of the CPU architecture.
+Applied to the vfs.pidfd branch of the vfs/vfs.git tree.
+Patches in the vfs.pidfd branch should appear in linux-next soon.
 
-> drivers/gpu/drm/amd/amdgpu/amdgpu_virt.h
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-This is just a bug. Please don't copy this stuff.
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
-> drivers/hwtracing/coresight/coresight-etm4x-core.c
-> drivers/hwtracing/coresight/coresight-etm4x-core.c
-> drivers/irqchip/irq-apple-aic.c
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
 
-These are also part of the CPU architecture.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.pidfd
 
-> 
-> We were looking for a way to determine if the OS is a guest OS or
-> not. However, I can see that this is a ARM64 specific API and so
-> probably the above are only compiled for ARM64. Interestingly, the AMD
-> driver implements the following ...
-> 
-> static inline bool is_virtual_machine(void)
-> {
-> #if defined(CONFIG_X86)
->         return boot_cpu_has(X86_FEATURE_HYPERVISOR);
-> #elif defined(CONFIG_ARM64)
->         return !is_kernel_in_hyp_mode();
-> #else
->         return false;
-> #endif
-> }
-
-This stuff should simply be ripped out and burned. Whoever wrote it
-didn't understand how this works.
-
-> 
-> > - My own tegra186 HW doesn't have VHE, since it is ARMv8.0, and this
-> >    helper will always return 'false'. How could this result in
-> >    something that still works? Can I get a free CPU upgrade?
-> 
-> I thought this API just checks to see if we are in EL2?
-
-It does. And that's the problem. On ARMv8.0, we run the Linux kernel
-at EL1. Tegra186 is ARMv8.0 (Denver + A57). So as written, this change
-breaks the very platform it intends to support.
-
-> 
-> > - If you assign this device to a VM and that the hypervisor doesn't
-> >    correctly virtualise it, then it is a different device and you
-> >    should simply advertise it something else. Or even better, fix your
-> >    hypervisor.
-> 
-> Sumit can add some more details on why we don't completely disable the
-> device for guest OSs.
-
-It's not about disabling it. It is about correctly supporting it
-(providing full emulation for it), or advertising it as something
-different so that SW can handle it differently.
-
-Poking into the internals of how the kernel is booted for a driver
-that isn't tied to the core architecture (because it would need to
-access system registers, for example) is not an acceptable outcome.
-
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+[1/1] pidfd: change do_notify_pidfd() to use __wake_up(poll_to_key(EPOLLIN))
+      https://git.kernel.org/vfs/vfs/c/e1358f104c9e
 
