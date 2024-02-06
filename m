@@ -1,307 +1,256 @@
-Return-Path: <linux-kernel+bounces-55456-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AE3684BCEB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:28:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C787C84BCE8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:28:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D8531C21183
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:28:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E1541F24FF6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:28:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44CFD12E75;
-	Tue,  6 Feb 2024 18:28:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7032A12E71;
+	Tue,  6 Feb 2024 18:28:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M/c+TUFQ"
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ffu3b+xg"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9EDA134A5;
-	Tue,  6 Feb 2024 18:28:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C63134A6
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 18:28:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707244123; cv=none; b=kabmGoC/Cn0HVUzIln1mNUOc8SojDFsFk/sUvfAB558qnJHT0WlrerSQoeFfD4VARFUtHGrsSWShVAvN2EPxflc709XQRH2eYwPVBvCtBgx1lFtpuXU9zD198Jg2jCXvop9fOWibHBRAgkShHJREONpSPJ2dtQnu9j4gV1U2ewE=
+	t=1707244083; cv=none; b=IiGkKLkLcXxATQSj4L4PApB6J6/rFp8wPD6YPEBNeCw+RQcZCL/VGNpx9rSWtYCsvVlh58kBeTsxrv+S34jdHpB9heDP8gqRHLab10k5l5zzCklmTZNCdb2nP37h/CvC932W5LUhHq3rQ1krBLygYtPaEFsutJfer4k3dK+vr2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707244123; c=relaxed/simple;
-	bh=0+RZHcCp/NMCytXSWyHreluR2lQnnemCua1HlFSZCew=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rdyHIZIFyOepOtKe69XZG72bTlGjwxJdbw70GdI/uLfbn7fgFRQfcX+7+G6gzCj0/2ySDRruYYFzdktzF4fYYykNe00wSh0fDJPqzOJLqcLOy+hNkDgcYM1hlyx2JUzt4iIuj0W5iHOaWpf4lfY3Vly4oWQc0JGtiwZT0bPWRJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M/c+TUFQ; arc=none smtp.client-ip=209.85.161.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-59cb1e24e91so1447043eaf.0;
-        Tue, 06 Feb 2024 10:28:41 -0800 (PST)
+	s=arc-20240116; t=1707244083; c=relaxed/simple;
+	bh=XHTHEUL3c1zqoIkdhMoTUTEvYUg9rrTol977ov8Dor4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DDkN7xwUMBWETx5xBa+yYY6YbDcJDRsB5YgHzSSB/WI4dC3xkGjlxLa3pXBefIJfanu1dZA0HZKgBi8pclAVjBZ/a06cx5Yx08h2uuxQ6zVKDO/UrE/Q+4p/VXxMpVXTo2KECGEvzdlJxoKQD0HjwzdB7xnw2LmDfSApSPyypok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ffu3b+xg; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56012eeb755so1229a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 10:28:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707244120; x=1707848920; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:reply-to:message-id:date
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ri33dEDMSF+uLhQGu0qPBpIz5K4xYUeshxoTcvF1uRc=;
-        b=M/c+TUFQEKbhpPOyx3KVKKL3qPHbWBjXl/s9sSMawRC2QbiYH7F0npH2Zl7TZTSusq
-         pvPutyoHheLs3Xhay0fDunCAkuZJGw39O48exSvxmwEUujtsD2CC+WWHzOKadzw6J27n
-         0YYCs+5JawTym125r+/Sij2pGS+Rx3L4I7qYxtCa20AcpPhzuytIGWaCdeoLmqso9SBQ
-         A67QnPdxgxXf6aY3J3CeZXSLl3gLVCNgyVWt7wiFqRVT/Uw7eZzP7UlXDZYpb0qgWndH
-         yRg17vfnze5DmCzj7953oLBwutCJw4cYQpEbRtOW1aEvRDXVjSUvBCZZPmOd4+lEYYOr
-         5I0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707244120; x=1707848920;
-        h=content-transfer-encoding:mime-version:reply-to:message-id:date
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1707244080; x=1707848880; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ri33dEDMSF+uLhQGu0qPBpIz5K4xYUeshxoTcvF1uRc=;
-        b=tyH5Np68Ln/SkTQnpnR5TkbMfw8zmDriUeLLM4cqrWxlbrF9yUIv0gPaoWy3TlgiCt
-         IxijtGaq6r+COzFh8SXPXafBIcAiFCiUZaKJYkuGWElKJ+U+C+MlUir5/9WgKug20mxr
-         rMCLgvrfc7HIsGmnHeXwuhkzv/sUMyMlo6zt2WdTc8GIsYO+ETs66R3DIofxg5YFnfKc
-         7HAnoMS6JDXpZPdqnByAMW+vR/RFLDaEWdYoZQz0XKT5LgYzdV3Uv7l0jP9g/KCcRxg+
-         uVYNDMcOykKWjBpYvIaWjUlbqcSHplIpf9WAse3Kp2dqghqpq5Ug15FAGlKL48gG5TZB
-         Gr8g==
-X-Gm-Message-State: AOJu0Yx75AYj9RpqNkahDVy7fdAFrKMWfKPVR0Lus1gx80eIk3Yi7hi3
-	53KPJ+b/soID6d4gzfB/sFGCLBwuKmqbM6jEyiaQTfg7sNaiHPK2
-X-Google-Smtp-Source: AGHT+IHLfQO1mq7zCZus8p7hf70KIAOyXJuPclrtTGt9F4DIPIbnjtaI+hylLkx1qbCPL4009cfXrQ==
-X-Received: by 2002:a05:6358:2490:b0:176:56b9:d4e1 with SMTP id m16-20020a056358249000b0017656b9d4e1mr322603rwc.23.1707244120454;
-        Tue, 06 Feb 2024 10:28:40 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVtbiL616DbzpVKTfBYtVTxwY4aYLBihKCF6hKfBFX++CaF/KM9zQ+Dj4p6+/D1Zh+tP8ejZa7KmFkCAJQ6S8IsphXfNGQD2PriTPN9UgdxOqrl2uRrVck6ZJ6Eg4YWkz+lkRvOMlPnNqcD+S+N47qrYQx1ZNC+irwh+Uh6kzOEgfWGvgz/QPAdv34ePV7JuFjHiCsmzYJO8em2DqDq6uRt6s/8PeWLgkjZbdYlm/jzK+0mDxGOfL4z4+bfMQSFLSPDmsUJo3K3FiaycIWsDCOBvbr9Edva8Y10ufQIMKbWjVUrparXKzDG+y6OotQOWVeWYEPisCV/mkKnN/GDUIi2jUzPca1g9ikCydDqK6LaEsHt+NKW/C/yAKcy2LSPuXvhxIghicuYxlk4jDGkO/+odTI2UqHI1iXoCYDSvo8QTpi+miu+7e+qcfUG4i6u9JL0GpLpe5PujBPJFL6gOXhBAh/9
-Received: from KASONG-MB2.tencent.com ([1.203.117.232])
-        by smtp.gmail.com with ESMTPSA id g20-20020a635214000000b005d8b89bbf20sm2446839pgb.63.2024.02.06.10.28.35
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 06 Feb 2024 10:28:39 -0800 (PST)
-From: Kairui Song <ryncsn@gmail.com>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	"Huang, Ying" <ying.huang@intel.com>,
-	Chris Li <chrisl@kernel.org>,
-	Minchan Kim <minchan@kernel.org>,
-	Yu Zhao <yuzhao@google.com>,
-	Barry Song <v-songbaohua@oppo.com>,
-	SeongJae Park <sj@kernel.org>,
-	Hugh Dickins <hughd@google.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Michal Hocko <mhocko@suse.com>,
-	Yosry Ahmed <yosryahmed@google.com>,
-	David Hildenbrand <david@redhat.com>,
-	stable@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kairui Song <kasong@tencent.com>
-Subject: [PATCH v2] mm/swap: fix race when skipping swapcache
-Date: Wed,  7 Feb 2024 02:25:59 +0800
-Message-ID: <20240206182559.32264-1-ryncsn@gmail.com>
-X-Mailer: git-send-email 2.43.0
-Reply-To: Kairui Song <kasong@tencent.com>
+        bh=mssWr8/tMwfYzRYqB7GAnBjReP7gos18KJNG0Y4GNVI=;
+        b=Ffu3b+xgSQL4YWVMxwIquI/txW3BMRUO5/jdLgfhkOZ/4V03tHGZ5WSTv5JPuK9O1J
+         XTsTVX+svLiCOaFYp30WGZWeSwZaqTSgahL74D3neblDb5xuFWNTEpqbN0JoRne+1OdU
+         99ShoRmlgvGLynDaifqKYrj4jdEK3AAmHn1ztx6yz3NEsZvaTLAPdfBocOSTBYy/O2wP
+         RkzxtZmgtodczPvTfUoYAfIR9fgoI8NiWNf1BMCZAnd4QIAXav9zxS0RFBtDQPRrrb4l
+         TEyd1ENpRgu+cVNG1bO6KT6PT6V5Q0poaI/mgkHhJoYWM3dwt4iCc2R9+9TiXbESGTl9
+         AFfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707244080; x=1707848880;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mssWr8/tMwfYzRYqB7GAnBjReP7gos18KJNG0Y4GNVI=;
+        b=h5jFYl/w5F2NsUcn8lDlKAOHRcrWQ30Tp3ruCsGmTaOc1LuXrc5qfhisGQWI+Btlxn
+         fgPNeEFru7EtIHfunpnW2BBeo8nN9w38POcYKW/uOXE0fUPxxtMar1NtPPoT8HgVCbfQ
+         xw732N3nuIwRCCjdZyPJnoKjFspcsMAAauOj1Exm3QEbbOO0sYT9LPO99lXfwSPd8lxm
+         9Wi+yMy/jxQoELqlHW3XN0Ld2KOisTsFub1cUFBIOn6joyXlhJmIK80lVcA/cQisy5ts
+         olMYDKmmLekzrLyR8z97JiUHT8FKRkEDWuakWSeEq1BnPxDPtwLF3L8G/JxJmHjwHZaq
+         qbTw==
+X-Gm-Message-State: AOJu0YwpSxmeR0I8EWf/CkZ6iOFveWycX6TLAyWfK4ZNQBQX+WDeDA68
+	eGRxuom2BzWwiAYLsCkRKwTnLSofPPGK/B8MULYzMjUSByreszI9YHEAYMuKokAvU+NV9nuHcGq
+	9nd8VZKdlArmJsPMujAB6NvKfh60xYcm21G2J
+X-Google-Smtp-Source: AGHT+IGlFHjhMsclmD9laqfjKedcH6F5arabPzzT/YJDR4LP/EEGeTRmgXeW7NgKrSk3f6qUrTPuh0ae6i59DgzppUw=
+X-Received: by 2002:a50:ccd6:0:b0:560:1b3:970 with SMTP id b22-20020a50ccd6000000b0056001b30970mr7470edj.7.1707244080137;
+ Tue, 06 Feb 2024 10:28:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240206010919.1109005-1-lokeshgidra@google.com> <20240206010919.1109005-4-lokeshgidra@google.com>
+In-Reply-To: <20240206010919.1109005-4-lokeshgidra@google.com>
+From: Jann Horn <jannh@google.com>
+Date: Tue, 6 Feb 2024 19:27:22 +0100
+Message-ID: <CAG48ez0AdTijvuh0xueg_spwNE9tVcPuvqT9WpvmtiNNudQFMw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] userfaultfd: use per-vma locks in userfaultfd operations
+To: Lokesh Gidra <lokeshgidra@google.com>
+Cc: akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, selinux@vger.kernel.org, 
+	surenb@google.com, kernel-team@android.com, aarcange@redhat.com, 
+	peterx@redhat.com, david@redhat.com, axelrasmussen@google.com, 
+	bgeffon@google.com, willy@infradead.org, kaleshsingh@google.com, 
+	ngeoffray@google.com, timmurray@google.com, rppt@kernel.org, 
+	Liam.Howlett@oracle.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Kairui Song <kasong@tencent.com>
+On Tue, Feb 6, 2024 at 2:09=E2=80=AFAM Lokesh Gidra <lokeshgidra@google.com=
+> wrote:
+> All userfaultfd operations, except write-protect, opportunistically use
+> per-vma locks to lock vmas. On failure, attempt again inside mmap_lock
+> critical section.
+>
+> Write-protect operation requires mmap_lock as it iterates over multiple
+> vmas.
+>
+> Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
+[...]
+> diff --git a/mm/memory.c b/mm/memory.c
+> index b05fd28dbce1..393ab3b0d6f3 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+[...]
+> +/*
+> + * lock_vma() - Lookup and lock VMA corresponding to @address.
+> + * @prepare_anon: If true, then prepare the VMA (if anonymous) with anon=
+_vma.
+> + *
+> + * Should be called without holding mmap_lock. VMA should be unlocked af=
+ter use
+> + * with unlock_vma().
+> + *
+> + * Return: A locked VMA containing @address, NULL of no VMA is found, or
+> + * -ENOMEM if anon_vma couldn't be allocated.
+> + */
+> +struct vm_area_struct *lock_vma(struct mm_struct *mm,
+> +                               unsigned long address,
+> +                               bool prepare_anon)
+> +{
+> +       struct vm_area_struct *vma;
+> +
+> +       vma =3D lock_vma_under_rcu(mm, address);
+> +
+> +       if (vma)
+> +               return vma;
+> +
+> +       mmap_read_lock(mm);
+> +       vma =3D vma_lookup(mm, address);
+> +       if (vma) {
+> +               if (prepare_anon && vma_is_anonymous(vma) &&
+> +                   anon_vma_prepare(vma))
+> +                       vma =3D ERR_PTR(-ENOMEM);
+> +               else
+> +                       vma_acquire_read_lock(vma);
 
-When skipping swapcache for SWP_SYNCHRONOUS_IO, if two or more threads
-swapin the same entry at the same time, they get different pages (A, B).
-Before one thread (T0) finishes the swapin and installs page (A)
-to the PTE, another thread (T1) could finish swapin of page (B),
-swap_free the entry, then swap out the possibly modified page
-reusing the same entry. It breaks the pte_same check in (T0) because
-PTE value is unchanged, causing ABA problem. Thread (T0) will
-install a stalled page (A) into the PTE and cause data corruption.
+This new code only calls anon_vma_prepare() for VMAs where
+vma_is_anonymous() is true (meaning they are private anonymous).
 
-One possible callstack is like this:
+[...]
+> diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+> index 74aad0831e40..64e22e467e4f 100644
+> --- a/mm/userfaultfd.c
+> +++ b/mm/userfaultfd.c
+> @@ -19,20 +19,25 @@
+>  #include <asm/tlb.h>
+>  #include "internal.h"
+>
+> -static __always_inline
+> -struct vm_area_struct *find_dst_vma(struct mm_struct *dst_mm,
+> -                                   unsigned long dst_start,
+> -                                   unsigned long len)
+> +/* Search for VMA and make sure it is valid. */
+> +static struct vm_area_struct *find_and_lock_dst_vma(struct mm_struct *ds=
+t_mm,
+> +                                                   unsigned long dst_sta=
+rt,
+> +                                                   unsigned long len)
+>  {
+> -       /*
+> -        * Make sure that the dst range is both valid and fully within a
+> -        * single existing vma.
+> -        */
+>         struct vm_area_struct *dst_vma;
+>
+> -       dst_vma =3D find_vma(dst_mm, dst_start);
+> -       if (!range_in_vma(dst_vma, dst_start, dst_start + len))
+> -               return NULL;
+> +       /* Ensure anon_vma is assigned for anonymous vma */
+> +       dst_vma =3D lock_vma(dst_mm, dst_start, true);
 
-CPU0                                 CPU1
-----                                 ----
-do_swap_page()                       do_swap_page() with same entry
-<direct swapin path>                 <direct swapin path>
-<alloc page A>                       <alloc page B>
-swap_read_folio() <- read to page A  swap_read_folio() <- read to page B
-<slow on later locks or interrupt>   <finished swapin first>
-..                                  set_pte_at()
-                                     swap_free() <- entry is free
-                                     <write to page B, now page A stalled>
-                                     <swap out page B to same swap entry>
-pte_same() <- Check pass, PTE seems
-              unchanged, but page A
-              is stalled!
-swap_free() <- page B content lost!
-set_pte_at() <- staled page A installed!
+lock_vma() is now used by find_and_lock_dst_vma(), which is used by
+mfill_atomic().
 
-And besides, for ZRAM, swap_free() allows the swap device to discard
-the entry content, so even if page (B) is not modified, if
-swap_read_folio() on CPU0 happens later than swap_free() on CPU1,
-it may also cause data loss.
+> +       if (!dst_vma)
+> +               return ERR_PTR(-ENOENT);
+> +
+> +       if (PTR_ERR(dst_vma) =3D=3D -ENOMEM)
+> +               return dst_vma;
+> +
+> +       /* Make sure that the dst range is fully within dst_vma. */
+> +       if (dst_start + len > dst_vma->vm_end)
+> +               goto out_unlock;
+>
+>         /*
+>          * Check the vma is registered in uffd, this is required to
+[...]
+> @@ -597,7 +599,15 @@ static __always_inline ssize_t mfill_atomic(struct u=
+serfaultfd_ctx *ctx,
+>         copied =3D 0;
+>         folio =3D NULL;
+>  retry:
+> -       mmap_read_lock(dst_mm);
+> +       /*
+> +        * Make sure the vma is not shared, that the dst range is
+> +        * both valid and fully within a single existing vma.
+> +        */
+> +       dst_vma =3D find_and_lock_dst_vma(dst_mm, dst_start, len);
+> +       if (IS_ERR(dst_vma)) {
+> +               err =3D PTR_ERR(dst_vma);
+> +               goto out;
+> +       }
+>
+>         /*
+>          * If memory mappings are changing because of non-cooperative
+> @@ -609,15 +619,6 @@ static __always_inline ssize_t mfill_atomic(struct u=
+serfaultfd_ctx *ctx,
+>         if (atomic_read(&ctx->mmap_changing))
+>                 goto out_unlock;
+>
+> -       /*
+> -        * Make sure the vma is not shared, that the dst range is
+> -        * both valid and fully within a single existing vma.
+> -        */
+> -       err =3D -ENOENT;
+> -       dst_vma =3D find_dst_vma(dst_mm, dst_start, len);
+> -       if (!dst_vma)
+> -               goto out_unlock;
+> -
+>         err =3D -EINVAL;
+>         /*
+>          * shmem_zero_setup is invoked in mmap for MAP_ANONYMOUS|MAP_SHAR=
+ED but
+> @@ -647,16 +648,6 @@ static __always_inline ssize_t mfill_atomic(struct u=
+serfaultfd_ctx *ctx,
+>             uffd_flags_mode_is(flags, MFILL_ATOMIC_CONTINUE))
+>                 goto out_unlock;
+>
+> -       /*
+> -        * Ensure the dst_vma has a anon_vma or this page
+> -        * would get a NULL anon_vma when moved in the
+> -        * dst_vma.
+> -        */
+> -       err =3D -ENOMEM;
+> -       if (!(dst_vma->vm_flags & VM_SHARED) &&
+> -           unlikely(anon_vma_prepare(dst_vma)))
+> -               goto out_unlock;
 
-To fix this, reuse swapcache_prepare which will pin the swap entry using
-the cache flag, and allow only one thread to pin it. Release the pin
-after PT unlocked. Racers will simply busy wait since it's a rare
-and very short event.
+But the check mfill_atomic() used to do was different, it checked for VM_SH=
+ARED.
 
-Other methods like increasing the swap count don't seem to be a good
-idea after some tests, that will cause racers to fall back to use the
-swap cache again. Parallel swapin using different methods leads to
-a much more complex scenario.
+Each VMA has one of these three types:
 
-Reproducer:
+1. shared (marked by VM_SHARED; does not have an anon_vma)
+2. private file-backed (needs to have anon_vma when storing PTEs)
+3. private anonymous (what vma_is_anonymous() detects; needs to have
+anon_vma when storing PTEs)
 
-This race issue can be triggered easily using a well constructed
-reproducer and patched brd (with a delay in read path) [1]:
-
-With latest 6.8 mainline, race caused data loss can be observed easily:
-$ gcc -g -lpthread test-thread-swap-race.c && ./a.out
-  Polulating 32MB of memory region...
-  Keep swapping out...
-  Starting round 0...
-  Spawning 65536 workers...
-  32746 workers spawned, wait for done...
-  Round 0: Error on 0x5aa00, expected 32746, got 32743, 3 data loss!
-  Round 0: Error on 0x395200, expected 32746, got 32743, 3 data loss!
-  Round 0: Error on 0x3fd000, expected 32746, got 32737, 9 data loss!
-  Round 0 Failed, 15 data loss!
-
-This reproducer spawns multiple threads sharing the same memory region
-using a small swap device. Every two threads updates mapped pages one by
-one in opposite direction trying to create a race, with one dedicated
-thread keep swapping out the data out using madvise.
-
-The reproducer created a reproduce rate of about once every 5 minutes,
-so the race should be totally possible in production.
-
-After this patch, I ran the reproducer for over a few hundred rounds
-and no data loss observed.
-
-Performance overhead is minimal, microbenchmark swapin 10G from 32G
-zram:
-
-Before:     10934698 us
-After:      11157121 us
-Non-direct: 13155355 us (Dropping SWP_SYNCHRONOUS_IO flag)
-
-Fixes: 0bcac06f27d7 ("mm, swap: skip swapcache for swapin of synchronous device")
-Reported-by: "Huang, Ying" <ying.huang@intel.com>
-Closes: https://lore.kernel.org/lkml/87bk92gqpx.fsf_-_@yhuang6-desk2.ccr.corp.intel.com/
-Link: https://github.com/ryncsn/emm-test-project/tree/master/swap-stress-race [1]
-Signed-off-by: Kairui Song <kasong@tencent.com>
-Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
-Acked-by: Yu Zhao <yuzhao@google.com>
-
----
-Update from V1:
-- Add some words on ZRAM case, it will discard swap content on swap_free so the race window is a bit different but cure is the same. [Barry Song]
-- Update comments make it cleaner [Huang, Ying]
-- Add a function place holder to fix CONFIG_SWAP=n built [SeongJae Park]
-- Update the commit message and summary, refer to SWP_SYNCHRONOUS_IO instead of "direct swapin path" [Yu Zhao]
-- Update commit message.
-- Collect Review and Acks.
-
- include/linux/swap.h |  5 +++++
- mm/memory.c          | 15 +++++++++++++++
- mm/swap.h            |  5 +++++
- mm/swapfile.c        | 13 +++++++++++++
- 4 files changed, 38 insertions(+)
-
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 4db00ddad261..8d28f6091a32 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -549,6 +549,11 @@ static inline int swap_duplicate(swp_entry_t swp)
- 	return 0;
- }
- 
-+static inline int swapcache_prepare(swp_entry_t swp)
-+{
-+	return 0;
-+}
-+
- static inline void swap_free(swp_entry_t swp)
- {
- }
-diff --git a/mm/memory.c b/mm/memory.c
-index 7e1f4849463a..1749c700823d 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3867,6 +3867,16 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 	if (!folio) {
- 		if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
- 		    __swap_count(entry) == 1) {
-+			/*
-+			 * Prevent parallel swapin from proceeding with
-+			 * the cache flag. Otherwise, another thread may
-+			 * finish swapin first, free the entry, and swapout
-+			 * reusing the same entry. It's undetectable as
-+			 * pte_same() returns true due to entry reuse.
-+			 */
-+			if (swapcache_prepare(entry))
-+				goto out;
-+
- 			/* skip swapcache */
- 			folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0,
- 						vma, vmf->address, false);
-@@ -4116,6 +4126,9 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- unlock:
- 	if (vmf->pte)
- 		pte_unmap_unlock(vmf->pte, vmf->ptl);
-+	/* Clear the swap cache pin for direct swapin after PTL unlock */
-+	if (folio && !swapcache)
-+		swapcache_clear(si, entry);
- out:
- 	if (si)
- 		put_swap_device(si);
-@@ -4124,6 +4137,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 	if (vmf->pte)
- 		pte_unmap_unlock(vmf->pte, vmf->ptl);
- out_page:
-+	if (!swapcache)
-+		swapcache_clear(si, entry);
- 	folio_unlock(folio);
- out_release:
- 	folio_put(folio);
-diff --git a/mm/swap.h b/mm/swap.h
-index 758c46ca671e..fc2f6ade7f80 100644
---- a/mm/swap.h
-+++ b/mm/swap.h
-@@ -41,6 +41,7 @@ void __delete_from_swap_cache(struct folio *folio,
- void delete_from_swap_cache(struct folio *folio);
- void clear_shadow_from_swap_cache(int type, unsigned long begin,
- 				  unsigned long end);
-+void swapcache_clear(struct swap_info_struct *si, swp_entry_t entry);
- struct folio *swap_cache_get_folio(swp_entry_t entry,
- 		struct vm_area_struct *vma, unsigned long addr);
- struct folio *filemap_get_incore_folio(struct address_space *mapping,
-@@ -97,6 +98,10 @@ static inline int swap_writepage(struct page *p, struct writeback_control *wbc)
- 	return 0;
- }
- 
-+static inline void swapcache_clear(struct swap_info_struct *si, swp_entry_t entry)
-+{
-+}
-+
- static inline struct folio *swap_cache_get_folio(swp_entry_t entry,
- 		struct vm_area_struct *vma, unsigned long addr)
- {
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 556ff7347d5f..746aa9da5302 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -3365,6 +3365,19 @@ int swapcache_prepare(swp_entry_t entry)
- 	return __swap_duplicate(entry, SWAP_HAS_CACHE);
- }
- 
-+void swapcache_clear(struct swap_info_struct *si, swp_entry_t entry)
-+{
-+	struct swap_cluster_info *ci;
-+	unsigned long offset = swp_offset(entry);
-+	unsigned char usage;
-+
-+	ci = lock_cluster_or_swap_info(si, offset);
-+	usage = __swap_entry_free_locked(si, offset, SWAP_HAS_CACHE);
-+	unlock_cluster_or_swap_info(si, ci);
-+	if (!usage)
-+		free_swap_slot(entry);
-+}
-+
- struct swap_info_struct *swp_swap_info(swp_entry_t entry)
- {
- 	return swap_type_to_swap_info(swp_type(entry));
--- 
-2.43.0
-
+This old code would call anon_vma_prepare() for both private VMA types
+(which is correct). The new code only calls anon_vma_prepare() for
+private anonymous VMAs, not for private file-backed ones. I think this
+code will probably crash with a BUG_ON() in __folio_set_anon() if you
+try to use userfaultfd to insert a PTE into a private file-backed VMA
+of a shmem file. (Which you should be able to get by creating a file
+in /dev/shm/ and then mapping that file with mmap(NULL, <size>,
+PROT_READ|PROT_WRITE, MAP_PRIVATE, <fd>, 0).)
 
