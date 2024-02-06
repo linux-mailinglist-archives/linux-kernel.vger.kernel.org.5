@@ -1,133 +1,142 @@
-Return-Path: <linux-kernel+bounces-54477-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 966DF84AFB8
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:15:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5CB184AFBC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:15:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48EA4286551
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:15:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 008DAB2428E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:15:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DA6512B142;
-	Tue,  6 Feb 2024 08:15:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D451812B169;
+	Tue,  6 Feb 2024 08:15:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SifXzZME"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="jkQRdDKY"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 836BB12AADF
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 08:15:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6051612B150
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 08:15:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707207314; cv=none; b=dMDRMEXpho8BnnL38dmjR9q/mzVt4tkYQ/PomsO8MxslZqo3hkWHpAuEAU5lZE2y4kr4W11HnO7oJLFWlZBKvEX0ME57TDuTM/37zn7pF0qG6MMQC/KHoLZbANTzwrgeokREwjVd170iImJ7SZgOW409HY2bFR5T0Yr1bIZeuOY=
+	t=1707207317; cv=none; b=DN06JCfSSxvfyp2nI2jBuH1+VjTEaPsPSBZiZYN4Yp1JLzntEL0WcJgShb3BvTV5gQ8z6/02AASS3qVPfRDFP2WFxiI3GQPbCthkb4rJIKd7bYrs34swR4pRb9qq4FInW0nPLGFTtYY0PMkppZdo8EZeJs8bxBcYyz/4VRc17Cw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707207314; c=relaxed/simple;
-	bh=k80mLjIvTze9I4g8rX1exSAm7QAJel1Yb7apaCxak3g=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=TURWj/iMSJODtoU9lf8vAnIv2920OgziaJbgBVoa+i++AMTpanpsGij0EBwzWH9dAgTZzVye93shhWq2GPhfHKjmpaTn11yI9ASSbC1zUgQzylvsZycHFRPVBtDSBJbG2ocK9US+OHr0NQ8wFPkYIHvCydKrs3SriGmp/esHHlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SifXzZME; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40fc22f372cso41381345e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 00:15:10 -0800 (PST)
+	s=arc-20240116; t=1707207317; c=relaxed/simple;
+	bh=YGLjoL7xChpMneTzTMtDqWunWKFG0vgpgJezm+/b2C4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PivP6xIu1J2bnEjc1s/KCRZcVXdTdpN9jmY9ngvq3nzz2rTCdPnTH7kVYKE4cxSrbIoMnUPQFRFmHFPDnENjhL2DQAOzLgMjK1hLt9sOv0eOWuMjqoAW7oqGKiyh4wpkczi3e2MrAGB72eW+w9FczMFVEIh4ryo8+/W/mdgWHFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=jkQRdDKY; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5115744dfe5so1009227e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 00:15:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707207309; x=1707812109; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=btHhwGxbZA6ve4BPec76cdv8nujipODBvqRCy/GsxP0=;
-        b=SifXzZMEgqsxESslbijXO52LSFbWRVYOQI4KGhtAki2cc/Rln9YkJTH3Izke976QCq
-         bVpGTQMhnWgGfUug2BvBYglrY5V5udpdI13x08Lzne/nh1CFxUfWHmcIdkv9RPRgxOYQ
-         2nnRLH1VmZPNhz8QDPMO8z30MfIC1tNBRwj9AkQcE6eKgx8XH/3Zibg+Xzi46lX7I6oM
-         gXaJNcYpaPbkxxHTQKJExUzGCU0fKAXUDN7eSUD1VrELI7hyl2lfElGHJ+2LPaxlYsCs
-         mTjjfrx063k0zMfAunY4+dIg+gqGCzICemTz9q0j+xNmSgnPpQt+Vxe6MVvgyurItn81
-         JTFw==
+        d=tuxon.dev; s=google; t=1707207313; x=1707812113; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DFH4UTR5EQtsU77bTwpZfCbLoj9097wAjcuQb4s57DM=;
+        b=jkQRdDKYVATLpbxxxXU4MUlkMM5Vgu+ItgucBs53q3FSakOchcw+3RlHBJ6vWfCwma
+         Vqp3V5llgystAmaURAQmFo0vppL6Mm/o1kO28eI4RXAG0dWnSepixTBsLWIG192d+0p0
+         aWpKKe5nsuBMlfzGBjIX9MYb85lCLlXUubEDWVDo5m+l24VDJlcyey15sExlJj2BQpzj
+         OkwQCDaGwuETLUVCjUcjUE06ct1c8pJiaw+x6rSdIogVlVuUIJyDzpC8oknOGyxG9edH
+         X6ja+DxTHs8KZa1kzPhKjb7/r9HGkdUp6dQ7T1HiHSwHalc2zf5hXqsH084RuSodzDow
+         4RNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707207309; x=1707812109;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=btHhwGxbZA6ve4BPec76cdv8nujipODBvqRCy/GsxP0=;
-        b=Kb+kMCcGviMjPOdgHD40YsQfHD2EE2SjnahktOdRMoDCrnKT1f2rOSXboYXD3ZwAsn
-         MmX3dkkmsyMB4maNNAb6mbbSeMjRo269wNREzZmgC7aTqz1Xcl3cIE1/1g0hIC2Cjm0u
-         /plKSFPxdlGSAMRoCwBirRqD4hE4umXwRKQXthvXHq1Krt8C8Sga3vBrM2TXCfdSwLn9
-         1WkE+Rpmh529hEFK1Pz+voCobwmiG0omti6sefZ9PRUkzQv6ijc++xToXY7/b5Pb/P3Q
-         V683qNzZ0TH/vn2WJghH9QfL/N3rSmw+VJOTPdwTqCA2LZW/X5tF0YjUBwoBxSMqIEN2
-         EUgQ==
-X-Gm-Message-State: AOJu0YynWgvmFo6rnQmF5Q6OfZLVwPuTsd2yE84lYPshkxgKFGVduLyX
-	3ShLKhDjtNa6cLdXCgJH+5DdjmiUDMnTGRwRQc9ugKPJmMEWS53iLCZJ5K/z+0M=
-X-Google-Smtp-Source: AGHT+IHAY0id2rUAFIshnMoMYXgfIfqBfIbwnjGvIxqn8bUK+f7tCiKlPakrEgJpmh+5BOErZSPgrA==
-X-Received: by 2002:a05:600c:5117:b0:40f:de5c:d283 with SMTP id o23-20020a05600c511700b0040fde5cd283mr957164wms.26.1707207308987;
-        Tue, 06 Feb 2024 00:15:08 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCX1hmKw70FzD7bJf7uUXsOKOKjCezkhFYawWz6xg07SYsxhvKv3q3I7MdZBhoJFAtFibPiY+lppQGWokiuhvJpriSDPCGWWvg9GaF5G7QtZAswh1dEJFg8W8CcMgLw1dSmZ7sXXdA/IfouRf7ndIcKbhlB1R8nIejdD7QFT2AuLEXE3QDRtu4Oi4rYDYAk4k0IDcxox5bzKqjI0HOIviksCiIkJYLHVrSo3nhX4vS6IVy1fKzFtFNMSlXsoM56I4rvi+O2xbGRj9kz3KHgEnYGW7BG/cV3dB8Ev9PwSfbQRIl9P27ThziXC2FZVj3+Jlge2Usk9R5sB807bUlqWsXWwVSOiA+sMVqobqtncNIZ7tlODknzocIf9K4Pin07cszcfsLJbcYxqSbHzjY0c2KXCuCElKyD5DbvxRvQth5ycDvE7GscwUWLpoMiCXYRVIqAsx9h1v5Y/xqvcGNdkra6z/tLvTUAGvo+QyfPCuxycSdJTyS8AYc47n3pa0WWh3uDgkfnfNC/HwE59mKN/BA33LBuxc+QNqaNaSnoPU7V56hOr9I8kkJbvLbZgJsa5Cqxe2jlspVAv1UUyjfXZIKAcaOCxtYPOtLxrfQATN8KauuCbNdn3Cm2rIgvzQ79N+KRpG/pYVbHUBQJPMN930iVtdqPu6BgzQo/5vadtYiABOIaTkDm9dxEWzDQ9gc/+UldTJhR77/lR/ab3nMd0CMaqhfoUDxpEm9UR5ywWQkLRcxzPNG9XG+Dtxoc1rqzY2HrQO0GkQQSoccVqaT2mSKOcmKsTnK5UAjicWvXQ+5nzh43HHTJVmXkmCgTn1Jh02bViz58Zh5/ZRwyEZ0FVR+dxOBpX3MuMDv2oTrc9nQullGCLh4UceAncr2COOFpejrRnrvdtoVdbEHEtkwBT9/T1eKNSQFZM9EvfufhNl9ATj7yb93zB3NW1ktFAneBRykJD1w
- huBWIWIirQQa/D77hagZ/LhIx3be1dMivkRxQWPWPFYjSmgBBx4KXysvRNuq0bi2acJDpi+BTqzK+7e5ufYEtNI1pXT54aVeY3fWAnDBMYVlXw1jxRAVFS3xEjM4URX69Ievl8tEmPTD5waLJpGY+w5LuYeqi+2NGkJ0XJkgDLdQY55mg7/dIs0m9u3A==
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id o28-20020adfa11c000000b0033b3ceda5dbsm1440140wro.44.2024.02.06.00.15.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 00:15:08 -0800 (PST)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-To: linux-arm-kernel@lists.infradead.org, Adam Ford <aford173@gmail.com>
-Cc: marex@denx.de, alexander.stein@ew.tq-group.com, 
- frieder.schrempf@kontron.de, Andrzej Hajda <andrzej.hajda@intel.com>, 
- Robert Foss <rfoss@kernel.org>, 
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
- Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
- Sascha Hauer <s.hauer@pengutronix.de>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>, 
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, 
- Philipp Zabel <p.zabel@pengutronix.de>, Vinod Koul <vkoul@kernel.org>, 
- Kishon Vijay Abraham I <kishon@kernel.org>, 
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
- Liu Ying <victor.liu@nxp.com>, Ulf Hansson <ulf.hansson@linaro.org>, 
- Lucas Stach <l.stach@pengutronix.de>, dri-devel@lists.freedesktop.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-phy@lists.infradead.org, linux-pm@vger.kernel.org
-In-Reply-To: <20240203165307.7806-1-aford173@gmail.com>
-References: <20240203165307.7806-1-aford173@gmail.com>
-Subject: Re: (subset) [PATCH V8 00/12] soc: imx8mp: Add support for HDMI
-Message-Id: <170720730748.2682504.5723443718654255772.b4-ty@linaro.org>
-Date: Tue, 06 Feb 2024 09:15:07 +0100
+        d=1e100.net; s=20230601; t=1707207313; x=1707812113;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DFH4UTR5EQtsU77bTwpZfCbLoj9097wAjcuQb4s57DM=;
+        b=jYhTVy/0TSHEVC0nS5G8G3Mj6Nu5C6y20st1iX8AxgjGqFz7feAuV0uWW6frRn+UTY
+         BB3rtOrgkKBobl42tjLW0EU7dBiSS3I+InHeLT9hoXoVEHX9qbbA1+gxqbcO1H8/CqRQ
+         RgBTzdxauHjbmAL+K8BmwC5vC0OKFeHLYERLVp6bE70QH6ZhJ7yj7uSgk2Pr5iaVbIvM
+         o2ioaXXsbIfcfmapYceWqkazsBUDHBbaPObxx9slXQ6alkh28FE6wjkKbDQlH+0PxIo+
+         8/+RPvZAIdzj/AWLitEF1t3YpvmFhQheVx2o3y4ZgoL0HnAOYiJcnpjPQu4sAgm5W1wU
+         kT0g==
+X-Gm-Message-State: AOJu0YxPJPeN1/Uoa7rPGB9qfPi/rLjeFTqk7bgQAxwaKlu60zwzuoIv
+	EPUB1ie4uM4gydGNfbCYRzpISczib/PkkVrPSHggojp7Wl0wGlkftE9y1z5Qv4N434qL9X6lRNR
+	Q
+X-Google-Smtp-Source: AGHT+IGV8sEmr7N77J+aRgQQzpGjPTzlrlo7HjcwR/Bgb4FUsJSxxWo/HdzuSaPLXR9eLTIaAGDRBw==
+X-Received: by 2002:ac2:560f:0:b0:511:51b8:8550 with SMTP id v15-20020ac2560f000000b0051151b88550mr1204378lfd.64.1707207313313;
+        Tue, 06 Feb 2024 00:15:13 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUi7toIeKaV3uLgJTuxPw3z7U8eNW6DzDumx131cwrPzbhdzsJZibYkeod0Qc3WanfpzHoO0L1aZphrmX4m+K907x/AcdO+RlNkgMYdlsvEICpEU9D+2R/mye933qK12DQ+2VRw0e9OSFxb34deX4ecjo2Ugvj21macCRbXpxA9IKX4Q5ZNltEwIpH3ALR3MOCRc/L9rCKrhUU0dRxYlNsS87QJu9ouB3J+bXY4Br+5auH5WmHCJMxkGXYKyebTeloS4LOraVeINeXIoRq414eThNrtidTfAGqKGX1SZ50ehLVfcRzVSpCd2wbFuV/PvPvJkyKmhLAXxTEzpNbinjxayCyzBfc6XfeaRH/lXgqYmvvVt+EC3VJveLVhEhJL5pmLZxRFDXaScEGng++sKQsbJKoI10v0hQJBMnW5G0GzY3BtnuZh/NwUSajQ8XMQGv9FuE7EEN5sWl4jD9nS2pHWEXIVOVILGBgHB6SuNUY8LUWQ6qW8xVioLDQPnsmrqzA=
+Received: from [192.168.50.4] ([82.78.167.154])
+        by smtp.gmail.com with ESMTPSA id p7-20020a05600c358700b0040fe308ff25sm1072787wmq.24.2024.02.06.00.15.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Feb 2024 00:15:12 -0800 (PST)
+Message-ID: <d2b44719-8f68-409e-811f-0cedc34d7f36@tuxon.dev>
+Date: Tue, 6 Feb 2024 10:15:10 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] arm64: dts: renesas: r9a08g045: Add missing
+ interrupts of IRQC node
+Content-Language: en-US
+To: Prabhakar <prabhakar.csengg@gmail.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Magnus Damm <magnus.damm@gmail.com>
+Cc: devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20240205144421.51195-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240205144421.51195-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <20240205144421.51195-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.4
 
-Hi,
 
-On Sat, 03 Feb 2024 10:52:40 -0600, Adam Ford wrote:
-> The i.MX8M Plus has an HDMI controller, but it depends on two
-> other systems, the Parallel Video Interface (PVI) and the
-> HDMI PHY from Samsung. The LCDIF controller generates the display
-> and routes it to the PVI which converts passes the parallel video
-> to the HDMI bridge.  The HDMI system has a corresponding power
-> domain controller whose driver was partially written, but the
-> device tree for it was never applied, so some changes to the
-> power domain should be harmless because they've not really been
-> used yet.
+
+On 05.02.2024 16:44, Prabhakar wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 > 
-> [...]
+> The IRQC block on RZ/G3S ("R9A08G045") SoC supports ECCRAM error
+> interrupts too, add those missing interrupts in the IRQC node.
+> 
+> Fixes: 837918aa3fdd ("arm64: dts: renesas: r9a08g045: Add IA55 interrupt controller node")
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
+Reviewed-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-[09/12] dt-bindings: display: imx: add binding for i.MX8MP HDMI TX
-        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=8933d29e7703f6f905bc84186b915b0ab4fe03bb
-[10/12] drm/bridge: imx: add bridge wrapper driver for i.MX8MP DWC HDMI
-        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=1f36d634670d8001a45fe2f2dcae546819f9c7d8
-
--- 
-Neil
-
+> ---
+>  arch/arm64/boot/dts/renesas/r9a08g045.dtsi | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/renesas/r9a08g045.dtsi b/arch/arm64/boot/dts/renesas/r9a08g045.dtsi
+> index dfee878c0f49..4aaffd1753c8 100644
+> --- a/arch/arm64/boot/dts/renesas/r9a08g045.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/r9a08g045.dtsi
+> @@ -152,7 +152,10 @@ irqc: interrupt-controller@11050000 {
+>  				     <GIC_SPI 458 IRQ_TYPE_LEVEL_HIGH>,
+>  				     <GIC_SPI 459 IRQ_TYPE_LEVEL_HIGH>,
+>  				     <GIC_SPI 460 IRQ_TYPE_LEVEL_HIGH>,
+> -				     <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
+> +				     <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
+>  			interrupt-names = "nmi",
+>  					  "irq0", "irq1", "irq2", "irq3",
+>  					  "irq4", "irq5", "irq6", "irq7",
+> @@ -164,7 +167,8 @@ irqc: interrupt-controller@11050000 {
+>  					  "tint20", "tint21", "tint22", "tint23",
+>  					  "tint24", "tint25", "tint26", "tint27",
+>  					  "tint28", "tint29", "tint30", "tint31",
+> -					  "bus-err";
+> +					  "bus-err", "ec7tie1-0", "ec7tie2-0",
+> +					  "ec7tiovf-0";
+>  			clocks = <&cpg CPG_MOD R9A08G045_IA55_CLK>,
+>  				 <&cpg CPG_MOD R9A08G045_IA55_PCLK>;
+>  			clock-names = "clk", "pclk";
 
