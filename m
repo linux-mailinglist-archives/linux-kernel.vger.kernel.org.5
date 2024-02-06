@@ -1,100 +1,157 @@
-Return-Path: <linux-kernel+bounces-54657-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54658-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B54C84B21C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:11:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF0D484B221
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:12:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E27A1C234CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:11:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73BCF282981
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:12:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A76F112EBDF;
-	Tue,  6 Feb 2024 10:10:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A12C012DDBB;
+	Tue,  6 Feb 2024 10:12:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="cCe7Wzn8"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="pvwpZAYp"
+Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5568912EBEA;
-	Tue,  6 Feb 2024 10:10:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF42F12D162;
+	Tue,  6 Feb 2024 10:12:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707214232; cv=none; b=EE8v0FbkemTKIWz+m5wqSTGItUPmuzh7WD6OEKEs/vX3sfbJBqMSFlmg2N3va1eduWFBphHnvR8/aCZALhSTGj/6LTRSP0lU/KERDs7bl+UaFX/1EhJF9FNtTkd1eZ0PuccfTGsp17J5il2gC1hrUrmkHzC/Lu1TnVE/OoPgsW8=
+	t=1707214334; cv=none; b=kztEDL/hZ58Dqjqk5A+7nDlHZTjUpiNYXR5OHd3vo7TpLeJ20k7QMfFtGkjLSARLtjhbP4k++GdkFrmM6bhtzJDl9cyQTTb13Y9v8R5EGS/FSQZYVSAnJPMmSr8dh7LKFpigX8WKNA8M4e+19hruxBmitiRBWJ2AuksiXBgGRmA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707214232; c=relaxed/simple;
-	bh=c0L7QZYigfyLPmzRjA6nS5GyM2Z1QUEWyvUjNZ0gam8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nz2/3t5fF1FlbvH8WdID/vypbDVXkwJB4E11XIb/nsbWPeCQYYHAq2ykXcEwtv40/QKPG/f5nXJBlA4IhohqIxpwsy5tE6Kwy6mcutNMFh756/roCqSYA3xyEBJigCC+NDcEmJWLsXAs93w9HJNmlLaPxhOeMQv8LZ8iqhAU2ng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=cCe7Wzn8; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707214228;
-	bh=c0L7QZYigfyLPmzRjA6nS5GyM2Z1QUEWyvUjNZ0gam8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=cCe7Wzn8mB/Qc2IlweE/YDlAx4XfeacuEPNZi8O5b3+sWsF5QBYAPAlU8rHBGvUJ5
-	 cdYZNevT/tmv/Z9t+j6a2Jg/g1075A9U8lgYjj5/WGb9cJUz5RLTmRDexmtlovQuH3
-	 h9JcY1hYhAIp2LNyNV1I9F0ENfUFbbHx5uTFbw0zBVJQHyAnKQQVmwcVHuosS2xfEY
-	 aJUB2kf/OqPh4vwKTtBi37VW8i1XMzYjoFndzVRFeDlwFffATcEznXu3JiNaCNloPV
-	 ojLHP6VhrNJvj0jaFYF4XH3rZZPEVIJOMraFGnSkKBIONqH28EdUrgwwP+ysHQZeOG
-	 cV5jZtl/Nr+Ew==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	s=arc-20240116; t=1707214334; c=relaxed/simple;
+	bh=CV4GH9UNJ6zNQc6c5xVZP+xrV8bnxAF5VgMaNZ9XGwg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=tA8KEpdWSNcafioYYmys3oDp23g2oJ8YXCZA39n4Za6Q9x5g3De+X4WDK7qKlb5oq8c+A9ChwcU7bbdngVuqHzmOy1Kc9iASQueQzO8e1rZG/KcQzTu68708+l4davmoLi4Ia76IcMQ1XrlIkdKZc6njJn08Mxr1lv4GXgqmg4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=pvwpZAYp; arc=none smtp.client-ip=185.125.188.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from dragon.fritz.box (unknown [58.7.187.102])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A72AA378206B;
-	Tue,  6 Feb 2024 10:10:27 +0000 (UTC)
-Message-ID: <d5998dd4-d582-488e-b3ef-98ea9737dcfb@collabora.com>
-Date: Tue, 6 Feb 2024 11:10:27 +0100
+	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 2A8513FB19;
+	Tue,  6 Feb 2024 10:11:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1707214322;
+	bh=qrYMi74bcCPFGEWKyxCuYJeZThHsF8LjYHDib4wabmI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version;
+	b=pvwpZAYpL7itxwj6MgJbESyF7AQhBzP2KZHOCwoBIe8dEJADO0NNkYpP3PlsljhHk
+	 lst+w14GIg0+Dpz/36nj53p1oLYtd5VC/LYz5MWuUeEgu8ba4JLGLoHZKEq+bl7p6a
+	 QCogBCbjjK/5a6yhWtNGU0/vOxXCbBpiKq6JuUJGGqG6qDFgtAOs0iBbaiBoh3UsdU
+	 PdgekP0s1iugCZzUWitEINb2L0cYNlGXCpUOF3UM7rBK3kUb7kNzBQcbqpRFISmn5G
+	 2Pwn9N23cv7rUx3l4ZfnPZPMbVvCpSx2P7ji6o6WiWLaZzMD/qSh2AQ7ArtAuzTzTv
+	 c9yAptHsCJ1rQ==
+From: Daniel van Vugt <daniel.van.vugt@canonical.com>
+To: 
+Cc: Daniel van Vugt <daniel.van.vugt@canonical.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Helge Deller <deller@gmx.de>,
+	linux-fbdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] dummycon: Add dummycon_(un)register_switch_notifier
+Date: Tue,  6 Feb 2024 18:10:50 +0800
+Message-ID: <20240206101100.25536-1-daniel.van.vugt@canonical.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <f037df4a-8a97-4fcd-b196-43f484b63d8d@amd.com>
+References: <f037df4a-8a97-4fcd-b196-43f484b63d8d@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] pmdomain: mediatek: Use
- devm_platform_ioremap_resource() in init_scp()
-Content-Language: en-US
-To: Markus Elfring <Markus.Elfring@web.de>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-pm@vger.kernel.org, kernel-janitors@vger.kernel.org,
- =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Matthias Brugger <matthias.bgg@gmail.com>, Rob Herring <robh@kernel.org>,
- Ulf Hansson <ulf.hansson@linaro.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>
-References: <da6af483-5ee9-45cd-922e-d9d5364674dc@web.de>
- <CAMuHMdUxn4Ne7kmEfONz8Uk3Why3m9r83GdM5RzTxm_4Gj_a6g@mail.gmail.com>
- <6e397bf2-1d45-434f-8619-58a737a138e3@web.de>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <6e397bf2-1d45-434f-8619-58a737a138e3@web.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Il 06/02/24 10:21, Markus Elfring ha scritto:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Tue, 6 Feb 2024 10:05:34 +0100
-> Subject: [PATCH v2] pmdomain: mediatek: Use devm_platform_ioremap_resource() in init_scp()
-> 
-> A wrapper function is available since the commit 7945f929f1a77a1c8887a97ca07f87626858ff42
-> ("drivers: provide devm_platform_ioremap_resource()").
-> 
-> * Thus reuse existing functionality instead of keeping duplicate source code.
-> 
-> * Delete a local variable which became unnecessary with this refactoring.
-> 
-> 
-> This issue was transformed by using the Coccinelle software.
-> 
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+To detect switch attempts before a real console exists. This will be
+used for the same purpose as dummycon_(un)register_output_notifier,
+for fbcon to detect a more polite time to take over.
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Signed-off-by: Daniel van Vugt <daniel.van.vugt@canonical.com>
+---
+ drivers/video/console/dummycon.c | 35 +++++++++++++++++++++++++++-----
+ include/linux/console.h          |  2 ++
+ 2 files changed, 32 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/video/console/dummycon.c b/drivers/video/console/dummycon.c
+index 14af5d9e13..55e9b600ce 100644
+--- a/drivers/video/console/dummycon.c
++++ b/drivers/video/console/dummycon.c
+@@ -83,6 +83,32 @@ static int dummycon_blank(struct vc_data *vc, int blank, int mode_switch)
+ 	/* Redraw, so that we get putc(s) for output done while blanked */
+ 	return 1;
+ }
++
++/* This is protected by the console_lock */
++static RAW_NOTIFIER_HEAD(dummycon_switch_nh);
++
++void dummycon_register_switch_notifier(struct notifier_block *nb)
++{
++	WARN_CONSOLE_UNLOCKED();
++
++	raw_notifier_chain_register(&dummycon_switch_nh, nb);
++}
++
++void dummycon_unregister_switch_notifier(struct notifier_block *nb)
++{
++	WARN_CONSOLE_UNLOCKED();
++
++	raw_notifier_chain_unregister(&dummycon_switch_nh, nb);
++}
++
++static int dummycon_switch(struct vc_data *vc)
++{
++	WARN_CONSOLE_UNLOCKED();
++
++	raw_notifier_call_chain(&dummycon_switch_nh, 0, vc);
++
++	return 0;
++}
+ #else
+ static void dummycon_putc(struct vc_data *vc, int c, int ypos, int xpos) { }
+ static void dummycon_putcs(struct vc_data *vc, const unsigned short *s,
+@@ -91,6 +117,10 @@ static int dummycon_blank(struct vc_data *vc, int blank, int mode_switch)
+ {
+ 	return 0;
+ }
++static int dummycon_switch(struct vc_data *vc)
++{
++	return 0;
++}
+ #endif
+ 
+ static const char *dummycon_startup(void)
+@@ -120,11 +150,6 @@ static bool dummycon_scroll(struct vc_data *vc, unsigned int top,
+ 	return false;
+ }
+ 
+-static int dummycon_switch(struct vc_data *vc)
+-{
+-	return 0;
+-}
+-
+ /*
+  *  The console `switch' structure for the dummy console
+  *
+diff --git a/include/linux/console.h b/include/linux/console.h
+index 779d388af8..8fd70ae623 100644
+--- a/include/linux/console.h
++++ b/include/linux/console.h
+@@ -531,5 +531,7 @@ extern void console_init(void);
+ /* For deferred console takeover */
+ void dummycon_register_output_notifier(struct notifier_block *nb);
+ void dummycon_unregister_output_notifier(struct notifier_block *nb);
++void dummycon_register_switch_notifier(struct notifier_block *nb);
++void dummycon_unregister_switch_notifier(struct notifier_block *nb);
+ 
+ #endif /* _LINUX_CONSOLE_H */
+-- 
+2.43.0
 
 
