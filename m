@@ -1,140 +1,140 @@
-Return-Path: <linux-kernel+bounces-55433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B610A84BCA8
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:05:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 18A5484BCB1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:07:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E916F1C24304
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:05:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C0581C24BE2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:07:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3834134C3;
-	Tue,  6 Feb 2024 18:04:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E4281078B;
+	Tue,  6 Feb 2024 18:07:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="iJ7+Rq+8"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="P8XgOjRz"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDEC912B9C
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 18:04:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFE96DF42
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 18:07:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707242694; cv=none; b=edBwOzbU95WYN0Ok0m6iVe3MRwstIpbB6Gs6aaEN3rrcHevJVXy9ZrEI9MEFoq6/dbjcSnByFm8vS4MZ+9M/g5kAM2d7AIWKXI/ioWBsWVvdVEYgAi4EHody+77ult4TmjPnvo1Uvvtgk+pY+l/AgRjHcyNoPBaAX4lxpcVsEQQ=
+	t=1707242854; cv=none; b=II9Zf6LWJATZY7MtCMVlSIufe6Ff7wKVc8ZUAP2Cs7ZwkgbuspohFioftjNhKB0jdVNu4I8wuFpNz3n2KxqS8OeZm7GiQUPySUyDkN/r6o7NUuvu3TwMF3kSnHhu5sqCbczp2Exy9SohJ/4UBoU3AP/Tpn8tBHNMUuYrbYkVTLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707242694; c=relaxed/simple;
-	bh=csIGa+rd7lcNnhTQbpItKD6NpMqF39eNVB3gtdBsnA0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=eDNz5VmWittqgZiI4aKiXnLG83PT3l58pW65sYLBGKfhKq/XnKeR61bNRC5ySBnsQVsYa3PP2nQzmy/8hdo6N/SUYfo9n5QGXxf/qVMBvoCHxNL5MG/WAoKLdRy51o/hW1l/+s34cMJqN1W2DZj8dB+pQ5PR3/v6cZ0PCgnBM4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=iJ7+Rq+8; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d7354ba334so51346775ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 10:04:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707242687; x=1707847487;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6/sMfQ4C2LqtKvqqdaWxWMsx/4R6rTjfiNR3jdV33D4=;
-        b=uAO2tFm+vaUiy7yZAu346yuOkVLb6BDbb/DuCFgeHa0RWu4l6hcCclBm1DDEtzAqCK
-         9BgMLlzh4sJY4b8JsiC1EssSekTdYdYs2/aDUFdChrB89BFaxEbhSdguCyVZq8dsdd+4
-         AlmAk6UhKyFObBecQkae00gQxgi1eI6w4jVX82Zmc1+reRISzh+5bgXiueEINrtmoIkO
-         oPCNEuzJDCsbBhhLTtIMXxaeSj903CSBKopHz3OldRBsF62Tjj9YqPLjHJG4CW5ltdPW
-         U6UiTMo3VADXmnSWFRq92nwl5FYfiScOhAzeFsVAJZBwh5+zCEjWaLT3+leDo/isvPRB
-         vscg==
-X-Gm-Message-State: AOJu0Yx0Ryke9d597KmnS0Ohcsp7FDDSl+9spe+t4Hgr8Ca97JLSorjH
-	Wk+KZrBVDRRIPeIc7jQRgX/VbnID0Tj/aKtHqChZexAnW2HSl4iB
-X-Google-Smtp-Source: AGHT+IHSjJorv6QXrPS87peEQAaqIavUR6mhKePHO2aQ8PMY7g+yxHpac9ju+EldK9aQYcfgXMw95g==
-X-Received: by 2002:a17:902:c947:b0:1d9:8082:4573 with SMTP id i7-20020a170902c94700b001d980824573mr3134146pla.2.1707242686937;
-        Tue, 06 Feb 2024 10:04:46 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWxfcDMLUogxRqr60AgcSVAEVfMDX8DLtD+DxKDIy4wagpYhynC42ozQ+xJlGI8S104oshUKFE71P9CVqUHbh/R0XVdX0hjyL1I3pMpFQY89HM7smgwaxFT2Zuc2FjRcqZiLJAB
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id e16-20020a170902cf5000b001d9ce370415sm884579plg.90.2024.02.06.10.04.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 10:04:46 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1707242685;
+	s=arc-20240116; t=1707242854; c=relaxed/simple;
+	bh=GP3AdmJhwLFXuWiy7rvWADVhXvVh1fs62Emf7JRG3WQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BCskNuT897HSdMDLTGmr1l3zO22DcM4MyaFSxYpen/zPwA59/5Bf+SzxYWBx71z8UwHs/JG7fFnMnQnYrJZ3S8DFDRGiGrV06C3793skE1UZwOCat2LCMXeCFbDjvvbrtzzdBc+bexFulVt2tjLMFg4/CNJ10GfI5uYWJldv2pE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=P8XgOjRz; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707242851;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=6/sMfQ4C2LqtKvqqdaWxWMsx/4R6rTjfiNR3jdV33D4=;
-	b=iJ7+Rq+8feZu+ukBnYYkMMivm+bNOMEs4M7eabGmy5IiTT36FSD5Y9+u24YUW6gY6eud84
-	HsE+yJmqH2bZrfMQy2ckuwUaK0DYMwThA6rxPU0vmipyXN9V3A95gMuj0VCY/4n21cCUoo
-	JnQPiIcwOGlrZXYLDyIbdkx7V8P4kBiouPd99tdJGfDxqPu+Ymbt9YDo4orr6qqiHWdUhF
-	TSHALQNwM+OrYU+ovJoZw7YQvrUusoRBXKNsXyBAfSMHTTmPbUqajawwJY/PnwH7TGWFPZ
-	2hE/x1YNn+iFTuZNrsxtWPaQM4LVLVtQ+8Y4/q+kCE997coHiWoTFoIo0cjVsg==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Tue, 06 Feb 2024 15:05:06 -0300
-Subject: [PATCH] workqueue: make wq_subsys const
+	 in-reply-to:in-reply-to:references:references;
+	bh=SvMLQJZTmssaBchGK7lN9IcLsx2n0fKoUI5Hxr88UkU=;
+	b=P8XgOjRzUDnR+cYdyV7IDULjN9GZxqX512RDQmhxqQIUohxEmgGxor1eD+mtjM3fVFYSET
+	RDgYsjC+CwdHGh3ITxbnO+5/FnmOL2yZvj46r0plt+7FGfoTRmdgSuD6cKeJ3MNpV5bv/e
+	RlsNv8Rl5TVD5E0yHjRv2f/Jtwi3KUw=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-674-Acl4GtxYMTGuC8p1BvC62A-1; Tue, 06 Feb 2024 13:07:26 -0500
+X-MC-Unique: Acl4GtxYMTGuC8p1BvC62A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id ACA0B101FA2F;
+	Tue,  6 Feb 2024 18:07:25 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.46])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 0E6EE112132A;
+	Tue,  6 Feb 2024 18:07:23 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Tue,  6 Feb 2024 19:06:09 +0100 (CET)
+Date: Tue, 6 Feb 2024 19:06:07 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Tycho Andersen <tycho@tycho.pizza>
+Cc: Christian Brauner <brauner@kernel.org>,
+	"Eric W . Biederman" <ebiederm@xmission.com>,
+	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+	Tycho Andersen <tandersen@netflix.com>
+Subject: Re: [PATCH] pidfd: getfd should always report ESRCH if a task is
+ exiting
+Message-ID: <20240206180607.GB3593@redhat.com>
+References: <20240206164308.62620-1-tycho@tycho.pizza>
+ <20240206173722.GA3593@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240206-bus_cleanup-workqueue-v1-1-72b10d282d58@marliere.net>
-X-B4-Tracking: v=1; b=H4sIANF0wmUC/x3M0QpAMBSA4VfRubbaZpvyKpKGgxMNW0PJu1suv
- 4v/fyCgJwxQZQ94PCnQ5hJEnkE/WzchoyEZJJeKS25YF0Pbr2hd3Nm1+eWIGJEJrUqrjC7kICC
- 1u8eR7v9bN+/7AfKWKkdnAAAA
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>, 
- linux-kernel@vger.kernel.org, "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1166; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=csIGa+rd7lcNnhTQbpItKD6NpMqF39eNVB3gtdBsnA0=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlwnTcwzfqVRHqZhUZNfw///fw0r9IwUn5joN6v
- J9nzqTZxf6JAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZcJ03AAKCRDJC4p8Y4ZY
- psygEACo9A4c81fJKS97/6hziaVq+DgVpPtkloBf5QVMfzsuidx4Zr+l8UEWqlb+jXd+jLtGhzt
- 1rf1RyQaW8U77kcdkx7jLq6kyHSI+A3ZiyZMdM9gCRFaVZ1ejZjniV9NtUXXgcINXp2wz+odFoR
- ulSuD558rj6b33Zw+Uu8luRmbQAqT+6RX8SxpLYMS7pqWWDwlejwJDgy0kGP9Wgwc1hMTtRGrgd
- IQtkMAJtfPZlXMHA9cZhQOiBnQ7dzt2to9q6zEoaFu0MGRxZtGyJTBmpfxKzV4rYFuoIXyvZBdM
- AD3tirU+beEh/3yrhO8Pgq5eQjQmzfc3S4cZMEoal7d44b3i8whe4Na4tgZa7BwKib7LMa4FoNL
- X8THbHsOQSZV0tR0bhdXPhGL+30uQzpQ/9vxTN1W78gTItQW/eI97xQfcTk6Nr1gFVYx6mKxHc7
- A92Hih/jhpPyXH7Q5UJGtE4mqrhg1k6TmcCXIN2BAcxoiVHxs4u1uftsdSeoPLsKokUcB2MwfOi
- KUUfARx/bo/jo5h4eNfK6OV1TEH09Viovqe2sTyHVXZTYC+YgI8MVTcLWcHGBx3pSdDFCC76OSW
- Ei2YPMiszy3DST7ISOVpVxi+lhoJH5kVusp9HHbmis7WQ9n28SadBFhhDrASJfjx0mZt6jxz9p3
- NXC6/tXW6DpsRXw==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240206173722.GA3593@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-Now that the driver core can properly handle constant struct bus_type,
-move the wq_subsys variable to be a constant structure as well,
-placing it into read-only memory which can not be modified at runtime.
+Sorry for noise, forgot to mention...
 
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
-The maintainer asked [1] for this patch to be received through the
-driver-core tree.
-[1]: https://lore.kernel.org/all/ZcEeOueCbrltxr_b@slm.duckdns.org/
----
- kernel/workqueue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 02/06, Oleg Nesterov wrote:
+>
+> On 02/06, Tycho Andersen wrote:
+> >
+> > From: Tycho Andersen <tandersen@netflix.com>
+> >
+> > We can get EBADF from __pidfd_fget() if a task is currently exiting, which
+> > might be confusing.
+> 
+> agreed, because EBADF looks as if the "fd" argument was wrong,
+> 
+> > Let's check PF_EXITING, and just report ESRCH if so.
+> 
+> agreed, we can pretend that the task has already exited,
+> 
+> But:
+> 
+> > --- a/kernel/pid.c
+> > +++ b/kernel/pid.c
+> > @@ -688,7 +688,7 @@ static int pidfd_getfd(struct pid *pid, int fd)
+> >  	int ret;
+> >  
+> >  	task = get_pid_task(pid, PIDTYPE_PID);
+> > -	if (!task)
+> > +	if (!task || task->flags & PF_EXITING)
+> >  		return -ESRCH;
+> 
+> This looks racy. Suppose that pidfd_getfd() races with the exiting task.
+> 
+> It is possible that this task sets PF_EXITING and does exit_files()
+> after the "task->flags & PF_EXITING" check above and before pidfd_getfd()
+> does __pidfd_fget(), in this case pidfd_getfd() still returns the same
+> EBADF we want to avoid.
+> 
+> Perhaps we can change pidfd_getfd() to do
+> 
+> 	if (IS_ERR(file))
+> 		return (task->flags & PF_EXITING) ? -ESRCH : PTR_ERR(file);
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 76e60faed892..f1e062acd091 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -6157,7 +6157,7 @@ static struct device_attribute wq_sysfs_unbound_attrs[] = {
- 	__ATTR_NULL,
- };
- 
--static struct bus_type wq_subsys = {
-+static const struct bus_type wq_subsys = {
- 	.name				= "workqueue",
- 	.dev_groups			= wq_sysfs_groups,
- };
+Or we can check task->files != NULL rather than PF_EXITING.
 
----
-base-commit: f297a3844aa059c53be3f69be85ebc071b8a6d16
-change-id: 20240206-bus_cleanup-workqueue-1547a46532d1
+To me this looks even better, but looks more confusing without a comment.
+OTOH, imo this needs a comment anyway ;)
 
-Best regards,
--- 
-Ricardo B. Marliere <ricardo@marliere.net>
+> 
+> instead?
+> 
+> This needs a comment to explain the PF_EXITING check. And perhaps another
+> comment to explain that we can't miss PF_EXITING if the target task has
+> already passed exit_files, both exit_files() and fget_task() take the same
+> task_lock(task).
+> 
+> What do you think?
+> 
+> Oleg.
 
 
