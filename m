@@ -1,111 +1,115 @@
-Return-Path: <linux-kernel+bounces-55453-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 484B684BCDF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:24:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5127584BCE3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:25:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF7F7B23B07
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:24:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2655B25761
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:25:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A412134BD;
-	Tue,  6 Feb 2024 18:23:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RJPpe0Lq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9031A134BD;
+	Tue,  6 Feb 2024 18:25:37 +0000 (UTC)
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1E6F13FF2;
-	Tue,  6 Feb 2024 18:23:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFAB0134A6;
+	Tue,  6 Feb 2024 18:25:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707243827; cv=none; b=kHc1MUQXOKXSn2x2Zi3g+vBjpoae7a2cAH8YaAXPVf4oGauG0toaibOrFdUPZe+avahs0KKBnPH/BJMGHWLuxs6QcURWOn1yWfQX9Ad7mULwkVTXPaq/5xASq7FDJFbODlQak56yxp4LMC4eGj8fAIIgvAStG3oOQf3pfYiiaEI=
+	t=1707243937; cv=none; b=e3WElZ/GB5d5+LGKWH4bR3d+k29ugM8/yDSYVxs9p2F6+S1g94BL70ip8Cx6epdcPawDZZx6uGslWKt/Tl9Ofya9AFVT3Av4lHwGIR4lPhYxD+KsT+uVqUC7Qw1NYUZ9Rlc4/7VuzCJn3VF58qkAhhd5h2ny1Et+Qe4bBapACM4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707243827; c=relaxed/simple;
-	bh=P4tdr7VlNtzN9kXz294+TUo4fwBUFBllYS4JLqJJo8Q=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=Gr+5zIbAE0wF8cC54vU0DgEyJqPl88zBbv1RJvz4rQWMLjO0UoGgCCS5FbxVZz6Nf3y8SpLSVGEd2B+AuV5rZdUqRqCK3fJo+lQht/fYDzlMTwfQk0+Yqmj25c/XXTD2g7NmVk3Pxi/DXSgJzLbGULV6DvWmebuuERrGVMthmEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RJPpe0Lq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AC91C433F1;
-	Tue,  6 Feb 2024 18:23:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707243827;
-	bh=P4tdr7VlNtzN9kXz294+TUo4fwBUFBllYS4JLqJJo8Q=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=RJPpe0LqxliRr6FhlR6esMqeAmntIRf4UHBU+ygAKeT1t9Jl8jp118/4LHp/6uSdF
-	 Y+wdixThS1ivhd2TrkAZEe6jFfWK8bzphRUJsB2J/t/JhxbGaa7hWo2fimaJr9cldA
-	 l392tFzWJh1M7g0//CaHUIiyB7wHWDCCBeJiTKOkP68ZJFoG7Okf6CFQiS3rBHBSUB
-	 u+/WQSqbL2gHn1fcoxKyiGGWucG5jfc3NVWoIt4rtxBhJ8F3yp7EVe09MiTwAKpYP7
-	 MnyNs9/KfjGDud7LBemXUH7E4UANFGocoO8RwDmRbyP2A8f6X5L4Bf+D9Xe++/qsG+
-	 P94XU6SYvx9Yg==
-Date: Tue, 06 Feb 2024 18:23:43 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1707243937; c=relaxed/simple;
+	bh=boIl8+TYOpv1nFJrU868vTSHC6Kp2anwFIqbK6Q1jnY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=I7V4qBwBwBYVe1cuyHF+zurJ8S6V8X+KzaSBFcaqk91HA1XlRshFUbz3Qzitfe/WZsu/GTPynGJHuCegUcV2M8ujiPk7YrMEHb6hkL/F2MeT/MuSU4Vvp+slkha+yv3DtOlkhVBd0Y+lZ5Gv9zBEpk7JRoNHGPqh2CguZpxLng8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e054f674b3so1014973b3a.1;
+        Tue, 06 Feb 2024 10:25:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707243935; x=1707848735;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=u7OPD6Ab0mIup3vmBPQkMwBWi3PgXlH+8pyREPGDz9Y=;
+        b=v0VIUnmQovpz5l4ulIwG6WSY84OFbOLPOITXpZM/Wh2/MTChsWWreQqXpfVDBwnOMT
+         V/zXnBHQ0mBLUrolXC+WS/9vcuKTg6esBC6XvWcZkCSnjcbJOrLhIC8lWz1NTl94MlKF
+         fsD1qHEn6kce1SOQAfy6NW7nh1/yjGvEyTyCS/j2XNrhbjAp9x/vMHXQ/aJVk1MEkU1a
+         Ru1ScSyenlHs8y+/b8R7n2JL/r3XYYHn6XOmZCXSL8+u7xhubOiW/PVOz2vpCV2g79/p
+         AriwvCA7/8sW0KotNEJMBJSqz8LXShRBrt1drveGPHTxHHq9vUSUOnqhq+hav3V09AwW
+         tmXw==
+X-Gm-Message-State: AOJu0YxAF6aURDegRiVu9+V4Bou6LXz781QJz2jDFCjDT7CycUSDiaoK
+	ZRx+c3AhHQ4VydFy29iYHmSpbumxYwyhhdDAyAvfmNKJ3GWM0Rkb
+X-Google-Smtp-Source: AGHT+IHzeykEQwnsURnDGMQmcK034wo8Yyz29Yv15z5NhGJQqVfCW8LjcHZxg3Cogyua2OkJdCQNZw==
+X-Received: by 2002:a05:6a00:189f:b0:6e0:450c:4a2b with SMTP id x31-20020a056a00189f00b006e0450c4a2bmr439535pfh.9.1707243934774;
+        Tue, 06 Feb 2024 10:25:34 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXMbyrLJfHQlzb/E9hQ/ZbCWDLa3IOdY4U9HOq7NNOjTVJ1tXcrmZy1lk4iBD49XYCVEVLJFX9PaGoVp/eLzaE4vlc3kngGwCQLOPXloNsqBwyyb1jLJ40PK0WnujNyqVhKrpnUMbBKWv0mGY7yCGZil7/9d1fM5DXQnlR65q+JKPj2NTZb
+Received: from ?IPV6:2620:0:1000:8411:cdf4:99a4:cfef:d785? ([2620:0:1000:8411:cdf4:99a4:cfef:d785])
+        by smtp.gmail.com with ESMTPSA id du23-20020a056a002b5700b006e053870d46sm2265781pfb.124.2024.02.06.10.25.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Feb 2024 10:25:34 -0800 (PST)
+Message-ID: <abced0b9-5a0c-4627-b53b-10b0a461c564@acm.org>
+Date: Tue, 6 Feb 2024 10:25:32 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Markus Schneider-Pargmann <msp@baylibre.com>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, 
- Santosh Shilimkar <ssantosh@kernel.org>, Andrew Davis <afd@ti.com>, 
- linux-arm-kernel@lists.infradead.org, Tero Kristo <kristo@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Rob Herring <robh+dt@kernel.org>, 
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
- devicetree@vger.kernel.org, Nishanth Menon <nm@ti.com>, 
- linux-kernel@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>
-In-Reply-To: <20240206143711.2410135-3-msp@baylibre.com>
-References: <20240206143711.2410135-1-msp@baylibre.com>
- <20240206143711.2410135-3-msp@baylibre.com>
-Message-Id: <170724381132.1723363.3827684466667274405.robh@kernel.org>
-Subject: Re: [PATCH 2/4] dt-bindings: hwinfo: ti,k3-socinfo: Add
- nvmem-cells
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/6] Restore data lifetime support
+Content-Language: en-US
+To: Christian Brauner <brauner@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+ "Martin K . Petersen" <martin.petersen@oracle.com>
+References: <20240202203926.2478590-1-bvanassche@acm.org>
+ <20240206-kunden-postfach-7fb32cb79486@brauner>
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20240206-kunden-postfach-7fb32cb79486@brauner>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-
-On Tue, 06 Feb 2024 15:37:09 +0100, Markus Schneider-Pargmann wrote:
-> The information k3-socinfo requires is stored in an efuse area. This
-> area is required by other devices/drivers as well, so using nvmem-cells
-> can be a cleaner way to describe which information are used.
+On 2/6/24 05:35, Christian Brauner wrote:
+> On Thu, 11 Jan 2024 17:22:40 +1100, David Disseldorp wrote:
+>> If initrd_start cpio extraction fails, CONFIG_BLK_DEV_RAM triggers
+>> fallback to initrd.image handling via populate_initrd_image().
+>> The populate_initrd_image() call follows successful extraction of any
+>> built-in cpio archive at __initramfs_start, but currently performs
+>> built-in archive extraction a second time.
+>>
+>> Prior to commit b2a74d5f9d446 ("initramfs: remove clean_rootfs"),
+>> the second built-in initramfs unpack call was used to repopulate entries
+>> removed by clean_rootfs(), but it's no longer necessary now the contents
+>> of the previous extraction are retained.
+>>
+>> [...]
 > 
-> If nvmem-cells are supplied, the address range is not required.
-> Cells chipvariant, chippartno and chipmanufacturer are introduced to
-> cover all required information.
-> 
-> Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-> Reviewed-by: Andrew Davis <afd@ti.com>
-> ---
->  .../bindings/hwinfo/ti,k3-socinfo.yaml        | 23 ++++++++++++++++++-
->  1 file changed, 22 insertions(+), 1 deletion(-)
-> 
+> I've pulled this in. There was a minor merge-conflict with
+> fs/iomap/buffer_write.c that I've resolved. Please double-check that
+> it's sane. I'll treat this branch as stable by Friday since I know you
+> want to rely on it.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Thanks! The patches on the vfs.rw branch look good to me and pass my regression
+tests.
 
-yamllint warnings/errors:
+> We can do it right now but I reckon that there might still be an ack or
+> two incoming that you wanted.
+I'm not sure acks will be incoming despite earlier promises. The following
+was promised almost two years ago: "If at some point there's a desire to
+actually try and upstream this support, then we'll be happy to review that
+patchset." [ ... ] "As I've said multiple times, whenever code is available,
+it'll be reviewed and discussed."
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/hwinfo/ti,k3-socinfo.example.dts:39.27-43.11: Warning (unit_address_vs_reg): /example-1/chipid@14: node has a unit name, but no reg or ranges property
+Sources:
+* https://lore.kernel.org/linux-block/ef77ef36-df95-8658-ff54-7d8046f5d0e7@kernel.dk/,
+   March 2022.
+* https://lore.kernel.org/linux-block/95588225-b2af-72b6-2feb-811a3b346f9f@kernel.dk/,
+   March 2022.
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240206143711.2410135-3-msp@baylibre.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+Bart.
 
