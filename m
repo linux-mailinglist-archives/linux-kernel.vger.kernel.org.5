@@ -1,124 +1,150 @@
-Return-Path: <linux-kernel+bounces-55161-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55169-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8444984B8D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:08:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 400CB84B8C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:05:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 138ADB21F42
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:00:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AF5F1C24045
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:05:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4025213475C;
-	Tue,  6 Feb 2024 14:57:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE33D1332B9;
+	Tue,  6 Feb 2024 15:05:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="jmNeG6Ka"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gr0Ql/Fu"
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE8AE1339A9
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 14:57:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83C5313248D;
+	Tue,  6 Feb 2024 15:05:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707231461; cv=none; b=liYGaC3bcPwR/kGLu4jtMPLaFh/TlVrtJSTlC1mmaUKAN2WhU6c9CkYkzRVkRsAa/g3ii3sHeqsT/VWPdiZ3XE09Cu+IL4odMNKKLLFUu1AlgfddaOTSgI6CPepSoHWNJr/XZuf5kjlEIJiA+VUiQQNRaNnb2KXj/KTnoGQCkDk=
+	t=1707231912; cv=none; b=HuS0Z3dTLn4b+GbtsgdZRgjy1uvJWqGzp1Vqro6S/qC6hf9VfdKa/eAb6GJdusQyQOEpIvFFwDm8z86Bg35qtygDEjQwwUvPfmubrcb8a0uhrXHlx1n4gosGmIzliYQHkKRZpZHzhOl/hKXk+YenDczViNKD6kpI+kAP3eBBtWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707231461; c=relaxed/simple;
-	bh=At3NKgE1b3gmQgeFp6wQ2Vd4bXzt+qAWBTc/hTeP86c=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DHuLqoBEa3Xhx4JrqT3vusapHefaa3rVc8L0Q3IMiGck6dXw2SUpeTMJkF4RZrLcEKjM74ELadfMukqlFIsW97qoU5st8HRU7aUJ3xRorpgghQz6nMU3psWzn5CvBY+1XDex2zF9aaQ/HKWHvH8AX+OocXNh2JaMkVRNDKf1jks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=jmNeG6Ka; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40fe2d3d5a9so6009855e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 06:57:39 -0800 (PST)
+	s=arc-20240116; t=1707231912; c=relaxed/simple;
+	bh=bVno8WQTGbHurQQwnhVu0vijufkiMDbLKRAxnxjC3Js=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=maZS37Pahv4c3K4BEx2+FGOkUrMnpFt3dP0CRbdri7YIVahO2y64MU8TWkDizRICIFtiK1QUmQktXOB+8oWoxjFqD3nVralQ6npDEq83tgf4Cku3nZDhmzZiwOo+ubBGqsb7T1zRAWwzH+ES8qGq+xWl7w0+pxpY0wC6Y3D+UeQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gr0Ql/Fu; arc=none smtp.client-ip=209.85.210.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6e125818649so3001591a34.1;
+        Tue, 06 Feb 2024 07:05:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707231458; x=1707836258; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1707231908; x=1707836708; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gASO78qnd+QKC6Tryaqp/xMfAhHvhZxuVEnU1FHt3IQ=;
-        b=jmNeG6Ka6mK5PBQeg5+cSTHQc18pmDVl51g9Vritw5BI1+MxHq9v4N9I1l/MMjkMcR
-         aITzRkUbxwQiYu2gqcwQ2BIfY43fDMEUhS+h9AyngMTeEnJfGKsrBDs5X58CKCIB/syM
-         vgDI69KsoDoajaXws2etgus1ULixRRpFOAmolUUERCtDkfK3GYeYdXWPkDW1rDhJjuZz
-         v/fgVWD8TFSOPtfrh/22tzcHqT9Vj32A8jPvmwHX7J8HG6akuP4W1iEvoH05Wc2HKY4T
-         Cg3vRBStqlFhjI56hBJIvNCH/NMg3B2f102vTPdIV8XS4fmKoHawWEAUA2jOxkgNo1Yj
-         WjGA==
+        bh=ioIvR4LsMaW6xA6i7+EQnV42R5bTHmknBpHkYqe7Uv8=;
+        b=gr0Ql/FuruA7uGX+Lr5gM8RFh5zuQqngDZ8NEwprk94/w6uRosssVwl/txD3osnLvQ
+         U+d5D0UsOrmS+tauC7JDB9oPuFbV0/45bJyzDxUVfN13yRqsC+nhV03ZK9Y4eCB1GHUz
+         MvfZD6ysXn2PJ+7HfRTCpy9IhR7i0EdTHA31pxHXzWmyk+22FMzNJ6JrhPyl05RtVMDc
+         DSZHZUQEVtPbs8KlIwgDJg8aPMq6FC8L/9kyUrxv4NDzmEXXsdFC9m3bfsPw+GycR+cB
+         By1aGZiZavYftP15uSUWN0VrJmjbMuLlFYtuhcqgiMUD94HzvO2xkdNHFT5AqRJFCUVD
+         aFmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707231458; x=1707836258;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1707231908; x=1707836708;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gASO78qnd+QKC6Tryaqp/xMfAhHvhZxuVEnU1FHt3IQ=;
-        b=pY1uv8edjIK/DLzBuR0m/hZqnVmN4DBjzklqPUdHyY5LRUjm6M68f55T3CzGYFY5sY
-         nckKb7ZCsJs3LBqhrc5HEadS/WRSTYWJE0gUZZgYKBZURGpcFXL7Bapq3tq2QQFmlUQO
-         Ee4R6Xup217lQzLDErMT1m1qhpfYEKxjd1eJ3nF0mmHxao1jUNPgDRuyYKUSJ3J2emZm
-         S1m4a2lptEgYi1YzLVPQux6sFI6NV14FP0ECqwZvlCXHRjeRmbgs0brkaEZIov7uJ6zA
-         tdjRP/Q81Y3INvPm2dVxSfNpqoau5/Oim9dm7AmSEp5M/0LmkjGquKWdfc0fsTYvArJ8
-         nBFA==
-X-Gm-Message-State: AOJu0YzT/zlvbKl1btqou/B6IbkqPKPWgBZTeDelnTzzGLyZfAj6jQRW
-	JRqvbR4qlwRP5OL5QR6G9IGVA3IuEeijXRcyUxC8Odgi/TJHPB2GhhgL770BFGY=
-X-Google-Smtp-Source: AGHT+IHeUAmaOBGgpivKhM4wX2IuW13WEvwte78xoboY3NHwL6YsIiphL2GESDSDG6g+c8QiLXAkAQ==
-X-Received: by 2002:adf:ed06:0:b0:33b:2658:cb3f with SMTP id a6-20020adfed06000000b0033b2658cb3fmr1379548wro.64.1707231457878;
-        Tue, 06 Feb 2024 06:57:37 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCW+e3f5uvLGpr7flmrRvo7g/ZKUCh94rCar9aQ2aSwAPj/XhZOEv5Lhb2DES8a71KjQJwvfWXUMUYDSTajwyx8IisYphxcpVwURtlN8y+wGHywkjUR7SFw0DxyjGKvx86titt9zgHSb5CSpKKu6ObesGMlybdi8rmzkL1RHLwAnOQxULy7MwMWVmSjr5WtwWNO6rwpgbx8r0XLUUXBzRoNZL4pRtaimUBJ6GOPz2w61B2/KbajRd9z/vlUxMj0UCDhcj447yw44xT5xiAbrl51P6I6w8yfDJn9NB1BnkjsxL7/mH8D/v+HEUu9OPkzwI7y3w6hQL0LI82jEo1amSFpaFlOh5fmdBujRB086J6Vq2DI1QdO2XOZwpbxWhH+bByLavXAVp0gnqyXYqAPT5DB+CYGxIpUyIcQDKfRK/TlJhS9HNRPVlwFOEsxuVb15xFojA7FDoAlBOeQgDbJUFh8yatRIJs4QDNBC
-Received: from blmsp.fritz.box ([2001:4091:a246:821e:6f3b:6b50:4762:8343])
-        by smtp.gmail.com with ESMTPSA id l14-20020a05600c4f0e00b0040fc56712e8sm2257896wmq.17.2024.02.06.06.57.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 06:57:37 -0800 (PST)
-From: Markus Schneider-Pargmann <msp@baylibre.com>
-To: Viresh Kumar <vireshk@kernel.org>,
-	Nishanth Menon <nm@ti.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tero Kristo <kristo@kernel.org>,
-	"Rafael J . Wysocki" <rafael@kernel.org>
-Cc: Andrew Davis <afd@ti.com>,
-	Dhruva Gole <d-gole@ti.com>,
-	linux-pm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Markus Schneider-Pargmann <msp@baylibre.com>
-Subject: [PATCH 3/3] arm64: dts: ti: k3-am625: Use nvmem-cells for opp
-Date: Tue,  6 Feb 2024 15:57:21 +0100
-Message-ID: <20240206145721.2418893-4-msp@baylibre.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240206145721.2418893-1-msp@baylibre.com>
-References: <20240206145721.2418893-1-msp@baylibre.com>
+        bh=ioIvR4LsMaW6xA6i7+EQnV42R5bTHmknBpHkYqe7Uv8=;
+        b=Q+Ve6RCJWdO0mEZjZpDEZfQOMWcaAi3wBdtlyFQO0bn0+UYKcMfwKYRbxaTj0JsCDR
+         Knhk3gvDsP8tO7HdpS5vYnyRFaFRiEiU90qltvBx9PNTtSibJgQUsUtk/7/TmVUNkUNv
+         JmP8hQ4yGBSFn6DBjU9P2JNqGQ8s/3fwfBp3wkEsmD3lzGxoS1+I1GbWYdkYTqYp7qSk
+         Hx10nUFvNbnMSfWQRLPsvpqmsCifEgRc/AyCDI8ZTmF+ksFmSfuPOqsMMClRZVTp15Xw
+         kGLDRMUHG0u3Y12p/YHAQ7ZQvWRoLNHDRNpGRXm3oRJPBsxkGpd22Yr6CU6wcneRIjNn
+         WevA==
+X-Gm-Message-State: AOJu0YwsstVjALus1sGpm/LtgYtLj210fQsQCnmIkGSxWDpbugtdcura
+	KbpOb/L1G+btsLBLdE6acjFC5Z7u+sI4vFklTPHwjmIsomXpRToGTjO+F0KkDW78mihVtH5rWgX
+	ygzE/kEu8bKTvk5NXgx5jdM3Fv/nFJ2wS3ow=
+X-Google-Smtp-Source: AGHT+IFWVTl6mm2CDlJsEbStomZ4IAGwkcu/Joc866MJc31wLxOcsv3DEJmL9yHTk+0ChG99yqhy1/iteBtcWJn+H6M=
+X-Received: by 2002:a05:6870:5251:b0:204:f0b:3bfd with SMTP id
+ o17-20020a056870525100b002040f0b3bfdmr3094700oai.43.1707231908476; Tue, 06
+ Feb 2024 07:05:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <202401312229.eddeb9a6-oliver.sang@intel.com> <CAOQ4uxiwCGxBBbz3Edsu-aeJbNzh5b-+gvTHwtBFnCvbto2v-g@mail.gmail.com>
+ <CAOQ4uxgAaApTVxxPLKH69PMP-5My=1vS_c6TGqvV5MizMKoaiw@mail.gmail.com> <Zb8vk1Psust0ODrs@xsang-OptiPlex-9020>
+In-Reply-To: <Zb8vk1Psust0ODrs@xsang-OptiPlex-9020>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 6 Feb 2024 17:04:56 +0200
+Message-ID: <CAOQ4uxjFA=P8ZiPjaqP-4Ka35GdqEtKaTTG1XMnts6rOswchCA@mail.gmail.com>
+Subject: Re: [linus:master] [remap_range] dfad37051a: stress-ng.file-ioctl.ops_per_sec
+ -11.2% regression
+To: Oliver Sang <oliver.sang@intel.com>, Christian Brauner <brauner@kernel.org>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org, 
+	Josef Bacik <josef@toxicpanda.com>, Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>, 
+	linux-fsdevel@vger.kernel.org, ying.huang@intel.com, feng.tang@intel.com, 
+	fengwei.yin@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Use nvmem cells referring to chip variant and speed grade for the
-operating points.
+On Sun, Feb 4, 2024 at 8:33=E2=80=AFAM Oliver Sang <oliver.sang@intel.com> =
+wrote:
+>
+> hi, Amir,
+>
+> On Fri, Feb 02, 2024 at 11:13:56AM +0200, Amir Goldstein wrote:
+> > On Wed, Jan 31, 2024 at 5:47=E2=80=AFPM Amir Goldstein <amir73il@gmail.=
+com> wrote:
+> > >
+> > > On Wed, Jan 31, 2024 at 4:13=E2=80=AFPM kenel test robot <oliver.sang=
+@intel.com> wrote:
+> > > >
+> > > >
+> > > >
+> > > > Hello,
+> > > >
+> > > > kernel test robot noticed a -11.2% regression of stress-ng.file-ioc=
+tl.ops_per_sec on:
+> > > >
+> > > >
+> > > > commit: dfad37051ade6ac0d404ef4913f3bd01954ee51c ("remap_range: mov=
+e permission hooks out of do_clone_file_range()")
+> > > > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git mas=
+ter
+> > > >
+> > >
+> > > Can you please try this fix:
+> > >
+> > >  7d4213664bda remap_range: move sanity checks out of do_clone_file_ra=
+nge()
+> > >
+> > > from:
+> > >
+> > > https://github.com/amir73il/linux ovl-fixes
+> > >
+> >
+> > Sorry, Oliver, this was a buggy commit.
+> > I pushed this fixes version to ovl-fixes branch:
+> >
+> >  1c5e7db8e1b2 remap_range: merge do_clone_file_range() into
+> > vfs_clone_file_range()
+> >
+> > Can you please test.
+>
+> the regression disappeared by above commit in our tests.
+>
+> I noticed this branch is based on v6.8-rc2, so I directly tested upon it =
+and its
+> parent (3f01e53bf6). I found 3f01e53bf6 has same data as dfad37051a we re=
+ported.
+>
+> and on 1c5e7db8e1b2, the performance back to the same level before dfad37=
+051a.
+>
 
-Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
----
- arch/arm64/boot/dts/ti/k3-am625.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+Thanks for testing!
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am625.dtsi b/arch/arm64/boot/dts/ti/k3-am625.dtsi
-index 4193c2b3eed6..d60e1be9eb89 100644
---- a/arch/arm64/boot/dts/ti/k3-am625.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am625.dtsi
-@@ -105,6 +105,8 @@ a53_opp_table: opp-table {
- 		compatible = "operating-points-v2-ti-cpu";
- 		opp-shared;
- 		syscon = <&wkup_conf>;
-+		nvmem-cells = <&chip_variant>, <&chip_speed>;
-+		nvmem-cell-names = "chipvariant", "chipspeed";
- 
- 		opp-200000000 {
- 			opp-hz = /bits/ 64 <200000000>;
--- 
-2.43.0
+Christian, can you please amend the fix commit to
+Reported-and-tested-by: kernel test robot <oliver.sang@intel.com>
 
+Thanks,
+Amir.
 
