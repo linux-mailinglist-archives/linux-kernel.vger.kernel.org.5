@@ -1,162 +1,149 @@
-Return-Path: <linux-kernel+bounces-54708-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54707-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90D7984B2B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:46:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DD3184B2AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:45:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C393F1C21B48
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:46:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A10E1F25BA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:45:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD01058131;
-	Tue,  6 Feb 2024 10:44:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CBF312EBE0;
+	Tue,  6 Feb 2024 10:44:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="LH/jS+gs"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bbpgzcux"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7932112F59C;
-	Tue,  6 Feb 2024 10:44:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 606C81EA90
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 10:44:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707216259; cv=none; b=OKD+i07NJhpIl3WMXR/x9T5aA4IafMprcaGR5GTHPVRErXmNI8XGC8pEG1n7SHht5GUi9OTyX2b4o4d2AgrfPeGb4+jAOdW1/Pb3ZLMueDMiTrlhsdg7beV+SdJU7AtZmEnk2gRcum3NA/UCKljdTzzQ5uinNxgr0i7ESSuQUFU=
+	t=1707216247; cv=none; b=DkdT5b3ovsWUQq3dg0Nra+ltBdZmwcdrhUy6I6GJDFMYqJTL2YJDh1DPiOefzQo+JAWXsZj2GzquOJ1DLePn2daN+9CLt5t2x0+IL0Nq64hBewyocMPCgTFWgOBOhLrOsSG+z/tlpkcRIWpsLK+y1svWAakX0QCenhuDrfTjLq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707216259; c=relaxed/simple;
-	bh=i371UdEhQpXaJ8mvQCXn8mXTIx12rvp+EJtokqwZJ0o=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=h4HYfnUZH8+Q2YbdqTHfdjviRW0iwSRHmfRtvu4GpkZniCV5HGCmS3E5CkSBeHJiU9PEm4FjMNI0tCW9L/Lqp7w7oMVwaiaq+V+dyxQeBhvY/kW0ebEvjsEMU3awP8Oh8FaaXDnmMngXucy2TBK99RnPN9pOX5a8IXtaBkpGNDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=LH/jS+gs; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 416AiApb113600;
-	Tue, 6 Feb 2024 04:44:10 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707216250;
-	bh=fnMZZfEYZdxyhfRJnAJGVe2SVYyE9V81+i0dqrp0+hM=;
-	h=From:To:CC:Subject:Date;
-	b=LH/jS+gsZAjdpWXQCEkzCns5tn8qrTjMBvLE30s913ioKACAbH/Q09rDAgSctLJQE
-	 kvHqUhmrdM/Il5wflJ4yo4AUGV5PGJ0g9yw4mI5ylN6K5UCVKylHX7P4JUQ4NAnfuo
-	 xTp1TKQwgQmJ5dJsZHFWXlk4v1ziyqOUAJOB6Kuc=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 416AiAet028004
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 6 Feb 2024 04:44:10 -0600
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 6
- Feb 2024 04:44:10 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 6 Feb 2024 04:44:10 -0600
-Received: from udit-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (udit-hp-z2-tower-g9-workstation-desktop-pc.dhcp.ti.com [172.24.227.18])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 416Ai6iS105184;
-	Tue, 6 Feb 2024 04:44:07 -0600
-From: Udit Kumar <u-kumar1@ti.com>
-To: <nm@ti.com>, <kristo@kernel.org>, <ssantosh@kernel.org>, <chandru@ti.com>,
-        <rishabh@ti.com>
-CC: <vigneshr@ti.com>, <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>, Udit Kumar <u-kumar1@ti.com>
-Subject: [PATCH v2] clk: keystone: sci-clk: Adding support for non contiguous clocks
-Date: Tue, 6 Feb 2024 16:13:57 +0530
-Message-ID: <20240206104357.3803517-1-u-kumar1@ti.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1707216247; c=relaxed/simple;
+	bh=3PO9HqabKlTeIf2oJndo4GKhZNWrhzSwkIySYL7yM4I=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ha6EtCn9T5o+pOvz8ckuB1+r4llZhl7IFCenq7iUjPhlpjCjkWys8FZ5LpKitT7EQuVy8QpqK0nhFOuIsSz4EnfXYcW4Ni5oDdL4uqG+dPMgiIUq3x8DAYl2qHPi55as7LXQfJ7L9RlyuK8yt4B55DWtPy0dAYpZ0MTF79p5+qs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bbpgzcux; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707216244;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=GUF0RwSqdPkltRDROFKguYIVUTaltKVb3IJtt9hFPTs=;
+	b=bbpgzcuxuwIgrd9i/pNpGfy1jt/lnMwuFtABpfFMZxFykOibX2kk5WID94ExzjZZmPJGWi
+	QYaSS0sgtkfHgkEfaYKb6dfG/pT/tAfMUZCAvU3mTvliRRYd+raW4RYPKj0itad907eNPt
+	uiOMrBWHFs4lVqlrYfD0s7SbWLfNjik=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-263-ouTo2KOzNOa24NBdxWwtCw-1; Tue, 06 Feb 2024 05:44:01 -0500
+X-MC-Unique: ouTo2KOzNOa24NBdxWwtCw-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40efaee41dbso3985585e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 02:44:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707216241; x=1707821041;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GUF0RwSqdPkltRDROFKguYIVUTaltKVb3IJtt9hFPTs=;
+        b=pCuCeIJRKiBRO/KB0VVEcT8w9x6TIf+MTNMPTW1Rq7a65+FJFRO0oGe+xvlFVT8XUO
+         9NkrKZhXHiDJA3Bvz2pM+Ao6wN9KrwT/6lCWH4v/KORDU1sZObwq1ABLWFBbv3Z4xJxw
+         WB7zIkIYikrSnd8B9DUr4ampUsMhcmL0dNyC/WYW5RoqM/5jGEL0b/3okCLZlGBJcQym
+         uymJW57PEvVMMSOslzYCp9IykUpfqNQrkb5dh4oMtIbet5olA3nG8llomSCLeY9PgfqE
+         XqYmaQCLyzFc84veu6vES3H+A/+F7yt4zg/2OSrQV3s6DNzHBUagHQ2vYG+Vmcp7GYR3
+         zPAQ==
+X-Gm-Message-State: AOJu0Ywjp0T91saxLW4j7tCDFl9/JKiQqUigI+5OQyr7MeqdCWBCWCrG
+	/0wKA9gRd1r+F1ivLzFpuDs9VqRnGI5Uk/NdYzsXwEeXRqaBv9dSm87/guyEKSx4goPBZ8g4fUG
+	zfE6nzzS1zR5HYQ7J1r820BUqcqUmPGPlI2jbs8SpyPttf52XnoDGJVPH0MaKyw==
+X-Received: by 2002:a05:600c:3b8f:b0:40e:e9dd:c290 with SMTP id n15-20020a05600c3b8f00b0040ee9ddc290mr1927195wms.0.1707216240743;
+        Tue, 06 Feb 2024 02:44:00 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG0MIt8c0drvzNqUWklMcwdZFOc9WkhWGGhOkXSqaBVOw1OKYd0DgsREwjUGPkk8B4c4L5brA==
+X-Received: by 2002:a05:600c:3b8f:b0:40e:e9dd:c290 with SMTP id n15-20020a05600c3b8f00b0040ee9ddc290mr1927182wms.0.1707216240402;
+        Tue, 06 Feb 2024 02:44:00 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXD4Iyw4GA1rjha+/SnnJhNMfoByPZdOihJX1I0X+AVMj616Jp65SGXAfE/dxo11kFGfl2vv9h4rKb1lS6dqbdA1pdPl9sXJwpxoBos0cMvDSueCZRorqxk3rjbeYpmZ0agpCnLzjIGApiSI62LardTmjH94J+iWlBiLN8hiNOa4244A6JI50l1IBV76sNK6AcDrELN28j77mLP/93TgClCm1U1Ofk89tGuEZ9P4e91UQGGla+61Vx5ab5nSLvJNWhOqdYU3tpCmpJmeSB+34Vh/d+v/kpoHxKYUSYeI04STfzQ/1mA/eqJ8o/TxiPu4Yhm9V44pKzXRo1OMHUAy7v/g1U6BGMufFKfsb/ngPWGfqqiFxU2zphx+vbVJ578NWqHv39iA8HxGDUmQE0qAOn88eNYmvsIl+OwF3RfY72Lru7Lu3ylun5PQ0MK9lQ8Pih+KAI9f8dySeNP6MEvBRXAt0LdPRn6eDfMbsTy7yG/QA==
+Received: from gerbillo.redhat.com (146-241-224-127.dyn.eolo.it. [146.241.224.127])
+        by smtp.gmail.com with ESMTPSA id fc16-20020a05600c525000b0040feb8c71a0sm744646wmb.13.2024.02.06.02.43.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 02:43:59 -0800 (PST)
+Message-ID: <5297dad6499f6d00f7229e8cf2c08e0eacb67e0c.camel@redhat.com>
+Subject: Re: [PATCH net-next v5] virtio_net: Support RX hash XDP hint
+From: Paolo Abeni <pabeni@redhat.com>
+To: Liang Chen <liangchen.linux@gmail.com>, Jesper Dangaard Brouer
+	 <hawk@kernel.org>
+Cc: mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com, 
+ hengqi@linux.alibaba.com, davem@davemloft.net, edumazet@google.com, 
+ kuba@kernel.org, netdev@vger.kernel.org, virtualization@lists.linux.dev, 
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ john.fastabend@gmail.com,  daniel@iogearbox.net, ast@kernel.org
+Date: Tue, 06 Feb 2024 11:43:58 +0100
+In-Reply-To: <CAKhg4tJFpG5nUNdeEbXFLonKkFUP0QCh8A9CpwU5OvtnBuz4Sw@mail.gmail.com>
+References: <20240202121151.65710-1-liangchen.linux@gmail.com>
+	 <c8d59e75-d0bb-4a03-9ef4-d6de65fa9356@kernel.org>
+	 <CAKhg4tJFpG5nUNdeEbXFLonKkFUP0QCh8A9CpwU5OvtnBuz4Sw@mail.gmail.com>
+Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Most of clocks and their parents are defined in contiguous range,
-But in few cases, there is gap in clock numbers[0].
-Driver assumes clocks to be in contiguous range, and add their clock
-ids incrementally.
+On Sat, 2024-02-03 at 10:56 +0800, Liang Chen wrote:
+> On Sat, Feb 3, 2024 at 12:20=E2=80=AFAM Jesper Dangaard Brouer <hawk@kern=
+el.org> wrote:
+> > On 02/02/2024 13.11, Liang Chen wrote:
+[...]
+> > > @@ -1033,6 +1039,16 @@ static void put_xdp_frags(struct xdp_buff *xdp=
+)
+> > >       }
+> > >   }
+> > >=20
+> > > +static void virtnet_xdp_save_rx_hash(struct virtnet_xdp_buff *virtne=
+t_xdp,
+> > > +                                  struct net_device *dev,
+> > > +                                  struct virtio_net_hdr_v1_hash *hdr=
+_hash)
+> > > +{
+> > > +     if (dev->features & NETIF_F_RXHASH) {
+> > > +             virtnet_xdp->hash_value =3D hdr_hash->hash_value;
+> > > +             virtnet_xdp->hash_report =3D hdr_hash->hash_report;
+> > > +     }
+> > > +}
+> > > +
+> >=20
+> > Would it be possible to store a pointer to hdr_hash in virtnet_xdp_buff=
+,
+> > with the purpose of delaying extracting this, until and only if XDP
+> > bpf_prog calls the kfunc?
+> >=20
+>=20
+> That seems to be the way v1 works,
+> https://lore.kernel.org/all/20240122102256.261374-1-liangchen.linux@gmail=
+com/
+> . But it was pointed out that the inline header may be overwritten by
+> the xdp prog, so the hash is copied out to maintain its integrity.
 
-New firmware started returning error while calling get_freq and is_on
-API for non-available clock ids.
+Why? isn't XDP supposed to get write access only to the pkt
+contents/buffer?
 
-In this fix, driver checks and adds only valid clock ids.
+if the XDP program can really change the virtio_net_hdr, that looks
+potentially dangerous/bug prone regardless of this patch.
 
-Fixes: 3c13933c6033 ("clk: keystone: sci-clk: add support for dynamically probing clocks")
+Thanks,
 
-[0] https://software-dl.ti.com/tisci/esd/latest/5_soc_doc/j7200/clocks.html
-Section Clocks for NAVSS0_CPTS_0 Device,
-clock id 12-15 not present.
-
-Signed-off-by: Udit Kumar <u-kumar1@ti.com>
----
-Changelog
-
-Changes in v2
-- Updated commit message
-- Simplified logic for valid clock id
-link to v1 https://lore.kernel.org/all/20240205044557.3340848-1-u-kumar1@ti.com/
-
-
-P.S
-Firmawre returns total num_parents count including non available ids.
-For above device id NAVSS0_CPTS_0, number of parents clocks are 16
-i.e from id 2 to 17. But out of these ids few are not valid.
-So driver adds only valid clock ids out ot total.
-
-Original logs
-https://gist.github.com/uditkumarti/de4b36b21247fb36725ad909ce4812f6#file-original-logs
-Line 2630 for error
-
-Logs with fix v2
-https://gist.github.com/uditkumarti/94e3e28d62282fd708dbfe37435ce1d9
-Line 2591
-
-
- drivers/clk/keystone/sci-clk.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/clk/keystone/sci-clk.c b/drivers/clk/keystone/sci-clk.c
-index 35fe197dd303..ff249cbd54a1 100644
---- a/drivers/clk/keystone/sci-clk.c
-+++ b/drivers/clk/keystone/sci-clk.c
-@@ -517,6 +517,7 @@ static int ti_sci_scan_clocks_from_dt(struct sci_clk_provider *provider)
- 	int num_clks = 0;
- 	int num_parents;
- 	int clk_id;
-+	u64 freq;
- 	const char * const clk_names[] = {
- 		"clocks", "assigned-clocks", "assigned-clock-parents", NULL
- 	};
-@@ -586,16 +587,23 @@ static int ti_sci_scan_clocks_from_dt(struct sci_clk_provider *provider)
- 				clk_id = args.args[1] + 1;
- 
- 				while (num_parents--) {
-+					/* Check if this clock id is valid */
-+					ret = provider->ops->get_freq(provider->sci,
-+						sci_clk->dev_id, clk_id, &freq);
-+
-+					clk_id++;
-+					if (ret)
-+						continue;
-+
- 					sci_clk = devm_kzalloc(dev,
- 							       sizeof(*sci_clk),
- 							       GFP_KERNEL);
- 					if (!sci_clk)
- 						return -ENOMEM;
- 					sci_clk->dev_id = args.args[0];
--					sci_clk->clk_id = clk_id++;
-+					sci_clk->clk_id = clk_id - 1;
- 					sci_clk->provider = provider;
- 					list_add_tail(&sci_clk->node, &clks);
--
- 					num_clks++;
- 				}
- 			}
--- 
-2.34.1
+Paolo
 
 
