@@ -1,153 +1,228 @@
-Return-Path: <linux-kernel+bounces-54535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FD1384B06F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:55:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AAD884B071
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:55:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF2BB1F264BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:55:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24F471C22897
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:55:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7090612CD96;
-	Tue,  6 Feb 2024 08:54:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C95312D751;
+	Tue,  6 Feb 2024 08:54:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ud0wWkc1"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dv690NaZ"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E87E512C81A
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 08:54:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74E6012D17C
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 08:54:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707209661; cv=none; b=OingwLRpLfsW9gAgSXHxv7bGb19F2bo+gHGr3s2TxtzZBnhOzC8WO5YOdz5DgfTJUxKR4p1jAhH1IaWelf9ZUMGT1oNO1X3XCxj2pnJps36SKhUrWTjUFSGD1G8vCvHy764e0yZ/MeXd3l19+fkbokKynKxm+9a3TZmeYahryMU=
+	t=1707209669; cv=none; b=D2m/x2itHi6b1yecGDM/Ltt77tJK3fd3AQSF3dv7A7SJlJ5fTdH4ECBXZKA9nzZaoZdvt00p1gGEzcHYigU+fHDYW70Vhhmltxgx6/66QIKBRx8xGv4zCjWnAOyL92ToXWx+yl2VhCp2NYd6eBrm7ZqH3lZqsX/iQAa2dRnQ1nA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707209661; c=relaxed/simple;
-	bh=aazENfqtOUGTlV9wdum2yY1QQawhdPN8d0nGlVzMOS0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uLCs08EVrHK8oOTF11e6PzjOQcG1VH6aAV7tcQvw4Ab3HW8QG+PjeQl9PgnXAr9K/pQSV0RQ66mPTy9xUH9P0LOlVv3fszl/i7QsKDp6W8PzGGHDNLDouM2uYAxz3GA9oCMKI9dApe70UT4GY8pO5/jwYeHS/InVXOdAePHuKKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ud0wWkc1; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707209658;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=D6jeTGXlTgd7sq1RCPaLQ4vJaHshuSOrnrjXVHXXGG4=;
-	b=Ud0wWkc1XwQBZo+G1X9y+lql8koybpfgy+QmpknIZ5Sth1r8cCoOSz+7wi09U/1TgMHWTJ
-	E2nFEnrqeNhdhwXvc392tN1Neiqjw9vqqFbcUMKN2KAXdDlb3+CPrlw5Rt0gjm3Rxsjk45
-	BBr3+mOVoO10ghA+DAIwsSGfCdP01sk=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-675-jCOfyzGgP4myvRykug3f6w-1; Tue, 06 Feb 2024 03:54:15 -0500
-X-MC-Unique: jCOfyzGgP4myvRykug3f6w-1
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-6da5a9defd5so1823131b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 00:54:15 -0800 (PST)
+	s=arc-20240116; t=1707209669; c=relaxed/simple;
+	bh=QiFBOTaBWVTHA5JY45pqSu/99Ao/iz+ZBi7+Bj4Wnhc=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=iDZUOjXhep1Rx8ndx7qibt1EqgcBxtboUEp4dwNT9tQ+eqEyXcQsap12liDP/fOKwWIVyhrEjx+vZxdUEb3ZZZPwz7tTB5QdYx48N4885QROiRa+mL2g78Op8aXN1r+I/Qcs7hnaEcyrVAvGL9WMu5je7WbqXa9AxaPMLeDwJro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dv690NaZ; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-511344235c6so6625836e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 00:54:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707209665; x=1707814465; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PpfNty4V2FJSl99hyIMrQ7HHIvMTg7pW9dV5rhCPpfQ=;
+        b=dv690NaZxJBDnePz5aBuCTtGWiyZggC+kxsrUz2UPPWfwJ7tlszow9udgmoclDWv2z
+         w2+amgII8rBS+PkTiWE7qM12U4+5yRaJnNNyo6FW0ATkOW6FR5OgmE+3CqfhAuSvZ0Qx
+         GakFoxVGS7m1YOvTo+nBC5sXGHspnJhGB+LkqiaHDCcpRCn3vD++sDS6WhZ5dpjlk25K
+         lCFw8fP1oHHmWzIsTYnkRjPhq/m4OEWRo0rXqrnCS5AB/2dGix+X5/lW2kuv5pA/KBHx
+         MASk8eLlhS7NR3fbW5jHAAAC+l6QjRnRGv/hBN4KWu+Ump1xw/uii/dBuw4UruOuxo+U
+         EkHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707209654; x=1707814454;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D6jeTGXlTgd7sq1RCPaLQ4vJaHshuSOrnrjXVHXXGG4=;
-        b=P5+hnXVNoHl3ubqK6pT+pt2kz50cWG7YtLC24A1D6x8lbCxCsZsu7M9p4EmGLO+Ct7
-         nC3WuLr8ZinCwQPke81R3q8mz/hzyEt4xRajLtHwi2MiJm50cbRvulDr2kiOKlu4BE4v
-         /Mhcl1ykkzi+B8G7+bvpRIneeK7hDAql6rhLZ4XbaMXhbD+o9O17UdfNvxFFcYDHoOEu
-         iwFbSbGml8A6Hw9XTYLXx3ua9DObv2CwNpIYhIt4crMpR/3j2poxqlNZMs5Q+Jl4oQfC
-         Cqnmv9c4hPAXlvZgNyWYD7xefpzc42r0ekv6vhj595xYlXvwYB6LdIrdtoihSV29lQzx
-         q9qg==
-X-Gm-Message-State: AOJu0YwbnjCRNY8/t786Ek9BYW5ryhWXtJ8ScbtmUgcfu1chW2MnReQk
-	gvGH8s4iqDf0KzWsTGG/1IusbrBqdMNXq+DgJKKsvhKVIcvgkfyq4gTjuIJ7H17hOThX17qho+A
-	ozyhSlHPIgdrQrkwAcUCARGMWmyL5p5eaJHji2WOgaH9SWQogUC1q39fcheF5kQ==
-X-Received: by 2002:a05:6a00:6ca1:b0:6e0:4576:f7e0 with SMTP id jc33-20020a056a006ca100b006e04576f7e0mr2247688pfb.2.1707209654359;
-        Tue, 06 Feb 2024 00:54:14 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEvN3y4+2Rw5wySrw+h3tMkLwaaLTuYCiyjGtL1y1ARDrZzfL7lEreaHm2OW4eOTmHSrywPIg==
-X-Received: by 2002:a05:6a00:6ca1:b0:6e0:4576:f7e0 with SMTP id jc33-20020a056a006ca100b006e04576f7e0mr2247674pfb.2.1707209654034;
-        Tue, 06 Feb 2024 00:54:14 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXgojwDuPwoSHBcnxvnh4eUxUfIAR5xwz/+stE6MwvGDIrJpPrLbUkveKky3x9HiRB2n2p1QQJn3vNs1cUKlg09cGWSW9Kmtf6HTPl2KAc570ys1TaAvFpcXwJbRF+gT+wjBJoL5VRKai3yxT4vxgiG7QcWWDDT
-Received: from x1n ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id x16-20020aa79a50000000b006e03be933cesm1349409pfj.96.2024.02.06.00.54.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 00:54:13 -0800 (PST)
-Date: Tue, 6 Feb 2024 16:54:06 +0800
-From: Peter Xu <peterx@redhat.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Shaoqin Huang <shahuang@redhat.com>
-Subject: Re: [PATCH] KVM: selftests: Fix a semaphore imbalance in the dirty
- ring logging test
-Message-ID: <ZcHzrqpoUlUl5OhU@x1n>
-References: <20240202231831.354848-1-seanjc@google.com>
+        d=1e100.net; s=20230601; t=1707209665; x=1707814465;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=PpfNty4V2FJSl99hyIMrQ7HHIvMTg7pW9dV5rhCPpfQ=;
+        b=qZpovxkKYOc45obIHI1gEnaFvy57EfY2TUFsUAAOAQWPNUYza5XVCKtPi1bKczIrC8
+         CdrdBNq/3A+zHhi2fEdYYMGxg/QnQneAJRrxsd5fBvnG9LNj27+xklLKQeX9G1sOZDZD
+         ffeWe1Em7SPrv31m2QvaPv93IqA9sIovSei/B12okLOCzkiW1RFnTJ8LrgEq+2p3J74l
+         TCsZtLHENWOlK1Qs22igHpA4Cqjc5Pt282RCifxJSSFNBelQ90Vfgc06hSUR82E6pHjJ
+         jGOTSJt5Uf1Rw289JavxS7e5MZV/zNUC5/Zv9wpFmpOEXv+L2pSMFYzZVtReH89MvXLO
+         XgZQ==
+X-Gm-Message-State: AOJu0Yx2xK1ftpGYaZl8aYhInRZf1ZR3EDSj3FruMObCSIFKoSS1TeBQ
+	xFdDWN0SJvxt9ih9mUcb59RkP5fE+VAIxhExU7MoErfkDvD1W84dOfWzNm5HjP8=
+X-Google-Smtp-Source: AGHT+IFDuq2X6Uvryx2hWt2fAZuxhgi0XTgVH8xY45EUkgsc37IDyLafR++qOnorPu2PMc+4r2ZTDw==
+X-Received: by 2002:a05:6512:401c:b0:511:48ab:2f9c with SMTP id br28-20020a056512401c00b0051148ab2f9cmr1639393lfb.42.1707209665385;
+        Tue, 06 Feb 2024 00:54:25 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUsA3tHV93bjseQi9VAWCbR5rYjl+ynyrSGk88N5INNZDvQL1XbJfo95gKDoH+zgAQiLSdYxgwdKdbnOIZXHLccA5Kb+G1PYItQQr5OFFa6dwgO2VWbDNu4G1HSgoqTCqrGQ/8YublNLuk4l+uEJDy6fi7MLw4imMjw2pBxUTAkiLsSgUZepH8FTviIkskqvGoRsG20JVXnq9kas3aLPNRVa7QdvgNnqZo2GoAp3YqX+2Mirru59YyyaoEMgmPlIGVPMVAPrE4KIytrewPkTxMWdaeYD94rsG0KgWs91BeV16viAeUqRM7sUC7h0Qt+nK/DyFUI1QpfvUYYKDS/OGQhpDgD+XBJoF7fVhsBSExw9n41wmYHBs/mtFi1rJC63WnL1ox3ubEKfggpZI/FKN4OcQ==
+Received: from ?IPV6:2a01:e0a:982:cbb0:ba23:8574:fa8:28dd? ([2a01:e0a:982:cbb0:ba23:8574:fa8:28dd])
+        by smtp.gmail.com with ESMTPSA id fa13-20020a05600c518d00b0040fb03f803esm1251337wmb.24.2024.02.06.00.54.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Feb 2024 00:54:24 -0800 (PST)
+Message-ID: <26732d5a-9fe1-4662-9362-ed397d266e01@linaro.org>
+Date: Tue, 6 Feb 2024 09:54:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240202231831.354848-1-seanjc@google.com>
+User-Agent: Mozilla Thunderbird
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCHv1 2/5] arm64: dts: amlogic: Add cache information to the
+ Amlogic SM1 SoC
+Content-Language: en-US, fr
+To: Anand Moon <linux.amoon@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Kevin Hilman <khilman@baylibre.com>,
+ Jerome Brunet <jbrunet@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240205171930.968-1-linux.amoon@gmail.com>
+ <20240205171930.968-3-linux.amoon@gmail.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20240205171930.968-3-linux.amoon@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 02, 2024 at 03:18:31PM -0800, Sean Christopherson wrote:
-> When finishing the final iteration of dirty_log_test testcase, set
-> host_quit _before_ the final "continue" so that the vCPU worker doesn't
-> run an extra iteration, and delete the hack-a-fix of an extra "continue"
-> from the dirty ring testcase.  This fixes a bug where the extra post to
-> sem_vcpu_cont may not be consumed, which results in failures in subsequent
-> runs of the testcases.  The bug likely was missed during development as
-> x86 supports only a single "guest mode", i.e. there aren't any subsequent
-> testcases after the dirty ring test, because for_each_guest_mode() only
-> runs a single iteration.
+On 05/02/2024 18:19, Anand Moon wrote:
+> As per S905X3 datasheet add missing cache information to the Amlogic
+> SM1 SoC. ARM Cortex-A55 CPU uses unified L3 cache instead of L2 cache.
 > 
-> For the regular dirty log testcases, letting the vCPU run one extra
-> iteration is a non-issue as the vCPU worker waits on sem_vcpu_cont if and
-> only if the worker is explicitly told to stop (vcpu_sync_stop_requested).
-> But for the dirty ring test, which needs to periodically stop the vCPU to
-> reap the dirty ring, letting the vCPU resume the guest _after_ the last
-> iteration means the vCPU will get stuck without an extra "continue".
-> 
-> However, blindly firing off an post to sem_vcpu_cont isn't guaranteed to
-> be consumed, e.g. if the vCPU worker sees host_quit==true before resuming
-> the guest.  This results in a dangling sem_vcpu_cont, which leads to
-> subsequent iterations getting out of sync, as the vCPU worker will
-> continue on before the main task is ready for it to resume the guest,
-> leading to a variety of asserts, e.g.
-> 
->   ==== Test Assertion Failure ====
->   dirty_log_test.c:384: dirty_ring_vcpu_ring_full
->   pid=14854 tid=14854 errno=22 - Invalid argument
->      1  0x00000000004033eb: dirty_ring_collect_dirty_pages at dirty_log_test.c:384
->      2  0x0000000000402d27: log_mode_collect_dirty_pages at dirty_log_test.c:505
->      3   (inlined by) run_test at dirty_log_test.c:802
->      4  0x0000000000403dc7: for_each_guest_mode at guest_modes.c:100
->      5  0x0000000000401dff: main at dirty_log_test.c:941 (discriminator 3)
->      6  0x0000ffff9be173c7: ?? ??:0
->      7  0x0000ffff9be1749f: ?? ??:0
->      8  0x000000000040206f: _start at ??:?
->   Didn't continue vcpu even without ring full
-> 
-> Alternatively, the test could simply reset the semaphores before each
-> testcase, but papering over hacks with more hacks usually ends in tears.
+> - Each Cortex-A55 core has 32KB of L1 instruction cache available and
+> 	32KB of L1 data cache available.
+> - Along with 512KB Unified L3 cache.
 
-IMHO this is fine; we don't have a hard requirement anyway on sem in this
-test, and we're pretty sure where the extra sem count came from (rather
-than an unknown cause).
-
-However since the patch can drop before_vcpu_join() by a proper ordering of
-setup host_quit v.s. sem_post(), I think it's at least equally nice indeed.
+This 512K number is for the NPU, AFAIK the CPU L3 Cache size isn't specified in the datasheet
 
 > 
-> Reported-by: Shaoqin Huang <shahuang@redhat.com>
-> Fixes: 84292e565951 ("KVM: selftests: Add dirty ring buffer test")
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> To improve system performance.
+> 
+> Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+> ---
+> Datasheet
+> [0] https://dn.odroid.com/S905X3/ODROID-C4/Docs/S905X3_Public_Datasheet_Hardkernel.pdf
+> [1] https://en.wikipedia.org/wiki/ARM_Cortex-A55
+> ---
+>   arch/arm64/boot/dts/amlogic/meson-sm1.dtsi | 39 ++++++++++++++++++----
+>   1 file changed, 33 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi b/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
+> index 643f94d9d08e..403443e782e4 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
+> +++ b/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
+> @@ -55,7 +55,13 @@ cpu0: cpu@0 {
+>   			compatible = "arm,cortex-a55";
+>   			reg = <0x0 0x0>;
+>   			enable-method = "psci";
+> -			next-level-cache = <&l2>;
+> +			d-cache-line-size = <32>;
+> +			d-cache-size = <0x8000>;
+> +			d-cache-sets = <32>;
+> +			i-cache-line-size = <32>;
+> +			i-cache-size = <0x8000>;
+> +			i-cache-sets = <32>;
+> +			next-level-cache = <&l3>;
+>   			#cooling-cells = <2>;
+>   		};
+>   
+> @@ -64,7 +70,13 @@ cpu1: cpu@1 {
+>   			compatible = "arm,cortex-a55";
+>   			reg = <0x0 0x1>;
+>   			enable-method = "psci";
+> -			next-level-cache = <&l2>;
+> +			d-cache-line-size = <32>;
+> +			d-cache-size = <0x8000>;
+> +			d-cache-sets = <32>;
+> +			i-cache-line-size = <32>;
+> +			i-cache-size = <0x8000>;
+> +			i-cache-sets = <32>;
+> +			next-level-cache = <&l3>;
+>   			#cooling-cells = <2>;
+>   		};
+>   
+> @@ -73,7 +85,13 @@ cpu2: cpu@2 {
+>   			compatible = "arm,cortex-a55";
+>   			reg = <0x0 0x2>;
+>   			enable-method = "psci";
+> -			next-level-cache = <&l2>;
+> +			d-cache-line-size = <32>;
+> +			d-cache-size = <0x8000>;
+> +			d-cache-sets = <32>;
+> +			i-cache-line-size = <32>;
+> +			i-cache-size = <0x8000>;
+> +			i-cache-sets = <32>;
+> +			next-level-cache = <&l3>;
+>   			#cooling-cells = <2>;
+>   		};
+>   
+> @@ -82,14 +100,23 @@ cpu3: cpu@3 {
+>   			compatible = "arm,cortex-a55";
+>   			reg = <0x0 0x3>;
+>   			enable-method = "psci";
+> -			next-level-cache = <&l2>;
+> +			d-cache-line-size = <32>;
+> +			d-cache-size = <0x8000>;
+> +			d-cache-sets = <32>;
+> +			i-cache-line-size = <32>;
+> +			i-cache-size = <0x8000>;
+> +			i-cache-sets = <32>;
+> +			next-level-cache = <&l3>;
+>   			#cooling-cells = <2>;
+>   		};
+>   
+> -		l2: l2-cache0 {
+> +		l3: l3-cache0 {
+>   			compatible = "cache";
+> -			cache-level = <2>;
+> +			cache-level = <3>;
+>   			cache-unified;
+> +			cache-size = <0x7d000>; /* L2. 512 KB */
 
-Reviewed-by: Peter Xu <peterx@redhat.com>
+Comment should be L3 here
+
+> +			cache-line-size = <64>;
+> +			cache-sets = <512>;
+>   		};
+>   	};
+>   
 
 Thanks,
-
--- 
-Peter Xu
+Neil
 
 
