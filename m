@@ -1,74 +1,73 @@
-Return-Path: <linux-kernel+bounces-55466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2566084BD0B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:42:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61E7C84BD10
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:43:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A9621C22AE1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:42:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E19CF1F259D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:43:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0811EDF59;
-	Tue,  6 Feb 2024 18:42:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF67E13AF8;
+	Tue,  6 Feb 2024 18:42:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="t54LG0m5"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lCXBvv7Y"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B60913FE7
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 18:42:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2189DDF59;
+	Tue,  6 Feb 2024 18:42:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707244964; cv=none; b=eLluar2YrXe7d7W4miOL+maaRSDgSe85Bs59td2+VxYbQoReO5Wu07HpLhX6G8BkHeiCBYLXcJkwh/x1VKby5aMh4gMKdQ5dLA65KGakQLZr6Ya2FqZRzmI6lFM4HuB/hnSEArqmgVHoRcNJNl3RnCDZlUK6wRTRpC4Wfzf68Xw=
+	t=1707244978; cv=none; b=R+XmB6JyZb7GercumYxW7hJnuw5oCGHFCiYnEpSCLj0tEUg0QDoGNT4MlBmu2dqka90+aAqzlH/IEdWx2WfGkEn+cE4T4ZUpikuDgdbE5rZ8m41eJ5DOavf+t0dZMjeLUqs6E374YPvj88rQvvlMWNIC+pxnm6Roph91tJMouvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707244964; c=relaxed/simple;
-	bh=8MBaPabl0Bb8vU/2dLb7YtAB4T72Dtck7qdoLLQY0+g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ledKSLiZ+tz9M867Emn74s56Um2tfLhZAVRYjNSOp7rHCUgo518iLr12ALRC+SYCaFsiai8+Q8ApUxbQKJ8qK/luaARgcDxSYXHGd08qQ0UCpfOti+X361hckVwlAWZE0/iYv+GZPpqrzUycrwyxpYsdGq+NTRdZpMvcoW03Zsw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=t54LG0m5; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-55ad2a47b7aso7695744a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 10:42:41 -0800 (PST)
+	s=arc-20240116; t=1707244978; c=relaxed/simple;
+	bh=2zNd/00J8nJ45V0bvSTkrCoVNw1xN/0ldoVU9aufm6s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=i1lgQNwtJkTbAwomYK9OTrMDTarDJsh9rMdpGQM1QDdh+bXN9KLMwtVtEWSJfnezaXIziFxcea8B1coCzoHVme5cXJMYE6Nf0XkL8udxHsg2uACkhESg+ByRfoeT4mZncs/24aOFC4ATtc0d9iNTkiZXBqur0Mw+pfd8FazC4Dg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lCXBvv7Y; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33b4b0a3bddso352018f8f.2;
+        Tue, 06 Feb 2024 10:42:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707244960; x=1707849760; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=CV/6DGRY7F0B4TiYPGlbuRxOZltTnz6gkeLa95KIEeM=;
-        b=t54LG0m5WdAqmSSKke/GmJcBc4RXgHHDPyLank6li49psSQkYIE22q0U/rHr6ybuPF
-         ot+OkGmqjAZ3+qBYY8Z2efAsb3jOpwzF4ITVClCOr6CTZ5gqlD9mACgGsQr2e66pyjSA
-         /unkmHXHoyPd6mCv/XDnL2+/nNBWd6C1KtKDlmUo7cB4BgWs9tuxDrqEmHDC8Q3yZGZZ
-         bq2ZwZ5NOzl/ivMIF6RHhggLPsvjPXCTz4gT6qvZscCt5GPYZgGs9q1RHV7GdjUgNPPT
-         D9suxhwfjesuktpNYoFJeFjlqybkb1NRgnK2UApI8fE3+UFZk+5C2TpdY+WsQPNruzxU
-         xKbA==
+        d=gmail.com; s=20230601; t=1707244975; x=1707849775; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JcYd3aRpfgCUSG1LIYQnSsuSSC3YGgnUABVKV+senFA=;
+        b=lCXBvv7Y3TtXrXZtOV7TOpORY6tM26/2ffLnLkB8+Folz6DZ64HRfIZ6J2la0vrfFI
+         KQvCNZ2LMblfWWS38qAO3VAhOq+WaCLCaEU/v4lv8MrPgnIj59IgATcA+3Kt+KXIsUWf
+         A+ZhAyFziCOMsQ0s8lH5L5zVjyI9AVxOeaUOUexks7cOlzUkR0YiswGYduUoca5og2DI
+         ORRFIDtN4ahXiafsw2kmdWBHY78BZCEMM55c50/+wuHbE9z3d4o6NtnKlZQrWLFH/0h4
+         g+D0Mz9ocvMzc/MT9/RDRnt7WxKkicUkJP7f5GOrj51or8Aymx2iC2wwLmB/937PFiAK
+         0yJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707244960; x=1707849760;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CV/6DGRY7F0B4TiYPGlbuRxOZltTnz6gkeLa95KIEeM=;
-        b=MAOWKNukymyKWzQsGoJgP5Wi72MID5JJaw8dUuGIB3x9TuSCt6KMIeGYRVlwfiBkRa
-         WuMY13yms1HiFxA/9AvdZ9qIqGOss1LlPZ4ukT5RovG2iHeQ9oXSrCeI2xiSGvS3VYk2
-         VbWm39i9pId1GJQPdUMazK2UONl8kqC/wvzXSgrW26gQ9xmD/tbEmsJosXNdozFrmWss
-         zLPurNYnJfvSsIf8ycqfGEPgLxrcv8wYNPXvKJ9YVuq5UrvRS8f3IkZqbfoPcnXrep6g
-         n7hYATqKQQUG3PCUf9eGae/B3wC7gzvrYv2KKEiJ+2WBxTjv+0FXHDdi10yddV1rCVAL
-         mwdQ==
-X-Gm-Message-State: AOJu0Yx0cOc/ElGBhMcv8T9zqCUKrqk24wO7zpVrH+QJp672r8uuvgRA
-	3GUJqAEb/BapzOKG23MjRQ7Td4KPovqjzbHFcpCVmeYtLLkmCISEVmdxsHj/sXw=
-X-Google-Smtp-Source: AGHT+IEO0ATnE8Phd7dm6ARNRR8q9Xnd2l2uEpSzz8LWBBdkN1/vfqnnKDm/J5Q61B0urpBIW1LtwA==
-X-Received: by 2002:aa7:d78e:0:b0:55f:adc6:4ee7 with SMTP id s14-20020aa7d78e000000b0055fadc64ee7mr2243064edq.32.1707244960376;
-        Tue, 06 Feb 2024 10:42:40 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUnD00nltNonygXyK4VjlYfQI+kO3r01XnKjIC2YQ35vpxeaaqhosToIo0p1nJcWMJ7kUjlYFJfwbByUYcCzIFN40pWSLjanhUj/TwK8BTqm427FdW2sXP8bK++oIAUNhcH7xXJXGZsLj+RA7OXeuiVtdvPdiIFztPohGDWyxgwQJ41D5acC7GfylOU/f30o9UpWtb5VkdW5qOAYjP2aJfqoH+anym/vL5Ixsg8JV2dPUnWFELmluUyRMsimlJ/uK++SVVupCSXbNG83EEsVnZdj5qXnz/oKAEOSSAzsNs=
-Received: from [192.168.192.207] (037008245233.garwolin.vectranet.pl. [37.8.245.233])
-        by smtp.gmail.com with ESMTPSA id k10-20020aa7d8ca000000b0056007548c9csm1283846eds.48.2024.02.06.10.42.38
+        d=1e100.net; s=20230601; t=1707244975; x=1707849775;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JcYd3aRpfgCUSG1LIYQnSsuSSC3YGgnUABVKV+senFA=;
+        b=T4kRjfyeCZalZrorbuZE4MlpVo91lhNhxph5bJtXX6XVkrQpoV5vk8UlGQX8OeFCyS
+         ruVn3Jyo/t+vpFS9fFuYkExLBIZ6oGnWd8nAea4cqgNMucdUdoxm16KNtMRQLY1qCHlB
+         eribRTNBZMhr+YmQvuWdgvdDKn7opMHCvt6L610AZ/aPLBKaCXn1mcOr8Yhcp2llDg+R
+         fMXp+5qXCyUUnQ/XVSCN9z0TH4yWjYjkJsiGeXrl2DNXUxXUCJEuz1wKR11J/vt6IDL7
+         XpLzvA1j0Rl9HTJLP8xsdcFx/R3uJCUKZb8N9HSNuUYUBQmJRwZYdmtyww6Y0ukyMehL
+         lorA==
+X-Gm-Message-State: AOJu0YxaXm1bPVXmlwE0/jGlGYHbbrfWul8lzjaT28MqxdyCvRvS8FV1
+	HGfW0PdQUe8nJn3amDQODWwIz1B4KgW55T2inAJeq9tQX7/XYVav
+X-Google-Smtp-Source: AGHT+IFtMiHNSHvx8KI/0xWb8L1QJIfX69P8hOKwZtnEAwxcw9gDu8J/XoZUlF6EE2Dq1ZZ0UKJL+A==
+X-Received: by 2002:adf:e9c2:0:b0:33b:1494:e4cd with SMTP id l2-20020adfe9c2000000b0033b1494e4cdmr1923628wrn.3.1707244974770;
+        Tue, 06 Feb 2024 10:42:54 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXF70vsTfTExShWiaK8oLQuWyCr/fKtj89R5eL2A4ujeldZ9kz/oaFGgySfBaS4vKgSg0p4m3+Rh8Q8Z7doJWNT8KpGs1T5B+6GQt6YXezuphuC++2lmKZaqhzB6cPzvPtwvYV5J+XAzWUVqIWwwHJ9ZHxNETOK8qobyvt4z8TAJis0/NIH9Nw9qOZc2Wao0ceTTDtrIyWcAXu5TRlo8lIyL4Pb/LoQEydAvMwVFHFopActFvRy79coIjeh/wWFnq9HyLVe+yUyby9zZ8GIq8hZ/9UsswTLzMmYl3LMcwbgNodGAyRteb85nXvXMaGpTS+Ok2N6J6Xg/eAuF2GpLekpMbmzMZkPu8kn39Xaps6IugWFjStek33DfPpW72MWhRROMSnbAAeXRvkQ4pwBsHC/cz6VzI96EppEhaJif+If/85PT2i/V8z9tyvi0HFNUYNMix8ZSeY47cyaY3vKiaKgnvqElbmJtvrjsVdStTa0MWdyj05RfklUJtuVW4eTE9rLb0MvIHvx11lx91LKScadS8PSgraft4mIeESMXrT358eE2uGGgwKyIkPUlspHSARdsWYvN3ns7metDHICypAKroZsbRmMwN97zokrjn6sBEVkNn/bWAd1dbKZN2eDGxV+BPmHyOyJ5SZnTf65q6TuKWUGICMno0HhksgDckTH0d4qbR/DeO667ldbpPCWugFKbMf+rR/7dR57ItMbhBqPTF2Eb+omDk+KE5/A3UfBxbE0dSjOckRYgKEsHrvWY2xvCq+6OOfChfk+GGc=
+Received: from [10.254.108.81] (munvpn.amd.com. [165.204.72.6])
+        by smtp.gmail.com with ESMTPSA id u15-20020a5d514f000000b0033afe6968bfsm2704594wrt.64.2024.02.06.10.42.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Feb 2024 10:42:40 -0800 (PST)
-Message-ID: <1ca4d384-9df4-4c00-a4c9-0c5ff491616e@linaro.org>
-Date: Tue, 6 Feb 2024 19:42:37 +0100
+        Tue, 06 Feb 2024 10:42:54 -0800 (PST)
+Message-ID: <051a3088-048e-4613-9f22-8ea17f1b9736@gmail.com>
+Date: Tue, 6 Feb 2024 19:42:49 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,107 +75,88 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/5] soc: qcom: llcc: Add regmap for Broadcast_AND
- region
-To: Unnathi Chalicheemala <quic_uchalich@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, kernel@quicinc.com
-References: <cover.1707202761.git.quic_uchalich@quicinc.com>
- <169277f53affed98ef41e5a7cbf2401fe62716bd.1707202761.git.quic_uchalich@quicinc.com>
+Subject: Re: [PATCH 3/3] drm/amdgpu: wire up the can_remove() callback
 Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <169277f53affed98ef41e5a7cbf2401fe62716bd.1707202761.git.quic_uchalich@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Hamza Mahfooz <hamza.mahfooz@amd.com>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
+ Bjorn Helgaas <bhelgaas@google.com>,
+ Mario Limonciello <mario.limonciello@amd.com>,
+ Lijo Lazar <lijo.lazar@amd.com>,
+ Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>, Le Ma <le.ma@amd.com>,
+ =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
+ James Zhu <James.Zhu@amd.com>, Aurabindo Pillai <aurabindo.pillai@amd.com>,
+ Alex Shi <alexs@kernel.org>, Jerry Snitselaar <jsnitsel@redhat.com>,
+ Wei Liu <wei.liu@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-pci@vger.kernel.org
+References: <20240202222603.141240-1-hamza.mahfooz@amd.com>
+ <20240202222603.141240-3-hamza.mahfooz@amd.com>
+ <2024020225-faceless-even-e3f8@gregkh> <ZcJCLkNoV-pVU8oy@phenom.ffwll.local>
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
+In-Reply-To: <ZcJCLkNoV-pVU8oy@phenom.ffwll.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 6.02.2024 08:15, Unnathi Chalicheemala wrote:
-> Define new regmap structure for Broadcast_AND region and initialize
-> regmap for Broadcast_AND region when HW block version
-> is greater than 4.1 for backwards compatibility.
+Am 06.02.24 um 15:29 schrieb Daniel Vetter:
+> On Fri, Feb 02, 2024 at 03:40:03PM -0800, Greg Kroah-Hartman wrote:
+>> On Fri, Feb 02, 2024 at 05:25:56PM -0500, Hamza Mahfooz wrote:
+>>> Removing an amdgpu device that still has user space references allocated
+>>> to it causes undefined behaviour.
+>> Then fix that please.  There should not be anything special about your
+>> hardware that all of the tens of thousands of other devices can't handle
+>> today.
+>>
+>> What happens when I yank your device out of a system with a pci hotplug
+>> bus?  You can't prevent that either, so this should not be any different
+>> at all.
+>>
+>> sorry, but please, just fix your driver.
+> fwiw Christian König from amd already rejected this too, I have no idea
+> why this was submitted
 
-Are they actually separate regions and not a single contiguous one?
+Well that was my fault.
 
-> 
-> Switch from broadcast_OR to broadcast_AND region for checking
-> status bit 1 as Broadcast_OR region checks only for bit 0.
-> 
-> Signed-off-by: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
-> ---
->  drivers/soc/qcom/llcc-qcom.c       | 22 +++++++++++++++++++---
->  include/linux/soc/qcom/llcc-qcom.h |  4 +++-
->  2 files changed, 22 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
-> index 4ca88eaebf06..fbd2542cd4c5 100644
-> --- a/drivers/soc/qcom/llcc-qcom.c
-> +++ b/drivers/soc/qcom/llcc-qcom.c
-> @@ -849,9 +849,14 @@ static int llcc_update_act_ctrl(u32 sid,
->  		return ret;
->  
->  	if (drv_data->version >= LLCC_VERSION_4_1_0_0) {
-> -		ret = regmap_read_poll_timeout(drv_data->bcast_regmap, status_reg,
-> -				      slice_status, (slice_status & ACT_COMPLETE),
-> -				      0, LLCC_STATUS_READ_DELAY);
-> +		if (!drv_data->bcast_and_regmap)
-> +			ret = regmap_read_poll_timeout(drv_data->bcast_regmap, status_reg,
-> +					slice_status, (slice_status & ACT_COMPLETE),
-> +					0, LLCC_STATUS_READ_DELAY);
-> +		else
-> +			ret = regmap_read_poll_timeout(drv_data->bcast_and_regmap, status_reg,
-> +					slice_status, (slice_status & ACT_COMPLETE),
-> +					0, LLCC_STATUS_READ_DELAY);
+I commented on an internal bug tracker that when sysfs bind/undbind is a 
+different code path from PCI remove/re-scan we could try to reject it.
 
-struct regmap *regmap = drv_data->bcast_and_regmap ?: bcast_regmap;
+Turned out it isn't a different code path.
 
-?
+>   since the very elaborate plan I developed with a
+> bunch of amd folks was to fix the various lifetime lolz we still have in
+> drm. We unfortunately export the world of internal objects to userspace as
+> uabi objects with dma_buf, dma_fence and everything else, but it's all
+> fixable and we have the plan even documented:
+>
+> https://dri.freedesktop.org/docs/drm/gpu/drm-uapi.html#device-hot-unplug
+>
+> So yeah anything that isn't that plan of record is very much no-go for drm
+> drivers. Unless we change that plan of course, but that needs a
+> documentation patch first and a big discussion.
+>
+> Aside from an absolute massive pile of kernel-internal refcounting bugs
+> the really big one we agreed on after a lot of discussion is that SIGBUS
+> on dma-buf mmaps is no-go for drm drivers, because it would break way too
+> much userspace in ways which are simply not fixable (since sig handlers
+> are shared in a process, which means the gl/vk driver cannot use it).
+>
+> Otherwise it's bog standard "fix the kernel bugs" work, just a lot of it.
 
-> +	if (drv_data->version >= LLCC_VERSION_4_1_0_0) {
+Ignoring a few memory leaks because of messed up refcounting we actually 
+got that working quite nicely.
 
-This check is rather redundant.. If there's no such region in hardware,
-it won't be described, and as such the _get()s will return some sort
-of an error.
+At least hot unplug / hot add seems to be working rather reliable in our 
+internal testing.
 
-Might as well make it a comment that it's intended for >=v4.1 and
-definitely leave a comment for the next guy that there's a backwards
-compatibility quirk involved..
+So it can't be that messed up.
 
-Konrad
+Regards,
+Christian.
+
+>
+> Cheers, Sima
+
 
