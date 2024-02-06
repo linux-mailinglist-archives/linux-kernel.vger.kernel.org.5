@@ -1,151 +1,270 @@
-Return-Path: <linux-kernel+bounces-55180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAC3B84B8E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:09:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 357FC84B8CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:07:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8399328D74B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:09:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFC7A2894D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:07:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99DD113474B;
-	Tue,  6 Feb 2024 15:08:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD186132C3F;
+	Tue,  6 Feb 2024 15:07:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X1qyTm/0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i1+n6vfa"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC86013328A;
-	Tue,  6 Feb 2024 15:08:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5A4C1E866;
+	Tue,  6 Feb 2024 15:07:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707232120; cv=none; b=Suyrc69GgZ0iysh3tmdT4VUri4Fgsd4zDeurId9ugjdnU+5LmSF91zjZTwlNcRd9YPUoDTctoNWOB9lI16GA2GDgZAsc/+D9mA4xWFeUCn29Ajirvpy5FUI9Y8HE9RGsrjiDXrBY2lWDULGANscX7a5LtgNC+rTV1E+xD+OIjgM=
+	t=1707232055; cv=none; b=S/erOGjnsYdSZmazgyPfs7SSwmgo9MbzjUoR11G6BLmwCeKmo8OCLof7IWzp55Xa6iLK5b6uDrCE2e61P2jGFqWR7TgUx/V0HTPkuNcw2KPFy6Rkxstpp8kdKQ3kk9YnGq/Hmt4j9FzlWDPGil8wiaYWpRUNpQKoDZ65QqjDhP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707232120; c=relaxed/simple;
-	bh=y0RNzdVJndYWSP0vGgdOxK1NMGHChFiuRWotjCrpl0Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MXVLakBmOB7V2UeMyJ+UNhW+y5gEuBO8ruRI6/Oz2G9dytldbqeVEVjzqxyp9et+Zk72zJ/KbiIFWWpvyRC6izI6b1omhEApQ7YS2rutHGQ5lCHRqP/hvWXSZx++jIHW9pqazWy9i87wAl+IaKo3MaaMnn3JK9GYsXdKjWkiQqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X1qyTm/0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94A01C433C7;
-	Tue,  6 Feb 2024 15:08:36 +0000 (UTC)
+	s=arc-20240116; t=1707232055; c=relaxed/simple;
+	bh=Ii+WcqZDg5A6lf9RNiCFYTT3chrvRJ8xzBmAEQd/9x4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=LJBiOrlfKW/ZJoXoflSSqWZhqTNtGeqnt27kuYwbbPilXrNEA1QldB5xYBKBLC0RyXRORYgd74GGeDIsDZFaJ6DrSZsHFBmqdzcHZOsQsSzQAFP3kGAy8u4tRuwLMepkWBCE0IjvNdlhN9dDyUGA79VqQ8elppgQHvlUBWUVixQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i1+n6vfa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD9F9C433F1;
+	Tue,  6 Feb 2024 15:07:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707232119;
-	bh=y0RNzdVJndYWSP0vGgdOxK1NMGHChFiuRWotjCrpl0Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=X1qyTm/0U+yzlb1K9Uzww22xl2BagUxKRr4E8pXRsIdKwRSutYO3C14gDCXxpMJ/d
-	 mPOgS/R5rdvmKhQPQqWgN6jB7CDkL8nbolZ2Qy/dVFSlBpc02UqkxXnh7lru3JQ6R+
-	 FHexHrssJkeJ0Fd0gepitxGMeB4XtUeU2WGxGWqZ3zdiPdsxBL08iYXnB8ZViIjSxA
-	 dIWYMhwbfW8ZcorLnhgSnUkLUOhsgtkMEZW26ZLWcZm+/Zd/OfuBb1lKum6H/aHwQE
-	 L/6ijl3lLIUQXQtXH+qlWsgLKPeSGfGP7TDQBtNzbBsFUoIx0ta5PUN+LzABn/gHKU
-	 RmXipacSQ1HGg==
-Date: Tue, 6 Feb 2024 15:07:04 +0000
-From: Simon Horman <horms@kernel.org>
-To: Pavel Sakharov <p.sakharov@ispras.ru>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org,
-	Alexey Khoroshilov <khoroshilov@ispras.ru>
-Subject: Re: [PATCH] stmmac: Fix incorrect dereference in stmmac_*_interrupt()
-Message-ID: <20240206150704.GD1104779@kernel.org>
-References: <20240203150323.1041736-1-p.sakharov@ispras.ru>
+	s=k20201202; t=1707232055;
+	bh=Ii+WcqZDg5A6lf9RNiCFYTT3chrvRJ8xzBmAEQd/9x4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=i1+n6vfa9B4C/ZJl6O5oTNDHwfvjMdNbYgxpglUy3EuYORgKfoWQyGZpxp9LnEcRG
+	 AwzuARqxy4YK6RdbcJwl62sJZThPo40QqqWxHoMirpOz55GvzqbX7WnOaf17OL+yWa
+	 zFp2kNn7+q4u30ZeRcF0ROP04JTd3GycggfG7ZSE+xyG6N3WvytzfZIsaoN8RNwqj4
+	 FfVYIFikrYYOsB18HZ4DmH1m9+zIWGA26Ho6fjC4nMBJYUrn1g76ncqwF3YVM5moNa
+	 u4bBJHE/uU177BwIEhoRzdcoUSJcrUv+zCI20FaEY4L+vMnBMQzOWt64OfOZ0Bqpix
+	 zDqn5DNINSKCQ==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>
+Cc: linux-trace-kernel@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	bpf <bpf@vger.kernel.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Guo Ren <guoren@kernel.org>
+Subject: [PATCH v7 00/36] tracing: fprobe: function_graph: Multi-function graph and fprobe on fgraph
+Date: Wed,  7 Feb 2024 00:07:29 +0900
+Message-Id: <170723204881.502590.11906735097521170661.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240203150323.1041736-1-p.sakharov@ispras.ru>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Sat, Feb 03, 2024 at 06:03:21PM +0300, Pavel Sakharov wrote:
-> If 'dev' is NULL, the 'priv' variable has an incorrect address when
-> dereferencing calling netdev_err().
-> 
-> Pass 'dev' instead of 'priv->dev" to the function.
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Signed-off-by: Pavel Sakharov <p.sakharov@ispras.ru>
+Hi,
 
-Thanks Pavel,
+Here is the 7th version of the series to re-implement the fprobe on
+function-graph tracer. The previous version is;
 
-I agree with your analysis that this can result in a NULL dereference.
-And that your proposed fix is good: netdev_err() can handle a NULL
-dev argument.
+https://lore.kernel.org/all/170505424954.459169.10630626365737237288.stgit@devnote2/
 
-As this seems to be a fix I suggest it should be for net.
-And that it should be based on that tree and designated as such
-in the subject:
+This version fixes max-limitation check[8/36] and interrupt while commiting
+pop operation bugs [20/36]. Also, I decided to move the FGRAPH_TYPE_BITMAP
+part from [13/36] to [8/36] so that it will introduce bitmap type from
+the beginning, instead of replacing the FGRAPH_TYPE_ARRAY.
+This also updates ftrace_graph_func() on loongarch and powerpc so that
+it will call function_graph_enter_ops() directly with fgraph_ops [13/36].
 
-Subject: [PATCH net] ...
+TODOs:
+ - Add s390x support to fprobe (this means implementing fgraph call from
+   ftrace support).
 
-Also if it is a fix, it should have a fixes tag.
-Perhaps this one:
+Overview
+--------
+This series does major 2 changes, enable multiple function-graphs on
+the ftrace (e.g. allow function-graph on sub instances) and rewrite the
+fprobe on this function-graph.
 
-Fixes: 8532f613bc78 ("net: stmmac: introduce MSI Interrupt routines for mac, safety, RX & TX")
+The former changes had been sent from Steven Rostedt 4 years ago (*),
+which allows users to set different setting function-graph tracer (and
+other tracers based on function-graph) in each trace-instances at the
+same time.
+
+(*) https://lore.kernel.org/all/20190525031633.811342628@goodmis.org/
+
+The purpose of latter change are;
+
+ 1) Remove dependency of the rethook from fprobe so that we can reduce
+   the return hook code and shadow stack.
+
+ 2) Make 'ftrace_regs' the common trace interface for the function
+   boundary.
+
+1) Currently we have 2(or 3) different function return hook codes,
+ the function-graph tracer and rethook (and legacy kretprobe).
+ But since this  is redundant and needs double maintenance cost,
+ I would like to unify those. From the user's viewpoint, function-
+ graph tracer is very useful to grasp the execution path. For this
+ purpose, it is hard to use the rethook in the function-graph
+ tracer, but the opposite is possible. (Strictly speaking, kretprobe
+ can not use it because it requires 'pt_regs' for historical reasons.)
+
+2) Now the fprobe provides the 'pt_regs' for its handler, but that is
+ wrong for the function entry and exit. Moreover, depending on the
+ architecture, there is no way to accurately reproduce 'pt_regs'
+ outside of interrupt or exception handlers. This means fprobe should
+ not use 'pt_regs' because it does not use such exceptions.
+ (Conversely, kprobe should use 'pt_regs' because it is an abstract
+  interface of the software breakpoint exception.)
+
+This series changes fprobe to use function-graph tracer for tracing
+function entry and exit, instead of mixture of ftrace and rethook.
+Unlike the rethook which is a per-task list of system-wide allocated
+nodes, the function graph's ret_stack is a per-task shadow stack.
+Thus it does not need to set 'nr_maxactive' (which is the number of
+pre-allocated nodes).
+Also the handlers will get the 'ftrace_regs' instead of 'pt_regs'.
+Since eBPF mulit_kprobe/multi_kretprobe events still use 'pt_regs' as
+their register interface, this changes it to convert 'ftrace_regs' to
+'pt_regs'. Of course this conversion makes an incomplete 'pt_regs',
+so users must access only registers for function parameters or
+return value. 
+
+Design
+------
+Instead of using ftrace's function entry hook directly, the new fprobe
+is built on top of the function-graph's entry and return callbacks
+with 'ftrace_regs'.
+
+Since the fprobe requires access to 'ftrace_regs', the architecture
+must support CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS, which enables to
+call function-graph entry callback with 'ftrace_regs', and also
+CONFIG_HAVE_FUNCTION_GRAPH_FREGS, which passes the ftrace_regs to
+return_to_handler.
+
+All fprobes share a single function-graph ops (means shares a common
+ftrace filter) similar to the kprobe-on-ftrace. This needs another
+layer to find corresponding fprobe in the common function-graph
+callbacks, but has much better scalability, since the number of
+registered function-graph ops is limited.
+
+In the entry callback, the fprobe runs its entry_handler and saves the
+address of 'fprobe' on the function-graph's shadow stack as data. The
+return callback decodes the data to get the 'fprobe' address, and runs
+the exit_handler.
+
+The fprobe introduces two hash-tables, one is for entry callback which
+searches fprobes related to the given function address passed by entry
+callback. The other is for a return callback which checks if the given
+'fprobe' data structure pointer is still valid. Note that it is
+possible to unregister fprobe before the return callback runs. Thus
+the address validation must be done before using it in the return
+callback.
+
+This series can be applied against the linux-trace/trace/urgent 
+(based on v6.8-rc1) kernel.
+
+This series can also be found below branch.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git/log/?h=topic/fprobe-on-fgraph
+
+Thank you,
+
+---
+
+Masami Hiramatsu (Google) (21):
+      ftrace: Fix DIRECT_CALLS to use SAVE_REGS by default
+      tracing: Add a comment about ftrace_regs definition
+      tracing: Rename ftrace_regs_return_value to ftrace_regs_get_return_value
+      x86: tracing: Add ftrace_regs definition in the header
+      function_graph: Use a simple LRU for fgraph_array index number
+      function_graph: Improve push operation for several interrupts
+      function_graph: Add a new entry handler with parent_ip and ftrace_regs
+      function_graph: Add a new exit handler with parent_ip and ftrace_regs
+      x86/ftrace: Enable HAVE_FUNCTION_GRAPH_FREGS
+      arm64: ftrace: Enable HAVE_FUNCTION_GRAPH_FREGS
+      fprobe: Use ftrace_regs in fprobe entry handler
+      fprobe: Use ftrace_regs in fprobe exit handler
+      tracing: Add ftrace_partial_regs() for converting ftrace_regs to pt_regs
+      tracing: Add ftrace_fill_perf_regs() for perf event
+      tracing/fprobe: Enable fprobe events with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+      bpf: Enable kprobe_multi feature if CONFIG_FPROBE is enabled
+      fprobe: Rewrite fprobe on function-graph tracer
+      tracing/fprobe: Remove nr_maxactive from fprobe
+      selftests: ftrace: Remove obsolate maxactive syntax check
+      selftests/ftrace: Add a test case for repeating register/unregister fprobe
+      Documentation: probes: Update fprobe on function-graph tracer
+
+Steven Rostedt (VMware) (15):
+      function_graph: Convert ret_stack to a series of longs
+      fgraph: Use BUILD_BUG_ON() to make sure we have structures divisible by long
+      function_graph: Add an array structure that will allow multiple callbacks
+      function_graph: Allow multiple users to attach to function graph
+      function_graph: Remove logic around ftrace_graph_entry and return
+      ftrace/function_graph: Pass fgraph_ops to function graph callbacks
+      ftrace: Allow function_graph tracer to be enabled in instances
+      ftrace: Allow ftrace startup flags exist without dynamic ftrace
+      function_graph: Have the instances use their own ftrace_ops for filtering
+      function_graph: Add "task variables" per task for fgraph_ops
+      function_graph: Move set_graph_function tests to shadow stack global var
+      function_graph: Move graph depth stored data to shadow stack global var
+      function_graph: Move graph notrace bit to shadow stack global var
+      function_graph: Implement fgraph_reserve_data() and fgraph_retrieve_data()
+      function_graph: Add selftest for passing local variables
 
 
-I don't think there is a need to respin for the above, though please
-keep this in mind when posting Networking patches in future.
+ Documentation/trace/fprobe.rst                     |   42 +
+ arch/arm64/Kconfig                                 |    2 
+ arch/arm64/include/asm/ftrace.h                    |   24 
+ arch/arm64/kernel/entry-ftrace.S                   |   28 +
+ arch/arm64/kernel/ftrace.c                         |   21 
+ arch/loongarch/Kconfig                             |    1 
+ arch/loongarch/include/asm/ftrace.h                |    2 
+ arch/loongarch/kernel/ftrace_dyn.c                 |    9 
+ arch/powerpc/include/asm/ftrace.h                  |    9 
+ arch/powerpc/kernel/trace/ftrace.c                 |    3 
+ arch/powerpc/kernel/trace/ftrace_64_pg.c           |   10 
+ arch/s390/Kconfig                                  |    1 
+ arch/s390/include/asm/ftrace.h                     |    7 
+ arch/x86/Kconfig                                   |    4 
+ arch/x86/include/asm/ftrace.h                      |   17 
+ arch/x86/kernel/ftrace.c                           |   51 +
+ arch/x86/kernel/ftrace_64.S                        |   37 +
+ include/linux/fprobe.h                             |   58 +
+ include/linux/ftrace.h                             |  167 +++
+ include/linux/sched.h                              |    3 
+ include/linux/trace_recursion.h                    |   39 -
+ kernel/trace/Kconfig                               |   19 
+ kernel/trace/bpf_trace.c                           |   14 
+ kernel/trace/fgraph.c                              | 1078 ++++++++++++++++----
+ kernel/trace/fprobe.c                              |  631 ++++++++----
+ kernel/trace/ftrace.c                              |   21 
+ kernel/trace/ftrace_internal.h                     |    2 
+ kernel/trace/trace.h                               |   94 +-
+ kernel/trace/trace_fprobe.c                        |  114 +-
+ kernel/trace/trace_functions.c                     |    8 
+ kernel/trace/trace_functions_graph.c               |   96 +-
+ kernel/trace/trace_irqsoff.c                       |   10 
+ kernel/trace/trace_probe_tmpl.h                    |    2 
+ kernel/trace/trace_sched_wakeup.c                  |   10 
+ kernel/trace/trace_selftest.c                      |  178 +++
+ lib/test_fprobe.c                                  |   51 -
+ samples/fprobe/fprobe_example.c                    |    4 
+ .../test.d/dynevent/add_remove_fprobe_repeat.tc    |   19 
+ .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    4 
+ 39 files changed, 2190 insertions(+), 700 deletions(-)
+ create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe_repeat.tc
 
-
-Looking at the patch above, and stmmac_main.c, it seems that the following
-functions also suffer from a similar problem:
-
-static irqreturn_t stmmac_msi_intr_tx(int irq, void *data)
-{
-	struct stmmac_tx_queue *tx_q = (struct stmmac_tx_queue *)data;
-	...
-	dma_conf = container_of(tx_q, struct stmmac_dma_conf, tx_queue[chan]);
-	priv = container_of(dma_conf, struct stmmac_priv, dma_conf);
-
-	if (unlikely(!data)) {
-		netdev_err(priv->dev, "%s: invalid dev pointer\n", __func__);
-		...
-
-And stmmac_msi_intr_rx(), which follows a similar pattern
-to stmmac_msi_intr_tx().
-
-I also note that in those functions "invalid dev pointer" seems misleading,
-perhaps it ought to be "invalid queue" pointer.
-
-As these problems seem to all have been introduced at the same time,
-perhaps it is appropriate to fix them all in one patch?
-
-> ---
->  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> index 4727f7be4f86..5ab5148013cd 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> @@ -5848,7 +5848,7 @@ static irqreturn_t stmmac_mac_interrupt(int irq, void *dev_id)
->  	struct stmmac_priv *priv = netdev_priv(dev);
-> 
->  	if (unlikely(!dev)) {
-> -		netdev_err(priv->dev, "%s: invalid dev pointer\n", __func__);
-> +		netdev_err(dev, "%s: invalid dev pointer\n", __func__);
->  		return IRQ_NONE;
->  	}
-> 
-> @@ -5868,7 +5868,7 @@ static irqreturn_t stmmac_safety_interrupt(int irq, void *dev_id)
->  	struct stmmac_priv *priv = netdev_priv(dev);
-> 
->  	if (unlikely(!dev)) {
-> -		netdev_err(priv->dev, "%s: invalid dev pointer\n", __func__);
-> +		netdev_err(dev, "%s: invalid dev pointer\n", __func__);
->  		return IRQ_NONE;
->  	}
-> 
-> 
+--
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
