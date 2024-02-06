@@ -1,94 +1,84 @@
-Return-Path: <linux-kernel+bounces-54616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4791384B189
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:45:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37EF684B18B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:46:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAAED1F23FED
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:45:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A08F1C22764
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:46:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E346812D16D;
-	Tue,  6 Feb 2024 09:45:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48D0912D74A;
+	Tue,  6 Feb 2024 09:45:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yd/PM0gW"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="BWZCqv2q"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3668712D145
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 09:45:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83E8D12D145;
+	Tue,  6 Feb 2024 09:45:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707212735; cv=none; b=nbPA3fA1xwOoqcA2ANfdB3wSOg+qDNG7HTxeNuPu2RAk0nh3CGlIZpF9PksA9qL0G2l+9tz2Ow0FSP0iV/t2zElZlMpAmZxyrTiHWQ10RdThI6wUkY70XSEss1UDj/ahUxQh9Siewqt18p+KKikEn7qUA+1j30LB3xodjbwzlpw=
+	t=1707212757; cv=none; b=eGQJ0zHzZ81I9TG/O2L4ujoxFQagBucY7wliSzxX5+xAfEDwBjcVJ7nZ7jRJsBETy+GN8k3NBKXn8GT+Xnu6NDGOGiOrFjJYT0k4ve600tAbZKE9n/Q9o7YN16YJKFy/2xTCI6xJcxs/dQfr/LfCHvE1y/IjqSrD182LdDMozI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707212735; c=relaxed/simple;
-	bh=FNqxpnmPzeDypyr0PapIxFvem5/h1m4TDwTMiSLWKhQ=;
+	s=arc-20240116; t=1707212757; c=relaxed/simple;
+	bh=wgqjFzC6wpBcy6cF1ZBRiJKqR9saGMFNfQ8Y3CoUsQk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F86wtOC3TpkuADY5mpaAutg4kvQF4IYjtDi1Nfe0BVbBuywWu3jGaNoVHM2+zNltpgzC5DAWSUNHetAyNW8L3bLtVdi90JK1Pcai2gVACb8ivmAhPXBbnhql/oOxrCvHOYbk9WiAZB8zuUMfqxOtBXzgFh72XTtWiNEPTA2ypAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yd/PM0gW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E65C2C433F1;
-	Tue,  6 Feb 2024 09:45:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707212734;
-	bh=FNqxpnmPzeDypyr0PapIxFvem5/h1m4TDwTMiSLWKhQ=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=STZ40SCShM1qwUFxnXe/JpiZ7zK6Rj9rrabnh4SHHyZT4V1r2gz72RA5Ig93fvHbV+RFhkD3KqdsPcp6EPlpvXBhU9yzajFGGj+hkkEU4wKct/ea7d5XfkNjiPjrGa3EugtHhexqORorKwiawNL+SvD0J9tK5+a6U5mqW+xl45k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=BWZCqv2q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CC2BC433C7;
+	Tue,  6 Feb 2024 09:45:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1707212757;
+	bh=wgqjFzC6wpBcy6cF1ZBRiJKqR9saGMFNfQ8Y3CoUsQk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Yd/PM0gWwb1+x8TiJ29IOA34CG2QyNc4NlQ/gy1yYLSoNvRhgThNngfUa1edOpsWl
-	 5YWj/Cyp/aYq9jBgVauMEdB7Ql5KNgiFdJEVuCCaMv+FIGWcpGmHpkoKKdW8GqXFdr
-	 GadFPsW0xttPrGKNM++ws4wGX3QyVT7RxsS1SQzsSdtF8bUMM6HBWRka/qI16Upxwl
-	 p+iJeSfMMceinMJl9TojDbsKRnIih08pqTz9zMOjHn0SuRjK77+LFVAI9Rrs0mCBCU
-	 52lSZhsIcyp4RXWbDwZ3KsKJLNvRERI8osMYyQ/DOb4c4Rogrxv05NgMkgBoRrbaOT
-	 rAr1+72aNP52w==
-Date: Tue, 6 Feb 2024 09:45:30 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: Spurious problems when running regmap unit tests in qemu
-Message-ID: <ZcH/uglviDbsPIQC@finisterre.sirena.org.uk>
-References: <fc1d865d-3e2e-48bc-8cd1-389ec6b15909@roeck-us.net>
+	b=BWZCqv2qNQEeIFsRpb6wRuesw0FXjxvQ+eTD9QgMOAW+j8h64HT/MSoECyquYAxEB
+	 iPsmKi1VcDi3VCXbsEBDQ3nsqKX39Zk89Vmb38AjmYDEO5g30E4WDBVNPtEL4I9s7+
+	 I7ZLt7PqMOxTyJPwJM45tahyM22MXXpw0qL8dYZQ=
+Date: Tue, 6 Feb 2024 09:45:54 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Kalle Valo <kvalo@kernel.org>
+Cc: "Ricardo B. Marliere" <ricardo@marliere.net>,
+	Michael Buesch <m@bues.ch>, linux-wireless@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ssb: make ssb_bustype const
+Message-ID: <2024020626-oasis-reactive-2e1a@gregkh>
+References: <20240204-bus_cleanup-ssb-v1-1-511026cd5f3c@marliere.net>
+ <2024020543-footsie-unreeling-1cd2@gregkh>
+ <87cyta9k8f.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="nqluStmxa6iNnK3w"
-Content-Disposition: inline
-In-Reply-To: <fc1d865d-3e2e-48bc-8cd1-389ec6b15909@roeck-us.net>
-X-Cookie: You might have mail.
-
-
---nqluStmxa6iNnK3w
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <87cyta9k8f.fsf@kernel.org>
 
-On Mon, Feb 05, 2024 at 10:03:01AM -0800, Guenter Roeck wrote:
+On Tue, Feb 06, 2024 at 08:31:44AM +0200, Kalle Valo wrote:
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+> 
+> > On Sun, Feb 04, 2024 at 05:44:21PM -0300, Ricardo B. Marliere wrote:
+> >> Now that the driver core can properly handle constant struct bus_type,
+> >> move the ssb_bustype variable to be a constant structure as well,
+> >> placing it into read-only memory which can not be modified at runtime.
+> >> 
+> >> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> >
+> > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> Greg, I saw your Reviewed-by email 7 times. Not sure if the problem is
+> on my end or your end but wanted to make sure you are aware of it.
 
-> Any idea how to debug this problem would be welcome. I'll try to bisect,
-> but of course that will only help if the problem was introduced recently.
+Yes, sorry, happened due to writing emails on a plane without a fully
+working internet connection :(
 
-No real ideas off hand, I wouldn't expect any of these tests to be
-intermittent - the only randomness is the data used to fill the buffers
-which we're not terribly sensitive to the values of.
+My fault.
 
---nqluStmxa6iNnK3w
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXB/7kACgkQJNaLcl1U
-h9BBcgf9EL1T6T9PgpHBkxjQ/gk/o05kNb3O/fS9+K9Z6gpNAD+WovaSR+Q/d8zn
-6ELEtPeVojTduNEppAs1uRHf1IUE83UCMFaFi5udKug3Z2syJlHaHxWqYZJHyOc9
-CXYVcuv5seqx+39pBBOX/O6nSP8CHP7r1ByYOHsp9tkyxu9t8GgW6wPxY2JW27lm
-xGXHZgj3KnQagRJ9YAMXSrgrVikyELhvCfZcaW7ieMwnxdfWBe+RI89aTg5uQd3f
-I5Hn2Xym9agog98yqESmQE61DeoNxi+EDDnQvyeZ5JDrptIF/FpFmpmWeQxFwhRn
-At020fG+8L1XNM4twgYtE+4PyYoJpQ==
-=C5RP
------END PGP SIGNATURE-----
-
---nqluStmxa6iNnK3w--
+greg k-h
 
