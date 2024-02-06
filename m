@@ -1,137 +1,200 @@
-Return-Path: <linux-kernel+bounces-54362-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54363-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A0C284AE38
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 06:55:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E35AA84AE3B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 06:57:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA596286367
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 05:55:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9964128677A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 05:57:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D2137F474;
-	Tue,  6 Feb 2024 05:54:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D03A81211;
+	Tue,  6 Feb 2024 05:57:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="mEn0c1cQ"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="h4RtbnBf"
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CDAC7F471
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 05:54:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A9DC8003E
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 05:57:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707198895; cv=none; b=XX2Arxobr2VMXvk2idJ5troXyLW/5dtDGWehR73zPYJdVMJTDyVofdP+PeM4w+G/w4wny2RnydkMjcUjzsx3q//UPENKANtYBV2qt6qbH4y2LIqkAZi7w9T5diJS9ycE7pek+0/MoPHv5nzFJsPfcYFqAQtb8wWjMfjtTlBL1fU=
+	t=1707199071; cv=none; b=CYB+WkfyYTksBEeXG9FZYfbVYyl58npihZ+bPVq2hcYyH8xAniKqavfhJrROmacbV7yPfW3K9LEJkXE/8hSpIJ8Qu3v2FCShGMYsO2SIQnRbrw2PgEznOAPm34dwo15eRzGZgKbCJVPwN068uVwZxVNqkAq2tZHzQnlZlvVr4tY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707198895; c=relaxed/simple;
-	bh=wqaA3OoXDWlX//VDvJy2vgmQEdAqGqgvYRWWrJpJDUY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=VBWRsCp2W5ai9KnV3kRwt6noCM38skWGuZo5Y+hCWZwuEJQUFBF9fqysYm1dwGMViYMWHbQU5ioyaiWhk6wsaxm1sieFhDCzkXM1gI0/1HrG2Op8pXuI3p+Y7dTbAEK1+f9yr0Ws64FqIVRmOhUmulT1sGKgBEurjTT3OMgo2Ns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=mEn0c1cQ; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40fc22f372cso40613815e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 21:54:52 -0800 (PST)
+	s=arc-20240116; t=1707199071; c=relaxed/simple;
+	bh=ysU08zj4Hg/RYgoGDggCvO60aVp5MmHmJq2MC6dL0VE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=En4BrtMLmtEUdo1nBglVeAwjjptZqDJx5LTvGS+bbNojaz7bZlFTGZJaF/GA01yaatH7vXia60dexeetkrfEj+dnHoR8YCC4ZC9Pt+ZynGR/SS7E0WBJ2Bl/Bwn/OcypQy5M9V0Udn/AYvf6ktgqqryfUv6hdLKIJGge9wWVl5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=h4RtbnBf; arc=none smtp.client-ip=209.85.128.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-6040d33380cso53953757b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 21:57:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1707198890; x=1707803690; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BTY1QBAZTWEgUTJ50PFVukt0GrjEOa549/HqPP8e+bE=;
-        b=mEn0c1cQWPKhibFG8wVRLFtXAldb88hbN6cXn07bndaX+cu+4S6S4M5cKr2PFeOLA+
-         wC2SVUvaYOSo/SFpu/EF/P+0ASvBhLsC/g9hYUBhLnzNxIV2f+8neF5iuNwNHxEf5ciT
-         rMRoB+62+3ald5OcqVL5cp86QaYwZXdg6UzyE4YDR47joM0O+2inrJMdSADkOvBCkHM4
-         q6ItAsuLbx3QT4D0WIrR8BEx1wJY17v6LniWHfotjOPLXLc8MkR24D1maHl41Jp6tQ+X
-         THEvuZZ2cIW4oZWeVhMwAhNZFIgZIICSvYMieYLnFrbp8Om3QElVCtfkbgxLg5k6qLBX
-         idmw==
+        d=linaro.org; s=google; t=1707199068; x=1707803868; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wmo8OZ+RD3WMbukSfHahLE4n7rr4rX9TbI2saroDAe0=;
+        b=h4RtbnBf/uLQ1ZRD7HxSb6mBzYQu3mAkqU9cQTbgxzMPx/pGpAbAJYSTlYMXwRGXND
+         JIPRf3jhDnfqca3+yu4CeADEF1IZ2ApOSWRR99KbVYWaWFfATFGggxQetXJfYxLBmfgW
+         ssZbBrIP/oOb3fSy29goQlQ6m3NFaNzse0bylewfER9h1HoGs9B/WH15ZSDeY8Oh6rB0
+         2E8o4byt0fIGH2B7mKq5B+mvWC1xgx8ebEbugI9bEWQo8YMsz2uZhS8HKegbn6VraONY
+         4BFxibQvTmYgu/Kf0pCui1PROFwWEXXwGaiDTTjH1ZjSLP6ZHk22lrsH24mmcwWzTH+G
+         PZOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707198890; x=1707803690;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BTY1QBAZTWEgUTJ50PFVukt0GrjEOa549/HqPP8e+bE=;
-        b=XcEDzKooW1XMGUAlu3+6/DnkJ+8qXbmb1ohk+g9N4Vxuk1FsS4fzZRWWHW4DjiZGwT
-         EqFdOT27QbN6JXgx/fNDn6RBbB3giNKiNwcQOJbElTSS17FoW4ZXemq54Rucq/HKrqrX
-         /S9zVD2L2fiIovZRwp/sT+MlYuW6JjhV7HJtg7csL5OjUEletjJK5HId7cfzLZHEoIkR
-         ZxZHPr9f6AXfruYw4OsHK6a89a3aiQEiFVRsmcNU2JWQya6lPp2M9sYd7JAiVFo1EKrg
-         K+tJE7uOnha2QjAaRvzsx3PNRpD5+2p5fIiCDoxRSf5VcZvfdQM3CVUGutadV71NuIo1
-         tk+Q==
-X-Gm-Message-State: AOJu0YycOnbuVtmwy45Ggcuyp5sbOgQ3F7i2HxpwFm7vcDwccjBTvzQ4
-	Tc1DYLfQFAIjbhds9HlGxTgs+msPlJ0lfssdqzBQkzNcOxyPrJQgX7Lhl4EmJMQ=
-X-Google-Smtp-Source: AGHT+IEvGBnActUAu0BCa5hFJpoZeCTBqeuLBV8E8iuP45AWz8rKTDXuJ8EaVdAWla8jMfh26r+E1Q==
-X-Received: by 2002:a05:600c:4f51:b0:40e:4806:f436 with SMTP id m17-20020a05600c4f5100b0040e4806f436mr603514wmq.3.1707198890571;
-        Mon, 05 Feb 2024 21:54:50 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUTkORDlPYl+vANvx/D4Q9dJgi1J2wftRMmPO6f46Y5Sd4BnVKKIMqeETxDBNQDD51YT/nbeCapIEqVTzMKOPexGzt+E+SGiBfNX1kQ2Mu1o6UICao3rJqfaLREU4fvhlAgZbqoiW4l558pDeOSkkfGbXp0BJsd1r1dSHKwKUqg0ADUWSBLXaSCrRbxx+uas+g6uPvPPfs0JwoZbq+3wtQEn3+ppEtvJkHT099/XlwKGJ2tJH1roldRpXgLd5A41qoBVPM7SxFDOOj8Xvb1LyyIrum3AyA+oSFmPK9BRbpd+0/q3GLEqaPvYjgJJT9RS98sNn7gPlI7Bu85m48Tzr6LA6BrxfZAKeFXPyaWFQbfJloBFjdC+s+rbdv7OW3M+POgS0Ic6Z3KSJhEZMmPWn4T
-Received: from [192.168.50.4] ([82.78.167.154])
-        by smtp.gmail.com with ESMTPSA id fa13-20020a05600c518d00b0040fb03f803esm741966wmb.24.2024.02.05.21.54.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Feb 2024 21:54:50 -0800 (PST)
-Message-ID: <35eca42a-5bb0-4d24-972b-6fe2fb4d87ab@tuxon.dev>
-Date: Tue, 6 Feb 2024 07:54:48 +0200
+        d=1e100.net; s=20230601; t=1707199068; x=1707803868;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Wmo8OZ+RD3WMbukSfHahLE4n7rr4rX9TbI2saroDAe0=;
+        b=SgLnRIdJw+Yue+N07meWcOi0AxKZwrQwb0Pd9Or/q056t0xmB7z0kFSMNmqpikTuX7
+         7/bdBunbF1eG9SaLDV5veJNpXDqjtyYEe43s8Ux7mV0XogocIVdjky1Hh67xY4TSbgEz
+         ZiC7SZwa2To3Hs9kRXn8GYckle6qBpyb4+evkVljCXNf8o56LWBjF6Ad5ncdqO69l1MF
+         EhyEXX8AFikVbnKD9Ysi8YwRTyAmhzX0Yyn1TFjrpjdhZ3cfOdPhlIaUOuOIJs9J5J2/
+         +KSKsjAbTGbdgVp7mvFWflOOfaqfDnyOYqBjac56SH+qIPO08GuB7wyG8iK5CtsZVxw7
+         NXoQ==
+X-Gm-Message-State: AOJu0Yz2Ec5SWLNTORFzk80Tl+DGa/f/jQE4DfslFHsCVd0k8PQ2BsOA
+	XvpUdGf4nBz2Mo3iLoJZw6VbGdmrvgb3homtv5ds0kXKzCzqt5CET1htLmraokCUhWL+C88liD7
+	Du+E2jodAmVufAXQ80SNC2393YRdD8vqZc5DdTw==
+X-Google-Smtp-Source: AGHT+IH+R9/XEh5MDFKwcKvN1122YGkm05bcyEuArFy7J3lbwWjm15zjwXjtYTmM97101cB17yqIknzWzpzCcwMYKxI=
+X-Received: by 2002:a81:a882:0:b0:604:76c3:7b3c with SMTP id
+ f124-20020a81a882000000b0060476c37b3cmr758325ywh.6.1707199068531; Mon, 05 Feb
+ 2024 21:57:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/8] ARM: dts: microchip: sam9x60ek: Add power-supply
- properties for sdmmc nodes
-Content-Language: en-US
-To: Mihai Sain <mihai.sain@microchip.com>, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240205080027.4565-1-mihai.sain@microchip.com>
- <20240205080027.4565-3-mihai.sain@microchip.com>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <20240205080027.4565-3-mihai.sain@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240206-gpio-keys-v1-1-7683799daf8d@quicinc.com>
+In-Reply-To: <20240206-gpio-keys-v1-1-7683799daf8d@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 6 Feb 2024 07:57:37 +0200
+Message-ID: <CAA8EJpqo6p+S4JirhGybGsiG0X9Evdb3LEVgorsewEcRT8LMgg@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: qcm6490-idp: Add configurations for gpio-keys
+To: quic_huliu@quicinc.com
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hi, Mihai,
+On Tue, 6 Feb 2024 at 04:21, Hui Liu via B4 Relay
+<devnull+quic_huliu.quicinc.com@kernel.org> wrote:
+>
+> From: Hui Liu <quic_huliu@quicinc.com>
+>
+> Add configurations for gpio-keys to enable pon_key and pon_resin
+> key.
 
-On 05.02.2024 10:00, Mihai Sain wrote:
-> The sdmmc0 and sdmmc1 controllers are powered from 3.3V regulator.
-> Add vmmc-supply and vqmmc-supply properties to sdmmc nodes.
-> The sdmmc controller from SAM9X60 MPU doesn't support the IO voltage signaling/switching required by the UHS sd-card.
+Configuring gpio-keys is a requirement for enabling the pon_key and
+pon_resin, so the commit message is incorrect.
 
-Please wrap the line at 75 chars (see [1]).
 
-Thank you,
-Claudiu Beznea
 
-[1]
-https://www.kernel.org/doc/html/v4.17/process/submitting-patches.html#the-canonical-patch-format.
 
-> In order to use the sd high-speed mode, keep vqmmc at 3V3.
-> 
-> Signed-off-by: Mihai Sain <mihai.sain@microchip.com>
+>
+> Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
 > ---
->  arch/arm/boot/dts/microchip/at91-sam9x60ek.dts | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/microchip/at91-sam9x60ek.dts b/arch/arm/boot/dts/microchip/at91-sam9x60ek.dts
-> index f3cbb675cea4..b19a0956dc97 100644
-> --- a/arch/arm/boot/dts/microchip/at91-sam9x60ek.dts
-> +++ b/arch/arm/boot/dts/microchip/at91-sam9x60ek.dts
-> @@ -560,6 +560,8 @@ &sdmmc0 {
->  	status = "okay";
->  	cd-gpios = <&pioA 23 GPIO_ACTIVE_LOW>;
->  	disable-wp;
-> +	vmmc-supply = <&vdd1_3v3>;
-> +	vqmmc-supply = <&vdd1_3v3>;
+>  arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 43 ++++++++++++++++++++++++++++++++
+>  1 file changed, 43 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+> index acf145d1d97c..4199ebf667af 100644
+> --- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+> @@ -9,6 +9,7 @@
+>  #define PM7250B_SID 8
+>  #define PM7250B_SID1 9
+>
+> +#include <dt-bindings/input/linux-event-codes.h>
+>  #include <dt-bindings/leds/common.h>
+>  #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+>  #include "sc7280.dtsi"
+> @@ -39,6 +40,24 @@ chosen {
+>                 stdout-path = "serial0:115200n8";
+>         };
+>
+> +       gpio-keys {
+> +               compatible = "gpio-keys";
+> +               label = "gpio-keys";
+> +
+> +               pinctrl-names = "default";
+> +               pinctrl-0 = <&key_vol_up_default>;
+
+pinctrl-names should come after pinctrl-0
+
+LGTM otherwise
+
+> +
+> +               key-volume-up {
+> +                       label = "volume_up";
+> +                       gpios = <&pm7325_gpios 6 GPIO_ACTIVE_LOW>;
+> +                       linux,input-type = <1>;
+> +                       linux,code = <KEY_VOLUMEUP>;
+> +                       wakeup-source;
+> +                       debounce-interval = <15>;
+> +                       linux,can-disable;
+> +               };
+> +       };
+> +
+>         reserved-memory {
+>                 xbl_mem: xbl@80700000 {
+>                         reg = <0x0 0x80700000 0x0 0x100000>;
+> @@ -421,6 +440,17 @@ vreg_bob_3p296: bob {
+>         };
 >  };
->  
->  &sdmmc1 {
-> @@ -568,6 +570,8 @@ &sdmmc1 {
->  	pinctrl-0 = <&pinctrl_sdmmc1_default>;
->  	no-1-8-v;
->  	non-removable;
-> +	vmmc-supply = <&vdd1_3v3>;
-> +	vqmmc-supply = <&vdd1_3v3>;
->  	status = "disabled"; /* Conflict with flx4. */
+>
+> +&pm7325_gpios {
+> +       key_vol_up_default: key-vol-up-state {
+> +               pins = "gpio6";
+> +               function = "normal";
+> +               input-enable;
+> +               bias-pull-up;
+> +               power-source = <0>;
+> +               qcom,drive-strength = <3>;
+> +       };
+> +};
+> +
+>  &pm8350c_pwm {
+>         status = "okay";
+>
+> @@ -448,6 +478,19 @@ led@3 {
+>         };
 >  };
->  
+>
+> +&pmk8350_pon {
+> +       status = "okay";
+> +};
+> +
+> +&pon_pwrkey {
+> +       status = "okay";
+> +};
+> +
+> +&pon_resin {
+> +       linux,code = <KEY_VOLUMEDOWN>;
+> +       status = "okay";
+> +};
+> +
+>  &qupv3_id_0 {
+>         status = "okay";
+>  };
+>
+> ---
+> base-commit: 23e11d0318521e8693459b0e4d23aec614b3b68b
+> change-id: 20240206-gpio-keys-138bbd850298
+>
+> Best regards,
+> --
+> Hui Liu <quic_huliu@quicinc.com>
+>
+>
+
+
+--
+With best wishes
+
+Dmitry
 
