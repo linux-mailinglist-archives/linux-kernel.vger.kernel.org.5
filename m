@@ -1,133 +1,244 @@
-Return-Path: <linux-kernel+bounces-55148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55147-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D64D084B896
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:57:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD12084B87A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:54:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1395B2EC71
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:54:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2C881C242CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:54:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 453CD133983;
-	Tue,  6 Feb 2024 14:53:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACE36133426;
+	Tue,  6 Feb 2024 14:53:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="H97xngnq"
-Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EEkmLQNy"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F37C2131E40
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 14:53:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BEDC13247F
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 14:53:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707231195; cv=none; b=SOeGf1oBqh+SDVoapYVXyA9KSMBlrYUry29jsR5NxY34s1i6yqDts5NIAyKLmd/otbv4zBnbUo3XnNWszes2X4TNDGxj65igJla+jHVQXodRy54XzWDALhdiJpiQH8J2h8BHShk8YrJ/+yLnd3MW+OJ1CiKYEmTLDQLcIoP2ktI=
+	t=1707231193; cv=none; b=JIJtU+bV+JCuKODOwVKXHR/fZq0C5AYOGqHUrDrwNznstiOOOi9FOwPAmiSGfGAuWe6U6gLyAriXivMWzRvPSpOgDNT7a7QNPQEA61de3D+nm36eLyJOtc6beYFEpS7p0+QKv5rV3rZroNR19pOrnLPB6m+oPg/GhC4Kuil2jDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707231195; c=relaxed/simple;
-	bh=D35/E2FHCU24dgs4Ty+rcDXPBktIfZ1jyU2574rY6J4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UD5t87wm8s8b0KU09twOFb1DKEPQoniHTrmEy1D+rhldnCt6EW6iD7dod7Oc5VJ2cgAqZwSRnTaiOzYLifnQoTDcYPw54HRQfVzTquDcqIdPsxHi6XtM1PDG9qDpMXnUnIIRJThnzdNPUKyK9EoCMjBq6bT+eU749VxncYIaDmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=H97xngnq; arc=none smtp.client-ip=209.85.166.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7bff2f6080aso40315739f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 06:53:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1707231193; x=1707835993; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/RZRnLtReRSjHaUzZeYCw5gGOm6jFVdruT7LPbqwewI=;
-        b=H97xngnqC3zj/gw0St/5tBaYKzpvOfvyRzbSqbXV37lY/MOt6FLZyQC5Nf6VwjBBqm
-         shXqnYgs1a4eU5tnzbnqP64x2wCitPe1vbgiYc/tji4yjnyPbe0lUaiamBfAqCLuGq61
-         H4Brmzxe8usrIYgnWTLy2Qgj/1fnV4ampxwCyrcqG/UXzcgEwyInNfVH0fKQeREo2dM3
-         gnF/PPB4XMn19BCQAj65HWumBirNs2+6X55aiQiAkGQqoqYNduRhJPQ6QTCbsyUl+l4j
-         IyMSRoVl6kDX3B4leLmoQStU95VsDElsyc2blxEhPQBzt8Q+GEIM3XJDaCkWSQAgJPo5
-         Bl4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707231193; x=1707835993;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/RZRnLtReRSjHaUzZeYCw5gGOm6jFVdruT7LPbqwewI=;
-        b=R+vJ+O7Q75bQc7Mo31AzbdUyYM3DPnCWs4jjgm3FV2r77EP1NrOHdfof2bnDjyQ30X
-         gQvVq53OHj1ZtwCkIc7eprZCUGs/IsYT4e9gPrcb0lYqeLrns7/pX57P+d8C7bF5zki5
-         7jeZJQyD6u8qscxacq0OgGG1ycwG8u9zJBEUaWFaejy912oBBISIRO4nu/oP06qmVTkT
-         J7HfzUMxJ7W8d9AdkgidcpJWT/Q5KtJnpSbzbkTkj8s648t4oD+Orfh5i9Z6VLMIUZaK
-         Jp5OzND2id9Y8zuvLx3uZpJW4ESvPl9kxvSB6PXdU/ftAJqUAx22+ZV3D7scaGjYHbC8
-         wTGg==
-X-Gm-Message-State: AOJu0YwsCbmCawh2YAO44RxcmpONsgxp20mYnCYIOZSUvKw+NZVlOAaB
-	OuveuClhtJWO9XFUSK5wF9MdXyNLMUxYBtijERziPLY5HNYbALta0r5WD/N3LAVR81FDJdwN9KO
-	Tn6s=
-X-Google-Smtp-Source: AGHT+IFkHEcNVJgsmx/JrCZ/vJcgCrBhCvfNvstVEh1lA4SXD33kt+u5VVvHbGTfsV9Sow3BPWZDeA==
-X-Received: by 2002:a5d:938a:0:b0:7c3:f631:a18f with SMTP id c10-20020a5d938a000000b007c3f631a18fmr899973iol.1.1707231192965;
-        Tue, 06 Feb 2024 06:53:12 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVG5Yo9X9qz852Tts0zLw91gtWD2fAd7d3MiZvqRPOZWstZ3sSRChpejZH81PST3lyaDhMJQMzvJJ6gvPbe/fGICAHzdE9aaK0Xvn3Rn/RmwUQe7K1BJDTEEH67x8DjsFw=
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id d65-20020a0285c7000000b004713a339311sm561194jai.8.2024.02.06.06.53.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Feb 2024 06:53:12 -0800 (PST)
-Message-ID: <0149019c-4562-426b-bcb1-fb8376ba0839@kernel.dk>
-Date: Tue, 6 Feb 2024 07:53:11 -0700
+	s=arc-20240116; t=1707231193; c=relaxed/simple;
+	bh=Qrpa+uGtUHpG2JAA82HSPm/TG8ygOkhkTJPlA2/C7bk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cMYw//quCWY2lJDiURi0JQXtzJdbG6p5HJsQ6u0Ultkl0rCfLK7rneW/maSyB425T+9j5VXTPRXvyXoX8O8ekfB77QZyW9lXRDM7S8ERamOTyDjf0VSARhKVwNEmUh9RvXfU7UtsFNtu2wjrYzNUgl35Yj2xPpNIqdDkRpmVS90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EEkmLQNy; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707231191;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ICNu3j0RxsXSNnJAkw6sqT5jyTGFKxvpyFp2l0saKd0=;
+	b=EEkmLQNyAJsBBpjYRg1bvnptm7GYFwvx2fqWf+YSzvm4kRYKCJbI4iydBilSYyuht/rUr3
+	u/pEWjQOTqndDANGXu1WRQRmVf5X+eInOYiEEfjQWlJWdcEnFz4Q0O7ZOuQ1Ev1gKA5CaN
+	OiBr6AQULQZaBIjsP/npih8uXsWKoi4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-167-zB82_cyAMDOOlBX9rRInSA-1; Tue, 06 Feb 2024 09:52:44 -0500
+X-MC-Unique: zB82_cyAMDOOlBX9rRInSA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D5715185A782;
+	Tue,  6 Feb 2024 14:52:43 +0000 (UTC)
+Received: from bfoster (unknown [10.22.32.186])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 6A5E51C060B3;
+	Tue,  6 Feb 2024 14:52:43 +0000 (UTC)
+Date: Tue, 6 Feb 2024 09:54:01 -0500
+From: Brian Foster <bfoster@redhat.com>
+To: Christoph Hellwig <hch@lst.de>
+Cc: linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>,
+	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	"Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 12/13] writeback: add a writeback iterator
+Message-ID: <ZcJICXOyW7XbiEPp@bfoster>
+References: <20240203071147.862076-1-hch@lst.de>
+ <20240203071147.862076-13-hch@lst.de>
+ <ZcD/4HNZt1zu2eZF@bfoster>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: build warnings after merge of the block tree
-Content-Language: en-US
-To: Geert Uytterhoeven <geert@linux-m68k.org>,
- Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20240206131050.0e86d882@canb.auug.org.au>
- <CAMuHMdWjAKbt_bne8Mjpg3N_7R8TcKvAoVV8T4VrwTC2apAr_g@mail.gmail.com>
- <CAMuHMdXMexzzkj=pSdGOPhGncZ3BO8PFCrtfeh2XPoWsZ9-+kw@mail.gmail.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <CAMuHMdXMexzzkj=pSdGOPhGncZ3BO8PFCrtfeh2XPoWsZ9-+kw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZcD/4HNZt1zu2eZF@bfoster>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-On 2/6/24 6:42 AM, Geert Uytterhoeven wrote:
-> On Tue, Feb 6, 2024 at 12:12 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->> On Tue, Feb 6, 2024 at 3:11 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->>> After merging the block tree, today's linux-next build (arm
->>> multi_v7_defconfig) produced these warnings:
->>>
->>> In file included from /home/sfr/next/next/include/linux/bits.h:6,
->>>                  from /home/sfr/next/next/include/linux/bitops.h:6,
->>>                  from /home/sfr/next/next/include/linux/kernel.h:23,
->>>                  from /home/sfr/next/next/io_uring/nop.c:2:
->>> /home/sfr/next/next/include/vdso/bits.h:7:40: warning: left shift count >= width of type [-Wshift-count-overflow]
->>>     7 | #define BIT(nr)                 (UL(1) << (nr))
->>>       |                                        ^~
->>> /home/sfr/next/next/include/linux/io_uring_types.h:538:35: note: in expansion of macro 'BIT'
->>>   538 |         REQ_F_CAN_POLL          = BIT(REQ_F_CAN_POLL_BIT),
->>>       |                                   ^~~
->>>
->>> (and mny more similar)
->>>
->>> Introduced by commit
->>>
->>>   d964e8440442 ("io_uring: add io_file_can_poll() helper")
->>>
->>> REQ_F_CAN_POLL_BIT is 32.
->>
->> All of these BIT() have to be changed to BIT_ULL().
->> And let's hope all variables used for storing these flags have been
->> changed from unsigned long to u64...
+On Mon, Feb 05, 2024 at 10:33:52AM -0500, Brian Foster wrote:
+> On Sat, Feb 03, 2024 at 08:11:46AM +0100, Christoph Hellwig wrote:
+> > Refactor the code left in write_cache_pages into an iterator that the
+> > file system can call to get the next folio for a writeback operation:
+> > 
+> > 	struct folio *folio = NULL;
+> > 
+> > 	while ((folio = writeback_iter(mapping, wbc, folio, &error))) {
+> > 		error = <do per-foli writeback>;
+> > 	}
+> > 
+> > The twist here is that the error value is passed by reference, so that
+> > the iterator can restore it when breaking out of the loop.
+> > 
+> > Handling of the magic AOP_WRITEPAGE_ACTIVATE value stays outside the
+> > iterator and needs is just kept in the write_cache_pages legacy wrapper.
+> > in preparation for eventually killing it off.
+> > 
+> > Heavily based on a for_each* based iterator from Matthew Wilcox.
+> > 
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > ---
+> >  include/linux/writeback.h |   4 +
+> >  mm/page-writeback.c       | 192 ++++++++++++++++++++++----------------
+> >  2 files changed, 118 insertions(+), 78 deletions(-)
+> > 
+> ...
+> > diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+> > index 3abb053e70580e..5fe4cdb7dbd61a 100644
+> > --- a/mm/page-writeback.c
+> > +++ b/mm/page-writeback.c
+> ...
+> > @@ -2434,69 +2434,68 @@ static struct folio *writeback_get_folio(struct address_space *mapping,
+> >  }
+> >  
+> >  /**
+> ...
+> >   */
+> > -int write_cache_pages(struct address_space *mapping,
+> > -		      struct writeback_control *wbc, writepage_t writepage,
+> > -		      void *data)
+> > +struct folio *writeback_iter(struct address_space *mapping,
+> > +		struct writeback_control *wbc, struct folio *folio, int *error)
+> >  {
+> ...
+> > +	} else {
+> >  		wbc->nr_to_write -= folio_nr_pages(folio);
+> >  
+> > -		if (error == AOP_WRITEPAGE_ACTIVATE) {
+> > -			folio_unlock(folio);
+> > -			error = 0;
+> > -		}
+> > +		WARN_ON_ONCE(*error > 0);
 > 
-> I have sent a fix
-> https://lore.kernel.org/1960190f37b94276df50d382b9f1488cd6b6e662.1707226862.git.geert+renesas@glider.be
+> Why the warning on writeback error here? It looks like new behavior, but
+> maybe I missed something. Otherwise the factoring LGTM.
 
-It needs a bit more than that, just because there's one helper that
-also returns flags to be set. I've sorted it out and amended the commit,
-should be fine now. I'll check on 32-bit as well.
+Err, sorry.. I glossed over the > 0 check and read it as < 0.
+Disregard, this seems reasonable to me as long as we no longer expect
+those AOP returns (which I'm not really clear on either, but anyways..):
 
--- 
-Jens Axboe
+Reviewed-by: Brian Foster <bfoster@redhat.com>
 
+> 
+> Brian
+> 
+> >  
+> >  		/*
+> >  		 * For integrity writeback we have to keep going until we have
+> > @@ -2510,33 +2509,70 @@ int write_cache_pages(struct address_space *mapping,
+> >  		 * wbc->nr_to_write or encounter the first error.
+> >  		 */
+> >  		if (wbc->sync_mode == WB_SYNC_ALL) {
+> > -			if (error && !ret)
+> > -				ret = error;
+> > +			if (*error && !wbc->saved_err)
+> > +				wbc->saved_err = *error;
+> >  		} else {
+> > -			if (error || wbc->nr_to_write <= 0)
+> > +			if (*error || wbc->nr_to_write <= 0)
+> >  				goto done;
+> >  		}
+> >  	}
+> >  
+> > -	/*
+> > -	 * For range cyclic writeback we need to remember where we stopped so
+> > -	 * that we can continue there next time we are called.  If  we hit the
+> > -	 * last page and there is more work to be done, wrap back to the start
+> > -	 * of the file.
+> > -	 *
+> > -	 * For non-cyclic writeback we always start looking up at the beginning
+> > -	 * of the file if we are called again, which can only happen due to
+> > -	 * -ENOMEM from the file system.
+> > -	 */
+> > -	folio_batch_release(&wbc->fbatch);
+> > -	if (wbc->range_cyclic)
+> > -		mapping->writeback_index = 0;
+> > -	return ret;
+> > +	folio = writeback_get_folio(mapping, wbc);
+> > +	if (!folio) {
+> > +		/*
+> > +		 * To avoid deadlocks between range_cyclic writeback and callers
+> > +		 * that hold pages in PageWriteback to aggregate I/O until
+> > +		 * the writeback iteration finishes, we do not loop back to the
+> > +		 * start of the file.  Doing so causes a page lock/page
+> > +		 * writeback access order inversion - we should only ever lock
+> > +		 * multiple pages in ascending page->index order, and looping
+> > +		 * back to the start of the file violates that rule and causes
+> > +		 * deadlocks.
+> > +		 */
+> > +		if (wbc->range_cyclic)
+> > +			mapping->writeback_index = 0;
+> > +
+> > +		/*
+> > +		 * Return the first error we encountered (if there was any) to
+> > +		 * the caller.
+> > +		 */
+> > +		*error = wbc->saved_err;
+> > +	}
+> > +	return folio;
+> >  
+> >  done:
+> >  	folio_batch_release(&wbc->fbatch);
+> >  	if (wbc->range_cyclic)
+> >  		mapping->writeback_index = folio->index + folio_nr_pages(folio);
+> > +	return NULL;
+> > +}
+> > +
+> > +/**
+> > + * write_cache_pages - walk the list of dirty pages of the given address space and write all of them.
+> > + * @mapping: address space structure to write
+> > + * @wbc: subtract the number of written pages from *@wbc->nr_to_write
+> > + * @writepage: function called for each page
+> > + * @data: data passed to writepage function
+> > + *
+> > + * Return: %0 on success, negative error code otherwise
+> > + *
+> > + * Note: please use writeback_iter() instead.
+> > + */
+> > +int write_cache_pages(struct address_space *mapping,
+> > +		      struct writeback_control *wbc, writepage_t writepage,
+> > +		      void *data)
+> > +{
+> > +	struct folio *folio = NULL;
+> > +	int error;
+> > +
+> > +	while ((folio = writeback_iter(mapping, wbc, folio, &error))) {
+> > +		error = writepage(folio, wbc, data);
+> > +		if (error == AOP_WRITEPAGE_ACTIVATE) {
+> > +			folio_unlock(folio);
+> > +			error = 0;
+> > +		}
+> > +	}
+> > +
+> >  	return error;
+> >  }
+> >  EXPORT_SYMBOL(write_cache_pages);
+> > -- 
+> > 2.39.2
+> > 
+> > 
+> 
+> 
 
 
