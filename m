@@ -1,146 +1,137 @@
-Return-Path: <linux-kernel+bounces-55678-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55677-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D23B784BFDF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FA5084BFDE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:14:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C360AB234A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:14:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7FF1B23463
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:14:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CB9D1BF27;
-	Tue,  6 Feb 2024 22:14:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A41F1BDED;
+	Tue,  6 Feb 2024 22:14:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KVoKtWei"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="RaYhLVOQ"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 252DE1BC30
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 22:14:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 610071BF24;
+	Tue,  6 Feb 2024 22:14:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707257665; cv=none; b=t7SkXGwmhVWYKByhtqz3bAZGbuj0o8FmP6IRymlFsY0OQTXpIUqkbPvg9f/vMICDCGWh0BU75yG0ptXLsgZAtqH2FC084MSh6vAOV+OTF4EKjJfx5UlaMdZz8h0yKh6SgZsInk90RA0i3HTvLcUV5VLG7J+dk9HYu3mjzQjxA7U=
+	t=1707257644; cv=none; b=esxp1pVRgwVopUsOgFKtWbrUIGtQQCGHI+GOb9MZv7JAl/tjB6BrQ1YvKWYk9N9sIBqdbO0LJ8i7eX8/pwfMsqJt2x+nXkv3BUx8/1f2u+iVzf2LQG3lc2jaf3FhBV0l8j6RSeHXSzbi815x3hAmmOkzzVsUbIHOhIa3j/kPwMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707257665; c=relaxed/simple;
-	bh=EdNMuL823nKxznGXv0hHFdrFCk7K/tjRGRJ5rhHIQ30=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=J3b/eG44KKOHJKdw+bOLmgPlTYqKxsW2+9FMtO1V7636UF8vjBoX6iuu31rvfFGPS3K8Xw+IHxc4Kzhnhss/U+hYXyNaXKOf6AFbN3d6h4ZYo7RmvolC6ih1qjx95gslWdRXBBhldBywcj1w86sCvMvF/+RL2SODebzRZGHXqxk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KVoKtWei; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707257663; x=1738793663;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=EdNMuL823nKxznGXv0hHFdrFCk7K/tjRGRJ5rhHIQ30=;
-  b=KVoKtWeiZ46qR7/hZI98ArlYWSUefBMeGaueMvNioSuZdMg967kKW4pB
-   qJ1/ZSAwjpu7lGWvFCyooq1+fzyyciXcwZrUMgf/m4oQAmP8cJpDSfe7m
-   6sMqztd8nzxNmhNAseQJ206mBsDY6+u3L7h8C8v6Uu6x5/BG0wS6tBRuF
-   Cy0MpqzSJyzXKKKC+oLylGQMWzuTx0e2YQdRdH2x+SuTPa329erskIrLX
-   mgNcXQKJj/AJzWxUHA73x9X+0oaGoxZQcS3tUoOlVm8H41Rhro00+yhVF
-   l/36oC/5Vdi0pyaPswh2WLuxE7hHD2Y2yx/sBTsVYW/wEseo7BckzQzT+
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="1018113"
-X-IronPort-AV: E=Sophos;i="6.05,248,1701158400"; 
-   d="scan'208";a="1018113"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 14:14:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,248,1701158400"; 
-   d="scan'208";a="1146800"
-Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
-  by orviesa009.jf.intel.com with ESMTP; 06 Feb 2024 14:14:20 -0800
-Received: from kbuild by 01f0647817ea with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rXThq-0001pg-2m;
-	Tue, 06 Feb 2024 22:14:18 +0000
-Date: Wed, 7 Feb 2024 06:13:24 +0800
-From: kernel test robot <lkp@intel.com>
-To: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Subject: security/landlock/ruleset.c:644: warning: Function parameter or
- struct member '' not described in 'landlock_init_layer_masks'
-Message-ID: <202402070653.ovMJd41U-lkp@intel.com>
+	s=arc-20240116; t=1707257644; c=relaxed/simple;
+	bh=8kC4nFc8jWCU8lz0w4ns6l3GkKaVW0JLOw8EaPHxltg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EpZ46t7TLzIr+rFfRUETS2thvB6oA0J2eHg8SUApbbWZVmbm+aggOgdh+YgeBfCg2Y6DCzBGTChq4HC/z4C2oamX8HvqcWn5WKLeW6VQFQhqB7P/Izl6KyI25mwsgzWVzMg465wZNhWKWyNhVRgMeloMMgJyGz186H3/zTKZEkw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=RaYhLVOQ; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1707257639;
+	bh=Hhm5lsGggZ/n0AiTj+cat/T+aIp+NC3/bl9hougzqP4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=RaYhLVOQu44EMobqCnJ3Nzvv3xkt6iiRuX05hTKN//wTMqyWjfYyEITCpYzxqPB5t
+	 fx9tGlhXXzUZntXkXKGeKDWHk6cQfslux9it55ViTbXNIurjv82VO3Uug+nTFDYc5M
+	 6Wev79GYoZA1WMOTlTOy/xajPORD7UfHWqefeqyrsB5zNFOF9J3rk2ZAbe49hjvFDt
+	 fx+TTKTpW10to3Ph+XbB1vU+1pljusZE/mnVKQzfSoL/MhgFlmnAifWcCdWjtVItO8
+	 ZY5VcG4KKNd3p+uGQTPJfPSsCwD4l/e5ZmOQi8Q20gG5N6O3i8ILVbc6PfnjIRe/fU
+	 5FR+NvAt0QkHg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TTyFZ4Nhkz4wcB;
+	Wed,  7 Feb 2024 09:13:54 +1100 (AEDT)
+Date: Wed, 7 Feb 2024 09:13:53 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Jean Delvare <jdelvare@suse.de>
+Cc: Linux Next Mailing List  <linux-next@vger.kernel.org>, Linux Kernel
+ Mailing List <linux-kernel@vger.kernel.org>, David Miller
+ <davem@davemloft.net>, "Eric W. Biederman" <ebiederm@xmission.com>, Florian
+ Fainelli <f.fainelli@gmail.com>, Hector Martin <marcan@marcan.st>, "Jason
+ A. Donenfeld" <Jason@zx2c4.com>, Lee Jones <lee@kernel.org>, Micah Morton
+ <mortonm@chromium.org>, Mike Marshall <hubcap@omnibond.com>, Pavel Machek
+ <pavel@ucw.cz>, Theodore Ts'o <tytso@mit.edu>
+Subject: Re: linux-next: trees being removed
+Message-ID: <20240207091353.2d16ac11@canb.auug.org.au>
+In-Reply-To: <d5e68f29d6c835848295c10bac964da7a57f1bfe.camel@suse.de>
+References: <20240124130101.428c09a3@canb.auug.org.au>
+ <d5e68f29d6c835848295c10bac964da7a57f1bfe.camel@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: multipart/signed; boundary="Sig_/8pK6Dh/8ND8BfyrbBsD2Dze";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   99bd3cb0d12e85d5114425353552121ec8f93adc
-commit: 0e7410112964168a65578002269ae3b80b207936 landlock: Move and rename layer helpers
-date:   3 months ago
-config: i386-randconfig-141-20240206 (https://download.01.org/0day-ci/archive/20240207/202402070653.ovMJd41U-lkp@intel.com/config)
-compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240207/202402070653.ovMJd41U-lkp@intel.com/reproduce)
+--Sig_/8pK6Dh/8ND8BfyrbBsD2Dze
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402070653.ovMJd41U-lkp@intel.com/
+Hi Jean,
 
-All warnings (new ones prefixed by >>):
+On Tue, 06 Feb 2024 11:50:44 +0100 Jean Delvare <jdelvare@suse.de> wrote:
+>
+> On Wed, 2024-01-24 at 13:01 +1100, Stephen Rothwell wrote:
+> >=20
+> > Tree=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Last commit date
+> > =C2=A0 URL
+> > =C2=A0 commits (if any)
+> > -----------------------------------------
+> > (...)
+> > dmi=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A02022-09-23 14:5=
+3:14 +0200
+> > =C2=A0 git://git.kernel.org/pub/scm/linux/kernel/git/jdelvare/staging.g=
+it#dmi-for-next =20
+>=20
+> This is still where I would put updates to the DMI subsystem, but it
+> turns out there haven't been any for some time now, and I'm not aware
+> of any pending issue.
 
-   Use of uninitialized value $param in regexp compilation at scripts/kernel-doc line 1518, <IN_FILE> line 182.
-   Use of uninitialized value $actual in substitution (s///) at scripts/kernel-doc line 1470, <IN_FILE> line 182.
-   Use of uninitialized value $actual in substitution (s///) at scripts/kernel-doc line 1470, <IN_FILE> line 182.
-   Use of uninitialized value $param in substitution (s///) at scripts/kernel-doc line 1576, <IN_FILE> line 182.
-   Use of uninitialized value $param in pattern match (m//) at scripts/kernel-doc line 1605, <IN_FILE> line 182.
-   Use of uninitialized value $param in hash element at scripts/kernel-doc line 1615, <IN_FILE> line 182.
-   Use of uninitialized value $param in pattern match (m//) at scripts/kernel-doc line 1615, <IN_FILE> line 182.
-   Use of uninitialized value $param in hash element at scripts/kernel-doc line 1616, <IN_FILE> line 182.
-   Use of uninitialized value $param in pattern match (m//) at scripts/kernel-doc line 1618, <IN_FILE> line 182.
-   Use of uninitialized value $param in concatenation (.) or string at scripts/kernel-doc line 1619, <IN_FILE> line 182.
-   security/landlock/ruleset.c:182: warning: Function parameter or struct member '' not described in 'insert_rule'
-   Use of uninitialized value $param in hash element at scripts/kernel-doc line 1634, <IN_FILE> line 182.
-   Use of uninitialized value $parameterlist[2] in join or string at scripts/kernel-doc line 1793, <IN_FILE> line 182.
-   security/landlock/ruleset.c:182: warning: Excess function parameter 'layers' description in 'insert_rule'
-   Use of uninitialized value $param in regexp compilation at scripts/kernel-doc line 1518, <IN_FILE> line 644.
-   Use of uninitialized value $actual in substitution (s///) at scripts/kernel-doc line 1470, <IN_FILE> line 644.
-   Use of uninitialized value $actual in substitution (s///) at scripts/kernel-doc line 1470, <IN_FILE> line 644.
-   Use of uninitialized value $param in substitution (s///) at scripts/kernel-doc line 1576, <IN_FILE> line 644.
-   Use of uninitialized value $param in pattern match (m//) at scripts/kernel-doc line 1605, <IN_FILE> line 644.
-   Use of uninitialized value $param in hash element at scripts/kernel-doc line 1615, <IN_FILE> line 644.
-   Use of uninitialized value $param in pattern match (m//) at scripts/kernel-doc line 1615, <IN_FILE> line 644.
-   Use of uninitialized value $param in hash element at scripts/kernel-doc line 1616, <IN_FILE> line 644.
-   Use of uninitialized value $param in pattern match (m//) at scripts/kernel-doc line 1618, <IN_FILE> line 644.
-   Use of uninitialized value $param in concatenation (.) or string at scripts/kernel-doc line 1619, <IN_FILE> line 644.
->> security/landlock/ruleset.c:644: warning: Function parameter or struct member '' not described in 'landlock_init_layer_masks'
-   Use of uninitialized value $param in hash element at scripts/kernel-doc line 1634, <IN_FILE> line 644.
-   Use of uninitialized value $parameterlist[2] in join or string at scripts/kernel-doc line 1793, <IN_FILE> line 644.
->> security/landlock/ruleset.c:644: warning: Excess function parameter 'layer_masks' description in 'landlock_init_layer_masks'
+I am happy to restore it if you want.
 
+> Out of curiosity, why do inactive branches bother you?
 
-vim +644 security/landlock/ruleset.c
+It is mostly just a way to get rid of abandoned trees.  Also, one of
+the checks I do requires me to reference all the commits between the
+merge base of each tree and Linus' tree.  If the base (and top commit)
+of a tree has not been updated for a year, that means checking 40,000+
+commits which takes a noticeable amount of time.  Also just merging
+such a tree has a noticeable delay.  An empty tree (relative to Linus'
+tree) doesn't cost much, of course.
 
-   626	
-   627	/**
-   628	 * landlock_init_layer_masks - Initialize layer masks from an access request
-   629	 *
-   630	 * Populates @layer_masks such that for each access right in @access_request,
-   631	 * the bits for all the layers are set where this access right is handled.
-   632	 *
-   633	 * @domain: The domain that defines the current restrictions.
-   634	 * @access_request: The requested access rights to check.
-   635	 * @layer_masks: The layer masks to populate.
-   636	 *
-   637	 * Returns: An access mask where each access right bit is set which is handled
-   638	 * in any of the active layers in @domain.
-   639	 */
-   640	access_mask_t landlock_init_layer_masks(
-   641		const struct landlock_ruleset *const domain,
-   642		const access_mask_t access_request,
-   643		layer_mask_t (*const layer_masks)[LANDLOCK_NUM_ACCESS_FS])
- > 644	{
+> I can certainly update that branch if it makes your life easier.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Yeah, even just resetting it to Linus' tree at each -rc1 will help.
+=20
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/8pK6Dh/8ND8BfyrbBsD2Dze
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXCryEACgkQAVBC80lX
+0Gxelwf/WKPa8NepgCNPji9dXgGKexHh8h2ZBiJE3R470JSdu4324afjcjMArriP
+sCmGpDVr1mU0S8MvFQ3g1GMJ9Jquc6RfQvaY2UvRkDXyvmstMhIflyd2krCyFuWO
+3Q6ZupO8/PUZOviYlf/lNH8YQpGzC1JhVPIikfFhAyxcRMHtfYF11VOcUEbVfdeK
+xusohXgxQiQqsa7no/LF2L7nGlXAaXzjAX7BTJ0JrHxfNW4pOy6ZxjW9PMaMCY8H
+imhK3yv9WQTSQ51q87nge5D3DD25Pe0vE4HNPEXItJgtGSud5VpR+/buKRR6L0dk
+32Eoeer/8R9vZMXKUV/ABFeLnJmOUg==
+=68Cp
+-----END PGP SIGNATURE-----
+
+--Sig_/8pK6Dh/8ND8BfyrbBsD2Dze--
 
