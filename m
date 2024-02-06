@@ -1,217 +1,309 @@
-Return-Path: <linux-kernel+bounces-54353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE52184AE0F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 06:23:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BC0C84ADC0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 06:05:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E34C1F251DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 05:23:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF554284B99
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 05:05:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA17A73196;
-	Tue,  6 Feb 2024 05:23:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="lpGA3O99"
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 967C07993D;
+	Tue,  6 Feb 2024 05:05:08 +0000 (UTC)
+Received: from IND01-MAX-obe.outbound.protection.outlook.com (mail-maxind01on2119.outbound.protection.outlook.com [40.107.222.119])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34A6F7F466
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 05:23:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.24
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707197007; cv=none; b=RXApBbUWoM9pjK7JhegfjO0MoNJxpH0HIE71uwIRr0xDGAAti7IbD1rHW3H6EzW+YQPVbBwA5pKoNAnXdAFkOI6M8ERsU5ZfaD1wrk1g4iyR6vQSUZt5yu1gm6kyGKAL/A7+blU1sWPW76iJok2p4saVCU0jua2RjuAmtvPcU+Y=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707197007; c=relaxed/simple;
-	bh=XEVDMySbdDpTa7WZXu2xzfB91+TIpxSETUySCbAsvnQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type:
-	 References; b=LvvibcujiZBKwFJV6hBG8e65XrPqlFXKa09svymACKTkEsJAMkPal+pcQjgXHvzvhEV7Iv3qjIX/AcON3Z9KK0qQiTXY9bduwYYhus0coLL+gbfEDwK2KdvhfKo+z4UwLTV1Mo2MezNEjc2eb84gFPj4i7/23Mx+VHygXigAowU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=lpGA3O99; arc=none smtp.client-ip=203.254.224.24
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-	by mailout1.samsung.com (KnoxPortal) with ESMTP id 20240206052323epoutp015f10334516f9d0961e902c2f95727609~xLqEUXZ-j1315313153epoutp011
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 05:23:23 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20240206052323epoutp015f10334516f9d0961e902c2f95727609~xLqEUXZ-j1315313153epoutp011
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1707197003;
-	bh=Kn3tsS86gqCdQCfwsQ06f3bnfgxMXBGi8UaNIerSgdU=;
-	h=From:To:Cc:Subject:Date:References:From;
-	b=lpGA3O99uGBhjk3GVF+pEeo+NP8Dva+tLEBDymvx3GJVS/ueKPezuFZ7YYGEaZTq9
-	 nWcocNmsHOctYvRipfhpk4euX01vuARehwetYIVaqyRQd5oMAvlftLCfjWvO1qLSSP
-	 gdYO8Y6JCL95vslhwXzdywsGSIjURXUgOqhDSeXc=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-	epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-	20240206052322epcas5p260a68301e617cb91930af55868a348c8~xLqD3vj1u0065900659epcas5p2m;
-	Tue,  6 Feb 2024 05:23:22 +0000 (GMT)
-Received: from epsmges5p3new.samsung.com (unknown [182.195.38.180]) by
-	epsnrtp3.localdomain (Postfix) with ESMTP id 4TTWqY3hLDz4x9QJ; Tue,  6 Feb
-	2024 05:23:21 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-	epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	7F.7F.09672.942C1C56; Tue,  6 Feb 2024 14:23:21 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-	epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240206024828epcas5p2119e961d13e6c9fb6ea114c7aca4bf3d~xJi0FZ-Lv2260322603epcas5p2A;
-	Tue,  6 Feb 2024 02:48:28 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240206024828epsmtrp24464ec0c9644b34fedc1f675b1ba02a4~xJi0Edx-Y0157001570epsmtrp2Q;
-	Tue,  6 Feb 2024 02:48:28 +0000 (GMT)
-X-AuditID: b6c32a4b-60bfd700000025c8-1e-65c1c249f9e9
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-	epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	52.53.08755.CFD91C56; Tue,  6 Feb 2024 11:48:28 +0900 (KST)
-Received: from AHRE124.. (unknown [109.105.118.124]) by epsmtip1.samsung.com
-	(KnoxPortal) with ESMTPA id
-	20240206024827epsmtip19d54c9ef7fc2da7a8230047d984226df~xJiyuV4GX2459624596epsmtip1d;
-	Tue,  6 Feb 2024 02:48:27 +0000 (GMT)
-From: Xiaobing Li <xiaobing.li@samsung.com>
-To: axboe@kernel.dk, asml.silence@gmail.com
-Cc: linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-	kun.dou@samsung.com, peiwei.li@samsung.com, joshi.k@samsung.com,
-	kundan.kumar@samsung.com, wenwen.chen@samsung.com, ruyi.zhang@samsung.com,
-	cliang01.li@samsung.com, xue01.he@samsung.com, Xiaobing Li
-	<xiaobing.li@samsung.com>
-Subject: [PATCH] liburing: add script for statistics sqpoll running time
-Date: Tue,  6 Feb 2024 10:40:14 +0800
-Message-Id: <20240206024014.11412-1-xiaobing.li@samsung.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF349745DE;
+	Tue,  6 Feb 2024 05:05:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.222.119
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707195907; cv=fail; b=RDEaBPX7q0hcjsXGPi3b9W5vQYK49q8zEepX+Nv+/7n80j9paZkG+sOmkJcU8h9n4lceDfLhaAZniwEiX6heg4ZXpkxoogGnaxdW8u2NhuRGhkbHoPYqSO0gaJEW7HTcQCTjo8ABSEWHAHkBdnaCpauqevdCcHVj0dHi33QGVXw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707195907; c=relaxed/simple;
+	bh=/aCiWw9NTSaqeplKveytxXGrXy5PPEGFT9nTm+60ei8=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=jbV1N78hChLaAtiN2RxK2C+TVoXcMVZNPN6pTiniguczrYfpZu182+aLLt5c4gk2rscm0zU2Pgq07MJ2eJgd92SB27avxQxmk7AzklYXOrZ0Mh5728Jqdhv8+lzMX972OR9MKKCOU8Nxs7D2zNCtYM8usWDHo0+yRuX9xOw0neI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=siliconsignals.io; spf=pass smtp.mailfrom=siliconsignals.io; arc=fail smtp.client-ip=40.107.222.119
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=siliconsignals.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=siliconsignals.io
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EeiyyBsCpyHZoBI/u0jNe8H5RJ+hz4fto+dVL3xCGKhP3u48YRfYQblavamjgpuRB2TICU37MBlMxr9fVSZ7yuoUWOqdliJAZAr+gdcGKWNy3bptJS4eXIBwljYL782vL5oOLa6eFie5H6rgRDjWzAzQYVGzGzA1drOICRpZO6XgbWS6SLf4Enik0wM5z1kSxA/dz+duzPkXufQytUcf2UYd0QLVLaUCSR4eESIMZicYqSLBURypZUcJgZAzoEgTfIe7gUN96evr3J+PK4sEYGqZgA+qci5qW64cZwiYs+osT+hc+Tyn6gHHH++mBLhwvsIs0luy/qdDbg2Dmg1Rqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/aCiWw9NTSaqeplKveytxXGrXy5PPEGFT9nTm+60ei8=;
+ b=CwHRLkwFOVyYC8jL0Z37fUr3E9iE2hv6buP0ylN7wzPLhGB6AOoN+6C66VPtgmck7Vii7eGh/83ToQSBy6Vl7SfKCnZdEY8dl+LR4YANvf3/KZUVFsOYjQs2rjYE6Nf0sd2xD17gEO4HBsUeBrDaQr+V/3jmdZzlvoyNc2AfZRNn5Xu+G3JTfKnRgPJfmXGPIaCbnpsQd2e7HapUZHt+5jE2GFQN/ZtJG4XPEDLZ06Jx5lWCdH2tqdVzHa2u3/dcK1ak5OQ6Yw4L609/u71XsUiJZDZt0P6Q7LSrplziR6+mSd7qbKpOfyoyrHYMebqNhfakNy1VHT1lZ9kRqTWqgg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=siliconsignals.io; dmarc=pass action=none
+ header.from=siliconsignals.io; dkim=pass header.d=siliconsignals.io; arc=none
+Received: from MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a01:42::6)
+ by MAXPR01MB4358.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a01:7::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36; Tue, 6 Feb
+ 2024 05:05:01 +0000
+Received: from MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM
+ ([fe80::72b4:8a64:2d93:7cc0]) by MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM
+ ([fe80::72b4:8a64:2d93:7cc0%4]) with mapi id 15.20.7249.035; Tue, 6 Feb 2024
+ 05:05:01 +0000
+From: Bhavin Sharma <bhavin.sharma@siliconsignals.io>
+To: Hans Verkuil <hverkuil@xs4all.nl>, "mchehab@kernel.org"
+	<mchehab@kernel.org>, "kieran.bingham@ideasonboard.com"
+	<kieran.bingham@ideasonboard.com>
+CC: Lars-Peter Clausen <lars@metafoo.de>, "linux-media@vger.kernel.org"
+	<linux-media@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] media: adv7180: Fix cppcheck warnings
+Thread-Topic: [PATCH v2] media: adv7180: Fix cppcheck warnings
+Thread-Index: AQHaPYfkNCfvrDXYy0uGv5NwfP7QArD7odSAgAFQ0FE=
+Date: Tue, 6 Feb 2024 05:05:01 +0000
+Message-ID:
+ <MAZPR01MB695711E70CEDFC41DE5C2C8DF2462@MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM>
+References: <20240102142729.1743421-1-bhavin.sharma@siliconsignals.io>
+ <16ef7746-d038-4607-8e2f-8f7cef5a8b48@xs4all.nl>
+In-Reply-To: <16ef7746-d038-4607-8e2f-8f7cef5a8b48@xs4all.nl>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=siliconsignals.io;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MAZPR01MB6957:EE_|MAXPR01MB4358:EE_
+x-ms-office365-filtering-correlation-id: 27e2c913-ee1f-466a-e71c-08dc26d12c52
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ wVyWWSPVyBn1jrIFkHMPZM3vnTCiy0atbFjhpKpSZQjzrDnQxNZvWT3tu9Ao7pfutnIXBBg4ZeWalMjupngsn3dzkuvPeKDEs6V9mm5+VKEnAX795Zmj+Gaz51iH8JElOG1tJsCHsPD5MMUSe7o3GW+3sS1C8IhG6/7oR0gjXobmDIMxG09McVUvqyGittrxlJM5/l9Xkb9yTAnsrfaq07vB+03pKZlrc4g1LEOHrDsadMXuLYtJI9zEVqTPjkygn6E1tYfZkGkZgVgmBS+uEnXWAj5HYdC2x+rB4UVIalSUxYqnEVAgzz7Q/vH/Xvyq5c8bDk+BP1JxGtDI2tv4mfbtJ8A2Oxg5WZ8+XebeTifFIJkLg3Eyzw15twdiUv+AeV2WW0QeH1bFm1WSgUujPh2IKX4YDx/6fYB8TOutd2iXDw/fFtBtbk3+J+1c9zJLOrz8K5JEPnZI4lFoEpj/rk8k9hzpBT+/dPyJuzzqHYZi8cqincbiegX9t6pRMVmwcyQ6d9nLFqzIq1aEostyyeHPzX146FWXGej6BkordtkYIY5xZ1h8GFfXW6I7QmWHWnu4ObVbIwKOBJzHkArEMrY+524c12HFIvEtshhEoSs=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(346002)(39830400003)(396003)(376002)(230922051799003)(230273577357003)(1800799012)(451199024)(64100799003)(186009)(55016003)(44832011)(4326008)(8936002)(8676002)(38070700009)(38100700002)(41300700001)(33656002)(5660300002)(86362001)(2906002)(66556008)(54906003)(66446008)(52536014)(66476007)(64756008)(316002)(66946007)(76116006)(91956017)(110136005)(478600001)(53546011)(45080400002)(6506007)(7696005)(122000001)(71200400001)(9686003)(26005)(966005)(83380400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-1?Q?Nhk5PvN5cS9eKJ8Q1IN7xmlU0rn27KXhlIo8YjV/sYJQdCRXR9Es3asC/d?=
+ =?iso-8859-1?Q?DgTV7EhysAjfY0NZNTe2jYskIcTdQ7B1Cf/58owwrtMlNBqhrH6gS11ISy?=
+ =?iso-8859-1?Q?oxInxBXdgu2cmCLUsLRyMK1Tbi7RANK+ZMxrIVnov2nfc3K8/2L8YPHs2m?=
+ =?iso-8859-1?Q?rlrOb+P7Uk1uyz3c/9lCex3d7rM2LZV70nvX01481Bz+2fyjbXdFLL1nin?=
+ =?iso-8859-1?Q?a2FmA5+EjzX46/2T0xZJY7JIKGCyD2KIJpXg80X8CRB86GJSHSTBroaYj3?=
+ =?iso-8859-1?Q?S/KBPnT+it08065Zt7Q5JwWxos44vJtyJxYFUB2pp82iS3SMBBGTL+TT4F?=
+ =?iso-8859-1?Q?N8ybi6N7WwybHJhj8NxuwjvJJvNlvouRqQW3vTnSG0xfhQZg8SGMm35yQa?=
+ =?iso-8859-1?Q?9y6Ms/CmiOtrKzcmrJxOEibdfzHO8qd1HOWRh4McGYXR+ACq03iUfrnfUA?=
+ =?iso-8859-1?Q?nJiJ7au6HszxyCBBk87WKeDQiwKeCR+2WSTDoClO5Vomyi88W0hf/NACUw?=
+ =?iso-8859-1?Q?4UVCvXuYJ4hETenHv5w0ltvffG6azp9L5bEVCeSUQ/z0pfZCkR6DSGmcJl?=
+ =?iso-8859-1?Q?zYsviUYxDcCL3fer+WFit5cI685ge0IemOBLsHf6Gl+rkUhe8sFkUL5Ob3?=
+ =?iso-8859-1?Q?2IqY/S8PFKL6BQkSp8QV5kOzKZlD8nRgiB17iiGP+m928FeVcDUqRhyfPi?=
+ =?iso-8859-1?Q?mQJqzNyFSlbbyiGJo637qO2wy63R/tq/F/hzZ1XlNkTOGcebyKcqtoQgNZ?=
+ =?iso-8859-1?Q?dpBGL01IwrZa79HCfxQ5w9ncb58NR5jYkTpyOCSxTkvYufV7WxvM3dpKGa?=
+ =?iso-8859-1?Q?9efTLXvSiavro89NS0sT8yn6j+05wKuz5lsd8QnnwJ320GMNGgW+k3njnO?=
+ =?iso-8859-1?Q?EhIwJU6dXBPd3jtQm+GerXsrTmMyMNtkT+tynEPtuG1ECGI7Nv3nOvYvdL?=
+ =?iso-8859-1?Q?oPaKQR8Y7h4rFJAAiKd8Kuld8zWNH7SfjPI4tN11g7ZiHeaMfXtUF+05Nv?=
+ =?iso-8859-1?Q?CisqQygzNsGxNw7H91Awpp3KPPLTRLREJXeFrvfxBua9pUofvvEQdFMsEE?=
+ =?iso-8859-1?Q?JT5TY73L9w5WZZB5dJi1dMFfg0TBfyH+jIt8qs1HbrEGi74hMlS1b9lWG5?=
+ =?iso-8859-1?Q?+KZCHYJOcg4CZXT345/m4Z43H7Tj/VhI7DNZhE44lJgjPU0EDVIsBoN7O2?=
+ =?iso-8859-1?Q?eawAPdawhJzofrGvqAk8owMALNtAbwBJQ+fMy3Gk1NS+YtlycoSbqYXeOs?=
+ =?iso-8859-1?Q?qjEjUYvU9BV7US1qbSc/VN3QcJy722dBo7VP5aUvVvw/ZBXBpiEVCfDJoi?=
+ =?iso-8859-1?Q?nMDzbLftRM6HMIqZlzlcK4Ync3vLM0vhX9LDBp/dAdSsUD8C9WcIIR8USg?=
+ =?iso-8859-1?Q?BdLwmAsINyzWvpkGlEgqbM6dOPZOG72Q6TLc16N5vAHKHbPf6zx21AeL5V?=
+ =?iso-8859-1?Q?Cy71xszKPeYtetzl85jBwBniGBaUjMbUdhV0g6vrWtiScd3EOiWtM1PxGI?=
+ =?iso-8859-1?Q?+714gkyGONH+NuowRC0uIt8O8ZUEsBazz8ErbGJ7ijZ0H/GG1Q9FHJPkXI?=
+ =?iso-8859-1?Q?LTdu8rIkq3p0b/PhdehnkdcmoaWMHhLD3hQVowbsIHvHiETH8b6E4rEVzN?=
+ =?iso-8859-1?Q?MoCMaNeFmxFC0206OYFPUZsFnE5FGgd4drRidnCkau5x4ArDMq381shA?=
+ =?iso-8859-1?Q?=3D=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrIJsWRmVeSWpSXmKPExsWy7bCmlq7noYOpBv0bpS3mrNrGaLH6bj+b
-	xem/j1ks3rWeY7E4+v8tm8Wv7ruMFlu/fGW1uLxrDpvFs72cFl8Of2e3ODvhA6vF1C07mCw6
-	Wi4zWnRdOMXmwOexc9Zddo/LZ0s9+rasYvT4vEkugCUq2yYjNTEltUghNS85PyUzL91WyTs4
-	3jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMH6EQlhbLEnFKgUEBicbGSvp1NUX5pSapCRn5x
-	ia1SakFKToFJgV5xYm5xaV66Xl5qiZWhgYGRKVBhQnbGj5kLmAveCFWcXdfG2MB4gaeLkZND
-	QsBEYv/XtcxdjFwcQgK7GSU+H1rEDuF8YpR4OGUOVOYbo8Sx1qtMMC3/emdCJfYySlyZ8o4V
-	wnnJKPFj/TlWkCo2AW2J6+u6wGwRIPv146ksIEXMAkuYJLZ+Oww2SljAQ+LSol52EJtFQFXi
-	7Yw+sAZeARuJU0cPsEGsk5fYf/AsM0RcUOLkzCcsIDYzULx562ywMyQEGjkkDt5YA+RwADku
-	Eiv/ckH0Cku8Or6FHcKWkvj8bi/UzGKJIz3fWSF6Gxglpt++ClVkLfHvyh4WkDnMApoS63fp
-	Q4RlJaaeWscEsZdPovf3E2hQ8ErsmAdjq0qsvvSQBcKWlnjd8Bsq7iHx/mMj2P1CArESb26u
-	YJvAKD8LyTuzkLwzC2HzAkbmVYySqQXFuempxaYFxnmp5fCoTc7P3cQITqta3jsYHz34oHeI
-	kYmD8RCjBAezkgiv2Y4DqUK8KYmVValF+fFFpTmpxYcYTYFhPJFZSjQ5H5jY80riDU0sDUzM
-	zMxMLI3NDJXEeV+3zk0REkhPLEnNTk0tSC2C6WPi4JRqYLLMv5FtENT2gDtS+Eqzd0XwuxBe
-	Rb7zp0p3GdwKerf/Tke90TOWdv1WdnM7sd9Miz+eOx/yXitJ00l1OffnyTx1N/nyygX0C9+x
-	rTvMc8p03aO+tT/+TLsu9+781HRv+QW/7lfFdC/ddeTfBAbDE5PnWmZ+ZdxxT/C07ia2b/mz
-	Zs44ve1hykPjyfePSf9e2PujcaZM+Qr2ZYdzkpj1ny3MEK/sYAu3WGpWqOKTGj53iqn5oc9F
-	JgGOgjszr8/n5f4U6lRT+63KMsXAbvvkqQ8+CTUud/i1xWPZAt2nNRMr596MK2kRX8B0LVU+
-	KWfS5i7flA8hnLJ5vYrp8/uOTX68y0x/n1LcTO97fElCzUosxRmJhlrMRcWJAHPYWmQ0BAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJLMWRmVeSWpSXmKPExsWy7bCSnO6fuQdTDc4+lLWYs2obo8Xqu/1s
-	Fqf/PmaxeNd6jsXi6P+3bBa/uu8yWmz98pXV4vKuOWwWz/ZyWnw5/J3d4uyED6wWU7fsYLLo
-	aLnMaNF14RSbA5/Hzll32T0uny316NuyitHj8ya5AJYoLpuU1JzMstQifbsErowfMxcwF7wR
-	qji7ro2xgfECTxcjJ4eEgInEv96ZzF2MXBxCArsZJRZ9f8XYxcgBlJCW+POnHKJGWGLlv+fs
-	ILaQwHNGiTu/a0BsNgFtievrulhBykUEdCUa7yqAjGEW2MAksf/pPFaQGmEBD4lLi3rBelkE
-	VCXezugDi/MK2EicOnqADWK+vMT+g2eZIeKCEidnPmEBsZmB4s1bZzNPYOSbhSQ1C0lqASPT
-	KkbJ1ILi3PTcYsMCw7zUcr3ixNzi0rx0veT83E2M4NDW0tzBuH3VB71DjEwcjIcYJTiYlUR4
-	zXYcSBXiTUmsrEotyo8vKs1JLT7EKM3BoiTOK/6iN0VIID2xJDU7NbUgtQgmy8TBKdXAZPV9
-	0nfDl3dz3MXNLtjYPtM/8oN9l13JstBHARdKmW1WrXe+yLi4wUTy0BvJj84PK4WLpm58NLUi
-	JjPgyx22T6oLvl0LClP6370po9vUNIBRXmy+1NY3Lmv8zLRfnZtW8LLgyErXdys7N61hYf21
-	feHCMw9eprWZSfkcnmt7mevhxzrNY3vPl75N5/36WDn63iL+1cWW34waXZ1UbiolcXfHfr4s
-	+/ukQ+0q9tJZyYLPJvDcsYjcFyTwi+3b3bsNPpyGfpNf/d0TlrFYRf5jut1cuZUMXkrH8t4o
-	lnSvLnu7U/R+UOr+gMtNj+7Y19Ue2f/w8KXkcJWLt9oY1ydWW9ec+tC4xYJ77d+f27vmSCmx
-	FGckGmoxFxUnAgAFs39N3AIAAA==
-X-CMS-MailID: 20240206024828epcas5p2119e961d13e6c9fb6ea114c7aca4bf3d
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240206024828epcas5p2119e961d13e6c9fb6ea114c7aca4bf3d
-References: <CGME20240206024828epcas5p2119e961d13e6c9fb6ea114c7aca4bf3d@epcas5p2.samsung.com>
+X-OriginatorOrg: siliconsignals.io
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 27e2c913-ee1f-466a-e71c-08dc26d12c52
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Feb 2024 05:05:01.2952
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 7ec5089e-a433-4bd1-a638-82ee62e21d37
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1j8m1UwDnDC7lkRcCw9kxFGEc51viZ2C/FRkAsByRGyzjujKPmdIUAlmeDPAyyiDU+Krs8JL2m2BcLi5m9tjjsELHdOjerGU4KzJ6MyYcnE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MAXPR01MB4358
 
-Count the running time and actual IO processing time of the sqpoll
-thread, and output the statistical time to terminal.
-
----
-The test results are as follows:
-PID             WorkTime(us)    TotalTime(us)   COMMAND
-1188923         1528823         1817846         iou-sqp-1188916
-1188920         1539703         1833793         iou-sqp-1188917
-1188921         1544210         1847887         iou-sqp-1188918
-1188922         1561503         1857846         iou-sqp-1188919
-
-Signed-off-by: Xiaobing Li <xiaobing.li@samsung.com>
----
- test/sqtimeshow.sh | 61 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
- create mode 100644 test/sqtimeshow.sh
-
-diff --git a/test/sqtimeshow.sh b/test/sqtimeshow.sh
-new file mode 100644
-index 0000000..e85fd2f
---- /dev/null
-+++ b/test/sqtimeshow.sh
-@@ -0,0 +1,61 @@
-+#!/usr/bin/env bash
-+
-+UPLINE=$(tput cuu1)
-+
-+function set_header() {
-+    printf "\033[47;30m%-15s %-15s %-15s %-15s \033[0m\n" PID WorkTime\(us\) TotalTime\(us\) COMMAND
-+}
-+
-+function get_time() {
-+    pid=$1
-+    item=$2
-+    proc_file="/proc/$pid/fdinfo/6"
-+    if [ ! -e $proc_file ]; then
-+        return
-+    fi
-+    content=$(cat ${proc_file} | grep ${item} | awk -F" " '{print $2}')
-+    echo ${content%us}
-+}
-+
-+function show_util() {
-+    index=0
-+    while true
-+    do
-+        data=$(top -H -b -n 1 | grep iou-sqp)
-+        if [ -z "${data}" ]; then
-+            echo "no sq thread is running."
-+            exit
-+        fi 
-+        index=0
-+        num=$(echo $data | tr -cd R |wc -c)
-+        arr=($data)
-+        len=$((${#arr[@]} / ${num}))
-+        i=0
-+        while [ ${i} -lt ${num} ]
-+        do
-+            pid=${arr[${i} * ${len}]}
-+            name=${arr[${i} * ${len} + len - 1]}
-+            work_time=$(get_time $pid "SqWorkTime")
-+            total_time=$(get_time $pid "SqTotalTime")
-+            printf "%-15s %-15s %-15s %-15s\n" ${pid} ${work_time} ${total_time} ${name}
-+            ((i++))
-+        done
-+        sleep 2
-+        update=$UPLINE
-+        for j in $(seq 1 ${num}); do
-+            update=$update$UPLINE
-+        done
-+        if [ ! -z "$(top -H -b -n 1 | grep iou-sqp)" ]; then
-+            echo "$update"
-+        fi
-+    done
-+}
-+
-+function main() {
-+    # set header
-+    set_header
-+    # show util
-+    show_util
-+}
-+
-+main
--- 
-2.34.1
-
+Hi Hans,=0A=
+=0A=
+> Hi Bhavin,=0A=
+=0A=
+> On 02/01/2024 15:27, Bhavin Sharma wrote:=0A=
+>> WARNING: Missing a blank line after declarations=0A=
+>>=0A=
+>> Signed-off-by: Bhavin Sharma <bhavin.sharma@siliconsignals.io>=0A=
+>> ---=0A=
+>>=A0 drivers/media/i2c/adv7180.c | 27 ++++++++++++++++++---------=0A=
+>>=A0 1 file changed, 18 insertions(+), 9 deletions(-)=0A=
+>>=0A=
+>> diff --git a/drivers/media/i2c/adv7180.c b/drivers/media/i2c/adv7180.c=
+=0A=
+>> index 54134473186b..0023a546b3c9 100644=0A=
+>> --- a/drivers/media/i2c/adv7180.c=0A=
+>> +++ b/drivers/media/i2c/adv7180.c=0A=
+>> @@ -335,8 +335,9 @@ static u32 adv7180_status_to_v4l2(u8 status1)=0A=
+>>=A0 static int __adv7180_status(struct adv7180_state *state, u32 *status,=
+=0A=
+>>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0 v4l2_std_id *std)=0A=
+>>=A0 {=0A=
+>> -=A0=A0=A0=A0 int status1 =3D adv7180_read(state, ADV7180_REG_STATUS1);=
+=0A=
+>> +=A0=A0=A0=A0 int status1;=0A=
+>>=0A=
+>> +=A0=A0=A0=A0 status1 =3D adv7180_read(state, ADV7180_REG_STATUS1);=0A=
+>>=A0=A0=A0=A0=A0=A0 if (status1 < 0)=0A=
+>>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return status1;=0A=
+>>=0A=
+>> @@ -356,7 +357,9 @@ static inline struct adv7180_state *to_state(struct =
+v4l2_subdev *sd)=0A=
+>>=A0 static int adv7180_querystd(struct v4l2_subdev *sd, v4l2_std_id *std)=
+=0A=
+>>=A0 {=0A=
+>>=A0=A0=A0=A0=A0=A0 struct adv7180_state *state =3D to_state(sd);=0A=
+>> -=A0=A0=A0=A0 int err =3D mutex_lock_interruptible(&state->mutex);=0A=
+>> +=A0=A0=A0=A0 int err;=0A=
+>> +=0A=
+>> +=A0=A0=A0=A0 err =3D mutex_lock_interruptible(&state->mutex);=0A=
+=0A=
+> The problem here is the missing empty line, not that 'int err =3D <someth=
+ing>;' part.=0A=
+> So just add the empty line and don't split up the variable assignment.=0A=
+=0A=
+Yes, the error is of missing empty line and I only resolved that particular=
+ error in the first version=0A=
+of this patch.=0A=
+=0A=
+But I was recommended to keep the conditional statement close to the line i=
+t is associated with=0A=
+and to make changes in the code wherever similar format is followed. =0A=
+=0A=
+So I followed the advise of Kieran Bingham and made changes accordingly. =
+=0A=
+=0A=
+Below is the link of the full discussion : https://lore.kernel.org/lkml/MAZ=
+PR01MB695752E4ADB0110443EA695CF2432@MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM=
+/T/=0A=
+=0A=
+>>=A0=A0=A0=A0=A0=A0 if (err)=0A=
+>>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return err;=0A=
+>>=0A=
+>> @@ -388,8 +391,9 @@ static int adv7180_s_routing(struct v4l2_subdev *sd,=
+ u32 input,=0A=
+>>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 u32 output, u32 config)=0A=
+>>=A0 {=0A=
+>>=A0=A0=A0=A0=A0=A0 struct adv7180_state *state =3D to_state(sd);=0A=
+>> -=A0=A0=A0=A0 int ret =3D mutex_lock_interruptible(&state->mutex);=0A=
+>> +=A0=A0=A0=A0 int ret;=0A=
+>>=0A=
+>> +=A0=A0=A0=A0 ret =3D mutex_lock_interruptible(&state->mutex);=0A=
+>>=A0=A0=A0=A0=A0=A0 if (ret)=0A=
+>>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return ret;=0A=
+>>=0A=
+>> @@ -399,7 +403,6 @@ static int adv7180_s_routing(struct v4l2_subdev *sd,=
+ u32 input,=0A=
+>>=A0=A0=A0=A0=A0=A0 }=0A=
+>>=0A=
+>>=A0=A0=A0=A0=A0=A0 ret =3D state->chip_info->select_input(state, input);=
+=0A=
+>> -=0A=
+=0A=
+> Why remove this empty line? It has nothing to do with what you are trying=
+=0A=
+> to fix.=0A=
+=0A=
+>>=A0=A0=A0=A0=A0=A0 if (ret =3D=3D 0)=0A=
+>>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 state->input =3D input;=0A=
+>>=A0 out:=0A=
+>> @@ -410,7 +413,9 @@ static int adv7180_s_routing(struct v4l2_subdev *sd,=
+ u32 input,=0A=
+>>=A0 static int adv7180_g_input_status(struct v4l2_subdev *sd, u32 *status=
+)=0A=
+>>=A0 {=0A=
+>>=A0=A0=A0=A0=A0=A0 struct adv7180_state *state =3D to_state(sd);=0A=
+>> -=A0=A0=A0=A0 int ret =3D mutex_lock_interruptible(&state->mutex);=0A=
+>> +=A0=A0=A0=A0 int ret;=0A=
+>> +=0A=
+>> +=A0=A0=A0=A0 ret =3D mutex_lock_interruptible(&state->mutex);=0A=
+>>=A0=A0=A0=A0=A0=A0 if (ret)=0A=
+>>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return ret;=0A=
+>>=0A=
+>> @@ -436,8 +441,9 @@ static int adv7180_program_std(struct adv7180_state =
+*state)=0A=
+>>=A0 static int adv7180_s_std(struct v4l2_subdev *sd, v4l2_std_id std)=0A=
+>>=A0 {=0A=
+>>=A0=A0=A0=A0=A0=A0 struct adv7180_state *state =3D to_state(sd);=0A=
+>> -=A0=A0=A0=A0 int ret =3D mutex_lock_interruptible(&state->mutex);=0A=
+>> +=A0=A0=A0=A0 int ret;=0A=
+>>=0A=
+>> +=A0=A0=A0=A0 ret =3D mutex_lock_interruptible(&state->mutex);=0A=
+>>=A0=A0=A0=A0=A0=A0 if (ret)=0A=
+>>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return ret;=0A=
+>>=0A=
+>> @@ -466,8 +472,9 @@ static int adv7180_g_std(struct v4l2_subdev *sd, v4l=
+2_std_id *norm)=0A=
+>>=A0 static int adv7180_g_frame_interval(struct v4l2_subdev *sd,=0A=
+>>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 struct v4l2_subdev_frame_interval *fi)=0A=
+>>=A0 {=0A=
+>> -=A0=A0=A0=A0 struct adv7180_state *state =3D to_state(sd);=0A=
+>> +=A0=A0=A0=A0 struct adv7180_state *state;=0A=
+>>=0A=
+>> +=A0=A0=A0=A0 state =3D to_state(sd);=0A=
+=0A=
+> And I am sure this never produced a cppcheck warning since there is an=0A=
+> empty line. If cppcheck DOES produce a warning on this, then it is a=0A=
+> useless application.=0A=
+=0A=
+>>=A0=A0=A0=A0=A0=A0 if (state->curr_norm & V4L2_STD_525_60) {=0A=
+>>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 fi->interval.numerator =3D 100=
+1;=0A=
+>>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 fi->interval.denominator =3D 3=
+0000;=0A=
+>> @@ -828,8 +835,9 @@ static int adv7180_get_mbus_config(struct v4l2_subde=
+v *sd,=0A=
+>>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0 unsigned int pad,=0A=
+>>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0 struct v4l2_mbus_config *cfg)=0A=
+>>=A0 {=0A=
+>> -=A0=A0=A0=A0 struct adv7180_state *state =3D to_state(sd);=0A=
+>> +=A0=A0=A0=A0 struct adv7180_state *state;=0A=
+>>=0A=
+>> +=A0=A0=A0=A0 state =3D to_state(sd);=0A=
+>>=A0=A0=A0=A0=A0=A0 if (state->chip_info->flags & ADV7180_FLAG_MIPI_CSI2) =
+{=0A=
+>>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 cfg->type =3D V4L2_MBUS_CSI2_D=
+PHY;=0A=
+>>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 cfg->bus.mipi_csi2.num_data_la=
+nes =3D 1;=0A=
+>> @@ -857,8 +865,9 @@ static int adv7180_get_skip_frames(struct v4l2_subde=
+v *sd, u32 *frames)=0A=
+>>=0A=
+>>=A0 static int adv7180_g_pixelaspect(struct v4l2_subdev *sd, struct v4l2_=
+fract *aspect)=0A=
+>>=A0 {=0A=
+>> -=A0=A0=A0=A0 struct adv7180_state *state =3D to_state(sd);=0A=
+>> +=A0=A0=A0=A0 struct adv7180_state *state;=0A=
+>>=0A=
+>> +=A0=A0=A0=A0 state =3D to_state(sd);=0A=
+>>=A0=A0=A0=A0=A0=A0 if (state->curr_norm & V4L2_STD_525_60) {=0A=
+>>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 aspect->numerator =3D 11;=0A=
+>>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 aspect->denominator =3D 10;=0A=
+=0A=
+> Honestly, none of these changes are worth the effort, so I just reject th=
+is.=0A=
+=0A=
+Kindly give your suggestions.=0A=
+=0A=
+Regards,=0A=
+Bhavin Sharma=
 
