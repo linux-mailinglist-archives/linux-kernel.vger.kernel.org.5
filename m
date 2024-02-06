@@ -1,135 +1,121 @@
-Return-Path: <linux-kernel+bounces-54134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C19F984AB57
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ED3F684AB58
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:01:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B9691F259A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:00:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 86ACE1F250A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:01:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F7AE6FB1;
-	Tue,  6 Feb 2024 01:00:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A17201361;
+	Tue,  6 Feb 2024 01:01:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="MF8CPSuC"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="TDUMdJAx"
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D4FC539A;
-	Tue,  6 Feb 2024 01:00:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46C44ED9
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 01:01:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707181204; cv=none; b=FmW40wnjqlcrr6RnaWp+NaP2R1NBRfZu58hNk8NTH/5ilsTXEFr3Z0dAEvMIkD0Y6HGQkh0rSjt94x3w2LJJ6QZmcTjwTvCFZTvilVeFmh2wOb1dpy4ufxPqkRmCOt75pj7vm59ixRD326WMxFMvk59ErA8W5M4mp61Q5dSN4As=
+	t=1707181285; cv=none; b=BmwFBS2R/PhImYOv/TF/oSRijMK1jLkJOqmiouOWTjt5jW+LWUWc4ewlqMNZPlTXDGa/q6eWx2kHwgYOo3Fj9qRRsgF0nkb8pihnPNzLdDEhw2KvZkeV2VQ0kv4J/6EnWAlW59cazbMXaOr05m5T1oyeZnFJ8ikPepe7sJhT3WQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707181204; c=relaxed/simple;
-	bh=pvr9OkLDytfZuT3AyoRYzRgHcW9tIdCf2sKbD8K4j+M=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=i2x0Mqw3c8jwo6DCfkGvOob/MFEKISCLHfW7P/LuQu1kCRsXTbduBAppxLct6P7pYWFSQbQB2axZYZosg7YnfCSUWsuEXc7x8Fs0KY74oG3DZfLIo1kwmuhOrWLjRtfRt1HM0dLUyNaHlV/X14cv9n0lxqDvYLXffbAZjakDM5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=MF8CPSuC; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1707181198;
-	bh=mcAAzoOAVGZzLS4NHfKVIUOk1ulVMJKUzquzS0Sq5Ck=;
-	h=Date:From:To:Cc:Subject:From;
-	b=MF8CPSuCd68GJjC8r+H8/Bmx9jzNzZwz7Hx15htJt5eohVABMsur7DU+1pWb1Ls92
-	 J7Yun2ixb7rQTOqsXnglA/kJgVZQMykfaB5PFwt5pMMNLMrzvcDqkLjRqAL4x3Qcz6
-	 J0jofEtekEB5U/k9DOnQUcHXnESaT6hjjweQnsKp0l4Ub4tPk5I4zLmGj8xIAa55Aw
-	 TXtImetwMyvp5+geBN6Q49MsHCCwjupJXL45ZFkuiU+ZY/QdkW0ZcqxqW4NiyIEkQ4
-	 3z/QkFM7wEeaGQMY9hQ6yXEVnZF5LHRbHVLyjjhELCEGmKwr4jLHCCAKpARx9bzrLS
-	 vZg+uVlA7KFzw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TTPzd3NNVz4wp3;
-	Tue,  6 Feb 2024 11:59:57 +1100 (AEDT)
-Date: Tue, 6 Feb 2024 11:59:56 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Daniel Vetter <daniel.vetter@ffwll.ch>, Intel Graphics
- <intel-gfx@lists.freedesktop.org>, DRI <dri-devel@lists.freedesktop.org>
-Cc: Dario Binacchi <dario.binacchi@amarulasolutions.com>, Inki Dae
- <inki.dae@samsung.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>, Michael Trimarchi
- <michael@amarulasolutions.com>, Michael Walle <mwalle@kernel.org>, Robert
- Foss <rfoss@kernel.org>
-Subject: linux-next: manual merge of the drm-misc tree with Linus' tree
-Message-ID: <20240206115956.4570e9b1@canb.auug.org.au>
+	s=arc-20240116; t=1707181285; c=relaxed/simple;
+	bh=EUuJIRIUy9jg+QIqT5SRBnRdaBUOh2gHEYKFd8kswzk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=c4YJ+4zTI7kxybZI22tXVPRPfr0SlmLqH6blcQf9zFHbhhZkfIdLvuVHgPqgCZ2r96FrOdG2oPk50ui4RhwQQjhxFxSyy5oc7g+hYY6i6MP2YDKIyQ0xQ1lxVIGvFiK+HP1CJSgK1QmcmnOYTLqJXauxKR84ThL2YaPHKu5QLUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=TDUMdJAx; arc=none smtp.client-ip=115.124.30.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1707181275; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=7c1tboIXd34qXTIIwjvuY/4rNTG1OWDCX7nIPdrejzY=;
+	b=TDUMdJAxUIpcwbEv/c9d1XRKgMjMnO7r8If4DEl0qLh5ko3N/DEc26YkkI4a+TKjnKNnYDOQjCcStziw/is3hSxFttBHxOKqkzU4NHGJKJdDbi+wCbfF2fqXdaPqqJX2LbXCWAAeXeuWAqM5X5l7xaJIZcGrmN2BV6IaA3NZoPU=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W0Bns7B_1707181273;
+Received: from 30.97.56.40(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W0Bns7B_1707181273)
+          by smtp.aliyun-inc.com;
+          Tue, 06 Feb 2024 09:01:14 +0800
+Message-ID: <1ecddd3f-957f-4dad-90e3-cb820bbe36ec@linux.alibaba.com>
+Date: Tue, 6 Feb 2024 09:01:29 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/tPTwWSbcHW7JIIhlh82ZBYM";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mm: hugetlb: improve the handling of hugetlb
+ allocation failure for freed or in-use hugetlb
+To: Michal Hocko <mhocko@suse.com>
+Cc: akpm@linux-foundation.org, muchun.song@linux.dev, osalvador@suse.de,
+ david@redhat.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <23814ccce5dd3cd30fd67aa692fd0bf3514b0166.1707137359.git.baolin.wang@linux.alibaba.com>
+ <ZcD1A3gj-Net_I9b@tiehlicka>
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <ZcD1A3gj-Net_I9b@tiehlicka>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
---Sig_/tPTwWSbcHW7JIIhlh82ZBYM
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-Today's linux-next merge of the drm-misc tree got a conflict in:
+On 2/5/2024 10:47 PM, Michal Hocko wrote:
+> On Mon 05-02-24 20:50:51, Baolin Wang wrote:
+>> When handling the freed hugetlb or in-use hugetlb, we should ignore the
+>> failure of alloc_buddy_hugetlb_folio() to dissolve the old hugetlb successfully,
+>> since we did not use the new allocated hugetlb in this 2 cases. Moreover,
+>> moving the allocation into the free hugetlb handling branch.
+> 
+> The changelog is a bit hard for me to understand. What about the
+> following instead?
+> alloc_and_dissolve_hugetlb_folio preallocates a new huge page before it
+> takes hugetlb_lock. In 3 out of 4 cases the page is not really used and
+> therefore the newly allocated page is just freed right away. This is
+> wasteful and it might cause pre-mature failures in those cases.
+> 
+> Address that by moving the allocation down to the only case (hugetlb
+> page is really in the free pages pool). We need to drop hugetlb_lock
+> to do so and therefore need to recheck the page state after regaining
+> it.
+> 
+> The patch is more of a cleanup than an actual fix to an existing
+> problem. There are no known reports about pre-mature failures.
 
-  drivers/gpu/drm/bridge/samsung-dsim.c
+Looks better. Thanks.
 
-between commit:
+>> @@ -3075,6 +3063,24 @@ static int alloc_and_dissolve_hugetlb_folio(struct hstate *h,
+>>   		cond_resched();
+>>   		goto retry;
+>>   	} else {
+>> +		if (!new_folio) {
+>> +			spin_unlock_irq(&hugetlb_lock);
+>> +			/*
+>> +			 * Before dissolving the free hugetlb, we need to allocate
+>> +			 * a new one for the pool to remain stable.  Here, we
+>> +			 * allocate the folio and 'prep' it by doing everything
+>> +			 * but actually updating counters and adding to the pool.
+>> +			 * This simplifies and let us do most of the processing
+>> +			 * under the lock.
+>> +			 */
+> 
+> This comment is not really needed anymore IMHO.
 
-  ff3d5d04db07 ("drm: bridge: samsung-dsim: Don't use FORCE_STOP_STATE")
+Acked.
 
-from Linus' tree and commit:
-
-  b2fe2292624a ("drm: bridge: samsung-dsim: enter display mode in the enabl=
-e() callback")
-
-from the drm-misc tree.
-
-I fixed it up (see below, please check) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/bridge/samsung-dsim.c
-index 6a10aa5c85f5,f9d85fe1df7e..000000000000
---- a/drivers/gpu/drm/bridge/samsung-dsim.c
-+++ b/drivers/gpu/drm/bridge/samsung-dsim.c
-@@@ -1498,6 -1526,11 +1503,8 @@@ static void samsung_dsim_atomic_disable
-  	if (!(dsi->state & DSIM_STATE_ENABLED))
-  		return;
- =20
- -	if (!samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type))
- -		samsung_dsim_set_stop_state(dsi, true);
- -
-+ 	samsung_dsim_set_display_enable(dsi, false);
-+=20
-  	dsi->state &=3D ~DSIM_STATE_VIDOUT_AVAILABLE;
-  }
- =20
-
---Sig_/tPTwWSbcHW7JIIhlh82ZBYM
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXBhIwACgkQAVBC80lX
-0GzXoAgAjOU5PMyBhdNjxCGyusGWHf/88xGF2bb6y76E2cLHxWZmxOv/ayFBxgL9
-2Sbbt44esyXM5DqMjeVXV8BxlOHKgXho2e4IwjQWSYqRL5sgv/ht2p3/4mD19KMM
-jZ44WmMPe+j9O1AYhrgqVLspl/81Jw+WvvEbuAHdNO4BrFTqrl3Ukwep6d1Vqc4v
-Ea6lci6qf+daL2U+ESCA6nHhNHM6Yn7kE0xliG7rQSX81u2MEAJVzdZou4RYhqzI
-xYP/mU1oIVFiZkz4P1xUK/2uggpbt6F0a1OHzxyDEPQwCveaPAmwsbh1P21IJB0u
-Ykh4PJBWNwddUdEtUwy1sncIOnausw==
-=gUMH
------END PGP SIGNATURE-----
-
---Sig_/tPTwWSbcHW7JIIhlh82ZBYM--
+> 
+>> +			new_folio = alloc_buddy_hugetlb_folio(h, gfp_mask, nid,
+>> +							      NULL, NULL);
+>> +			if (!new_folio)
+>> +				return -ENOMEM;
+>> +			__prep_new_hugetlb_folio(h, new_folio);
+>> +			goto retry;
+>> +		}
+>> +
+>>   		/*
+>>   		 * Ok, old_folio is still a genuine free hugepage. Remove it from
+>>   		 * the freelist and decrease the counters. These will be
+> 
 
