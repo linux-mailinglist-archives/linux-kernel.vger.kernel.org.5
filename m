@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-55385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CE6684BBFC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:34:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67BE684BC03
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:34:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33402287B08
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:34:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CAFA1C23A92
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:34:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B97D013AE3;
-	Tue,  6 Feb 2024 17:33:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C40AE1426D;
+	Tue,  6 Feb 2024 17:33:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OedQnV7k"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XnhBsyPA"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA4868F7D;
-	Tue,  6 Feb 2024 17:32:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C57BABA3F;
+	Tue,  6 Feb 2024 17:33:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707240781; cv=none; b=IZTKYALQNMCkb+AD5/pLu45JfG2H4/h8EJ6fIRwZ14igxU4828m2WeFHfpnISYnZyvCabU8hXj8cQf8nBjoLtgAreXG0+C0i1tRBd1Z+ctxJJ2IqxZYa0Ac7h8V5lM7qQgJFCit8zuMZt0dttOn0lOKfvrH1mvjlAXOlvBQk/Ng=
+	t=1707240784; cv=none; b=Vjqak4N3gUj4ifwKcwcZ/GyjWscHOhLGaLZhPthflrwVWgvFnGKECHzGkDDCHVGWTEat11nDP6OjLgVPMtkviyxMyOAq5yipBrox9wb6QLeYiagW44LFpzmguInYtzDSKBBvd4UUF9+exTNeYUaocP+fiIovSwn+h8/JecZQP/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707240781; c=relaxed/simple;
-	bh=J78yXE5qwS90R4EgpQlY1uiAZERyB7nhqi/EFAgqCCk=;
+	s=arc-20240116; t=1707240784; c=relaxed/simple;
+	bh=oPxMEZWAyg2qRL0yS2P7u9xEpG6GttLt28qXdFKsViI=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YRm32180BK9RRg6jdnzTDn02sv4aa58tqIGoCuNUKgGZWt490jA8A44VbtYQ75tr/3BRHia3A0N9vdLoFit2HQCFpfq86M8ywcGHia+8QL3aGOaeeIwW5sTmzZ+Uu9vYXKeXXxpkahCMFAEapCLBlsfvYM4CJt4ZNUF/PMHc7CY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OedQnV7k; arc=none smtp.client-ip=209.85.128.43
+	 MIME-Version; b=HDbd1oJqhpXRq0fFT+AFUPnsEv2fJUBBmfovdJdwaPLeR4/+G55gFDJQSRQa7/ckfNrpfIbpFrDrBj7t5eeEdHx3zJ4xCPru9ROG7gXszM/TKF449jw7w57PHRR0K+CVBvLywy42ClMNbeh/s10KhTQ9vApDhF+Ix8hj608aVag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XnhBsyPA; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40ffce2ceffso1264875e9.2;
-        Tue, 06 Feb 2024 09:32:59 -0800 (PST)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3394ca0c874so4181354f8f.2;
+        Tue, 06 Feb 2024 09:33:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707240778; x=1707845578; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707240780; x=1707845580; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=vvEq+NsiNLdpqkcur7fcDxX3BE0a2LiFsPz8eCkRlBo=;
-        b=OedQnV7k8e7/zr7s4ciBPgBTBB+m7AICc/7IOG/01lBzPfzT6ZC+WybrvVJiN3AJfs
-         n/dIZlLe4MnJoWaD+BUU2QuJeqQXi7HKmEnzEtPTmKVZs3871GWwDdRQ0jrWGBwG8/Ct
-         58HnGr7UqJscSZ8geBf+5ZVKt5iaKpGPMnIFvCTniVmoU63cSmXQCK7hpju16BwrrRug
-         sTUqThNgvKh1AJdTi52FD6LXxYRjWOdU9HKZmdCL2pYsOr5txV2jXlfbPRlWtST2V8pd
-         X6/PoAAO/plNG7KAnG6jLU6aB6YCe9ntChD3qxza0mgaW5JoLzNB1W6eausXT5AZN94I
-         pXKQ==
+        bh=Kbh8rqeYY03RgbOQ94/D59JmMRtePccIdeL610jMQyY=;
+        b=XnhBsyPAyGyNeYp2vwMizQ2ODj9/MA3TunQmdb3rkSj5BEz/JhfrD9rHU0Fq8mv0cd
+         ZpncUz2b8unTXIt+/Zo/F+/B+iJUiYX5o38FDuvXhCarBplGd/Ov5vPY7d9GQJvpueVc
+         42caA1iklXD8EsQxGXERkmoK7lwjMSt+29cwnw7jN0wnmsZNz2ddNt/0fQgvnCNoE7vX
+         tL53P0VA5dEw8jNsoDSXU74n411mXp7HkilL1Y6WbRIA1kYW6ccro34j8bmismKe+bR0
+         QSUyndnwdAVeIlMwnNa9VT5fMsgIUL3gfUplL9O8Mjwc0f54zhySfNrlAmL/NclyxfyL
+         GhsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707240778; x=1707845578;
+        d=1e100.net; s=20230601; t=1707240780; x=1707845580;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vvEq+NsiNLdpqkcur7fcDxX3BE0a2LiFsPz8eCkRlBo=;
-        b=a5Kgjh9y2Hhro1PGkpszL0RuWpcrexx1z/dnsNMdzvS8VECOZs3qEzMlzQlHTD6NoZ
-         /gstdj7EICdzF1uearL8nyVFgGCFU6k5HSVLqjWWkbN9GXjDvkxEMkOq3L1Mnh0dtNXR
-         rXrzdzb4MkLoN2HWNl58BD+VXu3/bEyVMOUAz23bhyyGLorZMcjyFv4qQfceCAV1flUv
-         /1s7ySRpfYMh24iU6f/PsyGbCXtaxmv1TQdvPnwm9PONT11uVVV9OpaBPDANcktNH5QQ
-         cVkD5XIRNapYMvqEWOCu0+2OUrLRzpQ2ZPNsOAz9lqIrwPWObzeA8M5mAd/lVyBZZooB
-         Yy5w==
-X-Gm-Message-State: AOJu0Yzpgmm83h/1gf+d9023vN4F4KSEWsjF3a6XY7VaQINCuvgQosN1
-	TWluZGOtzHqhqHhJ8vknWlM1hZTfOgxwyN5WguRyv8rmSO0a+tJv
-X-Google-Smtp-Source: AGHT+IFA+ihnfwGzQ5lwjMeITLI9ICJOubGxAayNdeBL4PPr1dASByyJ6iNLwwDS+TIgDe9lqlAbRQ==
-X-Received: by 2002:a05:600c:4f0e:b0:40f:dde8:1663 with SMTP id l14-20020a05600c4f0e00b0040fdde81663mr2935082wmq.19.1707240777897;
-        Tue, 06 Feb 2024 09:32:57 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXlA35Uq5N1Nys7Xu67Fa9mPzf3mhp/AXnH7iE2VN7PZO7oPKHnCPkdteXwzbMr7qPwz0sOtgsbs/gHTrfpl5Qzegr77KvWSiiBOToICtNxvzSDzwVlWJMv92zJW6KcpvQYl2GsM4DH4S/NwSZbF9YaJpGOS2g0TXpH3gL0Z0xxkopxmB8FrmXJQMHjc7qBTbVyJrcq6Zxt8L6sj91IXI0U+GpR4BEdIeSDbLd79DBmyeXzpVHPVvOLdXPQ8Q7ftKnpldwRkZVhEaRtIL132BAxYaZXofJgUHPLDAuAxMEZHMxz+tlYWDemF1WC86Wh7f0dfdOuZBTEGmIV9L4jZrDD1x09FncsX7s8bwmDpGQw0JWKOzWpGFOFAJS5guV3wjbOqy3HeAWJohDsYUUyAtjR4m4Kozj305Hj3TaYbBrcoIaoxZzQCzKUN5UVqBgVlTUsZGyICcYKl0QzpmDTsgQgqeOPvwZKOt90PBGWBYHElzt6iJjMy5V1z44mFgp0goN08X311Zr8++Q5pKevUwVzKW2thdYv4YzfGO9Du8CwLY2eKbbSJClzezOGSbD236XgljgB0CQx4kwQmwcos1OOKSNBARNTR+J+QrlB9bTJuJUCsm3SoPu7Oyhxihzn9XuYgwALF2DjbMx9DDtSZAdlageTT9T2CpPe3tdw3rc0Iksp0EqjYg==
+        bh=Kbh8rqeYY03RgbOQ94/D59JmMRtePccIdeL610jMQyY=;
+        b=aX/XBhrCdJD9uqt6ffS0kgY8vZs2P7VbzFB4Tr+j2HtpDBZb0v3K9zgglaGvNTOJkZ
+         7Gx0N9Ndd7ERMuvOCI1XccBQudtMiVfQHCS7eXonHpho4AZ3whRR8jHfMlhjkZquVVsX
+         wmA5U+Lv0BFJ6fWvIYyTygKP9bmh7L1EJrRMM5qL9Bygy52blnb5Z73x0mwgMZq+ci65
+         WWRzEuFrZHxVlHBgOEkyGUuovxU2jELeyTpcyZPDz6pdsVTAm0jdCsJ3bIJ6e60Gll+l
+         FpX8VEqP5jFyD3AGhZHEpR9vTjVI/ESMt4ejriV1+lEvvVvZrIvorLgg7yHaTszZ7nKc
+         I1Uw==
+X-Gm-Message-State: AOJu0YzyychnIK/ot9654FG6Za28vSFKgcoU/Ma6ACyNfU2niDa++BKM
+	BnzV5aqrRYOAYmoPJmLftl3zFzYM+890RGMahKLx5flJzzQiSXAk
+X-Google-Smtp-Source: AGHT+IGpYJB3EQifqrHTfgdzstXOlJrZifGq7DgQhrlDnUe4q/QUz/2cqfCSZky+eruSWRf4Ermt6g==
+X-Received: by 2002:adf:ea89:0:b0:33b:1e84:9684 with SMTP id s9-20020adfea89000000b0033b1e849684mr1560918wrm.70.1707240779922;
+        Tue, 06 Feb 2024 09:32:59 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVEGblCQWkfcbhgR/sx5JvYJbCwI4SdioML7hbLp9WuHnzW5RJsDeOz1ZEg2ekoM36/MJWvp0AafMT37w6Bec/RetsfUI66J2Z/zoNjUsYilBNc0bceRS2Budu/E0rrsH9ppaYSA/adgmpwgYxzMJ9rVr7IzJW8d+RGbClGrd/Dd/QfZ6M64++6rWhiuohDa/d6VfuTxyQxVyEvjSKXGwKM4VW/vRMTHmInjsd+iPi0tiX5f7yux7WQvtdQPciveRqy/jL1Y8Ufv6+LPdfarLAH4Q3BXqmcp1ddt8jEzQ7UFRB+8AZvrO0iXvQ6o1dfmaOVzZw43/WX4jGvF5cP611Krg6+7L9L2v6f2nvP4qCrOMaYo/LyPjfuubW5aQJwYTBUHIdDc8oxYl9jG3oNkon5SzenP2IiDxgj0gTYcBD2gN01W1ASDTCe1MnFVj/XJKQLkeXtMgxTGY0UNrL6wd+ICYjDnsqQtEeEDEl4CdXOIhRg88wH/EyUQ7Ux2+JvNqS+PoIritC4Xc+tobtLDFJoi16KwvRYBGqT2TNiv8hsqJ3BRJ2dAHDkO1iLGr27fdkIc5vqVzxCI9YNTpqmZD15oCOng5pYj9OkdyDqGwUUYKHQWscm/QRUYGUObl/vtbHymbPG+Ovb2yyjtBYAfiJiteuMJ3oT8Szx//Zm/00y2yFrxBvB5w==
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id l14-20020a05600c4f0e00b0040fc56712e8sm2621215wmq.17.2024.02.06.09.32.48
+        by smtp.googlemail.com with ESMTPSA id l14-20020a05600c4f0e00b0040fc56712e8sm2621215wmq.17.2024.02.06.09.32.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 09:32:56 -0800 (PST)
+        Tue, 06 Feb 2024 09:32:58 -0800 (PST)
 From: Christian Marangi <ansuelsmth@gmail.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -87,9 +87,9 @@ To: "David S. Miller" <davem@davemloft.net>,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-arm-msm@vger.kernel.org
-Subject: [net-next PATCH v7 03/10] net: phy: add devm/of_phy_package_join helper
-Date: Tue,  6 Feb 2024 18:31:06 +0100
-Message-ID: <20240206173115.7654-4-ansuelsmth@gmail.com>
+Subject: [net-next PATCH v7 04/10] net: phy: qcom: move more function to shared library
+Date: Tue,  6 Feb 2024 18:31:07 +0100
+Message-ID: <20240206173115.7654-5-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240206173115.7654-1-ansuelsmth@gmail.com>
 References: <20240206173115.7654-1-ansuelsmth@gmail.com>
@@ -101,188 +101,590 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add devm/of_phy_package_join helper to join PHYs in a PHY package. These
-are variant of the manual phy_package_join with the difference that
-these will use DT nodes to derive the base_addr instead of manually
-passing an hardcoded value.
-
-An additional value is added in phy_package_shared, "np" to reference
-the PHY package node pointer in specific PHY driver probe_once and
-config_init_once functions to make use of additional specific properties
-defined in the PHY package node in DT.
-
-The np value is filled only with of_phy_package_join if a valid PHY
-package node is found. A valid PHY package node must have the node name
-set to "ethernet-phy-package".
+Move more function to shared library in preparation for introduction of
+new PHY Family qca807x that will make use of both functions from at803x
+and qca808x as it's a transition PHY with some implementation of at803x
+and some from the new qca808x.
 
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 ---
- drivers/net/phy/phy_device.c | 96 ++++++++++++++++++++++++++++++++++++
- include/linux/phy.h          |  6 +++
- 2 files changed, 102 insertions(+)
+ drivers/net/phy/qcom/at803x.c       |  35 -----
+ drivers/net/phy/qcom/qca808x.c      | 205 ----------------------------
+ drivers/net/phy/qcom/qcom-phy-lib.c | 193 ++++++++++++++++++++++++++
+ drivers/net/phy/qcom/qcom.h         |  51 +++++++
+ 4 files changed, 244 insertions(+), 240 deletions(-)
 
-diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-index 2eed8f03621d..9014ac3c0fc8 100644
---- a/drivers/net/phy/phy_device.c
-+++ b/drivers/net/phy/phy_device.c
-@@ -1708,6 +1708,7 @@ int phy_package_join(struct phy_device *phydev, int base_addr, size_t priv_size)
- 			shared->priv_size = priv_size;
- 		}
- 		shared->base_addr = base_addr;
-+		shared->np = NULL;
- 		refcount_set(&shared->refcnt, 1);
- 		bus->shared[base_addr] = shared;
- 	} else {
-@@ -1730,6 +1731,63 @@ int phy_package_join(struct phy_device *phydev, int base_addr, size_t priv_size)
+diff --git a/drivers/net/phy/qcom/at803x.c b/drivers/net/phy/qcom/at803x.c
+index 36b70e88394e..3e3ee4c1d4bc 100644
+--- a/drivers/net/phy/qcom/at803x.c
++++ b/drivers/net/phy/qcom/at803x.c
+@@ -504,41 +504,6 @@ static void at803x_link_change_notify(struct phy_device *phydev)
+ 	}
  }
- EXPORT_SYMBOL_GPL(phy_package_join);
  
-+/**
-+ * of_phy_package_join - join a common PHY group in PHY package
-+ * @phydev: target phy_device struct
-+ * @priv_size: if non-zero allocate this amount of bytes for private data
-+ *
-+ * This is a variant of phy_package_join for PHY package defined in DT.
-+ *
-+ * The parent node of the @phydev is checked as a valid PHY package node
-+ * structure (by matching the node name "ethernet-phy-package") and the
-+ * base_addr for the PHY package is passed to phy_package_join.
-+ *
-+ * With this configuration the shared struct will also have the np value
-+ * filled to use additional DT defined properties in PHY specific
-+ * probe_once and config_init_once PHY package OPs.
-+ *
-+ * Returns < 0 on error, 0 on success. Esp. calling phy_package_join()
-+ * with the same cookie but a different priv_size is an error. Or a parent
-+ * node is not detected or is not valid or doesn't match the expected node
-+ * name for PHY package.
-+ */
-+int of_phy_package_join(struct phy_device *phydev, size_t priv_size)
+-static int at803x_read_status(struct phy_device *phydev)
+-{
+-	struct at803x_ss_mask ss_mask = { 0 };
+-	int err, old_link = phydev->link;
+-
+-	/* Update the link, but return if there was an error */
+-	err = genphy_update_link(phydev);
+-	if (err)
+-		return err;
+-
+-	/* why bother the PHY if nothing can have changed */
+-	if (phydev->autoneg == AUTONEG_ENABLE && old_link && phydev->link)
+-		return 0;
+-
+-	phydev->speed = SPEED_UNKNOWN;
+-	phydev->duplex = DUPLEX_UNKNOWN;
+-	phydev->pause = 0;
+-	phydev->asym_pause = 0;
+-
+-	err = genphy_read_lpa(phydev);
+-	if (err < 0)
+-		return err;
+-
+-	ss_mask.speed_mask = AT803X_SS_SPEED_MASK;
+-	ss_mask.speed_shift = __bf_shf(AT803X_SS_SPEED_MASK);
+-	err = at803x_read_specific_status(phydev, ss_mask);
+-	if (err < 0)
+-		return err;
+-
+-	if (phydev->autoneg == AUTONEG_ENABLE && phydev->autoneg_complete)
+-		phy_resolve_aneg_pause(phydev);
+-
+-	return 0;
+-}
+-
+ static int at803x_config_aneg(struct phy_device *phydev)
+ {
+ 	struct at803x_priv *priv = phydev->priv;
+diff --git a/drivers/net/phy/qcom/qca808x.c b/drivers/net/phy/qcom/qca808x.c
+index d88e04278fc4..8377325f157e 100644
+--- a/drivers/net/phy/qcom/qca808x.c
++++ b/drivers/net/phy/qcom/qca808x.c
+@@ -2,7 +2,6 @@
+ 
+ #include <linux/phy.h>
+ #include <linux/module.h>
+-#include <linux/ethtool_netlink.h>
+ 
+ #include "qcom.h"
+ 
+@@ -63,55 +62,6 @@
+ #define QCA808X_DBG_AN_TEST			0xb
+ #define QCA808X_HIBERNATION_EN			BIT(15)
+ 
+-#define QCA808X_CDT_ENABLE_TEST			BIT(15)
+-#define QCA808X_CDT_INTER_CHECK_DIS		BIT(13)
+-#define QCA808X_CDT_STATUS			BIT(11)
+-#define QCA808X_CDT_LENGTH_UNIT			BIT(10)
+-
+-#define QCA808X_MMD3_CDT_STATUS			0x8064
+-#define QCA808X_MMD3_CDT_DIAG_PAIR_A		0x8065
+-#define QCA808X_MMD3_CDT_DIAG_PAIR_B		0x8066
+-#define QCA808X_MMD3_CDT_DIAG_PAIR_C		0x8067
+-#define QCA808X_MMD3_CDT_DIAG_PAIR_D		0x8068
+-#define QCA808X_CDT_DIAG_LENGTH_SAME_SHORT	GENMASK(15, 8)
+-#define QCA808X_CDT_DIAG_LENGTH_CROSS_SHORT	GENMASK(7, 0)
+-
+-#define QCA808X_CDT_CODE_PAIR_A			GENMASK(15, 12)
+-#define QCA808X_CDT_CODE_PAIR_B			GENMASK(11, 8)
+-#define QCA808X_CDT_CODE_PAIR_C			GENMASK(7, 4)
+-#define QCA808X_CDT_CODE_PAIR_D			GENMASK(3, 0)
+-
+-#define QCA808X_CDT_STATUS_STAT_TYPE		GENMASK(1, 0)
+-#define QCA808X_CDT_STATUS_STAT_FAIL		FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_TYPE, 0)
+-#define QCA808X_CDT_STATUS_STAT_NORMAL		FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_TYPE, 1)
+-#define QCA808X_CDT_STATUS_STAT_SAME_OPEN	FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_TYPE, 2)
+-#define QCA808X_CDT_STATUS_STAT_SAME_SHORT	FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_TYPE, 3)
+-
+-#define QCA808X_CDT_STATUS_STAT_MDI		GENMASK(3, 2)
+-#define QCA808X_CDT_STATUS_STAT_MDI1		FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_MDI, 1)
+-#define QCA808X_CDT_STATUS_STAT_MDI2		FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_MDI, 2)
+-#define QCA808X_CDT_STATUS_STAT_MDI3		FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_MDI, 3)
+-
+-/* NORMAL are MDI with type set to 0 */
+-#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_NORMAL	QCA808X_CDT_STATUS_STAT_MDI1
+-#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_OPEN		(QCA808X_CDT_STATUS_STAT_SAME_OPEN |\
+-									 QCA808X_CDT_STATUS_STAT_MDI1)
+-#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_SHORT	(QCA808X_CDT_STATUS_STAT_SAME_SHORT |\
+-									 QCA808X_CDT_STATUS_STAT_MDI1)
+-#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_NORMAL	QCA808X_CDT_STATUS_STAT_MDI2
+-#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_OPEN		(QCA808X_CDT_STATUS_STAT_SAME_OPEN |\
+-									 QCA808X_CDT_STATUS_STAT_MDI2)
+-#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_SHORT	(QCA808X_CDT_STATUS_STAT_SAME_SHORT |\
+-									 QCA808X_CDT_STATUS_STAT_MDI2)
+-#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_NORMAL	QCA808X_CDT_STATUS_STAT_MDI3
+-#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_OPEN		(QCA808X_CDT_STATUS_STAT_SAME_OPEN |\
+-									 QCA808X_CDT_STATUS_STAT_MDI3)
+-#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_SHORT	(QCA808X_CDT_STATUS_STAT_SAME_SHORT |\
+-									 QCA808X_CDT_STATUS_STAT_MDI3)
+-
+-/* Added for reference of existence but should be handled by wait_for_completion already */
+-#define QCA808X_CDT_STATUS_STAT_BUSY		(BIT(1) | BIT(3))
+-
+ #define QCA808X_MMD7_LED_GLOBAL			0x8073
+ #define QCA808X_LED_BLINK_1			GENMASK(11, 6)
+ #define QCA808X_LED_BLINK_2			GENMASK(5, 0)
+@@ -406,86 +356,6 @@ static int qca808x_soft_reset(struct phy_device *phydev)
+ 	return ret;
+ }
+ 
+-static bool qca808x_cdt_fault_length_valid(int cdt_code)
+-{
+-	switch (cdt_code) {
+-	case QCA808X_CDT_STATUS_STAT_SAME_SHORT:
+-	case QCA808X_CDT_STATUS_STAT_SAME_OPEN:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_NORMAL:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_OPEN:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_SHORT:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_NORMAL:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_OPEN:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_SHORT:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_NORMAL:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_OPEN:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_SHORT:
+-		return true;
+-	default:
+-		return false;
+-	}
+-}
+-
+-static int qca808x_cable_test_result_trans(int cdt_code)
+-{
+-	switch (cdt_code) {
+-	case QCA808X_CDT_STATUS_STAT_NORMAL:
+-		return ETHTOOL_A_CABLE_RESULT_CODE_OK;
+-	case QCA808X_CDT_STATUS_STAT_SAME_SHORT:
+-		return ETHTOOL_A_CABLE_RESULT_CODE_SAME_SHORT;
+-	case QCA808X_CDT_STATUS_STAT_SAME_OPEN:
+-		return ETHTOOL_A_CABLE_RESULT_CODE_OPEN;
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_NORMAL:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_OPEN:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_SHORT:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_NORMAL:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_OPEN:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_SHORT:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_NORMAL:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_OPEN:
+-	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_SHORT:
+-		return ETHTOOL_A_CABLE_RESULT_CODE_CROSS_SHORT;
+-	case QCA808X_CDT_STATUS_STAT_FAIL:
+-	default:
+-		return ETHTOOL_A_CABLE_RESULT_CODE_UNSPEC;
+-	}
+-}
+-
+-static int qca808x_cdt_fault_length(struct phy_device *phydev, int pair,
+-				    int result)
+-{
+-	int val;
+-	u32 cdt_length_reg = 0;
+-
+-	switch (pair) {
+-	case ETHTOOL_A_CABLE_PAIR_A:
+-		cdt_length_reg = QCA808X_MMD3_CDT_DIAG_PAIR_A;
+-		break;
+-	case ETHTOOL_A_CABLE_PAIR_B:
+-		cdt_length_reg = QCA808X_MMD3_CDT_DIAG_PAIR_B;
+-		break;
+-	case ETHTOOL_A_CABLE_PAIR_C:
+-		cdt_length_reg = QCA808X_MMD3_CDT_DIAG_PAIR_C;
+-		break;
+-	case ETHTOOL_A_CABLE_PAIR_D:
+-		cdt_length_reg = QCA808X_MMD3_CDT_DIAG_PAIR_D;
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	val = phy_read_mmd(phydev, MDIO_MMD_PCS, cdt_length_reg);
+-	if (val < 0)
+-		return val;
+-
+-	if (result == ETHTOOL_A_CABLE_RESULT_CODE_SAME_SHORT)
+-		val = FIELD_GET(QCA808X_CDT_DIAG_LENGTH_SAME_SHORT, val);
+-	else
+-		val = FIELD_GET(QCA808X_CDT_DIAG_LENGTH_CROSS_SHORT, val);
+-
+-	return at803x_cdt_fault_length(val);
+-}
+-
+ static int qca808x_cable_test_start(struct phy_device *phydev)
+ {
+ 	int ret;
+@@ -527,81 +397,6 @@ static int qca808x_cable_test_start(struct phy_device *phydev)
+ 	return 0;
+ }
+ 
+-static int qca808x_cable_test_get_pair_status(struct phy_device *phydev, u8 pair,
+-					      u16 status)
+-{
+-	int length, result;
+-	u16 pair_code;
+-
+-	switch (pair) {
+-	case ETHTOOL_A_CABLE_PAIR_A:
+-		pair_code = FIELD_GET(QCA808X_CDT_CODE_PAIR_A, status);
+-		break;
+-	case ETHTOOL_A_CABLE_PAIR_B:
+-		pair_code = FIELD_GET(QCA808X_CDT_CODE_PAIR_B, status);
+-		break;
+-	case ETHTOOL_A_CABLE_PAIR_C:
+-		pair_code = FIELD_GET(QCA808X_CDT_CODE_PAIR_C, status);
+-		break;
+-	case ETHTOOL_A_CABLE_PAIR_D:
+-		pair_code = FIELD_GET(QCA808X_CDT_CODE_PAIR_D, status);
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	result = qca808x_cable_test_result_trans(pair_code);
+-	ethnl_cable_test_result(phydev, pair, result);
+-
+-	if (qca808x_cdt_fault_length_valid(pair_code)) {
+-		length = qca808x_cdt_fault_length(phydev, pair, result);
+-		ethnl_cable_test_fault_length(phydev, pair, length);
+-	}
+-
+-	return 0;
+-}
+-
+-static int qca808x_cable_test_get_status(struct phy_device *phydev, bool *finished)
+-{
+-	int ret, val;
+-
+-	*finished = false;
+-
+-	val = QCA808X_CDT_ENABLE_TEST |
+-	      QCA808X_CDT_LENGTH_UNIT;
+-	ret = at803x_cdt_start(phydev, val);
+-	if (ret)
+-		return ret;
+-
+-	ret = at803x_cdt_wait_for_completion(phydev, QCA808X_CDT_ENABLE_TEST);
+-	if (ret)
+-		return ret;
+-
+-	val = phy_read_mmd(phydev, MDIO_MMD_PCS, QCA808X_MMD3_CDT_STATUS);
+-	if (val < 0)
+-		return val;
+-
+-	ret = qca808x_cable_test_get_pair_status(phydev, ETHTOOL_A_CABLE_PAIR_A, val);
+-	if (ret)
+-		return ret;
+-
+-	ret = qca808x_cable_test_get_pair_status(phydev, ETHTOOL_A_CABLE_PAIR_B, val);
+-	if (ret)
+-		return ret;
+-
+-	ret = qca808x_cable_test_get_pair_status(phydev, ETHTOOL_A_CABLE_PAIR_C, val);
+-	if (ret)
+-		return ret;
+-
+-	ret = qca808x_cable_test_get_pair_status(phydev, ETHTOOL_A_CABLE_PAIR_D, val);
+-	if (ret)
+-		return ret;
+-
+-	*finished = true;
+-
+-	return 0;
+-}
+-
+ static int qca808x_get_features(struct phy_device *phydev)
+ {
+ 	int ret;
+diff --git a/drivers/net/phy/qcom/qcom-phy-lib.c b/drivers/net/phy/qcom/qcom-phy-lib.c
+index e0295d4b4a51..786bfc39912c 100644
+--- a/drivers/net/phy/qcom/qcom-phy-lib.c
++++ b/drivers/net/phy/qcom/qcom-phy-lib.c
+@@ -5,6 +5,7 @@
+ 
+ #include <linux/netdevice.h>
+ #include <linux/etherdevice.h>
++#include <linux/ethtool_netlink.h>
+ 
+ #include "qcom.h"
+ 
+@@ -311,6 +312,42 @@ int at803x_prepare_config_aneg(struct phy_device *phydev)
+ }
+ EXPORT_SYMBOL_GPL(at803x_prepare_config_aneg);
+ 
++int at803x_read_status(struct phy_device *phydev)
 +{
-+	struct device_node *node = phydev->mdio.dev.of_node;
-+	struct device_node *package_node;
-+	u32 base_addr;
-+	int ret;
++	struct at803x_ss_mask ss_mask = { 0 };
++	int err, old_link = phydev->link;
 +
-+	if (!node)
-+		return -EINVAL;
++	/* Update the link, but return if there was an error */
++	err = genphy_update_link(phydev);
++	if (err)
++		return err;
 +
-+	package_node = of_get_parent(node);
-+	if (!package_node)
-+		return -EINVAL;
++	/* why bother the PHY if nothing can have changed */
++	if (phydev->autoneg == AUTONEG_ENABLE && old_link && phydev->link)
++		return 0;
 +
-+	if (!of_node_name_eq(package_node, "ethernet-phy-package")) {
-+		ret = -EINVAL;
-+		goto exit;
-+	}
++	phydev->speed = SPEED_UNKNOWN;
++	phydev->duplex = DUPLEX_UNKNOWN;
++	phydev->pause = 0;
++	phydev->asym_pause = 0;
 +
-+	if (of_property_read_u32(package_node, "reg", &base_addr)) {
-+		ret = -EINVAL;
-+		goto exit;
-+	}
++	err = genphy_read_lpa(phydev);
++	if (err < 0)
++		return err;
 +
-+	ret = phy_package_join(phydev, base_addr, priv_size);
-+	if (ret)
-+		goto exit;
++	ss_mask.speed_mask = AT803X_SS_SPEED_MASK;
++	ss_mask.speed_shift = __bf_shf(AT803X_SS_SPEED_MASK);
++	err = at803x_read_specific_status(phydev, ss_mask);
++	if (err < 0)
++		return err;
 +
-+	phydev->shared->np = package_node;
++	if (phydev->autoneg == AUTONEG_ENABLE && phydev->autoneg_complete)
++		phy_resolve_aneg_pause(phydev);
 +
 +	return 0;
-+exit:
-+	of_node_put(package_node);
-+	return ret;
 +}
-+EXPORT_SYMBOL_GPL(of_phy_package_join);
++EXPORT_SYMBOL_GPL(at803x_read_status);
 +
- /**
-  * phy_package_leave - leave a common PHY group
-  * @phydev: target phy_device struct
-@@ -1746,6 +1804,10 @@ void phy_package_leave(struct phy_device *phydev)
- 	if (!shared)
- 		return;
- 
-+	/* Decrease the node refcount on leave if present */
-+	if (shared->np)
-+		of_node_put(shared->np);
-+
- 	if (refcount_dec_and_mutex_lock(&shared->refcnt, &bus->shared_lock)) {
- 		bus->shared[shared->base_addr] = NULL;
- 		mutex_unlock(&bus->shared_lock);
-@@ -1798,6 +1860,40 @@ int devm_phy_package_join(struct device *dev, struct phy_device *phydev,
+ static int at803x_get_downshift(struct phy_device *phydev, u8 *d)
+ {
+ 	int val;
+@@ -427,3 +464,159 @@ int at803x_cdt_wait_for_completion(struct phy_device *phydev,
+ 	return ret < 0 ? ret : 0;
  }
- EXPORT_SYMBOL_GPL(devm_phy_package_join);
- 
-+/**
-+ * devm_of_phy_package_join - resource managed of_phy_package_join()
-+ * @dev: device that is registering this PHY package
-+ * @phydev: target phy_device struct
-+ * @priv_size: if non-zero allocate this amount of bytes for private data
-+ *
-+ * Managed of_phy_package_join(). Shared storage fetched by this function,
-+ * phy_package_leave() is automatically called on driver detach. See
-+ * of_phy_package_join() for more information.
-+ */
-+int devm_of_phy_package_join(struct device *dev, struct phy_device *phydev,
-+			     size_t priv_size)
+ EXPORT_SYMBOL_GPL(at803x_cdt_wait_for_completion);
++
++static bool qca808x_cdt_fault_length_valid(int cdt_code)
 +{
-+	struct phy_device **ptr;
-+	int ret;
++	switch (cdt_code) {
++	case QCA808X_CDT_STATUS_STAT_SAME_SHORT:
++	case QCA808X_CDT_STATUS_STAT_SAME_OPEN:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_NORMAL:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_OPEN:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_SHORT:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_NORMAL:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_OPEN:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_SHORT:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_NORMAL:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_OPEN:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_SHORT:
++		return true;
++	default:
++		return false;
++	}
++}
 +
-+	ptr = devres_alloc(devm_phy_package_leave, sizeof(*ptr),
-+			   GFP_KERNEL);
-+	if (!ptr)
-+		return -ENOMEM;
++static int qca808x_cable_test_result_trans(int cdt_code)
++{
++	switch (cdt_code) {
++	case QCA808X_CDT_STATUS_STAT_NORMAL:
++		return ETHTOOL_A_CABLE_RESULT_CODE_OK;
++	case QCA808X_CDT_STATUS_STAT_SAME_SHORT:
++		return ETHTOOL_A_CABLE_RESULT_CODE_SAME_SHORT;
++	case QCA808X_CDT_STATUS_STAT_SAME_OPEN:
++		return ETHTOOL_A_CABLE_RESULT_CODE_OPEN;
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_NORMAL:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_OPEN:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_SHORT:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_NORMAL:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_OPEN:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_SHORT:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_NORMAL:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_OPEN:
++	case QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_SHORT:
++		return ETHTOOL_A_CABLE_RESULT_CODE_CROSS_SHORT;
++	case QCA808X_CDT_STATUS_STAT_FAIL:
++	default:
++		return ETHTOOL_A_CABLE_RESULT_CODE_UNSPEC;
++	}
++}
 +
-+	ret = of_phy_package_join(phydev, priv_size);
++static int qca808x_cdt_fault_length(struct phy_device *phydev, int pair,
++				    int result)
++{
++	int val;
++	u32 cdt_length_reg = 0;
 +
-+	if (!ret) {
-+		*ptr = phydev;
-+		devres_add(dev, ptr);
-+	} else {
-+		devres_free(ptr);
++	switch (pair) {
++	case ETHTOOL_A_CABLE_PAIR_A:
++		cdt_length_reg = QCA808X_MMD3_CDT_DIAG_PAIR_A;
++		break;
++	case ETHTOOL_A_CABLE_PAIR_B:
++		cdt_length_reg = QCA808X_MMD3_CDT_DIAG_PAIR_B;
++		break;
++	case ETHTOOL_A_CABLE_PAIR_C:
++		cdt_length_reg = QCA808X_MMD3_CDT_DIAG_PAIR_C;
++		break;
++	case ETHTOOL_A_CABLE_PAIR_D:
++		cdt_length_reg = QCA808X_MMD3_CDT_DIAG_PAIR_D;
++		break;
++	default:
++		return -EINVAL;
 +	}
 +
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(devm_of_phy_package_join);
++	val = phy_read_mmd(phydev, MDIO_MMD_PCS, cdt_length_reg);
++	if (val < 0)
++		return val;
 +
- /**
-  * phy_detach - detach a PHY device from its network device
-  * @phydev: target phy_device struct
-diff --git a/include/linux/phy.h b/include/linux/phy.h
-index ad93f8b1b128..f8ce8a757ed0 100644
---- a/include/linux/phy.h
-+++ b/include/linux/phy.h
-@@ -329,6 +329,7 @@ struct mdio_bus_stats {
-  * struct phy_package_shared - Shared information in PHY packages
-  * @base_addr: Base PHY address of PHY package used to combine PHYs
-  *   in one package and for offset calculation of phy_package_read/write
-+ * @np: Pointer to the Device Node if PHY package defined in DT
-  * @refcnt: Number of PHYs connected to this shared data
-  * @flags: Initialization of PHY package
-  * @priv_size: Size of the shared private data @priv
-@@ -340,6 +341,8 @@ struct mdio_bus_stats {
-  */
- struct phy_package_shared {
- 	u8 base_addr;
-+	/* With PHY package defined in DT this points to the PHY package node */
-+	struct device_node *np;
- 	refcount_t refcnt;
- 	unsigned long flags;
- 	size_t priv_size;
-@@ -1999,9 +2002,12 @@ int phy_ethtool_set_link_ksettings(struct net_device *ndev,
- 				   const struct ethtool_link_ksettings *cmd);
- int phy_ethtool_nway_reset(struct net_device *ndev);
- int phy_package_join(struct phy_device *phydev, int base_addr, size_t priv_size);
-+int of_phy_package_join(struct phy_device *phydev, size_t priv_size);
- void phy_package_leave(struct phy_device *phydev);
- int devm_phy_package_join(struct device *dev, struct phy_device *phydev,
- 			  int base_addr, size_t priv_size);
-+int devm_of_phy_package_join(struct device *dev, struct phy_device *phydev,
-+			     size_t priv_size);
++	if (result == ETHTOOL_A_CABLE_RESULT_CODE_SAME_SHORT)
++		val = FIELD_GET(QCA808X_CDT_DIAG_LENGTH_SAME_SHORT, val);
++	else
++		val = FIELD_GET(QCA808X_CDT_DIAG_LENGTH_CROSS_SHORT, val);
++
++	return at803x_cdt_fault_length(val);
++}
++
++static int qca808x_cable_test_get_pair_status(struct phy_device *phydev, u8 pair,
++					      u16 status)
++{
++	int length, result;
++	u16 pair_code;
++
++	switch (pair) {
++	case ETHTOOL_A_CABLE_PAIR_A:
++		pair_code = FIELD_GET(QCA808X_CDT_CODE_PAIR_A, status);
++		break;
++	case ETHTOOL_A_CABLE_PAIR_B:
++		pair_code = FIELD_GET(QCA808X_CDT_CODE_PAIR_B, status);
++		break;
++	case ETHTOOL_A_CABLE_PAIR_C:
++		pair_code = FIELD_GET(QCA808X_CDT_CODE_PAIR_C, status);
++		break;
++	case ETHTOOL_A_CABLE_PAIR_D:
++		pair_code = FIELD_GET(QCA808X_CDT_CODE_PAIR_D, status);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	result = qca808x_cable_test_result_trans(pair_code);
++	ethnl_cable_test_result(phydev, pair, result);
++
++	if (qca808x_cdt_fault_length_valid(pair_code)) {
++		length = qca808x_cdt_fault_length(phydev, pair, result);
++		ethnl_cable_test_fault_length(phydev, pair, length);
++	}
++
++	return 0;
++}
++
++int qca808x_cable_test_get_status(struct phy_device *phydev, bool *finished)
++{
++	int ret, val;
++
++	*finished = false;
++
++	val = QCA808X_CDT_ENABLE_TEST |
++	      QCA808X_CDT_LENGTH_UNIT;
++	ret = at803x_cdt_start(phydev, val);
++	if (ret)
++		return ret;
++
++	ret = at803x_cdt_wait_for_completion(phydev, QCA808X_CDT_ENABLE_TEST);
++	if (ret)
++		return ret;
++
++	val = phy_read_mmd(phydev, MDIO_MMD_PCS, QCA808X_MMD3_CDT_STATUS);
++	if (val < 0)
++		return val;
++
++	ret = qca808x_cable_test_get_pair_status(phydev, ETHTOOL_A_CABLE_PAIR_A, val);
++	if (ret)
++		return ret;
++
++	ret = qca808x_cable_test_get_pair_status(phydev, ETHTOOL_A_CABLE_PAIR_B, val);
++	if (ret)
++		return ret;
++
++	ret = qca808x_cable_test_get_pair_status(phydev, ETHTOOL_A_CABLE_PAIR_C, val);
++	if (ret)
++		return ret;
++
++	ret = qca808x_cable_test_get_pair_status(phydev, ETHTOOL_A_CABLE_PAIR_D, val);
++	if (ret)
++		return ret;
++
++	*finished = true;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(qca808x_cable_test_get_status);
+diff --git a/drivers/net/phy/qcom/qcom.h b/drivers/net/phy/qcom/qcom.h
+index c127d8f50f0f..dc259bbf0678 100644
+--- a/drivers/net/phy/qcom/qcom.h
++++ b/drivers/net/phy/qcom/qcom.h
+@@ -54,6 +54,55 @@
+ #define AT803X_CDT_STATUS_STAT_MASK		GENMASK(9, 8)
+ #define AT803X_CDT_STATUS_DELTA_TIME_MASK	GENMASK(7, 0)
  
- int __init mdio_bus_init(void);
- void mdio_bus_exit(void);
++#define QCA808X_CDT_ENABLE_TEST			BIT(15)
++#define QCA808X_CDT_INTER_CHECK_DIS		BIT(13)
++#define QCA808X_CDT_STATUS			BIT(11)
++#define QCA808X_CDT_LENGTH_UNIT			BIT(10)
++
++#define QCA808X_MMD3_CDT_STATUS			0x8064
++#define QCA808X_MMD3_CDT_DIAG_PAIR_A		0x8065
++#define QCA808X_MMD3_CDT_DIAG_PAIR_B		0x8066
++#define QCA808X_MMD3_CDT_DIAG_PAIR_C		0x8067
++#define QCA808X_MMD3_CDT_DIAG_PAIR_D		0x8068
++#define QCA808X_CDT_DIAG_LENGTH_SAME_SHORT	GENMASK(15, 8)
++#define QCA808X_CDT_DIAG_LENGTH_CROSS_SHORT	GENMASK(7, 0)
++
++#define QCA808X_CDT_CODE_PAIR_A			GENMASK(15, 12)
++#define QCA808X_CDT_CODE_PAIR_B			GENMASK(11, 8)
++#define QCA808X_CDT_CODE_PAIR_C			GENMASK(7, 4)
++#define QCA808X_CDT_CODE_PAIR_D			GENMASK(3, 0)
++
++#define QCA808X_CDT_STATUS_STAT_TYPE		GENMASK(1, 0)
++#define QCA808X_CDT_STATUS_STAT_FAIL		FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_TYPE, 0)
++#define QCA808X_CDT_STATUS_STAT_NORMAL		FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_TYPE, 1)
++#define QCA808X_CDT_STATUS_STAT_SAME_OPEN	FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_TYPE, 2)
++#define QCA808X_CDT_STATUS_STAT_SAME_SHORT	FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_TYPE, 3)
++
++#define QCA808X_CDT_STATUS_STAT_MDI		GENMASK(3, 2)
++#define QCA808X_CDT_STATUS_STAT_MDI1		FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_MDI, 1)
++#define QCA808X_CDT_STATUS_STAT_MDI2		FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_MDI, 2)
++#define QCA808X_CDT_STATUS_STAT_MDI3		FIELD_PREP_CONST(QCA808X_CDT_STATUS_STAT_MDI, 3)
++
++/* NORMAL are MDI with type set to 0 */
++#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_NORMAL	QCA808X_CDT_STATUS_STAT_MDI1
++#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_OPEN		(QCA808X_CDT_STATUS_STAT_SAME_OPEN |\
++									 QCA808X_CDT_STATUS_STAT_MDI1)
++#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI1_SAME_SHORT	(QCA808X_CDT_STATUS_STAT_SAME_SHORT |\
++									 QCA808X_CDT_STATUS_STAT_MDI1)
++#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_NORMAL	QCA808X_CDT_STATUS_STAT_MDI2
++#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_OPEN		(QCA808X_CDT_STATUS_STAT_SAME_OPEN |\
++									 QCA808X_CDT_STATUS_STAT_MDI2)
++#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI2_SAME_SHORT	(QCA808X_CDT_STATUS_STAT_SAME_SHORT |\
++									 QCA808X_CDT_STATUS_STAT_MDI2)
++#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_NORMAL	QCA808X_CDT_STATUS_STAT_MDI3
++#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_OPEN		(QCA808X_CDT_STATUS_STAT_SAME_OPEN |\
++									 QCA808X_CDT_STATUS_STAT_MDI3)
++#define QCA808X_CDT_STATUS_STAT_CROSS_SHORT_WITH_MDI3_SAME_SHORT	(QCA808X_CDT_STATUS_STAT_SAME_SHORT |\
++									 QCA808X_CDT_STATUS_STAT_MDI3)
++
++/* Added for reference of existence but should be handled by wait_for_completion already */
++#define QCA808X_CDT_STATUS_STAT_BUSY		(BIT(1) | BIT(3))
++
+ #define AT803X_LOC_MAC_ADDR_0_15_OFFSET		0x804C
+ #define AT803X_LOC_MAC_ADDR_16_31_OFFSET	0x804B
+ #define AT803X_LOC_MAC_ADDR_32_47_OFFSET	0x804A
+@@ -110,6 +159,7 @@ int at803x_read_specific_status(struct phy_device *phydev,
+ 				struct at803x_ss_mask ss_mask);
+ int at803x_config_mdix(struct phy_device *phydev, u8 ctrl);
+ int at803x_prepare_config_aneg(struct phy_device *phydev);
++int at803x_read_status(struct phy_device *phydev);
+ int at803x_get_tunable(struct phy_device *phydev,
+ 		       struct ethtool_tunable *tuna, void *data);
+ int at803x_set_tunable(struct phy_device *phydev,
+@@ -118,3 +168,4 @@ int at803x_cdt_fault_length(int dt);
+ int at803x_cdt_start(struct phy_device *phydev, u32 cdt_start);
+ int at803x_cdt_wait_for_completion(struct phy_device *phydev,
+ 				   u32 cdt_en);
++int qca808x_cable_test_get_status(struct phy_device *phydev, bool *finished);
 -- 
 2.43.0
 
