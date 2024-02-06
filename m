@@ -1,134 +1,98 @@
-Return-Path: <linux-kernel+bounces-54869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7FB584B498
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:12:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF06E84B49E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:13:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB76F1C23DAC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:12:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7EB521F291C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:13:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A0ED13248A;
-	Tue,  6 Feb 2024 12:08:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8259D132C25;
+	Tue,  6 Feb 2024 12:09:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="G6EyGV+l"
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sK0C9Nyv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7605B132478
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 12:08:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACE8A132488;
+	Tue,  6 Feb 2024 12:09:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707221314; cv=none; b=hNiYsyG0wHyM0YlQlPh6Bk6gx+zf5Xzd7adu4dP7LvTs48tQ5Ri+rCdh3o0gJmh1IwlAxjA+R24cCaziCzB7Kj6PL0MlCMhlavUcQKLRPXzSU+Z/J0j4iXMUCtecQFhxvlwRcLyY2XmDFzN+8xw29DBIwAxs5y1zuNC3L0rPDh4=
+	t=1707221345; cv=none; b=U57ntT0ELgZP5cm0Y+WPj30YzPfnBpqd/p4RYOv+krbN1boCARJhF4UBbs7T+TT57PLYKwb4OC4vK6NsY7OSRgyZnqoFJ9pGzUCT4OXZu9o7bEqfMcWd1vXD+aB/tCqbf2WKOekkHaD54nLfMvlykRfVaGfDX/Zd3LqkbhSbjAA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707221314; c=relaxed/simple;
-	bh=4Vu5+qjHqnLiD6M7Jx0MYJ1t1IIXbkexS1k3JHNLYrE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XuIXc7PG7AvhINy6E+0gbssM4t/xHx4BUuJB5BAFXHLYOsFGsWTKXI0Wn7eNc3irtf0BhrKxvrO9U/A1g5+eNgqRP04qeWOkBS0S33N0MmbFMHspIUsw5NurLpO4vpvSOnpAiv0HnNMtC59/u2pkWCORIcDHXuZDlFFDccMj92I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=G6EyGV+l; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dc23bf7e5aaso5335351276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 04:08:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707221311; x=1707826111; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=D+xvbQgPMNIqZPpU5Yxz0zVKVlrqGRam+oSS93XuAZg=;
-        b=G6EyGV+lrk2qG3c+xFFT4QmZe2kZkL9L2k5sSJU/PrFBr4GnBNIk0arxVEwPb3GoWi
-         Qrikzt0jttBL6H6PZ/MMc83caJB6fJOFPzDt9Q3bRLxPFU0dSuR4p1QWpnuuHtMP1t32
-         RiCAtdfrahm4lAChEB1aX7PYoV9lGe6IGkINfaOcaQyiZNRNlJA0H2JUP9H9k4Is31XJ
-         18DzKyk5pHouBFEY+VmINipp86Iw2fG0s9YsqAEFFww1328ZzXOVdnvY8E5Qz6huyw20
-         p1PeCOf6VS625ax1b/MkGH5MUZ+XFMw6/bViWxMZy9MzlzlWanANBY2VW/QGAf3YkKC9
-         VBXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707221311; x=1707826111;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=D+xvbQgPMNIqZPpU5Yxz0zVKVlrqGRam+oSS93XuAZg=;
-        b=mDFmUf2YrgDdwQI9BzrlAEdlyMqyP9CIo5dIc+ks6gEB/cEAfTvraWSwmrk0fvjcCT
-         saP8cRR5NPDFGnAx1h+bMnizSR0bKaFKlrr3lW940Jo/NOootEwHP/PGtxFImhhTQi2J
-         N/X9ZneZLgdMg+lZHz4s4D/mzG7ysPlA3xk6m8S7Eoer+Ks1b7nC2Sac+BfuShKzjmEX
-         dRAwiE6+GOkOuDG4F9b9NqpFe86iS4xqZCO3a7kVQXaFCYEpDSOLFLOOfCrYjP99f4ys
-         DF3IlxCBz02C6lvG4cZ470xvEUFhOZoZiCUcZ5+sZj8mwl1chLnR9J8Qp1JLqI1eK9Fp
-         4i6g==
-X-Gm-Message-State: AOJu0YzOG2GuccvAe8KXtf4z5u3WBfanpSB4kQvmiMR/okps5Dbye4Gz
-	6JlNbeBb561nrdWjKqqZy8aE26m6jsrcm5aPR3jIDuNAtiNzbWJ+bWbR0P1hKfV7ZH8SGV9ztmy
-	0dFXOIhLFO6HVJLHZRgpnBFQDyDOjc1ehD+eIhg==
-X-Google-Smtp-Source: AGHT+IHm/LzSZOY6wELij8ZqF6KUJKp53jlruo64Z12qH3QsvW0iqh2+ij7pZZDRD7Tg0EAkEehe8Eq/Q5Xya9Gok24=
-X-Received: by 2002:a25:6984:0:b0:dc2:3c3b:fa3e with SMTP id
- e126-20020a256984000000b00dc23c3bfa3emr1424003ybc.31.1707221311472; Tue, 06
- Feb 2024 04:08:31 -0800 (PST)
+	s=arc-20240116; t=1707221345; c=relaxed/simple;
+	bh=eFULCdtRIMuBKJjgR2NGy0D9a+xMsiURswxpvWKcvgw=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=PJ0o3bYeT634vVxQHa6S830eO9M1d8J+2BGyY1ioKUQcIMQgWCR7URxVALbK9Paj1JdFQxwzP/HuBLr/VySQ02EudY1XDxTJeqY6QlhN0+sus01Yc9GqlAaSAGAhz3JyCy4VllUitvhYZbUw5uLdjcYKIX/XSJiHy6zyC0BaSGY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sK0C9Nyv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9047C43390;
+	Tue,  6 Feb 2024 12:09:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707221345;
+	bh=eFULCdtRIMuBKJjgR2NGy0D9a+xMsiURswxpvWKcvgw=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=sK0C9NyvrPqgTXvCLutf+ZX4x9jQ4Y0ORnyspNPll8QZ6D5gEV1YWtV/ZNI62wo/x
+	 R/zwJnvgEoQP+oj3cBekBmL2IRWGK0eDr2ZZFAVJ/Q9f7WbqkC8C+dCYk3PtlEAnKc
+	 1of37JW6qaOM/sa9XUhs0ij+XjH+gIcV0hIaFTANdQ5vizlir4He5x2eswj/4cqzCS
+	 gOrGqK45Cucaqmnl2hCMzVANGimGPG7mSjYrHieU6mYGKlUy1p/yAgrAfHYcs2rSHy
+	 ZUMMH8I4xgVGtdqYIE2Ol1ElmR7uSznfDLkfg//9I4eeyYN5UwB8/g0i6USj6Izl9/
+	 7e1ALaFEy9i6g==
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.com>, 
+ Mario Limonciello <mario.limonciello@amd.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, 
+ Stanislav Petrov <stanislav.i.petrov@gmail.com>, stable@vger.kernel.org
+In-Reply-To: <20240205214853.2689-1-mario.limonciello@amd.com>
+References: <20240205214853.2689-1-mario.limonciello@amd.com>
+Subject: Re: [PATCH] ASoC: amd: yc: Add DMI quirk for Lenovo Ideapad Pro 5
+ 16ARP8
+Message-Id: <170722134350.992147.6667675889497982798.b4-ty@kernel.org>
+Date: Tue, 06 Feb 2024 12:09:03 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206113145.31096-1-quic_jkona@quicinc.com> <20240206113145.31096-5-quic_jkona@quicinc.com>
-In-Reply-To: <20240206113145.31096-5-quic_jkona@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 6 Feb 2024 14:08:20 +0200
-Message-ID: <CAA8EJpp7p35UECE7QfE-At+=xpa253=De+ZZNnaPSO9GqXCnrg@mail.gmail.com>
-Subject: Re: [PATCH 4/5] clk: qcom: camcc-sm8650: Add camera clock controller
- driver for SM8650
-To: Jagadeesh Kona <quic_jkona@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>, 
-	Taniya Das <quic_tdas@quicinc.com>, linux-arm-msm@vger.kernel.org, 
-	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Imran Shaik <quic_imrashai@quicinc.com>, 
-	Ajit Pandey <quic_ajipan@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
 
-On Tue, 6 Feb 2024 at 13:41, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
->
-> Add support for the camera clock controller for camera clients to be
-> able to request for camcc clocks on SM8650 platform.
->
-> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
-> ---
->  drivers/clk/qcom/Kconfig        |    8 +
->  drivers/clk/qcom/Makefile       |    1 +
->  drivers/clk/qcom/camcc-sm8650.c | 3601 +++++++++++++++++++++++++++++++
->  3 files changed, 3610 insertions(+)
->  create mode 100644 drivers/clk/qcom/camcc-sm8650.c
-[
-[skipped]
+On Mon, 05 Feb 2024 15:48:53 -0600, Mario Limonciello wrote:
+> The laptop requires a quirk ID to enable its internal microphone. Add
+> it to the DMI quirk table.
+> 
+> 
 
-> +static int __init cam_cc_sm8650_init(void)
-> +{
-> +       return platform_driver_register(&cam_cc_sm8650_driver);
-> +}
-> +subsys_initcall(cam_cc_sm8650_init);
+Applied to
 
-We have been here for the patch series for camcc-sm8550. Upstream
-reviewers expect that you don't repeat the same mistakes over and over
-again.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Please use module_platform_driver().
+Thanks!
 
-> +
-> +static void __exit cam_cc_sm8650_exit(void)
-> +{
-> +       platform_driver_unregister(&cam_cc_sm8650_driver);
-> +}
-> +module_exit(cam_cc_sm8650_exit);
-> +
-> +MODULE_DESCRIPTION("QTI CAMCC SM8650 Driver");
-> +MODULE_LICENSE("GPL");
-> --
-> 2.43.0
->
->
+[1/1] ASoC: amd: yc: Add DMI quirk for Lenovo Ideapad Pro 5 16ARP8
+      commit: 610010737f74482a61896596a0116876ecf9e65c
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
--- 
-With best wishes
-Dmitry
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
