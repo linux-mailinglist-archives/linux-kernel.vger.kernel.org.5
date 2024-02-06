@@ -1,151 +1,287 @@
-Return-Path: <linux-kernel+bounces-55088-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55089-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20AAC84B78C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ADF6C84B78E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:13:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 447921C2594D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:13:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3CD71C2536A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:13:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDFC0131E47;
-	Tue,  6 Feb 2024 14:12:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCC6E131E47;
+	Tue,  6 Feb 2024 14:13:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DNSe6W9D"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="A+hHP1vp";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="zJSQqycG"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BCB813172D
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 14:12:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2098E131E29
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 14:13:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707228776; cv=none; b=KBWLDgDHQIdHGVJPp4pjyKEuo7FcY/OtbGQrjsD/Z7TRavhFmU9mBpPb2gyz+vG3dHE3DJdttbMf1SIFrycWUcAvlPshdsjWKbGDeqwO5wU9vtjgZUfswsI57jJ3Q4b/frIxOs2zm01VWMS0tQt1bRWM+2Ma1uy6Li/zlKSX11k=
+	t=1707228809; cv=none; b=pdrOFfrlNQzrdEH4BrAL3GAVTNUvDNj7z2d7n4xmXCmR8DL/JtT9/dTDEKFEGGtpwvjQRaHIf9c9CgoOLwZEVWI5XoR/hVDbwfk6mKTshv9z+SU/afYmK0qVnouAUuvNRPws8PlZsAjhpHGA/qGrKh+/FihKuhCAWzLxxxahAvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707228776; c=relaxed/simple;
-	bh=Bsokvn5YWnf3uoqaFnfN9YvfGrwDEWEVf1pfDUZWanA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uMd5Q1QYynvwgt66aEfhk+h+M4gtfuypAyZfGn9iRAXPtMEbXcX/q+dVji6M3AAq2Iz2dLfuGJlnVHJe/CcQfvHaRobYg4xfJiwcTgxdlfSKYVOOYONimf0qiCy2SLD+WtttBZR8d319EPgw04wg7ocp4CBzJ7JY3h8pWmhODMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DNSe6W9D; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40fe32fcbdaso4997005e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 06:12:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707228772; x=1707833572; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=f/GUlRf0HmWkHoc7OTDeUe7IIuv9mQx9L8UMYHSrdxA=;
-        b=DNSe6W9DkJoXUkrMGXQJWfqkBeVCot3zQlUpGunagiP2iK54ajiKCb1E2c7+0pX6Q1
-         L9yvzX6BSIDOt+dJlch7MHyeGEpwIQksDJbEzaevakOZNG/cHPPInAhL0m03IwqAZLpk
-         k/TKuoXZQ7+esLkASazKXQKP2zPV2j9tLcP9tvsnB4Pi99+zuklAVewoEqxo34hM+wSE
-         0yutnOuf9rZ8i8tikN0CCSxRhMIOhLrVKjZpY7P2fMFxp9c0QfMqfZ58kA128I7QT96K
-         zaa+Wt3MDZVqYNGAZK8hh8S68pF+va34ZH3YDrEkbVT8v2svL0DJZUt1jooKroyTfJEz
-         /mNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707228772; x=1707833572;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f/GUlRf0HmWkHoc7OTDeUe7IIuv9mQx9L8UMYHSrdxA=;
-        b=DA6/pTyaRkwN4NP84i7WOZTDvreEhZBZjlKD4Q028CmDbN2a842ZWU+/tGvFh+5osA
-         D7V+i/A+ICJa+RI/j2dIJeQPR8jQCkIsUJy0gkJ84oaHJv4vo1iF6VwCRbwmDj3B1/AS
-         MNt2J6BS9slgfs12D3u3kbTUTITE+GO2RoNBp9+AimIVt288NNrrhdWpgvWKfRcOeUo6
-         JEoH2OiPpgcxemEyOrch4YJwUL9oanvd5yX+wvXFW9Ug7FXvUsxPyeidvCXx0c7724eD
-         SpYhLb1e1BUwgi1c8VmqWlH+3ue46dhBM1ztP4C8g6isklkdP2Uc5OLDPavPNQXVh+Lw
-         iZcA==
-X-Gm-Message-State: AOJu0YwtqGz5aG0uaLnm+W//Wv75rVLCsUXMktF79Bz+ysubOmr6cWeA
-	Zl8fWoGzbGZUBTZGPh1PdMM29CG6nCV26ppLBKiBW2NRWMs9pyjsmDDqdyTt86k=
-X-Google-Smtp-Source: AGHT+IHztXKPPEoRWAl5ItxM7oX/l5Dxb1UecXG0cZZ9t15hDEmGoMSNhlYb/7y1oEuc+RYvYgxATw==
-X-Received: by 2002:a05:600c:198f:b0:40f:dd35:9224 with SMTP id t15-20020a05600c198f00b0040fdd359224mr1646897wmq.4.1707228772550;
-        Tue, 06 Feb 2024 06:12:52 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXu+7aOEidgQf+ZljxAaXruBbmXFWN7vR9z/Xj1+EilHtJc4CQHZBO4NYKZVo15M0MdsaG73qvdBsSXXCuGsWReOfWbhkwxwv0xOBJlH/mKUIBwj/sSFVpqgEvX0mrMeKcKBqm1L01vapmGUU6g5fLbgc2XcwMhvdVZA2sXFNP0Ge76dzGNLNTU5jzcA13UlyncTqDZqDUW31pQmqG/IwTgXkVK4tIcd0BWLjaP7ng0xXd3vTiA3Cnto6gLmWSj/4RnUyUsMimpaOmlQhUGT3g8iu3v9tFCekBJairVp/DNC3kUb58BJsOPyrihhB7JEz4Lguiv0jDBbZFSBHPBNeBaO2MgtcUoPY+QVaIAY6TFH5vit/H90wtS5ucV/E2+6qZ/jtiTjdspcMl0jXIPEIWcZDMgLvJn7aJ2A8WdrGJ4UoOKWK5NTYViye/yaKlDPOc6z6betTFmmbqRaE4qW6u83KTS3ByYXgNbAepIWnHzKwPGxRy/QNwU78itobeaEKaSaXQjyWCycUHOb80fFjZSbAkw
-Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id w17-20020a5d6811000000b0033afcc899c1sm2213579wru.13.2024.02.06.06.12.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Feb 2024 06:12:52 -0800 (PST)
-Message-ID: <47bbd3e5-d94a-4b7e-afc2-68297f5a79c1@linaro.org>
-Date: Tue, 6 Feb 2024 15:12:50 +0100
+	s=arc-20240116; t=1707228809; c=relaxed/simple;
+	bh=9i2VhkIQDk5veFniGTSpL/iY9cyw3Xr+ZiniP0Mx/Pw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=uw5bz3T4fcC5CKV6RYp9Q1UsLcme44M91Cg8HGBNJLP4ppacpWYODXexx9z2ma0xmRy744mEG9p+3DMHEi/S5ZtKk9A/kn9jO1vkzMWuNQmUhUecg9L7qMgzOpivjLbEPuuuGhwmbHfFRsUjgKyhm3jVmajmiWdoDe6gOau/mJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=A+hHP1vp; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=zJSQqycG; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Anna-Maria Behnsen <anna-maria@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1707228804;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mNnu1k5ooezxCWqUfkL19987OPJ/E7GSIQiW9phWRg8=;
+	b=A+hHP1vpQSQHlP/CNmnOVuXpK/Scj3B7ZygPFo1zqTLscm9tsXZd+Tv8EfCugdDhBN9jD4
+	EgrZ4HwgWVXUlnVPcxsiv5rtAKiNDDF0s/MaisQdfILBfEGHbG/aRooNllAHGREbZjKlav
+	pZMfGdXqeSsWiUz9DJgSrDK4O5q2guxu5jLyLnvO78yn11bV449f0hm9d/KRNcVp/AfZD0
+	ZQoN96sZ2p/nuCXGg+6S8ZnLSxUxh4sQVla6ujxIr9SyBgLhriJvPgcsCZOJkQJ0Tj2PXN
+	+XTqaOXU47lQRq8KNx8nSiqzyWIwuTsTzT7zZePK/WV8THOtEXB1eKH6WXJlYA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1707228804;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mNnu1k5ooezxCWqUfkL19987OPJ/E7GSIQiW9phWRg8=;
+	b=zJSQqycGrDKix49apjGqJw7m3q4YAw3Np9mrtRihj776WDGbOWlVmGdBvRwnfpjDfamrte
+	+3FesofzXF5gV1AA==
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+ John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Eric Dumazet <edumazet@google.com>, "Rafael J . Wysocki"
+ <rafael.j.wysocki@intel.com>, Arjan van de Ven <arjan@infradead.org>,
+ "Paul E . McKenney" <paulmck@kernel.org>, Rik van Riel <riel@surriel.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Sebastian Siewior
+ <bigeasy@linutronix.de>, Giovanni Gherdovich <ggherdovich@suse.cz>, Lukasz
+ Luba <lukasz.luba@arm.com>, "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+ Srinivas Pandruvada <srinivas.pandruvada@intel.com>, K Prateek Nayak
+ <kprateek.nayak@amd.com>
+Subject: Re: [PATCH v10 18/20] timers: Implement the hierarchical pull model
+In-Reply-To: <ZcIyWJxeLy4GaTbM@localhost.localdomain>
+References: <20240115143743.27827-1-anna-maria@linutronix.de>
+ <20240115143743.27827-19-anna-maria@linutronix.de>
+ <ZcAQZ8-gbEYaQflu@pavilion.home> <87eddp3ju0.fsf@somnus>
+ <ZcIyWJxeLy4GaTbM@localhost.localdomain>
+Date: Tue, 06 Feb 2024 15:13:23 +0100
+Message-ID: <878r3x3cl8.fsf@somnus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [linux][PATCH] ASoC: dt-bindings: atmel,sam9x5-wm8731: Convert to
- json-schema
-Content-Language: en-US
-To: Dharma Balasubiramani <dharma.b@microchip.com>, claudiu.beznea@tuxon.dev,
- lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
- alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Cc: hari.prasathge@microchip.com
-References: <20240206064418.237377-1-dharma.b@microchip.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240206064418.237377-1-dharma.b@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 06/02/2024 07:44, Dharma Balasubiramani wrote:
-> Convert atmel sam9x5-wm8731-audio devicetree binding to json-schema.
-> 
-> Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
+Frederic Weisbecker <frederic@kernel.org> writes:
 
-There is no need to prefix patches with "linux".
+> Le Tue, Feb 06, 2024 at 12:36:55PM +0100, Anna-Maria Behnsen a =C3=A9crit=
+ :
+>> Frederic Weisbecker <frederic@kernel.org> writes:
+>>=20
+>> > Le Mon, Jan 15, 2024 at 03:37:41PM +0100, Anna-Maria Behnsen a =C3=A9c=
+rit :
+>> >> +/*
+>> >> + * Returns true, if there is nothing to be propagated to the next le=
+vel
+>> >> + *
+>> >> + * @data->firstexp is set to expiry of first gobal event of the (top=
+ level of
+>> >> + * the) hierarchy, but only when hierarchy is completely idle.
+>> >> + *
+>> >> + * This is the only place where the group event expiry value is set.
+>> >> + */
+>> >> +static
+>> >> +bool tmigr_update_events(struct tmigr_group *group, struct tmigr_gro=
+up *child,
+>> >> +			 struct tmigr_walk *data, union tmigr_state childstate,
+>> >> +			 union tmigr_state groupstate)
+>> >> +{
+>> >> +	struct tmigr_event *evt, *first_childevt;
+>> >> +	bool walk_done, remote =3D data->remote;
+>> >> +	bool leftmost_change =3D false;
+>> >> +	u64 nextexp;
+>> >> +
+>> >> +	if (child) {
+>> >> +		raw_spin_lock(&child->lock);
+>> >> +		raw_spin_lock_nested(&group->lock, SINGLE_DEPTH_NESTING);
+>> >> +
+>> >> +		if (childstate.active) {
+>> >> +			walk_done =3D true;
+>> >> +			goto unlock;
+>> >> +		}
+>> >> +
+>> >> +		first_childevt =3D tmigr_next_groupevt(child);
+>> >> +		nextexp =3D child->next_expiry;
+>> >> +		evt =3D &child->groupevt;
+>> >> +	} else {
+>> >> +		nextexp =3D data->nextexp;
+>> >> +
+>> >> +		first_childevt =3D evt =3D data->evt;
+>> >> +
+>> >> +		/*
+>> >> +		 * Walking the hierarchy is required in any case when a
+>> >> +		 * remote expiry was done before. This ensures to not lose
+>> >> +		 * already queued events in non active groups (see section
+>> >> +		 * "Required event and timerqueue update after a remote
+>> >> +		 * expiry" in the documentation at the top).
+>> >> +		 *
+>> >> +		 * The two call sites which are executed without a remote expiry
+>> >> +		 * before, are not prevented from propagating changes through
+>> >> +		 * the hierarchy by the return:
+>> >> +		 *  - When entering this path by tmigr_new_timer(), @evt->ignore
+>> >> +		 *    is never set.
+>> >> +		 *  - tmigr_inactive_up() takes care of the propagation by
+>> >> +		 *    itself and ignores the return value. But an immediate
+>> >> +		 *    return is required because nothing has to be done in this
+>> >> +		 *    level as the event could be ignored.
+>> >> +		 */
+>> >> +		if (evt->ignore && !remote)
+>> >> +			return true;
+>> >> +
+>> >> +		raw_spin_lock(&group->lock);
+>> >> +	}
+>> >> +
+>> >> +	if (nextexp =3D=3D KTIME_MAX) {
+>> >> +		evt->ignore =3D true;
+>> >> +
+>> >> +		/*
+>> >> +		 * When the next child event could be ignored (nextexp is
+>> >> +		 * KTIME_MAX) and there was no remote timer handling before or
+>> >> +		 * the group is already active, there is no need to walk the
+>> >> +		 * hierarchy even if there is a parent group.
+>> >> +		 *
+>> >> +		 * The other way round: even if the event could be ignored, but
+>> >> +		 * if a remote timer handling was executed before and the group
+>> >> +		 * is not active, walking the hierarchy is required to not miss
+>> >> +		 * an enqueued timer in the non active group. The enqueued timer
+>> >> +		 * of the group needs to be propagated to a higher level to
+>> >> +		 * ensure it is handled.
+>> >> +		 */
+>> >> +		if (!remote || groupstate.active) {
+>> >> +			walk_done =3D true;
+>> >> +			goto unlock;
+>> >
+>> > So if the current tmc going inactive was the migrator for the whole hi=
+erarchy
+>> > and it is reaching here the top-level, this assumes that if none of th=
+is tmc's
+>> > groups have a timer, then it can just return. But what if the top leve=
+l has
+>> > timers from other children? Who is going to handle them then?
+>> >
+>> > Should this be "goto check_toplvl" instead?
+>> >
+>>=20
+>> Simply replacing this goto will not work. Then we chould end up with a
+>> 'data->firstexp' set even if we do not want to have it (when remote is
+>> not set).
+>
+> Hmm, but the (groupstate.migrator =3D=3D TMIGR_NONE) condition should pre=
+vent that,
+> no?
+>
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+When remote is not set, and the group is not active (but it's not top
+level), walk_done will be set to true. Then goto check_toplevel. There
+walk_done and the groupstate migrator check is both true. But it is not
+top level... and the next goto unlock will also not happen and
+data->firstexp will be set. No?
 
-Best regards,
-Krzysztof
+>>=20
+>> There is another issue in here. When the event could be ignored and it
+>> is propagated because of e.g. remote timer handling, then the timerqueue
+>> dance is done nevertheless. It's not a big problem (as the ignore flag
+>> is set and event is removed of queue when revisting the timer queue),
+>> but its obviously more work than it is required to have.
+>
+> Right. I guess it doesn't hurt to delete it from the timerqueue if presen=
+t and
+> then update group->next_expiry accordingly. But it's certainly not useful
+> to requeue it :-)
+>
 
+This would be the plan to keep the delete but drop the requeue in this
+case.
+
+With those two things, the tmigr_update_events() wants to be changed a
+little more.
+
+Thanks
+
+> Thanks.
+>
+>>=20
+>> Thanks
+>>=20
+>> >> +		}
+>> >> +	} else {
+>> >> +		/*
+>> >> +		 * An update of @evt->cpu and @evt->ignore flag is required only
+>> >> +		 * when @child is set (the child is equal or higher than lvl0),
+>> >> +		 * but it doesn't matter if it is written once more to the per
+>> >> +		 * CPU event; make the update unconditional.
+>> >> +		 */
+>> >> +		evt->cpu =3D first_childevt->cpu;
+>> >> +		evt->ignore =3D false;
+>> >> +	}
+>> >> +
+>> >> +	walk_done =3D !group->parent;
+>> >> +
+>> >> +	/*
+>> >> +	 * If the child event is already queued in the group, remove it fro=
+m the
+>> >> +	 * queue when the expiry time changed only.
+>> >> +	 */
+>> >> +	if (timerqueue_node_queued(&evt->nextevt)) {
+>> >> +		if (evt->nextevt.expires =3D=3D nextexp)
+>> >> +			goto check_toplvl;
+>> >> +
+>> >> +		leftmost_change =3D timerqueue_getnext(&group->events) =3D=3D &evt=
+->nextevt;
+>> >> +		if (!timerqueue_del(&group->events, &evt->nextevt))
+>> >> +			WRITE_ONCE(group->next_expiry, KTIME_MAX);
+>> >> +	}
+>> >> +
+>> >> +	evt->nextevt.expires =3D nextexp;
+>> >> +
+>> >> +	if (timerqueue_add(&group->events, &evt->nextevt)) {
+>> >> +		leftmost_change =3D true;
+>> >> +		WRITE_ONCE(group->next_expiry, nextexp);
+>> >> +	}
+>> >> +
+>> >> +check_toplvl:
+>> >> +	if (walk_done && (groupstate.migrator =3D=3D TMIGR_NONE)) {
+>> >> +		/*
+>> >> +		 * Nothing to do when first event didn't changed and update was
+>> >> +		 * done during remote timer handling.
+>> >> +		 */
+>> >> +		if (remote && !leftmost_change)
+>> >> +			goto unlock;
+>> >> +		/*
+>> >> +		 * The top level group is idle and it has to be ensured the
+>> >> +		 * global timers are handled in time. (This could be optimized
+>> >> +		 * by keeping track of the last global scheduled event and only
+>> >> +		 * arming it on the CPU if the new event is earlier. Not sure if
+>> >> +		 * its worth the complexity.)
+>> >> +		 */
+>> >> +		data->firstexp =3D tmigr_next_groupevt_expires(group);
+>> >> +	}
+>> >> +
+>> >> +unlock:
+>> >> +	raw_spin_unlock(&group->lock);
+>> >> +
+>> >> +	if (child)
+>> >> +		raw_spin_unlock(&child->lock);
+>> >> +
+>> >> +	return walk_done;
+>> >> +}
 
