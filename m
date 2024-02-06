@@ -1,224 +1,106 @@
-Return-Path: <linux-kernel+bounces-54944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17E6884B53E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:33:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5E0884B542
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:33:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 917631F25EAE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:33:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79780B20F2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:33:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1996C1332B0;
-	Tue,  6 Feb 2024 12:19:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE4A15677B;
+	Tue,  6 Feb 2024 12:26:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A9UWKuJp"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	dkim=pass (1024-bit key) header.d=mev.co.uk header.i=@mev.co.uk header.b="O5h5sb4k"
+Received: from smtp92.iad3a.emailsrvr.com (smtp92.iad3a.emailsrvr.com [173.203.187.92])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83FAF1332A6;
-	Tue,  6 Feb 2024 12:19:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA6CF133439
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 12:26:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.203.187.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707221964; cv=none; b=Hjj71MGLnKZTNjAUPNQIaK6gdfW0Ap5DtY+YYANz+HAVuaZ3vIS22jACO7AmEnGDCJ+nGmG6GFz+BFY2PcMTaqzH/V3h7OrWEapOGSkJtYAcAplS4C2dEBPbyB3vHKp4tmKmXMtXNrkaBQNs+JuaJMa+knsg6uR99a+kKlSwjEI=
+	t=1707222412; cv=none; b=mMIH0JxbtggE1upfvF4gTc6VeEVPOAaZL2Y51lPvToR6mEWF33Zu/RdraYrCXrJPmO3kB1fTZna1c7eQ4WrhjjlbXcrj8Lm1hdnEvqOfm3/rR1s3MazRVHbdAPasH5YKCSf4ALunmN0+Wnhj8yZMXUOhwKhrLtEHRMI+0yrIFFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707221964; c=relaxed/simple;
-	bh=vOPlbom+hZu2FqS78/OBAPTU/ql3MwKYrdqCAkJSiKU=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=tiK5G1ylD15/VH2fpGmPpbujRRZjugO3Vj18byhu8R0AMxktqAzxUpLJfEBJBIr58qCCGCSeIhENb0IP2G7D7cGF4z/ZK5V5WkcW1D1CPF5IijoHRhotMX/qYYz+GRPox3tImbcu/GMX5ezmriRbnc4o8SVEUmZImCBQyfUipcg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A9UWKuJp; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707221963; x=1738757963;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=vOPlbom+hZu2FqS78/OBAPTU/ql3MwKYrdqCAkJSiKU=;
-  b=A9UWKuJpf0ja4NyaMtw8XyX4PiNzwv3v+pmFAPqjVVxKGm9sr0PeDo3l
-   Dy0RL3IMfO57ofY02CT6KLcPKJNR6z5hBGcwd4cizz4cbiwW8aiC8o6EV
-   mWlWlpJVonIb7RvjiyrZZeiv1wf6abc1topycwZ0fClpxiiQT/gL2ErjJ
-   R/6KXTDGr7Glvo3m+oJfjy33V3TwwnbtpQEPH7RxqM38CgHGDkOkbeefP
-   VUdtQbjbPCAhHjRS20uE0FmY1mNjBYQ/Ntww+z+rKHZk5/U94Lk1BTN43
-   n/k1/Ka5WkPC8aHIyEw4wN59TzhiaCPsMixWzXpCHKb8JgzlP+o9JyuWO
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="631608"
-X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
-   d="scan'208";a="631608"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 04:19:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
-   d="scan'208";a="31826258"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.36.139])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 04:19:18 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Tue, 6 Feb 2024 14:19:13 +0200 (EET)
-To: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-cc: linux-pci@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
-    Bjorn Helgaas <bhelgaas@google.com>, 
-    Mahesh J Salgaonkar <mahesh@linux.ibm.com>, Lukas Wunner <lukas@wunner.de>, 
-    Yazen Ghannam <yazen.ghannam@amd.com>
-Subject: Re: [PATCH v7] PCI/DPC: Ignore Surprise Down error on hot removal
-In-Reply-To: <20240205190321.103164-1-Smita.KoralahalliChannabasappa@amd.com>
-Message-ID: <881a8ba0-729f-7d36-d696-4fa80b1b03c2@linux.intel.com>
-References: <20240205190321.103164-1-Smita.KoralahalliChannabasappa@amd.com>
+	s=arc-20240116; t=1707222412; c=relaxed/simple;
+	bh=mCXHlMsrALtmUvBNu+kuM9UWAh6UhPaYeNVpy42lO80=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iU/iwxhVSYkA4ba0fXhic5Az//yPEkOb8pIKiTvT8asQxU1dcH7lua4lD6XsXPaJJivnwwmdxkLEbDrrd5XneCiLqXgoK8qhsheQNdfF0agmkyXF/g3fJf2zCWKwojuz14hzylYo1U9ezaHJurUtjVpRItJb7WWCPQlNakKlJgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mev.co.uk; spf=pass smtp.mailfrom=mev.co.uk; dkim=pass (1024-bit key) header.d=mev.co.uk header.i=@mev.co.uk header.b=O5h5sb4k; arc=none smtp.client-ip=173.203.187.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mev.co.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mev.co.uk
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+	s=20221208-6x11dpa4; t=1707221983;
+	bh=mCXHlMsrALtmUvBNu+kuM9UWAh6UhPaYeNVpy42lO80=;
+	h=Date:Subject:To:From:From;
+	b=O5h5sb4kot0BzOpfh8MMvbiJwPf2rUYy28Pr/uYnHylFZxsyAy3EQP0kwmaup50bF
+	 ZB+6zmkcUd1a5H4KbnhVsmv8n0vDBQx67IoZlIXqk1HxSP1JNGovZ+cdVGpK2MuI4b
+	 IIeYBHJdbWQhxJ2nLGQIlaRluO1TP6s2EMnvQyBA=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp28.relay.iad3a.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 625823885;
+	Tue,  6 Feb 2024 07:19:42 -0500 (EST)
+Message-ID: <f61a1401-bc7f-4b8c-90d3-8327b9692422@mev.co.uk>
+Date: Tue, 6 Feb 2024 12:19:41 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH][next] comedi: remove redundant assignment to variable
+ range
+To: Colin Ian King <colin.i.king@gmail.com>,
+ H Hartley Sweeten <hsweeten@visionengravers.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240205180436.1841706-1-colin.i.king@gmail.com>
+Content-Language: en-GB
+From: Ian Abbott <abbotti@mev.co.uk>
+Organization: MEV Ltd.
+In-Reply-To: <20240205180436.1841706-1-colin.i.king@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Classification-ID: 8fa3b390-ade1-48a3-85c8-0a992efc5f2c-1-1
 
-On Mon, 5 Feb 2024, Smita Koralahalli wrote:
-
-> According to PCIe r6.0 sec 6.7.6 [1], async removal with DPC may result in
-> surprise down error. This error is expected and is just a side-effect of
-> async remove.
+On 05/02/2024 18:04, Colin Ian King wrote:
+> The variable range is being initialized with a value that is never
+> read, it is being re-assigned later on. The initialization is
+> redundant and can be removed.
 > 
-> Ignore surprise down error generated as a side-effect of async remove.
-> Typically, this error is benign as the pciehp handler invoked by PDC
-> or/and DLLSC alongside DPC, de-enumerates and brings down the device
-> appropriately. But the error messages might confuse users. Get rid of
-> these irritating log messages with a 1s delay while pciehp waits for
-> dpc recovery.
+> Cleans up clang scan build warning:
+> drivers/comedi/drivers/das08.c:180:2: warning: Value stored
+> to 'range' is never read [deadcode.DeadStores]
 > 
-> The implementation is as follows: On an async remove a DPC is triggered
-> along with a Presence Detect State change and/or DLL State Change.
-> Determine it's an async remove by checking for DPC Trigger Status in DPC
-> Status Register and Surprise Down Error Status in AER Uncorrected Error
-> Status to be non-zero. If true, treat the DPC event as a side-effect of
-> async remove, clear the error status registers and continue with hot-plug
-> tear down routines. If not, follow the existing routine to handle AER and
-> DPC errors.
-> 
-> Please note that, masking Surprise Down Errors was explored as an
-> alternative approach, but left due to the odd behavior that masking only
-> avoids the interrupt, but still records an error per PCIe r6.0.1 Section
-> 6.2.3.2.2. That stale error is going to be reported the next time some
-> error other than Surprise Down is handled.
-> 
-> Dmesg before:
-> 
->   pcieport 0000:00:01.4: DPC: containment event, status:0x1f01 source:0x0000
->   pcieport 0000:00:01.4: DPC: unmasked uncorrectable error detected
->   pcieport 0000:00:01.4: PCIe Bus Error: severity=Uncorrected (Fatal), type=Transaction Layer, (Receiver ID)
->   pcieport 0000:00:01.4:   device [1022:14ab] error status/mask=00000020/04004000
->   pcieport 0000:00:01.4:    [ 5] SDES (First)
->   nvme nvme2: frozen state error detected, reset controller
->   pcieport 0000:00:01.4: DPC: Data Link Layer Link Active not set in 1000 msec
->   pcieport 0000:00:01.4: AER: subordinate device reset failed
->   pcieport 0000:00:01.4: AER: device recovery failed
->   pcieport 0000:00:01.4: pciehp: Slot(16): Link Down
->   nvme2n1: detected capacity change from 1953525168 to 0
->   pci 0000:04:00.0: Removing from iommu group 49
-> 
-> Dmesg after:
-> 
->  pcieport 0000:00:01.4: pciehp: Slot(16): Link Down
->  nvme1n1: detected capacity change from 1953525168 to 0
->  pci 0000:04:00.0: Removing from iommu group 37
-> 
-> [1] PCI Express Base Specification Revision 6.0, Dec 16 2021.
->     https://members.pcisig.com/wg/PCI-SIG/document/16609
-> 
-> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-> Reviewed-by: Lukas Wunner <lukas@wunner.de>
-> Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 > ---
-> v2:
-> 	Indentation is taken care. (Bjorn)
-> 	Unrelevant dmesg logs are removed. (Bjorn)
-> 	Rephrased commit message, to be clear on native vs FW-First
-> 	handling. (Bjorn and Sathyanarayanan)
-> 	Prefix changed from pciehp_ to dpc_. (Lukas)
-> 	Clearing ARI and AtomicOp Requester are performed as a part of
-> 	(de-)enumeration in pciehp_unconfigure_device(). (Lukas)
-> 	Changed to clearing all optional capabilities in DEVCTL2.
-> 	OS-First -> native. (Sathyanarayanan)
+>   drivers/comedi/drivers/das08.c | 1 -
+>   1 file changed, 1 deletion(-)
 > 
-> v3:
-> 	Added error message when root port become inactive.
-> 	Modified commit description to add more details.
-> 	Rearranged code comments and function calls with no functional
-> 	change.
-> 	Additional check for is_hotplug_bridge.
-> 	dpc_completed_waitqueue to wakeup pciehp handler.
-> 	Cleared only Fatal error detected in DEVSTA.
-> 
-> v4:
-> 	Made read+write conditional on "if (pdev->dpc_rp_extensions)"
-> 	for DPC_RP_PIO_STATUS.
-> 	Wrapped to 80 chars.
-> 	Code comment for clearing PCI_STATUS and PCI_EXP_DEVSTA.
-> 	Added pcie_wait_for_link() check.
-> 	Removed error message for root port inactive as the message
-> 	already existed.
-> 	Check for is_hotplug_bridge before registers read.
-> 	Section 6.7.6 of the PCIe Base Spec 6.0 -> PCIe r6.0 sec 6.7.6.
-> 	Made code comment more meaningful.
-> 
-> v5:
-> 	$SUBJECT correction.
-> 	Added "Reviewed-by" tag.
-> 	No code changes. Re-spin on latest base to get Bjorn's
-> 	attention.
-> 
-> v6:
-> 	Change to write 1's to clear error. (Sathyanarayanan)
-> 
-> v7:
-> 	No changes. Rebasing on pci main branch as per Bjorn comments.
-> ---
->  drivers/pci/pcie/dpc.c | 67 ++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 67 insertions(+)
-> 
+> diff --git a/drivers/comedi/drivers/das08.c b/drivers/comedi/drivers/das08.c
+> index 5d5b9174f88a..49944ce1f813 100644
+> --- a/drivers/comedi/drivers/das08.c
+> +++ b/drivers/comedi/drivers/das08.c
+> @@ -177,7 +177,6 @@ static int das08_ai_insn_read(struct comedi_device *dev,
+>   	int ret;
+>   
+>   	chan = CR_CHAN(insn->chanspec);
+> -	range = CR_RANGE(insn->chanspec);
+>   
+>   	/* clear crap */
+>   	inb(dev->iobase + DAS08_AI_LSB_REG);
 
-> +static bool dpc_is_surprise_removal(struct pci_dev *pdev)
-> +{
-> +	u16 status;
-> +
-> +	if (!pdev->is_hotplug_bridge)
-> +		return false;
-> +
-> +	pci_read_config_word(pdev, pdev->aer_cap + PCI_ERR_UNCOR_STATUS,
-> +			     &status);
-> +
+Thanks.  It looks like it gets reassigned to the same value further 
+down, closer to the point where the value is used (within an `if` 
+block), and so it doesn't matter which of the assignments is removed.
 
-> +	if (!(status & PCI_ERR_UNC_SURPDN))
-> +		return false;
-> +
-> +	return true;
-
-It would be simpler to just state and also easier to understand:
-
-	return status & PCI_ERR_UNC_SURPDN;
-
-C rules will handle the conversion to bool.
-
-> +}
-> +
->  static irqreturn_t dpc_handler(int irq, void *context)
->  {
->  	struct pci_dev *pdev = context;
->  
-> +	/*
-> +	 * According to PCIe r6.0 sec 6.7.6, errors are an expected side effect
-> +	 * of async removal and should be ignored by software.
-> +	 */
-> +	if (dpc_is_surprise_removal(pdev)) {
-> +		dpc_handle_surprise_removal(pdev);
-> +		return IRQ_HANDLED;
-> +	}
-> +
->  	dpc_process_error(pdev);
->  
->  	/* We configure DPC so it only triggers on ERR_FATAL */
-
+Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
 
 -- 
- i.
+-=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
+-=( registered in England & Wales.  Regd. number: 02862268.  )=-
+-=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
+-=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
 
 
