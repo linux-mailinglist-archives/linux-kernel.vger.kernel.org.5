@@ -1,185 +1,193 @@
-Return-Path: <linux-kernel+bounces-55548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55557-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AAD084BDFA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:15:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA12984BE19
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:29:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF642B238A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:15:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 754CF1F255AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:29:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C57F114012;
-	Tue,  6 Feb 2024 19:15:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7929B14294;
+	Tue,  6 Feb 2024 19:29:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OJ9O6z0o"
-Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="elWmJSmz"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8787F13FF0
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 19:15:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2938914276
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 19:29:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707246915; cv=none; b=QmBqrk1I9R4LayODDi5rGBEAsa+euMpuEKeIsNk/P0TtLC554GYj0xvJu3Mt7GyKiictzhRHydalEX07T9iWbzfRdXIJhqIr3g6e3jJ88PipjWa9ArV6B1v+ic6eiagoOxnXIDgNRh8Us4a9WEJA979knuVG0ShhhSg+ee+V2NA=
+	t=1707247782; cv=none; b=CFZ/mQvTOVEZ9vRGzjGiotq8s/J2w5ZmzU1za19fBGS4WHylnvKGheI3PtJkwI3IWOo8btEJAIU/tKj1NCg5QpcFFlkLuVK06mCBRGTbgYLL157Fn/OqHWn3W7R0k0KvvGEbt+geezCGo/Nrs452POrc0yhwB9FlzvOAUsja5B4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707246915; c=relaxed/simple;
-	bh=EKchfM0k0x9G+mP/tT4BFMnrvyBjteJPVzpfpdDc/ek=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MKwtJLIph16ewQl8h7tazT0/mbpkvCOsxiA9xpcVvAXU7bT6L/QimysNp99m4SOiDTh95l3+gMpwYYaraVYR1YgvEnzQuPHmBGwlzy5/KKSImlT6gi3mOfw1AhHdOX0MKxQnqFUIaw73vnytI35kdw8bmC1A8y+ONRxxQmazxAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OJ9O6z0o; arc=none smtp.client-ip=209.85.166.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-7bb5fda069bso320665839f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 11:15:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707246912; x=1707851712; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3wsz0Wlc4vOmHkQP1isB38YzA7dUn46KRxyW9pALPJs=;
-        b=OJ9O6z0oZv95J0wxlDYHweHMPpDz6hhirvnnEby5d6ZrNEDbT0SG+HsT0+2IZvp0KQ
-         UqYWL/evzdKuLqEqYdXq3Ipzz5bfVJeCHVS5SGHs9qDtEa6gu1EZTNx0fBtwkuTdFMfd
-         ceANhUzmOi4PJLgX16isXmQAAH8Iezw676rENpKjWnEkThqN1Tnj0oyQTaIy30bLWY//
-         AgpTcrkR9kdFCYnBK+RMfc5JkSVCM9qIjvaju/JavuTJ9miTGSkT7vruiE006m8KNdNA
-         n/qUWKpiwsBZr3PD3vLARGRXHuVuAyyBoez8OCJHF3XiTKh17g/FUZbwBeOs9vYo9BDW
-         l0uA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707246912; x=1707851712;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3wsz0Wlc4vOmHkQP1isB38YzA7dUn46KRxyW9pALPJs=;
-        b=ioca2UqWG3eBynwJOUMrdO5WGBEnIDYBTwWnYev577hZp3XFMOZoK5zLZu5l/WVBqK
-         wb9ylC1Nt36CsgkEM/mzcD5kxtRnEamCVwvcbN9gILIpXOSvSCAJJN1apbPYHDZ2J71p
-         U9YJV+3Kj3zaaiT0vqJIid8R7Iy5q2KMl+pJ3scidpVSQSePTaRQ5EiN/pjsMAqD7Bky
-         /JjeTyIQJmkODI8zR0ecKTo15IDPOoQhT5Se//ZHxSk53WBbJKx55qACgHA1x4F7ySzD
-         Xj4B3xSm3EqHqlcqMqmsN6QY3pDd7E+yPGBHidgGs3VQmmhnJhMw5brxUINXoUJCKKRU
-         tS9Q==
-X-Gm-Message-State: AOJu0YzZAIoYd+c8MMkuX2XwN1rVfHV2uj99tJ/3GGemVM/oYPV0DC0h
-	URaBRb3SDOeUaeSfuddkRfJZ6mE1eiSX1O6ygefPVHT4K9BW20TmpwgPA3iha10z5yMc+kPbP2r
-	Fonvm3ErWr8cNCZcvsu1DhzzVDCw=
-X-Google-Smtp-Source: AGHT+IHlB8CJJPWY88CqhoWUKjaAkgIVZp+aqU0RIbX9eCa1vXpYoHi02dOBWlBwM4d/o/7WyzuvduoXswrwtwDUP1Y=
-X-Received: by 2002:a05:6e02:1d97:b0:363:b6cc:dd69 with SMTP id
- h23-20020a056e021d9700b00363b6ccdd69mr3765433ila.28.1707246912449; Tue, 06
- Feb 2024 11:15:12 -0800 (PST)
+	s=arc-20240116; t=1707247782; c=relaxed/simple;
+	bh=XZkQUMsfnvjrmuHhGG32XgueQTUnlS3+DOH+pSVZ9V8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P0FX4UKbbDWGUPaSZBmkiM/MYaScLipWsCf+4Up9iY8yqaO69gBVQBDWf0J11SNOnlCrdcegGYmkbKLu81LOHmWgwSQYbZqhjpSM3kOACDeKCA0xZZTy0w3cC0UMEhPlCnOon01+yAGaa56p8IF/HgY3SL0cSgudZsl1s7nPj9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=elWmJSmz; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707247780;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0cVRs7KeAPV1Z6Jd/uVlTNTCTsZbLZD+HLSKeeEyC2I=;
+	b=elWmJSmzT5SO2YQC1A/yzPoCtSVSnOalZxSjS9AJjbLTZFtc8pR2M81e8RxEempblKgGFT
+	Hw5vNr9e2pn26UzbgqYZCavd5a7JaLWtdT2s1CdU3xbkxJV7flQI6VdZuL9bmyxQsaTEEO
+	Z7+nCP8oIUsp7M9Q08CWzTpYWs0drfg=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-35--OZ5BSJwN7SNOU60aDZ1nA-1; Tue,
+ 06 Feb 2024 14:29:37 -0500
+X-MC-Unique: -OZ5BSJwN7SNOU60aDZ1nA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C9F401C060CE;
+	Tue,  6 Feb 2024 19:29:35 +0000 (UTC)
+Received: from tpad.localdomain (unknown [10.96.133.4])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 634C02026D08;
+	Tue,  6 Feb 2024 19:29:33 +0000 (UTC)
+Received: by tpad.localdomain (Postfix, from userid 1000)
+	id 8DA37401E0C72; Tue,  6 Feb 2024 16:15:18 -0300 (-03)
+Date: Tue, 6 Feb 2024 16:15:18 -0300
+From: Marcelo Tosatti <mtosatti@redhat.com>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, Shuah Khan <shuah@kernel.org>,
+	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
+	Ryan Phillips <rphillips@redhat.com>,
+	Brent Rowsell <browsell@redhat.com>, Peter Hunt <pehunt@redhat.com>,
+	Cestmir Kalina <ckalina@redhat.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	Alex Gladkov <agladkov@redhat.com>, Phil Auld <pauld@redhat.com>,
+	Paul Gortmaker <paul.gortmaker@windriver.com>,
+	Daniel Bristot de Oliveira <bristot@kernel.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Costa Shulyupin <cshulyup@redhat.com>
+Subject: Re: [RFC PATCH 0/8] cgroup/cpuset: Support RCU_NOCB on isolated
+ partitions
+Message-ID: <ZcKFRqrUh5tTbsaJ@tpad>
+References: <20240117163511.88173-1-longman@redhat.com>
+ <ZagJPoEsLZ6Dg-NG@mtj.duckdns.org>
+ <5ee5bf79-6cdc-4d1b-a19f-f0d5165a5f16@redhat.com>
+ <ZcIsd6fjgmsb2dxr@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206180855.3987204-1-nphamcs@gmail.com> <20240206185145.GA97483@cmpxchg.org>
-In-Reply-To: <20240206185145.GA97483@cmpxchg.org>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Tue, 6 Feb 2024 11:15:01 -0800
-Message-ID: <CAKEwX=Ok0CNjbvdhb6MYHKhgdfxMvOExNd=FtsTdrhfXbgrv7w@mail.gmail.com>
-Subject: Re: [PATCH v2] mm/swap_state: update zswap LRU's protection range
- with the folio locked
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: akpm@linux-foundation.org, chengming.zhou@linux.dev, yosryahmed@google.com, 
-	linux-mm@kvack.org, kernel-team@meta.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZcIsd6fjgmsb2dxr@localhost.localdomain>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On Tue, Feb 6, 2024 at 10:51=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> On Tue, Feb 06, 2024 at 10:08:55AM -0800, Nhat Pham wrote:
-> > When a folio is swapped in, the protection size of the corresponding
-> > zswap LRU is incremented, so that the zswap shrinker is more
-> > conservative with its reclaiming action. This field is embedded within
-> > the struct lruvec, so updating it requires looking up the folio's memcg
-> > and lruvec. However, currently this lookup can happen after the folio i=
-s
-> > unlocked, for instance if a new folio is allocated, and
-> > swap_read_folio() unlocks the folio before returning. In this scenario,
-> > there is no stability guarantee for the binding between a folio and its
-> > memcg and lruvec:
-> >
-> > * A folio's memcg and lruvec can be freed between the lookup and the
-> >   update, leading to a UAF.
-> > * Folio migration can clear the now-unlocked folio's memcg_data, which
-> >   directs the zswap LRU protection size update towards the root memcg
-> >   instead of the original memcg. This was recently picked up by the
-> >   syzbot thanks to a warning in the inlined folio_lruvec() call.
-> >
-> > Move the zswap LRU protection range update above the swap_read_folio()
-> > call, and only when a new page is allocated, to prevent this.
-> >
-> > Reported-by: syzbot+17a611d10af7d18a7092@syzkaller.appspotmail.com
-> > Closes: https://lore.kernel.org/all/000000000000ae47f90610803260@google=
-com/
-> > Fixes: b5ba474f3f51 ("zswap: shrink zswap pool based on memory pressure=
-")
-> > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
->
-> Looks great, thanks for updating it!
->
-> One more thing I just realized:
->
-> > ---
-> >  mm/swap_state.c | 10 ++++++----
-> >  mm/zswap.c      |  1 +
-> >  2 files changed, 7 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/mm/swap_state.c b/mm/swap_state.c
-> > index e671266ad772..7255c01a1e4e 100644
-> > --- a/mm/swap_state.c
-> > +++ b/mm/swap_state.c
-> > @@ -680,9 +680,10 @@ struct folio *swap_cluster_readahead(swp_entry_t e=
-ntry, gfp_t gfp_mask,
-> >       /* The page was likely read above, so no need for plugging here *=
-/
-> >       folio =3D __read_swap_cache_async(entry, gfp_mask, mpol, ilx,
-> >                                       &page_allocated, false);
-> > -     if (unlikely(page_allocated))
-> > +     if (unlikely(page_allocated)) {
-> > +             zswap_folio_swapin(folio);
-> >               swap_read_folio(folio, false, NULL);
-> > -     zswap_folio_swapin(folio);
-> > +     }
-> >       return folio;
-> >  }
-> >
-> > @@ -855,9 +856,10 @@ static struct folio *swap_vma_readahead(swp_entry_=
-t targ_entry, gfp_t gfp_mask,
-> >       /* The folio was likely read above, so no need for plugging here =
-*/
-> >       folio =3D __read_swap_cache_async(targ_entry, gfp_mask, mpol, tar=
-g_ilx,
-> >                                       &page_allocated, false);
-> > -     if (unlikely(page_allocated))
-> > +     if (unlikely(page_allocated)) {
-> > +             zswap_folio_swapin(folio);
-> >               swap_read_folio(folio, false, NULL);
-> > -     zswap_folio_swapin(folio);
-> > +     }
-> >       return folio;
-> >  }
-> >
-> > diff --git a/mm/zswap.c b/mm/zswap.c
-> > index 4aea03285532..8c548f73d52e 100644
-> > --- a/mm/zswap.c
-> > +++ b/mm/zswap.c
-> > @@ -827,6 +827,7 @@ void zswap_folio_swapin(struct folio *folio)
-> >       struct lruvec *lruvec;
-> >
-> >       if (folio) {
-> > +             VM_WARN_ON_ONCE(!folio_test_locked(folio));
-> >               lruvec =3D folio_lruvec(folio);
-> >               atomic_long_inc(&lruvec->zswap_lruvec_state.nr_zswap_prot=
-ected);
-> >       }
->
-> The NULL check is now also no longer necessary.
->
-> It used to be called unconditionally, even if
-> __read_swap_cache_async() failed and returned NULL.
->
-> However, page_allocated =3D=3D true implies success. That newly allocated
-> and locked folio is always returned.
+On Tue, Feb 06, 2024 at 01:56:23PM +0100, Frederic Weisbecker wrote:
+> Le Wed, Jan 17, 2024 at 12:15:07PM -0500, Waiman Long a écrit :
+> > 
+> > On 1/17/24 12:07, Tejun Heo wrote:
+> > > Hello,
+> > > 
+> > > On Wed, Jan 17, 2024 at 11:35:03AM -0500, Waiman Long wrote:
+> > > > The first 2 patches are adopted from Federic with minor twists to fix
+> > > > merge conflicts and compilation issue. The rests are for implementing
+> > > > the new cpuset.cpus.isolation_full interface which is essentially a flag
+> > > > to globally enable or disable full CPU isolation on isolated partitions.
+> > > I think the interface is a bit premature. The cpuset partition feature is
+> > > already pretty restrictive and makes it really clear that it's to isolate
+> > > the CPUs. I think it'd be better to just enable all the isolation features
+> > > by default. If there are valid use cases which can't be served without
+> > > disabling some isolation features, we can worry about adding the interface
+> > > at that point.
+> > 
+> > My current thought is to make isolated partitions act like isolcpus=domain,
+> > additional CPU isolation capabilities are optional and can be turned on
+> > using isolation_full. However, I am fine with making all these turned on by
+> > default if it is the consensus.
+> 
+> Right it was the consensus last time I tried. Along with the fact that mutating
+> this isolation_full set has to be done on offline CPUs to simplify the whole
+> picture.
+> 
+> So lemme try to summarize what needs to be done:
+> 
+> 1) An all-isolation feature file (that is, all the HK_TYPE_* things) on/off for
+>   now. And if it ever proves needed, provide a way later for more finegrained
+>   tuning.
+> 
+> 2) This file must only apply to offline CPUs because it avoids migrations and
+>   stuff.
+> 
+> 3) I need to make RCU NOCB tunable only on offline CPUs, which isn't that much
+>    changes.
+> 
+> 4) HK_TYPE_TIMER:
+>    * Wrt. timers in general, not much needs to be done, the CPUs are
+>      offline. But:
+>    * arch/x86/kvm/x86.c does something weird
+>    * drivers/char/random.c might need some care
+>    * watchdog needs to be (de-)activated
+>    
+> 5) HK_TYPE_DOMAIN:
+>    * This one I fear is not mutable, this is isolcpus...
 
-Ah yeah, I forgot the context of that :) Just sent a fixlet to do away
-with the check. Thanks for picking that out!
+Except for HK_TYPE_DOMAIN, i have never seen anyone use any of this
+flags.
+
+> 
+> 6) HK_TYPE_MANAGED_IRQ:
+>    * I prefer not to think about it :-)
+> 
+> 7) HK_TYPE_TICK:
+>    * Maybe some tiny ticks internals to revisit, I'll check that.
+>    * There is a remote tick to take into consideration, but again the
+>      CPUs are offline so it shouldn't be too complicated.
+> 
+> 8) HK_TYPE_WQ:
+>    * Fortunately we already have all the mutable interface in place.
+>      But we must make it live nicely with the sysfs workqueue affinity
+>      files.
+> 
+> 9) HK_FLAG_SCHED:
+>    * Oops, this one is ignored by nohz_full/isolcpus, isn't it?
+>    Should be removed?
+> 
+> 10) HK_TYPE_RCU:
+>     * That's point 3) and also some kthreads to affine, which leads us
+>      to the following in HK_TYPE_KTHREAD:
+> 
+> 11) HK_FLAG_KTHREAD:
+>     * I'm guessing it's fine as long as isolation_full is also an
+>       isolated partition. Then unbound kthreads shouldn't run there.
+> 
+> 12) HK_TYPE_MISC:
+>     * Should be fine as ILB isn't running on offline CPUs.
+> 
+> Thanks.
+> 
+> 
+
 
